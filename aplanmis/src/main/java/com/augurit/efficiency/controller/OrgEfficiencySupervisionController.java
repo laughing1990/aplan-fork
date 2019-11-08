@@ -219,15 +219,15 @@ public class OrgEfficiencySupervisionController {
     @GetMapping("/getOrgItemStatistics")
     @ApiOperation(value = "委办局-时间区间内部门事项受理情况")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "startDate", value = "开始时间【yyyy-mm-dd】", readOnly = true, dataType = "string", paramType = "query", required = true),
-            @ApiImplicitParam(name = "endDate", value = "结束时间【yyyy-mm-dd】", readOnly = true, dataType = "string", paramType = "query", required = true),
+            @ApiImplicitParam(name = "StartTime", value = "开始时间【yyyy-mm-dd】", readOnly = true, dataType = "string", paramType = "query", required = true),
+            @ApiImplicitParam(name = "endTime", value = "结束时间【yyyy-mm-dd】", readOnly = true, dataType = "string", paramType = "query", required = true),
             @ApiImplicitParam(name = "type", value = "时间类型D昨天，W本周，M本月，为空是自定义时间段", readOnly = true, dataType = "string", paramType = "query", required = true),
             @ApiImplicitParam(name = "isCurrent", value = "是否查询当前部门的", readOnly = true, dataType = "string", paramType = "query", required = true),
             @ApiImplicitParam(name = "orgId", value = "查询部门的id", readOnly = true, dataType = "string", paramType = "query", required = false)
     })
-    public ContentResultForm getOrgItemStatistics(String startDate,String endDate,String type,boolean isCurrent,@RequestParam(required = false)String orgId){
+    public ContentResultForm getOrgItemStatistics(String StartTime,String endTime,String type,boolean isCurrent,@RequestParam(required = false)String orgId){
         try {
-            Map<String, Object> result = orgEfficiencySupersionService.getOrgItemStatistics(startDate, endDate, type, isCurrent, orgId);
+            Map<String, Object> result = orgEfficiencySupersionService.getOrgItemStatistics(StartTime, endTime, type, isCurrent, orgId);
             return new ContentResultForm<>(true, result, "查询成功！");
         } catch (Exception e) {
             e.printStackTrace();
