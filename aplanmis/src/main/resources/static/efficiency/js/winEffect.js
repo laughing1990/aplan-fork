@@ -594,19 +594,19 @@ var app = new Vue({
             ts.handelThemeApproveNumData(res.content)
           } else {
             ts.themeApproveNumTableData = [];
-            ts.themeApproveNumPieChart.clear();
+            ts.themeApproveNumPieChart && ts.themeApproveNumPieChart.clear();
             ts.themeApproveNumPieChart = "";
           }
         } else {
           ts.themeApproveNumTableData = []; 
-          ts.themeApproveNumPieChart.clear();
+          ts.themeApproveNumPieChart && ts.themeApproveNumPieChart.clear();
           ts.themeApproveNumPieChart = "";
           ts.apiMessage(res.message, 'error')
         }
       }, function () {
         ts.loading = false;
         ts.themeApproveNumTableData = [];
-        ts.themeApproveNumPieChart.clear();
+        ts.themeApproveNumPieChart && ts.themeApproveNumPieChart.clear();
         ts.themeApproveNumPieChart = "";
         ts.apiMessage('网络错误！', 'error')
       });
@@ -664,18 +664,18 @@ var app = new Vue({
           if (res.content && res.content !== null && res.content.data && res.content.data.length) {
             ts.handelThemeScatterData(res)
           } else {
-            ts.themeScatterBarChart.clear();
+            ts.themeScatterBarChart && ts.themeScatterBarChart.clear();
             ts.themeScatterBarChart = '';
           }
         } else {
           ts.apiMessage(res.message, 'error');
-          ts.themeScatterBarChart.clear();
+          ts.themeScatterBarChart && ts.themeScatterBarChart.clear();
           ts.themeScatterBarChart = '';
         }
       }, function () {
         ts.loading = false;
         ts.apiMessage('网络错误！', 'error');
-        ts.themeScatterBarChart.clear();
+        ts.themeScatterBarChart && ts.themeScatterBarChart.clear();
         ts.themeScatterBarChart = '';
       });
     },

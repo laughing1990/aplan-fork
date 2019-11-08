@@ -941,7 +941,7 @@ var windowEchartOptions = {
     series: [{
       name: '访问来源',
       type: 'pie',
-      radius: '55%',
+      radius: '50%',
       center: ['50%', '50%'],
       color: ['#32C4E8', '#07CDC6', '#9D96F3', '#FA7292', '#9EE5B8'],
       itemStyle: {
