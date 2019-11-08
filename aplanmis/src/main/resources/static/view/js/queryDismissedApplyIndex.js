@@ -51,7 +51,7 @@ var vm = new Vue({
             ts.loading = true;
 
             request('', {
-                url: ctx + '/rest/conditional/query/listDismissedApply',
+                url: ctx + 'rest/conditional/query/listDismissedApply',
                 type: 'get',
                 data: ts.searchFrom
             }, function (res) {
@@ -72,16 +72,16 @@ var vm = new Vue({
             var ts = this;
             ts.loading = true;
             request('', {
-                url: ctx + '/rest/conditional/query/queryApplyInfoTaskId',
+                url: ctx + 'rest/conditional/query/queryApplyInfoTaskId',
                 type: 'get',
                 data: {applyinstId: row.applyinstId}
             }, function (res) {
                 ts.loading = false;
                 if (res.success) {
                     if(row.viewId){
-                        window.open(ctx + '/apanmis/page/stageApproveIndex?isNotCompareAssignee=true&taskId=' + res.content.taskId + '&viewId=' + row.viewId, '_blank');
+                        window.open(ctx + 'apanmis/page/stageApproveIndex?isNotCompareAssignee=true&taskId=' + res.content.taskId + '&viewId=' + row.viewId, '_blank');
                     }else {
-                        window.open(ctx + '/apanmis/page/stageApproveIndex?isNotCompareAssignee=true&taskId=' + res.content.taskId + '&viewId=' + res.content.viewId, '_blank');
+                        window.open(ctx + 'apanmis/page/stageApproveIndex?isNotCompareAssignee=true&taskId=' + res.content.taskId + '&viewId=' + res.content.viewId, '_blank');
                     }
                 } else {
                     return ts.apiMessage(res.message, 'error')
@@ -108,7 +108,7 @@ var vm = new Vue({
             confirmMsg("确认信息", "确认发送短信提醒吗？", function () {
                 ts.loading = true;
                 request('', {
-                    url: ctx + '/rest/conditional/query/sendSms',
+                    url: ctx + 'rest/conditional/query/sendSms',
                     type: 'get',
                     data: {applyinstId: row.applyinstId}
                 }, function (res) {

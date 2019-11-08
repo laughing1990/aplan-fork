@@ -123,6 +123,7 @@ allprojects {
 
         compile "com.augurit.agcloud:agcloud-agx:${agcloudVersion}"
         compile "com.augurit.agcloud:agcloud-agx-common:${agcloudVersion}"
+        compile "com.augurit.agcloud:agcloud-agx-ui:${agcloudVersion}"
 
 //        compile "com.augurit.agcloud:agcloud-bpm-common:${agcloudVersion}"
 //        compile "com.augurit.agcloud:agcloud-bpm-admin:${agcloudVersion}"

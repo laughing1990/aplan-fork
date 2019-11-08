@@ -52,7 +52,7 @@ var vm = new Vue({
             ts.loading = true;
 
             request('', {
-                url: ctx + '/win/efficiency/supervision/listNeedCompletedApply',
+                url: ctx + 'win/efficiency/supervision/listNeedCompletedApply',
                 type: 'get',
                 data: ts.searchFrom
             }, function (res) {
@@ -71,7 +71,7 @@ var vm = new Vue({
         //补全
         viewDetail: function (row) {
             var correctId = row.correctId;
-            var urltemp = ctx + '/applyinst/correct/index.html?applyinstCorrectId=' + correctId;
+            var urltemp = ctx + 'applyinst/correct/index.html?applyinstCorrectId=' + correctId;
             var parentIfreamUrl = window.frames.location.href;
             urltemp = urltemp + '&parentIfreamUrl=' + parentIfreamUrl;
             var data = {

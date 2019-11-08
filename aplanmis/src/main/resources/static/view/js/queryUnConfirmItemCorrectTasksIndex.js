@@ -53,7 +53,7 @@ var vm = new Vue({
 			ts.loading = true;
 
 			request('', {
-				url: ctx + '/rest/conditional/query/listUnConfirmItemCorrect',
+				url: ctx + 'rest/conditional/query/listUnConfirmItemCorrect',
 				type: 'get',
 				data: ts.searchFrom
 			}, function (res) {
@@ -73,7 +73,7 @@ var vm = new Vue({
 		viewDetail: function (row) {
 			var correctId = row.correctId;
 			var parentIfreamUrl = window.frames.location.href;
-			var urltemp = ctx + '/rest/correct/matConfirm.html?correctId=' + row.correctId;
+			var urltemp = ctx + 'rest/correct/matConfirm.html?correctId=' + row.correctId;
 			//window.open(urltemp,'_blank')
             var currentTabId = parent.vm.activeTabIframe;
             urltemp = urltemp + '&parentIfreamUrl=' + parentIfreamUrl + '&currentTabId=' + currentTabId;
@@ -89,7 +89,7 @@ var vm = new Vue({
 		queryOrganizer: function () {
 			var ts = this;
 			request('', {
-				url: ctx + '/rest/conditional/query/listNeedCorrectTasksOrganizer',
+				url: ctx + 'rest/conditional/query/listNeedCorrectTasksOrganizer',
 				type: 'get',
 				data: {},
 				async: true

@@ -46,7 +46,7 @@ var vm = new Vue({
             ts.loading = true;
 
             request('', {
-                url: ctx + '/rest/conditional/query/listWindowParts',
+                url: ctx + 'rest/conditional/query/listWindowParts',
                 type: 'get',
                 data: ts.searchFrom
             }, function (res) {
@@ -68,7 +68,7 @@ var vm = new Vue({
             var ts = this;
             // ts.loading = true;
             request('', {
-                url: ctx + '/rest/conditional/query/parts/dic/list',
+                url: ctx + 'rest/conditional/query/parts/dic/list',
                 type: 'get',
                 data: {}
             }, function (res) {
@@ -98,7 +98,7 @@ var vm = new Vue({
                 // ts.loading = true;
                 var themeId = this.searchFrom.theme;
                 request('', {
-                    url: ctx + '/rest/conditional/query/theme/stage/list',
+                    url: ctx + 'rest/conditional/query/theme/stage/list',
                     type: 'get',
                     data: {themeId: themeId}
                 }, function (res) {
@@ -132,20 +132,20 @@ var vm = new Vue({
         //导出
         exportExcel:function(){
             var param = encodeURI(JSON.stringify(this.searchFrom));
-            window.location.href = ctx + "/rest/conditional/query/export/windowParts" + "?param=" + param;
+            window.location.href = ctx + "rest/conditional/query/export/windowParts" + "?param=" + param;
         },
         //查看详情
         viewDetail:function (row) {
             var ts = this;
             ts.loading = true;
             request('', {
-                url: ctx + '/rest/conditional/query/queryItemInfoTaskId',
+                url: ctx + 'rest/conditional/query/queryItemInfoTaskId',
                 type: 'get',
                 data: {iteminstId: row.iteminstId,handler:handler}
             }, function (res) {
                 ts.loading = false;
                 if (res.success) {
-                    window.open(ctx+'/apanmis/page/stageApproveIndex?isNotCompareAssignee=true&taskId='+res.content.taskId+'&viewId='+res.content.viewId,'_blank');
+                    window.open(ctx+'apanmis/page/stageApproveIndex?isNotCompareAssignee=true&taskId='+res.content.taskId+'&viewId='+res.content.viewId,'_blank');
                 } else {
                     return ts.apiMessage(res.message, 'error')
                 }

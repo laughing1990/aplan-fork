@@ -181,7 +181,7 @@ var vm = new Vue({
                         setTimeout(function () {
                             //var url = ctx + "rest/receive/toPrintPageForPassword?type=applicant";
                             //window.open(ctx + 'rest/ntko/ntkoOpenWin?jumpUrl=' + encodeURIComponent(url));
-                            var url = ctx + "/rest/receive/savePasswordPdf/"+data.loginName+"/"+data.loginPwd;
+                            var url = ctx + "rest/receive/savePasswordPdf/"+data.loginName+"/"+data.loginPwd;
                             window.open(ctx + 'preview/pdfjs/web/viewer.html?file='+encodeURIComponent(url));
                         },1000);
                         /* var url = ctx + "rest/receive/toPrintPageForPassword?type=applicant";
@@ -338,7 +338,7 @@ var vm = new Vue({
                                             // 打印回执
                                             //var url = ctx + "/aea/hi/receive/toPrintPageForPassword.do?type=applicant";
                                             //window.open(ctx + '/file/ntkoOpenWin.do?jumpUrl=' + encodeURIComponent(url));
-                                            var url = ctx + "/rest/receive/savePasswordPdf/" + data.loginName + "/" + data.loginPwd;
+                                            var url = ctx + "rest/receive/savePasswordPdf/" + data.loginName + "/" + data.loginPwd;
                                             window.open(ctx + 'preview/pdfjs/web/viewer.html?file=' + encodeURIComponent(url));
                                         } else {
                                             ts.apiMessage(res.message, 'error');

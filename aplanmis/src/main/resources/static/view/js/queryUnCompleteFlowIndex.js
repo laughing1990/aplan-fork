@@ -45,7 +45,7 @@ var vm = new Vue({
             ts.loading = true;
 
             request('', {
-                url: ctx + '/rest/conditional/query/listUnCompleteFlow',
+                url: ctx + 'rest/conditional/query/listUnCompleteFlow',
                 type: 'get',
                 data: ts.searchFrom
             }, function (res) {
@@ -72,7 +72,7 @@ var vm = new Vue({
             var ts = this;
             ts.loading = true;
             request('', {
-                url: ctx + '/rest/conditional/query/checkDoCompleteFlow',
+                url: ctx + 'rest/conditional/query/checkDoCompleteFlow',
                 type: 'get',
                 data: {taskId: row.taskId}
             }, function (res) {
@@ -109,7 +109,7 @@ var vm = new Vue({
             var ts = this;
             ts.loading = true;
             request('', {
-                url: ctx + '/rest/conditional/query/doCompleteFlow',
+                url: ctx + 'rest/conditional/query/doCompleteFlow',
                 type: 'get',
                 data: {taskId: ts.currentTaskId, desActId: desActId}
             }, function (res) {
