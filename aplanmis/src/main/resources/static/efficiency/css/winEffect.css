@@ -15,8 +15,6 @@
 .index-wrapper {
   padding: 15px;
   padding-bottom: 0;
-  min-width: 1430px;
-  min-width: 1526px;
 }
 .index-wrapper .status-card .status-card-item {
   background: url(../images/sawtooth.png) no-repeat bottom;
