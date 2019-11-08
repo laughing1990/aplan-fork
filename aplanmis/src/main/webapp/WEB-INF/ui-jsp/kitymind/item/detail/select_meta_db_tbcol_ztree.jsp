@@ -279,6 +279,12 @@ var selectMetaDbTbcolKey,
                         }else{
                             $("#elContent").val($("#elContent").val()+"  "+condStateElText);
                         }
+                    }else if(isCondOrState){
+                        if (result.value) {
+                            $("#"+isCondOrState).val(condStateElText);
+                        }else{
+                            $("#"+isCondOrState).val($("#"+isCondOrState).val()+"  "+condStateElText);
+                        }
                     }
                     $('#select_meta_db_tbcol_ztree_modal').modal('hide');
                 });

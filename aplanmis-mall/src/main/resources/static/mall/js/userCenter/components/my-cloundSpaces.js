@@ -749,9 +749,10 @@
         }
     })
     function onprogress(evt) {
+        console.log(33333333333333333)
         var vm = myCloundSpaces;
         var loaded = evt.loaded; //已经上传大小情况
-
+        console.log('上传的大小',loaded);
         var tot = evt.total; //附件总大小
         var per = Math.floor(100 * loaded / tot); //已经上传的百分比
 
@@ -763,6 +764,5 @@
             vm.uploadFile[j].uploadedSize = uploadedSize;
         }
         vm.uploadFile[j].uploadedPer = per;
-
     };
 })();

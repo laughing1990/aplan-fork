@@ -1171,4 +1171,33 @@ public class AeaItemAdminServiceImpl implements AeaItemAdminService {
 
         return sets;
     }
+
+    @Override
+    public List<AeaItem> getUnSelectedParFrontItemTree(String stageId,String frontItemId){
+
+        List<AeaItem> allNodes = new ArrayList<>();
+        String title = "工程建设审批事项库";
+        AeaItem rootNode = new AeaItem();
+        rootNode.setId("root");
+        rootNode.setName(title);
+        rootNode.setType("root");
+        rootNode.setOpen(true);
+        rootNode.setIsParent(true);
+        rootNode.setNocheck(true);
+        allNodes.add(rootNode);
+        // 所有最新版本事项,没有考虑是否发布
+        List<AeaItemBasic> allItems;
+        if(StringUtils.isNotBlank(stageId)){
+            allItems = aeaItemBasicMapper.listUnSelectedParFrontItemBasicByStageId(stageId,frontItemId,SecurityContext.getCurrentOrgId());
+        }else{
+            allItems = new ArrayList<>();
+        }
+        if(allItems!=null&&allItems.size()>0){
+            for(AeaItemBasic itemBasic : allItems){
+                AeaItem item = convertItemNode(itemBasic);
+                allNodes.add(item);
+            }
+        }
+        return allNodes;
+    }
 }

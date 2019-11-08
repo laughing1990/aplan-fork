@@ -11,12 +11,9 @@ import com.augurit.aplanmis.common.constants.ItemStatus;
 import com.augurit.aplanmis.common.constants.OpsActionConstants;
 import com.augurit.aplanmis.common.domain.AeaHiIteminst;
 import com.augurit.aplanmis.common.event.AplanmisEventPublisher;
-import com.augurit.aplanmis.common.event.def.BpmNodeSendAplanmisEvent;
-import com.augurit.aplanmis.common.event.def.ItemCompletedEvent;
 import com.augurit.aplanmis.common.service.instance.AeaHiApplyinstService;
 import com.augurit.aplanmis.common.service.instance.AeaHiIteminstService;
 import com.augurit.aplanmis.common.service.window.AeaServiceWindowService;
-import org.flowable.task.api.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -74,10 +71,13 @@ public class ApproveWinBtnService {
 
         String opuWinId = aeaServiceWindowService.getCurrentUserWindow() == null ? "" : aeaServiceWindowService.getCurrentUserWindow().getWindowId();
         String opuOrgId = SecurityContext.getCurrentOrgId();
-        //更新申请状态及维护状态历史
+        //2、推动流程流转
+        String taskId = bpmTaskService.completeTask(sendObject);
+
+        //3、更新申请状态及维护状态历史
         aeaHiApplyinstService.updateAeaHiApplyinstStateAndInsertTriggerAeaLogItemStateHist(applyinstId, sendObject.getTaskId(), appinsts.get(0).getAppinstId(), applyStatus, opuWinId);
 
-        //2、通过申请实例id查询事项实例列表，更新事项实例状态
+        //4、通过申请实例id查询事项实例列表，更新事项实例状态
         List<AeaHiIteminst> aeaHiIteminstList = aeaHiIteminstService.getAeaHiIteminstListByApplyinstId(applyinstId);
         String iteminstStatus = ItemStatus.valueOf(itemState).getValue();
         for(AeaHiIteminst iteminst : aeaHiIteminstList){
@@ -85,12 +85,12 @@ public class ApproveWinBtnService {
             aeaHiIteminstService.updateAeaHiIteminstStateAndInsertTriggerAeaLogItemStateHist(iteminst.getIteminstId(), sendObject.getTaskId(), appinsts.get(0).getAppinstId(), iteminstStatus, opuOrgId);
         }
 
-        //触发流程发送事件
-        Task currTask = bpmTaskService.getRuTaskByTaskId(sendObject.getTaskId());
-        publisher.publishEvent(new BpmNodeSendAplanmisEvent(this,sendObject));
+        //触发流程发送事件 已废弃
+//        Task currTask = bpmTaskService.getRuTaskByTaskId(sendObject.getTaskId());
+//        publisher.publishEvent(new BpmNodeSendAplanmisEvent(this,sendObject));
 
-        //3、推动流程流转
-        return bpmTaskService.completeTask(sendObject);
+
+        return taskId;
     }
 
     /**
@@ -115,18 +115,20 @@ public class ApproveWinBtnService {
         List<ActStoAppinst> appinsts = actStoAppinstService.listActStoAppinst(stoAppinst);
         if(appinsts==null)
             throw new RuntimeException("无法申请实例ID为："+applyinstId+"获取到模板流程实例，请检查！");
-        String applyStatus = ApplyState.valueOf(applyState).getValue();
 
+        //推动流程流转
+        String taskId = bpmTaskService.completeTask(sendObject);
+
+        String applyStatus = ApplyState.valueOf(applyState).getValue();
         String opuWinId = aeaServiceWindowService.getCurrentUserWindow() == null ? "" : aeaServiceWindowService.getCurrentUserWindow().getWindowId();
         //更新申请状态及维护状态历史
         aeaHiApplyinstService.updateAeaHiApplyinstStateAndInsertTriggerAeaLogItemStateHist(applyinstId, sendObject.getTaskId(), appinsts.get(0).getAppinstId(), applyStatus, opuWinId);
 
-        //触发流程发送事件
-        Task currTask = bpmTaskService.getRuTaskByTaskId(sendObject.getTaskId());
-        publisher.publishEvent(new BpmNodeSendAplanmisEvent(this,sendObject));
+        //触发流程发送事件 已废弃
+//        Task currTask = bpmTaskService.getRuTaskByTaskId(sendObject.getTaskId());
+//        publisher.publishEvent(new BpmNodeSendAplanmisEvent(this,sendObject));
 
-        //推动流程流转
-        return bpmTaskService.completeTask(sendObject);
+        return taskId;
     }
 
     /**
