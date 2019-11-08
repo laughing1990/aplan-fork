@@ -865,7 +865,7 @@ var vm = new Vue({
       var day = vm.speBaseInfoForm.specialDueDays;
       var date = vm.speBaseInfoForm.opsTime;
       if (!!day && !!date) {
-        // vm.speDiaLoading = true;
+        vm.speDiaLoading = true;
         request('', {
           url: ctx + 'rest/specialProcedure/getSpecialEndDate',
           type: 'get',

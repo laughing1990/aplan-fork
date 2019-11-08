@@ -20,6 +20,7 @@ function defaultBootstrap(bstableId, columns, url) {
         this.overAllArr = new Array();//全局选中的id数组
         this.overAllIds = new Array();//全局选中的row数组
         this.rowId = null;//row的唯一标识id
+        this.pageList = [10, 20, 50, 100];//可供选择的每页的行数
     };
 
 
@@ -44,7 +45,7 @@ function defaultBootstrap(bstableId, columns, url) {
                     // sortOrder: "desc",          //排序方式
                     pageNumber: 1,                  //初始化加载第一页，默认第一页
                     pageSize: this.pageSize,               //每页的记录行数
-                    pageList: [10, 20, 50, 100],    //可供选择的每页的行数
+                    pageList: this.pageList,    //可供选择的每页的行数
                     // queryParamsType: '',   //默认值为 'limit' ,在默认情况下 传给服务端的参数为：offset,limit,sort
                     queryParams: function (params) {
                         // return $.extend(this.queryParams, params);
@@ -409,6 +410,17 @@ function defaultBootstrap(bstableId, columns, url) {
             });
 
             return this;
+        },
+        setPageSize: function (pageSize) {
+            this.pageSize = pageSize;
+            return this;
+        },
+        setPageList: function (pageList) {
+            this.pageList = pageList;
+            return this;
+        },
+        destroy: function(){
+            this.btInstance.bootstrapTable('destroy');
         }
     };
 

@@ -1,8 +1,15 @@
 package com.augurit.aplanmis.front.supermarket.controller;
 
+import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
+import com.augurit.agcloud.framework.util.StringUtils;
+import com.augurit.aplanmis.front.receive.service.ReceiveService;
 import com.augurit.aplanmis.front.supermarket.service.AgentItemApplyService;
 import com.augurit.aplanmis.front.supermarket.vo.AgentItemApplyData;
+import com.augurit.aplanmis.supermarket.apply.service.RestImApplyService;
+import com.augurit.aplanmis.supermarket.apply.vo.ApplyinstResult;
+import com.augurit.aplanmis.supermarket.apply.vo.ImItemApplyData;
+import com.augurit.aplanmis.supermarket.apply.vo.ImPurchaseData;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,11 +24,28 @@ import org.springframework.web.bind.annotation.RestController;
 public class AgentItemApplyController {
     @Autowired
     private AgentItemApplyService agentItemApplyService;
+    @Autowired
+    private RestImApplyService restImApplyService;
+    @Autowired
+    private ReceiveService receiveService;
 
     @PostMapping("/series/processflow/start")
     @ApiOperation(value = "中介事项申报 -->唐山模式，发起申报", httpMethod = "POST")
     public ContentResultForm<String> startSeriesFlow(@RequestBody AgentItemApplyData agentItemApplyData) throws Exception {
-        String applyinstId = agentItemApplyService.startSeriesFlow(agentItemApplyData);
+        String applyinstIdParam = agentItemApplyData.getApplyinstId();
+        String applySubject = agentItemApplyData.getApplySubject();
+        ImItemApplyData applyData = agentItemApplyData.createItemApplyData();
+        //发起中介事项流程
+        ApplyinstResult result = restImApplyService.purchaseStartProcess(applyData);
+        String applyinstId = result.getApplyinstId();
+        String applyinstCode = result.getApplyinstCode();
+        //保存采购信息
+        ImPurchaseData purchaseData = agentItemApplyData.createPurchaseData(applyinstId, applyinstCode);
+        restImApplyService.savePurchaseProjInfo(purchaseData);
+        //保存受理回执，物料回执
+        if (StringUtils.isBlank(applyinstIdParam)) {
+            receiveService.saveReceive(new String[]{applyinstId}, new String[]{"1", "2"}, SecurityContext.getCurrentUserName(), "");
+        }
         return new ContentResultForm<>(true, applyinstId, "Series start process success");
     }
 

@@ -66,4 +66,8 @@ public interface WinEfficiencySupervisionService {
     Map<String, Object> getCurrentWinAcceptStatistics(String startTime, String endTime, String type, boolean b)throws  Exception;
 
     List<Map<String, Object>> getCurWinAcceptStatisticsByDay(String type, String startTime, String endTime) throws Exception;
+
+    Map<String, Object> getWinStageAvgLimitTimeStatistics(String startTime, String endTime, String type, boolean isCurrent, String windowId) throws Exception;
+
+    Map<String, Object> getWinStageLimitTimeStatistics(String startTime, String endTime, String type, boolean isCurrent, String windowId) throws Exception;
 }

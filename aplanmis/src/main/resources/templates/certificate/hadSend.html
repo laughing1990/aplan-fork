@@ -236,7 +236,7 @@
                   <el-input v-model="ItemSmsInfoForm.addresseePhone" id="addresseePhone_item" placeholder="电话" disabled></el-input>
               </el-form-item>
               <div class="clearfix">
-              <el-form-item class="input-inline" :label="addresseeIdcard" prop="addresseeIdcard" v-if="sendInfoForm.receiveMode == '1'">
+              <el-form-item class="input-inline" :label="addresseeIdcard" prop="addresseeIdcard" v-if="receiveMode_dig == '1'">
                   <el-input v-model="ItemSmsInfoForm.addresseeIdcard" id="addresseeIdcard_item" placeholder="身份证号码" ></el-input>
               </el-form-item>
               </div>

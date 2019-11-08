@@ -19,15 +19,13 @@ public class ImItemApplyData {
     private String appId;
     @ApiModelProperty(value = "事项版本ID", required = true)
     private String itemVerId;
-    @ApiModelProperty(value = "分局承办；并行推进事项分局承办，格式为：[{\"itemVerId\":\"111\",\"branchOrg\":\"222\"}]", required = true)
-    private String branchOrgMap;
+    //    @ApiModelProperty(value = "分局承办；并行推进事项分局承办，格式为：[{\"itemVerId\":\"111\",\"branchOrg\":\"222\"}]", required = true)
+//    private String branchOrgMap;
     @ApiModelProperty(value = "项目ID", required = true)
     private String projInfoId;
 
     @ApiModelProperty(value = "建设单位ID", required = true)
     String constructionUnitId;//
-    //    @ApiModelProperty(value = "建设单位Map集合，key为projInfoId,格式为[{projInfoId1:[unitId1,unitId1]}]", required = true)
-//    private List<BuildProjUnitVo> buildProjUnitMap;
     @ApiModelProperty(value = "材料实例ID集合", required = true)
     private String[] matinstsIds;
     @ApiModelProperty(value = "办理意见", required = true)
@@ -37,10 +35,6 @@ public class ImItemApplyData {
 
     @ApiModelProperty(value = "情形ID集合", hidden = true)
     private String[] stateIds;
-    //    @ApiModelProperty(value = "是否并行推行：0表示否，1表示是,", hidden = true)
-//    private String isParallel;
-//    @ApiModelProperty(value = "并行推进阶段ID", hidden = true)
-//    private String stageId;
     @ApiModelProperty(value = "是否为投资审批项目：1 是，0 否")
     String isApproveProj;
 //    @ApiModelProperty(value = "采购需求项目ID")

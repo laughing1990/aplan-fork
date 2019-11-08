@@ -174,4 +174,123 @@
         LEFT JOIN opu_om_org ooo on ooo.ORG_ID=gg.orgId
         LEFT JOIN bsc_dic_region bdr on bdr.region_id = ooo.region_id
     </select>
+    <select id="getWinLimitTimeStatistics" resultType="com.augurit.aplanmis.common.vo.analyse.ApplyLimitTimeVo">
+
+        SELECT count(1)count ,gg.INST_STATE instState from (
+        select
+        alash.APPLYINST_ID applyinstId,
+        aha.IS_SERIES_APPROVE isApprove,
+        asti.INST_STATE
+        from
+        aea_log_apply_state_hist alash
+        LEFT JOIN aea_hi_applyinst aha on aha.APPLYINST_ID= alash.APPLYINST_ID
+        LEFT JOIN aea_hi_par_stageinst ahps on ahps.APPLYINST_ID=aha.APPLYINST_ID
+        LEFT JOIN act_sto_appinst asp on asp.APPINST_ID = ahps.APPINST_ID
+        LEFT JOIN act_sto_timerule_inst asti on asti.APP_FLOWDEF_ID = asp.APP_FLOWDEF_ID AND asti.PROC_INST_ID = asp.PROCINST_ID
+        where alash.NEW_STATE='6'
+        and aha.IS_SERIES_APPROVE='0'
+        and alash.TRIGGER_TIME <![CDATA[ >= ]]> #{startTime}
+        and alash.TRIGGER_TIME <![CDATA[ <= ]]> #{endTime}
+        <if test="windowId !=null and windowId !=''">
+            and alash.OPS_WINDOW_ID = #{windowId}
+        </if>
+        and alash.ROOT_ORG_ID= #{rootOrgId}
+        and ahps.ROOT_ORG_ID=#{rootOrgId}
+        and aha.ROOT_ORG_ID = #{rootOrgId}
+        and asp.ROOT_ORG_ID= #{rootOrgId}
+        and asti.ORG_ID = #{rootOrgId}
+        UNION
+        select
+        alash.APPLYINST_ID applyinstId,
+        aha.IS_SERIES_APPROVE isApprove,
+        asti.INST_STATE
+        from
+        aea_log_apply_state_hist alash
+        LEFT JOIN aea_hi_applyinst aha on aha.APPLYINST_ID= alash.APPLYINST_ID
+        LEFT JOIN aea_hi_seriesinst ahs on ahs.APPLYINST_ID=aha.APPLYINST_ID
+        LEFT JOIN aea_hi_iteminst ahi on ahi.SERIESINST_ID = ahs.SERIESINST_ID
+        LEFT JOIN act_sto_appinst asp on asp.APPINST_ID = ahs.APPINST_ID
+        LEFT JOIN  act_sto_timerule_inst asti on  asti.PROC_INST_ID = ahi.PROCINST_ID
+        where alash.NEW_STATE='6'
+        and aha.IS_SERIES_APPROVE='1'
+        and ahs.STAGE_ID is not null
+        and alash.TRIGGER_TIME <![CDATA[ >= ]]> #{startTime}
+        and alash.TRIGGER_TIME <![CDATA[ <= ]]> #{endTime}
+        <if test="windowId !=null and windowId !=''">
+            and alash.OPS_WINDOW_ID = #{windowId}
+        </if>
+        and alash.ROOT_ORG_ID= #{rootOrgId}
+        and ahs.ROOT_ORG_ID =#{rootOrgId}
+        and ahi.ROOT_ORG_ID =#{rootOrgId}
+        and asp.ROOT_ORG_ID =#{rootOrgId}
+        and asti.ORG_ID = #{rootOrgId}
+        ) gg GROUP by gg.INST_STATE
+
+    </select>
+    <select id="getWinStageLimitTimeStatistics" resultType="com.augurit.aplanmis.common.vo.analyse.ApplyLimitTimeVo">
+        select
+        alash.APPLYINST_ID applyinstId,
+        aha.IS_SERIES_APPROVE isApprove,
+        alash.OPS_WINDOW_ID windowId,
+        asw.WINDOW_NAME windowName,
+        asw.SORT_NO sortNO,
+        aps.DYBZSPJDXH dybzspjdxh,
+        asti.USE_LIMIT_TIME useLimitTime,
+        "0"  isParallel
+        from aea_log_apply_state_hist alash
+        LEFT JOIN aea_hi_applyinst aha on aha.APPLYINST_ID= alash.APPLYINST_ID
+        LEFT JOIN aea_service_window asw on alash.OPS_WINDOW_ID=asw.WINDOW_ID
+        LEFT JOIN aea_hi_par_stageinst ahps on ahps.APPLYINST_ID=aha.APPLYINST_ID
+        LEFT JOIN aea_par_stage aps on aps.STAGE_ID = ahps.STAGE_ID
+        LEFT JOIN act_sto_appinst asp on asp.APPINST_ID = ahps.APPINST_ID
+        LEFT JOIN act_sto_timerule_inst asti on asti.APP_FLOWDEF_ID = asp.APP_FLOWDEF_ID AND asti.PROC_INST_ID = asp.PROCINST_ID
+        where alash.NEW_STATE='6'
+        and aha.IS_SERIES_APPROVE='0'
+        and alash.TRIGGER_TIME <![CDATA[ >= ]]> #{startTime}
+        and alash.TRIGGER_TIME <![CDATA[<= ]]> #{endTime}
+        <if test="windowId !=null and windowId !=''">
+            and alash.OPS_WINDOW_ID = #{windowId}
+        </if>
+        and alash.ROOT_ORG_ID = #{rootOrgId}
+        and aha.ROOT_ORG_ID=#{rootOrgId}
+        and asw.ROOT_ORG_ID= #{rootOrgId}
+        and ahps.ROOT_ORG_ID= #{rootOrgId}
+        and aps.ROOT_ORG_ID= #{rootOrgId}
+        and asp.ROOT_ORG_ID = #{rootOrgId}
+        and asti.ORG_ID = #{rootOrgId}
+        UNION
+        select
+        alash.APPLYINST_ID applyinstId,
+        aha.IS_SERIES_APPROVE isApprove,
+        alash.OPS_WINDOW_ID windowId,
+        asw.WINDOW_NAME windowName,
+        asw.SORT_NO sortNO,
+        aps.DYBZSPJDXH dybzspjdxh,
+        asti.USE_LIMIT_TIME useLimitTime,
+        ahs.IS_PARALLEL isParallel
+        from aea_log_apply_state_hist alash
+        LEFT JOIN aea_hi_applyinst aha on aha.APPLYINST_ID= alash.APPLYINST_ID
+        LEFT JOIN aea_service_window asw on alash.OPS_WINDOW_ID=asw.WINDOW_ID
+        LEFT JOIN aea_hi_seriesinst ahs on ahs.APPLYINST_ID=aha.APPLYINST_ID
+        LEFT JOIN aea_hi_iteminst ahi on ahi.SERIESINST_ID = ahs.SERIESINST_ID
+        LEFT JOIN aea_par_stage aps on aps.STAGE_ID = ahs.STAGE_ID
+        LEFT JOIN act_sto_appinst asp on asp.APPINST_ID = ahs.APPINST_ID
+        LEFT JOIN  act_sto_timerule_inst asti on  asti.PROC_INST_ID = ahi.PROCINST_ID
+        where alash.NEW_STATE='6'
+        and aha.IS_SERIES_APPROVE='1'
+        and ahs.STAGE_ID is not null
+        and alash.TRIGGER_TIME <![CDATA[ >= ]]> #{startTime}
+        and alash.TRIGGER_TIME <![CDATA[<= ]]> #{endTime}
+        <if test="windowId !=null and windowId !=''">
+            and alash.OPS_WINDOW_ID = #{windowId}
+        </if>
+        and alash.ROOT_ORG_ID = #{rootOrgId}
+        and aha.ROOT_ORG_ID= #{rootOrgId}
+        and asw.ROOT_ORG_ID= #{rootOrgId}
+        and ahs.ROOT_ORG_ID= #{rootOrgId}
+        and aps.ROOT_ORG_ID= #{rootOrgId}
+        and asp.ROOT_ORG_ID = #{rootOrgId}
+        and asti.ORG_ID = #{rootOrgId}
+
+    </select>
 </mapper>

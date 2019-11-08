@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by Administrator    2019-11-01 10:47:49 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaParFrontItemMapper">
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns">
+    FRONT_ITEM_ID  frontItemId,
+    STAGE_ID  stageId,
+    ITEM_VER_ID  itemVerId,
+    SORT_NO  sortNo,
+    IS_ACTIVE  isActive,
+    FRONT_ITEM_MEMO  frontItemMemo,
+    CREATER  creater,
+    CREATE_TIME  createTime,
+    MODIFIER  modifier,
+    MODIFY_TIME  modifyTime,
+    ROOT_ORG_ID  rootOrgId
+    </sql>
+
+    <sql id="allColumnsAlias">
+        ${alias}.FRONT_ITEM_ID  frontItemId,
+        ${alias}.STAGE_ID  stageId,
+        ${alias}.ITEM_VER_ID  itemVerId,
+        ${alias}.SORT_NO  sortNo,
+        ${alias}.IS_ACTIVE  isActive,
+        ${alias}.FRONT_ITEM_MEMO  frontItemMemo,
+        ${alias}.CREATER  creater,
+        ${alias}.CREATE_TIME  createTime,
+        ${alias}.MODIFIER  modifier,
+        ${alias}.MODIFY_TIME  modifyTime,
+        ${alias}.ROOT_ORG_ID  rootOrgId
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaParFrontItemById" resultType="AeaParFrontItem">
+        select
+        <include refid="allColumns"/>
+        from AEA_PAR_FRONT_ITEM
+        where FRONT_ITEM_ID = #{id}
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaParFrontItem" resultType="AeaParFrontItem">
+        select
+        <include refid="allColumns"/>
+        from AEA_PAR_FRONT_ITEM
+        <where>
+            <if test="frontItemId != null">
+                AND FRONT_ITEM_ID = #{frontItemId}
+            </if>
+            <if test="stageId != null">
+                AND STAGE_ID = #{stageId}
+            </if>
+            <if test="itemVerId != null">
+                AND ITEM_VER_ID = #{itemVerId}
+            </if>
+            <if test="sortNo != null">
+                AND SORT_NO = #{sortNo}
+            </if>
+            <if test="isActive != null">
+                AND IS_ACTIVE = #{isActive}
+            </if>
+            <if test="frontItemMemo != null">
+                AND FRONT_ITEM_MEMO = #{frontItemMemo}
+            </if>
+            <if test="creater != null">
+                AND CREATER = #{creater}
+            </if>
+            <if test="createTime != null">
+                AND CREATE_TIME = #{createTime}
+            </if>
+            <if test="modifier != null">
+                AND MODIFIER = #{modifier}
+            </if>
+            <if test="modifyTime != null">
+                AND MODIFY_TIME = #{modifyTime}
+            </if>
+            <if test="rootOrgId != null">
+                AND ROOT_ORG_ID = #{rootOrgId}
+            </if>
+        </where>
+    </select>
+    <!--4 根据条件查询实体list,返回分页对象 -->
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaParFrontItem" parameterType="AeaParFrontItem">
+    insert into AEA_PAR_FRONT_ITEM (
+FRONT_ITEM_ID  ,STAGE_ID  ,ITEM_VER_ID  ,SORT_NO  ,IS_ACTIVE  ,FRONT_ITEM_MEMO  ,CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME  ,ROOT_ORG_ID
+    )  values  (
+#{frontItemId},#{stageId},#{itemVerId},#{sortNo},#{isActive},#{frontItemMemo},#{creater},#{createTime},#{modifier},#{modifyTime},  #{rootOrgId}
+    )
+</insert>
+    <!--6 修改实体对象 -->
+    <update id="updateAeaParFrontItem" parameterType="AeaParFrontItem">
+        update AEA_PAR_FRONT_ITEM
+        <set>
+            <if test="frontItemId != null">
+                FRONT_ITEM_ID = #{frontItemId},
+            </if>
+            <if test="stageId != null">
+                STAGE_ID = #{stageId},
+            </if>
+            <if test="itemVerId != null">
+                ITEM_VER_ID = #{itemVerId},
+            </if>
+            <if test="sortNo != null">
+                SORT_NO = #{sortNo},
+            </if>
+            <if test="isActive != null">
+                IS_ACTIVE = #{isActive},
+            </if>
+            <if test="frontItemMemo != null">
+                FRONT_ITEM_MEMO = #{frontItemMemo},
+            </if>
+            <if test="creater != null">
+                CREATER = #{creater},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime},
+            </if>
+            <if test="modifier != null">
+                MODIFIER = #{modifier},
+            </if>
+            <if test="modifyTime != null">
+                MODIFY_TIME = #{modifyTime},
+            </if>
+            <if test="rootOrgId != null">
+                ROOT_ORG_ID = #{rootOrgId},
+            </if>
+        </set>
+        where FRONT_ITEM_ID = #{frontItemId}
+    </update>
+    <!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaParFrontItem">
+        delete from   AEA_PAR_FRONT_ITEM
+        where
+    FRONT_ITEM_ID = #{id}
+    </delete>
+    <!--8 删除实体对象列表,根据主键ID列表 -->
+    <!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaParFrontItem" id="AeaParFrontItemMap">
+        <id property="frontItemId" column="FRONT_ITEM_ID"/>
+        <result property="stageId" column="STAGE_ID"/>
+        <result property="itemVerId" column="ITEM_VER_ID"/>
+        <result property="sortNo" column="SORT_NO"/>
+        <result property="isActive" column="IS_ACTIVE"/>
+        <result property="frontItemMemo" column="FRONT_ITEM_MEMO"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="modifier" column="MODIFIER"/>
+        <result property="modifyTime" column="MODIFY_TIME"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+    </resultMap>
+
+    <select id="listAeaParFrontItemVo" resultType="com.augurit.aplanmis.common.vo.AeaParFrontItemVo">
+        select
+        <include refid="allColumnsAlias">
+            <property name="alias" value="apfi"></property>
+        </include>
+        ,aib.ITEM_NAME itemName
+        from AEA_PAR_FRONT_ITEM apfi
+        left join aea_item_basic aib on aib.ITEM_VER_ID = apfi.ITEM_VER_ID
+        <where>
+            <if test="frontItemId != null">
+                AND apfi.FRONT_ITEM_ID = #{frontItemId}
+            </if>
+            <if test="stageId != null">
+                AND apfi.STAGE_ID = #{stageId}
+            </if>
+            <if test="itemVerId != null">
+                AND apfi.ITEM_VER_ID = #{itemVerId}
+            </if>
+            <if test="sortNo != null">
+                AND apfi.SORT_NO = #{sortNo}
+            </if>
+            <if test="isActive != null">
+                AND apfi.IS_ACTIVE = #{isActive}
+            </if>
+            <if test="frontItemMemo != null">
+                AND apfi.FRONT_ITEM_MEMO = #{frontItemMemo}
+            </if>
+            <if test="creater != null">
+                AND apfi.CREATER = #{creater}
+            </if>
+            <if test="createTime != null">
+                AND apfi.CREATE_TIME = #{createTime}
+            </if>
+            <if test="modifier != null">
+                AND apfi.MODIFIER = #{modifier}
+            </if>
+            <if test="modifyTime != null">
+                AND apfi.MODIFY_TIME = #{modifyTime}
+            </if>
+            <if test="rootOrgId != null">
+                AND apfi.ROOT_ORG_ID = #{rootOrgId}
+            </if>
+            <if test="keyword!=null and keyword!='' ">
+                AND(aib.ITEM_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                OR aib.ITEM_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                OR aib.SSCODE LIKE CONCAT(CONCAT('%',#{keyword}),'%'))
+            </if>
+        </where>
+
+        order by apfi.SORT_NO
+    </select>
+
+    <select id="getMaxSortNo" resultType="java.lang.Long">
+        select max(SORT_NO) from AEA_PAR_FRONT_ITEM
+        <where>
+            <if test="stageId!=null and stageId!=''">
+                and STAGE_ID = #{stageId}
+            </if>
+        </where>
+    </select>
+
+    <select id="getAeaParFrontItemVoByFrontItemId" resultType="com.augurit.aplanmis.common.vo.AeaParFrontItemVo">
+        select
+        <include refid="allColumnsAlias">
+            <property name="alias" value="apfi"></property>
+        </include>
+        ,aib.ITEM_NAME itemName
+        from AEA_PAR_FRONT_ITEM apfi
+        left join aea_item_basic aib on aib.ITEM_VER_ID = apfi.ITEM_VER_ID
+        where apfi.FRONT_ITEM_ID = #{frontItemId}
+    </select>
+</mapper>

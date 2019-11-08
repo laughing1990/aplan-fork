@@ -1,30 +1,24 @@
 package com.augurit.aplanmis.front.supermarket.vo;
 
-import com.augurit.agcloud.bsc.util.UuidUtil;
-import com.augurit.agcloud.framework.constant.Status;
 import com.augurit.agcloud.framework.security.SecurityContext;
-import com.augurit.aplanmis.common.constants.ActiveStatus;
-import com.augurit.aplanmis.common.constants.AuditFlagStatus;
-import com.augurit.aplanmis.common.constants.DeletedStatus;
 import com.augurit.aplanmis.common.diyannotation.FiledNameIs;
 import com.augurit.aplanmis.common.domain.AeaImMajorQual;
-import com.augurit.aplanmis.common.domain.AeaImProjPurchase;
 import com.augurit.aplanmis.common.domain.AeaImUnitRequire;
-import com.augurit.aplanmis.common.domain.AeaProjInfo;
 import com.augurit.aplanmis.front.apply.vo.BuildProjUnitVo;
 import com.augurit.aplanmis.supermarket.apply.vo.ImItemApplyData;
+import com.augurit.aplanmis.supermarket.apply.vo.ImPurchaseData;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.springframework.beans.BeanUtils;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.util.StringUtils;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 @Data
 @ApiModel("中介事项申报参数实体vo")
@@ -230,42 +224,10 @@ public class AgentItemApplyData {
     private String socialFundProportion;
 
     @ApiModelProperty(value = "批文文件")
-    @FiledNameIs(filedValue = "批文文件")
     private String officialRemarkFile;
     @ApiModelProperty(value = "要求说明文件")
-    @FiledNameIs(filedValue = "要求说明文件")
     private String requireExplainFile;
 
-    //生成采购项目
-    public AeaProjInfo createProjInfo(AgentItemApplyData data) {
-        AeaProjInfo aeaProjInfo = new AeaProjInfo();
-        BeanUtils.copyProperties(data, aeaProjInfo);
-        aeaProjInfo.setProjInfoId(UuidUtil.generateUuid());
-        aeaProjInfo.setCreater(SecurityContext.getCurrentUserName());
-        aeaProjInfo.setCreateTime(new Date());
-        aeaProjInfo.setIsPurchaseProj(Status.ON);
-        aeaProjInfo.setRootOrgId(SecurityContext.getCurrentOrgId());
-        return aeaProjInfo;
-
-    }
-
-    //生成采购信息
-    public AeaImProjPurchase createPurchaseProjInfo(AgentItemApplyData data) {
-        AeaImProjPurchase aeaImProjPurchase = new AeaImProjPurchase();
-        BeanUtils.copyProperties(data, aeaImProjPurchase);
-        if (StringUtils.isEmpty(aeaImProjPurchase.getStageId())) {
-            aeaImProjPurchase.setStageId(null);
-        }
-        aeaImProjPurchase.setProjPurchaseId(UuidUtil.generateUuid());
-        aeaImProjPurchase.setIsDelete(DeletedStatus.NOT_DELETED.getValue());
-        aeaImProjPurchase.setIsActive(ActiveStatus.ACTIVE.getValue());
-        aeaImProjPurchase.setCreateTime(new Date());
-        aeaImProjPurchase.setCreater(SecurityContext.getCurrentUserName());
-        aeaImProjPurchase.setAuditFlag(AuditFlagStatus.NO_COMMIT);
-        aeaImProjPurchase.setRootOrgId(SecurityContext.getCurrentOrgId());
-        return aeaImProjPurchase;
-
-    }
 
     /**
      * 生成申报信息-common
@@ -275,8 +237,35 @@ public class AgentItemApplyData {
     public ImItemApplyData createItemApplyData() {
         ImItemApplyData applyData = new ImItemApplyData();
         BeanUtils.copyProperties(this, applyData);
+        if (!"0".equals(this.applySubject)) {
+            applyData.setConstructionUnitId(this.buildProjUnitMap.get(0).getUnitIds().get(0));
+        }
         applyData.setCreater(SecurityContext.getCurrentUserName());
         applyData.setRootOrgId(SecurityContext.getCurrentOrgId());
         return applyData;
+    }
+
+    /**
+     * 生成采购信息-common
+     *
+     * @param applyinstId
+     * @param applyinstCode
+     * @return
+     */
+    public ImPurchaseData createPurchaseData(String applyinstId, String applyinstCode) {
+        ImPurchaseData purchaseData = new ImPurchaseData();
+        BeanUtils.copyProperties(this, purchaseData);
+        purchaseData.setProjPurchaseId(UUID.randomUUID().toString());
+        purchaseData.setApplyinstId(applyinstId);
+        purchaseData.setApplyinstCode(applyinstCode);
+        purchaseData.setCreater(SecurityContext.getCurrentUserName());
+        purchaseData.setRootOrgId(SecurityContext.getCurrentOrgId());
+        if ("0".equals(this.applySubject)) {
+            purchaseData.setPublishLinkmanInfoId(applyLinkmanId);
+
+        } else {
+            purchaseData.setPublishUnitInfoId(this.buildProjUnitMap.get(0).getUnitIds().get(0));
+        }
+        return purchaseData;
     }
 }
