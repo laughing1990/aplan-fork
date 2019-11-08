@@ -55,7 +55,6 @@ public interface WinEfficiencySupervisionService {
     List<Map<String, Object>> getAcceptStatisticsByDay(String windowId, String type, String startTime, String endTime) throws Exception;
 
     Map<String, Object> getApplyStatisticsByTheme(String type, String startTime, String endTime) throws Exception;
-//    List<Map<String, Object>> getAcceptStaticsticsByDay(String windowId, String type, String startTime, String endTime) throws Exception;
 
     Map<String, Object> getThemeDistributionStatistics(String startTime, String endTime, String type) throws Exception;
 
@@ -66,4 +65,12 @@ public interface WinEfficiencySupervisionService {
     Map<String, Object> getCurrentWinAcceptStatistics(String startTime, String endTime, String type, boolean b)throws  Exception;
 
     List<Map<String, Object>> getCurWinAcceptStatisticsByDay(String type, String startTime, String endTime) throws Exception;
+
+    Map<String, Object> getWinStageAvgLimitTimeStatistics(String startTime, String endTime, String type, boolean isCurrent, String windowId) throws Exception;
+
+    Map<String, Object> getWinStageLimitTimeStatistics(String startTime, String endTime, String type, boolean isCurrent, String windowId) throws Exception;
+
+    List<Map<String, Object>> getCompletedApplyUseTimeByTheme(String type, String startTime, String endTime) throws Exception;
+
+    List<Map<String, Object>> getCompletedApplyUseTimeByThemeAndWindow(String themeId, String type, String startTime, String endTime) throws Exception;
 }

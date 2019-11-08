@@ -813,4 +813,22 @@
             ADD COLUMN `PRJ_SPTY` varchar(50) NOT NULL DEFAULT '' COMMENT '审查人员专业 C_PRJ_SPTY 数据字典';
         </sql>
     </changeSet>
+
+    <changeSet id="201911051117" author="linpx" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            alter table `aea_par_front_item` change column `STAGE_ITEM_ID` `ITEM_VER_ID` varchar(50) NOT NULL COMMENT '事项版本号';
+        </sql>
+    </changeSet>
+
+    <changeSet id="201911060925" author="linpx" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            alter table `aea_par_front_itemform` change column `ITEM_VER_ID` `STAGE_ITEM_ID` varchar(50) NOT NULL COMMENT '阶段事项ID';
+        </sql>
+    </changeSet>
+
+    <changeSet id="201911071058" author="linpx" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            alter table `aea_par_front_itemform` change column `FRONT_PARTFORM_ID` `FRONT_ITEMFORM_ID` varchar(50) NOT NULL COMMENT 'ID';
+        </sql>
+    </changeSet>
 </databaseChangeLog>

@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 import springfox.documentation.annotations.ApiIgnore;
@@ -234,7 +235,7 @@ public class WinEfficiencySupervisionController {
             @ApiImplicitParam(name = "startTime", value = "开始时间【yyyy-MM-dd】", dataType = "string", paramType = "String", required = true),
             @ApiImplicitParam(name = "endTime", value = "结束时间【yyyy-MM-dd】", dataType = "string", paramType = "String", required = true)
     })
-    public ResultForm getWinShouliStatistics(String startTime, String endTime) throws Exception {
+    public ResultForm getWinShouliStatistics(String startTime, String endTime) {
         ResultForm checkForm = checkTimeParam(startTime, endTime);
         if (checkForm != null) {
             return checkForm;
@@ -255,7 +256,7 @@ public class WinEfficiencySupervisionController {
             @ApiImplicitParam(name = "startTime", value = "开始时间【yyyy-MM】", dataType = "string", paramType = "String", required = true),
             @ApiImplicitParam(name = "endTime", value = "结束时间【yyyy-MM】", dataType = "string", paramType = "String", required = true)
     })
-    public ResultForm getWinShouliStatisticsByMonth(String startTime, String endTime) throws Exception {
+    public ResultForm getWinShouliStatisticsByMonth(String startTime, String endTime) {
         ResultForm checkForm = checkTimeParam(startTime, endTime, "yyyy-MM");
         if (checkForm != null) {
             return checkForm;
@@ -277,7 +278,7 @@ public class WinEfficiencySupervisionController {
             @ApiImplicitParam(name = "startTime", value = "开始时间【yyyy-MM-dd】", dataType = "string", paramType = "String", required = true),
             @ApiImplicitParam(name = "endTime", value = "结束时间【yyyy-MM-dd】", dataType = "string", paramType = "String", required = true)
     })
-    public ResultForm getRegionShenbaoStatistics(String startTime, String endTime) throws Exception {
+    public ResultForm getRegionShenbaoStatistics(String startTime, String endTime) {
         ResultForm checkForm = checkTimeParam(startTime, endTime);
         if (checkForm != null) {
             return checkForm;
@@ -297,7 +298,7 @@ public class WinEfficiencySupervisionController {
             @ApiImplicitParam(name = "startTime", value = "开始时间【yyyy-MM-dd】", dataType = "string", paramType = "String", required = true),
             @ApiImplicitParam(name = "endTime", value = "结束时间【yyyy-MM-dd】", dataType = "string", paramType = "String", required = true)
     })
-    public ResultForm getThemeShenbaoStatistics(String startTime, String endTime) throws Exception {
+    public ResultForm getThemeShenbaoStatistics(String startTime, String endTime) {
         ResultForm checkForm = checkTimeParam(startTime, endTime);
         if (checkForm != null) {
             return checkForm;
@@ -317,7 +318,7 @@ public class WinEfficiencySupervisionController {
             @ApiImplicitParam(name = "startTime", value = "开始时间【yyyy-MM-dd】", dataType = "string", paramType = "String", required = true),
             @ApiImplicitParam(name = "endTime", value = "结束时间【yyyy-MM-dd】", dataType = "string", paramType = "String", required = true)
     })
-    public ResultForm getStageShenbaoStatistics(String startTime, String endTime) throws Exception {
+    public ResultForm getStageShenbaoStatistics(String startTime, String endTime) {
         ResultForm checkForm = checkTimeParam(startTime, endTime);
         if (checkForm != null) {
             return checkForm;
@@ -368,33 +369,31 @@ public class WinEfficiencySupervisionController {
     }
 
     @GetMapping("/getWinAcceptDealStatistics")
-    @ApiOperation(value = "所有服务窗口的受理情况")
+    @ApiOperation(value = "所有服务窗口的接件受理情况")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "startTime", value = "开始时间【yyyy-MM-dd】", dataType = "string", paramType = "String", required = true),
-            @ApiImplicitParam(name = "endTime", value = "结束时间【yyyy-MM-dd】", dataType = "string", paramType = "String", required = true),
+            @ApiImplicitParam(name = "startTime", value = "开始时间【yyyy-MM-dd】", dataType = "string", paramType = "String"),
+            @ApiImplicitParam(name = "endTime", value = "结束时间【yyyy-MM-dd】", dataType = "string", paramType = "String"),
             @ApiImplicitParam(name = "type", value = "类型【周W月M日D】", dataType = "string", paramType = "String")
     })
     public ResultForm getWinAcceptDealStatistics(String type, String startTime, String endTime) {
         if (StringUtils.isBlank(type)) {
-            if (StringUtils.isBlank(startTime) || StringUtils.isBlank(endTime)) {
-                return new ResultForm(false, "请求缺少参数!");
-            }
-            checkTimeParam(startTime, endTime);
+            ResultForm resultForm = checkTimeParam(startTime, endTime);
+            if (resultForm != null) return resultForm;
         }
         try {
             List<Map<String, Object>> acceptStaticsticsByWin = winEfficiencySupervisionService.getAcceptDealStatisticsByWin(type, startTime, endTime);
             return new ContentResultForm<>(true, acceptStaticsticsByWin, "查询成功！");
         } catch (Exception e) {
-            log.error("服所有服务窗口的受理情况统计异常", e);
-            return new ContentResultForm<>(false, null, "所有服务窗口的受理情况统计异常，" + e.getMessage());
+            log.error("服所有服务窗口的接件受理情况统计异常", e);
+            return new ContentResultForm<>(false, null, "所有服务窗口的接件受理情况统计异常，" + e.getMessage());
         }
     }
 
     @GetMapping("/getWinAcceptStatisticsByDay")
-    @ApiOperation(value = "服务窗口的每日受理情况")
+    @ApiOperation(value = "服务窗口的每日接件受理情况")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "startTime", value = "开始时间【yyyy-MM-dd】", dataType = "string", paramType = "String", required = true),
-            @ApiImplicitParam(name = "endTime", value = "结束时间【yyyy-MM-dd】", dataType = "string", paramType = "String", required = true),
+            @ApiImplicitParam(name = "startTime", value = "开始时间【yyyy-MM-dd】", dataType = "string", paramType = "String"),
+            @ApiImplicitParam(name = "endTime", value = "结束时间【yyyy-MM-dd】", dataType = "string", paramType = "String"),
             @ApiImplicitParam(name = "type", value = "类型【周W月M日D】", dataType = "string", paramType = "String"),
             @ApiImplicitParam(name = "windowId", value = "窗口ID", dataType = "string", paramType = "String", required = true)
     })
@@ -403,45 +402,41 @@ public class WinEfficiencySupervisionController {
             return new ResultForm(false, "请求缺少参数!");
         }
         if (StringUtils.isBlank(type)) {
-            if (StringUtils.isBlank(startTime) || StringUtils.isBlank(endTime)) {
-                return new ResultForm(false, "请求缺少参数!");
-            }
-            checkTimeParam(startTime, endTime);
+            ResultForm resultForm = checkTimeParam(startTime, endTime);
+            if (resultForm != null) return resultForm;
         }
         try {
             List<Map<String, Object>> acceptStaticsticsByDay = winEfficiencySupervisionService.getAcceptStatisticsByDay(windowId, type, startTime, endTime);
             return new ContentResultForm<>(true, acceptStaticsticsByDay, "查询成功！");
         } catch (Exception e) {
-            log.error("服务窗口的每日受理情况统计异常", e);
-            return new ContentResultForm<>(false, null, "服务窗口的每日受理情况统计异常，" + e.getMessage());
+            log.error("服务窗口的每日接件受理情况统计异常", e);
+            return new ContentResultForm<>(false, null, "服务窗口的每日接件受理情况统计异常，" + e.getMessage());
         }
     }
 
     @GetMapping("/getCurWinAcceptStatisticsByDay")
-    @ApiOperation(value = "当前服务窗口的每日受理情况")
+    @ApiOperation(value = "当前服务窗口的每日接件受理情况")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "startTime", value = "开始时间【yyyy-MM-dd】", dataType = "string", paramType = "String", required = true),
-            @ApiImplicitParam(name = "endTime", value = "结束时间【yyyy-MM-dd】", dataType = "string", paramType = "String", required = true),
+            @ApiImplicitParam(name = "startTime", value = "开始时间【yyyy-MM-dd】", dataType = "string", paramType = "String"),
+            @ApiImplicitParam(name = "endTime", value = "结束时间【yyyy-MM-dd】", dataType = "string", paramType = "String"),
             @ApiImplicitParam(name = "type", value = "类型【周W月M日D】", dataType = "string", paramType = "String"),
     })
     public ResultForm getCurWinAcceptStatisticsByDay(String type, String startTime, String endTime) {
         if (StringUtils.isBlank(type)) {
-            if (StringUtils.isBlank(startTime) || StringUtils.isBlank(endTime)) {
-                return new ResultForm(false, "请求缺少参数!");
-            }
-            checkTimeParam(startTime, endTime);
+            ResultForm resultForm = checkTimeParam(startTime, endTime);
+            if (resultForm != null) return resultForm;
         }
         try {
             List<Map<String, Object>> acceptStaticsticsByDay = winEfficiencySupervisionService.getCurWinAcceptStatisticsByDay(type, startTime, endTime);
             return new ContentResultForm<>(true, acceptStaticsticsByDay, "查询成功！");
         } catch (Exception e) {
-            log.error("当前服务窗口的每日受理情况统计异常", e);
-            return new ContentResultForm<>(false, null, "当前服务窗口的每日受理情况统计异常，" + e.getMessage());
+            log.error("当前服务窗口的每日接件受理情况统计异常", e);
+            return new ContentResultForm<>(false, null, "当前服务窗口的每日接件受理情况统计异常，" + e.getMessage());
         }
     }
 
     @GetMapping("/getThemeApplyStatistics")
-    @ApiOperation(value = "主题申报统计")
+    @ApiOperation(value = "主题申报的接件受理情况统计")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "startTime", value = "开始时间【yyyy-MM-dd】", dataType = "string", paramType = "String", required = true),
             @ApiImplicitParam(name = "endTime", value = "结束时间【yyyy-MM-dd】", dataType = "string", paramType = "String", required = true),
@@ -449,13 +444,17 @@ public class WinEfficiencySupervisionController {
     })
     public ResultForm getThemeApplyStatistics(String type, String startTime, String endTime) throws Exception {
         if (StringUtils.isBlank(type)) {
-            if (StringUtils.isBlank(startTime) || StringUtils.isBlank(endTime)) {
-                return new ResultForm(false, "请求缺少参数!");
-            }
-            checkTimeParam(startTime, endTime);
+            ResultForm resultForm = checkTimeParam(startTime, endTime);
+            if (resultForm != null) return resultForm;
         }
-        Map<String, Object> applyStatisticsByTheme = winEfficiencySupervisionService.getApplyStatisticsByTheme(type, startTime, endTime);
-        return new ContentResultForm<>(true, applyStatisticsByTheme, "查询成功！");
+        try {
+
+            Map<String, Object> applyStatisticsByTheme = winEfficiencySupervisionService.getApplyStatisticsByTheme(type, startTime, endTime);
+            return new ContentResultForm<>(true, applyStatisticsByTheme, "查询成功！");
+        } catch (Exception e) {
+            log.error("主题申报的接件受理情况统计异常", e);
+            return new ContentResultForm<>(false, null, "主题申报的接件受理情况统计异常，" + e.getMessage());
+        }
     }
 
     /**
@@ -514,8 +513,7 @@ public class WinEfficiencySupervisionController {
             @ApiImplicitParam(name = "endTime", value = "结束时间【yyyy-MM-dd】", dataType = "string", paramType = "String", required = true),
             @ApiImplicitParam(name = "type", value = "类型【周W月M日D灵活时间段A】", dataType = "string", paramType = "String", required = true)
     })
-    public ResultForm getWinAcceptStatistics(String startTime, String endTime, String type) throws Exception {
-
+    public ResultForm getWinAcceptStatistics(String startTime, String endTime, String type) {
         try {
             Map<String, Object> result = winEfficiencySupervisionService.getWinAcceptStatistics(startTime, endTime, type, false);
             return new ContentResultForm<>(true, result, "查询成功！");
@@ -532,8 +530,7 @@ public class WinEfficiencySupervisionController {
             @ApiImplicitParam(name = "endTime", value = "结束时间【yyyy-MM-dd】", dataType = "string", paramType = "String", required = true),
             @ApiImplicitParam(name = "type", value = "类型【周W月M日D灵活时间段A】", dataType = "string", paramType = "String", required = true)
     })
-    public ResultForm getWinAcceptTotalStatistics(String startTime, String endTime, String type) throws Exception {
-
+    public ResultForm getWinAcceptTotalStatistics(String startTime, String endTime, String type) {
         try {
             Map<String, Object> result = winEfficiencySupervisionService.getWinAcceptRate(startTime, endTime, type);
             return new ContentResultForm<>(true, result, "查询成功！");
@@ -550,8 +547,7 @@ public class WinEfficiencySupervisionController {
             @ApiImplicitParam(name = "endTime", value = "结束时间【yyyy-MM-dd】", dataType = "string", paramType = "String", required = true),
             @ApiImplicitParam(name = "type", value = "类型【周W月M日D，为空自定义时间】", dataType = "string", paramType = "String", required = true)
     })
-    public ResultForm getThemeDistributionStatistics(String startTime, String endTime, String type) throws Exception {
-
+    public ResultForm getThemeDistributionStatistics(String startTime, String endTime, String type) {
         try {
             Map<String, Object> result = winEfficiencySupervisionService.getThemeDistributionStatistics(startTime, endTime, type);
             return new ContentResultForm<>(true, result, "查询成功！");
@@ -568,8 +564,7 @@ public class WinEfficiencySupervisionController {
             @ApiImplicitParam(name = "endTime", value = "结束时间【yyyy-MM-dd】", dataType = "string", paramType = "String", required = true),
             @ApiImplicitParam(name = "type", value = "类型【周W月M日D，为空自定义时间】", dataType = "string", paramType = "String", required = true)
     })
-    public ResultForm getStageApplyStatistics(String startTime, String endTime, String type) throws Exception {
-
+    public ResultForm getStageApplyStatistics(String startTime, String endTime, String type) {
         try {
             Map<String, Object> result = winEfficiencySupervisionService.getStageApplyStatisticsByType(startTime, endTime, type);
             return new ContentResultForm<>(true, result, "查询成功！");
@@ -586,16 +581,16 @@ public class WinEfficiencySupervisionController {
             @ApiImplicitParam(name = "endTime", value = "结束时间【yyyy-MM-dd】", dataType = "string", paramType = "String", required = true),
             @ApiImplicitParam(name = "type", value = "类型【周W月M日D灵活时间段A】", dataType = "string", paramType = "String", required = true)
     })
-    public ResultForm getCurrentWinAcceptStatistics(String startTime, String endTime, String type) throws Exception {
-
+    public ResultForm getCurrentWinAcceptStatistics(String startTime, String endTime, String type) {
         try {
-            Map<String, Object> result = winEfficiencySupervisionService.getCurrentWinAcceptStatistics(startTime, endTime, type,true);
+            Map<String, Object> result = winEfficiencySupervisionService.getCurrentWinAcceptStatistics(startTime, endTime, type, true);
             return new ContentResultForm<>(true, result, "查询成功！");
         } catch (Exception e) {
             log.error("统计接件受理情况", e);
             return new ContentResultForm<>(false, null, e.getMessage());
         }
     }
+
     @GetMapping("/getCurrentWinStageAcceptStatistics")
     @ApiOperation(value = "窗口阶段受理情况", notes = "窗口阶段受理情况")
     @ApiImplicitParams({
@@ -603,10 +598,9 @@ public class WinEfficiencySupervisionController {
             @ApiImplicitParam(name = "endTime", value = "结束时间【yyyy-MM-dd】", dataType = "string", paramType = "String", required = true),
             @ApiImplicitParam(name = "type", value = "类型【周W月M日D灵活时间段A】", dataType = "string", paramType = "String", required = true)
     })
-    public ResultForm getCurrentWinStageAcceptStatistics(String startTime, String endTime, String type) throws Exception {
-
+    public ResultForm getCurrentWinStageAcceptStatistics(String startTime, String endTime, String type) {
         try {
-            Map<String, Object> result = winEfficiencySupervisionService.getWinStageAcceptStatistics(startTime, endTime, type,true);
+            Map<String, Object> result = winEfficiencySupervisionService.getWinStageAcceptStatistics(startTime, endTime, type, true);
             return new ContentResultForm<>(true, result, "查询成功！");
         } catch (Exception e) {
             log.error("窗口阶段受理情况", e);
@@ -614,4 +608,89 @@ public class WinEfficiencySupervisionController {
         }
     }
 
+    @GetMapping("/getWinStageAvgLimitTimeStatistics")
+    @ApiOperation(value = "申报阶段平均用时", notes = "申报阶段平均用时")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "startTime", value = "开始时间【yyyy-MM-dd】", dataType = "string", paramType = "String", required = true),
+            @ApiImplicitParam(name = "endTime", value = "结束时间【yyyy-MM-dd】", dataType = "string", paramType = "String", required = true),
+            @ApiImplicitParam(name = "type", value = "类型【周W月M日D灵活时间段A】", dataType = "string", paramType = "String", required = true),
+            @ApiImplicitParam(name = "isCurrent", value = "是否查询当前窗口", dataType = "boolean", paramType = "boolean", required = false),
+            @ApiImplicitParam(name = "windowId", value = "指定窗口Id", dataType = "string", paramType = "String", required = false),
+    })
+    public ResultForm getWinStageAvgLimitTimeStatistics(String startTime, String endTime, String type, @RequestParam(required = false,value = "false")boolean isCurrent, @RequestParam(required = false)String windowId) throws Exception {
+
+        try {
+            Map<String, Object> result = winEfficiencySupervisionService.getWinStageAvgLimitTimeStatistics(startTime, endTime, type,isCurrent,windowId);
+            return new ContentResultForm<>(true, result, "查询成功！");
+        } catch (Exception e) {
+            log.error("申报阶段平均用时", e);
+            return new ContentResultForm<>(false, null, e.getMessage());
+        }
+    }
+
+    @GetMapping("/getWinStageLimitTimeStatistics")
+    @ApiOperation(value = "申报阶段时限", notes = "申报阶段时限")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "startTime", value = "开始时间【yyyy-MM-dd】", dataType = "string", paramType = "String", required = true),
+            @ApiImplicitParam(name = "endTime", value = "结束时间【yyyy-MM-dd】", dataType = "string", paramType = "String", required = true),
+            @ApiImplicitParam(name = "type", value = "类型【周W月M日D灵活时间段A】", dataType = "string", paramType = "String", required = true),
+            @ApiImplicitParam(name = "isCurrent", value = "是否查询当前窗口", dataType = "boolean", paramType = "boolean", required = false),
+            @ApiImplicitParam(name = "windowId", value = "指定窗口Id", dataType = "string", paramType = "String", required = false),
+    })
+    public ResultForm getWinStageLimitTimeStatistics(String startTime, String endTime, String type, @RequestParam(required = false,value = "false")boolean isCurrent,@RequestParam(required = false)String windowId) throws Exception {
+
+        try {
+            Map<String, Object> result = winEfficiencySupervisionService.getWinStageLimitTimeStatistics(startTime, endTime, type,isCurrent,windowId);
+            return new ContentResultForm<>(true, result, "查询成功！");
+        } catch (Exception e) {
+            log.error("窗口阶段受理情况", e);
+            return new ContentResultForm<>(false, null, e.getMessage());
+        }
+    }
+
+    @GetMapping("/getCompletedApplyUseTimeByTheme")
+    @ApiOperation(value = "按主题统计办结申报的用时情况", notes = "按主题统计办结申报的用时情况")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "startTime", value = "开始时间【yyyy-MM-dd】", dataType = "string", paramType = "String"),
+            @ApiImplicitParam(name = "endTime", value = "结束时间【yyyy-MM-dd】", dataType = "string", paramType = "String"),
+            @ApiImplicitParam(name = "type", value = "类型【周W月M日D灵活时间段A】", dataType = "string", paramType = "String")
+    })
+    public ResultForm getCompletedApplyUseTimeByTheme(String startTime, String endTime, String type) {
+        try {
+            if (StringUtils.isBlank(type)) {
+                ResultForm resultForm = checkTimeParam(startTime, endTime);
+                if (resultForm != null) return resultForm;
+            }
+            List<Map<String, Object>> result = winEfficiencySupervisionService.getCompletedApplyUseTimeByTheme(type, startTime, endTime);
+            return new ContentResultForm<>(true, result, "查询成功！");
+        } catch (Exception e) {
+            log.error("按主题统计办结申报的用时情况统计异常", e);
+            return new ContentResultForm<>(false, null, "按主题统计办结申报的用时情况统计异常，" + e.getMessage());
+        }
+    }
+
+    @GetMapping("/getCompletedApplyUseTimeByThemeAndWindow")
+    @ApiOperation(value = "按主题窗口统计办结申报的用时情况", notes = "按主题窗口统计办结申报的用时情况")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "startTime", value = "开始时间【yyyy-MM-dd】", dataType = "string", paramType = "String"),
+            @ApiImplicitParam(name = "endTime", value = "结束时间【yyyy-MM-dd】", dataType = "string", paramType = "String"),
+            @ApiImplicitParam(name = "type", value = "类型【周W月M日D灵活时间段A】", dataType = "string", paramType = "String"),
+            @ApiImplicitParam(name = "themeId", value = "主题ID", dataType = "string", paramType = "String", required = true)
+    })
+    public ResultForm getCompletedApplyUseTimeByThemeAndWindow(String themeId, String startTime, String endTime, String type) throws Exception {
+        try {
+            if (StringUtils.isBlank(themeId)) {
+                return new ResultForm(false, "请求缺少参数!");
+            }
+            if (StringUtils.isBlank(type)) {
+                ResultForm resultForm = checkTimeParam(startTime, endTime);
+                if (resultForm != null) return resultForm;
+            }
+            List<Map<String, Object>> result = winEfficiencySupervisionService.getCompletedApplyUseTimeByThemeAndWindow(themeId, type, startTime, endTime);
+            return new ContentResultForm<>(true, result, "查询成功！");
+        } catch (Exception e) {
+            log.error("按主题窗口统计办结申报的用时情况统计异常", e);
+            return new ContentResultForm<>(false, null, "按主题窗口统计办结申报的用时情况统计异常，" + e.getMessage());
+        }
+    }
 }

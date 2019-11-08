@@ -440,4 +440,10 @@ public class AeaItemAdminController {
         }
         return modelAndView;
     }
+
+    @RequestMapping("/getUnSelectedParFrontItemTree.do")
+    public List<AeaItem> getUnSelectedParFrontItemTree(String stageId,String frontItemId) {
+        List<AeaItem> list = aeaItemAdminService.getUnSelectedParFrontItemTree(stageId,frontItemId);
+        return list;
+    }
 }

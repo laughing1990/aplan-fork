@@ -1046,6 +1046,15 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
         return null;
     }
 
+    /**
+     * 指定窗口时间段内每日的接件受理情况
+     * @param winodwId
+     * @param type
+     * @param startTime
+     * @param endTime
+     * @return
+     * @throws Exception
+     */
     @Override
     public List<Map<String, Object>> getAcceptStatisticsByDay(String winodwId, String type, String startTime, String endTime) throws Exception {
         if ("D".equals(type)) {
@@ -1071,6 +1080,14 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
         return null;
     }
 
+    /**
+     * 当前窗口时间段内每日的接件受理情况
+     * @param type
+     * @param startTime
+     * @param endTime
+     * @return
+     * @throws Exception
+     */
     @Override
     public List<Map<String, Object>> getCurWinAcceptStatisticsByDay(String type, String startTime, String endTime) throws Exception {
         List<AeaServiceWindowUser> windows = aeaServiceWindowUserMapper.getAeaServiceWindowUserByUserId(SecurityContext.getCurrentUserId());
@@ -1079,6 +1096,140 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
         }
         String windowId = windows.get(0).getWindowId();
         return getAcceptStatisticsByDay(windowId, type, startTime, endTime);
+    }
+
+    /**
+     * 按主题统计办结申请的用时情况
+     * @param type
+     * @param startTime
+     * @param endTime
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public List<Map<String, Object>> getCompletedApplyUseTimeByTheme(String type, String startTime, String endTime) throws Exception {
+        String rootOrgId = SecurityContext.getCurrentOrgId();
+        if ("D".equals(type)) {
+            Date preDate = DateUtils.getPreDateByDate(new Date());
+            String preDateStr = DateUtils.convertDateToString(preDate, "yyyy-MM-dd");
+            String preDateStart = preDateStr + " 00:00:00";
+            String preDateEnd = preDateStr + " 23:59:59";
+            return getCompletedApplyUseTimeByThemeAndTime(preDateStart, preDateEnd, rootOrgId);
+        } else if ("W".equals(type)) {
+            Date thisWeekMonday = DateUtils.getThisWeekMonday(new Date());
+            Date thisWeekSunday = DateUtils.getThisWeekSunday(new Date());
+            String monday = DateUtils.convertDateToString(thisWeekMonday, "yyyy-MM-dd") + " 00:00:00";
+            String sunday = DateUtils.convertDateToString(thisWeekSunday, "yyyy-MM-dd") + " 23:59:59";
+            return getCompletedApplyUseTimeByThemeAndTime(monday, sunday, rootOrgId);
+        } else if ("M".equals(type)) {
+            Date firstDay = DateUtils.firstDayOfMonth(new Date());
+            Date lastDay = DateUtils.lastDayOfMonth(new Date());
+            String firstDayStart = DateUtils.convertDateToString(firstDay, "yyyy-MM-dd") + " 00:00:00";
+            String lastDayEnd = DateUtils.convertDateToString(lastDay, "yyyy-MM-dd") + " 23:59:59";
+            return getCompletedApplyUseTimeByThemeAndTime(firstDayStart, lastDayEnd, rootOrgId);
+        } else if (StringUtils.isNotBlank(startTime) && StringUtils.isNotBlank(endTime)) {
+            startTime = startTime + " 00:00:00";
+            endTime = endTime + " 23:59:59";
+            return getCompletedApplyUseTimeByThemeAndTime(startTime, endTime, rootOrgId);
+        }
+        return null;
+    }
+
+    private List<Map<String, Object>> getCompletedApplyUseTimeByThemeAndTime(String startTime, String endTime, String rootOrgId) throws Exception {
+        //找到全部主题
+        AeaParTheme search = new AeaParTheme();
+        search.setIsActive("1");
+        search.setRootOrgId(SecurityContext.getCurrentOrgId());
+        List<AeaParTheme> themes = aeaParThemeMapper.listAeaParTheme(search);
+
+        List<ApplyUseTimeStatisticsVo> completedApplyUseTimeByTheme = efficiencySupervisionMapper.getCompletedApplyUseTimeByTheme(startTime, endTime, rootOrgId);
+        Map<String, List<ApplyUseTimeStatisticsVo>> collect = completedApplyUseTimeByTheme.stream().collect(Collectors.groupingBy(ApplyUseTimeStatisticsVo::getThemeId));
+
+        List<Map<String, Object>> result = new ArrayList<>();
+        for (AeaParTheme theme : themes) {
+            Map<String, Object> data = new HashMap<>();
+            data.put("themeId", theme.getThemeId());
+            data.put("themeName", theme.getThemeName());
+            data.put("maxUseTime", 0.0);
+            data.put("minUseTime", 0.0);
+            data.put("avgUseTime", 0.0);
+            if (collect.get(theme.getThemeId()) != null) {
+                List<ApplyUseTimeStatisticsVo> applyUseTimeStatisticsVos = collect.get(theme.getThemeId());
+                data.put("maxUseTime", applyUseTimeStatisticsVos.get(0).getMaxUseTime());
+                data.put("minUseTime", applyUseTimeStatisticsVos.get(0).getMinUseTime());
+                data.put("avgUseTime", applyUseTimeStatisticsVos.get(0).getAvgUseTime());
+            }
+            result.add(data);
+        }
+        return result;
+    }
+
+    /**
+     * 按主题+窗口统计办结申请的用时情况
+     * @param themeId
+     * @param type
+     * @param startTime
+     * @param endTime
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public List<Map<String, Object>> getCompletedApplyUseTimeByThemeAndWindow(String themeId, String type, String startTime, String endTime) throws Exception {
+        String rootOrgId = SecurityContext.getCurrentOrgId();
+        if ("D".equals(type)) {
+            Date preDate = DateUtils.getPreDateByDate(new Date());
+            String preDateStr = DateUtils.convertDateToString(preDate, "yyyy-MM-dd");
+            String preDateStart = preDateStr + " 00:00:00";
+            String preDateEnd = preDateStr + " 23:59:59";
+            return getCompletedApplyUseTimeByWindowAndTime(themeId, preDateStart, preDateEnd, rootOrgId);
+        } else if ("W".equals(type)) {
+            Date thisWeekMonday = DateUtils.getThisWeekMonday(new Date());
+            Date thisWeekSunday = DateUtils.getThisWeekSunday(new Date());
+            String monday = DateUtils.convertDateToString(thisWeekMonday, "yyyy-MM-dd") + " 00:00:00";
+            String sunday = DateUtils.convertDateToString(thisWeekSunday, "yyyy-MM-dd") + " 23:59:59";
+            return getCompletedApplyUseTimeByWindowAndTime(themeId, monday, sunday, rootOrgId);
+        } else if ("M".equals(type)) {
+            Date firstDay = DateUtils.firstDayOfMonth(new Date());
+            Date lastDay = DateUtils.lastDayOfMonth(new Date());
+            String firstDayStart = DateUtils.convertDateToString(firstDay, "yyyy-MM-dd") + " 00:00:00";
+            String lastDayEnd = DateUtils.convertDateToString(lastDay, "yyyy-MM-dd") + " 23:59:59";
+            return getCompletedApplyUseTimeByWindowAndTime(themeId, firstDayStart, lastDayEnd, rootOrgId);
+        } else if (StringUtils.isNotBlank(startTime) && StringUtils.isNotBlank(endTime)) {
+            startTime = startTime + " 00:00:00";
+            endTime = endTime + " 23:59:59";
+            return getCompletedApplyUseTimeByWindowAndTime(themeId, startTime, endTime, rootOrgId);
+        }
+        return null;
+    }
+
+    private List<Map<String, Object>> getCompletedApplyUseTimeByWindowAndTime(String themeId, String startTime, String endTime, String rootOrgId) throws Exception {
+        //查询所有的窗口
+        AeaServiceWindow windowSearch = new AeaServiceWindow();
+        windowSearch.setIsActive("1");
+        windowSearch.setRootOrgId(rootOrgId);
+        List<AeaServiceWindow> serviceWindows = aeaServiceWindowMapper.listAeaServiceWindow(windowSearch);
+        serviceWindows = serviceWindows.stream().sorted(Comparator.comparing(AeaServiceWindow::getSortNo)).collect(Collectors.toList());
+
+        List<ApplyUseTimeStatisticsVo> completedApplyUseTimeByThemeAndWindow = efficiencySupervisionMapper.getCompletedApplyUseTimeByThemeAndWindow(themeId, startTime, endTime, rootOrgId);
+        Map<String, List<ApplyUseTimeStatisticsVo>> collect = completedApplyUseTimeByThemeAndWindow.stream().collect(Collectors.groupingBy(ApplyUseTimeStatisticsVo::getWindowId));
+
+        List<Map<String, Object>> result = new ArrayList<>();
+        for (AeaServiceWindow window : serviceWindows) {
+            Map<String, Object> data = new HashMap<>();
+            data.put("windowId", window.getWindowId());
+            data.put("windowName", window.getWindowName());
+            data.put("maxUseTime", 0.0);
+            data.put("minUseTime", 0.0);
+            data.put("avgUseTime", 0.0);
+            if (collect.get(window.getWindowId()) != null) {
+                List<ApplyUseTimeStatisticsVo> applyUseTimeStatisticsVos = collect.get(window.getWindowId());
+                data.put("maxUseTime", applyUseTimeStatisticsVos.get(0).getMaxUseTime());
+                data.put("minUseTime", applyUseTimeStatisticsVos.get(0).getMinUseTime());
+                data.put("avgUseTime", applyUseTimeStatisticsVos.get(0).getAvgUseTime());
+            }
+            result.add(data);
+        }
+        return result;
     }
 
     @Override
@@ -2382,5 +2533,161 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
         result.put("total",jiejian);
         result.put("data",dataList);
         return result;
+    }
+    @Override
+    public Map<String, Object> getWinStageLimitTimeStatistics(String startTime, String endTime, String type, boolean isCurrent, String windowId) throws Exception {
+        if ("D".equals(type)) {
+            String yesterday = DateUtils.convertDateToString(DateUtils.getPreDateByDate(new Date()), "yyyy-MM-dd");
+            startTime = yesterday + " 00:00:00";
+            endTime = yesterday + " 23:59:59";
+        } else if ("W".equals(type)) {
+            startTime = DateUtils.convertDateToString(DateUtils.getThisWeekMonday(new Date()), "yyyy-MM-dd") + " 00:00:00";
+            endTime = DateUtils.convertDateToString(DateUtils.getThisWeekSunday(new Date()), "yyyy-MM-dd") + " 23:59:59";
+
+        } else if ("M".equals(type)) {
+            startTime = DateUtils.convertDateToString(DateUtils.firstDayOfMonth(new Date()), "yyyy-MM-dd HH:mm:ss");
+            endTime = DateUtils.convertDateToString(DateUtils.lastDayOfMonth(new Date()), "yyyy-MM-dd HH:mm:ss");
+
+        } else {
+            if (!DateUtils.checkTimeParam(startTime, endTime, "yyyy-MM-dd")) {
+                throw new Exception("传入的时间参数欧问题。。。");
+            }
+            LocalDate endDate = LocalDate.parse(endTime, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            if (!LocalDate.now().isAfter(endDate)) {//结束日期只能统计到昨天
+                String yesterday = DateUtils.getYesterdayByFormat("yyyy-MM-dd");
+                endTime = yesterday + " 23:59:59";
+            }
+        }
+
+
+        List<ApplyLimitTimeVo> list = efficiencySupervisionMapper.getWinLimitTimeStatistics(startTime,endTime,windowId,SecurityContext.getCurrentOrgId());
+        List<Map<String, Object>> dataList = new ArrayList<>();
+        int total = 0;
+
+        for(int i=0;i<3;i++){
+            Map<String ,Object> map = new HashMap<>();
+            String name = TimeruleInstState.getTimeruleInstState(String.valueOf(i+1)).getName();
+            int count = 0;
+            for(ApplyLimitTimeVo vo :list){
+                if(vo.getInstState().equals(String.valueOf(i+1))){
+                    count += vo.getCount();
+                    total += vo.getCount();
+                    break;
+                }
+            }
+            map.put("name",name);
+            map.put("value",count);
+            dataList.add(map);
+        }
+
+        Map<String,Object> result = new HashMap<String, Object>();
+        result.put("data",dataList);
+        result.put("total",total);
+        return result;
+
+    }
+    @Override
+    public Map<String, Object> getWinStageAvgLimitTimeStatistics(String startTime, String endTime, String type, boolean isCurrent, String windowId) throws Exception{
+        if ("D".equals(type)) {
+            String yesterday = DateUtils.convertDateToString(DateUtils.getPreDateByDate(new Date()), "yyyy-MM-dd");
+            startTime = yesterday + " 00:00:00";
+            endTime = yesterday + " 23:59:59";
+        } else if ("W".equals(type)) {
+            startTime = DateUtils.convertDateToString(DateUtils.getThisWeekMonday(new Date()), "yyyy-MM-dd") + " 00:00:00";
+            endTime = DateUtils.convertDateToString(DateUtils.getThisWeekSunday(new Date()), "yyyy-MM-dd") + " 23:59:59";
+
+        } else if ("M".equals(type)) {
+            startTime = DateUtils.convertDateToString(DateUtils.firstDayOfMonth(new Date()), "yyyy-MM-dd HH:mm:ss");
+            endTime = DateUtils.convertDateToString(DateUtils.lastDayOfMonth(new Date()), "yyyy-MM-dd HH:mm:ss");
+
+        } else {
+            if (!DateUtils.checkTimeParam(startTime, endTime, "yyyy-MM-dd")) {
+                throw new Exception("传入的时间参数欧问题。。。");
+            }
+            LocalDate endDate = LocalDate.parse(endTime, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            if (!LocalDate.now().isAfter(endDate)) {//结束日期只能统计到昨天
+                String yesterday = DateUtils.getYesterdayByFormat("yyyy-MM-dd");
+                endTime = yesterday + " 23:59:59";
+            }
+        }
+        List<ApplyLimitTimeVo> list = efficiencySupervisionMapper.getWinStageLimitTimeStatistics(startTime,endTime,windowId,SecurityContext.getCurrentOrgId());
+        List<List<String>> resultDataList = new ArrayList<>();
+        List<List<String>> winStageList = new ArrayList<>();
+        if(list.size()>0){
+            List<String> dybzspjdxhList = new ArrayList<>();
+            dybzspjdxhList =  getGjbzjdInfo("code");
+            Map<String, List<ApplyLimitTimeVo>> collect = list.stream().collect(Collectors.groupingBy(ApplyLimitTimeVo::getWindowId));
+            Set<Map.Entry<String, List<ApplyLimitTimeVo>>> entries = collect.entrySet();
+            for(Map.Entry<String, List<ApplyLimitTimeVo>> entry: entries){
+                List<ApplyLimitTimeVo> winList = entry.getValue();
+
+                List<String> dataList = new ArrayList<>();
+                String windowName = list.get(0).getWindowName();
+                dataList.add(windowName);
+                int isParallelCount = 0 ; double isParallelLimitTime =0.0;
+                for (int i = 0, len = dybzspjdxhList.size(); i < len; i++) {
+                    int count = 0;double limitTime =0.0;
+                    for (int j = 0, len2 = list.size(); j < len2; j++) {
+                        if (list.get(j).getDybzspjdxh().indexOf(dybzspjdxhList.get(i)) != -1 && "0".equals(list.get(j).getIsParallel())) {
+                            count +=1;
+                            limitTime += list.get(j).getUseLimitTime();
+                        }
+                        if (list.get(j).getDybzspjdxh().indexOf(dybzspjdxhList.get(i)) != -1 && "1".equals(list.get(j).getIsParallel())) {
+                            isParallelCount ++;
+                            isParallelLimitTime += list.get(j).getUseLimitTime();
+                        }
+                    }
+                    String avgTime = getAvgTime(limitTime,count);
+                    dataList.add(avgTime);
+                }
+                //将并行推进的事项的申报页加到dybzspjdxh=5的中去
+                double _tmp = Double.valueOf(dataList.get(dybzspjdxhList.size() - 1)) + isParallelCount;
+                dataList.remove(dybzspjdxhList.size() - 1);
+                dataList.add(getAvgTime(isParallelLimitTime,isParallelCount));
+                winStageList.add(dataList);
+            }
+        }
+
+        //显示所有的窗口
+        AeaServiceWindow winsearch = new AeaServiceWindow();
+        winsearch.setRootOrgId(SecurityContext.getCurrentOrgId());
+        winsearch.setIsActive("1");
+        List<AeaServiceWindow> aeaServiceWindows = aeaServiceWindowMapper.listAeaServiceWindow(winsearch);
+        if (aeaServiceWindows.size() == 0) throw new Exception("服务窗口为空！");
+        for(AeaServiceWindow window :aeaServiceWindows){
+            boolean had = false;
+            for(int i=0,len = winStageList.size();i<len;i++){
+                if(winStageList.get(i).get(0).equals(window.getWindowName())){
+                    had = true;
+                    resultDataList.add(winStageList.get(i));
+                    break;
+                }
+            }
+            if(!had){
+                resultDataList.add(Arrays.asList(window.getWindowName(),"0","0","0","0","0"));
+            }
+        }
+
+        Map<String,Object> result = new HashMap<>();
+        List<String> winNameList = aeaServiceWindows.stream().map(obj -> obj.getWindowName()).collect(Collectors.toList());
+        result.put("title",winNameList);
+        result.put("data",resultDataList);
+        return result;
+    }
+    /**
+     * 计算平均时间
+     * @param limitTime
+     * @param count
+     * @return
+     */
+    private String getAvgTime(double limitTime, int count) {
+        if(count ==0){
+            return "0";
+        }
+        BigDecimal b1 = new BigDecimal(limitTime);
+        BigDecimal b2 = new BigDecimal(count);
+//        BigDecimal divide = b1.divide(b2, 2, BigDecimal.ROUND_HALF_UP);
+        BigDecimal divide = b1.divide(b2,  BigDecimal.ROUND_HALF_UP);
+        return divide.toString();
     }
 }
