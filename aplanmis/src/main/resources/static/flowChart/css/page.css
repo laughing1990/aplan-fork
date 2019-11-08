@@ -243,7 +243,8 @@ input[type="number"] {
     width: 830px;
     margin-top: 5px;
 }
-.app-table-u.base-info{
+
+.app-table-u.base-info {
     width: 850px;
     margin-top: 0px;
 }
@@ -259,13 +260,15 @@ td.bg-grey {
     background: #f3f6f9;
     width: 120px;
     font-weight: bold;
-    color:#575962;
+    color: #575962;
 }
-.base-info td.bg-grey{
+
+.base-info td.bg-grey {
     text-align: right;
     width: 140px;
 }
-.base-info td{
+
+.base-info td {
     padding: 15px 20px;
 }
 
