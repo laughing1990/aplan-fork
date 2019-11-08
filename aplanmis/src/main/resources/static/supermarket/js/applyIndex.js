@@ -106,8 +106,8 @@ var vm = new Vue({
       orgTree: [], // 部门组织树
       isJg: false, // 是否机关单位 false为企业单位
       parallelThemeList: [], // 并联主题列表
-      activeNames: ['3',], // el-collapse 默认展开列表
-      // activeNames: ['1', '2', '3', '4', '5', '6','7'], // el-collapse 默认展开列表
+      // activeNames: ['3',], // el-collapse 默认展开列表
+      activeNames: ['1', '2', '3', '4', '5', '6','7'], // el-collapse 默认展开列表
       ctx: ctx,
       verticalTabData: [ // 左侧纵向导航数据
         {
@@ -236,7 +236,7 @@ var vm = new Vue({
       applySubjectType: 0,  // 申办主体信息类型 0个人 1企业 2非企业
       projSelect: false, // 项目类型建设性质是否可下拉选择
       activeTab: 0,  // 纵向导航active状态index
-      showVerLen: 2, // 显示左侧纵向导航栏的长度
+      showVerLen: 7, // 显示左侧纵向导航栏的长度
       showMoreProjInfo: true, // 查询项目后展示更多信息
       loadingFile: false, // 文件上传loading
       loadingFileWin: false, // 窗口文件上传loading

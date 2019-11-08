@@ -107,7 +107,7 @@ public class StageProcFinishSuccessOrFailExecutionListener implements ExecutionL
                             BpmnModel bpmnModel = repositoryService.getBpmnModel(task.getProcessDefinitionId());
                             Process process = (Process)bpmnModel.getProcesses().get(0);
                             FlowElement flowElement = process.getFlowElement("banjie");
-                            if(flowElement instanceof UserTask){
+                            if(flowElement!=null && flowElement instanceof UserTask){
                                 UserTask userTask = (UserTask)flowElement;
                                 String assigneeStr = userTask.getAssignee();
 

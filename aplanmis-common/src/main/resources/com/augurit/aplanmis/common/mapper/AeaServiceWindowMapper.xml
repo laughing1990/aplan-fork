@@ -321,9 +321,7 @@
         <include refid="allColumns" />
         from AEA_SERVICE_WINDOW window
         WHERE window.WINDOW_ID IN (
-            SELECT WINDOW_ID
-            FROM aea_service_window_user
-            WHERE USER_ID = #{userId}
+        SELECT aswu.WINDOW_ID FROM aea_service_window_user aswu WHERE aswu.USER_ID = #{userId}
         )
     </select>
 
