@@ -225,9 +225,9 @@ public class OrgEfficiencySupervisionController {
             @ApiImplicitParam(name = "isCurrent", value = "是否查询当前部门的", readOnly = true, dataType = "string", paramType = "query", required = true),
             @ApiImplicitParam(name = "orgId", value = "查询部门的id", readOnly = true, dataType = "string", paramType = "query", required = false)
     })
-    public ContentResultForm getOrgItemStatistics(String StartTime,String endTime,String type,boolean isCurrent,@RequestParam(required = false)String orgId){
+    public ContentResultForm getOrgItemStatistics(String startTime,String endTime,String type,boolean isCurrent,@RequestParam(required = false)String orgId){
         try {
-            Map<String, Object> result = orgEfficiencySupersionService.getOrgItemStatistics(StartTime, endTime, type, isCurrent, orgId);
+            Map<String, Object> result = orgEfficiencySupersionService.getOrgItemStatistics(startTime, endTime, type, isCurrent, orgId);
             return new ContentResultForm<>(true, result, "查询成功！");
         } catch (Exception e) {
             e.printStackTrace();
