@@ -175,29 +175,34 @@ public class ApproveOfficialDocController {
     private OpuOmOrgMapper opuOmOrgMapper;
 
     @GetMapping("/getItemInOfficeMat")
-    @ApiOperation(value = "获取当前事项实例下 批文批复定义 列表")
-    @ApiImplicitParam(name = "iteminstId", value = "事项实例", required = true, dataType = "string")
-    public ResultForm getItemInOfficeMat(String iteminstId) {
-        List<AeaItemMat> matListByItemVerIds = new ArrayList<>();
+    @ApiOperation(value = "获取当前事项实例下 批文批复定义 列表,如果事项实例id为空，申请实例id不为空，则查询申请实例下所有事项的批文批复")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "applyinstId", value = "申请实例id", required = true, dataType = "string"),
+            @ApiImplicitParam(name = "iteminstId", value = "事项实例id", required = false, dataType = "string")
+    })
+    public ResultForm getItemInOfficeMat(String applyinstId, String iteminstId) {
+        List<AeaItemMat> matList = new ArrayList<>();
         try {
-            AeaHiIteminst iteminst = aeaHiIteminstMapper.getAeaHiIteminstById(iteminstId);
-            if (null == iteminst) return new ContentResultForm<>(true, matListByItemVerIds);
-            matListByItemVerIds = aeaItemMatService.getMatListByItemVerIds(new String[]{iteminst.getItemVerId()}, "0", null);
-            if (matListByItemVerIds.size() == 0) return new ContentResultForm<>(true, matListByItemVerIds);
-            matListByItemVerIds = matListByItemVerIds.stream().filter(mat -> StringUtils.isNotBlank(mat.getIsOfficialDoc()) && "1".equalsIgnoreCase(mat.getIsOfficialDoc())).collect(Collectors.toList());
-            return new ContentResultForm<>(true, matListByItemVerIds == null ? new ArrayList<>() : matListByItemVerIds);
+            matList = officialDocumentService.getItemInOfficeMat(applyinstId, iteminstId);
+            return new ContentResultForm<>(true, matList);
         } catch (Exception e) {
             e.printStackTrace();
-            return new ContentResultForm<>(false, matListByItemVerIds);
+            return new ContentResultForm<>(false, matList);
         }
     }
 
     @GetMapping("/getItemOutputCert")
-    @ApiOperation(value = "获取当前事项实例下 输出证照定义 列表")
-    @ApiImplicitParams({@ApiImplicitParam(name = "iteminstId", value = "事项实例", required = true, dataType = "string")})
-    public ResultForm getItemOutputCert(String iteminstId) {
+    @ApiOperation(value = "获取当前事项实例下 输出证照定义 列表，如果事项实例id为空，申请实例id不为空，则查询申请实例下所有事项的证照")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "applyinstId", value = "申请实例id", required = true, dataType = "string"),
+            @ApiImplicitParam(name = "iteminstId", value = "事项实例id", required = false, dataType = "string")
+    })
+    public ResultForm getItemOutputCert(String applyinstId, String iteminstId) {
+        if (StringUtils.isBlank(applyinstId) && StringUtils.isBlank(iteminstId)) {
+            return new ResultForm(false, "参数applyinstId和iteminstId不能同时为空！");
+        }
         try {
-            CertVo vo=officialDocumentService.getItemOutputCertByIteminstId(iteminstId);
+            CertVo vo = officialDocumentService.getItemOutputCertByIteminstId(applyinstId, iteminstId);
             return new ContentResultForm(true, vo, "success");
         } catch (Exception e) {
             e.printStackTrace();

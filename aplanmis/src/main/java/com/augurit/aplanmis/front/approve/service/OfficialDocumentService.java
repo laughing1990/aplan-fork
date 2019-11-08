@@ -21,6 +21,7 @@ import com.augurit.aplanmis.common.service.admin.par.AeaParShareMatAdminService;
 import com.augurit.aplanmis.common.service.file.FileUtilsService;
 import com.augurit.aplanmis.common.service.instance.*;
 import com.augurit.aplanmis.common.service.item.AeaItemBasicService;
+import com.augurit.aplanmis.common.service.mat.AeaItemMatService;
 import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
 import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
 import com.augurit.aplanmis.common.utils.DateUtils;
@@ -107,6 +108,8 @@ public class OfficialDocumentService {
     private OpuOmUserInfoMapper opuOmUserInfoMapper;
     @Autowired
     private AeaUnitProjLinkmanMapper aeaUnitProjLinkmanMapper;
+    @Autowired
+    private AeaItemMatService aeaItemMatService;
 
     /**
      * @param applyinstId 申报实例id
@@ -770,37 +773,81 @@ public class OfficialDocumentService {
     }
 
     /**
-     * 获取当前事项实例下证照定义列表
+     * 获取当前事项实例下证照定义列表，如果事项实例id为空，申请实例id不为空，则查询申请实例下所有事项的证照定义
      *
      * @param iteminstId
+     * @param applyinstId
      * @return
      * @throws Exception
      */
-    public CertVo getItemOutputCertByIteminstId(String iteminstId) throws Exception {
+    public CertVo getItemOutputCertByIteminstId(String applyinstId, String iteminstId) throws Exception {
         CertVo vo = new CertVo();
-        List<AeaCert> certs = aeaCertAdminService.getOutputCertsByIteminstId(iteminstId);
-        vo.changeToCertVo(certs);
-
-        AeaHiIteminst iteminst = aeaHiIteminstMapper.getAeaHiIteminstById(iteminstId);
-        if (null == iteminst) return vo;
-        String orgId = iteminst.getApproveOrgId();
-        OpuOmOrg org = opuOmOrgMapper.getOrg(orgId);
-        if (null == org) return vo;
-        String orgSeq = org.getOrgSeq();
-        if (StringUtils.isNotBlank(orgSeq)) {
-            String[] orgIds = orgSeq.split("\\.");
-            List<OpuOmOrg> opuOmOrgs = opuOmOrgMapper.getOrgNameByOrgIds(orgIds);
-            List<OpuOmOrg> omOrgs = opuOmOrgs.stream().filter(orgs -> StringUtils.isBlank(orgs.getOrgProperty()) || "d".equals(orgs.getOrgProperty())).collect(Collectors.toList());
-            vo.changeToOrgVo(omOrgs);
+        List<AeaHiIteminst> aeaHiIteminstList = new ArrayList<>();
+        if (StringUtils.isBlank(iteminstId)) {
+            aeaHiIteminstList = aeaHiIteminstMapper.getAeaHiIteminstListByApplyinstId(applyinstId);
+        } else {
+            AeaHiIteminst iteminst = aeaHiIteminstMapper.getAeaHiIteminstById(iteminstId);
+            if (null == iteminst) {
+                return vo;
+            }
+            aeaHiIteminstList.add(iteminst);
         }
-
-
-        String applyinstId = getApplyinstIdByIteminstId(iteminstId);
         List<AeaProjInfo> applyProj = aeaProjInfoService.findApplyProj(applyinstId);
-        if (applyProj.size() > 0) {
-            String projScale = applyProj.get(0).getProjScale();
-            vo.setProjScale(projScale);
+        for (AeaHiIteminst iteminst : aeaHiIteminstList) {
+
+            List<AeaCert> certs = aeaCertAdminService.getOutputCertsByIteminstId(iteminstId);
+            if (certs == null) {
+                continue;
+            }
+            vo.changeToCertVo(certs);
+
+            String orgId = iteminst.getApproveOrgId();
+            OpuOmOrg org = opuOmOrgMapper.getOrg(orgId);
+            if (null == org) {
+                continue;
+            }
+            String orgSeq = org.getOrgSeq();
+            if (StringUtils.isNotBlank(orgSeq)) {
+                String[] orgIds = orgSeq.split("\\.");
+                List<OpuOmOrg> opuOmOrgs = opuOmOrgMapper.getOrgNameByOrgIds(orgIds);
+                List<OpuOmOrg> omOrgs = opuOmOrgs.stream().filter(orgs -> StringUtils.isBlank(orgs.getOrgProperty()) || "d".equals(orgs.getOrgProperty())).collect(Collectors.toList());
+                vo.changeToOrgVo(omOrgs);
+            }
+            if (applyProj.size() > 0) {
+                String projScale = applyProj.get(0).getProjScale();
+                vo.setProjScale(projScale);
+            }
         }
         return vo;
+    }
+
+    /**
+     * 获取当前事项实例下批文批复定义列表，如果事项实例id为空，申请实例id不为空，则查询申请实例下所有事项的批文批复定义
+     *
+     * @param iteminstId
+     * @param applyinstId
+     * @return
+     * @throws Exception
+     */
+    public List<AeaItemMat> getItemInOfficeMat(String applyinstId, String iteminstId) throws Exception {
+        List<AeaItemMat> result = new ArrayList<>();
+        List<AeaHiIteminst> aeaHiIteminstList = new ArrayList<>();
+        if (StringUtils.isBlank(iteminstId)) {
+            aeaHiIteminstList = aeaHiIteminstMapper.getAeaHiIteminstListByApplyinstId(applyinstId);
+        } else {
+            AeaHiIteminst iteminst = aeaHiIteminstMapper.getAeaHiIteminstById(iteminstId);
+            aeaHiIteminstList.add(iteminst);
+        }
+        if (aeaHiIteminstList.size() > 0) {
+            String[] itemVerIds = new String[aeaHiIteminstList.size()];
+            for (int i = 0; i < aeaHiIteminstList.size(); i++) {
+                itemVerIds[i] = aeaHiIteminstList.get(i).getItemVerId();
+            }
+            List<AeaItemMat> matListByItemVerIds = aeaItemMatService.getMatListByItemVerIds(itemVerIds, "0", null);
+            if (matListByItemVerIds.size() > 0) {
+                result = matListByItemVerIds.stream().filter(mat -> StringUtils.isNotBlank(mat.getIsOfficialDoc()) && "1".equalsIgnoreCase(mat.getIsOfficialDoc())).collect(Collectors.toList());
+            }
+        }
+        return result;
     }
 }
