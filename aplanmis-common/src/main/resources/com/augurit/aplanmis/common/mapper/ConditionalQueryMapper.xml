@@ -4519,21 +4519,7 @@ ahi_123.ITEMINST_ID,
         LEFT JOIN AEA_PAR_THEME_VER ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
 --         LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
         LEFT JOIN AEA_PAR_THEME theme ON theme.THEME_ID = ver.THEME_ID
-        LEFT JOIN (
-        SELECT
-        asti.INST_STATE,
-        asti.REMAINING_TIME,
-        ahi.ITEMINST_ID,
-        asti.TIMERULE_UNIT,
-        asti.OVERDUE_TIME,
-        asti.PROC_INST_ID
-        FROM
-        act_sto_timerule_inst asti,
-        aea_hi_iteminst ahi
-        WHERE
-        asti.PROC_INST_ID = ahi.PROCINST_ID
-        AND asti.ORG_ID = #{currentOrgId}
-        ) tinst ON tinst.ITEMINST_ID = ahi_123.ITEMINST_ID
+        LEFT JOIN act_sto_timerule_inst tinst ON tinst.PROC_INST_ID = ahi_123.PROCINST_ID AND tinst.ORG_ID = #{currentOrgId}
         WHERE ahi_123.IS_SERIES_APPROVE = '0'
         <if test="theme != null and theme != '' ">
             AND theme.THEME_ID = #{theme}
@@ -4607,21 +4593,7 @@ ahi_123.ITEMINST_ID,
             <include refid="leftJoinApplyinstProj">
             </include>
 --             LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
-            LEFT JOIN (
-            SELECT
-            asti.INST_STATE,
-            asti.REMAINING_TIME,
-            ahi.ITEMINST_ID,
-            asti.TIMERULE_UNIT,
-            asti.OVERDUE_TIME,
-            asti.PROC_INST_ID
-            FROM
-            act_sto_timerule_inst asti,
-            aea_hi_iteminst ahi
-            WHERE
-            asti.PROC_INST_ID = ahi.PROCINST_ID
-            AND asti.ORG_ID = #{currentOrgId}
-            ) tinst ON tinst.ITEMINST_ID = ahi_123.ITEMINST_ID
+            LEFT JOIN act_sto_timerule_inst tinst ON tinst.PROC_INST_ID = ahi_123.PROCINST_ID AND tinst.ORG_ID = #{currentOrgId}
             WHERE ahi_123.IS_SERIES_APPROVE = '1'
 
             <if test="_databaseId == 'oracle'">
@@ -4757,26 +4729,8 @@ ahi_123.ITEMINST_ID,
         </if>
         LEFT JOIN aea_par_theme_ver ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
         LEFT JOIN aea_par_theme theme ON theme.THEME_ID = ver.THEME_ID
-        LEFT JOIN (
-        SELECT
-        asti.REMAINING_TIME,
-        asti.INST_STATE,
-        ahps.STAGEINST_ID,
-        asti.TIMERULE_UNIT,
-        asti.OVERDUE_TIME,
-        asti.PROC_INST_ID
-        FROM
-        act_sto_timerule_inst asti,
-        act_sto_appinst asp,
-        aea_hi_par_stageinst ahps
-        WHERE
-        asti.APP_FLOWDEF_ID = asp.APP_FLOWDEF_ID
-        AND asti.PROC_INST_ID = asp.PROCINST_ID
-        AND asp.APPINST_ID = ahps.APPINST_ID
-        AND ahps.ROOT_ORG_ID = #{currentOrgId}
-        AND asp.ROOT_ORG_ID = #{currentOrgId}
-        AND asti.ORG_ID = #{currentOrgId}
-        ) tinst ON tinst.STAGEINST_ID = ahs_123.STAGEINST_ID
+        LEFT JOIN act_sto_appinst asp ON asp.APPINST_ID = ahs_123.APPINST_ID AND ahs_123.ROOT_ORG_ID = #{currentOrgId} AND asp.ROOT_ORG_ID = #{currentOrgId}
+        LEFT JOIN act_sto_timerule_inst tinst ON tinst.APP_FLOWDEF_ID = asp.APP_FLOWDEF_ID AND tinst.PROC_INST_ID = asp.PROCINST_ID AND tinst.ORG_ID = #{currentOrgId}
         WHERE
         ahap_123.IS_SERIES_APPROVE = '0'
         <if test="theme != null and theme != '' ">
@@ -4865,21 +4819,7 @@ ahi_123.ITEMINST_ID,
         LEFT JOIN AEA_PAR_THEME_VER ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
 --         LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
         LEFT JOIN AEA_PAR_THEME theme ON theme.THEME_ID = ver.THEME_ID
-        LEFT JOIN (
-        SELECT
-        asti.INST_STATE,
-        asti.REMAINING_TIME,
-        ahi.ITEMINST_ID,
-        asti.TIMERULE_UNIT,
-        asti.OVERDUE_TIME,
-        asti.PROC_INST_ID
-        FROM
-        act_sto_timerule_inst asti,
-        aea_hi_iteminst ahi
-        WHERE
-        asti.PROC_INST_ID = ahi.PROCINST_ID
-        AND asti.ORG_ID = #{currentOrgId}
-        ) tinst ON tinst.ITEMINST_ID = ahi_123.ITEMINST_ID
+        LEFT JOIN act_sto_timerule_inst tinst ON tinst.PROC_INST_ID = ahi_123.PROCINST_ID AND tinst.ORG_ID = #{currentOrgId}
         WHERE ahi_123.IS_SERIES_APPROVE = '0'
 
         <if test="sublineType != null and sublineType != '' ">
