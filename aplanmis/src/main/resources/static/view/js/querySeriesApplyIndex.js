@@ -26,7 +26,7 @@ var vm = new Vue({
             ts.loading = true;
 
             request('', {
-                url: ctx + '/rest/conditional/query/listSeriesApplyItem',
+                url: ctx + 'rest/conditional/query/listSeriesApplyItem',
                 type: 'get',
                 data: ts.searchFrom
             }, function (res) {
@@ -46,7 +46,7 @@ var vm = new Vue({
         seriesApply:function (row) {
             var itemVerId = row.itemVerId;
             var itemName=row.itemName;
-            var urltemp =  ctx+'/apanmis/page/singleApplyIndex/' + itemVerId;
+            var urltemp =  ctx+'apanmis/page/singleApplyIndex/' + itemVerId;
             var data = {
                 'menuName':itemName,
                 'menuInnerUrl':urltemp,

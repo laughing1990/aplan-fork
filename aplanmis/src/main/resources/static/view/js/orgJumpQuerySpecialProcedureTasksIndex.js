@@ -40,7 +40,7 @@ var vm = new Vue({
 			ts.loading = true;
 			ts.searchFrom.entrust = entrust;
 			request('', {
-				url: ctx + '/rest/conditional/jump/lisSpecialProcedureTasks',
+				url: ctx + 'rest/conditional/jump/lisSpecialProcedureTasks',
 				type: 'get',
 				data: ts.searchFrom
 			}, function (res) {
@@ -61,7 +61,7 @@ var vm = new Vue({
 			var ts = this;
 			// ts.loading = true;
 			request('', {
-				url: ctx + '/rest/conditional/jump/task/dic/list',
+				url: ctx + 'rest/conditional/jump/task/dic/list',
 				type: 'get',
 				data: {}
 			}, function (res) {
@@ -80,7 +80,7 @@ var vm = new Vue({
 		//预审
 		viewDetail: function (row) {
 
-			var url = ctx + '/apanmis/page/stageApproveIndex?taskId=' + row.taskId + '&viewId=' + row.viewId;
+			var url = ctx + 'apanmis/page/stageApproveIndex?taskId=' + row.taskId + '&viewId=' + row.viewId;
 			if (row.busRecordId) {
 				url = url + '&busRecordId=' + row.busRecordId;
 			}

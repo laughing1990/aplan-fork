@@ -140,6 +140,7 @@
             },
             //Tree右键
             rigthClickTree:function($event,item,level){
+                var _this = this;
                 $event.returnValue = false;
                 $event.cancelBubble = true;
                 if (item) {
@@ -147,7 +148,10 @@
                 }
                 this.delDirId = item.dirId;
                 this.level = level;
-                this.$set(this.addDirFormData,'chooseSuperDir',this.delDirId)
+                console.log(this.delDirId)
+                setTimeout(function () {
+                    _this.$set(_this.addDirFormData,'chooseSuperDir',_this.delDirId)
+                },1000)
             },
 
             // table 右键
@@ -220,7 +224,9 @@
                     }, function(err) {
                         _this.$message.error('请求接口出错了哦!');
                     })
-                }, '', '确定', '取消')
+                },function(){
+                    console.log("取消");
+                }, '确定', '取消')
             },
 
             // 重命名
@@ -286,9 +292,11 @@
                     if(size > 1024 * 1024){
                         files[i].filesSize = (Math.round(size / (1024 * 1024))).toString() + "MB";
                         files[i].uploadedSize = 0 + "MB";
+                        $("#uploadedSize"+i).text(0 + "MB");
                     }else{
                         files[i].filesSize = (Math.round(size / 1024)).toString() + "KB";
                         files[i].uploadedSize = 0 + "KB";
+                        $("#uploadedSize"+i).text(0 + "KB");
                     }
                     totalSize = totalSize + size;
                     files[i].uploadedPer = 0;
@@ -749,20 +757,23 @@
         }
     })
     function onprogress(evt) {
-        console.log(33333333333333333)
+        console.log(33333)
         var vm = myCloundSpaces;
         var loaded = evt.loaded; //已经上传大小情况
         console.log('上传的大小',loaded);
         var tot = evt.total; //附件总大小
         var per = Math.floor(100 * loaded / tot); //已经上传的百分比
-
         if(loaded > 1024 * 1024) {
             var uploadedSize = (Math.round(loaded / (1024 * 1024))).toString() + 'MB';
-            vm.uploadFile[j].uploadedSize = uploadedSize;
+            vm.$set(vm.uploadFile[j],'uploadedSize',uploadedSize);
+            $("#uploadedSize"+j).text(uploadedSize);
         } else {
             var uploadedSize = (Math.round(loaded / 1024)).toString() + 'KB';
-            vm.uploadFile[j].uploadedSize = uploadedSize;
+            vm.$set(vm.uploadFile[j],'uploadedSize',uploadedSize);
+            $("#uploadedSize"+j).text(uploadedSize);
         }
-        vm.uploadFile[j].uploadedPer = per;
+        console.log('上传的百分比',per);
+        vm.$set(vm.uploadFile[j],'uploadedPer',per);
+        $("#proccess"+j).css({'width':per+'%'});
     };
 })();

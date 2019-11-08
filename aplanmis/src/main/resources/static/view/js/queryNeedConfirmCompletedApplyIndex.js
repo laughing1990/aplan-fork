@@ -51,7 +51,7 @@ var vm = new Vue({
             ts.loading = true;
 
             request('', {
-                url: ctx + '/rest/conditional/query/listNeedConfirmCompletedApply',
+                url: ctx + 'rest/conditional/query/listNeedConfirmCompletedApply',
                 type: 'get',
                 data: ts.searchFrom
             }, function (res) {
@@ -70,7 +70,7 @@ var vm = new Vue({
         //补全确认
         viewDetail:function (row) {
             var correctId = row.correctId;
-            var urltemp = ctx + '/applyinst/correct/applyinstConfirm.html?applyinstCorrectId=' + correctId;
+            var urltemp = ctx + 'applyinst/correct/applyinstConfirm.html?applyinstCorrectId=' + correctId;
             var parentIfreamUrl = window.frames.location.href;
             var currentTabId = parent.vm.activeTabIframe;
             urltemp = urltemp + '&parentIfreamUrl=' + parentIfreamUrl + '&currentTabId' + currentTabId;

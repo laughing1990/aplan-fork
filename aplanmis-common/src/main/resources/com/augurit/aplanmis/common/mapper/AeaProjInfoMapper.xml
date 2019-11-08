@@ -1777,13 +1777,13 @@
             select DISTINCT p.PARENT_PROJ_ID from aea_parent_proj p inner join aea_proj_info aapi on p.CHILD_PROJ_ID = aapi.PROJ_INFO_ID where aapi.IS_DELETED = '0'
         ) parProj on parProj.PARENT_PROJ_ID = proj.PROJ_INFO_ID
         where proj.IS_DELETED = '0'
-        and ( proj.PROJ_FLAG is null or proj.PROJ_FLAG != 'r')
-        and proj.PROJ_INFO_ID not in (
-            select ar.CHILD_PROJ_ID from aea_parent_proj ar inner join aea_proj_info aapi on ar.PARENT_PROJ_ID = aapi.PROJ_INFO_ID
-            where (aapi.PROJ_FLAG != 'r' or aapi.PROJ_FLAG is null)
-            and aapi.IS_DELETED = '0'
-        )
-
+--         and ( proj.PROJ_FLAG is null or proj.PROJ_FLAG != 'r')
+--         and proj.PROJ_INFO_ID not in (
+--             select ar.CHILD_PROJ_ID from aea_parent_proj ar inner join aea_proj_info aapi on ar.PARENT_PROJ_ID = aapi.PROJ_INFO_ID
+--             where (aapi.PROJ_FLAG != 'r' or aapi.PROJ_FLAG is null)
+--             and aapi.IS_DELETED = '0'
+--         )
+        and ( proj.PROJ_FLAG = 'p' or proj.PROJ_FLAG = '' or proj.PROJ_FLAG is null)
         <if test="onlyRegion">
             and proj.REGIONALISM in
             <foreach collection="selfAndChildRegionIds" item="id" open="(" separator="," close=")">

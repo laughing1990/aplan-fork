@@ -45,7 +45,7 @@ var vm = new Vue({
             ts.loading = true;
 
             request('', {
-                url: ctx + '/rest/conditional/query/listMyDrafts',
+                url: ctx + 'rest/conditional/query/listMyDrafts',
                 type: 'get',
                 data: ts.searchFrom
             }, function (res) {
