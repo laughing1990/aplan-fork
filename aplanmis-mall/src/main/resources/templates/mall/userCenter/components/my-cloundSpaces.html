@@ -305,7 +305,7 @@
     </div>
     <!--左侧树右键展开 str-->
     <div class="right-click-opt" id="right-click-opt-tree" @mouseleave="hideClickOpt">
-        <p @click="addDirDialogFlag = true;" v-show="level == 1">新增</p>
+        <p @click="addDirDialogFlag = true;clearFormData();" v-show="level == 1">新增</p>
         <p @click="deleteDir()">删除</p>
         <p @click="reNameDialogFlag = true;isReNameFile = 0">重命名</p>
     </div>
