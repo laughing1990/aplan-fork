@@ -19,7 +19,13 @@ var vm = new Vue({
                 applyEndTime: '',
                 applyType: '',
                 keyword:''
-            }
+            },
+            sendApplyVisible:false,
+            sendApplyLoading:false,
+            sendApplyComment: {
+                comment: ''
+            },
+            applyinstId:''
         }
     },
     methods: {
@@ -56,17 +62,18 @@ var vm = new Vue({
             });
         },
         //发起申报
-        sendApply: function (row) {
+        sendApply: function () {
             var ts = this;
             confirmMsg('提示信息：','你确定发起申报吗？',function(){
-                ts.loading = true;
+                ts.sendApplyLoading = true;
                 request('', {
                     url: ctx + "rest/apply/common/processflow/start",
                     type: 'post',
-                    data: {applyinstId: row.applyinstId}
+                    data: {applyinstId: ts.applyinstId,comment:ts.sendApplyComment.comment}
                 }, function (result) {
-                    ts.loading = false;
+                    ts.sendApplyLoading = false;
                     if (result.success) {
+                        this.sendApplyVisible = false;
                         ts.$message.success('申报成功！');
 
                         window.setTimeout(function(){
@@ -76,11 +83,18 @@ var vm = new Vue({
                         ts.apiMessage('发起申报失败!', 'error');
                     }
                 },function(){
-                    ts.loading = false;
+                    ts.sendApplyLoading = false;
                     ts.apiMessage('发起申报失败!', 'error');
                 },'确定','取消','warning',true);
             });
         },
+        openSendApplyDialog:function (row) {
+            this.sendApplyVisible = true;
+            this.applyinstId = row.applyinstId;
+        },
+        closeSendApplyDialog: function (){
+            this.$refs.sendApplyRef.resetFields();
+        }
     },
     created: function () {
         this.conditionalQueryDic();

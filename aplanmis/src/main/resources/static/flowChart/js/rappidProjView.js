@@ -226,10 +226,10 @@ $(function () {
           }, function (res) {
             vm.pageLoading = false;
             if (res.success) {
-              vm.aeaHiIteminst = res.content.aeaHiIteminst;
-              vm.commentList = res.content.commentList;
-              vm.officialDocumentList = res.content.officialDocumentList;
-              vm.specialList = res.content.specialList;
+              vm.aeaHiIteminst = res.content.aeaHiIteminst || [];
+              vm.commentList = res.content.commentList || [];
+              vm.officialDocumentList = res.content.officialDocumentList || [];
+              vm.specialList = res.content.specialList || [];
               vm.detailDiaTabs = vm.allDetailDiaTabs.concat([]);
               var tmp = res.content.supplyList.concat([]);
               tmp.forEach(function (u) {
