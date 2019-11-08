@@ -260,6 +260,12 @@ public class AgentItemApplyData {
         purchaseData.setApplyinstCode(applyinstCode);
         purchaseData.setCreater(SecurityContext.getCurrentUserName());
         purchaseData.setRootOrgId(SecurityContext.getCurrentOrgId());
+        if ("0".equals(this.applySubject)) {
+            purchaseData.setPublishLinkmanInfoId(applyLinkmanId);
+
+        } else {
+            purchaseData.setPublishUnitInfoId(this.buildProjUnitMap.get(0).getUnitIds().get(0));
+        }
         return purchaseData;
     }
 }

@@ -629,7 +629,7 @@ public class RestImApplyService {
         //参数校验
         this.validParams(data);
         String unitInfoId = data.getPublishUnitInfoId();
-        String applySubject = data.getApplySubject();
+//        String applySubject = data.getApplySubject();
         //初始化采购需求实体信息
         AeaImProjPurchase aeaImProjPurchase = data.createAeaImProjPurchase();
 
