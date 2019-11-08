@@ -82,17 +82,15 @@
             <div v-if="isApprover==1">
               <div class="spe-item-uboxs">
                 <div class="spe-item-u" v-for="(item,index) in approverSpecialDetailList">
-                  <div class="top-time-text-box c-f">
+                  <div class="top-time-text-box c-f" :class="{'is-blue': item.specialState==9}">
                     <div class="ttt-f"></div>
                     <div class="ttt-s">
-                      第{{getChineseIndex(index,approverSpecialDetailList.length)}}次发起
+                      第{{getChineseIndex(index,approverSpecialDetailList.length)}}次发起（{{item.specialState==9?'待结束':'已结束'}}）
                     </div>
                     <div class="ttt-t"></div>
                   </div>
                   <table class="spe-info-table">
-                    <tr>
-                      <td class="td-bg-grey" colspan="6">特殊程序发起</td>
-                    </tr>
+                    <div class="table-section-title">特殊程序发起</div>
                     <tr>
                       <td class="td-bg-grey">种类</td>
                       <td>{{specialTypeToText(item.specialType)}}</td>
@@ -103,7 +101,7 @@
                     </tr>
                     <tr>
                       <td class="td-bg-grey">申请时限</td>
-                      <td>{{item.specialDueDays}}工作日</td>
+                      <td>{{item.specialDueDays}}（工作日）</td>
                       <td class="td-bg-grey">开始时间</td>
                       <td>{{item.createTime}}</td>
                       <td class="td-bg-grey">结束时间</td>
@@ -132,12 +130,9 @@
                         <div v-else class="non-file-text">无</div>
                       </td>
                     </tr>
-                    <tr>
-                      <td colspan="6" style="border:none;padding:5px;"></td>
-                    </tr>
-                    <tr>
-                      <td class="td-bg-grey" colspan="6">特殊程序结束</td>
-                    </tr>
+                  </table>
+                  <table class="spe-info-table">
+                    <div class="table-section-title">特殊程序结束</div>
                     <template v-if="item.specialState==10">
                       <tr data-title="特殊程序已结束">
                         <td class="td-bg-grey">特殊程序结果</td>
@@ -273,17 +268,15 @@
                 </template>
                 <div class="spe-item-uboxs">
                   <div class="spe-item-u" v-for="(uu, index) in u.specialList">
-                    <div class="top-time-text-box c-f">
+                    <div class="top-time-text-box c-f" :class="{'is-blue': uu.specialState==9}">
                       <div class="ttt-f"></div>
                       <div class="ttt-s">
-                        第{{getChineseIndex(index,uu.length)}}次发起
+                        第{{getChineseIndex(index,u.specialList.length)}}次发起（{{uu.specialState==9?'待结束':'已结束'}}）
                       </div>
                       <div class="ttt-t"></div>
                     </div>
                     <table class="spe-info-table">
-                      <tr>
-                        <td class="td-bg-grey" colspan="6">特殊程序发起</td>
-                      </tr>
+                      <div class="table-section-title">特殊程序发起</div>
                       <tr>
                         <td class="td-bg-grey">种类</td>
                         <td>{{specialTypeToText(uu.specialType)}}</td>
@@ -294,7 +287,7 @@
                       </tr>
                       <tr>
                         <td class="td-bg-grey">申请时限</td>
-                        <td>{{uu.specialDueDays}}工作日</td>
+                        <td>{{uu.specialDueDays}}（工作日）</td>
                         <td class="td-bg-grey">开始时间</td>
                         <td>{{uu.createTime}}</td>
                         <td class="td-bg-grey">结束时间</td>
@@ -323,12 +316,9 @@
                           <div v-else class="non-file-text">无</div>
                         </td>
                       </tr>
-                      <tr>
-                        <td colspan="6" style="border:none;padding:5px;"></td>
-                      </tr>
-                      <tr>
-                        <td class="td-bg-grey" colspan="6">特殊程序结束</td>
-                      </tr>
+                    </table>
+                    <table class="spe-info-table">
+                      <div class="table-section-title">特殊程序结束</div>
                       <tr>
                         <td class="td-bg-grey">特殊程序结果</td>
                         <td colspan="5">{{uu.specialResult}}</td>
@@ -378,9 +368,7 @@
                     <div class="ttt-t"></div>
                   </div>
                   <table class="spe-info-table">
-                    <tr>
-                      <td class="td-bg-grey" colspan="6">基本信息</td>
-                    </tr>
+                    <div class="table-section-title">基本信息</div>
                     <tr>
                       <td class="td-bg-grey">申请流水号</td>
                       <td>{{item.applyinstCode}}</td>
@@ -413,9 +401,7 @@
                     </tr>
                   </table>
                   <table class="spe-info-table">
-                    <tr>
-                      <td class="td-bg-grey" colspan="7">补正材料列表</td>
-                    </tr>
+                    <div class="table-section-title">补正材料列表</div>
                     <tr>
                       <td class="td-bg-grey w1">序号</td>
                       <td class="td-bg-grey w2">材料名称</td>
@@ -469,9 +455,7 @@
                     </tr>
                   </table>
                   <table class="spe-info-table">
-                    <tr>
-                      <td class="td-bg-grey" colspan="6">经办信息</td>
-                    </tr>
+                    <div class="table-section-title">经办信息</div>
                     <tr>
                       <td class="td-bg-grey" colspan="1">窗口负责人</td>
                       <td colspan="5">{{item.windowUserName}}</td>
@@ -525,7 +509,7 @@
                       </tr>
                       <tr>
                         <td class="td-bg-grey">申请时限</td>
-                        <td>{{uu.specialDueDays}}工作日</td>
+                        <td>{{uu.specialDueDays}}（工作日）</td>
                         <td class="td-bg-grey">开始时间</td>
                         <td>{{uu.createTime}}</td>
                         <td class="td-bg-grey">结束时间</td>
@@ -1228,7 +1212,7 @@
         <!-- <span class="color-999">{{supplemetForm.approveOrgName || '暂无'}}</span> -->
         <span class="color-999">{{supplemetForm.chargeOrgName || '暂无'}}</span>
       </el-form-item>
-      <el-form-item class="half-item" label="办理时限(工作日)" prop="correctDueDays">
+      <el-form-item class="half-item" label="办理时限（工作日）" prop="correctDueDays">
         <span class="color-999" v-if="supplementDialogData.correctState == 6 || supplementDialogData.correctState == 7">{{supplemetForm.correctDueDays || '暂无'}}</span>
         <el-input size="medium" placeholder="请输入办理时限" type="number" min="0" v-else
                   v-model="supplemetForm.correctDueDays"></el-input>
@@ -1432,7 +1416,7 @@
         <!-- <el-input placeholder="请输入负责部门名称" v-model="matMendForm.approveOrgName" disabled></el-input> -->
         <span class="color-999">{{matMendForm.approveOrgName || '暂无'}}</span>
       </el-form-item>
-      <el-form-item class="half-item" label="办理期限(工作日)" prop="correctDueDays">
+      <el-form-item class="half-item" label="办理期限（工作日）" prop="correctDueDays">
         <span class="color-999" v-if=" matMendDialogData.correctState == 6 || matMendDialogData.correctState == 7">{{matMendForm.correctDueDays || '暂无'}}</span>
         <el-input placeholder="请输入办理期限" type="number" min="0" v-else
                   v-model="matMendForm.correctDueDays"></el-input>
