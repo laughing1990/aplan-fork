@@ -353,7 +353,7 @@
 <div class="container-tab">
     <div class="flow_steps">
         <ul class="stage">
-            <li data-url="/aea/par/stage/indexSetStageItem.do,/aea/item/frontCheckManage.do" class="overlay">
+            <li data-url="/aea/par/stage/indexSetStageItem.do,/aea/item/frontCheckItem.do<%--/aea/item/frontCheckManage.do--%>" class="overlay">
                 <i class="flow-steps-num">1</i>${currentBusiType == 'item'?'前置检测':'事项范围配置'}
             </li>
             <li data-url="/rest/mind/mindIndex.do, /rest/mind/noSituation.do" data-item="">
@@ -538,8 +538,8 @@
             }
         } else if (currentBusiType == AeaMindConst_MIND_NODE_TYPE_CODE_ITEM) {
             urlArr = [
-                // '/aea/item/frontCheckItem.do?busiType=' + currentBusiType + '&busiId=' + currentBusiId + '&stateVerId=' + currentStateVerId,
-                '/aea/item/frontCheckManage.do?busiType=' + currentBusiType + '&busiId=' + currentBusiId + '&stateVerId=' + currentStateVerId,
+                '/aea/item/frontCheckItem.do?busiType=' + currentBusiType + '&busiId=' + currentBusiId + '&stateVerId=' + currentStateVerId,
+                // '/aea/item/frontCheckManage.do?busiType=' + currentBusiType + '&busiId=' + currentBusiId + '&stateVerId=' + currentStateVerId,
                 '/rest/mind/mindIndex.do?busiType=' + currentBusiType + '&busiId=' + currentBusiId + '&stateVerId=' + currentStateVerId,
                 '/rest/mind/item/processModeler.do?busiType=' + currentBusiType + '&busiId=' + currentBusiId + '&stateVerId=' + currentStateVerId,
                 '/aea/item/indexSetItemOut.do?busiType=' + currentBusiType + '&busiId=' + currentBusiId + '&stateVerId=' + currentStateVerId,

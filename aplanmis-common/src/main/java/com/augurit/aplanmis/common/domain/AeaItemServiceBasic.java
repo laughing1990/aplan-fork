@@ -1,6 +1,7 @@
 package com.augurit.aplanmis.common.domain;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
@@ -9,6 +10,7 @@ import java.util.Date;
 /**
  * 设立依据-模型
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class AeaItemServiceBasic extends AeaServiceLegalClause implements Serializable {
 
