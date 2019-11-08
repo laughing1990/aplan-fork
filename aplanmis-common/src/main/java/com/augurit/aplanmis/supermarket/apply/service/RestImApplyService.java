@@ -8,6 +8,7 @@ import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.constants.AeaUnitConstants;
 import com.augurit.aplanmis.common.constants.ApplyState;
 import com.augurit.aplanmis.common.constants.AuditFlagStatus;
+import com.augurit.aplanmis.common.constants.ItemStatus;
 import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.mapper.*;
 import com.augurit.aplanmis.common.service.instance.*;
@@ -96,9 +97,6 @@ public class RestImApplyService {
 
     @Autowired
     private BpmTaskService bpmTaskService;
-
-    @Autowired
-    private TaskService taskService;
 
     public String publishPurchaseAndStartProcess() throws Exception {
 
