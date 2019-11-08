@@ -865,7 +865,7 @@ var vm = new Vue({
       var day = vm.speBaseInfoForm.specialDueDays;
       var date = vm.speBaseInfoForm.opsTime;
       if (!!day && !!date) {
-        // vm.speDiaLoading = true;
+        vm.speDiaLoading = true;
         request('', {
           url: ctx + 'rest/specialProcedure/getSpecialEndDate',
           type: 'get',
@@ -1437,7 +1437,7 @@ var vm = new Vue({
               //这里可以做交集，确保起草时有暂存按钮，审批时 有流程跟踪按钮
               vm.buttonData = result.panel.filter(function (u) {
                 return u.elementCode === 'wf_button_toolbar'
-              })[0]['childElement'];
+              })[0]['childElement'] || [];
               vm.filterButtonArray(vm.buttonData);
               vm.sortButtonArray(vm.buttonData);
             }

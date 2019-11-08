@@ -19,7 +19,6 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 @Data
 @ApiModel(value = "项目采购信息VO", description = "项目采购信息VO")
@@ -217,7 +216,7 @@ public class ImPurchaseData {
     private String applySubject;
 
     public AeaImProjPurchase createAeaImProjPurchase() {
-        this.projPurchaseId = UUID.randomUUID().toString();
+//        this.projPurchaseId = UUID.randomUUID().toString();
         AeaImProjPurchase aeaImProjPurchase = new AeaImProjPurchase();
         BeanUtils.copyProperties(this, aeaImProjPurchase);
         aeaImProjPurchase.setQuoteType("0");// 报价方式,0 金额 1 下浮率
