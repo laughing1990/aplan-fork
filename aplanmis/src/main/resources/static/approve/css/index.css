@@ -37,6 +37,15 @@ input[type="number"] {
     color: #575962;
 }
 
+#approvePage .ltabs .el-tabs__item{
+    font-size: 16px;
+    height: 44px;
+    line-height: 44px;
+}
+#approvePage .ltabs .el-tabs__nav{
+    height: 46px;
+}
+
 .page-header {
     height: 50px;
     line-height: 50px;
@@ -311,9 +320,8 @@ input[type="number"] {
 }
 
 .top-btns-status {
-    height: 66px;
     border-bottom: 1px solid #EBEDF2;
-    padding: 0 21px;
+    padding: 20px;
 }
 
 .top-btn {
@@ -326,7 +334,7 @@ input[type="number"] {
     line-height: 24px;
     height: 24px;
     font-size: 14px;
-    margin-top: 22px;
+    margin-top: 5px;
 }
 
 .top-btns-status .btn,
@@ -338,7 +346,6 @@ input[type="number"] {
     color: #575962;
     padding: 0px 20px;
     border-radius: 4px;
-    margin-top: 16px;
     margin-right: 10px;
     cursor: pointer;
     background: #fff;
@@ -793,7 +800,7 @@ input[type="number"] {
 
 .left-content .el-tabs.el-tabs--top {
     position: absolute;
-    top: 70px;
+    top: 75px;
     left: 0;
     bottom: 0;
     right: 0;
