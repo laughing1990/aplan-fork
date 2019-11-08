@@ -460,7 +460,7 @@
         ORDER BY asw.SORT_NO
     </select>
 
-    <select id="getApplyCount" resultType="long">
+    <select id="getApplyCount" resultType="java.lang.Long">
 
         select
         <if test="_databaseId == 'oracle'">

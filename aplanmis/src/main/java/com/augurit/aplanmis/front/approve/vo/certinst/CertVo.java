@@ -30,7 +30,7 @@ public class CertVo {
     }
 
     public void changeToCertVo(List<AeaCert> certs) {
-        if (null == certList || certs.isEmpty()) return;
+        if (null == certList || certs == null ||certs.isEmpty()) return;
         for (AeaCert cert : certs) {
             Cert vo = new Cert();
             BeanUtils.copyProperties(cert, vo);

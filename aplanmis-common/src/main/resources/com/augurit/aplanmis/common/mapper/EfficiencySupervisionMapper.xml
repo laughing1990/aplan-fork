@@ -174,6 +174,7 @@
         LEFT JOIN opu_om_org ooo on ooo.ORG_ID=gg.orgId
         LEFT JOIN bsc_dic_region bdr on bdr.region_id = ooo.region_id
     </select>
+
     <select id="getWinLimitTimeStatistics" resultType="com.augurit.aplanmis.common.vo.analyse.ApplyLimitTimeVo">
 
         SELECT count(1)count ,gg.INST_STATE instState from (
@@ -227,6 +228,7 @@
         ) gg GROUP by gg.INST_STATE
 
     </select>
+
     <select id="getWinStageLimitTimeStatistics" resultType="com.augurit.aplanmis.common.vo.analyse.ApplyLimitTimeVo">
         select
         alash.APPLYINST_ID applyinstId,
@@ -293,4 +295,198 @@
         and asti.ORG_ID = #{rootOrgId}
 
     </select>
+
+    <select id="getCompletedApplyUseTimeByTheme" resultType="com.augurit.aplanmis.common.vo.analyse.ApplyUseTimeStatisticsVo">
+        select THEME_ID as themeId, THEME_NAME as themeName,
+        max(USE_LIMIT_TIME) as maxUseTime, min(USE_LIMIT_TIME) as minUseTime, round(avg(USE_LIMIT_TIME), 2) as avgUseTime from (
+        select
+        apt.THEME_ID, apt.THEME_NAME, asti.USE_LIMIT_TIME
+        from
+        ACT_STO_TIMERULE_INST asti,
+        ACT_STO_APPINST asp,
+        AEA_HI_PAR_STAGEINST ahps,
+        AEA_PAR_STAGE aps,
+        AEA_PAR_THEME_VER aptv,
+        AEA_PAR_THEME apt,
+        AEA_HI_APPLYINST aha,
+        AEA_LOG_APPLY_STATE_HIST alash
+        where
+        asti.APP_FLOWDEF_ID = asp.APP_FLOWDEF_ID
+        and asti.PROC_INST_ID = asp.PROCINST_ID
+        and asp.APPINST_ID = ahps.APPINST_ID
+        and ahps.STAGE_ID = aps.STAGE_ID
+        and aps.THEME_VER_ID = aptv.THEME_VER_ID
+        and aptv.THEME_ID = apt.THEME_ID
+        and ahps.APPLYINST_ID = aha.APPLYINST_ID
+        and aha.APPLYINST_ID = alash.APPLYINST_ID
+        and asti.ORG_ID = #{rootOrgId}
+        and asp.ROOT_ORG_ID = #{rootOrgId}
+        and ahps.ROOT_ORG_ID = #{rootOrgId}
+        and aha.ROOT_ORG_ID = #{rootOrgId}
+        <if test="_databaseId == 'oracle'">
+            <if test="startTime != null and startTime != ''">
+                and to_char(alash.TRIGGER_TIME, 'yyyy-mm-dd HH24:mi:ss') &gt;= #{startTime}
+            </if>
+            <if test="endTime != null and endTime != ''">
+                and to_char(alash.TRIGGER_TIME, 'yyyy-mm-dd HH24:mi:ss') &lt;= #{endTime}
+            </if>
+        </if>
+        <if test="_databaseId == 'mysql'">
+            <if test="startTime != null and startTime != ''">
+                and alash.TRIGGER_TIME &gt;= #{startTime}
+            </if>
+            <if test="endTime != null and endTime != ''">
+                and alash.TRIGGER_TIME &lt;= #{endTime}
+            </if>
+        </if>
+        and alash.NEW_STATE = '6'
+        and aha.APPLYINST_STATE = '6'
+        and aha.IS_DELETED = '0'
+        and aha.IS_SERIES_APPROVE= '0'
+        union all
+        select
+        apt.THEME_ID, apt.THEME_NAME, asti.USE_LIMIT_TIME
+        from
+        ACT_STO_TIMERULE_INST asti,
+        AEA_HI_ITEMINST ahi,
+        AEA_HI_SERIESINST ahs,
+        AEA_PAR_STAGE aps,
+        AEA_PAR_THEME_VER aptv,
+        AEA_PAR_THEME apt,
+        AEA_HI_APPLYINST aha,
+        AEA_LOG_APPLY_STATE_HIST alash
+        where
+        ahi.SERIESINST_ID = ahs.SERIESINST_ID
+        and asti.PROC_INST_ID = ahi.PROCINST_ID
+        and ahs.STAGE_ID = aps.STAGE_ID
+        and aps.THEME_VER_ID = aptv.THEME_VER_ID
+        and aptv.THEME_ID = apt.THEME_ID
+        and ahs.APPLYINST_ID = aha.APPLYINST_ID
+        and aha.APPLYINST_ID = alash.APPLYINST_ID
+        and asti.ORG_ID = #{rootOrgId}
+        and ahi.ROOT_ORG_ID = #{rootOrgId}
+        and ahs.ROOT_ORG_ID = #{rootOrgId}
+        and aha.ROOT_ORG_ID = #{rootOrgId}
+        <if test="_databaseId == 'oracle'">
+            <if test="startTime != null and startTime != ''">
+                and to_char(alash.TRIGGER_TIME, 'yyyy-mm-dd HH24:mi:ss') &gt;= #{startTime}
+            </if>
+            <if test="endTime != null and endTime != ''">
+                and to_char(alash.TRIGGER_TIME, 'yyyy-mm-dd HH24:mi:ss') &lt;= #{endTime}
+            </if>
+        </if>
+        <if test="_databaseId == 'mysql'">
+            <if test="startTime != null and startTime != ''">
+                and alash.TRIGGER_TIME &gt;= #{startTime}
+            </if>
+            <if test="endTime != null and endTime != ''">
+                and alash.TRIGGER_TIME &lt;= #{endTime}
+            </if>
+        </if>
+        and alash.NEW_STATE = '6'
+        and aha.APPLYINST_STATE = '6'
+        and aha.IS_DELETED = '0' ) a
+        group by THEME_ID, THEME_NAME
+    </select>
+
+    <select id="getCompletedApplyUseTimeByThemeAndWindow" resultType="com.augurit.aplanmis.common.vo.analyse.ApplyUseTimeStatisticsVo">
+        select OPS_WINDOW_ID as windowId, WINDOW_NAME as windowName,
+        max(USE_LIMIT_TIME) as maxUseTime, min(USE_LIMIT_TIME) as minUseTime, round(avg(USE_LIMIT_TIME), 2) as avgUseTime from (
+        select
+        alash.OPS_WINDOW_ID, win.WINDOW_NAME, asti.USE_LIMIT_TIME
+        from
+        ACT_STO_TIMERULE_INST asti,
+        ACT_STO_APPINST asp,
+        AEA_HI_PAR_STAGEINST ahps,
+        AEA_PAR_STAGE aps,
+        AEA_PAR_THEME_VER aptv,
+        AEA_PAR_THEME apt,
+        AEA_HI_APPLYINST aha,
+        AEA_LOG_APPLY_STATE_HIST alash,
+        AEA_SERVICE_WINDOW win
+        where
+        asti.APP_FLOWDEF_ID = asp.APP_FLOWDEF_ID
+        and asti.PROC_INST_ID = asp.PROCINST_ID
+        and asp.APPINST_ID = ahps.APPINST_ID
+        and ahps.STAGE_ID = aps.STAGE_ID
+        and aps.THEME_VER_ID = aptv.THEME_VER_ID
+        and aptv.THEME_ID = apt.THEME_ID
+        and ahps.APPLYINST_ID = aha.APPLYINST_ID
+        and aha.APPLYINST_ID = alash.APPLYINST_ID
+        and alash.OPS_WINDOW_ID = win.WINDOW_ID
+        and asti.ORG_ID = #{rootOrgId}
+        and asp.ROOT_ORG_ID = #{rootOrgId}
+        and ahps.ROOT_ORG_ID = #{rootOrgId}
+        and aha.ROOT_ORG_ID = #{rootOrgId}
+        and apt.THEME_ID = #{themeId}
+        <if test="_databaseId == 'oracle'">
+            <if test="startTime != null and startTime != ''">
+                and to_char(alash.TRIGGER_TIME, 'yyyy-mm-dd HH24:mi:ss') &gt;= #{startTime}
+            </if>
+            <if test="endTime != null and endTime != ''">
+                and to_char(alash.TRIGGER_TIME, 'yyyy-mm-dd HH24:mi:ss') &lt;= #{endTime}
+            </if>
+        </if>
+        <if test="_databaseId == 'mysql'">
+            <if test="startTime != null and startTime != ''">
+                and alash.TRIGGER_TIME &gt;= #{startTime}
+            </if>
+            <if test="endTime != null and endTime != ''">
+                and alash.TRIGGER_TIME &lt;= #{endTime}
+            </if>
+        </if>
+        and alash.NEW_STATE = '6'
+        and aha.APPLYINST_STATE = '6'
+        and aha.IS_DELETED = '0'
+        and aha.IS_SERIES_APPROVE= '0'
+        union all
+        select
+        alash.OPS_WINDOW_ID, win.WINDOW_NAME, asti.USE_LIMIT_TIME
+        from
+        ACT_STO_TIMERULE_INST asti,
+        AEA_HI_ITEMINST ahi,
+        AEA_HI_SERIESINST ahs,
+        AEA_PAR_STAGE aps,
+        AEA_PAR_THEME_VER aptv,
+        AEA_PAR_THEME apt,
+        AEA_HI_APPLYINST aha,
+        AEA_LOG_APPLY_STATE_HIST alash,
+        AEA_SERVICE_WINDOW win
+        where
+        ahi.SERIESINST_ID = ahs.SERIESINST_ID
+        and asti.PROC_INST_ID = ahi.PROCINST_ID
+        and ahs.STAGE_ID = aps.STAGE_ID
+        and aps.THEME_VER_ID = aptv.THEME_VER_ID
+        and aptv.THEME_ID = apt.THEME_ID
+        and ahs.APPLYINST_ID = aha.APPLYINST_ID
+        and aha.APPLYINST_ID = alash.APPLYINST_ID
+        and alash.OPS_WINDOW_ID = win.WINDOW_ID
+        and asti.ORG_ID = #{rootOrgId}
+        and ahi.ROOT_ORG_ID = #{rootOrgId}
+        and ahs.ROOT_ORG_ID = #{rootOrgId}
+        and aha.ROOT_ORG_ID = #{rootOrgId}
+        and apt.THEME_ID = #{themeId}
+        <if test="_databaseId == 'oracle'">
+            <if test="startTime != null and startTime != ''">
+                and to_char(alash.TRIGGER_TIME, 'yyyy-mm-dd HH24:mi:ss') &gt;= #{startTime}
+            </if>
+            <if test="endTime != null and endTime != ''">
+                and to_char(alash.TRIGGER_TIME, 'yyyy-mm-dd HH24:mi:ss') &lt;= #{endTime}
+            </if>
+        </if>
+        <if test="_databaseId == 'mysql'">
+            <if test="startTime != null and startTime != ''">
+                and alash.TRIGGER_TIME &gt;= #{startTime}
+            </if>
+            <if test="endTime != null and endTime != ''">
+                and alash.TRIGGER_TIME &lt;= #{endTime}
+            </if>
+        </if>
+        and alash.NEW_STATE = '6'
+        and aha.APPLYINST_STATE = '6'
+        and aha.IS_DELETED = '0' ) a
+        group by OPS_WINDOW_ID, WINDOW_NAME
+    </select>
+
+
 </mapper>
