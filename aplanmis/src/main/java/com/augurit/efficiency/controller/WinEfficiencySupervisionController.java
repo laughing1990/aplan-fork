@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 import springfox.documentation.annotations.ApiIgnore;
@@ -607,6 +608,46 @@ public class WinEfficiencySupervisionController {
 
         try {
             Map<String, Object> result = winEfficiencySupervisionService.getWinStageAcceptStatistics(startTime, endTime, type,true);
+            return new ContentResultForm<>(true, result, "查询成功！");
+        } catch (Exception e) {
+            log.error("窗口阶段受理情况", e);
+            return new ContentResultForm<>(false, null, e.getMessage());
+        }
+    }
+
+    @GetMapping("/getWinStageAvgLimitTimeStatistics")
+    @ApiOperation(value = "申报阶段平均用时", notes = "申报阶段平均用时")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "startTime", value = "开始时间【yyyy-MM-dd】", dataType = "string", paramType = "String", required = true),
+            @ApiImplicitParam(name = "endTime", value = "结束时间【yyyy-MM-dd】", dataType = "string", paramType = "String", required = true),
+            @ApiImplicitParam(name = "type", value = "类型【周W月M日D灵活时间段A】", dataType = "string", paramType = "String", required = true),
+            @ApiImplicitParam(name = "isCurrent", value = "是否查询当前窗口", dataType = "boolean", paramType = "boolean", required = false),
+            @ApiImplicitParam(name = "windowId", value = "指定窗口Id", dataType = "string", paramType = "String", required = false),
+    })
+    public ResultForm getWinStageAvgLimitTimeStatistics(String startTime, String endTime, String type, @RequestParam(required = false,value = "false")boolean isCurrent, @RequestParam(required = false)String windowId) throws Exception {
+
+        try {
+            Map<String, Object> result = winEfficiencySupervisionService.getWinStageAvgLimitTimeStatistics(startTime, endTime, type,isCurrent,windowId);
+            return new ContentResultForm<>(true, result, "查询成功！");
+        } catch (Exception e) {
+            log.error("申报阶段平均用时", e);
+            return new ContentResultForm<>(false, null, e.getMessage());
+        }
+    }
+
+    @GetMapping("/getWinStageLimitTimeStatistics")
+    @ApiOperation(value = "申报阶段时限", notes = "申报阶段时限")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "startTime", value = "开始时间【yyyy-MM-dd】", dataType = "string", paramType = "String", required = true),
+            @ApiImplicitParam(name = "endTime", value = "结束时间【yyyy-MM-dd】", dataType = "string", paramType = "String", required = true),
+            @ApiImplicitParam(name = "type", value = "类型【周W月M日D灵活时间段A】", dataType = "string", paramType = "String", required = true),
+            @ApiImplicitParam(name = "isCurrent", value = "是否查询当前窗口", dataType = "boolean", paramType = "boolean", required = false),
+            @ApiImplicitParam(name = "windowId", value = "指定窗口Id", dataType = "string", paramType = "String", required = false),
+    })
+    public ResultForm getWinStageLimitTimeStatistics(String startTime, String endTime, String type, @RequestParam(required = false,value = "false")boolean isCurrent,@RequestParam(required = false)String windowId) throws Exception {
+
+        try {
+            Map<String, Object> result = winEfficiencySupervisionService.getWinStageLimitTimeStatistics(startTime, endTime, type,isCurrent,windowId);
             return new ContentResultForm<>(true, result, "查询成功！");
         } catch (Exception e) {
             log.error("窗口阶段受理情况", e);

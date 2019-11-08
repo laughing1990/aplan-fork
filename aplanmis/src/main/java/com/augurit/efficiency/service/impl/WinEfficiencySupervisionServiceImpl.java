@@ -2383,4 +2383,160 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
         result.put("data",dataList);
         return result;
     }
+    @Override
+    public Map<String, Object> getWinStageLimitTimeStatistics(String startTime, String endTime, String type, boolean isCurrent, String windowId) throws Exception {
+        if ("D".equals(type)) {
+            String yesterday = DateUtils.convertDateToString(DateUtils.getPreDateByDate(new Date()), "yyyy-MM-dd");
+            startTime = yesterday + " 00:00:00";
+            endTime = yesterday + " 23:59:59";
+        } else if ("W".equals(type)) {
+            startTime = DateUtils.convertDateToString(DateUtils.getThisWeekMonday(new Date()), "yyyy-MM-dd") + " 00:00:00";
+            endTime = DateUtils.convertDateToString(DateUtils.getThisWeekSunday(new Date()), "yyyy-MM-dd") + " 23:59:59";
+
+        } else if ("M".equals(type)) {
+            startTime = DateUtils.convertDateToString(DateUtils.firstDayOfMonth(new Date()), "yyyy-MM-dd HH:mm:ss");
+            endTime = DateUtils.convertDateToString(DateUtils.lastDayOfMonth(new Date()), "yyyy-MM-dd HH:mm:ss");
+
+        } else {
+            if (!DateUtils.checkTimeParam(startTime, endTime, "yyyy-MM-dd")) {
+                throw new Exception("传入的时间参数欧问题。。。");
+            }
+            LocalDate endDate = LocalDate.parse(endTime, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            if (!LocalDate.now().isAfter(endDate)) {//结束日期只能统计到昨天
+                String yesterday = DateUtils.getYesterdayByFormat("yyyy-MM-dd");
+                endTime = yesterday + " 23:59:59";
+            }
+        }
+
+
+        List<ApplyLimitTimeVo> list = efficiencySupervisionMapper.getWinLimitTimeStatistics(startTime,endTime,windowId,SecurityContext.getCurrentOrgId());
+        List<Map<String, Object>> dataList = new ArrayList<>();
+        int total = 0;
+
+        for(int i=0;i<3;i++){
+            Map<String ,Object> map = new HashMap<>();
+            String name = TimeruleInstState.getTimeruleInstState(String.valueOf(i+1)).getName();
+            int count = 0;
+            for(ApplyLimitTimeVo vo :list){
+                if(vo.getInstState().equals(String.valueOf(i+1))){
+                    count += vo.getCount();
+                    total += vo.getCount();
+                    break;
+                }
+            }
+            map.put("name",name);
+            map.put("value",count);
+            dataList.add(map);
+        }
+
+        Map<String,Object> result = new HashMap<String, Object>();
+        result.put("data",dataList);
+        result.put("total",total);
+        return result;
+
+    }
+    @Override
+    public Map<String, Object> getWinStageAvgLimitTimeStatistics(String startTime, String endTime, String type, boolean isCurrent, String windowId) throws Exception{
+        if ("D".equals(type)) {
+            String yesterday = DateUtils.convertDateToString(DateUtils.getPreDateByDate(new Date()), "yyyy-MM-dd");
+            startTime = yesterday + " 00:00:00";
+            endTime = yesterday + " 23:59:59";
+        } else if ("W".equals(type)) {
+            startTime = DateUtils.convertDateToString(DateUtils.getThisWeekMonday(new Date()), "yyyy-MM-dd") + " 00:00:00";
+            endTime = DateUtils.convertDateToString(DateUtils.getThisWeekSunday(new Date()), "yyyy-MM-dd") + " 23:59:59";
+
+        } else if ("M".equals(type)) {
+            startTime = DateUtils.convertDateToString(DateUtils.firstDayOfMonth(new Date()), "yyyy-MM-dd HH:mm:ss");
+            endTime = DateUtils.convertDateToString(DateUtils.lastDayOfMonth(new Date()), "yyyy-MM-dd HH:mm:ss");
+
+        } else {
+            if (!DateUtils.checkTimeParam(startTime, endTime, "yyyy-MM-dd")) {
+                throw new Exception("传入的时间参数欧问题。。。");
+            }
+            LocalDate endDate = LocalDate.parse(endTime, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            if (!LocalDate.now().isAfter(endDate)) {//结束日期只能统计到昨天
+                String yesterday = DateUtils.getYesterdayByFormat("yyyy-MM-dd");
+                endTime = yesterday + " 23:59:59";
+            }
+        }
+        List<ApplyLimitTimeVo> list = efficiencySupervisionMapper.getWinStageLimitTimeStatistics(startTime,endTime,windowId,SecurityContext.getCurrentOrgId());
+        List<List<String>> resultDataList = new ArrayList<>();
+        List<List<String>> winStageList = new ArrayList<>();
+        if(list.size()>0){
+            List<String> dybzspjdxhList = new ArrayList<>();
+            dybzspjdxhList =  getGjbzjdInfo("code");
+            Map<String, List<ApplyLimitTimeVo>> collect = list.stream().collect(Collectors.groupingBy(ApplyLimitTimeVo::getWindowId));
+            Set<Map.Entry<String, List<ApplyLimitTimeVo>>> entries = collect.entrySet();
+            for(Map.Entry<String, List<ApplyLimitTimeVo>> entry: entries){
+                List<ApplyLimitTimeVo> winList = entry.getValue();
+
+                List<String> dataList = new ArrayList<>();
+                String windowName = list.get(0).getWindowName();
+                dataList.add(windowName);
+                int isParallelCount = 0 ; double isParallelLimitTime =0.0;
+                for (int i = 0, len = dybzspjdxhList.size(); i < len; i++) {
+                    int count = 0;double limitTime =0.0;
+                    for (int j = 0, len2 = list.size(); j < len2; j++) {
+                        if (list.get(j).getDybzspjdxh().indexOf(dybzspjdxhList.get(i)) != -1 && "0".equals(list.get(j).getIsParallel())) {
+                            count +=1;
+                            limitTime += list.get(j).getUseLimitTime();
+                        }
+                        if (list.get(j).getDybzspjdxh().indexOf(dybzspjdxhList.get(i)) != -1 && "1".equals(list.get(j).getIsParallel())) {
+                            isParallelCount ++;
+                            isParallelLimitTime += list.get(j).getUseLimitTime();
+                        }
+                    }
+                    String avgTime = getAvgTime(limitTime,count);
+                    dataList.add(avgTime);
+                }
+                //将并行推进的事项的申报页加到dybzspjdxh=5的中去
+                double _tmp = Double.valueOf(dataList.get(dybzspjdxhList.size() - 1)) + isParallelCount;
+                dataList.remove(dybzspjdxhList.size() - 1);
+                dataList.add(getAvgTime(isParallelLimitTime,isParallelCount));
+                winStageList.add(dataList);
+            }
+        }
+
+        //显示所有的窗口
+        AeaServiceWindow winsearch = new AeaServiceWindow();
+        winsearch.setRootOrgId(SecurityContext.getCurrentOrgId());
+        winsearch.setIsActive("1");
+        List<AeaServiceWindow> aeaServiceWindows = aeaServiceWindowMapper.listAeaServiceWindow(winsearch);
+        if (aeaServiceWindows.size() == 0) throw new Exception("服务窗口为空！");
+        for(AeaServiceWindow window :aeaServiceWindows){
+            boolean had = false;
+            for(int i=0,len = winStageList.size();i<len;i++){
+                if(winStageList.get(i).get(0).equals(window.getWindowName())){
+                    had = true;
+                    resultDataList.add(winStageList.get(i));
+                    break;
+                }
+            }
+            if(!had){
+                resultDataList.add(Arrays.asList(window.getWindowName(),"0","0","0","0","0"));
+            }
+        }
+
+        Map<String,Object> result = new HashMap<>();
+        List<String> winNameList = aeaServiceWindows.stream().map(obj -> obj.getWindowName()).collect(Collectors.toList());
+        result.put("title",winNameList);
+        result.put("data",resultDataList);
+        return result;
+    }
+    /**
+     * 计算平均时间
+     * @param limitTime
+     * @param count
+     * @return
+     */
+    private String getAvgTime(double limitTime, int count) {
+        if(count ==0){
+            return "0";
+        }
+        BigDecimal b1 = new BigDecimal(limitTime);
+        BigDecimal b2 = new BigDecimal(count);
+//        BigDecimal divide = b1.divide(b2, 2, BigDecimal.ROUND_HALF_UP);
+        BigDecimal divide = b1.divide(b2,  BigDecimal.ROUND_HALF_UP);
+        return divide.toString();
+    }
 }

@@ -1,9 +1,6 @@
 package com.augurit.aplanmis.common.mapper;
 
-import com.augurit.aplanmis.common.vo.analyse.ApplyFormVo;
-import com.augurit.aplanmis.common.vo.analyse.ApplyPorjVo;
-import com.augurit.aplanmis.common.vo.analyse.ItemDetailFormVo;
-import com.augurit.aplanmis.common.vo.analyse.ItemExceptionCountVo;
+import com.augurit.aplanmis.common.vo.analyse.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -49,4 +46,7 @@ public interface EfficiencySupervisionMapper {
      * @return
      */
     List<ItemDetailFormVo> getItemStatisticsByTime(@Param("ids") String[] stateIds, @Param("startTime")String startTime, @Param("endTime")String endTime, @Param("rootOrgId")String rootOrgId);
+    List<ApplyLimitTimeVo> getWinLimitTimeStatistics(@Param("startTime") String startTime, @Param("endTime")String endTime, @Param("windowId")String windowId, @Param("rootOrgId") String rootOrgId);
+    List<ApplyLimitTimeVo> getWinStageLimitTimeStatistics(@Param("startTime") String startTime, @Param("endTime") String endTime, @Param("windowId") String windowId,@Param("rootOrgId") String rootOrgId);
+
 }
