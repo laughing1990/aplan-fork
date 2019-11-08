@@ -176,9 +176,10 @@ public class SmsAplanmisListener {
 
             String taskName = "";
 
-            Task currTask = taskService.createTaskQuery().processInstanceId(procinstId).singleResult();
-            if(currTask!=null)
-                taskName = currTask.getName();
+            List<Task> list = taskService.createTaskQuery().processInstanceId(procinstId).list();
+            if(list != null && list.size() > 0){
+                taskName = list.get(0).getName();
+            }
 
             String phoneNum = "";
             if(StringUtils.isNotBlank(linkmanInfoId)) {
