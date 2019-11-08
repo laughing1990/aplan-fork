@@ -7,8 +7,7 @@
     border: 0;
     overflow: auto;">
 <head>
-    <title>前置检测</title>
-    <title>事项范围配置</title>
+    <title>事项前置检测</title>
     <%@ include file="/ui-static/agcloud/framework/jsp/agcloud-meta.jsp"%>
     <%@ include file="/ui-static/agcloud/framework/jsp/agcloud-common.jsp"%>
     <%@ include file="/ui-static/agcloud/framework/theme-libs/metronic-v5/template-default.jsp"%>
