@@ -141,6 +141,9 @@
     margin-left: 35px;
     width: 880px;
 }
+.mainContent{
+    margin-top: 20px;
+}
 
 .wt-tab-content .department-list {
     text-align: left;
