@@ -1714,11 +1714,26 @@
         theme.THEME_NAME AS themeName,
         aps_123.STAGE_NAME AS stageName,
         NULL AS itemName,
-        ahap_123.CREATE_TIME AS applyTime,
-        t.ID_ AS taskId,
-        t.ASSIGNEE_ AS assignee
+        ahap_123.CREATE_TIME AS applyTime
         FROM
-        aea_hi_applyinst ahap_123
+        <choose>
+            <when test="windowId != null and windowId != '' ">
+                (SELECT * FROM AEA_HI_APPLYINST WHERE APPLYINST_ID IN (
+                  SELECT APPLYINST_ID FROM AEA_HI_APPLYINST ahap_123
+                  LEFT JOIN ACT_STO_APPINST app ON app.MASTER_RECORD_ID = ahap_123.APPLYINST_ID
+                  LEFT JOIN ACT_RU_TASK t ON t.PROC_INST_ID_ = app.PROCINST_ID AND t.ASSIGNEE_ in (
+                    SELECT ou.LOGIN_NAME FROM AEA_SERVICE_WINDOW_USER wu
+                    LEFT JOIN OPU_OM_USER ou ON wu.USER_ID = ou.USER_ID
+                    WHERE wu.WINDOW_ID = #{windowId})
+                  WHERE ahap_123.IS_SERIES_APPROVE = '0'
+                    AND ahap_123.APPLYINST_STATE = '0'
+                    AND ahap_123.APPLYINST_SOURCE = 'net'
+                    GROUP BY ahap_123.APPLYINST_ID) ) ahap_123
+            </when>
+            <otherwise>
+                aea_hi_applyinst ahap_123
+            </otherwise>
+        </choose>
         <include refid="leftJoinApplyinstProj">
         </include>
         LEFT JOIN aea_linkman_info ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
@@ -1726,11 +1741,7 @@
         LEFT JOIN aea_par_stage aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
         LEFT JOIN aea_par_theme_ver ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
         LEFT JOIN aea_par_theme theme ON theme.THEME_ID = ver.THEME_ID
-        LEFT JOIN act_sto_appinst app ON app.MASTER_RECORD_ID = ahap_123.APPLYINST_ID
-        LEFT JOIN act_ru_task t ON t.PROC_INST_ID_ = app.PROCINST_ID
-        <if test="loginName != null and loginName != ''">
-            and t.ASSIGNEE_ = #{loginName}
-        </if>
+
         <where>
             ahap_123.IS_SERIES_APPROVE = '0'
             AND ahap_123.APPLYINST_STATE = '0'
@@ -1738,13 +1749,6 @@
 
             <if test="theme != null and theme != '' ">
                 AND theme.THEME_ID = #{theme}
-            </if>
-            <if test="windowId != null and windowId != ''">
-                AND t.ASSIGNEE_ in (
-                SELECT ou.LOGIN_NAME FROM aea_service_window_user wu
-                LEFT JOIN opu_om_user ou ON wu.USER_ID = ou.USER_ID
-                where wu.WINDOW_ID = #{windowId}
-                )
             </if>
             <include refid="baseConditionalQuery">
             </include>
@@ -1763,32 +1767,36 @@
         NULL AS themeName,
         NULL AS stageName,
         ahi_123.ITEMINST_NAME AS itemName,
-        ahap_123.CREATE_TIME AS applyTime,
-        t.ID_ AS taskId,
-        t.ASSIGNEE_ AS assignee
+        ahap_123.CREATE_TIME AS applyTime
         FROM
-        aea_hi_applyinst ahap_123
+        <choose>
+            <when test="windowId != null and windowId != '' ">
+                (SELECT * FROM AEA_HI_APPLYINST WHERE APPLYINST_ID IN (
+                  SELECT APPLYINST_ID FROM AEA_HI_APPLYINST ahap_123
+                  LEFT JOIN ACT_STO_APPINST app ON app.MASTER_RECORD_ID = ahap_123.APPLYINST_ID
+                  LEFT JOIN ACT_RU_TASK t ON t.PROC_INST_ID_ = app.PROCINST_ID AND t.ASSIGNEE_ in (
+                    SELECT ou.LOGIN_NAME FROM aea_service_window_user wu
+                    LEFT JOIN opu_om_user ou ON wu.USER_ID = ou.USER_ID
+                    WHERE wu.WINDOW_ID = #{windowId})
+                  WHERE ahap_123.IS_SERIES_APPROVE = '1'
+                    AND ahap_123.APPLYINST_STATE = '0'
+                    AND ahap_123.APPLYINST_SOURCE = 'net'
+                  GROUP BY ahap_123.APPLYINST_ID) ) ahap_123
+            </when>
+            <otherwise>
+                aea_hi_applyinst ahap_123
+            </otherwise>
+        </choose>
         <include refid="leftJoinApplyinstProj">
         </include>
         LEFT JOIN aea_linkman_info ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
         LEFT JOIN aea_hi_seriesinst ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
         LEFT JOIN aea_hi_iteminst ahi_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
-        LEFT JOIN act_sto_appinst app ON app.MASTER_RECORD_ID = ahap_123.APPLYINST_ID
-        LEFT JOIN act_ru_task t ON t.PROC_INST_ID_ = app.PROCINST_ID
-        <if test="loginName != null and loginName != ''">
-            and t.ASSIGNEE_ = #{loginName}
-        </if>
+
         <where>
             ahap_123.IS_SERIES_APPROVE = '1'
             AND ahap_123.APPLYINST_STATE = '0'
             AND APPLYINST_SOURCE = 'net'
-            <if test="windowId != null and windowId != ''">
-                AND t.ASSIGNEE_ in (
-                SELECT ou.LOGIN_NAME FROM aea_service_window_user wu
-                LEFT JOIN opu_om_user ou ON wu.USER_ID = ou.USER_ID
-                where wu.WINDOW_ID = #{windowId}
-                )
-            </if>
             <include refid="baseConditionalQuery">
             </include>
         </where>
