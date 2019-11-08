@@ -702,7 +702,7 @@ public class AeaAnaOrgStatisticsImpl {
      * @param statisticsDate
      * @return
      */
-    private List<AeaAnaOrgDayStatistics> statisticsOneOrgDay(String orgId, String orgName, String statisticsRecordId, Date statisticsDate){
+    private List<AeaAnaOrgDayStatistics> statisticsOneOrgDay(String orgId, String orgName, String statisticsRecordId, Date statisticsDate)throws Exception{
         List<AeaAnaOrgDayStatistics> list = new ArrayList<>();
         //查询部门下发布和试运行的全部实施事项
         List<AeaItemBasic> itemBasics = aeaItemBasicMapper.listAeaItemBasicByOrgId(orgId);
@@ -711,6 +711,7 @@ public class AeaAnaOrgStatisticsImpl {
             String dateFormat = sdf.format(statisticsDate);
             String startTime = dateFormat + " 00:00:00";
             String endTime = dateFormat + " 23:59:59";
+            String rootOrgId = null;
             //前一天
             String preDate = DateUtils.getPreDateByDate(dateFormat);
             //统计不同来源
@@ -719,6 +720,9 @@ public class AeaAnaOrgStatisticsImpl {
                 for (int i = 0, len = itemBasics.size(); i < len; i++) {
                     AeaAnaOrgDayStatistics one = new AeaAnaOrgDayStatistics();
                     AeaItemBasic itemBasic = itemBasics.get(i);
+                    if(StringUtils.isBlank(rootOrgId)){
+                        rootOrgId = itemBasic.getRootOrgId();
+                    }
                     String itemId = itemBasic.getItemId();
                     AeaAnaOrgDayStatistics preStatistics = aeaAnaOrgDayStatisticsMapper.getAeaAnaOrgDayStatistics(orgId, itemId, preDate, applySource);
                     one.setOrgDayStatisticsId(UUID.randomUUID().toString());
@@ -787,17 +791,17 @@ public class AeaAnaOrgStatisticsImpl {
                             ItemStatus.DEPARTMENT_DEAL_START.getValue(), ItemStatus.SPECIFIC_PROC_START.getValue(), ItemStatus.SPECIFIC_PROC_END.getValue()};
                     search.setQueryIteminstStates(CalculateUtil.getQueryFieldValue(states2));
                     List<AeaHiIteminst> wariningList = aeaHiIteminstMapper.queryAeaHiIteminstList(search);
-                    one.setAllWariningCount(getStateCount(wariningList, "2"));
+                    one.setAllWariningCount(getStateCount(wariningList, "2",null,rootOrgId));
                     //日逾期数
-                    //通过时限计算实例表确定当天的逾期数量 TODO actStoTimeruleInstMapper缺少批量查询接口。目前需要查询很多次时限实例表。
+                    //通过时限计算实例表确定当天的逾期数量
                     String[] states3 = {ItemStatus.ACCEPT_DEAL.getValue(), ItemStatus.CORRECT_MATERIAL_START.getValue(), ItemStatus.CORRECT_MATERIAL_END.getValue(),
                             ItemStatus.DEPARTMENT_DEAL_START.getValue(), ItemStatus.SPECIFIC_PROC_START.getValue(), ItemStatus.SPECIFIC_PROC_END.getValue(),
                             ItemStatus.AGREE.getValue(), ItemStatus.AGREE_TOLERANCE.getValue(), ItemStatus.DISAGREE.getValue()};
                     search.clearQueryParam();
                     search.setQueryIteminstStates(CalculateUtil.getQueryFieldValue(states3));
                     List<AeaHiIteminst> overtimeList = aeaHiIteminstMapper.queryAeaHiIteminstList(search);
-                    Integer allOverTimeCount = getStateCount(overtimeList, "3");
-                    Integer dayOverTimeCount = allOverTimeCount - (preStatistics == null ? 0 : preStatistics.getAllOverTimeCount());
+                    Integer allOverTimeCount = getStateCount(overtimeList, "3",null,rootOrgId);
+                    Integer dayOverTimeCount = getStateCount(overtimeList, "3",statisticsDate,rootOrgId);
                     one.setDayOverTimeCount(dayOverTimeCount);
                     one.setAllOverTimeCount(allOverTimeCount);
                     Integer preDayOverTimeCount = preStatistics == null ? 0 : preStatistics.getDayOverTimeCount();
@@ -896,6 +900,7 @@ public class AeaAnaOrgStatisticsImpl {
      * @return
      * @throws Exception
      */
+    @Deprecated
     private int getStateCount(List<AeaHiIteminst> list,String state) {
         int count = 0;
         for(int i=0,len=list.size();i<len; i++){
@@ -927,5 +932,34 @@ public class AeaAnaOrgStatisticsImpl {
             throw new RuntimeException(e);
         }
         return boo;
+    }
+
+    /**
+     * 根据事项实例集合返回预警或逾期办件数量
+     * @param list
+     * @param state 2返回预警数， 3返回逾期数
+     * @param statisticsDate 统计日期。查询某天逾期的办件数使用
+     * @return
+     */
+    private int getStateCount(List<AeaHiIteminst> list,String state,Date statisticsDate,String rootOrgId) throws Exception{
+        int count = 0;
+        List<String> iteminstIdList = new ArrayList<>();
+        if(list != null && list.size() > 0){
+            for(int i=0,len=list.size();i<len; i++){
+                String iteminstId = list.get(i).getIteminstId();
+                iteminstIdList.add(iteminstId);
+            }
+            List<ActStoTimeruleInst> timeruleInstList = actStoTimeruleInstMapper.listProcessinstTimeruleInst(iteminstIdList.toArray(new String[iteminstIdList.size()]), rootOrgId);
+            if(timeruleInstList != null && timeruleInstList.size() > 0){
+                SimpleDateFormat sdf = statisticsDate==null?null:new SimpleDateFormat("yyyy-MM-dd");
+                for(int i=0,len=timeruleInstList.size();i<len;i++){
+                    ActStoTimeruleInst timeruleInst = timeruleInstList.get(i);
+                    if(state.equals(timeruleInst.getInstState())){
+                        count = statisticsDate == null?count+1:(timeruleInst.getOverdueDate()!= null&&sdf.format(statisticsDate).equals(sdf.format(timeruleInst.getOverdueDate())))?count+1:count;
+                    }
+                }
+            }
+        }
+        return count;
     }
 }
