@@ -110,9 +110,9 @@ public class AgentItemApplyData {
     @ApiModelProperty(value = "关联的审批流水号", hidden = true)
     private String applyinstCode;
 
-    @ApiModelProperty(value = "是否现场见证：1 是， 0 否")
-    private String isLiveWitness;
-    @ApiModelProperty(value = "见证者1姓名")
+    @ApiModelProperty(value = "是否现场见证：1 是， 0 否", hidden = true)
+    private String isLiveWitness = "0";
+    /*@ApiModelProperty(value = "见证者1姓名")
     private String witnessName1;
     @ApiModelProperty(value = "见证者2姓名")
     private String witnessName2;
@@ -123,7 +123,7 @@ public class AgentItemApplyData {
     @ApiModelProperty(value = "见证者2电话")
     private String witnessPhone2;
     @ApiModelProperty(value = "见证者3电话")
-    private String witnessPhone3;
+    private String witnessPhone3;*/
     @ApiModelProperty(value = "是否公示中选机构： 1 是， 0 否")
     private String isDiscloseIm;
     @ApiModelProperty(value = "是否公示中标公告：1 是， 0 否")

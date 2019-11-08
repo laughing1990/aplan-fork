@@ -1,6 +1,7 @@
 package com.augurit.aplanmis.common.domain;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
 /**
@@ -17,6 +18,7 @@ import java.io.Serializable;
     <li>修改内容1：</li>
 </ul>
 */
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class AeaHiSmsSendApply extends AeaHiSmsSendBean implements Serializable{
 // ----------------------------------------------------- Properties
