@@ -37,7 +37,7 @@ var vm = new Vue({
       } else if (value) {
         var flag = !/^[+]{0,1}(\d+)$/.test(value);
         if (flag) {
-          return callback(new Error('格式不正确'));
+          return callback(new Error('请输入大于0的数'));
         } else {
           callback();
         }
@@ -316,7 +316,7 @@ var vm = new Vue({
           {required: true, message: '请选择立项类型！', trigger: ['change']},
         ],
         projectAddress: [
-          {required: true, message: '请输入建设地点！', trigger: ['blur']},
+          {required: true, message: '请输入建设地点！', trigger: ['change']},
         ],
         financialSource: [
           {required: true, message: '请选择资金来源！', trigger: ['change']},
@@ -525,6 +525,11 @@ var vm = new Vue({
           { required: true, message: '请选择所需服务', trigger: ['change','blur'] },
         ],
         basePrice: [
+          {validator: checkMissNum, trigger: ['blur']},
+          { required: true, message: '请填写服务金额', trigger: ['blur'] },
+        ],
+        highestPrice: [
+          {validator: checkMissNum, trigger: ['blur']},
           { required: true, message: '请填写服务金额', trigger: ['blur'] },
         ],
         biddingType: [
@@ -2474,7 +2479,6 @@ var vm = new Vue({
       var _that = this;
       _that.buttonStyle = val;
       var jiansheUnitFormEleLen = $('.save-jansheUnit-info').length;
-      var jinbanUnitFormEleLen = $('.save-jinbanUnit-info').length;
       var applicantPerFlag = true;// 个人申报校验通过
       var jiansheUnitFlag = true;// 企业申报校验通过
       var jinbanUnitFlag = true;// 经办申报校验通过
@@ -2527,57 +2531,38 @@ var vm = new Vue({
         jiansheUnitFlag = false;
         perUnitMsg = "请添加申办主体建设单位信息"
       }
-      // 判断经办单位必填是否已填deboun
-      if (jinbanUnitFormEleLen > 0) {
-        for (var i = 0; i < jinbanUnitFormEleLen; i++) {
-          var formRef = 'jingban_' + i;
-          var validFun;
-          // console.log(typeof (_that.$refs[formRef].validate))
-          if ((typeof (_that.$refs[formRef].validate)) == 'function') {
-            validFun = _that.$refs[formRef].validate
-          } else {
-            validFun = _that.$refs[formRef][0].validate
-          }
-          validFun(function (valid) {
-            if (valid) {
-              jinbanUnitFlag = true;
-            } else {
-              jinbanUnitFlag = false;
-              perUnitMsg = "请完善申办主体经办单位信息"
-              return false;
-            }
-          });
-        }
-      } else if (jinbanUnitFormEleLen == 0 && _that.applySubjectType != 0) {
-        jinbanUnitFlag = false;
-        perUnitMsg = "请添加申办主体经办单位信息"
-      }
       if (projBascInfoFlag && applicantPerFlag && jiansheUnitFlag && jinbanUnitFlag) {
-        _that.$refs['formTest'].validate(function (valid) {
-          if (valid || _that.buttonStyle == 5) {
-            _that.getMatinstIds();
-            if (!_that.attIsRequireFlag && _that.buttonStyle != 5) {
-              alertMsg('', '请上传所有必传的电子件', '关闭', 'warning', true);
-              return false;
-            }
-            if (_that.buttonStyle == '3') {
-              _that.submitCommentsTitle = '不予受理意见对话框'
-              _that.showMatList = true;
-              _that.submitCommentsFlag = true;
-              _that.getCommnetList();
-            } else if (_that.buttonStyle == '0') {
-              _that.submitCommentsTitle = '收件意见对话框'
-              _that.showMatList = false;
-              _that.submitCommentsFlag = true;
-              _that.getCommnetList();
-            } else {
-              _that.submitCommentsFlag = false;
-            }
+        _that.$refs['purchaseProj'].validate(function (valid1) {
+          if(valid1){
+            _that.$refs['formTest'].validate(function (valid) {
+                  if (valid || _that.buttonStyle == 5) {
+                    _that.getMatinstIds();
+                    if (!_that.attIsRequireFlag && _that.buttonStyle != 5) {
+                      alertMsg('', '请上传所有必传的电子件', '关闭', 'warning', true);
+                      return false;
+                    }
+                    if (_that.buttonStyle == '3') {
+                      _that.submitCommentsTitle = '不予受理意见对话框'
+                      _that.showMatList = true;
+                      _that.submitCommentsFlag = true;
+                      _that.getCommnetList();
+                    } else if (_that.buttonStyle == '0') {
+                      _that.submitCommentsTitle = '收件意见对话框'
+                      _that.showMatList = false;
+                      _that.submitCommentsFlag = true;
+                      _that.getCommnetList();
+                    } else {
+                      _that.submitCommentsFlag = false;
+                    }
 
-          } else {
-            alertMsg('', '请选择材料', '关闭', 'error', true);
+                  } else {
+                    alertMsg('', '请选择材料', '关闭', 'error', true);
+                  }
+                });
+          }else {
+            alertMsg('', '请完善采购中介服务信息', '关闭', 'error', true);
           }
-        });
+        })
       } else {
         alertMsg('', perUnitMsg, '关闭', 'error', true);
       }

@@ -596,13 +596,13 @@
 								</el-checkbox-group>
 							</el-form-item>
 							<el-form-item label="资金来源比例" class="sources-proportion">
-								<el-form-item v-show="purchaseProj.isFinancialFund==1"
+								<el-form-item v-if="purchaseProj.isFinancialFund==1"
 															prop="financialFundProportion"
 															label="财政资金（%）"
 															class="input-inline">
 									<el-input v-model="purchaseProj.financialFundProportion" placeholder="请输入财政资金比例"></el-input>
 								</el-form-item>
-								<el-form-item v-show="purchaseProj.isSocialFund==1" label="社会资金（%）"
+								<el-form-item v-if="purchaseProj.isSocialFund==1" label="社会资金（%）"
 															prop="socialFundProportion" class="input-inline">
 									<el-input v-model="purchaseProj.socialFundProportion" placeholder="请输入社会资金比例"></el-input>
 								</el-form-item>
@@ -629,7 +629,7 @@
 								</template>
 								<el-input v-model="purchaseProj.serviceContent" type="textarea" placeholder="请填写建设内容"></el-input>
 							</el-form-item>
-							<el-form v-model="aeaImUnitRequire" label-width="176px" :rules="aeaImUnitRequireRules" name="aeaImUnitRequire" ref="aeaImUnitRequire">
+							<el-form v-model="aeaImUnitRequire" label-width="176px" name="aeaImUnitRequire" ref="aeaImUnitRequire">
 								<el-form-item label="中介服务机构要求" class="proj-code-info" required>
 									<el-checkbox v-model="aeaImUnitRequire.isQualRequire"
 															 :disabled="onlyService"
@@ -645,7 +645,7 @@
 															 @change="isRequireChange">仅承诺服务即可</el-checkbox>
 								</el-form-item>
 
-								<div v-show="aeaImUnitRequire.isQualRequire">
+								<div v-if="aeaImUnitRequire.isQualRequire">
 									<el-form-item label="资质要求" prop="qualRequireType">
 										<template slot="label">
 											<el-tooltip class="item" effect="dark" content="备注：涉及工程项目的，应当包含工程项目地址、项目基本情况(包含建设规模、建设面积、资金投入等具体参数)。涉及土地、房产评估的、应当包含土地、房产面积、预算价格等内容。" placement="right-start">
@@ -665,7 +665,7 @@
 												{{aptTreeaFlag?'收起资质树':'展开资质树'}}
 											</p>
 										</div>
-										<div v-show="aptTreeaFlag" style="border:1px solid #ced4da;max-width: 821px;">
+										<div v-if="aptTreeaFlag" style="border:1px solid #ced4da;max-width: 821px;">
 											<el-tabs type="border-card" v-model="activeSN" @tab-click="handleClickAtiveQA">
 												<el-tab-pane :label="item.qualName" v-for="(item, index1) in qualArry" :key="item.qualId">
 													<el-tabs type="border-card" v-model="activeLE" @tab-click="handleClickAtiveLE">
@@ -697,7 +697,7 @@
 										<el-input type="textarea" v-model="aeaImUnitRequire.qualRequireExplain" placeholder="请填写资质要求说明"></el-input>
 									</el-form-item>
 								</div>
-								<div v-show="aeaImUnitRequire.isRegisterRequire">
+								<div v-if="aeaImUnitRequire.isRegisterRequire">
 									<el-form-item prop="registerTotal">
 										<template slot="label">
 											<el-tooltip class="item" effect="dark" content="备注：请填写为本项目提供服务的中介机构持证执业(职业)人员总数要求。" placement="right-start">
@@ -717,7 +717,7 @@
 										<el-input type="textarea" v-model="aeaImUnitRequire.registerRequire"></el-input>
 									</el-form-item>
 								</div>
-								<div v-show="aeaImUnitRequire.isRecordRequire">
+								<div v-if="aeaImUnitRequire.isRecordRequire">
 									<el-form-item prop="recordRequireExplain">
 										<template slot="label">
 											<el-tooltip class="item" effect="dark" content="备注：该要求将公示于前台采购公告中。" placement="right-start">
@@ -747,14 +747,14 @@
 								</el-radio-group>
 							</el-form-item>
 							<!--随机抽取 str-->
-							<div class="" v-show="purchaseProj.biddingType == 1">
+							<div class="" v-if="purchaseProj.biddingType == 1">
 								<el-form-item label="是否确认金额" prop="isDefineAmount">
 									<el-radio-group v-model="purchaseProj.isDefineAmount">
 										<el-radio label="1">确定服务金额</el-radio>
 										<el-radio label="0">暂不做评估与预算</el-radio>
 									</el-radio-group>
 								</el-form-item>
-								<div class="clearfix" v-show="purchaseProj.isDefineAmount==1">
+								<div class="clearfix" v-if="purchaseProj.isDefineAmount==1">
 									<el-form-item  class="input-inline" label="服务金额（万元）" prop="basePrice">
 										<el-input type="number" v-model="purchaseProj.basePrice" @input="function(val){changeInputPrice(val,'basePrice')}"></el-input>
 									</el-form-item>
@@ -768,7 +768,7 @@
 										<el-radio label="0">否</el-radio>
 									</el-radio-group>
 								</el-form-item>
-								<div v-show="purchaseProj.isAvoid==1">
+								<div v-if="purchaseProj.isAvoid==1">
 									<el-form-item label="回避单位" prop="avoidUnitInfoIds" required>
 										<el-button type="primary" @click="selectOrgan" size="mini">选择单位</el-button>
 										<el-table :data="avoidData" stripe border ref="multipleTable2" style="margin-top: 10px;">
@@ -784,7 +784,7 @@
 							</div>
 							<!--随机抽取 str-->
 							<!--直接选取 str-->
-							<div class="" v-show="purchaseProj.biddingType == 2">
+							<div class="" v-if="purchaseProj.biddingType == 2">
 								<!--<el-form-item label="是否确认金额" prop="isDefineAmount">-->
 								<!--<el-radio-group v-model="purchaseProj.isDefineAmount">-->
 								<!--<el-radio label="1">确定服务金额</el-radio>-->
@@ -808,7 +808,7 @@
 							</div>
 							<!--直接选取 end-->
 							<!--竞价选取 str-->
-							<div class="" v-show="purchaseProj.biddingType == 3">
+							<div class="" v-if="purchaseProj.biddingType == 3">
 								<!--<el-form-item label="报价方式" prop="quoteType">-->
 								<!--<el-radio-group v-model="purchaseProj.quoteType">-->
 								<!--<el-radio label="0">服务金额</el-radio>-->
@@ -843,7 +843,7 @@
 										<el-radio label="0">否</el-radio>
 									</el-radio-group>
 								</el-form-item>
-								<div v-show="purchaseProj.isAvoid==1">
+								<div v-if="purchaseProj.isAvoid==1">
 									<el-form-item label="回避单位" prop="avoidUnitInfoIds" required>
 										<el-button type="primary" @click="selectOrgan" size="mini">选择单位</el-button>
 										<el-table :data="avoidData" stripe border ref="multipleTable2" style="margin-top: 10px;">
