@@ -166,7 +166,7 @@
         <el-table-column
                 label="操作" min-width="100">
             <template slot-scope="scope">
-                <span class="op-btn"  @click="sendApply(scope.row)" >发起申报</span>
+                <span class="op-btn"  @click="openSendApplyDialog(scope.row)" >发起申报</span>
             </template>
         </el-table-column>
     </el-table>
@@ -176,6 +176,23 @@
                    :current-page="searchFrom.pagination.page" layout="total,sizes, prev, pager, next, jumper"
                    :total="dataTotal" v-show="dataTotal>10">
     </el-pagination>
+
+    <el-dialog title="发起申报" :visible.sync="sendApplyVisible"
+               v-loading="sendApplyLoading"
+               width="600px" top="25vh" class="forw-dia-s"
+               ref="sendApplyRef" @close="closeSendApplyDialog">
+        <div class="dig-bg-grey">
+            <el-form ref="sendApplyRef" :model="sendApplyComment" size="medium"  label-width="85px">
+                <el-form-item label="意见：" prop="comment" :rules="[{ required: true, message: '请填写发起申报意见', trigger: 'blur' }]">
+                    <el-input type="textarea" :rows="5" v-model="sendApplyComment.comment"></el-input>
+                </el-form-item>
+            </el-form>
+        </div>
+        <div slot="footer" class="dialog-footer">
+            <el-button size="medium" type="primary" class="btn btn-primary" @click="sendApply">确认申报</el-button>
+            <el-button size="medium" class="btn btn-secondary" @click="sendApplyVisible=false">关闭</el-button>
+        </div>
+    </el-dialog>
 
 </div>
 
