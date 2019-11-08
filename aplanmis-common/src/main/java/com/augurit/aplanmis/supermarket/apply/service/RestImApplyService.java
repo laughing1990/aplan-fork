@@ -1,6 +1,7 @@
 package com.augurit.aplanmis.supermarket.apply.service;
 
 import com.augurit.agcloud.bpm.common.engine.BpmProcessService;
+import com.augurit.agcloud.bpm.common.engine.BpmTaskService;
 import com.augurit.agcloud.bpm.common.engine.form.BpmProcessInstance;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.util.StringUtils;
@@ -92,6 +93,12 @@ public class RestImApplyService {
 
     @Autowired
     private AeaImProjPurchaseMapper aeaImProjPurchaseMapper;
+
+    @Autowired
+    private BpmTaskService bpmTaskService;
+
+    @Autowired
+    private TaskService taskService;
 
     public String publishPurchaseAndStartProcess() throws Exception {
 
@@ -302,4 +309,166 @@ public class RestImApplyService {
 
         return seriesApplyinstId;
     }
+
+    /**
+     * 选取中介机构
+     *
+     * @throws Exception
+     */
+    public void chooseImunit() throws Exception {
+
+        ApplyState.IM_MILESTONE_CONFIRM_IMUNIT.getValue();// 待中介机构确认
+
+    }
+
+    /**
+     * 中介机构确认
+     *
+     * @throws Exception
+     */
+    public void confirmImunit() throws Exception {
+
+
+        ApplyState.IM_MILESTONE_CHOOSE_IMUNIT.getValue();// 重新选取中介机构
+
+
+        ApplyState.IM_MILESTONE_UPLOAD_CONTRACT.getValue();// 待上传合同
+
+    }
+
+    /**
+     * 上传合同
+     *
+     * @throws Exception
+     */
+    public void uploadContract() throws Exception {
+
+        ApplyState.IM_MILESTONE_CONFIRM_CONTRACT.getValue();// 待确认合同
+
+    }
+
+    /**
+     * 确认合同
+     *
+     * @throws Exception
+     */
+    public void confirmContract() throws Exception {
+
+        String confirmFlag = null;// 1：已确认合同有效，0：已确认合同无效
+
+        String purchaseId = null;// 采购需求ID
+
+        String applyinstId = null;// 申请实例ID
+
+        // TODO 业务操作
+
+
+        //获取申请实例历史记录列表
+        AeaLogApplyStateHist applyStateHist = this.getLastAeaLogApplyStateHist(applyinstId);
+        if (applyStateHist == null) throw new Exception("找不到申请实例历史记录！");
+        String taskId = applyStateHist.getTaskinstId();// 节点ID（此时还停留在《发布采购需求》节点）
+        String appinstId = applyStateHist.getAppinstId();// 模板实例ID
+
+        if ("1".equals(confirmFlag)) {
+
+            //更新申请实例历史状态
+            aeaHiApplyinstService.updateAeaHiApplyinstStateAndInsertTriggerAeaLogItemStateHist(applyinstId, taskId, appinstId, ApplyState.IM_MILESTONE_UPLOAD_SERVICE_RESULT.getValue(), null);// 待上传服务结果
+
+            //更新采购需求状态
+
+            //更新采购需求实例历史状态
+
+//            AuditFlagStatus.SERVICE_PROGRESS;// 服务中
+
+        } else {
+            //更新申请实例历史状态
+            aeaHiApplyinstService.updateAeaHiApplyinstStateAndInsertTriggerAeaLogItemStateHist(applyinstId, taskId, appinstId, ApplyState.IM_MILESTONE_UPLOAD_CONTRACT.getValue(), null);// 重新上传合同
+        }
+
+    }
+
+    /**
+     * 上传服务结果电子件或窗口收取纸质件
+     *
+     * @throws Exception
+     */
+    public void uploadServiceResult() throws Exception {
+
+        String applyinstId = null;// 申请实例ID
+
+        String purchaseId = null;// 采购需求ID
+
+        String message = null;// 如果在窗口上传电子件和收纸质件，则需要填写意见
+
+        // TODO 业务操作
+
+        //获取申请实例历史记录列表
+        AeaLogApplyStateHist applyStateHist = this.getLastAeaLogApplyStateHist(applyinstId);
+        if (applyStateHist == null) throw new Exception("找不到申请实例历史记录！");
+        String taskId = applyStateHist.getTaskinstId();// 节点ID（此时还停留在《发布采购需求》节点）
+        String appinstId = applyStateHist.getAppinstId();// 模板实例ID
+
+        List<AeaHiIteminst> iteminsts = aeaHiIteminstService.getAeaHiIteminstListByApplyinstId(applyinstId);
+        if (iteminsts.size() < 1) throw new Exception("找不到事项实例信息！");
+        AeaHiIteminst iteminst = iteminsts.get(0);
+
+        //更新事项实例历史状态
+        aeaHiIteminstService.updateAeaHiIteminstStateAndInsertTriggerAeaLogItemStateHist(iteminst.getIteminstId(), taskId, appinstId, ItemStatus.ACCEPT_DEAL.getValue(), SecurityContext.getCurrentOrgId());
+
+        String opuWinId = aeaServiceWindowService.getCurrentUserWindow() == null ? "" : aeaServiceWindowService.getCurrentUserWindow().getWindowId();
+
+        //更新申请实例历史状态
+        aeaHiApplyinstService.updateAeaHiApplyinstStateAndInsertTriggerAeaLogItemStateHist(applyinstId, taskId, appinstId, ApplyState.RECEIVE_APPROVED_APPLY.getValue(), opuWinId);// 已接件并审核
+
+        aeaHiApplyinstService.updateAeaHiApplyinstStateAndInsertTriggerAeaLogItemStateHist(applyinstId, taskId, appinstId, ApplyState.ACCEPT_DEAL.getValue(), opuWinId);// 已受理
+
+        //更新采购需求状态
+        AeaImProjPurchase aeaImProjPurchase = aeaImProjPurchaseMapper.getAeaImProjPurchaseByProjPurchaseId(purchaseId);
+        aeaImProjPurchase.setAuditFlag(AuditFlagStatus.SERVICE_FINISH);// 服务完成
+        aeaImProjPurchase.setModifier(SecurityContext.getCurrentUserId());
+        aeaImProjPurchase.setModifyTime(new Date());
+        aeaImProjPurchaseMapper.updateAeaImProjPurchase(aeaImProjPurchase);
+
+        //更新采购需求实例历史状态
+        AeaImPurchaseinst oldAeaImPurchaseinst = aeaImPurchaseinstMapper.getlastestPurchaseinstByProjPurchaseId(purchaseId);
+
+        AeaImPurchaseinst newAeaImPurchaseinst = new AeaImPurchaseinst();
+        newAeaImPurchaseinst.setPurchaseinstId(UUID.randomUUID().toString());
+        newAeaImPurchaseinst.setParentPurchaseinstId(oldAeaImPurchaseinst.getPurchaseinstId());
+//        newAeaImPurchaseinst.
+        newAeaImPurchaseinst.setCreater(SecurityContext.getCurrentUserId());
+        newAeaImPurchaseinst.setCreateTime(new Date());
+        newAeaImPurchaseinst.setRootOrgId(SecurityContext.getCurrentOrgId());
+        aeaImPurchaseinstMapper.insertPurchaseinst(newAeaImPurchaseinst);
+
+        //推动流程流转
+        Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
+        if (bpmProcessService.isProcessSuspended(task.getProcessInstanceId())) {
+            bpmProcessService.activateProcessInstanceById(task.getProcessInstanceId());//激活当前流程
+        }
+        bpmTaskService.addTaskComment(taskId, task.getProcessInstanceId(), StringUtils.isBlank(message) ? "" : message);//收件意见
+        taskService.complete(taskId, (Map) null);
+    }
+
+    /**
+     * 获取最后一条申请实例历史记录
+     *
+     * @return
+     * @throws Exception
+     */
+    private AeaLogApplyStateHist getLastAeaLogApplyStateHist(String applyinstId) throws Exception {
+
+        if (StringUtils.isBlank(applyinstId)) return new AeaLogApplyStateHist();
+
+        //获取申请实例历史记录列表
+        AeaLogApplyStateHist aeaLogApplyStateHist = new AeaLogApplyStateHist();
+        aeaLogApplyStateHist.setApplyinstId(applyinstId);
+        aeaLogApplyStateHist.setRootOrgId(SecurityContext.getCurrentOrgId());
+        List<AeaLogApplyStateHist> aeaLogApplyStateHists = aeaLogApplyStateHistService.findAeaLogApplyStateHist(aeaLogApplyStateHist);
+
+        if (aeaLogApplyStateHists.size() < 1) return new AeaLogApplyStateHist();
+
+        return aeaLogApplyStateHists.get(0);
+    }
+
 }
