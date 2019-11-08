@@ -252,4 +252,6 @@ public interface AeaItemBasicMapper {
 
     //根据中介事项获取关联的行政事项列表
     List<AeaItemBasic> getAgentParentItem(@Param("itemId") String itemId, @Param("rootOrgId") String rootOrgId);
+
+    List<AeaItemBasic> listUnSelectedParFrontItemBasicByStageId(@Param("stageId") String stageId,@Param("frontItemId") String frontItemId,@Param("rootOrgId") String rootOrgId);
 }
