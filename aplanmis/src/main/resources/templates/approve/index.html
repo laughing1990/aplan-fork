@@ -101,7 +101,7 @@
                     </tr>
                     <tr>
                       <td class="td-bg-grey">申请时限</td>
-                      <td>{{item.specialDueDays}}工作日</td>
+                      <td>{{item.specialDueDays}}（工作日）</td>
                       <td class="td-bg-grey">开始时间</td>
                       <td>{{item.createTime}}</td>
                       <td class="td-bg-grey">结束时间</td>
@@ -287,7 +287,7 @@
                       </tr>
                       <tr>
                         <td class="td-bg-grey">申请时限</td>
-                        <td>{{uu.specialDueDays}}工作日</td>
+                        <td>{{uu.specialDueDays}}（工作日）</td>
                         <td class="td-bg-grey">开始时间</td>
                         <td>{{uu.createTime}}</td>
                         <td class="td-bg-grey">结束时间</td>
@@ -509,7 +509,7 @@
                       </tr>
                       <tr>
                         <td class="td-bg-grey">申请时限</td>
-                        <td>{{uu.specialDueDays}}工作日</td>
+                        <td>{{uu.specialDueDays}}（工作日）</td>
                         <td class="td-bg-grey">开始时间</td>
                         <td>{{uu.createTime}}</td>
                         <td class="td-bg-grey">结束时间</td>
@@ -1212,7 +1212,7 @@
         <!-- <span class="color-999">{{supplemetForm.approveOrgName || '暂无'}}</span> -->
         <span class="color-999">{{supplemetForm.chargeOrgName || '暂无'}}</span>
       </el-form-item>
-      <el-form-item class="half-item" label="办理时限(工作日)" prop="correctDueDays">
+      <el-form-item class="half-item" label="办理时限（工作日）" prop="correctDueDays">
         <span class="color-999" v-if="supplementDialogData.correctState == 6 || supplementDialogData.correctState == 7">{{supplemetForm.correctDueDays || '暂无'}}</span>
         <el-input size="medium" placeholder="请输入办理时限" type="number" min="0" v-else
                   v-model="supplemetForm.correctDueDays"></el-input>
@@ -1416,7 +1416,7 @@
         <!-- <el-input placeholder="请输入负责部门名称" v-model="matMendForm.approveOrgName" disabled></el-input> -->
         <span class="color-999">{{matMendForm.approveOrgName || '暂无'}}</span>
       </el-form-item>
-      <el-form-item class="half-item" label="办理期限(工作日)" prop="correctDueDays">
+      <el-form-item class="half-item" label="办理期限（工作日）" prop="correctDueDays">
         <span class="color-999" v-if=" matMendDialogData.correctState == 6 || matMendDialogData.correctState == 7">{{matMendForm.correctDueDays || '暂无'}}</span>
         <el-input placeholder="请输入办理期限" type="number" min="0" v-else
                   v-model="matMendForm.correctDueDays"></el-input>
