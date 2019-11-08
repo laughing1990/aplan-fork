@@ -886,4 +886,13 @@
         </sql>
     </changeSet>
 
+    <changeSet id="201911071543" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_item_mat`
+            ADD COLUMN `MAT_PROP` char(1) NULL COMMENT '材料性质，m表示普通材料，c表示证照材料，f表示在线表单' AFTER `ROOT_ORG_ID`,
+            ADD COLUMN `CERT_ID`  varchar(50) NULL COMMENT '证照定义ID' AFTER `MAT_PROP`,
+            ADD COLUMN `FORM_ID`  varchar(50) NULL COMMENT '表单定义ID' AFTER `CERT_ID`;
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

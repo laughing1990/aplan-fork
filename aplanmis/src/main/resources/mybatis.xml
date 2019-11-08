@@ -17,6 +17,7 @@
 		<setting name="callSettersOnNulls" value="true"/>
 	</settings>
 	<typeAliases>
+		<package name="com.augurit.agcloud.framework.domain"/>
 		<package name="com.augurit.agcloud.bsc.domain"/>
 		<package name="com.augurit.agcloud.opus.common.domain"/>
 		<package name="com.augurit.agcloud.meta.domain"/>
