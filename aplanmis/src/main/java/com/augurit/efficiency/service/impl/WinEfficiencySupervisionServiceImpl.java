@@ -2653,6 +2653,8 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
         winsearch.setIsActive("1");
         List<AeaServiceWindow> aeaServiceWindows = aeaServiceWindowMapper.listAeaServiceWindow(winsearch);
         if (aeaServiceWindows.size() == 0) throw new Exception("服务窗口为空！");
+        //，默认是按sortNo降序的
+        aeaServiceWindows = aeaServiceWindows.stream().sorted(Comparator.comparing(AeaServiceWindow::getSortNo)).collect(Collectors.toList());
         for(AeaServiceWindow window :aeaServiceWindows){
             boolean had = false;
             for(int i=0,len = winStageList.size();i<len;i++){
