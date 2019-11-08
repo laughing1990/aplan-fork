@@ -15,8 +15,6 @@
 .index-wrapper {
   padding: 15px;
   padding-bottom: 0;
-  min-width: 1430px;
-  min-width: 1526px;
 }
 .index-wrapper .status-card .status-card-item {
   background: url(../images/sawtooth.png) no-repeat bottom;
@@ -415,7 +413,7 @@
 .module-timeLimit .win-precent-box .swipe-btn {
   display: inline-block;
   position: absolute;
-  top: 42%;
+  top: 30%;
   width: 36px;
   height: 40px;
   line-height: 40px;
@@ -447,7 +445,7 @@
   top: 38%;
 }
 .approve-pie-lgendtitle span {
-  margin-right: 32px;
+  margin-right: 14px;
 }
 .approve-pie-lgendtitle span:last-of-type {
   margin: 0;

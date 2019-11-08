@@ -78,6 +78,87 @@
 
     <!-- 督查模块展示区 -->
     <div class="module-wrap">
+
+       <!-- 时限分析专题 -->
+      <div class="mb20 module-timeLimit" v-if="curEffectModule == 1 || curEffectModule == 4">
+          <el-row :gutter="15" class="mt15 bottom-show-box">
+            <el-col :xs="24" :sm="24" :md="8" :lg="8" :xl="8">
+              <div class="mb10 theme-abnormal-box">
+                <el-card class="box-card pr">
+                  <div slot="header" class="clearfix">
+                    <span class="card-title">申报时限状态</span>
+                  </div>
+                  <div class="accept-rander-box" id="approveTimelimitStatusPieChart"></div>
+                  <div class="approve-pie-lgendtitle" v-show="approveTimelimitStatusPieChart">
+                    <span>申报状态</span>
+                    <span>申报数</span>
+                    <span>占比</span>
+                  </div>
+                  <div class="mb10 non-data" v-show="!approveTimelimitStatusPieChart"></div>
+                </el-card>
+              </div>
+            </el-col>
+            <el-col :xs="24" :sm="24" :md="16" :lg="16" :xl="16">
+              <div class="mb10 theme-abnormal-box">
+                <el-card class="box-card pr">
+                  <div slot="header" class="clearfix">
+                    <span class="card-title">申报阶段平均用时</span>
+                  </div>
+                  <div class="accept-rander-box" id="approveStageAverageTimeBarChart"></div>
+                  <div class="mb10 non-data" v-show="!approveStageAverageTimeBarChart"></div>
+                </el-card>
+              </div>
+            </el-col>
+          </el-row>
+          <el-card class="box-card pr" style="margin-top: 6px;">
+            <div slot="header" class="clearfix">
+              <span class="card-title">主题申报用时</span>
+            </div>
+            <div>
+              <el-row>
+                <div class="win-precent-box clearfix">
+                  <div class="win-item" v-for="item in themeShowList" :key="item.windId"
+                    :class="[item.select ? 'active':'']" @click="fetchSelectedThemeWinData(item)">
+                    <el-tooltip class="item" effect="dark" :content="item.winName" placement="top">
+                      <p class="ellipsis pdlr40 win-title">{{item.winName}}</p>
+                    </el-tooltip>
+                    <div class="win-content clearfix">
+                      <div class="fl win-precent">
+                        <p class="tip">最长用时</p>
+                        <p class="precent">{{item.lgTime || 0}}</p>
+                      </div>
+                      <div class="fr win-precent">
+                        <p class="tip">最短用时</p>
+                        <p class="precent">{{item.minTime || 0}}</p>
+                      </div>
+                      <div class="win-precent win-middle">
+                        <p class="tip">平均用时</p>
+                        <p class="precent">{{item.AveTime || 0}}</p>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- 左右切换 -->
+                  <div class="fl swipe-tabs-left swipe-btn" @click="themeHandelToLeft" v-show="isTLeft">
+                    <i class="el-icon-arrow-left"></i>
+                  </div>
+                  <div class="fr swipe-tabs-right swipe-btn" @click="themeHandelToRight" v-show="isTRight">
+                    <i class="el-icon-arrow-right"></i>
+                  </div>
+                </div>
+              </el-row>
+              <el-row :gutter="40">
+                <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="pr">
+                  <div class="mb10 accept-effectchart-box" id="themeApproveTimeBarChart"></div>
+                  <div class="mb10 non-data" v-show="!themeApproveTimeBarChart"></div>
+                </el-col>
+              </el-row>
+            </div>
+            <div class="accept-box" style="top: 60px;" v-show="!themeAllList.length">
+              <div class="non-data"></div>
+            </div>
+          </el-card>
+      </div>
+
       <!-- 工作量及有效性专题 -->
       <div class="mb20 module-workload" v-if="curEffectModule == 1 || curEffectModule == 2">
         <el-row :gutter="15" class="mt15 bottom-show-box">
@@ -176,7 +257,7 @@
                         @mouseover="leftChartHightLight(scope.$index)" @mouseout="leftChartHideLight(scope.$index)"></span>
                     </template>
                   </el-table-column>
-                  <el-table-column prop="themeName" label="主题名称" min-width="180" :formatter="formatterTableCell"
+                  <el-table-column prop="themeName" label="主题名称" min-width="100" :formatter="formatterTableCell"
                     :show-overflow-tooltip="true">
                   </el-table-column>
                   <el-table-column prop="apply" label="申报数" :formatter="formatterTableCell" width="100">
@@ -207,7 +288,7 @@
 
         <!-- 主题分布情况与阶段申报数 -->
         <el-row :gutter="15" class="mt15 themescatter-stageapprove-box">
-          <el-col :xs="24" :sm="24" :md="16" :lg="16" :xl="16">
+          <el-col :xs="24" :sm="24" :md="15" :lg="15" :xl="15">
             <div class="mb10 themescatter-box">
               <el-card class="box-card pr">
                 <div slot="header" class="clearfix">
@@ -218,7 +299,7 @@
               </el-card>
             </div>
           </el-col>
-          <el-col :xs="24" :sm="24" :md="8" :lg="8" :xl="8">
+          <el-col :xs="24" :sm="24" :md="9" :lg="9" :xl="9">
             <div class="mb10 stageapprove-box">
               <el-card class="box-card pr">
                 <div slot="header" class="clearfix">
@@ -232,85 +313,6 @@
         </el-row>
       </div>
 
-      <!-- 时限分析专题 -->
-      <div class="mb20 module-timeLimit" v-if="curEffectModule == 1 || curEffectModule == 4">
-        <el-row :gutter="15" class="mt15 bottom-show-box">
-          <el-col :xs="24" :sm="24" :md="8" :lg="8" :xl="8">
-            <div class="mb10 theme-abnormal-box">
-              <el-card class="box-card pr">
-                <div slot="header" class="clearfix">
-                  <span class="card-title">申报时限状态</span>
-                </div>
-                <div class="accept-rander-box" id="approveTimelimitStatusPieChart"></div>
-                <div class="approve-pie-lgendtitle" v-show="approveTimelimitStatusPieChart">
-                  <span>申报状态</span>
-                  <span>申报数</span>
-                  <span>占比</span>
-                </div>
-                <div class="mb10 non-data" v-show="!approveTimelimitStatusPieChart"></div>
-              </el-card>
-            </div>
-          </el-col>
-          <el-col :xs="24" :sm="24" :md="16" :lg="16" :xl="16">
-            <div class="mb10 theme-abnormal-box">
-              <el-card class="box-card pr">
-                <div slot="header" class="clearfix">
-                  <span class="card-title">申报阶段平均用时</span>
-                </div>
-                <div class="accept-rander-box" id="approveStageAverageTimeBarChart"></div>
-                <div class="mb10 non-data" v-show="!approveStageAverageTimeBarChart"></div>
-              </el-card>
-            </div>
-          </el-col>
-        </el-row>
-        <el-card class="box-card pr" style="margin-top: 6px;">
-          <div slot="header" class="clearfix">
-            <span class="card-title">主题申报用时</span>
-          </div>
-          <div>
-            <el-row>
-              <div class="win-precent-box clearfix">
-                <div class="win-item" v-for="item in themeShowList" :key="item.windId"
-                  :class="[item.select ? 'active':'']" @click="fetchSelectedThemeWinData(item)">
-                  <el-tooltip class="item" effect="dark" :content="item.winName" placement="top">
-                    <p class="ellipsis pdlr40 win-title">{{item.winName}}</p>
-                  </el-tooltip>
-                  <div class="win-content clearfix">
-                    <div class="fl win-precent">
-                      <p class="tip">最长用时</p>
-                      <p class="precent">{{item.lgTime || 0}}</p>
-                    </div>
-                    <div class="fr win-precent">
-                      <p class="tip">最短用时</p>
-                      <p class="precent">{{item.minTime || 0}}</p>
-                    </div>
-                    <div class="win-precent win-middle">
-                      <p class="tip">平均用时</p>
-                      <p class="precent">{{item.AveTime || 0}}</p>
-                    </div>
-                  </div>
-                </div>
-                <!-- 左右切换 -->
-                <div class="fl swipe-tabs-left swipe-btn" @click="themeHandelToLeft" v-show="isTLeft">
-                  <i class="el-icon-arrow-left"></i>
-                </div>
-                <div class="fr swipe-tabs-right swipe-btn" @click="themeHandelToRight" v-show="isTRight">
-                  <i class="el-icon-arrow-right"></i>
-                </div>
-              </div>
-            </el-row>
-            <el-row :gutter="40">
-              <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="pr">
-                <div class="mb10 accept-effectchart-box" id="themeApproveTimeBarChart"></div>
-                <div class="mb10 non-data" v-show="!themeApproveTimeBarChart"></div>
-              </el-col>
-            </el-row>
-          </div>
-          <div class="accept-box" style="top: 60px;" v-show="!themeAllList.length">
-            <div class="non-data"></div>
-          </div>
-        </el-card>
-      </div>
     </div>
 
   </div>

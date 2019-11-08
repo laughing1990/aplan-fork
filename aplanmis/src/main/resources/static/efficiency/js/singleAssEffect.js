@@ -330,7 +330,7 @@ var app = new Vue({
       _getData.type = ts.pageSearchData.type;
       _getData.itemId = obj.winId;
       request('', {
-        url: ctx + 'org/efficiency/supervision/getOrgItemAcceptHistroyStatistics',
+        url: ctx + 'org/efficiency/supervision/getOrgItemAcceptHistoryStatistics',
         type: 'get',
         data: _getData,
       }, function (res) {
