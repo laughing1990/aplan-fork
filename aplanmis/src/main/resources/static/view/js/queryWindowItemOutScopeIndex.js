@@ -51,7 +51,7 @@ var vm = new Vue({
 			ts.loading = true;
 
 			request('', {
-				url: ctx + '/rest/conditional/query/listWindowItemOutScope',
+				url: ctx + 'rest/conditional/query/listWindowItemOutScope',
 				type: 'get',
 				data: ts.searchFrom
 			}, function (res) {
@@ -72,16 +72,16 @@ var vm = new Vue({
 			var ts = this;
 			ts.loading = true;
 			request('', {
-				url: ctx + '/rest/conditional/query/queryItemInfoTaskId',
+				url: ctx + 'rest/conditional/query/queryItemInfoTaskId',
 				type: 'get',
 				data: {iteminstId: row.iteminstId,handler:false}
 			}, function (res) {
 				ts.loading = false;
 				if (res.success) {
 					if (row.viewId) {
-						window.open(ctx + '/apanmis/page/stageApproveIndex?isNotCompareAssignee=true&taskId=' + res.content.taskId + '&viewId=' + row.viewId + '&busRecordId=' + row.busRecordId, '_blank');
+						window.open(ctx + 'apanmis/page/stageApproveIndex?isNotCompareAssignee=true&taskId=' + res.content.taskId + '&viewId=' + row.viewId + '&busRecordId=' + row.busRecordId, '_blank');
 					} else {
-						window.open(ctx + '/apanmis/page/stageApproveIndex?isNotCompareAssignee=true&taskId=' + res.content.taskId + '&viewId=' + res.content.viewId + '&busRecordId=' + row.busRecordId, '_blank');
+						window.open(ctx + 'apanmis/page/stageApproveIndex?isNotCompareAssignee=true&taskId=' + res.content.taskId + '&viewId=' + res.content.viewId + '&busRecordId=' + row.busRecordId, '_blank');
 					}
 				} else {
 					return ts.apiMessage(res.message, 'error')

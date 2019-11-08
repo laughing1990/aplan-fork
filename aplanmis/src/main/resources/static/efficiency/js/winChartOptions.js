@@ -284,7 +284,7 @@ var windowEchartOptions = {
       type: 'pie',
       radius: ['40%', '54%'],
       // center: ['28%', '50%'],
-      center: ['18%', '50%'],
+      center: ['19%', '50%'],
       avoidLabelOverlap: false,
       label: {
         normal: {
@@ -1064,7 +1064,7 @@ var windowEchartOptions = {
         rich: {
           a: {
             color: '#575962',
-            width: 80,
+            width: 60,
             fontSize: 14,
             fontWeight: 900
           },
@@ -1080,7 +1080,7 @@ var windowEchartOptions = {
           },
           c: {
             color: '#575962',
-            width: 70,
+            width: 50,
             fontSize: 14,
           },
         }
@@ -1093,7 +1093,7 @@ var windowEchartOptions = {
       type: 'pie',
       radius: ['40%', '54%'],
       // center: ['28%', '50%'],
-      center: ['20%', '50%'],
+      center: ['24%', '50%'],
       avoidLabelOverlap: false,
       label: {
         normal: {

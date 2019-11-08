@@ -1033,7 +1033,7 @@ var app = new Vue({
     },
     isTRight: function () {
       var _crP = this.themePage;
-      if (_crP * 7 >= this.themeAllList.length) {
+      if (_crP * 5 >= this.themeAllList.length) {
         return false;
       }
       return true;

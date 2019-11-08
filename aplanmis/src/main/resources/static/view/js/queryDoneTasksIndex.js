@@ -60,7 +60,7 @@ var vm = new Vue({
             ts.loading = true;
 
             request('', {
-                url: ctx + '/rest/conditional/query/listDoneTasks',
+                url: ctx + 'rest/conditional/query/listDoneTasks',
                 type: 'get',
                 data: ts.searchFrom
             }, function (res) {
@@ -78,7 +78,7 @@ var vm = new Vue({
         },
         //查看详情
         viewDetail:function (row) {
-            var url = ctx+'/apanmis/page/stageApproveIndex?taskId='+row.taskId+'&viewId='+row.viewId;
+            var url = ctx+'apanmis/page/stageApproveIndex?taskId='+row.taskId+'&viewId='+row.viewId;
             if(row.busRecordId){
                 url = url + '&busRecordId='+row.busRecordId;
             }
@@ -111,7 +111,7 @@ var vm = new Vue({
 
             var ts = this;
             request('', {
-                url: ctx + '/rest/conditional/query/updateRemindRead',
+                url: ctx + 'rest/conditional/query/updateRemindRead',
                 type: 'get',
                 data: {'remindReceiverIds':remindReceiverId}
             }, function (res) {

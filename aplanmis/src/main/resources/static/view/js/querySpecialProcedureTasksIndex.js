@@ -43,7 +43,7 @@ var vm = new Vue({
 			ts.loading = true;
 
 			request('', {
-				url: ctx + '/rest/conditional/query/lisSpecialProcedureTasks',
+				url: ctx + 'rest/conditional/query/lisSpecialProcedureTasks',
 				type: 'get',
 				data: ts.searchFrom
 			}, function (res) {
@@ -75,7 +75,7 @@ var vm = new Vue({
 
 
 
-			var url = ctx + '/apanmis/page/stageApproveIndex?taskId=' + row.taskId + '&viewId=' + row.viewId;
+			var url = ctx + 'apanmis/page/stageApproveIndex?taskId=' + row.taskId + '&viewId=' + row.viewId;
 			if (row.busRecordId) {
 				url = url + '&busRecordId=' + row.busRecordId;
 			}
