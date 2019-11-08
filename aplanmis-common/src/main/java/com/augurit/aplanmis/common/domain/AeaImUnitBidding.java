@@ -1,5 +1,7 @@
 package com.augurit.aplanmis.common.domain;
 
+import com.augurit.agcloud.framework.security.SecurityContext;
+import com.augurit.aplanmis.common.constants.DeletedStatus;
 import com.augurit.aplanmis.common.diyannotation.FiledNameIs;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -7,6 +9,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * 企业报价表-模型
@@ -79,7 +82,30 @@ public class AeaImUnitBidding implements Serializable {
     private String contractPrice;// 合同金额
     private String serviceResultId;// 服务结果ID
 
-    public AeaImUnitBidding(String isWonBid,String isDelete,String auditFlag,String rootOrgId){
+    public AeaImUnitBidding(String projPurchaseId, String unitInfoId, String realPrice, String isWonBid, String auditFlag, String isDelete, String creater, Date createTime, String modifier, Date modifyTime, String linkmanInfoId, String memo, String unitServiceId, Date biddingTime, String isCancelSignup, String isUploadContract, String isUploadResult, String isEvaluate, String rootOrgId) {
+        this.unitBiddingId = UUID.randomUUID().toString();
+        this.projPurchaseId = projPurchaseId;
+        this.unitInfoId = unitInfoId;
+        this.realPrice = realPrice;
+        this.isWonBid = isWonBid;
+        this.auditFlag = auditFlag;
+        this.isDelete = isDelete;
+        this.creater = creater;
+        this.createTime = createTime;
+        this.modifier = modifier;
+        this.modifyTime = modifyTime;
+        this.linkmanInfoId = linkmanInfoId;
+        this.memo = memo;
+        this.unitServiceId = unitServiceId;
+        this.biddingTime = biddingTime;
+        this.isCancelSignup = isCancelSignup;
+        this.isUploadContract = isUploadContract;
+        this.isUploadResult = isUploadResult;
+        this.isEvaluate = isEvaluate;
+        this.rootOrgId = rootOrgId;
+    }
+
+    public AeaImUnitBidding(String isWonBid, String isDelete, String auditFlag, String rootOrgId) {
         this.isWonBid=isWonBid;
         this.isDelete=isDelete;
         this.auditFlag=auditFlag;
@@ -89,5 +115,24 @@ public class AeaImUnitBidding implements Serializable {
 
     public AeaImUnitBidding() {
 
+    }
+
+    public void buildImUnitBidding(String projPurchaseId, String agentUnitInfoId, String unitServiceId, String creater, String rootOrgId) {
+        this.setUnitBiddingId(UUID.randomUUID().toString());
+        this.setProjPurchaseId(projPurchaseId);
+        this.setAuditFlag("1");
+        this.setIsWonBid("1");
+        this.setIsCancelSignup("0");
+        this.setIsUploadContract("0");
+        this.setIsUploadResult("0");
+        this.setIsEvaluate("0");
+        this.setBiddingTime(new Date());
+        this.setUnitInfoId(agentUnitInfoId);
+//                aeaImUnitBidding.setRealPrice(aeaImUnitService.getPrice());
+        this.setIsDelete(DeletedStatus.NOT_DELETED.getValue());
+        this.setCreateTime(new Date());
+        this.setCreater(SecurityContext.getCurrentUserName());
+        this.setUnitServiceId(unitServiceId);
+        this.setRootOrgId(SecurityContext.getCurrentOrgId());
     }
 }

@@ -13,13 +13,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/market/apply")
-@Api(value = "启动流程接口", tags = "申报-发起中介事项申报")
+@Api(value = "中介事项启动流程接口", tags = "申报-发起中介事项申报")
 public class AgentItemApplyController {
     @Autowired
     private AgentItemApplyService agentItemApplyService;
 
     @PostMapping("/series/processflow/start")
-    @ApiOperation(value = "现场登记 --> 收件，发起申报", httpMethod = "POST")
+    @ApiOperation(value = "中介事项申报 -->唐山模式，发起申报", httpMethod = "POST")
     public ContentResultForm<String> startSeriesFlow(@RequestBody AgentItemApplyData agentItemApplyData) throws Exception {
         String applyinstId = agentItemApplyService.startSeriesFlow(agentItemApplyData);
         return new ContentResultForm<>(true, applyinstId, "Series start process success");

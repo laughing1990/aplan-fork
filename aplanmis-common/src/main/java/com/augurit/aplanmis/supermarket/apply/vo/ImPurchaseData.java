@@ -1,68 +1,29 @@
-package com.augurit.aplanmis.front.supermarket.vo;
+package com.augurit.aplanmis.supermarket.apply.vo;
 
 import com.augurit.agcloud.bsc.util.UuidUtil;
 import com.augurit.agcloud.framework.constant.Status;
-import com.augurit.agcloud.framework.security.SecurityContext;
-import com.augurit.aplanmis.common.constants.ActiveStatus;
 import com.augurit.aplanmis.common.constants.AuditFlagStatus;
-import com.augurit.aplanmis.common.constants.DeletedStatus;
 import com.augurit.aplanmis.common.diyannotation.FiledNameIs;
 import com.augurit.aplanmis.common.domain.AeaImMajorQual;
 import com.augurit.aplanmis.common.domain.AeaImProjPurchase;
 import com.augurit.aplanmis.common.domain.AeaImUnitRequire;
 import com.augurit.aplanmis.common.domain.AeaProjInfo;
-import com.augurit.aplanmis.front.apply.vo.BuildProjUnitVo;
-import com.augurit.aplanmis.supermarket.apply.vo.ImItemApplyData;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.springframework.beans.BeanUtils;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.util.StringUtils;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 @Data
-@ApiModel("中介事项申报参数实体vo")
-public class AgentItemApplyData {
-    @ApiModelProperty(value = "申请实例ID")
-    private String applyinstId;
-    @ApiModelProperty(value = "申报来源，网上申报：net、窗口申报：win", required = true, allowableValues = "net, win")
-    private String applySource;
-    @ApiModelProperty(value = "申报主体 0表示个人，1表示企业", required = true, allowableValues = "0, 1")
-    private String applySubject;
-    @ApiModelProperty(value = "联系人ID", required = true)
-    private String linkmanInfoId;
-    @ApiModelProperty(value = "模板ID", hidden = true)
-    private String appId;
-    @ApiModelProperty(value = "事项版本ID", required = true)
-    private String itemVerId;
-    @ApiModelProperty(value = "分局承办；并行推进事项分局承办，格式为：[{\"itemVerId\":\"111\",\"branchOrg\":\"222\"}]", required = true)
-    private String branchOrgMap;
-    @ApiModelProperty(value = "项目ID", required = true)
-    private String projInfoId;
-    @ApiModelProperty(value = "经办单位ID集合", hidden = true)
-    private String[] handleUnitIds;
-
-    @ApiModelProperty(value = "建设单位Map集合，key为projInfoId,格式为[{projInfoId1:[unitId1,unitId1]}]", required = true)
-    private List<BuildProjUnitVo> buildProjUnitMap;
-    @ApiModelProperty(value = "材料实例ID集合", required = true)
-    private String[] matinstsIds;
-    @ApiModelProperty(value = "办理意见", required = true)
-    private String comments;
-    @ApiModelProperty(value = "申请联系人ID,", notes = "当申报主体为个人时：必输")
-    private String applyLinkmanId;
-
-    @ApiModelProperty(value = "情形ID集合", hidden = true)
-    private String[] stateIds;
-    @ApiModelProperty(value = "是否并行推行：0表示否，1表示是,", hidden = true)
-    private String isParallel;
-    @ApiModelProperty(value = "并行推进阶段ID", hidden = true)
-    private String stageId;
+@ApiModel(value = "项目采购信息VO", description = "项目采购信息VO")
+public class ImPurchaseData {
 
     //采购项目信息
     @ApiModelProperty(value = "采购需求ID", hidden = true)
@@ -115,21 +76,28 @@ public class AgentItemApplyData {
 
     @ApiModelProperty(value = "关联的审批流水号", hidden = true)
     private String applyinstCode;
+    @ApiModelProperty(value = "关联的审批ID", hidden = true)
+    private String applyinstId;
 
-    @ApiModelProperty(value = "是否现场见证：1 是， 0 否")
-    private String isLiveWitness;
-    @ApiModelProperty(value = "见证者1姓名")
-    private String witnessName1;
-    @ApiModelProperty(value = "见证者2姓名")
-    private String witnessName2;
-    @ApiModelProperty(value = "见证者3姓名")
-    private String witnessName3;
-    @ApiModelProperty(value = "见证者1电话")
-    private String witnessPhone1;
-    @ApiModelProperty(value = "见证者2电话")
-    private String witnessPhone2;
-    @ApiModelProperty(value = "见证者3电话")
-    private String witnessPhone3;
+    @FiledNameIs(filedValue = "业主单位ID")
+    private String publishUnitInfoId;
+    @FiledNameIs(filedValue = "个人申报时采购人ID")
+    private String publishLinkmanInfoId;
+
+    @ApiModelProperty(value = "是否现场见证：1 是， 0 否", hidden = true)
+    private String isLiveWitness = "0";
+    /* @ApiModelProperty(value = "见证者1姓名")
+     private String witnessName1;
+     @ApiModelProperty(value = "见证者2姓名")
+     private String witnessName2;
+     @ApiModelProperty(value = "见证者3姓名")
+     private String witnessName3;
+     @ApiModelProperty(value = "见证者1电话")
+     private String witnessPhone1;
+     @ApiModelProperty(value = "见证者2电话")
+     private String witnessPhone2;
+     @ApiModelProperty(value = "见证者3电话")
+     private String witnessPhone3;*/
     @ApiModelProperty(value = "是否公示中选机构： 1 是， 0 否")
     private String isDiscloseIm;
     @ApiModelProperty(value = "是否公示中标公告：1 是， 0 否")
@@ -167,7 +135,7 @@ public class AgentItemApplyData {
     private Date choiceImunitTime;
 
     @ApiModelProperty(value = "业主委托人信息ID")
-    private String ownerlinkmanInfoId;
+    private String linkmanInfoId;
 
     @ApiModelProperty(value = "最小下浮率%")
     private String baseRate;
@@ -186,7 +154,8 @@ public class AgentItemApplyData {
 
     @ApiModelProperty(value = "【当IS_AVOID=1时必填】回避单位ID，多个,隔开")
     private String avoidUnitInfoIds;
-
+    @ApiModelProperty(value = "项目ID,当为采购项目时")
+    private String projInfoId;
     //采购项目信息
     @NotBlank(message = "采购项目编码不能为空")
     @ApiModelProperty(value = "采购项目地方编码", required = true)
@@ -236,47 +205,62 @@ public class AgentItemApplyData {
     @FiledNameIs(filedValue = "要求说明文件")
     private String requireExplainFile;
 
+    @ApiModelProperty(value = "业主联系人姓名")
+    private String linkmanName;
+
+    @ApiModelProperty(value = "业主联系人电话")
+    private String linkmanMobilePhone;
+
+    private String creater;
+    private String rootOrgId;
+    @ApiModelProperty(value = "申报主体 0表示个人，1表示企业", required = true, allowableValues = "0, 1")
+    private String applySubject;
+
+    public AeaImProjPurchase createAeaImProjPurchase() {
+        this.projPurchaseId = UUID.randomUUID().toString();
+        AeaImProjPurchase aeaImProjPurchase = new AeaImProjPurchase();
+        BeanUtils.copyProperties(this, aeaImProjPurchase);
+        aeaImProjPurchase.setQuoteType("0");// 报价方式,0 金额 1 下浮率
+        aeaImProjPurchase.setIsLiveWitness("0");// 是否现场见证：1 是， 0 否
+        aeaImProjPurchase.setAuditFlag(AuditFlagStatus.WAIT_CHOOSE);
+        aeaImProjPurchase.setIsDelete("0");
+        aeaImProjPurchase.setIsActive("1");
+        aeaImProjPurchase.setCreateTime(new Date());
+        return aeaImProjPurchase;
+        /*aeaImProjPurchase.setProjPurchaseId(this.projPurchaseId);
+        aeaImProjPurchase.setProjInfoId(this.projInfoId);
+        aeaImProjPurchase.setServiceItemId(this.serviceItemId);// 服务和中介服务事项关联ID
+        aeaImProjPurchase.setChoiceImunitTime(this.choiceImunitTime);// 选取中介时间
+        aeaImProjPurchase.setExpirationDate(this.getExpirationDate());// 截止日期
+        aeaImProjPurchase.setIsDefineAmount(this.getIsDefineAmount());// 是否确认金额，1 是 0 否
+        aeaImProjPurchase.setSelectCondition(this.getSelectCondition());// 服务选择条件：1 多个服务具备其一，0 多个服务都具备
+        aeaImProjPurchase.setOwnerComplaintPhone(this.ownerComplaintPhone);// 业主投诉电话
+        aeaImProjPurchase.setIsDiscloseIm(this.getIsDiscloseIm());// 是否公示中选机构： 1 是， 0 否
+        aeaImProjPurchase.setIsDiscloseBidding(this.getIsDiscloseBidding());// 是否公示中标公告：1 是， 0 否
+        aeaImProjPurchase.setApplyinstCode(this.getApplyinstCode());// 关联的审批流水号
+        aeaImProjPurchase.setIsApproveProj(isApproveProj);// 是否为投资审批项目：1 是，0 否
+        aeaImProjPurchase.setContacts(this.linkmanName);// 业主联系人
+        aeaImProjPurchase.setMoblie(this.getLinkmanMobilePhone());// 联系电话
+        aeaImProjPurchase.setBiddingType(this.getBiddingType());// 竞价类型：1 随机中标，2 自主选择
+        aeaImProjPurchase.setAuditFlag(AuditFlagStatus.WAIT_CHOOSE);// 采购需求状态：0：未提交，1：服务中，2：服务完成，3：服务中止，4：审核中，5：退回，6：报名中，7：选取中，8：选取开始，9：已选取，10：无效，11：待选取，12：已过时
+        aeaImProjPurchase.setBasePrice(this.getBasePrice());// 最低价格（万元）
+        aeaImProjPurchase.setHighestPrice(this.getHighestPrice());// 最高价格（万元）
+        aeaImProjPurchase.setServiceContent(this.getServiceContent());// 服务内容
+        aeaImProjPurchase.setLinkmanInfoId(linkmanInfoId);// 业主委托人信息ID*/
+
+    }
+
     //生成采购项目
-    public AeaProjInfo createProjInfo(AgentItemApplyData data) {
+    public AeaProjInfo createProjInfo(ImPurchaseData data) {
+
         AeaProjInfo aeaProjInfo = new AeaProjInfo();
         BeanUtils.copyProperties(data, aeaProjInfo);
         aeaProjInfo.setProjInfoId(UuidUtil.generateUuid());
-        aeaProjInfo.setCreater(SecurityContext.getCurrentUserName());
+        aeaProjInfo.setCreater(data.getCreater());
         aeaProjInfo.setCreateTime(new Date());
         aeaProjInfo.setIsPurchaseProj(Status.ON);
-        aeaProjInfo.setRootOrgId(SecurityContext.getCurrentOrgId());
+        aeaProjInfo.setRootOrgId(data.getRootOrgId());
         return aeaProjInfo;
 
-    }
-
-    //生成采购信息
-    public AeaImProjPurchase createPurchaseProjInfo(AgentItemApplyData data) {
-        AeaImProjPurchase aeaImProjPurchase = new AeaImProjPurchase();
-        BeanUtils.copyProperties(data, aeaImProjPurchase);
-        if (StringUtils.isEmpty(aeaImProjPurchase.getStageId())) {
-            aeaImProjPurchase.setStageId(null);
-        }
-        aeaImProjPurchase.setProjPurchaseId(UuidUtil.generateUuid());
-        aeaImProjPurchase.setIsDelete(DeletedStatus.NOT_DELETED.getValue());
-        aeaImProjPurchase.setIsActive(ActiveStatus.ACTIVE.getValue());
-        aeaImProjPurchase.setCreateTime(new Date());
-        aeaImProjPurchase.setCreater(SecurityContext.getCurrentUserName());
-        aeaImProjPurchase.setAuditFlag(AuditFlagStatus.NO_COMMIT);
-        aeaImProjPurchase.setRootOrgId(SecurityContext.getCurrentOrgId());
-        return aeaImProjPurchase;
-
-    }
-
-    /**
-     * 生成申报信息-common
-     *
-     * @return
-     */
-    public ImItemApplyData createItemApplyData() {
-        ImItemApplyData applyData = new ImItemApplyData();
-        BeanUtils.copyProperties(this, applyData);
-        applyData.setCreater(SecurityContext.getCurrentUserName());
-        applyData.setRootOrgId(SecurityContext.getCurrentOrgId());
-        return applyData;
     }
 }

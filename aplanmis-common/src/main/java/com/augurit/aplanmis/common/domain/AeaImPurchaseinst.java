@@ -6,7 +6,9 @@ import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * -模型
@@ -28,13 +30,14 @@ public class AeaImPurchaseinst implements Serializable {
     private static final long serialVersionUID = 1L;
     private String purchaseinstId; // (采购需求历史ID)
     private String projPurchaseId; // (采购需求ID)
-    private String purchaseFlag; // (采购需求状态：0：未提交，1：服务中，2：服务完成，3：服务中止，4：审核中，5：退回，6：报名中，7：选取中，8：选取开始，9：已选取，10：无效，11：待选取，12：已过时)
+    private String oldPurchaseFlag; // (采购需求状态：0：未提交，1：服务中，2：服务完成，3：服务中止，4：审核中，5：退回，6：报名中，7：选取中，8：选取开始，9：已选取，10：无效，11：待选取，12：已过时)
+    private String newPurchaseFlag; // (采购需求状态：0：未提交，1：服务中，2：服务完成，3：服务中止，4：审核中，5：退回，6：报名中，7：选取中，8：选取开始，9：已选取，10：无效，11：待选取，12：已过时)
     private String operateAction; // (【PURCHASE_FLAG=4时】操作：0：新增采购需求 ，1：修改采购需求，2：采购务求置为无效，3：新增合同，4：修改合同，5：新增评价，6：修改评价，7：修改中选机构)
     private String parentPurchaseinstId; // (父ID)
     private String linkmanInfoId; // (操作人信息ID)
     private String creater; // (创建人)
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private java.util.Date createTime; // (创建时间)
+    private Date createTime; // (创建时间)
     private String operateDescribe; // (操作详情描述（备注）)
     private String isOwnFile; // (是否拥有附件)
     private String applyData; // (请求数据json格式)
@@ -45,6 +48,18 @@ public class AeaImPurchaseinst implements Serializable {
 
     //扩展字段
     private List<BscAttForm> bscAttForms;// 文件列表
+
+    public void buildImPurchaseinst(String projPurchaseId, String purchaseFlag, String parentPurchaseinstId, String linkmanInfoId, String isOwnFile, String creater, String rootOrgId) {
+        this.purchaseinstId = UUID.randomUUID().toString();
+        this.oldPurchaseFlag = purchaseFlag;
+        this.newPurchaseFlag = purchaseFlag;
+        this.parentPurchaseinstId = parentPurchaseinstId;
+        this.linkmanInfoId = linkmanInfoId;
+        this.isOwnFile = isOwnFile;
+        this.creater = creater;
+        this.createTime = new Date();
+        this.rootOrgId = rootOrgId;
+    }
 
     public enum OperateAction {
 

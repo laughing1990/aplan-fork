@@ -12,6 +12,9 @@ import com.augurit.aplanmis.front.apply.vo.BuildProjUnitVo;
 import com.augurit.aplanmis.front.apply.vo.SeriesApplyDataVo;
 import com.augurit.aplanmis.front.receive.service.ReceiveService;
 import com.augurit.aplanmis.front.supermarket.vo.AgentItemApplyData;
+import com.augurit.aplanmis.supermarket.apply.service.RestImApplyService;
+import com.augurit.aplanmis.supermarket.apply.vo.ApplyinstResult;
+import com.augurit.aplanmis.supermarket.apply.vo.ImItemApplyData;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,6 +73,9 @@ public class AgentItemApplyService {
     @Autowired
     private AeaLinkmanInfoMapper aeaLinkmanInfoMapper;
 
+    @Autowired
+    private RestImApplyService restImApplyService;
+
     /**
      * 中介事项现场登记 --> 收件，发起申报
      *
@@ -79,12 +85,15 @@ public class AgentItemApplyService {
      */
     public String startSeriesFlow(AgentItemApplyData agentItemApplyData) throws Exception {
         String applyinstIdParam = agentItemApplyData.getApplyinstId();
-        SeriesApplyDataVo vo = this.changeToSeriesApplyDataVo(agentItemApplyData);
+        ImItemApplyData applyData = agentItemApplyData.createItemApplyData();
+        ApplyinstResult result = restImApplyService.purchaseStartProcess(applyData);
+        String applyinstId = result.getApplyinstId();
+       /* SeriesApplyDataVo vo = this.changeToSeriesApplyDataVo(agentItemApplyData);
         String applyinstId = aeaSeriesService.stageApplay(vo);
         agentItemApplyData.setApplyinstId(applyinstId);
         agentItemApplyData.setApplyinstCode(vo.getApplyinstCode());
         //保存采购项目信息
-        this.savePurchaseProjInfo(agentItemApplyData);
+        this.savePurchaseProjInfo(agentItemApplyData);*/
         //保存受理回执，物料回执
         if (StringUtils.isBlank(applyinstIdParam)) {
             receiveService.saveReceive(new String[]{applyinstId}, new String[]{"1", "2"}, SecurityContext.getCurrentUserName(), "");
