@@ -682,4 +682,135 @@
             ADD COLUMN `IS_DELETED` char(1) NULL DEFAULT 0 COMMENT '逻辑删除字段，1表示已删除 0表示未删除' AFTER `ROOT_ORG_ID`;
         </sql>
     </changeSet>
+
+    <changeSet id="201911071416" author="fenggy" failOnError="false">
+        <comment>新增 两证一书 ，3张表</comment>
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+
+            CREATE TABLE `aea_ex_proj_site` (
+            `SITE_ID` varchar(50) NOT NULL DEFAULT '' COMMENT '主键',
+            `PROJ_INFO_ID` varchar(50) NOT NULL COMMENT '项目ID',
+            `SITE_CODE` varchar(50) NOT NULL COMMENT '建设项目选址意见书批文号',
+            `LAND_AREA_VALUE` float DEFAULT NULL COMMENT '拟用地面积数值',
+            `LAND_AREA_UNIT` char(1) DEFAULT NULL COMMENT '拟用地面积单位',
+            `CONSTRUCTION_SIZE` varchar(200) DEFAULT NULL COMMENT '拟建设规模',
+            `GOV_ORG_CODE` varchar(50) DEFAULT NULL COMMENT '核发机关组织机构代码',
+            `GOV_ORG_NAME` varchar(200) DEFAULT NULL COMMENT '核发机关',
+            `PUBLISH_TIME` datetime DEFAULT NULL COMMENT '核发日期',
+            `SITE_MEMO` varchar(500) DEFAULT NULL COMMENT '备注',
+            `CREATER` varchar(50) DEFAULT NULL COMMENT '创建人',
+            `CREATE_TIME` datetime NOT NULL COMMENT '创建时间',
+            `MODIFIER` varchar(50) DEFAULT NULL COMMENT '修改人',
+            `MODIFY_TIME` datetime DEFAULT NULL COMMENT '修改时间',
+            `ROOT_ORG_ID` varchar(50) DEFAULT NULL COMMENT '所属根组织ID',
+            PRIMARY KEY (`SITE_ID`) USING BTREE
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='建设项目选址意见书';
+
+            CREATE TABLE `aea_ex_proj_cert_project` (
+            `CERT_PROJECT_ID` varchar(50) NOT NULL DEFAULT '' COMMENT '主键',
+            `PROJ_INFO_ID` varchar(50) NOT NULL COMMENT '项目ID',
+            `CERT_PROJECT_CODE` varchar(50) NOT NULL COMMENT '建设工程规划许可证编号',
+            `PUBLISH_ORG_CODE` varchar(50) DEFAULT NULL COMMENT '核发机关组织机构代码',
+            `PUBLISH_ORG_NAME` varchar(200) DEFAULT NULL COMMENT '核发机关',
+            `PUBLISH_TIME` datetime DEFAULT NULL COMMENT '核发日期',
+            `CERT_LAND_MEMO` varchar(500) DEFAULT NULL COMMENT '备注',
+            `CREATER` varchar(50) DEFAULT NULL COMMENT '创建人',
+            `CREATE_TIME` datetime NOT NULL COMMENT '创建时间',
+            `MODIFIER` varchar(50) DEFAULT NULL COMMENT '修改人',
+            `MODIFY_TIME` datetime DEFAULT NULL COMMENT '修改时间',
+            `ROOT_ORG_ID` varchar(50) DEFAULT NULL COMMENT '所属根组织ID',
+            PRIMARY KEY (`CERT_PROJECT_ID`) USING BTREE
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='建设工程规划许可证';
+
+            CREATE TABLE `aea_ex_proj_cert_land` (
+            `CERT_LAND_ID` varchar(50) NOT NULL DEFAULT '' COMMENT '主键',
+            `PROJ_INFO_ID` varchar(50) NOT NULL COMMENT '项目ID',
+            `CERT_LAND_CODE` varchar(50) NOT NULL COMMENT '用地规划许可证编号',
+            `LAND_NATURE` varchar(50) NOT NULL COMMENT '用地性质，来自于数据字典',
+            `LAND_AREA_VALUE` float DEFAULT NULL COMMENT '用地面积数值',
+            `LAND_AREA_UNIT` char(1) DEFAULT NULL COMMENT '用地面积单位',
+            `GOV_ORG_CODE` varchar(50) DEFAULT NULL COMMENT '发证机关机构代码',
+            `GOV_ORG_NAME` varchar(200) DEFAULT NULL COMMENT '发证机关',
+            `PUBLISH_TIME` datetime DEFAULT NULL COMMENT '发证日期',
+            `CERT_LAND_MEMO` varchar(500) DEFAULT NULL COMMENT '备注',
+            `CREATER` varchar(50) DEFAULT NULL COMMENT '创建人',
+            `CREATE_TIME` datetime NOT NULL COMMENT '创建时间',
+            `MODIFIER` varchar(50) DEFAULT NULL COMMENT '修改人',
+            `MODIFY_TIME` datetime DEFAULT NULL COMMENT '修改时间',
+            `ROOT_ORG_ID` varchar(50) DEFAULT NULL COMMENT '所属根组织ID',
+            PRIMARY KEY (`CERT_LAND_ID`) USING BTREE
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='建设项目用地规划许可证';
+
+        </sql>
+    </changeSet>
+
+    <changeSet id="201911071419" author="fenggy" failOnError="false">
+        <comment>合同信息表</comment>
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            CREATE TABLE `aea_ex_proj_contract` (
+            `CONTRACT_ID` varchar(50) NOT NULL DEFAULT '' COMMENT '主键',
+            `PROJ_INFO_ID` varchar(50) NOT NULL COMMENT '项目ID',
+            `PROVINCE_PROJ_CODE` varchar(50) NOT NULL COMMENT '建设项目选址意见书批文号',
+            `CONTRACT_CODE` varchar(50) DEFAULT NULL COMMENT '合同编号',
+            `CONTRACT_TYPE` varchar(50) DEFAULT NULL COMMENT '合同类型',
+            `CONTRACT_MOENY` float DEFAULT NULL COMMENT '合同金额，单位：万元',
+            `CONTRACT_SIGN_TIME` datetime DEFAULT NULL COMMENT '合同签订日期',
+            `CONTRACT_CONFIRM_TIME` datetime DEFAULT NULL COMMENT '合同确认日期',
+            `GOV_ORG_CODE` varchar(50) DEFAULT NULL COMMENT '合同确认的行政单位机构代码',
+            `GOV_ORG_NAME` varchar(200) DEFAULT NULL COMMENT '合同确认的行政单位机构名称',
+            `GOV_ORG_AREA_CODE` varchar(50) DEFAULT NULL COMMENT '合同确认的行政单位区域码',
+            `CONTRACT_MEMO` varchar(500) DEFAULT NULL COMMENT '备注',
+            `CREATER` varchar(50) DEFAULT NULL COMMENT '创建人',
+            `CREATE_TIME` datetime NOT NULL COMMENT '创建时间',
+            `MODIFIER` varchar(50) DEFAULT NULL COMMENT '修改人',
+            `MODIFY_TIME` datetime DEFAULT NULL COMMENT '修改时间',
+            `ROOT_ORG_ID` varchar(50) DEFAULT NULL COMMENT '所属根组织ID',
+            PRIMARY KEY (`CONTRACT_ID`) USING BTREE
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='合同信息';
+        </sql>
+    </changeSet>
+
+    <changeSet id="201911071420" author="fenggy" failOnError="false">
+        <comment>施工图审查信息</comment>
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            CREATE TABLE `aea_ex_proj_drawing` (
+            `DRAWING_ID` varchar(50) NOT NULL DEFAULT '' COMMENT '主键',
+            `PROJ_INFO_ID` varchar(50) NOT NULL COMMENT '项目ID',
+            `PROVINCE_PROJ_CODE` varchar(50) NOT NULL COMMENT '省级项目编号',
+            `DRAWING_QUABOOK_CODE` varchar(50) DEFAULT NULL COMMENT '施工图审查合格书编号',
+            `INVERSTMENT_MOENY` float DEFAULT NULL COMMENT '投资额，单位：万元',
+            `APPROVE_DRAWING_AREA` float DEFAULT NULL COMMENT '图审面积，单位：平方米',
+            `APPROVE_START_TIME` datetime DEFAULT NULL COMMENT '开始审查日期',
+            `APPROVE_END_TIME` datetime DEFAULT NULL COMMENT '审查完成日期',
+            `IS_ONCE_PASS` char(1) DEFAULT NULL COMMENT '一次审查是否通过，0表示否，1表示是',
+            `ONCE_PASS_AGAINST_COUNT` tinyint(4) DEFAULT NULL COMMENT '一次审查时违反强条数',
+            `ONCE_PASS_AGAINST_ITEM` tinyint(4) DEFAULT NULL COMMENT '一次审查时违反的强条条目',
+            `APPROVE_OPINION` varchar(1000) DEFAULT NULL COMMENT '施工图审查意见（终审）',
+            `APPROVE_CONFIRM_TIME` datetime DEFAULT NULL COMMENT '审图确认时间',
+            `GOV_ORG_CODE` varchar(50) DEFAULT NULL COMMENT '审图确认的行政单位机构代码',
+            `GOV_ORG_NAME` varchar(200) DEFAULT NULL COMMENT '审图确认的行政单位名称',
+            `GOV_ORG_AREA_CODE` varchar(50) DEFAULT NULL COMMENT '审图确认的行政单位区域码',
+            `DRAWING_MEMO` varchar(500) DEFAULT NULL COMMENT '备注',
+            `CREATER` varchar(50) DEFAULT NULL COMMENT '创建人',
+            `CREATE_TIME` datetime NOT NULL COMMENT '创建时间',
+            `MODIFIER` varchar(50) DEFAULT NULL COMMENT '修改人',
+            `MODIFY_TIME` datetime DEFAULT NULL COMMENT '修改时间',
+            `ROOT_ORG_ID` varchar(50) DEFAULT NULL COMMENT '所属根组织ID',
+            PRIMARY KEY (`DRAWING_ID`) USING BTREE
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='施工图审查信息';
+        </sql>
+    </changeSet>
+
+    <changeSet id="201911071424" author="fenggy" failOnError="false">
+        <sql splitStatements="true">
+            ALTER TABLE `aea_unit_proj_linkman`
+            ADD COLUMN `PROFESSION_CERT_TYPE` varchar(50) DEFAULT NULL COMMENT '执业注册证类型，简称注册类型，来自于数据字典（C_REG_LCN_TYPE）',
+            ADD COLUMN `PROFESSION_SEAL_NUM` varchar(50) DEFAULT NULL COMMENT '执业印章号',
+            ADD COLUMN `TITLE_GRADE` varchar(50) DEFAULT NULL COMMENT '职称等级，来自于数据字典（C_TITLE）',
+            ADD COLUMN `TITLE_CERT_NUM` varchar(50) DEFAULT NULL COMMENT '职称证号',
+            ADD COLUMN `REGISTER_NUM` varchar(50) DEFAULT NULL COMMENT '注册编号',
+            ADD COLUMN `SAFE_LICENCE_NUM` varchar(50) DEFAULT NULL COMMENT '安全生产考核合格证号',
+            ADD COLUMN `PRJ_SPTY` varchar(50) NOT NULL DEFAULT '' COMMENT '审查人员专业 C_PRJ_SPTY 数据字典';
+        </sql>
+    </changeSet>
 </databaseChangeLog>
