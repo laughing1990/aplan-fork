@@ -159,10 +159,11 @@
             <el-row :gutter="40">
               <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="pr">
                 <div class="mb10 accept-effectchart-box" id="accepHistoryEffectLineChart"></div>
+                <div class="mb10 non-data" v-show="!accepHistoryEffectLineChart"></div>
               </el-col>
             </el-row>
           </div>
-          <div class="accept-box" v-show="!accepHistoryEffectLineChart">
+          <div class="accept-box" style="top: 60px;" v-show="!accepConnectionWinAllList.length">
             <div class="non-data"></div>
           </div>
         </el-card>

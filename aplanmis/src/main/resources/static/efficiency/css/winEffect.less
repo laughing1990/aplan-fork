@@ -34,7 +34,7 @@
 
 .index-wrapper {
   padding: 15px;
-  padding-bottom:0;
+  padding-bottom: 0;
   min-width: 1430px;
   min-width: 1526px;
 
@@ -396,7 +396,8 @@
         width: 48px;
       }
     }
-    .win-content:after{
+
+    .win-content:after {
       position: absolute;
       display: block;
       content: '';
@@ -410,7 +411,7 @@
   }
 
   // 左右切换按钮
-  .swipe-btn{
+  .swipe-btn {
     display: inline-block;
     // margin-top: -60px;
     position: absolute;
@@ -419,28 +420,33 @@
     height: 40px;
     line-height: 40px;
     cursor: pointer;
-    i{
+
+    i {
       font-size: 26px;
       display: inline-block;
       vertical-align: middle;
     }
-    &:hover{
-      i{
+
+    &:hover {
+      i {
         color: #3FA1FD;
       }
     }
-    &.active{
-      i{
+
+    &.active {
+      i {
         color: #3FA1FD;
         font-size: 32px;
       }
     }
   }
-  .swipe-tabs-left{
+
+  .swipe-tabs-left {
     // margin-left: -8px;
     left: 0;
   }
-  .swipe-tabs-right{
+
+  .swipe-tabs-right {
     right: -10px;
   }
 }
@@ -450,23 +456,26 @@
 }
 
 // 接件总量区
-.handel-box{
+.handel-box {
+
   // 全局时间筛选
-  .page-date-pick{
+  .page-date-pick {
     height: 34px;
   }
 }
 
 // 主题申报量
-.theme-approve-show-box{
+.theme-approve-show-box {
   height: 350px;
+
   // 饼图
-  .theme-approve-pie-box{
+  .theme-approve-pie-box {
     height: 350px;
   }
 }
+
 // 主题申报量-表格第一列图例
-.table-item-legend{
+.table-item-legend {
   display: inline-block;
   vertical-align: middle;
   width: 14px;
@@ -476,16 +485,208 @@
 }
 
 // 主题分布情况与阶段申报数
-.themescatter-stageapprove-box{
+.themescatter-stageapprove-box {
   height: 500px;
 
   // 主题分布情况
-  .themescatter-rander-box{
+  .themescatter-rander-box {
     height: 410px;
   }
 
   // 阶段申报数
-  .stageapprove-rander-box{
+  .stageapprove-rander-box {
     height: 410px;
+  }
+}
+
+// 时限分析专题
+.module-timeLimit {
+
+  // 申报时限状态
+  .accept-rander-box {
+    height: 330px;
+  }
+
+  .win-precent-box {
+    position: relative;
+    color: #575962;
+    padding-left: 10px;
+
+    .win-item {
+      display: inline-block;
+      // width: 230px;
+      width: 19.8%; //暂定14.2%
+      height: 108px;
+      cursor: pointer;
+
+      &:hover {
+        .win-content {
+          border: 1px solid #B7E1FF;
+        }
+      }
+
+      &.active {
+        .win-content {
+          // border: 1px solid #B7E1FF;
+          // background: rgba(22, 154, 255, 0.1);
+          border: 1px solid #1D9AFD;
+          background: #1D9AFD;
+          color: #fff;
+
+          .win-pie {
+            background: rgba(165, 211, 247, 0.1);
+          }
+        }
+      }
+
+      .win-title {
+        text-align: center;
+        font-size: 14px;
+        font-weight: bold;
+        margin-top: -10px
+      }
+
+      .win-content {
+        position: relative;
+        margin-top: 12px;
+        border: 1px solid #DCDFE6;
+        width: 80%;
+        height: 83px;
+        margin: 0 auto;
+        margin-top: 12px;
+        padding: 8px;
+        .border-radius(4px);
+
+        .win-precent {
+          width: 60px;
+          height: 65px;
+          line-height: 1;
+          text-align: center;
+          // margin-left: 40px;
+          width: 48px;
+          width: 40%;
+          width: 33%;
+
+          p.tip {
+            font-size: 14px;
+            margin-top: 4px;
+          }
+
+          p.precent {
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 20px;
+          }
+        }
+
+        .win-middle{
+          position: relative;
+          overflow: hidden;
+          width: 34%;
+
+          &:before{
+            position: absolute;
+            display: block;
+            content: '';
+            height: 52px;
+            width: 1px;
+            background: #DCDFE6;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+          }
+
+          &:after{
+            position: absolute;
+            display: block;
+            content: '';
+            height: 52px;
+            width: 1px;
+            background: #DCDFE6;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+          }
+        }
+
+        .win-pie {
+          width: 60px;
+          height: 65px;
+          line-height: 1;
+          text-align: center;
+          background: #fdfdfd;
+          // margin-right: 40px;
+          padding-top: 10px;
+          width: 48px;
+        }
+      }
+
+      .win-content:after {
+        position: absolute;
+        display: none;
+        content: '';
+        height: 52px;
+        width: 1px;
+        background: #DCDFE6;
+        left: 50%;
+        top: 50%;
+        transform: translateY(-50%);
+      }
+    }
+
+    // 左右切换按钮
+    .swipe-btn {
+      display: inline-block;
+      // margin-top: -60px;
+      position: absolute;
+      top: 42%;
+      width: 36px;
+      height: 40px;
+      line-height: 40px;
+      cursor: pointer;
+
+      i {
+        font-size: 26px;
+        display: inline-block;
+        vertical-align: middle;
+      }
+
+      &:hover {
+        i {
+          color: #3FA1FD;
+        }
+      }
+
+      &.active {
+        i {
+          color: #3FA1FD;
+          font-size: 32px;
+        }
+      }
+    }
+
+    .swipe-tabs-left {
+      // margin-left: -8px;
+      left: 0;
+    }
+
+    .swipe-tabs-right {
+      right: -10px;
+    }
+  }
+}
+
+// 申报时限状态-lgend的标题
+.approve-pie-lgendtitle{
+  position: absolute;
+  color: #AFB2C1;
+  font-size: 14px;
+  right: 30px;
+  top: 38%;
+  span{
+    margin-right: 32px;
+    &:last-of-type{
+      margin: 0;
+    }
   }
 }

@@ -330,7 +330,7 @@ var app = new Vue({
       _getData.type = ts.pageSearchData.type;
       _getData.itemId = obj.winId;
       request('', {
-          url: ctx + 'org/efficiency/supervision/getOrgItemAcceptHistoryStatistics',
+        url: ctx + 'org/efficiency/supervision/getOrgItemAcceptHistroyStatistics',
         type: 'get',
         data: _getData,
       }, function (res) {
@@ -416,14 +416,14 @@ var app = new Vue({
     this.initEffectApi();
 
     // test
-    for (var i = 0; i < 15; i++) {
-      this.accepConnectionWinAllList.push({
-        winName: '窗口' + i,
-        select: false,
-        winId: i,
-      })
-    }
-    this.accepConnectionWinList = this.accepConnectionWinAllList.slice(0, 7)
+    // for (var i = 0; i < 15; i++) {
+    //   this.accepConnectionWinAllList.push({
+    //     winName: '窗口' + i,
+    //     select: false,
+    //     winId: i,
+    //   })
+    // }
+    // this.accepConnectionWinList = this.accepConnectionWinAllList.slice(0, 7)
   },
   computed: {
     isLeft: function () {
