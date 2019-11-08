@@ -35,7 +35,7 @@ import java.util.Map;
 @Api(value = "窗口效能督查接口", tags = "窗口效能督查接口")
 public class WinEfficiencySupervisionController {
 
-    private static String WIN_EFFICIENCY_SUPERVISION_INDEX = "efficiency/winEffect";
+    private static String WIN_EFFICIENCY_SUPERVISION_INDEX = "efficiency/windowPeopleEffect";
     private static String SINGLE_WIN_EFFICIENCY_SUPERVISION_INDEX = "efficiency/singleWinEffect";
 
     private static String QUERY_PRELIMINARY_TASKS_INDEX = "view/queryAllPreliminaryTasksIndex";
