@@ -84,7 +84,7 @@
   background-size: 100% 100%;
 }
 .index-wrapper .status-card .status-card-item:hover {
-  opacity: .9;
+  opacity: 0.9;
 }
 .index-wrapper .status-card .me-count {
   font-size: 28px;
@@ -102,6 +102,7 @@
 @media screen and (max-width: 1450px) {
   .index-wrapper .status-card .status-card-item {
     width: 19%;
+    width: 13.4%;
   }
   .index-wrapper .status-card .status-card-item:last-child {
     float: left;

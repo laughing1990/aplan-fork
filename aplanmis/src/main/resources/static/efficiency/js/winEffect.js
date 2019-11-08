@@ -91,7 +91,7 @@ var app = new Vue({
       },
 
       // 当前展示的是哪一个督查模块  1:全部   2:工作量及有效性专题   3: 并联专题   4: 时限分析
-      curEffectModule: 2,
+      curEffectModule: 4,
 
       // 整个页面的督查的查询数据
       pageSearchData: {
@@ -121,6 +121,7 @@ var app = new Vue({
       accepConnectionWinList: [],
 
 
+
       // 并联专题
       // 主题申报量
       // 主题申报量-饼图
@@ -135,6 +136,26 @@ var app = new Vue({
       // 阶段申报数
       // 阶段申报数-饼状图
       stageApprovePieChart: '',
+
+
+
+      // 时限分析专题
+      // 申报时限状态-饼图数据
+      approveTimelimitStatusPieChart: '',
+
+      // 申报阶段平均用时
+      approveStageAverageTimeBarChart: '',
+
+      // 主题申报用时
+      // 主题申报用时-柱状图
+      themeApproveTimeBarChart: '',
+      // 主题申报用时-切换主题的数据-总的数据
+      themeAllList: [],
+      // 主题申报用时-切换主题的数据-当前第几页
+      themePage: 1,
+      // 主题申报用时-切换主题的数据-当前页数据(定好了 7 条数据)
+      themeShowList: [],
+
     }
   },
   methods: {
@@ -149,6 +170,11 @@ var app = new Vue({
       this.themeApproveNumPieChart && this.themeApproveNumPieChart.resize();
       this.themeScatterBarChart && this.themeScatterBarChart.resize();
       this.stageApprovePieChart && this.stageApprovePieChart.resize();
+
+      // 时限专题
+      this.approveTimelimitStatusPieChart &&  this.approveTimelimitStatusPieChart.resize();
+      this.approveStageAverageTimeBarChart && this.approveStageAverageTimeBarChart.resize();
+      this.themeApproveTimeBarChart && this.themeApproveTimeBarChart.resize();
     },
 
     // 获取头部卡片数据
@@ -721,11 +747,263 @@ var app = new Vue({
     // 时限分析专题
     // 初始化时限专题
     initTimeLimitApi: function () {
-    
+      this.fetchApproveTimelimitStatusPieChartData();
+      this.fetchApproveStageAverageTimeBarChartData();
+      this.fetchAllThemeList();
     },
     // 清除掉已渲染当前专题下的echart图
     clearTimeLimitChart: function () {
-    
+      this.approveTimelimitStatusPieChart &&  this.approveTimelimitStatusPieChart.clear();
+      this.approveStageAverageTimeBarChart && this.approveStageAverageTimeBarChart.clear();
+      this.themeApproveTimeBarChart && this.themeApproveTimeBarChart.clear();
+    },
+
+    // 申报时限状态
+    // 申报时限状态-获取后端接口
+    fetchApproveTimelimitStatusPieChartData: function(){
+      var ts = this;
+      ts.loading = true;
+      ts.pageSearchData.startTime = formatDate(new Date(ts.pageDateRange[0]), 'yyyy-MM-dd') || '';
+      ts.pageSearchData.endTime = formatDate(new Date(ts.pageDateRange[1]), 'yyyy-MM-dd') || '';
+      request('', {
+        url: ctx + 'win/efficiency/supervision/getWinStageLimitTimeStatistics',
+        type: 'get',
+        data: ts.pageSearchData,
+      }, function (res) {
+        ts.loading = false;
+        if (res.success) {
+          if (res.content && res.content !== null) {
+            _approveTimelimitAccSum = res.content.total;
+            ts.handelApproveTimelimitStatusPieChartData(res.content.data);
+          } else {
+            ts.approveTimelimitStatusPieChart = '';
+          }
+        } else {
+          ts.apiMessage(res.message, 'error')
+          ts.approveTimelimitStatusPieChart = '';
+        }
+      }, function () {
+        ts.loading = false;
+        ts.apiMessage('网络错误！', 'error')
+        ts.approveTimelimitStatusPieChart = '';
+      });
+    },
+    // 申报时限状态-处理后端接口数据
+    handelApproveTimelimitStatusPieChartData: function(list){
+      if (!list || !list.length) return;
+      windowEchartOptions.approveTimelimitStatusPieChartOpt.legend.data = [];
+      windowEchartOptions.approveTimelimitStatusPieChartOpt.series[0].data = [];
+      for (var i = 0; i < list.length; i++) {
+        var opt = list[i].name;
+        _approveTimelimitLendObj[opt] = {
+          num: '',
+          percent: ''
+        }
+        _approveTimelimitLendObj[opt]['percent'] = list[i].value == 0 ? "0%" :((Number(list[i].value / _approveTimelimitAccSum) * 100).toFixed(0) + '%');
+        _approveTimelimitLendObj[opt]['num'] = list[i].value;
+
+        windowEchartOptions.approveTimelimitStatusPieChartOpt.legend.data.push(opt);
+        windowEchartOptions.approveTimelimitStatusPieChartOpt.series[0].data.push({
+          name: list[i].name || '',
+          value: list[i].value || 0,
+        })
+      }
+      windowEchartOptions.approveTimelimitStatusPieChartOpt.series[0].data[0].label = _approveTimelimitAccSumLabel;
+      this.renderApproveTimelimitStatusPieChart();
+    },
+    // 申报时限状态-渲染echart
+    renderApproveTimelimitStatusPieChart: function(){
+      this.approveTimelimitStatusPieChart = echarts.init(document.getElementById('approveTimelimitStatusPieChart'));
+      this.approveTimelimitStatusPieChart.setOption(windowEchartOptions.approveTimelimitStatusPieChartOpt);
+    },
+
+    // 申报阶段平均用时
+    // 申报阶段平均用时-获取后端接口
+    fetchApproveStageAverageTimeBarChartData: function(){
+      var ts = this;
+      ts.loading = true;
+      ts.pageSearchData.startTime = formatDate(new Date(ts.pageDateRange[0]), 'yyyy-MM-dd') || '';
+      ts.pageSearchData.endTime = formatDate(new Date(ts.pageDateRange[1]), 'yyyy-MM-dd') || '';
+      request('', {
+        url: ctx + 'win/efficiency/supervision/getWinStageAvgLimitTimeStatistics',
+        type: 'get',
+        data: ts.pageSearchData,
+      }, function (res) {
+        ts.loading = false;
+        if (res.success) {
+          if (res.content && res.content !== null) {
+            ts.handelApproveStageAverageTimeBarChartData(res);
+          } else {
+            ts.approveStageAverageTimeBarChart = '';
+          }
+        } else {
+          ts.apiMessage(res.message, 'error')
+          ts.approveStageAverageTimeBarChart = '';
+        }
+      }, function () {
+        ts.loading = false;
+        ts.apiMessage('网络错误！', 'error')
+        ts.approveStageAverageTimeBarChart = '';
+      });
+    },
+    // 申报阶段平均用时-处理后端数据
+    handelApproveStageAverageTimeBarChartData: function(res){
+      var _stageList = ['product','立项用地许可阶段','工程建设许可阶段','施工许可阶段','竣工验收阶段','并行推进'];
+      res.content.data.unshift(_stageList)
+      windowEchartOptions.approveStageAverageTimeBarChartOpt.dataset.source = res.content.data;
+      // 超过13条出现横向放大缩小工具
+      if (res.content.data.length && res.content.data.length < 13) {
+        windowEchartOptions.approveStageAverageTimeBarChartOpt.dataZoom = [];
+        windowEchartOptions.approveStageAverageTimeBarChartOpt.grid.y2 = 20;
+      } 
+      this.renderApproveStageAverageTimeBarChart();
+    },
+    // 申报阶段平均用时-渲染echarts
+    renderApproveStageAverageTimeBarChart: function(){
+      this.approveStageAverageTimeBarChart = echarts.init(document.getElementById('approveStageAverageTimeBarChart'));
+      this.approveStageAverageTimeBarChart.setOption(windowEchartOptions.approveStageAverageTimeBarChartOpt);
+    },
+
+    // 主题申报用时
+    // 获取的主题申报用时-头部主题数据
+    fetchAllThemeList: function () {
+      var ts = this;
+      ts.loading = true;
+      ts.pageSearchData.startTime = formatDate(new Date(ts.pageDateRange[0]), 'yyyy-MM-dd') || '';
+      ts.pageSearchData.endTime = formatDate(new Date(ts.pageDateRange[1]), 'yyyy-MM-dd') || '';
+      request('', {
+        url: ctx + 'win/efficiency/supervision/getCompletedApplyUseTimeByTheme',
+        type: 'get',
+        data: ts.pageSearchData,
+      }, function (res) {
+        ts.loading = false;
+        if (res.success) {
+          if (res.content && res.content !== null) {
+            ts.handelAllThemeList(res.content)
+          }
+        } else {
+          ts.apiMessage(res.message, 'error')
+        }
+      }, function () {
+        ts.loading = false;
+        ts.apiMessage('网络错误！', 'error')
+      });
+    },
+    // 处理主题申报用时-头部主题数据
+    handelAllThemeList: function (list) {
+      this.themeAllList = list.map(function (item) {
+        return {
+          winId: item.themeId,
+          winName: item.themeName,
+          lgTime: item.maxUseTime,  //最长用时
+          AveTime: item.avgUseTime, //平均用时
+          minTime: item.minUseTime, //最短用时
+          select: false //是否选中状态
+        }
+      })
+      // 截取前七个用来显示
+      this.themeShowList = this.themeAllList.slice(0, 5)
+      // 加载第一个主题下各窗口用时的统计数据
+      this.fetchSelectedThemeWinData(this.themeAllList[0]);
+    },
+    // 高亮当前选中的主题
+    activeCurThemeItem: function (obj) {
+      this.themeAllList.forEach(function (item) {
+        item.select = false;
+      })
+      obj.select = true;
+    },
+    // 获取当前选中窗口的统计数据
+    fetchSelectedThemeWinData: function (obj) {
+      this.activeCurThemeItem(obj); //高亮当前主题
+      var ts = this,
+        _getData = {};
+      ts.loading = true;
+      ts.pageSearchData.startTime = formatDate(new Date(ts.pageDateRange[0]), 'yyyy-MM-dd') || '';
+      ts.pageSearchData.endTime = formatDate(new Date(ts.pageDateRange[1]), 'yyyy-MM-dd') || '';
+      _getData.startTime = ts.pageSearchData.startTime;
+      _getData.endTime = ts.pageSearchData.endTime;
+      _getData.type = ts.pageSearchData.type;
+      _getData.themeId = obj.winId;
+      request('', {
+        url: ctx + 'win/efficiency/supervision/getCompletedApplyUseTimeByThemeAndWindow',
+        type: 'get',
+        data: _getData,
+      }, function (res) {
+        ts.loading = false;
+        if (res.success) {
+          if (res.content && res.content !== null) {
+            ts.handelSelectedThemeWinBarChartData(res.content);
+          } else {
+            ts.themeApproveTimeBarChart = "";
+          }
+        } else {
+          ts.apiMessage(res.message, 'error');
+          ts.themeApproveTimeBarChart = "";
+        }
+      }, function () {
+        ts.loading = false;
+        ts.apiMessage('网络错误！', 'error');
+        ts.themeApproveTimeBarChart = "";
+      });
+    },
+    // 主题申报用时-处理当前选中主题下各窗口的统计数据
+    handelSelectedThemeWinBarChartData: function (handData) {
+      var winList = [], //窗口数据list
+        _lgList = [], //最长用时list
+        _minList = [],  //最短用时list
+        _avgList = [], //平均用时list
+        _ln = handData.length;  //后端数据-窗口的总个数
+      for (var i = 0; i < _ln; i++) {
+        winList.push(handData[i].windowName);
+        _lgList.push(handData[i].maxUseTime);
+        _minList.push(handData[i].minUseTime);
+        _avgList.push(handData[i].avgUseTime);
+      }
+      windowEchartOptions.themeApproveTimeBarChartOpt.xAxis.data = winList;
+      windowEchartOptions.themeApproveTimeBarChartOpt.series[0].data = _lgList;
+      windowEchartOptions.themeApproveTimeBarChartOpt.series[1].data = _avgList;
+      windowEchartOptions.themeApproveTimeBarChartOpt.series[2].data = _minList;
+
+      if(_ln < 12){
+        windowEchartOptions.themeApproveTimeBarChartOpt.dataZoom = [];
+        windowEchartOptions.themeApproveTimeBarChartOpt.grid.y2 = 20;
+      }
+
+      this.renderThemeApproveTimeBarChart();
+    },
+    // 主题申报用时-渲染echart
+    renderThemeApproveTimeBarChart: function () {
+      this.themeApproveTimeBarChart = echarts.init(document.getElementById('themeApproveTimeBarChart'));
+      this.themeApproveTimeBarChart.setOption(windowEchartOptions.themeApproveTimeBarChartOpt);
+    },
+    // 主题申报用时-头部主题栏左右控制
+    themeHandelToRight: function () {
+      var ts = this,
+        _all = this.themeAllList,
+        _list = this.themeShowList,
+        _page = this.themePage,
+        _maxPage = "";
+      _maxPage = Math.floor(_all.length / 5);
+      this.themeShowList = _all.slice((_page) * 5, (_page + 1) * 5);
+      if (_page > 0 && _page <= _maxPage) {
+        _page++;
+      }
+      this.themePage = _page;
+    },
+    themeHandelToLeft: function () {
+      var ts = this,
+        _all = this.themeAllList,
+        _list = this.themeShowList,
+        _page = this.themePage,
+        _maxPage = "";
+      _maxPage = Math.floor(_all.length / 5);
+      // debugger
+      this.themeShowList = _all.slice((_page - 2) * 5, (_page - 1) * 5);
+      if (_page >= 2) {
+        _page--;
+      }
+      this.themePage = _page;
     },
 
   },
@@ -744,6 +1022,22 @@ var app = new Vue({
       }
       return true;
     },
+
+    // 时限分析专题-主题申报用时
+    isTLeft: function () {
+      var _crP = this.themePage;
+      if (_crP < 2) {
+        return false;
+      }
+      return true;
+    },
+    isTRight: function () {
+      var _crP = this.themePage;
+      if (_crP * 7 >= this.themeAllList.length) {
+        return false;
+      }
+      return true;
+    },
   },
   created: function () {
     this.fetchApplyStatistics();
@@ -751,6 +1045,16 @@ var app = new Vue({
     (this.curEffectModule == 2) && this.initEffectApi();
     (this.curEffectModule == 3) && this.initParallelApi();
     (this.curEffectModule == 4) && this.initTimeLimitApi();
+    // test
+    return
+    for (var i = 0; i < 15; i++) {
+      this.themeAllList.push({
+        winName: '窗口' + i,
+        select: false,
+        winId: i,
+      })
+    }
+    this.themeShowList = this.themeAllList.slice(0, 5)
   },
   mounted: function () {
     var ts = this
@@ -768,6 +1072,10 @@ var app = new Vue({
     // this.renderThemeApproveNumPieChart();
     // this.renderThemeScatterBarChart();
     // this.renderStageApprovePieChart();
+
+    // this.renderApproveTimelimitStatusPieChart();
+    // this.renderApproveStageAverageTimeBarChart();
+    // this.renderThemeApproveTimeBarChart();
   },
   filters: {},
 })

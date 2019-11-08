@@ -347,10 +347,10 @@
                                     {{scope.row.timeLimit}}小时<span style="color:#BEBEBE">（工作日）</span>
                                 </span>
                                 <span v-if="scope.row.timeLimitUnit == 'ND'">
-                                    {{scope.row.timeLimit}}天<span style="color:#BEBEBE">（自然日）</span>
+                                    {{scope.row.timeLimit}}<span style="color:#BEBEBE">（自然日）</span>
                                 </span>
                                 <span v-if="scope.row.timeLimitUnit == 'WD'">
-                                    {{scope.row.timeLimit}}天<span style="color:#BEBEBE">（工作日）</span>
+                                    {{scope.row.timeLimit}}<span style="color:#BEBEBE">（工作日）</span>
                                 </span>
                             </template>
                         </el-table-column>

@@ -46,6 +46,10 @@
   width: 48%;
 }
 
+.pdlr40{
+  padding: 0 40px;
+}
+
 .inline-block {
   display: inline-block;
 }
