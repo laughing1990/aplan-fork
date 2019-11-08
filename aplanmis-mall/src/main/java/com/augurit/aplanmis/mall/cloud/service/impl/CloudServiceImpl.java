@@ -184,6 +184,7 @@ public class CloudServiceImpl implements CloudService {
 
     @Override
     public PageInfo<BscAttForm> getAttsByDirId(String dirID,int pageNum,int pageSize,String keyword) throws Exception{
+        if(StringUtils.isBlank(dirID)) return new PageInfo<>(new ArrayList<>());
         List<BscAttForm> paramList = new ArrayList<>(1);
         BscAttForm param = new BscAttForm();
         param.setDirId(dirID);
@@ -252,7 +253,8 @@ public class CloudServiceImpl implements CloudService {
         bscAttLink.setRecordId(recordId);
         bscAttLink.setDirId(currentDirId);
         List<BscAttLink> list = bscAttMapper.listBscAttLink(bscAttLink);
-        batchUpdateBscAttLink(list, targetDirId, detailIds);
+        batchUpdateBscAttLink(list, targetDirId, detailIds);//更新关联关系
+        batchUpdateBscAttForm(detailIds, targetDirId);//更新文件的文件夹ID
     }
 
     private void batchUpdateBscAttLink(List<BscAttLink> list, String targetDirId, String[] detailIds) throws Exception {
@@ -264,6 +266,15 @@ public class CloudServiceImpl implements CloudService {
                 link.setDirId(targetDirId);
                 bscAttMapper.updateLink(link);
             }
+        }
+    }
+
+    private void batchUpdateBscAttForm(String[] detailIds,String targetDirId){
+        BscAttForm form = new BscAttForm();
+        form.setDirId(targetDirId);
+        for (String detailId : detailIds){
+            form.setDetailId(detailId);
+            bscAttMapper.updateDetail(form);
         }
     }
 
