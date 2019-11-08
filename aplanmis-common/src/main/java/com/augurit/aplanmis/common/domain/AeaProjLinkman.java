@@ -1,11 +1,10 @@
 package com.augurit.aplanmis.common.domain;
 
-import java.io.Serializable;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
-
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
+
+import java.io.Serializable;
+import java.util.UUID;
 
 /**
  * -模型
@@ -22,12 +21,12 @@ public class AeaProjLinkman implements Serializable {
 // ----------------------------------------------------- Properties
 
     private static final long serialVersionUID = 1L;
-    private java.lang.String projLinkmanId; // ()
-    private java.lang.String projInfoId; // (项目信息ID)
-    private java.lang.String linkmanInfoId; // (联系人信息ID)
-    private java.lang.String type; // (类型：link 联系人，apply 申请人)
-    private java.lang.String applyinstId; // (申请实例ID)
-    private java.lang.String creater; // (创建人)
+    private String projLinkmanId; // ()
+    private String projInfoId; // (项目信息ID)
+    private String linkmanInfoId; // (联系人信息ID)
+    private String type; // (类型：link 联系人，apply 申请人)
+    private String applyinstId; // (申请实例ID)
+    private String creater; // (创建人)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private java.util.Date createTime; // (创建时间)
 
@@ -40,4 +39,16 @@ public class AeaProjLinkman implements Serializable {
 
     private String isBlack;//是否黑名单
     private String redblackId;//
+
+    public AeaProjLinkman() {
+    }
+
+    public AeaProjLinkman(String projInfoId, String linkmanInfoId, String type, String applyinstId, String creater) {
+        this.projLinkmanId = UUID.randomUUID().toString();
+        this.projInfoId = projInfoId;
+        this.linkmanInfoId = linkmanInfoId;
+        this.type = type;
+        this.applyinstId = applyinstId;
+        this.creater = creater;
+    }
 }

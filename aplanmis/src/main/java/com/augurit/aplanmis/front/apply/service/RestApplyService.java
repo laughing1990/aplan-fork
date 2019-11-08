@@ -517,7 +517,8 @@ public class RestApplyService {
             AeaImPurchaseinst aeaImPurchaseinst = new AeaImPurchaseinst();
             aeaImPurchaseinst.setPurchaseinstId(UUID.randomUUID().toString());
             aeaImPurchaseinst.setProjPurchaseId(aeaImProjPurchase.getProjPurchaseId());
-            aeaImPurchaseinst.setPurchaseFlag("0");// 采购需求状态：0：未提交，1：服务中，2：服务完成，3：服务中止，4：审核中，5：退回，6：报名中，7：选取中，8：选取开始，9：已选取，10：无效，11：待选取，12：已过时
+            aeaImPurchaseinst.setNewPurchaseFlag("0");// 采购需求状态：0：未提交，1：服务中，2：服务完成，3：服务中止，4：审核中，5：退回，6：报名中，7：选取中，8：选取开始，9：已选取，10：无效，11：待选取，12：已过时
+            aeaImPurchaseinst.setOldPurchaseFlag("0");// 采购需求状态：0：未提交，1：服务中，2：服务完成，3：服务中止，4：审核中，5：退回，6：报名中，7：选取中，8：选取开始，9：已选取，10：无效，11：待选取，12：已过时
             aeaImPurchaseinst.setParentPurchaseinstId("root");
             aeaImPurchaseinst.setLinkmanInfoId(imServiceItemPurchaseVo.getLinkmanInfoId());
             aeaImPurchaseinst.setIsOwnFile("0");// 是否拥有附件

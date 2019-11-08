@@ -1,11 +1,14 @@
 package com.augurit.aplanmis.common.domain;
 
+import com.augurit.aplanmis.common.constants.DeletedStatus;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
+import java.util.Date;
+import java.util.UUID;
 
 /**
  * -模型
@@ -34,10 +37,20 @@ public class AeaImMajorQual implements Serializable {
     private String isDelete; // (是否删除：1 已删除，0 未删除)
     private String creater; // ()
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private java.util.Date createTime; // ()
+    private Date createTime; // ()
     @ApiModelProperty(value = "资质等级ID")
     private String qualLevelId; // (资质等级ID)
     private String unitRequireId; // (中介机构要求信息ID)
 
     private String priority;
+
+    public AeaImMajorQual() {}
+
+    public void buildImMajor(String unitRequireId, String creater) {
+        this.majorQualId = UUID.randomUUID().toString();
+        this.creater = creater;
+        this.createTime = new Date();
+        this.isDelete = DeletedStatus.NOT_DELETED.getValue();
+        this.unitRequireId = unitRequireId;
+    }
 }

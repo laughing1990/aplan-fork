@@ -267,7 +267,10 @@
                                                   <div v-if="concItem.matList!== undefined && concItem.matList.length >0">
                                                       <p class="guide-detail-atr" style="padding-left: 20px;"
                                                          v-for="(metrailItem,metrailIndex in concItem.matList">
-                                                          {{(metrailIndex+1)+'、'+metrailItem.matName}}</p>
+                                                          {{(metrailIndex+1)+'、'+metrailItem.matName}}
+                                                          <a href="javascript:void(0);" @click="showMatFiles(metrailItem,'TEMPLATE_DOC')">(空表下载、</a>
+                                                          <a href="javascript:void(0);" @click="showMatFiles(metrailItem,'SAMPLE_DOC')">样表下载）</a>
+                                                      </p>
                                                   </div>
                                                   <p v-else style="padding-left: 44px;color: gray;">该事项暂无材料</p>
                                             </div>
@@ -277,7 +280,10 @@
                                           <div v-for="(concItem,index) in guideDetailed.parallelList">
                                             <p class="detail-title">{{index+1+'、'+concItem.itemName}}</p>
                                             <div v-if="concItem.matList!== undefined && concItem.matList.length >0">
-                                              <p class="guide-detail-atr" style="padding-left: 20px;" v-for="(metrailItem,metrailIndex in concItem.matList" v-if="concItem.matList">{{(metrailIndex+1)+'、'+metrailItem.matName}}</p>
+                                              <p class="guide-detail-atr" style="padding-left: 20px;" v-for="(metrailItem,metrailIndex in concItem.matList" v-if="concItem.matList">{{(metrailIndex+1)+'、'+metrailItem.matName}}
+                                                  <a href="javascript:void(0);" @click="showMatFiles(metrailItem,'TEMPLATE_DOC')">(空表下载、</a>
+                                                  <a href="javascript:void(0);" @click="showMatFiles(metrailItem,'SAMPLE_DOC')">样表下载）</a>
+                                              </p>
                                             </div>
                                               <p v-else style="padding-left: 44px;color: gray">该事项暂无材料</p>
                                           </div>

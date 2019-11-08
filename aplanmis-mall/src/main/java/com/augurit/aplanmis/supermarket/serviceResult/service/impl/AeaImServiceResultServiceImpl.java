@@ -83,7 +83,7 @@ public class AeaImServiceResultServiceImpl implements AeaImServiceResultService 
     }
 
 
-    public PageInfo<AeaImServiceResult> listAeaImServiceResult(AeaImServiceResult aeaImServiceResult,Page page) throws Exception{
+    public PageInfo<AeaImServiceResult> listAeaImServiceResult(AeaImServiceResult aeaImServiceResult, Page page) throws Exception {
         aeaImServiceResult.setRootOrgId(topOrgId);
         PageHelper.startPage(page);
         List<AeaImServiceResult> list = aeaImServiceResultMapper.listAeaImServiceResult(aeaImServiceResult);
@@ -94,7 +94,7 @@ public class AeaImServiceResultServiceImpl implements AeaImServiceResultService 
     @Override
     public AeaImServiceResult getAeaImServiceResultById(String serviceResultId) throws Exception{
         if(StringUtils.isNotBlank(serviceResultId)) {
-            AeaImServiceResult  aeaImServiceResult = aeaImServiceResultMapper.getAeaImServiceResultById(serviceResultId);
+            AeaImServiceResult aeaImServiceResult = aeaImServiceResultMapper.getAeaImServiceResultById(serviceResultId);
 
             if(aeaImServiceResult!=null){
                 aeaImServiceResult.setBscAttForms(bscAtService.listAttLinkAndDetailByTablePKRecordId("AEA_IM_SERVICE_RESULT", "SERVICE_RESULT_ID", serviceResultId,topOrgId));
@@ -165,7 +165,7 @@ public class AeaImServiceResultServiceImpl implements AeaImServiceResultService 
         aeaImPurchaseinst.setProjPurchaseId(aeaImServiceResult.getProjPurchaseId());
         aeaImPurchaseinst.setCreater(SecurityContext.getCurrentUserName());
         aeaImPurchaseinst.setCreateTime(new Date());
-        aeaImPurchaseinst.setPurchaseFlag(aeaImProjPurchase.getAuditFlag());
+        aeaImPurchaseinst.setNewPurchaseFlag(aeaImProjPurchase.getAuditFlag());
         aeaImPurchaseinst.setOperateDescribe("新增服务结果");
         aeaImPurchaseinst.setIsOwnFile((files != null && files.size() > 0) ? "1" : "0");
         aeaImPurchaseinst.setLinkmanInfoId(loginInfoVo.getUserId());
@@ -205,7 +205,7 @@ public class AeaImServiceResultServiceImpl implements AeaImServiceResultService 
             aeaImPurchaseinst.setProjPurchaseId(aeaImServiceResult.getProjPurchaseId());
             aeaImPurchaseinst.setCreater(SecurityContext.getCurrentUserName());
             aeaImPurchaseinst.setCreateTime(new Date());
-            aeaImPurchaseinst.setPurchaseFlag(aeaImProjPurchase.getAuditFlag());
+            aeaImPurchaseinst.setNewPurchaseFlag(aeaImProjPurchase.getAuditFlag());
             aeaImPurchaseinst.setOperateDescribe("确认服务结果");
             aeaImPurchaseinst.setIsOwnFile("0");
             aeaImPurchaseinst.setLinkmanInfoId(loginInfoVo.getUserId());
@@ -228,7 +228,7 @@ public class AeaImServiceResultServiceImpl implements AeaImServiceResultService 
     }
 
     @Override
-    public AeaImServiceResult updateAeaImServiceResult(AeaImServiceResult aeaImServiceResult,List<MultipartFile> files,HttpServletRequest request) throws Exception{
+    public AeaImServiceResult updateAeaImServiceResult(AeaImServiceResult aeaImServiceResult, List<MultipartFile> files, HttpServletRequest request) throws Exception {
         aeaImServiceResult.setModifyTime(new Date());
         aeaImServiceResult.setUploadTime(aeaImServiceResult.getModifyTime());
         aeaImServiceResult.setModifier(SecurityContext.getCurrentUserName());
@@ -245,7 +245,7 @@ public class AeaImServiceResultServiceImpl implements AeaImServiceResultService 
         aeaImPurchaseinst.setProjPurchaseId(aeaImServiceResult.getProjPurchaseId());
         aeaImPurchaseinst.setCreater(SecurityContext.getCurrentUserName());
         aeaImPurchaseinst.setCreateTime(new Date());
-        aeaImPurchaseinst.setPurchaseFlag(aeaImProjPurchase.getAuditFlag());
+        aeaImPurchaseinst.setNewPurchaseFlag(aeaImProjPurchase.getAuditFlag());
         aeaImPurchaseinst.setOperateDescribe("修改服务结果");
         aeaImPurchaseinst.setIsOwnFile((files != null && files.size() > 0) ? "1" : "0");
         aeaImPurchaseinst.setLinkmanInfoId(loginInfoVo.getUserId());

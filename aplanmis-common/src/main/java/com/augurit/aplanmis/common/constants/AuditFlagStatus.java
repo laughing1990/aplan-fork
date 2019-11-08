@@ -44,4 +44,13 @@ public class AuditFlagStatus {
 
     /*已过时*/
     public static final String TIME_OUT = "12";
+
+    /*部门审批中*/
+    public static final String DEPARTMENT_APPROVAL = "13";
+
+    /*办结通过*/
+    public static final String AGREE = "14";
+
+    /*办结不通过*/
+    public static final String DISAGREE = "15";
 }

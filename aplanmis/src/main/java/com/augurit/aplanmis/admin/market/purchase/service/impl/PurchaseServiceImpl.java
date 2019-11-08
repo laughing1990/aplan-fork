@@ -141,7 +141,7 @@ public class PurchaseServiceImpl implements PurchaseService {
             aeaImPurchaseinst.setProjPurchaseId(aeaImProjPurchase.getProjPurchaseId());
             aeaImPurchaseinst.setCreater(SecurityContext.getCurrentUserName());
             aeaImPurchaseinst.setCreateTime(date);
-            aeaImPurchaseinst.setPurchaseFlag(auditFlag);
+            aeaImPurchaseinst.setNewPurchaseFlag(auditFlag);
             aeaImPurchaseinst.setOperateDescribe("采购需求项目审核");
             aeaImPurchaseinstMapper.insertPurchaseinst(aeaImPurchaseinst);
         }

@@ -1,12 +1,11 @@
 package com.augurit.aplanmis.common.domain;
 
-import java.io.Serializable;
-import java.util.Date;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
-
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
+
+import java.io.Serializable;
+import java.util.Date;
+import java.util.UUID;
 
 /**
  * -模型
@@ -23,15 +22,27 @@ public class AeaParentProj implements Serializable {
 // ----------------------------------------------------- Properties
 
     private static final long serialVersionUID = 1L;
-    private java.lang.String nodeProjId; // ()
-    private java.lang.String parentProjId; // ()
-    private java.lang.String childProjId; // ()
-    private java.lang.String projSeq; // ()
-    private java.lang.String creater; // ()
+    private String nodeProjId; // ()
+    private String parentProjId; // ()
+    private String childProjId; // ()
+    private String projSeq; // ()
+    private String creater; // ()
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date createTime; // ()
-    private java.lang.String modifier; // ()
+    private String modifier; // ()
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date modifyTime;
     private String rootOrgId;//根组织ID
+
+    public AeaParentProj() {}
+
+    public AeaParentProj(String parentProjId, String childProjId, String projSeq, String creater, String rootOrgId) {
+        this.nodeProjId = UUID.randomUUID().toString();
+        this.parentProjId = parentProjId;
+        this.childProjId = childProjId;
+        this.projSeq = projSeq;
+        this.createTime = new Date();
+        this.creater = creater;
+        this.rootOrgId = rootOrgId;
+    }
 }

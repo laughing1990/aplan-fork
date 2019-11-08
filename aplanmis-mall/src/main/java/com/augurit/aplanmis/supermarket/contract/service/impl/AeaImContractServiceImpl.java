@@ -72,7 +72,7 @@ public class AeaImContractServiceImpl implements AeaImContractService {
     }
 
     @Override
-    public AeaImContract saveAeaImContract(AeaImContract aeaImContract,List<MultipartFile> files,HttpServletRequest request) throws Exception{
+    public AeaImContract saveAeaImContract(AeaImContract aeaImContract, List<MultipartFile> files, HttpServletRequest request) throws Exception {
         AeaImContract query = new AeaImContract();
         query.setUnitBiddingId(aeaImContract.getUnitBiddingId());
         query.setIsDelete(DeletedStatus.NOT_DELETED.getValue());
@@ -108,7 +108,7 @@ public class AeaImContractServiceImpl implements AeaImContractService {
         aeaImPurchaseinst.setProjPurchaseId(aeaImContract.getProjPurchaseId());
         aeaImPurchaseinst.setCreater(SecurityContext.getCurrentUserName());
         aeaImPurchaseinst.setCreateTime(new Date());
-        aeaImPurchaseinst.setPurchaseFlag(aeaImProjPurchase.getAuditFlag());
+        aeaImPurchaseinst.setNewPurchaseFlag(aeaImProjPurchase.getAuditFlag());
         aeaImPurchaseinst.setOperateAction("3");
         aeaImPurchaseinst.setOperateDescribe("新增合同");
         aeaImPurchaseinst.setIsOwnFile((files != null && files.size() > 0) ? "1" : "0");
@@ -127,7 +127,7 @@ public class AeaImContractServiceImpl implements AeaImContractService {
     }
 
     @Override
-    public AeaImContract updateAeaImContract(AeaImContract aeaImContract,List<MultipartFile> files,HttpServletRequest request) throws Exception{
+    public AeaImContract updateAeaImContract(AeaImContract aeaImContract, List<MultipartFile> files, HttpServletRequest request) throws Exception {
         aeaImContract.setModifyTime(new Date());
         aeaImContract.setModifier(SecurityContext.getCurrentUserName());
         aeaImContractMapper.updateAeaImContract(aeaImContract);
@@ -144,7 +144,7 @@ public class AeaImContractServiceImpl implements AeaImContractService {
         aeaImPurchaseinst.setProjPurchaseId(aeaImContract.getProjPurchaseId());
         aeaImPurchaseinst.setCreater(SecurityContext.getCurrentUserName());
         aeaImPurchaseinst.setCreateTime(new Date());
-        aeaImPurchaseinst.setPurchaseFlag(aeaImProjPurchase.getAuditFlag());
+        aeaImPurchaseinst.setNewPurchaseFlag(aeaImProjPurchase.getAuditFlag());
         aeaImPurchaseinst.setOperateAction("4");
         aeaImPurchaseinst.setOperateDescribe("修改合同");
         aeaImPurchaseinst.setIsOwnFile((files != null && files.size() > 0) ? "1" : "0");
@@ -184,7 +184,8 @@ public class AeaImContractServiceImpl implements AeaImContractService {
             aeaImContractMapper.updateAeaImContract(aeaImContract);
         }
     }
-    public PageInfo<AeaImContract> listAeaImContract(AeaImContract aeaImContract,Page page) throws Exception{
+
+    public PageInfo<AeaImContract> listAeaImContract(AeaImContract aeaImContract, Page page) throws Exception {
         aeaImContract.setRootOrgId(topOrgId);
         PageHelper.startPage(page);
         List<AeaImContract> list = aeaImContractMapper.listAeaImContract(aeaImContract);
@@ -229,7 +230,7 @@ public class AeaImContractServiceImpl implements AeaImContractService {
     }
 
     @Override
-    public AeaImContract getNewContract(String projPurchaseId,HttpServletRequest request)throws Exception{
+    public AeaImContract getNewContract(String projPurchaseId, HttpServletRequest request) throws Exception {
         LoginInfoVo loginInfoVo = SessionUtil.getLoginInfo(request);
 
         if(loginInfoVo!=null && StringUtils.isNotBlank(projPurchaseId)){
@@ -266,7 +267,7 @@ public class AeaImContractServiceImpl implements AeaImContractService {
     }
 
     @Override
-    public List<ChosenProjInfoVo> getChosenProjInfoList(String keyword, String auditFlag, Page page,HttpServletRequest request)throws Exception{
+    public List<ChosenProjInfoVo> getChosenProjInfoList(String keyword, String auditFlag, Page page, HttpServletRequest request) throws Exception {
 
         LoginInfoVo loginInfoVo = SessionUtil.getLoginInfo(request);
 
@@ -283,7 +284,7 @@ public class AeaImContractServiceImpl implements AeaImContractService {
     }
 
     @Override
-    public AeaImContract confirmContractByContractId(AeaImContract aeaImContract,HttpServletRequest request)throws Exception{
+    public AeaImContract confirmContractByContractId(AeaImContract aeaImContract, HttpServletRequest request) throws Exception {
         try{
             aeaImContract.setAuditFlag("1");
             aeaImContract.setIsConfirm("1");
@@ -299,7 +300,7 @@ public class AeaImContractServiceImpl implements AeaImContractService {
             aeaImPurchaseinst.setProjPurchaseId(aeaImContract.getProjPurchaseId());
             aeaImPurchaseinst.setCreater(SecurityContext.getCurrentUserName());
             aeaImPurchaseinst.setCreateTime(new Date());
-            aeaImPurchaseinst.setPurchaseFlag(aeaImProjPurchase.getAuditFlag());
+            aeaImPurchaseinst.setNewPurchaseFlag(aeaImProjPurchase.getAuditFlag());
             aeaImPurchaseinst.setOperateDescribe("确认合同");
             aeaImPurchaseinst.setIsOwnFile("0");
             aeaImPurchaseinst.setLinkmanInfoId(loginInfoVo.getUserId());

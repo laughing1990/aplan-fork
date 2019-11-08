@@ -35,7 +35,9 @@ import java.util.Map;
 @Api(value = "窗口效能督查接口", tags = "窗口效能督查接口")
 public class WinEfficiencySupervisionController {
 
-    private static String WIN_EFFICIENCY_SUPERVISION_INDEX = "efficiency/windowPeopleEffect";
+    private static String WIN_EFFICIENCY_SUPERVISION_INDEX = "efficiency/winEffect";
+    private static String SINGLE_WIN_EFFICIENCY_SUPERVISION_INDEX = "efficiency/singleWinEffect";
+
     private static String QUERY_PRELIMINARY_TASKS_INDEX = "view/queryAllPreliminaryTasksIndex";
     private static String QUERY_DISMISSED_APPLY_INDEX = "view/queryAllDismissedApplyIndex";
     private static String QUERY_NEEDCORRECT_APPLY_INDEX = "view/queryAllNeedCompletedApplyIndex";
@@ -50,6 +52,12 @@ public class WinEfficiencySupervisionController {
     @ApiIgnore
     public ModelAndView index() {
         return new ModelAndView(WIN_EFFICIENCY_SUPERVISION_INDEX);
+    }
+
+    @RequestMapping("/winIndex")
+    @ApiIgnore
+    public ModelAndView winIndex() {
+        return new ModelAndView(SINGLE_WIN_EFFICIENCY_SUPERVISION_INDEX);
     }
 
     @GetMapping("/queryPreliminaryTasksIndex.html")

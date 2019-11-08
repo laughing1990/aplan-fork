@@ -7,7 +7,8 @@
     <sql id="allColumns">
         PURCHASEINST_ID  purchaseinstId,
         PROJ_PURCHASE_ID  projPurchaseId,
-        PURCHASE_FLAG  purchaseFlag,
+        OLD_PURCHASE_FLAG  oldPurchaseFlag,
+        NEW_PURCHASE_FLAG  newPurchaseFlag,
         OPERATE_ACTION  operateAction,
         PARENT_PURCHASEINST_ID  parentPurchaseinstId,
         LINKMAN_INFO_ID  linkmanInfoId,
@@ -78,10 +79,10 @@
     <!--5 新增实体对象 -->
     <insert id="insertAeaImPurchaseinst" parameterType="AeaImPurchaseinst">
     insert into AEA_IM_PURCHASEINST (
-PURCHASEINST_ID  ,PROJ_PURCHASE_ID  ,PURCHASE_FLAG  ,OPERATE_ACTION  ,PARENT_PURCHASEINST_ID  ,LINKMAN_INFO_ID  ,CREATER  ,CREATE_TIME  ,OPERATE_DESCRIBE  ,IS_OWN_FILE,
+PURCHASEINST_ID  ,PROJ_PURCHASE_ID  ,OLD_PURCHASE_FLAG  ,NEW_PURCHASE_FLAG ,OPERATE_ACTION  ,PARENT_PURCHASEINST_ID  ,LINKMAN_INFO_ID  ,CREATER  ,CREATE_TIME  ,OPERATE_DESCRIBE  ,IS_OWN_FILE,
 APPLY_DATA,PROCESSINST_ID,TASK_ID ,ROOT_ORG_ID
     )  values  (
-#{purchaseinstId},#{projPurchaseId},#{purchaseFlag},#{operateAction},#{parentPurchaseinstId},#{linkmanInfoId},#{creater},#{createTime},#{operateDescribe},  #{isOwnFile},
+#{purchaseinstId},#{projPurchaseId},#{oldPurchaseFlag},#{newPurchaseFlag},#{operateAction},#{parentPurchaseinstId},#{linkmanInfoId},#{creater},#{createTime},#{operateDescribe},  #{isOwnFile},
 #{applyData},#{processinstId},#{taskId},#{rootOrgId}
     )
 </insert>
@@ -95,8 +96,11 @@ APPLY_DATA,PROCESSINST_ID,TASK_ID ,ROOT_ORG_ID
             <if test="projPurchaseId != null">
                 PROJ_PURCHASE_ID = #{projPurchaseId},
             </if>
-            <if test="purchaseFlag != null">
-                PURCHASE_FLAG = #{purchaseFlag},
+            <if test="newPurchaseFlag != null">
+                NEW_PURCHASE_FLAG = #{newPurchaseFlag},
+            </if>
+            <if test="oldPurchaseFlag != null">
+                OLD_PURCHASE_FLAG = #{oldPurchaseFlag},
             </if>
             <if test="operateAction != null">
                 OPERATE_ACTION = #{operateAction},
@@ -146,7 +150,8 @@ APPLY_DATA,PROCESSINST_ID,TASK_ID ,ROOT_ORG_ID
     <resultMap type="AeaImPurchaseinst" id="AeaImPurchaseinstMap">
         <id property="purchaseinstId" column="PURCHASEINST_ID"/>
         <result property="projPurchaseId" column="PROJ_PURCHASE_ID"/>
-        <result property="purchaseFlag" column="PURCHASE_FLAG"/>
+        <result property="newPurchaseFlag" column="OLD_PURCHASE_FLAG"/>
+        <result property="oldPurchaseFlag" column="NEW_PURCHASE_FLAG"/>
         <result property="operateAction" column="OPERATE_ACTION"/>
         <result property="parentPurchaseinstId" column="PARENT_PURCHASEINST_ID"/>
         <result property="linkmanInfoId" column="LINKMAN_INFO_ID"/>
@@ -169,10 +174,10 @@ APPLY_DATA,PROCESSINST_ID,TASK_ID ,ROOT_ORG_ID
 
     <insert id="insertPurchaseinst" parameterType="AeaImPurchaseinst">
         INSERT INTO aea_im_purchaseinst (
-            PURCHASEINST_ID, PROJ_PURCHASE_ID, PURCHASE_FLAG, OPERATE_ACTION, PARENT_PURCHASEINST_ID, LINKMAN_INFO_ID, CREATER, CREATE_TIME, OPERATE_DESCRIBE, IS_OWN_FILE,APPLY_DATA,
+            PURCHASEINST_ID, PROJ_PURCHASE_ID, OLD_PURCHASE_FLAG,NEW_PURCHASE_FLAG, OPERATE_ACTION, PARENT_PURCHASEINST_ID, LINKMAN_INFO_ID, CREATER, CREATE_TIME, OPERATE_DESCRIBE, IS_OWN_FILE,APPLY_DATA,
             PROCESSINST_ID,TASK_ID
         ) SELECT
-            #{purchaseinstId},#{projPurchaseId},#{purchaseFlag},#{operateAction},
+            #{purchaseinstId},#{projPurchaseId},#{oldPurchaseFlag},#{newPurchaseFlag},#{operateAction},
             (
                 SELECT aip.PURCHASEINST_ID FROM AEA_IM_PURCHASEINST aip
                 WHERE aip.PROJ_PURCHASE_ID = #{projPurchaseId} ORDER BY aip.CREATE_TIME DESC limit 1

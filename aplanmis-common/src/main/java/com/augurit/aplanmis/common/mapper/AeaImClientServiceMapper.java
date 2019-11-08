@@ -4,6 +4,7 @@ import com.augurit.aplanmis.common.domain.AeaImClientService;
 import com.augurit.aplanmis.common.domain.AeaLinkmanInfo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
@@ -18,6 +19,7 @@ import java.util.List;
  * </ul>
  */
 @Mapper
+@Repository
 public interface AeaImClientServiceMapper {
 
     public void insertAeaImClientService(AeaImClientService aeaImClientService) throws Exception;

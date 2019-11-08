@@ -181,29 +181,4 @@ public class RestApplyCotroller {
             return new ResultForm(false, "发起申报失败，查询不到申请实例信息！");
         }
     }
-
-    @PostMapping("/getServiceItemsInfo")
-    @ApiOperation(value = "根据材料ID获取相关中介服务事项信息和项目信息", notes = "根据材料ID获取相关中介服务事项信息和项目信息", httpMethod = "POST")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "applyinstId", value = "申请实例id", required = true, dataType = "string", paramType = "query", readOnly = true),
-            @ApiImplicitParam(name = "matId", value = "材料定义ID", required = true, dataType = "string", paramType = "query", readOnly = true)
-    })
-    public ResultForm getImServiceItemsAndProjInfo(String matId, String applyinstId) {
-        try {
-
-            if (StringUtils.isBlank(applyinstId)) return new ResultForm(false, "缺少参数：applyinstId");
-            if (StringUtils.isBlank(matId)) return new ResultForm(false, "缺少参数：matId");
-            return new ContentResultForm(true, restStartProcessService.getImServiceItemsAndProjInfo(matId, applyinstId));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResultForm(false, "获取中介服务事项信息失败！");
-        }
-
-    }
-
-    @PostMapping("/createImServiceItemPurchase")
-    @ApiOperation(value = "创建项目采购需求", notes = "创建项目采购需求", httpMethod = "POST")
-    public ResultForm createImServiceItemPurchase(ImServiceItemPurchaseVo imServiceItemPurchaseVo) throws Exception {
-        return restStartProcessService.createImServiceItemPurchase(imServiceItemPurchaseVo);
-    }
 }
