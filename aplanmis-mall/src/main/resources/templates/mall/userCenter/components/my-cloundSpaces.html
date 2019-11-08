@@ -58,7 +58,7 @@
                                     </li>
                                 </template>
                                 <template v-else>
-                                    <li style="padding:10px 40px;color: #7F8590;">没数据</li>
+                                    <li style="padding:10px 40px;color: #7F8590;">暂无下级文件夹</li>
                                 </template>
                             </ul>
                         </el-collapse-transition>
@@ -71,16 +71,16 @@
             <section>
                 <div class="tips">
                     <i class="el-icon-warning-outline" style="font-size: 28px; color: rgb(255, 184, 34); vertical-align: middle;"></i>
-                    <span style="color: rgb(255, 75, 71);">温馨提示* </span>:材料附件单次上传最大为100M，总云盘不超过10G。
+                    <span style="color: rgb(255, 75, 71);">温馨提示* </span>:1.首次使用请先新增文件夹再上传文件。2.文件单次上传最大为100M，总云盘不超过10G。
                 </div>
             </section>
             <section class="clearfix">
                 <div class="operation-box">
-                    <el-button type="primary"><i class="ag ag-upload"></i> 上传</el-button>
-                    <el-button class="download-btn" @click="doDownload(1)"><i class="ag ag-download"></i> 下载</el-button>
-                    <el-button class="download-btn" @click="moveFiles(1)"> <img src="../../../../static/mall/images/userCenter/move.png" style="margin-right: 8px;" th:src="@{/mall/images/userCenter/move.png}" alt="文件夹">移动</el-button>
-                    <el-button type="danger" plain class="trash-btn" @click="delelteCloundFile(1)"><i class="ag ag-trash"></i> 删除</el-button>
-                    <input type="file" class="upload-file" id="fileMutiply" multiple @change="chooseFile($event)">
+                    <el-button type="primary" :disabled="DirTreeData.length == 0"><i class="ag ag-upload"></i> 上传</el-button>
+                    <el-button class="download-btn" :disabled="DirTreeData.length == 0 || FilesMultipleSelection.length == 0" @click="doDownload(1)"><i class="ag ag-download"></i> 下载</el-button>
+                    <el-button class="download-btn" :disabled="DirTreeData.length == 0  || FilesMultipleSelection.length == 0" @click="moveFiles(1)"> <img src="../../../../static/mall/images/userCenter/move.png" style="margin-right: 8px;" th:src="@{/mall/images/userCenter/move.png}" alt="文件夹">移动</el-button>
+                    <el-button type="danger" :disabled="DirTreeData.length == 0  || FilesMultipleSelection.length == 0" plain class="trash-btn" @click="delelteCloundFile(1)"><i class="ag ag-trash"></i> 删除</el-button>
+                    <input v-show="DirTreeData.length > 0" type="file" class="upload-file" id="fileMutiply" multiple @change="chooseFile($event)">
                 </div>
                 <div class="search-box">
                     <el-input
@@ -120,13 +120,7 @@
                                         {{scope.row.attName}}
                                     </div>
                                     <div class="download fr">
-                                        <i class="el-icon-more" @contextmenu.prevent="rigthClickTable($event,scope.row)"></i>
-                                        <div class="right-click-opt" id="right-click-opt-table">
-                                            <p @click="doDownload(0,scope.row.detailId)">下载</p>
-                                            <p @click="reNameDialogFlag = true;isReNameFile = 1;detailId = scope.row.detailId">重命名</p>
-                                            <p @click="moveFiles(0,scope.row)">移动</p>
-                                            <p @click="delelteCloundFile(1,scope.row)">删除</p>
-                                        </div>
+                                        <i class="el-icon-more" @contextmenu.prevent="rigthClickTable($event,scope.row)" ></i>
                                     </div>
                                 </div>
                             </template>
@@ -221,8 +215,8 @@
                     <el-scrollbar style="height: 100%;">
                         <ul class="user-pro-list">
                             <li class="user-pro-item pro-appraval " v-for="(item ,index) in DirTreeDataCopy">
-                                <div   style="cursor: pointer;margin: 10px auto;padding-left: 15px;" @click="handleOpenMenu(item,item.childDirs,index)">
-                                    <!--                                    <i :class="[item.open ? '':'close']" class="el-icon-arrow-down" style="margin-right: 5px;"></i>-->
+                                <div :class="[item.dirId == targetDirId ? 'active': '']"   style="cursor: pointer;margin: 0px auto;padding-left: 15px;padding: 10px;" @click="handleOpenMenu(item,item.childDirs,index);chooseMoveDir(item)">
+                                    <!-- <i :class="[item.open ? '':'close']" class="el-icon-arrow-down" style="margin-right: 5px;"></i>-->
                                     <div class="add-icon-bg" :class="[item.open ? '':'close']"></div>
                                     <img v-if="item.open" src="../../../../static/mall/images/userCenter/folder-open-fill.png" th:src="@{/mall/images/userCenter/folder-open-fill.png}" style="margin-right: 8px;" alt="文件夹" align="absmiddle">
                                     <img v-else src="../../../../static/mall/images/userCenter/folder-close-fill.png" th:src="@{/mall/images/userCenter/folder-close-fill.png}" style="margin-right: 8px;" alt="文件夹" align="absmiddle">
@@ -230,9 +224,14 @@
                                 </div>
                                 <el-collapse-transition>
                                     <ul v-show="item.open">
-                                        <li  :class="[itemSub.dirId == targetDirId ? 'active': '']"  v-for="(itemSub,indexSub) in item.childDirs" @click="chooseMoveDir(itemSub)" style="padding:10px 55px;">
-                                            <img src="../../../../static/mall/images/userCenter/folder-close-fill-hey.png" style="margin-right: 8px;" th:src="@{/mall/images/userCenter/folder-close-fill-hey.png}" alt="文件夹">{{itemSub.dirName}}
-                                        </li>
+                                        <template v-if="item.childDirs.length > 0">
+                                            <li  :class="[itemSub.dirId == targetDirId ? 'active': '']"  v-for="(itemSub,indexSub) in item.childDirs" @click="chooseMoveDir(itemSub)" style="padding:10px 55px;">
+                                                <img src="../../../../static/mall/images/userCenter/folder-close-fill-hey.png" style="margin-right: 8px;" th:src="@{/mall/images/userCenter/folder-close-fill-hey.png}" alt="文件夹">{{itemSub.dirName}}
+                                            </li>
+                                        </template>
+                                        <template v-else>
+                                            <li style="padding:10px 40px;color: #7F8590;">暂无下级文件夹</li>
+                                        </template>
                                     </ul>
                                 </el-collapse-transition>
                             </li>
@@ -277,9 +276,10 @@
                                 {{item.name}}
                             </span>
                             <p class="fileSize fr">
-                                <span>{{item.uploadedSize}} / {{item.filesSize}}</span>
-                                <span class="el-icon-success" v-if="item.uploadedPer == 100 " style="color: #00C161;margin-right: 9px;"></span>
-<!--                                <span class="el-icon-circle-close" v-else style="margin-right: 20px;"></span>-->
+                                <span>{{item.uploadedSize > item.filesSize?item.filesSize : item.uploadedSize}} / {{item.filesSize}}</span>
+                                <span class="el-icon-success" v-show="item.uploadedPer == 100 " style="color: #00C161;margin-right: 9px;"></span>
+                                <!-- <span class="el-icon-circle-close" v-else style="margin-right: 20px;"></span>-->
+                                 <span class="el-icon-info" style="color:rgb(255, 75, 71);margin-right: 9px;" v-show="item.error" title="上传失败"></span>
                             </p>
                         </div>
                     </div>
@@ -310,6 +310,16 @@
         <p @click="reNameDialogFlag = true;isReNameFile = 0">重命名</p>
     </div>
     <!--左侧树右键展开 end-->
+
+    <!--右侧table右键展开 str-->
+    <div class="right-click-opt" id="right-click-opt-table"  @mouseleave="hideClickOpt">
+        <p @click="doDownload(0,TableClickRow.detailId)">下载</p>
+        <p @click="reNameDialogFlag = true;isReNameFile = 1;detailId = TableClickRow.detailId">重命名</p>
+        <p @click="moveFiles(0,TableClickRow)">移动</p>
+        <p @click="delelteCloundFile(1,TableClickRow)">删除</p>
+    </div>
+    <!--右侧table右键展开 end-->
+
 </div>
     <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js" th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>
     <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js" th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>

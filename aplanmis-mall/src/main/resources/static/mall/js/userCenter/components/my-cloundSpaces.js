@@ -16,6 +16,7 @@
             DirTreeData: [],
             DirTreeDataCopy:[],
             fileListData:[],
+            TableClickRow:{}, // table 右键点击选中的数据
             dirId:'', // 选中的文件夹Id
             delDirId:'', // 右键删除文件夹id
             level:'',// 右键的等级  1表示父  2表示子
@@ -55,6 +56,9 @@
         created:function(){
            this.getDirTree();
         },
+        mounted:function(){
+            
+        },
         methods:{
             // 用户信息查询文件夹Tree
             getDirTree:function () {
@@ -84,6 +88,9 @@
                         for (var i = 0; i < content.length ; i++) {
                             if(content[i].childDirs && content[i].childDirs.length > 0 ) {
                                 vm.getFileList(content[i].childDirs[0]);
+                                break;
+                            }else{
+                                vm.getFileList(content[i]);
                                 break;
                             }
                         }
@@ -143,6 +150,16 @@
                 this.$set(this.addDirFormData,'chooseSuperDir',this.delDirId)
             },
 
+            // table 右键
+            rigthClickTable:function($event,item){
+                $event.returnValue = false;
+                $event.cancelBubble = true;
+                if (item) {
+                    $('#right-click-opt-table').show().css({ 'left': $event.pageX, 'top':$event.pageY });
+                }
+                this.TableClickRow = item;
+            },
+
             // 新建文件夹
             sureAddDir:function(){
                 var vm = this;
@@ -192,6 +209,11 @@
                         if(res.success){
                             _this.$message.success('删除成功');
                             _this.getDirTree();
+                            var item = {
+                                dirId: _this.dirId,
+                                dirName:_this.dirName,
+                            }
+                            _this.getFileList(item);
                         }else{
                             _this.$message.error('删除失败')
                         }
@@ -334,9 +356,11 @@
                         // vm.uploadFile.splice(index,1);//移除当前文件进度条样式
                         j++; //递归条件
                         vm.uploadCloudFiles();
+
                     },
                     error:function(){
                         vm.$message.error('上传出错，请稍后重试！');
+                        vm.$set(vm.uploadFile[j],'error','1');
                     }
                 });
             },
@@ -669,16 +693,8 @@
                 }
                 this.getFileList(item)
             },
-            treeNodeRightClick: function(event, data, Node, $event) {
-                $event.returnValue = false;
-                $event.cancelBubble = true;
-                if (data.categoryId) {
-                    $('#right-click-opt-tree').show().css({ 'left': event.clientX, 'top': event.clientY });
-                    this.rightClickCategoryId = data.categoryId;
-                }
-            },
             hideClickOpt: function() {
-                $('#right-click-opt-tree').hide()
+                $('.right-click-opt').hide()
             },
             // 重置数据（新增文件夹的对象）
             clearFormData:function(){

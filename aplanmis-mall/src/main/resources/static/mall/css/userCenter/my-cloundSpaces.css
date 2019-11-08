@@ -460,6 +460,10 @@
     background: #457EFF;
     color: #ffffff;
 }
+.addFileForm-box .user-pro-item div.active{
+    background: #457EFF;
+    color: #ffffff;
+}
 .addFilesDialog .el-dialog__body{
     padding: 20px 20px 15px;
 }
