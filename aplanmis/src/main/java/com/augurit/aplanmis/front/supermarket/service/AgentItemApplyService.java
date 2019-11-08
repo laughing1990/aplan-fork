@@ -88,6 +88,8 @@ public class AgentItemApplyService {
         ImItemApplyData applyData = agentItemApplyData.createItemApplyData();
         ApplyinstResult result = restImApplyService.purchaseStartProcess(applyData);
         String applyinstId = result.getApplyinstId();
+        String applyinstCode = result.getApplyinstCode();
+
        /* SeriesApplyDataVo vo = this.changeToSeriesApplyDataVo(agentItemApplyData);
         String applyinstId = aeaSeriesService.stageApplay(vo);
         agentItemApplyData.setApplyinstId(applyinstId);
@@ -170,7 +172,7 @@ public class AgentItemApplyService {
         if (aeaImUnitRequire == null) {
             throw new RuntimeException("缺少中介机构要求信息");
         }
-        AeaImProjPurchase purchaseProjInfo = data.createPurchaseProjInfo(data);
+        AeaImProjPurchase purchaseProjInfo = null;//data.createPurchaseProjInfo(data);
 
         //保存机构要求
         aeaImUnitRequire.setUnitRequireId(UuidUtil.generateUuid());
@@ -188,7 +190,7 @@ public class AgentItemApplyService {
             }
         }
         //保存采购项目
-        AeaProjInfo aeaProjInfo = data.createProjInfo(data);
+        AeaProjInfo aeaProjInfo = null;//data.createProjInfo(data);
         aeaProjInfoMapper.insertAeaProjInfo(aeaProjInfo);
         purchaseProjInfo.setProjInfoId(aeaProjInfo.getProjInfoId());
 

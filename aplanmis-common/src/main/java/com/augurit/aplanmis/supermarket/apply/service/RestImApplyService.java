@@ -513,7 +513,7 @@ public class RestImApplyService {
         AeaItemBasic itemBasic = aeaItemBasicMapper.getAeaItemBasicByItemVerId(itemVerId, SecurityContext.getCurrentOrgId());
 
         String appinstId = UUID.randomUUID().toString();//预先生成流程模板实例ID
-        result.setAppinstId(appinstId);
+//        result.setAppinstId(appinstId);
 //        String branchOrgMap = applyData.getBranchOrgMap();
         String opuWinId = aeaServiceWindowService.getCurrentUserWindow() == null ? "" : aeaServiceWindowService.getCurrentUserWindow().getWindowId();
         AeaHiApplyinst seriesApplyinst = aeaHiApplyinstService.createAeaHiApplyinstAndTriggerAeaLogApplyStateHist(applyData.getApplySource(),
@@ -521,12 +521,11 @@ public class RestImApplyService {
         result.setApplyinstId(seriesApplyinst.getApplyinstId());
         result.setApplyinstCode(seriesApplyinst.getApplyinstCode());
 
-        String seriesApplyinstId = seriesApplyinst.getApplyinstId();//申报实例ID
-
+        String applyinstId = seriesApplyinst.getApplyinstId();//申报实例ID
         seriesApplyinst.setProjInfoId(applyData.getProjInfoId());
 
         //1、保存单项实例
-        AeaHiSeriesinst aeaHiSeriesinst = aeaHiSeriesinstService.createAeaHiSeriesinst(seriesApplyinstId, appinstId, null, null);
+        AeaHiSeriesinst aeaHiSeriesinst = aeaHiSeriesinstService.createAeaHiSeriesinst(applyinstId, appinstId, null, null);
 
         //2、事项实例
         AeaHiIteminst aeaHiIteminst = aeaHiIteminstService.insertAeaHiIteminstAndTriggerAeaLogItemStateHist(aeaHiSeriesinst.getSeriesinstId(), itemVerId, null, null, appinstId);
@@ -549,7 +548,7 @@ public class RestImApplyService {
 //        aeaHiItemStateinstService.batchInsertAeaHiItemStateinst(seriesApplyinstId, aeaHiSeriesinst.getSeriesinstId(), null, stateIds, SecurityContext.getCurrentUserName());
 
         //4、材料输入输出实例
-        aeaHiItemInoutinstService.batchInsertAeaHiItemInoutinst(applyData.getMatinstsIds(), seriesApplyinstId, SecurityContext.getCurrentUserName());
+        aeaHiItemInoutinstService.batchInsertAeaHiItemInoutinst(applyData.getMatinstsIds(), applyinstId, SecurityContext.getCurrentUserName());
 
         //5、启动主流程
         BpmProcessInstance processInstance = aeaBpmProcessService.startFlow(itemBasic.getAppId(), appinstId, seriesApplyinst);
@@ -573,7 +572,7 @@ public class RestImApplyService {
         aeaLogItemStateHistService.updateAeaLogItemStateHist(logItemStateHist);
 
         //流程发起后，更新初始申请历史的taskId
-        AeaLogApplyStateHist applyStateHist = aeaLogApplyStateHistService.getInitStateAeaLogApplyStateHist(seriesApplyinstId, appinstId);
+        AeaLogApplyStateHist applyStateHist = aeaLogApplyStateHistService.getInitStateAeaLogApplyStateHist(applyinstId, appinstId);
         applyStateHist.setTaskinstId(tasks.get(0).getId());
         aeaLogApplyStateHistService.updateAeaLogApplyStateHist(applyStateHist);
 
@@ -589,7 +588,7 @@ public class RestImApplyService {
 
         //9、申报主体
         if ("0".equals(applyData.getApplySubject())) { //申报主体为个人
-            aeaLinkmanInfoService.insertApplyAndLinkProjLinkman(seriesApplyinstId, new String[]{applyData.getProjInfoId()}, applyData.getApplyLinkmanId(), applyData.getLinkmanInfoId());
+            aeaLinkmanInfoService.insertApplyAndLinkProjLinkman(applyinstId, new String[]{applyData.getProjInfoId()}, applyData.getApplyLinkmanId(), applyData.getLinkmanInfoId());
         } else {
 
             //建设单位
@@ -597,7 +596,7 @@ public class RestImApplyService {
             List<String> unitInfoIds = new ArrayList();
             unitInfoIds.add(applyData.getConstructionUnitId());
             puMap.put(applyData.getProjInfoId(), unitInfoIds);
-            aeaUnitInfoService.insertApplyOwnerUnitProj(seriesApplyinstId, puMap);//创建采购需求项目和建设单位关联
+            aeaUnitInfoService.insertApplyOwnerUnitProj(applyinstId, puMap);//创建采购需求项目和建设单位关联
 
             //如果是投资项目，则需要创建投资项目和建设单位关联
             if ("1".equals(applyData.getIsApproveProj())) {
@@ -626,10 +625,11 @@ public class RestImApplyService {
      * @param data
      * @throws Exception
      */
-    public AeaImProjPurchase savePurchaseProjInfo(ImPurchaseData data, String applySubject) throws Exception {
+    public AeaImProjPurchase savePurchaseProjInfo(ImPurchaseData data) throws Exception {
         //参数校验
         this.validParams(data);
         String unitInfoId = data.getPublishUnitInfoId();
+        String applySubject = data.getApplySubject();
         //初始化采购需求实体信息
         AeaImProjPurchase aeaImProjPurchase = data.createAeaImProjPurchase();
 
