@@ -5,6 +5,7 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.UUID;
 
 /**
  * 企业报价金额表-模型
@@ -27,6 +28,20 @@ public class AeaImBiddingPrice implements Serializable {
     private String creater; //创建人
     @FiledNameIs(filedValue = "创建时间")
     private Date createTime; //创建时间
+
+    public AeaImBiddingPrice() {
+    }
+
     private String rootOrgId;//根组织ID
 
+    public AeaImBiddingPrice(String unitBiddingId, String price, String isChoice, String isDelete, String creater, String rootOrgId) {
+        this.biddingPriceId = UUID.randomUUID().toString();
+        this.unitBiddingId = unitBiddingId;
+        this.price = price;
+        this.isChoice = isChoice;
+        this.isDelete = isDelete;
+        this.creater = creater;
+        this.createTime = new Date();
+        this.rootOrgId = rootOrgId;
+    }
 }

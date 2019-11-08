@@ -1633,7 +1633,8 @@ public class AeaImProjPurchaseServiceImpl implements AeaImProjPurchaseService {
         aeaImPurchaseinst.setCreater(SecurityContext.getCurrentUserName());
         aeaImPurchaseinst.setCreateTime(new Date());
         aeaImPurchaseinst.setLinkmanInfoId(aeaImProjPurchase.getLinkmanInfoId());
-        aeaImPurchaseinst.setPurchaseFlag(aeaImProjPurchase.getAuditFlag());
+        aeaImPurchaseinst.setOldPurchaseFlag(aeaImProjPurchase.getAuditFlag());
+        aeaImPurchaseinst.setNewPurchaseFlag(aeaImProjPurchase.getAuditFlag());
         aeaImPurchaseinst.setOperateAction(operateAction);
         aeaImPurchaseinst.setOperateDescribe(memo);
         aeaImPurchaseinst.setIsOwnFile(Status.OFF);

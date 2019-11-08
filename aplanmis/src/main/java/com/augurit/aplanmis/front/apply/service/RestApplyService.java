@@ -3,19 +3,22 @@ package com.augurit.aplanmis.front.apply.service;
 import com.alibaba.fastjson.JSON;
 import com.augurit.agcloud.bsc.util.UuidUtil;
 import com.augurit.agcloud.framework.security.SecurityContext;
+import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.agcloud.framework.util.StringUtils;
+import com.augurit.aplanmis.admin.market.item.service.AeaItemRelevanceService;
+import com.augurit.aplanmis.admin.market.service.service.AeaImServiceService;
 import com.augurit.aplanmis.common.constants.ApplyState;
-import com.augurit.aplanmis.common.domain.AeaHiApplyinst;
-import com.augurit.aplanmis.common.domain.AeaHiSmsInfo;
-import com.augurit.aplanmis.common.domain.AeaItemBasic;
-import com.augurit.aplanmis.common.domain.AeaParStage;
-import com.augurit.aplanmis.common.mapper.AeaHiSmsInfoMapper;
-import com.augurit.aplanmis.common.mapper.AeaItemBasicMapper;
-import com.augurit.aplanmis.common.mapper.AeaParStageMapper;
+import com.augurit.aplanmis.common.domain.*;
+import com.augurit.aplanmis.common.mapper.*;
+import com.augurit.aplanmis.common.service.admin.item.AeaItemBasicAdminService;
 import com.augurit.aplanmis.common.service.instance.AeaHiApplyinstService;
+import com.augurit.aplanmis.common.service.linkman.AeaLinkmanInfoService;
+import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
+import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
 import com.augurit.aplanmis.common.utils.BusinessUtil;
 import com.augurit.aplanmis.front.apply.vo.*;
 import com.augurit.aplanmis.front.receive.service.ReceiveService;
+import com.augurit.aplanmis.supermarket.apply.vo.ImServiceItemPurchaseVo;
 import io.jsonwebtoken.lang.Assert;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.BeanUtils;
@@ -45,6 +48,22 @@ public class RestApplyService {
     private ReceiveService receiveService;
     @Autowired
     private AeaHiApplyinstService aeaHiApplyinstService;
+    @Autowired
+    private AeaProjInfoService aeaProjInfoService;
+    @Autowired
+    private AeaLinkmanInfoService aeaLinkmanInfoService;
+    @Autowired
+    private AeaUnitInfoService aeaUnitInfoService;
+    @Autowired
+    private AeaItemBasicAdminService aeaItemBasicAdminService;
+    @Autowired
+    private AeaImServiceService aeaImServiceService;
+    @Autowired
+    private AeaItemRelevanceService aeaItemRelevanceService;
+    @Autowired
+    private AeaImProjPurchaseMapper aeaImProjPurchaseMapper;
+    @Autowired
+    private AeaImPurchaseinstMapper aeaImPurchaseinstMapper;
 
     /**
      * 现场登记 --> 收件，发起申报
@@ -321,6 +340,198 @@ public class RestApplyService {
                 aeaHiSmsInfoMapper.insertAeaHiSmsInfo(newOne);
             }
         }
+    }
+
+    /**
+     * 根据材料ID获取相关中介服务事项信息和项目信息
+     *
+     * @return
+     * @throws Exception
+     */
+    public Map getImServiceItemsAndProjInfo(String matId, String applyinstId) throws Exception {
+
+        if (StringUtils.isBlank(matId) || StringUtils.isBlank(applyinstId)) return null;
+
+        Map map = new HashMap();
+
+        ImServiceItemPurchaseVo imServiceItemPurchaseVo = new ImServiceItemPurchaseVo();
+
+        AeaHiApplyinst aeaHiApplyinst = aeaHiApplyinstService.getAeaHiApplyinstById(applyinstId);
+        if (aeaHiApplyinst == null) return null;
+
+        List<AeaProjInfo> projInfos = aeaProjInfoService.findApplyProj(applyinstId);
+        if (projInfos.size() < 1) return null;
+        AeaProjInfo projInfo = projInfos.get(0);
+
+        imServiceItemPurchaseVo.setApplyinstId(applyinstId);
+        imServiceItemPurchaseVo.setApplyinstCode(aeaHiApplyinst.getApplyinstCode());
+        imServiceItemPurchaseVo.setPurchaseCode(projInfo.getDistrict() + aeaHiApplyinst.getApplyinstCode());
+
+        imServiceItemPurchaseVo.setProjInfoId(projInfo.getProjInfoId());
+        imServiceItemPurchaseVo.setLocalCode(projInfo.getLocalCode());
+        imServiceItemPurchaseVo.setPurchaseName(projInfo.getProjName());
+
+        Map projScale = new HashMap();
+        projScale.put("buildAreaSum", projInfo.getBuildAreaSum());// 建筑面积
+        projScale.put("investSum", projInfo.getInvestSum());// 总投资
+        projScale.put("xmYdmj", projInfo.getXmYdmj());// 用地面积
+
+        AeaLinkmanInfo linkmanInfo = aeaLinkmanInfoService.getAeaLinkmanInfoByLinkmanInfoId(aeaHiApplyinst.getLinkmanInfoId());
+        if (linkmanInfo == null) return null;
+        imServiceItemPurchaseVo.setLinkmanInfoId(aeaHiApplyinst.getLinkmanInfoId());
+        imServiceItemPurchaseVo.setLinkmanName(linkmanInfo.getLinkmanName());
+        imServiceItemPurchaseVo.setLinkmanMobilePhone(linkmanInfo.getLinkmanMobilePhone());
+
+        //申办主体为单位
+        if ("1".equals(aeaHiApplyinst.getApplySubject())) {
+
+            List<AeaUnitInfo> aeaUnitInfos = aeaUnitInfoService.findApplyOwnerUnitProj(applyinstId, projInfo.getProjInfoId());
+            if (aeaUnitInfos.size() < 1) return null;
+            AeaUnitInfo unitInfo = aeaUnitInfos.get(0);
+            imServiceItemPurchaseVo.setUnitInfoId(unitInfo.getUnitInfoId());
+            imServiceItemPurchaseVo.setApplicant(unitInfo.getApplicant());
+            imServiceItemPurchaseVo.setApplySubject("1");
+        } else {
+            imServiceItemPurchaseVo.setApplySubject("0");
+            imServiceItemPurchaseVo.setUnitInfoId(linkmanInfo.getLinkmanInfoId());
+            imServiceItemPurchaseVo.setApplicant(linkmanInfo.getLinkmanName());
+        }
+
+        //根据输出材料ID获取对应的中介服务事项
+        List<AeaItemBasic> itemBasics = aeaItemBasicAdminService.getAeaItemBasicsListByOutputMatId(matId);
+
+        List<Map> serviceItemsInfo = new ArrayList();
+        Map serviceMap = new HashMap();
+
+        for (AeaItemBasic itemBasic : itemBasics) {
+
+            AeaItemRelevance aeaItemRelevance = new AeaItemRelevance();
+            aeaItemRelevance.setChildItemId(itemBasic.getItemId());
+            aeaItemRelevance.setIsDelete("0");
+
+            Map itemVo = new HashMap();
+            itemVo.put("itemName", itemBasic.getItemName());
+            itemVo.put("parItem", aeaItemRelevanceService.listAeaItemRelevance(aeaItemRelevance));// 获取关联行政事项
+
+            //获取中介服务事项所关联的所有中介服务
+            List<AeaImService> services = aeaImServiceService.listAeaImServiceNoPageByItemVerId(itemBasic.getItemVerId());
+            for (AeaImService service : services) {
+
+                serviceMap.put(service.getServiceId(), service);
+                itemVo.put("serviceItemId", service.getServiceItemId());
+                itemVo.put("serviceId", service.getServiceId());
+                serviceItemsInfo.add(itemVo);
+            }
+        }
+
+        List<Map> _services = new ArrayList();
+
+        if (serviceItemsInfo.size() > 0) {
+
+            Collection<AeaImService> valueCollection = serviceMap.values();
+            List<AeaImService> services = new ArrayList(valueCollection);
+
+            //按照中介服务来分类
+            for (AeaImService service : services) {
+                Map serviceVo = new HashMap();
+                serviceVo.put("serviceId", service.getServiceId());
+                serviceVo.put("serviceName", service.getServiceName());
+
+                List<Map> temp = new ArrayList();
+                for (Map itemVo : serviceItemsInfo) {
+                    if (itemVo.get("serviceId").equals(service.getServiceId())) {
+                        temp.add(itemVo);
+                    }
+                }
+                serviceVo.put("serviceItem", temp);
+                _services.add(serviceVo);
+            }
+        }
+
+        map.put("purchaseInfo", imServiceItemPurchaseVo);
+        map.put("projScale", projScale);
+        map.put("serviceItemsInfo", _services);
+
+        return map;
+    }
+
+    /**
+     * 发布项目采购需求
+     *
+     * @param imServiceItemPurchaseVo
+     * @throws Exception
+     */
+    public ResultForm createImServiceItemPurchase(ImServiceItemPurchaseVo imServiceItemPurchaseVo) throws Exception {
+
+        try {
+
+            if (StringUtils.isBlank(imServiceItemPurchaseVo.getServiceItemId()))
+                return new ResultForm(false, "缺少参数：ServiceItemId ");
+            if (StringUtils.isBlank(imServiceItemPurchaseVo.getProjInfoId()))
+                return new ResultForm(false, "缺少参数：ProjInfoId ");
+            if (StringUtils.isBlank(imServiceItemPurchaseVo.getLinkmanInfoId()))
+                return new ResultForm(false, "缺少参数：LinkmanInfoId ");
+            if (StringUtils.isBlank(imServiceItemPurchaseVo.getBiddingType()))
+                return new ResultForm(false, "缺少参数：BiddingType ");
+            if (imServiceItemPurchaseVo.getChoiceImunitTime() == null)
+                return new ResultForm(false, "缺少参数：ChoiceImunitTime ");
+            if (imServiceItemPurchaseVo.getExpirationDate() == null)
+                return new ResultForm(false, "缺少参数：ExpirationDate ");
+
+            //初始化采购需求实体信息
+            AeaImProjPurchase aeaImProjPurchase = new AeaImProjPurchase();
+            aeaImProjPurchase.setProjPurchaseId(UUID.randomUUID().toString());
+            aeaImProjPurchase.setProjInfoId(imServiceItemPurchaseVo.getProjInfoId());
+            aeaImProjPurchase.setServiceItemId(imServiceItemPurchaseVo.getServiceItemId());// 服务和中介服务事项关联ID
+            aeaImProjPurchase.setQuoteType("0");// 报价方式,0 金额 1 下浮率
+            aeaImProjPurchase.setChoiceImunitTime(imServiceItemPurchaseVo.getChoiceImunitTime());// 选取中介时间
+            aeaImProjPurchase.setExpirationDate(imServiceItemPurchaseVo.getExpirationDate());// 截止日期
+            aeaImProjPurchase.setIsDefineAmount(imServiceItemPurchaseVo.getIsDefineAmount());// 是否确认金额，1 是 0 否
+            aeaImProjPurchase.setSelectCondition(imServiceItemPurchaseVo.getSelectCondition());// 服务选择条件：1 多个服务具备其一，0 多个服务都具备
+            aeaImProjPurchase.setOwnerComplaintPhone(imServiceItemPurchaseVo.getLinkmanMobilePhone());// 业主投诉电话
+            aeaImProjPurchase.setIsDiscloseIm(imServiceItemPurchaseVo.getIsDiscloseIm());// 是否公示中选机构： 1 是， 0 否
+            aeaImProjPurchase.setIsDiscloseBidding(imServiceItemPurchaseVo.getIsDiscloseBidding());// 是否公示中标公告：1 是， 0 否
+            aeaImProjPurchase.setIsLiveWitness("0");// 是否现场见证：1 是， 0 否
+            aeaImProjPurchase.setApplyinstCode(imServiceItemPurchaseVo.getApplyinstCode());// 关联的审批流水号
+            aeaImProjPurchase.setIsApproveProj("1");// 是否为投资审批项目：1 是，0 否
+            aeaImProjPurchase.setContacts(imServiceItemPurchaseVo.getLinkmanName());// 业主联系人
+            aeaImProjPurchase.setMoblie(imServiceItemPurchaseVo.getLinkmanMobilePhone());// 联系电话
+            aeaImProjPurchase.setBiddingType(imServiceItemPurchaseVo.getBiddingType());// 竞价类型：1 随机中标，2 自主选择
+            aeaImProjPurchase.setAuditFlag("0");// 采购需求状态：0：未提交，1：服务中，2：服务完成，3：服务中止，4：审核中，5：退回，6：报名中，7：选取中，8：选取开始，9：已选取，10：无效，11：待选取，12：已过时
+            aeaImProjPurchase.setBasePrice(imServiceItemPurchaseVo.getBasePrice());// 最低价格（万元）
+            aeaImProjPurchase.setHighestPrice(imServiceItemPurchaseVo.getHighestPrice());// 最高价格（万元）
+            aeaImProjPurchase.setServiceContent(imServiceItemPurchaseVo.getServiceContent());// 服务内容
+            aeaImProjPurchase.setLinkmanInfoId(imServiceItemPurchaseVo.getLinkmanInfoId());// 业主委托人信息ID
+            aeaImProjPurchase.setIsDelete("0");
+            aeaImProjPurchase.setIsActive("1");
+            aeaImProjPurchase.setCreater(SecurityContext.getCurrentUserId());
+            aeaImProjPurchase.setCreateTime(new Date());
+            aeaImProjPurchase.setRootOrgId(SecurityContext.getCurrentOrgId());
+            //申报主体为单位时
+            if ("1".equals(imServiceItemPurchaseVo.getApplySubject())) {
+                aeaImProjPurchase.setPublishUnitInfoId(imServiceItemPurchaseVo.getUnitInfoId());// 业主单位ID
+            }
+            aeaImProjPurchaseMapper.insertAeaImProjPurchase(aeaImProjPurchase);
+
+            //初始化采购需求历史状态信息
+            AeaImPurchaseinst aeaImPurchaseinst = new AeaImPurchaseinst();
+            aeaImPurchaseinst.setPurchaseinstId(UUID.randomUUID().toString());
+            aeaImPurchaseinst.setProjPurchaseId(aeaImProjPurchase.getProjPurchaseId());
+            aeaImPurchaseinst.setNewPurchaseFlag("0");// 采购需求状态：0：未提交，1：服务中，2：服务完成，3：服务中止，4：审核中，5：退回，6：报名中，7：选取中，8：选取开始，9：已选取，10：无效，11：待选取，12：已过时
+            aeaImPurchaseinst.setOldPurchaseFlag("0");// 采购需求状态：0：未提交，1：服务中，2：服务完成，3：服务中止，4：审核中，5：退回，6：报名中，7：选取中，8：选取开始，9：已选取，10：无效，11：待选取，12：已过时
+            aeaImPurchaseinst.setParentPurchaseinstId("root");
+            aeaImPurchaseinst.setLinkmanInfoId(imServiceItemPurchaseVo.getLinkmanInfoId());
+            aeaImPurchaseinst.setIsOwnFile("0");// 是否拥有附件
+            aeaImPurchaseinst.setCreater(SecurityContext.getCurrentUserId());
+            aeaImPurchaseinst.setCreateTime(new Date());
+            aeaImPurchaseinst.setRootOrgId(SecurityContext.getCurrentOrgId());
+            aeaImPurchaseinstMapper.insertPurchaseinst(aeaImPurchaseinst);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResultForm(false, "采购需求发布失败！");
+        }
+
+        return new ResultForm(true, "采购需求发布成功！");
     }
 
     public String onlyInstApply(StageApplyDataPageVo stageApplyDataPageVo) throws Exception {
