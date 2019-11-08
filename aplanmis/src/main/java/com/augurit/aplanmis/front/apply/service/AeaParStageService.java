@@ -5,6 +5,7 @@ import com.augurit.agcloud.bpm.common.engine.BpmProcessService;
 import com.augurit.agcloud.bpm.common.engine.BpmTaskService;
 import com.augurit.agcloud.bpm.common.engine.form.BpmProcessInstance;
 import com.augurit.agcloud.bpm.common.service.ActStoAppinstService;
+import com.augurit.agcloud.framework.constant.Status;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.util.CollectionUtils;
 import com.augurit.agcloud.framework.util.StringUtils;
@@ -24,13 +25,14 @@ import com.augurit.aplanmis.common.domain.AeaItemMat;
 import com.augurit.aplanmis.common.domain.AeaLogApplyStateHist;
 import com.augurit.aplanmis.common.domain.AeaLogItemStateHist;
 import com.augurit.aplanmis.common.domain.AeaParStage;
+import com.augurit.aplanmis.common.domain.AeaParTheme;
 import com.augurit.aplanmis.common.domain.AeaParThemeVer;
 import com.augurit.aplanmis.common.domain.AeaProjInfo;
 import com.augurit.aplanmis.common.event.AplanmisEventPublisher;
-import com.augurit.aplanmis.common.event.AplanmisEventType;
 import com.augurit.aplanmis.common.mapper.AeaApplyinstProjMapper;
 import com.augurit.aplanmis.common.mapper.AeaHiItemInoutinstMapper;
 import com.augurit.aplanmis.common.mapper.AeaParStageMapper;
+import com.augurit.aplanmis.common.mapper.AeaParThemeMapper;
 import com.augurit.aplanmis.common.mapper.AeaParThemeVerMapper;
 import com.augurit.aplanmis.common.mapper.AeaProjInfoMapper;
 import com.augurit.aplanmis.common.service.instance.AeaHiApplyinstService;
@@ -89,6 +91,8 @@ public class AeaParStageService {
     private AeaBpmProcessService aeaBpmProcessService;
     @Autowired
     private AeaParThemeVerMapper aeaParThemeVerMapper;
+    @Autowired
+    private AeaParThemeMapper aeaParThemeMapper;
     @Autowired
     private AeaHiParStateinstService aeaHiParStateinstService;
     @Autowired
@@ -639,10 +643,14 @@ public class AeaParStageService {
             return;
         }
         String themeId = themeVer.getThemeId();
+        AeaParTheme aeaParTheme = aeaParThemeMapper.selectOneById(themeId);
         if (projInfoIds != null && projInfoIds.length > 0) {
             for (String projInfoId : projInfoIds) {
                 AeaProjInfo projInfo = aeaProjInfoMapper.getAeaProjInfoById(projInfoId);
-                projInfo.setThemeId(themeId);
+                // 主线的才绑定
+                if (Status.ON.equals(aeaParTheme.getIsMainline()) || StringUtils.isBlank(projInfo.getThemeId())) {
+                    projInfo.setThemeId(themeId);
+                }
                 projInfo.setThemeVerId(themeVerId);
                 projInfo.setModifyTime(new Date());
                 projInfo.setModifier(SecurityContext.getCurrentUserId());
