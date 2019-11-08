@@ -2231,12 +2231,11 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
         }
 
 
-        return queryWinStageStatistics(list, type, rootOrgId, windowId);
+        return queryWinStageStatistics(list, type, rootOrgId, windowId,startTime,endTime);
     }
 
-    private Map<String, Object> queryWinStageStatistics(List<AeaAnaWinDayStatistics> list, String type, String rootOrgId, String windowId) throws Exception {
-        String startTime = "";
-        String endTime = "";
+    private Map<String, Object> queryWinStageStatistics(List<AeaAnaWinDayStatistics> list, String type, String rootOrgId, String windowId, String startTime, String endTime) throws Exception {
+
         if ("D".equals(type)) {
             String yesterday = DateUtils.convertDateToString(DateUtils.getPreDateByDate(new Date()), "yyyy-MM-dd");
             startTime = yesterday + " 00:00:00";
