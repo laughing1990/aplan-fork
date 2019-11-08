@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaParStateItemMapper">
+
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns">
+        ${alias}.STATE_ITEM_ID  stateItemId,
+        ${alias}.PAR_STATE_ID  parStateId,
+        ${alias}.STAGE_ITEM_ID  stageItemId,
+        ${alias}.CREATER  creater,
+        ${alias}.CREATE_TIME  createTime,
+        ${alias}.SORT_NO  sortNo,
+        ${alias}.ROOT_ORG_ID  rootOrgId
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaParStateItemById" resultType="AeaParStateItem">
+        select
+            <include refid="allColumns">
+                <property name="alias" value="apsi"/>
+            </include>
+        from AEA_PAR_STATE_ITEM apsi
+        <where>
+            and STATE_ITEM_ID = #{id}
+            <if test="rootOrgId != null">
+            and ROOT_ORG_ID = #{rootOrgId}
+            </if>
+        </where>
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaParStateItem" resultType="AeaParStateItem">
+        select
+            <include refid="allColumns"><property name="alias" value="apsi"/></include>
+        from AEA_PAR_STATE_ITEM apsi
+        <where>
+            <if test="stateItemId != null">
+                AND STATE_ITEM_ID = #{stateItemId}
+            </if>
+            <if test="parStateId != null">
+                AND PAR_STATE_ID = #{parStateId}
+            </if>
+            <if test="stageItemId != null">
+                AND STAGE_ITEM_ID = #{stageItemId}
+            </if>
+            <if test="creater != null">
+                AND CREATER = #{creater}
+            </if>
+            <if test="createTime != null">
+                AND CREATE_TIME = #{createTime}
+            </if>
+            <if test="sortNo != null">
+                AND SORT_NO = #{sortNo}
+            </if>
+            <if test="rootOrgId != null">
+                AND ROOT_ORG_ID = #{rootOrgId}
+            </if>
+        </where>
+    </select>
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaParStateItem" parameterType="AeaParStateItem">
+        insert into AEA_PAR_STATE_ITEM (
+            STATE_ITEM_ID,
+            PAR_STATE_ID,
+            STAGE_ITEM_ID,
+            CREATER,
+            CREATE_TIME,
+            SORT_NO,
+            ROOT_ORG_ID
+        )  values  (
+            #{stateItemId},
+            #{parStateId},
+            #{stageItemId},
+            #{creater},
+            #{createTime},
+            #{sortNo},
+            #{rootOrgId}
+        )
+    </insert>
+
+    <!--6 修改实体对象 -->
+    <update id="updateAeaParStateItem" parameterType="AeaParStateItem">
+        update AEA_PAR_STATE_ITEM
+        <set>
+            <if test="stateItemId != null">
+                STATE_ITEM_ID = #{stateItemId},
+            </if>
+            <if test="parStateId != null">
+                PAR_STATE_ID = #{parStateId},
+            </if>
+            <if test="stageItemId != null">
+                STAGE_ITEM_ID = #{stageItemId},
+            </if>
+            <if test="creater != null">
+                CREATER = #{creater},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime},
+            </if>
+            <if test="sortNo != null">
+                SORT_NO = #{sortNo},
+            </if>
+            <if test="rootOrgId != null">
+                ROOT_ORG_ID = #{rootOrgId},
+            </if>
+        </set>
+        where STATE_ITEM_ID = #{stateItemId}
+    </update>
+
+    <!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaParStateItem">
+        delete from AEA_PAR_STATE_ITEM
+         where STATE_ITEM_ID = #{id}
+    </delete>
+
+    <!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaParStateItem" id="AeaParStateItemMap">
+        <id property="stateItemId" column="STATE_ITEM_ID"/>
+        <result property="parStateId" column="PAR_STATE_ID"/>
+        <result property="stageItemId" column="STAGE_ITEM_ID"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="sortNo" column="SORT_NO"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+    </resultMap>
+
+    <delete id="deleteAeaParStateItemByStateId">
+        delete from AEA_PAR_STATE_ITEM
+         where PAR_STATE_ID = #{parStateId}
+           and ROOT_ORG_ID = #{rootOrgId}
+    </delete>
+
+    <select id="listStageStateItemByItemAndOption" resultType="AeaParStateItem">
+        select
+            stateItem.STATE_ITEM_ID stateItemId,
+            stateItem.PAR_STATE_ID parStateId,
+            stateItem.STAGE_ITEM_ID stageItemId,
+            stateItem.CREATER creater,
+            stateItem.CREATE_TIME createTime,
+            stateItem.SORT_NO sortNo
+        from AEA_PAR_STATE_ITEM stateItem, AEA_PAR_STAGE_ITEM stageItem
+        <where>
+            and stageItem.STAGE_ITEM_ID = stateItem.STAGE_ITEM_ID
+            and stateItem.ROOT_ORG_ID = #{rootOrgId}
+            and stageItem.STAGE_ID = #{stageId}
+            <if test="isOptionItem!=null and isOptionItem!='' ">
+                and stageItem.IS_OPTION_ITEM = #{isOptionItem}
+            </if>
+            <if test="itemId!=null and itemId!='' ">
+                and stageItem.ITEM_ID = #{itemId}
+            </if>
+            <if test="itemVerId!=null and itemVerId!='' ">
+                and stageItem.ITEM_VER_ID = #{itemVerId}
+            </if>
+        </where>
+    </select>
+
+    <select id="listStageStateItemByStateAndOption" resultType="AeaParStateItem">
+        select
+            stateItem.STATE_ITEM_ID stateItemId,
+            stateItem.PAR_STATE_ID parStateId,
+            stateItem.STAGE_ITEM_ID stageItemId,
+            stateItem.CREATER creater,
+            stateItem.CREATE_TIME createTime,
+            stateItem.SORT_NO sortNo
+        from AEA_PAR_STATE_ITEM stateItem, AEA_PAR_STAGE_ITEM stageItem
+        <where>
+            and stageItem.STAGE_ITEM_ID = stateItem.STAGE_ITEM_ID
+            and stateItem.ROOT_ORG_ID = #{rootOrgId}
+            and stageItem.STAGE_ID = #{stageId}
+            <if test="isOptionItem!=null and isOptionItem!='' ">
+                and stageItem.IS_OPTION_ITEM = #{isOptionItem}
+            </if>
+            <if test="parStateId!=null and parStateId!='' ">
+                and stateItem.PAR_STATE_ID = #{parStateId}
+            </if>
+        </where>
+    </select>
+
+    <select id="listStageStateItem"  parameterType="java.lang.String" resultType="AeaParStateItem">
+        select
+            stateItem.STATE_ITEM_ID stateItemId,
+            stateItem.PAR_STATE_ID parStateId,
+            stateItem.STAGE_ITEM_ID stageItemId,
+            stageItem1.ITEM_VER_ID itemVerId,
+            stageItem1.ITEM_NAME itemName,
+            stageItem1.IS_CATALOG isCatalog
+        from AEA_PAR_STATE_ITEM stateItem,
+        (
+            select
+                stageItem.STAGE_ITEM_ID,
+                stageItem.STAGE_ID,
+                stageItem.ITEM_ID,
+                stageItem.ITEM_VER_ID,
+                itemBasic.ITEM_NAME,
+                itemBasic.ITEM_CODE,
+                itemBasic.IS_CATALOG
+            from AEA_PAR_STAGE_ITEM stageItem, AEA_ITEM_BASIC itemBasic
+            <where>
+                and stageItem.ITEM_ID = itemBasic.ITEM_ID
+                and stageItem.ITEM_VER_ID = itemBasic.ITEM_VER_ID
+                and stageItem.STAGE_ID = #{stageId}
+                and itemBasic.ROOT_ORG_ID = #{rootOrgId}
+            </where>
+        ) stageItem1
+        <where>
+            and stateItem.ROOT_ORG_ID = #{rootOrgId}
+            and stateItem.STAGE_ITEM_ID = stageItem1.STAGE_ITEM_ID
+            <if test="parStateId!=null and parStateId!='' ">
+            and stateItem.PAR_STATE_ID = #{parStateId}
+            </if>
+        </where>
+    </select>
+
+    <select id="listStateItemByStateId" resultType="AeaParStateItem">
+        select
+            <include refid="allColumns">
+                <property name="alias" value="stateItem"/>
+            </include>,
+            stageItem1.ITEM_NAME itemName,
+            stageItem1.ITEM_CODE itemCode
+        from AEA_PAR_STATE_ITEM stateItem
+        left join (
+            select
+                stageItem.STAGE_ITEM_ID,
+                stageItem.STAGE_ID,
+                stageItem.ITEM_ID,
+                item.ITEM_CODE,
+                item.ITEM_NAME
+            from AEA_PAR_STAGE_ITEM stageItem
+            join AEA_ITEM_BASIC item on item.ITEM_ID = stageItem.ITEM_ID and item.ITEM_VER_ID = stageItem.ITEM_VER_ID
+            where item.ROOT_ORG_ID = #{rootOrgId}
+        ) stageItem1 on stateItem.STAGE_ITEM_ID = stageItem1.STAGE_ITEM_ID
+        where stateItem.PAR_STATE_ID = #{parStateId}
+          and stateItem.ROOT_ORG_ID = #{rootOrgId}
+    </select>
+
+    <select id="listStateItemByParentStateId" resultType="AeaParStateItem">
+        select
+            <include refid="allColumns">
+                <property name="alias" value="apsi"/>
+            </include>
+        from AEA_PAR_STATE_ITEM apsi
+        where 1=1
+        and apsi.ROOT_ORG_ID = #{rootOrgId}
+        and apsi.PAR_STATE_ID in (
+            select
+                PAR_STATE_ID
+            from AEA_PAR_STATE
+            <where>
+                and IS_DELETED = '0'
+                and ROOT_ORG_ID = #{rootOrgId}
+                and PARENT_STATE_ID = #{parentStateId}
+            </where>
+        )
+    </select>
+
+    <select id="getMaxSortNo" resultType="java.lang.Long">
+        select
+            max(sort_no)
+        from AEA_PAR_STATE_ITEM
+       where ROOT_ORG_ID = #{rootOrgId}
+    </select>
+
+</mapper>

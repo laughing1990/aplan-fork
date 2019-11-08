@@ -1,0 +1,25 @@
+.halfStar{
+    background: url(../images/halfStar.png);
+}
+.fullStar{
+    background: url(../images/fullStar.png);
+}
+.emptyStar{
+    background: url(../images/star.png);
+}
+
+.starUl {
+    padding-left: 0;
+    overflow: hidden;
+}
+
+.starUl li {
+    float: left;
+    list-style: none;
+    width: 20px;
+    height: 20px;
+}
+
+.mark{
+    background-color: transparent;
+}

@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by 23948    2019-07-04 16:43:27 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaProjInfoLogMapper">
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns">
+        LOG_ID  logId,
+    PROJ_INFO_ID  projInfoId,
+    USER_NAME  userName,
+    OPS_NAME  opsName,
+    CHANGE_TIME  changeTime,
+    CHANGE_TEXT  changeText,
+    CREATER  creater,
+    CREATE_TIME  createTime,
+    REASON_MEMO  reasonMemo,
+    CHANGE_SOURCE  changeSource,
+    ROOT_ORG_ID rootOrgId
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaProjInfoLogById" resultType="AeaProjInfoLog">
+        select
+        <include refid="allColumns"/>
+        from AEA_PROJ_INFO_LOG
+        where LOG_ID = #{id}
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaProjInfoLog" resultType="AeaProjInfoLog">
+        select
+        <include refid="allColumns"/>
+        from AEA_PROJ_INFO_LOG
+        <where>
+            <if test="logId != null">
+                AND LOG_ID = #{logId}
+            </if>
+            <if test="projInfoId != null">
+                AND PROJ_INFO_ID = #{projInfoId}
+            </if>
+            <if test="userName != null">
+                AND USER_NAME = #{userName}
+            </if>
+            <if test="opsName != null">
+                AND OPS_NAME = #{opsName}
+            </if>
+            <if test="changeTime != null">
+                AND CHANGE_TIME = #{changeTime}
+            </if>
+            <if test="changeText != null">
+                AND CHANGE_TEXT = #{changeText}
+            </if>
+            <if test="creater != null">
+                AND CREATER = #{creater}
+            </if>
+            <if test="createTime != null">
+                AND CREATE_TIME = #{createTime}
+            </if>
+            <if test="reasonMemo != null">
+                AND REASON_MEMO = #{reasonMemo}
+            </if>
+            <if test="changeSource != null">
+                AND CHANGE_SOURCE = #{changeSource}
+            </if>
+            <if test="rootOrgId != null">
+                AND ROOT_ORG_ID = #{rootOrgId}
+            </if>
+        </where>
+    </select>
+    <!--4 根据条件查询实体list,返回分页对象 -->
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaProjInfoLog" parameterType="AeaProjInfoLog">
+        insert into AEA_PROJ_INFO_LOG (LOG_ID, PROJ_INFO_ID, USER_NAME, OPS_NAME, CHANGE_TIME, CHANGE_TEXT, CREATER,
+                                       CREATE_TIME, REASON_MEMO, CHANGE_SOURCE,ROOT_ORG_ID)
+        values (#{logId}, #{projInfoId}, #{userName}, #{opsName}, #{changeTime}, #{changeText}, #{creater},
+                #{createTime}, #{reasonMemo}, #{changeSource},#{rootOrgId})
+    </insert>
+    <!--6 修改实体对象 -->
+    <update id="updateAeaProjInfoLog" parameterType="AeaProjInfoLog">
+        update AEA_PROJ_INFO_LOG
+        <set>
+            <if test="logId != null">
+                LOG_ID = #{logId},
+            </if>
+            <if test="projInfoId != null">
+                PROJ_INFO_ID = #{projInfoId},
+            </if>
+            <if test="userName != null">
+                USER_NAME = #{userName},
+            </if>
+            <if test="opsName != null">
+                OPS_NAME = #{opsName},
+            </if>
+            <if test="changeTime != null">
+                CHANGE_TIME = #{changeTime},
+            </if>
+            <if test="changeText != null">
+                CHANGE_TEXT = #{changeText},
+            </if>
+            <if test="creater != null">
+                CREATER = #{creater},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime},
+            </if>
+            <if test="reasonMemo != null">
+                REASON_MEMO = #{reasonMemo},
+            </if>
+            <if test="changeSource != null">
+                CHANGE_SOURCE = #{changeSource},
+            </if>
+            <if test="rootOrgId != null">
+                ROOT_ORG_ID = #{rootOrgId},
+            </if>
+        </set>
+        where LOG_ID = #{logId}
+    </update>
+    <!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaProjInfoLog">
+        delete
+        from AEA_PROJ_INFO_LOG
+        where LOG_ID = #{id}
+    </delete>
+    <!--8 删除实体对象列表,根据主键ID列表 -->
+    <!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaProjInfoLog" id="AeaProjInfoLogMap">
+        <id property="logId" column="LOG_ID"/>
+        <result property="projInfoId" column="PROJ_INFO_ID"/>
+        <result property="userName" column="USER_NAME"/>
+        <result property="opsName" column="OPS_NAME"/>
+        <result property="changeTime" column="CHANGE_TIME"/>
+        <result property="changeText" column="CHANGE_TEXT"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="reasonMemo" column="REASON_MEMO"/>
+        <result property="changeSource" column="CHANGE_SOURCE"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+    </resultMap>
+</mapper>

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaImServiceItemMapper">
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumnsAlias">
+        ${alias}.SERVICE_ITEM_ID as serviceItemId,
+        ${alias}.ITEM_VER_ID as itemVerId,
+        ${alias}.SERVICE_ID as serviceId,
+        ${alias}.IS_DELETE as isDelete,
+        ${alias}.CREATER as creater,
+        ${alias}.CREATE_TIME as createTime
+    </sql>
+    <sql id="allColumns">
+        SERVICE_ITEM_ID as serviceItemId,
+        ITEM_VER_ID as itemVerId,
+        SERVICE_ID as serviceId,
+        IS_DELETE as isDelete,
+        CREATER as creater,
+        CREATE_TIME as createTime
+    </sql>
+    <!--查询中介服务事项详情 9e588f33-7193-404c-baf1-bd2af07a998c-->
+    <select id="getAgentServiceItemDetail" resultType="AeaImServiceItem">
+        SELECT
+            aisti.SERVICE_ITEM_ID as serviceItemId,
+            aisti.ITEM_VER_ID as itemVerId,
+            aisti.SERVICE_ID as serviceId,
+            aisti.IS_DELETE as isDelete,
+            aisti.CREATER as creater,
+            aisti.CREATE_TIME as createTime,
+            aib.ITEM_BASIC_ID as itemBasicId,
+            aib.ITEM_ID as itemId,
+            aib.ITEM_CODE as itemCode,
+            aib.ITEM_NAME as itemName,
+            ooo.ORG_NAME as orgName,
+            aist.SERVICE_NAME as serviceName
+        FROM
+        AEA_IM_SERVICE_ITEM aisti
+        LEFT JOIN AEA_ITEM_BASIC aib ON aib.ITEM_VER_ID = aisti.ITEM_VER_ID
+        LEFT JOIN opu_om_org ooo ON ooo.ORG_ID = aib.ORG_ID
+        LEFT JOIN aea_im_service aist ON aist.SERVICE_ID = aisti.SERVICE_ID
+        WHERE aib.ITEM_BASIC_ID = #{agentItemBasicId}
+    </select>
+    <select id="getItemServiceByServiceId" resultType="AeaImServiceItem">
+        select <include refid="allColumns"/> from AEA_IM_SERVICE_ITEM where SERVICE_ID = #{serviceId}
+    </select>
+
+    <select id="listAeaImServiceItemByItemVerId" resultType="AeaImServiceItem">
+        select
+        <include refid="allColumns"/>
+        from AEA_IM_SERVICE_ITEM
+        where ITEM_VER_ID = #{itemVerId}
+        and IS_DELETE = '0'
+    </select>
+    <!-- 新增实体对象 -->
+    <insert id="insertAeaImServiceItem" parameterType="AeaImServiceItem" >
+        insert into AEA_IM_SERVICE_ITEM (
+        SERVICE_ITEM_ID  ,ITEM_VER_ID  ,SERVICE_ID  ,IS_DELETE  ,CREATER  ,CREATE_TIME
+        )  values  (
+        #{serviceItemId},#{itemVerId},#{serviceId},#{isDelete},#{creater},#{createTime}
+        )
+    </insert>
+
+    <update id="cancelServiceRelation">
+        UPDATE AEA_IM_SERVICE_ITEM
+        SET IS_DELETE = '1'
+        WHERE
+        ITEM_VER_ID = #{itemVerId}
+        AND SERVICE_ID IN
+        <foreach collection="serviceIds" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </update>
+
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaImServiceItem" resultType="AeaImServiceItem" >
+        select
+        <include refid="allColumns"/>
+        from    AEA_IM_SERVICE_ITEM
+        <where>
+            <if test="serviceItemId != null" >
+                AND    SERVICE_ITEM_ID = #{serviceItemId}
+            </if>
+            <if test="itemVerId != null" >
+                AND    ITEM_VER_ID = #{itemVerId}
+            </if>
+            <if test="serviceId != null" >
+                AND    SERVICE_ID = #{serviceId}
+            </if>
+            <if test="isDelete != null" >
+                AND    IS_DELETE = #{isDelete}
+            </if>
+            <if test="creater != null" >
+                AND    CREATER = #{creater}
+            </if>
+            <if test="createTime != null" >
+                AND    CREATE_TIME = #{createTime}
+            </if>
+        </where>
+    </select>
+
+    <select id="getAeaImServiceItemByServiceItemId" resultType="AeaImServiceItem" >
+        select
+        <include refid="allColumns"/>
+        from    AEA_IM_SERVICE_ITEM
+        where  SERVICE_ITEM_ID = #{serviceItemId}
+    </select>
+
+</mapper>

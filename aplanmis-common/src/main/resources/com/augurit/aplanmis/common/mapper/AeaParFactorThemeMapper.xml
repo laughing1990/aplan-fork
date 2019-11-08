@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaParFactorThemeMapper" >
+
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns" >
+        GUIDE_THEME_ID  guideThemeId,
+        FACTOR_ID  factorId,
+        THEME_ID  themeId,
+        SORT_NO  sortNo,
+        CREATER  creater,
+        CREATE_TIME  createTime
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaParFactorThemeById" resultType="AeaParFactorTheme" >
+        select
+        <include refid="allColumns"/>
+        from    AEA_PAR_FACTOR_THEME
+        where    GUIDE_THEME_ID = #{id}
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaParFactorTheme" resultType="AeaParFactorTheme" >
+        select
+          <include refid="allColumns"/>
+        from    AEA_PAR_FACTOR_THEME
+        <where>
+            <if test="guideThemeId != null" >
+            AND    GUIDE_THEME_ID = #{guideThemeId}
+            </if>
+            <if test="factorId != null" >
+            AND    FACTOR_ID = #{factorId}
+            </if>
+            <if test="themeId != null" >
+            AND    THEME_ID = #{themeId}
+            </if>
+            <if test="sortNo != null" >
+            AND    SORT_NO = #{sortNo}
+            </if>
+            <if test="creater != null" >
+            AND    CREATER = #{creater}
+            </if>
+            <if test="createTime != null" >
+            AND    CREATE_TIME = #{createTime}
+            </if>
+        </where>
+    </select>
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaParFactorTheme" parameterType="AeaParFactorTheme" >
+        insert into AEA_PAR_FACTOR_THEME (GUIDE_THEME_ID, FACTOR_ID, THEME_ID, SORT_NO, CREATER, CREATE_TIME)
+        values (#{guideThemeId}, #{factorId}, #{themeId}, #{sortNo}, #{creater}, #{createTime})
+    </insert>
+
+    <!--6 修改实体对象 -->
+    <update id="updateAeaParFactorTheme" parameterType="AeaParFactorTheme" >
+        update AEA_PAR_FACTOR_THEME
+        <set >
+            <if test="guideThemeId != null" >
+            GUIDE_THEME_ID = #{guideThemeId},
+            </if>
+            <if test="factorId != null" >
+            FACTOR_ID = #{factorId},
+            </if>
+            <if test="themeId != null" >
+            THEME_ID = #{themeId},
+            </if>
+            <if test="sortNo != null" >
+            SORT_NO = #{sortNo},
+            </if>
+            <if test="creater != null" >
+            CREATER = #{creater},
+            </if>
+            <if test="createTime != null" >
+            CREATE_TIME = #{createTime},
+            </if>
+        </set>
+        where GUIDE_THEME_ID = #{guideThemeId}
+    </update>
+
+    <!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaParFactorTheme">
+        delete from   AEA_PAR_FACTOR_THEME where GUIDE_THEME_ID = #{id}
+    </delete>
+
+    <!--8 删除实体对象列表,根据factorId删除 -->
+    <delete id="deleteAeaParFactorThemeByFactorId">
+        delete from AEA_PAR_FACTOR_THEME where FACTOR_ID = #{factorId}
+    </delete>
+
+    <!-- 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaParFactorTheme" id="AeaParFactorThemeMap">
+        <id property="guideThemeId" column="GUIDE_THEME_ID"/>
+        <result property="factorId" column="FACTOR_ID"/>
+        <result property="themeId" column="THEME_ID"/>
+        <result property="sortNo" column="SORT_NO"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+    </resultMap>
+
+</mapper>

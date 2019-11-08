@@ -1,0 +1,434 @@
+@charset "utf-8";
+/* CSS Document */
+@charset "utf-8";
+/* CSS Document */
+/*基于metronic 5 demo3 | 外框架头部和左侧等样式 | yang2018.8.23*/
+
+/******************************BEGIN:图标icon******************************/
+
+/******一级菜单图标******/
+/**
+系统设置menu-system-setup.png    日常办公menu-day-office.png    用户管理menu-user-management.png    项目管理menu-project-management.png     
+办件查询menu-query.png   统计报表 menu-statistical-report.png       综合受理 menu-comprehensive.png    沟通协调menu-communicate.png
+统计分析meu-statistical.png    更多菜单menu-more.png
+**/
+/*菜单栏控制滚动*/
+#m_ver_menu {
+	height: 95%;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+#m_ver_menu::-webkit-scrollbar {
+	display: none;
+}
+/*系统设置*/
+.m-menu__nav .menu-system-setup {
+	background: url(../images/common/menu-system-setup.png) no-repeat 0 18px;
+	width: 24px!important;
+}
+/*日常办公*/
+.m-menu__nav .menu-day-office {
+	background: url(../images/common/menu-day-office.png) no-repeat 0 18px;
+	width: 25px!important;
+}
+/*用户管理*/
+.m-menu__nav .menu-user-management {
+	background: url(../images/common/menu-user-management.png) no-repeat 0 18px;
+	width: 25px!important;
+}
+/*统计报表*/
+.m-menu__nav .menu-statistical-report {
+	background: url(../images/common/menu-statistical-report.png) no-repeat 0 18px;
+	width: 25px!important;
+}
+/*综合受理*/
+.m-menu__nav .menu-comprehensive {
+	background: url(../images/common/menu-comprehensive.png) no-repeat 0 18px;
+	width: 27px!important;
+}
+/*办件查询*/
+.m-menu__nav .menu-query {
+	background: url(../images/common/menu-query.png) no-repeat 0 18px;
+	width: 23px!important;
+}
+/*项目管理*/
+.m-menu__nav .menu-project-management {
+	background: url(../images/common/menu-project-management.png) no-repeat 0 18px;
+	width: 28px!important;
+}
+/*沟通协调*/
+.m-menu__nav .menu-communicate {
+	background: url(../images/common/menu-communicate.png) no-repeat 0 18px;
+	width: 24px!important;
+}
+/*统计分析*/
+.m-menu__nav .meu-statistical {
+	background: url(../images/common/meu-statistical.png) no-repeat 0 18px;
+	witth: 27px!important;
+}
+/*更多菜单*/
+.m-menu__nav .menu-more {
+	background: url(../images/common/menu-more.png) no-repeat 0 18px;
+	width: 4px!important;
+}
+/*右侧工具栏图标*/
+.r-tool-bell {
+	background: url(../images/common/r-tool-bell.png) no-repeat 0 18px;
+	width: 25px;
+	height: 50px;
+	display: inline-block;
+}
+.r-tool-grid-menu {
+	background: url(../images/common/r-tool-grid-menu.png) no-repeat 0 18px;
+	width: 30px;
+	height: 50px;
+	display: inline-block;
+}
+.r-tool-clipboard {
+	background: url(../images/common/r-tool-clipboard.png) no-repeat 0 18px;
+	width: 25px;
+	height: 50px;
+	display: inline-block;
+}
+/*左侧菜单图标*/
+.m-aside-menu.m-aside-menu--skin-dark .m-menu__nav > .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__link-icon {
+	color: #36a3f7;
+}
+.m-aside-menu .m-menu__nav > .m-menu__item > .m-menu__link .submenu-pending-work {
+	background: url(../images/common/submenu-pending-work.png) no-repeat 0 0;
+	width: 38px!important;
+	height: 30px!important;
+	display: block!important;
+	margin: 0 auto;
+}
+.m-aside-menu .m-menu__nav > .m-menu__item > .m-menu__link:hover .submenu-pending-work, .m-aside-menu .m-menu__nav > .m-menu__item.m-menu__item--active > .m-menu__link .submenu-pending-work {
+	background: url(../images/common/submenu-pending-work-hover.png) no-repeat 0 0;
+}
+.m-aside-menu .m-menu__nav > .m-menu__item > .m-menu__link .submenu-online {
+	background: url(../images/common/submenu-online.png) no-repeat 0 0;
+	width: 38px!important;
+	height: 30px!important;
+	display: block!important;
+	margin: 0 auto;
+}
+.m-aside-menu .m-menu__nav > .m-menu__item > .m-menu__link:hover .submenu-online, .m-aside-menu .m-menu__nav > .m-menu__item.m-menu__item--active > .m-menu__link .submenu-online {
+	background: url(../images/common/submenu-online-hover.png) no-repeat 0 0;
+}
+.m-aside-menu .m-menu__nav > .m-menu__item > .m-menu__link .submenu-window {
+	background: url(../images/common/submenu-window.png) no-repeat 0 0;
+	width: 38px!important;
+	height: 30px!important;
+	display: block!important;
+	margin: 0 auto;
+}
+.m-aside-menu .m-menu__nav > .m-menu__item > .m-menu__link:hover .submenu-window, .m-aside-menu .m-menu__nav > .m-menu__item.m-menu__item--active > .m-menu__link .submenu-window {
+	background: url(../images/common/submenu-window-hover.png) no-repeat 0 0;
+}
+.m-aside-menu .m-menu__nav > .m-menu__item > .m-menu__link .submenu-send {
+	background: url(../images/common/submenu-send.png) no-repeat 0 0;
+	width: 38px!important;
+	height: 30px!important;
+	display: block!important;
+	margin: 0 auto;
+}
+.m-aside-menu .m-menu__nav > .m-menu__item > .m-menu__link:hover .submenu-send, .m-aside-menu .m-menu__nav > .m-menu__item.m-menu__item--active > .m-menu__link .submenu-send {
+	background: url(../images/common/submenu-send-hover.png) no-repeat 0 0;
+}
+/*左侧菜单选中*/
+.m-aside-menu .m-menu__nav > .m-menu__item.m-menu__item--active > .m-menu__link {
+	cursor: default;
+}
+/*左侧菜单文字hover*/
+.m-aside-menu.m-aside-menu--skin-dark .m-menu__nav > .m-menu__item > .m-menu__link:hover .m-menu__link-text {
+	color: #adcfeb !important
+}
+/******************************END:图片icon******************************/
+
+/******************************BEGIN:头部header******************************/
+
+/*调整header的高度*/
+.m-header {
+	height: 60px; /*m5默认80px;*/
+}
+/*调整logo模块高度*/
+.m-brand .m-brand__logo, .m-brand .m-brand__tools {
+	height: 60px !important;  /*m5默认80px;*/
+}
+/*一级菜单高度*/
+.m-header-menu {
+	margin: 0 0 0 100px; /*m5默认 0 0 0 10px;*/
+	height: 60px;
+	line-height: 60px;
+}
+/*一级菜单字号16px*/
+.m-header-menu .m-menu__nav > .m-menu__item > .m-menu__link .m-menu__link-text {
+	font-size: 16px;
+}
+/*一级菜单，每个菜单的间距*/
+.m-header-menu .m-menu__nav > .m-menu__item {
+	padding: 0px 30px;
+}
+/*菜单hover样式*/
+.m-header-menu .m-menu__nav > .m-menu__item:hover {
+	background-color: rgba(0,0,0,0.08);
+	border-left: 1px solid rgba(255,255,255,0.18);
+	border-right: 1px solid rgba(255,255,255,0.18);
+	padding: 0 29px;
+}
+/*当前选中菜单样式*/
+.m-header-menu .m-menu__nav > .m-menu__item.m-menu__item--active {
+	background-color: rgba(0,0,0,0.12);
+	border-left: 1px solid rgba(255,255,255,0.2);
+	border-right: 1px solid rgba(255,255,255,0.2);
+	padding: 0 29px;
+}
+
+/*系统标题长度*/
+.m-brand {
+	width: 480px;
+	padding: 0;
+	padding-left: 10px;
+}
+/*右侧工具栏*/
+.m-stack.m-stack--general {
+	padding-right: 16px;
+}
+.m-topbar .m-topbar__nav.m-nav {
+	height: 60px;
+}
+.m-topbar .m-topbar__nav.m-nav {
+	margin: 0;
+}
+/*右侧工具栏头像*/
+.m-topbar .m-topbar__nav.m-nav > .m-nav__item {
+	padding: 0 6px;
+}
+.m-nav.m-nav--inline > .m-nav__item > .m-nav__link {
+	padding: 0;
+}
+.m-topbar .m-topbar__nav.m-nav > .m-nav__item > .m-nav__link .m-topbar__userpic img {
+	width: 45px !important;
+}
+/*头像后面名字*/
+.m-topbar__user-profile--img .ag-user-name {
+	height: 60px;
+	display: inline-block;
+	padding-top: 25px;
+	padding-left: 5px;
+	color: #fff;
+	font-size: 15px;
+}
+/*下拉框*/
+.m-topbar__user-profile.m-dropdown.m-dropdown--align-right .m-dropdown__wrapper {
+	right: -4px;
+}
+.m-nav__item .m-tabs-line.nav.nav-tabs .nav-link, .m-tabs-line a.m-tabs__link {
+	padding: 5px 10px;
+}
+.m-topbar__user-profile.m-dropdown.m-dropdown--arrow.m-dropdown--up .m-dropdown__arrow.m-dropdown__arrow--right, .m-topbar__user-profile.m-dropdown.m-dropdown--arrow .m-dropdown__arrow.m-dropdown__arrow--right {
+	right: 10px!important;
+}
+.m-topbar__quick-actions.m-dropdown.m-dropdown--arrow.m-dropdown--up .m-dropdown__arrow.m-dropdown__arrow--right, .m-topbar__quick-actions.m-dropdown.m-dropdown--arrow .m-dropdown__arrow.m-dropdown__arrow--right {
+	right: 112px!important;
+}
+.m-dropdown.m-dropdown--align-center.m-dropdown--large .m-dropdown__wrapper {
+	margin-left: -296px;
+}
+.m-dropdown.m-dropdown--arrow.m-dropdown--up .m-dropdown__arrow, .m-dropdown.m-dropdown--arrow .m-dropdown__arrow {
+	margin-left: 80px;
+}
+.m-dropdown.m-dropdown--align-right.m-dropdown--align-push .m-dropdown__wrapper {
+	margin-right: -108px;
+}
+.m-nav-grid > .m-nav-grid__row > .m-nav-grid__item {
+	padding: 1.5rem 0.75rem;
+}
+.m-nav-grid .m-nav-grid__row .m-nav-grid__item {
+    border-right: 1px solid #f2f2f2;
+    border-bottom: 1px solid #f2f2f2;
+}
+/******************************END:头部header******************************/
+/******************************BEGIN:左侧菜单******************************/
+/*左侧菜单栏宽度*/
+.m-aside-left {
+	width: 122px;
+}
+/*每个菜单的内边距*/
+.m-aside-menu .m-menu__nav > .m-menu__item > .m-menu__link {
+	padding: 1.4rem 1rem;
+}
+/*底色颜色*/
+.m-aside-left.m-aside-left--skin-dark {
+	background-color: #2b3448;
+}
+
+.m-aside-menu.m-aside-menu--skin-dark .m-menu__nav > .m-menu__item:not(.m-menu__item--parent):not(.m-menu__item--open):not(.m-menu__item--expanded):not(.m-menu__item--active):hover {
+	background-color: #232b3e;
+}
+.m-aside-menu.m-aside-menu--skin-dark .m-menu__nav > .m-menu__item:not(.m-menu__item--parent):not(.m-menu__item--open):not(.m-menu__item--expanded):not(.m-menu__item--active):hover > .m-menu__heading .m-menu__link-icon,  .m-aside-menu.m-aside-menu--skin-dark .m-menu__nav > .m-menu__item:not(.m-menu__item--parent):not(.m-menu__item--open):not(.m-menu__item--expanded):not(.m-menu__item--active):hover > .m-menu__link .m-menu__link-icon {
+	color: #8c8ea4;
+}
+/*红色数字 内边距增大*/
+.m-badge {
+	padding: 0 3px;
+	z-index: 1000;
+}
+/*红色数字定位*/
+.m-aside-menu .m-menu__nav > .m-menu__item > .m-menu__link > .m-menu__link-title .m-menu__link-wrap .m-menu__link-badge {
+	top: 20px;
+	right: 25px;
+}
+/*左侧菜单字号*/
+.m-aside-menu .m-menu__nav > .m-menu__item > .m-menu__link .m-menu__link-text {
+	font-size: 14px;
+}
+/*菜单图标颜色*/
+.m-aside-menu.m-aside-menu--skin-dark .m-menu__nav > .m-menu__item > .m-menu__heading .m-menu__link-icon, .m-aside-menu.m-aside-menu--skin-dark .m-menu__nav > .m-menu__item > .m-menu__link .m-menu__link-icon {
+	color: #7988a8;
+}
+/*菜单选中时，图标和文字颜色*/
+.m-aside-menu .m-menu__nav > .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__link-icon {
+	color: #adcfeb !important;
+}
+.m-aside-menu .m-menu__nav > .m-menu__item > .m-menu__link > .m-menu__link-title {
+	margin-top: 0;
+}
+/*左侧菜单当前状态尖角定位*/
+.m-aside-menu .m-menu__nav > .m-menu__item.m-menu__item--expanded > .m-menu__link > .m-menu__item-here:before, .m-aside-menu .m-menu__nav > .m-menu__item.m-menu__item--active > .m-menu__link > .m-menu__item-here:before {
+	margin-top: 12px;
+}
+
+
+/****************BEGIN：左侧菜单浅色（临时用的样式）******************/
+.ag-light-leftmenu{
+	-webkit-box-shadow: 0px 1px 15px 1px rgba(69,65,78,0.08);
+    box-shadow: 0px 1px 15px 1px rgba(69,65,78,0.08);
+}
+.ag-light-leftmenu .m-aside-menu .m-menu__nav > .m-menu__item.m-menu__item--active > .m-menu__link,.ag-light-leftmenu .m-aside-menu .m-menu__nav > .m-menu__item.m-menu__item--active > .m-menu__link:hover{
+    background: #e1f1fd;
+}
+.ag-light-leftmenu .m-aside-menu .m-menu__nav > .m-menu__item > .m-menu__link:hover{
+	background-color: #fff;
+	
+}
+/****************END：左侧菜单浅色（临时用的样式）******************/
+/******************************END:左侧菜单******************************/
+
+/******************************BEGIN:右侧内容******************************/
+/*顶部选项卡*/
+.m-wrapper .nav-tabs {
+	background-color: #fff;
+	/*	-webkit-box-shadow: 0px 1px 15px 1px rgba(69, 65, 78, 0.08);
+    -moz-box-shadow: 0px 1px 15px 1px rgba(69, 65, 78, 0.08);
+    box-shadow: 0px 1px 15px 1px rgba(69, 65, 78, 0.08);*/
+	height: 40px;
+	line-height: 40px;
+	padding: 0 16px;
+	margin-bottom: 0;
+	position: relative;
+}
+.m-tabs-line {
+	border-bottom: 1px solid #d9d9d9;
+}
+.m-tabs-line .m-tabs__link {
+	padding: 0;
+}
+.m-tabs-line.m-tabs-line--info.nav.nav-tabs .nav-link:hover, .m-tabs-line.m-tabs-line--info.nav.nav-tabs .nav-link.active, .m-tabs-line.m-tabs-line--info a.m-tabs__link:hover, .m-tabs-line.m-tabs-line--info a.m-tabs__link.active {
+	height: 40PX;
+}
+.m-tabs-line.m-tabs-line--2x a.m-tabs__link:hover {
+	border-bottom-width: 0 !important;
+}
+.m-tabs-line.m-tabs-line--2x a.m-tabs__link.active {
+	border-bottom-width: 3px !important;
+}
+.nav-tabs.m-tabs-line .m-tabs__item {
+	text-align: center;
+	margin-right: 10px;
+	margin-bottom: -1px;
+}
+.m-grid__item .nav-tabs.m-tabs-line .m-tabs__item {
+	min-width: 120px;
+}
+.nav-tabs.m-tabs-line .nav-item.position-absolute {
+	right: 0;
+	width: 36px;
+	height: 40px;
+	border-left: 1px solid #d9d9d9;
+	padding-top: 12px;
+}
+.nav-tabs li .fa-times {
+	font-size: 1.2rem!important;
+	position: relative;
+	display: inline-block;
+	width: 20px;
+	font-weight: 100;
+	top: -1px;
+	margin-left: 8px;
+	text-align: center;
+	color: #898b96;
+	-webkit-text-stroke: 1px #fff;
+}
+.m-tabs-line .m-tabs__link {
+	font-size: 15px;
+}
+.nav.nav-pills .nav-link i, .nav.nav-tabs .nav-link i {
+	margin-right: -0.5rem;
+}
+.nav-link.m-tabs__link.dropdown-toggle {
+	text-align: center;
+	width: 36px;
+	padding-top: 12px;
+}
+.m-grid__item .m-tabs-line.nav.nav-tabs .nav-link, .m-grid__item .m-tabs-line a.m-tabs__link {
+	padding: 0 15px;
+	height: 40px;
+}
+.dropdown-menu > li > a, .dropdown-menu > .dropdown-item {
+	padding: 0px 10px;
+}
+.nav-link.dropdown-toggle:after, .btn.dropdown-toggle:after {
+	display: none;
+}
+/*iframe框架内容*/
+.iframe-wrapper {
+	width: 100%;
+	padding: 15px 15px 15px 15px;
+	overflow: hidden;
+	display: block;
+	height: calc( 100vh - 100px);
+}
+.iframe-wrapper .iframe {
+	width: 100%;
+	height: 100%;
+	background-color: #fff; 
+	-webkit-box-shadow: 0px 1px 15px 1px rgba(69,65,78,0.08);
+    box-shadow: 0px 1px 15px 1px rgba(69,65,78,0.08);
+/*	padding: 10px;*/
+	overflow: hidden;
+}
+/*tab标签控件（标签右键，前面已实现）需要在iframe外面套几层div，下面内容强制覆盖metronic原来设置，.dark-left-tab为自己新增class，主要用于锁定这块的页面*/
+.dark-left-tab.tab-content {
+	height: calc( 100vh - 100px)!important;
+}
+.dark-left-tab.tab-content > .active {
+	height: 100%!important;
+}
+.dark-left-tab.tab-content > .active > .m-content {
+	height: 100%!important;
+	padding: 16px!important;
+}
+.dark-left-tab.tab-content > .active > .m-content > .m-portlet {
+	height: 100%!important;
+	background-color: #fff; 
+	-webkit-box-shadow: 0px 1px 15px 1px rgba(69,65,78,0.08);
+    box-shadow: 0px 1px 15px 1px rgba(69,65,78,0.08);
+	margin-bottom: 0!important;
+}
+.dark-left-tab.tab-content > .active > .m-content > .m-portlet .tabiframe {
+	width: 100%;
+	height: 100%;
+	overflow: hidden
+}
+/******************************END:右侧内容******************************/
+

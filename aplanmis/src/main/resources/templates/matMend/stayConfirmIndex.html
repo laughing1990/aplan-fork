@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <!--引入公共css-->
+    <th:block th:include="common/common :: commonheader('补正待确认')"/>
+    <link rel="stylesheet" href="../../static/matMend/css/stayConfirmIndex.css"
+          th:href="@{/matMend/css/stayConfirmIndex.css}">
+    <script>
+        var currentUserId = '[[${currentUserId}]]';
+        var currentUserName = '[[${currentUserName}]]';
+        var currentOrgId = '[[${currentOrgId}]]';
+        var correctId = '[[${correctId}]]';
+
+
+    </script>
+    <style>
+        .el-table .warning-row {
+            background: #DBE0E6;
+        }
+        .el-input {
+            width: 240px;
+        }
+        .el-header {
+            background-color: #B3C0D1;
+            color: #333;
+            text-align: center;
+            line-height: 60px;
+
+        }
+
+    </style>
+</head>
+
+<body>
+
+<el-container>
+    <!--头部标题-->
+    <el-header style="text-align: center; font-size: 25px;  line-height: 60px ;">
+
+    </el-header>
+    <!--主体部分-->
+    <el-main>
+
+        <div id="approve" v-cloak>
+
+            <div class="content">
+                <div style="height: 60px;">
+
+                    <el-row>
+                        <el-input v-model="querForm.keyword" placeholder="请输入项目名称、办件名称、类型关键字" style="width: 400px;">
+                            <template slot="append"><span @click="doSearch();">查询</span></template>
+                        </el-input>
+
+
+                    </el-row>
+                </div>
+                <el-table ref="multipleTable" :data="tableData"  style="width: 100%" >
+                    <el-table-column label="序号" type="index" width="50"> </el-table-column>
+                    <el-table-column prop="applyinstCode" label="申请编号" width="160"></el-table-column>
+                    <el-table-column prop="projName" label="项目名称" width="220" show-overflow-tooltip></el-table-column>
+                    <el-table-column prop="iteminstName" label="办件名称" width="180"></el-table-column>
+                    <el-table-column prop="isSeriesApprove" label="类型" width="80"></el-table-column>
+                    <el-table-column prop="stageName" label="阶段/事项/辅线名称" width="180"></el-table-column>
+                    <el-table-column prop="themeName" label="主题名称" width="180"></el-table-column>
+                    <el-table-column prop="linkmanName" label="申请人" width="100"></el-table-column>
+                    <el-table-column prop="createTime" label="申报时间" width="100"></el-table-column>
+                    <el-table-column label="操作" align="center">
+                        <template slot-scope="scope">
+                            <el-button
+                                    type="primary"
+                                    @click="confirmMatCorrect(scope.$index, scope.row)">补正确认
+                            </el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
+
+                <div style="text-align: right; margin: 10px;">
+                    <template v-if="isShow">
+                        共{{total}}条
+                    </template>
+                    <template v-else>
+                        <el-pagination background
+                                       @size-change="handleSizeChange"
+                                       @current-change="handleCurrentChange"
+                                       :current-page="currentPage"
+                                       :page-sizes="[10, 50, 100, 200]"
+                                       :page-size="pageSize"
+                                       layout="total, sizes, prev, pager, next, jumper"
+                                       :total="total">
+                        </el-pagination>
+                    </template>
+
+
+                </div>
+            </div>
+
+
+        </div>
+    </el-main>
+</el-container>
+
+</body>
+<th:block th:include="common/common :: commonfooter"/>
+<th:block th:include="common/common :: gaopaiyi"/>
+<script src="../../static/matMend/js/stayConfirmIndex.js" th:src="@{/matMend/js/stayConfirmIndex.js}"></script>
+
+</html>

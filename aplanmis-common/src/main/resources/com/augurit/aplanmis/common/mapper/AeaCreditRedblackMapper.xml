@@ -1,0 +1,390 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaCreditRedblackMapper" >
+
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns" >
+        REDBLACK_ID  redblackId,
+        IS_BLACK isBlack,
+        REDBLACK_TYPE  redblackType,
+        UNIT_INFO_ID  unitInfoId,
+        LINKMAN_INFO_ID  linkmanInfoId,
+        REDBLACK_REASON  redblackReason,
+        REDBLACK_LEVEL  redblackLevel,
+        CREDIT_UNIT  creditUnit,
+        CREDIT_BASIS  creditBasis,
+        AFFIRM_TIME  affirmTime,
+        INCLUDE_TIME  includeTime,
+        END_TIME  endTime,
+        IS_VALID  isValid,
+        INVALID_REASON  invalidReason,
+        IS_SYNC  isSync,
+        SYNC_SOURCE  syncSource,
+        SYNC_TIME  syncTime,
+        CREATER  creater,
+        CREATE_TIME  createTime,
+        MODIFIER  modifier,
+        MODIFY_TIME  modifyTime,
+        ROOT_ORG_ID  rootOrgId
+    </sql>
+
+    <sql id="allColumns_alias">
+        ${alias}.REDBLACK_ID  redblackId,
+        ${alias}.IS_BLACK isBlack,
+        ${alias}.REDBLACK_TYPE  redblackType,
+        ${alias}.UNIT_INFO_ID  unitInfoId,
+        ${alias}.LINKMAN_INFO_ID  linkmanInfoId,
+        ${alias}.REDBLACK_REASON  redblackReason,
+        ${alias}.REDBLACK_LEVEL  redblackLevel,
+        ${alias}.CREDIT_UNIT  creditUnit,
+        ${alias}.CREDIT_BASIS  creditBasis,
+        ${alias}.AFFIRM_TIME  affirmTime,
+        ${alias}.INCLUDE_TIME  includeTime,
+        ${alias}.END_TIME  endTime,
+        ${alias}.IS_VALID  isValid,
+        ${alias}.INVALID_REASON  invalidReason,
+        ${alias}.IS_SYNC  isSync,
+        ${alias}.SYNC_SOURCE  syncSource,
+        ${alias}.SYNC_TIME  syncTime,
+        ${alias}.CREATER  creater,
+        ${alias}.CREATE_TIME  createTime,
+        ${alias}.MODIFIER  modifier,
+        ${alias}.MODIFY_TIME  modifyTime,
+        ${alias}.ROOT_ORG_ID  rootOrgId
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaCreditRedblackById" resultType="AeaCreditRedblack" >
+        select
+            <include refid="allColumns"/>
+        from  AEA_CREDIT_REDBLACK
+        where REDBLACK_ID = #{id}
+          and ROOT_ORG_ID = #{rootOrgId}
+    </select>
+
+    <select id="getAeaCreditRedblackRelInfoById" resultType="AeaCreditRedblack" >
+        select
+            <include refid="allColumns_alias">
+                <property name="alias" value="creRed"/>
+            </include>,
+            creUnit.APPLICANT as applicant,
+            creLink.LINKMAN_NAME as  linkmanName
+        from AEA_CREDIT_REDBLACK creRed
+        left join aea_unit_info creUnit on ( creRed.UNIT_INFO_ID = creUnit.UNIT_INFO_ID and creUnit.IS_DELETED = '0' )
+        left join aea_linkman_info creLink on( creRed.LINKMAN_INFO_ID = creLink.LINKMAN_INFO_ID and creLink.IS_DELETED = '0' )
+       where creRed.REDBLACK_ID = #{id}
+         and creRed.ROOT_ORG_ID = #{rootOrgId}
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaCreditRedblack" resultType="AeaCreditRedblack" >
+        select
+            <include refid="allColumns"/>
+        from  AEA_CREDIT_REDBLACK creRed
+        <where>
+            <if test="redblackId != null and redblackId!='' " >
+                and    creRed.REDBLACK_ID = #{redblackId}
+            </if>
+            <if test="isBlack != null and isBlack != '' " >
+                and    creRed.IS_BLACK = #{isBlack}
+            </if>
+            <if test="redblackType != null and redblackType!='' " >
+                and    creRed.REDBLACK_TYPE = #{redblackType}
+            </if>
+            <if test="unitInfoId != null and unitInfoId!='' " >
+                and    creRed.UNIT_INFO_ID = #{unitInfoId}
+            </if>
+            <if test="linkmanInfoId != null and linkmanInfoId!='' " >
+                and    creRed.LINKMAN_INFO_ID = #{linkmanInfoId}
+            </if>
+            <if test="redblackReason != null and redblackReason!='' " >
+                and    creRed.REDBLACK_REASON = #{redblackReason}
+            </if>
+            <if test="redblackLevel != null and redblackLevel!='' " >
+                and    creRed.REDBLACK_LEVEL = #{redblackLevel}
+            </if>
+            <if test="creditUnit != null and creditUnit!='' " >
+                and    creRed.CREDIT_UNIT = #{creditUnit}
+            </if>
+            <if test="creditBasis != null and creditBasis!='' " >
+                and    creRed.CREDIT_BASIS = #{creditBasis}
+            </if>
+            <if test="affirmTime != null" >
+                and    creRed.AFFIRM_TIME = #{affirmTime}
+            </if>
+            <if test="includeTime != null" >
+                and    creRed.INCLUDE_TIME = #{includeTime}
+            </if>
+            <if test="endTime != null" >
+                and    creRed.END_TIME = #{endTime}
+            </if>
+            <if test="isValid != null and isValid!='' " >
+                and    creRed.IS_VALID = #{isValid}
+            </if>
+            <if test="invalidReason != null and invalidReason!='' " >
+                and    creRed.INVALID_REASON = #{invalidReason}
+            </if>
+            <if test="isSync != null and isSync!='' " >
+                and    creRed.IS_SYNC = #{isSync}
+            </if>
+            <if test="syncSource != null and syncSource!='' " >
+                and    creRed.SYNC_SOURCE = #{syncSource}
+            </if>
+            <if test="syncTime != null" >
+                and    creRed.SYNC_TIME = #{syncTime}
+            </if>
+            <if test="rootOrgId != null and rootOrgId!='' " >
+                and    creRed.ROOT_ORG_ID = #{rootOrgId}
+            </if>
+            <if test="keyword!=null and keyword!='' ">
+                and (
+                    creRed.REDBLACK_REASON like concat('%', concat(#{keyword}, '%')) or
+                    creRed.CREDIT_UNIT like concat('%', concat(#{keyword}, '%')) or
+                    creRed.CREDIT_BASIS like concat('%', concat(#{keyword}, '%'))
+                )
+            </if>
+            order by creRed.CREATE_TIME desc
+        </where>
+    </select>
+
+    <select id="listAeaCreditRedblackRelInfo" resultType="AeaCreditRedblack">
+        select
+            <include refid="allColumns_alias">
+                <property name="alias" value="creRed"/>
+            </include>,
+            creUnit.APPLICANT as applicant,
+            creLink.LINKMAN_NAME as  linkmanName
+        from AEA_CREDIT_REDBLACK creRed
+        left join aea_unit_info creUnit on ( creRed.UNIT_INFO_ID = creUnit.UNIT_INFO_ID and creUnit.IS_DELETED = '0' )
+        left join aea_linkman_info creLink on( creRed.LINKMAN_INFO_ID = creLink.LINKMAN_INFO_ID and creLink.IS_DELETED = '0' )
+        <where>
+            <if test="redblackId != null and redblackId!='' " >
+            and    creRed.REDBLACK_ID = #{redblackId}
+            </if>
+            <if test="isBlack != null and isBlack != '' " >
+            and    creRed.IS_BLACK = #{isBlack}
+            </if>
+            <if test="redblackType != null and redblackType!='' " >
+            and    creRed.REDBLACK_TYPE = #{redblackType}
+            </if>
+            <if test="unitInfoId != null and unitInfoId!='' " >
+            and    creRed.UNIT_INFO_ID = #{unitInfoId}
+            </if>
+            <if test="linkmanInfoId != null and linkmanInfoId!='' " >
+            and    creRed.LINKMAN_INFO_ID = #{linkmanInfoId}
+            </if>
+            <if test="redblackReason != null and redblackReason!='' " >
+            and    creRed.REDBLACK_REASON = #{redblackReason}
+            </if>
+            <if test="redblackLevel != null and redblackLevel!='' " >
+            and    creRed.REDBLACK_LEVEL = #{redblackLevel}
+            </if>
+            <if test="creditUnit != null and creditUnit!='' " >
+            and    creRed.CREDIT_UNIT = #{creditUnit}
+            </if>
+            <if test="creditBasis != null and creditBasis!='' " >
+            and    creRed.CREDIT_BASIS = #{creditBasis}
+            </if>
+            <if test="affirmTime != null" >
+            and    creRed.AFFIRM_TIME = #{affirmTime}
+            </if>
+            <if test="includeTime != null" >
+            and    creRed.INCLUDE_TIME = #{includeTime}
+            </if>
+            <if test="endTime != null" >
+            and    creRed.END_TIME = #{endTime}
+            </if>
+            <if test="isValid != null and isValid!='' " >
+            and    creRed.IS_VALID = #{isValid}
+            </if>
+            <if test="invalidReason != null and invalidReason!='' " >
+            and    creRed.INVALID_REASON = #{invalidReason}
+            </if>
+            <if test="isSync != null and isSync!='' " >
+            and    creRed.IS_SYNC = #{isSync}
+            </if>
+            <if test="syncSource != null and syncSource!='' " >
+            and    creRed.SYNC_SOURCE = #{syncSource}
+            </if>
+            <if test="syncTime != null" >
+            and    creRed.SYNC_TIME = #{syncTime}
+            </if>
+            <if test="rootOrgId != null and rootOrgId!='' " >
+            and    creRed.ROOT_ORG_ID = #{rootOrgId}
+            </if>
+            <if test="keyword!=null and keyword!='' ">
+            and (
+                creRed.REDBLACK_REASON like concat('%', concat(#{keyword}, '%')) or
+                creRed.CREDIT_UNIT like concat('%', concat(#{keyword}, '%')) or
+                creRed.CREDIT_BASIS like concat('%', concat(#{keyword}, '%')) or
+                creUnit.APPLICANT like concat('%', concat(#{keyword}, '%')) or
+                creLink.LINKMAN_NAME like concat('%', concat(#{keyword}, '%'))
+            )
+            </if>
+            order by creRed.CREATE_TIME desc
+        </where>
+    </select>
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaCreditRedblack" parameterType="AeaCreditRedblack" >
+         insert into AEA_CREDIT_REDBLACK (
+            REDBLACK_ID,
+            IS_BLACK,
+            REDBLACK_TYPE,
+            UNIT_INFO_ID,
+            LINKMAN_INFO_ID,
+            REDBLACK_REASON,
+            REDBLACK_LEVEL,
+            CREDIT_UNIT,
+            CREDIT_BASIS,
+            AFFIRM_TIME,
+            INCLUDE_TIME,
+            END_TIME,
+            IS_VALID,
+            INVALID_REASON,
+            IS_SYNC,
+            SYNC_SOURCE,
+            SYNC_TIME,
+            CREATER,
+            CREATE_TIME,
+            MODIFIER,
+            MODIFY_TIME,
+            ROOT_ORG_ID
+        ) values (
+            #{redblackId},
+            #{isBlack},
+            #{redblackType},
+            #{unitInfoId},
+            #{linkmanInfoId},
+            #{redblackReason},
+            #{redblackLevel},
+            #{creditUnit},
+            #{creditBasis},
+            #{affirmTime},
+            #{includeTime},
+            #{endTime},
+            #{isValid},
+            #{invalidReason},
+            #{isSync},
+            #{syncSource},
+            #{syncTime},
+            #{creater},
+            #{createTime},
+            #{modifier},
+            #{modifyTime},
+            #{rootOrgId}
+        )
+    </insert>
+
+    <!--6 修改实体对象 -->
+    <update id="updateAeaCreditRedblack" parameterType="AeaCreditRedblack" >
+        update AEA_CREDIT_REDBLACK
+        <set >
+            <if test="redblackId != null" >
+                REDBLACK_ID = #{redblackId},
+            </if>
+            <if test="isBlack != null" >
+                IS_BLACK = #{isBlack},
+            </if>
+            <if test="redblackType != null" >
+                REDBLACK_TYPE = #{redblackType},
+            </if>
+            <if test="unitInfoId != null" >
+                UNIT_INFO_ID = #{unitInfoId},
+            </if>
+            <if test="linkmanInfoId != null" >
+                LINKMAN_INFO_ID = #{linkmanInfoId},
+            </if>
+            <if test="redblackReason != null" >
+                REDBLACK_REASON = #{redblackReason},
+            </if>
+            <if test="redblackLevel != null" >
+                REDBLACK_LEVEL = #{redblackLevel},
+            </if>
+            <if test="creditUnit != null" >
+                CREDIT_UNIT = #{creditUnit},
+            </if>
+            <if test="creditBasis != null" >
+                CREDIT_BASIS = #{creditBasis},
+            </if>
+            <if test="affirmTime != null" >
+                AFFIRM_TIME = #{affirmTime},
+            </if>
+            <if test="includeTime != null" >
+                INCLUDE_TIME = #{includeTime},
+            </if>
+            <if test="endTime != null" >
+                END_TIME = #{endTime},
+            </if>
+            <if test="isValid != null" >
+                IS_VALID = #{isValid},
+            </if>
+            <if test="invalidReason != null" >
+                INVALID_REASON = #{invalidReason},
+            </if>
+            <if test="isSync != null" >
+                IS_SYNC = #{isSync},
+            </if>
+            <if test="syncSource != null" >
+                SYNC_SOURCE = #{syncSource},
+            </if>
+            <if test="syncTime != null" >
+                SYNC_TIME = #{syncTime},
+            </if>
+            <if test="creater != null" >
+                CREATER = #{creater},
+            </if>
+            <if test="createTime != null" >
+                CREATE_TIME = #{createTime},
+            </if>
+            <if test="modifier != null" >
+                MODIFIER = #{modifier},
+            </if>
+            <if test="modifyTime != null" >
+                MODIFY_TIME = #{modifyTime},
+            </if>
+            <if test="rootOrgId != null" >
+                ROOT_ORG_ID = #{rootOrgId},
+            </if>
+        </set>
+        where REDBLACK_ID = #{redblackId}
+    </update>
+
+    <!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaCreditRedblack">
+        delete from AEA_CREDIT_REDBLACK where REDBLACK_ID = #{id}
+    </delete>
+
+    <update id="enOrDisableIsValid">
+        update AEA_CREDIT_REDBLACK set IS_VALID = case IS_VALID when '0' then '1' else '0' end
+        where REDBLACK_ID = #{id}
+    </update>
+
+    <resultMap type="AeaCreditRedblack" id="AeaCreditRedblackMap">
+        <id property="redblackId" column="REDBLACK_ID"/>
+        <result property="isBlack" column="IS_BLACK"/>
+        <result property="redblackType" column="REDBLACK_TYPE"/>
+        <result property="unitInfoId" column="UNIT_INFO_ID"/>
+        <result property="linkmanInfoId" column="LINKMAN_INFO_ID"/>
+        <result property="redblackReason" column="REDBLACK_REASON"/>
+        <result property="redblackLevel" column="REDBLACK_LEVEL"/>
+        <result property="creditUnit" column="CREDIT_UNIT"/>
+        <result property="creditBasis" column="CREDIT_BASIS"/>
+        <result property="affirmTime" column="AFFIRM_TIME"/>
+        <result property="includeTime" column="INCLUDE_TIME"/>
+        <result property="endTime" column="END_TIME"/>
+        <result property="isValid" column="IS_VALID"/>
+        <result property="invalidReason" column="INVALID_REASON"/>
+        <result property="isSync" column="IS_SYNC"/>
+        <result property="syncSource" column="SYNC_SOURCE"/>
+        <result property="syncTime" column="SYNC_TIME"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="modifier" column="MODIFIER"/>
+        <result property="modifyTime" column="MODIFY_TIME"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+    </resultMap>
+
+</mapper>

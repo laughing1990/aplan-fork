@@ -1,0 +1,394 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by yinlf    2019-08-31 10:58:09 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.data.exchange.mapper.spgl.SpglXmjbxxbMapper">
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns">
+        LSH  lsh,
+        DFSJZJ  dfsjzj,
+        XZQHDM  xzqhdm,
+        XMDM  xmdm,
+        XMMC  xmmc,
+        GCDM  gcdm,
+        GCFW  gcfw,
+        QJDGCDM  qjdgcdm,
+        XMTZLY  xmtzly,
+        TDHQFS  tdhqfs,
+        TDSFDSJFA  tdsfdsjfa,
+        SFWCQYPG  sfwcqypg,
+        SPLCLX  splclx,
+        LXLX  lxlx,
+        GCFL  gcfl,
+        JSXZ  jsxz,
+        XMZJSX  xmzjsx,
+        GBHYDMFBND  gbhydmfbnd,
+        GBHY  gbhy,
+        NKGSJ  nkgsj,
+        NJCSJ  njcsj,
+        XMSFWQBJ  xmsfwqbj,
+        XMWQBJSJ  xmwqbjsj,
+        ZTZE  ztze,
+        JSDDXZQH  jsddxzqh,
+        JSDD  jsdd,
+        XMJSDDX  xmjsddx,
+        XMJSDDY  xmjsddy,
+        JSGMJNR  jsgmjnr,
+        YDMJ  ydmj,
+        JZMJ  jzmj,
+        SBSJ  sbsj,
+        SPLCBM  splcbm,
+        SPLCBBH  splcbbh,
+        SJYXBS  sjyxbs,
+        SJWXYY  sjwxyy,
+        SJSCZT  sjsczt,
+        SBYY  sbyy,
+        scsj  scsj,
+        gxsj  gxsj
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getSpglXmjbxxbById" resultType="SpglXmjbxxb">
+        select
+        <include refid="allColumns"/>
+        from SPGL_XMJBXXB
+        where LSH = #{id}
+    </select>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getSpglXmjbxxbByXzqhdmAndGcdM" resultType="SpglXmjbxxb">
+        select
+        <include refid="allColumns"/>
+        from SPGL_XMJBXXB
+        where XZQHDM = #{xzqhdm} AND GCDM = #{gcdm}
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listSpglXmjbxxb" resultType="SpglXmjbxxb">
+        select
+        <include refid="allColumns"/>
+        from SPGL_XMJBXXB
+        <where>
+            <if test="lsh != null">
+                AND LSH = #{lsh}
+            </if>
+            <if test="dfsjzj != null">
+                AND DFSJZJ = #{dfsjzj}
+            </if>
+            <if test="xzqhdm != null">
+                AND XZQHDM = #{xzqhdm}
+            </if>
+            <if test="xmdm != null">
+                AND XMDM = #{xmdm}
+            </if>
+            <if test="xmmc != null">
+                AND XMMC = #{xmmc}
+            </if>
+            <if test="gcdm != null">
+                AND GCDM = #{gcdm}
+            </if>
+            <if test="gcfw != null">
+                AND GCFW = #{gcfw}
+            </if>
+            <if test="qjdgcdm != null">
+                AND QJDGCDM = #{qjdgcdm}
+            </if>
+            <if test="xmtzly != null">
+                AND XMTZLY = #{xmtzly}
+            </if>
+            <if test="tdhqfs != null">
+                AND TDHQFS = #{tdhqfs}
+            </if>
+            <if test="tdsfdsjfa != null">
+                AND TDSFDSJFA = #{tdsfdsjfa}
+            </if>
+            <if test="sfwcqypg != null">
+                AND SFWCQYPG = #{sfwcqypg}
+            </if>
+            <if test="splclx != null">
+                AND SPLCLX = #{splclx}
+            </if>
+            <if test="lxlx != null">
+                AND LXLX = #{lxlx}
+            </if>
+            <if test="gcfl != null">
+                AND GCFL = #{gcfl}
+            </if>
+            <if test="jsxz != null">
+                AND JSXZ = #{jsxz}
+            </if>
+            <if test="xmzjsx != null">
+                AND XMZJSX = #{xmzjsx}
+            </if>
+            <if test="gbhydmfbnd != null">
+                AND GBHYDMFBND = #{gbhydmfbnd}
+            </if>
+            <if test="gbhy != null">
+                AND GBHY = #{gbhy}
+            </if>
+            <if test="nkgsj != null">
+                AND NKGSJ = #{nkgsj}
+            </if>
+            <if test="njcsj != null">
+                AND NJCSJ = #{njcsj}
+            </if>
+            <if test="xmsfwqbj != null">
+                AND XMSFWQBJ = #{xmsfwqbj}
+            </if>
+            <if test="xmwqbjsj != null">
+                AND XMWQBJSJ = #{xmwqbjsj}
+            </if>
+            <if test="ztze != null">
+                AND ZTZE = #{ztze}
+            </if>
+            <if test="jsddxzqh != null">
+                AND JSDDXZQH = #{jsddxzqh}
+            </if>
+            <if test="jsdd != null">
+                AND JSDD = #{jsdd}
+            </if>
+            <if test="xmjsddx != null">
+                AND XMJSDDX = #{xmjsddx}
+            </if>
+            <if test="xmjsddy != null">
+                AND XMJSDDY = #{xmjsddy}
+            </if>
+            <if test="jsgmjnr != null">
+                AND JSGMJNR = #{jsgmjnr}
+            </if>
+            <if test="ydmj != null">
+                AND YDMJ = #{ydmj}
+            </if>
+            <if test="jzmj != null">
+                AND JZMJ = #{jzmj}
+            </if>
+            <if test="sbsj != null">
+                AND SBSJ = #{sbsj}
+            </if>
+            <if test="splcbm != null">
+                AND SPLCBM = #{splcbm}
+            </if>
+            <if test="splcbbh != null">
+                AND SPLCBBH = #{splcbbh}
+            </if>
+            <if test="sjyxbs != null">
+                AND SJYXBS = #{sjyxbs}
+            </if>
+            <if test="sjwxyy != null">
+                AND SJWXYY = #{sjwxyy}
+            </if>
+            <if test="sjsczt != null">
+                AND SJSCZT = #{sjsczt}
+            </if>
+            <if test="sbyy != null">
+                AND SBYY = #{sbyy}
+            </if>
+            <if test="scsj != null">
+                AND scsj = #{scsj}
+            </if>
+            <if test="gxsj != null">
+                AND gxsj = #{gxsj}
+            </if>
+        </where>
+    </select>
+    <!--4 根据条件查询实体list,返回分页对象 -->
+
+    <!--5 新增实体对象 -->
+    <insert id="insertSpglXmjbxxb" parameterType="SpglXmjbxxb">
+        insert into SPGL_XMJBXXB (
+    LSH  ,DFSJZJ  ,XZQHDM  ,XMDM  ,XMMC  ,GCDM  ,GCFW  ,QJDGCDM  ,XMTZLY  ,TDHQFS  ,TDSFDSJFA  ,SFWCQYPG  ,SPLCLX  ,LXLX  ,GCFL  ,JSXZ  ,XMZJSX  ,GBHYDMFBND  ,GBHY  ,NKGSJ  ,NJCSJ  ,XMSFWQBJ  ,XMWQBJSJ  ,ZTZE  ,JSDDXZQH  ,JSDD  ,XMJSDDX  ,XMJSDDY  ,JSGMJNR  ,YDMJ  ,JZMJ  ,SBSJ  ,SPLCBM  ,SPLCBBH  ,SJYXBS  ,SJWXYY  ,SJSCZT  ,SBYY  ,scsj  ,gxsj  
+        )  values  (
+    #{lsh},#{dfsjzj},#{xzqhdm},#{xmdm},#{xmmc},#{gcdm},#{gcfw},#{qjdgcdm},#{xmtzly},#{tdhqfs},#{tdsfdsjfa},#{sfwcqypg},#{splclx},#{lxlx},#{gcfl},#{jsxz},#{xmzjsx},#{gbhydmfbnd},#{gbhy},#{nkgsj},#{njcsj},#{xmsfwqbj},#{xmwqbjsj},#{ztze},#{jsddxzqh},#{jsdd},#{xmjsddx},#{xmjsddy},#{jsgmjnr},#{ydmj},#{jzmj},#{sbsj},#{splcbm},#{splcbbh},#{sjyxbs},#{sjwxyy},#{sjsczt},#{sbyy},#{scsj},  #{gxsj}
+        )
+    </insert>
+    <!--6 修改实体对象 -->
+    <update id="updateSpglXmjbxxb" parameterType="SpglXmjbxxb">
+        update SPGL_XMJBXXB
+        <set>
+            <if test="lsh != null">
+                LSH = #{lsh},
+            </if>
+            <if test="dfsjzj != null">
+                DFSJZJ = #{dfsjzj},
+            </if>
+            <if test="xzqhdm != null">
+                XZQHDM = #{xzqhdm},
+            </if>
+            <if test="xmdm != null">
+                XMDM = #{xmdm},
+            </if>
+            <if test="xmmc != null">
+                XMMC = #{xmmc},
+            </if>
+            <if test="gcdm != null">
+                GCDM = #{gcdm},
+            </if>
+            <if test="gcfw != null">
+                GCFW = #{gcfw},
+            </if>
+            <if test="qjdgcdm != null">
+                QJDGCDM = #{qjdgcdm},
+            </if>
+            <if test="xmtzly != null">
+                XMTZLY = #{xmtzly},
+            </if>
+            <if test="tdhqfs != null">
+                TDHQFS = #{tdhqfs},
+            </if>
+            <if test="tdsfdsjfa != null">
+                TDSFDSJFA = #{tdsfdsjfa},
+            </if>
+            <if test="sfwcqypg != null">
+                SFWCQYPG = #{sfwcqypg},
+            </if>
+            <if test="splclx != null">
+                SPLCLX = #{splclx},
+            </if>
+            <if test="lxlx != null">
+                LXLX = #{lxlx},
+            </if>
+            <if test="gcfl != null">
+                GCFL = #{gcfl},
+            </if>
+            <if test="jsxz != null">
+                JSXZ = #{jsxz},
+            </if>
+            <if test="xmzjsx != null">
+                XMZJSX = #{xmzjsx},
+            </if>
+            <if test="gbhydmfbnd != null">
+                GBHYDMFBND = #{gbhydmfbnd},
+            </if>
+            <if test="gbhy != null">
+                GBHY = #{gbhy},
+            </if>
+            <if test="nkgsj != null">
+                NKGSJ = #{nkgsj},
+            </if>
+            <if test="njcsj != null">
+                NJCSJ = #{njcsj},
+            </if>
+            <if test="xmsfwqbj != null">
+                XMSFWQBJ = #{xmsfwqbj},
+            </if>
+            <if test="xmwqbjsj != null">
+                XMWQBJSJ = #{xmwqbjsj},
+            </if>
+            <if test="ztze != null">
+                ZTZE = #{ztze},
+            </if>
+            <if test="jsddxzqh != null">
+                JSDDXZQH = #{jsddxzqh},
+            </if>
+            <if test="jsdd != null">
+                JSDD = #{jsdd},
+            </if>
+            <if test="xmjsddx != null">
+                XMJSDDX = #{xmjsddx},
+            </if>
+            <if test="xmjsddy != null">
+                XMJSDDY = #{xmjsddy},
+            </if>
+            <if test="jsgmjnr != null">
+                JSGMJNR = #{jsgmjnr},
+            </if>
+            <if test="ydmj != null">
+                YDMJ = #{ydmj},
+            </if>
+            <if test="jzmj != null">
+                JZMJ = #{jzmj},
+            </if>
+            <if test="sbsj != null">
+                SBSJ = #{sbsj},
+            </if>
+            <if test="splcbm != null">
+                SPLCBM = #{splcbm},
+            </if>
+            <if test="splcbbh != null">
+                SPLCBBH = #{splcbbh},
+            </if>
+            <if test="sjyxbs != null">
+                SJYXBS = #{sjyxbs},
+            </if>
+            <if test="sjwxyy != null">
+                SJWXYY = #{sjwxyy},
+            </if>
+            <if test="sjsczt != null">
+                SJSCZT = #{sjsczt},
+            </if>
+            <if test="sbyy != null">
+                SBYY = #{sbyy},
+            </if>
+            <if test="scsj != null">
+                scsj = #{scsj},
+            </if>
+            <if test="gxsj != null">
+                gxsj = #{gxsj},
+            </if>
+        </set>
+        where LSH = #{lsh}
+    </update>
+    <!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteSpglXmjbxxb">
+        delete from SPGL_XMJBXXB
+        where LSH = #{id}
+    </delete>
+    <!--8 删除实体对象列表,根据主键ID列表 -->
+    <!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="SpglXmjbxxb" id="SpglXmjbxxbMap">
+        <id property="lsh" column="LSH"/>
+        <result property="dfsjzj" column="DFSJZJ"/>
+        <result property="xzqhdm" column="XZQHDM"/>
+        <result property="xmdm" column="XMDM"/>
+        <result property="xmmc" column="XMMC"/>
+        <result property="gcdm" column="GCDM"/>
+        <result property="gcfw" column="GCFW"/>
+        <result property="qjdgcdm" column="QJDGCDM"/>
+        <result property="xmtzly" column="XMTZLY"/>
+        <result property="tdhqfs" column="TDHQFS"/>
+        <result property="tdsfdsjfa" column="TDSFDSJFA"/>
+        <result property="sfwcqypg" column="SFWCQYPG"/>
+        <result property="splclx" column="SPLCLX"/>
+        <result property="lxlx" column="LXLX"/>
+        <result property="gcfl" column="GCFL"/>
+        <result property="jsxz" column="JSXZ"/>
+        <result property="xmzjsx" column="XMZJSX"/>
+        <result property="gbhydmfbnd" column="GBHYDMFBND"/>
+        <result property="gbhy" column="GBHY"/>
+        <result property="nkgsj" column="NKGSJ"/>
+        <result property="njcsj" column="NJCSJ"/>
+        <result property="xmsfwqbj" column="XMSFWQBJ"/>
+        <result property="xmwqbjsj" column="XMWQBJSJ"/>
+        <result property="ztze" column="ZTZE"/>
+        <result property="jsddxzqh" column="JSDDXZQH"/>
+        <result property="jsdd" column="JSDD"/>
+        <result property="xmjsddx" column="XMJSDDX"/>
+        <result property="xmjsddy" column="XMJSDDY"/>
+        <result property="jsgmjnr" column="JSGMJNR"/>
+        <result property="ydmj" column="YDMJ"/>
+        <result property="jzmj" column="JZMJ"/>
+        <result property="sbsj" column="SBSJ"/>
+        <result property="splcbm" column="SPLCBM"/>
+        <result property="splcbbh" column="SPLCBBH"/>
+        <result property="sjyxbs" column="SJYXBS"/>
+        <result property="sjwxyy" column="SJWXYY"/>
+        <result property="sjsczt" column="SJSCZT"/>
+        <result property="sbyy" column="SBYY"/>
+        <result property="scsj" column="scsj"/>
+        <result property="gxsj" column="gxsj"/>
+    </resultMap>
+
+    <insert id="batchInsertSpglXmjbxxb" parameterType="SpglXmjbxxb">
+        insert into SPGL_XMJBXXB (
+        LSH ,DFSJZJ ,XZQHDM ,XMDM ,XMMC ,GCDM ,GCFW ,QJDGCDM ,XMTZLY ,TDHQFS ,TDSFDSJFA ,SFWCQYPG ,SPLCLX ,LXLX ,GCFL
+        ,JSXZ ,XMZJSX ,GBHYDMFBND ,GBHY ,NKGSJ ,NJCSJ ,XMSFWQBJ ,XMWQBJSJ ,ZTZE ,JSDDXZQH ,JSDD ,XMJSDDX ,XMJSDDY
+        ,JSGMJNR ,YDMJ ,JZMJ ,SBSJ ,SPLCBM ,SPLCBBH ,SJYXBS ,SJWXYY ,SJSCZT ,SBYY ,scsj ,gxsj
+        ) values
+        <foreach collection="list" item="item" separator=",">
+            (
+            #{item.lsh},#{item.dfsjzj},#{item.xzqhdm},#{item.xmdm},#{item.xmmc},#{item.gcdm},#{item.gcfw},#{item.qjdgcdm},#{item.xmtzly},#{item.tdhqfs},#{item.tdsfdsjfa},#{item.sfwcqypg},#{item.splclx},#{item.lxlx},#{item.gcfl},#{item.jsxz},#{item.xmzjsx},#{item.gbhydmfbnd},#{item.gbhy},#{item.nkgsj},#{item.njcsj},#{item.xmsfwqbj},#{item.xmwqbjsj},#{item.ztze},#{item.jsddxzqh},#{item.jsdd},#{item.xmjsddx},#{item.xmjsddy},#{item.jsgmjnr},#{item.ydmj},#{item.jzmj},#{item.sbsj},#{item.splcbm},#{item.splcbbh},#{item.sjyxbs},#{item.sjwxyy},#{item.sjsczt},#{item.sbyy},#{item.scsj},
+            #{item.gxsj}
+            )
+        </foreach>
+    </insert>
+</mapper>

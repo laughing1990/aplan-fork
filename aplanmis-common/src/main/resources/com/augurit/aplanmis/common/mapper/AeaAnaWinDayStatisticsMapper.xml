@@ -1,0 +1,1147 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by 98213    2019-09-18 10:32:05 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaAnaWinDayStatisticsMapper">
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns">
+    WINDOW_DAY_STATISTICS_ID  windowDayStatisticsId,
+    STATISTICS_RECORD_ID  statisticsRecordId,
+    WINDOW_ID  windowId,
+    WINDOW_NAME  windowName,
+    REGION_ID  regionId,
+    REGION_NAME  regionName,
+    APPLY_SOURCE  applySource,
+    APPLY_RECORD_ID  applyRecordId,
+    APPLY_RECORD_NAME  applyRecordName,
+    DYBZSPJDXH  dybzspjdxh,
+    IS_NODE  isNode,
+    IS_PARALLEL  isParallel,
+    DAY_APPLY_COUNT  dayApplyCount,
+    ALL_APPLY_COUNT  allApplyCount,
+    APPLY_LRR  applyLrr,
+    ALL_IN_SUPPLEMENT_COUNT  allInSupplementCount,
+    ALL_SUPPLEMENTED_COUNT  allSupplementedCount,
+    DAY_PRE_ACCEPTANCE_COUNT  dayPreAcceptanceCount,
+    ALL_PRE_ACCEPTANCE_COUNT  allPreAcceptanceCount,
+    PRE_ACCEPTANCE_LRR  preAcceptanceLrr,
+    DAY_OUT_SCOPE_COUNT  dayOutScopeCount,
+    ALL_OUT_SCOPE_COUNT  allOutScopeCount,
+    OUT_SCOPE_LRR  outScopeLrr,
+    DAY_COMPLETED_COUNT  dayCompletedCount,
+    ALL_COMPLETED_COUNT  allCompletedCount,
+    COMPLETED_LRR  completedLrr,
+    DAY_OVER_TIME_COUNT  dayOverTimeCount,
+    ALL_OVER_TIME_COUNT  allOverTimeCount,
+    OVER_TIME_LRR  overTimeLrr,
+    ALL_PRE_ACCEPTANCE_RATE  allPreAcceptanceRate,
+    ALL_OUT_SCOPE_RATE  allOutScopeRate,
+    ALL_OVER_TIME_RATE  allOverTimeRate,
+    ALL_COMPLETED_RATE  allCompletedRate,
+    STATISTICS_DATE  statisticsDate,
+    ROOT_ORG_ID  rootOrgId
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaAnaWinDayStatisticsById" resultType="AeaAnaWinDayStatistics">
+        select
+        <include refid="allColumns"/>
+        from AEA_ANA_WIN_DAY_STATISTICS
+        where WINDOW_DAY_STATISTICS_ID = #{id}
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaAnaWinDayStatistics" resultType="AeaAnaWinDayStatistics">
+        select
+        <include refid="allColumns"/>
+        from AEA_ANA_WIN_DAY_STATISTICS
+        <where>
+            <if test="windowDayStatisticsId != null">
+                AND WINDOW_DAY_STATISTICS_ID = #{windowDayStatisticsId}
+            </if>
+            <if test="statisticsRecordId != null">
+                AND STATISTICS_RECORD_ID = #{statisticsRecordId}
+            </if>
+            <if test="windowId != null">
+                AND WINDOW_ID = #{windowId}
+            </if>
+            <if test="windowName != null">
+                AND WINDOW_NAME = #{windowName}
+            </if>
+            <if test="regionId != null">
+                AND REGION_ID = #{regionId}
+            </if>
+            <if test="regionName != null">
+                AND REGION_NAME = #{regionName}
+            </if>
+            <if test="applySource != null">
+                AND APPLY_SOURCE = #{applySource}
+            </if>
+            <if test="applyRecordId != null">
+                AND APPLY_RECORD_ID = #{applyRecordId}
+            </if>
+            <if test="applyRecordName != null">
+                AND APPLY_RECORD_NAME = #{applyRecordName}
+            </if>
+            <if test="dybzspjdxh != null">
+                AND DYBZSPJDXH = #{dybzspjdxh}
+            </if>
+            <if test="isNode != null">
+                AND IS_NODE = #{isNode}
+            </if>
+            <if test="isParallel != null">
+                AND IS_PARALLEL = #{isParallel}
+            </if>
+            <if test="dayApplyCount != null">
+                AND DAY_APPLY_COUNT = #{dayApplyCount}
+            </if>
+            <if test="allApplyCount != null">
+                AND ALL_APPLY_COUNT = #{allApplyCount}
+            </if>
+            <if test="applyLrr != null">
+                AND APPLY_LRR = #{applyLrr}
+            </if>
+            <if test="allInSupplementCount != null">
+                AND ALL_IN_SUPPLEMENT_COUNT = #{allInSupplementCount}
+            </if>
+            <if test="allSupplementedCount != null">
+                AND ALL_SUPPLEMENTED_COUNT = #{allSupplementedCount}
+            </if>
+            <if test="dayPreAcceptanceCount != null">
+                AND DAY_PRE_ACCEPTANCE_COUNT = #{dayPreAcceptanceCount}
+            </if>
+            <if test="allPreAcceptanceCount != null">
+                AND ALL_PRE_ACCEPTANCE_COUNT = #{allPreAcceptanceCount}
+            </if>
+            <if test="preAcceptanceLrr != null">
+                AND PRE_ACCEPTANCE_LRR = #{preAcceptanceLrr}
+            </if>
+            <if test="dayOutScopeCount != null">
+                AND DAY_OUT_SCOPE_COUNT = #{dayOutScopeCount}
+            </if>
+            <if test="allOutScopeCount != null">
+                AND ALL_OUT_SCOPE_COUNT = #{allOutScopeCount}
+            </if>
+            <if test="outScopeLrr != null">
+                AND OUT_SCOPE_LRR = #{outScopeLrr}
+            </if>
+            <if test="dayCompletedCount != null">
+                AND DAY_COMPLETED_COUNT = #{dayCompletedCount}
+            </if>
+            <if test="allCompletedCount != null">
+                AND ALL_COMPLETED_COUNT = #{allCompletedCount}
+            </if>
+            <if test="completedLrr != null">
+                AND COMPLETED_LRR = #{completedLrr}
+            </if>
+            <if test="dayOverTimeCount != null">
+                AND DAY_OVER_TIME_COUNT = #{dayOverTimeCount}
+            </if>
+            <if test="allOverTimeCount != null">
+                AND ALL_OVER_TIME_COUNT = #{allOverTimeCount}
+            </if>
+            <if test="overTimeLrr != null">
+                AND OVER_TIME_LRR = #{overTimeLrr}
+            </if>
+            <if test="allPreAcceptanceRate != null">
+                AND ALL_PRE_ACCEPTANCE_RATE = #{allPreAcceptanceRate}
+            </if>
+            <if test="allOutScopeRate != null">
+                AND ALL_OUT_SCOPE_RATE = #{allOutScopeRate}
+            </if>
+            <if test="allOverTimeRate != null">
+                AND ALL_OVER_TIME_RATE = #{allOverTimeRate}
+            </if>
+            <if test="allCompletedRate != null">
+                AND ALL_COMPLETED_RATE = #{allCompletedRate}
+            </if>
+            <if test="statisticsDate != null">
+                AND STATISTICS_DATE = #{statisticsDate}
+            </if>
+            <if test="rootOrgId != null">
+                AND ROOT_ORG_ID = #{rootOrgId}
+            </if>
+            <if test="_databaseId == 'oracle'">
+                <if test="startTime != null and startTime != ''">
+                    and to_char(STATISTICS_DATE, 'yyyy-mm-dd') &gt;= #{startTime}
+                </if>
+                <if test="endTime != null and endTime != ''">
+                    and to_char(STATISTICS_DATE, 'yyyy-mm-dd') &lt;= #{endTime}
+                </if>
+            </if>
+            <if test="_databaseId == 'mysql'">
+                <if test="startTime !=null and startTime != ''">
+                    and STATISTICS_DATE <![CDATA[ >= ]]> STR_TO_DATE(concat(#{startTime},' 00:00:00'), '%Y-%m-%d
+                    %H:%i:%s')
+                </if>
+                <if test="endTime !=null and endTime != ''">
+                    and STATISTICS_DATE <![CDATA[ <= ]]> STR_TO_DATE(concat(#{endTime},' 23:59:59'), '%Y-%m-%d
+                    %H:%i:%s')
+                </if>
+            </if>
+        </where>
+        order by STATISTICS_DATE desc
+    </select>
+    <!--4 根据条件查询实体list,返回分页对象 -->
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaAnaWinDayStatistics" parameterType="AeaAnaWinDayStatistics">
+        insert into AEA_ANA_WIN_DAY_STATISTICS (
+        WINDOW_DAY_STATISTICS_ID  ,STATISTICS_RECORD_ID  ,WINDOW_ID  ,WINDOW_NAME  ,REGION_ID  ,REGION_NAME  ,APPLY_SOURCE  ,APPLY_RECORD_ID  ,APPLY_RECORD_NAME  ,DYBZSPJDXH  ,IS_NODE  ,IS_PARALLEL  ,DAY_APPLY_COUNT  ,ALL_APPLY_COUNT  ,APPLY_LRR  ,ALL_IN_SUPPLEMENT_COUNT  ,ALL_SUPPLEMENTED_COUNT  ,DAY_PRE_ACCEPTANCE_COUNT  ,ALL_PRE_ACCEPTANCE_COUNT  ,PRE_ACCEPTANCE_LRR  ,DAY_OUT_SCOPE_COUNT  ,ALL_OUT_SCOPE_COUNT  ,OUT_SCOPE_LRR  ,DAY_COMPLETED_COUNT  ,ALL_COMPLETED_COUNT  ,COMPLETED_LRR  ,DAY_OVER_TIME_COUNT  ,ALL_OVER_TIME_COUNT  ,OVER_TIME_LRR  ,ALL_PRE_ACCEPTANCE_RATE  ,ALL_OUT_SCOPE_RATE  ,ALL_OVER_TIME_RATE  ,ALL_COMPLETED_RATE  ,STATISTICS_DATE  ,ROOT_ORG_ID
+            )  values  (
+        #{windowDayStatisticsId},#{statisticsRecordId},#{windowId},#{windowName},#{regionId},#{regionName},#{applySource},#{applyRecordId},#{applyRecordName},#{dybzspjdxh},#{isNode},#{isParallel},#{dayApplyCount},#{allApplyCount},#{applyLrr},#{allInSupplementCount},#{allSupplementedCount},#{dayPreAcceptanceCount},#{allPreAcceptanceCount},#{preAcceptanceLrr},#{dayOutScopeCount},#{allOutScopeCount},#{outScopeLrr},#{dayCompletedCount},#{allCompletedCount},#{completedLrr},#{dayOverTimeCount},#{allOverTimeCount},#{overTimeLrr},#{allPreAcceptanceRate},#{allOutScopeRate},#{allOverTimeRate},#{allCompletedRate},#{statisticsDate},  #{rootOrgId}
+            )
+    </insert>
+    <!--6 修改实体对象 -->
+    <update id="updateAeaAnaWinDayStatistics" parameterType="AeaAnaWinDayStatistics">
+        update AEA_ANA_WIN_DAY_STATISTICS
+        <set>
+            <if test="windowDayStatisticsId != null">
+                WINDOW_DAY_STATISTICS_ID = #{windowDayStatisticsId},
+            </if>
+            <if test="statisticsRecordId != null">
+                STATISTICS_RECORD_ID = #{statisticsRecordId},
+            </if>
+            <if test="windowId != null">
+                WINDOW_ID = #{windowId},
+            </if>
+            <if test="windowName != null">
+                WINDOW_NAME = #{windowName},
+            </if>
+            <if test="regionId != null">
+                REGION_ID = #{regionId},
+            </if>
+            <if test="regionName != null">
+                REGION_NAME = #{regionName},
+            </if>
+            <if test="applySource != null">
+                APPLY_SOURCE = #{applySource},
+            </if>
+            <if test="applyRecordId != null">
+                APPLY_RECORD_ID = #{applyRecordId},
+            </if>
+            <if test="applyRecordName != null">
+                APPLY_RECORD_NAME = #{applyRecordName},
+            </if>
+            <if test="dybzspjdxh != null">
+                DYBZSPJDXH = #{dybzspjdxh},
+            </if>
+            <if test="isNode != null">
+                IS_NODE = #{isNode},
+            </if>
+            <if test="isParallel != null">
+                IS_PARALLEL = #{isParallel},
+            </if>
+            <if test="dayApplyCount != null">
+                DAY_APPLY_COUNT = #{dayApplyCount},
+            </if>
+            <if test="allApplyCount != null">
+                ALL_APPLY_COUNT = #{allApplyCount},
+            </if>
+            <if test="applyLrr != null">
+                APPLY_LRR = #{applyLrr},
+            </if>
+            <if test="allInSupplementCount != null">
+                ALL_IN_SUPPLEMENT_COUNT = #{allInSupplementCount},
+            </if>
+            <if test="allSupplementedCount != null">
+                ALL_SUPPLEMENTED_COUNT = #{allSupplementedCount},
+            </if>
+            <if test="dayPreAcceptanceCount != null">
+                DAY_PRE_ACCEPTANCE_COUNT = #{dayPreAcceptanceCount},
+            </if>
+            <if test="allPreAcceptanceCount != null">
+                ALL_PRE_ACCEPTANCE_COUNT = #{allPreAcceptanceCount},
+            </if>
+            <if test="preAcceptanceLrr != null">
+                PRE_ACCEPTANCE_LRR = #{preAcceptanceLrr},
+            </if>
+            <if test="dayOutScopeCount != null">
+                DAY_OUT_SCOPE_COUNT = #{dayOutScopeCount},
+            </if>
+            <if test="allOutScopeCount != null">
+                ALL_OUT_SCOPE_COUNT = #{allOutScopeCount},
+            </if>
+            <if test="outScopeLrr != null">
+                OUT_SCOPE_LRR = #{outScopeLrr},
+            </if>
+            <if test="dayCompletedCount != null">
+                DAY_COMPLETED_COUNT = #{dayCompletedCount},
+            </if>
+            <if test="allCompletedCount != null">
+                ALL_COMPLETED_COUNT = #{allCompletedCount},
+            </if>
+            <if test="completedLrr != null">
+                COMPLETED_LRR = #{completedLrr},
+            </if>
+            <if test="dayOverTimeCount != null">
+                DAY_OVER_TIME_COUNT = #{dayOverTimeCount},
+            </if>
+            <if test="allOverTimeCount != null">
+                ALL_OVER_TIME_COUNT = #{allOverTimeCount},
+            </if>
+            <if test="overTimeLrr != null">
+                OVER_TIME_LRR = #{overTimeLrr},
+            </if>
+            <if test="allPreAcceptanceRate != null">
+                ALL_PRE_ACCEPTANCE_RATE = #{allPreAcceptanceRate},
+            </if>
+            <if test="allOutScopeRate != null">
+                ALL_OUT_SCOPE_RATE = #{allOutScopeRate},
+            </if>
+            <if test="allOverTimeRate != null">
+                ALL_OVER_TIME_RATE = #{allOverTimeRate},
+            </if>
+            <if test="allCompletedRate != null">
+                ALL_COMPLETED_RATE = #{allCompletedRate},
+            </if>
+            <if test="statisticsDate != null">
+                STATISTICS_DATE = #{statisticsDate},
+            </if>
+            <if test="rootOrgId != null">
+                ROOT_ORG_ID = #{rootOrgId},
+            </if>
+        </set>
+        where WINDOW_DAY_STATISTICS_ID = #{windowDayStatisticsId}
+    </update>
+    <!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaAnaWinDayStatistics">
+        delete from   AEA_ANA_WIN_DAY_STATISTICS
+        where
+    WINDOW_DAY_STATISTICS_ID = #{id}
+    </delete>
+
+    <delete id="deleteThisDayStatisticsData">
+        delete from  AEA_ANA_WIN_DAY_STATISTICS
+        where
+        STATISTICS_DATE = #{statisticsDate}
+        AND ROOT_ORG_ID = #{rootOrgId}
+    </delete>
+
+    <insert id="batchInserWinDayStatisticst">
+        insert into AEA_ANA_WIN_DAY_STATISTICS (
+        WINDOW_DAY_STATISTICS_ID ,STATISTICS_RECORD_ID ,WINDOW_ID ,WINDOW_NAME ,REGION_ID ,REGION_NAME ,APPLY_SOURCE
+        ,APPLY_RECORD_ID ,APPLY_RECORD_NAME ,DYBZSPJDXH ,IS_NODE ,IS_PARALLEL
+        ,DAY_APPLY_COUNT ,ALL_APPLY_COUNT ,APPLY_LRR ,ALL_IN_SUPPLEMENT_COUNT ,ALL_SUPPLEMENTED_COUNT
+        ,DAY_PRE_ACCEPTANCE_COUNT ,ALL_PRE_ACCEPTANCE_COUNT ,PRE_ACCEPTANCE_LRR ,DAY_OUT_SCOPE_COUNT
+        ,ALL_OUT_SCOPE_COUNT ,OUT_SCOPE_LRR ,DAY_COMPLETED_COUNT ,ALL_COMPLETED_COUNT ,COMPLETED_LRR
+        ,DAY_OVER_TIME_COUNT ,ALL_OVER_TIME_COUNT ,OVER_TIME_LRR ,ALL_PRE_ACCEPTANCE_RATE ,ALL_OUT_SCOPE_RATE
+        ,ALL_OVER_TIME_RATE ,ALL_COMPLETED_RATE ,STATISTICS_DATE ,ROOT_ORG_ID
+        ) values
+        <foreach collection="winDayStatisticsList" item="winDayStatistics" separator=",">
+            (
+            #{winDayStatistics.windowDayStatisticsId},#{winDayStatistics.statisticsRecordId},#{winDayStatistics.windowId},#{winDayStatistics.windowName},#{winDayStatistics.regionId},#{winDayStatistics.regionName},#{winDayStatistics.applySource},
+            #{winDayStatistics.applyRecordId},#{winDayStatistics.applyRecordName},#{winDayStatistics.dybzspjdxh},#{winDayStatistics.isNode},#{winDayStatistics.isParallel},
+            #{winDayStatistics.dayApplyCount},#{winDayStatistics.allApplyCount},#{winDayStatistics.applyLrr},#{winDayStatistics.allInSupplementCount},#{winDayStatistics.allSupplementedCount},#{winDayStatistics.dayPreAcceptanceCount},#{winDayStatistics.allPreAcceptanceCount},#{winDayStatistics.preAcceptanceLrr},
+            #{winDayStatistics.dayOutScopeCount},#{winDayStatistics.allOutScopeCount},#{winDayStatistics.outScopeLrr},#{winDayStatistics.dayCompletedCount},#{winDayStatistics.allCompletedCount},#{winDayStatistics.completedLrr},#{winDayStatistics.dayOverTimeCount},
+            #{winDayStatistics.allOverTimeCount},#{winDayStatistics.overTimeLrr},#{winDayStatistics.allPreAcceptanceRate},#{winDayStatistics.allOutScopeRate},#{winDayStatistics.allOverTimeRate},#{winDayStatistics.allCompletedRate},#{winDayStatistics.statisticsDate},#{winDayStatistics.rootOrgId}
+            )
+        </foreach>
+    </insert>
+
+    <select id="getWinApplyByTime" resultType="AeaAnaWinDayStatistics">
+        select
+        window_id as windowId, sum(DAY_APPLY_COUNT) as dayApplyCount, sum(DAY_PRE_ACCEPTANCE_COUNT) as
+        dayPreAcceptanceCount
+        from AEA_ANA_WIN_DAY_STATISTICS
+        <where>
+            <if test="_databaseId == 'oracle'">
+                and to_char(STATISTICS_DATE, 'yyyy-mm-dd HH24:mi:ss') <![CDATA[ >= ]]> #{startTime}
+                and to_char(STATISTICS_DATE, 'yyyy-mm-dd HH24:mi:ss') <![CDATA[ <= ]]> #{endTime}
+            </if>
+            <if test="_databaseId == 'mysql'">
+                and STATISTICS_DATE <![CDATA[ >= ]]> #{startTime}
+                and STATISTICS_DATE <![CDATA[ <= ]]> #{endTime}
+            </if>
+            and ROOT_ORG_ID = #{rootOrgId}
+        </where>
+        group by window_id
+    </select>
+
+    <select id="getRegionApplyByTime" resultType="com.augurit.aplanmis.common.vo.analyse.RegionApplyStatisticsVo">
+        select REGION_ID as regionId, REGION_NAME as regionName, sum(DAY_APPLY_COUNT) as applyCount from
+        AEA_ANA_WIN_DAY_STATISTICS
+        <where>
+            <if test="_databaseId == 'oracle'">
+                and to_char(STATISTICS_DATE, 'yyyy-mm-dd HH24:mi:ss') <![CDATA[ >= ]]> #{startTime}
+                and to_char(STATISTICS_DATE, 'yyyy-mm-dd HH24:mi:ss') <![CDATA[ <= ]]> #{endTime}
+            </if>
+            <if test="_databaseId == 'mysql'">
+                and STATISTICS_DATE <![CDATA[ >= ]]> #{startTime}
+                and STATISTICS_DATE <![CDATA[ <= ]]> #{endTime}
+            </if>
+            and ROOT_ORG_ID = #{rootOrgId}
+        </where>
+        group by REGION_ID, REGION_NAME
+    </select>
+
+    <select id="getWinApplyStatistics" resultType="com.augurit.aplanmis.common.vo.analyse.WinApplyStatisticsVo">
+        select WINDOW_ID as windowId, WINDOW_NAME as windowName, APPLY_SOURCE as applySource,
+        SUM(DAY_APPLY_COUNT) as applyCount, SUM(DAY_PRE_ACCEPTANCE_COUNT) as shouliCount, SUM(DAY_OUT_SCOPE_COUNT) as
+        buyushouliCount,
+        SUM(DAY_COMPLETED_COUNT) as banjieCount, SUM(DAY_OVER_TIME_COUNT) as yuqiCount
+        from AEA_ANA_WIN_DAY_STATISTICS
+        <where>
+            <if test="_databaseId == 'oracle'">
+                and to_char(STATISTICS_DATE, 'yyyy-mm-dd HH24:mi:ss') <![CDATA[ >= ]]> #{startTime}
+                and to_char(STATISTICS_DATE, 'yyyy-mm-dd HH24:mi:ss') <![CDATA[ <= ]]> #{endTime}
+            </if>
+            <if test="_databaseId == 'mysql'">
+                and STATISTICS_DATE <![CDATA[ >= ]]> #{startTime}
+                and STATISTICS_DATE <![CDATA[ <= ]]> #{endTime}
+            </if>
+            and ROOT_ORG_ID = #{rootOrgId}
+        </where>
+        group by WINDOW_ID, WINDOW_NAME, APPLY_SOURCE
+    </select>
+
+    <select id="getWinAcceptStatistics" resultType="com.augurit.aplanmis.common.vo.analyse.WinApplyStatisticsVo">
+        select WINDOW_ID as windowId, WINDOW_NAME as windowName, APPLY_SOURCE as applySource,
+        SUM(DAY_APPLY_COUNT) as applyCount, SUM(DAY_PRE_ACCEPTANCE_COUNT) as shouliCount
+        from AEA_ANA_WIN_DAY_STATISTICS
+        <where>
+            <if test="_databaseId == 'oracle'">
+                and to_char(STATISTICS_DATE, 'yyyy-mm-dd HH24:mi:ss') <![CDATA[ >= ]]> #{startTime}
+                and to_char(STATISTICS_DATE, 'yyyy-mm-dd HH24:mi:ss') <![CDATA[ <= ]]> #{endTime}
+            </if>
+            <if test="_databaseId == 'mysql'">
+                and STATISTICS_DATE <![CDATA[ >= ]]> #{startTime}
+                and STATISTICS_DATE <![CDATA[ <= ]]> #{endTime}
+            </if>
+            and ROOT_ORG_ID = #{rootOrgId}
+        </where>
+        group by WINDOW_ID, WINDOW_NAME
+    </select>
+
+    <select id="getWinAcceptStatisticsByDay" resultType="com.augurit.aplanmis.common.vo.analyse.WinApplyStatisticsVo">
+        select STATISTICS_DATE as day, SUM(DAY_APPLY_COUNT) as applyCount, SUM(DAY_PRE_ACCEPTANCE_COUNT) as shouliCount
+        from AEA_ANA_WIN_DAY_STATISTICS
+        <where>
+            and WINDOW_ID = #{windowId}
+            <if test="_databaseId == 'oracle'">
+                and to_char(STATISTICS_DATE, 'yyyy-mm-dd HH24:mi:ss') <![CDATA[ >= ]]> #{startTime}
+                and to_char(STATISTICS_DATE, 'yyyy-mm-dd HH24:mi:ss') <![CDATA[ <= ]]> #{endTime}
+            </if>
+            <if test="_databaseId == 'mysql'">
+                and STATISTICS_DATE <![CDATA[ >= ]]> #{startTime}
+                and STATISTICS_DATE <![CDATA[ <= ]]> #{endTime}
+            </if>
+            and ROOT_ORG_ID = #{rootOrgId}
+        </where>
+        group by STATISTICS_DATE
+        order by STATISTICS_DATE
+    </select>
+
+    <select id="getWinApplyStatistics2" resultType="com.augurit.aplanmis.common.vo.analyse.WinApplyStatisticsVo">
+        select tt.*,asw.SORT_NO sortNo from(
+        select WINDOW_ID as windowId, WINDOW_NAME as windowName,
+        SUM(DAY_APPLY_COUNT) as applyCount,
+        SUM(DAY_PRE_ACCEPTANCE_COUNT) as shouliCount,
+        SUM(DAY_OUT_SCOPE_COUNT) as buyushouliCount,
+        SUM(DAY_COMPLETED_COUNT) as banjieCount,
+        SUM(DAY_OVER_TIME_COUNT) as yuqiCount
+        from AEA_ANA_WIN_DAY_STATISTICS
+        <where>
+            <if test="_databaseId == 'oracle'">
+                and to_char(STATISTICS_DATE, 'yyyy-mm-dd HH24:mi:ss') <![CDATA[ >= ]]> #{startTime}
+                and to_char(STATISTICS_DATE, 'yyyy-mm-dd HH24:mi:ss') <![CDATA[ <= ]]> #{endTime}
+            </if>
+            <if test="_databaseId == 'mysql'">
+                and STATISTICS_DATE <![CDATA[ >= ]]> #{startTime}
+                and STATISTICS_DATE <![CDATA[ <= ]]> #{endTime}
+            </if>
+            and ROOT_ORG_ID = #{rootOrgId}
+            <if test="windowId !=null and windowId !=''">
+              and  WINDOW_ID = #{windowId}
+            </if>
+        </where>
+        group by WINDOW_ID, WINDOW_NAME
+        )tt LEFT JOIN aea_service_window asw on tt.windowId = asw.WINDOW_ID
+        ORDER BY asw.SORT_NO
+    </select>
+
+    <select id="getApplyCount" resultType="long">
+
+        select
+        <if test="_databaseId == 'oracle'">
+            NVL(sum(DAY_APPLY_COUNT),0)
+        </if>
+        <if test="_databaseId == 'mysql'">
+            IFNULL(sum(DAY_APPLY_COUNT),0)
+        </if>
+
+        from aea_ana_win_day_statistics aawds
+        <where>
+            <if test="_databaseId == 'oracle'">
+                and to_char(aawds.STATISTICS_DATE, 'yyyy-mm-dd HH24:mi:ss') <![CDATA[ >= ]]> #{startTime}
+                and to_char(aawds.STATISTICS_DATE, 'yyyy-mm-dd HH24:mi:ss') <![CDATA[ <= ]]> #{endTime}
+            </if>
+            <if test="_databaseId == 'mysql'">
+                and aawds.STATISTICS_DATE <![CDATA[ >= ]]> #{startTime}
+                and aawds.STATISTICS_DATE <![CDATA[ <= ]]> #{endTime}
+            </if>
+            and aawds.window_id= #{windowId}
+            and aawds.root_org_id = #{rootOrgId}
+        </where>
+    </select>
+
+    <select id="getThemeStageStatistics" resultType="com.augurit.aplanmis.common.vo.analyse.ThemeDayApplyRecord">
+        select aatds.THEME_ID themeId,
+        aatds.THEME_NAME themeName,
+        aatds.DYBZSPJDXH DYBZSPJDXH,
+        aatds.IS_PARALLEL isParallel,
+        <if test="_databaseId == 'oracle'">
+            NVL(sum(aatds.DAY_APPLY_COUNT),0) applyCount
+        </if>
+        <if test="_databaseId == 'mysql'">
+            IFNULL(sum(aatds.DAY_APPLY_COUNT),0) applyCount
+        </if>
+
+        from aea_ana_theme_day_statistics aatds
+        where aatds.STATISTICS_DATE <![CDATA[>=  ]]> #{startTime}
+        and aatds.STATISTICS_DATE <![CDATA[ <= ]]> #{endTime}
+        and aatds.root_org_id = #{rootOrgId}
+        GROUP BY aatds.THEME_ID,
+        aatds.DYBZSPJDXH,
+        aatds.IS_PARALLEL
+    </select>
+
+    <select id="getStageGroupStatistics" resultType="com.augurit.aplanmis.common.vo.analyse.ThemeDayApplyRecord">
+     select
+        aatds.DYBZSPJDXH DYBZSPJDXH,
+        aatds.IS_PARALLEL isParallel,
+        <if test="_databaseId == 'oracle'">
+            NVL(sum(aatds.DAY_APPLY_COUNT),0) applyCount
+        </if>
+        <if test="_databaseId == 'mysql'">
+            IFNULL(sum(aatds.DAY_APPLY_COUNT),0) applyCount
+        </if>
+
+        from aea_ana_theme_day_statistics aatds
+        where aatds.STATISTICS_DATE <![CDATA[>=  ]]> #{startTime}
+        and aatds.STATISTICS_DATE <![CDATA[ <= ]]> #{endTime}
+        and aatds.root_org_id = #{rootOrgId}
+        GROUP BY
+        aatds.DYBZSPJDXH,
+        aatds.IS_PARALLEL
+    </select>
+
+    <select id="getWinStageGroupStatistics" resultType="AeaAnaWinDayStatistics">
+        select  aawds.WINDOW_ID windowId,
+
+        aawds.DYBZSPJDXH dybzspjdxh,
+        aawds.IS_PARALLEL isParallel,
+        <if test="_databaseId == 'oracle'">
+            NVL(SUM(aawds.DAY_APPLY_COUNT),0) dayApplyCount,
+            NVL(SUM(aawds.DAY_PRE_ACCEPTANCE_COUNT),0) dayPreAcceptanceCount,
+            NVL(SUM(aawds.DAY_OUT_SCOPE_COUNT),0) dayOutScopeCount,
+            NVL(SUM(aawds.DAY_COMPLETED_COUNT),0) dayCompletedCount
+        </if>
+        <if test="_databaseId == 'mysql'">
+            IFNULL(SUM(aawds.DAY_APPLY_COUNT),0) dayApplyCount,
+            IFNULL(SUM(aawds.DAY_PRE_ACCEPTANCE_COUNT),0) dayPreAcceptanceCount,
+            IFNULL(SUM(aawds.DAY_OUT_SCOPE_COUNT),0) dayOutScopeCount,
+            IFNULL(SUM(aawds.DAY_COMPLETED_COUNT),0) dayCompletedCount
+        </if>
+
+        FROM aea_ana_win_day_statistics aawds
+        <where>
+            aawds.ROOT_ORG_ID= #{rootOrgId}
+            <if test="windowId !=null ">
+                and  aawds.WINDOW_ID = #{windowId}
+            </if>
+            <if test="startTime !=null">
+                and aawds.STATISTICS_DATE <![CDATA[ >= ]]> #{startTime}
+            </if>
+            <if test="endTime !=null">
+                and aawds.STATISTICS_DATE <![CDATA[ <= ]]> #{endTime}
+            </if>
+
+        </where>
+        GROUP BY aawds.WINDOW_ID,
+        aawds.DYBZSPJDXH,
+        aawds.IS_PARALLEL
+
+    </select>
+
+    <select id="getApplyByNet" resultType="com.augurit.aplanmis.common.vo.analyse.WinStageApplyStatisticsVo">
+        <if test='isParallel == "0"'>
+            select aly.APPLYINST_ID as applyinstId, ahps.STAGE_ID as stageId from AEA_LOG_APPLY_STATE_HIST alysh
+            left join AEA_HI_APPLYINST aly on alysh.APPLYINST_ID = aly.APPLYINST_ID
+            left join AEA_LOG_APPLY_STATE_HIST tmp_a on alysh.APPLYINST_ID = tmp_a.APPLYINST_ID and alysh.NEW_STATE =
+            tmp_a.NEW_STATE and alysh.trigger_time > tmp_a.trigger_time
+            left join AEA_HI_PAR_STAGEINST ahps on ahps.APPLYINST_ID = aly.APPLYINST_ID
+            <where>
+                and alysh.ROOT_ORG_ID = #{rootOrgId}
+                and aly.IS_DELETED = '0'
+                and alysh.NEW_STATE in ('2','3','5')
+                and aly.APPLYINST_SOURCE = 'net'
+                and tmp_a.STATE_HIST_ID is null
+                and aly.IS_SERIES_APPROVE= '0'
+                <if test="windowId != null and windowId != ''">
+                    and alysh.OPS_WINDOW_ID = #{windowId}
+                </if>
+                <if test="_databaseId == 'oracle'">
+                    <if test="startTime != null and startTime != ''">
+                        and to_char(alysh.TRIGGER_TIME, 'yyyy-mm-dd HH24:mi:ss') &gt;= #{startTime}
+                    </if>
+                    <if test="endTime != null and endTime != ''">
+                        and to_char(alysh.TRIGGER_TIME, 'yyyy-mm-dd HH24:mi:ss') &lt;= #{endTime}
+                    </if>
+                </if>
+                <if test="_databaseId == 'mysql'">
+                    <if test="startTime != null and startTime != ''">
+                        and alysh.TRIGGER_TIME &gt;= #{startTime}
+                    </if>
+                    <if test="endTime != null and endTime != ''">
+                        and alysh.TRIGGER_TIME &lt;= #{endTime}
+                    </if>
+                </if>
+            </where>
+            union all
+        </if>
+        select aly.APPLYINST_ID as applyinstId, ahs.STAGE_ID as stageId from AEA_LOG_APPLY_STATE_HIST alysh
+        left join AEA_HI_APPLYINST aly on alysh.APPLYINST_ID = aly.APPLYINST_ID
+        left join AEA_LOG_APPLY_STATE_HIST tmp_a on alysh.APPLYINST_ID = tmp_a.APPLYINST_ID and alysh.NEW_STATE =
+        tmp_a.NEW_STATE and alysh.TRIGGER_TIME > tmp_a.TRIGGER_TIME
+        left join AEA_HI_SERIESINST ahs on ahs.APPLYINST_ID = aly.APPLYINST_ID
+        <where>
+            and alysh.ROOT_ORG_ID = #{rootOrgId}
+            and aly.IS_DELETED = '0'
+            and alysh.NEW_STATE in ('2','3','5')
+            and aly.APPLYINST_SOURCE = 'net'
+            and tmp_a.STATE_HIST_ID is null
+            and ahs.IS_PARALLEL = #{isParallel}
+            and ahs.STAGE_ID is not null
+            <if test="windowId != null and windowId != ''">
+                and alysh.OPS_WINDOW_ID = #{windowId}
+            </if>
+            <if test="_databaseId == 'oracle'">
+                <if test="startTime != null and startTime != ''">
+                    and to_char(alysh.TRIGGER_TIME, 'yyyy-mm-dd HH24:mi:ss') &gt;= #{startTime}
+                </if>
+                <if test="endTime != null and endTime != ''">
+                    and to_char(alysh.TRIGGER_TIME, 'yyyy-mm-dd HH24:mi:ss') &lt;= #{endTime}
+                </if>
+            </if>
+            <if test="_databaseId == 'mysql'">
+                <if test="startTime != null and startTime != ''">
+                    and alysh.TRIGGER_TIME &gt;= #{startTime}
+                </if>
+                <if test="endTime != null and endTime != ''">
+                    and alysh.TRIGGER_TIME &lt;= #{endTime}
+                </if>
+            </if>
+        </where>
+    </select>
+
+    <select id="countApplyByNet" resultType="java.lang.Long">
+        select count(1) from (
+        <if test='isParallel == "0"'>
+            select aly.APPLYINST_ID as applyinstId from AEA_LOG_APPLY_STATE_HIST alysh
+            left join AEA_HI_APPLYINST aly on alysh.APPLYINST_ID = aly.APPLYINST_ID
+            left join AEA_LOG_APPLY_STATE_HIST tmp_a on alysh.APPLYINST_ID = tmp_a.APPLYINST_ID and alysh.NEW_STATE =
+            tmp_a.NEW_STATE and alysh.TRIGGER_TIME > tmp_a.TRIGGER_TIME
+            left join AEA_HI_PAR_STAGEINST ahps on ahps.APPLYINST_ID = aly.APPLYINST_ID
+            <where>
+                and alysh.ROOT_ORG_ID = #{rootOrgId}
+                and aly.IS_DELETED = '0'
+                and alysh.NEW_STATE in ('2','3','5')
+                and aly.APPLYINST_SOURCE = 'net'
+                and tmp_a.STATE_HIST_ID is null
+                and aly.IS_SERIES_APPROVE= '0'
+                and ahps.STAGE_ID = #{stageId}
+                <if test="windowId != null and windowId != ''">
+                    and alysh.OPS_WINDOW_ID = #{windowId}
+                </if>
+                <if test="_databaseId == 'oracle'">
+                    <if test="startTime != null and startTime != ''">
+                        and to_char(alysh.TRIGGER_TIME, 'yyyy-mm-dd HH24:mi:ss') &gt;= #{startTime}
+                    </if>
+                    <if test="endTime != null and endTime != ''">
+                        and to_char(alysh.TRIGGER_TIME, 'yyyy-mm-dd HH24:mi:ss') &lt;= #{endTime}
+                    </if>
+                </if>
+                <if test="_databaseId == 'mysql'">
+                    <if test="startTime != null and startTime != ''">
+                        and alysh.TRIGGER_TIME &gt;= #{startTime}
+                    </if>
+                    <if test="endTime != null and endTime != ''">
+                        and alysh.TRIGGER_TIME &lt;= #{endTime}
+                    </if>
+                </if>
+            </where>
+            union all
+        </if>
+        select aly.APPLYINST_ID as applyinstId from AEA_LOG_APPLY_STATE_HIST alysh
+        left join AEA_HI_APPLYINST aly on alysh.APPLYINST_ID = aly.APPLYINST_ID
+        left join AEA_LOG_APPLY_STATE_HIST tmp_a on alysh.APPLYINST_ID = tmp_a.APPLYINST_ID and alysh.NEW_STATE =
+        tmp_a.NEW_STATE and alysh.TRIGGER_TIME > tmp_a.TRIGGER_TIME
+        left join AEA_HI_SERIESINST ahs on ahs.APPLYINST_ID = aly.APPLYINST_ID
+        <where>
+            and alysh.ROOT_ORG_ID = #{rootOrgId}
+            and aly.IS_DELETED = '0'
+            and alysh.NEW_STATE in ('2','3','5')
+            and aly.APPLYINST_SOURCE = 'net'
+            and tmp_a.STATE_HIST_ID is null
+            and ahs.IS_PARALLEL = #{isParallel}
+            and ahs.STAGE_ID = #{stageId}
+            <if test="windowId != null and windowId != ''">
+                and alysh.OPS_WINDOW_ID = #{windowId}
+            </if>
+            <if test="_databaseId == 'oracle'">
+                <if test="startTime != null and startTime != ''">
+                    and to_char(alysh.TRIGGER_TIME, 'yyyy-mm-dd HH24:mi:ss') &gt;= #{startTime}
+                </if>
+                <if test="endTime != null and endTime != ''">
+                    and to_char(alysh.TRIGGER_TIME, 'yyyy-mm-dd HH24:mi:ss') &lt;= #{endTime}
+                </if>
+            </if>
+            <if test="_databaseId == 'mysql'">
+                <if test="startTime != null and startTime != ''">
+                    and alysh.TRIGGER_TIME &gt;= #{startTime}
+                </if>
+                <if test="endTime != null and endTime != ''">
+                    and alysh.TRIGGER_TIME &lt;= #{endTime}
+                </if>
+            </if>
+        </where>
+        ) a
+    </select>
+
+    <select id="getApplyByWin" resultType="com.augurit.aplanmis.common.vo.analyse.WinStageApplyStatisticsVo">
+        <if test='isParallel == "0"'>
+            select aly.APPLYINST_ID as applyinstId, ahps.STAGE_ID as stageId
+            from
+            AEA_LOG_APPLY_STATE_HIST alysh
+            left join AEA_HI_APPLYINST aly on alysh.APPLYINST_ID = aly.APPLYINST_ID
+            left join AEA_HI_PAR_STAGEINST ahps on ahps.APPLYINST_ID = aly.APPLYINST_ID
+            <where>
+                <if test="oldStates != null">
+                    and alysh.OLD_STATE is null
+                </if>
+                <if test="states != null">
+                    and alysh.NEW_STATE in
+                    <foreach collection="states" open="(" close=")" separator="," item="state">
+                        #{state}
+                    </foreach>
+                </if>
+                and alysh.ROOT_ORG_ID = #{rootOrgId}
+                and aly.IS_SERIES_APPROVE= '0'
+                and aly.IS_DELETED = '0'
+                <if test="applySource != null and applySource != ''">
+                    and aly.APPLYINST_SOURCE = #{applySource}
+                </if>
+                <if test="windowId != null and windowId != ''">
+                    and alysh.OPS_WINDOW_ID = #{windowId}
+                </if>
+                <if test="_databaseId == 'oracle'">
+                    <if test="startTime != null and startTime != ''">
+                        and to_char(alysh.TRIGGER_TIME, 'yyyy-mm-dd HH24:mi:ss') &gt;= #{startTime}
+                    </if>
+                    <if test="endTime != null and endTime != ''">
+                        and to_char(alysh.TRIGGER_TIME, 'yyyy-mm-dd HH24:mi:ss') &lt;= #{endTime}
+                    </if>
+                </if>
+                <if test="_databaseId == 'mysql'">
+                    <if test="startTime != null and startTime != ''">
+                        and alysh.TRIGGER_TIME &gt;= #{startTime}
+                    </if>
+                    <if test="endTime != null and endTime != ''">
+                        and alysh.TRIGGER_TIME &lt;= #{endTime}
+                    </if>
+                </if>
+            </where>
+            union all
+        </if>
+        select aly.APPLYINST_ID as applyinstId, ahs.STAGE_ID as stageId
+        from
+        AEA_LOG_APPLY_STATE_HIST alysh
+        left join AEA_HI_APPLYINST aly on alysh.APPLYINST_ID = aly.APPLYINST_ID
+        left join AEA_HI_SERIESINST ahs on ahs.APPLYINST_ID = aly.APPLYINST_ID
+        <where>
+            <if test="oldStates != null">
+                and alysh.OLD_STATE is null
+            </if>
+            <if test="states != null">
+                and alysh.NEW_STATE in
+                <foreach collection="states" open="(" close=")" separator="," item="state">
+                    #{state}
+                </foreach>
+            </if>
+            and alysh.ROOT_ORG_ID = #{rootOrgId}
+            and ahs.STAGE_ID is not null
+            and ahs.IS_PARALLEL = #{isParallel}
+            and aly.IS_DELETED = '0'
+            <if test="applySource != null and applySource != ''">
+                and aly.APPLYINST_SOURCE = #{applySource}
+            </if>
+            <if test="windowId != null and windowId != ''">
+                and alysh.OPS_WINDOW_ID = #{windowId}
+            </if>
+            <if test="_databaseId == 'oracle'">
+                <if test="startTime != null and startTime != ''">
+                    and to_char(alysh.TRIGGER_TIME, 'yyyy-mm-dd HH24:mi:ss') &gt;= #{startTime}
+                </if>
+                <if test="endTime != null and endTime != ''">
+                    and to_char(alysh.TRIGGER_TIME, 'yyyy-mm-dd HH24:mi:ss') &lt;= #{endTime}
+                </if>
+            </if>
+            <if test="_databaseId == 'mysql'">
+                <if test="startTime != null and startTime != ''">
+                    and alysh.TRIGGER_TIME &gt;= #{startTime}
+                </if>
+                <if test="endTime != null and endTime != ''">
+                    and alysh.TRIGGER_TIME &lt;= #{endTime}
+                </if>
+            </if>
+        </where>
+    </select>
+
+    <select id="countApplyByWin" resultType="java.lang.Long">
+        select count(1) from (
+        <if test='isParallel == "0"'>
+            select aly.APPLYINST_ID as applyinstId
+            from
+            AEA_LOG_APPLY_STATE_HIST alysh
+            left join AEA_HI_APPLYINST aly on alysh.APPLYINST_ID = aly.APPLYINST_ID
+            left join AEA_HI_PAR_STAGEINST ahps on ahps.APPLYINST_ID = aly.APPLYINST_ID
+            <where>
+                <if test="oldStates != null">
+                    and alysh.OLD_STATE is null
+                </if>
+                <if test="states != null">
+                    and alysh.NEW_STATE in
+                    <foreach collection="states" open="(" close=")" separator="," item="state">
+                        #{state}
+                    </foreach>
+                </if>
+                and alysh.ROOT_ORG_ID = #{rootOrgId}
+                and ahps.STAGE_ID = #{stageId}
+                and aly.IS_SERIES_APPROVE= '0'
+                and aly.IS_DELETED = '0'
+                <if test="applySource != null and applySource != ''">
+                    and aly.APPLYINST_SOURCE = #{applySource}
+                </if>
+                <if test="windowId != null and windowId != ''">
+                    and alysh.OPS_WINDOW_ID = #{windowId}
+                </if>
+                <if test="_databaseId == 'oracle'">
+                    <if test="startTime != null and startTime != ''">
+                        and to_char(alysh.TRIGGER_TIME, 'yyyy-mm-dd HH24:mi:ss') &gt;= #{startTime}
+                    </if>
+                    <if test="endTime != null and endTime != ''">
+                        and to_char(alysh.TRIGGER_TIME, 'yyyy-mm-dd HH24:mi:ss') &lt;= #{endTime}
+                    </if>
+                </if>
+                <if test="_databaseId == 'mysql'">
+                    <if test="startTime != null and startTime != ''">
+                        and alysh.TRIGGER_TIME &gt;= #{startTime}
+                    </if>
+                    <if test="endTime != null and endTime != ''">
+                        and alysh.TRIGGER_TIME &lt;= #{endTime}
+                    </if>
+                </if>
+            </where>
+            union all
+        </if>
+        select aly.APPLYINST_ID as applyinstId
+        from
+        AEA_LOG_APPLY_STATE_HIST alysh
+        left join AEA_HI_APPLYINST aly on alysh.APPLYINST_ID = aly.APPLYINST_ID
+        left join AEA_HI_SERIESINST ahs on ahs.APPLYINST_ID = aly.APPLYINST_ID
+        <where>
+            <if test="oldStates != null">
+                and alysh.OLD_STATE is null
+            </if>
+            <if test="states != null">
+                and alysh.NEW_STATE in
+                <foreach collection="states" open="(" close=")" separator="," item="state">
+                    #{state}
+                </foreach>
+            </if>
+            and alysh.ROOT_ORG_ID = #{rootOrgId}
+            and ahs.STAGE_ID = #{stageId}
+            and ahs.IS_PARALLEL = #{isParallel}
+            and aly.IS_DELETED = '0'
+            <if test="applySource != null and applySource != ''">
+                and aly.APPLYINST_SOURCE = #{applySource}
+            </if>
+            <if test="windowId != null and windowId != ''">
+                and alysh.OPS_WINDOW_ID = #{windowId}
+            </if>
+            <if test="_databaseId == 'oracle'">
+                <if test="startTime != null and startTime != ''">
+                    and to_char(alysh.TRIGGER_TIME, 'yyyy-mm-dd HH24:mi:ss') &gt;= #{startTime}
+                </if>
+                <if test="endTime != null and endTime != ''">
+                    and to_char(alysh.TRIGGER_TIME, 'yyyy-mm-dd HH24:mi:ss') &lt;= #{endTime}
+                </if>
+            </if>
+            <if test="_databaseId == 'mysql'">
+                <if test="startTime != null and startTime != ''">
+                    and alysh.TRIGGER_TIME &gt;= #{startTime}
+                </if>
+                <if test="endTime != null and endTime != ''">
+                    and alysh.TRIGGER_TIME &lt;= #{endTime}
+                </if>
+            </if>
+        </where>
+        ) a
+    </select>
+
+    <select id="getSupplementApplyByWin" resultType="com.augurit.aplanmis.common.vo.analyse.WinStageApplyStatisticsVo">
+        <if test='isParallel == "0"'>
+            select aly.APPLYINST_ID as applyinstId, ahps.STAGE_ID as stageId from AEA_HI_APPLYINST aly
+            left join AEA_LOG_APPLY_STATE_HIST alysh on aly.APPLYINST_ID = alysh.APPLYINST_ID and alysh.NEW_STATE =
+            #{state}
+            left join AEA_HI_PAR_STAGEINST ahps on ahps.APPLYINST_ID = aly.APPLYINST_ID
+            where aly.APPLYINST_STATE = #{state}
+            and aly.APPLYINST_SOURCE = #{applySource}
+            and alysh.OPS_WINDOW_ID = #{windowId}
+            and aly.ROOT_ORG_ID = #{rootOrgId}
+            and aly.IS_DELETED = '0'
+            and aly.IS_SERIES_APPROVE= '0'
+            <if test="_databaseId == 'oracle'">
+                <if test="startTime != null and startTime != ''">
+                    and to_char(alysh.TRIGGER_TIME, 'yyyy-mm-dd HH24:mi:ss') &gt;= #{startTime}
+                </if>
+                <if test="endTime != null and endTime != ''">
+                    and to_char(alysh.TRIGGER_TIME, 'yyyy-mm-dd HH24:mi:ss') &lt;= #{endTime}
+                </if>
+            </if>
+            <if test="_databaseId == 'mysql'">
+                <if test="startTime != null and startTime != ''">
+                    and alysh.TRIGGER_TIME &gt;= #{startTime}
+                </if>
+                <if test="endTime != null and endTime != ''">
+                    and alysh.TRIGGER_TIME &lt;= #{endTime}
+                </if>
+            </if>
+            union all
+        </if>
+        select aly.APPLYINST_ID as applyinstId, ahs.STAGE_ID as stageId from AEA_HI_APPLYINST aly
+        left join AEA_LOG_APPLY_STATE_HIST alysh on aly.APPLYINST_ID = alysh.APPLYINST_ID and alysh.NEW_STATE = #{state}
+        left join AEA_HI_SERIESINST ahs on ahs.APPLYINST_ID = aly.APPLYINST_ID
+        where aly.APPLYINST_STATE = #{state}
+        and aly.APPLYINST_SOURCE = #{applySource}
+        and ahs.stage_id is not null
+        and alysh.OPS_WINDOW_ID = #{windowId}
+        and aly.ROOT_ORG_ID = #{rootOrgId}
+        and aly.IS_DELETED = '0'
+        and ahs.IS_PARALLEL = #{isParallel}
+        <if test="_databaseId == 'oracle'">
+            <if test="startTime != null and startTime != ''">
+                and to_char(alysh.TRIGGER_TIME, 'yyyy-mm-dd HH24:mi:ss') &gt;= #{startTime}
+            </if>
+            <if test="endTime != null and endTime != ''">
+                and to_char(alysh.TRIGGER_TIME, 'yyyy-mm-dd HH24:mi:ss') &lt;= #{endTime}
+            </if>
+        </if>
+        <if test="_databaseId == 'mysql'">
+            <if test="startTime != null and startTime != ''">
+                and alysh.TRIGGER_TIME &gt;= #{startTime}
+            </if>
+            <if test="endTime != null and endTime != ''">
+                and alysh.TRIGGER_TIME &lt;= #{endTime}
+            </if>
+        </if>
+    </select>
+
+    <select id="countSupplementApplyByWin" resultType="java.lang.Long">
+        select count(1) from (
+        <if test='isParallel == "0"'>
+            select aly.APPLYINST_ID as applyinstId from AEA_HI_APPLYINST aly
+            left join AEA_LOG_APPLY_STATE_HIST alysh on aly.APPLYINST_ID = alysh.APPLYINST_ID and alysh.NEW_STATE =
+            #{state}
+            left join AEA_HI_PAR_STAGEINST ahps on ahps.APPLYINST_ID = aly.APPLYINST_ID
+            where aly.APPLYINST_STATE = #{state}
+            and aly.APPLYINST_SOURCE = #{applySource}
+            and ahps.STAGE_ID = #{stageId}
+            and alysh.OPS_WINDOW_ID = #{windowId}
+            and aly.ROOT_ORG_ID = #{rootOrgId}
+            and aly.IS_DELETED = '0'
+            and aly.IS_SERIES_APPROVE= '0'
+            union all
+        </if>
+        select aly.APPLYINST_ID as applyinstId from AEA_HI_APPLYINST aly
+        left join AEA_LOG_APPLY_STATE_HIST alysh on aly.APPLYINST_ID = alysh.APPLYINST_ID and alysh.NEW_STATE = #{state}
+        left join AEA_HI_SERIESINST ahs on ahs.APPLYINST_ID = aly.APPLYINST_ID
+        where aly.APPLYINST_STATE = #{state}
+        and aly.APPLYINST_SOURCE = #{applySource}
+        and ahs.STAGE_ID = #{stageId}
+        and alysh.OPS_WINDOW_ID = #{windowId}
+        and aly.ROOT_ORG_ID = #{rootOrgId}
+        and aly.IS_DELETED = '0'
+        and ahs.IS_PARALLEL = #{isParallel}
+        ) a
+    </select>
+
+    <select id="getOverTimeApplyByWin" resultType="com.augurit.aplanmis.common.vo.analyse.WinStageApplyStatisticsVo">
+        select aly.* from (
+        <if test='isParallel == "0"'>
+            select
+            aha.APPLYINST_ID as applyinstId, ahps.STAGE_ID as stageId, asti.OVERDUE_DATE, aha.APPLYINST_SOURCE
+            from
+            ACT_STO_TIMERULE_INST asti,
+            ACT_STO_APPINST asp,
+            AEA_HI_PAR_STAGEINST ahps,
+            AEA_HI_APPLYINST aha
+            where
+            asti.APP_FLOWDEF_ID = asp.APP_FLOWDEF_ID
+            and asti.PROC_INST_ID = asp.PROCINST_ID
+            and asp.APPINST_ID = ahps.APPINST_ID
+            and ahps.APPLYINST_ID = aha.APPLYINST_ID
+            and asti.INST_STATE = #{instState}
+            and asti.ORG_ID = #{rootOrgId}
+            and asp.ROOT_ORG_ID = #{rootOrgId}
+            and ahps.ROOT_ORG_ID = #{rootOrgId}
+            and aha.ROOT_ORG_ID = #{rootOrgId}
+            and aha.IS_DELETED = '0'
+            and aha.IS_SERIES_APPROVE= '0'
+            union all
+        </if>
+        select
+        aha.APPLYINST_ID as applyinstId, ahs.STAGE_ID as stageId, asti.OVERDUE_DATE, aha.APPLYINST_SOURCE
+        from
+        ACT_STO_TIMERULE_INST asti,
+        AEA_HI_ITEMINST ahi,
+        AEA_HI_SERIESINST ahs,
+        AEA_HI_APPLYINST aha
+        where
+        ahi.SERIESINST_ID = ahs.SERIESINST_ID
+        and asti.PROC_INST_ID = ahi.PROCINST_ID
+        and ahs.APPLYINST_ID = aha.APPLYINST_ID
+        and asti.INST_STATE = #{instState}
+        and asti.ORG_ID = #{rootOrgId}
+        and ahi.ROOT_ORG_ID = #{rootOrgId}
+        and ahs.ROOT_ORG_ID = #{rootOrgId}
+        and aha.ROOT_ORG_ID = #{rootOrgId}
+        and aha.IS_DELETED = '0'
+        and ahs.STAGE_ID is not null
+        and ahs.IS_PARALLEL = #{isParallel}
+        ) aly
+        left join AEA_LOG_APPLY_STATE_HIST alysh on aly.applyinstId = alysh.APPLYINST_ID and alysh.NEW_STATE = '2'
+        <where>
+            <if test="overdueDate != null and overdueDate != ''">
+                <if test="_databaseId == 'oracle'">
+                    and to_char(aly.OVERDUE_DATE,'yyyy-mm-dd') = #{overdueDate}
+                </if>
+                <if test="_databaseId == 'mysql'">
+                    and DATE_FORMAT(aly.OVERDUE_DATE,'%Y-%m-%d') = #{overdueDate}
+                </if>
+            </if>
+            <if test="windowId == null">
+                and alysh.OPS_WINDOW_ID is not null
+            </if>
+            <if test="windowId != null and windowId != ''">
+                and alysh.OPS_WINDOW_ID = #{windowId}
+            </if>
+            <if test="applySource != null and applySource != ''">
+                and aly.APPLYINST_SOURCE = #{applySource}
+            </if>
+        </where>
+    </select>
+
+    <select id="countOverTimeApplyByWin" resultType="java.lang.Long">
+        select count(1) from (select aly.* from (
+        <if test='isParallel == "0"'>
+            select
+            aha.APPLYINST_ID, aha.APPLYINST_SOURCE
+            from
+            ACT_STO_TIMERULE_INST asti,
+            ACT_STO_APPINST asp,
+            AEA_HI_PAR_STAGEINST ahps,
+            AEA_HI_APPLYINST aha
+            where
+            asti.APP_FLOWDEF_ID = asp.APP_FLOWDEF_ID
+            and asti.PROC_INST_ID = asp.PROCINST_ID
+            and asp.APPINST_ID = ahps.APPINST_ID
+            and ahps.APPLYINST_ID = aha.APPLYINST_ID
+            and asti.INST_STATE = #{instState}
+            and asti.ORG_ID = #{rootOrgId}
+            and asp.ROOT_ORG_ID = #{rootOrgId}
+            and ahps.ROOT_ORG_ID = #{rootOrgId}
+            and aha.ROOT_ORG_ID = #{rootOrgId}
+            and aha.IS_DELETED = '0'
+            and ahps.STAGE_ID = #{stageId}
+            and aha.IS_SERIES_APPROVE= '0'
+            union all
+        </if>
+        select
+        aha.APPLYINST_ID, aha.APPLYINST_SOURCE
+        from
+        ACT_STO_TIMERULE_INST asti,
+        AEA_HI_ITEMINST ahi,
+        AEA_HI_SERIESINST ahs,
+        AEA_HI_APPLYINST aha
+        where
+        ahi.SERIESINST_ID = ahs.SERIESINST_ID
+        and asti.PROC_INST_ID = ahi.PROCINST_ID
+        and ahs.APPLYINST_ID = aha.APPLYINST_ID
+        and asti.INST_STATE = #{instState}
+        and asti.ORG_ID = #{rootOrgId}
+        and ahi.ROOT_ORG_ID = #{rootOrgId}
+        and ahs.ROOT_ORG_ID = #{rootOrgId}
+        and aha.ROOT_ORG_ID = #{rootOrgId}
+        and aha.IS_DELETED = '0'
+        and ahs.STAGE_ID = #{stageId}
+        and ahs.IS_PARALLEL = #{isParallel}
+        ) aly
+        left join AEA_LOG_APPLY_STATE_HIST alysh on aly.APPLYINST_ID = alysh.APPLYINST_ID and alysh.NEW_STATE = '2'
+        <where>
+            <if test="overdueDate != null and overdueDate != ''">
+                <if test="_databaseId == 'oracle'">
+                    and to_char(aly.OVERDUE_DATE,'yyyy-mm-dd') = #{overdueDate}
+                </if>
+                <if test="_databaseId == 'mysql'">
+                    and DATE_FORMAT(aly.OVERDUE_DATE,'%Y-%m-%d') = #{overdueDate}
+                </if>
+            </if>
+            <if test="windowId == null">
+                and alysh.OPS_WINDOW_ID is not null
+            </if>
+            <if test="windowId != null and windowId != ''">
+                and alysh.OPS_WINDOW_ID = #{windowId}
+            </if>
+            <if test="applySource != null and applySource != ''">
+                and aly.APPLYINST_SOURCE = #{applySource}
+            </if>
+        </where>
+        ) a
+    </select>
+
+    <!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaAnaWinDayStatistics" id="AeaAnaWinDayStatisticsMap">
+        <id property="windowDayStatisticsId" column="WINDOW_DAY_STATISTICS_ID"/>
+        <result property="statisticsRecordId" column="STATISTICS_RECORD_ID"/>
+        <result property="windowId" column="WINDOW_ID"/>
+        <result property="windowName" column="WINDOW_NAME"/>
+        <result property="regionId" column="REGION_ID"/>
+        <result property="regionName" column="REGION_NAME"/>
+        <result property="applySource" column="APPLY_SOURCE"/>
+        <result property="dayApplyCount" column="DAY_APPLY_COUNT"/>
+        <result property="allApplyCount" column="ALL_APPLY_COUNT"/>
+        <result property="applyLrr" column="APPLY_LRR"/>
+        <result property="allInSupplementCount" column="ALL_IN_SUPPLEMENT_COUNT"/>
+        <result property="allSupplementedCount" column="ALL_SUPPLEMENTED_COUNT"/>
+        <result property="dayPreAcceptanceCount" column="DAY_PRE_ACCEPTANCE_COUNT"/>
+        <result property="allPreAcceptanceCount" column="ALL_PRE_ACCEPTANCE_COUNT"/>
+        <result property="preAcceptanceLrr" column="PRE_ACCEPTANCE_LRR"/>
+        <result property="dayOutScopeCount" column="DAY_OUT_SCOPE_COUNT"/>
+        <result property="allOutScopeCount" column="ALL_OUT_SCOPE_COUNT"/>
+        <result property="outScopeLrr" column="OUT_SCOPE_LRR"/>
+        <result property="dayCompletedCount" column="DAY_COMPLETED_COUNT"/>
+        <result property="allCompletedCount" column="ALL_COMPLETED_COUNT"/>
+        <result property="completedLrr" column="COMPLETED_LRR"/>
+        <result property="dayOverTimeCount" column="DAY_OVER_TIME_COUNT"/>
+        <result property="allOverTimeCount" column="ALL_OVER_TIME_COUNT"/>
+        <result property="overTimeLrr" column="OVER_TIME_LRR"/>
+        <result property="allPreAcceptanceRate" column="ALL_PRE_ACCEPTANCE_RATE"/>
+        <result property="allOutScopeRate" column="ALL_OUT_SCOPE_RATE"/>
+        <result property="allOverTimeRate" column="ALL_OVER_TIME_RATE"/>
+        <result property="allCompletedRate" column="ALL_COMPLETED_RATE"/>
+        <result property="statisticsDate" column="STATISTICS_DATE"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+    </resultMap>
+</mapper>

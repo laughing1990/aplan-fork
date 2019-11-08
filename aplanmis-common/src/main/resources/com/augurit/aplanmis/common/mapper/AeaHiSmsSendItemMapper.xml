@@ -1,0 +1,369 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by Administrator    2019-08-03 10:37:41 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaHiSmsSendItemMapper" >
+<!--1 返回所有字段的SQL字句 -->
+<sql id="allColumns" >
+    SEND_ITEM_ID  sendItemId,
+    SEND_ITEM_CODE  sendItemCode,
+    IS_ONCE_SEND  isOnceSend,
+    SEND_APPLY_ID  sendApplyId,
+    APPLYINST_ID  applyinstId,
+    ITEMINST_ID  iteminstId,
+    INOUTINST_ID  inoutinstId,
+    WINDOW_USER_ID  windowUserId,
+    WINDOW_USER_NAME  windowUserName,
+    WINDOW_HANDLE_TIME  windowHandleTime,
+    RECEIVE_MODE  receiveMode,
+    ORDER_ID  orderId,
+    EXPRESS_NUM  expressNum,
+    ADDRESSEE_NAME  addresseeName,
+    ADDRESSEE_PHONE  addresseePhone,
+    ADDRESSEE_IDCARD  addresseeIdcard,
+    ADDRESSEE_ADDR  addresseeAddr,
+    ADDRESSEE_PROVINCE  addresseeProvince,
+    ADDRESSEE_CITY  addresseeCity,
+    ADDRESSEE_COUNTY  addresseeCounty,
+    SENDER_NAME  senderName,
+    SENDER_PHONE  senderPhone,
+    SENDER_ADDR  senderAddr,
+    SENDER_PROVINCE  senderProvince,
+    SENDER_CITY  senderCity,
+    SENDER_COUNTY  senderCounty,
+    SMS_TYPE  smsType,
+    ISSUE_TIME  issueTime,
+    CREATER  creater,
+    CREATE_TIME  createTime,
+    ROOT_ORG_ID rootOrgId,
+    IS_CONSIGNER isConsigner,
+    CONSIGNER_ATT_ID consignerAttId
+    </sql>
+
+<!--2 根据主键ID查询单个实体 -->
+<select id="getAeaHiSmsSendItemById" resultType="AeaHiSmsSendItem" >
+    select
+    <include refid="allColumns"/>
+    from    AEA_HI_SMS_SEND_ITEM
+    where    SEND_ITEM_ID = #{id}
+</select>
+
+<!--3 根据条件查询实体list -->
+    <select id="listAeaHiSmsSendItem" resultType="AeaHiSmsSendItem" >
+        select
+        <include refid="allColumns"/>
+        from    AEA_HI_SMS_SEND_ITEM
+    <where>
+        <if test="sendItemId != null" >
+        AND    SEND_ITEM_ID = #{sendItemId}
+        </if>
+        <if test="sendItemCode != null" >
+        AND    SEND_ITEM_CODE = #{sendItemCode}
+        </if>
+        <if test="isOnceSend != null" >
+        AND    IS_ONCE_SEND = #{isOnceSend}
+        </if>
+        <if test="sendApplyId != null" >
+        AND    SEND_APPLY_ID = #{sendApplyId}
+        </if>
+        <if test="applyinstId != null" >
+        AND    APPLYINST_ID = #{applyinstId}
+        </if>
+        <if test="iteminstId != null" >
+        AND    ITEMINST_ID = #{iteminstId}
+        </if>
+        <if test="inoutinstId != null" >
+        AND    INOUTINST_ID = #{inoutinstId}
+        </if>
+        <if test="windowUserId != null" >
+        AND    WINDOW_USER_ID = #{windowUserId}
+        </if>
+        <if test="windowUserName != null" >
+        AND    WINDOW_USER_NAME = #{windowUserName}
+        </if>
+        <if test="windowHandleTime != null" >
+        AND    WINDOW_HANDLE_TIME = #{windowHandleTime}
+        </if>
+        <if test="receiveMode != null" >
+        AND    RECEIVE_MODE = #{receiveMode}
+        </if>
+        <if test="orderId != null" >
+        AND    ORDER_ID = #{orderId}
+        </if>
+        <if test="expressNum != null" >
+        AND    EXPRESS_NUM = #{expressNum}
+        </if>
+        <if test="addresseeName != null" >
+        AND    ADDRESSEE_NAME = #{addresseeName}
+        </if>
+        <if test="addresseePhone != null" >
+        AND    ADDRESSEE_PHONE = #{addresseePhone}
+        </if>
+        <if test="addresseeIdcard != null" >
+        AND    ADDRESSEE_IDCARD = #{addresseeIdcard}
+        </if>
+        <if test="addresseeAddr != null" >
+        AND    ADDRESSEE_ADDR = #{addresseeAddr}
+        </if>
+        <if test="addresseeProvince != null" >
+        AND    ADDRESSEE_PROVINCE = #{addresseeProvince}
+        </if>
+        <if test="addresseeCity != null" >
+        AND    ADDRESSEE_CITY = #{addresseeCity}
+        </if>
+        <if test="addresseeCounty != null" >
+        AND    ADDRESSEE_COUNTY = #{addresseeCounty}
+        </if>
+        <if test="senderName != null" >
+        AND    SENDER_NAME = #{senderName}
+        </if>
+        <if test="senderPhone != null" >
+        AND    SENDER_PHONE = #{senderPhone}
+        </if>
+        <if test="senderAddr != null" >
+        AND    SENDER_ADDR = #{senderAddr}
+        </if>
+        <if test="senderProvince != null" >
+        AND    SENDER_PROVINCE = #{senderProvince}
+        </if>
+        <if test="senderCity != null" >
+        AND    SENDER_CITY = #{senderCity}
+        </if>
+        <if test="senderCounty != null" >
+        AND    SENDER_COUNTY = #{senderCounty}
+        </if>
+        <if test="smsType != null" >
+        AND    SMS_TYPE = #{smsType}
+        </if>
+        <if test="issueTime != null" >
+        AND    ISSUE_TIME = #{issueTime}
+        </if>
+        <if test="creater != null" >
+        AND    CREATER = #{creater}
+        </if>
+        <if test="createTime != null" >
+        AND    CREATE_TIME = #{createTime}
+        </if>
+        <if test="rootOrgId != null" >
+            AND    ROOT_ORG_ID = #{rootOrgId}
+        </if>
+        <if test="isConsigner != null" >
+           and IS_CONSIGNER = #{isConsigner}
+        </if>
+        <if test="consignerAttId != null" >
+           and CONSIGNER_ATT_ID = #{consignerAttId}
+        </if>
+    </where>
+    </select>
+<!--4 根据条件查询实体list,返回分页对象 -->
+
+<!--5 新增实体对象 -->
+<insert id="insertAeaHiSmsSendItem" parameterType="AeaHiSmsSendItem" >
+    insert into AEA_HI_SMS_SEND_ITEM (
+SEND_ITEM_ID  ,SEND_ITEM_CODE  ,IS_ONCE_SEND  ,SEND_APPLY_ID  ,APPLYINST_ID  ,ITEMINST_ID  ,INOUTINST_ID  ,WINDOW_USER_ID  ,WINDOW_USER_NAME  ,WINDOW_HANDLE_TIME  ,RECEIVE_MODE  ,ORDER_ID  ,EXPRESS_NUM  ,ADDRESSEE_NAME  ,ADDRESSEE_PHONE  ,ADDRESSEE_IDCARD  ,ADDRESSEE_ADDR  ,ADDRESSEE_PROVINCE  ,ADDRESSEE_CITY  ,ADDRESSEE_COUNTY  ,SENDER_NAME  ,SENDER_PHONE  ,SENDER_ADDR  ,SENDER_PROVINCE  ,SENDER_CITY  ,SENDER_COUNTY  ,SMS_TYPE  ,ISSUE_TIME  ,CREATER  ,CREATE_TIME ,ROOT_ORG_ID,IS_CONSIGNER ,CONSIGNER_ATT_ID
+    )  values  (
+#{sendItemId},#{sendItemCode},#{isOnceSend},#{sendApplyId},#{applyinstId},#{iteminstId},#{inoutinstId},#{windowUserId},#{windowUserName},#{windowHandleTime},#{receiveMode},#{orderId},#{expressNum},#{addresseeName},#{addresseePhone},#{addresseeIdcard},#{addresseeAddr},#{addresseeProvince},#{addresseeCity},#{addresseeCounty},#{senderName},#{senderPhone},#{senderAddr},#{senderProvince},#{senderCity},#{senderCounty},#{smsType},#{issueTime},#{creater},  #{createTime},#{rootOrgId},#{isConsigner},#{consignerAttId}
+    )
+</insert>
+<!--6 修改实体对象 -->
+<update id="updateAeaHiSmsSendItem" parameterType="AeaHiSmsSendItem" >
+    update AEA_HI_SMS_SEND_ITEM
+    <set >
+        <if test="sendItemId != null" >
+        SEND_ITEM_ID = #{sendItemId},
+        </if>
+        <if test="sendItemCode != null" >
+        SEND_ITEM_CODE = #{sendItemCode},
+        </if>
+        <if test="isOnceSend != null" >
+        IS_ONCE_SEND = #{isOnceSend},
+        </if>
+        <if test="sendApplyId != null" >
+        SEND_APPLY_ID = #{sendApplyId},
+        </if>
+        <if test="applyinstId != null" >
+        APPLYINST_ID = #{applyinstId},
+        </if>
+        <if test="iteminstId != null" >
+        ITEMINST_ID = #{iteminstId},
+        </if>
+        <if test="inoutinstId != null" >
+        INOUTINST_ID = #{inoutinstId},
+        </if>
+        <if test="windowUserId != null" >
+        WINDOW_USER_ID = #{windowUserId},
+        </if>
+        <if test="windowUserName != null" >
+        WINDOW_USER_NAME = #{windowUserName},
+        </if>
+        <if test="windowHandleTime != null" >
+        WINDOW_HANDLE_TIME = #{windowHandleTime},
+        </if>
+        <if test="receiveMode != null" >
+        RECEIVE_MODE = #{receiveMode},
+        </if>
+        <if test="orderId != null" >
+        ORDER_ID = #{orderId},
+        </if>
+        <if test="expressNum != null" >
+        EXPRESS_NUM = #{expressNum},
+        </if>
+        <if test="addresseeName != null" >
+        ADDRESSEE_NAME = #{addresseeName},
+        </if>
+        <if test="addresseePhone != null" >
+        ADDRESSEE_PHONE = #{addresseePhone},
+        </if>
+        <if test="addresseeIdcard != null" >
+        ADDRESSEE_IDCARD = #{addresseeIdcard},
+        </if>
+        <if test="addresseeAddr != null" >
+        ADDRESSEE_ADDR = #{addresseeAddr},
+        </if>
+        <if test="addresseeProvince != null" >
+        ADDRESSEE_PROVINCE = #{addresseeProvince},
+        </if>
+        <if test="addresseeCity != null" >
+        ADDRESSEE_CITY = #{addresseeCity},
+        </if>
+        <if test="addresseeCounty != null" >
+        ADDRESSEE_COUNTY = #{addresseeCounty},
+        </if>
+        <if test="senderName != null" >
+        SENDER_NAME = #{senderName},
+        </if>
+        <if test="senderPhone != null" >
+        SENDER_PHONE = #{senderPhone},
+        </if>
+        <if test="senderAddr != null" >
+        SENDER_ADDR = #{senderAddr},
+        </if>
+        <if test="senderProvince != null" >
+        SENDER_PROVINCE = #{senderProvince},
+        </if>
+        <if test="senderCity != null" >
+        SENDER_CITY = #{senderCity},
+        </if>
+        <if test="senderCounty != null" >
+        SENDER_COUNTY = #{senderCounty},
+        </if>
+        <if test="smsType != null" >
+        SMS_TYPE = #{smsType},
+        </if>
+        <if test="issueTime != null" >
+        ISSUE_TIME = #{issueTime},
+        </if>
+        <if test="creater != null" >
+        CREATER = #{creater},
+        </if>
+        <if test="createTime != null" >
+        CREATE_TIME = #{createTime},
+        </if>
+        <if test="rootOrgId != null" >
+            ROOT_ORG_ID = #{rootOrgId},
+        </if>
+        <if test="isConsigner != null" >
+            IS_CONSIGNER = #{isConsigner},
+        </if>
+        <if test="consignerAttId != null" >
+            CONSIGNER_ATT_ID = #{consignerAttId},
+        </if>
+    </set>
+    where SEND_ITEM_ID = #{sendItemId}
+</update>
+<!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaHiSmsSendItem">
+        delete from   AEA_HI_SMS_SEND_ITEM
+        where
+    SEND_ITEM_ID = #{id}
+    </delete>
+<!--8 删除实体对象列表,根据主键ID列表 -->
+<!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaHiSmsSendItem" id="AeaHiSmsSendItemMap">
+        <id property="sendItemId" column="SEND_ITEM_ID"/>
+        <result property="sendItemCode" column="SEND_ITEM_CODE"/>
+        <result property="isOnceSend" column="IS_ONCE_SEND"/>
+        <result property="sendApplyId" column="SEND_APPLY_ID"/>
+        <result property="applyinstId" column="APPLYINST_ID"/>
+        <result property="iteminstId" column="ITEMINST_ID"/>
+        <result property="inoutinstId" column="INOUTINST_ID"/>
+        <result property="windowUserId" column="WINDOW_USER_ID"/>
+        <result property="windowUserName" column="WINDOW_USER_NAME"/>
+        <result property="windowHandleTime" column="WINDOW_HANDLE_TIME"/>
+        <result property="receiveMode" column="RECEIVE_MODE"/>
+        <result property="orderId" column="ORDER_ID"/>
+        <result property="expressNum" column="EXPRESS_NUM"/>
+        <result property="addresseeName" column="ADDRESSEE_NAME"/>
+        <result property="addresseePhone" column="ADDRESSEE_PHONE"/>
+        <result property="addresseeIdcard" column="ADDRESSEE_IDCARD"/>
+        <result property="addresseeAddr" column="ADDRESSEE_ADDR"/>
+        <result property="addresseeProvince" column="ADDRESSEE_PROVINCE"/>
+        <result property="addresseeCity" column="ADDRESSEE_CITY"/>
+        <result property="addresseeCounty" column="ADDRESSEE_COUNTY"/>
+        <result property="senderName" column="SENDER_NAME"/>
+        <result property="senderPhone" column="SENDER_PHONE"/>
+        <result property="senderAddr" column="SENDER_ADDR"/>
+        <result property="senderProvince" column="SENDER_PROVINCE"/>
+        <result property="senderCity" column="SENDER_CITY"/>
+        <result property="senderCounty" column="SENDER_COUNTY"/>
+        <result property="smsType" column="SMS_TYPE"/>
+        <result property="issueTime" column="ISSUE_TIME"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+        <result property="isConsigner" column="IS_CONSIGNER"/>
+        <result property="consignerAttId" column="CONSIGNER_ATT_ID"/>
+    </resultMap>
+
+
+    <select id="getAeaHiSmsSendItemListByApplyinstId" resultType="AeaHiSmsSendItem">
+        select <include refid="allColumns" /> from AEA_HI_SMS_SEND_ITEM where APPLYINST_ID=#{applyinstId}
+
+    </select>
+
+    <insert id="batchInsertAeaHiSmsSendItem">
+         insert into AEA_HI_SMS_SEND_ITEM (
+          SEND_ITEM_ID  ,SEND_ITEM_CODE  ,IS_ONCE_SEND  ,SEND_APPLY_ID  ,APPLYINST_ID  ,ITEMINST_ID  ,INOUTINST_ID  ,WINDOW_USER_ID  ,WINDOW_USER_NAME  ,WINDOW_HANDLE_TIME  ,RECEIVE_MODE  ,ORDER_ID  ,EXPRESS_NUM  ,ADDRESSEE_NAME  ,ADDRESSEE_PHONE  ,ADDRESSEE_IDCARD  ,ADDRESSEE_ADDR  ,ADDRESSEE_PROVINCE  ,ADDRESSEE_CITY  ,ADDRESSEE_COUNTY  ,SENDER_NAME  ,SENDER_PHONE  ,SENDER_ADDR  ,SENDER_PROVINCE  ,SENDER_CITY  ,SENDER_COUNTY  ,SMS_TYPE  ,ISSUE_TIME  ,CREATER  ,CREATE_TIME,IS_CONSIGNER,CONSIGNER_ATT_ID,ROOT_ORG_ID
+          )
+        <if test="_databaseId == 'oracle'">
+            <foreach collection="hiSmsSendItemList" item="hiSmsSendItem" index="index" separator="union all">
+            (
+            SELECT
+                #{hiSmsSendItem.sendItemId},#{hiSmsSendItem.sendItemCode},#{hiSmsSendItem.isOnceSend},#{hiSmsSendItem.sendApplyId},#{hiSmsSendItem.applyinstId},#{hiSmsSendItem.iteminstId},#{hiSmsSendItem.inoutinstId},#{hiSmsSendItem.windowUserId},#{hiSmsSendItem.windowUserName},#{hiSmsSendItem.windowHandleTime},#{hiSmsSendItem.receiveMode},#{hiSmsSendItem.orderId},
+                #{hiSmsSendItem.expressNum},#{hiSmsSendItem.addresseeName},#{hiSmsSendItem.addresseePhone},#{hiSmsSendItem.addresseeIdcard},#{hiSmsSendItem.addresseeAddr},#{hiSmsSendItem.addresseeProvince},
+                #{hiSmsSendItem.addresseeCity},#{hiSmsSendItem.addresseeCounty},#{hiSmsSendItem.senderName},#{hiSmsSendItem.senderPhone},#{hiSmsSendItem.senderAddr},#{hiSmsSendItem.senderProvince},#{hiSmsSendItem.senderCity},#{hiSmsSendItem.senderCounty},#{hiSmsSendItem.smsType},#{hiSmsSendItem.issueTime},#{hiSmsSendItem.creater}, #{hiSmsSendItem.createTime},
+                #{hiSmsSendItem.isConsigner},#{hiSmsSendItem.consignerAttId},#{hiSmsSendItem.rootOrgId}
+                FROM dual
+                )
+            </foreach>
+        </if>
+        <if test="_databaseId == 'mysql'">
+            values
+            <foreach collection="hiSmsSendItemList" item="hiSmsSendItem" separator=",">
+                (
+                    #{hiSmsSendItem.sendItemId},#{hiSmsSendItem.sendItemCode},#{hiSmsSendItem.isOnceSend},#{hiSmsSendItem.sendApplyId},#{hiSmsSendItem.applyinstId},#{hiSmsSendItem.iteminstId},#{hiSmsSendItem.inoutinstId},#{hiSmsSendItem.windowUserId},#{hiSmsSendItem.windowUserName},#{hiSmsSendItem.windowHandleTime},#{hiSmsSendItem.receiveMode},#{hiSmsSendItem.orderId},
+                    #{hiSmsSendItem.expressNum},#{hiSmsSendItem.addresseeName},#{hiSmsSendItem.addresseePhone},#{hiSmsSendItem.addresseeIdcard},#{hiSmsSendItem.addresseeAddr},#{hiSmsSendItem.addresseeProvince},
+                    #{hiSmsSendItem.addresseeCity},#{hiSmsSendItem.addresseeCounty},#{hiSmsSendItem.senderName},#{hiSmsSendItem.senderPhone},#{hiSmsSendItem.senderAddr},#{hiSmsSendItem.senderProvince},#{hiSmsSendItem.senderCity},#{hiSmsSendItem.senderCounty},#{hiSmsSendItem.smsType},#{hiSmsSendItem.issueTime},#{hiSmsSendItem.creater}, #{hiSmsSendItem.createTime},
+                    #{hiSmsSendItem.isConsigner},#{hiSmsSendItem.consignerAttId},#{hiSmsSendItem.rootOrgId}
+                )
+            </foreach>
+        </if>
+    </insert>
+    <select id="countSendItemByApplyinstId" resultType="int">
+        select count(1) from AEA_HI_SMS_SEND_ITEM where APPLYINST_ID = #{applyinstId}
+
+    </select>
+    <select id="getNeedSendCount" resultType="int">
+
+      select COUNT(1) from aea_hi_item_inoutinst ahii where ahii.ITEMINST_ID in(
+      select ahi.ITEMINST_ID from aea_hi_iteminst ahi ,aea_hi_par_stageinst ahps
+        where ahps.APPLYINST_ID=#{applyinstId}
+        and ahps.STAGEINST_ID = ahi.STAGEINST_ID
+        and ahi.ITEMINST_STATE in('11','12')
+        ) and ahii.ITEM_INOUT_ID=aii.INOUT_ID
+    and aii.IS_INPUT='0'
+    and ahii.ROOT_ORG_ID = #{rootOrgId}
+    and aii.ROOT_ORG_ID= #{rootOrgId}
+    and aii.IS_DELETED='0'
+    </select>
+</mapper>

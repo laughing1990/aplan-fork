@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.EfficiencySupervisionMapper">
+
+
+    <select id="getApplyStatisticsByTIme" resultType="com.augurit.aplanmis.common.vo.analyse.ApplyFormVo">
+      select asw.WINDOW_NAME windowName
+      ,aha.applyinst_id applyinstId
+      ,aha.APPLYINST_STATE applyinstState
+    ,aha.IS_SERIES_APPROVE isApprove
+    ,aha.APPLYINST_SOURCE applyinstSource
+    from aea_hi_applyinst aha
+    LEFT JOIN opu_om_user oou on oou.login_name = aha.creater
+    LEFT JOIN aea_service_window_user aswu on aswu.user_id = oou.user_id and aswu.ROOT_ORG_ID = #{currentOrgId}
+    LEFT JOIN aea_service_window asw on asw.window_id = aswu.window_id and asw.ROOT_ORG_ID = #{currentOrgId}
+        where aha.CREATE_TIME <![CDATA[ >= ]]> STR_TO_DATE(concat(#{startTime},' 00:00:01'), '%Y-%m-%d %H:%i:%s')
+        and aha.CREATE_TIME <![CDATA[ <= ]]> STR_TO_DATE(concat(#{endTime},' 23:59:59'), '%Y-%m-%d %H:%i:%s')
+        and aha.IS_DELETED='0'
+        and aha.APPLYINST_SOURCE = 'win'
+        and asw.window_name is not null
+        and aha.root_org_id = #{currentOrgId}
+
+        UNION
+        select
+        IFNULL(asw.WINDOW_NAME,'未知窗口2')windowName
+        ,aha.applyinst_id applyinstId
+        ,aha.APPLYINST_STATE applyinstState
+        ,aha.IS_SERIES_APPROVE isApprove
+        ,aha.APPLYINST_SOURCE applyinstSource
+        from aea_hi_applyinst aha
+        LEFT JOIN aea_applyinst_proj aap on aap.applyinst_id = aha.applyinst_id
+        LEFT JOIN aea_proj_info api on api.proj_info_id = aap.proj_info_id and api.ROOT_ORG_ID = #{currentOrgId}
+
+        left join aea_service_window asw on asw.REGION_ID = api.REGIONALISM and asw.ROOT_ORG_ID = #{currentOrgId}
+       where aha.CREATE_TIME <![CDATA[ >= ]]> STR_TO_DATE(concat(#{startTime},' 00:00:01'), '%Y-%m-%d %H:%i:%s')
+        and aha.CREATE_TIME <![CDATA[ <= ]]> STR_TO_DATE(concat(#{endTime},' 23:59:59'), '%Y-%m-%d %H:%i:%s')
+        and aha.APPLYINST_SOURCE = 'net'
+        and aha.IS_DELETED='0'
+        and asw.IS_ACTIVE='1'
+        and api.REGIONALISM is not null
+        and aha.root_org_id = #{currentOrgId}
+	</select>
+   <select id="getApplyProjVoByState" resultType="com.augurit.aplanmis.common.vo.analyse.ApplyPorjVo">
+    select aha.applyinst_id applyinstId ,aha.IS_SERIES_APPROVE isApprove,aap.proj_info_id projInfoId from aea_hi_applyinst aha
+    LEFT JOIN aea_applyinst_proj aap on aap.applyinst_id = aha.applyinst_id
+       where aha.is_deleted = '0' and aha.root_org_id = #{rootOrgId} and aap.proj_info_id is not null
+       <if test="ids !=null">
+           and aha.applyinst_state in
+           <if test="_databaseId == 'oracle'">
+               <foreach collection="ids" item="item" open="(" separator="union all" close=")">
+                   #{item}
+               </foreach>
+           </if>
+           <if test="_databaseId == 'mysql'">
+               <foreach collection="ids" item="item" open="(" separator="," close=")">
+                   #{item}
+               </foreach>
+           </if>
+       </if>
+
+   </select>
+    <select id="queryApplyWithRegion" resultType="com.augurit.aplanmis.common.vo.analyse.ApplyFormVo">
+        select
+        aha.applyinst_id applyinstId,
+        bdr.REGION_NAME regionName,
+        bdr.region_id regionId
+        from aea_hi_applyinst aha
+        LEFT JOIN aea_applyinst_proj aap on aap.applyinst_id = aha.applyinst_id
+        LEFT JOIN aea_proj_info api on api.proj_info_id = aap.proj_info_id and api.root_org_id =#{rootOrgId}
+        LEFT JOIN bsc_dic_region bdr on bdr.region_id = api.REGIONALISM
+        where 1=1
+        <if test="startTime != null and startTime != ''  ">
+          and  aha.CREATE_TIME <![CDATA[ >= ]]> STR_TO_DATE(concat(#{startTime},' 00:00:01'), '%Y-%m-%d %H:%i:%s')
+        </if>
+        <if test="endTime != null and endTime != ''">
+            and aha.CREATE_TIME <![CDATA[ <= ]]> STR_TO_DATE(concat(#{endTime},' 23:59:59'), '%Y-%m-%d %H:%i:%s')
+        </if>
+        and aha.IS_DELETED='0'
+        and bdr.REGION_NAME is not null
+        and aha.root_org_id = #{rootOrgId}
+    </select>
+
+    <select id="queryItemStatisticsByTime" resultType="com.augurit.aplanmis.common.vo.analyse.ItemDetailFormVo">
+
+        select
+        ahi.APPROVE_ORG_ID orgId
+        ,ooo.org_name orgName
+        ,ahi.ITEMINST_ID iteminstId
+        ,ahi.iteminst_state iteminstState
+        ,bdr.REGION_NAME regionName
+        ,bdr.REGION_ID regionId
+        from  aea_hi_iteminst ahi
+        LEFT JOIN opu_om_org ooo on ooo.ORG_ID=ahi.APPROVE_ORG_ID
+        LEFT JOIN bsc_dic_region bdr on bdr.region_id = ooo.region_id
+        where 1=1
+        <if test="startTime != null and startTime != ''  ">
+           and  ahi.CREATE_TIME <![CDATA[ >= ]]> STR_TO_DATE(concat(#{startTime},' 00:00:01'), '%Y-%m-%d %H:%i:%s')
+        </if>
+        <if test="endTime != null and endTime != ''">
+            and ahi.CREATE_TIME <![CDATA[ <= ]]> STR_TO_DATE(concat(#{endTime},' 23:59:59'), '%Y-%m-%d %H:%i:%s')
+        </if>
+        and ahi.root_org_id = #{rootOrgId}
+        <if test="ids !=null">
+            and ahi.ITEMINST_STATE  in
+            <if test="_databaseId == 'oracle'">
+                <foreach collection="ids" item="item" open="(" separator="union all" close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="_databaseId == 'mysql'">
+                <foreach collection="ids" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+        </if>
+
+    </select>
+
+    <select id="queryItemExceptionCountVo" resultType="com.augurit.aplanmis.common.vo.analyse.ItemExceptionCountVo">
+        select ttt.*, aib.item_name as itemName, org.org_name as orgName,
+        (select count(1) from aea_hi_iteminst where ITEM_VER_ID = ttt.itemVerId) as totalCount
+        from (
+        select itemVerId, sum(noAccept) as noAcceptCount, sum(overdue) as overdueCount  from (
+        select itemVerId,
+        case iteminstState when '5' then 1 else 0 end as noAccept,
+        case when remainNum <![CDATA[ <= ]]> 0 then 1 else 0 end as overdue
+        from (
+        select
+        ahi.ITEM_VER_ID as itemVerId,
+        ahi.ITEMINST_STATE as iteminstState,
+        IFNULL(asti.REMAINING_TIME, 1) AS remainNum
+        from aea_hi_iteminst ahi
+        left join act_sto_timerule_inst asti on asti.PROC_INST_ID = ahi.PROCINST_ID
+        left join aea_item_basic aib on ahi.ITEM_VER_ID = aib.ITEM_VER_ID where ahi.ROOT_ORG_ID = #{rootOrgId}) t
+        where iteminstState = '5' or remainNum <![CDATA[ <= ]]> 0 ) tt group by itemVerId) ttt
+        left join aea_item_basic aib on ttt.itemVerId = aib.ITEM_VER_ID
+        left join opu_om_org org on aib.ORG_ID = org.ORG_ID
+    </select>
+
+
+    <select id="getItemStatisticsByTime" resultType="com.augurit.aplanmis.common.vo.analyse.ItemDetailFormVo">
+        select gg.*
+        ,ooo.org_name orgName
+        ,bdr.REGION_NAME regionName
+        ,bdr.REGION_ID regionId
+        from(
+        select
+        alish.ITEMINST_ID iteminstId
+        ,alish.NEW_STATE iteminstState
+        ,ahi.APPROVE_ORG_ID orgId
+        from  aea_hi_iteminst ahi ,aea_log_item_state_hist alish
+        where alish.ITEMINST_ID = ahi.ITEMINST_ID
+        and ahi.ROOT_ORG_ID= #{rootOrgId}
+        and alish.ROOT_ORG_ID = #{rootOrgId}
+        and alish.TRIGGER_TIME <![CDATA[ >= ]]> #{startTime}
+        and alish.TRIGGER_TIME <![CDATA[ <= ]]> #{endTime}
+        <if test="ids !=null">
+            and alish.NEW_STATE in
+            <if test="_databaseId == 'oracle'">
+                <foreach collection="ids" item="item" open="(" separator="union all" close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="_databaseId == 'mysql'">
+                <foreach collection="ids" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+        </if>
+
+        )gg
+        LEFT JOIN opu_om_org ooo on ooo.ORG_ID=gg.orgId
+        LEFT JOIN bsc_dic_region bdr on bdr.region_id = ooo.region_id
+    </select>
+</mapper>

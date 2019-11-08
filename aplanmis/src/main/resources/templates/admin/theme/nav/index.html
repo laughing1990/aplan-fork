@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>主题导航定义</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/metronic-5/vendors.bundle.css" th:href="@{/agcloud/framework/js-lib/metronic-5/vendors.bundle.css}">
+    <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/ui-private/default/common/css/metronic.css" th:href="@{/agcloud/framework/ui-private/default/common/css/metronic.css}">
+    <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.css" th:href="@{/agcloud/framework/js-lib/element-2/element.css}">
+    <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/ui-private/default/common/css/layout.css" th:href="@{/agcloud/framework/ui-private/default/common/css/layout.css}">
+    <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/ui-private/default/blue/css/theme.css" th:href="@{/agcloud/framework/ui-private/default/blue/css/theme.css}">
+    <!-- 业务样式 -->
+    <link rel="stylesheet" href="../../../../static/admin/theme/nav/css/index.css" th:href="@{/admin/theme/nav/css/index.css}">
+    <script>
+        var ctx = '[[@{/}]]';
+    </script>
+</head>
+<body>
+    <div id="index" v-cloak>
+        <div class="table-left float-left" style="width: 40%;">
+            <p class="table-head-text">导航定义</p>
+            <div class="table-content">
+                <div class="add-search clearfix" style="padding-bottom: 15px;">
+                    <button type="button" class="btn btn-primary" @click="aeditNavTbRow('', '新增导航定义')">新增</button>
+                    <button type="button" class="btn btn-outline-danger" @click="batchDelNavTbData()">删除</button>
+                    <div class="float-right search-btn" style="padding-left: 10px;">
+                        <div class="input-group search-key">
+                            <input type="text" class="form-control" v-model="searchKey" placeholder="请输入关键字" style="width: 250px;">
+                            <i class="la la-close clear-search" @click="searchKey='';page=1;searchLoadNavTb();"></i>
+                            <div class="input-group-append">
+                                <button class="btn btn-primary m-btn--icon" @click="searchLoadNavTb()">
+                                    <span><i class="fa fa-search"></i><span>查询</span></span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <el-table
+                    :data="tableData.rows"
+                    border style="width: 100%"
+                    v-loading="loading"
+                    @row-click="navTbRowClick"
+                    ref="navTable"
+                    @selection-change="handleSelChange"
+                    highlight-current-row>
+                    <el-table-column type="selection" align="center"></el-table-column>
+                    <el-table-column prop="navName" label="名称"></el-table-column>
+                    <el-table-column prop="isActive" width="120" align="center" label="是否启用">
+                        <template slot-scope="scope">
+                            <span class="m-switch m-switch--sm m-switch--icon">
+                                <label>
+                                    <input type="checkbox" :checked="(scope.row.isActive == 1)?true:false" @change="changeIsActive(scope.row, $event)">
+                                    <span></span>
+                                </label>
+                            </span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="" width="120" align="center" label="操作">
+                        <template slot-scope="scope">
+                            <el-tooltip class="item" effect="dark" content="编辑导航定义" placement="top-start">
+                                <el-button type="primary" icon="el-icon-edit" circle @click="aeditNavTbRow(scope.row, '编辑导航定义')"></el-button>
+                            </el-tooltip>
+                            <el-tooltip class="item" effect="dark" content="删除导航定义" placement="top-start">
+                                <el-button type="danger" icon="el-icon-delete" circle @click="delNavTbData(scope.row)"></el-button>
+                            </el-tooltip>
+                        </template>
+                    </el-table-column>
+                </el-table>
+            </div>
+            <el-pagination
+                background
+                v-if="tableData.total>9"
+                align="right"
+                :pager-count="5"
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+                :page-sizes="[10, 20, 30, 50]"
+                :page-size="pageSize"
+                layout="total,sizes, prev, pager, next, jumper"
+                :total="tableData.total">
+            </el-pagination>
+        </div>
+
+        <!-- 导航情形 -->
+        <div class="table-right float-right" style="width: 60%;">
+            <p class="table-head-text">导航情形</p>
+            <div class="table-content">
+                <div class="add-search clearfix" style="padding-bottom: 15px;">
+                    <button type="button" class="btn btn-primary" @click="aeditNavState('', '新增【问】情形')">新增</button>
+                    <button type="button" class="btn btn-outline-danger" @click="batchDelAeditNavState()">删除</button>
+                    <div class="float-right search-btn" style="padding-left: 10px;">
+                        <div class="input-group search-key">
+                            <input type="text" class="form-control" v-model="searchKeyRight" placeholder="请输入关键字" style="width: 250px;">
+                            <i class="la la-close clear-search" @click="searchKeyRight='';searchNavState(navId);"></i>
+                            <div class="input-group-append">
+                                <button class="btn btn-primary m-btn--icon" @click="searchNavState(navId)">
+                                    <span><i class="fa fa-search"></i><span>查询</span></span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <el-table
+                    :data="dataTbRight"
+                    border style="width: 100%"
+                    v-loading="loading2"
+                    row-key="factorId"
+                    highlight-current-row
+                    default-expand-all
+                    @selection-change="handleRightSelChange"
+                    :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
+                    <el-table-column type="selection" align="center"></el-table-column>
+                    <el-table-column prop="factorName" label="情形名称" width="350"></el-table-column>
+                    <el-table-column prop="isQuestion" label="情形类型" align="center" width="90">
+                        <template slot-scope="scope">
+                            {{scope.row.isQuestion == '1' ? '问题' : '答案'}}
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="mustAnswer" label="是否必答" align="center" width="90">
+                        <template slot-scope="scope">
+                            {{scope.row.mustAnswer == '1' ? '必答' :(scope.row.mustAnswer == '0' ? '可选':'-')}}
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="answerType" label="回答方式" align="center" width="90">
+                        <template slot-scope="scope">
+                            {{scope.row.answerType == 'y' ? '是否选择':(scope.row.answerType == 's'?'单选':(scope.row.answerType == 'm'?'可选':'-'))}}
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="themeName" label="关联主题" width="400">
+                        <template slot-scope="scope">
+                            <el-button type="text" class="btn-table" @click="showBindingTheme(scope.row.themeId)">{{scope.row.themeName}}</el-button>
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="" width="250" align="left" label="操作" fixed="right">
+                        <template slot-scope="scope">
+                            <el-tooltip class="item" effect="dark" content="编辑情形" placement="top-start">
+                                <el-button type="primary" icon="el-icon-edit" circle @click="aeditNavState(scope.row, '编辑【答】情形')"></el-button>
+                            </el-tooltip>
+                            <el-tooltip class="item" effect="dark" content="添加子情形" placement="top-start">
+                                <el-button type="primary" icon="el-icon-plus" circle @click="addChildState(scope.row)"></el-button>
+                            </el-tooltip>
+                            <el-tooltip class="item" effect="dark" content="查看绑定主题" placement="top-start" v-if="!isNullOrBank(scope.row.themeId)">
+                                <el-button icon="el-icon-search" circle @click="showBindingTheme(scope.row.themeId)"></el-button>
+                            </el-tooltip>
+                            <el-tooltip class="item" effect="dark" content="解除绑定主题" placement="top-start" v-if="!isNullOrBank(scope.row.themeId)">
+                                <el-button type="danger" icon="el-icon-close" circle @click="unbindTheme(scope.row.factorId)"></el-button>
+                            </el-tooltip>
+                            <el-tooltip class="item" effect="dark" content="删除情形" placement="top-start">
+                                <el-button type="danger" icon="el-icon-delete" circle @click="delAeditNavState(scope.row)"></el-button>
+                            </el-tooltip>
+                        </template>
+                    </el-table-column>
+                </el-table>
+            </div>
+        </div>
+
+        <!-- 新增/编辑导航定义 -->
+        <el-dialog :title="dialogTitie"
+                   :visible.sync="dialogEditTable"
+                   class="edit-row"
+                   @closed="clearFormData"
+                   width="40%">
+            <el-form :inline="true" :model="selRowData" :rules="rules" ref="selRowData">
+
+                <input type="hidden" :value="selRowData.navId">
+                <input type="hidden" :value="selRowData.isActive">
+
+                <el-row>
+                    <el-col :span="24">
+                        <el-form-item label="导航名称：" prop="navName" class="ops-memo2">
+                            <el-input v-model="selRowData.navName" placeholder="请输入导航名称" ></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+
+                <el-row>
+                    <el-col :span="24">
+                        <el-form-item label="排序：" prop="sortNo" class="ops-memo2">
+                            <el-input type="sortNo" v-model.number="selRowData.sortNo" autocomplete="off"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+
+                <el-row>
+                    <el-col :span="24">
+                        <el-form-item label="备注：" prop="navMemo" class="ops-memo">
+                            <el-input type="textarea" v-model="selRowData.navMemo" rows="4"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <button class="btn btn-secondary" @click="dialogEditTable=false">取消</button>
+                <button class="btn btn-primary"  @click="saveNavTbRow('selRowData', selRowData)">保存</button>
+            </div>
+        </el-dialog>
+
+        <!-- 新增/编辑导航情形 -->
+        <el-dialog :title="dialogTitie2"
+                   :visible.sync="dialogEditTable2"
+                   class="edit-row"
+                   @closed="clearRightFormData"
+                   width="45%">
+            <el-form :inline="true" :model="rightRowData" :rules="rules2" ref="rightRowData">
+
+                <input type="hidden" name="rightRowData.factorId" value=""/>
+                <input type="hidden" name="rightRowData.navId" value=""/>
+                <input type="hidden" name="rightRowData.themeId" value=""/>
+                <input type="hidden" name="rightRowData.parentFactorId" value=""/>
+                <input type="hidden" name="rightRowData.isQuestion" value=""/>
+
+                <el-row>
+                    <el-col :span="24">
+                        <el-form-item label="情形名称：" prop="factorName" class="ops-memo2">
+                            <el-input v-model="rightRowData.factorName" placeholder="请输入情形名称" ></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+
+                <el-row>
+                    <el-col :span="24">
+                        <el-form-item label="选择主题：" prop="themeName" v-if="isThemeShow" class="ops-memo2">
+                            <el-input v-model="rightRowData.themeName" placeholder="请选择主题" readonly @focus="selectThemeTree(rightRowData);">
+                                <el-button slot="append" icon="el-icon-search" @click="selectThemeTree(rightRowData);"></el-button>
+                            </el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+
+                <el-row>
+                    <el-col :span="12">
+                        <el-form-item label="是否必答：" prop="mustAnswer" v-if="isQuestionShow">
+                            <el-select v-model="rightRowData.mustAnswer">
+                                <el-option value="" label="请选择"></el-option>
+                                <el-option value="1" label="是"></el-option>
+                                <el-option value="0" label="否"></el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+
+                    <el-col :span="12">
+                        <el-form-item label="回答方式：" prop="answerType" v-if="isQuestionShow">
+                            <el-select v-model="rightRowData.answerType">
+                                <el-option value="" label="请选择"></el-option>
+                                <el-option value="y" label="是否选择"></el-option>
+                                <el-option value="s" label="单选答案"></el-option>
+                                <el-option value="m" label="多选答案"></el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+
+                <el-row>
+                    <el-col :span="24">
+                        <el-form-item label="是否启用EL：" prop="useEl" v-if="useElShow" class="ops-memo2">
+                            <el-select v-model="rightRowData.useEl">
+                                <el-option value="0" label="禁用"></el-option>
+                                <el-option value="1" label="启用"></el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+
+                <el-row>
+                    <el-col :span="24">
+                        <el-form-item label="EL表达式：" prop="stateEl" v-if="rightRowData.useEl=='1'" class="ops-memo">
+                            <el-input type="textarea" v-model="rightRowData.stateEl" rows="5"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+
+                <el-row>
+                    <el-col :span="12">
+                        <el-form-item label="是否启用：" prop="isActive">
+                            <el-select v-model="rightRowData.isActive">
+                                <el-option value="0" label="禁用"></el-option>
+                                <el-option value="1" label="启用"></el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+
+                    <el-col :span="12">
+                        <el-form-item label="排序：" prop="sortNo">
+                            <el-input type="sortNo" v-model.number="rightRowData.sortNo" autocomplete="off"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+
+                <el-row>
+                    <el-col :span="24">
+                        <el-form-item label="备注：" prop="factorMemo" class="ops-memo">
+                            <el-input type="textarea" v-model="rightRowData.factorMemo" rows="4"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+
+            </el-form>
+
+            <div slot="footer" class="dialog-footer">
+                <button class="btn btn-secondary" @click="dialogEditTable2=false">取消</button>
+                <button class="btn btn-primary"  @click="saveRightRowData('rightRowData', rightRowData)">保存</button>
+            </div>
+        </el-dialog>
+
+        <!-- 主题查看 -->
+        <el-dialog :title="dialogTitie3"
+                   :visible.sync="dialogEditTable3"
+                   class="edit-row"
+                   @closed="clearThemeFormData"
+                   width="45%">
+            <el-form :inline="true" :model="themeData" ref="themeData">
+
+                <el-row>
+                    <el-col :span="24">
+                        <el-form-item label="主题名称：" prop="themeName" class="ops-memo2">
+                            <el-input v-model="themeData.themeName" ></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+
+                <el-row>
+                    <el-col :span="24">
+                        <el-form-item label="主题编码：" prop="themeCode" class="ops-memo2">
+                            <el-input v-model="themeData.themeCode" ></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+
+                <el-row>
+                    <el-col :span="24">
+                        <el-form-item label="申报说明：" prop="themeMemo" class="ops-memo">
+                            <el-input type="textarea" v-model="themeData.themeMemo" rows="8"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <button class="btn btn-secondary" @click="dialogEditTable3=false">取消</button>
+            </div>
+        </el-dialog>
+
+        <!-- 选择主题 -->
+        <el-dialog title="选择主题" class="sel-apartment set-admin" :class="dialogSetTheme?'show':''" :visible.sync="dialogSetTheme">
+            <div class="tree-left float-left">
+                <p class="sel-title">选择：</p>
+                <el-input
+                    class="search-apartment"
+                    placeholder="搜索主题"
+                    v-model="themeFilterText" @input="themeSearch">
+                    <i slot="prefix" class="el-input__icon el-icon-search"></i>
+                    <i slot="suffix" class="el-input__icon el-icon-close" @click="clearThemeSearch"></i>
+                </el-input>
+                <el-tree
+                    v-show="setThemeSearchFlag"
+                    :style="{height:'400px',overflow:'auto'}"
+                    :data="setThemeTreeData"
+                    :expand-on-click-node="false"
+                    highlight-current
+                    :props="defaultProps"
+                    node-key="id"
+                    @node-click="selTheme"
+                    :default-expanded-keys="setThemeRootNodeId"
+                    ref="setThemeTree">
+                    <span class="custom-tree-node" slot-scope="scope">
+                        <span><i :class="'fa fa-folder'"></i>{{ scope.data.label }}</span>
+                    </span>
+                </el-tree>
+            </div>
+            <div class="selected-apartm">
+                <p class="sel-title">已选：</p>
+                <div class="selected-list" :style="{height:'350px',overflow:'auto'}">
+                    <p v-for="(item,index) in selThemeList" :id="item.id"
+                        class="selected-item">{{item.label}}
+                        <i class="la la-close float-right" @click="removeSelTheme(item, index)"></i>
+                    </p>
+                </div>
+            </div>
+            <div slot="footer" class="dialog-footer">
+                <el-button type="primary" @click="saveSelTheme">保存</el-button>
+                <el-button @click="dialogSetTheme=false">取消</el-button>
+            </div>
+        </el-dialog>
+    </div>
+
+    <!-- 引入js文件 -->
+    <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js" th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>
+    <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js" th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
+    <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js" th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
+    <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js" th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>
+    <!-- 业务js -->
+    <script type="text/javascript" src="../../../../static/admin/theme/nav/js/index.js" th:src="@{/admin/theme/nav/js/index.js}"></script>
+</body>
+</html>

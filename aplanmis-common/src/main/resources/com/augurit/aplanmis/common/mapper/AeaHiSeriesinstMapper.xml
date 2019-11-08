@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by Administrator    2019-07-04 16:45:21 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaHiSeriesinstMapper">
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns">
+        SERIESINST_ID  seriesinstId,
+    APPINST_ID  appinstId,
+    START_TIME  startTime,
+    END_TIME  endTime,
+    SERIESINST_STATE  seriesinstState,
+    SERIESINST_MEMO  seriesinstMemo,
+    CREATER  creater,
+    CREATE_TIME  createTime,
+    MODIFIER  modifier,
+    MODIFY_TIME  modifyTime,
+    APPLYINST_ID  applyinstId,
+    ROOT_ORG_ID rootOrgId,
+    STAGE_ID stageId,
+    IS_PARALLEL isParallel
+    </sql>
+
+    <sql id="aliasColumns">
+        ${alias}.SERIESINST_ID  seriesinstId,
+        ${alias}.APPINST_ID  appinstId,
+        ${alias}.START_TIME  startTime,
+        ${alias}.END_TIME  endTime,
+        ${alias}.SERIESINST_STATE  seriesinstState,
+        ${alias}.SERIESINST_MEMO  seriesinstMemo,
+        ${alias}.CREATER  creater,
+        ${alias}.CREATE_TIME  createTime,
+        ${alias}.MODIFIER  modifier,
+        ${alias}.MODIFY_TIME  modifyTime,
+        ${alias}.APPLYINST_ID  applyinstId,
+        ${alias}.ROOT_ORG_ID rootOrgId,
+        ${alias}.STAGE_ID stageId,
+        ${alias}.IS_PARALLEL isParallel
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaHiSeriesinstById" resultType="AeaHiSeriesinst">
+        select
+        <include refid="allColumns"/>
+        from AEA_HI_SERIESINST
+        where SERIESINST_ID = #{id}
+    </select>
+
+    <select id="getAeaHiSeriesinstByApplyinstId" resultType="AeaHiSeriesinst">
+        select
+        <include refid="allColumns"/>
+        from AEA_HI_SERIESINST
+        where APPLYINST_ID = #{applyinstId}
+    </select>
+
+    <select id="getAeaHiSeriesinstByAppinstId" resultType="AeaHiSeriesinst">
+        select
+        <include refid="allColumns"/>
+        from AEA_HI_SERIESINST
+        where APPINST_ID = #{appinstId}
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaHiSeriesinst" resultType="AeaHiSeriesinst">
+        select
+        <include refid="allColumns"/>
+        from AEA_HI_SERIESINST
+        <where>
+            <if test="seriesinstId != null">
+                AND SERIESINST_ID = #{seriesinstId}
+            </if>
+            <if test="appinstId != null">
+                AND APPINST_ID = #{appinstId}
+            </if>
+            <if test="startTime != null">
+                AND START_TIME = #{startTime}
+            </if>
+            <if test="endTime != null">
+                AND END_TIME = #{endTime}
+            </if>
+            <if test="seriesinstState != null">
+                AND SERIESINST_STATE = #{seriesinstState}
+            </if>
+            <if test="seriesinstMemo != null">
+                AND SERIESINST_MEMO = #{seriesinstMemo}
+            </if>
+            <if test="creater != null">
+                AND CREATER = #{creater}
+            </if>
+            <if test="createTime != null">
+                AND CREATE_TIME = #{createTime}
+            </if>
+            <if test="modifier != null">
+                AND MODIFIER = #{modifier}
+            </if>
+            <if test="modifyTime != null">
+                AND MODIFY_TIME = #{modifyTime}
+            </if>
+            <if test="applyinstId != null">
+                AND APPLYINST_ID = #{applyinstId}
+            </if>
+            <if test="rootOrgId != null">
+                AND ROOT_ORG_ID = #{rootOrgId}
+            </if>
+        </where>
+    </select>
+    <!--4 根据条件查询实体list,返回分页对象 -->
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaHiSeriesinst" parameterType="AeaHiSeriesinst">
+        insert into AEA_HI_SERIESINST (SERIESINST_ID, APPINST_ID, START_TIME, END_TIME, SERIESINST_STATE,
+                                       SERIESINST_MEMO, CREATER, CREATE_TIME, MODIFIER, MODIFY_TIME, APPLYINST_ID,ROOT_ORG_ID,STAGE_ID,IS_PARALLEL)
+        values (#{seriesinstId}, #{appinstId}, #{startTime}, #{endTime}, #{seriesinstState}, #{seriesinstMemo},
+                #{creater}, #{createTime}, #{modifier}, #{modifyTime}, #{applyinstId},#{rootOrgId},#{stageId},#{isParallel})
+    </insert>
+    <!--6 修改实体对象 -->
+    <update id="updateAeaHiSeriesinst" parameterType="AeaHiSeriesinst">
+        update AEA_HI_SERIESINST
+        <set>
+            <if test="seriesinstId != null">
+                SERIESINST_ID = #{seriesinstId},
+            </if>
+            <if test="appinstId != null">
+                APPINST_ID = #{appinstId},
+            </if>
+            <if test="startTime != null">
+                START_TIME = #{startTime},
+            </if>
+            <if test="endTime != null">
+                END_TIME = #{endTime},
+            </if>
+            <if test="seriesinstState != null">
+                SERIESINST_STATE = #{seriesinstState},
+            </if>
+            <if test="seriesinstMemo != null">
+                SERIESINST_MEMO = #{seriesinstMemo},
+            </if>
+            <if test="creater != null">
+                CREATER = #{creater},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime},
+            </if>
+            <if test="modifier != null">
+                MODIFIER = #{modifier},
+            </if>
+            <if test="modifyTime != null">
+                MODIFY_TIME = #{modifyTime},
+            </if>
+            <if test="applyinstId != null">
+                APPLYINST_ID = #{applyinstId},
+            </if>
+            <if test="rootOrgId != null">
+                ROOT_ORG_ID = #{rootOrgId},
+            </if>
+            <if test="stageId != null">
+                STAGE_ID = #{stageId},
+            </if>
+            <if test="isParallel != null">
+                IS_PARALLEL = #{isParallel}
+            </if>
+        </set>
+        where SERIESINST_ID = #{seriesinstId}
+    </update>
+    <!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaHiSeriesinst">
+        delete
+        from AEA_HI_SERIESINST
+        where SERIESINST_ID = #{id}
+    </delete>
+    <!--8 删除实体对象列表,根据主键ID列表 -->
+    <!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaHiSeriesinst" id="AeaHiSeriesinstMap">
+        <id property="seriesinstId" column="SERIESINST_ID"/>
+        <result property="appinstId" column="APPINST_ID"/>
+        <result property="startTime" column="START_TIME"/>
+        <result property="endTime" column="END_TIME"/>
+        <result property="seriesinstState" column="SERIESINST_STATE"/>
+        <result property="seriesinstMemo" column="SERIESINST_MEMO"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="modifier" column="MODIFIER"/>
+        <result property="modifyTime" column="MODIFY_TIME"/>
+        <result property="applyinstId" column="APPLYINST_ID"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+    </resultMap>
+
+    <select id="listAeaHiSeriesinstByApplyinstIds" resultType="com.augurit.aplanmis.common.domain.AeaHiSeriesinst">
+        select
+        <include refid="allColumns"/>
+        from AEA_HI_SERIESINST
+        where APPLYINST_ID in
+        <foreach collection="applyinstIds" item="applyinstId" open="(" close=")" separator=",">
+            #{applyinstId}
+        </foreach>
+    </select>
+
+    <select id="queryThemeAeaHiSeriesinsts" resultType="com.augurit.aplanmis.common.domain.AeaHiSeriesinst">
+        select
+        <include refid="aliasColumns">
+            <property name="alias" value="ahs"/>
+        </include>,aps.stage_name stageName,aha.applyinst_state applyinstState
+        from AEA_HI_SERIESINST ahs,AEA_PAR_STAGE aps,AEA_HI_APPLYINST aha
+        where ahs.STAGE_ID = aps.STAGE_ID
+        and ahs.APPLYINST_ID = aha.APPLYINST_ID
+        and aps.THEME_VER_ID in (${queryThemeVerIds})
+        <if test="rootOrgId != null and rootOrgId != ''">
+            AND ahs.ROOT_ORG_ID = #{rootOrgId}
+        </if>
+        <if test="queryStates != null and queryStates != ''">
+            AND aha.APPLYINST_STATE in (${queryStates})
+        </if>
+        <if test="startTime!=null and startTime!=''">
+            and aha.CREATE_TIME &gt;= #{startTime}
+        </if>
+        <if test="endTime!=null and endTime!=''">
+            and aha.CREATE_TIME &lt;= #{endTime}
+        </if>
+    </select>
+
+    <select id="queryStageAeaHiSeriesinsts" resultType="com.augurit.aplanmis.common.domain.AeaHiSeriesinst">
+        select
+        <include refid="aliasColumns">
+            <property name="alias" value="ahs"/>
+        </include>
+        from AEA_HI_SERIESINST ahs, AEA_HI_APPLYINST aha, AEA_PAR_STAGE aps
+        where ahs.STAGE_ID = aps.STAGE_ID
+        and ahs.APPLYINST_ID = aha.APPLYINST_ID
+        and aps.DYBZSPJDXH = #{standardStageCode}
+        <if test="rootOrgId != null and rootOrgId != ''">
+            AND ahs.ROOT_ORG_ID = #{rootOrgId}
+        </if>
+        <if test="queryStates != null and queryStates != ''">
+            AND aha.APPLYINST_STATE in (${queryStates})
+        </if>
+        <if test="startTime!=null and startTime!=''">
+            and aha.CREATE_TIME &gt;= #{startTime}
+        </if>
+        <if test="endTime!=null and endTime!=''">
+            and aha.CREATE_TIME &lt;= #{endTime}
+        </if>
+    </select>
+</mapper>

@@ -1,0 +1,1441 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by tiantian    2018-10-20 10:42:40 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaImProjPurchaseMapper">
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns">
+        PROJ_PURCHASE_ID  projPurchaseId,
+        PROJ_INFO_ID  projInfoId,
+        PUBLISH_UNIT_INFO_ID  publishUnitInfoId,
+        PUBLISH_LINKMAN_INFO_ID publishLinkmanInfoId,
+        SERVICE_ITEM_ID  serviceItemId,
+        BASE_PRICE  basePrice,
+        AUDIT_FLAG  auditFlag,
+        BID_NUM  bidNum,
+        BJ_TYPE  bjType,
+        IS_DELETE  isDelete,
+        IS_ACTIVE  isActive,
+        CREATER  creater,
+        CREATE_TIME  createTime,
+        MODIFIER  modifier,
+        MODIFY_TIME  modifyTime,
+        BIDDING_TYPE  biddingType,
+        MEMO  memo,
+        HIGHEST_PRICE  highestPrice,
+        SERVICE_TIME_EXPLAIN  serviceTimeExplain,
+        SERVICE_CONTENT  serviceContent,
+        CONTACTS  contacts,
+        MOBLIE  moblie,
+        IS_STAGE  isStage,
+        STAGE_ID  stageId,
+        STAGE_ITEM_VER_ID  stageItemVerId,
+        PUBLISH_TIME  publishTime,
+        AMOUNT_EXPLAIN  amountExplain,
+        IS_APPROVE_PROJ  isApproveProj,
+        APPLYINST_CODE  applyinstCode,
+        IS_LIVE_WITNESS  isLiveWitness,
+        WITNESS_NAME1  witnessName1,
+        WITNESS_NAME2  witnessName2,
+        WITNESS_NAME3  witnessName3,
+        WITNESS_PHONE1  witnessPhone1,
+        WITNESS_PHONE2  witnessPhone2,
+        WITNESS_PHONE3  witnessPhone3,
+        IS_DISCLOSE_IM  isDiscloseIm,
+        IS_DISCLOSE_BIDDING  isDiscloseBidding,
+        AUDIT_TIME  auditTime,
+        AUDIT_OPINION  auditOpinion,
+        OWNER_COMPLAINT_PHONE  ownerComplaintPhone,
+        UNIT_REQUIRE_ID unitRequireId,
+        SELECT_CONDITION selectCondition,
+        IS_DEFINE_AMOUNT isDefineAmount,
+        REQUIRE_EXPLAIN_FILE requireExplainFile,
+        OFFICIAL_REMARK_FILE officialRemarkFile,
+        EXPIRATION_DATE expirationDate,
+        LINKMAN_INFO_ID linkmanInfoId,
+        CHOICE_IMUNIT_TIME choiceImunitTime,
+        SERVICE_START_TIME serviceStartTime,
+        SERVICE_END_TIME serviceEndTime,
+        BASE_RATE baseRate,
+        HIGHEST_RATE highestRate,
+        QUOTE_TYPE quoteType,
+        IS_AVOID isAvoid,
+        AVOID_REASON avoidReason,
+        ROOT_ORG_ID rootOrgId
+    </sql>
+
+    <sql id="allColumnsAlias">
+        ${alias}.PROJ_PURCHASE_ID projPurchaseId,
+        ${alias}.PROJ_INFO_ID projInfoId,
+        ${alias}.PUBLISH_UNIT_INFO_ID publishUnitInfoId,
+        ${alias}.PUBLISH_LINKMAN_INFO_ID publishLinkmanInfoId,
+        ${alias}.SERVICE_ITEM_ID serviceItemId,
+        ${alias}.BASE_PRICE basePrice,
+        ${alias}.AUDIT_FLAG auditFlag,
+        ${alias}.BID_NUM bidNum,
+        ${alias}.BJ_TYPE bjType,
+        ${alias}.IS_DELETE isDelete,
+        ${alias}.IS_ACTIVE isActive,
+        ${alias}.CREATER creater,
+        ${alias}.CREATE_TIME createTime,
+        ${alias}.MODIFIER modifier,
+        ${alias}.MODIFY_TIME modifyTime,
+        ${alias}.BIDDING_TYPE biddingType,
+        ${alias}.MEMO memo,
+        ${alias}.HIGHEST_PRICE highestPrice,
+        ${alias}.SERVICE_TIME_EXPLAIN serviceTimeExplain,
+        ${alias}.SERVICE_CONTENT serviceContent,
+        ${alias}.CONTACTS contacts,
+        ${alias}.MOBLIE moblie,
+        ${alias}.IS_STAGE isStage,
+        ${alias}.STAGE_ID stageId,
+        ${alias}.STAGE_ITEM_VER_ID stageItemVerId,
+        ${alias}.PUBLISH_TIME publishTime,
+        ${alias}.AMOUNT_EXPLAIN amountExplain,
+        <if test="_databaseId == 'oracle'">
+            nvl(${alias}.IS_APPROVE_PROJ, '0') isApproveProj,
+        </if>
+        <if test="_databaseId == 'mysql'">
+            ifnull(${alias}.IS_APPROVE_PROJ,'0') isApproveProj,
+        </if>
+        ${alias}.APPLYINST_CODE applyinstCode,
+        <if test="_databaseId == 'oracle'">
+            nvl(${alias}.IS_LIVE_WITNESS, '0') isLiveWitness,
+        </if>
+        <if test="_databaseId == 'mysql'">
+            ifnull(${alias}.IS_LIVE_WITNESS,'0') isLiveWitness,
+        </if>
+        ${alias}.WITNESS_NAME1 witnessName1,
+        ${alias}.WITNESS_NAME2 witnessName2,
+        ${alias}.WITNESS_NAME3 witnessName3,
+        ${alias}.WITNESS_PHONE1 witnessPhone1,
+        ${alias}.WITNESS_PHONE2 witnessPhone2,
+        ${alias}.WITNESS_PHONE3 witnessPhone3,
+        <if test="_databaseId == 'oracle'">
+            nvl(${alias}.IS_DISCLOSE_IM, '0') isDiscloseIm,
+        </if>
+        <if test="_databaseId == 'mysql'">
+            ifnull(${alias}.IS_DISCLOSE_IM,'0') isDiscloseIm,
+        </if>
+        <if test="_databaseId == 'oracle'">
+            nvl(${alias}.IS_DISCLOSE_BIDDING, '0') isDiscloseBidding,
+        </if>
+        <if test="_databaseId == 'mysql'">
+            ifnull(${alias}.IS_DISCLOSE_BIDDING,'0') isDiscloseBidding,
+        </if>
+        ${alias}.AUDIT_TIME auditTime,
+        ${alias}.AUDIT_OPINION auditOpinion,
+        ${alias}.OWNER_COMPLAINT_PHONE ownerComplaintPhone,
+        ${alias}.UNIT_REQUIRE_ID unitRequireId,
+        ${alias}.SELECT_CONDITION selectCondition,
+        <if test="_databaseId == 'oracle'">
+            nvl(${alias}.IS_DEFINE_AMOUNT, '0') isDefineAmount,
+        </if>
+        <if test="_databaseId == 'mysql'">
+            ifnull(${alias}.IS_DEFINE_AMOUNT,'0') isDefineAmount,
+        </if>
+        ${alias}.REQUIRE_EXPLAIN_FILE requireExplainFile,
+        ${alias}.OFFICIAL_REMARK_FILE officialRemarkFile,
+        ${alias}.EXPIRATION_DATE expirationDate,
+        ${alias}.LINKMAN_INFO_ID linkmanInfoId,
+        ${alias}.CHOICE_IMUNIT_TIME choiceImunitTime,
+        ${alias}.SERVICE_START_TIME serviceStartTime,
+        ${alias}.SERVICE_END_TIME serviceEndTime,
+        ${alias}.BASE_RATE baseRate,
+        ${alias}.HIGHEST_RATE highestRate,
+        <if test="_databaseId == 'oracle'">
+            nvl(${alias}.QUOTE_TYPE, '0') quoteType,
+        </if>
+        <if test="_databaseId == 'mysql'">
+            ifnull(${alias}.QUOTE_TYPE,'0') quoteType,
+        </if>
+        <if test="_databaseId == 'oracle'">
+            nvl(${alias}.IS_AVOID, '0') isAvoid,
+        </if>
+        <if test="_databaseId == 'mysql'">
+            ifnull(${alias}.IS_AVOID,'0') isAvoid,
+        </if>
+        ${alias}.AVOID_REASON avoidReason,
+        ${alias}.ROOT_ORG_ID rootOrgId
+    </sql>
+
+    <!-- 新增实体对象 -->
+    <insert id="insertAeaImProjPurchase" parameterType="AeaImProjPurchase">
+        insert into AEA_IM_PROJ_PURCHASE (
+PROJ_PURCHASE_ID  ,PROJ_INFO_ID  ,PUBLISH_UNIT_INFO_ID  ,PUBLISH_LINKMAN_INFO_ID ,SERVICE_ITEM_ID  ,BASE_PRICE  ,AUDIT_FLAG  ,BID_NUM  ,BJ_TYPE  ,IS_DELETE  ,IS_ACTIVE  ,CREATER  ,CREATE_TIME  ,
+MODIFIER  ,MODIFY_TIME  ,BIDDING_TYPE  ,MEMO  ,HIGHEST_PRICE  ,SERVICE_TIME_EXPLAIN  ,SERVICE_CONTENT  ,CONTACTS  ,MOBLIE  ,IS_STAGE  ,STAGE_ID  ,STAGE_ITEM_VER_ID  ,
+PUBLISH_TIME  ,AMOUNT_EXPLAIN  ,IS_APPROVE_PROJ  ,APPLYINST_CODE  ,IS_LIVE_WITNESS  ,WITNESS_NAME1  ,WITNESS_NAME2  ,WITNESS_NAME3  ,WITNESS_PHONE1  ,WITNESS_PHONE2  ,
+WITNESS_PHONE3  ,IS_DISCLOSE_IM  ,IS_DISCLOSE_BIDDING  ,AUDIT_TIME  ,AUDIT_OPINION  ,OWNER_COMPLAINT_PHONE  ,UNIT_REQUIRE_ID  ,SERVICE_ID  ,OFFICIAL_REMARK_FILE  ,
+REQUIRE_EXPLAIN_FILE  ,SELECT_CONDITION  ,IS_DEFINE_AMOUNT,EXPIRATION_DATE,LINKMAN_INFO_ID,CHOICE_IMUNIT_TIME,SERVICE_START_TIME,SERVICE_END_TIME,BASE_RATE,
+HIGHEST_RATE,QUOTE_TYPE,ROOT_ORG_ID
+    )  values  (
+#{projPurchaseId},#{projInfoId},#{publishUnitInfoId},#{publishLinkmanInfoId},#{serviceItemId},#{basePrice},#{auditFlag},#{bidNum},#{bjType},#{isDelete},#{isActive},#{creater},#{createTime},#{modifier},#{modifyTime},#{biddingType},#{memo},#{highestPrice},#{serviceTimeExplain},#{serviceContent},#{contacts},#{moblie},#{isStage},#{stageId},#{stageItemVerId},#{publishTime},#{amountExplain},#{isApproveProj},#{applyinstCode},#{isLiveWitness},#{witnessName1},#{witnessName2},#{witnessName3},#{witnessPhone1},#{witnessPhone2},#{witnessPhone3},#{isDiscloseIm},#{isDiscloseBidding},#{auditTime},#{auditOpinion},#{ownerComplaintPhone},#{unitRequireId},#{serviceId},#{officialRemarkFile},#{requireExplainFile},#{selectCondition},  #{isDefineAmount} ,#{expirationDate},#{linkmanInfoId},#{choiceImunitTime},#{serviceStartTime},#{serviceEndTime},#{baseRate},#{highestRate},#{quoteType},#{rootOrgId}
+    )
+  </insert>
+
+    <!-- 修改实体对象 -->
+    <update id="updateAeaImProjPurchase" parameterType="AeaImProjPurchase">
+        update AEA_IM_PROJ_PURCHASE
+        <set>
+            <if test="projPurchaseId != null">
+                PROJ_PURCHASE_ID = #{projPurchaseId},
+            </if>
+            <if test="projInfoId != null">
+                PROJ_INFO_ID = #{projInfoId},
+            </if>
+            <if test="publishUnitInfoId != null">
+                PUBLISH_UNIT_INFO_ID = #{publishUnitInfoId},
+            </if>
+            <if test="publishLinkmanInfoId != null">
+                PUBLISH_LINKMAN_INFO_ID = #{publishLinkmanInfoId},
+            </if>
+
+            <if test="serviceItemId != null">
+                SERVICE_ITEM_ID = #{serviceItemId},
+            </if>
+            <if test="basePrice != null">
+                BASE_PRICE = #{basePrice},
+            </if>
+            <if test="auditFlag != null">
+                AUDIT_FLAG = #{auditFlag},
+            </if>
+            <if test="bidNum != null">
+                BID_NUM = #{bidNum},
+            </if>
+            <if test="bjType != null">
+                BJ_TYPE = #{bjType},
+            </if>
+            <if test="isDelete != null">
+                IS_DELETE = #{isDelete},
+            </if>
+            <if test="isActive != null">
+                IS_ACTIVE = #{isActive},
+            </if>
+            <if test="creater != null">
+                CREATER = #{creater},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime},
+            </if>
+            <if test="modifier != null">
+                MODIFIER = #{modifier},
+            </if>
+            <if test="modifyTime != null">
+                MODIFY_TIME = #{modifyTime},
+            </if>
+            <if test="biddingType != null">
+                BIDDING_TYPE = #{biddingType},
+            </if>
+            <if test="memo != null">
+                MEMO = #{memo},
+            </if>
+            <if test="highestPrice != null">
+                HIGHEST_PRICE = #{highestPrice},
+            </if>
+            <if test="serviceTimeExplain != null">
+                SERVICE_TIME_EXPLAIN = #{serviceTimeExplain},
+            </if>
+            <if test="serviceContent != null">
+                SERVICE_CONTENT = #{serviceContent},
+            </if>
+            <if test="contacts != null">
+                CONTACTS = #{contacts},
+            </if>
+            <if test="moblie != null">
+                MOBLIE = #{moblie},
+            </if>
+            <if test="isStage != null">
+                IS_STAGE = #{isStage},
+            </if>
+            <if test="stageId != null">
+                STAGE_ID = #{stageId},
+            </if>
+            <if test="stageItemVerId != null">
+                STAGE_ITEM_VER_ID = #{stageItemVerId},
+            </if>
+            <if test="publishTime != null">
+                PUBLISH_TIME = #{publishTime},
+            </if>
+
+            <if test="amountExplain != null">
+                AMOUNT_EXPLAIN = #{amountExplain},
+            </if>
+            <if test="isApproveProj != null">
+                IS_APPROVE_PROJ = #{isApproveProj},
+            </if>
+            <if test="applyinstCode != null">
+                APPLYINST_CODE = #{applyinstCode},
+            </if>
+            <if test="isLiveWitness != null">
+                IS_LIVE_WITNESS = #{isLiveWitness},
+            </if>
+            <if test="witnessName1 != null">
+                WITNESS_NAME1 = #{witnessName1},
+            </if>
+            <if test="witnessName2 != null">
+                WITNESS_NAME2 = #{witnessName2},
+            </if>
+            <if test="witnessName3 != null">
+                WITNESS_NAME3 = #{witnessName3},
+            </if>
+            <if test="witnessPhone1 != null">
+                WITNESS_PHONE1 = #{witnessPhone1},
+            </if>
+            <if test="witnessPhone2 != null">
+                WITNESS_PHONE2 = #{witnessPhone2},
+            </if>
+            <if test="witnessPhone3 != null">
+                WITNESS_PHONE3 = #{witnessPhone3},
+            </if>
+            <if test="isDiscloseIm != null">
+                IS_DISCLOSE_IM = #{isDiscloseIm},
+            </if>
+            <if test="isDiscloseBidding != null">
+                IS_DISCLOSE_BIDDING = #{isDiscloseBidding},
+            </if>
+            <if test="auditTime != null">
+                AUDIT_TIME = #{auditTime},
+            </if>
+            <if test="auditOpinion != null">
+                AUDIT_OPINION = #{auditOpinion},
+            </if>
+            <if test="ownerComplaintPhone != null">
+                OWNER_COMPLAINT_PHONE = #{ownerComplaintPhone},
+            </if>
+
+            <if test="unitRequireId != null">
+                UNIT_REQUIRE_ID = #{unitRequireId},
+            </if>
+
+            <if test="selectCondition != null">
+                SELECT_CONDITION = #{selectCondition},
+            </if>
+
+            <if test="isDefineAmount != null">
+                IS_DEFINE_AMOUNT = #{isDefineAmount},
+            </if>
+
+            <if test="officialRemarkFile != null">
+                OFFICIAL_REMARK_FILE = #{officialRemarkFile},
+            </if>
+
+            <if test="requireExplainFile != null">
+                REQUIRE_EXPLAIN_FILE = #{requireExplainFile},
+            </if>
+
+            <if test="expirationDate != null">
+                EXPIRATION_DATE = #{expirationDate},
+            </if>
+
+            <if test="linkmanInfoId != null">
+                LINKMAN_INFO_ID = #{linkmanInfoId},
+            </if>
+
+            <if test="choiceImunitTime != null">
+                CHOICE_IMUNIT_TIME = #{choiceImunitTime},
+            </if>
+
+            <if test="serviceStartTime != null">
+                SERVICE_START_TIME = #{serviceStartTime},
+            </if>
+
+            <if test="serviceEndTime != null">
+                SERVICE_END_TIME = #{serviceEndTime},
+            </if>
+
+            <if test="baseRate != null">
+                BASE_RATE = #{baseRate},
+            </if>
+
+            <if test="highestRate != null">
+                HIGHEST_RATE = #{highestRate},
+            </if>
+
+            <if test="quoteType != null">
+                QUOTE_TYPE = #{quoteType},
+            </if>
+            <if test="rootOrgId != null">
+                ROOT_ORG_ID = #{rootOrgId},
+            </if>
+        </set>
+        where PROJ_PURCHASE_ID = #{projPurchaseId}
+    </update>
+
+    <!--删除实体对象,根据主键ID -->
+    <update id="deleteAeaImProjPurchaseById">
+        update AEA_IM_PROJ_PURCHASE
+        <set>
+            IS_DELETED = '1'
+        </set>
+
+        where PROJ_PURCHASE_ID = #{projPurchaseId}
+    </update>
+
+    <!--根据服务项目ID查询单个实体 -->
+    <select id="getAeaImProjPurchaseByProjInfoId" resultType="AeaImProjPurchase">
+        select
+        <include refid="allColumns"/>
+        from AEA_IM_PROJ_PURCHASE
+        where PROJ_INFO_ID = #{projInfoId}
+    </select>
+
+
+    <select id="listAeaImProjPurchase" resultType="AeaImProjPurchase">
+        select
+        <include refid="allColumns"/>
+        from AEA_IM_PROJ_PURCHASE
+        <where>
+            <if test="projPurchaseId != null">
+                AND PROJ_PURCHASE_ID = #{projPurchaseId}
+            </if>
+            <if test="projInfoId != null">
+                AND PROJ_INFO_ID = #{projInfoId}
+            </if>
+            <if test="publishUnitInfoId != null">
+                AND PUBLISH_UNIT_INFO_ID = #{publishUnitInfoId}
+            </if>
+            <if test="serviceItemId != null">
+                AND SERVICE_ITEM_ID = #{serviceItemId}
+            </if>
+            <if test="basePrice != null">
+                AND BASE_PRICE = #{basePrice}
+            </if>
+            <if test="auditFlag != null">
+                AND AUDIT_FLAG = #{auditFlag}
+            </if>
+            <if test="bidNum != null">
+                AND BID_NUM = #{bidNum}
+            </if>
+            <if test="bjType != null">
+                AND BJ_TYPE = #{bjType}
+            </if>
+            <if test="isDelete != null">
+                AND IS_DELETE = #{isDelete}
+            </if>
+            <if test="isActive != null">
+                AND IS_ACTIVE = #{isActive}
+            </if>
+            <if test="creater != null">
+                AND CREATER = #{creater}
+            </if>
+            <if test="createTime != null">
+                AND CREATE_TIME = #{createTime}
+            </if>
+            <if test="modifier != null">
+                AND MODIFIER = #{modifier}
+            </if>
+            <if test="modifyTime != null">
+                AND MODIFY_TIME = #{modifyTime}
+            </if>
+            <if test="biddingType != null">
+                AND BIDDING_TYPE = #{biddingType}
+            </if>
+            <if test="memo != null">
+                AND MEMO = #{memo}
+            </if>
+            <if test="highestPrice != null">
+                AND HIGHEST_PRICE = #{highestPrice}
+            </if>
+            <if test="serviceTimeExplain != null">
+                AND SERVICE_TIME_EXPLAIN = #{serviceTimeExplain}
+            </if>
+            <if test="serviceContent != null">
+                AND SERVICE_CONTENT = #{serviceContent}
+            </if>
+            <if test="contacts != null">
+                AND CONTACTS = #{contacts}
+            </if>
+            <if test="moblie != null">
+                AND MOBLIE = #{moblie}
+            </if>
+            <if test="isStage != null">
+                AND IS_STAGE = #{isStage}
+            </if>
+            <if test="stageId != null">
+                AND STAGE_ID = #{stageId}
+            </if>
+            <if test="stageItemVerId != null">
+                AND STAGE_ITEM_VER_ID = #{stageItemVerId}
+            </if>
+            <if test="publishTime != null">
+                AND PUBLISH_TIME = #{publishTime}
+            </if>
+            <if test="amountExplain != null">
+                AND AMOUNT_EXPLAIN = #{amountExplain}
+            </if>
+            <if test="isApproveProj != null">
+                AND IS_APPROVE_PROJ = #{isApproveProj}
+            </if>
+            <if test="applyinstCode != null">
+                AND APPLYINST_CODE = #{applyinstCode}
+            </if>
+            <if test="isLiveWitness != null">
+                AND IS_LIVE_WITNESS = #{isLiveWitness}
+            </if>
+            <if test="witnessName1 != null">
+                AND WITNESS_NAME1 = #{witnessName1}
+            </if>
+            <if test="witnessName2 != null">
+                AND WITNESS_NAME2 = #{witnessName2}
+            </if>
+            <if test="witnessName3 != null">
+                AND WITNESS_NAME3 = #{witnessName3}
+            </if>
+            <if test="witnessPhone1 != null">
+                AND WITNESS_PHONE1 = #{witnessPhone1}
+            </if>
+            <if test="witnessPhone2 != null">
+                AND WITNESS_PHONE2 = #{witnessPhone2}
+            </if>
+            <if test="witnessPhone3 != null">
+                AND WITNESS_PHONE3 = #{witnessPhone3}
+            </if>
+            <if test="isDiscloseIm != null">
+                AND IS_DISCLOSE_IM = #{isDiscloseIm}
+            </if>
+            <if test="isDiscloseBidding != null">
+                AND IS_DISCLOSE_BIDDING = #{isDiscloseBidding}
+            </if>
+            <if test="auditTime != null">
+                AND AUDIT_TIME = #{auditTime}
+            </if>
+            <if test="auditOpinion != null">
+                AND AUDIT_OPINION = #{auditOpinion}
+            </if>
+            <if test="ownerComplaintPhone != null">
+                AND OWNER_COMPLAINT_PHONE = #{ownerComplaintPhone}
+            </if>
+            <if test="unitRequireId != null">
+                AND UNIT_REQUIRE_ID = #{unitRequireId}
+            </if>
+            <if test="serviceId != null">
+                AND SERVICE_ID = #{serviceId}
+            </if>
+            <if test="officialRemarkFile != null">
+                AND OFFICIAL_REMARK_FILE = #{officialRemarkFile}
+            </if>
+            <if test="requireExplainFile != null">
+                AND REQUIRE_EXPLAIN_FILE = #{requireExplainFile}
+            </if>
+            <if test="selectCondition != null">
+                AND SELECT_CONDITION = #{selectCondition}
+            </if>
+            <if test="isDefineAmount != null">
+                AND IS_DEFINE_AMOUNT = #{isDefineAmount}
+            </if>
+
+            <if test="expirationDate != null">
+                AND EXPIRATION_DATE = #{expirationDate}
+            </if>
+
+            <if test="linkmanInfoId != null">
+                AND LINKMAN_INFO_ID = #{linkmanInfoId}
+            </if>
+
+            <if test="choiceImunitTime != null">
+                AND CHOICE_IMUNIT_TIME = #{choiceImunitTime}
+            </if>
+
+            <if test="serviceStartTime != null">
+                AND SERVICE_START_TIME = #{serviceStartTime}
+            </if>
+
+            <if test="serviceEndTime != null">
+                AND SERVICE_END_TIME = #{serviceEndTime}
+            </if>
+
+            <if test="baseRate != null">
+                AND BASE_RATE = #{baseRate}
+            </if>
+
+            <if test="highestRate != null">
+                AND HIGHEST_RATE = #{highestRate}
+            </if>
+
+
+            <if test="quoteType != null">
+                AND QUOTE_TYPE = #{quoteType}
+            </if>
+            <if test="rootOrgId != null">
+                AND ROOT_ORG_ID = #{rootOrgId}
+            </if>
+        </where>
+    </select>
+
+    <select id="getPublishedPurchaseCount" resultType="Integer">
+        select COUNT( * ) FROM AEA_IM_PROJ_PURCHASE
+        WHERE AUDIT_FLAG in('6','7','8','9','11')
+        <if test="rootOrgId!=null and rootOrgId!=''">
+            and ROOT_ORG_ID=#{rootOrgId}
+        </if>
+    </select>
+
+    <select id="listCanjoin" resultType="AeaImProjPurchase">
+        select
+        aipp.PROJ_PURCHASE_ID  projPurchaseId,
+        api.proj_info_id projInfoId,
+        api.proj_name projName,
+        aib.item_name itemName,
+        aipp.create_time createTime,
+        aipp.highest_price highestPrice,
+        aipp.base_price basePrice
+        from AEA_IM_PROJ_PURCHASE aipp
+        left join aea_proj_info api
+        on api.proj_info_id = aipp.proj_info_id
+        left join aea_item_ver aiv on aiv.item_ver_id = aipp.item_ver_id
+        left join aea_item_basic aib on aib.item_ver_id = aiv.item_ver_id
+    </select>
+
+    <select id="listDetail" resultType="AeaImProjPurchase">
+        select
+        aipp.PROJ_PURCHASE_ID  projPurchaseId,
+        api.proj_name projName,
+        aib.item_name itemName,
+        aipp.create_time createTime,
+        aipp.highest_price highestPrice,
+        aipp.base_price basePrice
+        from AEA_IM_PROJ_PURCHASE aipp
+        left join aea_proj_info api
+        on api.proj_info_id = aipp.proj_info_id
+        left join aea_item_ver aiv on aiv.item_ver_id = aipp.item_ver_id
+        left join aea_item_basic aib on aib.item_ver_id = aiv.item_ver_id
+        where aipp.PROJ_PURCHASE_ID = #{projPurchaseId}
+    </select>
+
+    <select id="listbid" resultType="AeaImProjPurchase">
+        select
+        aipp.PROJ_PURCHASE_ID  projPurchaseId,
+        api.proj_name projName,
+        aib.item_name itemName,
+        aipp.create_time createTime,
+        aipp.highest_price highestPrice,
+        aipp.base_price basePrice
+        from AEA_IM_PROJ_PURCHASE aipp
+         left join aea_proj_info api
+        on api.proj_info_id = aipp.proj_info_id
+         left join aea_item_ver aiv on aiv.item_ver_id = aipp.item_ver_id
+        left join aea_item_basic aib on aib.item_ver_id = aiv.item_ver_id
+        where
+         aipp.PROJ_PURCHASE_ID = #{projPurchaseId}
+         AND aipp.IS_DELETE=0
+         AND aipp.IS_ACTIVE=1
+
+    </select>
+
+    <select id="listAeaImProjPurchaseForMyProj" resultType="AeaImProjPurchase">
+        select
+        <include refid="allColumnsAlias">
+            <property name="alias" value="pu"></property>
+        </include>
+        ,proj.PROJ_NAME projName,basic.ITEM_NAME itemName,proj.LOCAL_CODE localCode
+        from AEA_IM_PROJ_PURCHASE pu,AEA_PROJ_INFO proj,AEA_ITEM_BASIC basic
+        <where>
+            1=1
+            AND pu.IS_DELETE=0
+            AND pu.IS_ACTIVE=1
+            AND proj.IS_DELETED=0
+            AND proj.proj_info_id = pu.proj_info_id
+            AND basic.item_ver_id = pu.item_ver_id
+            <if test="projName != null">
+                AND proj.PROJ_NAME LIKE CONCAT(CONCAT('%',#{projName}),'%')
+            </if>
+            <if test="itemName != null">
+                AND basic.ITEM_NAME LIKE CONCAT(CONCAT('%',#{itemName}),'%')
+            </if>
+            <if test="auditFlag != null">
+                AND pu.AUDIT_FLAG =#{auditFlag}
+            </if>
+            <if test="localCode != null">
+                AND proj.LOCAL_CODE =#{localCode}
+            </if>
+            <if test="itemName != null">
+                AND basic.ITEM_NAME LIKE CONCAT(CONCAT('%',#{itemName}),'%')
+            </if>
+            <if test="auditFlag != null">
+                AND pu.AUDIT_FLAG =#{auditFlag}
+            </if>
+        </where>
+    </select>
+
+    <select id="countAeaImProjPurchaseForMyProj" resultType="Integer">
+        select
+        count (1)
+        from AEA_IM_PROJ_PURCHASE pu,AEA_PROJ_INFO proj,AEA_ITEM_BASIC basic
+        <where>
+            1=1
+            AND pu.IS_DELETE=0
+            AND pu.IS_ACTIVE=1
+            AND proj.IS_DELETED=0
+            AND proj.proj_info_id = pu.proj_info_id
+            AND basic.item_ver_id = pu.item_ver_id
+            <if test="projName != null">
+                AND proj.PROJ_NAME LIKE CONCAT(CONCAT('%',#{projName}),'%')
+            </if>
+            <if test="itemName != null">
+                AND basic.ITEM_NAME LIKE CONCAT(CONCAT('%',#{itemName}),'%')
+            </if>
+            <if test="auditFlag != null">
+                AND pu.AUDIT_FLAG =#{auditFlag}
+            </if>
+            <if test="localCode != null">
+                AND proj.LOCAL_CODE =#{localCode}
+            </if>
+        </where>
+    </select>
+
+    <select id="aeaImProjPurchaseForMyProj" resultType="AeaImProjPurchase">
+        select
+        <include refid="allColumnsAlias">
+            <property name="alias" value="pu"></property>
+        </include>
+        ,proj.PROJ_NAME projName,proj.local_Code localCode,basic.ITEM_NAME
+        itemName,org.org_name orgName
+        from AEA_IM_PROJ_PURCHASE pu,AEA_PROJ_INFO proj,AEA_ITEM_BASIC basic,opu_om_org org
+        <where>
+            AND proj.proj_info_id = pu.proj_info_id
+            AND basic.item_ver_id = pu.item_ver_id
+            AND basic.org_id = org.org_id
+            <if test="projPurchaseId != null">
+                AND pu.PROJ_PURCHASE_ID = #{projPurchaseId}
+            </if>
+        </where>
+    </select>
+
+    <select id="listUnitInfoIdByMajorQualRequire" resultType="com.augurit.aplanmis.common.vo.AgentUnitInfoVo">
+        select distinct
+        ahc.UNIT_INFO_ID unitInfoId,
+        aui.APPLICANT agentUnitName
+        from AEA_HI_CERTINST ahc,
+        AEA_BUS_CERTINST abc,
+        AEA_IM_CERTINST_MAJOR aicm,
+        AEA_IM_SERVICE_MAJOR aism,
+        AEA_IM_UNIT_SERVICE aius,
+        AEA_UNIT_INFO aui
+        <where>
+            ahc.CERTINST_ID = abc.CERTINST_ID
+            and aui.UNIT_INFO_ID = ahc.UNIT_INFO_ID
+            and abc.IS_DELETE != '1'
+            and abc.BUS_TABLE_NAME = 'AEA_IM_UNIT_SERVICE'
+            and abc.PK_NAME = 'UNIT_SERVICE_ID'
+            and abc.BUS_RECORD_ID = aius.UNIT_SERVICE_ID
+            and aius.SERVICE_ID = #{serviceId}
+            and aism.MAJOR_ID = aicm.MAJOR_ID
+            and ahc.CERTINST_ID = aicm.CERTINST_ID
+            and aius.AUDIT_FLAG = '1'
+            and aius.IS_DELETE != '1'
+            and aius.IS_ACTIVE = '1'
+            and aicm.IS_DELETE != '1'
+            and aism.IS_DELETE != '1'
+            and aism.MAJOR_SEQ like concat('%',concat(#{majorId},'%'))
+            <if test="qualLevelId != null and qualLevelId != ''">
+                AND ahc.QUAL_LEVEL_ID = #{qualLevelId}
+            </if>
+        </where>
+    </select>
+
+    <select id="listUnitInfoIdByServiceId" resultType="com.augurit.aplanmis.common.vo.AgentUnitInfoVo">
+        select distinct
+        aui.UNIT_INFO_ID unitInfoId,
+        aui.APPLICANT agentUnitName
+        from AEA_UNIT_INFO aui left join AEA_IM_UNIT_SERVICE aius on aius.UNIT_INFO_ID = aui.UNIT_INFO_ID
+        <where>
+            aius.SERVICE_ID = #{serviceId}
+            and aius.IS_DELETE !='1'
+            and aius.IS_ACTIVE ='1'
+            and aius.AUDIT_FLAG ='1'
+        </where>
+    </select>
+
+    <select id="listPublicProjPurchaseByQueryProjPurchaseVo" resultType="AeaImProjPurchase">
+        select aipp.PROJ_PURCHASE_ID projPurchaseId,
+        api.PROJ_NAME projName,
+        aui.APPLICANT applicant,
+        aipp.PUBLISH_TIME publishTime,
+        ais.SERVICE_NAME serviceName,
+        ais.PURCHASE_IMG_URL purchaseImgUrl,
+        aipp.EXPIRATION_DATE expirationDate,
+        aipp.BIDDING_TYPE biddingType,
+        aipp.IS_DEFINE_AMOUNT isDefineAmount,
+        aipp.BASE_PRICE basePrice,
+        aipp.HIGHEST_PRICE highestPrice,
+        aipp.QUOTE_TYPE quoteType,
+        aipp.BASE_RATE baseRate,
+        aipp.HIGHEST_RATE highestRate
+        from AEA_IM_PROJ_PURCHASE aipp
+        left join AEA_PROJ_INFO api on api.PROJ_INFO_ID = aipp.PROJ_INFO_ID
+        left join AEA_UNIT_INFO aui on aui.UNIT_INFO_ID = aipp.PUBLISH_UNIT_INFO_ID
+        left join AEA_IM_SERVICE_ITEM aisi on aisi.SERVICE_ITEM_ID = aipp.SERVICE_ITEM_ID
+        left join AEA_IM_SERVICE ais on aisi.SERVICE_ID = ais.SERVICE_ID
+        where
+        aipp.IS_DELETE !='1' and aipp.IS_ACTIVE = '1'
+        and aipp.AUDIT_FLAG in('6','7','8','9','11')
+        <if test="projName != null and projName != ''">
+            AND api.PROJ_NAME like concat('%',concat(#{projName},'%'))
+        </if>
+
+        <if test="serviceIds != null ">
+            AND aisi.SERVICE_ID IN
+            <foreach collection="serviceIds" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+
+        <if test="unitInfoId != null and unitInfoId != ''">
+            AND aipp.PUBLISH_UNIT_INFO_ID = #{unitInfoId}
+        </if>
+
+
+        <if test="applicant != null and applicant != ''">
+            AND aui.APPLICANT like concat('%',concat(#{applicant},'%'))
+        </if>
+
+
+        <if test="biddingType != null and biddingType != ''">
+            AND aipp.BIDDING_TYPE = #{biddingType}
+        </if>
+
+        <if test="startTime != null and startTime != ''">
+            <if test="_databaseId == 'oracle'">
+                <![CDATA[ AND to_char(aipp.PUBLISH_TIME,'yyyy-mm-dd') >= #{startTime} ]]>
+            </if>
+            <if test="_databaseId == 'mysql'">
+                <![CDATA[ AND DATE_FORMAT(aipp.PUBLISH_TIME , '%Y-%m-%d')>=  #{startTime}   ]]>
+            </if>
+        </if>
+
+        <if test="endTime != null and endTime != ''">
+
+            <if test="_databaseId == 'oracle'">
+                <![CDATA[ AND to_char(aipp.PUBLISH_TIME,'yyyy-mm-dd') <= #{endTime} ]]>
+            </if>
+            <if test="_databaseId == 'mysql'">
+                <![CDATA[ AND DATE_FORMAT(aipp.PUBLISH_TIME , '%Y-%m-%d') <=  #{endTime}   ]]>
+            </if>
+        </if>
+
+        ORDER BY aipp.CREATE_TIME DESC
+    </select>
+
+    <select id="getAeaImProjPurchaseDetailVoById" resultType="com.augurit.aplanmis.common.vo.AeaImProjPurchaseDetailVo">
+        select
+        <include refid="allColumnsAlias">
+            <property name="alias" value="aipp"></property>
+        </include>
+        ,
+        api.PROJ_NAME projName,
+        api.LOCAL_CODE localCode,
+        aui.APPLICANT applicant,
+        ais.SERVICE_NAME serviceName,
+        ais.SERVICE_ID,
+        item.ITEM_NAME itemName,
+        item.ITEM_BASIC_ID itemBasicId,
+        api.PROJ_SCALE projScale,
+        api.PROJ_SCALE_CONTENT projScaleContent,
+        aiur.IS_QUAL_REQUIRE isQualRequire,
+        aiur.QUAL_REQUIRE_TYPE qualRequireType,
+        aiur.QUAL_REQUIRE qualRequire,
+        aiur.QUAL_REQUIRE_EXPLAIN qualRequireExplain,
+        aiur.QUAL_RECORD_REQUIRE qualRecordRequire,
+        aiur.PROMISE_SERVICE promiseService,
+        aiur.OTHER_REQUIRE_EXPLAIN otherRequireExplain,
+        aiur.IS_REGISTER_REQUIRE isRegisterRequire,
+        aiur.REGISTER_TOTAL registerTotal,
+        aiur.REGISTER_REQUIRE registerRequire,
+        aiur.IS_RECORD_REQUIRE isRecordRequire,
+        aiur.RECORD_REQUIRE_EXPLAIN recordRequireExplain,
+        api.IS_FINANCIAL_FUND isFinancialFund,
+        api.FINANCIAL_FUND_PROPORTION financialFundProportion,
+        api.IS_SOCIAL_FUND isSocialFund,
+        api.SOCIAL_FUND_PROPORTION socialFundProportion,
+        org.ORG_NAME orgName,
+        apip.PROJ_NAME parentProjName,
+        apip.LOCAL_CODE parentLocalCode,
+        <if test="_databaseId == 'oracle'">
+            WM_CONCAT(pitem.ITEM_NAME) parentItemName,
+        </if>
+        <if test="_databaseId == 'mysql'">
+            GROUP_CONCAT(pitem.ITEM_NAME) parentItemName,
+        </if>
+        (SELECT
+        <if test="_databaseId == 'oracle'">
+            WM_CONCAT(aui.APPLICANT)
+        </if>
+        <if test="_databaseId == 'mysql'">
+            GROUP_CONCAT(aui.APPLICANT)
+        </if>
+        FROM aea_im_avoid_unit aiau, aea_unit_info aui
+        WHERE aiau.UNIT_INFO_ID = aui.UNIT_INFO_ID
+        AND aiau.IS_DELETE = '0' AND aiau.PROJ_PURCHASE_ID = aipp.PROJ_PURCHASE_ID) avoidUnitInfos
+        from AEA_IM_PROJ_PURCHASE aipp
+        left join AEA_PROJ_INFO api on api.PROJ_INFO_ID = aipp.PROJ_INFO_ID
+        left join AEA_PARENT_PROJ app on app.CHILD_PROJ_ID = aipp.PROJ_INFO_ID
+        left join AEA_PROJ_INFO apip on apip.PROJ_INFO_ID = app.PARENT_PROJ_ID
+        left join AEA_UNIT_INFO aui on aui.UNIT_INFO_ID = aipp.PUBLISH_UNIT_INFO_ID
+        left join AEA_IM_SERVICE_ITEM aisi on aisi.SERVICE_ITEM_ID = aipp.SERVICE_ITEM_ID
+        left join AEA_ITEM_BASIC item on item.ITEM_VER_ID = aisi.ITEM_VER_ID
+        left join OPU_OM_ORG org ON org.ORG_ID = item.ORG_ID
+        left join AEA_ITEM_RELEVANCE rele ON rele.CHILD_ITEM_ID = item.ITEM_ID
+        left join AEA_ITEM_BASIC pitem ON pitem.ITEM_ID = rele.PARENT_ITEM_ID
+        left join AEA_IM_UNIT_REQUIRE aiur on aiur.UNIT_REQUIRE_ID = aipp.UNIT_REQUIRE_ID
+        left join AEA_IM_SERVICE ais on aisi.SERVICE_ID = ais.SERVICE_ID
+        where aipp.PROJ_PURCHASE_ID = #{projPurchaseId}
+        GROUP BY api.PROJ_INFO_ID
+    </select>
+
+
+    <select id="getAeaImProjPurchaseByProjPurchaseId" resultType="AeaImProjPurchase">
+        select
+        <include refid="allColumns"/>
+        from AEA_IM_PROJ_PURCHASE
+        where PROJ_PURCHASE_ID = #{projPurchaseId}
+    </select>
+
+    <select id="listAuditProjPurchase" resultType="AeaImProjPurchase">
+        SELECT
+        aipp.PROJ_PURCHASE_ID projPurchaseId,
+        api.PROJ_NAME projName,
+        api.LOCAL_CODE localCode,
+        aui.APPLICANT applicant,
+        ais.SERVICE_NAME serviceName,
+        aib.ITEM_NAME itemName,
+        aipp.CREATE_TIME createTime,
+        (CASE
+        WHEN aipp.AUDIT_FLAG = '4' THEN '未审核'
+        WHEN aipp.AUDIT_FLAG NOT IN ('0', '4', '5') THEN '审核通过'
+        WHEN aipp.AUDIT_FLAG = '5' THEN '审核不通过'
+        END) auditFlag,
+        aipp.PUBLISH_TIME publishTime
+        FROM aea_im_proj_purchase aipp
+        LEFT JOIN aea_proj_info api ON aipp.PROJ_INFO_ID = api.PROJ_INFO_ID
+        LEFT JOIN aea_unit_info aui ON aipp.PUBLISH_UNIT_INFO_ID = aui.UNIT_INFO_ID
+        LEFT JOIN aea_im_service_item aisi ON aipp.SERVICE_ITEM_ID = aisi.SERVICE_ITEM_ID
+        LEFT JOIN aea_im_service ais ON aisi.SERVICE_ID = ais.SERVICE_ID
+        LEFT JOIN aea_item_basic aib ON aisi.ITEM_VER_ID = aib.ITEM_VER_ID
+        WHERE aipp.IS_DELETE ='0'
+        <if test="projName != null and projName != ''">
+            AND api.PROJ_NAME like concat('%',concat(#{projName},'%'))
+        </if>
+        <if test="itemName != null and itemName != ''">
+            AND aib.ITEM_NAME like concat('%',concat(#{itemName},'%'))
+        </if>
+        <if test="applicant != null and applicant != ''">
+            AND aui.APPLICANT like concat('%',concat(#{applicant},'%'))
+        </if>
+        <if test="serviceId != null and serviceId != ''">
+            AND ais.SERVICE_ID = #{serviceId}
+        </if>
+        <choose>
+            <when test="auditFlag != null and auditFlag == '0'.toString()">
+                AND aipp.AUDIT_FLAG = '4'
+            </when>
+            <when test="auditFlag != null and auditFlag == '1'.toString()">
+                AND aipp.AUDIT_FLAG NOT IN ('0', '4', '5')
+            </when>
+            <when test="auditFlag != null and auditFlag == '2'.toString()">
+                AND aipp.AUDIT_FLAG = '5'
+            </when>
+            <otherwise>
+                AND aipp.AUDIT_FLAG != '0'
+            </otherwise>
+        </choose>
+    </select>
+
+    <select id="getAuditProjPurchaseDetail" resultType="com.augurit.aplanmis.common.vo.AeaImProjPurchaseDetailVo">
+        SELECT
+        <include refid="allColumnsAlias">
+            <property name="alias" value="aipp"></property>
+        </include>
+        ,
+        api.PROJ_INFO_ID projInfoId,
+        aib.ITEM_NAME itemName,
+        (SELECT o.ORG_NAME FROM opu_om_org o WHERE o.ORG_ID = aib.ORG_ID) orgName,
+        api.LOCAL_CODE localCode,
+        api.PROJ_NAME projName,
+        aui.APPLICANT applicant,
+        api.SCALE_CONTENT scaleContent,
+        api.IS_FINANCIAL_FUND isFinancialFund,
+        api.FINANCIAL_FUND_PROPORTION financialFundProportion,
+        api.IS_SOCIAL_FUND isSocialFund,
+        api.SOCIAL_FUND_PROPORTION socialFundProportion,
+        api.PROJ_SCALE projScale,
+        api.PROJ_SCALE_CONTENT projScaleContent,
+        ais.SERVICE_NAME serviceName,
+        aiur.IS_QUAL_REQUIRE isQualRequire,
+        aiur.QUAL_REQUIRE_TYPE qualRequireType,
+        aiur.QUAL_REQUIRE_EXPLAIN qualRequireExplain,
+        aiur.QUAL_RECORD_REQUIRE qualRecordRequire,
+        aiur.PROMISE_SERVICE promiseService,
+        aiur.OTHER_REQUIRE_EXPLAIN otherRequireExplain,
+        aiur.IS_REGISTER_REQUIRE isRegisterRequire,
+        aiur.IS_RECORD_REQUIRE isRecordRequire,
+        aiur.RECORD_REQUIRE_EXPLAIN recordRequireExplain,
+        (SELECT
+        <if test="_databaseId == 'oracle'">
+            WM_CONCAT(aui.APPLICANT)
+        </if>
+        <if test="_databaseId == 'mysql'">
+            GROUP_CONCAT(aui.APPLICANT)
+        </if>
+        FROM aea_im_avoid_unit aiau, aea_unit_info aui
+        WHERE aiau.UNIT_INFO_ID = aui.UNIT_INFO_ID
+        AND aiau.IS_DELETE = '0' AND aiau.PROJ_PURCHASE_ID = aipp.PROJ_PURCHASE_ID) avoidUnitInfos,
+        (SELECT
+        <if test="_databaseId == 'oracle'">
+            WM_CONCAT(aib1.ITEM_NAME)
+        </if>
+        <if test="_databaseId == 'mysql'">
+            GROUP_CONCAT(aib1.ITEM_NAME)
+        </if>
+        FROM aea_item_relevance air, aea_item_basic aib1
+        WHERE air.PARENT_ITEM_ID = aib1.ITEM_ID AND air.CHILD_ITEM_ID = aib.ITEM_ID
+        AND aib1.ITEM_VER_ID IN (
+        SELECT seq.ITEM_VER_ID FROM aea_item_seq seq,(
+        SELECT seq1.ITEM_ID, MAX(seq1.ITEM_VER_MAX) ITEM_VER_MAX FROM aea_item_seq seq1
+        GROUP BY seq1.ITEM_ID) temp
+        WHERE seq.ITEM_ID = temp.ITEM_ID AND seq.ITEM_VER_MAX = temp.ITEM_VER_MAX
+        AND seq.ITEM_ID = aib1.ITEM_ID)
+        AND aib1.ITEM_NATURE = '0') parentItemName
+        FROM aea_im_proj_purchase aipp
+        LEFT JOIN aea_proj_info api ON aipp.PROJ_INFO_ID = api.PROJ_INFO_ID
+        LEFT JOIN aea_unit_info aui ON aipp.PUBLISH_UNIT_INFO_ID = aui.UNIT_INFO_ID
+        LEFT JOIN aea_im_service_item aisi ON aipp.SERVICE_ITEM_ID = aisi.SERVICE_ITEM_ID
+        LEFT JOIN aea_im_service ais ON aisi.SERVICE_ID = ais.SERVICE_ID
+        LEFT JOIN aea_item_basic aib ON aisi.ITEM_VER_ID = aib.ITEM_VER_ID
+        LEFT JOIN aea_im_unit_require aiur ON aipp.UNIT_REQUIRE_ID = aiur.UNIT_REQUIRE_ID
+        WHERE aipp.PROJ_PURCHASE_ID = #{projPurchaseId}
+    </select>
+
+    <!-- 更新状态 -->
+    <update id="updateAeaImProjPurchaseAuditFlag">
+        UPDATE aea_im_proj_purchase aipp
+        <set>
+            aipp.audit_flag = #{aeaImProjPurchase.auditFlags[1]},
+            <if test="aeaImProjPurchase.auditFlags[1] == '6'.toString()">
+                aipp.AUDIT_OPINION = #{aeaImProjPurchase.auditOpinion}, aipp.AUDIT_TIME = #{aeaImProjPurchase.auditTime}
+            </if>
+            <if test="aeaImProjPurchase.modifier != null">
+                aipp.MODIFIER = #{aeaImProjPurchase.modifier},
+            </if>
+            <if test="aeaImProjPurchase.modifyTime != null">
+                aipp.MODIFY_TIME = #{aeaImProjPurchase.modifyTime},
+            </if>
+        </set>
+        WHERE aipp.PROJ_PURCHASE_ID = #{aeaImProjPurchase.projPurchaseId} AND aipp.audit_flag =
+        #{aeaImProjPurchase.auditFlags[0]}
+    </update>
+
+    <select id="listSelectionNotice" resultType="AeaImProjPurchase">
+        select aipp.PROJ_PURCHASE_ID projPurchaseId,
+        api.PROJ_NAME projName,
+        aui.APPLICANT applicant,
+        aipp.PUBLISH_TIME publishTime,
+        ais.PURCHASE_IMG_URL purchaseImgUrl,
+        aipp.EXPIRATION_DATE expirationDate,
+        aipp.BIDDING_TYPE biddingType,
+        aipp.IS_DEFINE_AMOUNT isDefineAmount,
+        aipp.BASE_PRICE basePrice,
+        aipp.HIGHEST_PRICE highestPrice,
+        aipp.QUOTE_TYPE quoteType,
+        aipp.BASE_RATE baseRate,
+        aipp.HIGHEST_RATE highestRate,
+        ais.SERVICE_NAME serviceName,
+        uBidding.BIDDING_TIME selectedEndTime,
+        unit2.APPLICANT selectedApplicant
+        from AEA_IM_PROJ_PURCHASE aipp
+        left join AEA_PROJ_INFO api on api.PROJ_INFO_ID = aipp.PROJ_INFO_ID
+        left join AEA_UNIT_INFO aui on aui.UNIT_INFO_ID = aipp.PUBLISH_UNIT_INFO_ID
+        left join AEA_IM_SERVICE ais on aipp.SERVICE_ID = ais.SERVICE_ID
+        inner JOIN aea_im_unit_bidding uBidding on uBidding.PROJ_PURCHASE_ID = aipp.PROJ_PURCHASE_ID and
+        uBidding.IS_WON_BID="1" and uBidding.IS_DELETE='0'
+        LEFT JOIN aea_unit_info unit2 on uBidding.unit_info_id = unit2.unit_info_id
+        <where>
+
+            aipp.IS_DELETE !='1'
+            and aipp.IS_ACTIVE = '1' and aipp.AUDIT_FLAG in ('1','2','3','9')
+
+            <if test="projName != null and projName != ''">
+                AND api.PROJ_NAME like concat('%',concat(#{projName},'%'))
+            </if>
+
+            <if test="serviceIds != null ">
+                AND aisi.SERVICE_ID IN
+                <foreach collection="serviceIds" index="index" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="applicant != null and applicant != ''">
+                AND aui.APPLICANT like concat('%',concat(#{applicant},'%'))
+            </if>
+
+
+            <if test="biddingType != null and biddingType != ''">
+                AND aipp.BIDDING_TYPE = #{biddingType}
+            </if>
+
+            <if test="startTime != null and startTime != ''">
+                <if test="_databaseId == 'oracle'">
+                    <![CDATA[ AND to_char(aipp.PUBLISH_TIME,'yyyy-mm-dd') >= #{startTime} ]]>
+                </if>
+                <if test="_databaseId == 'mysql'">
+                    <![CDATA[ AND DATE_FORMAT(aipp.PUBLISH_TIME , '%Y-%m-%d')>=  #{startTime}   ]]>
+                </if>
+            </if>
+
+            <if test="endTime != null and endTime != ''">
+
+                <if test="_databaseId == 'oracle'">
+                    <![CDATA[ AND to_char(aipp.PUBLISH_TIME,'yyyy-mm-dd') <= #{endTime} ]]>
+                </if>
+                <if test="_databaseId == 'mysql'">
+                    <![CDATA[ AND DATE_FORMAT(aipp.PUBLISH_TIME , '%Y-%m-%d') <=  #{endTime}   ]]>
+                </if>
+            </if>
+        </where>
+        ORDER BY uBidding.BIDDING_TIME desc
+    </select>
+
+    <select id="getSelectionNoticeByProjPurchaseId" resultType="AeaImProjPurchase">
+        select
+        pinfo.PROJ_NAME projName,
+        item.ITEM_VER_ID,
+        basic.ITEM_NAME itemName,
+        pinfo.Local_CODE localCode ,
+        bid.BIDDING_TIME biddingTime,
+        (
+            SELECT MAX(aibp.PRICE) FROM aea_im_bidding_price aibp
+            WHERE aibp.IS_DELETE = '0' AND aibp.IS_CHOICE = '1'
+            AND aibp.UNIT_BIDDING_ID = bid.UNIT_BIDDING_ID
+        ) realPrice,
+        bid.UNIT_INFO_ID binfoId,
+        (select aui.APPLICANT from aea_unit_info aui where aui.UNIT_INFO_ID = purchase.PUBLISH_UNIT_INFO_ID) applicant,
+        uinfo.APPLICANT selectedApplicant,
+        uinfo.APPLICANT_DETAIL_SITE selectedAppAddr,
+        purchase.* from
+        (select * from aea_im_proj_purchase pp where pp.PROJ_PURCHASE_ID = #{projPurchaseId})purchase
+        LEFT JOIN aea_proj_info pinfo on purchase.PROJ_INFO_ID = pinfo.PROJ_INFO_ID
+        LEFT JOIN aea_im_service_item  item on purchase.SERVICE_ITEM_ID = item.SERVICE_ITEM_ID
+        LEFT JOIN aea_item_basic basic on item.ITEM_VER_ID = basic.ITEM_VER_ID
+        LEFT JOIN aea_im_unit_bidding bid on bid.PROJ_PURCHASE_ID = purchase.PROJ_PURCHASE_ID and bid.IS_WON_BID="1"
+        LEFT JOIN aea_unit_info uinfo on uinfo.UNIT_INFO_ID = bid.UNIT_INFO_ID
+    </select>
+
+    <!-- -->
+    <select id="listProjPurchase" resultType="AeaImProjPurchase">
+        SELECT
+        <include refid="allColumnsAlias">
+            <property name="alias" value="aipp"></property>
+        </include>
+        ,
+        api.PROJ_NAME projName,
+        t.ITEM_NAME itemName,
+        ais.SERVICE_NAME serviceName,
+        aiub.UNIT_BIDDING_ID unitBiddingId,
+        aise.SERVICE_EVALUATION_ID serviceEvaluationId,
+        cont.CONTRACT_ID contractId,
+        cont.IS_OWNER_UPLOAD isOwnerUpload,
+        cont.IS_CONFIRM isConfirm
+        FROM AEA_IM_PROJ_PURCHASE aipp
+        LEFT JOIN aea_proj_info api on aipp.PROJ_INFO_ID = api.PROJ_INFO_ID
+        LEFT JOIN aea_im_service ais on aipp.SERVICE_ID = ais.SERVICE_ID
+        LEFT JOIN aea_im_unit_bidding aiub on aipp.PROJ_PURCHASE_ID = aiub.PROJ_PURCHASE_ID
+        AND aiub.IS_WON_BID = '1' AND aiub.IS_DELETE = '0'
+        LEFT JOIN aea_im_service_evaluation aise on aiub.UNIT_BIDDING_ID = aise.UNIT_BIDDING_ID AND aise.IS_DELETE = '0'
+        LEFT JOIN (
+        SELECT aisi.SERVICE_ITEM_ID,aib.ITEM_VER_ID,aib.ITEM_NAME
+        FROM aea_im_service_item aisi,aea_item_basic aib
+        WHERE aisi.ITEM_VER_ID = aib.ITEM_VER_ID
+        ) t ON t.SERVICE_ITEM_ID = aipp.SERVICE_ITEM_ID
+        LEFT JOIN aea_im_contract cont on aipp.PROJ_PURCHASE_ID=cont.PROJ_PURCHASE_ID
+        WHERE aipp.IS_DELETE = '0'
+        <if test="keyword!=null and keyword!='' ">
+            AND (
+            api.PROJ_NAME LIKE concat('%',concat(#{keyword},'%')) OR
+            t.ITEM_NAME LIKE concat('%',concat(#{keyword},'%'))
+            )
+        </if>
+        <if test="projName!=null and projName!='' ">
+            AND api.PROJ_NAME LIKE concat('%',concat(#{projName},'%'))
+        </if>
+        <if test="publishUnitInfoId != null and publishUnitInfoId != ''">
+            AND aipp.PUBLISH_UNIT_INFO_ID = #{publishUnitInfoId}
+        </if>
+        <if test="linkmanInfoId != null and linkmanInfoId != ''">
+            AND aipp.LINKMAN_INFO_ID = #{linkmanInfoId}
+        </if>
+        <if test="serviceId != null and serviceId != ''">
+            AND aipp.SERVICE_ID = #{serviceId}
+        </if>
+        <if test="biddingType != null and biddingType != ''">
+            AND aipp.BIDDING_TYPE = #{biddingType}
+        </if>
+        <if test="auditFlag != null and auditFlag != ''">
+            AND aipp.AUDIT_FLAG = #{auditFlag}
+        </if>
+        <if test="auditFlags != null and auditFlags.length > 0">
+            AND aipp.AUDIT_FLAG IN
+            <foreach collection="auditFlags" index="i" item="flag" open="(" separator="," close=")">
+                #{flag}
+            </foreach>
+        </if>
+        ORDER BY aipp.PUBLISH_TIME DESC
+    </select>
+
+    <resultMap type="com.augurit.aplanmis.common.vo.AeaImProjPurchaseDetailVo" id="projPurchaseMajorRequireMap">
+        <id column="projPurchaseId" property="projPurchaseId"/>
+        <result column="projName" property="projName"/>
+        <result column="serviceId" property="serviceId"/>
+        <result column="itemName" property="itemName"/>
+        <result column="publishTime" property="publishTime"/>
+        <result column="basePrice" property="basePrice"/>
+        <result column="highestPrice" property="highestPrice"/>
+        <result column="isQualRequire" property="isQualRequire"/>
+        <result column="isRegisterRequire" property="isRegisterRequire"/>
+        <collection property="majorQualList" ofType="AeaImMajorQual">
+            <id column="majorQualId" property="majorQualId"/>
+            <result column="majorId" property="majorId"/>
+            <result column="priority" property="priority"/>
+        </collection>
+    </resultMap>
+
+    <!-- 根据单位ID获取可报名项目以及资质等级要求 -->
+    <select id="listCanBidProjPurchaseMajorRequire" resultMap="projPurchaseMajorRequireMap">
+        SELECT
+        aipp.PROJ_PURCHASE_ID projPurchaseId,
+        api.PROJ_NAME projName,
+        aib.ITEM_NAME itemName,
+        aipp.PUBLISH_TIME publishTime,
+        aipp.BASE_PRICE basePrice,
+        aipp.HIGHEST_PRICE highestPrice,
+        aiur.IS_QUAL_REQUIRE isQualRequire,
+        aiur.QUAL_REQUIRE_TYPE qualRequireType,
+        aiur.IS_REGISTER_REQUIRE isRegisterRequire,
+        aimq.MAJOR_QUAL_ID majorQualId,
+        aimq.MAJOR_ID majorId,
+        aiql.PRIORITY priority,
+        aipp.SERVICE_ID serviceId
+        FROM aea_im_proj_purchase aipp
+        LEFT JOIN aea_im_unit_require aiur ON aipp.UNIT_REQUIRE_ID = aiur.UNIT_REQUIRE_ID
+        LEFT JOIN aea_im_major_qual aimq ON aipp.UNIT_REQUIRE_ID = aimq.UNIT_REQUIRE_ID AND aimq.IS_DELETE = '0'
+        LEFT JOIN aea_im_qual_level aiql ON aimq.QUAL_LEVEL_ID = aiql.QUAL_LEVEL_ID AND aiql.IS_DELETE = '0'
+        LEFT JOIN aea_im_service_item aisi ON aipp.SERVICE_ITEM_ID = aisi.SERVICE_ITEM_ID
+        LEFT JOIN aea_item_basic aib ON aisi.ITEM_VER_ID = aib.ITEM_VER_ID
+        LEFT JOIN aea_proj_info api ON aipp.PROJ_INFO_ID = api.PROJ_INFO_ID
+        LEFT JOIN aea_im_unit_service aius  ON aipp.SERVICE_ID =aius.SERVICE_ID
+        WHERE aipp.IS_DELETE = '0' AND aipp.AUDIT_FLAG = '6' AND aipp.IS_ACTIVE = '1'
+        AND aius.IS_DELETE = '0' AND aius.AUDIT_FLAG = '1' AND aius.IS_ACTIVE = '1'
+        AND aius.UNIT_INFO_ID = #{unitInfoId}
+        AND (
+        aipp.EXPIRATION_DATE IS NULL OR
+        <if test="_databaseId == 'oracle'">
+            aipp.EXPIRATION_DATE &gt;= SYSDATE
+        </if>
+        <if test="_databaseId == 'mysql'">
+            aipp.EXPIRATION_DATE &gt;= SYSDATE()
+        </if>
+        )
+        <if test="projName != null and projName != ''">
+            AND api.PROJ_NAME LIKE CONCAT('%',CONCAT(#{projName},'%'))
+        </if>
+        <if test="itemVerId != null and itemVerId != ''">
+            AND aisi.ITEM_VER_ID = #{itemVerId}
+        </if>
+        <if test="projPurchaseId != null and projPurchaseId != ''">
+            AND aipp.PROJ_PURCHASE_ID = #{projPurchaseId}
+        </if>
+        AND aipp.PROJ_PURCHASE_ID NOT IN (
+        SELECT aiub.PROJ_PURCHASE_ID FROM aea_im_unit_bidding aiub
+        WHERE aiub.IS_DELETE = '0' AND aiub.IS_CANCEL_SIGNUP = '0' AND aiub.UNIT_INFO_ID = #{unitInfoId}
+        )
+        AND CASE aiur.IS_REGISTER_REQUIRE
+        WHEN '1' THEN aiur.REGISTER_TOTAL &lt;= (
+        SELECT COUNT(DISTINCT aisl.LINKMAN_INFO_ID) FROM aea_im_service_linkman aisl
+        WHERE aisl.AUDIT_FLAG = '1' AND aisl.IS_DELETE = '0'
+        AND aisl.SERVICE_ID = aipp.SERVICE_ID AND aisl.UNIT_INFO_ID = #{unitInfoId}
+        )
+        ELSE 1 = 1
+        END
+        AND CASE aipp.IS_AVOID
+        WHEN '1' THEN NOT EXISTS (
+        SELECT 1 FROM aea_im_avoid_unit aiau
+        WHERE aiau.IS_DELETE = '0' AND aiau.PROJ_PURCHASE_ID = aipp.PROJ_PURCHASE_ID AND aiau.UNIT_INFO_ID =
+        #{unitInfoId}
+        )
+        ELSE 1 = 1
+        END
+    </select>
+
+    <select id="getProjPurchaseInfoByProjPurchaseId" resultType="AeaImProjPurchase">
+        SELECT
+        <include refid="allColumnsAlias">
+            <property name="alias" value="aipp"></property>
+        </include>
+        ,
+        api.PROJ_NAME projName,
+        api.LOCAL_CODE localCode,
+        t.ITEM_NAME itemName,
+        aui.APPLICANT applicant
+        FROM AEA_IM_PROJ_PURCHASE aipp
+        LEFT JOIN aea_proj_info api on aipp.PROJ_INFO_ID = api.PROJ_INFO_ID
+        left join AEA_UNIT_INFO aui on aui.UNIT_INFO_ID = aipp.PUBLISH_UNIT_INFO_ID
+        LEFT JOIN (
+        SELECT aisi.SERVICE_ITEM_ID,aib.ITEM_VER_ID,aib.ITEM_NAME
+        FROM aea_im_service_item aisi,aea_item_basic aib
+        WHERE aisi.ITEM_VER_ID = aib.ITEM_VER_ID
+        ) t ON t.SERVICE_ITEM_ID = aipp.SERVICE_ITEM_ID
+        WHERE aipp.PROJ_PURCHASE_ID = #{projPurchaseId}
+        AND aipp.IS_DELETE = '0'
+    </select>
+
+    <select id="getServiceTypeList" resultType="AeaImService">
+        SELECT
+            ais.SERVICE_ID serviceId,ais.SERVICE_NAME serviceName
+        FROM
+            aea_im_service ais,
+            aea_im_unit_service aius
+        WHERE
+            ais.SERVICE_ID = aius.SERVICE_ID
+            AND aius.UNIT_INFO_ID = #{unitInfoId}
+            AND ais.IS_DELETE = '0'
+        GROUP BY
+            aius.SERVICE_ID
+    </select>
+
+
+    <select id="getPublishingInfoByProjPurchaseId" resultType="AeaImProjPurchase">
+        SELECT
+        <include refid="allColumnsAlias">
+            <property name="alias" value="aipp"></property>
+        </include>
+        ,
+        aui.APPLICANT applicant,
+        t.ITEM_NAME itemName,
+        aiub.IS_UPLOAD_CONTRACT isUploadContract,
+        aiub.IS_UPLOAD_RESULT isUploadResult,
+        aic.IS_OWNER_UPLOAD isOwnerUpload,
+        aic.IS_CONFIRM isConfirm,
+        aic.CONTRACT_ID contractId,
+        aisr.SERVICE_RESULT_ID serviceResultId
+        FROM
+        aea_im_proj_purchase aipp
+        LEFT JOIN aea_im_unit_bidding aiub ON aiub.PROJ_PURCHASE_ID = aipp.PROJ_PURCHASE_ID
+        left join AEA_UNIT_INFO aui on aui.UNIT_INFO_ID = aipp.PUBLISH_UNIT_INFO_ID
+        LEFT JOIN aea_im_contract aic on aiub.UNIT_BIDDING_ID = aic.UNIT_BIDDING_ID
+        LEFT JOIN aea_im_service_result aisr on aipp.PROJ_PURCHASE_ID = aisr.PROJ_PURCHASE_ID
+        LEFT JOIN (
+        SELECT
+        aisi.SERVICE_ITEM_ID,
+        aib.ITEM_VER_ID,
+        aib.ITEM_NAME
+        FROM
+        aea_im_service_item aisi,
+        aea_item_basic aib
+        WHERE
+        aisi.ITEM_VER_ID = aib.ITEM_VER_ID
+        ) t ON t.SERVICE_ITEM_ID = aipp.SERVICE_ITEM_ID
+        WHERE aipp.PROJ_PURCHASE_ID = #{projPurchaseId}
+        AND aiub.UNIT_INFO_ID = #{unitInfoId}
+        AND aipp.IS_DELETE = '0'
+    </select>
+
+    <select id="listProjPurchaseBidding" resultType="AeaImProjPurchase">
+        SELECT
+        aipp.PROJ_PURCHASE_ID projPurchaseId,
+        aipp.AUDIT_FLAG auditFlag,
+        aipp.CHOICE_IMUNIT_TIME choiceImunitTime,
+        aipp.BIDDING_TYPE biddingType,
+        aipp.EXPIRATION_DATE expirationDate,
+        (SELECT max(aibp.CREATE_TIME)
+        FROM aea_im_bidding_price aibp
+        WHERE aibp.IS_DELETE = '0' AND aibp.UNIT_BIDDING_ID IN (
+        SELECT aiub.UNIT_BIDDING_ID FROM aea_im_unit_bidding aiub
+        WHERE aiub.IS_DELETE = '0' AND aiub.IS_CANCEL_SIGNUP = '0'
+        AND aiub.PROJ_PURCHASE_ID = aipp.PROJ_PURCHASE_ID)
+        ) lastBiddingTime
+        FROM aea_im_proj_purchase aipp
+        WHERE aipp.IS_ACTIVE = '1' AND aipp.IS_DELETE = '0'
+        <if test="auditFlags != null and auditFlags.length > 0">
+            AND aipp.AUDIT_FLAG IN
+            <foreach collection="auditFlags" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+
+    <select id="listContractNotice" resultType="AeaImProjPurchase">
+        SELECT aipp.PROJ_PURCHASE_ID projPurchaseId,
+        <if test="_databaseId == 'oracle'">
+            NVL(aic.MODIFY_TIME, aic.CREATE_TIME) modifyTime,
+        </if>
+        <if test="_databaseId == 'mysql'">
+            IFNULL(aic.MODIFY_TIME, aic.CREATE_TIME) modifyTime,
+        </if>
+        api.PROJ_NAME projName
+        FROM AEA_IM_PROJ_PURCHASE aipp
+        LEFT JOIN aea_proj_info api ON api.PROJ_INFO_ID = aipp.PROJ_INFO_ID
+        LEFT JOIN aea_im_contract aic ON aic.PROJ_PURCHASE_ID = aipp.PROJ_PURCHASE_ID
+        <where>
+            aipp.IS_DELETE !='1'
+            AND aipp.IS_ACTIVE = '1' AND aic.AUDIT_FLAG = '1' AND aic.IS_CONFIRM = '1' AND aic.IS_DELETE = '0'
+            <if test="projName != null and projName != ''">
+                AND api.PROJ_NAME like concat('%',concat(#{projName},'%'))
+            </if>
+        </where>
+        <if test="_databaseId == 'oracle'">
+            ORDER BY NVL(aic.MODIFY_TIME, aic.CREATE_TIME) desc
+        </if>
+        <if test="_databaseId == 'mysql'">
+            ORDER BY IFNULL(aic.MODIFY_TIME, aic.CREATE_TIME) desc
+        </if>
+    </select>
+
+    <select id="getContractNoticeByProjPurchaseId" resultType="AeaImProjPurchase">
+        SELECT
+        aipp.PROJ_PURCHASE_ID projPurchaseId,
+        api.PROJ_NAME projName,
+        api.LOCAL_CODE localCode,
+        aic.CONTRACT_ID contractId,
+        (select aui.APPLICANT from aea_unit_info aui where aui.UNIT_INFO_ID = aic.OWNER_UNIT_INFO_ID)
+        'contract.ownerUnitInfoName',
+        (select aui.APPLICANT from aea_unit_info aui where aui.UNIT_INFO_ID = aic.SERVICE_UNIT_INFO_ID)
+        'contract.serviceUnitInfoName',
+        aic.CONTRACT_NAME 'contract.contractName',
+        aic.CONTRACT_CODE 'contract.contractCode',
+        aic.PRICE 'contract.price',
+        aic.SIGN_TIME 'contract.signTime',
+        aic.SERVICE_START_TIME 'contract.serviceStartTime',
+        aic.SERVICE_END_TIME 'contract.serviceEndTime',
+        aic.SERVICE_CONTENT 'contract.serviceContent'
+        FROM AEA_IM_PROJ_PURCHASE aipp
+        LEFT JOIN aea_proj_info api ON api.PROJ_INFO_ID = aipp.PROJ_INFO_ID
+        LEFT JOIN aea_im_contract aic ON aic.PROJ_PURCHASE_ID = aipp.PROJ_PURCHASE_ID
+        <where>
+            aipp.IS_DELETE !='1'
+            AND aipp.IS_ACTIVE = '1' AND aic.AUDIT_FLAG = '1' AND aic.IS_CONFIRM = '1' AND aic.IS_DELETE = '0'
+            AND aipp.PROJ_PURCHASE_ID = #{projPurchaseId}
+        </where>
+    </select>
+
+    <select id="queryIntermediaryList" resultType="map">
+			    select a.UNIT_BIDDING_ID unitBiddingId,c.APPLICANT applicant,b.PRICE price,
+			    d.LINKMAN_NAME linkmanName,a.IS_WON_BID isWonBid from aea_im_unit_bidding a
+				left join
+				(
+					select aeap.* from aea_im_bidding_price aeap,
+					(SELECT aibp.UNIT_BIDDING_ID,max(aibp.CREATE_TIME)createTime
+                    FROM aea_im_bidding_price aibp
+                    WHERE aibp.IS_DELETE = '0' AND aibp.UNIT_BIDDING_ID IN (
+                    SELECT aiub.UNIT_BIDDING_ID FROM aea_im_unit_bidding aiub
+                    WHERE aiub.IS_DELETE = '0' AND aiub.IS_CANCEL_SIGNUP = '0'
+                    AND aiub.PROJ_PURCHASE_ID = #{projPurchaseId})
+                            group by aibp.UNIT_BIDDING_ID) abc where aeap.UNIT_BIDDING_ID=abc.UNIT_BIDDING_ID
+                            and aeap.CREATE_TIME=abc.createTime
+				) b on a.UNIT_BIDDING_ID=b.UNIT_BIDDING_ID
+				left join aea_unit_info c on a.UNIT_INFO_ID=c.UNIT_INFO_ID
+				left join aea_linkman_info d on a.LINKMAN_INFO_ID=d.LINKMAN_INFO_ID
+			    where a.PROJ_PURCHASE_ID=#{projPurchaseId}
+    </select>
+
+    <update id="updateIntermediaryWonBidStatus">
+        update aea_im_unit_bidding set IS_WON_BID='1' where UNIT_BIDDING_ID=#{unitBiddingId}
+    </update>
+</mapper>

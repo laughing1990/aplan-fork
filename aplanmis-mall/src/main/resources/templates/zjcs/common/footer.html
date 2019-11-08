@@ -1,0 +1,58 @@
+<!--@Author: ZL-->
+<!--@Date:   2019/05/27-->
+<!--@Last Modified by:   ZL-->
+<!--@Last Modified time: $ $-->
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>唐山市中介服务网上超市</title>
+  <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.css" th:href="@{/agcloud/framework/js-lib/element-2/element.css}"/>
+  <link rel="stylesheet" href="../../../static/zjcs/common/css/reset.css" th:href="@{/zjcs/common/css/reset.css}">
+  <link rel="stylesheet" href="../../../static/zjcs/common/css/common-header.css" th:href="@{/zjcs/common/css/common-header.css}">
+  <script>
+    var ctx = '[[@{/}]]';
+    // var ctx = 'http://192.168.30.45:8080/opus-front/';
+  </script>
+</head>
+<body>
+<div id="headerFooter" class="ts-footer">
+  <div class="mod">
+    <div class="select-box">
+      <el-select
+        v-for="item in othersLinkList"
+        :placeholder="item.label"
+        v-model="item.value"
+        @change="changeLinkUrl">
+        <el-option
+          v-for="items in item.options"
+          :key="items.value"
+          :label="items.name"
+          :value="items.url">
+        </el-option>
+      </el-select>
+    </div>
+    <a class="foot-link fl" href="#" target="_blank">
+      <img src="../../../static/zjcs/common/images/footer_pic.png" th:src="@{/zjcs/common/images/footer_pic.png}">
+    </a>
+    <div class="footer-txt ">
+      <p>
+        <!--        <span>主办单位：唐山市政务服务管理办公室</span>-->
+        <span>主办单位：新疆自治区政务服务管理办公室</span>
+        <!--        <span>技术支持：广州奥格智能科技有限公司</span>-->
+      </p>
+      <p><span>技术支持：广州奥格智能科技有限公司</span></p>
+
+      <!--<p>地址：唐山市政务服务中心</p>-->
+    </div>
+  </div>
+</div>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js" th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js" th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js" th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
+<script src="../../../static/zjcs/common/js/common-header.js"  th:src="@{/zjcs/common/js/common-header.js}"></script>
+
+</body>
+</html>

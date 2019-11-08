@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<div th:fragment="ltGaoPaiYi">
+  <el-dialog id="ltGaoPaiYiDia" class="lt-gaopai-dialog" top="80px"
+             width="860px"
+             append-to-body
+             @closed="closedUplodPhoto()"
+             :visible.sync="ltPaiZhaoVisible">
+    <!--拍照窗口-->
+    <span slot="title" class="dialog-header">
+      拍照窗口 <span id="dev_Name">（设备名：无）</span>
+    </span>
+    <div id="upload_photo_modal" style="padding: 0 10px;">
+      <div class="modal-content clearfix">
+        <el-row>
+          <el-col :span="16">
+            <el-button type="primary" id="priDevBtn" onclick="clickPriDev();">打开主摄像头</el-button>
+            <el-button type="primary" id="subDevBtn" onclick="clickSubDev();">打开副摄像头</el-button>
+          </el-col>
+          <div class="col-4">
+            <el-button type="primary" onclick="takePicture();">拍照</el-button>
+            <el-button type="primary" onclick="upload_photo();">上传</el-button>
+            <el-button type="primary" onclick="devMoveRight();">旋转</el-button>
+          </div>
+        </el-row>
+        <el-row style="padding-top: 10px;padding-bottom: 10px">
+          <el-col :span="4" align="right">
+            设置分辨率：
+          </el-col>
+          <el-col :span="16" style="display:inline-block">
+            <select id="priResolutionList" style="width:20%;" ></select>
+            <select id="subResolutionList" style="width:20%;display: none" ></select>
+          </el-col>
+        </el-row>
+        <el-col>
+          <el-col :span="4">
+            <div id="container"></div>
+          </el-col>
+          <el-col :span="20">
+            <img id="bigPriDev" style="width: 640px;height: 480px">
+            <img id="bigSubDev" style="width: 640px;height: 480px;">
+          </el-col>
+        </el-col>
+      </div>
+    </div>
+    <!--照片预览窗口-->
+    <el-dialog
+      width="860px"
+      title="内层 Dialog"
+      :visible.sync="ltInnerVisible"
+      @closed="closedBigImg()"
+      append-to-body>
+      <span slot="title" class="dialog-header" id="big_img_photo_modal_title"></span>
+      <div id="big_img_photo_modal" class="clearfix">
+        <div class="modal-lg" style="padding-top: 2px;padding-bottom: 10px;padding-left: 0px">
+          <img src="" id="bigImgPreView" style="margin-left:30px">
+        </div>
+      </div>
+    </el-dialog>
+  </el-dialog>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,125 @@
+.modal .modal-content .modal-header {
+  height: 45px;
+  border-bottom: 1px solid #86caff;
+  padding: 0 12px;
+  line-height: 45px;
+}
+.modal-title, .modal .modal-content .modal-header .close {
+  line-height: 45px;
+}
+#ag_modal_1 {
+  color: #595959;
+}
+#ag_modal_1 .modal-content, #ag_modal_1 .modal-dialog {
+  width: 680px;
+}
+.fl {
+  float: left;
+}
+.fr {
+  float: right;
+}
+.link-left {
+  margin: 10px 0 10px 60px;
+  width: 60%;
+}
+.link-progress {
+  border: 1px solid #e8e8e8;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  height: 80px;
+  position: relative;
+}
+.link-left p {
+  margin-left: 10px;
+  text-align: center;
+  color: #595959;
+}
+.link-progress .link-left:hover p {
+  color: #2da4ff;
+  cursor: pointer;
+}
+.stage-name {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 10px 0;
+}
+.link-btn {
+  height: 100%;
+  width: 110px;
+  line-height: 80px;
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+  text-align: center;
+  font-size: 16px;
+}
+.link-progress .stage-icon {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: #2da4ff;
+  color: #fff;
+  font-size: 20px;
+  height: 53px;
+  font-weight: bold;
+  width: 52px;
+  line-height: 32px;
+  padding-left: 10px;
+}
+.link-progress .stage-icon:after {
+  content: '';
+  transform: rotate(45deg);
+  -o-transform: rotate(45deg);
+  -webkit-transform: rotate(45deg);
+  -moz-transform: rotate(45deg);
+  position: absolute;
+  padding: 36px 20px;
+  top: 5px;
+  left: 20px;
+  background: #fff;
+}
+/* .first-stage .stage-icon {
+  background-position: 0 0;
+} */
+.link-tache .stage-icon {
+  padding: 26px 27px;
+  background: url(../images/common/modal_1_stage_icon_1.png) no-repeat;
+  background-position: 0 -53px;
+}
+/* .third-stage .stage-icon {
+  background-position: 0 -106px;
+  
+}
+.fifth-stage .stage-icon {
+  background-position: 0 -159px;
+}
+.six-stage .stage-icon {
+  background-position: 0 -212px;
+} */
+.btn-metal {
+  background: #f3f3f3;
+  color: #595959;
+  border-left: 1px solid #e8e8e8;
+}
+.btn-metal:hover {
+  background: #f1f1f1;
+  border-left: 1px solid #e4e4e4;
+  cursor: pointer;
+}
+/*.before-start, .before-ask {*/
+/*color: #7f7f7f;*/
+/*background: #f3f3f3;*/
+/*}*/
+/*.pro-doing {*/
+/*color: #fff;*/
+/*background: #2da4ff;*/
+/*}*/
+/*.pass {*/
+/*color: #fff;*/
+/*background: #34bfa3;*/
+/*}*/
+/*.unpass {*/
+/*color: #fff;*/
+/*background: #ff5f5f;*/
+/*}*/
+

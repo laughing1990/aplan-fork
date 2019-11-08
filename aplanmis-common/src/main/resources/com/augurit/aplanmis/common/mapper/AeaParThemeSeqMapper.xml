@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaParThemeSeqMapper">
+
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns">
+        ${alias}.THEME_SEQ_ID  themeSeqId,
+        ${alias}.THEME_ID  themeId,
+        ${alias}.MAX_NUM  maxNum,
+        ${alias}.CREATER  creater,
+        ${alias}.CREATE_TIME  createTime,
+        ${alias}.MODIFIER  modifier,
+        ${alias}.MODIFY_TIME  modifyTime,
+        ${alias}.ROOT_ORG_ID  rootOrgId
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="selectOneById" resultType="AeaParThemeSeq" >
+        select
+            <include refid="allColumns">
+                <property name="alias" value="apts"/>
+            </include>
+        from AEA_PAR_THEME_SEQ apts
+        where THEME_SEQ_ID = #{id}
+    </select>
+
+    <select id="getAeaParThemeSeqByThemeId" resultType="AeaParThemeSeq" >
+        select
+            <include refid="allColumns">
+                <property name="alias" value="apts"/>
+            </include>
+        from  AEA_PAR_THEME_SEQ apts
+        <where>
+          and THEME_ID = #{themeId}
+          and ROOT_ORG_ID = #{rootOrgId}
+        </where>
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaParThemeSeq" resultType="AeaParThemeSeq">
+        select
+           <include refid="allColumns">
+               <property name="alias" value="apts"/>
+           </include>
+        from AEA_PAR_THEME_SEQ apts
+        <where>
+            <if test="themeSeqId != null" >
+                and    THEME_SEQ_ID = #{themeSeqId}
+            </if>
+            <if test="themeId != null" >
+                and    THEME_ID = #{themeId}
+            </if>
+            <if test="maxNum != null" >
+                and    MAX_NUM = #{maxNum}
+            </if>
+            <if test="creater != null" >
+                and    CREATER = #{creater}
+            </if>
+            <if test="createTime != null" >
+                and    CREATE_TIME = #{createTime}
+            </if>
+            <if test="modifier != null" >
+                and    MODIFIER = #{modifier}
+            </if>
+            <if test="modifyTime != null" >
+                and    MODIFY_TIME = #{modifyTime}
+            </if>
+            <if test="rootOrgId != null">
+                and    ROOT_ORG_ID = #{rootOrgId}
+            </if>
+        </where>
+    </select>
+
+    <insert id="insertOne" parameterType="AeaParThemeSeq" >
+        insert into AEA_PAR_THEME_SEQ (
+            THEME_SEQ_ID,
+            THEME_ID,
+            MAX_NUM,
+            CREATER,
+            CREATE_TIME,
+            MODIFIER,
+            MODIFY_TIME,
+            ROOT_ORG_ID
+        )  values  (
+            #{themeSeqId},
+            #{themeId},
+            #{maxNum},
+            #{creater},
+            #{createTime},
+            #{modifier},
+            #{modifyTime},
+            #{rootOrgId}
+        )
+    </insert>
+
+    <!--6 修改实体对象 -->
+    <update id="updateOne" parameterType="AeaParThemeSeq" >
+        update AEA_PAR_THEME_SEQ
+        <set >
+            <if test="themeSeqId != null" >
+                THEME_SEQ_ID = #{themeSeqId},
+            </if>
+            <if test="themeId != null" >
+                THEME_ID = #{themeId},
+            </if>
+            <if test="maxNum != null" >
+                MAX_NUM = #{maxNum},
+            </if>
+            <if test="creater != null" >
+                CREATER = #{creater},
+            </if>
+            <if test="createTime != null" >
+                CREATE_TIME = #{createTime},
+            </if>
+            <if test="modifier != null" >
+                MODIFIER = #{modifier},
+            </if>
+            <if test="modifyTime != null" >
+                MODIFY_TIME = #{modifyTime},
+            </if>
+            <if test="rootOrgId!=null ">
+                ROOT_ORG_ID = #{rootOrgId}
+            </if>
+        </set>
+        where THEME_SEQ_ID = #{themeSeqId}
+    </update>
+
+    <!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteById">
+        delete from AEA_PAR_THEME_SEQ where THEME_SEQ_ID = #{id}
+    </delete>
+
+    <!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaParThemeSeq" id="AeaParThemeSeqMap">
+        <id property="themeSeqId" column="THEME_SEQ_ID"/>
+        <result property="themeId" column="THEME_ID"/>
+        <result property="maxNum" column="MAX_NUM"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="modifier" column="MODIFIER"/>
+        <result property="modifyTime" column="MODIFY_TIME"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+    </resultMap>
+</mapper>

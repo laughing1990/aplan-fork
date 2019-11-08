@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by zhangwn    2019-09-19 18:57:42 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaAnaOrgUseTimeStatisticsMapper">
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns">
+    USE_TIME_STATISTICS_ID  useTimeStatisticsId,
+    STATISTICS_RECORD_ID  statisticsRecordId,
+    ITEMINST_ID  iteminstId,
+    TIMERULE_INST_ID  timeruleInstId,
+    USE_TIME_TYPE  useTimeType,
+    IS_COMPLETED  isCompleted,
+    ITEM_ID  itemId,
+    ITEM_NAME  itemName,
+    ITEM_PROPERTY  itemProperty,
+    ORG_ID  orgId,
+    ORG_NAME  orgName,
+    PROJ_NAME  projName,
+    REGION_ID  regionId,
+    REGION_NAME  regionName,
+    TIME_LIMIT  timeLimit,
+    TIMERULE_UNIT  timeruleUnit,
+    USE_LIMIT_TIME  useLimitTime,
+    REMAINING_TIME  remainingTime,
+    OVERDUE_TIME  overdueTime,
+    USE_TIME_RATE  useTimeRate,
+    IS_ALL_COUNT  isAllCount,
+    STATISTICS_START_DATE  statisticsStartDate,
+    STATISTICS_END_DATE  statisticsEndDate,
+    MEMO  memo,
+    CREATER  creater,
+    CREATE_TIME  createTime,
+    ROOT_ORG_ID  rootOrgId
+    </sql>
+
+    <sql id="allColumns_alias">
+        ${alias}.USE_TIME_STATISTICS_ID  useTimeStatisticsId,
+        ${alias}.STATISTICS_RECORD_ID  statisticsRecordId,
+        ${alias}.ITEMINST_ID  iteminstId,
+        ${alias}.TIMERULE_INST_ID  timeruleInstId,
+        ${alias}.USE_TIME_TYPE  useTimeType,
+        ${alias}.IS_COMPLETED  isCompleted,
+        ${alias}.ITEM_ID  itemId,
+        ${alias}.ITEM_NAME  itemName,
+        ${alias}.ITEM_PROPERTY  itemProperty,
+        ${alias}.ORG_ID  orgId,
+        ${alias}.ORG_NAME  orgName,
+        ${alias}.PROJ_NAME  projName,
+        ${alias}.REGION_ID  regionId,
+        ${alias}.REGION_NAME  regionName,
+        ${alias}.TIME_LIMIT  timeLimit,
+        ${alias}.TIMERULE_UNIT  timeruleUnit,
+        ${alias}.USE_LIMIT_TIME  useLimitTime,
+        ${alias}.REMAINING_TIME  remainingTime,
+        ${alias}.OVERDUE_TIME  overdueTime,
+        ${alias}.USE_TIME_RATE  useTimeRate,
+        ${alias}.IS_ALL_COUNT  isAllCount,
+        ${alias}.STATISTICS_START_DATE  statisticsStartDate,
+        ${alias}.STATISTICS_END_DATE  statisticsEndDate,
+        ${alias}.MEMO  memo,
+        ${alias}.CREATER  creater,
+        ${alias}.CREATE_TIME  createTime,
+        ${alias}.ROOT_ORG_ID  rootOrgId
+    </sql>
+
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaAnaOrgUseTimeStatisticsById" resultType="AeaAnaOrgUseTimeStatistics">
+        select
+        <include refid="allColumns"/>
+        from AEA_ANA_ORG_USE_TIME_STATISTICS
+        where USE_TIME_STATISTICS_ID = #{id}
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaAnaOrgUseTimeStatistics" resultType="AeaAnaOrgUseTimeStatistics">
+        select
+        <include refid="allColumns"/>
+        from AEA_ANA_ORG_USE_TIME_STATISTICS
+        <where>
+            <if test="useTimeStatisticsId != null">
+                AND USE_TIME_STATISTICS_ID = #{useTimeStatisticsId}
+            </if>
+            <if test="statisticsRecordId != null">
+                AND STATISTICS_RECORD_ID = #{statisticsRecordId}
+            </if>
+            <if test="iteminstId != null">
+                AND ITEMINST_ID = #{iteminstId}
+            </if>
+            <if test="timeruleInstId != null">
+                AND TIMERULE_INST_ID = #{timeruleInstId}
+            </if>
+            <if test="useTimeType != null">
+                AND USE_TIME_TYPE = #{useTimeType}
+            </if>
+            <if test="isCompleted != null">
+                AND IS_COMPLETED = #{isCompleted}
+            </if>
+            <if test="itemId != null">
+                AND ITEM_ID = #{itemId}
+            </if>
+            <if test="itemName != null">
+                AND ITEM_NAME = #{itemName}
+            </if>
+            <if test="itemProperty != null">
+                AND ITEM_PROPERTY = #{itemProperty}
+            </if>
+            <if test="orgId != null">
+                AND ORG_ID = #{orgId}
+            </if>
+            <if test="orgName != null">
+                AND ORG_NAME = #{orgName}
+            </if>
+            <if test="projName != null">
+                AND PROJ_NAME = #{projName}
+            </if>
+            <if test="regionId != null">
+                AND REGION_ID = #{regionId}
+            </if>
+            <if test="regionName != null">
+                AND REGION_NAME = #{regionName}
+            </if>
+            <if test="timeLimit != null">
+                AND TIME_LIMIT = #{timeLimit}
+            </if>
+            <if test="timeruleUnit != null">
+                AND TIMERULE_UNIT = #{timeruleUnit}
+            </if>
+            <if test="useLimitTime != null">
+                AND USE_LIMIT_TIME = #{useLimitTime}
+            </if>
+            <if test="remainingTime != null">
+                AND REMAINING_TIME = #{remainingTime}
+            </if>
+            <if test="overdueTime != null">
+                AND OVERDUE_TIME = #{overdueTime}
+            </if>
+            <if test="useTimeRate != null">
+                AND USE_TIME_RATE = #{useTimeRate}
+            </if>
+            <if test="isAllCount != null">
+                AND IS_ALL_COUNT = #{isAllCount}
+            </if>
+            <if test="statisticsStartDate != null">
+                AND STATISTICS_START_DATE = #{statisticsStartDate}
+            </if>
+            <if test="statisticsEndDate != null">
+                AND STATISTICS_END_DATE = #{statisticsEndDate}
+            </if>
+            <if test="memo != null">
+                AND MEMO = #{memo}
+            </if>
+            <if test="creater != null">
+                AND CREATER = #{creater}
+            </if>
+            <if test="createTime != null">
+                AND CREATE_TIME = #{createTime}
+            </if>
+            <if test="rootOrgId != null">
+                AND ROOT_ORG_ID = #{rootOrgId}
+            </if>
+        </where>
+    </select>
+    <!--4 根据条件查询实体list,返回分页对象 -->
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaAnaOrgUseTimeStatistics" parameterType="AeaAnaOrgUseTimeStatistics">
+        insert into AEA_ANA_ORG_USE_TIME_STATISTICS (USE_TIME_STATISTICS_ID, STATISTICS_RECORD_ID, ITEMINST_ID,
+                                                     TIMERULE_INST_ID, USE_TIME_TYPE, IS_COMPLETED, ITEM_ID, ITEM_NAME,
+                                                     ITEM_PROPERTY, ORG_ID, ORG_NAME, PROJ_NAME, REGION_ID, REGION_NAME,
+                                                     TIME_LIMIT, TIMERULE_UNIT, USE_LIMIT_TIME, REMAINING_TIME,
+                                                     OVERDUE_TIME, USE_TIME_RATE, IS_ALL_COUNT, STATISTICS_START_DATE,
+                                                     STATISTICS_END_DATE, MEMO, CREATER, CREATE_TIME, ROOT_ORG_ID)
+        values (#{useTimeStatisticsId}, #{statisticsRecordId}, #{iteminstId}, #{timeruleInstId}, #{useTimeType},
+                #{isCompleted}, #{itemId}, #{itemName}, #{itemProperty}, #{orgId}, #{orgName}, #{projName}, #{regionId},
+                #{regionName}, #{timeLimit}, #{timeruleUnit}, #{useLimitTime}, #{remainingTime}, #{overdueTime},
+                #{useTimeRate}, #{isAllCount}, #{statisticsStartDate}, #{statisticsEndDate}, #{memo}, #{creater},
+                #{createTime}, #{rootOrgId})
+    </insert>
+    <!--6 修改实体对象 -->
+    <update id="updateAeaAnaOrgUseTimeStatistics" parameterType="AeaAnaOrgUseTimeStatistics">
+        update AEA_ANA_ORG_USE_TIME_STATISTICS
+        <set>
+            <if test="useTimeStatisticsId != null">
+                USE_TIME_STATISTICS_ID = #{useTimeStatisticsId},
+            </if>
+            <if test="statisticsRecordId != null">
+                STATISTICS_RECORD_ID = #{statisticsRecordId},
+            </if>
+            <if test="iteminstId != null">
+                ITEMINST_ID = #{iteminstId},
+            </if>
+            <if test="timeruleInstId != null">
+                TIMERULE_INST_ID = #{timeruleInstId},
+            </if>
+            <if test="useTimeType != null">
+                USE_TIME_TYPE = #{useTimeType},
+            </if>
+            <if test="isCompleted != null">
+                IS_COMPLETED = #{isCompleted},
+            </if>
+            <if test="itemId != null">
+                ITEM_ID = #{itemId},
+            </if>
+            <if test="itemName != null">
+                ITEM_NAME = #{itemName},
+            </if>
+            <if test="itemProperty != null">
+                ITEM_PROPERTY = #{itemProperty},
+            </if>
+            <if test="orgId != null">
+                ORG_ID = #{orgId},
+            </if>
+            <if test="orgName != null">
+                ORG_NAME = #{orgName},
+            </if>
+            <if test="projName != null">
+                PROJ_NAME = #{projName},
+            </if>
+            <if test="regionId != null">
+                REGION_ID = #{regionId},
+            </if>
+            <if test="regionName != null">
+                REGION_NAME = #{regionName},
+            </if>
+            <if test="timeLimit != null">
+                TIME_LIMIT = #{timeLimit},
+            </if>
+            <if test="timeruleUnit != null">
+                TIMERULE_UNIT = #{timeruleUnit},
+            </if>
+            <if test="useLimitTime != null">
+                USE_LIMIT_TIME = #{useLimitTime},
+            </if>
+            <if test="remainingTime != null">
+                REMAINING_TIME = #{remainingTime},
+            </if>
+            <if test="overdueTime != null">
+                OVERDUE_TIME = #{overdueTime},
+            </if>
+            <if test="useTimeRate != null">
+                USE_TIME_RATE = #{useTimeRate},
+            </if>
+            <if test="isAllCount != null">
+                IS_ALL_COUNT = #{isAllCount},
+            </if>
+            <if test="statisticsStartDate != null">
+                STATISTICS_START_DATE = #{statisticsStartDate},
+            </if>
+            <if test="statisticsEndDate != null">
+                STATISTICS_END_DATE = #{statisticsEndDate},
+            </if>
+            <if test="memo != null">
+                MEMO = #{memo},
+            </if>
+            <if test="creater != null">
+                CREATER = #{creater},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime},
+            </if>
+            <if test="rootOrgId != null">
+                ROOT_ORG_ID = #{rootOrgId},
+            </if>
+        </set>
+        where USE_TIME_STATISTICS_ID = #{useTimeStatisticsId}
+    </update>
+    <!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaAnaOrgUseTimeStatistics">
+        delete
+        from AEA_ANA_ORG_USE_TIME_STATISTICS
+        where USE_TIME_STATISTICS_ID = #{id}
+    </delete>
+    <!--8 删除实体对象列表,根据主键ID列表 -->
+    <!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaAnaOrgUseTimeStatistics" id="AeaAnaOrgUseTimeStatisticsMap">
+        <id property="useTimeStatisticsId" column="USE_TIME_STATISTICS_ID"/>
+        <result property="statisticsRecordId" column="STATISTICS_RECORD_ID"/>
+        <result property="iteminstId" column="ITEMINST_ID"/>
+        <result property="timeruleInstId" column="TIMERULE_INST_ID"/>
+        <result property="useTimeType" column="USE_TIME_TYPE"/>
+        <result property="isCompleted" column="IS_COMPLETED"/>
+        <result property="itemId" column="ITEM_ID"/>
+        <result property="itemName" column="ITEM_NAME"/>
+        <result property="itemProperty" column="ITEM_PROPERTY"/>
+        <result property="orgId" column="ORG_ID"/>
+        <result property="orgName" column="ORG_NAME"/>
+        <result property="projName" column="PROJ_NAME"/>
+        <result property="regionId" column="REGION_ID"/>
+        <result property="regionName" column="REGION_NAME"/>
+        <result property="timeLimit" column="TIME_LIMIT"/>
+        <result property="timeruleUnit" column="TIMERULE_UNIT"/>
+        <result property="useLimitTime" column="USE_LIMIT_TIME"/>
+        <result property="remainingTime" column="REMAINING_TIME"/>
+        <result property="overdueTime" column="OVERDUE_TIME"/>
+        <result property="useTimeRate" column="USE_TIME_RATE"/>
+        <result property="isAllCount" column="IS_ALL_COUNT"/>
+        <result property="statisticsStartDate" column="STATISTICS_START_DATE"/>
+        <result property="statisticsEndDate" column="STATISTICS_END_DATE"/>
+        <result property="memo" column="MEMO"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+    </resultMap>
+
+    <delete id="deleteAeaAnaOrgUseTimeStatisticsByOrgId">
+        delete
+        from AEA_ANA_ORG_USE_TIME_STATISTICS
+        where ORG_ID = #{orgId}
+          and ROOT_ORG_ID = #{rootOrgId}
+    </delete>
+
+    <select id="listAeaAnaOrgUseTimeStatisticsByItemAndItemVer" resultType="AeaAnaOrgUseTimeStatistics">
+        select distinct
+        <include refid="allColumns_alias">
+            <property name="alias" value="aaouts"/>
+        </include>
+        from AEA_ANA_ORG_USE_TIME_STATISTICS aaouts, aea_hi_iteminst ahi
+        where
+        aaouts.ROOT_ORG_ID = #{rootOrgId}
+        and ahi.ROOT_ORG_ID = #{rootOrgId}
+        and ahi.ITEMINST_ID = aaouts.ITEMINST_ID
+        and ahi.ITEM_ID = #{itemId}
+        and ahi.ITEM_VER_ID = #{itemVerId}
+    </select>
+
+
+</mapper>

@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by yinlf    2019-08-31 10:58:12 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.data.exchange.mapper.spgl.SpglXmspsxblxxxxbMapper">
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns">
+        LSH  lsh,
+        DFSJZJ  dfsjzj,
+        XZQHDM  xzqhdm,
+        GCDM  gcdm,
+        SPSXSLBM  spsxslbm,
+        BLCS  blcs,
+        BLR  blr,
+        BLZT  blzt,
+        BLYJ  blyj,
+        BLSJ  blsj,
+        SJYXBS  sjyxbs,
+        SJWXYY  sjwxyy,
+        SJSCZT  sjsczt,
+        SBYY  sbyy,
+        scsj  scsj,
+        gxsj  gxsj
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getSpglXmspsxblxxxxbById" resultType="SpglXmspsxblxxxxb">
+        select
+        <include refid="allColumns"/>
+        from SPGL_XMSPSXBLXXXXB
+        where LSH = #{id}
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listSpglXmspsxblxxxxb" resultType="SpglXmspsxblxxxxb">
+        select
+        <include refid="allColumns"/>
+        from SPGL_XMSPSXBLXXXXB
+        <where>
+            <if test="lsh != null">
+                AND LSH = #{lsh}
+            </if>
+            <if test="dfsjzj != null">
+                AND DFSJZJ = #{dfsjzj}
+            </if>
+            <if test="xzqhdm != null">
+                AND XZQHDM = #{xzqhdm}
+            </if>
+            <if test="gcdm != null">
+                AND GCDM = #{gcdm}
+            </if>
+            <if test="spsxslbm != null">
+                AND SPSXSLBM = #{spsxslbm}
+            </if>
+            <if test="blcs != null">
+                AND BLCS = #{blcs}
+            </if>
+            <if test="blr != null">
+                AND BLR = #{blr}
+            </if>
+            <if test="blzt != null">
+                AND BLZT = #{blzt}
+            </if>
+            <if test="blyj != null">
+                AND BLYJ = #{blyj}
+            </if>
+            <if test="blsj != null">
+                AND BLSJ = #{blsj}
+            </if>
+            <if test="sjyxbs != null">
+                AND SJYXBS = #{sjyxbs}
+            </if>
+            <if test="sjwxyy != null">
+                AND SJWXYY = #{sjwxyy}
+            </if>
+            <if test="sjsczt != null">
+                AND SJSCZT = #{sjsczt}
+            </if>
+            <if test="sbyy != null">
+                AND SBYY = #{sbyy}
+            </if>
+            <if test="scsj != null">
+                AND scsj = #{scsj}
+            </if>
+            <if test="gxsj != null">
+                AND gxsj = #{gxsj}
+            </if>
+        </where>
+    </select>
+    <!--4 根据条件查询实体list,返回分页对象 -->
+
+    <!--5 新增实体对象 -->
+    <insert id="insertSpglXmspsxblxxxxb" parameterType="SpglXmspsxblxxxxb">
+        insert into SPGL_XMSPSXBLXXXXB (
+    LSH  ,DFSJZJ  ,XZQHDM  ,GCDM  ,SPSXSLBM  ,BLCS  ,BLR  ,BLZT  ,BLYJ  ,BLSJ  ,SJYXBS  ,SJWXYY  ,SJSCZT  ,SBYY  ,scsj  ,gxsj  
+        )  values  (
+    #{lsh},#{dfsjzj},#{xzqhdm},#{gcdm},#{spsxslbm},#{blcs},#{blr},#{blzt},#{blyj},#{blsj},#{sjyxbs},#{sjwxyy},#{sjsczt},#{sbyy},#{scsj},  #{gxsj}
+        )
+    </insert>
+    <!--6 修改实体对象 -->
+    <update id="updateSpglXmspsxblxxxxb" parameterType="SpglXmspsxblxxxxb">
+        update SPGL_XMSPSXBLXXXXB
+        <set>
+            <if test="lsh != null">
+                LSH = #{lsh},
+            </if>
+            <if test="dfsjzj != null">
+                DFSJZJ = #{dfsjzj},
+            </if>
+            <if test="xzqhdm != null">
+                XZQHDM = #{xzqhdm},
+            </if>
+            <if test="gcdm != null">
+                GCDM = #{gcdm},
+            </if>
+            <if test="spsxslbm != null">
+                SPSXSLBM = #{spsxslbm},
+            </if>
+            <if test="blcs != null">
+                BLCS = #{blcs},
+            </if>
+            <if test="blr != null">
+                BLR = #{blr},
+            </if>
+            <if test="blzt != null">
+                BLZT = #{blzt},
+            </if>
+            <if test="blyj != null">
+                BLYJ = #{blyj},
+            </if>
+            <if test="blsj != null">
+                BLSJ = #{blsj},
+            </if>
+            <if test="sjyxbs != null">
+                SJYXBS = #{sjyxbs},
+            </if>
+            <if test="sjwxyy != null">
+                SJWXYY = #{sjwxyy},
+            </if>
+            <if test="sjsczt != null">
+                SJSCZT = #{sjsczt},
+            </if>
+            <if test="sbyy != null">
+                SBYY = #{sbyy},
+            </if>
+            <if test="scsj != null">
+                scsj = #{scsj},
+            </if>
+            <if test="gxsj != null">
+                gxsj = #{gxsj},
+            </if>
+        </set>
+        where LSH = #{lsh}
+    </update>
+    <!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteSpglXmspsxblxxxxb">
+        delete from SPGL_XMSPSXBLXXXXB
+        where LSH = #{id}
+    </delete>
+    <!--8 删除实体对象列表,根据主键ID列表 -->
+    <!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="SpglXmspsxblxxxxb" id="SpglXmspsxblxxxxbMap">
+        <id property="lsh" column="LSH"/>
+        <result property="dfsjzj" column="DFSJZJ"/>
+        <result property="xzqhdm" column="XZQHDM"/>
+        <result property="gcdm" column="GCDM"/>
+        <result property="spsxslbm" column="SPSXSLBM"/>
+        <result property="blcs" column="BLCS"/>
+        <result property="blr" column="BLR"/>
+        <result property="blzt" column="BLZT"/>
+        <result property="blyj" column="BLYJ"/>
+        <result property="blsj" column="BLSJ"/>
+        <result property="sjyxbs" column="SJYXBS"/>
+        <result property="sjwxyy" column="SJWXYY"/>
+        <result property="sjsczt" column="SJSCZT"/>
+        <result property="sbyy" column="SBYY"/>
+        <result property="scsj" column="scsj"/>
+        <result property="gxsj" column="gxsj"/>
+    </resultMap>
+
+    <insert id="batchInsertSpglXmspsxblxxxxb" parameterType="SpglXmspsxblxxxxb">
+        insert into SPGL_XMSPSXBLXXXXB (
+        LSH ,DFSJZJ ,XZQHDM ,GCDM ,SPSXSLBM ,BLCS ,BLR ,BLZT ,BLYJ ,BLSJ ,SJYXBS ,SJWXYY ,SJSCZT ,SBYY ,scsj ,gxsj
+        ) values
+        <foreach collection="list" item="item" separator=",">
+            (
+            #{item.lsh},#{item.dfsjzj},#{item.xzqhdm},#{item.gcdm},#{item.spsxslbm},#{item.blcs},#{item.blr},#{item.blzt},#{item.blyj},#{item.blsj},#{item.sjyxbs},#{item.sjwxyy},#{item.sjsczt},#{item.sbyy},#{item.scsj},
+            #{item.gxsj}
+            )
+        </foreach>
+    </insert>
+</mapper>

@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by chenzh    2019-07-04 16:18:35 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaParStageItemInMapper">
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns">
+        ITEM_IN_ID  itemInId,
+    STAGE_ITEM_ID  stageItemId,
+    IN_ID  inId,
+    CREATER  creater,
+    CREATE_TIME  createTime,
+    SORT_NO  sortNo
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaParStageItemInById" resultType="AeaParStageItemIn">
+        select
+        <include refid="allColumns"/>
+        from AEA_PAR_STAGE_ITEM_IN
+        where ITEM_IN_ID = #{id}
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaParStageItemIn" resultType="AeaParStageItemIn">
+        select
+        <include refid="allColumns"/>
+        from AEA_PAR_STAGE_ITEM_IN
+        <where>
+            <if test="itemInId != null">
+                AND ITEM_IN_ID = #{itemInId}
+            </if>
+            <if test="stageItemId != null">
+                AND STAGE_ITEM_ID = #{stageItemId}
+            </if>
+            <if test="inId != null">
+                AND IN_ID = #{inId}
+            </if>
+            <if test="creater != null">
+                AND CREATER = #{creater}
+            </if>
+            <if test="createTime != null">
+                AND CREATE_TIME = #{createTime}
+            </if>
+            <if test="sortNo != null">
+                AND SORT_NO = #{sortNo}
+            </if>
+        </where>
+    </select>
+    <!--4 根据条件查询实体list,返回分页对象 -->
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaParStageItemIn" parameterType="AeaParStageItemIn">
+        insert into AEA_PAR_STAGE_ITEM_IN (ITEM_IN_ID, STAGE_ITEM_ID, IN_ID, CREATER, CREATE_TIME, SORT_NO)
+        values (#{itemInId}, #{stageItemId}, #{inId}, #{creater}, #{createTime}, #{sortNo})
+    </insert>
+    <!--6 修改实体对象 -->
+    <update id="updateAeaParStageItemIn" parameterType="AeaParStageItemIn">
+        update AEA_PAR_STAGE_ITEM_IN
+        <set>
+            <if test="itemInId != null">
+                ITEM_IN_ID = #{itemInId},
+            </if>
+            <if test="stageItemId != null">
+                STAGE_ITEM_ID = #{stageItemId},
+            </if>
+            <if test="inId != null">
+                IN_ID = #{inId},
+            </if>
+            <if test="creater != null">
+                CREATER = #{creater},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime},
+            </if>
+            <if test="sortNo != null">
+                SORT_NO = #{sortNo},
+            </if>
+        </set>
+        where ITEM_IN_ID = #{itemInId}
+    </update>
+    <!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaParStageItemIn">
+        delete
+        from AEA_PAR_STAGE_ITEM_IN
+        where ITEM_IN_ID = #{id}
+    </delete>
+
+
+    <!--8 删除实体对象列表,根据主键ID列表 -->
+    <!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaParStageItemIn" id="AeaParStageItemInMap">
+        <id property="itemInId" column="ITEM_IN_ID"/>
+        <result property="stageItemId" column="STAGE_ITEM_ID"/>
+        <result property="inId" column="IN_ID"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="sortNo" column="SORT_NO"/>
+    </resultMap>
+
+    <delete id="deleteAeaParStageItemInByStageItemId">
+        delete from   AEA_PAR_STAGE_ITEM_IN
+        where
+            STAGE_ITEM_ID = #{stageItemId}
+    </delete>
+
+    <select id="listStageItemInByItemAndOption" resultType="AeaParStageItemIn">
+        select
+        stageItemIn.ITEM_IN_ID itemInId,
+        stageItemIn.STAGE_ITEM_ID stageItemId,
+        stageItemIn.IN_ID inId,
+        stageItemIn.CREATER creater,
+        stageItemIn.CREATE_TIME createTime,
+        stageItemIn.SORT_NO sortNo
+        from AEA_PAR_STAGE_ITEM_IN stageItemIn, AEA_PAR_STAGE_ITEM stageItem
+        <where>
+            and stageItem.STAGE_ITEM_ID = stageItemIn.STAGE_ITEM_ID
+            and stageItem.STAGE_ID = #{stageId}
+            <if test="isOptionItem!=null and isOptionItem!='' ">
+                and stageItem.IS_OPTION_ITEM = #{isOptionItem}
+            </if>
+            <if test="itemId!=null and itemId!='' ">
+                and stageItem.ITEM_ID = #{itemId}
+            </if>
+            <if test="itemVerId!=null and itemVerId!='' ">
+                and stageItem.ITEM_VER_ID = #{itemVerId}
+            </if>
+        </where>
+    </select>
+
+    <select id="listStageItemInByStageIdAndOption" resultType="AeaParStageItemIn">
+        select
+        stageItemIn.ITEM_IN_ID itemInId,
+        stageItemIn.STAGE_ITEM_ID stageItemId,
+        stageItemIn.IN_ID inId,
+        stageItemIn.CREATER creater,
+        stageItemIn.CREATE_TIME createTime,
+        stageItemIn.SORT_NO sortNo
+        from AEA_PAR_STAGE_ITEM_IN stageItemIn, AEA_PAR_STAGE_ITEM stageItem
+        <where>
+            and stageItem.STAGE_ITEM_ID = stageItemIn.STAGE_ITEM_ID
+            and stageItem.STAGE_ID = #{stageId}
+            <if test="isOptionItem!=null and isOptionItem!='' ">
+                and stageItem.IS_OPTION_ITEM = #{isOptionItem}
+            </if>
+        </where>
+    </select>
+
+    <!--根据inId删除对象-->
+    <delete id="deleteAeaParStageItemInByInId">
+        delete from   AEA_PAR_STAGE_ITEM_IN
+        where
+            IN_ID = #{inId}
+    </delete>
+
+    <select id="getMaxSortNo" resultType="java.lang.Long">
+        select max(sort_no) from AEA_PAR_STAGE_ITEM_IN
+    </select>
+
+    <select id="listAeaParStageItemInByInId" resultType="AeaParStageItemIn">
+        select
+        itemIn.ITEM_IN_ID  itemInId,
+        itemIn.STAGE_ITEM_ID  stageItemId,
+        itemIn.IN_ID  inId,
+        itemIn.CREATER  creater,
+        itemIn.CREATE_TIME  createTime,
+        itemIn.SORT_NO  sortNo,
+        item.ITEM_NAME itemName
+        from AEA_PAR_STAGE_ITEM_IN itemIn
+        left join AEA_PAR_STAGE_ITEM stiem on stiem.STAGE_ITEM_ID = itemIn.STAGE_ITEM_ID
+        left join AEA_ITEM_basic item on item.ITEM_ID = stiem.ITEM_ID
+        <where>
+            and  itemIn.IN_ID = #{inId}
+        </where>
+    </select>
+</mapper>

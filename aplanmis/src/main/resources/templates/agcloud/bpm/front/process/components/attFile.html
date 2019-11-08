@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!--公共css,js-->
+    <th:block th:include="common/common :: approveCommonHeader('附件管理')"/>
+
+    <!--<link rel="stylesheet" href="../../../static/approve/css/common.css" th:href="@{/approve/css/common.css}">-->
+    <link type="text/css" rel="stylesheet" href="../../../../../../static/agcloud/bpm/front/process/css/att/webuploader/webuploader.css" th:href="@{/agcloud/bpm/front/process/css/att/webuploader/webuploader.css}"/>
+    <link type="text/css" rel="stylesheet" href="../../../../../../static/agcloud/bpm/front/process/css/att/style.css" th:href="@{/agcloud/bpm/front/process/css/att/style.css}"/>
+    <link type="text/css" rel="stylesheet" href="../../../../../../static/agcloud/bpm/front/process/css/att/allFile.css" th:href="@{/agcloud/bpm/front/process/css/att/allFile.css}"/>
+
+    <link rel="stylesheet" href="../../../../../../static/agcloud/bpm/front/process/css/approveDoc.css" th:href="@{/agcloud/bpm/front/process/css/approveDoc.css}">
+    <!--<script>
+        var ctx = "[[@{/}]]";
+    </script>-->
+</head>
+<body style="  background: #ffffff;">
+<div id="attFile">
+    <!-- 工具栏 -->
+    <div id="tool_change" class="tool-change">
+        <div class="tool">
+            <div class="wj-tool">
+                <!--                <a href="#" id="createDir" style="border-top-right-radius: 0px;border-bottom-right-radius: 0px;">-->
+                <!--                    <i class="flaticon-folder" style="margin-top:0px;"></i>-->
+                <!--                    <span>新建</span>-->
+                <!--                </a>-->
+                <!--<a href="#" id="upload">
+                    <i class="la la-upload" style="margin-top:4px;"></i>
+                    <span>上传</span>
+                </a>-->
+                <el-button-group>
+                    <el-button type="primary" id="uploadel">上传</el-button>
+                    <el-button type="primary" @click="doDownload()" id="multiDownload">下载</el-button>
+                    <el-button type="primary" id="remove">删除</el-button>
+                </el-button-group>
+                <!--  <a href="#" id="multiDownload" style="border-top-left-radius: 0px;border-bottom-left-radius: 0px;" @click="doDownload()">
+                      &lt;!&ndash;<img src="${pageContext.request.contextPath}/ui-static/agcloud/bsc/yunpan/img/xz.png"/>&ndash;&gt;
+                      <i class="la la-download"></i>
+                      <span>下载</span>
+                  </a>-->
+                <!-- <a href="#" id="remove" style="border-top-right-radius: 4px;border-bottom-right-radius: 4px;">
+                     <i class="la la-trash-o"></i>
+                     <span>删除</span>
+                 </a>-->
+            </div>
+            <!--<a href="#" id="lt_upload" style="border-top-left-radius: 4px;border-bottom-left-radius: 4px;">-->
+            <!--<i class="la la-camera"></i>-->
+            <!--<span>良田</span>-->
+            <!--</a>-->
+            <!--<a href="#" id="fz_upload"-->
+            <!--style="border-top-right-radius: 4px;border-bottom-right-radius: 4px;">-->
+            <!--<i class="la la-camera-retro"></i>-->
+            <!--<span>方正</span>-->
+            <!--</a>-->
+        </div>
+        <div class="tool-right">
+            <span style="float:left;">
+                <i class="el-icon-back" id="backToLast" @click="backToLast"></i>
+                <i class="el-icon-refresh" id="refresh" @click="refresh"></i>
+            </span>
+            <div class="search">
+                <!--                <input type="text" class="form-control m-input" AUTOCOMPLETE="off" id="searchKey" placeholder="搜索您的文件"/>-->
+                <!--                <i class="flaticon-search-1" id="search"></i>-->
+                <el-input placeholder="请输入关键字进行搜索" v-model="keyword" clearable class="input-with-select" id="searchKey">
+                    <i slot="suffix" id="search" class="el-input__icon el-icon-search" @click="searchFileData()"></i>
+                </el-input>
+            </div>
+            <span @click="activefile = !activefile;">
+                <!----<a class="sort"></a>-->
+                <a class="toggle" :class="{'file':activefile}" id="toggle"></a>
+            </span>
+
+        </div>
+    </div>
+    <div class="clear"></div>
+    <div class="allFile" style="padding: 0 11px;margin-top: 10px;font-size: 12px;">
+        <span id="all_file">全部文件</span>
+        <span id="dirXpath"></span>
+        <span style="float: right;" v-show="attDirsList.length>0">已全部加载，共<span class="file-total" style="color:#36A0F7;" v-text="attDirsList.length"></span>个</span>
+        <span style="float: right;" v-show="attFilesList.length>0">已全部加载，共<span class="file-total" style="color:#36A0F7;" v-text="attFilesList.length"></span>个</span>
+    </div>
+    <!--文件列表形式 str-->
+    <div id="show_list" v-loading="attFileLoading">
+        <div v-show="attDirsList.length>0">
+            <el-table
+                    :data="attDirsList"
+                    :height="tableHeigth"
+                    stripe
+                    highlight-current-row
+                    @row-click="fileTableRowClick"
+                    @selection-change="changeDirsSelection"
+                    style="width: 100%">
+                <el-table-column
+                        type="selection"
+                        width="50">
+                </el-table-column>
+                <el-table-column prop="dirName" label="文件名">
+                    <template slot-scope="scope">
+                        <div v-if="scope.row.dirName">
+                            <img class="folderIcon" src="../../../static/agcloud/bpm/front/process/css/att/images/new-file/folder.png" th:src="@{/agcloud/bpm/front/process/css/att/images/new-file/folder.png}">{{scope.row.dirName}}
+                            <!--                            <span class="editName hide">-->
+                            <!--                                <input type="text" class="editItem">-->
+                            <!--                                <span>-->
+                            <!--                                    <img src="/aplanmis-front/ui-static/agcloud/bsc/yunpan/img/confirm.png" class="pointer editConfirm">-->
+                            <!--                                    <img src="/aplanmis-front/ui-static/agcloud/bsc/yunpan/img/close.png" class="pointer editCancel">-->
+                            <!--                                </span>-->
+                            <!--                            </span>-->
+                            <!--                            <span class="wjj-tool hide" data-type="dir" data-key="sbcl_2018_augurit">-->
+                            <!--                                <img src="/aplanmis-front/ui-static/agcloud/bsc/yunpan/img/gd.png" class="pointer rename" title="重命名">-->
+                            <!--                            </span>-->
+                        </div>
+                        <span v-else>
+                           -
+                        </span>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                        prop="creater"
+                        align="center"
+                        label="上传人"
+                        width="80">
+                    <template slot-scope="scope">
+                    <span v-if="scope.row.creater">
+                        {{scope.row.creater}}
+                    </span>
+                        <span v-else>
+                       -
+                    </span>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                        align="center"
+                        prop="dirPrivilege"
+                        label="部门"
+                        width="90">
+                    <template slot-scope="scope">
+                    <span v-if="scope.row.dirPrivilege">
+                        {{scope.row.dirPrivilege}}
+                    </span>
+                        <span v-else>
+                       -
+                    </span>
+                    </template>
+                </el-table-column>
+            </el-table>
+        </div>
+        <div v-show="attFilesList.length>0">
+
+            <el-table
+                    :data="attFilesList"
+                    :height="tableHeigth"
+                    stripe
+                    highlight-current-row
+                    @selection-change="changeFilesSelection"
+                    @cell-mouse-enter="filesMouseEnter"
+                    @cell-mouse-leave="filesMouseLeave"
+                    style="width: 100%">
+                <el-table-column
+                        type="selection"
+                        width="50">
+                </el-table-column>
+                <el-table-column
+                        prop="attName"
+                        label="文件名"
+                >
+                    <template slot-scope="scope">
+                        <div v-if="scope.row.attName">
+                            <img src="../../../static/agcloud/bpm/front/process/css/att/images/new-file/file_picture.png" th:src="@{/agcloud/bpm/front/process/css/att/images/new-file/file_picture.png}">
+                            <span class="attName">{{scope.row.attName}}</span>
+                            <span class="wjj-tool" data-type="file" :id="scope.row.detailId" data-geo="undefined" style="display: none;" @click="doDownload(1,scope.row.detailId)">
+                                <img src="../../../static/agcloud/bpm/front/process/css/att/images/xz.png" th:src="@{/agcloud/bpm/front/process/css/att/images/xz.png}" class="pointer download" title="下载">
+                            </span>
+                        </div>
+                        <span v-else>
+                            -
+                    </span>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                        prop="createrName"
+                        label="上传人"
+                        align="center"
+                        width="70">
+                    <template slot-scope="scope">
+                    <span v-if="scope.row.createrName">
+                        {{scope.row.createrName}}
+                    </span>
+                        <span v-else>
+                       -
+                    </span>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                        prop="orgName"
+                        label="部门"
+                        align="center"
+                        width="100">
+                    <template slot-scope="scope">
+                    <span v-if="scope.row.orgName">
+                        {{scope.row.orgName}}
+                    </span>
+                        <span v-else>
+                       -
+                    </span>
+                    </template>
+                </el-table-column>
+            </el-table>
+        </div>
+        <div v-show="attDirsList.length<=0&&attFilesList.length<=0" class="noData">没有文件哦</div>
+    </div>
+    <!--文件列表形式 end-->
+
+    <!--文件中等图标形式 str-->
+    <div id="show_view" style="display:none;">
+        <table>
+            <thead>
+            <tr>
+                <td id="text-td_view">
+                    <label class="m-checkbox m-checkbox--solid m-checkbox--brand">
+                        <input id="checkAll_view" type="checkbox" @change="checkfileAll">
+                        <span></span>
+                    </label>
+                    <span id="total_select" style="color:#999;margin-left: -14px;">全选</span>
+                </td>
+            </tr>
+            </thead>
+        </table>
+        <div id="file_view" class="file-view" v-loading="attFileLoading">
+            <div v-show="attDirsList.length>0">
+                <div class="td-cust" :class="{'check-file':item.checkfile}" @click="toggleCheckfile(item,1)" @dblclick="dbclickDetail(item)" data-type="dir" data-key="sbcl_2018_augurit" v-for="item in  attDirsList" :key="item.dirId">
+                    <div class="file-image folder-icon"></div>
+                    <div class="file-name">
+                        <a href="javascript:void(0);" :title="item.dirName" v-text="item.dirName"></a>
+                    </div>
+                </div>
+            </div>
+            <div v-show="attFilesList.length>0">
+                <div class="td-cust" :class="{'check-file':item.checkfile}" @click="toggleCheckfile(item,2)" v-for="item in attFilesList" :key="item.detailId">
+                    <div class="file-image">
+                        <img src="../../../static/agcloud/bpm/front/process/css/att/images/new-file/file_picture.png" th:src="@{/agcloud/bpm/front/process/css/att/images/new-file/file_picture.png}">
+                    </div>
+                    <div class="file-name">
+                        <a href="javascript:void(0);" :title="item.attName" v-text="item.attName"></a>
+                    </div>
+                </div>
+            </div>
+            <div v-show="attDirsList.length<=0&&attFilesList.length<=0" class="noData">没有文件哦</div>
+        </div>
+    </div>
+    <!--文件中等图标形式 end-->
+
+</div>
+
+<!-- 引入组件库服务器使用 -->
+<th:block th:include="common/common :: approveCommonfooter"/>
+
+<script type="text/javascript" src="../../../../../../static/agcloud/bpm/front/process/css/att/webuploader/webuploader.js" th:src="@{/agcloud/bpm/front/process/css/att/webuploader/webuploader.js}"></script>
+<script type="text/javascript" src="../../../../../../static/agcloud/bpm/front/process/js/att/attFile.js" th:src="@{/agcloud/bpm/front/process/js/att/attFile.js}"></script>
+
+</body>
+</html>

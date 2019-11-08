@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by Administrator    2019-07-04 16:45:17 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaHiParStageinstMapper">
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns">
+        ${alias}.STAGEINST_ID  stageinstId,
+        ${alias}.THEME_VER_ID  themeVerId,
+        ${alias}.STAGE_ID  stageId,
+        ${alias}.START_TIME  startTime,
+        ${alias}.END_TIME  endTime,
+        ${alias}.STAGEINST_STATE  stageinstState,
+        ${alias}.STAGEINST_MEMO  stageinstMemo,
+        ${alias}.CREATER  creater,
+        ${alias}.CREATE_TIME  createTime,
+        ${alias}.MODIFIER  modifier,
+        ${alias}.MODIFY_TIME  modifyTime,
+        ${alias}.APPINST_ID  appinstId,
+        ${alias}.APPLYINST_ID  applyinstId,
+        ${alias}.BUSINESS_STATE  businessState,
+        ${alias}.ROOT_ORG_ID  rootOrgId
+    </sql>
+    <sql id="combineColumns">
+        ahps.STAGEINST_ID  stageinstId,
+        ahps.THEME_VER_ID  themeVerId,
+        ahps.STAGE_ID  stageId,
+        ahps.START_TIME  startTime,
+        ahps.END_TIME  endTime,
+        ahps.STAGEINST_STATE  stageinstState,
+        ahps.STAGEINST_MEMO  stageinstMemo,
+        ahps.CREATER  creater,
+        ahps.CREATE_TIME  createTime,
+        ahps.MODIFIER  modifier,
+        ahps.MODIFY_TIME  modifyTime,
+        ahps.APPINST_ID  appinstId,
+        ahps.APPLYINST_ID  applyinstId,
+        ahps.BUSINESS_STATE businessState,
+        aps.STAGE_NAME stageName,
+        aps.DUE_NUM dueNum,
+        aps.DUE_UNIT dueUnit,
+        aps.ICON_CSS iconCss,
+        aps.BG_CSS bgCss,
+        aps.SORT_NO sortNo,
+        aps.HAND_WAY handWay,
+        ahps.ROOT_ORG_ID  rootOrgId
+    </sql>
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaHiParStageinstById" resultType="AeaHiParStageinst">
+        select
+        <include refid="combineColumns" />
+        from AEA_HI_PAR_STAGEINST ahps,AEA_PAR_STAGE aps
+        where
+        ahps.STAGE_ID = aps.STAGE_ID
+        AND ahps.STAGEINST_ID = #{id}
+    </select>
+
+    <select id="getAeaHiParStageinstByAppinstId" resultType="AeaHiParStageinst">
+        select
+        <include refid="allColumns"><property name="alias" value="ahps"/></include>
+        from AEA_HI_PAR_STAGEINST ahps
+        where APPINST_ID = #{appinstId}
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaHiParStageinst" resultType="AeaHiParStageinst">
+        select
+        <include refid="combineColumns"/>
+        from AEA_HI_PAR_STAGEINST ahps,AEA_PAR_STAGE aps
+        <where>
+            ahps.STAGE_ID = aps.STAGE_ID
+            <if test="stageinstId != null">
+                AND ahps.STAGEINST_ID = #{stageinstId}
+            </if>
+            <if test="themeVerId != null">
+                AND ahps.THEME_VER_ID = #{themeVerId}
+            </if>
+            <if test="stageId != null">
+                AND ahps.STAGE_ID = #{stageId}
+            </if>
+            <if test="stageinstState != null">
+                AND ahps.STAGEINST_STATE = #{stageinstState}
+            </if>
+            <if test="appinstId != null">
+                AND ahps.APPINST_ID = #{appinstId}
+            </if>
+            <if test="applyinstId != null">
+                AND ahps.APPLYINST_ID = #{applyinstId}
+            </if>
+            <if test="businessState!=null">
+                AND ahps.BUSINESS_STATE=#{businessState}
+            </if>
+            <if test="rootOrgId!=null">
+                AND ahps.ROOT_ORG_ID=#{rootOrgId}
+            </if>
+        </where>
+    </select>
+
+    <!--4 根据条件查询实体list,返回分页对象 -->
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaHiParStageinst" parameterType="AeaHiParStageinst">
+        insert into AEA_HI_PAR_STAGEINST (STAGEINST_ID, THEME_VER_ID, STAGE_ID, START_TIME, END_TIME, STAGEINST_STATE,
+                                          STAGEINST_MEMO, CREATER, CREATE_TIME, MODIFIER, MODIFY_TIME, APPINST_ID,
+                                          APPLYINST_ID, BUSINESS_STATE,ROOT_ORG_ID)
+        values (#{stageinstId}, #{themeVerId}, #{stageId}, #{startTime}, #{endTime}, #{stageinstState},
+                #{stageinstMemo}, #{creater}, #{createTime}, #{modifier}, #{modifyTime}, #{appinstId}, #{applyinstId},
+                #{businessState},#{rootOrgId})
+    </insert>
+    <!--6 修改实体对象 -->
+    <update id="updateAeaHiParStageinst" parameterType="AeaHiParStageinst">
+        update AEA_HI_PAR_STAGEINST
+        <set>
+            <if test="stageinstId != null">
+                STAGEINST_ID = #{stageinstId},
+            </if>
+            <if test="themeVerId != null">
+                THEME_VER_ID = #{themeVerId},
+            </if>
+            <if test="stageId != null">
+                STAGE_ID = #{stageId},
+            </if>
+            <if test="startTime != null">
+                START_TIME = #{startTime},
+            </if>
+            <if test="endTime != null">
+                END_TIME = #{endTime},
+            </if>
+            <if test="stageinstState != null">
+                STAGEINST_STATE = #{stageinstState},
+            </if>
+            <if test="stageinstMemo != null">
+                STAGEINST_MEMO = #{stageinstMemo},
+            </if>
+            <if test="creater != null">
+                CREATER = #{creater},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime},
+            </if>
+            <if test="modifier != null">
+                MODIFIER = #{modifier},
+            </if>
+            <if test="modifyTime != null">
+                MODIFY_TIME = #{modifyTime},
+            </if>
+            <if test="appinstId != null">
+                APPINST_ID = #{appinstId},
+            </if>
+            <if test="applyinstId != null">
+                APPLYINST_ID = #{applyinstId},
+            </if>
+            <if test="businessState != null">
+                BUSINESS_STATE = #{businessState},
+            </if>
+            <if test="rootOrgId!=null">
+                ROOT_ORG_ID=#{rootOrgId},
+            </if>
+        </set>
+        where STAGEINST_ID = #{stageinstId}
+    </update>
+    <!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaHiParStageinst">
+        delete
+        from AEA_HI_PAR_STAGEINST
+        where STAGEINST_ID = #{id}
+    </delete>
+    <!---->
+    <select id="listAeaHiParStageinstByStageIdOrThemeVerId" resultType="AeaHiParStageinst">
+        select <include refid="allColumns"><property name="alias" value="ahps"/></include> from AEA_HI_PAR_STAGEINST ahps
+        <where>
+            <if test="themeVerId!=null and themeVerId!=''">
+                and ahps.THEME_VER_ID=#{themeVerId}
+            </if>
+            <if test="stageId!=null and stageId!=''">
+                and ahps.STAGE_ID=#{stageId}
+            </if>
+        </where>
+    </select>
+    <!--根据申请实例查询查询阶段实例-->
+    <select id="getAeaHiParStageinstByApplyinstId" resultType="AeaHiParStageinst">
+        select
+        <include refid="allColumns">
+            <property name="alias" value="ahps"/>
+        </include>
+        ,aps.STAGE_NAME stageName
+        ,apt.THEME_NAME themeName
+        ,aps.HAND_WAY handWay
+        ,aps.IS_NEED_STATE isNeedState
+        from AEA_HI_PAR_STAGEINST ahps
+        LEFT JOIN aea_par_stage aps ON aps.stage_id = ahps.stage_id
+        LEFT JOIN aea_par_theme_ver aptv ON aptv.THEME_VER_ID = ahps.THEME_VER_ID
+        LEFT JOIN aea_par_theme apt ON apt.THEME_ID = aptv.THEME_ID
+        where ahps.APPLYINST_ID=#{applyinstId}
+    </select>
+    <!--8 删除实体对象列表,根据主键ID列表 -->
+    <!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaHiParStageinst" id="AeaHiParStageinstMap">
+        <id property="stageinstId" column="STAGEINST_ID"/>
+        <result property="themeVerId" column="THEME_VER_ID"/>
+        <result property="stageId" column="STAGE_ID"/>
+        <result property="startTime" column="START_TIME"/>
+        <result property="endTime" column="END_TIME"/>
+        <result property="stageinstState" column="STAGEINST_STATE"/>
+        <result property="stageinstMemo" column="STAGEINST_MEMO"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="modifier" column="MODIFIER"/>
+        <result property="modifyTime" column="MODIFY_TIME"/>
+        <result property="appinstId" column="APPINST_ID"/>
+        <result property="applyinstId" column="APPLYINST_ID"/>
+        <result property="businessState" column="BUSINESS_STATE"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+    </resultMap>
+
+    <select id="listAeaHiParStageinstByApplyinstIds" resultType="com.augurit.aplanmis.common.domain.AeaHiParStageinst">
+        select
+        <include refid="allColumns">
+            <property name="alias" value="ahps"/>
+        </include>
+        from AEA_HI_PAR_STAGEINST ahps where ahps.APPLYINST_ID in
+        <foreach collection="applyinstIds" open="(" close=")" separator="," item="applyinstId">
+            #{applyinstId}
+        </foreach>
+    </select>
+
+    <select id="listAeaHiParStageinstByIds" resultType="com.augurit.aplanmis.common.domain.AeaHiParStageinst">
+        select
+        <include refid="allColumns">
+            <property name="alias" value="ahps"/>
+        </include>
+        from AEA_HI_PAR_STAGEINST ahps where ahps.STAGEINST_ID in
+        <foreach collection="stageinstIds" open="(" close=")" separator="," item="id">
+            #{id}
+        </foreach>
+    </select>
+
+    <select id="getStageinstIdsByStageid" resultType="string">
+        select ahps.STAGEINST_ID  from AEA_HI_PAR_STAGEINST ahps where ahps.STAGE_ID=#{stageId}
+    </select>
+
+    <select id="queryThemeAeaHiParStageinsts" resultType="com.augurit.aplanmis.common.domain.AeaHiParStageinst">
+        select
+        <include refid="allColumns">
+            <property name="alias" value="ahps"/>
+        </include> ,aha.applyinst_state applyinstState
+        from AEA_HI_PAR_STAGEINST ahps,AEA_HI_APPLYINST aha
+        where aha.APPLYINST_ID = ahps.APPLYINST_ID
+        and ahps.THEME_VER_ID in (${queryThemeVerIds})
+        <if test="rootOrgId != null and rootOrgId != ''">
+            AND ahps.ROOT_ORG_ID = #{rootOrgId}
+        </if>
+        <if test="queryStates != null and queryStates != ''">
+            AND aha.APPLYINST_STATE in (${queryStates})
+        </if>
+        <if test="startTime!=null and startTime!=''">
+            and aha.CREATE_TIME &gt;= concat(#{startTime},' 00:00:00')
+        </if>
+        <if test="endTime!=null and endTime!=''">
+            and aha.CREATE_TIME &lt;= concat(#{endTime},' 23:59:59')
+        </if>
+    </select>
+
+    <select id="queryStageAeaHiParStageinsts" resultType="com.augurit.aplanmis.common.domain.AeaHiParStageinst">
+
+        select apt.theme_name themeName,
+          gg.*
+        from (
+        select
+        <include refid="allColumns">
+            <property name="alias" value="ahps"/>
+        </include> ,aha.applyinst_state applyinstState,aps.STAGE_NAME stageName
+        from AEA_HI_PAR_STAGEINST ahps, AEA_HI_APPLYINST aha, AEA_PAR_STAGE aps
+        where aha.APPLYINST_ID = ahps.APPLYINST_ID
+        AND ahps.STAGE_ID = aps.STAGE_ID
+        AND aps.DYBZSPJDXH = #{standardStageCode}
+        <if test="rootOrgId != null and rootOrgId != ''">
+            AND ahps.ROOT_ORG_ID = #{rootOrgId}
+        </if>
+        <if test="queryStates != null and queryStates != ''">
+            AND aha.APPLYINST_STATE in (${queryStates})
+        </if>
+        <if test="startTime!=null and startTime!=''">
+            and aha.CREATE_TIME &gt;= concat(#{startTime},' 00:00:00')
+        </if>
+        <if test="endTime!=null and endTime!=''">
+            and aha.CREATE_TIME &lt;= concat(#{endTime},' 23:59:59')
+        </if>) gg
+        LEFT JOIN aea_par_theme_ver aptv on aptv.THEME_VER_ID = gg.themeVerId
+        LEFT JOIN aea_par_theme apt on apt.THEME_ID = aptv.THEME_ID
+    </select>
+
+</mapper>

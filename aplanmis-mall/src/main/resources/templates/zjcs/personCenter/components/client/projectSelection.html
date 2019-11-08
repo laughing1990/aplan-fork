@@ -1,0 +1,776 @@
+<!-- 中选的项目 -->
+<div id="projectSelection" class="box normal-module-box" v-cloak v-loading.fullscreen.lock="mloading">
+    <h2 class="box-tit">中选的项目</h2>
+    <!-- 中选的项目列表 -->
+    <div class="pandel mt20" v-if="!isProjectSelectDetail">
+        <el-row class="inlineblock-midd">
+            项目名称：
+            <el-input class="w-200 mr20" placeholder="请输入项目名称" v-model="projectSelectCheckData.projName"
+                @keyup.enter.native="checkSelectionProjectList" />
+            </el-input>
+            项目状态：
+            <el-select placeholder="请选择" v-model="projectSelectCheckData.auditFlag" :popper-append-to-body="false">
+                <el-option v-for="item in statusOptions" :key="item.auditState" :label="item.itemName"
+                    :value="item.auditState">
+                </el-option>
+            </el-select>
+            <el-button class="ml20" type="primary" size="medium" @click="checkSelectionProjectList">查询</el-button>
+        </el-row>
+        <el-table :data="projectSelectList" class="scrollable mt20" style="width: 100%;"
+            :header-cell-style="{background:'#f7f8fa'}">
+            <el-table-column label="序号" width="55">
+                <template scope="scope">
+                    {{scope.$index+1}}
+                </template>
+            </el-table-column>
+            <el-table-column prop="projName" label="项目名称">
+            </el-table-column>
+            <el-table-column label="报价金额">
+                <template scope="scope">
+                    <span>{{scope.row.realPrice | realPriceFormat}}</span>
+                </template>
+            </el-table-column>
+            <el-table-column label="中选日期">
+                <template scope="scope">
+                    <span>{{scope.row.biddingTime | dateFormat('y-m-d')}}</span>
+                </template>
+            </el-table-column>
+            <el-table-column prop="auditFlag" label="项目状态">
+            </el-table-column>
+            <el-table-column label="合同状态">
+                <template scope="scope">
+                    <span v-if="!scope.row.isUploadContract">未上传</span>
+                    <span v-else>{{scope.row.contractFlag | contractFormat}}</span>
+                </template>
+            </el-table-column>
+            <el-table-column label="操作">
+                <template scope="scope">
+                    <a class="a-color4879E4" href="javascript:;" @click="addAgreement(scope.row)"
+                        v-if="scope.row.isUploadContract == 0">上传合同</a>
+                    <p style="margin: 0;" v-else>
+                        <a class="a-color4879E4" href="javascript:;"
+                            v-if="scope.row.contractFlag == 0 && scope.row.isOwnerUpload == 0"
+                            @click="editAgreement(scope.row)">编辑合同</a>
+                        <a class="a-color4879E4" href="javascript:;" @click="lookAgreement(scope.row)">查看合同</a>
+                        <a class="a-color4879E4" href="javascript:;"
+                            v-if="scope.row.contractFlag == 0 && scope.row.isOwnerUpload == 1"
+                            @click="sureAgreement(scope.row)">确认合同</a>
+                    </p>
+
+                </template>
+            </el-table-column>
+        </el-table>
+        <el-pagination background align="right" @size-change="projectSelectionListSizeChange"
+            @current-change="projectSelectionListPageChange" :page-sizes="[10, 20, 30, 50]"
+            :page-size="projectSelectCheckData.pageSize" :current-page="projectSelectCheckData.pageNum"
+            layout="total,sizes, prev, pager, next, jumper" :total="projectSelectTotal" v-show="projectSelectTotal>10">
+        </el-pagination>
+    </div>
+    <!-- 人员详情 -->
+    <div class="pandel module-edit-pandel mt20" v-else>
+        <div class="info-header text-right mt20 clearfix">
+            <el-button @click="projectSelectDetailReturnOne">返回上一级</el-button>
+        </div>
+        <!-- 合同title -->
+        <div class="info-title">
+            {{contractDetailObj.contractName}} 【合同】
+        </div>
+
+        <!-- 合同数据 -->
+        <div class="info-item edit-item">
+            <div class="item-detail edit-item-detail">
+                <div class="row">
+                    <div class="col-md-6 form-item">
+                        <label>提交时间</label>
+                        <div class="input-box">
+                            <el-date-picker style="width:330px;" type="date" value-format="timestamp"
+                                :disabled="isLookHandelRow || isSureHandelRow" v-model="submitTime" placeholder="选择日期">
+                            </el-date-picker>
+                        </div>
+                    </div>
+                    <div class="col-md-6 form-item">
+                        <label>提交者</label>
+                        <div class="input-box">
+                            <input type="text" class="form-control" v-model="contractDetailObj.creater"
+                                :disabled="isLookHandelRow || isSureHandelRow">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 form-item">
+                        <label><b class="red-cl">*</b>合同签订时间</label>
+                        <div class="input-box date">
+                            <el-date-picker style="width:330px;" type="date" value-format="yyyy-MM-dd"
+                                :disabled="isLookHandelRow || isSureHandelRow" placeholder="选择日期"
+                                v-model="contractDetailObj.signTime">
+                            </el-date-picker>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-item">
+                    <label><b class="red-cl">*</b>合同编码</label>
+                    <div class="input-box">
+                        <input type="text" class="form-control" v-model="contractDetailObj.contractCode"
+                            :disabled="isLookHandelRow || isSureHandelRow">
+                    </div>
+                </div>
+                <div class="form-item mt20">
+                    <label><b class="red-cl">*</b>合同名称</label>
+                    <div class="input-box">
+                        <input type="text" class="form-control" v-model="contractDetailObj.contractName"
+                            :disabled="isLookHandelRow || isSureHandelRow">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 form-item">
+                        <label><b class="red-cl">*</b>合同总金额(元)</label>
+                        <div class="input-box">
+                            <input type="text" class="form-control" v-model="contractDetailObj.price"
+                                :disabled="isLookHandelRow || isSureHandelRow">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8 form-item">
+                        <label><b class="red-cl">*</b>合同服务期限</label>
+                        <div class="input-box date">
+                            <el-date-picker type="date" value-format="yyyy-MM-dd" placeholder="选择日期"
+                                :disabled="isLookHandelRow || isSureHandelRow"
+                                v-model="contractDetailObj.serviceStartTime">
+                            </el-date-picker>
+                        </div>
+                        <label class="date-space-label"><b class="red-cl">*</b>至</label>
+                        <div class="input-box date">
+                            <el-date-picker type="date" value-format="yyyy-MM-dd" placeholder="选择日期"
+                                :disabled="isLookHandelRow || isSureHandelRow"
+                                v-model="contractDetailObj.serviceEndTime">
+                            </el-date-picker>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="form-item">
+                    <label><b class="red-cl">*</b>服务内容</label>
+                    <div class="input-box">
+                        <textarea class="form-control" v-model="contractDetailObj.serviceContent"
+                            :disabled="isLookHandelRow || isSureHandelRow"></textarea>
+                    </div>
+                </div>
+                <div class="form-item mt-2">
+                    <label>备注</label>
+                    <div class="input-box">
+                        <textarea class="form-control" v-model="contractDetailObj.memo"
+                            :disabled="isLookHandelRow || isSureHandelRow"></textarea>
+                    </div>
+                </div>
+                <div class="form-item mt-2">
+                    <label><b class="red-cl">*</b>附件</label>
+                    <div class="input-box">
+                        <div class="upload-card contract-upload-card">
+                            <!-- 查看合同的时候不显示上传组件 -->
+                            <div class="upload-btn" v-show="!isLookHandelRow && !isSureHandelRow">
+                                <el-upload class="enclosure-upload-ref inlineblock-midd" ref="enclosureUploadRef"
+                                    action="" :multiple="true" :on-change="enclosureFileSelectChange"
+                                    :on-remove="enclosureFileSelectRemove" :auto-upload="false">
+                                    <el-button slot="trigger" size="medium" type="normal">上传文件</el-button>
+                                </el-upload>
+                                <span class="ml20 upload-tip">上传的附件不可超过10MB，禁止上传以下的附件类型：.exe,.sh,.bat,.com,.dll</span>
+                            </div>
+                            <ul class="pjfile-list">
+                                <li v-for="item in contractDetailObj.bscAttForms">{{item.attName}}
+                                    <a class="debtn" href="javascript:;" v-if="!isLookHandelRow && !isSureHandelRow"
+                                        @click="deleteContractOne(item)">删除</a>
+                                    <a class="debtn" href="javascript:;" v-if="isLookHandelRow || isSureHandelRow"
+                                        @click="downloadContractEnclosure(item)">下载</a>
+                                </li>
+                            </ul>
+                            <!-- <p class="note-txt mt-1">更新时间：2018年08月14日 21:58:20</p> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 保存，取消-->
+        <div class="text-center mt20" v-if="!isLookHandelRow">
+            <el-button type="primary" v-if="!isLookHandelRow && !isSureHandelRow" @click="saveContractData">保存
+            </el-button>
+            <el-button type="primary" v-if="isSureHandelRow" @click="userSureContract">确认</el-button>
+            <el-button @click="projectSelectDetailReturnOne">取消</el-button>
+        </div>
+    </div>
+</div>
+<script>
+    // var ctx = "http://192.168.14.6:8084/aplanmis-mall/" //振强
+
+    function add0(m) {
+        return m < 10 ? '0' + m : m
+    };
+
+    function tempFormatDate(temp) {
+        if (!temp) return;
+        var time = new Date(date);
+        var y = time.getFullYear();
+        var m = time.getMonth() + 1;
+        var d = time.getDate();
+        var h = time.getHours();
+        var mm = time.getMinutes();
+        var s = time.getSeconds();
+        return y + '-' + add0(m) + '-' + add0(d)
+    }
+    var module1 = new Vue({
+        el: '#projectSelection',
+        mixins: [mixins],
+        data: function () {
+            return {
+                // 页面loading
+                mloading: false,
+
+                // 当前是否中选的项目详情
+                isProjectSelectDetail: false,
+
+                // 项目状态下拉选项
+                statusOptions: [{
+                    auditState: 1,
+                    itemName: '服务中'
+                }, {
+                    auditState: 2,
+                    itemName: '服务完成'
+                }, {
+                    auditState: 3,
+                    itemName: '服务终止'
+                }, {
+                    auditState: 9,
+                    itemName: '已选取'
+                }, {
+                    auditState: 10,
+                    itemName: '无效'
+                }],
+                // 中选的项目列表
+                projectSelectList: [],
+                // 中选的项目列表-查询参数
+                projectSelectCheckData: {
+                    pageSize: 10,
+                    pageNum: 1,
+                    projName: '', //项目名称
+                    auditFlag: 2, //项目状态
+                    isWonBid: '1',//是否中标：1 已中标，0 未中标
+                    type: 1, //0-报名项目 1-中选项目 2-已签约项目 3-服务中项目
+                    isUploadContract: '', //是否已上传合同（0-否 ，1-是），已上传合同代表的是中选项目下的已签约项目
+                    unitInfoId: ''
+                },
+                // 中选的项目列表-总数
+                projectSelectTotal: 0,
+
+                // 当前中选的项目详情页是否为编辑
+                projectSelectDetailEditFlag: false,
+
+                // 当前操作行
+                curHandelRow: {},
+                // 当前行操作是否为确定合同
+                isSureHandelRow: false,
+                // 当前行操作是否为查看合同
+                isLookHandelRow: false,
+
+                // 合同详情
+                // 提交时间
+                submitTime: '',
+
+                // 合同详情数据
+                contractDetailObj: {
+                    creater: '', //提交者
+                    contractName: '', //合同名称
+                    contractCode: '', //合同编码
+                    price: '', // 合同金额
+                    signTime: '', //签订时间
+                    serviceStartTime: '', //服务开始时间
+                    serviceEndTime: '', //服务结束时间
+                    serviceContent: '', // 服务内容
+                    memo: '', // 备注
+                    bscAttForms: [], //已上传的附加列表
+
+                    projPurchaseId: '',
+                    createrUnitName: '',
+                    ownerUnitInfoId: '',
+                    serviceUnitInfoId: '',
+                    unitBiddingId: ''
+                },
+
+
+                // 附件相关
+                // 附件列表选择的文件，跟已有的文件没关联
+                enclosureFileListArr: [],
+
+            }
+        },
+        methods: {
+            init: function () {
+                this.fetchSelectionProjectList();
+            },
+            // 获取中选的项目的项目列表
+            fetchSelectionProjectList: function () {
+                var ts = this;
+                ts.projectSelectCheckData.unitInfoId = JSON.parse(localStorage.getItem('loginInfo'))
+                    .unitId;
+                ts.mloading = true;
+                request('', {
+                    url: ctx + 'aea/supermarket/bidProjectManage/listUnitBiddingProjPurchase',
+                    type: 'get',
+                    data: ts.projectSelectCheckData,
+                }, function (res) {
+                    ts.mloading = false;
+                    if (res.success) {
+                        ts.projectSelectList = res.content.rows;
+                        ts.projectSelectTotal = res.content.total;
+                    } else {
+                        ts.$message({
+                            message: res.message,
+                            type: 'error'
+                        });
+                    }
+                }, function (msg) {
+                    ts.mloading = false;
+                    ts.$message({
+                        message: '加载失败',
+                        type: 'error'
+                    });
+                });
+            },
+            // 查询-中选的项目
+            checkSelectionProjectList: function () {
+                this.projectSelectCheckData.pageNum = 1;
+                this.fetchSelectionProjectList();
+            },
+            // 列表当前页change
+            projectSelectionListPageChange: function (val) {
+                this.projectSelectCheckData.pageNum = val;
+                this.fetchSelectionProjectList();
+            },
+            // 列表页面大小change
+            projectSelectionListSizeChange: function (val) {
+                this.projectSelectCheckData.pageSize = val;
+                this.fetchSelectionProjectList();
+            },
+
+            // 中选的项目详情返回上一级
+            projectSelectDetailReturnOne: function () {
+                this.isProjectSelectDetail = false;
+                this.isSureHandelRow = false;
+                this.isLookHandelRow = false;
+                this.fetchSelectionProjectList();
+            },
+
+            // 上传合同操作相关
+            // 列表操作-上传合同
+            addAgreement: function (row) {
+                this.isProjectSelectDetail = true;
+                this.projectSelectDetailEditFlag = false; //当前为上传合同
+                this.curHandelRow = JSON.parse(JSON.stringify(row));
+                // 上传合同需要先获取合同的初始化数据
+                this.fetchUploadContractInitData(row);
+            },
+            // 先获取合同的初始化数据
+            fetchUploadContractInitData: function (row) {
+                var ts = this,
+                    _url = ctx + 'supermarket/contract/getNewContract/' + row.projPurchaseId;
+                ts.mloading = true;
+                request('', {
+                    url: _url,
+                    type: 'post',
+                }, function (res) {
+                    ts.mloading = false;
+                    if (res.success) {
+                        ts.initUploadContractData(res.content);
+                        ts.submitTime = res.content.createTime; //上传合同时，提交时间是创建时间
+                    } else {
+                        ts.$message({
+                            message: res.message,
+                            type: 'error'
+                        });
+                    }
+                }, function (msg) {
+                    ts.mloading = false;
+                    ts.$message({
+                        message: '加载失败',
+                        type: 'error'
+                    });
+                });
+            },
+            // 初始话上传合同的合同详情数据
+            initUploadContractData: function (data) {
+                var ts = this;
+                for (var k in ts.contractDetailObj) {
+                    if (data[k] && data[k] !== null) {
+                        ts.contractDetailObj[k] = data[k];
+                    } else {
+                        ts.contractDetailObj[k] = "";
+                    }
+                }
+                // 附件列表没值的时候赋值为[]
+                if (!ts.contractDetailObj.bscAttForms) {
+                    ts.contractDetailObj.bscAttForms = [];
+                }
+                ts.contractDetailObj.signTime = tempFormatDate(ts.contractDetailObj.signTime);
+                ts.contractDetailObj.serviceStartTime = tempFormatDate(ts.contractDetailObj
+                    .serviceStartTime);
+                ts.contractDetailObj.serviceEndTime = tempFormatDate(ts.contractDetailObj.serviceEndTime);
+            },
+
+            // 编辑合同-操作相关
+            // 列表操作-编辑合同
+            editAgreement: function (row) {
+                var ts = this;
+                ts.isProjectSelectDetail = true;
+                ts.projectSelectDetailEditFlag = true; //当前为编辑合同
+                ts.curHandelRow = JSON.parse(JSON.stringify(row));
+                ts.fetchEditOrLookContractData(row);
+            },
+            // 编辑（或者查看）时获取对应的合同合同数据
+            fetchEditOrLookContractData: function (row) {
+                var ts = this,
+                    _url = ctx + 'supermarket/contract/getAeaImContract/' + row.contractId;
+                ts.mloading = true;
+                request('', {
+                    url: _url,
+                    type: 'post',
+                }, function (res) {
+                    ts.mloading = false;
+                    if (res.success) {
+                        ts.initEditOrLookContractData(res.content);
+                        ts.submitTime = res.content.modifyTime || res.content
+                            .createTime; //编辑合同时，提交时间是最后修改时间
+                    } else {
+                        ts.$message({
+                            message: res.message,
+                            type: 'error'
+                        });
+                    }
+                }, function (msg) {
+                    ts.mloading = false;
+                    ts.$message({
+                        message: '加载失败',
+                        type: 'error'
+                    });
+                });
+            },
+            // 编辑（或查看）已上传的合同数据初始化
+            initEditOrLookContractData: function (data) {
+                var ts = this;
+                for (var k in ts.contractDetailObj) {
+                    if (data[k] && data[k] !== null) {
+                        ts.contractDetailObj[k] = data[k];
+                    } else {
+                        ts.contractDetailObj[k] = "";
+                    }
+                }
+                // 附件列表没值的时候赋值为[]
+                if (!ts.contractDetailObj.bscAttForms) {
+                    ts.contractDetailObj.bscAttForms = [];
+                }
+                ts.contractDetailObj.signTime = tempFormatDate(ts.contractDetailObj.signTime);
+                ts.contractDetailObj.serviceStartTime = tempFormatDate(ts.contractDetailObj
+                    .serviceStartTime);
+                ts.contractDetailObj.serviceEndTime = tempFormatDate(ts.contractDetailObj.serviceEndTime);
+            },
+
+            // 确认合同操作
+            sureAgreement: function (row) {
+                this.isProjectSelectDetail = true;
+                this.isSureHandelRow = true; //当前为确定合同
+                this.isLookHandelRow = false;
+                this.curHandelRow = JSON.parse(JSON.stringify(row)); //当前操作行赋值
+                this.fetchEditOrLookContractData(row);
+            },
+            // 用户确认合同
+            userSureContract: function(){
+                var ts = this;
+                _sureUrl = ctx + 'supermarket/contract/confirmContractByContractId/' + ts.curHandelRow.contractId ;
+                ts.mloading = true;
+                request('', {
+                    url:_sureUrl,
+                    type: 'post',
+                    data: {projPurchaseId:ts.contractDetailObj.projPurchaseId}
+                }, function (res) {
+                    ts.mloading = false;
+                    if (res.success) {
+                        ts.$message({
+                            message: '确认成功',
+                            type: 'success'
+                        });
+                        ts.projectSelectDetailReturnOne();
+                    } else {
+                        ts.$message({
+                            message: res.message,
+                            type: 'error'
+                        });
+                    }
+                }, function (msg) {
+                    ts.mloading = false;
+                    ts.$message({
+                        message: '加载失败',
+                        type: 'error'
+                    });
+                });
+            },
+
+            // 查看合同操作
+            lookAgreement: function (row) {
+                this.isProjectSelectDetail = true;
+                this.isSureHandelRow = false,
+                    this.isLookHandelRow = true; //当前为查看合同
+                this.curHandelRow = JSON.parse(JSON.stringify(row)); //当前操作行赋值
+                this.fetchEditOrLookContractData(row);
+            },
+
+
+            // 附件相关
+            // 附件上传--before
+            enclosureBeforeUpload: function (file) {
+                var ts = this,
+                    file = file;
+                var fileMaxSize = 1024 * 1024 * 10; // 10MB为最大限制
+                // 文件类型
+                // 检查文件类型
+                var index = file.name.lastIndexOf(".");
+                var ext = file.name.substr(index + 1);
+                if (['exe', 'sh', 'bat', 'com', 'dll'].indexOf(ext) !== -1) {
+                    ts.$message({
+                        message: '请上传非.exe,.sh,.bat,.com,.dll文件',
+                    });
+                    return false;
+                };
+                // 检查文件大小
+                if (file.size > fileMaxSize) {
+                    ts.$message({
+                        message: '请上传大小在10M以内的文件',
+                    });
+                    return false;
+                };
+                return true;
+            },
+            // 附件上传文件列表变动
+            enclosureFileSelectChange: function (file, fileList) {
+                var ts = this;
+                ts.enclosureFileListArr = [];
+                // 选择后检验
+                if (!ts.enclosureBeforeUpload(file)) {
+                    var fileIndex = fileList.indexOf(file.name);
+                    fileList.splice(fileIndex, 1);
+                }
+                fileList.forEach(function (item) {
+                    ts.enclosureFileListArr.push(item.raw)
+                })
+
+            },
+            // 附件上传文件列表移除某一项
+            enclosureFileSelectRemove: function (file, fileList) {
+                var ts = this;
+                ts.enclosureFileListArr = [];
+                // 选择后检验
+                if (!ts.enclosureBeforeUpload(file)) {
+                    var fileIndex = fileList.indexOf(file.name);
+                    fileList.splice(fileIndex, 1);
+                }
+                fileList.forEach(function (item) {
+                    ts.enclosureFileListArr.push(item.raw)
+                })
+
+            },
+            // 附件删除（删除已上传的附件）
+            deleteContractOne: function (obj) {
+                var ts = this,
+                    _delData = {};
+                confirmMsg('', '您确定删除当前附件吗？', function () {
+                    _delData.detailId = obj.detailId;
+                    ts.mloading = true;
+                    request('', {
+                        url: ctx + 'supermarket/contract/deleteContractFile',
+                        type: 'post',
+                        data: _delData
+                    }, function (res) {
+                        ts.mloading = false;
+                        if (res.success) {
+                            // 前端数据自己删除对应的附件数据
+                            ts.deleteContractOneForFont(_delData.detailId);
+                        } else {
+                            ts.$message({
+                                message: '加载失败',
+                                type: 'error'
+                            });
+                        }
+                    }, function (msg) {
+                        ts.mloading = false;
+                        ts.$message({
+                            message: '加载失败',
+                            type: 'error'
+                        });
+                    });
+                });
+            },
+            // 前端数据自己删除对应的附件数据
+            deleteContractOneForFont: function (id) {
+                var _allList = this.contractDetailObj.bscAttForms;
+                var _idx = -1;
+                for (var i = 0; i < _allList.length; i++) {
+                    if (id === _allList[i].detailId) {
+                        _idx = i;
+                        break;
+                    }
+                }
+                if (_idx !== -1) {
+                    this.contractDetailObj.bscAttForms.splice(_idx, 1)
+                }
+            },
+            // 附件下载
+            downloadContractEnclosure: function(obj){
+                window.open(ctx + 'supermarket/purchase/downloadAttachment/' + obj.detailId);
+            },
+            // 保存-校验必填
+            checkContractData: function (data) {
+                var ts = this;
+                if (!data.signTime) {
+                    return ts.$message({
+                        message: '请选择签订时间'
+                    })
+                }
+                if (!data.contractCode) {
+                    return ts.$message({
+                        message: '请填写合同编码'
+                    })
+                }
+                if (!data.contractName) {
+                    return ts.$message({
+                        message: '请填写合同名称'
+                    })
+                }
+                if (!data.price) {
+                    return ts.$message({
+                        message: '请填写合同金额'
+                    })
+                }
+                if (!data.serviceStartTime || !data.serviceEndTime) {
+                    return ts.$message({
+                        message: '请选择合同服务期限'
+                    })
+                } else {
+                    if (data.serviceStartTime > data.serviceEndTime) {
+                        return ts.$message({
+                            message: '合同服务期限起始时间不能大于结束时间'
+                        })
+                    }
+                }
+                if (!data.serviceContent) {
+                    return ts.$message({
+                        message: '请填写服务内容'
+                    })
+                }
+                // 当前为上传合同并且没有选择文件时
+                if (!ts.projectSelectDetailEditFlag && !ts.enclosureFileListArr.length) {
+                    return ts.$message({
+                        message: '请上传附件'
+                    })
+                }
+                return true;
+            },
+            // 保存操作
+            saveContractData: function () {
+                var ts = this,
+                    _canSaveFlag = false,
+                    _cloneContractData = {}, //合同详情的拷贝
+                    _sendData = new FormData();
+                _cloneContractData = JSON.parse(JSON.stringify(ts.contractDetailObj));
+                // 都不需要传附件列表给后端接口
+                delete _cloneContractData.bscAttForms;
+                // 校验必填字段
+                _canSaveFlag = ts.checkContractData(_cloneContractData);
+                if (_canSaveFlag !== true) {
+                    return;
+                }
+                // 当前为编辑时，带上合同id
+                if (ts.projectSelectDetailEditFlag) {
+                    _cloneContractData.contractId = ts.curHandelRow.contractId;
+                }
+                for (var i in _cloneContractData) {
+                    _sendData.append(i, _cloneContractData[i]);
+                }
+                for (var j = 0; j < ts.enclosureFileListArr.length; j++) {
+                    _sendData.append('file', ts.enclosureFileListArr[j]);
+                }
+                // 代表为中介机构上传
+                _sendData.append('isOwnerUpload', 0)
+
+                ts.mloading = true;
+                $.ajax({
+                    url: ctx + 'supermarket/contract/postContract',
+                    type: 'post',
+                    data: _sendData,
+                    contentType: false,
+                    processData: false,
+                    // mimeType: "multipart/form-data",
+                    success: function (res) {
+                        ts.mloading = false;
+                        if (res.success) {
+                            // 保存成功返回上一层
+                            ts.projectSelectDetailReturnOne();
+                            // 保存成功后将需要上传的附件文件列表清空
+                            ts.enclosureFileListArr = [];
+                            ts.$message({
+                                message: '上传合同成功',
+                                type: 'success'
+                            });
+                        } else {
+                            ts.$message({
+                                message: res.message,
+                                type: 'error'
+                            });
+                        }
+                    },
+                    error: function (msg) {
+                        ts.mloading = false;
+                        ts.$message({
+                            message: '保存失败',
+                            type: 'error'
+                        });
+                    },
+                })
+            },
+
+        },
+        mounted: function () {
+            this.init();
+        },
+        filters: {
+            // 合同状态
+            contractFormat: function (val) {
+                if (!val) return '待确定';
+                return val == 0 ? '待确定' : (val == 1 ? '已确定' : (val == 2 ? '审核失败' : '审核中'))
+            },
+            // 金额/下浮率
+            realPriceFormat: function (val) {
+                if (!val) return '无';
+                var num = parseFloat(val).toFixed(2);
+                num = num.toLocaleString();
+                return "￥ " + num + ' 元';
+            },
+        },
+    })
+</script>
+<style>
+    .contract-upload-card .upload-btn .upload-tip {
+        position: absolute;
+        top: 6px;
+    }
+
+    .form-control[disabled] {
+        background-color: transparent;
+        border: none;
+        color: #999;
+        cursor: text;
+    }
+
+    .el-input.is-disabled .el-input__inner {
+        background-color: transparent;
+        border: none;
+        color: #999;
+        cursor: text;
+    }
+</style>

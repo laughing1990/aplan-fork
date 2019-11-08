@@ -1,0 +1,190 @@
+/*
+ ** 清楚浮动
+ */
+ * {
+   padding: 0;
+   margin: 0;
+   box-sizing: border-box;
+ }
+body {
+  background: #f2f3f8;
+}
+.clearfix {
+  zoom: 1;
+}
+.clearfix:before, .clearfix:after {
+  content: "";
+  display: table;
+}
+.clearfix:after {
+  clear: both;
+}
+.fr {
+  float: right;
+}
+.status-card-item {
+  background: url(../images/sawtooth.png) no-repeat bottom;
+  float: left;
+  width: 13.6%;
+  margin: 0 0 16px 0.8%;
+  height: 90px;
+  background-size: contain;
+  padding: 10px 10px 10px 16px;
+  color: #fff;
+  cursor: pointer;
+  border-radius: 2px;
+}
+.status-card-item:hover {
+  opacity: .9;
+}
+.me-count {
+  font-size: 28px;
+  padding-top: 10px;
+}
+.status-card-item:first-child {
+  margin-left: 0; 
+}
+.status-card-item:last-child {
+  float: right;
+}
+.waring-status {
+  background-color: #E69F21; 
+}
+.error-status {
+  background-color: #E82223; 
+}
+.waiting1-status {
+  background-color: #2391E8; 
+}
+.waiting2-status {
+  background-color: #1DB4EB; 
+}
+.special-status {
+  background-color: #8D5EE8; 
+}
+.table-content {
+  background: #fff;
+  padding: 30px 20px;
+  position: relative;
+}
+.el-table thead th {
+  background: #F4F3F8;
+}
+.el-input-group__append, .el-input-group__prepend {
+  background-color: #36a3f7;
+  color: #fff;
+  border: 1px solid #36a3f7;
+}
+.status-sel-name {
+  text-align: left;
+  padding-left:20px;
+  font-size: 18px;
+  width: 100%;
+  position: absolute;
+  top: 30px;
+  left: 0;
+}
+.el-table {
+  border: 1px solid #e0e3e9;
+  border-bottom: none;
+}
+.el-table td, .el-table th.is-leaf {
+  border-color: #e0e3e9;
+}
+
+/*督办弹窗样式*/
+.sel{
+  /*display:inline-block;*/
+  width:70%;
+  padding:10px;
+}
+.sel-box{
+  display:flex;
+  height:100%;
+}
+.sel-left>div{
+  padding:10px 0 5px 10px;
+}
+.sel-left-head{
+  border-bottom:1px solid #EBEDF2;
+}
+/*.sel-left-foot{
+    border-top:1px solid #EBEDF2;
+}*/
+.sel-right{
+  width:50%;
+  border-left:1px solid #EBEDF2;
+}
+.handleDialog .el-dialog{
+  height: 480px;
+}
+.handleDialog .el-dialog__body{
+  padding:0;
+}
+.handleDialog .el-dialog__body{
+  height:90%;
+}
+.el-table__empty-block{
+  width:100%;
+}
+.textarea .el-textarea__inner{
+  height:200px;
+}
+.person{
+  display:flex;
+}
+.person>span:nth-child(1){
+  line-height: 34px;
+}
+.person1{
+  margin-bottom: 10px;
+}
+.sel-right p{
+  font-size: 16px;
+  color: #000;
+}
+.person-list{
+  min-height: 34px;
+  padding: 0px 10px;
+  display: inline-block;
+  width: 100%;
+  /*border: 1px solid #dcdfe6;*/
+  border-radius: 4px;
+  line-height: 2;
+  height: 45px;
+  overflow-y: scroll;
+}
+.scrollable .el-table .el-table-body td,.el-table th.is-leaf,.el-table td,.scrollable .el-table th.is-leaf{
+  border:0 none !important;
+}
+.apartment-item{
+  padding: 0px 3px;
+  border-radius: 4px;
+  background: #EBEDF2;
+  white-space: nowrap;
+  display: inline-block;
+  margin: 2px;
+  cursor: pointer;
+}
+.el-input__icon{
+  line-height: 25px;
+  cursor: pointer;
+}
+.personSelect .el-input__suffix{
+  display:none;
+}
+.sel-left-foot{
+  position: relative;
+}
+.sel-left-foot:before{
+  content:'';
+  position: absolute;
+  top: 0;
+  height:1px;
+  left: -10px;
+  width: 519px;
+  background:#EBEDF2;
+}
+.personSelect2 .el-select-dropdown{
+  display:none;
+}

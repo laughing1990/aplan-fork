@@ -1,0 +1,99 @@
+@charset "utf-8";
+/* CSS Document */
+/*基于metronic 5 demo3 | 待办工作页面样式 | yang2018.8.17*/
+
+/*全局*/
+body{
+	font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif!important;
+	min-width: 1660px;
+	overflow: hidden;
+	font-size: 0!important;   /*metronic默认1rem; 须设置为1，iframe才能正常*/
+	line-height: 1!important;    /*metronic默认1.5; 须设置为1，iframe才能正常*/
+}
+.m-body {
+	height: 100%;
+}
+.m--padding-left-8{
+	padding-left: 8px!important;
+}
+
+/******************************BEGIN:待办工作统计模块******************************/
+.row.m-row--no-padding > div {
+    padding-left: 8px;
+    padding-right: 8px;
+	border-right: 0;
+}
+.row.m-row--no-padding > div:first-child{
+	padding-left: 0;
+}
+.row.m-row--no-padding > div:last-child{
+	padding-right: 0;
+}
+.row.m-row--no-padding .m-widget24{
+	background-color: #fff; 
+	-webkit-box-shadow: 0px 1px 15px 1px rgba(69,65,78,0.08);
+    box-shadow: 0px 1px 15px 1px rgba(69,65,78,0.08);
+	border-radius: 4px;
+	padding: 12px 25px;
+}
+.row.m-row--no-padding .m-widget24 img{
+	height: 74px;
+}
+.m-widget24 .m-widget24__item .m-widget24__number {
+    color: #406ffd;
+	clear: both!important;
+	margin-bottom: 0;
+	float: none;
+	margin-right: 0;
+	padding: 0 5px;
+	font-weight: 700;
+	font-size: 15px;
+}
+.m-widget24 .m-widget24__item .m-widget24__number.m--font-metal{
+	color: #595959!important;
+}
+.m-widget24 .m-widget24__item .m-widget24__title {
+     margin-top: 0;
+	font-size: 18px;
+	font-weight: normal;
+	color: #32323d;
+	margin-bottom: 0;
+	margin-left: 0;
+}
+.m-widget24 .m-widget24__item .m-widget24__change {
+	margin-bottom: 0;
+	margin-top: 3px;
+	margin-left: 0;
+    font-size: 15px;
+    color: #a9a9a9;
+}
+.m-widget24 .m-widget24__item{
+	padding: 0;
+}
+.m-widget24 .m-widget24__item .progress{
+	margin-top: 3px;
+	margin-bottom: 0;
+	margin-left: 0;
+	height: 0.3rem;
+}
+.m-widget24 .m-widget24__item .m-widget24__stats {
+	float: none;
+    margin-right:0;
+	color: #32323d!important;
+    font-size: 36px;
+    font-weight: 700;
+}
+/******************************END:待办工作统计模块******************************/
+
+/******************************BEGIN:待办工作查询列表******************************/
+.m-portlet .m-portlet__body{
+	padding: 15px;
+}
+.m-portlet.ag-pending-databable{
+	margin: 16px 0px;
+}
+.m-datatable.m-datatable--default > .m-datatable__pager {
+    margin-top:0px;
+}
+
+/******************************END:待办工作查询列表******************************/

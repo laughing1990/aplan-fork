@@ -1,0 +1,591 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by zhangwn    2019-09-05 18:59:36 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaAnaOrgMonthStatisticsMapper" >
+<!--1 返回所有字段的SQL字句 -->
+<sql id="allColumns" >
+    ORG_MONTH_STATISTICS_ID  orgMonthStatisticsId,
+    STATISTICS_RECORD_ID  statisticsRecordId,
+    ORG_ID  orgId,
+    ORG_NAME  orgName,
+    REGION_ID  regionId,
+    REGION_NAME  regionName,
+    ITEM_ID  itemId,
+    ITEM_NAME  itemName,
+    APPLYINST_SOURCE  applyinstSource,
+    MONTH_APPLY_COUNT  monthApplyCount,
+    ALL_APPLY_COUNT  allApplyCount,
+    APPLY_ON_YOY_BASIS  applyOnYoyBasis,
+    APPLY_LRR  applyLrr,
+    ALL_IN_SUPPLEMENT_COUNT  allInSupplementCount,
+    IN_SUPPLEMENT_ON_YOY_BASIS  inSupplementOnYoyBasis,
+    IN_SUPPLEMENT_LRR  inSupplementLrr,
+    ALL_SUPPLEMENTED_COUNT  allSupplementedCount,
+    SUPPLEMENTED_ON_YOY_BASIS  supplementedOnYoyBasis,
+    SUPPLEMENTED_LRR  supplementedLrr,
+    MONTH_ACCEPTANCE_COUNT  monthAcceptanceCount,
+    ALL_ACCEPTANCE_COUNT  allAcceptanceCount,
+    ACCEPTANCE_ON_YOY_BASIS  acceptanceOnYoyBasis,
+    ACCEPTANCE_LRR  acceptanceLrr,
+    MONTH_OUT_SCOPE_COUNT  monthOutScopeCount,
+    ALL_OUT_SCOPE_COUNT  allOutScopeCount,
+    OUT_SCOPE_ON_YOY_BASIS  outScopeOnYoyBasis,
+    OUT_SCOPE_LRR  outScopeLrr,
+    MONTH_COMPLETED_COUNT  monthCompletedCount,
+    ALL_COMPLETED_COUNT  allCompletedCount,
+    COMPLETED_ON_YOY_BASIS  completedOnYoyBasis,
+    COMPLETED_LRR  completedLrr,
+    MONTH_SPECIFIC_ROUTINE_COUNT  monthSpecificRoutineCount,
+    ALL_SPECIFIC_ROUTINE_COUNT  allSpecificRoutineCount,
+    SPECIFIC_ROUTINE_ON_YOY_BASIS  specificRoutineOnYoyBasis,
+    SPECIFIC_ROUTINE_LRR  specificRoutineLrr,
+    ALL_WARINING_COUNT  allWariningCount,
+    MONTH_OVER_TIME_COUNT  monthOverTimeCount,
+    ALL_OVER_TIME_COUNT  allOverTimeCount,
+    OVER_TIME_ON_YOY_BASIS  overTimeOnYoyBasis,
+    OVER_TIME_LRR  overTimeLrr,
+    ALL_ACCEPTANCE_RATE  allAcceptanceRate,
+    ALL_OUT_SCOPE_RATE  allOutScopeRate,
+    ALL_OVER_TIME_RATE  allOverTimeRate,
+    ALL_COMPLETED_RATE  allCompletedRate,
+    STATISTICS_START_DATE  statisticsStartDate,
+    STATISTICS_END_DATE  statisticsEndDate,
+    STATISTICS_MONTH  statisticsMonth,
+    MODIFIER  modifier,
+    MODIFY_TIME  modifyTime,
+    ROOT_ORG_ID  rootOrgId
+    </sql>
+
+<!--2 根据主键ID查询单个实体 -->
+<select id="getAeaAnaOrgMonthStatisticsById" resultType="AeaAnaOrgMonthStatistics" >
+    select
+    <include refid="allColumns"/>
+    from    AEA_ANA_ORG_MONTH_STATISTICS
+    where    ORG_MONTH_STATISTICS_ID = #{id}
+</select>
+
+<!--3 根据条件查询实体list -->
+    <select id="listAeaAnaOrgMonthStatistics" resultType="AeaAnaOrgMonthStatistics" >
+        select
+        <include refid="allColumns"/>
+        from    AEA_ANA_ORG_MONTH_STATISTICS
+    <where>
+        <if test="orgMonthStatisticsId != null" >
+        AND    ORG_MONTH_STATISTICS_ID = #{orgMonthStatisticsId}
+        </if>
+        <if test="statisticsRecordId != null" >
+        AND    STATISTICS_RECORD_ID = #{statisticsRecordId}
+        </if>
+        <if test="orgId != null" >
+        AND    ORG_ID = #{orgId}
+        </if>
+        <if test="orgName != null" >
+        AND    ORG_NAME = #{orgName}
+        </if>
+        <if test="regionId != null" >
+        AND    REGION_ID = #{regionId}
+        </if>
+        <if test="regionName != null" >
+        AND    REGION_NAME = #{regionName}
+        </if>
+        <if test="itemId != null" >
+        AND    ITEM_ID = #{itemId}
+        </if>
+        <if test="itemName != null" >
+        AND    ITEM_NAME = #{itemName}
+        </if>
+        <if test="applyinstSource != null" >
+            AND    APPLYINST_SOURCE = #{applyinstSource}
+        </if>
+        <if test="monthApplyCount != null" >
+        AND    MONTH_APPLY_COUNT = #{monthApplyCount}
+        </if>
+        <if test="allApplyCount != null" >
+        AND    ALL_APPLY_COUNT = #{allApplyCount}
+        </if>
+        <if test="applyOnYoyBasis != null" >
+        AND    APPLY_ON_YOY_BASIS = #{applyOnYoyBasis}
+        </if>
+        <if test="applyLrr != null" >
+        AND    APPLY_LRR = #{applyLrr}
+        </if>
+        <if test="allInSupplementCount != null" >
+        AND    ALL_IN_SUPPLEMENT_COUNT = #{allInSupplementCount}
+        </if>
+        <if test="inSupplementOnYoyBasis != null" >
+        AND    IN_SUPPLEMENT_ON_YOY_BASIS = #{inSupplementOnYoyBasis}
+        </if>
+        <if test="inSupplementLrr != null" >
+        AND    IN_SUPPLEMENT_LRR = #{inSupplementLrr}
+        </if>
+        <if test="allSupplementedCount != null" >
+        AND    ALL_SUPPLEMENTED_COUNT = #{allSupplementedCount}
+        </if>
+        <if test="supplementedOnYoyBasis != null" >
+        AND    SUPPLEMENTED_ON_YOY_BASIS = #{supplementedOnYoyBasis}
+        </if>
+        <if test="supplementedLrr != null" >
+        AND    SUPPLEMENTED_LRR = #{supplementedLrr}
+        </if>
+        <if test="monthAcceptanceCount != null" >
+        AND    MONTH_ACCEPTANCE_COUNT = #{monthAcceptanceCount}
+        </if>
+        <if test="allAcceptanceCount != null" >
+        AND    ALL_ACCEPTANCE_COUNT = #{allAcceptanceCount}
+        </if>
+        <if test="acceptanceOnYoyBasis != null" >
+        AND    ACCEPTANCE_ON_YOY_BASIS = #{acceptanceOnYoyBasis}
+        </if>
+        <if test="acceptanceLrr != null" >
+        AND    ACCEPTANCE_LRR = #{acceptanceLrr}
+        </if>
+        <if test="monthOutScopeCount != null" >
+        AND    MONTH_OUT_SCOPE_COUNT = #{monthOutScopeCount}
+        </if>
+        <if test="allOutScopeCount != null" >
+        AND    ALL_OUT_SCOPE_COUNT = #{allOutScopeCount}
+        </if>
+        <if test="outScopeOnYoyBasis != null" >
+        AND    OUT_SCOPE_ON_YOY_BASIS = #{outScopeOnYoyBasis}
+        </if>
+        <if test="outScopeLrr != null" >
+        AND    OUT_SCOPE_LRR = #{outScopeLrr}
+        </if>
+        <if test="monthCompletedCount != null" >
+        AND    MONTH_COMPLETED_COUNT = #{monthCompletedCount}
+        </if>
+        <if test="allCompletedCount != null" >
+        AND    ALL_COMPLETED_COUNT = #{allCompletedCount}
+        </if>
+        <if test="completedOnYoyBasis != null" >
+        AND    COMPLETED_ON_YOY_BASIS = #{completedOnYoyBasis}
+        </if>
+        <if test="completedLrr != null" >
+        AND    COMPLETED_LRR = #{completedLrr}
+        </if>
+        <if test="monthSpecificRoutineCount != null" >
+        AND    MONTH_SPECIFIC_ROUTINE_COUNT = #{monthSpecificRoutineCount}
+        </if>
+        <if test="allSpecificRoutineCount != null" >
+        AND    ALL_SPECIFIC_ROUTINE_COUNT = #{allSpecificRoutineCount}
+        </if>
+        <if test="specificRoutineOnYoyBasis != null" >
+        AND    SPECIFIC_ROUTINE_ON_YOY_BASIS = #{specificRoutineOnYoyBasis}
+        </if>
+        <if test="specificRoutineLrr != null" >
+        AND    SPECIFIC_ROUTINE_LRR = #{specificRoutineLrr}
+        </if>
+        <if test="allWariningCount != null" >
+        AND    ALL_WARINING_COUNT = #{allWariningCount}
+        </if>
+        <if test="monthOverTimeCount != null" >
+        AND    MONTH_OVER_TIME_COUNT = #{monthOverTimeCount}
+        </if>
+        <if test="allOverTimeCount != null" >
+        AND    ALL_OVER_TIME_COUNT = #{allOverTimeCount}
+        </if>
+        <if test="overTimeOnYoyBasis != null" >
+        AND    OVER_TIME_ON_YOY_BASIS = #{overTimeOnYoyBasis}
+        </if>
+        <if test="overTimeLrr != null" >
+        AND    OVER_TIME_LRR = #{overTimeLrr}
+        </if>
+        <if test="allAcceptanceRate != null" >
+        AND    ALL_ACCEPTANCE_RATE = #{allAcceptanceRate}
+        </if>
+        <if test="allOutScopeRate != null" >
+        AND    ALL_OUT_SCOPE_RATE = #{allOutScopeRate}
+        </if>
+        <if test="allOverTimeRate != null" >
+        AND    ALL_OVER_TIME_RATE = #{allOverTimeRate}
+        </if>
+        <if test="allCompletedRate != null" >
+        AND    ALL_COMPLETED_RATE = #{allCompletedRate}
+        </if>
+        <if test="statisticsStartDate != null" >
+        AND    STATISTICS_START_DATE = #{statisticsStartDate}
+        </if>
+        <if test="statisticsEndDate != null" >
+        AND    STATISTICS_END_DATE = #{statisticsEndDate}
+        </if>
+        <if test="statisticsMonth != null" >
+        AND    STATISTICS_MONTH = #{statisticsMonth}
+        </if>
+        <if test="modifier != null" >
+        AND    MODIFIER = #{modifier}
+        </if>
+        <if test="modifyTime != null" >
+        AND    MODIFY_TIME = #{modifyTime}
+        </if>
+        <if test="rootOrgId != null" >
+        AND    ROOT_ORG_ID = #{rootOrgId}
+        </if>
+    </where>
+    </select>
+<!--4 根据条件查询实体list,返回分页对象 -->
+
+<!--5 新增实体对象 -->
+<insert id="insertAeaAnaOrgMonthStatistics" parameterType="AeaAnaOrgMonthStatistics" >
+    insert into AEA_ANA_ORG_MONTH_STATISTICS (
+ORG_MONTH_STATISTICS_ID  ,STATISTICS_RECORD_ID  ,ORG_ID  ,ORG_NAME  ,REGION_ID  ,REGION_NAME  ,ITEM_ID  ,ITEM_NAME  ,APPLYINST_SOURCE  ,MONTH_APPLY_COUNT  ,ALL_APPLY_COUNT  ,APPLY_ON_YOY_BASIS  ,APPLY_LRR  ,ALL_IN_SUPPLEMENT_COUNT  ,IN_SUPPLEMENT_ON_YOY_BASIS  ,IN_SUPPLEMENT_LRR  ,ALL_SUPPLEMENTED_COUNT  ,SUPPLEMENTED_ON_YOY_BASIS  ,SUPPLEMENTED_LRR  ,MONTH_ACCEPTANCE_COUNT  ,ALL_ACCEPTANCE_COUNT  ,ACCEPTANCE_ON_YOY_BASIS  ,ACCEPTANCE_LRR  ,MONTH_OUT_SCOPE_COUNT  ,ALL_OUT_SCOPE_COUNT  ,OUT_SCOPE_ON_YOY_BASIS  ,OUT_SCOPE_LRR  ,MONTH_COMPLETED_COUNT  ,ALL_COMPLETED_COUNT  ,COMPLETED_ON_YOY_BASIS  ,COMPLETED_LRR  ,MONTH_SPECIFIC_ROUTINE_COUNT  ,ALL_SPECIFIC_ROUTINE_COUNT  ,SPECIFIC_ROUTINE_ON_YOY_BASIS  ,SPECIFIC_ROUTINE_LRR  ,ALL_WARINING_COUNT  ,MONTH_OVER_TIME_COUNT  ,ALL_OVER_TIME_COUNT  ,OVER_TIME_ON_YOY_BASIS  ,OVER_TIME_LRR  ,ALL_ACCEPTANCE_RATE  ,ALL_OUT_SCOPE_RATE  ,ALL_OVER_TIME_RATE  ,ALL_COMPLETED_RATE  ,STATISTICS_START_DATE  ,STATISTICS_END_DATE  ,STATISTICS_MONTH  ,MODIFIER  ,MODIFY_TIME  ,ROOT_ORG_ID
+    )  values  (
+#{orgMonthStatisticsId},#{statisticsRecordId},#{orgId},#{orgName},#{regionId},#{regionName},#{itemId},#{itemName},#{applyinstSource},#{monthApplyCount},#{allApplyCount},#{applyOnYoyBasis},#{applyLrr},#{allInSupplementCount},#{inSupplementOnYoyBasis},#{inSupplementLrr},#{allSupplementedCount},#{supplementedOnYoyBasis},#{supplementedLrr},#{monthAcceptanceCount},#{allAcceptanceCount},#{acceptanceOnYoyBasis},#{acceptanceLrr},#{monthOutScopeCount},#{allOutScopeCount},#{outScopeOnYoyBasis},#{outScopeLrr},#{monthCompletedCount},#{allCompletedCount},#{completedOnYoyBasis},#{completedLrr},#{monthSpecificRoutineCount},#{allSpecificRoutineCount},#{specificRoutineOnYoyBasis},#{specificRoutineLrr},#{allWariningCount},#{monthOverTimeCount},#{allOverTimeCount},#{overTimeOnYoyBasis},#{overTimeLrr},#{allAcceptanceRate},#{allOutScopeRate},#{allOverTimeRate},#{allCompletedRate},#{statisticsStartDate},#{statisticsEndDate},#{statisticsMonth},#{modifier},#{modifyTime},  #{rootOrgId}
+    )
+</insert>
+<!--6 修改实体对象 -->
+<update id="updateAeaAnaOrgMonthStatistics" parameterType="AeaAnaOrgMonthStatistics" >
+    update AEA_ANA_ORG_MONTH_STATISTICS
+    <set >
+        <if test="orgMonthStatisticsId != null" >
+        ORG_MONTH_STATISTICS_ID = #{orgMonthStatisticsId},
+        </if>
+        <if test="statisticsRecordId != null" >
+        STATISTICS_RECORD_ID = #{statisticsRecordId},
+        </if>
+        <if test="orgId != null" >
+        ORG_ID = #{orgId},
+        </if>
+        <if test="orgName != null" >
+        ORG_NAME = #{orgName},
+        </if>
+        <if test="regionId != null" >
+        REGION_ID = #{regionId},
+        </if>
+        <if test="regionName != null" >
+        REGION_NAME = #{regionName},
+        </if>
+        <if test="itemId != null" >
+        ITEM_ID = #{itemId},
+        </if>
+        <if test="itemName != null" >
+        ITEM_NAME = #{itemName},
+        </if>
+        <if test="applyinstSource != null" >
+            APPLYINST_SOURCE = #{applyinstSource},
+        </if>
+        <if test="monthApplyCount != null" >
+        MONTH_APPLY_COUNT = #{monthApplyCount},
+        </if>
+        <if test="allApplyCount != null" >
+        ALL_APPLY_COUNT = #{allApplyCount},
+        </if>
+        <if test="applyOnYoyBasis != null" >
+        APPLY_ON_YOY_BASIS = #{applyOnYoyBasis},
+        </if>
+        <if test="applyLrr != null" >
+        APPLY_LRR = #{applyLrr},
+        </if>
+        <if test="allInSupplementCount != null" >
+        ALL_IN_SUPPLEMENT_COUNT = #{allInSupplementCount},
+        </if>
+        <if test="inSupplementOnYoyBasis != null" >
+        IN_SUPPLEMENT_ON_YOY_BASIS = #{inSupplementOnYoyBasis},
+        </if>
+        <if test="inSupplementLrr != null" >
+        IN_SUPPLEMENT_LRR = #{inSupplementLrr},
+        </if>
+        <if test="allSupplementedCount != null" >
+        ALL_SUPPLEMENTED_COUNT = #{allSupplementedCount},
+        </if>
+        <if test="supplementedOnYoyBasis != null" >
+        SUPPLEMENTED_ON_YOY_BASIS = #{supplementedOnYoyBasis},
+        </if>
+        <if test="supplementedLrr != null" >
+        SUPPLEMENTED_LRR = #{supplementedLrr},
+        </if>
+        <if test="monthAcceptanceCount != null" >
+        MONTH_ACCEPTANCE_COUNT = #{monthAcceptanceCount},
+        </if>
+        <if test="allAcceptanceCount != null" >
+        ALL_ACCEPTANCE_COUNT = #{allAcceptanceCount},
+        </if>
+        <if test="acceptanceOnYoyBasis != null" >
+        ACCEPTANCE_ON_YOY_BASIS = #{acceptanceOnYoyBasis},
+        </if>
+        <if test="acceptanceLrr != null" >
+        ACCEPTANCE_LRR = #{acceptanceLrr},
+        </if>
+        <if test="monthOutScopeCount != null" >
+        MONTH_OUT_SCOPE_COUNT = #{monthOutScopeCount},
+        </if>
+        <if test="allOutScopeCount != null" >
+        ALL_OUT_SCOPE_COUNT = #{allOutScopeCount},
+        </if>
+        <if test="outScopeOnYoyBasis != null" >
+        OUT_SCOPE_ON_YOY_BASIS = #{outScopeOnYoyBasis},
+        </if>
+        <if test="outScopeLrr != null" >
+        OUT_SCOPE_LRR = #{outScopeLrr},
+        </if>
+        <if test="monthCompletedCount != null" >
+        MONTH_COMPLETED_COUNT = #{monthCompletedCount},
+        </if>
+        <if test="allCompletedCount != null" >
+        ALL_COMPLETED_COUNT = #{allCompletedCount},
+        </if>
+        <if test="completedOnYoyBasis != null" >
+        COMPLETED_ON_YOY_BASIS = #{completedOnYoyBasis},
+        </if>
+        <if test="completedLrr != null" >
+        COMPLETED_LRR = #{completedLrr},
+        </if>
+        <if test="monthSpecificRoutineCount != null" >
+        MONTH_SPECIFIC_ROUTINE_COUNT = #{monthSpecificRoutineCount},
+        </if>
+        <if test="allSpecificRoutineCount != null" >
+        ALL_SPECIFIC_ROUTINE_COUNT = #{allSpecificRoutineCount},
+        </if>
+        <if test="specificRoutineOnYoyBasis != null" >
+        SPECIFIC_ROUTINE_ON_YOY_BASIS = #{specificRoutineOnYoyBasis},
+        </if>
+        <if test="specificRoutineLrr != null" >
+        SPECIFIC_ROUTINE_LRR = #{specificRoutineLrr},
+        </if>
+        <if test="allWariningCount != null" >
+        ALL_WARINING_COUNT = #{allWariningCount},
+        </if>
+        <if test="monthOverTimeCount != null" >
+        MONTH_OVER_TIME_COUNT = #{monthOverTimeCount},
+        </if>
+        <if test="allOverTimeCount != null" >
+        ALL_OVER_TIME_COUNT = #{allOverTimeCount},
+        </if>
+        <if test="overTimeOnYoyBasis != null" >
+        OVER_TIME_ON_YOY_BASIS = #{overTimeOnYoyBasis},
+        </if>
+        <if test="overTimeLrr != null" >
+        OVER_TIME_LRR = #{overTimeLrr},
+        </if>
+        <if test="allAcceptanceRate != null" >
+        ALL_ACCEPTANCE_RATE = #{allAcceptanceRate},
+        </if>
+        <if test="allOutScopeRate != null" >
+        ALL_OUT_SCOPE_RATE = #{allOutScopeRate},
+        </if>
+        <if test="allOverTimeRate != null" >
+        ALL_OVER_TIME_RATE = #{allOverTimeRate},
+        </if>
+        <if test="allCompletedRate != null" >
+        ALL_COMPLETED_RATE = #{allCompletedRate},
+        </if>
+        <if test="statisticsStartDate != null" >
+        STATISTICS_START_DATE = #{statisticsStartDate},
+        </if>
+        <if test="statisticsEndDate != null" >
+        STATISTICS_END_DATE = #{statisticsEndDate},
+        </if>
+        <if test="statisticsMonth != null" >
+        STATISTICS_MONTH = #{statisticsMonth},
+        </if>
+        <if test="modifier != null" >
+        MODIFIER = #{modifier},
+        </if>
+        <if test="modifyTime != null" >
+        MODIFY_TIME = #{modifyTime},
+        </if>
+        <if test="rootOrgId != null" >
+        ROOT_ORG_ID = #{rootOrgId},
+        </if>
+    </set>
+    where ORG_MONTH_STATISTICS_ID = #{orgMonthStatisticsId}
+</update>
+<!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaAnaOrgMonthStatistics">
+        delete from   AEA_ANA_ORG_MONTH_STATISTICS
+        where
+    ORG_MONTH_STATISTICS_ID = #{id}
+    </delete>
+<!--8 删除实体对象列表,根据主键ID列表 -->
+<!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaAnaOrgMonthStatistics" id="AeaAnaOrgMonthStatisticsMap">
+        <id property="orgMonthStatisticsId" column="ORG_MONTH_STATISTICS_ID"/>
+        <result property="statisticsRecordId" column="STATISTICS_RECORD_ID"/>
+        <result property="orgId" column="ORG_ID"/>
+        <result property="orgName" column="ORG_NAME"/>
+        <result property="regionId" column="REGION_ID"/>
+        <result property="regionName" column="REGION_NAME"/>
+        <result property="itemId" column="ITEM_ID"/>
+        <result property="itemName" column="ITEM_NAME"/>
+        <result property="applyinstSource" column="APPLYINST_SOURCE"/>
+        <result property="monthApplyCount" column="MONTH_APPLY_COUNT"/>
+        <result property="allApplyCount" column="ALL_APPLY_COUNT"/>
+        <result property="applyOnYoyBasis" column="APPLY_ON_YOY_BASIS"/>
+        <result property="applyLrr" column="APPLY_LRR"/>
+        <result property="allInSupplementCount" column="ALL_IN_SUPPLEMENT_COUNT"/>
+        <result property="inSupplementOnYoyBasis" column="IN_SUPPLEMENT_ON_YOY_BASIS"/>
+        <result property="inSupplementLrr" column="IN_SUPPLEMENT_LRR"/>
+        <result property="allSupplementedCount" column="ALL_SUPPLEMENTED_COUNT"/>
+        <result property="supplementedOnYoyBasis" column="SUPPLEMENTED_ON_YOY_BASIS"/>
+        <result property="supplementedLrr" column="SUPPLEMENTED_LRR"/>
+        <result property="monthAcceptanceCount" column="MONTH_ACCEPTANCE_COUNT"/>
+        <result property="allAcceptanceCount" column="ALL_ACCEPTANCE_COUNT"/>
+        <result property="acceptanceOnYoyBasis" column="ACCEPTANCE_ON_YOY_BASIS"/>
+        <result property="acceptanceLrr" column="ACCEPTANCE_LRR"/>
+        <result property="monthOutScopeCount" column="MONTH_OUT_SCOPE_COUNT"/>
+        <result property="allOutScopeCount" column="ALL_OUT_SCOPE_COUNT"/>
+        <result property="outScopeOnYoyBasis" column="OUT_SCOPE_ON_YOY_BASIS"/>
+        <result property="outScopeLrr" column="OUT_SCOPE_LRR"/>
+        <result property="monthCompletedCount" column="MONTH_COMPLETED_COUNT"/>
+        <result property="allCompletedCount" column="ALL_COMPLETED_COUNT"/>
+        <result property="completedOnYoyBasis" column="COMPLETED_ON_YOY_BASIS"/>
+        <result property="completedLrr" column="COMPLETED_LRR"/>
+        <result property="monthSpecificRoutineCount" column="MONTH_SPECIFIC_ROUTINE_COUNT"/>
+        <result property="allSpecificRoutineCount" column="ALL_SPECIFIC_ROUTINE_COUNT"/>
+        <result property="specificRoutineOnYoyBasis" column="SPECIFIC_ROUTINE_ON_YOY_BASIS"/>
+        <result property="specificRoutineLrr" column="SPECIFIC_ROUTINE_LRR"/>
+        <result property="allWariningCount" column="ALL_WARINING_COUNT"/>
+        <result property="monthOverTimeCount" column="MONTH_OVER_TIME_COUNT"/>
+        <result property="allOverTimeCount" column="ALL_OVER_TIME_COUNT"/>
+        <result property="overTimeOnYoyBasis" column="OVER_TIME_ON_YOY_BASIS"/>
+        <result property="overTimeLrr" column="OVER_TIME_LRR"/>
+        <result property="allAcceptanceRate" column="ALL_ACCEPTANCE_RATE"/>
+        <result property="allOutScopeRate" column="ALL_OUT_SCOPE_RATE"/>
+        <result property="allOverTimeRate" column="ALL_OVER_TIME_RATE"/>
+        <result property="allCompletedRate" column="ALL_COMPLETED_RATE"/>
+        <result property="statisticsStartDate" column="STATISTICS_START_DATE"/>
+        <result property="statisticsEndDate" column="STATISTICS_END_DATE"/>
+        <result property="statisticsMonth" column="STATISTICS_MONTH"/>
+        <result property="modifier" column="MODIFIER"/>
+        <result property="modifyTime" column="MODIFY_TIME"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+    </resultMap>
+
+    <delete id="deleteThisMonthStatisticsData">
+        delete from   AEA_ANA_ORG_MONTH_STATISTICS
+        where
+        ROOT_ORG_ID = #{rootOrgId}
+        and STATISTICS_MONTH = #{statisticsMonth}
+    </delete>
+
+    <!--批量插入-->
+    <insert id="batchInserOrgMonthStatisticst">
+        insert into AEA_ANA_ORG_MONTH_STATISTICS (
+            ORG_MONTH_STATISTICS_ID  ,STATISTICS_RECORD_ID  ,ORG_ID  ,ORG_NAME  ,REGION_ID  ,REGION_NAME  ,ITEM_ID  ,ITEM_NAME  ,APPLYINST_SOURCE  ,MONTH_APPLY_COUNT
+            ,ALL_APPLY_COUNT  ,APPLY_ON_YOY_BASIS  ,APPLY_LRR  ,ALL_IN_SUPPLEMENT_COUNT  ,IN_SUPPLEMENT_ON_YOY_BASIS  ,IN_SUPPLEMENT_LRR  ,ALL_SUPPLEMENTED_COUNT
+            ,SUPPLEMENTED_ON_YOY_BASIS  ,SUPPLEMENTED_LRR  ,MONTH_ACCEPTANCE_COUNT  ,ALL_ACCEPTANCE_COUNT  ,ACCEPTANCE_ON_YOY_BASIS  ,ACCEPTANCE_LRR
+            ,MONTH_OUT_SCOPE_COUNT  ,ALL_OUT_SCOPE_COUNT  ,OUT_SCOPE_ON_YOY_BASIS  ,OUT_SCOPE_LRR  ,MONTH_COMPLETED_COUNT  ,ALL_COMPLETED_COUNT
+            ,COMPLETED_ON_YOY_BASIS  ,COMPLETED_LRR  ,MONTH_SPECIFIC_ROUTINE_COUNT  ,ALL_SPECIFIC_ROUTINE_COUNT  ,SPECIFIC_ROUTINE_ON_YOY_BASIS
+            ,SPECIFIC_ROUTINE_LRR  ,ALL_WARINING_COUNT  ,MONTH_OVER_TIME_COUNT  ,ALL_OVER_TIME_COUNT  ,OVER_TIME_ON_YOY_BASIS  ,OVER_TIME_LRR
+            ,ALL_ACCEPTANCE_RATE  ,ALL_OUT_SCOPE_RATE  ,ALL_OVER_TIME_RATE  ,ALL_COMPLETED_RATE  ,STATISTICS_START_DATE  ,STATISTICS_END_DATE
+            ,STATISTICS_MONTH  ,MODIFIER  ,MODIFY_TIME  ,ROOT_ORG_ID
+        )  values
+        <foreach collection="orgMonthStatisticsList" item="orgMonthStatistics" separator=",">
+            (
+            #{orgMonthStatistics.orgMonthStatisticsId},#{orgMonthStatistics.statisticsRecordId},#{orgMonthStatistics.orgId},#{orgMonthStatistics.orgName},
+            #{orgMonthStatistics.regionId},#{orgMonthStatistics.regionName},#{orgMonthStatistics.itemId},#{orgMonthStatistics.itemName},#{orgMonthStatistics.applyinstSource},
+            #{orgMonthStatistics.monthApplyCount},#{orgMonthStatistics.allApplyCount},#{orgMonthStatistics.applyOnYoyBasis},#{orgMonthStatistics.applyLrr},
+            #{orgMonthStatistics.allInSupplementCount},#{orgMonthStatistics.inSupplementOnYoyBasis},#{orgMonthStatistics.inSupplementLrr},#{orgMonthStatistics.allSupplementedCount},
+            #{orgMonthStatistics.supplementedOnYoyBasis},#{orgMonthStatistics.supplementedLrr},#{orgMonthStatistics.monthAcceptanceCount},#{orgMonthStatistics.allAcceptanceCount},
+            #{orgMonthStatistics.acceptanceOnYoyBasis},#{orgMonthStatistics.acceptanceLrr},#{orgMonthStatistics.monthOutScopeCount},#{orgMonthStatistics.allOutScopeCount},
+            #{orgMonthStatistics.outScopeOnYoyBasis},#{orgMonthStatistics.outScopeLrr},#{orgMonthStatistics.monthCompletedCount},#{orgMonthStatistics.allCompletedCount},
+            #{orgMonthStatistics.completedOnYoyBasis},#{orgMonthStatistics.completedLrr},#{orgMonthStatistics.monthSpecificRoutineCount},#{orgMonthStatistics.allSpecificRoutineCount},
+            #{orgMonthStatistics.specificRoutineOnYoyBasis},#{orgMonthStatistics.specificRoutineLrr},#{orgMonthStatistics.allWariningCount},#{orgMonthStatistics.monthOverTimeCount},
+            #{orgMonthStatistics.allOverTimeCount},#{orgMonthStatistics.overTimeOnYoyBasis},#{orgMonthStatistics.overTimeLrr},#{orgMonthStatistics.allAcceptanceRate},
+            #{orgMonthStatistics.allOutScopeRate},#{orgMonthStatistics.allOverTimeRate},#{orgMonthStatistics.allCompletedRate},#{orgMonthStatistics.statisticsStartDate},
+            #{orgMonthStatistics.statisticsEndDate},#{orgMonthStatistics.statisticsMonth},#{orgMonthStatistics.modifier},#{orgMonthStatistics.modifyTime},  #{orgMonthStatistics.rootOrgId}
+            )
+        </foreach>
+    </insert>
+
+    <select id="getAeaAnaOrgMonthStatistics" resultType="AeaAnaOrgMonthStatistics" >
+        select
+        <include refid="allColumns"/>
+        from  AEA_ANA_ORG_MONTH_STATISTICS
+        where
+        ORG_ID = #{orgId}
+        and ITEM_ID = #{itemId}
+        and STATISTICS_MONTH = #{statisticsMonth}
+        and APPLYINST_SOURCE = #{applySource}
+    </select>
+
+    <select id="queryAeaAnaOrgMonthStatistics" resultType="AeaAnaOrgMonthStatistics" >
+        select
+        <include refid="allColumns"/>
+        from  AEA_ANA_ORG_MONTH_STATISTICS
+        where
+        ORG_ID = #{orgId}
+        and ITEM_ID = #{itemId}
+        and STATISTICS_MONTH in
+        <foreach collection="monthList" item="month" index="index" open="(" close=")" separator=",">
+            #{month}
+        </foreach>
+        order by STATISTICS_MONTH
+    </select>
+    <select id="sumMonthStatistics" resultType="AeaAnaOrgMonthStatistics">
+        select
+        sum(aaoms.MONTH_APPLY_COUNT) monthApplyCount,
+        sum(aaoms.MONTH_ACCEPTANCE_COUNT) monthAcceptanceCount,
+        sum(aaoms.MONTH_OUT_SCOPE_COUNT) monthOutScopeCount,
+        sum(aaoms.MONTH_COMPLETED_COUNT) monthCompletedCount,
+        sum(aaoms.MONTH_OVER_TIME_COUNT) monthOverTimeCount
+         from aea_ana_org_month_statistics aaoms where aaoms.STATISTICS_MONTH= #{yearMonth}
+        and aaoms.ORG_ID = #{orgId}
+        and aaoms.ROOT_ORG_ID =#{rootOrgId}
+    </select>
+
+
+
+
+    <select id="getOrgApplyStatisticsByMonth"
+            resultType="com.augurit.aplanmis.common.vo.analyse.OrgMonthApplyStatisticsVo">
+        select SUM(MONTH_ACCEPTANCE_COUNT) as shouliCount, SUM(MONTH_OUT_SCOPE_COUNT) as buyushouliCount,
+        SUM(MONTH_OVER_TIME_COUNT) as yuqiCount, SUM(MONTH_COMPLETED_COUNT) as banjieCount, STATISTICS_MONTH as month
+        from AEA_ANA_ORG_MONTH_STATISTICS
+        <where>
+            and STATISTICS_MONTH <![CDATA[ >= ]]> #{startMonth}
+            and STATISTICS_MONTH <![CDATA[ <= ]]> #{endMonth}
+            and ROOT_ORG_ID = #{rootOrgId}
+        </where>
+        group by STATISTICS_MONTH
+    </select>
+
+    <select id="getMonthStatisticsCompletedByArea" resultType="AeaAnaThemeMonthStatistics">
+        select
+        sum(aaoms.MONTH_COMPLETED_COUNT)MONTH_COMPLETED_COUNT,
+        REGION_NAME
+        from aea_ana_org_month_statistics aaoms where aaoms.STATISTICS_MONTH= #{yearMonth}
+        group by REGION_NAME
+    </select>
+
+    <select id="getOrgMonthStatistics" resultType="com.augurit.aplanmis.common.vo.analyse.ItemDetailFormVo">
+
+        SELECT
+        aaoms.ORG_ID orgId,
+        aaoms.ORG_NAME orgName,
+        aaoms.ITEM_ID itemId,
+        aaoms.ITEM_NAME itemName,
+        aaoms.APPLYINST_SOURCE applyinstSource,
+        SUM(aaoms.MONTH_APPLY_COUNT) receiptCount,
+        sum(aaoms.MONTH_ACCEPTANCE_COUNT) acceptCount,
+        SUM(aaoms.MONTH_OVER_TIME_COUNT) overdueCount
+        from
+        aea_ana_org_month_statistics aaoms
+        where  aaoms.STATISTICS_MONTH <![CDATA[ >= ]]> #{yearMonthStart}
+        and aaoms.STATISTICS_MONTH <![CDATA[ <= ]]> #{yearMonthEnd}
+        <if test="orgId != null and orgId !=''">
+            and aaoms.ORG_ID= #{orgId}
+        </if>
+
+        and aaoms.ROOT_ORG_ID= #{rootOrgId}
+        GROUP BY aaoms.ORG_ID,aaoms.ITEM_ID,aaoms.APPLYINST_SOURCE
+    </select>
+
+    <select id="getOrgItemAcceptStatistics" resultType="AeaAnaOrgMonthStatistics">
+        select * from (
+        select
+        ORG_ID as orgId, ORG_NAME as orgName, ITEM_ID as itemId, ITEM_NAME as itemName,
+        sum(MONTH_APPLY_COUNT) as monthApplyCount, sum(MONTH_ACCEPTANCE_COUNT) as monthAcceptanceCount
+        from AEA_ANA_ORG_MONTH_STATISTICS
+        where
+        ROOT_ORG_ID = #{rootOrgId}
+        <if test="orgId != null and orgId != ''">
+            and ORG_ID = #{orgId}
+        </if>
+        and STATISTICS_MONTH = #{month}
+        group by ORG_ID, ORG_NAME, ITEM_ID, ITEM_NAME
+        ) a
+        order by monthApplyCount
+    </select>
+
+</mapper>

@@ -1,0 +1,661 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <preConditions>
+        <dbms type="mysql"/>
+    </preConditions>
+
+    <changeSet id="201906041101" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            UPDATE aea_item_basic SET ITEM_NATURE = ( CASE ITEM_NATURE WHEN '1' THEN '0' WHEN '2' THEN '8' ELSE
+            ITEM_NATURE END );
+        </sql>
+    </changeSet>
+
+    <changeSet id="201906050951" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            update act_sto_view set sql_text="SELECT
+            aiv_123.ITEM_VER_ID,
+            aiv_123.ITEM_ID,
+            aiv_123.VER_NUM,
+            aib_123.ITEM_CODE,
+            aib_123.ITEM_NAME,
+            aib_123.ORG_ID,
+            aib_123.XKDX,
+            aib_123.ITEM_PROPERTY,
+            aib_123.DUE_NUM AS DUE_NUM,
+            aib_123.BJ_TYPE,
+            ooo_123.ORG_NAME
+            FROM AEA_ITEM_VER aiv_123
+            LEFT JOIN AEA_ITEM_BASIC aib_123 ON aiv_123.ITEM_VER_ID = aib_123.ITEM_VER_ID
+            LEFT JOIN OPU_OM_ORG ooo_123 ON aib_123.org_id = ooo_123.org_id
+            WHERE 1 = 1
+            AND aiv_123.IS_DELETED = 0
+            AND aiv_123.ITEM_VER_STATUS IN ('1', '2')
+            AND aib_123.item_nature = '0'
+            AND NOT EXISTS (
+            SELECT
+            1
+            FROM
+            aea_item item
+            WHERE
+            item.parent_item_id = aib_123.item_id
+            )"
+            where view_comment = '现场登记'
+        </sql>
+    </changeSet>
+
+    <changeSet id="201906051027" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            update agx_rs_cloud_soft set IS_IMG_ICON = CASE IS_IMG_ICON WHEN '0' THEN '0' WHEN '1' THEN '1' ELSE '0'
+            END;
+            update opu_rs_app_soft set IS_IMG_ICON = CASE IS_IMG_ICON WHEN '0' THEN '0' WHEN '1' THEN '1' ELSE '0' END;
+            update opu_rs_menu set IS_IMG_ICON = CASE IS_IMG_ICON WHEN '0' THEN '0' WHEN '1' THEN '1' ELSE '0' END;
+            update opu_rs_func set IS_IMG_ICON = CASE IS_IMG_ICON WHEN '0' THEN '0' WHEN '1' THEN '1' ELSE '0' END;
+        </sql>
+    </changeSet>
+
+    <changeSet id="201906100943" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            update aea_item_basic set SFSXGZCNZ = CASE SFSXGZCNZ WHEN '0' THEN '0' WHEN '1' THEN '1' ELSE '0' END;
+        </sql>
+    </changeSet>
+
+    <changeSet id="201906101552" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            UPDATE aea_item_basic
+            SET ITEM_PROPERTY = CASE ITEM_PROPERTY
+            WHEN '1' THEN '1'
+            WHEN '2' THEN '2'
+            WHEN '3' THEN '4'
+            WHEN 'LBJ' THEN '3'
+            WHEN 'DFJ' THEN '5'
+            WHEN 'DBJ' THEN '6'
+            END;
+        </sql>
+    </changeSet>
+
+    <changeSet id="201906101608" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            INSERT INTO `bsc_dic_code_type` (`TYPE_ID`, `TYPE_CODE`, `TYPE_NAME`, `IS_TREE`, `IS_ACTIVE`, `TYPE_MEMO`,
+            `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES
+            ('113c8c57-4c03-4992-8181-87ae8bc99f7a', 'ITEM_SLFS', '事项受理方式', '0', '1', NULL, NULL, '2019-06-10 16:06:26',
+            NULL, '2019-06-10 16:06:26', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('0a49ad57-6527-439f-8f06-73d44e7377ca',
+            '113c8c57-4c03-4992-8181-87ae8bc99f7a', '5', '其他', '1', '5', '', NULL, '0', '0', NULL, NULL, '2019-06-10
+            16:10:58', NULL, '2019-06-10 16:10:58', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('4e8ba4be-3d82-4a3d-a2c1-ab9a30b181fe',
+            '113c8c57-4c03-4992-8181-87ae8bc99f7a', '3', '网上申请，邮递纸质材料受理', '1', '3', '', NULL, '0', '0', NULL, NULL,
+            '2019-06-10 16:10:34', NULL, '2019-06-10 16:10:34', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('79111526-fccd-4403-80ab-4af659907d9c',
+            '113c8c57-4c03-4992-8181-87ae8bc99f7a', '1', '窗口现场受理', '1', '1', '', NULL, '0', '0', NULL, NULL, '2019-06-10
+            16:06:26', NULL, '2019-06-10 16:10:07', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('a4977fd4-7cba-4f45-aebe-7c7ca6c81942',
+            '113c8c57-4c03-4992-8181-87ae8bc99f7a', '4', '全流程网上申请和办理', '1', '4', '', NULL, '0', '0', NULL, NULL,
+            '2019-06-10 16:10:45', NULL, '2019-06-10 16:10:45', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('c0e7602e-d678-4e60-8aa6-7202b591525e',
+            '113c8c57-4c03-4992-8181-87ae8bc99f7a', '2', '网上申请，窗口纸质材料受理', '1', '2', '', NULL, '0', '0', NULL, NULL,
+            '2019-06-10 16:06:26', NULL, '2019-06-10 16:10:19', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+        </sql>
+    </changeSet>
+
+    <changeSet id="201906101615" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            UPDATE aea_item_basic set sfsxgzcnz = '0';
+        </sql>
+    </changeSet>
+
+    <changeSet id="201906101753" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            update act_sto_view set sql_text="SELECT
+            aiv_123.ITEM_VER_ID,
+            aiv_123.ITEM_ID,
+            aiv_123.VER_NUM,
+            aib_123.ITEM_CODE,
+            aib_123.ITEM_NAME,
+            aib_123.ORG_ID,
+            aib_123.XKDX,
+            aib_123.ITEM_PROPERTY,
+            aib_123.DUE_NUM AS DUE_NUM,
+            aib_123.BJ_TYPE,
+            ooo_123.ORG_NAME
+            FROM AEA_ITEM_VER aiv_123
+            LEFT JOIN AEA_ITEM_BASIC aib_123 ON aiv_123.ITEM_VER_ID = aib_123.ITEM_VER_ID
+            LEFT JOIN OPU_OM_ORG ooo_123 ON aib_123.org_id = ooo_123.org_id
+            WHERE 1 = 1
+            AND aiv_123.IS_DELETED = 0
+            AND aiv_123.ITEM_VER_STATUS IN ('1', '2')
+            AND aib_123.item_nature = '0' "
+            where view_comment = '现场登记'
+        </sql>
+    </changeSet>
+
+    <changeSet id="201906110944" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            INSERT INTO `opu_rs_func` (`FUNC_ID`, `APP_SOFT_ID`, `FUNC_CODE`, `FUNC_NAME`, `FUNC_TYPE`,
+            `FUNC_INVOKE_TYPE`, `FUNC_INVOKE_URL`, `FUNC_INVOKE_PARAM`, `FUNC_SORT_NO`, `PARENT_FUNC_ID`, `FUNC_LEVEL`,
+            `FUNC_SEQ`, `FUNC_SUB_COUNT`, `IS_AUTO_IMPORT`, `IS_ACTIVE_FUNC`, `FUNC_DELETED`, `FUNC_DESC`, `FUNC_MEMO`,
+            `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `FUNC_INVOKE_ACTIVITY`, `WIDGET_TYPE`, `FUNC_ICON_CSS`,
+            `WIDGET_IS_CONFIG`, `WIDGET_IS_VISIABLE`, `FUNC_SHORTCUT_KEY`, `WIDGET_IS_USE_TPL`, `TMN_ID`, `IS_IMG_ICON`,
+            `SMALL_IMG_PATH`, `MIDDLE_IMG_PATH`, `BIG_IMG_PATH`, `HUGE_IMG_PATH`) VALUES
+            ('a11fa495-3a3f-42c8-a1a0-151396734c6d', 'bd57d0be-8884-4a4e-a41e-98070d2f56db', 'opu-rs-func-00000000060',
+            '中介服务事项', 'func', '0', '/aea/item/index2.do?itemNature=8', NULL, '8',
+            '9b1fbbea-ad63-4040-86a8-6345f4b189e1', '2',
+            '.9b1fbbea-ad63-4040-86a8-6345f4b189e1.a11fa495-3a3f-42c8-a1a0-151396734c6d.', '0', '0', '1', '0', NULL,
+            NULL, 'beb9e669-9056-4bce-8c08-779271a7b6f2', '2019-06-03 17:12:33', 'beb9e669-9056-4bce-8c08-779271a7b6f2',
+            '2019-06-05 11:12:17', NULL, NULL, NULL, NULL, NULL, '0', NULL, NULL, '0', NULL, NULL, NULL, NULL);
+            INSERT INTO `opu_rs_func` (`FUNC_ID`, `APP_SOFT_ID`, `FUNC_CODE`, `FUNC_NAME`, `FUNC_TYPE`,
+            `FUNC_INVOKE_TYPE`, `FUNC_INVOKE_URL`, `FUNC_INVOKE_PARAM`, `FUNC_SORT_NO`, `PARENT_FUNC_ID`, `FUNC_LEVEL`,
+            `FUNC_SEQ`, `FUNC_SUB_COUNT`, `IS_AUTO_IMPORT`, `IS_ACTIVE_FUNC`, `FUNC_DELETED`, `FUNC_DESC`, `FUNC_MEMO`,
+            `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `FUNC_INVOKE_ACTIVITY`, `WIDGET_TYPE`, `FUNC_ICON_CSS`,
+            `WIDGET_IS_CONFIG`, `WIDGET_IS_VISIABLE`, `FUNC_SHORTCUT_KEY`, `WIDGET_IS_USE_TPL`, `TMN_ID`, `IS_IMG_ICON`,
+            `SMALL_IMG_PATH`, `MIDDLE_IMG_PATH`, `BIG_IMG_PATH`, `HUGE_IMG_PATH`) VALUES
+            ('10c149bd-3e70-4009-9bd6-f9f81dccf8f2', 'bd57d0be-8884-4a4e-a41e-98070d2f56db', 'opu-rs-func-00000000061',
+            '服务协同事项', 'func', '0', '/aea/item/index2.do?itemNature=9', NULL, '9',
+            '9b1fbbea-ad63-4040-86a8-6345f4b189e1', '2',
+            '.9b1fbbea-ad63-4040-86a8-6345f4b189e1.10c149bd-3e70-4009-9bd6-f9f81dccf8f2.', '0', '0', '1', '0', NULL,
+            NULL, 'beb9e669-9056-4bce-8c08-779271a7b6f2', '2019-06-03 17:13:20', 'beb9e669-9056-4bce-8c08-779271a7b6f2',
+            '2019-06-05 11:12:33', NULL, NULL, NULL, NULL, NULL, '0', NULL, NULL, '0', NULL, NULL, NULL, NULL);
+            INSERT INTO `opu_rs_func` (`FUNC_ID`, `APP_SOFT_ID`, `FUNC_CODE`, `FUNC_NAME`, `FUNC_TYPE`,
+            `FUNC_INVOKE_TYPE`, `FUNC_INVOKE_URL`, `FUNC_INVOKE_PARAM`, `FUNC_SORT_NO`, `PARENT_FUNC_ID`, `FUNC_LEVEL`,
+            `FUNC_SEQ`, `FUNC_SUB_COUNT`, `IS_AUTO_IMPORT`, `IS_ACTIVE_FUNC`, `FUNC_DELETED`, `FUNC_DESC`, `FUNC_MEMO`,
+            `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `FUNC_INVOKE_ACTIVITY`, `WIDGET_TYPE`, `FUNC_ICON_CSS`,
+            `WIDGET_IS_CONFIG`, `WIDGET_IS_VISIABLE`, `FUNC_SHORTCUT_KEY`, `WIDGET_IS_USE_TPL`, `TMN_ID`, `IS_IMG_ICON`,
+            `SMALL_IMG_PATH`, `MIDDLE_IMG_PATH`, `BIG_IMG_PATH`, `HUGE_IMG_PATH`) VALUES
+            ('41165d0d-f3a2-4039-b845-6585a396f3e2', 'bd57d0be-8884-4a4e-a41e-98070d2f56db', 'opu-rs-func-00000000062',
+            '市政公用服务事项', 'func', '0', '/aea/item/index2.do?itemNature=6', NULL, '10',
+            '9b1fbbea-ad63-4040-86a8-6345f4b189e1', '2',
+            '.9b1fbbea-ad63-4040-86a8-6345f4b189e1.41165d0d-f3a2-4039-b845-6585a396f3e2.', '0', '0', '1', '0', NULL,
+            NULL, 'beb9e669-9056-4bce-8c08-779271a7b6f2', '2019-06-03 17:17:26', 'beb9e669-9056-4bce-8c08-779271a7b6f2',
+            '2019-06-05 11:12:50', NULL, NULL, NULL, NULL, NULL, '0', NULL, NULL, '0', NULL, NULL, NULL, NULL);
+            update opu_rs_func set FUNC_NAME='行政事项库',FUNC_INVOKE_URL='/aea/item/index2.do?itemNature=0' where FUNC_NAME
+            = '事项库管理';
+            update opu_rs_func set FUNC_NAME='部门行政事项库' where FUNC_NAME = '部门事项库管理';
+
+            INSERT INTO `opu_rs_role_func` (`ROLE_FUNC_ID`, `ROLE_ID`, `FUNC_ID`) VALUES
+            ('297bd0fd-06ec-4bcc-b98b-8ac0534f15bf', '6c9fd702-0c30-44a3-be5d-807fd4c34f39',
+            'a11fa495-3a3f-42c8-a1a0-151396734c6d');
+            INSERT INTO `opu_rs_role_func` (`ROLE_FUNC_ID`, `ROLE_ID`, `FUNC_ID`) VALUES
+            ('9aaacd48-e837-4c1b-9e0b-e991c518ae00', '6c9fd702-0c30-44a3-be5d-807fd4c34f39',
+            '41165d0d-f3a2-4039-b845-6585a396f3e2');
+            INSERT INTO `opu_rs_role_func` (`ROLE_FUNC_ID`, `ROLE_ID`, `FUNC_ID`) VALUES
+            ('9f3acae4-b315-4ee9-ad6b-40e2480cc365', '6c9fd702-0c30-44a3-be5d-807fd4c34f39',
+            '10c149bd-3e70-4009-9bd6-f9f81dccf8f2');
+
+            INSERT INTO `opu_rs_menu` (`MENU_ID`, `MENU_CODE`, `MENU_NAME`, `MENU_ICON_CSS`, `NET_TMN_ID`,
+            `APP_SOFT_ID`, `FUNC_ID`, `PARENT_MENU_ID`, `MENU_LEVEL`, `MENU_SEQ`, `MENU_SORT_NO`, `IS_ACTIVE`,
+            `IS_LEAF`, `SUB_COUNT`, `ACTIVE_SUB_COUNT`, `PAGE_OPEN_MODE`, `SMALL_IMG_PATH`, `MIDDLE_IMG_PATH`,
+            `BIG_IMG_PATH`, `MENU_MEMO`, `MENU_DELETED`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`,
+            `MENU_INVOKE_ACTIVITY`, `MENU_INVOKE_TYPE`, `IS_SINGLE_URL`, `AUTO_SWITCH`, `MENU_INNER_URL`,
+            `MENU_GOV_URL`, `MENU_OUTER_URL`, `MENU_TAG_URL`, `IS_RECENTLY_ADD`, `IS_SHORTCUT_MENU`, `SHORTCUT_SORT_NO`,
+            `HUGE_IMG_PATH`, `IS_IMG_ICON`) VALUES ('7a5e94e8-93e0-48e0-9a47-148622b693f1', 'opu-rs-menu-00000000177',
+            '中介服务事项库', 'm-menu__link-icon flaticon-file-1', '623baeff-8079-4762-bb8f-becddc20b463',
+            'bd57d0be-8884-4a4e-a41e-98070d2f56db', 'a11fa495-3a3f-42c8-a1a0-151396734c6d',
+            'd0fd9ca7-dfc0-4dc5-9fe6-816c0ca54a70', '2',
+            '.d0fd9ca7-dfc0-4dc5-9fe6-816c0ca54a70.7a5e94e8-93e0-48e0-9a47-148622b693f1.', '3', '1', '1', '0', '0',
+            'default', NULL, NULL, NULL, NULL, '0', 'beb9e669-9056-4bce-8c08-779271a7b6f2', '2019-06-03 17:18:33',
+            'beb9e669-9056-4bce-8c08-779271a7b6f2', '2019-06-05 11:45:16', NULL, 'h', '0', '0',
+            'http://localhost:8083/aplanmis-front/aea/item/index2.do?itemNature=8',
+            'http://localhost:8083/aplanmis-front/aea/item/index2.do?itemNature=8',
+            'http://localhost:8083/aplanmis-front/aea/item/index2.do?itemNature=8', NULL, '0', NULL, NULL, NULL, '0');
+            INSERT INTO `opu_rs_menu` (`MENU_ID`, `MENU_CODE`, `MENU_NAME`, `MENU_ICON_CSS`, `NET_TMN_ID`,
+            `APP_SOFT_ID`, `FUNC_ID`, `PARENT_MENU_ID`, `MENU_LEVEL`, `MENU_SEQ`, `MENU_SORT_NO`, `IS_ACTIVE`,
+            `IS_LEAF`, `SUB_COUNT`, `ACTIVE_SUB_COUNT`, `PAGE_OPEN_MODE`, `SMALL_IMG_PATH`, `MIDDLE_IMG_PATH`,
+            `BIG_IMG_PATH`, `MENU_MEMO`, `MENU_DELETED`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`,
+            `MENU_INVOKE_ACTIVITY`, `MENU_INVOKE_TYPE`, `IS_SINGLE_URL`, `AUTO_SWITCH`, `MENU_INNER_URL`,
+            `MENU_GOV_URL`, `MENU_OUTER_URL`, `MENU_TAG_URL`, `IS_RECENTLY_ADD`, `IS_SHORTCUT_MENU`, `SHORTCUT_SORT_NO`,
+            `HUGE_IMG_PATH`, `IS_IMG_ICON`) VALUES ('bd90045b-a5b1-434a-98c5-5c21a8cf0c2d', 'opu-rs-menu-00000000178',
+            '服务协同事项库', 'm-menu__link-icon flaticon-file-1', '623baeff-8079-4762-bb8f-becddc20b463',
+            'bd57d0be-8884-4a4e-a41e-98070d2f56db', '10c149bd-3e70-4009-9bd6-f9f81dccf8f2',
+            'd0fd9ca7-dfc0-4dc5-9fe6-816c0ca54a70', '2',
+            '.d0fd9ca7-dfc0-4dc5-9fe6-816c0ca54a70.bd90045b-a5b1-434a-98c5-5c21a8cf0c2d.', '4', '1', '1', '0', '0',
+            'default', NULL, NULL, NULL, NULL, '0', 'beb9e669-9056-4bce-8c08-779271a7b6f2', '2019-06-03 17:20:58',
+            'beb9e669-9056-4bce-8c08-779271a7b6f2', '2019-06-05 11:44:40', NULL, 'h', '0', '0',
+            'http://localhost:8083/aplanmis-front/aea/item/index2.do?itemNature=9',
+            'http://localhost:8083/aplanmis-front/aea/item/index2.do?itemNature=9',
+            'http://localhost:8083/aplanmis-front/aea/item/index2.do?itemNature=9', NULL, '0', NULL, NULL, NULL, '0');
+            INSERT INTO `opu_rs_menu` (`MENU_ID`, `MENU_CODE`, `MENU_NAME`, `MENU_ICON_CSS`, `NET_TMN_ID`,
+            `APP_SOFT_ID`, `FUNC_ID`, `PARENT_MENU_ID`, `MENU_LEVEL`, `MENU_SEQ`, `MENU_SORT_NO`, `IS_ACTIVE`,
+            `IS_LEAF`, `SUB_COUNT`, `ACTIVE_SUB_COUNT`, `PAGE_OPEN_MODE`, `SMALL_IMG_PATH`, `MIDDLE_IMG_PATH`,
+            `BIG_IMG_PATH`, `MENU_MEMO`, `MENU_DELETED`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`,
+            `MENU_INVOKE_ACTIVITY`, `MENU_INVOKE_TYPE`, `IS_SINGLE_URL`, `AUTO_SWITCH`, `MENU_INNER_URL`,
+            `MENU_GOV_URL`, `MENU_OUTER_URL`, `MENU_TAG_URL`, `IS_RECENTLY_ADD`, `IS_SHORTCUT_MENU`, `SHORTCUT_SORT_NO`,
+            `HUGE_IMG_PATH`, `IS_IMG_ICON`) VALUES ('15e0b943-7907-45bc-b557-77b3b8fcaa7a', 'opu-rs-menu-00000000179',
+            '公用服务事项库', 'm-menu__link-icon flaticon-file-1', '623baeff-8079-4762-bb8f-becddc20b463',
+            'bd57d0be-8884-4a4e-a41e-98070d2f56db', '41165d0d-f3a2-4039-b845-6585a396f3e2',
+            'd0fd9ca7-dfc0-4dc5-9fe6-816c0ca54a70', '2',
+            '.d0fd9ca7-dfc0-4dc5-9fe6-816c0ca54a70.15e0b943-7907-45bc-b557-77b3b8fcaa7a.', '5', '1', '1', '0', '0',
+            'default', NULL, NULL, NULL, NULL, '0', 'beb9e669-9056-4bce-8c08-779271a7b6f2', '2019-06-03 17:22:33',
+            'beb9e669-9056-4bce-8c08-779271a7b6f2', '2019-06-05 11:45:02', NULL, 'h', '0', '0',
+            'http://localhost:8083/aplanmis-front/aea/item/index2.do?itemNature=6',
+            'http://localhost:8083/aplanmis-front/aea/item/index2.do?itemNature=6',
+            'http://localhost:8083/aplanmis-front/aea/item/index2.do?itemNature=6', NULL, '0', NULL, NULL, NULL, '0');
+            update opu_rs_menu set menu_name
+            ='行政事项库',menu_inner_url='http://localhost:8083/aplanmis-front/aea/item/index2.do?itemNature=0' where
+            menu_name like '%实施清单%' and menu_deleted = '0';
+            update opu_rs_menu set menu_name ='部门行政事项库',MENU_SORT_NO=6 where menu_name like '%部门事项%' and menu_deleted =
+            '0';
+            update opu_rs_menu set MENU_SORT_NO=7 where menu_name like '%电子证照定义库%' and menu_deleted = '0';
+            update opu_rs_menu set MENU_SORT_NO=8 where menu_name like '%材料类型库%' and menu_deleted = '0';
+            update opu_rs_menu set MENU_SORT_NO=9 where menu_name like '%材料标准清单%' and menu_deleted = '0';
+        </sql>
+    </changeSet>
+
+    <changeSet id="201906111052" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            INSERT INTO `bsc_dic_code_type` (`TYPE_ID`, `TYPE_CODE`, `TYPE_NAME`, `IS_TREE`, `IS_ACTIVE`, `TYPE_MEMO`,
+            `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES
+            ('20efd959-0f59-4964-8a7c-03824258d0ac', 'GJBZSPLCLX', '国家标准审批流程类型', '0', '1', NULL, NULL, '2019-06-11
+            10:44:41', NULL, '2019-06-11 10:44:41', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('1677b548-0882-4dd6-b4c0-bd434c4f5a78',
+            '20efd959-0f59-4964-8a7c-03824258d0ac', '10', '其他', '1', '10', '', NULL, '0', '0', NULL, NULL, '2019-06-11
+            10:46:47', NULL, '2019-06-11 10:46:47', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('28e906b8-07d5-469b-883e-9480d1f5824c',
+            '20efd959-0f59-4964-8a7c-03824258d0ac', '9', '能源工程类项目', '1', '9', '', NULL, '0', '0', NULL, NULL,
+            '2019-06-11 10:46:36', NULL, '2019-06-11 10:46:36', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('35dd4d3c-ce7d-4548-b8b0-52e31eb6ec4a',
+            '20efd959-0f59-4964-8a7c-03824258d0ac', '5', '带方案出让用地的社会投资项目', '1', '5', '', NULL, '0', '0', NULL, NULL,
+            '2019-06-11 10:45:43', NULL, '2019-06-11 10:45:43', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('5b308e29-3b55-46cc-bf58-bb63edc12135',
+            '20efd959-0f59-4964-8a7c-03824258d0ac', '6', '工业类投资项目', '1', '6', '', NULL, '0', '0', NULL, NULL,
+            '2019-06-11 10:46:00', NULL, '2019-06-11 10:46:00', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('a78ef540-4897-4d21-8269-64e5669d4df1',
+            '20efd959-0f59-4964-8a7c-03824258d0ac', '3', '一般社会投资项目', '1', '3', '', NULL, '0', '0', NULL, NULL,
+            '2019-06-11 10:45:20', NULL, '2019-06-11 10:45:20', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('ddf1061e-ffa9-4aa1-8ef2-d916ad9ffdbe',
+            '20efd959-0f59-4964-8a7c-03824258d0ac', '1', '政府投资工程建设项目（房屋建筑类）', '1', '1', '', NULL, '0', '0', NULL, NULL,
+            '2019-06-11 10:44:41', NULL, '2019-06-11 10:45:00', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('e4d28e75-9832-4efa-b776-1b6bc65c3fba',
+            '20efd959-0f59-4964-8a7c-03824258d0ac', '8', '水利工程类项目', '1', '8', '', NULL, '0', '0', NULL, NULL,
+            '2019-06-11 10:46:25', NULL, '2019-06-11 10:46:25', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('f31acfe0-d510-43f8-a332-6125fb0afebb',
+            '20efd959-0f59-4964-8a7c-03824258d0ac', '7', '交通工程类项目', '1', '7', '', NULL, '0', '0', NULL, NULL,
+            '2019-06-11 10:46:10', NULL, '2019-06-11 10:46:10', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('f6041aa2-3249-446e-a7e0-cf08a3dca826',
+            '20efd959-0f59-4964-8a7c-03824258d0ac', '2', '政府投资工程建设项目（线性工程类）', '1', '2', '', NULL, '0', '0', NULL, NULL,
+            '2019-06-11 10:44:41', NULL, '2019-06-11 10:45:10', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('fd7c72b6-4548-4467-aa51-113e9fe5f0f9',
+            '20efd959-0f59-4964-8a7c-03824258d0ac', '4', '小型社会投资项目', '1', '4', '', NULL, '0', '0', NULL, NULL,
+            '2019-06-11 10:45:32', NULL, '2019-06-11 10:45:32', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+        </sql>
+    </changeSet>
+
+    <changeSet id="201906111637" author="sam" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            update act_sto_view set SQL_TEXT = "SELECT
+            aht_new_123.*
+            FROM
+            (
+            SELECT
+            aht_123.*
+            FROM
+            (
+            SELECT DISTINCT
+            aha.APPLYINST_CODE,
+            ali.LINKMAN_NAME,
+            aps_123.STAGE_NAME ITEMINST_STAGE_NAME,
+            aha.CREATE_TIME,
+            art.NAME_,
+            '在办' STATE,
+            ahp.ID_ id,
+            NULL END_TIME_,
+            (
+            CASE aha.IS_SERIES_APPROVE
+            WHEN '1' THEN
+            '串联'
+            ELSE
+            '并联'
+            END
+            ) IS_SERIES_APPROVE,
+            aha.APPLYINST_SOURCE,
+            aha.CREATER,
+            art.ID_ TASK_ID
+            FROM
+            ACT_HI_PROCINST ahp,
+            ACT_STO_APPINST asa,
+            AEA_HI_APPLYINST aha,
+            AEA_PROJ_INFO api,
+            AEA_LINKMAN_INFO ali,
+            ACT_RU_TASK art,
+            AEA_HI_PAR_STAGEINST ahs_123,
+            AEA_PAR_STAGE aps_123
+            WHERE
+            ahp.id_ = asa.PROCINST_ID
+            AND asa.MASTER_RECORD_ID = aha.APPLYINST_ID
+            AND aha.LINKMAN_INFO_ID = ali.LINKMAN_INFO_ID
+            AND art.PROC_INST_ID_ = ahp.ID_
+            AND ahs_123.APPLYINST_ID = aha.APPLYINST_ID
+            AND aps_123.STAGE_ID = ahs_123.STAGE_ID
+            UNION ALL
+            SELECT DISTINCT
+            aha.APPLYINST_CODE,
+            ali.LINKMAN_NAME,
+            ahi_123.ITEMINST_NAME ITEMINST_STAGE_NAME,
+            aha.CREATE_TIME,
+            art.NAME_,
+            '在办' STATE,
+            ahp.ID_ id,
+            NULL END_TIME_,
+            (
+            CASE aha.IS_SERIES_APPROVE
+            WHEN '1' THEN
+            '串联'
+            ELSE
+            '并联'
+            END
+            ) IS_SERIES_APPROVE,
+            aha.APPLYINST_SOURCE,
+            aha.CREATER,
+            art.ID_ TASK_ID
+            FROM
+            ACT_HI_PROCINST ahp,
+            ACT_STO_APPINST asa,
+            AEA_HI_APPLYINST aha,
+            AEA_PROJ_INFO api,
+            AEA_LINKMAN_INFO ali,
+            ACT_RU_TASK art,
+            AEA_HI_SERIESINST ahs_123,
+            AEA_HI_ITEMINST ahi_123
+            WHERE
+            ahp.id_ = asa.PROCINST_ID
+            AND asa.MASTER_RECORD_ID = aha.APPLYINST_ID
+            AND aha.LINKMAN_INFO_ID = ali.LINKMAN_INFO_ID
+            AND art.PROC_INST_ID_ = ahp.ID_
+            AND ahs_123.APPLYINST_ID = aha.APPLYINST_ID
+            AND ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
+            UNION ALL
+            SELECT DISTINCT
+            aha.APPLYINST_CODE,
+            ali.LINKMAN_NAME,
+            aps_123.STAGE_NAME ITEMINST_STAGE_NAME,
+            aha.CREATE_TIME,
+            NULL NAME_,
+            '办结' STATE,
+            ahp.ID_ id,
+            ahp.END_TIME_,
+            (
+            CASE aha.IS_SERIES_APPROVE
+            WHEN '1' THEN
+            '串联'
+            ELSE
+            '并联'
+            END
+            ) IS_SERIES_APPROVE,
+            aha.APPLYINST_SOURCE,
+            aha.CREATER,
+            arti.ID_ TASK_ID
+            FROM
+            ACT_HI_PROCINST ahp,
+            ACT_STO_APPINST asa,
+            AEA_HI_APPLYINST aha,
+            AEA_PROJ_INFO api,
+            AEA_LINKMAN_INFO ali,
+            ACT_HI_TASKINST arti,
+            AEA_HI_PAR_STAGEINST ahs_123,
+            AEA_PAR_STAGE aps_123
+            WHERE
+            ahp.id_ = asa.PROCINST_ID
+            AND asa.MASTER_RECORD_ID = aha.APPLYINST_ID
+            AND aha.LINKMAN_INFO_ID = ali.LINKMAN_INFO_ID
+            AND arti.PROC_INST_ID_ = ahp.ID_
+            AND ahp.END_TIME_ IS NOT NULL
+            AND ahs_123.APPLYINST_ID = aha.APPLYINST_ID
+            AND aps_123.STAGE_ID = ahs_123.STAGE_ID
+            UNION ALL
+            SELECT DISTINCT
+            aha.APPLYINST_CODE,
+            ali.LINKMAN_NAME,
+            ahi_123.ITEMINST_NAME ITEMINST_STAGE_NAME,
+            aha.CREATE_TIME,
+            NULL NAME_,
+            '办结' STATE,
+            ahp.ID_ id,
+            ahp.END_TIME_,
+            (
+            CASE aha.IS_SERIES_APPROVE
+            WHEN '1' THEN
+            '串联'
+            ELSE
+            '并联'
+            END
+            ) IS_SERIES_APPROVE,
+            aha.APPLYINST_SOURCE,
+            aha.CREATER,
+            arti.ID_ TASK_ID
+            FROM
+            ACT_HI_PROCINST ahp,
+            ACT_STO_APPINST asa,
+            AEA_HI_APPLYINST aha,
+            AEA_PROJ_INFO api,
+            AEA_LINKMAN_INFO ali,
+            ACT_HI_TASKINST arti,
+            AEA_HI_SERIESINST ahs_123,
+            AEA_HI_ITEMINST ahi_123
+            WHERE
+            ahp.id_ = asa.PROCINST_ID
+            AND asa.MASTER_RECORD_ID = aha.APPLYINST_ID
+            AND aha.LINKMAN_INFO_ID = ali.LINKMAN_INFO_ID
+            AND arti.PROC_INST_ID_ = ahp.ID_
+            AND ahp.END_TIME_ IS NOT NULL
+            AND ahs_123.APPLYINST_ID = aha.APPLYINST_ID
+            AND ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
+            ) aht_123
+            ORDER BY
+            aht_123.CREATE_TIME DESC
+            ) aht_new_123
+            WHERE 1 = 1" WHERE VIEW_CODE = 'view-code-00000028';
+
+            UPDATE act_sto_column SET LIST_FORMAT_FUN = NULL WHERE COLUMN_ID = '9d88bc0e-8f1a-4cf3-9615-d9d461266ea9';
+
+            UPDATE act_sto_column SET LIST_FORMAT_FUN = 'dateFormatterCn',list_align = 'center' WHERE COLUMN_ID =
+            '1de4c433-cc66-4bf6-8a3c-afe142a2d367';
+        </sql>
+    </changeSet>
+
+    <changeSet id="201906120936" author="sam" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `act_sto_proc_susp_act`
+            MODIFY COLUMN `SUSPEND_TIME` datetime NOT NULL COMMENT '挂起时间' AFTER `PROCINST_ID`,
+            MODIFY COLUMN `ACTIVATE_TIME` datetime NULL DEFAULT NULL COMMENT '激活时间' AFTER `SUSPEND_TIME`,
+            MODIFY COLUMN `CREATE_TIME` datetime NOT NULL AFTER `CREATER`,
+            MODIFY COLUMN `MODIFY_TIME` datetime NOT NULL AFTER `MODIFIER`;
+
+            ALTER TABLE `act_de_model`
+            MODIFY COLUMN `LAST_UPDATED` datetime(6) NULL DEFAULT NULL AFTER `CREATED_BY`;
+        </sql>
+    </changeSet>
+
+    <changeSet id="201906231214" author="qinjp" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            UPDATE `bsc_dic_code_item`
+            SET `ITEM_ID` = '41725803-1710-4376-be08-78abae49c802-w',
+            `TYPE_ID` = 'fadff496-cde1-4c72-90b8-766744b18cb2-w',
+            `ITEM_CODE` = 'A00002',
+            `ITEM_NAME` = '预先服务协同',
+            `IS_ACTIVE` = '1',
+            `SORT_NO` = '3',
+            `PARENT_ID` = '',
+            `ITEM_SEQ` = NULL,
+            `ITEM_LEVEL` = '0',
+            `SUB_COUNT` = '0',
+            `ITEM_MEMO` = NULL,
+            `CREATER` = NULL,
+            `CREATE_TIME` = NULL,
+            `MODIFIER` = NULL,
+            `MODIFY_TIME` = '2019-06-23 11:00:00',
+            `ORG_ID` = '012aa547-7104-418d-87cc-824f24f1a278'
+            WHERE
+            (
+            `ITEM_ID` = '41725803-1710-4376-be08-78abae49c802-w'
+            );
+            UPDATE `bsc_dic_code_item`
+            SET `ITEM_ID` = '41725803-1710-4376-be08-78abae49c801-w',
+            `TYPE_ID` = 'fadff496-cde1-4c72-90b8-766744b18cb2-w',
+            `ITEM_CODE` = 'A00001',
+            `ITEM_NAME` = '政府投资类',
+            `IS_ACTIVE` = '1',
+            `SORT_NO` = '1',
+            `PARENT_ID` = '',
+            `ITEM_SEQ` = NULL,
+            `ITEM_LEVEL` = '0',
+            `SUB_COUNT` = '0',
+            `ITEM_MEMO` = NULL,
+            `CREATER` = NULL,
+            `CREATE_TIME` = NULL,
+            `MODIFIER` = NULL,
+            `MODIFY_TIME` = '2019-06-23 10:58:36',
+            `ORG_ID` = '012aa547-7104-418d-87cc-824f24f1a278'
+            WHERE
+            (
+            `ITEM_ID` = '41725803-1710-4376-be08-78abae49c801-w'
+            );
+
+            INSERT INTO `bsc_dic_code_item`
+            (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`, `PARENT_ID`, `ITEM_SEQ`,
+            `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `ORG_ID`)
+            VALUES ('41725803-1710-4376-be08-78abae49c803-w', 'fadff496-cde1-4c72-90b8-766744b18cb2-w', 'A00003',
+            '社会投资类', '1', '2', NULL, NULL, '0', '0', NULL, NULL, NULL, NULL, '2019-06-23 12:13:52',
+            '012aa547-7104-418d-87cc-824f24f1a278');
+        </sql>
+    </changeSet>
+
+    <changeSet id="201906251037" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            delete from bsc_dic_code_item where TYPE_ID ='4ce7d4fb-e5c4-4d67-9a2b-81904398df1c' and item_code in
+            ('3','4');
+        </sql>
+    </changeSet>
+
+    <changeSet id="201907091731" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            update aea_item_basic set IS_CITY_ITEM = '1';
+        </sql>
+    </changeSet>
+
+    <changeSet id="201907092110" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            update aea_item_service_legal set CREATER='369',CREATE_TIME='2019-07-09 21:06:48';
+            update aea_item_service_window set CREATER='369',CREATE_TIME='2019-07-09 21:06:48';
+        </sql>
+    </changeSet>
+
+    <changeSet id="201908301544" author="chenzh" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_hi_item_matinst`
+            ADD COLUMN `MEMO` varchar(1000) NULL COMMENT '备注' AFTER `ROOT_ORG_ID`;
+        </sql>
+    </changeSet>
+
+    <changeSet id="201908311151" author="chenzh" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `act_sto_timerule_inst`
+            MODIFY COLUMN `USE_LIMIT_TIME` double(30, 1) NULL COMMENT '已用时' AFTER `IS_CONCLUDING`,
+            MODIFY COLUMN `REMAINING_TIME` double(30, 1) NULL COMMENT '剩余用时' AFTER `USE_LIMIT_TIME`,
+            MODIFY COLUMN `OVERDUE_TIME` double(30, 1) NULL COMMENT '逾期用时' AFTER `REMAINING_TIME`;
+        </sql>
+    </changeSet>
+
+    <changeSet id="201909211122" author="chenzh" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_unit_proj`
+            ADD COLUMN `LINKMAN_INFO_ID` varchar(50) NULL COMMENT '单位项目负责人' AFTER `UNIT_TYPE`,
+            ADD CONSTRAINT `FK_AEA_UNIT_PROJ_L` FOREIGN KEY (`LINKMAN_INFO_ID`) REFERENCES `aea_linkman_info`
+            (`LINKMAN_INFO_ID`) ON DELETE RESTRICT ON UPDATE RESTRICT;
+            ALTER TABLE `aea_hi_certinst`
+            ADD COLUMN `MEMO` varchar(2000) NULL COMMENT '备注' AFTER `ROOT_ORG_ID`;
+        </sql>
+    </changeSet>
+    <!--修改中介超市服务图标路径-->
+    <changeSet id="201910081634" author="lwq" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            update aea_im_service set IMG_URL=if(INSTR(IMG_URL,'zjcs')!=1,CONCAT('zjcs/',IMG_URL),IMG_URL);
+        </sql>
+    </changeSet>
+
+    <!--增加中介超市测试数据-->
+    <changeSet id="20191010192801" author="lwq" failOnError="false">
+        <comment>增加中介超市测试数据</comment>
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+
+            INSERT INTO `aea_im_service_item`(`SERVICE_ITEM_ID`, `ITEM_VER_ID`, `SERVICE_ID`, `IS_DELETE`, `CREATER`,
+            `CREATE_TIME`) VALUES ('d3ac0368-689f-4b99-9d90-b1bae578b65a', '86c04bb0-fbfb-4cbe-86a6-c15a5b1f680e',
+            'e8037f55-b040-4c2d-8381-fdc3bd275d4c', '0', 'htry', '2019-10-10');
+
+            INSERT INTO `aea_item_relevance`(`RELEVANCE_ID`, `CHILD_ITEM_ID`, `PARENT_ITEM_ID`, `CREATER`,
+            `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `IS_DELETE`) VALUES ('f88bb71a-dc01-49aa-a01c-c3aa36c29be7',
+            '479459ad-86a9-4c88-9ef2-56df4ccbac1c', 'c3441c45-0cc7-4320-816f-be0c5848450a', 'admin', '2019-10-10', NULL,
+            NULL, '0');
+
+        </sql>
+    </changeSet>
+
+    <changeSet id="20191011-001" author="小糊涂">
+        <comment>增加中介超市测试数据-aea_im_client_service</comment>
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            INSERT INTO `aea_im_client_service`(`CLIENT_SERVICE_ID`, `UNIT_SERVICE_ID`, `UNIT_LINKMAN_ID`, `IS_DELETED`,
+            `CREATER`, `CREATE_TIME`) VALUES ('a52cde00-c33a-4744-b2ad-89a1b1ff5c69',
+            '5ff5e1f4-4ade-4e20-a646-e404e53db46e', '5bfe1e6d-9652-487c-8bb8-32eead3f2e28', '0', 'xiaohutu', '2019-10-11
+            11:02:39');
+        </sql>
+    </changeSet>
+
+    <changeSet id="20191011-002" author="小糊涂">
+        <comment>增加中介超市测试数据-aea_im_client_service---222</comment>
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            INSERT INTO `aplanmis_prd`.`aea_im_client_service`(`CLIENT_SERVICE_ID`, `UNIT_SERVICE_ID`,
+            `UNIT_LINKMAN_ID`, `IS_DELETED`, `CREATER`, `CREATE_TIME`) VALUES ('45b9f2b5-c0b1-4932-9c73-ebbd9f001e73',
+            'e1af1f45-c007-407e-9a8f-dd25bd05d613', '6a02be7b-1b32-49ee-9ad4-3ca390ed71ab', '0', 'xiaohutu', '2019-10-11
+            11:17:24');
+            INSERT INTO `aplanmis_prd`.`aea_im_client_service`(`CLIENT_SERVICE_ID`, `UNIT_SERVICE_ID`,
+            `UNIT_LINKMAN_ID`, `IS_DELETED`, `CREATER`, `CREATE_TIME`) VALUES ('cfaeb10f-b56c-4ba4-9a4a-0f0e0cb63f67',
+            'e1af1f45-c007-407e-9a8f-dd25bd05d613', '6dbd16e1-fb5e-4407-9e36-86acf147e362', '0', 'xiaohutu', '2019-10-11
+            11:18:00');
+            INSERT INTO `aplanmis_prd`.`aea_im_client_service`(`CLIENT_SERVICE_ID`, `UNIT_SERVICE_ID`,
+            `UNIT_LINKMAN_ID`, `IS_DELETED`, `CREATER`, `CREATE_TIME`) VALUES ('aa96e5ea-06b6-47a0-919a-3487bc1e54bd',
+            'e1af1f45-c007-407e-9a8f-dd25bd05d613', 'f2430271-3585-4e89-8e09-a2cbc2060366', '0', 'xiaohutu', '2019-10-11
+            11:18:37');
+
+        </sql>
+    </changeSet>
+    <changeSet id="20191012-001" author="xiaohutu">
+        <comment>删除AEA_IM_SERVICE_ITEM 垃圾数据</comment>
+        <sql>
+            delete from AEA_IM_SERVICE_ITEM WHERE SERVICE_ITEM_ID NOT
+            IN('d3ac0368-689f-4b99-9d90-b1bae578b65a','2074d08a-6a04-410b-94ec-e4cf9dbf7268')
+            and DATE_FORMAT( CREATE_TIME, '%Y%m%d' ) &lt; '20190615';
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

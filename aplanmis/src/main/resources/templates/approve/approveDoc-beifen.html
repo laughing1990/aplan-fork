@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <!--公共css,js-->
+  <meta charset="UTF-8">
+  <title>批文批复</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <!--引入公共css-->
+  <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.css"
+        th:href="@{/agcloud/framework/js-lib/element-2/element.css}"/>
+  <link rel="stylesheet"
+        href="/framework-ui/src/main/resources/static/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css"
+        th:href="@{/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css}">
+  <link rel="stylesheet"
+        href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/css/reset.css"
+        th:href="@{/agcloud/framework/js-lib/agcloud-lib/css/reset.css}">
+  <link rel="stylesheet" href="../../static/approve/css/approveDoc.css" th:href="@{/approve/css/approveDoc.css}">
+</head>
+<script>
+  var ctx = '[[@{/}]]';
+</script>
+<script src="../../static/approve/js/ip.js" th:src="@{/approve/js/ip.js}"></script>
+<body style="background: #ffffff;">
+<!-- 主体内容 end -->
+
+<div id="approvalDocument" style="height:1800px;" v-cloak> <!-- class="clearfix para-approve-content miniScrollbar" -->
+  <el-scrollBar style="height: 100%;">
+    <div class="m-section_content_top" id="isApprover" v-if="isApprover=='1'">
+      <el-button type="primary" icon="el-icon-plus" @click="addOffice()" id="createOfficialDocBtn">
+        新建
+      </el-button>
+      <el-button type="danger" icon="el-icon-delete" id="deleteOfficialDocBtn" @click="batchDeleteApproval">删除
+      </el-button>
+    </div>
+    <div class="content-table" v-if="officeDocList.length==0">
+      <el-table border ref="singleTable" :data="approvalList" :header-cell-style='styleObj' highlight-current-row
+                @selection-change="changeApprovelListSelection" style="width: 100%">
+        <el-table-column type="selection" align="center" width="50"></el-table-column>
+        <el-table-column type="index" label="序号" align="center" width="50"></el-table-column>
+        <el-table-column property="officialDocTitle" label="批文名称"></el-table-column>
+        <el-table-column property="docTypeName" align="center" label="类型" width="100"></el-table-column>
+        <el-table-column property="docCount" align="center" label="份数" width="100"></el-table-column>
+        <el-table-column property="creator" align="center" label="创建人" width="100"></el-table-column>
+        <el-table-column property="createDate" align="center" label="创建日期" width="120"></el-table-column>
+        <el-table-column align="center" label="操作" width="120px">
+          <template slot-scope="scope">
+            <section v-if="isApprover=='1'">
+              <el-button type="text" class="btn-table" @click="editApproval(scope.row)">
+                编辑
+              </el-button>
+              <el-button type="text" class="btn-table" @click="deleteApproval(scope.row)">
+                删除
+              </el-button>
+            </section>
+            <section v-else>
+              <el-button type="text" class="btn-table" @click="checkApproval(scope.row)">
+                查看
+              </el-button>
+            </section>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+    <!--v-show="isApprover==0"-->
+    <div v-else class="content-table" v-for="item in officeDocList" :key="item.orgName">
+      <div v-show="isApprover==0">部门：{{item.orgName}}</div>
+      <el-table border ref="singleTable" :data="item.itemMatinst" :header-cell-style='styleObj'
+                highlight-current-row @selection-change="changeApprovelListSelection" style="width: 100%">
+        <el-table-column type="selection" align="center" width="50"></el-table-column>
+        <el-table-column type="index" label="序号" align="center" width="50"></el-table-column>
+        <el-table-column property="officialDocTitle" label="批文名称"></el-table-column>
+        <el-table-column property="docTypeName" align="center" label="类型" width="100"></el-table-column>
+        <el-table-column property="docCount" align="center" label="份数" width="100"></el-table-column>
+        <el-table-column property="creator" align="center" label="创建人" width="100"></el-table-column>
+        <el-table-column property="createDate" align="center" label="创建日期" width="120"></el-table-column>
+        <el-table-column align="center" label="操作" width="120px">
+          <template slot-scope="scope">
+            <section v-if="isApprover=='1'">
+              <el-button type="text" class="btn-table" @click="editApproval(scope.row)">
+                编辑
+              </el-button>
+              <el-button type="text" class="btn-table" @click="deleteApproval(scope.row)">
+                删除
+              </el-button>
+            </section>
+            <section v-else>
+              <el-button type="text" class="btn-table" @click="checkApproval(scope.row)">
+                查看
+              </el-button>
+            </section>
+          </template>
+        </el-table-column>
+      </el-table>
+    
+    </div>
+    
+    <!-- 新建和修改批文 弹出框 str-->
+    <el-dialog :title="approvalDialogTitle" :visible.sync="showApprovalDialog" class="dialog processDiagramDialog"
+               width="800px" @close="reSetEditFormRuleData('officialDocForm')">
+      <div>
+        <el-form ref="officialDocForm" id="officialDocForm" :model="officialDocForm" :rules="EditFormRules"
+                 label-width="150px">
+          <el-form-item label="文件标题" require prop="officialDocTitle">
+            <el-row>
+              <el-col :span="16">
+                <el-input placeholder="请输入内容" v-model="officialDocForm.officialDocTitle" clearable>
+                
+                </el-input>
+              </el-col>
+              <el-col :span="8">
+                <el-select v-model="selectMatName" clearable placeholder="请选择" @change="setMatName"
+                           :disabled="canSelect">
+                  <el-option
+                      v-for="item in itemOfficeMatList"
+                      :key="item.matId"
+                      :label="item.matName"
+                      :value="item">
+                  </el-option>
+                </el-select>
+              </el-col>
+            </el-row>
+          
+          
+          </el-form-item>
+          <el-form-item label="文件文号" prop="officialDocNo">
+            <el-input v-model="officialDocForm.officialDocNo"></el-input>
+          </el-form-item>
+          
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="批复日期" require prop="officialDocPublishDate">
+                <el-date-picker v-model="officialDocForm.officialDocPublishDate" value-format="yyyy-MM-dd" type="date"
+                                placeholder="选择日期"></el-date-picker>
+              </el-form-item>
+            
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="有效期限" require prop="officialDocDueDate">
+                <el-date-picker v-model="officialDocForm.officialDocDueDate" type="date" value-format="yyyy-MM-dd"
+                                placeholder="选择日期"></el-date-picker>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-form-item label="类型">
+            <el-radio label="paper" v-model="CountType">纸质</el-radio>
+            <el-radio label="att" v-model="CountType">电子</el-radio>
+          </el-form-item>
+          <el-form-item label="份数" v-show="CountType =='att' ">
+            <!--                    <el-input v-model="newApprovalData.attCount"></el-input>-->
+            <div class="electron-option">
+              <input type="file" id="realUploadDo_" ref="realUploadDo_" name="file" multiple="multiple" class="hide"
+                     @change.stop="realUploadDo">
+              <el-button type="primary" id="uploadFile_" size="mini" @click.native="showUploadWindowFlag=true">
+                <i class="el-icon-upload el-icon--right"></i>选择文件
+              </el-button>
+              <div class="file-area">
+                <ul class="pjfile-list">
+                  <li v-for="(item, index) in fileList" :key="index">
+                    {{item.name}}<a class="debtn" href="javascript:;" @click="deluploadImg(item,index)">删除</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </el-form-item>
+          <el-form-item label="份数" v-show="CountType =='paper' ">
+            <el-input v-model="officialDocForm.paperCount"></el-input>
+          </el-form-item>
+        </el-form>
+      </div>
+      <div slot="footer" class="dialog-footer">
+        <button type="button" class="btn btn-outline-info"
+                @click="showApprovalDialog = false;reSetEditFormRuleData('officialDocForm')">
+          取消
+        </button>
+        
+        <button type="button" class="btn btn-info" v-if="isApprover=='1'" @click="saveNewApproval('officialDocForm')">
+          保存
+        </button>
+      </div>
+    </el-dialog>
+    <!-- 新建和修改批文 弹出框 end-->
+    
+    <!--文件上传下载弹窗 start-->
+    <el-dialog class="upload-flie-dialog" title="文件上传" :visible.sync="showUploadWindowFlag" @closed="uploadTableData=[]"
+               width="60%">
+      <div class="upload-file-content" :loading="loadingFileWin" element-loading-text="文件上传中"
+           element-loading-background="rgba(0, 0, 0, 0.3)" element-loading-spinner="el-icon-loading">
+        <div class="file-opt-btn">
+          <el-button type="primary" @click="downloadFile()">下载</el-button>
+          <el-upload ref="uploadFileAtt" class="upload-s-file" action="123" :show-file-list="false"
+                     :http-request="uploadFileCom" :file-list="fileList">
+            <el-button slot="trigger" type="primary">上传</el-button>
+          </el-upload>
+          <el-button type="primary" @click="delSelectFileCom()">删除</el-button>
+          <el-button type="primary" @click="openPhotoWindow(selMatRowData,'lt')">良田拍照</el-button>
+          <el-button type="primary" @click="openPhotoWindow(selMatRowData,'fz')">方正拍照</el-button>
+        </div>
+        <el-table :data="uploadTableData" border @selection-change="selectionFileChange" style="margin-top:15px;">
+          <el-table-column type="selection" align="center" width="55"></el-table-column>
+          <el-table-column prop="name" label="文件名"></el-table-column>
+          <el-table-column label="操作" align="center" width="150">
+            <template slot-scope="scope">
+              <el-button type="danger" size="mini" @click="fileDel(scope.row)">删除</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+    </el-dialog>
+    <!--文件上传下载弹窗 end-->
+  </el-scrollBar>
+</div>
+<!--引入公共js-->
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js"
+        th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js"
+        th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js"
+        th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js"
+        th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>
+<script src="../../static/approve/js/approveDoc.js" th:src="@{/approve/js/approveDoc.js}"></script>
+</body>
+</html>

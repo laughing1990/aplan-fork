@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by tiantian    2018-10-20 10:53:42 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AgentUnitServiceMapper">
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="aliasColumns">
+        ${alias}.UNIT_INFO_ID  unitInfoId,
+        ${alias}.APPLICANT  applicant,
+        ${alias}.IDTYPE  idtype,
+        ${alias}.APPLICANT_DISTRICT  applicantDistrict,
+        ${alias}.UNIT_TYPE unitType
+    </sql>
+
+    <!--入住机构列表，入住公示列表 mysql-->
+    <select id="listCheckinUnit" resultType="AgentUnitService" parameterType="AgentUnitService">
+        SELECT
+            aui.UNIT_INFO_ID unitInfoId,
+            aui.APPLICANT applicant,
+            aui.UNIT_NATURE unitNature,
+            aui.unified_social_credit_code unifiedSocialCreditCode,
+            temp2.SERVICE_NAME serviceName,
+            temp1.EVALUATION compEvaluation,
+            temp1.biddingNum,
+            aui.IMG_URL imgUrl,
+            temp2.AUDIT_FLAG auditFlag
+        FROM (
+            SELECT
+                aius.UNIT_INFO_ID,aius.AUDIT_FLAG,
+        <if test="_databaseId == 'oracle'">
+                    WM_CONCAT(ais.SERVICE_NAME) SERVICE_NAME
+                </if>
+                <if test="_databaseId == 'mysql'">
+                    GROUP_CONCAT(ais.SERVICE_NAME) SERVICE_NAME
+                </if>
+            FROM AEA_IM_UNIT_SERVICE aius
+            LEFT JOIN AEA_IM_SERVICE ais
+            ON aius.SERVICE_ID = ais.SERVICE_ID WHERE aius.IS_DELETE = '0' AND aius.IS_ACTIVE = '1'
+            AND aius.AUDIT_FLAG = '1' AND ais.IS_DELETE = '0' AND ais.IS_ACTIVE = '1'
+            GROUP BY aius.UNIT_INFO_ID
+        ) temp2
+        LEFT JOIN aea_unit_info aui ON temp2.UNIT_INFO_ID = aui.UNIT_INFO_ID
+        LEFT join (
+            SELECT aiub.UNIT_INFO_ID,avg(aise.COMP_EVALUATION) as EVALUATION, count(1) biddingNum FROM aea_im_unit_bidding aiub
+            LEFT JOIN aea_im_service_evaluation aise
+            ON aise.UNIT_BIDDING_ID = aiub.UNIT_BIDDING_ID AND aise.AUDIT_FLAG = '1' AND aise.IS_DELETE = '0'
+            WHERE aiub.IS_DELETE = '0'  AND aiub.IS_WON_BID = '1' AND aiub.IS_CANCEL_SIGNUP = '0'
+            GROUP BY aiub.UNIT_INFO_ID
+        ) temp1 ON temp1.UNIT_INFO_ID = aui.UNIT_INFO_ID
+        <where>
+            aui.IS_DELETED = '0' AND aui.IS_IM_UNIT = '1'
+            <if test="applicant != null and applicant !=''">
+                AND aui.APPLICANT LIKE concat('%',concat(#{applicant},'%'))
+            </if>
+            <if test="unitNature != null and unitNature !=''">
+                AND aui.unitNature = #{unitNature}
+            </if>
+            <if test="serviceIds != null ">
+                AND aui.UNIT_INFO_ID IN (
+                SELECT aius1.UNIT_INFO_ID FROM AEA_IM_UNIT_SERVICE aius1 WHERE aius1.SERVICE_ID IN
+                <foreach collection="serviceIds" index="index" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+                )
+            </if>
+            <choose>
+                <when test="compEvaluation != null and compEvaluation == '0'.toString()">
+                    AND temp1.EVALUATION IS NULL
+                </when>
+                <when test="compEvaluation != null and compEvaluation == '1'.toString()">
+                    AND temp1.EVALUATION BETWEEN '0' AND '3'
+                </when>
+                <when test="compEvaluation != null and compEvaluation == '2'.toString()">
+                    AND temp1.EVALUATION BETWEEN '3' AND '4'
+                </when>
+                <when test="compEvaluation != null and compEvaluation == '3'.toString()">
+                    AND temp1.EVALUATION BETWEEN '4' AND '5'
+                </when>
+            </choose>
+        </where>
+        ORDER BY
+        <choose>
+            <when test="publishTimeOrderSort != null and publishTimeOrderSort == 'desc'.toString()">
+                aui.CREATE_TIME DESC
+            </when>
+            <otherwise>
+                aui.CREATE_TIME
+            </otherwise>
+        </choose>
+        ,
+        <choose>
+            <when test="startOrderSort != null and startOrderSort == 'desc'.toString()">
+                temp1.EVALUATION DESC
+            </when>
+            <otherwise>
+                temp1.EVALUATION
+            </otherwise>
+        </choose>
+        ,
+        <choose>
+            <when test="biddingNumOrderSort != null and biddingNumOrderSort == 'desc'.toString()">
+                temp1.biddingNum DESC
+            </when>
+            <otherwise>
+                temp1.biddingNum
+            </otherwise>
+        </choose>
+    </select>
+
+    <!--入住服务列表-->
+    <select id="listCheckinService" resultType="AgentUnitService">
+        SELECT
+            <include refid="aliasColumns"> <property name="alias" value="aui"/> </include> ,
+            aius.UNIT_SERVICE_ID unitServiceId,
+            ais.SERVICE_ID serviceId,
+            ais.SERVICE_NAME serviceName,
+            ais.SERVICE_CODE serviceCode,
+            temp1.EVALUATION compEvaluation,
+            ais.IMG_URL imgUrl
+        FROM aea_im_unit_service aius
+        JOIN aea_im_service ais ON aius.SERVICE_ID = ais.SERVICE_ID
+        JOIN aea_unit_info aui ON aius.UNIT_INFO_ID = aui.UNIT_INFO_ID
+        LEFT JOIN (
+            SELECT aiub.UNIT_SERVICE_ID, AVG(aise.COMP_EVALUATION) AS EVALUATION, count(1) biddingNum FROM aea_im_unit_bidding aiub
+            LEFT JOIN aea_im_service_evaluation aise
+            ON aise.UNIT_BIDDING_ID = aiub.UNIT_BIDDING_ID
+            WHERE aiub.IS_DELETE = '0' AND aise.IS_DELETE = '0' AND aiub.IS_WON_BID = '1' AND aiub.IS_CANCEL_SIGNUP = '0'
+            AND aise.AUDIT_FLAG = '1'
+            GROUP BY aiub.UNIT_SERVICE_ID
+        ) temp1 ON temp1.UNIT_SERVICE_ID = aius.UNIT_SERVICE_ID
+        <where>
+            aius.AUDIT_FLAG = '1' AND aius.IS_DELETE = '0' AND aius.IS_ACTIVE = '1'
+            <if test="applicant!=null and applicant!=''">
+                AND aui.APPLICANT LIKE concat('%',concat(#{applicant},'%'))
+            </if>
+            <if test="serviceIds != null ">
+                AND aius.SERVICE_ID IN
+                <foreach collection="serviceIds" index="index" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="unitInfoId!=null and unitInfoId != '' ">
+                AND aius.UNIT_INFO_ID = #{unitInfoId}
+            </if>
+            <choose>
+                <when test="compEvaluation != null and compEvaluation == '0'.toString()">
+                    AND temp1.EVALUATION IS NULL
+                </when>
+                <when test="compEvaluation != null and compEvaluation == '1'.toString()">
+                    AND temp1.EVALUATION BETWEEN '0' AND '3'
+                </when>
+                <when test="compEvaluation != null and compEvaluation == '2'.toString()">
+                    AND temp1.EVALUATION BETWEEN '3' AND '4'
+                </when>
+                <when test="compEvaluation != null and compEvaluation == '3'.toString()">
+                    AND temp1.EVALUATION BETWEEN '4' AND '5'
+                </when>
+            </choose>
+        </where>
+        ORDER BY
+        <choose>
+            <when test="publishTimeOrderSort != null and publishTimeOrderSort == 'desc'.toString()">
+                aius.PUBLISH_TIME DESC
+            </when>
+            <otherwise>
+                aius.PUBLISH_TIME
+            </otherwise>
+        </choose>
+        ,
+        <choose>
+            <when test="startOrderSort != null and startOrderSort == 'desc'.toString()">
+                temp1.EVALUATION DESC
+            </when>
+            <otherwise>
+                temp1.EVALUATION
+            </otherwise>
+        </choose>
+        ,
+        <choose>
+            <when test="biddingNumOrderSort != null and biddingNumOrderSort == 'desc'.toString()">
+                temp1.biddingNum DESC
+            </when>
+            <otherwise>
+                temp1.biddingNum
+            </otherwise>
+        </choose>
+    </select>
+</mapper>

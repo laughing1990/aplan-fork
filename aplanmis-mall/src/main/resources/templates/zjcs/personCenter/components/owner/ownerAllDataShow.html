@@ -1,0 +1,111 @@
+<div id="allDataShow" class="data-show-box box normal-module-box">
+	<h2 class="box-tit">综合数据展示</h2>
+	<div class="data-show">
+		<ul class="data-show-list" @click="jumpModule">
+			<li>
+				<h4><span class="bg1"></span>所有项目</h4><a href="javascript:;"
+				                                         data-moduleid="allProject">{{projectStatusObj.allProjectSum}}</a>
+			</li>
+			<li>
+				<h4><span class="bg2"></span>待处理项目</h4><a href="javascript:;"
+				                                          data-moduleid="pendingProject">{{projectStatusObj.pendingProjectSum}}</a>
+			</li>
+			<li>
+				<h4><span class="bg3"></span>待审核项目</h4><a href="javascript:;"
+				                                          data-moduleid="waitAuditProject">{{projectStatusObj.waitAuditProjectSum}}</a>
+			</li>
+			<li>
+				<h4><span class="bg4"></span>待选取项目</h4><a href="javascript:;"
+				                                          data-moduleid="pendingProject">{{projectStatusObj.waitSelectProjectSum}}</a>
+			</li>
+			<li>
+				<h4><span class="bg5"></span>待登记合同项目</h4><a href="javascript:;"
+				                                            data-moduleid="pendingProject">{{projectStatusObj.waitUploadProjectSum}}</a>
+			</li>
+			<li>
+				<h4><span class="bg6"></span>待结束服务项目</h4><a href="javascript:;"
+				                                            data-moduleid="pendingProject">{{projectStatusObj.waitEndProjectSum}}</a>
+			</li>
+			<li>
+				<h4><span class="bg7"></span>待评价项目</h4><a href="javascript:;"
+				                                          data-moduleid="pendingProject">{{projectStatusObj.waitEvaluateProjectSum}}</a>
+			</li>
+		</ul>
+	</div>
+</div>
+<script>
+	// var ctx = "http://192.168.15.4:8084/aplanmis-mall/" //健锋
+	var module1 = new Vue({
+		el: '#allDataShow',
+		mixins: [mixins],
+		data: function () {
+			return {
+				projectStatusObj: {
+					accomplishProjectSum: 0,
+					allProjectSum: 0,
+					alreadyAnnounceProjectSum: 0,
+					alreadySelectionProjectSum: 0,
+					inServiceProjectSum: 0,
+					invalidProjectSum: 0,
+					pendingProjectSum: 0,
+					returnProjectSum: 0,
+					waitAnnounceProjectSum: 0,
+					waitAuditProjectSum: 0,
+					waitEndProjectSum: 0,
+					waitEvaluateProjectSum: 0,
+					waitSelectProjectSum: 0,
+					waitUploadProjectSum: 0,
+				},
+			}
+		},
+		methods: {
+			init: function () {
+				this.fetchProjectAllStatus();
+			},
+			// 获取各种状态的项目对应的统计数据
+			fetchProjectAllStatus: function () {
+				var ts = this, _getData = {};
+				_getData.unitInfoId = JSON.parse(localStorage.getItem('loginInfo')).unitId;
+				_getData.linkmanInfoId = JSON.parse(localStorage.getItem('loginInfo')).userId;
+				ts.mloading = true;
+				request('', {
+					url: ctx + 'supermarket/purchase/showProjPurchaseData',
+					type: 'get',
+					data: _getData
+				}, function (res) {
+					ts.mloading = false;
+					if (res.success) {
+						ts.projectStatusObj = res.content;
+					} else {
+						// ts.$message({
+						//     message: '数据加载失败',
+						//     type: 'error'
+						// });
+					}
+				}, function (msg) {
+					ts.mloading = false;
+					ts.$message({
+						message: '加载失败',
+						type: 'error'
+					});
+				});
+			},
+			// 跳转到对应的模块
+			jumpModule: function ($event) {
+				var _target = $event.target;
+				if (_target.nodeName.toLowerCase() == "a") {
+					var _moduleId = _target.dataset.moduleid; //跳转的模块id
+					// var _moduleType = _target.dataset.protype; //如果是已签约项目的点击
+					if (_moduleId) {
+						vm.moduleLoad(_moduleId + '.html', '#' + _moduleId);
+						vm.ownerItemSelect = _moduleId;
+
+					}
+				}
+			},
+		},
+		mounted: function () {
+			this.init();
+		},
+	})
+</script>

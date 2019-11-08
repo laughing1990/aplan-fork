@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <!--引入公共css-->
+    <th:block th:include="common/common :: commonheader('服务合同详细')" />
+    <link rel="stylesheet" href="../../../../static/apply/css/index.css" th:href="@{/apply/css/index.css}">
+</head>
+
+<body class="gray-body">
+<div id="approve" v-cloak v-loading="loading">
+    <div class="content">
+
+        <el-collapse v-model="activeNames">
+            <!--  基本信息  start  -->
+            <el-collapse-item class="clearfix" name="1" id="baseInfo">
+                <template slot="title">
+                    <i class="header-icon icon ag ag-project-info"></i>服务合同详细
+                </template>
+
+                <el-form-item label="项目名称" class="proj-code-info" prop="projName">
+                    <el-input name="projName" :disabled="linkQuerySucc" v-model="projBascInfoShow.projName">
+                    </el-input>
+                </el-form-item>
+
+
+                <el-form label-width="176px" ref="projBascInfoShowFrom" :rules="projBascInfoShowFromRules"
+                         :model="projBascInfoShow">
+                    <div class="clearfix">
+                        <el-form-item class="input-inline" label="申请类型" prop="localCode">
+                            <el-input name="localCode" :disabled="linkQuerySucc" v-model="projBascInfoShow.localCode">
+                            </el-input>
+                        </el-form-item>
+                        <el-form-item class="input-inline" label="服务单位名称" prop="localCode">
+                            <el-input name="localCode" :disabled="linkQuerySucc" v-model="projBascInfoShow.localCode">
+                            </el-input>
+                        </el-form-item>
+                    </div>
+
+                    <div class="clearfix">
+                        <el-form-item class="input-inline" label="业主单位名称" prop="gcbm">
+                            <el-input v-model="projBascInfoShow.gcbm"></el-input>
+                        </el-form-item>
+                        <el-form-item class="input-inline" label="合同名称" prop="localCode">
+                            <el-input name="localCode" :disabled="linkQuerySucc" v-model="projBascInfoShow.localCode">
+                            </el-input>
+                        </el-form-item>
+                    </div>
+
+
+                    <div class="clearfix">
+                        <el-form-item class="input-inline" label="合同编码" prop="gcbm">
+                            <el-input v-model="projBascInfoShow.gcbm"></el-input>
+                        </el-form-item>
+
+                        <el-form-item class="input-inline" label="合同金额" prop="gcbm">
+                            <el-input v-model="projBascInfoShow.gcbm"></el-input>
+                        </el-form-item>
+                    </div>
+
+
+                    <el-form-item class="input-inline" label="服务结束时间" prop="nstartTime">
+                        <el-date-picker v-model="projBascInfoShow.nstartTime" type="date" format="yyyy 年 MM 月 dd 日" value-format="yyyy-MM-dd">
+                        </el-date-picker>
+                        <input v-model="projBascInfoShow.nstartTime" type="hidden">
+                    </el-form-item>
+                    <el-form-item class="input-inline" label="服务开始时间" prop="endTime">
+                        <el-date-picker type="date" format="yyyy 年 MM 月 dd 日" value-format="yyyy-MM-dd" v-model="projBascInfoShow.endTime">
+                        </el-date-picker>
+                        <input v-model="projBascInfoShow.endTime" type="hidden">
+                    </el-form-item>
+
+                    <el-form-item label="服务内容" class="proj-code-info" prop="projName">
+                        <el-input name="projName" :disabled="linkQuerySucc" v-model="projBascInfoShow.projName">
+                        </el-input>
+                    </el-form-item>
+
+
+                    <el-form-item label="备注" class="proj-code-info" prop="projName">
+                        <el-input name="projName" :disabled="linkQuerySucc" v-model="projBascInfoShow.projName">
+                        </el-input>
+                    </el-form-item>
+
+
+                    <el-form-item label="审核结果" class="proj-code-info" prop="projName">
+                        <el-input name="projName" :disabled="linkQuerySucc" v-model="projBascInfoShow.projName">
+                        </el-input>
+                    </el-form-item>
+
+
+                    <el-form-item label="审核意见" class="proj-code-info" prop="projName">
+                        <el-input name="projName" :disabled="linkQuerySucc" v-model="projBascInfoShow.projName">
+                        </el-input>
+                    </el-form-item>
+
+
+
+<!--                    <el-form-item label="项目/工程名称" class="proj-code-info" prop="projName">-->
+<!--                        <el-input name="projName" :disabled="linkQuerySucc" v-model="projBascInfoShow.projName" placeholder="请输入项目/工程名称">-->
+<!--                        </el-input>-->
+<!--                        <el-button @click="showProjTree()">项目工程</el-button>-->
+<!--                    </el-form-item>-->
+
+<!--                    <div class="clearfix">-->
+<!--                        <el-form-item class="input-inline" label="所属主题">-->
+<!--                            <el-select disabled v-model="projBascInfoShow.projApplyType" filterable placeholder="请选择所属主题" @click.native="getProjThemeIdList"-->
+<!--                                       :loading="loadingThemeIdList">-->
+<!--                                <el-option v-for="item in projThemeIdList" :key="item.themeId" :label="item.themeName" :value="item.themeName">-->
+<!--                                </el-option>-->
+<!--                            </el-select>-->
+<!--                        </el-form-item>-->
+<!--                        <el-form-item class="input-inline" label="立项类型" prop="projType">-->
+<!--                            <el-select v-model="projBascInfoShow.projType">-->
+<!--                                <el-option v-for="item in projTypeList" :key="item.id" :label="item.itemName" :value="item.itemCode">-->
+<!--                                </el-option>-->
+<!--                            </el-select>-->
+<!--                        </el-form-item>-->
+<!--                        <el-form-item class="input-inline" prop="regionalism">-->
+<!--                            <template slot="label">-->
+<!--                                <el-tooltip class="item" effect="dark" content="市级审批的项目/工程请选择市级行政区划，区县审批的请选择对应的区县行政区划。" placement="right-start">-->
+<!--                                    <i class="ag ag-help"></i>-->
+<!--                                </el-tooltip>-->
+<!--                                审批行政区划-->
+<!--                            </template>-->
+<!--                            <el-select filterable v-model="projBascInfoShow.regionalism" placeholder="请选择审批行政区划">-->
+<!--                                <el-option v-for="item in districtList" :key="item.id" :label="item.regionName" :value="item.regionId">-->
+<!--                                </el-option>-->
+<!--                            </el-select>-->
+<!--                        </el-form-item>-->
+<!--                        <el-form-item class="input-inline" prop="projectAddress">-->
+<!--                            <template slot="label">-->
+<!--                                <el-tooltip class="item" effect="dark" content="选择项目/工程所在地行政区划。如果是跨区，则选择多个行政区划。" placement="right-start">-->
+<!--                                    <i class="ag ag-help"></i>-->
+<!--                                </el-tooltip>-->
+<!--                                建设地点-->
+<!--                            </template>-->
+<!--                            <el-select multiple v-model="projBascInfoShow.projectAddress" placeholder="请选择建设地点">-->
+<!--                                <el-option v-for="item in districtList" :key="item.regionId" :label="item.regionName" :value="item.regionId">-->
+<!--                                </el-option>-->
+<!--                            </el-select>-->
+<!--                        </el-form-item>-->
+<!--                        <el-form-item label="资金来源" class="input-inline" prop="financialSource">-->
+<!--                            &lt;!&ndash;<el-radio-group v-model="projBascInfoShow.financialSource">-->
+<!--                                <el-radio v-for="item in zjlyList" :key="item.id" :label="item.itemCode" :value="item.itemCode">-->
+<!--                                    {{item.itemName}}-->
+<!--                                </el-radio>-->
+<!--                            </el-radio-group>&ndash;&gt;-->
+<!--                            <el-select v-model="projBascInfoShow.financialSource" placeholder="请选择资金来源">-->
+<!--                                <el-option v-for="item in zjlyList" :key="item.id" :label="item.itemName" :value="item.itemCode">-->
+<!--                                </el-option>-->
+<!--                            </el-select>-->
+<!--                        </el-form-item>-->
+<!--                        <el-form-item class="input-inline" label="是否外资">-->
+<!--                            <el-radio-group v-model="projBascInfoShow.isForeign">-->
+<!--                                <el-radio label="1" value="1" key="1">是</el-radio>-->
+<!--                                <el-radio label="0" value="0" key="0">否</el-radio>-->
+<!--                            </el-radio-group>-->
+<!--                        </el-form-item>-->
+<!--                        <el-form-item class="input-inline" label="投资类型" prop="investType">-->
+<!--                            <el-select v-model="projBascInfoShow.investType">-->
+<!--                                <el-option v-for="item in tzlxList" :key="item.id" :label="item.itemName" :value="item.itemCode">-->
+<!--                                </el-option>-->
+<!--                            </el-select>-->
+<!--                        </el-form-item>-->
+<!--                        <el-form-item label="土地来源" class="input-inline" prop="landSource" placeholder="请选择土地来源">-->
+<!--                            <el-select v-model="projBascInfoShow.landSource">-->
+<!--                                <el-option v-for="item in tdlyList" :key="item.id" :label="item.itemName" :value="item.itemCode">-->
+<!--                                </el-option>-->
+<!--                            </el-select>-->
+<!--                        </el-form-item>-->
+<!--                        <el-form-item class="input-inline" prop="isAreaEstimate">-->
+<!--                            <template slot="label">-->
+<!--                                <el-tooltip class="item" effect="dark" content="建设范围未实施区域评估选“否”，建设范围已实施区域评估选“是”。" placement="right-start">-->
+<!--                                    <i class="ag ag-help"></i>-->
+<!--                                </el-tooltip>-->
+<!--                                是否完成区域评估-->
+<!--                            </template>-->
+<!--                            <el-radio-group v-model="projBascInfoShow.isAreaEstimate">-->
+<!--                                <el-radio label="1" value="1" key="1">是</el-radio>-->
+<!--                                <el-radio label="0" value="0" key="0">否</el-radio>-->
+<!--                            </el-radio-group>-->
+<!--                        </el-form-item>-->
+<!--                        <el-form-item class="input-inline" prop="isDesignSolution">-->
+<!--                            <template slot="label">-->
+<!--                                <el-tooltip class="item" effect="dark" content="建设用地不带设计方案选“否”，建设用地带设计方案选“是”。" placement="right-start">-->
+<!--                                    <i class="ag ag-help"></i>-->
+<!--                                </el-tooltip>-->
+<!--                                土地是否带设计方案-->
+<!--                            </template>-->
+<!--                            <el-radio-group v-model="projBascInfoShow.isDesignSolution">-->
+<!--                                <el-radio label="1" value="1" key="1">是</el-radio>-->
+<!--                                <el-radio label="0" value="0" key="0">否</el-radio>-->
+<!--                            </el-radio-group>-->
+<!--                        </el-form-item>-->
+<!--                        <el-form-item class="input-inline" label="建设性质" prop="projNature">-->
+<!--                            <el-select v-model="projBascInfoShow.projNature">-->
+<!--                                <el-option v-for="item in jsxzList" :key="item.id" :label="item.itemName" :value="item.itemCode">-->
+<!--                                </el-option>-->
+<!--                            </el-select>-->
+<!--                        </el-form-item>-->
+<!--                        <el-form-item label="工程分类" class="input-inline">-->
+<!--                            <el-select v-model="projBascInfoShow.projCategory">-->
+<!--                                <el-option v-for="item in gcflList" :key="item.id" :label="item.itemName" :value="item.itemCode">-->
+<!--                                </el-option>-->
+<!--                            </el-select>-->
+<!--                        </el-form-item>-->
+<!--                        <el-form-item class="input-inline" label="拟开工时间" prop="nstartTime">-->
+<!--                            <el-date-picker v-model="projBascInfoShow.nstartTime" type="date" placeholder="请选择拟开工时间" format="yyyy 年 MM 月 dd 日" value-format="yyyy-MM-dd">-->
+<!--                            </el-date-picker>-->
+<!--                            &lt;!&ndash;<el-input v-model="projBascInfoShow.nstartTime" type="hidden"></el-input>&ndash;&gt;-->
+<!--                            <input v-model="projBascInfoShow.nstartTime" type="hidden">-->
+<!--                        </el-form-item>-->
+<!--                        <el-form-item class="input-inline" label="拟建成时间" prop="endTime">-->
+<!--                            <el-date-picker type="date" placeholder="请选择拟建成时间" format="yyyy 年 MM 月 dd 日" value-format="yyyy-MM-dd" v-model="projBascInfoShow.endTime">-->
+<!--                            </el-date-picker>-->
+<!--                            &lt;!&ndash;<el-input v-model="projBascInfoShow.endTime" type="hidden"></el-input>&ndash;&gt;-->
+<!--                            <input v-model="projBascInfoShow.endTime" type="hidden">-->
+<!--                        </el-form-item>-->
+<!--                        <el-form-item class="input-inline" label="总投资（万元）" prop="investSum">-->
+<!--                            <el-input v-model="projBascInfoShow.investSum" placeholder="请输入总投资"></el-input>-->
+<!--                        </el-form-item>-->
+<!--                        <el-form-item class="input-inline" label="建筑面积（m&sup2;）" prop="buildAreaSum">-->
+<!--                            <el-input v-model="projBascInfoShow.buildAreaSum" placeholder="请填写建筑面积"></el-input>-->
+<!--                        </el-form-item>-->
+<!--                        <el-form-item class="input-inline" label="用地面积（m&sup2;）" prop="xmYdmj">-->
+<!--                            <el-input v-model="projBascInfoShow.xmYdmj" placeholder="请填写用地面积"></el-input>-->
+<!--                        </el-form-item>-->
+<!--                        <el-form-item class="input-inline" label="重点项目">-->
+<!--                            <el-select v-model="projBascInfoShow.projLevel">-->
+<!--                                <el-option v-for="item in projLevelList" :key="item.id" :label="item.itemName" :value="item.itemCode">-->
+<!--                                </el-option>-->
+<!--                            </el-select>-->
+<!--                        </el-form-item>-->
+<!--                        <el-form-item class="input-inline" prop="theIndustry">-->
+<!--                            <template slot="label">-->
+<!--                                <el-tooltip class="item" effect="dark" content="国标行业以国家统计局发布的《国民经济行业分类》（GB/T 4754-2017）编码为基准。" placement="right-start">-->
+<!--                                    <i class="ag ag-help"></i>-->
+<!--                                </el-tooltip>-->
+<!--                                国标行业-->
+<!--                            </template>-->
+<!--                            <el-input v-model="gbhyShowMsg" readonly placeholder="请选择国标行业" @click.native="isShowGbhy = true"></el-input>-->
+<!--                            <div style="position: relative;" v-show="isShowGbhy">-->
+<!--                                <div class="gbhyTreeBox">-->
+<!--                                    <div class="closeTree">-->
+<!--                                        <i class="ag ag-close" @click="isShowGbhy=false"></i>-->
+<!--                                    </div>-->
+<!--                                    <div class="gbhyTree">-->
+<!--                                        <el-tree-->
+<!--                                                :data="gbhySelectData"-->
+<!--                                                :props="gbhyProp"-->
+<!--                                                node-key="itemCode"-->
+<!--                                                show-checkbox-->
+<!--                                                ref="gbhy"-->
+<!--                                                @check-change="handleCheckChange">-->
+<!--                                        </el-tree>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            &lt;!&ndash;<el-input v-model="projBascInfoShow.theIndustry" type="hidden"></el-input>&ndash;&gt;-->
+<!--                            <input v-model="projBascInfoShow.theIndustry" type="hidden">-->
+<!--                        </el-form-item>-->
+<!--                        <el-form-item class="input-inline" label="国标行业代码发布年代" prop="gbCodeYear">-->
+<!--                            <el-input disabled v-model="projBascInfoShow.gbCodeYear" placeholder="请输入国标行业代码发布年代"></el-input>-->
+<!--                        </el-form-item>-->
+<!--                    </div>-->
+
+<!--                    <el-form-item prop="scaleContent">-->
+<!--                        <template slot="label">-->
+<!--                            <el-tooltip class="item" effect="dark" content="对项目建设规模以及建设内容的文字描述。" placement="right-start">-->
+<!--                                <i class="ag ag-help"></i>-->
+<!--                            </el-tooltip>-->
+<!--                            建设规模及内容-->
+<!--                        </template>-->
+<!--                        <el-input v-model="projBascInfoShow.scaleContent" type="textarea" placeholder="请填写建设内容"></el-input>-->
+<!--                    </el-form-item>-->
+
+<!--                    <div class="clearfix" v-if="showMoreBaseInfo">-->
+<!--                        <el-form-item label="项目地址" class="proj-addr">-->
+<!--                            <el-input v-model="projBascInfoShow.projAddr" placeholder="请输入项目详细地址"></el-input>-->
+<!--                        </el-form-item>-->
+<!--                        <el-form-item label="四至范围" class="proj-addr-scope">-->
+<!--                            <div class="proj-addr-item">-->
+<!--                                <span class="input-label">东至</span>-->
+<!--                                <el-input v-model="projBascInfoShow.eastScope" placeholder="请输入东至范围"></el-input>-->
+<!--                            </div>-->
+<!--                            <div class="proj-addr-item">-->
+<!--                                <span class="input-label">西至</span>-->
+<!--                                <el-input v-model="projBascInfoShow.westScope" placeholder="请输入西至范围"></el-input>-->
+<!--                            </div>-->
+<!--                            <div class="proj-addr-item">-->
+<!--                                <span class="input-label">南至</span>-->
+<!--                                <el-input v-model="projBascInfoShow.southScope" placeholder="请输入南至范围"></el-input>-->
+<!--                            </div>-->
+<!--                            <div class="proj-addr-item">-->
+<!--                                <span class="input-label">北至</span>-->
+<!--                                <el-input v-model="projBascInfoShow.northScope" placeholder="请输入北至范围"></el-input>-->
+<!--                            </div>-->
+<!--                        </el-form-item>-->
+<!--                    </div>-->
+                </el-form>
+            </el-collapse-item>
+        </el-collapse>
+
+
+
+
+
+
+
+
+
+    </div>
+
+
+
+</div>
+</body>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js" th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js" th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js" th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js" th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>
+<script th:src="@{/preview/pdfjs/build/pdf.js}"></script>
+<script src="../../../../static/apply/js/index.js" th:src="@{/apply/js/index.js}"></script>
+
+</html>

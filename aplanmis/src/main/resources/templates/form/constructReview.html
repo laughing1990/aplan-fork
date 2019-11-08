@@ -1,0 +1,339 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>施工图审查信息</title>
+  <link rel="stylesheet" href="../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.css" th:href="@{/agcloud/framework/js-lib/element-2/element.css}" />
+  <link rel="stylesheet" href="../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css" th:href="@{/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css}">
+  <link rel="stylesheet" href="../../static/form/css/constructReview.css" th:href="@{/form/css/constructReview.css}">
+  <script>
+    var ctx = '[[@{/}]]';
+    var projInfoId= '[[${projInfoId}]]'; 
+  // var ctx = 'http://192.168.32.48:8083/aplanmis-front/';
+  var ctx = 'http://192.168.15.26:8083/aplanmis-front/';
+  </script>
+</head>
+
+<body>
+  <div class='loading' v-if="pageLoading">
+    <div class="tips">
+      <i class="el-icon-loading"></i>
+      <p>请稍后</p>
+    </div>
+  </div>
+  <div id="app" v-cloak>
+    <el-collapse v-model="activeNames">
+      <!--  基本信息  start  -->
+      <el-collapse-item class="clearfix" name="1" id="baseInfo">
+        <template slot="title">
+          <i class="header-icon icon ag ag-project-info"></i>施工图审查信息
+        </template>
+        <el-form label-position="right" label-width="220px" :model="formData" ref="form" :rules="rules" :inline='true'>
+          <el-form-item prop="" v-show='false'>
+            <el-input v-model="formData.aeaExProjDrawing.drawingId"></el-input>
+          </el-form-item>
+          <div class="clearfix">
+            <el-form-item class="input-inline" prop="provinceProjCode" label="省级项目编号">
+              <el-input v-model="formData.aeaExProjDrawing.provinceProjCode" placeholder="请输入省级项目编号"></el-input>
+            </el-form-item>
+            <el-form-item class="input-inline" prop="drawingQuabookCode" label='施工图审查合格书编号'>
+              <el-input v-model="formData.aeaExProjDrawing.drawingQuabookCode" placeholder="请输入施工图审查合格书编号"></el-input>
+            </el-form-item>
+          </div>
+          <div class="clearfix">
+            <el-form-item class="input-inline" label="投资额（万元）" prop="inverstmentMoeny">
+              <el-input v-model="formData.aeaExProjDrawing.inverstmentMoeny" placeholder="请输入投资额"></el-input>
+            </el-form-item>
+            <el-form-item class="input-inline" label="图审面积（平方米）" prop="approveDrawingArea">
+              <el-input v-model="formData.aeaExProjDrawing.approveDrawingArea" placeholder="请输入图审面积"></el-input>
+            </el-form-item>
+          </div>
+          <div class="clearfix">
+            <el-form-item class="input-inline" label="开始审查日期" prop="approveStartTime">
+              <el-date-picker v-model="formData.aeaExProjDrawing.approveStartTime" type="date" placeholder="请选择开始审查日期">
+            </el-form-item>
+            <el-form-item class="input-inline" label="审查完成日期" prop="approveEndTime">
+              <el-date-picker v-model="formData.aeaExProjDrawing.approveEndTime" type="date" placeholder="请选择审查完成日期">
+            </el-form-item>
+          </div>
+          <div class="clearfix">
+            <el-form-item class="input-inline radio" label="一次审查是否通过" prop="isOncePass">
+              <el-radio-group v-model="formData.aeaExProjDrawing.isOncePass" style="width:390px;">
+                <el-radio label="1">是</el-radio>
+                <el-radio label="0">否</el-radio>
+              </el-radio-group>
+            </el-form-item>
+            <el-form-item class="input-inline" label="一次审查时违反强条数" prop="oncePassAgainstCount">
+              <el-input v-model="formData.aeaExProjDrawing.oncePassAgainstCount" placeholder="请输入一次审查时违反强条数"></el-input>
+            </el-form-item>
+          </div>
+          <div class="clearfix">
+            <el-form-item class="input-inline" label="一次审查时违反的强条条目" prop="oncePassAgainstItem">
+              <el-input v-model="formData.aeaExProjDrawing.oncePassAgainstItem" placeholder="请输入一次审查时违反的强条条目"></el-input>
+            </el-form-item>
+          </div>
+          <div class="clearfix">
+            <el-form-item class="input-inline allWidth" label="施工图审查意见（终审）" prop="approveOpinion">
+              <el-input v-model="formData.aeaExProjDrawing.approveOpinion" type="textarea" rows="5" placeholder="请输入施工图审查意见"></el-input>
+            </el-form-item>
+          </div>
+          <div class="clearfix">
+            <el-form-item class="input-inline" label="审图确认时间" prop="approveConfirmTime">
+              <el-date-picker v-model="formData.aeaExProjDrawing.approveConfirmTime" type="date" placeholder="请选择审图确认时间">
+            </el-form-item>
+            <el-form-item class="input-inline" label="审图确认的行政单位机构代码" prop="govOrgCode">
+              <el-input v-model="formData.aeaExProjDrawing.govOrgCode" placeholder="请输入审图确认的行政单位机构代码"></el-input>
+            </el-form-item>
+          </div>
+          <div class="clearfix">
+            <el-form-item class="input-inline" label="审图确认的行政单位名称" prop="govOrgName">
+              <el-input v-model="formData.aeaExProjDrawing.govOrgName" placeholder="请输入审图确认的行政单位名称"></el-input>
+            </el-form-item>
+            <el-form-item class="input-inline" label="审图确认的行政单位区域码" prop="govOrgAreaCode">
+              <el-input v-model="formData.aeaExProjDrawing.govOrgAreaCode" placeholder="请选择审图确认的行政单位区域码"></el-input>
+            </el-form-item>
+          </div>
+          <div class="clearfix">
+            <el-form-item class="form-title">
+              <p class='header'>施工图审查机构</p>
+            </el-form-item>
+            <el-form-item class="input-inline" prop="organizationalCode" label="组织机构代码">
+              <el-input v-model="formData.drawings[2].organizationalCode" placeholder="请输入组织机构代码"></el-input>
+            </el-form-item>
+            <el-form-item class="input-inline" prop="unifiedSocialCreditCode" label='统一社会信用代码'>
+              <el-input v-model="formData.drawings[2].unifiedSocialCreditCode" placeholder="请输入统一社会信用代码"></el-input>
+            </el-form-item>
+          </div>
+          <div class="clearfix">
+            <el-form-item class="input-inline" prop="applicant" label="单位名称">
+              <el-input v-model="formData.drawings[2].applicant" placeholder="请输入单位名称"></el-input>
+            </el-form-item>
+            <el-form-item class="input-inline" prop="unitType" label='项目主体类型'>
+              <el-select v-model="formData.drawings[2].unitType" placeholder="请选择项目主体类型">
+                <el-option :label="item.itemName" :value="item.itemCode" v-for="item in proType"></el-option>
+              </el-select>
+            </el-form-item>
+          </div>
+          <div class="clearfix">
+            <el-form-item class="input-inline" prop="projectLeader" label="图审机构项目负责人">
+              <el-select v-model="formData.drawings[2].projectLeader" placeholder="请选择图审机构项目负责人">
+                <el-option :label="item.itemName" :value="item.itemCode" v-for="item in landAreaUnitSite"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item class="input-inline" prop="projectLeaderCertNum" label='图审机构项目负责人身份证号码'>
+              <el-input v-model="formData.drawings[2].projectLeaderCertNum" placeholder="请输入图审机构项目负责人身份证号码"></el-input>
+            </el-form-item>
+          </div>
+          <div class="clearfix">
+            <el-form-item class="input-inline" prop="linkmanType" label='承担角色'>
+              <el-select v-model="formData.drawings[2].linkmanType" placeholder="请输入承担角色">
+                <el-option :label="item.itemName" :value="item.itemCode" v-for="item in linkmanType"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item class="input-inline" prop="professionCertType" label="执行注册证类型">
+              <el-select v-model="formData.drawings[2].professionCertType" placeholder="请选择执行注册证类型">
+                <el-option :label="item.itemName" :value="item.itemCode" v-for="item in CertifiType"></el-option>
+              </el-select>
+            </el-form-item>
+          </div>
+          <div class="clearfix">
+            <el-form-item class="input-inline" prop="professionSealNum" label="执业印章号">
+              <el-input v-model="formData.drawings[2].professionSealNum" placeholder="请输入执业印章号"></el-input>
+            </el-form-item>
+            <el-form-item class="input-inline" prop="titleGrade" label='职称等级'>
+              <el-select v-model="formData.drawings[2].titleGrade" placeholder="请选择职称等级">
+                <el-option :label="item.itemName" :value="item.itemCode" v-for="item in jobTitle"></el-option>
+              </el-select>
+            </el-form-item>
+          </div>
+          <div class="clearfix">
+            <el-form-item class="input-inline" prop="titleCertNum" label="职称证号">
+              <el-input v-model="formData.drawings[2].titleCertNum" placeholder="请输入职称证号"></el-input>
+            </el-form-item>
+            <el-form-item class="input-inline" prop="prjSpty" label='审查专业'>
+              <el-select v-model="formData.drawings[2].prjSpty" placeholder="请选择审查专业">
+                <el-option :label="item.itemName" :value="item.itemCode" v-for="item in prjType"></el-option>
+              </el-select>
+            </el-form-item>
+          </div>
+          <div class="clearfix">
+            <el-form-item class="input-inline allWidth" label="人员设置" prop="induCommRegNum">
+              <el-row class="linkman-set-item" v-for="(type,index) in formData.drawings[2].linkmen" :key="index">
+                <el-col :span="1">
+                  <el-button v-if="index==0" icon="el-icon-circle-plus-outline" type="primary" class="item-left-btn" @click="" title="新增"></el-button>
+                  <el-button v-else icon="el-icon-remove-outline" type="primary" @click="" class="item-left-btn" title="删除"></el-button>
+                </el-col>
+                <el-col :span="4">
+                  <el-select v-model="type.linkmanType" placeholder="请选中人员类型">
+                    <el-option v-for="item in linkmanType" :key="item.itemId" :label="item.itemName" :value="item.itemCode">
+                    </el-option>
+                  </el-select>
+                </el-col>
+                <el-col :span="5">
+                  <span><i>*</i>姓名</span>
+                  <el-select v-model="type.linkmanName" filterable placeholder="请选择联系人" @click.native="">
+                    <el-option v-for="item in person" :key="item.addressId" @click.native="getPerson(formData.drawings[2])" :label="item.addressName" :value="item.addressName">
+                    </el-option>
+                  </el-select>
+                </el-col>
+                <el-col :span="6">
+                  <span><i>*</i>身份证号</span>
+                  <el-input v-model="type.linkmanCertNo" placeholder="请输入身份证号"></el-input>
+                </el-col>
+                <el-col :span="6">
+                  <span><i>*</i>审查专业</span>
+                  <el-select v-model="type.prjSpty" placeholder="请选择审查专业" @click.native="">
+                    <el-option v-for="item in prjType" :key="item.itemId" @click.native="" :label="item.itemName" :value="item.itemCode">
+                    </el-option>
+                  </el-select>
+                </el-col>
+              </el-row>
+            </el-form-item>
+          </div>
+          <div class="clearfix">
+            <el-form-item class="form-title">
+              <p class='header'>勘察单位</p>
+            </el-form-item>
+            <el-form-item class="input-inline" prop="organizationalCode" label="组织机构代码">
+              <el-input v-model="formData.drawings[0].organizationalCode" placeholder="请输入组织机构代码"></el-input>
+            </el-form-item>
+            <el-form-item class="input-inline" prop="unifiedSocialCreditCode" label='统一社会信用代码'>
+              <el-input v-model="formData.drawings[0].unifiedSocialCreditCode" placeholder="请输入统一社会信用代码"></el-input>
+            </el-form-item>
+          </div>
+          <div class="clearfix">
+            <el-form-item class="input-inline" prop="applicant" label="单位名称">
+              <el-input v-model="formData.drawings[0].applicant" placeholder="请输入单位名称"></el-input>
+            </el-form-item>
+            <el-form-item class="input-inline" prop="unitType" label='项目主体类型'>
+              <el-select v-model="formData.drawings[0].unitType" placeholder="请选择项目主体类型">
+                <el-option :label="item.itemName" :value="item.itemCode" v-for="item in proType"></el-option>
+              </el-select>
+            </el-form-item>
+          </div>
+          <div class="clearfix">
+            <el-form-item class="input-inline" prop="projectLeader" label="图审机构项目负责人">
+              <el-select v-model="formData.drawings[0].projectLeader" placeholder="请选择图审机构项目负责人">
+                <el-option :label="item.itemName" :value="item.itemCode" v-for="item in landAreaUnitSite"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item class="input-inline" prop="projectLeaderCertNum" label='图审机构项目负责人身份证号码'>
+              <el-input v-model="formData.drawings[0].projectLeaderCertNum" placeholder="请输入图审机构项目负责人身份证号码"></el-input>
+            </el-form-item>
+          </div>
+          <div class="clearfix">
+            <el-form-item class="input-inline" prop="linkmanType" label='承担角色'>
+              <el-select v-model="formData.drawings[0].linkmanType" placeholder="请输入承担角色">
+                <el-option :label="item.itemName" :value="item.itemCode" v-for="item in linkmanType"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item class="input-inline" prop="professionCertType" label="执行注册证类型">
+              <el-select v-model="formData.drawings[0].professionCertType" placeholder="请选择执行注册证类型">
+                <el-option :label="item.itemName" :value="item.itemCode" v-for="item in CertifiType"></el-option>
+              </el-select>
+            </el-form-item>
+          </div>
+          <div class="clearfix">
+            <el-form-item class="input-inline" prop="professionSealNum" label="执业印章号">
+              <el-input v-model="formData.drawings[0].professionSealNum" placeholder="请输入执业印章号"></el-input>
+            </el-form-item>
+            <el-form-item class="input-inline" prop="titleGrade" label='职称等级'>
+              <el-select v-model="formData.drawings[0].titleGrade" placeholder="请选择职称等级">
+                <el-option :label="item.itemName" :value="item.itemCode" v-for="item in jobTitle"></el-option>
+              </el-select>
+            </el-form-item>
+          </div>
+          <div class="clearfix">
+            <el-form-item class="input-inline" prop="titleCertNum" label="职称证号">
+              <el-input v-model="formData.drawings[0].titleCertNum" placeholder="请输入职称证号"></el-input>
+            </el-form-item>
+            <el-form-item class="input-inline" prop="prjSpty" label='审查专业'>
+              <el-select v-model="formData.drawings[0].prjSpty" placeholder="请选择审查专业">
+                <el-option :label="item.itemName" :value="item.itemCode" v-for="item in prjType"></el-option>
+              </el-select>
+            </el-form-item>
+          </div>
+          <div class="clearfix">
+            <el-form-item class="form-title">
+              <p class='header'>设计单位</p>
+            </el-form-item>
+            <el-form-item class="input-inline" prop="organizationalCode" label="组织机构代码">
+              <el-input v-model="formData.drawings[1].organizationalCode" placeholder="请输入组织机构代码"></el-input>
+            </el-form-item>
+            <el-form-item class="input-inline" prop="unifiedSocialCreditCode" label='统一社会信用代码'>
+              <el-input v-model="formData.drawings[1].unifiedSocialCreditCode" placeholder="请输入统一社会信用代码"></el-input>
+            </el-form-item>
+          </div>
+          <div class="clearfix">
+            <el-form-item class="input-inline" prop="applicant" label="单位名称">
+              <el-input v-model="formData.drawings[1].applicant" placeholder="请输入单位名称"></el-input>
+            </el-form-item>
+            <el-form-item class="input-inline" prop="applicant" label='项目主体类型'>
+              <el-select v-model="formData.drawings[1].applicant" placeholder="请选择项目主体类型">
+                <el-option :label="item.itemName" :value="item.itemCode" v-for="item in proType"></el-option>
+              </el-select>
+            </el-form-item>
+          </div>
+          <div class="clearfix">
+            <el-form-item class="input-inline" prop="projectLeader" label="图审机构项目负责人">
+              <el-select v-model="formData.drawings[1].projectLeader" placeholder="请选择图审机构项目负责人">
+                <el-option :label="item.itemName" :value="item.itemCode" v-for="item in landAreaUnitSite"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item class="input-inline" prop="projectLeaderCertNum" label='图审机构项目负责人身份证号码'>
+              <el-input v-model="formData.drawings[1].projectLeaderCertNum" placeholder="请输入图审机构项目负责人身份证号码"></el-input>
+            </el-form-item>
+          </div>
+          <div class="clearfix">
+            <el-form-item class="input-inline" prop="linkmanType" label='承担角色'>
+              <el-select v-model="formData.drawings[1].linkmanType" placeholder="请输入承担角色">
+                <el-option :label="item.itemName" :value="item.itemCode" v-for="item in linkmanType"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item class="input-inline" prop="professionCertType" label="执行注册证类型">
+              <el-select v-model="formData.drawings[1].professionCertType" placeholder="请选择执行注册证类型">
+                <el-option :label="item.itemName" :value="item.itemCode" v-for="item in CertifiType"></el-option>
+              </el-select>
+            </el-form-item>
+          </div>
+          <div class="clearfix">
+            <el-form-item class="input-inline" prop="professionSealNum" label="执业印章号">
+              <el-input v-model="formData.drawings[1].professionSealNum" placeholder="请输入执业印章号"></el-input>
+            </el-form-item>
+            <el-form-item class="input-inline" prop="titleGrade" label='职称等级'>
+              <el-select v-model="formData.drawings[1].titleGrade" placeholder="请选择职称等级">
+                <el-option :label="item.itemName" :value="item.itemCode" v-for="item in jobTitle"></el-option>
+              </el-select>
+            </el-form-item>
+          </div>
+          <div class="clearfix">
+            <el-form-item class="input-inline" prop="titleCertNum" label="职称证号">
+              <el-input v-model="formData.drawings[1].titleCertNum" placeholder="请输入职称证号"></el-input>
+            </el-form-item>
+            <el-form-item class="input-inline" prop="prjSpty" label='审查专业'>
+              <el-select v-model="formData.drawings[1].prjSpty" placeholder="请选择审查专业">
+                <el-option :label="item.itemName" :value="item.itemCode" v-for="item in prjType"></el-option>
+              </el-select>
+            </el-form-item>
+          </div>
+          <div class="clearfix">
+            <el-form-item class="input-inline" prop="" label="人员设置">
+            </el-form-item>
+          </div>
+        </el-form>
+        <div class="right-bottom-btn">
+          <el-button type="primary" class="save-jinbanUnit-info" icon="el-icon-wallet" @click="save">保存</el-button>
+        </div>
+      </el-collapse-item>
+    </el-collapse>
+  </div>
+  <script src="../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js" th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>
+  <script src="../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js" th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
+  <script src="../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js" th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
+  <script src="../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js" th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>
+  <script type="text/javascript" src="../../static/form/js/constructReview.js" th:src="@{/form/js/constructReview.js}"></script>
+</body>
+
+</html>

@@ -1,0 +1,150 @@
+@charset "utf-8";
+/* CSS Document */
+/*登录页面  选择组织*/
+.m-portlet.ag-seclect-o{
+	width: 40%;
+	border-radius: 4px;
+	border: 0;
+	background: #f5f9ff;
+	position: absolute;                
+	top:50%;
+	left:50%;
+	transform: translate(-50%,-50%); 
+	-webkit-box-shadow: 0 1px 15px 1px rgba(69,65,78,.08);
+	box-shadow: 0 1px 15px 1px rgba(69,65,78,.08);
+}
+.m-portlet.ag-seclect-o .m-portlet__head{
+	background-color: #36a3f7;
+	border-radius: 4px 4px 0 0;
+}
+.m-portlet.ag-seclect-o .m-portlet__head a{
+	color: #fff;
+	margin-top: 2px;
+}
+.m-portlet.ag-seclect-o .m-portlet__head a i{
+	font-size: 24px;
+	-webkit-text-stroke: 1px #36a3f7;
+}
+.m-portlet.ag-seclect-o  .m-portlet__head .m-portlet__head-text {
+    color: #fff; 
+}
+.ag-seclect-o .ag-seclect-o-body{
+	overflow: hidden;
+	padding: 20px;
+}
+.ag-seclect-o .ag-seclect-o-body .organization{
+	text-align: center;
+	float: left;
+	padding: 10px 20px;
+	cursor: pointer;
+	border: 2px solid #f5f9ff;
+ 
+}
+.ag-seclect-o .ag-seclect-o-body .organization span{
+	margin-bottom: 10px;
+	font-size: 16px;
+}
+.ag-seclect-o .ag-seclect-o-body .organization span img{
+	width: 80px;
+	height: 80px;
+	border-radius: 50%;
+	border: 2px solid #fff;
+	-webkit-box-shadow: 0 1px 15px 1px rgba(69,65,78,.08);
+	box-shadow: 0 1px 15px 1px rgba(69,65,78,.08);
+}
+.ag-seclect-o .ag-seclect-o-body .organization:hover{
+	border-radius: 10px;
+	border: 2px solid #36a3f7;
+
+}
+.ag-seclect-o .ag-seclect-o-body .organization:hover span{
+	color: #36a3f7;
+}
+/*首页*/
+.m-portlet .icon {
+    color: #999;
+    padding: 50px 0 0;
+}
+.m-portlet .icon i {
+    font-size: 55px;
+    border: 1px solid #e5e5e5;
+    border-radius: 50%;
+    width: 130px;
+    line-height: 130px;
+    height: 130px;
+}
+.m-portlet a.m-category {
+    color: #999;
+    margin: 0;
+}
+.m-portlet a.m-category i{
+	font-size: 20px;
+	font-weight:lighter;
+}
+.agcloud-m-title{
+	font-size: 18px;
+}
+/*鼠标移上去，卡片效果 BEGIN JS控制id#m-portlet-card鼠标移上去时叠加class.bg-info yang*/
+.m-portlet.bg-info .btn-primary{
+	background: white; 
+    border-color: #d9d9d9; 
+	color: #595959;
+}
+.m-portlet.bg-info .btn-primary:hover{
+	color: #595959!important;
+}
+.m-portlet.bg-info h4,.m-portlet.bg-info i,.m-portlet.bg-info p{
+	color: #fff;	
+}
+/*鼠标移上去，卡片效果 END JS控制id#m-portlet-card鼠标移上去时叠加class.bg-info yang*/
+.m-page--fluid .m-header, .m-page--wide .m-header {
+    background-color: #282a3c;
+}
+.m-topbar .m-topbar__nav.m-nav>.m-nav__item>.m-nav__link .m-nav__link-icon {
+    text-align: center;
+    line-height: 0;
+    vertical-align: middle;
+    padding: 0;
+    color: #b1b0bc;
+}
+@media (min-width: 768px) and (max-width: 1200px){
+.col-md-2 {
+    flex: 0 0 25%;
+    max-width: 25%;
+}
+	}
+
+/*agcloud-navtab 框架标签栏  带删除图标*/
+.nav-tabs li .fa-times {
+    position: relative;
+    display: inline-block;
+    width: 20px;
+	font-weight: 100;
+	top: -1px;
+    margin-left: 8px;
+    text-align: center;
+    font-size: 14px;
+    color: #e8e8e8;
+	-webkit-text-stroke: 1px #fff;
+
+}
+.agcloud .nav-link {
+    display: block;
+    padding: 10px 14px;
+}
+.agcloud.nav-tabs{
+	background-color: #fff;
+	border-bottom: 1px solid #d9d9d9;
+}
+.agcloud.m-tabs-line .m-tabs__item {
+	margin: 0px; 
+    margin-bottom: -1px;
+	width: 180px;
+	text-align: center;
+}
+.agcloud.nav.nav-pills .nav-link i, .nav.nav-tabs .nav-link i {
+     margin-right: 0;
+}
+.agcloud.m-tabs-line.nav.nav-tabs .nav-link i, .m-tabs-line a.m-tabs__link i {
+    color: #cccccc;
+}

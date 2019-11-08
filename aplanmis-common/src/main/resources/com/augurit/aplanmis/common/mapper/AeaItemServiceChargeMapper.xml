@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by admin    2018-10-15 10:23:03 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaItemServiceChargeMapper" >
+<!--1 返回所有字段的SQL字句 -->
+<sql id="allColumns" >
+    ID  id,
+    ITEM_ID  itemId,
+    YWSF  ywsf,
+    JFSJ  jfsj,
+    JFHJ  jfhj,
+    JFDD  jfdd,
+    JFFS  jffs,
+    QTJFFS  qtjffs,
+    DATA_ID  dataId,
+    CREATER  creater,
+    CREATE_TIME  createTime,
+    MODIFIER  modifier,
+    MODIFY_TIME  modifyTime
+    </sql>
+
+    <sql id="preColumns" >
+        aisc.ID  id,
+        aisc.ITEM_ID  itemId,
+        aisc.YWSF  ywsf,
+        aisc.JFSJ  jfsj,
+        aisc.JFHJ  jfhj,
+        aisc.JFDD  jfdd,
+        aisc.JFFS  jffs,
+        aisc.QTJFFS  qtjffs,
+        aisc.DATA_ID  dataId,
+        aisc.CREATER  creater,
+        aisc.CREATE_TIME  createTime,
+        aisc.MODIFIER  modifier,
+        aisc.MODIFY_TIME  modifyTime
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaItemServiceChargeById" resultType="AeaItemServiceCharge" >
+        select
+        <include refid="allColumns"/>
+        from    AEA_ITEM_SERVICE_CHARGE
+        where    ID = #{id}
+    </select>
+
+<!--3 根据条件查询实体list -->
+    <select id="listAeaItemServiceCharge" resultType="AeaItemServiceCharge" >
+        SELECT
+        <include refid="preColumns"/>,item.ITEM_NAME itemName
+        FROM    AEA_ITEM_SERVICE_CHARGE aisc
+        INNER JOIN AEA_ITEM item ON  aisc.ITEM_ID = ITEM.ITEM_ID
+        LEFT JOIN (
+        SELECT aicgr.SERVICE_CHARGE_ID
+        FROM AEA_ITEM_CHARGE_GROUP_REL aicgr, AEA_ITEM_CHARGE_GROUP aicg
+        WHERE aicgr.CHARGE_GROUP_ID = aicg.ID
+        ) temp ON temp.SERVICE_CHARGE_ID = aisc.ID
+        <where>
+            <if test="keyword!=null and keyword!=''">
+                and (
+                item.ITEM_NAME like concat('%',concat(#{keyword},'%')) or
+                aisc.JFFS  = #{keyword}
+                )
+            </if>
+            <if test="id != null and id != ''" >
+                AND    aisc.ID = #{id}
+            </if>
+            <if test="itemId != null and itemId != ''" >
+                AND    aisc.ITEM_ID = #{itemId}
+            </if>
+            <if test="ywsf != null" >
+                AND    aisc.YWSF = #{ywsf}
+            </if>
+            <if test="jfsj != null" >
+                AND    aisc.JFSJ = #{jfsj}
+            </if>
+            <if test="jfhj != null" >
+                AND    aisc.JFHJ = #{jfhj}
+            </if>
+            <if test="jfdd != null" >
+                AND    aisc.JFDD = #{jfdd}
+            </if>
+            <if test="jffs != null" >
+                AND    aisc.JFFS = #{jffs}
+            </if>
+            <if test="qtjffs != null" >
+                AND    aisc.QTJFFS = #{qtjffs}
+            </if>
+            <if test="dataId != null" >
+                AND    aisc.DATA_ID = #{dataId}
+            </if>
+            <if test="creater != null" >
+                AND    aisc.CREATER = #{creater}
+            </if>
+            <if test="createTime != null" >
+                AND    aisc.CREATE_TIME = #{createTime}
+            </if>
+            <if test="modifier != null" >
+                AND    aisc.MODIFIER = #{modifier}
+            </if>
+            <if test="modifyTime != null" >
+                AND    aisc.MODIFY_TIME = #{modifyTime}
+            </if>
+        </where>
+    </select>
+<!--4 根据条件查询实体list,返回分页对象 -->
+
+<!--5 新增实体对象 -->
+<insert id="insertAeaItemServiceCharge" parameterType="AeaItemServiceCharge" >
+    insert into AEA_ITEM_SERVICE_CHARGE (
+ID  ,ITEM_ID  ,YWSF  ,JFSJ  ,JFHJ  ,JFDD  ,JFFS  ,QTJFFS  ,DATA_ID  ,CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME  
+    )  values  (
+#{id},#{itemId},#{ywsf},#{jfsj},#{jfhj},#{jfdd},#{jffs},#{qtjffs},#{dataId},#{creater},#{createTime},#{modifier},  #{modifyTime}
+    )
+</insert>
+<!--6 修改实体对象 -->
+<update id="updateAeaItemServiceCharge" parameterType="AeaItemServiceCharge" >
+        update AEA_ITEM_SERVICE_CHARGE
+        <set >
+            <if test="id != null" >
+                ID = #{id},
+            </if>
+            <if test="itemId != null" >
+                ITEM_ID = #{itemId},
+            </if>
+            <if test="ywsf != null" >
+                YWSF = #{ywsf},
+            </if>
+            <if test="jfsj != null" >
+                JFSJ = #{jfsj},
+            </if>
+            <if test="jfhj != null" >
+                JFHJ = #{jfhj},
+            </if>
+            <if test="jfdd != null" >
+                JFDD = #{jfdd},
+            </if>
+            <if test="jffs != null" >
+                JFFS = #{jffs},
+            </if>
+            <if test="qtjffs != null" >
+                QTJFFS = #{qtjffs},
+            </if>
+            <if test="dataId != null" >
+                DATA_ID = #{dataId},
+            </if>
+            <if test="creater != null" >
+                CREATER = #{creater},
+            </if>
+            <if test="createTime != null" >
+                CREATE_TIME = #{createTime},
+            </if>
+            <if test="modifier != null" >
+                MODIFIER = #{modifier},
+            </if>
+            <if test="modifyTime != null" >
+                MODIFY_TIME = #{modifyTime},
+            </if>
+        </set>
+        where ID = #{id}
+    </update>
+    <!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaItemServiceCharge">
+        delete from   AEA_ITEM_SERVICE_CHARGE
+        where
+    ID = #{id}
+    </delete>
+<!--8 删除实体对象列表,根据主键ID列表 -->
+<!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaItemServiceCharge" id="AeaItemServiceChargeMap">
+        <id property="id" column="ID"/>
+        <result property="itemId" column="ITEM_ID"/>
+        <result property="ywsf" column="YWSF"/>
+        <result property="jfsj" column="JFSJ"/>
+        <result property="jfhj" column="JFHJ"/>
+        <result property="jfdd" column="JFDD"/>
+        <result property="jffs" column="JFFS"/>
+        <result property="qtjffs" column="QTJFFS"/>
+        <result property="dataId" column="DATA_ID"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="modifier" column="MODIFIER"/>
+        <result property="modifyTime" column="MODIFY_TIME"/>
+    </resultMap>
+
+    <!--10 根据事项ID查询单个实体 -->
+    <select id="getAeaItemServiceChargeByItemId" resultType="AeaItemServiceCharge" >
+        select
+        <include refid="allColumns"/>
+        from    AEA_ITEM_SERVICE_CHARGE
+        where    ITEM_ID = #{itemId}
+    </select>
+
+</mapper>

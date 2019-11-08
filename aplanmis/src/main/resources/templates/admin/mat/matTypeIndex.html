@@ -1,0 +1,137 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>材料类型</title>
+  <link rel="stylesheet" href="../../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.css" th:href="@{/agcloud/framework/js-lib/element-2/element.css}" />
+  <link rel="stylesheet" href="../../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css" th:href="@{/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css}">
+  <link rel="stylesheet" href="../../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/ui-private/default/common/css/layout.css" th:href="@{/agcloud/framework/ui-private/default/common/css/layout.css}">
+  <link rel="stylesheet" href="../../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/ui-private/default/blue/css/theme.css" th:href="@{/agcloud/framework/ui-private/default/blue/css/theme.css}">
+  <link rel="stylesheet" href="../../../static/admin/mat/css/matTypeIndex.css" th:href="@{/admin/mat/css/matTypeIndex.css}">
+  <style>
+    .el-button+.el-button {
+         margin-left: 5px;
+     }
+
+     /*.input {*/
+       /*margin-left: 55%;*/
+     /*}*/
+
+     .el-button--medium {
+         padding: 10px 12px;
+         font-size: 14px;
+         border-radius: 4px;
+     }
+  </style>
+  <script>
+    var ctx = '[[@{/}]]';
+    // var ctx = 'http://39.107.139.174:8083/aplanmis-front/';
+
+      // var ctx = 'http://192.168.30.120:8083/aplanmis-front/';
+      // var ctx = 'http://192.168.32.2:8083/aplanmis-front/';
+
+  </script>
+</head>
+
+<body>
+  <div class='loading' v-if="pageLoading">
+    <div class="tips">
+      <i class="el-icon-loading"></i>
+      <p>请稍后</p>
+    </div>
+  </div>
+  <div id="app" v-cloak>
+    <div class='matLibrary'>
+      <p class="title">材料类别定义库</p>
+      <div class="btns">
+        <el-input placeholder="请输入关键字..." v-model="keyword2" class="input-with-select" style='width:250px;'></el-input>
+        <el-button size='medium' @click="keyword2=''" style="margin-left:5px;">清空</el-button>
+        <el-button size='medium' @click="unfold">展开</el-button>
+        <el-button size='medium' @click="fold">折叠</el-button>
+      </div>
+      <el-tree :data="regionData" class="filter-tree tree1" default-expand-all :expand-on-click-node="false" highlight-current :style="{height:treeLeftHeight-41+'px',overflow: 'auto'}" :filter-node-method="filterNodeOrg" node-key="id" @node-click="regionTreeNode" @node-contextmenu="treeNodeRightClick" ref="Tree">
+      </el-tree>
+    </div>
+    <div class="matList">
+      <p class="title">材料分类列表</p>
+      <div class='btns'>
+        <el-button type="primary" size='medium' @click="addType">新增分类</el-button>
+        <el-button size='medium' @click="delateAllWindow">删除</el-button>
+        <el-button size='medium' @click="showData">刷新</el-button>
+        <el-input placeholder="请输入关键字..." v-model="keyword" class="input input-with-select" style='width: 250px;'>
+        </el-input>
+        <el-button size='medium' type="primary" @click="showData" style="margin-left:5px;">查询</el-button>
+        <el-button size='medium' @click="keyword='';showData()">清空</el-button>
+      </div>
+      <el-table :data="tableData" border style="width: 99%;margin: 0.5%;" highlight-current-row @row-dblclick="dbclickRow" @selection-change="handleSelectionChange">
+        <el-table-column type="selection" width="55"></el-table-column>
+        <el-table-column prop="typeName" label="名称"></el-table-column>
+        <el-table-column prop="typeCode" label="编号"></el-table-column>
+        <el-table-column label="操作" width='120' align="center">
+          <template slot-scope='scope'>
+            <el-button type="primary" icon="el-icon-edit" circle @click="editWindow(scope.row);treeEdit = false"></el-button>
+            <el-button type="danger" icon="el-icon-delete" circle @click="delateWindow(scope.row)"></el-button>
+            <!-- <i class='el-icon-edit-outline cup' @click="editWindow(scope.row);treeEdit = false"></i>
+<i class='el-icon-delete cup' style="margin-left: 10px;" @click="delateWindow(scope.row)"></i> -->
+          </template>
+        </el-table-column>
+      </el-table>
+      <el-pagination background align="right" :pager-count="5" @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-sizes="[10, 20, 30, 50]" :page-size="pageSize" :current-page="pageNum" layout="total,sizes, prev, pager, next, jumper" :total="total">
+      </el-pagination>
+    </div>
+    <!--左侧树右键展开-->
+    <div class="right-click-opt" v-show="showRightClick" @mouseleave="showRightClick=false">
+      <p @click="addType();treeEdit=true;oper='add'"><i class="el-icon-circle-plus-outline"></i>&nbsp;新增分类</p>
+      <p @click="editWindow(leftSelNodeData);treeEdit=true;oper='edit'" v-if="notRoot"><i class="el-icon-edit-outline"></i>&nbsp;编辑</p>
+      <p @click="delateWindow(leftSelNodeData)" v-if="notRoot"><i class="el-icon-delete"></i>&nbsp;删除</p>
+    </div>
+    <!-- 弹出层 -->
+    <div class="right-sidebar" :class="showRightSlider?'show':''">
+      <div class="right-sidebar-content">
+        <el-tabs v-model="activeName" @tab-click="tabClick">
+          <el-tab-pane label="基本信息" name="first">
+            <el-form label-position="right" label-width="100px" :model="formData" ref="form" :rules="rules" :inline='true'>
+              <el-form-item prop="" v-show='false'>
+                <el-input v-model="formData.matTypeId"></el-input>
+              </el-form-item>
+              <el-form-item prop="" v-show='false'>
+                <el-input v-model="formData.parentTypeId"></el-input>
+              </el-form-item>
+              <el-form-item label="分类名称" prop="typeName">
+                <el-input v-model="formData.typeName" placeholder="" style="width:390px;"></el-input>
+              </el-form-item>
+              <el-form-item label="分类编号" prop="typeCode">
+                <el-input v-model="formData.typeCode" placeholder="" style="width:390px;"></el-input>
+              </el-form-item>
+              <el-form-item label="备注" prop="typeMemo">
+                <el-input type="textarea" v-model="formData.typeMemo" placeholder="" rows="4" style="width:390px;"></el-input>
+              </el-form-item>
+            </el-form>
+            <div class="silder-footer">
+              <el-button type="primary" size='medium' @click="checkCode">保存</el-button>
+              <el-button size='medium' @click="showRightSlider=false">取消</el-button>
+            </div>
+          </el-tab-pane>
+          <el-tab-pane label="设置父级" name="second" v-if="!isUsed">
+            <el-tree :data="parentData" class="filter-tree tree1" default-expand-all :expand-on-click-node="false" highlight-current :style="{height:treeLeftHeight-31+'px',overflow: 'auto'}" node-key="id" check-strictly show-checkbox @check-change="handleClick" @node-click="nodeClick" ref="parentTree">
+            </el-tree>
+            <div class="silder-footer">
+              <el-button type="primary" size='medium' @click="setParents">保存</el-button>
+              <el-button size='medium' @click="showRightSlider=false">取消</el-button>
+            </div>
+          </el-tab-pane>
+        </el-tabs>
+      </div>
+    </div>
+    <div class="right-sidebar-overlay" v-show="showRightSlider" @click="showRightSlider = false"></div>
+  </div>
+  <script src="../../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js" th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>
+  <script src="../../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js" th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
+  <script src="../../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js" th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
+  <script src="../../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js" th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>
+  <script src="../../../static/admin/mat/js/matTypeIndex.js" th:src="@{/admin/mat/js/matTypeIndex.js}"></script>
+</body>
+
+</html>

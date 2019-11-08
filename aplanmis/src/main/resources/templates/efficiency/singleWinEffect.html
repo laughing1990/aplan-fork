@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>窗口效能督查</title>
+  <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.css"
+    th:href="@{/agcloud/framework/js-lib/element-2/element.css}">
+  <link rel="stylesheet"
+    href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/css/reset.css"
+    th:href="@{/agcloud/framework/js-lib/agcloud-lib/css/reset.css}">
+
+  <link rel="stylesheet" href="../../static/efficiency/common/css/base.css"
+    th:href="@{/efficiency/common/css/base.css}">
+  <link rel="stylesheet" href="../../static/efficiency/css/singleWinEffect.css" th:href="@{/efficiency/css/singleWinEffect.css}">
+  <script>
+    var ctx = "[[@{/}]]";
+    // var ctx = "http://192.168.30.33:8083/aplanmis-front/"
+    // var ctx ="http://192.168.32.53:8083/aplanmis-front/"   //杰文
+  </script>
+</head>
+
+<body>
+  <div class="index-wrapper" id="singleWinEffect" v-cloak v-loading.fullscreen.lock="loading">
+    <!-- 头部卡片 -->
+    <div class="status-card clearfix">
+      <div class="status-card-item" v-for="(item, index) in statusCardData" @click="selectStateForWorkbench(item)"
+        :class="item.statusClass?item.statusClass:'waiting1-status'">
+        <span>{{item.name}}</span>
+        <div class="card-icon" :class="'icon-' + parseInt(index + 1)"></div>
+        <p class="me-count">{{item.count}}</p>
+        <p class="percent-bt" v-if="false">
+          <span class="mr10">同比 {{item.onYearonyearBasis || '无'}}
+            <i class="el-icon-caret-top"></i>
+          </span>
+          <span>环比 {{item.linkRelativeRatio || '无'}}
+            <i class="el-icon-caret-bottom"></i>
+          </span>
+        </p>
+      </div>
+    </div>
+
+    <!-- 时间筛选及模块划分操作栏 -->
+    <div class="handel-box clearfix">
+      <div class="fl color-999 mt20 mb20 time-bar">
+        <el-button-group class="mr20 card-box-sd">
+          <el-button :type="pageSearchData.type == 'D'? 'primary':'normal'" size="small"
+            @click="searchPageEffectDataForTimeRange('D')">昨日</el-button>
+          <el-button :type="pageSearchData.type == 'W'? 'primary':'normal'" size="small"
+            @click="searchPageEffectDataForTimeRange('W')">本周</el-button>
+          <el-button :type="pageSearchData.type == 'M'? 'primary':'normal'" size="small"
+            @click="searchPageEffectDataForTimeRange('M')">本月</el-button>
+        </el-button-group>
+        <el-date-picker class="card-box-sd page-date-pick" v-model="pageDateRange" type="daterange" align="right"
+          size="small" unlink-panels range-separator="~" start-placeholder="开始日期" end-placeholder="结束日期"
+          :picker-options="pickerOptions" value-format="yyyy-MM-dd" @change="pageDateRangeChange">
+        </el-date-picker>
+      </div>
+    </div>
+
+    <!-- 督查模块展示区 -->
+    <div class="module-wrap">
+     
+      <div class="mb20 module-workload">
+        <el-row :gutter="15" class="mt15 bottom-show-box">
+          <el-col :xs="24" :sm="24" :md="10" :lg="10" :xl="10">
+            <div class="mb10 theme-abnormal-box">
+              <el-card class="box-card pr">
+                <div slot="header" class="clearfix">
+                  <span class="card-title">接件受理情况</span>
+                </div>
+                <div class="accept-rander-box" id="acceptHandelPieChart"></div>
+                <div class="mb10 non-data" v-show="!acceptHandelPieChart"></div>
+              </el-card>
+            </div>
+          </el-col>
+          <el-col :xs="24" :sm="24" :md="14" :lg="14" :xl="14">
+            <div class="mb10 theme-abnormal-box">
+              <el-card class="box-card pr">
+                <div slot="header" class="clearfix">
+                  <span class="card-title">阶段受理情况</span>
+                </div>
+                <div class="accept-rander-box" id="stageHandelBarChart"></div>
+                <div class="mb10 non-data" v-show="!stageHandelBarChart"></div>
+              </el-card>
+            </div>
+          </el-col>
+        </el-row>
+        <el-card class="box-card pr" style="margin-top: 6px;">
+          <div slot="header" class="clearfix">
+            <span class="card-title">接件历史分析</span>
+          </div>
+          <div>
+            <el-row :gutter="40">
+              <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="pr">
+                <div class="mb10 accept-effectchart-box" id="accepHistoryEffectLineChart"></div>
+              </el-col>
+            </el-row>
+          </div>
+          <div class="accept-box" v-show="!accepHistoryEffectLineChart">
+            <div class="non-data"></div>
+          </div>
+        </el-card>
+      </div>
+
+    </div>
+
+  </div>
+
+  <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js"
+    th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>
+  <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js"
+    th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
+  <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js"
+    th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
+  <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/echarts-v4/echarts.min.js"
+    th:src="@{/agcloud/framework/js-lib/echarts-v4/echarts.min.js}"></script>
+  <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js"
+    th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>
+
+  <script src="../../static/efficiency/common/js/color-hash.js" th:src="@{/efficiency/common/js/color-hash.js}"
+    type="text/javascript"></script>
+  <script src="../../static/efficiency/js/singleWinChartOptions.js" th:src="@{/efficiency/js/singleWinChartOptions.js}"
+    type="text/javascript"></script>
+  <script src="../../static/efficiency/js/mixins.js" th:src="@{/efficiency/js/mixins.js}" type="text/javascript">
+  </script>
+  <script src="../../static/efficiency/js/singleWinEffect.js" th:src="@{/efficiency/js/singleWinEffect.js}" type="text/javascript">
+  </script>
+</body>
+
+</html>

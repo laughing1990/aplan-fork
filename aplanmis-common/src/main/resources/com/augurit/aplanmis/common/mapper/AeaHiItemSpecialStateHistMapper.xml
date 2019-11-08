@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by Administrator    2019-08-03 10:34:55 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaHiItemSpecialStateHistMapper" >
+<!--1 返回所有字段的SQL字句 -->
+<sql id="allColumns" >
+    SPECIAL_STATE_HIST_ID  specialStateHistId,
+    SPECIAL_ID  specialId,
+    STATE_HIST_ID  stateHistId,
+    CREATER  creater,
+    CREATE_TIME  createTime
+    </sql>
+
+<!--2 根据主键ID查询单个实体 -->
+<select id="getAeaHiItemSpecialStateHistById" resultType="AeaHiItemSpecialStateHist" >
+    select
+    <include refid="allColumns"/>
+    from    AEA_HI_ITEM_SPECIAL_STATE_HIST
+    where    SPECIAL_STATE_HIST_ID = #{id}
+</select>
+
+<!--3 根据条件查询实体list -->
+    <select id="listAeaHiItemSpecialStateHist" resultType="AeaHiItemSpecialStateHist" >
+        select
+        <include refid="allColumns"/>
+        from    AEA_HI_ITEM_SPECIAL_STATE_HIST
+    <where>
+        <if test="specialStateHistId != null" >
+        AND    SPECIAL_STATE_HIST_ID = #{specialStateHistId}
+        </if>
+        <if test="specialId != null" >
+        AND    SPECIAL_ID = #{specialId}
+        </if>
+        <if test="stateHistId != null" >
+        AND    STATE_HIST_ID = #{stateHistId}
+        </if>
+        <if test="creater != null" >
+        AND    CREATER = #{creater}
+        </if>
+        <if test="createTime != null" >
+        AND    CREATE_TIME = #{createTime}
+        </if>
+    </where>
+    </select>
+<!--4 根据条件查询实体list,返回分页对象 -->
+
+<!--5 新增实体对象 -->
+<insert id="insertAeaHiItemSpecialStateHist" parameterType="AeaHiItemSpecialStateHist" >
+    insert into AEA_HI_ITEM_SPECIAL_STATE_HIST (
+SPECIAL_STATE_HIST_ID  ,SPECIAL_ID  ,STATE_HIST_ID  ,CREATER  ,CREATE_TIME  
+    )  values  (
+#{specialStateHistId},#{specialId},#{stateHistId},#{creater},  #{createTime}
+    )
+</insert>
+<!--6 修改实体对象 -->
+<update id="updateAeaHiItemSpecialStateHist" parameterType="AeaHiItemSpecialStateHist" >
+    update AEA_HI_ITEM_SPECIAL_STATE_HIST
+    <set >
+        <if test="specialStateHistId != null" >
+        SPECIAL_STATE_HIST_ID = #{specialStateHistId},
+        </if>
+        <if test="specialId != null" >
+        SPECIAL_ID = #{specialId},
+        </if>
+        <if test="stateHistId != null" >
+        STATE_HIST_ID = #{stateHistId},
+        </if>
+        <if test="creater != null" >
+        CREATER = #{creater},
+        </if>
+        <if test="createTime != null" >
+        CREATE_TIME = #{createTime},
+        </if>
+    </set>
+    where SPECIAL_STATE_HIST_ID = #{specialStateHistId}
+</update>
+<!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaHiItemSpecialStateHist">
+        delete from   AEA_HI_ITEM_SPECIAL_STATE_HIST
+        where
+    SPECIAL_STATE_HIST_ID = #{id}
+    </delete>
+<!--8 删除实体对象列表,根据主键ID列表 -->
+<!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaHiItemSpecialStateHist" id="AeaHiItemSpecialStateHistMap">
+        <id property="specialStateHistId" column="SPECIAL_STATE_HIST_ID"/>
+        <result property="specialId" column="SPECIAL_ID"/>
+        <result property="stateHistId" column="STATE_HIST_ID"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+    </resultMap>
+</mapper>

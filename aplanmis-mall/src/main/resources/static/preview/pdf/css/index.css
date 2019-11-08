@@ -1,0 +1,94 @@
+#standardDlg{resize:none;z-index:3000}
+#standardDlg .dragMain{bottom:0;top:36px;} 
+#standardDlg .tabs{height:auto;line-height:inherit;}
+.toolbar{
+    position:absolute;
+    top:0px;left:0;right:0;
+    overflow:hidden;
+}
+#tree {
+    position: absolute;
+    width: 220px;
+    top: 0px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    overflow: auto;
+    border-right: 1px solid #ddd;
+}
+#content {
+    position: absolute;
+    left:220px;top:0;bottom:0;right:0;
+    overflow: auto;
+    padding: 8px;background-color:#ddd;
+}
+.dd{position:relative;margin-bottom:8px;border-bottom:1px solid #ddd;padding:10px 16px 20px 16px;max-width:190mm;background-color:#fff;}
+.dd:hover{outline:2px solid #d00;}
+.dd .bbar{display:none;text-align:right;position:absolute;right:0;bottom:5px;}
+.dd>h2{font-size:1.1em;background-color:#888;margin:.3em 0;padding:6px; color:#fff;}
+.dd:hover .bbar{display:block;}
+img{max-width:100%;}
+.tbSearch{position:absolute;top:3px;right:5px;border-collapse:collapse;}
+.tbSearch td{padding:4px;border:1px solid #0b7dd8;}
+.tbSearch input {
+    border: 0;
+    outline: 0;
+}
+.tbSearch input:hover{
+    outline: 0;
+}
+#btnSearch {
+    padding: 4px 10px;
+}
+.btn-search:hover {
+    background-color: #eee;
+}
+#standardDlg .skeyword{color:#f00;font-weight:bold;}
+.contextmenu {
+    background-color:white;
+    border:1px solid #ADADAD;
+    box-shadow:	#8E8E8E 1px 1px 2px ;
+    display:none;
+    position:absolute;
+    min-width:8em;    
+}
+.contextmenu ul {
+  list-style:none ;
+  margin:0;
+  padding:0;
+  text-align:left;
+}
+.contextmenu ul li {
+    padding:8px 14px;
+}
+.contextmenu ul li:hover {
+    background-color:#eee;
+}
+
+.inputDialog input {}
+.inputDialog .gf-name {
+    width:300px;
+}
+.inputDialog .gf-number {
+    width:8em;
+}
+.inputDialog .gf-content{
+    min-height:3em;
+    border:1px solid #9D9D9D;
+    margin-top:0.5em;
+    padding:0.5em;
+}
+.space {
+    display:inline-block;
+    width:1em;
+}
+.content .btns {
+    text-align:right;
+    margin-top:0.5em;
+}
+.tabs {
+    height:36px;
+    line-height:36px;
+    /*padding:1px 5px;*/
+
+}

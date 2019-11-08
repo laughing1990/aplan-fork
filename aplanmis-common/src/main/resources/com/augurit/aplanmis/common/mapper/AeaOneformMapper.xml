@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by tiantian    2018-10-20 10:51:59 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaOneformMapper">
+
+    <sql id="allColumns">
+          ONEFORM_ID  oneformId,
+          ONEFORM_NAME  oneformName,
+          ONEFORM_DESC oneformDesc,
+          ONEFORM_URL oneformUrl,
+          SORT_NO sortNo,
+          IS_ACTIVE  isActive,
+          CREATER  creater,
+          CREATE_TIME createTime,
+          MODIFIER  modifier,
+          MODIFY_TIME  modifyTime,
+          ROOT_ORG_ID rootOrgId
+    </sql>
+
+    <sql id="apoColumns">
+          apo.ONEFORM_ID  oneformId,
+          apo.ONEFORM_NAME  oneformName,
+          apo.ONEFORM_DESC oneformDesc,
+          apo.ONEFORM_URL oneformUrl,
+          apo.SORT_NO sortNo,
+          apo.IS_ACTIVE  isActive,
+          apo.CREATER  creater,
+          apo.CREATE_TIME createTime,
+          apo.MODIFIER  modifier,
+          apo.MODIFY_TIME  modifyTime,
+          apo.ROOT_ORG_ID rootOrgId
+    </sql>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaOneform" resultType="AeaOneform">
+        select
+            <include refid="allColumns"/>
+        from AEA_ONEFORM
+        <where>
+            <if test="oneformId != null and oneformId!='' ">
+                and ONEFORM_ID = #{oneformId}
+            </if>
+            <if test="oneformName != null and oneformName!='' ">
+                and ONEFORM_NAME = #{oneformName}
+            </if>
+            <if test="oneformDesc != null and oneformDesc!='' ">
+                and ONEFORM_DESC = #{oneformDesc}
+            </if>
+            <if test="oneformUrl != null and oneformUrl!='' ">
+                and ONEFORM_URL = #{oneformUrl}
+            </if>
+            <if test="sortNo != null and sortNo!='' ">
+                and SORT_NO = #{sortNo}
+            </if>
+            <if test="isActive != null and isActive!='' ">
+                and IS_ACTIVE = #{isActive}
+            </if>
+            <if test="creater != null and creater!='' ">
+                and CREATER = #{creater}
+            </if>
+            <if test="createTime != null and createTime!='' ">
+                and CREATE_TIME = #{createTime}
+            </if>
+            <if test="modifier != null and modifier!='' ">
+                and MODIFIER = #{modifier}
+            </if>
+            <if test="modifyTime != null and modifyTime!='' ">
+                and MODIFY_TIME = #{modifyTime}
+            </if>
+            <if test="rootOrgId!=null and rootOrgId!='' ">
+                and ROOT_ORG_ID = #{rootOrgId}
+            </if>
+            <if test="keyword!=null and keyword!='' ">
+                and (
+                    ONEFORM_NAME like concat('%',concat(#{keyword},'%')) or
+                    ONEFORM_DESC like concat('%',concat(#{keyword},'%')) or
+                    ONEFORM_URL like concat('%',concat(#{keyword},'%'))
+                )
+            </if>
+        </where>
+        order by SORT_NO desc, CREATE_TIME desc
+    </select>
+
+    <select id="listAeaOneformNotInStage" resultType="AeaOneform">
+        select
+           <include refid="apoColumns"/>
+        from AEA_ONEFORM apo
+        <where>
+            apo.ONEFORM_ID not in (
+                select apso.oneform_id
+                  from AEA_PAR_STAGE_ONEFORM apso
+                 where apso.PAR_STAGE_ID = #{parStageId}
+            )
+            <if test="oneformId != null and oneformId!='' ">
+                and apo.ONEFORM_ID = #{oneformId}
+            </if>
+            <if test="oneformName != null and oneformName!='' ">
+                and apo.ONEFORM_NAME = #{oneformName}
+            </if>
+            <if test="oneformDesc != null and oneformDesc!='' ">
+                and apo.ONEFORM_DESC = #{oneformDesc}
+            </if>
+            <if test="oneformUrl != null and oneformUrl!='' ">
+                and apo.ONEFORM_URL = #{oneformUrl}
+            </if>
+            <if test="sortNo != null and sortNo!='' ">
+                and apo.SORT_NO = #{sortNo}
+            </if>
+            <if test="isActive != null and isActive!='' ">
+                and apo.IS_ACTIVE = #{isActive}
+            </if>
+            <if test="creater != null and creater!='' ">
+                and apo.CREATER = #{creater}
+            </if>
+            <if test="createTime != null and createTime!='' ">
+                and apo.CREATE_TIME = #{createTime}
+            </if>
+            <if test="modifier != null and modifier!='' ">
+                and apo.MODIFIER = #{modifier}
+            </if>
+            <if test="modifyTime != null and modifyTime!='' ">
+                and apo.MODIFY_TIME = #{modifyTime}
+            </if>
+            <if test="rootOrgId!=null and rootOrgId!='' ">
+                and apo.ROOT_ORG_ID = #{rootOrgId}
+            </if>
+            <if test="keyword!=null and keyword!='' ">
+                and (
+                    apo.ONEFORM_NAME like concat('%',concat(#{keyword},'%')) or
+                    apo.ONEFORM_DESC like concat('%',concat(#{keyword},'%')) or
+                    apo.ONEFORM_URL like concat('%',concat(#{keyword},'%'))
+                )
+            </if>
+        </where>
+        order by apo.SORT_NO desc, apo.CREATE_TIME desc
+    </select>
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaOneform" parameterType="AeaOneform">
+        insert into AEA_ONEFORM (
+            ONEFORM_ID,
+            ONEFORM_NAME,
+            ONEFORM_DESC,
+            ONEFORM_URL,
+            SORT_NO,
+            IS_ACTIVE,
+            CREATER,
+            CREATE_TIME,
+            MODIFIER,
+            MODIFY_TIME,
+            ROOT_ORG_ID
+        )  values  (
+            #{oneformId},
+            #{oneformName},
+            #{oneformDesc},
+            #{oneformUrl},
+            #{sortNo},
+            #{isActive},
+            #{creater},
+            #{createTime},
+            #{modifier},
+            #{modifyTime},
+            #{rootOrgId}
+        )
+    </insert>
+
+    <!--6 修改实体对象 -->
+    <update id="updateAeaOneform" parameterType="AeaOneform">
+        update AEA_ONEFORM
+        <set>
+            <if test="oneformName != null and oneformName!='' ">
+                ONEFORM_NAME = #{oneformName},
+            </if>
+            <if test="oneformDesc != null and oneformDesc!='' ">
+                ONEFORM_DESC = #{oneformDesc},
+            </if>
+            <if test="oneformUrl != null and oneformUrl!='' ">
+                ONEFORM_URL = #{oneformUrl},
+            </if>
+            <if test="sortNo != null and sortNo!='' ">
+                SORT_NO = #{sortNo},
+            </if>
+            <if test="isActive != null and isActive!='' ">
+                IS_ACTIVE = #{isActive},
+            </if>
+            <if test="creater != null and creater!='' ">
+                CREATER = #{creater},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime},
+            </if>
+            <if test="modifier != null and modifier!='' ">
+                MODIFIER = #{modifier},
+            </if>
+            <if test="modifyTime != null">
+                MODIFY_TIME = #{modifyTime},
+            </if>
+            <if test="rootOrgId!=null and rootOrgId!='' ">
+                ROOT_ORG_ID = #{rootOrgId},
+            </if>
+        </set>
+        where ONEFORM_ID = #{oneformId}
+    </update>
+
+    <!-- 删除数据 -->
+    <delete id="deleteAeaOneform">
+        delete from AEA_ONEFORM where ONEFORM_ID = #{id}
+    </delete>
+
+    <delete id="batchDelAeaOneformByIds">
+        delete from AEA_ONEFORM  
+        where ONEFORM_ID in 
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="getParOneformById" resultType="AeaOneform">
+        select
+            <include refid="allColumns"/>
+        from AEA_ONEFORM
+        where ONEFORM_ID = #{id}
+    </select>
+
+    <select id="getMaxSortNo" resultType="java.lang.Long">
+        select
+            max(SORT_NO)
+        from AEA_ONEFORM
+        where ROOT_ORG_ID = #{rootOrgId}
+    </select>
+
+    <select id="listAeaOneformByStageId" resultType="AeaOneform">
+        select
+            apo.ONEFORM_ID  oneformId,
+            apo.ONEFORM_NAME  oneformName,
+            apo.ONEFORM_DESC oneformDesc,
+            apo.ONEFORM_URL oneformUrl,
+            apo.IS_ACTIVE  isActive,
+            apo.CREATER  creater,
+            apo.CREATE_TIME createTime,
+            apo.MODIFIER  modifier,
+            apo.MODIFY_TIME  modifyTime,
+            apo.ROOT_ORG_ID rootOrgId,
+            apso.sort_no sortNO,
+            apso.par_stage_id parStageId
+        from AEA_ONEFORM apo
+        join aea_par_stage_oneform apso on apo.oneform_id=apso.oneform_id
+        where apso.par_stage_id = #{stageId}
+        and apo.root_org_id = #{rootOrgId}
+        and apso.is_active='1'
+        and apo.is_active='1'
+        order by apso.sort_no asc
+    </select>
+
+    <update id="enOrDisableIsActive" parameterType="java.lang.String">
+        update AEA_ONEFORM set IS_ACTIVE = case IS_ACTIVE when '0' then '1' else '0' end
+        where ONEFORM_ID = #{id}
+    </update>
+
+</mapper>

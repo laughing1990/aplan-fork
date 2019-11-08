@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by tiantian    2018-10-20 10:51:59 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaParStageOneformMapper">
+
+    <sql id="allColumns">
+       STAGE_ONEFORM_ID  stageOneformId,
+       PAR_STAGE_ID  parStageId,
+       ONEFORM_ID oneformId,
+       LINK_NAME linkName,
+       SORT_NO sortNo,
+       IS_ACTIVE  isActive,
+       CREATER  creater,
+       CREATE_TIME createTime,
+       MODIFIER  modifier,
+       MODIFY_TIME  modifyTime
+    </sql>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaParStageOneform" resultType="AeaParStageOneform">
+        select
+            apso.STAGE_ONEFORM_ID stageOneformId,
+            apo.ONEFORM_NAME oneformName,
+            apso.LINK_NAME linkName
+        from aea_par_stage_oneform apso
+        left join aea_oneform apo on apso.ONEFORM_ID = apo.ONEFORM_ID
+        where apso.PAR_STAGE_ID = #{parStageId}
+        order by apso.SORT_NO asc
+    </select>
+
+    <select id="listAeaStageItem" resultType="AeaParStageItem">
+        select
+            apsi.STAGE_ITEM_ID stageItemId,
+            apsi.ITEM_ID itemId,
+            apsi.ITEM_VER_ID itemVerId,
+            apsi.STAGE_ID stageId,
+            apsi.SUB_FORM_ID subFormId,
+            apsi.SORT_NO sortNo,
+            item.ITEM_NAME as itemName,
+            item.ITEM_CODE as itemCode,
+            item.DUE_NUM as dueNum,
+            item.BJ_TYPE as bjType,
+            item.IS_CATALOG as isCatalog,
+            item.GUIDE_ORG_NAME as guideOrgName,
+            item.ORG_NAME as orgName
+        from AEA_PAR_STAGE_ITEM apsi,(
+            select
+                ai.ITEM_ID,
+                ai.ITEM_VER_ID,
+                ai.ITEM_NAME,
+                ai.ITEM_CODE,
+                ai.DUE_NUM,
+                ai.BJ_TYPE,
+                ai.IS_CATALOG,
+                ai.GUIDE_ORG_NAME,
+                org.ORG_NAME
+            from  AEA_ITEM_BASIC ai
+            join AEA_ITEM_VER aiv on ( ai.item_ver_id = aiv.item_ver_id and ai.ITEM_ID = aiv.ITEM_ID )
+            left join opu_om_org org on ( ai.org_id = org.org_id and org.ORG_DELETED = '0' )
+            where ai.ROOT_ORG_ID = #{rootOrgId}
+            and aiv.ROOT_ORG_ID = #{rootOrgId}
+            and aiv.IS_DELETED = '0'
+        )item
+        <where>
+            and apsi.ITEM_ID = item.ITEM_ID
+            and apsi.ITEM_VER_ID = item.ITEM_VER_ID
+            and apsi.STAGE_ID = #{parStageId}
+            and apsi.IS_OPTION_ITEM ='0'
+        </where>
+        order by apsi.SORT_NO asc, apsi.CREATE_TIME asc
+    </select>
+
+    <select id="getActStoForm" resultType="ActStoForm">
+        select
+        asf.FORM_NAME formName
+        FROM
+        AEA_PAR_STAGE_ITEM apsi
+        LEFT JOIN ACT_STO_FORM asf ON asf.FORM_ID = apsi.SUB_FORM_ID
+        <where>
+            and apsi.STAGE_ID = #{stageId}
+            AND apsi.ITEM_VER_ID = #{itemVerId}
+            AND asf.FORM_ID = #{formId}
+            AND asf.IS_DELETED = '0'
+            AND asf.FORM_PROPERTY IN ( 'smart-biz', 'smart-flow' )
+        </where>
+    </select>
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaParStageOneform" parameterType="AeaParStageOneform">
+        insert into AEA_PAR_STAGE_ONEFORM (
+            STAGE_ONEFORM_ID,
+            PAR_STAGE_ID,
+            ONEFORM_ID,
+            LINK_NAME,
+            SORT_NO,
+            IS_ACTIVE,
+            CREATER,
+            CREATE_TIME,
+            MODIFIER,
+            MODIFY_TIME
+        )  values  (
+            #{stageOneformId},
+            #{parStageId},
+            #{oneformId},
+            #{linkName},
+            #{sortNo},
+            #{isActive},
+            #{creater},
+            #{createTime},
+            #{modifier},
+            #{modifyTime}
+        )
+    </insert>
+
+    <!--6 修改实体对象 -->
+    <update id="updateAeaParStageOneform" parameterType="AeaParStageOneform">
+        update AEA_PAR_STAGE_ONEFORM
+        <set>
+            <if test="parStageId != null and parStageId!='' ">
+                PAR_STAGE_ID = #{parStageId},
+            </if>
+            <if test="oneformId != null and oneformId!='' ">
+                ONEFORM_ID = #{oneformId},
+            </if>
+            <if test="linkName != null and linkName!='' ">
+                LINK_NAME = #{linkName},
+            </if>
+            <if test="sortNo != null and sortNo!='' ">
+                SORT_NO = #{sortNo},
+            </if>
+            <if test="isActive != null and isActive!='' ">
+                IS_ACTIVE = #{isActive},
+            </if>
+            <if test="creater != null and creater!=''">
+                CREATER = #{creater},
+            </if>
+            <if test="createTime != null and createTime!=''">
+                CREATE_TIME = #{createTime},
+            </if>
+            <if test="modifier != null and modifier!=''">
+                MODIFIER = #{modifier},
+            </if>
+            <if test="modifyTime != null and modifyTime!=''">
+                MODIFY_TIME = #{modifyTime},
+            </if>
+        </set>
+        where STAGE_ONEFORM_ID = #{stageOneformId}
+    </update>
+
+    <!-- 删除数据 -->
+    <delete id="deleteAeaParStageOneform">
+        DELETE FROM AEA_PAR_STAGE_ONEFORM  where STAGE_ONEFORM_ID = #{id}
+    </delete>
+
+
+    <select id="getAeaParStageOneformById" resultType="AeaParStageOneform">
+        select
+        <include refid="allColumns"/>
+        from AEA_PAR_STAGE_ONEFORM
+        where STAGE_ONEFORM_ID = #{id}
+    </select>
+
+    <select id="listActStoFromNotInStageItem" resultType="com.augurit.aplanmis.common.vo.ActStoFormVo">
+        select
+            asf.FORM_ID formId,
+            asf.FORM_NAME formName,
+            asf.FORM_CODE formCode
+        from ACT_STO_FORM asf
+        <where>
+            and asf.FORM_ORG_ID = #{formOrgId}
+            and asf.FORM_ID not in (
+                select apsi.SUB_FORM_ID
+                from AEA_PAR_STAGE_ITEM apsi
+                where apsi.STAGE_ID = #{stageId}
+                  and apsi.SUB_FORM_ID is not null
+            )
+            AND asf.IS_DELETED = '0'
+            AND asf.FORM_PROPERTY IN ( 'smart-biz', 'smart-flow' )
+            <if test="keyword!=null and keyword!='' ">
+            and (
+                asf.FORM_NAME like concat('%',concat(#{keyword},'%')) or
+                asf.FORM_CODE like concat('%',concat(#{keyword},'%'))
+            )
+            </if>
+        </where>
+        order by asf.CREATE_TIME desc
+    </select>
+
+    <select id="listAeaParStageOneformNoRel" resultType="AeaParStageOneform" >
+        select
+           <include refid="allColumns"/>
+        from    AEA_PAR_STAGE_ONEFORM
+        <where>
+            <if test="stageOneformId != null" >
+                AND    STAGE_ONEFORM_ID = #{stageOneformId}
+            </if>
+            <if test="parStageId != null" >
+                AND    PAR_STAGE_ID = #{parStageId}
+            </if>
+            <if test="oneformId != null" >
+                AND    ONEFORM_ID = #{oneformId}
+            </if>
+            <if test="linkName != null" >
+                AND    LINK_NAME = #{linkName}
+            </if>
+            <if test="sortNo != null" >
+                AND    SORT_NO = #{sortNo}
+            </if>
+            <if test="isActive != null" >
+                AND    IS_ACTIVE = #{isActive}
+            </if>
+            <if test="creater != null" >
+                AND    CREATER = #{creater}
+            </if>
+            <if test="createTime != null" >
+                AND    CREATE_TIME = #{createTime}
+            </if>
+            <if test="modifier != null" >
+                AND    MODIFIER = #{modifier}
+            </if>
+            <if test="modifyTime != null" >
+                AND    MODIFY_TIME = #{modifyTime}
+            </if>
+        </where>
+    </select>
+
+</mapper>

@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<!--引入公共css-->
+	<th:block th:include="common/common :: commonheader('项目需求采购发布详情')"/>
+	<link rel="stylesheet" href="../../../static/apply/css/index.css" th:href="@{/apply/css/index.css}">
+	<style type="text/css">
+		.row {
+			margin-left: 0px;
+			margin-left: 0px;
+		}
+	</style>
+	<script>
+		var projPurchaseId = '[[${projPurchaseId}]]'
+	</script>
+</head>
+<body>
+<div id="mainContentPanel" class="row" style="width: 100%;height: 100%;margin: 0px;">
+	<div v-cloak><!--class="col-xl-12" style="padding: 0px 2px 0px 8px;"-->
+		<el-collapse v-model="activeNames">
+			<!---->
+			<el-form> <!--label-width="220px" label-position="left"-->
+
+				<!--项目基本信息-->
+				<el-collapse-item name="1">
+					<template slot="title">
+						<i class="header-icon el-icon-document-copy"></i>项目基本信息
+					</template>
+
+					<el-row>
+						<el-col :span='12'>
+							<el-form-item label="中介服务事项：">{{detailData.itemName}}</el-form-item>
+						</el-col>
+						<el-col :span='12'>
+							<el-form-item label="事项对应部门：">{{detailData.orgName}}</el-form-item>
+						</el-col>
+					</el-row>
+					<el-row>
+						<el-col :span="12">
+							<el-form-item label="投资审批项目："><!--{{detailData.isApproveProj == '1' ? '是' : '否'}}-->
+								<el-radio-group v-model="detailData.isApproveProj">
+									<el-radio label="1">是</el-radio>
+									<el-radio label="0">否</el-radio>
+								</el-radio-group>
+							</el-form-item>
+						</el-col>
+						<el-col :span="12">
+							<el-form-item label="投资审批项目编码：">{{detailData.parentLocalCode}}</label>
+							</el-form-item>
+						</el-col>
+					</el-row>
+					<el-row>
+						<el-col :span="12">
+							<el-form-item label="投资审批项目名称：">{{detailData.parentProjName}}</el-form-item>
+						</el-col>
+						<el-col :span="12">
+							<el-form-item label="采购项目编码：">{{detailData.localCode}}</el-form-item>
+						</el-col>
+					</el-row>
+
+					<el-row>
+						<el-col :span="12">
+							<el-form-item label="审批业务流水号：">{{detailData.applyinstCode}}</el-form-item>
+						</el-col>
+						<el-col :span="12">
+							<el-form-item label="项目业主：">{{detailData.applicant}}</el-form-item>
+						</el-col>
+					</el-row>
+					<el-row>
+						<el-col :span="12">
+							<el-form-item label="项目联系人：">{{detailData.contacts}}</el-form-item>
+						</el-col>
+						<el-col :span="12">
+							<el-form-item label="联系电话：">{{detailData.moblie}}</el-form-item>
+						</el-col>
+					</el-row>
+					<el-row>
+						<el-col :span="12">
+							<el-form-item label="采购项目名称：">{{detailData.projName}}</el-form-item>
+						</el-col>
+						<el-col :span="12">
+							<el-form-item label="项目规模：">（{{detailData.projScale}}）&nbsp;{{detailData.projScaleContent}}</el-form-item>
+						</el-col>
+					</el-row>
+
+					<el-row>
+						<el-col :span="24">
+							<el-form-item label="资金来源：">
+								<span v-if="detailData.financialFundProportion">
+									财政资金{{detailData.financialFundProportion}} %
+								</span>
+								<span v-if="detailData.financialFundProportion">
+									；社会资金{{detailData.socialFundProportion}} %
+								</span>
+							</el-form-item>
+						</el-col>
+					</el-row>
+				</el-collapse-item>
+				<!--服务信息-->
+				<el-collapse-item name="2">
+					<template slot="title">
+						<i class="header-icon el-icon-document-copy"></i>服务要求
+					</template>
+					<el-row>
+						<el-col :span='12'>
+							<el-form-item label="所需服务：">{{detailData.serviceName}}</el-form-item>
+						</el-col>
+						<el-col :span='12'>
+							<el-form-item label="服务要求：">{{detailData.selectCondition ? (detailData.selectCondition == '1' ?
+								'多个服务具备其一' : '多个服务都具备') : '无'}}
+							</el-form-item>
+						</el-col>
+					</el-row>
+					<el-row>
+						<el-col :span='12'>
+							<el-form-item label="服务时限说明：">{{detailData.serviceTimeExplain}}</el-form-item>
+						</el-col>
+						<el-col :span='12'>
+							<el-form-item label="服务内容：">{{detailData.serviceContent}}</el-form-item>
+						</el-col>
+					</el-row>
+				</el-collapse-item>
+
+				<!--中介机构要求-->
+				<el-collapse-item name="3">
+					<template slot="title">
+						<i class="header-icon el-icon-document-copy"></i>中介机构要求
+					</template>
+					<el-row>
+						<el-col :span='12'>
+							<el-form-item label="中介服务机构要求：">{{detailData.unitRequire}}</el-form-item>
+						</el-col>
+						<el-col :span='12'>
+							<el-form-item label="资质要求：">{{detailData.qualRequireType ? (detailData.qualRequireType == '1' ?
+								'多个资质子项符合其一即可' : '需同时符合所有选中资质子项') : ''}}
+							</el-form-item>
+						</el-col>
+					</el-row>
+
+					<el-row>
+						<el-col :span='12'>
+							<el-form-item label="资质要求说明：">
+								{{detailData.qualRequireExplain}}
+								<el-button @click="showQualificationTree(detailData.unitRequireId)">查看资质等级树</el-button>
+							</el-form-item>
+						</el-col>
+						<el-col :span='12'>
+							<el-form-item label="资质备案说明：">{{detailData.qualRecordRequire}}</el-form-item>
+						</el-col>
+					</el-row>
+
+					<el-row v-if="detailData.isRegisterRequire == '1'">
+						<el-col :span='12'>
+							<el-form-item label="执业/职业人员总数：">{{detailData.registerTotal}}</el-form-item>
+						</el-col>
+						<el-col :span='12'>
+							<el-form-item label="执业/职业人员要求：">{{detailData.registerRequire}}</el-form-item>
+						</el-col>
+					</el-row>
+
+					<el-row>
+						<el-col :span='12'>
+							<el-form-item label="备案要求说明：">{{detailData.recordRequireExplain}}</el-form-item>
+						</el-col>
+						<el-col :span='12'>
+							<el-form-item label="其他要求说明：">{{detailData.otherRequireExplain }}</el-form-item>
+						</el-col>
+					</el-row>
+				</el-collapse-item>
+				<!--选取中介服务机构方式-->
+				<el-collapse-item name="4">
+					<template slot="title">
+						<i class="header-icon el-icon-document-copy"></i>选取中介服务机构方式
+					</template>
+					<el-row>
+						<el-col :span='12'><!--1 随机抽取 2 直接抽取 3 竞价选取 -->
+							<el-form-item label="选取中介服务机构方式：">
+								<el-radio-group v-model="detailData.biddingType">
+									<el-radio label="1">随机抽取</el-radio>
+									<el-radio label="2">直接抽取</el-radio>
+									<el-radio label="3">竞价选取</el-radio>
+								</el-radio-group>
+							</el-form-item>
+						</el-col>
+						<el-col :span='12'>
+							<el-form-item :label="(detailData.biddingType == '3' && detailData.quoteType== '1') ? '下浮率：' : '服务金额：'">
+								<div v-if="detailData.biddingType == '1'">
+									<p>{{detailData.isDefineAmount == '0' ? '暂不做金额评估与预算' : detailData.basePrice}}</p>
+									<p v-if="detailData.isDefineAmount == '1' && detailData.basePrice">元</p>
+								</div>
+								<div v-if="detailData.biddingType == '2'">
+									<p>{{detailData.basePrice}}元</p>
+								</div>
+								<div v-if="detailData.biddingType == '3'">
+									<p v-if="detailData.quoteType == '0'">{{detailData.basePrice}}元 - {{detailData.highestPrice}}元</p>
+									<p v-if="detailData.quoteType == '1'">{{detailData.baseRate}}% - {{detailData.highestRate}}%</p>
+								</div>
+							</el-form-item>
+						</el-col>
+					</el-row>
+
+					<el-row>
+						<el-col :span='12'>
+							<el-form-item label="金额说明：">{{detailData.amountExplain}}</el-form-item>
+						</el-col>
+						<div v-if="detailData.biddingType == '2'">
+							<el-col :span='24'>
+								<el-form-item label="指定的中介机构：">{{detailData.selectedApplicant}}</el-form-item>
+							</el-col>
+						</div>
+						<div v-else>
+							<el-col :span='12'>
+								<el-form-item label="是否有回避情况：">
+									<el-radio-group v-model="detailData.isAvoid">
+										<el-radio label="1">是</el-radio>
+										<el-radio label="0">否</el-radio>
+									</el-radio-group>
+								</el-form-item>
+							</el-col>
+						</div>
+					</el-row>
+
+					<el-row v-if="detailData.isAvoid == '1'">
+						<el-col :span='12'>
+							<el-form-item label="回避机构：">{{detailData.avoidUnitInfos}}</el-form-item>
+						</el-col>
+						<el-col :span='12'>
+							<el-form-item label="回避原因：">{{detailData.avoidReason}}</el-form-item>
+						</el-col>
+					</el-row>
+
+					<el-row>
+						<el-col :span='12'>
+							<el-form-item label="报名截止时间：">{{detailData.expirationDate | formatDate }}</el-form-item>
+						</el-col>
+						<el-col :span='12'>
+							<el-form-item label="选取中介时间：">{{detailData.choiceImunitTime | formatDate}}</el-form-item>
+						</el-col>
+					</el-row>
+
+					<el-row>
+						<el-col :span='12'>
+							<el-form-item label="服务内容：">{{detailData.serviceContent}}</el-form-item>
+						</el-col>
+						<el-col :span='12'>
+							<el-form-item label="服务时限说明：">{{detailData.serviceTimeExplain}}</el-form-item>
+						</el-col>
+					</el-row>
+
+					<el-row>
+						<el-col :span='12'>
+							<el-form-item label="是否公示中选机构：">
+								<el-radio-group v-model="detailData.isDiscloseIm">
+									<el-radio label="1">是</el-radio>
+									<el-radio label="0">否</el-radio>
+								</el-radio-group>
+							</el-form-item>
+						</el-col>
+						<el-col :span='12'>
+							<el-form-item label="是否公示中标公告：">
+								<el-radio-group v-model="detailData.isDiscloseBidding">
+									<el-radio label="1">是</el-radio>
+									<el-radio label="0">否</el-radio>
+								</el-radio-group>
+							</el-form-item>
+						</el-col>
+					</el-row>
+
+					<el-row>
+						<el-col :span='12'>
+							<el-form-item label="是否见证现场竞价选取、摇珠：">
+								<el-radio-group v-model="detailData.isLiveWitness">
+									<el-radio label="1">是</el-radio>
+									<el-radio label="0">否</el-radio>
+								</el-radio-group>
+							</el-form-item>
+						</el-col>
+						<el-col :span='12' v-if="detailData.isLiveWitness == '1'">
+							<el-form-item label="见证人：">
+								{{detailData.witnessName1}}（{{detailData.witnessPhone1}}）
+								<p v-if="detailData.witnessName2!=''">
+									、{{detailData.witnessName2}}（{{detailData.witnessPhone2}}）
+								</p>
+								<p v-if="detailData.witnessName3!=''">
+									、{{detailData.witnessName3}}（{{detailData.witnessPhone3}}）
+								</p>
+							</el-form-item>
+						</el-col>
+					</el-row>
+				</el-collapse-item>
+
+				<!--附件-->
+				<el-collapse-item name="5">
+					<template slot="title">
+						<i class="header-icon el-icon-document-copy"></i>附件
+					</template>
+					<el-row>
+						<el-col :span='12'>
+							<el-form-item label="批文文件：">
+								<div v-if="1==1"><!--v-if="detailData.officialRemarkBscAttForms.length>0"-->
+									<span v-for="item in detailData.officialRemarkBscAttForms">
+											{{item.attDiskName}}
+									</span>
+								</div>
+								<div v-else>暂无</div>
+							</el-form-item>
+						</el-col>
+						<el-col :span='12'>
+							<el-form-item label="要求说明文件：">
+								<div v-if="1==1"> <!--v-if="detailData.requireExplainBscAttForms.length>0"-->
+									<span v-for="item in detailData.requireExplainBscAttForms" @click="">
+											{{item.attDiskName}}
+									</span>
+								</div>
+								<div v-else>暂无</div>
+							</el-form-item>
+						</el-col>
+					</el-row>
+				</el-collapse-item>
+
+				<!--审核结果-->
+				<el-collapse-item name="6" v-if="detailData.auditFlag != '4' && detailData.auditFlag != '0'">
+					<template slot="title">
+						<i class="header-icon el-icon-document-copy"></i>审核结果
+					</template>
+					<el-row>
+						<el-col :span='12'>
+							<el-form-item label="审核结果："><label>{{detailData.auditFlag == '5' ? '审核不通过' : '审核通过'}}</label>
+							</el-form-item>
+						</el-col>
+						<el-col :span='12'>
+							<el-form-item label="审核意见："><label>{{detailData.auditOpinion}}</label></el-form-item>
+						</el-col>
+					</el-row>
+				</el-collapse-item>
+
+			</el-form>
+		</el-collapse>
+	</div>
+	<div v-cloak style="vertical-align:middle;text-align: center !important;">
+		<el-button type="primary" v-if="detailData.auditFlag == '4'" @click="dialogTableVisible=true">
+			审核
+		</el-button>
+		<el-button type="primary" @click="backPrd">返回</el-button>
+	</div>
+	<el-divider></el-divider>
+
+	<!--资质等级树窗口-->
+	<el-dialog v-cloak title="资质等级树" :visible.sync="qualMajorModal">
+		<div id="qualTree">
+			<el-tabs type="border-card">
+				<el-tab-pane v-for="(item, index) in qualMajorTree" :label="item.qualName">
+					<template>
+						<el-tabs type="card" class="aea-qual-levels">
+							<el-tab-pane v-for="(itemLevels, ind) in item.qualLevelList" :label="itemLevels.qualLevelName" :key="itemLevels.qualLevelId">
+								<el-tree :data="itemLevels.majors" :props="defaultProps" default-expand-all></el-tree>
+							</el-tab-pane>
+						</el-tabs>
+					</template>
+				</el-tab-pane>
+			</el-tabs>
+		</div>
+	</el-dialog>
+
+	<!--审核窗口-->
+	<el-dialog v-cloak title="审核" :visible.sync="dialogTableVisible">
+		<div v-cloak style="margin-left: 25px;">
+			<el-form :model="auditForm" ref="auditForm">
+				<el-row>
+					<el-col :span="24">
+						<el-form-item label="是否通过：" required>
+							<el-select v-model="auditForm.auditFlag" placeholder="请选择">
+								<el-option label="审核通过" value="1"></el-option>
+								<el-option label="审核不通过" value="0"></el-option>
+							</el-select>
+						</el-form-item>
+					</el-col>
+				</el-row>
+				<el-row>
+					<el-col :span="24">
+						<el-form-item label="审核意见：" required>
+							<el-input v-model="auditForm.auditOpinion" type="textarea"></el-input>
+						</el-form-item>
+					</el-col>
+				</el-row>
+			</el-form>
+		</div>
+		<div slot="footer" class="dialog-footer">
+			<el-button @click="dialogTableVisible = false">取 消</el-button>
+			<el-button type="primary" @click="auditSubmit">保存</el-button>
+		</div>
+	</el-dialog>
+
+
+</div>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js" th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js" th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js" th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js" th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>
+<script src="../../../static/common/js/axios.min.js" th:src="@{/common/js/axios.min.js}"></script>
+<script src="../../../../static/admin/supermarket/purchase/purchase-detail.js" th:src="@{/admin/supermarket/purchase/purchase-detail.js}"></script>
+</body>
+</html>

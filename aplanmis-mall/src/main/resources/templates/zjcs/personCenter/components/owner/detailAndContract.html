@@ -1,0 +1,653 @@
+<!-- 待处理项目 -->
+<div class="box detailAndContract" id="detailAndContract">
+  <div class="pages pages1" v-if="showList == 1">
+    <div class="info-header clearfix">
+      <div class="handel text-right fr">
+        <el-button @click="showList = 0">返回上一页</el-button>
+      </div>
+    </div>
+    <h2>上传合同【{{form1.parentProjName}}】</h2>
+    <el-form ref="form" :model="form" label-width="150px" class="form" :inline=true>
+      <el-form-item label="合同签订时间：">
+        <el-date-picker v-model="form.signTime" type="date" value-format="yyyy-MM-dd" style="width:260px;" placeholder="选择日期时间">
+        </el-date-picker>
+      </el-form-item>
+      <el-form-item label="合同编码：">
+        <el-input v-model="form.contractCode" style="width:260px;"></el-input>
+      </el-form-item>
+      <el-form-item label="合同名称：">
+        <el-input v-model="form.contractName" style="width:260px;"></el-input>
+      </el-form-item>
+      <el-form-item label="合同总金额（元）：">
+        <el-input v-model="form.price" style="width:260px;"></el-input>
+      </el-form-item>
+      <el-form-item label="合同服务开始日期：">
+        <el-date-picker type="date" class="w-300" value-format="yyyy-MM-dd" v-model="form.serviceStartTime" style="width:260px;">
+        </el-date-picker>
+      </el-form-item>
+      <el-form-item label="合同服务截止日期：">
+        <el-date-picker type="date" class="w-300" value-format="yyyy-MM-dd" v-model="form.serviceEndTime" style="width:260px;">
+        </el-date-picker>
+      </el-form-item>
+      <el-form-item label="服务内容：">
+        <el-input v-model="form.serviceContent" style="width:684px;" type="textarea"></el-input>
+      </el-form-item>
+      <el-form-item label="备注：">
+        <el-input v-model="form.memo" style="width:684px;" type="textarea"></el-input>
+      </el-form-item>
+    </el-form>
+    <div class="upload">
+      <span>附件：</span>
+      <el-upload class="upload-demo" ref="upload" :multiple="true" style="width:684px;" action="" :file-list="fileList" :on-change="enclosureFileSelectChange2"
+        :on-remove="enclosureFileSelectRemove2"
+        :auto-upload="false">
+        <el-button slot="trigger" size="small"><i class="el-icon-upload"></i>上传附件</el-button>
+      </el-upload>
+    </div>
+    <button type="button" class="btn btn-primary" @click="sureAndSaveAgree">确定并保存合同</button>
+  </div>
+  <!-- 服务结果 start-->
+  <div class="pages pages1" v-if="showList == 4">
+    <div class="info-header clearfix">
+      <div class="handel text-right fr">
+        <el-button @click="showList = 0">返回上一页</el-button>
+      </div>
+    </div>
+    <h2>服务结果处理【{{curProjectDetail.parentProjName}}】</h2>
+    <el-form ref="form" :model="serviceForm" label-width="150px" class="form" :inline=true>
+      <el-form-item label="登记时间：">
+        <!-- <el-date-picker type="datetime" style="width:260px;" placeholder="选择日期时间" :readonly="true"  v-model="serviceForm.uploadTime">
+        </el-date-picker> -->
+        {{dateFormat(serviceForm.uploadTime)}}
+      </el-form-item>
+      <el-form-item label="处理意见：">
+        <el-radio-group v-model="serviceForm.auditFlag">
+          <el-radio :label="0" :value="0" :key="0">服务完成</el-radio>
+          <el-radio :label="1" :value="1" :key="1">服务中止</el-radio>
+          <el-radio :label="2" :value="2" :key="2">服务结果不符合要求，退回给中介机构</el-radio>
+        </el-radio-group>
+      </el-form-item>
+      <el-form-item label="结束时间：" style="width:600px;">
+        <!-- <el-date-picker type="datetime" style="width:260px;" placeholder="选择结束时间" :readonly="true" v-model="serviceForm.endTime">
+        </el-date-picker> -->
+        {{dateFormat(serviceForm.endTime)}}
+      </el-form-item>
+      <el-form-item label="合同总金额（元）：" style="width:600px;">
+        <!-- <el-input style="width:260px;" :readonly="true" v-model="curProjectDetail.contract.price || 0"></el-input> -->
+        {{curProjectDetail.contract ? curProjectDetail.contract.price :'0'}}
+      </el-form-item>
+      <el-form-item label="备注："  style="width:100%;">
+        <!-- <el-input style="width:684px;" type="textarea" :readonly="true" v-model="serviceForm.memo"></el-input> -->
+        {{serviceForm.memo}}
+      </el-form-item>
+    </el-form>
+
+    <div class="upload">
+      <span>附件：</span>
+      <div class="upload-demo service-upload-box">
+        <!-- <el-upload ref="serviceenclosureUpload" :multiple="true" style="width:684px;" action="" :auto-upload="false">
+          <el-button slot="trigger" size="small"><i class="el-icon-upload"></i>上传附件</el-button>
+        </el-upload> -->
+        <ul class="pjfile-list">
+          <li v-for="item in fileForm">{{item.attName}}
+            <a class="debtn" href="javascript:;" @click="downloadAttachment(item.detailId)">下载</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <button type="button" class="btn btn-primary" @click="saveServiceResult">确定</button>
+  </div>
+  <!-- 服务结果 end-->
+  <div class="pages pages2" v-if="showList == 0">
+    <div class="info-header clearfix">
+      <div class="handel fl text-left">
+        状态：{{form1.auditFlag==0?'未提交':form1.auditFlag==1?'服务中':form1.auditFlag==2?'服务完成':form1.auditFlag==3?'服务中止':form1.auditFlag==4?'审核中':form1.auditFlag==5?'退回':form1.auditFlag==6?'报名中':form1.auditFlag==7?'选取中':form1.auditFlag==8?'选取开始':form1.auditFlag==9?'已选取':form1.auditFlag==10?'无效':form1.auditFlag==11?'待选取':'已过时'}}
+      </div>
+      <div class="handel text-right fr">
+        <el-button @click="returnParentProjectList">返回列表</el-button>
+        <el-button type="primary" @click="putInvalid">置于无效项目</el-button>
+        <el-button type="primary" @click="applicatForSelect">申请重新选取</el-button>
+        <el-button type="primary" @click="showList = 1" v-if="form1.isUploadContract==0">上传合同</el-button>
+        <el-button type="primary" @click="showList = 1" v-else-if="form1.isUploadContract==1 && form1.isConfirm==1">修改合同
+        </el-button>
+        <el-button type="primary" @click="showList = 1"
+          v-else-if="form1.isUploadContract==1 && form1.isConfirm==0 && form1.isOwnerUpload==0">确认合同</el-button>
+        <!-- <el-button type="primary" @click="showList = 4" v-if="form1.isUploadResult==1" && form1.serviceResult.auditFlag==0">服务结果处理</el-button> -->
+        <el-button type="primary" @click="showList = 4">服务结果处理</el-button>
+      </div>
+    </div>
+    <h2>东莞市天然气高压管网工程沙田高中压调压站项目</h2>
+    <el-tabs v-model="activeName" @tab-click="" class="tabs">
+      <el-tab-pane label="采购要求" name="first">
+        <div class="info-item edit-item">
+          <h3 class="item-title" @click=""><i class="item-icon"></i>项目基本信息</h3>
+          <el-form ref="form" :model="form1" label-width="200px">
+            <el-form-item label="中介服务事项：">
+              {{form1.itemName}}
+            </el-form-item>
+            <el-form-item label="投资审批项目编码：">
+              {{form1.localCode}}
+            </el-form-item>
+            <el-form-item label="审批业务流水号：">
+              {{form1.applicantCode}}
+            </el-form-item>
+            <el-form-item label="项目联系人：">
+              {{form1.contacts}}
+            </el-form-item>
+            <el-form-item label="联系电话：">
+              {{form1.mobile}}
+            </el-form-item>
+            <el-form-item label="采购项目编码：">
+              {{form1.projPurchaseId}}
+            </el-form-item>
+            <el-form-item label="采购项目名称：">
+              {{form1.parentProjName}}
+            </el-form-item>
+            <el-form-item label="项目规模：">
+              {{form1.projScale}}
+            </el-form-item>
+            <el-form-item label="资金来源：">
+              {{form1.financialSource}}
+            </el-form-item>
+          </el-form>
+        </div>
+        <div class="info-item edit-item">
+          <h3 class="item-title" @click=""><i class="item-icon"></i>服务要求</h3>
+          <el-form ref="form" :model="form1" label-width="200px">
+            <el-form-item label="所需服务：">
+              {{form1.serviceName}}
+            </el-form-item>
+            <el-form-item label="服务时限说明：">
+              {{form1.serviceTimeExplain }}
+            </el-form-item>
+            <el-form-item label="服务内容：">
+              {{form1.serviceContent}}
+            </el-form-item>
+          </el-form>
+        </div>
+      </el-tab-pane>
+      <el-tab-pane label="相关意见" name="second">
+        <el-form ref="form" :model="form1" label-width="100px">
+          <el-form-item label="审核意见：">
+            {{form1.auditOpinion}}
+          </el-form-item>
+        </el-form>
+      </el-tab-pane>
+      <el-tab-pane label="选取过程" name="third">
+        <!-- <ul class="headInfo">
+            <li>
+              <span class="subTitle">竞价结束剩余时间：</span>
+              <span class="subDetail">1天14小时32分</span>
+            </li>
+            <li>
+              <span class="subTitle">当前最低价：</span>
+              <span class="subDetail">100000元</span>
+            </li>
+            <li>
+              <span class="subTitle">当前参与竞价中介：</span>
+              <span class="subDetail">6家</span>
+            </li>
+          </ul> -->
+        <el-form ref="form3" :model="form3" label-width="200px">
+          <el-form-item label="选取方式：">
+            {{form3.biddingType==null?"无":form3.biddingType==1?'随即中标':'自主选择'}}
+          </el-form-item>
+          <el-form-item label="参与中介结构：">
+            {{applicant}}
+          </el-form-item>
+          <el-form-item label="中标单位：">
+            {{form3.applicant}}
+          </el-form-item>
+          <el-form-item label="选取时间：">
+            {{dateFormat(form3.biddingTime)}}
+          </el-form-item>
+        </el-form>
+      </el-tab-pane>
+      <el-tab-pane label="服务过程" name="fourth">
+        <el-form ref="form4" :model="form4" label-width="150px">
+          <el-form-item label="所需服务：">
+            {{form4.serviceName}}
+          </el-form-item>
+          <el-form-item label="服务内容：">
+            {{form4.serviceContent}}
+          </el-form-item>
+          <el-form-item label="所需时限说明">
+            {{form4.serviceTimeExplain}}
+          </el-form-item>
+        </el-form>
+      </el-tab-pane>
+    </el-tabs>
+  </div>
+  <div class="pages pages3" v-if="showList == 3">
+    <div class="handel text-right fr">
+      <el-button @click="showList = 0">返回列表</el-button>
+    </div>
+    <h2>{{invalid?'置为无效项目':'申请重新选取'}}【东莞市天然气高压管网工程沙田高中压调压站项目】</h2>
+    <el-form ref="form5" :model="form5" label-width="150px">
+      <el-form-item label="项目业主：">
+        {{form5.applicant}}
+      </el-form-item>
+      <el-form-item label="提交时间：">
+        {{dateFormat(form5.publishTime)}}
+      </el-form-item>
+      <el-form-item label="项目名称：">
+        {{form5.projName}}
+      </el-form-item>
+      <el-form-item label="原因：">
+        <el-input type="textarea" v-model="form5.memo" style="width:714px"></el-input>
+      </el-form-item>
+    </el-form>
+    <div class="upload">
+      <el-upload class="upload-demo" ref="upload" action="" :multiple="true" :on-change="enclosureFileSelectChange"
+        :on-remove="enclosureFileSelectRemove" :auto-upload="false" :file-list="fileList2" :auto-upload="false">
+        <el-button slot="trigger" size="small"><i class="el-icon-upload"></i>上传附件</el-button>
+      </el-upload>
+    </div>
+    <button type="button" class="btn btn-primary" @click="applyProjPurchaseInvalid" style="margin: 24px 0 0 45%;
+">保存</button>
+  </div>
+</div>
+
+<script>
+  var moduleDetail = new Vue({
+    el: '#detailAndContract',
+    mixins: [mixins],
+    data: function () {
+      return {
+        // 待处理项目
+        // 合同服务期限
+        value: '',
+        // 页面切换控制
+        showList: 0,
+        //确认合同表单
+        form: {},
+        //详情信息
+        form1: {},
+        //服务评价
+        form2: {},
+        //选取过程
+        form3: {},
+        //服务过程
+        form4: {},
+        //置为无效项目
+        form5: {},
+        //附件列表
+        fileForm:[],
+        //待处理列表
+        pendingProjectList: [{}],
+        // 待处理项目列表
+        pendingProject: [],
+        // 所有的项目查询参数
+        pendingProjectCheckData: {
+          pageNum: 1,
+          pageSize: 10,
+          unitInfoId: ''
+        },
+        //所有的项目总数
+        pendingProjectTotal: 0,
+        //所有的项目列表中的中介事项下拉框
+        pendingProjectItemOptions: [{
+          label: '1',
+          value: '1'
+        }],
+        //所有的项目列表中的项目状态下拉框
+        pendingProjectStatusOptions: [{
+          label: '1',
+          value: '1'
+        }],
+        // 当前账号信息
+        unitInfo: {},
+        // 上传文列表
+        fileList: [],
+        fileList2: [],
+        // tab位置
+        activeName: 'first',
+        //选取过程表格
+        selectProcess: [],
+        // 参与中介结构
+        applicant: '',
+        // 是否置于无效项目
+        invalid: true,
+        // 获取信息集合
+        ids:{},
+        // 服务结果相关
+        // 项目详情
+        curProjectDetail: {},
+        // 服务结果form表单
+        serviceForm: {
+          uploadTime: '', //登记时间，
+          auditFlag: '', //处理意见
+          endTime: '', //结束时间
+          memo: '', //备注
+          projPurchaseId: "c36df244-a29e-4d50-b792-69709360424f",
+          serviceResultId: "88916ac1-4920-4593-b2f1-dd4fe38cf773",
+          unitBiddingId: "6e07c065-e9f2-40ba-ad82-d08fe8c51713",
+          linkmanInfoId:''
+        },
+        //上传合同成功后返回的合同id
+        contactId:'',
+        isProjectServiceDetail:false,
+        //页面是否有数据
+        pageData:false
+      }
+    },
+    created: function () {
+      this.unitInfo = JSON.parse(localStorage.getItem('loginInfo'))
+      this.getPublishingInfoByProjPurchaseId();
+      this.getNewContract();
+    },
+    mounted: function () {
+      this.init();
+    },
+    methods: {
+      init: function () {
+        console.log('我是详情模块')
+      },
+
+      //获取项目信息
+      getPublishingInfoByProjPurchaseId: function () {
+        var _this = this;
+        // this.loading=true;
+        request('', {
+          url: ctx + 'supermarket/purchase/getPublishingInfoByProjPurchaseId',
+          type: 'get',
+          data: {
+            unitInfoId: this.unitInfo.unitInfos[0].unitInfoId,
+            projPurchaseId: module1.curShowProjectDetailRow.projPurchaseId,
+            // projPurchaseId: 'c36df244-a29e-4d50-b792-69709360424f',
+          }
+        }, function (data) {
+          if(!data.content) return this.pageData=false;
+          _this.form1 = data.content;
+          _this.form4 = data.content;
+          _this.form5 = data.content;
+          // 当前项目详情赋值并初始化服务结果的form表单
+          _this.curProjectDetail = JSON.parse(JSON.stringify(data.content));
+          _this.serviceFormInit(JSON.parse(JSON.stringify(data.content)));
+          _this.fileForm = data.content.serviceResult.bscAttForms;
+
+          for (var i = 0; i < data.content.unitBiddingList.length; i++) {
+            _this.applicant = _this.applicant + data.content.unitBiddingList[i].applicant;
+            if (data.content.unitBiddingList.isWonBid == 1) {
+              _this.form3 = data.content.unitBiddingList[i];
+            }
+          }
+        }, function (msg) {
+          _this.$message({
+            message: '加载失败',
+            type: 'error'
+          });
+          _this.loading = false;
+        });
+      },
+      downloadAttachment:function(detailId){
+        window.open(ctx+"supermarket/purchase/downloadAttachment/"+detailId);
+      },
+      // 置位无效项目
+      putInvalid:function(){
+        if(!pageData) return;
+        showList = 3;
+        invalid=true;
+      },
+      // 申请重新选取
+      applicatForSelect:function(){
+        if(!pageData) return;
+        showList = 3;
+        invalid=false;
+      },
+      //保存置为无效
+      applyProjPurchaseInvalid: function (item) {
+        var _this = this;
+        // this.loading=true;
+        if (this.invalid) {
+          var url = "supermarket/purchase/applyProjPurchaseInvalid";
+        } else {
+          var url = 'supermarket/purchase/reselectProjPurchase'
+        }
+        var param = {
+          projPurchaseId: this.form5.projPurchaseId,
+          memo: this.form5.memo
+        }
+        var formData = new FormData();
+        for (var k in param) {
+          formData.append(k, param[k])
+        }
+
+        this.fileList2.forEach(function (item) {
+          formData.append('file', item)
+        })
+        // this.fileList2.forEach(function (item) {
+        //     param.append('file', item)
+        // })
+        $.ajax({
+          url: ctx + url,
+          type: 'post',
+          data: formData,
+          contentType: false,
+          processData: false,
+          success: function (res) {
+            if (res.sucess) {
+              ts.$message({
+                message: '保存成功',
+                type: 'success'
+              });
+            }
+            ts.form5.memo = '';
+            ts.fileList2 = [];
+          },
+          error: function (msg) {
+            ts.mloading = false;
+            ts.$message({
+              message: '保存失败',
+              type: 'error'
+            });
+          },
+        })
+      },
+      // 格式化时间
+      dateFormat: function (val) {
+        var daterc = val;
+        if (daterc != null) {
+          var dateMat = new Date(parseInt(daterc));
+          return formatDate(dateMat, 'yyyy-MM-dd hh:mm:ss')
+        }
+      },
+      // 格式化时间
+      dateFormat2: function (val) {
+        var daterc = val;
+        if (daterc != null) {
+          var dateMat = new Date(parseInt(daterc));
+          return formatDate(dateMat, 'yyyy-MM-dd')
+        }
+      },
+      // 附件相关
+      // 附件上传--before
+      enclosureBeforeUpload: function (file) {
+        var ts = this,
+          file = file;
+        var fileMaxSize = 1024 * 1024 * 10; // 10MB为最大限制
+        // 文件类型
+        // 检查文件类型
+        var index = file.name.lastIndexOf(".");
+        var ext = file.name.substr(index + 1);
+        if (['exe', 'sh', 'bat', 'com', 'dll'].indexOf(ext) !== -1) {
+          ts.$message({
+            message: '请上传非.exe,.sh,.bat,.com,.dll文件',
+          });
+          return false;
+        };
+        // 检查文件大小
+        if (file.size > fileMaxSize) {
+          ts.$message({
+            message: '请上传大小在10M以内的文件',
+          });
+          return false;
+        };
+        return true;
+      },
+      // 附件上传文件列表变动
+      enclosureFileSelectChange: function (file, fileList) {
+        console.log(fileList)
+        var ts = this;
+        ts.fileList2 = [];
+        // debugger
+        fileList.forEach(function (item) {
+          ts.fileList2.push(item.raw)
+        })
+      },
+      // 附件上传文件列表移除某一项
+      enclosureFileSelectRemove: function (file, fileList) {
+        console.log(fileList)
+        var ts = this;
+        ts.fileList2 = [];
+        fileList.forEach(function (item) {
+          ts.fileList2.push(item.raw)
+        })
+      },
+      // 附件上传文件列表变动
+      enclosureFileSelectChange2: function (file, fileList) {
+        console.log(fileList)
+        var ts = this;
+        ts.fileList = [];
+        // debugger
+        fileList.forEach(function (item) {
+          ts.fileList.push(item.raw)
+        })
+      },
+      // 附件上传文件列表移除某一项
+      enclosureFileSelectRemove2: function (file, fileList) {
+        console.log(fileList)
+        var ts = this;
+        ts.fileList = [];
+        fileList.forEach(function (item) {
+          ts.fileList.push(item.raw)
+        })
+      },
+      handleSizeChange: function (val) {
+        this.pageSize = val;
+        this.listPendingProjPurchase();
+      },
+      handleCurrentChange: function (val) {
+        this.currentPage = val;
+        this.listPendingProjPurchase();
+      },
+      // 获取所需信息
+      getNewContract:function(){
+        var _this= this;
+        request('',{url:ctx + 'supermarket/contract/getNewContract/'+module1.curShowProjectDetailRow.projPurchaseId,type: 'post',
+            data: {}
+          },function (data) {
+            _this.ids = data.content;
+          }, function(msg){
+             _this.$message({
+              message: '加载失败',
+              type: 'error'
+            });
+            _this.loading=false;
+        });
+      },
+      
+      // 确认合同并保存
+      sureAndSaveAgree: function () {
+        var _this =this;
+        var param = {
+              contractName :this.form.contractName,
+              contractCode :this.form.contractCode,
+              price :this.form.price,
+              serviceStartTime :this.form.serviceStartTime,
+              serviceEndTime :this.form.serviceEndTime,
+              serviceContent :this.form.serviceContent,
+              memo :this.form.memo,
+              signTime : this.form.signTime,
+              serviceUnitInfoId: this.ids.serviceUnitInfoId,
+              ownerUnitInfoId:this.ids.ownerUnitInfoId,
+              unitBiddingId:this.ids.unitBiddingId,
+              isOwnerUpload:this.ids.isOwnerUpload ? this.ids.isOwnerUpload : '1',
+              projPurchaseId:this.ids.projPurchaseId
+        }
+        var formData = new FormData();
+        for (var k in param) {
+          formData.append(k, param[k])
+        }
+
+        this.fileList.forEach(function (item) {
+          formData.append('file', item)
+        })
+        $.ajax({
+          url: ctx + 'supermarket/contract/postContract',
+          type: 'post',
+          data: formData,
+          contentType: false,
+          processData: false,
+          success: function (res) {
+            if (res.sucess) {
+              _this.$message({
+                message: '保存成功',
+                type: 'success'
+              });
+            }
+            _this.contactId = res.message;
+            _this.form = new Object;
+            _this.fileList = [];
+          },
+          error: function (msg) {
+            _this.mloading = false;
+            _this.$message({
+              message: '保存失败',
+              type: 'error'
+            });
+          },
+        })
+      },
+
+      // 服务结果相关
+      // 初始化服务结果form表单
+      serviceFormInit: function (data) {
+        var ts = this;
+        // ts.serviceForm = data.serviceResult;
+        for(var k in ts.serviceForm){
+          if(data.serviceResult && data.serviceResult[k] !==null){
+            ts.serviceForm[k] = data.serviceResult[k];
+          }else{
+            ts.serviceForm[k] = "";
+          }
+        }
+      },
+      // 服务结果保存
+      saveServiceResult: function () {
+        var _this = this;
+         request('',{url:ctx + 'supermarket/result/dealServiceResult',type: 'post',
+            data: {
+             uploadTime : this.dateFormat(this.serviceForm.uploadTime),
+             endTime : this.dateFormat2(this.serviceForm.endTime),
+             auditFlag : this.serviceForm.auditFlag,
+             projPurchaseId : this.serviceForm.projPurchaseId,
+             serviceResultId : this.serviceForm.serviceResultId,
+             unitBiddingId : this.serviceForm.unitBiddingId,
+             linkmanInfoId : this.serviceForm.linkmanInfoId
+            }
+          },function (data) {
+            _this.$message({
+              message: '保存成功',
+              type: 'success'
+            });
+            _this.loading = false;
+          }, function(msg){
+             _this.$message({
+              message: '加载失败',
+              type: 'error'
+            });
+             _this.serviceForm = new Object;
+            _this.loading=false;
+          });
+      },
+
+      // 与父组件相关
+      // 返回到组件的项目列表
+      returnParentProjectList: function () {
+        module1.returnProjectList(); //module是父组件的vue实例
+      },
+    },
+
+  })
+</script>

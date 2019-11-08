@@ -1,0 +1,1061 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaParInMapper">
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns">
+        IN_ID  inId,
+        STAGE_ID  stageId,
+        IS_OWNER  isOwner,
+        IS_STATE_IN  isStateIn,
+        PAR_STATE_ID  parStateId,
+        FILE_TYPE  fileType,
+        MAT_ID  matId,
+        CERT_ID  certId,
+        CREATER  creater,
+        CREATE_TIME  createTime,
+        MODIFIER  modifier,
+        MODIFY_TIME  modifyTime,
+        IS_DELETED  isDeleted,
+        SORT_NO  sortNo,
+        IS_COMMON  isCommon,
+        ROOT_ORG_ID rootOrgId
+    </sql>
+
+    <sql id="alias_column">
+        ${alias}.IN_ID  inId,
+        ${alias}.STAGE_ID  stageId,
+        ${alias}.IS_OWNER  isOwner,
+        ${alias}.IS_STATE_IN  isStateIn,
+        ${alias}.PAR_STATE_ID  parStateId,
+        ${alias}.FILE_TYPE  fileType,
+        ${alias}.MAT_ID  matId,
+        ${alias}.CERT_ID  certId,
+        ${alias}.CREATER  creater,
+        ${alias}.CREATE_TIME  createTime,
+        ${alias}.MODIFIER  modifier,
+        ${alias}.MODIFY_TIME  modifyTime,
+        ${alias}.IS_DELETED  isDeleted,
+        ${alias}.SORT_NO  sortNo,
+        ${alias}.IS_COMMON  isCommon,
+        ${alias}.ROOT_ORG_ID rootOrgId
+    </sql>
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaParInById" resultType="AeaParIn">
+        select
+        <include refid="allColumns"/>
+        from AEA_PAR_IN
+        where IN_ID = #{id}
+        AND IS_DELETED = '0'
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaParIn" resultType="AeaParIn">
+        select
+        <include refid="allColumns"/>
+        from AEA_PAR_IN
+        <where>
+            <if test="inId != null">
+                AND IN_ID = #{inId}
+            </if>
+            <if test="stageId != null">
+                AND STAGE_ID = #{stageId}
+            </if>
+            <if test="isOwner != null">
+                AND IS_OWNER = #{isOwner}
+            </if>
+            <if test="isStateIn != null">
+                AND IS_STATE_IN = #{isStateIn}
+            </if>
+            <if test="parStateId != null">
+                AND PAR_STATE_ID = #{parStateId}
+            </if>
+            <if test="fileType != null">
+                AND FILE_TYPE = #{fileType}
+            </if>
+            <if test="matId != null">
+                AND MAT_ID = #{matId}
+            </if>
+            <if test="certId != null">
+                AND CERT_ID = #{certId}
+            </if>
+            <if test="creater != null">
+                AND CREATER = #{creater}
+            </if>
+            <if test="createTime != null">
+                AND CREATE_TIME = #{createTime}
+            </if>
+            <if test="modifier != null">
+                AND MODIFIER = #{modifier}
+            </if>
+            <if test="modifyTime != null">
+                AND MODIFY_TIME = #{modifyTime}
+            </if>
+            <if test="isDeleted != null">
+                AND IS_DELETED = #{isDeleted}
+            </if>
+            <if test="sortNo != null">
+                AND SORT_NO = #{sortNo}
+            </if>
+            <if test="isCommon != null">
+                AND IS_COMMON = #{isCommon}
+            </if>
+            <if test="rootOrgId != null">
+                AND ROOT_ORG_ID = #{rootOrgId}
+            </if>
+            AND IS_DELETED = '0'
+        </where>
+    </select>
+
+    <select id="isCheckParInBelong2Item" resultType="java.lang.Integer">
+      SELECT
+        COUNT(*)
+      FROM
+	    aea_par_stage_item_in apsii,
+	    aea_par_stage_item apsi
+      WHERE
+	        apsi.STAGE_ITEM_ID = apsii.STAGE_ITEM_ID
+ 	    AND apsi.STAGE_ID = #{stageId}
+ 	    AND apsi.ITEM_VER_ID = #{itemVerId}
+	    AND apsii.IN_ID = #{inId}
+      GROUP BY
+	    apsii.IN_ID
+    </select>
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaParIn" parameterType="AeaParIn">
+        insert into AEA_PAR_IN (
+            IN_ID,
+            STAGE_ID,
+            IS_OWNER,
+            IS_STATE_IN,
+            PAR_STATE_ID,
+            FILE_TYPE,
+            MAT_ID,
+            CERT_ID,
+            CREATER,
+            CREATE_TIME,
+            MODIFIER,
+            MODIFY_TIME,
+            IS_DELETED,
+            SORT_NO,
+            IS_COMMON,
+            ROOT_ORG_ID
+          )
+        values (
+            #{inId},
+            #{stageId},
+            #{isOwner},
+            #{isStateIn},
+            #{parStateId},
+            #{fileType},
+            #{matId},
+            #{certId},
+            #{creater},
+            #{createTime},
+            #{modifier},
+            #{modifyTime},
+            #{isDeleted},
+            #{sortNo},
+            #{isCommon},
+            #{rootOrgId}
+        )
+    </insert>
+    <!--6 修改实体对象 -->
+    <update id="updateAeaParIn" parameterType="AeaParIn">
+        update AEA_PAR_IN
+        <set>
+            <if test="inId != null">
+                IN_ID = #{inId},
+            </if>
+            <if test="stageId != null">
+                STAGE_ID = #{stageId},
+            </if>
+            <if test="isOwner != null">
+                IS_OWNER = #{isOwner},
+            </if>
+            <if test="isStateIn != null">
+                IS_STATE_IN = #{isStateIn},
+            </if>
+            <if test="parStateId != null">
+                PAR_STATE_ID = #{parStateId},
+            </if>
+            <if test="fileType != null">
+                FILE_TYPE = #{fileType},
+            </if>
+            <if test="matId != null">
+                MAT_ID = #{matId},
+            </if>
+            <if test="certId != null">
+                CERT_ID = #{certId},
+            </if>
+            <if test="creater != null">
+                CREATER = #{creater},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime},
+            </if>
+            <if test="modifier != null">
+                MODIFIER = #{modifier},
+            </if>
+            <if test="modifyTime != null">
+                MODIFY_TIME = #{modifyTime},
+            </if>
+            <if test="isDeleted != null">
+                IS_DELETED = #{isDeleted},
+            </if>
+            <if test="sortNo != null">
+                SORT_NO = #{sortNo},
+            </if>
+            <if test="isCommon != null">
+                IS_COMMON = #{isCommon},
+            </if>
+            <if test="rootOrgId != null">
+                ROOT_ORG_ID = #{rootOrgId},
+            </if>
+        </set>
+        where IN_ID = #{inId}
+    </update>
+
+    <!--7 删除实体对象,根据主键ID -->
+    <update id="deleteAeaParIn">
+        update AEA_PAR_IN
+        <set>
+            IS_DELETED = '1'
+        </set>
+        where IN_ID = #{id}
+    </update>
+
+    <!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaParIn" id="AeaParInMap">
+        <id property="inId" column="IN_ID"/>
+        <result property="stageId" column="STAGE_ID"/>
+        <result property="isOwner" column="IS_OWNER"/>
+        <result property="isStateIn" column="IS_STATE_IN"/>
+        <result property="parStateId" column="PAR_STATE_ID"/>
+        <result property="fileType" column="FILE_TYPE"/>
+        <result property="matId" column="MAT_ID"/>
+        <result property="certId" column="CERT_ID"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="modifier" column="MODIFIER"/>
+        <result property="modifyTime" column="MODIFY_TIME"/>
+        <result property="isDeleted" column="IS_DELETED"/>
+        <result property="sortNo" column="SORT_NO"/>
+        <result property="isCommon" column="IS_COMMON"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+    </resultMap>
+
+    <select id="listInStateStageMat" resultType="AeaParIn">
+        select
+        parIn.IN_ID inId,
+        parIn.STAGE_ID stageId,
+        parIn.IS_OWNER isOwner,
+        parIn.IS_STATE_IN isStateIn,
+        parIn.PAR_STATE_ID parStateId,
+        parIn.FILE_TYPE fileType,
+        parIn.MAT_ID matId,
+        parIn.CERT_ID certId,
+        parIn.CREATER creater,
+        parIn.CREATE_TIME createTime,
+        parIn.MODIFIER modifier,
+        parIn.MODIFY_TIME modifyTime,
+        parIn.IS_DELETED isDeleted,
+        mat.MAT_NAME aeaMatCertName,
+        mat.MAT_CODE aeaMatCertCode,
+        mat.MAT_MEMO aeaMatCertMemo,
+        mat.IS_GLOBAL_SHARE isGlobalShare,
+        mat.IS_COMMON isCommon
+        from AEA_PAR_IN parIn, AEA_ITEM_MAT mat
+        <where>
+            and parIn.MAT_ID = mat.MAT_ID
+            and parIn.ROOT_ORG_ID = mat.ROOT_ORG_ID
+            and parIn.ROOT_ORG_ID = #{rootOrgId}
+            and parIn.STAGE_ID = #{stageId}
+            and parIn.IS_DELETED = '0'
+            and mat.IS_GLOBAL_SHARE = '1'
+            and parIn.FILE_TYPE = 'mat'
+            and mat.IS_DELETED = '0'
+            and ( parIn.PAR_STATE_ID = #{parStateId} or parIn.PAR_STATE_ID is null )
+            and mat.IS_COMMON = #{isCommon}
+            and parIn.IS_STATE_IN = '1'
+            <if test="keyword!='' and keyword!=null ">
+                and (
+                mat.MAT_NAME like concat('%',concat(#{keyword},'%')) or
+                mat.MAT_CODE like concat('%',concat(#{keyword},'%'))
+                )
+            </if>
+        </where>
+        order by parIn.CREATE_TIME desc
+    </select>
+
+
+    <select id="getGlobalMatListByStateId" resultType="java.lang.String">
+        select distinct parIn.MAT_ID matId
+        from AEA_PAR_IN parIn, AEA_ITEM_MAT mat
+        <where>
+            and parIn.MAT_ID = mat.MAT_ID
+            and parIn.ROOT_ORG_ID = mat.ROOT_ORG_ID
+            and parIn.ROOT_ORG_ID = #{rootOrgId}
+            and parIn.IS_OWNER = '1'
+            and parIn.FILE_TYPE = 'mat'
+            and parIn.IS_STATE_IN = '1'
+            and parIn.PAR_STATE_ID = #{parStateId}
+            and parIn.IS_DELETED='0'
+            and mat.IS_GLOBAL_SHARE = '1'
+            and mat.IS_ACTIVE = '1'
+            and mat.IS_DELETED = '0'
+        </where>
+    </select>
+
+    <select id="listCertListByStageId" resultType="java.lang.String">
+        select distinct parIn.CERT_ID certId
+        from AEA_PAR_IN parIn, AEA_CERT cert
+        <where>
+            and cert.CERT_ID = parIn.CERT_ID
+            and parIn.ROOT_ORG_ID = cert.ROOT_ORG_ID
+            and parIn.ROOT_ORG_ID = #{rootOrgId}
+            and parIn.STAGE_ID = #{stageId}
+            and parIn.FILE_TYPE = 'cert'
+            and parIn.IS_DELETED = '0'
+            and cert.IS_DELETED = '0'
+        </where>
+    </select>
+
+    <select id="lisCertAndMatByStageId" resultType="AeaParIn">
+        select
+        parIn.IN_ID inId,
+        parIn.STAGE_ID stageId,
+        parIn.IS_OWNER isOwner,
+        parIn.IS_STATE_IN isStateIn,
+        parIn.PAR_STATE_ID parStateId,
+        parIn.FILE_TYPE fileType,
+        parIn.MAT_ID matId,
+        parIn.CERT_ID certId,
+        parIn.CREATER creater,
+        parIn.CREATE_TIME createTime,
+        parIn.MODIFIER modifier,
+        parIn.MODIFY_TIME modifyTime,
+        parIn.IS_DELETED isDeleted,
+        (case when parIn.FILE_TYPE='mat' then mat.IS_COMMON else '0' end) isCommon,
+        (case when parIn.FILE_TYPE='mat' then mat.MAT_NAME else cert.CERT_NAME end) aeaMatCertName,
+        (case when parIn.FILE_TYPE='mat' then mat.MAT_MEMO else cert.CERT_MEMO end) aeaMatCertMemo,
+        (case when parIn.FILE_TYPE='mat' then mat.MAT_CODE else cert.CERT_CODE end) aeaMatCertCode,
+        (case when parIn.FILE_TYPE='mat' then mat.IS_GLOBAL_SHARE else '0' end) isGlobalShare
+        from AEA_PAR_IN parIn
+        left join AEA_ITEM_MAT mat on ( mat.MAT_ID = parIn.MAT_ID and parIn.ROOT_ORG_ID = mat.ROOT_ORG_ID )
+        left join AEA_CERT cert on ( cert.CERT_ID = parIn.CERT_ID and parIn.ROOT_ORG_ID = cert.ROOT_ORG_ID )
+        <where>
+            and parIn.ROOT_ORG_ID = #{rootOrgId}
+            and parIn.STAGE_ID = #{stageId}
+            and (parIn.FILE_TYPE = 'mat' or parIn.FILE_TYPE= 'cert' )
+            and parIn.IS_DELETED = '0'
+            and (mat.IS_DELETED = '0' or cert.IS_DELETED = '0')
+            <if test="keyword!='' and keyword!=null ">
+                and (
+                mat.MAT_NAME like concat('%',concat(#{keyword},'%')) or
+                mat.MAT_CODE like concat('%',concat(#{keyword},'%')) or
+                cert.CERT_CODE like concat('%',concat(#{keyword},'%')) or
+                cert.CERT_NAME like concat('%',concat(#{keyword},'%'))
+                )
+            </if>
+        </where>
+        order by parIn.CREATE_TIME desc
+    </select>
+
+    <select id="listNoStateInCertAndMatByStageId" resultType="AeaParIn">
+        select
+        parIn.IN_ID inId,
+        parIn.STAGE_ID stageId,
+        parIn.IS_OWNER isOwner,
+        parIn.IS_STATE_IN isStateIn,
+        parIn.PAR_STATE_ID parStateId,
+        parIn.FILE_TYPE fileType,
+        parIn.MAT_ID matId,
+        parIn.CERT_ID certId,
+        parIn.CREATER creater,
+        parIn.CREATE_TIME createTime,
+        parIn.MODIFIER modifier,
+        parIn.MODIFY_TIME modifyTime,
+        parIn.IS_DELETED isDeleted,
+        (case when parIn.FILE_TYPE='mat' then mat.IS_COMMON else '0' end) isCommon,
+        (case when parIn.FILE_TYPE='mat' then mat.MAT_NAME else cert.CERT_NAME end) aeaMatCertName,
+        (case when parIn.FILE_TYPE='mat' then mat.MAT_MEMO else cert.CERT_MEMO end) aeaMatCertMemo,
+        (case when parIn.FILE_TYPE='mat' then mat.MAT_CODE else cert.CERT_CODE end) aeaMatCertCode,
+        (case when parIn.FILE_TYPE='mat' then mat.IS_GLOBAL_SHARE else '0' end) isGlobalShare
+        from AEA_PAR_IN parIn
+        left join AEA_ITEM_MAT mat on ( mat.MAT_ID = parIn.MAT_ID and parIn.ROOT_ORG_ID = mat.ROOT_ORG_ID )
+        left join AEA_CERT cert on ( cert.CERT_ID = parIn.CERT_ID and parIn.ROOT_ORG_ID = cert.ROOT_ORG_ID )
+        <where>
+            and parIn.ROOT_ORG_ID = #{rootOrgId}
+            and parIn.STAGE_ID = #{stageId}
+            and parIn.IS_STATE_IN = '0'
+            and (parIn.FILE_TYPE = 'mat' or parIn.FILE_TYPE= 'cert' )
+            and parIn.IS_DELETED = '0'
+            and (mat.IS_DELETED = '0' or cert.IS_DELETED = '0')
+            <if test="keyword!='' and keyword!=null ">
+                and (
+                mat.MAT_NAME like concat('%',concat(#{keyword},'%')) or
+                mat.MAT_CODE like concat('%',concat(#{keyword},'%')) or
+                cert.CERT_CODE like concat('%',concat(#{keyword},'%')) or
+                cert.CERT_NAME like concat('%',concat(#{keyword},'%'))
+                )
+            </if>
+        </where>
+        order by parIn.CREATE_TIME desc
+    </select>
+
+    <select id="listNoStateInMatByStageId" resultType="AeaParIn">
+        select
+        parIn.IN_ID inId,
+        parIn.STAGE_ID stageId,
+        parIn.IS_OWNER isOwner,
+        parIn.IS_STATE_IN isStateIn,
+        parIn.PAR_STATE_ID parStateId,
+        parIn.FILE_TYPE fileType,
+        parIn.MAT_ID matId,
+        parIn.CERT_ID certId,
+        parIn.CREATER creater,
+        parIn.CREATE_TIME createTime,
+        parIn.MODIFIER modifier,
+        parIn.MODIFY_TIME modifyTime,
+        parIn.IS_DELETED isDeleted,
+        mat.MAT_NAME aeaMatCertName,
+        mat.MAT_CODE aeaMatCertCode,
+        mat.MAT_MEMO aeaMatCertMemo,
+        mat.IS_GLOBAL_SHARE isGlobalShare,
+        mat.IS_COMMON isCommon
+        from AEA_PAR_IN parIn, AEA_ITEM_MAT mat
+        <where>
+            and parIn.MAT_ID = mat.MAT_ID
+            and parIn.ROOT_ORG_ID = mat.ROOT_ORG_ID
+            and parIn.ROOT_ORG_ID = #{rootOrgId}
+            and parIn.STAGE_ID = #{stageId}
+            and parIn.IS_STATE_IN = '0'
+            and parIn.FILE_TYPE = 'mat'
+            and parIn.IS_DELETED = '0'
+            and mat.IS_DELETED = '0'
+            <if test="keyword!='' and keyword!=null ">
+                and (
+                mat.MAT_NAME like concat('%',concat(#{keyword},'%')) or
+                mat.MAT_CODE like concat('%',concat(#{keyword},'%'))
+                )
+            </if>
+        </where>
+        order by parIn.CREATE_TIME desc
+    </select>
+
+    <select id="listInStateMatByStageId" resultType="AeaParIn">
+        select
+        parIn.IN_ID inId,
+        parIn.STAGE_ID stageId,
+        parIn.IS_OWNER isOwner,
+        parIn.IS_STATE_IN isStateIn,
+        parIn.PAR_STATE_ID parStateId,
+        parIn.FILE_TYPE fileType,
+        parIn.MAT_ID matId,
+        parIn.CERT_ID certId,
+        parIn.CREATER creater,
+        parIn.CREATE_TIME createTime,
+        parIn.MODIFIER modifier,
+        parIn.MODIFY_TIME modifyTime,
+        parIn.IS_DELETED isDeleted,
+        mat.MAT_NAME aeaMatCertName,
+        mat.MAT_CODE aeaMatCertCode,
+        mat.MAT_MEMO aeaMatCertMemo,
+        mat.IS_GLOBAL_SHARE isGlobalShare
+        from AEA_PAR_IN parIn, AEA_ITEM_MAT mat
+        <where>
+            and parIn.MAT_ID = mat.MAT_ID
+            and parIn.ROOT_ORG_ID = mat.ROOT_ORG_ID
+            and parIn.ROOT_ORG_ID = #{rootOrgId}
+            and parIn.STAGE_ID = #{stageId}
+            and parIn.IS_STATE_IN = '1'
+            and parIn.IS_DELETED = '0'
+            and parIn.FILE_TYPE = 'mat'
+            and mat.IS_DELETED = '0'
+            <if test="keyword!='' and keyword!=null ">
+                and (
+                mat.MAT_NAME like concat('%',concat(#{keyword},'%')) or
+                mat.MAT_CODE like concat('%',concat(#{keyword},'%'))
+                )
+            </if>
+        </where>
+        order by parIn.CREATE_TIME desc
+    </select>
+
+    <select id="listInStateCertByStageId" resultType="AeaParIn">
+        select
+        parIn.IN_ID inId,
+        parIn.STAGE_ID stageId,
+        parIn.IS_OWNER isOwner,
+        parIn.IS_STATE_IN isStateIn,
+        parIn.PAR_STATE_ID parStateId,
+        parIn.FILE_TYPE fileType,
+        parIn.MAT_ID matId,
+        parIn.CERT_ID certId,
+        parIn.CREATER creater,
+        parIn.CREATE_TIME createTime,
+        parIn.MODIFIER modifier,
+        parIn.MODIFY_TIME modifyTime,
+        parIn.IS_DELETED isDeleted,
+        cert.CERT_NAME aeaMatCertName,
+        cert.CERT_CODE aeaMatCertCode,
+        cert.CERT_MEMO aeaMatCertMemo
+        from AEA_PAR_IN parIn, AEA_CERT cert
+        <where>
+            and cert.CERT_ID = parIn.CERT_ID
+            and parIn.ROOT_ORG_ID = cert.ROOT_ORG_ID
+            and parIn.ROOT_ORG_ID = #{rootOrgId}
+            and parIn.STAGE_ID = #{stageId}
+            and parIn.IS_STATE_IN = '1'
+            and parIn.FILE_TYPE = 'cert'
+            and parIn.IS_DELETED = '0'
+            and cert.IS_DELETED = '0'
+            <if test="keyword!='' and keyword!=null ">
+                and (
+                cert.CERT_NAME like concat('%',concat(#{keyword},'%')) or
+                cert.CERT_CODE like concat('%',concat(#{keyword},'%'))
+                )
+            </if>
+        </where>
+        order by parIn.CREATE_TIME desc
+    </select>
+
+    <select id="listStageMat" resultType="AeaParIn">
+        select
+        parIn.IN_ID inId,
+        parIn.STAGE_ID stageId,
+        parIn.IS_OWNER isOwner,
+        parIn.IS_STATE_IN isStateIn,
+        parIn.PAR_STATE_ID parStateId,
+        parIn.FILE_TYPE fileType,
+        parIn.MAT_ID matId,
+        parIn.CERT_ID certId,
+        parIn.CREATER creater,
+        parIn.CREATE_TIME createTime,
+        parIn.MODIFIER modifier,
+        parIn.MODIFY_TIME modifyTime,
+        parIn.IS_DELETED isDeleted,
+        mat.MAT_NAME aeaMatCertName,
+        mat.MAT_CODE aeaMatCertCode,
+        mat.MAT_MEMO aeaMatCertMemo,
+        mat.IS_GLOBAL_SHARE isGlobalShare,
+        mat.IS_COMMON isCommon
+        from AEA_PAR_IN parIn, AEA_ITEM_MAT mat
+        <where>
+            and parIn.MAT_ID = mat.MAT_ID
+            and parIn.ROOT_ORG_ID = mat.ROOT_ORG_ID
+            and parIn.ROOT_ORG_ID = #{rootOrgId}
+            and parIn.STAGE_ID = #{stageId}
+            and parIn.IS_DELETED = '0'
+            and mat.IS_GLOBAL_SHARE = '1'
+            and parIn.FILE_TYPE = 'mat'
+            and mat.IS_DELETED = '0'
+            and mat.IS_COMMON = #{isCommon}
+            and parIn.IS_STATE_IN = #{isStateIn}
+            <if test="parStateId!=null and parStateId!='' ">
+                and ( parIn.PAR_STATE_ID = #{parStateId} or parIn.PAR_STATE_ID is null )
+            </if>
+            <if test="keyword!='' and keyword!=null ">
+                and (
+                mat.MAT_NAME like concat('%',concat(#{keyword},'%')) or
+                mat.MAT_CODE like concat('%',concat(#{keyword},'%'))
+                )
+            </if>
+        </where>
+        order by parIn.CREATE_TIME desc
+    </select>
+
+    <select id="listStageInMatCert" resultType="AeaParIn">
+        select
+        a1.inId,
+        a1.stageId,
+        a1.isOwner,
+        a1.fileType,
+        a1.matId,
+        a1.sortNo,
+        a1.certId,
+        a1.aeaMatCertName,
+        a1.aeaMatCertCode
+        from(
+        select
+        parIn.IN_ID inId,
+        parIn.STAGE_ID stageId,
+        parIn.IS_OWNER isOwner,
+        parIn.IS_STATE_IN isStateIn,
+        parIn.PAR_STATE_ID parStateId,
+        parIn.FILE_TYPE fileType,
+        parIn.MAT_ID matId,
+        parIn.SORT_NO sortNo,
+        parIn.CERT_ID certId,
+        parIn.CREATER creater,
+        parIn.CREATE_TIME createTime,
+        parIn.MODIFIER modifier,
+        parIn.MODIFY_TIME modifyTime,
+        parIn.IS_DELETED isDeleted,
+        mat.MAT_NAME as aeaMatCertName,
+        mat.MAT_CODE as aeaMatCertCode
+        from AEA_PAR_IN parIn, AEA_ITEM_MAT mat
+        <where>
+            and parIn.MAT_ID = mat.MAT_ID
+            and parIn.ROOT_ORG_ID = mat.ROOT_ORG_ID
+            and parIn.ROOT_ORG_ID = #{rootOrgId}
+            and parIn.FILE_TYPE = 'mat'
+            and parIn.IS_DELETED = '0'
+            and parIn.STAGE_ID = #{stageId}
+            and mat.IS_DELETED = '0'
+            <if test="isStateIn != null and isStateIn!= '' ">
+                and parIn.IS_STATE_IN = #{isStateIn}
+            </if>
+            <if test="parStateId != null and parStateId!= '' ">
+                and parIn.PAR_STATE_ID = #{parStateId}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                and (
+                mat.MAT_NAME like CONCAT(CONCAT('%',#{keyword}),'%') OR
+                mat.MAT_CODE like CONCAT(CONCAT('%',#{keyword}),'%')
+                )
+            </if>
+        </where>
+        ) a1
+        union all
+        select
+        b1.inId,
+        b1.stageId,
+        b1.isOwner,
+        b1.fileType,
+        b1.matId,
+        b1.sortNo,
+        b1.certId,
+        b1.aeaMatCertName,
+        b1.aeaMatCertCode
+        from (
+        select
+        parIn.IN_ID inId,
+        parIn.STAGE_ID stageId,
+        parIn.IS_OWNER isOwner,
+        parIn.IS_STATE_IN isStateIn,
+        parIn.PAR_STATE_ID parStateId,
+        parIn.FILE_TYPE fileType,
+        parIn.MAT_ID matId,
+        parIn.SORT_NO sortNo,
+        parIn.CERT_ID certId,
+        parIn.CREATER creater,
+        parIn.CREATE_TIME createTime,
+        parIn.MODIFIER modifier,
+        parIn.MODIFY_TIME modifyTime,
+        parIn.IS_DELETED isDeleted,
+        cert.cert_name as aeaMatCertName,
+        cert.cert_code as aeaMatCertCode
+        from AEA_PAR_IN parIn, AEA_CERT cert
+        <where>
+            and cert.CERT_ID = parIn.CERT_ID
+            and cert.ROOT_ORG_ID = parIn.ROOT_ORG_ID
+            and parIn.ROOT_ORG_ID = #{rootOrgId}
+            and parIn.FILE_TYPE = 'cert'
+            and parIn.IS_DELETED = '0'
+            and parIn.STAGE_ID = #{stageId}
+            and cert.IS_DELETED = '0'
+            <if test="isStateIn != null and isStateIn!= '' ">
+                and parIn.IS_STATE_IN = #{isStateIn}
+            </if>
+            <if test="parStateId != null and parStateId!= '' ">
+                and parIn.PAR_STATE_ID = #{parStateId}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                and (
+                cert.cert_name like CONCAT(CONCAT('%',#{keyword}),'%') OR
+                cert.cert_code like CONCAT(CONCAT('%',#{keyword}),'%')
+                )
+            </if>
+        </where>
+        ) b1
+    </select>
+
+
+    <select id="listNoStateInCertByStageId" resultType="AeaParIn">
+        select
+        parIn.IN_ID inId,
+        parIn.STAGE_ID stageId,
+        parIn.IS_OWNER isOwner,
+        parIn.IS_STATE_IN isStateIn,
+        parIn.PAR_STATE_ID parStateId,
+        parIn.FILE_TYPE fileType,
+        parIn.MAT_ID matId,
+        parIn.CERT_ID certId,
+        parIn.CREATER creater,
+        parIn.CREATE_TIME createTime,
+        parIn.MODIFIER modifier,
+        parIn.MODIFY_TIME modifyTime,
+        parIn.IS_DELETED isDeleted,
+        cert.CERT_NAME aeaMatCertName,
+        cert.CERT_CODE aeaMatCertCode,
+        cert.CERT_MEMO aeaMatCertMemo
+        from AEA_PAR_IN parIn, AEA_CERT cert
+        <where>
+            and cert.CERT_ID = parIn.CERT_ID
+            and cert.ROOT_ORG_ID = parIn.ROOT_ORG_ID
+            and parIn.ROOT_ORG_ID = #{rootOrgId}
+            and parIn.STAGE_ID = #{stageId}
+            and parIn.IS_STATE_IN = '0'
+            and parIn.FILE_TYPE = 'cert'
+            and parIn.IS_DELETED = '0'
+            and cert.IS_DELETED = '0'
+            <if test="keyword!='' and keyword!=null ">
+                and (
+                cert.CERT_NAME like concat('%',concat(#{keyword},'%')) or
+                cert.CERT_CODE like concat('%',concat(#{keyword},'%'))
+                )
+            </if>
+        </where>
+        order by parIn.CREATE_TIME desc
+    </select>
+
+    <select id="listInStateMatByStageIdAndStateId" resultType="AeaParIn">
+        select
+        parIn.IN_ID inId,
+        parIn.STAGE_ID stageId,
+        parIn.IS_OWNER isOwner,
+        parIn.IS_STATE_IN isStateIn,
+        parIn.PAR_STATE_ID parStateId,
+        parIn.FILE_TYPE fileType,
+        parIn.MAT_ID matId,
+        parIn.CERT_ID certId,
+        parIn.CREATER creater,
+        parIn.CREATE_TIME createTime,
+        parIn.MODIFIER modifier,
+        parIn.MODIFY_TIME modifyTime,
+        parIn.IS_DELETED isDeleted,
+        mat.MAT_NAME aeaMatCertName,
+        mat.MAT_CODE aeaMatCertCode,
+        mat.MAT_MEMO aeaMatCertMemo,
+        mat.IS_GLOBAL_SHARE isGlobalShare
+        from AEA_PAR_IN parIn, AEA_ITEM_MAT mat
+        <where>
+            and parIn.MAT_ID = mat.MAT_ID
+            and parIn.ROOT_ORG_ID = mat.ROOT_ORG_ID
+            and parIn.ROOT_ORG_ID = #{rootOrgId}
+            and parIn.STAGE_ID = #{stageId}
+            and parIn.PAR_STATE_ID = #{stateId}
+            and parIn.IS_STATE_IN = '1'
+            and parIn.IS_DELETED = '0'
+            and parIn.FILE_TYPE = 'mat'
+            and mat.IS_DELETED = '0'
+            <if test="keyword!='' and keyword!=null ">
+                and (
+                mat.MAT_NAME like concat('%',concat(#{keyword},'%')) or
+                mat.MAT_CODE like concat('%',concat(#{keyword},'%'))
+                )
+            </if>
+        </where>
+        order by parIn.CREATE_TIME desc
+    </select>
+
+    <select id="listInStateCertByStageIdAndStateId" resultType="AeaParIn">
+        select
+        parIn.IN_ID inId,
+        parIn.STAGE_ID stageId,
+        parIn.IS_OWNER isOwner,
+        parIn.IS_STATE_IN isStateIn,
+        parIn.PAR_STATE_ID parStateId,
+        parIn.FILE_TYPE fileType,
+        parIn.MAT_ID matId,
+        parIn.CERT_ID certId,
+        parIn.CREATER creater,
+        parIn.CREATE_TIME createTime,
+        parIn.MODIFIER modifier,
+        parIn.MODIFY_TIME modifyTime,
+        parIn.IS_DELETED isDeleted,
+        cert.CERT_NAME aeaMatCertName,
+        cert.CERT_CODE aeaMatCertCode,
+        cert.CERT_MEMO aeaMatCertMemo
+        from AEA_PAR_IN parIn, AEA_CERT cert
+        <where>
+            and cert.CERT_ID = parIn.CERT_ID
+            and parIn.ROOT_ORG_ID = cert.ROOT_ORG_ID
+            and parIn.ROOT_ORG_ID = #{rootOrgId}
+            and parIn.STAGE_ID = #{stageId}
+            and parIn.PAR_STATE_ID = #{stateId}
+            and parIn.IS_STATE_IN = '1'
+            and parIn.FILE_TYPE = 'cert'
+            and parIn.IS_DELETED = '0'
+            and cert.IS_DELETED = '0'
+            <if test="keyword!='' and keyword!=null ">
+                and (
+                cert.CERT_NAME like concat('%',concat(#{keyword},'%')) or
+                cert.CERT_CODE like concat('%',concat(#{keyword},'%'))
+                )
+            </if>
+        </where>
+        order by parIn.CREATE_TIME desc
+    </select>
+
+    <select id="getMaxSortNoByStageId" resultType="java.lang.Long">
+        select
+            max(SORT_NO)
+        from AEA_PAR_IN
+        where STAGE_ID = #{stageId}
+          and IS_DELETED = '0'
+          and ROOT_ORG_ID = #{rootOrgId}
+    </select>
+
+    <update id="updateSortNo">
+        update AEA_PAR_IN
+        <set>
+            SORT_NO = #{sortNo}
+        </set>
+        where IN_ID = #{inId}
+    </update>
+
+    <update id="updateParStateIdNull">
+        update AEA_PAR_IN
+        set PAR_STATE_ID = null
+        where IN_ID = #{inId}
+    </update>
+
+    <update id="updateParStateId">
+        update AEA_PAR_IN
+        set PAR_STATE_ID = #{parStateId}
+        where IN_ID = #{inId}
+    </update>
+
+    <select id="getGlobalMatListByStageIdAndParStateId" resultType="java.lang.String">
+        select
+        parIn.MAT_ID matId
+        from AEA_PAR_IN parIn, AEA_ITEM_MAT mat
+        <where>
+            and parIn.MAT_ID = mat.MAT_ID
+            and parIn.ROOT_ORG_ID = mat.ROOT_ORG_ID
+            and parIn.ROOT_ORG_ID = #{rootOrgId}
+            and parIn.IS_OWNER = '1'
+            and parIn.FILE_TYPE = 'mat'
+            and parIn.IS_STATE_IN = '1'
+            and parIn.STAGE_ID = #{stageId}
+            and ( parIn.PAR_STATE_ID is null or parIn.PAR_STATE_ID = #{parStateId} )
+            and parIn.IS_DELETED='0'
+            and mat.IS_GLOBAL_SHARE = '1'
+            and mat.IS_ACTIVE = '1'
+            and mat.IS_DELETED = '0'
+        </where>
+    </select>
+
+    <select id="listStageInMatCertForm" resultType="AeaParIn">
+        select
+        a1.inId,
+        a1.stageId,
+        a1.isOwner,
+        a1.fileType,
+        a1.matId,
+        a1.certId,
+        '' as formId,
+        a1.sortNo,
+        a1.aeaMatCertName,
+        a1.aeaMatCertCode,
+        a1.createTime
+        from(
+        select
+        parIn.IN_ID inId,
+        parIn.STAGE_ID stageId,
+        parIn.IS_OWNER isOwner,
+        parIn.IS_STATE_IN isStateIn,
+        parIn.PAR_STATE_ID parStateId,
+        parIn.FILE_TYPE fileType,
+        parIn.MAT_ID matId,
+        parIn.SORT_NO sortNo,
+        parIn.CERT_ID certId,
+        parIn.CREATER creater,
+        parIn.CREATE_TIME createTime,
+        parIn.MODIFIER modifier,
+        parIn.MODIFY_TIME modifyTime,
+        parIn.IS_DELETED isDeleted,
+        mat.MAT_NAME as aeaMatCertName,
+        mat.MAT_CODE as aeaMatCertCode
+        from AEA_PAR_IN parIn, AEA_ITEM_MAT mat
+        <where>
+            and parIn.MAT_ID = mat.MAT_ID
+            and parIn.ROOT_ORG_ID = mat.ROOT_ORG_ID
+            and parIn.ROOT_ORG_ID = #{rootOrgId}
+            and parIn.FILE_TYPE = 'mat'
+            and parIn.IS_DELETED = '0'
+            and parIn.STAGE_ID = #{stageId}
+            and mat.IS_DELETED = '0'
+            <if test="isStateIn != null and isStateIn!= '' ">
+                and parIn.IS_STATE_IN = #{isStateIn}
+            </if>
+            <if test="parStateId != null and parStateId!= '' ">
+                and parIn.PAR_STATE_ID = #{parStateId}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                and (
+                mat.MAT_NAME like CONCAT(CONCAT('%',#{keyword}),'%') or
+                mat.MAT_CODE like CONCAT(CONCAT('%',#{keyword}),'%')
+                )
+            </if>
+        </where>
+        ) a1
+        union all
+        select
+        b1.inId,
+        b1.stageId,
+        b1.isOwner,
+        b1.fileType,
+        b1.matId,
+        b1.certId,
+        '' as formId,
+        b1.sortNo,
+        b1.aeaMatCertName,
+        b1.aeaMatCertCode,
+        b1.createTime
+        from (
+        select
+        parIn.IN_ID inId,
+        parIn.STAGE_ID stageId,
+        parIn.IS_OWNER isOwner,
+        parIn.IS_STATE_IN isStateIn,
+        parIn.PAR_STATE_ID parStateId,
+        parIn.FILE_TYPE fileType,
+        parIn.MAT_ID matId,
+        parIn.SORT_NO sortNo,
+        parIn.CERT_ID certId,
+        parIn.CREATER creater,
+        parIn.CREATE_TIME createTime,
+        parIn.MODIFIER modifier,
+        parIn.MODIFY_TIME modifyTime,
+        parIn.IS_DELETED isDeleted,
+        cert.cert_name as aeaMatCertName,
+        cert.cert_code as aeaMatCertCode
+        from AEA_PAR_IN parIn, AEA_cert cert
+        <where>
+            and parIn.CERT_ID = cert.cert_ID
+            and parIn.ROOT_ORG_ID = cert.ROOT_ORG_ID
+            and parIn.ROOT_ORG_ID = #{rootOrgId}
+            and parIn.FILE_TYPE = 'cert'
+            and parIn.IS_DELETED = '0'
+            and parIn.STAGE_ID = #{stageId}
+            and cert.IS_DELETED = '0'
+            <if test="isStateIn != null and isStateIn!= '' ">
+                and parIn.IS_STATE_IN = #{isStateIn}
+            </if>
+            <if test="parStateId != null and parStateId!= '' ">
+                and parIn.PAR_STATE_ID = #{parStateId}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                and (
+                cert.cert_name like CONCAT(CONCAT('%',#{keyword}),'%') or
+                cert.cert_code like CONCAT(CONCAT('%',#{keyword}),'%')
+                )
+            </if>
+        </where>
+        ) b1
+        union all
+        select
+        c1.stateFormId as inId,
+        c1.parStageId as stageId,
+        '1' as isOwner,
+        'form' as fileType,
+        '' as matId,
+        '' as certId,
+        c1.formId as formId,
+        c1.sortNo as sortNo,
+        c1.formName as aeaMatCertName,
+        c1.formCode as aeaMatCertCode,
+        c1.createTime as createTime
+        from (
+        select
+        stateForm.STATE_FORM_ID as stateFormId,
+        stateForm.PAR_STATE_ID as parStateId,
+        stateForm.SORT_NO as sortNo,
+        stateForm.PAR_STAGE_ID as parStageId,
+        stateForm.IS_STATE_FORM as isStateForm,
+        stateForm.CREATE_TIME as createTime,
+        asfrom.FORM_ID as formId,
+        asfrom.FORM_ORG_ID as formOrgId,
+        asfrom.FORM_PROPERTY as formProperty,
+        asfrom.FORM_CODE as formCode,
+        asfrom.FORM_NAME as formName,
+        asfrom.IS_INNER_FORM as isInnerForm,
+        asfrom.FORM_LOAD_URL as formLoadUrl
+        from AEA_PAR_STATE_FORM stateForm, ACT_STO_FORM asfrom
+        <where>
+            and stateForm.FORM_ID = asfrom.FORM_ID
+            and stateForm.PAR_STAGE_ID = #{stageId}
+            <if test="isStateIn != null and isStateIn!= '' ">
+                and stateForm.IS_STATE_FORM = #{isStateIn}
+            </if>
+            <if test="parStateId != null and parStateId!= '' ">
+                and stateForm.PAR_STATE_ID = #{parStateId}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                and (
+                asfrom.FORM_NAME like CONCAT(CONCAT('%',#{keyword}),'%') or
+                asfrom.FORM_CODE like CONCAT(CONCAT('%',#{keyword}),'%')
+                )
+            </if>
+        </where>
+        )c1
+        order by sortNo asc,createTime asc
+    </select>
+
+    <select id="listStoMatByCondition" resultType="AeaParIn">
+        select
+        parIn.IN_ID inId,
+        parIn.STAGE_ID stageId,
+        parIn.IS_OWNER isOwner,
+        parIn.IS_STATE_IN isStateIn,
+        parIn.PAR_STATE_ID parStateId,
+        parIn.FILE_TYPE fileType,
+        parIn.MAT_ID matId,
+        parIn.CERT_ID certId,
+        parIn.CREATER creater,
+        parIn.CREATE_TIME createTime,
+        parIn.MODIFIER modifier,
+        parIn.MODIFY_TIME modifyTime,
+        parIn.IS_DELETED isDeleted,
+        mat.MAT_NAME as aeaMatCertName,
+        mat.MAT_CODE as aeaMatCertCode
+        from AEA_PAR_IN parIn, AEA_ITEM_MAT mat
+        <where>
+            and mat.MAT_ID = parIn.MAT_ID
+            and parIn.ROOT_ORG_ID = mat.ROOT_ORG_ID
+            and parIn.ROOT_ORG_ID = #{rootOrgId}
+            <if test="stageId != null and stageId!='' ">
+                and parIn.STAGE_ID = #{stageId}
+            </if>
+            <if test="isStateIn != null and isStateIn!= '' ">
+                and parIn.IS_STATE_IN = #{isStateIn}
+            </if>
+            <if test="parStateId != null and parStateId!= '' ">
+                and parIn.PAR_STATE_ID = #{parStateId}
+            </if>
+            <if test="isCommon != null and isCommon!= '' ">
+                and mat.IS_COMMON = #{isCommon}
+            </if>
+            and parIn.FILE_TYPE = 'mat'
+            and parIn.IS_DELETED = '0'
+            and mat.IS_DELETED = '0'
+        </where>
+    </select>
+    <!--获取阶段事项下的输入输入-->
+    <select id="listItemAeaParIn" resultType="com.augurit.aplanmis.common.domain.AeaParIn">
+        select
+        <include refid="allColumns"/>
+        from aea_par_in where in_id in(
+        select IN_ID from aea_par_stage_item_in where STAGE_ITEM_ID=
+        (select STAGE_ITEM_ID from aea_par_stage_item where item_ver_id=#{itemVerId} and stage_id=#{stageId} )
+        ) and ROOT_ORG_ID=#{rootOrgId}
+    </select>
+    <!--获取阶段实例下的所有的材料定义-->
+    <select id="listAeaParInByStageinstId" resultType="com.augurit.aplanmis.common.domain.AeaParIn">
+        SELECT api.* from aea_par_in api
+        where ((api.IS_STATE_IN ='0' or api.IS_STATE_IN is null) or
+        api.PAR_STATE_ID in (
+            select ahps.EXEC_STATE_ID from aea_hi_par_stateinst ahps
+            where ahps.STAGEINST_ID=#{stageinstId}
+            AND ahps.ROOT_ORG_ID=#{rootOrgId}
+        ))
+        and api.STAGE_ID=#{stageId} and api.ROOT_ORG_ID=#{rootOrgId}
+    </select>
+
+</mapper>

@@ -1,0 +1,243 @@
+<div id="achieveManage" class="box normal-module-box">
+    <h2 class="box-tit">业绩管理
+        <el-button class="top-handel-btn" type="primary" @click="addAchieve">新增业绩</el-button>
+    </h2>
+    <!-- 业绩列表 -->
+    <div class="pandel mt20" v-if="!isAchieveDetail">
+        <el-row class="inlineblock-midd">
+            项目名称：
+            <el-input class="w-200 mr20" placeholder="请输入项目名称" />
+            </el-input>
+            审核情况：
+            <el-select placeholder="请选择">
+                <el-option v-for="item in auditOptions" :key="item.itemVerId" :label="item.itemName"
+                    :value="item.itemVerId">
+                </el-option>
+            </el-select>
+            <el-button class="ml20" type="primary" size="medium" @click="">搜索</el-button>
+        </el-row>
+        <el-table :data="achieveList" class="scrollable mt20" border style="width: 100%;"
+            :header-cell-style="{background:'#f7f8fa'}">
+            <el-table-column label="序号">
+                <template scope="scope">
+                    {{scope.$index+1}}
+                </template>
+            </el-table-column>
+            <el-table-column prop="" label="项目名称">
+            </el-table-column>
+            <el-table-column prop="" label="委托单位">
+            </el-table-column>
+            <el-table-column prop="" label="评估类型">
+            </el-table-column>
+            <el-table-column prop="" label="项目负责人">
+            </el-table-column>
+            <el-table-column label="操作">
+                <template scope="scope">
+                    <a class="a-color4879E4" href="javascript:;" @click="editAchieve(scope.row)">查看</a>
+                </template>
+            </el-table-column>
+        </el-table>
+        <el-pagination background align="right" @size-change="" @current-change="" :page-sizes="[10, 20, 30, 50]"
+            :page-size="achieveCheckData.pageSize" :current-page="achieveCheckData.pageNum"
+            layout="total,sizes, prev, pager, next, jumper" :total="achieveTotal">
+        </el-pagination>
+    </div>
+    <!-- 业绩详情 -->
+    <div class="pandel module-edit-pandel mt20" v-else>
+        <div class="info-header text-right mt20 clearfix">
+            <el-button @click="achieveDetailReturnOne">返回上一级</el-button>
+        </div>
+        <!-- 业绩title -->
+        <div class="info-title">
+            业绩
+        </div>
+        <!-- 业绩基本信息 -->
+        <div class="info-item edit-item">
+            <h2 class="item-title active" @click.stop="expandProjectInfoItem"><i class="item-icon"></i>业绩基本信息<i
+                    class="arrow-icon"></i></h2>
+            <div class="item-detail edit-item-detail">
+                <div class="row">
+                    <div class="col-md-6 form-item">
+                        <label><b class="red-cl">*</b>项目名称</label>
+                        <div class="input-box">
+                            <input type="text" class="form-control" id="" placeholder="请输入项目名称">
+                        </div>
+                    </div>
+                    <div class="col-md-6 form-item">
+                        <label><b class="red-cl">*</b>委托单位</label>
+                        <div class="input-box">
+                            <input type="text" class="form-control" id="" placeholder="请输如委托单位">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 form-item">
+                        <label><b class="red-cl">*</b>委托合同签订时间</label>
+                        <div class="input-box date">
+                            <el-date-picker type="date" placeholder="选择日期">
+                            </el-date-picker>
+                        </div>
+                    </div>
+                    <div class="col-md-6 form-item">
+                        <label><b class="red-cl">*</b>委托合同估算价</label>
+                        <div class="input-box" style="width: 50%;">
+                            <input type="text" class="form-control" id="" placeholder="">
+                        </div>
+                        <div class="input-box" style="padding-left: 10px;">万元</div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 form-item">
+                        <label><b class="red-cl">*</b>项目类别</label>
+                        <div class="input-box">
+                            <select class="form-control">
+                                <option selected>--请选择--</option>
+                                <option value="1">111</option>
+                                <option value="2">222</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6 form-item">
+                        <label><b class="red-cl">*</b>项目负责人</label>
+                        <div class="input-box">
+                            <select class="form-control">
+                                <option selected>--请选择--</option>
+                                <option value="1">111</option>
+                                <option value="2">222</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-item">
+                    <label>工程咨询专业类型</label>
+                    <div class="input-box checkbox-group">
+                        <el-checkbox-group>
+                            <el-checkbox label="">公路</el-checkbox>
+                            <el-checkbox label="">铁路</el-checkbox>
+                            <el-checkbox label="">城市轨道交通</el-checkbox>
+                            <el-checkbox label="">民航</el-checkbox>
+                            <el-checkbox label="">水电</el-checkbox>
+                            <el-checkbox label="">核电、核工业</el-checkbox>
+                            <el-checkbox label="">火电</el-checkbox>
+                            <el-checkbox label="">煤炭</el-checkbox>
+                            <el-checkbox label="">石油、天然气</el-checkbox>
+                            <el-checkbox label="">石化</el-checkbox>
+                            <el-checkbox label="">化工</el-checkbox>
+                            <el-checkbox label="">医药</el-checkbox>
+                            <el-checkbox label="">建筑材料</el-checkbox>
+                            <el-checkbox label="">机械</el-checkbox>
+                            <el-checkbox label="">电子</el-checkbox>
+                            <el-checkbox label="">纺织、化纤</el-checkbox>
+                            <el-checkbox label="">钢铁</el-checkbox>
+                            <el-checkbox label="">有色冶金</el-checkbox>
+                            <el-checkbox label="">农业</el-checkbox>
+                        </el-checkbox-group>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 附件材料 -->
+        <div class="info-item edit-item">
+            <h2 class="item-title active" @click="expandProjectInfoItem"><i
+                    class="item-icon item-fujian-icon"></i>附件材料<i class="arrow-icon"></i></h2>
+            <div class="item-detail edit-item-detail">
+                <el-table :data="enclosureList" class="scrollable mt20" border style="width: 100%;"
+                    :header-cell-style="{background:'#f7f8fa'}">
+                    <el-table-column prop="" label="电子件名称">
+                    </el-table-column>
+                    <el-table-column prop="" label="是否必须上传">
+                    </el-table-column>
+                    <el-table-column prop="" label="说明">
+                    </el-table-column>
+                    <el-table-column prop="" label="电子件列表">
+                    </el-table-column>
+                    <el-table-column label="操作">
+                        <template scope="scope">
+                            <a class="a-color4879E4" href="javascript:;" @click="">上传</a>
+                        </template>
+                    </el-table-column>
+                </el-table>
+            </div>
+        </div>
+        <!-- 提交审核 -->
+        <div class="text-center mt20">
+            <el-button type="primary">提交核查</el-button>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    var module1 = new Vue({
+        el: '#achieveManage',
+        mixins: [mixins],
+        data: function () {
+            return {
+                // 页面loading
+                loading: false,
+
+                // 页面app高度和内容content高度
+                appH: '',
+                contentH: '',
+
+                // 当前账号信息
+                currentLoginInfo: {
+                    unitInfoId: '0b1c323b-7247-4762-a72d-774fc4e07e8f',
+                },
+
+                // 当前是否为业绩详情
+                isAchieveDetail: false,
+
+                // 审核情况下拉选项
+                auditOptions: [{
+                    itemVerId: '',
+                    itemName: ''
+                }],
+
+                // 业绩列表
+                achieveList: [{}],
+                // 业绩列表-查询参数
+                achieveCheckData: {
+                    pageSize: 10,
+                    pageNum: 1,
+                    unitInfoId: '',
+                },
+                // 业绩列表-总数
+                achieveTotal: 0,
+
+                // 当前业绩详情页是否为编辑
+                achieveDetailEditFlag: false,
+
+                // 附件材料列表
+                enclosureList: [{}],
+            }
+        },
+        methods: {
+            init: function () {
+                console.log('我是模块')
+            },
+
+            // 业绩详情返回上一级
+            achieveDetailReturnOne: function () {
+                var ts = this;
+                ts.isAchieveDetail = false;
+            },
+
+            // 新增y业绩
+            addAchieve: function () {
+                var ts = this;
+                ts.isAchieveDetail = true;
+                ts.achieveDetailEditFlag = false; //当前为新增业绩
+            },
+
+            // 查看-编辑人员
+            editAchieve: function () {
+                var ts = this;
+                ts.isAchieveDetail = true;
+                ts.achieveDetailEditFlag = true; //当前为业绩详情编辑
+            },
+        },
+        mounted: function() {
+            this.init();
+        },
+    })
+</script>

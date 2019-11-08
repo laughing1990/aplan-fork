@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<th:block th:include="common/common :: commonheader('审核从业人员详情')"/>
+	<link rel="stylesheet" href="../../../static/apply/css/index.css" th:href="@{/apply/css/index.css}">
+	<script>
+		var serviceLinkmanId = '[[${serviceLinkmanId}]]';
+	</script>
+</head>
+<body>
+<div id="mainContentPanel" class="row" style="width: 100%;height: 100%;margin: 0px;">
+	<div v-cloak><!--class="col-xl-12" style="padding: 0px 2px 0px 8px;"-->
+		<el-collapse v-model="activeNames">
+			<!---->
+			<el-form>
+
+				<!--从业人员信息-->
+				<el-collapse-item name="1">
+					<template slot="title">
+						<i class="header-icon el-icon-document-copy"></i>从业人员信息
+					</template>
+
+					<el-row>
+						<el-col :span='12'>
+							<el-form-item label="姓名：">{{contentObj.linkmanInfo.linkmanName}}</el-form-item>
+						</el-col>
+						<el-col :span='12'>
+							<el-form-item label="类型：">
+								<div class="col-lg-5">
+									<label v-cloak v-if="contentObj.linkmanInfo.linkmanType === 'c'">个人联系人</label>
+									<label v-cloak v-else-if="contentObj.linkmanInfo.linkmanType === 'u'">企业联系人</label>
+									<label v-cloak v-else-if="contentObj.linkmanInfo.linkmanType === 'p'">企业项目联系人</label>
+									<label v-cloak v-else>{{contentObj.linkmanInfo.linkmanType}}</label>
+								</div>
+							</el-form-item>
+						</el-col>
+					</el-row>
+					<el-row>
+						<el-col :span="12">
+							<el-form-item label="地址："><label v-cloak>{{contentObj.linkmanInfo.linkmanAddr}}</label></el-form-item>
+						</el-col>
+						<el-col :span="12">
+							<el-form-item label="电话号码："><label v-cloak>{{contentObj.linkmanInfo.linkmanMobilePhone}}</label>
+							</el-form-item>
+						</el-col>
+					</el-row>
+					<el-row>
+						<el-col :span="12">
+							<el-form-item label="邮箱："><label v-cloak>{{contentObj.linkmanInfo.linkmanMail}}</label></el-form-item>
+						</el-col>
+						<el-col :span="12">
+							<el-form-item label="证件号："><label v-cloak>{{contentObj.linkmanInfo.linkmanCertNo}}</label></el-form-item>
+						</el-col>
+					</el-row>
+				</el-collapse-item>
+				<!--服务信息-->
+				<el-collapse-item name="2">
+					<template slot="title">
+						<i class="header-icon el-icon-document-copy"></i>服务信息
+					</template>
+					<el-row>
+						<el-col :span='12'>
+							<el-form-item label="服务名称："><label v-cloak>{{contentObj.service.serviceName}}</label></el-form-item>
+						</el-col>
+						<el-col :span='12'>
+							<el-form-item label="服务编码："><label v-cloak>{{contentObj.service.serviceCode}}</label></el-form-item>
+						</el-col>
+					</el-row>
+					<el-row>
+						<el-col :span="12">
+							<el-form-item label="从业时间："><label v-cloak>{{dateTimeFormat(contentObj.practiseDate)}}</label>
+							</el-form-item>
+						</el-col>
+						<el-col :span="12">
+							<el-form-item label="是否是项目负责人："><label v-cloak>{{(contentObj.isHead === '1') ? '是' : '否'}}</label>
+							</el-form-item>
+						</el-col>
+					</el-row>
+				</el-collapse-item>
+
+				<!--单位信息-->
+				<el-collapse-item name="3">
+					<template slot="title">
+						<i class="header-icon el-icon-document-copy"></i>服务信息
+					</template>
+					<el-row>
+						<el-col :span='12'>
+							<el-form-item label="单位名称："><label v-cloak>{{contentObj.unitInfo.applicant}}</label></el-form-item>
+						</el-col>
+						<el-col :span='12'>
+							<el-form-item label="社会信用代码："><label v-cloak>{{contentObj.unitInfo.unifiedSocialCreditCode}}</label>
+							</el-form-item>
+						</el-col>
+					</el-row>
+
+					<el-row>
+						<el-col :span='12'>
+							<el-form-item label="法人姓名："><label v-cloak>{{contentObj.unitInfo.idrepresentative}}</label></el-form-item>
+						</el-col>
+						<el-col :span='12'>
+							<el-form-item label="法人手机号码："><label v-cloak>{{contentObj.unitInfo.idmobile}}</label></el-form-item>
+						</el-col>
+					</el-row>
+
+					<el-row>
+						<el-col :span='12'>
+							<el-form-item label="法人身份证号码："><label v-cloak>{{contentObj.unitInfo.idno}}</label></el-form-item>
+						</el-col>
+						<el-col :span='12'>
+							<el-form-item label="单位性质：">
+								<div class="col-lg-5">
+									<label v-cloak v-if="contentObj.unitInfo.unitNature === '1'">企业</label>
+									<label v-cloak v-else-if="contentObj.unitInfo.unitNature === '2'">事业单位</label>
+									<label v-cloak v-else-if="contentObj.unitInfo.unitNature === '3'">社会组织</label>
+								</div>
+							</el-form-item>
+						</el-col>
+					</el-row>
+
+					<el-row>
+						<el-col :span="12">
+							<el-form-item label="联系人姓名："><label v-cloak>{{contentObj.unitInfo.contact}}</label>
+							</el-form-item>
+						</el-col>
+						<el-col :span="12">
+							<el-form-item label="联系人手机号码："><label v-cloak>{{contentObj.unitInfo.mobile}}</label>
+							</el-form-item>
+						</el-col>
+					</el-row>
+
+					<el-row>
+						<el-col :span='12'>
+							<el-form-item label="联系人邮箱："><label v-cloak>{{contentObj.unitInfo.email}}</label></el-form-item>
+						</el-col>
+						<el-col :span='12'>
+							<el-form-item label="单位地址："><label v-cloak>{{contentObj.unitInfo.applicantDetailSite}}</label>
+							</el-form-item>
+						</el-col>
+					</el-row>
+
+					<el-row>
+						<el-col :span='12'>
+							<el-form-item label="注册资本：">
+								<label v-cloak v-if="contentObj.unitInfo.registeredCapital != null && contentObj.unitInfo.registeredCapital != ''">
+									{{contentObj.unitInfo.registeredCapital}}万元
+								</label>
+
+							</el-form-item>
+						</el-col>
+						<el-col :span='12'>
+							<el-form-item label="注册登记机关："><label v-cloak>{{contentObj.unitInfo.registerAuthority}}</label>
+							</el-form-item>
+						</el-col>
+					</el-row>
+					<el-row>
+						<el-col :span='24'>
+							<el-form-item label="经营范围：">
+								<label v-cloak>{{contentObj.unitInfo.managementScope}}</label>
+							</el-form-item>
+						</el-col>
+					</el-row>
+
+				</el-collapse-item>
+				<!--证书列表-->
+				<el-collapse-item name="4">
+					<template slot="title">
+						<i class="header-icon el-icon-document-copy"></i>证书列表
+					</template>
+					<el-form>
+						<el-tabs v-model="activeName" @tab-click="handleClick" type="border-card" v-for="(item, index) in contentObj.certinst" :key="item.certinstId">
+							<el-tab-pane :label="item.certinstName" :name="index+''">
+								<el-row style="margin-left: 50px">
+									<el-col :span="12">
+										<el-form-item label="证书名称：">{{item.certinstName}}</el-form-item>
+									</el-col>
+									<el-col :span="12">
+										<el-form-item label="证书编码：">{{item.certinstCode}}</el-form-item>
+									</el-col>
+								</el-row>
+
+								<el-row style="margin-left: 50px">
+									<el-col :span="12">
+										<el-form-item label="等级："><label v-cloak>{{item.qualLevelName}}</label></el-form-item>
+									</el-col>
+									<el-col :span="12">
+										<el-form-item label="有效期限："><label v-cloak>
+											<!--											{{dateTimeFormat(item.termStart)}} - {{dateTimeFormat(item.termEnd)}}-->
+											{{item.termStart}} 至 {{item.termEnd}}
+										</label></el-form-item>
+									</el-col>
+								</el-row>
+
+								<el-row style="margin-left: 50px">
+									<el-col :span="24">
+										<el-form-item label="所属专业："></el-form-item>
+									</el-col>
+								</el-row>
+								<el-tabs type="border-card" style="margin-left: 50px">
+									<el-tab-pane v-for="qual in item.qualMajorList" :label="qual.qualName" :key="qual.qualName">
+										<el-tree :data="qual.aeaImMajorQualVoList" :props="defaultProps" default-expand-all></el-tree>
+									</el-tab-pane>
+								</el-tabs>
+								<el-row style="margin-left: 50px">
+									<el-col :span="24">
+										<el-form-item label="业务范围："><label v-cloak>{{item.managementScope}}</label></el-form-item>
+									</el-col>
+								</el-row>
+
+								<el-row style="margin-left: 50px">
+									<el-form-item label="附件列表：">
+										<label v-for="bscAttDetail in item.certinstDetail" style="margin-right: 15px;"><a :href="'javascript:filePreview(\'' + bscAttDetail.fileId + '\');'">{{bscAttDetail.fileName}}</a></label>
+									</el-form-item>
+								</el-row>
+							</el-tab-pane>
+						</el-tabs>
+					</el-form>
+				</el-collapse-item>
+
+				<!--审核结果-->
+				<el-collapse-item name="5" v-if="contentObj.auditFlag != '2'">
+					<template slot="title">
+						<i class="header-icon el-icon-document-copy"></i>审核结果
+					</template>
+					<el-row>
+						<el-col :span='12'>
+							<el-form-item label="审核结果："><label>{{contentObj.auditFlag == '1' ? '审核通过' : '审核不通过'}}</label>
+							</el-form-item>
+						</el-col>
+						<el-col :span='12'>
+							<el-form-item label="审核意见："><label>{{contentObj.memo}}</label></el-form-item>
+						</el-col>
+					</el-row>
+				</el-collapse-item>
+
+			</el-form>
+		</el-collapse>
+	</div>
+	<div v-cloak style="vertical-align:middle;text-align: center !important;">
+		<el-button type="primary" v-if="contentObj.auditFlag === '2'" @click="dialogTableVisible=true">审核</el-button>
+		<el-button type="primary" @click="backPrd">返回</el-button>
+	</div>
+	<el-divider></el-divider>
+
+
+	<!--审核窗口-->
+	<el-dialog v-cloak title="审核" :visible.sync="dialogTableVisible">
+		<div v-cloak style="margin-left: 25px;">
+			<el-form :model="auditForm" ref="auditForm">
+				<el-row>
+					<el-col :span="24">
+						<el-form-item label="是否通过：" required>
+							<el-select v-model="auditForm.auditFlag" placeholder="请选择">
+								<el-option label="审核通过" value="1"></el-option>
+								<el-option label="审核不通过" value="0"></el-option>
+							</el-select>
+						</el-form-item>
+					</el-col>
+				</el-row>
+				<el-row>
+					<el-col :span="24">
+						<el-form-item label="审核意见：" required>
+							<el-input v-model="auditForm.memo" type="textarea"></el-input>
+						</el-form-item>
+					</el-col>
+				</el-row>
+			</el-form>
+		</div>
+		<div slot="footer" class="dialog-footer">
+			<el-button @click="dialogTableVisible = false">取 消</el-button>
+			<el-button type="primary" @click="updateAeaImServiceLinkman">保存</el-button>
+		</div>
+	</el-dialog>
+</div>
+
+
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js" th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js" th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js" th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js" th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>
+
+<script src="../../../static/common/js/axios.min.js" th:src="@{/common/js/axios.min.js}"></script>
+<script src="../../../static/admin/supermarket/js/service_linkman_detail.js" th:src="@{/admin/supermarket/js/service_linkman_detail.js}"></script>
+
+</body>
+</html>

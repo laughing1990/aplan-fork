@@ -1,0 +1,188 @@
+.mt20 {
+  margin-top: 20px;
+}
+
+.mb20 {
+  margin-bottom: 20px;
+}
+
+.ml20 {
+  margin-left: 20px;
+}
+
+.mr20 {
+  margin-right: 20px;
+}
+
+.mb10 {
+  margin-bottom: 10px;
+}
+
+.pd20 {
+  padding: 20px;
+}
+
+.mt40 {
+  margin-top: 40px;
+}
+
+.mt15 {
+  margin-top: 15px;
+}
+
+.mb15 {
+  margin-bottom: 15px;
+}
+
+.mr10 {
+  margin-right: 10px;
+}
+
+.mb45{
+  margin-bottom: 45px;
+}
+
+.wd48 {
+  width: 48%;
+}
+
+.inline-block {
+  display: inline-block;
+}
+
+.w-320 {
+  width: 320px;
+}
+
+.w-260 {
+  width: 260px;
+}
+
+.h-220 {
+  height: 220px;
+}
+
+.color-999 {
+  color: #999;
+}
+
+.color-457EFF {
+  color: #457EFF;
+}
+
+.color-169aff {
+  color: #169AFF;
+}
+
+.pr {
+  position: relative;
+}
+
+.rotate-90 {
+  transform: rotate(90deg);
+}
+
+.mouse-pointer {
+  cursor: pointer;
+}
+
+/* 卡片title */
+.card-title {
+  font-weight: bold;
+  color: #575962;
+  font-size: 16px;
+}
+
+/* // table-btn */
+.table-btn {
+  width: 34px;
+  height: 34px;
+  text-align: center;
+  line-height: 34px;
+  -webkit-border-radius: 50%;
+  -ms-border-radius: 50%;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.table-btn:hover {
+  background: #36a3f7;
+  color: #fff;
+}
+
+.btn-hv-danger:hover {
+  background: #f4516c
+}
+
+/* 分割线 */
+.divider .el-divider--horizontal {
+  margin-top: 2px !important;
+}
+
+[v-cloak] {
+  display: none;
+}
+
+.scrollable {
+  overflow-y: auto;
+}
+
+/* 滚动条 */
+::-webkit-scrollbar-thumb:horizontal {
+  /*水平滚动条的样式*/
+  width: 8px;
+  background-color: #bbb;
+  -webkit-border-radius: 6px;
+}
+
+::-webkit-scrollbar-track-piece {
+  background-color: #fff;
+  /*滚动条的背景颜色*/
+  -webkit-border-radius: 0;
+  /*滚动条的圆角宽度*/
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  /*滚动条的宽度*/
+  height: 8px;
+  /*滚动条的高度*/
+  background-color: #bbb;
+  -webkit-border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:vertical {
+  /*垂直滚动条的样式*/
+  height: 50px;
+  background-color: #bbbbbb;
+  outline: 2px solid #fff;
+  outline-offset: -2px;
+  border: 2px solid #fff;
+  -webkit-border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  /*滚动条的hover样式*/
+  height: 50px;
+  background-color: #9f9f9f;
+  -webkit-border-radius: 4px;
+}
+
+/* 列表过渡动画 */
+.list-enter {
+  opacity: 0;
+  transform: translateY(100%);
+}
+
+.list-enter-active {
+  transition: 0.3s;
+}
+
+.list-enter-to {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+body {
+  background-color: #f2f3f8;
+}

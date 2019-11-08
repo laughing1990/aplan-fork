@@ -1,0 +1,633 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by chenzh    2019-07-04 16:18:34 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaParStageMapper">
+
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns">
+        ${alias}.STAGE_ID  stageId,
+        ${alias}.STAGE_NAME  stageName,
+        ${alias}.THEME_VER_ID  themeVerId,
+        ${alias}.APP_ID  appId,
+        ${alias}.DUE_NUM  dueNum,
+        ${alias}.DUE_UNIT  dueUnit,
+        ${alias}.SORT_NO  sortNo,
+        ${alias}.ICON_CSS  iconCss,
+        ${alias}.BG_CSS  bgCss,
+        ${alias}.STAGE_MEMO  stageMemo,
+        ${alias}.CREATER  creater,
+        ${alias}.CREATE_TIME  createTime,
+        ${alias}.MODIFIER  modifier,
+        ${alias}.MODIFY_TIME  modifyTime,
+        ${alias}.IS_DELETED  isDeleted,
+        ${alias}.IS_NODE  isNode,
+        ${alias}.STATUS_CHECK_URL  statusCheckUrl,
+        ${alias}.STAGE_CODE  stageCode,
+        ${alias}.IS_NEED_STATE  isNeedState,
+        ${alias}.SMALL_IMG_PATH  smallImgPath,
+        ${alias}.MIDDLE_IMG_PATH  middleImgPath,
+        ${alias}.BIG_IMG_PATH  bigImgPath,
+        ${alias}.HUGE_IMG_PATH  hugeImgPath,
+        ${alias}.IS_IMG_ICON  isImgIcon,
+        ${alias}.IS_OPTION_ITEM  isOptionItem,
+        ${alias}.IS_SEL_ITEM  isSelItem,
+        ${alias}.PARENT_ID  parentId,
+        ${alias}.NOPT_ITEM_SHOW_NUM  noptItemShowNum,
+        ${alias}.OPT_ITEM_SHOW_NUM  optItemShowNum,
+        ${alias}.USE_EL  useEl,
+        ${alias}.STAGE_EL  stageEl,
+        ${alias}.IS_CHECK_ITEM  isCheckItem,
+        ${alias}.LCBSXLX  lcbsxlx,
+        ${alias}.DYBZSPJDXH  dybzspjdxh,
+        ${alias}.HAND_WAY  handWay,
+        ${alias}.USE_ONE_FORM  useOneForm,
+        ${alias}.ROOT_ORG_ID  rootOrgId,
+        ${alias}.IS_SHOW_ITEM  isShowItem,
+        ${alias}.DYGJBZFXFW  dygjbzfxfw,
+        ${alias}.IS_CHECK_ITEMFORM  isCheckItemform,
+        ${alias}.IS_CHECK_PARTFORM  isCheckPartform,
+        ${alias}.IS_CHECK_PROJ  isCheckProj,
+        ${alias}.IS_CHECK_STAGE  isCheckStage
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaParStageById" resultType="AeaParStage">
+        select
+            <include refid="allColumns">
+                <property name="alias" value="aps"/>
+            </include>
+        from AEA_PAR_STAGE aps
+        where aps.STAGE_ID = #{id}
+          and aps.IS_DELETED = '0'
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaParStage" resultType="AeaParStage">
+        select
+            <include refid="allColumns">
+                <property name="alias" value="aps"/>
+            </include>
+        from AEA_PAR_STAGE aps
+        <where>
+            <if test="stageId != null">
+                AND STAGE_ID = #{stageId}
+            </if>
+            <if test="stageName != null">
+                AND STAGE_NAME = #{stageName}
+            </if>
+            <if test="themeVerId != null">
+                AND THEME_VER_ID = #{themeVerId}
+            </if>
+            <if test="appId != null">
+                AND APP_ID = #{appId}
+            </if>
+            <if test="dueNum != null">
+                AND DUE_NUM = #{dueNum}
+            </if>
+            <if test="dueUnit != null">
+                AND DUE_UNIT = #{dueUnit}
+            </if>
+            <if test="sortNo != null">
+                AND SORT_NO = #{sortNo}
+            </if>
+            <if test="iconCss != null">
+                AND ICON_CSS = #{iconCss}
+            </if>
+            <if test="bgCss != null">
+                AND BG_CSS = #{bgCss}
+            </if>
+            <if test="stageMemo != null">
+                AND STAGE_MEMO = #{stageMemo}
+            </if>
+            <if test="isNode != null">
+                AND IS_NODE = #{isNode}
+            </if>
+            <if test="statusCheckUrl != null">
+                AND STATUS_CHECK_URL = #{statusCheckUrl}
+            </if>
+            <if test="stageCode != null">
+                AND STAGE_CODE = #{stageCode}
+            </if>
+            <if test="isNeedState != null">
+                AND IS_NEED_STATE = #{isNeedState}
+            </if>
+            <if test="smallImgPath != null">
+                AND SMALL_IMG_PATH = #{smallImgPath}
+            </if>
+            <if test="middleImgPath != null">
+                AND MIDDLE_IMG_PATH = #{middleImgPath}
+            </if>
+            <if test="bigImgPath != null">
+                AND BIG_IMG_PATH = #{bigImgPath}
+            </if>
+            <if test="hugeImgPath != null">
+                AND HUGE_IMG_PATH = #{hugeImgPath}
+            </if>
+            <if test="isImgIcon != null">
+                AND IS_IMG_ICON = #{isImgIcon}
+            </if>
+            <if test="isOptionItem != null">
+                AND IS_OPTION_ITEM = #{isOptionItem}
+            </if>
+            <if test="isSelItem != null">
+                AND IS_SEL_ITEM = #{isSelItem}
+            </if>
+            <if test="parentId != null">
+                AND PARENT_ID = #{parentId}
+            </if>
+            <if test="noptItemShowNum != null">
+                AND NOPT_ITEM_SHOW_NUM = #{noptItemShowNum}
+            </if>
+            <if test="optItemShowNum != null">
+                AND OPT_ITEM_SHOW_NUM = #{optItemShowNum}
+            </if>
+            <if test="useEl != null">
+                AND USE_EL = #{useEl}
+            </if>
+            <if test="stageEl != null">
+                AND STAGE_EL = #{stageEl}
+            </if>
+            <if test="isCheckItem != null" >
+                AND    IS_CHECK_ITEM = #{isCheckItem}
+            </if>
+            <if test="lcbsxlx != null">
+                AND LCBSXLX = #{lcbsxlx}
+            </if>
+            <if test="dybzspjdxh != null">
+                AND DYBZSPJDXH = #{dybzspjdxh}
+            </if>
+            <if test="handWay != null">
+                AND HAND_WAY = #{handWay}
+            </if>
+            <if test="rootOrgId != null">
+                AND ROOT_ORG_ID = #{rootOrgId}
+            </if>
+            <if test="isShowItem != null">
+                AND IS_SHOW_ITEM  = #{isShowItem}
+            </if>
+            <if test="dygjbzfxfw != null">
+                AND DYGJBZFXFW  = #{dygjbzfxfw}
+            </if>
+            <if test="isCheckItemform != null" >
+                AND    IS_CHECK_ITEMFORM = #{isCheckItemform}
+            </if>
+            <if test="isCheckPartform != null" >
+                AND    IS_CHECK_PARTFORM = #{isCheckPartform}
+            </if>
+            <if test="isCheckProj != null" >
+                AND    IS_CHECK_PROJ = #{isCheckProj}
+            </if>
+            <if test="isCheckStage != null" >
+                AND    IS_CHECK_STAGE = #{isCheckStage}
+            </if>
+            <if test="keyword != null and keyword !='' " >
+                AND (
+                    STAGE_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%') OR
+                    STAGE_MEMO LIKE CONCAT(CONCAT('%',#{keyword}),'%') OR
+                    STAGE_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                )
+            </if>
+            AND  IS_DELETED = '0'
+        </where>
+        order by IS_NODE asc, SORT_NO asc, CREATE_TIME asc
+    </select>
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaParStage" parameterType="AeaParStage">
+        insert into AEA_Par_STAGE (
+            STAGE_ID,
+            STAGE_NAME,
+            STAGE_CODE,
+            THEME_VER_ID,
+            APP_ID,
+            DUE_NUM,
+            DUE_UNIT,
+            SORT_NO,
+            ICON_CSS,
+            BG_CSS,
+            STAGE_MEMO,
+            CREATER,
+            CREATE_TIME,
+            MODIFIER,
+            MODIFY_TIME,
+            IS_DELETED,
+            IS_NODE,
+            IS_NEED_STATE,
+            STATUS_CHECK_URL,
+            SMALL_IMG_PATH,
+            MIDDLE_IMG_PATH,
+            BIG_IMG_PATH,
+            HUGE_IMG_PATH,
+            IS_IMG_ICON,
+            IS_OPTION_ITEM,
+            IS_SEL_ITEM,
+            PARENT_ID,
+            NOPT_ITEM_SHOW_NUM,
+            OPT_ITEM_SHOW_NUM,
+            USE_EL,
+            STAGE_EL,
+            IS_CHECK_ITEM,
+            LCBSXLX,
+            DYBZSPJDXH,
+            HAND_WAY,
+            USE_ONE_FORM,
+            ROOT_ORG_ID,
+            IS_SHOW_ITEM,
+            DYGJBZFXFW,
+            IS_CHECK_ITEMFORM,
+            IS_CHECK_PARTFORM,
+            IS_CHECK_PROJ,
+            IS_CHECK_STAGE
+        )  values  (
+            #{stageId},
+            #{stageName},
+            #{stageCode},
+            #{themeVerId},
+            #{appId},
+            #{dueNum},
+            #{dueUnit},
+            #{sortNo},
+            #{iconCss},
+            #{bgCss},
+            #{stageMemo},
+            #{creater},
+            #{createTime},
+            #{modifier},
+            #{modifyTime},
+            #{isDeleted},
+            #{isNode},
+            #{isNeedState},
+            #{statusCheckUrl},
+            #{smallImgPath},
+            #{middleImgPath},
+            #{bigImgPath},
+            #{hugeImgPath},
+            #{isImgIcon},
+            #{isOptionItem},
+            #{isSelItem},
+            #{parentId},
+            #{noptItemShowNum},
+            #{optItemShowNum},
+            #{useEl},
+            #{stageEl},
+            #{isCheckItem},
+            #{lcbsxlx},
+            #{dybzspjdxh},
+            #{handWay},
+            #{useOneForm},
+            #{rootOrgId},
+            #{isShowItem},
+            #{dygjbzfxfw},
+            #{isCheckItemform},
+            #{isCheckPartform},
+            #{isCheckProj},
+            #{isCheckStage}
+        )
+    </insert>
+
+    <!--6 修改实体对象 -->
+    <update id="updateAeaParStage" parameterType="AeaParStage">
+        update AEA_Par_STAGE
+        <set >
+            <if test="stageId != null and stageId!='' " >
+                STAGE_ID = #{stageId},
+            </if>
+            <if test="stageName != null and stageName!='' " >
+                STAGE_NAME = #{stageName},
+            </if>
+            <if test="stageCode!=null and stageCode!='' ">
+                STAGE_CODE = #{stageCode},
+            </if>
+            <if test="themeVerId != null and themeVerId!='' " >
+                THEME_VER_ID  = #{themeVerId},
+            </if>
+            <if test="appId != null and appId!='' " >
+                APP_ID = #{appId},
+            </if>
+            <if test="dueNum != null and dueNum!='' " >
+                DUE_NUM = #{dueNum},
+            </if>
+            <if test="dueUnit != null and dueUnit!='' " >
+                DUE_UNIT = #{dueUnit},
+            </if>
+            <if test="sortNo != null and sortNo!='' " >
+                SORT_NO = #{sortNo},
+            </if>
+            <if test="iconCss != null" >
+                ICON_CSS = #{iconCss},
+            </if>
+            <if test="bgCss != null" >
+                BG_CSS = #{bgCss},
+            </if>
+            <if test="stageMemo != null" >
+                STAGE_MEMO = #{stageMemo},
+            </if>
+            <if test="creater != null and creater!='' " >
+                CREATER = #{creater},
+            </if>
+            <if test="createTime != null" >
+                CREATE_TIME = #{createTime},
+            </if>
+            <if test="modifier != null and modifier!='' " >
+                MODIFIER = #{modifier},
+            </if>
+            <if test="modifyTime != null" >
+                MODIFY_TIME = #{modifyTime},
+            </if>
+            <if test="isDeleted != null and isDeleted!='' " >
+                IS_DELETED = #{isDeleted},
+            </if>
+            <if test="isNode!=null and isNode!='' ">
+                IS_NODE = #{isNode},
+            </if>
+            <if test="isNeedState!=null and isNeedState!='' ">
+                IS_NEED_STATE = #{isNeedState},
+            </if>
+            <if test="statusCheckUrl!=null and statusCheckUrl!='' ">
+                STATUS_CHECK_URL = #{statusCheckUrl},
+            </if>
+            <if test="smallImgPath != null" >
+                SMALL_IMG_PATH = #{smallImgPath},
+            </if>
+            <if test="middleImgPath != null" >
+                MIDDLE_IMG_PATH = #{middleImgPath},
+            </if>
+            <if test="bigImgPath != null" >
+                BIG_IMG_PATH = #{bigImgPath},
+            </if>
+            <if test="hugeImgPath != null" >
+                HUGE_IMG_PATH = #{hugeImgPath},
+            </if>
+            <if test="isImgIcon != null" >
+                IS_IMG_ICON = #{isImgIcon},
+            </if>
+            <if test="isOptionItem != null and isOptionItem!='' " >
+                IS_OPTION_ITEM = #{isOptionItem},
+            </if>
+            <if test="isSelItem != null and isSelItem!='' " >
+                IS_SEL_ITEM = #{isSelItem},
+            </if>
+            <if test="parentId != null" >
+                PARENT_ID = #{parentId},
+            </if>
+            <if test="noptItemShowNum != null" >
+                NOPT_ITEM_SHOW_NUM = #{noptItemShowNum},
+            </if>
+            <if test="optItemShowNum != null" >
+                OPT_ITEM_SHOW_NUM = #{optItemShowNum},
+            </if>
+            <if test="useEl != null " >
+                USE_EL = #{useEl},
+            </if>
+            <if test="stageEl != null " >
+                STAGE_EL = #{stageEl},
+            </if>
+            <if test="isCheckItem != null " >
+                IS_CHECK_ITEM = #{isCheckItem},
+            </if>
+            <if test="lcbsxlx != null " >
+                LCBSXLX = #{lcbsxlx},
+            </if>
+            <if test="dybzspjdxh != null " >
+                DYBZSPJDXH = #{dybzspjdxh},
+            </if>
+            <if test="handWay != null " >
+                HAND_WAY = #{handWay},
+            </if>
+            <if test="useOneForm != null " >
+                USE_ONE_FORM = #{useOneForm},
+            </if>
+            <if test="rootOrgId != null and rootOrgId !=''">
+                ROOT_ORG_ID = #{rootOrgId},
+            </if>
+            <if test="isShowItem != null and isShowItem!='' ">
+                IS_SHOW_ITEM  = #{isShowItem},
+            </if>
+            <if test="dygjbzfxfw != null">
+                DYGJBZFXFW  = #{dygjbzfxfw},
+            </if>
+            <if test="isCheckItemform != null" >
+                IS_CHECK_ITEMFORM = #{isCheckItemform},
+            </if>
+            <if test="isCheckPartform != null" >
+                IS_CHECK_PARTFORM = #{isCheckPartform},
+            </if>
+            <if test="isCheckProj != null" >
+                IS_CHECK_PROJ = #{isCheckProj},
+            </if>
+            <if test="isCheckStage != null" >
+                IS_CHECK_STAGE = #{isCheckStage},
+            </if>
+        </set>
+        where STAGE_ID = #{stageId}
+    </update>
+
+    <delete id="deleteAeaParStage">
+        update AEA_Par_STAGE set IS_DELETED = '1' where STAGE_ID = #{id}
+    </delete>
+
+    <select id="listAeaParStageByThemeVerId" resultType="AeaParStage">
+        select
+        <include refid="allColumns"><property name="alias" value="aps"/></include>
+        from AEA_PAR_STAGE aps where aps.THEME_VER_ID=#{themeVerId} and aps.IS_DELETED!=1 order By aps.sort_no
+    </select>
+
+    <select id="getAeaParStageListByIteminstId" resultType="AeaParStage">
+        SELECT
+        <include refid="allColumns"><property name="alias" value="aps"/></include>
+        FROM aea_par_stage aps
+        LEFT JOIN aea_hi_par_stageinst ahps ON aps.STAGE_ID=ahps.STAGE_ID
+        LEFT JOIN aea_hi_iteminst ahi ON ahi.STAGEINST_ID=ahps.STAGEINST_ID
+        WHERE aps.IS_DELETED!=1 and ahi.ITEMINST_ID=#{iteminstId}
+    </select>
+
+    <!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaParStage" id="AeaParStageMap">
+        <id property="stageId" column="STAGE_ID"/>
+        <result property="stageName" column="STAGE_NAME"/>
+        <result property="themeVerId" column="THEME_VER_ID"/>
+        <result property="appId" column="APP_ID"/>
+        <result property="dueNum" column="DUE_NUM"/>
+        <result property="dueUnit" column="DUE_UNIT"/>
+        <result property="sortNo" column="SORT_NO"/>
+        <result property="iconCss" column="ICON_CSS"/>
+        <result property="bgCss" column="BG_CSS"/>
+        <result property="stageMemo" column="STAGE_MEMO"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="modifier" column="MODIFIER"/>
+        <result property="modifyTime" column="MODIFY_TIME"/>
+        <result property="isDeleted" column="IS_DELETED"/>
+        <result property="isNode" column="IS_NODE"/>
+        <result property="statusCheckUrl" column="STATUS_CHECK_URL"/>
+        <result property="stageCode" column="STAGE_CODE"/>
+        <result property="isNeedState" column="IS_NEED_STATE"/>
+        <result property="smallImgPath" column="SMALL_IMG_PATH"/>
+        <result property="middleImgPath" column="MIDDLE_IMG_PATH"/>
+        <result property="bigImgPath" column="BIG_IMG_PATH"/>
+        <result property="hugeImgPath" column="HUGE_IMG_PATH"/>
+        <result property="isImgIcon" column="IS_IMG_ICON"/>
+        <result property="isOptionItem" column="IS_OPTION_ITEM"/>
+        <result property="isSelItem" column="IS_SEL_ITEM"/>
+        <result property="parentId" column="PARENT_ID"/>
+        <result property="noptItemShowNum" column="NOPT_ITEM_SHOW_NUM"/>
+        <result property="optItemShowNum" column="OPT_ITEM_SHOW_NUM"/>
+        <result property="useEl" column="USE_EL"/>
+        <result property="isCheckItem" column="IS_CHECK_ITEM"/>
+        <result property="lcbsxlx" column="LCBSXLX"/>
+        <result property="dybzspjdxh" column="DYBZSPJDXH"/>
+        <result property="handWay" column="HAND_WAY"/>
+        <result property="useOneForm" column="USE_ONE_FORM"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+        <result property="isShowItem" column="IS_SHOW_ITEM"/>
+        <result property="dygjbzfxfw" column="DYGJBZFXFW"/>
+        <result property="isCheckItemform" column="IS_CHECK_ITEMFORM"/>
+        <result property="isCheckPartform" column="IS_CHECK_PARTFORM"/>
+        <result property="isCheckProj" column="IS_CHECK_PROJ"/>
+        <result property="isCheckStage" column="IS_CHECK_STAGE"/>
+    </resultMap>
+
+    <delete id="deleteAeaParStageByIds">
+        update  AEA_Par_STAGE
+           set  IS_DELETED = '1'
+        where
+        <if test="stageIds!=null and stageIds.length > 0">
+            STAGE_ID in
+            <foreach collection="stageIds" item="stageId" open="(" separator="," close=")">
+                #{stageId}
+            </foreach>
+        </if>
+    </delete>
+
+    <select id="getStageMaxSortNoByThemeVerId" resultType="Long">
+        select
+           max(SORT_NO)
+          from AEA_Par_STAGE
+         where THEME_VER_ID = #{themeVerId}
+           and ROOT_ORG_ID = #{rootOrgId}
+           and IS_DELETED = '0'
+    </select>
+
+    <select id="getPrintInFormBillData" resultType="com.augurit.aplanmis.common.domain.InFormBill" >
+        select
+            ai.ITEM_ID itemId,
+            ai.ITEM_NAME itemName,
+            org.ORG_NAME orgName,
+            aps.STAGE_NAME stageName
+        from
+            AEA_HI_ITEMINST ahi,
+            AEA_ITEM_basic ai,
+            OPU_OM_ORG org,
+            AEA_PAR_STAGE aps,
+            AEA_HI_PAR_STAGEINST ahps
+        where
+            ahi.ITEM_ID = ai.ITEM_ID
+          AND ahi.STAGEINST_ID = ahps.STAGEINST_ID
+          AND ahps.STAGE_ID = aps.STAGE_ID
+          AND org.ORG_ID = ahi.APPROVE_ORG_ID
+          AND org.ORG_DELETED = '0'
+          AND ahi.STAGEINST_ID = #{stageinstId}
+    </select>
+
+    <select id="getAeaParStageByApplyinstId" resultType="AeaParStage">
+       SELECT
+        <include refid="allColumns">
+            <property name="alias" value="aps"/>
+        </include>
+        FROM aea_hi_applyinst aha
+        LEFT JOIN aea_hi_par_stageinst ahps ON aha.APPLYINST_ID=ahps.APPLYINST_ID
+        LEFT JOIN aea_par_stage aps ON aps.STAGE_ID=ahps.STAGE_ID
+        WHERE APPINST_ID=#{applyinstId} AND aha.IS_DELETED !=1 AND aps.IS_DELETED !=1
+    </select>
+
+    <select id="getApplyInstStatusByProjInfoIdAndStageIdAndUnitInfoId" resultType="String">
+        select
+        aha.APPLYINST_STATE
+        from
+        aea_hi_par_stageinst ahps
+        left join aea_hi_applyinst aha
+        on ahps.applyinst_id = aha.APPLYINST_ID
+        left join aea_applyinst_proj aap
+        on aap.APPLYINST_ID = aha.APPLYINST_ID
+        left join aea_unit_proj aup
+        on aap.proj_info_id = aup.proj_info_id
+        where
+        aha.IS_DELETED = '0'
+        and aap.PROJ_INFO_ID = #{projInfoId}
+        and ahps.stage_id = #{stageId}
+        and aup.unit_info_id = #{unitInfoId}
+    </select>
+
+    <select id="getApplyInstStatusByProjInfoIdAndStageIdAndLinkmanInfoId" resultType="String">
+        select
+        aha.APPLYINST_STATE
+        from
+        aea_hi_par_stageinst ahps
+        left join aea_hi_applyinst aha
+        on ahps.applyinst_id = aha.APPLYINST_ID
+        left join aea_applyinst_proj aap
+        on aap.APPLYINST_ID = aha.APPLYINST_ID
+        left join aea_proj_linkman apl
+        on aap.proj_info_id = apl.proj_info_id
+        where
+        aha.IS_DELETED = '0'
+        and aap.PROJ_INFO_ID = #{projInfoId}
+        and ahps.stage_id = #{stageId}
+        and apl.linkman_info_id = #{linkmanInfoId}
+    </select>
+
+    <select id="listAeaParStageByIds" resultType="com.augurit.aplanmis.common.domain.AeaParStage">
+        select
+        <include refid="allColumns">
+            <property name="alias" value="aps"/>
+        </include>
+        from AEA_PAR_STAGE aps
+        where aps.STAGE_ID in
+        <foreach collection="ids" item="id" separator="," close=")" open="(">
+            #{id}
+        </foreach>
+    </select>
+
+    <select id="listTestOrPublishThemeVerRelStage" resultType="AeaParStage">
+        select
+            theme.THEME_ID as themeId,
+            theme.THEME_NAME as themeName,
+            theme.THEME_CODE as themeCode,
+            theme.THEME_VER_ID as themeVerId,
+            stage.STAGE_ID as stageId,
+            stage.STAGE_NAME as stageName,
+            stage.STAGE_CODE as stageCode,
+            stage.IS_NODE as isNode
+        from aea_par_stage stage,
+        (
+            select
+            theme.THEME_ID,
+            theme.THEME_NAME,
+            theme.THEME_CODE,
+            theme.THEME_TYPE,
+            theme.SORT_NO,
+            theme.CREATE_TIME,
+            themeVer.THEME_VER_ID
+            from aea_par_theme theme, aea_par_theme_ver themeVer
+            <where>
+                and themeVer.THEME_ID = theme.THEME_ID
+                and theme.IS_DELETED = '0'
+                and theme.ROOT_ORG_ID = #{rootOrgId}
+                and themeVer.IS_DELETED = '0'
+                and themeVer.ROOT_ORG_ID = #{rootOrgId}
+                and themeVer.IS_PUBLISH in ('1', '2')
+            </where>
+        ) theme
+        <where>
+            and stage.THEME_VER_ID = theme.THEME_VER_ID
+            and stage.ROOT_ORG_ID = #{rootOrgId}
+            and stage.IS_DELETED = '0'
+        </where>
+        order by theme.THEME_TYPE asc, theme.SORT_NO asc, theme.CREATE_TIME asc
+    </select>
+
+    <select id="getStageIdByDYBZSPJDXH" resultType="string">
+       select aps.stage_id stageId from AEA_PAR_STAGE aps where aps.DYBZSPJDXH = #{xh} and aps.IS_DELETED = '0'
+    </select>
+</mapper>

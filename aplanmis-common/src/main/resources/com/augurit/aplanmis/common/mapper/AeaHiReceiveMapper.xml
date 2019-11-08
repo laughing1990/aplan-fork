@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by Administrator    2019-07-04 16:45:20 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaHiReceiveMapper">
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns">
+        RECEIVE_ID  receiveId,
+        APPLYINST_ID  applyinstId,
+        OUTINST_ID  outinstId,
+        RECEIVE_USER_NAME  receiveUserName,
+        RECEIVE_CERT_NO  receiveCertNo,
+        RECEIVE_TIME  receiveTime,
+        APPROVE_DEPT_REGION  approveDeptRegion,
+        SUB_DEPT_REGION  subDeptRegion,
+        RECEIVE_MEMO  receiveMemo,
+        CREATER  creater,
+        CREATE_TIME  createTime,
+        MODIFIER  modifier,
+        MODIFY_TIME  modifyTime,
+        RECEIVE_USER_MOBILE  receiveUserMobile,
+        SERVICE_ADDRESS  serviceAddress,
+        DOCUMENT_NUM  documentNum,
+        RECEIPT_TYPE  receiptType,
+        FILE_URL  fileUrl,
+        DOCUMENT_NAME  documentName,
+        ROOT_ORG_ID rootOrgId
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaHiReceiveById" resultType="AeaHiReceive">
+        select
+        <include refid="allColumns"/>
+        from AEA_HI_RECEIVE where RECEIVE_ID = #{id}
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaHiReceive" resultType="AeaHiReceive">
+        select
+        <include refid="allColumns"/>
+        from AEA_HI_RECEIVE
+        <where>
+            <if test="receiveId != null">
+                AND RECEIVE_ID = #{receiveId}
+            </if>
+            <if test="applyinstId != null">
+                AND APPLYINST_ID = #{applyinstId}
+            </if>
+            <if test="outinstId != null">
+                AND OUTINST_ID = #{outinstId}
+            </if>
+            <if test="receiveUserName != null">
+                AND RECEIVE_USER_NAME = #{receiveUserName}
+            </if>
+            <if test="receiveCertNo != null">
+                AND RECEIVE_CERT_NO = #{receiveCertNo}
+            </if>
+            <if test="receiveMemo != null">
+                AND RECEIVE_MEMO = #{receiveMemo}
+            </if>
+            <if test="approveDeptRegion != null">
+                AND APPROVE_DEPT_REGION = #{approveDeptRegion}
+            </if>
+            <if test="subDeptRegion != null">
+                AND SUB_DEPT_REGION = #{subDeptRegion}
+            </if>
+            <if test="receiveUserMobile != null">
+                AND RECEIVE_USER_MOBILE = #{receiveUserMobile}
+            </if>
+            <if test="serviceAddress != null">
+                AND SERVICE_ADDRESS = #{serviceAddress}
+            </if>
+            <if test="documentNum != null">
+                AND DOCUMENT_NUM = #{documentNum}
+            </if>
+            <if test="receiptType != null">
+                AND RECEIPT_TYPE = #{receiptType}
+            </if>
+            <if test="rootOrgId != null">
+                AND ROOT_ORG_ID = #{rootOrgId}
+            </if>
+        </where>
+    </select>
+    <!--4 根据条件查询实体list,返回分页对象 -->
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaHiReceive" parameterType="AeaHiReceive">
+        insert into AEA_HI_RECEIVE (RECEIVE_ID, APPLYINST_ID, OUTINST_ID, RECEIVE_USER_NAME, RECEIVE_CERT_NO,
+                                    RECEIVE_TIME, APPROVE_DEPT_REGION, SUB_DEPT_REGION, RECEIVE_MEMO, CREATER,
+                                    CREATE_TIME, MODIFIER, MODIFY_TIME, RECEIVE_USER_MOBILE, SERVICE_ADDRESS,
+                                    DOCUMENT_NUM, RECEIPT_TYPE, FILE_URL, DOCUMENT_NAME,ROOT_ORG_ID)
+        values (#{receiveId}, #{applyinstId}, #{outinstId}, #{receiveUserName}, #{receiveCertNo}, #{receiveTime},
+                #{approveDeptRegion}, #{subDeptRegion}, #{receiveMemo}, #{creater}, #{createTime}, #{modifier},
+                #{modifyTime}, #{receiveUserMobile}, #{serviceAddress}, #{documentNum}, #{receiptType}, #{fileUrl},
+                #{documentName},#{rootOrgId})
+    </insert>
+    <!--6 修改实体对象 -->
+    <update id="updateAeaHiReceive" parameterType="AeaHiReceive">
+        update AEA_HI_RECEIVE
+        <set>
+            <if test="applyinstId != null">
+                APPLYINST_ID = #{applyinstId},
+            </if>
+            <if test="outinstId != null">
+                OUTINST_ID = #{outinstId},
+            </if>
+            <if test="receiveUserName != null">
+                RECEIVE_USER_NAME = #{receiveUserName},
+            </if>
+            <if test="receiveCertNo != null">
+                RECEIVE_CERT_NO = #{receiveCertNo},
+            </if>
+            <if test="receiveTime != null">
+                RECEIVE_TIME = #{receiveTime},
+            </if>
+            <if test="approveDeptRegion != null">
+                APPROVE_DEPT_REGION = #{approveDeptRegion},
+            </if>
+            <if test="subDeptRegion != null">
+                SUB_DEPT_REGION = #{subDeptRegion},
+            </if>
+            <if test="receiveMemo != null">
+                RECEIVE_MEMO = #{receiveMemo},
+            </if>
+            <if test="creater != null">
+                CREATER = #{creater},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime},
+            </if>
+            <if test="modifier != null">
+                MODIFIER = #{modifier},
+            </if>
+            <if test="modifyTime != null">
+                MODIFY_TIME = #{modifyTime},
+            </if>
+            <if test="receiveUserMobile != null">
+                RECEIVE_USER_MOBILE = #{receiveUserMobile},
+            </if>
+            <if test="serviceAddress != null">
+                SERVICE_ADDRESS = #{serviceAddress},
+            </if>
+            <if test="documentNum != null">
+                DOCUMENT_NUM = #{documentNum},
+            </if>
+            <if test="receiptType != null">
+                RECEIPT_TYPE = #{receiptType},
+            </if>
+            <if test="fileUrl != null">
+                FILE_URL = #{fileUrl},
+            </if>
+            <if test="documentName != null">
+                DOCUMENT_NAME = #{documentName},
+            </if>
+            <if test="rootOrgId != null">
+                ROOT_ORG_ID = #{rootOrgId},
+            </if>
+        </set>
+        where RECEIVE_ID = #{receiveId}
+    </update>
+    <!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaHiReceive">
+        delete from AEA_HI_RECEIVE where RECEIVE_ID = #{id}
+    </delete>
+
+    <select id="getAeaHiReceiveByApplyinstIdAndReceiptType" resultType="AeaHiReceive">
+        select
+        <include refid="allColumns"/>
+        from AEA_HI_RECEIVE
+        where APPLYINST_ID = #{applyinstId}
+        <if test="receiveType!=null and receiveType!=''">
+            AND RECEIPT_TYPE=#{receiveType}
+        </if>
+    </select>
+    <!--查询回执列表-->
+    <select id="getAeaHiReceiveByApplyinstIds" resultType="com.augurit.aplanmis.common.domain.AeaHiReceive">
+        select
+        <include refid="allColumns"/>
+        from AEA_HI_RECEIVE
+        <where>
+            <if test="applyinstIds!=null">
+                APPLYINST_ID in
+                <foreach collection="applyinstIds" close=")" item="applyinstId" open="(" separator=",">#{applyinstId}
+                </foreach>
+            </if>
+        </where>
+    </select>
+    <!--resultType="AeaHiReceive"-->
+    <select id="getAeaHiReceiveListByApplyinstIds" resultMap="AeaHiReceiveDtoMap">
+
+        select applyinst.APPLYINST_ID,
+        applyinst.APPLYINST_CODE,
+        applyinst.IS_SERIES_APPROVE,
+        case applyinst.IS_SERIES_APPROVE
+        when '0' then (select stage_name from aea_hi_par_stageinst stageinst LEFT JOIN aea_par_stage stage on
+        stage.STAGE_ID=stageinst.STAGE_ID where stageinst.APPLYINST_ID in
+        <foreach collection="applyinstIds" close=")" item="applyinstId" open="(" separator=",">#{applyinstId}</foreach>
+        )
+        else (
+        select ITEMINST_NAME from aea_hi_iteminst iteminst join aea_hi_seriesinst seriesinst on
+        seriesinst.SERIESINST_ID=iteminst.SERIESINST_ID where seriesinst.APPLYINST_ID
+        in
+        <foreach collection="applyinstIds" close=")" item="applyinstId" open="(" separator=",">#{applyinstId}
+        </foreach>
+        )
+        end name
+        ,
+        receive.*
+        from aea_hi_applyinst applyinst
+
+        LEFT JOIN aea_hi_receive receive on receive.APPLYINST_ID=applyinst.APPLYINST_ID
+        where applyinst.APPLYINST_ID in
+        <foreach collection="applyinstIds" close=")" item="applyinstId" open="(" separator=",">#{applyinstId}
+        </foreach>
+        order by receive.RECEIPT_TYPE
+    </select>
+
+    <select id="getAeaHiReceiveListByApplyinstId" resultMap="AeaHiReceiveDtoMap">
+
+        select applyinst.APPLYINST_ID,
+        applyinst.APPLYINST_CODE,
+        applyinst.IS_SERIES_APPROVE,
+        case applyinst.IS_SERIES_APPROVE
+        when '0' then (select stage_name from aea_hi_par_stageinst stageinst LEFT JOIN aea_par_stage stage on
+        stage.STAGE_ID=stageinst.STAGE_ID where stageinst.APPLYINST_ID =#{applyinstId}
+        )
+        else (
+        select ITEMINST_NAME from aea_hi_iteminst iteminst join aea_hi_seriesinst seriesinst on
+        seriesinst.SERIESINST_ID=iteminst.SERIESINST_ID where seriesinst.APPLYINST_ID=#{applyinstId}
+        )
+        end name
+        ,
+        receive.*
+        from aea_hi_applyinst applyinst
+
+        LEFT JOIN aea_hi_receive receive on receive.APPLYINST_ID=applyinst.APPLYINST_ID
+        where applyinst.APPLYINST_ID =#{applyinstId}
+        order by receive.RECEIPT_TYPE
+    </select>
+
+    <!-- 获取指定申报实例下指定类型的回执列表 -->
+    <select id="listReceiveByApplyinstIdAndTypes" resultType="com.augurit.aplanmis.common.domain.AeaHiReceive">
+        select
+        <include refid="allColumns"/>
+        from AEA_HI_RECEIVE
+        <where>
+            <if test="applyinstIds!=null">
+                APPLYINST_ID in
+                <foreach collection="applyinstIds" close=")" item="applyinstId" open="(" separator=",">#{applyinstId}
+                </foreach>
+            </if>
+            <if test="receiptTypes!=null">
+                RECEIPT_TYPE in
+                <foreach collection="receiptTypes" close=")" item="receiptType" open="(" separator=",">#{receiptTypes}
+                </foreach>
+            </if>
+        </where>
+
+    </select>
+
+    <!--8 删除实体对象列表,根据主键ID列表 -->
+
+    <resultMap type="com.augurit.aplanmis.common.dto.AeaHiReceiveDto" id="AeaHiReceiveDtoMap">
+        <id column="APPLYINST_ID" property="applyinstId"/>
+        <result column="APPLYINST_CODE" property="applyinstCode"/>
+        <result property="isSeries" column="IS_SERIES_APPROVE"/>
+        <result property="name" column="NAME"/>
+        <collection property="receiveList" ofType="com.augurit.aplanmis.common.domain.AeaHiReceive">
+            <id column="RECEIVE_ID" property="receiveId"/>
+            <result column="APPLYINST_ID" property="applyinstId"/>
+            <result column="RECEIPT_TYPE" property="receiptType"/>
+            <result column="DOCUMENT_NAME" property="documentName"/>
+            <result property="outinstId" column="OUTINST_ID"/>
+            <result property="receiveUserName" column="RECEIVE_USER_NAME"/>
+            <result property="receiveCertNo" column="RECEIVE_CERT_NO"/>
+            <result property="receiveTime" column="RECEIVE_TIME"/>
+            <result property="approveDeptRegion" column="APPROVE_DEPT_REGION"/>
+            <result property="subDeptRegion" column="SUB_DEPT_REGION"/>
+            <result property="receiveMemo" column="RECEIVE_MEMO"/>
+            <result property="creater" column="CREATER"/>
+            <result property="createTime" column="CREATE_TIME"/>
+            <result property="modifier" column="MODIFIER"/>
+            <result property="modifyTime" column="MODIFY_TIME"/>
+            <result property="receiveUserMobile" column="RECEIVE_USER_MOBILE"/>
+            <result property="serviceAddress" column="SERVICE_ADDRESS"/>
+            <result property="documentNum" column="DOCUMENT_NUM"/>
+            <result property="fileUrl" column="FILE_URL"/>
+        </collection>
+    </resultMap>
+
+    <!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaHiReceive" id="AeaHiReceiveMap">
+        <id property="receiveId" column="RECEIVE_ID"/>
+        <result property="applyinstId" column="APPLYINST_ID"/>
+        <result property="outinstId" column="OUTINST_ID"/>
+        <result property="receiveUserName" column="RECEIVE_USER_NAME"/>
+        <result property="receiveCertNo" column="RECEIVE_CERT_NO"/>
+        <result property="receiveTime" column="RECEIVE_TIME"/>
+        <result property="approveDeptRegion" column="APPROVE_DEPT_REGION"/>
+        <result property="subDeptRegion" column="SUB_DEPT_REGION"/>
+        <result property="receiveMemo" column="RECEIVE_MEMO"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="modifier" column="MODIFIER"/>
+        <result property="modifyTime" column="MODIFY_TIME"/>
+        <result property="receiveUserMobile" column="RECEIVE_USER_MOBILE"/>
+        <result property="serviceAddress" column="SERVICE_ADDRESS"/>
+        <result property="documentNum" column="DOCUMENT_NUM"/>
+        <result property="receiptType" column="RECEIPT_TYPE"/>
+        <result property="fileUrl" column="FILE_URL"/>
+        <result property="documentName" column="DOCUMENT_NAME"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+    </resultMap>
+</mapper>

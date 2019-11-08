@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaImBiddingPriceMapper">
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns" >
+    BIDDING_PRICE_ID  biddingPriceId,
+    UNIT_BIDDING_ID  unitBiddingId,
+    PRICE  price,
+    IS_CHOICE  isChoice,
+    IS_DELETE  isDelete,
+    CREATER  creater,
+    CREATE_TIME  createTime,
+    ROOT_ORG_ID rootOrgId
+    </sql>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaImBiddingPrice" resultType="AeaImBiddingPrice" >
+        select
+        <include refid="allColumns"/>
+        from  AEA_IM_BIDDING_PRICE
+        <where>
+            <if test="biddingPriceId != null" >
+                AND    BIDDING_PRICE_ID = #{biddingPriceId}
+            </if>
+            <if test="unitBiddingId != null" >
+                AND    UNIT_BIDDING_ID = #{unitBiddingId}
+            </if>
+            <if test="price != null" >
+                AND    PRICE = #{price}
+            </if>
+            <if test="isChoice != null" >
+                AND    IS_CHOICE = #{isChoice}
+            </if>
+            <if test="isDelete != null" >
+                AND    IS_DELETE = #{isDelete}
+            </if>
+            <if test="creater != null" >
+                AND    CREATER = #{creater}
+            </if>
+            <if test="createTime != null" >
+                AND    CREATE_TIME = #{createTime}
+            </if>
+            <if test="rootOrgId != null" >
+                AND    ROOT_ORG_ID = #{rootOrgId}
+            </if>
+        </where>
+    </select>
+
+    <insert id="insertAeaImBiddingPrice" parameterType="AeaImBiddingPrice">
+        insert into AEA_IM_BIDDING_PRICE (
+            BIDDING_PRICE_ID, UNIT_BIDDING_ID, PRICE, IS_CHOICE, IS_DELETE, CREATER, CREATE_TIME,ROOT_ORG_ID
+        ) values (
+            #{biddingPriceId}, #{unitBiddingId}, #{price}, #{isChoice}, #{isDelete}, #{creater}, #{createTime},#{rootOrgId}
+        )
+    </insert>
+
+    <!-- 修改实体对象 -->
+    <update id="updateAeaImBiddingPrice" parameterType="AeaImBiddingPrice">
+        update AEA_IM_BIDDING_PRICE
+        <set>
+            <if test="unitBiddingId != null" >
+                UNIT_BIDDING_ID = #{unitBiddingId},
+            </if>
+            <if test="price != null" >
+                PROJ_PURCHASE_ID = #{price},
+            </if>
+            <if test="isChoice != null" >
+                IS_CHOICE = #{isChoice},
+            </if>
+            <if test="isDelete != null" >
+                IS_DELETE = #{isDelete},
+            </if>
+            <if test="creater != null" >
+                CREATER = #{creater},
+            </if>
+            <if test="createTime != null" >
+                CREATE_TIME = #{createTime},
+            </if>
+            <if test="rootOrgId != null" >
+                ROOT_ORG_ID = #{rootOrgId},
+            </if>
+        </set>
+        where BIDDING_PRICE_ID = #{biddingPriceId}
+    </update>
+
+
+
+    <!-- 获取项目最高、最低价格以及中介机构报价 -->
+    <select id="getBiddingPriceByProjPurchaseId" resultType="java.util.HashMap">
+        SELECT
+            MAX(aibp.PRICE) highestPrice,
+            MIN(aibp.PRICE) basePrice,
+            MAX(aibp.CREATE_TIME) lastCreateTime,
+            (SELECT t.PRICE
+            FROM aea_im_bidding_price t WHERE t.IS_DELETE = '0' AND t.UNIT_BIDDING_ID = #{unitBiddingId}
+            ORDER BY t.CREATE_TIME DESC LIMIT 1) unitPrice
+        FROM aea_im_bidding_price aibp, aea_im_unit_bidding aiub
+        WHERE aibp.UNIT_BIDDING_ID = aiub.UNIT_BIDDING_ID
+        AND aibp.IS_DELETE = '0' AND aiub.IS_DELETE = '0'
+        AND aiub.PROJ_PURCHASE_ID = #{projPurchaseId}
+    </select>
+
+    <!-- 竞价选取 -->
+    <select id="getBiddingPrice" resultType="AeaImBiddingPrice">
+        SELECT
+            aibp.BIDDING_PRICE_ID bidding_price_id,
+            aiub.UNIT_BIDDING_ID unit_bidding_id
+        FROM aea_im_bidding_price aibp, aea_im_unit_bidding aiub
+        WHERE aibp.UNIT_BIDDING_ID = aiub.UNIT_BIDDING_ID
+        AND aiub.IS_DELETE = '0' and aibp.IS_DELETE = '0'
+        AND aiub.IS_CANCEL_SIGNUP = '0'
+        AND aiub.PROJ_PURCHASE_ID = #{projPurchaseId}
+        <choose>
+            <when test="type != null and type == '1'.toString()">
+                ORDER BY RAND() LIMIT 1
+            </when>
+            <when test="type != null and type == '2'.toString()">
+                ORDER BY aibp.PRICE desc LIMIT 1
+            </when>
+            <otherwise>
+                LIMIT 1
+            </otherwise>
+        </choose>
+    </select>
+
+</mapper>

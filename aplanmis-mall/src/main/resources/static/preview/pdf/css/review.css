@@ -1,0 +1,1522 @@
+@charset "utf-8";
+body {
+    overflow: hidden;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none
+}
+
+i {
+    font-style: normal
+}
+
+#wraper {
+    background-color: #555
+}
+
+.editorMWraper {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0
+}
+
+#editorWraper1 {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    overflow: hidden
+}
+
+#editorWraper2 {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    overflow: hidden
+}
+
+.comparison #editorWraper1 {
+    right: 50%
+}
+
+.comparison #editorWraper2 {
+    display: block;
+    left: 50%
+}
+
+.comparison #separator {
+    display: block
+}
+
+.editorWorkspace {
+    display: block;
+    position: absolute;
+    cursor: -webkit-grab;
+    cursor: -moz-grab;
+    cursor: grab;
+    width: 1px;
+    z-index: 2
+}
+
+svg {
+    overflow: visible
+}
+
+.editorSVG {
+    position: absolute;
+    top: 0;
+    left: 0
+}
+
+.bgImg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    background-color: #fff
+}
+
+.markerWraper {
+    position: absolute;
+    z-index: 10;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0
+}
+
+.markerWraper .marker {
+    position: absolute;
+    background-image: url(../image/marker.png);
+    background-size: contain;
+    width: 60px;
+    height: 60px;
+    cursor: pointer
+}
+
+.marker text {
+    display: inline-block;
+    fill: #fff;
+    font-size: 20px;
+    text-anchor: middle
+}
+
+.svg-element:hover {
+    cursor: pointer
+}
+
+.editorWorkspace > canvas {
+    position: relative
+}
+
+.toolBar {
+    position: absolute;
+    height: 40px;
+    left: 50%;
+    bottom:5px;
+    transform: translateX(-50%);
+    z-index: 10000;
+    background-color: #0071ca;
+    border: 0;
+    color: #fff;
+    text-align: center;
+    padding: 5px;
+    box-shadow: 0 0 5px #777;
+    border-radius: 4px 4px 0 0
+}
+
+.separation {
+    margin: 0 5px;
+    width: 1px;
+    height: 32px;
+    background-color: #f1f1f1;
+    display: inline-block
+}
+
+.btn {
+    background-image: url(../image/btn.png?d=2);
+    background-repeat: no-repeat;
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    bottom: 10px;
+}
+
+.btn:hover, .btn.selected {
+    background-color: #003161
+}
+
+.btn.active {
+    background-color: #666
+}
+
+.btn-arrow {
+    background-position: -5px -5px
+}
+
+.btn-center {
+    background-position: -50px -6px
+}
+
+.btn-drag {
+    background-position: -89px -5px
+}
+
+.btn-rotate-in {
+    background-position: -5px -47px
+}
+
+.btn-eraser {
+    background-position: -47px -45px
+}
+
+.btn-init-img {
+    background-position: -130px -128px
+}
+
+.btn-clip {
+    background-position: -86px -45px
+}
+
+.btn-rotate-out {
+    background-position: -7px -90px
+}
+
+.btn-marker {
+    background-position: -51px -89px
+}
+
+.btn-rectangle {
+    background-position: -87px -89px
+}
+
+.btn-save-on-server {
+    width: 32px;
+    height: 32px;
+    background-position: -131px -7px
+}
+
+.btn-zoom-in {
+    background-position: -131px -47px
+}
+
+.btn-zoom-out {
+    background-position: -135px -89px
+}
+
+.btn-nineCell {
+    background-position: -5px -130px
+}
+
+.btn-magnifier {
+    background-position: -50px -130px
+}
+
+.btn-dont-move {
+    background-position: -90px -130px
+}
+
+.measure-arrow path {
+    stroke: #000;
+    fill: transparent;
+    stroke-width: 1px;
+    marker-start: url(#line-marker);
+    marker-end: url(#line-marker);
+    marker-mid: url(#circle-mid)
+}
+
+.measure-area path {
+    fill: transparent;
+    stroke: #000;
+    stroke-width: 1px
+}
+
+.measure-arrow text {
+    font-size: 1.5em;
+    font-family: 宋体
+}
+
+.measure-area text {
+    font-size: 2em
+}
+
+.marker {
+    display: block;
+    position: absolute;
+    background-image: url(../image/marker.png);
+    width: 60px;
+    height: 50px;
+    cursor: pointer;
+    text-align: center;
+    color: #fff;
+    padding-top: 5px;
+    margin-left: -30px;
+    margin-top: -60px;
+    font-size: 18px
+}
+
+.marker.active {
+    background-image: url(../image/marker-active.png)
+}
+
+[cursor=grab] {
+    cursor: -webkit-grab;
+    cursor: -moz-grab;
+    cursor: grab
+}
+
+[cursor=grabbing] {
+    cursor: -webkit-grabbing;
+    cursor: -moz-grabbing;
+    cursor: grabbing
+}
+
+[cursor=default] {
+    cursor: default
+}
+
+.editorSVG path {
+    cursor: crosshair
+}
+
+.editorSVG g.marker {
+    fill: transparent;
+    stroke: red;
+    stroke-width: 3
+}
+
+.editorSVG g.marker.active .bound {
+    fill: #f00;
+    fill-opacity: .2
+}
+
+.editorSVG g.marker image {
+    width: 60px;
+    height: 50px;
+    cursor: pointer
+}
+
+@keyframes bounce {
+    0% {
+        transform: translate(0, 0)
+    }
+    50% {
+        transform: translate(0, -20px)
+    }
+    100% {
+        transform: translate(0, 0)
+    }
+}
+
+.editorSVG g.marker.active image, .editorSVG g.marker.active text {
+    animation: bounce 1s linear infinite
+}
+
+.editorSVG g.marker text {
+    stroke: #fff;
+    stroke-width: .5;
+    font-family: 'Times New Roman';
+    font-size: 20px
+}
+
+.editorSVG g.marker {
+    user-select: element;
+    pointer-events: all
+}
+
+#blueprintDlg {
+    left: 10px;
+    top: 20px;
+    width: 300px;
+    height: 500px
+}
+
+#blueprintDlg.collapse .dragMain, #blueprintDlg.collapse .bottomBar {
+    display: none
+}
+
+#blueprintDlg.collapse:hover .dragMain, #blueprintDlg.collapse:hover .bottomBar {
+    display: block
+}
+
+dl, dd {
+    margin: 0;
+    padding: 0
+}
+
+#blueprints {
+    background-color: #fff;
+    width: 100%;
+    border-collapse: collapse
+}
+
+#blueprints h3 {
+    margin: 0 0 4px 0;
+    font-size: 14px
+}
+
+#blueprints .order {
+    color: #777;
+    text-align: center
+}
+
+#blueprints .fullName {
+    font-weight: bold;
+    text-align: left;
+    font-size: 14px;
+    line-height: 1.4em
+}
+
+#blueprints td {
+    padding: 5px;
+    border-width: 1px 0 1px 0;
+    border-style: solid;
+    border-color: #aaa
+}
+
+#blueprints tr:hover {
+    background-color: #aefcf9
+}
+
+#blueprints tr.selected {
+    background-color: #aefcf9
+}
+
+.fullName {
+    display: block
+}
+
+#blueprintMenu {
+    position: absolute;
+    padding: 0;
+    margin: 0;
+    border: 1px solid #aaa;
+    display: none;
+    left: 50%;
+    top: 30%;
+    z-index: 1000
+}
+
+#blueprintMenu li {
+    list-style: none;
+    margin: 0;
+    padding: 7px;
+    border-bottom: 1px solid #aaa;
+    min-width: 7em;
+    background-color: #fff
+}
+
+#blueprintMenu li:hover {
+    background-color: #ff0
+}
+
+.versions [opinion-count] {
+    text-decoration: none;
+    border: 1px solid #f00;
+    border-radius: 20px;
+    padding: 0;
+    text-align: center;
+    color: #d00;
+    background-color: #fff;
+    margin-left: 3px;
+    position: absolute;
+    top: -.5em;
+    right: -.5em;
+    font-size: 10px;
+    z-index: 100;
+    display: block;
+    min-width: 1.6em;
+    height: 1.6em;
+    line-height: 1.6em
+}
+
+.versions [opinion-count="0"] {
+    display: none
+}
+
+.versions [status] {
+    text-decoration: none;
+    display: inline-block;
+    padding: 7px;
+    margin: 3px 6px 0 0;
+    color: #fff;
+    background-color: #999;
+    cursor: pointer;
+    position: relative;
+    font-weight: normal;
+    font-size: 12px;
+    text-align: center;
+    position: relative;
+    min-width: 3em;
+    height: 1em;
+    line-height: 1em
+}
+
+s.comparison {
+    cursor: pointer;
+    padding: 4px 7px;
+    box-shadow: 0 0 10px #999;
+    border-radius: 0 0 10px 10px;
+    border: 0;
+    text-decoration: none;
+    display: none;
+    background-color: #033592;
+    color: #fff;
+    position: absolute;
+    left: 0;
+    z-index: 100;
+    top: 1.8em;
+    width: 3em
+}
+
+.current:hover s.comparison {
+    display: inline-block
+}
+
+.current:hover .selected s.comparison {
+    display: none
+}
+
+.versions [status="待审"][isopen="1"] {
+    background-color: #0069d0
+}
+
+.versions [status="待审"][isopen="0"] {
+    background-color: #999
+}
+
+.versions [status="待审"] {
+    background-color: #0069d0
+}
+
+.versions [status="完成"] {
+    background-color: #777;
+    cursor: default
+}
+
+.versions [status="通过"] {
+    background-color: #35b300
+}
+
+.versions [status="整改"] {
+    background-color: #f00
+}
+
+.versions [status="已上传"] {
+    background-color: #3e97df
+}
+
+.versions [status="已上传"] i {
+    color: #fff
+}
+
+.versions [status="已上传"]:hover {
+    background-color: #cf0;
+    box-shadow: 0 0 6px #555
+}
+
+.versions [status="已上传"]:hover i {
+    color: #f00
+}
+
+.versions .selected {
+    box-shadow: 0 0 6px #555;
+    color: #f00 !important;
+    background-color: #cf0 !important
+}
+
+.versions [status] > b {
+    padding: 0 5px
+}
+
+.versions [status]:hover {
+    color: #f00;
+    box-shadow: 0 0 6px #555;
+    background-color: #cf0
+}
+
+.em2 {
+    width: 2em
+}
+
+.em3 {
+    width: 3em
+}
+
+.em4 {
+    width: 4em
+}
+
+.em5 {
+    width: 5em
+}
+
+.em6 {
+    width: 6em
+}
+
+#opinionDlg {
+    top: 20px;
+    right: 20px;
+    width: 500px;
+    height: 500px
+}
+
+#submit_button a {
+    margin-right: 5px
+}
+
+.peo-dd {
+    margin: 10px;
+    padding: 10px;
+    background-color: #fff;
+    border: 1px solid #ddd
+}
+
+.peo-dd.CurImgCode {
+    background-color: #f8ffe4
+}
+
+.peo-dd.selected {
+    outline: 2px solid #41de00;
+    box-shadow: 0 0 10px #777
+}
+
+.peo-dd:hover {
+    box-shadow: 0 0 10px #777
+}
+
+.peoContent p {
+    margin: 5px 0
+}
+
+.peo-dd .sort {
+    display: inline-block;
+    padding: 0 6px;
+    background-color: #555;
+    color: #fff;
+    border-radius: 10px;
+    font-style: normal;
+    height: 1.4em;
+    line-height: 1.4em
+}
+
+.peo-dd > div.title {
+    margin-bottom: .5em;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 6px
+}
+
+.peo-dd > div.title i {
+    margin: 0 3px;
+    font-style: normal
+}
+
+.peo-dd i.code {
+    cursor: pointer
+}
+
+.peo-dd[data-class="需修改完善意见"] .title {
+    font-weight: bold
+}
+
+.hideContent .content, .hideContent .buttonList {
+    display: none
+}
+
+.hideContent .title {
+    margin: 0 !important;
+    border-bottom: 0 !important;
+    padding-bottom: 0 !important
+}
+
+.buttonList {
+    position: relative;
+    margin: 10px 0
+}
+
+.buttonList > div {
+    position: absolute;
+    right: 5px;
+    top: 5px
+}
+
+.peoContent {
+    min-height: 3em
+}
+
+.position {
+    color: #999
+}
+
+#opinion h3 {
+    text-align: center;
+    font-size: 16px
+}
+
+#opinion h3 b {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 6px;
+    background-color: #777;
+    color: #fff;
+    font-weight: normal
+}
+
+#opinionEdit {
+    width: 620px;
+    height: 400px;
+    background-color: #f1f1f1;
+    transform: translate(-50%, -50%)
+}
+
+@media (max-width: 700px) {
+    #opinionEdit {
+        width: 100%;
+        left: 0;
+        right: 0;
+        margin-left: 0
+    }
+}
+
+#opinionEdit .dragMain {
+    bottom: 0
+}
+
+#opinionEdit input, #opinionEdit select {
+    padding: 3px
+}
+
+#opinionEdit .content {
+    overflow: auto;
+    background-color: #fff;
+    border: 1px solid #aaa;
+    box-sizing: border-box;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 7px;
+    padding: .5em;
+    line-height: 1.6em;
+    height: 100%
+}
+
+#opinionEdit table {
+    height: 100%
+}
+
+#opinionEdit table td button {
+    padding: 4px 6px
+}
+
+option[data-type="消防意见"] {
+    display: none
+}
+
+.peo-dd.CurImgCode > div.title i.sort {
+    background-color: #f00
+}
+
+.peo-dd.selected > div.title i.sort {
+    background-color: #02c206
+}
+
+.peo-dd.CurImgCode .btn-opinion-copy {
+    display: none
+}
+
+.showCurBlueprint .peo-dd {
+    display: none
+}
+
+.showCurBlueprint .peo-dd.CurImgCode {
+    display: block
+}
+
+#blueprintVersionList {
+    position: absolute;
+    z-index: 1000;
+    display: none;
+    background-color: #fff;
+    box-shadow: 0 0 10px #aaa
+}
+
+#blueprintVersionList dd {
+    padding: 9px
+}
+
+#blueprintVersionList dd:hover {
+    background-color: #92ffeb
+}
+
+#blueprintVersionList p {
+    margin: 0;
+    padding: 9px;
+    background-color: #2783e2;
+    color: #fff
+}
+
+#toolbarPageNum {
+    position: absolute;
+    z-index: 10000;
+    /*background-color: #005eb9;*/
+    background-color: #7F7F7F;
+    color: #fff;
+    top: 0;
+    left: 50%;
+    box-shadow: 0 0 5px #7F7F7F;
+    text-align: center;
+    font-size: 12px;
+    display: none;
+    border-radius: 0 0 6px 6px;
+    transform: translate(-50%, 0);
+    opacity:0.7;
+    /*-webkit-transition: background-color .15s;*/
+    height: 30px;
+    line-height: 30px
+}
+
+#toolbarPageNum button {
+    background-color: transparent;
+    padding: 10px;
+    border: 0;
+    font-size: 24px;
+    font-weight: bolder;
+    text-align:center;
+    display: inline-block;
+    width: auto;
+    padding: 0 10px;
+    height: 30px;
+    margin: 0;
+    color: #fff;
+    border: 0;
+    vertical-align: top
+}
+
+#toolbarPageNum button:focus {
+    outline: 0 none
+}
+
+#toolbarPageNum input {
+    width: 20px;
+    padding: 0;
+    margin: 0
+}
+
+#toolbarPageNum b {
+    padding: 0 10px;
+    font-weight: normal;
+    display: inline-block
+}
+
+.drag h2 li {
+    padding: 0 .5em;
+    color: #fff;
+    cursor: pointer
+}
+
+#replayEdit {
+    position: relative;
+    margin-top: 10px
+}
+
+#replayEdit [contenteditable] {
+    margin-bottom: 10px
+}
+
+.replay {
+    position: relative;
+    margin-top: 10px;
+    padding: 6px;
+    padding-left: 3em;
+    border: 1px solid #aaa;
+    min-height: 1.2em
+}
+
+.replay::before {
+    content: '回复:';
+    position: absolute;
+    left: 6px;
+    color: #aaa
+}
+
+.replay[check='通过']::after {
+    content: '√';
+    position: absolute;
+    right: 6px;
+    bottom: 6px;
+    color: #f00;
+    font-size: 30px
+}
+
+.replay[check='整改']::after {
+    content: '×';
+    position: absolute;
+    right: 6px;
+    bottom: 6px;
+    color: #f00;
+    font-size: 30px
+}
+
+#blueprintDlg.collapse h2 button {
+    color: transparent
+}
+
+#blueprintDlg.collapse h2 button::before {
+    content: '1';
+    position: absolute;
+    left: 1px;
+    font-family: Webdings;
+    color: #fff
+}
+
+.tabs {
+    background-color: #2196f3
+}
+
+#standardDlg .dragMain {
+    overflow: hidden
+}
+
+.topToolbar {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    width: 100px;
+    margin-left: -50px;
+    text-align: center
+}
+
+#zygkbDlg {
+    width: 700px;
+    margin-left: -350px;
+    height: 500px;
+    margin-top: -250px
+}
+
+#zygkbDlg .dragMain table {
+    width: 100%
+}
+
+#nineCell {
+    width: 100%;
+    height: 100%;
+    border-collapse: collapse;
+    left: 0;
+    top: 0;
+    position: absolute;
+    pointer-events: none
+}
+
+#nineCell tr:hover {
+    background-color: transparent
+}
+
+#nineCell tbody {
+    background-color: transparent
+}
+
+#nineCell td {
+    border: 3px solid #f00;
+    position: relative
+}
+
+#nineCell td b {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    font-size: 30px;
+    font-weight: bold;
+    display: inline-block;
+    background-color: #f00;
+    color: #fff;
+    width: 2em;
+    text-align: center;
+    pointer-events: all;
+    cursor: pointer
+}
+
+#nineCell td.checked {
+    background-color: #0080ff33
+}
+
+.magnifier {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 400px;
+    height: 400px;
+    background-color: transparent;
+    pointer-events: none;
+    z-index: 10
+}
+
+.magnifier > canvas {
+    position: absolute;
+    left: 0;
+    right: 0;
+    border-radius: 0;
+    box-sizing: border-box;
+    background-color: rgba(255, 255, 255, .8);
+    border: 5px solid;
+    box-shadow: 0 0 100px #555
+}
+
+.magnifier > b {
+    position: absolute;
+    transform: rotate(50deg);
+    width: 200px;
+    height: 0;
+    border: 10px solid;
+    box-shadow: 0 0 100px #555;
+    right: -50px;
+    bottom: 0;
+    display: none
+}
+
+#imageClipWraper {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0
+}
+
+#imageClipWraper .mask {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-color: rgba(199, 237, 255, .5)
+}
+
+#imageClipWraper .clipWorkArea {
+    position: absolute;
+    left: 30%;
+    top: 30%;
+    width: 1000px;
+    height: 1000px;
+    outline: 2px solid #f00;
+    background-color: rgba(255, 255, 255, .52)
+}
+
+h3 {
+    font-size: 1.1em;
+    margin: 7px 0;
+    text-align: center
+}
+
+#radio_group_class label {
+    display: block
+}
+
+#opinionSelectDlg .tabs {
+    height: auto;
+    line-height: inherit
+}
+
+#opinionSelectDlg .tabs li {
+    padding: 0 8px;
+    margin: 0;
+    font-size: 16px
+}
+
+#opinionUL {
+    padding: 10px
+}
+
+#opinionUL li {
+    margin: 5px 0;
+    position: relative
+}
+
+.edit_toolbar {
+    position: absolute;
+    bottom: 5px;
+    right: 5px
+}
+
+.dvOpinion {
+    background-color: #fff;
+    padding: 10px
+}
+
+#opinionUL li:hover {
+    box-shadow: 0 0 10px #aaa
+}
+
+#opinionUL li.active {
+    outline: 1px solid #0056ff
+}
+
+.imageClipWraper {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 8
+}
+
+#clipArea {
+    position: absolute;
+    left: 100px;
+    top: 100px;
+    width: 100px;
+    height: 100px;
+    outline: 2px solid;
+    box-shadow: 0 0 0 900000px rgba(170, 170, 170, .7);
+    cursor: move
+}
+
+#clipArea > b {
+    display: block;
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    outline: 2px solid #555;
+    background-color: #fff
+}
+
+#clipArea > b:hover {
+    background-color: #dd0
+}
+
+#clipArea > b.top-left {
+    left: -4px;
+    top: -4px;
+    cursor: se-resize
+}
+
+#clipArea > b.top {
+    left: 50%;
+    margin-left: -4px;
+    top: -4px;
+    cursor: ns-resize
+}
+
+#clipArea > b.top-right {
+    right: -4px;
+    top: -4px;
+    cursor: ne-resize
+}
+
+#clipArea > b.right {
+    right: -4px;
+    top: 50%;
+    margin-top: -4px;
+    cursor: e-resize
+}
+
+#clipArea > b.bottom-right {
+    right: -4px;
+    bottom: -4px;
+    cursor: nw-resize
+}
+
+#clipArea > b.bottom {
+    left: 50%;
+    margin-left: -4px;
+    bottom: -4px;
+    cursor: ns-resize
+}
+
+#clipArea > b.bottom-left {
+    left: -4px;
+    bottom: -4px;
+    cursor: sw-resize
+}
+
+#clipArea > b.left {
+    left: -4px;
+    margin-top: -4px;
+    top: 50%;
+    cursor: ew-resize
+}
+
+#clipArea > .toolbar {
+    position: absolute;
+    bottom: -35px;
+    right: 0;
+    top: auto;
+    left: auto;
+    white-space: nowrap;
+    text-align: center;
+    margin: 0;
+    padding: 3px;
+    border: 1px solid #333;
+    background-color: #fff;
+    cursor: pointer
+}
+
+#clipArea > .toolbar button {
+    margin: 0;
+    border-radius: 0
+}
+
+#clipImageWraper {
+    display: none
+}
+
+table.opinion {
+    width: 100%;
+    background-color: #fff
+}
+
+table.opinion td {
+    padding: 5px;
+    background-color: #fff;
+    border: 1px solid #aaa
+}
+
+table.opinion tr.type-tr, table.opinion tr.sub-title {
+    background-color: #e0f1ff;
+    font-size: 1.1em
+}
+
+.icon-status {
+    position: absolute;
+    right: 0;
+    bottom: 2em;
+    font-weight: normal;
+    padding: 6px 8px;
+    border: 1px dashed;
+    color: #f00;
+    display: block;
+    transform: rotate(-30deg);
+    border-radius: 4px
+}
+
+#blueprintListDlg th, #blueprintListDlg td {
+    padding: 3px;
+    text-align: left
+}
+
+#versionList a {
+    display: inline-block;
+    padding: 3px;
+    margin: 3px
+}
+
+#versionList a.current {
+    border-bottom: 2px solid #f00
+}
+
+#tbOpinion tr[self] {
+    background-color: #a4ff80
+}
+
+#tbOpinion th, #tbOpinion td {
+    text-align: left;
+    padding: 7px;
+    background-color: inherit
+}
+
+#tbOpinion td:first-child, #tbOpinion th:first-child {
+    text-align: center
+}
+
+#tbOpinion .boolbar {
+    text-align: right
+}
+
+#tbOpinion div.content {
+    padding: 5px
+}
+
+#tbOpinion td:last-child {
+    text-align: left
+}
+
+#tbOpinion h3 {
+    position: relative;
+    text-align: left;
+    font-size: 1em;
+    border-bottom: 1px dotted #ccc;
+    color: #777;
+    padding-bottom: 5px
+}
+
+#tbOpinion h3 a {
+    margin-right: 10px;
+    color: #0071ca
+}
+
+#tbOpinion i.status {
+    position: absolute;
+    top: 1em;
+    right: 1em;
+    transform: rotate(-30deg);
+    display: block;
+    border: 1px dotted #001d8a;
+    padding: 4px 6px;
+    height: 1em;
+    line-height: 1em;
+    color: #001d8a;
+    border-radius: 4px;
+    font-weight: normal
+}
+
+#tbOpinion td button {
+    padding: 4px 6px
+}
+
+#tbOpinion tr.selected {
+    background-color: #efffd3
+}
+
+tr.type-tr {
+    font-weight: bold
+}
+
+td.topinion {
+    position: relative
+}
+
+#tbOpinion .boolbar {
+    margin-top: 1em
+}
+
+#opinionEdit table {
+    line-height: 2em;
+    width: 100%
+}
+
+#opinionEdit tbody {
+    background-color: inherit
+}
+
+#opinionEdit td b {
+    height: 1em;
+    line-height: 1em;
+    overflow: hidden;
+    max-width: 10em;
+    margin-right: 7px
+}
+
+.pdfViewer {
+    position: fixed;
+    top: 100px;
+    width: 600px;
+    background-color: transparent
+}
+
+.pdfViewer .dragMain {
+    overflow: hidden;
+    background-color: transparent;
+    bottom: 0
+}
+
+#cmp_opinionDlg {
+    top: 50%;
+    left: 50%;
+    margin: 0;
+    margin-left: -250px;
+    margin-top: -200px
+}
+
+#blueprintListDlg td {
+    border: 1px solid #ddd
+}
+
+@keyframes combox_menu {
+    from {
+        -webkit-transform: translate3d(0, -20%, 0);
+        transform: translate3d(0, 20%, 0);
+        opacity: 0
+    }
+    to {
+        -webkit-transform: none;
+        transform: none;
+        opacity: 1
+    }
+}
+
+.combox .arrow {
+    position: absolute;
+    right: 2px;
+    top: 4px;
+    color: #aaa;
+    font-size: 80%
+}
+
+.combox_menu {
+    display: none;
+    position: fixed;
+    left: 0;
+    top: 22px;
+    background-color: #fff;
+    min-width: 150px;
+    margin: 0;
+    padding: 0;
+    border: 1px solid #777;
+    z-index: 8888;
+    box-shadow: 0 0 10px #aaa;
+    overflow-y: auto;
+    -webkit-animation: combox_menu .2s linear;
+    animation: combox_menu .2s linear
+}
+
+.combox_menu > li a.printfmulu:hover {
+    color: #000
+}
+
+.combox_menu > li {
+    display: block;
+    padding: .4em 16px;
+    min-height: 1.6em;
+    color: #333;
+    cursor: pointer;
+    border-bottom: 1px solid #eee
+}
+
+.combox_menu > li:hover {
+    background-color: #ffa
+}
+
+.combox_menu i {
+    text-decoration: none;
+    font-style: normal
+}
+
+.combox_menu button {
+    width: auto;
+    height: 2em;
+    padding: 0 8px;
+    margin: 0 3px 0 0;
+    line-height: 2em;
+    background-color: #fff;
+    color: #000;
+    border: 1px solid #aaa;
+    font-size: 14px
+}
+
+.combox_menu button:hover {
+    background-color: #0b7ec0;
+    color: #ff0
+}
+
+#blueprints .group_tr td, #pdfList .group_tr td {
+    padding: 6px 10px;
+    text-align: left;
+    background-color: #eee;
+    color: #555;
+    border: 0
+}
+
+#pdfList {
+    background-color: #fff
+}
+
+.editor-color-picker {
+    position: absolute;
+    top: 0;
+    right: 0;
+    box-shadow: 0 0 5px #7F7F7F;
+    z-index: 1000
+}
+
+.editor-color-picker i {
+    display: block;
+    float: left;
+    width: 2em;
+    height: 1em;
+    cursor: pointer;
+    margin: 0
+}
+
+.color1 {
+    background-color: #fff
+}
+
+.color2 {
+    background-color: #dfefff
+}
+
+.color3 {
+    background-color: #d3ffdc
+}
+
+.color4 {
+    background-color: #ffdab9
+}
+
+.color5 {
+    background-color: rgba(255, 255, 255, .5)
+}
+
+.workInfo {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    font-size: 1.2em
+}
+
+.searchWraper {
+    padding: 4px
+}
+
+#blueprintListDlg {
+    top: 30px;
+    left: 60%;
+    width: 350px;
+    height: 500px;
+    position: fixed
+}
+
+.editorWorkWraper {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0
+}
+
+#selectCodeDlg {
+    padding: 1em;
+    position: absolute;
+    background-color: #fff;
+    border: 1px solid #aaa;
+    z-index: 1
+}
+
+@media (max-width: 700px) {
+    #opinionDlg {
+        top: 0;
+        left: 0;
+        right: 0;
+        width: auto;
+        height: auto;
+        bottom: 0;
+        border-radius: 0
+    }
+
+    #blueprintListDlg, #blueprintDlg {
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        border-radius: 0
+    }
+}
+
+#zygkbTemplateDlg div[data-id] {
+    background-color: #fff;
+    padding: 2px 0 8px 8px;
+    margin: 2px 0
+}
+
+#zygkbTemplateDlg input {
+    margin: 4px
+}
+
+.list icon.toggle::after {
+    border: none
+}

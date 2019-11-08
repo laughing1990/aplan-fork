@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by Administrator    2019-09-12 16:22:50 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaCreditSummaryMapper">
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns">
+    SUMMARY_ID  summaryId,
+    CREDIT_TYPE  creditType,
+    SUMMARY_TYPE  summaryType,
+    CREDIT_UNIT_INFO_ID  creditUnitInfoId,
+    LINKMAN_INFO_ID  linkmanInfoId,
+    CN_TABLE_NAME  cnTableName,
+    EN_TABLE_NAME  enTableName,
+    CN_DEPT_NAME  cnDeptName,
+    EN_DEPT_NAME  enDeptName,
+    IS_VALID  isValid,
+    INVALID_REASON  invalidReason,
+    IS_SYNC  isSync,
+    SYNC_SOURCE  syncSource,
+    SYNC_TIME  syncTime,
+    CREATER  creater,
+    CREATE_TIME  createTime,
+    MODIFIER  modifier,
+    MODIFY_TIME  modifyTime,
+    ROOT_ORG_ID  rootOrgId
+    </sql>
+    <sql id="allColumns_alias">
+     ${alias}.SUMMARY_ID  summaryId,
+     ${alias}.CREDIT_TYPE  creditType,
+     ${alias}.SUMMARY_TYPE  summaryType,
+     ${alias}.CREDIT_UNIT_INFO_ID  creditUnitInfoId,
+     ${alias}.LINKMAN_INFO_ID  linkmanInfoId,
+     ${alias}.CN_TABLE_NAME  cnTableName,
+     ${alias}.EN_TABLE_NAME  enTableName,
+     ${alias}.CN_DEPT_NAME  cnDeptName,
+     ${alias}.EN_DEPT_NAME  enDeptName,
+     ${alias}.IS_VALID  isValid,
+     ${alias}.INVALID_REASON  invalidReason,
+     ${alias}.IS_SYNC  isSync,
+     ${alias}.SYNC_SOURCE  syncSource,
+     ${alias}.SYNC_TIME  syncTime,
+     ${alias}.CREATER  creater,
+     ${alias}.CREATE_TIME  createTime,
+     ${alias}.MODIFIER  modifier,
+     ${alias}.MODIFY_TIME  modifyTime,
+     ${alias}.ROOT_ORG_ID  rootOrgId
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaCreditSummaryById" resultType="AeaCreditSummary">
+        select
+        <include refid="allColumns"/>
+        from AEA_CREDIT_SUMMARY
+        where SUMMARY_ID = #{id}
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaCreditSummary" resultType="AeaCreditSummary">
+        select
+        <include refid="allColumns_alias">
+            <property name="alias" value="acs"/>
+        </include>
+        ,
+        creUnit.APPLICANT as creditUnitInfoName,
+        creLink.LINKMAN_NAME as linkmanInfoName
+        from AEA_CREDIT_SUMMARY acs
+        left join aea_credit_unit_info creUnit on ( acs.CREDIT_UNIT_INFO_ID = creUnit.CREDIT_UNIT_INFO_ID and
+        creUnit.IS_DELETED = '0'
+        )
+        left join aea_linkman_info creLink on ( acs.LINKMAN_INFO_ID = creLink.LINKMAN_INFO_ID and creLink.IS_DELETED =
+        '0' )
+        <where>
+            <if test="summaryId != null and summaryId != ''">
+                AND acs.SUMMARY_ID = #{summaryId}
+            </if>
+            <if test="creditType != null and creditType != ''">
+                AND acs.CREDIT_TYPE = #{creditType}
+            </if>
+            <if test="summaryType != null and summaryType != ''">
+                AND acs.SUMMARY_TYPE = #{summaryType}
+            </if>
+            <if test="creditUnitInfoId != null and creditUnitInfoId != ''">
+                AND acs.CREDIT_UNIT_INFO_ID = #{creditUnitInfoId}
+            </if>
+            <if test="linkmanInfoId != null and linkmanInfoId != ''">
+                AND acs.LINKMAN_INFO_ID = #{linkmanInfoId}
+            </if>
+            <if test="cnTableName != null and cnTableName != ''">
+                AND acs.CN_TABLE_NAME = #{cnTableName}
+            </if>
+            <if test="enTableName != null and enTableName != ''">
+                AND acs.EN_TABLE_NAME = #{enTableName}
+            </if>
+            <if test="cnDeptName != null and cnDeptName != ''">
+                AND acs.CN_DEPT_NAME = #{cnDeptName}
+            </if>
+            <if test="enDeptName != null and enDeptName != ''">
+                AND acs.EN_DEPT_NAME = #{enDeptName}
+            </if>
+            <if test="isValid != null and isValid != ''">
+                AND acs.IS_VALID = #{isValid}
+            </if>
+            <if test="invalidReason != null and invalidReason != ''">
+                AND acs.INVALID_REASON = #{invalidReason}
+            </if>
+            <if test="isSync != null and isSync != ''">
+                AND acs.IS_SYNC = #{isSync}
+            </if>
+            <if test="syncSource != null and syncSource != ''">
+                AND acs.SYNC_SOURCE = #{syncSource}
+            </if>
+            <if test="syncTime != null and syncTime != ''">
+                AND acs.SYNC_TIME = #{syncTime}
+            </if>
+            <if test="creater != null and creater != ''">
+                AND acs.CREATER = #{creater}
+            </if>
+            <if test="createTime != null and createTime != ''">
+                AND acs.CREATE_TIME = #{createTime}
+            </if>
+            <if test="modifier != null and modifier != ''">
+                AND acs.MODIFIER = #{modifier}
+            </if>
+            <if test="modifyTime != null and modifyTime != ''">
+                AND acs.MODIFY_TIME = #{modifyTime}
+            </if>
+            <if test="rootOrgId != null and rootOrgId != ''">
+                AND acs.ROOT_ORG_ID = #{rootOrgId}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                AND (
+                acs.CN_TABLE_NAME like concat('%', concat(#{keyword}, '%')) or
+                acs.CN_DEPT_NAME like concat('%', concat(#{keyword}, '%')) or
+                creUnit.APPLICANT like concat('%', concat(#{keyword}, '%')) or
+                creLink.LINKMAN_NAME like concat('%', concat(#{keyword}, '%'))
+                )
+            </if>
+        </where>
+        order by acs.CREATE_TIME desc
+    </select>
+    <select id="listAeaCreditSummaryByUnifiedSocialCreditCode"
+            resultType="com.augurit.aplanmis.common.domain.AeaCreditSummary">
+        select
+        <include refid="allColumns_alias">
+            <property name="alias" value="acs"/>
+        </include> from  AEA_CREDIT_SUMMARY acs
+        where acs.CREDIT_UNIT_INFO_ID in (
+         select acui.CREDIT_UNIT_INFO_ID from aea_credit_unit_info acui where acui.UNIFIED_SOCIAL_CREDIT_CODE=#{unifiedSocialCreditCode}
+        and acui.IS_DELETED='0'
+        )
+
+    </select>
+    <!--4 根据条件查询实体list,返回分页对象 -->
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaCreditSummary" parameterType="AeaCreditSummary">
+    insert into AEA_CREDIT_SUMMARY (
+    SUMMARY_ID  ,CREDIT_TYPE  ,SUMMARY_TYPE  ,CREDIT_UNIT_INFO_ID  ,LINKMAN_INFO_ID  ,CN_TABLE_NAME  ,EN_TABLE_NAME  ,CN_DEPT_NAME  ,EN_DEPT_NAME  ,IS_VALID  ,INVALID_REASON  ,IS_SYNC  ,SYNC_SOURCE  ,SYNC_TIME  ,CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME  ,ROOT_ORG_ID
+        )  values  (
+    #{summaryId},#{creditType},#{summaryType},#{creditUnitInfoId},#{linkmanInfoId},#{cnTableName},#{enTableName},#{cnDeptName},#{enDeptName},#{isValid},#{invalidReason},#{isSync},#{syncSource},#{syncTime},#{creater},#{createTime},#{modifier},#{modifyTime},  #{rootOrgId}
+        )
+    </insert>
+    <!--6 修改实体对象 -->
+    <update id="updateAeaCreditSummary" parameterType="AeaCreditSummary">
+        update AEA_CREDIT_SUMMARY
+        <set>
+            <if test="summaryId != null">
+                SUMMARY_ID = #{summaryId},
+            </if>
+            <if test="creditType != null">
+                CREDIT_TYPE = #{creditType},
+            </if>
+            <if test="summaryType != null">
+                SUMMARY_TYPE = #{summaryType},
+            </if>
+            <if test="creditUnitInfoId != null">
+                CREDIT_UNIT_INFO_ID = #{creditUnitInfoId},
+            </if>
+            <if test="linkmanInfoId != null">
+                LINKMAN_INFO_ID = #{linkmanInfoId},
+            </if>
+            <if test="cnTableName != null">
+                CN_TABLE_NAME = #{cnTableName},
+            </if>
+            <if test="enTableName != null">
+                EN_TABLE_NAME = #{enTableName},
+            </if>
+            <if test="cnDeptName != null">
+                CN_DEPT_NAME = #{cnDeptName},
+            </if>
+            <if test="enDeptName != null">
+                EN_DEPT_NAME = #{enDeptName},
+            </if>
+            <if test="isValid != null">
+                IS_VALID = #{isValid},
+            </if>
+            <if test="invalidReason != null">
+                INVALID_REASON = #{invalidReason},
+            </if>
+            <if test="isSync != null">
+                IS_SYNC = #{isSync},
+            </if>
+            <if test="syncSource != null">
+                SYNC_SOURCE = #{syncSource},
+            </if>
+            <if test="syncTime != null">
+                SYNC_TIME = #{syncTime},
+            </if>
+            <if test="creater != null">
+                CREATER = #{creater},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime},
+            </if>
+            <if test="modifier != null">
+                MODIFIER = #{modifier},
+            </if>
+            <if test="modifyTime != null">
+                MODIFY_TIME = #{modifyTime},
+            </if>
+            <if test="rootOrgId != null">
+                ROOT_ORG_ID = #{rootOrgId},
+            </if>
+        </set>
+        where SUMMARY_ID = #{summaryId}
+    </update>
+    <!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaCreditSummary">
+        delete from   AEA_CREDIT_SUMMARY
+        where
+    SUMMARY_ID = #{id}
+    </delete>
+    <!--8 删除实体对象列表,根据主键ID列表 -->
+    <!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaCreditSummary" id="AeaCreditSummaryMap">
+        <id property="summaryId" column="SUMMARY_ID"/>
+        <result property="creditType" column="CREDIT_TYPE"/>
+        <result property="summaryType" column="SUMMARY_TYPE"/>
+        <result property="creditUnitInfoId" column="CREDIT_UNIT_INFO_ID"/>
+        <result property="linkmanInfoId" column="LINKMAN_INFO_ID"/>
+        <result property="cnTableName" column="CN_TABLE_NAME"/>
+        <result property="enTableName" column="EN_TABLE_NAME"/>
+        <result property="cnDeptName" column="CN_DEPT_NAME"/>
+        <result property="enDeptName" column="EN_DEPT_NAME"/>
+        <result property="isValid" column="IS_VALID"/>
+        <result property="invalidReason" column="INVALID_REASON"/>
+        <result property="isSync" column="IS_SYNC"/>
+        <result property="syncSource" column="SYNC_SOURCE"/>
+        <result property="syncTime" column="SYNC_TIME"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="modifier" column="MODIFIER"/>
+        <result property="modifyTime" column="MODIFY_TIME"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+    </resultMap>
+</mapper>

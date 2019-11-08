@@ -1,0 +1,444 @@
+<?xml version="1.0" ?><wsdl:definitions name="CertbaoPlatformServiceImplService" targetNamespace="http://impl.certbaosignservice.server.ws.gov4biz.com/" xmlns:ns1="http://certbaosignservice.server.ws.gov4biz.com/" xmlns:ns2="http://schemas.xmlsoap.org/soap/http" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://impl.certbaosignservice.server.ws.gov4biz.com/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <wsdl:import location="http://certi.dg.gov.cn/certbaoServer/services/certbaoSignService?wsdl=CertbaoPlatformService.wsdl" namespace="http://certbaosignservice.server.ws.gov4biz.com/">
+    </wsdl:import>
+  <wsdl:binding name="CertbaoPlatformServiceImplServiceSoapBinding" type="ns1:CertbaoPlatformService">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"></soap:binding>
+    <wsdl:operation name="completeEnvelop">
+      <soap:operation soapAction="" style="document"></soap:operation>
+      <wsdl:input name="completeEnvelop">
+        <soap:body use="literal"></soap:body>
+      </wsdl:input>
+      <wsdl:output name="completeEnvelopResponse">
+        <soap:body use="literal"></soap:body>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="createEnvelopSignRequest">
+      <soap:operation soapAction="" style="document"></soap:operation>
+      <wsdl:input name="createEnvelopSignRequest">
+        <soap:body use="literal"></soap:body>
+      </wsdl:input>
+      <wsdl:output name="createEnvelopSignRequestResponse">
+        <soap:body use="literal"></soap:body>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="createTemplateByPdf">
+      <soap:operation soapAction="" style="document"></soap:operation>
+      <wsdl:input name="createTemplateByPdf">
+        <soap:body use="literal"></soap:body>
+      </wsdl:input>
+      <wsdl:output name="createTemplateByPdfResponse">
+        <soap:body use="literal"></soap:body>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="queryUrlLocked">
+      <soap:operation soapAction="" style="document"></soap:operation>
+      <wsdl:input name="queryUrlLocked">
+        <soap:body use="literal"></soap:body>
+      </wsdl:input>
+      <wsdl:output name="queryUrlLockedResponse">
+        <soap:body use="literal"></soap:body>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="viewPdfById">
+      <soap:operation soapAction="" style="document"></soap:operation>
+      <wsdl:input name="viewPdfById">
+        <soap:body use="literal"></soap:body>
+      </wsdl:input>
+      <wsdl:output name="viewPdfByIdResponse">
+        <soap:body use="literal"></soap:body>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="removePdfByEnvelop">
+      <soap:operation soapAction="" style="document"></soap:operation>
+      <wsdl:input name="removePdfByEnvelop">
+        <soap:body use="literal"></soap:body>
+      </wsdl:input>
+      <wsdl:output name="removePdfByEnvelopResponse">
+        <soap:body use="literal"></soap:body>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="updateUserInfo">
+      <soap:operation soapAction="" style="document"></soap:operation>
+      <wsdl:input name="updateUserInfo">
+        <soap:body use="literal"></soap:body>
+      </wsdl:input>
+      <wsdl:output name="updateUserInfoResponse">
+        <soap:body use="literal"></soap:body>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="verifySignedPdf">
+      <soap:operation soapAction="" style="document"></soap:operation>
+      <wsdl:input name="verifySignedPdf">
+        <soap:body use="literal"></soap:body>
+      </wsdl:input>
+      <wsdl:output name="verifySignedPdfResponse">
+        <soap:body use="literal"></soap:body>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="downloadSignedPdfByPdfId">
+      <soap:operation soapAction="" style="document"></soap:operation>
+      <wsdl:input name="downloadSignedPdfByPdfId">
+        <soap:body use="literal"></soap:body>
+      </wsdl:input>
+      <wsdl:output name="downloadSignedPdfByPdfIdResponse">
+        <soap:body use="literal"></soap:body>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="setEnvelopTemplate">
+      <soap:operation soapAction="" style="document"></soap:operation>
+      <wsdl:input name="setEnvelopTemplate">
+        <soap:body use="literal"></soap:body>
+      </wsdl:input>
+      <wsdl:output name="setEnvelopTemplateResponse">
+        <soap:body use="literal"></soap:body>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="downloadSignedPdfByToken">
+      <soap:operation soapAction="" style="document"></soap:operation>
+      <wsdl:input name="downloadSignedPdfByToken">
+        <soap:body use="literal"></soap:body>
+      </wsdl:input>
+      <wsdl:output name="downloadSignedPdfByTokenResponse">
+        <soap:body use="literal"></soap:body>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="downloadPdfByEnvelop">
+      <soap:operation soapAction="" style="document"></soap:operation>
+      <wsdl:input name="downloadPdfByEnvelop">
+        <soap:body use="literal"></soap:body>
+      </wsdl:input>
+      <wsdl:output name="downloadPdfByEnvelopResponse">
+        <soap:body use="literal"></soap:body>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="lockSignUrl">
+      <soap:operation soapAction="" style="document"></soap:operation>
+      <wsdl:input name="lockSignUrl">
+        <soap:body use="literal"></soap:body>
+      </wsdl:input>
+      <wsdl:output name="lockSignUrlResponse">
+        <soap:body use="literal"></soap:body>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="queryAllEnvelopStatus">
+      <soap:operation soapAction="" style="document"></soap:operation>
+      <wsdl:input name="queryAllEnvelopStatus">
+        <soap:body use="literal"></soap:body>
+      </wsdl:input>
+      <wsdl:output name="queryAllEnvelopStatusResponse">
+        <soap:body use="literal"></soap:body>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="viewPdfSignedById">
+      <soap:operation soapAction="" style="document"></soap:operation>
+      <wsdl:input name="viewPdfSignedById">
+        <soap:body use="literal"></soap:body>
+      </wsdl:input>
+      <wsdl:output name="viewPdfSignedByIdResponse">
+        <soap:body use="literal"></soap:body>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fileUploadByStream">
+      <soap:operation soapAction="" style="document"></soap:operation>
+      <wsdl:input name="fileUploadByStream">
+        <soap:body use="literal"></soap:body>
+      </wsdl:input>
+      <wsdl:output name="fileUploadByStreamResponse">
+        <soap:body use="literal"></soap:body>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="verifyPdf">
+      <soap:operation soapAction="" style="document"></soap:operation>
+      <wsdl:input name="verifyPdf">
+        <soap:body use="literal"></soap:body>
+      </wsdl:input>
+      <wsdl:output name="verifyPdfResponse">
+        <soap:body use="literal"></soap:body>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="signRequestByKeylabel">
+      <soap:operation soapAction="" style="document"></soap:operation>
+      <wsdl:input name="signRequestByKeylabel">
+        <soap:body use="literal"></soap:body>
+      </wsdl:input>
+      <wsdl:output name="signRequestByKeylabelResponse">
+        <soap:body use="literal"></soap:body>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="queryEnvelopSignRule">
+      <soap:operation soapAction="" style="document"></soap:operation>
+      <wsdl:input name="queryEnvelopSignRule">
+        <soap:body use="literal"></soap:body>
+      </wsdl:input>
+      <wsdl:output name="queryEnvelopSignRuleResponse">
+        <soap:body use="literal"></soap:body>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="cancelEnvelop">
+      <soap:operation soapAction="" style="document"></soap:operation>
+      <wsdl:input name="cancelEnvelop">
+        <soap:body use="literal"></soap:body>
+      </wsdl:input>
+      <wsdl:output name="cancelEnvelopResponse">
+        <soap:body use="literal"></soap:body>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="startEnvelop">
+      <soap:operation soapAction="" style="document"></soap:operation>
+      <wsdl:input name="startEnvelop">
+        <soap:body use="literal"></soap:body>
+      </wsdl:input>
+      <wsdl:output name="startEnvelopResponse">
+        <soap:body use="literal"></soap:body>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="queryEnvelopSignRequest">
+      <soap:operation soapAction="" style="document"></soap:operation>
+      <wsdl:input name="queryEnvelopSignRequest">
+        <soap:body use="literal"></soap:body>
+      </wsdl:input>
+      <wsdl:output name="queryEnvelopSignRequestResponse">
+        <soap:body use="literal"></soap:body>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="createEnvelopSignRequestByObj">
+      <soap:operation soapAction="" style="document"></soap:operation>
+      <wsdl:input name="createEnvelopSignRequestByObj">
+        <soap:body use="literal"></soap:body>
+      </wsdl:input>
+      <wsdl:output name="createEnvelopSignRequestByObjResponse">
+        <soap:body use="literal"></soap:body>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="signBySever">
+      <soap:operation soapAction="" style="document"></soap:operation>
+      <wsdl:input name="signBySever">
+        <soap:body use="literal"></soap:body>
+      </wsdl:input>
+      <wsdl:output name="signBySeverResponse">
+        <soap:body use="literal"></soap:body>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="unlockSignUrl">
+      <soap:operation soapAction="" style="document"></soap:operation>
+      <wsdl:input name="unlockSignUrl">
+        <soap:body use="literal"></soap:body>
+      </wsdl:input>
+      <wsdl:output name="unlockSignUrlResponse">
+        <soap:body use="literal"></soap:body>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="cancelEnvelopSignRequest">
+      <soap:operation soapAction="" style="document"></soap:operation>
+      <wsdl:input name="cancelEnvelopSignRequest">
+        <soap:body use="literal"></soap:body>
+      </wsdl:input>
+      <wsdl:output name="cancelEnvelopSignRequestResponse">
+        <soap:body use="literal"></soap:body>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="queryEnvelopSignAreaInfo">
+      <soap:operation soapAction="" style="document"></soap:operation>
+      <wsdl:input name="queryEnvelopSignAreaInfo">
+        <soap:body use="literal"></soap:body>
+      </wsdl:input>
+      <wsdl:output name="queryEnvelopSignAreaInfoResponse">
+        <soap:body use="literal"></soap:body>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="importUser">
+      <soap:operation soapAction="" style="document"></soap:operation>
+      <wsdl:input name="importUser">
+        <soap:body use="literal"></soap:body>
+      </wsdl:input>
+      <wsdl:output name="importUserResponse">
+        <soap:body use="literal"></soap:body>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="queryTemplateInfo">
+      <soap:operation soapAction="" style="document"></soap:operation>
+      <wsdl:input name="queryTemplateInfo">
+        <soap:body use="literal"></soap:body>
+      </wsdl:input>
+      <wsdl:output name="queryTemplateInfoResponse">
+        <soap:body use="literal"></soap:body>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="updateEnvelopSignRequest">
+      <soap:operation soapAction="" style="document"></soap:operation>
+      <wsdl:input name="updateEnvelopSignRequest">
+        <soap:body use="literal"></soap:body>
+      </wsdl:input>
+      <wsdl:output name="updateEnvelopSignRequestResponse">
+        <soap:body use="literal"></soap:body>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="downloadSignedPdfById">
+      <soap:operation soapAction="" style="document"></soap:operation>
+      <wsdl:input name="downloadSignedPdfById">
+        <soap:body use="literal"></soap:body>
+      </wsdl:input>
+      <wsdl:output name="downloadSignedPdfByIdResponse">
+        <soap:body use="literal"></soap:body>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="createEnvelopMultiPdfsSignRequest">
+      <soap:operation soapAction="" style="document"></soap:operation>
+      <wsdl:input name="createEnvelopMultiPdfsSignRequest">
+        <soap:body use="literal"></soap:body>
+      </wsdl:input>
+      <wsdl:output name="createEnvelopMultiPdfsSignRequestResponse">
+        <soap:body use="literal"></soap:body>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="uploadStampByCertsn">
+      <soap:operation soapAction="" style="document"></soap:operation>
+      <wsdl:input name="uploadStampByCertsn">
+        <soap:body use="literal"></soap:body>
+      </wsdl:input>
+      <wsdl:output name="uploadStampByCertsnResponse">
+        <soap:body use="literal"></soap:body>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="createEnvelopSignRequestWithToken">
+      <soap:operation soapAction="" style="document"></soap:operation>
+      <wsdl:input name="createEnvelopSignRequestWithToken">
+        <soap:body use="literal"></soap:body>
+      </wsdl:input>
+      <wsdl:output name="createEnvelopSignRequestWithTokenResponse">
+        <soap:body use="literal"></soap:body>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="removePdf">
+      <soap:operation soapAction="" style="document"></soap:operation>
+      <wsdl:input name="removePdf">
+        <soap:body use="literal"></soap:body>
+      </wsdl:input>
+      <wsdl:output name="removePdfResponse">
+        <soap:body use="literal"></soap:body>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="completeEnvelopSignRequst">
+      <soap:operation soapAction="" style="document"></soap:operation>
+      <wsdl:input name="completeEnvelopSignRequst">
+        <soap:body use="literal"></soap:body>
+      </wsdl:input>
+      <wsdl:output name="completeEnvelopSignRequstResponse">
+        <soap:body use="literal"></soap:body>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="createEnvelopMultiPdfs">
+      <soap:operation soapAction="" style="document"></soap:operation>
+      <wsdl:input name="createEnvelopMultiPdfs">
+        <soap:body use="literal"></soap:body>
+      </wsdl:input>
+      <wsdl:output name="createEnvelopMultiPdfsResponse">
+        <soap:body use="literal"></soap:body>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="createEnvelopSignRequestByKeylabel">
+      <soap:operation soapAction="" style="document"></soap:operation>
+      <wsdl:input name="createEnvelopSignRequestByKeylabel">
+        <soap:body use="literal"></soap:body>
+      </wsdl:input>
+      <wsdl:output name="createEnvelopSignRequestByKeylabelResponse">
+        <soap:body use="literal"></soap:body>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="createSignatureInPdf">
+      <soap:operation soapAction="" style="document"></soap:operation>
+      <wsdl:input name="createSignatureInPdf">
+        <soap:body use="literal"></soap:body>
+      </wsdl:input>
+      <wsdl:output name="createSignatureInPdfResponse">
+        <soap:body use="literal"></soap:body>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="verifyEnvelopSignature">
+      <soap:operation soapAction="" style="document"></soap:operation>
+      <wsdl:input name="verifyEnvelopSignature">
+        <soap:body use="literal"></soap:body>
+      </wsdl:input>
+      <wsdl:output name="verifyEnvelopSignatureResponse">
+        <soap:body use="literal"></soap:body>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="uploadStamp">
+      <soap:operation soapAction="" style="document"></soap:operation>
+      <wsdl:input name="uploadStamp">
+        <soap:body use="literal"></soap:body>
+      </wsdl:input>
+      <wsdl:output name="uploadStampResponse">
+        <soap:body use="literal"></soap:body>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="createSignRequestForSelfSign">
+      <soap:operation soapAction="" style="document"></soap:operation>
+      <wsdl:input name="createSignRequestForSelfSign">
+        <soap:body use="literal"></soap:body>
+      </wsdl:input>
+      <wsdl:output name="createSignRequestForSelfSignResponse">
+        <soap:body use="literal"></soap:body>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="queryEnvelopSignAreaInfoWithToken">
+      <soap:operation soapAction="" style="document"></soap:operation>
+      <wsdl:input name="queryEnvelopSignAreaInfoWithToken">
+        <soap:body use="literal"></soap:body>
+      </wsdl:input>
+      <wsdl:output name="queryEnvelopSignAreaInfoWithTokenResponse">
+        <soap:body use="literal"></soap:body>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="fileUpload">
+      <soap:operation soapAction="" style="document"></soap:operation>
+      <wsdl:input name="fileUpload">
+        <soap:body use="literal"></soap:body>
+      </wsdl:input>
+      <wsdl:output name="fileUploadResponse">
+        <soap:body use="literal"></soap:body>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="queryEnvelopStatus">
+      <soap:operation soapAction="" style="document"></soap:operation>
+      <wsdl:input name="queryEnvelopStatus">
+        <soap:body use="literal"></soap:body>
+      </wsdl:input>
+      <wsdl:output name="queryEnvelopStatusResponse">
+        <soap:body use="literal"></soap:body>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="createEnvelop">
+      <soap:operation soapAction="" style="document"></soap:operation>
+      <wsdl:input name="createEnvelop">
+        <soap:body use="literal"></soap:body>
+      </wsdl:input>
+      <wsdl:output name="createEnvelopResponse">
+        <soap:body use="literal"></soap:body>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="verifyPdfByEnvelop">
+      <soap:operation soapAction="" style="document"></soap:operation>
+      <wsdl:input name="verifyPdfByEnvelop">
+        <soap:body use="literal"></soap:body>
+      </wsdl:input>
+      <wsdl:output name="verifyPdfByEnvelopResponse">
+        <soap:body use="literal"></soap:body>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="downloadPdf">
+      <soap:operation soapAction="" style="document"></soap:operation>
+      <wsdl:input name="downloadPdf">
+        <soap:body use="literal"></soap:body>
+      </wsdl:input>
+      <wsdl:output name="downloadPdfResponse">
+        <soap:body use="literal"></soap:body>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="CertbaoPlatformServiceImplService">
+    <wsdl:port binding="tns:CertbaoPlatformServiceImplServiceSoapBinding" name="CertbaoPlatformServiceImplPort">
+      <soap:address location="http://certi.dg.gov.cn/certbaoServer/services/certbaoSignService"></soap:address>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

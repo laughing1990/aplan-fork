@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by Administrator    2019-07-04 17:12:38 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaItemDirectoryMapper">
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns">
+        DIRECTORY_ID  directoryId,
+    TYSXM  tysxm,
+    TYSXMC  tysxmc,
+    PRO_XH  proXh,
+    PRO_SXMC  proSxmc,
+    CIT_XH  citXh,
+    CIT_SXMC  citSxmc,
+    COU_XH  couXh,
+    COU_SXMC  couSxmc,
+    SPBM  spbm,
+    XH  xh,
+    TYMLYJ  tymlyj,
+    SPDX  spdx,
+    BBH  bbh,
+    TYMLZT  tymlzt,
+    FBSJ  fbsj,
+    SSSJ  sssj,
+    SYNC_TIME  syncTime,
+    TYMLYJ_IDS  tymlyjIds,
+    PARENT_ID  parentId,
+    CREATER  creater,
+    CREATE_TIME  createTime,
+    MODIFIER  modifier,
+    MODIFY_TIME  modifyTime,
+    ROOT_ORG_ID rootOrgId
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaItemDirectoryById" resultType="AeaItemDirectory">
+        select
+        <include refid="allColumns"/>
+        from AEA_ITEM_DIRECTORY
+        where TYSXM = #{id}
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaItemDirectory" resultType="AeaItemDirectory">
+        select
+        <include refid="allColumns"/>
+        from AEA_ITEM_DIRECTORY
+        <where>
+            <if test="directoryId != null">
+                AND DIRECTORY_ID = #{directoryId}
+            </if>
+            <if test="tysxm != null">
+                AND TYSXM = #{tysxm}
+            </if>
+            <if test="tysxmc != null">
+                AND TYSXMC = #{tysxmc}
+            </if>
+            <if test="proXh != null">
+                AND PRO_XH = #{proXh}
+            </if>
+            <if test="proSxmc != null">
+                AND PRO_SXMC = #{proSxmc}
+            </if>
+            <if test="citXh != null">
+                AND CIT_XH = #{citXh}
+            </if>
+            <if test="citSxmc != null">
+                AND CIT_SXMC = #{citSxmc}
+            </if>
+            <if test="couXh != null">
+                AND COU_XH = #{couXh}
+            </if>
+            <if test="couSxmc != null">
+                AND COU_SXMC = #{couSxmc}
+            </if>
+            <if test="spbm != null">
+                AND SPBM = #{spbm}
+            </if>
+            <if test="xh != null">
+                AND XH = #{xh}
+            </if>
+            <if test="tymlyj != null">
+                AND TYMLYJ = #{tymlyj}
+            </if>
+            <if test="spdx != null">
+                AND SPDX = #{spdx}
+            </if>
+            <if test="bbh != null">
+                AND BBH = #{bbh}
+            </if>
+            <if test="tymlzt != null">
+                AND TYMLZT = #{tymlzt}
+            </if>
+            <if test="fbsj != null">
+                AND FBSJ = #{fbsj}
+            </if>
+            <if test="sssj != null">
+                AND SSSJ = #{sssj}
+            </if>
+            <if test="syncTime != null">
+                AND SYNC_TIME = #{syncTime}
+            </if>
+            <if test="tymlyjIds != null">
+                AND TYMLYJ_IDS = #{tymlyjIds}
+            </if>
+            <if test="parentId != null">
+                AND PARENT_ID = #{parentId}
+            </if>
+            <if test="creater != null">
+                AND CREATER = #{creater}
+            </if>
+            <if test="createTime != null">
+                AND CREATE_TIME = #{createTime}
+            </if>
+            <if test="modifier != null">
+                AND MODIFIER = #{modifier}
+            </if>
+            <if test="modifyTime != null">
+                AND MODIFY_TIME = #{modifyTime}
+            </if>
+            <if test="rootOrgId != null">
+                AND ROOT_ORG_ID = #{rootOrgId}
+            </if>
+        </where>
+    </select>
+    <!--4 根据条件查询实体list,返回分页对象 -->
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaItemDirectory" parameterType="AeaItemDirectory">
+        insert into AEA_ITEM_DIRECTORY (DIRECTORY_ID, TYSXM, TYSXMC, PRO_XH, PRO_SXMC, CIT_XH, CIT_SXMC, COU_XH,
+                                        COU_SXMC, SPBM, XH, TYMLYJ, SPDX, BBH, TYMLZT, FBSJ, SSSJ, SYNC_TIME,
+                                        TYMLYJ_IDS, PARENT_ID, CREATER, CREATE_TIME, MODIFIER, MODIFY_TIME,ROOT_ORG_ID)
+        values (#{directoryId}, #{tysxm}, #{tysxmc}, #{proXh}, #{proSxmc}, #{citXh}, #{citSxmc}, #{couXh}, #{couSxmc},
+                #{spbm}, #{xh}, #{tymlyj}, #{spdx}, #{bbh}, #{tymlzt}, #{fbsj}, #{sssj}, #{syncTime}, #{tymlyjIds},
+                #{parentId}, #{creater}, #{createTime}, #{modifier}, #{modifyTime},#{rootOrgId})
+    </insert>
+    <!--6 修改实体对象 -->
+    <update id="updateAeaItemDirectory" parameterType="AeaItemDirectory">
+        update AEA_ITEM_DIRECTORY
+        <set>
+            <if test="directoryId != null">
+                DIRECTORY_ID = #{directoryId},
+            </if>
+            <if test="tysxm != null">
+                TYSXM = #{tysxm},
+            </if>
+            <if test="tysxmc != null">
+                TYSXMC = #{tysxmc},
+            </if>
+            <if test="proXh != null">
+                PRO_XH = #{proXh},
+            </if>
+            <if test="proSxmc != null">
+                PRO_SXMC = #{proSxmc},
+            </if>
+            <if test="citXh != null">
+                CIT_XH = #{citXh},
+            </if>
+            <if test="citSxmc != null">
+                CIT_SXMC = #{citSxmc},
+            </if>
+            <if test="couXh != null">
+                COU_XH = #{couXh},
+            </if>
+            <if test="couSxmc != null">
+                COU_SXMC = #{couSxmc},
+            </if>
+            <if test="spbm != null">
+                SPBM = #{spbm},
+            </if>
+            <if test="xh != null">
+                XH = #{xh},
+            </if>
+            <if test="tymlyj != null">
+                TYMLYJ = #{tymlyj},
+            </if>
+            <if test="spdx != null">
+                SPDX = #{spdx},
+            </if>
+            <if test="bbh != null">
+                BBH = #{bbh},
+            </if>
+            <if test="tymlzt != null">
+                TYMLZT = #{tymlzt},
+            </if>
+            <if test="fbsj != null">
+                FBSJ = #{fbsj},
+            </if>
+            <if test="sssj != null">
+                SSSJ = #{sssj},
+            </if>
+            <if test="syncTime != null">
+                SYNC_TIME = #{syncTime},
+            </if>
+            <if test="tymlyjIds != null">
+                TYMLYJ_IDS = #{tymlyjIds},
+            </if>
+            <if test="parentId != null">
+                PARENT_ID = #{parentId},
+            </if>
+            <if test="creater != null">
+                CREATER = #{creater},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime},
+            </if>
+            <if test="modifier != null">
+                MODIFIER = #{modifier},
+            </if>
+            <if test="modifyTime != null">
+                MODIFY_TIME = #{modifyTime},
+            </if>
+            <if test="rootOrgId != null">
+                ROOT_ORG_ID = #{rootOrgId},
+            </if>
+        </set>
+        where TYSXM = #{tysxm}
+    </update>
+    <!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaItemDirectory">
+        delete
+        from AEA_ITEM_DIRECTORY
+        where TYSXM = #{id}
+    </delete>
+    <!--8 删除实体对象列表,根据主键ID列表 -->
+    <!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaItemDirectory" id="AeaItemDirectoryMap">
+        <id property="tysxm" column="TYSXM"/>
+        <result property="directoryId" column="DIRECTORY_ID"/>
+        <result property="tysxmc" column="TYSXMC"/>
+        <result property="proXh" column="PRO_XH"/>
+        <result property="proSxmc" column="PRO_SXMC"/>
+        <result property="citXh" column="CIT_XH"/>
+        <result property="citSxmc" column="CIT_SXMC"/>
+        <result property="couXh" column="COU_XH"/>
+        <result property="couSxmc" column="COU_SXMC"/>
+        <result property="spbm" column="SPBM"/>
+        <result property="xh" column="XH"/>
+        <result property="tymlyj" column="TYMLYJ"/>
+        <result property="spdx" column="SPDX"/>
+        <result property="bbh" column="BBH"/>
+        <result property="tymlzt" column="TYMLZT"/>
+        <result property="fbsj" column="FBSJ"/>
+        <result property="sssj" column="SSSJ"/>
+        <result property="syncTime" column="SYNC_TIME"/>
+        <result property="tymlyjIds" column="TYMLYJ_IDS"/>
+        <result property="parentId" column="PARENT_ID"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="modifier" column="MODIFIER"/>
+        <result property="modifyTime" column="MODIFY_TIME"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+    </resultMap>
+</mapper>

@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by yinlf    2019-07-25 15:57:51 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaServiceWindowStageMapper">
+
+    <sql id="allColumns">
+        WIND_STAGE_ID  windStageId,
+        WIND_ID  windId,
+        STAGE_ID  stageId,
+        IS_ACTIVE  isActive,
+        REGION_RANGE  regionRange,
+        CREATER  creater,
+        CREATE_TIME  createTime,
+        ROOT_ORG_ID  rootOrgId,
+    </sql>
+
+    <sql id="windStageAllColumns" >
+        windStage.WIND_STAGE_ID  windStageId,
+        windStage.WIND_ID  windId,
+        windStage.STAGE_ID  stageId,
+        windStage.IS_ACTIVE  isActive,
+        windStage.REGION_RANGE  regionRange,
+        windStage.CREATER  creater,
+        windStage.CREATE_TIME  createTime
+    </sql>
+
+    <sql id="windAllColumns">
+        window.WINDOW_ID windowId,
+        window.WINDOW_NAME windowName,
+        window.REGION_ID  regionId,
+        window.ORG_ID orgId,
+        window.LINK_PHONE linkPhone,
+        window.WORK_TIME workTime,
+        window.WINDOW_ADDRESS windowAddress,
+        window.TRAFFIC_GUIDE trafficGuide,
+        window.WINDOW_MEMO windowMemo,
+        window.MAP_URL  mapUrl,
+        window.MAP_ATT mapAtt,
+        window.SORT_NO as sortNo,
+        window.IS_ACTIVE as isActive,
+        window.WINDOW_TYPE as windowType,
+        window.IS_PUBLIC as isPublic,
+        window.IS_ALL_ITEM as isAllItem,
+        window.IS_ALL_STAGE as isAllStage
+    </sql>
+
+    <sql id="stageAllColumns">
+        STAGE_ID  stageId,
+        STAGE_NAME  stageName,
+        THEME_VER_ID  themeVerId,
+        APP_ID  appId,
+        DUE_NUM  dueNum,
+        DUE_UNIT  dueUnit,
+        SORT_NO  sortNo,
+        ICON_CSS  iconCss,
+        BG_CSS  bgCss,
+        STAGE_MEMO  stageMemo,
+        CREATER  creater,
+        CREATE_TIME  createTime,
+        MODIFIER  modifier,
+        MODIFY_TIME  modifyTime,
+        IS_DELETED  isDeleted,
+        IS_NODE  isNode,
+        STATUS_CHECK_URL  statusCheckUrl,
+        STAGE_CODE  stageCode,
+        IS_NEED_STATE  isNeedState,
+        SMALL_IMG_PATH  smallImgPath,
+        MIDDLE_IMG_PATH  middleImgPath,
+        BIG_IMG_PATH  bigImgPath,
+        HUGE_IMG_PATH  hugeImgPath,
+        IS_IMG_ICON  isImgIcon,
+        IS_OPTION_ITEM  isOptionItem,
+        IS_SEL_ITEM  isSelItem,
+        PARENT_ID  parentId,
+        NOPT_ITEM_SHOW_NUM  noptItemShowNum,
+        OPT_ITEM_SHOW_NUM  optItemShowNum,
+        USE_EL  useEl,
+        STAGE_EL  stageEl,
+        IS_CHECK_ITEM  isFrontCheckItem,
+        LCBSXLX  lcbsxlx,
+        DYBZSPJDXH  dybzspjdxh,
+        HAND_WAY  handWay
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaServiceWindowStageById" resultType="AeaServiceWindowStage">
+        select
+           <include refid="windStageAllColumns"/>
+        from  AEA_SERVICE_WINDOW_STAGE windStage
+        where windStage.WIND_STAGE_ID = #{id}
+    </select>
+
+    <select id="listAeaServiceWindowStage" resultType="AeaServiceWindowStage" >
+        select
+            <include refid="windStageAllColumns"/>,
+            <include refid="windAllColumns"/>
+        from  AEA_SERVICE_WINDOW_STAGE as windStage, AEA_SERVICE_WINDOW as window
+        <where>
+            and windStage.WIND_ID = window.WINDOW_ID
+            and windStage.ROOT_ORG_ID = window.ROOT_ORG_ID
+            and windStage.ROOT_ORG_ID = #{rootOrgId}
+            <if test="windStageId != null" >
+                and   windStage.WIND_STAGE_ID = #{windStageId}
+            </if>
+            <if test="windId != null" >
+                and   windStage.WIND_ID = #{windId}
+            </if>
+            <if test="stageId != null" >
+                and   windStage.STAGE_ID = #{stageId}
+            </if>
+            <if test="isActive != null" >
+                and   windStage.IS_ACTIVE = #{isActive}
+            </if>
+            <if test="regionRange != null" >
+                and   windStage.REGION_RANGE = #{regionRange}
+            </if>
+            <if test="creater != null" >
+                and   windStage.CREATER = #{creater}
+            </if>
+            <if test="createTime != null" >
+                and   windStage.CREATE_TIME = #{createTime}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                and (
+                    window.WINDOW_NAME like CONCAT(CONCAT('%',#{keyword}),'%')
+                    or window.WINDOW_ADDRESS like CONCAT(CONCAT('%',#{keyword}),'%')
+                    or window.LINK_PHONE like CONCAT(CONCAT('%',#{keyword}),'%')
+                )
+            </if>
+        </where>
+    </select>
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaServiceWindowStage" parameterType="AeaServiceWindowStage">
+        insert into AEA_SERVICE_WINDOW_STAGE (
+            WIND_STAGE_ID,
+            WIND_ID,
+            STAGE_ID,
+            IS_ACTIVE,
+            REGION_RANGE,
+            CREATER,
+            CREATE_TIME,
+            ROOT_ORG_ID
+        )  values  (
+            #{windStageId},
+            #{windId},
+            #{stageId},
+            #{isActive},
+            #{regionRange},
+            #{creater},
+            #{createTime},
+            #{rootOrgId}
+        )
+    </insert>
+
+    <!--6 修改实体对象 -->
+    <update id="updateAeaServiceWindowStage" parameterType="AeaServiceWindowStage">
+        update AEA_SERVICE_WINDOW_STAGE
+        <set >
+            <if test="windStageId != null" >
+                WIND_STAGE_ID = #{windStageId},
+            </if>
+            <if test="windId != null" >
+                WIND_ID = #{windId},
+            </if>
+            <if test="stageId != null" >
+                STAGE_ID = #{stageId},
+            </if>
+            <if test="isActive != null" >
+                IS_ACTIVE = #{isActive},
+            </if>
+            <if test="regionRange != null" >
+                REGION_RANGE = #{regionRange}
+            </if>
+            <if test="creater != null" >
+                CREATER = #{creater},
+            </if>
+            <if test="createTime != null" >
+                CREATE_TIME = #{createTime},
+            </if>
+            <if test="rootOrgId != null">
+                ROOT_ORG_ID = #{rootOrgId},
+            </if>
+        </set>
+        where WIND_STAGE_ID = #{windStageId}
+    </update>
+
+    <!--7 删除实体对象,根据主键ID -->
+    <delete id="delAeaServiceWindowStageById">
+        delete from  AEA_SERVICE_WINDOW_STAGE where WIND_STAGE_ID = #{id}
+    </delete>
+
+    <delete id="batchDelAeaServiceWindowStageByIds">
+        delete from  AEA_SERVICE_WINDOW_STAGE where WIND_STAGE_ID in
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+
+    <resultMap type="AeaServiceWindowStage" id="AeaServiceWindowStageMap">
+        <id property="windStageId" column="WIND_STAGE_ID"/>
+        <result property="windId" column="WIND_ID"/>
+        <result property="stageId" column="STAGE_ID"/>
+        <result property="isActive" column="IS_ACTIVE"/>
+        <result property="regionRange" column="REGION_RANGE"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+    </resultMap>
+
+    <select id="findWindowStageByUserId" resultType="AeaParStage">
+        SELECT <include refid="stageAllColumns"/>
+        FROM AEA_PAR_STAGE
+        WHERE STAGE_ID IN (
+            SELECT STAGE_ID
+            FROM AEA_SERVICE_WINDOW_STAGE
+            WHERE WIND_ID IN (
+                SELECT WINDOW_ID
+                FROM AEA_SERVICE_WINDOW_USER
+                WHERE USER_ID = #{userId} AND IS_ACTIVE = '1'
+            ) AND IS_ACTIVE = '1'
+        )
+        AND ROOT_ORG_ID = #{rootOrgId}
+        <if test="themeVerId != null">
+            and THEME_VER_ID = #{themeVerId}
+        </if>
+    </select>
+
+    <select id="findWindowStageByWindowIdAndKeywordAndIsActive" resultType="AeaParStage">
+        SELECT <include refid="stageAllColumns"/>
+        FROM AEA_PAR_STAGE
+        WHERE STAGE_ID IN (
+            SELECT STAGE_ID
+            FROM AEA_SERVICE_WINDOW_STAGE
+            WHERE WIND_ID = #{windowId}
+            <if test="isActive!=null and isActive!=''">
+                AND IS_ACTIVE = #{isActive}
+            </if>
+        )
+        <if test="keyword!=null and keyword!=''">
+            AND (STAGE_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+            OR STAGE_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%'))
+        </if>
+    </select>
+
+    <update id="enableWindowStage">
+        update AEA_SERVICE_WINDOW_STAGE
+        set IS_ACTIVE = '1'
+        where WIND_ID = #{windowId} AND STAGE_ID = #{stageId}
+    </update>
+
+    <update id="disableWindowStage">
+        update AEA_SERVICE_WINDOW_STAGE
+        set IS_ACTIVE = '0'
+        where WIND_ID = #{windowId} AND STAGE_ID = #{stageId}
+    </update>
+
+    <delete id="deleteAeaServiceWindowStageByWindowIdAndStageId">
+        delete from AEA_SERVICE_WINDOW_STAGE
+        where WIND_ID = #{windowId} AND STAGE_ID = #{stageId}
+    </delete>
+
+    <delete id="delAeaServiceWindowStageByWindowId">
+        delete from AEA_SERVICE_WINDOW_STAGE
+        where WIND_ID = #{windowId}
+          and ROOT_ORG_ID = #{rootOrgId}
+    </delete>
+
+    <insert id="batchInsertAeaServiceWindowStage" parameterType="AeaServiceWindowStage">
+        insert into AEA_SERVICE_WINDOW_STAGE (
+            WIND_STAGE_ID  ,WIND_ID  ,STAGE_ID  ,IS_ACTIVE ,REGION_RANGE  ,CREATER  ,CREATE_TIME, ROOT_ORG_ID
+        ) values
+        <foreach collection="aeaServiceWindowStageList" item="aeaServiceWindowStage" separator=",">
+            (#{aeaServiceWindowStage.windStageId},#{aeaServiceWindowStage.windId},#{aeaServiceWindowStage.stageId},#{aeaServiceWindowStage.isActive},#{aeaServiceWindowStage.regionRange},#{aeaServiceWindowStage.creater},  #{aeaServiceWindowStage.createTime},  #{aeaServiceWindowStage.rootOrgId})
+        </foreach>
+    </insert>
+
+    <delete id="batchDeleteWindowStageByWindowIdAndStageId">
+        delete from AEA_SERVICE_WINDOW_STAGE
+        where WIND_ID = #{windowId} AND STAGE_ID IN
+        <foreach collection="stageIds" item="stageId" open="(" separator="," close=")">
+            #{stageId}
+        </foreach>
+        <if test="rootOrgId != null">
+            and ROOT_ORG_ID = #{rootOrgId}
+        </if>
+    </delete>
+
+    <select id="findCurrentUserWindowStage" resultType="AeaServiceWindowStage">
+        select
+        <include refid="windStageAllColumns"/>
+        from  AEA_SERVICE_WINDOW_STAGE windStage
+        where windStage.WIND_ID IN (
+            SELECT WINDOW_ID
+            FROM aea_service_window_user
+            WHERE USER_ID = #{userId}
+              AND IS_ACTIVE = '1'
+              AND ROOT_ORG_ID = #{rootOrgId} )
+        AND IS_ACTIVE = '1'
+        AND ROOT_ORG_ID = #{rootOrgId}
+        <if test="stageId!=null and stageId!=''">
+            AND STAGE_ID = #{stageId}
+        </if>
+    </select>
+
+    <select id="findAeaServiceWindowStageByWindowId" resultType="AeaServiceWindowStage">
+        SELECT
+        <include refid="windStageAllColumns"/>,
+        aps.THEME_VER_ID ,aps.STAGE_NAME stageName,apt.THEME_NAME themeName
+        FROM
+        AEA_SERVICE_WINDOW_STAGE windStage
+        INNER JOIN AEA_PAR_STAGE aps on aps.stage_id=windStage.stage_id
+        INNER JOIN aea_par_theme_ver aptv on aptv.THEME_VER_ID=aps.THEME_VER_ID
+            AND aptv.IS_PUBLISH IN ('1','2')
+        LEFT JOIN aea_par_theme apt on apt.THEME_ID=aptv.THEME_ID
+        where windStage.WIND_ID = #{windowId}
+        <if test="keyword!=null and keyword!=''">
+            AND (aps.STAGE_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+            OR apt.THEME_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%'))
+        </if>
+    </select>
+</mapper>

@@ -1,0 +1,18 @@
+archivesBaseName = 'aplanmis-mall'
+
+apply plugin: 'war'
+
+dependencies {
+    compile project(':aplanmis-common')
+
+    compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.5'
+    compile ('net.glxn.qrgen:javase:2.0')
+
+    compile "com.augurit.agcloud:agcloud-bpm-common:${agcloudVersion}"
+    //compile ('com.augurit.agcloud:agcloud-framework-no-sso:5.0.0')
+    //compile('org.springframework.boot:spring-boot-devtools')
+//    compile fileTree(include: ['*.jar'], dir: 'src\\main\\webapp\\WEB-INF\\lib')
+
+    runtime("org.apache.tomcat.embed:tomcat-embed-jasper")
+}
+

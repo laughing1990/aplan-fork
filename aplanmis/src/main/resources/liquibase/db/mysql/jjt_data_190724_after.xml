@@ -1,0 +1,296 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <preConditions>
+        <dbms type="mysql"/>
+    </preConditions>
+
+    <changeSet id="201907251151" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            INSERT INTO `opu_rs_func` (`FUNC_ID`, `APP_SOFT_ID`, `FUNC_CODE`, `FUNC_NAME`, `FUNC_TYPE`, `FUNC_INVOKE_TYPE`, `FUNC_INVOKE_URL`, `FUNC_INVOKE_PARAM`, `FUNC_SORT_NO`, `PARENT_FUNC_ID`, `FUNC_LEVEL`, `FUNC_SEQ`, `FUNC_SUB_COUNT`, `IS_AUTO_IMPORT`, `IS_ACTIVE_FUNC`, `FUNC_DELETED`, `FUNC_DESC`, `FUNC_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `FUNC_INVOKE_ACTIVITY`, `WIDGET_TYPE`, `FUNC_ICON_CSS`, `WIDGET_IS_CONFIG`, `WIDGET_IS_VISIABLE`, `FUNC_SHORTCUT_KEY`, `WIDGET_IS_USE_TPL`, `TMN_ID`, `IS_IMG_ICON`, `SMALL_IMG_PATH`, `MIDDLE_IMG_PATH`, `BIG_IMG_PATH`, `HUGE_IMG_PATH`) VALUES ('ba9274dd-024c-4c1d-8526-624d60db34a4', 'bd57d0be-8884-4a4e-a41e-98070d2f56db', 'opu-rs-func-00000000066', '事项下放', 'func', '0', '/aea/item/delegateIndex.do', NULL, '13', '9b1fbbea-ad63-4040-86a8-6345f4b189e1', '2', '.9b1fbbea-ad63-4040-86a8-6345f4b189e1.ba9274dd-024c-4c1d-8526-624d60db34a4.', '0', '0', '1', '0', NULL, NULL, 'beb9e669-9056-4bce-8c08-779271a7b6f2', '2019-07-25 11:35:33', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '0', NULL, NULL, '0', NULL, NULL, NULL, NULL);
+            INSERT INTO `opu_rs_role_func` (`ROLE_FUNC_ID`, `ROLE_ID`, `FUNC_ID`) VALUES ('02761bc3-50ce-4aca-abb7-6f489eafab25', '6c9fd702-0c30-44a3-be5d-807fd4c34f39', 'ba9274dd-024c-4c1d-8526-624d60db34a4');
+            INSERT INTO `opu_rs_menu` (`MENU_ID`, `MENU_CODE`, `MENU_NAME`, `MENU_ICON_CSS`, `NET_TMN_ID`, `APP_SOFT_ID`, `FUNC_ID`, `PARENT_MENU_ID`, `MENU_LEVEL`, `MENU_SEQ`, `MENU_SORT_NO`, `IS_ACTIVE`, `IS_LEAF`, `SUB_COUNT`, `ACTIVE_SUB_COUNT`, `PAGE_OPEN_MODE`, `SMALL_IMG_PATH`, `MIDDLE_IMG_PATH`, `BIG_IMG_PATH`, `MENU_MEMO`, `MENU_DELETED`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `MENU_INVOKE_ACTIVITY`, `MENU_INVOKE_TYPE`, `IS_SINGLE_URL`, `AUTO_SWITCH`, `MENU_INNER_URL`, `MENU_GOV_URL`, `MENU_OUTER_URL`, `MENU_TAG_URL`, `IS_RECENTLY_ADD`, `IS_SHORTCUT_MENU`, `SHORTCUT_SORT_NO`, `HUGE_IMG_PATH`, `IS_IMG_ICON`) VALUES ('72a32d2b-5a2a-45ee-a94b-bbe843bad91f', 'opu-rs-menu-00000000186', '事项下放', 'm-menu__link-icon flaticon-file-1', '623baeff-8079-4762-bb8f-becddc20b463', 'bd57d0be-8884-4a4e-a41e-98070d2f56db', 'ba9274dd-024c-4c1d-8526-624d60db34a4', 'd0fd9ca7-dfc0-4dc5-9fe6-816c0ca54a70', '2', '.d0fd9ca7-dfc0-4dc5-9fe6-816c0ca54a70.72a32d2b-5a2a-45ee-a94b-bbe843bad91f.', '7', '1', '1', '0', '0', 'default', NULL, NULL, NULL, NULL, '0', 'beb9e669-9056-4bce-8c08-779271a7b6f2', '2019-07-25 11:35:33', 'beb9e669-9056-4bce-8c08-779271a7b6f2', '2019-07-25 11:37:21', NULL, 'h', '0', '0', 'http://192.168.30.120:8083/aplanmis-front/aea/item/delegateIndex.do', 'http://192.168.30.120:8083/aplanmis-front/aea/item/delegateIndex.do', 'http://192.168.30.120:8083/aplanmis-front/aea/item/delegateIndex.do', NULL, NULL, NULL, NULL, NULL, '0');
+        </sql>
+    </changeSet>
+
+    <changeSet id="201907291531" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            update bsc_att_link set TABLE_NAME = 'AEA_SERVICE_LEGAL_CLAUSE' where TABLE_NAME = 'AEA_ITEM_SERVICE_LEGAL_CLAUSE';
+            update bsc_att_link set TABLE_NAME = 'AEA_SERVICE_LEGAL' where TABLE_NAME = 'AEA_ITEM_SERVICE_LEGAL';
+            update bsc_att_link set TABLE_NAME = 'AEA_SERVICE_WINDOW' where TABLE_NAME = 'AEA_ITEM_SERVICE_WINDOW';
+        </sql>
+    </changeSet>
+
+    <changeSet id="201907291659" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            INSERT INTO `bsc_dic_code_type` (`TYPE_ID`, `TYPE_CODE`, `TYPE_NAME`, `IS_TREE`, `IS_ACTIVE`, `TYPE_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES ('3ddc0c74-98b9-4525-a5d2-94a9c9b2b01b', 'WINDOW_TYPE', '窗口类型', '0', '1', NULL, NULL, '2019-07-25 11:12:42', NULL, '2019-07-25 11:12:42', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`, `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES ('2f6977df-0728-4f75-8169-f0d40dc94b2e', '3ddc0c74-98b9-4525-a5d2-94a9c9b2b01b', '1', '收费发证窗口', '1', '1', '', NULL, NULL, '0', NULL, NULL, '2019-07-25 11:12:42', NULL, '2019-07-25 11:13:49', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`, `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES ('6ccf0d3c-de2b-446e-9bb0-b0cab82a0c7f', '3ddc0c74-98b9-4525-a5d2-94a9c9b2b01b', '0', '综合窗口', '1', '0', '', NULL, NULL, '0', NULL, NULL, '2019-07-25 11:12:42', NULL, '2019-07-25 11:13:34', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+        </sql>
+    </changeSet>
+
+    <!--<changeSet id="201908011000" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            INSERT INTO `opu_rs_func` (`FUNC_ID`, `APP_SOFT_ID`, `FUNC_CODE`, `FUNC_NAME`, `FUNC_TYPE`, `FUNC_INVOKE_TYPE`, `FUNC_INVOKE_URL`, `FUNC_INVOKE_PARAM`, `FUNC_SORT_NO`, `PARENT_FUNC_ID`, `FUNC_LEVEL`, `FUNC_SEQ`, `FUNC_SUB_COUNT`, `IS_AUTO_IMPORT`, `IS_ACTIVE_FUNC`, `FUNC_DELETED`, `FUNC_DESC`, `FUNC_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `FUNC_INVOKE_ACTIVITY`, `WIDGET_TYPE`, `FUNC_ICON_CSS`, `WIDGET_IS_CONFIG`, `WIDGET_IS_VISIABLE`, `FUNC_SHORTCUT_KEY`, `WIDGET_IS_USE_TPL`, `TMN_ID`, `IS_IMG_ICON`, `SMALL_IMG_PATH`, `MIDDLE_IMG_PATH`, `BIG_IMG_PATH`, `HUGE_IMG_PATH`) VALUES ('c921779e-4994-45a7-88be-47e299747f11', 'bd57d0be-8884-4a4e-a41e-98070d2f56db', 'opu-rs-func-00000000067', '总表管理', 'func', '0', '/aea/par/indexOneForm.do', NULL, '14', '9b1fbbea-ad63-4040-86a8-6345f4b189e1', '2', '.9b1fbbea-ad63-4040-86a8-6345f4b189e1.c921779e-4994-45a7-88be-47e299747f11.', '0', '0', '1', '0', NULL, NULL, 'beb9e669-9056-4bce-8c08-779271a7b6f2', '2019-08-01 09:53:43', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '0', NULL, NULL, '0', NULL, NULL, NULL, NULL);
+            INSERT INTO `opu_rs_role_func` (`ROLE_FUNC_ID`, `ROLE_ID`, `FUNC_ID`) VALUES ('3f6ca9da-0a8d-47c3-8f78-7947cd2ad4c5', '6c9fd702-0c30-44a3-be5d-807fd4c34f39', 'c921779e-4994-45a7-88be-47e299747f11');
+            INSERT INTO `opu_rs_menu` (`MENU_ID`, `MENU_CODE`, `MENU_NAME`, `MENU_ICON_CSS`, `NET_TMN_ID`, `APP_SOFT_ID`, `FUNC_ID`, `PARENT_MENU_ID`, `MENU_LEVEL`, `MENU_SEQ`, `MENU_SORT_NO`, `IS_ACTIVE`, `IS_LEAF`, `SUB_COUNT`, `ACTIVE_SUB_COUNT`, `PAGE_OPEN_MODE`, `SMALL_IMG_PATH`, `MIDDLE_IMG_PATH`, `BIG_IMG_PATH`, `MENU_MEMO`, `MENU_DELETED`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `MENU_INVOKE_ACTIVITY`, `MENU_INVOKE_TYPE`, `IS_SINGLE_URL`, `AUTO_SWITCH`, `MENU_INNER_URL`, `MENU_GOV_URL`, `MENU_OUTER_URL`, `MENU_TAG_URL`, `IS_RECENTLY_ADD`, `IS_SHORTCUT_MENU`, `SHORTCUT_SORT_NO`, `HUGE_IMG_PATH`, `IS_IMG_ICON`) VALUES ('22d45e2b-672b-4211-8c22-060eef22aa1a', 'opu-rs-menu-00000000188', '总表管理', 'm-menu__link-icon flaticon-file-1', '623baeff-8079-4762-bb8f-becddc20b463', 'bd57d0be-8884-4a4e-a41e-98070d2f56db', 'c921779e-4994-45a7-88be-47e299747f11', 'd0fd9ca7-dfc0-4dc5-9fe6-816c0ca54a70', '2', '.d0fd9ca7-dfc0-4dc5-9fe6-816c0ca54a70.22d45e2b-672b-4211-8c22-060eef22aa1a.', '13', '1', '1', '0', '0', 'default', NULL, NULL, NULL, NULL, '0', 'beb9e669-9056-4bce-8c08-779271a7b6f2', '2019-08-01 09:53:43', 'beb9e669-9056-4bce-8c08-779271a7b6f2', '2019-08-01 09:55:07', NULL, 'h', '0', '0', 'http://192.168.30.120:8083/aplanmis-front/aea/par/indexOneForm.do', 'http://192.168.30.120:8083/aplanmis-front/aea/par/indexOneForm.do', 'http://192.168.30.120:8083/aplanmis-front/aea/par/indexOneForm.do', NULL, NULL, NULL, NULL, NULL, '0');
+        </sql>
+    </changeSet>-->
+
+    <changeSet id="201908071152" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            update aea_par_oneform  set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_item  set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_item_ver  set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_item_seq  set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_item_basic  set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+        </sql>
+    </changeSet>
+
+    <changeSet id="201908071336" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            update opu_rs_func set FUNC_INVOKE_URL ='/aea/service/legal/indexAeaServiceLegal.do' where FUNC_NAME like '%法律法规%';
+            update opu_rs_menu set MENU_INNER_URL='http://192.168.30.120:8083/aplanmis-front/aea/service/legal/indexAeaServiceLegal.do'  where MENU_NAME like '%法律法规%';
+            UPDATE opu_rs_func SET FUNC_INVOKE_URL = '/aea/service/window/index.do' WHERE FUNC_NAME LIKE '%服务窗口%';
+            UPDATE opu_rs_menu
+            SET MENU_INNER_URL = 'http://localhost:8083/aplanmis-front/aea/service/window/index.do',
+                MENU_OUTER_URL = 'http://localhost:8083/aplanmis-front/aea/service/window/index.do',
+                MENU_GOV_URL = 'http://localhost:8083/aplanmis-front/aea/service/window/index.do'
+            WHERE MENU_NAME LIKE '%服务窗口%';
+        </sql>
+    </changeSet>
+
+    <changeSet id="201908081055" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            update aea_service_legal set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_service_legal_clause set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_service_window  set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_service_window_item SET ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_service_window_stage SET ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_service_window_user SET ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_item_mat_type set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_item_mat set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_cert set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_cert_type set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+        </sql>
+    </changeSet>
+
+    <changeSet id="201908121356" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            update aea_item_guide_attr set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+        </sql>
+    </changeSet>
+
+    <changeSet id="201908271338" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            update aea_par_theme set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_par_theme_seq set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_par_theme_ver set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_par_state_item set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_par_state set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_par_stage_questions set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_par_stage_guide set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_par_stage_charges set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_par_stage set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_par_share_mat set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_par_oneform set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_par_in set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_item_state_ver set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_item_state set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_item_service_basic set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_item_cond set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_item_directory set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_item_guide set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_item_guide_accordings set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_item_guide_charges set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_item_guide_conditions set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_item_guide_departments set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_item_guide_extend set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_item_guide_matconditions set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_item_guide_materials set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_item_guide_questions set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_item_guide_specials set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_item_inout set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_item_priv set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+        </sql>
+    </changeSet>
+
+    <changeSet id="201908271425" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            UPDATE aea_service_window SET region_range = ( CASE WHEN region_range IS NULL THEN '1' ELSE region_range END );
+            UPDATE aea_service_window SET IS_PUBLIC = ( CASE WHEN IS_PUBLIC IS NULL THEN '1' ELSE IS_PUBLIC END );
+            UPDATE aea_service_window SET IS_ACTIVE = ( CASE WHEN IS_ACTIVE IS NULL THEN '1' ELSE IS_ACTIVE END );
+            UPDATE aea_service_window SET WINDOW_TYPE = ( CASE WHEN WINDOW_TYPE IS NULL THEN '1' ELSE WINDOW_TYPE END );
+            UPDATE aea_service_window SET IS_ALL_ITEM = ( CASE WHEN IS_ALL_ITEM IS NULL THEN '1' ELSE IS_ALL_ITEM END );
+            UPDATE aea_service_window SET IS_ALL_STAGE = ( CASE WHEN IS_ALL_STAGE IS NULL THEN '1' ELSE IS_ALL_STAGE END );
+        </sql>
+    </changeSet>
+
+    <!--<changeSet id="201908301359" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            INSERT INTO `opu_rs_func` (`FUNC_ID`, `APP_SOFT_ID`, `FUNC_CODE`, `FUNC_NAME`, `FUNC_TYPE`, `FUNC_INVOKE_TYPE`, `FUNC_INVOKE_URL`, `FUNC_INVOKE_PARAM`, `FUNC_SORT_NO`, `PARENT_FUNC_ID`, `FUNC_LEVEL`, `FUNC_SEQ`, `FUNC_SUB_COUNT`, `IS_AUTO_IMPORT`, `IS_ACTIVE_FUNC`, `FUNC_DELETED`, `FUNC_DESC`, `FUNC_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `FUNC_INVOKE_ACTIVITY`, `WIDGET_TYPE`, `FUNC_ICON_CSS`, `WIDGET_IS_CONFIG`, `WIDGET_IS_VISIABLE`, `FUNC_SHORTCUT_KEY`, `WIDGET_IS_USE_TPL`, `TMN_ID`, `IS_IMG_ICON`, `SMALL_IMG_PATH`, `MIDDLE_IMG_PATH`, `BIG_IMG_PATH`, `HUGE_IMG_PATH`) VALUES ('094c1dc0-a0c6-4e9f-8076-b84fac41f366', 'bd57d0be-8884-4a4e-a41e-98070d2f56db', 'opu-rs-func-0000000099', '主题导航定义', 'func', '0', '/par/theme/navIndex.do', NULL, '15', '9b1fbbea-ad63-4040-86a8-6345f4b189e1', '2', '.9b1fbbea-ad63-4040-86a8-6345f4b189e1.094c1dc0-a0c6-4e9f-8076-b84fac41f366.', '0', '0', '1', '0', NULL, NULL, 'beb9e669-9056-4bce-8c08-779271a7b6f2', '2019-08-29 16:01:28', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '0', NULL, NULL, '0', NULL, NULL, NULL, NULL);
+            INSERT INTO `opu_rs_role_func` (`ROLE_FUNC_ID`, `ROLE_ID`, `FUNC_ID`) VALUES ('c3674920-76a1-481c-b86a-dc1e2bd7a52b', '6c9fd702-0c30-44a3-be5d-807fd4c34f39', '094c1dc0-a0c6-4e9f-8076-b84fac41f366');
+            INSERT INTO `opu_rs_func` (`FUNC_ID`, `APP_SOFT_ID`, `FUNC_CODE`, `FUNC_NAME`, `FUNC_TYPE`, `FUNC_INVOKE_TYPE`, `FUNC_INVOKE_URL`, `FUNC_INVOKE_PARAM`, `FUNC_SORT_NO`, `PARENT_FUNC_ID`, `FUNC_LEVEL`, `FUNC_SEQ`, `FUNC_SUB_COUNT`, `IS_AUTO_IMPORT`, `IS_ACTIVE_FUNC`, `FUNC_DELETED`, `FUNC_DESC`, `FUNC_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `FUNC_INVOKE_ACTIVITY`, `WIDGET_TYPE`, `FUNC_ICON_CSS`, `WIDGET_IS_CONFIG`, `WIDGET_IS_VISIABLE`, `FUNC_SHORTCUT_KEY`, `WIDGET_IS_USE_TPL`, `TMN_ID`, `IS_IMG_ICON`, `SMALL_IMG_PATH`, `MIDDLE_IMG_PATH`, `BIG_IMG_PATH`, `HUGE_IMG_PATH`) VALUES ('094c1dc0-a0c6-4e9f-8076-b84fac41f366', 'bd57d0be-8884-4a4e-a41e-98070d2f56db', 'opu-rs-func-0000000099', '主题导航定义', 'func', '0', '/par/theme/navIndex.do', NULL, '15', '9b1fbbea-ad63-4040-86a8-6345f4b189e1', '2', '.9b1fbbea-ad63-4040-86a8-6345f4b189e1.094c1dc0-a0c6-4e9f-8076-b84fac41f366.', '0', '0', '1', '0', NULL, NULL, 'beb9e669-9056-4bce-8c08-779271a7b6f2', '2019-08-29 16:01:28', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '0', NULL, NULL, '0', NULL, NULL, NULL, NULL);
+        </sql>
+    </changeSet>-->
+
+    <changeSet id="201909111434" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            INSERT INTO `opu_rs_func` (`FUNC_ID`, `APP_SOFT_ID`, `FUNC_CODE`, `FUNC_NAME`, `FUNC_TYPE`, `FUNC_INVOKE_TYPE`, `FUNC_INVOKE_URL`, `FUNC_INVOKE_PARAM`, `FUNC_SORT_NO`, `PARENT_FUNC_ID`, `FUNC_LEVEL`, `FUNC_SEQ`, `FUNC_SUB_COUNT`, `IS_AUTO_IMPORT`, `IS_ACTIVE_FUNC`, `FUNC_DELETED`, `FUNC_DESC`, `FUNC_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `FUNC_INVOKE_ACTIVITY`, `WIDGET_TYPE`, `FUNC_ICON_CSS`, `WIDGET_IS_CONFIG`, `WIDGET_IS_VISIABLE`, `FUNC_SHORTCUT_KEY`, `WIDGET_IS_USE_TPL`, `TMN_ID`, `IS_IMG_ICON`, `SMALL_IMG_PATH`, `MIDDLE_IMG_PATH`, `BIG_IMG_PATH`, `HUGE_IMG_PATH`) VALUES ('c39f96e7-24cc-44fa-b314-f0ef786cdaed', 'bd57d0be-8884-4a4e-a41e-98070d2f56db', 'opu-rs-func-00000000105', '主题样本', 'func', '0', '/apanmis/admin/theme/sampleIndex.html', NULL, '16', '9b1fbbea-ad63-4040-86a8-6345f4b189e1', '2', '.9b1fbbea-ad63-4040-86a8-6345f4b189e1.c39f96e7-24cc-44fa-b314-f0ef786cdaed.', '0', '0', '1', '0', NULL, NULL, 'beb9e669-9056-4bce-8c08-779271a7b6f2', '2019-09-11 14:06:20', 'beb9e669-9056-4bce-8c08-779271a7b6f2', '2019-09-11 14:14:04', NULL, NULL, NULL, NULL, NULL, '0', NULL, NULL, '0', NULL, NULL, NULL, NULL);
+            INSERT INTO `opu_rs_role_func` (`ROLE_FUNC_ID`, `ROLE_ID`, `FUNC_ID`) VALUES ('3d73bac7-9d38-4cc5-a9bf-2d8d3a86a590', '6c9fd702-0c30-44a3-be5d-807fd4c34f39', 'c39f96e7-24cc-44fa-b314-f0ef786cdaed');
+            INSERT INTO `opu_rs_menu` (`MENU_ID`, `MENU_CODE`, `MENU_NAME`, `MENU_ICON_CSS`, `NET_TMN_ID`, `APP_SOFT_ID`, `FUNC_ID`, `PARENT_MENU_ID`, `MENU_LEVEL`, `MENU_SEQ`, `MENU_SORT_NO`, `IS_ACTIVE`, `IS_LEAF`, `SUB_COUNT`, `ACTIVE_SUB_COUNT`, `PAGE_OPEN_MODE`, `SMALL_IMG_PATH`, `MIDDLE_IMG_PATH`, `BIG_IMG_PATH`, `MENU_MEMO`, `MENU_DELETED`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `MENU_INVOKE_ACTIVITY`, `MENU_INVOKE_TYPE`, `IS_SINGLE_URL`, `AUTO_SWITCH`, `MENU_INNER_URL`, `MENU_GOV_URL`, `MENU_OUTER_URL`, `MENU_TAG_URL`, `IS_RECENTLY_ADD`, `IS_SHORTCUT_MENU`, `SHORTCUT_SORT_NO`, `HUGE_IMG_PATH`, `IS_IMG_ICON`) VALUES ('75a87eeb-67a7-4d1d-b4b5-f27b5678a3a1', 'opu-rs-menu-00000000253', '主题样本', 'm-menu__link-icon flaticon-file-1', '623baeff-8079-4762-bb8f-becddc20b463', 'bd57d0be-8884-4a4e-a41e-98070d2f56db', 'c39f96e7-24cc-44fa-b314-f0ef786cdaed', 'd0fd9ca7-dfc0-4dc5-9fe6-816c0ca54a70', '2', '.d0fd9ca7-dfc0-4dc5-9fe6-816c0ca54a70.75a87eeb-67a7-4d1d-b4b5-f27b5678a3a1.', '18', '1', '1', '0', '0', 'default', NULL, NULL, NULL, NULL, '0', 'beb9e669-9056-4bce-8c08-779271a7b6f2', '2019-09-11 14:06:20', 'beb9e669-9056-4bce-8c08-779271a7b6f2', '2019-09-11 14:14:27', NULL, 'h', '0', '0', 'http://192.168.30.120:8083/aplanmis-front/apanmis/admin/theme/sampleIndex.html', 'http://192.168.30.120:8083/aplanmis-front/apanmis/admin/theme/sampleIndex.html', 'http://192.168.30.120:8083/aplanmis-front/apanmis/admin/theme/sampleIndex.html', NULL, NULL, NULL, NULL, NULL, '0');
+        </sql>
+    </changeSet>
+
+    <changeSet id="201909111547" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            UPDATE aea_item_basic SET IS_CATALOG = '1' WHERE ORG_ID IS NULL OR ORG_ID = '';
+            UPDATE aea_item_basic SET IS_CATALOG = '0' WHERE ORG_ID IS NOT NULL AND ORG_ID != '';
+        </sql>
+    </changeSet>
+    
+    <changeSet id="201909121443" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            INSERT INTO `opu_rs_func` (`FUNC_ID`, `APP_SOFT_ID`, `FUNC_CODE`, `FUNC_NAME`, `FUNC_TYPE`, `FUNC_INVOKE_TYPE`, `FUNC_INVOKE_URL`, `FUNC_INVOKE_PARAM`, `FUNC_SORT_NO`, `PARENT_FUNC_ID`, `FUNC_LEVEL`, `FUNC_SEQ`, `FUNC_SUB_COUNT`, `IS_AUTO_IMPORT`, `IS_ACTIVE_FUNC`, `FUNC_DELETED`, `FUNC_DESC`, `FUNC_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `FUNC_INVOKE_ACTIVITY`, `WIDGET_TYPE`, `FUNC_ICON_CSS`, `WIDGET_IS_CONFIG`, `WIDGET_IS_VISIABLE`, `FUNC_SHORTCUT_KEY`, `WIDGET_IS_USE_TPL`, `TMN_ID`, `IS_IMG_ICON`, `SMALL_IMG_PATH`, `MIDDLE_IMG_PATH`, `BIG_IMG_PATH`, `HUGE_IMG_PATH`) VALUES ('665d9928-8b23-4f18-bc7a-23954781ae9f', 'bd57d0be-8884-4a4e-a41e-98070d2f56db', 'opu-rs-module-00000000044', '信用监管', 'modu', '0', NULL, NULL, '16', 'c5f7451c-c9e5-431b-ba3f-32111f92f989', '2', '.c5f7451c-c9e5-431b-ba3f-32111f92f989.665d9928-8b23-4f18-bc7a-23954781ae9f.', '0', '0', '1', '0', NULL, NULL, 'beb9e669-9056-4bce-8c08-779271a7b6f2', '2019-09-12 14:19:13', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '0', NULL, NULL, NULL, NULL);
+            UPDATE `opu_rs_func` SET `FUNC_ID`='ab646cc9-9c9e-4e54-a8b2-463e3dbfb21f', `APP_SOFT_ID`='bd57d0be-8884-4a4e-a41e-98070d2f56db', `FUNC_CODE`='opu-rs-func-00000000104', `FUNC_NAME`='红黑名单', `FUNC_TYPE`='func', `FUNC_INVOKE_TYPE`='0', `FUNC_INVOKE_URL`='/apanmis/admin/credit/redblack.html', `FUNC_INVOKE_PARAM`=NULL, `FUNC_SORT_NO`='1', `PARENT_FUNC_ID`='665d9928-8b23-4f18-bc7a-23954781ae9f', `FUNC_LEVEL`='3', `FUNC_SEQ`='.c5f7451c-c9e5-431b-ba3f-32111f92f989.665d9928-8b23-4f18-bc7a-23954781ae9f.ab646cc9-9c9e-4e54-a8b2-463e3dbfb21f.', `FUNC_SUB_COUNT`='0', `IS_AUTO_IMPORT`='0', `IS_ACTIVE_FUNC`='1', `FUNC_DELETED`='0', `FUNC_DESC`=NULL, `FUNC_MEMO`=NULL, `CREATER`='beb9e669-9056-4bce-8c08-779271a7b6f2', `CREATE_TIME`='2019-09-05 20:34:33', `MODIFIER`='beb9e669-9056-4bce-8c08-779271a7b6f2', `MODIFY_TIME`='2019-09-12 14:20:06', `FUNC_INVOKE_ACTIVITY`=NULL, `WIDGET_TYPE`=NULL, `FUNC_ICON_CSS`=NULL, `WIDGET_IS_CONFIG`=NULL, `WIDGET_IS_VISIABLE`=NULL, `FUNC_SHORTCUT_KEY`='0', `WIDGET_IS_USE_TPL`=NULL, `TMN_ID`=NULL, `IS_IMG_ICON`='0', `SMALL_IMG_PATH`=NULL, `MIDDLE_IMG_PATH`=NULL, `BIG_IMG_PATH`=NULL, `HUGE_IMG_PATH`=NULL WHERE (`FUNC_ID`='ab646cc9-9c9e-4e54-a8b2-463e3dbfb21f');
+            INSERT INTO `opu_rs_role_func` (`ROLE_FUNC_ID`, `ROLE_ID`, `FUNC_ID`) VALUES ('e1c3d0c5-00f5-4a4d-a876-984def5f6b9d', '6c9fd702-0c30-44a3-be5d-807fd4c34f39', '665d9928-8b23-4f18-bc7a-23954781ae9f');
+            INSERT INTO `opu_rs_menu` (`MENU_ID`, `MENU_CODE`, `MENU_NAME`, `MENU_ICON_CSS`, `NET_TMN_ID`, `APP_SOFT_ID`, `FUNC_ID`, `PARENT_MENU_ID`, `MENU_LEVEL`, `MENU_SEQ`, `MENU_SORT_NO`, `IS_ACTIVE`, `IS_LEAF`, `SUB_COUNT`, `ACTIVE_SUB_COUNT`, `PAGE_OPEN_MODE`, `SMALL_IMG_PATH`, `MIDDLE_IMG_PATH`, `BIG_IMG_PATH`, `MENU_MEMO`, `MENU_DELETED`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `MENU_INVOKE_ACTIVITY`, `MENU_INVOKE_TYPE`, `IS_SINGLE_URL`, `AUTO_SWITCH`, `MENU_INNER_URL`, `MENU_GOV_URL`, `MENU_OUTER_URL`, `MENU_TAG_URL`, `IS_RECENTLY_ADD`, `IS_SHORTCUT_MENU`, `SHORTCUT_SORT_NO`, `HUGE_IMG_PATH`, `IS_IMG_ICON`) VALUES ('842bded0-6a80-4c1e-a34a-f59c5d5f6923', 'opu-rs-menu-00000000254', '信用监管', NULL, '623baeff-8079-4762-bb8f-becddc20b463', 'bd57d0be-8884-4a4e-a41e-98070d2f56db', '665d9928-8b23-4f18-bc7a-23954781ae9f', '86cbd88f-ce23-4eeb-a8cd-0d234467200a', '2', '.86cbd88f-ce23-4eeb-a8cd-0d234467200a.842bded0-6a80-4c1e-a34a-f59c5d5f6923.', '17', '1', '1', '0', '0', 'default', NULL, NULL, NULL, NULL, '0', 'beb9e669-9056-4bce-8c08-779271a7b6f2', '2019-09-12 14:19:13', 'beb9e669-9056-4bce-8c08-779271a7b6f2', '2019-09-12 14:22:20', NULL, 'h', '0', '0', 'http://10.207.87.130:8083null', 'http://nullnull', 'http://nullnull', NULL, NULL, NULL, NULL, NULL, '0');
+            UPDATE `opu_rs_menu` SET `MENU_ID`='b551b56d-4680-4ae9-9693-e2732a9d8ebc', `MENU_CODE`='opu-rs-menu-00000000251', `MENU_NAME`='红黑名单', `MENU_ICON_CSS`='m-menu__link-icon flaticon-file-1', `NET_TMN_ID`='623baeff-8079-4762-bb8f-becddc20b463', `APP_SOFT_ID`='bd57d0be-8884-4a4e-a41e-98070d2f56db', `FUNC_ID`='ab646cc9-9c9e-4e54-a8b2-463e3dbfb21f', `PARENT_MENU_ID`='842bded0-6a80-4c1e-a34a-f59c5d5f6923', `MENU_LEVEL`='3', `MENU_SEQ`='.86cbd88f-ce23-4eeb-a8cd-0d234467200a.842bded0-6a80-4c1e-a34a-f59c5d5f6923.b551b56d-4680-4ae9-9693-e2732a9d8ebc.', `MENU_SORT_NO`='1', `IS_ACTIVE`='1', `IS_LEAF`='1', `SUB_COUNT`='0', `ACTIVE_SUB_COUNT`='0', `PAGE_OPEN_MODE`='default', `SMALL_IMG_PATH`=NULL, `MIDDLE_IMG_PATH`=NULL, `BIG_IMG_PATH`=NULL, `MENU_MEMO`=NULL, `MENU_DELETED`='0', `CREATER`='beb9e669-9056-4bce-8c08-779271a7b6f2', `CREATE_TIME`='2019-09-05 20:34:33', `MODIFIER`='beb9e669-9056-4bce-8c08-779271a7b6f2', `MODIFY_TIME`='2019-09-12 14:29:05', `MENU_INVOKE_ACTIVITY`=NULL, `MENU_INVOKE_TYPE`='h', `IS_SINGLE_URL`='0', `AUTO_SWITCH`='0', `MENU_INNER_URL`='http://192.168.30.120:8083/aplanmis-front/apanmis/admin/credit/redblack.html', `MENU_GOV_URL`='http://192.168.30.120:8083/aplanmis-front/apanmis/admin/credit/redblack.html', `MENU_OUTER_URL`='http://192.168.30.120:8083/aplanmis-front/apanmis/admin/credit/redblack.html', `MENU_TAG_URL`=NULL, `IS_RECENTLY_ADD`=NULL, `IS_SHORTCUT_MENU`=NULL, `SHORTCUT_SORT_NO`=NULL, `HUGE_IMG_PATH`=NULL, `IS_IMG_ICON`='0' WHERE (`MENU_ID`='b551b56d-4680-4ae9-9693-e2732a9d8ebc');
+        </sql>
+    </changeSet>
+
+    <changeSet id="201909171010" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            UPDATE aea_item_basic SET ITEM_CATEGORY_MARK=ITEM_CODE  where ITEM_CATEGORY_MARK IS NULL OR ITEM_CATEGORY_MARK = '';
+        </sql>
+    </changeSet>
+
+    <changeSet id="201909171133" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            update aea_par_stage set IS_SHOW_ITEM ='1' where IS_NODE = '1';
+            update aea_par_stage set IS_SHOW_ITEM ='0' where IS_NODE = '2';
+        </sql>
+    </changeSet>
+
+    <changeSet id="201909181041" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            INSERT INTO `opu_rs_func` (`FUNC_ID`, `APP_SOFT_ID`, `FUNC_CODE`, `FUNC_NAME`, `FUNC_TYPE`, `FUNC_INVOKE_TYPE`, `FUNC_INVOKE_URL`, `FUNC_INVOKE_PARAM`, `FUNC_SORT_NO`, `PARENT_FUNC_ID`, `FUNC_LEVEL`, `FUNC_SEQ`, `FUNC_SUB_COUNT`, `IS_AUTO_IMPORT`, `IS_ACTIVE_FUNC`, `FUNC_DELETED`, `FUNC_DESC`, `FUNC_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `FUNC_INVOKE_ACTIVITY`, `WIDGET_TYPE`, `FUNC_ICON_CSS`, `WIDGET_IS_CONFIG`, `WIDGET_IS_VISIABLE`, `FUNC_SHORTCUT_KEY`, `WIDGET_IS_USE_TPL`, `TMN_ID`, `IS_IMG_ICON`, `SMALL_IMG_PATH`, `MIDDLE_IMG_PATH`, `BIG_IMG_PATH`, `HUGE_IMG_PATH`) VALUES ('ab646cc9-9c9e-4e54-a8b2-463e3dbfb21f', 'bd57d0be-8884-4a4e-a41e-98070d2f56db', 'opu-rs-func-00000000104', '红黑名单', 'func', '0', '/apanmis/admin/credit/redblack.html', NULL, '1', '665d9928-8b23-4f18-bc7a-23954781ae9f', '3', '.c5f7451c-c9e5-431b-ba3f-32111f92f989.665d9928-8b23-4f18-bc7a-23954781ae9f.ab646cc9-9c9e-4e54-a8b2-463e3dbfb21f.', '0', '0', '1', '0', NULL, NULL, 'beb9e669-9056-4bce-8c08-779271a7b6f2', '2019-09-05 20:34:33', 'beb9e669-9056-4bce-8c08-779271a7b6f2', '2019-09-12 14:20:06', NULL, NULL, NULL, NULL, NULL, '0', NULL, NULL, '0', NULL, NULL, NULL, NULL);
+            INSERT INTO `opu_rs_role_func` (`ROLE_FUNC_ID`, `ROLE_ID`, `FUNC_ID`) VALUES ('4c67804b-1fd1-4f51-8abf-f5297f475f67', '6c9fd702-0c30-44a3-be5d-807fd4c34f39', 'ab646cc9-9c9e-4e54-a8b2-463e3dbfb21f');
+            INSERT INTO `opu_rs_menu` (`MENU_ID`, `MENU_CODE`, `MENU_NAME`, `MENU_ICON_CSS`, `NET_TMN_ID`, `APP_SOFT_ID`, `FUNC_ID`, `PARENT_MENU_ID`, `MENU_LEVEL`, `MENU_SEQ`, `MENU_SORT_NO`, `IS_ACTIVE`, `IS_LEAF`, `SUB_COUNT`, `ACTIVE_SUB_COUNT`, `PAGE_OPEN_MODE`, `SMALL_IMG_PATH`, `MIDDLE_IMG_PATH`, `BIG_IMG_PATH`, `MENU_MEMO`, `MENU_DELETED`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `MENU_INVOKE_ACTIVITY`, `MENU_INVOKE_TYPE`, `IS_SINGLE_URL`, `AUTO_SWITCH`, `MENU_INNER_URL`, `MENU_GOV_URL`, `MENU_OUTER_URL`, `MENU_TAG_URL`, `IS_RECENTLY_ADD`, `IS_SHORTCUT_MENU`, `SHORTCUT_SORT_NO`, `HUGE_IMG_PATH`, `IS_IMG_ICON`) VALUES ('b551b56d-4680-4ae9-9693-e2732a9d8ebc', 'opu-rs-menu-00000000251', '红黑名单', 'm-menu__link-icon flaticon-file-1', '623baeff-8079-4762-bb8f-becddc20b463', 'bd57d0be-8884-4a4e-a41e-98070d2f56db', 'ab646cc9-9c9e-4e54-a8b2-463e3dbfb21f', '842bded0-6a80-4c1e-a34a-f59c5d5f6923', '3', '.86cbd88f-ce23-4eeb-a8cd-0d234467200a.842bded0-6a80-4c1e-a34a-f59c5d5f6923.b551b56d-4680-4ae9-9693-e2732a9d8ebc.', '1', '1', '1', '0', '0', 'default', NULL, NULL, NULL, NULL, '0', 'beb9e669-9056-4bce-8c08-779271a7b6f2', '2019-09-05 20:34:33', 'beb9e669-9056-4bce-8c08-779271a7b6f2', '2019-09-12 14:29:05', NULL, 'h', '0', '0', 'http://192.168.30.120:8083/aplanmis-front/apanmis/admin/credit/redblack.html', 'http://192.168.30.120:8083/aplanmis-front/apanmis/admin/credit/redblack.html', 'http://192.168.30.120:8083/aplanmis-front/apanmis/admin/credit/redblack.html', NULL, NULL, NULL, NULL, NULL, '0');
+        </sql>
+    </changeSet>
+
+    <changeSet id="201909181042" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            INSERT INTO `opu_rs_func` (`FUNC_ID`, `APP_SOFT_ID`, `FUNC_CODE`, `FUNC_NAME`, `FUNC_TYPE`, `FUNC_INVOKE_TYPE`, `FUNC_INVOKE_URL`, `FUNC_INVOKE_PARAM`, `FUNC_SORT_NO`, `PARENT_FUNC_ID`, `FUNC_LEVEL`, `FUNC_SEQ`, `FUNC_SUB_COUNT`, `IS_AUTO_IMPORT`, `IS_ACTIVE_FUNC`, `FUNC_DELETED`, `FUNC_DESC`, `FUNC_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `FUNC_INVOKE_ACTIVITY`, `WIDGET_TYPE`, `FUNC_ICON_CSS`, `WIDGET_IS_CONFIG`, `WIDGET_IS_VISIABLE`, `FUNC_SHORTCUT_KEY`, `WIDGET_IS_USE_TPL`, `TMN_ID`, `IS_IMG_ICON`, `SMALL_IMG_PATH`, `MIDDLE_IMG_PATH`, `BIG_IMG_PATH`, `HUGE_IMG_PATH`) VALUES ('335b90a8-78fa-4f85-a401-dc2946be596c', 'bd57d0be-8884-4a4e-a41e-98070d2f56db', 'opu-rs-func-00000000107', '单位企业', 'func', '0', '/apanmis/admin/credit/unit/index.html', NULL, '2', '665d9928-8b23-4f18-bc7a-23954781ae9f', '3', '.c5f7451c-c9e5-431b-ba3f-32111f92f989.665d9928-8b23-4f18-bc7a-23954781ae9f.335b90a8-78fa-4f85-a401-dc2946be596c.', '0', '0', '1', '0', NULL, NULL, 'beb9e669-9056-4bce-8c08-779271a7b6f2', '2019-09-16 09:39:06', 'beb9e669-9056-4bce-8c08-779271a7b6f2', '2019-09-16 09:52:28', NULL, NULL, NULL, NULL, NULL, '0', NULL, NULL, '0', NULL, NULL, NULL, NULL);
+            INSERT INTO `opu_rs_role_func` (`ROLE_FUNC_ID`, `ROLE_ID`, `FUNC_ID`) VALUES ('b1cd9f80-5bc4-4342-98d9-d90d6343f7a1', '6c9fd702-0c30-44a3-be5d-807fd4c34f39', '335b90a8-78fa-4f85-a401-dc2946be596c');
+            INSERT INTO `opu_rs_menu` (`MENU_ID`, `MENU_CODE`, `MENU_NAME`, `MENU_ICON_CSS`, `NET_TMN_ID`, `APP_SOFT_ID`, `FUNC_ID`, `PARENT_MENU_ID`, `MENU_LEVEL`, `MENU_SEQ`, `MENU_SORT_NO`, `IS_ACTIVE`, `IS_LEAF`, `SUB_COUNT`, `ACTIVE_SUB_COUNT`, `PAGE_OPEN_MODE`, `SMALL_IMG_PATH`, `MIDDLE_IMG_PATH`, `BIG_IMG_PATH`, `MENU_MEMO`, `MENU_DELETED`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `MENU_INVOKE_ACTIVITY`, `MENU_INVOKE_TYPE`, `IS_SINGLE_URL`, `AUTO_SWITCH`, `MENU_INNER_URL`, `MENU_GOV_URL`, `MENU_OUTER_URL`, `MENU_TAG_URL`, `IS_RECENTLY_ADD`, `IS_SHORTCUT_MENU`, `SHORTCUT_SORT_NO`, `HUGE_IMG_PATH`, `IS_IMG_ICON`) VALUES ('48136400-2296-4bb1-8b32-4966cb441fc0', 'opu-rs-menu-00000000259', '单位企业', 'm-menu__link-icon flaticon-file-1', '623baeff-8079-4762-bb8f-becddc20b463', 'bd57d0be-8884-4a4e-a41e-98070d2f56db', '335b90a8-78fa-4f85-a401-dc2946be596c', '842bded0-6a80-4c1e-a34a-f59c5d5f6923', '3', '.86cbd88f-ce23-4eeb-a8cd-0d234467200a.842bded0-6a80-4c1e-a34a-f59c5d5f6923.48136400-2296-4bb1-8b32-4966cb441fc0.', '2', '1', '1', '0', '0', 'default', NULL, NULL, NULL, NULL, '0', 'beb9e669-9056-4bce-8c08-779271a7b6f2', '2019-09-16 09:39:06', 'beb9e669-9056-4bce-8c08-779271a7b6f2', '2019-09-16 11:27:49', NULL, 'h', '0', '0', 'http://192.168.30.120:8083/aplanmis-front/apanmis/admin/credit/unit/index.html', 'http://192.168.30.120:8083/aplanmis-front/apanmis/admin/credit/unit/index.html', 'http://192.168.30.120:8083/aplanmis-front/apanmis/admin/credit/unit/index.html', '', NULL, NULL, NULL, NULL, '0');
+        </sql>
+    </changeSet>
+
+    <changeSet id="201909181043" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            INSERT INTO `opu_rs_func` (`FUNC_ID`, `APP_SOFT_ID`, `FUNC_CODE`, `FUNC_NAME`, `FUNC_TYPE`, `FUNC_INVOKE_TYPE`, `FUNC_INVOKE_URL`, `FUNC_INVOKE_PARAM`, `FUNC_SORT_NO`, `PARENT_FUNC_ID`, `FUNC_LEVEL`, `FUNC_SEQ`, `FUNC_SUB_COUNT`, `IS_AUTO_IMPORT`, `IS_ACTIVE_FUNC`, `FUNC_DELETED`, `FUNC_DESC`, `FUNC_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `FUNC_INVOKE_ACTIVITY`, `WIDGET_TYPE`, `FUNC_ICON_CSS`, `WIDGET_IS_CONFIG`, `WIDGET_IS_VISIABLE`, `FUNC_SHORTCUT_KEY`, `WIDGET_IS_USE_TPL`, `TMN_ID`, `IS_IMG_ICON`, `SMALL_IMG_PATH`, `MIDDLE_IMG_PATH`, `BIG_IMG_PATH`, `HUGE_IMG_PATH`) VALUES ('355fe351-a67e-425c-b68c-586a3db47e99', 'bd57d0be-8884-4a4e-a41e-98070d2f56db', 'opu-rs-func-00000000108', '信用详情', 'func', '0', '/apanmis/admin/credit/summary/index.html', NULL, '3', '665d9928-8b23-4f18-bc7a-23954781ae9f', '3', '.c5f7451c-c9e5-431b-ba3f-32111f92f989.665d9928-8b23-4f18-bc7a-23954781ae9f.355fe351-a67e-425c-b68c-586a3db47e99.', '0', '0', '1', '0', NULL, NULL, 'beb9e669-9056-4bce-8c08-779271a7b6f2', '2019-09-16 09:43:01', 'beb9e669-9056-4bce-8c08-779271a7b6f2', '2019-09-16 09:57:28', NULL, NULL, NULL, NULL, NULL, '0', NULL, NULL, '0', NULL, NULL, NULL, NULL);
+            INSERT INTO `opu_rs_role_func` (`ROLE_FUNC_ID`, `ROLE_ID`, `FUNC_ID`) VALUES ('62985ddb-1877-45df-b0de-9865c532dd36', '6c9fd702-0c30-44a3-be5d-807fd4c34f39', '355fe351-a67e-425c-b68c-586a3db47e99');
+            INSERT INTO `opu_rs_menu` (`MENU_ID`, `MENU_CODE`, `MENU_NAME`, `MENU_ICON_CSS`, `NET_TMN_ID`, `APP_SOFT_ID`, `FUNC_ID`, `PARENT_MENU_ID`, `MENU_LEVEL`, `MENU_SEQ`, `MENU_SORT_NO`, `IS_ACTIVE`, `IS_LEAF`, `SUB_COUNT`, `ACTIVE_SUB_COUNT`, `PAGE_OPEN_MODE`, `SMALL_IMG_PATH`, `MIDDLE_IMG_PATH`, `BIG_IMG_PATH`, `MENU_MEMO`, `MENU_DELETED`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `MENU_INVOKE_ACTIVITY`, `MENU_INVOKE_TYPE`, `IS_SINGLE_URL`, `AUTO_SWITCH`, `MENU_INNER_URL`, `MENU_GOV_URL`, `MENU_OUTER_URL`, `MENU_TAG_URL`, `IS_RECENTLY_ADD`, `IS_SHORTCUT_MENU`, `SHORTCUT_SORT_NO`, `HUGE_IMG_PATH`, `IS_IMG_ICON`) VALUES ('91316481-03f8-4bff-8457-652427b2e20b', 'opu-rs-menu-00000000260', '信用详情', 'm-menu__link-icon flaticon-file-1', '623baeff-8079-4762-bb8f-becddc20b463', 'bd57d0be-8884-4a4e-a41e-98070d2f56db', '355fe351-a67e-425c-b68c-586a3db47e99', '842bded0-6a80-4c1e-a34a-f59c5d5f6923', '3', '.86cbd88f-ce23-4eeb-a8cd-0d234467200a.842bded0-6a80-4c1e-a34a-f59c5d5f6923.91316481-03f8-4bff-8457-652427b2e20b.', '3', '1', '1', '0', '0', 'default', NULL, NULL, NULL, NULL, '0', 'beb9e669-9056-4bce-8c08-779271a7b6f2', '2019-09-16 09:43:02', 'beb9e669-9056-4bce-8c08-779271a7b6f2', '2019-09-16 09:57:49', NULL, 'h', '0', '0', 'http://192.168.30.120:8083/aplanmis-front/apanmis/admin/credit/summary/index.html', 'http://192.168.30.120:8083/aplanmis-front/apanmis/admin/credit/summary/index.html', 'http://192.168.30.120:8083/aplanmis-front/apanmis/admin/credit/summary/index.html', NULL, NULL, NULL, NULL, NULL, '0');
+        </sql>
+    </changeSet>
+
+    <changeSet id="201909210934" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            update opu_rs_func set FUNC_INVOKE_URL = '/apanmis/admin/oneformIndex.html' where FUNC_NAME like '%总表管理%';
+            update opu_rs_menu set MENU_INNER_URL = 'http://192.168.30.120:8083/aplanmis-front/apanmis/admin/oneformIndex.html' where MENU_NAME like '%总表管理%';
+        </sql>
+    </changeSet>
+
+    <changeSet id="201909261516" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            INSERT INTO `bsc_dic_code_type` (`TYPE_ID`, `TYPE_CODE`, `TYPE_NAME`, `IS_TREE`, `IS_ACTIVE`, `TYPE_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES ('25005e32-95ce-4235-b5bb-a55da2fed371', 'GJBZFXFW', '国家标准辅线服务', '0', '1', NULL, NULL, '2019-09-26 14:46:07', NULL, '2019-09-26 14:46:07', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`, `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES ('36df4160-0907-4c62-ae81-1750db03bb49', '25005e32-95ce-4235-b5bb-a55da2fed371', '54C', '联合测绘', '1', '4', '', NULL, '0', '0', NULL, NULL, '2019-09-26 14:49:27', NULL, '2019-09-26 14:49:27', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`, `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES ('46402000-9bb2-4eec-9a24-513f93903718', '25005e32-95ce-4235-b5bb-a55da2fed371', '54Y', '联合验收', '1', '5', '', NULL, '0', '0', NULL, NULL, '2019-09-26 14:49:43', NULL, '2019-09-26 14:49:43', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`, `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES ('a2c575eb-c626-418b-86cd-d18e3da0944f', '25005e32-95ce-4235-b5bb-a55da2fed371', '52', '方案联审', '1', '2', '', NULL, NULL, '0', NULL, NULL, '2019-09-26 14:46:07', NULL, '2019-09-26 14:48:57', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`, `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES ('b77f2bc1-bc48-495c-9674-d70a344e5527', '25005e32-95ce-4235-b5bb-a55da2fed371', '51', '多评合一', '1', '1', '', NULL, NULL, '0', NULL, NULL, '2019-09-26 14:46:07', NULL, '2019-09-26 14:48:37', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`, `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES ('fd8e9906-fa07-4541-bd6e-739a86b6da5e', '25005e32-95ce-4235-b5bb-a55da2fed371', '53', '联合审图', '1', '3', '', NULL, '0', '0', NULL, NULL, '2019-09-26 14:49:10', NULL, '2019-09-26 14:49:10', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+        </sql>
+    </changeSet>
+
+    <changeSet id="201910152019" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            INSERT INTO `opu_rs_func` (`FUNC_ID`, `APP_SOFT_ID`, `FUNC_CODE`, `FUNC_NAME`, `FUNC_TYPE`, `FUNC_INVOKE_TYPE`, `FUNC_INVOKE_URL`, `FUNC_INVOKE_PARAM`, `FUNC_SORT_NO`, `PARENT_FUNC_ID`, `FUNC_LEVEL`, `FUNC_SEQ`, `FUNC_SUB_COUNT`, `IS_AUTO_IMPORT`, `IS_ACTIVE_FUNC`, `FUNC_DELETED`, `FUNC_DESC`, `FUNC_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `FUNC_INVOKE_ACTIVITY`, `WIDGET_TYPE`, `FUNC_ICON_CSS`, `WIDGET_IS_CONFIG`, `WIDGET_IS_VISIABLE`, `FUNC_SHORTCUT_KEY`, `WIDGET_IS_USE_TPL`, `TMN_ID`, `IS_IMG_ICON`, `SMALL_IMG_PATH`, `MIDDLE_IMG_PATH`, `BIG_IMG_PATH`, `HUGE_IMG_PATH`) VALUES ('818f2bf0-104f-43ca-b4e0-446bf74c0b69', 'bd57d0be-8884-4a4e-a41e-98070d2f56db', 'opu-rs-func-00000000120', '系统跟踪日志', 'func', '0', '/apanmis/admin/sys/traceLog.html', NULL, '7', '9fbb25dc-a514-4646-9413-8417197a2a49', '3', '.acce5fd0-7ac5-4e22-9dbe-afff4a33ab49.9fbb25dc-a514-4646-9413-8417197a2a49.818f2bf0-104f-43ca-b4e0-446bf74c0b69.', '0', '0', '1', '0', NULL, NULL, 'beb9e669-9056-4bce-8c08-779271a7b6f2', '2019-10-15 16:21:01', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '0', NULL, NULL, '0', NULL, NULL, NULL, NULL);
+            INSERT INTO `opu_rs_role_func` (`ROLE_FUNC_ID`, `ROLE_ID`, `FUNC_ID`) VALUES ('8e036362-77e2-4ab6-a34a-0867b0ddd241', '6c9fd702-0c30-44a3-be5d-807fd4c34f39', '818f2bf0-104f-43ca-b4e0-446bf74c0b69');
+            INSERT INTO `opu_rs_menu` (`MENU_ID`, `MENU_CODE`, `MENU_NAME`, `MENU_ICON_CSS`, `NET_TMN_ID`, `APP_SOFT_ID`, `FUNC_ID`, `PARENT_MENU_ID`, `MENU_LEVEL`, `MENU_SEQ`, `MENU_SORT_NO`, `IS_ACTIVE`, `IS_LEAF`, `SUB_COUNT`, `ACTIVE_SUB_COUNT`, `PAGE_OPEN_MODE`, `SMALL_IMG_PATH`, `MIDDLE_IMG_PATH`, `BIG_IMG_PATH`, `MENU_MEMO`, `MENU_DELETED`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `MENU_INVOKE_ACTIVITY`, `MENU_INVOKE_TYPE`, `IS_SINGLE_URL`, `AUTO_SWITCH`, `MENU_INNER_URL`, `MENU_GOV_URL`, `MENU_OUTER_URL`, `MENU_TAG_URL`, `IS_RECENTLY_ADD`, `IS_SHORTCUT_MENU`, `SHORTCUT_SORT_NO`, `HUGE_IMG_PATH`, `IS_IMG_ICON`) VALUES ('e60441b7-df21-47ab-a53c-f8055af7dc84', 'opu-rs-menu-00000000283', '系统跟踪日志', 'm-menu__link-icon flaticon-settings-1', '623baeff-8079-4762-bb8f-becddc20b463', 'bd57d0be-8884-4a4e-a41e-98070d2f56db', '818f2bf0-104f-43ca-b4e0-446bf74c0b69', '1730611d-c431-48ef-a030-820fa4f41964', '3', '.3b1231d9-6129-4f5d-a42b-2019eb7fdb08.1730611d-c431-48ef-a030-820fa4f41964.e60441b7-df21-47ab-a53c-f8055af7dc84.', '19', '1', '1', '0', '0', 'default', NULL, NULL, NULL, NULL, '0', 'beb9e669-9056-4bce-8c08-779271a7b6f2', '2019-10-15 16:21:02', 'beb9e669-9056-4bce-8c08-779271a7b6f2', '2019-10-15 16:22:26', NULL, 'h', '0', '0', 'http://192.168.30.120:8083/aplanmis-front/apanmis/admin/sys/traceLog.html', 'http://192.168.30.120:8083/aplanmis-front/apanmis/admin/sys/traceLog.html', 'http://192.168.30.120:8083/aplanmis-front/apanmis/admin/sys/traceLog.html', NULL, NULL, NULL, NULL, NULL, '0');
+        </sql>
+    </changeSet>
+
+    <changeSet id="201910161529" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            update aea_item_basic set ITEM_EXCHANGE_WAY = '1' where IS_CATALOG = '1';
+            update aea_item_basic set ITEM_EXCHANGE_WAY = null where IS_CATALOG = '0';
+        </sql>
+    </changeSet>
+
+    <changeSet id="201910161737" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            update aea_par_state set IS_PROC_START_COND = '0';
+        </sql>
+    </changeSet>
+
+    <changeSet id="201910171640" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            update opu_rs_menu set HANDLE_URL_WAY = '1';
+        </sql>
+    </changeSet>
+
+    <changeSet id="201910221651" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            update opu_rs_func set FUNC_INVOKE_URL = '/apanmis/admin/theme/navIndex.html' where func_NAME like '%主题导航%';
+            update opu_rs_menu set MENU_INNER_URL = 'http://localhost:8083/aplanmis-front/apanmis/admin/theme/navIndex.html' where menu_NAME like '%主题导航%';
+
+            update opu_rs_func set FUNC_INVOKE_URL = '/apanmis/admin/matTypeIndex.html' where func_NAME like '%材料类型%';
+            update opu_rs_menu set MENU_INNER_URL = 'http://localhost:8083/aplanmis-front/apanmis/admin/matTypeIndex.html' where menu_NAME like '%材料类型%';
+
+            <!--update opu_rs_func set FUNC_INVOKE_URL = '/aea/cert/index.do' where func_NAME like '%电子证照%';-->
+            <!--update opu_rs_menu set MENU_INNER_URL = 'http://localhost:8083/aplanmis-front/aea/cert/index.do' where menu_NAME like '%电子证照%';-->
+        </sql>
+    </changeSet>
+
+    <changeSet id="201910300952" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            update aea_item_basic set IS_LINK = '0';
+        </sql>
+    </changeSet>
+
+    <changeSet id="201910301437" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            update aea_par_stage_partform set IS_SMART_FORM = '1';
+        </sql>
+    </changeSet>
+
+    <changeSet id="201910301446" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            update aea_item_basic set USE_ONE_FORM = '0';
+        </sql>
+    </changeSet>
+
+    <changeSet id="201910311024" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            update opu_rs_func set FUNC_INVOKE_URL = '/aea/item/mat/type/index.do' where func_NAME like '%材料类型%';
+            update opu_rs_menu set MENU_INNER_URL = 'http://localhost:8083/aplanmis-front/aea/item/mat/type/index.do' where menu_NAME like '%材料类型%';
+        </sql>
+    </changeSet>
+
+    <changeSet id="201911051541" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            update aea_item_basic set IS_SHARE = '0';
+        </sql>
+    </changeSet>
+
+    <changeSet id="201911051629" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            update opu_rs_menu set PAGE_OPEN_MODE = 'def';
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

@@ -1,0 +1,2931 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaItemBasicMapper">
+
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns">
+        ITEM_BASIC_ID  itemBasicId,
+        ITEM_ID  itemId,
+        ITEM_VER_ID  itemVerId,
+        ITEM_CODE  itemCode,
+        ITEM_NAME  itemName,
+        ORG_ID  orgId,
+        ITEM_TYPE  itemType,
+        BJ_TYPE  bjType,
+        ACCEPT_MODE  acceptMode,
+        HANDLE_ARTICLE  handleArticle,
+        HANDLE_FLOW  handleFlow,
+        DUE_NUM  dueNum,
+        SEND_RESULT_MODE  sendResultMode,
+        DOC_TEMPLATE  docTemplate,
+        APPLY_TABLE_DEMO  applyTableDemo,
+        APPLY_TABLE_TEMPLATE  applyTableTemplate,
+        STANDARD_ITEM_CODE  standardItemCode,
+        ITEM_MEMO  itemMemo,
+        CREATER  creater,
+        CREATE_TIME  createTime,
+        MODIFIER  modifier,
+        MODIFY_TIME  modifyTime,
+        APP_ID  appId,
+        ITEM_DIR_ID  itemDirId,
+        INNER_APP_ID  innerAppId,
+        ITEM_PROPERTY  itemProperty,
+        DIRECTORYCODE  directorycode,
+        DIRECTORY_ID  directoryId,
+        BASECODE  basecode,
+        WTBM  wtbm,
+        SQJB  sqjb,
+        SFZHLR  sfzhlr,
+        SLYJ  slyj,
+        BBH  bbh,
+        SXMLZT  sxmlzt,
+        FBSJ  fbsj,
+        SSSJ  sssj,
+        ISOLD  isold,
+        SFWSBL  sfwsbl,
+        BWSBLLY  bwsblly,
+        UNONLINEREASONOTHER  unonlinereasonother,
+        SFCZWTXFTZSSQK  sfczwtxftzssqk,
+        FZCD  fzcd,
+        SSCODE  sscode,
+        SXGLFSLX  sxglfslx,
+        WTFQFX  wtfqfx,
+        WTFQQTSM  wtfqqtsm,
+        SLFS  slfs,
+        IS_NEED_STATE  isNeedState,
+        IS_MILESTONE_ITEM  isMilestoneItem,
+        OUTER_SYSTEM_HANDLE  outerSystemHandle,
+        OUTER_SYSTEM_DESC  outerSystemDesc,
+        OUTER_SYSTEM_URL  outerSystemUrl,
+        IS_ASYN  isAsyn,
+        ASYN_TIME  asynTime,
+        IS_LOCAL  isLocal,
+        IS_FEE  isFee,
+        XKDX  xkdx,
+        ITEM_ALIAS  itemAlias,
+        IS_NEED_FRONT_COND  isNeedFrontCond,
+        AREA_CODE  areaCode,
+        AREA_CODE_NAME  areaCodeName,
+        KP_ITEM_ID  kpItemId,
+        ITEM_NATURE  itemNature,
+        SFSXGZCNZ  sfsxgzcnz,
+        IS_CATALOG isCatalog,
+        GUIDE_ORG_NAME guideOrgName,
+        REGION_ID regionId,
+        ROOT_ORG_ID rootOrgId,
+        ITEM_CATEGORY_MARK itemCategoryMark,
+        ITEM_EXCHANGE_WAY itemExchangeWay,
+        IS_LINK isLink,
+        USE_ONE_FORM  useOneForm,
+        IS_CHECK_ITEM  isCheckItem,
+        IS_CHECK_PARTFORM  isCheckPartform,
+        IS_CHECK_PROJ  isCheckProj,
+        IS_SHARE isShare
+    </sql>
+
+    <sql id="aib_allColumns">
+        aib.ITEM_BASIC_ID  itemBasicId,
+        aib.ITEM_ID  itemId,
+        aib.ITEM_VER_ID  itemVerId,
+        aib.ITEM_CODE  itemCode,
+        aib.ITEM_NAME  itemName,
+        aib.ORG_ID  orgId,
+        aib.ITEM_TYPE  itemType,
+        aib.BJ_TYPE  bjType,
+        aib.ACCEPT_MODE  acceptMode,
+        aib.HANDLE_ARTICLE  handleArticle,
+        aib.HANDLE_FLOW  handleFlow,
+        aib.DUE_NUM  dueNum,
+        aib.SEND_RESULT_MODE  sendResultMode,
+        aib.DOC_TEMPLATE  docTemplate,
+        aib.APPLY_TABLE_DEMO  applyTableDemo,
+        aib.APPLY_TABLE_TEMPLATE  applyTableTemplate,
+        aib.STANDARD_ITEM_CODE  standardItemCode,
+        aib.ITEM_MEMO  itemMemo,
+        aib.CREATER  creater,
+        aib.CREATE_TIME  createTime,
+        aib.MODIFIER  modifier,
+        aib.MODIFY_TIME  modifyTime,
+        aib.APP_ID  appId,
+        aib.ITEM_DIR_ID  itemDirId,
+        aib.INNER_APP_ID  innerAppId,
+        aib.ITEM_PROPERTY  itemProperty,
+        aib.DIRECTORYCODE  directorycode,
+        aib.DIRECTORY_ID  directoryId,
+        aib.BASECODE  basecode,
+        aib.WTBM  wtbm,
+        aib.SQJB  sqjb,
+        aib.SFZHLR  sfzhlr,
+        aib.SLYJ  slyj,
+        aib.BBH  bbh,
+        aib.SXMLZT  sxmlzt,
+        aib.FBSJ  fbsj,
+        aib.SSSJ  sssj,
+        aib.ISOLD  isold,
+        aib.SFWSBL  sfwsbl,
+        aib.BWSBLLY  bwsblly,
+        aib.UNONLINEREASONOTHER  unonlinereasonother,
+        aib.SFCZWTXFTZSSQK  sfczwtxftzssqk,
+        aib.FZCD  fzcd,
+        aib.SSCODE  sscode,
+        aib.SXGLFSLX  sxglfslx,
+        aib.WTFQFX  wtfqfx,
+        aib.WTFQQTSM  wtfqqtsm,
+        aib.SLFS  slfs,
+        aib.IS_NEED_STATE  isNeedState,
+        aib.IS_MILESTONE_ITEM  isMilestoneItem,
+        aib.OUTER_SYSTEM_HANDLE  outerSystemHandle,
+        aib.OUTER_SYSTEM_DESC  outerSystemDesc,
+        aib.OUTER_SYSTEM_URL  outerSystemUrl,
+        aib.IS_ASYN  isAsyn,
+        aib.ASYN_TIME  asynTime,
+        aib.IS_LOCAL  isLocal,
+        aib.IS_FEE  isFee,
+        aib.XKDX  xkdx,
+        aib.ITEM_ALIAS  itemAlias,
+        aib.IS_NEED_FRONT_COND  isNeedFrontCond,
+        aib.AREA_CODE  areaCode,
+        aib.AREA_CODE_NAME  areaCodeName,
+        aib.KP_ITEM_ID  kpItemId,
+        aib.ITEM_NATURE  itemNature,
+        aib.SFSXGZCNZ  sfsxgzcnz,
+        aib.ROOT_ORG_ID rootOrgId,
+        aib.IS_CATALOG isCatalog,
+        aib.GUIDE_ORG_NAME guideOrgName,
+        aib.REGION_ID regionId,
+        aib.ITEM_CATEGORY_MARK itemCategoryMark,
+        aib.ITEM_EXCHANGE_WAY itemExchangeWay,
+        aib.IS_LINK isLink,
+        aib.USE_ONE_FORM  useOneForm,
+        aib.IS_CHECK_ITEM  isCheckItem,
+        aib.IS_CHECK_PARTFORM  isCheckPartform,
+        aib.IS_CHECK_PROJ  isCheckProj,
+        aib.IS_SHARE isShare
+    </sql>
+
+    <sql id="allColumns2">
+        ${alias}.ITEM_BASIC_ID  itemBasicId,
+        ${alias}.ITEM_ID  itemId,
+        ${alias}.ITEM_VER_ID  itemVerId,
+        ${alias}.ITEM_CODE  itemCode,
+        ${alias}.ITEM_NAME  itemName,
+        ${alias}.ORG_ID  orgId,
+        ${alias}.ITEM_TYPE  itemType,
+        ${alias}.BJ_TYPE  bjType,
+        ${alias}.ACCEPT_MODE  acceptMode,
+        ${alias}.HANDLE_ARTICLE  handleArticle,
+        ${alias}.HANDLE_FLOW  handleFlow,
+        ${alias}.DUE_NUM  dueNum,
+        ${alias}.SEND_RESULT_MODE  sendResultMode,
+        ${alias}.DOC_TEMPLATE  docTemplate,
+        ${alias}.APPLY_TABLE_DEMO  applyTableDemo,
+        ${alias}.APPLY_TABLE_TEMPLATE  applyTableTemplate,
+        ${alias}.STANDARD_ITEM_CODE  standardItemCode,
+        ${alias}.ITEM_MEMO  itemMemo,
+        ${alias}.CREATER  creater,
+        ${alias}.CREATE_TIME  createTime,
+        ${alias}.MODIFIER  modifier,
+        ${alias}.MODIFY_TIME  modifyTime,
+        ${alias}.APP_ID  appId,
+        ${alias}.ITEM_DIR_ID  itemDirId,
+        ${alias}.INNER_APP_ID  innerAppId,
+        ${alias}.ITEM_PROPERTY  itemProperty,
+        ${alias}.DIRECTORYCODE  directorycode,
+        ${alias}.DIRECTORY_ID  directoryId,
+        ${alias}.BASECODE  basecode,
+        ${alias}.WTBM  wtbm,
+        ${alias}.SQJB  sqjb,
+        ${alias}.SFZHLR  sfzhlr,
+        ${alias}.SLYJ  slyj,
+        ${alias}.BBH  bbh,
+        ${alias}.SXMLZT  sxmlzt,
+        ${alias}.FBSJ  fbsj,
+        ${alias}.SSSJ  sssj,
+        ${alias}.ISOLD  isold,
+        ${alias}.SFWSBL  sfwsbl,
+        ${alias}.BWSBLLY  bwsblly,
+        ${alias}.UNONLINEREASONOTHER  unonlinereasonother,
+        ${alias}.SFCZWTXFTZSSQK  sfczwtxftzssqk,
+        ${alias}.FZCD  fzcd,
+        ${alias}.SSCODE  sscode,
+        ${alias}.SXGLFSLX  sxglfslx,
+        ${alias}.WTFQFX  wtfqfx,
+        ${alias}.WTFQQTSM  wtfqqtsm,
+        ${alias}.SLFS  slfs,
+        ${alias}.IS_NEED_STATE  isNeedState,
+        ${alias}.IS_MILESTONE_ITEM  isMilestoneItem,
+        ${alias}.OUTER_SYSTEM_HANDLE  outerSystemHandle,
+        ${alias}.OUTER_SYSTEM_DESC  outerSystemDesc,
+        ${alias}.OUTER_SYSTEM_URL  outerSystemUrl,
+        ${alias}.IS_ASYN  isAsyn,
+        ${alias}.ASYN_TIME  asynTime,
+        ${alias}.IS_LOCAL  isLocal,
+        ${alias}.IS_FEE  isFee,
+        ${alias}.XKDX  xkdx,
+        ${alias}.ITEM_ALIAS  itemAlias,
+        ${alias}.IS_NEED_FRONT_COND  isNeedFrontCond,
+        ${alias}.AREA_CODE  areaCode,
+        ${alias}.AREA_CODE_NAME  areaCodeName,
+        ${alias}.KP_ITEM_ID  kpItemId,
+        ${alias}.ITEM_NATURE  itemNature,
+        ${alias}.SFSXGZCNZ  sfsxgzcnz,
+        ${alias}.ROOT_ORG_ID rootOrgId,
+        ${alias}.IS_CATALOG isCatalog,
+        ${alias}.GUIDE_ORG_NAME guideOrgName,
+        ${alias}.REGION_ID regionId,
+        ${alias}.ITEM_CATEGORY_MARK itemCategoryMark,
+        ${alias}.ITEM_EXCHANGE_WAY itemExchangeWay,
+        ${alias}.IS_LINK isLink,
+        ${alias}.USE_ONE_FORM  useOneForm,
+        ${alias}.IS_CHECK_ITEM  isCheckItem,
+        ${alias}.IS_CHECK_PARTFORM  isCheckPartform,
+        ${alias}.IS_CHECK_PROJ  isCheckProj,
+        ${alias}.IS_SHARE isShare
+    </sql>
+
+    <sql id="allColumns3">
+        ${alias}.itemBasicId,
+        ${alias}.itemId,
+        ${alias}.itemVerId,
+        ${alias}.itemCode,
+        ${alias}.itemName,
+        ${alias}.orgId,
+        ${alias}.itemType,
+        ${alias}.bjType,
+        ${alias}.acceptMode,
+        ${alias}.handleArticle,
+        ${alias}.handleFlow,
+        ${alias}.dueNum,
+        ${alias}.sendResultMode,
+        ${alias}.docTemplate,
+        ${alias}.applyTableDemo,
+        ${alias}.applyTableTemplate,
+        ${alias}.standardItemCode,
+        ${alias}.itemMemo,
+        ${alias}.creater,
+        ${alias}.createTime,
+        ${alias}.modifier,
+        ${alias}.modifyTime,
+        ${alias}.appId,
+        ${alias}.itemDirId,
+        ${alias}.innerAppId,
+        ${alias}.itemProperty,
+        ${alias}.directorycode,
+        ${alias}.directoryId,
+        ${alias}.basecode,
+        ${alias}.wtbm,
+        ${alias}.sqjb,
+        ${alias}.sfzhlr,
+        ${alias}.slyj,
+        ${alias}.bbh,
+        ${alias}.sxmlzt,
+        ${alias}.fbsj,
+        ${alias}.sssj,
+        ${alias}.isold,
+        ${alias}.sfwsbl,
+        ${alias}.bwsblly,
+        ${alias}.unonlinereasonother,
+        ${alias}.sfczwtxftzssqk,
+        ${alias}.fzcd,
+        ${alias}.sscode,
+        ${alias}.sxglfslx,
+        ${alias}.wtfqfx,
+        ${alias}.wtfqqtsm,
+        ${alias}.slfs,
+        ${alias}.isNeedState,
+        ${alias}.isMilestoneItem,
+        ${alias}.outerSystemHandle,
+        ${alias}.outerSystemDesc,
+        ${alias}.outerSystemUrl,
+        ${alias}.isAsyn,
+        ${alias}.asynTime,
+        ${alias}.isLocal,
+        ${alias}.isFee,
+        ${alias}.xkdx,
+        ${alias}.itemAlias,
+        ${alias}.isNeedFrontCond,
+        ${alias}.areaCode,
+        ${alias}.areaCodeName,
+        ${alias}.kpItemId,
+        ${alias}.itemNature,
+        ${alias}.sfsxgzcnz,
+        ${alias}.rootOrgId,
+        ${alias}.isCatalog,
+        ${alias}.guideOrgName,
+        ${alias}.regionId,
+        ${alias}.itemCategoryMark,
+        ${alias}.itemExchangeWay,
+        ${alias}.isLink,
+        ${alias}.useOneForm,
+        ${alias}.isCheckItem,
+        ${alias}.isCheckPartform,
+        ${alias}.isCheckProj,
+        ${alias}.isShare
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaItemBasicById" resultType="AeaItemBasic">
+        select
+            <include refid="allColumns"/>
+        from AEA_ITEM_BASIC
+        where ITEM_BASIC_ID = #{id}
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaItemBasic" resultType="AeaItemBasic">
+        select
+        <include refid="aib_allColumns"/>
+        from AEA_ITEM_BASIC aib
+        <where>
+            <if test="itemBasicId != null">
+                AND aib.ITEM_BASIC_ID = #{itemBasicId}
+            </if>
+            <if test="itemId != null">
+                AND aib.ITEM_ID = #{itemId}
+            </if>
+            <if test="itemVerId != null">
+                AND aib.ITEM_VER_ID = #{itemVerId}
+            </if>
+            <if test="itemCode != null">
+                AND aib.ITEM_CODE = #{itemCode}
+            </if>
+            <if test="itemName != null">
+                AND aib.ITEM_NAME = #{itemName}
+            </if>
+            <if test="orgId != null">
+                AND aib.ORG_ID = #{orgId}
+            </if>
+            <if test="itemType != null">
+                AND aib.ITEM_TYPE = #{itemType}
+            </if>
+            <if test="bjType != null">
+                AND aib.BJ_TYPE = #{bjType}
+            </if>
+            <if test="acceptMode != null">
+                AND aib.ACCEPT_MODE = #{acceptMode}
+            </if>
+            <if test="handleArticle != null">
+                AND aib.HANDLE_ARTICLE = #{handleArticle}
+            </if>
+            <if test="handleFlow != null">
+                AND aib.HANDLE_FLOW = #{handleFlow}
+            </if>
+            <if test="dueNum != null">
+                AND aib.DUE_NUM = #{dueNum}
+            </if>
+            <if test="sendResultMode != null">
+                AND aib.SEND_RESULT_MODE = #{sendResultMode}
+            </if>
+            <if test="docTemplate != null">
+                AND aib.DOC_TEMPLATE = #{docTemplate}
+            </if>
+            <if test="applyTableDemo != null">
+                AND aib.APPLY_TABLE_DEMO = #{applyTableDemo}
+            </if>
+            <if test="applyTableTemplate != null">
+                AND aib.APPLY_TABLE_TEMPLATE = #{applyTableTemplate}
+            </if>
+            <if test="standardItemCode != null">
+                AND aib.STANDARD_ITEM_CODE = #{standardItemCode}
+            </if>
+            <if test="itemMemo != null">
+                AND aib.ITEM_MEMO = #{itemMemo}
+            </if>
+            <if test="creater != null">
+                AND aib.CREATER = #{creater}
+            </if>
+            <if test="createTime != null">
+                AND aib.CREATE_TIME = #{createTime}
+            </if>
+            <if test="modifier != null">
+                AND aib.MODIFIER = #{modifier}
+            </if>
+            <if test="modifyTime != null">
+                AND aib.MODIFY_TIME = #{modifyTime}
+            </if>
+            <if test="appId != null">
+                AND aib.APP_ID = #{appId}
+            </if>
+            <if test="itemDirId != null">
+                AND ITEM_DIR_ID = #{itemDirId}
+            </if>
+            <if test="innerAppId != null">
+                AND aib.INNER_APP_ID = #{innerAppId}
+            </if>
+            <if test="itemProperty != null">
+                AND aib.ITEM_PROPERTY = #{itemProperty}
+            </if>
+            <if test="directorycode != null">
+                AND aib.DIRECTORYCODE = #{directorycode}
+            </if>
+            <if test="directoryId != null">
+                AND aib.DIRECTORY_ID = #{directoryId}
+            </if>
+            <if test="basecode != null">
+                AND aib.BASECODE = #{basecode}
+            </if>
+            <if test="wtbm != null">
+                AND aib.WTBM = #{wtbm}
+            </if>
+            <if test="sqjb != null">
+                AND aib.SQJB = #{sqjb}
+            </if>
+            <if test="sfzhlr != null">
+                AND aib.SFZHLR = #{sfzhlr}
+            </if>
+            <if test="slyj != null">
+                AND aib.SLYJ = #{slyj}
+            </if>
+            <if test="bbh != null">
+                AND aib.BBH = #{bbh}
+            </if>
+            <if test="sxmlzt != null">
+                AND aib.SXMLZT = #{sxmlzt}
+            </if>
+            <if test="fbsj != null">
+                AND aib.FBSJ = #{fbsj}
+            </if>
+            <if test="sssj != null">
+                AND aib.SSSJ = #{sssj}
+            </if>
+            <if test="isold != null">
+                AND aib.ISOLD = #{isold}
+            </if>
+            <if test="sfwsbl != null">
+                AND aib.SFWSBL = #{sfwsbl}
+            </if>
+            <if test="bwsblly != null">
+                AND aib.BWSBLLY = #{bwsblly}
+            </if>
+            <if test="unonlinereasonother != null">
+                AND aib.UNONLINEREASONOTHER = #{unonlinereasonother}
+            </if>
+            <if test="sfczwtxftzssqk != null">
+                AND aib.SFCZWTXFTZSSQK = #{sfczwtxftzssqk}
+            </if>
+            <if test="fzcd != null">
+                AND aib.FZCD = #{fzcd}
+            </if>
+            <if test="sscode != null">
+                AND aib.SSCODE = #{sscode}
+            </if>
+            <if test="sxglfslx != null">
+                AND aib.SXGLFSLX = #{sxglfslx}
+            </if>
+            <if test="wtfqfx != null">
+                AND aib.WTFQFX = #{wtfqfx}
+            </if>
+            <if test="wtfqqtsm != null">
+                AND aib.WTFQQTSM = #{wtfqqtsm}
+            </if>
+            <if test="slfs != null">
+                AND aib.SLFS = #{slfs}
+            </if>
+            <if test="isNeedState != null">
+                AND aib.IS_NEED_STATE = #{isNeedState}
+            </if>
+            <if test="isMilestoneItem != null">
+                AND aib.IS_MILESTONE_ITEM = #{isMilestoneItem}
+            </if>
+            <if test="outerSystemHandle != null">
+                AND aib.OUTER_SYSTEM_HANDLE = #{outerSystemHandle}
+            </if>
+            <if test="outerSystemDesc != null">
+                AND aib.OUTER_SYSTEM_DESC = #{outerSystemDesc}
+            </if>
+            <if test="outerSystemUrl != null">
+                AND aib.OUTER_SYSTEM_URL = #{outerSystemUrl}
+            </if>
+            <if test="isAsyn != null">
+                AND aib.IS_ASYN = #{isAsyn}
+            </if>
+            <if test="asynTime != null">
+                AND aib.ASYN_TIME = #{asynTime}
+            </if>
+            <if test="isLocal != null">
+                AND aib.IS_LOCAL = #{isLocal}
+            </if>
+            <if test="isFee != null">
+                AND aib.IS_FEE = #{isFee}
+            </if>
+            <if test="xkdx != null">
+                AND aib.XKDX = #{xkdx}
+            </if>
+            <if test="itemAlias != null">
+                AND aib.ITEM_ALIAS = #{itemAlias}
+            </if>
+            <if test="isNeedFrontCond != null">
+                AND aib.IS_NEED_FRONT_COND = #{isNeedFrontCond}
+            </if>
+            <if test="areaCode != null">
+                AND aib.AREA_CODE = #{areaCode}
+            </if>
+            <if test="areaCodeName != null">
+                AND aib.AREA_CODE_NAME = #{areaCodeName}
+            </if>
+            <if test="kpItemId != null">
+                AND aib.KP_ITEM_ID = #{kpItemId}
+            </if>
+            <if test="itemNature != null">
+                AND aib.ITEM_NATURE = #{itemNature}
+            </if>
+            <if test="sfsxgzcnz != null">
+                AND aib.SFSXGZCNZ = #{sfsxgzcnz}
+            </if>
+            <if test="rootOrgId != null">
+                AND aib.ROOT_ORG_ID = #{rootOrgId}
+            </if>
+            <if test="isCatalog != null" >
+                AND aib.IS_CATALOG = #{isCatalog}
+            </if>
+            <if test="guideOrgName != null" >
+                AND aib.GUIDE_ORG_NAME = #{guideOrgName}
+            </if>
+            <if test="regionId != null" >
+                AND aib.REGION_ID = #{regionId}
+            </if>
+            <if test="itemCategoryMark != null" >
+                AND aib.ITEM_CATEGORY_MARK = #{itemCategoryMark}
+            </if>
+            <if test="itemExchangeWay != null" >
+                AND aib.ITEM_EXCHANGE_WAY = #{itemExchangeWay}
+            </if>
+            <if test="isLink != null and isLink!='' " >
+                AND aib.IS_LINK = #{isLink}
+            </if>
+            <if test="useOneForm != null and useOneForm!='' " >
+                AND aib.USE_ONE_FORM = #{useOneForm}
+            </if>
+            <if test="isCheckItem != null and isCheckItem!='' " >
+                AND aib.IS_CHECK_ITEM = #{isCheckItem}
+            </if>
+            <if test="isCheckPartform != null and isCheckPartform!=''" >
+                AND aib.IS_CHECK_PARTFORM = #{isCheckPartform}
+            </if>
+            <if test="isCheckProj != null and isCheckProj!='' " >
+                AND aib.IS_CHECK_PROJ = #{isCheckProj}
+            </if>
+            <if test="isShare != null and isShare!='' " >
+                AND aib.IS_SHARE = #{isShare}
+            </if>
+            <if test="keyword != null and keyword !='' " >
+                AND aib.ITEM_NAME like CONCAT(CONCAT('%',#{keyword}),'%')
+            </if>
+        </where>
+    </select>
+
+    <select id="listOpuOmOrgByAllPropJoinItem" resultType="OpuOmOrg" >
+        select
+            org.ORG_ID  as orgId,
+            org.ORG_CODE as orgCode,
+            org.ORG_NAME as orgName,
+            org.ORG_SHORT_NAME1 as orgShortName1,
+            org.ORG_SHORT_NAME2 as orgShortName2,
+            org.PARENT_ORG_ID as parentOrgId,
+            org.ORG_SEQ as orgSeq,
+            org.ORG_TYPE as orgType,
+            org.ORG_NATURE as orgNature,
+            org.ORG_DELETED as orgDeleted,
+            org.IS_TOP_ORG as isTopOrg
+        from OPU_OM_ORG org
+        <where>
+            <if test="rootOrgId!=null and rootOrgId!=''">
+                EXISTS (SELECT * FROM aea_item_basic aib WHERE org.org_id = aib.org_id  AND aib.root_org_id = #{rootOrgId})
+            </if>
+
+            <if test="opuOmOrg.parentOrgId != null and opuOmOrg.parentOrgId !=''" >
+                AND  org.PARENT_ORG_ID = #{opuOmOrg.parentOrgId}
+            </if>
+
+            <if test="opuOmOrg.orgProperty != null and opuOmOrg.orgProperty !=''" >
+                AND  org.ORG_PROPERTY = #{opuOmOrg.orgProperty}
+            </if>
+            <if test="opuOmOrg.isActive != null and opuOmOrg.isActive !=''" >
+                AND org.IS_ACTIVE = #{opuOmOrg.isActive}
+            </if>
+            and  org.ORG_DELETED='0'
+            and  org.ORG_ID != '-1'
+        </where>
+        order by org.CREATE_TIME DESC ,org.MODIFY_TIME DESC
+    </select>
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaItemBasic" parameterType="AeaItemBasic">
+        insert into AEA_ITEM_BASIC (
+            ITEM_BASIC_ID,
+            ITEM_ID,
+            ITEM_VER_ID,
+            ITEM_CODE,
+            ITEM_NAME,
+            ORG_ID,
+            ITEM_TYPE,
+            BJ_TYPE,
+            ACCEPT_MODE,
+            HANDLE_ARTICLE,
+            HANDLE_FLOW,
+            DUE_NUM,
+            SEND_RESULT_MODE,
+            DOC_TEMPLATE,
+            APPLY_TABLE_DEMO,
+            APPLY_TABLE_TEMPLATE,
+            STANDARD_ITEM_CODE,
+            ITEM_MEMO,
+            CREATER,
+            CREATE_TIME,
+            MODIFIER,
+            MODIFY_TIME,
+            APP_ID,
+            ITEM_DIR_ID,
+            INNER_APP_ID,
+            ITEM_PROPERTY,
+            DIRECTORYCODE,
+            DIRECTORY_ID,
+            BASECODE,
+            WTBM,
+            SQJB,
+            SFZHLR,
+            SLYJ,
+            BBH,
+            SXMLZT,
+            FBSJ,
+            SSSJ,
+            ISOLD,
+            SFWSBL,
+            BWSBLLY,
+            UNONLINEREASONOTHER,
+            SFCZWTXFTZSSQK,
+            FZCD,
+            SSCODE,
+            SXGLFSLX,
+            WTFQFX,
+            WTFQQTSM,
+            SLFS,
+            IS_NEED_STATE,
+            IS_MILESTONE_ITEM,
+            OUTER_SYSTEM_HANDLE,
+            OUTER_SYSTEM_DESC,
+            OUTER_SYSTEM_URL,
+            IS_ASYN,
+            ASYN_TIME,
+            IS_LOCAL,
+            IS_FEE,
+            XKDX,
+            ITEM_ALIAS,
+            IS_NEED_FRONT_COND,
+            AREA_CODE,
+            AREA_CODE_NAME,
+            KP_ITEM_ID,
+            ITEM_NATURE,
+            SFSXGZCNZ,
+            ROOT_ORG_ID,
+            IS_CATALOG,
+            GUIDE_ORG_NAME,
+            REGION_ID,
+            ITEM_CATEGORY_MARK,
+            ITEM_EXCHANGE_WAY,
+            IS_LINK,
+            USE_ONE_FORM  ,
+            IS_CHECK_ITEM  ,
+            IS_CHECK_PARTFORM  ,
+            IS_CHECK_PROJ,
+            IS_SHARE
+        )
+        values(
+            #{itemBasicId},
+            #{itemId},
+            #{itemVerId},
+            #{itemCode},
+            #{itemName},
+            #{orgId},
+            #{itemType},
+            #{bjType},
+            #{acceptMode},
+            #{handleArticle},
+            #{handleFlow},
+            #{dueNum},
+            #{sendResultMode},
+            #{docTemplate},
+            #{applyTableDemo},
+            #{applyTableTemplate},
+            #{standardItemCode},
+            #{itemMemo},
+            #{creater},
+            #{createTime},
+            #{modifier},
+            #{modifyTime},
+            #{appId},
+            #{itemDirId},
+            #{innerAppId},
+            #{itemProperty},
+            #{directorycode},
+            #{directoryId},
+            #{basecode},
+            #{wtbm},
+            #{sqjb},
+            #{sfzhlr},
+            #{slyj},
+            #{bbh},
+            #{sxmlzt},
+            #{fbsj},
+            #{sssj},
+            #{isold},
+            #{sfwsbl},
+            #{bwsblly},
+            #{unonlinereasonother},
+            #{sfczwtxftzssqk},
+            #{fzcd},
+            #{sscode},
+            #{sxglfslx},
+            #{wtfqfx},
+            #{wtfqqtsm},
+            #{slfs},
+            #{isNeedState},
+            #{isMilestoneItem},
+            #{outerSystemHandle},
+            #{outerSystemDesc},
+            #{outerSystemUrl},
+            #{isAsyn},
+            #{asynTime},
+            #{isLocal},
+            #{isFee},
+            #{xkdx},
+            #{itemAlias},
+            #{isNeedFrontCond},
+            #{areaCode},
+            #{areaCodeName},
+            #{kpItemId},
+            #{itemNature},
+            #{sfsxgzcnz},
+            #{rootOrgId},
+            #{isCatalog},
+            #{guideOrgName},
+            #{regionId},
+            #{itemCategoryMark},
+            #{itemExchangeWay},
+            #{isLink},
+            #{useOneForm},
+            #{isCheckItem},
+            #{isCheckPartform},
+            #{isCheckProj},
+            #{isShare}
+        )
+    </insert>
+
+    <!--6 修改实体对象 -->
+    <update id="updateAeaItemBasic" parameterType="AeaItemBasic">
+        update AEA_ITEM_BASIC
+        <set>
+            <if test="itemBasicId != null">
+                ITEM_BASIC_ID = #{itemBasicId},
+            </if>
+            <if test="itemId != null">
+                ITEM_ID = #{itemId},
+            </if>
+            <if test="itemVerId != null">
+                ITEM_VER_ID = #{itemVerId},
+            </if>
+            <if test="itemCode != null">
+                ITEM_CODE = #{itemCode},
+            </if>
+            <if test="itemName != null">
+                ITEM_NAME = #{itemName},
+            </if>
+            <if test="orgId != null">
+                ORG_ID = #{orgId},
+            </if>
+            <if test="itemType != null">
+                ITEM_TYPE = #{itemType},
+            </if>
+            <if test="bjType != null">
+                BJ_TYPE = #{bjType},
+            </if>
+            <if test="acceptMode != null">
+                ACCEPT_MODE = #{acceptMode},
+            </if>
+            <if test="handleArticle != null">
+                HANDLE_ARTICLE = #{handleArticle},
+            </if>
+            <if test="handleFlow != null">
+                HANDLE_FLOW = #{handleFlow},
+            </if>
+            <if test="dueNum != null">
+                DUE_NUM = #{dueNum},
+            </if>
+            <if test="sendResultMode != null">
+                SEND_RESULT_MODE = #{sendResultMode},
+            </if>
+            <if test="docTemplate != null">
+                DOC_TEMPLATE = #{docTemplate},
+            </if>
+            <if test="applyTableDemo != null">
+                APPLY_TABLE_DEMO = #{applyTableDemo},
+            </if>
+            <if test="applyTableTemplate != null">
+                APPLY_TABLE_TEMPLATE = #{applyTableTemplate},
+            </if>
+            <if test="standardItemCode != null">
+                STANDARD_ITEM_CODE = #{standardItemCode},
+            </if>
+            <if test="itemMemo != null">
+                ITEM_MEMO = #{itemMemo},
+            </if>
+            <if test="creater != null">
+                CREATER = #{creater},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime},
+            </if>
+            <if test="modifier != null">
+                MODIFIER = #{modifier},
+            </if>
+            <if test="modifyTime != null">
+                MODIFY_TIME = #{modifyTime},
+            </if>
+            <if test="appId != null">
+                APP_ID = #{appId},
+            </if>
+            <if test="itemDirId != null">
+                ITEM_DIR_ID = #{itemDirId},
+            </if>
+            <if test="innerAppId != null">
+                INNER_APP_ID = #{innerAppId},
+            </if>
+            <if test="itemProperty != null">
+                ITEM_PROPERTY = #{itemProperty},
+            </if>
+            <if test="directorycode != null">
+                DIRECTORYCODE = #{directorycode},
+            </if>
+            <if test="directoryId != null">
+                DIRECTORY_ID = #{directoryId},
+            </if>
+            <if test="basecode != null">
+                BASECODE = #{basecode},
+            </if>
+            <if test="wtbm != null">
+                WTBM = #{wtbm},
+            </if>
+            <if test="sqjb != null">
+                SQJB = #{sqjb},
+            </if>
+            <if test="sfzhlr != null">
+                SFZHLR = #{sfzhlr},
+            </if>
+            <if test="slyj != null">
+                SLYJ = #{slyj},
+            </if>
+            <if test="bbh != null">
+                BBH = #{bbh},
+            </if>
+            <if test="sxmlzt != null">
+                SXMLZT = #{sxmlzt},
+            </if>
+            <if test="fbsj != null">
+                FBSJ = #{fbsj},
+            </if>
+            <if test="sssj != null">
+                SSSJ = #{sssj},
+            </if>
+            <if test="isold != null">
+                ISOLD = #{isold},
+            </if>
+            <if test="sfwsbl != null">
+                SFWSBL = #{sfwsbl},
+            </if>
+            <if test="bwsblly != null">
+                BWSBLLY = #{bwsblly},
+            </if>
+            <if test="unonlinereasonother != null">
+                UNONLINEREASONOTHER = #{unonlinereasonother},
+            </if>
+            <if test="sfczwtxftzssqk != null">
+                SFCZWTXFTZSSQK = #{sfczwtxftzssqk},
+            </if>
+            <if test="fzcd != null">
+                FZCD = #{fzcd},
+            </if>
+            <if test="sscode != null">
+                SSCODE = #{sscode},
+            </if>
+            <if test="sxglfslx != null">
+                SXGLFSLX = #{sxglfslx},
+            </if>
+            <if test="wtfqfx != null">
+                WTFQFX = #{wtfqfx},
+            </if>
+            <if test="wtfqqtsm != null">
+                WTFQQTSM = #{wtfqqtsm},
+            </if>
+            <if test="slfs != null">
+                SLFS = #{slfs},
+            </if>
+            <if test="isNeedState != null">
+                IS_NEED_STATE = #{isNeedState},
+            </if>
+            <if test="isMilestoneItem != null">
+                IS_MILESTONE_ITEM = #{isMilestoneItem},
+            </if>
+            <if test="outerSystemHandle != null">
+                OUTER_SYSTEM_HANDLE = #{outerSystemHandle},
+            </if>
+            <if test="outerSystemDesc != null">
+                OUTER_SYSTEM_DESC = #{outerSystemDesc},
+            </if>
+            <if test="outerSystemUrl != null">
+                OUTER_SYSTEM_URL = #{outerSystemUrl},
+            </if>
+            <if test="isAsyn != null">
+                IS_ASYN = #{isAsyn},
+            </if>
+            <if test="asynTime != null">
+                ASYN_TIME = #{asynTime},
+            </if>
+            <if test="isLocal != null">
+                IS_LOCAL = #{isLocal},
+            </if>
+            <if test="isFee != null">
+                IS_FEE = #{isFee},
+            </if>
+            <if test="xkdx != null">
+                XKDX = #{xkdx},
+            </if>
+            <if test="itemAlias != null">
+                ITEM_ALIAS = #{itemAlias},
+            </if>
+            <if test="isNeedFrontCond != null">
+                IS_NEED_FRONT_COND = #{isNeedFrontCond},
+            </if>
+            <if test="areaCode != null">
+                AREA_CODE = #{areaCode},
+            </if>
+            <if test="areaCodeName != null">
+                AREA_CODE_NAME = #{areaCodeName},
+            </if>
+            <if test="kpItemId != null">
+                KP_ITEM_ID = #{kpItemId},
+            </if>
+            <if test="itemNature != null">
+                ITEM_NATURE = #{itemNature},
+            </if>
+            <if test="sfsxgzcnz != null">
+                SFSXGZCNZ = #{sfsxgzcnz},
+            </if>
+            <if test="rootOrgId != null">
+                ROOT_ORG_ID = #{rootOrgId},
+            </if>
+            <if test="isCatalog != null" >
+                IS_CATALOG = #{isCatalog},
+            </if>
+            <if test="guideOrgName != null" >
+                GUIDE_ORG_NAME = #{guideOrgName},
+            </if>
+            <if test="regionId != null" >
+                REGION_ID = #{regionId},
+            </if>
+            <if test="itemCategoryMark != null" >
+                ITEM_CATEGORY_MARK = #{itemCategoryMark},
+            </if>
+            <if test="itemExchangeWay != null" >
+                ITEM_EXCHANGE_WAY = #{itemExchangeWay},
+            </if>
+            <if test="isLink != null and isLink!='' " >
+                IS_LINK = #{isLink},
+            </if>
+            <if test="useOneForm != null and useOneForm!='' " >
+                USE_ONE_FORM = #{useOneForm},
+            </if>
+            <if test="isCheckItem != null and isCheckItem!='' " >
+                IS_CHECK_ITEM = #{isCheckItem},
+            </if>
+            <if test="isCheckPartform != null and isCheckPartform!='' " >
+                IS_CHECK_PARTFORM = #{isCheckPartform},
+            </if>
+            <if test="isCheckProj != null and isCheckProj!='' " >
+                IS_CHECK_PROJ = #{isCheckProj},
+            </if>
+            <if test="isShare != null and isShare!='' " >
+                IS_SHARE = #{isShare},
+            </if>
+        </set>
+        where ITEM_BASIC_ID = #{itemBasicId}
+    </update>
+
+    <!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaItemBasic">
+        delete from AEA_ITEM_BASIC where ITEM_BASIC_ID = #{id}
+    </delete>
+
+    <!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaItemBasic" id="AeaItemBasicMap">
+        <id property="itemBasicId" column="ITEM_BASIC_ID"/>
+        <result property="itemId" column="ITEM_ID"/>
+        <result property="itemVerId" column="ITEM_VER_ID"/>
+        <result property="itemCode" column="ITEM_CODE"/>
+        <result property="itemName" column="ITEM_NAME"/>
+        <result property="orgId" column="ORG_ID"/>
+        <result property="itemType" column="ITEM_TYPE"/>
+        <result property="bjType" column="BJ_TYPE"/>
+        <result property="acceptMode" column="ACCEPT_MODE"/>
+        <result property="handleArticle" column="HANDLE_ARTICLE"/>
+        <result property="handleFlow" column="HANDLE_FLOW"/>
+        <result property="dueNum" column="DUE_NUM"/>
+        <result property="sendResultMode" column="SEND_RESULT_MODE"/>
+        <result property="docTemplate" column="DOC_TEMPLATE"/>
+        <result property="applyTableDemo" column="APPLY_TABLE_DEMO"/>
+        <result property="applyTableTemplate" column="APPLY_TABLE_TEMPLATE"/>
+        <result property="standardItemCode" column="STANDARD_ITEM_CODE"/>
+        <result property="itemMemo" column="ITEM_MEMO"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="modifier" column="MODIFIER"/>
+        <result property="modifyTime" column="MODIFY_TIME"/>
+        <result property="appId" column="APP_ID"/>
+        <result property="itemDirId" column="ITEM_DIR_ID"/>
+        <result property="innerAppId" column="INNER_APP_ID"/>
+        <result property="itemProperty" column="ITEM_PROPERTY"/>
+        <result property="directorycode" column="DIRECTORYCODE"/>
+        <result property="directoryId" column="DIRECTORY_ID"/>
+        <result property="basecode" column="BASECODE"/>
+        <result property="wtbm" column="WTBM"/>
+        <result property="sqjb" column="SQJB"/>
+        <result property="sfzhlr" column="SFZHLR"/>
+        <result property="slyj" column="SLYJ"/>
+        <result property="bbh" column="BBH"/>
+        <result property="sxmlzt" column="SXMLZT"/>
+        <result property="fbsj" column="FBSJ"/>
+        <result property="sssj" column="SSSJ"/>
+        <result property="isold" column="ISOLD"/>
+        <result property="sfwsbl" column="SFWSBL"/>
+        <result property="bwsblly" column="BWSBLLY"/>
+        <result property="unonlinereasonother" column="UNONLINEREASONOTHER"/>
+        <result property="sfczwtxftzssqk" column="SFCZWTXFTZSSQK"/>
+        <result property="fzcd" column="FZCD"/>
+        <result property="sscode" column="SSCODE"/>
+        <result property="sxglfslx" column="SXGLFSLX"/>
+        <result property="wtfqfx" column="WTFQFX"/>
+        <result property="wtfqqtsm" column="WTFQQTSM"/>
+        <result property="slfs" column="SLFS"/>
+        <result property="isNeedState" column="IS_NEED_STATE"/>
+        <result property="isMilestoneItem" column="IS_MILESTONE_ITEM"/>
+        <result property="outerSystemHandle" column="OUTER_SYSTEM_HANDLE"/>
+        <result property="outerSystemDesc" column="OUTER_SYSTEM_DESC"/>
+        <result property="outerSystemUrl" column="OUTER_SYSTEM_URL"/>
+        <result property="isAsyn" column="IS_ASYN"/>
+        <result property="asynTime" column="ASYN_TIME"/>
+        <result property="isLocal" column="IS_LOCAL"/>
+        <result property="isFee" column="IS_FEE"/>
+        <result property="xkdx" column="XKDX"/>
+        <result property="itemAlias" column="ITEM_ALIAS"/>
+        <result property="isNeedFrontCond" column="IS_NEED_FRONT_COND"/>
+        <result property="areaCode" column="AREA_CODE"/>
+        <result property="areaCodeName" column="AREA_CODE_NAME"/>
+        <result property="kpItemId" column="KP_ITEM_ID"/>
+        <result property="itemNature" column="ITEM_NATURE"/>
+        <result property="sfsxgzcnz" column="SFSXGZCNZ"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+        <result property="isCatalog" column="IS_CATALOG"/>
+        <result property="guideOrgName" column="GUIDE_ORG_NAME"/>
+        <result property="regionId" column="REGION_ID"/>
+        <result property="itemCategoryMark" column="ITEM_CATEGORY_MARK"/>
+        <result property="itemExchangeWay" column="ITEM_EXCHANGE_WAY"/>
+        <result property="isLink" column="IS_LINK"/>
+        <result property="useOneForm" column="USE_ONE_FORM"/>
+        <result property="isCheckItem" column="IS_CHECK_ITEM"/>
+        <result property="isCheckPartform" column="IS_CHECK_PARTFORM"/>
+        <result property="isCheckProj" column="IS_CHECK_PROJ"/>
+        <result property="isShare" column="IS_SHARE"/>
+    </resultMap>
+
+    <!--10.根据阶段ID查询事项定义列表-->
+    <select id="getAeaItemBasicListByStageId" resultType="AeaItemBasic">
+        select distinct
+        <include refid="aib_allColumns"/>,ooo.ORG_NAME orgName, apsi.sort_no sortNo, bdr.region_name regionName
+        FROM aea_par_stage aps
+        LEFT JOIN aea_par_stage_item apsi ON aps.STAGE_ID=apsi.STAGE_ID AND aps.STAGE_ID=#{stageId}
+        LEFT JOIN aea_item_ver aiv ON aiv.ITEM_VER_ID=apsi.ITEM_VER_ID AND aiv.ITEM_ID=apsi.ITEM_ID
+        LEFT JOIN aea_item_basic aib ON aib.ITEM_VER_ID=aiv.ITEM_VER_ID AND aiv.ITEM_ID=aib.ITEM_ID
+        LEFT JOIN opu_om_org ooo ON ooo.ORG_ID = aib.ORG_ID
+        left join bsc_dic_region bdr on bdr.region_id=aib.region_id
+        WHERE aps.IS_DELETED !=1 AND aiv.IS_DELETED !=1 and aib.SXMLZT in('0','1')
+        <if test="isOptionItem !=null and isOptionItem !=''">
+            and apsi.is_option_item=#{isOptionItem}
+        </if>
+        <if test="rootOrgId!=null and rootOrgId!=''">
+            and aps.ROOT_ORG_ID=#{rootOrgId}
+            and aib.ROOT_ORG_ID=#{rootOrgId}
+            and aiv.ROOT_ORG_ID=#{rootOrgId}
+        </if>
+    </select>
+
+    <select id="getAeaItemBasicByItemVerId" resultType="AeaItemBasic">
+        select
+        <include refid="aib_allColumns"/>,org.ORG_NAME orgName
+        from aea_item_ver aiv
+        left join aea_item_basic aib on aiv.ITEM_ID=aib.ITEM_ID and aiv.ITEM_VER_ID=aib.ITEM_VER_ID and aib.ROOT_ORG_ID
+        = aiv.ROOT_ORG_ID
+        left join OPU_OM_ORG org on ( org.ORG_ID = aib.ORG_ID and org.ORG_DELETED = '0' )
+        WHERE aiv.item_ver_id=#{itemVerId}
+        and aiv.ROOT_ORG_ID = #{rootOrgId}
+        and aiv.IS_DELETED !=1
+        and aib.SXMLZT in('0','1')
+    </select>
+
+    <select id="getAeaItemBasicByItemVerId2" resultType="AeaItemBasic">
+        select
+           <include refid="aib_allColumns"/>
+        from aea_item_ver aiv
+        left join aea_item_basic aib on (
+            aib.ITEM_ID = aiv.ITEM_ID
+        and aib.ITEM_VER_ID = aiv.ITEM_VER_ID
+        and aib.ROOT_ORG_ID = aiv.ROOT_ORG_ID
+        )
+        <where>
+            and aiv.ROOT_ORG_ID = #{rootOrgId}
+            and aiv.item_ver_id = #{itemVerId}
+            and aiv.IS_DELETED = '0'
+        </where>
+    </select>
+
+    <select id="getItemVerIdListByProjInfoId" resultType="string">
+         SELECT DISTINCT aib.ITEM_VER_ID
+            from aea_proj_info api
+            LEFT JOIN aea_applyinst_proj aap ON api.PROJ_INFO_ID=aap.PROJ_INFO_ID
+            LEFT JOIN aea_hi_applyinst aha ON aap.APPLYINST_ID=aha.APPLYINST_ID
+            LEFT JOIN aea_hi_seriesinst ahs ON ahs.APPLYINST_ID=aha.APPLYINST_ID
+            LEFT JOIN aea_hi_iteminst ahi ON ahi.SERIESINST_ID=ahs.SERIESINST_ID
+            LEFT JOIN aea_item_ver aiv ON aiv.ITEM_ID=ahi.ITEM_ID
+            LEFT JOIN aea_item_basic aib ON aib.ITEM_VER_ID=aiv.ITEM_VER_ID
+            where  api.IS_DELETED!=1 and aha.IS_DELETED!=1 and aiv.IS_DELETED !=1
+            and api.proj_info_id=#{projInfoId} AND aib.ITEM_VER_ID is NOT NULL
+            /*and ahi.ITEMINST_STATE in('11','12')*/
+    </select>
+
+    <select id="getAeaItemBasicListByStageIdAndStateId" resultType="AeaItemBasic">
+        SELECT
+        <include refid="aib_allColumns"/>,ooo.ORG_NAME orgName, bdr.region_name regionName
+        FROM
+        aea_par_stage aps
+        LEFT JOIN aea_par_stage_item apsi ON aps.STAGE_ID = apsi.STAGE_ID
+        LEFT JOIN aea_par_state_item st ON st.STAGE_ITEM_ID = apsi.STAGE_ITEM_ID
+        LEFT JOIN aea_par_state state ON state.PAR_STATE_ID = st.PAR_STATE_ID
+        LEFT JOIN aea_item_ver aiv ON aiv.ITEM_VER_ID = apsi.ITEM_VER_ID AND aiv.ITEM_ID = apsi.ITEM_ID
+        LEFT JOIN aea_item_basic aib on aiv.item_id=aib.item_id and aiv.item_ver_id=aib.item_ver_id
+        LEFT JOIN opu_om_org ooo ON ooo.ORG_ID = aib.ORG_ID
+        left join bsc_dic_region bdr on bdr.region_id=aib.region_id
+        WHERE
+        aps.STAGE_ID = #{stageId}
+        AND aps.IS_DELETED != 1
+        AND aiv.IS_DELETED != 1
+        AND state.IS_DELETED != 1
+        and aib.SXMLZT in('0','1')
+        <if test="stateId !=null and stateId!=''">
+            AND state.PAR_STATE_ID = #{stateId}
+        </if>
+        <if test="isOptionItem !=null and isOptionItem!=''">
+            AND apsi.IS_OPTION_ITEM = #{isOptionItem}
+        </if>
+        and aiv.ROOT_ORG_ID=#{rootOrgId} and aib.ROOT_ORG_ID=#{rootOrgId} and state.ROOT_ORG_ID=#{rootOrgId}
+        order by apsi.sort_no desc
+    </select>
+
+    <select id="listAeaItemBasicListByStageIds" resultType="AeaItemBasic">
+        SELECT
+        <include refid="aib_allColumns"/>
+        FROM
+        aea_par_stage aps
+        LEFT JOIN aea_par_stage_item apsi ON aps.STAGE_ID = apsi.STAGE_ID
+        LEFT JOIN aea_par_state_item st ON st.STAGE_ITEM_ID = apsi.STAGE_ITEM_ID
+        LEFT JOIN aea_par_state state ON state.PAR_STATE_ID = st.PAR_STATE_ID
+        LEFT JOIN aea_item_ver aiv ON aiv.ITEM_VER_ID = apsi.ITEM_VER_ID AND aiv.ITEM_ID = apsi.ITEM_ID
+        LEFT JOIN aea_item_basic aib on aiv.item_id=aib.item_id and aiv.item_ver_id=aib.item_ver_id
+        WHERE
+        aps.STAGE_ID in
+        <foreach collection="stageIds" open="(" close=")" separator="," item="stageId">
+            #{stageId}
+        </foreach>
+        AND state.PAR_STATE_ID is not null
+        AND aps.IS_DELETED != 1
+        AND aiv.IS_DELETED != 1
+        AND state.IS_DELETED != 1
+        and aib.SXMLZT in('0','1')
+        and aiv.ROOT_ORG_ID=#{rootOrgId} and aib.ROOT_ORG_ID=#{rootOrgId} and state.ROOT_ORG_ID=#{rootOrgId}
+    </select>
+
+    <select id="listOptionAeaItemBasicListByStageIds" resultType="AeaItemBasic">
+        SELECT
+        <include refid="aib_allColumns"/>
+        FROM
+        aea_par_stage aps
+        LEFT JOIN aea_par_stage_item apsi ON aps.STAGE_ID = apsi.STAGE_ID
+        LEFT JOIN aea_item_ver aiv ON aiv.ITEM_VER_ID = apsi.ITEM_VER_ID AND aiv.ITEM_ID = apsi.ITEM_ID
+        LEFT JOIN aea_item_basic aib on aiv.item_id=aib.item_id and aiv.item_ver_id=aib.item_ver_id
+        WHERE
+        aps.STAGE_ID in
+        <foreach collection="stageIds" open="(" close=")" separator="," item="stageId">
+            #{stageId}
+        </foreach>
+        <if test="isOptionItem !=null and isOptionItem!=''">
+            AND apsi.IS_OPTION_ITEM = #{isOptionItem}
+        </if>
+        AND aps.IS_DELETED != 1
+        AND aiv.IS_DELETED != 1
+        and aib.SXMLZT in('0','1')
+        and aiv.ROOT_ORG_ID=#{rootOrgId} and aib.ROOT_ORG_ID=#{rootOrgId}
+    </select>
+
+    <select id="getAeaItemBasicListByOrgId" resultType="AeaItemBasic">
+        SELECT
+        <include refid="aib_allColumns"/>
+        , org.ORG_NAME orgName
+        FROM
+        AEA_ITEM_BASIC aib
+        JOIN (
+        SELECT
+        item_ver_id,
+        ver_num,
+        ITEM_VER_STATUS
+        FROM
+        aea_item_ver ver
+        JOIN (
+        SELECT
+        ITEM_ID,
+        max(VER_NUM) maxNum
+        FROM
+        aea_item_ver
+        WHERE
+        IS_DELETED = '0'
+        GROUP BY
+        ITEM_ID
+        ) maxVer ON ver.item_id = maxVer.item_id
+        AND ver.VER_NUM = maxVer.maxNum
+        ) itemVer ON aib.ITEM_VER_ID = itemVer.ITEM_VER_ID
+        LEFT JOIN OPU_OM_ORG org ON (
+        org.ORG_ID = aib.ORG_ID
+        AND org.ORG_DELETED = '0'
+        )
+        LEFT JOIN AEA_ITEM item ON item.item_id = aib.Item_Id
+        WHERE
+        aib.SXMLZT IN ('0', '1')
+        <if test="orgId!=null and orgId!=''">
+            AND org.org_id = #{orgId} or org.PARENT_ORG_ID=#{orgId}
+        </if>
+    </select>
+
+    <select id="getAeaItemBasicListByItemVerIds" resultType="AeaItemBasic">
+        SELECT
+        <include refid="aib_allColumns"/>,ooo.ORG_NAME orgName
+        FROM aea_item_ver aiv
+        LEFT JOIN aea_item_basic aib ON aiv.ITEM_ID=aib.ITEM_ID AND aiv.ITEM_VER_ID=aib.ITEM_VER_ID
+        LEFT JOIN opu_om_org ooo ON ooo.ORG_ID = aib.ORG_ID
+        WHERE aiv.IS_DELETED !=1 and aib.SXMLZT in('0','1') and aiv.item_ver_id in
+        <if test="_databaseId == 'oracle'">
+            <foreach collection="itemVerIds" item="item" open="(" separator="union all" close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="_databaseId == 'mysql'">
+            <foreach collection="itemVerIds" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+
+    <select id="searchAnnounceDataList" resultType="com.augurit.aplanmis.common.dto.AnnounceDataDto">
+        select aea_123.* from (
+        SELECT
+        applyInst.APPLYINST_CODE applyinstCode,
+        itemInst.ITEMINST_STATE iteminstState,
+        itemInst.START_TIME startTime,
+        itemInst.END_TIME endTime,
+        item.ITEM_NAME itemName,
+        org.ORG_NAME orgName,
+        proj.PROJ_NAME projName,
+        item.DUE_NUM dueNum
+        FROM
+        AEA_HI_ITEMINST itemInst
+        LEFT JOIN AEA_ITEM_BASIC item ON item.item_ver_id = itemInst.item_ver_id
+        LEFT JOIN OPU_OM_ORG org ON itemInst.APPROVE_ORG_ID = org.ORG_ID
+        INNER JOIN AEA_HI_PAR_STAGEINST stage ON stage.STAGEINST_ID = itemInst.STAGEINST_ID
+        INNER JOIN AEA_HI_APPLYINST applyInst ON applyInst.APPLYINST_ID = stage.APPLYINST_ID
+        INNER JOIN AEA_APPLYINST_PROJ ap ON ap.APPLYINST_ID = applyInst.APPLYINST_ID
+        INNER JOIN AEA_PROJ_INFO proj ON proj.PROJ_INFO_ID = ap.PROJ_INFO_ID
+        <where>
+            applyInst.IS_DELETED !=1 and proj.IS_DELETED !=1
+            <if test="keyword!=null and keyword!=''">
+                and (proj.proj_name like CONCAT('%',#{keyword},'%')
+                or proj.local_code=#{keyword}
+                or applyInst.APPLYINST_CODE=#{keyword})
+            </if>
+            <if test="rootOrgId!=null and rootOrgId!=''">
+                and itemInst.ROOT_ORG_ID=#{rootOrgId}
+                and item.ROOT_ORG_ID=#{rootOrgId}
+                and stage.ROOT_ORG_ID=#{rootOrgId}
+                and applyInst.ROOT_ORG_ID=#{rootOrgId}
+                and proj.ROOT_ORG_ID=#{rootOrgId}
+            </if>
+        </where>
+        UNION ALL
+        SELECT
+        applyInst.APPLYINST_CODE applyinstCode,
+        itemInst.ITEMINST_STATE iteminstState,
+        itemInst.START_TIME startTime,
+        itemInst.END_TIME endTime,
+        item.ITEM_NAME itemName,
+        org.ORG_NAME orgName,
+        proj.PROJ_NAME projName,
+        item.DUE_NUM dueNum
+        FROM
+        AEA_HI_ITEMINST itemInst
+        LEFT JOIN AEA_ITEM_BASIC item ON item.item_ver_id = itemInst.item_ver_id
+        LEFT JOIN OPU_OM_ORG org ON itemInst.APPROVE_ORG_ID = org.ORG_ID
+        INNER JOIN AEA_HI_SERIESINST series ON series.SERIESINST_ID = itemInst.SERIESINST_ID
+        INNER JOIN AEA_HI_APPLYINST applyInst ON applyInst.APPLYINST_ID = series.APPLYINST_ID
+        INNER JOIN AEA_APPLYINST_PROJ ap ON ap.APPLYINST_ID = applyInst.APPLYINST_ID
+        INNER JOIN AEA_PROJ_INFO proj ON proj.PROJ_INFO_ID = ap.PROJ_INFO_ID
+        <where>
+            applyInst.IS_DELETED !=1 and proj.IS_DELETED !=1
+            <if test="keyword!=null and keyword!=''">
+                and (proj.proj_name like CONCAT('%',#{keyword},'%')
+                or proj.local_code=#{keyword}
+                or applyInst.APPLYINST_CODE=#{keyword})
+            </if>
+            <if test="rootOrgId!=null and rootOrgId!=''">
+                and itemInst.ROOT_ORG_ID=#{rootOrgId}
+                and item.ROOT_ORG_ID=#{rootOrgId}
+                and series.ROOT_ORG_ID=#{rootOrgId}
+                and applyInst.ROOT_ORG_ID=#{rootOrgId}
+                and proj.ROOT_ORG_ID=#{rootOrgId}
+            </if>
+        </where>
+        ) aea_123 order by aea_123.startTime desc
+    </select>
+
+    <!--根据情形ID查询绑定的事项列表-->
+    <select id="listAeaParStateItemByStateId" resultType="AeaItemBasic">
+        select<include refid="aib_allColumns"/>,ooo.ORG_NAME orgName, bdr.region_name regionName
+        from AEA_ITEM_BASIC aib
+        LEFT JOIN opu_om_org ooo ON ooo.ORG_ID = aib.ORG_ID
+        left join bsc_dic_region bdr on bdr.region_id=aib.region_id
+        where aib.ITEM_VER_ID in(
+        select apsi.ITEM_VER_ID from AEA_PAR_STAGE_ITEM apsi
+        LEFT JOIN AEA_PAR_STATE_ITEM psi on apsi.STAGE_ITEM_ID=psi.STAGE_ITEM_ID where psi.PAR_STATE_ID=#{stateId}
+        )
+    </select>
+
+    <select id="listAeaItemBasicByItemVerIds" resultType="com.augurit.aplanmis.common.domain.AeaItemBasic">
+        select
+        <include refid="allColumns"/>
+        from AEA_ITEM_BASIC
+        where ITEM_VER_ID in
+        <foreach collection="itemVerIds" separator="," item="itemVerId" open="(" close=")">#{itemVerId}</foreach>
+    </select>
+
+    <select id="getItemByTypeCodeAndItemCode" resultType="com.augurit.agcloud.bsc.domain.BscDicCodeItem">
+        select item.ITEM_ID as itemId,
+		item.TYPE_ID as typeId,
+		item.ITEM_CODE as itemCode,
+		item.ITEM_NAME as itemName,
+		item.IS_ACTIVE as itemIsActive,
+		item.SORT_NO as itemSortNo,
+		item.PARENT_ID as itemParentId,
+		item.ITEM_SEQ as itemSeq,
+		item.ITEM_LEVEL as itemLevel,
+		item.SUB_COUNT as itemSubCount,
+		item.ITEM_MEMO as itemMemo,
+		item.CREATER as itemCreater,
+		item.CREATE_TIME as itemCreateTime,
+		item.MODIFIER as itemModifier,
+		item.MODIFY_TIME as itemModifyTime
+        from BSC_DIC_CODE_ITEM item,BSC_DIC_CODE_TYPE codetype WHERE codetype.TYPE_ID = ITEM.TYPE_ID
+        AND codetype.TYPE_CODE = #{typeCode} AND item.ITEM_CODE = #{itemCode}
+    </select>
+
+    <select id="listLatestOkAeaItemBasic" resultType="com.augurit.aplanmis.common.domain.AeaItemBasic">
+        select
+            <include refid="aib_allColumns"/>,
+            itemVer.ver_num verNum,
+            itemVer.item_ver_status itemVerStatus,
+            org.ORG_NAME orgName,
+        item.PARENT_ITEM_ID parentItemId,
+        bdr.region_name regionName
+        from AEA_ITEM_BASIC aib
+        join (select item_ver_id, ver_num, ITEM_VER_STATUS from aea_item_ver ver
+        join (select ITEM_ID, max(VER_NUM) maxNum from aea_item_ver where IS_DELETED='0' and ITEM_VER_STATUS in
+        ('2','1') group by ITEM_ID ) maxVer
+        on ver.item_id = maxVer.item_id and ver.VER_NUM = maxVer.maxNum ) itemVer on aib.ITEM_VER_ID =
+        itemVer.ITEM_VER_ID
+        left join OPU_OM_ORG org on ( org.ORG_ID = aib.ORG_ID and org.ORG_DELETED = '0' )
+        left join AEA_ITEM item on item.ITEM_ID = aib.ITEM_ID
+        left JOIN bsc_dic_region bdr on aib.region_id=bdr.region_id
+        <where>
+            and aib.ROOT_ORG_ID = #{rootOrgId}
+            <if test="itemBasicId != null and itemBasicId!='' ">
+                and aib.ITEM_BASIC_ID = #{aibId}
+            </if>
+            <if test="itemId != null and itemId!='' ">
+                and aib.ITEM_ID = #{itemId}
+            </if>
+            <if test="itemVerId != null and itemVerId!='' ">
+                and aib.ITEM_VER_ID = #{itemVerId}
+            </if>
+            <if test="itemCode != null and itemCode!='' ">
+                and aib.ITEM_CODE = #{itemCode}
+            </if>
+            <if test="itemName != null and itemName!='' ">
+                and aib.ITEM_NAME = #{itemName}
+            </if>
+            <if test="orgId != null and orgId!='' ">
+                and aib.ORG_ID = #{orgId}
+            </if>
+            <if test="itemType != null and itemType!='' ">
+                and aib.ITEM_TYPE = #{itemType}
+            </if>
+            <if test="bjType != null">
+                and aib.BJ_TYPE = #{bjType}
+            </if>
+            <if test="acceptMode != null">
+                and aib.ACCEPT_MODE = #{acceptMode}
+            </if>
+            <if test="handleArticle != null">
+                and aib.HANDLE_ARTICLE = #{handleArticle}
+            </if>
+            <if test="handleFlow != null">
+                and aib.HANDLE_FLOW = #{handleFlow}
+            </if>
+            <if test="dueNum != null">
+                and aib.DUE_NUM = #{dueNum}
+            </if>
+            <if test="sendResultMode != null">
+                and aib.SEND_RESULT_MODE = #{sendResultMode}
+            </if>
+            <if test="docTemplate != null">
+                and aib.DOC_TEMPLATE = #{docTemplate}
+            </if>
+            <if test="applyTableDemo != null">
+                and aib.APPLY_TABLE_DEMO = #{applyTableDemo}
+            </if>
+            <if test="applyTableTemplate != null">
+                and aib.APPLY_TABLE_TEMPLATE = #{applyTableTemplate}
+            </if>
+            <if test="standardItemCode != null">
+                and aib.STANDARD_ITEM_CODE = #{standardItemCode}
+            </if>
+            <if test="itemMemo != null and itemMemo!='' ">
+                and aib.ITEM_MEMO = #{itemMemo}
+            </if>
+            <if test="creater != null and creater!='' ">
+                and aib.CREATER = #{creater}
+            </if>
+            <if test="createTime != null">
+                and aib.CREATE_TIME = #{createTime}
+            </if>
+            <if test="modifier != null and modifier!='' ">
+                and aib.MODIFIER = #{modifier}
+            </if>
+            <if test="modifyTime != null">
+                and aib.MODIFY_TIME = #{modifyTime}
+            </if>
+            <if test="appId != null and appId!='' ">
+                and aib.APP_ID = #{appId}
+            </if>
+            <if test="itemDirId != null and itemDirId!='' ">
+                and aib.ITEM_DIR_ID = #{itemDirId}
+            </if>
+            <if test="innerAppId != null and innerAppId!='' ">
+                and aib.INNER_APP_ID = #{innerAppId}
+            </if>
+            <if test="itemProperty != null and itemProperty!='' ">
+                and aib.ITEM_PROPERTY = #{itemProperty}
+            </if>
+            <if test="directorycode != null and directorycode!='' ">
+                and aib.DIRECTORYCODE =#{directorycode}
+            </if>
+            <if test="directoryId != null and directoryId!='' ">
+                and aib.DIRECTORY_ID =#{directoryId}
+            </if>
+            <if test="basecode != null and basecode!='' ">
+                and aib.BASECODE =#{basecode}
+            </if>
+            <if test="wtbm != null and wtbm!='' ">
+                and aib.WTBM =#{wtbm}
+            </if>
+            <if test="sqjb != null and sqjb!='' ">
+                and aib.SQJB =#{sqjb}
+            </if>
+            <if test="xkdx != null and xkdx!='' ">
+                and aib.XKDX =#{xkdx}
+            </if>
+            <if test="sfzhlr != null and sfzhlr!='' ">
+                and aib.SFZHLR =#{sfzhlr}
+            </if>
+            <if test="slyj!= null and slyj!='' ">
+                and aib.SLYJ =#{slyj}
+            </if>
+            <if test="bbh != null and bbh!='' ">
+                and aib.BBH =#{bbh}
+            </if>
+            <if test="sxmlzt != null and sxmlzt!='' ">
+                and aib.SXMLZT =#{sxmlzt}
+            </if>
+            <if test="fbsj != null and fbsj!='' ">
+                and aib.FBSJ =#{fbsj}
+            </if>
+            <if test="sssj != null and sssj!='' ">
+                and aib.SSSJ =#{sssj}
+            </if>
+            <if test="isold != null and isold!='' ">
+                and aib.ISOLD =#{isold}
+            </if>
+            <if test="sfwsbl != null and sfwsbl!='' ">
+                and aib.SFWSBL =#{sfwsbl}
+            </if>
+            <if test="bwsblly != null and bwsblly!='' ">
+                and aib.BWSBLLY =#{bwsblly}
+            </if>
+            <if test="unonlinereasonother != null and unonlinereasonother!='' ">
+                and aib.UNONLINEREASONOTHER =#{unonlinereasonother}
+            </if>
+            <if test="sfczwtxftzssqk != null and sfczwtxftzssqk!='' ">
+                and aib.SFCZWTXFTZSSQK =#{sfczwtxftzssqk}
+            </if>
+            <if test="fzcd != null and fzcd!='' ">
+                and aib.FZCD =#{fzcd}
+            </if>
+            <if test="sscode != null and sscode!='' ">
+                and aib.SSCODE = #{sscode}
+            </if>
+            <if test="sxglfslx != null and sxglfslx!='' ">
+                and aib.SXGLFSLX = #{sxglfslx}
+            </if>
+            <if test="wtfqfx != null and wtfqfx!='' ">
+                and aib.WTFQFX = #{wtfqfx}
+            </if>
+            <if test="wtfqqtsm != null and wtfqqtsm!='' ">
+                and aib.WTFQQTSM = #{wtfqqtsm}
+            </if>
+            <if test="slfs != null and slfs!='' ">
+                and aib.SLFS = #{slfs}
+            </if>
+            <if test="isNeedState != null and isNeedState!='' ">
+                and aib.IS_NEED_STATE = #{isNeedState}
+            </if>
+            <if test="isMilestoneItem != null and isMilestoneItem!='' ">
+                and aib.IS_MILESTONE_ITEM = #{isMilestoneItem}
+            </if>
+            <if test="outerSystemHandle != null">
+                and aib.OUTER_SYSTEM_HANDLE = #{outerSystemHandle}
+            </if>
+            <if test="outerSystemDesc != null">
+                and aib.OUTER_SYSTEM_DESC = #{outerSystemDesc}
+            </if>
+            <if test="outerSystemUrl != null">
+                and aib.OUTER_SYSTEM_URL = #{outerSystemUrl}
+            </if>
+            <if test="isAsyn != null">
+                and aib.IS_ASYN = #{isAsyn}
+            </if>
+            <if test="asynTime != null">
+                and aib.ASYN_TIME = #{asynTime}
+            </if>
+            <if test="isLocal != null and isLocal!='' ">
+                and aib.IS_LOCAL = #{isLocal}
+            </if>
+            <if test="isFee != null and isFee!='' ">
+                and aib.IS_FEE = #{isFee}
+            </if>
+            <if test="itemAlias != null">
+                and aib.ITEM_ALIAS = #{itemAlias}
+            </if>
+            <if test="isNeedFrontCond != null">
+                and aib.IS_NEED_FRONT_COND = #{isNeedFrontCond}
+            </if>
+            <if test="areaCode != null">
+                and aib.AREA_CODE = #{areaCode}
+            </if>
+            <if test="areaCodeName != null">
+                and aib.AREA_CODE_NAME = #{areaCodeName}
+            </if>
+            <if test="kpItemId != null">
+                and aib.KP_ITEM_ID = #{kpItemId}
+            </if>
+            <if test="parentItemId != null and parentItemId!=''">
+                and item.PARENT_ITEM_ID = #{parentItemId}
+            </if>
+            <if test="itemSeq != null and itemSeq!=''">
+                and (item.PARENT_ITEM_ID <![CDATA[ <> ]]> 'root'
+                and item.ITEM_SEQ like concat('%.',concat(#{itemSeq},'.%')))
+            </if>
+            <if test="itemNature != null and itemNature != ''">
+                and aib.ITEM_NATURE = #{itemNature}
+            </if>
+            <if test="sfsxgzcnz != null and sfsxgzcnz != '' ">
+                and aib.SFSXGZCNZ = #{sfsxgzcnz}
+            </if>
+            <if test="isCatalog != null and isCatalog != ''">
+                and aib.IS_CATALOG = #{isCatalog}
+            </if>
+            <if test="guideOrgName != null and guideOrgName != ''">
+                and aib.GUIDE_ORG_NAME = #{guideOrgName}
+            </if>
+            <if test="regionId != null and regionId != ''">
+                and aib.REGION_ID = #{regionId}
+            </if>
+            <if test="regionIds != null and regionIds.length > 0 ">
+                and aib.REGION_ID IN
+                <foreach collection="regionIds" item="id" open="(" close=")" separator=",">
+                    #{id}
+                </foreach>
+            </if>
+            <if test="keyword!=null and keyword!='' ">
+                and (
+                aib.ITEM_CODE like concat('%',concat(#{keyword},'%')) or
+                aib.ITEM_NAME like concat('%',concat(#{keyword},'%')) or
+                aib.ITEM_MEMO like concat('%',concat(#{keyword},'%'))
+                )
+            </if>
+            <if test="searchItemIds != null and searchItemIds.length > 0 ">
+                and aib.ITEM_ID IN
+                <foreach collection="searchItemIds" item="id" open="(" close=")" separator=",">
+                    #{id}
+                </foreach>
+            </if>
+        </where>
+        order by org.ORG_LEVEL asc, org.ORG_SORT_NO asc, aib.CREATE_TIME desc
+    </select>
+
+    <select id="listAeaItemBasicByOrgIds" resultType="com.augurit.aplanmis.common.domain.AeaItemBasic">
+        select
+            itemBasic.ITEM_BASIC_ID  itemBasicId,
+            itemBasic.ITEM_ID  itemId,
+            itemBasic.ITEM_VER_ID  itemVerId,
+            itemBasic.ITEM_CODE  itemCode,
+            itemBasic.ITEM_NAME  itemName,
+            itemBasic.ORG_ID  orgId,
+            itemBasic.ITEM_TYPE  itemType,
+            itemBasic.BJ_TYPE  bjType,
+            itemBasic.STANDARD_ITEM_CODE  standardItemCode,
+            itemBasic.ITEM_PROPERTY  itemProperty,
+            itemBasic.BASECODE  basecode,
+            itemBasic.SSCODE  sscode,
+            itemBasic.SXMLZT  sxmlzt,
+            itemBasic.IS_NEED_STATE  isNeedState,
+            itemBasic.ITEM_ALIAS  itemAlias,
+            itemBasic.IS_NEED_FRONT_COND  isNeedFrontCond,
+            itemBasic.ITEM_NATURE  itemNature,
+            itemBasic.ROOT_ORG_ID rootOrgId,
+            itemBasic.IS_CATALOG isCatalog,
+            itemBasic.GUIDE_ORG_NAME guideOrgName,
+            itemBasic.REGION_ID regionId,
+            itemBasic.ITEM_CATEGORY_MARK itemCategoryMark,
+            itemBasic.IS_LINK isLink,
+            itemBasic.USE_ONE_FORM  useOneForm,
+            itemBasic.IS_CHECK_ITEM  isCheckItem,
+            itemBasic.IS_CHECK_PARTFORM  isCheckPartform,
+            itemBasic.IS_CHECK_PROJ  isCheckProj,
+
+            itemVer.ver_num verNum,
+            itemVer.item_ver_status itemVerStatus,
+            org.ORG_NAME orgName,
+            item.PARENT_ITEM_ID parentItemId
+        from AEA_ITEM_BASIC itemBasic
+        join (select item_ver_id, ver_num, ITEM_VER_STATUS from aea_item_ver ver
+        join (select ITEM_ID, max(VER_NUM) maxNum from aea_item_ver where IS_DELETED='0' group by ITEM_ID ) maxVer
+        on ver.item_id = maxVer.item_id and ver.VER_NUM = maxVer.maxNum ) itemVer on itemBasic.ITEM_VER_ID = itemVer.ITEM_VER_ID
+        left join OPU_OM_ORG org on ( org.ORG_ID = itemBasic.ORG_ID and org.ORG_DELETED = '0' )
+        left join AEA_ITEM item on item.item_id = itemBasic.Item_Id
+        <where>
+            and itemBasic.ROOT_ORG_ID = #{itemBasic.rootOrgId}
+            <if test="itemBasic.itemType != null and itemBasic.itemType!='' ">
+            and itemBasic.ITEM_TYPE = #{itemBasic.itemType}
+            </if>
+            <if test="itemBasic.parentItemId != null and itemBasic.parentItemId!=''">
+            and item.PARENT_ITEM_ID = #{itemBasic.parentItemId}
+            </if>
+            <if test="itemBasic.itemSeq != null and itemBasic.itemSeq!=''">
+            and (item.PARENT_ITEM_ID <![CDATA[ <> ]]> 'root'
+            and item.ITEM_SEQ like concat('%.',concat(#{itemBasic.itemSeq},'.%')))
+            </if>
+            <if test="itemBasic.isCatalog != null and itemBasic.isCatalog != ''">
+            and itemBasic.IS_CATALOG = #{itemBasic.isCatalog}
+            </if>
+            <if test="itemBasic.keyword!=null and itemBasic.keyword!='' ">
+            and (
+                itemBasic.ITEM_CODE like concat('%',concat(#{itemBasic.keyword},'%')) or
+                itemBasic.ITEM_NAME like concat('%',concat(#{itemBasic.keyword},'%')) or
+                itemBasic.ITEM_ALIAS like concat('%',concat(#{itemBasic.keyword},'%')) or
+                itemBasic.ITEM_MEMO like concat('%',concat(#{itemBasic.keyword},'%'))
+            )
+            </if>
+            <if test="itemBasic.orgId!=null and itemBasic.orgId!='' ">
+            and itemBasic.ORG_ID = #{itemBasic.orgId}
+            </if>
+            <if test="orgIds!=null and orgIds.size()>0">
+            and itemBasic.ORG_ID in
+                <foreach collection="orgIds" item="orgId" open="(" close=")" separator=",">
+                    #{orgId}
+                </foreach>
+            </if>
+        </where>
+        order by org.ORG_LEVEL asc, org.ORG_SORT_NO asc,itemBasic.CREATE_TIME desc
+    </select>
+
+    <select id="listLatestAeaItemBasic" resultType="com.augurit.aplanmis.common.domain.AeaItemBasic">
+        select
+            <include refid="allColumns2">
+                <property name="alias" value="aib"/>
+            </include>,
+            itemVer.ver_num verNum,
+            itemVer.item_ver_status itemVerStatus,
+            org.ORG_NAME orgName,
+            item.PARENT_ITEM_ID parentItemId
+        from AEA_ITEM_BASIC aib
+        join (select item_ver_id, ver_num, ITEM_VER_STATUS from aea_item_ver ver
+        join (select ITEM_ID, max(VER_NUM) maxNum from aea_item_ver where IS_DELETED='0' group by ITEM_ID) maxVer
+        on ver.item_id = maxVer.item_id and ver.VER_NUM = maxVer.maxNum ) itemVer on aib.ITEM_VER_ID = itemVer.ITEM_VER_ID
+        left join OPU_OM_ORG org on ( org.ORG_ID = aib.ORG_ID and org.ORG_DELETED = '0' )
+        left join AEA_ITEM item on item.item_id = aib.item_id
+        <where>
+            and aib.ROOT_ORG_ID = #{rootOrgId}
+            <if test="itemBasicId != null and itemBasicId!='' ">
+                and aib.ITEM_BASIC_ID = #{itemBasicId}
+            </if>
+            <if test="itemId != null and itemId!='' ">
+                and aib.ITEM_ID = #{itemId}
+            </if>
+            <if test="itemVerId != null and itemVerId!='' ">
+                and aib.ITEM_VER_ID = #{itemVerId}
+            </if>
+            <if test="itemCode != null and itemCode!='' ">
+                and aib.ITEM_CODE = #{itemCode}
+            </if>
+            <if test="itemName != null and itemName!='' ">
+                and aib.ITEM_NAME = #{itemName}
+            </if>
+            <if test="itemType != null and itemType!='' ">
+                and aib.ITEM_TYPE = #{itemType}
+            </if>
+            <if test="bjType != null">
+                and aib.BJ_TYPE = #{bjType}
+            </if>
+            <if test="standardItemCode != null">
+                and aib.STANDARD_ITEM_CODE = #{standardItemCode}
+            </if>
+            <if test="itemMemo != null and itemMemo!='' ">
+                and aib.ITEM_MEMO = #{itemMemo}
+            </if>
+            <if test="itemProperty != null and itemProperty!='' ">
+                and aib.ITEM_PROPERTY = #{itemProperty}
+            </if>
+            <if test="basecode != null and basecode!='' ">
+                and aib.BASECODE =#{basecode}
+            </if>
+            <if test="sscode != null and sscode!='' ">
+                and aib.SSCODE = #{sscode}
+            </if>
+            <if test="isNeedState != null and isNeedState!='' ">
+                and aib.IS_NEED_STATE = #{isNeedState}
+            </if>
+            <if test="itemAlias != null">
+                and aib.ITEM_ALIAS = #{itemAlias}
+            </if>
+            <if test="isNeedFrontCond != null">
+                and aib.IS_NEED_FRONT_COND = #{isNeedFrontCond}
+            </if>
+            <if test="parentItemId != null and parentItemId!=''">
+                and item.PARENT_ITEM_ID = #{parentItemId}
+            </if>
+            <if test="itemSeq != null and itemSeq!=''">
+                and (item.PARENT_ITEM_ID <![CDATA[ <> ]]> 'root'
+                and item.ITEM_SEQ like concat('%.',concat(#{itemSeq},'.%')))
+            </if>
+            <if test="itemNature != null and itemNature != ''">
+                and aib.ITEM_NATURE = #{itemNature}
+            </if>
+            <if test="isCatalog != null and isCatalog != ''">
+                and aib.IS_CATALOG = #{isCatalog}
+            </if>
+            <if test="orgName != null and orgName != ''">
+            and (
+                org.ORG_NAME like #{orgName} or aib.GUIDE_ORG_NAME like #{orgName}
+            )
+            </if>
+            <if test="keyword!=null and keyword!='' ">
+            and (
+                aib.ITEM_CODE like concat('%',concat(#{keyword},'%')) or
+                aib.ITEM_NAME like concat('%',concat(#{keyword},'%')) or
+                aib.ITEM_MEMO like concat('%',concat(#{keyword},'%')) or
+                aib.GUIDE_ORG_NAME like concat('%',concat(#{keyword},'%')) or
+                org.ORG_NAME like concat('%',concat(#{keyword},'%'))
+            )
+            </if>
+            <if test="searchItemIds != null and searchItemIds.length > 0 ">
+            and aib.ITEM_ID IN
+            <foreach collection="searchItemIds" item="id" open="(" close=")" separator=",">
+                #{id}
+            </foreach>
+            </if>
+        </where>
+        order by aib.CREATE_TIME desc, org.ORG_LEVEL asc, org.ORG_SORT_NO asc
+    </select>
+
+    <select id="getOneByItemVerId" resultType="AeaItemBasic">
+        select
+        <include refid="allColumns2">
+            <property name="alias" value="aib"/>
+        </include>,
+        org.ORG_NAME orgName
+        from AEA_ITEM_BASIC aib
+        left join OPU_OM_ORG org on aib.org_id = org.org_id
+        where aib.ITEM_VER_ID = #{itemVerId}
+        and aib.ROOT_ORG_ID = #{rootOrgId}
+    </select>
+
+    <select id="listAeaItemBasicWithOrg" resultType="AeaItemBasic">
+        select
+        <include refid="allColumns2">
+            <property name="alias" value="aib"/>
+        </include>,
+        org.ORG_NAME orgName,
+        itemVer.ITEM_VER_STATUS itemVerStatus
+        from AEA_ITEM_BASIC aib
+        left join OPU_OM_ORG org on ( org.ORG_ID = aib.ORG_ID and org.ORG_DELETED = '0')
+        left join AEA_ITEM_VER itemVer on aib.ITEM_VER_ID = itemVer.ITEM_VER_ID and aib.ITEM_ID = itemVer.ITEM_ID
+        <where>
+            and aib.ROOT_ORG_ID = #{rootOrgId}
+            <if test="itemBasicId != null and itemBasicId!='' ">
+                and aib.ITEM_BASIC_ID = #{itemBasicId}
+            </if>
+            <if test="itemId != null and itemId!='' ">
+                and aib.ITEM_ID = #{itemId}
+            </if>
+            <if test="itemVerId != null and itemVerId!='' ">
+                and aib.ITEM_VER_ID = #{itemVerId}
+            </if>
+            <if test="itemCode != null and itemCode!='' ">
+                and aib.ITEM_CODE = #{itemCode}
+            </if>
+            <if test="itemName != null and itemName!='' ">
+                and aib.ITEM_NAME = #{itemName}
+            </if>
+            <if test="orgId != null and orgId!='' ">
+                and aib.ORG_ID = #{orgId}
+            </if>
+            <if test="itemType != null and itemType!='' ">
+                and aib.ITEM_TYPE = #{itemType}
+            </if>
+            <if test="bjType != null">
+                and aib.BJ_TYPE = #{bjType}
+            </if>
+            <if test="acceptMode != null">
+                and aib.ACCEPT_MODE = #{acceptMode}
+            </if>
+            <if test="handleArticle != null">
+                and aib.HANDLE_ARTICLE = #{handleArticle}
+            </if>
+            <if test="handleFlow != null">
+                and aib.HANDLE_FLOW = #{handleFlow}
+            </if>
+            <if test="dueNum != null">
+                and aib.DUE_NUM = #{dueNum}
+            </if>
+            <if test="sendResultMode != null">
+                and aib.SEND_RESULT_MODE = #{sendResultMode}
+            </if>
+            <if test="docTemplate != null">
+                and aib.DOC_TEMPLATE = #{docTemplate}
+            </if>
+            <if test="applyTableDemo != null">
+                and aib.APPLY_TABLE_DEMO = #{applyTableDemo}
+            </if>
+            <if test="applyTableTemplate != null">
+                and aib.APPLY_TABLE_TEMPLATE = #{applyTableTemplate}
+            </if>
+            <if test="standardItemCode != null">
+                and aib.STANDARD_ITEM_CODE = #{standardItemCode}
+            </if>
+            <if test="itemMemo != null and itemMemo!='' ">
+                and aib.ITEM_MEMO = #{itemMemo}
+            </if>
+            <if test="creater != null and creater!='' ">
+                and aib.CREATER = #{creater}
+            </if>
+            <if test="createTime != null">
+                and aib.CREATE_TIME = #{createTime}
+            </if>
+            <if test="modifier != null and modifier!='' ">
+                and aib.MODIFIER = #{modifier}
+            </if>
+            <if test="modifyTime != null">
+                and aib.MODIFY_TIME = #{modifyTime}
+            </if>
+            <if test="appId != null and appId!='' ">
+                and aib.APP_ID = #{appId}
+            </if>
+            <if test="itemDirId != null and itemDirId!='' ">
+                and aib.ITEM_DIR_ID = #{itemDirId}
+            </if>
+            <if test="innerAppId != null and innerAppId!='' ">
+                and aib.INNER_APP_ID = #{innerAppId}
+            </if>
+            <if test="itemProperty != null and itemProperty!='' ">
+                and aib.ITEM_PROPERTY = #{itemProperty}
+            </if>
+            <if test="directorycode != null and directorycode!='' ">
+                and aib.DIRECTORYCODE =#{directorycode}
+            </if>
+            <if test="directoryId != null and directoryId!='' ">
+                and aib.DIRECTORY_ID =#{directoryId}
+            </if>
+            <if test="basecode != null and basecode!='' ">
+                and aib.BASECODE =#{basecode}
+            </if>
+            <if test="wtbm != null and wtbm!='' ">
+                and aib.WTBM =#{wtbm}
+            </if>
+            <if test="sqjb != null and sqjb!='' ">
+                and aib.SQJB =#{sqjb}
+            </if>
+            <if test="xkdx != null and xkdx!='' ">
+                and aib.XKDX =#{xkdx}
+            </if>
+            <if test="sfzhlr != null and sfzhlr!='' ">
+                and aib.SFZHLR =#{sfzhlr}
+            </if>
+            <if test="slyj!= null and slyj!='' ">
+                and aib.SLYJ =#{slyj}
+            </if>
+            <if test="bbh != null and bbh!='' ">
+                and aib.BBH =#{bbh}
+            </if>
+            <if test="sxmlzt != null and sxmlzt!='' ">
+                and aib.SXMLZT =#{sxmlzt}
+            </if>
+            <if test="fbsj != null and fbsj!='' ">
+                and aib.FBSJ =#{fbsj}
+            </if>
+            <if test="sssj != null and sssj!='' ">
+                and aib.SSSJ =#{sssj}
+            </if>
+            <if test="isold != null and isold!='' ">
+                and aib.ISOLD =#{isold}
+            </if>
+            <if test="sfwsbl != null and sfwsbl!='' ">
+                and aib.SFWSBL =#{sfwsbl}
+            </if>
+            <if test="bwsblly != null and bwsblly!='' ">
+                and aib.BWSBLLY =#{bwsblly}
+            </if>
+            <if test="unonlinereasonother != null and unonlinereasonother!='' ">
+                and aib.UNONLINEREASONOTHER =#{unonlinereasonother}
+            </if>
+            <if test="sfczwtxftzssqk != null and sfczwtxftzssqk!='' ">
+                and aib.SFCZWTXFTZSSQK =#{sfczwtxftzssqk}
+            </if>
+            <if test="fzcd != null and fzcd!='' ">
+                and aib.FZCD =#{fzcd}
+            </if>
+            <if test="sscode != null and sscode!='' ">
+                and aib.SSCODE = #{sscode}
+            </if>
+            <if test="sxglfslx != null and sxglfslx!='' ">
+                and aib.SXGLFSLX = #{sxglfsl}
+            </if>
+            <if test="wtfqfx != null and wtfqfx!='' ">
+                and aib.WTFQFX = #{wtfqfx}
+            </if>
+            <if test="wtfqqtsm != null and wtfqqtsm!='' ">
+                and aib.WTFQQTSM = #{wtfqqtsm}
+            </if>
+            <if test="slfs != null and slfs!='' ">
+                and aib.SLFS = #{slfs}
+            </if>
+            <if test="isNeedState != null and isNeedState!='' ">
+                and aib.IS_NEED_STATE = #{isNeedState}
+            </if>
+            <if test="isMilestoneItem != null and isMilestoneItem!='' ">
+                and aib.IS_MILESTONE_ITEM = #{isMilestoneItem}
+            </if>
+            <if test="outerSystemHandle != null">
+                and aib.OUTER_SYSTEM_HANDLE = #{outerSystemHandle}
+            </if>
+            <if test="outerSystemDesc != null">
+                and aib.OUTER_SYSTEM_DESC = #{outerSystemDesc}
+            </if>
+            <if test="outerSystemUrl != null">
+                and aib.OUTER_SYSTEM_URL = #{outerSystemUrl}
+            </if>
+            <if test="isAsyn != null">
+                and aib.IS_ASYN = #{isAsyn}
+            </if>
+            <if test="asynTime != null">
+                and aib.ASYN_TIME = #{asynTime}
+            </if>
+            <if test="isLocal != null and isLocal!='' ">
+                and aib.IS_LOCAL = #{isLocal}
+            </if>
+            <if test="isFee != null and isFee!='' ">
+                and aib.IS_FEE = #{isFee}
+            </if>
+            <if test="itemAlias != null">
+                and aib.ITEM_ALIAS = #{itemAlias}
+            </if>
+            <if test="isNeedFrontCond != null">
+                and aib.IS_NEED_FRONT_COND = #{isNeedFrontCond}
+            </if>
+            <if test="areaCode != null">
+                and aib.AREA_CODE = #{areaCode}
+            </if>
+            <if test="areaCodeName != null">
+                and aib.AREA_CODE_NAME = #{areaCodeName}
+            </if>
+            <if test="kpItemId != null">
+                and aib.KP_ITEM_ID = #{kpItemId}
+            </if>
+            <if test="keyword!=null and keyword!='' ">
+                and (
+                    aib.ITEM_CODE like concat('%',concat(#{keyword},'%')) or
+                    aib.ITEM_NAME like concat('%',concat(#{keyword},'%')) or
+                    aib.ITEM_MEMO like concat('%',concat(#{keyword},'%'))
+                )
+            </if>
+            <if test="isDeleted != null">
+                and itemVer.IS_DELETED = #{isDeleted}
+            </if>
+            <if test="itemNature != null and itemNature != ''">
+                and aib.ITEM_NATURE = #{itemNature}
+            </if>
+            <if test="sfsxgzcnz != null and sfsxgzcnz != '' ">
+                and aib.SFSXGZCNZ = #{sfsxgzcnz}
+            </if>
+            <if test="isCatalog != null and isCatalog != ''">
+                and aib.IS_CATALOG = #{isCatalog}
+            </if>
+            <if test="guideOrgName != null and guideOrgName != ''">
+                and aib.GUIDE_ORG_NAME = #{guideOrgName}
+            </if>
+            <if test="regionId != null and regionId != ''">
+                and aib.REGION_ID = #{regionId}
+            </if>
+            <if test="isLink != null and isLink!='' " >
+                and aib.IS_LINK = #{isLink}
+            </if>
+            <if test="useOneForm != null and useOneForm!='' " >
+                and aib.USE_ONE_FORM = #{useOneForm}
+            </if>
+            <if test="isCheckItem != null and isCheckItem!='' " >
+                and aib.IS_CHECK_ITEM = #{isCheckItem}
+            </if>
+            <if test="isCheckPartform != null and isCheckPartform!='' " >
+                and aib.IS_CHECK_PARTFORM = #{isCheckPartform}
+            </if>
+            <if test="isCheckProj != null and isCheckProj!='' " >
+                and aib.IS_CHECK_PROJ = #{isCheckProj}
+            </if>
+        </where>
+        order by org.ORG_LEVEL asc, org.ORG_SORT_NO asc, aib.CREATE_TIME desc
+    </select>
+
+    <select id="getItemAcceptModeByParentId" resultType="java.lang.Long">
+        select
+        max(ACCEPT_MODE) as acceptMode
+        from AEA_ITEM_BASIC
+        <where>
+            <if test="parentItemId!=null and parentItemId!=''">
+                and PARENT_ITEM_ID = #{parentItemId}
+            </if>
+            <if test="parentItemId==null or parentItemId==''">
+                and ( PARENT_ITEM_ID is null or PARENT_ITEM_ID ='' )
+            </if>
+        </where>
+    </select>
+
+    <select id="listExtItemByOrgIdsRelStandItem" resultType="AeaItemBasic">
+        select
+            <include refid="allColumns3">
+                <property name="alias" value="item1"/>
+            </include>,
+            item1.verNum,
+            item1.itemVerStatus,
+            item1.parentItemId,
+            item1.orgName,
+            item1.orgLevel,
+            item1.orgSortNo
+        from (
+            select
+                <include refid="allColumns2">
+                    <property name="alias" value="itemBasic"/>
+                </include>,
+                itemVer.ver_num as verNum,
+                itemVer.item_ver_status as itemVerStatus,
+                item.PARENT_ITEM_ID as parentItemId,
+                '' as orgName,
+                '' as orgLevel,
+                '' as orgSortNo
+            from AEA_ITEM_BASIC itemBasic
+            join (select item_ver_id, ver_num, ITEM_VER_STATUS from aea_item_ver ver
+            join (select ITEM_ID, max(VER_NUM) maxNum from aea_item_ver where IS_DELETED='0' group by ITEM_ID ) maxVer
+            on ver.item_id = maxVer.item_id and ver.VER_NUM = maxVer.maxNum ) itemVer on itemBasic.ITEM_VER_ID = itemVer.ITEM_VER_ID
+            left join AEA_ITEM item on item.item_id = itemBasic.Item_Id
+            <where>
+                and item.PARENT_ITEM_ID = 'root'
+                and itemBasic.IS_CATALOG = '1'
+                and itemBasic.ROOT_ORG_ID = #{itemBasic.rootOrgId}
+                <if test="itemBasic.itemType != null and itemBasic.itemType!='' ">
+                and itemBasic.ITEM_TYPE = #{itemBasic.itemType}
+                </if>
+                <if test="itemBasic.orgName != null and itemBasic.orgName != ''">
+                and itemBasic.GUIDE_ORG_NAME like #{itemBasic.orgName}
+                </if>
+                <if test="itemBasic.keyword!=null and itemBasic.keyword!='' ">
+                and (
+                    itemBasic.ITEM_CODE like concat('%',concat(#{itemBasic.keyword},'%')) or
+                    itemBasic.ITEM_NAME like concat('%',concat(#{itemBasic.keyword},'%')) or
+                    itemBasic.ITEM_MEMO like concat('%',concat(#{itemBasic.keyword},'%')) or
+                    itemBasic.GUIDE_ORG_NAME like concat('%',concat(#{itemBasic.keyword},'%'))
+                )
+                </if>
+            </where>
+        ) item1
+        union
+        select
+            <include refid="allColumns3">
+                <property name="alias" value="item2"/>
+            </include>,
+            item2.verNum,
+            item2.itemVerStatus,
+            item2.parentItemId,
+            item2.orgName,
+            item2.orgLevel,
+            item2.orgSortNo
+        from (
+            select
+                <include refid="allColumns2">
+                    <property name="alias" value="itemBasic"/>
+                </include>,
+                itemVer.ver_num as verNum,
+                itemVer.item_ver_status as itemVerStatus,
+                item.PARENT_ITEM_ID as parentItemId,
+                org.ORG_NAME as orgName,
+                org.ORG_LEVEL as orgLevel,
+                org.ORG_SORT_NO as orgSortNo
+            from AEA_ITEM_BASIC itemBasic
+            join (select item_ver_id, ver_num, ITEM_VER_STATUS from aea_item_ver ver
+            join (select ITEM_ID, max(VER_NUM) maxNum from aea_item_ver where IS_DELETED='0' group by ITEM_ID ) maxVer
+            on ver.item_id = maxVer.item_id and ver.VER_NUM = maxVer.maxNum ) itemVer on itemBasic.ITEM_VER_ID = itemVer.ITEM_VER_ID
+            left join OPU_OM_ORG org on ( org.ORG_ID = itemBasic.ORG_ID and org.ORG_DELETED = '0' )
+            left join AEA_ITEM item on item.item_id = itemBasic.Item_Id
+            <where>
+                and item.PARENT_ITEM_ID <![CDATA[ <> ]]> 'root'
+                and itemBasic.IS_CATALOG = '0'
+                and itemBasic.ROOT_ORG_ID = #{itemBasic.rootOrgId}
+                <if test="itemBasic.itemType != null and itemBasic.itemType!='' ">
+                and itemBasic.ITEM_TYPE = #{itemBasic.itemType}
+                </if>
+                <if test="itemBasic.orgName != null and itemBasic.orgName != ''">
+                and org.ORG_NAME like #{itemBasic.orgName}
+                </if>
+                <if test="itemBasic.keyword!=null and itemBasic.keyword!='' ">
+                and (
+                    itemBasic.ITEM_CODE like concat('%',concat(#{itemBasic.keyword},'%')) or
+                    itemBasic.ITEM_NAME like concat('%',concat(#{itemBasic.keyword},'%')) or
+                    itemBasic.ITEM_MEMO like concat('%',concat(#{itemBasic.keyword},'%')) or
+                    org.ORG_NAME like concat('%',concat(#{itemBasic.keyword},'%'))
+                )
+                </if>
+                <if test="orgIds!=null and orgIds.size()>0">
+                    and itemBasic.ORG_ID in
+                    <foreach collection="orgIds" item="orgId" open="(" close=")" separator=",">
+                        #{orgId}
+                    </foreach>
+                </if>
+            </where>
+        )item2
+        order by createTime desc, orgLevel asc, orgSortNo asc
+    </select>
+
+    <select id="getAeaItemBasicWithOrgById" resultType="AeaItemBasic">
+        select
+        <include refid="allColumns2">
+            <property name="alias" value="itemBasic"/>
+        </include>
+        ,
+        org.ORG_NAME orgName,
+        region.region_name regionName
+        from AEA_ITEM_BASIC itemBasic
+        left join OPU_OM_ORG org on ( org.ORG_ID = itemBasic.ORG_ID and org.ORG_DELETED = '0')
+        left join bsc_dic_region region on region.REGION_ID = itemBasic.REGION_ID
+        where itemBasic.ITEM_BASIC_ID = #{itemBasicId}
+    </select>
+
+    <!--查询主题下的事项-->
+    <select id="listAeaItemBasicByThemeVerId" resultType="com.augurit.aplanmis.common.domain.AeaItemBasic">
+        select
+            aitem.ITEM_ID as itemId,
+            aitem.ITEM_NAME as itemName,
+            aitem.ITEM_BASIC_ID,
+            aitem.ITEM_VER_ID,
+            aitem.PARENT_ITEM_ID as parentItemId
+        from(
+                select
+                    ai.ITEM_ID,
+                    ai.ITEM_NAME,
+                    a.PARENT_ITEM_ID,
+                    ai.ITEM_BASIC_ID,
+                    ai.ITEM_VER_ID
+                from
+                    AEA_PAR_STAGE aps,
+                    AEA_PAR_STAGE_ITEM apsi ,
+                    AEA_ITEM_BASIC ai,
+                    AEA_ITEM a
+                where aps.THEME_VER_ID = #{themeVerId}
+                  and aps.STAGE_ID = apsi.stage_id
+                  and apsi.item_ver_id = ai.ITEM_VER_ID
+                  and ai.item_id = a.item_id  order by apsi.SORT_NO
+            ) aitem
+    </select>
+
+    <select id="checkUniqueItemCode" resultType="AeaItemBasic">
+        select
+        itemBasic.ITEM_ID itemId,
+        itemBasic.ITEM_CODE itemCode
+        from AEA_ITEM_BASIC itemBasic, AEA_ITEM_VER itemVer
+        <where>
+            and itemBasic.ITEM_VER_ID = itemVer.ITEM_VER_ID
+            and itemBasic.ROOT_ORG_ID = itemVer.ROOT_ORG_ID
+            and itemVer.IS_DELETED = '0'
+            and itemBasic.ITEM_CODE = #{itemCode}
+        </where>
+        GROUP BY itemBasic.ITEM_CODE, itemBasic.ITEM_ID
+    </select>
+
+    <select id="getAeaItemBasicByItemCode" resultType="AeaItemBasic">
+        select
+        <include refid="allColumns2">
+            <property name="alias" value="itemBasic"/>
+        </include>
+        ,
+        org.ORG_NAME orgName
+        from AEA_ITEM_BASIC itemBasic
+        left join OPU_OM_ORG org on ( org.ORG_ID = itemBasic.ORG_ID and org.ORG_DELETED = '0'), AEA_ITEM_VER itemVer
+        where itemBasic.item_ver_id = itemVer.item_ver_id
+        and itemBasic.ITEM_CODE = #{itemCode}
+        and itemVer = '2'
+    </select>
+
+    <select id="getAeaItemBasicsListByOutputMatId" resultType="AeaItemBasic">
+        SELECT
+        <include refid="aib_allColumns"/>
+        FROM
+        aea_item_inout aii,
+        aea_item_mat aim,
+        aea_item_basic aib,
+        aea_item_ver aiv
+        WHERE
+        aii.MAT_ID = #{matId}
+        AND aii.IS_DELETED = '0'
+        AND aii.MAT_ID = aim.MAT_ID
+        AND aim.IS_OFFICIAL_DOC = '1'
+        AND aim.IS_DELETED = '0'
+        AND aii.ITEM_VER_ID = aiv.ITEM_VER_ID
+        AND aiv.ITEM_VER_STATUS IN ( '1', '2' )
+        AND aiv.IS_DELETED = '0'
+        AND aii.ITEM_VER_ID = aib.ITEM_VER_ID
+        AND aib.ITEM_NATURE = '8'
+        AND aim.ROOT_ORG_ID = #{rootOrgId}
+        AND aii.ROOT_ORG_ID = #{rootOrgId}
+        AND aib.ROOT_ORG_ID = #{rootOrgId}
+        AND aiv.ROOT_ORG_ID = #{rootOrgId}
+    </select>
+
+    <select id="listAllChildItems" resultType="AeaItemBasic">
+        select
+        <include refid="allColumns2">
+            <property name="alias" value="itemBasic"/>
+        </include>
+        from AEA_ITEM_BASIC itemBasic, AEA_ITEM item
+        <where>
+            and itemBasic.ITEM_ID = item.ITEM_ID
+            and itemBasic.ROOT_ORG_ID = item.ROOT_ORG_ID
+            and item.PARENT_ITEM_ID <![CDATA[ <> ]]> 'root'
+            and item.ITEM_SEQ like concat('%.',concat(#{itemId},'.%'))
+        </where>
+        order by itemBasic.CREATE_TIME asc
+    </select>
+
+    <!--查询中介服务事项-->
+    <select id="listAgentItemService" resultType="com.augurit.aplanmis.common.domain.AeaItemService">
+        SELECT t.* FROM (
+        SELECT
+        aib.ITEM_BASIC_ID agentItemBasicId,
+        aib.ITEM_NAME agentItemName,
+        o.ORG_NAME agentOrgName,
+        aib.CREATE_TIME publishTime,
+        (SELECT
+        <if test="_databaseId == 'oracle'">
+            WM_CONCAT(aib1.ITEM_NAME)
+        </if>
+        <if test="_databaseId == 'mysql'">
+            GROUP_CONCAT(aib1.ITEM_NAME)
+        </if>
+        FROM aea_item_relevance air, aea_item_basic aib1
+        WHERE air.PARENT_ITEM_ID = aib1.ITEM_ID AND air.CHILD_ITEM_ID = aib.ITEM_ID
+        AND aib1.ITEM_VER_ID IN (
+        SELECT seq.ITEM_VER_ID FROM aea_item_seq seq,(
+        SELECT seq1.ITEM_ID,MAX(seq1.ITEM_VER_MAX) ITEM_VER_MAX FROM aea_item_seq seq1
+        GROUP BY seq1.ITEM_ID) temp
+        WHERE seq.ITEM_ID = temp.ITEM_ID AND seq.ITEM_VER_MAX = temp.ITEM_VER_MAX
+        AND seq.ITEM_ID = aib1.ITEM_ID)
+        AND aib1.ITEM_NATURE = '0' and aib1.IS_CATALOG='1') itemName
+        FROM aea_item_basic aib LEFT JOIN opu_om_org o ON aib.ORG_ID = o.ORG_ID
+        WHERE aib.ITEM_NATURE = '8' and aib.IS_CATALOG='1'
+        AND EXISTS (
+        SELECT ver1.ITEM_VER_ID FROM aea_item_ver ver1, (
+        SELECT ver2.ITEM_ID,MAX(ver2.VER_NUM) VER_NUM FROM aea_item_ver ver2
+        WHERE ver2.IS_DELETED = '0' AND ver2.ITEM_VER_STATUS IN ('2','1')
+        GROUP BY ver2.ITEM_ID) temp
+        WHERE ver1.ITEM_ID = temp.ITEM_ID AND ver1.VER_NUM = temp.VER_NUM
+        AND ver1.ITEM_VER_ID = aib.ITEM_VER_ID)
+        <if test="serviceIds != null">
+            AND EXISTS (
+            SELECT 1 FROM aea_im_service_item aisi WHERE aisi.ITEM_VER_ID = aib.ITEM_VER_ID AND aisi.SERVICE_ID IN
+            <foreach collection="serviceIds" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+            )
+        </if>
+        <if test="agentItemName != '' and agentItemName != null ">
+            AND aib.ITEM_NAME LIKE CONCAT(CONCAT('%',#{agentItemName}),'%')
+        </if>
+        <if test="agentOrgId != null and agentOrgId != ''">
+            and aib.ORG_ID in
+            <foreach collection="orgIds" item="orgId" index="i" open="(" separator="," close=")">
+                #{orgId}
+            </foreach>
+        </if>
+        ) t
+        <where>
+            <if test="itemName != '' and itemName != null ">
+                t.itemName LIKE CONCAT(CONCAT('%',#{itemName}),'%')
+            </if>
+        </where>
+    </select>
+
+    <!--查询中介机构服务事项对应的部门-->
+    <select id="listServiceItemOrg" resultType="AeaItemService">
+        SELECT
+            aib.ORG_ID agentOrgId,
+            (SELECT o.ORG_NAME FROM OPU_OM_ORG o WHERE o.ORG_ID = aib.ORG_ID) agentOrgName
+        FROM AEA_ITEM_BASIC aib
+        WHERE aib.ITEM_NATURE='8'
+        GROUP BY aib.ORG_ID
+    </select>
+
+    <!--查询中介服务事项详情-->
+    <select id="getAgentItemBasicById" resultType="com.augurit.aplanmis.common.domain.AgentItemDetail">
+        SELECT
+        aib.ITEM_ID itemId,
+        aib.ITEM_VER_ID itemVerId,
+        aib.ITEM_BASIC_ID itemBasicId,
+        aib.ITEM_NAME itemName,
+        aib.ITEM_CODE itemCode,
+        (SELECT o.ORG_NAME FROM opu_om_org o WHERE o.ORG_ID = aib.ORG_ID) orgName,
+        temp.SERVICE_NAME serviceName,
+        (SELECT
+        <if test="_databaseId == 'oracle'">
+            WM_CONCAT(aiq.QUAL_NAME)
+        </if>
+        <if test="_databaseId == 'mysql'">
+            GROUP_CONCAT(aiq.QUAL_NAME)
+        </if>
+        FROM aea_im_qual aiq WHERE INSTR(aiur.QUAL_REQUIRE, aiq.QUAL_ID) > 0 AND aiq.IS_DELETE = '0') qualName,
+        aiur.QUAL_REQUIRE_EXPLAIN qualRequireExplain,
+        aiur.IS_QUAL_REQUIRE isQualRequire,
+        aiie.IS_FINANCIAL_FUND isFinancialFund,
+        aiie.IS_SOCIAL_FUND isSocialFund,
+        aiie.SERVICE_CONTENT serviceContent,
+        aiie.SERVICE_RESULT serviceResult,
+        aiie.TIME_LIMIT_EXPLAIN timeLimitExplain,
+        aiie.SERVICE_TIME_LIMIT serviceTimeLimit,
+        aiie.PRICE_MANAGEMENT priceManagement,
+        aiie.SLCJ slcj,
+        aiie.MEMO memo
+        FROM aea_item_basic aib
+        LEFT JOIN (
+        SELECT
+        aisi.ITEM_VER_ID,
+        <if test="_databaseId == 'oracle'">
+            WM_CONCAT(ais.SERVICE_NAME) SERVICE_NAME
+        </if>
+        <if test="_databaseId == 'mysql'">
+            GROUP_CONCAT(ais.SERVICE_NAME) SERVICE_NAME
+        </if>
+        FROM aea_im_service_item aisi
+        LEFT JOIN aea_im_service ais ON aisi.SERVICE_ID = ais.SERVICE_ID
+        WHERE aisi.IS_DELETE = '0' AND ais.IS_DELETE = '0' AND ais.IS_ACTIVE = '1'
+        GROUP BY aisi.ITEM_VER_ID) temp ON aib.ITEM_VER_ID = temp.ITEM_VER_ID
+        LEFT JOIN aea_im_item_explain aiie ON aib.ITEM_VER_ID = aiie.ITEM_VER_ID
+        LEFT JOIN aea_im_unit_require aiur ON aiie.UNIT_REQUIRE_ID = aiur.UNIT_REQUIRE_ID
+        WHERE aib.ITEM_BASIC_ID = #{itemBasicId}
+    </select>
+
+    <!--查询单个中介事项对应的行政事项列表-->
+    <select id="listItemBasicByAgentItemId" resultType="AeaItemBasic">
+        select
+        <include refid="allColumns2">
+            <property name="alias" value="itemBasic"/>
+        </include>
+        ,org.ORG_NAME from AEA_ITEM_BASIC itemBasic
+        left join OPU_OM_ORG org on ( org.ORG_ID = itemBasic.ORG_ID and org.ORG_DELETED = '0')
+        where itemBasic.ITEM_VER_ID in (
+        select temp1.ITEM_VER_ID from (
+        select MAX(ais.ITEM_VER_MAX),ais.ITEM_VER_ID from AEA_ITEM_SEQ ais
+        left join AEA_ITEM_RELEVANCE air on air.PARENT_ITEM_ID=ais.ITEM_ID
+        where air.CHILD_ITEM_ID=#{agentItemId} GROUP BY ais.ITEM_ID
+        ) temp1
+        )
+    </select>
+
+    <!--查询中介机构所属的事项-->
+    <select id="listAgentItemServiceByUnitInfoId" resultType="com.augurit.aplanmis.common.domain.AeaItemService">
+        SELECT
+        aib.ITEM_VER_ID agentItemVerId,
+        aib.item_name agentItemName,
+        (SELECT
+        <if test="_databaseId == 'oracle'">
+            WM_CONCAT(aib1.ITEM_NAME)
+        </if>
+        <if test="_databaseId == 'mysql'">
+            GROUP_CONCAT(aib1.ITEM_NAME)
+        </if>
+        FROM aea_item_relevance air, aea_item_basic aib1
+        WHERE air.PARENT_ITEM_ID = aib1.ITEM_ID AND air.CHILD_ITEM_ID = aib.ITEM_ID
+        AND aib1.ITEM_VER_ID IN (
+        SELECT seq.ITEM_VER_ID FROM aea_item_seq seq, (
+        SELECT seq1.ITEM_ID,MAX(seq1.ITEM_VER_MAX) ITEM_VER_MAX FROM aea_item_seq seq1
+        GROUP BY seq1.ITEM_ID) temp
+        WHERE seq.ITEM_ID = temp.ITEM_ID AND seq.ITEM_VER_MAX = temp.ITEM_VER_MAX
+        AND seq.ITEM_ID = aib1.ITEM_ID)
+        AND aib1.ITEM_NATURE = '0') itemName
+        FROM aea_item_basic aib
+        LEFT JOIN aea_im_service_item aisi ON aib.ITEM_VER_ID = aisi.ITEM_VER_ID
+        WHERE aisi.IS_DELETE = '0' AND aisi.SERVICE_ID IN (
+        SELECT aius.SERVICE_ID FROM aea_im_unit_service aius
+        WHERE aius.IS_ACTIVE = '1' AND aius.IS_DELETE = '0' AND aius.AUDIT_FLAG = '1'
+        AND aius.UNIT_INFO_ID = #{unitInfoId}
+        )
+        <if test="agentItemName != '' and agentItemName != null ">
+            AND aib.ITEM_NAME LIKE CONCAT(CONCAT('%',#{agentItemName}),'%')
+        </if>
+    </select>
+
+    <select id="listItemServiceVo" resultType="com.augurit.aplanmis.common.vo.AeaItemServiceVo">
+        select
+        itemBasic.ITEM_BASIC_ID agentItemBasicId,
+        itemBasic.ITEM_ID agentItemId,
+        itemBasic.ITEM_VER_ID agentItemVerId,
+        itemBasic.ITEM_CODE agentItemCode,
+        itemBasic.ITEM_NAME agentItemName,
+        itemBasic.ORG_ID agentOrgId,t1.ORG_NAME agentOrgName,
+        <if test="_databaseId == 'oracle'">
+            WM_CONCAT(temp2.ITEM_NAME) itemName,
+        </if>
+        <if test="_databaseId == 'mysql'">
+            GROUP_CONCAT(temp2.ITEM_NAME SEPARATOR ',') itemName,
+        </if>
+        aiie.SERVICE_CONTENT serviceContent,
+        aiie.SERVICE_RESULT serviceResult,
+        aiie.TIME_LIMIT_EXPLAIN timeLimitExplain,
+        aiie.SERVICE_TIME_LIMIT serviceTimeLimit,
+        aiur.IS_QUAL_REQUIRE isQualRequire,
+        aiur.QUAL_REQUIRE_TYPE qualRequireType,
+        aiur.QUAL_REQUIRE_EXPLAIN qualRequireExplain,
+        aiur.QUAL_RECORD_REQUIRE qualRecordRequire,
+        aiur.PROMISE_SERVICE promiseService,
+        aiur.OTHER_REQUIRE_EXPLAIN otherRequireExplain,
+        aiur.IS_REGISTER_REQUIRE isRegisterRequire,
+        aiur.REGISTER_TOTAL registerTotal,
+        aiur.REGISTER_REQUIRE registerRequire,
+        aiur.IS_RECORD_REQUIRE isRecordRequire,
+        aiur.RECORD_REQUIRE_EXPLAIN recordRequireExplain,
+        itemservice.SERVICE_NAME serviceName
+        from AEA_ITEM_BASIC itemBasic
+        LEFT JOIN AEA_ITEM_VER aiv on aiv.ITEM_VER_ID=itemBasic.ITEM_VER_ID
+        LEFT JOIN AEA_ITEM ai on aiv.ITEM_ID=ai.ITEM_ID
+        LEFT JOIN OPU_OM_ORG t1 ON t1.ORG_ID = itemBasic.ORG_ID
+        LEFT JOIN AEA_ITEM_RELEVANCE air on air.CHILD_ITEM_ID=ai.ITEM_ID
+        LEFT JOIN (
+        select temp1.ITEM_ID,temp1.ITEM_VER_ID,temp1.ITEM_NAME from (
+        SELECT aib.ITEM_VER_ID,aib.ITEM_ID,MAX(ais.ITEM_VER_MAX),aib.ITEM_NAME FROM AEA_ITEM_BASIC aib
+        left join AEA_ITEM_SEQ ais on aib.ITEM_VER_ID=ais.ITEM_VER_ID where aib.ITEM_NATURE='0' group by aib.ITEM_ID )
+        temp1
+        join aea_item_relevance air on air.PARENT_ITEM_ID=temp1.ITEM_ID
+        ) temp2 on temp2.ITEM_ID=air.PARENT_ITEM_ID
+
+        LEFT JOIN AEA_IM_ITEM_EXPLAIN aiie on aiv.ITEM_VER_ID=aiie.ITEM_VER_ID
+        LEFT JOIN AEA_IM_UNIT_REQUIRE aiur on aiur.UNIT_REQUIRE_ID=aiie.UNIT_REQUIRE_ID
+        LEFT JOIN (
+        select aisi.ITEM_VER_ID,GROUP_CONCAT(ais.SERVICE_NAME) SERVICE_NAME from AEA_IM_SERVICE_ITEM aisi
+        LEFT JOIN AEA_IM_SERVICE ais on ais.SERVICE_ID=aisi.SERVICE_ID GROUP by aisi.ITEM_VER_ID
+        ) itemservice on itemservice.ITEM_VER_ID = aiv.ITEM_VER_ID
+        <where>
+            itemBasic.ITEM_NATURE='8' and itemBasic.IS_CATALOG='0'
+            <if test="keyword!=null and keyword!=''">
+                and (
+                itemBasic.ITEM_CODE like concat('%',concat(#{keyword},'%')) or
+                itemBasic.ITEM_NAME like concat('%',concat(#{keyword},'%')) or
+                itemBasic.ITEM_MEMO like concat('%',concat(#{keyword},'%'))
+                )
+            </if>
+
+            <if test="itemVerId!=null and itemVerId!=''">
+                and itemBasic.ITEM_VER_ID = #{itemVerId}
+            </if>
+
+        </where>
+        GROUP BY itemBasic.ITEM_ID
+    </select>
+
+    <!-- 中介超市  事项下来框list-->
+    <select id="listAeaItemBasicAll" resultType="AeaItemBasic">
+        select
+        <include refid="allColumns"/>
+        from AEA_ITEM_BASIC itemBasic,AEA_ITEM_VER t
+        where
+        itemBasic.ITEM_VER_ID = t.ITEM_VER_ID
+    </select>
+
+    <!--中介服务-->
+    <select id="listService" resultType="AeaItemBasic">
+        select
+        <include refid="allColumns"/>,ooo.org_name orgName
+        from aea_item_basic itemBasic
+        left join opu_om_org ooo
+        on ooo.org_id = itemBasic.org_id
+        left join AEA_IM_SERVICE_TYPE aist
+        on itemBasic.service_type_id = aist.service_type_id
+        where
+        aist.service_type_name = #{serviceType}
+    </select>
+
+    <!--查询事项-->
+    <select id="listItemName" resultType="AeaItemBasic">
+        select
+        <include refid="allColumns"/>,ooo.org_name orgName
+        from aea_item_basic itemBasic
+        left join opu_om_org ooo
+        on ooo.org_id = itemBasic.org_id
+        left join AEA_IM_SERVICE_TYPE aist
+        on itemBasic.service_type_id = aist.service_type_id
+        where
+        <if test="itemName != ''and itemName != null ">
+            itemBasic.item_name LIKE CONCAT(CONCAT('%',#{itemName}),'%')
+        </if>
+    </select>
+
+    <select id="listAeaItemBasicByItemIds" resultType="AeaItemBasic">
+        select
+            <include refid="allColumns2">
+                <property name="alias" value="itemBasic"/>
+            </include>,
+            org.ORG_NAME orgName,
+            org.ORG_CODE orgCode
+        from AEA_ITEM_BASIC itemBasic
+        left join OPU_OM_ORG org on itemBasic.ORG_ID = org.ORG_ID and org.ORG_DELETED = '0'
+        <where>
+            and itemBasic.ROOT_ORG_ID = #{rootOrgId}
+            and itemBasic.ITEM_VER_ID in (
+                select
+                    ITEM_VER_ID
+                from AEA_ITEM_VER
+                <where>
+                    and ROOT_ORG_ID = #{rootOrgId}
+                    and IS_DELETED = '0'
+                    and ITEM_ID in
+                    <foreach collection="itemIds" item="itemId" open="(" close=")" separator=",">
+                        #{itemId}
+                    </foreach>
+                </where>
+            )
+        </where>
+    </select>
+
+
+    <select id="listItemByParState" resultType="AeaItemBasic">
+        select
+        <include refid="allColumns2">
+            <property name="alias" value="itemBasic"/>
+        </include>
+        ,
+        pstage.SORT_NO sortNo,
+        ooo.ORG_ID orgId,
+        ooo.ORG_NAME orgName
+        from aea_item_basic itemBasic
+        left join aea_par_stage_item pstage on (itemBasic.item_id = pstage.item_id and itemBasic.ITEM_VER_ID =
+        pstage.ITEM_VER_ID)
+        left join aea_par_state_item pstate on pstage.stage_item_id = pstate.stage_item_id
+        left join OPU_OM_ORG ooo on ooo.ORG_ID = itemBasic.ORG_ID
+        where pstate.par_state_id = #{parStateId} order by pstage.SORT_NO
+    </select>
+
+    <select id="listAeaItemBasicByStageId" resultType="AeaItemBasic">
+        select
+        ai.ITEM_BASIC_ID itemBasicId,
+        ai.ITEM_VER_ID itemVerid,
+        ai.ITEM_ID itemId,
+        ai.ITEM_NAME itemName,
+        ai.ITEM_CODE itemCode,
+        ai.INNER_APP_ID innerAppId,
+        a.PARENT_ITEM_ID parentItemId,
+        apsi.IS_OPTION_ITEM isOptionItem,
+        ooo.org_name orgName,
+        ooo.org_id orgId,
+        ai.due_num dueNum,
+        ai.bj_type bjType
+        from AEA_PAR_STAGE aps,
+        AEA_PAR_STAGE_ITEM apsi ,
+        AEA_ITEM_BASIC ai,
+        OPU_OM_ORG ooo, AEA_ITEM_VER aiv, AEA_ITEM a
+        where aps.STAGE_ID = #{stageId}
+        and aps.STAGE_ID = apsi.stage_id
+        <if test="itemBasic.isOptionItem!=null and itemBasic.isOptionItem!=''">
+            and apsi.IS_OPTION_ITEM = #{itemBasic.isOptionItem}
+        </if>
+        and apsi.ITEM_VER_ID = ai.ITEM_VER_ID
+        and ai.ITEM_VER_ID = aiv.ITEM_VER_ID
+        and aiv.IS_DELETED = 0
+        and ai.ITEM_ID = a.ITEM_ID
+        and ooo.org_id = ai.org_id
+        order by apsi.SORT_NO
+    </select>
+    <select id="listCarryOutAeaItemBasicByParentItemIds" resultType="com.augurit.aplanmis.common.domain.AeaItemBasic">
+        select
+        <include refid="allColumns2">
+            <property name="alias" value="aib"/>
+        </include>
+        , ooo.org_name orgName, bdr.region_name regionName
+        from aea_item_basic aib
+        left join opu_om_org ooo on ooo.org_id=aib.org_id
+        left join bsc_dic_region bdr on bdr.region_id=aib.region_id
+        join aea_item ai on aib.item_id=ai.item_id
+        join aea_item_ver aiv on aiv.item_ver_id=aib.item_ver_id
+        join (
+        select aiv2.item_ver_id, max(ver_num) verNum
+        from aea_item_basic aib2
+        join aea_item ai2 on aib2.item_id=ai2.item_id
+        join aea_item_ver aiv2 on aiv2.item_ver_id=aib2.item_ver_id
+        where aib2.root_org_id=#{rootOrgId}
+        and aib2.is_catalog='0'
+        and aiv2.item_ver_status in('1', '2')
+        and aiv2.is_deleted='0'
+        and ai2.parent_item_id in
+        <foreach collection="parentItemIds" open="(" close=")" separator="," item="parentItemId">
+            #{parentItemId}
+        </foreach>
+        group by aib2.item_ver_id
+        ) t1 on t1.item_ver_id=aiv.item_ver_id and t1.verNum=aiv.ver_num
+        where ai.parent_item_id in
+        <foreach collection="parentItemIds" open="(" close=")" separator="," item="parentItemId">
+            #{parentItemId}
+        </foreach>
+        and aib.root_org_id=#{rootOrgId}
+        and aib.is_catalog='0'
+        and aiv.is_deleted='0'
+    </select>
+
+    <!--查询并联申报下事项已办列表-->
+    <select id="getStageItemVerIdListByStageIdAndProjInfoId" resultType="java.lang.String">
+            SELECT DISTINCT aib.ITEM_VER_ID
+            from aea_proj_info api
+            LEFT JOIN aea_applyinst_proj aap ON api.PROJ_INFO_ID=aap.PROJ_INFO_ID
+            LEFT JOIN aea_hi_applyinst aha ON aap.APPLYINST_ID=aha.APPLYINST_ID
+            LEFT JOIN aea_hi_par_stageinst ahs ON ahs.APPLYINST_ID=aha.APPLYINST_ID
+            LEFT JOIN aea_hi_iteminst ahi ON ahi.STAGEINST_ID=ahs.STAGEINST_ID
+            LEFT JOIN aea_item_ver aiv ON aiv.ITEM_ID=ahi.ITEM_ID
+            LEFT JOIN aea_item_basic aib ON aib.ITEM_VER_ID=aiv.ITEM_VER_ID
+            where  api.IS_DELETED!=1 and aha.IS_DELETED!=1 and aiv.IS_DELETED !=1
+            and api.proj_info_id=#{projInfoId} AND aib.ITEM_VER_ID is NOT NULL
+            and ahs.STAGE_ID=#{stageId} and ahs.ROOT_ORG_ID=#{rootOrgId}
+            /*and ahi.ITEMINST_STATE in('11','12')*/
+    </select>
+    <select id="getLatestParentAeaItemBasicByChildItemId" resultType="com.augurit.aplanmis.common.domain.AeaItemBasic">
+        select
+        <include refid="allColumns2">
+            <property name="alias" value="itemBasic"/>
+        </include>
+        from aea_item_basic itemBasic
+        join aea_item_ver ver on itemBasic.item_ver_id=ver.item_ver_id AND ver.ITEM_VER_STATUS IN ('1','2') AND
+        ver.IS_DELETED = '0'
+        where itemBasic.root_org_id=#{rootOrgId}
+        and itemBasic.item_id in(
+        select parent_item_id from aea_item where item_id=#{itemId}
+        )
+        order by ver.VER_NUM desc limit 1
+    </select>
+
+    <select id="syncItemRegion" parameterType="AeaItemBasic">
+        update aea_item_basic item
+        set item.REGION_ID = (
+              select
+                  org.REGION_ID
+              from
+                  opu_om_org org
+              where
+                  org.ORG_ID = item.ORG_ID
+              and org.ORG_DELETED = '0'
+        )
+        <where>
+            and item.ROOT_ORG_ID = #{rootOrgId}
+            <if test="isCatalog != null and isCatalog != ''">
+            and item.IS_CATALOG = #{isCatalog}
+            </if>
+        </where>
+    </select>
+
+    <select id="checkUniqueItemCategoryMark" resultType="AeaItemBasic">
+        select
+            itemBasic.ITEM_ID as itemId,
+            itemBasic.ITEM_CATEGORY_MARK as itemCategoryMark,
+            itemBasic.IS_CATALOG as isCatalog
+        from AEA_ITEM_BASIC itemBasic, AEA_ITEM_VER itemVer
+        <where>
+            and itemBasic.ITEM_ID = itemVer.ITEM_ID
+            and itemBasic.ITEM_VER_ID = itemVer.ITEM_VER_ID
+            and itemBasic.ROOT_ORG_ID = #{rootOrgId}
+            and itemVer.ROOT_ORG_ID = #{rootOrgId}
+            and itemVer.IS_DELETED = '0'
+            <if test="itemId!=null and itemId!='' ">
+            and itemBasic.ITEM_ID != #{itemId}
+            </if>
+            and itemBasic.IS_CATALOG = #{isCatalog}
+            and itemBasic.ITEM_CATEGORY_MARK = #{itemCategoryMark}
+        </where>
+        GROUP BY itemBasic.ITEM_CATEGORY_MARK, itemBasic.ITEM_ID
+    </select>
+
+    <select id="listOrgInfoByRootOrgId" resultType="AeaItemBasic">
+        SELECT org.ORG_ID orgId,org.ORG_NAME orgName,region.REGION_ID regionId,region.REGION_NAME regionName,region.REGION_TYPE regionType
+        FROM aea_item_basic basic
+        LEFT JOIN opu_om_org org ON basic.ORG_ID = org.ORG_ID
+        LEFT JOIN bsc_dic_region region ON org.REGION_ID = region.REGION_ID
+        WHERE basic.SXMLZT IN ('0', '1')
+        AND basic.IS_CATALOG = '0'
+        AND org.ORG_DELETED = '0'
+        AND org.IS_ACTIVE = '1'
+        AND basic.ROOT_ORG_ID = #{rootOrgId}
+        GROUP BY basic.ORG_ID
+    </select>
+
+    <select id="listAeaItemBasicByOrgId" resultType="AeaItemBasic">
+        SELECT
+        <include refid="allColumns2">
+            <property name="alias" value="basic"/>
+        </include>
+        FROM aea_item_basic basic
+        LEFT JOIN aea_item_ver ver ON basic.ITEM_VER_ID = ver.ITEM_VER_ID
+        WHERE ver.ITEM_VER_STATUS in('1','2')
+        AND ver.IS_DELETED = '0'
+        AND basic.IS_CATALOG = '0'
+        AND basic.SXMLZT IN ('0', '1')
+        AND basic.ORG_ID = #{orgId}
+        GROUP BY basic.ITEM_ID
+    </select>
+
+    <select id="listLatestVerAeaItemBasicByOrgId" resultType="AeaItemBasic">
+        SELECT
+        <include refid="allColumns2">
+            <property name="alias" value="aib"/>
+        </include>
+        FROM
+        aea_item_basic aib,
+        (
+        SELECT
+        ITEM_ID,
+        ITEM_VER_ID,
+        max( VER_NUM ) maxNum
+        FROM
+        aea_item_ver
+        WHERE
+        IS_DELETED = '0'
+        AND ITEM_VER_STATUS IN ( '2', '1' )
+        GROUP BY
+        ITEM_ID
+        ) itemVer
+        WHERE
+        itemVer.ITEM_ID = aib.ITEM_ID
+        AND itemVer.ITEM_VER_ID = aib.ITEM_VER_ID
+        AND aib.ROOT_ORG_ID = #{rootOrgId}
+        AND aib.ORG_ID = #{orgId}
+    </select>
+
+    <select id="listSefAndChildLatestOkAeaItemBasic" resultType="com.augurit.aplanmis.common.domain.AeaItemBasic">
+        select
+            <include refid="aib_allColumns"/>,
+            itemVer.ver_num verNum,
+            itemVer.item_ver_status itemVerStatus,
+            org.ORG_NAME orgName,
+        item.PARENT_ITEM_ID parentItemId
+        from AEA_ITEM_BASIC aib
+        join (select item_ver_id, ver_num, ITEM_VER_STATUS from aea_item_ver ver
+        join (select ITEM_ID, max(VER_NUM) maxNum from aea_item_ver where IS_DELETED='0' and ITEM_VER_STATUS in ('2','1') group by ITEM_ID ) maxVer
+        on ver.item_id = maxVer.item_id and ver.VER_NUM = maxVer.maxNum ) itemVer on aib.ITEM_VER_ID = itemVer.ITEM_VER_ID
+        left join OPU_OM_ORG org on ( org.ORG_ID = aib.ORG_ID and org.ORG_DELETED = '0' )
+        left join AEA_ITEM item on item.ITEM_ID = aib.ITEM_ID
+        <where>
+            and aib.ROOT_ORG_ID = #{rootOrgId}
+            <if test="isCatalog != null and isCatalog != ''">
+            and aib.IS_CATALOG = #{isCatalog}
+            </if>
+            <if test="itemIds != null and itemIds.size()>0">
+            and (
+                <foreach collection="itemIds" item="itemId" open="" separator="or" close="">
+                    item.ITEM_SEQ like concat('%.',concat(#{itemId},'.%'))
+                </foreach>
+                )
+            </if>
+        </where>
+    </select>
+
+    <select id="listSefAndChildLatestOkItemVerIds" resultType="java.lang.String">
+        select distinct
+            aib.ITEM_VER_ID as itemVerId
+        from AEA_ITEM_BASIC aib
+        join (select item_ver_id, ver_num, ITEM_VER_STATUS from aea_item_ver ver
+        join (select ITEM_ID, max(VER_NUM) maxNum from aea_item_ver where IS_DELETED='0' and ITEM_VER_STATUS in ('2','1') group by ITEM_ID ) maxVer
+        on ver.item_id = maxVer.item_id and ver.VER_NUM = maxVer.maxNum ) itemVer on aib.ITEM_VER_ID = itemVer.ITEM_VER_ID
+        left join OPU_OM_ORG org on ( org.ORG_ID = aib.ORG_ID and org.ORG_DELETED = '0' )
+        left join AEA_ITEM item on item.ITEM_ID = aib.ITEM_ID
+        <where>
+            and aib.ROOT_ORG_ID = #{rootOrgId}
+            <if test="isCatalog != null and isCatalog != ''">
+            and aib.IS_CATALOG = #{isCatalog}
+            </if>
+            <if test="itemIds != null and itemIds.size()>0">
+            and (
+                <foreach collection="itemIds" item="itemId" open="" separator="or" close="">
+                    item.ITEM_SEQ like concat('%.',concat(#{itemId},'.%'))
+                </foreach>
+                )
+            </if>
+        </where>
+    </select>
+
+    <select id="listAeaItemBasicByIteminstId" resultType="AeaItemBasic">
+        SELECT
+        <include refid="aib_allColumns"/>,
+        org.ORG_NAME orgName
+        from aea_hi_iteminst ahi
+        LEFT JOIN aea_item_basic aib ON ahi.ITEM_ID =aib.ITEM_ID AND ahi.ITEM_VER_ID=aib.ITEM_VER_ID
+        left join OPU_OM_ORG org on ( org.ORG_ID = aib.ORG_ID and org.ORG_DELETED = '0' )
+        where ahi.ITEMINST_ID=#{iteminstId}
+    </select>
+
+    <select id="listAeaItemBasicByItemVerIdsAndOrgId" resultType="AeaItemBasic">
+        select
+            <include refid="aib_allColumns"/>,
+            org.ORG_NAME orgName
+        from aea_item_basic aib
+        left join OPU_OM_ORG org on ( org.ORG_ID = aib.ORG_ID and org.ORG_DELETED = '0' )
+        <where>
+            and aib.ROOT_ORG_ID = #{rootOrgId}
+            <if test="itemVerIds != null and itemVerIds.size()>0 ">
+            and aib.ITEM_VER_ID in
+                <foreach collection="itemVerIds" item="itemVerId" open="("  separator="," close=")">
+                    #{itemVerId}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+
+    <!--网厅首页查询事项实体list -->
+    <select id="listAeaItemBasicOfMain" resultType="AeaItemBasic">
+        select
+        <include refid="aib_allColumns"/>,bdr.region_name regionName,ooo.org_name orgName,ooo.org_tel orgTel,aig.SERVE_TYPE_text serveTypeText
+        from AEA_ITEM_BASIC aib
+        left join bsc_dic_region bdr on bdr.region_id=aib.region_id
+        left join opu_om_org ooo on ooo.org_id = aib.org_id
+        left join aea_item_guide aig on aib.item_ver_id = aig.item_Ver_id
+        <where>
+            <if test="keyword != null and keyword !='' " >
+                and aib.ITEM_NAME like CONCAT(CONCAT('%',#{keyword}),'%')
+            </if>
+            <if test="isCatalog != null" >
+                AND aib.IS_CATALOG = #{isCatalog}
+            </if>
+        </where>
+    </select>
+
+    <select id="getAgentParentItem" resultType="AeaItemBasic">
+        select DISTINCT
+        <include refid="aib_allColumns"/>
+        from aea_item_basic aib
+        where aib.ITEM_ID in(
+        select air.PARENT_ITEM_ID from aea_item_relevance air where air.CHILD_ITEM_ID=#{itemId}
+        )
+        and aib.ROOT_ORG_ID=#{rootOrgId}
+        GROUP BY ITEM_ID
+    </select>
+
+</mapper>

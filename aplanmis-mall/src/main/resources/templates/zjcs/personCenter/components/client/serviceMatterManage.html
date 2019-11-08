@@ -1,0 +1,1534 @@
+<div id="serviceMatterManage" class="normal-module-box ervice-matter-box box" v-cloak
+    v-loading.fullscreen.lock="mloading">
+    <h2 class="box-tit clearfix">服务事项管理
+        <el-button class="top-handel-btn" type="primary" @click="addServiceMatter">新增服务事项</el-button>
+    </h2>
+    <div class="pandel mt20" v-if="!isServiceMatterDetail">
+        <el-row class="inlineblock-midd">
+            中介服务类型：
+            <el-select placeholder="请选择" v-model="serviceMatterCheckData.serviceId" :popper-append-to-body="false">
+                <el-option v-for="item in agentServiceOptions" :key="item.serviceId" :label="item.serviceName"
+                    :value="item.serviceId">
+                </el-option>
+            </el-select>
+            <el-button class="ml20" type="primary" size="medium" @click="checkServiceMatterList">查询</el-button>
+        </el-row>
+        <el-table :data="serviceMatterList" class="scrollable mt20" border style="width: 100%;"
+            :header-cell-style="{background:'#f7f8fa'}">
+            <el-table-column label="序号">
+                <template scope="scope">
+                    {{scope.$index+1}}
+                </template>
+            </el-table-column>
+            <el-table-column prop="serviceName" label="中介服务">
+            </el-table-column>
+            <el-table-column label="状态">
+                <template scope="scope">
+                    <p>{{scope.row.auditFlag | auditFlagCn}}</p>
+                </template>
+            </el-table-column>
+            <el-table-column label="从业人员">
+                <template scope="scope">
+                    <p v-for="people in scope.row.linkmanInfo">{{people.linkmanName}}</p>
+                </template>
+            </el-table-column>
+            <el-table-column label="操作">
+                <template scope="scope">
+                    <a class="a-color4879E4" href="javascript:;" @click="editServiceMatter(scope.row)">编辑</a>
+                </template>
+            </el-table-column>
+        </el-table>
+        <el-pagination background align="right" @size-change="serviceMatterListSizeChange"
+            v-show="serviceMatterTotal>10" @current-change="serviceMatterListPageChange" :page-sizes="[10, 20, 30, 50]"
+            :page-size="serviceMatterCheckData.pageSize" :current-page="serviceMatterCheckData.pageNum"
+            layout="total,sizes, prev, pager, next, jumper" :total="serviceMatterTotal">
+        </el-pagination>
+    </div>
+
+    <!-- 新增服务事项编辑-新增 -->
+    <div class="pandel module-edit-pandel  mt20" v-else>
+        <!-- 事项编辑区 -->
+        <div style="width: 100%; " v-if="isServiceMatterPandelState == 1">
+            <div class="info-header text-right mt20 clearfix">
+                <el-button @click="matterReturnOne">返回上一级</el-button>
+            </div>
+            <!-- 项目title -->
+            <div class="info-title">
+                {{serviceMatterEditFlag ? '编辑':'新增'}}服务事项
+            </div>
+            <!-- 基本信息 -->
+            <div class="info-item edit-item">
+                <h2 class="item-title active" @click="expandProjectInfoItem"><i class="item-icon"></i>基本信息<i
+                        class="arrow-icon"></i></h2>
+                <div class="item-detail edit-item-detail">
+                    <div class="form-item">
+                        <label><b class="red-cl">*</b>中介服务</label>
+                        <div class="input-box">
+                            <el-select placeholder="请选择" v-model="serviceMatterDetailObj.serviceId" style="width: 100%;" :popper-append-to-body="false"
+                                @change="agentServiceChangeForInvolve">
+                                <el-option v-for="item in agentServiceOptions" :key="item.serviceId"
+                                    :label="item.serviceName" :value="item.serviceId">
+                                </el-option>
+                            </el-select>
+                        </div>
+                    </div>
+                    <div class="form-item">
+                        <label>中介服务事项</label>
+                        <div class="input-box">
+                            <el-table :data="involveMatterList" class="scrollable mt20" border style="width: 100%;"
+                                :header-cell-style="{background:'#f7f8fa'}">
+                                <el-table-column label="序号" width="55">
+                                    <template scope="scope">
+                                        {{scope.$index+1}}
+                                    </template>
+                                </el-table-column>
+                                <el-table-column prop="itemName" label="事项名称">
+                                </el-table-column>
+                                <el-table-column prop="orgName" label="对应部门">
+                                </el-table-column>
+                            </el-table>
+                            <el-pagination background align="right" @size-change="involveMatterListSizeChange"
+                                v-show="involveMatterTotal>10" @current-change="involveMatterListPageChange"
+                                :page-sizes="[10, 20, 30, 50]" :page-size="involveMatterCheckData.pageSize"
+                                :current-page="involveMatterCheckData.pageNum"
+                                layout="total,sizes, prev, pager, next, jumper" :total="involveMatterTotal">
+                            </el-pagination>
+                        </div>
+                    </div>
+                    <!-- <div class="form-item mt20">
+                        <label style="line-height: 36px;margin-bottom: 0;"><b class="red-cl">*</b>有效期</label>
+                        <div class="input-box clearfix">
+                            <div class="col-wd-5 date inlineblock-midd ">
+                                <el-date-picker type="date" placeholder="选择日期" value-format="yyyy-MM-dd"
+                                    v-model="serviceMatterDetailObj.termStart">
+                                </el-date-picker>
+                            </div>
+                            <div class="col-wd-1 md-label inlineblock-midd ">至</div>
+                            <div class="col-wd-5 date inlineblock-midd ">
+                                <el-date-picker type="date" placeholder="选择日期" value-format="yyyy-MM-dd"
+                                    v-model="serviceMatterDetailObj.termEnd">
+                                </el-date-picker>
+                            </div>
+                        </div>
+                    </div> -->
+                    <div class="form-item mt20">
+                        <label><b class="red-cl">*</b>收费参考</label>
+                        <div class="input-box">
+                            <textarea class="form-control" v-model="serviceMatterDetailObj.feeReference"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-item mt20">
+                        <label><b class="red-cl">*</b>服务承诺</label>
+                        <div class="input-box">
+                            <textarea class="form-control" v-model="serviceMatterDetailObj.serviceContent"></textarea>
+                        </div>
+                    </div>
+                    <!-- <div class="form-item mt20">
+                        <label><b class="red-cl">*</b>业务范围</label>
+                        <div class="input-box">
+                            <textarea class="form-control" v-model="serviceMatterDetailObj.managementScope"></textarea>
+                        </div>
+                    </div> -->
+                    <div class="form-item mt20">
+                        <label>从业人员</label>
+                        <div class="input-box">
+                            <!-- <div class="upload-card person-upload">
+                                <div class="upload-btn">
+                                    <el-button @click="fetchJobPeopleList">选 择</el-button>
+                                    <span class="ml-3">请选择从业人员</span>
+                                    
+                                </div>
+                                <ul class="pjfile-list mt20 ml20">
+                                    <li v-for="item in serviceMatterDetailObj.linkmanInfo">
+                                        <i class="person-ico"></i>{{item.linkmanName}}
+                                        <a class="debtn" href="javascript:;" @click="jobPeopleDelOne(item)">删除</a>
+                                    </li>
+                                </ul>
+                            </div> -->
+                            <el-table ref="jobPeopleRef" :data="jobPeopleList" class="scrollable" style="width: 100%;" border
+                                :header-cell-style="{background:'#f7f8fa'}">
+                                <!-- <el-table-column type="expand">
+                                    <template slot-scope="props">
+                                        <el-form label-position="left" inline class="demo-table-expand">
+                                            <el-form-item label="已获得资格/职称证书">
+                                                <span>{{ props.row.certNames || '无'}}</span>
+                                            </el-form-item>
+                                            <el-form-item label="可提供的服务类型">
+                                                <span>{{ props.row.serviceNames || '无'}}</span>
+                                            </el-form-item>
+                                        </el-form>
+                                    </template>
+                                </el-table-column> -->
+                                <el-table-column label="序号" width="55">
+                                    <template scope="scope">
+                                        {{scope.$index+1}}
+                                    </template>
+                                </el-table-column>
+                                <el-table-column prop="linkmanName" label="姓名" width="100">
+                                </el-table-column>
+                                <el-table-column label="已获得资格/职称证书">
+                                    <template scope="scope">
+                                        {{scope.row.certNames || '无'}}
+                                    </template>
+                                </el-table-column>
+                                <el-table-column label="可提供的服务类型">
+                                    <template scope="scope">
+                                        {{scope.row.serviceNames || '无'}}
+                                    </template>
+                                </el-table-column>
+                            </el-table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 附件材料 -->
+            <div class="info-item edit-item">
+                <h2 class="item-title active" @click="expandProjectInfoItem"><i
+                        class="item-icon item-fujian-icon"></i>附件材料<i class="arrow-icon"></i></h2>
+                <div class="item-detail edit-item-detail">
+                    <el-button class="mt20" @click="addCertificate">添加证书</el-button>
+                    <el-button class="mt20" @click="showLicenceStore">证照库</el-button>
+                    <el-table :data="serviceMatterDetailObj.certinstBVos" class="scrollable mt20" border
+                        style="width: 100%;" :header-cell-style="{background:'#f7f8fa'}">
+                        <el-table-column prop="certinstCode" label="证书编码">
+                        </el-table-column>
+                        <el-table-column prop="certinstName" label="证书名称">
+                        </el-table-column>
+                        <el-table-column prop="qualName" label="所属资质">
+                        </el-table-column>
+                        <el-table-column prop="qualLevelName" label="等级">
+                        </el-table-column>
+                        <el-table-column label="证书列表">
+                            <template scope="scope">
+                                <p v-for="item in scope.row.certinstDetail">
+                                    <a class="a-color4879E4" href="javascript:;"
+                                        @click="showDetailFormItem(item)">{{item.fileName}}</a>
+                                </p>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="操作">
+                            <template scope="scope">
+                                <a class="a-color4879E4" href="javascript:;"
+                                    @click="editCertificate(scope.$index,scope.row)">编辑</a>
+                                <a class="a-color4879E4" href="javascript:;"
+                                    @click="delOneCertificate(scope.row)">删除</a>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                </div>
+            </div>
+            <div class="text-center mt20">
+                <el-button type="primary" @click="submitServiceMatterDetailToAudit">提交审核</el-button>
+                <el-button @click="cancelServiceMatterDetailToAudit">取消</el-button>
+            </div>
+        </div>
+        <!-- 证书编辑区 -->
+        <div style="width: 100%; " v-if="isServiceMatterPandelState == 2">
+            <div class="info-header text-right mt20 clearfix">
+                <el-button @click="certificateReturnOne">返回上一级</el-button>
+            </div>
+            <!-- 证书title -->
+            <div class="info-title">
+                {{certificateEditFlag ? '编辑':'新增'}}证书
+            </div>
+            <!-- 基本信息 -->
+            <div class="info-item edit-item">
+                <h2 class="item-title active" @click="expandProjectInfoItem"><i class="item-icon"></i>基本信息<i
+                        class="arrow-icon"></i></h2>
+                <div class="item-detail edit-item-detail">
+                    <div class="form-item">
+                        <label><b class="red-cl">*</b>证书类型</label>
+                        <div class="input-box">
+                            <el-select placeholder="请选择" v-model="certificateDetailObj.certId" style="width: 100%;" :popper-append-to-body="false">
+                                <el-option v-for="item in addCertificateOptions" :key="item.certId"
+                                    :label="item.certName" :value="item.certId">
+                                </el-option>
+                            </el-select>
+                        </div>
+                    </div>
+                    <div class="form-item mt20">
+                        <label><b class="red-cl">*</b>证书编码</label>
+                        <div class="input-box date">
+                            <input type="text" class="form-control" v-model="certificateDetailObj.certinstCode" />
+                        </div>
+                    </div>
+                    <div class="form-item mt20">
+                        <label><b class="red-cl">*</b>证书名称</label>
+                        <div class="input-box date">
+                            <input type="text" class="form-control" v-model="certificateDetailObj.certinstName" />
+                        </div>
+                    </div>
+                    <div class="form-item mt20">
+                        <label><b class="red-cl">*</b>业务范围</label>
+                        <div class="input-box">
+                            <textarea class="form-control" v-model="certificateDetailObj.managementScope"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-item mt20">
+                        <label style="line-height: 36px;margin-bottom: 0;"><b class="red-cl">*</b>有效期限</label>
+                        <div class="input-box clearfix">
+                            <div class="col-wd-5 date inlineblock-midd ">
+                                <el-date-picker type="datetime" placeholder="选择日期" format="yyyy-MM-dd"
+                                                v-model="certificateDetailObj.termStart">
+                                </el-date-picker>
+                            </div>
+                            <div class="col-wd-1 md-label inlineblock-midd ">至</div>
+                            <div class="col-wd-5 date inlineblock-midd ">
+                                <el-date-picker type="datetime" placeholder="选择日期" format="yyyy-MM-dd"
+                                                v-model="certificateDetailObj.termEnd">
+                                </el-date-picker>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb20">
+                        <div class="col-md-12 form-item">
+                            <label @click="getTreeCheck"><b class="red-cl">*</b>所属专业</label>
+                            <div class="input-box major-tree-box">
+                                <div class="box-header-tool mb20">
+                                    <el-button-group>
+                                        <el-button class="quality-btn" type="primary" size="medium"
+                                            v-for="(item, index) in allSubordinateMajorData"
+                                            @click="selectTreeForQuality(item,index)">{{item.qualName}}</el-button>
+                                    </el-button-group>
+
+                                </div>
+                                <el-tree ref="tree" :data="curSelectQualiTreeData" :props="treeProps" show-checkbox
+                                    :check-strictly="true" node-key="id">
+                                </el-tree>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-item mt20">
+                        <label><b class="red-cl">*</b>等级</label>
+                        <div class="input-box input-radio">
+                            <el-radio-group v-model="certificateDetailObj.qualLevelId">
+                                <el-radio :label="item.qualLevelId" v-for="item in curSelectQualiRankDataOptions"
+                                    :key="item.qualLevelId">
+                                    {{item.qualLevelName}}
+                                </el-radio>
+                            </el-radio-group>
+                        </div>
+                    </div>
+                    <div class="form-item mt20">
+                        <label><b class="red-cl">*</b>附件</label>
+                        <div class="input-box">
+                            <div class="upload-card">
+                                <div class="upload-btn">
+                                    <el-upload class="enclosure-upload-ref inlineblock-midd" ref="enclosureUploadRef"
+                                        action="" :multiple="true" :on-change="enclosureFileSelectChange"
+                                        :on-remove="enclosureFileSelectRemove" :auto-upload="false">
+                                        <el-button slot="trigger" size="medium" type="normal">上传文件</el-button>
+                                    </el-upload>
+                                    <span class="upload-tip">上传的附件不可超过10MB，禁止上传以下的附件类型：.exe,.sh,.bat,.com,.dll</span>
+                                </div>
+                                <ul class="pjfile-list">
+                                    <li v-for="item in certificateDetailObj.certinstDetail">{{item.fileName}}<a
+                                            class="debtn" href="javascript:;" @click="delOneEnclosure(item)">删除</a></li>
+                                </ul>
+                                <!-- <p class="note-txt mt-1">更新时间：2018年08月14日 21:58:20</p> -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center">
+                <el-button type="primary" @click="saveCertificateDetail">保存</el-button>
+                <el-button @click="cancelCertificateDetail">取消</el-button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 所有从业人员的dialog -->
+    <el-dialog title="请选择从业人员" :visible.sync="isShowJobPeopleDialog" width="760px">
+        <el-table ref="jobPeopleRef" :data="jobPeopleList" class="scrollable" style="width: 100%;"
+            :header-cell-style="{background:'#f7f8fa'}" @selection-change="jobPeoplesListSelect">
+            <el-table-column type="expand">
+                <template slot-scope="props">
+                    <el-form label-position="left" inline class="demo-table-expand">
+                        <el-form-item label="已获得资格/职称证书">
+                            <span>{{ props.row.certNames || '无'}}</span>
+                        </el-form-item>
+                        <el-form-item label="可提供的服务类型">
+                            <span>{{ props.row.serviceNames || '无'}}</span>
+                        </el-form-item>
+                    </el-form>
+                </template>
+            </el-table-column>
+            <el-table-column type="selection" width="55">
+            </el-table-column>
+            <el-table-column label="序号" width="55">
+                <template scope="scope">
+                    {{scope.$index+1}}
+                </template>
+            </el-table-column>
+            <el-table-column prop="linkmanName" label="姓名" width="100">
+            </el-table-column>
+            <el-table-column label="已获得资格/职称证书">
+                <template scope="scope">
+                    {{scope.row.certNames || '无'}}
+                </template>
+            </el-table-column>
+            <el-table-column label="可提供的服务类型">
+                <template scope="scope">
+                    {{scope.row.serviceNames || '无'}}
+                </template>
+            </el-table-column>
+        </el-table>
+        <span slot="footer" class="dialog-footer">
+            <el-button @click="isShowJobPeopleDialog = false">取 消</el-button>
+            <el-button type="primary" @click="jobPeopleDialogSure">确 定</el-button>
+        </span>
+    </el-dialog>
+    <!-- 证书列表中的点击查看的dialog -->
+    <el-dialog title="查看" :visible.sync="certificatePictureDialogFlag" width="860px" center>
+        <div class="imgShowBox img-wrap">
+            <img src="" alt="">
+        </div>
+    </el-dialog>
+    <!-- 证照库dialog -->
+    <el-dialog title="请选择证照" :visible.sync="isShowLicenceStoreDialog" width="860px">
+            <el-table ref="licenceRef" :data="licenceStoreList" class="scrollable" style="width: 100%;"
+                :header-cell-style="{background:'#f7f8fa'}" @selection-change="licenceStoreSelection">
+                <el-table-column type="selection" width="55">
+                </el-table-column>
+                <el-table-column label="序号" width="55">
+                    <template scope="scope">
+                        {{scope.$index+1}}
+                    </template>
+                </el-table-column>
+                <el-table-column prop="certinstCode" label="证书编码">
+                </el-table-column>
+                <el-table-column prop="certinstName" label="证书名称">
+                </el-table-column>
+                <el-table-column prop="qualName" label="所属资质">
+                </el-table-column>
+                <el-table-column prop="qualLevelName" label="等级">
+                </el-table-column>
+                <el-table-column label="附件">
+                    <template scope="scope">
+                        <p v-for="item in scope.row.certinstDetail">
+                            <a class="a-color4879E4" href="javascript:;"
+                                @click="showDetailFormItem(item)">{{item.fileName}}</a>
+                        </p>
+                    </template>
+                </el-table-column>
+                <el-table-column>
+                    <template scope="scope">
+                        <a class="a-color4879E4" href="javascript:;"
+                            @click="licenceStoreDelOne(scope.row)">删除</a>
+                    </template>
+                </el-table-column>
+            </el-table>
+            <el-pagination background align="right" @size-change="licenceStoreListSizeChange"
+                v-show="licenceStoreTotal>10" @current-change="licenceStoreListPageChange"
+                :page-sizes="[10, 20, 30, 50]" :page-size="licenceStoreCheckData.pageSize"
+                :current-page="licenceStoreCheckData.pageNum" layout="total,sizes, prev, pager, next, jumper"
+                :total="licenceStoreTotal">
+            </el-pagination>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="isShowLicenceStoreDialog = false">取 消</el-button>
+                <el-button type="primary" @click="licenceStoreDialogSuce">确 定</el-button>
+            </span>
+        </el-dialog>
+</div>
+
+<script>
+    // var ctx = "http://192.168.14.2:8084/aplanmis-mall/"    //振强
+    // 事项详情初始数据
+    var SERVICE_MATTER_DETAIL_OBJ = {
+        serviceId: '', //中介服务
+        // termStart: '', //有效期开始时间
+        // termEnd: '', //有效期结束时间
+        feeReference: '', //收费参考
+        serviceContent: '', //服务承诺
+        // managementScope: '', //业务范围
+        linkmanInfo: [], //从业人员list
+        certinstBVos: [], //证书list
+    };
+    // 证书详情初始数据
+    var CERTIFICATE_DETAIL_OBJ = {
+        certId: '', //证书类型
+        certinstCode: '', //证书编码
+        certinstName: '', //证书名称
+        managementScope: '', //业务范围
+        termStart: '', //有效期限-start
+        termEnd: '', //有效期限-end
+        majorId: [], //所属专业
+        qualLevelId: '', //等级
+        certinstDetail: '', //附件列表
+    };
+    var module1 = new Vue({
+        el: '#serviceMatterManage',
+        mixins: [mixins],
+        data: function () {
+            return {
+
+                // 中介服务类型下拉选项-表格中、中介服务下拉列表-详情中
+                agentServiceOptions: [],
+
+
+                // 服务事项管理列表
+                serviceMatterList: [],
+                // 服务事项管理列表-查询参数
+                serviceMatterCheckData: {
+                    pageSize: 10,
+                    pageNum: 1,
+                    // serviceTypeItemName: '',
+                    // itemBasicId: '',
+                    serviceId: '',
+                    unitInfoId: '',
+                },
+                // 服务事项管理列表-总数
+                serviceMatterTotal: 0,
+
+                // 当前是否为服务事项详情模块
+                isServiceMatterDetail: false,
+
+                // 当前服务事项详情模块状态--1、事项的详情，，，2、证书的详情
+                isServiceMatterPandelState: 1,
+
+                // 服务事项管理-编辑标识
+                serviceMatterEditFlag: false,
+
+                // 服务事项详情
+                serviceMatterDetailObj: {
+                    serviceId: '', //中介服务
+                    // termStart: '', //有效期开始时间
+                    // termEnd: '', //有效期结束时间
+                    feeReference: '', //收费参考
+                    serviceContent: '', //服务承诺
+                    // managementScope: '', //业务范围
+                    linkmanInfo: [], //从业人员list
+                    certinstBVos: [], //证书list
+                },
+
+                // 中介服务事项相关-服务事项详情
+                // 中介服务事项列表
+                involveMatterList: [],
+                // 中介服务事项列表-查询参数
+                involveMatterCheckData: {
+                    pageSize: 10,
+                    pageNum: 1,
+                    serviceId: '',
+                },
+                // 中介服务事项列表-总数
+                involveMatterTotal: 0,
+
+
+                // 从业人员相关
+                // 是否显示所有从业人员列表dialog
+                isShowJobPeopleDialog: false,
+                // 所有从业人员列表-接口获取
+                jobPeopleList: [],
+                // 从业人员列表选中list
+                jobPeopleSelects: [],
+
+                // 证书相关
+                // 证书列表
+                certificateList: [],
+                // 证书列表-点击查看dialog
+                certificatePictureDialogFlag: false,
+                // 证书列表编辑标识
+                certificateEditFlag: false,
+                // 添加证书类型下拉列表options
+                addCertificateOptions: [],
+                // 所属专业-树节点字段定义，child,name是后端接口数据
+                treeProps: {
+                    children: 'child',
+                    label: 'name'
+                },
+                // 当前编辑的证书索引
+                curEditCertificateIndex: -1,
+
+                // 所属专业-所有的资质包括资质下的树
+                allSubordinateMajorData: {},
+                // 所属专业-当前选中资质的树的数据
+                curSelectQualiTreeData: [],
+                // 所属专业-当前选中资质的等级的数据options
+                curSelectQualiRankDataOptions: [],
+
+                // 证书详情-detail
+                certificateDetailObj: {
+                    certId: '', //证书类型
+                    certinstCode: '', //证书编码
+                    certinstName: '', //证书名称
+                    managementScope: '', //业务范围
+                    termStart: '', //有效期限-start
+                    termEnd: '', //有效期限-end
+                    majorId: [], //所属专业
+                    qualLevelId: '', //等级
+                    certinstDetail: [], //附件列表
+                },
+
+                // 附件列表选择的文件
+                enclosureFileListArr: [],
+
+                // 证照库相关
+                // 是否显示证照库dialog
+                isShowLicenceStoreDialog: false,
+                // 证照库列表
+                licenceStoreList: [],
+                // 证照库查询数据
+                licenceStoreCheckData: {
+                    pageSize: 10,
+                    pageNum: 1,
+                    type: 1,
+                    typeId: ''
+                },
+                // 证照库总数
+                licenceStoreTotal: 0,
+                // 证照库选中数据
+                licenceStoreSelects: [],
+
+            }
+        },
+        methods: {
+
+            // 事项-返回上一级
+            matterReturnOne: function () {
+                var ts = this;
+                ts.isServiceMatterDetail = false;
+                ts.isServiceMatterPandelState = 1; //当前事项-编辑面板重置为事项的详情
+                ts.backToTop();
+            },
+
+            // 证书-返回上一级
+            certificateReturnOne: function () {
+                var ts = this;
+                ts.isServiceMatterPandelState = 1; //当前事项-编辑面板重置为事项的详情
+            },
+
+            // 新增事项编辑
+            addServiceMatter: function () {
+                var ts = this;
+                ts.isServiceMatterDetail = true;
+                ts.serviceMatterEditFlag = false; //当前为事项新增
+                ts.serviceMatterDetailObj = SERVICE_MATTER_DETAIL_OBJ; //新增时，事项详情是为空的数据
+
+                ts.involveMatterList = []; //新增时，中介服务事项列表置空
+                ts.involveMatterTotal = 0; //新增时，中介服务事项列表总数置0
+                // ts.fetchInvolveMatterList(); //进入新增事项页面获取一下-中介服务事项列表
+            },
+
+            // 服务事项表格编辑
+            editServiceMatter: function (row) {
+                var ts = this;
+                ts.isServiceMatterDetail = true;
+                ts.serviceMatterEditFlag = true; //当前为事项编辑
+                ts.serviceMatterDetailObj = JSON.parse(JSON.stringify(row));
+
+
+                ts.fetchInvolveMatterList(); //进入编辑事项页面获取一下-中介服务事项列表
+                ts.fetchJobPeopleList(); //进入编辑事项页面获取一下-从业人员列表
+            },
+
+            // 获取中介服务下拉列表options
+            fetchBaseDropList: function () {
+                var ts = this;
+                ts.mloading = true;
+                request('', {
+                    url: ctx + 'aea/supermarket/serviceMatter/getBasicInfo',
+                    type: 'get',
+                }, function (res) {
+                    ts.mloading = false;
+                    if (res.success) {
+                        ts.agentServiceOptions = res.content.service; //中介服务下拉options
+                    } else {
+                        ts.$message({
+                            message: '中介服务列表加载失败',
+                            type: 'error'
+                        });
+                    }
+                }, function (msg) {
+                    ts.mloading = false;
+                    ts.$message({
+                        message: '加载失败',
+                        type: 'error'
+                    });
+                });
+            },
+
+            // 获取服务事项管理列表
+            fetchServiceMatterManageList: function () {
+                var ts = this;
+                ts.serviceMatterCheckData.unitInfoId = JSON.parse(localStorage.getItem('loginInfo')).unitId;
+                ts.mloading = true;
+                request('', {
+                    url: ctx + 'aea/supermarket/serviceMatter/listServiceMatter',
+                    type: 'post',
+                    data: ts.serviceMatterCheckData
+                }, function (res) {
+                    ts.mloading = false;
+                    if (res.success) {
+                        ts.serviceMatterList = res.content.rows;
+                        ts.serviceMatterTotal = res.content.total;
+                    } else {
+                        ts.$message({
+                            message: '服务事项列表加载失败',
+                            type: 'error'
+                        });
+                    }
+                }, function (msg) {
+                    ts.mloading = false;
+                    ts.$message({
+                        message: '加载失败',
+                        type: 'error'
+                    });
+                });
+            },
+
+            // 服务事项管理列表当前页修改
+            serviceMatterListPageChange: function (val) {
+                var ts = this;
+                ts.serviceMatterCheckData.pageNum = val;
+                ts.fetchServiceMatterManageList();
+            },
+
+            // 服务事项管理列表页面大小修改
+            serviceMatterListSizeChange: function (val) {
+                var ts = this;
+                ts.serviceMatterCheckData.pageSize = val;
+                ts.fetchServiceMatterManageList();
+            },
+
+            // 服务事项管理列表页面-查询
+            checkServiceMatterList: function () {
+                var ts = this;
+                ts.serviceMatterCheckData.pageNum = 1;
+                ts.fetchServiceMatterManageList();
+            },
+
+            // 服务事项详情取消
+            cancelServiceMatterDetailToAudit: function () {
+                var ts = this;
+                ts.isServiceMatterDetail = false;
+                ts.isServiceMatterPandelState = 1; //当前事项-编辑面板重置为事项的详情
+                ts.backToTop();
+            },
+
+            // 服务事项详情提交审核
+            submitServiceMatterDetailToAudit: function () {
+                var ts = this,
+                    _submitData = {};
+                _submitData = {
+                    serviceId: '', //中介服务
+                    // termStart: '', //有效期开始时间
+                    // termEnd: '', //有效期结束时间
+                    feeReference: '', //收费参考
+                    serviceContent: '', //服务承诺
+                    // managementScope: '', //业务范围
+                    // linkmanInfo: [], //从业人员list
+                    certinstBVos: [], //证书list
+                };
+                for (var k in _submitData) {
+                    // _submitData[k] = ts.serviceMatterDetailObj[k];
+                    if(ts.serviceMatterDetailObj[k]){
+                        _submitData[k] = ts.serviceMatterDetailObj[k];
+                    }else{
+                        _submitData[k] =  '';
+                    }
+                }
+                if (!_submitData.serviceId.length) {
+                    return ts.$message({
+                        message: '请选择中介服务！'
+                    })
+                }
+                debugger
+                if (!_submitData.feeReference.length) {
+                    return ts.$message({
+                        message: '请填写收费参考！'
+                    })
+                }
+                if (!_submitData.serviceContent.length) {
+                    return ts.$message({
+                        message: '请填写服务承诺！'
+                    })
+                }
+                // if (!_submitData.linkmanInfo.length) {
+                //     return ts.$message({
+                //         message: '请选择从业人员！'
+                //     })
+                // }
+                if (!_submitData.certinstBVos.length) {
+                    return ts.$message({
+                        message: '请添加证书！'
+                    })
+                }
+                // 服务事项编辑带上id
+                if (ts.serviceMatterEditFlag) {
+                    _submitData.unitServiceId = ts.serviceMatterDetailObj.unitServiceId;
+                }
+                // 带上unitId
+                _submitData.unitInfoId = JSON.parse(localStorage.getItem('loginInfo')).unitId;
+                console.log(_submitData)
+                var _sendData = {
+                    json: JSON.stringify(_submitData)
+                };
+                ts.mloading = true;
+                $.ajax({
+                    url: ctx + 'aea/supermarket/serviceMatter/saveServiceMatter',
+                    type: 'post',
+                    data: _sendData,
+                    success: function (res) {
+                        ts.mloading = false;
+                        if (res.success) {
+                            ts.cancelServiceMatterDetailToAudit();
+                            ts.fetchServiceMatterManageList();
+                            ts.$message({
+                                message: '提交成功！',
+                                type: 'success'
+                            })
+                        } else {
+                            ts.$message({
+                                message: '提交失败！',
+                                type: 'error'
+                            });
+                        }
+                    },
+                    error: function (err) {
+                        ts.mloading = false;
+                        ts.$message({
+                            message: '提交失败！',
+                            type: 'error'
+                        });
+                    },
+                })
+                // request('', {
+                //     url: ctx + 'aea/supermarket/serviceMatter/saveServiceMatter',
+                //     type: 'post',
+                //     data: _submitData
+                // }, function (res) {
+                //     ts.mloading = false;
+                //     if (res.success) {
+                //         ts.cancelServiceMatterDetailToAudit();
+                //         ts.fetchServiceMatterManageList();
+                //         ts.$message({
+                //             message: '提交成功！',
+                //             type: 'success'
+                //         })
+                //     } else {
+                //         ts.$message({
+                //             message: '中介服务列表加载失败',
+                //             type: 'error'
+                //         });
+                //     }
+                // }, function (msg) {
+                //     ts.mloading = false;
+                //     ts.$message({
+                //         message: '加载失败',
+                //         type: 'error'
+                //     });
+                // });
+            },
+
+
+            // 证书相关
+            // 添加证书
+            addCertificate: function () {
+                var ts = this;
+                // 如果是还没有选择中介服务，则不访问证书类型的下拉options接口
+                if (!ts.serviceMatterDetailObj.serviceId) {
+                    ts.backToTop();
+                    return ts.$message({
+                        message: '请先选择中介服务'
+                    })
+                }
+
+                ts.isServiceMatterPandelState = 2;
+                ts.certificateEditFlag = false; //当前为添加证书
+                ts.certificateDetailObj = CERTIFICATE_DETAIL_OBJ; //新增的的证书详情赋初始值
+
+                ts.fetchCertificateTypeOptions(); // 获取证书类型的下拉options
+                ts.fetchSubordinateMajorTreeData(); //加载所属专业树的数据
+                ts.backToTop(); //body位置默认为返回顶部
+            },
+            // 编辑证书
+            editCertificate: function (idx, row) {
+                console.log(row)
+                var ts = this;
+                 // 如果是还没有选择中介服务，则不编辑证书
+                 if (!ts.serviceMatterDetailObj.serviceId) {
+                    ts.backToTop();
+                    return ts.$message({
+                        message: '请先选择中介服务'
+                    })
+                }
+                ts.isServiceMatterPandelState = 2;
+                ts.certificateEditFlag = true; //当前为编辑证书
+                ts.certificateDetailObj = row; //编辑的当前行的证书详情赋值
+                ts.curEditCertificateIndex = idx; //编辑的当前行索引赋值
+
+                ts.$nextTick(function(){
+                    ts.$refs.tree.setCheckedKeys(ts.certificateDetailObj.majorId);
+                })
+
+                // console.log(idx)
+
+                ts.fetchCertificateTypeOptions(); // 获取证书类型的下拉options
+                ts.fetchSubordinateMajorTreeData(); //加载所属专业树的数据
+                ts.backToTop(); //body位置默认为返回顶部
+            },
+            // 删除一条证书数据
+            delOneCertificate: function (row) {
+                var ts = this,
+                    _delData = {};
+                confirmMsg('', '您确定删除当前证书吗？', function () {
+                    _delData.certinstId = row.certinstId;
+
+                    //证书的删除是删除当前服务事项与证书列表的关联关系，不是直接删掉证书库的证书
+                    ts.delOneCertificateFrontSelf(_delData.certinstId);
+                    return;
+                })
+            },
+            // 删除一条证书数据-接口成功后，前端自己删除对应证书
+            delOneCertificateFrontSelf: function (certificateId) {
+                var ts = this;
+                var _allCertificate = ts.serviceMatterDetailObj.certinstBVos; //所有的证书List
+                var _idx = -1; //当前删除的附件索引
+                for (var i = 0; i < _allCertificate.length; i++) {
+                    var _tmpCertificateId = _allCertificate[i].certinstId;
+                    if (_tmpCertificateId == certificateId) {
+                        _idx = i;
+                        break;
+                    }
+                }
+                // console.log(_idx);
+                if (_allCertificate.length && _idx > -1) {
+                    ts.serviceMatterDetailObj.certinstBVos.splice(_idx, 1);
+                }
+            },
+            // 点击dialog查看某一条证书列表的详情
+            showDetailFormItem: function (item) {
+                var ts = this;
+                window.open(ctx + 'file/showFile.do?detailId=' + item.fileId);
+            },
+
+
+            // 证书详情相关
+            // 获取证书类型的下拉options
+            fetchCertificateTypeOptions: function () {
+                var ts = this,
+                    _getData = {};
+                _getData.serviceId = ts.serviceMatterDetailObj.serviceId; //这个需要服务事项详情里面的中介服务下拉框的serviceId
+                ts.mloading = true;
+                request('', {
+                    url: ctx + 'aea/supermarket/serviceMatter/getCertList',
+                    type: 'get',
+                    data: _getData,
+                }, function (res) {
+                    ts.mloading = false;
+                    if (res.success) {
+                        ts.addCertificateOptions = res.content;
+                    } else {
+                        ts.$message({
+                            message: '证书类型下拉列表加载失败',
+                            type: 'error'
+                        });
+                    }
+                }, function (msg) {
+                    ts.mloading = false;
+                    ts.$message({
+                        message: '加载失败',
+                        type: 'error'
+                    });
+                });
+            },
+            // 获取证书 所属专业树的数据
+            fetchSubordinateMajorTreeData: function () {
+                var ts = this,
+                    _getData = {};
+                _getData.serviceId = ts.serviceMatterDetailObj.serviceId; //这个需要服务事项详情里面的中介服务下拉框的serviceId
+                ts.mloading = true;
+                request('', {
+                    url: ctx + 'aea/supermarket/serviceMatter/getMajorTreeByServiceId.do',
+                    type: 'post',
+                    data: _getData
+                }, function (res) {
+                    ts.mloading = false;
+                    if (res) {
+                        ts.allSubordinateMajorData = res; //得到所有的资质及下面的所有的树
+                        // 初始化树-默认选中第一个资质
+                        setTimeout(function () {
+                            $('.major-tree-box').find('.quality-btn').eq(0).trigger(
+                                'click');
+                        }, 0)
+
+                    } else {
+                        ts.$message({
+                            message: '所属专业加载失败',
+                            type: 'error'
+                        });
+                    }
+                }, function (msg) {
+                    ts.mloading = false;
+                    ts.$message({
+                        message: '加载失败',
+                        type: 'error'
+                    });
+                });
+            },
+            // 证书详情-所属专业树默认展开
+            initMajorTree: function () {
+                var ts = this;
+                ts.$nextTick(function () {
+                    for (var i = 0; i < ts.$refs.tree.store._getAllNodes().length; i++) {
+                        ts.$refs.tree.store._getAllNodes()[i].expanded = true;
+                    }
+                });
+            },
+            // 所属专业树-选中当前资质
+            selectTreeForQuality: function (quality, idx) {
+                var ts = this;
+                ts.curSelectQualiTreeData = quality.majorTree; //当前选中的资质下树数据赋值
+                ts.curSelectQualiRankDataOptions = quality.levelList; //当前选中的资质下等级的options数据赋值
+
+                // 所属专业树获取成功后展开树并初始化
+                ts.initMajorTree();
+                // 所属专业树获取成功后-编辑时，对选中的树节点回显   certificateDetailObj
+                if (ts.certificateDetailObj.majorId && ts.certificateDetailObj.majorId !== null) {
+                    ts.$refs.tree.setCheckedKeys(ts.certificateDetailObj.majorId);
+                }
+                // 所属专业树选中资质后的当前按钮变化
+                var _curBtn = $('.major-tree-box').find('.quality-btn');
+                _curBtn.eq(idx).addClass('el-button--primary');
+                _curBtn.eq(idx).siblings().removeClass('el-button--primary');
+            },
+            // 获取所属专业人员树当中的选中节点数据
+            getTreeCheck: function () {
+                console.log(this.$refs.tree.getCheckedKeys());
+                return this.$refs.tree.getCheckedKeys();
+            },
+            // 附件上传--before
+            enclosureBeforeUpload: function (file) {
+                var ts = this,
+                    file = file;
+                var fileMaxSize = 1024 * 1024 * 10; // 10MB为最大限制
+                // 文件类型
+                // 检查文件类型
+                var index = file.name.lastIndexOf(".");
+                var ext = file.name.substr(index + 1);
+                if (['exe', 'sh', 'bat', 'com', 'dll'].indexOf(ext) !== -1) {
+                    ts.$message({
+                        message: '请上传非.exe,.sh,.bat,.com,.dll文件',
+                    });
+                    return false;
+                };
+                // 检查文件大小
+                if (file.size > fileMaxSize) {
+                    ts.$message({
+                        message: '请上传大小在10M以内的文件',
+                    });
+                    return false;
+                };
+                return true;
+            },
+            // 附件上传文件列表变动
+            enclosureFileSelectChange: function (file, fileList) {
+                // console.log(fileList)
+                var ts = this;
+                ts.enclosureFileListArr = [];
+                fileList.forEach(function (item) {
+                    ts.enclosureFileListArr.push(item.raw)
+                })
+            },
+            // 附件上传文件列表移除某一项
+            enclosureFileSelectRemove: function (file, fileList) {
+                // console.log(fileList)
+                var ts = this;
+                ts.enclosureFileListArr = [];
+                fileList.forEach(function (item) {
+                    ts.enclosureFileListArr.push(item.raw)
+                })
+            },
+
+            // 附件列表中删除掉一条数据
+            delOneEnclosure: function (row) {
+                var ts = this,
+                    _delData = {};
+                confirmMsg('', '您确定删除当前附件吗？', function () {
+                    _delData.detailId = row.fileId;
+                    // test
+                    // ts.delOneEnclosureFrontSelf( _delData.detailId);
+                    // return;
+
+                    ts.mloading = true;
+                    request('', {
+                        url: ctx + 'aea/supermarket/serviceMatter/deleteCertinstAtt',
+                        type: 'get',
+                        data: _delData
+                    }, function (res) {
+                        ts.mloading = false;
+                        if (res.success) {
+                            ts.delOneEnclosureFrontSelf(_delData.detailId);
+                            ts.$message({
+                                message: '删除成功！',
+                                type: 'success'
+                            });
+                        } else {
+                            ts.$message({
+                                message: '删除失败',
+                                type: 'error'
+                            });
+                        }
+                    }, function (msg) {
+                        ts.mloading = false;
+                        ts.$message({
+                            message: '删除失败',
+                            type: 'error'
+                        });
+                    });
+                })
+            },
+            // 附件列表中删除接口调用后，成功后前端自己删除掉一条数据
+            delOneEnclosureFrontSelf: function (enclosureId) {
+                var ts = this;
+                var _allEnclosure = ts.certificateDetailObj.certinstDetail; //所有的附件list
+                var _idx = -1; //当前删除的附件索引
+                for (var i = 0; i < _allEnclosure.length; i++) {
+                    var _tmpEnclosureId = _allEnclosure[i].fileId;
+                    if (enclosureId == _tmpEnclosureId) {
+                        _idx = i;
+                        break;
+                    }
+                }
+                // console.log(_idx)
+                if (_allEnclosure.length && _idx > -1) {
+                    ts.certificateDetailObj.certinstDetail.splice(_idx, 1);
+                }
+            },
+            // 证书详情的取消操作
+            cancelCertificateDetail: function () {
+                this.isServiceMatterPandelState = 1;
+
+            },
+            // 证书详情的保存操作
+            saveCertificateDetail: function () {
+                var ts = this,
+                    _canSaveFlag = true,
+                    _saveData = {};
+                ts.certificateDetailObj.majorId = ts.getTreeCheck(); //获取所属专业树当中选中的专业id
+
+                _saveData = {
+                    certId: '', //证书类型
+                    certinstCode: '', //证书编码
+                    certinstName: '', //证书名称
+                    managementScope: '', //业务范围
+                    termStart: '', //有效期限-start
+                    termEnd: '', //有效期限-end
+                    majorId: [], //所属专业
+                    qualLevelId: '', //等级
+                    // bscAttFileAndDirs: [], //附件列表
+                };
+
+                for (var k in _saveData) {
+                    _saveData[k] = ts.certificateDetailObj[k];
+                }
+
+                if (_saveData.certId === null || !_saveData.certId.length) {
+                    return ts.$message({
+                        message: '请选择证书类型！'
+                    })
+                }
+                if (_saveData.certinstCode === null || !_saveData.certinstCode.length) {
+                    return ts.$message({
+                        message: '请填写证件编码！'
+                    })
+                }
+                if (_saveData.certinstName === null || !_saveData.certinstName.length) {
+                    return ts.$message({
+                        message: '请填写证件名称！'
+                    })
+                }
+                if (_saveData.managementScope === null || !_saveData.managementScope.length) {
+                    return ts.$message({
+                        message: '请填写业务范围！'
+                    })
+                }
+                // if (_saveData.termStart === null || !_saveData.termStart.length || _saveData.termEnd ===
+                //     null || !_saveData.termEnd.length) {
+                //     return ts.$message({
+                //         message: '请选择有效期限！'
+                //     })
+                // } else {
+                //     if (_saveData.termEnd < _saveData.termStart) {
+                //         return ts.$message({
+                //             message: '有效期限起始时间不能大于结束时间！'
+                //         })
+                //     }
+                // }
+                if (_saveData.majorId === null || !_saveData.majorId.length) {
+                    return ts.$message({
+                        message: '请选择所属专业！'
+                    })
+                }
+                if (_saveData.qualLevelId !== null && !_saveData.qualLevelId.length) {
+                    return ts.$message({
+                        message: '请选择等级！'
+                    })
+                }
+                // if (_saveData.bscAttFileAndDirs !== null && !_saveData.bscAttFileAndDirs.length && ts
+                //     .certificateEditFlag) {
+                //     return ts.$message({
+                //         message: '请选择上传文件！'
+                //     })
+                // }
+
+                // 新增证书并且没有打算选择上传文件
+                if (!ts.enclosureFileListArr.length && !ts.certificateEditFlag) {
+                    return ts.$message({
+                        message: '请上传文件附件！'
+                    })
+                }
+                // 校验文件是否能上传
+                if (ts.enclosureFileListArr.length) {
+                    var _fileCanUpload = true;
+                    for (var i = 0; i < ts.enclosureFileListArr.length; i++) {
+                        if (!ts.enclosureBeforeUpload(ts.enclosureFileListArr[i])) {
+                            _fileCanUpload = false;
+                            break;
+                        }
+                    }
+                    if (!_fileCanUpload) return ts.$message({
+                        message: '请上传非.exe,.sh,.bat,.com,.dll文件'
+                    });
+                }
+                // 如果是证书实例编辑,带上当前编辑证书的certinstId
+                if (ts.certificateEditFlag) {
+                    _saveData.certinstId = ts.certificateDetailObj.certinstId;
+                }
+                // 带上unitId
+                _saveData.unitInfoId = JSON.parse(localStorage.getItem('loginInfo')).unitId;
+
+                _saveData.termStart = new Date(_saveData.termStart);
+                _saveData.termEnd = new Date(_saveData.termEnd);
+
+                // return;
+                var formData = new FormData();
+                for (var k in _saveData) {
+                    formData.append(k, _saveData[k])
+                }
+
+                ts.enclosureFileListArr.forEach(function (item) {
+                    formData.append('file', item)
+                })
+                // return;
+
+                ts.mloading = true;
+                $.ajax({
+                    url: ctx + 'aea/supermarket/serviceMatter/saveCertificate',
+                    type: 'post',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    // mimeType: "multipart/form-data",
+                    success: function (res) {
+                        ts.mloading = false;
+                        if (res.success) {
+                            // 保存成功后将当前保存的证书实例添加到事项详情的证书列表中，若为编辑保存，则替换
+                            if (!ts.certificateEditFlag) {
+                                ts.serviceMatterDetailObj.certinstBVos.push(res.content)
+                            } else {
+                                ts.serviceMatterDetailObj.certinstBVos.splice(ts
+                                    .curEditCertificateIndex, 1, res.content)
+                            }
+
+                            // 保存成功后返回事项详情
+                            ts.cancelCertificateDetail();
+                            // 保存成功后将需要上传的附件文件列表清空
+                            ts.enclosureFileListArr = [];
+                            ts.$message({
+                                message: '保存成功',
+                                type: 'success'
+                            });
+                        } else {
+                            ts.$message({
+                                message: '保存失败',
+                                type: 'error'
+                            });
+                        }
+                    },
+                    error: function (msg) {
+                        ts.mloading = false;
+                        ts.$message({
+                            message: '保存失败',
+                            type: 'error'
+                        });
+                    },
+                })
+            },
+
+
+            // 从业人员相关
+            // 获取所有从业人员-并弹框展示
+            fetchJobPeopleList: function () {
+                var ts = this,
+                    _getData = {};
+                // if (!ts.serviceMatterDetailObj.serviceId) {
+                //     ts.backToTop();
+                //     return ts.$message({
+                //         message: '请先选择中介服务'
+                //     })
+                // }
+                ts.jobPeopleList = []; //初始的时候所有从业人员列表先置空
+                _getData.serviceId = ts.serviceMatterDetailObj.serviceId; //这个需要详情里面的中介服务下拉框的serviceId
+                _getData.unitInfoId = JSON.parse(localStorage.getItem('loginInfo')).unitId;
+                // ts.isShowJobPeopleDialog = true;
+                ts.mloading = true;
+                request('', {
+                    url: ctx + 'aea/supermarket/serviceMatter/getLinkManList',
+                    type: 'get',
+                    data: _getData,
+                }, function (res) {
+                    ts.mloading = false;
+                    if (res.success) {
+                        ts.jobPeopleList = res.content;
+                    } else {
+                        ts.$message({
+                            message: '从业人员加载失败',
+                            type: 'error'
+                        });
+                    }
+                }, function (msg) {
+                    ts.mloading = false;
+                    ts.$message({
+                        message: '加载失败',
+                        type: 'error'
+                    });
+                });
+            },
+            // 从所有从业人员列表当中选中
+            jobPeoplesListSelect: function (list) {
+                var ts = this;
+                ts.jobPeopleSelects = list;
+            },
+            // 所有从业人员弹框确定
+            jobPeopleDialogSure: function () {
+                var ts = this;
+                ts.isShowJobPeopleDialog = false;
+                if (!ts.jobPeopleSelects.length) {
+                    return ts.$message({
+                        message: '您尚未选从业人员'
+                    })
+                }
+                // console.log(ts.jobPeopleSelects)
+
+                var _noRepeatAllLinkmanList = []; //当前所有的从业人员列表(去重后的list)
+                var _curAllLinkmanList = ts.serviceMatterDetailObj.linkmanInfo.concat(ts
+                    .jobPeopleSelects); //当前所有的从业人员列表
+                var obj = {};
+                for (var i = 0; i < _curAllLinkmanList.length; i++) {
+                    if (!obj[_curAllLinkmanList[i].linkmanInfoId]) {
+                        _noRepeatAllLinkmanList.push(_curAllLinkmanList[i]);
+                        obj[_curAllLinkmanList[i].linkmanInfoId] = true;
+                    }
+                }
+                ts.serviceMatterDetailObj.linkmanInfo = _noRepeatAllLinkmanList;
+                ts.$refs.jobPeopleRef.clearSelection(); //清除掉所有从业人员弹框中已选的
+            },
+            // 删除掉已选的从业人员
+            jobPeopleDelOne: function (manObj) {
+                var ts = this;
+                confirmMsg('', '您确定删除当前人员吗？', function () {
+                    var _curDelLinkmanInfoId = manObj.linkmanInfoId;
+                    var _allLinkmanInfo = ts.serviceMatterDetailObj.linkmanInfo;
+                    var _delIdx = -1;
+                    for (var i = 0; i < _allLinkmanInfo.length; i++) {
+                        if (_allLinkmanInfo[i].linkmanInfoId == _curDelLinkmanInfoId) {
+                            _delIdx = i;
+                            break;
+                        }
+                    }
+                    if (_allLinkmanInfo.length && _delIdx > -1) {
+                        ts.serviceMatterDetailObj.linkmanInfo.splice(_delIdx, 1);
+                    }
+                    // console.log(ts.serviceMatterDetailObj.linkmanInfo)
+                })
+            },
+
+
+
+            // 中介服务事项相关
+            // 中介服务下拉change-关联中介服务事项列表
+            agentServiceChangeForInvolve: function () {
+                var ts = this;
+                ts.involveMatterCheckData.pageNum = 1;
+                ts.fetchInvolveMatterList();
+                // 获取从业人员
+                ts.fetchJobPeopleList();
+            },
+            // 获取中介服务事项列表
+            fetchInvolveMatterList: function () {
+                var ts = this;
+                ts.involveMatterCheckData.serviceId = ts.serviceMatterDetailObj.serviceId;
+                ts.mloading = true;
+                request('', {
+                    url: ctx + 'aea/supermarket/serviceMatter/getServiceMatter',
+                    type: 'get',
+                    data: ts.involveMatterCheckData,
+                }, function (res) {
+                    ts.mloading = false;
+                    if (res.success) {
+                        ts.involveMatterList = res.content.rows;
+                        ts.involveMatterTotal = res.content.total;
+                    } else {
+                        ts.$message({
+                            message: '中介服务事项列表加载失败',
+                            type: 'error'
+                        });
+                    }
+                }, function (msg) {
+                    ts.mloading = false;
+                    ts.$message({
+                        message: '加载失败',
+                        type: 'error'
+                    });
+                });
+            },
+            // 中介服务事项列表-当前页面大小变化
+            involveMatterListSizeChange: function (val) {
+                var ts = this;
+                ts.involveMatterCheckData.pageSize = val;
+            },
+            // 中介服务事项列表-当前页面page变化
+            involveMatterListPageChange: function (val) {
+                var ts = this;
+                ts.involveMatterCheckData.pageNum = val;
+            },
+
+            // 证照库相关
+            // 显示证照库dialog
+            showLicenceStore: function(){
+                this.isShowLicenceStoreDialog = true;
+                this.fetchLicenceStoreList();
+            },
+            // 获取证照库数据list
+            fetchLicenceStoreList: function(){
+                var ts = this;
+                ts.licenceStoreCheckData.typeId = JSON.parse(localStorage.getItem('loginInfo')).unitId;
+                ts.mloading = true;
+                request('', {
+                    url: ctx + 'supermarket/certinst/listCertinstLibrary',
+                    type: 'get',
+                    data: ts.licenceStoreCheckData,
+                }, function (res) {
+                    ts.mloading = false;
+                    if (res.success) {
+                        ts.licenceStoreList = res.content.rows;
+                        ts.licenceStoreTotal = res.content.total;
+                    } else {
+                        ts.$message({
+                            message: res.message,
+                            type: 'error'
+                        });
+                    }
+                }, function (msg) {
+                    ts.mloading = false;
+                    ts.$message({
+                        message: '加载失败',
+                        type: 'error'
+                    });
+                });
+            },
+            // 证照库换页
+            licenceStoreListPageChange: function(val){
+                this.licenceStoreCheckData.pageNum = val;
+                this.fetchLicenceStoreList();
+            },
+            // 证照库页大小
+            licenceStoreListSizeChange: function(val){
+                this.licenceStoreCheckData.pageSize = val;
+                this.fetchLicenceStoreList();
+            },
+            // 证照库列表选中
+            licenceStoreSelection: function(val){
+                this.licenceStoreSelects = val;
+            },
+            // 证照库dialog确定
+            licenceStoreDialogSuce: function(){  
+                var ts = this;           
+                var _noRepeatList = []; //(去重后的list)
+                var _curAllList = ts.serviceMatterDetailObj.certinstBVos.concat(ts
+                    .licenceStoreSelects); //当前所有的从业人员列表
+                var obj = {};
+                for (var i = 0; i < _curAllList.length; i++) {
+                    if (!obj[_curAllList[i].certinstId]) {
+                        _noRepeatList.push(_curAllList[i]);
+                        obj[_curAllList[i].certinstId] = true;
+                    }
+                }
+                ts.serviceMatterDetailObj.certinstBVos = _noRepeatList;
+                ts.$refs.licenceRef.clearSelection(); //清除掉证照库弹框中已选的
+                ts.isShowLicenceStoreDialog = false;
+            },
+            // 删除证照库一条证照
+            licenceStoreDelOne: function(row){
+                var ts = this,
+                    _delData = {};
+                confirmMsg('', '您确定删除当前证书吗？', function () {  
+                    _delData.certinstId = row.certinstId;
+                    ts.mloading = true;
+                    request('', {
+                        url: ctx + 'supermarket/certinst/deleteCertinst',
+                        type: 'get',
+                        data: _delData
+                    }, function (res) {
+                        ts.mloading = false;
+                        if (res.success) {
+                            ts.fetchLicenceStoreList();
+                            ts.$message({
+                                message: '删除成功！',
+                                type: 'success'
+                            });
+                        } else {
+                            ts.$message({
+                                message: '删除失败',
+                                type: 'error'
+                            });
+                        }
+                    }, function (msg) {
+                        ts.mloading = false;
+                        ts.$message({
+                            message: '删除失败',
+                            type: 'error'
+                        });
+                    });
+                });  
+            },
+        },
+        mounted: function () {
+
+        },
+        created: function () {
+            this.fetchBaseDropList();
+            this.fetchServiceMatterManageList();
+        },
+        filters: {
+            // 列表审核状态展示
+            auditFlagCn: function (flag) {
+                // var _allFlags = ['未审核', '审核中', '审核通过', '审核失败', '已发布', '已完成'];
+                var _allFlags = ['审核失败', '已审核', '审核中'];
+                return _allFlags[parseInt(flag)];
+            },
+        },
+
+    });
+</script>
+<style>
+    .demo-table-expand {
+        font-size: 0;
+    }
+
+    .demo-table-expand label {
+        width: 190px!important;
+        color: #99a9bf!important;
+    }
+
+    .demo-table-expand .el-form-item {
+        margin-right: 0;
+        margin-bottom: 0;
+        width: 100%;
+    }
+</style>

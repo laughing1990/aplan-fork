@@ -1,0 +1,254 @@
+/*
+* @Author: ZL
+* @Date:   2019/09/16
+* @Last Modified by:   ZL
+* @Last Modified time: $ $
+*/
+[v-cloak] {
+    display: none;
+}
+
+#index {
+    height: 100%;
+}
+
+.add-search {
+    padding: 10px 0;
+}
+.add-search .btn {
+    margin-right: 5px;
+}
+/*el-search样式重置*/
+.add-search .el-input__inner {
+    height: 34px;
+    line-height: 34px;
+}
+.add-search .search-btn {
+    margin-left: 5px;
+}
+.add-search .el-input__icon {
+    line-height: 34px;
+}
+
+.search-key {
+    position: relative;
+}
+.clear-search {
+    position: absolute;
+    right: 90px;
+    top: 8px;
+    color: #afb2c1;
+    z-index: 100;
+}
+
+.edit-row .el-form-item__label {
+    width: 150px;
+    text-align: right;
+}
+
+.table-left,
+.table-right {
+    width: 50%;
+    height: 100%;
+}
+
+/*.table-left {*/
+/*border-right: 1px solid #EBEDF2;*/
+/*}*/
+.el-form-item {
+    margin-bottom: 10px;
+}
+
+.search-input .el-input__inner {
+    width: 280px;
+    height: 34px;
+    line-height: 34px;
+    padding-left: 10px;
+}
+
+.search-input .el-input__icon {
+    line-height: 34px;
+}
+
+.table-head-text {
+    font-size: 16px;
+    padding: 15px 20px;
+    margin: 0;
+    border-bottom: 1px solid #EBEDF2;
+    color: #575962;
+}
+
+.table-left .table-head-text {
+    border-right: 1px solid #EBEDF2;
+}
+
+.table-content {
+    padding: 0 20px;
+    border-right: 1px solid #EBEDF2;
+}
+
+.table-left .cell i {
+    /*color: #FF9C00;*/
+}
+
+.el-form--inline .el-form-item {
+    display: inline-block;
+    margin-right: 10px;
+    vertical-align: top;
+    width: 48%;
+}
+
+.el-form--inline .el-form-item__content {
+    display: inline-block;
+    vertical-align: top;
+    width: 60%;
+}
+
+/** 单位，联系人弹出框样式 **/
+.sel-apartment {
+}
+
+.sel-apartment.show {
+    display: block;
+}
+
+.sel-apartment .tree-left {
+    position: inherit;
+    float: inherit;
+    padding: 0;
+    width: 50%;
+}
+
+.sel-apartment .el-dialog__body {
+    padding: 0;
+    color: #575962;
+}
+
+.sel-apartment .el-dialog__body:after {
+    display: block;
+    clear: both;
+    content: "";
+}
+
+.sel-apartment .tree-left .el-tree {
+    padding: 0 10px;
+}
+
+.sel-apartment .sel-title {
+    font-size: 16px;
+    background: #E7EEF3;
+    padding: 5px 10px;
+}
+
+.sel-apartment .search-apartment {
+    width: 90%;
+    margin: 10px 5%;
+}
+
+.selected-apartm {
+    margin-left: 50%;
+}
+
+.selected-list {
+    margin-top: 10px;
+}
+
+.selected-item {
+    padding: 10px;
+    margin-left: 10px;
+}
+
+.selected-item i {
+    display: none;
+}
+
+.selected-item:hover {
+    background: #EBEDF2;
+}
+
+.selected-item:hover i {
+    display: inherit;
+    cursor: pointer;
+}
+
+.selected-apartm .m-scrollable {
+    margin-right: 0;
+}
+
+.el-form-item.is-success .el-input__inner, .el-form-item.is-success .el-input__inner:focus, .el-form-item.is-success .el-textarea__inner, .el-form-item.is-success .el-textarea__inner:focus {
+    border-color: #dcdfe6;
+}
+
+.el-form-item__error {
+    padding-top: 2px;
+}
+
+/* el-dialog 设置组织管理员弹窗 start*/
+.set-admin .search-apartment {
+    width: 95%;
+    margin: 10px;
+}
+
+/*button重置*/
+.el-button--medium {
+    padding: 9px 14px;
+}
+
+/*.el-dialog__body {*/
+/*padding: 15px 15px 0 15px;*/
+/*}*/
+
+/*el-dialog 样式*/
+.el-dialog__header {
+    border-bottom: 1px solid #E0E3E9;
+}
+.el-dialog__body {
+    padding: 0 20px;
+}
+.el-dialog .el-form {
+    padding-top: 20px;
+}
+.edit-row .el-form-item__label {
+    width: 30%;
+    text-align: right;
+}
+.el-form--inline .el-form-item {
+    margin-right: 0;
+    width: 99%;
+}
+.el-form--inline .el-form-item__content {
+    width: 70%;
+}
+.el-form-item__content .el-select {
+    width: 100%;
+}
+.ops-memo .el-form-item__label {
+
+    width: 15%;
+    float: left;
+}
+.ops-memo .el-form-item__content {
+
+    display: block;
+    width: 100%;
+}
+
+.ops-memo2 .el-form-item__label {
+
+    width: 15%;
+    float: left;
+}
+
+.ops-memo2 .el-form-item__content {
+
+    width: 85%;
+}
+
+.ops-memo .el-textarea {
+
+    position: relative;
+    display: inline-block;
+    width: 85%;
+    vertical-align: bottom;
+    font-size: 14px;
+}

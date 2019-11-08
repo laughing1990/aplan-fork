@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<HTML lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<HEAD>
+    <th:block th:include="common/common :: commonheader('在线预览pdf文件')"/>
+    <!--css-->
+
+</HEAD>
+<BODY>
+<div id="demo">
+    <iframe id="displayPdfIframe" width="100%" height="800" :src="pdfUrl">
+    </iframe>
+</div>
+</BODY>
+<th:block th:include="common/common :: commonfooter"/>
+<script th:src="@{/preview/pdfjs/build/pdf.js}"></script>
+<!--js-->
+<script type="text/javascript">
+    var ctx = '[[@{/}]]';
+    // var ctx = 'http://192.168.30.93:8083/aplanmis-front'
+
+    var detailId = '[[${detailId}]]';
+    var fileUrl = ctx + 'previewPdf/loadPdf?detailId=' + detailId;
+    var vm = new Vue({
+        el: '#demo',
+        data: function () {
+            return {
+                pdfUrl: ctx + 'preview/pdfjs/web/viewer.html?file=' + encodeURIComponent(fileUrl)
+            }
+        },
+        mounted: function () {
+            var _that = this;
+        },
+        methods: {}
+    });
+</script>
+</HTML>

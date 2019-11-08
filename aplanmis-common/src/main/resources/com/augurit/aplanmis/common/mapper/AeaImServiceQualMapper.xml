@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by tiantian    2019-06-10 17:09:13 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaImServiceQualMapper">
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns">
+    SERVICE_QUAL_ID  serviceQualId,
+    SERVICE_ID  serviceId,
+    QUAL_ID  qualId,
+    IS_DELETE  isDelete,
+    CREATER  creater,
+    CREATE_TIME  createTime
+    </sql>
+
+    <sql id="allColumnsAlias">
+        ${alias}.SERVICE_QUAL_ID  serviceQualId,
+        ${alias}.SERVICE_ID  serviceId,
+        ${alias}.QUAL_ID  qualId,
+        ${alias}.IS_DELETE  isDelete,
+        ${alias}.CREATER  creater,
+        ${alias}.CREATE_TIME  createTime
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaImServiceQualById" resultType="AeaImServiceQual">
+        select
+        <include refid="allColumns"/>
+        from AEA_IM_SERVICE_QUAL
+        where SERVICE_QUAL_ID = #{id}
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaImServiceQual" resultType="AeaImServiceQual">
+        select
+        <include refid="allColumnsAlias">
+            <property name="alias" value="aisq"></property>
+        </include>
+        ,
+        aiq.QUAL_NAME qualName
+        from AEA_IM_SERVICE_QUAL aisq
+        left join AEA_IM_QUAL aiq ON aisq.QUAL_ID = aiq.QUAL_ID
+        <where>
+            <if test="serviceQualId != null">
+                AND aisq.SERVICE_QUAL_ID = #{serviceQualId}
+            </if>
+            <if test="serviceId != null">
+                AND aisq.SERVICE_ID = #{serviceId}
+            </if>
+            <if test="qualId != null">
+                AND aisq.QUAL_ID = #{qualId}
+            </if>
+            <if test="isDelete != null">
+                AND aisq.IS_DELETE = #{isDelete}
+            </if>
+            <if test="creater != null">
+                AND aisq.CREATER = #{creater}
+            </if>
+            <if test="createTime != null">
+                AND aisq.CREATE_TIME = #{createTime}
+            </if>
+            <if test="serviceIds != null and serviceIds.length > 0 ">
+                and aisq.SERVICE_ID IN
+                <foreach collection="serviceIds" item="id" open="(" close=")" separator=",">
+                    #{id}
+                </foreach>
+            </if>
+        </where>
+    </select>
+    <!--4 根据条件查询实体list,返回分页对象 -->
+
+    <select id="getAeaImServiceQualListByServiceId" resultType="AeaImServiceQual">
+        SELECT
+        <include refid="allColumnsAlias">
+            <property name="alias" value="aisq"></property>
+        </include>,
+        aiq.qual_name qualName
+        FROM
+        AEA_IM_SERVICE_QUAL aisq
+        LEFT JOIN aea_im_qual aiq ON aiq.qual_id = aisq.qual_id
+        WHERE
+        aisq.SERVICE_ID =  #{serviceId}
+    </select>
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaImServiceQual" parameterType="AeaImServiceQual">
+    insert into AEA_IM_SERVICE_QUAL (
+SERVICE_QUAL_ID  ,SERVICE_ID  ,QUAL_ID  ,IS_DELETE  ,CREATER  ,CREATE_TIME
+    )  values  (
+#{serviceQualId},#{serviceId},#{qualId},#{isDelete},#{creater},  #{createTime}
+    )
+</insert>
+    <!--6 修改实体对象 -->
+    <update id="updateAeaImServiceQual" parameterType="AeaImServiceQual">
+        update AEA_IM_SERVICE_QUAL
+        <set>
+            <if test="serviceQualId != null">
+                SERVICE_QUAL_ID = #{serviceQualId},
+            </if>
+            <if test="serviceId != null">
+                SERVICE_ID = #{serviceId},
+            </if>
+            <if test="qualId != null">
+                QUAL_ID = #{qualId},
+            </if>
+            <if test="isDelete != null">
+                IS_DELETE = #{isDelete},
+            </if>
+            <if test="creater != null">
+                CREATER = #{creater},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime},
+            </if>
+        </set>
+        where SERVICE_QUAL_ID = #{serviceQualId}
+    </update>
+    <!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaImServiceQual">
+        delete from   AEA_IM_SERVICE_QUAL
+        where
+    SERVICE_QUAL_ID = #{id}
+    </delete>
+    <!--8 删除实体对象列表,根据主键ID列表 -->
+    <!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaImServiceQual" id="AeaImServiceQualMap">
+        <id property="serviceQualId" column="SERVICE_QUAL_ID"/>
+        <result property="serviceId" column="SERVICE_ID"/>
+        <result property="qualId" column="QUAL_ID"/>
+        <result property="isDelete" column="IS_DELETE"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+    </resultMap>
+    <!--10 根据服务Id和资质Id删除对应关联关系 -->
+    <delete id="deleteServiceQualByServiceId">
+        delete from   AEA_IM_SERVICE_QUAL
+        where
+            SERVICE_ID = #{serviceId}
+            AND QUAL_ID = #{qualId}
+    </delete>
+</mapper>

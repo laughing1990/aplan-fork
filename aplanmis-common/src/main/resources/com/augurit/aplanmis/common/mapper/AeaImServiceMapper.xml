@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaImServiceMapper">
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns">
+    SERVICE_ID  serviceId,
+    SERVICE_CODE  serviceCode,
+    SERVICE_NAME  serviceName,
+    IS_DELETE  isDelete,
+    IS_ACTIVE  isActive,
+    CREATER  creater,
+    CREATE_TIME  createTime,
+    MEMO  memo,
+    PARENT_ID  parentId,
+    SERVICE_SEQ  serviceSeq,
+    IMG_URL imgUrl,
+    PURCHASE_IMG_URL  purchaseImgUrl,
+    ROOT_ORG_ID rootOrgId
+    </sql>
+
+    <sql id="allColumnsAlias">
+        ${alias}.SERVICE_ID  serviceId,
+        ${alias}.SERVICE_CODE  serviceCode,
+        ${alias}.SERVICE_NAME  serviceName,
+        ${alias}.IS_DELETE  isDelete,
+        ${alias}.IS_ACTIVE  isActive,
+        ${alias}.CREATER  creater,
+        ${alias}.CREATE_TIME  createTime,
+        ${alias}.MEMO  memo,
+        ${alias}.PARENT_ID  parentId,
+        ${alias}.SERVICE_SEQ  serviceSeq,
+        ${alias}.IMG_URL imgUrl,
+        ${alias}.PURCHASE_IMG_URL  purchaseImgUrl,
+        ${alias}.ROOT_ORG_ID  rootOrgId
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaImServiceById" resultType="AeaImService">
+        select
+        <include refid="allColumns"/>
+        from AEA_IM_SERVICE
+        where SERVICE_ID = #{id}
+        and IS_DELETE = '0'
+    </select>
+
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaImService" resultType="AeaImService">
+        select
+        <include refid="allColumns"/>
+        from AEA_IM_SERVICE
+        <where>
+            <if test="keyword!=null and keyword!='' ">
+                and (
+                SERVICE_CODE like concat('%',concat(#{keyword},'%')) or
+                SERVICE_NAME like concat('%',concat(#{keyword},'%')) or
+                MEMO like concat('%',concat(#{keyword},'%'))
+                )
+            </if>
+            <if test="serviceId != null">
+                AND SERVICE_ID = #{serviceId}
+            </if>
+            <if test="serviceCode != null">
+                AND SERVICE_CODE = #{serviceCode}
+            </if>
+            <if test="serviceName != null">
+                AND SERVICE_NAME = #{serviceName}
+            </if>
+            <if test="isActive != null">
+                AND IS_ACTIVE = #{isActive}
+            </if>
+            <if test="creater != null">
+                AND CREATER = #{creater}
+            </if>
+            <if test="createTime != null">
+                AND CREATE_TIME = #{createTime}
+            </if>
+            <if test="memo != null">
+                AND MEMO = #{memo}
+            </if>
+            <if test="parentId != null">
+                AND PARENT_ID = #{parentId}
+            </if>
+            <if test="serviceSeq != null">
+                AND SERVICE_SEQ = #{serviceSeq}
+            </if>
+            <if test="rootOrgId != null">
+                AND ROOT_ORG_ID = #{rootOrgId}
+            </if>
+            AND IS_DELETE = '0'
+        </where>
+        ORDER BY CREATE_TIME DESC
+    </select>
+
+    <select id="checkUniqueServiceCode" resultType="java.lang.Integer">
+        select count(*) from AEA_IM_SERVICE
+        <where>
+            <if test="serviceId != null and serviceId!='' ">
+                and SERVICE_ID != #{serviceId}
+            </if>
+            and SERVICE_CODE = #{serviceCode}
+        </where>
+    </select>
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaImService" parameterType="AeaImService">
+    insert into AEA_IM_SERVICE (
+SERVICE_ID  ,SERVICE_CODE  ,SERVICE_NAME  ,IS_DELETE  ,IS_ACTIVE  ,CREATER  ,CREATE_TIME  ,MEMO  ,PARENT_ID  ,SERVICE_SEQ,IMG_URL,  PURCHASE_IMG_URL,ROOT_ORG_ID
+    )  values  (
+#{serviceId},#{serviceCode},#{serviceName},#{isDelete},#{isActive},#{creater},#{createTime},#{memo},#{parentId},  #{serviceSeq},#{imgUrl},#{purchaseImgUrl},#{rootOrgId}
+    )
+</insert>
+    <!--6 修改实体对象 -->
+    <update id="updateAeaImService" parameterType="AeaImService">
+        update AEA_IM_SERVICE
+        <set>
+            <if test="serviceId != null">
+                SERVICE_ID = #{serviceId},
+            </if>
+            <if test="serviceCode != null">
+                SERVICE_CODE = #{serviceCode},
+            </if>
+            <if test="serviceName != null">
+                SERVICE_NAME = #{serviceName},
+            </if>
+            <if test="isDelete != null">
+                IS_DELETE = #{isDelete},
+            </if>
+            <if test="isActive != null">
+                IS_ACTIVE = #{isActive},
+            </if>
+            <if test="creater != null">
+                CREATER = #{creater},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime},
+            </if>
+            <if test="memo != null">
+                MEMO = #{memo},
+            </if>
+            <if test="parentId != null">
+                PARENT_ID = #{parentId},
+            </if>
+            <if test="serviceSeq != null">
+                SERVICE_SEQ = #{serviceSeq},
+            </if>
+            <if test="imgUrl != null">
+                IMG_URL = #{imgUrl},
+            </if>
+            <if test="purchaseImgUrl != null">
+                PURCHASE_IMG_URL = #{purchaseImgUrl},
+            </if>
+            <if test="rootOrgId != null">
+                ROOT_ORG_ID = #{rootOrgId},
+            </if>
+        </set>
+        where SERVICE_ID = #{serviceId}
+    </update>
+    <!--7 逻辑删除实体对象,根据主键ID -->
+    <update id="deleteAeaImService">
+        UPDATE AEA_IM_SERVICE  SET IS_DELETE = '1' WHERE SERVICE_ID = #{id}
+    </update>
+
+    <update id="deleteAeaImServiceQual">
+        DELETE FROM AEA_IM_SERVICE_QUAL WHERE SERVICE_ID = #{id}
+    </update>
+
+    <update id="changIsActiveState" parameterType="java.lang.String">
+        update AEA_IM_SERVICE set IS_ACTIVE = case IS_ACTIVE when '0' then '1' else '0' end
+        where SERVICE_ID = #{id}
+    </update>
+    <!--8 删除实体对象列表,根据主键ID列表 -->
+    <!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaImService" id="AeaImServiceMap">
+        <id property="serviceId" column="SERVICE_ID"/>
+        <result property="serviceCode" column="SERVICE_CODE"/>
+        <result property="serviceName" column="SERVICE_NAME"/>
+        <result property="isDelete" column="IS_DELETE"/>
+        <result property="isActive" column="IS_ACTIVE"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="memo" column="MEMO"/>
+        <result property="parentId" column="PARENT_ID"/>
+        <result property="serviceSeq" column="SERVICE_SEQ"/>
+        <result property="imgUrl" column="IMG_URL"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+    </resultMap>
+
+
+    <select id="listAeaImServiceVoByItemVerId" resultType="com.augurit.aplanmis.common.vo.AeaImServiceVo">
+        select
+        ais.SERVICE_ID serviceId,
+        ais.SERVICE_CODE serviceCode,
+        ais.SERVICE_NAME serviceName,
+        aisi.SERVICE_ITEM_ID serviceItemId
+        from AEA_IM_SERVICE ais left join AEA_IM_SERVICE_ITEM aisi on ais.SERVICE_ID = aisi.SERVICE_ID
+        <where>
+            aisi.ITEM_VER_ID = #{itemVerId}
+            and ais.IS_DELETE != '1'
+            and ais.IS_ACTIVE = '1'
+            and aisi.IS_DELETE != '1'
+        </where>
+    </select>
+
+    <select id="getAeaImServiceByServiceItemId" resultType="AeaImService">
+        select
+        <include refid="allColumnsAlias">
+            <property name="alias" value="ais"></property>
+        </include>
+        from AEA_IM_SERVICE ais left join AEA_IM_SERVICE_ITEM aisi
+        on ais.SERVICE_ID = aisi.SERVICE_ID
+        where aisi.SERVICE_ITEM_ID = #{serviceItemId}
+        and ais.IS_DELETE = '0'
+    </select>
+
+    <select id="listAeaImServiceNoPageByItemVerId" resultType="AeaImService">
+        select
+        <include refid="allColumnsAlias">
+            <property name="alias" value="ais"></property>
+        </include>
+        ,aisi.SERVICE_ITEM_ID serviceItemId
+        from AEA_IM_SERVICE_ITEM aisi,AEA_IM_SERVICE ais
+        where aisi.SERVICE_ID = ais.SERVICE_ID
+        and aisi.ITEM_VER_ID = #{itemVerId}
+        and aisi.IS_DELETE = '0'
+        and ais.IS_DELETE = '0'
+    </select>
+
+
+    <select id="listAeaImServiceNoPageByProjPurchaseId" resultType="AeaImService">
+        select
+        <include refid="allColumnsAlias">
+            <property name="alias" value="ais"></property>
+        </include>
+        from AEA_IM_SERVICE_ITEM aisi,AEA_IM_SERVICE ais,AEA_IM_PROJ_PURCHASE aipp
+        where aisi.SERVICE_ID = ais.SERVICE_ID
+        where aipp.SERVICE_ITEM_ID = aisi.SERVICE_ITEM_ID
+        and aipp.PROJ_PURCHASE_ID = #{projPurchaseId}
+        and aisi.IS_DELETE = '0'
+        and ais.IS_DELETE = '0'
+    </select>
+
+    <select id="getAeaImServiceAllList" resultType="AeaImService" >
+        select
+        <include refid="allColumns"/>
+        from  AEA_IM_SERVICE
+    </select>
+
+
+</mapper>

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by jjt    2018-11-19 22:01:58 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaItemGuideQuestionsMapper" >
+
+    <sql id="allColumns" >
+        ID  id,
+        ANSWER  answer,
+        ITEM_VER_ID  itemVerId,
+        ORDERNUM  ordernum,
+        QUESTION  question,
+        ROOT_ORG_ID rootOrgId
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaItemGuideQuestionsById" resultType="AeaItemGuideQuestions" >
+        select
+            <include refid="allColumns"/>
+        from  AEA_ITEM_GUIDE_QUESTIONS
+        where ID = #{id}
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaItemGuideQuestions" resultType="AeaItemGuideQuestions" >
+        select
+           <include refid="allColumns"/>
+        from    AEA_ITEM_GUIDE_QUESTIONS
+        <where>
+            <if test="answer != null and answer!='' " >
+                and    ANSWER = #{answer}
+            </if>
+            <if test="itemVerId != null and itemVerId!='' " >
+                and    ITEM_VER_ID = #{itemVerId}
+            </if>
+            <if test="ordernum != null and ordernum!='' " >
+                and    ORDERNUM = #{ordernum}
+            </if>
+            <if test="question != null and question!='' " >
+                and    QUESTION = #{question}
+            </if>
+            <if test="rootOrgId!=null and rootOrgId!=''">
+                and    ROOT_ORG_ID = #{rootOrgId}
+            </if>
+            <if test="keyword!=null and keyword!=''">
+                and (
+                    ANSWER   like concat('%',concat(#{keyword},'%')) or
+                    QUESTION like concat('%',concat(#{keyword},'%'))
+                )
+            </if>
+        </where>
+        order by ORDERNUM desc
+    </select>
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaItemGuideQuestions" parameterType="AeaItemGuideQuestions" >
+        insert into AEA_ITEM_GUIDE_QUESTIONS(
+            ID,
+            ANSWER,
+            ITEM_VER_ID,
+            ORDERNUM,
+            QUESTION,
+            ROOT_ORG_ID
+        )
+        values
+        (
+            #{id},
+            #{answer},
+            #{itemVerId},
+            #{ordernum},
+            #{question},
+            #{rootOrgId}
+        )
+    </insert>
+
+    <!--6 修改实体对象 -->
+    <update id="updateAeaItemGuideQuestions" parameterType="AeaItemGuideQuestions" >
+        update AEA_ITEM_GUIDE_QUESTIONS
+        <set >
+            <if test="id != null" >
+                ID = #{id},
+            </if>
+            <if test="answer != null" >
+                ANSWER = #{answer},
+            </if>
+            <if test="itemVerId != null" >
+                ITEM_VER_ID = #{itemVerId},
+            </if>
+            <if test="ordernum != null" >
+                ORDERNUM = #{ordernum},
+            </if>
+            <if test="question != null" >
+                QUESTION = #{question},
+            </if>
+            <if test="rootOrgId!=null">
+                ROOT_ORG_ID = #{rootOrgId},
+            </if>
+        </set>
+        where ID = #{id}
+    </update>
+
+    <delete id="deleteAeaItemGuideQuestions">
+        delete from  AEA_ITEM_GUIDE_QUESTIONS  where ID = #{id}
+    </delete>
+
+    <delete id="batchDeleteGuideQuestionsByItemVerId">
+        delete from  AEA_ITEM_GUIDE_QUESTIONS  where ITEM_VER_ID = #{itemVerId} and  ROOT_ORG_ID = #{rootOrgId}
+    </delete>
+
+    <delete id="batchDelQuestAnswerByIds">
+        delete from  AEA_ITEM_GUIDE_QUESTIONS  where ID in
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="getMaxSortNoByItemVerId" resultType="java.lang.Long">
+        select
+           max(ORDERNUM)
+        from AEA_ITEM_GUIDE_QUESTIONS
+        where item_ver_id = #{itemVerId} and  ROOT_ORG_ID = #{rootOrgId}
+    </select>
+
+</mapper>

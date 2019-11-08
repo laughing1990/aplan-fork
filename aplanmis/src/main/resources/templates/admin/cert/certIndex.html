@@ -1,0 +1,243 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>电子证照库</title>
+  <link rel="stylesheet" href="../../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.css" th:href="@{/agcloud/framework/js-lib/element-2/element.css}" />
+  <link rel="stylesheet" href="../../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css" th:href="@{/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css}">
+  <link rel="stylesheet" href="../../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/ui-private/default/common/css/layout.css" th:href="@{/agcloud/framework/ui-private/default/common/css/layout.css}">
+  <link rel="stylesheet" href="../../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/ui-private/default/blue/css/theme.css" th:href="@{/agcloud/framework/ui-private/default/blue/css/theme.css}">
+  <link rel="stylesheet" href="../../../static/admin/cert/css/certIndex.css" th:href="@{/admin/cert/css/certIndex.css}">
+  <style>
+    .el-button+.el-button {
+        margin-left: 5px;
+      }
+
+      .input {
+        margin-left: 48%;
+      }
+
+      .el-button--medium {
+        padding: 10px 12px;
+        font-size: 14px;
+        border-radius: 4px;
+      }
+  </style>
+  <script>
+    var ctx = '[[@{/}]]';
+    // var ctx = 'http://39.107.139.174:8083/aplanmis-front/';
+    
+      // var ctx = 'http://192.168.30.120:8083/aplanmis-front/';
+      // var ctx = 'http://192.168.32.2:8083/aplanmis-front/';
+    </script>
+</head>
+
+<body>
+  <div class='loading' v-if="pageLoading">
+    <div class="tips">
+      <i class="el-icon-loading"></i>
+      <p>请稍后</p>
+    </div>
+  </div>
+  <div id="app" v-cloak>
+    <div class='certLibrary'>
+      <p class="title">电子证照库</p>
+      <div class="btns">
+        <el-input placeholder="请输入关键字..." v-model="keyword2" class="input-with-select" style='width: 300px;'>
+        </el-input>
+        <el-button size='medium' style="margin-left: 5px" @click="keyword2=''">清空</el-button>
+        <el-button size='medium' @click="unfold">展开</el-button>
+        <el-button size='medium' @click="fold">折叠</el-button>
+      </div>
+      <el-tree :data="regionData" class="filter-tree tree1" default-expand-all :expand-on-click-node="false" highlight-current :style="{height:treeLeftHeight-41+'px',overflow: 'auto'}" :filter-node-method="filterNodeOrg" node-key="id" @node-click="regionTreeNode" @node-contextmenu="treeNodeRightClick" ref="Tree">
+      </el-tree>
+    </div>
+    <div class="certList">
+      <!--<p class="title">材料分类列表</p>-->
+      <div class="type-list">
+        <p class="title subtitle">分类列表</p>
+        <div class='btns'>
+          <el-button type="primary" size='medium' @click="addType();item='type';selfData=true;other=false;">新增分类</el-button>
+          <el-button size='medium' @click="delateAllWindow" type="danger">删除</el-button>
+          <el-button size='medium' @click="showData">刷新</el-button>
+          <el-input placeholder="请输入关键字..." v-model="keyword" class="input input-with-select" style='width: 300px;'>
+          </el-input>
+          <el-button size='medium' type="primary" @click="showData" style="margin-left:5px;">查询</el-button>
+          <el-button size='medium' @click="keyword='';showData()" style="margin-left:5px;">清空</el-button>
+        </div>
+        <el-table class='el-table' :data="tableData" @selection-change="handleSelectionChange" style="width: 100%" ref="table1" @row-click="rowClick1">
+          <el-table-column type="selection" width="55"></el-table-column>
+          <el-table-column prop="typeName" label="分类名称"></el-table-column>
+          <el-table-column prop="typeCode" label="分类编号" align='center'></el-table-column>
+          <el-table-column prop="sortNo" label="排序" align='center'></el-table-column>
+          <el-table-column prop="isActive" label="是否启用" align='center'>
+            <template slot-scope="scope">
+              <el-switch v-model="scope.row.isActive" active-value="1" inactive-value="0" active-color="#13ce66" inactive-color="rgba(230,232,239,1)" @change='changeState(scope.row)'>
+              </el-switch>
+            </template>
+          </el-table-column>
+          <el-table-column label="操作" width='100' align='center'>
+            <template slot-scope='scope'>
+              <el-button type="primary" icon="el-icon-edit" circle @click="item='type';tableortree='table';editWindow(scope.row);treeEdit = true"></el-button>
+              <el-button type="danger" icon="el-icon-delete" circle @click="delateWindow(scope.row);"></el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+        <el-pagination background align="right" :pager-count="5" @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-sizes="[10, 20, 30, 50]" :page-size="pageSize" :current-page="pageNum" layout="total,sizes, prev, pager, next, jumper" :total="total">
+        </el-pagination>
+      </div>
+      <div class="cert-list" v-show="!isFirst" style="margin-top: 30px;">
+        <p class="title subtitle" style="border-top: 1px solid #e8e8e8;">证照列表</p>
+        <div class='btns'>
+          <el-button type="primary" size='medium' @click="addCert();item='cerd';">新增证照</el-button>
+          <el-button size='medium' @click="delateAllCert" type="danger">删除</el-button>
+          <el-button size='medium' @click="showCertData">刷新</el-button>
+          <el-input placeholder="请输入关键字..." v-model="keyword3" class="input input-with-select" style='width:300px;'>
+          </el-input>
+          <el-button size='medium' type="primary" @click="showCertData" style="margin-left:5px;">查询</el-button>
+          <el-button size='medium' @click="keyword3='';showCertData()" style="margin-left:5px;">清空</el-button>
+        </div>
+        <el-table class='el-table' :data="tableData2" @selection-change="handleSelectionChange2" style="width: 100%" ref="table2" @row-click="rowClick2">
+          <el-table-column type="selection" width="55"></el-table-column>
+          <el-table-column prop="certName" label="证照名称"></el-table-column>
+          <el-table-column prop="certCode" label="证照编号"></el-table-column>
+          <el-table-column prop="certHolder" label="证照类型">
+            <template slot-scope='scope'>
+              {{scope.row.certHolder=="c"?'企业':scope.row.certHolder=="u"?'个人':'工程项目'}}
+            </template>
+          </el-table-column>
+          <el-table-column prop="certMemo" label="备注"></el-table-column>
+          <el-table-column label="操作" width='100'>
+            <template slot-scope='scope'>
+              <el-button type="primary" icon="el-icon-edit" circle @click="item='cerd';editCert(scope.row);treeEdit = true"></el-button>
+              <el-button type="danger" icon="el-icon-delete" circle @click="delateCert(scope.row)"></el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+        <el-pagination background align="right" :pager-count="5" @size-change="handleSizeChange2" @current-change="handleCurrentChange2" :page-sizes="[10, 20, 30, 50]" :page-size="pageSize2" :current-page="pageNum2" layout="total,sizes, prev, pager, next, jumper" :total="total2">
+        </el-pagination>
+      </div>
+    </div>
+    <!--左侧树右键展开-->
+    <div class="right-click-opt" v-show="showRightClick" @mouseleave="showRightClick=false">
+      <p @click="add();treeEdit=true;item='type';other=false;selfData=true;oper='add'"><i class="el-icon-circle-plus-outline"></i>&nbsp;新增分类</p>
+      <p @click="edit(leftSelNodeData);treeEdit=true;selfData=false;other=true;oper='edit'" v-if="notRoot"><i class="el-icon-edit-outline"></i>&nbsp;编辑</p>
+      <p @click="delateWindow(leftSelNodeData)" v-if="notRoot"><i class="el-icon-delete"></i>&nbsp;删除</p>
+    </div>
+    <!-- 弹出层 -->
+    <div class="right-sidebar" :class="showRightSlider?'show':''">
+      <div class="right-sidebar-content">
+        <div v-if="item=='type'">
+          <h3 class="label">{{typeLabel}}</h3>
+          <el-form label-position="right" label-width="100px" :model="formData" ref="form" :rules="rules" :inline='true'>
+            <el-form-item prop="" v-show='false'>
+              <el-input v-model="formData.certTypeId"></el-input>
+            </el-form-item>
+            <el-form-item prop="" v-show='false'>
+              <el-input v-model="formData.parentTypeId"></el-input>
+            </el-form-item>
+            <el-form-item label="分类名称" prop="typeName">
+              <el-input v-model="formData.typeName" placeholder="" style="width:390px;"></el-input>
+            </el-form-item>
+            <el-form-item label="分类编号" prop="typeCode">
+              <el-input v-model="formData.typeCode" placeholder="" style="width:390px;"></el-input>
+            </el-form-item>
+            <el-form-item label="排序" prop="sortNo">
+              <el-input v-model="formData.sortNo" placeholder="" style="width:390px;"></el-input>
+            </el-form-item>
+            <el-form-item label="备注" prop="typeMemo">
+              <el-input type="textarea" v-model="formData.typeMemo" rows="4" style="width:390px;"></el-input>
+            </el-form-item>
+          </el-form>
+          <div class="silder-footer">
+            <el-button type="primary" size='medium' @click="checkCode">保存</el-button>
+            <el-button size='medium' @click="showRightSlider=false">取消</el-button>
+          </div>
+        </div>
+        <div v-if="item=='cerd'">
+          <h3 class="label">{{cerdLabel}}</h3>
+          <el-form label-position="right" label-width="120px" :model="formData2" ref="form2" :rules="rules2" :inline='true'>
+            <el-form-item prop="" v-show='false'>
+              <el-input v-model="formData2.certTypeId"></el-input>
+            </el-form-item>
+            <el-form-item prop="" v-show='false'>
+              <el-input v-model="formData2.certId"></el-input>
+            </el-form-item>
+            <el-form-item label="证照名称" prop="certName">
+              <el-input v-model="formData2.certName" placeholder="" style="width:390px;"></el-input>
+            </el-form-item>
+            <el-form-item label="证照编号" prop="certCode">
+              <el-input v-model="formData2.certCode" placeholder="" style="width:390px;"></el-input>
+            </el-form-item>
+            <el-form-item label="所属文案库" prop="attDirName">
+              <el-input v-model="formData2.attDirName" readonly placeholder="" style="width:390px;" @foucs='selectAttr();getAttrTree()'>
+                <el-button slot="append" @click="selectAttr();getAttrTree()">选择</el-button>
+              </el-input>
+            </el-form-item>
+            <el-form-item label="证照所属类型" prop="certHolder">
+              <el-select v-model="formData2.certHolder" @change="forceUpdate" style="width:390px;">
+                <el-option label="请选择" value=""></el-option>
+                <el-option label="企业" value="c"></el-option>
+                <el-option label="个人" value="u"></el-option>
+                <el-option label="工程项目" value="p"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="承诺时限计量" prop="dueNum">
+              <el-input v-model="formData2.dueNum" type="number" autocomplete='off' placeholder="" style="width:390px;"></el-input>
+              <!-- <el-input-number v-model="formData2.dueNum" controls-position="right" :min="0" :max="10000000" style="width:390px;"></el-input-number> -->
+            </el-form-item>
+            <el-form-item label="承诺时限单位" prop="dueUnit">
+              <el-select v-model="formData2.dueUnit" @change="forceUpdate" style="width:390px;">
+                <el-option label="请选择" value=""></el-option>
+                <el-option label="工作日" value="1"></el-option>
+                <el-option label="自然日" value="2"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="软件环境" prop="softwareEnv">
+              <el-input v-model="formData2.softwareEnv" type="textarea" rows="4" placeholder="" style="width:390px;"></el-input>
+            </el-form-item>
+            <el-form-item label="业务行为" prop="busAction">
+              <el-input v-model="formData2.busAction" type="textarea" rows="4" placeholder="" style="width:390px;"></el-input>
+            </el-form-item>
+            <el-form-item label="排序" prop="sortNo">
+              <el-input v-model="formData2.sortNo" placeholder="" style="width:390px;"></el-input>
+            </el-form-item>
+            <el-form-item label="备注" prop="certMemo">
+              <el-input type="textarea" v-model="formData2.certMemo" rows="4" style="width:390px;"></el-input>
+            </el-form-item>
+          </el-form>
+          <div class="silder-footer">
+            <el-button type="primary" size='medium' @click="checkUniqueCertCode">保存</el-button>
+            <el-button size='medium' @click="showRightSlider=false">取消</el-button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="right-sidebar-overlay" v-show="showRightSlider" @click="showRightSlider = false"></div>
+    <!-- 选择文件库 str-->
+    <el-dialog title="选择文件库" :visible.sync="attrLibrary" class="edit-row1" width="700px" top="5vh">
+      <div class='header'>
+        <el-input placeholder="请输入关键字..." v-model="attrKeyword" class="input-with-select" style='width:300px;'></el-input>
+        <!-- <el-button type="primary" size='medium'>查询</el-button> -->
+        <el-button size='medium' @click="clearRegionKeyword" style="margin-left:5px;">清空</el-button>
+        <el-button size='medium' @click="unfold2">展开</el-button>
+        <el-button size='medium' @click="fold2">折叠</el-button>
+      </div>
+      <el-tree :data="attrData" class="filter-tree tree1" default-expand-all :expand-on-click-node="false" highlight-current :style="{height:attrTreeHeight+'px',overflow: 'auto'}" :filter-node-method="filterNodeOrg" node-key="id" @node-click="attrTreeNode" ref="attrTree">
+      </el-tree>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" size='medium' @click="saveDataBase">保存</el-button>
+        <el-button size='medium' @click="attrLibrary=false">取消</el-button>
+      </div>
+    </el-dialog>
+  </div>
+  <script src="../../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js" th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>
+  <script src="../../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js" th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
+  <script src="../../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js" th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
+  <script src="../../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js" th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>
+  <script type="text/javascript" src="../../../static/admin/cert/js/certIndex.js" th:src="@{/admin/cert/js/certIndex.js}"></script>
+</body>
+
+</html>

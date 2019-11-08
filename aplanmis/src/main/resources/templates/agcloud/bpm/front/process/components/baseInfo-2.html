@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!--公共css,js-->
+    <th:block th:include="common/common :: approveCommonHeader('基本信息')"/>
+    <link rel="stylesheet" href="../../../../../../static/agcloud/bpm/front/process/css/approval-integration.css" th:href="@{/agcloud/bpm/front/process/css/approval-integration.css}">
+    <link rel="stylesheet" href="../../../../../../static/agcloud/bpm/front/process/css/baseInfo.css" th:href="@{/agcloud/bpm/front/process/css/baseInfo.css}">
+    <script>
+        //var ctx = "[[@{/}]]";
+        var formJson = "[[${formJson}]]";
+        var applyinstId = "[[${masterEntityKey}]]";
+        var processInstanceId = "[[${appFlowdefId}]]";
+        var isSeries = "[[${isSeries}]]";
+        console.log('是否是串联', isSeries)  // 1为串联 0是并联
+        console.log("申报实例id", applyinstId)
+        console.log('流程实例id', processInstanceId)
+        // var ctx = 'http://localhost:8083/aplanmis-front/'
+        // var taskId = '4577513'
+        // var viewId =  'f626f33e-691d-4e88-a532-fb1cddbd9b20'
+
+    </script>
+</head>
+<body id="body">
+<div class="clearfix para-approve-content" id="baseInfo">
+    <div class="tab-one-content">
+        <div class="content">
+            <!-- 左边 -->
+            <div class="vertical" id="menu">
+                <div class="vertical-time">
+                    <ul>
+                        <li class="firstCicle">
+                            <a href="javascript:;"></a>
+                            <b class="line"></b>
+                        </li>
+                        <li class="ciclebox" data-name="div_step_1">
+                            <a href="#div_step_1">申报项目信息</a>
+                            <b class="cicle"></b>
+                        </li>
+                        <li class="ciclebox" data-name="div_step_6" v-if="isSeries == '1'">
+                            <a href="#div_step_6">项目基本信息</a>
+                            <b class="cicle"></b>
+                        </li>
+                        <li class="ciclebox" data-name="div_step_5">
+                            <a href="#div_step_5">办理意见列表</a>
+                            <b class="cicle"></b>
+                        </li>
+                        <li class="ciclebox" data-name="div_step_2" v-if="isSeries == '0' ">
+                            <a href="#div_step_2">事项列表</a>
+                            <b class="cicle"></b>
+                        </li>
+                        <li class="ciclebox active" data-name="div_step_3">
+                            <a href="#div_step_3">材料列表</a>
+                            <b class="cicle"></b>
+                        </li>
+                        <li class="ciclebox" data-name="div_step_4">
+                            <a href="#div_step_4">联系人信息</a>
+                            <b class="cicle"></b>
+                        </li>
+                        <li class="lilastCicle">
+                            <a href="javascript:;"></a>
+                            <b></b>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <!-- 右边 -->
+            <div class="approval-content  vertical-right miniScrollbar" id="content" style="position:relative;">
+                <div class="m-portlet__body" style="width:100%;">
+                    <!--begin::Section-->
+                    <div class="m-accordion m-accordion--default m-accordion--toggle-arrow" id="m_accordion_5" role="tablist">
+                        <!--begin::Item 申报项目信息-->
+                        <div class="m-accordion__item div-step" id="div_step_1">
+                            <div class="m-accordion__item-head" :class="{'collapsed':!showMasterItemMsg}" srole="tab" id="m_accordion_5_item_1_head" data-toggle="collapse" href="#m_accordion_5_item_1_body"
+                                    aria-expanded="true" @click="showMasterItemMsg = !showMasterItemMsg">
+										<span class="m-accordion__item-icon">
+
+										</span>
+                                <span class="m-accordion__item-title">
+											申报项目信息
+										</span>
+                                <span class="m-accordion__item-mode"></span>
+                            </div>
+                            <div class="m-accordion__item-body collapse show" id="m_accordion_5_item_1_body" role="tabpanel"
+                                    aria-labelledby="m_accordion_5_item_1_head" data-parent="#m_accordion_1">
+                                <el-collapse-transition>
+                                    <div class="m-accordion__item-content" v-show="showMasterItemMsg">
+
+                                        <div class="m-portlet__body">
+                                            <table class="table table-bordered">
+                                                <tbody>
+                                                <tr>
+                                                    <th scope="row">
+                                                        项目名称
+                                                    </th>
+                                                    <td class="projName" v-text="masterItemMsg.projName">
+
+                                                    </td>
+                                                    <th scope="row">
+                                                        项目代码
+                                                    </th>
+                                                    <td class="localCode" v-text="masterItemMsg.localCode">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">
+                                                        项目（法人）单位／个人
+                                                    </th>
+                                                    <td class="projectBuildUnit" v-text="masterItemMsg.projectBuildUnit">
+                                                    </td>
+                                                    <th scope="row">
+                                                        证照（件）号
+                                                    </th>
+                                                    <td class="buildUnitIDCard" v-text="masterItemMsg.buildUnitIDCard">
+                                                    </td>
+                                                </tr>
+                                                <!-- 新增 START-->
+                                                <tr>
+                                                    <th scope="row" style="width: 18%;">申报流水号</th>
+                                                    <td class="iteminstCode" style="width: 32%" v-text="masterItemMsg.iteminstCode"></td>
+                                                    <th scope="row">申请时间</th>
+                                                    <td class="applyTime" v-text="$options.filters.formatDate(masterItemMsg.applyTime)||'-'"></td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row" style="width: 18%;">事项名称</th>
+                                                    <td class="itemName" v-html="masterItemMsg.itemName"></td>
+                                                    <th scope="row" style="width: 18%;">实施编码</th>
+                                                    <td class="itemCode" style="width: 32%" v-html="masterItemMsg.itemCode"></td>
+                                                </tr>
+                                                <!-- 新增 END-->
+                                                <tr class="hide" id="agencyRow" v-show="masterItemMsg.projectAgency">
+                                                    <th scope="row">
+                                                        经办单位
+                                                    </th>
+                                                    <td class="projectAgency" v-text="masterItemMsg.projectAgency ||'-' ">
+                                                    </td>
+                                                    <th scope="row" v-show="masterItemMsg.agencyIDCard">
+                                                        经办单位证照号码
+                                                    </th>
+                                                    <td class="agencyIDCard" v-text="masterItemMsg.agencyIDCard ||'-' ">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">
+                                                        前置条件
+                                                    </th>
+                                                    <td id="c5">
+                                                        无
+                                                    </td>
+                                                    <th scope="row">
+                                                        办件类型
+                                                    </th>
+                                                    <td id="itemProperty" class="itemProperty" v-text="masterItemMsg.itemProperty">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">
+                                                        查看情形
+                                                    </th>
+                                                    <td colspan="3">
+                                                        <button type="button" class="btn btn-primary btn-sm" @click.stop="showParState()">查看情形</button>
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                    </div>
+                                </el-collapse-transition>
+                            </div>
+                        </div>
+                        <!--end::Item  申报项目信息-->
+                        <!--begin::Item 项目基本信息-->
+                        <div class="m-accordion__item div-step active" id="div_step_6" v-if="isSeries =='1' ">
+                            <div class="m-accordion__item-head" :class="{'collapsed':!showProjBaseInfo}" role="tab" id="m_accordion_proj_6_head" data-toggle="collapse" href="#m_accordion_proj_6_body" aria-expanded="true" @click="showProjBaseInfo = !showProjBaseInfo">
+                                        <span class="m-accordion__item-icon">
+                                        </span>
+                                <span class="m-accordion__item-title">项目基本信息</span>
+                                <span class="m-accordion__item-mode"></span>
+                            </div>
+                            <div class="m-accordion__item-body collapse show" id="m_accordion_proj_6_body" role="tabpanel" aria-labelledby="m_accordion_item_6_head" data-parent="#m_accordion_6">
+                                <el-collapse-transition>
+                                    <div class="m-accordion__item-content" v-show="showProjBaseInfo" style="padding: 0px">
+                                        <div class="m-portlet__body" id="projectInfo" style="display: block;">
+                                            <table class="table table-bordered">
+                                                <tbody>
+                                                <tr>
+                                                    <th style="width: 15%">项目名称</th>
+                                                    <td id="projInfoName" style="width: 32%">公安消防支队南湖生态城特勤消防站项目</td>
+                                                    <th style="width: 15%">项目代码</th>
+                                                    <td id="projInfoCode" style="width: 32%">2016-130200-93-01-000063</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>总投资(万元)</th>
+                                                    <td id="investSum" style="width: 32%">3014.69</td>
+                                                    <th>用地面积(㎡)</th>
+                                                    <td id="xmYdmj" style="width: 32%"></td>
+                                                </tr>
+                                                <tr>
+                                                    <th>建筑内容</th>
+                                                    <td id="scaleContent" style="width: 32%">项目规划建设总占地面积14000平方米，约合21亩。项目总建筑面积5600平方米，为一座特勤消防站。</td>
+                                                    <th>建设面积(㎡)</th>
+                                                    <td id="buildAreaSum" style="width: 32%">5600</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>项目类型</th>
+                                                    <td id="projType" style="width: 32%">审批</td>
+                                                    <th style="width: 15%">建设性质</th>
+                                                    <td id="projNature" style="width: 32%">新建</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>项目开工时间</th>
+                                                    <td id="nstrartTime" style="width: 32%"></td>
+                                                    <th>项目建成时间</th>
+                                                    <td id="endTime" style="width: 32%">2019-01-01 08:00</td>
+                                                </tr>
+
+                                                <tr id="projAgencyShow">
+                                                    <th>备案文号</th>
+                                                    <td id="projAgency" style="width: 32%"></td>
+                                                    <th>项目地址</th>
+                                                    <td id="abroadProjectAddress" style="width: 32%"></td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </el-collapse-transition>
+                            </div>
+                        </div>
+                        <!--end::Item  项目基本信息-->
+                        <!--begin::Item  办理意见列表-->
+                        <div class="m-accordion__item div-step active" id="div_step_5">
+                            <div class="m-accordion__item-head" :class="{'collapsed':!showCommentlist}" role="tab" id="m_accordion_5_item_5_head" data-toggle="collapse" href="#m_accordion_5_item_5_body"
+                                    aria-expanded="true" @click="showCommentlist = !showCommentlist">
+										<span class="m-accordion__item-icon">
+
+										</span>
+                                <span class="m-accordion__item-title">
+											办理意见列表
+										</span>
+                                <span class="m-accordion__item-mode"></span>
+                            </div>
+                            <div class="m-accordion__item-body collapse show" id="m_accordion_5_item_5_body" role="tabpanel"
+                                    aria-labelledby="m_accordion_5_item_5_head" data-parent="#m_accordion_5">
+                                <el-collapse-transition>
+                                    <div class="m-accordion__item-content" v-show="showCommentlist">
+                                        <div class="m-portlet__body">
+                                            <div id="authItemLists">
+                                                <div class="bootstrap-table">
+                                                    <div class="fixed-table-toolbar">
+
+                                                    </div>
+                                                    <div class="fixed-table-container" style="padding-bottom: 0px;">
+                                                        <div class="fixed-table-header" style="display: none;">
+                                                            <table></table>
+                                                        </div>
+                                                        <el-table
+                                                                :data="tableData"
+                                                                style="width: 100%">
+                                                            <el-table-column
+                                                                    prop="date"
+                                                                    label="日期"
+                                                                    width="180">
+                                                            </el-table-column>
+                                                            <el-table-column
+                                                                    prop="name"
+                                                                    label="姓名"
+                                                                    width="180">
+                                                            </el-table-column>
+                                                            <el-table-column
+                                                                    prop="address"
+                                                                    label="地址">
+                                                            </el-table-column>
+                                                        </el-table>
+                                                        <div class="fixed-table-body">
+
+                                                            <table id="_authTable" class="table table-bordered table-hover" v-loading="commentListLoading" element-loading-text="加载中...">
+                                                                <thead>
+                                                                <tr>
+                                                                    <th style="text-align: center; width: 10%; " data-field="nodeName">
+                                                                        <div class="th-inner ">节点名称</div>
+                                                                        <div class="fht-cell"></div>
+                                                                    </th>
+                                                                    <th style="text-align: center; width: 30%; " data-field="orgName">
+                                                                        <div class="th-inner ">部门</div>
+                                                                        <div class="fht-cell"></div>
+                                                                    </th>
+                                                                    <th style="text-align: center; width: 8%; " data-field="taskAssignee">
+                                                                        <div class="th-inner ">人员</div>
+                                                                        <div class="fht-cell"></div>
+                                                                    </th>
+                                                                    <th style="text-align: center; width: 8%; " data-field="taskState">
+                                                                        <div class="th-inner ">节点状态</div>
+                                                                        <div class="fht-cell"></div>
+                                                                    </th>
+                                                                    <th style="text-align: center; width: 30%; " data-field="commentMessage">
+                                                                        <div class="th-inner ">意见</div>
+                                                                        <div class="fht-cell"></div>
+                                                                    </th>
+                                                                    <th style="text-align: center; width: 14%; " data-field="sigeInDate">
+                                                                        <div class="th-inner ">办理时间</div>
+                                                                        <div class="fht-cell"></div>
+                                                                    </th>
+                                                                </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                <tr v-if="commentlist.length>0" v-for="item in commentlist">
+                                                                    <td style="text-align: center; width: 10%; " v-text="item.nodeName||'-' "></td>
+                                                                    <td style="text-align: center; width: 30%; " v-text="item.orgName ||'-' ">唐山市</td>
+                                                                    <td style="text-align: center; width: 8%; " v-text="item.taskAssignee || '-' ">窗口人员</td>
+                                                                    <td style="text-align: center; width: 8%;color: orange; " v-if="item.taskState=='4'">已转交</td>
+                                                                    <td style="text-align: center; width: 8%;color: orange;" v-if="item.taskState=='3'">已回退</td>
+                                                                    <td style="text-align: center; width: 8%; " v-if="item.taskState=='2'">已完成</td>
+                                                                    <td style="text-align: center; width: 8%;color: green; " v-if="item.taskState=='1'">处理中</td>
+                                                                    <td style="text-align: center; width: 30%; " v-text="item.commentMessage ||'-' ">同意</td>
+                                                                    <td style="text-align: center; width: 14%; " v-text=" $options.filters.formatDate(item.sigeInDate)">2019-06-20
+                                                                        10:26
+                                                                    </td>
+                                                                </tr>
+                                                                <tr class="no-records-found" v-else>
+                                                                    <td colspan="6">没有找到匹配的记录</td>
+                                                                </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                        <div class="fixed-table-footer" style="display: none;">
+                                                            <table>
+                                                                <tbody>
+                                                                <tr></tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                    <div class="fixed-table-pagination" style="display: none;"></div>
+                                                </div>
+                                                <div class="clearfix"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </el-collapse-transition>
+                            </div>
+                        </div>
+                        <!--end::Item-->
+                        <!--begin::Item-->
+                        <div class="m-accordion__item div-step" id="div_step_2" v-if="isSeries == '0' ">
+                            <div class="m-accordion__item-head" :class="{'collapsed':!showParallelLsit}" role="tab" id="m_accordion_5_item_2_head" data-toggle="collapse" href="#m_accordion_5_item_2_body"
+                                    aria-expanded="true" @click="showParallelLsit = !showParallelLsit">
+										<span class="m-accordion__item-icon">
+
+										</span>
+                                <span class="m-accordion__item-title">
+											事项列表
+										</span>
+                                <span class="m-accordion__item-mode"></span>
+                            </div>
+                            <div class="m-accordion__item-body collapse show" id="m_accordion_5_item_2_body" role="tabpanel"
+                                    aria-labelledby="m_accordion_5_item_2_head" data-parent="#m_accordion_2">
+                                <el-collapse-transition>
+                                    <div class="m-accordion__item-content" v-show="showParallelLsit">
+                                        <div class="m-portlet__body">
+                                            <div id="stageItemLists">
+                                                <table class="table table2 table-bordered ">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>序号</th>
+                                                        <th>征求部门</th>
+                                                        <th>事项名称</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr v-for="(item,index) in ParallelLsit">
+                                                        <th scope="row" v-text="(index+1)"></th>
+                                                        <td v-text="item.orgName">行政审批局</td>
+                                                        <td v-text="item.itemName">政府投资项目可行性研究报告审批</td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </el-collapse-transition>
+                            </div>
+                        </div>
+                        <!--end::Item-->
+
+                        <!--begin::Item-->
+                        <div class="m-accordion__item div-step" id="div_step_3">
+                            <div class="m-accordion__item-head" :class="{'collapsed':!showMatinstList}" role="tab" id="m_accordion_5_item_3_head" data-toggle="collapse" href="#m_accordion_5_item_3_body"
+                                    aria-expanded="true" @click="showMatinstList = !showMatinstList">
+										<span class="m-accordion__item-icon">
+
+										</span>
+                                <span class="m-accordion__item-title">
+											材料列表
+										</span>
+                                <span class="m-accordion__item-mode"></span>
+                            </div>
+                            <div class="m-accordion__item-body collapse show" id="m_accordion_5_item_3_body" role="tabpanel"
+                                    aria-labelledby="m_accordion_5_item_3_head" data-parent="#m_accordion_3">
+                                <el-collapse-transition>
+                                    <div class="m-accordion__item-content" v-show="showMatinstList">
+                                        <div class="m-portlet__body">
+                                            <div class="bootstrap-table">
+                                                <div class="fixed-table-toolbar"></div>
+                                                <div class="fixed-table-container" style="padding-bottom: 0px;">
+                                                    <div class="fixed-table-body">
+                                                        <table id="_matTable" class="table table-bordered table-hover">
+
+                                                            <thead>
+                                                            <tr>
+                                                                <th style="text-align: center; width: 6%; " data-field="num">
+                                                                    <div class="th-inner ">序号</div>
+                                                                    <div class="fht-cell"></div>
+                                                                </th>
+                                                                <th style="text-align: center; width: 30%; " data-field="matName">
+                                                                    <div class="th-inner ">材料名称</div>
+                                                                    <div class="fht-cell"></div>
+                                                                </th>
+                                                                <th style="text-align: center; width: 15%; " data-field="matFrom">
+                                                                    <div class="th-inner ">文件来源</div>
+                                                                    <div class="fht-cell"></div>
+                                                                </th>
+                                                                <th style="text-align: center; width: 10%; " data-field="realPaperCount">
+                                                                    <div class="th-inner ">原件是否已验/收</div>
+                                                                    <div class="fht-cell"></div>
+                                                                </th>
+                                                                <th style="text-align: center; width: 10%; " data-field="realCopyCount">
+                                                                    <div class="th-inner ">复印件是否已验/收</div>
+                                                                    <div class="fht-cell"></div>
+                                                                </th>
+                                                                <th style="text-align: center; width: 20%; " data-field="attCount">
+                                                                    <div class="th-inner ">电子件信息</div>
+                                                                    <div class="fht-cell"></div>
+                                                                </th>
+                                                            </tr>
+                                                            </thead>
+                                                            <tbody v-if="matinstList.length>0">
+                                                            <div v-if="matinstList.length>0">
+                                                                <tr v-for="(item ,index) in matinstList">
+                                                                    <td style="text-align: center; width: 5%; " v-text="index"></td>
+                                                                    <td style="text-align: center; width: 30%; " v-text="item.matName ||'-'">法定代表人身份证明及授权委托书</td>
+                                                                    <td style="text-align: center; width: 15%; " v-text="$options.filters.dicCodeItem(item.matFrom)">申请人</td>
+                                                                    <td style="text-align: center; width: 10%; " v-text="item.realPaperCount!=null && item.realPaperCount>0?'是':'否'"></td>
+                                                                    <td style="text-align: center; width: 10%; " v-text="item.realCopyCount!=null && item.realCopyCount>0?'是':'否'"></td>
+                                                                    <td style="text-align: center; width: 20%; ">
+                                                                        <button class='btn btn-success btn-sm' type='button' v-if="item.attCount !=null && item.attCount > 0"
+                                                                                @click.stop="showAttMatinstWindow(item.attMatinstId)">已上传({{item.attCount}})
+                                                                        </button>
+                                                                        <button class="btn btn-info btn-sm" type="button" v-else disabled="disabled" onclick="showAttMatinstWindow(tem.attMatinstId)">未上传
+                                                                        </button>
+                                                                    </td>
+                                                                </tr>
+                                                            </div>
+                                                            <div v-else>
+                                                                <tr class="no-records-found" v-if="matinstList.length<=0">
+                                                                    <td colspan="6">没有找到匹配的记录</td>
+                                                                </tr>
+                                                            </div>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="clearfix"></div>
+                                        </div>
+                                    </div>
+                                </el-collapse-transition>
+                            </div>
+                        </div>
+                        <!--end::Item-->
+                        <!--begin::Item-->
+                        <div class="m-accordion__item div-step" id="div_step_4">
+                            <div class="m-accordion__item-head" :class="{'collapsed':!showContactPeople}" role="tab" id="m_accordion_5_item_4_head" data-toggle="collapse" href="#m_accordion_5_item_4_body"
+                                    aria-expanded="true" @click="showContactPeople = !showContactPeople">
+										<span class="m-accordion__item-icon">
+
+										</span>
+                                <span class="m-accordion__item-title">
+											联系人信息
+										</span>
+                                <span class="m-accordion__item-mode"></span>
+                            </div>
+                            <div class="m-accordion__item-body collapse show" id="m_accordion_5_item_4_body" role="tabpanel"
+                                    aria-labelledby="m_accordion_5_item_4_head" data-parent="#m_accordion_4">
+                                <el-collapse-transition>
+                                    <div class="m-accordion__item-content" v-show="showContactPeople">
+
+                                        <div class="m-portlet__body">
+                                            <table class="table table-bordered">
+                                                <tbody>
+                                                <tr>
+                                                    <th scope="row">
+                                                        联系人
+                                                    </th>
+                                                    <td class="contact" v-text="masterItemMsg.contact || '-' ">
+                                                    </td>
+                                                    <th scope="row">
+                                                        联系人证件号
+                                                    </th>
+                                                    <td class="contactIdNo" v-text="masterItemMsg.contactIdNo || '-'">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">
+                                                        联系人手机
+                                                    </th>
+                                                    <td class="contactMobile" v-text="masterItemMsg.contactMobile || '-'">
+                                                    </td>
+                                                    <th scope="row">
+                                                        联系人邮箱
+                                                    </th>
+                                                    <td class="contactMail" v-text="masterItemMsg.contactMail || '-'">
+                                                    </td>
+                                                </tr>
+                                                <tr id="agencyLink1" class="hide">
+                                                    <th scope="row">
+                                                        经办联系人
+                                                    </th>
+                                                    <td class="agencyContact" v-text="masterItemMsg.agencyContact || '-'">
+                                                    </td>
+                                                    <th scope="row">
+                                                        经办联系人证件号
+                                                    </th>
+                                                    <td class="agencyContactIdNo" v-text="masterItemMsg.agencyContactIdNo ||'-' ">
+                                                    </td>
+                                                </tr>
+                                                <tr id="agencyLink2" class="hide">
+                                                    <th scope="row">
+                                                        经办联系人手机
+                                                    </th>
+                                                    <td class="agencyContactMobile" v-text="masterItemMsg.agencyContactMobile ||'-' ">
+                                                    </td>
+                                                    <th scope="row">
+                                                        经办联系人邮箱
+                                                    </th>
+                                                    <td class="agencyContactMail" v-text="masterItemMsg.agencyContactMail ||'-' ">
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                    </div>
+                                </el-collapse-transition>
+                            </div>
+                        </div>
+                        <!--end::Item-->
+                    </div>
+                    <!--end::Section-->
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- 材料列表 查看已上传的文件 str-->
+    <el-dialog title="已上传的文件列表" :visible.sync="isShowMatlFileListDi" class="dialog sendDialog">
+        <el-table :data="matinstFileList" stripe border highlight-current-row ref="matinstFileList"
+                style="margin-top: 10px;width: 900px;">
+            <!--					<el-table-column type="selection" width="80"  align="center"></el-table-column>-->
+            <el-table-column type="index" label="序号" width="80" align="center"></el-table-column>
+            <el-table-column prop="fileName" label="文件名"></el-table-column>
+            <el-table-column label="操作" align="center" width="120">
+                <template slot-scope="scope">
+                    <el-button type="text" class="btn-table" @click.stop="downloadSelectFile(scope.row)">
+                        下载
+                    </el-button>
+                    <el-button type="text" class="btn-table" disabled="disabled">
+                        盖章
+                    </el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+        <el-pagination v-show="matinstFileList.length>0"
+                background
+                align="right"
+                :pager-count="5"
+                @size-change="handleSizeChangeMatFile"
+                @current-change="handleCurrentChangeMatFile"
+                :page-sizes="[10, 20, 30, 50]"
+                :page-size="matinstFilePageSize"
+                :current-page="matinstFilePageNum"
+                layout="total,sizes, prev, pager, next, jumper"
+                :total="matinstFileTotal">
+        </el-pagination>
+    </el-dialog>
+    <!--材料列表 查看已上传的文件 end-->
+</div>
+
+<!-- 引入组件库服务器使用 -->
+<th:block th:include="common/common :: approveCommonfooter"/>
+
+<script src="../../../../../../static/agcloud/bpm/front/process/js/baseInfo.js" th:src="@{/agcloud/bpm/front/process/js/baseInfo.js}" type="text/javascript"></script>
+<script src="../../../../../../static/agcloud/bpm/front/process/js/approval-integration.js" th:src="@{/agcloud/bpm/front/process/js/approval-integration.js}" type="text/javascript"></script>
+</body>
+</html>

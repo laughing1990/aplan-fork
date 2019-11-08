@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by yinlf    2019-08-31 10:58:08 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.data.exchange.mapper.aplanmis.StageItemMapper">
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns">
+        DFSJZJ  dfsjzj,
+        XZQHDM  xzqhdm,
+        SPLCBM  splcbm,
+        SPLCBBH  splcbbh,
+        SPJDXH  spjdxh,
+        SPSXBM  spsxbm,
+        SPSXBBH  spsxbbh,
+        SPSXMC  spsxmc,
+        DYBZSPSXBM  dybzspsxbm,
+        SFSXGZCNZ  sfsxgzcnz,
+        BJLX  bjlx,
+        SQDX  sqdx,
+        BLJGSDFS  bljgsdfs,
+        SPSXBLSX  spsxblsx,
+        SPBMBM  spbmbm,
+        SPBMMC  spbmmc,
+        SFLCBSX  sflcbsx,
+        SJYXBS  sjyxbs
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getSpglDfxmsplcjdsxxxbById" resultType="SpglDfxmsplcjdsxxxb">
+        select
+        <include refid="allColumns"/>
+        from SPGL_DFXMSPLCJDSXXXB_VIEW
+        where dfsjzj = #{id}
+    </select>
+
+    <select id="listSpglDfxmsplcjdsxxxbByTimeRange" resultType="SpglDfxmsplcjdsxxxb">
+        select
+        <include refid="allColumns"/>
+        from SPGL_DFXMSPLCJDSXXXB_VIEW
+        <where>
+            <if test="startTime != null">
+                AND MODIFY_TIME &gt;= #{startTime}
+            </if>
+            <if test="endTime != null">
+                AND MODIFY_TIME &lt; #{endTime}
+            </if>
+        </where>
+    </select>
+
+    <select id="listSpglDfxmsplcjdfxsxxxbByTimeRange" resultType="SpglDfxmsplcjdsxxxb">
+        select
+        <include refid="allColumns"/>
+        from SPGL_DFXMSPLCJDFXSXXXB_VIEW
+        <where>
+            <if test="startTime != null">
+                AND MODIFY_TIME &gt;= #{startTime}
+            </if>
+            <if test="endTime != null">
+                AND MODIFY_TIME &lt; #{endTime}
+            </if>
+        </where>
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listSpglDfxmsplcjdsxxxb" resultType="SpglDfxmsplcjdsxxxb">
+        select
+        <include refid="allColumns"/>
+        from SPGL_DFXMSPLCJDSXXXB_VIEW
+        <where>
+            <if test="dfsjzj != null">
+                AND DFSJZJ = #{dfsjzj}
+            </if>
+            <if test="xzqhdm != null">
+                AND XZQHDM = #{xzqhdm}
+            </if>
+            <if test="splcbm != null">
+                AND SPLCBM = #{splcbm}
+            </if>
+            <if test="splcbbh != null">
+                AND SPLCBBH = #{splcbbh}
+            </if>
+            <if test="spjdxh != null">
+                AND SPJDXH = #{spjdxh}
+            </if>
+            <if test="spsxbm != null">
+                AND SPSXBM = #{spsxbm}
+            </if>
+            <if test="spsxbbh != null">
+                AND SPSXBBH = #{spsxbbh}
+            </if>
+            <if test="spsxmc != null">
+                AND SPSXMC = #{spsxmc}
+            </if>
+            <if test="dybzspsxbm != null">
+                AND DYBZSPSXBM = #{dybzspsxbm}
+            </if>
+            <if test="sfsxgzcnz != null">
+                AND SFSXGZCNZ = #{sfsxgzcnz}
+            </if>
+            <if test="bjlx != null">
+                AND BJLX = #{bjlx}
+            </if>
+            <if test="sqdx != null">
+                AND SQDX = #{sqdx}
+            </if>
+            <if test="bljgsdfs != null">
+                AND BLJGSDFS = #{bljgsdfs}
+            </if>
+            <if test="spsxblsx != null">
+                AND SPSXBLSX = #{spsxblsx}
+            </if>
+            <if test="spbmbm != null">
+                AND SPBMBM = #{spbmbm}
+            </if>
+            <if test="spbmmc != null">
+                AND SPBMMC = #{spbmmc}
+            </if>
+            <if test="sflcbsx != null">
+                AND SFLCBSX = #{sflcbsx}
+            </if>
+            <if test="sjyxbs != null">
+                AND SJYXBS = #{sjyxbs}
+            </if>
+            <if test="startTime != null">
+                AND MODIFY_TIME &gt;= #{startTime}
+            </if>
+            <if test="endTime != null">
+                AND MODIFY_TIME &lt; #{endTime}
+            </if>
+        </where>
+    </select>
+    <!--8 删除实体对象列表,根据主键ID列表 -->
+    <!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="SpglDfxmsplcjdsxxxb" id="SpglDfxmsplcjdsxxxbMap">
+        <id property="lsh" column="LSH"/>
+        <result property="dfsjzj" column="DFSJZJ"/>
+        <result property="xzqhdm" column="XZQHDM"/>
+        <result property="splcbm" column="SPLCBM"/>
+        <result property="splcbbh" column="SPLCBBH"/>
+        <result property="spjdxh" column="SPJDXH"/>
+        <result property="spsxbm" column="SPSXBM"/>
+        <result property="spsxbbh" column="SPSXBBH"/>
+        <result property="spsxmc" column="SPSXMC"/>
+        <result property="dybzspsxbm" column="DYBZSPSXBM"/>
+        <result property="sfsxgzcnz" column="SFSXGZCNZ"/>
+        <result property="bjlx" column="BJLX"/>
+        <result property="sqdx" column="SQDX"/>
+        <result property="bljgsdfs" column="BLJGSDFS"/>
+        <result property="spsxblsx" column="SPSXBLSX"/>
+        <result property="spbmbm" column="SPBMBM"/>
+        <result property="spbmmc" column="SPBMMC"/>
+        <result property="qzspsxbm" column="QZSPSXBM"/>
+        <result property="sflcbsx" column="SFLCBSX"/>
+        <result property="sjyxbs" column="SJYXBS"/>
+        <result property="sbyy" column="SBYY"/>
+        <result property="scsj" column="scsj"/>
+        <result property="gxsj" column="gxsj"/>
+    </resultMap>
+</mapper>

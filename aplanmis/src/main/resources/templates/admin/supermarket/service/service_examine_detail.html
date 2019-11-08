@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<!--引入公共css-->
+	<th:block th:include="common/common :: commonheader('企业发布服务详情')"/>
+	<script>
+		var unitServiceId = '[[${unitServiceId}]]'
+		var serviceId = '[[${serviceId}]]'
+		console.log(unitServiceId)
+		console.log(serviceId)
+	</script>
+	<style>
+		.ml20 {
+			margin-left: 20px;
+		}
+
+		.mb20 {
+			margin-bottom: 20px;
+		}
+
+		.mg20 {
+			width: 100%;
+			height: 100%;
+			margin: 20px;
+		}
+		.container {
+			padding: 25px;
+		}
+	</style>
+</head>
+<body>
+<div id="mainContentPanel" class="container">
+	<div style="padding: 0px 2px 0px 8px;">
+		<el-row>
+			<h3 class="m-portlet__head-text clearfix">
+				企业发布服务详情
+				<el-button class="fr" @click="toPre">返回上一页</el-button>
+			</h3>
+		</el-row>
+
+	</div>
+	<!--详情-->
+	<div v-cloak>
+		<el-form>
+			<el-form-item prop="" label="中介服务：">{{detailData.serviceName}}</el-form-item>
+			<el-form-item prop="" label="收费参考：">{{detailData.feeReference}}</el-form-item>
+			<el-form-item prop="" label="服务承诺：">{{detailData.serviceContent}}</el-form-item>
+			<el-row v-if="detailData.auditFlag=='1'">
+				<el-form-item label="审核意见：">{{detailData.memo}}</el-form-item>
+			</el-row>
+			<el-row>
+				<el-form-item prop="" label="中介服务事项：">
+					<template scope="scope">
+						<el-table :data="agentItemServices">
+							<el-table-column label="序号">
+								<template scope="scope">
+									{{scope.$index+1}}
+								</template>
+							</el-table-column>
+							<el-table-column label="服务事项名称" prop="itemName"></el-table-column>
+							<el-table-column label="所属机构" prop="orgName"></el-table-column>
+						</el-table>
+					</template>
+				</el-form-item>
+
+			</el-row>
+
+			<el-form-item prop="" label="从业人员：">
+				<template scope="scope">
+					<el-table :data="linkmanList">
+						<el-table-column label="序号">
+							<template scope="scope">
+								{{scope.$index+1}}
+							</template>
+						</el-table-column>
+						<el-table-column label="姓名" prop="linkmanName"></el-table-column>
+						<el-table-column label="服务类型" prop="serviceName"></el-table-column>
+						<el-table-column label="证书等级">
+							<template scope="scope">
+								<div v-for="item in scope.row.certinsts">
+									{{item.qualName}}（{{item.qualLevelName}}）
+								</div>
+							</template>
+						</el-table-column>
+
+						<el-table-column label="从业时间" prop="practiseDate" :formatter="formatDateTime"></el-table-column>
+						<el-table-column label="证照附件">
+							<template scope="scope">
+								<p v-for="item in scope.row.certinsts">
+									<el-button @click="openFileDialog(item.certinstDetail)">{{item.certinstDetail.length}}</el-button>
+									<!--<i class="el-icon-upload" style="cursor:pointer;"  @click="openFileDialog(item.certinstDetail)">{{item.certinstDetail.length}}</i>-->
+								</p>
+							</template>
+						</el-table-column>
+					</el-table>
+				</template>
+			</el-form-item>
+
+			<!--证书列表-->
+			<el-form-item prop="" label="证书列表："></el-form-item>
+
+			<el-tabs v-model="activeName" @tab-click="handleClick" type="border-card" v-for="(item, index) in certinsts" :key="item.certinstId">
+				<el-tab-pane :label="item.certinstName" :name="index+''">
+					<el-row style="margin-left: 50px">
+						<el-col :span="12">
+							<el-form-item label="证书名称：">{{item.certinstName}}</el-form-item>
+						</el-col>
+						<el-col :span="12">
+							<el-form-item label="证书编码：">{{item.certinstCode}}</el-form-item>
+						</el-col>
+					</el-row>
+
+					<el-row style="margin-left: 50px">
+						<el-col :span="12">
+							<el-form-item label="等级："><label v-cloak>{{item.qualLevelName}}</label></el-form-item>
+						</el-col>
+						<el-col :span="12">
+							<el-form-item label="有效期限："><label v-cloak>
+								{{item.termStart}} 至 {{item.termEnd}}
+							</label></el-form-item>
+						</el-col>
+					</el-row>
+
+					<el-row style="margin-left: 50px">
+						<el-col :span="24">
+							<el-form-item label="所属专业："></el-form-item>
+						</el-col>
+					</el-row>
+					<el-tabs type="border-card" style="margin-left: 50px">
+						<el-tab-pane v-for="major in item.majorElTree" :label="major.name" :key="major.id">
+							<el-tree :data="major.child" :props="defaultProps" default-expand-all></el-tree>
+						</el-tab-pane>
+					</el-tabs>
+					<el-row style="margin-left: 50px">
+						<el-col :span="24">
+							<el-form-item label="业务范围："><label v-cloak>{{item.managementScope}}</label></el-form-item>
+						</el-col>
+					</el-row>
+
+					<el-row style="margin-left: 50px">
+						<el-form-item label="附件列表：">
+							<label v-for="bscAttDetail in item.certinstDetail" style="margin-right: 15px;">
+								<a @click="filePreview(bscAttDetail)" style="cursor:pointer;">{{bscAttDetail.fileName}}</a>
+							</label>
+						</el-form-item>
+					</el-row>
+				</el-tab-pane>
+			</el-tabs>
+
+
+		</el-form>
+	</div>
+
+
+	<!--	操作  -->
+	<div style="text-align: center" v-if="detailData.auditFlag!='1'" v-cloak>
+		<el-button @click="examineService('1')">通过</el-button>
+		<el-button @click="examineService('0')">不通过</el-button>
+	</div>
+	<!--审批弹窗-->
+	<el-dialog title="收货地址" :visible.sync="dialogFormVisible">
+		<el-form :model="auditForm" :inline="true">
+			<el-row :span="18">
+				<el-form-item label="审批意见:">
+					<el-input v-model="auditForm.memo"></el-input>
+				</el-form-item>
+
+			</el-row>
+		</el-form>
+		<div slot="footer" class="dialog-footer">
+			<el-button @click="dialogFormVisible = false">取 消</el-button>
+			<el-button type="primary" @click="changeAuditFlag">确 定</el-button>
+		</div>
+	</el-dialog>
+
+	<!--附件弹窗-->
+	<!--审批弹窗-->
+	<el-dialog title="附件列表" :visible.sync="fileDialogVisible">
+		<el-table :data="fileList">
+			<el-table-column label="序号">
+				<template scope="scope">
+					{{scope.$index+1}}
+				</template>
+			</el-table-column>
+			<el-table-column label="证照名称" prop="fileName"></el-table-column>
+			<el-table-column label="操作">
+				<template scope="scope">
+					<el-button @click="filePreview(scope.row)">查看</el-button>
+				</template>
+			</el-table-column>
+		</el-table>
+	</el-dialog>
+</div>
+
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js" th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js" th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js" th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js" th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>
+<script src="../../../static/common/js/axios.min.js" th:src="@{/common/js/axios.min.js}"></script>
+
+<script>
+
+	var vm = new Vue({
+		el: '#mainContentPanel',
+		data: function () {
+			return {
+				fileList: [],
+				fileDialogVisible: false,
+				dialogFormVisible: false,
+				allowPreType: {
+					'doc': true,
+					'docx': true,
+					'pdf': true,
+					'ppt': true,
+					'pptx': true,
+					'xls': true,
+					'xlsx': true,
+					'txt': true,
+					'dwg': true,
+				},
+				activeName: '0',
+				auditForm: {
+					auditFlag: '',
+					memeo: '',
+					unitServiceId: unitServiceId,
+
+				},
+				agentItemServices: [],
+				certinsts: [],
+				linkmanList: [],
+				detailData: {},
+				defaultProps: {
+					children: 'children',
+					label: 'name'
+				}
+			}
+
+		},
+		methods: {
+			handleClick: function (tab, event) {
+				this.activeName = tab.name + '';
+			},
+			//格式化审核状态
+			formatAudioFlag: function (row, column, cellValue, index) {
+				switch (cellValue) {
+					case '0':
+						return '审核失败';
+					case '1':
+						return '已审核';
+					case '2':
+						return '审核中';
+					default:
+						return '审核中';
+				}
+			},
+			formatDateTime: function (row, column, cellValue, index) {
+				var oDate = new Date(cellValue),
+						oYear = oDate.getFullYear(),
+						oMonth = oDate.getMonth() + 1,
+						oDay = oDate.getDate(),
+						oHour = oDate.getHours(),
+						oMin = oDate.getMinutes(),
+						oSec = oDate.getSeconds();
+				var oTime = oYear + '-' + this.getzf(oMonth) + '-' + this.getzf(oDay);//最后拼接时间  + ' ' + this.getzf(oHour) + ':' + this.getzf(oMin) + ':' + this.getzf(oSec)
+				return oTime;
+			},
+			//补0操作
+			getzf: function (num) {
+				if (parseInt(num) < 10) {
+					num = '0' + num;
+				}
+				return num;
+			},
+			clearSearchForm: function () {
+				// this.$refs['searchForm'].resetFields();
+				// this.queryUnitService();
+			},
+			//查询详情
+			queryDetailData: function () {
+				var _this = this;
+				var url = ctx + 'supermarket/serviceExamine/queryUnitSeriveDetail'
+				// var url=ctx+'/supermarket/serviceExamine/getServiceMatter.do'
+				request('', {
+					url: url,
+					data: {'unitServiceId': unitServiceId},
+					type: 'get'
+				}, function (data) {
+					console.log(data)
+					if (data.success) {
+						_this.detailData = data.content;
+						_this.agentItemServices = data.content.agentItemServices;
+						_this.certinsts = data.content.certinstBVos;
+						_this.linkmanList = data.content.linkmanInfo;
+						// console.log(data.content);
+					}
+				}, function (msg) {
+				})
+
+			},
+			//返回上一页
+			toPre: function () {
+				window.location.href = '/aplanmis-front/supermarket/serviceExamine/index.html'
+
+			},
+			// 预览电子件 必须要有detailId
+			filePreview: function (data) {
+				if (!data.detailId) {
+					data.detailId = data.fileId;
+				} // 设置detailId
+				if (!data.attFormat) {
+					data.attFormat = data.fileType;
+				} // 文件类型
+				if (this.allowPreType[data.attFormat]) {
+					return this.preFile(data);
+				} // 预览pdf、doc等
+				// 预览图片等
+				var detailId = data.detailId;
+				var flashAttributes = '';
+				var tempwindow = window.open('_blank'); // 先打开页面
+				tempwindow.location = ctx + 'rest/mats/att/preview?detailId=' + detailId + '&flashAttributes=' + flashAttributes;
+			},
+
+			preFile: function (obj) {
+				var vm = this;
+				if (obj.attFormat == 'dwg') {
+					// 查看施工图
+					var tempwindow = window.open(); // 先打开页面
+					setTimeout(function () {
+						tempwindow.location = ctx + 'cod/drawing/drawingCheck?detailId=' + obj.detailId;
+					}, 1000)
+					return null;
+				}
+				if (obj.attFormat == 'pdf') {
+					// PDF文件直接打开预览，不需要等待转换
+					return vm.doPreFile(obj);
+				}
+				// 判断服务器端文件是否已经转换成功，转换成功才能预览
+				vm.parentPageLoading = true;
+				var count = 0;
+				doRequest();
+
+				function doRequest() {
+					request('', {
+						url: ctx + 'previewPdf/pdfIsCoverted?detailId=' + obj.detailId,
+						type: 'get',
+					}, function (res) {
+						if (res.success) {
+							count = 0;
+							vm.parentPageLoading = false;
+							vm.doPreFile(obj);
+						} else {
+							if (++count > 9) {
+								confirmMsg('提示信息：', '文件预览请求中，是否继续等待？', function () {
+									count = 0;
+									doRequest();
+								}, function () {
+									count = 0;
+									vm.parentPageLoading = false;
+									return false;
+								}, '确定', '取消', 'warning', true)
+							} else {
+								setTimeout(function () {
+									doRequest();
+								}, 1000)
+							}
+							// vm.$message('文件还未转换成功，请稍后再进行预览操作');
+						}
+					}, function (res) {
+						count = 0;
+						vm.parentPageLoading = false;
+						vm.$message.error('请求预览文件失败')
+					});
+				}
+			},
+			//打开附件弹窗
+			openFileDialog: function (row) {
+				this.fileList = row;
+				this.fileDialogVisible = true;
+			},
+			examineService: function (value) {
+				var _this = this;
+				_this.auditForm.auditFlag = value;
+				_this.dialogFormVisible = true;
+
+			},
+
+			changeAuditFlag: function () {
+				var _this = this;
+				_this.dialogFormVisible = false;
+				var url = ctx + '/supermarket/serviceExamine/examineUnitService.do';
+				request('', {
+					url: url,
+					data: _this.auditForm,
+					type: 'get'
+				}, function (data) {
+					console.log(data)
+					if (data.success) {
+						_this.toPre()
+					}
+				}, function (msg) {
+				})
+			}
+		},
+		mounted: function () {
+			this.queryDetailData();
+		},
+		create: function () {
+
+		}
+	})
+</script>
+</body>
+</html>

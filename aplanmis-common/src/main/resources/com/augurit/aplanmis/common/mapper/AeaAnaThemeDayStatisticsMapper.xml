@@ -1,0 +1,739 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by chenjw    2019-09-03 13:41:57 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaAnaThemeDayStatisticsMapper">
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns">
+    THEME_DAY_STATISTICS_ID  themeDayStatisticsId,
+    STATISTICS_RECORD_ID  statisticsRecordId,
+    THEME_ID  themeId,
+    THEME_NAME  themeName,
+    APPLY_RECORD_ID  applyRecordId,
+    APPLY_RECORD_NAME  applyRecordName,
+    DYBZSPJDXH dybzspjdxh,
+    IS_NODE isNode,
+    IS_PARALLEL isParallel,
+    APPLYINST_SOURCE applyinstSource,
+    DAY_APPLY_COUNT  dayApplyCount,
+    ALL_APPLY_COUNT  allApplyCount,
+    APPLY_LRR  applyLrr,
+    ALL_IN_SUPPLEMENT_COUNT  allInSupplementCount,
+    ALL_SUPPLEMENTED_COUNT  allSupplementedCount,
+    DAY_PRE_ACCEPTANCE_COUNT  dayPreAcceptanceCount,
+    ALL_PRE_ACCEPTANCE_COUNT  allPreAcceptanceCount,
+    PRE_ACCEPTANCE_LRR  preAcceptanceLrr,
+    DAY_OUT_SCOPE_COUNT  dayOutScopeCount,
+    ALL_OUT_SCOPE_COUNT  allOutScopeCount,
+    OUT_SCOPE_LRR  outScopeLrr,
+    DAY_COMPLETED_COUNT  dayCompletedCount,
+    ALL_COMPLETED_COUNT  allCompletedCount,
+    COMPLETED_LRR  completedLrr,
+    DAY_OVER_TIME_COUNT  dayOverTimeCount,
+    ALL_OVER_TIME_COUNT  allOverTimeCount,
+    OVER_TIME_LRR  overTimeLrr,
+    ALL_PRE_ACCEPTANCE_RATE  allPreAcceptanceRate,
+    ALL_OUT_SCOPE_RATE  allOutScopeRate,
+    ALL_OVER_TIME_RATE  allOverTimeRate,
+    ALL_COMPLETED_RATE  allCompletedRate,
+    STATISTICS_DATE  statisticsDate,
+    ROOT_ORG_ID  rootOrgId
+    </sql>
+
+    <sql id="alias_Columns">
+     ${alias}.THEME_DAY_STATISTICS_ID  themeDayStatisticsId,
+     ${alias}.STATISTICS_RECORD_ID  statisticsRecordId,
+     ${alias}.THEME_ID  themeId,
+     ${alias}.THEME_NAME  themeName,
+     ${alias}.APPLY_RECORD_ID  applyRecordId,
+     ${alias}.APPLY_RECORD_NAME  applyRecordName,
+     ${alias}.DYBZSPJDXH dybzspjdxh,
+     ${alias}.IS_NODE isNode,
+     ${alias}.IS_PARALLEL isParallel,
+     ${alias}.APPLYINST_SOURCE applyinstSource,
+     ${alias}.DAY_APPLY_COUNT  dayApplyCount,
+     ${alias}.ALL_APPLY_COUNT  allApplyCount,
+     ${alias}.APPLY_LRR  applyLrr,
+     ${alias}.ALL_IN_SUPPLEMENT_COUNT  allInSupplementCount,
+     ${alias}.ALL_SUPPLEMENTED_COUNT  allSupplementedCount,
+     ${alias}.DAY_PRE_ACCEPTANCE_COUNT  dayPreAcceptanceCount,
+     ${alias}.ALL_PRE_ACCEPTANCE_COUNT  allPreAcceptanceCount,
+     ${alias}.PRE_ACCEPTANCE_LRR  preAcceptanceLrr,
+     ${alias}.DAY_OUT_SCOPE_COUNT  dayOutScopeCount,
+     ${alias}.ALL_OUT_SCOPE_COUNT  allOutScopeCount,
+     ${alias}.OUT_SCOPE_LRR  outScopeLrr,
+     ${alias}.DAY_COMPLETED_COUNT  dayCompletedCount,
+     ${alias}.ALL_COMPLETED_COUNT  allCompletedCount,
+     ${alias}.COMPLETED_LRR  completedLrr,
+     ${alias}.DAY_OVER_TIME_COUNT  dayOverTimeCount,
+     ${alias}.ALL_OVER_TIME_COUNT  allOverTimeCount,
+     ${alias}.OVER_TIME_LRR  overTimeLrr,
+     ${alias}.ALL_PRE_ACCEPTANCE_RATE  allPreAcceptanceRate,
+     ${alias}.ALL_OUT_SCOPE_RATE  allOutScopeRate,
+     ${alias}.ALL_OVER_TIME_RATE  allOverTimeRate,
+     ${alias}.ALL_COMPLETED_RATE  allCompletedRate,
+     ${alias}.STATISTICS_DATE  statisticsDate,
+     ${alias}.ROOT_ORG_ID  rootOrgId
+    </sql>
+
+    <sql id="allColumns_asti">
+    asti.TIMERULE_INST_ID  timeruleInstId,
+    asti.TIMERULE_INST_TYPE  timeruleInstType,
+    asti.TIMERULE_ID  timeruleId,
+    asti.APP_FLOWDEF_ID  appFlowdefId,
+    asti.TIMEGROUP_ID  timegroupId,
+    asti.TIMEGROUP_ACT_ID  timegroupActId,
+    asti.PROC_INST_ID  procInstId,
+    asti.TASKINST_ID  taskinstId,
+    asti.TIMERULE_UNIT timeruleUnit,
+    asti.TIME_LIMIT  timeLimit,
+    asti.IS_CONCLUDING  isConcluding,
+    asti.USE_LIMIT_TIME  useLimitTime,
+    asti.REMAINING_TIME  remainingTime,
+    asti.OVERDUE_TIME  overdueTime,
+    asti.ORG_ID orgId,
+    asti.CREATER  creater,
+    asti.CREATE_TIME  createTime,
+    asti.MODIFIER  modifier,
+    asti.MODIFY_TIME  modifyTime,
+    asti.INST_STATE instState
+    </sql>
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaAnaThemeDayStatisticsById" resultType="AeaAnaThemeDayStatistics">
+        select
+        <include refid="allColumns"/>
+        from AEA_ANA_THEME_DAY_STATISTICS
+        where THEME_DAY_STATISTICS_ID = #{id}
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaAnaThemeDayStatistics" resultType="AeaAnaThemeDayStatistics">
+        select
+        <include refid="allColumns"/>
+        from AEA_ANA_THEME_DAY_STATISTICS
+        <where>
+            <if test="themeDayStatisticsId != null">
+                AND THEME_DAY_STATISTICS_ID = #{themeDayStatisticsId}
+            </if>
+            <if test="statisticsRecordId != null">
+                AND STATISTICS_RECORD_ID = #{statisticsRecordId}
+            </if>
+            <if test="themeId != null">
+                AND THEME_ID = #{themeId}
+            </if>
+            <if test="themeName != null">
+                AND THEME_NAME = #{themeName}
+            </if>
+            <if test="applyRecordId != null">
+                AND APPLY_RECORD_ID = #{applyRecordId}
+            </if>
+            <if test="applyRecordName != null">
+                AND APPLY_RECORD_NAME = #{applyRecordName}
+            </if>
+            <if test="dybzspjdxh != null">
+                AND DYBZSPJDXH = #{dybzspjdxh}
+            </if>
+            <if test="isNode != null">
+                AND IS_NODE = #{isNode}
+            </if>
+            <if test="isParallel != null">
+                AND IS_PARALLEL = #{isParallel}
+            </if>
+            <if test="applyinstSource != null">
+                AND APPLYINST_SOURCE = #{applyinstSource}
+            </if>
+            <if test="dayApplyCount != null">
+                AND DAY_APPLY_COUNT = #{dayApplyCount}
+            </if>
+            <if test="allApplyCount != null">
+                AND ALL_APPLY_COUNT = #{allApplyCount}
+            </if>
+            <if test="applyLrr != null">
+                AND APPLY_LRR = #{applyLrr}
+            </if>
+            <if test="allInSupplementCount != null">
+                AND ALL_IN_SUPPLEMENT_COUNT = #{allInSupplementCount}
+            </if>
+            <if test="allSupplementedCount != null">
+                AND ALL_SUPPLEMENTED_COUNT = #{allSupplementedCount}
+            </if>
+            <if test="dayPreAcceptanceCount != null">
+                AND DAY_PRE_ACCEPTANCE_COUNT = #{dayPreAcceptanceCount}
+            </if>
+            <if test="allPreAcceptanceCount != null">
+                AND ALL_PRE_ACCEPTANCE_COUNT = #{allPreAcceptanceCount}
+            </if>
+            <if test="preAcceptanceLrr != null">
+                AND PRE_ACCEPTANCE_LRR = #{preAcceptanceLrr}
+            </if>
+            <if test="dayOutScopeCount != null">
+                AND DAY_OUT_SCOPE_COUNT = #{dayOutScopeCount}
+            </if>
+            <if test="allOutScopeCount != null">
+                AND ALL_OUT_SCOPE_COUNT = #{allOutScopeCount}
+            </if>
+            <if test="outScopeLrr != null">
+                AND OUT_SCOPE_LRR = #{outScopeLrr}
+            </if>
+            <if test="dayCompletedCount != null">
+                AND DAY_COMPLETED_COUNT = #{dayCompletedCount}
+            </if>
+            <if test="allCompletedCount != null">
+                AND ALL_COMPLETED_COUNT = #{allCompletedCount}
+            </if>
+            <if test="completedLrr != null">
+                AND COMPLETED_LRR = #{completedLrr}
+            </if>
+            <if test="dayOverTimeCount != null">
+                AND DAY_OVER_TIME_COUNT = #{dayOverTimeCount}
+            </if>
+            <if test="allOverTimeCount != null">
+                AND ALL_OVER_TIME_COUNT = #{allOverTimeCount}
+            </if>
+            <if test="overTimeLrr != null">
+                AND OVER_TIME_LRR = #{overTimeLrr}
+            </if>
+            <if test="allPreAcceptanceRate != null">
+                AND ALL_PRE_ACCEPTANCE_RATE = #{allPreAcceptanceRate}
+            </if>
+            <if test="allOutScopeRate != null">
+                AND ALL_OUT_SCOPE_RATE = #{allOutScopeRate}
+            </if>
+            <if test="allOverTimeRate != null">
+                AND ALL_OVER_TIME_RATE = #{allOverTimeRate}
+            </if>
+            <if test="allCompletedRate != null">
+                AND ALL_COMPLETED_RATE = #{allCompletedRate}
+            </if>
+            <if test="statisticsDate != null">
+                AND STATISTICS_DATE = #{statisticsDate}
+            </if>
+            <if test="rootOrgId != null">
+                AND ROOT_ORG_ID = #{rootOrgId}
+            </if>
+            <if test="exceptionFilter != null">
+                AND (ALL_OUT_SCOPE_RATE > 0 OR ALL_OVER_TIME_RATE > 0)
+            </if>
+        </where>
+    </select>
+    <!--4 根据条件查询实体list,返回分页对象 -->
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaAnaThemeDayStatistics" parameterType="AeaAnaThemeDayStatistics">
+    insert into AEA_ANA_THEME_DAY_STATISTICS (
+    THEME_DAY_STATISTICS_ID  ,STATISTICS_RECORD_ID  ,THEME_ID  ,THEME_NAME  ,APPLY_RECORD_ID  ,APPLY_RECORD_NAME  ,DYBZSPJDXH, IS_NODE, IS_PARALLEL, APPLYINST_SOURCE,DAY_APPLY_COUNT  ,ALL_APPLY_COUNT  ,APPLY_LRR  ,ALL_IN_SUPPLEMENT_COUNT  ,ALL_SUPPLEMENTED_COUNT  ,DAY_PRE_ACCEPTANCE_COUNT  ,ALL_PRE_ACCEPTANCE_COUNT  ,PRE_ACCEPTANCE_LRR  ,DAY_OUT_SCOPE_COUNT  ,ALL_OUT_SCOPE_COUNT  ,OUT_SCOPE_LRR  ,DAY_COMPLETED_COUNT  ,ALL_COMPLETED_COUNT  ,COMPLETED_LRR  ,DAY_OVER_TIME_COUNT  ,ALL_OVER_TIME_COUNT  ,OVER_TIME_LRR  ,ALL_PRE_ACCEPTANCE_RATE  ,ALL_OUT_SCOPE_RATE  ,ALL_OVER_TIME_RATE  ,ALL_COMPLETED_RATE  ,STATISTICS_DATE  ,ROOT_ORG_ID
+        )  values  (
+    #{themeDayStatisticsId},#{statisticsRecordId},#{themeId},#{themeName},#{applyRecordId},#{applyRecordName},#{dybzspjdxh},#{isNode},#{isParallel},#{applyinstSource},#{dayApplyCount},#{allApplyCount},#{applyLrr},#{allInSupplementCount},#{allSupplementedCount},#{dayPreAcceptanceCount},#{allPreAcceptanceCount},#{preAcceptanceLrr},#{dayOutScopeCount},#{allOutScopeCount},#{outScopeLrr},#{dayCompletedCount},#{allCompletedCount},#{completedLrr},#{dayOverTimeCount},#{allOverTimeCount},#{overTimeLrr},#{allPreAcceptanceRate},#{allOutScopeRate},#{allOverTimeRate},#{allCompletedRate},#{statisticsDate},  #{rootOrgId}
+        )
+    </insert>
+    <!--6 修改实体对象 -->
+    <update id="updateAeaAnaThemeDayStatistics" parameterType="AeaAnaThemeDayStatistics">
+        update AEA_ANA_THEME_DAY_STATISTICS
+        <set>
+            <if test="themeDayStatisticsId != null">
+                THEME_DAY_STATISTICS_ID = #{themeDayStatisticsId},
+            </if>
+            <if test="statisticsRecordId != null">
+                STATISTICS_RECORD_ID = #{statisticsRecordId},
+            </if>
+            <if test="themeId != null">
+                THEME_ID = #{themeId},
+            </if>
+            <if test="themeName != null">
+                THEME_NAME = #{themeName},
+            </if>
+            <if test="applyRecordId != null">
+                APPLY_RECORD_ID = #{applyRecordId},
+            </if>
+            <if test="applyRecordName != null">
+                APPLY_RECORD_NAME = #{applyRecordName},
+            </if>
+            <if test="dybzspjdxh != null">
+                DYBZSPJDXH = #{dybzspjdxh},
+            </if>
+            <if test="isNode != null">
+                IS_NODE = #{isNode},
+            </if>
+            <if test="isParallel != null">
+                IS_PARALLEL = #{isParallel},
+            </if>
+            <if test="applyinstSource != null">
+                APPLYINST_SOURCE = #{applyinstSource},
+            </if>
+            <if test="dayApplyCount != null">
+                DAY_APPLY_COUNT = #{dayApplyCount},
+            </if>
+            <if test="allApplyCount != null">
+                ALL_APPLY_COUNT = #{allApplyCount},
+            </if>
+            <if test="applyLrr != null">
+                APPLY_LRR = #{applyLrr},
+            </if>
+            <if test="allInSupplementCount != null">
+                ALL_IN_SUPPLEMENT_COUNT = #{allInSupplementCount},
+            </if>
+            <if test="allSupplementedCount != null">
+                ALL_SUPPLEMENTED_COUNT = #{allSupplementedCount},
+            </if>
+            <if test="dayPreAcceptanceCount != null">
+                DAY_PRE_ACCEPTANCE_COUNT = #{dayPreAcceptanceCount},
+            </if>
+            <if test="allPreAcceptanceCount != null">
+                ALL_PRE_ACCEPTANCE_COUNT = #{allPreAcceptanceCount},
+            </if>
+            <if test="preAcceptanceLrr != null">
+                PRE_ACCEPTANCE_LRR = #{preAcceptanceLrr},
+            </if>
+            <if test="dayOutScopeCount != null">
+                DAY_OUT_SCOPE_COUNT = #{dayOutScopeCount},
+            </if>
+            <if test="allOutScopeCount != null">
+                ALL_OUT_SCOPE_COUNT = #{allOutScopeCount},
+            </if>
+            <if test="outScopeLrr != null">
+                OUT_SCOPE_LRR = #{outScopeLrr},
+            </if>
+            <if test="dayCompletedCount != null">
+                DAY_COMPLETED_COUNT = #{dayCompletedCount},
+            </if>
+            <if test="allCompletedCount != null">
+                ALL_COMPLETED_COUNT = #{allCompletedCount},
+            </if>
+            <if test="completedLrr != null">
+                COMPLETED_LRR = #{completedLrr},
+            </if>
+            <if test="dayOverTimeCount != null">
+                DAY_OVER_TIME_COUNT = #{dayOverTimeCount},
+            </if>
+            <if test="allOverTimeCount != null">
+                ALL_OVER_TIME_COUNT = #{allOverTimeCount},
+            </if>
+            <if test="overTimeLrr != null">
+                OVER_TIME_LRR = #{overTimeLrr},
+            </if>
+            <if test="allPreAcceptanceRate != null">
+                ALL_PRE_ACCEPTANCE_RATE = #{allPreAcceptanceRate},
+            </if>
+            <if test="allOutScopeRate != null">
+                ALL_OUT_SCOPE_RATE = #{allOutScopeRate},
+            </if>
+            <if test="allOverTimeRate != null">
+                ALL_OVER_TIME_RATE = #{allOverTimeRate},
+            </if>
+            <if test="allCompletedRate != null">
+                ALL_COMPLETED_RATE = #{allCompletedRate},
+            </if>
+            <if test="statisticsDate != null">
+                STATISTICS_DATE = #{statisticsDate},
+            </if>
+            <if test="rootOrgId != null">
+                ROOT_ORG_ID = #{rootOrgId},
+            </if>
+        </set>
+        where THEME_DAY_STATISTICS_ID = #{themeDayStatisticsId}
+    </update>
+    <!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaAnaThemeDayStatistics">
+        delete from   AEA_ANA_THEME_DAY_STATISTICS
+        where
+    THEME_DAY_STATISTICS_ID = #{id}
+    </delete>
+    <!--8 删除实体对象列表,根据主键ID列表 -->
+
+    <select id="getAeaAnaThemeDayStatistics" resultType="AeaAnaThemeDayStatistics">
+        select
+        <include refid="alias_Columns">
+            <property name="alias" value="tds"></property>
+        </include>
+        from aea_ana_theme_day_statistics tds
+        <where>
+            <if test="themeId != null and themeId != ''">
+                and tds.THEME_ID = #{themeId}
+            </if>
+            <if test="stageId != null and stageId != ''">
+                and tds.APPLY_RECORD_ID = #{stageId}
+            </if>
+            <if test="currentOrgId != null and currentOrgId != ''">
+                and tds.ROOT_ORG_ID = #{currentOrgId}
+            </if>
+            <if test="isParallel != null and isParallel != ''">
+                and tds.IS_PARALLEL = #{isParallel}
+            </if>
+            <if test="applyinstSource != null and applyinstSource != ''">
+                and tds.APPLYINST_SOURCE = #{applyinstSource}
+            </if>
+            <if test="_databaseId == 'oracle'">
+                <if test="startTime != null and startTime != ''">
+                    and to_char(tds.STATISTICS_DATE, 'yyyy-mm-dd') &gt;= #{startTime}
+                </if>
+                <if test="endTime != null and endTime != ''">
+                    and to_char(tds.STATISTICS_DATE, 'yyyy-mm-dd') &lt;= #{endTime}
+                </if>
+            </if>
+            <if test="_databaseId == 'mysql'">
+                <if test="startTime !=null and startTime != ''">
+                    and tds.STATISTICS_DATE <![CDATA[ >= ]]> STR_TO_DATE(concat(#{startTime},' 00:00:00'), '%Y-%m-%d
+                    %H:%i:%s')
+                </if>
+                <if test="endTime !=null and endTime != ''">
+                    and tds.STATISTICS_DATE <![CDATA[ <= ]]> STR_TO_DATE(concat(#{endTime},' 23:59:59'), '%Y-%m-%d
+                    %H:%i:%s')
+                </if>
+            </if>
+
+        </where>
+        order by tds.STATISTICS_DATE desc
+    </select>
+
+    <select id="getStateAllCount" resultType="int">
+
+        select count(1) from aea_hi_applyinst aha ,
+        aea_hi_par_stageinst ahps
+        where aha.APPLYINST_ID = ahps.APPLYINST_ID
+        <if test="states != null">
+            and aha.APPLYINST_STATE in
+            <if test="_databaseId == 'oracle'">
+                <foreach collection="states" item="item" open="(" separator="union all" close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="_databaseId == 'mysql'">
+                <foreach collection="states" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+        </if>
+
+        and ahps.STAGE_ID=#{stageId}
+        and aha.IS_SERIES_APPROVE='0'
+        and aha.IS_DELETED ='0'
+        and aha.ROOT_ORG_ID =#{currentOrgId}
+        and ahps.ROOT_ORG_ID = #{currentOrgId}
+    </select>
+
+    <select id="queryThemeStageIds" resultType="map">
+      select DISTINCT aps.stage_id stageId, aps.stage_name stageName, aps.DYBZSPJDXH dybzspjdxh, aps.is_node isNode
+      from aea_par_stage aps where aps.THEME_VER_ID in(${themeVerIds})
+      and aps.is_deleted ='0' and aps.root_org_id =#{rootOrgId}
+    </select>
+
+    <select id="getAeaAnaThemeDayStatisticsBySatgeIdAndThemeId" resultType="AeaAnaThemeDayStatistics">
+        select
+        <if test="_databaseId == 'oracle'">
+            NVL(sum(DAY_APPLY_COUNT),0) dayApplyCount,
+            NVL(sum(DAY_PRE_ACCEPTANCE_COUNT),0) dayPreAcceptanceCount,
+            NVL(sum(DAY_OUT_SCOPE_COUNT),0) dayOutScopeCount,
+            NVL(sum(DAY_COMPLETED_COUNT),0) dayCompletedCount,
+            NVL(sum(DAY_OVER_TIME_COUNT),0) dayOverTimeCount,
+            NVL(ALL_APPLY_COUNT,0) allApplyCount,
+            NVL(ALL_PRE_ACCEPTANCE_COUNT,0) allPreAcceptanceCount,
+            NVL(ALL_OUT_SCOPE_COUNT,0) allOutScopeCount,
+            NVL(ALL_COMPLETED_COUNT,0) allCompletedCount,
+            NVL(ALL_OVER_TIME_COUNT,0) allOverTimeCount
+        </if>
+        <if test="_databaseId == 'mysql'">
+            IFNULL(sum(DAY_APPLY_COUNT),0) dayApplyCount,
+            IFNULL(sum(DAY_PRE_ACCEPTANCE_COUNT),0) dayPreAcceptanceCount,
+            IFNULL(sum(DAY_OUT_SCOPE_COUNT),0) dayOutScopeCount,
+            IFNULL(sum(DAY_COMPLETED_COUNT),0) dayCompletedCount,
+            IFNULL(sum(DAY_OVER_TIME_COUNT),0) dayOverTimeCount,
+            IFNULL(ALL_APPLY_COUNT,0) allApplyCount,
+            IFNULL(ALL_PRE_ACCEPTANCE_COUNT,0) allPreAcceptanceCount,
+            IFNULL(ALL_OUT_SCOPE_COUNT,0) allOutScopeCount,
+            IFNULL(ALL_COMPLETED_COUNT,0) allCompletedCount,
+            IFNULL(ALL_OVER_TIME_COUNT,0) allOverTimeCount
+        </if>
+      from aea_ana_theme_day_statistics aatds where aatds.THEME_ID=#{themeId} and aatds.APPLY_RECORD_ID=#{stageId}
+
+            and STATISTICS_DATE <![CDATA[ >= ]]> #{startTime}
+            and STATISTICS_DATE <![CDATA[ <= ]]> #{endTime}
+
+      and ROOT_ORG_ID = #{rootOrgId}
+      and is_parallel = #{isParallel}
+      and applyinst_source = #{applyinstSource}
+    </select>
+
+    <select id="getThemePeriodStatistics"
+            resultType="com.augurit.aplanmis.common.vo.analyse.ThemePeriodStatistics">
+        select
+            THEME_ID as themeId,
+            APPLY_RECORD_ID as applyRecordId,
+            SUM(DAY_APPLY_COUNT) as periodApplyCount,
+            SUM(DAY_PRE_ACCEPTANCE_COUNT) as periodPreAcceptanceCount,
+            SUM(DAY_OUT_SCOPE_COUNT) as periodOutScopeCount,
+            SUM(DAY_COMPLETED_COUNT) as periodCompletedCount,
+            SUM(DAY_OVER_TIME_COUNT) as periodOverTimeCount
+        from aea_ana_theme_day_statistics
+        where ROOT_ORG_ID = #{rootOrgId}
+        <if test="_databaseId == 'oracle'">
+            and to_char(STATISTICS_DATE, 'yyyy-mm-dd') &gt;= #{startTime}
+            and to_char(STATISTICS_DATE, 'yyyy-mm-dd') &lt;= #{endTime}
+        </if>
+        <if test="_databaseId == 'mysql'">
+            and STATISTICS_DATE <![CDATA[ >= ]]> STR_TO_DATE(concat(#{startTime},' 00:00:00'), '%Y-%m-%d %H:%i:%s')
+            and STATISTICS_DATE <![CDATA[ <= ]]> STR_TO_DATE(concat(#{endTime},' 23:59:59'), '%Y-%m-%d %H:%i:%s')
+        </if>
+        group by THEME_ID, APPLY_RECORD_ID
+    </select>
+
+    <insert id="batchInsertAeaAnaThemeDayStatistics" parameterType="AeaAnaThemeDayStatistics">
+        insert into AEA_ANA_THEME_DAY_STATISTICS (
+        THEME_DAY_STATISTICS_ID ,STATISTICS_RECORD_ID ,THEME_ID ,THEME_NAME ,APPLY_RECORD_ID ,APPLY_RECORD_NAME
+        ,DYBZSPJDXH ,IS_NODE ,IS_PARALLEL,APPLYINST_SOURCE
+        ,DAY_APPLY_COUNT ,ALL_APPLY_COUNT ,APPLY_LRR ,ALL_IN_SUPPLEMENT_COUNT ,ALL_SUPPLEMENTED_COUNT
+        ,DAY_PRE_ACCEPTANCE_COUNT ,ALL_PRE_ACCEPTANCE_COUNT ,PRE_ACCEPTANCE_LRR ,DAY_OUT_SCOPE_COUNT
+        ,ALL_OUT_SCOPE_COUNT ,OUT_SCOPE_LRR ,DAY_COMPLETED_COUNT ,ALL_COMPLETED_COUNT ,COMPLETED_LRR
+        ,DAY_OVER_TIME_COUNT ,ALL_OVER_TIME_COUNT ,OVER_TIME_LRR ,ALL_PRE_ACCEPTANCE_RATE ,ALL_OUT_SCOPE_RATE
+        ,ALL_OVER_TIME_RATE ,ALL_COMPLETED_RATE ,STATISTICS_DATE ,ROOT_ORG_ID
+        ) values
+        <foreach collection="themeDayStatisticsList" item="list" separator=",">
+            (
+            #{list.themeDayStatisticsId},#{list.statisticsRecordId},#{list.themeId},#{list.themeName},#{list.applyRecordId},#{list.applyRecordName},#{list.dybzspjdxh},#{list.isNode},#{list.isParallel},#{list.applyinstSource},#{list.dayApplyCount},#{list.allApplyCount},#{list.applyLrr},#{list.allInSupplementCount},#{list.allSupplementedCount},#{list.dayPreAcceptanceCount},#{list.allPreAcceptanceCount},#{list.preAcceptanceLrr},#{list.dayOutScopeCount},#{list.allOutScopeCount},#{list.outScopeLrr},#{list.dayCompletedCount},#{list.allCompletedCount},#{list.completedLrr},#{list.dayOverTimeCount},#{list.allOverTimeCount},#{list.overTimeLrr},#{list.allPreAcceptanceRate},#{list.allOutScopeRate},#{list.allOverTimeRate},#{list.allCompletedRate},#{list.statisticsDate},
+            #{list.rootOrgId}
+            )
+        </foreach>
+
+    </insert>
+
+    <select id="getStageStoTimeruleInst" resultType="ActStoTimeruleInst">
+
+            select <include refid="allColumns_asti"></include>  from
+
+                    act_sto_timerule_inst asti,
+                    act_sto_appinst asp,
+                    aea_hi_par_stageinst ahps,
+                    aea_hi_applyinst aha
+                    WHERE
+                    asti.APP_FLOWDEF_ID = asp.APP_FLOWDEF_ID
+                    AND asti.PROC_INST_ID = asp.PROCINST_ID
+                    AND asp.APPINST_ID = ahps.APPINST_ID
+                    and ahps.STAGE_ID =#{stageId}
+                    <if test="state != null and state != ''">
+                        and asti.INST_STATE =#{state}
+                    </if>
+                    <if test="startTime !=null and startTime != ''">
+                        and asti.OVERDUE_DATE <![CDATA[ >= ]]> #{startTime}
+                    </if>
+                    <if test="endTime !=null and endTime != ''">
+                        and asti.OVERDUE_DATE <![CDATA[ <= ]]> #{endTime}
+                    </if>
+                    and aha.applyinst_id = ahps.applyinst_id
+                    and aha.applyinst_source =#{source}
+                    and aha.IS_SERIES_APPROVE = #{isApprove}
+                    AND ahps.ROOT_ORG_ID = #{rootOrgId}
+                    AND asp.ROOT_ORG_ID = #{rootOrgId}
+                    AND asti.ORG_ID = #{rootOrgId}
+
+                    union
+                    select <include refid="allColumns_asti"></include>  from
+                    act_sto_timerule_inst asti,
+                    aea_hi_iteminst ahi,
+                    aea_hi_seriesinst ahs,
+                    aea_hi_applyinst aha
+                    WHERE
+                    ahs.stage_id=#{stageId}
+                    and ahi.SERIESINST_ID = ahs.SERIESINST_ID
+                    and asti.PROC_INST_ID = ahi.PROCINST_ID
+                    <if test="state != null and state != ''">
+                        and asti.INST_STATE = #{state}
+                    </if>
+                    <if test="startTime !=null and startTime != ''">
+                        and asti.OVERDUE_DATE <![CDATA[ >= ]]> #{startTime}
+                    </if>
+                    <if test="endTime !=null and endTime != ''">
+                        and asti.OVERDUE_DATE <![CDATA[ <= ]]> #{endTime}
+                    </if>
+                    and ahs.APPLYINST_ID = aha.APPLYINST_ID
+                    and aha.APPLYINST_SOURCE= #{source}
+                    and aha.IS_SERIES_APPROVE = #{isApprove}
+                    and ahs.IS_PARALLEL= #{isApprove}
+                    and asti.PROC_INST_ID = ahi.PROCINST_ID
+                    and asti.ORG_ID = #{rootOrgId}
+                    and ahi.ROOT_ORG_ID = #{rootOrgId}
+                    and ahs.ROOT_ORG_ID = #{rootOrgId}
+
+
+
+    </select>
+
+    <delete id="deleteThisDayStatisticsData">
+        delete from   AEA_ANA_THEME_DAY_STATISTICS  where
+
+        <if test="_databaseId == 'oracle'">
+            to_char(STATISTICS_DATE, 'yyyy-mm-dd') = #{statisticsDate}
+        </if>
+        <if test="_databaseId == 'mysql'">
+            DATE_FORMAT(STATISTICS_DATE, '%Y-%m-%d') = #{statisticsDate}
+        </if>
+
+        AND ROOT_ORG_ID = #{rootOrgId}
+    </delete>
+
+    <select id="getThemeApplyByTime" resultType="com.augurit.aplanmis.common.vo.analyse.ThemeApplyStatisticsVo">
+        select item.ITEM_CODE as code, item.ITEM_NAME as name, sum(DAY_APPLY_COUNT) as applyCount from
+        AEA_ANA_THEME_DAY_STATISTICS themeana
+        left join AEA_PAR_THEME theme on theme.THEME_ID = themeana.THEME_ID
+        left join BSC_DIC_CODE_ITEM item on theme.THEME_TYPE = item.ITEM_CODE
+        left join BSC_DIC_CODE_TYPE codeType on item.TYPE_ID = codeType.TYPE_ID
+        <where>
+            and codeType.TYPE_CODE = 'THEME_TYPE'
+            and themeana.STATISTICS_DATE <![CDATA[ >= ]]> #{startTime}
+            and themeana.STATISTICS_DATE <![CDATA[ <= ]]> #{endTime}
+            and themeana.ROOT_ORG_ID = #{rootOrgId}
+        </where>
+        group by item.ITEM_CODE, item.ITEM_NAME
+    </select>
+
+    <select id="getStageApplyByTime" resultType="com.augurit.aplanmis.common.vo.analyse.StageApplyStatisticsVo">
+        select stage.DYBZSPJDXH as code, sum(stageana.DAY_APPLY_COUNT) as applyCount from AEA_ANA_THEME_DAY_STATISTICS
+        stageana
+        left join AEA_PAR_STAGE stage on stage.STAGE_ID = stageana.APPLY_RECORD_ID
+        <where>
+            and stageana.STATISTICS_DATE <![CDATA[ >= ]]> #{startTime}
+            and stageana.STATISTICS_DATE <![CDATA[ <= ]]> #{endTime}
+            and stageana.ROOT_ORG_ID = #{rootOrgId}
+        </where>
+        group by stage.DYBZSPJDXH
+    </select>
+
+    <select id="getOutScopeApplyByThemeStage" resultType="AeaAnaThemeDayStatistics">
+        select themeId, themeName, applyRecordId, applyRecordName, count(1) as allOutScopeCount from (
+        select apt.THEME_ID as themeId, apt.THEME_NAME as themeName, aps.STAGE_ID as applyRecordId, aps.STAGE_NAME as
+        applyRecordName from aea_hi_applyinst ahi,
+            aea_hi_par_stageinst ahps, aea_par_stage aps,
+            aea_par_theme_ver aptv, aea_par_theme apt
+        where
+            ahi.APPLYINST_ID = ahps.APPLYINST_ID
+            AND ahps.STAGE_ID = aps.STAGE_ID
+            AND aps.THEME_VER_ID = aptv.THEME_VER_ID
+            AND aptv.THEME_ID = apt.THEME_ID
+            and ahi.IS_SERIES_APPROVE = '0'
+            and ahi.APPLYINST_STATE = '5'
+        <if test="_databaseId == 'oracle'">
+            <if test="startTime != null and startTime != ''">
+                and to_char(ahi.CREATE_TIME, 'yyyy-mm-dd') <![CDATA[ >= ]]> #{startTime}
+            </if>
+            <if test="endTime != null and endTime != ''">
+                and to_char(ahi.CREATE_TIME, 'yyyy-mm-dd') <![CDATA[ <= ]]> #{endTime}
+            </if>
+        </if>
+        <if test="_databaseId == 'mysql'">
+            <if test="startTime != null and startTime != ''">
+                and ahi.CREATE_TIME <![CDATA[ >= ]]> #{startTime}
+            </if>
+            <if test="endTime != null and endTime != ''">
+                and ahi.CREATE_TIME <![CDATA[ <= ]]> #{endTime}
+            </if>
+        </if>
+            and ahi.ROOT_ORG_ID = #{rootOrgId}
+        union all
+        select apt.THEME_ID as themeId, apt.THEME_NAME as themeName, aps.STAGE_ID as applyRecordId, aps.STAGE_NAME as
+        applyRecordName from aea_hi_applyinst ahi,
+            aea_hi_seriesinst ahs, aea_par_stage aps,
+            aea_par_theme_ver aptv, aea_par_theme apt
+        where
+            ahi.APPLYINST_ID = ahs.applyinst_id
+            AND ahs.STAGE_ID = aps.STAGE_ID
+            AND aps.THEME_VER_ID = aptv.THEME_VER_ID
+            AND aptv.THEME_ID = apt.THEME_ID
+            and ahi.IS_SERIES_APPROVE = '1'
+            and ahi.APPLYINST_STATE = '5'
+        <if test="_databaseId == 'oracle'">
+            <if test="startTime != null and startTime != ''">
+                and to_char(ahi.CREATE_TIME, 'yyyy-mm-dd') <![CDATA[ >= ]]> #{startTime}
+            </if>
+            <if test="endTime != null and endTime != ''">
+                and to_char(ahi.CREATE_TIME, 'yyyy-mm-dd') <![CDATA[ <= ]]> #{endTime}
+            </if>
+        </if>
+        <if test="_databaseId == 'mysql'">
+            <if test="startTime != null and startTime != ''">
+                and ahi.CREATE_TIME <![CDATA[ >= ]]> #{startTime}
+            </if>
+            <if test="endTime != null and endTime != ''">
+                and ahi.CREATE_TIME <![CDATA[ <= ]]> #{endTime}
+            </if>
+        </if>
+            and ahi.ROOT_ORG_ID = #{rootOrgId}
+        ) a group by themeId, themeName, applyRecordId, applyRecordName
+    </select>
+
+    <select id="getOverTimeApply" resultType="AeaAnaThemeDayStatistics">
+        select themeId, themeName, stageId, stageName, count(1) as allOverTimeCount from (
+        select apt.THEME_ID as themeId, apt.THEME_NAME as themeName, aps.STAGE_ID as stageId, aps.STAGE_NAME as stageName
+        from act_sto_timerule_inst asti, act_sto_appinst asp,
+              aea_hi_par_stageinst ahps, aea_par_stage aps,
+              aea_par_theme_ver aptv, aea_par_theme apt
+        where asti.APP_FLOWDEF_ID = asp.APP_FLOWDEF_ID
+          and asti.PROC_INST_ID = asp.PROCINST_ID
+          and asp.APPINST_ID = ahps.APPINST_ID
+          and ahps.STAGE_ID = aps.STAGE_ID
+          and aps.THEME_VER_ID = aptv.THEME_VER_ID
+          and aptv.THEME_ID = apt.THEME_ID
+          and asti.INST_STATE = '3'
+          and asti.ORG_ID = #{rootOrgId}
+        union all
+        select apt.THEME_ID as themeId, apt.THEME_NAME as themeName, aps.STAGE_ID as stageId, aps.STAGE_NAME as stageName
+        from act_sto_timerule_inst asti, aea_hi_iteminst ahi,
+               aea_hi_seriesinst ahs, aea_par_stage aps,
+			   aea_par_theme_ver aptv, aea_par_theme apt
+        where asti.PROC_INST_ID = ahi.PROCINST_ID
+		  and ahi.SERIESINST_ID = ahs.SERIESINST_ID
+		  and ahs.stage_id = aps.stage_id
+		  and aps.THEME_VER_ID = aptv.THEME_VER_ID
+		  and aptv.THEME_ID = apt.THEME_ID
+		  and asti.INST_STATE = '3'
+          and asti.ORG_ID = #{rootOrgId}
+        ) a group by themeId, themeName, stageId, stageName
+    </select>
+
+    <select id="getApplyByTheme" resultType="com.augurit.aplanmis.common.vo.analyse.ThemeApplyStatisticsVo">
+        select THEME_ID as themeId, THEME_NAME as themeName, APPLYINST_SOURCE as applyinstSource,
+        sum(DAY_APPLY_COUNT) as apply, sum(DAY_PRE_ACCEPTANCE_COUNT) as acceptDeal, sum(DAY_OVER_TIME_COUNT) as overTime
+        from
+        AEA_ANA_THEME_DAY_STATISTICS
+        <where>
+            and STATISTICS_DATE <![CDATA[ >= ]]> #{startTime}
+            and STATISTICS_DATE <![CDATA[ <= ]]> #{endTime}
+            and ROOT_ORG_ID = #{rootOrgId}
+        </where>
+        group by THEME_ID, THEME_NAME, APPLYINST_SOURCE
+    </select>
+
+    <!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaAnaThemeDayStatistics" id="AeaAnaThemeDayStatisticsMap">
+        <id property="themeDayStatisticsId" column="THEME_DAY_STATISTICS_ID"/>
+        <result property="statisticsRecordId" column="STATISTICS_RECORD_ID"/>
+        <result property="themeId" column="THEME_ID"/>
+        <result property="themeName" column="THEME_NAME"/>
+        <result property="applyRecordId" column="APPLY_RECORD_ID"/>
+        <result property="applyRecordName" column="APPLY_RECORD_NAME"/>
+        <result property="dybzspjdxh" column="DYBZSPJDXH"/>
+        <result property="isNode" column="IS_NODE"/>
+        <result property="isParallel" column="IS_PARALLEL"/>
+        <result property="applyinstSource" column="APPLYINST_SOURCE"/>
+        <result property="dayApplyCount" column="DAY_APPLY_COUNT"/>
+        <result property="allApplyCount" column="ALL_APPLY_COUNT"/>
+        <result property="applyLrr" column="APPLY_LRR"/>
+        <result property="allInSupplementCount" column="ALL_IN_SUPPLEMENT_COUNT"/>
+        <result property="allSupplementedCount" column="ALL_SUPPLEMENTED_COUNT"/>
+        <result property="dayPreAcceptanceCount" column="DAY_PRE_ACCEPTANCE_COUNT"/>
+        <result property="allPreAcceptanceCount" column="ALL_PRE_ACCEPTANCE_COUNT"/>
+        <result property="preAcceptanceLrr" column="PRE_ACCEPTANCE_LRR"/>
+        <result property="dayOutScopeCount" column="DAY_OUT_SCOPE_COUNT"/>
+        <result property="allOutScopeCount" column="ALL_OUT_SCOPE_COUNT"/>
+        <result property="outScopeLrr" column="OUT_SCOPE_LRR"/>
+        <result property="dayCompletedCount" column="DAY_COMPLETED_COUNT"/>
+        <result property="allCompletedCount" column="ALL_COMPLETED_COUNT"/>
+        <result property="completedLrr" column="COMPLETED_LRR"/>
+        <result property="dayOverTimeCount" column="DAY_OVER_TIME_COUNT"/>
+        <result property="allOverTimeCount" column="ALL_OVER_TIME_COUNT"/>
+        <result property="overTimeLrr" column="OVER_TIME_LRR"/>
+        <result property="allPreAcceptanceRate" column="ALL_PRE_ACCEPTANCE_RATE"/>
+        <result property="allOutScopeRate" column="ALL_OUT_SCOPE_RATE"/>
+        <result property="allOverTimeRate" column="ALL_OVER_TIME_RATE"/>
+        <result property="allCompletedRate" column="ALL_COMPLETED_RATE"/>
+        <result property="statisticsDate" column="STATISTICS_DATE"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+    </resultMap>
+</mapper>

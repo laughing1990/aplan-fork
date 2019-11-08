@@ -1,0 +1,154 @@
+[v-cloak] {
+    display: none
+}
+
+#isApprover {
+    padding-top: 20px;
+    padding-left: 20px;
+}
+
+.content-table {
+    padding: 10px 20px;
+}
+
+.btn {
+    /* font-family: "Montserrat"; */
+    font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif !important;
+    -webkit-box-shadow: none !important;
+    -moz-box-shadow: none !important;
+    box-shadow: none !important;
+    cursor: pointer;
+    display: inline-block;
+    font-weight: 400;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    user-select: none;
+    border: 1px solid transparent;
+    padding: 9px 20px;
+    font-size: 1rem;
+    line-height: 1.25;
+    border-radius: 0.25rem;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.btn-info {
+    color: #fff;
+    background-color: #36a3f7;
+    border-color: #36a3f7;
+}
+
+.btn-info:hover {
+    color: #fff;
+    background-color: #1192f6;
+    border-color: #0a8cf0;
+}
+
+.btn.btn-outline-info {
+    color: #36a3f7;
+}
+
+.btn:not(:disabled):not(.disabled) {
+    cursor: pointer;
+}
+
+.btn-outline-info {
+    color: #36a3f7;
+    background-color: transparent;
+    background-image: none;
+    border-color: #36a3f7;
+}
+
+#isApprover .el-button--medium {
+    padding: 9px 14px;
+}
+
+/*reset element ui dialog*/
+.el-dialog {
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.el-dialog__header {
+    background: #169AFF;
+    padding: 10px 20px;
+}
+
+.el-dialog__title,
+.el-dialog__headerbtn .el-dialog__close,
+.el-dialog__headerbtn:hover .el-dialog__close {
+    color: #fff;
+}
+
+.el-dialog__headerbtn {
+    top: 15px;
+}
+
+.el-dialog__footer {
+    padding: 10px 16px;
+}
+
+.el-dialog__body {
+    padding: 0;
+}
+
+/*w文件上传 按钮 str*/
+#realUploadDo_ {
+    position: absolute;
+    width: 80px;
+    z-index: 9;
+    opacity: 0;
+    filter: alpha(opacity=0);
+}
+
+.pjfile-list a {
+    margin-left: 30px;
+    color: red;
+}
+
+.upload-s-file {
+    display: inline-block;
+}
+
+.file-opt-btn .el-button + .el-button {
+    margin-left: 0px;
+}
+
+/*w文件上传 按钮 end*/
+.el-form-item {
+    margin-bottom: 16px;
+}
+
+.el-table th {
+    background: #F5F7FA;
+}
+
+td.dia-ope-btns {
+    color: #E0E3E9;
+}
+
+.dia-ope-btns span.ope-btn {
+    display: inline-block;
+    margin: 0 5px;
+    cursor: pointer;
+    color: #169AFF;
+}
+
+.dia-ope-btns span.red {
+    color: #FF4B47;
+}
+
+.dia-ope-btns span:hover {
+    text-decoration: underline;
+}
+
+.dia-upload-input {
+    display: inline-block;
+    width: 0px;
+    height: 0px;
+    overflow: hidden;
+    opacity: 0;
+}
+
+
+

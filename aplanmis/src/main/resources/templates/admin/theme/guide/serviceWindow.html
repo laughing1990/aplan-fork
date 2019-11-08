@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>窗口办理</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!--引入样式-->
+    <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/metronic-5/vendors.bundle.css" th:href="@{/agcloud/framework/js-lib/metronic-5/vendors.bundle.css}">
+    <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/ui-private/default/common/css/metronic.css" th:href="@{/agcloud/framework/ui-private/default/common/css/metronic.css}">
+    <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.css" th:href="@{/agcloud/framework/js-lib/element-2/element.css}">
+    <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/ui-private/default/common/css/layout.css" th:href="@{/agcloud/framework/ui-private/default/common/css/layout.css}">
+    <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/ui-private/default/blue/css/theme.css" th:href="@{/agcloud/framework/ui-private/default/blue/css/theme.css}">
+    <!-- 业务样式 -->
+    <link rel="stylesheet" href="../../../../static/admin/theme/guide/css/serviceWindow.css" th:href="@{/admin/theme/guide/css/serviceWindow.css}">
+    <script>
+        var ctx = '[[@{/}]]';
+        var stageId = '[[${recordId}]]';
+        var curIsEditable = [[${curIsEditable}]];
+    </script>
+</head>
+<body>
+    <div id="index" v-loading="loading" style="padding: 15px;">
+        <!-- 查询 -->
+        <div class="add-search clearfix" style="padding-bottom: 15px;">
+            <button v-show="curIsEditable" type="button" class="btn btn-primary" @click="openServiceWindow();">导入服务窗口</button>
+            <button v-show="curIsEditable" type="button" class="btn btn-outline-danger" @click="batchDelData">删除</button>
+            <button v-show="curIsEditable" type="button" class="btn btn-secondary" @click="searchRow();">刷新</button>
+            <div class="float-right search-btn" style="padding-left: 10px;">
+                <div class="input-group search-key">
+                    <input type="text" class="form-control" v-model="searchKey" placeholder="请输入查询关键字" style="width: 250px;">
+                    <i class="la la-close clear-search" @click="searchKey='';page=1;searchRow();"></i>
+                    <div class="input-group-append">
+                        <button class="btn btn-primary m-btn--icon" @click="searchRow()">
+                            <span><i class="fa fa-search"></i><span>查询</span></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 主要显示内容 -->
+        <el-table
+            ref="stageWindTable"
+            :data="tableData.rows"
+            border style="width: 100%"
+            highlight-current-row
+            v-loading="loading"
+            @row-click="stageWindClickSel"
+            @selection-change="handleSelChange">
+            <el-table-column type="selection" align="center"></el-table-column>
+            <el-table-column prop="windowName" label="窗口名称" align="left"></el-table-column>
+            <el-table-column prop="linkPhone" label="窗口电话" align="left"></el-table-column>
+            <el-table-column prop="windowAddress" label="窗口地址" align="left"></el-table-column>
+            <el-table-column prop="" label="操作" width="100" align="center">
+                <template slot-scope="scope">
+                    <el-button v-show="curIsEditable" type="danger" icon="el-icon-delete" circle @click="deleteData(scope.row)"></el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+        <!-- 分页 -->
+        <el-pagination
+                background
+                align="right"
+                :pager-count="5"
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+                :page-sizes="[10, 20, 30, 50]"
+                :page-size="pageSize"
+                layout="total,sizes, prev, pager, next, jumper"
+                :total="tableData.total">
+        </el-pagination>
+
+        <!-- 服务窗口 -->
+        <el-dialog title="导入服务窗口" :visible.sync="dialogTbShow">
+            <!-- 查询 -->
+            <div class="add-search clearfix" style="padding-bottom: 15px;">
+                <button type="button" class="btn btn-primary" @click="importStageWindows();">导入</button>
+                <button type="button" class="btn btn-secondary" @click="dialogTbShow=false">关闭</button>
+                <div class="float-right search-btn" style="padding-left: 10px;">
+                    <div class="input-group search-key">
+                        <input type="text" class="form-control" v-model="windSearchKey" placeholder="请输入查询关键字" style="width: 250px;">
+                        <i class="la la-close clear-search" @click="windSearchKey='';windPage=1;windSearchRow();"></i>
+                        <div class="input-group-append">
+                            <button class="btn btn-primary m-btn--icon" @click="windSearchRow()">
+                                <span><i class="fa fa-search"></i><span>查询</span></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <el-table
+                ref="windTable"
+                :data="windTableData.rows"
+                border style="width: 100%;height: 420px;overflow:auto"
+                highlight-current-row
+                v-loading="windLoading"
+                @row-click="windClickSel"
+                @selection-change="windHandleSelChange">
+                <el-table-column type="selection" align="center"></el-table-column>
+                <el-table-column prop="windowName" label="窗口名称" align="left"></el-table-column>
+                <el-table-column prop="linkPhone" label="窗口电话" align="left"></el-table-column>
+                <el-table-column prop="windowAddress" label="窗口地址" align="left"></el-table-column>
+            </el-table>
+            <el-pagination
+                    background style="padding: 10px 5px;"
+                    align="right"
+                    :pager-count="5"
+                    @size-change="windHandleSizeChange"
+                    @current-change="windHandleCurrentChange"
+                    :page-sizes="[10, 20, 30, 50]"
+                    :page-size="windPageSize"
+                    layout="total,sizes, prev, pager, next, jumper"
+                    :total="windTableData.total">
+            </el-pagination>
+        </el-dialog>
+    </div>
+
+    <!-- 引入js文件 -->
+    <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js" th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>
+    <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js" th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
+    <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js" th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
+    <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js" th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>
+    <!-- 业务js -->
+    <script type="text/javascript" src="../../../../static/admin/theme/guide/js/serviceWindow.js" th:src="@{/admin/theme/guide/js/serviceWindow.js}"></script>
+</body>
+</html>

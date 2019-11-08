@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<!--引入公共css-->
+	<th:block th:include="common/common :: commonheader('机构服务审批')"/>
+	<style>
+		.ml20 {
+			margin-left: 20px;
+		}
+
+		.mb20 {
+			margin-bottom: 20px;
+		}
+		.container {
+			padding: 25px;
+		}
+	</style>
+</head>
+<body>
+<div id="mainContentPanel" class="container">
+	<div>
+		<h3 class="mb20">
+			企业发布服务列表
+		</h3>
+	</div>
+	<div v-cloak>
+		<el-form :model="searchForm" ref="searchForm" :inline="true">
+			<el-row>
+				<el-col :span="6">
+					<el-form-item label="从业机构名称：" prop="applicant">
+						<el-input v-model="searchForm.applicant" placeholder="请输入从业机构名称" @blur="queryUnitService"></el-input>
+					</el-form-item>
+
+				</el-col>
+				<el-col :span="6">
+					<el-form-item label="服务类型：" prop="serviceId">
+						<el-select placeholder="请选择" v-model="searchForm.serviceId" :popper-append-to-body="false">
+							<el-option v-for="item in imServiceList" :key="item.serviceId" :label="item.serviceName" :value="item.serviceId" @click.native="queryUnitService"></el-option>
+						</el-select>
+					</el-form-item>
+				</el-col>
+				<el-col :span="6">
+					<el-form-item label="审核状态：" prop="auditFlag">
+						<el-select placeholder="请选择" v-model="searchForm.auditFlag" :popper-append-to-body="false">
+							<el-option v-for="item in auditOptions" :key="item.value" :label="item.label" :value="item.value" @click.native="queryUnitService"></el-option>
+						</el-select>
+					</el-form-item>
+				</el-col>
+				<el-form-item>
+					<el-button type="primary" @click="clearSearchForm">清空</el-button>
+				</el-form-item>
+			</el-row>
+		</el-form>
+	</div>
+	<!---->
+	<div v-cloak>
+		<el-table :data="ServiceMatterList">
+			<el-table-column label="序号" width="55">
+				<template slot-scope="scope">
+					{{scope.$index+1}}
+				</template>
+			</el-table-column>
+			<el-table-column prop="serviceName" label="服务类型"></el-table-column>
+			<el-table-column prop="applicant" label="从业机构"></el-table-column>
+			<el-table-column prop="certinstStr" label="资质证书"></el-table-column>
+			<el-table-column prop="auditFlag" label="审核状态" :formatter="formatAudioFlag"></el-table-column>
+			<el-table-column prop="createTime" label="提交时间" :formatter="formatDateTime"></el-table-column>
+			<el-table-column prop="" label="操作">
+				<template slot-scope="scope">
+					<el-button v-if="scope.row.auditFlag!=1" type="text" class="el-icon-edit" style="font-size:1.3rem" @click.native="toDetailHtml(scope.row)">
+
+					</el-button>
+					<!--<i class="el-icon-search"></i>-->
+					<el-button type="text" v-else style="font-size:1.3rem" class="el-icon-search" @click.native="toDetailHtml(scope.row)">
+
+					</el-button>
+				</template>
+			</el-table-column>
+		</el-table>
+
+	</div>
+	<div style="margin-top: 20px">
+		<el-pagination
+				background
+				align="right"
+				:pager-count="5"
+				@size-change="handleSizeChange"
+				@current-change="handleCurrentChange"
+				:page-sizes="[10, 20, 30, 50]"
+				:page-size="searchForm.pageSize"
+				:current-page="searchForm.pageNum"
+				layout="total,sizes, prev, pager, next, jumper"
+				:total="searchForm.total">
+		</el-pagination>
+	</div>
+
+</div>
+
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js" th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js" th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js" th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js" th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>
+<script src="../../../static/common/js/axios.min.js" th:src="@{/common/js/axios.min.js}"></script>
+
+
+<script>
+	var vm = new Vue({
+		el: '#mainContentPanel',
+		data: function () {
+			return {
+				// 审核情况下拉选项
+				auditOptions: [
+					{value: '', label: '请选择'}, {
+						value: '0',
+						label: '审核失败'
+					}, {
+						value: '2',
+						label: '审核中'
+					}, {
+						value: '1',
+						label: '已审核'
+					}],
+				searchForm: {
+					applicant: '',
+					auditFlag: '',
+					serviceId: '',
+					total: 0,
+					pageSize: 10,
+					pageNum: 1
+				},
+				ServiceMatterList: [],
+				imServiceList: [],//中介服务列表
+			}
+
+		},
+		methods: {
+
+			//格式化审核状态
+			formatAudioFlag: function (row, column, cellValue, index) {
+				switch (cellValue) {
+					case '0':
+						return '审核失败';
+					case '1':
+						return '已审核';
+					case '2':
+						return '审核中';
+					default:
+						return '审核中';
+				}
+			},
+			formatDateTime: function (row, column, cellValue, index) {
+				var oDate = new Date(cellValue),
+						oYear = oDate.getFullYear(),
+						oMonth = oDate.getMonth() + 1,
+						oDay = oDate.getDate(),
+						oHour = oDate.getHours(),
+						oMin = oDate.getMinutes(),
+						oSec = oDate.getSeconds();
+				var oTime = oYear + '-' + this.getzf(oMonth) + '-' + this.getzf(oDay) + ' ' + this.getzf(oHour) + ':' + this.getzf(oMin) + ':' + this.getzf(oSec);//最后拼接时间
+				return oTime;
+			},
+			//补0操作
+			getzf: function (num) {
+				if (parseInt(num) < 10) {
+					num = '0' + num;
+				}
+				return num;
+			},
+			clearSearchForm: function () {
+				this.$refs['searchForm'].resetFields();
+				this.queryUnitService();
+			},
+
+			queryUnitService: function () {
+				var _this = this;
+				request('', {
+					url: ctx + '/supermarket/serviceExamine/listServiceMatter',
+					data: _this.searchForm,
+					type: 'get'
+				}, function (data) {
+
+					if (data.success) {
+						_this.ServiceMatterList = data.content.rows;
+						_this.searchForm.total = data.content.total;
+					}
+				}, function (msg) {
+				})
+			},
+
+			handleSizeChange: function (val) {
+				this.searchForm.pageSize = val;
+				this.queryUnitService();
+			},
+			handleCurrentChange: function (val) {
+				this.searchForm.pageNum = val;
+				this.queryUnitService();
+			},
+			handleSelectionChange: function (val) {
+				this.multipleSelection = val;
+			},
+			toDetailHtml: function (row) {
+				var unitServiceId = row.unitServiceId;
+				window.location.href = ctx + 'supermarket/serviceExamine/unitServiceDetailIndex.html?unitServiceId=' + unitServiceId;
+			},
+
+			queryAgentSerivce: function () {
+				var _this = this;
+				request('', {
+					url: ctx + 'supermarket/service/listAeaImServiceNoPage',
+					type: 'get'
+				}, function (data) {
+
+					if (data.success) {
+						_this.imServiceList = data.content;
+					}
+				}, function (msg) {
+				})
+			}
+		},
+		mounted: function () {
+			this.queryAgentSerivce();
+			this.queryUnitService();
+		},
+		create: function () {
+
+		}
+	})
+</script>
+</body>
+
+</html>

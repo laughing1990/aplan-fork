@@ -1,0 +1,1193 @@
+// 公共样式
+// inline-block, middle
+.inlineblock-midd {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+// 居中
+.text-ceter {
+    text-align: center;
+}
+
+// 居右
+.text-right {
+    text-align: right;
+}
+
+// 居左
+.text-left {
+    text-align: left;
+}
+
+.ml20 {
+    margin-left: 20px;
+}
+
+.mr20 {
+    margin-right: 20px;
+}
+
+.mt20 {
+    margin-top: 20px !important;
+}
+
+.mb20 {
+    margin-bottom: 20px;
+}
+
+.pl10 {
+    padding-left: 10px;
+}
+
+.pr10 {
+    padding-right: 10px;
+}
+
+.pt10 {
+    padding-top: 10px;
+}
+
+.pb10 {
+    padding-bottom: 10px;
+}
+
+.w-200 {
+    width: 200px;
+}
+
+.w-300 {
+    width: 300px !important;
+}
+
+label{
+  margin-bottom:0;
+}
+// 定义a链接颜色
+.a-color4879E4 {
+    color: #4879E4;
+}
+
+// 定义图片包裹层
+.img-wrap {
+    text-align: center;
+    overflow: hidden;
+
+    img {
+        max-width: 100%;
+        max-height: 100%;
+    }
+}
+
+/*
+定义圆角
+@radius 圆角大小
+*/
+.round(@radius: 5px) {
+    -webkit-border-radius: @radius;
+    -moz-border-radius: @radius;
+    border-radius: @radius;
+}
+
+/*
+定义背景图
+@url 图片url
+*/
+.bgSet(@url) {
+    background: @url no-repeat center;
+    background-size: 100% 100%;
+}
+
+// 个人中心页面-中介机构
+html,
+body {
+    width: 100%;
+    height: 100%;
+    background: #f2f6f9;
+    overflow-y: auto;
+}
+
+input[type="text"] {
+    height: 34px !important;
+}
+
+// 个人中心页面
+.person-content-wrap {
+    position: relative;
+    width: 1200px;
+    min-height: 600px;
+    margin: 0 auto;
+    height: 100%;
+    // height: 80%;
+    padding-bottom: 30px;
+
+
+    // 头部面包屑
+    .crumbs-wrap {
+        width: 100%;
+        height: 48px;
+        line-height: 48px;
+
+        .crumbs-icon {
+            width: 16px;
+            height: 18px;
+            background: url("../img/icon_local.png") no-repeat center;
+            background-size: 100% 100%;
+            margin-right: 6px;
+        }
+
+        .crumbs-tip {
+            color: #333;
+            font-size: 14px;
+        }
+
+        // 当前页面
+        .crumbs-cur {
+            color: #3184FA;
+        }
+    }
+
+    // main
+    .person-centre-box {
+        position: relative;
+        width: 100%;
+        // min-height: calc(~"100% - 48px");
+        background: #fff;
+        // min-height: 880px;
+        height: calc(~ "100% - 40px");
+        // min-height: calc(~"100% - 40px");
+
+        // 左边菜单
+        .menu-sidebar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 200px;
+            height: 100%;
+            // background: #e6e6e6;
+            border-right: 1px solid #eee;
+
+            // 个人信息
+            .personal-box {
+                position: relative;
+                width: 100%;
+                height: 120px;
+                padding-top: 18px;
+                .bgSet(url("../img/Bg.png"));
+
+                // 背景图
+                .person-bg-img {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                }
+
+                // 头像
+                .person-photo {
+                    position: relative;
+                    width: 46px;
+                    height: 46px;
+                    margin: 0px auto 12px;
+                    line-height: 46px;
+                    .round(23px);
+                    background: #fff;
+                    overflow: hidden;
+                    text-align: center;
+
+                    img {
+                        max-width: 100%;
+                        max-height: 100%;
+
+                    }
+                }
+
+                // 名称
+                p.person-name {
+                    position: relative;
+                    padding: 0 8px;
+                    width: 100%;
+                    text-align: center;
+                    color: #fff;
+                    font-size: 14px;
+                }
+
+                // 设置
+                span.person-set {
+                    position: absolute;
+                    top: 12px;
+                    right: 12px;
+                    width: 16px;
+                    height: 16px;
+                    background: url(../img/set_ico.png) no-repeat center;
+                }
+            }
+
+            // 菜单栏
+            .menu-nav {
+                height: calc(~ "100% - 120px");
+                overflow-y: auto;
+                padding-bottom: 60px;
+
+                li>a {
+                    display: block;
+                    font-size: 18px;
+                    font-weight: 700;
+                    text-align: center;
+                    line-height: 56px;
+                    border-top: 1px solid #eee;
+                    border-bottom: 1px solid #eee;
+                }
+                li>p {
+                    display: block;
+                    font-size: 18px;
+                    font-weight: 700;
+                    text-align: center;
+                    line-height: 56px;
+                    border-top: 1px solid #eee;
+                    border-bottom: 1px solid #eee;
+                    margin: 0;
+                }
+
+                li>ul {
+                    li {
+                        cursor: pointer;
+                        line-height: 48px;
+                        text-align: center;
+                        color: #333;
+                        font-size: 15px;
+                        border-left: 4px solid #fff;
+                        transition: all .2s;
+                    }
+
+                    li.active {
+                        background: rgba(49, 132, 250, .1);
+                        color: #3184fa;
+                        border-left-color: #3184fa;
+                    }
+                }
+            }
+        }
+
+        // 右边模块wrap
+        .content-wrap {
+            width: calc(~ "100% - 200px");
+            margin-left: 200px;
+            height: 100%;
+            // overflow-y: auto;
+
+            .content {
+                padding: 20px;
+                height: 100%;
+
+                .box {
+                    height: 100%;
+
+                    .box-tit {
+                        margin: 15px 0 10px;
+                        padding-left: 8px;
+                        line-height: 20px;
+                        font-size: 20px;
+                        color: #333;
+                        border-left: 5px solid #3184fa;
+                    }
+
+                    .pandel {
+                        // height: calc(~ "100% - 30px")
+                    }
+                }
+            }
+
+            // 中介结构内容区
+            .agency-content-wrap {
+
+                // 综合数据展示
+                .data-show-box {
+                    .data-show {
+                        .data-show-list {
+                            margin: 30px 0;
+                            overflow: hidden;
+
+                            li {
+                                float: left;
+                                width: 30.5%;
+                                height: 140px;
+                                margin-right: 2.5%;
+                                padding: 18px 20px;
+                                margin-bottom: 30px;
+                                background: #F2F6F9;
+                                text-align: center;
+
+                                &>h4 {
+                                    font-size: 15px;
+                                    text-align: left;
+                                    margin-bottom: 12px;
+
+                                    &>span {
+                                        display: inline-block;
+                                        vertical-align: middle;
+                                        margin-top: -3px;
+                                        margin-right: 6px;
+                                        width: 20px;
+                                        height: 20px;
+
+                                    }
+
+                                    .bgimgwhile(@counter) when (@counter < 7) {
+                                        .bg@{counter} {
+                                            background:url("../img/iconagency/icon@{counter}.png") no-repeat 0 0;
+                                            // background-size: 100%;
+                                        }
+
+                                        .bgimgwhile((@counter + 1)); // 递归调用自身
+                                    }
+
+                                    .bgimgwhile(1);
+                                }
+
+                                &>a {
+                                    display: inline-block;
+                                    font-size: 38px;
+                                    transition: all .2s;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // 添加委托人
+                .client-box {
+                    position: relative;
+
+                    // 跳转按钮
+                    .to-add-btn {
+                        position: absolute;
+                        top: 0;
+                        right: 0;
+                    }
+
+                    // 委托人列表
+                    .client-list {
+                        .handel {
+                            height: 34px;
+                            line-height: 34px;
+                            margin-top: 30px;
+                        }
+
+                        // 表格
+                        .list {
+                            // height: 500px;
+                            width: 100%;
+                            // background: #eee;
+                            padding-top: 30px;
+                            // min-height: 400px!important;
+                            overflow-y: auto;
+                        }
+                    }
+
+                    // 添加面板
+                    .client-add {
+                        position: absolute;
+                        left: 0;
+                        top: 0;
+                        width: 100%;
+                        height: 100%;
+                        background: #fff;
+                        z-index: 2;
+                    }
+                }
+
+                // 可报名项目模块
+                .project-cansignup-module {
+                    position: relative;
+                    min-height: 680px;
+
+                    // 当前竞价的项目基本信息展示模块
+                    .cansignup-project-info {
+                        position: relative;
+                        top: -44px;
+                        z-index: 2;
+                        left: 0;
+                        background: #fff;
+                        width: 100%;
+                        height: 100%;
+
+                        // 头部
+                        .info-header {
+                            height: 40px;
+                            line-height: 40px;
+
+                            .info-time {
+                                font-size: 16px;
+
+                                b {
+                                    color: #4879E4;
+                                }
+                            }
+                        }
+
+                        // 项目title
+                        .info-title {
+                            text-align: center;
+                            font-size: 24px;
+                            line-height: 2.2;
+                            margin-bottom: 10px;
+                            margin-top: 10px;
+                        }
+
+                        // 信息模块
+                        .info-item {
+                            h2.item-title {
+                                border-bottom: 1px solid #e1e9f5;
+                                font-size: 16px;
+                                color: #333;
+                                height: 50px;
+                                line-height: 50px;
+                                padding: 0 18px 0 0;
+                                cursor: pointer;
+                                position: relative;
+
+                                .arrow-icon {
+                                    width: 18px;
+                                    height: 18px;
+                                    display: inline-block;
+                                    background: url(../img/projectDetail/arrow_right.png) center center no-repeat;
+                                    position: absolute;
+                                    right: 10px;
+                                    top: 50%;
+                                    margin-top: -6px;
+                                    // transition: all 0.3s linear;
+                                }
+
+                                .item-icon {
+                                    width: 22px;
+                                    height: 22px;
+                                    display: inline-block;
+                                    background: url(../img/projectDetail/info_ico.png) center center no-repeat;
+                                    margin-right: 8px;
+                                    vertical-align: middle;
+                                    margin-top: -3px;
+                                }
+
+                            }
+
+                            h2.item-title+.item-detail {
+                                display: none;
+                                // height: 0;
+                                // overflow: hidden;                              
+                                // transition: all 0.3s linear;
+                            }
+
+                            h2.item-title.active {
+                                .arrow-icon {
+                                    transform: rotate(90deg);
+                                    // background: url(../img/projectDetail/arrow_bottom.png) center center no-repeat;
+                                }
+                            }
+
+                            h2.item-title.active+.item-detail {
+                                display: block;
+                                // height: auto;
+                                padding: 20px 0;
+                            }
+                        }
+
+                        // 咨询与监督
+                        .supervision-item {
+                            h2.item-title {
+                                .item-icon {
+                                    background: url("../img/projectDetail/colla_1.png") no-repeat center;
+                                }
+                            }
+                        }
+
+                        // 附件
+                        .enclosure-item {
+                            h2.item-title {
+                                .item-icon {
+                                    background: url("../img/projectDetail/colla_2.png") no-repeat center;
+                                }
+                            }
+
+                            .item-detail {
+                                p {
+                                    display: inline-block;
+                                    min-width: 50%;
+                                    color: #474747;
+                                    margin-bottom: 20px;
+
+                                    span {
+                                        display: inline-block;
+                                    }
+
+                                    a {}
+                                }
+                            }
+                        }
+
+                        // 竞价过程
+                        .price-procss {
+
+                            b {
+                                color: #4879E4;
+                            }
+
+                            .my-price-box {
+                                border: 1px solid #e4e4e4;
+                                // margin: 20px 0 50px 30px;
+                                padding: 15px 30px 30px;
+
+                                .bidding-rule {
+                                    text-align: right;
+
+                                    a {
+                                        color: #3184FA;
+
+                                        .help-ico {
+                                            width: 18px;
+                                            height: 18px;
+                                            display: inline-block;
+                                            background: url(../img/projectDetail/help_icon.png) no-repeat;
+                                            margin-left: 6px;
+                                            vertical-align: middle;
+                                            margin-top: -2px;
+                                        }
+                                    }
+                                }
+
+                                .input-money {
+                                    width: 65%;
+                                    width: 94%;
+                                    margin: auto;
+
+                                    label {
+                                        font-size: 16px;
+                                        color: #474747;
+                                        line-height: 2;
+                                    }
+
+                                    .my-price-inp {
+                                        display: inline-block;
+                                        width: 72%;
+                                        height: 38px !important;
+                                    }
+                                }
+                            }
+                        }
+
+                        // 参与报名的报名信息填写
+                        .edit-item {
+                            .edit-item-detail {
+                                .form-item {
+                                    display: table;
+                                    margin: 10px 0;
+
+                                    label {
+                                        text-align: right;
+                                        font-size: 14px;
+                                        line-height: 16px;
+                                        color: #666;
+                                        padding-right: 12px;
+                                        width: 135px;
+                                        font-weight: 400;
+                                        vertical-align: middle;
+
+                                        .red-cl {
+                                            color: #fa3131;
+                                        }
+                                    }
+
+                                    .input-box {
+                                        display: table-cell;
+                                        width: 100%;
+
+                                        .note-txt {
+                                            font-size: 12px;
+                                            color: #747474;
+                                            vertical-align: text-bottom;
+                                        }
+                                    }
+
+                                    .input-radio {
+                                        label {
+                                            width: 30px;
+                                        }
+                                    }
+                                }
+
+                                .upload-card {
+                                    border: 1px solid #ccc;
+                                    padding: 20px 20px 15px 20px;
+
+                                    .upload-btn {
+                                        position: relative;
+
+                                    }
+
+                                    .pjfile-list {
+                                        width: 30%;
+
+                                        li {
+                                            margin: 10px 0;
+                                            color: #474747;
+
+                                            .person-ico {
+                                                width: 24px;
+                                                height: 24px;
+                                                display: inline-block;
+                                                background: url(../img/person_icon.png) center center no-repeat;
+                                                margin-right: 16px;
+                                                vertical-align: middle;
+                                                margin-top: -2px;
+                                            }
+
+                                            .debtn {
+                                                color: #F12E2E;
+                                                float: right;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        // 提交信息操作模块
+                        .sign-up-box {
+                            text-align: center;
+
+                            .read-rule {
+                                margin: 50px 0 30px;
+                                position: relative;
+                                display: block;
+
+                                label {
+                                    display: inline-block;
+                                    vertical-align: middle;
+                                    position: relative;
+                                    padding-left: 5px;
+                                    font-weight: 400;
+                                    margin-bottom: 0;
+                                    color: #999;
+                                }
+                            }
+                        }
+
+                        // 报名成功页
+                        .apply-success {
+                            margin: 100px 0 50px 0;
+                            text-align: center;
+
+                            .success-icon {
+                                margin: 0 auto;
+                                width: 80px;
+                                height: 80px;
+                                .bgSet(url("../img/success.png"))
+                            }
+
+                            h2 {
+                                font-size: 36px;
+                                color: #474747;
+                                margin: 15px 0 20px;
+                            }
+
+                            .el-buttonb {
+                                margin-top: 50px;
+                            }
+                        }
+                    }
+                }
+
+                // 报名的项目模块
+                .project-singnup-module {
+                    position: relative;
+                    min-height: 680px;
+
+                    // 当前竞价的项目基本信息展示模块
+                    .signup-project-info {
+                        position: relative;
+                        top: -44px;
+                        z-index: 2;
+                        left: 0;
+                        background: #fff;
+                        width: 100%;
+                        height: 100%;
+
+                        // 头部
+                        .info-header {
+                            height: 40px;
+                            line-height: 40px;
+
+                            .info-time {
+                                font-size: 16px;
+
+                                b {
+                                    color: #4879E4;
+                                }
+                            }
+                        }
+
+                        // 项目title
+                        .info-title {
+                            text-align: center;
+                            font-size: 24px;
+                            line-height: 2.2;
+                            margin-bottom: 10px;
+                            margin-top: 10px;
+                        }
+
+                        // 信息模块
+                        .info-item {
+                            h2.item-title {
+                                border-bottom: 1px solid #e1e9f5;
+                                font-size: 16px;
+                                color: #333;
+                                height: 50px;
+                                line-height: 50px;
+                                padding: 0 18px 0 0;
+                                cursor: pointer;
+                                position: relative;
+
+                                .arrow-icon {
+                                    width: 18px;
+                                    height: 18px;
+                                    display: inline-block;
+                                    background: url(../img/projectDetail/arrow_right.png) center center no-repeat;
+                                    position: absolute;
+                                    right: 10px;
+                                    top: 50%;
+                                    margin-top: -6px;
+                                    // transition: all 0.3s linear;
+                                }
+
+                                .item-icon {
+                                    width: 22px;
+                                    height: 22px;
+                                    display: inline-block;
+                                    background: url(../img/projectDetail/info_ico.png) center center no-repeat;
+                                    margin-right: 8px;
+                                    vertical-align: middle;
+                                    margin-top: -3px;
+                                }
+
+                            }
+
+                            h2.item-title+.item-detail {
+                                display: none;
+                                // height: 0;
+                                // overflow: hidden;                              
+                                // transition: all 0.3s linear;
+                            }
+
+                            h2.item-title.active {
+                                .arrow-icon {
+                                    transform: rotate(90deg);
+                                    // background: url(../img/projectDetail/arrow_bottom.png) center center no-repeat;
+                                }
+                            }
+
+                            h2.item-title.active+.item-detail {
+                                display: block;
+                                // height: auto;
+                                padding: 20px 0;
+                            }
+
+                        }
+
+                        // 竞价过程
+                        .price-procss {
+
+                            b {
+                                color: #4879E4;
+                            }
+                            // 竞价信息展示
+                            .price-show-box{
+                                width: 38%; 
+                                display: inline-block; 
+                                vertical-align: top;
+                                padding: 10px 0;
+                                border: 1px solid #e4e4e4;
+                                .text-right{
+                                    font-weight: bold;
+                                }
+                            }
+
+                            .my-price-box {
+                                width: 56%;
+                                height: 289px;
+                                border: 1px solid #e4e4e4;
+                                // margin: 20px 0 50px 30px;
+                                padding: 15px 30px 30px;
+                                display: inline-block; 
+                                vertical-align: top;
+                                margin-left: 20px;
+
+                                .bidding-rule {
+                                    text-align: right;
+
+                                    a {
+                                        color: #3184FA;
+
+                                        .help-ico {
+                                            width: 18px;
+                                            height: 18px;
+                                            display: inline-block;
+                                            background: url(../img/projectDetail/help_icon.png) no-repeat;
+                                            margin-left: 6px;
+                                            vertical-align: middle;
+                                            margin-top: -2px;
+                                        }
+                                    }
+                                }
+
+                                .input-money {
+                                    width: 65%;
+                                    width: 94%;
+                                    margin: auto;
+                                    margin-top: 50px;
+
+                                    label {
+                                        font-size: 16px;
+                                        color: #474747;
+                                        line-height: 2;
+                                    }
+
+                                    .my-price-inp {
+                                        display: inline-block;
+                                        width: 78%;
+                                        width: 72%;
+                                        height: 38px !important;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // 服务事项管理模块
+                .service-matter-box {}
+
+                //执业/职业人员管理
+                .job-people-manage{
+                  .module-edit-pandel{
+                    .info-item{
+                      .item-detail{
+                        .row{
+                          .el-radio-group{
+                            .el-radio{
+                              width:56px;
+                            } 
+                          }
+                          .checkgroup{
+                            display: inline-block;
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+                
+                // 共用模块
+                .normal-module-box {
+                    position: relative;
+                    min-height: 680px;
+
+                    .box-tit {
+                        position: relative;
+
+                        .top-handel-btn {
+                            position: absolute;
+                            right: 0;
+                            top: 0;
+                        }
+                    }
+
+                    // 新增-编辑服务事项模块
+                    .module-edit-pandel {
+                        position: absolute;
+                        position: relative;
+                        top: -44px;
+                        z-index: 2;
+                        left: 0;
+                        background: #fff;
+                        width: 100%;
+                        height: 100%;
+
+
+                        // 头部
+                        .info-header {
+                            height: 40px;
+                            line-height: 40px;
+
+                            .info-time {
+                                font-size: 16px;
+
+                                b {
+                                    color: #4879E4;
+                                }
+                            }
+                        }
+
+                        // 项目title
+                        .info-title {
+                            text-align: center;
+                            font-size: 24px;
+                            line-height: 2.2;
+                            margin-bottom: 10px;
+                            margin-top: 10px;
+                        }
+
+                        // 信息模块
+                        .info-item {
+                            h2.item-title {
+                                border-bottom: 1px solid #e1e9f5;
+                                font-size: 16px;
+                                color: #333;
+                                height: 50px;
+                                line-height: 50px;
+                                padding: 0 18px 0 0;
+                                cursor: pointer;
+                                position: relative;
+
+                                .arrow-icon {
+                                    width: 18px;
+                                    height: 18px;
+                                    display: inline-block;
+                                    background: url(../img/projectDetail/arrow_right.png) center center no-repeat;
+                                    position: absolute;
+                                    right: 10px;
+                                    top: 50%;
+                                    margin-top: -6px;
+                                    // transition: all 0.3s linear;
+                                }
+
+                                .item-icon {
+                                    width: 22px;
+                                    height: 22px;
+                                    display: inline-block;
+                                    background: url(../img/projectDetail/info_ico.png) center center no-repeat;
+                                    margin-right: 8px;
+                                    vertical-align: middle;
+                                    margin-top: -3px;
+                                }
+
+                                // 附件
+                                .item-fujian-icon {
+                                    background: url(../img/projectDetail/colla_2.png) center center no-repeat;
+                                }
+
+                            }
+
+                            h2.item-title+.item-detail {
+                                display: none;
+                                // height: 0;
+                                // overflow: hidden;                              
+                                // transition: all 0.3s linear;
+                            }
+
+                            h2.item-title.active {
+                                .arrow-icon {
+                                    transform: rotate(90deg);
+                                    // background: url(../img/projectDetail/arrow_bottom.png) center center no-repeat;
+                                }
+                            }
+
+                            h2.item-title.active+.item-detail {
+                                display: block;
+                                // height: auto;
+                                padding: 20px 0;
+                            }
+                        }
+
+                        // 编辑模块
+                        .edit-item {
+                            .edit-item-detail {
+                                .form-item {
+                                    display: table;
+                                    margin: 10px 0;
+
+                                    label {
+                                        text-align: right;
+                                        font-size: 14px;
+                                        line-height: 16px;
+                                        color: #666;
+                                        padding-right: 12px;
+                                        width: 135px;
+                                        font-weight: 400;
+                                        vertical-align: middle;
+
+                                        .red-cl {
+                                            color: #fa3131;
+                                        }
+                                    }
+
+                                    .input-box {
+                                        display: table-cell;
+                                        width: 100%;
+
+                                        .note-txt {
+                                            font-size: 12px;
+                                            color: #747474;
+                                            vertical-align: text-bottom;
+                                        }
+                                    }
+
+                                    // 树形结构
+                                    .major-tree-box {
+                                        padding: 10px;
+                                        border: 1px solid #e5e5e5;
+
+                                        // 树结构头部资质xuanze
+                                        .box-header-tool {
+                                            border-bottom: 1px solid #e5e5e5;
+                                            padding-bottom: 10px;
+                                        }
+
+                                        label {
+                                            width: 30px;
+                                        }
+                                    }
+
+                                    .input-radio {
+                                        label {
+                                            width: 30px;
+                                            width: auto;
+                                        }
+                                    }
+
+                                    // 输入行带有其他操作的
+                                    .input-handel-box {
+                                        position: relative;
+
+                                        .el-date-editor,
+                                        .el-select {
+                                            width: 330px;
+                                        }
+
+                                        .handel-btn {
+                                            position: absolute;
+                                            right: 35px;
+                                            top: 4px;
+                                            width: 26px;
+                                            height: 26px;
+
+                                            i {
+                                                font-size: 26px;
+                                            }
+
+                                            &:nth-of-type(1) {
+                                                right: 75px;
+                                            }
+                                        }
+                                    }
+
+                                    // 多选checkbox组
+                                    .checkbox-group {
+                                        border: 1px solid rgba(204, 204, 204, 1);
+                                        padding: 8px 12px;
+
+                                        label {
+                                            width: 148px;
+                                            text-align: left;
+                                            margin-right: 20px;
+                                            margin-top: 20px;
+                                        }
+                                    }
+
+                                    // 日期间隔label
+                                    .date-space-label {
+                                        width: 40px;
+                                        padding-right: 20px;
+                                    }
+
+                                }
+
+                                .upload-card {
+                                    border: 1px solid #ccc;
+                                    padding: 20px 20px 15px 20px;
+
+                                    .upload-btn {
+                                        position: relative;
+
+                                        // 上传提示
+                                        .upload-tip {
+                                            position: absolute;
+                                            top: 6px;
+                                            left: 140px;
+                                        }
+                                    }
+
+                                    .pjfile-list {
+                                        width: 30%;
+
+                                        li {
+                                            margin: 10px 0;
+                                            color: #474747;
+
+                                            .person-ico {
+                                                width: 24px;
+                                                height: 24px;
+                                                display: inline-block;
+                                                background: url(../img/person_icon.png) center center no-repeat;
+                                                margin-right: 16px;
+                                                vertical-align: middle;
+                                                margin-top: -2px;
+                                            }
+
+                                            .debtn {
+                                                color: #F12E2E;
+                                                float: right;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // 添加委托人
+                .add-client-people-box{
+                    // 列表小图标
+                    .list-icon{
+                        width: 32px;
+                        height: 32px;
+                        display: inline-block;
+                        margin-right: 8px;
+                        vertical-align: middle;
+                        margin-top: -2px;
+                    }
+                    // 管理员图标
+                    .admin-icon{
+                        background: url('../img/admin_icon.png')no-repeat center;                   
+                    }
+                    // 普通成员图标
+                    .person-icon{
+                        background: url('../img/person_icon.png') no-repeat center;
+                    }
+
+                    // 绑定账号dialog
+                    .bidding-dialog{
+                        .service-matter-box{
+                            margin: 20px 0 0 0;
+                            label{
+                                margin-top: 6px;
+                                width: 44%;
+                                &:nth-child(even){
+                                    margin-right: 0;
+                                }
+                                // 限制显示长度
+                                .el-checkbox__label{
+                                    display: inline-block;
+                                    vertical-align: middle;
+                                    overflow: hidden;
+                                    text-overflow: ellipsis;
+                                    width: 15em;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

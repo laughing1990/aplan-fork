@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by 23948    2019-07-04 16:40:49 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaUnitLinkmanMapper">
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns">
+        UNIT_LINKMAN_ID  unitLinkmanId,
+    UNIT_INFO_ID  unitInfoId,
+    LINKMAN_INFO_ID  linkmanInfoId,
+    CREATER  creater,
+    CREATE_TIME  createTime,
+    IS_BIND_ACCOUNT  isBindAccount,
+    IS_ADMINISTRATORS  isAdministrators
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaUnitLinkmanById" resultType="AeaUnitLinkman">
+        select
+        <include refid="allColumns"/>
+        from AEA_UNIT_LINKMAN
+        where UNIT_LINKMAN_ID = #{id}
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaUnitLinkman" resultType="AeaUnitLinkman">
+        select
+        <include refid="allColumns"/>
+        from AEA_UNIT_LINKMAN
+        <where>
+            <if test="unitLinkmanId != null">
+                AND UNIT_LINKMAN_ID = #{unitLinkmanId}
+            </if>
+            <if test="unitInfoId != null">
+                AND UNIT_INFO_ID = #{unitInfoId}
+            </if>
+            <if test="linkmanInfoId != null">
+                AND LINKMAN_INFO_ID = #{linkmanInfoId}
+            </if>
+            <if test="creater != null">
+                AND CREATER = #{creater}
+            </if>
+            <if test="createTime != null">
+                AND CREATE_TIME = #{createTime}
+            </if>
+            <if test="isBindAccount != null">
+                AND IS_BIND_ACCOUNT = #{isBindAccount}
+            </if>
+            <if test="isAdministrators != null">
+                AND IS_ADMINISTRATORS = #{isAdministrators}
+            </if>
+        </where>
+    </select>
+    <!--4 根据条件查询实体list,返回分页对象 -->
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaUnitLinkman" parameterType="AeaUnitLinkman">
+        insert into AEA_UNIT_LINKMAN (UNIT_LINKMAN_ID, UNIT_INFO_ID, LINKMAN_INFO_ID, CREATER, CREATE_TIME,
+                                      IS_BIND_ACCOUNT, IS_ADMINISTRATORS)
+        values (#{unitLinkmanId}, #{unitInfoId}, #{linkmanInfoId}, #{creater}, #{createTime}, #{isBindAccount},
+                #{isAdministrators})
+    </insert>
+
+    <!-- 批量新增 -->
+    <insert id="batchInsertAeaUnitLinkman" parameterType="AeaUnitLinkman">
+        insert into AEA_UNIT_LINKMAN (UNIT_LINKMAN_ID, UNIT_INFO_ID, LINKMAN_INFO_ID, CREATER, CREATE_TIME,
+        IS_BIND_ACCOUNT, IS_ADMINISTRATORS)
+        values
+        <foreach collection="aeaUnitLinkmanList" item="aeaUnitLinkman" separator=",">
+            (#{aeaUnitLinkman.unitLinkmanId}, #{aeaUnitLinkman.unitInfoId}, #{aeaUnitLinkman.linkmanInfoId},
+            #{aeaUnitLinkman.creater}, #{aeaUnitLinkman.createTime}, #{aeaUnitLinkman.isBindAccount},
+            #{aeaUnitLinkman.isAdministrators})
+        </foreach>
+    </insert>
+
+
+    <!--6 修改实体对象 -->
+    <update id="updateAeaUnitLinkman" parameterType="AeaUnitLinkman">
+        update AEA_UNIT_LINKMAN
+        <set>
+            <if test="unitLinkmanId != null">
+                UNIT_LINKMAN_ID = #{unitLinkmanId},
+            </if>
+            <if test="unitInfoId != null">
+                UNIT_INFO_ID = #{unitInfoId},
+            </if>
+            <if test="linkmanInfoId != null">
+                LINKMAN_INFO_ID = #{linkmanInfoId},
+            </if>
+            <if test="creater != null">
+                CREATER = #{creater},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime},
+            </if>
+            <if test="isBindAccount != null">
+                IS_BIND_ACCOUNT = #{isBindAccount},
+            </if>
+            <if test="isAdministrators != null">
+                IS_ADMINISTRATORS = #{isAdministrators},
+            </if>
+        </set>
+        where UNIT_LINKMAN_ID = #{unitLinkmanId}
+    </update>
+
+    <update id="updateAeaUnitLinkmanByUnitAndLinkman" parameterType="AeaUnitLinkman">
+        update AEA_UNIT_LINKMAN aul
+        <set>
+            <if test="isBindAccount != null and isBindAccount!=''">
+                aul.IS_BIND_ACCOUNT = #{isBindAccount},
+            </if>
+            <if test="isAdministrators != null and isAdministrators!=''">
+                aul.IS_ADMINISTRATORS = #{isAdministrators}
+            </if>
+        </set>
+        <where>
+            <if test="linkmanInfoId!=null and linkmanInfoId!=''">
+                and LINKMAN_INFO_ID = #{linkmanInfoId}
+            </if>
+            <if test="unitInfoId!=null and unitInfoId!='' ">
+                AND UNIT_INFO_ID=#{unitInfoId}
+            </if>
+        </where>
+    </update>
+
+    <!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaUnitLinkman">
+        delete
+        from AEA_UNIT_LINKMAN
+        where UNIT_LINKMAN_ID = #{id}
+    </delete>
+
+    <select id="getLinkManIdByUnitInfoId" resultType="String">
+        select LINKMAN_INFO_ID FROM AEA_UNIT_LINKMAN
+        WHERE UNIT_INFO_ID = #{unitInfoId}
+    </select>
+
+    <delete id="deleteUnitLinkman">
+        delete
+        from AEA_UNIT_LINKMAN
+        where UNIT_INFO_ID = #{unitInfoId}
+        AND LINKMAN_INFO_ID IN
+        <foreach collection="linkmanInfoIds" item="linkmanInfoId" open="(" separator="," close=")">
+            #{linkmanInfoId}
+        </foreach>
+    </delete>
+    <!--8 删除实体对象列表,根据主键ID列表 -->
+    <!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaUnitLinkman" id="AeaUnitLinkmanMap">
+        <id property="unitLinkmanId" column="UNIT_LINKMAN_ID"/>
+        <result property="unitInfoId" column="UNIT_INFO_ID"/>
+        <result property="linkmanInfoId" column="LINKMAN_INFO_ID"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="isBindAccount" column="IS_BIND_ACCOUNT"/>
+        <result property="isAdministrators" column="IS_ADMINISTRATORS"/>
+    </resultMap>
+</mapper>

@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by Administrator    2019-11-01 10:14:43 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaExProjDrawingMapper" >
+<!--1 返回所有字段的SQL字句 -->
+<sql id="allColumns" >
+    DRAWING_ID  drawingId,
+    PROJ_INFO_ID  projInfoId,
+    PROVINCE_PROJ_CODE  provinceProjCode,
+    DRAWING_QUABOOK_CODE  drawingQuabookCode,
+    INVERSTMENT_MOENY  inverstmentMoeny,
+    APPROVE_DRAWING_AREA  approveDrawingArea,
+    APPROVE_START_TIME  approveStartTime,
+    APPROVE_END_TIME  approveEndTime,
+    IS_ONCE_PASS  isOncePass,
+    ONCE_PASS_AGAINST_COUNT  oncePassAgainstCount,
+    ONCE_PASS_AGAINST_ITEM  oncePassAgainstItem,
+    APPROVE_OPINION  approveOpinion,
+    APPROVE_CONFIRM_TIME  approveConfirmTime,
+    GOV_ORG_CODE  govOrgCode,
+    GOV_ORG_NAME  govOrgName,
+    GOV_ORG_AREA_CODE  govOrgAreaCode,
+    DRAWING_MEMO  drawingMemo,
+    CREATER  creater,
+    CREATE_TIME  createTime,
+    MODIFIER  modifier,
+    MODIFY_TIME  modifyTime,
+    ROOT_ORG_ID  rootOrgId
+    </sql>
+
+<!--2 根据主键ID查询单个实体 -->
+<select id="getAeaExProjDrawingById" resultType="AeaExProjDrawing" >
+    select
+    <include refid="allColumns"/>
+    from    AEA_EX_PROJ_DRAWING
+    where    DRAWING_ID = #{id}
+</select>
+
+<!--3 根据条件查询实体list -->
+    <select id="listAeaExProjDrawing" resultType="AeaExProjDrawing" >
+        select
+        <include refid="allColumns"/>
+        from    AEA_EX_PROJ_DRAWING
+    <where>
+        <if test="drawingId != null" >
+        AND    DRAWING_ID = #{drawingId}
+        </if>
+        <if test="projInfoId != null" >
+        AND    PROJ_INFO_ID = #{projInfoId}
+        </if>
+        <if test="provinceProjCode != null" >
+        AND    PROVINCE_PROJ_CODE = #{provinceProjCode}
+        </if>
+        <if test="drawingQuabookCode != null" >
+        AND    DRAWING_QUABOOK_CODE = #{drawingQuabookCode}
+        </if>
+        <if test="inverstmentMoeny != null" >
+        AND    INVERSTMENT_MOENY = #{inverstmentMoeny}
+        </if>
+        <if test="approveDrawingArea != null" >
+        AND    APPROVE_DRAWING_AREA = #{approveDrawingArea}
+        </if>
+        <if test="approveStartTime != null" >
+        AND    APPROVE_START_TIME = #{approveStartTime}
+        </if>
+        <if test="approveEndTime != null" >
+        AND    APPROVE_END_TIME = #{approveEndTime}
+        </if>
+        <if test="isOncePass != null" >
+        AND    IS_ONCE_PASS = #{isOncePass}
+        </if>
+        <if test="oncePassAgainstCount != null" >
+        AND    ONCE_PASS_AGAINST_COUNT = #{oncePassAgainstCount}
+        </if>
+        <if test="oncePassAgainstItem != null" >
+        AND    ONCE_PASS_AGAINST_ITEM = #{oncePassAgainstItem}
+        </if>
+        <if test="approveOpinion != null" >
+        AND    APPROVE_OPINION = #{approveOpinion}
+        </if>
+        <if test="approveConfirmTime != null" >
+        AND    APPROVE_CONFIRM_TIME = #{approveConfirmTime}
+        </if>
+        <if test="govOrgCode != null" >
+        AND    GOV_ORG_CODE = #{govOrgCode}
+        </if>
+        <if test="govOrgName != null" >
+        AND    GOV_ORG_NAME = #{govOrgName}
+        </if>
+        <if test="govOrgAreaCode != null" >
+        AND    GOV_ORG_AREA_CODE = #{govOrgAreaCode}
+        </if>
+        <if test="drawingMemo != null" >
+        AND    DRAWING_MEMO = #{drawingMemo}
+        </if>
+        <if test="creater != null" >
+        AND    CREATER = #{creater}
+        </if>
+        <if test="createTime != null" >
+        AND    CREATE_TIME = #{createTime}
+        </if>
+        <if test="modifier != null" >
+        AND    MODIFIER = #{modifier}
+        </if>
+        <if test="modifyTime != null" >
+        AND    MODIFY_TIME = #{modifyTime}
+        </if>
+        <if test="rootOrgId != null" >
+        AND    ROOT_ORG_ID = #{rootOrgId}
+        </if>
+    </where>
+    </select>
+<!--4 根据条件查询实体list,返回分页对象 -->
+
+<!--5 新增实体对象 -->
+<insert id="insertAeaExProjDrawing" parameterType="com.augurit.aplanmis.common.domain.AeaExProjDrawing" >
+    insert into AEA_EX_PROJ_DRAWING (
+DRAWING_ID  ,PROJ_INFO_ID  ,PROVINCE_PROJ_CODE  ,DRAWING_QUABOOK_CODE  ,INVERSTMENT_MOENY  ,APPROVE_DRAWING_AREA  ,APPROVE_START_TIME  ,APPROVE_END_TIME  ,IS_ONCE_PASS  ,ONCE_PASS_AGAINST_COUNT  ,ONCE_PASS_AGAINST_ITEM  ,APPROVE_OPINION  ,APPROVE_CONFIRM_TIME  ,GOV_ORG_CODE  ,GOV_ORG_NAME  ,GOV_ORG_AREA_CODE  ,DRAWING_MEMO  ,CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME  ,ROOT_ORG_ID  
+    )  values  (
+#{drawingId},#{projInfoId},#{provinceProjCode},#{drawingQuabookCode},#{inverstmentMoeny},#{approveDrawingArea},#{approveStartTime},#{approveEndTime},#{isOncePass},#{oncePassAgainstCount},#{oncePassAgainstItem},#{approveOpinion},#{approveConfirmTime},#{govOrgCode},#{govOrgName},#{govOrgAreaCode},#{drawingMemo},#{creater},#{createTime},#{modifier},#{modifyTime},  #{rootOrgId}
+    )
+</insert>
+<!--6 修改实体对象 -->
+<update id="updateAeaExProjDrawing" parameterType="com.augurit.aplanmis.common.domain.AeaExProjDrawing" >
+    update AEA_EX_PROJ_DRAWING
+    <set >
+        <if test="drawingId != null" >
+        DRAWING_ID = #{drawingId},
+        </if>
+        <if test="projInfoId != null" >
+        PROJ_INFO_ID = #{projInfoId},
+        </if>
+        <if test="provinceProjCode != null" >
+        PROVINCE_PROJ_CODE = #{provinceProjCode},
+        </if>
+        <if test="drawingQuabookCode != null" >
+        DRAWING_QUABOOK_CODE = #{drawingQuabookCode},
+        </if>
+        <if test="inverstmentMoeny != null" >
+        INVERSTMENT_MOENY = #{inverstmentMoeny},
+        </if>
+        <if test="approveDrawingArea != null" >
+        APPROVE_DRAWING_AREA = #{approveDrawingArea},
+        </if>
+        <if test="approveStartTime != null" >
+        APPROVE_START_TIME = #{approveStartTime},
+        </if>
+        <if test="approveEndTime != null" >
+        APPROVE_END_TIME = #{approveEndTime},
+        </if>
+        <if test="isOncePass != null" >
+        IS_ONCE_PASS = #{isOncePass},
+        </if>
+        <if test="oncePassAgainstCount != null" >
+        ONCE_PASS_AGAINST_COUNT = #{oncePassAgainstCount},
+        </if>
+        <if test="oncePassAgainstItem != null" >
+        ONCE_PASS_AGAINST_ITEM = #{oncePassAgainstItem},
+        </if>
+        <if test="approveOpinion != null" >
+        APPROVE_OPINION = #{approveOpinion},
+        </if>
+        <if test="approveConfirmTime != null" >
+        APPROVE_CONFIRM_TIME = #{approveConfirmTime},
+        </if>
+        <if test="govOrgCode != null" >
+        GOV_ORG_CODE = #{govOrgCode},
+        </if>
+        <if test="govOrgName != null" >
+        GOV_ORG_NAME = #{govOrgName},
+        </if>
+        <if test="govOrgAreaCode != null" >
+        GOV_ORG_AREA_CODE = #{govOrgAreaCode},
+        </if>
+        <if test="drawingMemo != null" >
+        DRAWING_MEMO = #{drawingMemo},
+        </if>
+        <if test="creater != null" >
+        CREATER = #{creater},
+        </if>
+        <if test="createTime != null" >
+        CREATE_TIME = #{createTime},
+        </if>
+        <if test="modifier != null" >
+        MODIFIER = #{modifier},
+        </if>
+        <if test="modifyTime != null" >
+        MODIFY_TIME = #{modifyTime},
+        </if>
+        <if test="rootOrgId != null" >
+        ROOT_ORG_ID = #{rootOrgId},
+        </if>
+    </set>
+    where DRAWING_ID = #{drawingId}
+</update>
+<!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaExProjDrawing">
+        delete from   AEA_EX_PROJ_DRAWING
+        where
+    DRAWING_ID = #{id}
+    </delete>
+<!--8 删除实体对象列表,根据主键ID列表 -->
+<!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="com.augurit.aplanmis.common.domain.AeaExProjDrawing" id="AeaExProjDrawingMap">
+        <id property="drawingId" column="DRAWING_ID"/>
+        <result property="projInfoId" column="PROJ_INFO_ID"/>
+        <result property="provinceProjCode" column="PROVINCE_PROJ_CODE"/>
+        <result property="drawingQuabookCode" column="DRAWING_QUABOOK_CODE"/>
+        <result property="inverstmentMoeny" column="INVERSTMENT_MOENY"/>
+        <result property="approveDrawingArea" column="APPROVE_DRAWING_AREA"/>
+        <result property="approveStartTime" column="APPROVE_START_TIME"/>
+        <result property="approveEndTime" column="APPROVE_END_TIME"/>
+        <result property="isOncePass" column="IS_ONCE_PASS"/>
+        <result property="oncePassAgainstCount" column="ONCE_PASS_AGAINST_COUNT"/>
+        <result property="oncePassAgainstItem" column="ONCE_PASS_AGAINST_ITEM"/>
+        <result property="approveOpinion" column="APPROVE_OPINION"/>
+        <result property="approveConfirmTime" column="APPROVE_CONFIRM_TIME"/>
+        <result property="govOrgCode" column="GOV_ORG_CODE"/>
+        <result property="govOrgName" column="GOV_ORG_NAME"/>
+        <result property="govOrgAreaCode" column="GOV_ORG_AREA_CODE"/>
+        <result property="drawingMemo" column="DRAWING_MEMO"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="modifier" column="MODIFIER"/>
+        <result property="modifyTime" column="MODIFY_TIME"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+    </resultMap>
+</mapper>

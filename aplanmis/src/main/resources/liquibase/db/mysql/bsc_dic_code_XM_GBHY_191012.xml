@@ -1,0 +1,715 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <preConditions>
+        <dbms type="mysql"/>
+    </preConditions>
+
+    <changeSet id="201910121133" author="chendx" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            delete from `bsc_dic_code_type` where `TYPE_CODE` = 'XM_GBHY';
+            INSERT INTO `bsc_dic_code_type`(`TYPE_ID`, `TYPE_CODE`, `TYPE_NAME`, `IS_TREE`, `IS_ACTIVE`, `TYPE_MEMO`,
+            `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES
+            ('fadff496-cde1-4c72-90b8-766744b18cb9', 'XM_GBHY', '国标行业', '1', '1', NULL, NULL, '2018-08-08 00:00:00',
+            NULL, '2019-08-19 17:42:38', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            delete from bsc_dic_code_item where TYPE_ID = 'fadff496-cde1-4c72-90b8-766744b18cb9';
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('03541cc0-c7a1-4ebf-9bad-2b2b30b71fe0',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'A01', '农业', '1', 1, '31725803-1710-4376-be08-78abae49c894',
+            '.03541cc0-c7a1-4ebf-9bad-2b2b30b71fe0.', 1, 0, NULL, NULL, '2019-10-12 09:52:21', NULL, '2019-10-12
+            09:52:21', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('06e339b1-ce53-4f32-b71d-06426ec7ceda',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'E47', '房屋建筑业', '1', 1, '31725803-1710-4376-be08-78abae49c101',
+            '.06e339b1-ce53-4f32-b71d-06426ec7ceda.', 1, 0, NULL, NULL, '2019-10-12 10:10:04', NULL, '2019-10-12
+            10:10:04', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('087cda95-4464-4871-a777-d18c10adb4ea',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'B09', '有色金属矿采选业', '1', 4, '31725803-1710-4376-be08-78abae49c895',
+            '.087cda95-4464-4871-a777-d18c10adb4ea.', 1, 0, NULL, NULL, '2019-10-12 09:57:18', NULL, '2019-10-12
+            09:57:18', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('09809e05-91e6-4f5f-9449-a01545028c03',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'I63', '电信、广播电视和卫星传输服务', '1', 1,
+            '31725803-1710-4376-be08-78abae49c897', '.09809e05-91e6-4f5f-9449-a01545028c03.', 1, 0, NULL, NULL,
+            '2019-10-12 10:21:43', NULL, '2019-10-12 10:21:43', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('0a2ce898-e13d-4701-a492-2b565eb3b1af',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'M73', '研究和试验发展', '1', 1, '8a7b254e-333d-47c7-8ebe-7ddc1db4483a',
+            '.8a7b254e-333d-47c7-8ebe-7ddc1db4483a.0a2ce898-e13d-4701-a492-2b565eb3b1af.', 2, 0, NULL, NULL, '2019-10-12
+            10:31:26', NULL, '2019-10-12 10:31:26', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('0deecfb6-7c42-4725-b15c-fa9cca51aa73',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'F52', '零售业', '1', 2, '31725803-1710-4376-be08-78abae49c100',
+            '.0deecfb6-7c42-4725-b15c-fa9cca51aa73.', 1, 0, NULL, NULL, '2019-10-12 10:11:51', NULL, '2019-10-12
+            10:11:51', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('0e348fb6-108b-4ef1-a678-d2c36a3cd968',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'K', '房地产业', '1', 11, '', '.0e348fb6-108b-4ef1-a678-d2c36a3cd968.',
+            1, 1, NULL, NULL, '2019-10-12 10:24:27', NULL, '2019-10-12 10:24:27',
+            '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('160b60b4-8cdb-435e-b3c6-e54cb3244a1a',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'B12', '其他采矿业', '1', 7, '31725803-1710-4376-be08-78abae49c895',
+            '.160b60b4-8cdb-435e-b3c6-e54cb3244a1a.', 1, 0, NULL, NULL, '2019-10-12 09:58:04', NULL, '2019-10-12
+            09:58:04', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('1788e420-c8de-40fb-adb4-7db9e39974ff',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'C25', '石油加工、炼焦和核燃料加工业 ', '1', 25,
+            '31725803-1710-4376-be08-78abae49c103', '.1788e420-c8de-40fb-adb4-7db9e39974ff.', 1, 0, NULL, NULL,
+            '2019-10-12 10:03:15', NULL, '2019-10-12 10:03:15', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('18d0f4b1-2d63-4632-bfde-8b3e888e1b03',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'S94', '群众团体、社会团体和其他成员组织', '1', 5,
+            '9242b20d-2055-4a4a-9ccf-244ded062d4e',
+            '.9242b20d-2055-4a4a-9ccf-244ded062d4e.18d0f4b1-2d63-4632-bfde-8b3e888e1b03.', 2, 0, NULL, NULL, '2019-10-12
+            10:49:55', NULL, '2019-10-12 10:49:55', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('1b63fece-e0b3-4238-8c1e-3b66ee52c305',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'E48', '土木工程建筑业', '1', 2, '31725803-1710-4376-be08-78abae49c101',
+            '.1b63fece-e0b3-4238-8c1e-3b66ee52c305.', 1, 0, NULL, NULL, '2019-10-12 10:10:41', NULL, '2019-10-12
+            10:10:41', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('1bcdd678-6487-459a-a1e1-1178de598691',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'C30', '非金属矿物制品业', '1', 30, '31725803-1710-4376-be08-78abae49c103',
+            '.1bcdd678-6487-459a-a1e1-1178de598691.', 1, 0, NULL, NULL, '2019-10-12 10:04:33', NULL, '2019-10-12
+            10:04:33', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('1d746c9d-0625-49b0-8019-a1a2876072f7',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'C18', '纺织服装、服饰业', '1', 6, '31725803-1710-4376-be08-78abae49c103',
+            '.1d746c9d-0625-49b0-8019-a1a2876072f7.', 1, 0, NULL, NULL, '2019-10-12 10:01:07', NULL, '2019-10-12
+            10:01:07', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('1f74aa84-2e7e-412a-840d-be5842c0fc56',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'C20', '木材加工和木、竹、藤、棕、草制品业', '1', 8,
+            '31725803-1710-4376-be08-78abae49c103', '.1f74aa84-2e7e-412a-840d-be5842c0fc56.', 1, 0, NULL, NULL,
+            '2019-10-12 10:02:10', NULL, '2019-10-12 10:02:10', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('20567e41-a19e-4dc1-a0ef-b34f969ee110',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'G56', '航空运输业 ', '1', 4, '31725803-1710-4376-be08-78abae49c899',
+            '.20567e41-a19e-4dc1-a0ef-b34f969ee110.', 1, 0, NULL, NULL, '2019-10-12 10:15:34', NULL, '2019-10-12
+            10:15:34', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('20f7e35e-0584-488d-b522-22a717155d46',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'J69', '其他金融业', '1', 4, '31725803-1710-4376-be08-78abae49c896',
+            '.20f7e35e-0584-488d-b522-22a717155d46.', 1, 0, NULL, NULL, '2019-10-12 10:23:42', NULL, '2019-10-12
+            10:23:42', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('2940b652-221f-4d68-8c0b-7597dd13ec1d',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'J68', '保险业', '1', 3, '31725803-1710-4376-be08-78abae49c896',
+            '.2940b652-221f-4d68-8c0b-7597dd13ec1d.', 1, 0, NULL, NULL, '2019-10-12 10:23:25', NULL, '2019-10-12
+            10:23:25', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('2b39105c-26bd-4d79-89b2-fe5a169e50b6',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'N77', '生态保护和环境治理业', '1', 2, '5a5f5036-2b74-42f5-9b86-b620cfe87941',
+            '.5a5f5036-2b74-42f5-9b86-b620cfe87941.2b39105c-26bd-4d79-89b2-fe5a169e50b6.', 2, 0, NULL, NULL, '2019-10-12
+            10:32:34', NULL, '2019-10-12 10:32:34', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('2ea52621-c440-43c2-add7-0680c07c3453',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'Q', '卫生和社会工作', '1', 17, '',
+            '.2ea52621-c440-43c2-add7-0680c07c3453.', 1, 2, NULL, NULL, '2019-10-12 10:26:25', NULL, '2019-10-12
+            10:26:25', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('30b216ab-b5d7-4c9a-b702-2edf12de609b',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'G60', '邮政业', '1', 8, '31725803-1710-4376-be08-78abae49c899',
+            '.30b216ab-b5d7-4c9a-b702-2edf12de609b.', 1, 0, NULL, NULL, '2019-10-12 10:17:34', NULL, '2019-10-12
+            10:17:53', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('31581c2a-466c-43d2-891e-8b51393fb266',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'C42', '废弃资源综合利用业 ', '1', 42,
+            '31725803-1710-4376-be08-78abae49c103', '.31581c2a-466c-43d2-891e-8b51393fb266.', 1, 0, NULL, NULL,
+            '2019-10-12 10:08:14', NULL, '2019-10-12 10:08:14', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('31725803-1710-4376-be08-78abae49c100',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'F', '批发和零售业', '1', 6, NULL, NULL, 0, 2, NULL, NULL, NULL, NULL,
+            NULL, '012aa547-7104-418d-87cc-824f24f1a278');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('31725803-1710-4376-be08-78abae49c101',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'E', '建筑业', '1', 5, NULL, NULL, 0, 4, NULL, NULL, NULL, NULL, NULL,
+            '012aa547-7104-418d-87cc-824f24f1a278');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('31725803-1710-4376-be08-78abae49c102',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'D', '电力、热力、燃气及水生产和供应业', '1', 4, NULL, NULL, 0, 3, NULL, NULL, NULL,
+            NULL, NULL, '012aa547-7104-418d-87cc-824f24f1a278');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('31725803-1710-4376-be08-78abae49c103',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'C', '制造业', '1', 3, NULL, NULL, 0, 31, NULL, NULL, NULL, NULL, NULL,
+            '012aa547-7104-418d-87cc-824f24f1a278');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('31725803-1710-4376-be08-78abae49c894',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'A', '农、林、牧、渔', '1', 1, NULL, NULL, 0, 5, NULL, NULL, NULL, NULL,
+            NULL, '012aa547-7104-418d-87cc-824f24f1a278');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('31725803-1710-4376-be08-78abae49c895',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'B', '采矿业', '1', 2, NULL, NULL, 0, 7, NULL, NULL, NULL, NULL, NULL,
+            '012aa547-7104-418d-87cc-824f24f1a278');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('31725803-1710-4376-be08-78abae49c896',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'J', '金融业', '1', 10, NULL, NULL, 0, 4, NULL, NULL, NULL, NULL, NULL,
+            '012aa547-7104-418d-87cc-824f24f1a278');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('31725803-1710-4376-be08-78abae49c897',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'I', '信息传输、软件和信息技术服务业', '1', 9, NULL, NULL, 0, 3, NULL, NULL, NULL,
+            NULL, NULL, '012aa547-7104-418d-87cc-824f24f1a278');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('31725803-1710-4376-be08-78abae49c898',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'H', '住宿和餐饮业', '1', 8, NULL, NULL, 0, 2, NULL, NULL, NULL, NULL,
+            NULL, '012aa547-7104-418d-87cc-824f24f1a278');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('31725803-1710-4376-be08-78abae49c899',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'G', '交通运输、仓储和邮政业', '1', 7, NULL, NULL, 0, 8, NULL, NULL, NULL,
+            NULL, NULL, '012aa547-7104-418d-87cc-824f24f1a278');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('31fffa3a-a551-4f41-a2ee-42c1675361d6',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'C40', '仪器仪表制造业', '1', 40, '31725803-1710-4376-be08-78abae49c103',
+            '.31fffa3a-a551-4f41-a2ee-42c1675361d6.', 1, 0, NULL, NULL, '2019-10-12 10:07:11', NULL, '2019-10-12
+            10:07:11', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('34382b21-81eb-4fd5-a142-15ce02db8708',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'A02', '林业', '1', 2, '31725803-1710-4376-be08-78abae49c894',
+            '.34382b21-81eb-4fd5-a142-15ce02db8708.', 1, 0, NULL, NULL, '2019-10-12 09:52:43', NULL, '2019-10-12
+            09:52:43', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('379d4526-b362-4801-a51b-23ec2f84d44c',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'L', '租赁和商务服务业', '1', 12, '',
+            '.379d4526-b362-4801-a51b-23ec2f84d44c.', 1, 2, NULL, NULL, '2019-10-12 10:24:44', NULL, '2019-10-12
+            10:24:44', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('3aa3d43a-3c31-446c-8018-8d113ef1cc74',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'H62', '餐饮业', '1', 2, '31725803-1710-4376-be08-78abae49c898',
+            '.3aa3d43a-3c31-446c-8018-8d113ef1cc74.', 1, 0, NULL, NULL, '2019-10-12 10:21:16', NULL, '2019-10-12
+            10:21:16', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('3b56be60-a298-481c-a118-350ae9bb9980',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'C13', '农副食品加工业', '1', 1, '31725803-1710-4376-be08-78abae49c103',
+            '.3b56be60-a298-481c-a118-350ae9bb9980.', 1, 0, NULL, NULL, '2019-10-12 09:58:57', NULL, '2019-10-12
+            09:58:57', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('3d8a1b50-563a-458b-9299-ad11e2846a18',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'C35', '专用设备制造业 ', '1', 35, '31725803-1710-4376-be08-78abae49c103',
+            '.3d8a1b50-563a-458b-9299-ad11e2846a18.', 1, 0, NULL, NULL, '2019-10-12 10:05:52', NULL, '2019-10-12
+            10:05:52', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('3e22478a-5490-4fc3-8546-31fb4aec3ed7',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'K70', '房地产业', '1', 1, '0e348fb6-108b-4ef1-a678-d2c36a3cd968',
+            '.0e348fb6-108b-4ef1-a678-d2c36a3cd968.3e22478a-5490-4fc3-8546-31fb4aec3ed7.', 2, 0, NULL, NULL, '2019-10-12
+            10:28:34', NULL, '2019-10-12 10:28:34', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('3e4962c8-e132-4a0c-a47d-734dd54f9067',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'B11', '开采辅助活动', '1', 6, '31725803-1710-4376-be08-78abae49c895',
+            '.3e4962c8-e132-4a0c-a47d-734dd54f9067.', 1, 0, NULL, NULL, '2019-10-12 09:57:45', NULL, '2019-10-12
+            09:57:45', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('462ecb5e-4d0f-4926-a926-f4a75418c37d',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'L72', '商务服务业', '1', 2, '379d4526-b362-4801-a51b-23ec2f84d44c',
+            '.379d4526-b362-4801-a51b-23ec2f84d44c.462ecb5e-4d0f-4926-a926-f4a75418c37d.', 2, 0, NULL, NULL, '2019-10-12
+            10:30:56', NULL, '2019-10-12 10:30:56', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('470320cb-5f04-4489-9e1f-e8ea8707d1f7',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'O80', '机动车、电子产品和日用产品修理业', '1', 2,
+            'e17f8ca4-ac1c-4e2d-afef-75699d15c1b2',
+            '.e17f8ca4-ac1c-4e2d-afef-75699d15c1b2.470320cb-5f04-4489-9e1f-e8ea8707d1f7.', 2, 0, NULL, NULL, '2019-10-12
+            10:34:20', NULL, '2019-10-12 10:34:20', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('4768d076-4a8b-4fda-abd0-b43b46a927fa',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'C16', '烟草制品业 ', '1', 4, '31725803-1710-4376-be08-78abae49c103',
+            '.4768d076-4a8b-4fda-abd0-b43b46a927fa.', 1, 0, NULL, NULL, '2019-10-12 10:00:08', NULL, '2019-10-12
+            10:00:08', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('495fc3dc-866d-4744-9571-34a46f225cf4',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'C19', '皮革、毛皮、羽毛及其制品和制鞋业', '1', 7,
+            '31725803-1710-4376-be08-78abae49c103', '.495fc3dc-866d-4744-9571-34a46f225cf4.', 1, 0, NULL, NULL,
+            '2019-10-12 10:01:48', NULL, '2019-10-12 10:01:48', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('4de2d6e7-337b-4566-b6be-4f0133511aaa',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'R85', '新闻和出版业', '1', 1, 'ed87c956-361d-4afe-95c5-3cef6663e723',
+            '.ed87c956-361d-4afe-95c5-3cef6663e723.4de2d6e7-337b-4566-b6be-4f0133511aaa.', 2, 0, NULL, NULL, '2019-10-12
+            10:39:37', NULL, '2019-10-12 10:39:37', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('4f5b2ee1-3d97-4606-a6ef-d8090e346e72',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'G57', '管道运输业 ', '1', 5, '31725803-1710-4376-be08-78abae49c899',
+            '.4f5b2ee1-3d97-4606-a6ef-d8090e346e72.', 1, 0, NULL, NULL, '2019-10-12 10:15:48', NULL, '2019-10-12
+            10:15:48', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('52083e1f-b26d-4d3e-a99e-7d32954bc28c',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'T96', '国际组织', '1', 1, '82117ac7-1a27-4b11-9f5b-cf4721b388c7',
+            '.82117ac7-1a27-4b11-9f5b-cf4721b388c7.52083e1f-b26d-4d3e-a99e-7d32954bc28c.', 2, 0, NULL, NULL, '2019-10-12
+            10:50:31', NULL, '2019-10-12 10:50:31', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('548c42a3-2363-4941-91fb-cda27b7260de',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'S92', '人民政协、民主党派', '1', 3, '9242b20d-2055-4a4a-9ccf-244ded062d4e',
+            '.9242b20d-2055-4a4a-9ccf-244ded062d4e.548c42a3-2363-4941-91fb-cda27b7260de.', 2, 0, NULL, NULL, '2019-10-12
+            10:42:30', NULL, '2019-10-12 10:42:30', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('551f4fdb-a8ce-4b12-9d4d-ae29dc6fb73d',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'P', '教育', '1', 16, '', '.551f4fdb-a8ce-4b12-9d4d-ae29dc6fb73d.', 1,
+            1, NULL, NULL, '2019-10-12 10:26:10', NULL, '2019-10-12 10:26:10', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('55adde05-8414-41ea-9a9d-2449964724d7',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'C26', '化学原料和化学制品制造业', '1', 26,
+            '31725803-1710-4376-be08-78abae49c103', '.55adde05-8414-41ea-9a9d-2449964724d7.', 1, 0, NULL, NULL,
+            '2019-10-12 10:03:30', NULL, '2019-10-12 10:03:30', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('5a5f5036-2b74-42f5-9b86-b620cfe87941',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'N', '水利、环境和公共设施管理业', '1', 14, '',
+            '.5a5f5036-2b74-42f5-9b86-b620cfe87941.', 1, 4, NULL, NULL, '2019-10-12 10:25:33', NULL, '2019-10-12
+            10:25:33', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('5a819fb4-7af4-4e99-a602-2dfeb77e55f6',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'C22', '造纸和纸制品业 ', '1', 10, '31725803-1710-4376-be08-78abae49c103',
+            '.5a819fb4-7af4-4e99-a602-2dfeb77e55f6.', 1, 0, NULL, NULL, '2019-10-12 10:02:38', NULL, '2019-10-12
+            10:51:15', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('5b69d6af-2b75-47a1-875d-64f211458865',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'C34', '通用设备制造业', '1', 34, '31725803-1710-4376-be08-78abae49c103',
+            '.5b69d6af-2b75-47a1-875d-64f211458865.', 1, 0, NULL, NULL, '2019-10-12 10:05:30', NULL, '2019-10-12
+            10:05:30', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('5d9bdf0a-fd02-4595-b1ea-49b8f90f757e',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'M75', '科技推广和应用服务业', '1', 3, '8a7b254e-333d-47c7-8ebe-7ddc1db4483a',
+            '.8a7b254e-333d-47c7-8ebe-7ddc1db4483a.5d9bdf0a-fd02-4595-b1ea-49b8f90f757e.', 2, 0, NULL, NULL, '2019-10-12
+            10:32:02', NULL, '2019-10-12 10:32:02', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('5f51fbdf-4326-4df7-926e-b9cdc76c61ec',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'C33', '金属制品业 ', '1', 33, '31725803-1710-4376-be08-78abae49c103',
+            '.5f51fbdf-4326-4df7-926e-b9cdc76c61ec.', 1, 0, NULL, NULL, '2019-10-12 10:05:17', NULL, '2019-10-12
+            10:05:17', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('60288ccf-7bb3-45b8-8fc1-a9fa8455592b',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'D46', '水的生产和供应业 ', '1', 3, '31725803-1710-4376-be08-78abae49c102',
+            '.60288ccf-7bb3-45b8-8fc1-a9fa8455592b.', 1, 0, NULL, NULL, '2019-10-12 10:09:36', NULL, '2019-10-12
+            10:09:36', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('6311dd32-d633-4e87-bc51-6678d98b3e43',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'C28', '化学纤维制造业', '1', 28, '31725803-1710-4376-be08-78abae49c103',
+            '.6311dd32-d633-4e87-bc51-6678d98b3e43.', 1, 0, NULL, NULL, '2019-10-12 10:04:01', NULL, '2019-10-12
+            10:04:01', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('6722047b-80d9-4fda-aefb-e646d4debac1',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'D44', '电力、热力生产和供应业', '1', 1,
+            '31725803-1710-4376-be08-78abae49c102', '.6722047b-80d9-4fda-aefb-e646d4debac1.', 1, 0, NULL, NULL,
+            '2019-10-12 10:09:05', NULL, '2019-10-12 10:09:05', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('68057947-3e16-440a-b88b-2405729a4c8b',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'P82', '教育', '1', 1, '551f4fdb-a8ce-4b12-9d4d-ae29dc6fb73d',
+            '.551f4fdb-a8ce-4b12-9d4d-ae29dc6fb73d.68057947-3e16-440a-b88b-2405729a4c8b.', 2, 0, NULL, NULL, '2019-10-12
+            10:37:36', NULL, '2019-10-12 10:37:36', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('68c72c02-9f2e-4a92-b6c1-0cce9c76e216',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'G53', '铁路运输业', '1', 1, '31725803-1710-4376-be08-78abae49c899',
+            '.68c72c02-9f2e-4a92-b6c1-0cce9c76e216.', 1, 0, NULL, NULL, '2019-10-12 10:14:40', NULL, '2019-10-12
+            10:14:40', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('6d0fa60f-676b-49eb-840b-838a4477d0e1',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'G54', '道路运输业', '1', 2, '31725803-1710-4376-be08-78abae49c899',
+            '.6d0fa60f-676b-49eb-840b-838a4477d0e1.', 1, 0, NULL, NULL, '2019-10-12 10:14:58', NULL, '2019-10-12
+            10:14:58', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('6e06666d-3c9d-4416-86ff-6ed98c62425d',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'B08', '黑色金属矿采选业', '1', 3, '31725803-1710-4376-be08-78abae49c895',
+            '.6e06666d-3c9d-4416-86ff-6ed98c62425d.', 1, 0, NULL, NULL, '2019-10-12 09:57:02', NULL, '2019-10-12
+            09:57:02', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('734763a7-cd49-40ee-b407-f531975fb6e0',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'C15', '酒、饮料和精制茶制造业', '1', 3,
+            '31725803-1710-4376-be08-78abae49c103', '.734763a7-cd49-40ee-b407-f531975fb6e0.', 1, 0, NULL, NULL,
+            '2019-10-12 09:59:27', NULL, '2019-10-12 09:59:27', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('75858bee-d2c2-466a-8cd0-aaac8a01d63f',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'O81', '其他服务业', '1', 3, 'e17f8ca4-ac1c-4e2d-afef-75699d15c1b2',
+            '.e17f8ca4-ac1c-4e2d-afef-75699d15c1b2.75858bee-d2c2-466a-8cd0-aaac8a01d63f.', 2, 0, NULL, NULL, '2019-10-12
+            10:35:20', NULL, '2019-10-12 10:35:20', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('791f0529-f659-4315-a813-ef9c52415d94',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'B10', '非金属矿采选业', '1', 5, '31725803-1710-4376-be08-78abae49c895',
+            '.791f0529-f659-4315-a813-ef9c52415d94.', 1, 0, NULL, NULL, '2019-10-12 09:57:30', NULL, '2019-10-12
+            09:57:30', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('810f23d0-8600-4902-ba4f-529112c51749',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'C14', '食品制造业', '1', 2, '31725803-1710-4376-be08-78abae49c103',
+            '.810f23d0-8600-4902-ba4f-529112c51749.', 1, 0, NULL, NULL, '2019-10-12 09:59:13', NULL, '2019-10-12
+            09:59:13', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('82117ac7-1a27-4b11-9f5b-cf4721b388c7',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'T', '国际组织', '1', 20, '', '.82117ac7-1a27-4b11-9f5b-cf4721b388c7.',
+            1, 1, NULL, NULL, '2019-10-12 10:27:09', NULL, '2019-10-12 10:27:09',
+            '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('8223b149-3cd6-4a1a-b50f-4284cb5df287',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'H61', '住宿业', '1', 1, '31725803-1710-4376-be08-78abae49c898',
+            '.8223b149-3cd6-4a1a-b50f-4284cb5df287.', 1, 0, NULL, NULL, '2019-10-12 10:21:03', NULL, '2019-10-12
+            10:21:03', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('8553ae7a-061d-43b5-9a7e-22db5a8f612e',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'Q83', '卫生', '1', 1, '2ea52621-c440-43c2-add7-0680c07c3453',
+            '.2ea52621-c440-43c2-add7-0680c07c3453.8553ae7a-061d-43b5-9a7e-22db5a8f612e.', 2, 0, NULL, NULL, '2019-10-12
+            10:37:56', NULL, '2019-10-12 10:37:56', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('862204a0-3a8b-409f-9a08-315c14f1fb9f',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'C41', '其他制造业', '1', 41, '31725803-1710-4376-be08-78abae49c103',
+            '.862204a0-3a8b-409f-9a08-315c14f1fb9f.', 1, 0, NULL, NULL, '2019-10-12 10:08:02', NULL, '2019-10-12
+            10:08:02', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('8a7b254e-333d-47c7-8ebe-7ddc1db4483a',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'M', '科学研究和技术服务业', '1', 13, '',
+            '.8a7b254e-333d-47c7-8ebe-7ddc1db4483a.', 1, 3, NULL, NULL, '2019-10-12 10:25:05', NULL, '2019-10-12
+            10:25:05', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('8ab9ff69-de2b-49a0-9f05-7e1c1d887e44',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'G59', '仓储业', '1', 7, '31725803-1710-4376-be08-78abae49c899',
+            '.8ab9ff69-de2b-49a0-9f05-7e1c1d887e44.', 1, 0, NULL, NULL, '2019-10-12 10:17:17', NULL, '2019-10-12
+            10:17:17', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('8f3f1360-276e-4a53-9a47-0b4c293a0212',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'C17', '纺织业', '1', 5, '31725803-1710-4376-be08-78abae49c103',
+            '.8f3f1360-276e-4a53-9a47-0b4c293a0212.', 1, 0, NULL, NULL, '2019-10-12 10:00:48', NULL, '2019-10-12
+            10:00:48', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('913026b3-723f-4935-84d7-98e13fa47fda',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'I64', '互联网和相关服务', '1', 2, '31725803-1710-4376-be08-78abae49c897',
+            '.913026b3-723f-4935-84d7-98e13fa47fda.', 1, 0, NULL, NULL, '2019-10-12 10:22:01', NULL, '2019-10-12
+            10:22:01', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('921e1fdd-bff6-4fbc-92ef-db1029995955',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'F51', '批发业', '1', 1, '31725803-1710-4376-be08-78abae49c100',
+            '.921e1fdd-bff6-4fbc-92ef-db1029995955.', 1, 0, NULL, NULL, '2019-10-12 10:11:32', NULL, '2019-10-12
+            10:11:32', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('9242b20d-2055-4a4a-9ccf-244ded062d4e',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'S', '公共管理、社会保障和社会组织', '1', 19, '',
+            '.9242b20d-2055-4a4a-9ccf-244ded062d4e.', 1, 6, NULL, NULL, '2019-10-12 10:26:57', NULL, '2019-10-12
+            10:26:57', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('92da844d-b28d-4d9c-896e-69961244dba0',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'M74', '专业技术服务业', '1', 2, '8a7b254e-333d-47c7-8ebe-7ddc1db4483a',
+            '.8a7b254e-333d-47c7-8ebe-7ddc1db4483a.92da844d-b28d-4d9c-896e-69961244dba0.', 2, 0, NULL, NULL, '2019-10-12
+            10:31:41', NULL, '2019-10-12 10:31:41', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('962e2b36-8de1-4843-adf3-5ae500da9a8f',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'R89', '娱乐业', '1', 5, 'ed87c956-361d-4afe-95c5-3cef6663e723',
+            '.ed87c956-361d-4afe-95c5-3cef6663e723.962e2b36-8de1-4843-adf3-5ae500da9a8f.', 2, 0, NULL, NULL, '2019-10-12
+            10:41:42', NULL, '2019-10-12 10:41:42', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('9787d43b-ca5c-46dd-9820-5226a4528e41',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'O79', '居民服务业', '1', 1, 'e17f8ca4-ac1c-4e2d-afef-75699d15c1b2',
+            '.e17f8ca4-ac1c-4e2d-afef-75699d15c1b2.9787d43b-ca5c-46dd-9820-5226a4528e41.', 2, 0, NULL, NULL, '2019-10-12
+            10:34:07', NULL, '2019-10-12 10:34:07', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('993353cf-6f6d-4cc6-9acd-cbc05c0be96d',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'J66', '货币金融服务', '1', 1, '31725803-1710-4376-be08-78abae49c896',
+            '.993353cf-6f6d-4cc6-9acd-cbc05c0be96d.', 1, 0, NULL, NULL, '2019-10-12 10:22:59', NULL, '2019-10-12
+            10:22:59', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('9aca45f4-b414-475a-ad69-7d642ed36d6a',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'L71', '租赁业', '1', 1, '379d4526-b362-4801-a51b-23ec2f84d44c',
+            '.379d4526-b362-4801-a51b-23ec2f84d44c.9aca45f4-b414-475a-ad69-7d642ed36d6a.', 2, 0, NULL, NULL, '2019-10-12
+            10:28:56', NULL, '2019-10-12 10:28:56', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('9ed2d5f1-b883-4b8d-b50e-63fae47d8063',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'D45', '燃气生产和供应业 ', '1', 2, '31725803-1710-4376-be08-78abae49c102',
+            '.9ed2d5f1-b883-4b8d-b50e-63fae47d8063.', 1, 0, NULL, NULL, '2019-10-12 10:09:24', NULL, '2019-10-12
+            10:09:24', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('9f79d1d3-9c32-4d16-b22c-f8811e686a41',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'S91', '国家机构', '1', 2, '9242b20d-2055-4a4a-9ccf-244ded062d4e',
+            '.9242b20d-2055-4a4a-9ccf-244ded062d4e.9f79d1d3-9c32-4d16-b22c-f8811e686a41.', 2, 0, NULL, NULL, '2019-10-12
+            10:42:19', NULL, '2019-10-12 10:42:19', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('aaab7e19-e8db-4511-8595-707f66314c5b',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'E50', '建筑装饰和其他建筑业', '1', 4, '31725803-1710-4376-be08-78abae49c101',
+            '.aaab7e19-e8db-4511-8595-707f66314c5b.', 1, 0, NULL, NULL, '2019-10-12 10:11:13', NULL, '2019-10-12
+            10:11:13', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('abdd2808-5cf3-4b84-9373-1745b1144d6d',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'G58', '装卸搬运和运输代理业', '1', 6, '31725803-1710-4376-be08-78abae49c899',
+            '.abdd2808-5cf3-4b84-9373-1745b1144d6d.', 1, 0, NULL, NULL, '2019-10-12 10:16:52', NULL, '2019-10-12
+            10:16:52', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('aea8ce5d-473a-4d17-a2d7-1e970503e338',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'C24', '文教、工美、体育和娱乐用品制造业', '1', 24,
+            '31725803-1710-4376-be08-78abae49c103', '.aea8ce5d-473a-4d17-a2d7-1e970503e338.', 1, 0, NULL, NULL,
+            '2019-10-12 10:03:03', NULL, '2019-10-12 10:03:03', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('af8a3ecd-7496-47fd-a116-3ab1280d8976',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'G55', '水上运输业', '1', 3, '31725803-1710-4376-be08-78abae49c899',
+            '.af8a3ecd-7496-47fd-a116-3ab1280d8976.', 1, 0, NULL, NULL, '2019-10-12 10:15:14', NULL, '2019-10-12
+            10:15:14', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('b01a2ac7-7140-4ea0-a0b0-3920e317e4de',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'C23', '印刷和记录媒介复制业', '1', 23,
+            '31725803-1710-4376-be08-78abae49c103', '.b01a2ac7-7140-4ea0-a0b0-3920e317e4de.', 1, 0, NULL, NULL,
+            '2019-10-12 10:02:50', NULL, '2019-10-12 10:02:50', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('b163f64e-87e5-41fa-b97b-31c5d74d5d6a',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'C38', '电气机械和器材制造业 ', '1', 38,
+            '31725803-1710-4376-be08-78abae49c103', '.b163f64e-87e5-41fa-b97b-31c5d74d5d6a.', 1, 0, NULL, NULL,
+            '2019-10-12 10:06:33', NULL, '2019-10-12 10:06:33', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('c15fdda0-753a-4a8c-ac56-493d9031ce69',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'N76', '水利管理业', '1', 1, '5a5f5036-2b74-42f5-9b86-b620cfe87941',
+            '.5a5f5036-2b74-42f5-9b86-b620cfe87941.c15fdda0-753a-4a8c-ac56-493d9031ce69.', 2, 0, NULL, NULL, '2019-10-12
+            10:32:21', NULL, '2019-10-12 10:32:21', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('c1a89c25-6051-415a-b5a6-fed547e45533',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'C27', '医药制造业 ', '1', 27, '31725803-1710-4376-be08-78abae49c103',
+            '.c1a89c25-6051-415a-b5a6-fed547e45533.', 1, 0, NULL, NULL, '2019-10-12 10:03:42', NULL, '2019-10-12
+            10:03:42', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('c3c9498e-a49b-4f54-b5f4-17430a595268',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'I65', '软件和信息技术服务业', '1', 3, '31725803-1710-4376-be08-78abae49c897',
+            '.c3c9498e-a49b-4f54-b5f4-17430a595268.', 1, 0, NULL, NULL, '2019-10-12 10:22:18', NULL, '2019-10-12
+            10:22:18', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('c48a49f5-7030-424b-8d64-68e345a6af79',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'R88', '体育', '1', 4, 'ed87c956-361d-4afe-95c5-3cef6663e723',
+            '.ed87c956-361d-4afe-95c5-3cef6663e723.c48a49f5-7030-424b-8d64-68e345a6af79.', 2, 0, NULL, NULL, '2019-10-12
+            10:40:26', NULL, '2019-10-12 10:40:26', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('c825dc0e-b21e-4960-9cbf-168460458c21',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'C37', '铁路、船舶、航空航天和其他运输设备制造业', '1', 37,
+            '31725803-1710-4376-be08-78abae49c103', '.c825dc0e-b21e-4960-9cbf-168460458c21.', 1, 0, NULL, NULL,
+            '2019-10-12 10:06:20', NULL, '2019-10-12 10:06:20', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('d0b90754-d2d4-45f3-8a8d-efcfdd6874df',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'S95', '基层群众自治组织', '1', 6, '9242b20d-2055-4a4a-9ccf-244ded062d4e',
+            '.9242b20d-2055-4a4a-9ccf-244ded062d4e.d0b90754-d2d4-45f3-8a8d-efcfdd6874df.', 2, 0, NULL, NULL, '2019-10-12
+            10:50:09', NULL, '2019-10-12 10:50:09', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('d1c78bf3-6a2e-48a8-9605-ae428e74283f',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'A05', '农、林、牧、渔服务业', '1', 5, '31725803-1710-4376-be08-78abae49c894',
+            '.d1c78bf3-6a2e-48a8-9605-ae428e74283f.', 1, 0, NULL, NULL, '2019-10-12 09:55:01', NULL, '2019-10-12
+            09:55:01', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('d2905df4-b9dd-44e2-ba75-ed72887b17c1',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'C39', '计算机、通信和其他电子设备制造业', '1', 39,
+            '31725803-1710-4376-be08-78abae49c103', '.d2905df4-b9dd-44e2-ba75-ed72887b17c1.', 1, 0, NULL, NULL,
+            '2019-10-12 10:06:46', NULL, '2019-10-12 10:06:46', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('d3ede6de-3dbc-4d55-a86a-162f87f154e6',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'J67', '资本市场服务', '1', 2, '31725803-1710-4376-be08-78abae49c896',
+            '.d3ede6de-3dbc-4d55-a86a-162f87f154e6.', 1, 0, NULL, NULL, '2019-10-12 10:23:11', NULL, '2019-10-12
+            10:23:11', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('d4fa1b26-ed84-401c-9b9e-858f54ecbc8c',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'A03', '畜牧业', '1', 3, '31725803-1710-4376-be08-78abae49c894',
+            '.d4fa1b26-ed84-401c-9b9e-858f54ecbc8c.', 1, 0, NULL, NULL, '2019-10-12 09:53:34', NULL, '2019-10-12
+            09:53:34', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('dacea669-09d4-4a86-9182-fae6d0ebbf3b',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'E49', '建筑安装业', '1', 3, '31725803-1710-4376-be08-78abae49c101',
+            '.dacea669-09d4-4a86-9182-fae6d0ebbf3b.', 1, 0, NULL, NULL, '2019-10-12 10:10:57', NULL, '2019-10-12
+            10:10:57', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('e158190a-9aa7-437d-a01d-ab68fa4642cf',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'A04', '渔业', '1', 4, '31725803-1710-4376-be08-78abae49c894',
+            '.e158190a-9aa7-437d-a01d-ab68fa4642cf.', 1, 0, NULL, NULL, '2019-10-12 09:54:04', NULL, '2019-10-12
+            09:54:40', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('e17f8ca4-ac1c-4e2d-afef-75699d15c1b2',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'O', '居民服务、修理和其他服务业', '1', 15, '',
+            '.e17f8ca4-ac1c-4e2d-afef-75699d15c1b2.', 1, 4, NULL, NULL, '2019-10-12 10:25:49', NULL, '2019-10-12
+            10:25:49', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('e252bb4d-1e48-49d4-aab3-e74976b32fff',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'C36', '汽车制造业', '1', 36, '31725803-1710-4376-be08-78abae49c103',
+            '.e252bb4d-1e48-49d4-aab3-e74976b32fff.', 1, 0, NULL, NULL, '2019-10-12 10:06:05', NULL, '2019-10-12
+            10:06:05', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('e3cddf88-a5e9-4dbb-9477-b94950b90f1c',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'C31', '黑色金属冶炼和压延加工业 ', '1', 31,
+            '31725803-1710-4376-be08-78abae49c103', '.e3cddf88-a5e9-4dbb-9477-b94950b90f1c.', 1, 0, NULL, NULL,
+            '2019-10-12 10:04:47', NULL, '2019-10-12 10:04:47', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('e80affcc-0070-4f10-a674-fff348a71fde',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'C21', '家具制造业 ', '1', 9, '31725803-1710-4376-be08-78abae49c103',
+            '.e80affcc-0070-4f10-a674-fff348a71fde.', 1, 0, NULL, NULL, '2019-10-12 10:02:27', NULL, '2019-10-12
+            10:50:51', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('ebdd313f-93bc-42a6-8d2a-f37aebefed5b',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'S93', '社会保障', '1', 4, '9242b20d-2055-4a4a-9ccf-244ded062d4e',
+            '.9242b20d-2055-4a4a-9ccf-244ded062d4e.ebdd313f-93bc-42a6-8d2a-f37aebefed5b.', 2, 0, NULL, NULL, '2019-10-12
+            10:49:39', NULL, '2019-10-12 10:49:39', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('ebedb4b0-1b7b-4f75-9be7-cd5dcb0918ff',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'R86', '广播、电视、电影和影视录音制作业', '1', 2,
+            'ed87c956-361d-4afe-95c5-3cef6663e723',
+            '.ed87c956-361d-4afe-95c5-3cef6663e723.ebedb4b0-1b7b-4f75-9be7-cd5dcb0918ff.', 2, 0, NULL, NULL, '2019-10-12
+            10:39:53', NULL, '2019-10-12 10:39:53', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('ec710f97-861d-4058-b1fa-3d6ee56375f2',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'B06', '煤炭开采和洗选业', '1', 1, '31725803-1710-4376-be08-78abae49c895',
+            '.ec710f97-861d-4058-b1fa-3d6ee56375f2.', 1, 0, NULL, NULL, '2019-10-12 09:55:46', NULL, '2019-10-12
+            09:55:46', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('ed87c956-361d-4afe-95c5-3cef6663e723',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'R', '文化、体育和娱乐业', '1', 18, '',
+            '.ed87c956-361d-4afe-95c5-3cef6663e723.', 1, 5, NULL, NULL, '2019-10-12 10:26:43', NULL, '2019-10-12
+            10:26:43', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('ed968864-367e-416d-84a7-ba7cf18c1d96',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'C32', '有色金属冶炼和压延加工业 ', '1', 32,
+            '31725803-1710-4376-be08-78abae49c103', '.ed968864-367e-416d-84a7-ba7cf18c1d96.', 1, 0, NULL, NULL,
+            '2019-10-12 10:04:58', NULL, '2019-10-12 10:04:58', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('f0e11d5b-8f8a-46bb-91a9-02e41141557e',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'C43', '金属制品、机械和设备修理业', '1', 43,
+            '31725803-1710-4376-be08-78abae49c103', '.f0e11d5b-8f8a-46bb-91a9-02e41141557e.', 1, 0, NULL, NULL,
+            '2019-10-12 10:08:34', NULL, '2019-10-12 10:08:34', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('f17abf40-edbd-4fb4-9708-561ed4277ac5',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'N78', '公共设施管理业', '1', 3, '5a5f5036-2b74-42f5-9b86-b620cfe87941',
+            '.5a5f5036-2b74-42f5-9b86-b620cfe87941.f17abf40-edbd-4fb4-9708-561ed4277ac5.', 2, 0, NULL, NULL, '2019-10-12
+            10:33:14', NULL, '2019-10-12 10:33:14', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('f1f14dfb-5550-413d-9c23-d4bf60ce10b9',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'B07', '石油和天然气开采业', '1', 2, '31725803-1710-4376-be08-78abae49c895',
+            '.f1f14dfb-5550-413d-9c23-d4bf60ce10b9.', 1, 0, NULL, NULL, '2019-10-12 09:56:46', NULL, '2019-10-12
+            09:56:46', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('f22c20dd-6fa8-4b2f-9642-2d5b42b09475',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'C29', '橡胶和塑料制品业', '1', 29, '31725803-1710-4376-be08-78abae49c103',
+            '.f22c20dd-6fa8-4b2f-9642-2d5b42b09475.', 1, 0, NULL, NULL, '2019-10-12 10:04:15', NULL, '2019-10-12
+            10:04:15', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('f8578e4e-9ef1-4758-babf-db2d8eaa8520',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'R87', '文化艺术业', '1', 3, 'ed87c956-361d-4afe-95c5-3cef6663e723',
+            '.ed87c956-361d-4afe-95c5-3cef6663e723.f8578e4e-9ef1-4758-babf-db2d8eaa8520.', 2, 0, NULL, NULL, '2019-10-12
+            10:40:08', NULL, '2019-10-12 10:40:08', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('f8ed38f9-f410-4a7c-8384-e5e9a2babed3',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'N79', '土地管理业', '1', 4, '5a5f5036-2b74-42f5-9b86-b620cfe87941',
+            '.5a5f5036-2b74-42f5-9b86-b620cfe87941.f8ed38f9-f410-4a7c-8384-e5e9a2babed3.', 2, 0, NULL, NULL, '2019-10-12
+            10:33:41', NULL, '2019-10-12 10:33:41', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('f935cd5d-5351-4558-865e-aec3b56d2e34',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'Q84', '社会工作', '1', 2, '2ea52621-c440-43c2-add7-0680c07c3453',
+            '.2ea52621-c440-43c2-add7-0680c07c3453.f935cd5d-5351-4558-865e-aec3b56d2e34.', 2, 0, NULL, NULL, '2019-10-12
+            10:38:10', NULL, '2019-10-12 10:38:10', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('fe9fde2c-3c68-490d-87f7-52233dba753f',
+            'fadff496-cde1-4c72-90b8-766744b18cb9', 'S90', '中国共产党机关', '1', 1, '9242b20d-2055-4a4a-9ccf-244ded062d4e',
+            '.9242b20d-2055-4a4a-9ccf-244ded062d4e.fe9fde2c-3c68-490d-87f7-52233dba753f.', 2, 0, NULL, NULL, '2019-10-12
+            10:42:04', NULL, '2019-10-12 10:42:04', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

@@ -1,0 +1,126 @@
+/*细线tab标签*/
+
+#app {
+
+  font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif !important;
+}
+
+.el-tabs__nav-wrap::after {
+  content: '';
+  height: 1px;
+}
+
+.matLibrary,
+.matList {
+  width: 67%;
+  height: 100%;
+  float: left;
+  border: 1px solid #e8e8e8;
+  margin-right: 6px;
+}
+
+.matLibrary {
+  width: 31%;
+}
+
+.el-tree-node__label:before {
+  content: "";
+  background: url(../image/spritPic.png) no-repeat;
+  width: 19px;
+  background-position: -109px -14px;
+  height: 16px;
+  display: inline-block;
+}
+
+.el-tree-node__children .el-tree-node__label:before {
+  content: "";
+  background: url(../image/spritPic.png) no-repeat;
+  width: 19px;
+  background-position: -109px -14px;
+  height: 16px;
+  display: inline-block;
+}
+
+.el-tree-node__content {
+  height: 30px;
+}
+
+.el-tree--highlight-current .el-tree-node.is-current>.el-tree-node__content {
+  /*background-color: #bfddff;*/
+  /*background-color: #f5f7fa;*/
+  background-color: rgb(234, 246, 255);
+}
+
+.right-click-opt {
+  /*display: none;*/
+  background: #fff;
+  -webkit-box-shadow: 0px 1px 15px 1px rgba(69, 65, 78, 0.08);
+  box-shadow: 0px 1px 15px 1px rgba(69, 65, 78, 0.08);
+  position: absolute;
+  width: 200px;
+  color: #595762;
+  z-index: 1000;
+}
+
+.right-click-opt p {
+  margin: 8px 20px;
+  cursor: pointer;
+  height: 25px;
+  font-size: 16px;
+}
+
+.right-click-opt p:hover {
+  background: #bfddff;
+  ;
+}
+
+.tree1 .el-tabs__item.is-active {
+  background: #169AFF;
+  color: #fff;
+  border-color: #169AFF;
+}
+
+.title {
+  padding: 10px 10px;
+}
+
+.btns {
+  padding: 6px 10px;
+  border-top: 1px solid #e8e8e8;
+  /*border-bottom:1px solid #e8e8e8;*/
+}
+
+.search {
+  float: right;
+}
+
+.input {
+  margin-left: 45%;
+}
+
+/*右侧滑窗right-sidebar start*/
+.right-sidebar.show {
+  right: 0;
+}
+
+.right-sidebar {
+  overflow: hidden;
+}
+
+.right-sidebar-overlay {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.silder-footer {
+  position: fixed;
+  bottom: 28px;
+  right: 40px;
+}
+
+.cup {
+  cursor: pointer;
+}
+
+.cell {
+  font-size: 14px;
+}

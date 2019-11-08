@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaItemGuideSpecialsMapper" >
+
+    <sql id="allColumns" >
+        ID  id,
+        ITEM_VER_ID  itemVerId,
+        OTHERNAME  othername,
+        SX  sx,
+        SXDW  sxdw,
+        SXDW_TEXT  sxdwText,
+        TYPE  type,
+        TYPE_TEXT  typeText,
+        ROOT_ORG_ID rootOrgId
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaItemGuideSpecialsById" resultType="AeaItemGuideSpecials" >
+        select
+            <include refid="allColumns"/>
+        from AEA_ITEM_GUIDE_SPECIALS
+        where ID = #{id}
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaItemGuideSpecials" resultType="AeaItemGuideSpecials" >
+        select
+            <include refid="allColumns"/>
+        from    AEA_ITEM_GUIDE_SPECIALS
+        <where>
+            <if test="id != null" >
+                AND    ID = #{id}
+            </if>
+            <if test="itemVerId != null" >
+                AND    ITEM_VER_ID = #{itemVerId}
+            </if>
+            <if test="othername != null" >
+                AND    OTHERNAME = #{othername}
+            </if>
+            <if test="sx != null" >
+                AND    SX = #{sx}
+            </if>
+            <if test="sxdw != null" >
+                AND    SXDW = #{sxdw}
+            </if>
+            <if test="sxdwText != null" >
+                AND    SXDW_TEXT = #{sxdwText}
+            </if>
+            <if test="type != null" >
+                AND    TYPE = #{type}
+            </if>
+            <if test="typeText != null" >
+                AND    TYPE_TEXT = #{typeText}
+            </if>
+            <if test="rootOrgId != null" >
+                AND    ROOT_ORG_ID = #{rootOrgId}
+            </if>
+        </where>
+    </select>
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaItemGuideSpecials" parameterType="AeaItemGuideSpecials">
+        insert into AEA_ITEM_GUIDE_SPECIALS (
+            ID,
+            ITEM_VER_ID,
+            OTHERNAME,
+            SX,
+            SXDW,
+            SXDW_TEXT,
+            TYPE,
+            TYPE_TEXT,
+            ROOT_ORG_ID
+        )  values  (
+            #{id},
+            #{itemVerId},
+            #{othername},
+            #{sx},
+            #{sxdw},
+            #{sxdwText},
+            #{type},
+            #{typeText},
+            #{rootOrgId}
+        )
+    </insert>
+    <!--6 修改实体对象 -->
+    <update id="updateAeaItemGuideSpecials" parameterType="AeaItemGuideSpecials" >
+        update AEA_ITEM_GUIDE_SPECIALS
+        <set >
+            <if test="id != null" >
+                ID = #{id},
+            </if>
+            <if test="itemVerId != null" >
+                ITEM_VER_ID = #{itemVerId},
+            </if>
+            <if test="othername != null" >
+                OTHERNAME = #{othername},
+            </if>
+            <if test="sx != null" >
+                SX = #{sx},
+            </if>
+            <if test="sxdw != null" >
+                SXDW = #{sxdw},
+            </if>
+            <if test="sxdwText != null" >
+                SXDW_TEXT = #{sxdwText},
+            </if>
+            <if test="type != null" >
+                TYPE = #{type},
+            </if>
+            <if test="typeText != null" >
+                TYPE_TEXT = #{typeText},
+            </if>
+            <if test="rootOrgId != null" >
+               ROOT_ORG_ID = #{rootOrgId},
+            </if>
+        </set>
+        where ID = #{id}
+    </update>
+
+    <delete id="deleteAeaItemGuideSpecials">
+        delete from  AEA_ITEM_GUIDE_SPECIALS  where ID = #{id}
+    </delete>
+
+    <delete id="batchDeleteGuideSpecialsByItemVerId">
+        delete from  AEA_ITEM_GUIDE_SPECIALS
+         where ITEM_VER_ID = #{itemVerId}
+           and ROOT_ORG_ID = #{rootOrgId}
+    </delete>
+
+</mapper>

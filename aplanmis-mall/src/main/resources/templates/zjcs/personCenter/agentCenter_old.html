@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <title>个人中心</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+  <link rel="stylesheet"
+    href="/framework-ui/src/main/resources/static/agcloud/framework/ui-private/common/metronic-5/vendors.bundle.css"
+    th:href="@{/agcloud/framework/ui-private/common/metronic-5/vendors.bundle.css}">
+  <link rel="stylesheet"
+    href="/framework-ui/src/main/resources/static/agcloud/framework/ui-private/default/common/css/metronic.css"
+    th:href="@{/agcloud/framework/ui-private/default/common/css/metronic.css}">
+  <link rel="stylesheet"
+    href="/framework-ui/src/main/resources/static/agcloud/framework/ui-private/common/element-2/element.css"
+    th:href="@{/agcloud/framework/ui-private/common/element-2/element.css}">
+  <link rel="stylesheet"
+    href="/framework-ui/src/main/resources/static/agcloud/framework/ui-private/default/common/css/layout.css"
+    th:href="@{/agcloud/framework/ui-private/default/common/css/layout.css}">
+  <link rel="stylesheet"
+    href="/framework-ui/src/main/resources/static/agcloud/framework/ui-private/default/blue/css/theme.css"
+    th:href="@{/agcloud/framework/ui-private/default/blue/css/theme.css}">
+
+  <link rel="stylesheet" href="../../../static/common/css/reset.css" th:href="@{/common/css/reset.css}">
+  <link rel="stylesheet" href="../../../static/personCenter/css/agentCenter.css"
+    th:href="@{/personCenter/css/agentCenter.css}">
+
+  <script>
+    //var ctx = '[[@{/}]]';
+    // var ctx = 'http://192.168.32.46:8084/aplanmis-mall/';
+    // var ctx = 'http://39.107.139.174:8084/aplanmis-mall/'; //174
+    var ctx = "http://192.168.14.40:8084/aplanmis-mall/"    //振强
+  </script>
+</head>
+
+<body class="" style="padding: 0;">
+  <div class="index" id="app" v-cloak v-loading.fullscreen.lock="loading">
+    <!-- 头部 -->
+    <div class="header" style="min-width: 1200px;">
+      <iframe src="../common/header.html" frameborder="0"></iframe>
+    </div>
+
+    <div class="person-content-wrap" :style="{height: contentH}">
+      <!-- 面包屑 -->
+      <div class="crumbs-wrap">
+        <span class="inlineblock-midd crumbs-icon"></span>
+        <span class="crumbs-tip">当前位置：</span>
+        <el-breadcrumb separator-class="el-icon-arrow-right" class="inlineblock-midd">
+          <el-breadcrumb-item><a href="../index.html">首页</a></el-breadcrumb-item>
+          <el-breadcrumb-item><span class="crumbs-cur">中介机构个人中心</span></el-breadcrumb-item>
+        </el-breadcrumb>
+      </div>
+      <!-- 个人中心页面 -->
+      <div class="person-centre-box clearfix">
+        <!-- 左侧菜单栏 -->
+        <div class="menu-sidebar">
+          <!-- 个人信息 -->
+          <div class="personal-box">
+            <div class="person-photo">
+              <img src="../../../static/personCenter/img/user_bg.png" alt="">
+            </div>
+            <p class="person-name">中介机构</p>
+            <span class="person-set"></span>
+          </div>
+          <!-- 中介机构菜单 -->
+          <ul class="menu-nav">
+            <li v-for="item in agencyMenuList" :key="item.itemName">
+              <a href="javascript:;">{{item.itemName}}</a>
+              <ul class="nav-tree">
+                <li :class="[i.select ? 'active': '']" v-for="i in item.childList" :key="i.value"
+                  @click.stop="agencyMenuSelect(i)">{{i.name}}</li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+        <div class="content-wrap">
+          <!-- 中介机构内容start -->
+          <div class="agency-content-wrap content" id="agency-content-wrap">
+            <!-- 综合数据展示 -->
+            <div class="data-show-box box" v-if="agencyItemSelect == '综合数据展示'">
+              <h2 class="service-tit box-tit">综合数据展示</h2>
+              <div class="data-show">
+                <ul class="data-show-list">
+                  <li>
+                    <h4><span class="bg1"></span>可报名项目</h4><a href="javascript:;">28</a>
+                  </li>
+                  <li>
+                    <h4><span class="bg2"></span>已报名项目</h4><a href="javascript:;">6</a>
+                  </li>
+                  <li>
+                    <h4><span class="bg3"></span>已中选项目</h4><a href="javascript:;">2</a>
+                  </li>
+                  <li>
+                    <h4><span class="bg4"></span>已签约项目</h4><a href="javascript:;">4</a>
+                  </li>
+                  <li>
+                    <h4><span class="bg5"></span>服务中项目</h4><a href="javascript:;">0</a>
+                  </li>
+                  <li>
+                    <h4><span class="bg6"></span>综合评价</h4><a href="javascript:;">4.8</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- 可报名的项目 -->
+            <div class="box project-cansignup-module" v-if="agencyItemSelect == '可报名的项目'">
+              <h2 class="box-tit">可报名的项目</h2>
+              <div class="project-sign-wrap pandel mt20" v-if="!isCanSignupPeojectInfoPandel">
+                <el-row>
+                  项目名称：
+                  <el-input class="w-200 mr20" placeholder="请输入要查询的项目名称" v-model="canSignupPeojectCheckData.projName" />
+                  </el-input>
+                  中介事项：
+                  <el-select placeholder="请选择" v-model="canSignupPeojectCheckData.itemVerId">
+                      <el-option
+                        v-for="item in canSignupProjectItemOptions"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value">
+                      </el-option>
+                  </el-select>
+                  <el-button class="ml20" type="primary" size="medium" @click="">查询</el-button>
+                </el-row>
+                <el-table :data="canSignupProjectList" class="scrollable mt20" border style="width: 100%;"
+                  :header-cell-style="{background:'#f7f8fa'}">
+
+                  <el-table-column label="操作">
+                    <template scope="scope">
+                      <a class="a-color4879E4" href="javascript:;" @click="showProjectInfoDetailPandel">参与报名</a>
+                    </template>
+                  </el-table-column>
+                </el-table>
+                <el-pagination background align="right" @size-change="" @current-change=""
+                  :page-sizes="[10, 20, 30, 50]" :page-size="canSignupPeojectCheckData.pageSize"
+                  :current-page="canSignupPeojectCheckData.pageNum" layout="total,sizes, prev, pager, next, jumper"
+                  :total="canSignupProjectTotal">
+                </el-pagination>
+              </div>
+              <!-- 当前竞价的项目的基本信息pandel -->
+              <div class="cansignup-project-info pandel" v-else>
+                <!-- 项目信息展示页 -->
+                <div style="width: 100%; " v-if="isCanSignupProjectPandelState == 1">
+                  <!-- 竞价截止时间与操作 -->
+                  <div class="info-header clearfix">
+                    <span class="info-time fl">
+                      参与竞价截止时间：2019-05-10 17:30:00 已有<b>2</b>家中介参与竞价
+                    </span>
+                    <div class="handel text-right fr">
+                      <el-button @click="returnCanSignupProjectList">返回列表</el-button>
+                      <el-button class="ml20" type="primary" @click="isCanSignupProjectPandelState = 2">参与报名
+                      </el-button>
+                    </div>
+                  </div>
+                  <!-- 项目title -->
+                  <div class="info-title">
+                    东莞市天然气高压管网工程沙田高中压调压站项目
+                  </div>
+
+                  <!-- 项目基本信息 -->
+                  <div class="info-item">
+                    <h2 class="item-title active" @click="expandProjectInfoItem"><i class="item-icon"></i>项目基本信息<i
+                        class="arrow-icon"></i></h2>
+                    <div class="item-detail">
+                      <el-row class="mb20">
+                        <el-col class="text-right" :span="5">中介服务事项：</el-col>
+                        <el-col class="text-left pl10" :span="19">出具测绘航空摄影专业一般航摄业务的测绘成果报告(作业范围：无限额限制)</el-col>
+                      </el-row>
+                      <el-row class="mb20">
+                        <el-col class="text-right" :span="5">事项对应部门：</el-col>
+                        <el-col class="text-left pl10" :span="19">..出具测绘航空摄影专业一般航摄业务的测绘成果报告</el-col>
+                      </el-row>
+                      <el-row class="mb20">
+                        <el-col class="text-right" :span="5">设计的行政事项：</el-col>
+                        <el-col class="text-left pl10" :span="19">..出具测绘航空摄影专业一般航摄业务的测绘成果报告</el-col>
+                      </el-row>
+                      <el-row class="mb20">
+                        <el-col class="text-right" :span="5">投资审批项目：</el-col>
+                        <el-col class="text-left pl10" :span="19">..出具测绘航空摄影专业一般航摄业务的测绘成果报告</el-col>
+                      </el-row>
+                      <el-row class="mb20">
+                        <el-col class="text-right" :span="5">投资审批项目编码：</el-col>
+                        <el-col class="text-left pl10" :span="19">..出具测绘航空摄影专业一般航摄业务的测绘成果报告</el-col>
+                      </el-row>
+                      <el-row class="mb20">
+                        <el-col class="text-right" :span="5">采购项目编码：</el-col>
+                        <el-col class="text-left pl10" :span="19">..出具测绘航空摄影专业一般航摄业务的测绘成果报告</el-col>
+                      </el-row>
+                      <el-row class="mb20">
+                        <el-col class="text-right" :span="5">项目业主：</el-col>
+                        <el-col class="text-left pl10" :span="19">..出具测绘航空摄影专业一般航摄业务的测绘成果报告</el-col>
+                      </el-row>
+                      <el-row class="mb20">
+                        <el-col class="text-right" :span="5">联系电话：</el-col>
+                        <el-col class="text-left pl10" :span="19">..出具测绘航空摄影专业一般航摄业务的测绘成果报告</el-col>
+                      </el-row>
+                      <el-row class="mb20">
+                        <el-col class="text-right" :span="5">建设面积(m<sup>2</sup>)：</el-col>
+                        <el-col class="text-left pl10" :span="19">..出具测绘航空摄影专业一般航摄业务的测绘成果报告</el-col>
+                      </el-row>
+                      <el-row class="mb20">
+                        <el-col class="text-right" :span="5">总投资（万元）：</el-col>
+                        <el-col class="text-left pl10" :span="19">..出具测绘航空摄影专业一般航摄业务的测绘成果报告</el-col>
+                      </el-row>
+                      <el-row class="mb20">
+                        <el-col class="text-right" :span="5">建设内容：</el-col>
+                        <el-col class="text-left pl10" :span="19">
+                          本项目高压管道线路长度约300m，从沿江高速西侧已间高雅管道开口接驳进入沙田高中压调压站拟选址地块，高压管道设计压力4.4MPa，管径DN300。调压站建设地点在东莞市沙田镇穗丰年村，位于沿江高速东侧约100m、进港南路以南约200m处，用地面积约3000㎡（折合4.5亩）。
+                        </el-col>
+                      </el-row>
+                      <el-row class="mb20">
+                        <el-col class="text-right" :span="5">价格(万元)：</el-col>
+                        <el-col class="text-left pl10" :span="19">8888</el-col>
+                      </el-row>
+                    </div>
+                  </div>
+
+                  <!-- 服务要求 -->
+                  <div class="info-item">
+                    <h2 class="item-title active" @click="expandProjectInfoItem"><i class="item-icon"></i>服务要求<i
+                        class="arrow-icon"></i></h2>
+                    <div class="item-detail">
+                      <el-row class="mb20">
+                        <el-col class="text-right" :span="5">所需服务：</el-col>
+                        <el-col class="text-left pl10" :span="19">测绘</el-col>
+                      </el-row>
+                      <el-row class="mb20">
+                        <el-col class="text-right" :span="5">服务时限说明：</el-col>
+                        <el-col class="text-left pl10" :span="19">30</el-col>
+                      </el-row>
+                      <el-row class="mb20">
+                        <el-col class="text-right" :span="5">服务内容：</el-col>
+                        <el-col class="text-left pl10" :span="19">海岸线测绘</el-col>
+                      </el-row>
+                    </div>
+                  </div>
+
+                  <!-- 中介机构要求 -->
+                  <div class="info-item">
+                    <h2 class="item-title active" @click="expandProjectInfoItem"><i class="item-icon"></i>中介机构要求<i
+                        class="arrow-icon"></i></h2>
+                    <div class="item-detail">
+                      <el-row class="mb20">
+                        <el-col class="text-right" :span="5">中介机构服务要求：</el-col>
+                        <el-col class="text-left pl10" :span="19">测绘</el-col>
+                      </el-row>
+                      <el-row class="mb20">
+                        <el-col class="text-right" :span="5">资质要求：</el-col>
+                        <el-col class="text-left pl10" :span="19">30</el-col>
+                      </el-row>
+                      <el-row class="mb20">
+                        <el-col class="text-right" :span="5">资质要求说明：</el-col>
+                        <el-col class="text-left pl10" :span="19">海岸线测绘</el-col>
+                      </el-row>
+                      <el-row class="mb20">
+                        <el-col class="text-right" :span="5">其他要求说明：</el-col>
+                        <el-col class="text-left pl10" :span="19">无</el-col>
+                      </el-row>
+                    </div>
+                  </div>
+
+                  <!-- 选取中介服务机构方式 -->
+                  <div class="info-item">
+                    <h2 class="item-title active" @click="expandProjectInfoItem"><i class="item-icon"></i>选取中介服务机构方式<i
+                        class="arrow-icon"></i></h2>
+                    <div class="item-detail">
+                      <el-row class="mb20">
+                        <el-col class="text-right" :span="5">选取中介服务机构方式：</el-col>
+                        <el-col class="text-left pl10" :span="19">竞价选取</el-col>
+                      </el-row>
+                      <el-row class="mb20">
+                        <el-col class="text-right" :span="5">是否确认金额：</el-col>
+                        <el-col class="text-left pl10" :span="19">30</el-col>
+                      </el-row>
+                      <el-row class="mb20">
+                        <el-col class="text-right" :span="5">金额说明：</el-col>
+                        <el-col class="text-left pl10" :span="19">海岸线测绘</el-col>
+                      </el-row>
+                      <el-row class="mb20">
+                        <el-col class="text-right" :span="5">见证现场竞价选取、摇珠：</el-col>
+                        <el-col class="text-left pl10" :span="19">无</el-col>
+                      </el-row>
+                      <el-row class="mb20">
+                        <el-col class="text-right" :span="5">见证人姓名：</el-col>
+                        <el-col class="text-left pl10" :span="19">无</el-col>
+                      </el-row>
+                      <el-row class="mb20">
+                        <el-col class="text-right" :span="5">联系电话：</el-col>
+                        <el-col class="text-left pl10" :span="19">无</el-col>
+                      </el-row>
+                    </div>
+                  </div>
+
+                  <!-- 咨询与监督 -->
+                  <div class="info-item supervision-item">
+                    <h2 class="item-title active" @click="expandProjectInfoItem"><i class="item-icon"></i>咨询与监督<i
+                        class="arrow-icon"></i></h2>
+                    <div class="item-detail">
+                      <el-row class="mb20">
+                        <el-col class="text-right" :span="5">项目业主业务咨询电话：</el-col>
+                        <el-col class="text-left pl10" :span="19">13457886838</el-col>
+                      </el-row>
+                      <el-row class="mb20">
+                        <el-col class="text-right" :span="5">投诉质疑：</el-col>
+                        <el-col class="text-left pl10" :span="19">13457886838</el-col>
+                      </el-row>
+                    </div>
+                  </div>
+
+                  <!-- 附件 -->
+                  <div class="info-item enclosure-item">
+                    <h2 class="item-title active" @click="expandProjectInfoItem"><i class="item-icon"></i>附件<i
+                        class="arrow-icon"></i></h2>
+                    <div class="item-detail">
+                      <p class="clearfix">
+                        <span class="fl">资质证.jpg</span>
+                        <a class="a-color4879E4 fr" href="javascript:;">下载</a>
+                      </p>
+                      <p class="clearfix">
+                        <span class="fl">资质证资质证资质证资质证资质证资质证资质证资质证.jpg</span>
+                        <a class="a-color4879E4 fr" href="javascript:;">下载</a>
+                      </p>
+                    </div>
+
+                  </div>
+
+                </div>
+                <!-- 参与报名信息填写页 -->
+                <div style="width: 100%; " v-if="isCanSignupProjectPandelState == 2">
+                  <div class="info-header clearfix">
+                    <div class="handel text-right fr">
+                      <el-button @click="returnCanSignupProjectList">返回列表</el-button>
+                    </div>
+                  </div>
+                  <!-- 项目title -->
+                  <div class="info-title">
+                      【项目报名】东莞市天然气高压管网工程沙田高中压调压站项目
+                  </div>
+
+                  <!-- 填写报名信息 -->
+                  <div class="info-item edit-item">
+                    <h2 class="item-title active" @click="expandProjectInfoItem"><i class="item-icon"></i>填写报名信息<i
+                        class="arrow-icon"></i></h2>
+                    <div class="item-detail edit-item-detail">
+                      <div class="form-item">
+                        <label><b class="red-cl">*</b>中介机构名称</label>
+                        <div class="input-box">
+                          <input type="text" class="form-control" placeholder="请输入中介机构名称"/>
+                        </div>
+                      </div>
+                      <div class="form-item mt20">
+                        <label><b class="red-cl">*</b>统一社会信用代码</label>
+                        <div class="input-box">
+                          <input type="text" class="form-control" placeholder="请输入统一社会信用代码" value="91440101MA59UG0CXN">
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-6 form-item">
+                          <label><b class="red-cl">*</b>联系地址</label>
+                          <div class="input-box">
+                            <input type="text" class="form-control" id="" placeholder="请输入联系地址">
+                          </div>
+                        </div>
+                        <div class="col-md-6 form-item">
+                          <label><b class="red-cl">*</b>邮政编号</label>
+                          <div class="input-box">
+                            <input type="text" class="form-control" id="" placeholder="请输入邮政编号">
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-6 form-item">
+                          <label><b class="red-cl">*</b>业务授权人</label>
+                          <div class="input-box">
+                            <input type="text" class="form-control" placeholder="请输入业务授权人" value="夏阳[510503199402126210]">
+                          </div>
+                        </div>
+                        <div class="col-md-6 form-item">
+                          <label><b class="red-cl">*</b>联系邮箱</label>
+                          <div class="input-box">
+                            <input type="text" class="form-control" placeholder="请输入联系邮箱" value="yuyunpeng0923@163.com">
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-6 form-item">
+                          <label><b class="red-cl">*</b>固定电话</label>
+                          <div class="input-box">
+                            <input type="text" class="form-control" placeholder="请输入固定电话" value="020-84783534">
+                          </div>
+                        </div>
+                        <div class="col-md-6 form-item">
+                          <label><b class="red-cl">*</b>企业联系号码</label>
+                          <div class="input-box">
+                            <input type="text" class="form-control" placeholder="请输入企业联系号码" value="13451880109">
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-6 form-item">
+                          <label><b class="red-cl">*</b>业务联系号码</label>
+                          <div class="input-box">
+                            <input type="text" class="form-control"  placeholder="请输入业务联系号码"  value="13451880109">
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-item">
+                        <label><b class="red-cl">*</b>是否参与现场摇号</label>
+                        <div class="input-box input-radio">
+                          <el-radio  label="是">是</el-radio>
+                          <el-radio  label="否">否</el-radio>
+                          <span class="note-txt"
+                            style="margin-left: 20px;">备注：报名成功即进入候选人名单，您的选择将帮助超市中心人员摇号现场坐席安排。</span>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-6 form-item">
+                          <label>摇珠地点</label>
+                          <div class="input-box">
+                            <span>一楼</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-6 form-item">
+                          <label>摇珠时间</label>
+                          <div class="input-box">
+                            <span>2018-08-16 17:00</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- 选择执业/职业人员 -->
+                  <div class="info-item edit-item">
+                    <h2 class="item-title active" @click="expandProjectInfoItem"><i class="item-icon"></i>选择执业/职业人员 <i
+                        class="arrow-icon"></i></h2>
+                    <div class="item-detail edit-item-detail">
+                      <div class="form-item">
+                        <label><b class="red-cl">*</b>执业/职业人员总数</label>
+                        <div class="input-box">
+                          <input type="text" class="form-control" id="" value="4">
+                        </div>
+                      </div>
+                      <div class="form-item mt20">
+                        <label><b class="red-cl">*</b>执业/职业人员要求</label>
+                        <div class="input-box">
+                          <textarea
+                            class="form-control">环境影响报告书(表)应当由中介机构中相应专业类别的环境影响评价功工程师作为编制主持人。环境影响报告书各章节和环境影响报告表的主要内容应当由主持编制机构中的环境影响评价工程师作为只要编制人员。</textarea>
+                        </div>
+                      </div>
+                      <div class="upload-card mt20 ml20">
+                        <div class="upload-btn">
+                          <el-button type="primary">选 择</el-button>
+                          <span class="ml20">请选择执业/职业人员</span>
+                        </div>
+                        <ul class="pjfile-list mt20 ml30">
+                          <li><i class="person-ico"></i>曾珊<a class="debtn" href="javascript:;">删除</a></li>
+                          <li><i class="person-ico"></i>曾珊<a class="debtn" href="javascript:;">删除</a></li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- 参与报名提交 -->
+                  <div class="sign-up-box mt20 mb20">
+                    <div class="read-rule checkbox">
+                      <input id="checkbox19" type="checkbox">
+                      <label class="gray-cl" for="checkbox19">我单位承诺服务报名条件并全面相应采购项目的所有要求</label>
+                    </div>
+                    <el-button type="primary" @click="isCanSignupProjectPandelState = 3">参与报名</el-button>
+                    <el-button>取 消</el-button>
+                  </div>
+                </div>
+                <!-- 参与报名信息提交成功页 -->
+                <div style="width: 100%;" v-if="isCanSignupProjectPandelState == 3">
+                  <!-- 竞价截止时间与操作 -->
+                  <div class="info-header clearfix">
+                    <div class="handel text-right fr">
+                      <el-button @click="returnCanSignupProjectList">返回列表</el-button>
+                    </div>
+                  </div>
+                  <!-- 项目title -->
+                  <div class="info-title">
+                    【项目报名】东莞市天然气高压管网工程沙田高中压调压站项目
+                  </div>
+                  <!-- 成功信息 -->
+                  <div class="apply-success">
+                      <div class="success-icon"></div>
+                      <h2>报名成功</h2>
+                      <p>进入中介个人中心-<a class="a-color4879E4" href="javascript:;">报名的项目</a>页面查看项目报名状态</p>
+                      <el-button type="primary">确  定</el-button>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- 报名的项目 -->
+            <div class="box project-singnup-module" v-if="agencyItemSelect == '报名的项目'">
+              <h2 class="box-tit" @click="isSignupProjectInfoPandel = true">报名的项目</h2>
+              <div class="pandel mt20" v-if="!isSignupProjectInfoPandel">
+                <el-row>
+                  项目名称：
+                  <el-input class="w-200 mr20" placeholder="请输入要查询的项目名称" v-model="otherConcatCheckData.linkmanCertNo">
+                  </el-input>
+                  选取方式：
+                  <el-input class="w-200 mr20" placeholder="请输入账号" v-model="otherConcatCheckData.loginName">
+                  </el-input>
+                  <el-button type="primary" size="medium" @click="">查询</el-button>
+                </el-row>
+                <el-table :data="signupProjectList" class="scrollable mt20" border style="width: 100%;"
+                  :header-cell-style="{background:'#f7f8fa'}">
+
+                  <el-table-column label="操作">
+                    <template scope="scope">
+                      <a class="a-color4879E4" href="javascript:;" @click="">参与竞价</a>
+                    </template>
+                  </el-table-column>
+                </el-table>
+                <el-pagination background align="right" @size-change="" @current-change=""
+                  :page-sizes="[10, 20, 30, 50]" :page-size="signupPeojectCheckData.pageSize"
+                  :current-page="signupPeojectCheckData.pageNum" layout="total,sizes, prev, pager, next, jumper"
+                  :total="signupProjectTotal">
+                </el-pagination>
+              </div>
+              <!-- 当前竞价的项目的基本信息pandel -->
+              <div class="signup-project-info pandel" v-else>
+                <div style="width: 100%; ">
+                  <!-- 操作 -->
+                  <div class="info-header clearfix">
+                    <div class="handel text-right fr">
+                      <el-button @click="isSignupProjectInfoPandel = false">返回列表</el-button>
+                    </div>
+                  </div>
+                  <!-- 项目竞价title -->
+                  <div class="info-title">
+                    【项目竞价】东莞市天然气高压管网工程沙田高中压调压站项目
+                  </div>
+
+                  <!-- 项目基本信息 （打开agent_item_bidding.html）-->
+                  <div class="info-item">
+                    <h2 class="item-title active" @click="expandProjectInfoItem"><i class="item-icon"></i>项目基本信息<i
+                        class="arrow-icon"></i></h2>
+                    <div class="item-detail">
+                      <el-row class="mb20">
+                        <el-col class="text-right" :span="5">服务事项：</el-col>
+                        <el-col class="text-left pl10" :span="19">出具测绘航空摄影专业一般航摄业务的测绘成果报告(作业范围：无限额限制)</el-col>
+                      </el-row>
+                      <el-row class="mb20">
+                        <el-col class="text-right" :span="5">事项对应部门：</el-col>
+                        <el-col class="text-left pl10" :span="19">8888</el-col>
+                      </el-row>
+                      <el-row class="mb20">
+                        <el-col class="text-right" :span="5">服务类型：</el-col>
+                        <el-col class="text-left pl10" :span="19">8888</el-col>
+                      </el-row>
+                      <el-row class="mb20">
+                        <el-col class="text-right" :span="5">服务时限：</el-col>
+                        <el-col class="text-left pl10" :span="19">150天</el-col>
+                      </el-row>
+                      <el-row class="mb20">
+                        <el-col class="text-right" :span="5">服务金额：</el-col>
+                        <el-col class="text-left pl10" :span="19">8888万</el-col>
+                      </el-row>
+                    </div>
+                  </div>
+
+                  <!-- 竞价过程 -->
+                  <div class="info-item price-procss">
+                    <h2 class="item-title active" @click="expandProjectInfoItem"><i class="item-icon"></i>竞价过程<i
+                        class="arrow-icon"></i></h2>
+                    <div class="item-detail">
+                      <el-row class="mb20">
+                        <el-col class="text-right" :span="5">报名截止事件：</el-col>
+                        <el-col class="text-left pl10" :span="19">2019-08-22</el-col>
+                      </el-row>
+                      <el-row class="mb20">
+                        <el-col class="text-right" :span="5">你的报价：</el-col>
+                        <el-col class="text-left pl10" :span="19">8888</el-col>
+                      </el-row>
+                      <el-row class="mb20">
+                        <el-col class="text-right" :span="5">当前报名中介：</el-col>
+                        <el-col class="text-left pl10" :span="19"><b>4</b> 家</el-col>
+                      </el-row>
+                      <div class="my-price-box">
+                        <p class="bidding-rule"><a href="javascript:;">竞价规则<i class="help-ico"></i></a></p>
+                        <div class="form-group input-money">
+                          <label>请输入您本次出价金额</label>
+                          <input type="text" class="form-control my-price-inp" placeholder="" />
+                          <el-button type="primary ml20">确定出价</el-button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+
+            <!-- 中选的项目 -->
+            <div class="box" v-if="agencyItemSelect == '中选的项目'">
+              <h2 class="box-tit">中选的项目</h2>
+              <div class="pandel">
+                中选的项目
+              </div>
+            </div>
+
+            <!-- 服务的项目 -->
+            <div class="box" v-if="agencyItemSelect == '服务的项目'">
+              <h2 class="box-tit">服务的项目</h2>
+              <div class="pandel">
+                服务的项目
+                <div style="width: 100%; height: 2000px;"></div>
+              </div>
+            </div>
+
+            <!-- 添加委托人 -->
+            <div class="client-box box" v-if="agencyItemSelect == '添加委托人'">
+              <h2 class="box-tit">添加委托人</h2>
+              <el-button class="to-add-btn" type="primary" size="medium"
+                @click="clientIsList = false; fetchUnitConcatList()">添加委托人账号
+              </el-button>
+              <!-- 委托人列表 -->
+              <div class="client-list pandel" v-if="clientIsList">
+                <el-row class="handel">
+                  <el-col :span="10">
+                    <el-input placeholder="姓名/身份证/账号" class="input-with-select" v-model="clientCheckData.keyword">
+                      <template slot="prepend">查询条件：</template>
+                      <el-button slot="append" icon="el-icon-search" @click="clientSearch"></el-button>
+                    </el-input>
+                  </el-col>
+                </el-row>
+                <div class="list">
+                  <el-table :data="clientList" class="scrollable" stripe border style="width: 100%;"
+                    :header-cell-style="{background:'#f7f8fa'}">
+                    <el-table-column label="序号" width="50">
+                      <template scope="scope"><span>{{scope.$index + 1}}</span></template>
+                    </el-table-column>
+                    <el-table-column prop="linkmanName" label="姓名"></el-table-column>
+                    <!-- <el-table-column label="身份证号码">
+                        <template scope="scope"><span>{{scope.row.linkmanCertNo | sfzHideLast}}</span></template>
+                    </el-table-column> -->
+                    <el-table-column prop="linkmanCertNo" label="身份证号码"></el-table-column>
+                    <el-table-column prop="linkmanMobilePhone" label="电话号码"></el-table-column>
+                    <el-table-column prop="linkmanMail" label="邮箱"></el-table-column>
+                    <el-table-column prop="loginName" label="账号"></el-table-column>
+                    <el-table-column label="操作">
+                      <template scope="scope">
+                        <a class="a-color4879E4" href="javascript:;" v-if="scope.row.isAdministrators == 1"
+                          @click="handelClientUnitOther(scope.row, 'relieveAdmin')">解除管理员</a>
+                        <a class="a-color4879E4" href="javascript:;" v-else
+                          @click="handelClientUnitOther(scope.row, 'setAdmin')">设为管理员</a>
+                        <a class="a-color4879E4" href="javascript:;"
+                          @click="handelClientUnitOther(scope.row, 'relieveBind')">解除绑定</a>
+                      </template>
+                    </el-table-column>
+                  </el-table>
+                </div>
+                <div class="pager">
+                  <el-pagination background align="right" @size-change="clientListSizeChange"
+                    @current-change="clientListPageChange" :page-sizes="[10, 20, 30, 50]"
+                    :page-size="clientCheckData.pageSize" :current-page="clientCheckData.pageNum"
+                    layout="total,sizes, prev, pager, next, jumper" :total="clientTotal" v-if="clientList.length">
+                  </el-pagination>
+                </div>
+              </div>
+              <!-- 添加委托人 -->
+              <div class="client-add pandel" v-else>
+                <el-row>
+                  <el-col :span="4">
+                    <h5>添加委托人账号</h5>
+                  </el-col>
+                  <el-col :span="4" :offset="16" class="text-right">
+                    <el-button type="normal" @click="returnClientList">返回列表</el-button>
+                  </el-col>
+                </el-row>
+                <el-tabs v-model="isRelationOthers" @tab-click="">
+                  <el-tab-pane label="单位联系人账号" name="list">
+                    <el-table :data="unitConcatList" class="scrollable" border style="width: 100%;"
+                      :header-cell-style="{background:'#f7f8fa'}">
+                      <el-table-column label="序号" width="50">
+                        <template scope="scope"><span>{{scope.$index + 1}}</span></template>
+                      </el-table-column>
+                      <el-table-column prop="linkmanName" label="姓名"></el-table-column>
+                      <!-- <el-table-column label="身份证号码">
+                              <template scope="scope"><span>{{scope.row.linkmanCertNo | sfzHideLast}}</span></template>
+                          </el-table-column> -->
+                      <el-table-column prop="linkmanCertNo" label="身份证号码"></el-table-column>
+                      <el-table-column prop="linkmanMobilePhone" label="电话号码"></el-table-column>
+                      <el-table-column prop="linkmanMail" label="邮箱"></el-table-column>
+                      <el-table-column prop="loginName" label="账号"></el-table-column>
+                      <el-table-column label="操作">
+                        <template scope="scope">
+                          <a class="a-color4879E4" href="javascript:;"
+                            @click="handelClientUnitOther(scope.row, 'setBind')">绑定账号</a>
+                        </template>
+                      </el-table-column>
+                    </el-table>
+                    <el-pagination background align="right" @size-change="unitConcatListSizeChange"
+                      @current-change="unitConcatListPageChange" :page-sizes="[10, 20, 30, 50]"
+                      :page-size="unitConcatCheckData.pageSize" :current-page="unitConcatCheckData.pageNum"
+                      layout="total,sizes, prev, pager, next, jumper" :total="unitConcatTotal"
+                      v-if="unitConcatList.length">
+                    </el-pagination>
+                  </el-tab-pane>
+                  <el-tab-pane label="关联其他账号" name="relation">
+                    <el-row>
+                      身份证号码：
+                      <el-input class="w-200 mr20" placeholder="请输入身份证号" v-model="otherConcatCheckData.linkmanCertNo">
+                      </el-input>
+                      账号：
+                      <el-input class="w-200 mr20" placeholder="请输入账号" v-model="otherConcatCheckData.loginName">
+                      </el-input>
+                      <el-button type="primary" size="medium" @click="fetchOtherConcatList">查询</el-button>
+                    </el-row>
+                    <el-table :data="otherConcatList" class="scrollable mt20" border style="width: 100%;"
+                      :header-cell-style="{background:'#f7f8fa'}">
+                      <el-table-column label="序号" width="50">
+                        <template scope="scope"><span>{{scope.$index + 1}}</span></template>
+                      </el-table-column>
+                      <el-table-column prop="linkmanName" label="姓名"></el-table-column>
+                      <el-table-column label="身份证号码">
+                        <template scope="scope"><span>{{scope.row.linkmanCertNo | sfzHideLast}}</span></template>
+                      </el-table-column>
+                      <el-table-column prop="linkmanMobilePhone" label="电话号码"></el-table-column>
+                      <el-table-column prop="linkmanMail" label="邮箱"></el-table-column>
+                      <el-table-column prop="loginName" label="账号"></el-table-column>
+                      <el-table-column label="操作">
+                        <template scope="scope">
+                          <a class="a-color4879E4" href="javascript:;"
+                            @click="handelClientUnitOther(scope.row, 'setBind')">绑定账号</a>
+                        </template>
+                      </el-table-column>
+                    </el-table>
+                    <el-pagination background align="right" @size-change="otherConcatListSizeChange"
+                      @current-change="otherConcatListPageChange" :page-sizes="[10, 20, 30, 50]"
+                      :page-size="otherConcatCheckData.pageSize" :current-page="otherConcatCheckData.pageNum"
+                      layout="total,sizes, prev, pager, next, jumper" :total="otherConcatTotal"
+                      v-if="otherConcatList.length">
+                    </el-pagination>
+                  </el-tab-pane>
+                </el-tabs>
+              </div>
+            </div>
+
+            <!-- 基本信息 -->
+            <div class="box" v-if="agencyItemSelect == '基本信息'">
+              <h2 class="box-tit">基本信息</h2>
+              <div class="pandel">
+                基本信息
+              </div>
+            </div>
+          </div>
+          <!-- 中介机构内容end -->
+        </div>
+      </div>
+
+      <!-- 添加委托人模块-绑定账号 -->
+      <el-dialog title="绑定账号" :visible.sync="clientAccountBindDialog" width="300px" center>
+        <el-input placeholder="请输入账号" readonly v-model="clientAccountBindData.loginName"></el-input>
+        <el-input class="mt20" placeholder="请输入密码" v-model="clientAccountBindData.loginPwd"></el-input>
+        <span slot="footer" class="dialog-footer" style="display: inline-block; margin: 20px;">
+          <!-- <el-button @click="clientAccountBindDialog = false">取 消</el-button> -->
+          <el-button class="w-200" type="primary" @click="clientAccountBindSub">绑&nbsp;定</el-button>
+        </span>
+      </el-dialog>
+
+    </div>
+
+    <!-- footer -->
+    <div class="footer" style="min-width: 1200px;">
+      <iframe src="../common/footer.html" frameborder="0"></iframe>
+    </div>
+  </div>
+</body>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js"
+  th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js"
+  th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/ui-private/common/element-2/element.js"
+  th:src="@{/agcloud/framework/ui-private/common/element-2/element.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/ui-private/common/js/common.js"
+  th:src="@{/agcloud/framework/ui-private/common/js/common.js}"></script>
+
+<script src="../../../static/personCenter/js/agentCenter_old.js" th:src="@{/personCenter/js/agentCenter.js}"
+  type="text/javascript"></script>
+
+</html>

@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by admin    2019-05-31 09:22:45 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaImServiceMajorMapper">
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns">
+    MAJOR_ID  majorId,
+    MAJOR_CODE  majorCode,
+    MAJOR_NAME  majorName,
+    IS_DELETE  isDelete,
+    CREATER  creater,
+    CREATE_TIME  createTime,
+    MEMO  memo,
+    PARENT_MAJOR_ID  parentMajorId,
+    MAJOR_SEQ  majorSeq,
+    QUAL_ID qualId,
+    ROOT_ORG_ID rootOrgId
+    </sql>
+
+    <sql id="preColumns">
+        m.MAJOR_ID  majorId,
+        m.MAJOR_CODE  majorCode,
+        m.MAJOR_NAME  majorName,
+        m.IS_DELETE  isDelete,
+        m.CREATER  creater,
+        m.CREATE_TIME  createTime,
+        m.MEMO  memo,
+        m.PARENT_MAJOR_ID  parentMajorId,
+        m.MAJOR_SEQ  majorSeq,
+        m.QUAL_ID qualId,
+        m.ROOT_ORG_ID rootOrgId
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaImServiceMajorById" resultType="AeaImServiceMajor">
+        select
+        <include refid="allColumns"/>
+        from AEA_IM_SERVICE_MAJOR
+        where MAJOR_ID = #{id}
+        and IS_DELETE = '0'
+    </select>
+
+    <select id="getAeaImServiceMajorRootNodeByQualId" resultType="AeaImServiceMajor">
+        select
+        <include refid="allColumns"/>
+        from AEA_IM_SERVICE_MAJOR
+        where QUAL_ID = #{qualId}
+        and IS_DELETE = '0'
+        and PARENT_MAJOR_ID IS NULL
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaImServiceMajor" resultType="AeaImServiceMajor">
+        select DISTINCT
+        <include refid="preColumns"/>
+        from AEA_IM_SERVICE_MAJOR m
+        /* LEFT JOIN AEA_IM_SERVICE_TYPE_MAJOR sm ON sm.MAJOR_ID = m.MAJOR_ID*/
+        <where>
+            <if test="keyword!=null and keyword!='' ">
+                and (
+                m.MAJOR_CODE like concat('%',concat(#{keyword},'%')) or
+                m.MAJOR_NAME like concat('%',concat(#{keyword},'%')) or
+                m.MEMO like concat('%',concat(#{keyword},'%'))
+                )
+            </if>
+            <!-- <if test="serviceTypeId != null and serviceTypeId != ''" >
+                 AND    sm.SERVICE_TYPE_ID = #{serviceTypeId}
+             </if>-->
+            <if test="majorId != null">
+                AND m.MAJOR_ID = #{majorId}
+            </if>
+            <if test="majorCode != null">
+                AND m.MAJOR_CODE = #{majorCode}
+            </if>
+            <if test="majorName != null">
+                AND m.MAJOR_NAME = #{majorName}
+            </if>
+            <if test="creater != null">
+                AND m.CREATER = #{creater}
+            </if>
+            <if test="createTime != null">
+                AND m.CREATE_TIME = #{createTime}
+            </if>
+            <if test="memo != null">
+                AND m.MEMO = #{memo}
+            </if>
+            <if test="parentMajorId != null">
+                AND m.PARENT_MAJOR_ID = #{parentMajorId}
+            </if>
+            <if test="majorSeq != null">
+                AND m.MAJOR_SEQ = #{majorSeq}
+            </if>
+            <if test="qualId != null">
+                AND m.QUAL_ID = #{qualId}
+            </if>
+            <if test="rootOrgId != null">
+                AND m.ROOT_ORG_ID = #{rootOrgId}
+            </if>
+            AND m.IS_DELETE = '0'
+            /* AND sm.IS_DELETE = '0'*/
+            ORDER BY m.CREATE_TIME ASC
+        </where>
+    </select>
+
+    <select id="listMajorTree" resultType="AeaImServiceMajor">
+        select
+        <include refid="preColumns"/>
+        from AEA_IM_SERVICE_MAJOR m
+        <where>
+            <if test="keyword!=null and keyword!='' ">
+                and (
+                m.MAJOR_CODE like concat('%',concat(#{keyword},'%')) or
+                m.MAJOR_NAME like concat('%',concat(#{keyword},'%')) or
+                m.MEMO like concat('%',concat(#{keyword},'%'))
+                )
+            </if>
+            <if test="majorId != null">
+                AND m.MAJOR_ID = #{majorId}
+            </if>
+            <if test="majorCode != null">
+                AND m.MAJOR_CODE = #{majorCode}
+            </if>
+            <if test="majorName != null">
+                AND m.MAJOR_NAME = #{majorName}
+            </if>
+            <if test="creater != null">
+                AND m.CREATER = #{creater}
+            </if>
+            <if test="createTime != null">
+                AND m.CREATE_TIME = #{createTime}
+            </if>
+            <if test="memo != null">
+                AND m.MEMO = #{memo}
+            </if>
+            <if test="parentMajorId != null">
+                AND m.PARENT_MAJOR_ID = #{parentMajorId}
+            </if>
+            <if test="majorSeq != null">
+                AND m.MAJOR_SEQ = #{majorSeq}
+            </if>
+            <if test="qualId != null and qualId != ''">
+                AND m.QUAL_ID = #{qualId}
+            </if>
+            <if test="rootOrgId != null and rootOrgId != ''">
+                AND m.ROOT_ORG_ID = #{rootOrgId}
+            </if>
+            AND m.IS_DELETE = '0'
+            ORDER BY m.CREATE_TIME ASC
+        </where>
+    </select>
+
+    <!--检查编码-->
+    <select id="checkUniqueMajorTypeCode" resultType="java.lang.Integer">
+        select count(*) from AEA_IM_SERVICE_MAJOR
+        <where>
+            <if test="majorId != null and majorId!='' ">
+                and MAJOR_ID != #{majorId}
+            </if>
+            and MAJOR_CODE = #{majorCode}
+            and IS_DELETE = '0'
+        </where>
+    </select>
+
+    <select id="listChildrenAeaImServiceMajorByMajorId" resultType="AeaImServiceMajor">
+        SELECT
+        <include refid="allColumns"/>
+        FROM aea_im_service_major
+        WHERE MAJOR_SEQ LIKE concat('%.',concat(#{majorId},'.%'))
+        AND MAJOR_ID != #{majorId}
+        AND IS_DELETE = '0'
+    </select>
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaImServiceMajor" parameterType="AeaImServiceMajor">
+    insert into AEA_IM_SERVICE_MAJOR (
+MAJOR_ID  ,MAJOR_CODE  ,MAJOR_NAME  ,IS_DELETE  ,CREATER  ,CREATE_TIME  ,MEMO  ,PARENT_MAJOR_ID  ,MAJOR_SEQ  ,QUAL_ID,ROOT_ORG_ID
+    )  values  (
+#{majorId},#{majorCode},#{majorName},#{isDelete},#{creater},#{createTime},#{memo},#{parentMajorId},  #{majorSeq},  #{qualId},#{rootOrgId}
+    )
+</insert>
+    <!--6 修改实体对象 -->
+    <update id="updateAeaImServiceMajor" parameterType="AeaImServiceMajor">
+        update AEA_IM_SERVICE_MAJOR
+        <set>
+            <if test="majorId != null">
+                MAJOR_ID = #{majorId},
+            </if>
+            <if test="majorCode != null">
+                MAJOR_CODE = #{majorCode},
+            </if>
+            <if test="majorName != null">
+                MAJOR_NAME = #{majorName},
+            </if>
+            <if test="isDelete != null">
+                IS_DELETE = #{isDelete},
+            </if>
+            <if test="creater != null">
+                CREATER = #{creater},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime},
+            </if>
+            <if test="memo != null">
+                MEMO = #{memo},
+            </if>
+            <if test="parentMajorId != null">
+                PARENT_MAJOR_ID = #{parentMajorId},
+            </if>
+            <if test="majorSeq != null">
+                MAJOR_SEQ = #{majorSeq},
+            </if>
+            <if test="qualId != null">
+                QUAL_ID = #{qualId},
+            </if>
+            <if test="rootOrgId != null">
+                ROOT_ORG_ID = #{rootOrgId},
+            </if>
+        </set>
+        where MAJOR_ID = #{majorId}
+    </update>
+
+    <!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaImServiceMajor">
+        UPDATE  AEA_IM_SERVICE_MAJOR
+        SET IS_DELETE = '1'
+        where
+        MAJOR_ID = #{id}
+    </delete>
+
+    <!--8 删除实体对象树,根据资质ID -->
+    <delete id="deleteAeaImServiceMajorTreeByQualId">
+        UPDATE  AEA_IM_SERVICE_MAJOR
+        SET IS_DELETE = '1'
+        where
+        QUAL_ID = #{qualId}
+    </delete>
+
+    <!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaImServiceMajor" id="AeaImServiceMajorMap">
+        <id property="majorId" column="MAJOR_ID"/>
+        <result property="majorCode" column="MAJOR_CODE"/>
+        <result property="majorName" column="MAJOR_NAME"/>
+        <result property="isDelete" column="IS_DELETE"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="memo" column="MEMO"/>
+        <result property="parentMajorId" column="PARENT_MAJOR_ID"/>
+        <result property="majorSeq" column="MAJOR_SEQ"/>
+        <result property="qualId" column="QUAL_ID"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+    </resultMap>
+    <!---->
+    <select id="listMajorByCertinstId" resultType="com.augurit.aplanmis.common.domain.AeaImServiceMajor">
+        SELECT DISTINCT
+            aism.MAJOR_ID majorId,
+            aism.MAJOR_NAME majorName,
+            aism.PARENT_MAJOR_ID parentMajorId,
+            aism.MAJOR_SEQ majorSeq
+        FROM aea_im_service_major aism, (
+            SELECT
+                aism1.MAJOR_SEQ
+            FROM aea_im_service_major aism1, aea_im_certinst_major aicm
+            WHERE aism1.MAJOR_ID = aicm.MAJOR_ID AND aism1.IS_DELETE = '0' AND aicm.IS_DELETE = '0' AND aicm.CERTINST_ID = #{certinstId}
+        ) temp
+        WHERE INSTR(temp.MAJOR_SEQ, aism.MAJOR_ID) > 0
+    </select>
+
+    <select id="getServiceMajorListByQualId" resultType="AeaImServiceMajor">
+        SELECT <include refid="allColumns"/> from aea_im_service_major WHERE qual_id = #{qualId}
+
+    </select>
+
+    <select id="listMajorByServiceTypeId" resultType="com.augurit.aplanmis.common.domain.AeaImServiceMajor">
+        select
+        <include refid="preColumns"/>
+        from    AEA_IM_SERVICE_MAJOR m
+        where EXISTS(select * from aea_im_service_type_major aistm where aistm.MAJOR_ID=m.MAJOR_ID and aistm.SERVICE_TYPE_ID=#{serviceTypeId})
+        and  m.IS_DELETE = '0'
+    </select>
+
+    <select id="getServiceMajorListByCertinstId" resultType="AeaImServiceMajor">
+
+        select <include refid="preColumns"/> from aea_im_service_major m ,aea_im_certinst_major cmajor where cmajor.certinst_id = #{certinstId} and cmajor.major_id = m.major_id
+    </select>
+</mapper>

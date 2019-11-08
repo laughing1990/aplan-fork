@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>窗口效能督查</title>
+  <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.css"
+    th:href="@{/agcloud/framework/js-lib/element-2/element.css}">
+  <link rel="stylesheet"
+    href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/css/reset.css"
+    th:href="@{/agcloud/framework/js-lib/agcloud-lib/css/reset.css}">
+
+  <link rel="stylesheet" href="../../static/efficiency/common/css/base.css"
+    th:href="@{/efficiency/common/css/base.css}">
+  <link rel="stylesheet" href="../../static/efficiency/css/winEffect.css" th:href="@{/efficiency/css/winEffect.css}">
+  <script>
+    var ctx = "[[@{/}]]";
+    // var ctx = "http://192.168.30.33:8083/aplanmis-front/"
+    // var ctx ="http://192.168.32.53:8083/aplanmis-front/"   //杰文
+  </script>
+</head>
+
+<body>
+  <div class="index-wrapper" id="winEffect" v-cloak v-loading.fullscreen.lock="loading">
+    <!-- 头部卡片 -->
+    <div class="status-card clearfix">
+      <div class="status-card-item" v-for="(item, index) in statusCardData" @click="selectStateForWorkbench(item)"
+        :class="item.statusClass?item.statusClass:'waiting1-status'">
+        <span>{{item.name}}</span>
+        <div class="card-icon" :class="'icon-' + parseInt(index + 1)"></div>
+        <p class="me-count">{{item.count}}</p>
+        <p class="percent-bt" v-if="false">
+          <span class="mr10">同比 {{item.onYearonyearBasis || '无'}}
+            <i class="el-icon-caret-top"></i>
+          </span>
+          <span>环比 {{item.linkRelativeRatio || '无'}}
+            <i class="el-icon-caret-bottom"></i>
+          </span>
+        </p>
+      </div>
+    </div>
+
+    <!-- 时间筛选及模块划分操作栏 -->
+    <div class="handel-box clearfix">
+      <div class="fl color-999 mt20 mb20 time-bar">
+        <!-- <a href="javascript:;" class="mr20 time-span" :class="[pageSearchData.type == 'D' ? 'color-169aff':'']" @click="searchPageEffectDataForTimeRange('D')">昨日</a>
+        <a href="javascript:;" class="mr20 time-span" :class="[pageSearchData.type == 'W' ? 'color-169aff':'']" @click="searchPageEffectDataForTimeRange('W')">本周</a>
+        <a href="javascript:;" class="mr20 time-span" :class="[pageSearchData.type == 'M' ? 'color-169aff':'']" @click="searchPageEffectDataForTimeRange('M')">本月</a> -->
+        <el-button-group class="mr20 card-box-sd">
+          <el-button :type="pageSearchData.type == 'D'? 'primary':'normal'" size="small"
+            @click="searchPageEffectDataForTimeRange('D')">昨日</el-button>
+          <el-button :type="pageSearchData.type == 'W'? 'primary':'normal'" size="small"
+            @click="searchPageEffectDataForTimeRange('W')">本周</el-button>
+          <el-button :type="pageSearchData.type == 'M'? 'primary':'normal'" size="small"
+            @click="searchPageEffectDataForTimeRange('M')">本月</el-button>
+        </el-button-group>
+        <el-date-picker class="card-box-sd page-date-pick" v-model="pageDateRange" type="daterange" align="right"
+          size="small" unlink-panels range-separator="~" start-placeholder="开始日期" end-placeholder="结束日期"
+          :picker-options="pickerOptions" value-format="yyyy-MM-dd" @change="pageDateRangeChange">
+        </el-date-picker>
+      </div>
+      <div class="module-box mt20 mb20 fr card-box-sd">
+        <el-button-group>
+          <el-button :type="curEffectModule == 1 ? 'primary':'normal'" size="small" @click="moduleSwitch('1')">全部
+          </el-button>
+          <el-button :type="curEffectModule == 2 ? 'primary':'normal'" size="small" @click="moduleSwitch('2')">工作量及有效性专题
+          </el-button>
+          <el-button :type="curEffectModule == 3 ? 'primary':'normal'" size="small" @click="moduleSwitch('3')">并联专题
+          </el-button>
+          <el-button :type="curEffectModule == 4 ? 'primary':'normal'" size="small" @click="moduleSwitch('4')">时限分析
+          </el-button>
+        </el-button-group>
+      </div>
+    </div>
+
+    <!-- 督查模块展示区 -->
+    <div class="module-wrap">
+      <!-- 工作量及有效性专题 -->
+      <div class="mb20 module-workload" v-if="curEffectModule == 1 || curEffectModule == 2">
+        <el-row :gutter="15" class="mt15 bottom-show-box">
+          <el-col :xs="24" :sm="24" :md="10" :lg="10" :xl="10">
+            <div class="mb10 theme-abnormal-box">
+              <el-card class="box-card pr">
+                <div slot="header" class="clearfix">
+                  <span class="card-title">接件总量</span>
+                </div>
+                <div class="accept-rander-box" id="acceptSumPieChart"></div>
+                <div class="mb10 non-data" v-show="!acceptSumPieChart"></div>
+              </el-card>
+            </div>
+          </el-col>
+          <el-col :xs="24" :sm="24" :md="14" :lg="14" :xl="14">
+            <div class="mb10 theme-abnormal-box">
+              <el-card class="box-card pr">
+                <div slot="header" class="clearfix">
+                  <span class="card-title">接件受理情况</span>
+                </div>
+                <div class="accept-rander-box" id="accepConnectionBarChart"></div>
+                <div class="mb10 non-data" v-show="!accepConnectionBarChart"></div>
+              </el-card>
+            </div>
+          </el-col>
+        </el-row>
+        <el-card class="box-card pr" style="margin-top: 6px;">
+          <div slot="header" class="clearfix">
+            <span class="card-title">接件历史分析</span>
+          </div>
+          <div>
+            <el-row>
+              <div class="win-precent-box clearfix" :class="[isSmallWin? 'mb45':'']">
+                <div class="win-item" v-for="item in accepConnectionWinList" :key="item.windId"
+                  :class="[item.select ? 'active':'']" @click="fetchSelectedWinAccepConnectionEffectData(item)">
+                  <p class="ellipsis win-title">{{item.winName}}</p>
+                  <div class="win-content clearfix">
+                    <div class="fl win-precent">
+                      <p class="tip">已接件</p>
+                      <p class="precent">{{item.apply || 0}}</p>
+                    </div>
+                    <div class="fr win-precent">
+                      <p class="tip">已受理</p>
+                      <p class="precent">{{item.acceptDeal || 0}}</p>
+                    </div>
+                    <div class="fr win-pie" style="display:none;">
+                      <el-tooltip placement="top" effect="light">
+                        <div slot="content">{{'受理率：' + item.percent}}</div>
+                        <el-progress type="circle" :width="40" :show-text="false" :percentage="item.percentNum">
+                        </el-progress>
+                      </el-tooltip>
+                    </div>
+                  </div>
+                </div>
+                <!-- 左右切换 -->
+                <div class="fl swipe-tabs-left swipe-btn" @click="winHandelToLeft" v-show="isLeft">
+                  <i class="el-icon-arrow-left"></i>
+                </div>
+                <div class="fr swipe-tabs-right swipe-btn" @click="winHandelToRight" v-show="isRight">
+                  <i class="el-icon-arrow-right"></i>
+                </div>
+              </div>
+            </el-row>
+            <el-row :gutter="40">
+              <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="pr">
+                <div class="mb10 accept-effectchart-box" id="accepConnectionEffectLineChart"></div>
+              </el-col>
+            </el-row>
+          </div>
+          <div class="accept-box" v-show="!accepConnectionEffectLineChart">
+            <div class="non-data"></div>
+          </div>
+        </el-card>
+      </div>
+
+      <!-- 并联专题 -->
+      <div class="mb20 mt15 module-parallel" v-if="curEffectModule == 1 || curEffectModule == 3">
+        <!-- 主题申报量 -->
+        <el-card class="box-card pr" style="margin-top: 6px;">
+          <div slot="header" class="clearfix">
+            <span class="card-title">主题申报量</span>
+          </div>
+          <el-row :gutter="10" class="theme-approve-show-box">
+            <el-col :xs="24" :sm="24" :md="7" :lg="7" :xl="7" class="pr">
+              <div class="theme-approve-pie-box" id="themeApproveNumPieChart"></div>
+              <div class="mb10 non-data" v-show="!themeApproveNumPieChart"></div>
+            </el-col>
+            <el-col :xs="24" :sm="24" :md="17" :lg="17" :xl="17">
+              <div class="theme-approve-table-box">
+                <el-table :data="themeApproveNumTableData" border style="width: 100%" height='350'
+                  :header-cell-style="{padding:'5px 0', color: '#575962'}">
+                  <el-table-column prop="date" label="图例" width="50"  align="center">
+                    <template slot-scope="scope">
+                      <span class="table-item-legend mouse-pointer" :style="{background: scope.row.itemColor}"
+                        @mouseover="leftChartHightLight(scope.$index)" @mouseout="leftChartHideLight(scope.$index)"></span>
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="themeName" label="主题名称" min-width="180" :formatter="formatterTableCell"
+                    :show-overflow-tooltip="true">
+                  </el-table-column>
+                  <el-table-column prop="apply" label="申报数" :formatter="formatterTableCell" width="100">
+                  </el-table-column>
+                  <el-table-column prop="acceptDeal" label="受理数" :formatter="formatterTableCell" width="100">
+                  </el-table-column>
+                  <el-table-column prop="overTime" label="逾期数" :formatter="formatterTableCell" width="100">
+                  </el-table-column>
+                  <el-table-column prop="acceptDealRate" label="受理率" :formatter="formatterTableCell" width="100">
+                    <template slot-scope="scope">
+                      <span>{{(Number(scope.row.acceptDealRate)*100).toFixed(2) + '%' || 0}}</span>
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="overTimeRate" label="逾期率" :formatter="formatterTableCell" width="100">
+                    <template slot-scope="scope">
+                      <span>{{(Number(scope.row.overTimeRate)*100).toFixed(2) + '%' || 0}}</span>
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="netApply" label="网厅申报" :formatter="formatterTableCell" width="100">
+                  </el-table-column>
+                  <el-table-column prop="winApply" label="窗口申报" :formatter="formatterTableCell" width="100">
+                  </el-table-column>
+                </el-table>
+              </div>
+            </el-col>
+          </el-row>
+        </el-card>
+
+        <!-- 主题分布情况与阶段申报数 -->
+        <el-row :gutter="15" class="mt15 themescatter-stageapprove-box">
+          <el-col :xs="24" :sm="24" :md="16" :lg="16" :xl="16">
+            <div class="mb10 themescatter-box">
+              <el-card class="box-card pr">
+                <div slot="header" class="clearfix">
+                  <span class="card-title">主题分布情况</span>
+                </div>
+                <div class="themescatter-rander-box" id="themeScatterBarChart"></div>
+                <div class="mb10 non-data" v-show="!themeScatterBarChart"></div>
+              </el-card>
+            </div>
+          </el-col>
+          <el-col :xs="24" :sm="24" :md="8" :lg="8" :xl="8">
+            <div class="mb10 stageapprove-box">
+              <el-card class="box-card pr">
+                <div slot="header" class="clearfix">
+                  <span class="card-title">阶段申报数</span>
+                </div>
+                <div class="stageapprove-rander-box" id="stageApprovePieChart"></div>
+                <div class="mb10 non-data" v-show="!stageApprovePieChart"></div>
+              </el-card>
+            </div>
+          </el-col>
+        </el-row>
+      </div>
+
+      <!-- 时限分析专题 -->
+      <div class="mb20 mt15 module-parallel" v-if="curEffectModule == 1 || curEffectModule == 4">
+
+      </div>
+    </div>
+
+  </div>
+
+  <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js"
+    th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>
+  <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js"
+    th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
+  <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js"
+    th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
+  <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/echarts-v4/echarts.min.js"
+    th:src="@{/agcloud/framework/js-lib/echarts-v4/echarts.min.js}"></script>
+  <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js"
+    th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>
+
+  <script src="../../static/efficiency/common/js/color-hash.js" th:src="@{/efficiency/common/js/color-hash.js}"
+    type="text/javascript"></script>
+  <script src="../../static/efficiency/js/winChartOptions.js" th:src="@{/efficiency/js/winChartOptions.js}"
+    type="text/javascript"></script>
+  <script src="../../static/efficiency/js/mixins.js" th:src="@{/efficiency/js/mixins.js}" type="text/javascript">
+  </script>
+  <script src="../../static/efficiency/js/winEffect.js" th:src="@{/efficiency/js/winEffect.js}" type="text/javascript">
+  </script>
+</body>
+
+</html>

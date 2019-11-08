@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.data.exchange.mapper.aplanmis.ItemBasicMapper">
+
+    <sql id="item_allColumns">
+        ${alias}.ITEM_ID  itemId,
+        ${alias}.PARENT_ITEM_ID  parentItemId,
+        ${alias}.ITEM_SEQ  itemSeq,
+        ${alias}.CREATER  creater,
+        ${alias}.CREATE_TIME  createTime,
+        ${alias}.MODIFIER  modifier,
+        ${alias}.MODIFY_TIME  modifyTime,
+        ${alias}. ROOT_ORG_ID rootOrgId
+    </sql>
+
+    <sql id="item_basic_allColumns">
+        ${alias}.ITEM_BASIC_ID  itemBasicId,
+        ${alias}.ITEM_ID  itemId,
+        ${alias}.ITEM_VER_ID  itemVerId,
+        ${alias}.ITEM_CODE  itemCode,
+        ${alias}.ITEM_NAME  itemName,
+        ${alias}.ORG_ID  orgId,
+        ${alias}.ITEM_TYPE  itemType,
+        ${alias}.BJ_TYPE  bjType,
+        ${alias}.ACCEPT_MODE  acceptMode,
+        ${alias}.HANDLE_ARTICLE  handleArticle,
+        ${alias}.HANDLE_FLOW  handleFlow,
+        ${alias}.DUE_NUM  dueNum,
+        ${alias}.SEND_RESULT_MODE  sendResultMode,
+        ${alias}.DOC_TEMPLATE  docTemplate,
+        ${alias}.APPLY_TABLE_DEMO  applyTableDemo,
+        ${alias}.APPLY_TABLE_TEMPLATE  applyTableTemplate,
+        ${alias}.STANDARD_ITEM_CODE  standardItemCode,
+        ${alias}.ITEM_MEMO  itemMemo,
+        ${alias}.CREATER  creater,
+        ${alias}.CREATE_TIME  createTime,
+        ${alias}.MODIFIER  modifier,
+        ${alias}.MODIFY_TIME  modifyTime,
+        ${alias}.APP_ID  appId,
+        ${alias}.ITEM_DIR_ID  itemDirId,
+        ${alias}.INNER_APP_ID  innerAppId,
+        ${alias}.ITEM_PROPERTY  itemProperty,
+        ${alias}.DIRECTORYCODE  directorycode,
+        ${alias}.DIRECTORY_ID  directoryId,
+        ${alias}.BASECODE  basecode,
+        ${alias}.WTBM  wtbm,
+        ${alias}.SQJB  sqjb,
+        ${alias}.SFZHLR  sfzhlr,
+        ${alias}.SLYJ  slyj,
+        ${alias}.BBH  bbh,
+        ${alias}.SXMLZT  sxmlzt,
+        ${alias}.FBSJ  fbsj,
+        ${alias}.SSSJ  sssj,
+        ${alias}.ISOLD  isold,
+        ${alias}.SFWSBL  sfwsbl,
+        ${alias}.BWSBLLY  bwsblly,
+        ${alias}.UNONLINEREASONOTHER  unonlinereasonother,
+        ${alias}.SFCZWTXFTZSSQK  sfczwtxftzssqk,
+        ${alias}.FZCD  fzcd,
+        ${alias}.SSCODE  sscode,
+        ${alias}.SXGLFSLX  sxglfslx,
+        ${alias}.WTFQFX  wtfqfx,
+        ${alias}.WTFQQTSM  wtfqqtsm,
+        ${alias}.SLFS  slfs,
+        ${alias}.IS_NEED_STATE  isNeedState,
+        ${alias}.IS_MILESTONE_ITEM  isMilestoneItem,
+        ${alias}.OUTER_SYSTEM_HANDLE  outerSystemHandle,
+        ${alias}.OUTER_SYSTEM_DESC  outerSystemDesc,
+        ${alias}.OUTER_SYSTEM_URL  outerSystemUrl,
+        ${alias}.IS_ASYN  isAsyn,
+        ${alias}.ASYN_TIME  asynTime,
+        ${alias}.IS_LOCAL  isLocal,
+        ${alias}.IS_FEE  isFee,
+        ${alias}.XKDX  xkdx,
+        ${alias}.ITEM_ALIAS  itemAlias,
+        ${alias}.IS_NEED_FRONT_COND  isNeedFrontCond,
+        ${alias}.AREA_CODE  areaCode,
+        ${alias}.AREA_CODE_NAME  areaCodeName,
+        ${alias}.KP_ITEM_ID  kpItemId,
+        ${alias}.ITEM_NATURE  itemNature,
+        ${alias}.SFSXGZCNZ  sfsxgzcnz,
+        ${alias}.ROOT_ORG_ID rootOrgId,
+        ${alias}.IS_CATALOG isCatalog,
+        ${alias}.GUIDE_ORG_NAME guideOrgName,
+        ${alias}.REGION_ID regionId,
+        ${alias}.ITEM_CATEGORY_MARK itemCategoryMark
+    </sql>
+
+    <select id="findCarryOutItemByCatalogItemId" resultType="AeaItem">
+        select
+        <include refid="item_allColumns">
+            <property name="alias" value="i"/>
+        </include>
+        FROM AEA_ITEM i
+        WHERE i.PARENT_ITEM_ID = #{itemId}
+    </select>
+
+    <select id="findStageItemDueNumByItemIdAndStageId" resultType="string">
+        SELECT t1.TIME_LIMIT
+        FROM (
+            SELECT flod.TIME_LIMIT, flod.APP_ID
+            FROM ACT_TPL_APP_FLOWDEF flod
+                INNER JOIN act_tpl_app_trigger trg ON flod.APP_FLOWDEF_ID = trg.TRIGGER_APP_FLOWDEF_ID
+                INNER JOIN aea_item_ver iv ON iv.ITEM_VER_ID = trg.BUS_RECORD_ID
+            WHERE trg.IS_DELETED = '0'
+                AND iv.ITEM_ID = #{itemId}
+        ) t1
+            INNER JOIN aea_par_stage stage ON t1.APP_ID = stage.APP_ID
+        WHERE stage.STAGE_ID = #{stageId}
+        LIMIT 1
+    </select>
+
+    <select id="findStageItemByStageItemId" resultType="AeaParStageItem">
+        SELECT apsi.ITEM_ID itemId, apsi.STAGE_ID stageId, aib.IS_CATALOG isCatalog, apsi.IS_OPTION_ITEM isOptionItem, aib.DUE_NUM dueNum
+        FROM aea_par_stage_item apsi
+            INNER JOIN aea_item_basic aib ON apsi.ITEM_VER_ID = aib.ITEM_VER_ID
+        WHERE STAGE_ITEM_ID = #{stageItemId}
+    </select>
+
+    <select id="getAeaParThemeVerByItemCodeAndThemeCode" resultType="SpglDfxmsplcjdxxb">
+        SELECT apt_123.theme_code AS splcbm, aptv_123.ver_num AS splcbbh
+        , CASE
+        WHEN AEA_PAR_STAGE_ITEM.IS_OPTION_ITEM = '1' THEN 5
+        WHEN stage.IS_NODE IN ('2', '3') THEN 5
+        ELSE stage.SORT_NO
+        END AS SPJDXH
+        FROM AEA_PAR_STAGE_ITEM
+        INNER JOIN AEA_PAR_STAGE stage ON stage.STAGE_ID = AEA_PAR_STAGE_ITEM.STAGE_ID
+        INNER JOIN AEA_PAR_THEME_VER aptv_123 ON aptv_123.THEME_VER_ID = stage.THEME_VER_ID
+        INNER JOIN AEA_PAR_THEME apt_123 ON apt_123.THEME_ID = aptv_123.THEME_ID
+        INNER JOIN AEA_ITEM_VER aiv_123 ON aiv_123.ITEM_VER_ID = AEA_PAR_STAGE_ITEM.ITEM_VER_ID
+        INNER JOIN AEA_ITEM_BASIC aib_123 ON aib_123.ITEM_VER_ID = AEA_PAR_STAGE_ITEM.ITEM_VER_ID
+        WHERE aib_123.ITEM_CODE = #{itemCode}
+        <if test="themeCode != null">
+            AND apt_123.THEME_CODE = #{themeCode}
+        </if>
+        ORDER BY AEA_PAR_STAGE_ITEM.CREATE_TIME DESC
+        LIMIT 1
+    </select>
+
+    <select id="findParentItemByItemVerId" resultType="AeaItemBasic">
+        SELECT
+        <include refid="item_basic_allColumns">
+            <property name="alias" value="pib"></property>
+        </include>
+        FROM aea_item_basic pib
+        INNER JOIN (
+        SELECT ib.item_ver_id, i.PARENT_ITEM_ID
+        FROM aea_item_basic ib
+        INNER JOIN aea_item i ON ib.item_id = i.item_id
+        WHERE ib.item_ver_id = #{itemVerId}
+        ) cib
+        ON cib.PARENT_ITEM_ID = pib.item_id
+        INNER JOIN AEA_ITEM_VER aiv ON aiv.item_ver_id = pib.item_ver_id
+        WHERE aiv.ITEM_VER_STATUS IN ('1', '2')
+        LIMIT 1
+    </select>
+    
+    <select id="findStageIdByItemId" resultType="string">
+        SELECT apsi.item_id,stage.STAGE_ID
+        FROM AEA_PAR_STAGE_ITEM apsi
+        INNER JOIN AEA_PAR_STAGE stage ON stage.STAGE_ID = apsi.STAGE_ID
+        GROUP BY apsi.item_id,stage.STAGE_ID
+    </select>
+
+</mapper>

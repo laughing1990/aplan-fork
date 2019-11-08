@@ -1,0 +1,580 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by Administrator    2019-08-03 10:26:15 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaHiItemCorrectMapper" >
+<!--1 返回所有字段的SQL字句 -->
+<sql id="allColumns" >
+    CORRECT_ID  correctId,
+    ITEMINST_ID  iteminstId,
+    APPLYINST_ID  applyinstId,
+    PROJ_INFO_ID  projInfoId,
+    IS_FLOW_TRIGGER  isFlowTrigger,
+    APPINST_ID  appinstId,
+    CORRECT_DUE_DAYS  correctDueDays,
+    CORRECT_DUE_TIME  correctDueTime,
+    MATINST_IDS  matinstIds,
+    CORRECT_DESC  correctDesc,
+    CORRECT_MEMO  correctMemo,
+    CHARGE_ORG_ID  chargeOrgId,
+    CHARGE_ORG_NAME  chargeOrgName,
+    WINDOW_USER_ID  windowUserId,
+    WINDOW_USER_NAME  windowUserName,
+    WINDOW_PHONE  windowPhone,
+    OPS_USER_ID  opsUserId,
+    OPS_USER_NAME  opsUserName,
+    OPS_TIME  opsTime,
+    CORRECT_USER_NAME  correctUserName,
+    CORRECT_END_TIME  correctEndTime,
+    PRINT_USER_ID  printUserId,
+    PRINT_USER_NAME  printUserName,
+    PRINT_TIME  printTime,
+    CORRECT_STATE  correctState,
+    IS_DELETED  isDeleted,
+    CREATER  creater,
+    CREATE_TIME  createTime,
+    MODIFIER  modifier,
+    MODIFY_TIME  modifyTime,
+    ROOT_ORG_ID rootOrgId
+    </sql>
+
+    <sql id="allColumns_ahic" >
+        ahic.CORRECT_ID  correctId,
+        ahic.ITEMINST_ID  iteminstId,
+        ahic.APPLYINST_ID  applyinstId,
+        ahic.PROJ_INFO_ID  projInfoId,
+        ahic.IS_FLOW_TRIGGER  isFlowTrigger,
+        ahic.APPINST_ID  appinstId,
+        ahic.CORRECT_DUE_DAYS  correctDueDays,
+        ahic.CORRECT_DUE_TIME  correctDueTime,
+        ahic.MATINST_IDS  matinstIds,
+        ahic.CORRECT_DESC  correctDesc,
+        ahic.CORRECT_MEMO  correctMemo,
+        ahic.CHARGE_ORG_ID  chargeOrgId,
+        ahic.CHARGE_ORG_NAME  chargeOrgName,
+        ahic.WINDOW_USER_ID  windowUserId,
+        ahic.WINDOW_USER_NAME  windowUserName,
+        ahic.WINDOW_PHONE  windowPhone,
+        ahic.OPS_USER_ID  opsUserId,
+        ahic.OPS_USER_NAME  opsUserName,
+        ahic.OPS_TIME  opsTime,
+        ahic.CORRECT_USER_NAME  correctUserName,
+        ahic.CORRECT_END_TIME  correctEndTime,
+        ahic.PRINT_USER_ID  printUserId,
+        ahic.PRINT_USER_NAME  printUserName,
+        ahic.PRINT_TIME  printTime,
+        ahic.CORRECT_STATE  correctState,
+        ahic.IS_DELETED  isDeleted,
+        ahic.CREATER  creater,
+        ahic.CREATE_TIME  createTime,
+        ahic.MODIFIER  modifier,
+        ahic.MODIFY_TIME  modifyTime,
+        ahic.ROOT_ORG_ID rootOrgId
+    </sql>
+
+<!--2 根据主键ID查询单个实体 -->
+<select id="getAeaHiItemCorrectById" resultType="AeaHiItemCorrect" >
+    select
+    <include refid="allColumns_ahic"/>,ahi.ITEMINST_NAME iteminstName,aha.APPLYINST_CODE applyinstCode,api.PROJ_NAME
+    projInfoName,
+    api.LOCAL_CODE localCode,api.REGIONALISM regionalism,aha.APPLY_SUBJECT applySubject,aha.LINKMAN_INFO_ID
+    linkmanInfoId,ooo.ORG_NAME approveOrgName
+    from    AEA_HI_ITEM_CORRECT ahic
+    LEFT JOIN AEA_HI_ITEMINST ahi ON ahi.ITEMINST_ID = ahic.ITEMINST_ID
+    LEFT JOIN OPU_OM_ORG ooo ON ahi.APPROVE_ORG_ID = ooo.ORG_ID
+    LEFT JOIN AEA_HI_APPLYINST aha ON aha.APPLYINST_ID = ahic.APPLYINST_ID
+    LEFT JOIN AEA_PROJ_INFO api ON api.PROJ_INFO_ID = ahic.PROJ_INFO_ID
+    where    ahic.CORRECT_ID = #{id}
+    AND  ahic.IS_DELETED = '0'
+</select>
+
+<!--3 根据条件查询实体list -->
+    <select id="listAeaHiItemCorrect" resultType="AeaHiItemCorrect" >
+        select
+        <include refid="allColumns"/>
+        from    AEA_HI_ITEM_CORRECT
+    <where>
+        <if test="correctId != null" >
+        AND    CORRECT_ID = #{correctId}
+        </if>
+        <if test="iteminstId != null" >
+        AND    ITEMINST_ID = #{iteminstId}
+        </if>
+        <if test="applyinstId != null" >
+        AND    APPLYINST_ID = #{applyinstId}
+        </if>
+        <if test="projInfoId != null" >
+        AND    PROJ_INFO_ID = #{projInfoId}
+        </if>
+        <if test="isFlowTrigger != null" >
+        AND    IS_FLOW_TRIGGER = #{isFlowTrigger}
+        </if>
+        <if test="appinstId != null" >
+        AND    APPINST_ID = #{appinstId}
+        </if>
+        <if test="correctDueDays != null" >
+        AND    CORRECT_DUE_DAYS = #{correctDueDays}
+        </if>
+        <if test="correctDueTime != null" >
+        AND    CORRECT_DUE_TIME = #{correctDueTime}
+        </if>
+        <if test="matinstIds != null" >
+        AND    MATINST_IDS = #{matinstIds}
+        </if>
+        <if test="correctDesc != null" >
+        AND    CORRECT_DESC = #{correctDesc}
+        </if>
+        <if test="correctMemo != null" >
+        AND    CORRECT_MEMO = #{correctMemo}
+        </if>
+        <if test="chargeOrgId != null" >
+        AND    CHARGE_ORG_ID = #{chargeOrgId}
+        </if>
+        <if test="chargeOrgName != null" >
+        AND    CHARGE_ORG_NAME = #{chargeOrgName}
+        </if>
+        <if test="windowUserId != null" >
+        AND    WINDOW_USER_ID = #{windowUserId}
+        </if>
+        <if test="windowUserName != null" >
+        AND    WINDOW_USER_NAME = #{windowUserName}
+        </if>
+        <if test="windowPhone != null" >
+        AND    WINDOW_PHONE = #{windowPhone}
+        </if>
+        <if test="opsUserId != null" >
+        AND    OPS_USER_ID = #{opsUserId}
+        </if>
+        <if test="opsUserName != null" >
+        AND    OPS_USER_NAME = #{opsUserName}
+        </if>
+        <if test="opsTime != null" >
+        AND    OPS_TIME = #{opsTime}
+        </if>
+        <if test="correctUserName != null" >
+        AND    CORRECT_USER_NAME = #{correctUserName}
+        </if>
+        <if test="correctEndTime != null" >
+        AND    CORRECT_END_TIME = #{correctEndTime}
+        </if>
+        <if test="printUserId != null" >
+        AND    PRINT_USER_ID = #{printUserId}
+        </if>
+        <if test="printUserName != null" >
+        AND    PRINT_USER_NAME = #{printUserName}
+        </if>
+        <if test="printTime != null" >
+        AND    PRINT_TIME = #{printTime}
+        </if>
+        <if test="correctState != null" >
+        AND    CORRECT_STATE = #{correctState}
+        </if>
+        <if test="isDeleted != null" >
+        AND    IS_DELETED = #{isDeleted}
+        </if>
+        <if test="creater != null" >
+        AND    CREATER = #{creater}
+        </if>
+        <if test="createTime != null" >
+        AND    CREATE_TIME = #{createTime}
+        </if>
+        <if test="modifier != null" >
+        AND    MODIFIER = #{modifier}
+        </if>
+        <if test="modifyTime != null" >
+        AND    MODIFY_TIME = #{modifyTime}
+        </if>
+        <if test="rootOrgId != null" >
+            AND  ROOT_ORG_ID = #{rootOrgId}
+        </if>
+      AND  IS_DELETED = '0'
+    </where>
+        ORDER BY CREATE_TIME DESC
+    </select>
+<!--4 根据条件查询实体list,返回分页对象 -->
+
+<!--5 新增实体对象 -->
+<insert id="insertAeaHiItemCorrect" parameterType="AeaHiItemCorrect" >
+    insert into AEA_HI_ITEM_CORRECT (
+CORRECT_ID  ,ITEMINST_ID  ,APPLYINST_ID  ,PROJ_INFO_ID  ,IS_FLOW_TRIGGER  ,APPINST_ID  ,CORRECT_DUE_DAYS  ,CORRECT_DUE_TIME  ,MATINST_IDS  ,CORRECT_DESC  ,CORRECT_MEMO  ,CHARGE_ORG_ID  ,CHARGE_ORG_NAME  ,WINDOW_USER_ID  ,WINDOW_USER_NAME  ,WINDOW_PHONE  ,OPS_USER_ID  ,OPS_USER_NAME  ,OPS_TIME  ,CORRECT_USER_NAME  ,CORRECT_END_TIME  ,PRINT_USER_ID  ,PRINT_USER_NAME  ,PRINT_TIME  ,CORRECT_STATE  ,IS_DELETED  ,CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME,ROOT_ORG_ID
+    )  values  (
+#{correctId},#{iteminstId},#{applyinstId},#{projInfoId},#{isFlowTrigger},#{appinstId},#{correctDueDays},#{correctDueTime},#{matinstIds},#{correctDesc},#{correctMemo},#{chargeOrgId},#{chargeOrgName},#{windowUserId},#{windowUserName},#{windowPhone},#{opsUserId},#{opsUserName},#{opsTime},#{correctUserName},#{correctEndTime},#{printUserId},#{printUserName},#{printTime},#{correctState},#{isDeleted},#{creater},#{createTime},#{modifier},  #{modifyTime},#{rootOrgId}
+    )
+</insert>
+<!--6 修改实体对象 -->
+<update id="updateAeaHiItemCorrect" parameterType="AeaHiItemCorrect" >
+    update AEA_HI_ITEM_CORRECT
+    <set >
+        <if test="correctId != null" >
+        CORRECT_ID = #{correctId},
+        </if>
+        <if test="iteminstId != null" >
+        ITEMINST_ID = #{iteminstId},
+        </if>
+        <if test="applyinstId != null" >
+        APPLYINST_ID = #{applyinstId},
+        </if>
+        <if test="projInfoId != null" >
+        PROJ_INFO_ID = #{projInfoId},
+        </if>
+        <if test="isFlowTrigger != null" >
+        IS_FLOW_TRIGGER = #{isFlowTrigger},
+        </if>
+        <if test="appinstId != null" >
+        APPINST_ID = #{appinstId},
+        </if>
+        <if test="correctDueDays != null" >
+        CORRECT_DUE_DAYS = #{correctDueDays},
+        </if>
+        <if test="correctDueTime != null" >
+        CORRECT_DUE_TIME = #{correctDueTime},
+        </if>
+        <if test="matinstIds != null" >
+        MATINST_IDS = #{matinstIds},
+        </if>
+        <if test="correctDesc != null" >
+        CORRECT_DESC = #{correctDesc},
+        </if>
+        <if test="correctMemo != null" >
+        CORRECT_MEMO = #{correctMemo},
+        </if>
+        <if test="chargeOrgId != null" >
+        CHARGE_ORG_ID = #{chargeOrgId},
+        </if>
+        <if test="chargeOrgName != null" >
+        CHARGE_ORG_NAME = #{chargeOrgName},
+        </if>
+        <if test="windowUserId != null" >
+        WINDOW_USER_ID = #{windowUserId},
+        </if>
+        <if test="windowUserName != null" >
+        WINDOW_USER_NAME = #{windowUserName},
+        </if>
+        <if test="windowPhone != null" >
+        WINDOW_PHONE = #{windowPhone},
+        </if>
+        <if test="opsUserId != null" >
+        OPS_USER_ID = #{opsUserId},
+        </if>
+        <if test="opsUserName != null" >
+        OPS_USER_NAME = #{opsUserName},
+        </if>
+        <if test="opsTime != null" >
+        OPS_TIME = #{opsTime},
+        </if>
+        <if test="correctUserName != null" >
+        CORRECT_USER_NAME = #{correctUserName},
+        </if>
+        <if test="correctEndTime != null" >
+        CORRECT_END_TIME = #{correctEndTime},
+        </if>
+        <if test="printUserId != null" >
+        PRINT_USER_ID = #{printUserId},
+        </if>
+        <if test="printUserName != null" >
+        PRINT_USER_NAME = #{printUserName},
+        </if>
+        <if test="printTime != null" >
+        PRINT_TIME = #{printTime},
+        </if>
+        <if test="correctState != null" >
+        CORRECT_STATE = #{correctState},
+        </if>
+        <if test="isDeleted != null" >
+        IS_DELETED = #{isDeleted},
+        </if>
+        <if test="creater != null" >
+        CREATER = #{creater},
+        </if>
+        <if test="createTime != null" >
+        CREATE_TIME = #{createTime},
+        </if>
+        <if test="modifier != null" >
+        MODIFIER = #{modifier},
+        </if>
+        <if test="modifyTime != null" >
+        MODIFY_TIME = #{modifyTime},
+        </if>
+        <if test="rootOrgId != null" >
+            ROOT_ORG_ID = #{rootOrgId},
+        </if>
+    </set>
+    where CORRECT_ID = #{correctId}
+</update>
+<!--7 删除实体对象,根据主键ID -->
+    <update id="deleteAeaHiItemCorrect"  >
+        update AEA_HI_ITEM_CORRECT
+    <set >
+        IS_DELETED = '1'
+    </set>
+        where CORRECT_ID = #{id}
+    </update>
+
+    <select id="searchStayMatCorrectListByKeyword" resultType="com.augurit.aplanmis.common.vo.MatCorrectConfirmVo">
+select * from(
+SELECT
+	ahi_123.ITEMINST_ID iteminstId,
+	ahap_123.APPLYINST_CODE applyinstCode,
+	temp1.PROJ_NAME projName,
+	ali_123.LINKMAN_NAME linkmanName,
+	case ahap_123.IS_SERIES_APPROVE WHEN '1' THEN '单项' ELSE '并联' end  isSeriesApprove,
+	theme.THEME_NAME themeName,
+	aps_123.STAGE_NAME stageName,
+	ahi_123.ITEMINST_NAME iteminstName,
+	ahap_123.CREATE_TIME createTime,
+	ahic_123.CORRECT_ID correctId
+FROM
+	AEA_HI_ITEMINST ahi_123
+LEFT JOIN AEA_HI_PAR_STAGEINST ahs_123 ON ahi_123.STAGEINST_ID = ahs_123.STAGEINST_ID
+LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+LEFT JOIN AEA_PAR_STAGE aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
+LEFT JOIN AEA_PAR_THEME_VER ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
+LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+LEFT JOIN AEA_PAR_THEME theme ON theme.THEME_ID = ver.THEME_ID
+        INNER JOIN AEA_HI_ITEM_CORRECT ahic_123 ON ahic_123.APPLYINST_ID = ahap_123.APPLYINST_ID AND
+        ahic_123.ITEMINST_ID = ahi_123.ITEMINST_ID AND ahic_123.CORRECT_STATE = '7'
+LEFT JOIN (
+	SELECT
+		ap.APPLYINST_ID,
+		GROUP_CONCAT(p.PROJ_NAME) AS PROJ_NAME
+	FROM
+		aea_applyinst_proj ap
+	LEFT JOIN aea_proj_info p ON ap.proj_info_id = p.proj_info_id
+	GROUP BY
+		ap.APPLYINST_ID
+) temp1 ON temp1.APPLYINST_ID = ahap_123.APPLYINST_ID
+WHERE
+	ahi_123.IS_SERIES_APPROVE = '0'
+        AND ahi_123.ITEMINST_STATE = '7'
+and ahic_123.ROOT_ORG_ID = #{currentOrgId}
+and ahic_123.creater = #{currentUserId}
+UNION
+	SELECT
+		ahi_123.ITEMINST_ID iteminstId,
+		ahap_123.APPLYINST_CODE applyinstCode,
+		temp1.PROJ_NAME projName,
+		ali_123.LINKMAN_NAME linkmanName,
+		case ahap_123.IS_SERIES_APPROVE WHEN '1' THEN '单项' ELSE '并联' end  isSeriesApprove,
+		NULL AS  themeName,
+		NULL AS  stageName,
+		ahi_123.ITEMINST_NAME iteminstName,
+		ahap_123.CREATE_TIME createTime,
+		ahic_123.CORRECT_ID correctId
+	FROM
+		AEA_HI_ITEMINST ahi_123
+	LEFT JOIN AEA_HI_SERIESINST ahs_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
+	LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+	LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+        INNER JOIN AEA_HI_ITEM_CORRECT ahic_123 ON ahic_123.APPLYINST_ID = ahap_123.APPLYINST_ID AND
+        ahic_123.ITEMINST_ID = ahi_123.ITEMINST_ID AND ahic_123.CORRECT_STATE = '7'
+	LEFT JOIN (
+		SELECT
+			ap.APPLYINST_ID,
+			GROUP_CONCAT(p.PROJ_NAME) AS PROJ_NAME
+		FROM
+			aea_applyinst_proj ap
+		LEFT JOIN aea_proj_info p ON ap.proj_info_id = p.proj_info_id
+		GROUP BY
+			ap.APPLYINST_ID
+	) temp1 ON temp1.APPLYINST_ID = ahap_123.APPLYINST_ID
+	WHERE
+		ahi_123.IS_SERIES_APPROVE = '1'
+        AND ahi_123.ITEMINST_STATE = '7'
+and ahic_123.ROOT_ORG_ID = #{currentOrgId}
+and ahic_123.creater = #{currentUserId}
+) gg
+<where>
+    <if test="keyword !='' and keyword != null">
+        gg.projName like CONCAT('%',#{keyword},'%') or gg.isSeriesApprove = #{keyword} or themeName like concat('%',#{keyword},'%')
+    </if>
+</where>
+    </select>
+<!--8 删除实体对象列表,根据主键ID列表 -->
+<!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaHiItemCorrect" id="AeaHiItemCorrectMap">
+        <id property="correctId" column="CORRECT_ID"/>
+        <result property="iteminstId" column="ITEMINST_ID"/>
+        <result property="applyinstId" column="APPLYINST_ID"/>
+        <result property="projInfoId" column="PROJ_INFO_ID"/>
+        <result property="isFlowTrigger" column="IS_FLOW_TRIGGER"/>
+        <result property="appinstId" column="APPINST_ID"/>
+        <result property="correctDueDays" column="CORRECT_DUE_DAYS"/>
+        <result property="correctDueTime" column="CORRECT_DUE_TIME"/>
+        <result property="matinstIds" column="MATINST_IDS"/>
+        <result property="correctDesc" column="CORRECT_DESC"/>
+        <result property="correctMemo" column="CORRECT_MEMO"/>
+        <result property="chargeOrgId" column="CHARGE_ORG_ID"/>
+        <result property="chargeOrgName" column="CHARGE_ORG_NAME"/>
+        <result property="windowUserId" column="WINDOW_USER_ID"/>
+        <result property="windowUserName" column="WINDOW_USER_NAME"/>
+        <result property="windowPhone" column="WINDOW_PHONE"/>
+        <result property="opsUserId" column="OPS_USER_ID"/>
+        <result property="opsUserName" column="OPS_USER_NAME"/>
+        <result property="opsTime" column="OPS_TIME"/>
+        <result property="correctUserName" column="CORRECT_USER_NAME"/>
+        <result property="correctEndTime" column="CORRECT_END_TIME"/>
+        <result property="printUserId" column="PRINT_USER_ID"/>
+        <result property="printUserName" column="PRINT_USER_NAME"/>
+        <result property="printTime" column="PRINT_TIME"/>
+        <result property="correctState" column="CORRECT_STATE"/>
+        <result property="isDeleted" column="IS_DELETED"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="modifier" column="MODIFIER"/>
+        <result property="modifyTime" column="MODIFY_TIME"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+
+    </resultMap>
+
+    <!-- 根据当前登录人/单位的ID，获取材料补正列表 -->
+    <select id="searchStayMatCorrectListByCurrentUser" resultType="com.augurit.aplanmis.common.vo.MatCorrectConfirmVo">
+        SELECT
+        	ahi_123.ITEMINST_ID iteminstId,
+        ahi_123.ITEMINST_CODE iteminstCode,
+        	ahap_123.APPLYINST_CODE applyinstCode,
+        	temp1.PROJ_NAME projName,
+            temp1.LOCAL_CODE AS localCode,
+            temp1.GCBM AS gcbm,
+        	'并联' isSeriesApprove,
+        	theme.THEME_NAME themeName,
+        	aps_123.STAGE_NAME stageName,
+        	ahi_123.ITEMINST_NAME iteminstName,
+        	ahap_123.CREATE_TIME createTime,
+		    ahap_123.APPLY_SUBJECT applySubject,
+        	ahic_123.CORRECT_ID correctId
+        FROM
+        	AEA_HI_ITEMINST ahi_123
+        LEFT JOIN AEA_HI_PAR_STAGEINST ahs_123 ON ahi_123.STAGEINST_ID = ahs_123.STAGEINST_ID
+        LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+        LEFT JOIN AEA_PAR_STAGE aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
+        LEFT JOIN AEA_PAR_THEME_VER ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
+        LEFT JOIN AEA_PAR_THEME theme ON theme.THEME_ID = ver.THEME_ID
+        INNER JOIN AEA_HI_ITEM_CORRECT ahic_123 ON ahic_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+        AND ahic_123.ITEMINST_ID = ahi_123.ITEMINST_ID
+        AND ahic_123.CORRECT_STATE = '6'
+        LEFT JOIN (
+        	SELECT
+        		ap.APPLYINST_ID,
+                p.PROJ_NAME AS PROJ_NAME,
+                p.LOCAL_CODE AS LOCAL_CODE,
+                p.GCBM AS GCBM
+        	FROM
+        		aea_applyinst_proj ap
+        	LEFT JOIN aea_proj_info p ON ap.proj_info_id = p.proj_info_id
+        	GROUP BY
+        		ap.APPLYINST_ID
+        ) temp1 ON temp1.APPLYINST_ID = ahap_123.APPLYINST_ID
+        WHERE
+        	ahi_123.IS_SERIES_APPROVE = '0'
+        AND ahi_123.ITEMINST_STATE = '6'
+        AND (
+        	(
+        		ahap_123.APPLY_SUBJECT = '0'
+                <if test="userId !=null and userId!=''">
+                    AND ahap_123.LINKMAN_INFO_ID = #{userId}
+                </if>
+                <if test="userId ==null || userId==''">
+                    AND ahap_123.LINKMAN_INFO_ID is null
+                </if>
+        	)
+        	OR (
+        		ahap_123.APPLY_SUBJECT = '1'
+        		AND ahap_123.APPLYINST_ID IN (
+        			SELECT
+        				aaup.APPLYINST_ID
+        			FROM
+        				aea_applyinst_unit_proj aaup
+        			LEFT JOIN aea_unit_proj aup ON aaup.UNIT_PROJ_ID = aup.UNIT_PROJ_ID
+        			WHERE
+        				aaup.IS_DELETED != 1 and aup.is_Owner = 1
+                        <if test="unitInfoId !=null and unitInfoId!=''">
+                             and aup.UNIT_INFO_ID = #{unitInfoId}
+                        </if>
+                        <if test="unitInfoId ==null || unitInfoId==''">
+                            and aup.UNIT_INFO_ID is null
+                        </if>
+        		)
+        	)
+        )
+        <if test="keyword != null and keyword != ''">
+            AND (
+            ahi_123.ITEMINST_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%') or
+            ahap_123.APPLYINST_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%') OR
+            temp1.PROJ_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%')OR
+            ahi_123.ITEMINST_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+            )
+        </if>
+    UNION
+	    SELECT
+	    	ahi_123.ITEMINST_ID iteminstId,
+        ahi_123.ITEMINST_CODE iteminstCode,
+        	ahap_123.APPLYINST_CODE applyinstCode,
+        	temp1.PROJ_NAME projName,
+            temp1.LOCAL_CODE AS localCode,
+            temp1.GCBM AS gcbm,
+        	'单项' IS_SERIES_APPROVE,
+	    	temp1.THEME_NAME AS themeName,
+	    	NULL AS STAGE_NAME,
+        	ahi_123.ITEMINST_NAME iteminstName,
+        	ahap_123.CREATE_TIME createTime,
+		    ahap_123.APPLY_SUBJECT applySubject,
+        	ahic_123.CORRECT_ID correctId
+	    FROM
+	    	AEA_HI_ITEMINST ahi_123
+	    LEFT JOIN AEA_HI_SERIESINST ahs_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
+	    LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+	    LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+	    INNER JOIN AEA_HI_ITEM_CORRECT ahic_123 ON ahic_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+	    AND ahic_123.ITEMINST_ID = ahi_123.ITEMINST_ID
+	    AND ahic_123.CORRECT_STATE = '6'
+	    LEFT JOIN (
+	    	SELECT
+	    		ap.APPLYINST_ID,
+                p.PROJ_NAME AS PROJ_NAME,
+                p.LOCAL_CODE AS LOCAL_CODE,
+                apt.THEME_NAME AS THEME_NAME,
+                p.GCBM AS GCBM
+	    	FROM
+	    		aea_applyinst_proj ap
+	    	LEFT JOIN aea_proj_info p ON ap.proj_info_id = p.proj_info_id
+            LEFT JOIN aea_par_theme apt on apt.theme_id = p.theme_id
+	    	GROUP BY
+	    		ap.APPLYINST_ID
+	    ) temp1 ON temp1.APPLYINST_ID = ahap_123.APPLYINST_ID
+	    WHERE
+	    	ahi_123.IS_SERIES_APPROVE = '1'
+	    AND ahi_123.ITEMINST_STATE = '6'
+	    AND (
+	    	(
+	    		ahap_123.APPLY_SUBJECT = '0'
+	    		AND ahap_123.LINKMAN_INFO_ID = #{userId}
+	    	)
+	    	OR (
+	    		ahap_123.APPLY_SUBJECT = '1'
+	    		AND ahap_123.APPLYINST_ID IN (
+	    			SELECT
+	    				aaup.APPLYINST_ID
+	    			FROM
+	    				aea_applyinst_unit_proj aaup
+	    			LEFT JOIN aea_unit_proj aup ON aaup.UNIT_PROJ_ID = aup.UNIT_PROJ_ID
+	    			WHERE
+	    				aaup.IS_DELETED != 1 and aup.is_Owner = 1
+                        <if test="unitInfoId !=null and unitInfoId!=''">
+                            and aup.UNIT_INFO_ID = #{unitInfoId}
+                        </if>
+                        <if test="unitInfoId ==null || unitInfoId==''">
+                            and aup.UNIT_INFO_ID is null
+                        </if>
+	    		)
+	    	)
+	    )
+        <if test="keyword != null and keyword != ''">
+            AND (
+            ahi_123.ITEMINST_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%') or
+            ahap_123.APPLYINST_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%') OR
+            temp1.PROJ_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%')OR
+            ahi_123.ITEMINST_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+            )
+        </if>
+    </select>
+</mapper>

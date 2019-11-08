@@ -1,0 +1,2099 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.EffectivenessInspectionMapper">
+
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns">
+        TASK_ID  itemId,
+        APPLYINST_CODE applyinstCode,
+        ITEMINST_STAGE_NAME iteminstStageName,
+        LINKMAN_NAME linkMan,
+        case APPLYINST_SOURCE when 'net' then '网上申报' when 'win' then '窗口申报' else APPLYINST_SOURCE end applyinstSource,
+        CREATE_TIME_ parentItemId,
+        START_TIME startTime,
+        APPLY_TIME applyinstTime,
+        NAME_ taskName,
+        DUE_NUM dueNum,
+        IS_SERIES_APPROVE isSeriesApprove,
+        busRecordId busRecordId,
+        ITEM_PROPERTY itemProperty,
+        APPLY_TYPE applyType,
+        PROJ_NAME projName,
+        USER_NAME approveUserName,
+        PROC_INST_ID_ procInstId
+    </sql>
+
+    <!-- 预警办件列表 -->
+    <select id="yuJingBanJianList" resultType="EffectInspectForm">
+        SELECT
+            <include refid="allColumns"/>
+        FROM
+        (
+        (
+        SELECT
+        art_123.ID_ TASK_ID,
+        ahap_123.APPLYINST_CODE APPLYINST_CODE,
+        aps_123.STAGE_NAME ITEMINST_STAGE_NAME,
+        ali_123.LINKMAN_NAME LINKMAN_NAME,
+        ahap_123.APPLYINST_SOURCE APPLYINST_SOURCE,
+        art_123.CREATE_TIME_ CREATE_TIME_,
+        ahp_123.START_TIME_ START_TIME,
+        ahap_123.CREATE_TIME APPLY_TIME,
+        art_123.NAME_ NAME_,
+        aps_123.DUE_NUM DUE_NUM,
+        '并联' AS IS_SERIES_APPROVE,
+        'undefined' AS busRecordId,
+        'undefined' AS ITEM_PROPERTY,
+        '0' AS APPLY_TYPE,
+        temp1.PROJ_NAME,
+        u.USER_NAME,
+        art_123.PROC_INST_ID_
+        FROM
+        ACT_RU_TASK art_123
+        LEFT JOIN ACT_HI_PROCINST ahp_123 ON art_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
+        LEFT JOIN ACT_STO_APPINST asa_123 ON asa_123.procinst_id = ahp_123.PROC_INST_ID_
+        LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahap_123.APPLYINST_ID = asa_123.master_record_id
+        LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+        LEFT JOIN AEA_HI_PAR_STAGEINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+        LEFT JOIN AEA_PAR_STAGE aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
+        LEFT JOIN OPU_OM_USER u ON u.LOGIN_NAME = art_123.ASSIGNEE_
+        LEFT JOIN (
+        SELECT
+        ap.APPLYINST_ID,
+        GROUP_CONCAT(p.PROJ_NAME) PROJ_NAME
+        FROM
+        aea_applyinst_proj ap
+        LEFT JOIN aea_proj_info p ON ap.proj_info_id = p.proj_info_id
+        GROUP BY
+        ap.APPLYINST_ID
+        ) temp1 ON temp1.APPLYINST_ID = ahap_123.APPLYINST_ID
+        WHERE
+        1 = 1
+        AND ahap_123.IS_SERIES_APPROVE = '0'
+        AND art_123.TASK_DEF_KEY_ NOT IN (
+        'yushen',
+        'wangshangyushen',
+        'shenpibuzheng',
+        'wangshangshouli'
+        )
+        AND art_123.ASSIGNEE_ IS NOT NULL
+        <if test="keyword != null and keyword != ''">
+            AND (
+            ahap_123.APPLYINST_CODE like concat('%',concat(#{keyword},'%'))
+            OR temp1.PROJ_NAME like concat('%',concat(#{keyword},'%'))
+            OR u.USER_NAME like concat('%',concat(#{keyword},'%'))
+            )
+        </if>
+        )
+        UNION
+        (
+        SELECT
+        art_123.ID_ TASK_ID,
+        ahap_123.APPLYINST_CODE APPLYINST_CODE,
+        aps_123.STAGE_NAME ITEMINST_STAGE_NAME,
+        ali_123.LINKMAN_NAME LINKMAN_NAME,
+        ahap_123.APPLYINST_SOURCE APPLYINST_SOURCE,
+        art_123.CREATE_TIME_ CREATE_TIME_,
+        ahp_123.START_TIME_ START_TIME,
+        ahap_123.CREATE_TIME AS APPLY_TIME,
+        art_123.NAME_ NAME_,
+        aps_123.DUE_NUM DUE_NUM,
+        '并联' AS IS_SERIES_APPROVE,
+        'undefined' AS busRecordId,
+        'undefined' AS ITEM_PROPERTY,
+        '0' AS APPLY_TYPE,
+        temp1.PROJ_NAME,
+        u.USER_NAME,
+        art_123.PROC_INST_ID_
+        FROM
+        ACT_RU_TASK art_123
+        LEFT JOIN ACT_HI_PROCINST ahp_123 ON art_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
+        LEFT JOIN ACT_STO_APPINST_SUBFLOW asas_123 ON asas_123.SUBFLOW_PROCINST_ID = art_123.PROC_INST_ID_
+        LEFT JOIN ACT_STO_APPINST asa_123 ON asas_123.appinst_id = asa_123.APPINST_ID
+        LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahap_123.APPLYINST_ID = asa_123.master_record_id
+        LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+        LEFT JOIN AEA_HI_PAR_STAGEINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+        LEFT JOIN AEA_PAR_STAGE aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
+        LEFT JOIN OPU_OM_USER u ON u.LOGIN_NAME = art_123.ASSIGNEE_
+        LEFT JOIN (
+        SELECT
+        ap.APPLYINST_ID,
+        GROUP_CONCAT(p.PROJ_NAME) PROJ_NAME
+        FROM
+        aea_applyinst_proj ap
+        LEFT JOIN aea_proj_info p ON ap.proj_info_id = p.proj_info_id
+        GROUP BY
+        ap.APPLYINST_ID
+        ) temp1 ON temp1.APPLYINST_ID = ahap_123.APPLYINST_ID
+        WHERE
+        1 = 1
+        AND ahap_123.IS_SERIES_APPROVE = '0'
+        AND art_123.TASK_DEF_KEY_ NOT IN (
+        'yushen',
+        'wangshangyushen',
+        'shenpibuzheng',
+        'wangshangshouli'
+        )
+        AND art_123.ASSIGNEE_ IS NOT NULL
+        <if test="keyword != null and keyword != ''">
+            AND (
+            ahap_123.APPLYINST_CODE like concat('%',concat(#{keyword},'%'))
+            OR temp1.PROJ_NAME like concat('%',concat(#{keyword},'%'))
+            OR u.USER_NAME like concat('%',concat(#{keyword},'%'))
+            )
+        </if>
+        )
+        UNION
+        (
+        SELECT
+        art_123.ID_ TASK_ID,
+        ahap_123.APPLYINST_CODE APPLYINST_CODE,
+        ahi_123.ITEMINST_NAME ITEMINST_STAGE_NAME,
+        ali_123.LINKMAN_NAME LINKMAN_NAME,
+        ahap_123.APPLYINST_SOURCE AS APPLYINST_SOURCE,
+        art_123.CREATE_TIME_ AS CREATE_TIME_,
+        ahp_123.START_TIME_ AS START_TIME,
+        ahap_123.CREATE_TIME AS APPLY_TIME,
+        art_123.NAME_ NAME_,
+        ai_123.DUE_NUM DUE_NUM,
+        '串联' AS IS_SERIES_APPROVE,
+        ahi_123.ITEMINST_ID busRecordId,
+        ai_123.ITEM_PROPERTY AS ITEM_PROPERTY,
+        '1' AS APPLY_TYPE,
+        temp1.PROJ_NAME,
+        u.USER_NAME,
+        art_123.PROC_INST_ID_
+        FROM
+        ACT_RU_TASK art_123
+        LEFT JOIN ACT_HI_PROCINST ahp_123 ON art_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
+        LEFT JOIN ACT_STO_APPINST asa_123 ON asa_123.procinst_id = ahp_123.PROC_INST_ID_
+        LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahap_123.APPLYINST_ID = asa_123.master_record_id
+        LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+        LEFT JOIN AEA_HI_SERIESINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+        LEFT JOIN AEA_HI_ITEMINST ahi_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
+        LEFT JOIN AEA_ITEM_BASIC ai_123 ON ahi_123.ITEM_VER_ID = ai_123.ITEM_VER_ID
+        LEFT JOIN OPU_OM_USER u ON u.LOGIN_NAME = art_123.ASSIGNEE_
+        LEFT JOIN (
+        SELECT
+        ap.APPLYINST_ID,
+        GROUP_CONCAT(p.PROJ_NAME) PROJ_NAME
+        FROM
+        aea_applyinst_proj ap
+        LEFT JOIN aea_proj_info p ON ap.proj_info_id = p.proj_info_id
+        GROUP BY
+        ap.APPLYINST_ID
+        ) temp1 ON temp1.APPLYINST_ID = ahap_123.APPLYINST_ID
+        WHERE
+        1 = 1
+        AND ahap_123.IS_SERIES_APPROVE = '1'
+        AND art_123.TASK_DEF_KEY_ NOT IN (
+        'yushen',
+        'wangshangyushen',
+        'shenpibuzheng',
+        'wangshangshouli'
+        )
+        AND art_123.ASSIGNEE_ IS NOT NULL
+        <if test="keyword != null and keyword != ''">
+            AND (
+            ahap_123.APPLYINST_CODE like concat('%',concat(#{keyword},'%'))
+            OR temp1.PROJ_NAME like concat('%',concat(#{keyword},'%'))
+            OR u.USER_NAME like concat('%',concat(#{keyword},'%'))
+            )
+        </if>
+        )
+        UNION
+        (
+        SELECT
+        art_123.ID_ TASK_ID,
+        ahap_123.APPLYINST_CODE APPLYINST_CODE,
+        ahi_123.ITEMINST_NAME ITEMINST_STAGE_NAME,
+        ali_123.LINKMAN_NAME LINKMAN_NAME,
+        ahap_123.APPLYINST_SOURCE AS APPLYINST_SOURCE,
+        art_123.CREATE_TIME_ AS CREATE_TIME_,
+        ahp_123.START_TIME_ AS START_TIME,
+        ahap_123.CREATE_TIME AS APPLY_TIME,
+        art_123.NAME_ NAME_,
+        ai_123.DUE_NUM DUE_NUM,
+        '串联' AS IS_SERIES_APPROVE,
+        ahi_123.ITEMINST_ID busRecordId,
+        ai_123.ITEM_PROPERTY AS ITEM_PROPERTY,
+        '1' AS APPLY_TYPE,
+        temp1.PROJ_NAME,
+        u.USER_NAME,
+        art_123.PROC_INST_ID_
+        FROM
+        ACT_RU_TASK art_123
+        LEFT JOIN ACT_HI_PROCINST ahp_123 ON art_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
+        LEFT JOIN ACT_STO_APPINST_SUBFLOW asas_123 ON asas_123.SUBFLOW_PROCINST_ID = art_123.PROC_INST_ID_
+        LEFT JOIN ACT_STO_APPINST asa_123 ON asas_123.appinst_id = asa_123.APPINST_ID
+        LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahap_123.APPLYINST_ID = asa_123.master_record_id
+        LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+        LEFT JOIN AEA_HI_SERIESINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+        LEFT JOIN AEA_HI_ITEMINST ahi_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
+        LEFT JOIN AEA_ITEM_BASIC ai_123 ON ahi_123.ITEM_VER_ID = ai_123.ITEM_VER_ID
+        LEFT JOIN OPU_OM_USER u ON u.LOGIN_NAME = art_123.ASSIGNEE_
+        LEFT JOIN (
+        SELECT
+        ap.APPLYINST_ID,
+        GROUP_CONCAT(p.PROJ_NAME) PROJ_NAME
+        FROM
+        aea_applyinst_proj ap
+        LEFT JOIN aea_proj_info p ON ap.proj_info_id = p.proj_info_id
+        GROUP BY
+        ap.APPLYINST_ID
+        ) temp1 ON temp1.APPLYINST_ID = ahap_123.APPLYINST_ID
+        WHERE
+        1 = 1
+        AND ahap_123.IS_SERIES_APPROVE = '1'
+        AND art_123.TASK_DEF_KEY_ NOT IN (
+        'yushen',
+        'wangshangyushen',
+        'shenpibuzheng',
+        'wangshangshouli'
+        )
+        AND art_123.ASSIGNEE_ IS NOT NULL
+        <if test="keyword != null and keyword != ''">
+            AND (
+            ahap_123.APPLYINST_CODE like concat('%',concat(#{keyword},'%'))
+            OR temp1.PROJ_NAME like concat('%',concat(#{keyword},'%'))
+            OR u.USER_NAME like concat('%',concat(#{keyword},'%'))
+            )
+        </if>
+        )
+        ) ART_123
+        WHERE
+        1 = 1  AND  (ART_123.due_num-getEffectiveWorkDays(ART_123.APPLY_TIME,NOW()))&lt;=2 and (ART_123.due_num-getEffectiveWorkDays(ART_123.APPLY_TIME,NOW()))&gt;0
+        GROUP BY
+        ART_123.TASK_ID
+    </select>
+
+    <!-- 预警办件列表 -->
+    <select id="yuJingBanJianCount" resultType="Integer">
+        select
+            count(1)
+        from (
+            SELECT
+                <include refid="allColumns"/>
+            FROM
+            (
+            (
+            SELECT
+            art_123.ID_ TASK_ID,
+            ahap_123.APPLYINST_CODE APPLYINST_CODE,
+            aps_123.STAGE_NAME ITEMINST_STAGE_NAME,
+            ali_123.LINKMAN_NAME LINKMAN_NAME,
+            ahap_123.APPLYINST_SOURCE APPLYINST_SOURCE,
+            art_123.CREATE_TIME_ CREATE_TIME_,
+            ahp_123.START_TIME_ START_TIME,
+            ahap_123.CREATE_TIME APPLY_TIME,
+            art_123.NAME_ NAME_,
+            aps_123.DUE_NUM DUE_NUM,
+            '并联' AS IS_SERIES_APPROVE,
+            'undefined' AS busRecordId,
+            'undefined' AS ITEM_PROPERTY,
+            '0' AS APPLY_TYPE,
+            temp1.PROJ_NAME,
+            u.USER_NAME,
+            art_123.PROC_INST_ID_
+            FROM
+            ACT_RU_TASK art_123
+            LEFT JOIN ACT_HI_PROCINST ahp_123 ON art_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
+            LEFT JOIN ACT_STO_APPINST asa_123 ON asa_123.procinst_id = ahp_123.PROC_INST_ID_
+            LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahap_123.APPLYINST_ID = asa_123.master_record_id
+            LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+            LEFT JOIN AEA_HI_PAR_STAGEINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN AEA_PAR_STAGE aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
+            LEFT JOIN OPU_OM_USER u ON u.LOGIN_NAME = art_123.ASSIGNEE_
+            LEFT JOIN (
+            SELECT
+            ap.APPLYINST_ID,
+            GROUP_CONCAT(p.PROJ_NAME) PROJ_NAME
+            FROM
+            aea_applyinst_proj ap
+            LEFT JOIN aea_proj_info p ON ap.proj_info_id = p.proj_info_id
+            GROUP BY
+            ap.APPLYINST_ID
+            ) temp1 ON temp1.APPLYINST_ID = ahap_123.APPLYINST_ID
+            WHERE
+            1 = 1
+            AND ahap_123.IS_SERIES_APPROVE = '0'
+            AND art_123.TASK_DEF_KEY_ NOT IN (
+            'yushen',
+            'wangshangyushen',
+            'shenpibuzheng',
+            'wangshangshouli'
+            )
+            AND art_123.ASSIGNEE_ IS NOT NULL
+            )
+            UNION
+            (
+            SELECT
+            art_123.ID_ TASK_ID,
+            ahap_123.APPLYINST_CODE APPLYINST_CODE,
+            aps_123.STAGE_NAME ITEMINST_STAGE_NAME,
+            ali_123.LINKMAN_NAME LINKMAN_NAME,
+            ahap_123.APPLYINST_SOURCE APPLYINST_SOURCE,
+            art_123.CREATE_TIME_ CREATE_TIME_,
+            ahp_123.START_TIME_ START_TIME,
+            ahap_123.CREATE_TIME AS APPLY_TIME,
+            art_123.NAME_ NAME_,
+            aps_123.DUE_NUM DUE_NUM,
+            '并联' AS IS_SERIES_APPROVE,
+            'undefined' AS busRecordId,
+            'undefined' AS ITEM_PROPERTY,
+            '0' AS APPLY_TYPE,
+            temp1.PROJ_NAME,
+            u.USER_NAME,
+            art_123.PROC_INST_ID_
+            FROM
+            ACT_RU_TASK art_123
+            LEFT JOIN ACT_HI_PROCINST ahp_123 ON art_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
+            LEFT JOIN ACT_STO_APPINST_SUBFLOW asas_123 ON asas_123.SUBFLOW_PROCINST_ID = art_123.PROC_INST_ID_
+            LEFT JOIN ACT_STO_APPINST asa_123 ON asas_123.appinst_id = asa_123.APPINST_ID
+            LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahap_123.APPLYINST_ID = asa_123.master_record_id
+            LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+            LEFT JOIN AEA_HI_PAR_STAGEINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN AEA_PAR_STAGE aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
+            LEFT JOIN OPU_OM_USER u ON u.LOGIN_NAME = art_123.ASSIGNEE_
+            LEFT JOIN (
+            SELECT
+            ap.APPLYINST_ID,
+            GROUP_CONCAT(p.PROJ_NAME) PROJ_NAME
+            FROM
+            aea_applyinst_proj ap
+            LEFT JOIN aea_proj_info p ON ap.proj_info_id = p.proj_info_id
+            GROUP BY
+            ap.APPLYINST_ID
+            ) temp1 ON temp1.APPLYINST_ID = ahap_123.APPLYINST_ID
+            WHERE
+            1 = 1
+            AND ahap_123.IS_SERIES_APPROVE = '0'
+            AND art_123.TASK_DEF_KEY_ NOT IN (
+            'yushen',
+            'wangshangyushen',
+            'shenpibuzheng',
+            'wangshangshouli'
+            )
+            AND art_123.ASSIGNEE_ IS NOT NULL
+            )
+            UNION
+            (
+            SELECT
+            art_123.ID_ TASK_ID,
+            ahap_123.APPLYINST_CODE APPLYINST_CODE,
+            ahi_123.ITEMINST_NAME ITEMINST_STAGE_NAME,
+            ali_123.LINKMAN_NAME LINKMAN_NAME,
+            ahap_123.APPLYINST_SOURCE AS APPLYINST_SOURCE,
+            art_123.CREATE_TIME_ AS CREATE_TIME_,
+            ahp_123.START_TIME_ AS START_TIME,
+            ahap_123.CREATE_TIME AS APPLY_TIME,
+            art_123.NAME_ NAME_,
+            ai_123.DUE_NUM DUE_NUM,
+            '串联' AS IS_SERIES_APPROVE,
+            ahi_123.ITEMINST_ID busRecordId,
+            ai_123.ITEM_PROPERTY AS ITEM_PROPERTY,
+            '1' AS APPLY_TYPE,
+            temp1.PROJ_NAME,
+            u.USER_NAME,
+            art_123.PROC_INST_ID_
+            FROM
+            ACT_RU_TASK art_123
+            LEFT JOIN ACT_HI_PROCINST ahp_123 ON art_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
+            LEFT JOIN ACT_STO_APPINST asa_123 ON asa_123.procinst_id = ahp_123.PROC_INST_ID_
+            LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahap_123.APPLYINST_ID = asa_123.master_record_id
+            LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+            LEFT JOIN AEA_HI_SERIESINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN AEA_HI_ITEMINST ahi_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
+            LEFT JOIN AEA_ITEM_BASIC ai_123 ON ahi_123.ITEM_VER_ID = ai_123.ITEM_VER_ID
+            LEFT JOIN OPU_OM_USER u ON u.LOGIN_NAME = art_123.ASSIGNEE_
+            LEFT JOIN (
+            SELECT
+            ap.APPLYINST_ID,
+            GROUP_CONCAT(p.PROJ_NAME) PROJ_NAME
+            FROM
+            aea_applyinst_proj ap
+            LEFT JOIN aea_proj_info p ON ap.proj_info_id = p.proj_info_id
+            GROUP BY
+            ap.APPLYINST_ID
+            ) temp1 ON temp1.APPLYINST_ID = ahap_123.APPLYINST_ID
+            WHERE
+            1 = 1
+            AND ahap_123.IS_SERIES_APPROVE = '1'
+            AND art_123.TASK_DEF_KEY_ NOT IN (
+            'yushen',
+            'wangshangyushen',
+            'shenpibuzheng',
+            'wangshangshouli'
+            )
+            AND art_123.ASSIGNEE_ IS NOT NULL
+            )
+            UNION
+            (
+            SELECT
+            art_123.ID_ TASK_ID,
+            ahap_123.APPLYINST_CODE APPLYINST_CODE,
+            ahi_123.ITEMINST_NAME ITEMINST_STAGE_NAME,
+            ali_123.LINKMAN_NAME LINKMAN_NAME,
+            ahap_123.APPLYINST_SOURCE AS APPLYINST_SOURCE,
+            art_123.CREATE_TIME_ AS CREATE_TIME_,
+            ahp_123.START_TIME_ AS START_TIME,
+            ahap_123.CREATE_TIME AS APPLY_TIME,
+            art_123.NAME_ NAME_,
+            ai_123.DUE_NUM DUE_NUM,
+            '串联' AS IS_SERIES_APPROVE,
+            ahi_123.ITEMINST_ID busRecordId,
+            ai_123.ITEM_PROPERTY AS ITEM_PROPERTY,
+            '1' AS APPLY_TYPE,
+            temp1.PROJ_NAME,
+            u.USER_NAME,
+            art_123.PROC_INST_ID_
+            FROM
+            ACT_RU_TASK art_123
+            LEFT JOIN ACT_HI_PROCINST ahp_123 ON art_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
+            LEFT JOIN ACT_STO_APPINST_SUBFLOW asas_123 ON asas_123.SUBFLOW_PROCINST_ID = art_123.PROC_INST_ID_
+            LEFT JOIN ACT_STO_APPINST asa_123 ON asas_123.appinst_id = asa_123.APPINST_ID
+            LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahap_123.APPLYINST_ID = asa_123.master_record_id
+            LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+            LEFT JOIN AEA_HI_SERIESINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN AEA_HI_ITEMINST ahi_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
+            LEFT JOIN AEA_ITEM_BASIC ai_123 ON ahi_123.ITEM_VER_ID = ai_123.ITEM_VER_ID
+            LEFT JOIN OPU_OM_USER u ON u.LOGIN_NAME = art_123.ASSIGNEE_
+            LEFT JOIN (
+            SELECT
+            ap.APPLYINST_ID,
+            GROUP_CONCAT(p.PROJ_NAME) PROJ_NAME
+            FROM
+            aea_applyinst_proj ap
+            LEFT JOIN aea_proj_info p ON ap.proj_info_id = p.proj_info_id
+            GROUP BY
+            ap.APPLYINST_ID
+            ) temp1 ON temp1.APPLYINST_ID = ahap_123.APPLYINST_ID
+            WHERE
+            1 = 1
+            AND ahap_123.IS_SERIES_APPROVE = '1'
+            AND art_123.TASK_DEF_KEY_ NOT IN (
+            'yushen',
+            'wangshangyushen',
+            'shenpibuzheng',
+            'wangshangshouli'
+            )
+            AND art_123.ASSIGNEE_ IS NOT NULL
+            )
+            ) ART_123
+            WHERE
+            1 = 1
+            AND  (ART_123.due_num-getEffectiveWorkDays(ART_123.APPLY_TIME,NOW()))&lt;=2
+            and (ART_123.due_num-getEffectiveWorkDays(ART_123.APPLY_TIME,NOW()))&gt;0
+            GROUP BY
+            ART_123.TASK_ID
+        ) temp_
+    </select>
+
+    <!-- 逾期办件列表 -->
+    <select id="yuQiBanJianList" resultType="EffectInspectForm">
+        SELECT
+            <include refid="allColumns"/>
+        FROM
+        (
+        (
+        SELECT
+        art_123.ID_ TASK_ID,
+        ahap_123.APPLYINST_CODE APPLYINST_CODE,
+        aps_123.STAGE_NAME ITEMINST_STAGE_NAME,
+        ali_123.LINKMAN_NAME LINKMAN_NAME,
+        ahap_123.APPLYINST_SOURCE APPLYINST_SOURCE,
+        art_123.CREATE_TIME_ CREATE_TIME_,
+        ahp_123.START_TIME_ START_TIME,
+        ahap_123.CREATE_TIME APPLY_TIME,
+        art_123.NAME_ NAME_,
+        aps_123.DUE_NUM DUE_NUM,
+        '并联' AS IS_SERIES_APPROVE,
+        'undefined' AS busRecordId,
+        'undefined' AS ITEM_PROPERTY,
+        '0' AS APPLY_TYPE,
+        temp1.PROJ_NAME,
+        u.USER_NAME,
+        art_123.PROC_INST_ID_
+        FROM
+        ACT_RU_TASK art_123
+        LEFT JOIN ACT_HI_PROCINST ahp_123 ON art_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
+        LEFT JOIN ACT_STO_APPINST asa_123 ON asa_123.procinst_id = ahp_123.PROC_INST_ID_
+        LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahap_123.APPLYINST_ID = asa_123.master_record_id
+        LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+        LEFT JOIN AEA_HI_PAR_STAGEINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+        LEFT JOIN AEA_PAR_STAGE aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
+        LEFT JOIN OPU_OM_USER u ON u.LOGIN_NAME = art_123.ASSIGNEE_
+        LEFT JOIN (
+        SELECT
+        ap.APPLYINST_ID,
+        GROUP_CONCAT(p.PROJ_NAME) PROJ_NAME
+        FROM
+        aea_applyinst_proj ap
+        LEFT JOIN aea_proj_info p ON ap.proj_info_id = p.proj_info_id
+        GROUP BY
+        ap.APPLYINST_ID
+        ) temp1 ON temp1.APPLYINST_ID = ahap_123.APPLYINST_ID
+        WHERE
+        1 = 1
+        AND ahap_123.IS_SERIES_APPROVE = '0'
+        AND art_123.TASK_DEF_KEY_ NOT IN (
+        'yushen',
+        'wangshangyushen',
+        'shenpibuzheng',
+        'wangshangshouli'
+        )
+        AND art_123.ASSIGNEE_ IS NOT NULL
+        <if test="keyword != null and keyword != ''">
+            AND (
+            ahap_123.APPLYINST_CODE like concat('%',concat(#{keyword},'%'))
+            OR temp1.PROJ_NAME like concat('%',concat(#{keyword},'%'))
+            OR u.USER_NAME like concat('%',concat(#{keyword},'%'))
+            )
+        </if>
+        )
+        UNION
+        (
+        SELECT
+        art_123.ID_ TASK_ID,
+        ahap_123.APPLYINST_CODE APPLYINST_CODE,
+        aps_123.STAGE_NAME ITEMINST_STAGE_NAME,
+        ali_123.LINKMAN_NAME LINKMAN_NAME,
+        ahap_123.APPLYINST_SOURCE APPLYINST_SOURCE,
+        art_123.CREATE_TIME_ CREATE_TIME_,
+        ahp_123.START_TIME_ START_TIME,
+        ahap_123.CREATE_TIME AS APPLY_TIME,
+        art_123.NAME_ NAME_,
+        aps_123.DUE_NUM DUE_NUM,
+        '并联' AS IS_SERIES_APPROVE,
+        'undefined' AS busRecordId,
+        'undefined' AS ITEM_PROPERTY,
+        '0' AS APPLY_TYPE,
+        temp1.PROJ_NAME,
+        u.USER_NAME,
+        art_123.PROC_INST_ID_
+        FROM
+        ACT_RU_TASK art_123
+        LEFT JOIN ACT_HI_PROCINST ahp_123 ON art_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
+        LEFT JOIN ACT_STO_APPINST_SUBFLOW asas_123 ON asas_123.SUBFLOW_PROCINST_ID = art_123.PROC_INST_ID_
+        LEFT JOIN ACT_STO_APPINST asa_123 ON asas_123.appinst_id = asa_123.APPINST_ID
+        LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahap_123.APPLYINST_ID = asa_123.master_record_id
+        LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+        LEFT JOIN AEA_HI_PAR_STAGEINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+        LEFT JOIN AEA_PAR_STAGE aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
+        LEFT JOIN OPU_OM_USER u ON u.LOGIN_NAME = art_123.ASSIGNEE_
+        LEFT JOIN (
+        SELECT
+        ap.APPLYINST_ID,
+        GROUP_CONCAT(p.PROJ_NAME) PROJ_NAME
+        FROM
+        aea_applyinst_proj ap
+        LEFT JOIN aea_proj_info p ON ap.proj_info_id = p.proj_info_id
+        GROUP BY
+        ap.APPLYINST_ID
+        ) temp1 ON temp1.APPLYINST_ID = ahap_123.APPLYINST_ID
+        WHERE
+        1 = 1
+        AND ahap_123.IS_SERIES_APPROVE = '0'
+        AND art_123.TASK_DEF_KEY_ NOT IN (
+        'yushen',
+        'wangshangyushen',
+        'shenpibuzheng',
+        'wangshangshouli'
+        )
+        AND art_123.ASSIGNEE_ IS NOT NULL
+        <if test="keyword != null and keyword != ''">
+            AND (
+            ahap_123.APPLYINST_CODE like concat('%',concat(#{keyword},'%'))
+            OR temp1.PROJ_NAME like concat('%',concat(#{keyword},'%'))
+            OR u.USER_NAME like concat('%',concat(#{keyword},'%'))
+            )
+        </if>
+        )
+        UNION
+        (
+        SELECT
+        art_123.ID_ TASK_ID,
+        ahap_123.APPLYINST_CODE APPLYINST_CODE,
+        ahi_123.ITEMINST_NAME ITEMINST_STAGE_NAME,
+        ali_123.LINKMAN_NAME LINKMAN_NAME,
+        ahap_123.APPLYINST_SOURCE AS APPLYINST_SOURCE,
+        art_123.CREATE_TIME_ AS CREATE_TIME_,
+        ahp_123.START_TIME_ AS START_TIME,
+        ahap_123.CREATE_TIME AS APPLY_TIME,
+        art_123.NAME_ NAME_,
+        ai_123.DUE_NUM DUE_NUM,
+        '串联' AS IS_SERIES_APPROVE,
+        ahi_123.ITEMINST_ID busRecordId,
+        ai_123.ITEM_PROPERTY AS ITEM_PROPERTY,
+        '1' AS APPLY_TYPE,
+        temp1.PROJ_NAME,
+        u.USER_NAME,
+        art_123.PROC_INST_ID_
+        FROM
+        ACT_RU_TASK art_123
+        LEFT JOIN ACT_HI_PROCINST ahp_123 ON art_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
+        LEFT JOIN ACT_STO_APPINST asa_123 ON asa_123.procinst_id = ahp_123.PROC_INST_ID_
+        LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahap_123.APPLYINST_ID = asa_123.master_record_id
+        LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+        LEFT JOIN AEA_HI_SERIESINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+        LEFT JOIN AEA_HI_ITEMINST ahi_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
+        LEFT JOIN AEA_ITEM_BASIC ai_123 ON ahi_123.ITEM_VER_ID = ai_123.ITEM_VER_ID
+        LEFT JOIN OPU_OM_USER u ON u.LOGIN_NAME = art_123.ASSIGNEE_
+        LEFT JOIN (
+        SELECT
+        ap.APPLYINST_ID,
+        GROUP_CONCAT(p.PROJ_NAME) PROJ_NAME
+        FROM
+        aea_applyinst_proj ap
+        LEFT JOIN aea_proj_info p ON ap.proj_info_id = p.proj_info_id
+        GROUP BY
+        ap.APPLYINST_ID
+        ) temp1 ON temp1.APPLYINST_ID = ahap_123.APPLYINST_ID
+        WHERE
+        1 = 1
+        AND ahap_123.IS_SERIES_APPROVE = '1'
+        AND art_123.TASK_DEF_KEY_ NOT IN (
+        'yushen',
+        'wangshangyushen',
+        'shenpibuzheng',
+        'wangshangshouli'
+        )
+        AND art_123.ASSIGNEE_ IS NOT NULL
+        <if test="keyword != null and keyword != ''">
+            AND (
+            ahap_123.APPLYINST_CODE like concat('%',concat(#{keyword},'%'))
+            OR temp1.PROJ_NAME like concat('%',concat(#{keyword},'%'))
+            OR u.USER_NAME like concat('%',concat(#{keyword},'%'))
+            )
+        </if>
+        )
+        UNION
+        (
+        SELECT
+        art_123.ID_ TASK_ID,
+        ahap_123.APPLYINST_CODE APPLYINST_CODE,
+        ahi_123.ITEMINST_NAME ITEMINST_STAGE_NAME,
+        ali_123.LINKMAN_NAME LINKMAN_NAME,
+        ahap_123.APPLYINST_SOURCE AS APPLYINST_SOURCE,
+        art_123.CREATE_TIME_ AS CREATE_TIME_,
+        ahp_123.START_TIME_ AS START_TIME,
+        ahap_123.CREATE_TIME AS APPLY_TIME,
+        art_123.NAME_ NAME_,
+        ai_123.DUE_NUM DUE_NUM,
+        '串联' AS IS_SERIES_APPROVE,
+        ahi_123.ITEMINST_ID busRecordId,
+        ai_123.ITEM_PROPERTY AS ITEM_PROPERTY,
+        '1' AS APPLY_TYPE,
+        temp1.PROJ_NAME,
+        u.USER_NAME,
+        art_123.PROC_INST_ID_
+        FROM
+        ACT_RU_TASK art_123
+        LEFT JOIN ACT_HI_PROCINST ahp_123 ON art_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
+        LEFT JOIN ACT_STO_APPINST_SUBFLOW asas_123 ON asas_123.SUBFLOW_PROCINST_ID = art_123.PROC_INST_ID_
+        LEFT JOIN ACT_STO_APPINST asa_123 ON asas_123.appinst_id = asa_123.APPINST_ID
+        LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahap_123.APPLYINST_ID = asa_123.master_record_id
+        LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+        LEFT JOIN AEA_HI_SERIESINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+        LEFT JOIN AEA_HI_ITEMINST ahi_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
+        LEFT JOIN AEA_ITEM_BASIC ai_123 ON ahi_123.ITEM_VER_ID = ai_123.ITEM_VER_ID
+        LEFT JOIN OPU_OM_USER u ON u.LOGIN_NAME = art_123.ASSIGNEE_
+        LEFT JOIN (
+        SELECT
+        ap.APPLYINST_ID,
+        GROUP_CONCAT(p.PROJ_NAME) PROJ_NAME
+        FROM
+        aea_applyinst_proj ap
+        LEFT JOIN aea_proj_info p ON ap.proj_info_id = p.proj_info_id
+        GROUP BY
+        ap.APPLYINST_ID
+        ) temp1 ON temp1.APPLYINST_ID = ahap_123.APPLYINST_ID
+        WHERE
+        1 = 1
+        AND ahap_123.IS_SERIES_APPROVE = '1'
+        AND art_123.TASK_DEF_KEY_ NOT IN (
+        'yushen',
+        'wangshangyushen',
+        'shenpibuzheng',
+        'wangshangshouli'
+        )
+        AND art_123.ASSIGNEE_ IS NOT NULL
+        <if test="keyword != null and keyword != ''">
+            AND (
+            ahap_123.APPLYINST_CODE like concat('%',concat(#{keyword},'%'))
+            OR temp1.PROJ_NAME like concat('%',concat(#{keyword},'%'))
+            OR u.USER_NAME like concat('%',concat(#{keyword},'%'))
+            )
+        </if>
+        )
+        ) ART_123
+        WHERE
+        1 = 1  AND  (ART_123.due_num - getEffectiveWorkDays(ART_123.APPLY_TIME,NOW()) )&lt;=0
+        GROUP BY
+        ART_123.TASK_ID
+    </select>
+
+    <!-- 逾期办件列表 -->
+    <select id="yuQiBanJianCount" resultType="Integer">
+        select
+            count(1)
+        from (
+            SELECT
+                <include refid = "allColumns" />
+            FROM
+            (
+            (
+            SELECT
+            art_123.ID_ TASK_ID,
+            ahap_123.APPLYINST_CODE APPLYINST_CODE,
+            aps_123.STAGE_NAME ITEMINST_STAGE_NAME,
+            ali_123.LINKMAN_NAME LINKMAN_NAME,
+            ahap_123.APPLYINST_SOURCE APPLYINST_SOURCE,
+            art_123.CREATE_TIME_ CREATE_TIME_,
+            ahp_123.START_TIME_ START_TIME,
+            ahap_123.CREATE_TIME APPLY_TIME,
+            art_123.NAME_ NAME_,
+            aps_123.DUE_NUM DUE_NUM,
+            '并联' AS IS_SERIES_APPROVE,
+            'undefined' AS busRecordId,
+            'undefined' AS ITEM_PROPERTY,
+            '0' AS APPLY_TYPE,
+            temp1.PROJ_NAME,
+            u.USER_NAME,
+            art_123.PROC_INST_ID_
+            FROM
+            ACT_RU_TASK art_123
+            LEFT JOIN ACT_HI_PROCINST ahp_123 ON art_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
+            LEFT JOIN ACT_STO_APPINST asa_123 ON asa_123.procinst_id = ahp_123.PROC_INST_ID_
+            LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahap_123.APPLYINST_ID = asa_123.master_record_id
+            LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+            LEFT JOIN AEA_HI_PAR_STAGEINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN AEA_PAR_STAGE aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
+            LEFT JOIN OPU_OM_USER u ON u.LOGIN_NAME = art_123.ASSIGNEE_
+            LEFT JOIN (
+            SELECT
+            ap.APPLYINST_ID,
+            GROUP_CONCAT(p.PROJ_NAME) PROJ_NAME
+            FROM
+            aea_applyinst_proj ap
+            LEFT JOIN aea_proj_info p ON ap.proj_info_id = p.proj_info_id
+            GROUP BY
+            ap.APPLYINST_ID
+            ) temp1 ON temp1.APPLYINST_ID = ahap_123.APPLYINST_ID
+            WHERE
+            1 = 1
+            AND ahap_123.IS_SERIES_APPROVE = '0'
+            AND art_123.TASK_DEF_KEY_ NOT IN (
+            'yushen',
+            'wangshangyushen',
+            'shenpibuzheng',
+            'wangshangshouli'
+            )
+            AND art_123.ASSIGNEE_ IS NOT NULL
+            )
+            UNION
+            (
+            SELECT
+            art_123.ID_ TASK_ID,
+            ahap_123.APPLYINST_CODE APPLYINST_CODE,
+            aps_123.STAGE_NAME ITEMINST_STAGE_NAME,
+            ali_123.LINKMAN_NAME LINKMAN_NAME,
+            ahap_123.APPLYINST_SOURCE APPLYINST_SOURCE,
+            art_123.CREATE_TIME_ CREATE_TIME_,
+            ahp_123.START_TIME_ START_TIME,
+            ahap_123.CREATE_TIME AS APPLY_TIME,
+            art_123.NAME_ NAME_,
+            aps_123.DUE_NUM DUE_NUM,
+            '并联' AS IS_SERIES_APPROVE,
+            'undefined' AS busRecordId,
+            'undefined' AS ITEM_PROPERTY,
+            '0' AS APPLY_TYPE,
+            temp1.PROJ_NAME,
+            u.USER_NAME,
+            art_123.PROC_INST_ID_
+            FROM
+            ACT_RU_TASK art_123
+            LEFT JOIN ACT_HI_PROCINST ahp_123 ON art_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
+            LEFT JOIN ACT_STO_APPINST_SUBFLOW asas_123 ON asas_123.SUBFLOW_PROCINST_ID = art_123.PROC_INST_ID_
+            LEFT JOIN ACT_STO_APPINST asa_123 ON asas_123.appinst_id = asa_123.APPINST_ID
+            LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahap_123.APPLYINST_ID = asa_123.master_record_id
+            LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+            LEFT JOIN AEA_HI_PAR_STAGEINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN AEA_PAR_STAGE aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
+            LEFT JOIN OPU_OM_USER u ON u.LOGIN_NAME = art_123.ASSIGNEE_
+            LEFT JOIN (
+            SELECT
+            ap.APPLYINST_ID,
+            GROUP_CONCAT(p.PROJ_NAME) PROJ_NAME
+            FROM
+            aea_applyinst_proj ap
+            LEFT JOIN aea_proj_info p ON ap.proj_info_id = p.proj_info_id
+            GROUP BY
+            ap.APPLYINST_ID
+            ) temp1 ON temp1.APPLYINST_ID = ahap_123.APPLYINST_ID
+            WHERE
+            1 = 1
+            AND ahap_123.IS_SERIES_APPROVE = '0'
+            AND art_123.TASK_DEF_KEY_ NOT IN (
+            'yushen',
+            'wangshangyushen',
+            'shenpibuzheng',
+            'wangshangshouli'
+            )
+            AND art_123.ASSIGNEE_ IS NOT NULL
+            )
+            UNION
+            (
+            SELECT
+            art_123.ID_ TASK_ID,
+            ahap_123.APPLYINST_CODE APPLYINST_CODE,
+            ahi_123.ITEMINST_NAME ITEMINST_STAGE_NAME,
+            ali_123.LINKMAN_NAME LINKMAN_NAME,
+            ahap_123.APPLYINST_SOURCE AS APPLYINST_SOURCE,
+            art_123.CREATE_TIME_ AS CREATE_TIME_,
+            ahp_123.START_TIME_ AS START_TIME,
+            ahap_123.CREATE_TIME AS APPLY_TIME,
+            art_123.NAME_ NAME_,
+            ai_123.DUE_NUM DUE_NUM,
+            '串联' AS IS_SERIES_APPROVE,
+            ahi_123.ITEMINST_ID busRecordId,
+            ai_123.ITEM_PROPERTY AS ITEM_PROPERTY,
+            '1' AS APPLY_TYPE,
+            temp1.PROJ_NAME,
+            u.USER_NAME,
+            art_123.PROC_INST_ID_
+            FROM
+            ACT_RU_TASK art_123
+            LEFT JOIN ACT_HI_PROCINST ahp_123 ON art_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
+            LEFT JOIN ACT_STO_APPINST asa_123 ON asa_123.procinst_id = ahp_123.PROC_INST_ID_
+            LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahap_123.APPLYINST_ID = asa_123.master_record_id
+            LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+            LEFT JOIN AEA_HI_SERIESINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN AEA_HI_ITEMINST ahi_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
+            LEFT JOIN AEA_ITEM_BASIC ai_123 ON ahi_123.ITEM_VER_ID = ai_123.ITEM_VER_ID
+            LEFT JOIN OPU_OM_USER u ON u.LOGIN_NAME = art_123.ASSIGNEE_
+            LEFT JOIN (
+            SELECT
+            ap.APPLYINST_ID,
+            GROUP_CONCAT(p.PROJ_NAME) PROJ_NAME
+            FROM
+            aea_applyinst_proj ap
+            LEFT JOIN aea_proj_info p ON ap.proj_info_id = p.proj_info_id
+            GROUP BY
+            ap.APPLYINST_ID
+            ) temp1 ON temp1.APPLYINST_ID = ahap_123.APPLYINST_ID
+            WHERE
+            1 = 1
+            AND ahap_123.IS_SERIES_APPROVE = '1'
+            AND art_123.TASK_DEF_KEY_ NOT IN (
+            'yushen',
+            'wangshangyushen',
+            'shenpibuzheng',
+            'wangshangshouli'
+            )
+            AND art_123.ASSIGNEE_ IS NOT NULL
+            )
+            UNION
+            (
+            SELECT
+            art_123.ID_ TASK_ID,
+            ahap_123.APPLYINST_CODE APPLYINST_CODE,
+            ahi_123.ITEMINST_NAME ITEMINST_STAGE_NAME,
+            ali_123.LINKMAN_NAME LINKMAN_NAME,
+            ahap_123.APPLYINST_SOURCE AS APPLYINST_SOURCE,
+            art_123.CREATE_TIME_ AS CREATE_TIME_,
+            ahp_123.START_TIME_ AS START_TIME,
+            ahap_123.CREATE_TIME AS APPLY_TIME,
+            art_123.NAME_ NAME_,
+            ai_123.DUE_NUM DUE_NUM,
+            '串联' AS IS_SERIES_APPROVE,
+            ahi_123.ITEMINST_ID busRecordId,
+            ai_123.ITEM_PROPERTY AS ITEM_PROPERTY,
+            '1' AS APPLY_TYPE,
+            temp1.PROJ_NAME,
+            u.USER_NAME,
+            art_123.PROC_INST_ID_
+            FROM
+            ACT_RU_TASK art_123
+            LEFT JOIN ACT_HI_PROCINST ahp_123 ON art_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
+            LEFT JOIN ACT_STO_APPINST_SUBFLOW asas_123 ON asas_123.SUBFLOW_PROCINST_ID = art_123.PROC_INST_ID_
+            LEFT JOIN ACT_STO_APPINST asa_123 ON asas_123.appinst_id = asa_123.APPINST_ID
+            LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahap_123.APPLYINST_ID = asa_123.master_record_id
+            LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+            LEFT JOIN AEA_HI_SERIESINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN AEA_HI_ITEMINST ahi_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
+            LEFT JOIN AEA_ITEM_BASIC ai_123 ON ahi_123.ITEM_VER_ID = ai_123.ITEM_VER_ID
+            LEFT JOIN OPU_OM_USER u ON u.LOGIN_NAME = art_123.ASSIGNEE_
+            LEFT JOIN (
+            SELECT
+            ap.APPLYINST_ID,
+            GROUP_CONCAT(p.PROJ_NAME) PROJ_NAME
+            FROM
+            aea_applyinst_proj ap
+            LEFT JOIN aea_proj_info p ON ap.proj_info_id = p.proj_info_id
+            GROUP BY
+            ap.APPLYINST_ID
+            ) temp1 ON temp1.APPLYINST_ID = ahap_123.APPLYINST_ID
+            WHERE
+            1 = 1
+            AND ahap_123.IS_SERIES_APPROVE = '1'
+            AND art_123.TASK_DEF_KEY_ NOT IN (
+            'yushen',
+            'wangshangyushen',
+            'shenpibuzheng',
+            'wangshangshouli'
+            )
+            AND art_123.ASSIGNEE_ IS NOT NULL
+            )
+            ) ART_123
+            WHERE
+            1 = 1  AND  (ART_123.due_num - getEffectiveWorkDays(ART_123.APPLY_TIME,NOW()) )&lt;=0
+            GROUP BY
+                ART_123.TASK_ID
+        ) temp_
+
+    </select>
+
+    <!-- 网上待预审列表 -->
+    <select id="wangShangDaiYuShenList" resultType="EffectInspectForm">
+		SELECT
+		    <include refid = "allColumns" />
+		FROM (
+			(SELECT art_123.ID_ AS TASK_ID, ahap_123.APPLYINST_CODE AS APPLYINST_CODE, aps_123.STAGE_NAME AS ITEMINST_STAGE_NAME, ali_123.LINKMAN_NAME AS LINKMAN_NAME, ahap_123.APPLYINST_SOURCE AS APPLYINST_SOURCE
+				, art_123.CREATE_TIME_ AS CREATE_TIME_, ahp_123.START_TIME_ AS START_TIME, ahap_123.CREATE_TIME AS APPLY_TIME, art_123.NAME_ AS NAME_, aps_123.DUE_NUM AS DUE_NUM
+				, '并联' AS IS_SERIES_APPROVE, 'undefined' AS busRecordId, 'undefined' AS ITEM_PROPERTY, '0' AS APPLY_TYPE, temp1.PROJ_NAME
+				, u.USER_NAME, art_123.PROC_INST_ID_
+			FROM ACT_RU_TASK art_123
+				LEFT JOIN ACT_HI_PROCINST ahp_123 ON art_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
+				LEFT JOIN ACT_STO_APPINST asa_123 ON asa_123.procinst_id = ahp_123.PROC_INST_ID_
+				LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahap_123.APPLYINST_ID = asa_123.master_record_id
+				LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+				LEFT JOIN AEA_HI_PAR_STAGEINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+				LEFT JOIN AEA_PAR_STAGE aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
+				LEFT JOIN OPU_OM_USER u ON u.LOGIN_NAME = art_123.ASSIGNEE_
+				LEFT JOIN (
+					SELECT ap.APPLYINST_ID, GROUP_CONCAT(P.PROJ_NAME) AS PROJ_NAME
+					FROM aea_applyinst_proj ap
+						LEFT JOIN aea_proj_info P ON ap.proj_info_id = P.proj_info_id
+					GROUP BY ap.APPLYINST_ID
+				) temp1
+				ON temp1.APPLYINST_ID = ahap_123.APPLYINST_ID
+			WHERE 1 = 1
+				AND ahap_123.IS_SERIES_APPROVE = '0'
+				AND art_123.TASK_DEF_KEY_ IN ('yushen', 'wangshangyushen', 'wangshangshouli')
+                <if test="keyword != null and keyword != ''">
+                    AND (
+                    ahap_123.APPLYINST_CODE like concat('%',concat(#{keyword},'%'))
+                    OR temp1.PROJ_NAME like concat('%',concat(#{keyword},'%'))
+                    OR u.USER_NAME like concat('%',concat(#{keyword},'%'))
+                    )
+                </if>
+            )
+			UNION
+			(SELECT art_123.ID_ AS TASK_ID, ahap_123.APPLYINST_CODE AS APPLYINST_CODE, aps_123.STAGE_NAME AS ITEMINST_STAGE_NAME, ali_123.LINKMAN_NAME AS LINKMAN_NAME, ahap_123.APPLYINST_SOURCE AS APPLYINST_SOURCE
+				, art_123.CREATE_TIME_ AS CREATE_TIME_, ahp_123.START_TIME_ AS START_TIME, ahap_123.CREATE_TIME AS APPLY_TIME, art_123.NAME_ AS NAME_, aps_123.DUE_NUM AS DUE_NUM
+				, '并联' AS IS_SERIES_APPROVE, 'undefined' AS busRecordId, 'undefined' AS ITEM_PROPERTY, '0' AS APPLY_TYPE, temp1.PROJ_NAME
+				, u.USER_NAME, art_123.PROC_INST_ID_
+			FROM ACT_RU_TASK art_123
+				LEFT JOIN ACT_HI_PROCINST ahp_123 ON art_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
+				LEFT JOIN ACT_STO_APPINST_SUBFLOW asas_123 ON asas_123.SUBFLOW_PROCINST_ID = art_123.PROC_INST_ID_
+				LEFT JOIN ACT_STO_APPINST asa_123 ON asas_123.appinst_id = asa_123.APPINST_ID
+				LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahap_123.APPLYINST_ID = asa_123.master_record_id
+				LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+				LEFT JOIN AEA_HI_PAR_STAGEINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+				LEFT JOIN AEA_PAR_STAGE aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
+				LEFT JOIN OPU_OM_USER u ON u.LOGIN_NAME = art_123.ASSIGNEE_
+				LEFT JOIN (
+					SELECT ap.APPLYINST_ID, GROUP_CONCAT(P.PROJ_NAME) AS PROJ_NAME
+					FROM aea_applyinst_proj ap
+						LEFT JOIN aea_proj_info P ON ap.proj_info_id = P.proj_info_id
+					GROUP BY ap.APPLYINST_ID
+				) temp1
+				ON temp1.APPLYINST_ID = ahap_123.APPLYINST_ID
+			WHERE 1 = 1
+				AND ahap_123.IS_SERIES_APPROVE = '0'
+				AND art_123.TASK_DEF_KEY_ IN ('yushen', 'wangshangyushen', 'wangshangshouli')
+                <if test="keyword != null and keyword != ''">
+                    AND (
+                    ahap_123.APPLYINST_CODE like concat('%',concat(#{keyword},'%'))
+                    OR temp1.PROJ_NAME like concat('%',concat(#{keyword},'%'))
+                    OR u.USER_NAME like concat('%',concat(#{keyword},'%'))
+                    )
+                </if>)
+			UNION
+			(SELECT art_123.ID_ AS TASK_ID, ahap_123.APPLYINST_CODE AS APPLYINST_CODE, ahi_123.ITEMINST_NAME AS ITEMINST_STAGE_NAME, ali_123.LINKMAN_NAME AS LINKMAN_NAME, ahap_123.APPLYINST_SOURCE AS APPLYINST_SOURCE
+				, art_123.CREATE_TIME_ AS CREATE_TIME_, ahp_123.START_TIME_ AS START_TIME, ahap_123.CREATE_TIME AS APPLY_TIME, art_123.NAME_ AS NAME_, ai_123.DUE_NUM AS DUE_NUM
+				, '串联' AS IS_SERIES_APPROVE, ahi_123.ITEMINST_ID AS busRecordId, ai_123.ITEM_PROPERTY AS ITEM_PROPERTY, '1' AS APPLY_TYPE, temp1.PROJ_NAME
+				, u.USER_NAME, art_123.PROC_INST_ID_
+			FROM ACT_RU_TASK art_123
+				LEFT JOIN ACT_HI_PROCINST ahp_123 ON art_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
+				LEFT JOIN ACT_STO_APPINST asa_123 ON asa_123.procinst_id = ahp_123.PROC_INST_ID_
+				LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahap_123.APPLYINST_ID = asa_123.master_record_id
+				LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+				LEFT JOIN AEA_HI_SERIESINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+				LEFT JOIN AEA_HI_ITEMINST ahi_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
+				LEFT JOIN AEA_ITEM_BASIC ai_123 ON ahi_123.ITEM_VER_ID = ai_123.ITEM_VER_ID
+				LEFT JOIN OPU_OM_USER u ON u.LOGIN_NAME = art_123.ASSIGNEE_
+				LEFT JOIN (
+					SELECT ap.APPLYINST_ID, GROUP_CONCAT(P.PROJ_NAME) AS PROJ_NAME
+					FROM aea_applyinst_proj ap
+						LEFT JOIN aea_proj_info P ON ap.proj_info_id = P.proj_info_id
+					GROUP BY ap.APPLYINST_ID
+				) temp1
+				ON temp1.APPLYINST_ID = ahap_123.APPLYINST_ID
+			WHERE 1 = 1
+				AND ahap_123.IS_SERIES_APPROVE = '1'
+				AND art_123.TASK_DEF_KEY_ IN ('yushen', 'wangshangyushen', 'wangshangshouli')
+                <if test="keyword != null and keyword != ''">
+                    AND (
+                    ahap_123.APPLYINST_CODE like concat('%',concat(#{keyword},'%'))
+                    OR temp1.PROJ_NAME like concat('%',concat(#{keyword},'%'))
+                    OR u.USER_NAME like concat('%',concat(#{keyword},'%'))
+                    )
+                </if>)
+			UNION
+			(SELECT art_123.ID_ AS TASK_ID, ahap_123.APPLYINST_CODE AS APPLYINST_CODE, ahi_123.ITEMINST_NAME AS ITEMINST_STAGE_NAME, ali_123.LINKMAN_NAME AS LINKMAN_NAME, ahap_123.APPLYINST_SOURCE AS APPLYINST_SOURCE
+				, art_123.CREATE_TIME_ AS CREATE_TIME_, ahp_123.START_TIME_ AS START_TIME, ahap_123.CREATE_TIME AS APPLY_TIME, art_123.NAME_ AS NAME_, ai_123.DUE_NUM AS DUE_NUM
+				, '串联' AS IS_SERIES_APPROVE, ahi_123.ITEMINST_ID AS busRecordId, ai_123.ITEM_PROPERTY AS ITEM_PROPERTY, '1' AS APPLY_TYPE, temp1.PROJ_NAME
+				, u.USER_NAME, art_123.PROC_INST_ID_
+			FROM ACT_RU_TASK art_123
+				LEFT JOIN ACT_HI_PROCINST ahp_123 ON art_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
+				LEFT JOIN ACT_STO_APPINST_SUBFLOW asas_123 ON asas_123.SUBFLOW_PROCINST_ID = art_123.PROC_INST_ID_
+				LEFT JOIN ACT_STO_APPINST asa_123 ON asas_123.appinst_id = asa_123.APPINST_ID
+				LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahap_123.APPLYINST_ID = asa_123.master_record_id
+				LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+				LEFT JOIN AEA_HI_SERIESINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+				LEFT JOIN AEA_HI_ITEMINST ahi_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
+				LEFT JOIN AEA_ITEM_BASIC ai_123 ON ahi_123.ITEM_VER_ID = ai_123.ITEM_VER_ID
+				LEFT JOIN OPU_OM_USER u ON u.LOGIN_NAME = art_123.ASSIGNEE_
+				LEFT JOIN (
+					SELECT ap.APPLYINST_ID, GROUP_CONCAT(P.PROJ_NAME) AS PROJ_NAME
+					FROM aea_applyinst_proj ap
+						LEFT JOIN aea_proj_info P ON ap.proj_info_id = P.proj_info_id
+					GROUP BY ap.APPLYINST_ID
+				) temp1
+				ON temp1.APPLYINST_ID = ahap_123.APPLYINST_ID
+			WHERE 1 = 1
+				AND ahap_123.IS_SERIES_APPROVE = '1'
+				AND art_123.TASK_DEF_KEY_ IN ('yushen', 'wangshangyushen', 'wangshangshouli')
+                <if test="keyword != null and keyword != ''">
+                    AND (
+                    ahap_123.APPLYINST_CODE like concat('%',concat(#{keyword},'%'))
+                    OR temp1.PROJ_NAME like concat('%',concat(#{keyword},'%'))
+                    OR u.USER_NAME like concat('%',concat(#{keyword},'%'))
+                    )
+                </if>)
+		) ART_123
+		WHERE 1 = 1
+		ORDER BY ART_123.CREATE_TIME_ DESC
+    </select>
+
+    <!-- 网上待预审数 -->
+    <select id="wangShangDaiYuShenCount" resultType="Integer">
+        SELECT
+            count(1)
+        FROM
+            (
+                (
+                    SELECT
+                        art_123.ID_ TASK_ID,
+                        ahap_123.APPLYINST_CODE APPLYINST_CODE,
+                        aps_123.STAGE_NAME ITEMINST_STAGE_NAME,
+                        ali_123.LINKMAN_NAME LINKMAN_NAME,
+                        ahap_123.APPLYINST_SOURCE APPLYINST_SOURCE,
+                        art_123.CREATE_TIME_ CREATE_TIME_,
+                        ahp_123.START_TIME_ START_TIME,
+                        ahap_123.CREATE_TIME AS APPLY_TIME,
+                        art_123.NAME_ NAME_,
+                        aps_123.DUE_NUM DUE_NUM,
+                        '并联' AS IS_SERIES_APPROVE,
+                        'undefined' AS busRecordId,
+                        'undefined' AS ITEM_PROPERTY,
+                        '0' AS APPLY_TYPE,
+                        temp1.PROJ_NAME,
+                        u.USER_NAME,
+                        art_123.PROC_INST_ID_
+                    FROM
+                        ACT_RU_TASK art_123
+                    LEFT JOIN ACT_HI_PROCINST ahp_123 ON art_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
+                    LEFT JOIN ACT_STO_APPINST asa_123 ON asa_123.procinst_id = ahp_123.PROC_INST_ID_
+                    LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahap_123.APPLYINST_ID = asa_123.master_record_id
+                    LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+                    LEFT JOIN AEA_HI_PAR_STAGEINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+                    LEFT JOIN AEA_PAR_STAGE aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
+                    LEFT JOIN OPU_OM_USER u ON u.LOGIN_NAME = art_123.ASSIGNEE_
+                    LEFT JOIN (
+                        SELECT
+                            ap.APPLYINST_ID,
+                            GROUP_CONCAT(P .PROJ_NAME) PROJ_NAME
+                        FROM
+                            aea_applyinst_proj ap
+                        LEFT JOIN aea_proj_info P ON ap.proj_info_id = P .proj_info_id
+                        GROUP BY
+                            ap.APPLYINST_ID
+                    ) temp1 ON temp1.APPLYINST_ID = ahap_123.APPLYINST_ID
+                    WHERE
+                        1 = 1
+                    AND ahap_123.IS_SERIES_APPROVE = '0'
+                    AND art_123.TASK_DEF_KEY_ IN ('yushen', 'wangshangyushen','wangshangshouli')
+                )
+                UNION
+                    (
+                        SELECT
+                            art_123.ID_ TASK_ID,
+                            ahap_123.APPLYINST_CODE APPLYINST_CODE,
+                            aps_123.STAGE_NAME ITEMINST_STAGE_NAME,
+                            ali_123.LINKMAN_NAME LINKMAN_NAME,
+                            ahap_123.APPLYINST_SOURCE APPLYINST_SOURCE,
+                            art_123.CREATE_TIME_ CREATE_TIME_,
+                            ahp_123.START_TIME_ START_TIME,
+                            ahap_123.CREATE_TIME AS APPLY_TIME,
+                            art_123.NAME_ NAME_,
+                            aps_123.DUE_NUM DUE_NUM,
+                            '并联' AS IS_SERIES_APPROVE,
+                            'undefined' AS busRecordId,
+                            'undefined' AS ITEM_PROPERTY,
+                            '0' AS APPLY_TYPE,
+                            temp1.PROJ_NAME,
+                            u.USER_NAME,
+                            art_123.PROC_INST_ID_
+                        FROM
+                            ACT_RU_TASK art_123
+                        LEFT JOIN ACT_HI_PROCINST ahp_123 ON art_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
+                        LEFT JOIN ACT_STO_APPINST_SUBFLOW asas_123 ON asas_123.SUBFLOW_PROCINST_ID = art_123.PROC_INST_ID_
+                        LEFT JOIN ACT_STO_APPINST asa_123 ON asas_123.appinst_id = asa_123.APPINST_ID
+                        LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahap_123.APPLYINST_ID = asa_123.master_record_id
+                        LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+                        LEFT JOIN AEA_HI_PAR_STAGEINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+                        LEFT JOIN AEA_PAR_STAGE aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
+                        LEFT JOIN OPU_OM_USER u ON u.LOGIN_NAME = art_123.ASSIGNEE_
+                        LEFT JOIN (
+                            SELECT
+                                ap.APPLYINST_ID,
+                                GROUP_CONCAT(P .PROJ_NAME)  PROJ_NAME
+                            FROM
+                                aea_applyinst_proj ap
+                            LEFT JOIN aea_proj_info P ON ap.proj_info_id = P .proj_info_id
+                            GROUP BY
+                                ap.APPLYINST_ID
+                        ) temp1 ON temp1.APPLYINST_ID = ahap_123.APPLYINST_ID
+                        WHERE
+                            1 = 1
+                        AND ahap_123.IS_SERIES_APPROVE = '0'
+                        AND art_123.TASK_DEF_KEY_ IN ('yushen', 'wangshangyushen','wangshangshouli')
+                    )
+                UNION
+                    (
+                        SELECT
+                            art_123.ID_ TASK_ID,
+                            ahap_123.APPLYINST_CODE APPLYINST_CODE,
+                            ahi_123.ITEMINST_NAME ITEMINST_STAGE_NAME,
+                            ali_123.LINKMAN_NAME LINKMAN_NAME,
+                            ahap_123.APPLYINST_SOURCE AS APPLYINST_SOURCE,
+                            art_123.CREATE_TIME_ AS CREATE_TIME_,
+                            ahp_123.START_TIME_ AS START_TIME,
+                            ahap_123.CREATE_TIME  AS APPLY_TIME,
+                            art_123.NAME_ NAME_,
+                            ai_123.DUE_NUM DUE_NUM,
+                            '串联' AS IS_SERIES_APPROVE,
+                            ahi_123.ITEMINST_ID busRecordId,
+                            ai_123.ITEM_PROPERTY AS ITEM_PROPERTY,
+                            '1' AS APPLY_TYPE,
+                            temp1.PROJ_NAME,
+                            u.USER_NAME,
+                            art_123.PROC_INST_ID_
+                        FROM
+                            ACT_RU_TASK art_123
+                        LEFT JOIN ACT_HI_PROCINST ahp_123 ON art_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
+                        LEFT JOIN ACT_STO_APPINST asa_123 ON asa_123.procinst_id = ahp_123.PROC_INST_ID_
+                        LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahap_123.APPLYINST_ID = asa_123.master_record_id
+                        LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+                        LEFT JOIN AEA_HI_SERIESINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+                        LEFT JOIN AEA_HI_ITEMINST ahi_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
+                        LEFT JOIN AEA_ITEM_BASIC ai_123 ON ahi_123.ITEM_VER_ID = ai_123.ITEM_VER_ID
+                        LEFT JOIN OPU_OM_USER u ON u.LOGIN_NAME = art_123.ASSIGNEE_
+                        LEFT JOIN (
+                            SELECT
+                                ap.APPLYINST_ID,
+                                GROUP_CONCAT(P .PROJ_NAME) PROJ_NAME
+                            FROM
+                                aea_applyinst_proj ap
+                            LEFT JOIN aea_proj_info P ON ap.proj_info_id = P .proj_info_id
+                            GROUP BY
+                                ap.APPLYINST_ID
+                        ) temp1 ON temp1.APPLYINST_ID = ahap_123.APPLYINST_ID
+                        WHERE
+                            1 = 1
+                        AND ahap_123.IS_SERIES_APPROVE = '1'
+                        AND art_123.TASK_DEF_KEY_ IN ('yushen', 'wangshangyushen','wangshangshouli')
+                    )
+                UNION
+                    (
+                        SELECT
+                            art_123.ID_ TASK_ID,
+                            ahap_123.APPLYINST_CODE APPLYINST_CODE,
+                            ahi_123.ITEMINST_NAME ITEMINST_STAGE_NAME,
+                            ali_123.LINKMAN_NAME LINKMAN_NAME,
+                            ahap_123.APPLYINST_SOURCE AS APPLYINST_SOURCE,
+                            art_123.CREATE_TIME_ AS CREATE_TIME_,
+                            ahp_123.START_TIME_ AS START_TIME,
+                            ahap_123.CREATE_TIME  AS APPLY_TIME,
+                            art_123.NAME_ NAME_,
+                            ai_123.DUE_NUM DUE_NUM,
+                            '串联' AS IS_SERIES_APPROVE,
+                            ahi_123.ITEMINST_ID busRecordId,
+                            ai_123.ITEM_PROPERTY AS ITEM_PROPERTY,
+                            '1' AS APPLY_TYPE,
+                            temp1.PROJ_NAME,
+                            u.USER_NAME,
+                            art_123.PROC_INST_ID_
+                        FROM
+                            ACT_RU_TASK art_123
+                        LEFT JOIN ACT_HI_PROCINST ahp_123 ON art_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
+                        LEFT JOIN ACT_STO_APPINST_SUBFLOW asas_123 ON asas_123.SUBFLOW_PROCINST_ID = art_123.PROC_INST_ID_
+                        LEFT JOIN ACT_STO_APPINST asa_123 ON asas_123.appinst_id = asa_123.APPINST_ID
+                        LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahap_123.APPLYINST_ID = asa_123.master_record_id
+                        LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+                        LEFT JOIN AEA_HI_SERIESINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+                        LEFT JOIN AEA_HI_ITEMINST ahi_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
+                        LEFT JOIN AEA_ITEM_BASIC ai_123 ON ahi_123.ITEM_VER_ID = ai_123.ITEM_VER_ID
+                        LEFT JOIN OPU_OM_USER u ON u.LOGIN_NAME = art_123.ASSIGNEE_
+                        LEFT JOIN (
+                            SELECT
+                                ap.APPLYINST_ID,
+                                GROUP_CONCAT(P .PROJ_NAME) PROJ_NAME
+                            FROM
+                                aea_applyinst_proj ap
+                            LEFT JOIN aea_proj_info P ON ap.proj_info_id = P .proj_info_id
+                            GROUP BY
+                                ap.APPLYINST_ID
+                        ) temp1 ON temp1.APPLYINST_ID = ahap_123.APPLYINST_ID
+                        WHERE
+                            1 = 1
+                        AND ahap_123.IS_SERIES_APPROVE = '1'
+                        AND art_123.TASK_DEF_KEY_ IN ('yushen', 'wangshangyushen','wangshangshouli')
+                    )
+            ) ART_123
+        WHERE
+            1 = 1
+        ORDER BY
+            ART_123.CREATE_TIME_ DESC
+    </select>
+
+    <!-- 材料待补全列表 -->
+    <select id="caiLiaoBuQuanBanJianList" resultType="EffectInspectForm">
+        SELECT
+            <include refid="allColumns"/>
+        FROM
+            (
+                (
+                SELECT
+                    art_123.ID_ TASK_ID,
+                    ahap_123.APPLYINST_CODE APPLYINST_CODE,
+                    ahap_123.APPLYINST_ID applyinstId,
+                    art_123.PROC_INST_ID_ procinstId,
+                    aps_123.STAGE_NAME ITEMINST_STAGE_NAME,
+                    ali_123.LINKMAN_NAME LINKMAN_NAME,
+                    ahap_123.APPLYINST_SOURCE APPLYINST_SOURCE,
+                    art_123.CREATE_TIME_ AS CREATE_TIME_,
+                    ahp_123.START_TIME_ AS START_TIME,
+                    ahap_123.CREATE_TIME AS APPLY_TIME,
+                    art_123.NAME_ NAME_,
+                    aps_123.DUE_NUM DUE_NUM,
+                    '并联' AS IS_SERIES_APPROVE,
+                    'undefined' AS busRecordId,
+                    'undefined' AS ITEM_PROPERTY,
+                    '0' AS APPLY_TYPE,
+                    temp1.PROJ_NAME,
+                    u.USER_NAME,
+                    art_123.PROC_INST_ID_
+                FROM
+                    ACT_RU_TASK art_123
+                    LEFT JOIN ACT_HI_PROCINST ahp_123 ON art_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
+                    LEFT JOIN ACT_STO_APPINST asa_123 ON asa_123.procinst_id = ahp_123.PROC_INST_ID_
+                    LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahap_123.APPLYINST_ID = asa_123.master_record_id
+                    LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+                    LEFT JOIN AEA_HI_PAR_STAGEINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+                    LEFT JOIN AEA_PAR_STAGE aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
+                    LEFT JOIN OPU_OM_USER u ON u.LOGIN_NAME = art_123.ASSIGNEE_
+                    LEFT JOIN (
+                    SELECT
+                        ap.APPLYINST_ID,
+                        GROUP_CONCAT( p.PROJ_NAME ) PROJ_NAME
+                    FROM
+                        aea_applyinst_proj ap
+                        LEFT JOIN aea_proj_info p ON ap.proj_info_id = p.proj_info_id
+                    GROUP BY
+                        ap.APPLYINST_ID
+                    ) temp1 ON temp1.APPLYINST_ID = ahap_123.APPLYINST_ID
+                WHERE
+                    1 = 1
+                    AND ahap_123.IS_SERIES_APPROVE = '0'
+                    AND art_123.TASK_DEF_KEY_ IN ( 'shenpibuzheng' )
+                ) UNION
+                (
+                SELECT
+                    art_123.ID_ TASK_ID,
+                    ahap_123.APPLYINST_CODE APPLYINST_CODE,
+                    ahap_123.APPLYINST_ID applyinstId,
+                    art_123.PROC_INST_ID_ procinstId,
+                    aps_123.STAGE_NAME ITEMINST_STAGE_NAME,
+                    ali_123.LINKMAN_NAME LINKMAN_NAME,
+                    ahap_123.APPLYINST_SOURCE APPLYINST_SOURCE,
+                    art_123.CREATE_TIME_ AS CREATE_TIME_,
+                    ahp_123.START_TIME_ AS START_TIME,
+                    ahap_123.CREATE_TIME AS APPLY_TIME,
+                    art_123.NAME_ NAME_,
+                    aps_123.DUE_NUM DUE_NUM,
+                    '并联' AS IS_SERIES_APPROVE,
+                    'undefined' AS busRecordId,
+                    'undefined' AS ITEM_PROPERTY,
+                    '0' AS APPLY_TYPE,
+                    temp1.PROJ_NAME,
+                    u.USER_NAME,
+                    art_123.PROC_INST_ID_
+                FROM
+                    ACT_RU_TASK art_123
+                    LEFT JOIN ACT_HI_PROCINST ahp_123 ON art_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
+                    LEFT JOIN ACT_STO_APPINST_SUBFLOW asas_123 ON asas_123.SUBFLOW_PROCINST_ID = art_123.PROC_INST_ID_
+                    LEFT JOIN ACT_STO_APPINST asa_123 ON asas_123.appinst_id = asa_123.APPINST_ID
+                    LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahap_123.APPLYINST_ID = asa_123.master_record_id
+                    LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+                    LEFT JOIN AEA_HI_PAR_STAGEINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+                    LEFT JOIN AEA_PAR_STAGE aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
+                    LEFT JOIN OPU_OM_USER u ON u.LOGIN_NAME = art_123.ASSIGNEE_
+                    LEFT JOIN (
+                    SELECT
+                        ap.APPLYINST_ID,
+                        GROUP_CONCAT( p.PROJ_NAME ) PROJ_NAME
+                    FROM
+                        aea_applyinst_proj ap
+                        LEFT JOIN aea_proj_info p ON ap.proj_info_id = p.proj_info_id
+                    GROUP BY
+                        ap.APPLYINST_ID
+                    ) temp1 ON temp1.APPLYINST_ID = ahap_123.APPLYINST_ID
+                WHERE
+                    1 = 1
+                    AND ahap_123.IS_SERIES_APPROVE = '0'
+                    AND art_123.TASK_DEF_KEY_ IN ( 'shenpibuzheng' )
+                ) UNION
+                (
+                SELECT
+                    art_123.ID_ TASK_ID,
+                    ahap_123.APPLYINST_CODE APPLYINST_CODE,
+                    ahap_123.APPLYINST_ID applyinstId,
+                    art_123.PROC_INST_ID_ procinstId,
+                    ahi_123.ITEMINST_NAME ITEMINST_STAGE_NAME,
+                    ali_123.LINKMAN_NAME LINKMAN_NAME,
+                    ahap_123.APPLYINST_SOURCE AS APPLYINST_SOURCE,
+                    art_123.CREATE_TIME_ AS CREATE_TIME_,
+                    ahp_123.START_TIME_ AS START_TIME,
+                    ahap_123.CREATE_TIME AS APPLY_TIME,
+                    art_123.NAME_ NAME_,
+                    ai_123.DUE_NUM DUE_NUM,
+                    '串联' AS IS_SERIES_APPROVE,
+                    ahi_123.ITEMINST_ID busRecordId,
+                    ai_123.ITEM_PROPERTY AS ITEM_PROPERTY,
+                    '1' AS APPLY_TYPE,
+                    temp1.PROJ_NAME,
+                    u.USER_NAME,
+                    art_123.PROC_INST_ID_
+                FROM
+                    ACT_RU_TASK art_123
+                    LEFT JOIN ACT_HI_PROCINST ahp_123 ON art_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
+                    LEFT JOIN ACT_STO_APPINST asa_123 ON asa_123.procinst_id = ahp_123.PROC_INST_ID_
+                    LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahap_123.APPLYINST_ID = asa_123.master_record_id
+                    LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+                    LEFT JOIN AEA_HI_SERIESINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+                    LEFT JOIN AEA_HI_ITEMINST ahi_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
+                    LEFT JOIN AEA_ITEM_BASIC ai_123 ON ahi_123.ITEM_VER_ID = ai_123.ITEM_VER_ID
+                    LEFT JOIN OPU_OM_USER u ON u.LOGIN_NAME = art_123.ASSIGNEE_
+                    LEFT JOIN (
+                    SELECT
+                        ap.APPLYINST_ID,
+                        GROUP_CONCAT( p.PROJ_NAME ) PROJ_NAME
+                    FROM
+                        aea_applyinst_proj ap
+                        LEFT JOIN aea_proj_info p ON ap.proj_info_id = p.proj_info_id
+                    GROUP BY
+                        ap.APPLYINST_ID
+                    ) temp1 ON temp1.APPLYINST_ID = ahap_123.APPLYINST_ID
+                WHERE
+                    1 = 1
+                    AND ahap_123.IS_SERIES_APPROVE = '1'
+                    AND art_123.TASK_DEF_KEY_ IN ( 'shenpibuzheng' )
+                ) UNION
+                (
+                SELECT
+                    art_123.ID_ TASK_ID,
+                    ahap_123.APPLYINST_CODE APPLYINST_CODE,
+                    ahap_123.APPLYINST_ID applyinstId,
+                    art_123.PROC_INST_ID_ procinstId,
+                    ahi_123.ITEMINST_NAME ITEMINST_STAGE_NAME,
+                    ali_123.LINKMAN_NAME LINKMAN_NAME,
+                    ahap_123.APPLYINST_SOURCE AS APPLYINST_SOURCE,
+                    art_123.CREATE_TIME_ AS CREATE_TIME_,
+                    ahp_123.START_TIME_ AS START_TIME,
+                    ahap_123.CREATE_TIME AS APPLY_TIME,
+                    art_123.NAME_ AS NAME_,
+                    ai_123.DUE_NUM AS DUE_NUM,
+                    '串联' AS IS_SERIES_APPROVE,
+                    ahi_123.ITEMINST_ID busRecordId,
+                    ai_123.ITEM_PROPERTY AS ITEM_PROPERTY,
+                    '1' AS APPLY_TYPE,
+                    temp1.PROJ_NAME,
+                    u.USER_NAME,
+                    art_123.PROC_INST_ID_
+                FROM
+                    ACT_RU_TASK art_123
+                    LEFT JOIN ACT_HI_PROCINST ahp_123 ON art_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
+                    LEFT JOIN ACT_STO_APPINST_SUBFLOW asas_123 ON asas_123.SUBFLOW_PROCINST_ID = art_123.PROC_INST_ID_
+                    LEFT JOIN ACT_STO_APPINST asa_123 ON asas_123.appinst_id = asa_123.APPINST_ID
+                    LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahap_123.APPLYINST_ID = asa_123.master_record_id
+                    LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+                    LEFT JOIN AEA_HI_SERIESINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+                    LEFT JOIN AEA_HI_ITEMINST ahi_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
+                    LEFT JOIN AEA_ITEM_BASIC ai_123 ON ahi_123.ITEM_VER_ID = ai_123.ITEM_VER_ID
+                    LEFT JOIN OPU_OM_USER u ON u.LOGIN_NAME = art_123.ASSIGNEE_
+                    LEFT JOIN (
+                    SELECT
+                        ap.APPLYINST_ID,
+                        GROUP_CONCAT( p.PROJ_NAME ) PROJ_NAME
+                    FROM
+                        aea_applyinst_proj ap
+                        LEFT JOIN aea_proj_info p ON ap.proj_info_id = p.proj_info_id
+                    GROUP BY
+                        ap.APPLYINST_ID
+                    ) temp1 ON temp1.APPLYINST_ID = ahap_123.APPLYINST_ID
+                WHERE
+                    1 = 1
+                    AND ahap_123.IS_SERIES_APPROVE = '1'
+                    AND art_123.TASK_DEF_KEY_ IN ( 'shenpibuzheng' )
+                )
+            ) ART_123
+        WHERE
+            1 = 1
+        <if test="keyword != null and keyword != ''">
+            AND (
+            APPLYINST_CODE like concat('%',concat(#{keyword},'%'))
+            OR PROJ_NAME like concat('%',concat(#{keyword},'%'))
+            OR USER_NAME like concat('%',concat(#{keyword},'%'))
+            )
+        </if>
+    </select>
+
+    <!-- 材料待补全数 -->
+    <select id="caiLiaoBuQuanBanJianCount" resultType="Integer">
+        SELECT
+            count(1)
+        FROM
+            (
+                (
+                SELECT
+                    art_123.ID_ TASK_ID,
+                    ahap_123.APPLYINST_CODE APPLYINST_CODE,
+                    ahap_123.APPLYINST_ID applyinstId,
+                    art_123.PROC_INST_ID_ procinstId,
+                    aps_123.STAGE_NAME ITEMINST_STAGE_NAME,
+                    ali_123.LINKMAN_NAME LINKMAN_NAME,
+                    ahap_123.APPLYINST_SOURCE APPLYINST_SOURCE,
+                    art_123.CREATE_TIME_ AS CREATE_TIME_,
+                    ahp_123.START_TIME_ AS START_TIME,
+                    ahap_123.CREATE_TIME AS APPLY_TIME,
+                    art_123.NAME_ NAME_,
+                    aps_123.DUE_NUM DUE_NUM,
+                    '并联' AS IS_SERIES_APPROVE,
+                    'undefined' AS busRecordId,
+                    'undefined' AS ITEM_PROPERTY,
+                    '0' AS APPLY_TYPE,
+                    temp1.PROJ_NAME,
+                    u.USER_NAME,
+                    art_123.PROC_INST_ID_
+                FROM
+                    ACT_RU_TASK art_123
+                    LEFT JOIN ACT_HI_PROCINST ahp_123 ON art_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
+                    LEFT JOIN ACT_STO_APPINST asa_123 ON asa_123.procinst_id = ahp_123.PROC_INST_ID_
+                    LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahap_123.APPLYINST_ID = asa_123.master_record_id
+                    LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+                    LEFT JOIN AEA_HI_PAR_STAGEINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+                    LEFT JOIN AEA_PAR_STAGE aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
+                    LEFT JOIN OPU_OM_USER u ON u.LOGIN_NAME = art_123.ASSIGNEE_
+                    LEFT JOIN (
+                    SELECT
+                        ap.APPLYINST_ID,
+                        GROUP_CONCAT( p.PROJ_NAME ) PROJ_NAME
+                    FROM
+                        aea_applyinst_proj ap
+                        LEFT JOIN aea_proj_info p ON ap.proj_info_id = p.proj_info_id
+                    GROUP BY
+                        ap.APPLYINST_ID
+                    ) temp1 ON temp1.APPLYINST_ID = ahap_123.APPLYINST_ID
+                WHERE
+                    1 = 1
+                    AND ahap_123.IS_SERIES_APPROVE = '0'
+                    AND art_123.TASK_DEF_KEY_ IN ( 'shenpibuzheng' )
+                ) UNION
+                (
+                SELECT
+                    art_123.ID_ TASK_ID,
+                    ahap_123.APPLYINST_CODE APPLYINST_CODE,
+                    ahap_123.APPLYINST_ID applyinstId,
+                    art_123.PROC_INST_ID_ procinstId,
+                    aps_123.STAGE_NAME ITEMINST_STAGE_NAME,
+                    ali_123.LINKMAN_NAME LINKMAN_NAME,
+                    ahap_123.APPLYINST_SOURCE APPLYINST_SOURCE,
+                    art_123.CREATE_TIME_ AS CREATE_TIME_,
+                    ahp_123.START_TIME_ AS START_TIME,
+                    ahap_123.CREATE_TIME AS APPLY_TIME,
+                    art_123.NAME_ NAME_,
+                    aps_123.DUE_NUM DUE_NUM,
+                    '并联' AS IS_SERIES_APPROVE,
+                    'undefined' AS busRecordId,
+                    'undefined' AS ITEM_PROPERTY,
+                    '0' AS APPLY_TYPE,
+                    temp1.PROJ_NAME,
+                    u.USER_NAME,
+                    art_123.PROC_INST_ID_
+                FROM
+                    ACT_RU_TASK art_123
+                    LEFT JOIN ACT_HI_PROCINST ahp_123 ON art_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
+                    LEFT JOIN ACT_STO_APPINST_SUBFLOW asas_123 ON asas_123.SUBFLOW_PROCINST_ID = art_123.PROC_INST_ID_
+                    LEFT JOIN ACT_STO_APPINST asa_123 ON asas_123.appinst_id = asa_123.APPINST_ID
+                    LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahap_123.APPLYINST_ID = asa_123.master_record_id
+                    LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+                    LEFT JOIN AEA_HI_PAR_STAGEINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+                    LEFT JOIN AEA_PAR_STAGE aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
+                    LEFT JOIN OPU_OM_USER u ON u.LOGIN_NAME = art_123.ASSIGNEE_
+                    LEFT JOIN (
+                    SELECT
+                        ap.APPLYINST_ID,
+                        GROUP_CONCAT( p.PROJ_NAME ) PROJ_NAME
+                    FROM
+                        aea_applyinst_proj ap
+                        LEFT JOIN aea_proj_info p ON ap.proj_info_id = p.proj_info_id
+                    GROUP BY
+                        ap.APPLYINST_ID
+                    ) temp1 ON temp1.APPLYINST_ID = ahap_123.APPLYINST_ID
+                WHERE
+                    1 = 1
+                    AND ahap_123.IS_SERIES_APPROVE = '0'
+                    AND art_123.TASK_DEF_KEY_ IN ( 'shenpibuzheng' )
+                ) UNION
+                (
+                SELECT
+                    art_123.ID_ TASK_ID,
+                    ahap_123.APPLYINST_CODE APPLYINST_CODE,
+                    ahap_123.APPLYINST_ID applyinstId,
+                    art_123.PROC_INST_ID_ procinstId,
+                    ahi_123.ITEMINST_NAME ITEMINST_STAGE_NAME,
+                    ali_123.LINKMAN_NAME LINKMAN_NAME,
+                    ahap_123.APPLYINST_SOURCE AS APPLYINST_SOURCE,
+                    art_123.CREATE_TIME_ AS CREATE_TIME_,
+                    ahp_123.START_TIME_ AS START_TIME,
+                    ahap_123.CREATE_TIME AS APPLY_TIME,
+                    art_123.NAME_ NAME_,
+                    ai_123.DUE_NUM DUE_NUM,
+                    '串联' AS IS_SERIES_APPROVE,
+                    ahi_123.ITEMINST_ID busRecordId,
+                    ai_123.ITEM_PROPERTY AS ITEM_PROPERTY,
+                    '1' AS APPLY_TYPE,
+                    temp1.PROJ_NAME,
+                    u.USER_NAME,
+                    art_123.PROC_INST_ID_
+                FROM
+                    ACT_RU_TASK art_123
+                    LEFT JOIN ACT_HI_PROCINST ahp_123 ON art_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
+                    LEFT JOIN ACT_STO_APPINST asa_123 ON asa_123.procinst_id = ahp_123.PROC_INST_ID_
+                    LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahap_123.APPLYINST_ID = asa_123.master_record_id
+                    LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+                    LEFT JOIN AEA_HI_SERIESINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+                    LEFT JOIN AEA_HI_ITEMINST ahi_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
+                    LEFT JOIN AEA_ITEM_BASIC ai_123 ON ahi_123.ITEM_VER_ID = ai_123.ITEM_VER_ID
+                    LEFT JOIN OPU_OM_USER u ON u.LOGIN_NAME = art_123.ASSIGNEE_
+                    LEFT JOIN (
+                    SELECT
+                        ap.APPLYINST_ID,
+                        GROUP_CONCAT( p.PROJ_NAME ) PROJ_NAME
+                    FROM
+                        aea_applyinst_proj ap
+                        LEFT JOIN aea_proj_info p ON ap.proj_info_id = p.proj_info_id
+                    GROUP BY
+                        ap.APPLYINST_ID
+                    ) temp1 ON temp1.APPLYINST_ID = ahap_123.APPLYINST_ID
+                WHERE
+                    1 = 1
+                    AND ahap_123.IS_SERIES_APPROVE = '1'
+                    AND art_123.TASK_DEF_KEY_ IN ( 'shenpibuzheng' )
+                ) UNION
+                (
+                SELECT
+                    art_123.ID_ TASK_ID,
+                    ahap_123.APPLYINST_CODE APPLYINST_CODE,
+                    ahap_123.APPLYINST_ID applyinstId,
+                    art_123.PROC_INST_ID_ procinstId,
+                    ahi_123.ITEMINST_NAME ITEMINST_STAGE_NAME,
+                    ali_123.LINKMAN_NAME LINKMAN_NAME,
+                    ahap_123.APPLYINST_SOURCE AS APPLYINST_SOURCE,
+                    art_123.CREATE_TIME_ AS CREATE_TIME_,
+                    ahp_123.START_TIME_ AS START_TIME,
+                    ahap_123.CREATE_TIME AS APPLY_TIME,
+                    art_123.NAME_ AS NAME_,
+                    ai_123.DUE_NUM AS DUE_NUM,
+                    '串联' AS IS_SERIES_APPROVE,
+                    ahi_123.ITEMINST_ID busRecordId,
+                    ai_123.ITEM_PROPERTY AS ITEM_PROPERTY,
+                    '1' AS APPLY_TYPE,
+                    temp1.PROJ_NAME,
+                    u.USER_NAME,
+                    art_123.PROC_INST_ID_
+                FROM
+                    ACT_RU_TASK art_123
+                    LEFT JOIN ACT_HI_PROCINST ahp_123 ON art_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
+                    LEFT JOIN ACT_STO_APPINST_SUBFLOW asas_123 ON asas_123.SUBFLOW_PROCINST_ID = art_123.PROC_INST_ID_
+                    LEFT JOIN ACT_STO_APPINST asa_123 ON asas_123.appinst_id = asa_123.APPINST_ID
+                    LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahap_123.APPLYINST_ID = asa_123.master_record_id
+                    LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+                    LEFT JOIN AEA_HI_SERIESINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+                    LEFT JOIN AEA_HI_ITEMINST ahi_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
+                    LEFT JOIN AEA_ITEM_BASIC ai_123 ON ahi_123.ITEM_VER_ID = ai_123.ITEM_VER_ID
+                    LEFT JOIN OPU_OM_USER u ON u.LOGIN_NAME = art_123.ASSIGNEE_
+                    LEFT JOIN (
+                    SELECT
+                        ap.APPLYINST_ID,
+                        GROUP_CONCAT( p.PROJ_NAME ) PROJ_NAME
+                    FROM
+                        aea_applyinst_proj ap
+                        LEFT JOIN aea_proj_info p ON ap.proj_info_id = p.proj_info_id
+                    GROUP BY
+                        ap.APPLYINST_ID
+                    ) temp1 ON temp1.APPLYINST_ID = ahap_123.APPLYINST_ID
+                WHERE
+                    1 = 1
+                    AND ahap_123.IS_SERIES_APPROVE = '1'
+                    AND art_123.TASK_DEF_KEY_ IN ( 'shenpibuzheng' )
+                )
+            ) ART_123
+        WHERE
+            1 = 1
+    </select>
+
+    <!-- 待过程补正列表 -->
+    <select id="daiGuoChengBuZhengBanJianList" resultType="EffectInspectForm">
+        SELECT
+        <include refid="allColumns"/>
+        FROM
+        (
+        (
+        SELECT
+        art_123.ID_ TASK_ID,
+        ahap_123.APPLYINST_CODE APPLYINST_CODE,
+        ahap_123.APPLYINST_ID applyinstId,
+        art_123.PROC_INST_ID_ procinstId,
+        aps_123.STAGE_NAME ITEMINST_STAGE_NAME,
+        ali_123.LINKMAN_NAME LINKMAN_NAME,
+        ahap_123.APPLYINST_SOURCE APPLYINST_SOURCE,
+        art_123.CREATE_TIME_ AS CREATE_TIME_,
+        ahp_123.START_TIME_ AS START_TIME,
+        ahap_123.CREATE_TIME AS APPLY_TIME,
+        art_123.NAME_ NAME_,
+        aps_123.DUE_NUM DUE_NUM,
+        '并联' AS IS_SERIES_APPROVE,
+        'undefined' AS busRecordId,
+        'undefined' AS ITEM_PROPERTY,
+        '0' AS APPLY_TYPE,
+        temp1.PROJ_NAME,
+        u.USER_NAME,
+        art_123.PROC_INST_ID_
+        FROM
+        ACT_RU_TASK art_123
+        LEFT JOIN ACT_HI_PROCINST ahp_123 ON art_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
+        LEFT JOIN ACT_STO_APPINST asa_123 ON asa_123.procinst_id = ahp_123.PROC_INST_ID_
+        LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahap_123.APPLYINST_ID = asa_123.master_record_id
+        LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+        LEFT JOIN AEA_HI_PAR_STAGEINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+        LEFT JOIN AEA_PAR_STAGE aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
+        LEFT JOIN OPU_OM_USER u ON u.LOGIN_NAME = art_123.ASSIGNEE_
+        LEFT JOIN (
+        SELECT
+        ap.APPLYINST_ID,
+        GROUP_CONCAT( p.PROJ_NAME ) PROJ_NAME
+        FROM
+        aea_applyinst_proj ap
+        LEFT JOIN aea_proj_info p ON ap.proj_info_id = p.proj_info_id
+        GROUP BY
+        ap.APPLYINST_ID
+        ) temp1 ON temp1.APPLYINST_ID = ahap_123.APPLYINST_ID
+        WHERE
+        1 = 1
+        AND ahap_123.IS_SERIES_APPROVE = '0'
+        AND art_123.TASK_DEF_KEY_ IN ( 'shenpibuzheng' )
+        <if test="keyword != null and keyword != ''">
+            AND (
+            ahap_123.APPLYINST_CODE like concat('%',concat(#{keyword},'%'))
+            OR temp1.PROJ_NAME like concat('%',concat(#{keyword},'%'))
+            OR u.USER_NAME like concat('%',concat(#{keyword},'%'))
+            )
+        </if>
+        ) UNION
+        (
+        SELECT
+        art_123.ID_ TASK_ID,
+        ahap_123.APPLYINST_CODE APPLYINST_CODE,
+        ahap_123.APPLYINST_ID applyinstId,
+        art_123.PROC_INST_ID_ procinstId,
+        aps_123.STAGE_NAME ITEMINST_STAGE_NAME,
+        ali_123.LINKMAN_NAME LINKMAN_NAME,
+        ahap_123.APPLYINST_SOURCE APPLYINST_SOURCE,
+        art_123.CREATE_TIME_ AS CREATE_TIME_,
+        ahp_123.START_TIME_ AS START_TIME,
+        ahap_123.CREATE_TIME AS APPLY_TIME,
+        art_123.NAME_ NAME_,
+        aps_123.DUE_NUM DUE_NUM,
+        '并联' AS IS_SERIES_APPROVE,
+        'undefined' AS busRecordId,
+        'undefined' AS ITEM_PROPERTY,
+        '0' AS APPLY_TYPE,
+        temp1.PROJ_NAME,
+        u.USER_NAME,
+        art_123.PROC_INST_ID_
+        FROM
+        ACT_RU_TASK art_123
+        LEFT JOIN ACT_HI_PROCINST ahp_123 ON art_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
+        LEFT JOIN ACT_STO_APPINST_SUBFLOW asas_123 ON asas_123.SUBFLOW_PROCINST_ID = art_123.PROC_INST_ID_
+        LEFT JOIN ACT_STO_APPINST asa_123 ON asas_123.appinst_id = asa_123.APPINST_ID
+        LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahap_123.APPLYINST_ID = asa_123.master_record_id
+        LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+        LEFT JOIN AEA_HI_PAR_STAGEINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+        LEFT JOIN AEA_PAR_STAGE aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
+        LEFT JOIN OPU_OM_USER u ON u.LOGIN_NAME = art_123.ASSIGNEE_
+        LEFT JOIN (
+        SELECT
+        ap.APPLYINST_ID,
+        GROUP_CONCAT( p.PROJ_NAME ) PROJ_NAME
+        FROM
+        aea_applyinst_proj ap
+        LEFT JOIN aea_proj_info p ON ap.proj_info_id = p.proj_info_id
+        GROUP BY
+        ap.APPLYINST_ID
+        ) temp1 ON temp1.APPLYINST_ID = ahap_123.APPLYINST_ID
+        WHERE
+        1 = 1
+        AND ahap_123.IS_SERIES_APPROVE = '0'
+        AND art_123.TASK_DEF_KEY_ IN ( 'shenpibuzheng' )
+        <if test="keyword != null and keyword != ''">
+            AND (
+            ahap_123.APPLYINST_CODE like concat('%',concat(#{keyword},'%'))
+            OR temp1.PROJ_NAME like concat('%',concat(#{keyword},'%'))
+            OR u.USER_NAME like concat('%',concat(#{keyword},'%'))
+            )
+        </if>
+        ) UNION
+        (
+        SELECT
+        art_123.ID_ TASK_ID,
+        ahap_123.APPLYINST_CODE APPLYINST_CODE,
+        ahap_123.APPLYINST_ID applyinstId,
+        art_123.PROC_INST_ID_ procinstId,
+        ahi_123.ITEMINST_NAME ITEMINST_STAGE_NAME,
+        ali_123.LINKMAN_NAME LINKMAN_NAME,
+        ahap_123.APPLYINST_SOURCE AS APPLYINST_SOURCE,
+        art_123.CREATE_TIME_ AS CREATE_TIME_,
+        ahp_123.START_TIME_ AS START_TIME,
+        ahap_123.CREATE_TIME AS APPLY_TIME,
+        art_123.NAME_ NAME_,
+        ai_123.DUE_NUM DUE_NUM,
+        '串联' AS IS_SERIES_APPROVE,
+        ahi_123.ITEMINST_ID busRecordId,
+        ai_123.ITEM_PROPERTY AS ITEM_PROPERTY,
+        '1' AS APPLY_TYPE,
+        temp1.PROJ_NAME,
+        u.USER_NAME,
+        art_123.PROC_INST_ID_
+        FROM
+        ACT_RU_TASK art_123
+        LEFT JOIN ACT_HI_PROCINST ahp_123 ON art_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
+        LEFT JOIN ACT_STO_APPINST asa_123 ON asa_123.procinst_id = ahp_123.PROC_INST_ID_
+        LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahap_123.APPLYINST_ID = asa_123.master_record_id
+        LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+        LEFT JOIN AEA_HI_SERIESINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+        LEFT JOIN AEA_HI_ITEMINST ahi_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
+        LEFT JOIN AEA_ITEM_BASIC ai_123 ON ahi_123.ITEM_VER_ID = ai_123.ITEM_VER_ID
+        LEFT JOIN OPU_OM_USER u ON u.LOGIN_NAME = art_123.ASSIGNEE_
+        LEFT JOIN (
+        SELECT
+        ap.APPLYINST_ID,
+        GROUP_CONCAT( p.PROJ_NAME ) PROJ_NAME
+        FROM
+        aea_applyinst_proj ap
+        LEFT JOIN aea_proj_info p ON ap.proj_info_id = p.proj_info_id
+        GROUP BY
+        ap.APPLYINST_ID
+        ) temp1 ON temp1.APPLYINST_ID = ahap_123.APPLYINST_ID
+        WHERE
+        1 = 1
+        AND ahap_123.IS_SERIES_APPROVE = '1'
+        AND art_123.TASK_DEF_KEY_ IN ( 'shenpibuzheng' )
+        <if test="keyword != null and keyword != ''">
+            AND (
+            ahap_123.APPLYINST_CODE like concat('%',concat(#{keyword},'%'))
+            OR temp1.PROJ_NAME like concat('%',concat(#{keyword},'%'))
+            OR u.USER_NAME like concat('%',concat(#{keyword},'%'))
+            )
+        </if>
+        ) UNION
+        (
+        SELECT
+        art_123.ID_ TASK_ID,
+        ahap_123.APPLYINST_CODE APPLYINST_CODE,
+        ahap_123.APPLYINST_ID applyinstId,
+        art_123.PROC_INST_ID_ procinstId,
+        ahi_123.ITEMINST_NAME ITEMINST_STAGE_NAME,
+        ali_123.LINKMAN_NAME LINKMAN_NAME,
+        ahap_123.APPLYINST_SOURCE AS APPLYINST_SOURCE,
+        art_123.CREATE_TIME_ AS CREATE_TIME_,
+        ahp_123.START_TIME_ AS START_TIME,
+        ahap_123.CREATE_TIME AS APPLY_TIME,
+        art_123.NAME_ AS NAME_,
+        ai_123.DUE_NUM AS DUE_NUM,
+        '串联' AS IS_SERIES_APPROVE,
+        ahi_123.ITEMINST_ID busRecordId,
+        ai_123.ITEM_PROPERTY AS ITEM_PROPERTY,
+        '1' AS APPLY_TYPE,
+        temp1.PROJ_NAME,
+        u.USER_NAME,
+        art_123.PROC_INST_ID_
+        FROM
+        ACT_RU_TASK art_123
+        LEFT JOIN ACT_HI_PROCINST ahp_123 ON art_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
+        LEFT JOIN ACT_STO_APPINST_SUBFLOW asas_123 ON asas_123.SUBFLOW_PROCINST_ID = art_123.PROC_INST_ID_
+        LEFT JOIN ACT_STO_APPINST asa_123 ON asas_123.appinst_id = asa_123.APPINST_ID
+        LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahap_123.APPLYINST_ID = asa_123.master_record_id
+        LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+        LEFT JOIN AEA_HI_SERIESINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+        LEFT JOIN AEA_HI_ITEMINST ahi_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
+        LEFT JOIN AEA_ITEM_BASIC ai_123 ON ahi_123.ITEM_VER_ID = ai_123.ITEM_VER_ID
+        LEFT JOIN OPU_OM_USER u ON u.LOGIN_NAME = art_123.ASSIGNEE_
+        LEFT JOIN (
+        SELECT
+        ap.APPLYINST_ID,
+        GROUP_CONCAT( p.PROJ_NAME ) PROJ_NAME
+        FROM
+        aea_applyinst_proj ap
+        LEFT JOIN aea_proj_info p ON ap.proj_info_id = p.proj_info_id
+        GROUP BY
+        ap.APPLYINST_ID
+        ) temp1 ON temp1.APPLYINST_ID = ahap_123.APPLYINST_ID
+        WHERE
+        1 = 1
+        AND ahap_123.IS_SERIES_APPROVE = '1'
+        AND art_123.TASK_DEF_KEY_ IN ( 'shenpibuzheng' )
+        <if test="keyword != null and keyword != ''">
+            AND (
+            ahap_123.APPLYINST_CODE like concat('%',concat(#{keyword},'%'))
+            OR temp1.PROJ_NAME like concat('%',concat(#{keyword},'%'))
+            OR u.USER_NAME like concat('%',concat(#{keyword},'%'))
+            )
+        </if>
+        )
+        ) ART_123
+        WHERE
+        1 = 1
+    </select>
+
+    <!-- 待过程补正数 -->
+    <select id="daiGuoChengBuZhengBanJianCount" resultType="Integer">
+        SELECT
+            count(1)
+        FROM
+        (
+        (
+        SELECT
+        art_123.ID_ TASK_ID,
+        ahap_123.APPLYINST_CODE APPLYINST_CODE,
+        ahap_123.APPLYINST_ID applyinstId,
+        art_123.PROC_INST_ID_ procinstId,
+        aps_123.STAGE_NAME ITEMINST_STAGE_NAME,
+        ali_123.LINKMAN_NAME LINKMAN_NAME,
+        ahap_123.APPLYINST_SOURCE APPLYINST_SOURCE,
+        art_123.CREATE_TIME_ AS CREATE_TIME_,
+        ahp_123.START_TIME_ AS START_TIME,
+        ahap_123.CREATE_TIME AS APPLY_TIME,
+        art_123.NAME_ NAME_,
+        aps_123.DUE_NUM DUE_NUM,
+        '并联' AS IS_SERIES_APPROVE,
+        'undefined' AS busRecordId,
+        'undefined' AS ITEM_PROPERTY,
+        '0' AS APPLY_TYPE,
+        temp1.PROJ_NAME,
+        u.USER_NAME,
+        art_123.PROC_INST_ID_
+        FROM
+        ACT_RU_TASK art_123
+        LEFT JOIN ACT_HI_PROCINST ahp_123 ON art_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
+        LEFT JOIN ACT_STO_APPINST asa_123 ON asa_123.procinst_id = ahp_123.PROC_INST_ID_
+        LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahap_123.APPLYINST_ID = asa_123.master_record_id
+        LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+        LEFT JOIN AEA_HI_PAR_STAGEINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+        LEFT JOIN AEA_PAR_STAGE aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
+        LEFT JOIN OPU_OM_USER u ON u.LOGIN_NAME = art_123.ASSIGNEE_
+        LEFT JOIN (
+        SELECT
+        ap.APPLYINST_ID,
+        GROUP_CONCAT( p.PROJ_NAME ) PROJ_NAME
+        FROM
+        aea_applyinst_proj ap
+        LEFT JOIN aea_proj_info p ON ap.proj_info_id = p.proj_info_id
+        GROUP BY
+        ap.APPLYINST_ID
+        ) temp1 ON temp1.APPLYINST_ID = ahap_123.APPLYINST_ID
+        WHERE
+        1 = 1
+        AND ahap_123.IS_SERIES_APPROVE = '0'
+        AND art_123.TASK_DEF_KEY_ IN ( 'shenpibuzheng' )
+        ) UNION
+        (
+        SELECT
+        art_123.ID_ TASK_ID,
+        ahap_123.APPLYINST_CODE APPLYINST_CODE,
+        ahap_123.APPLYINST_ID applyinstId,
+        art_123.PROC_INST_ID_ procinstId,
+        aps_123.STAGE_NAME ITEMINST_STAGE_NAME,
+        ali_123.LINKMAN_NAME LINKMAN_NAME,
+        ahap_123.APPLYINST_SOURCE APPLYINST_SOURCE,
+        art_123.CREATE_TIME_ AS CREATE_TIME_,
+        ahp_123.START_TIME_ AS START_TIME,
+        ahap_123.CREATE_TIME AS APPLY_TIME,
+        art_123.NAME_ NAME_,
+        aps_123.DUE_NUM DUE_NUM,
+        '并联' AS IS_SERIES_APPROVE,
+        'undefined' AS busRecordId,
+        'undefined' AS ITEM_PROPERTY,
+        '0' AS APPLY_TYPE,
+        temp1.PROJ_NAME,
+        u.USER_NAME,
+        art_123.PROC_INST_ID_
+        FROM
+        ACT_RU_TASK art_123
+        LEFT JOIN ACT_HI_PROCINST ahp_123 ON art_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
+        LEFT JOIN ACT_STO_APPINST_SUBFLOW asas_123 ON asas_123.SUBFLOW_PROCINST_ID = art_123.PROC_INST_ID_
+        LEFT JOIN ACT_STO_APPINST asa_123 ON asas_123.appinst_id = asa_123.APPINST_ID
+        LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahap_123.APPLYINST_ID = asa_123.master_record_id
+        LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+        LEFT JOIN AEA_HI_PAR_STAGEINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+        LEFT JOIN AEA_PAR_STAGE aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
+        LEFT JOIN OPU_OM_USER u ON u.LOGIN_NAME = art_123.ASSIGNEE_
+        LEFT JOIN (
+        SELECT
+        ap.APPLYINST_ID,
+        GROUP_CONCAT( p.PROJ_NAME ) PROJ_NAME
+        FROM
+        aea_applyinst_proj ap
+        LEFT JOIN aea_proj_info p ON ap.proj_info_id = p.proj_info_id
+        GROUP BY
+        ap.APPLYINST_ID
+        ) temp1 ON temp1.APPLYINST_ID = ahap_123.APPLYINST_ID
+        WHERE
+        1 = 1
+        AND ahap_123.IS_SERIES_APPROVE = '0'
+        AND art_123.TASK_DEF_KEY_ IN ( 'shenpibuzheng' )
+        ) UNION
+        (
+        SELECT
+        art_123.ID_ TASK_ID,
+        ahap_123.APPLYINST_CODE APPLYINST_CODE,
+        ahap_123.APPLYINST_ID applyinstId,
+        art_123.PROC_INST_ID_ procinstId,
+        ahi_123.ITEMINST_NAME ITEMINST_STAGE_NAME,
+        ali_123.LINKMAN_NAME LINKMAN_NAME,
+        ahap_123.APPLYINST_SOURCE AS APPLYINST_SOURCE,
+        art_123.CREATE_TIME_ AS CREATE_TIME_,
+        ahp_123.START_TIME_ AS START_TIME,
+        ahap_123.CREATE_TIME AS APPLY_TIME,
+        art_123.NAME_ NAME_,
+        ai_123.DUE_NUM DUE_NUM,
+        '串联' AS IS_SERIES_APPROVE,
+        ahi_123.ITEMINST_ID busRecordId,
+        ai_123.ITEM_PROPERTY AS ITEM_PROPERTY,
+        '1' AS APPLY_TYPE,
+        temp1.PROJ_NAME,
+        u.USER_NAME,
+        art_123.PROC_INST_ID_
+        FROM
+        ACT_RU_TASK art_123
+        LEFT JOIN ACT_HI_PROCINST ahp_123 ON art_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
+        LEFT JOIN ACT_STO_APPINST asa_123 ON asa_123.procinst_id = ahp_123.PROC_INST_ID_
+        LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahap_123.APPLYINST_ID = asa_123.master_record_id
+        LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+        LEFT JOIN AEA_HI_SERIESINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+        LEFT JOIN AEA_HI_ITEMINST ahi_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
+        LEFT JOIN AEA_ITEM_BASIC ai_123 ON ahi_123.ITEM_VER_ID = ai_123.ITEM_VER_ID
+        LEFT JOIN OPU_OM_USER u ON u.LOGIN_NAME = art_123.ASSIGNEE_
+        LEFT JOIN (
+        SELECT
+        ap.APPLYINST_ID,
+        GROUP_CONCAT( p.PROJ_NAME ) PROJ_NAME
+        FROM
+        aea_applyinst_proj ap
+        LEFT JOIN aea_proj_info p ON ap.proj_info_id = p.proj_info_id
+        GROUP BY
+        ap.APPLYINST_ID
+        ) temp1 ON temp1.APPLYINST_ID = ahap_123.APPLYINST_ID
+        WHERE
+        1 = 1
+        AND ahap_123.IS_SERIES_APPROVE = '1'
+        AND art_123.TASK_DEF_KEY_ IN ( 'shenpibuzheng' )
+        ) UNION
+        (
+        SELECT
+        art_123.ID_ TASK_ID,
+        ahap_123.APPLYINST_CODE APPLYINST_CODE,
+        ahap_123.APPLYINST_ID applyinstId,
+        art_123.PROC_INST_ID_ procinstId,
+        ahi_123.ITEMINST_NAME ITEMINST_STAGE_NAME,
+        ali_123.LINKMAN_NAME LINKMAN_NAME,
+        ahap_123.APPLYINST_SOURCE AS APPLYINST_SOURCE,
+        art_123.CREATE_TIME_ AS CREATE_TIME_,
+        ahp_123.START_TIME_ AS START_TIME,
+        ahap_123.CREATE_TIME AS APPLY_TIME,
+        art_123.NAME_ AS NAME_,
+        ai_123.DUE_NUM AS DUE_NUM,
+        '串联' AS IS_SERIES_APPROVE,
+        ahi_123.ITEMINST_ID busRecordId,
+        ai_123.ITEM_PROPERTY AS ITEM_PROPERTY,
+        '1' AS APPLY_TYPE,
+        temp1.PROJ_NAME,
+        u.USER_NAME,
+        art_123.PROC_INST_ID_
+        FROM
+        ACT_RU_TASK art_123
+        LEFT JOIN ACT_HI_PROCINST ahp_123 ON art_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
+        LEFT JOIN ACT_STO_APPINST_SUBFLOW asas_123 ON asas_123.SUBFLOW_PROCINST_ID = art_123.PROC_INST_ID_
+        LEFT JOIN ACT_STO_APPINST asa_123 ON asas_123.appinst_id = asa_123.APPINST_ID
+        LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahap_123.APPLYINST_ID = asa_123.master_record_id
+        LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+        LEFT JOIN AEA_HI_SERIESINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+        LEFT JOIN AEA_HI_ITEMINST ahi_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
+        LEFT JOIN AEA_ITEM_BASIC ai_123 ON ahi_123.ITEM_VER_ID = ai_123.ITEM_VER_ID
+        LEFT JOIN OPU_OM_USER u ON u.LOGIN_NAME = art_123.ASSIGNEE_
+        LEFT JOIN (
+        SELECT
+        ap.APPLYINST_ID,
+        GROUP_CONCAT( p.PROJ_NAME ) PROJ_NAME
+        FROM
+        aea_applyinst_proj ap
+        LEFT JOIN aea_proj_info p ON ap.proj_info_id = p.proj_info_id
+        GROUP BY
+        ap.APPLYINST_ID
+        ) temp1 ON temp1.APPLYINST_ID = ahap_123.APPLYINST_ID
+        WHERE
+        1 = 1
+        AND ahap_123.IS_SERIES_APPROVE = '1'
+        AND art_123.TASK_DEF_KEY_ IN ( 'shenpibuzheng' )
+        )
+        ) ART_123
+        WHERE
+        1 = 1
+    </select>
+</mapper>

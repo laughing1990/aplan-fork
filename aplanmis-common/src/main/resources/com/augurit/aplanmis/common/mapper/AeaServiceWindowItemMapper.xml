@@ -1,0 +1,368 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by yinlf    2019-07-25 14:14:38 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaServiceWindowItemMapper">
+
+    <sql id="allColumns">
+        WIND_ITEM_ID  windItemId,
+        WIND_ID  windId,
+        ITEM_VER_ID  itemVerId,
+        IS_ACTIVE  isActive,
+        CREATER  creater,
+        CREATE_TIME  createTime,
+        ROOT_ORG_ID   rootOrgId
+    </sql>
+
+    <sql id="windItemAllColumns" >
+        windItem.WIND_ITEM_ID  windItemId,
+        windItem.WIND_ID  windId,
+        windItem.ITEM_VER_ID  itemVerId,
+        windItem.IS_ACTIVE  isActive,
+        windItem.CREATER  creater,
+        windItem.CREATE_TIME  createTime,
+        windItem.ROOT_ORG_ID  rootOrgId
+    </sql>
+
+    <sql id="windAllColumns">
+        window.WINDOW_ID windowId,
+        window.WINDOW_NAME windowName,
+        window.REGION_ID  regionId,
+        window.ORG_ID orgId,
+        window.LINK_PHONE linkPhone,
+        window.WORK_TIME workTime,
+        window.WINDOW_ADDRESS windowAddress,
+        window.TRAFFIC_GUIDE trafficGuide,
+        window.WINDOW_MEMO windowMemo,
+        window.MAP_URL  mapUrl,
+        window.MAP_ATT mapAtt,
+        window.SORT_NO as sortNo,
+        window.IS_ACTIVE as isActive,
+        window.WINDOW_TYPE as windowType,
+        window.IS_PUBLIC as isPublic,
+        window.IS_ALL_ITEM as isAllItem,
+        window.IS_ALL_STAGE as isAllStage,
+        window.ROOT_ORG_ID rootOrgId
+
+    </sql>
+
+    <sql id="itemBasicAllColumns">
+        itemBasic.ITEM_BASIC_ID  itemBasicId,
+        itemBasic.ITEM_ID  itemId,
+        itemBasic.ITEM_VER_ID  itemVerId,
+        itemBasic.ITEM_CODE  itemCode,
+        itemBasic.ITEM_NAME  itemName,
+        itemBasic.ORG_ID  orgId,
+        itemBasic.ITEM_TYPE  itemType,
+        itemBasic.BJ_TYPE  bjType,
+        itemBasic.ACCEPT_MODE  acceptMode,
+        itemBasic.HANDLE_ARTICLE  handleArticle,
+        itemBasic.HANDLE_FLOW  handleFlow,
+        itemBasic.DUE_NUM  dueNum,
+        itemBasic.SEND_RESULT_MODE  sendResultMode,
+        itemBasic.DOC_TEMPLATE  docTemplate,
+        itemBasic.APPLY_TABLE_DEMO  applyTableDemo,
+        itemBasic.APPLY_TABLE_TEMPLATE  applyTableTemplate,
+        itemBasic.STANDARD_ITEM_CODE  standardItemCode,
+        itemBasic.ITEM_MEMO  itemMemo,
+        itemBasic.CREATER  creater,
+        itemBasic.CREATE_TIME  createTime,
+        itemBasic.MODIFIER  modifier,
+        itemBasic.MODIFY_TIME  modifyTime,
+        itemBasic.APP_ID  appId,
+        itemBasic.ITEM_DIR_ID  itemDirId,
+        itemBasic.INNER_APP_ID  innerAppId,
+        itemBasic.ITEM_PROPERTY  itemProperty,
+        itemBasic.DIRECTORYCODE  directorycode,
+        itemBasic.DIRECTORY_ID  directoryId,
+        itemBasic.BASECODE  basecode,
+        itemBasic.WTBM  wtbm,
+        itemBasic.SQJB  sqjb,
+        itemBasic.SFZHLR  sfzhlr,
+        itemBasic.SLYJ  slyj,
+        itemBasic.BBH  bbh,
+        itemBasic.SXMLZT  sxmlzt,
+        itemBasic.FBSJ  fbsj,
+        itemBasic.SSSJ  sssj,
+        itemBasic.ISOLD  isold,
+        itemBasic.SFWSBL  sfwsbl,
+        itemBasic.BWSBLLY  bwsblly,
+        itemBasic.UNONLINEREASONOTHER  unonlinereasonother,
+        itemBasic.SFCZWTXFTZSSQK  sfczwtxftzssqk,
+        itemBasic.FZCD  fzcd,
+        itemBasic.SSCODE  sscode,
+        itemBasic.SXGLFSLX  sxglfslx,
+        itemBasic.WTFQFX  wtfqfx,
+        itemBasic.WTFQQTSM  wtfqqtsm,
+        itemBasic.SLFS  slfs,
+        itemBasic.IS_NEED_STATE  isNeedState,
+        itemBasic.IS_MILESTONE_ITEM  isMilestoneItem,
+        itemBasic.OUTER_SYSTEM_HANDLE  outerSystemHandle,
+        itemBasic.OUTER_SYSTEM_DESC  outerSystemDesc,
+        itemBasic.OUTER_SYSTEM_URL  outerSystemUrl,
+        itemBasic.IS_ASYN  isAsyn,
+        itemBasic.ASYN_TIME  asynTime,
+        itemBasic.IS_LOCAL  isLocal,
+        itemBasic.IS_FEE  isFee,
+        itemBasic.XKDX  xkdx,
+        itemBasic.ITEM_ALIAS  itemAlias,
+        itemBasic.IS_NEED_FRONT_COND  isNeedFrontCond,
+        itemBasic.AREA_CODE  areaCode,
+        itemBasic.AREA_CODE_NAME  areaCodeName,
+        itemBasic.KP_ITEM_ID  kpItemId,
+        itemBasic.ITEM_NATURE  itemNature,
+        itemBasic.SFSXGZCNZ  sfsxgzcnz
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaServiceWindowItemById" resultType="AeaServiceWindowItem">
+        select
+        <include refid="allColumns"/>
+        from AEA_SERVICE_WINDOW_ITEM
+        where WIND_ITEM_ID = #{id}
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaServiceWindowItem" resultType="AeaServiceWindowItem" >
+        select
+            <include refid="windItemAllColumns"/>,
+            <include refid="windAllColumns"/>,
+            item.ITEM_NAME as itemName
+        from AEA_SERVICE_WINDOW_ITEM as windItem,
+             AEA_SERVICE_WINDOW as window,
+             AEA_ITEM_BASIC as item,
+             AEA_ITEM_VER as ver
+        <where>
+            and windItem.WIND_ID = window.WINDOW_ID
+            and windItem.ITEM_VER_ID = item.ITEM_VER_ID
+            and ver.ITEM_VER_ID = item.ITEM_VER_ID
+            and ver.ITEM_VER_STATUS IN ('1','2')
+            and window.ROOT_ORG_ID = #{rootOrgId}
+            and item.ROOT_ORG_ID = #{rootOrgId}
+            <if test="windItemId != null" >
+                and    windItem.WIND_ITEM_ID = #{windItemId}
+            </if>
+            <if test="windId != null" >
+                and    windItem.WIND_ID = #{windId}
+            </if>
+            <if test="itemVerId != null" >
+                and    windItem.ITEM_VER_ID = #{itemVerId}
+            </if>
+            <if test="isActive != null" >
+                and    windItem.IS_ACTIVE = #{isActive}
+            </if>
+            <if test="creater != null" >
+                and    windItem.CREATER = #{creater}
+            </if>
+            <if test="createTime != null" >
+                and    windItem.CREATE_TIME = #{createTime}
+            </if>
+            <if test="rootOrgId != null" >
+                and    windItem.ROOT_ORG_ID = #{rootOrgId}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                and (
+                    window.WINDOW_NAME like CONCAT(CONCAT('%',#{keyword}),'%')
+                    or window.WINDOW_ADDRESS like CONCAT(CONCAT('%',#{keyword}),'%')
+                    or window.LINK_PHONE like CONCAT(CONCAT('%',#{keyword}),'%')
+                    or item.ITEM_NAME like CONCAT(CONCAT('%',#{keyword}),'%')
+                )
+            </if>
+        </where>
+    </select>
+    <!--4 根据条件查询实体list,返回分页对象 -->
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaServiceWindowItem" parameterType="AeaServiceWindowItem">
+        insert into AEA_SERVICE_WINDOW_ITEM (
+    WIND_ITEM_ID  ,WIND_ID  ,ITEM_VER_ID  ,IS_ACTIVE  ,CREATER  ,CREATE_TIME, ROOT_ORG_ID
+        )  values  (
+    #{windItemId},#{windId},#{itemVerId},#{isActive},#{creater},  #{createTime}, #{rootOrgId}
+        )
+    </insert>
+    <!--6 修改实体对象 -->
+    <update id="updateAeaServiceWindowItem" parameterType="AeaServiceWindowItem">
+        update AEA_SERVICE_WINDOW_ITEM
+        <set>
+            <if test="windItemId != null">
+                WIND_ITEM_ID = #{windItemId},
+            </if>
+            <if test="windId != null">
+                WIND_ID = #{windId},
+            </if>
+            <if test="itemVerId != null">
+                ITEM_VER_ID = #{itemVerId},
+            </if>
+            <if test="isActive != null">
+                IS_ACTIVE = #{isActive},
+            </if>
+            <if test="creater != null">
+                CREATER = #{creater},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime},
+            </if>
+            <if test="rootOrgId != null">
+                ROOT_ORG_ID = #{rootOrgId},
+            </if>
+        </set>
+        where WIND_ITEM_ID = #{windItemId}
+    </update>
+
+    <!--8 删除实体对象列表,根据主键ID列表 -->
+    <!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaServiceWindowItem" id="AeaServiceWindowItemMap">
+        <id property="windItemId" column="WIND_ITEM_ID"/>
+        <result property="windId" column="WIND_ID"/>
+        <result property="itemVerId" column="ITEM_VER_ID"/>
+        <result property="isActive" column="IS_ACTIVE"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+    </resultMap>
+
+    <select id="findWindowItemByUserId" resultType="AeaItemBasic">
+        SELECT <include refid="itemBasicAllColumns"/>
+        FROM AEA_ITEM_BASIC itemBasic
+        INNER JOIN AEA_ITEM_VER ver ON ver.ITEM_VER_ID = itemBasic.ITEM_VER_ID
+            AND ver.ITEM_VER_STATUS IN ('1','2')
+        WHERE itemBasic.ITEM_VER_ID IN (
+            SELECT ITEM_VER_ID
+            FROM aea_service_window_item
+            WHERE WIND_ID IN (
+                SELECT WINDOW_ID
+                FROM aea_service_window_user
+                WHERE USER_ID = #{userId} AND IS_ACTIVE = '1'
+            ) AND IS_ACTIVE = '1'
+        )
+    </select>
+
+    <select id="findWindowItemByWindowIdAndKeywordAndIsActive" resultType="AeaItemBasic">
+        SELECT <include refid="itemBasicAllColumns"/>
+        FROM AEA_ITEM_BASIC itemBasic
+        INNER JOIN AEA_ITEM_VER ver ON ver.ITEM_VER_ID = itemBasic.ITEM_VER_ID
+            AND ver.ITEM_VER_STATUS IN ('1','2')
+        WHERE itemBasic.ITEM_VER_ID IN (
+            SELECT ITEM_VER_ID
+            FROM aea_service_window_item
+            WHERE WIND_ID = #{windowId}
+            <if test="isActive!=null and isActive!=''">
+                AND IS_ACTIVE = #{isActive}
+            </if>
+        )
+        <if test="keyword!=null and keyword!=''">
+            AND (ITEM_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+            OR ITEM_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%'))
+        </if>
+        <if test="rootOrgId != null">
+            and itemBasic.ROOT_ORG_ID = #{rootOrgId}
+        </if>
+    </select>
+
+    <update id="enableWindowItem">
+        update AEA_SERVICE_WINDOW_ITEM
+        set IS_ACTIVE = '1'
+        where WIND_ID = #{windowId} AND ITEM_VER_ID = #{itemVerId}
+    </update>
+
+    <update id="disableWindowItem">
+        update AEA_SERVICE_WINDOW_ITEM
+        set IS_ACTIVE = '0'
+        where WIND_ID = #{windowId} AND ITEM_VER_ID = #{itemVerId}
+    </update>
+
+    <!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaServiceWindowItemById">
+        delete from AEA_SERVICE_WINDOW_ITEM
+        where WIND_ITEM_ID = #{id}
+    </delete>
+
+    <delete id="batchDelAeaServiceWindowItemByIds">
+        delete from AEA_SERVICE_WINDOW_ITEM where WIND_ITEM_ID in
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteAeaServiceWindowItemByWindowIdAndItemVerId">
+        delete from AEA_SERVICE_WINDOW_ITEM
+        where WIND_ID = #{windowId} AND ITEM_VER_ID = #{itemVerId}
+        <if test="rootOrgId != null">
+            and ROOT_ORG_ID = #{rootOrgId}
+        </if>
+    </delete>
+
+    <insert id="batchInsertAeaServiceWindowItem" parameterType="AeaServiceWindowItem">
+        insert into AEA_SERVICE_WINDOW_ITEM (
+            WIND_ITEM_ID  ,WIND_ID  ,ITEM_VER_ID  ,IS_ACTIVE  ,CREATER  ,CREATE_TIME, ROOT_ORG_ID
+        )  values
+        <foreach collection="aeaServiceWindowItemList" item="aeaServiceWindowItem" separator=",">
+            (#{aeaServiceWindowItem.windItemId},#{aeaServiceWindowItem.windId},#{aeaServiceWindowItem.itemVerId},#{aeaServiceWindowItem.isActive},#{aeaServiceWindowItem.creater},  #{aeaServiceWindowItem.createTime},#{aeaServiceWindowItem.rootOrgId})
+        </foreach>
+    </insert>
+
+    <delete id="batchDeleteWindowItemByWindowIdAndItemVerId">
+        delete from AEA_SERVICE_WINDOW_ITEM
+        where WIND_ID = #{windowId} AND ITEM_VER_ID IN
+        <foreach collection="itemVerIds" item="itemVerId" open="(" separator="," close=")">
+            #{itemVerId}
+        </foreach>
+        <if test="rootOrgId != null">
+            and ROOT_ORG_ID = #{rootOrgId}
+        </if>
+    </delete>
+
+    <select id="listWindowItemByWindowId" resultType="AeaServiceWindowItem" >
+        select
+            <include refid="windItemAllColumns"/>,
+            itemBasic.ITEM_CODE itemCode,
+            itemBasic.ITEM_NAME itemName,
+            itemBasic.ITEM_NATURE itemNature,
+            org.ORG_NAME orgName
+        from AEA_SERVICE_WINDOW_ITEM as windItem
+        INNER join AEA_ITEM_BASIC itemBasic on itemBasic.ITEM_VER_ID = windItem.ITEM_VER_ID
+        INNER JOIN AEA_ITEM_VER ver ON ver.ITEM_VER_ID = itemBasic.ITEM_VER_ID
+            AND ver.ITEM_VER_STATUS IN ('1','2')
+        left join OPU_OM_ORG org on ( org.ORG_ID = itemBasic.ORG_ID and org.ORG_DELETED = '0')
+        <where>
+            and windItem.WIND_ID = #{windowId}
+            <if test="keyword!=null and keyword!=''">
+            and (
+                itemBasic.ITEM_CODE like concat('%',concat(#{keyword},'%')) or
+                itemBasic.ITEM_NAME like concat('%',concat(#{keyword},'%')) or
+                org.ORG_NAME like concat('%',concat(#{keyword},'%'))
+            )
+            </if>
+            <if test="rootOrgId != null">
+                and windItem.ROOT_ORG_ID = #{rootOrgId}
+            </if>
+        </where>
+    </select>
+
+    <delete id="delAeaServiceWindowItemByWindowAndItemIds">
+        delete from AEA_SERVICE_WINDOW_ITEM
+        <where>
+            and WIND_ID = #{windowId}
+            <if test="itemVerIds != null and itemVerIds.length>0" >
+                and ITEM_VER_ID in
+                <foreach collection="itemVerIds" item="itemVerId" open="(" close=")" separator=",">
+                    #{itemVerId}
+                </foreach>
+            </if>
+            <if test="rootOrgId != null">
+                and ROOT_ORG_ID = #{rootOrgId}
+            </if>
+        </where>
+    </delete>
+
+    <delete id="delAeaServiceWindowItemByWindowIds">
+        delete from AEA_SERVICE_WINDOW_ITEM where WIND_ID in
+        <foreach collection="windowIds" item="windowId" open="(" close=")" separator=",">
+            #{windowId}
+        </foreach>
+        <if test="rootOrgId != null">
+            and ROOT_ORG_ID = #{rootOrgId}
+        </if>
+    </delete>
+
+</mapper>

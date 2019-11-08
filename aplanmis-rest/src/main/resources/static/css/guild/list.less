@@ -1,0 +1,295 @@
+// list
+
+.wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  // overflow-y: scroll;
+  // overflow-x: hidden;
+
+  // 头部搜索及过滤
+  .header-handel {
+    width: 100%;
+    height: 1.2rem;
+    line-height: 1.2rem;
+    // background: #e5e5e5;
+    padding: 0 20px;
+
+    // 搜索框
+    .search-box {
+      display: inline-block;
+      vertical-align: middle;
+      width: 6rem;
+      height: 100%;
+      line-height: 1;
+      padding: 0.225rem 0;
+
+      .search {
+        height: 0.75rem;
+        line-height: 0.75rem;
+        border-radius: 0.38rem;
+        -webkit-border-radius: 0.38rem;
+        background: #F2F2F2;
+
+        .search-inp {
+          height: 100%;
+          width: 90%;
+          display: inline-block;
+          font-size: 0.3rem;
+          border: none;
+          outline: none;
+          background: none;
+          padding: 0 20px;
+        }
+
+        // 搜索小图标按钮
+        .search-btn {
+          display: inline-block;
+          vertical-align: middle;
+          width: 0.34rem;
+          height: 0.34rem;
+          // margin-left: 0.7rem;
+          background: url("../../imgs/guild/search_non.png") no-repeat center;
+          background-size: 100% 100%;
+
+          &.active {
+            background: url("../../imgs/guild/search_active.png") no-repeat center;
+            background-size: 100% 100%;
+          }
+        }
+
+        // 搜索小图标按钮-激活状态
+
+      }
+    }
+
+    // 过滤按钮
+    .filter-box {
+      display: inline-block;
+      vertical-align: middle;
+      width: 0.44rem;
+      height: 100%;
+      padding: 0.38rem 0;
+
+      .filter {
+        height: 0.44rem;
+        background: url("../../imgs/guild/filter_btn.png") no-repeat center;
+        background-size: 100% 100%;
+      }
+    }
+  }
+
+  // 事项内容区
+  .content {
+    width: 100%;
+    height: calc(~ "100% - 1.2rem");
+    // background: #e5e5e5;
+
+    // title
+    .title-box {
+      width: 100%;
+      height: 1rem;
+      line-height: 1rem;
+
+      .title-tip {
+        display: inline-block;
+        vertical-align: middle;
+        height: 0.32rem;
+        line-height: 0.32rem;
+        border-left: 10px solid #0187F2;
+        font-size: 0.32rem;
+        color: #474747;
+      }
+    }
+
+    // 列表
+    .list-box {
+      width: 100%;
+      height: calc(~ "100% - 1rem");
+      // background: #999;
+      font-size: 0.3rem;
+      overflow-y: scroll;
+      overflow-x: hidden;
+
+      // 每一项事项
+      .list-item {
+        width: 100%;
+        height: 1rem;
+        line-height: 1rem;
+        border-top: 1px solid #e5e5e5;
+        padding: 0 15px;
+
+        // 左边标识
+        .item-tag {
+          display: inline-block;
+          vertical-align: top;
+          width: 0.36rem;
+          height: 100%;
+
+          span {
+            display: inline-block;
+            height: 0.36rem;
+            width: 100%;
+            background: url("../../imgs/guild/guide.png") no-repeat center;
+            background-size: 100% 100%;
+            margin-top: 0.3rem;
+          }
+        }
+
+        // 中间文字
+        .item-tip {
+          display: inline-block;
+          width: 6rem;
+          color: #474747;
+          font-size: 0.3rem;
+          padding: 0 15px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        // 右边跳转
+        .item-right {
+          display: inline-block;
+          vertical-align: top;
+          width: 0.18rem;
+          height: 100%;
+
+          span {
+            display: inline-block;
+            height: 0.28rem;
+            width: 100%;
+            background: url("../../imgs/guild/to_right.png") no-repeat center;
+            background-size: 100% 100%;
+            margin-top: 0.3rem;
+          }
+        }
+      }
+    }
+  }
+
+  // 筛选侧滑mask
+  .filter-mask {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, .4);
+    z-index: 99;
+    // display: none;
+  }
+
+  // 筛选侧滑栏
+  .filter-slider {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 80%;
+    height: 100%;
+    // padding: 10px 0 0.84rem 0;
+    background: #fff;
+    z-index: 100;
+    transform: translateX(100%);
+    transition: transform .1s ease-in;
+    // display: none;
+
+    overflow-y: scroll;
+
+    .slider-content {
+      width: 100%;
+      height: calc(~ "100% - 0.84rem");
+      overflow-y: scroll;
+
+      // 筛选主题分类
+      .filter-box {
+        width: 100%;
+        margin-bottom: 20px;
+
+        .filter-group {
+          padding: 20px 15px;
+          font-size: 0.25rem;
+          color: #999;
+        }
+
+        .filter-content {
+          width: 100%;
+
+          // padding: 0 15px;
+          // padding-top: 20px;
+          .filter-item {
+            display: inline-block;
+            width: 1.74rem;
+            height: 0.94rem;
+            // line-height: 0.94rem;
+            margin-left: 0.16rem;
+            margin-bottom: 0.16rem;
+            font-size: 0.22rem;
+            color: #666;
+            text-align: center;
+            background: #F5F5F5;
+            position: relative;
+
+            span {
+              position: absolute;
+              top: 50%;
+              left: 50%;
+              transform: translateX(-50%) translateY(-50%);
+              width: 96%;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              display: -webkit-box;
+              -webkit-line-clamp: 2; // 控制多行的行数
+              -webkit-box-orient: vertical;
+            }
+          }
+
+          .filter-item-active {
+            color: #0190F2;
+            background: url("../../imgs/guild/selected-bg.png") #EEF8FF no-repeat right bottom;
+          }
+        }
+      }
+    }
+
+
+    // 重置，确定区
+    .filter-handel {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      height: 0.84rem;
+      line-height: 0.84rem;
+      font-size: 0;
+
+      .handel {
+        display: inline-block;
+        vertical-align: top;
+        width: 50%;
+        text-align: center;
+        font-size: 0.30rem;
+      }
+
+      .handel-left {
+        color: #666;
+        background: #F9EDDF;
+
+        &.active {
+          color: #FF8800;
+        }
+      }
+
+      .handel-right {
+        color: #fff;
+        background: #0190F2;
+      }
+    }
+  }
+
+  // 滑出状态
+  .filter-slider-active {
+    transform: translateX(0);
+  }
+
+}

@@ -1,0 +1,121 @@
+ul {
+    padding: 0;
+    list-style: none;
+    margin: 0;
+}
+
+.box {
+    padding: 10px 20px;
+    overflow: hidden;
+}
+
+.nav {
+    width: 11%;
+    min-width: 138px;
+    display: inline-block;
+    border: 1px solid #ddd;
+}
+
+.content {
+    display: inline-block;
+    width: 89%;
+    height: 1800px;
+    float: right;
+    /*border: 1px solid #e8e8e8;*/
+}
+
+.m-accordion {
+
+}
+
+.modal-header {
+
+}
+
+.m-accordion.m-accordion--bordered .m-accordion__item, .m-accordion.m-accordion--default .m-accordion__item {
+    border-radius: 0;
+    border: 0 none;
+}
+
+.m-accordion .m-accordion__item .m-accordion__item-head .m-accordion__item-title {
+    font-size: 1rem;
+}
+
+.m-accordion .m-accordion__item .m-accordion__item-head {
+    background: #ececec !important;
+    padding: 0.6rem 1.7rem;
+    border-left: 5px solid #36a3f7;
+}
+
+.m-accordion.m-accordion--default .m-accordion__item {
+    margin-bottom: 0;
+}
+
+.m-accordion .m-accordion__item .m-accordion__item-body > span, .m-accordion .m-accordion__item .m-accordion__item-body .m-accordion__item-content {
+    padding: 0.6rem 2rem;
+}
+
+.m-section__content li {
+    line-height: 1.8rem;
+    cursor: pointer;
+    color: #666;
+}
+
+.modal-header {
+    border: none !important;
+}
+
+.m-section__content li:hover {
+    color: #36a3f7;
+}
+
+.page, .page li {
+    width: 100%;
+    height: 100%;
+}
+
+.page li {
+    display: none;
+}
+
+.show {
+    display: block !important;
+}
+
+.special {
+    color: #36a3f7 !important;
+}
+
+.m-section__content ul li {
+    width: 122%;
+}
+
+.modal-title {
+    margin: 0 auto;
+}
+
+/*mini滚动条样式 start*/
+.miniScrollbar {
+    overflow: auto;
+}
+
+.miniScrollbar::-webkit-scrollbar { /*滚动条整体样式*/
+    width: 4px; /*高宽分别对应横竖滚动条的尺寸*/
+    height: 4px;
+}
+
+.miniScrollbar::-webkit-scrollbar-thumb { /*滚动条里面小方块*/
+    border-radius: 5px;
+    -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.miniScrollbar::-webkit-scrollbar-track { /*滚动条里面轨道*/
+    -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+    border-radius: 0;
+    background: rgba(0, 0, 0, 0.1);
+}
+
+/*mini滚动条样式 end*/

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>总表管理</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!--引入样式-->
+    <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/metronic-5/vendors.bundle.css" th:href="@{/agcloud/framework/js-lib/metronic-5/vendors.bundle.css}">
+    <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/ui-private/default/common/css/metronic.css" th:href="@{/agcloud/framework/ui-private/default/common/css/metronic.css}">
+    <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.css" th:href="@{/agcloud/framework/js-lib/element-2/element.css}">
+    <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/ui-private/default/common/css/layout.css" th:href="@{/agcloud/framework/ui-private/default/common/css/layout.css}">
+    <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/ui-private/default/blue/css/theme.css" th:href="@{/agcloud/framework/ui-private/default/blue/css/theme.css}">
+    <!-- 业务样式 -->
+    <link rel="stylesheet" href="../../../static/admin/oneform/css/oneformIndex.css" th:href="@{/admin/oneform/css/oneformIndex.css}">
+    <script>
+        var ctx = '[[@{/}]]';
+    </script>
+</head>
+<body>
+<div id="index" v-loading="loading" style="padding: 15px;">
+    <!-- 查询 -->
+    <div class="add-search clearfix" style="padding-bottom: 15px;">
+        <button type="button" class="btn btn-primary" @click="editRow('',0)">新增</button>
+        <button type="button" class="btn btn-outline-danger" @click="batchDelData">删除</button>
+        <div class="float-right search-btn" style="padding-left: 10px;">
+            <div class="input-group search-key">
+                <input type="text" class="form-control" v-model="searchKey" placeholder="请输入查询关键字" style="width: 250px;">
+                <i class="la la-close clear-search" @click="searchKey='';page=1;searchRow();"></i>
+                <div class="input-group-append">
+                    <button class="btn btn-primary m-btn--icon" @click="searchRow()">
+                        <span><i class="fa fa-search"></i><span>查询</span></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 主要显示内容 -->
+    <el-table
+        ref="oneformTb"
+        :data="tableData.rows"
+        border style="width: 100%"
+        highlight-current-row
+        v-loading="loading"
+        @row-dblclick="dbclickRow"
+        @row-click="clickRow"
+        @selection-change="handleSelChange">
+        <el-table-column type="selection" align="center"></el-table-column>
+        <el-table-column prop="oneformName" label="表单名称" align="left"></el-table-column>
+        <el-table-column prop="oneformDesc" label="表单描述" align="left"></el-table-column>
+        <el-table-column prop="oneformUrl" label="表单加载地址" align="left"></el-table-column>
+        <el-table-column prop="sortNo" label="排序" align="center" width="120"></el-table-column>
+        <el-table-column prop="isActive" width="120" label="是否启用" align="center">
+            <template slot-scope="scope">
+                <span class="m-switch m-switch--sm m-switch--icon">
+                    <label>
+                        <input type="checkbox" :checked="(scope.row.isActive == 1)?true:false" @change="changeIsActive(scope.row, $event)">
+                        <span></span>
+                    </label>
+                </span>
+            </template>
+        </el-table-column>
+        <el-table-column prop="" label="操作" width="120" align="center">
+            <template slot-scope="scope">
+                <el-button type="primary" icon="el-icon-edit" circle @click="editRow(scope.row,1)"></el-button>
+                <el-button type="danger" icon="el-icon-delete" circle @click="deleteData(scope.row)"></el-button>
+            </template>
+        </el-table-column>
+    </el-table>
+
+    <!-- 分页 -->
+    <el-pagination
+            background
+            align="right"
+            :pager-count="5"
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :page-sizes="[10, 20, 30, 50]"
+            :page-size="pageSize"
+            layout="total,sizes, prev, pager, next, jumper"
+            :total="tableData.total">
+    </el-pagination>
+
+    <!-- 新增/编辑页面 -->
+    <el-dialog :title="dialogTitie" :visible.sync="dialogEditTable" class="edit-row" @closed="clearFormData">
+        <el-form :inline="true" :model="selRowData" :rules="rules" ref="selRowData" :style="{height: '400px', overflow:'auto'}">
+
+            <input type="hidden" :value="selRowData.oneformId">
+
+            <el-row>
+                <el-col :span="24">
+                    <el-form-item label="表单名称：" prop="oneformName" class="ops-memo">
+                        <el-input type="textarea" v-model="selRowData.oneformName" rows="1"></el-input>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+
+            <el-row>
+                <el-col :span="24">
+                    <el-form-item label="表单描述：" prop="oneformDesc" class="ops-memo">
+                        <el-input type="textarea" v-model="selRowData.oneformDesc" rows="5"></el-input>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+
+            <el-row>
+                <el-col :span="24">
+                    <el-form-item label="表单加载地址：" prop="oneformUrl" class="ops-memo">
+                        <el-input type="textarea" v-model="selRowData.oneformUrl" rows="5"></el-input>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+
+            <el-row>
+                <el-col :span="12">
+                    <el-form-item label="是否有效：" prop="isActive">
+                        <el-select v-model="selRowData.isActive">
+                            <el-option value="0" label="无效"></el-option>
+                            <el-option value="1" label="有效"></el-option>
+                        </el-select>
+                    </el-form-item>
+                </el-col>
+
+                <el-col :span="12">
+                    <el-form-item label="排序：" prop="sortNo">
+                        <el-input type="sortNo" v-model.number="selRowData.sortNo" autocomplete="off"></el-input>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+
+        </el-form>
+
+        <div slot="footer" class="dialog-footer">
+            <button class="btn btn-secondary" @click="dialogEditTable=false">取消</button>
+            <button class="btn btn-primary"  @click="saveEdit('selRowData', selRowData)">保存</button>
+        </div>
+    </el-dialog>
+</div>
+
+<!-- 引入js文件 -->
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js" th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js" th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js" th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js" th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>
+<!-- 业务js -->
+<script type="text/javascript" src="../../../static/admin/oneform/js/oneformIndex.js" th:src="@{/admin/oneform/js/oneformIndex.js}"></script>
+</body>
+</html>

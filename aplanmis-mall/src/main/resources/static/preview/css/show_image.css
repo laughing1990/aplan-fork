@@ -1,0 +1,16 @@
+.viewer-download {
+    background-position:8px 8px;
+    background-image: url(../img/download.png);
+    background-repeat: no-repeat;
+    background-size:47%;
+    color: transparent;
+    display: block;
+    font-size: 0;
+    height: 20px;
+    line-height: 0;
+    width: 20px;
+}
+
+.viewer-download::before {
+
+}

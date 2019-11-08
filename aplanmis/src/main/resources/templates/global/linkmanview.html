@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>全局人员库</title>
+  <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.css"
+    th:href="@{/agcloud/framework/js-lib/element-2/element.css}">
+
+  <link rel="stylesheet" href="../../static/global/common/css/reset.css" th:href="@{/global/common/css/reset.css}">
+  <link rel="stylesheet" href="../../static/global/common/css/base.css" th:href="@{/global/common/css/base.css}">
+  <link rel="stylesheet" href="../../static/global/css/linkmanview.css" th:href="@{/global/css/linkmanview.css}">
+  <script>
+    var ctx = "[[@{/}]]";
+    // var ctx = "http://192.168.30.138:8083/aplanmis-front/"
+  </script>
+</head>
+
+<body>
+  <div class="index-wrapper" id="linkManView" v-cloak v-loading.fullscreen.lock="loading">
+    <h2 class="title">全局联系人库</h2>
+    <div class="tool-bar clearfix">
+      <div class="bar-left fl">
+        <el-button type="primary" size="medium" @click="addLinkMan">新增</el-button>
+        <el-button type="danger" size="medium" @click="batchDel">删除</el-button>
+        <el-button type="success" size="medium" @click="fetchLinkmanList">刷新</el-button>
+      </div>
+      <div class="bar-right fr">
+        <el-input clas="inline-block w-320" placeholder="请输入姓名,身份证号" v-model="linkmanSearchData.keyword"  prefix-icon="el-icon-search"
+          @keyup.enter.native="linkManListSearch"></el-input>
+        <el-button class="ml20" type="primary" size="medium" @click="linkManListSearch">查询</el-button>
+        <el-button size="medium" @click="linkmanListReset">清空</el-button>
+      </div>
+    </div>
+    <el-table :data="linkmanList" class="scrollable mt20" style="width: 100%;"
+      :header-cell-style="{background:'#f7f8fa'}" @selection-change="handleSelectionChange">
+      <el-table-column type="selection" width="55">
+      </el-table-column>
+      <el-table-column prop="linkmanName" label="联系人姓名">
+      </el-table-column>
+      <el-table-column prop="linkmanCertNo" label="身份证号">
+      </el-table-column>
+      <el-table-column prop="linkmanMobilePhone" label="手机号码">
+      </el-table-column>
+      <el-table-column prop="linkmanMail" label="电子邮箱">
+      </el-table-column>
+      <el-table-column prop="linkmanAddr" label="联系人住址">
+      </el-table-column>
+      <el-table-column prop="loginName" label="登录名">
+      </el-table-column>
+      <el-table-column label="操作">
+        <template scope="scope">
+          <span class="inline-block table-btn" @click="generatePassword(scope.row)"><i class="el-icon-lock"></i></span>
+          <span class="inline-block table-btn" @click="editLinkMan(scope.row)"> <i
+              class="el-icon-edit-outline"></i></span>
+          <span class="inline-block table-btn btn-hv-danger" @click="delLinkMan(scope.row)"> <i
+              class="el-icon-delete"></i></span>
+        </template>
+      </el-table-column>
+    </el-table>
+    <el-pagination class="mt20 mb20 mr20" background align="right" @size-change="handleSizeChange"
+      @current-change="handleCurrentChange" :page-sizes="[10, 20, 30, 50]" :page-size="linkmanSearchData.pageSize"
+      :current-page="linkmanSearchData.pageNum" layout="total,sizes, prev, pager, next, jumper" :total="linkmanTotal"
+      v-show="linkmanTotal>10">
+    </el-pagination>
+
+    <!-- 新增，编辑联系人 -->
+    <el-dialog :title="isEditLinkManFlag == 1? '编辑联系人':'新增联系人'" :visible.sync="linkManDialogState" width="800px"
+      @closed="dialogClose">
+      <el-form :model="manForm" :rules="manRules" ref="manForm" :inline="true" label-width="124px" class="linkman-form">
+        <div class="divider">
+          <span>基本信息</span>
+          <el-divider></el-divider>
+        </div>
+        <el-form-item label="联系人名称" prop="linkmanName">
+          <el-input placeholder="请输入联系人名称" v-model="manForm.linkmanName"></el-input>
+        </el-form-item>
+        <el-form-item label="联系人类型" prop="linkmanType">
+          <el-select placeholder="请选择" v-model="manForm.linkmanType" @change="changeLinkmanType">
+            <el-option label="个人联系人" value="c"></el-option>
+            <el-option label="企业联系人" value="u"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item class="fill-item" label="单位名称" v-if="manForm.linkmanType == 'u'">
+          <el-input v-model="manForm.applicant">
+            <el-button slot="append" icon="el-icon-search" @click.stop="fetchUnitList"></el-button>
+          </el-input>
+          <div class="select-drop-box" v-show="isShowSelectDropBox">
+            <ul>
+              <li v-for="item in unitList" :key="item.unitInfoId" @click.stop="selectDropItem(item)">{{item.applicant}}</li>
+            </ul>
+          </div>
+        </el-form-item>
+
+        <el-form-item label="身份证号" prop="linkmanCertNo">
+          <el-input placeholder="请输入身份证号" v-model="manForm.linkmanCertNo"></el-input>
+        </el-form-item>
+        <el-form-item label="手机号码" prop="linkmanMobilePhone">
+          <el-input placeholder="请输入手机号码" v-model="manForm.linkmanMobilePhone"></el-input>
+        </el-form-item>
+        <el-form-item label="办公电话">
+          <el-input placeholder="请输入办公电话" v-model="manForm.linkmanOfficePhon"></el-input>
+        </el-form-item>
+        <el-form-item label="电子邮件">
+          <el-input placeholder="请输入电子邮件" v-model="manForm.linkmanMail"></el-input>
+        </el-form-item>
+        <el-form-item label="传真">
+          <el-input placeholder="请输入传真" v-model="manForm.linkmanFax"></el-input>
+        </el-form-item>
+        <el-form-item label="登录名">
+          <el-input placeholder="请输入登录名" :disabled="true" v-model="curEditRow.loginName"></el-input>
+        </el-form-item>
+        <el-form-item class="fill-item" label="联系人住址" prop="linkmanAddr">
+          <el-input placeholder="请输入联系人住址" v-model="manForm.linkmanAddr"></el-input>
+        </el-form-item>
+        <el-form-item class="fill-item" label="备注">
+          <el-input type="textarea" placeholder="请输入备注" v-model="manForm.linkmanMemo"></el-input>
+        </el-form-item>
+      </el-form>
+      <div class="divider">
+        <span>证照信息</span>
+        <el-divider></el-divider>
+      </div>
+      <div class="upload-card">
+        <div class="upload-btn">
+          <el-upload class="enclosure-upload-ref inlineblock-midd" ref="enclosureUploadRef" action="" :multiple="true"
+            :on-change="enclosureFileSelectChange" :on-remove="enclosureFileSelectRemove" :auto-upload="false">
+            <el-button slot="trigger" size="medium" type="normal">上传文件</el-button>
+          </el-upload>
+          <span class="tip">上传的附件不可超过10MB，禁止上传以下的附件类型：.exe,.sh,.bat,.com,.dll</span>
+        </div>
+        <el-table :data="curEditRow.fileList" class="scrollable mt20" style="width: 100%;"
+          @selection-change="handleFileSelectionChange">
+          <!-- <el-table-column type="selection" width="55">
+          </el-table-column> -->
+          <el-table-column label="序号" width="55">
+            <template scope="scope">
+              <span>{{scope.$index + 1}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="文件名">
+            <template scope="scope">
+              <a href="javascript:;" @click="filePreview(scope.row)">{{scope.row.fileName}}</a>
+            </template>
+          </el-table-column>
+          <el-table-column label="操作" width="100">
+            <template scope="scope">
+              <span class="inline-block table-btn" @click="downFile(scope.row)"><i
+                  class="el-icon-download"></i></span>
+              <span class="inline-block table-btn btn-hv-danger" @click="deleteContractOne(scope.row)"><i
+                  class="el-icon-delete"></i></span>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="linkManDialogState = false">取 消</el-button>
+        <el-button type="primary" @click="saveLinkManInfo">保 存</el-button>
+      </span>
+    </el-dialog>
+
+  </div>
+
+  <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js"
+    th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>
+  <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js"
+    th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
+  <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js"
+    th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
+  <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js"
+    th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>
+
+  <script src="../../static/global/js/mixins.js" th:src="@{/global/js/mixins.js}"
+    type="text/javascript"></script>
+  <script src="../../static/global/js/linkmanview.js" th:src="@{/global/js/linkmanview.js}"
+    type="text/javascript"></script>
+</body>
+
+</html>

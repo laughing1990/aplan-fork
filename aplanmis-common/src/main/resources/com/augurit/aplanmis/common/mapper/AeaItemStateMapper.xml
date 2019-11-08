@@ -1,0 +1,741 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by Administrator    2019-07-04 17:14:00 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaItemStateMapper">
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns">
+        ${alias}.ITEM_STATE_ID  itemStateId,    ${alias}.ITEM_ID  itemId,           ${alias}.ITEM_VER_ID  itemVerId,
+        ${alias}.STATE_VER_ID  stateVerId,      ${alias}.STATE_NAME  stateName,     ${alias}.STATE_EL  stateEl,
+        ${alias}.SORT_NO  sortNo,               ${alias}.STATE_MEMO  stateMemo,     ${alias}.IS_ACTIVE  isActive,
+        ${alias}.CREATER  creater,              ${alias}.CREATE_TIME  createTime,   ${alias}.MODIFIER  modifier,
+        ${alias}.MODIFY_TIME  modifyTime,       ${alias}.USE_EL  useEl,             ${alias}.PARENT_STATE_ID  parentStateId,
+        ${alias}.STATE_SEQ  stateSeq,           ${alias}.IS_QUESTION  isQuestion,   ${alias}.ANSWER_TYPE  answerType,
+        ${alias}.MUST_ANSWER  mustAnswer,       ${alias}.IS_DELETED  isDeleted,     ${alias}.IS_PROC_START_COND  isProcStartCond,
+        ${alias}.ROOT_ORG_ID  rootOrgId
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaItemStateById" resultType="AeaItemState">
+        select
+        <include refid="allColumns">
+            <property name="alias" value="ais"/>
+        </include>
+        from AEA_ITEM_STATE ais
+        where ais.ITEM_STATE_ID = #{id} AND ais.IS_DELETED = '0'
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaItemState" resultType="AeaItemState">
+        select
+        <include refid="allColumns">
+            <property name="alias" value="ais"/>
+        </include>
+        from AEA_ITEM_STATE ais
+        <where>
+            <if test="itemStateId != null">
+                AND ITEM_STATE_ID = #{itemStateId}
+            </if>
+            <if test="itemId != null">
+                AND ITEM_ID = #{itemId}
+            </if>
+            <if test="itemVerId != null">
+                AND ITEM_VER_ID = #{itemVerId}
+            </if>
+            <if test="stateVerId != null">
+                AND STATE_VER_ID = #{stateVerId}
+            </if>
+            <if test="stateName != null">
+                AND STATE_NAME = #{stateName}
+            </if>
+            <if test="stateEl != null">
+                AND STATE_EL = #{stateEl}
+            </if>
+            <if test="sortNo != null">
+                AND SORT_NO = #{sortNo}
+            </if>
+            <if test="stateMemo != null">
+                AND STATE_MEMO = #{stateMemo}
+            </if>
+            <if test="isActive != null">
+                AND IS_ACTIVE = #{isActive}
+            </if>
+            <if test="useEl != null">
+                AND USE_EL = #{useEl}
+            </if>
+            <if test="parentStateId != null">
+                AND PARENT_STATE_ID = #{parentStateId}
+            </if>
+            <if test="stateSeq != null">
+                AND STATE_SEQ = #{stateSeq}
+            </if>
+            <if test="isQuestion != null">
+                AND IS_QUESTION = #{isQuestion}
+            </if>
+            <if test="answerType != null">
+                AND ANSWER_TYPE = #{answerType}
+            </if>
+            <if test="mustAnswer != null">
+                AND MUST_ANSWER = #{mustAnswer}
+            </if>
+            <if test="isProcStartCond != null">
+                AND IS_PROC_START_COND = #{isProcStartCond}
+            </if>
+            <if test="rootOrgId != null">
+                AND ROOT_ORG_ID = #{rootOrgId}
+            </if>
+            AND IS_DELETED = '0'
+        </where>
+    </select>
+
+    <!--4 根据条件查询实体list,返回分页对象 -->
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaItemState" parameterType="AeaItemState">
+        insert into AEA_ITEM_STATE (ITEM_STATE_ID, ITEM_ID, ITEM_VER_ID, STATE_VER_ID, STATE_NAME, STATE_EL, SORT_NO,
+                                    STATE_MEMO, IS_ACTIVE, CREATER, CREATE_TIME, MODIFIER, MODIFY_TIME, USE_EL,
+                                    PARENT_STATE_ID, STATE_SEQ, IS_QUESTION, ANSWER_TYPE, MUST_ANSWER, IS_DELETED,
+                                    IS_PROC_START_COND,ROOT_ORG_ID)
+        values (#{itemStateId}, #{itemId}, #{itemVerId}, #{stateVerId}, #{stateName}, #{stateEl}, #{sortNo},
+                #{stateMemo}, #{isActive}, #{creater}, #{createTime}, #{modifier}, #{modifyTime}, #{useEl},
+                #{parentStateId}, #{stateSeq}, #{isQuestion}, #{answerType}, #{mustAnswer}, #{isDeleted},
+                #{isProcStartCond},#{rootOrgId})
+    </insert>
+    <!--6 修改实体对象 -->
+    <update id="updateAeaItemState" parameterType="AeaItemState">
+        update AEA_ITEM_STATE
+        <set>
+            <if test="itemStateId != null">
+                ITEM_STATE_ID = #{itemStateId},
+            </if>
+            <if test="itemId != null">
+                ITEM_ID = #{itemId},
+            </if>
+            <if test="itemVerId != null">
+                ITEM_VER_ID = #{itemVerId},
+            </if>
+            <if test="stateVerId != null">
+                STATE_VER_ID = #{stateVerId},
+            </if>
+            <if test="stateName != null">
+                STATE_NAME = #{stateName},
+            </if>
+            <if test="stateEl != null">
+                STATE_EL = #{stateEl},
+            </if>
+            <if test="sortNo != null">
+                SORT_NO = #{sortNo},
+            </if>
+            <if test="stateMemo != null">
+                STATE_MEMO = #{stateMemo},
+            </if>
+            <if test="isActive != null">
+                IS_ACTIVE = #{isActive},
+            </if>
+            <if test="creater != null">
+                CREATER = #{creater},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime},
+            </if>
+            <if test="modifier != null">
+                MODIFIER = #{modifier},
+            </if>
+            <if test="modifyTime != null">
+                MODIFY_TIME = #{modifyTime},
+            </if>
+            <if test="useEl != null">
+                USE_EL = #{useEl},
+            </if>
+            <if test="parentStateId != null">
+                PARENT_STATE_ID = #{parentStateId},
+            </if>
+            <if test="stateSeq != null">
+                STATE_SEQ = #{stateSeq},
+            </if>
+            <if test="isQuestion != null">
+                IS_QUESTION = #{isQuestion},
+            </if>
+            <if test="answerType != null">
+                ANSWER_TYPE = #{answerType},
+            </if>
+            <if test="mustAnswer != null">
+                MUST_ANSWER = #{mustAnswer},
+            </if>
+            <if test="isDeleted != null">
+                IS_DELETED = #{isDeleted},
+            </if>
+            <if test="isProcStartCond != null">
+                IS_PROC_START_COND = #{isProcStartCond},
+            </if>
+            <if test="rootOrgId != null">
+                ROOT_ORG_ID = #{rootOrgId},
+            </if>
+        </set>
+        where ITEM_STATE_ID = #{itemStateId}
+    </update>
+    <!--7 删除实体对象,根据主键ID -->
+    <update id="deleteAeaItemState">
+        update AEA_ITEM_STATE set IS_DELETED = '1' where ITEM_STATE_ID = #{id}
+    </update>
+    <!--根据事项版本ID获取情形列表-->
+    <select id="listAeaItemStateByItemVerId" resultType="AeaItemState">
+        select
+        <include refid="allColumns">
+            <property name="alias" value="ais"/>
+        </include>
+        from AEA_ITEM_STATE ais where ais.ITEM_VER_ID=#{itemVerId} AND IS_DELETED = '0'
+    </select>
+    <!--根据事项版本ID获取root情形列表-->
+    <select id="listRootAeaItemStateByItemVerId" resultType="AeaItemState">
+        select
+        <include refid="allColumns">
+            <property name="alias" value="ais"/>
+        </include>
+        from AEA_ITEM_STATE ais where ais.PARENT_STATE_ID is null and ais.ITEM_VER_ID=#{itemVerId} AND IS_DELETED = '0'
+        <if test="stateVerId!=null and stateVerId!=''">and ais.STATE_VER_ID=#{stateVerId}</if>
+    </select>
+    <!--    根据父情形ID查找子情形列表-->
+    <select id="listAeaItemStateByParentItemStateId" resultType="AeaItemState">
+        select
+        <include refid="allColumns">
+            <property name="alias" value="ais"/>
+        </include>
+        from AEA_ITEM_STATE ais where ais.PARENT_STATE_ID=#{itemStateId} AND IS_DELETED = '0'
+    </select>
+    <!--查询情形答案-->
+    <select id="listAnswerStateByQuestionStateId" resultType="AeaItemState">
+        select
+        <include refid="allColumns">
+            <property name="alias" value="ais"/>
+        </include>
+        from AEA_ITEM_STATE ais where ais.PARENT_STATE_ID=#{itemStateId} and ais.IS_QUESTION='0' AND IS_DELETED = '0'
+    </select>
+    <!--根据情形版本ID查询所有情形-->
+    <select id="listAeaItemStateByStateVerId" resultType="AeaItemState">
+        select
+        <include refid="allColumns">
+            <property name="alias" value="ais"/>
+        </include>
+        from AEA_ITEM_STATE ais where ais.STATE_VER_ID=#{stateVerId} AND IS_DELETED = '0'
+    </select>
+    <select id="listAeaItemStateByIds" resultType="AeaItemState">
+        select
+        <include refid="allColumns">
+            <property name="alias" value="ais"/>
+        </include>
+        from AEA_ITEM_STATE ais
+        where ais.ITEM_STATE_ID in
+        <foreach collection="itemStateIds" item="id" open="(" close=")" separator=",">#{id}</foreach>
+    </select>
+
+    <!--8 删除实体对象列表,根据主键ID列表 -->
+
+    <!--TODO 小糊涂-->
+    <!--    根据父情形ID查找子情形及答案列表-->
+    <select id="listItemStateByParentItemStateId" resultMap="AeaItemStateMap">
+        select ais.* from AEA_ITEM_STATE ais where IS_DELETED = '0'
+        <if test="itemVerId!=null and itemVerId!='' ">and ais.ITEM_VER_ID=#{itemVerId}</if>
+        <if test="stateVerId!=null and stateVerId!=''">and ais.STATE_VER_ID=#{stateVerId}</if>
+        <choose>
+            <when test="parentStateId==null or parentStateId=='ROOT' or parentStateId=='root'">
+                and ais.PARENT_STATE_ID is null
+            </when>
+            <otherwise>
+                and ais.PARENT_STATE_ID=#{parentStateId}
+            </otherwise>
+        </choose>
+    </select>
+
+    <!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaItemState" id="AeaItemStateMap">
+        <id property="itemStateId" column="ITEM_STATE_ID"/>
+        <result property="itemId" column="ITEM_ID"/>
+        <result property="itemVerId" column="ITEM_VER_ID"/>
+        <result property="stateVerId" column="STATE_VER_ID"/>
+        <result property="stateName" column="STATE_NAME"/>
+        <result property="stateEl" column="STATE_EL"/>
+        <result property="sortNo" column="SORT_NO"/>
+        <result property="stateMemo" column="STATE_MEMO"/>
+        <result property="isActive" column="IS_ACTIVE"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="modifier" column="MODIFIER"/>
+        <result property="modifyTime" column="MODIFY_TIME"/>
+        <result property="useEl" column="USE_EL"/>
+        <result property="parentStateId" column="PARENT_STATE_ID"/>
+        <result property="stateSeq" column="STATE_SEQ"/>
+        <result property="isQuestion" column="IS_QUESTION"/>
+        <result property="answerType" column="ANSWER_TYPE"/>
+        <result property="mustAnswer" column="MUST_ANSWER"/>
+        <result property="isDeleted" column="IS_DELETED"/>
+        <result property="isProcStartCond" column="IS_PROC_START_COND"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+        <collection property="answerStates" column="ITEM_STATE_ID" select="listAeaItemStateByParentItemStateId"
+                    ofType="AeaParState" javaType="arraylist"></collection>
+    </resultMap>
+
+
+    <select id="listAeaItemStateBySyncKpState" resultType="AeaItemState">
+        select
+        <include refid="allColumns">
+            <property name="alias" value="ais"/>
+        </include>
+        from AEA_ITEM_STATE ais
+        <where>
+            <if test="itemStateId != null and itemStateId!='' ">
+                and ITEM_STATE_ID = #{itemStateId}
+            </if>
+            <if test="itemId != null and itemId!='' ">
+                and ITEM_ID = #{itemId}
+            </if>
+            <if test="stateName != null and stateName!='' ">
+                and STATE_NAME = #{stateName}
+            </if>
+            <if test="stateEl != null and stateEl!='' ">
+                and STATE_EL = #{stateEl}
+            </if>
+            <if test="sortNo != null">
+                and SORT_NO = #{sortNo}
+            </if>
+            <if test="stateMemo != null and stateMemo!='' ">
+                and STATE_MEMO = #{stateMemo}
+            </if>
+            <if test="isActive != null and isActive!='' ">
+                and IS_ACTIVE = #{isActive}
+            </if>
+            <if test="creater != null and creater!='' ">
+                and CREATER = #{creater}
+            </if>
+            <if test="createTime != null">
+                and CREATE_TIME = #{createTime}
+            </if>
+            <if test="modifier != null and modifier!='' ">
+                and MODIFIER = #{modifier}
+            </if>
+            <if test="modifyTime != null">
+                and MODIFY_TIME = #{modifyTime}
+            </if>
+            <if test="useEl != null">
+                AND USE_EL = #{useEl}
+            </if>
+            <if test="parentStateId != null and parentStateId != ''">
+                AND PARENT_STATE_ID = #{parentStateId}
+            </if>
+            <if test="parentStateId == ''">
+                AND PARENT_STATE_ID IS NULL
+            </if>
+            <if test="stateSeq != null">
+                AND STATE_SEQ = #{stateSeq}
+            </if>
+            <if test="isQuestion != null">
+                AND IS_QUESTION = #{isQuestion}
+            </if>
+            <if test="answerType != null">
+                AND ANSWER_TYPE = #{answerType}
+            </if>
+            <if test="mustAnswer != null">
+                AND MUST_ANSWER = #{mustAnswer}
+            </if>
+            <if test="isDeleted != null">
+                AND IS_DELETED = #{isDeleted}
+            </if>
+            <if test="isProcStartCond != null">
+                AND IS_PROC_START_COND = #{isProcStartCond}
+            </if>
+            <if test="keyword!=null and keyword!='' ">
+                and (
+                STATE_NAME like concat('%',concat(#{keyword},'%')) or
+                STATE_EL like concat('%',concat(#{keyword},'%')) or
+                STATE_MEMO like concat('%',concat(#{keyword},'%'))
+                )
+            </if>
+        </where>
+        order by MODIFY_TIME desc,CREATE_TIME desc,SORT_NO desc
+    </select>
+
+    <select id="getMaxSortNo" resultType="java.lang.Long">
+        select max(SORT_NO) from AEA_ITEM_STATE
+    </select>
+
+    <select id="listAeaItemStateWithStateVer" resultType="AeaItemState">
+        select
+        <include refid="allColumns">
+            <property name="alias" value="itemState"/>
+        </include>
+        from AEA_ITEM_STATE itemState
+        left join AEA_ITEM_STATE_VER stateVer
+        on itemState.STATE_VER_ID = stateVer.ITEM_STATE_VER_ID
+        and itemState.ITEM_VER_ID = stateVer.ITEM_VER_ID
+        and itemState.ROOT_ORG_ID = stateVer.ROOT_ORG_ID
+        <where>
+            and itemState.ROOT_ORG_ID = #{rootOrgId}
+            and itemState.IS_DELETED = '0'
+            <if test="itemStateId != null and itemStateId!='' ">
+                and itemState.ITEM_STATE_ID = #{itemStateId}
+            </if>
+            <if test="verStatus">
+                and stateVer.VER_STATUS=#{verStatus}
+            </if>
+            <if test="itemId != null and itemId!='' ">
+                and itemState.ITEM_ID = #{itemId}
+            </if>
+            <if test="itemVerId != null">
+                and itemState.ITEM_VER_ID = #{itemVerId}
+            </if>
+            <if test="stateVerId != null">
+                and itemState.STATE_VER_ID = #{stateVerId}
+            </if>
+            <if test="stateName != null and stateName!='' ">
+                and itemState.STATE_NAME = #{stateName}
+            </if>
+            <if test="stateEl != null and stateEl!='' ">
+                and itemState.STATE_EL = #{stateEl}
+            </if>
+            <if test="sortNo != null">
+                and itemState.SORT_NO = #{sortNo}
+            </if>
+            <if test="stateMemo != null and stateMemo!='' ">
+                and itemState.STATE_MEMO = #{stateMemo}
+            </if>
+            <if test="isActive != null and isActive!='' ">
+                and itemState.IS_ACTIVE = #{isActive}
+            </if>
+            <if test="creater != null and creater!='' ">
+                and itemState.CREATER = #{creater}
+            </if>
+            <if test="createTime != null">
+                and itemState.CREATE_TIME = #{createTime}
+            </if>
+            <if test="modifier != null and modifier!='' ">
+                and itemState.MODIFIER = #{modifier}
+            </if>
+            <if test="modifyTime != null">
+                and itemState.MODIFY_TIME = #{modifyTime}
+            </if>
+            <if test="useEl != null">
+                AND itemState.USE_EL = #{useEl}
+            </if>
+            <if test="parentStateId != null and parentStateId != ''">
+                AND itemState.PARENT_STATE_ID = #{parentStateId}
+            </if>
+            <if test="parentStateId == '' ">
+                AND itemState.PARENT_STATE_ID IS NULL
+            </if>
+            <if test="stateSeq != null">
+                AND itemState.STATE_SEQ = #{stateSeq}
+            </if>
+            <if test="isQuestion != null">
+                AND itemState.IS_QUESTION = #{isQuestion}
+            </if>
+            <if test="answerType != null">
+                AND itemState.ANSWER_TYPE = #{answerType}
+            </if>
+            <if test="mustAnswer != null">
+                AND itemState.MUST_ANSWER = #{mustAnswer}
+            </if>
+            <if test="isProcStartCond != null">
+                AND itemState.IS_PROC_START_COND = #{isProcStartCond}
+            </if>
+            <if test="keyword!=null and keyword!='' ">
+                and (
+                itemState.STATE_NAME like concat('%',concat(#{keyword},'%')) or
+                itemState.STATE_EL like concat('%',concat(#{keyword},'%')) or
+                itemState.STATE_MEMO like concat('%',concat(#{keyword},'%'))
+                )
+            </if>
+        </where>
+        ORDER BY itemState.SORT_NO asc
+    </select>
+
+    <delete id="batchDeleteAeaItemState">
+        update AEA_ITEM_STATE set IS_DELETED = '1' where ITEM_STATE_ID in
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+
+    <update id="changIsActiveState" parameterType="java.lang.String">
+        UPDATE AEA_ITEM_STATE
+        SET IS_ACTIVE = CASE IS_ACTIVE WHEN '0' THEN '1' ELSE '0' END
+        where ITEM_STATE_ID = #{id}
+    </update>
+
+    <delete id="thoroughDeleteAeaItemState">
+        update AEA_ITEM_STATE set IS_DELETED = '1' where ITEM_STATE_ID = #{id}
+    </delete>
+
+    <delete id="thoroughDeleteAeaItemStateByItemId">
+        delete from AEA_ITEM_STATE where ITEM_ID = #{itemId}
+    </delete>
+
+    <select id="listChildAeaItemStateByParentStateId" resultType="AeaItemState">
+        select
+        <include refid="allColumns">
+            <property name="alias" value="ais"/>
+        </include>
+        from AEA_ITEM_STATE ais
+        <where>
+            and ROOT_ORG_ID = #{rootOrgId}
+            and ITEM_VER_ID = #{itemVerId}
+            and STATE_VER_ID = #{stateVerId}
+            <if test="parentStateId != null and parentStateId != ''">
+                and PARENT_STATE_ID = #{parentStateId}
+            </if>
+            <if test="parentStateId == null or parentStateId == ''">
+                and (PARENT_STATE_ID is null or parent_state_id='')
+            </if>
+            and IS_DELETED = '0'
+        </where>
+    </select>
+
+    <select id="getAeaItemStateByItemVerId" resultType="AeaItemState">
+        select
+        ITEM_STATE_ID  itemStateId,
+        ITEM_ID  itemId,
+        ITEM_VER_ID itemVerId,
+        STATE_VER_ID stateVerId,
+        STATE_NAME  stateName,
+        STATE_EL  stateEl,
+        SORT_NO  sortNo,
+        STATE_MEMO  stateMemo,
+        IS_ACTIVE  isActive,
+        CREATER  creater,
+        CREATE_TIME  createTime,
+        MODIFIER  modifier,
+        MODIFY_TIME  modifyTime,
+        USE_EL  useEl,
+        PARENT_STATE_ID  parentStateId,
+        STATE_SEQ  stateSeq,
+        IS_QUESTION  isQuestion,
+        ANSWER_TYPE  answerType,
+        MUST_ANSWER  mustAnswer,
+        IS_DELETED  isDeleted,
+        IS_PROC_START_COND  isProcStartCond
+        from AEA_ITEM_STATE
+        where ITEM_VER_ID = #{itemVerId}
+        ORDER BY SORT_NO asc
+    </select>
+
+    <select id="listAeaItemStateForIsPublish" resultType="AeaItemState">
+        select
+        itemState.ITEM_STATE_ID itemStateId,
+        itemState.ITEM_ID itemId,
+        itemState.ITEM_VER_ID itemVerId,
+        itemState.STATE_VER_ID stateVerId,
+        itemState.STATE_NAME stateName,
+        itemState.STATE_EL stateEl,
+        itemState.SORT_NO sortNo,
+        itemState.STATE_MEMO stateMemo,
+        itemState.IS_ACTIVE isActive,
+        itemState.CREATER creater,
+        itemState.CREATE_TIME createTime,
+        itemState.MODIFIER modifier,
+        itemState.MODIFY_TIME modifyTime,
+        itemState.USE_EL useEl,
+        itemState.PARENT_STATE_ID parentStateId,
+        itemState.STATE_SEQ stateSeq,
+        itemState.IS_QUESTION isQuestion,
+        itemState.ANSWER_TYPE answerType,
+        itemState.MUST_ANSWER mustAnswer,
+        itemState.IS_DELETED isDeleted,
+        itemState.IS_PROC_START_COND isProcStartCond
+        from AEA_ITEM_STATE itemState
+        left join AEA_ITEM_STATE_VER stateVer
+        ON itemState.STATE_VER_ID=stateVer.ITEM_STATE_VER_ID AND itemState.ITEM_VER_ID=stateVer.ITEM_VER_ID
+        <where>
+            and itemState.IS_DELETED = '0'
+            and stateVer.IS_DELETED = '0'
+            and stateVer.VER_STATUS in ('1','2')
+            <if test="itemStateId != null and itemStateId!='' ">
+                and itemState.ITEM_STATE_ID = #{itemStateId}
+            </if>
+            <if test="itemId != null and itemId!='' ">
+                and itemState.ITEM_ID = #{itemId}
+            </if>
+            <if test="itemVerId != null">
+                and itemState.ITEM_VER_ID = #{itemVerId}
+            </if>
+            <if test="stateVerId != null">
+                and itemState.STATE_VER_ID = #{stateVerId}
+            </if>
+            <if test="stateName != null and stateName!='' ">
+                and itemState.STATE_NAME = #{stateName}
+            </if>
+            <if test="stateEl != null and stateEl!='' ">
+                and itemState.STATE_EL = #{stateEl}
+            </if>
+            <if test="sortNo != null">
+                and itemState.SORT_NO = #{sortNo}
+            </if>
+            <if test="stateMemo != null and stateMemo!='' ">
+                and itemState.STATE_MEMO = #{stateMemo}
+            </if>
+            <if test="isActive != null and isActive!='' ">
+                and itemState.IS_ACTIVE = #{isActive}
+            </if>
+            <if test="creater != null and creater!='' ">
+                and itemState.CREATER = #{creater}
+            </if>
+            <if test="createTime != null">
+                and itemState.CREATE_TIME = #{createTime}
+            </if>
+            <if test="modifier != null and modifier!='' ">
+                and itemState.MODIFIER = #{modifier}
+            </if>
+            <if test="modifyTime != null">
+                and itemState.MODIFY_TIME = #{modifyTime}
+            </if>
+            <if test="useEl != null">
+                AND itemState.USE_EL = #{useEl}
+            </if>
+            <if test="parentStateId != null and parentStateId != ''">
+                AND itemState.PARENT_STATE_ID = #{parentStateId}
+            </if>
+            <if test="parentStateId == ''">
+                AND itemState.PARENT_STATE_ID IS NULL
+            </if>
+            <if test="stateSeq != null">
+                AND itemState.STATE_SEQ = #{stateSeq}
+            </if>
+            <if test="isQuestion != null">
+                AND itemState.IS_QUESTION = #{isQuestion}
+            </if>
+            <if test="answerType != null">
+                AND itemState.ANSWER_TYPE = #{answerType}
+            </if>
+            <if test="mustAnswer != null">
+                AND itemState.MUST_ANSWER = #{mustAnswer}
+            </if>
+            <if test="isProcStartCond != null">
+                AND itemState.IS_PROC_START_COND = #{isProcStartCond}
+            </if>
+            <if test="keyword!=null and keyword!='' ">
+                and (
+                itemState.STATE_NAME like concat('%',concat(#{keyword},'%')) or
+                itemState.STATE_EL like concat('%',concat(#{keyword},'%')) or
+                itemState.STATE_MEMO like concat('%',concat(#{keyword},'%'))
+                )
+            </if>
+        </where>
+        ORDER BY SORT_NO asc
+    </select>
+
+    <delete id="batchDelAeaItemStateVerState">
+        update AEA_ITEM_STATE set IS_DELETED = '1'
+        where ITEM_VER_ID = #{itemVerId}
+          and STATE_VER_ID = #{stateVerId}
+          and ROOT_ORG_ID = #{rootOrgId}
+    </delete>
+
+    <select id="listAeaItemStateByItemId" resultType="AeaItemState">
+        select
+        <include refid="allColumns"/>
+        from AEA_ITEM_STATE
+        where ITEM_ID = #{itemId}
+        and IS_DELETED = '0'
+    </select>
+
+    <select id="listTopAeaItemStateByItemId" resultType="AeaItemState">
+        select
+        <include refid="allColumns"/>
+        from AEA_ITEM_STATE
+        where
+        ITEM_ID = #{itemId}
+        and ( PARENT_STATE_ID is null or PARENT_STATE_ID = '' or PARENT_STATE_ID='1')
+        and IS_DELETED = '0'
+    </select>
+
+    <select id="getOneByItemVerId" resultType="AeaItemState" parameterType="string">
+        select
+        <include refid="allColumns"/>
+        from AEA_ITEM_STATE where ITEM_VER_ID=#{itemVerId}
+    </select>
+
+    <select id="getPublistOneByItemVerId" resultType="AeaItemState" parameterType="string">
+
+        SELECT
+            s.ITEM_STATE_ID  itemStateId,
+            s.ITEM_ID  itemId,
+            s.ITEM_VER_ID itemVerId,
+            s.STATE_VER_ID stateVerId,
+            s.STATE_NAME  stateName,
+            s.STATE_EL  stateEl,
+            s.SORT_NO  sortNo,
+            s.STATE_MEMO  stateMemo,
+            s.IS_ACTIVE  isActive,
+            s.CREATER  creater,
+            s.CREATE_TIME  createTime,
+            s.MODIFIER  modifier,
+            s.MODIFY_TIME  modifyTime,
+            s.USE_EL  useEl,
+            s.PARENT_STATE_ID  parentStateId,
+            s.STATE_SEQ  stateSeq,
+            s.IS_QUESTION  isQuestion,
+            s.ANSWER_TYPE  answerType,
+            s.MUST_ANSWER  mustAnswer,
+            s.IS_DELETED  isDeleted,
+            s.IS_PROC_START_COND  isProcStartCond
+
+         FROM AEA_ITEM_STATE s
+        INNER JOIN AEA_ITEM_STATE_VER V
+        ON s.STATE_VER_ID=V.ITEM_STATE_VER_ID AND s.ITEM_VER_ID=V.ITEM_VER_ID
+
+
+        WHERE s.ITEM_VER_ID=#{itemVerId}
+        AND s.IS_ACTIVE='1' AND V.VER_STATUS='1' AND V.IS_DELETED='0';
+
+    </select>
+
+    <select id="listAeaItemStateByCriteria" resultType="com.augurit.aplanmis.common.dto.AeaItemStateDto"
+            parameterType="com.augurit.aplanmis.common.qo.state.AeaItemStateQo">
+        SELECT
+        <include refid="allColumns"/>
+        FROM AEA_ITEM_STATE
+        <where>
+            <if test="itemStateId != null">
+                AND ITEM_STATE_ID = #{itemStateId}
+            </if>
+            <if test="itemVerId != null">
+                AND ITEM_VER_ID = #{itemVerId}
+            </if>
+            <if test="stateVerId != null">
+                AND STATE_VER_ID = #{stateVerId}
+            </if>
+            <if test="stateName != null">
+                AND STATE_NAME LIKE #{stateName}
+            </if>
+            <if test="isActive != null">
+                AND IS_ACTIVE = #{isActive}
+            </if>
+            <if test="useEl != null">
+                AND USER_EL = #{useEl}
+            </if>
+            <if test="parentStateId != null and parentStateId != 'IS_NULL' and parentStateId != 'NOT_NULL'">
+                AND PARENT_STATE_ID = #{parentStateId}
+            </if>
+            <if test="parentStateIdNullable != null and parentStateIdNullable == 'IS_NULL'">
+                AND PARENT_STATE_ID IS NULL
+            </if>
+            <if test="parentStateIdNullable != null and parentStateIdNullable == 'NOT_NULL'">
+                AND PARENT_STATE_ID IS NOT NULL
+            </if>
+            <if test="isQuestion != null">
+                AND IS_QUESTION = #{isQuestion}
+            </if>
+            <if test="answerType != null">
+                AND ANSWER_TYPE = #{answerType}
+            </if>
+            <if test="mustAnswer != null">
+                AND MUST_ANSWER = #{mustAnswer}
+            </if>
+            <if test="isDeleted != null">
+                AND IS_DELETED = #{isDeleted}
+            </if>
+            <if test="isProcStartCond != null">
+                AND IS_PROC_START_COND = #{isProcStartCond}
+            </if>
+        </where>
+    </select>
+
+</mapper>

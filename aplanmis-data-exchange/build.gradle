@@ -1,0 +1,19 @@
+archivesBaseName = 'aplanmis-data-exchange'
+
+apply plugin: 'war'
+
+dependencies {
+    compile project(':aplanmis-common')
+    
+    compile('org.springframework.boot:spring-boot-starter-aop')
+
+    //agcloud依赖
+//    implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+//    compile('com.augurit.agcloud:jodconverter-core:4.2.2')
+
+    //others
+//    compile('commons-beanutils:commons-beanutils:1.9.3')
+
+    compile group: 'net.sourceforge.stripes', name: 'stripes', version: '1.6.0'
+
+}

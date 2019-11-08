@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>信用管理-信用详情</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!--引入样式-->
+    <link rel="stylesheet"
+          href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/metronic-5/vendors.bundle.css"
+          th:href="@{/agcloud/framework/js-lib/metronic-5/vendors.bundle.css}">
+    <link rel="stylesheet"
+          href="/framework-ui/src/main/resources/static/agcloud/framework/ui-private/default/common/css/metronic.css"
+          th:href="@{/agcloud/framework/ui-private/default/common/css/metronic.css}">
+    <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.css"
+          th:href="@{/agcloud/framework/js-lib/element-2/element.css}">
+    <link rel="stylesheet"
+          href="/framework-ui/src/main/resources/static/agcloud/framework/ui-private/default/common/css/layout.css"
+          th:href="@{/agcloud/framework/ui-private/default/common/css/layout.css}">
+    <link rel="stylesheet"
+          href="/framework-ui/src/main/resources/static/agcloud/framework/ui-private/default/blue/css/theme.css"
+          th:href="@{/agcloud/framework/ui-private/default/blue/css/theme.css}">
+    <link rel="stylesheet" href="../../../static/admin/credit/css/summaryIndex.css"
+          th:href="@{/admin/credit/css/summaryIndex.css}">
+    <script>
+        var ctx = '[[@{/}]]';
+    </script>
+</head>
+<body>
+<div id="index" v-cloak>
+    <div class="table-left float-left">
+        <p class="table-head-text">信用汇总</p>
+        <div class="table-content">
+            <div class="add-search clearfix" style="padding-bottom: 15px;">
+                <button type="button" class="btn btn-primary" @click="editRow('')">新增</button>
+                <button type="button" class="btn btn-outline-danger" @click="removeRow()">删除</button>
+                <div class="float-right search-btn" style="padding-left: 10px;">
+                    <div class="input-group search-key">
+                        <input type="text" class="form-control" v-model="searchKey" placeholder="请输入关键字" style="width: 250px;">
+                        <i class="la la-close clear-search" @click="searchKey='';page=1;searchRow();"></i>
+                        <div class="input-group-append">
+                            <button class="btn btn-primary m-btn--icon" @click="searchRow()">
+                                <span><i class="fa fa-search"></i><span>查询</span></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="float-right" style="margin-right: 10px;">
+                    对象类型：
+                    <el-select v-model="summaryType" @change="summaryTypeSearch" style="width: 140px">
+                        <el-option value="">请选择</el-option>
+                        <el-option value="u" label="单位"></el-option>
+                        <el-option value="l" label="联系人"></el-option>
+                    </el-select>
+                </div>
+            </div>
+            <el-table :data="tableData.rows" border style="width: 100%" v-loading="loading1"
+                      @row-click="leftRowClick" ref="summaryTable"
+                      @selection-change="handleSelChange"
+                      highlight-current-row>
+                <el-table-column type="selection" width="40"></el-table-column>
+                </el-table-column>
+                <el-table-column prop="summaryType" label="对象类型" width="80" align="center">
+                    <template slot-scope="scope">
+                        {{scope.row.summaryType == 'u' ? '单位' : '联系人'}}
+                    </template>
+                </el-table-column>
+                <el-table-column prop="summaryType" label="对象名称">
+                    <template slot-scope="scope">
+                        {{scope.row.summaryType == 'u' ? scope.row.creditUnitInfoName : scope.row.linkmanInfoName}}
+                    </template>
+                </el-table-column>
+                <el-table-column prop="cnTableName" label="信用信息"></el-table-column>
+                <el-table-column prop="cnDeptName" label="所属单位"></el-table-column>
+                <el-table-column prop="creditType" label="信用类型" :formatter="creditTypeFormat" align="center"></el-table-column>
+                <el-table-column prop="isSync" label="是否同步" align="center">
+                    <template slot-scope="scope">
+                        {{scope.row.isSync == '0' ? '手工录入' : '自动同步'}}
+                    </template>
+                </el-table-column>
+                <el-table-column prop="" width="120" align="center" label="操作">
+                    <template slot-scope="scope">
+                        <el-button type="text" class="btn-table" @click="editRow(scope.row,1)">编辑</el-button>
+                        <el-button type="text" class="btn-table" style="margin-left: -8px;" @click="deleteData(scope.row)">删除</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+        </div>
+        <el-pagination
+                background
+                v-if="tableData.total>9"
+                align="right"
+                :pager-count="5"
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+                :page-sizes="[10, 20, 30, 50]"
+                :page-size="pageSizeLeft"
+                layout="total,sizes, prev, pager, next, jumper"
+                :total="tableData.total">
+        </el-pagination>
+    </div>
+    <div class="table-right float-right">
+        <p class="table-head-text">信用详情信息</p>
+        <div class="table-content">
+            <div class="add-search clearfix" style="padding-bottom: 15px;">
+                <button type="button" class="btn btn-primary" @click="editChildRow('')">新增</button>
+                <button type="button" class="btn btn-outline-danger" @click="removeRightRow()">删除</button>
+                <div class="float-right search-btn" style="padding-left: 10px;">
+                    <div class="input-group search-key">
+                        <input type="text" class="form-control" v-model="searchKeyRight" placeholder="请输入关键字" style="width: 250px;">
+                        <i class="la la-close clear-search" @click="searchKeyRight='';pageRight=1;searchRowRight(summaryId);"></i>
+                        <div class="input-group-append">
+                            <button class="btn btn-primary m-btn--icon" @click="searchRowRight(summaryId)">
+                                <span><i class="fa fa-search"></i><span>查询</span></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <el-table
+                :data="dataTbRight.rows"
+                border
+                style="width: 100%"
+                v-loading="loading2"
+                row-key="detailId"
+                highlight-current-row
+                @selection-change="handleRightSelChange">
+                <el-table-column type="selection" width="40"></el-table-column>
+                <el-table-column prop="cnColumnName" label="详细字段"></el-table-column>
+                <el-table-column prop="enColumnName" label="详细字段英文">
+                    <template slot-scope="scope">
+                        {{scope.row.enColumnName == '' || scope.row.enColumnName == null ? '-' :
+                        scope.row.enColumnName}}
+                    </template>
+                </el-table-column>
+                <el-table-column prop="columnDataType" label="值类型" :formatter="columnDataTypeFormat" align="center"></el-table-column>
+                <el-table-column prop="columnValue" label="详细值"></el-table-column>
+                <el-table-column prop="isSync" label="是否同步" align="center">
+                    <template slot-scope="scope">
+                        {{scope.row.isSync == '0' ? '手工录入' : '自动同步'}}
+                    </template>
+                </el-table-column>
+                <el-table-column prop="" :width="newChildTree?'250':'120'" align="center" label="操作">
+                    <template slot-scope="scope">
+                        <el-button type="text" class="btn-table" @click="editChildRow(scope.row)">编辑</el-button>
+                        <el-button type="text" class="btn-table" style="margin-left: -8px;" @click="deleteDetailData(scope.row)">删除</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+        </div>
+        <el-pagination
+            background align="right"
+            v-if="dataTbRight.total>9"
+            :pager-count="5"
+            key="pagination"
+            @size-change="handleRightSizeChange"
+            @current-change="handleRightCurrentChange"
+            :page-sizes="[10, 20, 30, 50]"
+            :page-size="pageSizeRight"
+            layout="total,sizes, prev, pager, next, jumper"
+            :total="dataTbRight.total">
+        </el-pagination>
+    </div>
+
+    <!-- 信用信息新增或编辑表单 -->
+    <el-dialog :title="dialogTitie" :visible.sync="dialogEditTable1" class="edit-row" @closed="clearFormData('selRow')">
+        <el-form :inline="true" :model="selRowData" :rules="rules" ref="selRow" :style="{height: '450px', overflow:'auto'}">
+
+            <el-row>
+                <el-col :span="12">
+                    <el-form-item label="对象类型：" prop="summaryType">
+                        <input type="hidden" v-model="selRowData.summaryId" name="summaryId"/>
+                        <el-select v-model="selRowData.summaryType" @change="changeSummaryTypeHandler">
+                            <el-option value="u" label="单位"></el-option>
+                            <el-option value="l" label="联系人"></el-option>
+                        </el-select>
+                    </el-form-item>
+                </el-col>
+
+                <el-col :span="12">
+                    <el-form-item label="信用类型：" prop="creditType">
+                        <el-select v-model="selRowData.creditType" style="width: 100%">
+                            <el-option v-for="(ct,index) in creditTypeList" :key="index" :label="ct.label"
+                                       :value="ct.value"></el-option>
+                        </el-select>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+
+            <el-row>
+                <el-col :span="24">
+                    <el-form-item label="单位：" prop="creditUnitInfoName" v-if="inputUnitInfo" class="ops-memo2">
+                        <input type="hidden" v-model="selRowData.creditUnitInfoId" name="creditUnitInfoId"/>
+                        <el-input v-model="selRowData.creditUnitInfoName" name="creditUnitInfoName" placeholder="单位名称"
+                                  :readonly="readonly" @focus="selUnitInfo"></el-input>
+                    </el-form-item>
+
+                    <el-form-item label="联系人：" prop="linkmanInfoName" v-if="inputLinkmanInfo" class="ops-memo2">
+                        <input type="hidden" v-model="selRowData.linkmanInfoId" name="linkmanInfoId"/>
+                        <el-input v-model="selRowData.linkmanInfoName" name="linkmanInfoName" placeholder="联系人名称"
+                                  :readonly="readonly" @focus="selLinkmanInfo">
+                        </el-input>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+
+            <el-row>
+                <el-col :span="24">
+                    <el-form-item label="信用信息(中)：" prop="cnTableName" class="ops-memo2">
+                        <el-input v-model="selRowData.cnTableName" placeholder="信用信息（中文）"></el-input>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+
+            <el-row>
+                <el-col :span="24">
+                    <el-form-item label="信用信息(英)：" class="ops-memo2">
+                        <el-input v-model="selRowData.enTableName" placeholder="信用信息（英文）"></el-input>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+
+            <el-row>
+                <el-col :span="24">
+                    <el-form-item label="所属单位(中)：" prop="cnDeptName" class="ops-memo2">
+                        <el-input v-model="selRowData.cnDeptName" placeholder="所属单位（中文）"></el-input>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+
+            <el-row>
+                <el-col :span="24">
+                    <el-form-item label="所属单位(英)：" class="ops-memo2">
+                        <el-input v-model="selRowData.enDeptName" placeholder="所属单位（英文）"></el-input>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+
+            <el-row>
+                <el-col :span="12">
+                    <el-form-item label="是否有效：">
+                        <el-select v-model="selRowData.isValid" @change="changeIsValidHandler">
+                            <el-option value="1" label="有效"></el-option>
+                            <el-option value="0" label="无效"></el-option>
+                        </el-select>
+                    </el-form-item>
+                </el-col>
+
+                <el-col :span="12">
+                    <el-form-item label="是否同步：">
+                        <el-select v-model="selRowData.isSync" @change="isSyncEdit">
+                            <el-option value="0" label="手动录入"></el-option>
+                            <el-option value="1" label="自动同步"></el-option>
+                        </el-select>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+
+            <el-row>
+                <el-col :span="24">
+                    <el-form-item label="失效原因：" prop="invalidReason" v-if="inputInValidReason" class="ops-memo">
+                        <el-input type="textarea" v-model="selRowData.invalidReason" placeholder="失效原因" rows="3"></el-input>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+
+            <el-row>
+                <el-col :span="24">
+                    <el-form-item label="同步来源：" v-if="inputSyncFiled" class="ops-memo">
+                        <el-input type="textarea" v-model="selRowData.syncSource" rows="3"></el-input>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+
+            <el-row>
+                <el-col :span="24">
+                    <el-form-item label="同步时间：" v-if="inputSyncFiled" class="ops-memo2">
+                        <el-date-picker
+                            v-model="selRowData.syncTime"
+                            type="datetime"
+                            placeholder="选择日期"
+                            value-format="yyyy-MM-dd HH:mm:ss"
+                            style="width: 100%"
+                            :readonly="inputSyncFiled">
+                        </el-date-picker>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <button class="btn btn-secondary" @click="dialogEditTable1 = false">取消</button>
+            <button class="btn btn-primary" @click="dialogEditTable1 = false;saveEdit('selRow')">保存</button>
+        </div>
+    </el-dialog>
+
+    <!-- 信用信息详情新增或编辑表单 -->
+    <el-dialog :title="dialogTitie" :visible.sync="dialogEditTable2" class="edit-row" @closed="clearFormData('creditDetail')">
+
+        <el-form :inline="true" :model="rightRowData" :rules="rules" ref="creditDetail" :style="{height: '450px', overflow:'auto'}">
+
+            <input type="hidden" v-model="rightRowData.summaryId" name="summaryId"/>
+
+            <el-row>
+                <el-col :span="24">
+                    <el-form-item label="字段中文名：" prop="cnColumnName" class="ops-memo2">
+                        <el-input v-model="rightRowData.cnColumnName" placeholder="字段中文名"></el-input>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+
+            <el-row>
+                <el-col :span="24">
+                    <el-form-item label="字段英文名：" prop="enColumnName" class="ops-memo2">
+                        <el-input v-model="rightRowData.enColumnName" placeholder="字段英文名"></el-input>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+
+            <el-row>
+                <el-col :span="24">
+                    <el-form-item label="值类型：" prop="columnDataType" class="ops-memo2">
+                        <el-select v-model="rightRowData.columnDataType" style="width: 100%">
+                            <el-option value="s" label="字符串"></el-option>
+                            <el-option value="n" label="数字"></el-option>
+                            <el-option value="d" label="日期"></el-option>
+                        </el-select>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+
+            <el-row>
+                <el-col :span="24">
+                    <el-form-item label="实际值：" prop="columnStrValue" v-if="rightRowData.columnDataType == 's'" class="ops-memo2">
+                        <el-input v-model="rightRowData.columnStrValue" placeholder="详细值"></el-input>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+
+            <el-row>
+                <el-col :span="24">
+                    <el-form-item label="详细值：" prop="columnNumberValue" v-if="rightRowData.columnDataType == 'n'" class="ops-memo2">
+                        <el-input v-model="rightRowData.columnNumberValue" placeholder="详细值"></el-input>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+
+            <el-row>
+                <el-col :span="24">
+                    <el-form-item label="详细值：" prop="columnDateValue" v-if="rightRowData.columnDataType == 'd'"class="ops-memo2">
+                        <el-date-picker v-model="rightRowData.columnDateValue"
+                                        type="datetime"
+                                        placeholder="选择日期"
+                                        value-format="yyyy-MM-dd HH:mm:ss"
+                                        style="width: 100%">
+                        </el-date-picker>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+
+            <el-row>
+                <el-col :span="24">
+                    <el-form-item label="是否同步：" class="ops-memo2">
+                        <el-select v-model="rightRowData.isSync" @change="isSyncEdit2">
+                            <el-option value="0" label="手动录入"></el-option>
+                            <el-option value="1" label="自动同步"></el-option>
+                        </el-select>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+
+            <el-row>
+                <el-col :span="24">
+                    <el-form-item label="同步来源：" v-if="inputSyncFiled2" class="ops-memo">
+                        <el-input type="textarea" v-model="rightRowData.syncSource" rows="3"></el-input>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+
+            <el-row>
+                <el-col :span="24">
+                    <el-form-item label="同步时间：" v-if="inputSyncFiled2" class="ops-memo2">
+                        <el-date-picker v-model="rightRowData.syncTime"
+                                        type="datetime"
+                                        placeholder="选择日期"
+                                        value-format="yyyy-MM-dd HH:mm:ss"
+                                        style="width: 100%"
+                                        :readonly="inputSyncFiled2">
+                        </el-date-picker>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <button class="btn btn-secondary" @click="dialogEditTable2 = false">取消</button>
+            <button class="btn btn-primary" @click="dialogEditTable2 = false;saveCreditDetail('creditDetail')">保存
+            </button>
+        </div>
+    </el-dialog>
+
+    <!-- 企业单位 -->
+    <el-dialog title="选择企业单位" :visible.sync="dialogSelUnit" class="sel-apartment set-admin edit-row"
+               width="800px" height="600px">
+        <div class="tree-left float-left">
+            <p class="sel-title">选择：</p>
+            <el-input
+                    class="search-apartment"
+                    placeholder="搜索企业单位"
+                    v-model="unitFilterText" @input="selUnitInfo">
+                <i slot="prefix" class="el-input__icon el-icon-search"></i>
+                <i slot="suffix" class="el-input__icon el-icon-close" @click="clearUnitSearch"></i>
+            </el-input>
+            <el-tree
+                    :style="{height:fullHeight-400+'px',overflow:'auto'}"
+                    :data="selUnitTreeData"
+                    :expand-on-click-node="false"
+                    highlight-current
+                    :props="defaultProps"
+                    node-key="id"
+                    @node-click="clickSelUnit"
+                    :default-expanded-keys="selUnitRootNodeId">
+                    <span class="custom-tree-node" slot-scope="scope">
+                        <span>
+                            <i :class="'fa fa-folder'"></i>{{ scope.data.label }}
+                        </span>
+                    </span>
+            </el-tree>
+        </div>
+        <div class="selected-apartm">
+            <p class="sel-title">已选：</p>
+            <div class="selected-list"
+                 :style="{height:fullHeight-350+'px',overflow:'auto'}">
+                <p v-for="(item,index) in selUnitInfoList"
+                   :id="item.id"
+                   class="selected-item">{{item.label}}
+                    <i class="la la-close float-right" @click="removeSelUnit(item,index)"></i>
+                </p>
+            </div>
+        </div>
+        <div slot="footer" class="dialog-footer">
+            <el-button type="primary" @click="saveSelUnit">保存</el-button>
+            <el-button @click="closeSelUnitInfo">取消</el-button>
+        </div>
+    </el-dialog>
+
+    <!-- 企业单位 -->
+    <el-dialog title="选择联系人" :visible.sync="dialogSelLinkman" class="sel-apartment set-admin edit-row"
+               width="800px" height="600px">
+        <div class="tree-left float-left">
+            <p class="sel-title">选择：</p>
+            <el-input
+                    class="search-apartment"
+                    placeholder="搜索联系人"
+                    v-model="linkmanFilterText" @input="selLinkmanInfo">
+                <i slot="prefix" class="el-input__icon el-icon-search"></i>
+                <i slot="suffix" class="el-input__icon el-icon-close" @click="clearLinkmanSearch"></i>
+            </el-input>
+            <el-tree
+                    :style="{height:fullHeight-400+'px',overflow:'auto'}"
+                    :data="selLinkmanTreeData"
+                    :expand-on-click-node="false"
+                    highlight-current
+                    :props="defaultProps"
+                    node-key="id"
+                    @node-click="clickSelLinkman"
+                    :default-expanded-keys="selLinkmanRootNodeId">
+                    <span class="custom-tree-node" slot-scope="scope">
+                        <span>
+                            <i :class="'fa fa-folder'"></i>{{ scope.data.label }}
+                        </span>
+                    </span>
+            </el-tree>
+        </div>
+        <div class="selected-apartm">
+            <p class="sel-title">已选：</p>
+            <div class="selected-list"
+                 :style="{height:fullHeight-350+'px',overflow:'auto'}">
+                <p v-for="(item,index) in selLinkmanInfoList"
+                   :id="item.id"
+                   class="selected-item">{{item.label}}
+                    <i class="la la-close float-right" @click="removeSelLinkman(item,index)"></i>
+                </p>
+            </div>
+        </div>
+        <div slot="footer" class="dialog-footer">
+            <el-button type="primary" @click="saveSelLinkman">保存</el-button>
+            <el-button @click="closeSelLinkmanInfo">取消</el-button>
+        </div>
+    </el-dialog>
+</div>
+
+<!-- 引入js文件 -->
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js"
+        th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js"
+        th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js"
+        th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js"
+        th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>
+<script type="text/javascript" src="../../../static/admin/credit/js/summaryIndex.js"
+        th:src="@{/admin/credit/js/summaryIndex.js}"></script>
+
+</body>
+</html>

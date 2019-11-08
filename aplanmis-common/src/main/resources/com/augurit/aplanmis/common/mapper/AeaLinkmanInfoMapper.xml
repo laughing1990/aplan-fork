@@ -1,0 +1,657 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by 23948    2019-07-04 16:44:47 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaLinkmanInfoMapper">
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns">
+    linkman.LINKMAN_INFO_ID  linkmanInfoId,
+    linkman.LINKMAN_TYPE  linkmanType,
+    linkman.LINKMAN_CATE  linkmanCate,
+    linkman.LINKMAN_NAME  linkmanName,
+    linkman.LINKMAN_ADDR  linkmanAddr,
+    linkman.LINKMAN_OFFICE_PHON  linkmanOfficePhon,
+    linkman.LINKMAN_MOBILE_PHONE  linkmanMobilePhone,
+    linkman.LINKMAN_FAX  linkmanFax,
+    linkman.LINKMAN_MAIL  linkmanMail,
+    linkman.LINKMAN_CERT_NO  linkmanCertNo,
+    linkman.IS_ACTIVE  isActive,
+    linkman.IS_DELETED  isDeleted,
+    linkman.LINKMAN_MEMO  linkmanMemo,
+    linkman.CREATER  creater,
+    linkman.CREATE_TIME  createTime,
+    linkman.MODIFIER  modifier,
+    linkman.MODIFY_TIME  modifyTime,
+    linkman.LOGIN_NAME  loginName,
+    linkman.LOGIN_PWD  loginPwd,
+    linkman.IMG_URL  imgUrl,
+    linkman.ROOT_ORG_ID rootOrgId
+    </sql>
+    <sql id="alias_allColumns">
+        ${alias}.LINKMAN_INFO_ID  linkmanInfoId,
+    ${alias}.LINKMAN_TYPE  linkmanType,
+    ${alias}.LINKMAN_CATE  linkmanCate,
+    ${alias}.LINKMAN_NAME  linkmanName,
+    ${alias}.LINKMAN_ADDR  linkmanAddr,
+    ${alias}.LINKMAN_OFFICE_PHON  linkmanOfficePhon,
+    ${alias}.LINKMAN_MOBILE_PHONE  linkmanMobilePhone,
+    ${alias}.LINKMAN_FAX  linkmanFax,
+    ${alias}.LINKMAN_MAIL  linkmanMail,
+    ${alias}.LINKMAN_CERT_NO  linkmanCertNo,
+    ${alias}.IS_ACTIVE  isActive,
+    ${alias}.IS_DELETED  isDeleted,
+    ${alias}.LINKMAN_MEMO  linkmanMemo,
+    ${alias}.CREATER  creater,
+    ${alias}.CREATE_TIME  createTime,
+    ${alias}.MODIFIER  modifier,
+    ${alias}.MODIFY_TIME  modifyTime,
+    ${alias}.LOGIN_NAME  loginName,
+    ${alias}.LOGIN_PWD  loginPwd,
+    ${alias}.IMG_URL  imgUrl,
+    ${alias}.ROOT_ORG_ID rootOrgId
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaLinkmanInfoById" resultType="AeaLinkmanInfo">
+        select
+        <include refid="allColumns"/>
+        from AEA_LINKMAN_INFO linkman
+        where LINKMAN_INFO_ID = #{id}
+        AND IS_DELETED = '0'
+    </select>
+
+    <select id="getProjLinkman" resultType="AeaLinkmanInfo">
+        select
+        <include refid="allColumns"/>
+        from AEA_LINKMAN_INFO linkman
+        where LINKMAN_INFO_ID IN (
+            SELECT LINKMAN_INFO_ID
+            FROM aea_proj_linkman
+            WHERE PROJ_INFO_ID = #{projInfoId}
+                AND APPLYINST_ID = #{applyinstId}
+                AND TYPE = 'link'
+        )
+            AND IS_DELETED = '0'
+    </select>
+
+    <select id="getApplyProjLinkman" resultType="AeaLinkmanInfo">
+        select
+        <include refid="allColumns"/>
+        from AEA_LINKMAN_INFO linkman
+        where LINKMAN_INFO_ID IN (
+            SELECT LINKMAN_INFO_ID
+            FROM aea_proj_linkman
+            WHERE PROJ_INFO_ID = #{projInfoId}
+                AND APPLYINST_ID = #{applyinstId}
+                AND TYPE = 'apply'
+        )
+            AND IS_DELETED = '0'
+    </select>
+
+    <select id="getApplyLinkman" resultType="AeaLinkmanInfo">
+        select
+        <include refid="allColumns"/>
+        from AEA_LINKMAN_INFO linkman
+        where LINKMAN_INFO_ID IN (
+            SELECT LINKMAN_INFO_ID
+            FROM aea_hi_applyinst
+            AND APPLYINST_ID = #{applyinstId}
+        )
+        AND IS_DELETED = '0'
+    </select>
+
+    <select id="findLinkmanTypes" resultType="AeaLinkmanInfo">
+        SELECT ali.linkman_name linkmanName,aupl.LINKMAN_TYPE linkmanType,aupl.LINKMAN_INFO_ID linkmanInfoId
+        from aea_unit_proj aup
+        LEFT JOIN aea_unit_proj_linkman aupl ON aup.UNIT_PROJ_ID=aupl.UNIT_PROJ_ID
+        left join aea_linkman_info ali on  aupl.linkman_info_id=ali.linkman_info_id
+        where aup.PROJ_INFO_ID=#{projInfoId}  and aup.UNIT_INFO_ID=#{unitInfoId}
+    </select>
+
+    <select id="findAllUnitLinkman" resultType="AeaLinkmanInfo">
+        select
+        <include refid="allColumns"/>
+        from AEA_LINKMAN_INFO linkman
+        where LINKMAN_INFO_ID IN (
+            SELECT LINKMAN_INFO_ID
+            FROM AEA_UNIT_LINKMAN
+            WHERE UNIT_INFO_ID = #{unitInfoId}
+        )
+        AND IS_DELETED = '0'
+    </select>
+
+    <select id="getAeaLinkmanInfoByLoginName" resultType="AeaLinkmanInfo">
+        select
+        <include refid="allColumns"/>
+        from AEA_LINKMAN_INFO linkman
+        where LOGIN_NAME = #{loginName}
+        AND IS_DELETED = '0'
+        AND ROOT_ORG_ID=#{rootOrgId}
+    </select>
+
+    <select id="findLinkmanInfoByKeyword" resultType="AeaLinkmanInfo">
+        select
+        <include refid="allColumns"/>
+        from AEA_LINKMAN_INFO linkman
+        where linkman.IS_DELETED = '0'
+        <if test="keyword!=null and keyword!=''">
+            AND (linkman.LINKMAN_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%') or linkman.LINKMAN_CERT_NO LIKE CONCAT(CONCAT('%',#{keyword}),'%'))
+        </if>
+        <if test="rootOrgId != null and rootOrgId !=''">
+            AND linkman.ROOT_ORG_ID = #{rootOrgId}
+        </if>
+        order by linkman.CREATE_TIME desc
+    </select>
+
+
+    <!--3 根据条件查询实体list -->
+    <select id="findAeaLinkmanInfo" resultType="AeaLinkmanInfo">
+        select
+        <include refid="allColumns"/>
+        from AEA_LINKMAN_INFO linkman
+        <where>
+            <if test="linkmanInfoId != null">
+                AND LINKMAN_INFO_ID = #{linkmanInfoId}
+            </if>
+            <if test="linkmanType != null">
+                AND LINKMAN_TYPE = #{linkmanType}
+            </if>
+            <if test="linkmanCate != null">
+                AND LINKMAN_CATE = #{linkmanCate}
+            </if>
+            <if test="linkmanName != null">
+                AND LINKMAN_NAME = #{linkmanName}
+            </if>
+            <if test="linkmanAddr != null">
+                AND LINKMAN_ADDR = #{linkmanAddr}
+            </if>
+            <if test="linkmanOfficePhon != null">
+                AND LINKMAN_OFFICE_PHON = #{linkmanOfficePhon}
+            </if>
+            <if test="linkmanMobilePhone != null">
+                AND LINKMAN_MOBILE_PHONE = #{linkmanMobilePhone}
+            </if>
+            <if test="linkmanFax != null">
+                AND LINKMAN_FAX = #{linkmanFax}
+            </if>
+            <if test="linkmanMail != null">
+                AND LINKMAN_MAIL = #{linkmanMail}
+            </if>
+            <if test="linkmanCertNo != null">
+                AND LINKMAN_CERT_NO = #{linkmanCertNo}
+            </if>
+            <if test="isActive != null">
+                AND IS_ACTIVE = #{isActive}
+            </if>
+            <if test="isDeleted != null">
+                AND IS_DELETED = #{isDeleted}
+            </if>
+            <if test="linkmanMemo != null">
+                AND LINKMAN_MEMO = #{linkmanMemo}
+            </if>
+            <if test="creater != null">
+                AND CREATER = #{creater}
+            </if>
+            <if test="createTime != null">
+                AND CREATE_TIME = #{createTime}
+            </if>
+            <if test="modifier != null">
+                AND MODIFIER = #{modifier}
+            </if>
+            <if test="modifyTime != null">
+                AND MODIFY_TIME = #{modifyTime}
+            </if>
+            <if test="loginName != null">
+                AND LOGIN_NAME = #{loginName}
+            </if>
+            <if test="loginPwd != null">
+                AND LOGIN_PWD = #{loginPwd}
+            </if>
+            <if test="imgUrl != null">
+                AND IMG_URL = #{imgUrl}
+            </if>
+            <if test="keyword!=null and keyword!=''">
+                AND (
+                LINKMAN_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                or LINKMAN_MOBILE_PHONE LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                or LINKMAN_CERT_NO LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                )
+            </if>
+            <if test="rootOrgId != null">
+                AND ROOT_ORG_ID = #{rootOrgId}
+            </if>
+            AND IS_DELETED = '0'
+        </where>
+    </select>
+    <select id="getProjLinkmanByApplyinstId" resultType="com.augurit.aplanmis.common.domain.AeaLinkmanInfo">
+        select <include refid="allColumns"/>
+        from AEA_LINKMAN_INFO linkman where LINKMAN_INFO_ID IN (
+            SELECT LINKMAN_INFO_ID FROM AEA_PROJ_LINKMAN WHERE APPLYINST_ID = #{applyinstId} AND TYPE = 'link'
+        ) AND IS_DELETED = '0'
+    </select>
+    <!--4 根据条件查询实体list,返回分页对象 -->
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaLinkmanInfo" parameterType="AeaLinkmanInfo">
+        insert into AEA_LINKMAN_INFO (LINKMAN_INFO_ID, LINKMAN_TYPE, LINKMAN_CATE, LINKMAN_NAME, LINKMAN_ADDR,
+                                      LINKMAN_OFFICE_PHON, LINKMAN_MOBILE_PHONE, LINKMAN_FAX, LINKMAN_MAIL,
+                                      LINKMAN_CERT_NO, IS_ACTIVE, IS_DELETED, LINKMAN_MEMO, CREATER, CREATE_TIME,
+                                      MODIFIER, MODIFY_TIME, LOGIN_NAME, LOGIN_PWD, IMG_URL,ROOT_ORG_ID)
+        values (#{linkmanInfoId}, #{linkmanType}, #{linkmanCate}, #{linkmanName}, #{linkmanAddr}, #{linkmanOfficePhon},
+                #{linkmanMobilePhone}, #{linkmanFax}, #{linkmanMail}, #{linkmanCertNo}, #{isActive}, #{isDeleted},
+                #{linkmanMemo}, #{creater}, #{createTime}, #{modifier}, #{modifyTime}, #{loginName}, #{loginPwd},
+                #{imgUrl},#{rootOrgId})
+    </insert>
+    <!--6 修改实体对象 -->
+    <update id="updateAeaLinkmanInfo" parameterType="AeaLinkmanInfo">
+        update AEA_LINKMAN_INFO
+        <set>
+            <if test="linkmanInfoId != null">
+                LINKMAN_INFO_ID = #{linkmanInfoId},
+            </if>
+            <if test="linkmanType != null">
+                LINKMAN_TYPE = #{linkmanType},
+            </if>
+            <if test="linkmanCate != null">
+                LINKMAN_CATE = #{linkmanCate},
+            </if>
+            <if test="linkmanName != null">
+                LINKMAN_NAME = #{linkmanName},
+            </if>
+            <if test="linkmanAddr != null">
+                LINKMAN_ADDR = #{linkmanAddr},
+            </if>
+            <if test="linkmanOfficePhon != null">
+                LINKMAN_OFFICE_PHON = #{linkmanOfficePhon},
+            </if>
+            <if test="linkmanMobilePhone != null">
+                LINKMAN_MOBILE_PHONE = #{linkmanMobilePhone},
+            </if>
+            <if test="linkmanFax != null">
+                LINKMAN_FAX = #{linkmanFax},
+            </if>
+            <if test="linkmanMail != null">
+                LINKMAN_MAIL = #{linkmanMail},
+            </if>
+            <if test="linkmanCertNo != null">
+                LINKMAN_CERT_NO = #{linkmanCertNo},
+            </if>
+            <if test="isActive != null">
+                IS_ACTIVE = #{isActive},
+            </if>
+            <if test="isDeleted != null">
+                IS_DELETED = #{isDeleted},
+            </if>
+            <if test="linkmanMemo != null">
+                LINKMAN_MEMO = #{linkmanMemo},
+            </if>
+            <if test="creater != null">
+                CREATER = #{creater},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime},
+            </if>
+            <if test="modifier != null">
+                MODIFIER = #{modifier},
+            </if>
+            <if test="modifyTime != null">
+                MODIFY_TIME = #{modifyTime},
+            </if>
+            <if test="loginName != null">
+                LOGIN_NAME = #{loginName},
+            </if>
+            <if test="loginPwd != null">
+                LOGIN_PWD = #{loginPwd},
+            </if>
+            <if test="imgUrl != null">
+                IMG_URL = #{imgUrl},
+            </if>
+            <if test="rootOrgId != null">
+                ROOT_ORG_ID = #{rootOrgId},
+            </if>
+        </set>
+        where LINKMAN_INFO_ID = #{linkmanInfoId}
+    </update>
+    <!--7 删除实体对象,根据主键ID -->
+    <update id="deleteAeaLinkmanInfo">
+        update AEA_LINKMAN_INFO
+        <set>
+            IS_DELETED = '1'
+        </set>
+        where LINKMAN_INFO_ID = #{id}
+    </update>
+
+    <!-- 批量删除-->
+    <update id="batchLinkmanInfo">
+        update AEA_LINKMAN_INFO
+        <set>
+            IS_DELETED = '1'
+        </set>
+        where LINKMAN_INFO_ID IN
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+    <!--查询企业联系人或委托人-->
+    <select id="getAeaLinkmanInfoByUnitInfoIdAndIsBindAccount" resultType="AeaLinkmanInfo">
+        select
+        <include refid="alias_allColumns"><property name="alias" value="linkman"/></include>,
+         aul.IS_BIND_ACCOUNT isBindAccount,aul.UNIT_INFO_ID unitInfoId
+        from AEA_LINKMAN_INFO linkman
+        left join AEA_UNIT_LINKMAN aul on linkman.linkman_info_id = aul.LINKMAN_INFO_ID
+        where aul.UNIT_INFO_ID = #{unitInfoId}
+        <if test='isBindAccount != null and isBindAccount !=""'>
+            AND aul.IS_BIND_ACCOUNT = #{isBindAccount}
+        </if>
+        and linkman.IS_DELETED = '0'
+    </select>
+
+    <select id="listAeaLinkmanInfo" resultType="AeaLinkmanInfo">
+        select
+        aul.UNIT_INFO_ID unitInfoId,
+        <include refid="alias_allColumns">
+            <property name="alias" value="linkman"></property>
+        </include>
+        from AEA_LINKMAN_INFO linkman
+        left join AEA_UNIT_LINKMAN aul
+        on aul.LINKMAN_INFO_ID=linkman.LINKMAN_INFO_ID
+        <where>
+            <if test="keyword!=null and keyword!='' ">
+                and (
+                linkman.LINKMAN_NAME like concat('%',concat(#{keyword},'%')) or
+                linkman.LOGIN_NAME like concat('%',concat(#{keyword},'%')) or
+                linkman.LINKMAN_CERT_NO like concat('%',concat(#{keyword},'%'))
+                )
+            </if>
+            <if test="unitInfoId != null and unitInfoId!=''">
+                AND aul.UNIT_INFO_ID = #{unitInfoId}
+            </if>
+            <if test="linkmanInfoId != null and linkmanInfoId !=''">
+                AND linkman.LINKMAN_INFO_ID = #{linkmanInfoId}
+            </if>
+            <if test="linkmanType != null and linkmanType!=''">
+                AND linkman.LINKMAN_TYPE = #{linkmanType}
+            </if>
+            <if test="linkmanCate != null and linkmanCate!=''">
+                AND linkman.LINKMAN_CATE = #{linkmanCate}
+            </if>
+            <if test="linkmanName != null and linkmanName!=''">
+                AND linkman.LINKMAN_NAME = #{linkmanName}
+            </if>
+            <if test="linkmanAddr != null and linkmanAddr!=''">
+                AND linkman.LINKMAN_ADDR = #{linkmanAddr}
+            </if>
+            <if test="linkmanOfficePhon != null and linkmanOfficePhon!=''">
+                AND linkman.LINKMAN_OFFICE_PHON = #{linkmanOfficePhon}
+            </if>
+            <if test="linkmanMobilePhone != null and linkmanMobilePhone!=''">
+                AND linkman.LINKMAN_MOBILE_PHONE = #{linkmanMobilePhone}
+            </if>
+            <if test="linkmanFax != null and linkmanFax!=''">
+                AND linkman.LINKMAN_FAX = #{linkmanFax}
+            </if>
+            <if test="linkmanMail != null and linkmanMail!=''">
+                AND linkman.LINKMAN_MAIL = #{linkmanMail}
+            </if>
+            <if test="linkmanCertNo != null and linkmanCertNo!=''">
+                AND linkman.LINKMAN_CERT_NO = #{linkmanCertNo}
+            </if>
+            <if test="isActive != null and isActive!=''">
+                AND linkman.IS_ACTIVE = #{isActive}
+            </if>
+            <if test="loginName != null and loginName!=''">
+                AND linkman.LOGIN_NAME = #{loginName}
+            </if>
+            <if test="isBindAccount != null and isBindAccount!=''">
+                AND aul.IS_BIND_ACCOUNT = #{isBindAccount}
+            </if>
+            <if test="isAdministrators != null and isAdministrators!=''">
+                AND aul.IS_ADMINISTRATORS = #{isAdministrators}
+            </if>
+            <if test="rootOrgId != null and rootOrgId!=''">
+                AND aul.ROOT_ORG_ID = #{rootOrgId}
+            </if>
+            AND (IS_DELETED = '0' or IS_DELETED is null)
+        </where>
+    </select>
+    <!--8 删除实体对象列表,根据主键ID列表 -->
+    <!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaLinkmanInfo" id="AeaLinkmanInfoMap">
+        <id property="linkmanInfoId" column="LINKMAN_INFO_ID"/>
+        <result property="linkmanType" column="LINKMAN_TYPE"/>
+        <result property="linkmanCate" column="LINKMAN_CATE"/>
+        <result property="linkmanName" column="LINKMAN_NAME"/>
+        <result property="linkmanAddr" column="LINKMAN_ADDR"/>
+        <result property="linkmanOfficePhon" column="LINKMAN_OFFICE_PHON"/>
+        <result property="linkmanMobilePhone" column="LINKMAN_MOBILE_PHONE"/>
+        <result property="linkmanFax" column="LINKMAN_FAX"/>
+        <result property="linkmanMail" column="LINKMAN_MAIL"/>
+        <result property="linkmanCertNo" column="LINKMAN_CERT_NO"/>
+        <result property="isActive" column="IS_ACTIVE"/>
+        <result property="isDeleted" column="IS_DELETED"/>
+        <result property="linkmanMemo" column="LINKMAN_MEMO"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="modifier" column="MODIFIER"/>
+        <result property="modifyTime" column="MODIFY_TIME"/>
+        <result property="loginName" column="LOGIN_NAME"/>
+        <result property="loginPwd" column="LOGIN_PWD"/>
+        <result property="imgUrl" column="IMG_URL"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+
+    </resultMap>
+
+    <!--查询单位人员资格证书 0b1c323b-7247-4762-a72d-774fc4e07e8f -->
+    <select id="listAgentLinkmanCertinst" resultType="AgentLinkmanCert">
+        SELECT t.linkmanName, t.serviceName,
+        <if test="_databaseId == 'oracle'">
+            WM_CONCAT(ahc.CERTINST_NAME) certinstName
+        </if>
+        <if test="_databaseId == 'mysql'">
+            GROUP_CONCAT(ahc.CERTINST_NAME) certinstName
+        </if>
+        FROM (
+        SELECT
+        ali.LINKMAN_NAME linkmanName,
+        ali.LINKMAN_INFO_ID linkmanId,
+        aisl.SERVICE_LINKMAN_ID serviceLinkmanId,
+        <if test="_databaseId == 'oracle'">
+            WM_CONCAT(ais.SERVICE_NAME) serviceName
+        </if>
+        <if test="_databaseId == 'mysql'">
+            GROUP_CONCAT(ais.SERVICE_NAME) serviceName
+        </if>
+        FROM aea_im_service_linkman aisl
+        LEFT JOIN aea_linkman_info ali ON ali.LINKMAN_INFO_ID = aisl.LINKMAN_INFO_ID
+        LEFT JOIN aea_im_service ais ON aisl.SERVICE_ID = ais.SERVICE_ID
+        WHERE aisl.UNIT_INFO_ID = #{unitInfoId}
+        AND aisl.IS_DELETE = '0' AND aisl.AUDIT_FLAG = '1' AND ali.IS_DELETED = '0'
+        <if test="linkmanName != null and linkmanName!=''">
+            AND ali.LINKMAN_NAME LIKE concat('%',concat(#{linkmanName},'%'))
+        </if>
+        GROUP BY aisl.LINKMAN_INFO_ID) t
+        LEFT JOIN aea_bus_certinst abc ON abc.BUS_RECORD_ID = t.serviceLinkmanId
+        AND abc.BUS_TABLE_NAME = 'aea_im_service_linkman' AND abc.PK_NAME = 'SERVICE_LINKMAN_ID' AND abc.IS_DELETE = '0'
+        LEFT JOIN aea_hi_certinst ahc ON ahc.CERTINST_ID = abc.CERTINST_ID
+        GROUP BY t.linkmanId
+    </select>
+
+    <!--查询中介机构业务授权人信息 -->
+    <select id="listAgentHeadLinkman" resultType="AgentLinkmanCert">
+        SELECT
+            ais.SERVICE_ID serviceId,
+            ais.SERVICE_NAME serviceName,
+            ali.LINKMAN_NAME linkmanName,
+            ali.LINKMAN_MOBILE_PHONE linkmanMobilePhone
+        FROM aea_im_client_service aics
+        LEFT JOIN aea_im_unit_service aius ON aius.UNIT_SERVICE_ID = aics.UNIT_SERVICE_ID
+        LEFT JOIN aea_im_service ais ON aius.SERVICE_ID = ais.SERVICE_ID
+        LEFT JOIN aea_unit_linkman aul ON aul.UNIT_LINKMAN_ID = aics.UNIT_LINKMAN_ID
+        LEFT JOIN aea_linkman_info ali ON ali.LINKMAN_INFO_ID = aul.LINKMAN_INFO_ID
+        WHERE aics.IS_DELETED = '0' AND aius.IS_DELETE = '0' AND ais.IS_DELETE = '0' AND ali.IS_DELETED = '0'
+    </select>
+
+    <!--根据单位id和服务id查询从业人员-->
+    <select id="getLinkmanList" resultType="AeaLinkmanInfo">
+        select
+        <include refid="alias_allColumns"><property name="alias" value="ali"></property></include>,
+        aisl.SERVICE_LINKMAN_ID serviceLinkmanId
+        FROM aea_im_service_linkman aisl,aea_linkman_info ali
+        WHERE ali.LINKMAN_INFO_ID = aisl.LINKMAN_INFO_ID
+        AND aisl.UNIT_INFO_ID = #{unitInfoId}
+        AND aisl.SERVICE_ID = #{serviceId}
+        AND aisl.AUDIT_FLAG = '1'
+        AND aisl.IS_DELETE = '0'
+        <if test="linkmanInfoIds != null ">
+            AND aisl.LINKMAN_INFO_ID IN
+            <foreach collection="linkmanInfoIds" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+
+    <!--2 根据主键ID查询单个实体；表字段及结构改变 请使用getListLinkmanUnitById  或getOneById -->
+    <select id="getAeaLinkmanInfoAndUnitInfoByLinkmanInfoId" resultType="AeaLinkmanInfo">
+        select
+        <include refid="alias_allColumns"><property name="alias" value="ali"></property></include>,
+        ,unit.APPLICANT applicant,unit.IDCARD idcard,aul.IS_BIND_ACCOUNT isBindAccount
+        from AEA_LINKMAN_INFO ali
+        left join AEA_UNIT_LINKMAN aul on ali.linkman_info_id = aul.LINKMAN_INFO_ID
+        left join aea_unit_info unit on aul.UNIT_INFO_ID = unit.unit_info_id
+        where ali.LINKMAN_INFO_ID = #{id}
+        and ali.IS_DELETED = '0'
+    </select>
+    <!--解绑，绑定人员；设置管理员-->
+    <update id="updateAeaUnitLinkman" parameterType="AeaUnitLinkman">
+        update AEA_UNIT_LINKMAN aul
+        <set>
+            <if test="isBindAccount != null and isBindAccount!=''">
+                aul.IS_BIND_ACCOUNT = #{isBindAccount},
+            </if>
+            <if test="isAdministrators != null and isAdministrators!=''">
+                aul.IS_ADMINISTRATORS = #{isAdministrators}
+            </if>
+        </set>
+        <where>
+            <if test="linkmanInfoId!=null and linkmanInfoId!=''">and LINKMAN_INFO_ID = #{linkmanInfoId}</if>
+            <if test="unitInfoId!=null and unitInfoId!='' ">AND UNIT_INFO_ID=#{unitInfoId}</if>
+        </where>
+    </update>
+
+    <!--根据公司id查询委托人信息-->
+    <select id="getAeaLinkmanInfoByUnitInfoId" resultType="AeaLinkmanInfo">
+        select DISTINCT
+        <include refid="alias_allColumns"><property name="alias" value="linkman"></property></include>,
+        aul.IS_BIND_ACCOUNT as isBindAccount,
+        aul.UNIT_INFO_ID
+        from AEA_LINKMAN_INFO linkman
+        left join AEA_UNIT_LINKMAN aul on linkman.linkman_info_id = aul.LINKMAN_INFO_ID
+        where aul.UNIT_INFO_ID = #{unitInfoId}
+        <if test='isAll != null and isAll =="1"'>
+            AND aul.IS_BIND_ACCOUNT = #{isAll}
+        </if>
+        and linkman.IS_DELETED = '0'
+    </select>
+
+    <!--删除委托关系-->
+    <delete id="deleteUnitLinkmanInfo" parameterType="AeaUnitLinkman">
+        delete from AEA_UNIT_LINKMAN where UNIT_INFO_ID=#{unitInfoId} AND LINKMAN_INFO_ID=#{linkmanInfoId}
+    </delete>
+
+    <!--查询单位外未绑定人员列表-->
+    <select id="listUnBindLinkman" resultType="AeaLinkmanInfo">
+        select
+        <include refid="alias_allColumns">
+            <property name="alias" value="linkman"></property>
+        </include>
+        from AEA_LINKMAN_INFO linkman
+        <where>
+            (linkman.IS_DELETED = '0' or linkman.IS_DELETED is null)
+            and linkman.LINKMAN_INFO_ID not in(select aul.LINKMAN_INFO_ID from AEA_UNIT_LINKMAN aul where
+            aul.UNIT_INFO_ID=#{unitInfoId})
+            <if test="linkmanCertNo != null and linkmanCertNo!=''">
+                AND linkman.LINKMAN_CERT_NO like concat('%',concat(#{linkmanCertNo},'%'))
+            </if>
+            <if test="loginName != null and loginName!=''">
+                AND linkman.LOGIN_NAME like concat('%',concat(#{loginName},'%'))
+            </if>
+        </where>
+    </select>
+
+    <select id="listAeaUnitLinkman" parameterType="AeaUnitLinkman" resultType="AeaUnitLinkman">
+        SELECT * FROM AEA_UNIT_LINKMAN
+        <where>
+            <if test="unitInfoId!=null">and UNIT_INFO_ID= #{unitInfoId}</if>
+            <if test="linkmanInfoId!=null">and LINKMAN_INFO_ID = #{linkmanInfoId}</if>
+        </where>
+    </select>
+
+    <!--插入单位联系人关联表-->
+    <insert id="insertUnitLinkman" parameterType="AeaUnitLinkman">
+        insert into AEA_UNIT_LINKMAN(
+          UNIT_LINKMAN_ID,UNIT_INFO_ID,LINKMAN_INFO_ID,CREATER,CREATE_TIME,IS_BIND_ACCOUNT,IS_ADMINISTRATORS
+        ) values (
+          #{unitLinkmanId},#{unitInfoId},#{linkmanInfoId},#{creater},#{createTime},#{isBindAccount},#{isAdministrators}
+        )
+    </insert>
+
+    <!--根据单位ID查询已绑定的委托人-->
+    <select id="listBindLinkmanByUnitId" parameterType="string" resultType="AeaLinkmanInfo">
+        select
+        <include refid="alias_allColumns">
+            <property name="alias" value="linkman"></property>
+        </include>
+        ,aul.IS_BIND_ACCOUNT isBindAccount ,aul.IS_ADMINISTRATORS isAdministrators,aul.UNIT_INFO_ID unitInfoId,
+        (SELECT
+        <if test="_databaseId == 'oracle'">
+            WM_CONCAT(ais.SERVICE_NAME)
+        </if>
+        <if test="_databaseId == 'mysql'">
+            GROUP_CONCAT(ais.SERVICE_NAME)
+        </if>
+        FROM aea_im_client_service aics, aea_im_unit_service aius, aea_im_service ais
+        WHERE aics.UNIT_SERVICE_ID = aius.UNIT_SERVICE_ID
+        AND aius.SERVICE_ID = ais.SERVICE_ID
+        AND aics.IS_DELETED = '0' AND aics.UNIT_LINKMAN_ID = aul.UNIT_LINKMAN_ID) serviceNames
+        FROM AEA_UNIT_LINKMAN aul
+        left join AEA_LINKMAN_INFO linkman
+        on linkman.LINKMAN_INFO_ID=aul.LINKMAN_INFO_ID
+        where
+        aul.UNIT_INFO_ID =#{unitInfoId} and linkman.IS_DELETED = '0'
+        <if test="isAdministrators!=null and isAdministrators!=''">
+            and aul.IS_ADMINISTRATORS=#{isAdministrators}
+        </if>
+        <if test="isBindAccount!=null and isBindAccount!=''">
+            and aul.IS_BIND_ACCOUNT=#{isBindAccount}
+        </if>
+        <if test="keyword!=null and keyword!=''">
+            and (linkman.LINKMAN_NAME =#{keyword} or linkman.LINKMAN_CERT_NO = #{keyword} or
+            linkman.LOGIN_NAME=#{keyword})
+        </if>
+    </select>
+
+    <select id="getLinkmanListByServiceId" resultType="AeaLinkmanInfo">
+        select
+        <include refid="alias_allColumns">
+            <property name="alias" value="linfo"></property>
+        </include>
+        ,(select ais.service_name from aea_im_service ais where ais.service_id = lm.service_id) serviceName,
+        lm.practise_date practiseDate,lm.service_linkman_id serviceLinkmanId from aea_linkman_info linfo ,aea_im_service_linkman lm where
+        lm.service_id=#{serviceId} and lm.unit_info_id=#{unitInfoId}
+        and lm.linkman_info_id = linfo.LINKMAN_INFO_ID
+        and lm.audit_flag = '1' and lm.is_delete = '0' and linfo.is_deleted = '0'
+    </select>
+
+    <!--根据从业人员id数组查询关联的服务-->
+    <select id="listLinkmanServiceName" resultType="AeaLinkmanInfo">
+        SELECT
+        ais.SERVICE_NAME serviceName,
+        aisl.LINKMAN_INFO_ID linkmanInfoId
+        FROM aea_im_service_linkman aisl,aea_im_service ais
+        WHERE aisl.SERVICE_ID = ais.SERVICE_ID
+        AND aisl.LINKMAN_INFO_ID in
+        <foreach collection="linkmanIds" item="id" index="i" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+</mapper>

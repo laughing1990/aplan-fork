@@ -1,0 +1,456 @@
+/*
+* @Author: ZL
+* @Date:   2019/02/14
+* @Last Modified by:   ZL
+* @Last Modified time: $ $
+*/
+[v-cloak]{
+    display: none;
+}
+#index {
+    padding: 0 10px;
+}
+.add-search {
+    padding: 10px 0;
+}
+.add-search .btn {
+    margin-right: 5px;
+}
+/*el-search样式重置*/
+.add-search .el-input__inner {
+    height: 34px;
+    line-height: 34px;
+}
+.add-search .search-btn {
+    margin-left: 5px;
+}
+.add-search .el-input__icon {
+    line-height: 34px;
+}
+/*el-search样式重置*/
+
+/*表格操作按钮样式 */
+.btn-table {
+    padding: 0 7px 0 9px;
+    position: relative;
+    color: #169AFF;
+    cursor: pointer;
+}
+.btn-table.disabled, .btn-table.disabled:hover {
+    color: #8ACCFF;
+    cursor: not-allowed;
+}
+.btn-table:hover {
+    color: #008DF9;
+}
+.btn-table:first-child {
+    padding-left: 0;
+}
+.btn-table:after {
+    content: '';
+    display: inline-block;
+    height: 12px;
+    width: 1px;
+    background: #E0E3E9;
+    margin-left: 6px;
+    position: absolute;
+    top: 2px;
+}
+.btn-table:last-child:after {
+    height: 0;
+}
+/*表格操作按钮样式 */
+
+/*el-dialog 样式*/
+.el-dialog__header {
+    border-bottom: 1px solid #E0E3E9;
+}
+.el-dialog__body {
+    padding: 0 20px;
+}
+.el-dialog .el-form {
+    padding-top: 20px;
+}
+.edit-row .el-form-item__label {
+    width: 30%;
+    text-align: right;
+}
+.el-form--inline .el-form-item {
+    margin-right: 0;
+    width: 99%;
+}
+.el-form--inline .el-form-item__content {
+    width: 70%;
+}
+.el-form-item__content .el-select {
+    width: 100%;
+}
+.ops-memo .el-form-item__label {
+
+    width: 15%;
+    float: left;
+}
+.ops-memo .el-form-item__content {
+
+    display: block;
+    width: 100%;
+}
+
+.ops-memo2 .el-form-item__label {
+
+    width: 15%;
+    float: left;
+}
+
+.ops-memo2 .el-form-item__content {
+
+    width: 85%;
+}
+
+.ops-memo .el-textarea {
+
+    position: relative;
+    display: inline-block;
+    width: 85%;
+    vertical-align: bottom;
+    font-size: 14px;
+}
+
+.search-key {
+    position: relative;
+}
+.clear-search {
+    position: absolute;
+    right: 90px;
+    top: 8px;
+    color: #afb2c1;
+    z-index: 100;
+}
+
+/*
+* @Author: ZL
+* @Date:   2019/2/26
+* @Last Modified by:   ZL
+* @Last Modified time: $ $
+*/
+#managementPage {
+    height: 100%;
+}
+/*tree-left start*/
+.tree-left .el-input input {
+    height: 34px;
+    padding: 0 10px;
+}
+.tree-left .el-input__icon {
+    line-height: 34px;
+}
+.tree-left .el-tabs__header {
+    margin: 10px 20px;
+}
+.tree-left .el-tabs__nav {
+    width: 100%;
+}
+.tree-left .el-tabs__item {
+    width: 50%;
+    text-align: center;
+    height: 34px;
+    line-height: 34px;
+    color: #575962;
+}
+.tree-left .el-tabs--card>.el-tabs__header .el-tabs__nav {
+    border-radius: 4px;
+}
+.tree-left .el-tabs--card>.el-tabs__header .el-tabs__item {
+    border-color: #E3E6ED;
+}
+.tree-left .el-tabs--card>.el-tabs__header .el-tabs__item.is-active {
+    border-color: #169AFF;
+}
+.tree-left .el-tabs__item:first-child {
+    border-radius: 4px 0 0 4px;
+}
+.tree-left .el-tabs__item:last-child {
+    border-radius: 0 4px 4px 0;
+}
+.tree-left .el-tabs__item.is-active {
+    background: #169AFF;
+    color: #fff;
+    border-color: #169AFF;
+}
+#org_framework .opt-btn {
+    margin-bottom: 10px;
+}
+.opt-btn .btn-secondary {
+    color: #575962;
+}
+.opt-btn .btn {
+    margin-right: 5px;
+}
+.opt-btn i {
+    color: #7C828D;
+    font-size: 16px;
+    vertical-align: middle;
+}
+.tree-left  .custom-tree-node .flaticon-map:before {
+    color: #afb2c1;
+}
+.search-title {
+    height: 40px;
+    line-height: 40px;
+    padding: 0 10px;
+    background: #EAF6FF;
+    font-size: 15px;
+    color: #575962;
+}
+.tree-left .search-org {
+    width: 279px;
+    margin: 10px 20px 0 20px;
+}
+/*tree-left end*/
+/*tree-right start*/
+.tree-right {
+    margin-left: 320px;
+    padding-bottom: 10px;
+}
+.right-title {
+    height: 48px;
+    line-height: 48px;
+    border-bottom: 1px solid #EBEDF2;
+    padding: 0 20px;
+    color: #AFB2C1;
+}
+.right-title .depart-name {
+    color: #575962;
+    font-size: 18px;
+}
+.right-title .staff-count {
+    color: #7C828D;
+}
+.tree-right  .right-content {
+    padding-left: 20px;
+}
+.tree-right .right-nav {
+    padding: 8px 0;
+}
+.right-nav .map-icon {
+    color: #169AFF;
+    font-size: 18px;
+}
+.tree-right .bread-nav {
+    padding-left: 5px;
+    vertical-align: middle;
+}
+.bread-nav .next-node {
+    color: #AFB2C1;
+    padding: 0 5px 0 2px;
+}
+.right-nav .bread-nav .last-nav {
+    color: #7C828D;
+}
+.right-content .p-header {
+    height: 40px;
+    line-height: 40px;
+    color: #575962;
+    font-size: 18px;
+}
+.right-content .p-header i {
+    padding-right: 5px;
+}
+.right-btn-group {
+    height: 48px;
+    line-height: 46px;
+    background: #F9FBFC;
+    padding: 0 10px;
+}
+.children-apart {
+    margin-bottom: 30px;
+}
+.children-apart .apart-item {
+    height: 48px;
+    line-height: 48px;
+    font-size: 14px;
+    color: #575962;
+    cursor: pointer;
+}
+.children-apart .apart-item:hover {
+    background: #f4f8fa;
+}
+.children-apart .apart-item i:before {
+    color: #C3E5FF;
+    padding-right: 5px;
+}
+.children-apart .apart-item .flaticon-map:before {
+    color: #afb2c1;
+}
+.right-click-opt {
+    /*display: none;*/
+    background: #fff;
+    -webkit-box-shadow: 0px 1px 15px 1px rgba(69,65,78,0.08);
+    box-shadow: 0px 1px 15px 1px rgba(69,65,78,0.08);
+    position: absolute;
+    width: 200px;
+    color: #595762;
+    z-index: 1000;
+}
+.right-click-opt p {
+    margin: 8px 20px;
+    cursor: pointer;
+}
+.show-more-item {
+    color: #169AFF;
+    padding: 10px 30px;
+    line-height: 40px;
+    cursor: pointer;
+}
+.show-more-item i {
+    padding-left: 5px;
+    font-size: 14px;
+}
+.search-list {
+    padding: 0 20px;
+    margin-right: 0;
+}
+.search-list .el-tree {
+    padding: 0!important;
+}
+.add-org-group {
+    display: inline-block;
+}
+.add-org-group .dropdown-menu>.dropdown-item {
+    line-height: 28px;
+}
+/*右侧滑窗right-sidebar start*/
+.user-info {
+    margin-bottom: 28px;
+}
+.right-sidebar.show {
+    right: 0;
+}
+.right-sidebar .user-photo {
+    height: 66px;
+    border-radius: 50%;
+}
+.base-info {
+    padding: 10px 20px;
+}
+.user-label {
+    padding: 8px 15px;
+    font-size: 18px;
+}
+.user-label .user-name {
+    border-right: .1rem solid #E3E6ED;
+    padding-right: 12px;
+    margin-right: 8px;
+}
+.user-label .user-id{
+    font-size: 1rem;
+    color: #7C828D;
+}
+label {
+    margin-bottom: 0;
+}
+.el-form {
+    padding-right: 30px;
+}
+.el-form-item {
+    margin-bottom: 15px;
+}
+.apartment-list {
+    min-height: 34px;
+    padding: 0px 10px;
+    display: inline-block;
+    width: 100%;
+    border: 1px solid #dcdfe6;
+    border-radius: 4px;
+    line-height: 1;
+    cursor: pointer;
+}
+.apartment-list .apartment-item {
+    padding: 5px 10px;
+    border-radius: 4px;
+    background: #EBEDF2;
+    white-space: nowrap;
+    display: inline-block;
+    margin: 4px;
+}
+.right-sidebar .el-date-editor.el-input {
+    width: 100%;
+}
+.sel-opu-ac-role {
+    margin-top: 15px;
+}
+.right-sidebar .el-select {
+    width: 100%;
+}
+/* el-dialog 编辑用户部门弹窗 start*/
+.sel-apartment {
+    display: none;
+}
+.sel-apartment.show {
+    display: block;
+}
+.sel-apartment .tree-left {
+    position: inherit;
+    float: inherit;
+    padding: 0;
+    width: 50%;
+}
+.sel-apartment .el-dialog__body {
+    padding: 0;
+    color: #575962;
+}
+.sel-apartment .el-dialog__body:after {
+    display: block;
+    clear: both;
+    content: "";
+}
+.sel-apartment .tree-left .el-tree {
+    padding: 0 10px;
+}
+.sel-apartment .sel-title {
+    font-size: 16px;
+    background: #E7EEF3;
+    padding: 5px 10px;
+}
+.sel-apartment .search-apartment {
+    width: 90%;
+    margin: 10px 5%;
+}
+.selected-apartm {
+    margin-left: 50%;
+}
+.selected-list {
+    margin-top: 10px;
+}
+.selected-item {
+    padding: 10px;
+    margin-left: 10px;
+}
+.selected-item i {
+    display: none;
+}
+.selected-item:hover {
+    background: #EBEDF2;
+}
+.selected-item:hover i {
+    display: inherit;
+    cursor: pointer;
+}
+.selected-apartm .m-scrollable {
+    margin-right: 0;
+}
+.el-form-item.is-success .el-input__inner, .el-form-item.is-success .el-input__inner:focus, .el-form-item.is-success .el-textarea__inner, .el-form-item.is-success .el-textarea__inner:focus {
+    border-color: #dcdfe6;
+}
+.el-form-item__error {
+    padding-top: 2px;
+}
+/* el-dialog 设置组织管理员弹窗 start*/
+.set-admin .search-apartment {
+    width: 95%;
+    margin: 10px;
+}
+/*button重置*/
+.el-button--medium {
+    padding: 9px 14px;
+}

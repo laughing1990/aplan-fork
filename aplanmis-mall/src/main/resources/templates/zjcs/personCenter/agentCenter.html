@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <title>个人中心</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="shortcut icon" href="../../../static/zjcs/common/images/favicon.ico" th:href="@{/zjcs/common/images/favicon.ico}">
+  <!--
+  <link rel="stylesheet"
+    href="/framework-ui/src/main/resources/static/agcloud/framework/ui-private/common/metronic-5/vendors.bundle.css"
+    th:href="@{/agcloud/framework/ui-private/common/metronic-5/vendors.bundle.css}"> -->
+  <!-- <link rel="stylesheet"
+    href="/framework-ui/src/main/resources/static/agcloud/framework/ui-private/default/common/css/metronic.css"
+    th:href="@{/agcloud/framework/ui-private/default/common/css/metronic.css}"> -->
+  <!-- <link rel="stylesheet"
+    href="/framework-ui/src/main/resources/static/agcloud/framework/ui-private/common/element-2/element.css"
+    th:href="@{/agcloud/framework/ui-private/common/element-2/element.css}"> -->
+  <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.css"
+    th:href="@{/agcloud/framework/js-lib/element-2/element.css}" />
+  <link rel="stylesheet"
+    href="/framework-ui/src/main/resources/static/agcloud/framework/ui-private/default/common/css/layout.css"
+    th:href="@{/agcloud/framework/ui-private/default/common/css/layout.css}">
+  <link rel="stylesheet"
+    href="/framework-ui/src/main/resources/static/agcloud/framework/ui-private/default/blue/css/theme.css"
+    th:href="@{/agcloud/framework/ui-private/default/blue/css/theme.css}">
+
+  <link rel="stylesheet" href="../../../static/zjcs/personCenter/css/bootstrap.min.css"
+    th:href="@{/zjcs/personCenter/css/bootstrap.min.css}">
+  <link rel="stylesheet" href="../../../static/zjcs/common/css/reset.css" th:href="@{/zjcs/common/css/reset.css}">
+  <link rel="stylesheet" href="../../../static/zjcs/personCenter/css/agentCenter.css"
+    th:href="@{/zjcs/personCenter/css/agentCenter.css}">
+
+  <script>
+    var ctx = '[[@{/}]]';
+    // var ctx = 'http://192.168.15.4:8084/aplanmis-mall/';
+    
+    // var ctx = 'http://192.168.32.46:8084/aplanmis-mall/';
+    // var ctx = 'http://39.107.139.174:8084/aplanmis-mall/'; //174
+    // var ctx = "http://192.168.14.2:8084/aplanmis-mall/"    //振强
+    // var ctx = "http://192.168.14.39:8084/aplanmis-mall/"; //杰文
+    // var ctx = "http://192.168.14.43:8084/aplanmis-mall/"; //泽浩
+  </script>
+</head>
+
+<body class="" style="padding: 0;">
+  <div class="index" id="app" v-cloak v-loading.fullscreen.lock="loading">
+    <!-- 头部 -->
+
+
+
+    <div class="header" style="min-width: 1200px;">
+      <iframe src="../common/header.html" th:src="@{header.html}" frameborder="0"></iframe>
+    </div>
+    <!-- <div class="header">
+      <iframe src="common/header.html" th:src="@{header.html}" frameborder="0"></iframe>
+    </div> -->
+
+
+    <div class="person-content-wrap" :style="{height: contentH}">
+      <!-- 面包屑 -->
+      <div class="crumbs-wrap">
+        <span class="inlineblock-midd crumbs-icon"></span>
+        <span class="crumbs-tip">当前位置：</span>
+        <el-breadcrumb separator-class="el-icon-arrow-right" class="inlineblock-midd">
+          <el-breadcrumb-item><a href="../index.html" th:href="@{index.html}">首页</a></el-breadcrumb-item>
+          <el-breadcrumb-item><span class="crumbs-cur">中介机构个人中心</span></el-breadcrumb-item>
+        </el-breadcrumb>
+      </div>
+      <!-- 个人中心页面 -->
+      <div class="person-centre-box clearfix">
+        <!-- 左侧菜单栏 -->
+        <div class="menu-sidebar">
+          <!-- 个人信息 -->
+          <div class="personal-box">
+              <img class="person-bg-img" src="../../../static/zjcs/personCenter/img/Bg.png" alt="" th:src="@{/zjcs/personCenter/img/Bg.png}">
+            <div class="person-photo">
+              <img v-if="showNormalPhoto" src="../../../static/zjcs/personCenter/img/photo.png" alt="" th:src="@{/zjcs/personCenter/img/photo.png}">
+              <img v-else :src="imgctx + 'supermarket/main/getHeadImage' + '?time='+new Date()" @error="errorLoadPhoto">
+            </div>
+            <p class="person-name">{{currentLoginInfo.loginName}}</p>
+            <span class="person-set" style="display: none;"></span>
+          </div>
+          <!-- 中介机构菜单 -->
+          <ul class="menu-nav">
+            <li v-for="item in agencyMenuList" :key="item.itemName">
+              <!-- <a href="javascript:;">{{item.itemName}}</a> -->
+              <p>{{item.itemName}}</p>
+              <ul class="nav-tree">
+                <li :class="[i.value==agencyItemSelect ? 'active': '']" v-for="i in item.childList" :key="i.value"
+                  @click.stop="agencyMenuSelect(i)">{{i.name}}</li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+        <div class="content-wrap">
+          <!-- 中介机构内容start -->
+          <div class="agency-content-wrap content" id="agency-content-wrap" style="min-height:700px;">
+
+          </div>
+          <!-- 中介机构内容end -->
+        </div>
+      </div>
+    </div>
+
+    <!-- footer -->
+
+    <div class="footer" style="min-width: 1200px;">
+      <iframe src="../common/footer.html" th:src="@{footer.html}" frameborder="0"></iframe>
+    </div>
+
+    <!-- <div class="footer">
+      <iframe src="common/footer.html" th:src="@{footer.html}" frameborder="0"></iframe>
+    </div> -->
+
+
+  </div>
+</body>
+
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js"
+  th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js"
+  th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js"
+  th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
+<!--<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js"-->
+<!--  th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>-->
+<script src="../../../static/common/js/common.js" th:src="@{/common/js/common.js}"></script>
+
+
+<script src="../../../static/zjcs/personCenter/js/mixins.js" th:src="@{/zjcs/personCenter/js/mixins.js}"></script>
+<script src="../../../static/zjcs/personCenter/js/agentCenter.js" th:src="@{/zjcs/personCenter/js/agentCenter.js}"></script>
+
+
+</html>

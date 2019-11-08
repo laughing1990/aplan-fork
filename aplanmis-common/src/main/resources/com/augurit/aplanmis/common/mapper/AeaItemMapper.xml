@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaItemMapper">
+
+    <sql id="allColumns">
+        ITEM_ID  itemId,
+        PARENT_ITEM_ID  parentItemId,
+        ITEM_SEQ  itemSeq,
+        CREATER  creater,
+        CREATE_TIME  createTime,
+        MODIFIER  modifier,
+        MODIFY_TIME  modifyTime,
+        ROOT_ORG_ID rootOrgId
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaItemById" resultType="AeaItem">
+        select
+            <include refid="allColumns"/>
+        from AEA_ITEM item
+        where item.ITEM_ID = #{id}
+    </select>
+
+    <!-- 根据父事项的id获取父事项下的所有子事项-->
+    <select id="getAeaItemByParentItemId" resultType="AeaItem">
+        select
+            <include refid="allColumns"/>
+        from AEA_ITEM item
+        where item.PARENT_ITEM_ID = #{parentItemId}
+    </select>
+
+
+    <select id="getAeaItemByItemSeq" resultType="AeaItem">
+        select
+            <include refid="allColumns"/>
+        from AEA_ITEM item
+        where item.ITEM_SEQ = #{itemSeq}
+    </select>
+
+    <select id="listAllChildItem" resultType="AeaItem">
+        select
+            <include refid="allColumns"/>
+        from AEA_ITEM
+        <where>
+            AND ITEM_ID != #{itemId}
+            AND ITEM_SEQ like concat('%.',concat(#{itemId},'.%'))
+            AND ROOT_ORG_ID = #{rootOrgId}
+        </where>
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaItem" resultType="AeaItem">
+        select
+        <include refid="allColumns"/>
+        from AEA_ITEM
+        <where>
+            <if test="itemId != null">
+                AND ITEM_ID = #{itemId}
+            </if>
+            <if test="parentItemId != null">
+                AND PARENT_ITEM_ID = #{parentItemId}
+            </if>
+            <if test="itemSeq != null">
+                AND ITEM_SEQ = #{itemSeq}
+            </if>
+            <if test="creater != null">
+                AND CREATER = #{creater}
+            </if>
+            <if test="createTime != null">
+                AND CREATE_TIME = #{createTime}
+            </if>
+            <if test="modifier != null">
+                AND MODIFIER = #{modifier}
+            </if>
+            <if test="modifyTime != null">
+                AND MODIFY_TIME = #{modifyTime}
+            </if>
+            <if test="rootOrgId != null">
+                AND ROOT_ORG_ID = #{rootOrgId}
+            </if>
+        </where>
+    </select>
+    <!--4 根据条件查询实体list,返回分页对象 -->
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaItem" parameterType="AeaItem">
+        insert into AEA_ITEM (ITEM_ID, PARENT_ITEM_ID, ITEM_SEQ, CREATER, CREATE_TIME, MODIFIER, MODIFY_TIME,ROOT_ORG_ID)
+        values (#{itemId}, #{parentItemId}, #{itemSeq}, #{creater}, #{createTime}, #{modifier}, #{modifyTime},#{rootOrgId})
+    </insert>
+
+    <!--6 修改实体对象 -->
+    <update id="updateAeaItem" parameterType="AeaItem">
+        update AEA_ITEM
+        <set>
+            <if test="itemId != null">
+                ITEM_ID = #{itemId},
+            </if>
+            <if test="parentItemId != null">
+                PARENT_ITEM_ID = #{parentItemId},
+            </if>
+            <if test="itemSeq != null">
+                ITEM_SEQ = #{itemSeq},
+            </if>
+            <if test="creater != null">
+                CREATER = #{creater},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime},
+            </if>
+            <if test="modifier != null">
+                MODIFIER = #{modifier},
+            </if>
+            <if test="modifyTime != null">
+                MODIFY_TIME = #{modifyTime},
+            </if>
+            <if test="rootOrgId != null">
+                ROOT_ORG_ID = #{rootOrgId},
+            </if>
+        </set>
+        where ITEM_ID = #{itemId}
+    </update>
+
+    <!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaItem">
+        delete
+        from AEA_ITEM
+        where ITEM_ID = #{id}
+    </delete>
+
+    <!--8 删除实体对象列表,根据主键ID列表 -->
+    <!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaItem" id="AeaItemMap">
+        <id property="itemId" column="ITEM_ID"/>
+        <result property="parentItemId" column="PARENT_ITEM_ID"/>
+        <result property="itemSeq" column="ITEM_SEQ"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="modifier" column="MODIFIER"/>
+        <result property="modifyTime" column="MODIFY_TIME"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+    </resultMap>
+
+    <!--8 根据条件查询实体详细信息list -->
+    <select id="listAeaItemInfo" resultType="AeaItem">
+        select
+        <include refid="allColumns"/>
+        from AEA_ITEM item
+        <where>
+            <if test="itemId != null and itemId!='' ">
+                and item.ITEM_ID = #{itemId}
+            </if>
+            <if test="parentItemId != null and parentItemId!='' ">
+                and item.PARENT_ITEM_ID = #{parentItemId}
+            </if>
+            <if test="itemSeq != null and itemSeq!='' ">
+                and item.ITEM_SEQ = #{itemSeq}
+            </if>
+            <if test="creater != null and creater!='' ">
+                and item.CREATER = #{creater}
+            </if>
+            <if test="createTime != null">
+                and item.CREATE_TIME = #{createTime}
+            </if>
+            <if test="modifier != null and modifier!='' ">
+                and item.MODIFIER = #{modifier}
+            </if>
+            <if test="modifyTime != null">
+                and item.MODIFY_TIME = #{modifyTime}
+            </if>
+        </where>
+        order by item.CREATE_TIME desc
+    </select>
+
+</mapper>

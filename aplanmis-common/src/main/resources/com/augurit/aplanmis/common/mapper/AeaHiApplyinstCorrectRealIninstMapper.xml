@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by tiantian    2019-08-28 17:34:16 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaHiApplyinstCorrectRealIninstMapper" >
+<!--1 返回所有字段的SQL字句 -->
+<sql id="allColumns" >
+    APPLYINST_REAL_ININST_ID  applyinstRealIninstId,
+    APPLYINST_CORRECT_ID  applyinstCorrectId,
+    APPLYINST_DUE_ININST_ID  applyinstDueIninstId,
+    MATINST_ID  matinstId,
+    IS_PASS  isPass,
+    ATT_COUNT  attCount,
+    REAL_PAPER_COUNT  realPaperCount,
+    REAL_COPY_COUNT  realCopyCount,
+    CREATER  creater,
+    CREATE_TIME  createTime,
+    MODIFIER  modifier,
+    MODIFY_TIME  modifyTime,
+    ROOT_ORG_ID  rootOrgId
+    </sql>
+
+    <sql id="allColumns_ahacri">
+    ahacri.APPLYINST_REAL_ININST_ID  applyinstRealIninstId,
+    ahacri.APPLYINST_CORRECT_ID  applyinstCorrectId,
+    ahacri.APPLYINST_DUE_ININST_ID  applyinstDueIninstId,
+    ahacri.MATINST_ID  matinstId,
+    ahacri.IS_PASS  isPass,
+    ahacri.ATT_COUNT  attCount,
+    ahacri.REAL_PAPER_COUNT  realPaperCount,
+    ahacri.REAL_COPY_COUNT  realCopyCount,
+    ahacri.CREATER  creater,
+    ahacri.CREATE_TIME  createTime,
+    ahacri.MODIFIER  modifier,
+    ahacri.MODIFY_TIME  modifyTime,
+    ahacri.ROOT_ORG_ID  rootOrgId
+    </sql>
+
+<!--2 根据主键ID查询单个实体 -->
+<select id="getAeaHiApplyinstCorrectRealIninstById" resultType="AeaHiApplyinstCorrectRealIninst" >
+    select
+    <include refid="allColumns"/>
+    from    AEA_HI_APPLYINST_CORRECT_REAL_ININST
+    where    APPLYINST_REAL_ININST_ID = #{id}
+</select>
+
+    <select id="getCorrectRealIninstByApplyinstCorrectId" resultType="AeaHiApplyinstCorrectRealIninst">
+        SELECT
+        <include refid="allColumns_ahacri"/>,ahim.MATINST_NAME matinstName,ahim.MAT_ID matId,aim.REVIEW_KEY_POINTS
+        reviewKeyPoints,aim.REVIEW_SAMPLE_DOC reviewSampleDoc,aim.SAMPLE_DOC sampleDoc,aim.TEMPLATE_DOC templateDoc
+        FROM AEA_HI_APPLYINST_CORRECT_REAL_ININST ahacri,AEA_HI_ITEM_MATINST ahim,AEA_ITEM_MAT aim
+        WHERE aim.MAT_ID = ahim.MAT_ID
+        AND ahacri.MATINST_ID = ahim.MATINST_ID
+        AND ahacri.APPLYINST_CORRECT_ID = #{applyinstCorrectId}
+        AND ahacri.ROOT_ORG_ID = #{topOrgId}
+    </select>
+
+<!--3 根据条件查询实体list -->
+    <select id="listAeaHiApplyinstCorrectRealIninst" resultType="AeaHiApplyinstCorrectRealIninst" >
+        select
+        <include refid="allColumns"/>
+        from    AEA_HI_APPLYINST_CORRECT_REAL_ININST
+    <where>
+        <if test="applyinstRealIninstId != null" >
+        AND    APPLYINST_REAL_ININST_ID = #{applyinstRealIninstId}
+        </if>
+        <if test="applyinstCorrectId != null" >
+        AND    APPLYINST_CORRECT_ID = #{applyinstCorrectId}
+        </if>
+        <if test="applyinstDueIninstId != null" >
+        AND    APPLYINST_DUE_ININST_ID = #{applyinstDueIninstId}
+        </if>
+        <if test="matinstId != null" >
+        AND    MATINST_ID = #{matinstId}
+        </if>
+        <if test="isPass != null" >
+        AND    IS_PASS = #{isPass}
+        </if>
+        <if test="attCount != null" >
+        AND    ATT_COUNT = #{attCount}
+        </if>
+        <if test="realPaperCount != null" >
+        AND    REAL_PAPER_COUNT = #{realPaperCount}
+        </if>
+        <if test="realCopyCount != null" >
+        AND    REAL_COPY_COUNT = #{realCopyCount}
+        </if>
+        <if test="creater != null" >
+        AND    CREATER = #{creater}
+        </if>
+        <if test="createTime != null" >
+        AND    CREATE_TIME = #{createTime}
+        </if>
+        <if test="modifier != null" >
+        AND    MODIFIER = #{modifier}
+        </if>
+        <if test="modifyTime != null" >
+        AND    MODIFY_TIME = #{modifyTime}
+        </if>
+        <if test="rootOrgId != null" >
+        AND    ROOT_ORG_ID = #{rootOrgId}
+        </if>
+    </where>
+    </select>
+<!--4 根据条件查询实体list,返回分页对象 -->
+
+<!--5 新增实体对象 -->
+<insert id="insertAeaHiApplyinstCorrectRealIninst" parameterType="AeaHiApplyinstCorrectRealIninst" >
+    insert into AEA_HI_APPLYINST_CORRECT_REAL_ININST (
+APPLYINST_REAL_ININST_ID  ,APPLYINST_CORRECT_ID  ,APPLYINST_DUE_ININST_ID  ,MATINST_ID  ,IS_PASS  ,ATT_COUNT  ,REAL_PAPER_COUNT  ,REAL_COPY_COUNT  ,CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME  ,ROOT_ORG_ID  
+    )  values  (
+#{applyinstRealIninstId},#{applyinstCorrectId},#{applyinstDueIninstId},#{matinstId},#{isPass},#{attCount},#{realPaperCount},#{realCopyCount},#{creater},#{createTime},#{modifier},#{modifyTime},  #{rootOrgId}
+    )
+</insert>
+<!--6 修改实体对象 -->
+<update id="updateAeaHiApplyinstCorrectRealIninst" parameterType="AeaHiApplyinstCorrectRealIninst" >
+    update AEA_HI_APPLYINST_CORRECT_REAL_ININST
+    <set >
+        <if test="applyinstRealIninstId != null" >
+        APPLYINST_REAL_ININST_ID = #{applyinstRealIninstId},
+        </if>
+        <if test="applyinstCorrectId != null" >
+        APPLYINST_CORRECT_ID = #{applyinstCorrectId},
+        </if>
+        <if test="applyinstDueIninstId != null" >
+        APPLYINST_DUE_ININST_ID = #{applyinstDueIninstId},
+        </if>
+        <if test="matinstId != null" >
+        MATINST_ID = #{matinstId},
+        </if>
+        <if test="isPass != null" >
+        IS_PASS = #{isPass},
+        </if>
+        <if test="attCount != null" >
+        ATT_COUNT = #{attCount},
+        </if>
+        <if test="realPaperCount != null" >
+        REAL_PAPER_COUNT = #{realPaperCount},
+        </if>
+        <if test="realCopyCount != null" >
+        REAL_COPY_COUNT = #{realCopyCount},
+        </if>
+        <if test="creater != null" >
+        CREATER = #{creater},
+        </if>
+        <if test="createTime != null" >
+        CREATE_TIME = #{createTime},
+        </if>
+        <if test="modifier != null" >
+        MODIFIER = #{modifier},
+        </if>
+        <if test="modifyTime != null" >
+        MODIFY_TIME = #{modifyTime},
+        </if>
+        <if test="rootOrgId != null" >
+        ROOT_ORG_ID = #{rootOrgId},
+        </if>
+    </set>
+    where APPLYINST_REAL_ININST_ID = #{applyinstRealIninstId}
+</update>
+<!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaHiApplyinstCorrectRealIninst">
+        delete from   AEA_HI_APPLYINST_CORRECT_REAL_ININST
+        where
+    APPLYINST_REAL_ININST_ID = #{id}
+    </delete>
+<!--8 删除实体对象列表,根据主键ID列表 -->
+<!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaHiApplyinstCorrectRealIninst" id="AeaHiApplyinstCorrectRealIninstMap">
+        <id property="applyinstRealIninstId" column="APPLYINST_REAL_ININST_ID"/>
+        <result property="applyinstCorrectId" column="APPLYINST_CORRECT_ID"/>
+        <result property="applyinstDueIninstId" column="APPLYINST_DUE_ININST_ID"/>
+        <result property="matinstId" column="MATINST_ID"/>
+        <result property="isPass" column="IS_PASS"/>
+        <result property="attCount" column="ATT_COUNT"/>
+        <result property="realPaperCount" column="REAL_PAPER_COUNT"/>
+        <result property="realCopyCount" column="REAL_COPY_COUNT"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="modifier" column="MODIFIER"/>
+        <result property="modifyTime" column="MODIFY_TIME"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+    </resultMap>
+</mapper>

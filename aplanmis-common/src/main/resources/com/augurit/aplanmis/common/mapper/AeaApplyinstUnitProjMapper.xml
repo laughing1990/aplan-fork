@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by chenzh    2019-07-04 19:24:00 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaApplyinstUnitProjMapper">
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns">
+        APPLYINST_UNIT_PROJ_ID  applyinstUnitProjId,
+        UNIT_PROJ_ID  unitProjId,
+        APPLYINST_ID  applyinstId,
+        IS_DELETED  isDeleted,
+        CREATER  creater,
+        CREATE_TIME  createTime
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaApplyinstUnitProjById" resultType="AeaApplyinstUnitProj">
+        select
+        <include refid="allColumns"/>
+        from AEA_APPLYINST_UNIT_PROJ
+        where APPLYINST_UNIT_PROJ_ID = #{id}
+        AND IS_DELETED = '0'
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaApplyinstUnitProj" resultType="AeaApplyinstUnitProj">
+        select
+        <include refid="allColumns"/>
+        from AEA_APPLYINST_UNIT_PROJ
+        <where>
+            <if test="applyinstUnitProjId != null">
+                AND APPLYINST_UNIT_PROJ_ID = #{applyinstUnitProjId}
+            </if>
+            <if test="unitProjId != null">
+                AND UNIT_PROJ_ID = #{unitProjId}
+            </if>
+            <if test="applyinstId != null">
+                AND APPLYINST_ID = #{applyinstId}
+            </if>
+            AND IS_DELETED = '0'
+        </where>
+    </select>
+
+    <select id="getAeaApplyinstUnitProjByApplyinstId"
+            resultType="com.augurit.aplanmis.common.domain.AeaApplyinstUnitProj">
+        select
+        <include refid="allColumns"/>
+        from AEA_APPLYINST_UNIT_PROJ where APPLYINST_ID=#{applyinstId}
+    </select>
+    <!--4 根据条件查询实体list,返回分页对象 -->
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaApplyinstUnitProj" parameterType="AeaApplyinstUnitProj">
+        insert into AEA_APPLYINST_UNIT_PROJ (
+        APPLYINST_UNIT_PROJ_ID  ,UNIT_PROJ_ID  ,APPLYINST_ID  ,IS_DELETED  ,CREATER  ,CREATE_TIME
+            )  values  (
+        #{applyinstUnitProjId},#{unitProjId},#{applyinstId},#{isDeleted},#{creater},  #{createTime}
+            )
+    </insert>
+
+    <insert id="batchInsertAeaApplyinstUnitProjMapper" parameterType="AeaApplyinstUnitProj">
+        insert into AEA_APPLYINST_UNIT_PROJ (
+        APPLYINST_UNIT_PROJ_ID ,UNIT_PROJ_ID ,APPLYINST_ID ,IS_DELETED ,CREATER ,CREATE_TIME
+        ) values
+        <foreach collection="aeaApplyinstUnitProjList" item="aeaApplyinstUnitProj" separator=",">
+            (#{aeaApplyinstUnitProj.applyinstUnitProjId},#{aeaApplyinstUnitProj.unitProjId},#{aeaApplyinstUnitProj.applyinstId},#{aeaApplyinstUnitProj.isDeleted},#{aeaApplyinstUnitProj.creater},
+            #{aeaApplyinstUnitProj.createTime})
+        </foreach>
+    </insert>
+
+    <!--6 修改实体对象 -->
+    <update id="updateAeaApplyinstUnitProj" parameterType="AeaApplyinstUnitProj">
+        update AEA_APPLYINST_UNIT_PROJ
+        <set>
+            <if test="applyinstUnitProjId != null">
+                APPLYINST_UNIT_PROJ_ID = #{applyinstUnitProjId},
+            </if>
+            <if test="unitProjId != null">
+                UNIT_PROJ_ID = #{unitProjId},
+            </if>
+            <if test="applyinstId != null">
+                APPLYINST_ID = #{applyinstId},
+            </if>
+            <if test="isDeleted != null">
+                IS_DELETED = #{isDeleted},
+            </if>
+            <if test="creater != null">
+                CREATER = #{creater},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime},
+            </if>
+        </set>
+        where APPLYINST_UNIT_PROJ_ID = #{applyinstUnitProjId}
+    </update>
+    <!--7 删除实体对象,根据主键ID -->
+    <update id="deleteAeaApplyinstUnitProj">
+        update AEA_APPLYINST_UNIT_PROJ
+        <set>
+            IS_DELETED = '1'
+        </set>
+        where APPLYINST_UNIT_PROJ_ID = #{id}
+    </update>
+    <!--8 删除实体对象列表,根据主键ID列表 -->
+    <!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaApplyinstUnitProj" id="AeaApplyinstUnitProjMap">
+        <id property="applyinstUnitProjId" column="APPLYINST_UNIT_PROJ_ID"/>
+        <result property="unitProjId" column="UNIT_PROJ_ID"/>
+        <result property="applyinstId" column="APPLYINST_ID"/>
+        <result property="isDeleted" column="IS_DELETED"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+    </resultMap>
+</mapper>

@@ -1,0 +1,443 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaHiItemInoutinstMapper">
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns">
+        INOUTINST_ID  inoutinstId,
+    ITEMINST_ID  iteminstId,
+    ITEM_INOUT_ID  itemInoutId,
+    MATINST_ID  matinstId,
+    CERTINST_ID  certinstId,
+    CREATER  creater,
+    CREATE_TIME  createTime,
+    MODIFIER  modifier,
+    MODIFY_TIME  modifyTime,
+    IS_COLLECTED  isCollected,
+    IS_PAR_IN  isParIn,
+    PAR_IN_ID  parInId,
+    ROOT_ORG_ID rootOrgId
+    </sql>
+    <sql id="aliasColumns">
+    ${alias}.INOUTINST_ID  inoutinstId,
+    ${alias}.ITEMINST_ID  iteminstId,
+    ${alias}.ITEM_INOUT_ID  itemInoutId,
+    ${alias}.MATINST_ID  matinstId,
+    ${alias}.CERTINST_ID  certinstId,
+    ${alias}.CREATER  creater,
+    ${alias}.CREATE_TIME  createTime,
+    ${alias}.MODIFIER  modifier,
+    ${alias}.MODIFY_TIME  modifyTime,
+    ${alias}.IS_COLLECTED  isCollected,
+    ${alias}.IS_PAR_IN  isParIn,
+    ${alias}.PAR_IN_ID  parInId
+    </sql>
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaHiItemInoutinstById" resultType="AeaHiItemInoutinst">
+        select
+        <include refid="allColumns"/>
+        from AEA_HI_ITEM_INOUTINST
+        where INOUTINST_ID = #{id}
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaHiItemInoutinst" resultType="AeaHiItemInoutinst">
+        select
+        <include refid="allColumns"/>
+        from AEA_HI_ITEM_INOUTINST
+        <where>
+            <if test="inoutinstId != null">
+                AND INOUTINST_ID = #{inoutinstId}
+            </if>
+            <if test="iteminstId != null">
+                AND ITEMINST_ID = #{iteminstId}
+            </if>
+            <if test="itemInoutId != null">
+                AND ITEM_INOUT_ID = #{itemInoutId}
+            </if>
+            <if test="matinstId != null">
+                AND MATINST_ID = #{matinstId}
+            </if>
+            <if test="certinstId != null">
+                AND CERTINST_ID = #{certinstId}
+            </if>
+            <if test="creater != null">
+                AND CREATER = #{creater}
+            </if>
+            <if test="createTime != null">
+                AND CREATE_TIME = #{createTime}
+            </if>
+            <if test="modifier != null">
+                AND MODIFIER = #{modifier}
+            </if>
+            <if test="modifyTime != null">
+                AND MODIFY_TIME = #{modifyTime}
+            </if>
+            <if test="isCollected != null">
+                AND IS_COLLECTED = #{isCollected}
+            </if>
+            <if test="isParIn != null">
+                AND IS_PAR_IN = #{isParIn}
+            </if>
+            <if test="parInId != null">
+                AND PAR_IN_ID = #{parInId}
+            </if>
+            <if test="rootOrgId != null">
+                AND ROOT_ORG_ID = #{rootOrgId}
+            </if>
+        </where>
+    </select>
+    <select id="getAeaHiItemInoutinstByMatinstId" resultType="com.augurit.aplanmis.common.domain.AeaHiItemInoutinst">
+        select
+        <include refid="allColumns"/>
+        from AEA_HI_ITEM_INOUTINST
+        where MATINST_ID = #{matinstId}
+    </select>
+    <!--4 根据条件查询实体list,返回分页对象 -->
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaHiItemInoutinst" parameterType="AeaHiItemInoutinst">
+        insert into AEA_HI_ITEM_INOUTINST (INOUTINST_ID, ITEMINST_ID, ITEM_INOUT_ID, MATINST_ID, CERTINST_ID, CREATER,
+                                           CREATE_TIME, MODIFIER, MODIFY_TIME, IS_COLLECTED, IS_PAR_IN, PAR_IN_ID,ROOT_ORG_ID)
+        values (#{inoutinstId}, #{iteminstId}, #{itemInoutId}, #{matinstId}, #{certinstId}, #{creater}, #{createTime},
+                #{modifier}, #{modifyTime}, #{isCollected}, #{isParIn}, #{parInId},#{rootOrgId})
+    </insert>
+    <!--6 修改实体对象 -->
+    <update id="updateAeaHiItemInoutinst" parameterType="AeaHiItemInoutinst">
+        update AEA_HI_ITEM_INOUTINST
+        <set>
+            <if test="inoutinstId != null">
+                INOUTINST_ID = #{inoutinstId},
+            </if>
+            <if test="iteminstId != null">
+                ITEMINST_ID = #{iteminstId},
+            </if>
+            <if test="itemInoutId != null">
+                ITEM_INOUT_ID = #{itemInoutId},
+            </if>
+            <if test="matinstId != null">
+                MATINST_ID = #{matinstId},
+            </if>
+            <if test="certinstId != null">
+                CERTINST_ID = #{certinstId},
+            </if>
+            <if test="creater != null">
+                CREATER = #{creater},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime},
+            </if>
+            <if test="modifier != null">
+                MODIFIER = #{modifier},
+            </if>
+            <if test="modifyTime != null">
+                MODIFY_TIME = #{modifyTime},
+            </if>
+            <if test="isCollected != null">
+                IS_COLLECTED = #{isCollected},
+            </if>
+            <if test="isParIn != null">
+                IS_PAR_IN = #{isParIn},
+            </if>
+            <if test="parInId != null">
+                PAR_IN_ID = #{parInId},
+            </if>
+            <if test="rootOrgId != null">
+                ROOT_ORG_ID = #{rootOrgId},
+            </if>
+        </set>
+        where INOUTINST_ID = #{inoutinstId}
+    </update>
+
+    <update id="batchUpdateAeaHiItemInoutinst" parameterType="java.util.List">
+        <if test="_databaseId == 'oracle'">
+            <foreach collection="list" open="begin" close=";end;" separator=";" item="item">
+                update AEA_HI_ITEM_INOUTINST
+                <set>
+                    <if test="item.inoutinstId != null">
+                        INOUTINST_ID = #{item.inoutinstId},
+                    </if>
+                    <if test="item.iteminstId != null">
+                        ITEMINST_ID = #{item.iteminstId},
+                    </if>
+                    <if test="item.itemInoutId != null">
+                        ITEM_INOUT_ID = #{item.itemInoutId},
+                    </if>
+                    <if test="item.matinstId != null">
+                        MATINST_ID = #{item.matinstId},
+                    </if>
+                    <if test="item.certinstId != null">
+                        CERTINST_ID = #{item.certinstId},
+                    </if>
+                    <if test="item.creater != null">
+                        CREATER = #{item.creater},
+                    </if>
+                    <if test="item.createTime != null">
+                        CREATE_TIME = #{item.createTime},
+                    </if>
+                    <if test="item.modifier != null">
+                        MODIFIER = #{item.modifier},
+                    </if>
+                    <if test="item.modifyTime != null">
+                        MODIFY_TIME = #{item.modifyTime},
+                    </if>
+                    <if test="item.isCollected != null">
+                        IS_COLLECTED = #{item.isCollected},
+                    </if>
+                    <if test="item.isParIn != null">
+                        IS_PAR_IN = #{item.isParIn},
+                    </if>
+                    <if test="item.parInId != null">
+                        PAR_IN_ID = #{item.parInId},
+                    </if>
+                    <if test="item.rootOrgId != null">
+                        ROOT_ORG_ID = #{item.rootOrgId}
+                    </if>
+                </set>
+                where INOUTINST_ID = #{item.inoutinstId}
+            </foreach>
+        </if>
+        <if test="_databaseId == 'mysql'">
+            <foreach collection="list" open="" close="" separator=";" item="item">
+                update AEA_HI_ITEM_INOUTINST
+                <set>
+                    <if test="item.inoutinstId != null">
+                        INOUTINST_ID = #{item.inoutinstId},
+                    </if>
+                    <if test="item.iteminstId != null">
+                        ITEMINST_ID = #{item.iteminstId},
+                    </if>
+                    <if test="item.itemInoutId != null">
+                        ITEM_INOUT_ID = #{item.itemInoutId},
+                    </if>
+                    <if test="item.matinstId != null">
+                        MATINST_ID = #{item.matinstId},
+                    </if>
+                    <if test="item.certinstId != null">
+                        CERTINST_ID = #{item.certinstId},
+                    </if>
+                    <if test="item.creater != null">
+                        CREATER = #{item.creater},
+                    </if>
+                    <if test="item.createTime != null">
+                        CREATE_TIME = #{item.createTime},
+                    </if>
+                    <if test="item.modifier != null">
+                        MODIFIER = #{item.modifier},
+                    </if>
+                    <if test="item.modifyTime != null">
+                        MODIFY_TIME = #{item.modifyTime},
+                    </if>
+                    <if test="item.isCollected != null">
+                        IS_COLLECTED = #{item.isCollected},
+                    </if>
+                    <if test="item.isParIn != null">
+                        IS_PAR_IN = #{item.isParIn},
+                    </if>
+                    <if test="item.parInId != null">
+                        PAR_IN_ID = #{item.parInId},
+                    </if>
+                    <if test="item.rootOrgId != null">
+                        ROOT_ORG_ID = #{item.rootOrgId}
+                    </if>
+                </set>
+                where INOUTINST_ID = #{item.inoutinstId}
+            </foreach>
+        </if>
+
+
+    </update>
+
+    <!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaHiItemInoutinst">
+        delete
+        from AEA_HI_ITEM_INOUTINST
+        where INOUTINST_ID = #{id}
+    </delete>
+    <delete id="deleteAeaHiItemInoutinstByMatinstId">
+        delete from AEA_HI_ITEM_INOUTINST where MATINST_ID=#{matinstId}
+    </delete>
+    <!--根据证照实例ID批量删除-->
+    <delete id="deleteAeaHiItemInoutinstByCertinstIds">
+        delete from AEA_HI_ITEM_INOUTINST where CERTINST_ID in
+        <foreach collection="certinstIds" close=")" open="(" separator="," item="certinstId">#{certinstId}</foreach>
+    </delete>
+    <!--批量插入-->
+    <insert id="batchInsertAeaHiItemInoutinst" parameterType="java.util.List">
+        insert into AEA_HI_ITEM_INOUTINST (
+        INOUTINST_ID ,ITEMINST_ID ,ITEM_INOUT_ID ,MATINST_ID ,CERTINST_ID ,CREATER ,CREATE_TIME ,MODIFIER ,MODIFY_TIME
+        ,IS_COLLECTED ,IS_PAR_IN ,PAR_IN_ID,ROOT_ORG_ID
+        )
+        <foreach collection="list" item="item" index="index" separator="UNION ALL">
+            select
+            #{item.inoutinstId},#{item.iteminstId},#{item.itemInoutId},#{item.matinstId},#{item.certinstId},#{item.creater},#{item.createTime},#{item.modifier},#{item.modifyTime},#{item.isCollected},#{item.isParIn},#{item.parInId},#{item.rootOrgId}
+            from dual
+        </foreach>
+    </insert>
+
+    <select id="getAeaHiItemInoutinstOutByIteminstId" resultType="AeaHiItemInoutinst">
+        select
+        <include refid="aliasColumns">
+            <property name="alias" value="ahii"/>
+        </include>
+        from aea_hi_item_inoutinst ahii,
+        (
+        select aii.inout_id from aea_hi_iteminst hii ,aea_item_inout aii where hii.ITEMINST_ID = #{iteminstId} and
+        aii.item_ver_id= hii.ITEM_VER_ID and aii.is_input='0' and aii.file_type='cert' and aii.IS_DELETED='0'
+        )ggg
+        where ahii.ITEMINST_ID = #{iteminstId} and ggg.inout_id = ahii.item_inout_id
+
+    </select>
+    <select id="getAeaHiItemInoutinstOutByIteminstIdWithoutInOut" resultType="AeaHiItemInoutinst">
+        select <include refid="aliasColumns"><property name="alias" value="ahii"></property></include> from aea_hi_item_inoutinst ahii ,
+        aea_item_inout aii
+        where ahii.ITEMINST_ID = #{iteminstId}
+        and ahii.ITEM_INOUT_ID=aii.INOUT_ID
+        and aii.IS_INPUT='0'
+        and ahii.ROOT_ORG_ID = #{rootOrgId}
+        and aii.ROOT_ORG_ID=#{rootOrgId}
+        and aii.IS_DELETED='0'
+    </select>
+
+
+    <!--8 删除实体对象列表,根据主键ID列表 -->
+    <!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaHiItemInoutinst" id="AeaHiItemInoutinstMap">
+        <id property="inoutinstId" column="INOUTINST_ID"/>
+        <result property="iteminstId" column="ITEMINST_ID"/>
+        <result property="itemInoutId" column="ITEM_INOUT_ID"/>
+        <result property="matinstId" column="MATINST_ID"/>
+        <result property="certinstId" column="CERTINST_ID"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="modifier" column="MODIFIER"/>
+        <result property="modifyTime" column="MODIFY_TIME"/>
+        <result property="isCollected" column="IS_COLLECTED"/>
+        <result property="isParIn" column="IS_PAR_IN"/>
+        <result property="parInId" column="PAR_IN_ID"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+    </resultMap>
+    <!--获取单项证照实例-->
+    <select id="getAeaHiIteminstCertByIteminstId" resultType="AeaHiItemInoutinst">
+        select
+        <include refid="aliasColumns">
+            <property name="alias" value="ahii"></property>
+        </include>
+        from aea_hi_item_inoutinst ahii ,(
+        select aii.inout_id from aea_hi_iteminst ahi ,aea_item_inout aii where ahi.ITEMINST_ID =#{iteminstId}
+        and aii.FILE_TYPE='cert' and aii.IS_INPUT='0' and aii.IS_DELETED='0' and ahi.ITEM_VER_ID = aii.ITEM_VER_ID
+        ) gg where gg.inout_id = ahii.ITEM_INOUT_ID
+
+    </select>
+
+    <!--获取one单项证照实例-->
+    <select id="getAeaHiIteminstCertByCertinstId" resultType="AeaHiItemInoutinst">
+        select
+        <include refid="aliasColumns">
+            <property name="alias" value="ahii"></property>
+        </include>
+        from aea_hi_item_inoutinst ahii   where ahii.CERTINST_ID=#{certinstId}
+
+    </select>
+
+    <!--获取单项证照实例列表-->
+    <select id="getAeaHiIteminstCertByIteminstIds" resultType="AeaHiItemInoutinst">
+        select
+        <include refid="aliasColumns">
+            <property name="alias" value="ahii"></property>
+        </include>
+        from aea_hi_item_inoutinst ahii ,(
+        select aii.inout_id from aea_hi_iteminst ahi ,aea_item_inout aii where ahi.ITEMINST_ID in
+        <foreach collection="iteminstIds" close=")" open="(" separator="," item="iteminstId"> #{iteminstId}</foreach>
+        and aii.FILE_TYPE='cert' and aii.IS_INPUT='0' and aii.IS_DELETED='0' and ahi.ITEM_VER_ID = aii.ITEM_VER_ID
+        ) gg where gg.inout_id = ahii.ITEM_INOUT_ID
+
+    </select>
+    <!-- 查询单项审批材料实例-->
+    <select id="getSeriesMatingList" resultType="AeaMatinst">
+        SELECT
+        ahim.MATINST_ID as matinstId, ahim.MATINST_NAME as matinstName,
+        ahi1.ITEMINST_NAME as iteminstName, ahi1.ITEM_VER_ID as itemVerId,
+        ahi1.ITEMINST_ID as iteminstId,
+        CASE WHEN ahim.ATT_COUNT IS NULL THEN 0 ELSE ahim.ATT_COUNT END as attCount,
+        CASE WHEN ahim.REAL_COPY_COUNT IS NULL THEN 0 ELSE ahim.REAL_COPY_COUNT END as realCopyCount,
+        CASE WHEN ahim.REAL_PAPER_COUNT IS NULL THEN 0 ELSE ahim.REAL_PAPER_COUNT END as realPaperCount,
+        ahii.INOUTINST_ID as inoutinstId, ahii.IS_COLLECTED as isCollected,
+        ahii.IS_PAR_IN as isParIn, ahii.ITEMINST_ID as iteminstId,
+        ahii.PAR_IN_ID as parInId, aim.MAT_ID as matId, aim.MAT_CODE as matCode, aim.MAT_FROM as matFrom,
+        aim.IS_COMMON as isCommon, aim.DUE_PAPER_COUNT as duePaperCount,
+        aim.DUE_COPY_COUNT as dueCopyCount, ahim.OFFICIAL_DOC_DUE_DATE as officialDocDueDate,
+        ahim.OFFICIAL_DOC_NO as officialDocNo, ahim.OFFICIAL_DOC_TITLE as officialDocTitle,
+        aim.IS_OFFICIAL_DOC as isOfficeDoc, aim.ATT_IS_REQUIRE as attIsRequire
+        FROM AEA_HI_ITEM_INOUTINST ahii
+        LEFT JOIN AEA_HI_ITEMINST ahi1 ON ahi1.ITEMINST_ID = ahii.ITEMINST_ID
+        LEFT JOIN AEA_HI_ITEM_MATINST ahim ON ahii.MATINST_ID = ahim.MATINST_ID
+        LEFT JOIN AEA_ITEM_MAT aim ON aim.MAT_ID = ahim.MAT_ID
+        WHERE ahii.ITEMINST_ID = #{iteminstId} and aim.IS_DELETED='0'
+        <if test="isOfficeDoc!=null and isOfficeDoc!=''">
+            and aim.IS_OFFICIAL_DOC=#{isOfficeDoc}
+        </if>
+        ORDER BY aim.SORT_NO
+    </select>
+
+    <!--查询iteminstId查询并联申报下所有的材料实例 25217e1d-ea1f-4ca7-904d-3bb064cef1e4 -->
+    <select id="getAllUnionMatinstList" resultType="AeaMatinst">
+        SELECT
+        ahim.MATINST_ID as matinstId, ahim.MATINST_NAME as matinstName,
+        ahi1.ITEMINST_NAME as iteminstName, ahi1.ITEM_VER_ID as itemVerId,
+        ahi1.ITEMINST_ID as iteminstId,
+        CASE WHEN ahim.ATT_COUNT IS NULL THEN 0 ELSE ahim.ATT_COUNT END as attCount,
+        CASE WHEN ahim.REAL_COPY_COUNT IS NULL THEN 0 ELSE ahim.REAL_COPY_COUNT END as realCopyCount,
+        CASE WHEN ahim.REAL_PAPER_COUNT IS NULL THEN 0 ELSE ahim.REAL_PAPER_COUNT END as realPaperCount,
+        ahii.INOUTINST_ID as inoutinstId, ahii.IS_COLLECTED as isCollected,
+        ahii.IS_PAR_IN as isParIn, ahii.ITEMINST_ID as iteminstId,
+        ahii.PAR_IN_ID as parInId, aim.MAT_ID as matId, aim.MAT_CODE as matCode, aim.MAT_FROM as matFrom,
+        aim.IS_COMMON as isCommon, aim.DUE_PAPER_COUNT as duePaperCount,
+        aim.DUE_COPY_COUNT as dueCopyCount, ahim.OFFICIAL_DOC_DUE_DATE as officialDocDueDate,
+        ahim.OFFICIAL_DOC_NO as officialDocNo, ahim.OFFICIAL_DOC_TITLE as officialDocTitle,
+        aim.IS_OFFICIAL_DOC as isOfficeDoc, aim.ATT_IS_REQUIRE as attIsRequire
+        FROM AEA_HI_ITEM_INOUTINST ahii
+        LEFT JOIN AEA_HI_ITEMINST ahi1 ON ahi1.ITEMINST_ID = ahii.ITEMINST_ID
+        LEFT JOIN AEA_HI_ITEM_MATINST ahim ON ahii.MATINST_ID = ahim.MATINST_ID
+        LEFT JOIN AEA_ITEM_MAT aim ON aim.MAT_ID = ahim.MAT_ID
+        WHERE ahii.ITEMINST_ID IN (
+        SELECT ahi.ITEMINST_ID FROM AEA_HI_ITEMINST ahi
+        WHERE ahi.STAGEINST_ID IN ( SELECT ahi1.STAGEINST_ID FROM AEA_HI_ITEMINST ahi1 WHERE ahi1.ITEMINST_ID =
+        #{iteminstId})
+        ) and aim.IS_DELETED='0'
+        <if test="isOfficeDoc!=null and isOfficeDoc!=''">
+            and aim.IS_OFFICIAL_DOC=#{isOfficeDoc}
+        </if>
+        ORDER BY aim.SORT_NO
+    </select>
+
+    <!--查询iteminstIds 查询单项或并联事项实例的材料-->
+    <select id="getMatinstListBy" resultType="com.augurit.aplanmis.common.domain.AeaMatinst">
+        SELECT
+        ahim.MATINST_ID as matinstId, ahim.MATINST_NAME as matinstName,
+        ahi1.ITEMINST_NAME as iteminstName, ahi1.ITEM_VER_ID as itemVerId,
+        ahi1.ITEMINST_ID as iteminstId,
+        CASE WHEN ahim.ATT_COUNT IS NULL THEN 0 ELSE ahim.ATT_COUNT END as attCount,
+        CASE WHEN ahim.REAL_COPY_COUNT IS NULL THEN 0 ELSE ahim.REAL_COPY_COUNT END as realCopyCount,
+        CASE WHEN ahim.REAL_PAPER_COUNT IS NULL THEN 0 ELSE ahim.REAL_PAPER_COUNT END as realPaperCount,
+        ahii.INOUTINST_ID as inoutinstId, ahii.IS_COLLECTED as isCollected,
+        ahii.IS_PAR_IN as isParIn, ahii.ITEMINST_ID as iteminstId,
+        ahii.PAR_IN_ID as parInId, aim.MAT_ID as matId, aim.MAT_CODE as matCode, aim.MAT_FROM as matFrom,
+        aim.IS_COMMON as isCommon, aim.DUE_PAPER_COUNT as duePaperCount,
+        aim.DUE_COPY_COUNT as dueCopyCount, ahim.OFFICIAL_DOC_DUE_DATE as officialDocDueDate,
+        ahim.OFFICIAL_DOC_NO as officialDocNo, ahim.OFFICIAL_DOC_TITLE as officialDocTitle,
+        aim.IS_OFFICIAL_DOC as isOfficeDoc, aim.ATT_IS_REQUIRE as attIsRequire
+        FROM AEA_HI_ITEM_INOUTINST ahii
+        LEFT JOIN AEA_HI_ITEMINST ahi1 ON ahi1.ITEMINST_ID = ahii.ITEMINST_ID
+        LEFT JOIN AEA_HI_ITEM_MATINST ahim ON ahii.MATINST_ID = ahim.MATINST_ID
+        LEFT JOIN AEA_ITEM_MAT aim ON aim.MAT_ID = ahim.MAT_ID
+        where ahii.ITEMINST_ID in
+        <foreach collection="iteminstIds" item="iteminstId" open="(" separator="," close=")">
+            #{iteminstId}
+        </foreach>
+        <if test="isOfficeDoc!=null and isOfficeDoc!=''">
+            AND aim.IS_OFFICIAL_DOC = #{isOfficeDoc}
+        </if>
+        ORDER BY aim.SORT_NO
+    </select>
+
+</mapper>

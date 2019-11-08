@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by Administrator    2019-07-04 16:45:15 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaHiItemStateinstMapper">
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns">
+        ${alias}.ITEM_STATEINST_ID  itemStateinstId,
+        ${alias}.APPLYINST_ID  applyinstId,
+        ${alias}.SERIESINST_ID  seriesinstId,
+        ${alias}.STAGEINST_ID  stageinstId,
+        ${alias}.EXEC_STATE_ID  execStateId,
+        ${alias}.PARENT_STATEINST_ID  parentStateinstId,
+        ${alias}.STATEINST_SEQ  stateinstSeq,
+        ${alias}.CREATER  creater,
+        ${alias}.CREATE_TIME  createTime,
+        ${alias}.MODIFIER  modifier,
+        ${alias}.MODIFY_TIME  modifyTime,
+        ${alias}.ROOT_ORG_ID  rootOrgId
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaHiItemStateinstById" resultType="AeaHiItemStateinst">
+        select
+        <include refid="allColumns"><property name="alias" value="ahis"/></include>
+        from AEA_HI_ITEM_STATEINST ahis
+        where ahis.ITEM_STATEINST_ID = #{id}
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaHiItemStateinst" resultType="AeaHiItemStateinst">
+        select
+        <include refid="allColumns"><property name="alias" value="ahis"/></include>
+        from AEA_HI_ITEM_STATEINST ahis
+        <where>
+            <if test="itemStateinstId != null">
+                AND ahis.ITEM_STATEINST_ID = #{itemStateinstId}
+            </if>
+            <if test="applyinstId != null">
+                AND ahis.APPLYINST_ID = #{applyinstId}
+            </if>
+            <if test="seriesinstId != null">
+                AND ahis.SERIESINST_ID = #{seriesinstId}
+            </if>
+            <if test="stageinstId != null">
+                AND ahis.STAGEINST_ID = #{stageinstId}
+            </if>
+            <if test="execStateId != null">
+                AND ahis.EXEC_STATE_ID = #{execStateId}
+            </if>
+            <if test="parentStateinstId != null">
+                AND ahis.PARENT_STATEINST_ID = #{parentStateinstId}
+            </if>
+            <if test="rootOrgId != null">
+                AND ahis.ROOT_ORG_ID = #{rootOrgId}
+            </if>
+        </where>
+    </select>
+    <!--根据主键批量查询-->
+    <select id="listAeaHiItemStateinstByIds" resultType="AeaHiItemStateinst">
+        select
+        <include refid="allColumns"><property name="alias" value="ahis"/></include>
+        from AEA_HI_ITEM_STATEINST ahis
+        where ahis.ITEM_STATEINST_ID in
+        <foreach collection="itemStateinstIds" separator="," open="(" close=")" item="id">#{id}</foreach>
+    </select>
+
+    <select id="listAeaHiItemStateinstByApplyinstIdOrSeriesinstId" resultType="AeaHiItemStateinst">
+        select
+        <include refid="allColumns"><property name="alias" value="ahis"/></include>
+        from AEA_HI_ITEM_STATEINST ahis
+        <where>
+            <if test="applyinstId!=null and applyinstId!=''">
+                AND ahis.APPLYINST_ID=#{applyinstId}
+            </if>
+            <if test="seriesinstId!=null and seriesinstId!=''">
+                AND ahis.SERIESINST_ID=#{seriesinstId}
+            </if>
+        </where>
+    </select>
+
+    <select id="listAeaHiItemStateinstByApplyinstIdOrStageinstId" resultType="AeaHiItemStateinst">
+        select
+        <include refid="allColumns">
+            <property name="alias" value="ahis"/>
+        </include>
+        from AEA_HI_ITEM_STATEINST ahis
+        <where>
+            <if test="applyinstId!=null and applyinstId!=''">
+                AND ahis.APPLYINST_ID=#{applyinstId}
+            </if>
+            <if test="seriesinstId!=null and seriesinstId!=''">
+                AND ahis.STAGEINST_ID=#{stageinstId}
+            </if>
+        </where>
+    </select>
+    <!--4 根据条件查询实体list,返回分页对象 -->
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaHiItemStateinst" parameterType="AeaHiItemStateinst">
+        insert into AEA_HI_ITEM_STATEINST (ITEM_STATEINST_ID, APPLYINST_ID, SERIESINST_ID, EXEC_STATE_ID,
+                                           PARENT_STATEINST_ID, STATEINST_SEQ, CREATER, CREATE_TIME, MODIFIER,
+                                           MODIFY_TIME,ROOT_ORG_ID, STAGEINST_ID)
+        values (#{itemStateinstId}, #{applyinstId}, #{seriesinstId}, #{execStateId}, #{parentStateinstId},
+                #{stateinstSeq}, #{creater}, #{createTime}, #{modifier}, #{modifyTime},#{rootOrgId}, #{stageinstId})
+    </insert>
+    <!--6 修改实体对象 -->
+    <update id="updateAeaHiItemStateinst" parameterType="AeaHiItemStateinst">
+        update AEA_HI_ITEM_STATEINST
+        <set>
+            <if test="itemStateinstId != null">
+                ITEM_STATEINST_ID = #{itemStateinstId},
+            </if>
+            <if test="applyinstId != null">
+                APPLYINST_ID = #{applyinstId},
+            </if>
+            <if test="seriesinstId != null">
+                SERIESINST_ID = #{seriesinstId},
+            </if>
+            <if test="stageinstId != null">
+                STAGEINST_ID = #{stageinstId},
+            </if>
+            <if test="execStateId != null">
+                EXEC_STATE_ID = #{execStateId},
+            </if>
+            <if test="parentStateinstId != null">
+                PARENT_STATEINST_ID = #{parentStateinstId},
+            </if>
+            <if test="stateinstSeq != null">
+                STATEINST_SEQ = #{stateinstSeq},
+            </if>
+            <if test="creater != null">
+                CREATER = #{creater},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime},
+            </if>
+            <if test="modifier != null">
+                MODIFIER = #{modifier},
+            </if>
+            <if test="modifyTime != null">
+                MODIFY_TIME = #{modifyTime},
+            </if>
+            <if test="rootOrgId != null">
+                ROOT_ORG_ID = #{rootOrgId},
+            </if>
+        </set>
+        where ITEM_STATEINST_ID = #{itemStateinstId}
+    </update>
+    <!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaHiItemStateinst">
+        delete
+        from AEA_HI_ITEM_STATEINST
+        where ITEM_STATEINST_ID = #{id}
+    </delete>
+    <!--8 删除实体对象列表,根据主键ID列表 -->
+    <!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaHiItemStateinst" id="AeaHiItemStateinstMap">
+        <id property="itemStateinstId" column="ITEM_STATEINST_ID"/>
+        <result property="applyinstId" column="APPLYINST_ID"/>
+        <result property="seriesinstId" column="SERIESINST_ID"/>
+        <result property="stageinstId" column="STAGEINST_ID"/>
+        <result property="execStateId" column="EXEC_STATE_ID"/>
+        <result property="parentStateinstId" column="PARENT_STATEINST_ID"/>
+        <result property="stateinstSeq" column="STATEINST_SEQ"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="modifier" column="MODIFIER"/>
+        <result property="modifyTime" column="MODIFY_TIME"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+    </resultMap>
+</mapper>

@@ -1,0 +1,167 @@
+body{
+	height: 100%;
+	min-width: 1660px;
+}
+/* BEGIN 覆盖metronic的样式*/
+.m-portlet{
+	border: none;
+}
+.m-datatable.m-datatable--default > .m-datatable__pager {
+	margin-top: 20px;
+	position: absolute;
+	bottom: 28px;
+	right: 53px;
+}
+/* END 覆盖metronic的样式*/
+
+/*BEGIN 头部*/
+#msg-header .m-grid__item{
+	background: #fff!important;
+}
+#msg-header .agcloud-m-title{
+	border: 0;
+	border-radius: 3px;
+	height: 42px;
+	line-height: 42px;
+	color: #555;
+	background-color: #fff !important;
+	border-bottom: 1px solid #E8E8E8;
+}
+#msg-header .agcloud-title-icon{
+	display: -webkit-box;
+	display: -ms-flexbox;
+	display: flex;
+	display: -webkit-flex;
+	-webkit-box-align: center;
+	-ms-flex-align: center;
+	align-items: center;
+	margin-left: 15px;
+	font-size: 16px;
+	font-weight: bold;
+}
+#msg-header .agcloud-title-icon span{
+	margin-left: 10px;
+}
+
+.operate-btn-box {
+	height: 58px;
+	padding-left: 15px;
+	border-bottom: 1px solid #E8E8E8;
+	position: relative;
+}
+.operate-btn-box .operate-btn{
+	position: absolute;
+	top: 50%;
+	margin-top: -19px;
+
+}
+.operate-btn-box .btn.new_message {
+	padding: 10px 20px;
+	border-radius: 4px!important;
+}
+.operate-btn-box  .input-group{
+	width: 400px;
+	margin-left: 20px;
+}
+/*END 头部*/
+
+/*BEGIN 内容左边部分*/
+.m-body{
+	display: -webkit-box;
+	display: -ms-flexbox;
+	display: flex;
+	height: 100%;
+	padding-top: 15px;
+
+}
+.m-body-left{
+	width: 196px;
+}
+.m-body-right{
+	flex: 2;
+}
+#westSpace{
+	width: 196px!important;
+
+}
+#westSpace .leftbutton{
+	padding: 0 10px 0px 10px;
+}
+#westSpace .leftbutton button{
+	width: 180px;
+	height: 40px;
+	border: none;
+	-webkit-border-radius: inherit;
+	-moz-border-radius: inherit;
+	border-radius: inherit;
+}
+#westSpace .leftbutton button.btn-default{
+	background-color: #fff;
+	color: #333;
+}
+#westSpace .leftbutton button.btn-primary{
+	background-color: #36a4f6;
+	color: #fff;
+}
+/*END 内容左边部分*/
+
+/*BEGIN 内容右边部分*/
+nav-tabs {
+	padding-left: 10px;
+	font-size: 15px;
+	position: relative;
+}
+.nav-tabs .nav-link {
+	border: 1px solid #d9d9d9;
+	border-top-left-radius: 0.25rem;
+	border-top-right-radius: 0.25rem;
+	background: #f4f4f4;
+}
+.nav.nav-tabs .nav-link.active {
+	color: #36a3f7;
+}
+.stage-color {
+	position: absolute;
+	right: 30px;
+	top: 111px;
+}
+.stage-color span {
+	position: relative;
+	font-size: 14px;
+}
+
+.tab-content{
+	height: 100%;
+	border-top: 10px solid #F4F4F4;
+	border-left:10px solid #F4F4F4;
+}
+
+/*END 内容右边部分*/
+
+/* BEGIN 新建消息弹窗*/
+.modal-header{
+	background:#fff;
+	color:#333;
+	border-bottom: 2px solid #36a3f7;
+}
+.modal-title h5{
+	color: #333!important;
+}
+#form-group-btn-box{
+	text-align: right;
+	margin-top: 68px;
+	padding: 10px 0px 4px;
+	border-top: 1px solid #e8e8e8;
+	margin-bottom: 0px;
+}
+/* END 新建消息弹窗*/
+
+/* BEGIN 关闭弹窗按钮样式*/
+.close{
+	position: absolute;
+	top: 16px;
+	right: 13px;
+	font-size:30px!important;
+}
+
+/* END 关闭弹窗按钮样式*/

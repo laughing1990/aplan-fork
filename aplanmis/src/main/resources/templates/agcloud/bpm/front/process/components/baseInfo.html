@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!--公共css,js-->
+    <th:block th:include="common/common :: approveCommonHeader('基本信息')"/>
+    <link rel="stylesheet" href="../../../../../../static/agcloud/bpm/front/process/css/baseInfo.css" th:href="@{/agcloud/bpm/front/process/css/baseInfo.css}">
+    <script>
+    </script>
+</head>
+<body>
+<div id="baseInfo" v-cloak>
+    <el-scrollBar style="height: 100%;">
+        <div class="content">
+            <div class="vertical-tab" id="menu">
+                <ul>
+                    <li class="vertical-label" v-for="(item, index) in verticalTabData" :data-name="item.target"
+                        :class="{'active':activeTab==index}"
+                        @click="activeTab=index;toggle(item,index)">
+                        <a :href="'#'+item.target">{{item.label}}</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="content-right">
+                <el-collapse v-model="activeNames">
+                    <!-- 申报项目信息 start -->
+                    <el-collapse-item class="div-step" id="applyDataInfo" name="1">
+                        <template slot="title">
+                            <i class="header-icon el-icon-document-copy"></i>申报基本信息
+                        </template>
+                        <el-form :model="applyDataForm">
+                            <el-col :span="12">
+                                <el-form-item label="申报流水号：">{{applyDataForm.applyNo}}</el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="申请时间：">{{$options.filters.formatDate(applyDataForm.applyDate)}}
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="事项名称：">{{applyDataForm.itemName}}</el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="实施编码：">{{applyDataForm.iteminstCode}}</el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="项目代码：">{{applyDataForm.projCode}}</el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="项目名称：">{{applyDataForm.projName }}</el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="项目（法人）单位／个人：">{{applyDataForm.applyUnit}}</el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="证照（件）号：">{{applyDataForm.applyIDCard}}</el-form-item>
+                            </el-col>
+
+                            <el-col :span="12">
+                                <el-form-item label="经办单位：">{{applyDataForm.agency || '无'}}</el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="经办单位证照号码：">{{applyDataForm.agencyIDCard || '无'}}</el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="办件类型：">{{applyDataForm.itemProperty || '无'}}</el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="前置条件：">无</el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="查看情形：">
+                                    <el-button type="primary" @click.stop="showParState()">查看情形</el-button>
+                                </el-form-item>
+                            </el-col>
+                        </el-form>
+                    </el-collapse-item>
+                    <!-- 项目基本信息 start -->
+                    <el-collapse-item class="div-step" name="2" id="projInfo">
+                        <template slot="title">
+                            <i class="header-icon el-icon-document-copy"></i>项目基本信息
+                        </template>
+                        <el-form :model="projInfoForm">
+                            <input type="hidden" name="projInfoId" :value="projInfoForm.projInfoId">
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="项目类型：">{{
+                                    $options.filters.changeProjTypeFromDic(projInfoForm.projType) }}
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="项目代码：" class="proj-code-info">{{projInfoForm.localCode}}
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="工程代码：">{{projInfoForm.gcbm}}</el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="项目名称/工程名称：" id="projName">{{projInfoForm.projName}}</el-form-item>
+                            </el-col>
+                            <div v-if="applyDataForm.isForeign=='0'">
+                                <el-col :span="12">
+                                    <el-form-item class="input-inline" label="总投资（万元）：">{{projInfoForm.investSum}}
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="12">
+                                    <el-form-item class="input-inline" label="用地面积（㎡）：">{{projInfoForm.xmYdmj}}
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="12">
+                                    <el-form-item class="input-inline" label="建设性质：">{{
+                                        $options.filters.changeProjNatureFromDic(projInfoForm.projNature) }}
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="12">
+                                    <el-form-item class="input-inline" label="项目开工时间：">{{projInfoForm.nstartTime}}
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="12">
+                                    <el-form-item class="input-inline" label="项目建成时间：">{{projInfoForm.endTime}}
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="12">
+                                    <el-form-item class="input-inline" label="备案文号：" v-show="approveNumClazz">
+                                        {{projInfoForm.foreignApproveNum}}
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="12">
+                                    <el-form-item class="input-inline" label="建设面积（㎡）：">{{projInfoForm.buildAreaSum}}
+                                    </el-form-item>
+                                </el-col>
+                            </div>
+                            <el-col :span="12">
+                                <el-form-item class="input-block" label="项目地址：">{{projInfoForm.projAddr}}</el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="建筑内容：">{{projInfoForm.scaleContent}}</el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="备注：">{{projInfoForm.foreignRemark}}</el-form-item>
+                            </el-col>
+                        </el-form>
+                    </el-collapse-item>
+                    <!--办理意见列表 start -->
+                    <el-collapse-item class="div-step" name="3" id="commentsInfo">
+                        <template slot="title">
+                            <i class="header-icon el-icon-document-copy"></i>办理意见列表
+                        </template>
+                        <el-table :data="commentlist" border tooltip-effect="dark" style="width: 100%">
+                            <el-table-column prop="nodeName" label="节点名称" align="center"></el-table-column>
+                            <el-table-column prop="orgName" label="部门" align="center"></el-table-column>
+                            <el-table-column prop="taskAssignee" label="人员" align="center"></el-table-column>
+                            <el-table-column prop="taskState" label="节点状态" :formatter="formatTaskState" align="center"></el-table-column>
+                            <el-table-column prop="commentMessage" label="意见" align="center"></el-table-column>
+                            <el-table-column prop="sigeInDate" label="办理时间" align="center">
+                                <template slot-scope="scope">{{$options.filters.formatDate(scope.row.sigeInDate)}}
+                                </template>
+                            </el-table-column>
+
+                        </el-table>
+                    </el-collapse-item>
+                    <!-- 事项列表 start -->
+                    <el-collapse-item class="div-step" name="4" id="iteminstList" v-if="isSeries=='0'">
+                        <template slot="title">
+                            <i class="header-icon el-icon-document-copy"></i>事项列表
+                        </template>
+                        <el-table :data="ParallelLsit" border tooltip-effect="dark" style="width: 100%">
+                            <el-table-column type="index" width="50" align="center"></el-table-column>
+                            <el-table-column prop="approveOrgName" label="征求部门" align="center"></el-table-column>
+                            <el-table-column prop="iteminstName" label="事项名称" align="center"></el-table-column>
+                        </el-table>
+                    </el-collapse-item>
+                    <!--材料列表 start-->
+                    <el-collapse-item class="div-step" name="5" id="matsList">
+                        <template slot="title">
+                            <i class="header-icon el-icon-document-copy"></i>材料列表
+                        </template>
+                        <el-table :data="matinstList" border tooltip-effect="dark" style="width: 100%">
+                            <el-table-column type="index" width="50" align="center"></el-table-column>
+                            <el-table-column prop="matName" label="材料名称" align="center"></el-table-column>
+                            <el-table-column prop="matFrom" label="文件来源" align="center" width="120">
+                                <template slot-scope="scope">{{$options.filters.dicCodeItem(scope.row.matFrom)}}
+                                </template>
+                            </el-table-column>
+                            <el-table-column prop="realPaperCount" label="原件是否已验/收" align="center" width="80">
+                                <template slot-scope="scope">
+                                    <i v-if="scope.row.realPaperCount>0" class="el-icon-circle-check cg"></i>
+                                    <i v-else class="el-icon-circle-close cr"></i>
+                                    <!--<span style="margin-left: 10px">{{ scope.row.realPaperCount==0?'否':'是' }}</span>-->
+                                </template>
+                            </el-table-column>
+                            <el-table-column prop="realCopyCount" label="复印件是否已验/收" align="center" width="100">
+                                <template slot-scope="scope">
+                                    <i  v-if="scope.row.realCopyCount>0" class="el-icon-circle-check cg"></i>
+                                    <i  v-else class="el-icon-circle-close cr"></i>
+                                    <!-- <span style="margin-left: 10px">{{ scope.row.realCopyCount==0?'否':'是' }}</span>-->
+                                </template>
+                            </el-table-column>
+                            <el-table-column prop="attCount" label="电子件信息" align="center" width="150">
+                                <template slot-scope="scope">
+                                    <el-button type="primary" v-if="scope.row.attCount !=null && scope.row.attCount > 0" @click.stop="showAttMatinstWindow(scope.row.attMatinstId)">
+                                        {{scope.row.attCount}}
+                                    </el-button>
+                                    <i v-else  class="el-icon-circle-close cr"></i>
+                                    <!--<el-button type="primary" v-else></el-button>-->
+                                </template>
+                            </el-table-column>
+                        </el-table>
+
+                    </el-collapse-item>
+                    <!--联系人信息 start-->
+                    <el-collapse-item class="div-step" name="6" id="linkInfo">
+                        <template slot="title">
+                            <i class="header-icon el-icon-document-copy"></i>联系人信息
+                        </template>
+                        <el-form :model="applyDataForm">
+                            <el-col :span="12">
+                                <el-form-item prop="contact" label="联系人：">{{applyDataForm.contact}}</el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item prop="contactIdNo" label="联系人证件号：">{{applyDataForm.contactIdNo}}
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item prop="contactMobile" label="联系人手机：">{{applyDataForm.contactMobile}}
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item prop="contactMail" label="联系人邮箱：">{{applyDataForm.contactMail}}
+                                </el-form-item>
+                            </el-col>
+                            <!--<el-col :span="12">
+                                <el-form-item prop="agencyContact" label="经办联系人：">{{applyDataForm.agencyContact}}
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item prop="agencyContactIdNo" label="经办联系人证件号：">
+                                    {{applyDataForm.agencyContactIdNo}}
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item prop="agencyContactMobile" label="经办联系人手机：">
+                                    {{applyDataForm.agencyContactMobile}}
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item prop="agencyContactMail" label="经办联系人邮箱：">
+                                    {{applyDataForm.agencyContactMail}}
+                                </el-form-item>
+                            </el-col>-->
+                        </el-form>
+                    </el-collapse-item>
+                </el-collapse>
+            </div>
+        </div>
+    </el-scrollBar>
+</div>
+
+<!-- 引入组件库服务器使用 -->
+<!--<th:block th:include="common/common :: approveCommonfooter"/>-->
+<th:block th:include="common/common :: commonfooter"/>
+
+<script src="../../../../../../static/agcloud/bpm/front/process/js/baseInfo.js" th:src="@{/agcloud/bpm/front/process/js/baseInfo.js}" type="text/javascript"></script>
+
+<script src="../../../../../../static/agcloud/bpm/front/process/js/approval-integration.js" th:src="@{/agcloud/bpm/front/process/js/approval-integration.js}" type="text/javascript"></script>
+
+
+</body>
+</html>

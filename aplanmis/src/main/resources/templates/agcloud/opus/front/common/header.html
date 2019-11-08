@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<!--基于metronic 5.5 demo3-->
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>工程建设审批平台</title>
+  <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/ui-private/common/metronic-5/vendors.bundle.css" th:href="@{/agcloud/framework/ui-private/common/metronic-5/vendors.bundle.css}">
+  <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/ui-private/default/common/css/metronic.css" th:href="@{/agcloud/framework/ui-private/default/common/css/metronic.css}">
+  <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.css" th:href="@{/agcloud/framework/js-lib/element-2/element.css}"/>
+  <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/ui-private/default/common/css/layout.css" th:href="@{/agcloud/framework/ui-private/default/common/css/layout.css}">
+  <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/ui-private/default/blue/css/theme.css" th:href="@{/agcloud/framework/ui-private/default/blue/css/theme.css}">
+  <link rel="stylesheet" href="../../../../../static/agcloud/opus/front/common/css/header.css" th:href="@{/agcloud/opus/front/common/css/header.css}">
+  <script>
+    var ctx = '[[@{/}]]';
+    // var ctx = 'http://192.168.30.45:8080/opus-front/';
+  </script>
+</head>
+<!--BEGIN: body主体内容-->
+
+<body class="m-page--fluid m-aside-left--skin-dark">
+  <div id="header" v-cloak>
+    <!--BEGIN:头部-->
+    <header>
+      <div class="float-left pro-logo">
+        <img src="../../../../../static/agcloud/opus/front/common/images/logo_3.png" alt="奥格云平台" th:src="@{/agcloud/opus/front/common/images/logo_3.png}">
+        <!--<span class="m-badge m-badge&#45;&#45;brand m-badge&#45;&#45;wide m-badge&#45;&#45;warning">v5.0.0</span>-->
+      </div>
+      <div id="m_header_menu" class="m-header-menu m-header-menu--submenu-skin-light">
+        <ul class="m-menu__nav  m-menu__nav--submenu-arrow ">
+          <li v-for="(item,index) in headerDataShow"
+              class="m-menu__item"
+              :class="index==headerActive?'m-menu__item--active':''"
+              @click="headerChangeMenu(item,index,$event);">
+            <a href="javascript:;" class="m-menu__link">
+              <i class="m-menu__link-icon" :class="item.menuIconCss?item.menuIconCss:'flaticon-clipboard'"></i>
+              <span class="m-menu__link-text">{{item.menuName}}</span>
+            </a>
+          </li>
+          <li v-show="showMenuMore"
+              class="m-menu__item pull-more"
+              @mouseenter="showMoreItem=true"
+              @mouseleave="showMoreItem=false">
+            <b class="flaticon-more"></b>
+            <ul class="more-tabs" v-show="showMoreItem">
+              <li v-for="(itemHide,ind) in hideHeaderData"
+                  @click="headerChangeMenu(itemHide,-1,$event);">
+                <i class="more-tabs-icon" :class="itemHide.menuIconCss?itemHide.menuIconCss:'flaticon-clipboard'"></i>
+                <span class="more-tabs-text">{{itemHide.menuName}}</span>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      <div class="m-topbar topbar-login-info">
+        <ul class="m-topbar__nav m-nav m-nav--inline">
+            <li class="m-nav__item m-topbar__languages show-user-info"
+                @mouseenter="editUserInfoFlag = true"
+                @mouseleave="editUserInfoFlag = false">
+              <a href="#" class="m-nav__link">
+                <span class="m-nav__link-text">
+                  <img v-if="userSex==0" src="../../../../../static/agcloud/opus/front/common/images/user_man.jpg"
+                       th:src="@{/agcloud/opus/front/common/images/user_man.jpg}"
+                       class="m-topbar__language-selected-img">
+                  <img v-else src="../../../../../static/agcloud/opus/front/common/images/user_woman.jpg"
+                       th:src="@{/agcloud/opus/front/common/images/user_woman.jpg}"
+                       class="m-topbar__language-selected-img">
+                  <span class="user-role">{{userName}}</span>
+                  </span>
+                <!--<p class="user-name">{{loginName}}</p>-->
+              </a>
+              <div class="login-info" v-show="editUserInfoFlag" style="width: 150px">
+                <div class="login-info-content">
+                  <!--<div class="user-info">
+                    <img v-if="userSex==0" src="../../../../../static/agcloud/opus/front/common/images/user_man.jpg"
+                         th:src="@{/agcloud/opus/front/common/images/user_man.jpg}"
+                         class="user-logo">
+                    <img v-else src="../../../../../static/agcloud/opus/front/common/images/user_woman.jpg"
+                         th:src="@{/agcloud/opus/front/common/images/user_woman.jpg}"
+                         class="user-logo">
+                  </div>-->
+                  <p class="user-detail" @click="showUserInfo=true">个人信息</p>
+                  <p class="edit-password" @click="editPasswordFlag=true">修改密码</p>
+                </div>
+              </div>
+            </li>
+            <li class="m-nav__item" @click="logout($event)">
+              <a href="javascript:;" class="m-nav__link">
+                <span class="m-nav__link-icon"><i class="flaticon-logout"></i></span>
+              </a>
+            </li>
+          </ul>
+      </div>
+    </header>
+    <!--BEGIN:头部-->
+    <!-- begin::主体内容 -->
+    <div class="" :style="{ height: (curHeight-60) + 'px' }">
+      <!-- BEGIN: 左侧菜单 -->
+      <div class="aside-left">
+        <!-- BEGIN: 左侧菜单-->
+        <el-menu
+          default-active="2"
+          class="m-ver-menu"
+          background-color="#2b3448"
+          @mouseleave.native="hideChildrenList()">
+          <el-menu-item class="menu-item el-menu-vertical-demo"
+                        :index="'1-'+index"
+                        :class="index==leftMenuActive?'menu-item-active':''"
+                        v-for="(item, index) in leftData"
+                        :id="item.id"
+                        ref="elMenu"
+                        @mouseenter.native="item.childrenList?showChildrenList(index,$event):''">
+            <template slot="title">
+              <a href="#" class="menu-link " @click="addTab($event,item,activeTabIframe,index)">
+                <i class="menu-link-icon" :class="item.menuIconCss?item.menuIconCss:'flaticon-clipboard'"></i>
+                <span class="menu-link-text">{{item.menuName}}</span>
+                <span class="m-badge m-badge--danger" v-if="item.count!=null||item.count!=undefined"> {{item.count}} </span>
+                <span class="menu-item-here" v-if="index == leftMenuActive"></span>
+              </a>
+            </template>
+            <ul v-if="item.childrenList"
+                class="menu-item-child"
+                v-show="hoverCheck == index"
+                :style="{ top: menuTop + 'px' }"
+                :ref="'elMenu'+index">
+              <el-menu-item :index="'2-'+ind"
+                            v-for="(itemChild,ind) in item.childrenList"
+                            @click="addTab($event,itemChild,activeTabIframe,ind)">
+                <i class="" :class="item.menuIconCss?item.menuIconCss:'flaticon-clipboard'"></i>
+                {{itemChild.menuName}}</el-menu-item>
+            </ul>
+            
+          </el-menu-item>
+        </el-menu>
+        <!-- END: 左侧菜单 -->
+      </div>
+      <!-- END: 左侧模块 -->
+      <!--BEGIN:右侧模块-->
+      <div class="content-right" :style="{ height: (curHeight-60) + 'px' }">
+        <!--BEGIN:顶部选项卡-->
+        <el-tabs
+          v-model="activeTabIframe"
+          closable
+          @tab-remove="removeTab"
+          @tab-click="changeTab"
+          @contextmenu.native.prevent="tabMouseRightClick">
+          <el-tab-pane
+            v-for="(item, index) in activeTabData"
+            :key="item.id"
+            :label="item.menuName"
+            :name="item.id">
+            <div class="content-iframe" :style="{ height: (curHeight-132) + 'px' }">
+              <iframe :src="item.menuInnerUrl" frameborder="0" name="_blank"></iframe>
+            </div>
+          </el-tab-pane>
+        </el-tabs>
+        <div class="popup_menu" v-show="showTabOpt" :style="{top:tabOptTop+10+'px',left:tabOptleft+10+'px'}">
+          <ul>
+            <li @click="closeOther()">
+              <a href="javascript:;"><i class="fa fa-times"></i> 关闭其他标签页</a>
+            </li>
+            <li @click="closeLeft()">
+              <a href="javascript:;"><i class="fa fa-times"></i> 关闭左边标签页</a>
+            </li>
+            <li @click="closeRight()">
+              <a href="javascript:;"><i class="fa fa-times"></i> 关闭右边标签页</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    <!--END：右侧模块-->
+    </div>
+    
+    <!--个人信息弹窗 start-->
+    <el-dialog title="个人信息" :visible.sync="showUserInfo" top="30vh" width="30%">
+      <p class="user-item">登录名：{{loginName}}</p>
+      <p class="user-item">用户名：{{userName}}</p>
+      <p class="user-item">用户邮箱：{{userEmail}}</p>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="showUserInfo = false;">关闭</el-button>
+      </div>
+    </el-dialog>
+    <!--个人信息弹窗 end-->
+    <!--修改密码弹窗 start-->
+    <el-dialog title="修改密码" class="edit-password" :visible.sync="editPasswordFlag" top="30vh" width="40%" @closed="clearDialogData('editPasswordData')">
+      <el-form :model="editPasswordData"
+               :rules="editPasswordRule"
+               ref="editPasswordData">
+        <el-form-item label="请输入原密码："
+                      label-width="200px"
+                      prop="oldPassword">
+          <el-input v-model="editPasswordData.oldPassword" type="password"></el-input>
+        </el-form-item>
+        <el-form-item label="请输入新密码："
+                      label-width="200px"
+                      prop="newPassword">
+          <el-input v-model="editPasswordData.newPassword" type="password"></el-input>
+        </el-form-item>
+        <el-form-item label="请再次输入新密码："
+                      label-width="200px"
+                      prop="newPasswordCheck">
+          <el-input v-model="editPasswordData.newPasswordCheck" type="password"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="editPasswordFlag = false;">取消</el-button>
+        <el-button type="primary" @click="editPasswordSubmit">保存</el-button>
+      </div>
+    </el-dialog>
+    <!--修改密码弹窗 end-->
+  </div>
+  <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js" th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>
+  <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js" th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
+  <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js" th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
+  <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js" th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>
+  <script src="../../../../../static/agcloud/opus/front/common/js/header.js" th:src="@{/agcloud/opus/front/common/js/header.js}"></script>
+  <!--END:js文件-->
+</body>
+<!--END: body主体内容-->
+
+</html>

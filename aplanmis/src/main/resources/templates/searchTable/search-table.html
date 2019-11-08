@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--申报页面-apply-公共引入的js css-->
+<head th:fragment="commonheader(title)">
+  <meta charset="UTF-8">
+  <title th:text="${title}"></title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.css" th:href="@{/agcloud/framework/js-lib/element-2/element.css}"/>
+  <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css" th:href="@{/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css}">
+  <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/css/reset.css" th:href="@{/agcloud/framework/js-lib/agcloud-lib/css/reset.css}">
+  <link rel="stylesheet" href="../../static/searchTable/css/search-table.css" th:href="@{/searchTable/css/search-table.css}">
+  <script>
+    var ctx = '[[@{/}]]';
+    // var ctx = 'http://192.168.32.46:8083/aplanmis-front/';
+  </script>
+</head>
+<body  class="gray-body">
+  <div class="search-table" id="searchTable" v-cloak :style="{height: (curHeight-32)+'px'}">
+    <div class="search-box">
+      <el-form :model="searchFrom" class="search-from clearfix" label-width="100px">
+        <el-col :span="24" class="search-item-fif">
+          <el-form-item label="搜索关键字" class="search-input">
+            <el-input v-model="searchFrom.keyword" placeholder="请输入项目/工程编码、名称等关键词">
+              <el-button slot="append" icon="el-icon-search">查询</el-button>
+            </el-input>
+          </el-form-item>
+          <span class="more-search-item" @click="showMoreSearchItem=!showMoreSearchItem">高级查询 <i class="icon ag" :class="showMoreSearchItem?'ag-up-arrow':'ag-down-arrow'"></i></span>
+        </el-col>
+        <template v-if="showMoreSearchItem">
+          <el-col :span="8">
+            <el-form-item label="申报来源">
+              <el-select v-model="searchFrom.soruce" placeholder="请选择">
+                <el-option label="来源一" value="1"></el-option>
+                <el-option label="来源二" value="2"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="审批类型">
+              <el-radio-group v-model="searchFrom.applyType">
+                <el-radio label="0">全部</el-radio>
+                <el-radio label="1">并联</el-radio>
+                <el-radio label="2">单项</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="所属主题">
+              <el-select v-model="searchFrom.theme" placeholder="请选择">
+                <el-option label="主题一" value="1"></el-option>
+                <el-option label="主题二" value="2"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="审批时限">
+              <el-radio-group v-model="searchFrom.deadline">
+                <el-radio label="0">全部</el-radio>
+                <el-radio label="1">预警</el-radio>
+                <el-radio label="2">逾期</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="申报时间">
+              <el-col :span="10">
+                <el-form-item prop="applyTimeStr">
+                  <el-date-picker type="date" placeholder="选择日期" v-model="searchFrom.applyTimeStr" style="width: 100%;"></el-date-picker>
+                </el-form-item>
+              </el-col>
+              <span class="line fl" style="padding: 0 5px">-</span>
+              <el-col :span="10">
+                <el-form-item prop="applyTimeEnd">
+                  <el-date-picker placeholder="选择日期" v-model="searchFrom.applyTimeEnd" style="width: 100%;"></el-date-picker>
+                </el-form-item>
+              </el-col>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="到达时间">
+              <el-col :span="10">
+                <el-form-item prop="arrTimeStr">
+                  <el-date-picker type="date" placeholder="选择日期" v-model="searchFrom.arrTimeStr" style="width: 100%;"></el-date-picker>
+                </el-form-item>
+              </el-col>
+              <span class="line fl" style="padding: 0 5px">-</span>
+              <el-col :span="10">
+                <el-form-item prop="arrTimeEnd">
+                  <el-date-picker placeholder="选择时间" v-model="searchFrom.arrTimeEnd" style="width: 100%;"></el-date-picker>
+                </el-form-item>
+              </el-col>
+            </el-form-item>
+          </el-col>
+        </template>
+      </el-form>
+    </div>
+    <el-table class="search-content"
+            :data="tableData"
+            border stripe
+            style="width: 100%">
+      <el-table-column
+              label=""
+              width="65">
+        <template slot-scope="scope">
+          <span class="ye-color icon ag ag-mail"></span>
+          <el-popover
+            v-if="scope.row.message&&scope.row.message.length>0"
+            placement="right"
+            width="350"
+            trigger="hover">
+            <el-row class="popover-item" v-for="mesItem in scope.row.message">
+              <el-col class="ye-color" :span="10">{{mesItem.time}}</el-col>
+              <el-col class="ye-color" :span="4">{{mesItem.name}}</el-col>
+              <el-col class="wit-opc-color" :span="10">{{mesItem.label}}</el-col>
+            </el-row>
+            <span slot="reference" class="red-color icon ag ag-message"></span>
+          </el-popover>
+          <span v-else class="red-color icon ag ag-message"></span>
+
+        </template>
+      </el-table-column>
+      <el-table-column
+              prop="soruce"
+              label="申报来源"
+              width="80">
+      </el-table-column>
+      <el-table-column
+              prop="applyType"
+              width="80"
+              label="审批类型">
+      </el-table-column>
+      <el-table-column
+              prop="applyCode"
+              min-width="160"
+              label="申报流水号">
+      </el-table-column>
+      <el-table-column
+              min-width="180px"
+              prop="projName"
+              label="项目/工程名称">
+      </el-table-column>
+      <el-table-column
+              prop="applyMan"
+              min-width="80"
+              label="申请人">
+      </el-table-column>
+      <el-table-column
+              min-width="250px"
+              prop="stageItem"
+              label="阶段/事项/辅线名称">
+        <template slot-scope="scope">
+          <div class="step-status" v-if="scope.row.stageItem.stageName&&scope.row.stageItem.itemName">
+            <span class="step-status-item green-status"><span class="item-name ellipsis">{{scope.row.stageItem.stageName}}</span></span>
+            <span class="step-status-item gary-status long-status-item"><span class="item-name ellipsis">{{scope.row.stageItem.itemName}}</span></span>
+          </div>
+          <div class="step-status" v-else-if="!scope.row.stageItem.itemName">
+            <span class="step-status-item green-status"><span class="item-name ellipsis">{{scope.row.stageItem.stageName}}</span></span>
+            <span class="step-status-item gary-status">1</span>
+            <span class="step-status-item gary-status">2</span>
+            <span class="step-status-item gary-status">3</span>
+          </div>
+          <span v-else>{{scope.row.stageItem.itemName}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column
+              prop="status"
+              min-width="100"
+              label="当前节点">
+      </el-table-column>
+      <el-table-column
+              prop="deadline"
+              min-width="80"
+              label="剩余时限">
+        <template slot-scope="scope">
+          <span class="bg-status green-deadline" v-if="scope.row.deadline>0">{{'剩余'+scope.row.deadline+'天'}}</span>
+          <span class="bg-status blue-deadline" v-else-if="scope.row.deadline==0">剩余0天</span>
+          <span class="bg-status red-deadline" v-else>{{'逾期'+(-Number(scope.row.deadline))+'天'}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column
+              prop="deadline"
+              width="160"
+              label="事项时限">
+        <template slot-scope="scope">
+          <div class="item-deadline" v-if="scope.$index==0">
+            <span class="guide-deadline">法定12天</span>
+            <span class="rel-deadline">实际10天</span>
+          </div>
+          <div class="item-deadline green-item" v-if="scope.$index==1">
+            <span class="guide-deadline">法定2天</span>
+            <span class="rel-deadline">实际10天</span>
+          </div>
+          <div class="item-deadline red-item" v-if="scope.$index==2">
+            <span class="guide-deadline">法定12天</span>
+            <span class="rel-deadline">实际10天</span>
+          </div>
+          <div class="item-deadline" v-if="scope.$index==3">
+            <span class="guide-deadline">法定12天</span>
+            <span class="rel-deadline">实际10天</span>
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column
+              min-width="150"
+              prop="startTime"
+              label="受理时间">
+      </el-table-column>
+      <el-table-column
+              prop="endTime"
+              min-width="150"
+              label="到达时间">
+      </el-table-column>
+      <el-table-column
+              width="60"
+              label="操作">
+        <template slot-scope="scope">
+          <span class="op-btn">签收</span>
+        </template>
+      </el-table-column>
+    </el-table>
+  </div>
+  <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js" th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>
+  <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js" th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
+  <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js" th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
+  <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js" th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>
+  <script src="../../static/searchTable/js/search-table.js" th:src="@{/searchTable/js/search-table.js}"></script>
+</body>
+</html>

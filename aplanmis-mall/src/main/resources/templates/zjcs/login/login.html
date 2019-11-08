@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <!--  <title>唐山市中介服务网上超市</title>-->
+  <title>新疆自治区中介服务网上超市</title>
+  <link rel="shortcut icon" href="../../../static/zjcs/common/images/favicon.ico" th:href="@{/zjcs/common/images/favicon.ico}">
+  <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.css" th:href="@{/agcloud/framework/js-lib/element-2/element.css}"/>
+  <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css" th:href="@{/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css}">
+  <link rel="stylesheet" href="../../../static/zjcs/common/css/reset.css" th:href="@{/zjcs/common/css/reset.css}">
+  <link rel="stylesheet" href="../../../static/zjcs/login/css/login.css" th:href="@{/zjcs/login/css/login.css}">
+  <script>
+    var ctx = '[[@{/}]]';
+    //var ctx = 'http://192.168.32.4:8084/aplanmis-mall/';
+  </script>
+</head>
+<body>
+<div id="login" v-cloak>
+  <div class="login-container">
+    <div class="login-pic">
+      <div class="login-logo">
+        <img src="../../../static/zjcs/login/images/login_name-xj.png" th:src="@{/zjcs/login/images/login_name-xj.png}">
+      </div>
+      <img src="../../../static/zjcs/login/images/login_pic.png" th:src="@{/zjcs/login/images/login_pic.png}">
+    </div>
+    <div class="login-box">
+      <div class="sign-icon"><i></i></div>
+      <div class="login-tab clearfix">
+        <ul class="login-tab-tit">
+          <li :class="submitUserInfo.isOwner==0?'active':''" @click="changeOwner(0)">中介机构登录</li>
+          <li :class="submitUserInfo.isOwner==1?'active':''" @click="changeOwner(1)">业主单位登录</li>
+        </ul>
+      </div>
+      <el-form :model="submitUserInfo" :rules="rules" ref="loginInfo" class="login-form">
+        <input type="hidden" v-model="submitUserInfo.isOwner">
+        <el-form-item prop="userName">
+          <el-input prefix-icon="ag ag-user" v-model="submitUserInfo.userName"></el-input>
+        </el-form-item>
+        <el-form-item prop="password" class="password">
+          <el-input prefix-icon="ag ag-lock-s"
+                    type="password"
+                    v-model="submitUserInfo.password"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="loginSubmit()">登陆</el-button>
+        </el-form-item>
+        <el-form-item>
+          <el-button @click="resetForm('ruleForm')">注册</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
+  </div>
+</div>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js" th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js" th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js" th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
+<!--<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js" th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>-->
+<script src="../../../static/common/js/common.js" th:src="@{/common/js/common.js}"></script>
+
+
+<script src="/framework-ui/src/main/resources/static/agcloud/login/js/md5.js" th:src="@{/agcloud/login/js/md5.js}"></script>
+<script src="/framework-ui/src/main/resources/static/sm3/sm3.js" th:src="@{/sm3/sm3.js}"></script>
+<script src="../../../static/zjcs/login/js/login.js"  th:src="@{/zjcs/login/js/login.js}"></script>
+
+</body>
+</html>

@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by tiantian    2019-08-28 17:33:44 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaHiApplyinstCorrectMapper" >
+<!--1 返回所有字段的SQL字句 -->
+<sql id="allColumns" >
+    APPLYINST_CORRECT_ID  applyinstCorrectId,
+    APPLYINST_ID  applyinstId,
+    PROJ_INFO_ID  projInfoId,
+    IS_FLOW_TRIGGER  isFlowTrigger,
+    APPINST_ID  appinstId,
+    CORRECT_DUE_DAYS  correctDueDays,
+    CORRECT_DUE_TIME  correctDueTime,
+    CORRECT_MEMO  correctMemo,
+    WINDOW_USER_ID  windowUserId,
+    WINDOW_USER_NAME  windowUserName,
+    WINDOW_PHONE  windowPhone,
+    OPS_USER_ID  opsUserId,
+    OPS_USER_NAME  opsUserName,
+    OPS_TIME  opsTime,
+    CORRECT_USER_NAME  correctUserName,
+    CORRECT_END_TIME  correctEndTime,
+    PRINT_USER_ID  printUserId,
+    PRINT_USER_NAME  printUserName,
+    PRINT_TIME  printTime,
+    CORRECT_STATE  correctState,
+    IS_DELETED  isDeleted,
+    CREATER  creater,
+    CREATE_TIME  createTime,
+    MODIFIER  modifier,
+    MODIFY_TIME  modifyTime,
+    ROOT_ORG_ID  rootOrgId
+    </sql>
+
+    <sql id="allColumns_ahac" >
+    ahac.APPLYINST_CORRECT_ID  applyinstCorrectId,
+    ahac.APPLYINST_ID  applyinstId,
+    ahac.PROJ_INFO_ID  projInfoId,
+    ahac.IS_FLOW_TRIGGER  isFlowTrigger,
+    ahac.APPINST_ID  appinstId,
+    ahac.CORRECT_DUE_DAYS  correctDueDays,
+    ahac.CORRECT_DUE_TIME  correctDueTime,
+    ahac.CORRECT_MEMO  correctMemo,
+    ahac.WINDOW_USER_ID  windowUserId,
+    ahac.WINDOW_USER_NAME  windowUserName,
+    ahac.WINDOW_PHONE  windowPhone,
+    ahac.OPS_USER_ID  opsUserId,
+    ahac.OPS_USER_NAME  opsUserName,
+    OPS_TIME  opsTime,
+    ahac.CORRECT_USER_NAME  correctUserName,
+    ahac.CORRECT_END_TIME  correctEndTime,
+    ahac.PRINT_USER_ID  printUserId,
+    ahac.PRINT_USER_NAME  printUserName,
+    ahac.PRINT_TIME  printTime,
+    ahac.CORRECT_STATE  correctState,
+    ahac.IS_DELETED  isDeleted,
+    ahac.CREATER  creater,
+    ahac.CREATE_TIME  createTime,
+    ahac.MODIFIER  modifier,
+    ahac.MODIFY_TIME  modifyTime,
+    ahac.ROOT_ORG_ID  rootOrgId
+    </sql>
+
+<!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaHiApplyinstCorrectById" resultType="AeaHiApplyinstCorrect" >
+        select
+        <include refid="allColumns_ahac"/>,aha.APPLYINST_CODE applyinstCode,api.PROJ_NAME projInfoName,api.LOCAL_CODE localCode,api.REGIONALISM  regionalism,
+        aha.APPLY_SUBJECT applySubject,aha.LINKMAN_INFO_ID linkmanInfoId,aha.APPLYINST_SOURCE applyinstSource
+        from AEA_HI_APPLYINST_CORRECT ahac,AEA_HI_APPLYINST aha,AEA_PROJ_INFO api
+        where    ahac.APPLYINST_CORRECT_ID = #{applyinstCorrectId}
+        AND ahac.APPLYINST_ID = aha.APPLYINST_ID
+        AND ahac.PROJ_INFO_ID = api.PROJ_INFO_ID
+        AND  ahac.IS_DELETED = '0'
+    </select>
+
+<!--3 根据条件查询实体list -->
+    <select id="listAeaHiApplyinstCorrect" resultType="AeaHiApplyinstCorrect" >
+        select
+        <include refid="allColumns"/>
+        from    AEA_HI_APPLYINST_CORRECT
+    <where>
+        <if test="applyinstCorrectId != null" >
+        AND    APPLYINST_CORRECT_ID = #{applyinstCorrectId}
+        </if>
+        <if test="applyinstId != null" >
+        AND    APPLYINST_ID = #{applyinstId}
+        </if>
+        <if test="projInfoId != null" >
+        AND    PROJ_INFO_ID = #{projInfoId}
+        </if>
+        <if test="isFlowTrigger != null" >
+        AND    IS_FLOW_TRIGGER = #{isFlowTrigger}
+        </if>
+        <if test="appinstId != null" >
+        AND    APPINST_ID = #{appinstId}
+        </if>
+        <if test="correctDueDays != null" >
+        AND    CORRECT_DUE_DAYS = #{correctDueDays}
+        </if>
+        <if test="correctDueTime != null" >
+        AND    CORRECT_DUE_TIME = #{correctDueTime}
+        </if>
+        <if test="correctMemo != null" >
+        AND    CORRECT_MEMO = #{correctMemo}
+        </if>
+        <if test="windowUserId != null" >
+        AND    WINDOW_USER_ID = #{windowUserId}
+        </if>
+        <if test="windowUserName != null" >
+        AND    WINDOW_USER_NAME = #{windowUserName}
+        </if>
+        <if test="windowPhone != null" >
+        AND    WINDOW_PHONE = #{windowPhone}
+        </if>
+        <if test="opsUserId != null" >
+        AND    OPS_USER_ID = #{opsUserId}
+        </if>
+        <if test="opsUserName != null" >
+        AND    OPS_USER_NAME = #{opsUserName}
+        </if>
+        <if test="opsTime != null" >
+        AND    OPS_TIME = #{opsTime}
+        </if>
+        <if test="correctUserName != null" >
+        AND    CORRECT_USER_NAME = #{correctUserName}
+        </if>
+        <if test="correctEndTime != null" >
+        AND    CORRECT_END_TIME = #{correctEndTime}
+        </if>
+        <if test="printUserId != null" >
+        AND    PRINT_USER_ID = #{printUserId}
+        </if>
+        <if test="printUserName != null" >
+        AND    PRINT_USER_NAME = #{printUserName}
+        </if>
+        <if test="printTime != null" >
+        AND    PRINT_TIME = #{printTime}
+        </if>
+        <if test="correctState != null" >
+        AND    CORRECT_STATE = #{correctState}
+        </if>
+        <if test="isDeleted != null" >
+        AND    IS_DELETED = #{isDeleted}
+        </if>
+        <if test="creater != null" >
+        AND    CREATER = #{creater}
+        </if>
+        <if test="createTime != null" >
+        AND    CREATE_TIME = #{createTime}
+        </if>
+        <if test="modifier != null" >
+        AND    MODIFIER = #{modifier}
+        </if>
+        <if test="modifyTime != null" >
+        AND    MODIFY_TIME = #{modifyTime}
+        </if>
+        <if test="rootOrgId != null" >
+        AND    ROOT_ORG_ID = #{rootOrgId}
+        </if>
+      AND  IS_DELETED = '0'
+    </where>
+        ORDER BY CREATE_TIME DESC
+    </select>
+<!--4 根据条件查询实体list,返回分页对象 -->
+
+<!--5 新增实体对象 -->
+<insert id="insertAeaHiApplyinstCorrect" parameterType="AeaHiApplyinstCorrect" >
+    insert into AEA_HI_APPLYINST_CORRECT (
+APPLYINST_CORRECT_ID  ,APPLYINST_ID  ,PROJ_INFO_ID  ,IS_FLOW_TRIGGER  ,APPINST_ID  ,CORRECT_DUE_DAYS  ,CORRECT_DUE_TIME  ,CORRECT_MEMO  ,WINDOW_USER_ID  ,WINDOW_USER_NAME  ,WINDOW_PHONE  ,OPS_USER_ID  ,OPS_USER_NAME  ,OPS_TIME  ,CORRECT_USER_NAME  ,CORRECT_END_TIME  ,PRINT_USER_ID  ,PRINT_USER_NAME  ,PRINT_TIME  ,CORRECT_STATE  ,IS_DELETED  ,CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME  ,ROOT_ORG_ID
+    )  values  (
+#{applyinstCorrectId},#{applyinstId},#{projInfoId},#{isFlowTrigger},#{appinstId},#{correctDueDays},#{correctDueTime},#{correctMemo},#{windowUserId},#{windowUserName},#{windowPhone},#{opsUserId},#{opsUserName},#{opsTime},#{correctUserName},#{correctEndTime},#{printUserId},#{printUserName},#{printTime},#{correctState},#{isDeleted},#{creater},#{createTime},#{modifier},#{modifyTime},  #{rootOrgId}
+    )
+</insert>
+<!--6 修改实体对象 -->
+<update id="updateAeaHiApplyinstCorrect" parameterType="AeaHiApplyinstCorrect" >
+    update AEA_HI_APPLYINST_CORRECT
+    <set >
+        <if test="applyinstCorrectId != null" >
+        APPLYINST_CORRECT_ID = #{applyinstCorrectId},
+        </if>
+        <if test="applyinstId != null" >
+        APPLYINST_ID = #{applyinstId},
+        </if>
+        <if test="projInfoId != null" >
+        PROJ_INFO_ID = #{projInfoId},
+        </if>
+        <if test="isFlowTrigger != null" >
+        IS_FLOW_TRIGGER = #{isFlowTrigger},
+        </if>
+        <if test="appinstId != null" >
+        APPINST_ID = #{appinstId},
+        </if>
+        <if test="correctDueDays != null" >
+        CORRECT_DUE_DAYS = #{correctDueDays},
+        </if>
+        <if test="correctDueTime != null" >
+        CORRECT_DUE_TIME = #{correctDueTime},
+        </if>
+        <if test="correctMemo != null" >
+        CORRECT_MEMO = #{correctMemo},
+        </if>
+        <if test="windowUserId != null" >
+        WINDOW_USER_ID = #{windowUserId},
+        </if>
+        <if test="windowUserName != null" >
+        WINDOW_USER_NAME = #{windowUserName},
+        </if>
+        <if test="windowPhone != null" >
+        WINDOW_PHONE = #{windowPhone},
+        </if>
+        <if test="opsUserId != null" >
+        OPS_USER_ID = #{opsUserId},
+        </if>
+        <if test="opsUserName != null" >
+        OPS_USER_NAME = #{opsUserName},
+        </if>
+        <if test="opsTime != null" >
+        OPS_TIME = #{opsTime},
+        </if>
+        <if test="correctUserName != null" >
+        CORRECT_USER_NAME = #{correctUserName},
+        </if>
+        <if test="correctEndTime != null" >
+        CORRECT_END_TIME = #{correctEndTime},
+        </if>
+        <if test="printUserId != null" >
+        PRINT_USER_ID = #{printUserId},
+        </if>
+        <if test="printUserName != null" >
+        PRINT_USER_NAME = #{printUserName},
+        </if>
+        <if test="printTime != null" >
+        PRINT_TIME = #{printTime},
+        </if>
+        <if test="correctState != null" >
+        CORRECT_STATE = #{correctState},
+        </if>
+        <if test="isDeleted != null" >
+        IS_DELETED = #{isDeleted},
+        </if>
+        <if test="creater != null" >
+        CREATER = #{creater},
+        </if>
+        <if test="createTime != null" >
+        CREATE_TIME = #{createTime},
+        </if>
+        <if test="modifier != null" >
+        MODIFIER = #{modifier},
+        </if>
+        <if test="modifyTime != null" >
+        MODIFY_TIME = #{modifyTime},
+        </if>
+        <if test="rootOrgId != null" >
+        ROOT_ORG_ID = #{rootOrgId},
+        </if>
+    </set>
+    where APPLYINST_CORRECT_ID = #{applyinstCorrectId}
+</update>
+<!--7 删除实体对象,根据主键ID -->
+    <update id="deleteAeaHiApplyinstCorrect"  >
+        update AEA_HI_APPLYINST_CORRECT
+    <set >
+        IS_DELETED = '1'
+    </set>
+        where APPLYINST_CORRECT_ID = #{id}
+    </update>
+<!--8 删除实体对象列表,根据主键ID列表 -->
+<!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaHiApplyinstCorrect" id="AeaHiApplyinstCorrectMap">
+        <id property="applyinstCorrectId" column="APPLYINST_CORRECT_ID"/>
+        <result property="applyinstId" column="APPLYINST_ID"/>
+        <result property="projInfoId" column="PROJ_INFO_ID"/>
+        <result property="isFlowTrigger" column="IS_FLOW_TRIGGER"/>
+        <result property="appinstId" column="APPINST_ID"/>
+        <result property="correctDueDays" column="CORRECT_DUE_DAYS"/>
+        <result property="correctDueTime" column="CORRECT_DUE_TIME"/>
+        <result property="correctMemo" column="CORRECT_MEMO"/>
+        <result property="windowUserId" column="WINDOW_USER_ID"/>
+        <result property="windowUserName" column="WINDOW_USER_NAME"/>
+        <result property="windowPhone" column="WINDOW_PHONE"/>
+        <result property="opsUserId" column="OPS_USER_ID"/>
+        <result property="opsUserName" column="OPS_USER_NAME"/>
+        <result property="opsTime" column="OPS_TIME"/>
+        <result property="correctUserName" column="CORRECT_USER_NAME"/>
+        <result property="correctEndTime" column="CORRECT_END_TIME"/>
+        <result property="printUserId" column="PRINT_USER_ID"/>
+        <result property="printUserName" column="PRINT_USER_NAME"/>
+        <result property="printTime" column="PRINT_TIME"/>
+        <result property="correctState" column="CORRECT_STATE"/>
+        <result property="isDeleted" column="IS_DELETED"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="modifier" column="MODIFIER"/>
+        <result property="modifyTime" column="MODIFY_TIME"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+    </resultMap>
+</mapper>

@@ -1,0 +1,583 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaParShareMatMapper">
+
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns">
+        SHARE_MAT_ID  shareMatId,
+        ROOT_ORG_ID  rootOrgId,
+        THEME_VER_ID  themeVerId,
+        OUT_ITEM_VER_ID  outItemVerId,
+        OUT_INOUT_ID  outInoutId,
+        IN_ITEM_VER_ID  inItemVerId,
+        IN_INOUT_ID  inInoutId,
+        IN_ITEM_STATE_VER_ID  inItemStateVerId,
+        IS_ACTIVE  isActive,
+        CREATER  creater,
+        CREATE_TIME  createTime,
+        MODIFIER  modifier,
+        MODIFY_TIME  modifyTime
+    </sql>
+
+    <sql id="shareColumns">
+        SHARE_MAT_ID  shareMatId,
+        THEME_VER_ID  themeVerId,
+        OUT_INOUT_ID outInoutId,
+        IN_INOUT_ID inInoutId,
+        IS_ACTIVE isActive,
+        CREATER  creater,
+        CREATE_TIME  createTime,
+        MODIFIER  modifier,
+        MODIFY_TIME  modifyTime,
+        ROOT_ORG_ID rootOrgId
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaParShareMatById" resultType="AeaParShareMat">
+        select
+           <include refid="allColumns"/>
+        from AEA_PAR_SHARE_MAT
+        where SHARE_MAT_ID = #{id}
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaParShareMat" resultType="AeaParShareMat">
+        select
+           <include refid="allColumns"/>
+        from AEA_PAR_SHARE_MAT
+        <where>
+            <if test="shareMatId != null" >
+                and    SHARE_MAT_ID = #{shareMatId}
+            </if>
+            <if test="rootOrgId != null" >
+                and    ROOT_ORG_ID = #{rootOrgId}
+            </if>
+            <if test="themeVerId != null" >
+                and    THEME_VER_ID = #{themeVerId}
+            </if>
+            <if test="outItemVerId != null" >
+                and    OUT_ITEM_VER_ID = #{outItemVerId}
+            </if>
+            <if test="outInoutId != null" >
+                and    OUT_INOUT_ID = #{outInoutId}
+            </if>
+            <if test="inItemVerId != null" >
+                and    IN_ITEM_VER_ID = #{inItemVerId}
+            </if>
+            <if test="inInoutId != null" >
+                and    IN_INOUT_ID = #{inInoutId}
+            </if>
+            <if test="inItemStateVerId != null" >
+                and    IN_ITEM_STATE_VER_ID = #{inItemStateVerId}
+            </if>
+            <if test="isActive != null" >
+                and    IS_ACTIVE = #{isActive}
+            </if>
+            <if test="creater != null" >
+                and    CREATER = #{creater}
+            </if>
+            <if test="createTime != null" >
+                and    CREATE_TIME = #{createTime}
+            </if>
+            <if test="modifier != null" >
+                and    MODIFIER = #{modifier}
+            </if>
+            <if test="modifyTime != null" >
+                and    MODIFY_TIME = #{modifyTime}
+            </if>
+        </where>
+    </select>
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaParShareMat" parameterType="AeaParShareMat">
+        insert into AEA_PAR_SHARE_MAT (
+             SHARE_MAT_ID,
+             ROOT_ORG_ID,
+             THEME_VER_ID,
+             OUT_ITEM_VER_ID,
+             OUT_INOUT_ID,
+             IN_ITEM_VER_ID,
+             IN_INOUT_ID,
+             IN_ITEM_STATE_VER_ID,
+             IS_ACTIVE,
+             CREATER,
+             CREATE_TIME,
+             MODIFIER,
+             MODIFY_TIME
+        )  values  (
+             #{shareMatId},
+             #{rootOrgId},
+             #{themeVerId},
+             #{outItemVerId},
+             #{outInoutId},
+             #{inItemVerId},
+             #{inInoutId},
+             #{inItemStateVerId},
+             #{isActive},
+             #{creater},
+             #{createTime},
+             #{modifier},
+             #{modifyTime}
+        )
+    </insert>
+
+    <!--6 修改实体对象 -->
+    <update id="updateAeaParShareMat" parameterType="AeaParShareMat">
+        update AEA_PAR_SHARE_MAT
+        <set >
+            <if test="shareMatId != null" >
+                SHARE_MAT_ID = #{shareMatId},
+            </if>
+            <if test="rootOrgId != null" >
+                ROOT_ORG_ID = #{rootOrgId},
+            </if>
+            <if test="themeVerId != null" >
+                THEME_VER_ID = #{themeVerId},
+            </if>
+            <if test="outItemVerId != null" >
+                OUT_ITEM_VER_ID = #{outItemVerId},
+            </if>
+            <if test="outInoutId != null" >
+                OUT_INOUT_ID = #{outInoutId},
+            </if>
+            <if test="inItemVerId != null" >
+                IN_ITEM_VER_ID = #{inItemVerId},
+            </if>
+            <if test="inInoutId != null" >
+                IN_INOUT_ID = #{inInoutId},
+            </if>
+            <if test="inItemStateVerId != null" >
+                IN_ITEM_STATE_VER_ID = #{inItemStateVerId},
+            </if>
+            <if test="isActive != null" >
+                IS_ACTIVE = #{isActive},
+            </if>
+            <if test="creater != null" >
+                CREATER = #{creater},
+            </if>
+            <if test="createTime != null" >
+                CREATE_TIME = #{createTime},
+            </if>
+            <if test="modifier != null" >
+                MODIFIER = #{modifier},
+            </if>
+            <if test="modifyTime != null" >
+                MODIFY_TIME = #{modifyTime},
+            </if>
+        </set>
+        where SHARE_MAT_ID = #{shareMatId}
+    </update>
+
+    <!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaParShareMat">
+        delete from AEA_PAR_SHARE_MAT where SHARE_MAT_ID = #{id}
+    </delete>
+
+    <!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaParShareMat" id="AeaParShareMatMap">
+        <id property="shareMatId" column="SHARE_MAT_ID"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+        <result property="themeVerId" column="THEME_VER_ID"/>
+        <result property="outItemVerId" column="OUT_ITEM_VER_ID"/>
+        <result property="outInoutId" column="OUT_INOUT_ID"/>
+        <result property="inItemVerId" column="IN_ITEM_VER_ID"/>
+        <result property="inInoutId" column="IN_INOUT_ID"/>
+        <result property="inItemStateVerId" column="IN_ITEM_STATE_VER_ID"/>
+        <result property="isActive" column="IS_ACTIVE"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="modifier" column="MODIFIER"/>
+        <result property="modifyTime" column="MODIFY_TIME"/>
+    </resultMap>
+
+    <delete id="deleteAeaParShareMatByIds">
+        delete from AEA_PAR_SHARE_MAT
+        where
+        <if test="shareMatIds!=null and shareMatIds.length > 0">
+            SHARE_MAT_ID in
+            <foreach collection="shareMatIds" item="shareMatId" open="(" separator="," close=")">
+                #{shareMatId}
+            </foreach>
+        </if>
+    </delete>
+
+    <!--根据条件级联查询实体list -->
+    <select id="listAeaParShareMatCascade" resultType="AeaParShareMat">
+        select
+            share_mat.SHARE_MAT_ID as shareMatId,
+            item_out.ITEM_ID as outItemId,
+            item1.ITEM_NAME as outItemName,
+            item_out.FILE_TYPE as outFileType,
+            item_out.MAT_ID as outMatId,
+            item_out.CERT_ID as outCertId,
+            item_in.ITEM_ID as inItemId,
+            item2.ITEM_NAME as inItemName,
+            item_out.FILE_TYPE as inFileType,
+            item_in.MAT_ID as inMatId,
+            item_in.CERT_ID as inCertId,
+            share_mat.IS_ACTIVE as isActive
+        from AEA_PAR_SHARE_MAT share_mat,
+             AEA_ITEM_INOUT item_out ,
+             AEA_ITEM_INOUT item_in,
+             AEA_ITEM item1 ,
+             AEA_ITEM item2
+        <where>
+            share_mat.OUT_INOUT_ID=item_out.INOUT_ID
+            and item_in.ITEM_ID =item1.ITEM_ID
+            and item_out.ITEM_ID =item2.ITEM_ID
+            <if test="themeVerId != null and themeVerId!='' ">
+                and THEME_VER_ID = #{themeVerId}
+            </if>
+            <if test="keyword != null and keyword !='' ">
+                and (
+                    item1.ITEM_NAME LIKE CONCAT(ConCAT('%',#{keyword}),'%') OR
+                    item2.ITEM_NAME LIKE CONCAT(ConCAT('%',#{keyword}),'%')
+                )
+            </if>
+        </where>
+        order by share_mat.modify_time desc, share_mat.create_time desc
+    </select>
+
+    <select id="getAeaParShareMatCascade" resultType="AeaParShareMat">
+        select
+
+            share_mat.SHARE_MAT_ID as shareMatId,
+            share_mat.THEME_VER_ID  themeVerId,
+            share_mat.OUT_INOUT_ID as outInoutId,
+            share_mat.PAR_IN_ID as parInId,
+
+            item_out.ITEM_ID    as outItemId,
+            item1.ITEM_NAME     as outItemName,
+            item_out.FILE_TYPE  as outFileType,
+            item_out.MAT_ID     as outMatId,
+            item_out.CERT_ID    as outCertId,
+
+            item_in.ITEM_ID     as inItemId,
+            item2.ITEM_NAME     as inItemName,
+            item_out.FILE_TYPE  as inFileType,
+            item_in.MAT_ID      as inMatId,
+            item_in.CERT_ID     as inCertId,
+
+            share_mat.IS_ACTIVE as isActive
+
+        from  AEA_PAR_SHARE_MAT share_mat,
+              AEA_ITEM_INOUT item_out ,
+              AEA_ITEM_INOUT item_in,
+              AEA_ITEM item1 ,
+              AEA_ITEM item2
+        where share_mat.OUT_INOUT_ID=item_out.INOUT_ID
+          and item_in.ITEM_ID =item1.ITEM_ID
+          and item_out.ITEM_ID =item2.ITEM_ID
+          and share_mat.SHARE_MAT_ID =  #{id}
+    </select>
+
+    <select id="existShare" resultType="long" parameterType="string">
+        select "COUNT"(*) from AEA_PAR_SHARE_MAT WHERE OUT_INOUT_ID = #{inoutId}
+    </select>
+
+    <!--查询输出事项材料list -->
+    <select id="listOutItemMat" resultType="AeaItemInout">
+        select
+            inOut1.INOUT_ID inoutId,
+            inOut1.ITEM_VER_ID itemVerId,
+            inOut1.FILE_TYPE fileType,
+            mat.MAT_ID matId,
+            mat.MAT_NAME aeaMatCertName,
+            mat.MAT_CODE aeaMatCertCode,
+            inOut1.SORT_NO sortNo,
+            inOut1.CREATE_TIME createTime,
+            inOut1.STATE_VER_ID stateVerId,
+            a1.IS_OPTION_ITEM isOptionItem
+        from AEA_ITEM_INOUT inOut1,(
+            select
+                aib.ITEM_NAME,
+                aib.IS_CATALOG,
+                apsi.STAGE_ITEM_ID,
+                apsi.ITEM_VER_ID,
+                apsi.SORT_NO,
+                apsi.CREATE_TIME,
+                aps.STAGE_NAME,
+                aps.STAGE_ID,
+                aps.THEME_VER_ID,
+                apsi.IS_OPTION_ITEM
+            from AEA_PAR_STAGE_ITEM apsi
+            left join aea_item_basic aib on aib.ITEM_VER_ID = apsi.ITEM_VER_ID
+            left join aea_par_stage aps on aps.STAGE_ID = apsi.STAGE_ID
+            WHERE
+            aps.THEME_VER_ID = #{themeVerId}
+            and apsi.IS_OPTION_ITEM != '2'
+            and aps.IS_DELETED = '0'
+            and aps.ROOT_ORG_ID = #{rootOrgId}
+            and aib.ROOT_ORG_ID = #{rootOrgId}
+        ) as a1, AEA_ITEM_MAT mat
+        where 1 = 1
+        and inOut1.ITEM_VER_ID = a1.ITEM_VER_ID
+        and inOut1.IS_INPUT = '0'
+        and inOut1.FILE_TYPE = 'mat'
+        and inOut1.IS_DELETED = '0'
+        and inOut1.ITEM_VER_ID = #{itemVerId}
+        and inOut1.ROOT_ORG_ID = #{rootOrgId}
+        and mat.MAT_ID = inOut1.MAT_ID
+        and mat.IS_DELETED = '0'
+        and mat.IS_ACTIVE = '1'
+        and mat.IS_OFFICIAL_DOC = '1'
+        order by a1.SORT_NO asc
+    </select>
+
+    <!--查询输入事项材料list -->
+    <select id="listInItemMat" resultType="AeaItemInout">
+        select
+        inOut1.INOUT_ID inoutId,
+        inOut1.ITEM_VER_ID itemVerId,
+        inOut1.FILE_TYPE fileType,
+        mat.MAT_ID matId,
+        mat.MAT_NAME aeaMatCertName,
+        mat.MAT_CODE aeaMatCertCode,
+        inOut1.SORT_NO sortNo,
+        inOut1.CREATE_TIME createTime,
+        inOut1.STATE_VER_ID stateVerId,
+        a1.IS_OPTION_ITEM isOptionItem
+        from AEA_ITEM_INOUT inOut1,
+        (
+        select
+        aib.ITEM_NAME,
+        aib.IS_CATALOG,
+        apsi.STAGE_ITEM_ID,
+        apsi.ITEM_VER_ID,
+        apsi.SORT_NO,
+        apsi.CREATE_TIME,
+        aps.STAGE_NAME,
+        aps.STAGE_ID,
+        aps.THEME_VER_ID,
+        apsi.IS_OPTION_ITEM
+        from
+        AEA_PAR_STAGE_ITEM apsi
+        left join aea_item_basic aib on aib.ITEM_VER_ID = apsi.ITEM_VER_ID
+        left join aea_par_stage aps on aps.STAGE_ID = apsi.STAGE_ID
+        WHERE
+        aps.THEME_VER_ID = #{themeVerId}
+        and apsi.IS_OPTION_ITEM != '2'
+        and aps.IS_DELETED = '0'
+        and aps.ROOT_ORG_ID = #{rootOrgId}
+        and aib.ROOT_ORG_ID = #{rootOrgId}
+        ) AS a1,
+        AEA_ITEM_MAT mat
+        where 1 = 1
+        and inOut1.ITEM_VER_ID = a1.ITEM_VER_ID
+        and inOut1.IS_INPUT = '1'
+        and inOut1.FILE_TYPE = 'mat'
+        and inOut1.IS_DELETED = '0'
+        and inOut1.ITEM_VER_ID = #{itemVerId}
+        and inOut1.ROOT_ORG_ID = #{rootOrgId}
+        <if test="stateVerId != null and stateVerId !='' ">
+        and inOut1.STATE_VER_ID = #{stateVerId}
+        </if>
+        and mat.MAT_ID = inOut1.MAT_ID
+        and mat.IS_OFFICIAL_DOC = '1'
+        and mat.IS_ACTIVE = '1'
+        and mat.IS_DELETED = '0'
+        order by a1.SORT_NO asc
+    </select>
+
+
+    <!--根据主题版本号查询输出事项树 -->
+    <select id="listOutItemTreeByThemeVerId" resultType="AeaItemBasic">
+        select distinct
+            a1.ITEM_VER_ID as itemVerId,
+            a1.ITEM_NAME as itemName,
+            a1.IS_CATALOG as isCataLog,
+            a1.STAGE_ID as stageId,
+            a1.STAGE_NAME as stageName,
+            a1.IS_NODE as isNode,
+            a1.IS_OPTION_ITEM as isOptionItem
+        from (
+            select
+                aps.THEME_VER_ID,
+                aps.STAGE_ID,
+                aps.STAGE_NAME,
+                aps.IS_NODE,
+                aib.ITEM_NAME,
+                aib.IS_CATALOG,
+                apsi.STAGE_ITEM_ID,
+                apsi.ITEM_VER_ID,
+                apsi.SORT_NO,
+                apsi.IS_OPTION_ITEM,
+                apsi.CREATE_TIME
+            from AEA_PAR_STAGE_ITEM apsi, aea_item_basic aib, aea_par_stage aps
+            <where>
+                and apsi.ITEM_ID = aib.ITEM_ID
+                and apsi.ITEM_VER_ID = aib.ITEM_VER_ID
+                and aps.STAGE_ID = apsi.STAGE_ID
+                and aps.THEME_VER_ID = #{themeVerId}
+                and apsi.IS_OPTION_ITEM != '2'
+                and aps.IS_DELETED = '0'
+                and aib.ROOT_ORG_ID = #{rootOrgId}
+                and aps.ROOT_ORG_ID = #{rootOrgId}
+            </where>
+            order by aps.IS_NODE asc, aps.SORT_NO asc, apsi.IS_OPTION_ITEM asc, apsi.SORT_NO asc, apsi.CREATE_TIME asc
+	    ) as a1, AEA_ITEM_INOUT aii, AEA_ITEM_MAT aim
+        <where>
+            and aii.ITEM_VER_ID = a1.ITEM_VER_ID
+            and aii.IS_INPUT = '0'
+            and aii.IS_DELETED = '0'
+            and aii.ROOT_ORG_ID = #{rootOrgId}
+            and aii.FILE_TYPE = 'mat'
+            and aii.MAT_ID = aim.MAT_ID
+            and aim.IS_OFFICIAL_DOC = '1'
+            and aim.IS_ACTIVE = '1'
+            and aim.IS_DELETED = '0'
+            and aim.ROOT_ORG_ID = #{rootOrgId}
+        </where>
+        order by a1.IS_OPTION_ITEM asc, a1.SORT_NO asc, a1.CREATE_TIME asc
+    </select>
+
+    <!--根据主题版本号查询输入事项树 -->
+    <select id="listInItemTreeByThemeVerId" resultType="AeaItemBasic">
+        select distinct
+            a1.ITEM_NAME itemName,
+            a1.IS_CATALOG isCataLog,
+            a1.STAGE_NAME stageName,
+            a1.STAGE_ID stageId,
+            a1.ITEM_VER_ID itemVerId
+        from
+	    (
+	        select
+                aib.ITEM_NAME,
+                aib.IS_CATALOG,
+                apsi.STAGE_ITEM_ID,
+                apsi.ITEM_VER_ID,
+                apsi.SORT_NO,
+                apsi.CREATE_TIME,
+                aps.STAGE_NAME,
+                aps.STAGE_ID,
+                aps.THEME_VER_ID
+            from
+            AEA_PAR_STAGE_ITEM apsi
+            left join aea_item_basic aib on aib.ITEM_VER_ID = apsi.ITEM_VER_ID
+            left join aea_par_stage aps on aps.STAGE_ID = apsi.STAGE_ID
+            WHERE
+            aps.THEME_VER_ID = #{themeVerId}
+            and apsi.IS_OPTION_ITEM != '2'
+            and aps.IS_DELETED = '0'
+            and aps.ROOT_ORG_ID = #{rootOrgId}
+            and aib.ROOT_ORG_ID = #{rootOrgId}
+	    ) AS a1, AEA_ITEM_INOUT aii, aea_item_mat aim
+        WHERE
+            aii.ITEM_VER_ID = a1.ITEM_VER_ID
+        and aii.IS_INPUT = '1'
+        and aii.IS_DELETED = '0'
+        and aii.ROOT_ORG_ID = #{rootOrgId}
+        and aii.FILE_TYPE = 'mat'
+        and aii.MAT_ID = aim.MAT_ID
+        and aim.IS_OFFICIAL_DOC = '1'
+        and aim.IS_ACTIVE = '1'
+        and aim.IS_DELETED = '0'
+        and aim.ROOT_ORG_ID = #{rootOrgId}
+        order by a1.SORT_NO asc
+    </select>
+
+    <!--保存共享材料 -->
+    <insert id="saveAeaParShareMat" parameterType="AeaParShareMat">
+        insert into AEA_PAR_SHARE_MAT (
+             SHARE_MAT_ID,
+             ROOT_ORG_ID,
+             THEME_VER_ID,
+             OUT_ITEM_VER_ID,
+             OUT_INOUT_ID,
+             IN_ITEM_VER_ID,
+             IN_INOUT_ID,
+             IN_ITEM_STATE_VER_ID,
+             IS_ACTIVE,
+             CREATER,
+             CREATE_TIME,
+             MODIFIER,
+             MODIFY_TIME
+        )  values  (
+             #{shareMatId},
+             #{rootOrgId},
+             #{themeVerId},
+             #{outItemVerId},
+             #{outInoutId},
+             #{inItemVerId},
+             #{inInoutId},
+             #{inItemStateVerId},
+             #{isActive},
+             #{creater},
+             #{createTime},
+             #{modifier},
+             #{modifyTime}
+        )
+    </insert>
+
+    <!--查询输出材料共享的输入材料集合 -->
+    <select id="inOutCheckboxList" resultType="AeaParShareMat">
+        select
+            <include refid="shareColumns"/>
+        from AEA_PAR_SHARE_MAT
+        <where>
+            and THEME_VER_ID = #{themeVerId}
+            and OUT_INOUT_ID = #{outInoutId}
+        </where>
+    </select>
+
+    <select id="getStateByItemVerId" resultType="AeaItemStateVer">
+        select
+			 aisv.ITEM_STATE_VER_ID itemStateVerId
+        from aea_item_state_ver aisv
+        <where>
+            and aisv.ROOT_ORG_ID = #{rootOrgId}
+            and aisv.ITEM_VER_ID = #{itemVerId}
+            and aisv.VER_STATUS = '1'
+            and aisv.IS_DELETED = '0'
+        </where>
+    </select>
+
+    <select id="getAeaParShareMat" resultType="AeaParShareMat">
+        select
+        <include refid="allColumns"/>
+        from AEA_PAR_SHARE_MAT
+        where ROOT_ORG_ID = #{rootOrgId}
+        and THEME_VER_ID = #{themeVerId}
+        and OUT_ITEM_VER_ID = #{outItemVerId}
+        and OUT_INOUT_ID = #{outInoutId}
+        and IN_ITEM_VER_ID = #{inItemVerId}
+        and IN_INOUT_ID = #{inInoutId}
+        and IN_ITEM_STATE_VER_ID = #{inItemStateVerId}
+    </select>
+
+    <delete id="batchDelAeaParShareMatByCond" parameterType="AeaParShareMat">
+        delete from AEA_PAR_SHARE_MAT
+        <where>
+            <if test="shareMatId != null" >
+                and    SHARE_MAT_ID = #{shareMatId}
+            </if>
+            <if test="rootOrgId != null" >
+                and    ROOT_ORG_ID = #{rootOrgId}
+            </if>
+            <if test="themeVerId != null" >
+                and    THEME_VER_ID = #{themeVerId}
+            </if>
+            <if test="outItemVerId != null" >
+                and    OUT_ITEM_VER_ID = #{outItemVerId}
+            </if>
+            <if test="outInoutId != null" >
+                and    OUT_INOUT_ID = #{outInoutId}
+            </if>
+            <if test="inItemVerId != null" >
+                and    IN_ITEM_VER_ID = #{inItemVerId}
+            </if>
+            <if test="inInoutId != null" >
+                and    IN_INOUT_ID = #{inInoutId}
+            </if>
+            <if test="inItemStateVerId != null" >
+                and    IN_ITEM_STATE_VER_ID = #{inItemStateVerId}
+            </if>
+            <if test="isActive != null" >
+                and    IS_ACTIVE = #{isActive}
+            </if>
+        </where>
+    </delete>
+
+</mapper>

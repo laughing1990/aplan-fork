@@ -1,0 +1,550 @@
+<div id="baseInfo" class="box" style="min-height: 680px;">
+  <h2 class="box-tit">基本信息</h2>
+  <div class="pandel">
+    <!--基本信息-->
+    <div class="sidebar-item active">
+      <div class="ts-tab item-tab">
+        <ul class="ts-tab-title">
+          <li class="active" v-show="!(loginUserInfo.isPersonAccount == 0 && loginUserInfo.userId==null)">我的信息</li>
+          <li :class="{'active':loginUserInfo.isPersonAccount == 0 && loginUserInfo.userId==null}">企业信息</li>
+        </ul>
+        <div class="ts-tab-content">
+          <div class="ts-tab-item active" style="width:50%;"
+               v-show="!(loginUserInfo.isPersonAccount == 0 && loginUserInfo.userId==null)">
+            <el-form label-width="156px" :model="personInfo" id="personInfo">
+              <el-form-item label="头像">
+                <div class="photo-change">
+                  <img v-if="showNormalPhoto" src="../../../../../main/resources/static/zjcs/personCenter/img/portrait.png"
+                       th:src="@{/zjcs/personCenter/img/portrait.png}">
+                  <img v-else :src="prtraitSrc" @error="errorLoadPhoto">
+                  <span class="head_btn" :class="[!showNormalPhoto? 'head_btn_hasimg':'head_btn_noimg']">
+                    <i v-show="showNormalPhoto">修改头像</i>
+                    <input type="file" class="upload_pic" id="upload" ref="filePrtrait" @change.stop="uploadoPrtrait"/>
+                  </span>
+                </div>
+              </el-form-item>
+              <el-form-item label="姓名">
+                <el-input v-model="personInfo.linkmanName"></el-input>
+              </el-form-item>
+              <el-form-item label="联系方式">
+                <el-input v-model="personInfo.linkmanMobilePhone"></el-input>
+              </el-form-item>
+              <el-form-item label="身份证号">
+                <el-input v-model="personInfo.linkmanCertNo"></el-input>
+              </el-form-item>
+              <el-form-item label="邮箱">
+                <el-input v-model="personInfo.linkmanMail"></el-input>
+              </el-form-item>
+              <el-form-item>
+                <div class="info-group-btn mt-3">
+                  <a class="btn gray-btn" href="javascript:;" role="button">取消</a>
+                  <div class="btn blue-btn" @click="savePersonInfo">保存</div>
+                </div>
+              </el-form-item>
+            </el-form>
+          </div>
+          <div class="ts-tab-item" :class="{'active':loginUserInfo.isPersonAccount == 0 && loginUserInfo.userId==null}"
+               v-show="loginUserInfo.isPersonAccount != 1">
+            <el-form label-width="150px" :inline="true" :model="unitInfo" id="unitInfoForm">
+              <input type="hidden" v-model="unitInfo.unitInfoId"></input>
+              <el-form-item label="企业名称	">
+                <el-input v-model="unitInfo.applicant"
+                          :disabled="!(loginUserInfo.isPersonAccount == 0 && loginUserInfo.userId==null)"></el-input>
+              </el-form-item>
+              <el-form-item label="统一社会信用代码	">
+                <el-input v-model="unitInfo.unifiedSocialCreditCode"
+                          :disabled="!(loginUserInfo.isPersonAccount == 0 && loginUserInfo.userId==null)"></el-input>
+              </el-form-item>
+              <el-form-item label="单位性质" prop="unitNature">
+                <el-select v-model="unitInfo.unitNature || '1'" clearable placeholder="请选择"
+                           :disabled="!(loginUserInfo.isPersonAccount == 0 && loginUserInfo.userId==null)">
+                  <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                  </el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label="邮政编码">
+                <el-input v-model="unitInfo.postalCode"
+                          :disabled="!(loginUserInfo.isPersonAccount == 0 && loginUserInfo.userId==null)"></el-input>
+              </el-form-item>
+              <el-form-item label="企业法人">
+                <el-input v-model="unitInfo.idrepresentative"
+                          :disabled="!(loginUserInfo.isPersonAccount == 0 && loginUserInfo.userId==null)"></el-input>
+              </el-form-item>
+              <el-form-item label="法人身份证号">
+                <el-input v-model="unitInfo.idno"
+                          :disabled="!(loginUserInfo.isPersonAccount == 0 && loginUserInfo.userId==null)"></el-input>
+              </el-form-item>
+              <el-form-item label="注册资本">
+                <el-input v-model="unitInfo.registeredCapital"
+                          :disabled="!(loginUserInfo.isPersonAccount == 0 && loginUserInfo.userId==null)"></el-input>
+              </el-form-item>
+              <el-form-item label="注册登记机关">
+                <el-input v-model="unitInfo.registerAuthority"
+                          :disabled="!(loginUserInfo.isPersonAccount == 0 && loginUserInfo.userId==null)"></el-input>
+              </el-form-item>
+              <el-form-item label="经营范围">
+                <el-input v-model="unitInfo.managementScope"
+                          :disabled="!(loginUserInfo.isPersonAccount == 0 && loginUserInfo.userId==null)"
+                          :autosize="{minRows:4,maxRows:8}" type="textarea" style="width:786px;"></el-input>
+              </el-form-item>
+              <el-form-item v-if="loginUserInfo.isPersonAccount == 0 && loginUserInfo.userId==null">
+                <div class="info-group-btn mt-3" style="margin-left: 454px;">
+                  <a class="btn gray-btn" href="javascript:;" role="button">取消</a>
+                  <div class="btn blue-btn" @click="saveUnitInfo">保存</div>
+                </div>
+              </el-form-item>
+            </el-form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  // var ctx = "http://192.168.14.6:8084/aplanmis-mall/"    //振强
+  var module1 = new Vue({
+    el: '#baseInfo',
+    mixins: [mixins],
+    data: function () {
+      return {
+        loginUserInfo: {
+          isAdministrators: "1",
+          isOwner: "1",
+          isPersonAccount: "0", // 是否为个人账号 0否
+          personName: "陈泽浩3",
+          sid: "487A03BC2405ADCA78B3BD5984379A24",
+          unitId: "e03f1889-5a2d-44ce-abe0-4a9177824b84",
+          unitName: "唐山市测试企业2",
+          userId: "0283d833-6556-4c8f-aa7a-2f7746643885",
+        },
+        personInfo: {},
+        unitInfo: {},
+        options: [{
+          value: '1',
+          label: '企业'
+        }, {
+          value: '2',
+          label: '事业单位'
+        }, {
+          value: '3',
+          label: '社会组织'
+        }],
+        // 头像地址
+        prtraitSrc: '',
+        // 是否展示默认的头像
+        showNormalPhoto: false,
+      }
+    },
+    methods: {
+      init: function () {
+        this.getPersonInfo();
+        this.getUnitInfo();
+      },
+      getPersonInfo: function () {
+        var vm = this;
+        request('', {
+          url: ctx + 'supermarket/main/getPersonInfo.do',
+          type: 'post',
+          data: {
+            linkmanInfoId: vm.loginUserInfo.userId
+          },
+        }, function (res) {
+          if (res.success) {
+            var content = res.content;
+            vm.personInfo = content;
+            vm.prtraitSrc = ctx + 'supermarket/main/getHeadImage' + '?time=' + new Date();
+          }
+        }, function (msg) {
+          vm.$message({
+            message: '加载失败',
+            type: 'error'
+          });
+        });
+      },
+      savePersonInfo: function () {
+        var vm = this;
+        var personInfo = JSON.parse(JSON.stringify(vm.personInfo))
+        delete personInfo.AeaUnitInfo
+        delete personInfo.BscAttFileAndDir
+        delete personInfo.createTime
+        delete personInfo.modifyTime
+        delete personInfo.fileList
+        delete personInfo.aeaUnitInfoList
+        request('', {
+          url: ctx + 'supermarket/main/savePersonInfo.do',
+          type: 'post',
+          data: personInfo,
+        }, function (res) {
+          console.log("个人信息" + res)
+          if (res.success) {
+            vm.$message({
+              message: '保存失败',
+              type: 'success'
+            });
+          } else {
+            vm.$message({
+              message: '保存失败',
+              type: 'error'
+            });
+          }
+        }, function (msg) {
+          vm.$message({
+            message: '保存失败',
+            type: 'error'
+          });
+        });
+      },
+      // /supermarket/main/getUnitInfo.do 获取单位信息
+      getUnitInfo: function () {
+        var vm = this;
+        request('', {
+          url: ctx + 'supermarket/main/getUnitInfo.do',
+          type: 'post',
+          data: {
+            untInfoId: vm.loginUserInfo.unitId
+          }
+        }, function (res) {
+          console.log("获取单位信息" + res)
+          if (res.success) {
+            var content = res.content;
+            vm.unitInfo = content;
+          }
+        }, function (msg) {
+          vm.$message({
+            message: '加载失败',
+            type: 'error'
+          });
+        });
+      },
+      saveUnitInfo: function () {
+        var vm = this;
+        var unitInfo = JSON.parse(JSON.stringify(vm.unitInfo))
+        delete unitInfo.AeaUnitInfo
+        delete unitInfo.BscAttFileAndDir
+        delete unitInfo.createTime
+        delete unitInfo.modifyTime
+        delete unitInfo.fileList
+        delete unitInfo.aeaUnitInfoList
+        delete unitInfo.aeaLinkmanInfoList
+        delete unitInfo.childlist
+        request('', {
+          url: ctx + 'supermarket/main/saveUnitInfo.do',
+          type: 'post',
+          data: unitInfo,
+        }, function (res) {
+          if (res.success) {
+            vm.$message({
+              message: '保存成功',
+              type: 'success'
+            });
+
+          }
+        }, function (msg) {
+          vm.$message({
+            message: '加载失败',
+            type: 'error'
+          });
+          vm.getUnitInfo();
+        });
+      },
+
+      // 校验文件类型
+      uploadCheckFile: function (file) {
+        var ts = this,
+            file = file;
+        // 文件类型
+        // 检查文件类型
+        var imgReg = /(.*)\.(gif|jpg|jpeg|png|gif|jpg|png)$/;
+        if (!imgReg.test(file.name)) {
+          ts.$message({
+            message: '请上传图片文件',
+          });
+          return false;
+        }
+        ;
+        return true;
+      },
+
+      // 上传头像
+      uploadoPrtrait: function () {
+        var ts = this;
+        var _file = ts.$refs.filePrtrait.files[0];
+        var _canUpload = ts.uploadCheckFile(_file);
+        if (_canUpload) {
+          // console.log(_file)
+          var _imgForm = new FormData();
+          _imgForm.append('file', _file);
+          $.ajax({
+            url: ctx + 'supermarket/main/uploadHeadImage',
+            type: 'post',
+            cache: 'false',
+            contentType: false,
+            processData: false,
+            data: _imgForm,
+            success: function (res) {
+              if (res.success) {
+                ts.prtraitSrc = ctx + 'supermarket/main/getHeadImage' + '?time=' + new Date();
+                ts.$message({
+                  message: '上传成功',
+                  type: 'success'
+                });
+              } else {
+                ts.$message({
+                  message: res.message,
+                  type: 'error'
+                });
+              }
+            },
+            error: function (err) {
+              ts.$message({
+                message: '上传失败',
+                type: 'error'
+              });
+            },
+          })
+        }
+      },
+      // 加载头像失败
+      errorLoadPhoto: function () {
+        this.showNormalPhoto = true;
+      },
+
+    },
+    created: function () {
+      //do something after creating vue instance
+
+    },
+    mounted: function () {
+      this.loginUserInfo = JSON.parse(localStorage.getItem("loginInfo")) || {}
+
+      this.init();
+      //一级tab栏
+      $('.ts-tab-title li').click(function (e) {
+        var selfIndex = $(this).index()
+        $(this).addClass('active').siblings().removeClass('active')
+        $(this).parent().siblings().children('div:eq(' + selfIndex + ')').addClass('active').siblings()
+            .removeClass('active')
+      });
+
+      //二级tab栏
+      $('.ts-subtab-tit li').click(function (e) {
+        var selfIndex = $(this).index()
+        $(this).addClass('active').siblings().removeClass('active')
+        $(this).parent().siblings().children('div:eq(' + selfIndex + ')').addClass('active').siblings()
+            .removeClass('active')
+
+      });
+    },
+  })
+</script>
+
+<style>
+  .ts-tab-title {
+    height: 54px;
+    white-space: nowrap;
+    border-bottom: 1px solid #eee;
+    transition: all .2s;
+    -webkit-transition: all .2s;
+    margin-top: 20px;
+  }
+
+  .ts-tab-item,
+  .ts-subtab-pane {
+    display: none;
+  }
+
+  .ts-tab-item.active,
+  .ts-subtab-pane.active {
+    display: block;
+  }
+
+  .ts-tab-title li {
+    display: inline-block;
+    vertical-align: middle;
+    font-size: 16px;
+    color: #333;
+    transition: all .2s;
+    -webkit-transition: all .2s;
+    position: relative;
+    line-height: 54px;
+    min-width: 108px;
+    padding: 0 22px;
+    text-align: center;
+    cursor: pointer;
+  }
+
+  .ts-tab-title li.active {
+    color: #3184FA;
+    background: rgba(49, 132, 250, .1);
+  }
+
+  .ts-tab-title li.active:after {
+    position: absolute;
+    left: 0;
+    top: 0;
+    content: '';
+    width: 100%;
+    height: 54px;
+    border-bottom: 4px solid #3184FA;
+    box-sizing: border-box;
+    pointer-events: none;
+  }
+
+  .item-tab .ts-tab-content {
+    padding: 15px 0;
+  }
+
+  .basic-info-tb {
+    width: 50%;
+  }
+
+  .basic-info-tb > tbody > tr > td:first-child {
+    width: 32.5%;
+  }
+
+  .photo-change {
+    width: 96px;
+    height: 96px;
+    line-height: 96px;
+    text-align: center;
+    border-radius: 50%;
+    /* background: #eee; */
+    overflow: hidden;
+    position: relative;
+    vertical-align: middle;
+    display: inline-block;
+    margin-left: 15px;
+    border: 1px solid #e5e5e5;
+    /* background: url('../../../../../main/resources/static/personCenter/img/portrait.png') no-repeat center; */
+  }
+
+  .photo-change img {
+    /* width: 100%; */
+    max-width: 100%;
+    max-height: 100%;
+  }
+
+  .photo-change .head_btn {
+    width: 96px;
+    height: 96px;
+    line-height: 96px;
+    border-radius: 50%;
+    display: block;
+    background: rgba(0, 0, 0, .5);
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 99;
+    color: #fff;
+    text-align: center;
+  }
+
+  /* 没有头像的样式 */
+  .photo-change .head_btn_noimg {
+    background: rgba(0, 0, 0, .5);
+
+  }
+
+  /* 有头像的样式 */
+  .photo-change .head_btn_hasimg {
+    background: rgba(0, 0, 0, 0);
+  }
+
+  .upload_pic {
+    display: block;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+    border-radius: 50%;
+    pos-height: 4;
+    cursor: pointer;
+  }
+
+  /*我的消息详情*/
+  .issue-tag {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  .issue-tag span {
+    color: #999;
+    margin: 0 10px;
+  }
+
+  .guide-article .article-file {
+    margin-top: 50px;
+  }
+
+  .article-file > span {
+    display: block;
+    float: left;
+    width: 50px;
+  }
+
+  .article-file .file-list {
+    margin-left: 50px;
+  }
+
+  .article-file .file-list > a {
+    display: block;
+    margin-bottom: 10px;
+    color: #4879e4;
+  }
+
+  .article-file .file-list > a:hover {
+    text-decoration: underline;
+  }
+
+  .gray-btn,
+  .blue-btn {
+    background: #eee;
+    margin: 0 8px;
+    padding: 6px 20px;
+    border-radius: 4px;
+  }
+
+  .blue-btn {
+    background: #4879e4;
+    color: #fff;
+  }
+
+  .info-group-btn {
+    margin-bottom: 20px;
+  }
+
+  .info-group-btn .blue-btn:hover {
+    color: #fff;
+  }
+
+  #personInfo .el-input__inner,
+  #unitInfoForm .el-input__inner {
+    border-color: rgba(220, 223, 230, 1);
+    border-radius: 4px;
+    line-height: 36px;
+    height: 36px;
+    box-shadow: none;
+  }
+
+  #personInfo .el-form-item:nth-child(1) label {
+    padding-top: 30px;
+  }
+
+  #unitInfoForm .el-input__inner {
+    width: 295px;
+  }
+
+  /* disabled样式调整 */
+  #unitInfoForm .el-input.is-disabled .el-input__inner + span {
+    display: none;
+  }
+
+  #unitInfoForm .el-input.is-disabled .el-input__inner, #unitInfoForm .el-textarea.is-disabled .el-textarea__inner {
+    background-color: transparent;
+    border: none;
+    color: #999;
+    cursor: text;
+  }
+</style>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.OrgPortalMapper">
+
+    <select id="countShiXianJian" resultType="long">
+        select count(*) from (
+        select ahi.ITEMINST_ID ,asti.INST_STATE ,
+        t.ASSIGNEE_ from aea_hi_iteminst ahi
+        left JOIN act_sto_timerule_inst asti on asti.PROC_INST_ID = ahi.PROCINST_ID  and asti.ORG_ID = #{currentOrgId}
+        LEFT JOIN act_hi_taskinst t ON t.PROC_INST_ID_ = asti.PROC_INST_ID
+         where asti.INST_STATE =#{instState} and t.ASSIGNEE_ = #{loginName}) gg
+    </select>
+
+</mapper>

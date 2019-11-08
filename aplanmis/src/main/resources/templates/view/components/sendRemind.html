@@ -1,0 +1,89 @@
+<template id="sendRemind" th:fragment="sendRemind">
+    <!-- 催办弹窗 -->
+    <el-dialog :title="handleTitle" :visible.sync="handleDialog" class="handleDialog" width="980px">
+        <div class="sel-box">
+            <div class="sel sel-left">
+                <div class="sel-left-head">
+                    <div class="person person1">
+                        <span class="sel-lable">接收人：</span>
+                        <el-select
+                                v-model="recievePeron"
+                                multiple
+                                filterable
+                                allow-create
+                                default-first-option
+                                style="width:425px;margin-left:5px;"
+                                class="personSelect"
+                                :popper-append-to-body="false"
+                                @focus="focus"
+                                :filter-method="filter"
+                                @remove-tag="removeTag">
+                            <el-option
+                                    v-for="item in recieveSerch"
+                                    :key="item.userId"
+                                    :label="item.userName"
+                                    :value="item.userId">
+                            </el-option>
+                        </el-select>
+                    </div>
+                    <div class="person person2">
+                        <span class="sel-lable">抄送人：</span>
+                        <el-select
+                                v-model="copySendPeron"
+                                multiple
+                                filterable
+                                allow-create
+                                default-first-option
+                                style="width:425px;margin-left:5px;"
+                                class="personSelect"
+                                :popper-append-to-body="false"
+                                @focus="focus2"
+                                :filter-method="filter2"
+                                @remove-tag="removeTag"
+                                :loading="recieveLoading">
+                            <el-option
+                                    v-for="item in copySendSerch"
+                                    :key="item.userId"
+                                    :label="item.userName"
+                                    :value="item.userId">
+                            </el-option>
+                        </el-select>
+                    </div>
+                </div>
+                <div class="sel-left-body">
+                    <span class="sel-lable" style="vertical-align:top;margin-left: 10px;">催办内容：</span>
+                    <el-input type="textarea" v-model="textarea" class="textarea" style="width: 425px;"></el-input>
+                </div>
+                <div class="sel-left-foot" style="margin-top:10px;">
+                    <span class="sel-lable" style="margin-left: 16px;">催办方式：</span>
+                    <el-checkbox-group :min="1" v-model="type" style="display: inline-block;position: relative;">
+                        <el-checkbox label="n">催办消息</el-checkbox>
+                        <el-checkbox label="m">短信</el-checkbox>
+                    </el-checkbox-group>
+                    <!--           <el-select v-model="level" placeholder="请选择催办等级">
+                                   <el-option label="非常紧急" value="u"></el-option>
+                                   <el-option label="紧急" value="h"></el-option>
+                                   <el-option label="平急" value="l"></el-option>
+                               </el-select><br />-->
+                </div>
+            </div>
+            <div class="sel sel-right">
+                <p>当前在办人员</p>
+                <el-table :data="remindTableData" class="scrollable" style="margin-top: 10px;width: 100%;" @selection-change="handleSelectionChange"  highlight-current-row @row-click="handleSelectionChange2"  row-key="id" ref="table" height="375px">
+                    <el-table-column type="selection" align="center" width="50"></el-table-column>
+                    <el-table-column label="全选" align="left">
+                        <template slot-scope="scope">
+                            <i class="el-icon-user-solid"></i>
+                            {{scope.row.userName+' ('+scope.row.procName+'--'+scope.row.taskName+')'}}
+                        </template>
+                    </el-table-column>
+                </el-table>
+            </div>
+        </div>
+
+        <div slot="footer" class="dialog-footer">
+            <el-button  @click="handleDialog = false">取消</el-button>
+            <el-button type="primary" @click="sendData" style="margin-top: 10px">发送</el-button>
+        </div>
+    </el-dialog>
+</template>

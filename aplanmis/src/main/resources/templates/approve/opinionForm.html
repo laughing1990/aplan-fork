@@ -1,0 +1,595 @@
+<!--@Author: ***-->
+<!--@Date:   ***-->
+<!--@Last Modified by:   ***-->
+<!--@Last Modified time: ***-->
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <title>审批意见</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <!--引入公共css-->
+  <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.css"
+        th:href="@{/agcloud/framework/js-lib/element-2/element.css}"/>
+  <link rel="stylesheet"
+        href="/framework-ui/src/main/resources/static/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css"
+        th:href="@{/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css}">
+  <link rel="stylesheet"
+        href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/css/reset.css"
+        th:href="@{/agcloud/framework/js-lib/agcloud-lib/css/reset.css}">
+  <link rel="stylesheet" href="../../static/approve/css/index.css" th:href="@{/approve/css/index.css}">
+  
+  <script>
+    var ctx = '[[@{/}]]';
+  </script>
+  <script src="../../static/approve/js/ip.js" th:src="@{/approve/js/ip.js}"></script>
+  <style>
+    .mg10 {
+      padding: 15px 15px;
+      padding-top: 66px;
+    }
+    
+    .el-table__expand-column {
+      border-right: 0 !important;
+    }
+    
+    .padding-left-0 .cell {
+      padding-left: 0px;
+    }
+    
+    .padding-left-20 .cell {
+      padding-left: 20px;
+    }
+    
+    .el-table__expanded-cell[class*=cell] {
+      padding: 0;
+    }
+    
+    .sec-lev-table > .el-table__header-wrapper,
+    .thr-lev-table > .el-table__header-wrapper {
+      display: none;
+    }
+    
+    .sev-lev-expand > .cell {
+      position: relative;
+      left: 18px;
+    }
+    
+    .thr-lev-expand > .cell {
+      position: relative;
+      left: 30px;
+    }
+    
+    .thr-lev-tbox {
+      padding: 16px 16px 16px 54px;
+    }
+    
+    .tst-icon {
+      width: 30px;
+      height: 30px;
+      line-height: 30px;
+      text-align: center;
+      border-radius: 100%;
+      background: #4EB2FD;
+      color: #fff;
+      display: inline-block;
+      margin-right: 5px;
+      font-size: 22px;
+    }
+    
+    .sx-label {
+      display: inline-block;
+      font-size: 12px;
+      border-radius: 4px;
+      height: 20px;
+      color: #fff;
+      padding: 0 3px;
+      background: #00C161;
+      position: relative;
+      left: -5px;
+      top: 2px;
+    }
+    
+    .thr-lev-tbox td,
+    .thr-lev-tbox th {
+      padding: 7px 0;
+    }
+    
+    .sec-lev-table,
+    .thr-lev-table {
+      border: none;
+    }
+    
+    .font-blod {
+      font-weight: bold;
+      display: inline-block;
+    }
+    
+    .sx-node-name {
+      height: 24px;
+      line-height: 24px;
+      max-width: 170px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      word-wrap: normal;
+    }
+    
+    .yellow-hint-box {
+      display: inline-block;
+      margin-left: 10px;
+      cursor: pointer;
+      height: 24px;
+      line-height: 22px;
+      border: 1px solid #FFB822;
+      border-radius: 4px;
+      font-weight: 600;
+      color: #ffffff;
+    }
+    
+    .yellow-hint-box:hover {
+      opacity: 0.8;
+    }
+    
+    .ye-h-text {
+      padding: 0 7px;
+      background: #FFB822;
+    }
+    
+    .ye-h-number {
+      width: 30px;
+      text-align: center;
+      color: #FFB822;
+    }
+    
+    .status-span {
+      display: inline-block;
+      height: 24px;
+      line-height: 22px;
+      border-radius: 12px;
+      color: #4EB2FD;
+      border: 1px solid #4EB2FD;
+      padding: 0 12px;
+    }
+    
+    .status-span.done {
+      border-color: #00C161;
+      color: #00C161;
+    }
+    
+    .status-span.back {
+      border-color: #B8C8DC;
+      color: #B8C8DC;
+    }
+    
+    .status-span.forward {
+      border-color: #B8C8DC;
+      color: #B8C8DC;
+    }
+    
+    .status-span.unuse {
+      border-color: #B8C8DC;
+      color: #B8C8DC;
+    }
+    
+    .status-btns-right {
+      padding-bottom: 15px;
+      position: fixed;
+      height: 66px;
+      padding-top: 15px;
+      background: #ffffff;
+      z-index: 100;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding-left: 16px;
+    }
+    .fri-lev-spanl{
+      font-size: 15px;
+      position: relative;
+      top:-1px;
+    }
+  </style>
+</head>
+
+<body class="bg-white">
+<div id="pageBox" v-cloak v-loading="pageLoading">
+  <div class="mg10">
+    <div class="status-btns-right">
+      <el-button size="medium" @click="allExpand">全部展开</el-button>
+      <el-button size="medium" @click="allNotExpand">全部折叠</el-button>
+    </div>
+    <el-table @expand-change="adapterCss" class-name="fri-lev-table" :data="commentList"
+              stripe
+              row-key="uniqueId" border
+              tooltip-effect="dark" style="width: 100%">
+      <el-table-column type="expand" width="30px" align="right">
+        <template v-if="scope.row.childNode&&scope.row.childNode.length" slot-scope="scope">
+          <template v-if="scope.row.nodeName=='办结'">
+            <div class="thr-lev-tbox">
+              <!-- 第二级环节 -->
+              <el-table :data="scope.row.childNode" border tooltip-effect="dark" style="width: 100%">
+                <el-table-column :width="tWidth1" prop="nodeName" label="环节" align="left"></el-table-column>
+                <el-table-column :width="width2" prop="taskAssignee" label="人员" align="left"></el-table-column>
+                <el-table-column prop="commentMessage" label="办理意见" align="left"></el-table-column>
+                <el-table-column prop="approveResult" :width="resultWidth" label="办理结果" align="left">
+                  <template slot-scope="resScope">
+                    {{formatResultStatus(resScope.row.approveResult)}}
+                  </template>
+                </el-table-column>
+                <el-table-column :width="width4" prop="sigeInDate" label="办理时间" align="left">
+                  <template slot-scope="timeScope">
+                    {{$options.filters.formatDate(timeScope.row.sigeInDate)}}
+                  </template>
+                </el-table-column>
+                <el-table-column :width="tWidth5" prop="taskState" label="状态" align="left">
+                  <template slot-scope="statusScope" v-if="typeof statusScope.row.taskState == 'number'">
+                    <span class="status-span" :class="[getStatusClass(statusScope.row.taskState)]">
+                      {{formatTaskState(statusScope.row.taskState)}}
+                    </span>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
+          </template>
+          <template v-else-if="scope.row.nodeName!='办结'">
+            <el-table :data="scope.row.childNode" border tooltip-effect="dark" style="width: 100%"
+                      class="sec-lev-table">
+              <el-table-column type="expand" width="50px" align="right" class-name="sev-lev-expand">
+                <template slot-scope='scope2'>
+                  <div v-if="scope2.row.isTargetNode" class="thr-lev-tbox">
+                    <!-- 第三级环节 -->
+                    <el-table :data="scope2.row.childNode" border tooltip-effect="dark" style="width: 100%">
+                      <el-table-column :width="tWidth1" prop="nodeName" label="环节" align="left"></el-table-column>
+                      <el-table-column :width="width2" prop="taskAssignee" label="人员" align="left"></el-table-column>
+                      <el-table-column prop="commentMessage" label="办理意见" align="left"></el-table-column>
+                      <el-table-column prop="approveResult" :width="resultWidth" label="办理结果" align="left">
+                        <template slot-scope="resScope">
+                          {{formatResultStatus(resScope.row.approveResult)}}
+                        </template>
+                      </el-table-column>
+                      <el-table-column :width="width4" prop="endDate" label="办理时间" align="left">
+                        <template slot-scope="timeScope">
+                          {{$options.filters.formatDate(timeScope.row.endDate)}}
+                        </template>
+                      </el-table-column>
+                      <el-table-column :width="tWidth5" prop="taskState" label="状态" align="left">
+                        <template slot-scope="statusScope" v-if="typeof statusScope.row.taskState == 'number'">
+                          <span class="status-span" :class="[getStatusClass(statusScope.row.taskState)]">
+                            {{formatTaskState(statusScope.row.taskState)}}
+                          </span>
+                        </template>
+                      </el-table-column>
+                    </el-table>
+                  </div>
+                  <div v-else>
+                    <!-- 第三级非环节 -->
+                    <el-table border :data="scope2.row.childNode" class="thr-lev-table">
+                      <el-table-column type="expand" width="70px" align="right" class-name="thr-lev-expand">
+                        <template slot-scope="scope3">
+                          <!-- 第四级环节 -->
+                          <div class="thr-lev-tbox">
+                            <el-table :data="scope3.row.childNode" border tooltip-effect="dark" style="width: 100%">
+                              <el-table-column :width="tWidth1" prop="nodeName" label="环节"
+                                               align="left"></el-table-column>
+                              <el-table-column :width="width2" prop="taskAssignee" label="人员"
+                                               align="left"></el-table-column>
+                              <el-table-column prop="commentMessage" label="办理意见" align="left"></el-table-column>
+                              <el-table-column prop="approveResult" :width="resultWidth" label="办理结果" align="left">
+                                <template slot-scope="resScope">
+                                  {{formatResultStatus(resScope.row.approveResult)}}
+                                </template>
+                              </el-table-column>
+                              <el-table-column :width="width4" prop="endDate" label="办理时间" align="left">
+                                <template slot-scope="timeScope">
+                                  {{$options.filters.formatDate(timeScope.row.endDate)}}
+                                </template>
+                              </el-table-column>
+                              <el-table-column :width="tWidth5" prop="taskState" label="状态" align="left">
+                                <template slot-scope="statusScope" v-if="typeof statusScope.row.taskState == 'number'">
+                                  <span class="status-span" :class="[getStatusClass(statusScope.row.taskState)]">
+                                    {{formatTaskState(statusScope.row.taskState)}}
+                                  </span>
+                                </template>
+                              </el-table-column>
+                            </el-table>
+                          </div>
+                        </template>
+                      </el-table-column>
+                      <el-table-column :width="400" prop="nodeName" class-name="padding-left-0" label="环节/事项"
+                                       align="left">
+                        <template slot-scope="scope3">
+                          <div style="position:relative;" class="c-f">
+                            <span class="sx-label l" v-if="scope3.row.isItemNode==1">事项</span>
+                            <span :style="{maxWidth:getMaxWidth(scope3.row)}"
+                                  class="sx-node-name font-blod l" :title="scope3.row.nodeName">
+                              {{scope3.row.nodeName}}
+                            </span>
+                          </div>
+                        </template>
+                      </el-table-column>
+                      <el-table-column :width="width2" prop="orgName" label="承办单位" align="left"></el-table-column>
+                      <el-table-column prop="commentMessage" label="办结意见" align="left"></el-table-column>
+                      <el-table-column prop="approveResult" :width="resultWidth" label="办理结果" align="left">
+                        <template slot-scope="resScope">
+                          {{formatResultStatus(resScope.row.approveResult)}}
+                        </template>
+                      </el-table-column>
+                      <el-table-column :width="width4" prop="endDate" label="办结时间" align="left">
+                        <template slot-scope="timeScope">
+                          {{$options.filters.formatDate(timeScope.row.endDate)}}
+                        </template>
+                      </el-table-column>
+                      <el-table-column :width="fWidth5" prop="taskState" label="状态" align="left">
+                        <template slot-scope="statusScope" v-if="typeof statusScope.row.taskState == 'number'">
+                          <span class="status-span" :class="[getStatusClass(statusScope.row.taskState)]">
+                            {{formatTaskState(statusScope.row.taskState)}}
+                          </span>
+                        </template>
+                      </el-table-column>
+                    </el-table>
+                  </div>
+                </template>
+              </el-table-column>
+              <!-- 第二级 -->
+              <el-table-column :width="sWidth1" prop="nodeName" class-name="padding-left-0" label="环节/事项" align="left">
+                <template slot-scope="scope3">
+                  <div style="position:relative;" class="c-f">
+                    <span class="sx-label l" v-if="scope3.row.isItemNode==1">事项</span>
+                    <span :style="{maxWidth:getMaxWidth(scope3.row)}" class="sx-node-name font-blod l"
+                          :title="scope3.row.nodeName">
+                      {{scope3.row.nodeName}}
+                    </span>
+                  </div>
+                </template>
+              </el-table-column>
+              <el-table-column :width="width2" prop="orgName" label="承办单位" align="left"></el-table-column>
+              <el-table-column prop="commentMessage" label="办结意见" align="left"></el-table-column>
+              <el-table-column prop="approveResult" :width="resultWidth" label="办理结果" align="left">
+                <template slot-scope="resScope">
+                  {{formatResultStatus(resScope.row.approveResult)}}
+                </template>
+              </el-table-column>
+              <el-table-column :width="width4" prop="endDate" label="办结时间" align="left">
+                <template slot-scope="timeScope">
+                  {{$options.filters.formatDate(timeScope.row.endDate)}}
+                </template>
+              </el-table-column>
+              <el-table-column :width="fWidth5" prop="taskState" label="状态" align="left">
+                <template slot-scope="statusScope" v-if="typeof statusScope.row.taskState == 'number'">
+                  <span class="status-span" :class="[getStatusClass(statusScope.row.taskState)]">
+                    {{formatTaskState(statusScope.row.taskState)}}
+                  </span>
+                </template>
+              </el-table-column>
+            </el-table>
+          </template>
+        </template>
+        <template v-else>
+          <div>abcd</div>
+        </template>
+      
+      </el-table-column>
+      <!-- 第一级 -->
+      <el-table-column :width="fWidth1" prop="nodeName" class-name="padding-left-0" label="环节/事项" align="left">
+        <template slot-scope="scope">
+          <div><span class="ag tst-icon">&#xe6bc</span><span class="font-blod fri-lev-spanl">{{scope.row.nodeName}}</span></div>
+        </template>
+      </el-table-column>
+      <el-table-column :width="width2" prop="orgName" label="承办单位" align="left"></el-table-column>
+      <el-table-column prop="commentMessage" label="办结意见" align="left"></el-table-column>
+      <el-table-column prop="approveResult" :width="resultWidth" label="办理结果" align="left">
+        <template slot-scope="resScope">
+          {{formatResultStatus(resScope.row.approveResult)}}
+        </template>
+      </el-table-column>
+      <el-table-column :width="width4" prop="endDate" label="办结时间" align="left">
+        <template slot-scope="timeScope">
+          {{$options.filters.formatDate(timeScope.row.endDate)}}
+        </template>
+      </el-table-column>
+      <el-table-column :width="fWidth5" prop="taskState" label="状态" align="left">
+        <template slot-scope="statusScope" v-if="typeof statusScope.row.taskState == 'number'">
+          <span class="status-span" :class="[getStatusClass(statusScope.row.taskState)]">
+            {{formatTaskState(statusScope.row.taskState)}}
+          </span>
+        </template>
+      </el-table-column>
+    </el-table>
+  
+  </div>
+
+</div>
+</body>
+<!--引入公共js-->
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js"
+        th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js"
+        th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js"
+        th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js"
+        th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>
+<script>
+  var vm = new Vue({
+    el: '#pageBox',
+    data: function () {
+      return {
+        commentList: [],
+        // processInstanceId: '4910103',
+        // applyinstId: 'b6fa23fc-682d-450b-97d2-23bc025f61dc',
+        processInstanceId: getUrlParam('processInstanceId'),
+        applyinstId: getUrlParam('masterEntityKey'),
+        isSeriesinst: getUrlParam('isSeriesinst'),
+        pageLoading: false,
+        width1: 440,
+        width2: '200px',
+        width4: '140px',
+        width5: 120,
+        resultWidth: 100,
+        resultStatus: ['不同意', '同意', '不涉及'],
+      }
+    },
+    computed: {
+      fWidth1: function () {
+        return this.width1 + 'px';
+      },
+      sWidth1: function () {
+        return (this.width1 - 20) + 'px';
+      },
+      tWidth1: function () {
+        return (this.width1 - 25) + 'px';
+      },
+      fWidth5: function () {
+        return this.width5 + 'px';
+      },
+      tWidth5: function () {
+        return (this.width5 - 16) + 'px';
+      },
+    },
+    methods: {
+      formatResultStatus: function (str) {
+        return str == '0' ? '不同意' :
+            str == '1' ? '同意' :
+                str == '2' ? '不涉及' : '';
+      },
+      getMaxWidth: function (row) {
+        var width = 170;
+        // if (!(row.isItemNode == 1 && (+row.bzNum))) {
+          width += 84;
+        // }
+        // if (!(row.isItemNode == 1 && (+row.tscxNum))) {
+          width += 110;
+        // }
+        return width + 'px';
+      },
+      openProcessDetDialog: function (row) {
+        parent.vm.openProcessDetDialog(row);
+      },
+      // 节点class
+      getStatusClass: function (status) {
+        var val = +status;
+        var arr = ['', '', 'done', 'back', 'forward', 'unuse'];
+        return arr[val] || '';
+      },
+      //转换节点状态
+      formatTaskState: function (cellValue) {
+        var value = "办理中";
+        switch (cellValue) {
+          case 1:
+            value = '办理中';
+            break;
+          case 2:
+            value = '已完成';
+            break;
+          case 3:
+            value = '已回退';
+            break;
+          case 4:
+            value = '已转发';
+            break;
+          case 5:
+            value = '已废弃';
+            break;
+        }
+        return value;
+      },
+      //获取所有的意见列表
+      getCommentListFilter: function () {
+        var _that = this;
+        var vm = this;
+        vm.pageLoading = true;
+        parent.vm.approveProcessLoading = true;
+        request('', {
+          url: ctx + 'rest/bpm/approve/comment/tree?processInstanceId=' + _that.processInstanceId + "&applyinstId=" + _that.applyinstId,
+          type: 'get',
+          timeout: 300000
+        }, function (res) {
+          vm.pageLoading = false;
+          parent.vm.approveProcessLoading = false;
+          if (res.success) {
+            var uniqueId = 1; // elementUI表格每个节点需要一个唯一值
+            var busRecordId = getUrlParam('busRecordId');
+            res.content.length && res.content.forEach(function (u) {
+              u.uniqueId = uniqueId++;
+              u.childNode && u.childNode.length && u.childNode.forEach(function (uu) {
+                var isTargetNode = true;
+                uu.uniqueId = uniqueId++;
+                uu.childNode && uu.childNode.length && uu.childNode.forEach(function (uuu) {
+                  uuu.uniqueId = uniqueId++;
+                  uuu.childNode && uuu.childNode.length && uuu.childNode.forEach(function (uuuu) {
+                    uuuu.uniqueId = uniqueId++;
+                  });
+                  if (uuu.childNode && uuu.childNode.length) {
+                    isTargetNode = false;
+                  }
+                });
+                uu.isTargetNode = isTargetNode;
+              });
+            });
+            _that.commentList = res.content.concat([]);
+            parent.vm.approveStepList = res.content.concat([]);
+          } else {
+            vm.$message.error(res.message);
+          }
+        }, function () {
+          vm.pageLoading = false;
+          parent.vm.approveProcessLoading = false;
+          vm.$message.error("获取审批过程tab数据失败");
+        });
+      },
+      adapterCss: function () {
+        this.$nextTick(function () {
+          $('.sec-lev-table').parent().css({"border": "none"});
+          $('.thr-lev-table').parent('td').css({"border": "none"});
+          var box = $('.el-table__expanded-cell');
+          for(var i=0; i<box.length; i++){
+            var now = box.eq(i);
+            if (now.html().length == 0) {
+              now.parent().hide();
+            }
+          }
+        });
+      },
+      allExpand: function () {
+        var box = $('.el-table__row');
+        for (var i = 0; i < box.length; i++) {
+          var _this = box.eq(i);
+          if (!_this.hasClass('expanded')) {
+            _this.find('.el-icon.el-icon-arrow-right').trigger('click');
+          }
+        }
+      },
+      allNotExpand: function () {
+        $('.el-table__row.expanded .el-icon.el-icon-arrow-right').trigger('click');
+      }
+    },
+    created: function () {
+    },
+    mounted: function () {
+      //先从parent获取applyinstId和processInstanceId
+      this.getCommentListFilter()
+    },
+    filters: {
+      formatDate: function (time) {
+        if (!time) return '-';
+        var date = new Date(time);
+        if (!date) return;
+        return formatDate(date, 'yyyy-MM-dd hh:mm');
+      },
+    }
+  });
+  
+  function getUrlParam(name) {
+    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+    var r = window.location.search.substr(1).match(reg);
+    if (r != null) {
+      return unescape(r[2]);
+    }
+    return null;
+  }
+  
+</script>
+</html>

@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by Administrator    2019-07-04 17:14:27 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaLocalDirectoryMapper">
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns">
+        ID  id,
+    DIRECTORYCODE  directorycode,
+    DIRECTORY_ID  directoryId,
+    BASECODE  basecode,
+    ORG_ID  orgId,
+    ITEMCODE  itemcode,
+    WTBM  wtbm,
+    SQJB  sqjb,
+    BJSXMC  bjsxmc,
+    SFYZX  sfyzx,
+    BJZXMC  bjzxmc,
+    BJZXBM  bjzxbm,
+    SXXZ  sxxz,
+    XKDX  xkdx,
+    SFZHLR  sfzhlr,
+    SLYJ  slyj,
+    BBH  bbh,
+    SXMLZT  sxmlzt,
+    FBSJ  fbsj,
+    SSSJ  sssj,
+    ISOLD  isold,
+    ROOT_ORG_ID rootOrgId
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaLocalDirectoryById" resultType="AeaLocalDirectory">
+        select
+        <include refid="allColumns"/>
+        from AEA_LOCAL_DIRECTORY
+        where ID = #{id}
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaLocalDirectory" resultType="AeaLocalDirectory">
+        select
+        <include refid="allColumns"/>
+        from AEA_LOCAL_DIRECTORY
+        <where>
+            <if test="id != null">
+                AND ID = #{id}
+            </if>
+            <if test="directorycode != null">
+                AND DIRECTORYCODE = #{directorycode}
+            </if>
+            <if test="directoryId != null">
+                AND DIRECTORY_ID = #{directoryId}
+            </if>
+            <if test="basecode != null">
+                AND BASECODE = #{basecode}
+            </if>
+            <if test="orgId != null">
+                AND ORG_ID = #{orgId}
+            </if>
+            <if test="itemcode != null">
+                AND ITEMCODE = #{itemcode}
+            </if>
+            <if test="wtbm != null">
+                AND WTBM = #{wtbm}
+            </if>
+            <if test="sqjb != null">
+                AND SQJB = #{sqjb}
+            </if>
+            <if test="bjsxmc != null">
+                AND BJSXMC = #{bjsxmc}
+            </if>
+            <if test="sfyzx != null">
+                AND SFYZX = #{sfyzx}
+            </if>
+            <if test="bjzxmc != null">
+                AND BJZXMC = #{bjzxmc}
+            </if>
+            <if test="bjzxbm != null">
+                AND BJZXBM = #{bjzxbm}
+            </if>
+            <if test="sxxz != null">
+                AND SXXZ = #{sxxz}
+            </if>
+            <if test="xkdx != null">
+                AND XKDX = #{xkdx}
+            </if>
+            <if test="sfzhlr != null">
+                AND SFZHLR = #{sfzhlr}
+            </if>
+            <if test="slyj != null">
+                AND SLYJ = #{slyj}
+            </if>
+            <if test="bbh != null">
+                AND BBH = #{bbh}
+            </if>
+            <if test="sxmlzt != null">
+                AND SXMLZT = #{sxmlzt}
+            </if>
+            <if test="fbsj != null">
+                AND FBSJ = #{fbsj}
+            </if>
+            <if test="sssj != null">
+                AND SSSJ = #{sssj}
+            </if>
+            <if test="isold != null">
+                AND ISOLD = #{isold}
+            </if>
+            <if test="rootOrgId != null">
+                AND ROOT_ORG_ID = #{rootOrgId}
+            </if>
+        </where>
+    </select>
+    <!--4 根据条件查询实体list,返回分页对象 -->
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaLocalDirectory" parameterType="AeaLocalDirectory">
+        insert into AEA_LOCAL_DIRECTORY (ID, DIRECTORYCODE, DIRECTORY_ID, BASECODE, ORG_ID, ITEMCODE, WTBM, SQJB,
+                                         BJSXMC, SFYZX, BJZXMC, BJZXBM, SXXZ, XKDX, SFZHLR, SLYJ, BBH, SXMLZT, FBSJ,
+                                         SSSJ, ISOLD,ROOT_ORG_ID)
+        values (#{id}, #{directorycode}, #{directoryId}, #{basecode}, #{orgId}, #{itemcode}, #{wtbm}, #{sqjb},
+                #{bjsxmc}, #{sfyzx}, #{bjzxmc}, #{bjzxbm}, #{sxxz}, #{xkdx}, #{sfzhlr}, #{slyj}, #{bbh}, #{sxmlzt},
+                #{fbsj}, #{sssj}, #{isold},#{rootOrgId})
+    </insert>
+    <!--6 修改实体对象 -->
+    <update id="updateAeaLocalDirectory" parameterType="AeaLocalDirectory">
+        update AEA_LOCAL_DIRECTORY
+        <set>
+            <if test="id != null">
+                ID = #{id},
+            </if>
+            <if test="directorycode != null">
+                DIRECTORYCODE = #{directorycode},
+            </if>
+            <if test="directoryId != null">
+                DIRECTORY_ID = #{directoryId},
+            </if>
+            <if test="basecode != null">
+                BASECODE = #{basecode},
+            </if>
+            <if test="orgId != null">
+                ORG_ID = #{orgId},
+            </if>
+            <if test="itemcode != null">
+                ITEMCODE = #{itemcode},
+            </if>
+            <if test="wtbm != null">
+                WTBM = #{wtbm},
+            </if>
+            <if test="sqjb != null">
+                SQJB = #{sqjb},
+            </if>
+            <if test="bjsxmc != null">
+                BJSXMC = #{bjsxmc},
+            </if>
+            <if test="sfyzx != null">
+                SFYZX = #{sfyzx},
+            </if>
+            <if test="bjzxmc != null">
+                BJZXMC = #{bjzxmc},
+            </if>
+            <if test="bjzxbm != null">
+                BJZXBM = #{bjzxbm},
+            </if>
+            <if test="sxxz != null">
+                SXXZ = #{sxxz},
+            </if>
+            <if test="xkdx != null">
+                XKDX = #{xkdx},
+            </if>
+            <if test="sfzhlr != null">
+                SFZHLR = #{sfzhlr},
+            </if>
+            <if test="slyj != null">
+                SLYJ = #{slyj},
+            </if>
+            <if test="bbh != null">
+                BBH = #{bbh},
+            </if>
+            <if test="sxmlzt != null">
+                SXMLZT = #{sxmlzt},
+            </if>
+            <if test="fbsj != null">
+                FBSJ = #{fbsj},
+            </if>
+            <if test="sssj != null">
+                SSSJ = #{sssj},
+            </if>
+            <if test="isold != null">
+                ISOLD = #{isold},
+            </if>
+            <if test="rootOrgId != null">
+                ROOT_ORG_ID = #{rootOrgId},
+            </if>
+        </set>
+        where ID = #{id}
+    </update>
+    <!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaLocalDirectory">
+        delete
+        from AEA_LOCAL_DIRECTORY
+        where ID = #{id}
+    </delete>
+    <!--8 删除实体对象列表,根据主键ID列表 -->
+    <!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaLocalDirectory" id="AeaLocalDirectoryMap">
+        <id property="id" column="ID"/>
+        <result property="directorycode" column="DIRECTORYCODE"/>
+        <result property="directoryId" column="DIRECTORY_ID"/>
+        <result property="basecode" column="BASECODE"/>
+        <result property="orgId" column="ORG_ID"/>
+        <result property="itemcode" column="ITEMCODE"/>
+        <result property="wtbm" column="WTBM"/>
+        <result property="sqjb" column="SQJB"/>
+        <result property="bjsxmc" column="BJSXMC"/>
+        <result property="sfyzx" column="SFYZX"/>
+        <result property="bjzxmc" column="BJZXMC"/>
+        <result property="bjzxbm" column="BJZXBM"/>
+        <result property="sxxz" column="SXXZ"/>
+        <result property="xkdx" column="XKDX"/>
+        <result property="sfzhlr" column="SFZHLR"/>
+        <result property="slyj" column="SLYJ"/>
+        <result property="bbh" column="BBH"/>
+        <result property="sxmlzt" column="SXMLZT"/>
+        <result property="fbsj" column="FBSJ"/>
+        <result property="sssj" column="SSSJ"/>
+        <result property="isold" column="ISOLD"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+    </resultMap>
+</mapper>

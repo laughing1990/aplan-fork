@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>事项扩展信息</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!--引入样式-->
+    <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/metronic-5/vendors.bundle.css" th:href="@{/agcloud/framework/js-lib/metronic-5/vendors.bundle.css}">
+    <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/ui-private/default/common/css/metronic.css" th:href="@{/agcloud/framework/ui-private/default/common/css/metronic.css}">
+    <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.css" th:href="@{/agcloud/framework/js-lib/element-2/element.css}">
+    <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/ui-private/default/common/css/layout.css" th:href="@{/agcloud/framework/ui-private/default/common/css/layout.css}">
+    <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/ui-private/default/blue/css/theme.css" th:href="@{/agcloud/framework/ui-private/default/blue/css/theme.css}">
+    <!-- 业务样式 -->
+    <link rel="stylesheet" href="../../../../static/admin/item/guide/css/extendInfoIndex.css" th:href="@{/admin/item/guide/css/extendInfoIndex.css}">
+    <script>
+        var ctx = '[[@{/}]]';
+        var itemVerId = '[[${itemVerId}]]';
+        var curIsEditable = [[${curIsEditable}]];
+    </script>
+</head>
+<body>
+    <div id="index" style="padding: 10px 0px;">
+        <el-form id="item_extend_info_form" :inline="true" :model="selRowData"
+                 :rules="rules" ref="selRowData" method="post" enctype="multipart/form-data" >
+
+            <input type="hidden" :value="selRowData.id">
+            <input type="hidden" :value="selRowData.itemVerId">
+            <input type="hidden" :value="selRowData.isScheduleText">
+            <input type="hidden" :value="selRowData.isExpressText">
+            <input type="hidden" :value="selRowData.serviceTypeText">
+
+            <el-row>
+                <el-col :span="24">
+                    <el-form-item label="结果名称：" prop="resultName" class="ops-memo2">
+                        <el-input type="text" v-model="selRowData.resultName" :readonly="readonly"></el-input>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+
+            <el-row>
+                <el-col :span="24">
+                    <el-form-item label="结果样本：" prop="resultSample" class="ops-memo2">
+                        <el-input type="text" v-model="selRowData.resultSample" :readonly="readonly"></el-input>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+
+            <el-row>
+                <el-col :span="12">
+                    <el-form-item label="业务系统：" prop="xtmc">
+                        <el-input type="text" v-model="selRowData.xtmc" :readonly="readonly" style="width: 98%;"></el-input>
+                    </el-form-item>
+                </el-col>
+
+                <el-col :span="12">
+                    <el-form-item label="联办机构：" prop="otherDept">
+                        <el-input type="text" v-model="selRowData.otherDept" :readonly="readonly" style="width: 98%;"></el-input>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+
+            <el-row>
+                <el-col :span="12">
+                    <el-form-item label="是否支持预约办理：" prop="isSchedule">
+                        <el-select v-model="selRowData.isSchedule" :readonly="readonly" style="width: 98%;">
+                            <el-option value="" label="请选择"></el-option>
+                            <el-option value="0" label="否"></el-option>
+                            <el-option value="1" label="是"></el-option>
+                        </el-select>
+                    </el-form-item>
+                </el-col>
+
+                <el-col :span="12">
+                    <el-form-item label="是否支持物流快递：" prop="isExpress">
+                        <el-select v-model="selRowData.isExpress" :readonly="readonly" style="width: 98%;">
+                            <el-option value="" label="请选择"></el-option>
+                            <el-option value="0" label="否"></el-option>
+                            <el-option value="1" label="是"></el-option>
+                        </el-select>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+
+            <el-row>
+                <el-col :span="24">
+                    <el-form-item label="审批服务形式：" prop="serviceType" class="ops-memo2">
+                        <el-checkbox-group v-model="selRowData.serviceType">
+                            <el-checkbox label="1">马上办</el-checkbox>
+                            <el-checkbox label="2"></el-checkbox>
+                            <el-checkbox label="3"></el-checkbox>
+                            <el-checkbox label="4"></el-checkbox>
+                            <el-checkbox label="5"></el-checkbox>
+                        </el-checkbox-group>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+
+        </el-form>
+    </div>
+
+    <!-- 引入js文件 -->
+    <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js" th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>
+    <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js" th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
+    <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js" th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
+    <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js" th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>
+    <!-- 业务js -->
+    <script type="text/javascript" src="../../../../static/admin/item/guide/js/extendInfoIndex.js" th:src="@{/admin/item/guide/js/extendInfoIndex.js}"></script>
+</body>
+</html>

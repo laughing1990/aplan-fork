@@ -1,0 +1,28 @@
+/* 右键菜单样式 */
+body{ position:relative;}
+ul,li{ margin:0; padding:0; list-style:none; font-size:12px;}
+.popup_menu {
+	position: absolute;
+	z-index: 90;
+	background-color: #fff;
+	/* border: 1px solid #d9d9d9;*/
+	box-shadow: 0 1px 10px 0px rgba(69,65,78,.2);
+	padding: 2px;
+	width: 170px;
+	border-radius: 2px;
+}
+.popup_menu a {
+	display: block;
+	color: #595959;
+	text-indent: 10px;
+	text-decoration: none;
+	height: 36px;
+	line-height: 36px;
+	padding-right: 5px;
+	font-size: 14px;
+}
+.popup_menu a:hover {
+	background: #36a3f7;
+	color: #ffff;
+	/* border-radius: 4px; */
+}

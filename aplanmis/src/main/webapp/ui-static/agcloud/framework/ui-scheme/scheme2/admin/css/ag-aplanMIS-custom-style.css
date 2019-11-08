@@ -1,0 +1,182 @@
+@charset "utf-8";
+/* CSS Document */
+/*住建产品自定义样式汇总 | yang2018.8.30*/
+
+/***弹出框***/
+/*ag-aplan-moda为住建产品定义的弹出框类名*/
+/*标题栏header高度*/
+.modal.ag-aplan-modal .modal-dialog,.modal.ag-aplan-modal .modal-lg{
+	max-width: 60%!important;
+	min-width: 660px;
+}
+.modal.ag-aplan-modal .modal-content .modal-header {
+	height: 46px;
+	line-height: 46px;
+    border-bottom: 2px solid #86caff;
+	padding: 12px;
+}
+.modal.ag-aplan-modal .modal-content .modal-header h5{
+	font-weight: 700;
+	font-size: 16px;
+	color: #595959;
+}
+.modal.ag-aplan-modal .modal-content .modal-header .close {
+    padding: 0;
+    margin: 0;
+    margin-top: 12px;
+}
+.modal.ag-aplan-modal .modal-body .m-option{
+	position: relative;
+}
+.modal.ag-aplan-modal .modal-body .step-one .m-option{
+	height: 280px;
+	text-align: center;
+}
+.modal.ag-aplan-modal .modal-body .step-two .m-option{
+	margin-bottom:15px;
+}
+.modal.ag-aplan-modal .modal-body .m-option:hover {
+    border: 1px solid #d9d9d9;
+}
+/*当前状态蓝色边框*/
+.modal.ag-aplan-modal .modal-body .m-option.current {
+    border: 1px solid #36a3f7;
+}
+/*当前状态右下角三角形和打勾*/
+.modal.ag-aplan-modal .modal-body .m-option.current .triangle{
+	background: url(../images/common/triangle.png) no-repeat 0 0;
+	width: 54px;
+	height: 54px;
+	position: absolute;
+	bottom: 0;
+	right: 0;
+}
+.modal.ag-aplan-modal .modal-body .m-option  p{
+	color: #989898;
+	font-size: 15px;
+	line-height: 20px;
+}
+/*步骤条*/
+.modal.ag-aplan-modal .flow_steps {
+	float: none;
+	margin-bottom: 20px;
+}
+.modal.ag-aplan-modal .flow_steps .stage{
+	margin-bottom: 0;
+	margin-left: -28px;
+}
+.modal.ag-aplan-modal .flow_steps .stage li {
+	width: 49%;
+	height: 46px;
+	line-height: 46px;
+	font-size: 16px;
+	padding: 0px 4px 0 16px;
+	color: #949393;
+    background: #eaecf1;
+    display:inline-block;
+    position: relative;
+	padding-left: 80px;
+}
+.modal.ag-aplan-modal .flow_steps .stage li.current{
+    background: #5cb8ff;
+	color: #fff;
+	font-weight: 700;
+}
+.modal.ag-aplan-modal .flow_steps .stage li.current:after{
+    content: '';
+    display: block;
+    border-top: 23px solid transparent;
+    border-bottom: 23px solid transparent;
+    border-left: 23px solid #5cb8ff;
+    position: absolute;
+    right: -23px;
+    top: 0;
+    z-index: 10;
+}
+.modal.ag-aplan-modal .flow_steps .stage li i.flow-steps-num{
+	width: 30px;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    background-color: transparent;
+	border: 1px solid #bebebe;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 7px;
+    vertical-align: middle;
+    color: #bebebe;
+    font-size: 18px;
+    font-style: normal;
+}
+.modal.ag-aplan-modal .flow_steps .stage li.current i.flow-steps-num{
+    background-color: #fff;
+	border: 1px solid #fff;
+    color: #5cb8ff;
+    font-size: 18px;
+	font-weight: 700;
+}
+.modal.ag-aplan-modal .flow_steps .stage li:after{
+    content: '';
+    display: block;
+    border-top: 23px solid transparent;
+    border-bottom: 23px solid transparent;
+    border-left: 23px solid #eaecf1;
+    position: absolute;
+    right: -23px;
+    top: 0;
+    z-index: 10;
+}
+.modal.ag-aplan-modal .flow_steps .stage li:before{
+    content: '';
+    display: block;
+    border-top: 23px solid transparent;
+    border-bottom: 23px solid transparent;
+    border-left: 23px solid #fff;
+    position: absolute;
+    left: 0px;
+    top: 0;
+}
+
+.modal.ag-aplan-modal .flow_steps .stage li:first-child{
+    border-radius: 4px 0 0 4px;
+}
+.modal.ag-aplan-modal .flow_steps .stage li:last-child{
+    border-radius: 0px 4px 4px 0px;
+    padding-right: 12px;
+}
+ .modal.ag-aplan-modal .flow_steps .stage li:first-child:before{
+    display: none;
+}
+.modal.ag-aplan-modal .flow_steps .stage li.stage-success{
+    background: #cadff5;
+	color: #73a0cc;
+	font-weight: 700;
+}
+.modal.ag-aplan-modal .flow_steps .stage li.stage-success i.flow-steps-num{
+    background-color: #ddeaf9;
+	border: 1px solid #ddeaf9;
+    color: #73a0cc;
+    font-size: 18px;
+	font-weight: 700;
+}
+.modal.ag-aplan-modal .flow_steps .stage li.stage-success:after{
+    border-left: 23px solid #cadff5;
+}
+
+.modal.ag-aplan-modal .flow_steps .stage li:last-child:after{
+    display: none;
+}
+.modal.ag-aplan-modal .flow_steps .stage .item{
+	background-color:#36a3f7;
+	border-radius: 4px!important;
+	line-height: 18px;
+	padding: 6px 2px 6px 12px;
+}
+.modal.ag-aplan-modal .modal-content .modal-footer {
+    padding: 15px 25px;
+}
+.modal.ag-aplan-modal .btn{
+	width: 80px;
+	height: 36px;
+}
+

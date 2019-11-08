@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>个人中心</title>
+    <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.css"
+          th:href="@{/agcloud/framework/js-lib/element-2/element.css}">
+
+    <link rel="stylesheet" href="../../../../static/mall/css/common/reset_wt.css"
+          th:href="@{/mall/css/common/reset_wt.css}">
+    <link rel="stylesheet" href="../../../../static/mall/css/common/base_wt.css"
+          th:href="@{/mall/css/common/base_wt.css}">
+    <link rel="stylesheet" href="../../../../static/mall/css/userCenter/userCenterPage.css"
+          th:href="@{/mall/css/userCenter/userCenterPage.css}">
+    <link rel="stylesheet" href="../../../../static/mall/css/userCenter/credit.css"
+          th:href="@{/mall/css/userCenter/credit.css}">
+    <script>
+        var ctx = "[[@{/}]]";
+        // var ctx = "http://192.168.15.101:8084/aplanmis-mall/"
+    </script>
+</head>
+<body>
+<div id="userCenterPage" v-cloak>
+    <header>
+        <div class="header-wraper">
+            <div class="head-img-url">
+                <img src="../../../../static/mall/images/userCenter/avatar_old.png"
+                     th:src="@{/mall/images/userCenter/avatar_old.png}">
+            </div>
+            <div class="head-user-info">
+                <p class="nickName"
+                   v-text='aeaUnitInfo && aeaUnitInfo.loginName || aeaLinkmanInfo && aeaLinkmanInfo .loginName ||"未知用户"'></p>
+                <div class="nickName-des" v-if="user=='2'">
+                    <div class="nickName-des-left">
+                        <p>法定代表人：{{aeaUnitInfo.idrepresentative||"-"}} </p>
+                        <p>联系电话：{{aeaUnitInfo.idmobile||"-"}}</p>
+                    </div>
+                    <div class="nickName-des-right">
+                        <p>统一社会信用代码：{{aeaUnitInfo.unifiedSocialCreditCode||"-"}} </p>
+                        <p>单位名称：{{aeaUnitInfo.applicant||"-"}}</p>
+                    </div>
+                </div>
+                <div class="nickName-des" v-else>
+                    <div class="nickName-des-left">
+                        <p>联系人名：{{aeaLinkmanInfo.linkmanName||"-"}} </p>
+                        <p>联系电话：{{aeaLinkmanInfo.linkmanOfficePhon||"-"}}</p>
+                    </div>
+                    <div class="nickName-des-right">
+                        <p>身份证号：{{aeaLinkmanInfo.linkmanCertNo||"-"}} </p>
+                        <p>邮箱：{{aeaLinkmanInfo.linkmanMail||"-"}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <div class="credit-dia-wrap">
+        <div class="credit-dia-box">
+            <div :class="(isBlack||loseCreditCount>0)?'cd-hint-box':'cd-hint-good-box'">
+                <i :class="isBlack?'cd-hint-icon el-icon-error':(loseCreditCount>0?'cd-hint-icon el-icon-warning':'cd-hint-good-icon el-icon-success')"></i>
+                <span class="black">{{isBlack?('当前企业已被纳入信用黑名单，将无法申报项目！'):(loseCreditCount<=0?'当前企业信用良好，无失信记录！':('当前企业有'+loseCreditCount+'次失信记录'))}}</span>
+                <div class="credit-red-black" v-show="isBlack">
+                    <div class="credit-red-black-left">
+                        <p>列入黑名单时间：{{redblackInfo.includeTime| formatDate}}</p>
+                        <p>列入黑名单的原因：{{redblackInfo.redblackReason||"-"}} </p>
+                    </div>
+                    <div class="credit-red-black-right">
+                        <p>认证机构：{{redblackInfo.creditUnit||"-"}}</p>
+                        <p>认证依据：{{redblackInfo.creditBasis||"-"}} </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="cd-type-u" :class="{'is-black':item.itemCode=='bad'}"
+                 :key="index"
+                 v-for="(item,index) in creditTypeList" v-show="item.summaries&&item.summaries.length">
+                <div class="cd-type-title">{{item.itemName}}</div>
+                <div class="pre-list-box">
+                    <div class="pre-list-u" :class="{open: item2.isOpen}"
+                         :key="index2"
+                         v-for="(item2,index2) in item.summaries">
+                        <div class="pre-u-title" @click="item2.isOpen = !item2.isOpen;">
+                            <i v-if="item2.detailDtos.length>0"
+                               :class="[item2.isOpen?'el-icon-caret-bottom':'el-icon-caret-right']"></i>
+                            {{item2.cnTableName}}（{{item2.cnDeptName}}）（<span :class="item.itemCode=='bad'? 'color1': 'color2'">{{item2.detailDtos?item2.detailDtos.length:0}}</span>条记录，最后更新时间：{{item2.lastUpdateTime|
+                            formatDate}}）
+                        </div>
+                        <div class="p-u-wrap" v-show="item2.isOpen">
+                            <div class="pre-u-detail clearfix" v-for="(uuu,uindex) in item2.detailDtos" :key="uindex">
+                                <div class="fl p-detail-label"><i class="radio" :class="item.itemCode=='bad'? 'radio1': 'radio2'"></i>{{uuu.cnColumnName}}：</div>
+                                <div class="fl p-detail-value">{{uuu.columnValue}}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div v-if="!creditTypeList||creditTypeList.length==0" class="noData-box">
+        <img src="../../../../static/mall/images/icon/noData.png" th:src="@{/mall/images/icon/noData.png}">
+    </div>
+</div>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js"
+        th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js"
+        th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js"
+        th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
+<!--<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js"-->
+<!--        th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>-->
+<script src="../../../../static/common/js/common.js" th:src="@{/common/js/common.js}"></script>
+
+
+<script type="text/javascript">
+    var module1 = new Vue({
+        el: '#userCenterPage',
+        data: function () {
+            return {
+                // 页面loading
+                loading: false,
+                keyword: "",
+                tableData1: [{
+                    matName: '111',
+                    itemCode: '111',
+                    itemType: '111',
+                    orgName: '111'
+                }],
+                tableData2: [{
+                    matName: '222',
+                    itemCode: '222',
+                    itemType: '222'
+                }],
+                selectPeple: [],
+                options: [],
+                radio: '0',
+                user: '2',
+                isAdd: true,
+                //个人信息
+                aeaLinkmanInfo: {},
+                //企业信息
+                aeaUnitInfo: {},
+                selectObj: {},
+                creditTypeList: [],
+                isBlack: '',
+                loseCreditCount: '',
+                redblackInfo: ''
+            }
+        },
+        methods: {
+            // 获取信息
+            getUserinfo: function () {
+                var _this = this;
+                request('', {
+                    url: ctx + 'rest/user/userinfo',
+                    type: 'get',
+                    data: {}
+                }, function (res) {
+                    if (res.success) {
+                        if (res.content.aeaLinkmanInfo || res.content.aeaUnitInfo) {
+                            _this.aeaLinkmanInfo = res.content.aeaLinkmanInfo;
+                            _this.aeaUnitInfo = res.content.aeaUnitInfo || {};
+                            _this.options = res.content.aeaUnitList;
+                            _this.user = res.content.role;
+
+                            if (_this.user == '2') {
+                            } else {
+                                _this.getUnitLinkman();
+                            }
+                        }
+                    } else {
+                        _this.$message.error(res.message);
+                    }
+
+                }, function () {
+                    _this.$message.error('获取数据失败，请重试');
+                });
+            },
+            // 根据企业或者个人id查询是否属于黑名单及信用记录
+            getPersonOrUnitBlackAndCreditListByBizCode: function () {
+                var _that = this;
+                request('', {
+                    url: ctx + 'rest/user/credit/redblack/getPersonOrUnitBlackAndCreditListByBizCode',
+                    type: 'get',
+                    data: {}
+                }, function (result) {
+                    if (result.success) {
+                        if (result.content.isBlack == 1) {
+                            // _that.creditDiaVisible = true; // 展示信用记录弹窗
+                            _that.isBlack = true;
+                        } else {
+                            _that.isBlack = false;
+                        }
+                        _that.loseCreditCount = 0;
+                        _that.redblackInfo = result.content;
+                        _that.creditTypeList = result.content.creditList;
+                        result.content.creditList.map(function (item) {
+                            if (item.itemCode == 'bad' && item.summaries.length > 0) {
+                                _that.loseCreditCount = item.summaries.length;
+                            }
+                            item.summaries.map(function (itemSum) {
+                                Vue.set(itemSum, 'isOpen', false);
+                            })
+                        });
+                        console.log(_that.creditTypeList);
+                    } else {
+                        _that.$message.error(result.message ? result.message : '获取信用状态失败！');
+                    }
+                }, function (msg) {
+
+                })
+            },
+        },
+        created: function () {
+            this.getUserinfo();
+            this.getPersonOrUnitBlackAndCreditListByBizCode();
+        }, filters: {
+            formatDate: function (time) {
+                if (!time) return "";
+                var date = new Date(time);
+                return formatDate(date, 'yyyy-MM-dd');
+            }
+        }
+    })
+</script>
+</body>
+</html>

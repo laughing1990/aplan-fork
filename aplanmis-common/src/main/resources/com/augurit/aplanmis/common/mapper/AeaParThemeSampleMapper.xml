@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by Administrator    2019-09-11 14:19:07 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaParThemeSampleMapper">
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns">
+        THEME_SAMPLE_ID  themeSampleId,
+        SAMPLE_NAME  sampleName,
+        SAMPLE_DESC  sampleDesc,
+        SAMPLE_TYPE  sampleType,
+        SAMPLE_CONTENT  sampleContent,
+        CREATER  creater,
+        CREATE_TIME  createTime,
+        MODIFIER  modifier,
+        MODIFY_TIME  modifyTime
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaParThemeSampleById" resultType="AeaParThemeSample">
+        select
+        <include refid="allColumns"/>
+        from AEA_PAR_THEME_SAMPLE
+        where THEME_SAMPLE_ID = #{id}
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaParThemeSample" resultType="AeaParThemeSample">
+        select
+        <include refid="allColumns"/>
+        from AEA_PAR_THEME_SAMPLE
+        <where>
+            <if test="themeSampleId != null and themeSampleId != ''">
+                AND THEME_SAMPLE_ID = #{themeSampleId}
+            </if>
+            <if test="sampleName != null and sampleName != ''">
+                AND SAMPLE_NAME = #{sampleName}
+            </if>
+            <if test="sampleDesc != null and sampleDesc != ''">
+                AND SAMPLE_DESC = #{sampleDesc}
+            </if>
+            <if test="sampleType != null and sampleType != ''">
+                AND SAMPLE_TYPE = #{sampleType}
+            </if>
+            <if test="sampleContent != null and sampleContent != ''">
+                AND SAMPLE_CONTENT = #{sampleContent}
+            </if>
+            <if test="creater != null and creater != ''">
+                AND CREATER = #{creater}
+            </if>
+            <if test="createTime != null ">
+                AND CREATE_TIME = #{createTime}
+            </if>
+            <if test="modifier != null and modifier != ''">
+                AND MODIFIER = #{modifier}
+            </if>
+            <if test="modifyTime != null">
+                AND MODIFY_TIME = #{modifyTime}
+            </if>
+            <if test="keyword != null and keyword !='' " >
+                and (
+                SAMPLE_NAME like CONCAT(CONCAT('%',#{keyword}),'%')
+                )
+            </if>
+        </where>
+    </select>
+
+    <!--4 根据条件查询实体list,返回分页对象 -->
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaParThemeSample" parameterType="AeaParThemeSample">
+        insert into AEA_PAR_THEME_SAMPLE (THEME_SAMPLE_ID, SAMPLE_NAME, SAMPLE_DESC, SAMPLE_TYPE, SAMPLE_CONTENT,
+                                          CREATER, CREATE_TIME, MODIFIER, MODIFY_TIME)
+        values (#{themeSampleId}, #{sampleName}, #{sampleDesc}, #{sampleType}, #{sampleContent}, #{creater},
+                #{createTime}, #{modifier}, #{modifyTime})
+    </insert>
+    <!--6 修改实体对象 -->
+    <update id="updateAeaParThemeSample" parameterType="AeaParThemeSample">
+        update AEA_PAR_THEME_SAMPLE
+        <set>
+            <if test="themeSampleId != null and themeSampleId != ''">
+                THEME_SAMPLE_ID = #{themeSampleId},
+            </if>
+            <if test="sampleName != null and sampleName != ''">
+                SAMPLE_NAME = #{sampleName},
+            </if>
+            <if test="sampleDesc != null and sampleDesc != ''">
+                SAMPLE_DESC = #{sampleDesc},
+            </if>
+            <if test="sampleType != null and sampleType != ''">
+                SAMPLE_TYPE = #{sampleType},
+            </if>
+            <if test="sampleContent != null and sampleContent != ''">
+                SAMPLE_CONTENT = #{sampleContent},
+            </if>
+            <if test="creater != null and creater != ''">
+                CREATER = #{creater},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime},
+            </if>
+            <if test="modifier != null and modifier != ''">
+                MODIFIER = #{modifier},
+            </if>
+            <if test="modifyTime != null">
+                MODIFY_TIME = #{modifyTime},
+            </if>
+        </set>
+        where THEME_SAMPLE_ID = #{themeSampleId}
+    </update>
+    <!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaParThemeSample">
+        delete
+        from AEA_PAR_THEME_SAMPLE
+        where THEME_SAMPLE_ID = #{id}
+    </delete>
+
+    <!--8 删除实体对象列表,根据主键ID列表 -->
+    <delete id="batchDelThemeSampleByIds">
+        delete from AEA_PAR_THEME_SAMPLE
+        where THEME_SAMPLE_ID in
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaParThemeSample" id="AeaParThemeSampleMap">
+        <id property="themeSampleId" column="THEME_SAMPLE_ID"/>
+        <result property="sampleName" column="SAMPLE_NAME"/>
+        <result property="sampleDesc" column="SAMPLE_DESC"/>
+        <result property="sampleType" column="SAMPLE_TYPE"/>
+        <result property="sampleContent" column="SAMPLE_CONTENT"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="modifier" column="MODIFIER"/>
+        <result property="modifyTime" column="MODIFY_TIME"/>
+    </resultMap>
+</mapper>

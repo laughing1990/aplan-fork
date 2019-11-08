@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by admin    2019-06-12 18:22:32 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaImItemExplainMapper" >
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns" >
+        ITEM_EXPLAIN_ID  itemExplainId,
+        ITEM_VER_ID  itemVerId,
+        SERVICE_CONTENT  serviceContent,
+        SERVICE_RESULT  serviceResult,
+        TIME_LIMIT_EXPLAIN  timeLimitExplain,
+        SERVICE_TIME_LIMIT  serviceTimeLimit,
+        PRICE_MANAGEMENT  priceManagement,
+        SLCJ  slcj,
+        MEMO  memo,
+        IS_FINANCIAL_FUND  isFinancialFund,
+        IS_SOCIAL_FUND  isSocialFund,
+        UNIT_REQUIRE_ID  unitRequireId,
+        ROOT_ORG_ID rootOrgId
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaImItemExplainById" resultType="AeaImItemExplain" >
+        select
+        <include refid="allColumns"/>
+        from    AEA_IM_ITEM_EXPLAIN
+        where    ITEM_EXPLAIN_ID = #{id}
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaImItemExplain" resultType="AeaImItemExplain" >
+        select
+        <include refid="allColumns"/>
+        from    AEA_IM_ITEM_EXPLAIN
+        <where>
+            <if test="itemExplainId != null" >
+                AND    ITEM_EXPLAIN_ID = #{itemExplainId}
+            </if>
+            <if test="itemVerId != null" >
+                AND    ITEM_VER_ID = #{itemVerId}
+            </if>
+            <if test="serviceContent != null" >
+                AND    SERVICE_CONTENT = #{serviceContent}
+            </if>
+            <if test="serviceResult != null" >
+                AND    SERVICE_RESULT = #{serviceResult}
+            </if>
+            <if test="timeLimitExplain != null" >
+                AND    TIME_LIMIT_EXPLAIN = #{timeLimitExplain}
+            </if>
+            <if test="serviceTimeLimit != null" >
+                AND    SERVICE_TIME_LIMIT = #{serviceTimeLimit}
+            </if>
+            <if test="priceManagement != null" >
+                AND    PRICE_MANAGEMENT = #{priceManagement}
+            </if>
+            <if test="slcj != null" >
+                AND    SLCJ = #{slcj}
+            </if>
+            <if test="memo != null" >
+                AND    MEMO = #{memo}
+            </if>
+            <if test="isFinancialFund != null" >
+                AND    IS_FINANCIAL_FUND = #{isFinancialFund}
+            </if>
+            <if test="isSocialFund != null" >
+                AND    IS_SOCIAL_FUND = #{isSocialFund}
+            </if>
+            <if test="unitRequireId != null" >
+                AND    UNIT_REQUIRE_ID = #{unitRequireId}
+            </if>
+            <if test="rootOrgId != null" >
+                AND    ROOT_ORG_ID = #{rootOrgId}
+            </if>
+        </where>
+    </select>
+
+    <select id="getAeaImItemExplainByItemVerId" resultType="AeaImItemExplain" >
+        select
+        <include refid="allColumns"/>
+        from    AEA_IM_ITEM_EXPLAIN
+        where    ITEM_VER_ID = #{itemVerId}
+    </select>
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaImItemExplain" parameterType="AeaImItemExplain" >
+        insert into AEA_IM_ITEM_EXPLAIN (
+        ITEM_EXPLAIN_ID  ,ITEM_VER_ID  ,SERVICE_CONTENT  ,SERVICE_RESULT  ,TIME_LIMIT_EXPLAIN  ,SERVICE_TIME_LIMIT  ,PRICE_MANAGEMENT  ,SLCJ  ,MEMO  ,IS_FINANCIAL_FUND  ,IS_SOCIAL_FUND  ,UNIT_REQUIRE_ID,ROOT_ORG_ID
+        )  values  (
+        #{itemExplainId},#{itemVerId},#{serviceContent},#{serviceResult},#{timeLimitExplain},#{serviceTimeLimit},#{priceManagement},#{slcj},#{memo},#{isFinancialFund},#{isSocialFund},  #{unitRequireId},#{rootOrgId}
+        )
+    </insert>
+    <!--6 修改实体对象 -->
+    <update id="updateAeaImItemExplain" parameterType="AeaImItemExplain" >
+        update AEA_IM_ITEM_EXPLAIN
+        <set >
+            <if test="itemExplainId != null" >
+                ITEM_EXPLAIN_ID = #{itemExplainId},
+            </if>
+            <if test="itemVerId != null" >
+                ITEM_VER_ID = #{itemVerId},
+            </if>
+            <if test="serviceContent != null" >
+                SERVICE_CONTENT = #{serviceContent},
+            </if>
+            <if test="serviceResult != null" >
+                SERVICE_RESULT = #{serviceResult},
+            </if>
+            <if test="timeLimitExplain != null" >
+                TIME_LIMIT_EXPLAIN = #{timeLimitExplain},
+            </if>
+            <if test="serviceTimeLimit != null" >
+                SERVICE_TIME_LIMIT = #{serviceTimeLimit},
+            </if>
+            <if test="priceManagement != null" >
+                PRICE_MANAGEMENT = #{priceManagement},
+            </if>
+            <if test="slcj != null" >
+                SLCJ = #{slcj},
+            </if>
+            <if test="memo != null" >
+                MEMO = #{memo},
+            </if>
+            <if test="isFinancialFund != null" >
+                IS_FINANCIAL_FUND = #{isFinancialFund},
+            </if>
+            <if test="isSocialFund != null" >
+                IS_SOCIAL_FUND = #{isSocialFund},
+            </if>
+            <if test="unitRequireId != null" >
+                UNIT_REQUIRE_ID = #{unitRequireId},
+            </if>
+            <if test="rootOrgId != null" >
+                ROOT_ORG_ID = #{rootOrgId},
+            </if>
+        </set>
+        where ITEM_EXPLAIN_ID = #{itemExplainId}
+    </update>
+    <!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaImItemExplain">
+        delete from   AEA_IM_ITEM_EXPLAIN
+        where
+        ITEM_EXPLAIN_ID = #{id}
+    </delete>
+    <!--8 删除实体对象列表,根据主键ID列表 -->
+    <!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaImItemExplain" id="AeaImItemExplainMap">
+        <id property="itemExplainId" column="ITEM_EXPLAIN_ID"/>
+        <result property="itemVerId" column="ITEM_VER_ID"/>
+        <result property="serviceContent" column="SERVICE_CONTENT"/>
+        <result property="serviceResult" column="SERVICE_RESULT"/>
+        <result property="timeLimitExplain" column="TIME_LIMIT_EXPLAIN"/>
+        <result property="serviceTimeLimit" column="SERVICE_TIME_LIMIT"/>
+        <result property="priceManagement" column="PRICE_MANAGEMENT"/>
+        <result property="slcj" column="SLCJ"/>
+        <result property="memo" column="MEMO"/>
+        <result property="isFinancialFund" column="IS_FINANCIAL_FUND"/>
+        <result property="isSocialFund" column="IS_SOCIAL_FUND"/>
+        <result property="unitRequireId" column="UNIT_REQUIRE_ID"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+    </resultMap>
+</mapper>

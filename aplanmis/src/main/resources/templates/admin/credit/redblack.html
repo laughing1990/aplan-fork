@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>信用管理-红黑名单</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!--引入样式-->
+    <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/metronic-5/vendors.bundle.css" th:href="@{/agcloud/framework/js-lib/metronic-5/vendors.bundle.css}">
+    <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/ui-private/default/common/css/metronic.css" th:href="@{/agcloud/framework/ui-private/default/common/css/metronic.css}">
+    <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.css" th:href="@{/agcloud/framework/js-lib/element-2/element.css}">
+    <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/ui-private/default/common/css/layout.css" th:href="@{/agcloud/framework/ui-private/default/common/css/layout.css}">
+    <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/ui-private/default/blue/css/theme.css" th:href="@{/agcloud/framework/ui-private/default/blue/css/theme.css}">
+    <link rel="stylesheet" href="../../../static/admin/credit/css/redblack.css" th:href="@{/admin/credit/css/redblack.css}">
+    <script>
+        var ctx = '[[@{/}]]';
+    </script>
+</head>
+<body>
+    <div id="index" v-loading="loading" style="padding: 15px;">
+        <!-- 查询 -->
+        <div class="add-search clearfix" style="padding-bottom: 15px;">
+            <button type="button" class="btn btn-primary" @click="editRow('',0)">新增</button>
+            <button type="button" class="btn btn-outline-danger" @click="batchDelData">删除</button>
+            <div class="float-right search-btn" style="padding-left: 10px;">
+                <div class="input-group search-key">
+                    <input type="text" class="form-control" v-model="searchKey" placeholder="请输入查询关键字" style="width: 250px;">
+                    <i class="la la-close clear-search" @click="searchKey='';redblackTypeS='';page=1;searchRow();"></i>
+                    <div class="input-group-append">
+                        <button class="btn btn-primary m-btn--icon" @click="searchRow()">
+                            <span><i class="fa fa-search"></i><span>查询</span></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="float-right">
+                对象类型：
+                <el-select v-model="redblackTypeS" @change="redblackTypeSearch" style="width: 140px">
+                    <el-option value="">请选择</el-option>
+                    <el-option value="u" label="单位"></el-option>
+                    <el-option value="l" label="联系人"></el-option>
+                </el-select>
+            </div>
+        </div>
+
+        <!-- 主要显示内容 -->
+        <el-table
+            :data="tableData.rows"
+            border style="width: 100%"
+            highlight-current-row
+            v-loading="loading"
+            @row-dblclick="dbclickRow"
+            @selection-change="handleSelChange">
+            <el-table-column type="selection" align="center"></el-table-column>
+            <el-table-column prop="redblackType" label="对象类型" align="center" width="130">
+                <template slot-scope="scope">
+                    {{scope.row.redblackType == 'u' ? '单位' : '联系人'}}
+                </template>
+            </el-table-column>
+            <el-table-column prop="" label="对象名称" align="left" width="300">
+                <template slot-scope="scope">
+                    {{scope.row.redblackType == 'u' ? scope.row.applicant : scope.row.linkmanName}}
+                </template>
+            </el-table-column>
+            <el-table-column prop="isBlack" label="是否红黑名单" align="center" width="140">
+                <template slot-scope="scope">
+                    {{scope.row.isBlack == '1' ? '黑名单' : '红名单'}}
+                </template>
+            </el-table-column>
+            <el-table-column prop="redblackReason" label="列入红黑名单原因" align="left"></el-table-column>
+            <el-table-column prop="creditUnit" label="认证机关"></el-table-column>
+            <el-table-column prop="isValid" width="120" label="是否启用" align="center">
+                <template slot-scope="scope">
+                    <span class="m-switch m-switch--sm m-switch--icon">
+                        <label>
+                            <input type="checkbox" :checked="(scope.row.isValid == 1)?true:false" @change="changeIsValid(scope.row, $event)">
+                            <span></span>
+                        </label>
+                    </span>
+                </template>
+            </el-table-column>
+            <el-table-column prop="" label="操作" width="120" align="center">
+                <template slot-scope="scope">
+                    <a href="javascript:;" class="btn-table" @click="editRow(scope.row,1)">编辑</a>
+                    <a href="javascript:;" class="btn-table" @click="deleteData(scope.row)">删除</a>
+                </template>
+            </el-table-column>
+        </el-table>
+
+        <!-- 分页 -->
+        <el-pagination
+                background
+                align="right"
+                :pager-count="5"
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+                :page-sizes="[10, 20, 30, 50]"
+                :page-size="pageSize"
+                layout="total,sizes, prev, pager, next, jumper"
+                :total="tableData.total">
+        </el-pagination>
+
+        <!-- 新增/编辑页面 -->
+        <el-dialog :title="dialogTitie" :visible.sync="dialogEditTable" class="edit-row" @closed="clearFormData">
+            <el-form :inline="true" :model="selRowData" :rules="rules" ref="selRowData" :style="{height: '400px', overflow:'auto'}">
+
+                <input type="hidden" :value="selRowData.redblackId">
+
+                <el-row>
+                    <el-col :span="12">
+                        <el-form-item label="对象类型：" prop="redblackType">
+                            <el-select v-model="selRowData.redblackType" @change="redblackTypeEdit">
+                                <el-option value="u" label="单位"></el-option>
+                                <el-option value="l" label="联系人"></el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+
+                    <el-col :span="12">
+                        <el-form-item label="是否黑名单：" prop="isBlack">
+                            <el-select v-model="selRowData.isBlack">
+                                <el-option value="0" label="红名单"></el-option>
+                                <el-option value="1" label="黑名单"></el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+
+                <el-row>
+                    <el-col :span="24">
+                        <el-form-item label="企业单位：" key="editUnit" v-if="inputUnit" prop="applicant" class="ops-memo2">
+                            <el-input v-model="selRowData.applicant" placeholder="企业单位" :readonly="readonly"
+                                      @focus="editUnit(selRowData.redblackId)"></el-input>
+                        </el-form-item>
+
+                        <el-form-item label="联系人：" key="editLinkman" v-if="inputLinkman" prop="linkmanName" class="ops-memo2">
+                            <el-input v-model="selRowData.linkmanName" placeholder="联系人" :readonly="readonly"
+                                      @focus="editLinkman(selRowData.redblackId)"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+
+                <el-row>
+                    <el-col :span="12">
+                        <el-form-item label="入名单时间：" prop="includeTime">
+                            <el-date-picker
+                                    v-model="selRowData.includeTime"
+                                    type="datetime"
+                                    placeholder="选择日期"
+                                    value-format="yyyy-MM-dd HH:mm:ss" style="width: 100%">
+                            </el-date-picker>
+                        </el-form-item>
+                    </el-col>
+
+                    <el-col :span="12">
+                        <el-form-item label="失信程度：" prop="redblackLevel">
+                            <el-select v-model="selRowData.redblackLevel">
+                                <el-option value="1" label="一般失信"></el-option>
+                                <el-option value="2" label="中度失信"></el-option>
+                                <el-option value="3" label="严重失信"></el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+
+                <el-row>
+                    <el-col :span="24">
+                        <el-form-item label="入名单原因：" prop="redblackReason" class="ops-memo">
+                            <el-input type="textarea" v-model="selRowData.redblackReason" rows="3"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+
+                <el-row>
+                    <el-col :span="24">
+                        <el-form-item label="认证机关：" prop="creditUnit" class="ops-memo">
+                            <el-input type="textarea" v-model="selRowData.creditUnit" rows="2"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+
+                <el-row>
+                    <el-col :span="24">
+                        <el-form-item label="认证依据：" prop="creditBasis" class="ops-memo">
+                            <el-input type="textarea" v-model="selRowData.creditBasis" rows="3"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+
+                <el-row>
+                    <el-col :span="12">
+                        <el-form-item label="认证时间：" prop="affirmTime">
+                            <el-date-picker
+                                v-model="selRowData.affirmTime"
+                                type="datetime"
+                                placeholder="选择日期"
+                                value-format="yyyy-MM-dd HH:mm:ss" style="width: 100%">
+                            </el-date-picker>
+                        </el-form-item>
+                    </el-col>
+
+                    <el-col :span="12">
+                        <el-form-item label="截止时间：" prop="endTime">
+                            <el-date-picker
+                                v-model="selRowData.endTime"
+                                type="datetime"
+                                placeholder="选择日期"
+                                value-format="yyyy-MM-dd HH:mm:ss" style="width: 100%">
+                            </el-date-picker>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+
+                <el-row>
+                    <el-col :span="12">
+                        <el-form-item label="是否有效：" prop="isValid">
+                            <el-select v-model="selRowData.isValid" @change="isValidEdit">
+                                <el-option value="0" label="无效"></el-option>
+                                <el-option value="1" label="有效"></el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+
+                    <el-col :span="12">
+                        <el-form-item label="是否同步：" prop="isSync">
+                            <el-select v-model="selRowData.isSync" @change="isSyncEdit">
+                                <el-option value="0" label="手工录入"></el-option>
+                                <el-option value="1" label="自动同步"></el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+
+                <el-row>
+                    <el-col :span="24">
+                        <el-form-item label="无效原因：" prop="invalidReason" v-if="inputInvalidReason" class="ops-memo">
+                            <el-input type="textarea" v-model="selRowData.invalidReason" rows="3"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+
+                <el-row>
+                    <el-col :span="24">
+                        <el-form-item label="同步来源：" prop="syncSource" v-if="inputSyncFiled" class="ops-memo">
+                            <el-input type="textarea" v-model="selRowData.syncSource" rows="3"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+
+                <el-row>
+                    <el-col :span="24">
+                        <el-form-item label="同步时间：" prop="syncTime" v-if="inputSyncFiled" class="ops-memo2">
+                            <el-date-picker
+                                v-model="selRowData.syncTime"
+                                type="datetime"
+                                placeholder="选择日期"
+                                value-format="yyyy-MM-dd HH:mm:ss"
+                                style="width: 100%"
+                                :readonly="inputSyncFiled">
+                            </el-date-picker>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+
+            </el-form>
+
+            <div slot="footer" class="dialog-footer">
+                <button class="btn btn-secondary" @click="dialogEditTable=false">取消</button>
+                <button class="btn btn-primary"  @click="saveEdit('selRowData', selRowData)">保存</button>
+            </div>
+        </el-dialog>
+
+        <!-- 企业单位 -->
+        <el-dialog title="选择企业单位" class="sel-apartment set-admin" :class="dialogSetUnit?'show':''"
+                   :visible.sync="dialogSetUnit">
+            <div class="tree-left float-left">
+                <p class="sel-title">选择：</p>
+                <el-input
+                        class="search-apartment"
+                        placeholder="搜索企业单位"
+                        v-model="unitFilterText" @input="unitSearch">
+                    <i slot="prefix" class="el-input__icon el-icon-search"></i>
+                    <i slot="suffix" class="el-input__icon el-icon-close" @click="clearUnitSearch"></i>
+                </el-input>
+                <el-tree
+                    v-show="setUnitSearchFlag"
+                    :style="{height:fullHeight-400+'px',overflow:'auto'}"
+                    :data="setUnitTreeData"
+                    :expand-on-click-node="false"
+                    highlight-current
+                    :props="defaultProps"
+                    node-key="id"
+                    @node-click="selUnit"
+                    :default-expanded-keys="setUnitRootNodeId"
+                    ref="setUnitTree">
+                    <span class="custom-tree-node" slot-scope="scope">
+                        <span>
+                            <i :class="'fa fa-folder'"></i>{{ scope.data.label }}
+                        </span>
+                    </span>
+                </el-tree>
+            </div>
+            <div class="selected-apartm">
+                <p class="sel-title">已选：</p>
+                <div class="selected-list"
+                     :style="{height:fullHeight-350+'px',overflow:'auto'}">
+                    <p v-for="(item,index) in selUnitList"
+                       :id="item.id"
+                       class="selected-item">{{item.label}}
+                        <i class="la la-close float-right" @click="removeSelUnit(item,index)"></i>
+                    </p>
+                </div>
+            </div>
+            <div slot="footer" class="dialog-footer">
+                <el-button type="primary" @click="saveSelUnit">保存</el-button>
+                <el-button @click="dialogSetUnit = false">取消</el-button>
+            </div>
+        </el-dialog>
+
+        <!-- 联系人 -->
+        <el-dialog title="选择联系人" class="sel-apartment set-admin" :class="dialogSetLinkman?'show':''"
+                   :visible.sync="dialogSetLinkman">
+            <div class="tree-left float-left">
+                <p class="sel-title">选择：</p>
+                <el-input
+                    class="search-apartment"
+                    placeholder="搜索联系人"
+                    v-model="linkmanFilterText" @input="linkmanSearch">
+                    <i slot="prefix" class="el-input__icon el-icon-search"></i>
+                    <i slot="suffix" class="el-input__icon el-icon-close" @click="clearLinkmanSearch"></i>
+                </el-input>
+                <el-tree
+                    v-show="setLinkmanSearchFlag"
+                    :style="{height:fullHeight-400+'px',overflow:'auto'}"
+                    :data="setLinkmanTreeData"
+                    :expand-on-click-node="false"
+                    highlight-current
+                    :props="defaultProps"
+                    node-key="id"
+                    @node-click="selLinkman"
+                    :default-expanded-keys="setLinkmanRootNodeId"
+                    ref="setLinkmanTree">
+                    <span class="custom-tree-node" slot-scope="scope">
+                        <span>
+                            <i :class="'fa fa-folder'"></i>{{ scope.data.label }}
+                        </span>
+                    </span>
+                </el-tree>
+            </div>
+            <div class="selected-apartm">
+                <p class="sel-title">已选：</p>
+                <div class="selected-list"
+                     :style="{height:fullHeight-350+'px',overflow:'auto'}">
+                    <p v-for="(item,index) in selLinkmanList"
+                       :id="item.id"
+                       class="selected-item">{{item.label}}
+                       <i class="la la-close float-right" @click="removeSelLinkman(item,index)"></i>
+                    </p>
+                </div>
+            </div>
+            <div slot="footer" class="dialog-footer">
+                <el-button type="primary" @click="saveSelLinkman">保存</el-button>
+                <el-button @click="dialogSetLinkman = false">取消</el-button>
+            </div>
+        </el-dialog>
+    </div>
+
+    <!-- 引入js文件 -->
+    <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js" th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>
+    <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js" th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
+    <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js" th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
+    <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js" th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>
+    <script type="text/javascript" src="../../../static/admin/credit/js/redblack.js" th:src="@{/admin/credit/js/redblack.js}"></script>
+</body>
+</html>

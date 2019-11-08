@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by yinlf    2019-09-26 17:36:22 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.data.exchange.mapper.aplanmis.EtlErrorLogMapper">
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns">
+        LOG_ID  logId,
+        JOB_LOG_ID jobLogId,
+        JOB_NAME  jobName,
+        STEP_NAME  stepName,
+        TABLE_NAME  tableName,
+        RECORD_ID  recordId,
+        ERR_DESC  errDesc,
+        ERR_CODE  errCode,
+        ERR_NUM  errNum,
+        ERR_COLUMN  errColumn,
+        ERR_VALUE errValue,
+        DIAGNOSE_RESULT diagnoseResult,
+        IS_SOLVE isSolve,
+        CREATE_TIME  createTime
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getEtlErrorLogById" resultType="EtlErrorLog">
+        select
+        <include refid="allColumns"/>
+        from ETL_ERROR_LOG
+        where LOG_ID = #{id}
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listEtlErrorLog" resultType="EtlErrorLog">
+        select
+        <include refid="allColumns"/>
+        from ETL_ERROR_LOG
+        <where>
+            <if test="logId != null">
+                AND LOG_ID = #{logId}
+            </if>
+            <if test="jobLogId != null">
+                AND JOB_LOG_ID = #{jobLogId}
+            </if>
+            <if test="jobName != null">
+                AND JOB_NAME = #{jobName}
+            </if>
+            <if test="stepName != null">
+                AND STEP_NAME = #{stepName}
+            </if>
+            <if test="tableName != null">
+                AND TABLE_NAME = #{tableName}
+            </if>
+            <if test="recordId != null">
+                AND RECORD_ID = #{recordId}
+            </if>
+            <if test="errDesc != null">
+                AND ERR_DESC = #{errDesc}
+            </if>
+            <if test="errCode != null">
+                AND ERR_CODE = #{errCode}
+            </if>
+            <if test="errNum != null">
+                AND ERR_NUM = #{errNum}
+            </if>
+            <if test="errColumn != null">
+                AND ERR_COLUMN = #{errColumn}
+            </if>
+            <if test="errValue != null">
+                AND ERR_VALUE = #{errValue}
+            </if>
+            <if test="diagnoseResult != null">
+                AND DIAGNOSE_RESULT = #{diagnoseResult}
+            </if>
+            <if test="isSolve != null">
+                AND IS_SOLVE = #{isSolve}
+            </if>
+            <if test="createTime != null">
+                AND CREATE_TIME = #{createTime}
+            </if>
+        </where>
+    </select>
+    <!--4 根据条件查询实体list,返回分页对象 -->
+
+    <!--5 新增实体对象 -->
+    <insert id="insertEtlErrorLog" parameterType="EtlErrorLog">
+        insert into ETL_ERROR_LOG (
+    LOG_ID  ,JOB_LOG_ID,JOB_NAME  ,STEP_NAME  ,TABLE_NAME  ,RECORD_ID  ,ERR_DESC  ,ERR_CODE  ,ERR_NUM  ,ERR_COLUMN ,ERR_VALUE,DIAGNOSE_RESULT,IS_SOLVE  ,CREATE_TIME
+        )  values  (
+    #{logId},#{jobLogId},#{jobName},#{stepName},#{tableName},#{recordId},#{errDesc},#{errCode},#{errNum},#{errColumn},#{errValue} ,#{diagnoseResult},#{isSolve},  #{createTime}
+        )
+    </insert>
+    <!--6 修改实体对象 -->
+    <update id="updateEtlErrorLog" parameterType="EtlErrorLog">
+        update ETL_ERROR_LOG
+        <set>
+            <if test="logId != null">
+                LOG_ID = #{logId},
+            </if>
+            <if test="jobLogId != null">
+               JOB_LOG_ID = #{jobLogId},
+            </if>
+            <if test="jobName != null">
+                JOB_NAME = #{jobName},
+            </if>
+            <if test="stepName != null">
+                STEP_NAME = #{stepName},
+            </if>
+            <if test="tableName != null">
+                TABLE_NAME = #{tableName},
+            </if>
+            <if test="recordId != null">
+                RECORD_ID = #{recordId},
+            </if>
+            <if test="errDesc != null">
+                ERR_DESC = #{errDesc},
+            </if>
+            <if test="errCode != null">
+                ERR_CODE = #{errCode},
+            </if>
+            <if test="errNum != null">
+                ERR_NUM = #{errNum},
+            </if>
+            <if test="errColumn != null">
+                ERR_COLUMN = #{errColumn},
+            </if>
+            <if test="errValue != null">
+                ERR_VALUE = #{errValue},
+            </if>
+            <if test="diagnoseResult != null">
+                DIAGNOSE_RESULT = #{diagnoseResult},
+            </if>
+            <if test="isSolve != null">
+                IS_SOLVE = #{isSolve},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime},
+            </if>
+        </set>
+        where LOG_ID = #{logId}
+    </update>
+    <!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteEtlErrorLog">
+        delete from ETL_ERROR_LOG
+        where LOG_ID = #{id}
+    </delete>
+    <!--8 删除实体对象列表,根据主键ID列表 -->
+    <!--3 根据条件查询实体list -->
+    <select id="findUnDiagnoseEtlErrorLog" resultType="EtlErrorLog">
+        select
+        <include refid="allColumns"/>
+        from ETL_ERROR_LOG
+        where  DIAGNOSE_RESULT IS NULL
+    </select>
+</mapper>

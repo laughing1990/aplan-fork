@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaImUnitServiceMapper">
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns">
+    UNIT_SERVICE_ID  unitServiceId,
+    SERVICE_ID  serviceId,
+    PRICE  price,
+    AUDIT_FLAG  auditFlag,
+    IS_DELETE  isDelete,
+    IS_ACTIVE  isActive,
+    CREATER  creater,
+    CREATE_TIME  createTime,
+    MODIFIER  modifier,
+    MODIFY_TIME  modifyTime,
+    UNIT_INFO_ID  unitInfoId,
+    MEMO  memo,
+    SERVICE_CONTENT  serviceContent,
+    PUBLISH_TIME  publishTime,
+    FEE_REFERENCE  feeReference,
+    ROOT_ORG_ID rootOrgId
+    </sql>
+    <sql id="allColumnsIus">
+    ius.UNIT_SERVICE_ID  unitServiceId,
+    ius.SERVICE_ID  serviceId,
+    ius.PRICE  price,
+    ius.AUDIT_FLAG  auditFlag,
+    ius.IS_DELETE  isDelete,
+    ius.IS_ACTIVE  isActive,
+    ius.CREATER  creater,
+    ius.CREATE_TIME  createTime,
+    ius.MODIFIER  modifier,
+    ius.MODIFY_TIME  modifyTime,
+    ius.UNIT_INFO_ID  unitInfoId,
+    ius.MEMO  memo,
+    ius.SERVICE_CONTENT  serviceContent,
+    ius.PUBLISH_TIME  publishTime,
+    ius.FEE_REFERENCE  feeReference,
+    ius.AUDIT_TIME  auditTime
+    </sql>
+    <sql id="allColumnsIm">
+    im.UNIT_SERVICE_ID unitServiceId,
+    im.PRICE price,
+    im.AUDIT_FLAG  auditFlag,
+    im.IS_DELETE isDelete,
+    im.IS_ACTIVE isActive,
+    im.CREATER creater,
+    im.CREATE_TIME createTime,
+    im.MODIFIER  modifier,
+    im.MODIFY_TIME modifyTime,
+    im.UNIT_INFO_ID unitInfoId,
+    im.SERVICE_ID serviceId,
+    im.MEMO  memo,
+    im.SERVICE_CONTENT serviceContent
+    </sql>
+    <!--2 根据主键ID查询单个实体 -->
+    <!--<select id="getAeaImUnitServiceById" resultType="AeaImUnitService" >-->
+    <!--select-->
+    <!--<include refid="allColumns"/>-->
+    <!--from    AEA_IM_UNIT_SERVICE-->
+    <!--where    UNIT_SERVICE_ID = #{id}-->
+    <!--</select>-->
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaImUnitService" resultType="AeaImUnitService">
+        select
+        <include refid="allColumns"/>
+        from AEA_IM_UNIT_SERVICE
+        <where>
+            <if test="unitServiceId != null">
+                AND UNIT_SERVICE_ID = #{unitServiceId}
+            </if>
+            <if test="serviceId != null">
+                AND SERVICE_ID = #{serviceId}
+            </if>
+            <if test="price != null">
+                AND PRICE = #{price}
+            </if>
+            <if test="auditFlag != null">
+                AND AUDIT_FLAG = #{auditFlag}
+            </if>
+            <if test="isDelete != null">
+                AND IS_DELETE = #{isDelete}
+            </if>
+            <if test="isActive != null">
+                AND IS_ACTIVE = #{isActive}
+            </if>
+            <if test="creater != null">
+                AND CREATER = #{creater}
+            </if>
+            <if test="createTime != null">
+                AND CREATE_TIME = #{createTime}
+            </if>
+            <if test="modifier != null">
+                AND MODIFIER = #{modifier}
+            </if>
+            <if test="modifyTime != null">
+                AND MODIFY_TIME = #{modifyTime}
+            </if>
+            <if test="unitInfoId != null">
+                AND UNIT_INFO_ID = #{unitInfoId}
+            </if>
+            <if test="memo != null">
+                AND MEMO = #{memo}
+            </if>
+            <if test="serviceContent != null">
+                AND SERVICE_CONTENT = #{serviceContent}
+            </if>
+            <if test="publishTime != null">
+                AND PUBLISH_TIME = #{publishTime}
+            </if>
+            <if test="feeReference != null">
+                AND FEE_REFERENCE = #{feeReference}
+            </if>
+            <if test="rootOrgId != null">
+                AND ROOT_ORG_ID = #{rootOrgId}
+            </if>
+        </where>
+    </select>
+    <!--4 根据条件查询实体list,返回分页对象 -->
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaImUnitService" parameterType="AeaImUnitService">
+    insert into AEA_IM_UNIT_SERVICE (
+UNIT_SERVICE_ID  ,SERVICE_ID  ,PRICE  ,AUDIT_FLAG  ,IS_DELETE  ,IS_ACTIVE  ,CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME  ,UNIT_INFO_ID  ,MEMO  ,SERVICE_CONTENT  ,PUBLISH_TIME  ,FEE_REFERENCE,AUDIT_TIME,ROOT_ORG_ID
+    )  values  (
+#{unitServiceId},#{serviceId},#{price},#{auditFlag},#{isDelete},#{isActive},#{creater},#{createTime},#{modifier},#{modifyTime},#{unitInfoId},#{memo},#{serviceContent},#{publishTime},#{feeReference},#{auditTime},#{rootOrgId}
+    )
+</insert>
+    <!--6 修改实体对象 -->
+    <update id="updateAeaImUnitService" parameterType="AeaImUnitService">
+        update AEA_IM_UNIT_SERVICE
+        <set>
+            <if test="unitServiceId != null">
+                UNIT_SERVICE_ID = #{unitServiceId},
+            </if>
+            <if test="serviceId != null">
+                SERVICE_ID = #{serviceId},
+            </if>
+            <if test="price != null">
+                PRICE = #{price},
+            </if>
+            <if test="auditFlag != null">
+                AUDIT_FLAG = #{auditFlag},
+            </if>
+            <if test="isDelete != null">
+                IS_DELETE = #{isDelete},
+            </if>
+            <if test="isActive != null">
+                IS_ACTIVE = #{isActive},
+            </if>
+            <if test="creater != null">
+                CREATER = #{creater},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime},
+            </if>
+            <if test="modifier != null">
+                MODIFIER = #{modifier},
+            </if>
+            <if test="modifyTime != null">
+                MODIFY_TIME = #{modifyTime},
+            </if>
+            <if test="unitInfoId != null">
+                UNIT_INFO_ID = #{unitInfoId},
+            </if>
+            <if test="memo != null">
+                MEMO = #{memo},
+            </if>
+            <if test="serviceContent != null">
+                SERVICE_CONTENT = #{serviceContent},
+            </if>
+            <if test="publishTime != null">
+                PUBLISH_TIME = #{publishTime},
+            </if>
+            <if test="feeReference != null">
+                FEE_REFERENCE = #{feeReference},
+            </if>
+            <if test="auditTime != null">
+                AUDIT_TIME = #{auditTime},
+            </if>
+            <if test="rootOrgId != null">
+                ROOT_ORG_ID = #{rootOrgId},
+            </if>
+        </set>
+        where UNIT_SERVICE_ID = #{unitServiceId}
+    </update>
+    <!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaImUnitService">
+        delete from   AEA_IM_UNIT_SERVICE
+        where
+    UNIT_SERVICE_ID = #{id}
+    </delete>
+    <!--8 删除实体对象列表,根据主键ID列表 -->
+    <!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaImUnitService" id="AeaImUnitServiceMap">
+        <id property="unitServiceId" column="UNIT_SERVICE_ID"/>
+        <result property="serviceId" column="SERVICE_ID"/>
+        <result property="price" column="PRICE"/>
+        <result property="auditFlag" column="AUDIT_FLAG"/>
+        <result property="isDelete" column="IS_DELETE"/>
+        <result property="isActive" column="IS_ACTIVE"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="modifier" column="MODIFIER"/>
+        <result property="modifyTime" column="MODIFY_TIME"/>
+        <result property="unitInfoId" column="UNIT_INFO_ID"/>
+        <result property="memo" column="MEMO"/>
+        <result property="serviceContent" column="SERVICE_CONTENT"/>
+        <result property="publishTime" column="PUBLISH_TIME"/>
+        <result property="feeReference" column="FEE_REFERENCE"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+    </resultMap>
+
+    <select id="getAeaImUnitService" resultType="AeaImUnitService">
+
+    </select>
+    <select id="listAgentUnitService" resultType="AeaImUnitService">
+
+    </select>
+    <select id="listAeaImUnitServiceVo" resultType="com.augurit.aplanmis.common.vo.ServiceMatterVo">
+        select * from (
+        select
+        <include refid="allColumnsIus"/>,se.SERVICE_NAME serviceName ,ui.applicant
+        from aea_im_unit_service ius
+        LEFT JOIN aea_im_service se on se.SERVICE_ID = ius.SERVICE_ID
+        inner join aea_unit_info ui on ui.unit_info_id = ius.unit_info_id
+        order by ius.CREATE_TIME desc
+        ) gg
+        <where>
+            <if test="applicant!=null and applicant != ''">
+                gg.applicant like concat('%',#{applicant},'%')
+            </if>
+            <if test="serviceName!=null and serviceName != ''">
+                and gg.serviceName like concat('%',#{serviceName},'%')
+            </if>
+            <if test="serviceId!=null and serviceId != ''">
+                and gg.serviceId =#{serviceId}
+            </if>
+            <if test="auditFlag!=null and auditFlag != ''">
+                and gg.auditFlag =#{auditFlag}
+            </if>
+            <if test="unitInfoId!=null and unitInfoId != ''">
+                and gg.unitInfoId =#{unitInfoId}
+            </if>
+        </where>
+
+    </select>
+
+    <select id="getUnitServiceByUnitInfoIdAndServiceItemId" resultType="AeaImUnitService">
+        select
+        <include refid="allColumnsIm"/>
+        from AEA_IM_UNIT_SERVICE im left join AEA_IM_SERVICE_ITEM item
+        on im.SERVICE_ID = item.SERVICE_ID
+        <where>
+            item.SERVICE_ITEM_ID = #{serviceItemId}
+            and im.UNIT_INFO_ID = #{unitInfoId}
+            AND im.IS_DELETE != '1'
+            AND im.IS_ACTIVE = '1'
+            AND item.IS_DELETE != '1'
+        </where>
+    </select>
+
+    <select id="listUnitServiceByServiceItemId" resultType="AeaImUnitService">
+        select
+        im.UNIT_SERVICE_ID unitServiceId,
+        im.UNIT_INFO_ID unitInfoId,
+        im.SERVICE_ID serviceId
+        from AEA_IM_UNIT_SERVICE im left join AEA_IM_SERVICE_ITEM item
+        on im.SERVICE_ID = item.SERVICE_ID
+        <where>
+            item.SERVICE_ITEM_ID = #{serviceItemId}
+            AND im.IS_DELETE != '1'
+            AND im.IS_ACTIVE = '1'
+            AND item.IS_DELETE != '1'
+            AND im.AUDIT_FLAG = '4'
+        </where>
+    </select>
+    <select id="getServiceMatterVoByUnitserviceId" resultType="com.augurit.aplanmis.common.vo.ServiceMatterVo">
+        select se.SERVICE_NAME serviceName,ui.applicant,
+        <include refid="allColumnsIus"/>
+        from aea_im_unit_service ius,aea_im_service se, aea_unit_info ui where se.SERVICE_ID = ius.SERVICE_ID and
+        ius.UNIT_SERVICE_ID=#{unitServiceId} and ui.unit_info_id = ius.unit_info_id
+    </select>
+
+    <!-- 中介机构发布服务详情 -->
+    <select id="getAeaImUnitServiceDetail" resultType="AeaImUnitService">
+        SELECT
+            ais.SERVICE_NAME serviceName,
+            ais.SERVICE_ID serviceId,
+            aius.FEE_REFERENCE feeReference,
+            aius.SERVICE_CONTENT serviceContent,
+            ais.IMG_URL imgUrl
+        FROM aea_im_unit_service aius
+        LEFT JOIN aea_im_service ais ON aius.SERVICE_ID = ais.SERVICE_ID
+        WHERE aius.UNIT_SERVICE_ID = #{unitServiceId}
+    </select>
+
+
+    <select id="getAeaImUnitServiceByServiceId" resultType="AeaImUnitService">
+        <include refid="aeaImUnitServiceByServiceIdSQL"></include>
+    </select>
+
+    <select id="getAeaImUnitServiceByServiceIds" resultType="AeaImUnitService">
+        <include refid="aeaImUnitServiceByServiceIdSQL"></include>
+    </select>
+
+    <sql id="aeaImUnitServiceByServiceIdSQL">
+        SELECT
+        <include refid="allColumns"/>
+        FROM aea_im_unit_service
+        WHERE SERVICE_ID = #{serviceId}
+        AND UNIT_INFO_ID = #{unitInfoId}
+        AND IS_DELETE = '0'
+    </sql>
+</mapper>

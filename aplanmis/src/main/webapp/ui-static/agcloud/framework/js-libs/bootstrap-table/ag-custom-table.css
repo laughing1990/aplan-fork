@@ -1,0 +1,191 @@
+@charset "utf-8";
+/* CSS Document */
+/******************************* bootstrap-table样式定义*******************************/ /*yang2018.9.18*/
+/*
+自定义类名说明
+.base（必须）      --------  基础样式，只有线框   
+.zebra            --------  斑马线样式
+.no-table-oline   --------  清除table外边框
+.no-line          --------  清除th td的边框
+.no-line-lr       --------  清除th td的左右边框
+.no-line-tb       --------  清除th td的上下边框
+.color-hover      --------  改变行hover颜色
+*/
+/*全局*/
+html,body{
+	margin: 0;
+	padding: 0;
+}
+*, ::after, ::before {
+    box-sizing: border-box;
+}
+/*基础base*/
+.table td, .table th{
+	border-top: 0;
+	font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif!important;
+}
+.base .bootstrap-table .table{
+	border-bottom: 0;
+}
+.base{padding: 20px;}
+.base thead tr th,.base tbody tr td{
+	color: #595959;
+	font-size: 14px!important;
+	text-align: left;
+}
+.base tbody tr td{
+	padding: 12px 8px!important;
+	border-top: 1px solid #e8e8e8;
+}
+.base tbody tr:last-child td{
+	border-bottom: 0;
+}
+.base tbody tr:nth-of-type(2n+1) {
+    background-color:#fff;
+}
+.base tbody tr:hover {
+    background-color:#f4f3f8;
+}
+/*斑马线zebra*/
+.zebra table{
+	border-bottom: 0;
+}
+.zebra tbody tr:nth-of-type(2n) {
+    background-color:#f4f3f8;
+}
+.zebra tbody tr:hover {
+    background-color:#f4f3f8;
+}
+.zebra .bootstrap-table .table > thead > tr > th{
+	background-color: #eff0f4;
+}
+/*清除table外边框*/
+.no-table-oline .fixed-table-container{
+	border: 0;
+}
+.no-table-oline tbody tr:last-child td{
+	border-bottom: 1px solid #e8e8e8;
+}
+.no-table-oline .bootstrap-table .table > thead > tr > th{
+	border-top: 1px solid #e8e8e8;
+	border-bottom: 1px solid #e8e8e8;
+}
+/*清除th td的边框*/
+.no-line thead tr th,.no-line tbody tr td{
+	border: 0;
+}
+.no-line .bootstrap-table .table > thead > tr > th{
+	border-bottom: 0;
+	border-top: 0;
+}
+.no-line tbody tr:last-child td{
+	border-bottom: 0;
+}
+/*清除th td的左右边框*/
+.no-line-lr thead tr th,.no-line-lr tbody tr td{
+	border-left: 0;
+	border-right: 0;
+}
+.no-line-lr tbody tr:last-child td{
+	border-bottom: 0;
+}
+.no-table-oline.no-line-lr tbody tr:last-child td{
+	border-bottom: 1px solid #e8e8e8;
+}
+/*清除th td的上下边框*/
+.no-line-tb .bootstrap-table .table > thead > tr > th{
+	border-bottom: 0;
+	border-top: 0;
+}
+.no-line-tb thead tr th,.no-line-tb tbody tr td{
+	border-top: 0;
+	border-bottom: 0;
+}
+.no-line-tb tbody tr:last-child td{
+	border-bottom: 0;
+}
+
+/*默认hover是灰色#f3f4f8,如要更改，加入.color-hover*/
+.color-hover tbody tr:hover {
+    background-color:#f3f4f8;
+}
+
+/*基础复选框ag-checkbox*/
+.base tbody tr td label{
+	display: inline;	
+}
+.ag-radio, .ag-checkbox {
+    position: relative;
+    padding-left: 30px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+.ag-checkbox {
+    color: #FF5703;
+}
+.ag-radio>input, .ag-checkbox>input {
+    position: absolute;
+    z-index: -1;
+    opacity: 0;
+    filter: alpha(opacity=0);
+}
+.ag-radio>span, .ag-checkbox>span {
+    border-radius: 3px;
+    background: none;
+    position: absolute;
+    top: 1px;
+    left: 0;
+    height: 18px;
+    width: 18px;
+}
+.ag-checkbox>span {
+    border: 1px solid #bdc3d4;
+}
+.ag-checkbox>input:checked ~ span {
+    border: 1px solid #bdc3d4;
+}
+.ag-radio>span:after, .ag-checkbox>span:after {
+    content: '';
+    position: absolute;
+    display: none;
+}
+.ag-checkbox>span:after {
+    top: 50%;
+    left: 50%;
+    margin-left: -2px;
+    margin-top: -6px;
+    width: 5px;
+    height: 10px;
+    border-width: 0 2px 2px 0/*rtl:ignore*/ !important;
+    -webkit-transform: rotate(45deg);
+    transform: rotate(45deg)/*rtl:ignore*/;
+}
+.ag-checkbox>span:after {
+    border: solid #36a3f7;
+}
+.ag-radio>input:checked ~ span:after, .ag-checkbox>input:checked ~ span:after {
+    display: block;
+}
+.ag-radio.ag-radio--disabled, .ag-radio.ag-checkbox--disabled, .ag-checkbox.ag-radio--disabled, .ag-checkbox.ag-checkbox--disabled {
+    opacity: .8;
+    filter: alpha(opacity=80);
+    cursor: not-allowed;
+}
+/*主色调实心复选框 ag-checkbox-primary*/
+.ag-checkbox.ag-checkbox--solid>span {
+    background: #e2e5ec;
+    border: 1px solid transparent !important;
+}
+.ag-checkbox.ag-checkbox--brand.ag-checkbox--solid>span {
+    border: 1px solid transparent !important;
+}
+.ag-checkbox.ag-checkbox--primary.ag-checkbox--solid>input:checked ~ span {
+    background: #36a3f7;
+}
+.ag-checkbox.ag-checkbox--primary.ag-checkbox--solid>span {
+    border: 1px solid transparent !important;
+}
+.ag-checkbox.ag-checkbox--primary.ag-checkbox--solid>span:after {
+    border: solid #fff;
+}

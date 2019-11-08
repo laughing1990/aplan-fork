@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <th:block th:include="common/common :: commonheader('行政许可不予受理决定书')"/>
+    <th:block th:include="common/common :: ntkojs"/>
+
+    <script type="text/javascript">
+        var wordInfoData = null;            //word填充数据
+        //var applyinstId = '${applyinstId}'; //打印数据查询参数
+        var receiveId = '[[${receiveId}]]'; //打印数据查询参数-回执ID
+        var loadInfoResult = false;         //标识数据是否成功查询
+        var isMakeUp = '${isMakeUp}';  //是否补交
+
+        //覆盖文档打开回调方法
+        function ntkoondocumentopened(str, doc) {
+            TANGER_OCX_bDocOpen = !0;//true
+            //当前打开的文档类型 0=没有文档；100 =其他文档类型；1=word；2=Excel.Sheet或者 Excel.Chart ；
+            // 3=PowerPoint.Show；4= Visio.Drawing； 5=MSProject.Project；6= WPS Doc；7=Kingsoft.Sheet
+            opendoctype = TANGER_OCX_OBJ.DocType;
+            //saved属性用来判断文档是否被修改过,文档打开的时候设置成ture,当文档被修改,自动被设置为false,该属性由office提供.
+            //当电脑上安装的office没有激活的会报错。
+            // TANGER_OCX_OBJ.activeDocument.saved=true;
+            if (TANGER_OCX_bDocOpen) {                      //当文档完全打开
+                prohibitOperate();                          //设置禁用的操作
+                if (wordInfoData != null) setWordInfo(wordInfoData);         //设置书签的内容
+            }
+        }
+
+        function prohibitOperate() {
+            TANGER_OCX_OBJ.FileNew = false;          //禁止文件菜单的新建项
+            TANGER_OCX_OBJ.FileOpen = false;        //禁止文件菜单的打开项
+            TANGER_OCX_OBJ.FileClose = false;       //禁止文件菜单的关闭项
+            TANGER_OCX_OBJ.FileSave = true;        //禁止文件菜单的保存项
+            TANGER_OCX_OBJ.FileSaveAs = true;      //禁止文件菜单的另存为项
+        }
+
+        function initInfo() {
+            TANGER_OCX_OBJ = document.getElementById("TANGER_OCX");
+            //判断chrome的版本是否大于54，若大于54，使用代理解决问题
+            //本段代码一般放在TANGER_OCX_OBJ = document.getElementById("TANGER_OCX");代码后面。
+            var brower;
+            var regStr_Chrome = /chrome\/[\d.]+/gi;
+            var agent = navigator.userAgent.toLowerCase();
+            if (agent.indexOf("chrome") > 0) {
+                brower = agent.match(regStr_Chrome);
+            }
+            var verinfo = (brower + "").replace(/[^0-9.]/ig, "");
+            var uVerinfo = parseFloat(verinfo);
+            if (uVerinfo > 54) {
+                TANGER_OCX_OBJ = new Proxy(TANGER_OCX_OBJ, {
+                    set: function (target, key, value, proxy) {
+                        var func = target["setattribute"];
+                        var args = new Array();
+                        args[0] = key;
+                        args[1] = value;
+                        return (Reflect.apply(func, target, args));
+                    },
+                    get: function (target, key, proxy) {
+                        var value = target[key];
+                        if (typeof value == 'function') { // 为函数
+                            return function () {
+                                return Reflect.apply(value, target, arguments);
+                            };
+                        } else
+                            return (value);
+                    }
+                });
+            }
+            // TANGER_OCX_OBJ.IsShowFileErrorMsg = false;   //不弹出文件存取错误
+            objTitleBar();                                  //不显示标题
+            // TANGER_OCX_OBJ.FullScreenMode = true;       //全屏打开
+            loadWordInfoData();                             //加载数据
+            openWordTemplet();
+        }
+
+        //打开设置好的模板文档
+        function openWordTemplet() {
+            var url = ctx + "receive/ts/唐山市准予行政许可决定书.doc";
+            if (loadInfoResult)
+                TANGER_OCX_OBJ.BeginOpenFromURL(url, true, 'WPS.Document');     //打开模板文档
+        }
+
+        //设置word模板的值
+        function setWordInfo(jsonData) {
+            console.log(jsonData);
+            for (var key in jsonData) {
+                if (key != 'allMatList' && jsonData[key] != null && jsonData[key] != '') {
+                    TANGER_OCX_OBJ.SetBookmarkValue(key, jsonData[key]);
+                    TANGER_OCX_OBJ.ActiveDocument.Bookmarks(key).Range.Select();               //选中书签的内容
+                    TANGER_OCX_OBJ.ActiveDocument.Application.Selection.Font.Bold = false;    //不加粗
+                } else if (key == 'allMatList') {    //所有材料
+                    var plist = jsonData[key];
+                    if (plist != null && plist.length > 0) {  //遍历纸质材料
+                        var showMat = '';
+                        $.each(plist, function (i, p) {
+                            if (p.attCount != '' && p.attCount != null && p.attCount > 0) {
+                                showMat += (i + 1) + '、' + p.matinstName + '(电子件' + p.attCount + '份) ' + String.fromCharCode(10);
+                            } else if (p.realPaperCount != '' && p.realPaperCount != null && p.realPaperCount > 0) {
+                                showMat += (i + 1) + '、' + p.matinstName + '(原件' + p.realPaperCount + '份) ' + String.fromCharCode(10);
+                            } else {
+                                showMat += (i + 1) + '、' + p.matinstName + '(复印件' + p.realCopyCount + '份) ' + String.fromCharCode(10);
+                            }
+                            //showMat += (i+1)+'、' + p.matinstName + ' ';
+                            TANGER_OCX_OBJ.SetBookmarkValue(key, showMat);
+                        });
+
+                    }
+                }
+            }
+        }
+
+        //加载信息--受理回执
+        function loadWordInfoData() {
+            var url = ctx + '/rest/receive/getOneReceiveByReceiveId/' + receiveId;
+            $.ajax({
+                type: 'post',
+                url: url,
+                cache: false,
+                async: false,
+                data: {
+                    //applyinstId: applyinstId,
+                    //receiptType: '8',
+                    isMakeUp: isMakeUp
+                },
+                dataType: 'json',
+                success: function (result) {
+                    if (result != null) {
+                        loadInfoResult = true;
+                        converInfo(result);
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    TANGER_OCX_OBJ.ShowTipMessage('提示', '数据加载失败！' + XMLHttpRequest.status);
+                }
+            });
+        }
+
+        //转换打印数据
+        function converInfo(jsonObj) {
+            if (jsonObj == '' || typeof (jsonObj) == 'undefined') return '';
+            var tType = {'4': '分钟', '3': '小时', '1': '个工作日', '2': '个自然日'};//办理时限单位
+            var receiveDate = '';   //收件日期
+            var processingTime = '';//办理时限
+            var myDate = new Date();
+            var month = (myDate.getMonth() + 1) < 10 ? '0' + (myDate.getMonth() + 1) : myDate.getMonth() + 1;
+            var day = myDate.getDate() < 10 ? '0' + myDate.getDate() : myDate.getDate();
+            var printDate = myDate.getFullYear() + '年' + month + '月' + day + '日';
+            var proposer = '';//申报主体
+            var proposerNo = '';//申报主体编号
+            var linkUser = '';
+            var linkPhone = '';
+            if (jsonObj.getMatDate != '' && jsonObj.getMatDate != null)
+                receiveDate = agcloud.utils.dateFormat(jsonObj.getMatDate);
+            var tt = jsonObj.timeLimit;
+            if (tt != null && tt.length > 1) {
+                var t = tt.substring(tt.length - 1);
+                var num = tt.substring(0, tt.length - 1);
+                for (var k in tType) {
+                    if (t.indexOf(k) != -1) {
+                        processingTime = parseInt(num) + tType[k];//（收件日的次工作日开始算，不含现场踏勘、公示、听证及征求相关部门意见时间）
+                        break;
+                    }
+                }
+            }
+            if (jsonObj.agentName) {
+                proposer = jsonObj.agentName;
+                proposerNo = jsonObj.agentIdCard;
+                linkPhone = jsonObj.agentLinkmanTel;
+                linkUser = jsonObj.agentLinkmanName;
+            } else {
+                proposer = jsonObj.applicant;
+                proposerNo = jsonObj.applicantIDCard;
+                linkPhone = jsonObj.receiveUserMobile;
+                linkUser = jsonObj.receiveUserName;
+            }
+            wordInfoData = {
+                'applyInstId': jsonObj.applyinstCode,
+                'applyName': jsonObj.receiveUserName,
+                'year': receiveDate.substring(0, 4),
+                'month': receiveDate.substring(5, 7),
+                'day': receiveDate.substring(8, 10),
+                'nowYear': myDate.getFullYear(),
+                'nowMonth': month,
+                'nowDay': day,
+            }
+        }
+    </script>
+
+</HEAD>
+
+<BODY onload="initInfo();">
+</BODY>
+</HTML>

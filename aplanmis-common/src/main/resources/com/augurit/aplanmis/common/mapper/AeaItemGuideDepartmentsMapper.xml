@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaItemGuideDepartmentsMapper" >
+
+    <sql id="allColumns" >
+        ID  id,
+        ITEM_VER_ID  itemVerId,
+        ADDRESS  address,
+        NAME  name,
+        TEL  tel,
+        TIME  time,
+        TIME_DELAY_BUS  timeDelayBus,
+        TOPWIN  topwin,
+        TOPWIN_TEXT  topwinText,
+        FILEID  fileid,
+        ROOT_ORG_ID rootOrgId
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaItemGuideDepartmentsById" resultType="AeaItemGuideDepartments" >
+        select
+            <include refid="allColumns"/>
+        from AEA_ITEM_GUIDE_DEPARTMENTS
+        where ID = #{id}
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaItemGuideDepartments" resultType="AeaItemGuideDepartments" >
+        select
+            <include refid="allColumns"/>
+        from    AEA_ITEM_GUIDE_DEPARTMENTS
+        <where>
+            <if test="id != null" >
+                AND    ID = #{id}
+            </if>
+            <if test="itemVerId != null" >
+                AND    ITEM_VER_ID = #{itemVerId}
+            </if>
+            <if test="address != null" >
+                AND    ADDRESS = #{address}
+            </if>
+            <if test="name != null" >
+                AND    NAME = #{name}
+            </if>
+            <if test="tel != null" >
+                AND    TEL = #{tel}
+            </if>
+            <if test="time != null" >
+                AND    TIME = #{time}
+            </if>
+            <if test="timeDelayBus != null" >
+                AND    TIME_DELAY_BUS = #{timeDelayBus}
+            </if>
+            <if test="topwin != null" >
+                AND    TOPWIN = #{topwin}
+            </if>
+            <if test="topwinText != null" >
+                AND    TOPWIN_TEXT = #{topwinText}
+            </if>
+            <if test="fileid != null" >
+                AND    FILEID = #{fileid}
+            </if>
+            <if test="rootOrgId != null" >
+                AND    ROOT_ORG_ID = #{rootOrgId}
+            </if>
+        </where>
+    </select>
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaItemGuideDepartments" parameterType="AeaItemGuideDepartments" >
+        insert into AEA_ITEM_GUIDE_DEPARTMENTS (
+            ID  ,ITEM_VER_ID  ,ADDRESS  ,NAME  ,TEL  ,TIME  ,TIME_DELAY_BUS  ,TOPWIN  ,TOPWIN_TEXT  ,FILEID, ROOT_ORG_ID
+        )  values  (
+            #{id},#{itemVerId},#{address},#{name},#{tel},#{time},#{timeDelayBus},#{topwin},#{topwinText},  #{fileid}, #{rootOrgId}
+        )
+    </insert>
+    <!--6 修改实体对象 -->
+    <update id="updateAeaItemGuideDepartments" parameterType="AeaItemGuideDepartments" >
+        update AEA_ITEM_GUIDE_DEPARTMENTS
+        <set >
+            <if test="id != null" >
+                ID = #{id},
+            </if>
+            <if test="itemVerId != null" >
+                ITEM_VER_ID = #{itemVerId},
+            </if>
+            <if test="address != null" >
+                ADDRESS = #{address},
+            </if>
+            <if test="name != null" >
+                NAME = #{name},
+            </if>
+            <if test="tel != null" >
+                TEL = #{tel},
+            </if>
+            <if test="time != null" >
+                TIME = #{time},
+            </if>
+            <if test="timeDelayBus != null" >
+                TIME_DELAY_BUS = #{timeDelayBus},
+            </if>
+            <if test="topwin != null" >
+                TOPWIN = #{topwin},
+            </if>
+            <if test="topwinText != null" >
+                TOPWIN_TEXT = #{topwinText},
+            </if>
+            <if test="fileid != null" >
+                FILEID = #{fileid},
+            </if>
+            <if test="rootOrgId != null" >
+                ROOT_ORG_ID = #{rootOrgId},
+            </if>
+        </set>
+        where ID = #{id}
+    </update>
+
+    <!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaItemGuideDepartments">
+        delete from  AEA_ITEM_GUIDE_DEPARTMENTS where ID = #{id}
+    </delete>
+
+    <delete id="batchDeleteGuideDepartmentsByItemVerId">
+        delete from  AEA_ITEM_GUIDE_DEPARTMENTS where ITEM_VER_ID = #{itemVerId} and ROOT_ORG_ID = #{rootOrgId}
+    </delete>
+
+</mapper>

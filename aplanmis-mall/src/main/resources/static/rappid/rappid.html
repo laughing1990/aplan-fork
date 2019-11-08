@@ -1,0 +1,62 @@
+<html>
+	<head>
+		<title>rappid demo</title>
+
+
+		<link rel="stylesheet" type="text/css" href="build/rappid.min.css">
+    <link rel="stylesheet" type="text/css" href="apps/KitchenSink/css/style.css">
+    <link rel="stylesheet" type="text/css" href="apps/KitchenSink/css/theme-picker.css">
+    <link rel="stylesheet" type="text/css" href="apps/KitchenSink/css/style.dark.css">
+    <link rel="stylesheet" type="text/css" href="apps/KitchenSink/css/style.material.css">
+    <link rel="stylesheet" type="text/css" href="apps/KitchenSink/css/style.modern.css">
+    
+		<script src="node_modules/jquery/dist/jquery.js"></script>
+		<script src="node_modules\lodash/index.js"></script>
+		<script src="node_modules/backbone/backbone.js"></script>
+		<script src="build/rappid.min.js"></script>
+    <script src="apps\KitchenSink\js\models\joint.shapes.app.js"></script>
+    <script src="apps\KitchenSink\js\views\main.js"></script>
+    <script src="node_modules/dagre/dist/dagre.core.js"></script>
+    <script src="node_modules/graphlib/dist/graphlib.core.js"></script>
+    <script src="apps/KitchenSink/js/config/halo.js"></script>
+    <script src="apps/KitchenSink/js/config/selection.js"></script>
+    <script src="apps/KitchenSink/js/config/inspector.js"></script>
+    <script src="apps/KitchenSink/js/config/stencil.js"></script>
+    <script src="apps/KitchenSink/js/config/toolbar.js"></script>
+    <script src="apps/KitchenSink/js/config/sample-graphs.js"></script>
+    <script src="apps/KitchenSink/js/views/navigator.js"></script>
+    <script src="apps/KitchenSink/js/models/joint.shapes.app.js"></script>
+    <script src="apps/KitchenSink/js/views/theme-picker.js"></script>
+
+
+
+	</head>
+	<body>
+		<div id="app">
+			
+		</div>
+	</body>
+	<script>
+        joint.setTheme('modern');
+        app = new App.MainView({ el: '#app' });
+        themePicker = new App.ThemePicker({ mainView: app });
+        themePicker.render().$el.appendTo(document.body);
+        window.addEventListener('load', function() {
+            app.graph.fromJSON(JSON.parse(App.config.sampleGraphs.emergencyProcedure));
+        });
+    </script>
+    <script>
+        (function() {
+            var fs = (document.location.protocol === 'file:');
+            var ff = (navigator.userAgent.toLowerCase().indexOf('firefox') !== -1);
+            if (fs && !ff) {
+               (new joint.ui.Dialog({
+                   width: 300,
+                   type: 'alert',
+                   title: 'Local File',
+                   content: $('#message-fs').show()
+                })).open();
+            }
+        })();
+    </script>
+</html>

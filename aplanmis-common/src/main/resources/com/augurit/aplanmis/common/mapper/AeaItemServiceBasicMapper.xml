@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by Administrator    2019-07-04 17:13:44 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaItemServiceBasicMapper">
+
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns">
+        ${alias}.BASIC_ID  basicId,
+        ${alias}.TABLE_NAME  tableName,
+        ${alias}.PK_NAME  pkName,
+        ${alias}.RECORD_ID  recordId,
+        ${alias}.LEGAL_CLAUSE_ID  legalClauseId,
+        ${alias}.CREATER  creater,
+        ${alias}.CREATE_TIME  createTime,
+        ${alias}.ROOT_ORG_ID  rootOrgId
+    </sql>
+
+    <sql id="legalColumns" >
+        legal.LEGAL_ID  legalId,
+        legal.LEGAL_NAME  legalName,
+        legal.LEGAL_LEVEL  legalLevel,
+        legal.BASIC_NO  basicNo,
+        legal.ISSUE_ORG  issueOrg,
+        legal.EXE_DATE  exeDate,
+        legal.UPDATE_DATE  updateDate,
+        legal.SERVICE_LEGAL_ATT  serviceLegalAtt,
+        legal.SERVICE_LEGAL_MEMO  serviceLegalMemo,
+        legal.PARENT_LEGAL_ID  parentLegalId,
+        legal.LEGAL_SEQ  legalSeq,
+        legal.CREATER  creater,
+        legal.CREATE_TIME  createTime,
+        legal.MODIFIER  modifier,
+        legal.MODIFY_TIME  modifyTime
+    </sql>
+
+    <sql id="legalClauseColumns" >
+        aislc.LEGAL_CLAUSE_ID  legalClauseId,
+        aislc.LEGAL_ID  legalId,
+        aislc.CLAUSE_TITLE  clauseTitle,
+        aislc.CLAUSE_CONTENT  clauseContent,
+        aislc.SORT_NO  sortNo,
+        aislc.IS_ACTIVE  isActive,
+        aislc.IS_DELETED  isDeleted,
+        aislc.CREATER  creater,
+        aislc.CREATE_TIME  createTime,
+        aislc.MODIFIER  modifier,
+        aislc.MODIFY_TIME  modifyTime
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaItemServiceBasicById" resultType="AeaItemServiceBasic">
+        select
+        <include refid="allColumns"><property name="alias" value="aib"/></include>
+        from AEA_ITEM_SERVICE_BASIC aib
+        where BASIC_ID = #{id}
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaItemServiceBasic" resultType="AeaItemServiceBasic">
+        select
+        <include refid="allColumns"><property name="alias" value="aib"/></include>
+        from AEA_ITEM_SERVICE_BASIC aib
+        <where>
+            <if test="basicId != null">
+                AND BASIC_ID = #{basicId}
+            </if>
+            <if test="tableName != null">
+                AND TABLE_NAME = #{tableName}
+            </if>
+            <if test="pkName != null">
+                AND PK_NAME = #{pkName}
+            </if>
+            <if test="recordId != null">
+                AND RECORD_ID = #{recordId}
+            </if>
+            <if test="legalClauseId != null">
+                AND LEGAL_CLAUSE_ID = #{legalClauseId}
+            </if>
+            <if test="creater != null">
+                AND CREATER = #{creater}
+            </if>
+            <if test="createTime != null">
+                AND CREATE_TIME = #{createTime}
+            </if>
+            <if test="rootOrgId != null">
+                AND ROOT_ORG_ID = #{rootOrgId}
+            </if>
+        </where>
+    </select>
+    <!--4 根据条件查询实体list,返回分页对象 -->
+
+    <select id="listAeaItemServiceBasicAndClauseContent" resultType="AeaItemServiceBasic">
+        select
+        <include refid="allColumns">
+            <property name="alias" value="aib"/>
+        </include>
+        ,aislc.clause_title clauseTitle,aislc.clause_content clauseContent,asl.LEGAL_NAME legalName,asl.EXE_DATE exeDate
+        from AEA_ITEM_SERVICE_BASIC aib
+        left join aea_service_legal_clause aislc
+        on aib.legal_clause_id=aislc.legal_clause_id
+        left join aea_service_legal asl
+        on asl.LEGAL_ID=aislc.LEGAL_ID
+        <where>
+            <if test="basicId != null">
+                AND aib.BASIC_ID = #{basicId}
+            </if>
+            <if test="tableName != null">
+                AND aib.TABLE_NAME = #{tableName}
+            </if>
+            <if test="pkName != null">
+                AND aib.PK_NAME = #{pkName}
+            </if>
+            <if test="recordId != null">
+                AND aib.RECORD_ID = #{recordId}
+            </if>
+            <if test="legalClauseId != null">
+                AND aib.LEGAL_CLAUSE_ID = #{legalClauseId}
+            </if>
+            <if test="creater != null">
+                AND aib.CREATER = #{creater}
+            </if>
+            <if test="createTime != null">
+                AND aib.CREATE_TIME = #{createTime}
+            </if>
+            <if test="rootOrgId != null">
+                AND aib.ROOT_ORG_ID = #{rootOrgId}
+            </if>
+        </where>
+    </select>
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaItemServiceBasic" parameterType="AeaItemServiceBasic">
+        insert into AEA_ITEM_SERVICE_BASIC (BASIC_ID, TABLE_NAME, PK_NAME, RECORD_ID, LEGAL_CLAUSE_ID, CREATER,
+                                            CREATE_TIME, ROOT_ORG_ID)
+        values (#{basicId}, #{tableName}, #{pkName}, #{recordId}, #{legalClauseId}, #{creater}, #{createTime},#{rootOrgId})
+    </insert>
+    <!--6 修改实体对象 -->
+    <update id="updateAeaItemServiceBasic" parameterType="AeaItemServiceBasic">
+        update AEA_ITEM_SERVICE_BASIC
+        <set>
+            <if test="basicId != null">
+                BASIC_ID = #{basicId},
+            </if>
+            <if test="tableName != null">
+                TABLE_NAME = #{tableName},
+            </if>
+            <if test="pkName != null">
+                PK_NAME = #{pkName},
+            </if>
+            <if test="recordId != null">
+                RECORD_ID = #{recordId},
+            </if>
+            <if test="legalClauseId != null">
+                LEGAL_CLAUSE_ID = #{legalClauseId},
+            </if>
+            <if test="creater != null">
+                CREATER = #{creater},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime},
+            </if>
+            <if test="rootOrgId != null">
+                ROOT_ORG_ID = #{rootOrgId},
+            </if>
+        </set>
+        where BASIC_ID = #{basicId}
+    </update>
+    <!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaItemServiceBasic">
+        delete
+        from AEA_ITEM_SERVICE_BASIC
+        where BASIC_ID = #{id}
+    </delete>
+    <!--8 删除实体对象列表,根据主键ID列表 -->
+    <!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaItemServiceBasic" id="AeaItemServiceBasicMap">
+        <id property="basicId" column="BASIC_ID"/>
+        <result property="tableName" column="TABLE_NAME"/>
+        <result property="pkName" column="PK_NAME"/>
+        <result property="recordId" column="RECORD_ID"/>
+        <result property="legalClauseId" column="LEGAL_CLAUSE_ID"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+    </resultMap>
+
+    <select id="listAeaItemServiceBasicWithLegal" resultType="AeaItemServiceBasic" >
+        select
+            <include refid="allColumns">
+                <property name="alias" value="aisb"/>
+            </include>,
+            <include refid="legalClauseColumns"/>,
+            <include refid="legalColumns"/>
+        from AEA_ITEM_SERVICE_BASIC aisb
+        join AEA_SERVICE_LEGAL_CLAUSE aislc on aislc.LEGAL_CLAUSE_ID = aisb.LEGAL_CLAUSE_ID
+        join AEA_SERVICE_LEGAL legal on aislc.LEGAL_ID = legal.LEGAL_ID
+        <where>
+            <if test="basicId != null" >
+                and    aisb.BASIC_ID = #{basicId}
+            </if>
+            <if test="tableName != null and tableName != ''" >
+                and    aisb.TABLE_NAME = #{tableName}
+            </if>
+            <if test="pkName != null and pkName != ''" >
+                and    aisb.PK_NAME = #{pkName}
+            </if>
+            <if test="recordId != null and recordId != ''" >
+                and    aisb.RECORD_ID = #{recordId}
+            </if>
+            <if test="rootOrgId != null and rootOrgId != ''" >
+                and    aisb.ROOT_ORG_ID = #{rootOrgId}
+            </if>
+            <if test="legalClauseId != null" >
+                and    aisb.LEGAL_CLAUSE_ID = #{legalClauseId}
+            </if>
+            <if test="keyword != null and keyword != ''" >
+                and (
+                    legal.LEGAL_NAME like concat('%',concat(#{keyword},'%')) or
+                    legal.LEGAL_LEVEL like concat('%',concat(#{keyword},'%')) or
+                    legal.BASIC_NO like concat('%',concat(#{keyword},'%')) or
+                    legal.ISSUE_ORG like concat('%',concat(#{keyword},'%')) or
+                    aislc.CLAUSE_TITLE like concat('%',concat(#{keyword},'%')) or
+                    aislc.CLAUSE_CONTENT like concat('%',concat(#{keyword},'%'))
+                )
+            </if>
+        </where>
+    </select>
+
+    <delete id="deleteAeaItemServiceBasicByRecordId">
+        delete from AEA_ITEM_SERVICE_BASIC where RECORD_ID = #{recordId}
+    </delete>
+
+    <delete id="deleteAeaItemServiceBasicByCondition">
+        delete from AEA_ITEM_SERVICE_BASIC
+        <where>
+            <if test="aeaItemServiceBasic.tableName != null" >
+                and TABLE_NAME = #{aeaItemServiceBasic.tableName}
+            </if>
+            <if test="aeaItemServiceBasic.pkName != null" >
+                and PK_NAME = #{aeaItemServiceBasic.pkName}
+            </if>
+            <if test="aeaItemServiceBasic.recordId" >
+                and RECORD_ID = #{aeaItemServiceBasic.recordId}
+            </if>
+            <if test="aeaItemServiceBasic.rootOrgId != null">
+                and ROOT_ORG_ID = #{aeaItemServiceBasic.rootOrgId}
+            </if>
+            <if test="legalClauseIds!=null and legalClauseIds.length>0">
+                and LEGAL_CLAUSE_ID in
+                <foreach collection="legalClauseIds" item="legalClauseId" open="(" separator="," close=")">
+                    #{legalClauseId}
+                </foreach>
+            </if>
+        </where>
+    </delete>
+
+</mapper>

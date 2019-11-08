@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by yinlf    2019-07-25 14:14:40 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaServiceWindowUserMapper">
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns">
+        WINDOW_USER_ID  windowUserId,
+        WINDOW_ID  windowId,
+        USER_ID  userId,
+        IS_ACTIVE  isActive,
+        CREATER  creater,
+        CREATE_TIME  createTime,
+        root_org_id rootOrgId
+    </sql>
+
+    <sql id="alias_allColumns">
+        ${alias}.WINDOW_USER_ID  windowUserId,
+        ${alias}.WINDOW_ID  windowId,
+        ${alias}.USER_ID  userId,
+        ${alias}.IS_ACTIVE  isActive,
+        ${alias}.CREATER  creater,
+        ${alias}.CREATE_TIME  createTime,
+        ${alias}.root_org_id rootOrgId
+    </sql>
+
+    <sql id="omuser_columns">
+        omuser.USER_ID as userId,
+        omuser.LOGIN_NAME as loginName,
+        omuser.LOGIN_PWD as loginPwd,
+        omuser.DINGTALK_ACCOUNT as dingtalkAccount,
+        omuser.DINGTALK_ID as dingtalkId,
+        omuser.WECHAT_ACCOUNT as wechatAccount,
+        omuser.WECHAT_ID as wechatId,
+        omuser.USER_NAME as userName,
+        omuser.USER_SEX as userSex,
+        omuser.IS_PWD_ENCRYPTED as isPwdEncrypted,
+        omuser.ENCRYPT_SALT as encryptSalt,
+        omuser.PWD_STRENGTH_GRADE as pwdStrengthGrade,
+        omuser.IS_ACTIVE as isActive,
+        omuser.ACTIVE_BEGIN_TIME as activeBeginTime,
+        omuser.ACTIVE_END_TIME as activeEndTime,
+        omuser.USER_DELETED as userDeleted,
+        omuser.CREATER as creater,
+        omuser.CREATE_TIME as createTime,
+        omuser.MODIFIER as modifier,
+        omuser.MODIFY_TIME as modifyTime,
+        omuser.IS_ORIGINAL_ADMIN as isOriginalAdmin,
+        omuser.IS_LOCK as isLock,
+        omuser.LOGIN_FAIL_NUM as loginFailNum,
+        omuser.LOCK_TIME as lockTime
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaServiceWindowUserById" resultType="AeaServiceWindowUser">
+        select
+        <include refid="allColumns"/>
+        from AEA_SERVICE_WINDOW_USER
+        where WINDOW_USER_ID = #{id}
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaServiceWindowUser" resultType="AeaServiceWindowUser">
+        select
+        <include refid="allColumns"/>
+        from AEA_SERVICE_WINDOW_USER
+        <where>
+            <if test="windowUserId != null">
+                AND WINDOW_USER_ID = #{windowUserId}
+            </if>
+            <if test="windowId != null">
+                AND WINDOW_ID = #{windowId}
+            </if>
+            <if test="userId != null">
+                AND USER_ID = #{userId}
+            </if>
+            <if test="isActive != null">
+                AND IS_ACTIVE = #{isActive}
+            </if>
+            <if test="creater != null">
+                AND CREATER = #{creater}
+            </if>
+            <if test="createTime != null">
+                AND CREATE_TIME = #{createTime}
+            </if>
+            <if test="rootOrgId != null">
+                AND ROOT_ORG_ID = #{rootOrgId}
+            </if>
+        </where>
+    </select>
+    <!--4 根据条件查询实体list,返回分页对象 -->
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaServiceWindowUser" parameterType="AeaServiceWindowUser">
+        insert into AEA_SERVICE_WINDOW_USER (
+    WINDOW_USER_ID  ,WINDOW_ID  ,USER_ID  ,IS_ACTIVE  ,CREATER  ,CREATE_TIME, ROOT_ORG_ID
+        )  values  (
+    #{windowUserId},#{windowId},#{userId},#{isActive},#{creater},  #{createTime}, #{rootOrgId}
+        )
+    </insert>
+    <!--6 修改实体对象 -->
+    <update id="updateAeaServiceWindowUser" parameterType="AeaServiceWindowUser">
+        update AEA_SERVICE_WINDOW_USER
+        <set>
+            <if test="windowUserId != null">
+                WINDOW_USER_ID = #{windowUserId},
+            </if>
+            <if test="windowId != null">
+                WINDOW_ID = #{windowId},
+            </if>
+            <if test="userId != null">
+                USER_ID = #{userId},
+            </if>
+            <if test="isActive != null">
+                IS_ACTIVE = #{isActive},
+            </if>
+            <if test="creater != null">
+                CREATER = #{creater},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime},
+            </if>
+            <if test="rootOrgId != null">
+                ROOT_ORG_ID = #{rootOrgId},
+            </if>
+
+        </set>
+        where WINDOW_USER_ID = #{windowUserId}
+    </update>
+    <!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaServiceWindowUser">
+        delete from AEA_SERVICE_WINDOW_USER
+        where WINDOW_USER_ID = #{id}
+    </delete>
+
+    <delete id="deleteAeaServiceWindowUserByWindowId">
+        delete from AEA_SERVICE_WINDOW_USER
+        where WINDOW_ID = #{windowId}
+    </delete>
+
+    <!--8 删除实体对象列表,根据主键ID列表 -->
+    <!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaServiceWindowUser" id="AeaServiceWindowUserMap">
+        <id property="windowUserId" column="WINDOW_USER_ID"/>
+        <result property="windowId" column="WINDOW_ID"/>
+        <result property="userId" column="USER_ID"/>
+        <result property="isActive" column="IS_ACTIVE"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+    </resultMap>
+
+    <select id="findWindowUserByWindowIdAndKeywordAndIsActive" resultType="OpuOmUser">
+        SELECT <include refid="omuser_columns"/>
+        FROM OPU_OM_USER omuser
+        WHERE omuser.USER_ID IN (
+            SELECT USER_ID
+            FROM AEA_SERVICE_WINDOW_USER
+            WHERE WINDOW_ID = #{windowId}
+            <if test="isActive!=null and isActive!=''">
+                AND IS_ACTIVE = #{isActive}
+            </if>
+        )
+        <if test="keyword!=null and keyword!=''">
+            AND (LOGIN_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+            OR USER_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%'))
+        </if>
+
+    </select>
+
+    <update id="enableWindowUser">
+        update AEA_SERVICE_WINDOW_USER
+        set IS_ACTIVE = '1'
+        where WINDOW_ID = #{windowId} AND USER_ID = #{userId}
+    </update>
+
+    <update id="disableWindowUser">
+        update AEA_SERVICE_WINDOW_USER
+        set IS_ACTIVE = '0'
+        where WINDOW_ID = #{windowId} AND USER_ID = #{userId}
+    </update>
+
+    <delete id="deleteAeaServiceWindowUserByWindowIdAndUserId">
+        delete from AEA_SERVICE_WINDOW_USER
+        where WINDOW_ID = #{windowId} AND USER_ID = #{userId}
+    </delete>
+
+
+    <insert id="batchInsertAeaServiceWindowUser" parameterType="AeaServiceWindowUser">
+        insert into AEA_SERVICE_WINDOW_USER (
+        WINDOW_USER_ID  ,WINDOW_ID  ,USER_ID  ,IS_ACTIVE  ,CREATER  ,CREATE_TIME, ROOT_ORG_ID
+        )  values
+        <foreach collection="aeaServiceWindowUserList" item="aeaServiceWindowUser" separator=",">
+            (
+            #{aeaServiceWindowUser.windowUserId},#{aeaServiceWindowUser.windowId},#{aeaServiceWindowUser.userId},#{aeaServiceWindowUser.isActive},#{aeaServiceWindowUser.creater},  #{aeaServiceWindowUser.createTime},#{aeaServiceWindowUser.rootOrgId}
+            )
+        </foreach>
+    </insert>
+
+    <delete id="batchDeleteWindowUserByWindowIdAndUserId">
+        delete from AEA_SERVICE_WINDOW_USER
+        where WINDOW_ID = #{windowId} AND USER_ID IN
+        <foreach collection="userIds" item="userId" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+    </delete>
+
+    <sql id="window_user_allColumns" >
+        winUser.WINDOW_USER_ID  windowUserId,
+        winUser.WINDOW_ID  windowId,
+        winUser.USER_ID  userId,
+        winUser.IS_ACTIVE  isActive,
+        winUser.CREATER  creater,
+        winUser.CREATE_TIME  createTime,
+        winUser.ROOT_ORG_ID  rootOrgId
+    </sql>
+
+    <select id="listWindowUserByWindowId" resultType="AeaServiceWindowUser">
+        select
+            <include refid="allColumns"/>,
+            a1.loginName as loginName,
+            a1.userName as userName,
+            a1.orgName as orgName,
+            a1.userSex as userSex
+        from  AEA_SERVICE_WINDOW_USER as winUser
+        left join (
+            select
+                omuser.USER_ID as userId,
+                omuser.LOGIN_NAME as loginName,
+                omuser.USER_NAME as userName,
+                omuser.USER_SEX AS userSex,
+                org.ORG_NAME as orgName
+            from OPU_OM_USER as omuser, opu_om_user_org as user_org, OPU_OM_ORG as org
+            <where>
+                and org.ORG_ID = user_org.ORG_ID
+                and omuser.USER_ID = user_org.USER_ID
+                and org.IS_ACTIVE = '1'
+                and org.ORG_DELETED = '0'
+                and omuser.USER_DELETED = '0'
+                <if test="keyword!=null and keyword!='' ">
+                    and (
+                    omuser.USER_NAME like CONCAT(CONCAT('%',#{keyword}),'%') or
+                    omuser.Login_Name like CONCAT(CONCAT('%',#{keyword}),'%') or
+                    org.ORG_NAME like CONCAT(CONCAT('%',#{keyword}),'%')
+                    )
+                </if>
+            </where>
+        )a1 on a1.userId = winUser.USER_ID
+        <where>
+            and  winUser.WINDOW_ID = #{windowId}
+            <if test="keyword!=null and keyword!='' ">
+            and (
+            a1.USERNAME like CONCAT(CONCAT('%',#{keyword}),'%') or
+            a1.LoginName like CONCAT(CONCAT('%',#{keyword}),'%') or
+            a1.ORGNAME like CONCAT(CONCAT('%',#{keyword}),'%')
+            )
+        </if>
+        </where>
+    </select>
+
+    <select id="getAeaServiceWindowUserByUserId" resultType="AeaServiceWindowUser">
+        select
+        <include refid="alias_allColumns">
+            <property name="alias" value="aswu"/>
+        </include>,win.WINDOW_NAME windowName
+        from AEA_SERVICE_WINDOW_USER aswu,aea_service_window win
+        where  win.WINDOW_ID = aswu.WINDOW_ID
+        AND  aswu.USER_ID = #{userId}
+    </select>
+
+    <select id="findWindowUserByRegionIdAndAllItemUser" resultType="OpuOmUser">
+        SELECT <include refid="omuser_columns"/>
+        FROM OPU_OM_USER omuser
+        WHERE omuser.USER_ID IN (
+            SELECT USER_ID
+            FROM AEA_SERVICE_WINDOW_USER
+            WHERE WINDOW_ID IN
+                (
+                    SELECT WINDOW_ID FROM aea_service_window WHERE REGION_RANGE = '0'
+                    AND ROOT_ORG_ID = #{rootOrgId}
+                )
+            <if test="regionId != null">
+                UNION ALL
+                SELECT USER_ID
+                FROM AEA_SERVICE_WINDOW_USER
+                WHERE WINDOW_ID IN
+                (
+                    SELECT WINDOW_ID FROM aea_service_window
+                    WHERE REGION_ID = #{regionId}
+                    AND ROOT_ORG_ID = #{rootOrgId}
+                )
+          </if>
+        )
+    </select>
+
+    <select id="findWindowUserByRegionId" resultType="OpuOmUser">
+        SELECT
+        <include refid="omuser_columns"/>
+        FROM OPU_OM_USER omuser
+        WHERE omuser.USER_ID IN (
+        SELECT USER_ID
+        FROM AEA_SERVICE_WINDOW_USER
+        WHERE WINDOW_ID IN
+        (
+        SELECT WINDOW_ID FROM aea_service_window
+        WHERE REGION_ID = #{regionId}
+        AND ROOT_ORG_ID = #{rootOrgId}
+        )
+        )
+    </select>
+
+    <select id="queryAeaServiceWindowUser" resultType="AeaServiceWindowUser">
+        SELECT us.LOGIN_NAME loginName,win.WINDOW_NAME windowName,win.REGION_ID regionId,
+        <include refid="alias_allColumns">
+            <property name="alias" value="aswu"/>
+        </include>
+        FROM aea_service_window_user aswu,opu_om_user us,aea_service_window win
+        WHERE us.USER_ID = aswu.USER_ID
+        AND win.WINDOW_ID = aswu.WINDOW_ID
+        AND aswu.WINDOW_ID in (
+        SELECT WINDOW_ID FROM aea_service_window_user
+        WHERE USER_ID = #{userId}
+        )
+    </select>
+</mapper>

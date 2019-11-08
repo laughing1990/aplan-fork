@@ -1,0 +1,378 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <preConditions>
+        <dbms type="mysql"/>
+    </preConditions>
+
+    <changeSet id="201907251341" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            DROP TABLE IF EXISTS `aea_item_service_window_user`;
+            CREATE TABLE `aea_service_window_user` (
+                `WINDOW_USER_ID` varchar(50) NOT NULL COMMENT '主键',
+                `WINDOW_ID` varchar(100) NOT NULL COMMENT '窗口ID',
+                `USER_ID` varchar(100) NOT NULL COMMENT '用户ID',
+                `IS_ACTIVE` char(1) NOT NULL COMMENT '是否启用，0表示禁用，1表示启用',
+                `CREATER` varchar(50) NOT NULL COMMENT '创建人',
+                `CREATE_TIME` datetime NOT NULL COMMENT '创建时间',
+                PRIMARY KEY (`WINDOW_USER_ID`) USING BTREE
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='服务窗口与人员关联表';
+        </sql>
+    </changeSet>
+
+    <changeSet id="201907311641" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_par_stage`
+            MODIFY COLUMN `HAND_WAY`  char(1) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '办理方式 0 多事项直接合并办理  1 按阶段多级情形组织事项办理';
+            ALTER TABLE `aea_par_stage`
+            ADD COLUMN `USE_ONE_FORM`  char(1) NULL COMMENT '是否允许设置\"一张表单\" 0 禁用 1允许';
+        </sql>
+    </changeSet>
+
+    <changeSet id="201908061614" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `opu_om_org`
+            ADD COLUMN `REGION_ID`  varchar(50) NULL COMMENT '行政区划ID';
+            ALTER TABLE `aea_par_stage_item`
+            ADD COLUMN `SUB_FORM_ID`  varchar(50) NULL COMMENT '智能表单ID';
+            ALTER TABLE `bsc_dic_region`
+            ADD COLUMN `REGION_TYPE`  char(1) NULL COMMENT '行政区划类型，g表示国家，p表示省份，m表示直辖市，c表示城市，a表示区县，s表示街镇',
+            ADD COLUMN `REGION_PINYIN`  varchar(255) NULL;
+            ALTER TABLE `bsc_dic_region`
+            MODIFY COLUMN `REGION_PINYIN`  varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '行政区划名字拼音';
+        </sql>
+    </changeSet>
+
+    <changeSet id="201908061618" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `bsc_att_detail`
+            ADD COLUMN `IS_NEED_PDF`  char(1) NULL COMMENT '是否需要转换PDF，0表示不是，1表示是';
+            ALTER TABLE `bsc_att_detail`
+            ADD COLUMN `IS_CONVERT_PDF`  char(1) NULL COMMENT '是否已经转换PDF，0表示没有转，1表示已转换';
+            ALTER TABLE `bsc_att_detail`
+            ADD COLUMN `CONVERT_PDF_RESULT`  char(1) NULL COMMENT 'PDF转换结果，0表示转换失败，1表示转换成功';
+            ALTER TABLE `bsc_att_detail`
+            ADD COLUMN `CONVERT_PDF_TIME`  datetime NULL;
+        </sql>
+    </changeSet>
+
+    <changeSet id="201908061619" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_bus_cert`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NULL AFTER `MEMO`;
+            ALTER TABLE `aea_bus_certinst`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NULL AFTER `MEMO`;
+            ALTER TABLE `aea_cert`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NULL AFTER `SORT_NO`;
+            ALTER TABLE `aea_cert_type`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NULL AFTER `SUB_COUNT`;
+            ALTER TABLE `aea_hi_applyinst`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NULL AFTER `SMS_SEND_TIME`;
+            ALTER TABLE `aea_hi_certinst`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NULL AFTER `QUAL_LEVEL_ID`;
+            ALTER TABLE `aea_hi_item_correct`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NULL AFTER `MODIFY_TIME`;
+            ALTER TABLE `aea_hi_item_correct_due_ininst`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NULL AFTER `IS_NEED_ATT`;
+            ALTER TABLE `aea_hi_item_correct_real_ininst`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NULL AFTER `MODIFY_TIME`;
+            ALTER TABLE `aea_hi_item_inoutinst`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NULL AFTER `PAR_IN_ID`;
+            ALTER TABLE `aea_hi_item_matinst`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NULL AFTER `OFFICIAL_DOC_PUBLISH_DATE`;
+            ALTER TABLE `aea_hi_item_special`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NULL AFTER `MODIFY_TIME`;
+            ALTER TABLE `aea_hi_item_stateinst`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NULL AFTER `MODIFY_TIME`;
+            ALTER TABLE `aea_hi_iteminst`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NULL AFTER `SMS_SEND_TIME`;
+            ALTER TABLE `aea_hi_par_stageinst`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NULL AFTER `BUSINESS_STATE`;
+            ALTER TABLE `aea_hi_par_stateinst`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NULL AFTER `MODIFY_TIME`;
+            ALTER TABLE `aea_hi_receive`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NULL AFTER `DOCUMENT_NAME`;
+            ALTER TABLE `aea_hi_seriesinst`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NULL AFTER `APPLYINST_ID`;
+            ALTER TABLE `aea_hi_sms_info`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NULL AFTER `ISSUE_TIME`;
+            ALTER TABLE `aea_hi_sms_send_apply`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NULL AFTER `CONSIGNER_ATT_ID`;
+            ALTER TABLE `aea_hi_sms_send_item`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NULL AFTER `CONSIGNER_ATT_ID`;
+            ALTER TABLE `aea_item`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NULL AFTER `MODIFY_TIME`;
+            ALTER TABLE `aea_item_basic`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NULL AFTER `JZ_ORG_IDS`;
+            ALTER TABLE `aea_item_directory`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NULL AFTER `MODIFY_TIME`;
+            ALTER TABLE `aea_item_guide`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NULL AFTER `IS_LEVYWAIVER`;
+            ALTER TABLE `aea_item_inout`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NULL AFTER `SORT_NO`;
+            ALTER TABLE `aea_item_mat`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NULL AFTER `ZCQY`;
+            ALTER TABLE `aea_item_mat_type`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NULL AFTER `MODIFY_TIME`;
+            ALTER TABLE `aea_item_seq`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NULL AFTER `ITEM_VER_ID`;
+            ALTER TABLE `aea_item_service_basic`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NULL AFTER `CREATE_TIME`;
+            ALTER TABLE `aea_item_service_window_rel`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NULL AFTER `CREATE_TIME`;
+            ALTER TABLE `aea_item_state`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NULL AFTER `IS_PROC_START_COND`;
+            ALTER TABLE `aea_item_state_ver`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NULL AFTER `VER_NUM`;
+            ALTER TABLE `aea_item_ver`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NULL AFTER `MODIFY_TIME`;
+            ALTER TABLE `aea_linkman_info`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NULL AFTER `IMG_URL`;
+            ALTER TABLE `aea_local_directory`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NULL AFTER `ISOLD`;
+            ALTER TABLE `aea_log_apply_state_hist`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NULL AFTER `BUS_RECORD_ID`;
+            ALTER TABLE `aea_log_item_state_hist`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NULL AFTER `BUS_RECORD_ID`;
+            ALTER TABLE `aea_par_in`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NULL AFTER `IS_COMMON`;
+            ALTER TABLE `aea_par_oneform`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NULL AFTER `MODIFY_TIME`;
+            ALTER TABLE `aea_par_share_mat`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NULL AFTER `MODIFY_TIME`;
+            ALTER TABLE `aea_par_stage`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NULL AFTER `USE_ONE_FORM`;
+            ALTER TABLE `aea_par_stage_charges`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NULL AFTER `MODIFY_TIME`;
+            ALTER TABLE `aea_par_stage_guide`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NULL AFTER `GUIDE_ATT`;
+            ALTER TABLE `aea_par_stage_questions`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NULL AFTER `MODIFY_TIME`;
+            ALTER TABLE `aea_par_state`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NULL AFTER `IS_QUESTION_ORI`;
+            ALTER TABLE `aea_par_theme`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NULL AFTER `IS_ONLINE_SB`;
+            ALTER TABLE `aea_par_theme_seq`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NULL AFTER `MODIFY_TIME`;
+            ALTER TABLE `aea_par_theme_ver`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NULL AFTER `THEME_VER_DIAGRAM`;
+            ALTER TABLE `aea_parent_proj`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NULL AFTER `MODIFY_TIME`;
+            ALTER TABLE `aea_proj_info`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NULL AFTER `GCBM`;
+            ALTER TABLE `aea_proj_info_log`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NULL AFTER `CHANGE_SOURCE`;
+            ALTER TABLE `aea_service_legal`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NULL AFTER `MODIFY_TIME`;
+            ALTER TABLE `aea_service_legal_clause`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NULL AFTER `CLAUSE_ATT`;
+            ALTER TABLE `aea_service_window`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NULL AFTER `IS_ALL_STAGE`;
+            ALTER TABLE `aea_unit_info`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NULL AFTER `IS_OWNER_UNIT`;
+            ALTER TABLE `aea_unit_info_log`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NULL AFTER `CREATE_TIME`;
+            ALTER TABLE `aea_im_bidding_price`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NULL AFTER `CREATE_TIME`;
+            ALTER TABLE `aea_im_contract`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NULL AFTER `POSTPONE_SERVICE_END_TIME`;
+            ALTER TABLE `aea_im_item_explain`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NULL AFTER `UNIT_REQUIRE_ID`;
+            ALTER TABLE `aea_im_proj_purchase`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NULL AFTER `IS_AVOID`;
+            ALTER TABLE `aea_im_purchaseinst`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NULL AFTER `APPLY_DATA`;
+            ALTER TABLE `aea_im_qual`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NULL AFTER `QUAL_LEVEL_ID`;
+            ALTER TABLE `aea_im_qual_level`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NULL AFTER `MEMO`;
+            ALTER TABLE `aea_im_service`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NULL AFTER `IMG_URL`;
+            ALTER TABLE `aea_im_service_evaluation`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NULL AFTER `AUDIT_OPINION`;
+            ALTER TABLE `aea_im_service_major`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NULL AFTER `QUAL_ID`;
+            ALTER TABLE `aea_im_service_result`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NULL AFTER `IS_EXTERNAL_UPLOAD`;
+            ALTER TABLE `aea_im_unit_bidding`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NULL AFTER `IS_EVALUATE`;
+            ALTER TABLE `aea_im_unit_require`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NULL AFTER `RECORD_REQUIRE_EXPLAIN`;
+            ALTER TABLE `aea_im_unit_service`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NULL AFTER `AUDIT_TIME`;
+            ALTER TABLE `aea_im_service_linkman`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NULL AFTER `AUDIT_TIME`;
+        </sql>
+    </changeSet>
+
+    <changeSet id="201908061626" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_par_share_mat`
+            CHANGE COLUMN `PAR_IN_ID` `IN_INOUT_ID`  varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '主题版本阶段的事项输入定义ID';
+        </sql>
+    </changeSet>
+
+    <changeSet id="201908061921" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_item_ver`
+            ADD COLUMN `GDS_VER_NUM`  double(5,0) NULL COMMENT '用于存储广东省事项库版本号';
+        </sql>
+    </changeSet>
+
+    <changeSet id="201908081005" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_service_window_item`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NULL COMMENT '根组织ID';
+            ALTER TABLE `aea_service_window_stage`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NULL COMMENT '根组织ID';
+            ALTER TABLE `aea_service_window_user`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NULL COMMENT '根组织ID';
+
+            ALTER TABLE `aea_par_state_item`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NULL COMMENT '根组织id';
+        </sql>
+    </changeSet>
+
+    <changeSet id="201908121353" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_item_guide_attr`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NULL COMMENT '根组织id';
+        </sql>
+    </changeSet>
+
+    <changeSet id="201908201005" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_item_basic`
+            MODIFY COLUMN `ORG_ID`  varchar(50) NULL COMMENT 'IS_CATALOG=1 非必填；IS_CATALOG=0，必填(实施机关)组织ID' ,
+            ADD COLUMN `IS_CATALOG`  char(1) NULL COMMENT '是否标准事项  1标准事项 0 实施事项' ,
+            ADD COLUMN `ORG_NAME`  varchar(200) NULL COMMENT '当IS_CATALOG=1时是直接给用户输入，当IS_CATALOG=0时是用户选择的组织' ;
+            ALTER TABLE `aea_item_basic`
+            CHANGE COLUMN `ORG_NAME` `GUIDE_ORG_NAME`  varchar(200) NULL DEFAULT NULL COMMENT '当IS_CATALOG=1时是直接给用户输入，选择部门字段隐藏；当IS_CATALOG=0时此字段隐藏，选择部门字段展示' ;
+        </sql>
+    </changeSet>
+
+    <changeSet id="201908211538" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_item_basic` ADD COLUMN `REGION_ID`  varchar(50) NULL COMMENT '行政区划ID';
+        </sql>
+    </changeSet>
+
+    <changeSet id="201908211749" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_par_share_mat`
+            ADD COLUMN `OUT_ITEM_VER_ID`  varchar(50) NULL COMMENT '输出事项版本ID',
+            ADD COLUMN `IN_ITEM_VER_ID`  varchar(50) NULL COMMENT '输入事项版本ID',
+            ADD COLUMN `IN_ITEM_STATE_VER_ID`  varchar(50) NULL COMMENT '输入事项情形版本ID';
+        </sql>
+    </changeSet>
+
+    <changeSet id="201908271337" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_service_window`
+            ADD COLUMN `REGION_RANGE`  char(1) NULL COMMENT '办理范围，0表示全市通办，1表示属地办理';
+        </sql>
+    </changeSet>
+
+    <changeSet id="201908301013" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            CREATE TABLE `aea_par_nav` (
+            `NAV_ID` varchar(50) NOT NULL COMMENT '主键',
+            `NAV_NAME` varchar(500) NOT NULL COMMENT '主题导航名称',
+            `SORT_NO` double(38,0) NOT NULL COMMENT '排列顺序号',
+            `NAV_MEMO` varchar(500) DEFAULT NULL COMMENT '备注说明',
+            `IS_ACTIVE` varchar(1) NOT NULL COMMENT '是否启用，0表示禁用，1表示启用',
+            `IS_DELETED` varchar(1) DEFAULT NULL COMMENT '是否删除，0表示未删除，1表示已删除',
+            `CREATER` varchar(255) NOT NULL COMMENT '创建人',
+            `CREATE_TIME` datetime NOT NULL COMMENT '创建时间',
+            `MODIFIER` varchar(255) DEFAULT NULL COMMENT '修改人',
+            `MODIFY_TIME` datetime DEFAULT NULL COMMENT '修改时间',
+            `ROOT_ORG_ID` varchar(50) DEFAULT NULL,
+            PRIMARY KEY (`NAV_ID`) USING BTREE,
+            KEY `ROOT_ORG_ID` (`ROOT_ORG_ID`) USING BTREE COMMENT 'ROOT_ORG_ID'
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='主题导航定义表';
+        </sql>
+    </changeSet>
+
+    <changeSet id="201908301014" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            CREATE TABLE `aea_par_factor` (
+            `FACTOR_ID` varchar(50) NOT NULL COMMENT '主键',
+            `NAV_ID` varchar(50) NOT NULL COMMENT '阶段定义ID',
+            `FACTOR_NAME` varchar(500) NOT NULL COMMENT '条件名称',
+            `USE_EL` varchar(50) DEFAULT NULL COMMENT '是否启用EL表达式，0表示不启用，1表示启用。默认为0',
+            `STATE_EL` varchar(500) DEFAULT NULL COMMENT '条件表达式',
+            `IS_QUESTION` varchar(1) DEFAULT NULL COMMENT '是否问题，0表示答案，1表示问题，2表示事项情形',
+            `ANSWER_TYPE` varchar(1) DEFAULT NULL COMMENT '问题的答案类型，y表示是否选择，s表示单选答案，m表示多选答案',
+            `MUST_ANSWER` varchar(1) DEFAULT NULL COMMENT '是否必须回答，0表示可选回答，1表示必须回答【IS_QUESTION=1】',
+            `PARENT_FACTOR_ID` varchar(50) DEFAULT NULL COMMENT '父ID',
+            `FACTOR_SEQ` varchar(2000) DEFAULT NULL COMMENT '序列',
+            `SORT_NO` double(38,0) NOT NULL COMMENT '排列顺序号',
+            `IS_ACTIVE` varchar(1) NOT NULL COMMENT '是否启用，0表示禁用，1表示启用',
+            `FACTOR_MEMO` varchar(500) DEFAULT NULL COMMENT '备注说明',
+            `CREATER` varchar(255) NOT NULL COMMENT '创建人',
+            `CREATE_TIME` datetime NOT NULL COMMENT '创建时间',
+            `MODIFIER` varchar(255) DEFAULT NULL COMMENT '修改人',
+            `MODIFY_TIME` datetime DEFAULT NULL COMMENT '修改时间',
+            `IS_DELETED` varchar(1) DEFAULT NULL COMMENT '是否删除，0表示未删除，1表示已删除',
+            `IS_QUESTION_ORI` varchar(1) DEFAULT NULL COMMENT '存储原IS_QUESTION数据',
+            `ROOT_ORG_ID` varchar(50) DEFAULT NULL,
+            PRIMARY KEY (`FACTOR_ID`) USING BTREE,
+            KEY `STAGE_ID` (`NAV_ID`) USING BTREE COMMENT 'STAGE_ID',
+            KEY `ROOT_ORG_ID` (`ROOT_ORG_ID`) USING BTREE COMMENT 'ROOT_ORG_ID',
+            KEY `PARENT_STATE_ID` (`PARENT_FACTOR_ID`) USING BTREE COMMENT 'PARENT_STATE_ID'
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='主题导航因子表';
+        </sql>
+    </changeSet>
+
+    <changeSet id="201908301015" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            CREATE TABLE `aea_par_factor_theme` (
+            `GUIDE_THEME_ID` varchar(50) NOT NULL COMMENT 'ID',
+            `FACTOR_ID` varchar(50) NOT NULL COMMENT '阶段定义ID',
+            `THEME_ID` varchar(50) NOT NULL COMMENT '智能表单定义ID',
+            `SORT_NO` tinyint(10) DEFAULT NULL COMMENT '排序字段',
+            `CREATER` varchar(50) NOT NULL COMMENT '创建人',
+            `CREATE_TIME` datetime NOT NULL COMMENT '创建时间',
+            PRIMARY KEY (`GUIDE_THEME_ID`) USING BTREE
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='阶段与事项关联定义表';
+        </sql>
+    </changeSet>
+
+    <changeSet id="201908301016" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            CREATE TABLE `aea_par_stage_partform` (
+            `STAGE_PARTFORM_ID` varchar(50) NOT NULL COMMENT 'ID',
+            `PARTFORM_NAME` varchar(255) NOT NULL,
+            `STAGE_ID` varchar(500) NOT NULL COMMENT '阶段定义ID',
+            `PARTFORM_ID` varchar(50) NOT NULL COMMENT '智能表单定义ID',
+            `SORT_NO` tinyint(10) DEFAULT NULL COMMENT '排序字段',
+            `USE_EL` char(1) DEFAULT NULL COMMENT '是否启动EL表达式，0表示禁用，1表示启用',
+            `EL_CONTENT` varchar(500) DEFAULT NULL COMMENT 'EL表达式内容',
+            `CREATER` varchar(50) NOT NULL COMMENT '创建人',
+            `CREATE_TIME` datetime NOT NULL COMMENT '创建时间',
+            PRIMARY KEY (`STAGE_PARTFORM_ID`) USING BTREE
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='阶段扩展表关联表';
+        </sql>
+    </changeSet>
+
+    <changeSet id="20190831160244" author="xiong" failOnError="false">
+        <preConditions>
+            <not>
+                <columnExists tableName="aea_proj_info" columnName="garden"/>
+            </not>
+        </preConditions>
+        <sql endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            alter table aea_proj_info add garden varchar(255) default null comment '园区';
+            alter table aea_proj_info add street varchar(255) default null comment '街道';
+            alter table aea_proj_info add east_scope varchar(255) default null comment '东至';
+            alter table aea_proj_info add south_scope varchar(255) default null comment '南至';
+            alter table aea_proj_info add west_scope varchar(255) default null comment '西至';
+            alter table aea_proj_info add north_scope varchar(255) default null comment '北至';
+            alter table aea_proj_info add project_dept varchar(255) default null comment '立项部门';
+            alter table aea_proj_info add above_ground varchar(20) default null comment '地上面积 单位: 平方米';
+            alter table aea_proj_info add under_ground varchar(20) default null comment '地下面积 单位: 平方米';
+        </sql>
+    </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,212 @@
+// 循环生成div的bg
+.intro-loop(@n, @i: 1) when (@i <=@n) {
+  .icon-@{i} {
+    background-image: url("../images/assignUser/icon-@{i}.png");
+    background-size: 100% 100%;
+  }
+
+  .intro-loop(@n, (@i + 1));
+}
+
+// 没有数据的展示
+.non-data {
+  background: url('../images/non-data.png') no-repeat center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  height: 216px !important;
+  width: 180px;
+  transform: translateX(-50%) translateY(-50%);
+}
+
+.box-card {
+
+  .el-card__header {
+    height: 48px!important;
+    line-height: 26px!important;
+    padding: 10px 20px;
+  }
+  .el-card__body{
+    // padding: 10px 20px;
+  }
+}
+
+.rongque_jian {
+  background-color: #2391E8 !important;
+}
+
+// 
+.daibuzheng_jian {
+  background-color: #F0AB30 !important;
+}
+
+// 
+.buquandaiqueren_jian {
+  background-color: #F09030 !important;
+}
+
+// 
+.teshuchengxu_jian {
+  background-color: #9E72F3 !important;
+}
+
+// 
+.rongquetongguo_jian {
+  background-color: #30B0F1 !important;
+}
+
+// 
+.banlibutongguo_jian {
+  background-color: #F23D5B !important;
+}
+
+.buyushouli_jian {
+  background: #9FA0B1 !important;
+}
+
+.index-wrapper {
+  padding: 15px;
+  padding-bottom: 5px;
+
+  .status-card {
+    .status-card-item {
+      background: url(../images/sawtooth.png) no-repeat bottom;
+      float: left;
+      width: 13.6%;
+      margin: 0 0 16px 0.8%;
+      height: 90px;
+      background-size: contain;
+      padding: 10px 10px 10px 16px;
+      color: #fff;
+      cursor: pointer;
+      border-radius: 2px;
+
+      .card-icon {
+        float: right;
+        display: inline-block;
+        width: 30px;
+        height: 32px;
+      }
+
+      .intro-loop(7); //调用循环生成bg
+    }
+
+    .status-card-item:hover {
+      opacity: .9;
+    }
+
+    .me-count {
+      font-size: 28px;
+      padding-top: 5px;
+    }
+
+    .status-card-item:first-child {
+      margin-left: 0;
+    }
+
+    .status-card-item:last-child {
+      float: right;
+    }
+
+    .percent-bt {
+      font-size: 12px;
+    }
+  }
+
+  @media screen and (max-width: 1450px) {
+    .status-card {
+      .status-card-item {
+        width: 19%;
+      }
+
+      .status-card-item:last-child {
+        float: left;
+      }
+
+      .status-card-item:first-child {
+        margin-left: 0.8%;
+      }
+    }
+  }
+
+  @media screen and (max-width: 1000px) {
+    .status-card {
+      .status-card-item {
+        width: 23.8%;
+      }
+    }
+  }
+
+  // 部门事项
+  .depart-box {
+    .depart-chart {
+      // background: palegoldenrod;
+      height: 300px;
+    }
+
+    .depart-table {
+      // background: peru;
+      height: 300px;
+    }
+  }
+
+  // 月度，地区，主题申报
+  .declare-box {
+    .declare-month-and-area {
+      height: 736px;
+
+      .declare-month {
+        height: 360px;
+
+        .rander-box {
+          height: 260px;
+        }
+      }
+
+      .declare-area {
+        height: 360px;
+
+        .rander-box {
+          height: 260px;
+        }
+      }
+    }
+
+    .declare-theme {
+      height: 736px;
+
+      .rander-box {
+        height: 635px;
+        height: 320px;
+      }
+    }
+  }
+
+  // 主题申报异常排名，项目并联审批统计，申报来源统计
+  .bottom-show-box {
+
+    .theme-abnormal-box {
+      .rander-box {
+        height: 290px;
+      }
+    }
+
+    .half-box {
+      .left-box {
+        width: 49%;
+
+        .rander-box {
+          height: 290px;
+        }
+      }
+
+      .right-box {
+        width: 49%;
+
+        .rander-box {
+          height: 290px;
+        }
+      }
+    }
+  }
+}

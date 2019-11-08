@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by Administrator    2019-06-11 10:44:10 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaImCertinstMajorMapper" >
+<!--1 返回所有字段的SQL字句 -->
+<sql id="allColumns" >
+    CERTINST_MAJOR_ID  certinstMajorId,
+    CERTINST_ID  certinstId,
+    MAJOR_ID  majorId,
+    IS_DELETE  isDelete,
+    CREATER  creater,
+    CREATE_TIME  createTime
+    </sql>
+
+<!--2 根据主键ID查询单个实体 -->
+<select id="getAeaImCertinstMajorById" resultType="AeaImCertinstMajor" >
+    select
+    <include refid="allColumns"/>
+    from    AEA_IM_CERTINST_MAJOR
+    where    CERTINST_MAJOR_ID = #{id}
+</select>
+
+<!--3 根据条件查询实体list -->
+    <select id="listAeaImCertinstMajor" resultType="AeaImCertinstMajor" >
+        select
+        <include refid="allColumns"/>
+        from    AEA_IM_CERTINST_MAJOR
+    <where>
+        <if test="certinstMajorId != null" >
+        AND    CERTINST_MAJOR_ID = #{certinstMajorId}
+        </if>
+        <if test="certinstId != null" >
+        AND    CERTINST_ID = #{certinstId}
+        </if>
+        <if test="majorId != null" >
+        AND    MAJOR_ID = #{majorId}
+        </if>
+        <if test="isDelete != null" >
+        AND    IS_DELETE = #{isDelete}
+        </if>
+        <if test="creater != null" >
+        AND    CREATER = #{creater}
+        </if>
+        <if test="createTime != null" >
+        AND    CREATE_TIME = #{createTime}
+        </if>
+    </where>
+    </select>
+<!--4 根据条件查询实体list,返回分页对象 -->
+
+<!--5 新增实体对象 -->
+<insert id="insertAeaImCertinstMajor" parameterType="AeaImCertinstMajor" >
+    insert into AEA_IM_CERTINST_MAJOR (
+CERTINST_MAJOR_ID  ,CERTINST_ID  ,MAJOR_ID  ,IS_DELETE  ,CREATER  ,CREATE_TIME  
+    )  values  (
+#{certinstMajorId},#{certinstId},#{majorId},#{isDelete},#{creater},  #{createTime}
+    )
+</insert>
+<!--6 修改实体对象 -->
+<update id="updateAeaImCertinstMajor" parameterType="AeaImCertinstMajor" >
+    update AEA_IM_CERTINST_MAJOR
+    <set >
+        <if test="certinstMajorId != null" >
+        CERTINST_MAJOR_ID = #{certinstMajorId},
+        </if>
+        <if test="certinstId != null" >
+        CERTINST_ID = #{certinstId},
+        </if>
+        <if test="majorId != null" >
+        MAJOR_ID = #{majorId},
+        </if>
+        <if test="isDelete != null" >
+        IS_DELETE = #{isDelete},
+        </if>
+        <if test="creater != null" >
+        CREATER = #{creater},
+        </if>
+        <if test="createTime != null" >
+        CREATE_TIME = #{createTime},
+        </if>
+    </set>
+    where CERTINST_MAJOR_ID = #{certinstMajorId}
+</update>
+<!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaImCertinstMajor">
+        delete from   AEA_IM_CERTINST_MAJOR
+        where
+    CERTINST_MAJOR_ID = #{id}
+    </delete>
+<!--8 删除实体对象列表,根据主键ID列表 -->
+<!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaImCertinstMajor" id="AeaImCertinstMajorMap">
+        <id property="certinstMajorId" column="CERTINST_MAJOR_ID"/>
+        <result property="certinstId" column="CERTINST_ID"/>
+        <result property="majorId" column="MAJOR_ID"/>
+        <result property="isDelete" column="IS_DELETE"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+    </resultMap>
+
+    <delete id="deleteAeaImCertinstMajorByCertinstId">
+        delete from AEA_IM_CERTINST_MAJOR where CERTINST_ID = #{certinstId}
+    </delete>
+
+    <select id="listCertinstMajorByUnitInfoId" resultType="AeaImCertinstMajor">
+        SELECT
+            aicm.CERTINST_MAJOR_ID certinstMajorId,
+            ahc.CERTINST_ID certinstId,
+            aiql.PRIORITY priority,
+            aicm.MAJOR_ID majorId,
+            aism.MAJOR_SEQ majorSeq
+        FROM aea_im_certinst_major aicm
+        LEFT JOIN aea_hi_certinst ahc ON ahc.CERTINST_ID = aicm.CERTINST_ID
+        LEFT JOIN aea_im_qual_level aiql ON ahc.QUAL_LEVEL_ID = aiql.QUAL_LEVEL_ID
+        LEFT JOIN aea_im_service_major aism ON aicm.MAJOR_ID = aism.MAJOR_ID
+        WHERE aicm.IS_DELETE = '0'
+        AND aicm.CERTINST_ID IN (
+            SELECT abc.CERTINST_ID FROM aea_bus_certinst abc, aea_im_unit_service aius
+            WHERE abc.BUS_RECORD_ID = aius.UNIT_SERVICE_ID AND abc.IS_DELETE = '0'
+            AND abc.BUS_TABLE_NAME = 'AEA_IM_UNIT_SERVICE' AND abc.PK_NAME = 'UNIT_SERVICE_ID'
+            <!--AND abc.AUDIT_FLAG = '' -->
+            AND aius.IS_DELETE = '0' AND aius.UNIT_INFO_ID = #{unitInfoId}
+        )
+    </select>
+
+    <resultMap type="AeaImQual" id="certinstQualMajorMap">
+        <id column="qualId" property="qualId"/>
+        <result column="qualName" property="qualName"/>
+        <collection property="aeaImMajorQualVoList" ofType="com.augurit.aplanmis.common.vo.AeaImMajorQualVo">
+            <id column="majorId" property="majorId"/>
+            <result column="majorName" property="majorName"/>
+            <result column="parentMajorId" property="parentMajorId"/>
+            <result column="majorSeq" property="majorSeq"/>
+        </collection>
+    </resultMap>
+
+    <select id="listQualMajorByCertinstId" resultMap="certinstQualMajorMap">
+        SELECT
+            aiq.QUAL_ID qualId,
+            aiq.QUAL_NAME qualName,
+            aism.MAJOR_ID majorId,
+            aism.MAJOR_NAME majorName,
+            aism.PARENT_MAJOR_ID parentMajorId,
+            aism.MAJOR_SEQ majorSeq
+        FROM aea_im_certinst_major aicm
+        LEFT JOIN aea_im_service_major aism ON aicm.MAJOR_ID = aism.MAJOR_ID
+        LEFT JOIN aea_im_qual aiq ON aiq.QUAL_ID = aism.QUAL_ID
+        WHERE aicm.IS_DELETE = '0'
+        AND aicm.CERTINST_ID = #{certinstId}
+    </select>
+
+</mapper>

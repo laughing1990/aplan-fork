@@ -1,0 +1,131 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" >
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"  />
+<title>表单设计</title>
+    <style>
+        body{
+            font-size: 16px;
+            font-weight: 500;
+            font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
+        }
+        #loading p{
+            color:#169aff;
+            width:150px;
+            margin:100px auto;
+        }
+    </style>
+    <script>
+        function IEVersion() {
+            var userAgent = navigator.userAgent; //取得浏览器的userAgent字符串
+            var isIE = userAgent.indexOf("compatible") > -1 && userAgent.indexOf("MSIE") > -1; //判断是否IE<11浏览器
+            var isEdge = userAgent.indexOf("Edge") > -1 && !isIE; //判断是否IE的Edge浏览器
+            var isIE11 = userAgent.indexOf('Trident') > -1 && userAgent.indexOf("rv:11.0") > -1;
+            if(isIE) {
+                var reIE = new RegExp("MSIE (\\d+\\.\\d+);");
+                reIE.test(userAgent);
+                var fIEVersion = parseFloat(RegExp["$1"]);
+                if(fIEVersion == 7) {
+                    return 7;
+                } else if(fIEVersion == 8) {
+                    return 8;
+                } else if(fIEVersion == 9) {
+                    return 9;
+                } else if(fIEVersion == 10) {
+                    return 10;
+                } else {
+                    return 6;//IE版本<=7
+                }
+            } else if(isEdge) {
+                return -2;//edge
+            } else if(isIE11) {
+                return 11; //IE11
+            }else{
+                return -1;//不是ie浏览器
+            }
+        }
+        var tips="智能表单设计器暂时只支持IE，请使用IE10、IE11浏览器。";
+        var version=IEVersion();
+        if(version<=10){
+            alert(tips);
+        }
+    </script>
+</head>
+<body style="margin:0px 0px;">
+<div id="loading">
+    <p>拼命加载中...</p>
+</div>
+<table width="100%"  height="100%" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <td  align="center" valign="middle" id="applettd">
+        </td>
+    </tr>
+</table>
+</body>
+</html>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    //http://localhost:7071/bpm-admin/
+    var restWebApp = [[${restWebApp}]];
+    if(restWebApp==null||restWebApp=='null'){
+        restWebApp="";
+    }
+    var formId = [[${actStoForm.formId}]];
+    if(formId==null||formId=='null'){
+           formId="";
+    }
+
+    var needCallBackSaveActStoForm = [[${needCallBackSaveActStoForm}]];
+    if(needCallBackSaveActStoForm==null||needCallBackSaveActStoForm=='null'){
+        needCallBackSaveActStoForm="0";
+    }
+    var urlCallBackSaveActStoForm = [[${urlCallBackSaveActStoForm}]];
+    if(urlCallBackSaveActStoForm==null||urlCallBackSaveActStoForm=='null'){
+        urlCallBackSaveActStoForm="";
+    }
+    var paramCallBackSaveActStoForm = [[${paramCallBackSaveActStoForm}]];
+    if(paramCallBackSaveActStoForm==null||paramCallBackSaveActStoForm=='null'){
+        paramCallBackSaveActStoForm="";
+    }
+    var requiredField = [[${requiredField}]];
+    if(requiredField==null||requiredField=='null'){
+        requiredField="";
+    }
+    /*]]>*/
+
+    function loadCompleted(){
+        var id="loading";
+        document.getElementById(id).style.display="none";
+    }
+</script>
+<script LANGUAGE="JavaScript">
+var browserHeight = window.top.document.body.clientHeight;
+var browserWidth = window.top.document.body.clientWidth;
+
+var applethtml=
+    '	  <applet  id="myapplet" name="myapplet" width="100%" height="100%" mayscript="mayscript" alt="此浏览器不支持Applet!">'+
+    '        <PARAM name="classloader_cache" value="false"/>'+
+    '        <PARAM name="codebase" value="."/> '+
+    '        <PARAM name="archive" value="applet/formdesigner.jar,applet/gson-2.8.6.jar,applet/fastjson-1.2.56.jar,applet/htmllexer.jar,applet/jsoup-1.12.1.jar,applet/htmlparser.jar"/>'+
+    '        <PARAM name="code" value="com.augur.DesignerApplet.class"/>'+
+    '        <PARAM name="type" value="application/x-java-applet;jpi-version=1.6.0"/>'+
+    '        <PARAM name="scriptable" value="true"/>'+
+    '        <PARAM name="STAT_SERVICE_URL" value=""/>'+
+    '        <PARAM name="STAT_SERVICE_MODE" value="http"/>'+
+    '        <PARAM name="APP_MODE" value="RUN"/>'+
+    '        <PARAM name="centerimage" value="true"> '+
+
+    '        <PARAM name="restWebApp" value="'+restWebApp+'"/>'+
+    '        <PARAM name="currentTechId" value="8dccbc9d-37be-4b62-806d-976d4edcadff"/>'+
+    '        <PARAM name="currentTmnId" value="1"/>'+
+    '        <PARAM name="formProperty" value="smart-biz"/>'+
+    // '        <PARAM name="formId" value="58a98cb5-92d4-4b0e-964c-e9ae86918710"/>'+
+    '        <PARAM name="formId" value="'+formId+'"/>'+
+    '        <PARAM name="browserHeight" value="'+browserHeight+'"> '+
+    '        <PARAM name="browserWidth" value="'+browserWidth+'"> '+
+    '        <PARAM name="needCallBackSaveActStoForm" value="'+needCallBackSaveActStoForm+'"> '+
+    '        <PARAM name="urlCallBackSaveActStoForm" value="'+urlCallBackSaveActStoForm+'"> '+
+    '        <PARAM name="paramCallBackSaveActStoForm" value="'+paramCallBackSaveActStoForm+'"> '+
+    '        <PARAM name="requiredField" value="'+requiredField+'"> '+
+    '      </applet>';
+document.getElementById("applettd").innerHTML=applethtml;
+</script>

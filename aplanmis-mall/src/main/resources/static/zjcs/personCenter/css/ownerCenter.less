@@ -1,0 +1,884 @@
+// 公共样式
+// inline-block, middle
+.inlineblock-midd {
+	display: inline-block;
+	vertical-align: middle;
+}
+
+// 居中
+.text-ceter {
+	text-align: center;
+}
+
+// 居右
+.text-right {
+	text-align: right;
+}
+
+// 居左
+.text-left {
+	text-align: left;
+}
+
+.ml20 {
+	margin-left: 20px;
+}
+
+.mr20 {
+	margin-right: 20px;
+}
+
+.mt20 {
+	margin-top: 20px !important;
+}
+
+.mb20 {
+	margin-bottom: 20px;
+}
+
+.w-200 {
+	width: 200px;
+}
+
+.a-color4879E4 {
+	color: #4879e4;
+}
+
+.label-line {
+	width: calc(~ "100% - 76px");
+}
+
+/*
+定义圆角
+@radius 圆角大小
+*/
+.round(@radius: 5px) {
+	-webkit-border-radius: @radius;
+	-moz-border-radius: @radius;
+	border-radius: @radius;
+}
+
+/*
+定义背景图
+@url 图片url
+*/
+.bgSet(@url) {
+	background: @url no-repeat center;
+	background-size: 100% 100%;
+}
+
+// 个人中心页面-业主单位
+html,
+body {
+	width: 100%;
+	height: 100%;
+	background: #f2f6f9;
+	overflow-y: auto;
+}
+
+input[type="text"] {
+	height: 34px !important;
+}
+
+/*附件上传样式*/
+.upload-demo {
+	width: 715px;
+	margin: 0 150px;
+	padding: 20px;
+	border: 1px solid #ccc;
+
+}
+
+.service-upload-box {
+	.pjfile-list {
+		// margin: 20px;
+		width: 400px;
+
+		li {
+			position: relative;
+			padding-right: 60px;
+
+			a {
+				position: absolute;
+				top: 0;
+				right: 0;
+			}
+		}
+	}
+}
+
+// 个人中心页面
+.person-content-wrap {
+	position: relative;
+	width: 1200px;
+	min-height: 600px;
+	margin: 0 auto;
+	height: 100%;
+	// height: 80%;
+	padding-bottom: 30px;
+
+
+	// 头部面包屑
+	.crumbs-wrap {
+		width: 100%;
+		height: 48px;
+		line-height: 48px;
+
+		.crumbs-icon {
+			width: 16px;
+			height: 18px;
+			background: url("../img/icon_local.png") no-repeat center;
+			background-size: 100% 100%;
+			margin-right: 6px;
+		}
+
+		.crumbs-tip {
+			color: #333;
+			font-size: 14px;
+		}
+
+		// 当前页面
+		.crumbs-cur {
+			color: #3184FA;
+		}
+	}
+
+	// main
+	.person-centre-box {
+		position: relative;
+		width: 100%;
+		// min-height: calc(~"100% - 48px");
+		background: #fff;
+		// min-height: 880px;
+		height: calc(~ "100% - 40px");
+		// min-height: calc(~"100% - 40px");
+
+		// 左边菜单
+		.menu-sidebar {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 200px;
+			height: 100%;
+			// background: #e6e6e6;
+			border-right: 1px solid #eee;
+
+			// 个人信息
+			.personal-box {
+				position: relative;
+				width: 100%;
+				height: 120px;
+				padding-top: 18px;
+				.bgSet(url("../img/Bg.png"));
+
+				// 背景图
+				.person-bg-img {
+					position: absolute;
+					top: 0;
+					left: 0;
+					width: 100%;
+				}
+
+				// 头像
+				.person-photo {
+					position: relative;
+					width: 46px;
+					height: 46px;
+					margin: 0px auto 20px;
+					line-height: 46px;
+					.round(23px);
+					background: #fff;
+					overflow: hidden;
+					text-align: center;
+
+					img {
+						max-width: 100%;
+						max-height: 100%;
+
+					}
+				}
+
+				// 名称
+				p.person-name {
+					position: relative;
+					width: 100%;
+					text-align: center;
+					color: #fff;
+					font-size: 14px;
+				}
+
+				// 设置
+				span.person-set {
+					position: absolute;
+					top: 12px;
+					right: 12px;
+					width: 16px;
+					height: 16px;
+					background: url(../img/set_ico.png) no-repeat center;
+				}
+			}
+
+			// 菜单栏
+			.menu-nav {
+				height: calc(~ "100% - 120px");
+				overflow-y: auto;
+				padding-bottom: 60px;
+
+				li>a {
+					display: block;
+					font-size: 18px;
+					font-weight: 700;
+					text-align: center;
+					line-height: 56px;
+					border-top: 1px solid #eee;
+					border-bottom: 1px solid #eee;
+				}
+
+				li>p {
+					display: block;
+					font-size: 18px;
+					font-weight: 700;
+					text-align: center;
+					line-height: 56px;
+					border-top: 1px solid #eee;
+					border-bottom: 1px solid #eee;
+					margin: 0;
+				}
+
+				li>ul {
+					li {
+						cursor: pointer;
+						line-height: 48px;
+						text-align: center;
+						color: #333;
+						font-size: 15px;
+						border-left: 4px solid #fff;
+						transition: all .2s;
+					}
+
+					li.active {
+						background: rgba(49, 132, 250, .1);
+						color: #3184fa;
+						border-left-color: #3184fa;
+					}
+				}
+			}
+		}
+
+		// 右边模块wrap
+		.content-wrap {
+			width: calc(~ "100% - 200px");
+			margin-left: 200px;
+			height: 100%;
+			// overflow-y: auto;
+
+			.content {
+				padding: 20px;
+				height: 100%;
+
+				.box {
+					height: 100%;
+
+					.box-tit {
+						margin: 15px 0 10px;
+						padding-left: 8px;
+						line-height: 20px;
+						font-size: 20px;
+						color: #333;
+						border-left: 5px solid #3184fa;
+					}
+				}
+			}
+
+			// 业主内容区
+			.owner-content-wrap {
+
+				// 综合数据展示
+				.data-show-box {
+					.data-show {
+						.data-show-list {
+							margin: 30px 0;
+							overflow: hidden;
+
+							li {
+								float: left;
+								width: 30.5%;
+								height: 130px;
+								margin-right: 2.5%;
+								padding: 18px 20px;
+								margin-bottom: 30px;
+								background: #F2F6F9;
+								text-align: center;
+
+								&>h4 {
+									font-size: 15px;
+									text-align: left;
+									margin-bottom: 12px;
+
+									&>span {
+										display: inline-block;
+										vertical-align: middle;
+										margin-top: -3px;
+										margin-right: 6px;
+										width: 20px;
+										height: 20px;
+
+									}
+
+									.bgimgwhile(@counter) when (@counter < 8) {
+										.bg@{counter} {
+											background:url("../img/iconowner/icon@{counter}.png") no-repeat 0 0;
+											background-size: 100%;
+										}
+
+										.bgimgwhile((@counter + 1)); // 递归调用自身
+									}
+
+									.bgimgwhile(1);
+								}
+
+								&>a {
+									display: inline-block;
+									font-size: 32px;
+									transition: all .2s;
+								}
+							}
+						}
+					}
+				}
+
+				// 公共模块
+				.normal-module-box {
+					position: relative;
+
+					.list-wrap {
+						.hint-box {
+							line-height: 22px;
+							background: rgba(255, 136, 0, 0.03);
+							border: 1px solid rgba(255, 220, 179, 1);
+							color: #666666;
+							padding: 10px 30px;
+							text-align: center;
+							margin: 30px 0;
+
+							a {
+								color: #FF8800;
+							}
+						}
+					}
+
+					.module-edit-wrap {
+						position: relative;
+						top: -44px;
+						z-index: 2;
+						left: 0;
+						background: #fff;
+						width: 100%;
+						height: 100%;
+
+						// 头部
+						.info-header {
+							height: 40px;
+							line-height: 40px;
+
+							.info-time {
+								font-size: 16px;
+
+								b {
+									color: #4879E4;
+								}
+							}
+						}
+
+						// 项目title
+						.info-title {
+							text-align: center;
+							font-size: 24px;
+							line-height: 2.2;
+							margin-bottom: 10px;
+							margin-top: 30px;
+						}
+
+						// 信息模块
+						.info-item {
+							h2.item-title {
+								border-bottom: 1px solid #e1e9f5;
+								font-size: 16px;
+								color: #333;
+								height: 50px;
+								line-height: 50px;
+								padding: 0 18px 0 0;
+								cursor: pointer;
+								position: relative;
+
+								.arrow-icon {
+									width: 18px;
+									height: 18px;
+									display: inline-block;
+									background: url(../img/projectDetail/arrow_right.png) center center no-repeat;
+									position: absolute;
+									right: 10px;
+									top: 50%;
+									margin-top: -6px;
+									// transition: all 0.3s linear;
+								}
+
+								.item-icon {
+									width: 22px;
+									height: 22px;
+									display: inline-block;
+									background: url(../img/projectDetail/info_ico.png) center center no-repeat;
+									margin-right: 8px;
+									vertical-align: middle;
+									margin-top: -3px;
+								}
+
+								// 咨询与监督
+								.item-zixun-icon {
+									background: url(../img/projectDetail/colla_1.png) center center no-repeat;
+								}
+
+								// 附件
+								.item-fujian-icon {
+									background: url(../img/projectDetail/colla_2.png) center center no-repeat;
+								}
+
+							}
+
+							h2.item-title+.item-detail {
+								display: none;
+								// height: 0;
+								// overflow: hidden;                              
+								// transition: all 0.3s linear;
+							}
+
+							h2.item-title.active {
+								.arrow-icon {
+									transform: rotate(90deg);
+									// background: url(../img/projectDetail/arrow_bottom.png) center center no-repeat;
+								}
+							}
+
+							h2.item-title.active+.item-detail {
+								display: block;
+								// height: auto;
+								padding: 20px 0;
+							}
+						}
+
+						// 参与报名的报名信息填写
+						.edit-item {
+							.edit-item-detail {
+								.form-item {
+									display: table;
+									margin: 10px 0;
+
+									label {
+										text-align: right;
+										font-size: 14px;
+										line-height: 16px;
+										color: #666;
+										padding-right: 12px;
+										width: 135px;
+										font-weight: 400;
+										vertical-align: middle;
+
+										.red-cl {
+											color: #fa3131;
+										}
+									}
+
+									.input-box {
+										display: table-cell;
+										width: 100%;
+
+										.note-txt {
+											font-size: 12px;
+											color: #747474;
+											vertical-align: text-bottom;
+										}
+									}
+
+									.el-input-radio {
+										label {
+											// width: 30px;
+											width: auto;
+										}
+									}
+
+									.el-input-checkbox {
+										label {
+											text-align: left;
+											margin-right: 0;
+											width: auto;
+										}
+									}
+
+									.percent-box {
+										input[type="text"] {
+											width: 30%;
+											display: inline-block;
+											margin-top: 10px;
+										}
+									}
+								}
+
+								.upload-card {
+									border: 1px solid #ccc;
+									padding: 20px 20px 15px 20px;
+
+									.upload-btn {
+										position: relative;
+
+									}
+
+									.pjfile-list {
+										width: 30%;
+
+										li {
+											margin: 10px 0;
+											color: #474747;
+
+											.person-ico {
+												width: 24px;
+												height: 24px;
+												display: inline-block;
+												background: url(../img/person_icon.png) center center no-repeat;
+												margin-right: 16px;
+												vertical-align: middle;
+												margin-top: -2px;
+											}
+
+											.debtn {
+												color: #F12E2E;
+												float: right;
+											}
+										}
+									}
+
+									.note-txt {
+										font-size: 12px;
+										color: #747474;
+										vertical-align: middle;
+									}
+								}
+
+								.note-txt {
+									font-size: 12px;
+									color: #747474;
+									vertical-align: middle;
+								}
+							}
+						}
+					}
+				}
+
+				//所有项目
+				.allProject {
+					.detail-page {
+						.info-header {
+							.text-left {
+								font-size: 16px;
+								font-family: MicrosoftYaHei;
+								font-weight: 400;
+								color: rgba(18, 189, 123, 1);
+								position: absolute;
+								right: 23px;
+								top: 154px;
+							}
+						}
+
+						.form2 {
+							width: 90%;
+						}
+
+						h2 {
+							padding: 26px 0;
+							text-align: center;
+							font-size: 24px;
+							color: #333333;
+						}
+
+						.btn {
+							margin-left: 50%;
+							margin-top: 15px;
+						}
+
+						.info-item {
+							h3.item-title {
+								border-bottom: 1px solid #e1e9f5;
+								font-size: 16px;
+								color: #333;
+								height: 50px;
+								line-height: 50px;
+								padding: 0 18px 0 0;
+								cursor: pointer;
+								position: relative;
+							}
+
+							.item-icon {
+								width: 22px;
+								height: 22px;
+								display: inline-block;
+								background: url(../img/projectDetail/info_ico.png) center center no-repeat;
+								margin-right: 8px;
+								vertical-align: middle;
+								margin-top: -3px;
+							}
+						}
+
+						.tabs {
+							.el-tabs__item {
+								font-size: 16px;
+							}
+
+							.el-tabs__nav-wrap::after {
+								content: '';
+								height: 1px;
+							}
+
+							.headInfo {
+								display: flex;
+
+								li {
+									padding: 20px;
+									width: 294px;
+									margin-left: 18px;
+									height: 120px;
+
+									&:nth-child(1) {
+										background: rgba(242, 249, 253, 1);
+									}
+
+									&:nth-child(2) {
+										background: rgba(244, 242, 253, 1);
+									}
+
+									&:nth-child(3) {
+										background: rgba(253, 250, 242, 1);
+									}
+
+									.subTitle {
+										font-size: 14px;
+										font-weight: 400;
+										color: rgba(51, 51, 51, 1);
+										line-height: 24px;
+									}
+
+									.subDetail {
+										font-size: 24px;
+										font-weight: 400;
+										color: rgba(51, 51, 51, 1);
+										display: block;
+										margin-top: 10px;
+										text-indent: 36px;
+									}
+								}
+							}
+						}
+					}
+				}
+
+				//待处理项目
+				.pendingProject {
+					.pages1 {
+						.form {
+							width: 90%;
+
+							.el-date-editor {
+								width: 100%;
+							}
+						}
+
+						.upload {
+							display: flex;
+
+							&>span {
+								width: 152px;
+								text-indent: 97px;
+							}
+
+							.upload-demo {
+								margin: 0;
+							}
+						}
+
+						.btn {
+							margin-left: 50%;
+							margin-top: 15px;
+						}
+
+						h2 {
+							padding: 26px 0;
+							text-align: center;
+							font-size: 24px;
+							color: #333333;
+						}
+					}
+
+					.pages2 {
+						.form2 {
+							width: 90%;
+
+							.el-rate {
+								margin-top: 6px;
+							}
+						}
+
+						.btn {
+							margin-left: 50%;
+							margin-top: 15px;
+						}
+
+						h2 {
+							padding: 26px 0;
+							text-align: center;
+							font-size: 24px;
+							color: #333333;
+						}
+					}
+				}
+
+				//企业详情和合同上传
+				.detailAndContract {
+					.pages {
+						h2 {
+							padding: 26px 0;
+							text-align: center;
+							font-size: 24px;
+							color: #333333;
+						}
+					}
+
+					.pages1 {
+						.form {
+							width: 90%;
+
+							.el-date-editor {
+								width: 100%;
+							}
+						}
+
+						.upload {
+							display: flex;
+
+							&>span {
+								width: 152px;
+								text-indent: 97px;
+							}
+
+							.upload-demo {
+								margin: 0;
+							}
+						}
+
+						.btn {
+							margin-left: 50%;
+							margin-top: 15px;
+						}
+					}
+
+					.pages2 {
+						.text-left {
+							font-size: 16px;
+							font-family: MicrosoftYaHei;
+							font-weight: 400;
+							color: rgba(18, 189, 123, 1);
+							position: absolute;
+							right: 23px;
+							top: 154px;
+						}
+
+						.tabs {
+							.headInfo {
+								display: flex;
+
+								li {
+									padding: 20px;
+									width: 294px;
+									margin-left: 18px;
+									height: 120px;
+
+									&:nth-child(1) {
+										background: rgba(242, 249, 253, 1);
+									}
+
+									&:nth-child(2) {
+										background: rgba(244, 242, 253, 1);
+									}
+
+									&:nth-child(3) {
+										background: rgba(253, 250, 242, 1);
+									}
+
+									.subTitle {
+										font-size: 14px;
+										font-weight: 400;
+										color: rgba(51, 51, 51, 1);
+										line-height: 24px;
+									}
+
+									.subDetail {
+										font-size: 24px;
+										font-weight: 400;
+										color: rgba(51, 51, 51, 1);
+										display: block;
+										margin-top: 10px;
+										text-indent: 36px;
+									}
+								}
+							}
+
+							.applicant li {
+								line-height: 20px;
+							}
+						}
+
+						.info-item {
+							h3.item-title {
+								border-bottom: 1px solid #e1e9f5;
+								font-size: 16px;
+								color: #333;
+								height: 50px;
+								line-height: 50px;
+								padding: 0 18px 0 0;
+								cursor: pointer;
+								position: relative;
+							}
+
+							.item-icon {
+								width: 22px;
+								height: 22px;
+								display: inline-block;
+								background: url(../img/projectDetail/info_ico.png) center center no-repeat;
+								margin-right: 8px;
+								vertical-align: middle;
+								margin-top: -3px;
+							}
+						}
+					}
+				}
+				// 添加委托人
+                .add-client-people-box{
+                    // 列表小图标
+                    .list-icon{
+                        width: 32px;
+                        height: 32px;
+                        display: inline-block;
+                        margin-right: 8px;
+                        vertical-align: middle;
+                        margin-top: -2px;
+                    }
+                    // 管理员图标
+                    .admin-icon{
+                        background: url('../img/admin_icon.png')no-repeat center;                   
+                    }
+                    // 普通成员图标
+                    .person-icon{
+                        background: url('../img/person_icon.png') no-repeat center;
+                    }
+                }
+			}
+		}
+	}
+}

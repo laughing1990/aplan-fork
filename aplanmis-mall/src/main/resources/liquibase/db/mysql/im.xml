@@ -1,0 +1,161 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!-- chenzh 专属SQL插入脚本，请勿添加其他SQL，谢谢合作！-->
+
+    <preConditions>
+        <dbms type="mysql"/>
+    </preConditions>
+
+    <changeSet id="201906101913" author="chenzh" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_unit_info`
+            MODIFY COLUMN `LOGIN_PWD` varchar(50) CHARACTER SET utf8 NULL DEFAULT NULL COMMENT '登录密码' AFTER `UNIT_TYPE`,
+            ADD COLUMN `MANAGEMENT_SCOPE` varchar(2000) CHARACTER SET ujis NULL DEFAULT NULL COMMENT '经营范围' AFTER
+            `LOGIN_PWD`,
+            ADD COLUMN `REGISTERED_CAPITAL` varchar(255) NULL COMMENT '注册资本' AFTER `MANAGEMENT_SCOPE`,
+            ADD COLUMN `REGISTER_AUTHORITY` varchar(255) NULL COMMENT '注册登记机关' AFTER `REGISTERED_CAPITAL`,
+            ADD COLUMN `UNIT_NATURE` varchar(2) NULL COMMENT '单位性质：1 企业，2 事业单位，3 社会组织' AFTER `REGISTER_AUTHORITY`,
+            ADD COLUMN `POSTAL_CODE` varchar(50) NULL COMMENT '邮政编码' AFTER `UNIT_NATURE`,
+            ADD COLUMN `IS_IM_UNIT` char(1) NULL COMMENT '是否为中介机构：1 是，0 否' AFTER `POSTAL_CODE`;
+        </sql>
+    </changeSet>
+
+    <changeSet id="201906101917" author="chenzh" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_proj_info`
+            DROP COLUMN `PARENT_PROJ_ID`,
+            DROP COLUMN `PROJ_SEQ`,
+            ADD COLUMN `PROJ_SCALE` varchar(500) NULL COMMENT '项目规模' AFTER `GEO_OBJECTID`,
+            ADD COLUMN `PROJ_SCALE_CONTENT` varchar(500) NULL COMMENT '项目规模内容' AFTER `PROJ_SCALE`,
+            ADD COLUMN `IS_FINANCIAL_FUND` char(1) NULL COMMENT '是否为财政资金（资金来源）：1 是，0 不是' AFTER `PROJ_SCALE_CONTENT`,
+            ADD COLUMN `FINANCIAL_FUND_PROPORTION` varchar(255) NULL COMMENT '财政资金比例：当 IS_FINANCIAL_FUND = 1，必填' AFTER
+            `IS_FINANCIAL_FUND`,
+            ADD COLUMN `IS_SOCIAL_FUND` char(1) NULL COMMENT '是否为社会资金（资金来源）：1 是，0 不是' AFTER `FINANCIAL_FUND_PROPORTION`,
+            ADD COLUMN `SOCIAL_FUND_PROPORTION` varchar(255) NULL COMMENT '社会资金比例：当 IS_SOCIAL_FUND = 1，必填' AFTER
+            `IS_SOCIAL_FUND`,
+            ADD COLUMN `IS_INVALID_PROJ` char(1) NULL COMMENT '是否为无效项目：1 是， 0 否' AFTER `SOCIAL_FUND_PROPORTION`,
+            ADD COLUMN `IS_PURCHASE_PROJ` char(1) NULL COMMENT '是否为采购项目：1 是，0 否（投资审批项目）' AFTER `IS_INVALID_PROJ`;
+        </sql>
+    </changeSet>
+
+    <changeSet id="201906110914" author="chenzh" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_item_basic`
+            DROP COLUMN `SERVICE_TYPE_ID`;
+        </sql>
+    </changeSet>
+
+    <changeSet id="201906151642" author="chenzh" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_unit_info`
+            ADD COLUMN `IMG_URL` varchar(500) NULL COMMENT '图片地址' AFTER `IS_IM_UNIT`;
+        </sql>
+    </changeSet>
+
+    <changeSet id="201906171122" author="chenzh" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_unit_info`
+            ADD COLUMN `IS_OWNER_UNIT` char(1) NULL COMMENT '是否为业主单位：1 是，0 否' AFTER `IMG_URL`;
+        </sql>
+    </changeSet>
+
+    <changeSet id="201906171123" author="chenzh" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_im_proj_purchase`
+            ADD COLUMN `EXPIRATION_DATE` date NULL COMMENT '截止日期' AFTER `IS_DEFINE_AMOUNT`;
+        </sql>
+    </changeSet>
+
+    <changeSet id="201906201455" author="chenzh" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_hi_applyinst`
+            ADD COLUMN `IS_SERVICE_COOPERATIVE` char(1) NULL COMMENT '【当IS_SERIES_APPROVE=1】是否关联服务协同：1 是，0 否' AFTER
+            `APPLY_SUBJECT`;
+        </sql>
+    </changeSet>
+
+    <changeSet id="201907021452" author="chenzh" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_im_proj_purchase`
+            ADD COLUMN `IS_AVOID` char(1) NULL COMMENT '是否有企业回避：1 是，0 否' AFTER `QUOTE_TYPE`;
+        </sql>
+    </changeSet>
+
+    <changeSet id="201907021453" author="chenzh" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_im_proj_purchase`
+            ADD COLUMN `AVOID_REASON` varchar(500) NULL COMMENT '【当IS_AVOID=1时必填】回避原因' AFTER `IS_AVOID`;
+        </sql>
+    </changeSet>
+
+    <!--<changeSet id="201907021510" author="chenzh" failOnError="false">-->
+    <!--<sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">-->
+    <!--CREATE TABLE `aea_im_avoid_unit`  (-->
+    <!--`AVOID_UNIT_ID` varchar(50) NOT NULL,-->
+    <!--`PROJ_PURCHASE_ID` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '采购需求ID',-->
+    <!--`UNIT_INFO_ID` varchar(50) NOT NULL COMMENT '需回避的企业ID',-->
+    <!--`IS_DELETE` varchar(1) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '是否删除：1 已删除，0 未删除',-->
+    <!--`CREATER` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,-->
+    <!--`CREATE_TIME` datetime(0) NOT NULL,-->
+    <!--PRIMARY KEY (`AVOID_UNIT_ID`),-->
+    <!--CONSTRAINT `FK_AEA_IM_AVOID_UNIT_P` FOREIGN KEY (`PROJ_PURCHASE_ID`) REFERENCES `aea_im_proj_purchase` (`PROJ_PURCHASE_ID`) ON DELETE RESTRICT ON UPDATE RESTRICT,-->
+    <!--CONSTRAINT `FK_AEA_IM_AVOID_UNIT_U` FOREIGN KEY (`UNIT_INFO_ID`) REFERENCES `aea_unit_info` (`UNIT_INFO_ID`) ON DELETE RESTRICT ON UPDATE RESTRICT-->
+    <!--) ENGINE=InnoDB DEFAULT CHARSET=utf8;-->
+    <!--</sql>-->
+    <!--</changeSet>-->
+
+    <changeSet id="201907051500" author="chenzh" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_im_service`
+            ADD COLUMN `PURCHASE_IMG_URL` varchar(500) NULL COMMENT '采购公告服务图片地址' AFTER `IMG_URL`;
+        </sql>
+    </changeSet>
+
+    <changeSet id="201907090954" author="chenzh" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            DROP TABLE IF EXISTS `aea_im_unit_service_linkman`;
+        </sql>
+    </changeSet>
+
+    <!--<changeSet id="201907090956" author="chenzh" failOnError="false">-->
+    <!--<sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">-->
+    <!--CREATE TABLE `aea_im_client_service`  (-->
+    <!--`CLIENT_SERVICE_ID` varchar(50) NOT NULL,-->
+    <!--`UNIT_SERVICE_ID` varchar(50) NULL COMMENT '中介机构服务ID',-->
+    <!--`UNIT_LINKMAN_ID` varchar(50) NULL COMMENT '委托人ID',-->
+    <!--`IS_DELETED` varchar(1) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '逻辑删除标记。0表示正常记录，1表示已删除记录。',-->
+    <!--`CREATER` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '创建人',-->
+    <!--`CREATE_TIME` datetime(0) NOT NULL COMMENT '创建时间',-->
+    <!--PRIMARY KEY (`CLIENT_SERVICE_ID`),-->
+    <!--CONSTRAINT `FK_AEA_IM_CLIENT_SERVICE_U` FOREIGN KEY (`UNIT_SERVICE_ID`) REFERENCES `aea_im_unit_service` (`UNIT_SERVICE_ID`) ON DELETE RESTRICT ON UPDATE RESTRICT,-->
+    <!--CONSTRAINT `FK_AEA_IM_CLIENT_SERVICE_UL` FOREIGN KEY (`UNIT_LINKMAN_ID`) REFERENCES `aea_unit_linkman` (`UNIT_LINKMAN_ID`) ON DELETE RESTRICT ON UPDATE RESTRICT-->
+    <!--) ENGINE=InnoDB DEFAULT CHARSET=utf8;-->
+    <!--</sql>-->
+    <!--</changeSet>-->
+    <changeSet id="201911071109003" author="xiaohutu" failOnError="false">
+        <comment>中介超市采购需求表增加字段</comment>
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_im_proj_purchase`
+            ADD COLUMN `PUBLISH_LINKMAN_INFO_ID` varchar(50) NULL COMMENT '发布人ID，当申报人为个人主体时' AFTER `PUBLISH_UNIT_INFO_ID`;
+
+            ALTER TABLE `aea_im_purchaseinst`
+            ADD COLUMN `PROCESSINST_ID` varchar(50) NULL COMMENT '流程实例ID' AFTER `APPLY_DATA`;
+
+            ALTER TABLE `aea_im_purchaseinst`
+            ADD COLUMN `TASK_ID` varchar(50) NULL COMMENT '任务ID' AFTER `PROCESSINST_ID`;
+        </sql>
+    </changeSet>
+    <changeSet id="201911071109002" author="xiaohutu" failOnError="false">
+        <comment>采购历史状态表更新状态字段</comment>
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_im_purchaseinst`
+            CHANGE COLUMN `PURCHASE_FLAG` `OLD_PURCHASE_FLAG` varchar(2) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT
+            '旧采购需求状态：0：未提交，1：服务中，2：服务完成，3：服务中止，4：审核中，5：退回，6：报名中，7：选取中，8：选取开始，9：已选取，10：无效，11：待选取，12：已过时' AFTER `PROJ_PURCHASE_ID`,
+            ADD COLUMN `NEW_PURCHASE_FLAG` varchar(255) NULL COMMENT '新采购需求状态' AFTER `OLD_PURCHASE_FLAG`;
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

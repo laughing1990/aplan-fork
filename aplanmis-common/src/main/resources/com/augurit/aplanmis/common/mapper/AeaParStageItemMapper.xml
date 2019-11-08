@@ -1,0 +1,832 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by chenzh    2019-07-04 16:18:34 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaParStageItemMapper">
+
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns">
+        ${alias}.STAGE_ITEM_ID  stageItemId,
+        ${alias}.STAGE_ID  stageId,
+        ${alias}.ITEM_ID  itemId,
+        ${alias}.CREATER  creater,
+        ${alias}.CREATE_TIME  createTime,
+        ${alias}.SORT_NO  sortNo,
+        ${alias}.ITEM_VER_ID  itemVerId,
+        ${alias}.IS_OPTION_ITEM  isOptionItem,
+        ${alias}.SUB_FORM_ID subFormId
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaParStageItemById" resultType="AeaParStageItem">
+        select
+        <include refid="allColumns"><property name="alias" value="apsi"/></include>
+        from AEA_PAR_STAGE_ITEM apsi
+        where STAGE_ITEM_ID = #{id}
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaParStageItem" resultType="AeaParStageItem">
+        select
+        <include refid="allColumns"><property name="alias" value="apsi"/></include>
+        from AEA_PAR_STAGE_ITEM apsi
+        <where>
+            <if test="stageItemId != null">
+                AND STAGE_ITEM_ID = #{stageItemId}
+            </if>
+            <if test="stageId != null">
+                AND STAGE_ID = #{stageId}
+            </if>
+            <if test="itemId != null">
+                AND ITEM_ID = #{itemId}
+            </if>
+            <if test="itemVerId != null">
+                AND ITEM_VER_ID = #{itemVerId}
+            </if>
+            <if test="isOptionItem != null">
+                AND IS_OPTION_ITEM = #{isOptionItem}
+            </if>
+        </where>
+    </select>
+    <!--根据id查询事项列表-->
+    <select id="listAeaStageItemByParInId" resultType="com.augurit.aplanmis.common.domain.AeaParStageItem">
+        select
+        <include refid="allColumns"><property name="alias" value="apsi"/></include>
+        from AEA_PAR_STAGE_ITEM apsi,AEA_PAR_STAGE_ITEM_IN parin
+        where parin.IN_ID = #{parInId}
+        and apsi.stage_item_id = parin.stage_item_id
+        order by apsi.SORT_NO asc,apsi.CREATE_TIME asc
+    </select>
+
+    <select id="listAeaStageItemByParInIds" resultType="AeaParStageItem">
+        select
+        <include refid="allColumns"><property name="alias" value="apsi"/></include>,parin.IN_ID parInId
+        from AEA_PAR_STAGE_ITEM apsi,AEA_PAR_STAGE_ITEM_IN parin
+        where parin.IN_ID in <foreach collection="parInIds" separator="," open="(" close=")" item="parInId">#{parInId}</foreach>
+        and apsi.stage_item_id = parin.stage_item_id
+        order by apsi.SORT_NO asc,apsi.CREATE_TIME asc
+    </select>
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaParStageItem" parameterType="AeaParStageItem">
+        insert into AEA_PAR_STAGE_ITEM (STAGE_ITEM_ID, STAGE_ID, ITEM_ID, CREATER, CREATE_TIME, SORT_NO, ITEM_VER_ID,
+                                        IS_OPTION_ITEM)
+        values (#{stageItemId}, #{stageId}, #{itemId}, #{creater}, #{createTime}, #{sortNo}, #{itemVerId},
+                #{isOptionItem})
+    </insert>
+
+    <!--6 修改实体对象 -->
+    <update id="updateAeaParStageItem" parameterType="AeaParStageItem">
+        update AEA_PAR_STAGE_ITEM
+        <set>
+            <if test="stageItemId != null">
+                STAGE_ITEM_ID = #{stageItemId},
+            </if>
+            <if test="stageId != null">
+                STAGE_ID = #{stageId},
+            </if>
+            <if test="itemId != null">
+                ITEM_ID = #{itemId},
+            </if>
+            <if test="creater != null">
+                CREATER = #{creater},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime},
+            </if>
+            <if test="sortNo != null">
+                SORT_NO = #{sortNo},
+            </if>
+            <if test="itemVerId != null">
+                ITEM_VER_ID = #{itemVerId},
+            </if>
+            <if test="isOptionItem != null">
+                IS_OPTION_ITEM = #{isOptionItem},
+            </if>
+            <if test="subFormId != null">
+                SUB_FORM_ID = #{subFormId},
+            </if>
+        </set>
+        where STAGE_ITEM_ID = #{stageItemId}
+    </update>
+
+    <!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaParStageItem">
+        delete
+        from AEA_PAR_STAGE_ITEM
+        where STAGE_ITEM_ID = #{id}
+    </delete>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaStageItemByStageId" resultType="AeaParStageItem">
+        select
+            <include refid="allColumns">
+                <property name="alias" value="apsi"/>
+            </include>,
+            item.ITEM_NAME as itemName,
+            item.ITEM_CODE as itemCode,
+            item.DUE_NUM as dueNum,
+            item.BJ_TYPE as bjType,
+            item.IS_CATALOG as isCatalog,
+            item.GUIDE_ORG_NAME as guideOrgName,
+            item.ORG_NAME as orgName,
+            item.item_seq as itemSeq
+        from AEA_PAR_STAGE_ITEM apsi,(
+            select
+                ai.ITEM_ID,
+                ai.ITEM_VER_ID,
+                ai.ITEM_NAME,
+                ai.ITEM_CODE,
+                ai.DUE_NUM,
+                ai.BJ_TYPE,
+                ai.IS_CATALOG,
+                ai.GUIDE_ORG_NAME,
+                org.ORG_NAME,
+                aitem.item_seq
+            from  AEA_ITEM_BASIC ai
+            join AEA_ITEM_VER aiv on ( ai.item_ver_id = aiv.item_ver_id and ai.ITEM_ID = aiv.ITEM_ID )
+            left join opu_om_org org on ( ai.org_id = org.org_id and org.ORG_DELETED = '0' )
+            left join aea_item aitem on aitem.item_id = ai.item_id
+            where ai.ROOT_ORG_ID = #{rootOrgId}
+            and aiv.ROOT_ORG_ID = #{rootOrgId}
+            and aiv.IS_DELETED = '0'
+        )item
+        <where>
+            and apsi.ITEM_ID = item.ITEM_ID
+            and apsi.ITEM_VER_ID = item.ITEM_VER_ID
+            and apsi.STAGE_ID = #{stageId}
+            <if test="isOptionItem != null and isOptionItem!='' ">
+            and apsi.IS_OPTION_ITEM = #{isOptionItem}
+            </if>
+        </where>
+        order by item.GUIDE_ORG_NAME asc, item.ORG_NAME asc, apsi.SORT_NO asc, apsi.CREATE_TIME asc
+    </select>
+
+    <select id="listAeaStageItemByStageIdGroupByed" resultType="AeaParStageItem">
+        select
+        <include refid="allColumns">
+            <property name="alias" value="apsi"/>
+        </include>,
+        item.ITEM_NAME as itemName,
+        item.ITEM_CODE as itemCode,
+        item.DUE_NUM as dueNum,
+        item.BJ_TYPE as bjType,
+        item.IS_CATALOG as isCatalog,
+        item.GUIDE_ORG_NAME as guideOrgName,
+        item.PARENT_ITEM_ID  as parentItemId,
+        item.ORG_NAME as orgName
+        from AEA_PAR_STAGE_ITEM apsi,(
+        select
+        ai.ITEM_ID,
+        ai.ITEM_VER_ID,
+        ai.ITEM_NAME,
+        ai.ITEM_CODE,
+        ai.DUE_NUM,
+        ai.BJ_TYPE,
+        ai.IS_CATALOG,
+        ai.GUIDE_ORG_NAME,
+        ai1.PARENT_ITEM_ID,
+        org.ORG_NAME
+        from  AEA_ITEM_BASIC ai
+        join aea_item ai1 on ai.item_id = ai1.item_id
+        join AEA_ITEM_VER aiv on ( ai.item_ver_id = aiv.item_ver_id and ai.ITEM_ID = aiv.ITEM_ID )
+        left join opu_om_org org on ( ai.org_id = org.org_id and org.ORG_DELETED = '0' )
+        where ai.ROOT_ORG_ID = #{rootOrgId}
+        and aiv.ROOT_ORG_ID = #{rootOrgId}
+        and aiv.IS_DELETED = '0'
+        )item
+        <where>
+            and apsi.ITEM_ID = item.ITEM_ID
+            and apsi.ITEM_VER_ID = item.ITEM_VER_ID
+            and apsi.STAGE_ID = #{stageId}
+            <if test="isOptionItem != null and isOptionItem!='' ">
+                and apsi.IS_OPTION_ITEM = #{isOptionItem}
+            </if>
+            group by apsi.item_id
+        </where>
+        order by item.GUIDE_ORG_NAME asc, item.ORG_NAME asc, apsi.SORT_NO asc, apsi.CREATE_TIME asc
+    </select>
+
+    <select id="listAeaStageItemCondition" resultType="AeaParStageItem">
+        select
+            <include refid="allColumns">
+                <property name="alias" value="apsi"/>
+            </include>,
+            item.ITEM_NAME as itemName,
+            item.ITEM_CODE as itemCode,
+            item.DUE_NUM as dueNum,
+            item.BJ_TYPE as bjType,
+            item.IS_CATALOG as isCatalog,
+            item.GUIDE_ORG_NAME as guideOrgName,
+            item.ORG_NAME as orgName
+        from AEA_PAR_STAGE_ITEM apsi,(
+            select
+                ai.ITEM_ID,
+                ai.ITEM_VER_ID,
+                ai.ITEM_NAME,
+                ai.ITEM_CODE,
+                ai.DUE_NUM,
+                ai.BJ_TYPE,
+                ai.IS_CATALOG,
+                ai.GUIDE_ORG_NAME,
+                org.ORG_NAME
+            from  AEA_ITEM_BASIC ai
+            join AEA_ITEM_VER aiv on ( ai.item_ver_id = aiv.item_ver_id and ai.ITEM_ID = aiv.ITEM_ID )
+            left join opu_om_org org on ( ai.org_id = org.org_id and org.ORG_DELETED = '0' )
+            where ai.ROOT_ORG_ID = #{rootOrgId}
+            and aiv.ROOT_ORG_ID = #{rootOrgId}
+            and aiv.IS_DELETED = '0'
+        )item
+        <where>
+            and apsi.ITEM_ID = item.ITEM_ID
+            and apsi.ITEM_VER_ID = item.ITEM_VER_ID
+            and apsi.STAGE_ID = #{stageId}
+            <if test="isOptionItem != null and isOptionItem!='' ">
+            and apsi.IS_OPTION_ITEM = #{isOptionItem}
+            </if>
+            <if test="keyword != null and keyword !='' ">
+            and (
+                item.ITEM_NAME like concat('%',concat(#{keyword},'%')) or
+                item.ITEM_CODE like concat('%',concat(#{keyword},'%')) or
+                item.GUIDE_ORG_NAME like concat('%',concat(#{keyword},'%')) or
+                item.ORG_NAME like concat('%',concat(#{keyword},'%'))
+            )
+            </if>
+            and apsi.IS_OPTION_ITEM !='2'
+        </where>
+        order by apsi.IS_OPTION_ITEM asc, apsi.SORT_NO asc, apsi.CREATE_TIME asc
+    </select>
+
+    <select id="listStageAllItem" resultType="AeaParStageItem">
+        select
+            <include refid="allColumns">
+                <property name="alias" value="apsi"/>
+            </include>,
+            item.ITEM_NAME as itemName,
+            item.ITEM_CODE as itemCode,
+            item.DUE_NUM as dueNum,
+            item.BJ_TYPE as bjType,
+            item.IS_CATALOG as isCatalog,
+            item.GUIDE_ORG_NAME as guideOrgName,
+            item.ORG_NAME as orgName
+        from AEA_PAR_STAGE_ITEM apsi,(
+            select
+                ai.ITEM_ID,
+                ai.ITEM_VER_ID,
+                ai.ITEM_NAME,
+                ai.ITEM_CODE,
+                ai.DUE_NUM,
+                ai.BJ_TYPE,
+                ai.IS_CATALOG,
+                ai.GUIDE_ORG_NAME,
+                org.ORG_NAME
+            from  AEA_ITEM_BASIC ai
+            join AEA_ITEM_VER aiv on ( ai.item_ver_id = aiv.item_ver_id and ai.ITEM_ID = aiv.ITEM_ID )
+            left join opu_om_org org on ( ai.org_id = org.org_id and org.ORG_DELETED = '0' )
+            where ai.ROOT_ORG_ID = #{rootOrgId}
+            and aiv.ROOT_ORG_ID = #{rootOrgId}
+            and aiv.IS_DELETED = '0'
+        )item
+        <where>
+            and apsi.ITEM_ID = item.ITEM_ID
+            and apsi.ITEM_VER_ID = item.ITEM_VER_ID
+            and apsi.STAGE_ID = #{stageId}
+            <if test="isOptionItem != null and isOptionItem!='' ">
+            and apsi.IS_OPTION_ITEM = #{isOptionItem}
+            </if>
+            <if test="keyword != null and keyword !='' ">
+            and (
+                item.ITEM_NAME like concat('%',concat(#{keyword},'%')) or
+                item.ITEM_CODE like concat('%',concat(#{keyword},'%')) or
+                item.GUIDE_ORG_NAME like concat('%',concat(#{keyword},'%')) or
+                item.ORG_NAME like concat('%',concat(#{keyword},'%'))
+            )
+            </if>
+        </where>
+        order by apsi.IS_OPTION_ITEM asc, apsi.SORT_NO asc, apsi.CREATE_TIME asc
+    </select>
+
+    <select id="listAeaStageMatItemCondition" resultType="AeaParStageItem">
+        select
+        <include refid="allColumns"><property name="alias" value="apsi"/></include>,
+        ai.ITEM_NAME itemName,
+        ai.ITEM_CODE itemCode,
+        org.ORG_NAME orgName
+        from AEA_PAR_STAGE_ITEM apsi right join
+        AEA_PAR_STATE_ITEM stateItem on
+        stateItem.STAGE_ITEM_ID=apsi.STAGE_ITEM_ID,AEA_ITEM_basic ai,OPU_OM_ORG org
+        <where>
+            apsi.STAGE_ID = #{stageId}
+            and apsi.ITEM_ID = ai.ITEM_ID
+            and apsi.ITEM_VER_ID = ai.ITEM_VER_ID
+            and ai.ORG_ID = org.ORG_ID
+            and stateItem.PAR_STATE_ID = #{parStateId}
+            <if test="keyword != null and keyword!='' ">
+                and (
+                ai.ITEM_NAME like concat('%',concat(#{keyword},'%')) or
+                ai.ITEM_CODE like concat('%',concat(#{keyword},'%')) or
+                org.ORG_NAME like concat('%',concat(#{keyword},'%'))
+                )
+            </if>
+        </where>
+        order by apsi.SORT_NO asc,apsi.CREATE_TIME asc
+    </select>
+
+    <delete id="batchDeleteStageItemByStageId">
+        delete
+        from AEA_PAR_STAGE_ITEM
+        where STAGE_ID = #{stageId}
+    </delete>
+
+    <select id="listAeaParStageItemWhichBindState" resultType="AeaParStageItem">
+        select
+            <include refid="allColumns">
+                <property name="alias" value="apsi"/>
+            </include>,
+            item.ITEM_NAME as itemName,
+            item.ITEM_CODE as itemCode,
+            item.DUE_NUM as dueNum,
+            item.BJ_TYPE as bjType,
+            item.IS_CATALOG as isCatalog,
+            item.GUIDE_ORG_NAME as guideOrgName,
+            item.ORG_NAME as orgName
+        from AEA_PAR_STAGE_ITEM apsi,(
+            select
+                ai.ITEM_ID,
+                ai.ITEM_VER_ID,
+                ai.ITEM_NAME,
+                ai.ITEM_CODE,
+                ai.DUE_NUM,
+                ai.BJ_TYPE,
+                ai.IS_CATALOG,
+                ai.GUIDE_ORG_NAME,
+                org.ORG_NAME
+            from  AEA_ITEM_BASIC ai
+            join AEA_ITEM_VER aiv on ( ai.item_ver_id = aiv.item_ver_id and ai.ITEM_ID = aiv.ITEM_ID )
+            left join opu_om_org org on ( ai.org_id = org.org_id and org.ORG_DELETED = '0' )
+            where ai.ROOT_ORG_ID = #{rootOrgId}
+            and aiv.ROOT_ORG_ID = #{rootOrgId}
+            and aiv.IS_DELETED = '0'
+        )item, AEA_PAR_STATE_ITEM apti
+        <where>
+            and apsi.ITEM_ID = item.ITEM_ID
+            and apsi.ITEM_VER_ID = item.ITEM_VER_ID
+            and apsi.STAGE_ID = #{stageId}
+            and apti.STAGE_ITEM_ID = apsi.STAGE_ITEM_ID
+            <if test="keyword != null and keyword !='' ">
+            and (
+                item.ITEM_NAME like concat('%',concat(#{keyword},'%')) or
+                item.ITEM_CODE like concat('%',concat(#{keyword},'%')) or
+                item.GUIDE_ORG_NAME like concat('%',concat(#{keyword},'%')) or
+                item.ORG_NAME like concat('%',concat(#{keyword},'%'))
+            )
+            </if>
+        </where>
+        order by apsi.IS_OPTION_ITEM asc, apsi.SORT_NO asc, apsi.CREATE_TIME asc
+    </select>
+
+    <select id="listAeaStageItemByParIn" resultType="AeaParStageItem">
+        select
+            <include refid="allColumns">
+                <property name="alias" value="apsi"/>
+            </include>,
+            item.ITEM_NAME as itemName,
+            item.ITEM_CODE as itemCode,
+            item.DUE_NUM as dueNum,
+            item.BJ_TYPE as bjType,
+            item.IS_CATALOG as isCatalog,
+            item.GUIDE_ORG_NAME as guideOrgName,
+            item.ORG_NAME as orgName
+        from AEA_PAR_STAGE_ITEM apsi,(
+            select
+            ai.ITEM_ID,
+            ai.ITEM_VER_ID,
+            ai.ITEM_NAME,
+            ai.ITEM_CODE,
+            ai.DUE_NUM,
+            ai.BJ_TYPE,
+            ai.IS_CATALOG,
+            ai.GUIDE_ORG_NAME,
+            org.ORG_NAME
+            from  AEA_ITEM_BASIC ai
+            join AEA_ITEM_VER aiv on ( ai.item_ver_id = aiv.item_ver_id and ai.ITEM_ID = aiv.ITEM_ID )
+            left join opu_om_org org on ( ai.org_id = org.org_id and org.ORG_DELETED = '0' )
+            where ai.ROOT_ORG_ID = #{rootOrgId}
+            and aiv.ROOT_ORG_ID = #{rootOrgId}
+            and aiv.IS_DELETED = '0'
+        )item, AEA_PAR_STAGE_ITEM_IN parin
+        where 1=1
+          and apsi.ITEM_ID = item.ITEM_ID
+          and apsi.ITEM_VER_ID = item.ITEM_VER_ID
+          and apsi.stage_item_id = parin.stage_item_id
+          and parin.IN_ID = #{inId}
+        order by apsi.SORT_NO asc,apsi.CREATE_TIME asc
+    </select>
+
+    <select id="listAeaStageItemByParIns" resultType="AeaParStageItem">
+        select
+            <include refid="allColumns">
+                <property name="alias" value="apsi"/>
+            </include>,
+            item.ITEM_NAME as itemName,
+            item.ITEM_CODE as itemCode,
+            item.DUE_NUM as dueNum,
+            item.BJ_TYPE as bjType,
+            item.IS_CATALOG as isCatalog,
+            item.GUIDE_ORG_NAME as guideOrgName,
+            item.ORG_NAME as orgName,
+            parin.IN_ID as inId
+        from AEA_PAR_STAGE_ITEM apsi,(
+            select
+                ai.ITEM_ID,
+                ai.ITEM_VER_ID,
+                ai.ITEM_NAME,
+                ai.ITEM_CODE,
+                ai.DUE_NUM,
+                ai.BJ_TYPE,
+                ai.IS_CATALOG,
+                ai.GUIDE_ORG_NAME,
+                org.ORG_NAME
+            from  AEA_ITEM_BASIC ai
+            join AEA_ITEM_VER aiv on ( ai.item_ver_id = aiv.item_ver_id and ai.ITEM_ID = aiv.ITEM_ID )
+            left join opu_om_org org on ( ai.org_id = org.org_id and org.ORG_DELETED = '0' )
+            where ai.ROOT_ORG_ID = #{rootOrgId}
+            and aiv.ROOT_ORG_ID = #{rootOrgId}
+            and aiv.IS_DELETED = '0'
+        )item, AEA_PAR_STAGE_ITEM_IN parin
+        <where>
+            and apsi.ITEM_ID = item.ITEM_ID
+            and apsi.ITEM_VER_ID = item.ITEM_VER_ID
+            and apsi.stage_item_id = parin.stage_item_id
+            and parin.IN_ID in
+            <foreach collection="inIds" item="inId" open="(" close=")" separator=",">
+                #{inId}
+            </foreach>
+        </where>
+        order by apsi.SORT_NO asc, apsi.CREATE_TIME asc
+    </select>
+
+    <select id="listRepeatStageItem" resultType="AeaParStageItem">
+        select
+        <include refid="allColumns"><property name="alias" value="apsi"/></include>,
+        count(*) as count
+        from AEA_PAR_STAGE_ITEM apsi
+        where 1=1
+        and apsi.STAGE_ID = #{stageId}
+        and apsi.IS_OPTION_ITEM = #{isOptionItem}
+        group by apsi.ITEM_VER_ID
+        having count > 1
+        order by apsi.SORT_NO asc, apsi.CREATE_TIME asc
+    </select>
+
+    <select id="getMaxSortNoByStageId" resultType="java.lang.Long">
+        select max(SORT_NO) from AEA_PAR_STAGE_ITEM
+    </select>
+
+    <update id="batchUpdateStageItemByItemVerChange">
+        update AEA_PAR_STAGE_ITEM set ITEM_VER_ID = #{newItemVerId}
+         where ITEM_ID = #{itemId}
+           and ITEM_VER_ID = #{itemVerId}
+           and STAGE_ID in (
+                select distinct STAGE_ID
+                from aea_par_stage
+                where THEME_VER_ID = #{themeVerId}
+                  and IS_DELETED = '0'
+                  and ROOT_ORG_ID = #{rootOrgId}
+           )
+    </update>
+    <select id="countStageItemByisOptionItem" resultType="Integer">
+        select count(1) from aea_par_stage_item apsi
+        join aea_item_ver aiv on apsi.ITEM_VER_ID = aiv.ITEM_VER_ID and apsi.ITEM_ID = aiv.ITEM_ID and aiv.IS_DELETED = '0'
+        and aiv.root_org_id = #{rootOrgId}
+        where  1=1 and apsi.STAGE_ID = #{stageId}
+        and apsi.IS_OPTION_ITEM = #{isOptionItem}
+
+    </select>
+    <select id="rappidFindStageAllBasicItemGroupByisOptionItem" resultMap="rappidFindStageAllBasicItemGroupByisOptionItemMap">
+
+        (
+          select
+            aib.ITEM_ID,
+            aib.ITEM_NAME,
+            aib.ITEM_CODE,
+            aib.DUE_NUM,
+            aib.BJ_TYPE,
+            aib.IS_CATALOG,
+            t1.STAGE_ITEM_ID  ,
+            t1.STAGE_ID       ,
+            t1.CREATER        ,
+            t1.CREATE_TIME    ,
+            t1.SORT_NO        ,
+            t1.ITEM_VER_ID    ,
+            t1.IS_OPTION_ITEM,
+            t1.
+          from aea_item ain
+            join aea_item_basic aib on ain.ITEM_ID = aib.ITEM_ID
+            join (
+                   select
+                     apsi.IS_OPTION_ITEM,
+                     apsi.STAGE_ITEM_ID,
+                     apsi.STAGE_ID,
+                     apsi.ITEM_ID,
+                     apsi.CREATER,
+                     apsi.CREATE_TIME,
+                     apsi.SORT_NO,
+                     apsi.ITEM_VER_ID,
+                     ai.PARENT_ITEM_ID
+                   from aea_par_stage_item apsi
+                     join aea_item ai on apsi.ITEM_ID = ai.ITEM_ID
+                     join AEA_ITEM_VER aiv on ( apsi.item_ver_id = aiv.item_ver_id and apsi.ITEM_ID = aiv.ITEM_ID ) and aiv.IS_DELETED = '0'
+                   where 1 = 1
+                   and apsi.STAGE_ID = #{stageId}
+                 ) t1 on ain.ITEM_ID = t1.PARENT_ITEM_ID
+          where 1 = 1
+          and ain.ROOT_ORG_ID = #{rootOrgId}
+          group by ain.ITEM_ID
+          order by t1.sort_no
+        )
+        union all
+        (
+          select
+            aib.ITEM_ID,
+            aib.ITEM_NAME,
+            aib.ITEM_CODE,
+            aib.DUE_NUM,
+            aib.BJ_TYPE,
+            aib.IS_CATALOG,
+            apsi.STAGE_ITEM_ID  ,
+            apsi.STAGE_ID       ,
+            apsi.CREATER        ,
+            apsi.CREATE_TIME    ,
+            apsi.SORT_NO        ,
+            apsi.ITEM_VER_ID    ,
+            apsi.IS_OPTION_ITEM
+          from aea_par_stage_item apsi
+            join aea_item ai on apsi.ITEM_ID = ai.ITEM_ID and ai.PARENT_ITEM_ID = 'root'
+            join aea_item_basic aib on ai.ITEM_ID = aib.ITEM_ID
+            join AEA_ITEM_VER aiv on ( aib.item_ver_id = aiv.item_ver_id and aib.ITEM_ID = aiv.ITEM_ID ) and aiv.IS_DELETED = '0'
+          where 1 = 1
+          and apsi.STAGE_ID = #{stageId}
+          and ai.ROOT_ORG_ID = #{rootOrgId}
+          order by apsi.sort_no
+        )
+
+    </select>
+
+    <select id="findParentItemByItemds" resultType="String">
+        select ai1.ITEM_ID from aea_item ai1 where exists(
+
+        select ai.PARENT_ITEM_ID
+        from aea_item ai
+        where 1 = 1 and ai.ITEM_ID in
+        <foreach collection="parentItemIds" open="(" close=")" separator="," item="parentItemId">
+            #{parentItemId}
+        </foreach>
+        and ai.PARENT_ITEM_ID = ai1.ITEM_ID
+        )
+
+    </select>
+
+    <select id="listStageItemByThemeVerId" resultType="AeaParStageItem">
+        select
+            <include refid="allColumns">
+                <property name="alias" value="apsi"/>
+            </include>
+        from AEA_PAR_STAGE_ITEM apsi
+        <where>
+            and apsi.STAGE_ID in (
+                select
+                   STAGE_ID
+                from aea_par_stage
+                <where>
+                    and IS_DELETED = '0'
+                    and THEME_VER_ID = #{themeVerId}
+                    and ROOT_ORG_ID = #{rootOrgId}
+                </where>
+            )
+            <if test="isOptionItem != null and isOptionItem!='' ">
+            and apsi.IS_OPTION_ITEM = #{isOptionItem}
+            </if>
+            and apsi.IS_OPTION_ITEM != '2'
+        </where>
+    </select>
+
+    <select id="listStageItemRelRepeatByThemeVerId" resultType="AeaParStageItem">
+         select
+             stage.STAGE_ID as stageId,
+             stage.STAGE_CODE as stageCode,
+             stage.STAGE_NAME as stageName,
+             stage.IS_NODE as isNode,
+             itemBasic.ITEM_ID as itemId,
+             itemBasic.ITEM_VER_ID as itemVerId,
+             itemBasic.ITEM_CODE as itemCode,
+             itemBasic.ITEM_NAME as itemName,
+             case itemBasic.is_catalog when '1' then '标准事项' else '实施事项' end as isCatalog,
+             case itemBasic.is_catalog when '1' then itemBasic.GUIDE_ORG_NAME else org.ORG_NAME end as orgName,
+             stageItem.STAGE_ITEM_ID as stageItemId,
+             stageItem.SORT_NO as sortNo,
+             stageItem.SUB_FORM_ID as subFormId,
+             stageItem.IS_OPTION_ITEM as isOptionItem
+         from aea_par_stage_item stageItem
+         join aea_par_stage stage on stage.stage_id = stageItem.stage_id
+         join aea_item_basic itemBasic on itemBasic.ITEM_ID = stageItem.ITEM_ID and itemBasic.ITEM_VER_ID = stageItem.ITEM_VER_ID
+         left join opu_om_org org on org.ORG_ID = itemBasic.ORG_ID and org.ORG_DELETED = '0'
+        <where>
+            and stage.IS_DELETED = '0'
+            and stage.ROOT_ORG_ID = #{rootOrgId}
+            and stage.THEME_VER_ID = #{themeVerId}
+            and itemBasic.ROOT_ORG_ID = #{rootOrgId}
+            <if test="isOptionItem != null and isOptionItem!='' ">
+            and stageItem.IS_OPTION_ITEM = #{isOptionItem}
+            </if>
+            <if test="isCatalog!=null and isCatalog!=''">
+            and itemBasic.IS_CATALOG = #{isCatalog}
+            </if>
+            and stageItem.IS_OPTION_ITEM != '2'
+        </where>
+        order by stage.is_node asc, stage.SORT_NO asc, stageItem.IS_OPTION_ITEM asc,
+                 stageItem.SORT_NO asc, stageItem.CREATE_TIME asc
+    </select>
+
+    <select id="listStageItemNoRepeatByThemeVerId" resultType="AeaParStageItem">
+        select
+            stage.STAGE_ID as stageId,
+            stage.STAGE_CODE as stageCode,
+            stage.STAGE_NAME as stageName,
+            stage.IS_NODE as isNode,
+            itemBasic.ITEM_ID as itemId,
+            itemBasic.ITEM_VER_ID as itemVerId,
+            itemBasic.ITEM_CODE as itemCode,
+            itemBasic.ITEM_NAME as itemName,
+            case itemBasic.is_catalog when '1' then '标准事项' else '实施事项' end as isCatalog,
+            case itemBasic.is_catalog when '1' then itemBasic.GUIDE_ORG_NAME else org.ORG_NAME end as orgName,
+            stageItem.STAGE_ITEM_ID as stageItemId,
+            stageItem.SORT_NO as sortNo,
+            stageItem.SUB_FORM_ID as subFormId,
+            stageItem.IS_OPTION_ITEM as isOptionItem
+        from aea_par_stage_item stageItem
+        join aea_par_stage stage on stage.stage_id = stageItem.stage_id
+        join aea_item_basic itemBasic on itemBasic.ITEM_ID = stageItem.ITEM_ID and itemBasic.ITEM_VER_ID = stageItem.ITEM_VER_ID
+        left join opu_om_org org on org.ORG_ID = itemBasic.ORG_ID and org.ORG_DELETED = '0'
+        <where>
+            and stage.IS_DELETED = '0'
+            and stage.ROOT_ORG_ID = #{rootOrgId}
+            and stage.THEME_VER_ID = #{themeVerId}
+            and itemBasic.ROOT_ORG_ID = #{rootOrgId}
+            <if test="isOptionItem != null and isOptionItem!='' ">
+                and stageItem.IS_OPTION_ITEM = #{isOptionItem}
+            </if>
+            <if test="isCatalog!=null and isCatalog!=''">
+                and itemBasic.IS_CATALOG = #{isCatalog}
+            </if>
+            and stageItem.IS_OPTION_ITEM != '2'
+        </where>
+        group by stageItem.ITEM_ID
+        order by stage.is_node asc, stage.SORT_NO asc, stageItem.IS_OPTION_ITEM asc, stageItem.SORT_NO asc, stageItem.CREATE_TIME asc
+    </select>
+
+    <select id="listStageItemRelInfoNoRepeatByThemeVerId" resultType="AeaParStageItem">
+        select
+            <include refid="allColumns">
+                <property name="alias" value="apsi"/>
+            </include>,
+            itemBasic.ITEM_CODE as itemCode,
+            itemBasic.ITEM_NAME as itemName,
+            itemBasic.IS_CATALOG as isCatalog
+        from AEA_PAR_STAGE_ITEM apsi
+        join aea_item_basic itemBasic on itemBasic.ITEM_ID = apsi.ITEM_ID and itemBasic.ITEM_VER_ID = apsi.ITEM_VER_ID
+        <where>
+            and apsi.STAGE_ID in (
+                select
+                    STAGE_ID
+                from aea_par_stage
+                <where>
+                    and IS_DELETED = '0'
+                    and ROOT_ORG_ID = #{rootOrgId}
+                    and THEME_VER_ID = #{themeVerId}
+                </where>
+            )
+            and itemBasic.ROOT_ORG_ID = #{rootOrgId}
+            <if test="isCatalog!=null and isCatalog!=''">
+            and itemBasic.IS_CATALOG = #{isCatalog}
+            </if>
+            <if test="isOptionItem != null and isOptionItem!='' ">
+            and apsi.IS_OPTION_ITEM = #{isOptionItem}
+            </if>
+            and apsi.IS_OPTION_ITEM != '2'
+        </where>
+        group by apsi.ITEM_ID
+        order by apsi.IS_OPTION_ITEM asc, apsi.SORT_NO asc, apsi.CREATE_TIME asc
+    </select>
+    
+    <select id="listItemIdsNoRepeatByThemeVerId" resultType="java.lang.String">
+        select distinct
+            apsi.ITEM_ID as itemId
+        from AEA_PAR_STAGE_ITEM apsi
+        join aea_item_basic itemBasic on itemBasic.ITEM_ID = apsi.ITEM_ID and itemBasic.ITEM_VER_ID = apsi.ITEM_VER_ID
+        <where>
+            and apsi.STAGE_ID in (
+                select
+                    STAGE_ID
+                from aea_par_stage
+                <where>
+                    and IS_DELETED = '0'
+                    and ROOT_ORG_ID = #{rootOrgId}
+                    and THEME_VER_ID = #{themeVerId}
+                </where>
+            )
+            and itemBasic.ROOT_ORG_ID = #{rootOrgId}
+            <if test="isCatalog!=null and isCatalog!=''">
+            and itemBasic.IS_CATALOG = #{isCatalog}
+            </if>
+            <if test="isOptionItem != null and isOptionItem!='' ">
+            and apsi.IS_OPTION_ITEM = #{isOptionItem}
+            </if>
+            and apsi.IS_OPTION_ITEM != '2'
+        </where>
+        group by apsi.ITEM_ID
+        order by apsi.IS_OPTION_ITEM asc, apsi.SORT_NO asc, apsi.CREATE_TIME asc
+    </select>
+
+    <select id="listItemVerIdsNoRepeatByThemeVerId" resultType="java.lang.String">
+        select distinct
+            apsi.ITEM_VER_ID as itemVerId
+        from AEA_PAR_STAGE_ITEM apsi
+        join aea_item_basic itemBasic on itemBasic.ITEM_ID = apsi.ITEM_ID and itemBasic.ITEM_VER_ID = apsi.ITEM_VER_ID
+        <where>
+            and apsi.STAGE_ID in (
+            select
+            STAGE_ID
+            from aea_par_stage
+            <where>
+                and IS_DELETED = '0'
+                and ROOT_ORG_ID = #{rootOrgId}
+                and THEME_VER_ID = #{themeVerId}
+            </where>
+            )
+            and itemBasic.ROOT_ORG_ID = #{rootOrgId}
+            <if test="isCatalog!=null and isCatalog!=''">
+                and itemBasic.IS_CATALOG = #{isCatalog}
+            </if>
+            <if test="isOptionItem != null and isOptionItem!='' ">
+                and apsi.IS_OPTION_ITEM = #{isOptionItem}
+            </if>
+            and apsi.IS_OPTION_ITEM != '2'
+        </where>
+        group by apsi.ITEM_ID
+        order by apsi.IS_OPTION_ITEM asc, apsi.SORT_NO asc, apsi.CREATE_TIME asc
+    </select>
+
+    <select id="checkBeforeSeriesFlow" resultType="AeaParStageItem">
+        select
+        <include refid="allColumns">
+            <property name="alias" value="apsi"/>
+        </include>
+        , apt.theme_id themeId, apt.theme_name themeName, api.proj_info_id projInfoId
+        from aea_par_theme apt
+        left join aea_proj_info api on api.theme_id=apt.theme_id
+        join aea_par_theme_ver aptv on aptv.theme_id=apt.theme_id
+        join aea_par_stage aps on aps.theme_ver_id=aptv.theme_ver_id
+        join aea_par_stage_item apsi on apsi.stage_id=aps.stage_id
+        where apt.IS_DELETED='0'
+        and aptv.IS_PUBLISH in('1', '2')
+        and aptv.is_deleted='0'
+        and apsi.item_ver_id in
+        <foreach collection="itemVerIds" item="itemVerId" separator="," open="(" close=")">
+            #{itemVerId}
+        </foreach>
+        <if test="themeId != null and themeId != ''">
+            and apt.theme_id=#{themeId}
+        </if>
+        and apt.ROOT_ORG_ID=#{rootOrgId}
+    </select>
+
+    <resultMap id="rappidFindStageAllBasicItemGroupByisOptionItemMap" type="com.augurit.aplanmis.common.mybatisBean.RappidStageItemBean">
+        <id property="isOptionItem" column="IS_OPTION_ITEM"/>
+        <collection property="aeaParStageItems" javaType="ArrayList" ofType="com.augurit.aplanmis.common.mybatisBean.RappidItemBean">
+            <id property="itemId" column="ITEM_ID"/>
+            <result property="itemName" column="item_name"/>
+            <result property="itemCode" column="ITEM_CODE"/>
+            <result property="dueNum" column="DUE_NUM"/>
+            <result property="isCatalog" column="IS_CATALOG"/>
+            <result property="stageItemId" column="STAGE_ITEM_ID"/>
+            <result property="stageId" column="STAGE_ID"/>
+            <result property="itemVerId" column="ITEM_VER_ID"/>
+            <result property="isOptionItem" column="IS_OPTION_ITEM"/>
+        </collection>
+
+    </resultMap>
+
+    <!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaParStageItem" id="AeaParStageItemMap">
+        <id property="stageItemId" column="STAGE_ITEM_ID"/>
+        <result property="stageId" column="STAGE_ID"/>
+        <result property="itemId" column="ITEM_ID"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="sortNo" column="SORT_NO"/>
+        <result property="itemVerId" column="ITEM_VER_ID"/>
+        <result property="isOptionItem" column="IS_OPTION_ITEM"/>
+    </resultMap>
+
+</mapper>

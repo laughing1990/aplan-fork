@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>委办局首页</title>
+  <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.css"
+    th:href="@{/agcloud/framework/js-lib/element-2/element.css}">
+  <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css"
+    th:href="@{/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css}">
+  <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/css/reset.css"
+    th:href="@{/agcloud/framework/js-lib/agcloud-lib/css/reset.css}">
+
+  <link rel="stylesheet" href="../../static/effectSupervision/common/css/base.css"
+    th:href="@{/effectSupervision/common/css/base.css}">
+  <link rel="stylesheet" href="../../static/effectSupervision/css/assignPeopleIndex.css"
+    th:href="@{/effectSupervision/css/assignPeopleIndex.css}">
+  <script>
+    var ctx = "[[@{/}]]";
+    // var ctx = "http://192.168.30.33:8083/aplanmis-front/"
+    // var ctx ="http://192.168.15.200:8083/aplanmis-front/"  //严浩
+    // var ctx ="http://192.168.32.53:8083/aplanmis-front/"   //杰文
+  </script>
+</head>
+
+<body>
+  <div class="index-wrapper" id="assignPeopleIndex" v-cloak v-loading.fullscreen.lock="loading">
+    <!-- 主体 -->
+    <div class="index-content">
+      <!-- 待办列表 -->
+      <el-card class="mb15 box-card">
+        <div slot="header" class="clearfix">
+          <span class="card-title">待办列表
+            <a href="javascript:;" class="num-badge" v-show="needHandelTotal>0">{{needHandelTotal}}</a>
+          </span>
+          <div class="handel-box fr">
+            <el-input size="medium" placeholder="请输入申报流水号、项目/工程名称" v-model="needHandelCheckData.keyword"
+              @keyup.enter.native="needHandelListCurrentChange(1)">
+              <el-button slot="append" icon="el-icon-search" @click="needHandelListCurrentChange(1)"></el-button>
+            </el-input>
+          </div>
+        </div>
+        <div class="mt-18 table-box ag-table">
+          <el-table :data="needHandelList" class="scrollable mt20" style="width: 100%;" height="291" border
+            :default-sort="{prop: 'dueNum', order: 'ascending'}" @sort-change="needHandelListSurplusSort" @row-dblclick="needHandelListRowDbFn"
+            :header-cell-style="{background:'#F3F6F9',padding:'8px 0', color: '#575962'}" :cell-class-name="tabCellName">
+            <el-table-column  width="64">
+              <template slot-scope="scope">
+                <!-- <i class="icon ag ag-mail-o color-C9C9C9" v-if="isSign(scope.row)"></i>
+                <i class="icon ag ag-mail color-FFB822" v-if="!isSign(scope.row)"></i>
+                <i class="icon ag ag-message color-FF4B47"></i> -->
+                <el-tooltip effect="light" placement="top">
+                  <div slot="content">已签收</div>
+                  <span class="color-C9C9C9 icon ag ag-mail-o" v-show="isSign(scope.row)"></span>
+                </el-tooltip>
+                <el-tooltip effect="light" placement="top">
+                  <div slot="content">未签收</div>
+                  <span class="ye-color icon ag ag-mail" v-show="!isSign(scope.row)"></span>
+                </el-tooltip>
+
+                <el-popover v-if="scope.row.remindList && scope.row.remindList.length>0" placement="right" width="700"
+                  trigger="hover">
+                  <el-row class="popover-item" v-for="mesItem in scope.row.remindList">
+                    <el-col class="ye-color" :span="5"
+                      v-html="formatDatetimeCommon(mesItem.sendDate,'yyyy-MM-dd hh:mm')"></el-col>
+                    <el-col class="ye-color remind_text" :span="4">{{mesItem.sendUserName}}</el-col>
+                    <el-col class="wit-opc-color remind_text" :span="12">{{mesItem.remindContent}}</el-col>
+                    <el-col class="wit-opc-color" :span="3"><button class="remind_btn"
+                        @click="showRemindInfo(scope.row,mesItem)">查看</button></el-col>
+                  </el-row>
+                  <span slot="reference" class="red-color icon ag ag-message"
+                    v-if="scope.row.remindList && scope.row.remindList.length>0"></span>
+                </el-popover>
+
+                <el-tooltip effect="light" placement="top">
+                  <div slot="content">暂无未读催办信息</div>
+                  <span v-show="!scope.row.remindList || scope.row.remindList.length<=0"
+                    class="color-C9C9C9 icon ag ag-message"></span>
+                </el-tooltip>
+              </template>
+            </el-table-column>
+            <el-table-column prop="applySource" label="来源" width="50" >
+            </el-table-column>
+            <el-table-column prop="applyType" label="类型" width="50" >
+            </el-table-column>
+            <el-table-column prop="applyinstCode" label="申报流水号" width="160" :formatter="formatterTableCell" :show-overflow-tooltip ="true">
+            </el-table-column>
+            <el-table-column label="项目/工程名称" prop="projName" min-width="150" :show-overflow-tooltip ="true">
+            </el-table-column>
+            <el-table-column label="阶段/事项/辅线名称" min-width="200">
+              <template slot-scope="scope">
+                <el-tooltip  effect="light" placement="top" >
+                  <div slot="content" v-html="showThemeStageItemInfo(scope.row)"></div>
+                  <span v-html="stageFormatter(scope.row)"></span>
+                </el-tooltip>
+              </template>
+            </el-table-column>
+            <el-table-column label="剩余时间" width="100" sortable  v-if="!pcClientSmallTag">
+              <template slot-scope="scope">
+                <span class="day-success-badge" :class="dueNumFn(scope.row.dueNum)">{{scope.row.dueNum | dueNumFormat}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="操作" width="60">
+              <template slot-scope="scope">
+                <a href="javascript:;" class="color-169AFF" @click="daibanbanli(scope.row)">办理</a>
+              </template>
+            </el-table-column>
+          </el-table>
+          <el-pagination class="mt8 mb8 mr20" small background align="right" v-show="needHandelTotal>4"
+            @current-change="needHandelListCurrentChange" :page-size="needHandelCheckData.pageSize"
+            :current-page="needHandelCheckData.pageNum" layout="total, prev, pager, next, jumper"
+            :total="needHandelTotal">
+          </el-pagination>
+        </div>
+      </el-card>
+
+      <!-- 补正待确认 -->
+      <el-card class="mb15 box-card">
+        <div slot="header" class="clearfix">
+          <span class="card-title">补正待确认
+            <a href="javascript:;" class="num-badge" v-show="correctNeedSureTotal>0">{{correctNeedSureTotal}}</a>
+          </span>
+          <div class="handel-box fr">
+            <el-input size="medium" placeholder="请输入申报流水号、项目/工程名称" v-model="correctNeedSureCheckData.keyword"
+              @keyup.enter.native="correctNeedSureCurrentChange(1)">
+              <el-button slot="append" icon="el-icon-search" @click="correctNeedSureCurrentChange(1)"></el-button>
+            </el-input>
+          </div>
+        </div>
+        <div class="mt-18 table-box ag-table">
+          <el-table :data="correctNeedSureList" class="scrollable mt20" style="width: 100%;" height="291" border
+            :header-cell-style="{background:'#F3F6F9',padding:'8px 0', color: '#575962'}" :cell-class-name="tabCellName" @row-dblclick="correctNeedSureRowDbFn">
+            <el-table-column prop="applySource" label="来源" width="50">
+            </el-table-column>
+            <el-table-column prop="applyType" label="类型" width="50" :formatter="formatterTableCell">
+            </el-table-column>
+            <el-table-column prop="applyinstCode" label="申报流水号" width="160" :formatter="formatterTableCell":show-overflow-tooltip ="true">
+            </el-table-column>
+            <el-table-column label="项目/工程名称" prop="projName" min-width="170" :show-overflow-tooltip ="true">
+            </el-table-column>
+            <el-table-column prop="linkmanName" label="申请人" width="90" :formatter="formatterTableCell" :show-overflow-tooltip ="true" v-if="!pcClientSmallTag">
+            </el-table-column>
+            <el-table-column label="阶段/事项/辅线名称" min-width="220">
+              <template slot-scope="scope">
+                <el-tooltip  effect="light" placement="top" >
+                  <div slot="content" v-html="showThemeStageItemInfo(scope.row)"></div>
+                  <span v-html="stageFormatter(scope.row)"></span>
+                </el-tooltip>
+              </template>
+            </el-table-column>
+            <el-table-column label="操作" width="80">
+              <template slot-scope="scope">
+                <a href="javascript:;" class="color-169AFF" @click="buzhengqueren(scope.row)">补正确认</a>
+              </template>
+            </el-table-column>
+          </el-table>
+          <el-pagination class="mt8 mb8 mr20" small background align="right" v-show="correctNeedSureTotal>4"
+            @current-change="correctNeedSureCurrentChange" :page-size="correctNeedSureCheckData.pageSize"
+            :current-page="correctNeedSureCheckData.pageNum" layout="total, prev, pager, next, jumper"
+            :total="correctNeedSureTotal">
+          </el-pagination>
+        </div>
+      </el-card>
+
+      <!-- 我经办办件 -->
+      <el-card class="box-card">
+        <div slot="header" class="clearfix">
+          <span class="card-title">我经办办件
+            <a href="javascript:;" class="num-badge" v-show="needCorrectApproveTotal>0">{{needCorrectApproveTotal}}</a>
+          </span>
+          <div class="handel-box fr">
+            <el-input size="medium" placeholder="请输入申报流水号、项目/工程名称" v-model="needCorrectApproveCheckData.keyword"
+              @keyup.enter.native="needCorrectApproveListCurrentChange(1)">
+              <el-button slot="append" icon="el-icon-search" @click="needCorrectApproveListCurrentChange(1)">
+              </el-button>
+            </el-input>
+          </div>
+        </div>
+        <div class="mt-18 table-box ag-table">
+          <el-table :data="needCorrectApproveList" class="scrollable mt20" style="width: 100%;" height="291" border
+          :default-sort="{prop: 'dueNum', order: 'ascending'}" @sort-change="needCorrectApproveListSort"  @row-dblclick="needCorrectApproveListRowDbFn"
+          :header-cell-style="{background:'#F3F6F9',padding:'8px 0', color: '#575962'}" :cell-class-name="tabCellName">
+            <el-table-column prop="applySource" label="来源" width="60">
+            </el-table-column>
+            <el-table-column prop="applyType" label="类型" width="60" :formatter="formatterTableCell">
+            </el-table-column>
+            <el-table-column prop="applyinstCode" label="申报流水号" width="160" :formatter="formatterTableCell" :show-overflow-tooltip ="true">
+            </el-table-column>
+            <el-table-column label="项目/工程名称" prop="projName" min-width="170" :show-overflow-tooltip ="true">
+            </el-table-column>
+            <el-table-column label="阶段/事项/辅线名称" min-width="220">
+              <template slot-scope="scope">
+                <el-tooltip  effect="light" placement="top" >
+                  <div slot="content" v-html="showThemeStageItemInfo(scope.row)"></div>
+                  <span v-html="stageFormatter(scope.row)"></span>
+                </el-tooltip>
+              </template>
+            </el-table-column>
+            <el-table-column prop="dueNum" label="剩余时间" width="140" sortable v-if="!pcClientSmallTag">
+              <template slot-scope="scope">
+                <span class="day-success-badge" :class="dueNumFn(scope.row.dueNum)">{{scope.row.dueNum | dueNumFormat}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="操作" width="60">
+              <template slot-scope="scope">
+                <a href="javascript:;" class="color-169AFF" @click="jingbanchakan(scope.row)">查看</a>
+              </template>
+            </el-table-column>
+          </el-table>
+          <el-pagination class="mt8 mb8 mr20" small background align="right" v-show="needCorrectApproveTotal>4"
+            @current-change="needCorrectApproveListCurrentChange" :page-size="needCorrectApproveCheckData.pageSize"
+            :current-page="needCorrectApproveCheckData.pageNum" layout="total, prev, pager, next, jumper"
+            :total="needCorrectApproveTotal">
+          </el-pagination>
+        </div>
+      </el-card>
+    </div>
+    <!-- 右侧  -->
+    <div class="index-right">
+      <!-- 工作台 -->
+      <el-card class="box-card mt15">
+        <div slot="header" class="clearfix">
+          <span class="card-title" style="transform: translateY(0)">工作台</span>
+        </div>
+        <div class="workbench">
+          <div class="bench-item" v-for="(item,index) in statusCardData" @click="selectStateForWorkbench(item)">
+            <span class="item-icon" :class="'icon-' + parseInt(index + 1)"></span>
+            <p class="item-count">{{item.count}}</p>
+            <p class="item-name">{{item.name}}</p>
+          </div>
+        </div>
+      </el-card>
+      <!-- 催办消息 -->
+      <el-card class="box-card mt15 pr">
+        <div slot="header" class="clearfix">
+          <span class="card-title" style="transform: translateY(0)">催办消息
+            <span class="num-badge" v-show="personMsgTotal>0">{{personMsgTotal}}</span>
+          </span>
+          <el-dropdown class="fr mouse-pointer" trigger="click" v-show="personMsgTotal > 6" @command="moreMassageList">
+            <i class="el-icon-more color-999 rotate-90"></i>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item command="more">查看更多</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+        </div>
+        <div class="notice-new-box">
+          <transition-group v-bind:css="false" @before-enter="beforeEnter" @enter="enter" @after-enter="afterEnter"
+            tag="ul">
+            <li class="new-item mouse-pointer" v-for="(item,index) in personMsgList" :key="item.contentId" :data-delay="index*100" @click="moreMassageList(item)"
+              data-y="100%">
+              <p>
+                <span class="item-content">{{item.contentTitle}}</span>
+                <span class="item-is-new" v-show="isPreThreeDate(item.createTime)">&nbsp;</span>
+              </p>
+              <span class="item-time">{{(item.receiveTime || item.createTime) | formatterTime('yyyy-MM-dd hh:mm') }}</span>
+            </li>
+          </transition-group>
+        </div>
+        <div class="mt40 non-data" v-if="personMsgList.length === 0"></div>
+      </el-card>
+      <!-- 通知公告 -->
+      <el-card class="box-card mt15 pr">
+        <div slot="header" class="clearfix">
+          <span class="card-title" style="transform: translateY(0)">通知公告
+            <span class="num-badge" v-show="noticeTotal>0">{{noticeTotal}}</span>
+          </span>
+          <el-dropdown class="fr mouse-pointer" trigger="click" v-show="noticeTotal > 6" @command="moreNoticeList">
+            <i class="el-icon-more color-999 rotate-90"></i>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item command="more">查看更多</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+        </div>
+        <div class="notice-new-box">
+          <transition-group v-bind:css="false" @before-enter="beforeEnter" @enter="enter" @after-enter="afterEnter"
+            tag="ul">
+            <li class="new-item mouse-pointer" v-for="(item,index) in noticeList" :key="item.contentId" :data-delay="index*100" @click="moreNoticeList(item)"
+              data-y="100%">
+              <p>
+                <span class="item-content">{{item.contentTitle}}</span>
+                <span class="item-is-new" v-show="isPreThreeDate(item.publishTime)">&nbsp;</span>
+              </p>
+              <span class="item-time">{{item.publishTime | formatterTime('yyyy-MM-dd hh:mm')}}</span>
+            </li>
+          </transition-group>
+        </div>
+        <div class="mt40 non-data" v-if="noticeList.length === 0"></div>
+      </el-card>
+    </div>
+     <!-- 待办列表-催办 -->
+    <el-dialog title="催办信息" :visible.sync="isShowMsgDetail" :append-to-body="true" :show-close="true" width="800px">
+      <div class="sendMsg" style="border-top: 1px solid #EBEDF2;"><span>发送人：{{msgDetail.sendUserName}}</span><span
+          style="float: right;">发送时间：{{msgDetail.sendDate}}</span></div>
+      <div class="remindContent">{{msgDetail.remindContent}}</div>
+    </el-dialog>
+  </div>
+  </div>
+
+  <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js"
+    th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>
+  <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js"
+    th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
+  <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js"
+    th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
+  <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/echarts-v4/echarts.min.js"
+    th:src="@{/agcloud/framework/js-lib/echarts-v4/echarts.min.js}"></script>
+  <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js"
+    th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>
+
+  <script src="../../static/effectSupervision/js/mixins.js" th:src="@{/effectSupervision/js/mixins.js}"
+    type="text/javascript"></script>
+  <script src="../../static/effectSupervision/js/assignPeopleIndex.js"
+    th:src="@{/effectSupervision/js/assignPeopleIndex.js}" type="text/javascript">
+  </script>
+</body>
+
+</html>

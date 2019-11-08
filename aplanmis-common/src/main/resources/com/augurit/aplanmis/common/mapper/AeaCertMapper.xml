@@ -1,0 +1,402 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by Administrator    2019-07-04 17:12:22 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaCertMapper">
+
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns">
+        cert.CERT_ID  certId,
+        cert.CERT_CODE  certCode,
+        cert.CERT_NAME  certName,
+        cert.ATT_DIR_ID  attDirId,
+        cert.CERT_TYPE_ID  certTypeId,
+        cert.CERT_MEMO  certMemo,
+        cert.IS_DELETED  isDeleted,
+        cert.CREATER  creater,
+        cert.CREATE_TIME  createTime,
+        cert.MODIFIER  modifier,
+        cert.MODIFY_TIME  modifyTime,
+        cert.CERT_HOLDER  certHolder,
+        cert.SOFTWARE_ENV  softwareEnv,
+        cert.BUS_ACTION  busAction,
+        cert.DUE_NUM  dueNum,
+        cert.DUE_UNIT  dueUnit,
+        cert.SORT_NO  sortNo,
+        cert.ROOT_ORG_ID rootOrgId
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="selectOneById" resultType="AeaCert">
+        select
+        <include refid="allColumns"/>,
+        attDir.DIR_NAME attDirName,
+        act.TYPE_NAME typeName
+        from AEA_CERT cert
+        left join BSC_ATT_DIR attDir on ( attDir.DIR_ID = cert.ATT_DIR_ID and cert.ROOT_ORG_ID = attDir.ORG_ID )
+        left join AEA_CERT_TYPE act on ( act.CERT_TYPE_ID = cert.CERT_TYPE_ID and cert.ROOT_ORG_ID = act.ROOT_ORG_ID )
+        where cert.CERT_ID = #{id}
+        and cert.IS_DELETED = '0'
+    </select>
+
+    <select id="getOutputCertsByItemVerId" resultType="AeaCert">
+        SELECT
+        <include refid="allColumns"/>
+        FROM AEA_CERT cert, AEA_ITEM_INOUT aii
+        WHERE
+        cert.CERT_ID = aii.CERT_ID
+        AND
+        aii.ITEM_VER_ID = #{itemVerId}
+        AND
+        aii.IS_INPUT = '0'
+        AND
+        aii.FILE_TYPE = 'cert'
+        AND
+        aii.ROOT_ORG_ID = #{rootOrgId}
+        AND
+        cert.ROOT_ORG_ID = #{rootOrgId}
+        AND
+        cert.IS_DELETED = '0'
+        AND
+        aii.IS_DELETED = '0'
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaCert" resultType="AeaCert">
+        select
+        <include refid="allColumns"/>,
+        attDir.DIR_NAME attDirName,
+        act.TYPE_NAME typeName
+        from AEA_CERT cert
+        left join BSC_ATT_DIR attDir on ( attDir.DIR_ID = cert.ATT_DIR_ID and cert.ROOT_ORG_ID = attDir.ORG_ID )
+        left join AEA_CERT_TYPE act on ( act.CERT_TYPE_ID = cert.CERT_TYPE_ID and cert.ROOT_ORG_ID = act.ROOT_ORG_ID )
+        <where>
+            <if test="certId != null and certId!='' ">
+                and cert.CERT_ID = #{certId}
+            </if>
+            <if test="certCode != null and certCode!='' ">
+                and cert.CERT_CODE = #{certCode}
+            </if>
+            <if test="certName != null and certName!='' ">
+                and cert.CERT_NAME = #{certName}
+            </if>
+            <if test="attDirId != null and attDirId!='' ">
+                and cert.ATT_DIR_ID = #{attDirId}
+            </if>
+            <if test="certTypeId != null and certTypeId!='' ">
+                and cert.CERT_TYPE_ID = #{certTypeId}
+            </if>
+            <if test="certHolder != null and certHolder!='' ">
+                and cert.CERT_HOLDER = #{certHolder}
+            </if>
+            <if test="softwareEnv != null and softwareEnv!='' ">
+                and cert.SOFTWARE_ENV = #{softwareEnv}
+            </if>
+            <if test="busAction != null and busAction!='' ">
+                and cert.BUS_ACTION = #{busAction}
+            </if>
+            <if test="certMemo != null and certMemo!='' ">
+                and cert.CERT_MEMO = #{certMemo}
+            </if>
+            <if test="isDeleted != null">
+                and cert.IS_DELETED = #{isDeleted, jdbcType=VARCHAR}
+            </if>
+            <if test="creater != null and creater!='' ">
+                and cert.CREATER = #{creater}
+            </if>
+            <if test="createTime != null">
+                and cert.CREATE_TIME = #{createTime}
+            </if>
+            <if test="modifier != null and modifier!='' ">
+                and cert.MODIFIER = #{modifier}
+            </if>
+            <if test="modifyTime != null">
+                and cert.MODIFY_TIME = #{modifyTime}
+            </if>
+            <if test="dueNum != null">
+                and cert.DUE_NUM = #{dueNum}
+            </if>
+            <if test="dueUnit != null">
+                and cert.DUE_UNIT = #{dueUnit}
+            </if>
+            <if test="sortNo != null">
+                and cert.SORT_NO = #{sortNo}
+            </if>
+            <if test="rootOrgId != null">
+                and cert.ROOT_ORG_ID = #{rootOrgId}
+            </if>
+            <if test="keyword!=null and keyword!='' ">
+                and (
+                cert.CERT_CODE like concat('%',concat(#{keyword},'%')) or
+                cert.CERT_NAME like concat('%',concat(#{keyword},'%')) or
+                cert.CERT_MEMO like concat('%',concat(#{keyword},'%'))
+                )
+            </if>
+            <if test="checkedCertIds != null and checkedCertIds.length > 0">
+                AND cert.CERT_ID in
+                <foreach collection="checkedCertIds" item="certId" index="index" open="(" close=")" separator=",">
+                    #{certId}
+                </foreach>
+            </if>
+            and cert.IS_DELETED = '0'
+        </where>
+        order by cert.CREATE_TIME asc
+    </select>
+
+    <select id="listStageNoSelectCert" resultType="AeaCert">
+        select
+        <include refid="allColumns"/>,
+        attDir.DIR_NAME attDirName,
+        act.TYPE_NAME typeName
+        from AEA_CERT cert
+        left join BSC_ATT_DIR attDir on ( attDir.DIR_ID = cert.ATT_DIR_ID and cert.ROOT_ORG_ID = attDir.ORG_ID )
+        left join AEA_CERT_TYPE act on ( act.CERT_TYPE_ID = cert.CERT_TYPE_ID and cert.ROOT_ORG_ID = act.ROOT_ORG_ID )
+        <where>
+            and cert.IS_DELETED = '0'
+            <if test="keyword!=null and keyword!='' ">
+                and (
+                cert.CERT_CODE like concat('%',concat(#{keyword},'%')) or
+                cert.CERT_NAME like concat('%',concat(#{keyword},'%')) or
+                cert.CERT_MEMO like concat('%',concat(#{keyword},'%'))
+                )
+            </if>
+            <if test="rootOrgId != null">
+                and cert.ROOT_ORG_ID = #{rootOrgId}
+            </if>
+            and cert.CERT_ID not in (
+            select CERT_ID from AEA_PAR_IN
+            <where>
+                and STAGE_ID = #{stageId}
+                <if test="isStateIn != null and isStateIn!='' ">
+                    and IS_STATE_IN = #{isStateIn}
+                </if>
+                <if test="parStateId != null and parStateId!='' ">
+                    and PAR_STATE_ID = #{parStateId}
+                </if>
+                <if test="rootOrgId != null">
+                    and ROOT_ORG_ID = #{rootOrgId}
+                </if>
+                and FILE_TYPE = 'cert'
+                and IS_DELETED = '0'
+            </where>
+            )
+        </where>
+        order by cert.CREATE_TIME asc
+    </select>
+
+    <select id="listItemNoSelectCert" resultType="AeaCert">
+        select
+        <include refid="allColumns"/>,
+        attDir.DIR_NAME attDirName,
+        act.TYPE_NAME typeName
+        from AEA_CERT cert
+        left join BSC_ATT_DIR attDir on ( attDir.DIR_ID = cert.ATT_DIR_ID and cert.ROOT_ORG_ID = attDir.ORG_ID )
+        left join AEA_CERT_TYPE act on ( act.CERT_TYPE_ID = cert.CERT_TYPE_ID and cert.ROOT_ORG_ID = act.ROOT_ORG_ID )
+        <where>
+            and cert.IS_DELETED = '0'
+            <if test="keyword!=null and keyword!='' ">
+                and (
+                cert.CERT_CODE like concat('%',concat(#{keyword},'%')) or
+                cert.CERT_NAME like concat('%',concat(#{keyword},'%')) or
+                cert.CERT_MEMO like concat('%',concat(#{keyword},'%'))
+                )
+            </if>
+            <if test="rootOrgId != null">
+                and cert.ROOT_ORG_ID = #{rootOrgId}
+            </if>
+            and cert.CERT_ID not in (
+            select CERT_ID from AEA_ITEM_INOUT
+            <where>
+                and ITEM_VER_ID = #{itemVerId}
+                and STATE_VER_ID = #{stateVerId}
+                <if test="isInput != null and isInput!='' ">
+                    and IS_INPUT = #{isInput}
+                </if>
+                <if test="isStateIn != null and isStateIn!= '' ">
+                    and IS_STATE_IN = #{isStateIn}
+                </if>
+                <if test="itemStateId != null and itemStateId!= '' ">
+                    and ITEM_STATE_ID = #{itemStateId}
+                </if>
+                <if test="rootOrgId != null">
+                    and ROOT_ORG_ID = #{rootOrgId}
+                </if>
+                and FILE_TYPE = 'cert'
+                and IS_DELETED = '0'
+            </where>
+            )
+        </where>
+        order by cert.CREATE_TIME asc
+    </select>
+
+    <!--5 新增实体对象 -->
+    <insert id="insertOne" parameterType="AeaCert">
+        insert into AEA_CERT (
+            CERT_ID,
+            CERT_CODE,
+            CERT_NAME,
+            ATT_DIR_ID,
+            CERT_TYPE_ID,
+            CERT_MEMO,
+            IS_DELETED,
+            CREATER,
+            CREATE_TIME,
+            MODIFIER,
+            MODIFY_TIME,
+            CERT_HOLDER,
+            SOFTWARE_ENV,
+            BUS_ACTION,
+            DUE_NUM,
+            DUE_UNIT,
+            SORT_NO,
+            ROOT_ORG_ID
+        )  values  (
+            #{certId},
+            #{certCode},
+            #{certName},
+            #{attDirId},
+            #{certTypeId},
+            #{certMemo},
+            #{isDeleted, jdbcType=VARCHAR},
+            #{creater},
+            #{createTime},
+            #{modifier},
+            #{modifyTime},
+            #{certHolder},
+            #{softwareEnv},
+            #{busAction},
+            #{dueNum},
+            #{dueUnit},
+            #{sortNo},
+            #{rootOrgId}
+        )
+    </insert>
+
+    <!--6 修改实体对象 -->
+    <update id="updateOne" parameterType="AeaCert">
+        update AEA_CERT
+        <set>
+            <if test="certId != null and certId!='' ">
+                CERT_ID = #{certId},
+            </if>
+            <if test="certCode != null and certCode!='' ">
+                CERT_CODE = #{certCode},
+            </if>
+            <if test="certName != null and certName!='' ">
+                CERT_NAME = #{certName},
+            </if>
+            <if test="attDirId != null and attDirId!='' ">
+                ATT_DIR_ID = #{attDirId},
+            </if>
+            <if test="certTypeId != null and certTypeId!='' ">
+                CERT_TYPE_ID = #{certTypeId},
+            </if>
+            <if test="certHolder != null">
+                CERT_HOLDER = #{certHolder},
+            </if>
+            <if test="softwareEnv != null">
+                SOFTWARE_ENV = #{softwareEnv},
+            </if>
+            <if test="busAction != null">
+                BUS_ACTION = #{busAction},
+            </if>
+            <if test="certMemo != null">
+                CERT_MEMO = #{certMemo},
+            </if>
+            <if test="isDeleted != null">
+                IS_DELETED = #{isDeleted, jdbcType=VARCHAR},
+            </if>
+            <if test="creater != null and creater!='' ">
+                CREATER = #{creater},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime},
+            </if>
+            <if test="modifier != null and modifier!='' ">
+                MODIFIER = #{modifier},
+            </if>
+            <if test="modifyTime != null">
+                MODIFY_TIME = #{modifyTime},
+            </if>
+            <if test="dueNum != null">
+                DUE_NUM = #{dueNum},
+            </if>
+            <if test="dueUnit != null">
+                DUE_UNIT = #{dueUnit},
+            </if>
+            <if test="sortNo != null">
+                SORT_NO = #{sortNo},
+            </if>
+            <if test="rootOrgId != null">
+                ROOT_ORG_ID = #{rootOrgId},
+            </if>
+        </set>
+        where CERT_ID = #{certId}
+    </update>
+
+    <!--7 删除实体对象,根据主键ID -->
+    <update id="deleteById" parameterType="java.lang.String">
+        update AEA_CERT set IS_DELETED = '1' where CERT_ID = #{id}
+    </update>
+
+    <select id="checkUniqueCertCode" resultType="java.lang.Integer">
+        select count(*) from AEA_CERT
+        <where>
+            and ROOT_ORG_ID = #{rootOrgId}
+            <if test="certId!=null and certId!='' ">
+                and CERT_ID != #{certId}
+            </if>
+            and CERT_CODE = #{certCode}
+        </where>
+    </select>
+
+    <select id="getMaxCertSortNo" resultType="java.lang.Long">
+        select
+           max(SORT_NO)
+        from AEA_CERT
+       where ROOT_ORG_ID = #{rootOrgId}
+    </select>
+
+    <select id="listAeaCertByIds" resultType="AeaCert">
+        select
+        <include refid="allColumns"/>
+        from AEA_CERT cert
+        where cert.CERT_ID in
+        <foreach collection="ids" item="certId" open="(" close=")" index="index" separator=",">
+            #{certId}
+        </foreach>
+    </select>
+
+    <update id="batchDeleteCertByCertTypeId">
+        update AEA_CERT set IS_DELETED = '1' where CERT_TYPE_ID = #{certTypeId}
+    </update>
+
+    <update id="batchDeleteCertByCertTypeIds">
+        update AEA_CERT set IS_DELETED = '1' where CERT_TYPE_ID in
+        <foreach collection="certTypeIds" item="certTypeId" open="(" close=")" separator=",">
+            #{certTypeId}
+        </foreach>
+    </update>
+
+    <update id="batchDeleteCertByCertIds">
+        update AEA_CERT set IS_DELETED = '1' where CERT_ID in
+        <foreach collection="certIds" item="certId" open="(" close=")" separator=",">
+            #{certId}
+        </foreach>
+    </update>
+
+    <select id="getCertByServiceId" resultType="AeaCert">
+        select
+        <include refid="allColumns"/>
+        from AEA_CERT cert where EXISTS(
+        select certt.CERT_ID from aea_bus_cert certt , aea_im_service_qual q where q.service_id=#{serviceId} and
+        certt.BUS_RECORD_ID = q.qual_id and certt.BUS_TABLE_NAME="AEA_IM_QUAL" and certt.CERT_ID = cert.cert_id
+        )
+
+    </select>
+    <select id="getAeaCertById" resultType="com.augurit.aplanmis.common.domain.AeaCert">
+        select
+        <include refid="allColumns"/>
+        from AEA_CERT cert where CERT_ID=#{certId} and IS_DELETED='0' and ROOT_ORG_ID=#{rootOrgId}
+    </select>
+</mapper>

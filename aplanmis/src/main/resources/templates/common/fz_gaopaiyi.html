@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<div th:fragment="fzGaoPaiYi">
+  <el-dialog id="fzGaoPaiYiDia" @closed="closedUplodPhoto()" class="special-dialog fz-gaopai-dialog" top="80px"
+             width="860px"
+             append-to-body
+             :visible.sync="fzPaiZhaoVisible">
+    <span slot="title" class="dialog-header">
+      拍照窗口 <span id="fz_dev_Name">（设备名：无）</span>
+    </span>
+    <!--拍照窗口-->
+    <div id="fz_upload_photo_modal" class="clearfix" style="padding: 0 10px;">
+      <el-row>
+        <el-col :span="12">
+          <el-button type="primary" id="mainDevBtn" onclick="openMainDev();">打开主摄像头</el-button>
+          <el-button type="primary" id="secondDevBtn" onclick="openSecondDev();">打开副摄像头</el-button>
+        </el-col>
+        <el-col :span="12">
+          <el-button type="primary" onclick="captureToFile();">拍照</el-button>
+          <el-button type="primary" onclick="fz_upload_photo();">上传</el-button>
+          <el-button type="primary" onclick="rotationDev();">旋转</el-button>
+          <el-button type="primary" onclick="imageTopdf();">转为pdf</el-button>
+        </el-col>
+      </el-row>
+      <el-row style="padding-top: 10px;padding-bottom: 10px">
+        <el-col :span="4" align="right">
+          设置分辨率：
+        </el-col>
+        <el-col :span="16" align="left">
+          <select id="Resolution_Select" name="Resolution" style="width:20%;" onchange="setResIndex(Resolution_Select.value)">
+          </select>
+        </el-col>
+      </el-row>
+      <el-row>
+          <el-col :span="4">
+            <div id="fz_container" style="height:500px;overflow-x:hidden;overflow-y:auto;"></div>
+          </el-col>
+          <el-col :span="20">
+            <div style="width:99%;height:500px;" align="center" id="dev">
+              <object id="Capture" type="application/ZCaptureVideo" style ="width: 99%;height: 500px;border: 1px gray solid;"></object>
+            </div>
+          </el-col>
+        </el-row>
+    </div>
+    <!--照片预览窗口-->
+    <el-dialog
+      width="860px"
+      title="内层 Dialog"
+      :visible.sync="fzInnerVisible"
+      @closed="closedBigImg()"
+      append-to-body>
+      <span slot="title" class="dialog-header" id="fz_big_img_photo_modal_title"></span>
+      <div id="fz_big_img_photo_modal" class="clearfix">
+        <div class="modal-body" style="padding-top: 2px;padding-bottom: 10px;padding-left: 0px;height:650px">
+          <img src="" id="fz_bigImgPreView" style="margin-left:30px">
+        </div>
+      </div>
+    </el-dialog>
+  </el-dialog>
+</div>
+
+</body>
+</html>

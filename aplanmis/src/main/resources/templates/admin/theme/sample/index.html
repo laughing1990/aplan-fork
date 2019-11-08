@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>主题样本</title>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!--引入样式-->
+    <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/metronic-5/vendors.bundle.css" th:href="@{/agcloud/framework/js-lib/metronic-5/vendors.bundle.css}">
+    <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/ui-private/default/common/css/metronic.css" th:href="@{/agcloud/framework/ui-private/default/common/css/metronic.css}">
+    <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.css" th:href="@{/agcloud/framework/js-lib/element-2/element.css}">
+    <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/ui-private/default/common/css/layout.css" th:href="@{/agcloud/framework/ui-private/default/common/css/layout.css}">
+    <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/ui-private/default/blue/css/theme.css" th:href="@{/agcloud/framework/ui-private/default/blue/css/theme.css}">
+    <link rel="stylesheet" href="../../../../static/admin/theme/sample/css/style.css" th:href="@{/admin/theme/sample/css/style.css}">
+
+    <script>
+        var ctx = '[[@{/}]]';
+    </script>
+</head>
+<body>
+<div id="index" v-loading="loading" style="padding: 15px;">
+    <div class="add-search clearfix" style="padding-bottom: 15px;">
+        <button type="button" class="btn btn-primary" @click="addThemeSample">新增</button>
+        <button type="button" class="btn btn-outline-danger" @click="batchDelData">删除</button>
+        <div class="float-right search-btn" style="padding-left: 10px;">
+            <div class="input-group search-key">
+                <input type="text" class="form-control" v-model="searchKey" placeholder="请输入查询关键字" style="width: 250px;">
+                <i class="la la-close clear-search" @click="clearAndReloadDataTable"></i>
+                <div class="input-group-append">
+                    <button class="btn btn-primary m-btn--icon" @click="reloadDataTable">
+                        <span><i class="fa fa-search"></i><span>查询</span></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 主要显示内容 -->
+    <el-table
+            :data="tableData.rows"
+            border style="width: 100%"
+            highlight-current-row
+            v-loading="loading"
+            @row-dblclick=""
+            @selection-change="handleSelChange">
+        <el-table-column type="selection" align="center"></el-table-column>
+        <el-table-column prop="sampleName" label="样本名称" align="left" width="350">
+        </el-table-column>
+        <el-table-column prop="sampleType" label="样本类型" align="center" width="200">
+            <template slot-scope="scope">
+                {{parseSampleType(scope.row.sampleType)}}
+            </template>
+        </el-table-column>
+        <el-table-column prop="sampleDesc" label="样本描述" align="left"></el-table-column>
+        <el-table-column prop="" label="操作" width="130" align="center">
+            <template slot-scope="scope">
+                <el-button type="primary" icon="el-icon-edit" circle @click="editThemeSample(scope.row)"></el-button>
+                <el-button type="danger" icon="el-icon-delete" circle @click="delThemeSample(scope.row)"></el-button>
+            </template>
+        </el-table-column>
+    </el-table>
+
+    <!-- 分页 -->
+    <el-pagination
+            background
+            align="right"
+            :pager-count="5"
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :page-sizes="[10, 20, 30, 50]"
+            :page-size.sync="pageSize"
+            layout="total,sizes, prev, pager, next, jumper"
+            :total="tableData.total"
+            :current-page.sync="page"
+    >
+    </el-pagination>
+
+
+    <!-- 新增/编辑页面 -->
+    <el-dialog :title="dialogTitie" :visible.sync="dialogEditTable" class="edit-row" @closed="clearFormData">
+        <el-form :inline="true" :model="selRowData" :rules="rules" ref="selRowData">
+
+            <input type="hidden" v-model="selRowData.themeSampleId">
+
+            <el-form-item label="样本名称："  prop="sampleName">
+                <el-input v-model="selRowData.sampleName" placeholder="样本名称" ></el-input>
+            </el-form-item>
+
+            <el-form-item label="样本类型：" prop="sampleType">
+                <el-select v-model="selRowData.sampleType" >
+                    <el-option :value="item.itemCode" :label="item.itemName" v-for="(item, index) in sampleTypeList"></el-option>
+                </el-select>
+            </el-form-item>
+
+
+            <el-form-item label="样本描述：" prop="sampleDesc" class="ops-memo">
+                <el-input type="textarea" v-model="selRowData.sampleDesc" rows="3"></el-input>
+            </el-form-item>
+
+
+            <el-form-item label="模板内容：" prop="sampleContent" class="ops-memo">
+                <el-input type="textarea" v-model="selRowData.sampleContent" rows="10"></el-input>
+            </el-form-item>
+
+        </el-form>
+
+        <div slot="footer" class="dialog-footer">
+            <button class="btn btn-secondary" @click="dialogEditTable=false">取消</button>
+            <button class="btn btn-primary"  @click="saveThemeSample()">保存</button>
+        </div>
+    </el-dialog>
+
+</div>
+
+<!-- 引入js文件 -->
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js" th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js" th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js" th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js" th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>
+<script type="text/javascript" src="../../../../static/admin/theme/sample/js/index.js" th:src="@{/admin/theme/sample/js/index.js}"></script>
+</body>
+</html>

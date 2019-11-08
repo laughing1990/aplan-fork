@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <th:block th:include="common/common :: commonheader('送达回证打印')"/>
+    <th:block th:include="common/common :: ntkojs"/>
+
+    <script type="text/javascript">
+        var wordInfoData = null;            //word填充数据
+        //var applyinstId = '${applyinstId}'; //打印数据查询参数
+        var receiveId = '[[${receiveId}]]'; //打印数据查询参数-回执ID
+        var loadInfoResult = false;         //标识数据是否成功查询
+        //覆盖文档打开回调方法
+        function ntkoondocumentopened(str, doc) {
+            TANGER_OCX_bDocOpen = !0;//true
+            //当前打开的文档类型 0=没有文档；100 =其他文档类型；1=word；2=Excel.Sheet或者 Excel.Chart ；
+            // 3=PowerPoint.Show；4= Visio.Drawing； 5=MSProject.Project；6= WPS Doc；7=Kingsoft.Sheet
+            opendoctype = TANGER_OCX_OBJ.DocType;
+            //saved属性用来判断文档是否被修改过,文档打开的时候设置成ture,当文档被修改,自动被设置为false,该属性由office提供.
+            //当电脑上安装的office没有激活的会报错。
+            // TANGER_OCX_OBJ.activeDocument.saved=true;
+            if (TANGER_OCX_bDocOpen) {                     //当文档完全打开
+                prohibitOperate();                          //设置禁用的操作
+                if (wordInfoData != null) setWordInfo(wordInfoData);
+            }
+        }
+
+        function prohibitOperate() {
+            TANGER_OCX_OBJ.FileNew = false;          //禁止文件菜单的新建项
+            TANGER_OCX_OBJ.FileOpen = false;        //禁止文件菜单的打开项
+            TANGER_OCX_OBJ.FileClose = false;       //禁止文件菜单的关闭项
+            TANGER_OCX_OBJ.FileSave = false;        //禁止文件菜单的保存项
+            TANGER_OCX_OBJ.FileSaveAs = false;      //禁止文件菜单的另存为项
+        }
+
+        function initInfo() {
+            TANGER_OCX_OBJ = document.getElementById("TANGER_OCX");
+            //判断chrome的版本是否大于54，若大于54，使用代理解决问题
+            //本段代码一般放在TANGER_OCX_OBJ = document.getElementById("TANGER_OCX");代码后面。
+            var brower;
+            var regStr_Chrome = /chrome\/[\d.]+/gi;
+            var agent = navigator.userAgent.toLowerCase();
+            if (agent.indexOf("chrome") > 0) {
+                brower = agent.match(regStr_Chrome);
+            }
+            var verinfo = (brower + "").replace(/[^0-9.]/ig, "");
+            var uVerinfo = parseFloat(verinfo);
+            if (uVerinfo > 54) {
+                TANGER_OCX_OBJ = new Proxy(TANGER_OCX_OBJ, {
+                    set: function (target, key, value, proxy) {
+                        var func = target["setattribute"];
+                        var args = new Array();
+                        args[0] = key;
+                        args[1] = value;
+                        return (Reflect.apply(func, target, args));
+                    },
+                    get: function (target, key, proxy) {
+                        var value = target[key];
+                        if (typeof value == 'function') { // 为函数
+                            return function () {
+                                return Reflect.apply(value, target, arguments);
+                            };
+                        } else
+                            return (value);
+                    }
+                });
+            }
+            objTitleBar();                                  //不显示标题
+            // TANGER_OCX_OBJ.FullScreenMode = true;       //全屏打开
+            loadWordInfoData();                             //加载数据
+            openWordTemplet();
+        }
+
+        //打开设置好的模板文档
+        function openWordTemplet() {
+            var url = ctx + "receive/ts/8-行政许可文书送达回证0327.doc";
+            if (loadInfoResult)
+                TANGER_OCX_OBJ.BeginOpenFromURL(url, true);     //打开模板文档
+        }
+
+        //设置word模板的值
+        function setWordInfo(jsonData) {
+            for (var key in jsonData) {
+                if (jsonData[key] != null) {
+                    TANGER_OCX_OBJ.SetBookmarkValue(key, jsonData[key]);
+                }
+            }
+        }
+
+        //加载信息
+        function loadWordInfoData() {
+            var url = ctx + '/rest/receive/getOneReceiveByReceiveId/' + receiveId;
+
+            $.ajax({
+                type: 'get',
+                url: url,
+                cache: false,
+                async: false,
+                //data: {applyinstId: applyinstId, receiptType: "0"},
+                dataType: 'json',
+                success: function (result) {
+                    if (result != null) {
+                        loadInfoResult = true;
+                        converInfo(result);
+                    }
+                },
+                error: function (msg) {
+                    TANGER_OCX_OBJ.ShowTipMessage('提示', '数据加载失败！');
+                }
+            });
+        }
+
+        //转换打印数据
+        function converInfo(jsonObj) {
+            if (jsonObj == '' || typeof (jsonObj) == 'undefined') return '';
+            var receiveDate = '';   //收到时间
+            if (jsonObj.createTime != '' && jsonObj.createTime != null) {
+                var myDate = new Date(jsonObj.createTime);
+                var month = (myDate.getMonth() + 1) < 10 ? '0' + (myDate.getMonth() + 1) : myDate.getMonth() + 1;
+                var day = myDate.getDate() < 10 ? '0' + myDate.getDate() : myDate.getDate();
+                receiveDate = myDate.getFullYear() + '年' + month + '月' + day + '日' + ' ' +
+                    myDate.getHours() + '时' + myDate.getMinutes() + '分' + myDate.getSeconds() + '秒';
+            }
+            var unit = '';
+            if (jsonObj.applicant) {
+                unit = jsonObj.applicant;
+            }
+            wordInfoData = {
+                'numberCode': jsonObj.applyinstCode,
+                'receiveName': unit + "（" + jsonObj.receiveUserName + "）",
+                'linkPhone': jsonObj.receiveUserMobile,
+                'sendType': jsonObj.receiveMode == "1" ? '窗口领证' : '邮政快递',
+                'sendAddr': jsonObj.serviceAddress,
+                'certInfo': '',
+                'receiveTime': receiveDate,
+                'remark': jsonObj.receiveMemo,
+                'itemName': jsonObj.iteminstName
+            }
+        }
+    </script>
+
+</HEAD>
+
+<BODY onload="initInfo();">
+
+</BODY>
+</HTML>

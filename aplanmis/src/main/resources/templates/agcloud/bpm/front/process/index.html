@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!--公共css,js-->
+    <th:block th:include="common/common :: approveCommonHeader('流程审批界面')"/>
+
+    <link rel="stylesheet" href="../../../../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/js-lib/agtree-v3/css/zTreeStyle/zTreeStyle.css" th:href="@{/agcloud/framework/js-lib/agtree-v3/css/zTreeStyle/zTreeStyle.css}"/>
+
+    <link rel="stylesheet" href="../../../../../static/agcloud/bpm/front/process/css/approval-integration.css" th:href="@{/agcloud/bpm/front/process/css/approval-integration.css}">
+    <link rel="stylesheet" href="../../../../../static/agcloud/bpm/front/process/css/index.css" th:href="@{/agcloud/bpm/front/process/css/index.css}">
+    <link rel="stylesheet" href="../../../../../static/agcloud/bpm/front/process/css/orgTheme.css" th:href="@{/agcloud/bpm/front/process/css/orgTheme.css}">
+
+
+    <link type="text/css" rel="stylesheet" href="../../../../../static/agcloud/bpm/front/process/diagram/display/jquery.qtip.min.css" th:href="@{/agcloud/bpm/front/process/diagram/display/jquery.qtip.min.css}"/>
+    <link type="text/css" rel="stylesheet" href="../../../../../static/agcloud/bpm/front/process/diagram/display/displaymodel.css" th:href="@{/agcloud/bpm/front/process/diagram/display/displaymodel.css}"/>
+    <script>
+        //var ctx = "[[@{/}]]";
+        /* var formJson = "[[${formJson}]]";
+         var appId = "[[${appId}]]";
+         var taskId = "[[${taskId}]]";
+         var viewId = "[[${viewId}]]";
+         var busRecordId = "[[${busRecordId}]]";
+         var isApprover = "[[${isApprover}]]";
+         var recordIds = "[[${masterEntityKey}]]";//跟上传主键关联，用于查询
+         var recordId = "[[${masterEntityKey}]]";//用于上传
+         var attLink = {
+             tableName: 'AEA_HI_TASK',
+             pkName: 'ID_',
+             recordId: taskId,
+         };//attLink用于附件关联多个业务ID
+
+         var applyinstId = "[[${masterEntityKey}]]";
+         var processInstanceId = "[[${processInstanceId}]]";*/
+        //console.log("index:"+applyinstId);
+        // var ctx = "http://192.168.14.9:8083/aplanmis-front/"
+        // var ctx = "http://192.168.32.48:8083/aplanmis-front/"
+    </script>
+</head>
+<body>
+
+<div class="content" id="app" v-cloak>
+    <section class="first clearfix">
+        <div class="approval-header">
+            <div>
+                <i class="el-icon-office-building"></i>
+                <span class="approval-title" id="currentApproveStageItemName"
+                      v-text="typeAstateData.stageOrItemName"></span>
+                <span id="currentApproveProjName" v-text="typeAstateData.projName"></span>
+                <span class="fr">
+                        <span class="full-screen">
+                          <i class="spread"></i>
+                        </span>
+                        <span class="close-window">
+                          <i class="el-icon-close"></i>
+                        </span>
+                </span>
+            </div>
+        </div>
+        <div class="headerNav d-flex justify-content-between">
+            <!--            <template v-for="item in buttonData" v-html="item.elementRender"></template>-->
+            <!--动态权限按钮位置 str-->
+
+            <div class="fl" id="buttonBar">
+                <!--<div>
+                    <button @click="testBtn">测试</button>
+                </div>-->
+                <template v-for="item in buttonDataShow">
+                    <span v-html="item.elementRender" v-if="item.isHidden == 0"></span>
+                </template>
+                <el-dropdown v-show="showMenuMore">
+                  <span class="el-dropdown-link">
+                    <i class="el-icon-more" style="color: #61bbff;transform:rotate(90deg);"></i>
+                  </span>
+                    <el-dropdown-menu slot="dropdown">
+                        <template v-for="(itemHide,ind) in buttonDataHide">
+                            <el-dropdown-item v-if="itemHide.isHidden == 0" v-html="itemHide.elementRender"></el-dropdown-item>
+                        </template>
+                    </el-dropdown-menu>
+                </el-dropdown>
+            </div>
+            <!--动态权限按钮位置 end-->
+            <div class="fr d-flex align-items-center" id="applyStatus">
+                <div class="fl">申报方式：
+                    <span class="badge badge-pill badge-success" v-if="typeAstateData.applyStyle == 'win'">窗口申报</span>
+                    <span class="badge badge-pill badge-success" v-else>网上申报</span>
+                </div>
+                <div class="fl">状态：<span id="nodeState" class="badge badge-pill badge-success"
+                                         v-text="typeAstateData.currentState"></span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="three" id="mainContentPart">
+        <div id="wrapper" class="clearfix toggled">
+            <div id="page-content-wrapper" class="fl content-left">
+                <div>
+                    <section class="second">
+                        <ul class="nav nav-tabs" id="form-tabsId" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active show" id="m_tabs_link_1" aria-controls="m_tabs_content_1"
+                                   aria-selected="true" data-toggle="tab" href="#m_tabs_content_1" role="tab">基本信息</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="m_tabs_link_2" aria-controls="m_tabs_content_2"
+                                   aria-selected="false" data-toggle="tab" href="#m_tabs_content_2" role="tab">批文批复</a>
+                            </li>
+                        </ul>
+                        <div class="tab-content" id="form-tabs-content" v-loading="formTabsContentLoading"
+                             element-loading-text="加载中...">
+                        </div>
+                    </section>
+                </div>
+            </div>
+            <!-- Sidebar -->
+            <div id="sidebar-wrapper" class="custom-scroll-style fl">
+                <div class="content-right" :class="changeRightWidth">
+                    <div class="sidebar-left fl" style="position:relative;">
+                        <ul class="nav nav-tabs vertical-tab" role="tablist">
+                            <li class="nav-item m-tabs__item " :class="{'active':rightVerticalTabActive == 1}"
+                                @click="rightVerticalTabActive = 1">
+                                <a class="nav-link m-tabs__link" :class="{'active':rightVerticalTabActive == 1}">
+                                    办理意见
+                                </a>
+                            </li>
+                            <li class="nav-item m-tabs__item" :class="{'active':rightVerticalTabActive == 2}"
+                                id="attachFileClick" @click="rightVerticalTabActive = 2">
+                                <a class="nav-link m-tabs__link" :class="{'active':rightVerticalTabActive == 2}">
+                                    材料附件
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="sidebar-right fl">
+                        <div class="tab-content" id="rightContentPart">
+                            <div class="tab-pane active" id="processHistoryComment"
+                                 v-show="rightVerticalTabActive == 1">
+                                <ul class="nav nav-tabs right-tab-1" role="tablist">
+                                    <li class="nav-item m-tabs__item" @click="rightTabActive = 1">
+                                        <a class="nav-link m-tabs__link" :class="{'active':rightTabActive == 1}">
+                                            流程视图
+                                        </a>
+                                    </li>
+                                    <li class="nav-item m-tabs__item" @click="rightTabActive = 2">
+                                        <a class="nav-link m-tabs__link" :class="{'active':rightTabActive == 2}">
+                                            对话视图
+                                        </a>
+                                    </li>
+                                </ul>
+                                <i class="tab-icon-right" :class="[rightIconTab?'expand':'compress']"
+                                   @click="rightIconTab = !rightIconTab"></i>
+                                <div class="tab-content" style="padding-top: 15px;">
+                                    <div class="tab-pane miniScrollbar  m-scrollable aplan-sidebar"
+                                         :class="{'active':rightTabActive == 1}" id="right_tab_1"
+                                         v-show="rightTabActive == 1">
+                                        <div class="m-accordion m-accordion--toggle-arrow"
+                                             :class="{'mg-200':processViewLoading}" id="processView"
+                                             v-loading="processViewLoading" element-loading-text="加载中...">
+
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane m-scrollable" :class="{'active':rightTabActive == 2}"
+                                         style="-ms-overflow-x: hidden;padding:20px 12px 0;" id="right_tab_1_2"
+                                         v-show="rightTabActive == 2">
+                                        <div class="m-messenger m-messenger--message-arrow m-messenger--skin-light"
+                                             :style="{height:winHeight+'px'}">
+                                            <el-scrollbar style="height: 100%">
+                                                <div class="m-messenger__messages m-scrollable m-scroller"
+                                                     id="processAssignComment_dialog" style="padding-right: 25px;"
+                                                     v-loading="processViewLoading" element-loading-text="加载中...">
+
+                                                </div>
+                                            </el-scrollbar>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane" id="attachFile" v-show="rightVerticalTabActive == 2"
+                                 style="padding-left: 10px;">
+                                <iframe frameborder="0" scrolling="no" id="attachContentFrame"
+                                        style="width:100%;overflow-x: hidden;height: 100%;margin: 0;padding: 0;border: 0;"
+                                        src=""></iframe>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 发送对话框 -->
+    <el-dialog :title="saveAndSendTitle" :visible.sync="sendDialog" class="dialog sendDialog">
+        <el-container>
+            <el-header>发送环节及办理人</el-header>
+            <el-main>
+                <el-form ref="sendForm" :rules="sendFormRule" label-width="150px"
+                         class="demo-form-inline" :model="sendForm">
+                    <el-form-item label="下一环节：">
+                        <div id="nextTaskList"></div>
+                    </el-form-item>
+                    <el-form-item label="下一环节审批人：">
+                        <el-input v-model="sendForm.nextTaskAssignee" readonly ref="nextTaskAssignee"
+                                  name="nextTaskAssignee"
+                                  placeholder="请选择办理人">
+                            <template slot="append">
+                                <el-button id='selectAsingee' type="text" class="btn-table"
+                                           :disabled="!isNeedSelectAssignee"
+                                           @click="selectAssigneeDialog=true;getAssigneeTree()"
+                                           style="margin: 0 auto;display:inline-block;">选择
+                                </el-button>
+                            </template>
+                        </el-input>
+                    </el-form-item>
+                    <!--注释短信通知功能 -->
+                    <!--<el-form-item label="是否通知企业：">
+                        <el-radio label="1" v-model="sendForm.isSendSMS" @change="showMasses()">是</el-radio>
+                        <el-radio label="0" v-model="sendForm.isSendSMS" @change="showMasses()">否</el-radio>
+                    </el-form-item>
+                    <el-form-item label="短信内容：" v-show="sendForm.isSendSMS == '1'">
+                        <el-input type="textarea" v-model="sendForm.contentDesc"></el-input>
+                    </el-form-item>
+                    <el-form-item label="通知下一个审批人：">
+                        <el-radio label="1" v-model="sendForm.isSendToNextHandle">是</el-radio>
+                        <el-radio label="0" v-model="sendForm.isSendToNextHandle">否</el-radio>
+                    </el-form-item>-->
+                </el-form>
+            </el-main>
+        </el-container>
+        <el-container style="margin-top:15px;">
+            <el-header>办理意见</el-header>
+            <el-main>
+                <el-form ref="opinionForm" :rules="opinionFormRule"
+                         class="demo-form-inline" :model="opinionForm">
+                    <el-row>
+                        <el-col :span="16">
+                            <el-form-item>
+                                <el-select v-model="opinionForm.selectOpinion" placeholder="请选择常用办理意见" filterable
+                                           style="width:500px;" @change="opinionSelectChange">
+                                    <el-option :label="item.opinionContent" :value="item.opinionContent"
+                                               v-for="item in opinionTableData" :key="item.opinionId"></el-option>
+                                </el-select>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="8">
+                            <div style="text-align: right">
+                                <button type="button" class="btn btn-secondary" @click="setCommonOpinion()">设为常用意见
+                                </button>
+                                <button type="button" class="btn btn-secondary"
+                                        @click="manageOpinionDialog=true;getOpinionList()">意见管理
+                                </button>
+                            </div>
+                        </el-col>
+                    </el-row>
+                    <el-form-item>
+                        <el-input type="textarea" :rows="3" placeholder="请输入办理意见"
+                                  v-model="opinionForm.opinionText"></el-input>
+                    </el-form-item>
+                </el-form>
+            </el-main>
+        </el-container>
+        <div id="sendTip">
+        </div>
+        <div slot="footer" class="dialog-footer">
+            <button type="button" class="btn btn-primary" @click="doSendOperation()">发送
+            </button>
+            <button type="button" class="btn btn-secondary" @click="sendDialog=false">关闭
+            </button>
+        </div>
+    </el-dialog>
+
+    <!--更改事项状态专用弹框 start-->
+    <el-dialog :title="commentTitle" :visible.sync="submitCommentsShow" class="dialog sendDialog">
+        <el-container style="margin-top:15px;">
+            <el-header>办理意见</el-header>
+            <el-main>
+                <el-form ref="opinionForm" :rules="opinionFormRule"
+                         class="demo-form-inline" :model="opinionForm">
+                    <el-row>
+                        <el-col :span="16">
+                            <el-form-item>
+                                <el-select v-model="opinionForm.selectOpinion" placeholder="请选择常用办理意见" filterable
+                                           style="width:500px;" @change="opinionSelectChange">
+                                    <el-option :label="item.opinionContent" :value="item.opinionContent"
+                                               v-for="item in opinionTableData" :key="item.opinionId"></el-option>
+                                </el-select>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="8">
+                            <div style="text-align: right">
+                                <el-button @click="setCommonOpinion()">设为常用意见</el-button>
+                                <el-button @click="submitCommentsFlag1=true">管理</el-button>
+                            </div>
+                        </el-col>
+                    </el-row>
+                    <el-form-item>
+                        <el-input type="textarea" :rows="3" placeholder="请输入办理意见"
+                                  v-model="opinionForm.opinionText"></el-input>
+                    </el-form-item>
+                </el-form>
+            </el-main>
+        </el-container>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="submitCommentsShow = false">取 消</el-button>
+            <el-button type="primary" @click="updateItemState">发送</el-button>
+        </div>
+        <el-dialog title="常用意见管理" append-to-body class="edit-comments" :visible.sync="submitCommentsFlag1" width="700px">
+            <el-table :data="opinionTableData">&lt;!&ndash;@selection-change="handleSelectionChange"&ndash;&gt;
+                <el-table-column property="opinionTableData.name" label="常用意见" prop="opinionContent"></el-table-column>
+                <el-table-column property="name" label="操作" width="150">
+                    <template slot-scope="scope">
+                        <span title="编辑" class="el-icon-edit" @click="getUserOptionById(scope.row)"></span>
+                        <span title="删除" class="el-icon-delete" @click="deleteOpinion(scope.row.opinionId)"></span>
+                    </template>
+                </el-table-column>
+            </el-table>
+            <el-dialog title="编辑常用意见" append-to-body class="edit-comments" :visible.sync="submitCommentsFlag2" width="600px">
+                <el-form ref="editOpinionForm" :rules="editOpinionFormRule" label-width="100px" :model="editOpinionForm">
+                    <el-form-item label="意见内容:" require prop="opinionContent">
+                        <el-input type="textarea" :rows="4" placeholder="请输入办理意见" v-model="editOpinionForm.opinionContent"></el-input>
+                    </el-form-item>
+                    <el-form-item label="排序号">
+                        <el-input type="number" v-model="editOpinionForm.sortNo" autocomplete="off"></el-input>
+                    </el-form-item>
+                </el-form>
+                <div slot="footer" class="dialog-footer">
+                    <el-button @click="submitCommentsFlag2 = false">关闭</el-button>
+                    <el-button type="primary" @click="editUserOption()">保存</el-button>
+                </div>
+            </el-dialog>
+        </el-dialog>
+    </el-dialog>
+    <!--申报意见弹窗 end-->
+
+    <!--  选择审批人 弹窗 -->
+    <el-dialog title="选择办理人对话框" :visible.sync="selectAssigneeDialog" class="dialog sendDialog selectAssigneeDialog"
+               v-cloak>
+        <el-row>
+            <el-col :span="16">
+                <el-container>
+                    <el-header>
+                        <span>待选办理人</span>
+                        <span style="margin-left: 20px">
+                                <input style="height: 30px;" v-model="assigneeSearchKeyword" @keyup="assigneeSearch"/>
+                            </span>
+                    </el-header>
+                    <el-main>
+                        <ul id="assigneeOrgTree" class="ztree"></ul>
+                    </el-main>
+                </el-container>
+            </el-col>
+            <el-col :span="2">
+                <div style="height: 445px;padding-top: 210px">
+                    <button type="button" class="el-button el-button--primary el-transfer__button">
+                        <span><i class="el-icon-arrow-right"></i></span></button>
+                </div>
+            </el-col>
+            <el-col :span="6">
+                <el-container>
+                    <el-header>已选办理人</el-header>
+                    <el-main>
+                        <div id="selectedAssignees"></div>
+                    </el-main>
+                </el-container>
+            </el-col>
+        </el-row>
+        <div slot="footer" class="dialog-footer">
+            <button type="button" class="btn btn-primary" @click="confirmSelectAssignee">确定
+            </button>
+            <button type="button" class="btn btn-secondary" @click="selectAssigneeDialog=false">关闭
+            </button>
+        </div>
+    </el-dialog>
+
+    <!--  管理常用办理意见 弹窗 -->
+    <el-dialog title="常用办理意见" :visible.sync="manageOpinionDialog" class="dialog sendDialog" id="manageOpinionDialog">
+        <el-table :data="opinionTableData" stripe border highlight-current-row ref="opinionTable" height="500"
+                  @selection-change="handleSelectionChange" style="margin-top: 10px;width: 100%;">
+            <!--<el-table-column type="selection" width="40"></el-table-column>-->
+            <el-table-column prop="opinionContent" label="意见内容" width="400"></el-table-column>
+            <el-table-column label="操作" align="center">
+                <template slot-scope="scope">
+                    <el-button type="text" class="btn-table" @click="editOpinion(scope.row)">
+                        编辑
+                    </el-button>
+                    <el-button type="text" class="btn-table" @click="deleteOpinion(scope.row.opinionId)">
+                        删除
+                    </el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+    </el-dialog>
+
+    <!--  编辑意见 弹窗 -->
+    <el-dialog title="编辑意见" :visible.sync="editOpinionDialog" class="dialog sendDialog">
+        <el-form ref="editOpinionForm" :rules="editOpinionFormRule" label-width="150px"
+                 class="demo-form-inline" :model="editOpinionForm">
+            <el-form-item label="意见内容:" require prop="opinionContent">
+                <el-input type="textarea" :rows="4" placeholder="请输入办理意见"
+                          v-model="editOpinionForm.opinionContent"></el-input>
+            </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <button type="button" class="btn btn-primary" @click="doSaveOpinion">保存
+            </button>
+            <button type="button" class="btn btn-secondary" @click="editOpinionDialog=false">取消
+            </button>
+        </div>
+    </el-dialog>
+
+    <!-- 流程跟踪对话框 -->
+    <el-dialog title="流程跟踪" :visible.sync="processDiagramDialog" class="dialog processDiagramDialog">
+        <div class="row" id="parentPro">
+        </div>
+        <el-scrollbar>
+            <div id="bpmnModel">
+            </div>
+        </el-scrollbar>
+    </el-dialog>
+
+    <!--查看情形对话框  -->
+    <el-dialog title="查看情形 " :visible.sync="processStatesDialog" class="dialog">
+
+        <!--<el-table
+                :data="statesData"
+                style="width: 100%;margin-bottom: 20px;"
+                row-key="parStateId"
+                border
+                default-expand-all
+                :tree-props="{children: 'children'}">
+            <el-table-column prop="stateName" >
+                <template slot-scope="scope">
+                    <font style="color:red;" v-if="scope.row.mustAnswer == '1'">*</font><span>{{scope.row.stateName}}</span>
+                </template>
+            </el-table-column>
+        </el-table>-->
+
+        <el-scrollbar style="height: 350px">
+            <div class="m-portlet__body"
+                 style="padding:15px 20px 10px 15px;max-height:650px;overflow-y:auto;overflow-x: hidden">
+                <div id="dg_modal_show_par_stateinst_content" style="width:100%" v-loading="processStatesLoading">
+                    <div v-if="statesData.length>0">
+                        <div class="states_item" v-for="(item,index) in statesData">
+                            <div style=""><font style="color:red;" v-if="item.mustAnswer == '1'">*</font>{{item.stateName}}
+                            </div>
+                            <div style="margin-top: 10px;margin-left: 20px;" v-for="(item2,index2) in item.answerStates">
+                                答：{{item2.stateName}}
+                            </div>
+                        </div>
+                    </div>
+                    <div v-else>
+                        <span>没有情形</span>
+                    </div>
+                </div>
+            </div>
+        </el-scrollbar>
+    </el-dialog>
+
+    <!--回执列表弹窗 start-->
+    <el-dialog title="回执列表"
+               :visible.sync="receiptPrintDialog"
+               :close-on-click-modal="false"
+               :close-on-press-escape="false"
+               class="receive-modal"
+               width="900px">
+        <div class="receive-item" v-for="item in receiptTable">
+            <p class="receive-item-header">{{item.name}}
+                <span class="fr" :class="item.isSeries==0?'receive-type-y':'receive-type'">{{item.isSeries==0?'并联':'并行'}}</span>
+            </p>
+            <div class="receive-list">
+                <el-button v-for="itemBtn in item.receiveList" @click="printReceive(itemBtn)" :key="itemBtn.receiveId">
+                    {{(itemBtn.receiptType==2)?'收件回执':(itemBtn.receiptType==1)?'物料回执':(itemBtn.receiptType==3)?'不受理回执':'其他回执'}}
+                </el-button>
+            </div>
+        </div>
+    </el-dialog>
+    <!--回执列表弹窗 end-->
+
+    <el-dialog title="证照列表" :visible.sync="certinstModalShow" class="dialog sendDialog" width="900px">
+        <el-button type="primary" @click="addItemCert()">新增</el-button>
+        <el-button type="primary" @click="batchDeleteItemCert()">删除</el-button>
+        <el-table :data="certinstList" stripe border highlight-current-row ref="opinionTable"
+                  @selection-change="selecCertinstListChange" style="margin-top: 10px;width: 100%;"><!--height="500"-->
+            <el-table-column type="selection" width="55" align="center"></el-table-column>
+            <el-table-column prop="certinstCode" label="证照编码" align="center"></el-table-column>
+            <el-table-column prop="certinstName" label="证照名称" align="center"></el-table-column>
+            <el-table-column prop="issueDate" label="颁发日期" align="center"></el-table-column>
+            <el-table-column prop="termStart" label="有效期（起始）" align="center"></el-table-column>
+            <el-table-column prop="termEnd" label="有效期（截止）" align="center"></el-table-column>
+            <el-table-column label="操作" align="center">
+                <template slot-scope="scope">
+                    <el-button type="text" class="btn-table" @click="editCertinst(scope.row)">
+                        编辑
+                    </el-button>
+                    <el-button type="text" class="btn-table" @click="deleteCertinst(scope.row.certinstId)">
+                        删除
+                    </el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+        <el-dialog title="编辑/新增证照" append-to-body class="edit-comments" :visible.sync="editCertinstModel" width="900px" @close="resetForm('editCertForm')">
+            <el-form :model="editCertForm" ref="editCertForm" label-width="180px" :rules="certFormRules">
+                <div class="clearfix">
+                    <el-form-item class="input-inline" label="证照类型" prop="certId">
+                        <el-select id="certId" v-model="editCertForm.certId"
+                                   placeholder="证书类型">
+                            <el-option v-for="item in certList" :key="item.certId" :label="item.certName"
+                                       :value="item.certId">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                </div>
+                <el-form-item label="证书编号：" prop="certinstCode">
+                    <el-input v-model="editCertForm.certinstCode" placeholder="请输入证书编号"></el-input>
+                </el-form-item>
+                <el-form-item label="证书名称：" prop="certinstName">
+                    <el-input v-model="editCertForm.certinstName" placeholder="请输入证书名称"></el-input>
+                </el-form-item>
+                <el-form-item label="业主单位：" prop="applicant">{{editCertForm.applicant}}
+                    <!--<el-input v-model="editCertForm.applicant" placeholder="请输入业主单位" disabled></el-input>-->
+                </el-form-item>
+                <el-form-item label="颁发单位：" prop="issueOrgName">{{editCertForm.issueOrgName}}
+                    <!--<el-input v-model="editCertForm.issueOrgName" placeholder="请输入颁发单位" disabled></el-input>-->
+                </el-form-item>
+                <el-form-item label="有效期">
+                    <el-col :span="11">
+                        <el-date-picker type="date" placeholder="选择日期" v-model="editCertForm.termStart" style="width: 100%;"></el-date-picker>
+                    </el-col>
+                    <el-col class="line" :span="2">-</el-col>
+                    <el-col :span="11">
+                        <el-date-picker type="date" placeholder="选择日期" v-model="editCertForm.termEnd" style="width: 100%;" prop="termEnd"></el-date-picker>
+                    </el-col>
+                </el-form-item>
+                <el-form-item label="制证时间：">
+                    <!--<el-input v-model="editCertForm.issueDate"></el-input>-->
+                    <el-date-picker type="date" placeholder="选择日期" format="yyyy-MM-dd" v-model="editCertForm.issueDate" style="width: 100%;"></el-date-picker>
+                </el-form-item>
+                <el-form-item label="持证者：">
+                    <el-input v-model="editCertForm.certOwner"></el-input>
+                </el-form-item>
+                <el-form-item label="证书上传">
+                    <div class="upload-file-content"
+                         :loading="loadingFileWin"
+                         element-loading-text="文件上传中"
+                         element-loading-background="rgba(0, 0, 0, 0.3)"
+                         element-loading-spinner="el-icon-loading">
+                        <div class="file-opt-btn">
+                            <el-upload
+                                    ref="uploadCert"
+                                    class="upload-s-file"
+                                    :action="ctx+'rest/certificate/certinst/att/upload'"
+                                    :show-file-list="false"
+                                    :http-request="uploadFileCom"
+                                    :file-list="fileList">
+                                <el-button slot="trigger" size="small" type="primary">上传</el-button>
+                                <el-button size="small" type="primary" @click="delSelectCertCom()">删除</el-button>
+                            </el-upload>
+                        </div>
+                        <el-table :data="uploadCertData" border @selection-change="selectFileChange">
+                            <el-table-column type="selection"
+                                             align="center"
+                                             width="55">
+                            </el-table-column>
+                            <el-table-column prop="fileName" label="文件名"></el-table-column>
+                            <el-table-column label="操作" align="center" width="150">
+                                <template slot-scope="scope">
+                                    <el-button type="primary" size="mini" @click="filePreview(scope.row)">预览</el-button>
+                                    <el-button type="primary" size="mini" @click="deleteOneAttach(scope.row.fileId)">删除</el-button>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                    </div>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="editCertinstModel = false">取 消</el-button>
+                <el-button @click="saveOrUpdateCertinst()">确 定</el-button>
+            </div>
+        </el-dialog>
+    </el-dialog>
+
+    <!--新增编辑证照实例 start-->
+    <!--<el-dialog title="证照列表" :visible.sync="certinstModalShow1" class="dialog sendDialog" @close="resetForm('editCertForm')">
+        <el-button type="primary" @click="addItemCert()">新增</el-button>
+        <el-button type="primary" @click="batchDeleteItemCert()">删除</el-button>
+
+        <el-table :data="certinstList" @selection-change="selecCertinstListChange">
+            <el-table-column type="selection" width="55"></el-table-column>
+            <el-table-column prop="certinstCode" label="证照编码"></el-table-column>
+            <el-table-column prop="certinstName" label="证照名称"></el-table-column>
+            <el-table-column prop="issueDate" label="颁发日期"></el-table-column>
+            <el-table-column prop="termStart" label="有效期（起始）"></el-table-column>
+            <el-table-column prop="termEnd" label="有效期（截止）"></el-table-column>
+            <template slot-scope="scope">
+                <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">Edit
+                </el-button>
+                <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">Delete
+                </el-button>
+            </template>
+        </el-table>
+
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="certinstModalShow = false">取 消</el-button>
+
+        </div>
+
+        <el-dialog title="编辑/新增证照" append-to-body class="edit-comments" :visible.sync="editCertinstModel" width="700px">
+            <el-form :model="editCertForm" ref="editCertForm" label-width="180px" :rules="certFormRules">
+                <div class="clearfix">
+                    <el-form-item class="input-inline" label="证照类型">
+                        <el-select id="certId" v-model="editCertForm.certId"
+                                   placeholder="证书类型">
+                            <el-option v-for="item in certList" :key="item.certId" :label="item.certName"
+                                       :value="item.certId">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                </div>
+                <el-form-item label="证书编号：" prop="certinstCode">
+                    <el-input v-model="editCertForm.certinstCode" placeholder="请输入证书编号"></el-input>
+                </el-form-item>
+                <el-form-item label="证书名称：" prop="certinstName">
+                    <el-input v-model="editCertForm.certinstName" placeholder="请输入证书名称"></el-input>
+                </el-form-item>
+                <el-form-item label="业主单位：" prop="issueOrg">
+                    <el-input v-model="editCertForm.applicant" placeholder="请输入业主单位" disabled></el-input>
+                    &lt;!&ndash; <el-select id="certId" v-model="editCertForm.unitInfoId"  filterable
+                                placeholder="颁发单位">&lt;!&ndash;:disabled="projSelect"&ndash;&gt;
+                         <el-option v-for="item in unitInfoList" :key="item.unitInfoId" :label="item.applicant"
+                                    :value="item.unitInfoId">
+                         </el-option>
+                     </el-select>&ndash;&gt;
+                </el-form-item>
+                <el-form-item label="颁发单位：" prop="issueOrg">
+                    <el-input v-model="editCertForm.issueOrgName" placeholder="请输入颁发单位" disabled></el-input>
+                    &lt;!&ndash;<el-select id="certId" v-model="editCertForm.issueOrgId"  filterable
+                               placeholder="颁发单位">&lt;!&ndash;:disabled="projSelect"&ndash;&gt;
+                        <el-option v-for="item in orgList" :key="item.unitInfoId" :label="item.applicant"
+                                   :value="item.unitInfoId">
+                        </el-option>
+                    </el-select>&ndash;&gt;
+                </el-form-item>
+                <el-form-item label="有效期">
+                    <el-col :span="11">
+                        &lt;!&ndash;<el-input v-model="editCertForm.termStart" placeholder="" ></el-input>&ndash;&gt;
+                        <el-date-picker type="date" placeholder="选择日期" v-model="editCertForm.termStart" style="width: 100%;"></el-date-picker>
+                    </el-col>
+                    <el-col class="line" :span="2">-</el-col>
+                    <el-col :span="11">
+                        &lt;!&ndash;<el-input v-model="editCertForm.termEnd" placeholder="" ></el-input>&ndash;&gt;
+                        <el-date-picker type="date" placeholder="选择日期" v-model="editCertForm.termEnd" style="width: 100%;" prop="termEnd"></el-date-picker>
+                    </el-col>
+                </el-form-item>
+                <el-form-item label="制证时间：">
+                    &lt;!&ndash;<el-input v-model="editCertForm.issueDate"></el-input>&ndash;&gt;
+                    <el-date-picker type="date" placeholder="选择日期" v-model="editCertForm.issueDate" style="width: 100%;"></el-date-picker>
+                </el-form-item>
+                <el-form-item label="持证者：">
+                    <el-input v-model="editCertForm.certOwner"></el-input>
+                </el-form-item>
+                <el-form-item label="证书上传">
+                    <div class="upload-file-content"
+                         :loading="loadingFileWin"
+                         element-loading-text="文件上传中"
+                         element-loading-background="rgba(0, 0, 0, 0.3)"
+                         element-loading-spinner="el-icon-loading">
+                        <div class="file-opt-btn">
+                            <el-upload
+                                    ref="uploadCert"
+                                    class="upload-s-file"
+                                    :action="ctx+'rest/certificate/cert/upload'"
+                                    :show-file-list="false"
+                                    :http-request="uploadCertCom"
+                                    :file-list="fileList">
+                                <el-button slot="trigger" size="small" type="primary">上传</el-button>
+                                <el-button type="primary" @click="delSelectCertCom()">删除</el-button>
+                            </el-upload>
+                        </div>
+                        <el-table :data="uploadCertData" border @selection-change="selectionCertChange">
+                            <el-table-column type="selection"
+                                             align="center"
+                                             width="55">
+                            </el-table-column>
+                            <el-table-column prop="fileName" label="文件名"></el-table-column>
+                            <el-table-column label="操作" align="center" width="150">
+                                <template slot-scope="scope">
+                                    <el-button type="primary" size="mini" @click="filePreview(scope.row)">预览</el-button>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                    </div>
+                </el-form-item>
+            </el-form>
+        </el-dialog>
+
+    </el-dialog>-->
+    <!--新增编辑证照实例 end-->
+
+    <!-- 材料补正dialog -->
+    <!--  编辑意见 弹窗 -->
+    <el-dialog title="材料补正" :visible.sync="isShowMaterialSupplementDialog" class="dialog mertial-supplement-dialog"
+               width="1250px">
+      <!-- 标签（正在补件的显示） -->
+      <div class="supplement-tag" v-if="supplementDialogData.correctState == 6 || supplementDialogData.correctState == 7">正在补件中...</div>
+      <el-form :inline="true" :model="supplemetForm" :rules="supplementFormRules" label-width="140px" class="demo-form-inline supplement-form" ref="supplemetForm" v-loading="sloading">
+        <el-form-item class="half-item" label="办件流水号">
+          <!-- <el-input placeholder="请输入办件流水号" v-model="supplemetForm.applyinstCode" disabled></el-input> -->
+          <span class="color-999">{{supplemetForm.applyinstCode || '暂无'}}</span>
+        </el-form-item>
+        <el-form-item class="half-item" label="项目编号">
+          <!-- <el-input placeholder="请输入项目编号" v-model="supplemetForm.localCode" disabled></el-input> -->
+          <span class="color-999">{{supplemetForm.localCode || '暂无'}}</span>
+        </el-form-item>
+        <el-form-item  class="half-item" label="项目名称">
+          <!-- <el-input placeholder="请输入项目名称" v-model="supplemetForm.projInfoName" disabled></el-input> -->
+          <span class="color-999">{{supplemetForm.projInfoName || '暂无'}}</span>
+        </el-form-item>
+        <el-form-item  class="half-item" label="客户名称">
+          <!-- <el-input placeholder="请输入客户名称" v-model="supplemetForm.owner" disabled></el-input> -->
+          <span class="color-999">{{supplemetForm.owner || '暂无'}}</span>
+        </el-form-item>
+        <el-form-item class="half-item" label="审批事项名称">
+          <!-- <el-input placeholder="请输入审批事项名称" v-model="supplemetForm.iteminstName" disabled></el-input> -->
+          <span class="color-999">{{supplemetForm.iteminstName || '暂无'}}</span>
+        </el-form-item>
+        <el-form-item class="half-item" label="负责部门名称">
+            <!-- <el-input placeholder="请输入负责部门名称" v-model="supplemetForm.approveOrgName" disabled></el-input> -->
+            <span class="color-999">{{supplemetForm.approveOrgName || '暂无'}}</span>
+        </el-form-item>
+        <el-form-item  class="half-item" label="补正办理时限(天)" prop="correctDueDays">
+            <span class="color-999" v-if="supplementDialogData.correctState == 6 || supplementDialogData.correctState == 7">{{supplemetForm.correctDueDays || '暂无'}}</span>
+            <el-input placeholder="请输入补正办理时限" type="number" min="0"  v-else
+             v-model="supplemetForm.correctDueDays"></el-input>
+        </el-form-item>
+          <el-form-item class="fill-item" label="备注">
+              <span class="color-999"
+                    v-if="supplementDialogData.correctState == 6 || supplementDialogData.correctState == 7">{{supplementDialogData.correctMemo || '暂无'}}</span>
+              <el-input placeholder="请输入备注" type="textarea" v-model="supplementDialogData.correctMemo"
+                        v-else></el-input>
+          </el-form-item>
+          <el-form-item class="fill-item" :label="inSeletcedMaterialPandel? '已收清单列表':'待补正材料清单'">
+          <template v-if="!inSeletcedMaterialPandel">
+            <div class="material-table-header">
+              <span style="width: 126px;">材料名称</span>
+              <span style="width: 61px;">类型</span>
+              <span style="width: 100px;">补正份数</span>
+              <span style="width: 282px;">意见</span>
+              <span style="width: 58px;">操作</span>
+            </div>
+            <div class="material-table-wrap">
+              <div class="material-table" v-for="(item,index) in tobaMakeupMaterialList" :key="item.matId">
+                <div class="tb-title inline-block"><p>{{item.matName || item.matinstName}}</p></div>
+                <div class="tb-content inline-block">
+                  <div class="tb-item" v-if="item.isNeedOrign">
+                    <span class="inline-block tip">原件</span>
+                    <div class="inline-block border-left al-center num ">
+                      <span class="color-999" v-if="supplementDialogData.correctState == 6 || supplementDialogData.correctState == 7">{{tobaMakeupMaterialList[index].paperCount || '0'}}</span>
+                      <el-input class="w98" placeholder="补正份数" type="number" min="0" v-model="tobaMakeupMaterialList[index].paperCount" v-else></el-input>
+                    </div>
+                    <div class="inline-block border-left al-center opinion">
+                      <span class="color-999" v-if="supplementDialogData.correctState == 6 || supplementDialogData.correctState == 7">{{tobaMakeupMaterialList[index].paperDueIninstOpinion || '暂无'}}</span>
+                      <el-input class="w98" placeholder="请输入意见" v-model="tobaMakeupMaterialList[index].paperDueIninstOpinion" v-else></el-input>
+                    </div>
+                    <div class="inline-block border-left al-center delete">
+                      <span class="color-999" v-if="supplementDialogData.correctState == 6 || supplementDialogData.correctState == 7">
+                          <i class="el-icon-delete color-999" style="cursor: not-allowed;"></i>
+                      </span>
+                      <i class="el-icon-delete" @click="delTobaMakeupMaterial('isNeedOrign',item,index)" v-else></i>
+                    </div>
+                  </div>
+                  <div class="tb-item" v-if="item.isNeedCopy">
+                    <span class="inline-block tip">复印件</span>
+                    <div class="inline-block border-left al-center num">
+                      <span class="color-999" v-if="supplementDialogData.correctState == 6 || supplementDialogData.correctState == 7">{{tobaMakeupMaterialList[index].copyCount || '0'}}</span>
+                      <el-input class="w98" placeholder="补正份数" type="number" min="0" v-model="tobaMakeupMaterialList[index].copyCount" v-else></el-input>
+                    </div>
+                    <div class="inline-block border-left al-center opinion">
+                      <span class="color-999" v-if="supplementDialogData.correctState == 6 || supplementDialogData.correctState == 7">{{tobaMakeupMaterialList[index].copyDueIninstOpinion || '暂无'}}</span>
+                      <el-input class="w98" placeholder="请输入意见" v-model="tobaMakeupMaterialList[index].copyDueIninstOpinion" v-else></el-input>
+                    </div>
+                    <div class="inline-block border-left al-center delete">
+                      <span class="color-999" v-if="supplementDialogData.correctState == 6 || supplementDialogData.correctState == 7"> 
+                          <i class="el-icon-delete color-999" style="cursor: not-allowed;"></i>
+                      </span>
+                      <i class="el-icon-delete" @click="delTobaMakeupMaterial('isNeedCopy',item,index)" v-else></i>
+                    </div>
+                  </div>
+                  <div class="tb-item" v-if="item.isNeedElectron">
+                    <span class="inline-block tip">电子件</span>
+                    <div class="inline-block border-left al-center num">
+                        <el-switch v-model="tobaMakeupMaterialList[index].isNeedAtt" active-color="#13ce66" disabled>
+                        </el-switch>
+                    </div>
+                    <div class="inline-block border-left al-center opinion">
+                      <span class="color-999" v-if="supplementDialogData.correctState == 6 || supplementDialogData.correctState == 7">{{tobaMakeupMaterialList[index].attDueIninstOpinion || '暂无'}}</span>
+                      <el-input class="w98" placeholder="请输入意见" v-model="tobaMakeupMaterialList[index].attDueIninstOpinion" v-else></el-input>
+                    </div>
+                    <div class="inline-block border-left al-center delete">
+                      <span class="color-999" v-if="supplementDialogData.correctState == 6 || supplementDialogData.correctState == 7"> 
+                          <i class="el-icon-delete color-999" style="cursor: not-allowed;"></i>
+                      </span>
+                      <i class="el-icon-delete" @click="delTobaMakeupMaterial('isNeedElectron',item,index)" v-else></i>
+                    </div>
+                  </div>
+                </div>
+                <!-- <div class="close-box"> <i class="el-icon-circle-close"></i> </div> -->
+              </div>
+            </div>
+            <div class="show-all" v-if="supplementDialogData.correctState == 6 || supplementDialogData.correctState == 7" style="height: 1px;border-bottom: 1px solid #e5e5e5;"></div>
+            <div class="show-all" @click="inSeletcedMaterialPandel = true;" v-else>选择材料</div>
+          </template>
+          <template v-else>
+            <div class="material-table-header">
+              <span style="width: 126px;">材料名称</span>
+              <span style="width: 101px;">类型</span>
+              <span style="width: 100px;">应收（份）</span>
+              <span style="width: 100px;">已收（份）</span>
+              <span style="width: 200px;">操作</span>
+            </div>
+            <div class="material-table-wrap">
+              <div class="material-table" v-for="(item,index) in tobeSelectMaterialList" :key="item.matId">
+                <div class="tb-title inline-block"><p>{{item.matName}}</p></div>
+                <div class="tb-content inline-block">
+                  <div class="tb-item" v-if="!!item.realPaperCount">
+                    <span class="inline-block show-span">原件</span>
+                    <span class="inline-block show-span">{{item.paperCount || '0'}}</span>
+                    <span class="inline-block show-span">{{item.realPaperCount || '0'}}</span>
+                    <div class="inline-block border-left al-center check">
+                      <el-checkbox v-model="tobeSelectMaterialList[index].isNeedOrign" @change="clickTobaSelectMaterial"></el-checkbox>
+                    </div>
+                  </div>
+                  <div class="tb-item" v-if="!!item.realCopyCount">
+                    <span class="inline-block show-span">复印件</span>
+                    <span class="inline-block show-span">{{item.copyCount || '0'}}</span>
+                    <span class="inline-block show-span">{{item.realCopyCount || '0'}}</span>
+                    <div class="inline-block border-left al-center check">
+                      <el-checkbox v-model="tobeSelectMaterialList[index].isNeedCopy"  @change="clickTobaSelectMaterial"></el-checkbox>
+                    </div>
+                  </div>
+                  <div class="tb-item" v-if="!!item.attCount">
+                    <span class="inline-block show-span">电子件</span>
+                    <span class="inline-block show-span">必须</span>
+                    <span class="inline-block show-span">{{item.attCount || '0'}}</span>
+                    <div class="inline-block border-left al-center check">
+                      <el-checkbox v-model="tobeSelectMaterialList[index].isNeedElectron" @change="clickTobaSelectMaterial"></el-checkbox>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="show-all" @click="inSeletcedMaterialPandel = false; selectMaterialToMakeupList();">确定并返回</div>
+          </template>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <button type="button" class="btn btn-primary" @click="saveMaterialCorrection" :disabled="supplementDialogData.correctState == 6 || supplementDialogData.correctState == 7">保存
+        </button>
+        <button type="button" class="btn btn-secondary" @click="isShowMaterialSupplementDialog=false">关闭
+        </button>
+      </div>
+    </el-dialog>
+
+</div>
+
+<!-- 引入组件库服务器使用 -->
+<th:block th:include="common/common :: approveCommonfooter"/>
+<script src="../../../../../static/common/js/axios.min.js" th:src="@{/common/js/axios.min.js}"></script>
+<script src="../../../../../static/agcloud/bpm/front/process/js/wfCommon.js" th:src="@{/agcloud/bpm/front/process/js/wfCommon.js}" type="text/javascript"></script>
+<script src="../../../../../static/agcloud/bpm/front/process/js/showDiagram.js" th:src="@{/agcloud/bpm/front/process/js/showDiagram.js}" type="text/javascript"></script>
+<script src="../../../../../static/agcloud/bpm/front/process/js/index.js" th:src="@{/agcloud/bpm/front/process/js/index.js}" type="text/javascript"></script>
+<script src="../../../../../static/agcloud/bpm/front/process/js/plugins/bootstrap.min.js" th:src="@{/agcloud/bpm/front/process/js/plugins/bootstrap.min.js}" type="text/javascript"></script>
+<script src="../../../../../static/agcloud/bpm/front/process/js/approval-integration.js" th:src="@{/agcloud/bpm/front/process/js/approval-integration.js}" type="text/javascript"></script>
+
+<script src="../../../../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/js-lib/agtree-v3/js/jquery.agtree.core.js" th:src="@{/agcloud/framework/js-lib/agtree-v3/js/jquery.agtree.core.js}" type="text/javascript"></script>
+<script src="../../../../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/js-lib/ztree-v3/js/jquery.ztree.excheck.js" th:src="@{/agcloud/framework/js-lib/ztree-v3/js/jquery.ztree.excheck.js}" type="text/javascript"></script>
+<!--扩展实现复选框-->
+<script src="../../../../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/js-lib/ztree-v3/js/jquery.ztree.exedit.js" th:src="@{/agcloud/framework/js-lib/ztree-v3/js/jquery.ztree.exedit.js}" type="text/javascript"></script>
+<script src="../../../../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/js-lib/ztree-v3/js/jquery.ztree.exhide.js" th:src="@{/agcloud/framework/js-lib/ztree-v3/js/jquery.ztree.exhide.js}" type="text/javascript"></script>
+
+<script type="text/javascript" src="../../../../../static/agcloud/bpm/front/process/diagram/display/jquery.qtip.min.js" th:src="@{/agcloud/bpm/front/process/diagram/display/jquery.qtip.min.js}"></script>
+<script type="text/javascript" src="../../../../../static/agcloud/bpm/front/process/diagram/display/raphael.js" th:src="@{/agcloud/bpm/front/process/diagram/display/raphael.js}"></script>
+<script type="text/javascript" src="../../../../../static/agcloud/bpm/front/process/diagram/display/bpmn-draw.js" th:src="@{/agcloud/bpm/front/process/diagram/display/bpmn-draw.js}"></script>
+<script type="text/javascript" src="../../../../../static/agcloud/bpm/front/process/diagram/display/bpmn-icons.js" th:src="@{/agcloud/bpm/front/process/diagram/display/bpmn-icons.js}"></script>
+<script type="text/javascript" src="../../../../../static/agcloud/bpm/front/process/diagram/display/Polyline.js" th:src="@{/agcloud/bpm/front/process/diagram/display/Polyline.js}"></script>
+
+</body>
+</html>

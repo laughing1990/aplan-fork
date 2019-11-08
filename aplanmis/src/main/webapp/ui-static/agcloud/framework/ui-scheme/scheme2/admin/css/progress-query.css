@@ -1,0 +1,242 @@
+body {
+  color: #595959;
+}
+.m-portlet__body {
+  background: #fff;
+}
+.m-portlet__body .pro-name {
+  font-size: 16px;
+  font-weight: bold;
+  position: relative;
+  margin-left: 5px;
+}
+.m-portlet__body .pro-name:before {
+  position: absolute;
+  display: block;
+  width: 4px;
+  height: 18px;
+  left: -10px;
+  top: -2px;
+  content: "";
+  background: #188ae2;
+}
+.pro-info-item .item-label {
+  display: inline-block;
+  width: 100px;
+  text-align: right;
+}
+.pro-info-item .item-name {
+  display: inline-block;
+  width: 65%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  word-wrap: normal;
+}
+.pro-progress {
+  background: #f7fcff;
+  padding: 20px 10px;
+  border-radius: 10px;
+  border: 1px solid #cae4f5;
+  font-size: 15px;
+}
+.pro-progress span {
+  padding: 2px 4px;
+  border-radius: 5px;
+  margin: 0 5px;
+}
+.stage {
+  color: #34bfa3;
+  border: 1px solid #34bfa3;
+}
+.events {
+  color: #36a3f7;
+  border: 1px solid #36a3f7;
+}
+.use-time {
+  color: #ffa800;
+  border: 1px solid #ffa800;
+}
+.need-check {
+  border: 1px solid #595959;
+}
+.nav-tabs {
+  padding-left: 10px;
+  font-size: 15px;
+  position: relative;
+}
+.nav-tabs .nav-link {
+  border: 1px solid #d9d9d9;
+  border-top-left-radius: 0.25rem;
+  border-top-right-radius: 0.25rem;
+  background: #f4f4f4;
+}
+.nav.nav-tabs .nav-link.active {
+  color: #36a3f7;
+}
+.stage-color {
+  position: absolute;
+  right: 30px;
+}
+.stage-color span {
+  margin-left: 40px;
+  position: relative;
+  font-size: 14px;
+}
+.stage-color span:before {
+  content: '';
+  padding: 7px;
+  position: absolute;
+  left: -20px;
+  border-radius: 50%;
+}
+.stage-color .stage-end:before {
+  background: #34bfa3;
+}
+.stage-color .stage-start:before {
+  background: #36a3f7;
+}
+.stage-color .before-start:before {
+  background: #e2e2e2;
+}
+.stage-left {
+  text-align: center;
+}
+.stage-left .stage-label {
+  font-weight: bold;
+}
+.pro-stage-icon {
+  height: 44px;
+  width: 44px;
+  border-radius: 50%;
+  font-size: 18px;
+  line-height: 42px;
+  margin: 10px auto;
+  font-weight: bold;
+}
+.stage-left .green-border {
+  border: 1px solid #34bfa3;
+  color: #34bfa3;
+}
+.stage-left .blue-border {
+  border: 1px solid #36a3f7;
+  color: #36a3f7;
+}
+
+.stage-left .gray-border {
+  border: 1px solid #E2E2E2;
+  color: #E2E2E2;
+}
+
+.agencies-item {
+  float: left;
+  text-align: center;
+  width: 160px;     /*160px*/
+  border-radius: 5px;
+  margin: 10px 12px;
+}
+.created-agencies-item {
+  border: 1px solid #34bfa3;
+}
+.start-agencies-item {
+  border: 1px solid #36a3f7;
+}
+.end-agencies-item {
+  border: 1px solid #e2e2e2;
+}
+
+.none-agencies-item {
+  border: 1px solid white;
+}
+
+.agencies-item p {
+  height: 32px;
+  line-height: 32px;
+}
+.agencies-item .item-write {
+  background: #fff;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+}
+.created-agencies-item p {
+  background: #34bfa3;
+  color: #fff;
+}
+.created-agencies-item .item-write {
+  color: #34bfa3;
+}
+.start-agencies-item p {
+  background: #36a3f7;
+  color: #fff;
+}
+.start-agencies-item .item-write {
+  color: #36a3f7;
+}
+.end-agencies-item p {
+  background: #e2e2e2;
+}
+.stage-right {
+  padding: 0 0 60px 0;
+}
+.pro-created .stage-left, .pro-start .stage-left {
+  position: relative;
+}
+.pro-created .stage-left:before, .pro-start .stage-left:before {
+  position: absolute;
+  content: '';
+  width: 4px;
+  display: inline-block;
+  top: 67px;    /*67px*/
+  bottom: 30px;
+  background: #34bfa3;
+  left: 49%;
+}
+.pro-created .stage-left:after, .pro-start .stage-left:after {
+  position: absolute;
+  content: '';
+  padding: 5px;
+  background: #34bfa3;
+  border-radius: 50%;
+  bottom: 22px;
+  left: 48%;
+}
+
+.pro-none .stage-left:before{
+  position: absolute;
+  content: '';
+  width: 4px;
+  display: inline-block;
+  top: 67px;    /*67px*/
+  bottom: 30px;
+  background: #E2E2E2;
+  left: 49%;
+}
+.pro-none .stage-left:after{
+  position: absolute;
+  content: '';
+  padding: 5px;
+  background: #E2E2E2;
+  border-radius: 50%;
+  bottom: 22px;
+  left: 48%;
+}
+
+  .pro-process .stage-left:before{
+    position: absolute;
+    content: '';
+    width: 4px;
+    display: inline-block;
+    top: 67px;    /*67px*/
+    bottom: 30px;
+    background: #36A3F7;
+    left: 49%;
+  }
+.pro-process .stage-left:after{
+  position: absolute;
+  content: '';
+  padding: 5px;
+  background: #36A3F7;
+  border-radius: 50%;
+  bottom: 22px;
+  left: 48%;
+}

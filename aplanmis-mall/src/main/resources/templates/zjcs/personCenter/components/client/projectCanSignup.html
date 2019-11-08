@@ -1,0 +1,1249 @@
+<!-- 可报名的项目 -->
+<div id="projectCanSignup" class="box project-cansignup-module" v-cloak v-loading.fullscreen.lock="mloading">
+    <h2 class="box-tit">可报名的项目</h2>
+    <div class="project-sign-wrap pandel mt20" v-if="!isCanSignupPeojectInfoPandel">
+        <el-row class="inlineblock-midd">
+            项目名称：
+            <el-input class="w-200 mr20" placeholder="请输入要查询的项目名称" v-model="canSignupPeojectCheckData.projName" />
+            </el-input>
+            中介事项：
+            <!-- <el-select placeholder="请选择" v-model="canSignupPeojectCheckData.itemVerId">
+                <el-option v-for="item in canSignupProjectItemOptions" :key="item.itemVerId" :label="item.itemName"
+                    :value="item.itemVerId">
+                </el-option>
+            </el-select> -->
+            <el-input class="w-200" placeholder="请选择" @focus="showClientMatterDialog"
+                v-model="clientMatterSelects[0].agentItemName" />
+            </el-input>
+            <el-button class="ml20" type="primary" size="medium" @click="checkCanSignupProject">查询</el-button>
+        </el-row>
+        <el-table :data="canSignupProjectList" class="scrollable mt20" style="width: 100%;"
+            :header-cell-style="{background:'#f7f8fa'}">
+            <el-table-column prop="projName" label="项目名称">
+            </el-table-column>
+            <el-table-column prop="itemName" label="中介事项">
+            </el-table-column>
+            <el-table-column label="公告时间">
+                <template scope="scope">
+                    {{scope.row.publishTime | dateFormat('y-m-d')}}
+                </template>
+            </el-table-column>
+            <el-table-column prop="basePrice" label="竞价金额(万元)">
+            </el-table-column>
+            <el-table-column label="操作">
+                <template scope="scope">
+                    <a class="a-color4879E4" href="javascript:;"
+                        @click="showProjectInfoDetailPandel(scope.row)">参与报名</a>
+                </template>
+            </el-table-column>
+        </el-table>
+        <el-pagination background align="right" @size-change="canSignUpProjectListSizeChange"
+            @current-change="canSignUpProjectListPageNumChange" :page-sizes="[10, 20, 30, 50]"
+            :page-size="canSignupPeojectCheckData.pageSize" :current-page="canSignupPeojectCheckData.pageNum"
+            layout="total,sizes, prev, pager, next, jumper" :total="canSignupProjectTotal"
+            v-show="canSignupProjectTotal>10">
+        </el-pagination>
+    </div>
+    <!-- 当前竞价的项目的基本信息pandel -->
+    <div class="cansignup-project-info pandel" v-else>
+        <!-- 项目信息展示页 -->
+        <div style="width: 100%; " v-if="isCanSignupProjectPandelState == 1">
+            <!-- 竞价截止时间与操作 -->
+            <div class="info-header clearfix">
+                <span class="info-time fl">
+                    报名截止时间：{{curCanSignUpProjectDetail.expirationDate | dateFormat('y-m-d hh:mm:ss') ||'无'}} &nbsp; 已有
+                    <b style="margin: 0 4px;">{{curCanSignUpProjectDetail.unitBiddingCount || 0}}</b>家中介参与报名
+                </span>
+                <div class="handel text-right fr">
+                    <el-button @click="returnCanSignupProjectList">返回列表</el-button>
+                    <el-button class="ml20" type="primary" @click="joinCurCanSignUpProj">参与报名
+                    </el-button>
+                </div>
+            </div>
+            <!-- 项目title -->
+            <div class="info-title">
+                {{curCanSignUpProjectDetail.projName || '无'}}
+            </div>
+
+            <!-- 项目基本信息 -->
+            <div class="info-item">
+                <h2 class="item-title active" @click="expandProjectInfoItem"><i class="item-icon"></i>项目基本信息<i
+                        class="arrow-icon"></i></h2>
+                <div class="item-detail">
+                    <el-row class="mb20">
+                        <el-col class="text-right" :span="5">中介服务事项：</el-col>
+                        <el-col class="text-left pl10" :span="19">{{curCanSignUpProjectDetail.itemName || '无'}}</el-col>
+                    </el-row>
+                    <el-row class="mb20">
+                        <el-col class="text-right" :span="5">事项对应部门：</el-col>
+                        <el-col class="text-left pl10" :span="19">{{curCanSignUpProjectDetail.orgName || '无'}}</el-col>
+                    </el-row>
+                    <el-row class="mb20">
+                        <el-col class="text-right" :span="5">涉及的行政事项：</el-col>
+                        <el-col class="text-left pl10" :span="19">{{curCanSignUpProjectDetail.parentItemName || '无'}}
+                        </el-col>
+                    </el-row>
+                    <el-row class="mb20">
+                        <el-col class="text-right" :span="5">投资审批项目：</el-col>
+                        <el-col class="text-left pl10" :span="19">
+                            {{curCanSignUpProjectDetail.isApproveProj == 0 ? '否':'是' || '无'}}</el-col>
+                    </el-row>
+                    <el-row class="mb20">
+                        <el-col class="text-right" :span="5">投资审批项目编码：</el-col>
+                        <el-col class="text-left pl10" :span="19">{{curCanSignUpProjectDetail.parentLocalCode  || '无'}}
+                        </el-col>
+                    </el-row>
+                    <el-row class="mb20">
+                        <el-col class="text-right" :span="5">审批业务流水号：</el-col>
+                        <el-col class="text-left pl10" :span="19">{{curCanSignUpProjectDetail.applyinstCode || '无'}}
+                        </el-col>
+                    </el-row>
+                    <el-row class="mb20">
+                        <el-col class="text-right" :span="5">采购项目编码：</el-col>
+                        <el-col class="text-left pl10" :span="19">{{curCanSignUpProjectDetail.localCode || '无'}}
+                        </el-col>
+                    </el-row>
+                    <el-row class="mb20">
+                        <el-col class="text-right" :span="5">项目业主：</el-col>
+                        <el-col class="text-left pl10" :span="19">{{curCanSignUpProjectDetail.applicant || '无'}}
+                        </el-col>
+                    </el-row>
+                    <el-row class="mb20">
+                        <el-col class="text-right" :span="5">项目联系人：</el-col>
+                        <el-col class="text-left pl10" :span="19">{{curCanSignUpProjectDetail.contacts || '无'}}</el-col>
+                    </el-row>
+                    <el-row class="mb20">
+                        <el-col class="text-right" :span="5">联系电话：</el-col>
+                        <el-col class="text-left pl10" :span="19">{{curCanSignUpProjectDetail.moblie || '无'}}</el-col>
+                    </el-row>
+                    <el-row class="mb20">
+                        <el-col class="text-right" :span="5">采购项目名称：</el-col>
+                        <el-col class="text-left pl10" :span="19">{{curCanSignUpProjectDetail.projName || '无'}}</el-col>
+                    </el-row>
+                    <el-row class="mb20">
+                        <el-col class="text-right" :span="5">项目规模：</el-col>
+                        <el-col class="text-left pl10" :span="19">
+                            <b style="color: #fa9931;">{{curCanSignUpProjectDetail.projScaleContent || '无'}}</b>
+                            元
+                        </el-col>
+                    </el-row>
+                    <el-row class="mb20">
+                        <el-col class="text-right" :span="5">资金来源：</el-col>
+                        <el-col class="text-left pl10" :span="19">
+                            <span v-if="zijinSource">{{zijinSource}}</span>
+                            <span v-else>无</span>
+                        </el-col>
+                    </el-row>
+                </div>
+            </div>
+
+            <!-- 服务要求 -->
+            <div class="info-item">
+                <h2 class="item-title active" @click="expandProjectInfoItem"><i class="item-icon"></i>服务要求<i
+                        class="arrow-icon"></i></h2>
+                <div class="item-detail">
+                    <el-row class="mb20">
+                        <el-col class="text-right" :span="5">所需服务：</el-col>
+                        <el-col class="text-left pl10" :span="19">{{curCanSignUpProjectDetail.serviceName || '无'}}
+                        </el-col>
+                    </el-row>
+                    <el-row class="mb20">
+                        <el-col class="text-right" :span="5">服务时限说明：</el-col>
+                        <el-col class="text-left pl10" :span="19">
+                            {{curCanSignUpProjectDetail.serviceTimeExplain || '无'}}</el-col>
+                    </el-row>
+                    <el-row class="mb20">
+                        <el-col class="text-right" :span="5">服务内容：</el-col>
+                        <el-col class="text-left pl10" :span="19">{{curCanSignUpProjectDetail.serviceContent || '无'}}
+                        </el-col>
+                    </el-row>
+                </div>
+            </div>
+
+            <!-- 中介机构要求 -->
+            <div class="info-item">
+                <h2 class="item-title active" @click="expandProjectInfoItem"><i class="item-icon"></i>中介机构要求<i
+                        class="arrow-icon"></i></h2>
+                <div class="item-detail">
+                    <el-row class="mb20">
+                        <el-col class="text-right" :span="5">中介服务机构要求：</el-col>
+                        <el-col class="text-left pl10" :span="19">
+                            {{curCanSignUpProjectDetail.isQualRequire == 1 ? '资质（资格）要求':''}}
+                            {{curCanSignUpProjectDetail.isRecordRequire == 1 ? '备案要求':''}}
+                            {{curCanSignUpProjectDetail.isRegisterRequire == 1 ? '执业/执业人员要求':''}}
+                        </el-col>
+                    </el-row>
+                    <!-- 不需要资质要求的时候，不显示下面两项 -->
+                    <template v-if="curCanSignUpProjectDetail.isQualRequire == 1">
+                        <el-row class="mb20">
+                            <el-col class="text-right" :span="5">资质要求：</el-col>
+                            <el-col class="text-left pl10" :span="19">
+                                {{curCanSignUpProjectDetail.qualRequireType ? '多个资质子项符合其一即可':'需同时符合所有选中资质子项要求' || '无'}}
+                            </el-col>
+                        </el-row>
+                        <el-row class="mb20">
+                            <el-col class="text-right" :span="5">资质要求说明：</el-col>
+                            <el-col class="text-left pl10" :span="19">
+                                {{curCanSignUpProjectDetail.qualRequireExplain || '无'}}</el-col>
+                        </el-row>
+                    </template>
+                    <el-row class="mb20">
+                        <el-col class="text-right" :span="5">其他要求说明：</el-col>
+                        <el-col class="text-left pl10" :span="19">
+                            {{curCanSignUpProjectDetail.otherRequireExplain || '无'}}</el-col>
+                    </el-row>
+                </div>
+            </div>
+
+            <!-- 选取中介服务机构方式 -->
+            <div class="info-item">
+                <h2 class="item-title active" @click="expandProjectInfoItem"><i class="item-icon"></i>选取中介服务机构方式<i
+                        class="arrow-icon"></i></h2>
+                <div class="item-detail">
+                    <el-row class="mb20">
+                        <el-col class="text-right" :span="5">选取中介服务机构方式：</el-col>
+                        <el-col class="text-left pl10" :span="19">
+                            {{curCanSignUpProjectDetail.biddingType == 1? '随机中标':'自主选' || '无'}}</el-col>
+                    </el-row>
+                    <el-row class="mb20">
+                        <el-col class="text-right" :span="5">是否确认金额：</el-col>
+                        <el-col class="text-left pl10" :span="19">
+                            {{curCanSignUpProjectDetail.isDefineAmount ==0? '否':'是' || '无'}}</el-col>
+                    </el-row>
+                    <el-row class="mb20">
+                        <el-col class="text-right" :span="5">金额说明：</el-col>
+                        <el-col class="text-left pl10" :span="19">{{curCanSignUpProjectDetail.amountExplain || '无'}}
+                        </el-col>
+                    </el-row>
+                    <el-row class="mb20">
+                        <el-col class="text-right" :span="5">见证现场竞价选取、摇珠：</el-col>
+                        <el-col class="text-left pl10" :span="19">
+                            {{curCanSignUpProjectDetail.isLiveWitness == 0 ? '否':'是' || '无'}}</el-col>
+                    </el-row>
+                    <el-row class="mb20">
+                        <el-col class="text-right" :span="5">见证人姓名（联系电话）：</el-col>
+                        <el-col class="text-left pl10" :span="19">
+                            <span v-if="!witnessInfo">无</span>
+                            <span v-else>
+                                {{witnessInfo}}
+                            </span>
+                        </el-col>
+                    </el-row>
+                </div>
+            </div>
+
+            <!-- 咨询与监督 -->
+            <div class="info-item supervision-item">
+                <h2 class="item-title active" @click="expandProjectInfoItem"><i class="item-icon"></i>咨询与监督<i
+                        class="arrow-icon"></i></h2>
+                <div class="item-detail">
+                    <el-row class="mb20">
+                        <el-col class="text-right" :span="5">项目业主业务咨询电话：</el-col>
+                        <el-col class="text-left pl10" :span="19">{{curCanSignUpProjectDetail.moblie || '无'}}</el-col>
+                    </el-row>
+                    <el-row class="mb20">
+                        <el-col class="text-right" :span="5">投诉质疑：</el-col>
+                        <el-col class="text-left pl10" :span="19">
+                            {{curCanSignUpProjectDetail.ownerComplaintPhone || '无'}}</el-col>
+                    </el-row>
+                </div>
+            </div>
+
+            <!-- 附件 -->
+            <div class="info-item enclosure-item">
+                <h2 class="item-title active" @click="expandProjectInfoItem"><i class="item-icon"></i>附件<i
+                        class="arrow-icon"></i></h2>
+                <div class="item-detail" v-if="curProjEnclosureList.length">
+                    <p class="clearfix enclosure-list" v-for="item in curProjEnclosureList">
+                        <span class="fl">{{item.attName}}</span>
+                        <a class="a-color4879E4 fr" href="javascript:;" @click="curProjEnclosureDown(item)">下载</a>
+                    </p>
+                </div>
+                <div class="item-detail" v-else>
+                    <p class="clearfix">
+                        暂无
+                    </p>
+                </div>
+            </div>
+
+        </div>
+        <!-- 参与报名信息填写页 -->
+        <div style="width: 100%; " v-if="isCanSignupProjectPandelState == 2">
+            <div class="info-header clearfix">
+                <div class="handel text-right fr">
+                    <el-button @click="returnCanSignupProjectList">返回列表</el-button>
+                </div>
+            </div>
+            <!-- 项目title -->
+            <div class="info-title">
+                【项目报名】{{curCanSignUpProjectDetail.projName}}
+            </div>
+
+            <!-- 填写报名信息 -->
+            <div class="info-item edit-item">
+                <h2 class="item-title active" @click="expandProjectInfoItem"><i class="item-icon"></i>填写报名信息<i
+                        class="arrow-icon"></i></h2>
+                <div class="item-detail edit-item-detail">
+                    <div class="form-item">
+                        <label><b class="red-cl">*</b>中介机构名称</label>
+                        <div class="input-box">
+                            <input type="text" class="form-control" placeholder="请输入中介机构名称" :readonly="isReadOnly"
+                                v-model="curCanSignUpProjectSubmitData.applicant" />
+                        </div>
+                    </div>
+                    <div class="form-item mt20">
+                        <label><b class="red-cl">*</b>统一社会信用代码</label>
+                        <div class="input-box">
+                            <input type="text" class="form-control" placeholder="请输入统一社会信用代码" :readonly="isReadOnly"
+                                   v-model="curCanSignUpProjectSubmitData.unifiedSocialCreditCode"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 form-item">
+                            <label><b class="red-cl">*</b>联系地址</label>
+                            <div class="input-box">
+                                <input type="text" class="form-control" placeholder="请输入联系地址" :readonly="isReadOnly"
+                                    v-model="curCanSignUpProjectSubmitData.applicantDetailSite" />
+                            </div>
+                        </div>
+                        <div class="col-md-6 form-item">
+                            <label><b class="red-cl">*</b>邮政编号</label>
+                            <div class="input-box">
+                                <input type="text" class="form-control" id="" placeholder="请输入邮政编号"
+                                    :readonly="isReadOnly" v-model="curCanSignUpProjectSubmitData.postalCode" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 form-item">
+                            <label><b class="red-cl">*</b>业务授权人</label>
+                            <div class="input-box">
+                                <!-- <input type="text" class="form-control" placeholder="请输入业务授权人"> -->
+                                <el-select placeholder="请选择业务授权人" style="width: 330px;" v-model="businessAdminObj" :popper-append-to-body="false"
+                                    value-key="linkmanInfoId">
+                                    <el-option v-for="item in businessAdminOptions" :key="item.linkmanInfoId"
+                                        :label="item.linkmanName" :value="item">
+                                    </el-option>
+                                </el-select>
+                            </div>
+                        </div>
+                        <div class="col-md-6 form-item">
+                            <label>联系邮箱</label>
+                            <div class="input-box">
+                                <input type="text" class="form-control" placeholder="请输入联系邮箱"
+                                    v-model="businessAdminObj.linkmanMail" :readonly="isReadOnly" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 form-item">
+                            <label>固定电话</label>
+                            <div class="input-box">
+                                <input type="text" class="form-control" placeholder="请输入固定电话" :readonly="isReadOnly">
+                            </div>
+                        </div>
+                        <div class="col-md-6 form-item">
+                            <label><b class="red-cl">*</b>企业联系号码</label>
+                            <div class="input-box">
+                                <input type="text" class="form-control" placeholder="请输入企业联系号码" :readonly="isReadOnly"
+                                    v-model="curCanSignUpProjectSubmitData.mobile" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 form-item">
+                            <label><b class="red-cl">*</b>业务联系号码</label>
+                            <div class="input-box">
+                                <input type="text" class="form-control" placeholder="请输入业务联系号码"
+                                    v-model="businessAdminObj.linkmanMobilePhone" :readonly="isReadOnly">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-item">
+                        <label><b class="red-cl">*</b>是否参与现场摇号</label>
+                        <div class="input-box input-radio">
+                            <el-radio v-model="submitSignUpData.isParticipate" label="1">是</el-radio>
+                            <el-radio v-model="submitSignUpData.isParticipate" label="0">否</el-radio>
+                            <span class="note-txt"
+                                style="margin-left: 20px;">备注：报名成功即进入候选人名单，您的选择将帮助超市中心人员摇号现场坐席安排。</span>
+                        </div>
+                    </div>
+                    <div class="row" style="display: none;">
+                        <div class="col-md-6 form-item">
+                            <label>摇珠地点</label>
+                            <div class="input-box">
+                                <span>一楼</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="display: none;">
+                        <div class="col-md-6 form-item">
+                            <label>摇珠时间</label>
+                            <div class="input-box">
+                                <span>2018-08-16 17:00</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 选择执业/职业人员 -->
+            <div class="info-item edit-item" v-if="curCanSignUpProjectDetail.isRegisterRequire == 1">
+                <h2 class="item-title active" @click="expandProjectInfoItem"><i class="item-icon"></i>选择执业/职业人员 <i
+                        class="arrow-icon"></i></h2>
+                <div class="item-detail edit-item-detail">
+                    <div class="form-item">
+                        <label><b class="red-cl">*</b>执业/职业人员总数</label>
+                        <div class="input-box">
+                            <input type="text" class="form-control" v-model="curCanSignUpProjectDetail.registerTotal"
+                                :readonly="isReadOnly" />
+                        </div>
+                    </div>
+                    <div class="form-item mt20">
+                        <label><b class="red-cl">*</b>执业/职业人员要求</label>
+                        <div class="input-box">
+                            <textarea class="form-control" v-model="curCanSignUpProjectDetail.registerRequire"
+                                :readonly="isReadOnly"></textarea>
+                        </div>
+                    </div>
+                    <div class="upload-card mt20 ml20">
+                        <div class="upload-btn">
+                            <el-button type="primary" @click="fetchJobPeopleList">选 择</el-button>
+                            <span class="ml20">请选择执业/职业人员</span>
+                        </div>
+                        <ul class="pjfile-list mt20 ml30">
+                            <li v-for="item in jobPeopleSelectsConFirmlist"><i
+                                    class="person-ico"></i>{{item.linkmanName}}<a class="debtn" href="javascript:;"
+                                    @click="delJobPeopleSelects(item.linkmanInfoId)">删除</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- 参与报名提交 -->
+            <div class="sign-up-box mt20 mb20">
+                <div class="read-rule checkbox">
+                    <el-checkbox v-model="isCanSubmitFlag" label="true">我单位承诺服务报名条件并全面相应采购项目的所有要求</el-checkbox>
+                </div>
+                <el-button type="primary" @click="submitSignupProjectInfo" :disabled="!isCanSubmitFlag">参与报名</el-button>
+                <el-button @click="isCanSignupProjectPandelState = 1;">取 消</el-button>
+            </div>
+        </div>
+        <!-- 参与报名信息提交成功页 -->
+        <div style="width: 100%;" v-if="isCanSignupProjectPandelState == 3">
+            <!-- 竞价截止时间与操作 -->
+            <div class="info-header clearfix">
+                <div class="handel text-right fr">
+                    <el-button @click="returnCanSignupProjectList">返回列表</el-button>
+                </div>
+            </div>
+            <!-- 项目title -->
+            <div class="info-title">
+                【项目报名】{{curCanSignUpProjectDetail.projName}}
+            </div>
+            <!-- 成功信息 -->
+            <div class="apply-success">
+                <div class="success-icon"></div>
+                <h2>报名成功</h2>
+                <p>进入中介个人中心-<a class="a-color4879E4" href="javascript:;" @click="jumpToSignUpProjModule">报名的项目</a>页面查看项目报名状态</p>
+                <el-button type="primary"  @click="returnCanSignupProjectList">确 定</el-button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- 所有从业人员的dialog -->
+    <el-dialog title="请选择从业人员" :visible.sync="isShowJobPeopleDialog" width="760px">
+        <el-table ref="jobPeopleRef" :data="jobPeopleList" class="scrollable" style="width: 100%;"
+            :header-cell-style="{background:'#f7f8fa'}" @selection-change="jobPeoplesListSelect">
+            <el-table-column type="expand">
+                <template slot-scope="props">
+                    <el-form label-position="left" inline class="demo-table-expand">
+                        <el-form-item label="已获得资格/职称证书">
+                            <span>{{ props.row.certNames || '无'}}</span>
+                        </el-form-item>
+                        <el-form-item label="可提供的服务类型">
+                            <span>{{ props.row.serviceNames || '无'}}</span>
+                        </el-form-item>
+                    </el-form>
+                </template>
+            </el-table-column>
+            <el-table-column type="selection" width="55">
+            </el-table-column>
+            <el-table-column label="序号" width="55">
+                <template scope="scope">
+                    {{scope.$index+1}}
+                </template>
+            </el-table-column>
+            <el-table-column prop="linkmanName" label="姓名" width="100">
+            </el-table-column>
+            <el-table-column label="已获得资格/职称证书">
+                <template scope="scope">
+                    {{scope.row.certNames || '无'}}
+                </template>
+            </el-table-column>
+            <el-table-column label="可提供的服务类型">
+                <template scope="scope">
+                    {{scope.row.serviceNames || '无'}}
+                </template>
+            </el-table-column>
+        </el-table>
+        <span slot="footer" class="dialog-footer">
+            <el-button @click="isShowJobPeopleDialog = false">取 消</el-button>
+            <el-button type="primary" @click="jobPeopleDialogSure">确 定</el-button>
+        </span>
+    </el-dialog>
+
+    <!-- 所有中介事项的dialog -->
+    <el-dialog class="client-matter-dialog" title="请选择中介事项" :visible.sync="isShowClientMatterDialog" width="760px">
+        <el-input class="w-200 mr20" placeholder="请输入中介事项名" v-model="clientMatterCheckData.agentItemName"
+            @keyup.enter.native="clientMatterListCheckFn" />
+        </el-input>
+        <el-button class="ml20 mb20" type="primary" size="medium" @click="clientMatterListCheckFn">查询</el-button>
+        <el-table ref="clientMatterRef" :data="clientMatterList" class="scrollable" style="width: 100%;"
+            :header-cell-style="{background:'#f7f8fa'}" @selection-change="clientMatterListSelect">
+            <el-table-column type="selection" width="55">
+            </el-table-column>
+            <el-table-column label="序号" width="55">
+                <template scope="scope">
+                    {{scope.$index+1}}
+                </template>
+            </el-table-column>
+            <el-table-column prop="agentItemName" label="中介服务事项">
+            </el-table-column>
+            <el-table-column prop="itemName" label="涉及的行政部门">
+            </el-table-column>
+        </el-table>
+        <el-pagination background align="right" @size-change="clientMatterPageSizeChange"
+            @current-change="clientMatterPageNumChange" :page-sizes="[10, 20, 30, 50]"
+            :page-size="clientMatterCheckData.pageSize" :current-page="clientMatterCheckData.pageNum"
+            layout="total,sizes, prev, pager, next, jumper" :total="clientMatterTotal" v-show="clientMatterTotal>10">
+        </el-pagination>
+        <span slot="footer" class="dialog-footer">
+            <el-button @click="isShowClientMatterDialog = false">取 消</el-button>
+            <el-button type="primary" @click="clientMatterDialogSure">确 定</el-button>
+        </span>
+    </el-dialog>
+</div>
+
+<script>
+    // var ctx = "http://192.168.14.2:8084/aplanmis-mall/" //振强
+    var module1 = new Vue({
+        el: '#projectCanSignup',
+        mixins: [mixins],
+        data: function () {
+            return {
+                // 页面loading
+                mloading: false,
+                // 当前登陆信息
+                currentLoginInfo: {
+                    unitInfoId: '',
+                },
+
+                // 可报名项目
+                // 可报名项目列表
+                canSignupProjectList: [],
+                // 可报名项目查询参数
+                canSignupPeojectCheckData: {
+                    pageNum: 1,
+                    pageSize: 10,
+                    itemVerId: '',
+                    projName: '',
+                    unitInfoId: ''
+                },
+                //可报名项目总数
+                canSignupProjectTotal: 0,
+                // 可报名项目列表中的中介事项下拉框
+                canSignupProjectItemOptions: [{
+                    itemName: '1',
+                    itemVerId: '1'
+                }],
+                // 当前是否展示参与报名的项目的项目信息
+                isCanSignupPeojectInfoPandel: false,
+                // 当前选中-想要报名的当前行
+                canSignupProjectWantRow: {},
+                // 当前是否展示参与报名的项目信息1、编辑2、成功模块3
+                isCanSignupProjectPandelState: 1,
+
+                // 所有的中介事项相关
+                // 所有的中介事项-是否展示dailog
+                isShowClientMatterDialog: false,
+                //  所有的中介事项表
+                clientMatterList: [],
+                //  所有的中介事项表的查询数据
+                clientMatterCheckData: {
+                    pageSize: 10,
+                    pageNum: 1,
+                    agentItemName: '',
+                },
+                // 所有的中介事项总数
+                clientMatterTotal: 0,
+                // 所有的从业人员表-表格选中list
+                clientMatterSelects: [{
+                    agentItemName: "",
+                    agentItemVerId: ""
+                }],
+
+                // 当前展示的项目详情
+                curCanSignUpProjectDetail: {
+                    projName: '', //项目名
+                    itemName: '', //中介服务事项
+                    parentItemName: '', //涉及的行政事项
+                    orgName: '', //事项对应部门
+                    isApproveProj: 0, //是否投资审批项目 0否，1是
+                    parentLocalCode: '', //投资审批项目编码
+                    applyinstCode: '', //审批业务流水号
+                    localCode: '', //采购项目编码
+                    applicant: '', //项目业主
+                    contacts: '', //项目联系人
+                    moblie: '', //联系电话、 项目业主业务咨询电话
+                    projScaleContent: '', //项目规模
+
+                    // 资金来源
+                    isFinancialFund: '', //(是否为财政资金（资金来源）：1 是，0 不是)
+                    financialFundProportion: '', // (财政资金比例
+                    isSocialFund: '', // (是否为社会资金（资金来源）：1 是，0 不是)
+                    socialFundProportion: '', // (社会资金比例
+
+                    serviceName: '', //所需服务
+                    serviceTimeExplain: '', //服务时限说明                           
+                    serviceContent: '', //服务内容
+
+                    // 中介服务机构要求
+                    isQualRequire: '', //	string是否需要资质要求：1 需要，0 不需要
+                    isRecordRequire: '', //string是否需要备案要求：1 需要，0 不需要
+                    isRegisterRequire: '', //	string是否需要执业/职业人员要求：1 需要，0 不需要
+
+                    qualRequireType: '', //资质要求 1 多个资质子项符合其一即可，0 需同时符合所有选中资质子项要
+                    qualRequireExplain: '', //资质要求说明
+                    otherRequireExplain: '', //其他要求说明
+
+                    biddingType: '', // 选取中介服务机构方式 1 随机中标，2 自主选
+                    isDefineAmount: '', //是否确认金额 1 是 0 否
+                    amountExplain: '', //金额说明
+                    isLiveWitness: '', //是否见证现场竞价选取、摇珠：1 是， 0 否
+
+                    // 见证人list
+                    witnessName1: '',
+                    witnessName2: '',
+                    witnessName3: '',
+                    witnessPhone1: '',
+                    witnessPhone2: '',
+                    witnessPhone3: '',
+
+                    ownerComplaintPhone: '', //投诉质疑
+
+                    expirationDate: '', //竞价截止时间
+                    unitBiddingCount: '', //已有参与竞价的中介数量
+
+                    // 中介服务的serviceId
+                    serviceId: '',
+
+                    registerTotal: '', //执业/职业人员总数
+                    registerRequire: '', //执业/职业人员要求
+
+                    // 是否是必须填写选择职业从业人员
+                    // isRegisterRequire: '',
+                },
+                // 当前项目详情附件列表
+                curProjEnclosureList: [],
+                // 是否已经勾选承诺要求 0为尚未勾选 1为已勾选
+                isCanSubmitFlag: false,
+
+
+                // 报名信息填写模块
+                // 是否显示所有的从业人员dialog
+                isShowJobPeopleDialog: false,
+                // 所有的从业人员
+                jobPeopleList: [],
+                // 从业人员表格选中list
+                jobPeopleSelects: [],
+                // 从业人员表格选中-最终确认数据list
+                jobPeopleSelectsConFirmlist: [],
+                // 报名信息填写模块-填写数据详情
+                curCanSignUpProjectSubmitData: {
+                    applicant: "唐山鸿图水利工程设计有限公司", // 中介机构名称
+                    applicantDetailSite: "唐山市高新区荣华东道69号", // 联系地址
+                    // email: "123", //联系邮箱
+                    idTypeName: "社会信用代码", //统一社会信用代码
+                    idcard: "911302936703266328", //
+                    idrepresentative: "田红刚", //
+                    idtype: "2", //
+                    mobile: "123", //企业联系号码
+                    postalCode: "063000", //邮政编号
+                    registeredCapital: "300", //
+                    unitNature: "1", //
+                    curCanSignUpProjectSubmitData: "",//企业信用代码
+                },
+                // 报名信息填写模块-业务授权人下拉列表options
+                businessAdminOptions: [],
+                // 报名信息填写模块-业务授权人选中
+                businessAdminObj: {},
+                // 参与报名提交的数据
+                submitSignUpData: {
+                    isParticipate: '', //是否参与现场摇号
+                },
+
+                // 报名信息填写模块-是否是只读
+                isReadOnly: true,
+            }
+        },
+        methods: {
+            init: function () {
+                this.fetchCanSignupProjectList();
+                this.fetchClientMatterList();
+            },
+            // 获取可报名项目列表
+            fetchCanSignupProjectList: function () {
+                var ts = this;
+                ts.canSignupPeojectCheckData.unitInfoId = JSON.parse(localStorage.getItem('loginInfo'))
+                    .unitId;
+                ts.canSignupPeojectCheckData.itemVerId = ts.clientMatterSelects[0].agentItemVerId;
+                ts.mloading = true;
+                request('', {
+                    url: ctx + 'aea/supermarket/bidProjectManage/listCanBidAeaImProjPurchase',
+                    type: 'get',
+                    data: ts.canSignupPeojectCheckData,
+                }, function (res) {
+                    ts.mloading = false;
+                    if (res.success) {
+                        ts.canSignupProjectList = res.content.rows;
+                        ts.canSignupProjectTotal = res.content.total;
+                    } else {
+                        ts.$message({
+                            message: '加载失败',
+                            type: 'error'
+                        });
+                    }
+                }, function (msg) {
+                    ts.mloading = false;
+                    ts.$message({
+                        message: '加载失败',
+                        type: 'error'
+                    });
+                });
+            },
+            // 查询可报名项目列表
+            checkCanSignupProject: function () {
+                var ts = this;
+                ts.canSignupPeojectCheckData.pageNum = 1;
+                ts.fetchCanSignupProjectList();
+            },
+            // 可报名项目列表换页
+            canSignUpProjectListPageNumChange: function (val) {
+                this.canSignupPeojectCheckData.pageNum = val;
+                this.fetchCanSignupProjectList();
+            },
+            // 可报名项目列表页size变化
+            canSignUpProjectListSizeChange: function (val) {
+                this.canSignupPeojectCheckData.pageSize = val;
+                this.fetchCanSignupProjectList();
+            },
+
+            // 项目详情相关
+            // 展示当前竞选项目的详细信息
+            showProjectInfoDetailPandel: function (row) {
+                var ts = this;
+                ts.isCanSignupPeojectInfoPandel = true;
+                ts.fetchCurCanSignUpProjectDetail(row);
+                ts.canSignupProjectWantRow = JSON.parse(JSON.stringify(row));
+            },
+            // 获取当前点击可报名项目的详情
+            fetchCurCanSignUpProjectDetail: function (row) {
+                var ts = this,
+                    _getData = {};
+                _getData.projPurchaseId = row.projPurchaseId;
+                ts.mloading = true;
+                request('', {
+                    url: ctx + 'supermarket/purchase/getPublicProjPurchaseDatail',
+                    type: 'post',
+                    data: _getData,
+                }, function (res) {
+                    ts.mloading = false;
+                    if (res.success) {
+                        ts.initProjectDetailBasicInfo(res.content);
+                        // 有附件列表
+                        if (res.content.requireExplainFile && res.content.requireExplainFile !==
+                            null) {
+                            ts.fetchCurProjEnclosureList(res.content.requireExplainFile);
+                        }
+                    } else {
+                        ts.isCanSignupPeojectInfoPandel = false;
+                        ts.$message({
+                            message: '项目详情加载失败！',
+                            type: 'error'
+                        });
+                    }
+                }, function (msg) {
+                    ts.mloading = false;
+                    ts.isCanSignupPeojectInfoPandel = false;
+                    ts.$message({
+                        message: '网络错误！',
+                        type: 'error'
+                    });
+                });
+            },
+            // 项目详情初始化基本信息
+            initProjectDetailBasicInfo: function (info) {
+                var ts = this,
+                    _basicInfoObj = ts.curCanSignUpProjectDetail;
+                for (var k in _basicInfoObj) {
+                    if (info[k] && info[k] !== null) {
+                        _basicInfoObj[k] = info[k];
+                    } else {
+                        _basicInfoObj[k] = '';
+                    }
+                }
+                // console.log(ts.curCanSignUpProjectDetail)
+            },
+            // 获取当前项目详情的附件列表
+            fetchCurProjEnclosureList: function (requireExplainFile) {
+                var ts = this,
+                    _getUrl = ctx + 'supermarket/purchase/getRequireExplainFileList/' + requireExplainFile;
+                ts.mloading = true;
+                request('', {
+                    url: _getUrl,
+                    type: 'post',
+                }, function (res) {
+                    ts.mloading = false;
+                    if (res.success) {
+                        ts.curProjEnclosureList = res.content;
+                    }
+                }, function (msg) {
+                    ts.mloading = false;
+
+                });
+            },
+            // 当前项目详情的附件列表-点击下载
+            curProjEnclosureDown: function (obj) {
+                if (!obj) return;
+                var _downUrl = ctx + 'supermarket/purchase/downloadAttachment/' + obj.detailId;
+                window.open(_downUrl);
+            },
+            // 返回可报名项目列表
+            returnCanSignupProjectList: function () {
+                var ts = this;
+                ts.isCanSignupPeojectInfoPandel = false;
+                ts.isCanSignupProjectPandelState = 1;
+                ts.fetchCanSignupProjectList();
+            },
+            // 点击展示当前项目的模块信息
+            expandProjectInfoItem: function ($event) {
+                var _mod = $($event.target);
+                _mod.toggleClass('active');
+            },
+
+
+            // 参与报名信息填写模块
+            // 从业人员相关方法
+            // 获取所有从业人员-并弹框展示
+            fetchJobPeopleList: function () {
+                var ts = this,
+                    _getData = {};
+                ts.jobPeopleList = []; //初始的时候所有从业人员列表先置空
+                _getData.serviceId = ts.curCanSignUpProjectDetail.serviceId; //这个需要详情里面的中介服务的serviceId
+                _getData.unitInfoId = JSON.parse(localStorage.getItem('loginInfo')).unitId;
+                ts.isShowJobPeopleDialog = true;
+                ts.mloading = true;
+                request('', {
+                    url: ctx + 'aea/supermarket/serviceMatter/getLinkManList',
+                    type: 'get',
+                    data: _getData,
+                }, function (res) {
+                    ts.mloading = false;
+                    if (res.success) {
+                        ts.jobPeopleList = res.content;
+                    } else {
+                        ts.$message({
+                            message: '从业人员加载失败',
+                            type: 'error'
+                        });
+                    }
+                }, function (msg) {
+                    ts.mloading = false;
+                    ts.$message({
+                        message: '加载失败',
+                        type: 'error'
+                    });
+                });
+            },
+            // 从所有从业人员列表当中选中
+            jobPeoplesListSelect: function (list) {
+                var ts = this;
+                // if(!list.length)return;
+                ts.jobPeopleSelects = JSON.parse(JSON.stringify(list));
+            },
+            // 所有从业人员弹框确定
+            jobPeopleDialogSure: function () {
+                var ts = this;
+
+                var _noRepeatAllLinkmanList = []; //当前所有的从业人员列表(去重后的list)
+                var _curAllLinkmanList = ts.jobPeopleSelectsConFirmlist.concat(ts
+                    .jobPeopleSelects); //当前所有的从业人员列表
+                var obj = {};
+                for (var i = 0; i < _curAllLinkmanList.length; i++) {
+                    if (!obj[_curAllLinkmanList[i].linkmanInfoId]) {
+                        _noRepeatAllLinkmanList.push(_curAllLinkmanList[i]);
+                        obj[_curAllLinkmanList[i].linkmanInfoId] = true;
+                    }
+                }
+
+                if (!_noRepeatAllLinkmanList.length) {
+                    return ts.$message({
+                        message: '您尚未选择从业人员'
+                    })
+                } else if (_noRepeatAllLinkmanList.length > ts.curCanSignUpProjectDetail.registerTotal) {
+                    return ts.$message({
+                        message: '从业人员数量大于限制'
+                    })
+                }
+                ts.isShowJobPeopleDialog = false;
+                ts.jobPeopleSelectsConFirmlist = _noRepeatAllLinkmanList;
+                ts.$refs.jobPeopleRef.clearSelection(); //清除掉所有从业人员弹框中已选的
+            },
+            // 从业人员选中后删除
+            delJobPeopleSelects: function (delId) {
+                var ts = this,
+                    _delIdx = -1,
+                    _allJobPeoples = ts.jobPeopleSelectsConFirmlist;
+                for (var i = 0, len = _allJobPeoples.length; i < len; i++) {
+                    if (delId === _allJobPeoples[i].linkmanInfoId) {
+                        _delIdx = i;
+                        break;
+                    }
+                }
+                ts.jobPeopleSelectsConFirmlist.splice(_delIdx, 1);
+                // console.log(ts.jobPeopleSelectsConFirmlist)
+            },
+
+            // 参与报名-由项目详情=>项目信息填写
+            joinCurCanSignUpProj: function () {
+                var ts = this;
+                ts.isCanSignupProjectPandelState = 2;
+                ts.fetchAgentUnitDetail();
+                ts.fetchBusinessAdminOptions();
+            },
+            // 获取项目信息填写模块-已填好的数据，由接口获取
+            fetchAgentUnitDetail: function () {
+                var ts = this,
+                    _getData = {};
+                _getData.unitInfoId = JSON.parse(localStorage.getItem('loginInfo')).unitId;
+                ts.mloading = true;
+                request('', {
+                    url: ctx + 'supermarket/agentservice/getAgentUnitDetail',
+                    type: 'get',
+                    data: _getData,
+                }, function (res) {
+                    ts.mloading = false;
+                    if (res.success) {
+                        ts.curCanSignUpProjectSubmitData = res.content;
+                    } else {
+                        ts.$message({
+                            message: '信息加载失败！',
+                            type: 'error'
+                        });
+                    }
+                }, function (msg) {
+                    ts.mloading = false;
+                    ts.$message({
+                        message: '加载失败',
+                        type: 'error'
+                    });
+                });
+            },
+            // 获取项目信息填写模块-业务授权人下拉options
+            fetchBusinessAdminOptions: function () {
+                var ts = this,
+                    _getData = {};
+                _getData.unitInfoId = JSON.parse(localStorage.getItem('loginInfo')).unitId;
+                // _getData.isBindAccount = 1;
+                // _getData.pageSize = 100;
+                // _getData.pageNum = 1;
+                _getData.serviceId = ts.curCanSignUpProjectDetail.serviceId;
+                ts.mloading = true;
+                request('', {
+                    url: ctx + 'aea/supermarket/bidProjectManage/listClientServiceLinkmanInfo',
+                    type: 'get',
+                    data: _getData,
+                }, function (res) {
+                    ts.mloading = false;
+                    if (res.success) {
+                        ts.businessAdminOptions = res.content;
+                    } else {
+                        ts.$message({
+                            message: '业务授权人信息加载失败！',
+                            type: 'error'
+                        });
+                    }
+                }, function (msg) {
+                    ts.mloading = false;
+                    ts.$message({
+                        message: '加载失败',
+                        type: 'error'
+                    });
+                });
+            },
+            // 项目信息填写模块提交报名信息
+            submitSignupProjectInfo: function () {
+                var ts = this,
+                    _subData = {};
+                _subData.unitInfoId = JSON.parse(localStorage.getItem('loginInfo')).unitId;
+                _subData.projPurchaseId = ts.canSignupProjectWantRow.projPurchaseId;
+                _subData.linkmanInfoId = ts.businessAdminObj.linkmanInfoId || ''; //选中的业务授权人id
+                _subData.isParticipate = ts.submitSignUpData.isParticipate; //是否参与现场摇号
+                _subData.serviceLinkmanIds = []; //选中的从业人员的ids
+                ts.jobPeopleSelectsConFirmlist.forEach(function (item) {
+                    _subData.serviceLinkmanIds.push(item.linkmanInfoId);
+                })
+                _subData.serviceLinkmanIds = JSON.stringify(_subData.serviceLinkmanIds);
+                var _canSubmitFlag = ts.checkSubmitSignupProjectInfo(_subData); //校验必填
+                if (_canSubmitFlag !== true) return;
+                 // 如果项目详情里面不需要从业人员，即isRegisterRequire不为1，不传从业人员
+                if(ts.curCanSignUpProjectDetail.isRegisterRequire != 1){
+                   delete _subData.serviceLinkmanIds;
+                }
+                // console.log(_subData);
+                // return;
+                ts.mloading = true;
+                request('', {
+                    url: ctx + 'aea/supermarket/bidProjectManage/signUpProjPurchase',
+                    type: 'post',
+                    data: _subData,
+                }, function (res) {
+                    ts.mloading = false;
+                    if (res.success) {
+                        ts.isCanSignupProjectPandelState = 3;
+                    } else {
+                        ts.$message({
+                            message: '参与报名失败！',
+                            type: 'error'
+                        });
+                    }
+                }, function (msg) {
+                    ts.mloading = false;
+                    ts.$message({
+                        message: '参与报名失败！',
+                        type: 'error'
+                    });
+                });
+            },
+            // 项目信息填写模块提交报名信息-校验必填
+            checkSubmitSignupProjectInfo: function (obj) {
+                // debugger
+                var ts = this,
+                    _noAdoptObj = {};
+                var _requireList = [{
+                    key: 'linkmanInfoId',
+                    tip: '请选择业务授权人！'
+                }, {
+                    key: 'isParticipate',
+                    tip: '请选择是否参与现场摇号！'
+                }, {
+                    key: 'serviceLinkmanIds',
+                    tip: '请选择从业人员！'
+                }];
+                // 如果项目详情里面不需要从业人员，即isRegisterRequire不为1，不校验从业人员
+                if(ts.curCanSignUpProjectDetail.isRegisterRequire != 1){
+                    _requireList.pop();
+                }
+                for (var i = 0; i < _requireList.length; i++) {
+                    if (!obj[_requireList[i].key].length || obj[_requireList[i].key] == '[]') {
+                        _noAdoptObj = _requireList[i];
+                        break;
+                    }
+                }
+                if (JSON.stringify(_noAdoptObj) == '{}') {
+                    return true;
+                } else {
+                    return ts.$message({
+                        message: _noAdoptObj.tip,
+                    });
+                }
+            },
+            // 跳转到 报名的项目 模块
+            jumpToSignUpProjModule: function(){
+                vm.moduleLoad('projectSignup.html', '#projectSignup');
+                vm.agencyItemSelect = 'projectSignup';
+            },
+
+            // 中介服务事项dialog相关
+            // 展示中介事项dialog
+            showClientMatterDialog: function () {
+                var ts = this;
+                ts.isShowClientMatterDialog = true;
+            },
+            // 获取中介事项数据列表
+            fetchClientMatterList: function () {
+                var ts = this,
+                    _getData = {};
+                _getData = JSON.parse(JSON.stringify(ts.clientMatterCheckData));
+                _getData.unitInfoId = JSON.parse(localStorage.getItem('loginInfo')).unitId;
+                ts.mloading = true;
+                request('', {
+                    url: ctx + 'aea/supermarket/bidProjectManage/listAeaItemBasic',
+                    type: 'get',
+                    data: _getData,
+                }, function (res) {
+                    ts.mloading = false;
+                    if (res.success) {
+                        ts.clientMatterList = res.content.rows;
+                        ts.clientMatterTotal = res.content.total;
+                    } else {
+                        ts.$message({
+                            message: '中介事项加载失败',
+                            type: 'error'
+                        });
+                    }
+                }, function (msg) {
+                    ts.mloading = false;
+                    ts.$message({
+                        message: '加载失败',
+                        type: 'error'
+                    });
+                });
+            },
+            // 中介事项dialog- dialog查询
+            clientMatterListCheckFn: function () {
+                var ts = this;
+                ts.clientMatterCheckData.pageNum = 1;
+                ts.fetchClientMatterList();
+            },
+            // 中介事项dialog -页面切换页码
+            clientMatterPageNumChange: function (val) {
+                var ts = this;
+                ts.clientMatterCheckData.pageNum = val;
+                ts.fetchClientMatterList();
+            },
+            // 中介事项dialog -页面切换页面size
+            clientMatterPageSizeChange: function (val) {
+                var ts = this;
+                ts.clientMatterCheckData.pageSize = val;
+                ts.fetchClientMatterList();
+            },
+            // 中介事项dialog 选中
+            clientMatterListSelect: function (val) {
+                this.clientMatterSelects = val;
+                if (!val) {
+                    this.clientMatterSelects = {
+                        agentItemName: "",
+                        agentItemVerId: ""
+                    }
+                }
+            },
+            // dialog确定
+            clientMatterDialogSure: function () {
+                var ts = this;
+                if (ts.clientMatterSelects.length > 1) {
+                    return ts.$message({
+                        message: '请选择一条中介服务事项'
+                    })
+                }
+                ts.isShowClientMatterDialog = false;
+            },
+        },
+        mounted: function () {
+            // this.currentLoginInfo.unitInfoId = JSON.parse(localStorage.getItem('loginInfo')).unitId;
+            this.init();
+        },
+        computed: {
+            // 见证人信息
+            witnessInfo: function () {
+                var ts = this;
+                var _str1 = '',
+                    _str2 = '',
+                    _str3 = '',
+                    _str = '';
+                if (!ts.curCanSignUpProjectDetail.witnessName1 && !ts.curCanSignUpProjectDetail
+                    .witnessName2 && !ts.curCanSignUpProjectDetail.witnessName3) return '';
+                if (ts.curCanSignUpProjectDetail.witnessName1) {
+                    _str1 = ts.curCanSignUpProjectDetail.witnessName1;
+                    if (ts.curCanSignUpProjectDetail.witnessPhone1) {
+                        _str1 = _str1 + '(' + ts.curCanSignUpProjectDetail.witnessPhone1 + ')';
+                    } else {
+                        _str1 += '(无)'
+                    }
+                }
+                if (ts.curCanSignUpProjectDetail.witnessName2) {
+                    _str2 = ts.curCanSignUpProjectDetail.witnessName2;
+                    if (ts.curCanSignUpProjectDetail.witnessPhone2) {
+                        _str2 = _str2 + '(' + ts.curCanSignUpProjectDetail.witnessPhone2 + ')';
+                    } else {
+                        _str2 += '(无)'
+                    }
+                }
+                if (ts.curCanSignUpProjectDetail.witnessName3) {
+                    _str3 = ts.curCanSignUpProjectDetail.witnessName3;
+                    if (ts.curCanSignUpProjectDetail.witnessPhone3) {
+                        _str3 = _str3 + '(' + ts.curCanSignUpProjectDetail.witnessPhone3 + ')';
+                    } else {
+                        _str3 += '(无)'
+                    }
+                }
+                if (_str1) {
+                    _str += _str1;
+                    if (_str1) {
+                        _str += ('，' + _str2);
+                        if (_str3) {
+                            _str += ('，' + _str3);
+                        }
+                    }
+                }
+                return _str;
+            },
+            // 资金来源
+            zijinSource: function () {
+                var ts = this,
+                    _str = '';
+                if (ts.curCanSignUpProjectDetail.isFinancialFund == 1) {
+                    _str = _str + '财政投资' + ts.curCanSignUpProjectDetail.financialFundProportion + '%';
+                    if (ts.curCanSignUpProjectDetail.isSocialFund == 1) {
+                        _str = _str + '，社会投资' + ts.curCanSignUpProjectDetail.socialFundProportion + '%';
+                    }
+                    return _str;
+                }
+                if (ts.curCanSignUpProjectDetail.isSocialFund == 1) {
+                    _str = _str + '社会投资' + ts.curCanSignUpProjectDetail.socialFundProportion + '%';
+                    if (ts.curCanSignUpProjectDetail.isFinancialFund == 1) {
+                        _str = _str + '，财政投资' + ts.curCanSignUpProjectDetail.socialFundProportion + '%';
+                    }
+                    return _str;
+                }
+
+            },
+        },
+    })
+</script>
+<style>
+    /* 所有的中介事项dialog */
+    .client-matter-dialog .el-dialog .el-dialog__footer {
+        border: 0;
+    }
+
+    /* 附件-下载列表 */
+    .enclosure-list {
+        position: relative;
+        padding-right: 40px;
+        width: 60% !important;
+
+    }
+
+    .enclosure-list a {
+        position: absolute;
+        top: 0;
+        right: 0;
+    }
+
+    .demo-table-expand {
+        font-size: 0;
+    }
+
+    .demo-table-expand label {
+        width: 190px;
+        color: #99a9bf;
+    }
+
+    .demo-table-expand .el-form-item {
+        margin-right: 0;
+        margin-bottom: 0;
+        width: 100%;
+    }
+</style>

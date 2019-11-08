@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>中介服务机构</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="shortcut icon" href="../../../static/zjcs/common/images/favicon.ico" th:href="@{/zjcs/common/images/favicon.ico}">
+     <!-- <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/metronic-5/vendors.bundle.css" th:href="@{/agcloud/framework/js-lib/metronic-5/vendors.bundle.css}"> -->
+    <!-- <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/ui-private/default/common/css/metronic.css" th:href="@{/agcloud/framework/ui-private/default/common/css/metronic.css}"> -->
+    <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.css" th:href="@{/agcloud/framework/js-lib/element-2/element.css}">
+    <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/ui-private/default/common/css/layout.css" th:href="@{/agcloud/framework/ui-private/default/common/css/layout.css}">
+    <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/ui-private/default/blue/css/theme.css" th:href="@{/agcloud/framework/ui-private/default/blue/css/theme.css}">
+    <link rel="stylesheet" href="../../../static/zjcs/common/css/reset.css" th:href="@{/zjcs/common/css/reset.css}">
+
+    <link rel="stylesheet" href="../../../static/zjcs/serviceOrgan/css/index.css" th:href="@{/zjcs/serviceOrgan/css/index.css}">
+    <script>
+        var ctx = '[[@{/}]]';
+        // var ctx = 'http://192.168.14.6:8084/aplanmis-mall/';
+        // var ctx = 'http://192.168.14.9:8084/aplanmis-mall/';
+        // var ctx = 'http://192.168.32.5:8084/aplanmis-mall/';
+        // var ctx = 'http://192.168.15.4:8084/aplanmis-mall/';
+        
+    </script>
+</head>
+<body class="scrollable bodyCss">
+  <div class="header">
+    <iframe src="../common/header.html" th:src="@{header.html}" frameborder="0" width="100%" height="100%"></iframe>
+  </div>
+  <div class="main-content">
+    <div id="app" class="content" v-cloak v-loading="loading">
+      <div class="ts-content">
+        <div class="mod">
+          <!-- <div class="local-main">
+            <span class="local-icon"></span>
+            <span class="local-span">当前位置：</span>
+            <a class="local-a" href="index.html">首页</a>
+            <span class="local-span">&gt;</span>
+            <a class="local-a" href="#">中介服务 </a>
+            <span class="local-span">&gt;</span>
+            <a class="local-a active" href="#">佛山电力设计院有限公司</a>
+          </div> -->
+          <div class="service-main mb-4" style="background: #fff;padding:25px;">
+            <div class="serverinfo-box">
+              <div class="enterprise-server">
+                <div class="enterprise-server-hd">
+                  <div class="server-card clearfix">
+                    <div class="img-box">
+                      <!-- <div class="nav-icon ts_icon_02"></div> -->
+                     <!--  <img src="../../../static/serviceOrgan/img/gckc_ico.png" height="44" width="44" alt="" /> -->
+                      <img class="media-object" :src="ctx+serviceDetail.imgUrl">
+
+                      <p>{{serviceDetail.serviceName}}</p>
+                    </div>
+                    <div class="intro">
+                      <p class="newline-common">
+                        <b>收费参考：</b>
+                         {{serviceDetail.feeReference}}
+                      </p>
+                      <p class="newline-common">
+                        <b>服务承诺：</b>
+                        {{serviceDetail.serviceContent}}
+                      </p>
+                      <p class="newline-common">
+                        <b>对应的中介服务事项：</b>
+                      </p>
+                    </div>
+                  </div>
+                  <div class="table-con mt-4">
+                    <el-table :data="tableData2" class="scrollable" border ref="singleTable"  :header-cell-style="{background:'#f7f8fa',color:'#606266',fontWeight:'bold'}" @cell-click="">
+                      <el-table-column prop="agentItemName" label="事项名称">
+                        <template slot-scope="scope">
+                          <span @click="itemClick2(scope.row.agentItemBasicId)"style="color:#3184FA;cursor:pointer;">{{scope.row.agentItemName}}</span>
+                        </template>
+                      </el-table-column>
+                      <el-table-column prop="agentOrgName"  label="事项对应部门" ></el-table-column>
+                    </el-table>
+                   <!--  <el-pagination
+                      background
+                      align="right"
+                      :pager-count="5"
+                      @size-change="handleSizeChange2"
+                      @current-change="handleCurrentChange2"
+                      :page-sizes="[10, 20, 30, 50]"
+                      :page-size="pageSize2"
+                      :current-page="page2"
+                      layout="total,sizes, prev, pager, next, jumper"
+                      :total="total2">
+                    </el-pagination> -->
+                  </div>
+                </div>
+                <div class="enterprise-server-bd">
+                  <div class="subTitle">
+                    <a class="blue-cl" href="javascript:void(0);" @click="switchPageBook()">{{certinstInfo.certinstName}}</a>
+                  </div>
+                  <p>
+                    <span><font style="font-weight: 700;">有效期（起）1：</font>{{dateFormat(certinstInfo.termStart)}}</span>
+                    <span style="padding-left: 10px"><font style="font-weight: 700;">有效期（止）：</font>{{dateFormat(certinstInfo.termEnd)}}</span>
+                  </p>
+                  <p style="margin: 10px 0;"><b>业务范围：</b></p>
+                  <p class="newline-common">
+                    {{certinstInfo.managementScope}}
+                  </p>
+                </div>
+              </div>
+              <div class="enter-seat"></div>
+              <div class="enterprise-info">
+                <div class="info-main">
+                  <div class="icon-title is-line">
+                    <i class="colla-icon"></i> 中介机构信息
+                  </div>
+                  <h4 class="name">
+                    {{organDetail.applicant}}
+                  </h4>
+                  <ul class="info-list">
+                    <li>
+                      <b class="key">统一社会信用代码</b>
+                      <span class="value">{{organDetail.idcard}}</span>
+                    </li>
+                    <li>
+                      <b class="key">机构性质</b>
+                      <span class="value" v-if="organDetail.unitNature==1">企业</span>
+                      <span class="value" v-else-if="organDetail.unitNature==2">事业单位</span>
+                      <span class="value" v-else>社会组织</span>
+                    </li>
+                    <li>
+                      <b class="key">法人代表</b>
+                      <span class="value">{{organDetail.idrepresentative}}</span>
+                    </li>
+                    <li>
+                      <b class="key">经营有效期</b>
+                      <span class="value"></span>
+                    </li>
+                    <li>
+                      <b class="key">注册资金（万元）</b>
+                      <span class="value">{{organDetail.registeredCapital}}</span>
+                    </li>
+                  </ul>
+                </div>
+                <div class="btn-panel">
+                  <a class="subtab-btn" href="javascript:;" @click="itemClick()">查看所有服务>></a>
+                  <a class="subtab-btn" href="javascript:;">查看所有资格信息>></a>
+                </div>
+              </div>
+            </div>
+            <div class="service-collapse">
+              <div class="icon-title is-line">
+                <i class="colla-icon colla-icon3"></i>可提供服务的执业/职业人员
+              </div>
+              <div class="table-con mt-2">
+                <el-table :data="tableData3" class="scrollable" border ref="singleTable2"  :header-cell-style="{background:'#f7f8fa',color:'#606266',fontWeight:'bold'}" @cell-click="">
+                  <el-table-column prop="linkmanName" label="姓名" align="center" width="100px"></el-table-column>
+                  <el-table-column prop="certinstName"  label="已有资格证书/职称证书" ></el-table-column>
+                  <el-table-column prop="serviceName"  label="可提供服务的类型" ></el-table-column>
+                </el-table>
+                <el-pagination v-show="total3 > 10"
+                  background
+                  align="right"
+                  :pager-count="5"
+                  @size-change="handleSizeChange3"
+                  @current-change="handleCurrentChange3"
+                  :page-sizes="[10, 20, 30, 50]"
+                  :page-size="pageSize3"
+                  :current-page="page3"
+                  layout="total,sizes, prev, pager, next, jumper"
+                  :total="total3">
+                </el-pagination> 
+              </div>
+            </div>
+            <div class="service-collapse">
+              <div class="icon-title is-line">
+                <i class="colla-icon"></i>参与项目
+              </div>
+              <div class="table-con mt-2">
+                <el-table :data="tableData4" class="scrollable" border ref="singleTable2"  :header-cell-style="{background:'#f7f8fa',color:'#606266',fontWeight:'bold'}" @cell-click="" v-if="tabData==true">
+                  <el-table-column type="expand">
+                    <template slot-scope="props">
+                      <el-form label-position="left" label-width="300" class="demo-table-expand expand1" :inline="true">
+                        <el-form-item label="选取方式 ">
+                          <span>{{ props.row.biddingType }}</span>
+                        </el-form-item>
+                        <el-form-item label="服务评价 ">
+                          <span>{{ props.row.avgCompEvaluation?props.row.avgCompEvaluation:'暂无评价' }}</span>
+                        </el-form-item>
+                        <el-form-item label="项目金额 ">
+                          <span>{{ props.row.realPrice?props.row.realPrice:'无' }}</span>
+                        </el-form-item>
+                        <el-form-item label="服务时间 ">
+                          <span>{{ props.row.assessDetail?props.row.name:'无' }}</span>
+                        </el-form-item>
+                        <el-form-item label="服务质量 ">
+                          <span>{{ props.row.serviceQuality?props.row.serviceQuality:'暂无评价' }}</span>
+                        </el-form-item>
+                        <el-form-item label="服务时效 ">
+                          <span>{{ props.row.servicePrescription?props.row.servicePrescription:'暂无评价' }}</span>
+                        </el-form-item>
+                        <el-form-item label="服务态度 ">
+                          <span>{{ props.row.serviceAttitude?props.row.serviceAttitude:'暂无评价' }}</span>
+                        </el-form-item>
+                        <el-form-item label="服务收费 ">
+                          <span>{{ props.row.serviceCharge?props.row.serviceCharge:'暂无评价' }}</span>
+                        </el-form-item>
+                        <el-form-item label="服务规范 ">
+                          <span>{{ props.row.serviceStandard?props.row.serviceStandard:'暂无评价' }}</span>
+                        </el-form-item>
+                      </el-form>
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="projName" label="项目名称"></el-table-column>
+                  <el-table-column prop="auditFlag"  label="状态" width="80px"></el-table-column>
+                  <el-table-column prop="applicant"  label="采购单位" ></el-table-column>
+                  <el-table-column prop="compEvaluation"  label="项目评价" ></el-table-column>
+                </el-table>
+
+                <div v-else style="text-align:center;">
+                  <img src="../../../static/zjcs/serviceOrgan/img/nodata_pic.png"/>
+                  <p>暂无记录</p>
+                </div>
+                <el-pagination v-show="total4 > 10"
+                  background
+                  align="right"
+                  :pager-count="5"
+                  @size-change="handleSizeChange4"
+                  @current-change="handleCurrentChange4"
+                  :page-sizes="[10, 20, 30, 50]"
+                  :page-size="pageSize4"
+                  :current-page="page4"
+                  layout="total,sizes, prev, pager, next, jumper"
+                  :total="total4">
+                </el-pagination> 
+               <!--  <table class="table agency-tb tsitem-tb">
+                  <thead>
+                    <tr>
+                      <th>项目名称</th>
+                      <th>状态</th>
+                      <th>采购单位</th>
+                      <th>项目评价</th>
+                      <th>操作</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td colspan="5">
+                        <div class="no-data">
+                          <img src="../../../static/serviceOrgan/img/nodata_pic.png"/>
+                          <p>暂无记录</p>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table> -->
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer">
+    <iframe src="../common/footer.html" th:src="@{footer.html}" frameborder="0" width="100%" height="100%"></iframe>
+  </div>
+
+</body>
+<!-- <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/metronic-5/vendors.bundle.js" th:src="@{/agcloud/framework/js-lib/metronic-5/vendors.bundle.js}" type="text/javascript"></script> -->
+<!-- <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/metronic-5/scripts.bundle.js" th:src="@{/agcloud/framework/js-lib/metronic-5/scripts.bundle.js}" type="text/javascript"></script> -->
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js" th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>
+
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js" th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js" th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
+<!--<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js" th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>-->
+<script src="../../../static/common/js/common.js" th:src="@{/common/js/common.js}"></script>
+
+
+<script src="../../../static/zjcs/serviceOrgan/js/index2.js" th:src="@{/zjcs/serviceOrgan/js/index2.js}" type="text/javascript"></script>
+</html>

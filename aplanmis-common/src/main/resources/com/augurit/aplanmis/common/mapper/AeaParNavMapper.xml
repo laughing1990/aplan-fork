@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by Administrator    2019-08-29 19:01:40 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaParNavMapper" >
+
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns" >
+        NAV_ID  navId,
+        NAV_NAME  navName,
+        SORT_NO  sortNo,
+        NAV_MEMO  navMemo,
+        IS_ACTIVE  isActive,
+        IS_DELETED  isDeleted,
+        CREATER  creater,
+        CREATE_TIME  createTime,
+        MODIFIER  modifier,
+        MODIFY_TIME  modifyTime,
+        ROOT_ORG_ID  rootOrgId
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaParNavById" resultType="AeaParNav" >
+        select
+        <include refid="allColumns"/>
+        from    AEA_PAR_NAV
+        where   NAV_ID = #{id}
+        AND  IS_DELETED = '0'
+        and  ROOT_ORG_ID = #{rootOrgId}
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaParNav" resultType="AeaParNav" >
+        select
+        <include refid="allColumns"/>
+        from    AEA_PAR_NAV
+        <where>
+            <if test="navId != null" >
+            AND    NAV_ID = #{navId}
+            </if>
+            <if test="navName != null" >
+            AND    NAV_NAME = #{navName}
+            </if>
+            <if test="sortNo != null" >
+            AND    SORT_NO = #{sortNo}
+            </if>
+            <if test="navMemo != null" >
+            AND    NAV_MEMO = #{navMemo}
+            </if>
+            <if test="isActive != null" >
+            AND    IS_ACTIVE = #{isActive}
+            </if>
+            <if test="isDeleted != null" >
+            AND    IS_DELETED = #{isDeleted}
+            </if>
+            <if test="creater != null" >
+            AND    CREATER = #{creater}
+            </if>
+            <if test="createTime != null" >
+            AND    CREATE_TIME = #{createTime}
+            </if>
+            <if test="modifier != null" >
+            AND    MODIFIER = #{modifier}
+            </if>
+            <if test="modifyTime != null" >
+            AND    MODIFY_TIME = #{modifyTime}
+            </if>
+            <if test="rootOrgId != null" >
+            AND    ROOT_ORG_ID = #{rootOrgId}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                AND NAV_NAME like concat('%',concat(#{keyword},'%'))
+            </if>
+          AND  IS_DELETED = '0'
+        </where>
+        order by SORT_NO asc, CREATE_TIME asc
+    </select>
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaParNav" parameterType="AeaParNav" >
+        insert into AEA_PAR_NAV (NAV_ID, NAV_NAME, SORT_NO, NAV_MEMO, IS_ACTIVE, IS_DELETED, CREATER, CREATE_TIME, MODIFIER,
+                                 MODIFY_TIME, ROOT_ORG_ID)
+        values (#{navId}, #{navName}, #{sortNo}, #{navMemo}, #{isActive}, #{isDeleted}, #{creater}, #{createTime},
+                #{modifier}, #{modifyTime}, #{rootOrgId})
+    </insert>
+
+    <!--6 修改实体对象 -->
+    <update id="updateAeaParNav" parameterType="AeaParNav" >
+        update AEA_PAR_NAV
+        <set >
+            <if test="navId != null and navId != '' " >
+            NAV_ID = #{navId},
+            </if>
+            <if test="navName != null and navName != ''" >
+            NAV_NAME = #{navName},
+            </if>
+            <if test="sortNo != null " >
+            SORT_NO = #{sortNo},
+            </if>
+            <if test="navMemo != null" >
+            NAV_MEMO = #{navMemo},
+            </if>
+            <if test="isActive != null and isActive != ''" >
+            IS_ACTIVE = #{isActive},
+            </if>
+            <if test="isDeleted != null and isDeleted != ''" >
+            IS_DELETED = #{isDeleted},
+            </if>
+            <if test="creater != null and creater != ''" >
+            CREATER = #{creater},
+            </if>
+            <if test="createTime != null " >
+            CREATE_TIME = #{createTime},
+            </if>
+            <if test="modifier != null and modifier != ''" >
+            MODIFIER = #{modifier},
+            </if>
+            <if test="modifyTime != null " >
+            MODIFY_TIME = #{modifyTime},
+            </if>
+            <if test="rootOrgId != null and rootOrgId != ''" >
+            ROOT_ORG_ID = #{rootOrgId},
+            </if>
+        </set>
+        where NAV_ID = #{navId}
+    </update>
+
+    <!--7 删除实体对象,根据主键ID -->
+    <update id="deleteAeaParNav"  >
+        update AEA_PAR_NAV
+    <set >
+        IS_DELETED = '1'
+    </set>
+        where NAV_ID = #{id}
+        and  ROOT_ORG_ID = #{rootOrgId}
+    </update>
+
+    <!--8 获取最大排序号 -->
+    <select id="getMaxSortNo" resultType="java.lang.Long">
+        select
+            max(sort_no)
+        from AEA_PAR_NAV
+        where ROOT_ORG_ID = #{rootOrgId}
+        and IS_DELETED = '0'
+    </select>
+
+    <update id="changIsActiveState">
+        update aea_par_nav
+        set IS_ACTIVE = case IS_ACTIVE
+        when '1' then '0'
+        when '0' then '1'
+        end
+        <where>
+            and NAV_ID = #{id}
+            and ROOT_ORG_ID = #{rootOrgId}
+            and IS_DELETED = '0'
+        </where>
+    </update>
+
+    <!--返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaParNav" id="AeaParNavMap">
+        <id property="navId" column="NAV_ID"/>
+        <result property="navName" column="NAV_NAME"/>
+        <result property="sortNo" column="SORT_NO"/>
+        <result property="navMemo" column="NAV_MEMO"/>
+        <result property="isActive" column="IS_ACTIVE"/>
+        <result property="isDeleted" column="IS_DELETED"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="modifier" column="MODIFIER"/>
+        <result property="modifyTime" column="MODIFY_TIME"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+    </resultMap>
+
+</mapper>

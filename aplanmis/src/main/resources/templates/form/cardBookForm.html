@@ -1,0 +1,137 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>建设项目两证一书信息</title>
+  <link rel="stylesheet" href="../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.css" th:href="@{/agcloud/framework/js-lib/element-2/element.css}" />
+  <link rel="stylesheet" href="../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css" th:href="@{/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css}">
+  <link rel="stylesheet" href="../../static/form/css/cardBookForm.css" th:href="@{/form/css/cardBookForm.css}">
+  <script>
+    var ctx = '[[@{/}]]';
+    var projInfoId= '[[${projInfoId}]]'; 
+  // var ctx = 'http://192.168.32.48:8083/aplanmis-front/';
+  // var ctx = 'http://192.168.15.26:8083/aplanmis-front/';
+  </script>
+</head>
+
+<body>
+  <div class='loading' v-if="pageLoading">
+    <div class="tips">
+      <i class="el-icon-loading"></i>
+      <p>请稍后</p>
+    </div>
+  </div>
+  <div id="app" v-cloak>
+    <el-collapse v-model="activeNames">
+      <!--  基本信息  start  -->
+      <el-collapse-item class="clearfix" name="1" id="baseInfo">
+        <template slot="title">
+          <i class="header-icon icon ag ag-project-info"></i>建设项目两证一书信息
+        </template>
+        <p class='header'>建设项目用地规划许可证</p>
+        <el-form label-position="right" label-width="210px" :model="formData" ref="form" :rules="rules" :inline='true'>
+          <el-form-item prop="" v-show='false'>
+            <el-input v-model="formData.certLandId"></el-input>
+          </el-form-item>
+          <div class="clearfix">
+            <el-form-item class="input-inline" prop="certLandCode" label="建设项目用地规划许可证编号">
+              <el-input v-model="formData.certLandCode" placeholder="请输入建设项目用地规划许可证编号"></el-input>
+            </el-form-item>
+            <el-form-item class="input-inline" prop="landNature" label='用地性质可用地性质ID'>
+              <el-select v-model="formData.landNature" placeholder="请选择用地性质可用地性质ID" @change="forceUpdate">
+                <el-option :label="item.itemName" :value="item.itemCode" v-for="item in fieldType"></el-option>
+              </el-select>
+            </el-form-item>
+          </div>
+          <div class="clearfix">
+            <el-form-item class="input-inline" label="用地面积" prop="landAreaValue">
+              <el-input v-model="formData.landAreaValue" placeholder="请输入用地面积" class="input-with-select">
+                <el-select v-model="formData.landAreaUnit" slot="append" placeholder="请选择">
+                  <el-option :label="item.itemName" :value="item.itemCode" v-for="item in landAreaUnitSite"></el-option>
+                  <!-- <el-option label="餐厅名" value="1"></el-option>
+                  <el-option label="订单号" value="2"></el-option>
+                  <el-option label="用户电话" value="3"></el-option> -->
+                </el-select>
+              </el-input>
+            </el-form-item>
+            <el-form-item class="input-inline" label="发证机关机构代码" prop="govOrgCodeLand">
+              <el-input v-model="formData.govOrgCodeLand" placeholder="请输入发证机关机构代码"></el-input>
+            </el-form-item>
+          </div>
+          <div class="clearfix">
+            <el-form-item class="input-inline" label="发证机关" prop="govOrgNameLand">
+              <el-input v-model="formData.govOrgNameLand" placeholder="请输入发证机关"></el-input>
+            </el-form-item>
+            <el-form-item class="input-inline" label="发证日期" prop="publishTimeLand">
+              <el-date-picker v-model="formData.publishTimeLand" type="date" placeholder="请选择发证日期">
+            </el-form-item>
+          </div>
+        </el-form>
+        <p class='header'>建设工程规划许可证</p>
+        <el-form label-position="right" label-width="210px" :model="formData2" ref="form2" :rules="rules2" :inline='true'>
+          <el-form-item prop="certProjectId" v-show="false">
+            <el-input v-model="formData2.certProjectId"></el-input>
+          </el-form-item>
+          <el-form-item class="input-inline" label="建设工程规划许可证编号" prop="certProjectCode">
+            <el-input v-model="formData2.certProjectCode" placeholder="请输入建设工程规划许可证编号"></el-input>
+          </el-form-item>
+          <el-form-item class="input-inline" label="核发机关组织机构代码" prop="publishOrgCodeProject">
+            <el-input v-model="formData2.publishOrgCodeProject" placeholder="请输入核发机关组织机构代码"></el-input>
+          </el-form-item>
+          <el-form-item class="input-inline" label="核发机关" prop="publishOrgNameProject">
+            <el-input v-model="formData2.publishOrgNameProject" placeholder="请输入核发机关"></el-input>
+          </el-form-item>
+          <el-form-item class="input-inline" label="核发日期" prop="publishTimeProject">
+            <el-date-picker v-model="formData2.publishTimeProject" type="date" placeholder="请选择核发日期">
+            </el-date-picker>
+          </el-form-item>
+        </el-form>
+        <p class='header'>建设项目选址意见书</p>
+        <el-form label-position="right" label-width="210px" :model="formData3" ref="form3" :rules="rules3" :inline='true'>
+          <el-form-item prop="siteId">
+            <el-input v-model="formData3.siteId" v-show="false"></el-input>
+          </el-form-item>
+          <el-form-item class="input-inline" label='建设项目选址意见书批文号' prop="siteCode">
+            <el-input v-model="formData3.siteCode" placeholder="请输入建设项目选址意见书批文号"></el-input>
+          </el-form-item>
+          <el-form-item class="input-inline" prop="landAreaValueSite" label='拟用地面积'>
+            <el-input v-model="formData3.landAreaValueSite" placeholder="请输入拟用地面积" class="input-with-select">
+              <el-select v-model="formData3.landAreaUnitSite" slot="append" placeholder="请选择">
+                <el-option :label="item.itemName" :value="item.itemCode" v-for="item in landAreaUnitSite"></el-option>
+                <!-- <el-option label="餐厅名" value="1"></el-option>
+<el-option label="订单号" value="2"></el-option>
+<el-option label="用户电话" value="3"></el-option> -->
+              </el-select>
+            </el-input>
+          </el-form-item>
+          <el-form-item class="input-inline" label="拟建设规模" prop="constructionSize">
+            <el-input v-model="formData3.constructionSize" placeholder="请输入拟建设规模"></el-input>
+          </el-form-item>
+          <el-form-item class="input-inline" label="核发机关组织机构代码" prop="govOrgCodeSite">
+            <el-input v-model="formData3.govOrgCodeSite" placeholder="请输入核发机关组织机构代码"></el-input>
+          </el-form-item>
+          <el-form-item class="input-inline" label="核发机关" prop="govOrgNameSite">
+            <el-input v-model="formData3.govOrgNameSite" placeholder="请输入核发机关"></el-input>
+          </el-form-item>
+          <el-form-item class="input-inline" label="核发日期" prop="publishTimeSite">
+            <el-date-picker v-model="formData3.publishTimeSite" type="date" placeholder="请选择核发日期">
+            </el-date-picker>
+          </el-form-item>
+        </el-form>
+        <div class="right-bottom-btn">
+          <el-button type="primary" class="save-jinbanUnit-info" icon="el-icon-wallet" @click="save">保存</el-button>
+          <!-- <el-button type="primary" circle @click="save">保存</el-button> -->
+        </div>
+      </el-collapse-item>
+    </el-collapse>
+  </div>
+  <script src="../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js" th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>
+  <script src="../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js" th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
+  <script src="../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js" th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
+  <script src="../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js" th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>
+  <script type="text/javascript" src="../../static/form/js/cardBookForm.js" th:src="@{/form/js/cardBookForm.js}"></script>
+</body>
+
+</html>

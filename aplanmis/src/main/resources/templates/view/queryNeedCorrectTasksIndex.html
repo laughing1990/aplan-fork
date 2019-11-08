@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--公共引入的js css-->
+<head th:fragment="commonheader(title)">
+    <meta charset="UTF-8">
+    <title>待补正办件</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.css" th:href="@{/agcloud/framework/js-lib/element-2/element.css}"/>
+    <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css" th:href="@{/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css}">
+    <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/css/reset.css" th:href="@{/agcloud/framework/js-lib/agcloud-lib/css/reset.css}">
+    <link rel="stylesheet" href="../../static/searchTable/css/search-table.css" th:href="@{/searchTable/css/search-table.css}">
+
+    <script>
+        var ctx = '[[@{/}]]';
+    </script>
+</head>
+
+<body  class="gray-body">
+<div class="search-table" id="searchTable" v-loading.fullscreen.lock="loading" v-cloak :style="{minHeight: (curHeight-32)+'px'}">
+    <div class="search-box">
+        <el-form  class="search-from clearfix" label-width="110px">
+            <el-col :span="24" class="search-item-fif">
+                <el-form-item label="搜索关键字" class="search-input">
+                    <el-input v-model="searchFrom.keyword" placeholder="请输入项目/工程编码、名称等关键词">
+                        <el-button slot="append" icon="el-icon-search" @click="tableDataSearch" >查询</el-button>
+                    </el-input>
+                </el-form-item>
+                <span class="more-search-item" @click="showMoreSearchItem=!showMoreSearchItem">高级查询 <i class="icon ag" :class="showMoreSearchItem?'ag-up-arrow':'ag-down-arrow'"></i></span>
+            </el-col>
+            <template v-if="showMoreSearchItem">
+                <el-col :span="8">
+                    <el-form-item label="申报来源">
+                        <el-select v-model="searchFrom.applySource" placeholder="请选择" clearable @change="tableDataSearch">
+                            <el-option
+                                    v-for="item in applySourceList"
+                                    :key="item.itemId"
+                                    :label="item.itemName"
+                                    :value="item.itemCode">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                    <el-form-item label="审批类型">
+                        <el-radio-group v-model="searchFrom.applyType" @change="clearThemeList">
+                            <el-radio label="">全部</el-radio>
+                            <el-radio label="0">并联</el-radio>
+                            <el-radio label="1">单项</el-radio>
+                        </el-radio-group>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                    <el-form-item label="所属主题">
+                        <el-select v-model="searchFrom.theme" placeholder="请选择" clearable :disabled="searchFrom.applyType=='1'" @change="tableDataSearch">
+                            <el-option
+                                    v-for="item in themeList"
+                                    :key="item.themeId"
+                                    :label="item.themeName"
+                                    :value="item.themeId">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                    <el-form-item label="申报时间">
+                        <el-col :span="10">
+                            <el-form-item prop="searchFrom.applyStartTime">
+                                <el-date-picker type="date"
+                                                format="yyyy-MM-dd"
+                                                value-format="yyyy-MM-dd"
+                                                placeholder="选择时间"
+                                                v-model="searchFrom.applyStartTime"
+                                                style="width: 100%;"
+                                                @change="tableDataSearch">
+
+                                </el-date-picker>
+                            </el-form-item>
+                        </el-col>
+                        <span class="line fl" style="padding: 0 5px">-</span>
+                        <el-col :span="10">
+                            <el-form-item prop="searchFrom.applyEndTime">
+                                <el-date-picker type="date"
+                                                format="yyyy-MM-dd"
+                                                value-format="yyyy-MM-dd"
+                                                placeholder="选择时间"
+                                                v-model="searchFrom.applyEndTime"
+                                                style="width: 100%;"
+                                                @change="tableDataSearch">
+
+                                </el-date-picker>
+                            </el-form-item>
+                        </el-col>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                    <el-form-item label="承办单位">
+                        <el-select v-model="searchFrom.organizerId" placeholder="请选择" clearable @change="tableDataSearch">
+                            <el-option
+                                    v-for="item in organizerList"
+                                    :key="item.orgId"
+                                    :label="item.orgName"
+                                    :value="item.orgId">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                    <el-form-item label="设定补正时间">
+                        <el-col :span="10">
+                            <el-form-item prop="searchFrom.correctDueStartTime">
+                                <el-date-picker type="date"
+                                                format="yyyy-MM-dd"
+                                                value-format="yyyy-MM-dd"
+                                                placeholder="选择时间"
+                                                v-model="searchFrom.correctDueStartTime"
+                                                style="width: 100%;"
+                                                @change="tableDataSearch">
+
+                                </el-date-picker>
+                            </el-form-item>
+                        </el-col>
+                        <span class="line fl" style="padding: 0 5px">-</span>
+                        <el-col :span="10">
+                            <el-form-item prop="searchFrom.correctDueEndTime">
+                                <el-date-picker type="date"
+                                                format="yyyy-MM-dd"
+                                                value-format="yyyy-MM-dd"
+                                                placeholder="选择时间"
+                                                v-model="searchFrom.correctDueEndTime"
+                                                style="width: 100%;"
+                                                @change="tableDataSearch">
+
+                                </el-date-picker>
+                            </el-form-item>
+                        </el-col>
+                    </el-form-item>
+                </el-col>
+            </template>
+        </el-form>
+    </div>
+
+    <el-table class="search-content"
+              :data="tableData"
+              border stripe
+              style="width: 100%"
+              :default-sort = "{prop: 'correctDueTime', order: 'descending'}"
+              @sort-change='sortChange'>
+        <el-table-column
+                prop="applySource"
+                label="来源"
+                min-width="50"
+                show-overflow-tooltip
+                :formatter = "formatTableCell">
+
+        </el-table-column>
+        <el-table-column
+                prop="applyType"
+                min-width="50"
+                label="类型"
+                show-overflow-tooltip
+                :formatter = "formatTableCell">
+        </el-table-column>
+        <el-table-column
+                prop="applyinstCode"
+                min-width="140"
+                label="申报流水号"
+                show-overflow-tooltip
+                :formatter = "formatTableCell">
+        </el-table-column>
+        <el-table-column
+                prop="localCode"
+                min-width="220"
+                label="项目/工程代码"
+                show-overflow-tooltip
+                :formatter = "formatTableCell">
+        </el-table-column>
+        <el-table-column
+                prop="projName"
+                min-width="150"
+                label="项目/工程名称">
+            <template scope="scope">
+                <el-tooltip  effect="light" placement="top" >
+                    <div slot="content" v-html="showProjInfo(scope.row)"></div>
+                    <span>{{scope.row.projName?scope.row.projName:'-'}}</span>
+                </el-tooltip>
+            </template>
+        </el-table-column>
+        <el-table-column
+                prop="linkmanName"
+                min-width="80"
+                label="申请人"
+                show-overflow-tooltip
+                :formatter = "formatTableCell">
+        </el-table-column>
+        <el-table-column
+                min-width="260px"
+                prop="stageItemName"
+                label="阶段/事项/辅线名称">
+            <template scope="scope">
+                <el-tooltip  effect="light" placement="top" >
+                    <div slot="content" v-html="showThemeStageItemInfo(scope.row)"></div>
+                    <span v-html="stageFormatter(scope.row)"></span>
+                </el-tooltip>
+            </template>
+        </el-table-column>
+        <el-table-column
+                sortable="custom"
+                min-width="140"
+                prop="applyTime"
+                label="申报时间"
+                show-overflow-tooltip
+                :formatter = "formatTableCell">
+        </el-table-column>
+
+        <el-table-column
+                prop="organizer"
+                min-width="80"
+                label="承办单位"
+                show-overflow-tooltip
+                :formatter = "formatTableCell">
+        </el-table-column>
+
+        <el-table-column
+                prop="assignee"
+                min-width="80"
+                label="审批人员"
+                show-overflow-tooltip
+                :formatter = "formatTableCell">
+        </el-table-column>
+
+        <el-table-column
+                sortable="custom"
+                prop="correctDueTime"
+                min-width="140"
+                label="设定补正时间"
+                show-overflow-tooltip
+                :formatter = "formatTableCell">
+        </el-table-column>
+        <el-table-column
+                label="操作" min-width="150">
+            <template slot-scope="scope">
+                <span class="op-btn btn_border_right"  @click="viewDetail(scope.row)" >材料补正</span>
+                <span class="op-btn" @click="sendSms(scope.row)">短信提醒</span>
+            </template>
+        </el-table-column>
+    </el-table>
+
+    <el-pagination class="mt20 mb20 mr20 el-pagination-top" background align="right" @size-change="handleSizeChange"
+                   @current-change="handleCurrentChange" :page-sizes="[10, 20, 30, 50]" :page-size="searchFrom.pagination.perpage"
+                   :current-page="searchFrom.pagination.page" layout="total,sizes, prev, pager, next, jumper"
+                   :total="dataTotal" v-show="dataTotal>10">
+    </el-pagination>
+
+</div>
+
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js" th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js" th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js" th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js" th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>
+
+<script src="../../static/view/js/mixins.js" th:src="@{/view/js/mixins.js}"
+        type="text/javascript"></script>
+<script src="../../static/view/js/queryNeedCorrectTasksIndex.js" th:src="@{/view/js/queryNeedCorrectTasksIndex.js}"
+        type="text/javascript"></script>
+</body>
+</html>

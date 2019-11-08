@@ -1,0 +1,444 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaItemGuideMapper" >
+
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns" >
+        ID  id,
+        ANTICIPATE_DAY  anticipateDay,
+        ANTICIPATE_TYPE  anticipateType,
+        CATLOG_CODE  catlogCode,
+        CKBLLC  ckbllc,
+        CKBLLCT  ckbllct,
+        DEPT_NAME  deptName,
+        DEPT_TYPE_TEXT  deptTypeText,
+        HANDLE_TYPE_TEXT  handleTypeText,
+        IS_FEE_TEXT  isFeeText,
+        LINKWAY  linkway,
+        PROJECT_TYPE_TEXY  projectTypeTexy,
+        PROMISE_DAY  promiseDay,
+        PROMISE_TYPE  promiseType,
+        SERVE_TYPE_TEXT  serveTypeText,
+        TASK_CODE  taskCode,
+        TASK_NAME  taskName,
+        TASK_TYPE_TEXT  taskTypeText,
+        TSCKADDRESS  tsckaddress,
+        TSDZYX  tsdzyx,
+        TSTEL  tstel,
+        WSBLLC  wsbllc,
+        USER_LEVEL  userLevel,
+        WSBLLCT  wsbllct,
+        WSTSWZ  wstswz,
+        XHTSDZ  xhtsdz,
+        ITEM_VER_ID  itemVerId,
+        TASK_TYPE  taskType,
+        USE_LEVEL_TEXT  useLevelText,
+        DEPT_CODE  deptCode,
+        DEPT_TYPE  deptType,
+        TONGYI_CODE  tongyiCode,
+        SERVE_TYPE  serveType,
+        ANTICIPATE_TYPE_TEXT  anticipateTypeText,
+        FDBLSXSM  fdblsxsm,
+        PROMISE_TYPE_TEXT  promiseTypeText,
+        CRBJSXSM  crbjsxsm,
+        HANDLE_TYPE  handleType,
+        PROJECT_TYPE  projectType,
+        ITEMSOURCE  itemsource,
+        ITEMSOURCE_TEXT  itemsourceText,
+        FACTDEGREE_EXPLAIN  factdegreeExplain,
+        ACCEPT_CONDITION  acceptCondition,
+        SUPERVISE_WAY  superviseWay,
+        IS_FEE  isFee,
+        CHARGENODE  chargenode,
+        CHARGETYPE  chargetype,
+        CHARGETYPE_TEXT  chargetypeText,
+        ONLINE_CHECK  onlineCheck,
+        ONLINE_CHECK_TEXT  onlineCheckText,
+        TRANSACT_WEB_URL  transactWebUrl,
+        LEVY_KIND  levyKind,
+        IS_LEVYWAIVER  isLevywaiver,
+        ROOT_ORG_ID rootOrgId
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaItemGuideById" resultType="AeaItemGuide" >
+        select
+        <include refid="allColumns"/>
+        from    AEA_ITEM_GUIDE
+        where    ID = #{id}
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaItemGuide" resultType="AeaItemGuide" >
+        select
+        <include refid="allColumns"/>
+        from    AEA_ITEM_GUIDE
+        <where>
+            <if test="id != null" >
+                AND    ID = #{id}
+            </if>
+            <if test="anticipateDay != null" >
+                AND    ANTICIPATE_DAY = #{anticipateDay}
+            </if>
+            <if test="anticipateType != null" >
+                AND    ANTICIPATE_TYPE = #{anticipateType}
+            </if>
+            <if test="catlogCode != null" >
+                AND    CATLOG_CODE = #{catlogCode}
+            </if>
+            <if test="ckbllc != null" >
+                AND    CKBLLC = #{ckbllc}
+            </if>
+            <if test="ckbllct != null" >
+                AND    CKBLLCT = #{ckbllct}
+            </if>
+            <if test="deptName != null" >
+                AND    DEPT_NAME = #{deptName}
+            </if>
+            <if test="deptTypeText != null" >
+                AND    DEPT_TYPE_TEXT = #{deptTypeText}
+            </if>
+            <if test="handleTypeText != null" >
+                AND    HANDLE_TYPE_TEXT = #{handleTypeText}
+            </if>
+            <if test="isFeeText != null" >
+                AND    IS_FEE_TEXT = #{isFeeText}
+            </if>
+            <if test="linkway != null" >
+                AND    LINKWAY = #{linkway}
+            </if>
+            <if test="projectTypeTexy != null" >
+                AND    PROJECT_TYPE_TEXY = #{projectTypeTexy}
+            </if>
+            <if test="promiseDay != null" >
+                AND    PROMISE_DAY = #{promiseDay}
+            </if>
+            <if test="promiseType != null" >
+                AND    PROMISE_TYPE = #{promiseType}
+            </if>
+            <if test="serveTypeText != null" >
+                AND    SERVE_TYPE_TEXT = #{serveTypeText}
+            </if>
+            <if test="taskCode != null" >
+                AND    TASK_CODE = #{taskCode}
+            </if>
+            <if test="taskName != null" >
+                AND    TASK_NAME = #{taskName}
+            </if>
+            <if test="taskTypeText != null" >
+                AND    TASK_TYPE_TEXT = #{taskTypeText}
+            </if>
+            <if test="tsckaddress != null" >
+                AND    TSCKADDRESS = #{tsckaddress}
+            </if>
+            <if test="tsdzyx != null" >
+                AND    TSDZYX = #{tsdzyx}
+            </if>
+            <if test="tstel != null" >
+                AND    TSTEL = #{tstel}
+            </if>
+            <if test="wsbllc != null" >
+                AND    WSBLLC = #{wsbllc}
+            </if>
+            <if test="userLevel != null" >
+                AND    USER_LEVEL = #{userLevel}
+            </if>
+            <if test="wsbllct != null" >
+                AND    WSBLLCT = #{wsbllct}
+            </if>
+            <if test="wstswz != null" >
+                AND    WSTSWZ = #{wstswz}
+            </if>
+            <if test="xhtsdz != null" >
+                AND    XHTSDZ = #{xhtsdz}
+            </if>
+            <if test="itemVerId != null" >
+                AND    ITEM_VER_ID = #{itemVerId}
+            </if>
+            <if test="taskType != null" >
+                AND    TASK_TYPE = #{taskType}
+            </if>
+            <if test="useLevelText != null" >
+                AND    USE_LEVEL_TEXT = #{useLevelText}
+            </if>
+            <if test="deptCode != null" >
+                AND    DEPT_CODE = #{deptCode}
+            </if>
+            <if test="deptType != null" >
+                AND    DEPT_TYPE = #{deptType}
+            </if>
+            <if test="tongyiCode != null" >
+                AND    TONGYI_CODE = #{tongyiCode}
+            </if>
+            <if test="serveType != null" >
+                AND    SERVE_TYPE = #{serveType}
+            </if>
+            <if test="anticipateTypeText != null" >
+                AND    ANTICIPATE_TYPE_TEXT = #{anticipateTypeText}
+            </if>
+            <if test="fdblsxsm != null" >
+                AND    FDBLSXSM = #{fdblsxsm}
+            </if>
+            <if test="promiseTypeText != null" >
+                AND    PROMISE_TYPE_TEXT = #{promiseTypeText}
+            </if>
+            <if test="crbjsxsm != null" >
+                AND    CRBJSXSM = #{crbjsxsm}
+            </if>
+            <if test="handleType != null" >
+                AND    HANDLE_TYPE = #{handleType}
+            </if>
+            <if test="projectType != null" >
+                AND    PROJECT_TYPE = #{projectType}
+            </if>
+            <if test="itemsource != null" >
+                AND    ITEMSOURCE = #{itemsource}
+            </if>
+            <if test="itemsourceText != null" >
+                AND    ITEMSOURCE_TEXT = #{itemsourceText}
+            </if>
+            <if test="factdegreeExplain != null" >
+                AND    FACTDEGREE_EXPLAIN = #{factdegreeExplain}
+            </if>
+            <if test="acceptCondition != null" >
+                AND    ACCEPT_CONDITION = #{acceptCondition}
+            </if>
+            <if test="superviseWay != null" >
+                AND    SUPERVISE_WAY = #{superviseWay}
+            </if>
+            <if test="isFee != null" >
+                AND    IS_FEE = #{isFee}
+            </if>
+            <if test="chargenode != null" >
+                AND    CHARGENODE = #{chargenode}
+            </if>
+            <if test="chargetype != null" >
+                AND    CHARGETYPE = #{chargetype}
+            </if>
+            <if test="chargetypeText != null" >
+                AND    CHARGETYPE_TEXT = #{chargetypeText}
+            </if>
+            <if test="onlineCheck != null" >
+                AND    ONLINE_CHECK = #{onlineCheck}
+            </if>
+            <if test="onlineCheckText != null" >
+                AND    ONLINE_CHECK_TEXT = #{onlineCheckText}
+            </if>
+            <if test="transactWebUrl != null" >
+                AND    TRANSACT_WEB_URL = #{transactWebUrl}
+            </if>
+            <if test="levyKind != null" >
+                AND    LEVY_KIND = #{levyKind}
+            </if>
+            <if test="isLevywaiver != null" >
+                AND    IS_LEVYWAIVER = #{isLevywaiver}
+            </if>
+            <if test="rootOrgId != null" >
+               AND     ROOT_ORG_ID = #{rootOrgId}
+            </if>
+        </where>
+    </select>
+    <!--4 根据条件查询实体list,返回分页对象 -->
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaItemGuide" parameterType="AeaItemGuide" >
+        insert into AEA_ITEM_GUIDE (
+        ID  ,ANTICIPATE_DAY  ,ANTICIPATE_TYPE  ,CATLOG_CODE  ,CKBLLC  ,CKBLLCT  ,DEPT_NAME  ,DEPT_TYPE_TEXT  ,HANDLE_TYPE_TEXT  ,IS_FEE_TEXT  ,LINKWAY  ,PROJECT_TYPE_TEXY  ,PROMISE_DAY  ,PROMISE_TYPE  ,SERVE_TYPE_TEXT  ,TASK_CODE  ,TASK_NAME  ,TASK_TYPE_TEXT  ,TSCKADDRESS  ,TSDZYX  ,TSTEL  ,WSBLLC  ,USER_LEVEL  ,WSBLLCT  ,WSTSWZ  ,XHTSDZ  ,ITEM_VER_ID  ,TASK_TYPE  ,USE_LEVEL_TEXT  ,DEPT_CODE  ,DEPT_TYPE  ,TONGYI_CODE  ,SERVE_TYPE  ,ANTICIPATE_TYPE_TEXT  ,FDBLSXSM  ,PROMISE_TYPE_TEXT  ,CRBJSXSM  ,HANDLE_TYPE  ,PROJECT_TYPE  ,ITEMSOURCE  ,ITEMSOURCE_TEXT  ,FACTDEGREE_EXPLAIN  ,ACCEPT_CONDITION  ,SUPERVISE_WAY  ,IS_FEE  ,CHARGENODE  ,CHARGETYPE  ,CHARGETYPE_TEXT  ,ONLINE_CHECK  ,ONLINE_CHECK_TEXT  ,TRANSACT_WEB_URL  ,LEVY_KIND  ,IS_LEVYWAIVER, ROOT_ORG_ID
+        )  values  (
+        #{id},#{anticipateDay},#{anticipateType},#{catlogCode},#{ckbllc},#{ckbllct},#{deptName},#{deptTypeText},#{handleTypeText},#{isFeeText},#{linkway},#{projectTypeTexy},#{promiseDay},#{promiseType},#{serveTypeText},#{taskCode},#{taskName},#{taskTypeText},#{tsckaddress},#{tsdzyx},#{tstel},#{wsbllc},#{userLevel},#{wsbllct},#{wstswz},#{xhtsdz},#{itemVerId},#{taskType},#{useLevelText},#{deptCode},#{deptType},#{tongyiCode},#{serveType},#{anticipateTypeText},#{fdblsxsm},#{promiseTypeText},#{crbjsxsm},#{handleType},#{projectType},#{itemsource},#{itemsourceText},#{factdegreeExplain},#{acceptCondition},#{superviseWay},#{isFee},#{chargenode},#{chargetype},#{chargetypeText},#{onlineCheck},#{onlineCheckText},#{transactWebUrl},#{levyKind},  #{isLevywaiver}, #{rootOrgId}
+        )
+    </insert>
+
+    <!--6 修改实体对象 -->
+    <update id="updateAeaItemGuide" parameterType="AeaItemGuide" >
+        update AEA_ITEM_GUIDE
+        <set >
+            <if test="id != null" >
+                ID = #{id},
+            </if>
+            <if test="anticipateDay != null" >
+                ANTICIPATE_DAY = #{anticipateDay},
+            </if>
+            <if test="anticipateType != null" >
+                ANTICIPATE_TYPE = #{anticipateType},
+            </if>
+            <if test="catlogCode != null" >
+                CATLOG_CODE = #{catlogCode},
+            </if>
+            <if test="ckbllc != null" >
+                CKBLLC = #{ckbllc},
+            </if>
+            <if test="ckbllct != null" >
+                CKBLLCT = #{ckbllct},
+            </if>
+            <if test="deptName != null" >
+                DEPT_NAME = #{deptName},
+            </if>
+            <if test="deptTypeText != null" >
+                DEPT_TYPE_TEXT = #{deptTypeText},
+            </if>
+            <if test="handleTypeText != null" >
+                HANDLE_TYPE_TEXT = #{handleTypeText},
+            </if>
+            <if test="isFeeText != null" >
+                IS_FEE_TEXT = #{isFeeText},
+            </if>
+            <if test="linkway != null" >
+                LINKWAY = #{linkway},
+            </if>
+            <if test="projectTypeTexy != null" >
+                PROJECT_TYPE_TEXY = #{projectTypeTexy},
+            </if>
+            <if test="promiseDay != null" >
+                PROMISE_DAY = #{promiseDay},
+            </if>
+            <if test="promiseType != null" >
+                PROMISE_TYPE = #{promiseType},
+            </if>
+            <if test="serveTypeText != null" >
+                SERVE_TYPE_TEXT = #{serveTypeText},
+            </if>
+            <if test="taskCode != null" >
+                TASK_CODE = #{taskCode},
+            </if>
+            <if test="taskName != null" >
+                TASK_NAME = #{taskName},
+            </if>
+            <if test="taskTypeText != null" >
+                TASK_TYPE_TEXT = #{taskTypeText},
+            </if>
+            <if test="tsckaddress != null" >
+                TSCKADDRESS = #{tsckaddress},
+            </if>
+            <if test="tsdzyx != null" >
+                TSDZYX = #{tsdzyx},
+            </if>
+            <if test="tstel != null" >
+                TSTEL = #{tstel},
+            </if>
+            <if test="wsbllc != null" >
+                WSBLLC = #{wsbllc},
+            </if>
+            <if test="userLevel != null" >
+                USER_LEVEL = #{userLevel},
+            </if>
+            <if test="wsbllct != null" >
+                WSBLLCT = #{wsbllct},
+            </if>
+            <if test="wstswz != null" >
+                WSTSWZ = #{wstswz},
+            </if>
+            <if test="xhtsdz != null" >
+                XHTSDZ = #{xhtsdz},
+            </if>
+            <if test="itemVerId != null" >
+                ITEM_VER_ID = #{itemVerId},
+            </if>
+            <if test="taskType != null" >
+                TASK_TYPE = #{taskType},
+            </if>
+            <if test="useLevelText != null" >
+                USE_LEVEL_TEXT = #{useLevelText},
+            </if>
+            <if test="deptCode != null" >
+                DEPT_CODE = #{deptCode},
+            </if>
+            <if test="deptType != null" >
+                DEPT_TYPE = #{deptType},
+            </if>
+            <if test="tongyiCode != null" >
+                TONGYI_CODE = #{tongyiCode},
+            </if>
+            <if test="serveType != null" >
+                SERVE_TYPE = #{serveType},
+            </if>
+            <if test="anticipateTypeText != null" >
+                ANTICIPATE_TYPE_TEXT = #{anticipateTypeText},
+            </if>
+            <if test="fdblsxsm != null" >
+                FDBLSXSM = #{fdblsxsm},
+            </if>
+            <if test="promiseTypeText != null" >
+                PROMISE_TYPE_TEXT = #{promiseTypeText},
+            </if>
+            <if test="crbjsxsm != null" >
+                CRBJSXSM = #{crbjsxsm},
+            </if>
+            <if test="handleType != null" >
+                HANDLE_TYPE = #{handleType},
+            </if>
+            <if test="projectType != null" >
+                PROJECT_TYPE = #{projectType},
+            </if>
+            <if test="itemsource != null" >
+                ITEMSOURCE = #{itemsource},
+            </if>
+            <if test="itemsourceText != null" >
+                ITEMSOURCE_TEXT = #{itemsourceText},
+            </if>
+            <if test="factdegreeExplain != null" >
+                FACTDEGREE_EXPLAIN = #{factdegreeExplain},
+            </if>
+            <if test="acceptCondition != null" >
+                ACCEPT_CONDITION = #{acceptCondition},
+            </if>
+            <if test="superviseWay != null" >
+                SUPERVISE_WAY = #{superviseWay},
+            </if>
+            <if test="isFee != null" >
+                IS_FEE = #{isFee},
+            </if>
+            <if test="chargenode != null" >
+                CHARGENODE = #{chargenode},
+            </if>
+            <if test="chargetype != null" >
+                CHARGETYPE = #{chargetype},
+            </if>
+            <if test="chargetypeText != null" >
+                CHARGETYPE_TEXT = #{chargetypeText},
+            </if>
+            <if test="onlineCheck != null" >
+                ONLINE_CHECK = #{onlineCheck},
+            </if>
+            <if test="onlineCheckText != null" >
+                ONLINE_CHECK_TEXT = #{onlineCheckText},
+            </if>
+            <if test="transactWebUrl != null" >
+                TRANSACT_WEB_URL = #{transactWebUrl},
+            </if>
+            <if test="levyKind != null" >
+                LEVY_KIND = #{levyKind},
+            </if>
+            <if test="isLevywaiver != null" >
+                IS_LEVYWAIVER = #{isLevywaiver},
+            </if>
+            <if test="rootOrgId != null" >
+                ROOT_ORG_ID = #{rootOrgId},
+            </if>
+        </set>
+        where ID = #{id}
+    </update>
+
+    <!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaItemGuide">
+        delete from AEA_ITEM_GUIDE where id = #{id}
+    </delete>
+
+    <delete id="deleteAeaItemGuideByItemVerId">
+        delete from AEA_ITEM_GUIDE
+        where ITEM_VER_ID = #{itemVerId}
+          and ROOT_ORG_ID = #{rootOrgId}
+    </delete>
+
+    <select id="getOneByItemVerId" resultType="com.augurit.aplanmis.common.domain.AeaItemGuide">
+        select
+            <include refid="allColumns"></include>
+        from AEA_ITEM_GUIDE
+        where ITEM_VER_ID = #{itemVerId}
+          and ROOT_ORG_ID = #{rootOrgId}
+    </select>
+
+
+</mapper>

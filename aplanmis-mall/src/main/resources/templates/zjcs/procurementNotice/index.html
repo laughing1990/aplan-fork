@@ -1,0 +1,129 @@
+<!--@Author: ZL-->
+<!--@Date:   2019/06/13-->
+<!--@Last Modified by:   ZL-->
+<!--@Last Modified time: $ $-->
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>唐山市中介服务网上超市</title>
+  <link rel="shortcut icon" href="../../../static/zjcs/common/images/favicon.ico" th:href="@{/zjcs/common/images/favicon.ico}">
+  <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.css" th:href="@{/agcloud/framework/js-lib/element-2/element.css}"/>
+  <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css" th:href="@{/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css}">
+  <link rel="stylesheet" href="../../../static/zjcs/common/css/reset.css" th:href="@{/zjcs/common/css/reset.css}">
+  <link rel="stylesheet" href="../../../static/zjcs/procurementNotice/css/index.css"  th:href="@{/zjcs/procurementNotice/css/index.css}"></link>
+
+  <script>
+    var ctx = '[[@{/}]]';
+    // var ctx = 'http://192.168.30.209:8084/aplanmis-mall/';
+  </script>
+</head>
+<body>
+<div id="index" v-cloak>
+  <div class="header">
+    <iframe src="../common/header.html" th:src="@{../header.html}" frameborder="0"></iframe>
+  </div>
+  <div class="main-content clearfix" :style="{minHeight:contentMinHeight+'px'}">
+    <el-form :model="searchData" ref="searchFrom" label-width="100px" class="search-form clearfix">
+      <el-col :span="12">
+        <el-form-item label="项目名称">
+          <el-input v-model="searchData.projName"  placeholder="请输入"></el-input>
+        </el-form-item>
+      </el-col>
+      <el-col :span="12">
+        <el-form-item label="项目业主">
+          <el-input v-model="searchData.applicant"  placeholder="请输入">
+            <el-button slot="append" @click="getPublicProjPurchaseList()"> 搜索</el-button>
+          </el-input>
+        </el-form-item>
+      </el-col>
+      <el-col :span="24">
+        <el-form-item label="服务类型" class="service-id">
+          <el-checkbox-group v-model="searchData.serviceIdList">
+            <el-col :span="6" v-for="item in serviceIdListShow">
+              <el-checkbox :key="item.serviceId" :label="item.serviceId" name="serviceId">{{item.serviceName}}</el-checkbox>
+            </el-col>
+          </el-checkbox-group>
+          <el-button v-show="serviceIdList.length>3" size="mini" class="show-more" @click="toggleShow()">
+            {{showMoreServiceId?'展开':'收起'}} <i :class="showMoreServiceId?'el-icon-arrow-down':'el-icon-arrow-up'"></i>
+          </el-button>
+        </el-form-item>
+      </el-col>
+      <el-col :span="12">
+        <el-form-item label="发布时间">
+          <el-col :span="11">
+            <el-form-item>
+              <el-date-picker v-model="searchData.startTime" type="date" placeholder="选择日期"  style="width: 100%;"></el-date-picker>
+            </el-form-item>
+          </el-col>
+          <el-col class="line" :span="2">至</el-col>
+          <el-col :span="11">
+            <el-form-item>
+              <el-date-picker v-model="searchData.endTime" placeholder="选择日期"  style="width: 100%;"></el-date-picker>
+            </el-form-item>
+          </el-col>
+        </el-form-item>
+      </el-col>
+      <el-col :span="12">
+        <el-form-item label="竞价类型">
+          <el-select v-model="searchData.biddingType" placeholder="请选择">
+            <el-option :label="1" value="shanghai">随机中标</el-option>
+            <el-option :label="2" value="beijing">自主选择</el-option>
+          </el-select>
+        </el-form-item>
+      </el-col>
+    </el-form>
+    <el-table
+      :data="purchaseList.rows"
+      style="width: 100%">
+      <el-table-column
+        prop="projName"
+        label="项目">
+        <template slot-scope="scope">
+          <a :href="'details.html?projPurchaseId='+scope.row.projPurchaseId" target="_blank"> {{scope.row.projName}}</a>
+        </template>
+      </el-table-column>
+      <el-table-column
+        prop="applicant"
+        label="项目业主">
+      </el-table-column>
+      <el-table-column
+        width="200px"
+        prop="serviceName"
+        label="服务类型">
+      </el-table-column>
+      <el-table-column
+        width="200px"
+        prop="publishTime"
+        label="发布时间">
+        <template  slot-scope="scope">
+          {{scope.row.publishTime | formatDate}}
+        </template>
+      </el-table-column>
+    </el-table>
+    <el-pagination background
+                   align="right"
+                   v-if="purchaseList.total>9"
+                   :pager-count="5"
+                   @size-change="handleSizeChange"
+                   @current-change="handleCurrentChange"
+                   :page-sizes="[10, 20, 30, 50]"
+                   :page-size="pageSize"
+                   layout="total,sizes, prev, pager, next, jumper"
+                   :total="purchaseList.total">
+    </el-pagination>
+  </div>
+  <div class="footer" :class="isScroll?'':'fixed-bottom'">
+    <iframe src="../common/footer.html" th:src="@{../footer.html}" frameborder="0"></iframe>
+  </div>
+</div>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js" th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js" th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js" th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
+<!--<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js" th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>-->
+<script src="../../../static/common/js/common.js" th:src="@{/common/js/common.js}"></script>
+<script src="../../../static/zjcs/procurementNotice/js/index.js"  th:src="@{/zjcs/procurementNotice/js/index.js}"></script>
+</body>
+</html>

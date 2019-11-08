@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by admin    2018-10-18 13:53:13 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaServiceLegalClauseMapper" >
+
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns" >
+        LEGAL_CLAUSE_ID  legalClauseId,
+        LEGAL_ID  legalId,
+        CLAUSE_TITLE  clauseTitle,
+        CLAUSE_CONTENT  clauseContent,
+        CLAUSE_ATT clauseAtt,
+        SORT_NO  sortNo,
+        IS_ACTIVE  isActive,
+        IS_DELETED  isDeleted,
+        CREATER  creater,
+        CREATE_TIME  createTime,
+        MODIFIER  modifier,
+        MODIFY_TIME  modifyTime,
+        ROOT_ORG_ID  rootOrgId
+    </sql>
+
+    <sql id="preColumns" >
+        aislc.LEGAL_CLAUSE_ID  legalClauseId,
+        aislc.LEGAL_ID  legalId,
+        aislc.CLAUSE_TITLE  clauseTitle,
+        aislc.CLAUSE_CONTENT  clauseContent,
+        aislc.CLAUSE_ATT clauseAtt,
+        aislc.SORT_NO  sortNo,
+        aislc.IS_ACTIVE  isActive,
+        aislc.IS_DELETED  isDeleted,
+        aislc.CREATER  creater,
+        aislc.CREATE_TIME  createTime,
+        aislc.MODIFIER  modifier,
+        aislc.MODIFY_TIME  modifyTime,
+        aislc.ROOT_ORG_ID rootOrgId
+
+    </sql>
+
+    <sql id="legalAllColumns" >
+        legal.LEGAL_ID  legalId,
+        legal.LEGAL_NAME  legalName,
+        legal.LEGAL_LEVEL  legalLevel,
+        legal.BASIC_NO  basicNo,
+        legal.ISSUE_ORG  issueOrg,
+        legal.EXE_DATE  exeDate,
+        legal.UPDATE_DATE  updateDate,
+        legal.SERVICE_LEGAL_ATT  serviceLegalAtt,
+        legal.SERVICE_LEGAL_MEMO  serviceLegalMemo,
+        legal.PARENT_LEGAL_ID  parentLegalId,
+        legal.LEGAL_SEQ  legalSeq,
+        legal.ROOT_ORG_ID  rootOrgId
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaServiceLegalClauseById" resultType="AeaServiceLegalClause">
+        select
+            <include refid="allColumns"/>
+        from  AEA_SERVICE_LEGAL_CLAUSE
+        where LEGAL_CLAUSE_ID = #{id}
+          and IS_DELETED = '0'
+    </select>
+
+    <select id="getLegalAndClauseByClauseId" resultType="AeaServiceLegalClause">
+        select
+            <include refid="preColumns"/>,
+            <include refid="legalAllColumns"/>
+        from  AEA_SERVICE_LEGAL_CLAUSE aislc, AEA_SERVICE_LEGAL legal
+        where aislc.LEGAL_ID = legal.LEGAL_ID
+          and aislc.LEGAL_CLAUSE_ID = #{legalClauseId}
+          and aislc.IS_DELETED = '0'
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaServiceLegalClause" resultType="AeaServiceLegalClause" >
+        select
+            aisl.LEGAL_NAME legalName,
+            aisl.BASIC_NO basicNo,
+            aisl.ISSUE_ORG issueOrg,
+            aisl.EXE_DATE exeDate,
+            <include refid="preColumns"/>
+        from  AEA_SERVICE_LEGAL_CLAUSE aislc,AEA_SERVICE_LEGAL aisl
+        <where>
+            AND aislc.LEGAL_ID = aisl.LEGAL_ID
+            <if test="keyword != null and keyword != ''" >
+            and (
+                aisl.LEGAL_NAME like concat('%',concat(#{keyword},'%'))OR
+                aisl.BASIC_NO like concat('%',concat(#{keyword},'%')) OR
+                aisl.ISSUE_ORG like concat('%',concat(#{keyword},'%'))OR
+                aislc.CLAUSE_TITLE like concat('%',concat(#{keyword},'%'))
+            )
+            </if>
+            <if test="legalClauseId != null" >
+            AND    aislc.LEGAL_CLAUSE_ID = #{legalClauseId}
+            </if>
+            <if test="legalId != null" >
+            AND    aislc.LEGAL_ID = #{legalId}
+            </if>
+            <if test="clauseTitle != null" >
+            AND    aislc.CLAUSE_TITLE = #{clauseTitle}
+            </if>
+            <if test="clauseContent != null" >
+            AND    aislc.CLAUSE_CONTENT = #{clauseContent}
+            </if>
+            <if test="sortNo != null" >
+            AND    aislc.SORT_NO = #{sortNo}
+            </if>
+            <if test="isActive != null" >
+            AND    aislc.IS_ACTIVE = #{isActive}
+            </if>
+            <if test="isDeleted != null" >
+            AND    aislc.IS_DELETED = #{isDeleted}
+            </if>
+            <if test="creater != null" >
+            AND    aislc.CREATER = #{creater}
+            </if>
+            <if test="createTime != null" >
+            AND    aislc.CREATE_TIME = #{createTime}
+            </if>
+            <if test="modifier != null" >
+            AND    aislc.MODIFIER = #{modifier}
+            </if>
+            <if test="modifyTime != null" >
+            AND    aislc.MODIFY_TIME = #{modifyTime}
+            </if>
+            <if test="rootOrgId != null" >
+            AND    aislc.ROOT_ORG_ID = #{rootOrgId}
+            </if>
+            <if test="legalClauseIdArr != null and legalClauseIdArr.length>0" >
+                AND aislc.LEGAL_CLAUSE_ID IN
+                <foreach collection="legalClauseIdArr" item="legalClauseId" index="i" open="(" separator="," close=")">
+                    #{legalClauseId}
+                </foreach>
+            </if>
+          AND  aislc.IS_DELETED = '0'
+        </where>
+        order by aislc.SORT_NO asc, aislc.CREATE_TIME asc
+    </select>
+
+    <!--4 根据条件查询实体list,返回分页对象 -->
+    <select id="listAeaServiceLegalClauseByChargeGroupId" parameterType="com.augurit.aplanmis.common.domain.AeaItemServiceBasic"  resultType="AeaServiceLegalClause" >
+        SELECT
+            aisl.LEGAL_NAME legalName,
+            aisl.BASIC_NO basicNo,
+            aisl.ISSUE_ORG issueOrg,
+            aisl.EXE_DATE exeDate,
+            <include refid="preColumns"/>
+        FROM AEA_SERVICE_LEGAL_CLAUSE aislc
+        INNER JOIN AEA_SERVICE_LEGAL aisl ON aislc.LEGAL_ID = aisl.LEGAL_ID
+        <where>
+              aislc.LEGAL_CLAUSE_ID IN (
+                  SELECT LEGAL_CLAUSE_ID
+                  FROM AEA_ITEM_SERVICE_BASIC aisb
+                  WHERE aisb.TABLE_NAME =  #{tableName}
+                  AND PK_NAME =  #{pkName}
+                  AND RECORD_ID =  #{recordId}
+              )
+            <if test="keyword != null and keyword != ''" >
+                and (
+                   aisl.LEGAL_NAME like concat('%',concat(#{keyword},'%'))
+                )
+            </if>
+            <if test="rootOrgId != null" >
+                AND    aislc.ROOT_ORG_ID = #{rootOrgId}
+            </if>
+        </where>
+    </select>
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaServiceLegalClause" parameterType="AeaServiceLegalClause" >
+        insert into AEA_SERVICE_LEGAL_CLAUSE (
+            LEGAL_CLAUSE_ID,
+            LEGAL_ID,
+            CLAUSE_TITLE,
+            CLAUSE_CONTENT,
+            CLAUSE_ATT,
+            SORT_NO,
+            IS_ACTIVE,
+            IS_DELETED,
+            CREATER,
+            CREATE_TIME,
+            MODIFIER,
+            MODIFY_TIME,
+            ROOT_ORG_ID
+        )  values  (
+            #{legalClauseId},
+            #{legalId},
+            #{clauseTitle},
+            #{clauseContent},
+            #{clauseAtt},
+            #{sortNo},
+            #{isActive},
+            #{isDeleted},
+            #{creater},
+            #{createTime},
+            #{modifier},
+            #{modifyTime},
+            #{rootOrgId}
+        )
+    </insert>
+
+    <!--6 修改实体对象 -->
+    <update id="updateAeaServiceLegalClause" parameterType="AeaServiceLegalClause" >
+        update AEA_SERVICE_LEGAL_CLAUSE
+        <set >
+            <if test="legalClauseId != null" >
+            LEGAL_CLAUSE_ID = #{legalClauseId},
+            </if>
+            <if test="legalId != null" >
+            LEGAL_ID = #{legalId},
+            </if>
+            <if test="clauseTitle != null" >
+            CLAUSE_TITLE = #{clauseTitle},
+            </if>
+            <if test="clauseContent != null" >
+            CLAUSE_CONTENT = #{clauseContent},
+            </if>
+            <if test="clauseAtt != null" >
+            CLAUSE_ATT = #{clauseAtt},
+            </if>
+            <if test="sortNo != null" >
+            SORT_NO = #{sortNo},
+            </if>
+            <if test="isActive != null" >
+            IS_ACTIVE = #{isActive},
+            </if>
+            <if test="isDeleted != null" >
+            IS_DELETED = #{isDeleted},
+            </if>
+            <if test="creater != null" >
+            CREATER = #{creater},
+            </if>
+            <if test="createTime != null" >
+            CREATE_TIME = #{createTime},
+            </if>
+            <if test="modifier != null" >
+            MODIFIER = #{modifier},
+            </if>
+            <if test="modifyTime != null" >
+            MODIFY_TIME = #{modifyTime},
+            </if>
+            <if test="rootOrgId != null" >
+                ROOT_ORG_ID = #{rootOrgId},
+            </if>
+        </set>
+        where LEGAL_CLAUSE_ID = #{legalClauseId}
+    </update>
+
+    <select id="getMaxSortNo" resultType="java.lang.Long">
+        select max(SORT_NO) from AEA_SERVICE_LEGAL_CLAUSE where IS_DELETED = '0' AND ROOT_ORG_ID=#{rootOrgId}
+    </select>
+
+    <update id="deleteAeaServiceLegalClause"  >
+        update AEA_SERVICE_LEGAL_CLAUSE set IS_DELETED = '1'
+        where LEGAL_CLAUSE_ID = #{id}
+    </update>
+
+    <delete id="deleteAeaServiceLegalClauseBylegalId">
+        delete from AEA_SERVICE_LEGAL_CLAUSE where LEGAL_ID = #{legalId}
+    </delete>
+
+    <select id="listAeaServiceLegalClauseForRecordId" resultType="AeaServiceLegalClause" >
+        select aib.BASIC_ID basicId,aisl.LEGAL_NAME legalName, aisl.BASIC_NO basicNo, aisl.ISSUE_ORG issueOrg,
+        aisl.EXE_DATE exeDate, aislc.LEGAL_CLAUSE_ID legalClauseId, aislc.LEGAL_ID legalId,
+        aislc.CLAUSE_TITLE clauseTitle, aislc.CLAUSE_CONTENT clauseContent, aislc.CLAUSE_ATT clauseAtt, aislc.SORT_NO sortNo,
+         aislc.IS_ACTIVE isActive, aislc.IS_DELETED isDeleted, aislc.CREATER creater, aislc.CREATE_TIME createTime, aislc.MODIFIER modifier,
+         aislc.MODIFY_TIME modifyTime, aislc.ROOT_ORG_ID rootOrgId from AEA_ITEM_SERVICE_BASIC aib,AEA_SERVICE_LEGAL_CLAUSE aislc ,
+         AEA_SERVICE_LEGAL aisl
+        <where>
+            aib.LEGAL_CLAUSE_ID= aislc.LEGAL_CLAUSE_ID and aislc.LEGAL_ID = aisl.LEGAL_ID
+            <if test="recordId != null" >
+               AND aib.RECORD_ID = #{recordId}
+            </if>
+            <if test="tableName != null">
+               AND aib.TABLE_NAME = #{tableName}
+            </if>
+            <if test="pkName != null">
+               AND aib.PK_NAME = #{pkName}
+            </if>
+            <if test="keyword != null and keyword != ''" >
+                AND (
+                aisl.LEGAL_NAME like concat('%',concat(#{keyword},'%'))OR
+                aisl.BASIC_NO like concat('%',concat(#{keyword},'%')) OR
+                aisl.ISSUE_ORG like concat('%',concat(#{keyword},'%'))OR
+                aislc.CLAUSE_TITLE like concat('%',concat(#{keyword},'%'))
+                )
+            </if>
+            <if test="legalClauseId != null" >
+                AND    aislc.LEGAL_CLAUSE_ID = #{legalClauseId}
+            </if>
+            <if test="legalId != null" >
+                AND    aislc.LEGAL_ID = #{legalId}
+            </if>
+            <if test="clauseTitle != null" >
+                AND    aislc.CLAUSE_TITLE = #{clauseTitle}
+            </if>
+            <if test="clauseContent != null" >
+                AND    aislc.CLAUSE_CONTENT = #{clauseContent}
+            </if>
+            <if test="sortNo != null" >
+                AND    aislc.SORT_NO = #{sortNo}
+            </if>
+            <if test="isActive != null" >
+                AND    aislc.IS_ACTIVE = #{isActive}
+            </if>
+            <if test="isDeleted != null" >
+                AND    aislc.IS_DELETED = #{isDeleted}
+            </if>
+            <if test="creater != null" >
+                AND    aislc.CREATER = #{creater}
+            </if>
+            <if test="createTime != null" >
+                AND    aislc.CREATE_TIME = #{createTime}
+            </if>
+            <if test="modifier != null" >
+                AND    aislc.MODIFIER = #{modifier}
+            </if>
+            <if test="modifyTime != null" >
+                AND    aislc.MODIFY_TIME = #{modifyTime}
+            </if>
+            <if test="rootOrgId != null" >
+                AND    aislc.ROOT_ORG_ID = #{rootOrgId}
+            </if>
+            AND  aislc.IS_DELETED = '0'
+        </where>
+        order by aislc.SORT_NO asc, aislc.CREATE_TIME desc
+
+    </select>
+
+
+    <resultMap type="AeaServiceLegalClause" id="AeaServiceLegalClauseMap">
+        <id property="legalClauseId" column="LEGAL_CLAUSE_ID"/>
+        <result property="legalId" column="LEGAL_ID"/>
+        <result property="clauseTitle" column="CLAUSE_TITLE"/>
+        <result property="clauseContent" column="CLAUSE_CONTENT"/>
+        <result property="clauseAtt" column="CLAUSE_ATT"/>
+        <result property="sortNo" column="SORT_NO"/>
+        <result property="isActive" column="IS_ACTIVE"/>
+        <result property="isDeleted" column="IS_DELETED"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="modifier" column="MODIFIER"/>
+        <result property="modifyTime" column="MODIFY_TIME"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+    </resultMap>
+
+</mapper>

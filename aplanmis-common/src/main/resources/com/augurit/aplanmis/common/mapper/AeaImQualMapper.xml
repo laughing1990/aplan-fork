@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by admin    2019-06-10 13:41:46 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaImQualMapper" >
+<!--1 返回所有字段的SQL字句 -->
+<sql id="allColumns" >
+    QUAL_ID  qualId,
+    QUAL_CODE  qualCode,
+    QUAL_NAME  qualName,
+    IS_DELETE  isDelete,
+    CREATER  creater,
+    CREATE_TIME  createTime,
+    MEMO  memo,
+    QUAL_LEVEL_ID  qualLevelId,
+    ROOT_ORG_ID rootOrgId
+    </sql>
+
+<!--2 根据主键ID查询单个实体 -->
+<select id="getAeaImQualById" resultType="AeaImQual" >
+    select
+    <include refid="allColumns"/>
+    from    AEA_IM_QUAL
+    where    QUAL_ID = #{id}
+</select>
+
+    <select id="checkUniqueQualCode" resultType="java.lang.Integer">
+        select count(*) from AEA_IM_QUAL
+        <where>
+            <if test="qualId != null and qualId!='' " >
+                and QUAL_ID != #{qualId}
+            </if>
+            and QUAL_CODE = #{qualCode}
+            and    IS_DELETE = '0'
+        </where>
+    </select>
+
+    <select id="listAeaImQualByQualIds" resultType="AeaImQual" >
+        select
+        <include refid="allColumns"/>
+        from    AEA_IM_QUAL
+        where    QUAL_ID IN
+        <foreach collection="qualIds" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
+
+<!--3 根据条件查询实体list -->
+    <select id="listAeaImQual" resultType="AeaImQual" >
+        select
+        <include refid="allColumns"/>
+        from    AEA_IM_QUAL
+    <where>
+        <if test="keyword!=null and keyword!='' ">
+            and (
+            QUAL_CODE like concat('%',concat(#{keyword},'%')) or
+            QUAL_NAME like concat('%',concat(#{keyword},'%')) or
+            MEMO like concat('%',concat(#{keyword},'%'))
+            )
+        </if>
+        <if test="qualId != null" >
+        AND    QUAL_ID = #{qualId}
+        </if>
+        <if test="qualCode != null" >
+        AND    QUAL_CODE = #{qualCode}
+        </if>
+        <if test="qualName != null" >
+        AND    QUAL_NAME = #{qualName}
+        </if>
+        <if test="creater != null" >
+        AND    CREATER = #{creater}
+        </if>
+        <if test="createTime != null" >
+        AND    CREATE_TIME = #{createTime}
+        </if>
+        <if test="memo != null" >
+        AND    MEMO = #{memo}
+        </if>
+        <if test="qualLevelId != null" >
+        AND    QUAL_LEVEL_ID = #{qualLevelId}
+        </if>
+        <if test="rootOrgId != null" >
+            AND    ROOT_ORG_ID = #{rootOrgId}
+        </if>
+        AND    IS_DELETE = '0'
+        ORDER BY CREATE_TIME ASC
+    </where>
+    </select>
+
+
+<!--4 根据条件查询实体list,返回分页对象 -->
+    <select id="listAeaImNotInQual" resultType="AeaImQual" >
+        select
+        <include refid="allColumns"/>
+        from    AEA_IM_QUAL
+        <where>
+            <if test="qual.keyword!=null and qual.keyword!='' ">
+                and (
+                QUAL_CODE like concat('%',concat(#{qual.keyword},'%')) or
+                QUAL_NAME like concat('%',concat(#{qual.keyword},'%')) or
+                MEMO like concat('%',concat(#{qual.keyword},'%'))
+                )
+            </if>
+            <if test="qual.qualId != null" >
+                AND    QUAL_ID = #{qual.qualId}
+            </if>
+            <if test="qual.qualCode != null" >
+                AND    QUAL_CODE = #{qual.qualCode}
+            </if>
+            <if test="qual.qualName != null" >
+                AND    QUAL_NAME = #{qual.qualName}
+            </if>
+            <if test="qual.creater != null" >
+                AND    CREATER = #{qual.creater}
+            </if>
+            <if test="qual.createTime != null" >
+                AND    CREATE_TIME = #{qual.createTime}
+            </if>
+            <if test="qual.memo != null" >
+                AND    MEMO = #{qual.memo}
+            </if>
+            <if test="qual.qualLevelId != null" >
+                AND    QUAL_LEVEL_ID = #{qual.qualLevelId}
+            </if>
+            <if test="qualIds != null and qualIds.size()>0" >
+                AND QUAL_ID NOT IN
+                <foreach collection="qualIds" item="qualId" index="index" open="(" close=")" separator=",">
+                    #{qualId}
+                </foreach>
+            </if>
+            <if test="qual.rootOrgId != null" >
+                AND    ROOT_ORG_ID = #{qual.rootOrgId}
+            </if>
+            AND    IS_DELETE = '0'
+            ORDER BY CREATE_TIME ASC
+        </where>
+    </select>
+
+    <select id="listAeaImInQual" resultType="AeaImQual" >
+        select
+        <include refid="allColumns"/>
+        from    AEA_IM_QUAL
+        where QUAL_ID IN
+        <foreach collection="qualIds" item="qualId" index="index" open="(" close=")" separator=",">
+            #{qualId}
+        </foreach>
+
+    </select>
+
+<!--5 新增实体对象 -->
+<insert id="insertAeaImQual" parameterType="AeaImQual" >
+    insert into AEA_IM_QUAL (
+QUAL_ID  ,QUAL_CODE  ,QUAL_NAME  ,IS_DELETE  ,CREATER  ,CREATE_TIME  ,MEMO  ,QUAL_LEVEL_ID,ROOT_ORG_ID
+    )  values  (
+#{qualId},#{qualCode},#{qualName},#{isDelete},#{creater},#{createTime},#{memo},  #{qualLevelId},#{rootOrgId}
+    )
+</insert>
+<!--6 修改实体对象 -->
+<update id="updateAeaImQual" parameterType="AeaImQual" >
+    update AEA_IM_QUAL
+    <set >
+        <if test="qualId != null" >
+        QUAL_ID = #{qualId},
+        </if>
+        <if test="qualCode != null" >
+        QUAL_CODE = #{qualCode},
+        </if>
+        <if test="qualName != null" >
+        QUAL_NAME = #{qualName},
+        </if>
+        <if test="isDelete != null" >
+        IS_DELETE = #{isDelete},
+        </if>
+        <if test="creater != null" >
+        CREATER = #{creater},
+        </if>
+        <if test="createTime != null" >
+        CREATE_TIME = #{createTime},
+        </if>
+        <if test="memo != null" >
+        MEMO = #{memo},
+        </if>
+        <if test="qualLevelId != null" >
+        QUAL_LEVEL_ID = #{qualLevelId},
+        </if>
+        <if test="rootOrgId != null" >
+            ROOT_ORG_ID = #{rootOrgId},
+        </if>
+    </set>
+    where QUAL_ID = #{qualId}
+</update>
+<!--7 删除实体对象,根据主键ID -->
+    <update id="deleteAeaImQual">
+        update AEA_IM_QUAL
+        SET IS_DELETE = '1'
+        where
+        QUAL_ID = #{id}
+    </update>
+<!--8 删除实体对象列表,根据主键ID列表 -->
+<!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaImQual" id="AeaImQualMap">
+        <id property="qualId" column="QUAL_ID"/>
+        <result property="qualCode" column="QUAL_CODE"/>
+        <result property="qualName" column="QUAL_NAME"/>
+        <result property="isDelete" column="IS_DELETE"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="memo" column="MEMO"/>
+        <result property="qualLevelId" column="QUAL_LEVEL_ID"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+    </resultMap>
+
+
+    <select id="listAeaImQualVoByServiceId" resultType="com.augurit.aplanmis.common.vo.AeaImQualVo">
+        select
+        aiq.QUAL_ID  qualId,
+        aiq.QUAL_CODE  qualCode,
+        aiq.QUAL_NAME  qualName,
+        aiq.QUAL_LEVEL_ID  qualLevelId,
+        aisq.SERVICE_QUAL_ID serviceQualId
+        from AEA_IM_QUAL aiq left join AEA_IM_SERVICE_QUAL aisq on aisq.QUAL_ID = aiq.QUAL_ID
+        <where>
+            aisq.SERVICE_ID = #{serviceId}
+            AND aiq.IS_DELETE !='1'
+        </where>
+    </select>
+
+    <select id="listAeaImQualByProjPurchaseId" resultType="AeaImQual">
+        select
+        aiq.QUAL_ID  qualId,
+        aiq.QUAL_CODE  qualCode,
+        aiq.QUAL_NAME  qualName,
+        aiq.QUAL_LEVEL_ID  qualLevelId
+        from AEA_IM_QUAL aiq
+        left join AEA_IM_SERVICE_QUAL aisq on aisq.QUAL_ID = aiq.QUAL_ID
+        left join AEA_IM_SERVICE_ITEM aisi on aisi.SERVICE_ID = aisq.SERVICE_ID
+        left join AEA_IM_PROJ_PURCHASE aipp on aipp.SERVICE_ITEM_ID = aisi.SERVICE_ITEM_ID
+        <where>
+            aipp.PROJ_PURCHASE_ID = #{projPurchaseId}
+            AND aiq.IS_DELETE !='1'
+        </where>
+    </select>
+</mapper>

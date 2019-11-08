@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>我的材料库</title>
+    <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css" th:href="@{/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css}">
+    <style>
+        .tips{
+            width:930px;
+            height:48px;
+            background:rgba(255,252,238,1);
+            border:1px solid rgba(255,184,34,1);
+            border-radius:4px;
+            margin-bottom: 12px;
+        }
+        .mt20{
+            margin-top: 20px;
+        }
+        .search-box{
+            width: 250px;
+            float: right;
+        }
+        .matFileListTable .fileName{
+            color:#3F4047;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            word-wrap: normal;
+            max-width: 80%;
+        }
+        .matFileListTable .fontSize{
+            color: #7F8590;
+            font-size:14px;
+        }
+        .matFileListTable .ag{
+            width: 1em;
+            vertical-align: -0.15em;
+            fill: currentColor;
+            overflow: hidden;
+            line-height: 40px;
+            font-size: 35px;
+            margin: 10px auto;
+            color: #333;
+            -webkit-transition: font-size 0.25s linear, width 0.25s linear;
+            -moz-transition: font-size 0.25s linear, width 0.25s linear;
+            transition: font-size 0.25s linear, width 0.25s linear;
+            vertical-align: middle;
+        }
+        .matFileListTable .ag-download{
+            font-size: 16px;
+            margin-right: 20px;
+            color: #457EFF;
+            vertical-align: initial;
+        }
+        .matFileListTable .el-icon-view{
+            font-size: 16px;
+            color: #457EFF;
+            margin-right: 20px;
+        }
+        .matFileListTable .ag-filetype-txt{
+            color:#55d7e0;
+        }
+        .matFileListTable .ag-filetype-xsl{
+            color: #8bc755;
+        }
+        .matFileListTable .ag-filetype-doc{
+            color: #ff8800;
+        }
+        .matFileListTable .ag-filetype-pdf{
+            color: #ea4318;
+        }
+        .matFileListTable .ag-filetype-jpg{
+            color: #3db6fb;
+        }
+        .matFileListTable .ag-filetype-gif{
+            color: #84DC00;
+        }
+        .matFileListTable .ag-filetype-png{
+            color: #FCCC00;
+        }
+        .matFileListTable .ag-filetype-zip{
+            color: #DC4EC1;
+        }
+        .matFileListTable .ag-filetype-rar{
+            color: #8D51DB;
+        }
+        .matFileListTable .ag-folder-fill{
+            color: #ff8800;
+        }
+        .matFileListTable .ag-filetype-html{
+            color: #6CB600;
+        }
+        .matFileListTable .ag-filetype-mov{
+            color: #B0D700;
+        }
+        .matFileListTable .ag-filetype-rp{
+            color: #713CBE;
+        }
+        .matFileListTable .ag-filetype-ppt{
+            color: #F85207;
+        }
+        .matFileListTable .ag-filetype-wps{
+            color: #33D39D;
+        }
+        .matFileListTable .ag-filetype-exe{
+            color: #F6E400;
+        }
+        .matFileListTable .download{
+            display: none;
+            vertical-align: middle;
+            cursor: pointer;
+        }
+        .matFileListTable .el-table__body tr.hover-row .download{
+            display: block;
+        }
+
+    </style>
+</head>
+<body>
+<div id="my-materials">
+
+    <section>
+        <div class="tips">
+            <i class="el-icon-warning-outline" style="font-size: 28px; color: rgb(255, 184, 34); vertical-align: middle;"></i>
+            <span style="color: rgb(255, 75, 71);">温馨提示* </span>:材料库的文件为历史申报上传，可在新的申报中复用。
+        </div>
+    </section>
+
+    <section class="search-box">
+        <el-input
+                placeholder="搜索你要找的材料"
+                v-model="keyword">
+            <i slot="suffix" class="el-input__icon el-icon-search"></i>
+        </el-input>
+    </section>
+
+    <section class="my-materials-table-box" v-loading="mloading">
+        <div class="my-declareing-table">
+            <el-table :data="matFileList"   style="width:100%" class="matFileListTable" v-loading="tableLoading">
+                <el-table-column
+                        fixed
+                        prop="fileName"
+                        label="文件名称"
+                        >
+                    <template slot-scope="scope">
+                        <div class="clearfix">
+                            <div class="fileName fl"><i class="ag" :class="getFileTypeIcon(scope.row.fileType)"></i> {{scope.row.fileName}}</div>
+                            <div class="download fr" >
+                                <i class="ag ag-download" @click="downloadFile(scope.row.fileId)"></i>
+                                <i class="el-icon-view" @click="previewFile(scope.row)"></i>
+                            </div>
+                        </div>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                        prop="updateTime"
+                        label="日期"
+                        width="120">
+                    <template slot-scope="scope">
+                        <div class="fontSize">{{scope.row.updateTime|formatDate}}</div>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                        prop="fileSize"
+                        label="大小"
+                        align="center"
+                        width="100">
+                    <template slot-scope="scope">
+                        <div v-if="scope.row.fileSize" class="fontSize">{{scope.row.fileSize|getFileSize}}</div>
+                        <div v-else class="fontSize">未知</div>
+                    </template>
+                </el-table-column>
+            </el-table>
+            <el-pagination class="mt20 mb20 mr20" background align="right" @size-change="handleSizeChange"
+                           @current-change="handleCurrentChange" :page-sizes="[10, 20, 30, 50]" :page-size="pageSize"
+                           :current-page="pageNum" layout="total,sizes, prev, pager, next, jumper" :total="total"
+                           v-show="total>10">
+            </el-pagination>
+        </div>
+    </section>
+
+</div>
+<script src="../../../../static/mall/js/userCenter/components/my-materials.js" th:src="@{/mall/js/userCenter/components/my-materials.js}" type="text/javascript"></script>
+</body>
+</html>

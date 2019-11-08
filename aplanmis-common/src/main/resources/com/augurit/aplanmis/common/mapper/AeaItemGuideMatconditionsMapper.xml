@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by jjt    2018-11-19 22:01:38 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaItemGuideMatconditionsMapper" >
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns" >
+        CONDITION_GUID  conditionGuid,
+        ITEM_VER_ID  itemVerId,
+        MATERIAL_GUID  materialGuid,
+        MATERIAL_TYPE  materialType,
+        MATERIAL_TYPE_TEXT  materialTypeText,
+        PAGE_COPY_NUM  pageCopyNum,
+        PAGE_NUM  pageNum,
+        ROWGUID  rowguid,
+        ROOT_ORG_ID rootOrgId
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaItemGuideMatconditionsById" resultType="AeaItemGuideMatconditions" >
+        select
+           <include refid="allColumns"/>
+        from AEA_ITEM_GUIDE_MATCONDITIONS
+        where ROWGUID = #{id}
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaItemGuideMatconditions" resultType="AeaItemGuideMatconditions" >
+        select
+        <include refid="allColumns"/>
+        from    AEA_ITEM_GUIDE_MATCONDITIONS
+        <where>
+            <if test="conditionGuid != null" >
+                AND    CONDITION_GUID = #{conditionGuid}
+            </if>
+            <if test="itemVerId != null" >
+                AND    ITEM_VER_ID = #{itemVerId}
+            </if>
+            <if test="materialGuid != null" >
+                AND    MATERIAL_GUID = #{materialGuid}
+            </if>
+            <if test="materialType != null" >
+                AND    MATERIAL_TYPE = #{materialType}
+            </if>
+            <if test="materialTypeText != null" >
+                AND    MATERIAL_TYPE_TEXT = #{materialTypeText}
+            </if>
+            <if test="pageCopyNum != null" >
+                AND    PAGE_COPY_NUM = #{pageCopyNum}
+            </if>
+            <if test="pageNum != null" >
+                AND    PAGE_NUM = #{pageNum}
+            </if>
+            <if test="rowguid != null" >
+                AND    ROWGUID = #{rowguid}
+            </if>
+            <if test="rootOrgId != null" >
+                AND    ROOT_ORG_ID = #{rootOrgId}
+            </if>
+        </where>
+    </select>
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaItemGuideMatconditions" parameterType="AeaItemGuideMatconditions" >
+        insert into AEA_ITEM_GUIDE_MATCONDITIONS (
+            CONDITION_GUID  ,ITEM_VER_ID  ,MATERIAL_GUID  ,MATERIAL_TYPE  ,MATERIAL_TYPE_TEXT  ,PAGE_COPY_NUM  ,PAGE_NUM  ,ROWGUID, ROOT_ORG_ID
+        )  values  (
+            #{conditionGuid},#{itemVerId},#{materialGuid},#{materialType},#{materialTypeText},#{pageCopyNum},#{pageNum},  #{rowguid}, #{rootOrgId}
+        )
+    </insert>
+
+    <!--6 修改实体对象 -->
+    <update id="updateAeaItemGuideMatconditions" parameterType="AeaItemGuideMatconditions" >
+        update AEA_ITEM_GUIDE_MATCONDITIONS
+        <set >
+            <if test="conditionGuid != null" >
+                CONDITION_GUID = #{conditionGuid},
+            </if>
+            <if test="itemVerId != null" >
+                ITEM_VER_ID = #{itemVerId},
+            </if>
+            <if test="materialGuid != null" >
+                MATERIAL_GUID = #{materialGuid},
+            </if>
+            <if test="materialType != null" >
+                MATERIAL_TYPE = #{materialType},
+            </if>
+            <if test="materialTypeText != null" >
+                MATERIAL_TYPE_TEXT = #{materialTypeText},
+            </if>
+            <if test="pageCopyNum != null" >
+                PAGE_COPY_NUM = #{pageCopyNum},
+            </if>
+            <if test="pageNum != null" >
+                PAGE_NUM = #{pageNum},
+            </if>
+            <if test="rowguid != null" >
+                ROWGUID = #{rowguid},
+            </if>
+            <if test="rootOrgId != null" >
+                ROOT_ORG_ID = #{rootOrgId},
+            </if>
+        </set>
+        where ROWGUID = #{rowguid}
+    </update>
+
+    <!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaItemGuideMatconditions">
+        delete from   AEA_ITEM_GUIDE_MATCONDITIONS where ID = #{id}
+    </delete>
+
+    <delete id="batchDeleteGuideMatconditionsByItemVerId">
+        delete from   AEA_ITEM_GUIDE_MATCONDITIONS where ITEM_VER_ID = #{itemVerId} and ROOT_ORG_ID = #{rootOrgId}
+    </delete>
+
+</mapper>

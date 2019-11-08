@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html style="overflow-x: hidden;height: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    overflow: auto;">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>bootstrap表格使用示例</title>
+    <link rel="stylesheet" href="../../bootstrap3/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="../bootstrap-table.min.css" />
+    <link rel="stylesheet" href="../bootstrap-table-page.css"/>
+    <link rel="stylesheet" href="../ag-custom-table.css"/>
+    <script type="text/javascript" src="../../jquery1/jquery-1.11.3.min.js" ></script>
+    <script type="text/javascript" src="../../bootstrap3/js/bootstrap.min.js" ></script>
+    <script type="text/javascript" src="../bootstrap-table.min.js" ></script>
+    <script type="text/javascript" src="../bootstrap-table-zh-CN.min.js" ></script>
+    <script type="text/javascript" src="../bootstrap-table-page.js" ></script>
+</head>
+<body style="width: 100%;overflow-x: hidden;">
+<div class="base zebra">
+    <div id="local_data">
+        <table  id="customTable"
+                data-toggle="table"
+                data-sort-stable="true"
+                data-sort-name="PROBLEM_ROAD"
+                data-striped="true"
+                data-pagination-show-page-go="true"
+                data-pagination="true"
+                data-page-list="[10, 20, 50, 100]"
+                data-side-pagination="client" e no-line-lr
+                data-url="data.json">
+            <thead>
+            <tr>
+                <th data-field="" data-checkbox="true" ></th>
+                <th data-field="PROBLEM_DESC" data-width="200" data-sortable="true" data-align="center" >问题描述</th>
+                <th data-field="PROBLEM_TYPE" data-formatter="">问题类型</th>
+                <th data-field="DEVICE_TYPE" data-formatter="">设施类型</th>
+                <th data-field="PROBLEM_LOCATION">问题地点</th>
+                <th data-field="PROBLEM_ROAD">问题道路</th>
+                <th data-field="URGENT_TYPE" data-formatter="testFormatter">紧急程度</th>
+            </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+<button onclick="getSelected()">获取选中</button>
+<!--<button onclick="initChecked()">初始化checkbox</button>-->
+<script>
+    function testFormatter(value, row, index, field) {
+        return value == 1 ? "紧急" : "一般";
+    }
+    function checkboxFormatter(value, row, index, field) {
+        var text = '';
+        text += "<label class=\"ag-checkbox\">";
+        text += "	<input type=\"checkbox\" name='itemId' value='" + value + "'>";
+        text += "	<span></span>";
+        text += "</label>";
+        return text;
+    }
+    function getSelected() {
+        var a= $("#customTable").bootstrapTable('getSelections');
+        console.log(a);
+    }
+    function initChecked() {
+        $(".bootstrap-table .bs-checkbox input[type='checkbox']").each(function () {
+            var $this = $(this);
+            var name = $this.attr("name");
+            var data_index = $this.attr("data-index");
+            var text = '';
+            var $parent = $this.parent();
+            if($parent.hasClass("th-inner")){
+                text += "<label class=\"ag-checkbox ag-selectAll\">";
+            }else{
+                text += "<label class=\"ag-checkbox ag-select\">";
+            }
+            text += "<input type=\"checkbox\">";
+            text += "	<span></span>";
+            text += "</label>";
+            $parent.append(text);
+            $this.hide();
+        });
+        $(".ag-select input").click(function () {
+            $(this).parent().prev("input").click();
+        });
+        $(".ag-selectAll input").click(function () {
+            $(".ag-select input").click();
+        });
+    }
+</script>
+</body>
+</html>

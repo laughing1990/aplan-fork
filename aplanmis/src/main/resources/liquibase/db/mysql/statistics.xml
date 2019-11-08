@@ -1,0 +1,719 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <preConditions>
+        <dbms type="mysql"/>
+    </preConditions>
+
+    <changeSet id="201910291003" author="zhangwn" failOnError="false">
+        <comment>效能督查统计相关表</comment>
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            create table if not exists `aea_ana_org_day_statistics` (
+            `ORG_DAY_STATISTICS_ID` varchar(50) NOT NULL COMMENT '主键',
+            `STATISTICS_RECORD_ID` varchar(50) NOT NULL COMMENT '数据生成记录表ID',
+            `ORG_ID` varchar(50) NOT NULL COMMENT '部门ID',
+            `ORG_NAME` varchar(200) NOT NULL COMMENT '部门名称',
+            `REGION_ID` varchar(50) DEFAULT NULL COMMENT '行政区划ID（区县级以下的需要换算成区县级）',
+            `REGION_NAME` varchar(200) DEFAULT NULL COMMENT '行政区划名称',
+            `ITEM_ID` varchar(50) NOT NULL COMMENT '事项ID',
+            `ITEM_NAME` varchar(200) NOT NULL COMMENT '事项名称',
+            `DAY_APPLY_COUNT` int(11) NOT NULL COMMENT '日接件数',
+            `ALL_APPLY_COUNT` int(11) NOT NULL COMMENT '总接件数',
+            `APPLY_LRR` double(6,2) NOT NULL COMMENT '日接件数环比',
+            `ALL_IN_SUPPLEMENT_COUNT` int(11) NOT NULL COMMENT '待补正数（不需查询历史表统计）',
+            `ALL_SUPPLEMENTED_COUNT` int(11) NOT NULL COMMENT '补正待确认数（不需查询历史表统计）',
+            `DAY_ACCEPTANCE_COUNT` int(11) NOT NULL COMMENT '日受理数（需查询历史表统计）',
+            `ALL_ACCEPTANCE_COUNT` int(11) NOT NULL COMMENT '总受理数',
+            `ACCEPTANCE_LRR` double(6,2) NOT NULL COMMENT '日受理数环比',
+            `DAY_OUT_SCOPE_COUNT` int(11) NOT NULL COMMENT '日不予受理数',
+            `ALL_OUT_SCOPE_COUNT` int(11) NOT NULL COMMENT '总不予受理数',
+            `OUT_SCOPE_LRR` double(6,2) NOT NULL COMMENT '日不予受理数环比',
+            `DAY_COMPLETED_COUNT` int(11) NOT NULL COMMENT '日办结数',
+            `ALL_COMPLETED_COUNT` int(11) NOT NULL COMMENT '总办结数',
+            `COMPLETED_LRR` double(6,2) NOT NULL COMMENT '日办结数环比',
+            `DAY_SPECIFIC_ROUTINE_COUNT` int(11) NOT NULL COMMENT '日特殊程序数',
+            `ALL_SPECIFIC_ROUTINE_COUNT` int(11) NOT NULL COMMENT '总特殊程序数',
+            `SPECIFIC_ROUTINE_LRR` double(6,2) NOT NULL COMMENT '特殊程序数环比',
+            `ALL_WARINING_COUNT` int(11) NOT NULL COMMENT '预警数',
+            `DAY_OVER_TIME_COUNT` int(11) NOT NULL COMMENT '日逾期数',
+            `ALL_OVER_TIME_COUNT` int(11) NOT NULL COMMENT '总逾期数',
+            `OVER_TIME_LRR` double(6,2) NOT NULL COMMENT '日逾期数环比',
+            `ALL_ACCEPTANCE_RATE` double(4,2) NOT NULL COMMENT '总受理率（受理数/接件数）',
+            `ALL_OUT_SCOPE_RATE` double(4,2) NOT NULL COMMENT '总不予受理率（不予受理数/接件数）',
+            `ALL_OVER_TIME_RATE` double(4,2) NOT NULL COMMENT '总逾期率（逾期数/受理数）',
+            `ALL_COMPLETED_RATE` double(4,2) NOT NULL COMMENT '总办结率（办结数/受理数）',
+            `STATISTICS_DATE` date NOT NULL COMMENT '统计数据日期，不是创建日期（yyyy-MM-dd）',
+            `ROOT_ORG_ID` varchar(50) NOT NULL COMMENT '所属顶级组织ID',
+            PRIMARY KEY (`ORG_DAY_STATISTICS_ID`) USING BTREE
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='部门日办件统计表';
+        </sql>
+    </changeSet>
+    <changeSet id="201910291004" author="zhangwn" failOnError="false">
+        <comment>效能督查统计相关表</comment>
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            create table if not exists `aea_ana_org_week_statistics` (
+            `ORG_WEEK_STATISTICS_ID` varchar(50) NOT NULL COMMENT '主键',
+            `STATISTICS_RECORD_ID` varchar(50) NOT NULL COMMENT '数据生成记录表ID',
+            `ORG_ID` varchar(50) NOT NULL COMMENT '部门ID',
+            `ORG_NAME` varchar(200) NOT NULL COMMENT '部门名称',
+            `REGION_ID` varchar(50) DEFAULT NULL COMMENT '行政区划ID（区县级以下的需要换算成区县级）',
+            `REGION_NAME` varchar(200) DEFAULT NULL COMMENT '行政区划名称',
+            `ITEM_ID` varchar(50) NOT NULL COMMENT '事项ID',
+            `ITEM_NAME` varchar(200) NOT NULL COMMENT '事项名称',
+            `WEEK_APPLY_COUNT` int(11) NOT NULL COMMENT '周接件数',
+            `ALL_APPLY_COUNT` int(11) NOT NULL COMMENT '总接件数',
+            `APPLY_LRR` double(6,2) NOT NULL COMMENT '周接件数环比',
+            `ALL_IN_SUPPLEMENT_COUNT` int(11) NOT NULL COMMENT '待补正数',
+            `ALL_SUPPLEMENTED_COUNT` int(11) NOT NULL COMMENT '补正待确认数',
+            `WEEK_ACCEPTANCE_COUNT` int(11) NOT NULL COMMENT '周受理数',
+            `ALL_ACCEPTANCE_COUNT` int(11) NOT NULL COMMENT '总受理数',
+            `ACCEPTANCE_LRR` double(6,2) NOT NULL COMMENT '周受理数环比',
+            `WEEK_OUT_SCOPE_COUNT` int(11) NOT NULL COMMENT '周不予受理数',
+            `ALL_OUT_SCOPE_COUNT` int(11) NOT NULL COMMENT '总不予受理数',
+            `OUT_SCOPE_LRR` double(6,2) NOT NULL COMMENT '周不予受理数环比',
+            `WEEK_COMPLETED_COUNT` int(11) NOT NULL COMMENT '周办结数',
+            `ALL_COMPLETED_COUNT` int(11) NOT NULL COMMENT '总办结数',
+            `COMPLETED_LRR` double(6,2) NOT NULL COMMENT '周办结数环比',
+            `WEEK_SPECIFIC_ROUTINE_COUNT` int(11) NOT NULL COMMENT '周特殊程序数',
+            `ALL_SPECIFIC_ROUTINE_COUNT` int(11) NOT NULL COMMENT '总特殊程序数',
+            `SPECIFIC_ROUTINE_LRR` double(6,2) NOT NULL COMMENT '特殊程序数环比',
+            `ALL_WARINING_COUNT` int(11) NOT NULL COMMENT '总预警数',
+            `WEEK_OVER_TIME_COUNT` int(11) NOT NULL COMMENT '周逾期数',
+            `ALL_OVER_TIME_COUNT` int(11) NOT NULL COMMENT '总逾期数',
+            `OVER_TIME_LRR` double(6,2) NOT NULL COMMENT '周逾期数环比',
+            `ALL_ACCEPTANCE_RATE` double(4,2) NOT NULL COMMENT '总受理率（受理数/接件数）',
+            `ALL_OUT_SCOPE_RATE` double(4,2) NOT NULL COMMENT '总不予受理率（不予受理数/接件数）',
+            `ALL_OVER_TIME_RATE` double(4,2) NOT NULL COMMENT '总逾期率（逾期数/受理数）',
+            `ALL_COMPLETED_RATE` double(4,2) NOT NULL COMMENT '总办结率（办结数/受理数）',
+            `STATISTICS_START_DATE` datetime NOT NULL COMMENT '统计数据开始日期（yyyy-MM-dd 00:00:00）',
+            `STATISTICS_END_DATE` datetime NOT NULL COMMENT '统计数据结束日期（yyyy-MM-dd 23:59:59）',
+            `STATISTICS_YEAR` int(11) NOT NULL COMMENT '统计数据年份',
+            `WEEK_NUM` int(11) NOT NULL COMMENT '第几周。表示统计数据开始日期和统计数据结束日期是对应年份中第几周。',
+            `ROOT_ORG_ID` varchar(50) NOT NULL COMMENT '所属顶级组织ID',
+            PRIMARY KEY (`ORG_WEEK_STATISTICS_ID`) USING BTREE
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='部门周办件统计表（在日办件统计表的基础上统计。历史周数据不变。本周数据每日更新，保存的是本周至昨日的数据。）';
+        </sql>
+    </changeSet>
+    <changeSet id="201910291005" author="zhangwn" failOnError="false">
+        <comment>效能督查统计相关表</comment>
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            create table if not exists `aea_ana_org_month_statistics` (
+            `ORG_MONTH_STATISTICS_ID` varchar(50) NOT NULL COMMENT '主键',
+            `STATISTICS_RECORD_ID` varchar(50) NOT NULL COMMENT '数据生成记录表ID',
+            `ORG_ID` varchar(50) NOT NULL COMMENT '部门ID',
+            `ORG_NAME` varchar(200) NOT NULL COMMENT '部门名称',
+            `REGION_ID` varchar(50) DEFAULT NULL COMMENT '行政区划ID（区县级以下的需要换算成区县级）',
+            `REGION_NAME` varchar(200) DEFAULT NULL COMMENT '行政区划名称',
+            `ITEM_ID` varchar(50) NOT NULL COMMENT '事项ID',
+            `ITEM_NAME` varchar(200) NOT NULL COMMENT '事项名称',
+            `MONTH_APPLY_COUNT` int(11) NOT NULL COMMENT '月接件数',
+            `ALL_APPLY_COUNT` int(11) NOT NULL COMMENT '总接件数',
+            `APPLY_ON_YOY_BASIS` double(4,2) NOT NULL COMMENT '月接件数同比',
+            `APPLY_LRR` double(6,2) NOT NULL COMMENT '年接件数环比',
+            `ALL_IN_SUPPLEMENT_COUNT` int(11) NOT NULL COMMENT '待补正数',
+            `IN_SUPPLEMENT_ON_YOY_BASIS` double(4,2) NOT NULL COMMENT '待补正数同比',
+            `IN_SUPPLEMENT_LRR` double(4,2) NOT NULL COMMENT '待补正数环比',
+            `ALL_SUPPLEMENTED_COUNT` int(11) NOT NULL COMMENT '补正待确认数',
+            `SUPPLEMENTED_ON_YOY_BASIS` double(4,2) NOT NULL COMMENT '补正待确认数同比',
+            `SUPPLEMENTED_LRR` double(4,2) NOT NULL COMMENT '补正待确认数环比',
+            `MONTH_ACCEPTANCE_COUNT` int(11) NOT NULL COMMENT '月受理数',
+            `ALL_ACCEPTANCE_COUNT` int(11) NOT NULL COMMENT '总受理数',
+            `ACCEPTANCE_ON_YOY_BASIS` double(4,2) NOT NULL COMMENT '月受理数同比',
+            `ACCEPTANCE_LRR` double(6,2) NOT NULL COMMENT '年受理数环比',
+            `MONTH_OUT_SCOPE_COUNT` int(11) NOT NULL COMMENT '月不予受理数',
+            `ALL_OUT_SCOPE_COUNT` int(11) NOT NULL COMMENT '总不予受理数',
+            `OUT_SCOPE_ON_YOY_BASIS` double(4,2) NOT NULL COMMENT '月不予受理数同比',
+            `OUT_SCOPE_LRR` double(6,2) NOT NULL COMMENT '年不予受理数环比',
+            `MONTH_COMPLETED_COUNT` int(11) NOT NULL COMMENT '月办结数',
+            `ALL_COMPLETED_COUNT` int(11) NOT NULL COMMENT '总办结数',
+            `COMPLETED_ON_YOY_BASIS` double(4,2) NOT NULL COMMENT '月办结数同比',
+            `COMPLETED_LRR` double(6,2) NOT NULL COMMENT '年办结数环比',
+            `MONTH_SPECIFIC_ROUTINE_COUNT` int(11) NOT NULL COMMENT '月特殊程序数',
+            `ALL_SPECIFIC_ROUTINE_COUNT` int(11) NOT NULL COMMENT '总特殊程序数',
+            `SPECIFIC_ROUTINE_ON_YOY_BASIS` double(4,2) NOT NULL COMMENT '特殊程序数同比',
+            `SPECIFIC_ROUTINE_LRR` double(6,2) NOT NULL COMMENT '特殊程序数环比',
+            `ALL_WARINING_COUNT` int(11) NOT NULL COMMENT '预警数',
+            `MONTH_OVER_TIME_COUNT` int(11) NOT NULL COMMENT '月逾期数',
+            `ALL_OVER_TIME_COUNT` int(11) NOT NULL COMMENT '总逾期数',
+            `OVER_TIME_ON_YOY_BASIS` double(4,2) NOT NULL COMMENT '月逾期数同比',
+            `OVER_TIME_LRR` double(6,2) NOT NULL COMMENT '年逾期数环比',
+            `ALL_ACCEPTANCE_RATE` double(4,2) NOT NULL COMMENT '总受理率（受理数/接件数）',
+            `ALL_OUT_SCOPE_RATE` double(4,2) NOT NULL COMMENT '总不予受理率（不予受理数/接件数）',
+            `ALL_OVER_TIME_RATE` double(4,2) NOT NULL COMMENT '总逾期率（逾期数/预受理数）',
+            `ALL_COMPLETED_RATE` double(4,2) NOT NULL COMMENT '总办结率（办结数/预受理数）',
+            `STATISTICS_START_DATE` datetime NOT NULL COMMENT '统计数据开始日期（yyyy-MM-dd 00:00:00）',
+            `STATISTICS_END_DATE` datetime NOT NULL COMMENT '统计数据结束日期（yyyy-MM-dd 23:59:59）',
+            `STATISTICS_MONTH` varchar(20) NOT NULL COMMENT '统计数据月份(yyyy-MM)',
+            `MODIFIER` varchar(50) DEFAULT NULL COMMENT '修改人',
+            `MODIFY_TIME` datetime DEFAULT NULL COMMENT '修改时间',
+            `ROOT_ORG_ID` varchar(50) NOT NULL COMMENT '所属顶级组织ID',
+            PRIMARY KEY (`ORG_MONTH_STATISTICS_ID`) USING BTREE
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='部门月办件统计表（在日办件统计表的基础上统计。历史月数据不变。本月数据每日更新，保存的是本月至昨日的数据。）';
+        </sql>
+    </changeSet>
+    <changeSet id="201910291006" author="zhangwn" failOnError="false">
+        <comment>效能督查统计相关表</comment>
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            create table if not exists `aea_ana_org_year_statistics` (
+            `ORG_YEAR_STATISTICS_ID` varchar(50) NOT NULL COMMENT '主键',
+            `STATISTICS_RECORD_ID` varchar(50) NOT NULL COMMENT '数据生成记录表ID',
+            `ORG_ID` varchar(50) NOT NULL COMMENT '部门ID',
+            `ORG_NAME` varchar(200) NOT NULL COMMENT '部门名称',
+            `REGION_ID` varchar(50) DEFAULT NULL COMMENT '行政区划ID（区县级以下的需要换算成区县级）',
+            `REGION_NAME` varchar(200) DEFAULT NULL COMMENT '行政区划名称',
+            `ITEM_ID` varchar(50) NOT NULL COMMENT '事项ID',
+            `ITEM_NAME` varchar(200) NOT NULL COMMENT '事项名称',
+            `YEAR_APPLY_COUNT` int(11) NOT NULL COMMENT '年接件数',
+            `ALL_APPLY_COUNT` int(11) NOT NULL COMMENT '总接件数',
+            `APPLY_LRR` double(4,2) NOT NULL COMMENT '年接件数环比',
+            `ALL_IN_SUPPLEMENT_COUNT` int(11) NOT NULL COMMENT '待补正数',
+            `ALL_SUPPLEMENTED_COUNT` int(11) NOT NULL COMMENT '补正待确认数',
+            `YEAR_ACCEPTANCE_COUNT` int(11) NOT NULL COMMENT '年受理数',
+            `ALL_ACCEPTANCE_COUNT` int(11) NOT NULL COMMENT '总受理数',
+            `ACCEPTANCE_LRR` double(4,2) NOT NULL COMMENT '年受理数环比',
+            `YEAR_OUT_SCOPE_COUNT` int(11) NOT NULL COMMENT '年不予受理数',
+            `ALL_OUT_SCOPE_COUNT` int(11) NOT NULL COMMENT '总不予受理数',
+            `OUT_SCOPE_LRR` double(4,2) NOT NULL COMMENT '年不予受理数环比',
+            `YEAR_COMPLETED_COUNT` int(11) NOT NULL COMMENT '年办结数',
+            `ALL_COMPLETED_COUNT` int(11) NOT NULL COMMENT '总办结数',
+            `COMPLETED_LRR` double(4,2) NOT NULL COMMENT '年办结数环比',
+            `YEAR_SPECIFIC_ROUTINE_COUNT` int(11) NOT NULL COMMENT '年特殊程序数',
+            `ALL_SPECIFIC_ROUTINE_COUNT` int(11) NOT NULL COMMENT '总特殊程序数',
+            `SPECIFIC_ROUTINE_LRR` double(4,2) NOT NULL COMMENT '年特殊程序数环比',
+            `ALL_WARINING_COUNT` int(11) NOT NULL COMMENT '预警数',
+            `YEAR_OVER_TIME_COUNT` int(11) NOT NULL COMMENT '年逾期数',
+            `ALL_OVER_TIME_COUNT` int(11) NOT NULL COMMENT '总逾期数',
+            `OVER_TIME_LRR` double(4,2) NOT NULL COMMENT '年逾期数环比',
+            `ALL_ACCEPTANCE_RATE` double(4,2) NOT NULL COMMENT '总受理率（受理数/接件数）',
+            `ALL_OUT_SCOPE_RATE` double(4,2) NOT NULL COMMENT '总不予受理率（不予受理数/接件数）',
+            `ALL_OVER_TIME_RATE` double(4,2) NOT NULL COMMENT '总逾期率（逾期数/受理数）',
+            `ALL_COMPLETED_RATE` double(4,2) NOT NULL COMMENT '总办结率（办结数/受理数）',
+            `STATISTICS_START_DATE` datetime NOT NULL COMMENT '统计数据开始日期（yyyy-MM-dd 00:00:00）',
+            `STATISTICS_END_DATE` datetime NOT NULL COMMENT '统计数据结束日期（yyyy-MM-dd 23:59:59）',
+            `STATISTICS_YEAR` int(11) NOT NULL COMMENT '统计数据年份（yyyy）',
+            `ROOT_ORG_ID` varchar(50) NOT NULL COMMENT '所属顶级组织ID',
+            PRIMARY KEY (`ORG_YEAR_STATISTICS_ID`) USING BTREE
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='部门年办件统计表（在月办件统计表的基础上统计。历史年数据不变。本年数据每日更新，保存的是本年至昨日的数据。）';
+        </sql>
+    </changeSet>
+    <changeSet id="201910291007" author="zhangwn" failOnError="false">
+        <comment>效能督查统计相关表</comment>
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            create table if not exists `aea_ana_report` (
+            `REPORT_ID` varchar(50) NOT NULL COMMENT '主键',
+            `TABLE_NAME` varchar(200) NOT NULL COMMENT '表名',
+            `REPORT_NAME` varchar(200) NOT NULL COMMENT '报表名称',
+            `REPORT_TYPE` char(1) NOT NULL COMMENT '报表类型。d表示日报表，w表示周报表，m表示月报表，y表示年报表',
+            `MEMO` varchar(2000) DEFAULT NULL COMMENT '备注',
+            `CREATER` varchar(50) NOT NULL COMMENT '创建人',
+            `CREATE_TIME` datetime NOT NULL COMMENT '创建时间',
+            `MODIFIER` varchar(50) DEFAULT NULL COMMENT '修改人',
+            `MODIFY_TIME` datetime DEFAULT NULL COMMENT '修改时间',
+            `ROOT_ORG_ID` varchar(50) NOT NULL COMMENT '所属顶级组织ID',
+            PRIMARY KEY (`REPORT_ID`) USING BTREE
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='统计报表总表';
+        </sql>
+    </changeSet>
+    <changeSet id="201910291008" author="zhangwn" failOnError="false">
+        <comment>效能督查统计相关表</comment>
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            create table if not exists `aea_ana_statistics_record` (
+            `STATISTICS_RECORD_ID` varchar(50) NOT NULL COMMENT '主键',
+            `REPORT_ID` varchar(50) NOT NULL COMMENT '统计报表总表ID',
+            `REPORT_NAME` varchar(200) NOT NULL COMMENT '报表名称',
+            `STATISTICS_START_DATE` datetime NOT NULL COMMENT '统计数据开始日期（yyyy-MM-dd）',
+            `STATISTICS_END_DATE` datetime NOT NULL COMMENT '统计数据结束日期（yyyy-MM-dd）',
+            `OPERATE_SOURCE` char(1) NOT NULL COMMENT '生成来源。1表示程序生成，0表示人工生成',
+            `STATISTICS_TYPE` char(1) NOT NULL COMMENT '统计类型。s表示申报统计，b表示办件统计',
+            `CREATER` varchar(50) NOT NULL COMMENT '创建人',
+            `CREATE_TIME` datetime NOT NULL COMMENT '创建时间',
+            `MODIFIER` varchar(50) DEFAULT NULL COMMENT '修改人',
+            `MODIFY_TIME` datetime DEFAULT NULL COMMENT '修改时间',
+            `ROOT_ORG_ID` varchar(50) NOT NULL COMMENT '所属顶级组织ID',
+            PRIMARY KEY (`STATISTICS_RECORD_ID`) USING BTREE
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='统计数据生成记录表';
+        </sql>
+    </changeSet>
+    <changeSet id="201910291009" author="zhangwn" failOnError="false">
+        <comment>效能督查统计相关表</comment>
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            create table if not exists `aea_ana_theme_day_statistics` (
+            `THEME_DAY_STATISTICS_ID` varchar(50) NOT NULL COMMENT '主键',
+            `STATISTICS_RECORD_ID` varchar(50) NOT NULL COMMENT '数据生成记录表ID',
+            `THEME_ID` varchar(50) NOT NULL COMMENT '主题ID',
+            `THEME_NAME` varchar(200) NOT NULL COMMENT '主题名称',
+            `APPLY_RECORD_ID` varchar(50) NOT NULL COMMENT '阶段/辅线/并行推进事项ID',
+            `APPLY_RECORD_NAME` varchar(200) NOT NULL COMMENT '阶段/辅线/并行推进事项名称',
+            `DYBZSPJDXH` varchar(200) DEFAULT NULL COMMENT '对应国家标准审批阶段，多选，1 立项用地规划许可 2 立项用地规划许可 3 施工许可 4 竣工验收 5 并行推进',
+            `IS_NODE` varchar(1) DEFAULT NULL COMMENT '1表示主线，2表示辅线 3技术审查',
+            `IS_PARALLEL` varchar(1) DEFAULT NULL COMMENT '是否并行推进事项。0表示否，1表示是',
+            `APPLYINST_SOURCE` varchar(3) NOT NULL COMMENT '申报来源，net表示网上申报，win表示窗口申报',
+            `DAY_APPLY_COUNT` int(11) NOT NULL COMMENT '日接件数',
+            `ALL_APPLY_COUNT` int(11) NOT NULL COMMENT '总接件数',
+            `APPLY_LRR` double(6,2) NOT NULL COMMENT '日接件数环比',
+            `ALL_IN_SUPPLEMENT_COUNT` int(11) NOT NULL COMMENT '待补全数（不需查询历史表统计）',
+            `ALL_SUPPLEMENTED_COUNT` int(11) NOT NULL COMMENT '补全待确认数（不需查询历史表统计）',
+            `DAY_PRE_ACCEPTANCE_COUNT` int(11) NOT NULL COMMENT '日预受理数（需查询历史表统计）',
+            `ALL_PRE_ACCEPTANCE_COUNT` int(11) NOT NULL COMMENT '总预受理数',
+            `PRE_ACCEPTANCE_LRR` double(6,2) NOT NULL COMMENT '日预受理数环比',
+            `DAY_OUT_SCOPE_COUNT` int(11) NOT NULL COMMENT '日不予受理数',
+            `ALL_OUT_SCOPE_COUNT` int(11) NOT NULL COMMENT '总不予受理数',
+            `OUT_SCOPE_LRR` double(6,2) NOT NULL COMMENT '日不予受理数环比',
+            `DAY_COMPLETED_COUNT` int(11) NOT NULL COMMENT '日办结数',
+            `ALL_COMPLETED_COUNT` int(11) NOT NULL COMMENT '总办结数',
+            `COMPLETED_LRR` double(6,2) NOT NULL COMMENT '日办结数环比',
+            `DAY_OVER_TIME_COUNT` int(11) NOT NULL COMMENT '日逾期数',
+            `ALL_OVER_TIME_COUNT` int(11) NOT NULL COMMENT '总逾期数',
+            `OVER_TIME_LRR` double(6,2) NOT NULL COMMENT '日逾期数环比',
+            `ALL_PRE_ACCEPTANCE_RATE` double(4,2) NOT NULL COMMENT '总预受理率（预受理数/接件数）',
+            `ALL_OUT_SCOPE_RATE` double(4,2) NOT NULL COMMENT '总不予受理率（不予受理数/接件数）',
+            `ALL_OVER_TIME_RATE` double(4,2) NOT NULL COMMENT '总逾期率（逾期数/预受理数）',
+            `ALL_COMPLETED_RATE` double(4,2) NOT NULL COMMENT '总办结率（办结数/预受理数）',
+            `STATISTICS_DATE` date NOT NULL COMMENT '统计数据日期，不是创建日期（yyyy-MM-dd）',
+            `ROOT_ORG_ID` varchar(50) NOT NULL COMMENT '所属顶级组织ID',
+            PRIMARY KEY (`THEME_DAY_STATISTICS_ID`) USING BTREE
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='主题日申报统计表';
+        </sql>
+    </changeSet>
+    <changeSet id="201910291010" author="zhangwn" failOnError="false">
+        <comment>效能督查统计相关表</comment>
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            create table if not exists `aea_ana_theme_week_statistics` (
+            `THEME_WEEK_STATISTICS_ID` varchar(50) NOT NULL COMMENT '主键',
+            `STATISTICS_RECORD_ID` varchar(50) NOT NULL COMMENT '数据生成记录表ID',
+            `THEME_ID` varchar(50) NOT NULL COMMENT '主题ID',
+            `THEME_NAME` varchar(200) NOT NULL COMMENT '主题名称',
+            `APPLY_RECORD_ID` varchar(50) NOT NULL COMMENT '阶段/辅线/并行推进事项ID',
+            `APPLY_RECORD_NAME` varchar(200) NOT NULL COMMENT '阶段/辅线/并行推进事项名称',
+            `DYBZSPJDXH` varchar(200) DEFAULT NULL COMMENT '对应国家标准审批阶段，多选，1 立项用地规划许可 2 立项用地规划许可 3 施工许可 4 竣工验收 5 并行推进',
+            `IS_NODE` varchar(1) DEFAULT NULL COMMENT '1表示主线，2表示辅线 3技术审查',
+            `IS_PARALLEL` varchar(1) DEFAULT NULL COMMENT '是否并行推进事项。0表示否，1表示是',
+            `APPLYINST_SOURCE` varchar(3) NOT NULL COMMENT '申报来源，net表示网上申报，win表示窗口申报',
+            `WEEK_APPLY_COUNT` int(11) NOT NULL COMMENT '周接件数',
+            `ALL_APPLY_COUNT` int(11) NOT NULL COMMENT '总接件数',
+            `APPLY_LRR` double(6,2) NOT NULL COMMENT '周接件数环比',
+            `ALL_IN_SUPPLEMENT_COUNT` int(11) NOT NULL COMMENT '待补全数',
+            `ALL_SUPPLEMENTED_COUNT` int(11) NOT NULL COMMENT '补全待确认数',
+            `WEEK_PRE_ACCEPTANCE_COUNT` int(11) NOT NULL COMMENT '周预受理数',
+            `ALL_PRE_ACCEPTANCE_COUNT` int(11) NOT NULL COMMENT '总预受理数',
+            `PRE_ACCEPTANCE_LRR` double(6,2) NOT NULL COMMENT '周预受理数环比',
+            `WEEK_OUT_SCOPE_COUNT` int(11) NOT NULL COMMENT '周不予受理数',
+            `ALL_OUT_SCOPE_COUNT` int(11) NOT NULL COMMENT '总不予受理数',
+            `OUT_SCOPE_LRR` double(6,2) NOT NULL COMMENT '周不予受理数环比',
+            `WEEK_COMPLETED_COUNT` int(11) NOT NULL COMMENT '周办结数',
+            `ALL_COMPLETED_COUNT` int(11) NOT NULL COMMENT '总办结数',
+            `COMPLETED_LRR` double(6,2) NOT NULL COMMENT '周办结数环比',
+            `WEEK_OVER_TIME_COUNT` int(11) NOT NULL COMMENT '周逾期数',
+            `ALL_OVER_TIME_COUNT` int(11) NOT NULL COMMENT '总逾期数',
+            `OVER_TIME_LRR` double(6,2) NOT NULL COMMENT '周逾期数环比',
+            `ALL_PRE_ACCEPTANCE_RATE` double(4,2) NOT NULL COMMENT '总预受理率（预受理数/接件数）',
+            `ALL_OUT_SCOPE_RATE` double(4,2) NOT NULL COMMENT '总不予受理率（不予受理数/接件数）',
+            `ALL_OVER_TIME_RATE` double(4,2) NOT NULL COMMENT '总逾期率（逾期数/预受理数）',
+            `ALL_COMPLETED_RATE` double(4,2) NOT NULL COMMENT '总办结率（办结数/预受理数）',
+            `STATISTICS_START_DATE` datetime NOT NULL COMMENT '统计数据开始日期（yyyy-MM-dd 00:00:00）',
+            `STATISTICS_END_DATE` datetime NOT NULL COMMENT '统计数据结束日期（yyyy-MM-dd 23:59:59）',
+            `STATISTICS_YEAR` int(11) NOT NULL COMMENT '统计数据年份',
+            `WEEK_NUM` int(11) NOT NULL COMMENT '第几周。表示统计数据开始日期和统计数据结束日期是对应年份中第几周。',
+            `MODIFIER` varchar(50) DEFAULT NULL COMMENT '修改人',
+            `MODIFY_TIME` datetime DEFAULT NULL COMMENT '修改时间',
+            `ROOT_ORG_ID` varchar(50) NOT NULL COMMENT '所属顶级组织ID',
+            PRIMARY KEY (`THEME_WEEK_STATISTICS_ID`) USING BTREE
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='主题周申报统计表（在日申报统计表的基础上统计。历史周数据不变。本周数据每日更新，保存的是本周至昨日的数据。）';
+        </sql>
+    </changeSet>
+    <changeSet id="201910291011" author="zhangwn" failOnError="false">
+        <comment>效能督查统计相关表</comment>
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            create table if not exists `aea_ana_theme_month_statistics` (
+            `THEME_MONTH_STATISTICS_ID` varchar(50) NOT NULL COMMENT '主键',
+            `STATISTICS_RECORD_ID` varchar(50) NOT NULL COMMENT '数据生成记录表ID',
+            `THEME_ID` varchar(50) NOT NULL COMMENT '主题ID',
+            `THEME_NAME` varchar(200) NOT NULL COMMENT '主题名称',
+            `APPLY_RECORD_ID` varchar(50) NOT NULL COMMENT '阶段/辅线/并行推进事项ID',
+            `APPLY_RECORD_NAME` varchar(200) NOT NULL COMMENT '阶段/辅线/并行推进事项名称',
+            `DYBZSPJDXH` varchar(200) DEFAULT NULL COMMENT '对应国家标准审批阶段，多选，1 立项用地规划许可 2 立项用地规划许可 3 施工许可 4 竣工验收 5 并行推进',
+            `IS_NODE` varchar(1) DEFAULT NULL COMMENT '1表示主线，2表示辅线 3技术审查',
+            `IS_PARALLEL` varchar(1) DEFAULT NULL COMMENT '是否并行推进事项。0表示否，1表示是',
+            `APPLYINST_SOURCE` varchar(3) NOT NULL COMMENT '申报来源，net表示网上申报，win表示窗口申报',
+            `MONTH_APPLY_COUNT` int(11) NOT NULL COMMENT '月接件数',
+            `ALL_APPLY_COUNT` int(11) NOT NULL COMMENT '总接件数',
+            `APPLY_ON_YOY_BASIS` double(4,2) NOT NULL COMMENT '月接件数同比',
+            `APPLY_LRR` double(6,2) NOT NULL COMMENT '月接件数环比',
+            `ALL_IN_SUPPLEMENT_COUNT` int(11) NOT NULL COMMENT '待补全数',
+            `IN_SUPPLEMENT_ON_YOY_BASIS` double(4,2) NOT NULL COMMENT '待补全数同比',
+            `IN_SUPPLEMENT_LRR` double(4,2) NOT NULL COMMENT '待补全数环比',
+            `ALL_SUPPLEMENTED_COUNT` int(11) NOT NULL COMMENT '补全待确认数',
+            `SUPPLEMENTED_ON_YOY_BASIS` double(4,2) NOT NULL COMMENT '补全待确认数同比',
+            `SUPPLEMENTED_LRR` double(4,2) NOT NULL COMMENT '补全待确认数环比',
+            `MONTH_PRE_ACCEPTANCE_COUNT` int(11) NOT NULL COMMENT '月预受理数',
+            `ALL_PRE_ACCEPTANCE_COUNT` int(11) NOT NULL COMMENT '总预受理数',
+            `PRE_ACCEPTANCE_ON_YOY_BASIS` double(4,2) NOT NULL COMMENT '月预受理数同比',
+            `PRE_ACCEPTANCE_LRR` double(6,2) NOT NULL COMMENT '月预受理数环比',
+            `MONTH_OUT_SCOPE_COUNT` int(11) NOT NULL COMMENT '月不予受理数',
+            `ALL_OUT_SCOPE_COUNT` int(11) NOT NULL COMMENT '总不予受理数',
+            `OUT_SCOPE_ON_YOY_BASIS` double(4,2) NOT NULL COMMENT '月不予受理数同比',
+            `OUT_SCOPE_LRR` double(6,2) NOT NULL COMMENT '月不予受理数环比',
+            `MONTH_COMPLETED_COUNT` int(11) NOT NULL COMMENT '月办结数',
+            `ALL_COMPLETED_COUNT` int(11) NOT NULL COMMENT '总办结数',
+            `COMPLETED_ON_YOY_BASIS` double(4,2) NOT NULL COMMENT '月办结数同比',
+            `COMPLETED_LRR` double(6,2) NOT NULL COMMENT '月办结数环比',
+            `MONTH_OVER_TIME_COUNT` int(11) NOT NULL COMMENT '月逾期数',
+            `ALL_OVER_TIME_COUNT` int(11) NOT NULL COMMENT '总逾期数',
+            `OVER_TIME_ON_YOY_BASIS` double(4,2) NOT NULL COMMENT '月逾期数同比',
+            `OVER_TIME_LRR` double(6,2) NOT NULL COMMENT '月逾期数环比',
+            `ALL_PRE_ACCEPTANCE_RATE` double(4,2) NOT NULL COMMENT '总预受理率（预受理数/接件数）',
+            `ALL_OUT_SCOPE_RATE` double(4,2) NOT NULL COMMENT '总不予受理率（不予受理数/接件数）',
+            `ALL_OVER_TIME_RATE` double(4,2) NOT NULL COMMENT '总逾期率（逾期数/预受理数）',
+            `ALL_COMPLETED_RATE` double(4,2) NOT NULL COMMENT '总办结率（办结数/预受理数）',
+            `STATISTICS_START_DATE` datetime NOT NULL COMMENT '统计数据开始日期（yyyy-MM-dd 00:00:00）',
+            `STATISTICS_END_DATE` datetime NOT NULL COMMENT '统计数据结束日期（yyyy-MM-dd 23:59:59）',
+            `STATISTICS_MONTH` varchar(20) NOT NULL COMMENT '统计数据月份(yyyy-MM)',
+            `MODIFIER` varchar(50) DEFAULT NULL COMMENT '修改人',
+            `MODIFY_TIME` datetime DEFAULT NULL COMMENT '修改时间',
+            `ROOT_ORG_ID` varchar(50) NOT NULL COMMENT '所属顶级组织ID',
+            PRIMARY KEY (`THEME_MONTH_STATISTICS_ID`) USING BTREE
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='主题月申报统计表（在日申报统计表的基础上统计。历史月数据不变。本月数据每日更新，保存的是本月至昨日的数据。）';
+        </sql>
+    </changeSet>
+    <changeSet id="201910291012" author="zhangwn" failOnError="false">
+        <comment>效能督查统计相关表</comment>
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            create table if not exists `aea_ana_theme_year_statistics` (
+            `THEME_YEAR_STATISTICS_ID` varchar(50) NOT NULL COMMENT '主键',
+            `STATISTICS_RECORD_ID` varchar(50) NOT NULL COMMENT '数据生成记录表ID',
+            `THEME_ID` varchar(50) NOT NULL COMMENT '主题ID',
+            `THEME_NAME` varchar(200) NOT NULL COMMENT '主题名称',
+            `APPLY_RECORD_ID` varchar(50) NOT NULL COMMENT '阶段/辅线/并行推进事项ID',
+            `APPLY_RECORD_NAME` varchar(200) NOT NULL COMMENT '阶段/辅线/并行推进事项名称',
+            `DYBZSPJDXH` varchar(200) DEFAULT NULL COMMENT '对应国家标准审批阶段，多选，1 立项用地规划许可 2 立项用地规划许可 3 施工许可 4 竣工验收 5 并行推进',
+            `IS_NODE` varchar(1) DEFAULT NULL COMMENT '1表示主线，2表示辅线 3技术审查',
+            `IS_PARALLEL` varchar(1) DEFAULT NULL COMMENT '是否并行推进事项。0表示否，1表示是',
+            `APPLYINST_SOURCE` varchar(3) NOT NULL COMMENT '申报来源，net表示网上申报，win表示窗口申报',
+            `YEAR_APPLY_COUNT` int(11) NOT NULL COMMENT '年接件数',
+            `ALL_APPLY_COUNT` int(11) NOT NULL COMMENT '总接件数',
+            `APPLY_LRR` double(6,2) NOT NULL COMMENT '年接件数环比',
+            `ALL_IN_SUPPLEMENT_COUNT` int(11) NOT NULL COMMENT '待补全数',
+            `IN_SUPPLEMENT_LRR` double(4,2) NOT NULL COMMENT '年待补全数环比',
+            `ALL_SUPPLEMENTED_COUNT` int(11) NOT NULL COMMENT '补全待确认数',
+            `SUPPLEMENTED_LRR` double(4,2) NOT NULL COMMENT '年补全待确认数环比',
+            `YEAR_PRE_ACCEPTANCE_COUNT` int(11) NOT NULL COMMENT '年预受理数',
+            `ALL_PRE_ACCEPTANCE_COUNT` int(11) NOT NULL COMMENT '总预受理数',
+            `PRE_ACCEPTANCE_LRR` double(6,2) NOT NULL COMMENT '年预受理数环比',
+            `YEAR_OUT_SCOPE_COUNT` int(11) NOT NULL COMMENT '年不予受理数',
+            `ALL_OUT_SCOPE_COUNT` int(11) NOT NULL COMMENT '总不予受理数',
+            `OUT_SCOPE_LRR` double(6,2) NOT NULL COMMENT '年不予受理数环比',
+            `YEAR_COMPLETED_COUNT` int(11) NOT NULL COMMENT '年办结数',
+            `ALL_COMPLETED_COUNT` int(11) NOT NULL COMMENT '总办结数',
+            `COMPLETED_LRR` double(6,2) NOT NULL COMMENT '年办结数环比',
+            `YEAR_OVER_TIME_COUNT` int(11) NOT NULL COMMENT '年逾期数',
+            `ALL_OVER_TIME_COUNT` int(11) NOT NULL COMMENT '总逾期数',
+            `OVER_TIME_LRR` double(6,2) NOT NULL COMMENT '年逾期数环比',
+            `ALL_PRE_ACCEPTANCE_RATE` double(4,2) NOT NULL COMMENT '总预受理率（预受理数/接件数）',
+            `ALL_OUT_SCOPE_RATE` double(4,2) NOT NULL COMMENT '总不予受理率（不予受理数/接件数）',
+            `ALL_OVER_TIME_RATE` double(4,2) NOT NULL COMMENT '总逾期率（逾期数/预受理数）',
+            `ALL_COMPLETED_RATE` double(4,2) NOT NULL COMMENT '总办结率（办结数/预受理数）',
+            `STATISTICS_START_DATE` datetime NOT NULL COMMENT '统计数据开始日期（yyyy-MM-dd 00:00:00）',
+            `STATISTICS_END_DATE` datetime NOT NULL COMMENT '统计数据结束日期（yyyy-MM-dd 23:59:59）',
+            `STATISTICS_YEAR` int(11) NOT NULL COMMENT '统计数据年份（yyyy）',
+            `MODIFIER` varchar(50) DEFAULT NULL COMMENT '修改人',
+            `MODIFY_TIME` datetime DEFAULT NULL COMMENT '修改时间',
+            `ROOT_ORG_ID` varchar(50) NOT NULL COMMENT '所属顶级组织ID',
+            PRIMARY KEY (`THEME_YEAR_STATISTICS_ID`) USING BTREE
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='主题年申报统计表（在月申报统计表的基础上统计。历史年数据不变。本年数据每日更新，保存的是本年至昨日的数据。）';
+        </sql>
+    </changeSet>
+    <changeSet id="201910291013" author="zhangwn" failOnError="false">
+        <comment>效能督查统计相关表</comment>
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            create table if not exists `aea_ana_win_day_statistics` (
+            `WINDOW_DAY_STATISTICS_ID` varchar(50) NOT NULL COMMENT '主键',
+            `STATISTICS_RECORD_ID` varchar(50) NOT NULL COMMENT '数据生成记录表ID',
+            `WINDOW_ID` varchar(50) NOT NULL COMMENT '服务窗口ID',
+            `WINDOW_NAME` varchar(200) NOT NULL COMMENT '窗口名称',
+            `REGION_ID` varchar(50) DEFAULT NULL COMMENT '行政区划ID（区县级以下的需要换算成区县级）',
+            `REGION_NAME` varchar(200) DEFAULT NULL COMMENT '行政区划名称',
+            `APPLY_SOURCE` varchar(50) NOT NULL COMMENT '申报来源，统计维度。net表示网厅申报，win表示现场申报',
+            `DAY_APPLY_COUNT` int(11) NOT NULL COMMENT '日接件数',
+            `ALL_APPLY_COUNT` int(11) NOT NULL COMMENT '总接件数',
+            `APPLY_LRR` double(6,2) NOT NULL COMMENT '日接件数环比',
+            `ALL_IN_SUPPLEMENT_COUNT` int(11) NOT NULL COMMENT '待补全数（不需查询历史表统计）',
+            `ALL_SUPPLEMENTED_COUNT` int(11) NOT NULL COMMENT '补全待确认数（不需查询历史表统计）',
+            `DAY_PRE_ACCEPTANCE_COUNT` int(11) NOT NULL COMMENT '日预受理数（需查询历史表统计）',
+            `ALL_PRE_ACCEPTANCE_COUNT` int(11) NOT NULL COMMENT '总预受理数',
+            `PRE_ACCEPTANCE_LRR` double(6,2) NOT NULL COMMENT '日预受理数环比',
+            `DAY_OUT_SCOPE_COUNT` int(11) NOT NULL COMMENT '日不予受理数',
+            `ALL_OUT_SCOPE_COUNT` int(11) NOT NULL COMMENT '总不予受理数',
+            `OUT_SCOPE_LRR` double(6,2) NOT NULL COMMENT '日不予受理数环比',
+            `DAY_COMPLETED_COUNT` int(11) NOT NULL COMMENT '日办结数',
+            `ALL_COMPLETED_COUNT` int(11) NOT NULL COMMENT '总办结数',
+            `COMPLETED_LRR` double(6,2) NOT NULL COMMENT '日办结数环比',
+            `DAY_OVER_TIME_COUNT` int(11) NOT NULL COMMENT '日逾期数',
+            `ALL_OVER_TIME_COUNT` int(11) NOT NULL COMMENT '总逾期数',
+            `OVER_TIME_LRR` double(6,2) NOT NULL COMMENT '日逾期数环比',
+            `ALL_PRE_ACCEPTANCE_RATE` double(4,2) NOT NULL COMMENT '总预受理率（预受理数/接件数）',
+            `ALL_OUT_SCOPE_RATE` double(4,2) NOT NULL COMMENT '总不予受理率（不予受理数/接件数）',
+            `ALL_OVER_TIME_RATE` double(4,2) NOT NULL COMMENT '总逾期率（逾期数/预受理数）',
+            `ALL_COMPLETED_RATE` double(4,2) NOT NULL COMMENT '总办结率（办结数/预受理数）',
+            `STATISTICS_DATE` date NOT NULL COMMENT '统计数据日期，不是创建日期（yyyy-MM-dd）',
+            `ROOT_ORG_ID` varchar(50) NOT NULL COMMENT '所属顶级组织ID',
+            PRIMARY KEY (`WINDOW_DAY_STATISTICS_ID`) USING BTREE
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='窗口日申报统计表';
+        </sql>
+    </changeSet>
+    <changeSet id="201910291014" author="zhangwn" failOnError="false">
+        <comment>效能督查统计相关表</comment>
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            create table if not exists `aea_ana_win_week_statistics` (
+            `WINDOW_WEEK_STATISTICS_ID` varchar(50) NOT NULL COMMENT '主键',
+            `STATISTICS_RECORD_ID` varchar(50) NOT NULL COMMENT '数据生成记录表ID',
+            `WINDOW_ID` varchar(50) NOT NULL COMMENT '服务窗口ID',
+            `WINDOW_NAME` varchar(200) NOT NULL COMMENT '窗口名称',
+            `REGION_ID` varchar(50) DEFAULT NULL COMMENT '行政区划ID（区县级以下的需要换算成区县级）',
+            `REGION_NAME` varchar(200) DEFAULT NULL COMMENT '行政区划名称',
+            `APPLY_SOURCE` varchar(50) NOT NULL COMMENT '申报来源，统计维度。net表示网厅申报，win表示现场申报',
+            `WEEK_APPLY_COUNT` int(11) NOT NULL COMMENT '周接件数',
+            `ALL_APPLY_COUNT` int(11) NOT NULL COMMENT '总接件数',
+            `APPLY_LRR` double(6,2) NOT NULL COMMENT '周接件数环比',
+            `ALL_IN_SUPPLEMENT_COUNT` int(11) NOT NULL COMMENT '待补全数',
+            `ALL_SUPPLEMENTED_COUNT` int(11) NOT NULL COMMENT '补全待确认数',
+            `WEEK_PRE_ACCEPTANCE_COUNT` int(11) NOT NULL COMMENT '周预受理数',
+            `ALL_PRE_ACCEPTANCE_COUNT` int(11) NOT NULL COMMENT '总预受理数',
+            `PRE_ACCEPTANCE_LRR` double(6,2) NOT NULL COMMENT '周预受理数环比',
+            `WEEK_OUT_SCOPE_COUNT` int(11) NOT NULL COMMENT '周不予受理数',
+            `ALL_OUT_SCOPE_COUNT` int(11) NOT NULL COMMENT '总不予受理数',
+            `OUT_SCOPE_LRR` double(6,2) NOT NULL COMMENT '周不予受理数环比',
+            `WEEK_COMPLETED_COUNT` int(11) NOT NULL COMMENT '周办结数',
+            `ALL_COMPLETED_COUNT` int(11) NOT NULL COMMENT '总办结数',
+            `COMPLETED_LRR` double(6,2) NOT NULL COMMENT '周办结数环比',
+            `WEEK_OVER_TIME_COUNT` int(11) NOT NULL COMMENT '周逾期数',
+            `ALL_OVER_TIME_COUNT` int(11) NOT NULL COMMENT '总逾期数',
+            `OVER_TIME_LRR` double(6,2) NOT NULL COMMENT '周逾期数环比',
+            `ALL_PRE_ACCEPTANCE_RATE` double(4,2) NOT NULL COMMENT '总预受理率（预受理数/接件数）',
+            `ALL_OUT_SCOPE_RATE` double(4,2) NOT NULL COMMENT '总不予受理率（不予受理数/接件数）',
+            `ALL_OVER_TIME_RATE` double(4,2) NOT NULL COMMENT '总逾期率（逾期数/预受理数）',
+            `ALL_COMPLETED_RATE` double(4,2) NOT NULL COMMENT '总办结率（办结数/预受理数）',
+            `STATISTICS_START_DATE` datetime NOT NULL COMMENT '统计数据开始日期（yyyy-MM-dd 00:00:00）',
+            `STATISTICS_END_DATE` datetime NOT NULL COMMENT '统计数据结束日期（yyyy-MM-dd 23:59:59）',
+            `STATISTICS_YEAR` int(11) NOT NULL COMMENT '统计数据年份',
+            `WEEK_NUM` int(11) NOT NULL COMMENT '第几周。表示统计数据开始日期和统计数据结束日期是对应年份中第几周。',
+            `MODIFIER` varchar(50) DEFAULT NULL COMMENT '修改人',
+            `MODIFY_TIME` datetime DEFAULT NULL COMMENT '修改时间',
+            `ROOT_ORG_ID` varchar(50) NOT NULL COMMENT '所属顶级组织ID',
+            PRIMARY KEY (`WINDOW_WEEK_STATISTICS_ID`) USING BTREE
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='窗口周申报统计表（在日申报统计表的基础上统计。历史周数据不变。本周数据每日更新，保存的是本周至昨日的数据。）';
+        </sql>
+    </changeSet>
+    <changeSet id="201910291015" author="zhangwn" failOnError="false">
+        <comment>效能督查统计相关表</comment>
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            create table if not exists `aea_ana_win_month_statistics` (
+            `WINDOW_MONTH_STATISTICS_ID` varchar(50) NOT NULL COMMENT '主键',
+            `STATISTICS_RECORD_ID` varchar(50) NOT NULL COMMENT '数据生成记录表ID',
+            `WINDOW_ID` varchar(50) NOT NULL COMMENT '服务窗口ID',
+            `WINDOW_NAME` varchar(200) NOT NULL COMMENT '窗口名称',
+            `REGION_ID` varchar(50) DEFAULT NULL COMMENT '行政区划ID（区县级以下的需要换算成区县级）',
+            `REGION_NAME` varchar(200) DEFAULT NULL COMMENT '行政区划名称',
+            `APPLY_SOURCE` varchar(50) NOT NULL COMMENT '申报来源，统计维度。net表示网厅申报，win表示现场申报',
+            `MONTH_APPLY_COUNT` int(11) NOT NULL COMMENT '月接件数',
+            `ALL_APPLY_COUNT` int(11) NOT NULL COMMENT '总接件数',
+            `APPLY_ON_YOY_BASIS` double(4,2) NOT NULL COMMENT '月接件数同比',
+            `APPLY_LRR` double(6,2) NOT NULL COMMENT '月接件数环比',
+            `ALL_IN_SUPPLEMENT_COUNT` int(11) NOT NULL COMMENT '待补全数',
+            `IN_SUPPLEMENT_ON_YOY_BASIS` double(4,2) NOT NULL COMMENT '待补全数同比',
+            `IN_SUPPLEMENT_LRR` double(4,2) NOT NULL COMMENT '待补全数环比',
+            `ALL_SUPPLEMENTED_COUNT` int(11) NOT NULL COMMENT '补全待确认数',
+            `SUPPLEMENTED_ON_YOY_BASIS` double(4,2) NOT NULL COMMENT '月补全待确认数同比',
+            `SUPPLEMENTED_LRR` double(4,2) NOT NULL COMMENT '月补全待确认数环比',
+            `MONTH_PRE_ACCEPTANCE_COUNT` int(11) NOT NULL COMMENT '月预受理数',
+            `ALL_PRE_ACCEPTANCE_COUNT` int(11) NOT NULL COMMENT '总预受理数',
+            `PRE_ACCEPTANCE_ON_YOY_BASIS` double(4,2) NOT NULL COMMENT '月预受理数同比',
+            `PRE_ACCEPTANCE_LRR` double(6,2) NOT NULL COMMENT '月预受理数环比',
+            `MONTH_OUT_SCOPE_COUNT` int(11) NOT NULL COMMENT '月不予受理数',
+            `ALL_OUT_SCOPE_COUNT` int(11) NOT NULL COMMENT '总不予受理数',
+            `OUT_SCOPE_ON_YOY_BASIS` double(4,2) NOT NULL COMMENT '月不予受理数同比',
+            `OUT_SCOPE_LRR` double(6,2) NOT NULL COMMENT '月不予受理数环比',
+            `MONTH_COMPLETED_COUNT` int(11) NOT NULL COMMENT '月办结数',
+            `ALL_COMPLETED_COUNT` int(11) NOT NULL COMMENT '总办结数',
+            `COMPLETED_ON_YOY_BASIS` double(4,2) NOT NULL COMMENT '月办结数同比',
+            `COMPLETED_LRR` double(6,2) NOT NULL COMMENT '月办结数环比',
+            `MONTH_OVER_TIME_COUNT` int(11) NOT NULL COMMENT '月逾期数',
+            `ALL_OVER_TIME_COUNT` int(11) NOT NULL COMMENT '总逾期数',
+            `OVER_TIME_ON_YOY_BASIS` double(4,2) NOT NULL COMMENT '月逾期数同比',
+            `OVER_TIME_LRR` double(6,2) NOT NULL COMMENT '月逾期数环比',
+            `ALL_PRE_ACCEPTANCE_RATE` double(4,2) NOT NULL COMMENT '总预受理率（预受理数/接件数）',
+            `ALL_OUT_SCOPE_RATE` double(4,2) NOT NULL COMMENT '总不予受理率（不予受理数/接件数）',
+            `ALL_OVER_TIME_RATE` double(4,2) NOT NULL COMMENT '总逾期率（逾期数/预受理数）',
+            `ALL_COMPLETED_RATE` double(4,2) NOT NULL COMMENT '总办结率（办结数/预受理数）',
+            `STATISTICS_START_DATE` datetime NOT NULL COMMENT '统计数据开始日期（yyyy-MM-dd 00:00:00）',
+            `STATISTICS_END_DATE` datetime NOT NULL COMMENT '统计数据结束日期（yyyy-MM-dd 23:59:59）',
+            `STATISTICS_MONTH` varchar(20) NOT NULL COMMENT '统计数据月份(yyyy-MM)',
+            `MODIFIER` varchar(50) DEFAULT NULL COMMENT '修改人',
+            `MODIFY_TIME` datetime DEFAULT NULL COMMENT '修改时间',
+            `ROOT_ORG_ID` varchar(50) NOT NULL COMMENT '所属顶级组织ID',
+            PRIMARY KEY (`WINDOW_MONTH_STATISTICS_ID`) USING BTREE
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='窗口月申报统计表（在日申报统计表的基础上统计。历史月数据不变。本月数据每日更新，保存的是本月至昨日的数据。）';
+        </sql>
+    </changeSet>
+    <changeSet id="201910291016" author="zhangwn" failOnError="false">
+        <comment>效能督查统计相关表</comment>
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            create table if not exists `aea_ana_win_year_statistics` (
+            `WINDOW_YEAR_STATISTICS_ID` varchar(50) NOT NULL COMMENT '主键',
+            `STATISTICS_RECORD_ID` varchar(50) NOT NULL COMMENT '数据生成记录表ID',
+            `WINDOW_ID` varchar(50) NOT NULL COMMENT '服务窗口ID',
+            `WINDOW_NAME` varchar(200) NOT NULL COMMENT '窗口名称',
+            `REGION_ID` varchar(50) DEFAULT NULL COMMENT '行政区划ID（区县级以下的需要换算成区县级）',
+            `REGION_NAME` varchar(200) DEFAULT NULL COMMENT '行政区划名称',
+            `APPLY_SOURCE` varchar(50) NOT NULL COMMENT '申报来源，统计维度。net表示网厅申报，win表示现场申报',
+            `YEAR_APPLY_COUNT` int(11) NOT NULL COMMENT '年接件数',
+            `ALL_APPLY_COUNT` int(11) NOT NULL COMMENT '总接件数',
+            `APPLY_LRR` double(6,2) NOT NULL COMMENT '年接件数环比',
+            `ALL_IN_SUPPLEMENT_COUNT` int(11) NOT NULL COMMENT '待补全数',
+            `IN_SUPPLEMENT_LRR` double(4,2) NOT NULL COMMENT '待补全数环比',
+            `ALL_SUPPLEMENTED_COUNT` int(11) NOT NULL COMMENT '补全待确认数',
+            `SUPPLEMENTED_LRR` double(4,2) NOT NULL COMMENT '补全待确认数环比',
+            `YEAR_PRE_ACCEPTANCE_COUNT` int(11) NOT NULL COMMENT '年预受理数',
+            `ALL_PRE_ACCEPTANCE_COUNT` int(11) NOT NULL COMMENT '总预受理数',
+            `PRE_ACCEPTANCE_LRR` double(6,2) NOT NULL COMMENT '年预受理数环比',
+            `YEAR_OUT_SCOPE_COUNT` int(11) NOT NULL COMMENT '年不予受理数',
+            `ALL_OUT_SCOPE_COUNT` int(11) NOT NULL COMMENT '总不予受理数',
+            `OUT_SCOPE_LRR` double(6,2) NOT NULL COMMENT '年不予受理数环比',
+            `YEAR_COMPLETED_COUNT` int(11) NOT NULL COMMENT '年办结数',
+            `ALL_COMPLETED_COUNT` int(11) NOT NULL COMMENT '总办结数',
+            `COMPLETED_LRR` double(6,2) NOT NULL COMMENT '年办结数环比',
+            `YEAR_OVER_TIME_COUNT` int(11) NOT NULL COMMENT '年逾期数',
+            `ALL_OVER_TIME_COUNT` int(11) NOT NULL COMMENT '总逾期数',
+            `OVER_TIME_LRR` double(6,2) NOT NULL COMMENT '年逾期数环比',
+            `ALL_PRE_ACCEPTANCE_RATE` varchar(20) NOT NULL COMMENT '总预受理率（预受理数/接件数）',
+            `ALL_OUT_SCOPE_RATE` double(4,2) NOT NULL COMMENT '总不予受理率（不予受理数/接件数）',
+            `ALL_OVER_TIME_RATE` double(4,2) NOT NULL COMMENT '总逾期率（逾期数/预受理数）',
+            `ALL_COMPLETED_RATE` double(4,2) NOT NULL COMMENT '总办结率（办结数/预受理数）',
+            `STATISTICS_START_DATE` datetime NOT NULL COMMENT '统计数据开始日期（yyyy-MM-dd 00:00:00）',
+            `STATISTICS_END_DATE` datetime NOT NULL COMMENT '统计数据结束日期（yyyy-MM-dd 23:59:59）',
+            `STATISTICS_YEAR` int(11) NOT NULL COMMENT '统计数据年份（yyyy）',
+            `MODIFIER` varchar(50) DEFAULT NULL COMMENT '修改人',
+            `MODIFY_TIME` datetime DEFAULT NULL COMMENT '修改时间',
+            `ROOT_ORG_ID` varchar(50) NOT NULL COMMENT '所属顶级组织ID',
+            PRIMARY KEY (`WINDOW_YEAR_STATISTICS_ID`) USING BTREE
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='窗口年申报统计表（在月申报统计表的基础上统计。历史年数据不变。本年数据每日更新，保存的是本年至昨日的数据。）';
+        </sql>
+    </changeSet>
+    <changeSet id="201910291017" author="zhangwn" failOnError="false">
+        <comment>效能督查统计相关表</comment>
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            create table if not exists `aea_ana_org_use_time_statistics` (
+            `USE_TIME_STATISTICS_ID` varchar(50) NOT NULL COMMENT '主键',
+            `STATISTICS_RECORD_ID` varchar(50) NOT NULL COMMENT '数据生成记录表ID',
+            `ITEMINST_ID` varchar(50) NOT NULL COMMENT '事项实例ID',
+            `TIMERULE_INST_ID` varchar(50) NOT NULL COMMENT '时限计算实例ID',
+            `USE_TIME_TYPE` varchar(1) NOT NULL COMMENT '统计用时类型，0表示最短用时，1表示最长用时',
+            `IS_COMPLETED` varchar(1) DEFAULT NULL COMMENT '是否已办结，USE_TIME_TYPE为1时使用。0表示未办结，1表示已办结',
+            `ITEM_ID` varchar(50) NOT NULL COMMENT '事项ID',
+            `ITEM_NAME` varchar(100) NOT NULL COMMENT '事项名称。',
+            `ITEM_PROPERTY` varchar(50) DEFAULT NULL COMMENT '办件类型。',
+            `ORG_ID` varchar(50) NOT NULL COMMENT '部门ID',
+            `ORG_NAME` varchar(200) NOT NULL COMMENT '部门名称',
+            `PROJ_NAME` varchar(500) NOT NULL COMMENT '项目名称',
+            `REGION_ID` varchar(50) NOT NULL COMMENT '行政区划ID（区县级以下的需要换算成区县级）',
+            `REGION_NAME` varchar(200) NOT NULL COMMENT '行政区划名称',
+            `TIME_LIMIT` double(30,0) NOT NULL COMMENT '时限数',
+            `TIMERULE_UNIT` varchar(3) NOT NULL COMMENT '【计算规则时间单位】ND：自然日，WD：工作日，NH：小时（自然日），WH：小时（工作日）',
+            `USE_LIMIT_TIME` double(30,1) NOT NULL COMMENT '已用时',
+            `REMAINING_TIME` double(30,1) NOT NULL COMMENT '剩余用时',
+            `OVERDUE_TIME` double(30,1) NOT NULL COMMENT '逾期用时',
+            `USE_TIME_RATE` double(4,2) DEFAULT NULL COMMENT '用时率（已用时/时限数）',
+            `IS_ALL_COUNT` varchar(1) NOT NULL COMMENT '是否全量统计，0表示否，1表示全量统计',
+            `STATISTICS_START_DATE` datetime DEFAULT NULL COMMENT 'IS_ALL_COUNT为0时必填，统计数据开始日期（yyyy-MM-dd 00:00:00）',
+            `STATISTICS_END_DATE` datetime DEFAULT NULL COMMENT 'IS_ALL_COUNT为0时必填，统计数据结束日期（yyyy-MM-dd 23:59:59）',
+            `MEMO` varchar(500) DEFAULT NULL COMMENT '备注',
+            `CREATER` varchar(50) NOT NULL COMMENT '创建人',
+            `CREATE_TIME` datetime NOT NULL COMMENT '创建时间',
+            `ROOT_ORG_ID` varchar(50) NOT NULL COMMENT '所属顶级组织ID',
+            PRIMARY KEY (`USE_TIME_STATISTICS_ID`) USING BTREE
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='办件用时统计表（统计办理时限延期最长和办理时限压缩最短的办件）';
+        </sql>
+    </changeSet>
+    <changeSet id="201910291018" author="zhangwn" failOnError="false">
+        <comment>效能督查统计相关表</comment>
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            create table if not exists `aea_ana_win_use_time_statistics` (
+            `USE_TIME_STATISTICS_ID` varchar(50) NOT NULL COMMENT '主键',
+            `STATISTICS_RECORD_ID` varchar(50) NOT NULL COMMENT '数据生成记录表ID',
+            `APPLYINST_ID` varchar(50) NOT NULL COMMENT '申请实例ID',
+            `TIMERULE_INST_ID` varchar(50) NOT NULL COMMENT '时限计算实例ID',
+            `USE_TIME_TYPE` varchar(1) NOT NULL COMMENT '统计用时类型，0表示最短用时，1表示最长用时',
+            `IS_COMPLETED` varchar(1) DEFAULT NULL COMMENT '是否已办结，USE_TIME_TYPE为1时使用。0表示未办结，1表示已办结',
+            `IS_SERIES_APPROVE` varchar(1) NOT NULL COMMENT '是否串联审批，0表示并联审批，1表示串联审批',
+            `STAGE_NAME` varchar(500) DEFAULT NULL COMMENT '阶段名称。IS_SERIES_APPROVE为0时必填',
+            `THEME_NAME` varchar(500) DEFAULT NULL COMMENT '主题名称。IS_SERIES_APPROVE为0时必填',
+            `ITEM_NAME` varchar(100) DEFAULT NULL COMMENT '事项名称。IS_SERIES_APPROVE为1时必填',
+            `ITEM_PROPERTY` varchar(50) DEFAULT NULL COMMENT '办件类型。IS_SERIES_APPROVE为1时必填',
+            `WINDOW_ID` varchar(50) NOT NULL COMMENT '服务窗口ID',
+            `WINDOW_NAME` varchar(200) NOT NULL COMMENT '窗口名称',
+            `PROJ_NAME` varchar(500) NOT NULL COMMENT '项目名称',
+            `REGION_ID` varchar(50) NOT NULL COMMENT '行政区划ID（区县级以下的需要换算成区县级）',
+            `REGION_NAME` varchar(200) NOT NULL COMMENT '行政区划名称',
+            `APPLY_SOURCE` varchar(50) NOT NULL COMMENT '申报来源。net表示网厅申报，win表示现场申报',
+            `TIME_LIMIT` double(30,0) NOT NULL COMMENT '时限数',
+            `TIMERULE_UNIT` varchar(3) NOT NULL COMMENT '【计算规则时间单位】ND：自然日，WD：工作日，NH：小时（自然日），WH：小时（工作日）',
+            `USE_LIMIT_TIME` double(30,1) NOT NULL COMMENT '已用时',
+            `REMAINING_TIME` double(30,1) NOT NULL COMMENT '剩余用时',
+            `OVERDUE_TIME` double(30,1) NOT NULL COMMENT '逾期用时',
+            `USE_TIME_RATE` double(4,2) DEFAULT NULL COMMENT '用时率（已用时/时限数）',
+            `IS_ALL_COUNT` varchar(1) NOT NULL COMMENT '是否全量统计，0表示否，1表示全量统计',
+            `STATISTICS_START_DATE` datetime DEFAULT NULL COMMENT 'IS_ALL_COUNT为0时必填，统计数据开始日期（yyyy-MM-dd 00:00:00）',
+            `STATISTICS_END_DATE` datetime DEFAULT NULL COMMENT 'IS_ALL_COUNT为0时必填，统计数据结束日期（yyyy-MM-dd 23:59:59）',
+            `MEMO` varchar(500) DEFAULT NULL COMMENT '备注',
+            `CREATER` varchar(50) NOT NULL COMMENT '创建人',
+            `CREATE_TIME` datetime NOT NULL COMMENT '创建时间',
+            `ROOT_ORG_ID` varchar(50) NOT NULL COMMENT '所属顶级组织ID',
+            PRIMARY KEY (`USE_TIME_STATISTICS_ID`) USING BTREE
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='申报用时统计表（统计办理时限延期最长和办理时限压缩最短的申报）';
+        </sql>
+    </changeSet>
+    <changeSet id="201910291019" author="zhangwn" failOnError="false">
+        <comment>效能督查统计相关表</comment>
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            create table if not exists `aea_ana_proj_statistics` (
+            `PROJ_STATISTICS_ID` varchar(50) NOT NULL COMMENT '主键',
+            `STATISTICS_RECORD_ID` varchar(50) NOT NULL COMMENT '数据生成记录表ID',
+            `REGION_ID` varchar(50) NOT NULL COMMENT '行政区划ID（市级和区县级以下的需要换算成市级和区县级）',
+            `REGION_NAME` varchar(200) NOT NULL COMMENT '行政区划名称',
+            `ALL_PARALLEL_COUNT` int(11) NOT NULL COMMENT '全并联项目数',
+            `PART_PARALLEL_COUNT` int(11) NOT NULL COMMENT '部分并联项目数',
+            `NO_PARALLEL_COUNT` int(11) NOT NULL COMMENT '无并联项目数',
+            `SHENPI_COUNT` int(11) NOT NULL COMMENT '审批项目数',
+            `HEZHUN_COUNT` int(11) NOT NULL COMMENT '核准项目数',
+            `BEIAN_COUNT` int(11) NOT NULL COMMENT '备案项目数',
+            `ONE_STAGE_COUNT` int(11) NOT NULL COMMENT '1阶段项目数',
+            `TWO_STAGE_COUNT` int(11) NOT NULL COMMENT '2阶段项目数',
+            `THREE_STAGE_COUNT` int(11) NOT NULL COMMENT '3阶段项目数',
+            `FOUR_STAGE_COUNT` int(11) NOT NULL COMMENT '4阶段项目数',
+            `STATISTICS_DATE` date NOT NULL COMMENT '统计数据日期，不是创建日期（yyyy-MM-dd）',
+            `ROOT_ORG_ID` varchar(50) NOT NULL COMMENT '所属顶级组织ID',
+            PRIMARY KEY (`PROJ_STATISTICS_ID`) USING BTREE
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='项目统计表';
+        </sql>
+    </changeSet>
+
+    <changeSet id="201910291020" author="zhangwn" failOnError="false">
+        <comment>效能督查统计相关表</comment>
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            INSERT INTO `aea_ana_report` (`REPORT_ID`, `TABLE_NAME`, `REPORT_NAME`, `REPORT_TYPE`, `MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `ROOT_ORG_ID`) VALUES ('0001', 'aea_ana_org_day_statistics', '部门日办件统计表', 'd', NULL, 'htry', '2019-09-04 15:00:36', NULL, NULL, '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `aea_ana_report` (`REPORT_ID`, `TABLE_NAME`, `REPORT_NAME`, `REPORT_TYPE`, `MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `ROOT_ORG_ID`) VALUES ('0002', 'aea_ana_org_week_statistics', '部门周办件统计表', 'w', NULL, 'htry', '2019-09-04 15:00:36', NULL, NULL, '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `aea_ana_report` (`REPORT_ID`, `TABLE_NAME`, `REPORT_NAME`, `REPORT_TYPE`, `MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `ROOT_ORG_ID`) VALUES ('0003', 'aea_ana_org_month_statistics', '部门月办件统计表', 'm', NULL, 'htry', '2019-09-04 15:00:36', NULL, NULL, '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `aea_ana_report` (`REPORT_ID`, `TABLE_NAME`, `REPORT_NAME`, `REPORT_TYPE`, `MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `ROOT_ORG_ID`) VALUES ('0004', 'aea_ana_org_year_statistics', '部门年办件统计表', 'y', NULL, 'htry', '2019-09-04 15:00:36', NULL, NULL, '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `aea_ana_report` (`REPORT_ID`, `TABLE_NAME`, `REPORT_NAME`, `REPORT_TYPE`, `MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `ROOT_ORG_ID`) VALUES ('0005', 'aea_ana_org_use_time_statistics', '办件用时统计表', 'm', NULL, 'htry', '2019-09-21 14:46:13', NULL, NULL, '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `aea_ana_report` (`REPORT_ID`, `TABLE_NAME`, `REPORT_NAME`, `REPORT_TYPE`, `MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `ROOT_ORG_ID`) VALUES ('0011', 'aea_ana_theme_day_statistics', '主题日办件统计表', 'd', NULL, 'htry', '2019-09-04 15:00:36', NULL, NULL, '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `aea_ana_report` (`REPORT_ID`, `TABLE_NAME`, `REPORT_NAME`, `REPORT_TYPE`, `MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `ROOT_ORG_ID`) VALUES ('0012', 'aea_ana_theme_week_statistics', '主题周办件统计表', 'w', NULL, 'htry', '2019-09-04 15:00:36', NULL, NULL, '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `aea_ana_report` (`REPORT_ID`, `TABLE_NAME`, `REPORT_NAME`, `REPORT_TYPE`, `MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `ROOT_ORG_ID`) VALUES ('0013', 'aea_ana_theme_month_statistics', '主题月办件统计表', 'm', NULL, 'htry', '2019-09-04 15:00:36', NULL, NULL, '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `aea_ana_report` (`REPORT_ID`, `TABLE_NAME`, `REPORT_NAME`, `REPORT_TYPE`, `MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `ROOT_ORG_ID`) VALUES ('0014', 'aea_ana_theme_year_statistics', '主题年办件统计表', 'y', NULL, 'htry', '2019-09-04 15:00:36', NULL, NULL, '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `aea_ana_report` (`REPORT_ID`, `TABLE_NAME`, `REPORT_NAME`, `REPORT_TYPE`, `MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `ROOT_ORG_ID`) VALUES ('2001', 'aea_ana_win_day_statistics', '窗口日申报统计表', 'd', NULL, 'htry', '2019-09-04 15:00:36', NULL, NULL, '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `aea_ana_report` (`REPORT_ID`, `TABLE_NAME`, `REPORT_NAME`, `REPORT_TYPE`, `MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `ROOT_ORG_ID`) VALUES ('2002', 'aea_ana_win_week_statistics', '窗口周申报统计表', 'w', NULL, 'htry', '2019-09-04 15:00:36', NULL, NULL, '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `aea_ana_report` (`REPORT_ID`, `TABLE_NAME`, `REPORT_NAME`, `REPORT_TYPE`, `MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `ROOT_ORG_ID`) VALUES ('2003', 'aea_ana_win_month_statistics', '窗口月申报统计表', 'm', NULL, 'htry', '2019-09-04 15:00:36', NULL, NULL, '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `aea_ana_report` (`REPORT_ID`, `TABLE_NAME`, `REPORT_NAME`, `REPORT_TYPE`, `MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `ROOT_ORG_ID`) VALUES ('2004', 'aea_ana_win_year_statistics', '窗口年申报统计表', 'y', NULL, 'htry', '2019-09-04 15:00:36', NULL, NULL, '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+        </sql>
+    </changeSet>
+</databaseChangeLog>

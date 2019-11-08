@@ -1,0 +1,236 @@
+<div id="inServiceProject" class="box normal-module-box" v-cloak v-loading.fullscreen.lock="mloading">
+    <h2 class="box-tit">服务中项目</h2>
+    <!-- 服务的项目列表 -->
+    <div class="pandel" v-if="!isProjectServiceDetail">
+        <el-row class="mt20">
+            项目名称：
+            <el-input class="inlineblock-midd label-line" placeholder="请输入要查询的项目名称" v-model="projectCheckData.keyword">
+            </el-input>
+        </el-row>
+        <el-row class="mt20">
+            服务类型：
+            <el-select placeholder="请选择" v-model="projectCheckData.serviceType">
+                <el-option v-for="item in serviceTypeOptions" :key="item.serviceId" :label="item.serviceName"
+                    :value="item.serviceId">
+                </el-option>
+            </el-select>
+            <span class="ml20">选取方式：</span>
+            <el-select placeholder="请选择" v-model="projectCheckData.biddingType">
+                <el-option v-for="item in selectionMethodOptions" :key="item.value" :label="item.label"
+                    :value="item.value">
+                </el-option>
+            </el-select>
+            <el-button class="ml20" type="primary" size="medium" @click="checkProjectList">查询</el-button>
+        </el-row>
+        <el-row class="mt20" style="display: none;">
+            项目状态：
+            <el-select placeholder="请选择" v-model="projectCheckData.auditFlag">
+                <el-option v-for="item in projectStatusOptions" :key="item.auditState" :label="item.itemName"
+                    :value="item.auditState">
+                </el-option>
+            </el-select>
+
+        </el-row>
+        <el-table :data="projectList" class="scrollable mt20" style="width: 100%;"
+            :header-cell-style="{background:'#f7f8fa'}">
+            <el-table-column label="序号" width="55">
+                <template scope="scope">
+                    {{scope.$index+1}}
+                </template>
+            </el-table-column>
+            <el-table-column label="项目名称">
+                <template scope="scope">
+                    <a class="a-color4879E4" href="javascript:;"
+                        @click="showProjectDetail(scope.row)">{{scope.row.projName}}</a>
+                </template>
+            </el-table-column>
+            <el-table-column prop="serviceName" label="服务类型">
+            </el-table-column>
+            <el-table-column label="状态">
+                <template scope="scope">
+                    <span>{{scope.row.auditFlag | auditFlagFormat}}</span>
+                </template>
+            </el-table-column>
+            <el-table-column prop="" label="选取方式">
+                <template scope="scope">
+                    <span>{{scope.row.biddingType | biddingTypeFormat}}</span>
+                </template>
+            </el-table-column>
+            <el-table-column label="更新时间">
+                <template scope="scope">
+                    <span>{{scope.row.modifyTime | dateFormat('y-m-d hh:mm:ss')}}</span>
+                </template>
+            </el-table-column>
+        </el-table>
+        <el-pagination background align="right" @size-change="listSizeChange" @current-change="listPageChange"
+            :page-sizes="[10, 20, 30, 50]" :page-size="projectCheckData.pageSize"
+            :current-page="projectCheckData.pageNum" layout="total,sizes, prev, pager, next, jumper"
+            :total="projectTotal" v-show="projectTotal>10">
+        </el-pagination>
+    </div>
+
+    <!-- 详情 -->
+    <div class="pandel module-edit-pandel project-detail-pandel mt20" v-else>
+
+    </div>
+</div>
+<script>
+    // var ctx = "http://192.168.15.4:8084/aplanmis-mall/" //健锋
+    var module1 = new Vue({
+        el: '#inServiceProject',
+        mixins: [mixins],
+        data: function () {
+            return {
+                // 页面loading
+                mloading: false,
+
+                // 当前是否中选的项目详情
+                isProjectServiceDetail: false,
+
+                // 服务类型下拉列表
+                serviceTypeOptions: [],
+                // 选取方式下拉列表
+                selectionMethodOptions: [{
+                    label: '随机中标',
+                    value: 1
+                }, {
+                    label: '直接选取',
+                    value: 2
+                }, {
+                    label: '网上竞价',
+                    value: 3
+                }],
+
+                // 项目状态下拉选项
+                projectStatusOptions: [{
+                    auditState: 1,
+                    itemName: '服务中'
+                }, {
+                    auditState: 2,
+                    itemName: '服务完成'
+                }, {
+                    auditState: 3,
+                    itemName: '服务终止'
+                }],
+                // 服务的项目列表
+                projectList: [],
+                // 服务的项目列表-查询参数
+                projectCheckData: {
+                    pageSize: 10,
+                    pageNum: 1,
+                    keyword: '', //项目名称
+                    biddingType: '', //选取方式
+                    serviceType: '', //服务类型
+                    // auditFlag: '', //项目状态
+                    publishUnitInfoId: 'e6b0fbdc-0467-47c8-9907-ba4aa54103bc', //企业id
+                    linkmanInfoId: '0283d833-6556-4c8f-aa7a-2f7746643885', //登陆后的userid
+                    // publishUnitInfoId: '', //企业id
+                    // linkmanInfoId: '', //登陆后的userid
+                    proType: 9, //1为所有项目，2为待处理，3为待审核，4为待发布，5为已退回，6为已发布，7为已中选，8为无效，9为服务中，10为已完成
+                },
+                // 服务的项目列表-总数
+                projectTotal: 0,
+
+            }
+        },
+        methods: {
+            init: function () {
+                this.fetchList();
+                this.fetchServiceTypeOptions();
+            },
+            // 获取服务类型下拉列表options
+            fetchServiceTypeOptions: function () {
+                var ts = this,
+                    _getData = {};
+                _getData.unitInfoId = JSON.parse(localStorage.getItem('loginInfo')).unitId;
+                ts.mloading = true;
+                request('', {
+                    url: ctx + 'supermarket/purchase/getServiceType',
+                    type: 'get',
+                    data: _getData,
+                }, function (res) {
+                    ts.mloading = false;
+                    if (res.success) {
+                        ts.serviceTypeOptions = res.content;
+                    } else {
+                        ts.$message({
+                            message: '加载失败',
+                            type: 'error'
+                        });
+                    }
+                }, function (msg) {
+                    ts.mloading = false;
+                    ts.$message({
+                        message: '加载失败',
+                        type: 'error'
+                    });
+                });
+            },
+            // 获取项目的项目列表
+            fetchList: function () {
+                var ts = this;
+                // ts.projectCheckData.publishUnitInfoId = JSON.parse(localStorage.getItem('loginInfo'))
+                //     .unitId;
+                // ts.projectCheckData.linkmanInfoId = JSON.parse(localStorage.getItem('loginInfo'))
+                //     .userId;
+                ts.mloading = true;
+                request('', {
+                    url: ctx + 'supermarket/purchase/listProjPurchase',
+                    type: 'get',
+                    data: ts.projectCheckData,
+                }, function (res) {
+                    ts.mloading = false;
+                    if (res.success) {
+                        ts.projectList = res.content.rows;
+                        ts.projectTotal = res.content.total;
+                    } else {
+                        ts.$message({
+                            message: '加载失败',
+                            type: 'error'
+                        });
+                    }
+                }, function (msg) {
+                    ts.mloading = false;
+                    ts.$message({
+                        message: '加载失败',
+                        type: 'error'
+                    });
+                });
+            },
+            // 查询-中选的项目
+            checkProjectList: function () {
+                this.projectCheckData.pageNum = 1;
+                this.fetchList();
+            },
+            // 列表当前页change
+            listPageChange: function (val) {
+                this.projectCheckData.pageNum = val;
+                this.fetchList();
+            },
+            // 列表页面大小change
+            listSizeChange: function (val) {
+                this.projectCheckData.pageSize = val;
+                this.fetchList();
+            },
+
+        },
+        mounted: function () {
+            this.init();
+        },
+        filters: {
+            // 状态format
+            auditFlagFormat: function (val) {
+                if (!val) return '暂无';
+                var _valCnList = ['未提交', '服务中', '服务完成', '服务中止', '审核中', '退回', '报名中', '选取中', '选取开始', '已选取',
+                    '无效', '待选取', '已过时'
+                ];
+                return _valCnList[parseInt(val)];
+            },
+            //  抽取方式
+            biddingTypeFormat: function (val) {
+                if (!val) return '暂无';
+                return val == 1 ? '随机中标' : (val == 2 ? '直接选取' : '网上竞价');
+            },
+        },
+    })
+</script>

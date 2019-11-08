@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by jjt    2018-11-17 17:09:21 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaItemGuideExtendMapper" >
+    <sql id="allColumns" >
+        ID  id,
+        ITEM_VER_ID  itemVerId,
+        HANDLE_AREA  handleArea,
+        HANDLE_AREA_TEXT  handleAreaText,
+        IS_EXPRESS  isExpress,
+        IS_EXPRESS_TEXT  isExpressText,
+        IS_LIMIT  isLimit,
+        IS_LIMIT_TEXT  isLimitText,
+        IS_SCHEDULE  isSchedule,
+        IS_SCHEDULE_TEXT  isScheduleText,
+        LIMIT_SCENE_NUM  limitSceneNum,
+        LIMIT_SCENE_NUM_TEXT  limitSceneNumText,
+        OTHER_DEPT  otherDept,
+        SERVICE_TYPE  serviceType,
+        SERVICE_TYPE_TEXT  serviceTypeText,
+        SQRQL  sqrql,
+        SQRYW  sqryw,
+        TASK_GUID  taskGuid,
+        XSNR  xsnr,
+        XTMC  xtmc,
+        XZFYBM  xzfybm,
+        XZFYDH  xzfydh,
+        XZFYDZ  xzfydz,
+        XZFYWZ  xzfywz,
+        XZSSBM  xzssbm,
+        XZSSDH  xzssdh,
+        XZSSDZ  xzssdz,
+        XZSSWZ  xzsswz,
+        ZXCKADDRESS  zxckaddress,
+        SSJGWZ  ssjgwz,
+        ZXZWWBWZ  zxzwwbwz,
+        ZXWXH  zxwxh,
+        ZXDZYX  zxdzyx,
+        THEME_NATURAL_TYPE  themeNaturalType,
+        THEME_NATURAL_TYPE_TEXT themeNaturalTypeText,
+        ZZZ_SQNR  zzzSqnr,
+        RESULT_NAME  resultName,
+        ZZZ_RESULT_GUID  zzzResultGuid,
+        ZXXHYJDZ  zxxhyjdz
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaItemGuideExtendById" resultType="AeaItemGuideExtend" >
+        select
+           <include refid="allColumns"/>
+        from AEA_ITEM_GUIDE_EXTEND
+        where ID = #{id}
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaItemGuideExtend" resultType="AeaItemGuideExtend" >
+        select
+           <include refid="allColumns"/>
+        from AEA_ITEM_GUIDE_EXTEND
+        <where>
+            <if test="id != null" >
+                AND    ID = #{id}
+            </if>
+            <if test="itemVerId != null" >
+                AND    ITEM_VER_ID = #{itemVerId}
+            </if>
+            <if test="handleArea != null" >
+                AND    HANDLE_AREA = #{handleArea}
+            </if>
+            <if test="handleAreaText != null" >
+                AND    HANDLE_AREA_TEXT = #{handleAreaText}
+            </if>
+            <if test="isExpress != null" >
+                AND    IS_EXPRESS = #{isExpress}
+            </if>
+            <if test="isExpressText != null" >
+                AND    IS_EXPRESS_TEXT = #{isExpressText}
+            </if>
+            <if test="isLimit != null" >
+                AND    IS_LIMIT = #{isLimit}
+            </if>
+            <if test="isLimitText != null" >
+                AND    IS_LIMIT_TEXT = #{isLimitText}
+            </if>
+            <if test="isSchedule != null" >
+                AND    IS_SCHEDULE = #{isSchedule}
+            </if>
+            <if test="isScheduleText != null" >
+                AND    IS_SCHEDULE_TEXT = #{isScheduleText}
+            </if>
+            <if test="limitSceneNum != null" >
+                AND    LIMIT_SCENE_NUM = #{limitSceneNum}
+            </if>
+            <if test="limitSceneNumText != null" >
+                AND    LIMIT_SCENE_NUM_TEXT = #{limitSceneNumText}
+            </if>
+            <if test="otherDept != null" >
+                AND    OTHER_DEPT = #{otherDept}
+            </if>
+            <if test="serviceType != null" >
+                AND    SERVICE_TYPE = #{serviceType}
+            </if>
+            <if test="serviceTypeText != null" >
+                AND    SERVICE_TYPE_TEXT = #{serviceTypeText}
+            </if>
+            <if test="sqrql != null" >
+                AND    SQRQL = #{sqrql}
+            </if>
+            <if test="sqryw != null" >
+                AND    SQRYW = #{sqryw}
+            </if>
+            <if test="taskGuid != null" >
+                AND    TASK_GUID = #{taskGuid}
+            </if>
+            <if test="xsnr != null" >
+                AND    XSNR = #{xsnr}
+            </if>
+            <if test="xtmc != null" >
+                AND    XTMC = #{xtmc}
+            </if>
+            <if test="xzfybm != null" >
+                AND    XZFYBM = #{xzfybm}
+            </if>
+            <if test="xzfydh != null" >
+                AND    XZFYDH = #{xzfydh}
+            </if>
+            <if test="xzfydz != null" >
+                AND    XZFYDZ = #{xzfydz}
+            </if>
+            <if test="xzfywz != null" >
+                AND    XZFYWZ = #{xzfywz}
+            </if>
+            <if test="xzssbm != null" >
+                AND    XZSSBM = #{xzssbm}
+            </if>
+            <if test="xzssdh != null" >
+                AND    XZSSDH = #{xzssdh}
+            </if>
+            <if test="xzssdz != null" >
+                AND    XZSSDZ = #{xzssdz}
+            </if>
+            <if test="xzsswz != null" >
+                AND    XZSSWZ = #{xzsswz}
+            </if>
+            <if test="zxckaddress != null" >
+                AND    ZXCKADDRESS = #{zxckaddress}
+            </if>
+            <if test="ssjgwz != null" >
+                AND    SSJGWZ = #{ssjgwz}
+            </if>
+            <if test="zxzwwbwz != null" >
+                AND    ZXZWWBWZ = #{zxzwwbwz}
+            </if>
+            <if test="zxwxh != null" >
+                AND    ZXWXH = #{zxwxh}
+            </if>
+            <if test="zxdzyx != null" >
+                AND    ZXDZYX = #{zxdzyx}
+            </if>
+            <if test="themeNaturalType != null" >
+                AND    THEME_NATURAL_TYPE = #{themeNaturalType}
+            </if>
+            <if test="themeNaturalTypeText != null" >
+                AND    THEME_NATURAL_TYPE_TEXT = #{themeNaturalTypeText}
+            </if>
+            <if test="zzzSqnr != null" >
+                AND    ZZZ_SQNR = #{zzzSqnr}
+            </if>
+            <if test="resultName != null" >
+                AND    RESULT_NAME = #{resultName}
+            </if>
+            <if test="zzzResultGuid != null" >
+                AND    ZZZ_RESULT_GUID = #{zzzResultGuid}
+            </if>
+            <if test="zxxhyjdz != null" >
+                AND    ZXXHYJDZ = #{zxxhyjdz}
+            </if>
+            <if test="rootOrgId != null" >
+                AND    ROOT_ORG_ID = #{rootOrgId}
+            </if>
+        </where>
+    </select>
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaItemGuideExtend" parameterType="AeaItemGuideExtend" >
+        insert into AEA_ITEM_GUIDE_EXTEND (
+            ID  ,ITEM_VER_ID  ,HANDLE_AREA  ,HANDLE_AREA_TEXT  ,IS_EXPRESS  ,IS_EXPRESS_TEXT  ,IS_LIMIT  ,IS_LIMIT_TEXT  ,IS_SCHEDULE  ,IS_SCHEDULE_TEXT  ,LIMIT_SCENE_NUM  ,LIMIT_SCENE_NUM_TEXT  ,OTHER_DEPT  ,SERVICE_TYPE  ,SERVICE_TYPE_TEXT  ,SQRQL  ,SQRYW  ,TASK_GUID  ,XSNR  ,XTMC  ,XZFYBM  ,XZFYDH  ,XZFYDZ  ,XZFYWZ  ,XZSSBM  ,XZSSDH  ,XZSSDZ  ,XZSSWZ  ,ZXCKADDRESS  ,SSJGWZ  ,ZXZWWBWZ  ,ZXWXH  ,ZXDZYX ,THEME_NATURAL_TYPE ,THEME_NATURAL_TYPE_TEXT ,ZZZ_SQNR ,RESULT_NAME ,ZZZ_RESULT_GUID ,ZXXHYJDZ, ROOT_ORG_ID
+        )  values  (
+            #{id},#{itemVerId},#{handleArea},#{handleAreaText},#{isExpress},#{isExpressText},#{isLimit},#{isLimitText},#{isSchedule},#{isScheduleText},#{limitSceneNum},#{limitSceneNumText},#{otherDept},#{serviceType},#{serviceTypeText},#{sqrql},#{sqryw},#{taskGuid},#{xsnr},#{xtmc},#{xzfybm},#{xzfydh},#{xzfydz},#{xzfywz},#{xzssbm},#{xzssdh},#{xzssdz},#{xzsswz},#{zxckaddress},#{ssjgwz},#{zxzwwbwz},#{zxwxh},  #{zxdzyx} , #{themeNaturalType} ,#{themeNaturalTypeText} ,#{zzzSqnr},#{resultName},#{zzzResultGuid},#{zxxhyjdz},#{rootOrgId}
+        )
+    </insert>
+
+    <update id="updateAeaItemGuideExtend" parameterType="AeaItemGuideExtend" >
+        update AEA_ITEM_GUIDE_EXTEND
+        <set >
+            <if test="id != null" >
+                ID = #{id},
+            </if>
+            <if test="itemVerId != null" >
+                ITEM_VER_ID = #{itemVerId},
+            </if>
+            <if test="handleArea != null" >
+                HANDLE_AREA = #{handleArea},
+            </if>
+            <if test="handleAreaText != null" >
+                HANDLE_AREA_TEXT = #{handleAreaText},
+            </if>
+            <if test="isExpress != null" >
+                IS_EXPRESS = #{isExpress},
+            </if>
+            <if test="isExpressText != null" >
+                IS_EXPRESS_TEXT = #{isExpressText},
+            </if>
+            <if test="isLimit != null" >
+                IS_LIMIT = #{isLimit},
+            </if>
+            <if test="isLimitText != null" >
+                IS_LIMIT_TEXT = #{isLimitText},
+            </if>
+            <if test="isSchedule != null" >
+                IS_SCHEDULE = #{isSchedule},
+            </if>
+            <if test="isScheduleText != null" >
+                IS_SCHEDULE_TEXT = #{isScheduleText},
+            </if>
+            <if test="limitSceneNum != null" >
+                LIMIT_SCENE_NUM = #{limitSceneNum},
+            </if>
+            <if test="limitSceneNumText != null" >
+                LIMIT_SCENE_NUM_TEXT = #{limitSceneNumText},
+            </if>
+            <if test="otherDept != null" >
+                OTHER_DEPT = #{otherDept},
+            </if>
+            <if test="serviceType != null" >
+                SERVICE_TYPE = #{serviceType},
+            </if>
+            <if test="serviceTypeText != null" >
+                SERVICE_TYPE_TEXT = #{serviceTypeText},
+            </if>
+            <if test="sqrql != null" >
+                SQRQL = #{sqrql},
+            </if>
+            <if test="sqryw != null" >
+                SQRYW = #{sqryw},
+            </if>
+            <if test="taskGuid != null" >
+                TASK_GUID = #{taskGuid},
+            </if>
+            <if test="xsnr != null" >
+                XSNR = #{xsnr},
+            </if>
+            <if test="xtmc != null" >
+                XTMC = #{xtmc},
+            </if>
+            <if test="xzfybm != null" >
+                XZFYBM = #{xzfybm},
+            </if>
+            <if test="xzfydh != null" >
+                XZFYDH = #{xzfydh},
+            </if>
+            <if test="xzfydz != null" >
+                XZFYDZ = #{xzfydz},
+            </if>
+            <if test="xzfywz != null" >
+                XZFYWZ = #{xzfywz},
+            </if>
+            <if test="xzssbm != null" >
+                XZSSBM = #{xzssbm},
+            </if>
+            <if test="xzssdh != null" >
+                XZSSDH = #{xzssdh},
+            </if>
+            <if test="xzssdz != null" >
+                XZSSDZ = #{xzssdz},
+            </if>
+            <if test="xzsswz != null" >
+                XZSSWZ = #{xzsswz},
+            </if>
+            <if test="zxckaddress != null" >
+                ZXCKADDRESS = #{zxckaddress},
+            </if>
+            <if test="ssjgwz != null" >
+                SSJGWZ = #{ssjgwz},
+            </if>
+            <if test="zxzwwbwz != null" >
+                ZXZWWBWZ = #{zxzwwbwz},
+            </if>
+            <if test="zxwxh != null" >
+                ZXWXH = #{zxwxh},
+            </if>
+            <if test="zxdzyx != null" >
+                ZXDZYX = #{zxdzyx},
+            </if>
+            <if test="themeNaturalType != null" >
+                THEME_NATURAL_TYPE = #{themeNaturalType},
+            </if>
+            <if test="themeNaturalTypeText != null" >
+                THEME_NATURAL_TYPE_TEXT = #{themeNaturalTypeText},
+            </if>
+            <if test="zzzSqnr != null" >
+                ZZZ_SQNR = #{zzzSqnr},
+            </if>
+            <if test="resultName != null" >
+                RESULT_NAME = #{resultName},
+            </if>
+            <if test="zzzResultGuid != null" >
+                ZZZ_RESULT_GUID = #{zzzResultGuid},
+            </if>
+            <if test="zxxhyjdz != null" >
+                ZXXHYJDZ = #{zxxhyjdz},
+            </if>
+            <if test="rootOrgId != null" >
+                ROOT_ORG_ID = #{rootOrgId},
+            </if>
+        </set>
+        where ID = #{id}
+    </update>
+
+    <!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaItemGuideExtend">
+        delete from   AEA_ITEM_GUIDE_EXTEND where ID = #{id}
+    </delete>
+
+    <delete id="deleteGuideExtendByItemVerId">
+        delete from  AEA_ITEM_GUIDE_EXTEND where ITEM_VER_ID = #{itemVerId} and ROOT_ORG_ID = #{rootOrgId}
+    </delete>
+
+</mapper>

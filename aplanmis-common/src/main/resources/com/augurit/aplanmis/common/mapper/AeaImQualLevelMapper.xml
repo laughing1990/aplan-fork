@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by admin    2019-06-11 11:11:43 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaImQualLevelMapper" >
+<!--1 返回所有字段的SQL字句 -->
+<sql id="allColumns" >
+    QUAL_LEVEL_ID  qualLevelId,
+    QUAL_LEVEL_CODE  qualLevelCode,
+    QUAL_LEVEL_NAME  qualLevelName,
+    PARENT_QUAL_LEVEL_ID  parentQualLevelId,
+    QUAL_LEVEL_SEQ  qualLevelSeq,
+    PRIORITY  priority,
+    IS_DELETE  isDelete,
+    CREATER  creater,
+    CREATE_TIME  createTime,
+    MEMO  memo,
+    ROOT_ORG_ID rootOrgId
+    </sql>
+
+<!--2 根据主键ID查询单个实体 -->
+<select id="getAeaImQualLevelById" resultType="AeaImQualLevel" >
+    select
+    <include refid="allColumns"/>
+    from    AEA_IM_QUAL_LEVEL
+    where    QUAL_LEVEL_ID = #{id}
+</select>
+
+<!--3 根据条件查询实体list -->
+    <select id="listAeaImQualLevel" resultType="AeaImQualLevel" >
+        select
+        <include refid="allColumns"/>
+        from    AEA_IM_QUAL_LEVEL
+    <where>
+        <if test="qualLevelId != null" >
+        AND    QUAL_LEVEL_ID = #{qualLevelId}
+        </if>
+        <if test="qualLevelCode != null" >
+        AND    QUAL_LEVEL_CODE = #{qualLevelCode}
+        </if>
+        <if test="qualLevelName != null" >
+        AND    QUAL_LEVEL_NAME = #{qualLevelName}
+        </if>
+        <if test="parentQualLevelId != null and parentQualLevelId != ''" >
+        AND    PARENT_QUAL_LEVEL_ID = #{parentQualLevelId}
+        </if>
+        <if test="qualLevelSeq != null" >
+        AND    QUAL_LEVEL_SEQ = #{qualLevelSeq}
+        </if>
+        <if test="priority != null" >
+        AND    PRIORITY = #{priority}
+        </if>
+        <if test="creater != null" >
+        AND    CREATER = #{creater}
+        </if>
+        <if test="createTime != null" >
+        AND    CREATE_TIME = #{createTime}
+        </if>
+        <if test="memo != null" >
+        AND    MEMO = #{memo}
+        </if>
+        <if test="rootOrgId != null" >
+            AND    ROOT_ORG_ID = #{rootOrgId}
+        </if>
+        AND    IS_DELETE = '0'
+        ORDER BY PRIORITY ASC
+    </where>
+    </select>
+<!--4 根据条件查询实体list,返回分页对象 -->
+
+<!--5 新增实体对象 -->
+<insert id="insertAeaImQualLevel" parameterType="AeaImQualLevel" >
+    insert into AEA_IM_QUAL_LEVEL (
+QUAL_LEVEL_ID  ,QUAL_LEVEL_CODE  ,QUAL_LEVEL_NAME  ,PARENT_QUAL_LEVEL_ID  ,QUAL_LEVEL_SEQ  ,PRIORITY  ,IS_DELETE  ,CREATER  ,CREATE_TIME  ,MEMO ,ROOT_ORG_ID
+    )  values  (
+#{qualLevelId},#{qualLevelCode},#{qualLevelName},#{parentQualLevelId},#{qualLevelSeq},#{priority},#{isDelete},#{creater},#{createTime},  #{memo},#{rootOrgId}
+    )
+</insert>
+<!--6 修改实体对象 -->
+<update id="updateAeaImQualLevel" parameterType="AeaImQualLevel" >
+    update AEA_IM_QUAL_LEVEL
+    <set >
+        <if test="qualLevelId != null" >
+        QUAL_LEVEL_ID = #{qualLevelId},
+        </if>
+        <if test="qualLevelCode != null" >
+        QUAL_LEVEL_CODE = #{qualLevelCode},
+        </if>
+        <if test="qualLevelName != null" >
+        QUAL_LEVEL_NAME = #{qualLevelName},
+        </if>
+        <if test="parentQualLevelId != null" >
+        PARENT_QUAL_LEVEL_ID = #{parentQualLevelId},
+        </if>
+        <if test="qualLevelSeq != null" >
+        QUAL_LEVEL_SEQ = #{qualLevelSeq},
+        </if>
+        <if test="priority != null" >
+        PRIORITY = #{priority},
+        </if>
+        <if test="isDelete != null" >
+        IS_DELETE = #{isDelete},
+        </if>
+        <if test="creater != null" >
+        CREATER = #{creater},
+        </if>
+        <if test="createTime != null" >
+        CREATE_TIME = #{createTime},
+        </if>
+        <if test="memo != null" >
+        MEMO = #{memo},
+        </if>
+        <if test="rootOrgId != null" >
+            ROOT_ORG_ID = #{rootOrgId},
+        </if>
+    </set>
+    where QUAL_LEVEL_ID = #{qualLevelId}
+</update>
+<!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaImQualLevel">
+        delete from   AEA_IM_QUAL_LEVEL
+        where
+    QUAL_LEVEL_ID = #{id}
+    </delete>
+<!--8 删除实体对象列表,根据主键ID列表 -->
+<!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaImQualLevel" id="AeaImQualLevelMap">
+        <id property="qualLevelId" column="QUAL_LEVEL_ID"/>
+        <result property="qualLevelCode" column="QUAL_LEVEL_CODE"/>
+        <result property="qualLevelName" column="QUAL_LEVEL_NAME"/>
+        <result property="parentQualLevelId" column="PARENT_QUAL_LEVEL_ID"/>
+        <result property="qualLevelSeq" column="QUAL_LEVEL_SEQ"/>
+        <result property="priority" column="PRIORITY"/>
+        <result property="isDelete" column="IS_DELETE"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="memo" column="MEMO"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+    </resultMap>
+</mapper>

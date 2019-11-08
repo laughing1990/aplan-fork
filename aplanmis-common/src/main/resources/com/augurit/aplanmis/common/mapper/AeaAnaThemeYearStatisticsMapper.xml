@@ -1,0 +1,481 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by 98213    2019-09-05 10:35:36 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaAnaThemeYearStatisticsMapper">
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns">
+    THEME_YEAR_STATISTICS_ID  themeYearStatisticsId,
+    STATISTICS_RECORD_ID  statisticsRecordId,
+    THEME_ID  themeId,
+    THEME_NAME  themeName,
+    APPLY_RECORD_ID  applyRecordId,
+    APPLY_RECORD_NAME  applyRecordName,
+    DYBZSPJDXH dybzspjdxh,
+    IS_NODE isNode,
+    IS_PARALLEL isParallel,
+    APPLYINST_SOURCE applyinstSource,
+    YEAR_APPLY_COUNT  yearApplyCount,
+    ALL_APPLY_COUNT  allApplyCount,
+    APPLY_LRR  applyLrr,
+    ALL_IN_SUPPLEMENT_COUNT  allInSupplementCount,
+    IN_SUPPLEMENT_LRR  inSupplementLrr,
+    ALL_SUPPLEMENTED_COUNT  allSupplementedCount,
+    SUPPLEMENTED_LRR  supplementedLrr,
+    YEAR_PRE_ACCEPTANCE_COUNT  yearPreAcceptanceCount,
+    ALL_PRE_ACCEPTANCE_COUNT  allPreAcceptanceCount,
+    PRE_ACCEPTANCE_LRR  preAcceptanceLrr,
+    YEAR_OUT_SCOPE_COUNT  yearOutScopeCount,
+    ALL_OUT_SCOPE_COUNT  allOutScopeCount,
+    OUT_SCOPE_LRR  outScopeLrr,
+    YEAR_COMPLETED_COUNT  yearCompletedCount,
+    ALL_COMPLETED_COUNT  allCompletedCount,
+    COMPLETED_LRR  completedLrr,
+    YEAR_OVER_TIME_COUNT  yearOverTimeCount,
+    ALL_OVER_TIME_COUNT  allOverTimeCount,
+    OVER_TIME_LRR  overTimeLrr,
+    ALL_PRE_ACCEPTANCE_RATE  allPreAcceptanceRate,
+    ALL_OUT_SCOPE_RATE  allOutScopeRate,
+    ALL_OVER_TIME_RATE  allOverTimeRate,
+    ALL_COMPLETED_RATE  allCompletedRate,
+    STATISTICS_START_DATE  statisticsStartDate,
+    STATISTICS_END_DATE  statisticsEndDate,
+    STATISTICS_YEAR  statisticsYear,
+    MODIFIER  modifier,
+    MODIFY_TIME  modifyTime,
+    ROOT_ORG_ID  rootOrgId
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaAnaThemeYearStatisticsById" resultType="AeaAnaThemeYearStatistics">
+        select
+        <include refid="allColumns"/>
+        from AEA_ANA_THEME_YEAR_STATISTICS
+        where THEME_YEAR_STATISTICS_ID = #{id}
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaAnaThemeYearStatistics" resultType="AeaAnaThemeYearStatistics">
+        select
+        <include refid="allColumns"/>
+        from AEA_ANA_THEME_YEAR_STATISTICS
+        <where>
+            <if test="themeYearStatisticsId != null">
+                AND THEME_YEAR_STATISTICS_ID = #{themeYearStatisticsId}
+            </if>
+            <if test="statisticsRecordId != null">
+                AND STATISTICS_RECORD_ID = #{statisticsRecordId}
+            </if>
+            <if test="themeId != null">
+                AND THEME_ID = #{themeId}
+            </if>
+            <if test="themeName != null">
+                AND THEME_NAME = #{themeName}
+            </if>
+            <if test="applyRecordId != null">
+                AND APPLY_RECORD_ID = #{applyRecordId}
+            </if>
+            <if test="applyRecordName != null">
+                AND APPLY_RECORD_NAME = #{applyRecordName}
+            </if>
+            <if test="dybzspjdxh != null">
+                AND DYBZSPJDXH = #{dybzspjdxh}
+            </if>
+            <if test="isNode != null">
+                AND IS_NODE = #{isNode}
+            </if>
+            <if test="isParallel != null">
+                AND IS_PARALLEL = #{isParallel}
+            </if>
+            <if test="applyinstSource != null">
+                AND APPLYINST_SOURCE = #{applyinstSource}
+            </if>
+            <if test="yearApplyCount != null">
+                AND YEAR_APPLY_COUNT = #{yearApplyCount}
+            </if>
+            <if test="allApplyCount != null">
+                AND ALL_APPLY_COUNT = #{allApplyCount}
+            </if>
+            <if test="applyLrr != null">
+                AND APPLY_LRR = #{applyLrr}
+            </if>
+            <if test="allInSupplementCount != null">
+                AND ALL_IN_SUPPLEMENT_COUNT = #{allInSupplementCount}
+            </if>
+            <if test="inSupplementLrr != null">
+                AND IN_SUPPLEMENT_LRR = #{inSupplementLrr}
+            </if>
+            <if test="allSupplementedCount != null">
+                AND ALL_SUPPLEMENTED_COUNT = #{allSupplementedCount}
+            </if>
+            <if test="supplementedLrr != null">
+                AND SUPPLEMENTED_LRR = #{supplementedLrr}
+            </if>
+            <if test="yearPreAcceptanceCount != null">
+                AND YEAR_PRE_ACCEPTANCE_COUNT = #{yearPreAcceptanceCount}
+            </if>
+            <if test="allPreAcceptanceCount != null">
+                AND ALL_PRE_ACCEPTANCE_COUNT = #{allPreAcceptanceCount}
+            </if>
+            <if test="preAcceptanceLrr != null">
+                AND PRE_ACCEPTANCE_LRR = #{preAcceptanceLrr}
+            </if>
+            <if test="yearOutScopeCount != null">
+                AND YEAR_OUT_SCOPE_COUNT = #{yearOutScopeCount}
+            </if>
+            <if test="allOutScopeCount != null">
+                AND ALL_OUT_SCOPE_COUNT = #{allOutScopeCount}
+            </if>
+            <if test="outScopeLrr != null">
+                AND OUT_SCOPE_LRR = #{outScopeLrr}
+            </if>
+            <if test="yearCompletedCount != null">
+                AND YEAR_COMPLETED_COUNT = #{yearCompletedCount}
+            </if>
+            <if test="allCompletedCount != null">
+                AND ALL_COMPLETED_COUNT = #{allCompletedCount}
+            </if>
+            <if test="completedLrr != null">
+                AND COMPLETED_LRR = #{completedLrr}
+            </if>
+            <if test="yearOverTimeCount != null">
+                AND YEAR_OVER_TIME_COUNT = #{yearOverTimeCount}
+            </if>
+            <if test="allOverTimeCount != null">
+                AND ALL_OVER_TIME_COUNT = #{allOverTimeCount}
+            </if>
+            <if test="overTimeLrr != null">
+                AND OVER_TIME_LRR = #{overTimeLrr}
+            </if>
+            <if test="allPreAcceptanceRate != null">
+                AND ALL_PRE_ACCEPTANCE_RATE = #{allPreAcceptanceRate}
+            </if>
+            <if test="allOutScopeRate != null">
+                AND ALL_OUT_SCOPE_RATE = #{allOutScopeRate}
+            </if>
+            <if test="allOverTimeRate != null">
+                AND ALL_OVER_TIME_RATE = #{allOverTimeRate}
+            </if>
+            <if test="allCompletedRate != null">
+                AND ALL_COMPLETED_RATE = #{allCompletedRate}
+            </if>
+            <if test="statisticsStartDate != null">
+                AND STATISTICS_START_DATE = #{statisticsStartDate}
+            </if>
+            <if test="statisticsEndDate != null">
+                AND STATISTICS_END_DATE = #{statisticsEndDate}
+            </if>
+            <if test="statisticsYear != null">
+                AND STATISTICS_YEAR = #{statisticsYear}
+            </if>
+            <if test="modifier != null">
+                AND MODIFIER = #{modifier}
+            </if>
+            <if test="modifyTime != null">
+                AND MODIFY_TIME = #{modifyTime}
+            </if>
+            <if test="rootOrgId != null">
+                AND ROOT_ORG_ID = #{rootOrgId}
+            </if>
+        </where>
+    </select>
+    <!--4 根据条件查询实体list,返回分页对象 -->
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaAnaThemeYearStatistics" parameterType="AeaAnaThemeYearStatistics">
+    insert into AEA_ANA_THEME_YEAR_STATISTICS (
+    THEME_YEAR_STATISTICS_ID  ,STATISTICS_RECORD_ID  ,THEME_ID  ,THEME_NAME  ,APPLY_RECORD_ID  ,APPLY_RECORD_NAME  ,DYBZSPJDXH ,IS_NODE,IS_PARALLEL,APPLYINST_SOURCE,YEAR_APPLY_COUNT  ,ALL_APPLY_COUNT  ,APPLY_LRR  ,ALL_IN_SUPPLEMENT_COUNT  ,IN_SUPPLEMENT_LRR  ,ALL_SUPPLEMENTED_COUNT  ,SUPPLEMENTED_LRR  ,YEAR_PRE_ACCEPTANCE_COUNT  ,ALL_PRE_ACCEPTANCE_COUNT  ,PRE_ACCEPTANCE_LRR  ,YEAR_OUT_SCOPE_COUNT  ,ALL_OUT_SCOPE_COUNT  ,OUT_SCOPE_LRR  ,YEAR_COMPLETED_COUNT  ,ALL_COMPLETED_COUNT  ,COMPLETED_LRR  ,YEAR_OVER_TIME_COUNT  ,ALL_OVER_TIME_COUNT  ,OVER_TIME_LRR  ,ALL_PRE_ACCEPTANCE_RATE  ,ALL_OUT_SCOPE_RATE  ,ALL_OVER_TIME_RATE  ,ALL_COMPLETED_RATE  ,STATISTICS_START_DATE  ,STATISTICS_END_DATE  ,STATISTICS_YEAR  ,MODIFIER  ,MODIFY_TIME  ,ROOT_ORG_ID
+        )  values  (
+    #{themeYearStatisticsId},#{statisticsRecordId},#{themeId},#{themeName},#{applyRecordId},#{applyRecordName},#{dybzspjdxh},#{isNode},#{isParallel},#{applyinstSource},#{yearApplyCount},#{allApplyCount},#{applyLrr},#{allInSupplementCount},#{inSupplementLrr},#{allSupplementedCount},#{supplementedLrr},#{yearPreAcceptanceCount},#{allPreAcceptanceCount},#{preAcceptanceLrr},#{yearOutScopeCount},#{allOutScopeCount},#{outScopeLrr},#{yearCompletedCount},#{allCompletedCount},#{completedLrr},#{yearOverTimeCount},#{allOverTimeCount},#{overTimeLrr},#{allPreAcceptanceRate},#{allOutScopeRate},#{allOverTimeRate},#{allCompletedRate},#{statisticsStartDate},#{statisticsEndDate},#{statisticsYear},#{modifier},#{modifyTime},  #{rootOrgId}
+        )
+    </insert>
+    <!--6 修改实体对象 -->
+    <update id="updateAeaAnaThemeYearStatistics" parameterType="AeaAnaThemeYearStatistics">
+        update AEA_ANA_THEME_YEAR_STATISTICS
+        <set>
+            <if test="themeYearStatisticsId != null">
+                THEME_YEAR_STATISTICS_ID = #{themeYearStatisticsId},
+            </if>
+            <if test="statisticsRecordId != null">
+                STATISTICS_RECORD_ID = #{statisticsRecordId},
+            </if>
+            <if test="themeId != null">
+                THEME_ID = #{themeId},
+            </if>
+            <if test="themeName != null">
+                THEME_NAME = #{themeName},
+            </if>
+            <if test="applyRecordId != null">
+                APPLY_RECORD_ID = #{applyRecordId},
+            </if>
+            <if test="applyRecordName != null">
+                APPLY_RECORD_NAME = #{applyRecordName},
+            </if>
+            <if test="dybzspjdxh != null">
+                DYBZSPJDXH = #{dybzspjdxh},
+            </if>
+            <if test="isNode != null">
+                IS_NODE = #{isNode},
+            </if>
+            <if test="isParallel != null">
+                IS_PARALLEL = #{isParallel},
+            </if>
+            <if test="applyinstSource != null">
+                APPLYINST_SOURCE = #{applyinstSource},
+            </if>
+            <if test="yearApplyCount != null">
+                YEAR_APPLY_COUNT = #{yearApplyCount},
+            </if>
+            <if test="allApplyCount != null">
+                ALL_APPLY_COUNT = #{allApplyCount},
+            </if>
+            <if test="applyLrr != null">
+                APPLY_LRR = #{applyLrr},
+            </if>
+            <if test="allInSupplementCount != null">
+                ALL_IN_SUPPLEMENT_COUNT = #{allInSupplementCount},
+            </if>
+            <if test="inSupplementLrr != null">
+                IN_SUPPLEMENT_LRR = #{inSupplementLrr},
+            </if>
+            <if test="allSupplementedCount != null">
+                ALL_SUPPLEMENTED_COUNT = #{allSupplementedCount},
+            </if>
+            <if test="supplementedLrr != null">
+                SUPPLEMENTED_LRR = #{supplementedLrr},
+            </if>
+            <if test="yearPreAcceptanceCount != null">
+                YEAR_PRE_ACCEPTANCE_COUNT = #{yearPreAcceptanceCount},
+            </if>
+            <if test="allPreAcceptanceCount != null">
+                ALL_PRE_ACCEPTANCE_COUNT = #{allPreAcceptanceCount},
+            </if>
+            <if test="preAcceptanceLrr != null">
+                PRE_ACCEPTANCE_LRR = #{preAcceptanceLrr},
+            </if>
+            <if test="yearOutScopeCount != null">
+                YEAR_OUT_SCOPE_COUNT = #{yearOutScopeCount},
+            </if>
+            <if test="allOutScopeCount != null">
+                ALL_OUT_SCOPE_COUNT = #{allOutScopeCount},
+            </if>
+            <if test="outScopeLrr != null">
+                OUT_SCOPE_LRR = #{outScopeLrr},
+            </if>
+            <if test="yearCompletedCount != null">
+                YEAR_COMPLETED_COUNT = #{yearCompletedCount},
+            </if>
+            <if test="allCompletedCount != null">
+                ALL_COMPLETED_COUNT = #{allCompletedCount},
+            </if>
+            <if test="completedLrr != null">
+                COMPLETED_LRR = #{completedLrr},
+            </if>
+            <if test="yearOverTimeCount != null">
+                YEAR_OVER_TIME_COUNT = #{yearOverTimeCount},
+            </if>
+            <if test="allOverTimeCount != null">
+                ALL_OVER_TIME_COUNT = #{allOverTimeCount},
+            </if>
+            <if test="overTimeLrr != null">
+                OVER_TIME_LRR = #{overTimeLrr},
+            </if>
+            <if test="allPreAcceptanceRate != null">
+                ALL_PRE_ACCEPTANCE_RATE = #{allPreAcceptanceRate},
+            </if>
+            <if test="allOutScopeRate != null">
+                ALL_OUT_SCOPE_RATE = #{allOutScopeRate},
+            </if>
+            <if test="allOverTimeRate != null">
+                ALL_OVER_TIME_RATE = #{allOverTimeRate},
+            </if>
+            <if test="allCompletedRate != null">
+                ALL_COMPLETED_RATE = #{allCompletedRate},
+            </if>
+            <if test="statisticsStartDate != null">
+                STATISTICS_START_DATE = #{statisticsStartDate},
+            </if>
+            <if test="statisticsEndDate != null">
+                STATISTICS_END_DATE = #{statisticsEndDate},
+            </if>
+            <if test="statisticsYear != null">
+                STATISTICS_YEAR = #{statisticsYear},
+            </if>
+            <if test="modifier != null">
+                MODIFIER = #{modifier},
+            </if>
+            <if test="modifyTime != null">
+                MODIFY_TIME = #{modifyTime},
+            </if>
+            <if test="rootOrgId != null">
+                ROOT_ORG_ID = #{rootOrgId},
+            </if>
+        </set>
+        where THEME_YEAR_STATISTICS_ID = #{themeYearStatisticsId}
+    </update>
+    <!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaAnaThemeYearStatistics">
+        delete from   AEA_ANA_THEME_YEAR_STATISTICS
+        where
+    THEME_YEAR_STATISTICS_ID = #{id}
+    </delete>
+    <!--8 删除实体对象列表,根据主键ID列表 -->
+    <!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaAnaThemeYearStatistics" id="AeaAnaThemeYearStatisticsMap">
+        <id property="themeYearStatisticsId" column="THEME_YEAR_STATISTICS_ID"/>
+        <result property="statisticsRecordId" column="STATISTICS_RECORD_ID"/>
+        <result property="themeId" column="THEME_ID"/>
+        <result property="themeName" column="THEME_NAME"/>
+        <result property="applyRecordId" column="APPLY_RECORD_ID"/>
+        <result property="applyRecordName" column="APPLY_RECORD_NAME"/>
+        <result property="dybzspjdxh" column="DYBZSPJDXH"/>
+        <result property="isNode" column="IS_NODE"/>
+        <result property="isParallel" column="IS_PARALLEL"/>
+        <result property="applyinstSource" column="APPLYINST_SOURCE"/>
+        <result property="yearApplyCount" column="YEAR_APPLY_COUNT"/>
+        <result property="allApplyCount" column="ALL_APPLY_COUNT"/>
+        <result property="applyLrr" column="APPLY_LRR"/>
+        <result property="allInSupplementCount" column="ALL_IN_SUPPLEMENT_COUNT"/>
+        <result property="inSupplementLrr" column="IN_SUPPLEMENT_LRR"/>
+        <result property="allSupplementedCount" column="ALL_SUPPLEMENTED_COUNT"/>
+        <result property="supplementedLrr" column="SUPPLEMENTED_LRR"/>
+        <result property="yearPreAcceptanceCount" column="YEAR_PRE_ACCEPTANCE_COUNT"/>
+        <result property="allPreAcceptanceCount" column="ALL_PRE_ACCEPTANCE_COUNT"/>
+        <result property="preAcceptanceLrr" column="PRE_ACCEPTANCE_LRR"/>
+        <result property="yearOutScopeCount" column="YEAR_OUT_SCOPE_COUNT"/>
+        <result property="allOutScopeCount" column="ALL_OUT_SCOPE_COUNT"/>
+        <result property="outScopeLrr" column="OUT_SCOPE_LRR"/>
+        <result property="yearCompletedCount" column="YEAR_COMPLETED_COUNT"/>
+        <result property="allCompletedCount" column="ALL_COMPLETED_COUNT"/>
+        <result property="completedLrr" column="COMPLETED_LRR"/>
+        <result property="yearOverTimeCount" column="YEAR_OVER_TIME_COUNT"/>
+        <result property="allOverTimeCount" column="ALL_OVER_TIME_COUNT"/>
+        <result property="overTimeLrr" column="OVER_TIME_LRR"/>
+        <result property="allPreAcceptanceRate" column="ALL_PRE_ACCEPTANCE_RATE"/>
+        <result property="allOutScopeRate" column="ALL_OUT_SCOPE_RATE"/>
+        <result property="allOverTimeRate" column="ALL_OVER_TIME_RATE"/>
+        <result property="allCompletedRate" column="ALL_COMPLETED_RATE"/>
+        <result property="statisticsStartDate" column="STATISTICS_START_DATE"/>
+        <result property="statisticsEndDate" column="STATISTICS_END_DATE"/>
+        <result property="statisticsYear" column="STATISTICS_YEAR"/>
+        <result property="modifier" column="MODIFIER"/>
+        <result property="modifyTime" column="MODIFY_TIME"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+    </resultMap>
+
+    <select id="getYearStatisticsFromMonthTable" resultType="com.augurit.aplanmis.common.vo.analyse.YearCountVo">
+        SELECT
+        <if test="_databaseId == 'oracle'">
+            NVL(sum(aatms.MONTH_APPLY_COUNT),0) thisYearApplyCount,
+
+            NVL(sum(aatms.MONTH_PRE_ACCEPTANCE_COUNT),0) thisYearPreAcceptanceCount,
+            NVL(sum(aatms.MONTH_OUT_SCOPE_COUNT),0) thisYearOutScopeCount,
+            NVL(sum(aatms.ALL_COMPLETED_COUNT),0) thisYearCompletedCount,
+            NVL(sum(aatms.MONTH_OVER_TIME_COUNT),0) thisYearOverTimeCount,
+
+            NVL(aatys.YEAR_APPLY_COUNT,0) lastYearApplyCount,
+            NVL(aatys.ALL_IN_SUPPLEMENT_COUNT,0) lastYearInSupplementCount,
+            NVL(aatys.ALL_SUPPLEMENTED_COUNT,0) lastYearSupplementedCount,
+            NVL(aatys.YEAR_PRE_ACCEPTANCE_COUNT,0) lastYearPreAcceptanceCount,
+            NVL(aatys.YEAR_OUT_SCOPE_COUNT,0) lastYearOutScopeCount,
+            NVL(aatys.YEAR_COMPLETED_COUNT,0) lastYearCompletedCount,
+            NVL(aatys.YEAR_OVER_TIME_COUNT,0) lastYearOverTimeCount,
+
+            NVL(aatms2.ALL_APPLY_COUNT,0) allApplyCount,
+            NVL(aatms2.ALL_IN_SUPPLEMENT_COUNT,0) allInSupplementCount,
+            NVL(aatms2.ALL_SUPPLEMENTED_COUNT,0) allSupplementedCount,
+            NVL(aatms2.ALL_PRE_ACCEPTANCE_COUNT,0) allPreAcceptanceCount,
+            NVL(aatms2.ALL_OUT_SCOPE_COUNT,0) allOutScopeCount,
+            NVL(aatms2.ALL_COMPLETED_COUNT,0) allCompletedCount ,
+            NVL(aatms2.ALL_OVER_TIME_COUNT,0) allOverTimeCount,
+        </if>
+        <if test="_databaseId == 'mysql'">
+            ifnull(sum(aatms.MONTH_APPLY_COUNT),0) thisYearApplyCount,
+
+            ifnull(sum(aatms.MONTH_PRE_ACCEPTANCE_COUNT),0) thisYearPreAcceptanceCount,
+            ifnull(sum(aatms.MONTH_OUT_SCOPE_COUNT),0) thisYearOutScopeCount,
+            ifnull(sum(aatms.ALL_COMPLETED_COUNT),0) thisYearCompletedCount,
+            ifnull(sum(aatms.MONTH_OVER_TIME_COUNT),0) thisYearOverTimeCount,
+
+            ifnull(aatys.YEAR_APPLY_COUNT,0) lastYearApplyCount,
+            ifnull(aatys.ALL_IN_SUPPLEMENT_COUNT,0) lastYearInSupplementCount,
+            ifnull(aatys.ALL_SUPPLEMENTED_COUNT,0) lastYearSupplementedCount,
+            ifnull(aatys.YEAR_PRE_ACCEPTANCE_COUNT,0) lastYearPreAcceptanceCount,
+            ifnull(aatys.YEAR_OUT_SCOPE_COUNT,0) lastYearOutScopeCount,
+            ifnull(aatys.YEAR_COMPLETED_COUNT,0) lastYearCompletedCount,
+            ifnull(aatys.YEAR_OVER_TIME_COUNT,0) lastYearOverTimeCount,
+
+            ifnull(aatms2.ALL_APPLY_COUNT,0) allApplyCount,
+            ifnull(aatms2.ALL_IN_SUPPLEMENT_COUNT,0) allInSupplementCount,
+            ifnull(aatms2.ALL_SUPPLEMENTED_COUNT,0) allSupplementedCount,
+            ifnull(aatms2.ALL_PRE_ACCEPTANCE_COUNT,0) allPreAcceptanceCount,
+            ifnull(aatms2.ALL_OUT_SCOPE_COUNT,0) allOutScopeCount,
+            ifnull(aatms2.ALL_COMPLETED_COUNT,0) allCompletedCount ,
+            ifnull(aatms2.ALL_OVER_TIME_COUNT,0) allOverTimeCount,
+        </if>
+
+
+        aatms.THEME_ID themtId,
+        aatms.THEME_NAME themtName,
+        aatms.APPLY_RECORD_ID applyRecordId,
+        aatms.APPLY_RECORD_NAME applyRecordName,
+        aatms.IS_PARALLEL isParallel,
+        aatms.DYBZSPJDXH dybzspjdxh,
+        aatms.IS_NODE isNode,
+        aatms.APPLYINST_SOURCE applyinstSource
+        from aea_ana_theme_month_statistics aatms
+        left JOIN aea_ana_theme_year_statistics aatys on aatys.THEME_ID = aatms.THEME_ID
+        and aatys.APPLY_RECORD_ID = aatms.APPLY_RECORD_ID and aatms.ROOT_ORG_ID = aatys.ROOT_ORG_ID
+        and aatys.STATISTICS_YEAR = #{lastYear}
+        LEFT JOIN aea_ana_theme_month_statistics aatms2 on aatms.THEME_ID = aatms2.THEME_ID and aatms.APPLY_RECORD_ID=aatms2.APPLY_RECORD_ID
+        and  aatms.ROOT_ORG_ID = aatms2.ROOT_ORG_ID and aatms2.STATISTICS_MONTH= #{yearMonth}
+        where aatms.STATISTICS_MONTH like concat(#{year},'-%')
+        and aatms.ROOT_ORG_ID = #{rootOrgId}
+        GROUP BY aatms.THEME_ID,aatms.APPLY_RECORD_ID,aatms.IS_PARALLEL,aatms.APPLYINST_SOURCE
+
+    </select>
+
+    <delete id="deleteThisYearStatisticsData">
+        delete from   AEA_ANA_THEME_YEAR_STATISTICS
+        where
+        STATISTICS_YEAR = #{year} and ROOT_ORG_ID = #{rootOrgId}
+    </delete>
+
+    <insert id="batchInsertYearStatisticsData">
+        insert into AEA_ANA_THEME_YEAR_STATISTICS (
+        THEME_YEAR_STATISTICS_ID  ,STATISTICS_RECORD_ID  ,THEME_ID  ,THEME_NAME  ,APPLY_RECORD_ID  ,APPLY_RECORD_NAME  ,DYBZSPJDXH,IS_NODE,IS_PARALLEL,APPLYINST_SOURCE,YEAR_APPLY_COUNT  ,ALL_APPLY_COUNT  ,APPLY_LRR  ,ALL_IN_SUPPLEMENT_COUNT  ,IN_SUPPLEMENT_LRR  ,ALL_SUPPLEMENTED_COUNT  ,SUPPLEMENTED_LRR  ,YEAR_PRE_ACCEPTANCE_COUNT  ,ALL_PRE_ACCEPTANCE_COUNT  ,PRE_ACCEPTANCE_LRR  ,YEAR_OUT_SCOPE_COUNT  ,ALL_OUT_SCOPE_COUNT  ,OUT_SCOPE_LRR  ,YEAR_COMPLETED_COUNT  ,ALL_COMPLETED_COUNT  ,COMPLETED_LRR  ,YEAR_OVER_TIME_COUNT  ,ALL_OVER_TIME_COUNT  ,OVER_TIME_LRR  ,ALL_PRE_ACCEPTANCE_RATE  ,ALL_OUT_SCOPE_RATE  ,ALL_OVER_TIME_RATE  ,ALL_COMPLETED_RATE  ,STATISTICS_START_DATE  ,STATISTICS_END_DATE  ,STATISTICS_YEAR  ,MODIFIER  ,MODIFY_TIME  ,ROOT_ORG_ID
+        )  values
+        <foreach collection="yearStatisticsList" item="list" separator=",">
+            (
+            #{list.themeYearStatisticsId},#{list.statisticsRecordId},#{list.themeId},#{list.themeName},#{list.applyRecordId},#{list.applyRecordName},#{list.dybzspjdxh},#{list.isNode},#{list.isParallel},#{list.applyinstSource},#{list.yearApplyCount},#{list.allApplyCount},#{list.applyLrr},#{list.allInSupplementCount},#{list.inSupplementLrr},#{list.allSupplementedCount},#{list.supplementedLrr},#{list.yearPreAcceptanceCount},#{list.allPreAcceptanceCount},#{list.preAcceptanceLrr},#{list.yearOutScopeCount},#{list.allOutScopeCount},#{list.outScopeLrr},#{list.yearCompletedCount},#{list.allCompletedCount},#{list.completedLrr},#{list.yearOverTimeCount},#{list.allOverTimeCount},#{list.overTimeLrr},#{list.allPreAcceptanceRate},#{list.allOutScopeRate},#{list.allOverTimeRate},#{list.allCompletedRate},#{list.statisticsStartDate},#{list.statisticsEndDate},#{list.statisticsYear},#{list.modifier},#{list.modifyTime},  #{list.rootOrgId}
+            )
+        </foreach>
+    </insert>
+
+    <select id="getThemeApplyByTime" resultType="com.augurit.aplanmis.common.vo.analyse.ThemeApplyStatisticsVo">
+        select item.ITEM_CODE as code, item.ITEM_NAME as name, sum(YEAR_APPLY_COUNT) as applyCount from
+        AEA_ANA_THEME_YEAR_STATISTICS themeana
+        left join AEA_PAR_THEME theme on theme.THEME_ID = themeana.THEME_ID
+        left join BSC_DIC_CODE_ITEM item on theme.THEME_TYPE = item.ITEM_CODE
+        left join BSC_DIC_CODE_TYPE codeType on item.TYPE_ID = codeType.TYPE_ID
+        <where>
+            and codeType.TYPE_CODE = 'THEME_TYPE'
+            and themeana.STATISTICS_YEAR <![CDATA[ >= ]]> #{startYear}
+            and themeana.STATISTICS_YEAR <![CDATA[ <= ]]> #{endYear}
+            and themeana.ROOT_ORG_ID = #{rootOrgId}
+        </where>
+        group by item.ITEM_CODE, item.ITEM_NAME
+    </select>
+
+    <select id="getStageApplyByTime" resultType="com.augurit.aplanmis.common.vo.analyse.StageApplyStatisticsVo">
+        select stage.DYBZSPJDXH as code, sum(stageana.YEAR_APPLY_COUNT) as applyCount from AEA_ANA_THEME_YEAR_STATISTICS
+        stageana
+        left join AEA_PAR_STAGE stage on stage.STAGE_ID = stageana.APPLY_RECORD_ID
+        <where>
+            and stageana.STATISTICS_YEAR <![CDATA[ >= ]]> #{startYear}
+            and stageana.STATISTICS_YEAR <![CDATA[ <= ]]> #{endYear}
+            and stageana.ROOT_ORG_ID = #{rootOrgId}
+        </where>
+        group by stage.DYBZSPJDXH
+    </select>
+</mapper>

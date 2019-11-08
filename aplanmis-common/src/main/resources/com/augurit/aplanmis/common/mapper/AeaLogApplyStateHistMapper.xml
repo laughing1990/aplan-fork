@@ -1,0 +1,453 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by yinlf    2019-07-01 16:22:56 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaLogApplyStateHistMapper">
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns">
+        STATE_HIST_ID  stateHistId,
+        APPLYINST_ID  applyinstId,
+        IS_FLOW_TRIGGER  isFlowTrigger,
+        APPINST_ID  appinstId,
+        TASKINST_ID  taskinstId,
+        TRIGGER_TIME  triggerTime,
+        OLD_STATE  oldState,
+        NEW_STATE  newState,
+        OPS_WINDOW_ID opsWindowId,
+        OPS_USER_ID  opsUserId,
+        OPS_USER_NAME  opsUserName,
+        OPS_FILL_TIME  opsFillTime,
+        OPS_USER_OPINION  opsUserOpinion,
+        OPS_ACTION  opsAction,
+        OPS_MEMO  opsMemo,
+        BUS_TABLE_NAME  busTableName,
+        BUS_PK_NAME  busPkName,
+        BUS_RECORD_ID  busRecordId,
+        ROOT_ORG_ID rootOrgId
+    </sql>
+
+    <sql id="allColumns_alash">
+        alash.STATE_HIST_ID  stateHistId,
+        alash.APPLYINST_ID  applyinstId,
+        alash.IS_FLOW_TRIGGER  isFlowTrigger,
+        alash.APPINST_ID  appinstId,
+        alash.TASKINST_ID  taskinstId,
+        alash.TRIGGER_TIME  triggerTime,
+        alash.OLD_STATE  oldState,
+        alash.NEW_STATE  newState,
+        alash.OPS_WINDOW_ID opsWindowId,
+        alash.OPS_USER_ID  opsUserId,
+        alash.OPS_USER_NAME  opsUserName,
+        alash.OPS_FILL_TIME  opsFillTime,
+        alash.OPS_USER_OPINION  opsUserOpinion,
+        alash.OPS_ACTION  opsAction,
+        alash.OPS_MEMO  opsMemo,
+        alash.BUS_TABLE_NAME  busTableName,
+        alash.BUS_PK_NAME  busPkName,
+        alash.BUS_RECORD_ID  busRecordId,
+        alash.ROOT_ORG_ID rootOrgId
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaLogApplyStateHistById" resultType="AeaLogApplyStateHist">
+        select
+        <include refid="allColumns"/>
+        from AEA_LOG_APPLY_STATE_HIST
+        where STATE_HIST_ID = #{id}
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaLogApplyStateHist" resultType="AeaLogApplyStateHist">
+        select
+        <include refid="allColumns"/>
+        from AEA_LOG_APPLY_STATE_HIST
+        <where>
+            <if test="stateHistId != null">
+                AND STATE_HIST_ID = #{stateHistId}
+            </if>
+            <if test="applyinstId != null">
+                AND APPLYINST_ID = #{applyinstId}
+            </if>
+            <if test="isFlowTrigger != null">
+                AND IS_FLOW_TRIGGER = #{isFlowTrigger}
+            </if>
+            <if test="appinstId != null">
+                AND APPINST_ID = #{appinstId}
+            </if>
+            <if test="taskinstId != null">
+                AND TASKINST_ID = #{taskinstId}
+            </if>
+            <if test="triggerTime != null">
+                AND TRIGGER_TIME = #{triggerTime}
+            </if>
+            <if test="oldState != null">
+                AND OLD_STATE = #{oldState}
+            </if>
+            <if test="newState != null">
+                AND NEW_STATE = #{newState}
+            </if>
+            <if test="opsWindowId != null">
+                AND OPS_WINDOW_ID = #{opsWindowId}
+            </if>
+            <if test="opsUserId != null">
+                AND OPS_USER_ID = #{opsUserId}
+            </if>
+            <if test="opsUserName != null">
+                AND OPS_USER_NAME = #{opsUserName}
+            </if>
+            <if test="opsFillTime != null">
+                AND OPS_FILL_TIME = #{opsFillTime}
+            </if>
+            <if test="opsUserOpinion != null">
+                AND OPS_USER_OPINION = #{opsUserOpinion}
+            </if>
+            <if test="opsAction != null">
+                AND OPS_ACTION = #{opsAction}
+            </if>
+            <if test="opsMemo != null">
+                AND OPS_MEMO = #{opsMemo}
+            </if>
+            <if test="busTableName != null">
+                AND BUS_TABLE_NAME = #{busTableName}
+            </if>
+            <if test="busPkName != null">
+                AND BUS_PK_NAME = #{busPkName}
+            </if>
+            <if test="busRecordId != null">
+                AND BUS_RECORD_ID = #{busRecordId}
+            </if>
+            <if test="rootOrgId != null">
+                AND ROOT_ORG_ID = #{rootOrgId}
+            </if>
+        </where>
+        ORDER BY TRIGGER_TIME DESC
+    </select>
+    <!--4 根据条件查询实体list,返回分页对象 -->
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaLogApplyStateHist" parameterType="AeaLogApplyStateHist">
+        insert into AEA_LOG_APPLY_STATE_HIST (STATE_HIST_ID, APPLYINST_ID, IS_FLOW_TRIGGER, APPINST_ID, TASKINST_ID,
+                                              TRIGGER_TIME, OLD_STATE, NEW_STATE, OPS_WINDOW_ID, OPS_USER_ID, OPS_USER_NAME,
+                                              OPS_FILL_TIME, OPS_USER_OPINION, OPS_ACTION, OPS_MEMO, BUS_TABLE_NAME,
+                                              BUS_PK_NAME, BUS_RECORD_ID,ROOT_ORG_ID)
+        values (#{stateHistId}, #{applyinstId}, #{isFlowTrigger}, #{appinstId}, #{taskinstId}, #{triggerTime},
+                #{oldState}, #{newState},#{opsWindowId}, #{opsUserId}, #{opsUserName}, #{opsFillTime}, #{opsUserOpinion}, #{opsAction},
+                #{opsMemo}, #{busTableName}, #{busPkName}, #{busRecordId},#{rootOrgId})
+    </insert>
+    <!--6 修改实体对象 -->
+    <update id="updateAeaLogApplyStateHist" parameterType="AeaLogApplyStateHist">
+        update AEA_LOG_APPLY_STATE_HIST
+        <set>
+            <if test="stateHistId != null">
+                STATE_HIST_ID = #{stateHistId},
+            </if>
+            <if test="applyinstId != null">
+                APPLYINST_ID = #{applyinstId},
+            </if>
+            <if test="isFlowTrigger != null">
+                IS_FLOW_TRIGGER = #{isFlowTrigger},
+            </if>
+            <if test="appinstId != null">
+                APPINST_ID = #{appinstId},
+            </if>
+            <if test="taskinstId != null">
+                TASKINST_ID = #{taskinstId},
+            </if>
+            <if test="triggerTime != null">
+                TRIGGER_TIME = #{triggerTime},
+            </if>
+            <if test="oldState != null">
+                OLD_STATE = #{oldState},
+            </if>
+            <if test="newState != null">
+                NEW_STATE = #{newState},
+            </if>
+            <if test="opsWindowId != null">
+               OPS_WINDOW_ID = #{opsWindowId},
+            </if>
+            <if test="opsUserId != null">
+                OPS_USER_ID = #{opsUserId},
+            </if>
+            <if test="opsUserName != null">
+                OPS_USER_NAME = #{opsUserName},
+            </if>
+            <if test="opsFillTime != null">
+                OPS_FILL_TIME = #{opsFillTime},
+            </if>
+            <if test="opsUserOpinion != null">
+                OPS_USER_OPINION = #{opsUserOpinion},
+            </if>
+            <if test="opsAction != null">
+                OPS_ACTION = #{opsAction},
+            </if>
+            <if test="opsMemo != null">
+                OPS_MEMO = #{opsMemo},
+            </if>
+            <if test="busTableName != null">
+                BUS_TABLE_NAME = #{busTableName},
+            </if>
+            <if test="busPkName != null">
+                BUS_PK_NAME = #{busPkName},
+            </if>
+            <if test="busRecordId != null">
+                BUS_RECORD_ID = #{busRecordId},
+            </if>
+            <if test="rootOrgId != null">
+                ROOT_ORG_ID = #{rootOrgId},
+            </if>
+        </set>
+        where STATE_HIST_ID = #{stateHistId}
+    </update>
+    <!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaLogApplyStateHist">
+        delete
+        from AEA_LOG_APPLY_STATE_HIST
+        where STATE_HIST_ID = #{id}
+    </delete>
+    <!--8 删除实体对象列表,根据主键ID列表 -->
+    <!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaLogApplyStateHist" id="AeaLogApplyStateHistMap">
+        <id property="stateHistId" column="STATE_HIST_ID"/>
+        <result property="applyinstId" column="APPLYINST_ID"/>
+        <result property="isFlowTrigger" column="IS_FLOW_TRIGGER"/>
+        <result property="appinstId" column="APPINST_ID"/>
+        <result property="taskinstId" column="TASKINST_ID"/>
+        <result property="triggerTime" column="TRIGGER_TIME"/>
+        <result property="oldState" column="OLD_STATE"/>
+        <result property="newState" column="NEW_STATE"/>
+        <result property="opsWindowId" column="OPS_WINDOW_ID"/>
+        <result property="opsUserId" column="OPS_USER_ID"/>
+        <result property="opsUserName" column="OPS_USER_NAME"/>
+        <result property="opsFillTime" column="OPS_FILL_TIME"/>
+        <result property="opsUserOpinion" column="OPS_USER_OPINION"/>
+        <result property="opsAction" column="OPS_ACTION"/>
+        <result property="opsMemo" column="OPS_MEMO"/>
+        <result property="busTableName" column="BUS_TABLE_NAME"/>
+        <result property="busPkName" column="BUS_PK_NAME"/>
+        <result property="busRecordId" column="BUS_RECORD_ID"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+    </resultMap>
+
+    <select id="getInitStateAeaLogApplyStateHist" resultType="AeaLogApplyStateHist">
+        select
+        <include refid="allColumns"/>
+        from AEA_LOG_APPLY_STATE_HIST
+        where APPLYINST_ID = #{applyinstId} AND APPINST_ID = #{appinstId} AND IS_FLOW_TRIGGER = '1' AND TASKINST_ID IS null AND OLD_STATE is null
+    </select>
+
+    <select id="getAeaLogApplyStateHistByApplyinstCorrectId" resultType="AeaLogApplyStateHist">
+        SELECT
+        <include refid="allColumns_alash"/>
+        FROM AEA_LOG_APPLY_STATE_HIST alash, AEA_HI_APPLYINST_CORRECT_STATE_HIST ahacsh
+        WHERE
+        ahacsh.APPLYINST_STATE_HIST_ID = alash.STATE_HIST_ID
+        AND
+        ahacsh.APPLYINST_CORRECT_ID = #{applyinstCorrectId}
+    </select>
+
+    <select id="getAeaLogApplyStateHistListByApplyinstCorrectId" resultType="AeaLogApplyStateHist">
+        SELECT
+        <include refid="allColumns_alash"/>
+        FROM AEA_LOG_APPLY_STATE_HIST alash, AEA_HI_APPLYINST_CORRECT_STATE_HIST ahacsh
+        WHERE
+        ahacsh.APPLYINST_STATE_HIST_ID = alash.STATE_HIST_ID
+        AND
+        ahacsh.APPLYINST_CORRECT_ID = #{applyinstCorrectId}
+    </select>
+
+    <select id="getFirstApplyAeaProjStageByProjInfoIdAndStandardSortNo" resultType="AeaLogApplyStateHist">
+        SELECT
+        <include refid="allColumns"/>
+        FROM AEA_LOG_APPLY_STATE_HIST
+        WHERE APPLYINST_ID IN (
+            SELECT ahps_123.APPLYINST_ID
+            FROM aea_hi_par_stageinst ahps_123
+                INNER JOIN aea_par_stage aps_123 ON aps_123.STAGE_ID = ahps_123.STAGE_ID
+                INNER JOIN AEA_APPLYINST_PROJ aap_123 ON ahps_123.APPLYINST_ID = aap_123.APPLYINST_ID
+            WHERE aap_123.PROJ_INFO_ID = #{projInfoId} AND aps_123.DYBZSPJDXH = #{standardSortNo}
+        ) AND NEW_STATE = '2'
+        ORDER BY TRIGGER_TIME ASC
+        limit 1
+    </select>
+    <select id="getApplyChangeHis" resultType="AeaLogApplyStateHist">
+
+        select ahis.applyinst_id as applyinstId, ahis.new_state as newState ,ahp.APPLYINST_SOURCE applyinstSource
+        from aea_log_apply_state_hist ahis
+
+                LEFT JOIN aea_hi_par_stageinst ahps on ahps.applyinst_id = ahis.applyinst_id
+                LEFT JOIN aea_hi_applyinst ahp on ahp.APPLYINST_ID = ahis.APPLYINST_ID
+                where ahis.TRIGGER_TIME <![CDATA[ >= ]]> #{startTime}
+                and ahis.TRIGGER_TIME <![CDATA[ <= ]]> #{endTime}
+                and ahps.STAGE_ID =#{stageId}
+                and ahp.IS_SERIES_APPROVE= #{isApprove}
+                union
+                select ahis.applyinst_id as applyinstId, ahis.new_state as newState ,ahp.APPLYINST_SOURCE applyinstSource
+                from aea_log_apply_state_hist ahis
+                LEFT JOIN aea_hi_seriesinst ahs on ahs.APPLYINST_ID = ahis.APPLYINST_ID
+                LEFT JOIN aea_hi_applyinst ahp on ahp.APPLYINST_ID = ahis.APPLYINST_ID
+                where ahis.TRIGGER_TIME <![CDATA[ >= ]]> #{startTime}
+                and ahis.TRIGGER_TIME <![CDATA[ <= ]]> #{endTime}
+                and ahs.STAGE_ID =#{stageId}
+                and ahs.IS_PARALLEL = #{isParallel}
+                and ahp.IS_SERIES_APPROVE=#{isApprove}
+
+
+    </select>
+
+    <select id="findApplyinstCorrectStateHist" resultType="com.augurit.aplanmis.common.vo.SupplyOrSpacialCommentVo">
+        SELECT alash.TASKINST_ID id,alash.OPS_USER_NAME man,case alash.NEW_STATE when '3' then '1' else '2' end
+        signState,alash.OPS_USER_OPINION
+        commentMessage,'补全' nodeName,alash.TRIGGER_TIME endDate
+        from aea_log_apply_state_hist alash
+        LEFT JOIN aea_hi_applyinst_correct_state_hist ahacsh ON alash.STATE_HIST_ID=ahacsh.APPLYINST_STATE_HIST_ID
+        LEFT JOIN aea_hi_applyinst_correct ahac ON ahacsh.APPLYINST_CORRECT_ID=ahac.APPLYINST_CORRECT_ID
+        where
+         alash.NEW_STATE in('3','4') AND alash.TASKINST_ID=#{taskInstId}
+         <if test="applyinstId!=null and applyinstId!=''">
+             and alash.APPLYINST_ID=#{applyinstId}
+         </if>
+        <if test="rootOrgId!=null and rootOrgId!=''">
+            AND alash.ROOT_ORG_ID=#{rootOrgId}
+            AND ahac.ROOT_ORG_ID=#{rootOrgId}
+        </if>
+    </select>
+
+    <select id="listLatestLogApplyStateHist" resultType="AeaLogApplyStateHist">
+        SELECT
+        <include refid="allColumns"/>,
+        max(TRIGGER_TIME) latestTriggerTime
+        FROM AEA_LOG_APPLY_STATE_HIST
+        WHERE ROOT_ORG_ID =#{rootOrgId}
+        GROUP BY APPLYINST_ID
+
+    </select>
+    <select id="getWindowApplyHistory" resultType="AeaLogApplyStateHist">
+        select <include refid="allColumns"/> from aea_log_apply_state_hist where
+        OPS_WINDOW_ID= #{windowId}
+        and TRIGGER_TIME <![CDATA[ >= ]]> #{startTime}
+        and TRIGGER_TIME <![CDATA[ <=]]> #{endTime}
+        and ROOT_ORG_ID= #{rootOrgId}
+
+    </select>
+    <select id="getWindowApplyHistoryByState" resultType="AeaLogApplyStateHist" >
+        select * from aea_log_apply_state_hist alash
+        where alash.new_state= #{state}
+        and alash.trigger_time <![CDATA[>= ]]> #{startTime} and
+        alash.trigger_time <![CDATA[<=]]> #{endTime}
+        and alash.root_org_id = #{rootOrgId}
+        and alash.ops_window_id = #{windowId}
+    </select>
+    <select id="getApplyChangeHisIsParallel" resultType="AeaLogApplyStateHist">
+         select ahis.applyinst_id as applyinstId, ahis.new_state as newState
+        from aea_log_apply_state_hist ahis
+                LEFT JOIN aea_hi_seriesinst ahs on ahs.APPLYINST_ID = ahis.APPLYINST_ID
+                where ahis.TRIGGER_TIME <![CDATA[ >= ]]> concat(#{startDate},' 00:00:00')
+                and ahis.TRIGGER_TIME <![CDATA[ <= ]]> concat(#{endDate},' 23:59:59')
+                and ahs.STAGE_ID =#{stageId}
+                and ahs.IS_PARALLEL = #{isParallel}
+    </select>
+    <select id="listLogApplyStateHistBySourecAndParallel" resultType="com.augurit.aplanmis.common.vo.analyse.ThemeDayApplyRecord">
+        select alash.NEW_STATE newState,
+        aha.APPLYINST_ID applyinstId,
+        aps.STAGE_ID stageId,
+        aps.STAGE_NAME stageName,
+        aps.DYBZSPJDXH dybzspjdxh,
+        aps.IS_NODE isNode,
+        apt.THEME_ID themeId ,
+        apt.THEME_NAME themeName,
+        '0' isParallel,
+		aha.APPLYINST_SOURCE applyinstSource,
+aha.IS_SERIES_APPROVE isApprove
+        from aea_log_apply_state_hist alash
+        LEFT JOIN aea_hi_applyinst aha on aha.APPLYINST_ID = alash.APPLYINST_ID
+        LEFT JOIN aea_hi_par_stageinst ahps on ahps.APPLYINST_ID = alash.APPLYINST_ID
+        LEFT JOIN aea_par_stage aps on aps.STAGE_ID = ahps.STAGE_ID
+        LEFT JOIN aea_par_theme_ver aptv on aptv.THEME_VER_ID = aps.THEME_VER_ID
+        LEFT JOIN aea_par_theme apt on apt.THEME_ID = aptv.THEME_ID
+        where aha.IS_SERIES_APPROVE = #{isApprove}
+        and alash.ROOT_ORG_ID = #{rootOrgId}
+        and aha.ROOT_ORG_ID =  #{rootOrgId}
+        and ahps.ROOT_ORG_ID= #{rootOrgId}
+        and aptv.ROOT_ORG_ID =  #{rootOrgId}
+        and aps.ROOT_ORG_ID =  #{rootOrgId}
+        and apt.ROOT_ORG_ID = #{rootOrgId}
+        and alash.TRIGGER_TIME <![CDATA[ >= ]]> #{startTime}
+        and alash.TRIGGER_TIME <![CDATA[ <= ]]> #{endTime}
+        and ahps.STAGE_ID is not null
+        UNION
+        select alash.NEW_STATE newState,
+        aha.APPLYINST_ID applyinstId,
+        aps.STAGE_ID stageId,
+        aps.STAGE_NAME stageName,
+        aps.DYBZSPJDXH dybzspjdxh,
+        aps.IS_NODE isNode,
+        apt.THEME_ID themeId,
+        apt.THEME_NAME themeName,
+        ahs.IS_PARALLEL isParallel,
+		aha.APPLYINST_SOURCE applyinstSource,
+aha.IS_SERIES_APPROVE isApprove
+        from aea_log_apply_state_hist alash
+        LEFT JOIN aea_hi_applyinst aha on aha.APPLYINST_ID = alash.APPLYINST_ID
+        LEFT JOIN aea_hi_seriesinst ahs on ahs.APPLYINST_ID = alash.APPLYINST_ID
+        LEFT JOIN aea_par_stage aps on aps.STAGE_ID = ahs.STAGE_ID
+
+        LEFT JOIN aea_par_theme_ver aptv on aptv.THEME_VER_ID = aps.THEME_VER_ID
+        LEFT JOIN aea_par_theme apt on apt.THEME_ID = aptv.THEME_ID
+        where aha.IS_SERIES_APPROVE = #{isApprove}
+        and aha.ROOT_ORG_ID=#{rootOrgId}
+        and ahs.ROOT_ORG_ID=#{rootOrgId}
+        and aps.ROOT_ORG_ID=#{rootOrgId}
+        and aptv.ROOT_ORG_ID=#{rootOrgId}
+        and apt.ROOT_ORG_ID=#{rootOrgId}
+        and ahs.stage_id is not null
+        and ahs.IS_PARALLEL = #{isParallel}
+        and alash.TRIGGER_TIME <![CDATA[ >= ]]> #{startTime}
+        and alash.TRIGGER_TIME <![CDATA[ <= ]]> #{endTime}
+
+    </select>
+
+   <select id="getWindowApplyCountGroupByStage" resultType="com.augurit.aplanmis.common.vo.analyse.ThemeDayApplyRecord">
+       select count(*) count ,gg.DYBZSPJDXH,gg.isParallel from (
+       select alash.applyinst_id,
+       alash.NEW_STATE,
+       aha.IS_SERIES_APPROVE,
+       ahps.STAGE_ID,
+       aps.IS_NODE,
+       aps.DYBZSPJDXH,
+       '0' isParallel
+       from aea_log_apply_state_hist alash
+       LEFT JOIN aea_hi_applyinst aha on aha.APPLYINST_ID = alash.APPLYINST_ID
+       LEFT JOIN aea_hi_par_stageinst ahps on ahps.APPLYINST_ID = aha.APPLYINST_ID
+       LEFT JOIN aea_par_stage aps on ahps.STAGE_ID = aps.STAGE_ID
+       where alash.new_state= #{state}
+       and alash.trigger_time  <![CDATA[ >= ]]> #{startTime}
+       and alash.trigger_time <![CDATA[ <= ]]> #{endTime}
+        and alash.root_org_id = #{rootOrgId}
+       and alash.ops_window_id = #{windowId}
+       and aha.IS_SERIES_APPROVE ='0'
+
+       UNION
+
+       select alash.applyinst_id,
+       alash.NEW_STATE,
+       aha.IS_SERIES_APPROVE,
+       ahs.STAGE_ID,
+       aps.IS_NODE,
+       aps.DYBZSPJDXH,
+       ahs.IS_PARALLEL isParallel
+       from aea_log_apply_state_hist alash
+       LEFT JOIN aea_hi_applyinst aha on aha.APPLYINST_ID = alash.APPLYINST_ID
+       LEFT JOIN aea_hi_seriesinst ahs on ahs.APPLYINST_ID = aha.APPLYINST_ID
+       LEFT JOIN aea_par_stage aps on aps.STAGE_ID = ahs.STAGE_ID
+       where alash.new_state= #{state}
+       and alash.trigger_time  <![CDATA[ >= ]]> #{startTime}
+       and alash.trigger_time <![CDATA[ <= ]]> #{endTime}
+        and alash.root_org_id = #{rootOrgId}
+       and alash.ops_window_id = #{windowId}
+       and aha.IS_SERIES_APPROVE ='1'
+       and ahs.STAGE_ID is not null
+
+       ) gg
+       GROUP BY gg.isParallel,gg.DYBZSPJDXH
+   </select>
+</mapper>

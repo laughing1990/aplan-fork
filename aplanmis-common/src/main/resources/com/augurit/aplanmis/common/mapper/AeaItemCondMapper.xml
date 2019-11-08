@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaItemCondMapper">
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns">
+        ITEM_COND_ID  itemCondId,
+        ITEM_ID  itemId,
+        ITEM_VER_ID itemVerId,
+        COND_NAME  condName,
+        COND_EL  condEl,
+        SORT_NO  sortNo,
+        COND_MEMO  condMemo,
+        IS_ACTIVE  isActive,
+        CREATER  creater,
+        CREATE_TIME  createTime,
+        MODIFIER  modifier,
+        MODIFY_TIME  modifyTime,
+        USE_EL  useEl,
+        PARENT_COND_ID  parentCondId,
+        COND_SEQ  condSeq,
+        IS_QUESTION  isQuestion,
+        SFZZ  sfzz,
+        MUILT_SELECT  muiltSelect,
+        ROOT_ORG_ID rootOrgId
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaItemCondById" resultType="AeaItemCond">
+        select
+        <include refid="allColumns"/>
+        from AEA_ITEM_COND
+        where ITEM_COND_ID = #{id}
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaItemCond" resultType="AeaItemCond">
+        select
+        <include refid="allColumns"/>
+        from    AEA_ITEM_COND
+        <where>
+            <if test="itemCondId != null and itemCondId!='' " >
+                and    ITEM_COND_ID = #{itemCondId}
+            </if>
+            <if test="itemId != null and itemId!='' " >
+                and    ITEM_ID = #{itemId}
+            </if>
+            <if test="itemVerId != null and itemVerId!='' " >
+                and    ITEM_VER_ID = #{itemVerId}
+            </if>
+            <if test="condName != null and condName!='' " >
+                and    COND_NAME = #{condName}
+            </if>
+            <if test="condEl != null and condEl!='' " >
+                and    COND_EL = #{condEl}
+            </if>
+            <if test="sortNo != null" >
+                and    SORT_NO = #{sortNo}
+            </if>
+            <if test="condMemo != null and condMemo!='' " >
+                and    COND_MEMO = #{condMemo}
+            </if>
+            <if test="isActive != null and isActive!='' " >
+                and    IS_ACTIVE = #{isActive}
+            </if>
+            <if test="creater != null and creater!='' " >
+                and    CREATER = #{creater}
+            </if>
+            <if test="createTime != null" >
+                and    CREATE_TIME = #{createTime}
+            </if>
+            <if test="modifier != null and modifier!='' " >
+                and    MODIFIER = #{modifier}
+            </if>
+            <if test="modifyTime != null" >
+                and    MODIFY_TIME = #{modifyTime}
+            </if>
+            <if test="useEl != null" >
+                and    USE_EL = #{useEl}
+            </if>
+            <if test="parentCondId != null and parentCondId!='root' and parentCondId !='ROOT'" >
+                and    PARENT_COND_ID = #{parentCondId}
+            </if>
+            <if test="parentCondId=='root' || parentCondId =='ROOT'" >
+                and    PARENT_COND_ID IS NULL
+            </if>
+            <if test="condSeq != null" >
+                and    COND_SEQ = #{condSeq}
+            </if>
+            <if test="isQuestion != null" >
+                and    IS_QUESTION = #{isQuestion}
+            </if>
+            <if test="sfzz != null" >
+                and    SFZZ = #{sfzz}
+            </if>
+            <if test="muiltSelect != null" >
+                and    MUILT_SELECT = #{muiltSelect}
+            </if>
+            <if test="rootOrgId != null ">
+                and    ROOT_ORG_ID = #{rootOrgId}
+            </if>
+        </where>
+    </select>
+    <!--4 根据条件查询实体list,返回分页对象 -->
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaItemCond" parameterType="AeaItemCond">
+        insert into AEA_ITEM_COND
+        (
+            ITEM_COND_ID,
+            ITEM_ID,
+            COND_NAME,
+            COND_EL,
+            SORT_NO,
+            COND_MEMO,
+            IS_ACTIVE,
+            CREATER,
+            CREATE_TIME,
+            MODIFIER,
+            MODIFY_TIME,
+            USE_EL,
+            PARENT_COND_ID,
+            COND_SEQ,
+            IS_QUESTION,
+            SFZZ,
+            MUILT_SELECT,
+            ITEM_VER_ID,
+            ROOT_ORG_ID
+        )  values  (
+            #{itemCondId},
+            #{itemId},
+            #{condName},
+            #{condEl},
+            #{sortNo},
+            #{condMemo},
+            #{isActive},
+            #{creater},
+            #{createTime},
+            #{modifier},
+            #{modifyTime},
+            #{useEl},
+            #{parentCondId},
+            #{condSeq},
+            #{isQuestion},
+            #{sfzz},
+            #{muiltSelect},
+            #{itemVerId},
+            #{rootOrgId}
+        )
+    </insert>
+
+    <!--6 修改实体对象 -->
+    <update id="updateAeaItemCond" parameterType="AeaItemCond">
+        update AEA_ITEM_COND
+        <set >
+            <if test="itemCondId != null" >
+                ITEM_COND_ID = #{itemCondId},
+            </if>
+            <if test="itemId != null" >
+                ITEM_ID = #{itemId},
+            </if>
+            <if test="itemVerId != null" >
+                ITEM_VER_ID = #{itemVerId},
+            </if>
+            <if test="condName != null" >
+                COND_NAME = #{condName},
+            </if>
+            <if test="condEl != null" >
+                COND_EL = #{condEl},
+            </if>
+            <if test="sortNo != null" >
+                SORT_NO = #{sortNo},
+            </if>
+            <if test="condMemo != null" >
+                COND_MEMO = #{condMemo},
+            </if>
+            <if test="isActive != null" >
+                IS_ACTIVE = #{isActive},
+            </if>
+            <if test="creater != null" >
+                CREATER = #{creater},
+            </if>
+            <if test="createTime != null" >
+                CREATE_TIME = #{createTime},
+            </if>
+            <if test="modifier != null" >
+                MODIFIER = #{modifier},
+            </if>
+            <if test="modifyTime != null" >
+                MODIFY_TIME = #{modifyTime},
+            </if>
+            <if test="useEl != null" >
+                USE_EL = #{useEl},
+            </if>
+            <if test="parentCondId != null" >
+                PARENT_COND_ID = #{parentCondId},
+            </if>
+            <if test="condSeq != null" >
+                COND_SEQ = #{condSeq},
+            </if>
+            <if test="isQuestion != null" >
+                IS_QUESTION = #{isQuestion},
+            </if>
+            <if test="sfzz != null" >
+                SFZZ = #{sfzz},
+            </if>
+            <if test="muiltSelect != null" >
+                MUILT_SELECT = #{muiltSelect},
+            </if>
+            <if test="rootOrgId != null ">
+                ROOT_ORG_ID = #{rootOrgId},
+            </if>
+        </set>
+        where ITEM_COND_ID = #{itemCondId}
+    </update>
+
+    <!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaItemCond">
+        delete
+        from AEA_ITEM_COND
+        where ITEM_COND_ID = #{id}
+    </delete>
+
+    <!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaItemCond" id="AeaItemCondMap">
+        <id property="itemCondId" column="ITEM_COND_ID"/>
+        <result property="itemId" column="ITEM_ID"/>
+        <result property="itemVerId" column="ITEM_VER_ID"/>
+        <result property="condName" column="COND_NAME"/>
+        <result property="condEl" column="COND_EL"/>
+        <result property="sortNo" column="SORT_NO"/>
+        <result property="condMemo" column="COND_MEMO"/>
+        <result property="isActive" column="IS_ACTIVE"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="modifier" column="MODIFIER"/>
+        <result property="modifyTime" column="MODIFY_TIME"/>
+        <result property="useEl" column="USE_EL"/>
+        <result property="parentCondId" column="PARENT_COND_ID"/>
+        <result property="condSeq" column="COND_SEQ"/>
+        <result property="isQuestion" column="IS_QUESTION"/>
+        <result property="sfzz" column="SFZZ"/>
+        <result property="muiltSelect" column="MUILT_SELECT"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+    </resultMap>
+
+    <!--获取最大排序 -->
+    <select id="getMaxSortNo" resultType="java.lang.Long">
+        select max(SORT_NO) from AEA_ITEM_COND  where ROOT_ORG_ID = #{rootOrgId}
+    </select>
+
+    <delete id="batchDeleteAeaItemCond">
+        delete from AEA_ITEM_COND where ITEM_COND_ID in
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+
+    <update id="changIsActiveState" parameterType="java.lang.String">
+        UPDATE AEA_ITEM_COND
+        SET IS_ACTIVE = CASE IS_ACTIVE WHEN '0' THEN '1' ELSE '0' END
+        WHERE ITEM_COND_ID = #{id}
+    </update>
+
+    <select id="listChildrenItemCondById" parameterType="string" resultMap="AeaItemCondMap">
+        select
+           <include refid="allColumns"/>
+        from AEA_ITEM_COND
+        <where>
+            and ROOT_ORG_ID = #{rootOrgId}
+            and PARENT_COND_ID = #{id}
+            and IS_ACTIVE = '1'
+        </where>
+    </select>
+
+    <select id="listItemCondTopListByItemId" parameterType="string" resultMap="AeaItemCondMap">
+        select
+           <include refid="allColumns"/>
+        from  AEA_ITEM_COND
+        <where>
+            and ROOT_ORG_ID = #{rootOrgId}
+            and ITEM_VER_ID =#{itemVerId}
+            and IS_ACTIVE = '1'
+            and PARENT_COND_ID is null
+            and IS_QUESTION = 1
+        </where>
+    </select>
+
+    <select id="listChildAeaItemCondByParentCondId" resultType="AeaItemCond" >
+        select
+           <include refid="allColumns"/>
+        from AEA_ITEM_COND
+        <where>
+            and ROOT_ORG_ID = #{rootOrgId}
+            and ITEM_VER_ID =#{itemVerId}
+            and PARENT_COND_ID = #{parentCondId}
+            and IS_ACTIVE = '1'
+        </where>
+    </select>
+</mapper>

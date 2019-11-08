@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>通知公告</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="shortcut icon" href="../../../static/zjcs/common/images/favicon.ico" th:href="@{/zjcs/common/images/favicon.ico}">
+     <!-- <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/metronic-5/vendors.bundle.css" th:href="@{/agcloud/framework/js-lib/metronic-5/vendors.bundle.css}"> -->
+    <!-- <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/ui-private/default/common/css/metronic.css" th:href="@{/agcloud/framework/ui-private/default/common/css/metronic.css}"> -->
+    <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.css" th:href="@{/agcloud/framework/js-lib/element-2/element.css}">
+    <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/ui-private/default/common/css/layout.css" th:href="@{/agcloud/framework/ui-private/default/common/css/layout.css}">
+    <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/ui-private/default/blue/css/theme.css" th:href="@{/agcloud/framework/ui-private/default/blue/css/theme.css}">
+     <link rel="stylesheet" href="../../../static/zjcs/common/css/reset.css" th:href="@{/zjcs/common/css/reset.css}">
+    <link rel="stylesheet" href="../../../static/zjcs/notice/css/index.css" th:href="@{/zjcs/notice/css/index.css}">
+    <script>
+        var ctx = '[[@{/}]]';
+        var businessFlag = '[[${businessFlag}]]'
+        // var ctx = 'http://192.168.32.46:8087/aoa/';
+    </script>
+</head>
+<body class="scrollable bodyCss">
+  <div class="header">
+    <iframe src="../common/header.html" th:src="@{/supermarket/main/header.html}" frameborder="0" width="100%" height="100%"></iframe>
+  </div>
+  <div class="main-content">
+    <div id="app" class="content" v-cloak v-loading="loading">
+    <div class="first-page" v-if="curPage==1">
+    	<div class="page-main clearfix">
+				<div class="page-sidebar">
+					<div class="sidebar-tit">公示公告</div>
+					<ul class="nav-tree" >
+						<li :class="index==0?'active':''" v-for="(item,index) in items" @click="tabToggle($event,item)">{{item.categoryName}}</li>
+						<!-- <li :class="type=='control'?'active':''" @click="tabToggle('control')">管理公告</li> -->
+					</ul>
+				</div>
+				<div class="sidebar-con">
+					<div class="sidebar-item" v-if="type=='message'">
+						<h2 class="service-tit">{{categoryName}}</h2>
+						<div class="tzgg-wrap">
+							<ul class="notice-list">
+								<li v-for="item in noticeList" >
+									<a href="javascript:void(0);" @click="curPage=2;listClick(item.contentId)">{{item.contentTitle}}</a>
+									<span class="notice-time">{{dateFormat(item.publishTime)}}</span>
+								</li>
+							</ul>
+              <el-pagination
+                background
+                align="right"
+                :pager-count="5"
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+                :page-sizes="[10, 20, 30, 50]"
+                :page-size="pageSize"
+                :current-page="page"
+                layout="total,sizes, prev, pager, next, jumper"
+                :total="total"
+                v-show="total>10">
+              </el-pagination>
+						</div>
+					</div>
+					<!-- <div class="sidebar-item" v-else>
+						<h2 class="service-tit">管理公告</h2>
+						<div class="tzgg-wrap">
+							<ul class="notice-list">
+								<li v-for="item in controlList">
+									<a href="javascript:void(0);" @click="curPage=2;listClick(item.name)">{{item.name}}</a>
+									<span class="notice-time">{{item.time}}</span>
+								</li>
+							</ul>
+						</div>
+					</div> -->
+				</div>
+			</div>
+    </div>
+		<div class="second-page" v-else>
+			<div class="nav">
+        <!-- <button type="button" class="btn btn-secondary back" @click="curPage=1;">返回列表</button> -->
+         <el-button @click="curPage=1;">返回列表</el-button>
+      </div>
+      <div class="content">
+      	<div>
+      		<h2 style="text-align:center;">{{contentWord.contentTitle}}</h2>
+	      	<p style="text-align:center;margin:15px 0;">{{dateFormat(contentWord.publishTime)}}</p>
+	      	<div v-html="contentWord.contentText" v-if="contentWord.contentText"></div>
+          <a href="javascript:void(0);" v-for="item in contentWord.attList" @click="download(item)" v-else>{{item.attName}}</a>
+      	</div>
+  <!--     	<div v-else class="pdfBox">
+      		<h2 style="text-align:center;">{{contentWord[num].title}}</h2>
+      		<a href="../../../static/notice/img/0.pdf" download v-if='num==0' >{{contentWord[num].title}}.pdf</a>
+      		<a href="../../../static/notice/img/0.pdf" download v-if='num==1' >{{contentWord[num].title}}.pdf</a>
+      	</div> -->
+      </div>
+		</div>
+    </div>
+  </div>
+  <div class="footer">
+    <iframe src="../common/footer.html" th:src="@{/supermarket/main/footer.html}" frameborder="0" width="100%" height="100%"></iframe>
+  </div>
+
+</body>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js" th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js"
+  th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
+ <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js" th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/ui-private/common/js/common.js"
+  th:src="@{/agcloud/framework/ui-private/common/js/common.js}"></script>
+
+<script src="../../../static/zjcs/notice/js/index.js" th:src="@{/zjcs/notice/js/index.js}" type="text/javascript"></script>
+</html>

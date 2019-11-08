@@ -1,0 +1,319 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
+    http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <preConditions>
+        <dbms type="mysql"/>
+    </preConditions>
+
+    <changeSet id="20190604105700" author="huangzl" failOnError="false">
+        <addColumn tableName="ACT_STO_FORM">
+            <column name="FORM_LAYOUT_HTML" type="BLOB" remarks="表单布局html" />
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="201906041100" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_item_basic`
+            MODIFY COLUMN `ITEM_TYPE`  varchar(10) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '事项性质小分类，来自于数据字典',
+            MODIFY COLUMN `ITEM_NATURE`  varchar(2) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '事项性质大分类：0-标准事项，8-中介服务事项，9-服务协同，6-市政公用服务',
+            MODIFY COLUMN `IS_MILESTONE_ITEM`  varchar(1) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '是否里程碑事项,0表示否,1表示阶段内所有事项办结才算阶段办结,2表示阶段内任一事项办结阶段就办结';
+        </sql>
+    </changeSet>
+
+    <changeSet id="201906051109" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_item_basic`
+            MODIFY COLUMN `ITEM_NATURE`  varchar(2) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '事项性质大分类：0-行政事项，8-中介服务事项，9-服务协同，6-市政公用服务';
+        </sql>
+    </changeSet>
+
+    <changeSet id="201906100922" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_item_basic`
+            MODIFY COLUMN `IS_MILESTONE_ITEM`  varchar(1) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '是否里程碑事项,0表示否,1是';
+        </sql>
+    </changeSet>
+
+    <changeSet id="201906100927" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_item_basic`
+            ADD COLUMN `SFSXGZCNZ`  char(1) NULL COMMENT '0: 实行审批制  1: 实行告知承诺制 同一事项事项审批制与告知承诺制，应赋予不同的事项编号';
+        </sql>
+    </changeSet>
+
+    <changeSet id="201906100933" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_par_stage`
+            ADD COLUMN `LCBSXLX`  char(1) NULL COMMENT '1:属于该审批阶段的所有里程碑事项办结，该审批阶段才算办结;2:属于该审批阶段的任一项里程碑事项办结，该审批阶段就算办结',
+            ADD COLUMN `DYBZSPJDXH`  varchar(200) NULL COMMENT '1 立项用地规划许可 2 立项用地规划许可 3 施工许可 4 竣工验收 5 并行推进';
+        </sql>
+    </changeSet>
+
+    <changeSet id="201906101642" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_item_basic`
+            MODIFY COLUMN `SXMLZT`  varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '事项状态: 1 在用 2暂停 3取消 4删除';
+        </sql>
+    </changeSet>
+
+    <changeSet id="201906110935" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_par_stage`
+            ADD COLUMN `IS_FRONT_CHECK_ITEM`  char(1) NULL COMMENT '是否允许设置前置检查事项  0 禁止  1允许';
+            ALTER TABLE `aea_par_stage_item`
+            MODIFY COLUMN `IS_OPTION_ITEM`  varchar(1) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '是否可选事项 0表示并联审批事项 1表示并行推进事项 2前置检查事项';
+            UPDATE aea_par_stage
+            SET IS_FRONT_CHECK_ITEM = CASE IS_FRONT_CHECK_ITEM
+            WHEN '0' THEN '0'
+            WHEN '1' THEN '1'
+            ELSE '0' END;
+        </sql>
+    </changeSet>
+
+    <changeSet id="201906111120" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_par_theme`
+            ADD COLUMN `GJBZSPLCLX`  varchar(200) NULL COMMENT '国家审批流程类型,查看标准';
+        </sql>
+    </changeSet>
+
+    <changeSet id="201906131153" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_par_theme_ver`
+            MODIFY COLUMN `IS_PUBLISH`  varchar(1) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '版本状态 0 未发布  1 已发布  2 试运行  3 已过时';
+        </sql>
+    </changeSet>
+
+    <changeSet id="201906181503" author="linpx" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_linkman_info`
+            ADD COLUMN `IMG_URL` varchar(500) NULL COMMENT '图片地址' AFTER `LOGIN_PWD`;
+        </sql>
+    </changeSet>
+
+    <changeSet id="201906191534" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_item_basic`
+            MODIFY COLUMN `SEND_RESULT_MODE`  varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '办理结果送达方式,存在多种方式，用逗号隔开';
+        </sql>
+    </changeSet>
+
+    <changeSet id="201906181843" author="zhangwn" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aoa_notice_content`
+            ADD COLUMN `BUSINESS_FLAG`  varchar(50) NULL COMMENT '业务标志。来自数据字典';
+        </sql>
+    </changeSet>
+
+    <changeSet id="201906211745" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_par_theme`
+            ADD COLUMN `IS_ONLINE_SB`  char(1) NULL DEFAULT 1 COMMENT '是否允许网上申报，0表示不允许，1表示允许，默认是允许';
+            update aea_par_theme set IS_ONLINE_SB=CASE IS_ONLINE_SB WHEN (IS_ONLINE_SB IS NULL) THEN '1' ELSE IS_ONLINE_SB END;
+        </sql>
+    </changeSet>
+
+    <changeSet id="20190625113600" author="xiaohutu" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aoa_notice_category`  ADD COLUMN `BUSINESS_FLAG` varchar(50) NULL COMMENT '业务标志。来自数据字典' AFTER `MODIFY_TIME`;
+        </sql>
+    </changeSet>
+
+    <changeSet id="20190625194200" author="chendx" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_item_guide_accordings`
+            MODIFY COLUMN `ACCORDINGNUMBER`  varchar(200) NULL DEFAULT NULL COMMENT '依据文号' AFTER `ITEM_VER_ID`;
+            ALTER TABLE `aea_item_guide_accordings`
+            MODIFY COLUMN `TERMSNUMBER`  varchar(1000) NULL DEFAULT NULL AFTER `TERMSCONTENT`;
+        </sql>
+    </changeSet>
+
+    <changeSet id="201906270959" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_par_stage`
+            ADD COLUMN `HAND_WAY`  char(1) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '处理方式 0 多事项直接合并办理  1 按阶段多级情形组织事项办理';
+            update aea_par_stage set HAND_WAY= '1' AND IS_DELETED = '0';
+        </sql>
+    </changeSet>
+
+    <changeSet id="201907021042" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_item_basic`
+            MODIFY COLUMN `DOC_TEMPLATE`  mediumblob NULL COMMENT '文书模版',
+            MODIFY COLUMN `APPLY_TABLE_DEMO`  mediumblob NULL COMMENT '申请表范本',
+            MODIFY COLUMN `APPLY_TABLE_TEMPLATE`  mediumblob NULL COMMENT '申请表模版';
+        </sql>
+    </changeSet>
+
+    <changeSet id="201907021850" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_item_service_window`
+            MODIFY COLUMN `MAP_ATT`  text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '地图附件';
+        </sql>
+    </changeSet>
+
+    <changeSet id="201906271300" author="linpx" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_proj_info`
+            ADD COLUMN `GCBM` varchar(100) NULL COMMENT '工程编码';
+        </sql>
+    </changeSet>
+
+    <changeSet id="201907091531" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_item_service_window`
+            MODIFY COLUMN `REGION_CODE` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '行政区划代码',
+            MODIFY COLUMN `ORG_CODE`  varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '组织机构代码',
+            MODIFY COLUMN `MAP_ATT`  varchar(1000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '地图附件';
+
+            ALTER TABLE `aea_item_service_window`
+            ADD COLUMN `CREATER`  varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '创建人',
+            ADD COLUMN `CREATE_TIME`  datetime NOT NULL COMMENT '创建时间',
+            ADD COLUMN `MODIFIER`  varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '修改人',
+            ADD COLUMN `MODIFY_TIME`  datetime NULL DEFAULT NULL COMMENT '修改时间';
+
+            ALTER TABLE `aea_item_service_window_rel`
+            DROP COLUMN `MODIFIER`,
+            DROP COLUMN `MODIFY_TIME`;
+
+            ALTER TABLE `aea_item_service_window_rel`
+            COMMENT='业务与服务窗口关联表';
+
+            ALTER TABLE `aea_item_service_legal`
+            MODIFY COLUMN `LEGAL_ID`  varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '法律法规ID';
+
+            ALTER TABLE `aea_item_service_legal`
+            ADD COLUMN `CREATER`  varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '创建人' ,
+            ADD COLUMN `CREATE_TIME`  datetime NOT NULL COMMENT '创建时间',
+            ADD COLUMN `MODIFIER`  varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '修改人' ,
+            ADD COLUMN `MODIFY_TIME`  datetime NULL DEFAULT NULL COMMENT '修改时间' ;
+
+            ALTER TABLE `aea_item_service_legal_clause`
+            MODIFY COLUMN `LEGAL_CLAUSE_ID`  varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '法律法规条款ID',
+            MODIFY COLUMN `LEGAL_ID`  varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '法律法规ID';
+
+            ALTER TABLE `aea_item_service_basic`
+            DROP COLUMN `MODIFIER`,
+            DROP COLUMN `MODIFY_TIME`,
+            MODIFY COLUMN `BASIC_ID`  varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '设立依据ID';
+
+            CREATE TABLE `aea_par_stage_charges` (
+            `CHARGE_ID` varchar(100) NOT NULL COMMENT '主键',
+            `STAGE_ID` varchar(100) DEFAULT NULL COMMENT '阶段ID',
+            `FEE_NAME` varchar(200) DEFAULT NULL COMMENT '收费项目名称',
+            `FEE_ORG` varchar(2000) DEFAULT NULL COMMENT '收费主体',
+            `FEE_TYPE` char(1) DEFAULT NULL COMMENT '收费性质 1 行政事业性收费 2 经营服务性收费',
+            `FEE_TYPE_TEXT` varchar(100) DEFAULT NULL COMMENT '收费性质文本',
+            `BYLAW` mediumtext COMMENT '收费依据',
+            `IS_DESC` char(1) DEFAULT NULL COMMENT '是否允许减免 1是 0否',
+            `IS_DESC_TEXT` varchar(100) DEFAULT NULL COMMENT '是否允许减免文本',
+            `DESC_EXPLAIN` mediumtext COMMENT '收费减免情形说明',
+            `DESC_LAW` mediumtext COMMENT '减免法律依据',
+            `FEE_STAND` mediumtext,
+            `REMARK` varchar(500) DEFAULT NULL COMMENT '收费项目备注',
+            `SORT_NO` int(11) DEFAULT NULL COMMENT '收费项目排序',
+            `CREATER` varchar(50) NOT NULL COMMENT '创建人',
+            `CREATE_TIME` datetime NOT NULL COMMENT '创建时间',
+            `MODIFIER` varchar(50) DEFAULT NULL COMMENT '修改人',
+            `MODIFY_TIME` datetime DEFAULT NULL COMMENT '修改时间',
+            PRIMARY KEY (`CHARGE_ID`) USING BTREE
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='阶段办事指南收费项目信息';
+
+            CREATE TABLE `aea_par_stage_questions` (
+            `QUESTION_ID` varchar(100) NOT NULL COMMENT '主建',
+            `STAGE_ID` varchar(100) DEFAULT NULL COMMENT '阶段ID',
+            `QUESTION` text COMMENT '常见问题',
+            `ANSWER` text COMMENT '解答',
+            `SORT_NO` int(11) DEFAULT NULL COMMENT '排序',
+            `CREATER` varchar(50) NOT NULL COMMENT '创建人',
+            `CREATE_TIME` datetime NOT NULL COMMENT '创建时间',
+            `MODIFIER` varchar(50) DEFAULT NULL COMMENT '修改人',
+            `MODIFY_TIME` datetime DEFAULT NULL COMMENT '修改时间',
+            PRIMARY KEY (`QUESTION_ID`) USING BTREE
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='阶段办事指南常见问题回答';
+
+            CREATE TABLE `aea_par_stage_guide` (
+            `GUIDE_ID` varchar(100) NOT NULL COMMENT '操作指南ID',
+            `STAGE_ID` varchar(100) NOT NULL COMMENT '阶段ID',
+            `APPLY_OBJ` varchar(500) DEFAULT NULL COMMENT '受理对象',
+            `ACCEPT_COND` text COMMENT '受理条件',
+            `LEGAL_DAY` double(10,0) DEFAULT NULL COMMENT '法定办结时限',
+            `LEGAL_TYPE` varchar(10) DEFAULT NULL COMMENT '法定办结时限单位',
+            `LEGAL_DESC` text COMMENT '法定办结时限说明',
+            `PROMISE_DAY` double(10,0) DEFAULT NULL COMMENT '承诺办结时限',
+            `PROMISE_TYPE` varchar(10) DEFAULT NULL COMMENT '承诺办结时限单位',
+            `PROMISE_DESC` text COMMENT '承诺办结时限说明',
+            `COMSUP_ADDRESS` varchar(500) DEFAULT NULL COMMENT '投诉监督窗口地址',
+            `COMSUP_EMAIL` varchar(500) DEFAULT NULL COMMENT '投诉监督电子邮箱',
+            `COMSUP_LETTER` varchar(500) DEFAULT NULL COMMENT '投诉监督信函地址',
+            `COMSUP_TEL` varchar(500) DEFAULT NULL COMMENT '投诉监督电话',
+            `COMSUP_ONLINE` varchar(500) DEFAULT NULL COMMENT '网上投诉监督网址',
+            `CKBLLC` text COMMENT '窗口申报办理流程说明',
+            `CKBLLCT` varchar(500) DEFAULT NULL COMMENT '窗口办理流程图（建议统一使用附件管理模块功能）',
+            `WSBLLC` text COMMENT '网上申报办理流程',
+            `WSBLLCT` varchar(500) DEFAULT NULL COMMENT '网上办理流程图（建议统一使用附件管理模块功能）',
+            `HANDLE_FLOW` text COMMENT '办理程序',
+            `HANDLE_TIMELIMIT_DESC` varchar(1000) DEFAULT NULL COMMENT '办理时限说明',
+            `GUIDE_DEMO` varchar(1000) DEFAULT NULL COMMENT '备注说明',
+            `WARM_PROMPT` varchar(1000) DEFAULT NULL COMMENT '温馨提示',
+            `GUIDE_ATT` varchar(500) DEFAULT NULL COMMENT '流程图附件（建议统一使用附件管理模块功能）',
+            PRIMARY KEY (`GUIDE_ID`) USING BTREE
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='阶段办事指南基本信息';
+        </sql>
+    </changeSet>
+
+    <changeSet id="201907091624" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_item_basic`
+            ADD COLUMN `IS_CITY_ITEM` char(1) NULL COMMENT '是否市级事项 0 否 1是',
+            ADD COLUMN `QX_ORG_IDS`  varchar(500) NULL COMMENT '区县部门列表，当时市级事项，分局承办，部门数据获取来源',
+            ADD COLUMN `JZ_ORG_IDS`  varchar(500) NULL COMMENT '街镇部门列表，当时市级事项，分局承办，部门数据获取来源';
+        </sql>
+    </changeSet>
+
+
+    <changeSet id="20190710104800" author="linpx" failOnError="false">
+        <addColumn tableName="aea_unit_linkman">
+            <column name="IS_BIND_ACCOUNT" type="char(1)" remarks="是否绑定账号：1 是， 0  否" afterColumn="CREATE_TIME"/>
+        </addColumn>
+
+        <addColumn tableName="aea_unit_linkman">
+            <column name="IS_ADMINISTRATORS" type="char(1)" remarks="是否为管理员：1 是，0 否" afterColumn="IS_BIND_ACCOUNT"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="201907301210" author="qinjp" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_hi_iteminst`
+            ADD COLUMN `ITEM_APPLY_CODE`  varchar(50) NULL COMMENT '事项申报流水号';
+        </sql>
+    </changeSet>
+
+
+    <changeSet id="201909111241" author="qinjp" failOnError="false">
+        <preConditions>
+            <not>
+                <columnExists tableName="aea_unit_info" columnName="TAXPAYER_NUM"/>
+            </not>
+        </preConditions>
+        <sql splitStatements="true">
+            alter table aea_unit_info add TAXPAYER_NUM varchar(64) default null comment '纳税人识别号';
+            alter table aea_unit_info add CREDIT_FLAG_NUM varchar(64) default null comment '信用标记码';
+        </sql>
+    </changeSet>
+
+    <changeSet id="201909151316" author="zhangwn" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_log_apply_state_hist`
+            ADD COLUMN `OPS_WINDOW_ID`  varchar(50) NULL COMMENT '办理窗口ID' AFTER `NEW_STATE`;
+            ALTER TABLE `aea_hi_applyinst`
+            MODIFY COLUMN `ROOT_ORG_ID`  varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '根组织 ID' AFTER `SMS_SEND_TIME`;
+            ALTER TABLE `aea_log_item_state_hist`
+            ADD COLUMN `OPS_ORG_ID`  varchar(50) NULL COMMENT '办件所属委办局组织ID' AFTER `NEW_STATE`;
+        </sql>
+    </changeSet>
+</databaseChangeLog>

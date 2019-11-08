@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${viewComment}"></title>
+
+    <!-- JS全局变量 -->
+    <script>
+        var ctx = '[[@{/}]]';
+        var viewId = '[[${viewId}]]';
+        var viewCode= '[[${viewCode}]]';
+    </script>
+
+    <!-- 引入AgCloud Framework框架公共JS，提供兼容性和统一样式支持，在引入easyui、bootstrap等JS库以后再引入该文件 -->
+    <link rel="stylesheet" href="/framework/ui-private/common/metronic-5/vendors.bundle.css" th:href="@{/agcloud/framework/ui-private/common/metronic-5/vendors.bundle.css}">
+    <link rel="stylesheet" href="/framework/ui-private/default/common/css/metronic.css" th:href="@{/agcloud/framework/ui-private/default/common/css/metronic.css}">
+    <link rel="stylesheet" href="/framework/ui-private/default/common/css/layout.css" th:href="@{/agcloud/framework/ui-private/default/common/css/layout.css}">
+    <link rel="stylesheet" href="/framework/ui-private/default/blue/css/theme.css" th:href="@{/agcloud/framework/ui-private/default/blue/css/theme.css}">
+
+    <!--bootstrap-table-->
+    <link th:href="@{/agcloud/framework/js-lib/bootstrap-table-v3/bootstrap-table.min.css}" rel="stylesheet" type="text/css">
+    <!--bootstrap-table补充样式-->
+    <!--<link href="${http_base_url}/ui-static/agcloud/framework/ui-scheme/scheme2/admin/css/ag-bootstrap-table.css" rel="stylesheet" type="text/css">-->
+    <link rel="stylesheet" th:href="@{/agcloud/bpm/front/view/common/css/commonSearch.css}" />
+    <link rel="stylesheet" th:href="@{/agcloud/framework/js-lib/bootstrap-table-v3/bootstrap-table-page.css}" />
+    <!--平台公用js-->
+    <script th:src="@{/agcloud/framework/ui-private/common/metronic-5/vendors.bundle.js}" type="text/javascript"></script>
+    <script th:src="@{/agcloud/framework/ui-private/common/metronic-5/scripts.bundle.js}" type="text/javascript"></script>
+    <script th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}" type="text/javascript"></script>
+    <script th:src="@{/agcloud/framework/ui-private/common/element-2/element.js}" type="text/javascript"></script>
+
+    <!--bootstrap-table-->
+    <script type="text/javascript" th:src="@{/agcloud/framework/js-lib/bootstrap-table-v3/bootstrap-table.min.js}" ></script>
+    <script type="text/javascript" th:src="@{/agcloud/framework/js-lib/bootstrap-table-v3/bootstrap-table-zh-CN.min.js}" ></script>
+    <script type="text/javascript" th:src="@{/agcloud/framework/js-lib/bootstrap-table-v3/bootstrap-table-page.js}" ></script>
+    <!--<script type="text/javascript" th:src="@{/agcloud/framework/theme-libs/metronic-v5/default/assets/vendors/base/bootstrap-datepicker-local.js"></script>-->
+    <script type="text/javascript" th:src="@{/agcloud/bpm/front/process/wfCommon.js}"></script>
+    <script type="text/javascript" th:src="@{/agcloud/bpm/front/view/common/js/commonSearch.js}" ></script>
+    <script type="text/javascript" th:src="@{/agcloud/bpm/front/view/common/js/commonFormatter.js}" ></script>
+    <script type="text/javascript" th:src="@{/agcloud/bpm/front/view/common/js/bootstrap-table-render.js}" ></script>
+    <script type="text/javascript" th:src="@{/agcloud/bpm/front/view/common/js/bootstrap-table-format.js}" ></script>
+    <script type="text/javascript" th:src="@{/agcloud/bpm/commom/bootstrap-datepicker-local.js}"></script>
+    <style type="text/css">
+        /* CSS Document */
+        /*表格*/
+        .table th {
+            font-weight: 700;
+            font-size: 15px;
+        }
+        .table th, .table td {
+            border-top: 1px solid #e8e8e8;
+            line-height: 20px!important;
+        }
+        .table thead th {
+            border-bottom: 1px solid #e8e8e8;
+        }
+        .ag-count-down{
+            height: 24px;
+            line-height: 24px;
+            padding: 0 10px;
+        }
+        btn-outline-primary.ag-count-down:hover {
+            color: #36a3f7!important;
+            background-color: #fff;
+            border-color: #36a3f7;
+        }
+        .btn.btn-outline-primary.ag-count-down.active, .btn.btn-outline-primary.ag-count-down.focus, .btn.btn-outline-primary.ag-count-down:focus, .btn.btn-outline-primary.ag-count-down:hover:not(:disabled) {
+            color: #36a3f7 !important;
+            background-color: #fff;
+            border-color: #36a3f7;
+            cursor: default;
+        }
+        .btn-outline-info.ag-count-down:hover {
+            color: #36a3f7!important;
+            background-color: #fff;
+            border-color: #36a3f7;
+        }
+        .btn.btn-outline-info.ag-count-down.active, .btn.btn-outline-info.ag-count-down.focus, .btn.btn-outline-info.ag-count-down:focus, .btn.btn-outline-info.ag-count-down:hover:not(:disabled) {
+            color: #36a3f7 !important;
+            background-color: #fff;
+            border-color: #36a3f7;
+            cursor: default;
+        }
+        .btn-outline-warning.ag-count-down:hover {
+            color: #ffb822!important;
+            background-color: #fff;
+            border-color: #ffb822;
+        }
+        .btn.btn-outline-warning.ag-count-down.active, .btn.btn-outline-warning.ag-count-down.focus, .btn.btn-outline-warning.ag-count-down:focus, .btn.btn-outline-warning.ag-count-down:hover:not(:disabled) {
+            color: #ffb822 !important;
+            background-color: #fff;
+            border-color: #ffb822;
+            cursor: default;
+        }
+        .btn-outline-danger.ag-count-down:hover {
+            color: #f4516c!important;
+            background-color: #fff;
+            border-color: #f4516c;
+        }
+        .btn.btn-outline-danger.ag-count-down.active, .btn.btn-outline-danger.ag-count-down.focus, .btn.btn-outline-danger.ag-count-down:focus, .btn.btn-outline-danger.ag-count-down:hover:not(:disabled) {
+            color: #f4516c !important;
+            background-color: #fff;
+            border-color: #f4516c;
+            cursor: default;
+        }
+        .flow_steps{
+            float: left;
+            width: 200px;
+        }
+        .stage{
+            margin-bottom: 0;
+        }
+        .stage li{
+            padding: 0px 4px 0  24px;
+            line-height: 26px;
+            background: #e2e2e2;
+            display:inline-block;
+            color: #fff;
+            position: relative;
+            margin-right: 3px;
+        }
+        .stage li:after{
+            content: '';
+            display: block;
+            border-top: 13px solid transparent;
+            border-bottom: 13px solid transparent;
+            border-left: 13px solid #e2e2e2;
+            position: absolute;
+            right: -13px;
+            top: 0;
+            z-index: 10;
+        }
+        .stage li:before{
+            content: '';
+            display: block;
+            border-top: 13px solid transparent;
+            border-bottom: 13px solid transparent;
+            border-left: 13px solid #fff;
+            position: absolute;
+            left: 0px;
+            top: 0;
+        }
+
+        .stage li:first-child{
+            border-radius: 4px 0 0 4px;
+        }
+        .stage li:last-child,.stageEnd{
+            border-radius: 0px 4px 4px 0px;
+            padding-right: 12px;
+        }
+        .stage li:first-child:before{
+            display: none;
+        }
+        .stage li.stage-success{
+            background: #34bfa3;
+        }
+        .stage li.stage-success:after{
+            border-left: 13px solid #34bfa3;
+        }
+        .stage li.current{
+            background: #36a3f7;
+        }
+        .stage li.current:after{
+            content: '';
+            display: block;
+            border-top: 13px solid transparent;
+            border-bottom: 13px solid transparent;
+            border-left: 13px solid #36a3f7;
+            position: absolute;
+            right: -13px;
+            top: 0;
+            z-index: 10;
+        }
+        .stage li:last-child:after,.stage li.current.stageEnd:after{
+            display: none;
+        }
+        .stage li.current.stageEnd:after{
+        }
+        .stage .item{
+            background-color:#36a3f7;
+            border-radius: 4px!important;
+            line-height: 18px;
+            padding: 6px 2px 6px 12px;
+        }
+        table td a i{
+            margin-top: -2px;
+        }
+
+        #customTable table{
+            color:#595959;
+        }
+        .fixed-table-container thead th:nth-last-child(2) .desc,.fixed-table-container thead th:nth-last-child(2) .asc{
+            background-position: 50% 9px;
+        }
+        .fixed-table-container thead th:nth-last-child(3) .desc,.fixed-table-container thead th:nth-last-child(3) .asc{
+            background-position: 70% 9px;
+        }
+        #customTable  thead tr th.proj_name{
+            width: 25%!important;
+        }
+        #customTable  thead tr th.insert_state_name{
+            /*width: 200px!important;*/
+        }
+        #customTable  tbody tr td.proj_name{
+            text-align: left!important;
+            width: 257px!important;
+        }
+        #customTable  tbody tr td.insert_state_name{
+            text-align: left!important;
+            width: 197px!important;
+            /*overflow: hidden;*/
+            /*text-overflow: ellipsis;*/
+            /*display: -webkit-box;*/
+            /*-webkit-box-orient: vertical;*/
+            /*-webkit-line-clamp: 2;*/
+            /*border-bottom: none;*/
+            /*padding-bottom: 0px;*/
+            /*margin-right: 0px;*/
+        }
+        #customTable thead tr{
+            background:rgba(244,243,248,0.5);
+        }
+
+        #customTable tbody tr:nth-child(odd){
+            background:rgba(244,243,248,0.3);
+        }
+        #APPLY_TYPE .option-title{
+            width: 70px;
+            text-align: right;
+        }
+    </style>
+</head>
+<body style="width: 100%;overflow-x: hidden;background:#fff;">
+<!-- 主要显示内容 -->
+<div class="ag-iframe-portlet" id="app">
+    <input type="hidden" id="pageCode" value="10101">
+    <input type="hidden" id="refdomain" value="">
+    <input type="hidden" id="refpagecode" value="01">
+
+    <!--搜索框-->
+    <div class="cxbox">
+        <div class="input-group float-left" style="width: 35%" >
+            <input type="text" id="searchInput_keyword" name="mykey" class="form-control form-control-warning" placeholder="请输入查询关键字">
+            <div class="input-group-append">
+                <button class="btn btn-primary m-btn--icon" onclick="keywordChange()" type="button"><span><i class="flaticon flaticon-search"></i> <span>查询</span></span></button>
+            </div>
+
+        <!--<span th:if="${bpmViewEntity.searchItemEntities}">
+            &lt;!&ndash;<a href="#" id="advanceQueryButton" onclick="collapseExpansionSearch('local_data',  'query-conditions');fitTable()" >高级查询</a>&ndash;&gt;
+        </span>-->
+    </div>
+        <!-- 工具栏，放按钮 -->
+        <!--<div class="toolBar">-->
+            <!--<span ><button id="viewBtn" onclick="nextView()" class="btn btn-primary" type="button">树型表格</button></span>-->
+            <!--<span ><button onclick="createProject()" class="btn btn-primary" type="button">新建项目</button></span>-->
+        <!--</div>-->
+</div>
+
+<br/>
+<br/>
+
+<div class="query-conditions">
+    <div class="yixuan clearfix">
+        <table class="fl">
+            <tbody>
+            <tr class="new">
+                <td><p class="part-title-icon-bg part-title-icon-bg-blue"><i class="glyphicon glyphicon-compressed"></i></p></td>
+                <td width="80" align="left" class="title">已选条件：</td><td><div class="yixuanNavList"></div></td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="clear-all-conditions fl">
+            <a href="#" onclick="clearAllCondition()" class="clear-btn"><span><i class=" fa fa-trash-o"></i>&nbsp;清空</span></a>
+            <span class="sel-count">共 <b id="queryResultCount"></b> 条满足条件</span>
+        </div>
+
+        <!--<div class="enshrine fl">-->
+        <!--<a href="#" onclick="alert('功能开发中，敬请期待！')" class="enshrine-btn"><span><i class=" fa fa-star-o"></i>&nbsp;收藏</span></a>-->
+        <!--</div>-->
+    </div>
+    <div class="sel">
+        <!--<span th:if="${bpmViewEntity.searchItemEntities}">
+            <span th:each="item : ${bpmViewEntity.searchItemEntities}">
+                <span th:utext="${item.widgetsHtml}"></span>
+             </span>
+        </span>-->
+</div>
+</div>
+<!--搜索框 END-->
+<div class="m-portlet__body " style="padding-top: 15px;clear: both;background:#fff;">
+    <table  id="customTable">
+    </table>
+</div>
+
+    <!--  催办 弹窗 -->
+    <el-dialog title="催办" :visible.sync="remindDialogVisible" class="dialog sendDialog" id="remindDialog">
+
+    </el-dialog>
+</div>
+<script>
+    var vm = new Vue({
+        el: '#app',
+        data: {
+            remindDialogVisible: false,
+        },
+        created: function () {
+        },
+        mounted: function () {
+        },
+        methods: {
+            showRemindDialog:function () {
+                vm.remindDialogVisible = true;
+            }
+        },
+    });
+</script>
+<script>
+    //表格初始化完成回调事件
+    function loadCallback(data) {
+        // fitTable();
+        //表头样式
+        $(".fixed-table-header").css("margin-bottom","-1px");
+        //同步查询结果数
+        if(data && data.total >= 0){
+            $("#queryResultCount").text(data.total);
+        }
+    }
+    var callbackOptions= {
+        loadCallback:loadCallback
+    };
+  $(function(){
+    var commonSearchData = {
+      url : '',//查询url
+      title : "您已选择",
+      dataList : [],
+      total:0
+    };
+    $("#search").commonSearch(commonSearchData,function(param){
+      //TODO 查询回调函数
+    });
+
+    $('#closeProblemViewModelBtn').click(function(){
+      $('#problem_view_modal').modal('hide');
+    });
+    //初始化日期查询框
+    initDateQuery();
+    //初始化数字查询框
+    initNumberQuery();
+
+    //20180725 新增
+    //窗口变化时，去动态计算是否有更多项，并显示更多按钮
+    $(window).resize(function() {
+      showOrHiddenMoreBtn();
+      fitTable();
+      iframeScroll();  //屏幕变化改变iframe内scroll
+    });
+
+    //使用bootstrap-table渲染数据，参数：表格div 的id，查询参数，自定义回调函数集合
+    bootstrapTable = bootstrapTableRender.initTable(mdatatableId,callbackOptions);
+
+    // add by zl 2018/11/2 start
+
+    // 設置內容部分超出滾動而非整個iframe滾動
+    function iframeScroll(){
+        if($('.iframe-content').length > 0 && $('.iframe-content').offset()){
+            var contentTop = $('.iframe-content').offset().top;
+            var height = $(window).height();
+            $('.iframe-content').css({'height':height-contentTop+'px'});
+        }
+    }
+    iframeScroll();
+
+    // add by zl 2018/11/2 end
+  })
+</script>
+<script>
+  var mdatatableId='customTable';
+  var queryInput_name_mykey='searchInput_keyword';
+  var bootstrapTable;
+  //查看
+  function editProblem(rowData){
+    $('#problem_view_modal_title').html('编辑问题上报信息');
+    $('#problem_view_modal').modal('show');
+
+    var arr=rowData.PROBLEM_TYPE.split(',');
+    $('#problem_view_modal').find('select[name="PROBLEM_TYPE_SELECT"]').selectpicker('val', arr);
+
+    loadFormData(true,"#problem_view_form",rowData);
+
+  }
+
+  function saveProblem(){
+    var problemType = $('#problem_view_modal').find('select[name="PROBLEM_TYPE_SELECT"]').selectpicker('val');
+    var params = $('#problem_view_form').serializeArray();
+    params.push({"name":"PROBLEM_TYPE","value":problemType.toString()});
+
+    var values = {};
+    for (var item in params) {
+      values[params[item].name] = params[item].value;
+    }
+
+    $.ajax({
+      url: ctx+'/front/smart/form/saveMobileFormData.do',
+      type: "post",
+      data: {
+        isNew: '0',
+        formCode: 'TEST_PROBLEM',
+        values: JSON.stringify(values)
+      },
+      dataType: "json",
+      error: function(result) {
+        swal('错误信息', result.message, 'error');
+      },
+      success: function(result) {
+        if(result.success){
+          swal('提示信息', "保存信息成功！", 'info');
+        }else{
+          swal('错误信息', "保存信息失败！", 'error');
+        }
+      }
+    });
+  }
+  //表格自适应
+  function fitTable() {
+    // var element = $(".query-conditions");
+    // var height = $("#" + mdatatableId).height() + 74+100;
+    // if(element.hasClass("on")){
+    //     height = height > window.innerHeight - 217+100 - element.height() ? height : window.innerHeight - 217+100 - element.height();
+    // }else{
+    //     height = height > window.innerHeight - 183+100 ? height : window.innerHeight - 183+100;
+    // }
+    //刷新表格高度
+    // bootstrapTable.bootstrapTable("resetView"/*,{height:height}*/);
+  }
+
+  /* //剩余天数
+   function restOfDay(value, row, index) {
+       var time = new Date().getTime();//当前时间
+       var time2 = new Date(row.START_TIME).getTime();//阶段开始时间
+       var time3 = row.DUE_NUM * 24 * 60 * 60 * 1000;//阶段承诺办理时间
+       if(time > (time2+time3)){
+           var result = Math.ceil((time - (time2 + time3))/ (24 * 60 * 60 * 1000));
+           // return "<div style='text-align:center;padding: 3px 0px;border:1px solid #ccc;border-radius:20px;width: 100px'>逾期"+ result +"天</div>";
+           return "<span class=\"btn m-btn--pill btn-outline-danger ag-count-down\">逾期"+ result +"天</span>";
+       }else{
+           var result = Math.ceil((time3 + time2 - time)/ (24 * 60 * 60 * 1000));
+           // return "<div style='text-align:center;padding: 3px 0px;border:1px solid #ccc;border-radius:20px;width: 100px'>剩余"+ result +"天</div>";
+           var color = " btn-outline-info "
+           if(result <= 2){
+               color = " btn-outline-warning ";
+           }
+           return "<span class=\"btn m-btn--pill "+ color +" ag-count-down\">剩余"+ result +"天</span>";
+       }
+   }
+
+   //承诺天数
+   function promiseDate(value, row, index) {
+       var time = value * 24 * 60 * 60 * 1000;//将承诺天数换算层毫秒
+       var time2 = new Date(row.START_TIME).getTime();//获取开始受理的时间值
+       return formatDatetimeCommon(time + time2,'yyyy年MM月dd日');
+   }*/
+</script>
+
+</body>
+</html>

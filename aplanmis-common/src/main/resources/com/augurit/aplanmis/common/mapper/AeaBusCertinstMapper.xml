@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by Administrator    2019-07-04 17:12:20 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaBusCertinstMapper">
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns">
+        BUS_CERTINST_ID  busCertinstId,
+    BUS_TABLE_NAME  busTableName,
+    CERTINST_ID  certinstId,
+    AUDIT_FLAG  auditFlag,
+    IS_DELETE  isDelete,
+    CREATER  creater,
+    CREATE_TIME  createTime,
+    MODIFIER  modifier,
+    MODIFY_TIME  modifyTime,
+    PK_NAME  pkName,
+    BUS_RECORD_ID  busRecordId,
+    MEMO  memo,
+    ROOT_ORG_ID rootOrgId
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaBusCertinstById" resultType="AeaBusCertinst">
+        select
+        <include refid="allColumns"/>
+        from AEA_BUS_CERTINST
+        where BUS_CERTINST_ID = #{id}
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaBusCertinst" resultType="AeaBusCertinst">
+        select
+        <include refid="allColumns"/>
+        from AEA_BUS_CERTINST
+        <where>
+            <if test="busCertinstId != null">
+                AND BUS_CERTINST_ID = #{busCertinstId}
+            </if>
+            <if test="busTableName != null">
+                AND BUS_TABLE_NAME = #{busTableName}
+            </if>
+            <if test="certinstId != null">
+                AND CERTINST_ID = #{certinstId}
+            </if>
+            <if test="auditFlag != null">
+                AND AUDIT_FLAG = #{auditFlag}
+            </if>
+            <if test="isDelete != null">
+                AND IS_DELETE = #{isDelete}
+            </if>
+            <if test="creater != null">
+                AND CREATER = #{creater}
+            </if>
+            <if test="createTime != null">
+                AND CREATE_TIME = #{createTime}
+            </if>
+            <if test="modifier != null">
+                AND MODIFIER = #{modifier}
+            </if>
+            <if test="modifyTime != null">
+                AND MODIFY_TIME = #{modifyTime}
+            </if>
+            <if test="pkName != null">
+                AND PK_NAME = #{pkName}
+            </if>
+            <if test="busRecordId != null">
+                AND BUS_RECORD_ID = #{busRecordId}
+            </if>
+            <if test="memo != null">
+                AND MEMO = #{memo}
+            </if>
+            <if test="rootOrgId != null">
+                AND ROOT_ORG_ID = #{rootOrgId}
+            </if>
+        </where>
+    </select>
+    <!--4 根据条件查询实体list,返回分页对象 -->
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaBusCertinst" parameterType="AeaBusCertinst">
+        insert into AEA_BUS_CERTINST (BUS_CERTINST_ID, BUS_TABLE_NAME, CERTINST_ID, AUDIT_FLAG, IS_DELETE, CREATER,
+                                      CREATE_TIME, MODIFIER, MODIFY_TIME, PK_NAME, BUS_RECORD_ID, MEMO,ROOT_ORG_ID)
+        values (#{busCertinstId}, #{busTableName}, #{certinstId}, #{auditFlag}, #{isDelete}, #{creater}, #{createTime},
+                #{modifier}, #{modifyTime}, #{pkName}, #{busRecordId}, #{memo},#{rootOrgId})
+    </insert>
+    <!--6 修改实体对象 -->
+    <update id="updateAeaBusCertinst" parameterType="AeaBusCertinst">
+        update AEA_BUS_CERTINST
+        <set>
+            <if test="busCertinstId != null">
+                BUS_CERTINST_ID = #{busCertinstId},
+            </if>
+            <if test="busTableName != null">
+                BUS_TABLE_NAME = #{busTableName},
+            </if>
+            <if test="certinstId != null">
+                CERTINST_ID = #{certinstId},
+            </if>
+            <if test="auditFlag != null">
+                AUDIT_FLAG = #{auditFlag},
+            </if>
+            <if test="isDelete != null">
+                IS_DELETE = #{isDelete},
+            </if>
+            <if test="creater != null">
+                CREATER = #{creater},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime},
+            </if>
+            <if test="modifier != null">
+                MODIFIER = #{modifier},
+            </if>
+            <if test="modifyTime != null">
+                MODIFY_TIME = #{modifyTime},
+            </if>
+            <if test="pkName != null">
+                PK_NAME = #{pkName},
+            </if>
+            <if test="busRecordId != null">
+                BUS_RECORD_ID = #{busRecordId},
+            </if>
+            <if test="memo != null">
+                MEMO = #{memo},
+            </if>
+            <if test="rootOrgId != null">
+                ROOT_ORG_ID = #{rootOrgId},
+            </if>
+        </set>
+        where BUS_CERTINST_ID = #{busCertinstId}
+    </update>
+    <!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaBusCertinst">
+        delete
+        from AEA_BUS_CERTINST
+        where BUS_CERTINST_ID = #{id}
+    </delete>
+    <!--8 删除实体对象列表,根据主键ID列表 -->
+    <!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaBusCertinst" id="AeaBusCertinstMap">
+        <id property="busCertinstId" column="BUS_CERTINST_ID"/>
+        <result property="busTableName" column="BUS_TABLE_NAME"/>
+        <result property="certinstId" column="CERTINST_ID"/>
+        <result property="auditFlag" column="AUDIT_FLAG"/>
+        <result property="isDelete" column="IS_DELETE"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="modifier" column="MODIFIER"/>
+        <result property="modifyTime" column="MODIFY_TIME"/>
+        <result property="pkName" column="PK_NAME"/>
+        <result property="busRecordId" column="BUS_RECORD_ID"/>
+        <result property="memo" column="MEMO"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+
+    </resultMap>
+
+    <delete id="deleteAeaBusCertinstByCertinstId">
+        UPDATE aea_bus_certinst  SET IS_DELETE = '1' WHERE CERTINST_ID = #{certinstId}
+    </delete>
+
+    <select id="getAeaBusCertinstByCertinstId" resultType="AeaBusCertinst">
+        select
+        <include refid="allColumns"/>
+        from AEA_BUS_CERTINST
+        where CERTINST_ID = #{certinstId}
+        AND BUS_RECORD_ID = #{busRecordId}
+    </select>
+
+    <delete id="deleteByCertinstId">
+        DELETE FROM aea_bus_certinst WHERE CERTINST_ID = #{certinstId}
+    </delete>
+
+    <delete id="deleteAeaBusCertinstByTableNameAndRecordId">
+        delete from aea_bus_certinst where BUS_TABLE_NAME = #{busTableName} and BUS_RECORD_ID =#{busRecordId}
+    </delete>
+
+    <insert id="batchInsertBusCertinst">
+        insert into AEA_BUS_CERTINST (
+        BUS_CERTINST_ID ,BUS_TABLE_NAME ,CERTINST_ID ,AUDIT_FLAG ,IS_DELETE ,CREATER ,CREATE_TIME ,MODIFIER ,MODIFY_TIME
+        ,PK_NAME ,BUS_RECORD_ID ,MEMO
+        ) values
+        <foreach collection="list" item="busCertinst" index="index" separator=",">
+            (#{busCertinst.busCertinstId},#{busCertinst.busTableName},#{busCertinst.certinstId},#{busCertinst.auditFlag},#{busCertinst.isDelete},#{busCertinst.creater},#{busCertinst.createTime},#{busCertinst.modifier},#{busCertinst.modifyTime},#{busCertinst.pkName},#{busCertinst.busRecordId},#{busCertinst.memo})
+        </foreach>
+
+    </insert>
+
+    <!--查询相关执业人员的已有资格证书/职称证书-->
+    <select id="listLinkmanCertinstName" resultType="AeaBusCertinst">
+        SELECT
+        ahc.CERTINST_NAME certinstName,
+        abc.BUS_RECORD_ID busRecordId,
+        t1.LINKMAN_INFO_ID linkmanInfoId
+        FROM aea_bus_certinst abc
+        LEFT JOIN aea_hi_certinst ahc ON abc.CERTINST_ID = ahc.CERTINST_ID
+        LEFT JOIN (
+        SELECT SERVICE_LINKMAN_ID,LINKMAN_INFO_ID
+        FROM aea_im_service_linkman
+        WHERE LINKMAN_INFO_ID in
+        <foreach collection="linkmanIds" item="id" index="i" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        ) t1
+        ON t1.SERVICE_LINKMAN_ID = abc.BUS_RECORD_ID
+        WHERE abc.BUS_RECORD_ID in(
+        SELECT SERVICE_LINKMAN_ID
+        FROM aea_im_service_linkman
+        WHERE LINKMAN_INFO_ID in
+        <foreach collection="linkmanIds" item="id" index="i" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        )
+        AND abc.BUS_TABLE_NAME = 'aea_im_service_linkman'
+    </select>
+
+    <update id="updateAeaBusCertinstByAudit" parameterType="AeaBusCertinst">
+        update AEA_BUS_CERTINST
+        <set>
+            AUDIT_FLAG = #{auditFlag},
+            MEMO = #{memo},
+            <if test="modifier != null">
+                MODIFIER = #{modifier},
+            </if>
+            <if test="modifyTime != null">
+                MODIFY_TIME = #{modifyTime},
+            </if>
+        </set>
+        where BUS_TABLE_NAME = #{busTableName} AND BUS_RECORD_ID = #{busRecordId}
+    </update>
+</mapper>

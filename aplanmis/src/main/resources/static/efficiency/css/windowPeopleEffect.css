@@ -1,0 +1,141 @@
+.non-data {
+  background: url('../images/non-data.png') no-repeat center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  height: 216px!important;
+  width: 180px;
+  transform: translateX(-50%) translateY(-50%);
+}
+.box-card .el-card__header {
+  height: 48px!important;
+  line-height: 26px!important;
+  padding: 10px 20px;
+}
+.index-wrapper {
+  padding: 15px;
+  padding-bottom: 5px;
+}
+.index-wrapper .status-card .status-card-item {
+  background: url(../images/sawtooth.png) no-repeat bottom;
+  float: left;
+  width: 16%;
+  margin: 0 0 16px 0.8%;
+  height: 90px;
+  background-size: contain;
+  padding: 10px 10px 10px 16px;
+  color: #fff;
+  cursor: pointer;
+  border-radius: 2px;
+}
+.index-wrapper .status-card .status-card-item .card-icon {
+  float: right;
+  display: inline-block;
+  width: 30px;
+  height: 32px;
+}
+.index-wrapper .status-card .status-card-item .icon-1 {
+  background-image: url("../images/windowUser/icon-1.png");
+  background-size: 100% 100%;
+}
+.index-wrapper .status-card .status-card-item .icon-2 {
+  background-image: url("../images/windowUser/icon-2.png");
+  background-size: 100% 100%;
+}
+.index-wrapper .status-card .status-card-item .icon-3 {
+  background-image: url("../images/windowUser/icon-3.png");
+  background-size: 100% 100%;
+}
+.index-wrapper .status-card .status-card-item .icon-4 {
+  background-image: url("../images/windowUser/icon-4.png");
+  background-size: 100% 100%;
+}
+.index-wrapper .status-card .status-card-item .icon-5 {
+  background-image: url("../images/windowUser/icon-5.png");
+  background-size: 100% 100%;
+}
+.index-wrapper .status-card .status-card-item .icon-6 {
+  background-image: url("../images/windowUser/icon-6.png");
+  background-size: 100% 100%;
+}
+.index-wrapper .status-card .status-card-item:hover {
+  opacity: .9;
+}
+.index-wrapper .status-card .me-count {
+  font-size: 28px;
+  padding-top: 5px;
+}
+.index-wrapper .status-card .status-card-item:first-child {
+  margin-left: 0;
+}
+.index-wrapper .status-card .status-card-item:last-child {
+  float: right;
+}
+.index-wrapper .status-card .waring-status {
+  background-color: #F0AB30;
+}
+.index-wrapper .status-card .waring-correct {
+  background-color: #F09030;
+}
+.index-wrapper .status-card .alerdy-correct {
+  background-color: #30AFF0;
+}
+.index-wrapper .status-card .not-shouli {
+  background-color: #9FA0B1;
+}
+.index-wrapper .status-card .time-yujing {
+  background-color: #F0AB30;
+}
+.index-wrapper .status-card .time-yuqi {
+  background-color: #F23D5B;
+}
+.index-wrapper .status-card .percent-bt {
+  font-size: 12px;
+}
+.index-wrapper .depart-box .depart-chart {
+  height: 300px;
+}
+.index-wrapper .depart-box .depart-table {
+  height: 300px;
+}
+.index-wrapper .declare-box .declare-month-and-area {
+  height: 736px;
+  height: 726px;
+}
+.index-wrapper .declare-box .declare-month-and-area .declare-month {
+  height: 360px;
+  height: 348px;
+}
+.index-wrapper .declare-box .declare-month-and-area .declare-month .rander-box {
+  height: 262px;
+}
+.index-wrapper .declare-box .declare-month-and-area .declare-area {
+  height: 360px;
+}
+.index-wrapper .declare-box .declare-month-and-area .declare-area .rander-box {
+  height: 262px;
+}
+.index-wrapper .declare-box .declare-theme {
+  height: 736px;
+  height: 720px;
+}
+.index-wrapper .declare-box .declare-theme .rander-box {
+  height: 635px;
+  height: 320px;
+  height: 315px;
+}
+.index-wrapper .bottom-show-box .theme-abnormal-box .rander-box {
+  height: 290px;
+}
+.index-wrapper .bottom-show-box .half-box .left-box {
+  width: 49%;
+}
+.index-wrapper .bottom-show-box .half-box .left-box .rander-box {
+  height: 290px;
+}
+.index-wrapper .bottom-show-box .half-box .right-box {
+  width: 49%;
+}
+.index-wrapper .bottom-show-box .half-box .right-box .rander-box {
+  height: 290px;
+}

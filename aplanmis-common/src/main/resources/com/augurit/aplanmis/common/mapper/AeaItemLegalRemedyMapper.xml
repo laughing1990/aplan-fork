@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by tiantian    2018-10-20 10:49:19 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaItemLegalRemedyMapper" >
+<!--1 返回所有字段的SQL字句 -->
+<sql id="allColumns" >
+    LEGAL_REMEDY_ID  legalRemedyId,
+    ITEM_BASIC_ID  itemBasicId,
+    WIN_COMPLAINT  winComplaint,
+    TEL_COMPLAINT  telComplaint,
+    ONLINE_COMPLAINT  onlineComplaint,
+    EMAIL_COMPLAINT  emailComplaint,
+    LETTER_COMPLAINT  letterComplaint,
+    REPLY_TIME_FORM  replyTimeForm,
+    ADM_RECON_DEPT  admReconDept,
+    ADM_RECON_ADDRESS  admReconAddress,
+    ADM_RECON_TEL  admReconTel,
+    ADM_RECON_NET_ADDRESS  admReconNetAddress,
+    ADM_PROCE_DEPT  admProceDept,
+    ADM_PROCE_TEL  admProceTel,
+    ADM_PROCE_ADDRESS  admProceAddress,
+    ADM_PROCE_NET_ADDRESS  admProceNetAddress,
+    DATA_ID  dataId,
+    CREATER  creater,
+    CREATE_TIME  createTime,
+    MODIFIER  modifier,
+    MODIFY_TIME  modifyTime
+    </sql>
+
+<!--2 根据主键ID查询单个实体 -->
+<select id="getAeaItemLegalRemedyById" resultType="AeaItemLegalRemedy" >
+    select
+    <include refid="allColumns"/>
+    from    AEA_ITEM_LEGAL_REMEDY
+    where    LEGAL_REMEDY_ID = #{id}
+</select>
+
+<!--3 根据条件查询实体list -->
+    <select id="listAeaItemLegalRemedy" resultType="AeaItemLegalRemedy" >
+        select
+        <include refid="allColumns"/>
+        from    AEA_ITEM_LEGAL_REMEDY
+    <where>
+        <if test="legalRemedyId != null" >
+        AND    LEGAL_REMEDY_ID = #{legalRemedyId}
+        </if>
+        <if test="itemBasicId != null" >
+        AND    ITEM_BASIC_ID = #{itemBasicId}
+        </if>
+        <if test="winComplaint != null" >
+        AND    WIN_COMPLAINT = #{winComplaint}
+        </if>
+        <if test="telComplaint != null" >
+        AND    TEL_COMPLAINT = #{telComplaint}
+        </if>
+        <if test="onlineComplaint != null" >
+        AND    ONLINE_COMPLAINT = #{onlineComplaint}
+        </if>
+        <if test="emailComplaint != null" >
+        AND    EMAIL_COMPLAINT = #{emailComplaint}
+        </if>
+        <if test="letterComplaint != null" >
+        AND    LETTER_COMPLAINT = #{letterComplaint}
+        </if>
+        <if test="replyTimeForm != null" >
+        AND    REPLY_TIME_FORM = #{replyTimeForm}
+        </if>
+        <if test="admReconDept != null" >
+        AND    ADM_RECON_DEPT = #{admReconDept}
+        </if>
+        <if test="admReconAddress != null" >
+        AND    ADM_RECON_ADDRESS = #{admReconAddress}
+        </if>
+        <if test="admReconTel != null" >
+        AND    ADM_RECON_TEL = #{admReconTel}
+        </if>
+        <if test="admReconNetAddress != null" >
+        AND    ADM_RECON_NET_ADDRESS = #{admReconNetAddress}
+        </if>
+        <if test="admProceDept != null" >
+        AND    ADM_PROCE_DEPT = #{admProceDept}
+        </if>
+        <if test="admProceTel != null" >
+        AND    ADM_PROCE_TEL = #{admProceTel}
+        </if>
+        <if test="admProceAddress != null" >
+        AND    ADM_PROCE_ADDRESS = #{admProceAddress}
+        </if>
+        <if test="admProceNetAddress != null" >
+        AND    ADM_PROCE_NET_ADDRESS = #{admProceNetAddress}
+        </if>
+        <if test="dataId != null" >
+        AND    DATA_ID = #{dataId}
+        </if>
+        <if test="creater != null" >
+        AND    CREATER = #{creater}
+        </if>
+        <if test="createTime != null" >
+        AND    CREATE_TIME = #{createTime}
+        </if>
+        <if test="modifier != null" >
+        AND    MODIFIER = #{modifier}
+        </if>
+        <if test="modifyTime != null" >
+        AND    MODIFY_TIME = #{modifyTime}
+        </if>
+    </where>
+    </select>
+<!--4 根据条件查询实体list,返回分页对象 -->
+
+<!--5 新增实体对象 -->
+<insert id="insertAeaItemLegalRemedy" parameterType="AeaItemLegalRemedy" >
+    insert into AEA_ITEM_LEGAL_REMEDY (
+LEGAL_REMEDY_ID  ,ITEM_BASIC_ID  ,WIN_COMPLAINT  ,TEL_COMPLAINT  ,ONLINE_COMPLAINT  ,EMAIL_COMPLAINT  ,LETTER_COMPLAINT  ,REPLY_TIME_FORM  ,ADM_RECON_DEPT  ,ADM_RECON_ADDRESS  ,ADM_RECON_TEL  ,ADM_RECON_NET_ADDRESS  ,ADM_PROCE_DEPT  ,ADM_PROCE_TEL  ,ADM_PROCE_ADDRESS  ,ADM_PROCE_NET_ADDRESS  ,DATA_ID  ,CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME
+    )  values  (
+#{legalRemedyId},#{itemBasicId},#{winComplaint},#{telComplaint},#{onlineComplaint},#{emailComplaint},#{letterComplaint},#{replyTimeForm},#{admReconDept},#{admReconAddress},#{admReconTel},#{admReconNetAddress},#{admProceDept},#{admProceTel},#{admProceAddress},#{admProceNetAddress},#{dataId},#{creater},#{createTime},#{modifier},  #{modifyTime}
+    )
+</insert>
+<!--6 修改实体对象 -->
+<update id="updateAeaItemLegalRemedy" parameterType="AeaItemLegalRemedy" >
+    update AEA_ITEM_LEGAL_REMEDY
+    <set >
+        <if test="legalRemedyId != null" >
+        LEGAL_REMEDY_ID = #{legalRemedyId},
+        </if>
+        <if test="itemBasicId != null" >
+        ITEM_BASIC_ID = #{itemBasicId},
+        </if>
+        <if test="winComplaint != null" >
+        WIN_COMPLAINT = #{winComplaint},
+        </if>
+        <if test="telComplaint != null" >
+        TEL_COMPLAINT = #{telComplaint},
+        </if>
+        <if test="onlineComplaint != null" >
+        ONLINE_COMPLAINT = #{onlineComplaint},
+        </if>
+        <if test="emailComplaint != null" >
+        EMAIL_COMPLAINT = #{emailComplaint},
+        </if>
+        <if test="letterComplaint != null" >
+        LETTER_COMPLAINT = #{letterComplaint},
+        </if>
+        <if test="replyTimeForm != null" >
+        REPLY_TIME_FORM = #{replyTimeForm},
+        </if>
+        <if test="admReconDept != null" >
+        ADM_RECON_DEPT = #{admReconDept},
+        </if>
+        <if test="admReconAddress != null" >
+        ADM_RECON_ADDRESS = #{admReconAddress},
+        </if>
+        <if test="admReconTel != null" >
+        ADM_RECON_TEL = #{admReconTel},
+        </if>
+        <if test="admReconNetAddress != null" >
+        ADM_RECON_NET_ADDRESS = #{admReconNetAddress},
+        </if>
+        <if test="admProceDept != null" >
+        ADM_PROCE_DEPT = #{admProceDept},
+        </if>
+        <if test="admProceTel != null" >
+        ADM_PROCE_TEL = #{admProceTel},
+        </if>
+        <if test="admProceAddress != null" >
+        ADM_PROCE_ADDRESS = #{admProceAddress},
+        </if>
+        <if test="admProceNetAddress != null" >
+        ADM_PROCE_NET_ADDRESS = #{admProceNetAddress},
+        </if>
+        <if test="dataId != null" >
+        DATA_ID = #{dataId},
+        </if>
+        <if test="creater != null" >
+        CREATER = #{creater},
+        </if>
+        <if test="createTime != null" >
+        CREATE_TIME = #{createTime},
+        </if>
+        <if test="modifier != null" >
+        MODIFIER = #{modifier},
+        </if>
+        <if test="modifyTime != null" >
+        MODIFY_TIME = #{modifyTime},
+        </if>
+    </set>
+    where LEGAL_REMEDY_ID = #{legalRemedyId}
+</update>
+<!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaItemLegalRemedy">
+        delete from   AEA_ITEM_LEGAL_REMEDY
+        where
+    LEGAL_REMEDY_ID = #{id}
+    </delete>
+<!--8 删除实体对象列表,根据主键ID列表 -->
+<!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaItemLegalRemedy" id="AeaItemLegalRemedyMap">
+        <id property="legalRemedyId" column="LEGAL_REMEDY_ID"/>
+        <result property="itemBasicId" column="ITEM_BASIC_ID"/>
+        <result property="winComplaint" column="WIN_COMPLAINT"/>
+        <result property="telComplaint" column="TEL_COMPLAINT"/>
+        <result property="onlineComplaint" column="ONLINE_COMPLAINT"/>
+        <result property="emailComplaint" column="EMAIL_COMPLAINT"/>
+        <result property="letterComplaint" column="LETTER_COMPLAINT"/>
+        <result property="replyTimeForm" column="REPLY_TIME_FORM"/>
+        <result property="admReconDept" column="ADM_RECON_DEPT"/>
+        <result property="admReconAddress" column="ADM_RECON_ADDRESS"/>
+        <result property="admReconTel" column="ADM_RECON_TEL"/>
+        <result property="admReconNetAddress" column="ADM_RECON_NET_ADDRESS"/>
+        <result property="admProceDept" column="ADM_PROCE_DEPT"/>
+        <result property="admProceTel" column="ADM_PROCE_TEL"/>
+        <result property="admProceAddress" column="ADM_PROCE_ADDRESS"/>
+        <result property="admProceNetAddress" column="ADM_PROCE_NET_ADDRESS"/>
+        <result property="dataId" column="DATA_ID"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="modifier" column="MODIFIER"/>
+        <result property="modifyTime" column="MODIFY_TIME"/>
+    </resultMap>
+
+    <!--10 根据事项ID查询单个实体 -->
+    <select id="getAeaItemLegalRemedyByItemId" resultType="AeaItemLegalRemedy" >
+        select
+        <include refid="allColumns"/>
+        from    AEA_ITEM_LEGAL_REMEDY
+        where    ITEM_BASIC_ID = #{itemBasicId}
+    </select>
+
+</mapper>

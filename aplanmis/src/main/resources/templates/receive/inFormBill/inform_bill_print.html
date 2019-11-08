@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <th:block th:include="common/common :: commonheader('告知单打印')" />
+    <th:block th:include="common/common :: ntkojs" />
+
+    <script type="text/javascript">
+        var  stageinstId = '${stageinstId}';    //阶段实例id
+        var  projInfoId = '${projInfoId}';    //项目id
+        var wordInfoData = null;  //word填充数据
+        var projInfoData = null;
+        //覆盖文档打开回调方法
+        function ntkoondocumentopened(str,doc) {
+            TANGER_OCX_bDocOpen = !0;//true
+            //当前打开的文档类型 0=没有文档；100 =其他文档类型；1=word；2=Excel.Sheet或者 Excel.Chart ；3=PowerPoint.Show；4= Visio.Drawing； 5=MSProject.Project；6= WPS Doc；7=Kingsoft.Sheet
+            opendoctype = TANGER_OCX_OBJ.DocType;
+            TANGER_OCX_OBJ.activeDocument.saved=true;//saved属性用来判断文档是否被修改过,文档打开的时候设置成ture,当文档被修改,自动被设置为false,该属性由office提供.
+            console.log("覆盖成功");
+
+            if(TANGER_OCX_bDocOpen){                    //当文档完全打开
+                officeToolBar();                            //不显示工具栏
+                objMenubar();                               //隐藏菜单栏
+                if(projInfoData != null) setWordInfo(projInfoData);
+                if(wordInfoData != null) setWordInfo(wordInfoData);
+                TANGER_OCX_OBJ.SetReadOnly(true);        //只读模式
+                // officeToolBar();                            //显示工具栏
+                objMenubar();                               //放开菜单栏
+                TANGER_OCX_OBJ.FileNew =false;          //禁止文件菜单的新建项
+                TANGER_OCX_OBJ.FileOpen  =false;        //禁止文件菜单的打开项
+                TANGER_OCX_OBJ.FileClose  =false;       //禁止文件菜单的关闭项
+                TANGER_OCX_OBJ.FileSave  =false;        //禁止文件菜单的保存项
+                TANGER_OCX_OBJ.FileSaveAs  =false;      //禁止文件菜单的另存为项
+            }
+        }
+
+        function initInfo(){
+            TANGER_OCX_OBJ=document.getElementById("TANGER_OCX");
+            //判断chrome的版本是否大于54，若大于54，使用代理解决问题
+            //本段代码一般放在TANGER_OCX_OBJ = document.getElementById("TANGER_OCX");代码后面。
+            var brower;
+            var regStr_Chrome = /chrome\/[\d.]+/gi;
+            var agent = navigator.userAgent.toLowerCase();
+            if( agent.indexOf("chrome") > 0 ){
+                brower = agent.match( regStr_Chrome );
+            }
+            var verinfo = ( brower + "" ).replace(/[^0-9.]/ig,"");
+            var uVerinfo = parseFloat( verinfo );
+            if( uVerinfo > 54 ){
+                TANGER_OCX_OBJ = new Proxy( TANGER_OCX_OBJ, {
+                    set: function (target, key, value, proxy) {
+                        var func = target["setattribute"];
+                        var args = new Array();
+                        args[0] = key;
+                        args[1] = value;
+                        return ( Reflect.apply(func, target, args) );
+                    },
+                    get: function(target, key, proxy) {
+                        var value = target[key];
+                        if(typeof value == 'function'){ // 为函数
+                            return function() {
+                                return Reflect.apply(value, target, arguments);
+                            };
+                        }
+                        else
+                            return( value );
+                    }
+                });
+            }
+            objTitleBar();                                  //不显示标题
+            TANGER_OCX_OBJ.FullScreenMode = true;       //全屏打开
+            loadWordInfoData();                             //加载数据
+            loadProjInfoData();
+            openWordTemplet();
+        }
+        //打开设置好的模板文档
+        function openWordTemplet() {
+            var url = ctx + "receive/default/告知单模板.doc";
+            TANGER_OCX_OBJ.BeginOpenFromURL(url);     //打开模板文档
+        }
+        //设置word模板的值
+        function setWordInfo(jsonData) {
+            for (var key in jsonData){
+                if(jsonData[key] != null && key != 'itemMatMap'){
+                    TANGER_OCX_OBJ.SetBookmarkValue(key,jsonData[key]);
+                }else if(key == 'itemMatMap' && jsonData[key] != null){                     //需要补正的内容
+                    var indent = '    ';    //首行缩进四个空格
+                    var supplementalMat = '';//内容
+                    var data = jsonData[key];
+                    for(var j in data){
+                        var map = data[j];
+                        if(JSON.stringify(map) != "{}"){
+                            for(var k in map){
+                                if(map[k] != ''&&map[k] != 'undefined'){        //String.fromCharCode(10)把换行符ascii码转换成字符串 13表示回车符
+                                    var t = '申请事项：' + k + String.fromCharCode(10) + '需补正材料清单：' + String.fromCharCode(10);
+                                    var m = (map[k] + '').split(',');
+                                    var t2 = '';
+                                    for(var i=0; i < m.length; i++){
+                                        t2 = t2 + indent + (i+1) + ' ' + m[i] + String.fromCharCode(10);
+                                    }
+                                    supplementalMat = supplementalMat + t + t2 + String.fromCharCode(10);
+                                }
+                            }
+                        }
+                    }
+                    // console.log(supplementalMat);
+                    TANGER_OCX_OBJ.setbookmarkvalue("itemMatMap",supplementalMat);
+                }
+            }
+        }
+        //加载信息
+        function loadWordInfoData() {
+            if(stageinstId != ''&& stageinstId != 'undefined') {
+                var url = ctx + '/aea/par/stage/getPrintInFormBillData.do';
+                $.ajax({
+                    type: 'post',
+                    url: url,
+                    cache: false,
+                    async: false,
+                    data: {'stageinstId': stageinstId},
+                    // data: {'stageinstId': 'f7a3f95c-2059-4465-83f2-a1110e3ac22d'},
+                    dataType: 'json',
+                    success: function (result) {
+                        if (result != null) {
+                            var itemMatList = {};
+                            for(var i=0; i < result.length; i++){
+                                itemMatList[result[i].itemName] = result[i].itemMatMap;
+                            }
+                            if(result.length != 0){
+                                wordInfoData = {
+                                    'stageName':result[0].stageName,
+                                    'itemMatMap':itemMatList
+                                };
+                            }
+                            console.log('数据加载成功');
+                        }
+                    },
+                    error: function (msg) {
+                        console.log('数据加载失败' + msg);
+                    }
+                });
+            }
+        }
+        //加载项目基本信息
+        function loadProjInfoData() {
+            if(projInfoId != ''&& projInfoId != 'undefined'){
+                $.ajax({
+                    type: 'post',
+                    url: ctx+'/aea/window/accept/getAeaProjInfo.do',
+                    cache:false,
+                    async:false,
+                    data: {projInfoId: projInfoId},
+                    // data: {id: 'abb7facc-023e-4880-8d21-eed218f62623'},
+                    dataType:'json',
+                    success: function(result){
+                        if(result != null){
+                            var myDate = new Date();//获取系统当前时间
+                            var informDate = myDate.getFullYear() + '年' + (myDate.getMonth() + 1) + '月' + myDate.getDate() + '日'
+                            var localCode = result.localCode;
+                            if(localCode != null && localCode.indexOf('【')!= -1){
+                                localCode =  localCode.substring(localCode.indexOf('【')+1,localCode.lastIndexOf('】'));
+                                result.localCode = localCode;
+                            }
+                            projInfoData = {
+                                'projName':result.projName,
+                                'projCode':result.localCode,
+                                'unitName':result.legalUnitName,
+                                'informDate':informDate
+                            }
+                            // console.log(projInfoData);
+                            console.log('项目数据加载成功');
+                        }
+                    },
+                    error: function (msg) {
+                        console.log(msg);
+                    }
+                });
+            }
+        }
+    </script>
+
+</HEAD>
+
+<BODY onload="initInfo();">
+
+</BODY>
+</HTML>

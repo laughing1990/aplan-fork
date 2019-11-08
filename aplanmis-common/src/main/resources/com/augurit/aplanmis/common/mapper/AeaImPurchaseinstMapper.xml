@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by Augurit    2019-06-26 09:20:12 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaImPurchaseinstMapper">
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns">
+        PURCHASEINST_ID  purchaseinstId,
+        PROJ_PURCHASE_ID  projPurchaseId,
+        PURCHASE_FLAG  purchaseFlag,
+        OPERATE_ACTION  operateAction,
+        PARENT_PURCHASEINST_ID  parentPurchaseinstId,
+        LINKMAN_INFO_ID  linkmanInfoId,
+        CREATER  creater,
+        CREATE_TIME  createTime,
+        OPERATE_DESCRIBE  operateDescribe,
+        IS_OWN_FILE  isOwnFile,
+        APPLY_DATA applyData,
+        PROCESSINST_ID processinstId,
+        TASK_ID taskId,
+        ROOT_ORG_ID rootOrgId
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaImPurchaseinstById" resultType="AeaImPurchaseinst">
+        select
+        <include refid="allColumns"/>
+        from AEA_IM_PURCHASEINST
+        where PURCHASEINST_ID = #{id}
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaImPurchaseinst" resultType="AeaImPurchaseinst">
+        select
+        <include refid="allColumns"/>
+        from AEA_IM_PURCHASEINST
+        <where>
+            <if test="purchaseinstId != null">
+                AND PURCHASEINST_ID = #{purchaseinstId}
+            </if>
+            <if test="projPurchaseId != null">
+                AND PROJ_PURCHASE_ID = #{projPurchaseId}
+            </if>
+            <if test="purchaseFlag != null">
+                AND PURCHASE_FLAG = #{purchaseFlag}
+            </if>
+            <if test="operateAction != null">
+                AND OPERATE_ACTION = #{operateAction}
+            </if>
+            <if test="parentPurchaseinstId != null">
+                AND PARENT_PURCHASEINST_ID = #{parentPurchaseinstId}
+            </if>
+            <if test="linkmanInfoId != null">
+                AND LINKMAN_INFO_ID = #{linkmanInfoId}
+            </if>
+            <if test="creater != null">
+                AND CREATER = #{creater}
+            </if>
+            <if test="createTime != null">
+                AND CREATE_TIME = #{createTime}
+            </if>
+            <if test="operateDescribe != null">
+                AND OPERATE_DESCRIBE = #{operateDescribe}
+            </if>
+            <if test="isOwnFile != null">
+                AND IS_OWN_FILE = #{isOwnFile}
+            </if>
+            <if test="applyData != null">
+                AND APPLY_DATA = #{applyData}
+            </if>
+            <if test="rootOrgId != null">
+                AND ROOT_ORG_ID = #{rootOrgId}
+            </if>
+        </where>
+    </select>
+    <!--4 根据条件查询实体list,返回分页对象 -->
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaImPurchaseinst" parameterType="AeaImPurchaseinst">
+    insert into AEA_IM_PURCHASEINST (
+PURCHASEINST_ID  ,PROJ_PURCHASE_ID  ,PURCHASE_FLAG  ,OPERATE_ACTION  ,PARENT_PURCHASEINST_ID  ,LINKMAN_INFO_ID  ,CREATER  ,CREATE_TIME  ,OPERATE_DESCRIBE  ,IS_OWN_FILE,
+APPLY_DATA,PROCESSINST_ID,TASK_ID ,ROOT_ORG_ID
+    )  values  (
+#{purchaseinstId},#{projPurchaseId},#{purchaseFlag},#{operateAction},#{parentPurchaseinstId},#{linkmanInfoId},#{creater},#{createTime},#{operateDescribe},  #{isOwnFile},
+#{applyData},#{processinstId},#{taskId},#{rootOrgId}
+    )
+</insert>
+    <!--6 修改实体对象 -->
+    <update id="updateAeaImPurchaseinst" parameterType="AeaImPurchaseinst">
+        update AEA_IM_PURCHASEINST
+        <set>
+            <if test="purchaseinstId != null">
+                PURCHASEINST_ID = #{purchaseinstId},
+            </if>
+            <if test="projPurchaseId != null">
+                PROJ_PURCHASE_ID = #{projPurchaseId},
+            </if>
+            <if test="purchaseFlag != null">
+                PURCHASE_FLAG = #{purchaseFlag},
+            </if>
+            <if test="operateAction != null">
+                OPERATE_ACTION = #{operateAction},
+            </if>
+            <if test="parentPurchaseinstId != null">
+                PARENT_PURCHASEINST_ID = #{parentPurchaseinstId},
+            </if>
+            <if test="linkmanInfoId != null">
+                LINKMAN_INFO_ID = #{linkmanInfoId},
+            </if>
+            <if test="creater != null">
+                CREATER = #{creater},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime},
+            </if>
+            <if test="operateDescribe != null">
+                OPERATE_DESCRIBE = #{operateDescribe},
+            </if>
+            <if test="isOwnFile != null">
+                IS_OWN_FILE = #{isOwnFile},
+            </if>
+
+            <if test="applyData != null">
+                APPLY_DATA = #{applyData},
+            </if>
+            <if test="processinstId != null">
+                PROCESSINST_ID = #{processinstId},
+            </if>
+            <if test="taskId != null">
+                TASK_ID = #{taskId},
+            </if>
+            <if test="rootOrgId != null">
+                ROOT_ORG_ID = #{rootOrgId},
+            </if>
+        </set>
+        where PURCHASEINST_ID = #{purchaseinstId}
+    </update>
+    <!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaImPurchaseinst">
+        delete from   AEA_IM_PURCHASEINST
+        where
+    PURCHASEINST_ID = #{id}
+    </delete>
+    <!--8 删除实体对象列表,根据主键ID列表 -->
+    <!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaImPurchaseinst" id="AeaImPurchaseinstMap">
+        <id property="purchaseinstId" column="PURCHASEINST_ID"/>
+        <result property="projPurchaseId" column="PROJ_PURCHASE_ID"/>
+        <result property="purchaseFlag" column="PURCHASE_FLAG"/>
+        <result property="operateAction" column="OPERATE_ACTION"/>
+        <result property="parentPurchaseinstId" column="PARENT_PURCHASEINST_ID"/>
+        <result property="linkmanInfoId" column="LINKMAN_INFO_ID"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="operateDescribe" column="OPERATE_DESCRIBE"/>
+        <result property="isOwnFile" column="IS_OWN_FILE"/>
+        <result property="applyData" column="APPLY_DATA"/>
+        <result property="processinstId" column="PROCESSINST_ID"/>
+        <result property="taskId" column="TASK_ID"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+    </resultMap>
+
+    <select id="getlastestPurchaseinstByProjPurchaseId" resultType="AeaImPurchaseinst">
+        select max(CREATE_TIME) lastestTime,
+        <include refid="allColumns"/>
+        from AEA_IM_PURCHASEINST
+        where PROJ_PURCHASE_ID = #{projPurchaseId}
+    </select>
+
+    <insert id="insertPurchaseinst" parameterType="AeaImPurchaseinst">
+        INSERT INTO aea_im_purchaseinst (
+            PURCHASEINST_ID, PROJ_PURCHASE_ID, PURCHASE_FLAG, OPERATE_ACTION, PARENT_PURCHASEINST_ID, LINKMAN_INFO_ID, CREATER, CREATE_TIME, OPERATE_DESCRIBE, IS_OWN_FILE,APPLY_DATA,
+            PROCESSINST_ID,TASK_ID
+        ) SELECT
+            #{purchaseinstId},#{projPurchaseId},#{purchaseFlag},#{operateAction},
+            (
+                SELECT aip.PURCHASEINST_ID FROM AEA_IM_PURCHASEINST aip
+                WHERE aip.PROJ_PURCHASE_ID = #{projPurchaseId} ORDER BY aip.CREATE_TIME DESC limit 1
+            ),
+            #{linkmanInfoId},#{creater},#{createTime},#{operateDescribe},  #{isOwnFile},#{applyData},#{processinstId},#{taskId}
+        FROM dual
+    </insert>
+
+
+    <select id="getlastestPurchaseinstForContract" resultType="AeaImPurchaseinst">
+        select max(CREATE_TIME) lastestTime,
+        <include refid="allColumns"/>
+        from AEA_IM_PURCHASEINST
+        where PROJ_PURCHASE_ID = #{projPurchaseId} and OPERATE_ACTION in ('3','4','5');
+    </select>
+</mapper>

@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by Administrator    2019-09-12 16:23:07 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaCreditDetailMapper" >
+
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns" >
+        DETAIL_ID  detailId,
+        SUMMARY_ID  summaryId,
+        CN_COLUMN_NAME  cnColumnName,
+        EN_COLUMN_NAME  enColumnName,
+        COLUMN_VALUE  columnValue,
+        COLUMN_DATA_TYPE  columnDataType,
+        IS_SYNC  isSync,
+        SYNC_SOURCE  syncSource,
+        SYNC_TIME  syncTime,
+        CREATER  creater,
+        CREATE_TIME  createTime,
+        MODIFIER  modifier,
+        MODIFY_TIME  modifyTime,
+        ROOT_ORG_ID  rootOrgId
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaCreditDetailById" resultType="AeaCreditDetail" >
+        select
+        <include refid="allColumns"/>
+        from    AEA_CREDIT_DETAIL
+        where    DETAIL_ID = #{id}
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaCreditDetail" resultType="AeaCreditDetail" >
+        select
+        <include refid="allColumns"/>
+        from    AEA_CREDIT_DETAIL
+        <where>
+            <if test="detailId != null" >
+            AND    DETAIL_ID = #{detailId}
+            </if>
+            <if test="summaryId != null" >
+            AND    SUMMARY_ID = #{summaryId}
+            </if>
+            <if test="cnColumnName != null" >
+            AND    CN_COLUMN_NAME = #{cnColumnName}
+            </if>
+            <if test="enColumnName != null" >
+            AND    EN_COLUMN_NAME = #{enColumnName}
+            </if>
+            <if test="columnValue != null" >
+            AND    COLUMN_VALUE = #{columnValue}
+            </if>
+            <if test="columnDataType != null" >
+            AND    COLUMN_DATA_TYPE = #{columnDataType}
+            </if>
+            <if test="isSync != null" >
+            AND    IS_SYNC = #{isSync}
+            </if>
+            <if test="syncSource != null" >
+            AND    SYNC_SOURCE = #{syncSource}
+            </if>
+            <if test="syncTime != null" >
+            AND    SYNC_TIME = #{syncTime}
+            </if>
+            <if test="creater != null" >
+            AND    CREATER = #{creater}
+            </if>
+            <if test="createTime != null" >
+            AND    CREATE_TIME = #{createTime}
+            </if>
+            <if test="modifier != null" >
+            AND    MODIFIER = #{modifier}
+            </if>
+            <if test="modifyTime != null" >
+            AND    MODIFY_TIME = #{modifyTime}
+            </if>
+            <if test="rootOrgId != null" >
+            AND    ROOT_ORG_ID = #{rootOrgId}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                AND (
+                CN_COLUMN_NAME like concat('%', concat(#{keyword}, '%')) or
+                EN_COLUMN_NAME like concat('%', concat(#{keyword}, '%'))
+                )
+            </if>
+        </where>
+        order by CREATE_TIME desc
+    </select>
+    <!--4 根据条件查询实体list,返回分页对象 -->
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaCreditDetail" parameterType="AeaCreditDetail" >
+        insert into AEA_CREDIT_DETAIL (
+    DETAIL_ID  ,SUMMARY_ID  ,CN_COLUMN_NAME  ,EN_COLUMN_NAME  ,COLUMN_VALUE  ,COLUMN_DATA_TYPE  ,IS_SYNC  ,SYNC_SOURCE  ,SYNC_TIME  ,CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME  ,ROOT_ORG_ID
+        )  values  (
+    #{detailId},#{summaryId},#{cnColumnName},#{enColumnName},#{columnValue},#{columnDataType},#{isSync},#{syncSource},#{syncTime},#{creater},#{createTime},#{modifier},#{modifyTime},  #{rootOrgId}
+        )
+    </insert>
+
+    <!--6 修改实体对象 -->
+    <update id="updateAeaCreditDetail" parameterType="AeaCreditDetail" >
+        update AEA_CREDIT_DETAIL
+        <set >
+            <if test="detailId != null" >
+            DETAIL_ID = #{detailId},
+            </if>
+            <if test="summaryId != null" >
+            SUMMARY_ID = #{summaryId},
+            </if>
+            <if test="cnColumnName != null" >
+            CN_COLUMN_NAME = #{cnColumnName},
+            </if>
+            <if test="enColumnName != null" >
+            EN_COLUMN_NAME = #{enColumnName},
+            </if>
+            <if test="columnValue != null" >
+            COLUMN_VALUE = #{columnValue},
+            </if>
+            <if test="columnDataType != null" >
+            COLUMN_DATA_TYPE = #{columnDataType},
+            </if>
+            <if test="isSync != null" >
+            IS_SYNC = #{isSync},
+            </if>
+            <if test="syncSource != null" >
+            SYNC_SOURCE = #{syncSource},
+            </if>
+            <if test="syncTime != null" >
+            SYNC_TIME = #{syncTime},
+            </if>
+            <if test="creater != null" >
+            CREATER = #{creater},
+            </if>
+            <if test="createTime != null" >
+            CREATE_TIME = #{createTime},
+            </if>
+            <if test="modifier != null" >
+            MODIFIER = #{modifier},
+            </if>
+            <if test="modifyTime != null" >
+            MODIFY_TIME = #{modifyTime},
+            </if>
+            <if test="rootOrgId != null" >
+            ROOT_ORG_ID = #{rootOrgId},
+            </if>
+        </set>
+        where DETAIL_ID = #{detailId}
+    </update>
+
+    <!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaCreditDetail">
+        delete from   AEA_CREDIT_DETAIL where DETAIL_ID = #{id}
+    </delete>
+
+    <resultMap type="AeaCreditDetail" id="AeaCreditDetailMap">
+        <id property="detailId" column="DETAIL_ID"/>
+        <result property="summaryId" column="SUMMARY_ID"/>
+        <result property="cnColumnName" column="CN_COLUMN_NAME"/>
+        <result property="enColumnName" column="EN_COLUMN_NAME"/>
+        <result property="columnValue" column="COLUMN_VALUE"/>
+        <result property="columnDataType" column="COLUMN_DATA_TYPE"/>
+        <result property="isSync" column="IS_SYNC"/>
+        <result property="syncSource" column="SYNC_SOURCE"/>
+        <result property="syncTime" column="SYNC_TIME"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="modifier" column="MODIFIER"/>
+        <result property="modifyTime" column="MODIFY_TIME"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+    </resultMap>
+
+</mapper>

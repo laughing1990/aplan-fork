@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by Augurit    2019-07-02 16:00:48 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaImAvoidUnitMapper" >
+<!--1 返回所有字段的SQL字句 -->
+<sql id="allColumns" >
+    AVOID_UNIT_ID  avoidUnitId,
+    PROJ_PURCHASE_ID  projPurchaseId,
+    UNIT_INFO_ID  unitInfoId,
+    IS_DELETE  isDelete,
+    CREATER  creater,
+    CREATE_TIME  createTime
+    </sql>
+
+<!--2 根据主键ID查询单个实体 -->
+<select id="getAeaImAvoidUnitById" resultType="AeaImAvoidUnit" >
+    select
+    <include refid="allColumns"/>
+    from    AEA_IM_AVOID_UNIT
+    where    AVOID_UNIT_ID = #{id}
+</select>
+
+<!--3 根据条件查询实体list -->
+    <select id="listAeaImAvoidUnit" resultType="AeaImAvoidUnit" >
+        select
+        <include refid="allColumns"/>
+        from    AEA_IM_AVOID_UNIT
+    <where>
+        <if test="avoidUnitId != null" >
+        AND    AVOID_UNIT_ID = #{avoidUnitId}
+        </if>
+        <if test="projPurchaseId != null" >
+        AND    PROJ_PURCHASE_ID = #{projPurchaseId}
+        </if>
+        <if test="unitInfoId != null" >
+        AND    UNIT_INFO_ID = #{unitInfoId}
+        </if>
+        <if test="isDelete != null" >
+        AND    IS_DELETE = #{isDelete}
+        </if>
+        <if test="creater != null" >
+        AND    CREATER = #{creater}
+        </if>
+        <if test="createTime != null" >
+        AND    CREATE_TIME = #{createTime}
+        </if>
+    </where>
+    </select>
+<!--4 根据条件查询实体list,返回分页对象 -->
+
+<!--5 新增实体对象 -->
+<insert id="insertAeaImAvoidUnit" parameterType="AeaImAvoidUnit" >
+    insert into AEA_IM_AVOID_UNIT (
+AVOID_UNIT_ID  ,PROJ_PURCHASE_ID  ,UNIT_INFO_ID  ,IS_DELETE  ,CREATER  ,CREATE_TIME  
+    )  values  (
+#{avoidUnitId},#{projPurchaseId},#{unitInfoId},#{isDelete},#{creater},  #{createTime}
+    )
+</insert>
+<!--6 修改实体对象 -->
+<update id="updateAeaImAvoidUnit" parameterType="AeaImAvoidUnit" >
+    update AEA_IM_AVOID_UNIT
+    <set >
+        <if test="avoidUnitId != null" >
+        AVOID_UNIT_ID = #{avoidUnitId},
+        </if>
+        <if test="projPurchaseId != null" >
+        PROJ_PURCHASE_ID = #{projPurchaseId},
+        </if>
+        <if test="unitInfoId != null" >
+        UNIT_INFO_ID = #{unitInfoId},
+        </if>
+        <if test="isDelete != null" >
+        IS_DELETE = #{isDelete},
+        </if>
+        <if test="creater != null" >
+        CREATER = #{creater},
+        </if>
+        <if test="createTime != null" >
+        CREATE_TIME = #{createTime},
+        </if>
+    </set>
+    where AVOID_UNIT_ID = #{avoidUnitId}
+</update>
+<!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaImAvoidUnit">
+        delete from   AEA_IM_AVOID_UNIT
+        where
+    AVOID_UNIT_ID = #{id}
+    </delete>
+<!--8 删除实体对象列表,根据主键ID列表 -->
+<!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaImAvoidUnit" id="AeaImAvoidUnitMap">
+        <id property="avoidUnitId" column="AVOID_UNIT_ID"/>
+        <result property="projPurchaseId" column="PROJ_PURCHASE_ID"/>
+        <result property="unitInfoId" column="UNIT_INFO_ID"/>
+        <result property="isDelete" column="IS_DELETE"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+    </resultMap>
+</mapper>

@@ -1,0 +1,76 @@
+.mt10 {
+  margin-top: 10px;
+}
+.mt20 {
+  margin-top: 20px;
+}
+
+.mb20 {
+  margin-bottom: 20px;
+}
+
+.ml20 {
+  margin-left: 20px;
+}
+
+.mr20 {
+  margin-right: 20px;
+}
+
+.pd20 {
+  padding: 20px;
+}
+
+.mt40 {
+  margin-top: 40px;
+}
+
+.wd48 {
+  width: 48%;
+}
+
+.inline-block {
+  display: inline-block;
+}
+
+.w-320 {
+  width: 320px;
+}
+
+.w-260 {
+  width: 260px;
+}
+
+.al-right {
+  text-align: right;
+}
+
+/* // table-btn */
+.table-btn {
+  width: 34px;
+  height: 34px;
+  text-align: center;
+  line-height: 34px;
+  -webkit-border-radius: 50%;
+  -ms-border-radius: 50%;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.table-btn:hover {
+  background: #36a3f7;
+  color: #fff;
+}
+
+.btn-hv-danger:hover {
+  background: #f4516c
+}
+
+/* 分割线 */
+.divider .el-divider--horizontal {
+  margin-top: 2px !important;
+}
+
+[v-cloak] {
+  display: none;
+}

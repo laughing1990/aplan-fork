@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaItemGuideAttrMapper" >
+
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns" >
+        ATTACHGUID  attachguid,
+        ATTACHNAME  attachname,
+        FILEPATH  filepath,
+        NEIWANG_PATH  neiwangPath,
+        BIZ_TABLE_NAME  bizTableName,
+        BIZ_TABLE_PK_ID  bizTablePkId,
+        BIZ_RECORD_ID  bizRecordId,
+        GUIDE_ATTR_ID  guideAttrId,
+        ROOT_ORG_ID rootOrgId
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaItemGuideAttrById" resultType="AeaItemGuideAttr" >
+        select
+        <include refid="allColumns"/>
+        from    AEA_ITEM_GUIDE_ATTR
+        where    GUIDE_ATTR_ID = #{id}
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaItemGuideAttr" resultType="AeaItemGuideAttr" >
+        select
+        <include refid="allColumns"/>
+        from    AEA_ITEM_GUIDE_ATTR
+        <where>
+            <if test="attachguid != null" >
+                AND    ATTACHGUID = #{attachguid}
+            </if>
+            <if test="attachname != null" >
+                AND    ATTACHNAME = #{attachname}
+            </if>
+            <if test="filepath != null" >
+                AND    FILEPATH = #{filepath}
+            </if>
+            <if test="neiwangPath != null" >
+                AND    NEIWANG_PATH = #{neiwangPath}
+            </if>
+            <if test="bizTableName != null" >
+                AND    BIZ_TABLE_NAME = #{bizTableName}
+            </if>
+            <if test="bizTablePkId != null" >
+                AND    BIZ_TABLE_PK_ID = #{bizTablePkId}
+            </if>
+            <if test="bizRecordId != null" >
+                AND    BIZ_RECORD_ID = #{bizRecordId}
+            </if>
+            <if test="guideAttrId != null" >
+                AND    GUIDE_ATTR_ID = #{guideAttrId}
+            </if>
+            <if test="rootOrgId != null" >
+                AND    ROOT_ORG_ID = #{rootOrgId}
+            </if>
+        </where>
+    </select>
+    <!--4 根据条件查询实体list,返回分页对象 -->
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaItemGuideAttr" parameterType="AeaItemGuideAttr" >
+        insert into AEA_ITEM_GUIDE_ATTR (
+            ATTACHGUID  ,ATTACHNAME  ,FILEPATH  ,NEIWANG_PATH  ,BIZ_TABLE_NAME  ,BIZ_TABLE_PK_ID  ,BIZ_RECORD_ID  ,GUIDE_ATTR_ID, ROOT_ORG_ID
+        )  values  (
+            #{attachguid},#{attachname},#{filepath},#{neiwangPath},#{bizTableName},#{bizTablePkId},#{bizRecordId},  #{guideAttrId}, #{rootOrgId}
+        )
+    </insert>
+    <!--6 修改实体对象 -->
+    <update id="updateAeaItemGuideAttr" parameterType="AeaItemGuideAttr" >
+        update AEA_ITEM_GUIDE_ATTR
+        <set >
+            <if test="attachguid != null" >
+                ATTACHGUID = #{attachguid},
+            </if>
+            <if test="attachname != null" >
+                ATTACHNAME = #{attachname},
+            </if>
+            <if test="filepath != null" >
+                FILEPATH = #{filepath},
+            </if>
+            <if test="neiwangPath != null" >
+                NEIWANG_PATH = #{neiwangPath},
+            </if>
+            <if test="bizTableName != null" >
+                BIZ_TABLE_NAME = #{bizTableName},
+            </if>
+            <if test="bizTablePkId != null" >
+                BIZ_TABLE_PK_ID = #{bizTablePkId},
+            </if>
+            <if test="bizRecordId != null" >
+                BIZ_RECORD_ID = #{bizRecordId},
+            </if>
+            <if test="guideAttrId != null" >
+                GUIDE_ATTR_ID = #{guideAttrId},
+            </if>
+            <if test="rootOrgId != null" >
+                AND    ROOT_ORG_ID = #{rootOrgId},
+            </if>
+        </set>
+        where GUIDE_ATTR_ID = #{guideAttrId}
+    </update>
+
+    <!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaItemGuideAttr">
+        delete from  AEA_ITEM_GUIDE_ATTR where ATTACHGUID = #{id}
+    </delete>
+
+    <delete id="batchDeleteItemGuideAttr">
+        delete from  AEA_ITEM_GUIDE_ATTR
+        <where>
+            <if test="attachguid != null" >
+                AND    ATTACHGUID = #{attachguid}
+            </if>
+            <if test="attachname != null" >
+                AND    ATTACHNAME = #{attachname}
+            </if>
+            <if test="filepath != null" >
+                AND    FILEPATH = #{filepath}
+            </if>
+            <if test="neiwangPath != null" >
+                AND    NEIWANG_PATH = #{neiwangPath}
+            </if>
+            <if test="bizTableName != null" >
+                AND    BIZ_TABLE_NAME = #{bizTableName}
+            </if>
+            <if test="bizTablePkId != null" >
+                AND    BIZ_TABLE_PK_ID = #{bizTablePkId}
+            </if>
+            <if test="bizRecordId != null" >
+                AND    BIZ_RECORD_ID = #{bizRecordId}
+            </if>
+        </where>
+    </delete>
+</mapper>

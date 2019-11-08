@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by tiantian    2019-08-28 17:34:02 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaHiApplyinstCorrectDueIninstMapper" >
+<!--1 返回所有字段的SQL字句 -->
+<sql id="allColumns" >
+    APPLYINST_DUE_ININST_ID  applyinstDueIninstId,
+    APPLYINST_CORRECT_ID  applyinstCorrectId,
+    IS_NEW_MATINST  isNewMatinst,
+    MATINST_ID  matinstId,
+    CORRECT_OPINION  correctOpinion,
+    CREATER  creater,
+    CREATE_TIME  createTime,
+    PAPER_COUNT  paperCount,
+    COPY_COUNT  copyCount,
+    IS_NEED_ATT  isNeedAtt,
+    ROOT_ORG_ID  rootOrgId
+    </sql>
+
+    <sql id="allColumns_ahacdi">
+    ahacdi.APPLYINST_DUE_ININST_ID  applyinstDueIninstId,
+    ahacdi.APPLYINST_CORRECT_ID  applyinstCorrectId,
+    ahacdi.IS_NEW_MATINST isNewMatinst,
+        ahacdi.MATINST_ID matinstId,
+    ahacdi.CORRECT_OPINION  correctOpinion,
+    ahacdi.CREATER  creater,
+    ahacdi.CREATE_TIME  createTime,
+    ahacdi.PAPER_COUNT paperCount,
+    ahacdi.COPY_COUNT  copyCount,
+    ahacdi.IS_NEED_ATT isNeedAtt,
+    ahacdi.ROOT_ORG_ID rootOrgId
+    </sql>
+
+<!--2 根据主键ID查询单个实体 -->
+<select id="getAeaHiApplyinstCorrectDueIninstById" resultType="AeaHiApplyinstCorrectDueIninst" >
+    select
+    <include refid="allColumns"/>
+    from    AEA_HI_APPLYINST_CORRECT_DUE_ININST
+    where    APPLYINST_DUE_ININST_ID = #{id}
+</select>
+
+    <select id="getCorrectDueIninstByApplyinstCorrectId" resultType="AeaHiApplyinstCorrectDueIninst">
+        SELECT
+        <include refid="allColumns_ahacdi"/>,ahim.MATINST_NAME matinstName,ahim.MAT_ID matId,aim.REVIEW_KEY_POINTS
+        reviewKeyPoints,aim.REVIEW_SAMPLE_DOC reviewSampleDoc,aim.SAMPLE_DOC sampleDoc,aim.TEMPLATE_DOC templateDoc
+        FROM AEA_HI_APPLYINST_CORRECT_DUE_ININST ahacdi,AEA_HI_ITEM_MATINST ahim,AEA_ITEM_MAT aim
+        WHERE aim.MAT_ID = ahim.MAT_ID
+        AND ahacdi.MATINST_ID = ahim.MATINST_ID
+        AND ahacdi.APPLYINST_CORRECT_ID = #{applyinstCorrectId}
+        AND ahacdi.ROOT_ORG_ID = #{topOrgId}
+    </select>
+
+<!--3 根据条件查询实体list -->
+    <select id="listAeaHiApplyinstCorrectDueIninst" resultType="AeaHiApplyinstCorrectDueIninst" >
+        select
+        <include refid="allColumns"/>
+        from    AEA_HI_APPLYINST_CORRECT_DUE_ININST
+    <where>
+        <if test="applyinstDueIninstId != null" >
+        AND    APPLYINST_DUE_ININST_ID = #{applyinstDueIninstId}
+        </if>
+        <if test="applyinstCorrectId != null" >
+        AND    APPLYINST_CORRECT_ID = #{applyinstCorrectId}
+        </if>
+        <if test="isNewMatinst != null" >
+        AND    IS_NEW_MATINST = #{isNewMatinst}
+        </if>
+        <if test="matinstId != null" >
+        AND    MATINST_ID = #{matinstId}
+        </if>
+        <if test="correctOpinion != null" >
+        AND    CORRECT_OPINION = #{correctOpinion}
+        </if>
+        <if test="creater != null" >
+        AND    CREATER = #{creater}
+        </if>
+        <if test="createTime != null" >
+        AND    CREATE_TIME = #{createTime}
+        </if>
+        <if test="paperCount != null" >
+        AND    PAPER_COUNT = #{paperCount}
+        </if>
+        <if test="copyCount != null" >
+        AND    COPY_COUNT = #{copyCount}
+        </if>
+        <if test="isNeedAtt != null" >
+        AND    IS_NEED_ATT = #{isNeedAtt}
+        </if>
+        <if test="rootOrgId != null" >
+        AND    ROOT_ORG_ID = #{rootOrgId}
+        </if>
+    </where>
+    </select>
+<!--4 根据条件查询实体list,返回分页对象 -->
+
+<!--5 新增实体对象 -->
+<insert id="insertAeaHiApplyinstCorrectDueIninst" parameterType="AeaHiApplyinstCorrectDueIninst" >
+    insert into AEA_HI_APPLYINST_CORRECT_DUE_ININST (
+APPLYINST_DUE_ININST_ID  ,APPLYINST_CORRECT_ID  ,IS_NEW_MATINST  ,MATINST_ID  ,CORRECT_OPINION  ,CREATER  ,CREATE_TIME  ,PAPER_COUNT  ,COPY_COUNT  ,IS_NEED_ATT  ,ROOT_ORG_ID  
+    )  values  (
+#{applyinstDueIninstId},#{applyinstCorrectId},#{isNewMatinst},#{matinstId},#{correctOpinion},#{creater},#{createTime},#{paperCount},#{copyCount},#{isNeedAtt},  #{rootOrgId}
+    )
+</insert>
+
+    <insert id="batchInsertAeaHiApplyinstCorrectDueIninst" parameterType="java.util.List">
+        insert into AEA_HI_APPLYINST_CORRECT_DUE_ININST (
+        APPLYINST_DUE_ININST_ID  ,APPLYINST_CORRECT_ID  ,IS_NEW_MATINST  ,MATINST_ID  ,CORRECT_OPINION  ,CREATER  ,CREATE_TIME  ,PAPER_COUNT  ,COPY_COUNT  ,IS_NEED_ATT  ,ROOT_ORG_ID
+        )
+        <if test="_databaseId == 'oracle'">
+            <foreach collection="list" item="applyinst" index="index" separator="union all">
+                (
+                SELECT
+                #{applyinst.applyinstDueIninstId},#{applyinst.applyinstCorrectId},#{applyinst.isNewMatinst},#{applyinst.matinstId},#{applyinst.correctOpinion},#{applyinst.creater},  #{applyinst.createTime},#{applyinst.paperCount},#{applyinst.copyCount},#{applyinst.isNeedAtt},#{applyinst.rootOrgId}
+                FROM dual
+                )
+            </foreach>
+        </if>
+        <if test="_databaseId == 'mysql'">
+            values
+            <foreach collection="list" item="applyinst" index="index" separator=",">
+                (
+                #{applyinst.applyinstDueIninstId},#{applyinst.applyinstCorrectId},#{applyinst.isNewMatinst},#{applyinst.matinstId},#{applyinst.correctOpinion},#{applyinst.creater},  #{applyinst.createTime},#{applyinst.paperCount},#{applyinst.copyCount},#{applyinst.isNeedAtt},#{applyinst.rootOrgId}
+                )
+            </foreach>
+        </if>
+    </insert>
+
+
+<!--6 修改实体对象 -->
+<update id="updateAeaHiApplyinstCorrectDueIninst" parameterType="AeaHiApplyinstCorrectDueIninst" >
+    update AEA_HI_APPLYINST_CORRECT_DUE_ININST
+    <set >
+        <if test="applyinstDueIninstId != null" >
+        APPLYINST_DUE_ININST_ID = #{applyinstDueIninstId},
+        </if>
+        <if test="applyinstCorrectId != null" >
+        APPLYINST_CORRECT_ID = #{applyinstCorrectId},
+        </if>
+        <if test="isNewMatinst != null" >
+        IS_NEW_MATINST = #{isNewMatinst},
+        </if>
+        <if test="matinstId != null" >
+        MATINST_ID = #{matinstId},
+        </if>
+        <if test="correctOpinion != null" >
+        CORRECT_OPINION = #{correctOpinion},
+        </if>
+        <if test="creater != null" >
+        CREATER = #{creater},
+        </if>
+        <if test="createTime != null" >
+        CREATE_TIME = #{createTime},
+        </if>
+        <if test="paperCount != null" >
+        PAPER_COUNT = #{paperCount},
+        </if>
+        <if test="copyCount != null" >
+        COPY_COUNT = #{copyCount},
+        </if>
+        <if test="isNeedAtt != null" >
+        IS_NEED_ATT = #{isNeedAtt},
+        </if>
+        <if test="rootOrgId != null" >
+        ROOT_ORG_ID = #{rootOrgId},
+        </if>
+    </set>
+    where APPLYINST_DUE_ININST_ID = #{applyinstDueIninstId}
+</update>
+<!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaHiApplyinstCorrectDueIninst">
+        delete from   AEA_HI_APPLYINST_CORRECT_DUE_ININST
+        where
+    APPLYINST_DUE_ININST_ID = #{id}
+    </delete>
+<!--8 删除实体对象列表,根据主键ID列表 -->
+<!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaHiApplyinstCorrectDueIninst" id="AeaHiApplyinstCorrectDueIninstMap">
+        <id property="applyinstDueIninstId" column="APPLYINST_DUE_ININST_ID"/>
+        <result property="applyinstCorrectId" column="APPLYINST_CORRECT_ID"/>
+        <result property="isNewMatinst" column="IS_NEW_MATINST"/>
+        <result property="matinstId" column="MATINST_ID"/>
+        <result property="correctOpinion" column="CORRECT_OPINION"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="paperCount" column="PAPER_COUNT"/>
+        <result property="copyCount" column="COPY_COUNT"/>
+        <result property="isNeedAtt" column="IS_NEED_ATT"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+    </resultMap>
+</mapper>

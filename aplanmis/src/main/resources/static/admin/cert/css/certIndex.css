@@ -1,0 +1,173 @@
+/*细线tab标签*/
+.el-tabs__nav-wrap::after {
+  content: '';
+  height: 1px;
+}
+
+.certLibrary,
+.certForm,
+.certList {
+  width: 67%;
+  height: 100%;
+  float: left;
+  border: 1px solid #e8e8e8;
+  margin-right: 5px;
+}
+
+.certList {
+  overflow-y: auto;
+}
+
+.certLibrary {
+  width: 31%;
+}
+
+.el-tree-node__label:before {
+  content: "";
+  background: url(../image/spritPic.png) no-repeat;
+  width: 19px;
+  background-position: -109px -14px;
+  height: 16px;
+  display: inline-block;
+}
+
+.el-tree-node__children .el-tree-node__label:before {
+  content: "";
+  background: url(../image/spritPic.png) no-repeat;
+  width: 19px;
+  background-position: -109px -14px;
+  height: 16px;
+  display: inline-block;
+}
+
+.el-tree-node__content {
+  height: 30px;
+}
+
+.el-tree--highlight-current .el-tree-node.is-current>.el-tree-node__content {
+  /*background-color: #bfddff;*/
+  background-color: rgb(234, 246, 255);
+}
+
+.right-click-opt {
+  /*display: none;*/
+  background: #fff;
+  -webkit-box-shadow: 0px 1px 15px 1px rgba(69, 65, 78, 0.08);
+  box-shadow: 0px 1px 15px 1px rgba(69, 65, 78, 0.08);
+  position: absolute;
+  width: 200px;
+  color: #595762;
+  z-index: 1000;
+}
+
+.right-click-opt p {
+  margin: 8px 20px;
+  cursor: pointer;
+}
+
+.right-click-opt p:hover {
+  background: #bfddff;
+  ;
+}
+
+.tree1 .el-tabs__item.is-active {
+  background: #169AFF;
+  color: #fff;
+  border-color: #169AFF;
+}
+
+.el-tree {
+  margin-top: 5px;
+
+}
+
+.title {
+  padding: 10px 10px;
+}
+
+.btns {
+  padding: 12px 10px;
+  border-bottom: 1px solid #e8e8e8;
+  margin-bottom: 10px;
+  /* border-top: 1px solid #e8e8e8;
+  border-bottom:1px solid #e8e8e8;*/
+}
+
+.search {
+  float: right;
+}
+
+.input {
+  margin-left: 46%;
+}
+
+/*右侧滑窗right-sidebar start*/
+.right-sidebar.show {
+  right: 0;
+}
+
+.right-sidebar {
+  overflow: hidden;
+}
+
+.right-sidebar-overlay {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.silder-footer {
+  position: fixed;
+  bottom: 28px;
+  right: 40px;
+}
+
+.subtitle {
+  /*background: #f5faff;*/
+  /*background: #f5f7fa00;*/
+  background: #f5f7fa;
+}
+
+.cup {
+  cursor: pointer;
+}
+
+.title:nth-child(1) {
+  border-bottom: 1px solid #e8e8e8;
+}
+
+.el-pagination {
+  margin: 15px 0;
+}
+
+.el-table__empty-block {
+  height: auto;
+}
+
+.el-dialog__title {
+  line-height: 48px;
+}
+
+.el-dialog__headerbtn {
+  top: 16px;
+}
+
+.el-form {
+  margin-top: 17px;
+}
+
+.el-dialog__body {
+  padding: 12px 20px;
+}
+
+.label {
+
+  text-indent: 10px;
+  border-bottom: 1px solid #eee;
+  margin: 0;
+  line-height: 40px;
+  font-weight: normal;
+}
+
+.el-tree-node__label,
+.el-table .cell {
+  font-size: 15px;
+}

@@ -1,0 +1,401 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaParStateMapper">
+
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns">
+        ${alias}.PAR_STATE_ID  parStateId,
+        ${alias}.STAGE_ID  stageId,
+        ${alias}.STATE_NAME  stateName,
+        ${alias}.USE_EL  useEl,
+        ${alias}.STATE_EL  stateEl,
+        ${alias}.IS_QUESTION  isQuestion,
+        ${alias}.ANSWER_TYPE  answerType,
+        ${alias}.MUST_ANSWER  mustAnswer,
+        ${alias}.PARENT_STATE_ID  parentStateId,
+        ${alias}.STATE_SEQ  stateSeq,
+        ${alias}.SORT_NO  sortNo,
+        ${alias}.IS_ACTIVE  isActive,
+        ${alias}.STATE_MEMO  stateMemo,
+        ${alias}.CREATER  creater,
+        ${alias}.CREATE_TIME  createTime,
+        ${alias}.MODIFIER  modifier,
+        ${alias}.MODIFY_TIME  modifyTime,
+        ${alias}.IS_DELETED  isDeleted,
+        ${alias}.IS_QUESTION_ORI  isQuestionOri,
+        ${alias}.IS_PROC_START_COND  isProcStartCond,
+        ${alias}.ROOT_ORG_ID  rootOrgId
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaParStateById" resultType="AeaParState">
+        select
+        <include refid="allColumns">
+            <property name="alias" value="parState"/>
+        </include>
+        from AEA_PAR_STATE parState
+        where parState.PAR_STATE_ID = #{id}
+        and parState.IS_DELETED = '0'
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaParState" resultType="AeaParState">
+        select
+        <include refid="allColumns">
+            <property name="alias" value="parState"/>
+        </include>
+        from AEA_PAR_STATE parState
+        <where>
+            <if test="parStateId != null">
+                AND PAR_STATE_ID = #{parStateId}
+            </if>
+            <if test="stageId != null">
+                AND STAGE_ID = #{stageId}
+            </if>
+            <if test="stateName != null">
+                AND STATE_NAME = #{stateName}
+            </if>
+            <if test="useEl != null">
+                AND USE_EL = #{useEl}
+            </if>
+            <if test="stateEl != null">
+                AND STATE_EL = #{stateEl}
+            </if>
+            <if test="isQuestion != null">
+                AND IS_QUESTION = #{isQuestion}
+            </if>
+            <if test="answerType != null">
+                AND ANSWER_TYPE = #{answerType}
+            </if>
+            <if test="mustAnswer != null">
+                AND MUST_ANSWER = #{mustAnswer}
+            </if>
+            <if test="parentStateId != null">
+                AND PARENT_STATE_ID = #{parentStateId}
+            </if>
+            <if test="stateSeq != null">
+                AND STATE_SEQ = #{stateSeq}
+            </if>
+            <if test="sortNo != null">
+                AND SORT_NO = #{sortNo}
+            </if>
+            <if test="isActive != null">
+                AND IS_ACTIVE = #{isActive}
+            </if>
+            <if test="stateMemo != null">
+                AND STATE_MEMO = #{stateMemo}
+            </if>
+            <if test="isQuestionOri != null">
+                AND IS_QUESTION_ORI = #{isQuestionOri}
+            </if>
+            <if test="isProcStartCond != null">
+                AND IS_PROC_START_COND = #{isProcStartCond}
+            </if>
+            <if test="rootOrgId != null">
+                AND ROOT_ORG_ID = #{rootOrgId}
+            </if>
+            <if test="keyword!='' and keyword!=null ">
+                AND STATE_NAME like concat('%',concat(#{keyword},'%'))
+            </if>
+            AND IS_DELETED = '0'
+        </where>
+    </select>
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaParState" parameterType="AeaParState">
+        insert into AEA_PAR_STATE(
+            PAR_STATE_ID,
+            STAGE_ID,
+            STATE_NAME,
+            USE_EL,
+            STATE_EL,
+            IS_QUESTION,
+            ANSWER_TYPE,
+            MUST_ANSWER,
+            PARENT_STATE_ID,
+            STATE_SEQ,
+            SORT_NO,
+            IS_ACTIVE,
+            STATE_MEMO,
+            CREATER,
+            CREATE_TIME,
+            MODIFIER,
+            MODIFY_TIME,
+            IS_DELETED,
+            IS_QUESTION_ORI,
+            IS_PROC_START_COND,
+            ROOT_ORG_ID
+        ) values (
+            #{parStateId},
+            #{stageId},
+            #{stateName},
+            #{useEl},
+            #{stateEl},
+            #{isQuestion},
+            #{answerType},
+            #{mustAnswer},
+            #{parentStateId},
+            #{stateSeq},
+            #{sortNo},
+            #{isActive, jdbcType=VARCHAR},
+            #{stateMemo},
+            #{creater},
+            #{createTime},
+            #{modifier},
+            #{modifyTime},
+            #{isDeleted, jdbcType=VARCHAR},
+            #{isQuestionOri},
+            #{isProcStartCond},
+            #{rootOrgId}
+        )
+    </insert>
+
+    <!--6 修改实体对象 -->
+    <update id="updateAeaParState" parameterType="AeaParState">
+        update AEA_PAR_STATE
+        <set>
+            <if test="parStateId != null">
+                PAR_STATE_ID = #{parStateId},
+            </if>
+            <if test="stageId != null">
+                STAGE_ID = #{stageId},
+            </if>
+            <if test="stateName != null">
+                STATE_NAME = #{stateName},
+            </if>
+            <if test="useEl != null">
+                USE_EL = #{useEl},
+            </if>
+            <if test="stateEl != null">
+                STATE_EL = #{stateEl},
+            </if>
+            <if test="isQuestion != null">
+                IS_QUESTION = #{isQuestion},
+            </if>
+            <if test="answerType != null">
+                ANSWER_TYPE = #{answerType},
+            </if>
+            <if test="mustAnswer != null">
+                MUST_ANSWER = #{mustAnswer},
+            </if>
+            <if test="parentStateId != null">
+                PARENT_STATE_ID = #{parentStateId},
+            </if>
+            <if test="stateSeq != null">
+                STATE_SEQ = #{stateSeq},
+            </if>
+            <if test="sortNo != null">
+                SORT_NO = #{sortNo},
+            </if>
+            <if test="isActive != null">
+                IS_ACTIVE = #{isActive},
+            </if>
+            <if test="stateMemo != null">
+                STATE_MEMO = #{stateMemo},
+            </if>
+            <if test="creater != null">
+                CREATER = #{creater},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime},
+            </if>
+            <if test="modifier != null">
+                MODIFIER = #{modifier},
+            </if>
+            <if test="modifyTime != null">
+                MODIFY_TIME = #{modifyTime},
+            </if>
+            <if test="isDeleted != null">
+                IS_DELETED = #{isDeleted},
+            </if>
+            <if test="isQuestionOri != null">
+                IS_QUESTION_ORI = #{isQuestionOri},
+            </if>
+            <if test="isProcStartCond != null">
+                IS_PROC_START_COND = #{isProcStartCond},
+            </if>
+            <if test="rootOrgId != null">
+                ROOT_ORG_ID = #{rootOrgId},
+            </if>
+        </set>
+        where PAR_STATE_ID = #{parStateId}
+    </update>
+
+    <!--7 删除实体对象,根据主键ID -->
+    <update id="deleteAeaParState">
+        update AEA_PAR_STATE
+        <set>
+            IS_DELETED = '1'
+        </set>
+        where PAR_STATE_ID = #{id}
+    </update>
+
+    <!--根据阶段ID获取阶段下所有的情形列表-->
+    <select id="listAeaParStateByStageId" resultType="AeaParState">
+        select
+        <include refid="allColumns">
+            <property name="alias" value="parState"/>
+        </include>
+        from AEA_PAR_STATE parState
+        where parState.STAGE_ID = #{stageId}
+        and parState.ROOT_ORG_ID = #{rootOrgId}
+        and parState.IS_DELETED = '0'
+    </select>
+
+    <!--根据阶段ID获取阶段root情形-->
+    <select id="listRootAeaParStateByStageId" resultType="AeaParState">
+        select
+        <include refid="allColumns">
+            <property name="alias" value="parState"/>
+        </include>
+        from AEA_PAR_STATE parState
+        where parState.PARENT_STATE_ID is null
+        and parState.STAGE_ID = #{stageId}
+        and parState.ROOT_ORG_ID = #{rootOrgId}
+        and parState.IS_DELETED = '0'
+    </select>
+
+    <!--根据父情形ID查找子情形-->
+    <select id="listAeaParStateByParentStateId" resultType="AeaParState">
+        select
+        <include refid="allColumns">
+            <property name="alias" value="parState"/>
+        </include>
+        from AEA_PAR_STATE parState
+        <where>
+            and parState.ROOT_ORG_ID = #{rootOrgId}
+            and parState.PARENT_STATE_ID = #{parentStateId}
+            and parState.IS_DELETED = '0'
+        </where>
+    </select>
+
+    <!--根据问题情形查找答案-->
+    <select id="listAnswerStateByQuestionStateId" resultType="AeaParState">
+        select
+        <include refid="allColumns">
+            <property name="alias" value="parState"/>
+        </include>
+        from AEA_PAR_STATE parState
+        <where>
+            and parState.ROOT_ORG_ID = #{rootOrgId}
+            and parState.PARENT_STATE_ID = #{parentParStateId}
+            and parState.IS_DELETED = '0'
+            and parState.IS_QUESTION = '0'
+        </where>
+    </select>
+
+    <!-- 查询除了root情形外的所有情形-->
+    <select id="listChildAeaParStateByStageId" resultType="AeaParState">
+        select
+        <include refid="allColumns">
+            <property name="alias" value="parState"/>
+        </include>
+        from AEA_PAR_STATE parState
+        <where>
+            and parState.ROOT_ORG_ID = #{rootOrgId}
+            and parState.STAGE_ID = #{stageId}
+            and parState.PARENT_STATE_ID is not null
+            and parState.IS_DELETED = '0'
+        </where>
+    </select>
+
+    <!--根据主键批量查询-->
+    <select id="listAeaItemStateByIds" resultType="AeaParState">
+        select
+        <include refid="allColumns">
+            <property name="alias" value="state"/>
+        </include>
+        from AEA_PAR_STATE state
+        where state.PAR_STATE_ID in
+        <foreach collection="stateIds" separator="," close=")" open="(" item="stateId">
+            #{stateId}
+        </foreach>
+    </select>
+    <!--8 删除实体对象列表,根据主键ID列表 -->
+
+
+    <!--根据父情形ID查找子情形及答案-->
+    <select id="listParStateByParentStateId" resultMap="AeaParStateMap">
+        select parState.* from AEA_PAR_STATE parState where
+        parState.ROOT_ORG_ID = #{rootOrgId} and parState.IS_DELETED = '0' and parState.STAGE_ID=#{stageId}
+        <choose>
+            <when test="parentStateId==null or parentStateId=='ROOT' or parentStateId=='root'">
+                and parState.PARENT_STATE_ID is null
+            </when>
+            <otherwise>
+                and parState.PARENT_STATE_ID = #{parentStateId}
+            </otherwise>
+        </choose>
+    </select>
+    <!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaParState" id="AeaParStateMap">
+        <id property="parStateId" column="PAR_STATE_ID"/>
+        <result property="stageId" column="STAGE_ID"/>
+        <result property="stateName" column="STATE_NAME"/>
+        <result property="useEl" column="USE_EL"/>
+        <result property="stateEl" column="STATE_EL"/>
+        <result property="isQuestion" column="IS_QUESTION"/>
+        <result property="answerType" column="ANSWER_TYPE"/>
+        <result property="mustAnswer" column="MUST_ANSWER"/>
+        <result property="parentStateId" column="PARENT_STATE_ID"/>
+        <result property="stateSeq" column="STATE_SEQ"/>
+        <result property="sortNo" column="SORT_NO"/>
+        <result property="isActive" column="IS_ACTIVE"/>
+        <result property="stateMemo" column="STATE_MEMO"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="modifier" column="MODIFIER"/>
+        <result property="modifyTime" column="MODIFY_TIME"/>
+        <result property="isDeleted" column="IS_DELETED"/>
+        <result property="isQuestionOri" column="IS_QUESTION_ORI"/>
+        <result property="isProcStartCond" column="IS_PROC_START_COND"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+        <collection property="answerStates" column="PAR_STATE_ID" select="listParStateByParentId"
+                    ofType="AeaParState" javaType="arraylist"></collection>
+    </resultMap>
+
+    <select id="listParStateByParentId" resultType="AeaParState">
+        select
+        <include refid="allColumns">
+            <property name="alias" value="state"/>
+        </include>
+        from AEA_PAR_STATE state where IS_DELETED = '0' and PARENT_STATE_ID = #{parStateId}
+
+    </select>
+    <select id="listAllChildStates" resultType="AeaParState">
+        select
+        <include refid="allColumns">
+            <property name="alias" value="state"/>
+        </include>
+        from AEA_PAR_STATE state
+        where state.IS_DELETED = '0'
+        and state.ROOT_ORG_ID = #{rootOrgId}
+        and state.STATE_SEQ like concat('%.',concat(#{parStateId},'.%'))
+        and state.PAR_STATE_ID != #{parStateId}
+        <if test="keyword!='' and keyword!=null ">
+            and state.STATE_NAME like concat('%',concat(#{keyword},'%'))
+        </if>
+        order by state.CREATE_TIME asc
+    </select>
+
+    <select id="getMaxSortNo" resultType="java.lang.Long">
+        select max(SORT_NO) from AEA_PAR_STATE where ROOT_ORG_ID = #{rootOrgId}
+    </select>
+
+    <select id="listAeaParStateByParentStateIdAndStageId" resultType="AeaParState">
+        select
+        <include refid="allColumns">
+            <property name="alias" value="state"/>
+        </include>
+        from AEA_PAR_STATE state
+        <where>
+            IS_DELETED = '0'
+            <if test="parentStateId!=null">and PARENT_STATE_ID = #{parentStateId}</if>
+            <if test="rootOrgId!=null">and ROOT_ORG_ID = #{rootOrgId}</if>
+            <if test="stageId!=null">and STAGE_ID = #{stageId}</if>
+        </where>
+
+    </select>
+</mapper>

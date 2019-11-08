@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by yinlf    2019-07-01 16:22:57 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaLogItemStateHistMapper">
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns">
+        STATE_HIST_ID  stateHistId,
+        ITEMINST_ID  iteminstId,
+        IS_FLOW_TRIGGER  isFlowTrigger,
+        APPINST_ID  appinstId,
+        TASKINST_ID  taskinstId,
+        TRIGGER_TIME  triggerTime,
+        OLD_STATE  oldState,
+        NEW_STATE  newState,
+        OPS_ORG_ID opsOrgId,
+        OPS_USER_ID  opsUserId,
+        OPS_USER_NAME  opsUserName,
+        OPS_FILL_TIME  opsFillTime,
+        OPS_USER_OPINION  opsUserOpinion,
+        OPS_ACTION  opsAction,
+        OPS_MEMO  opsMemo,
+        BUS_TABLE_NAME  busTableName,
+        BUS_PK_NAME  busPkName,
+        BUS_RECORD_ID  busRecordId,
+        ROOT_ORG_ID rootOrgId
+    </sql>
+
+    <sql id="allColumns_alish">
+        alish.STATE_HIST_ID  stateHistId,
+        alish.ITEMINST_ID  iteminstId,
+        alish.IS_FLOW_TRIGGER  isFlowTrigger,
+        alish.APPINST_ID  appinstId,
+        alish.TASKINST_ID  taskinstId,
+        alish.TRIGGER_TIME  triggerTime,
+        alish.OLD_STATE  oldState,
+        alish.NEW_STATE  newState,
+        alish.OPS_ORG_ID opsOrgId,
+        alish.OPS_USER_ID  opsUserId,
+        alish.OPS_USER_NAME  opsUserName,
+        alish.OPS_FILL_TIME  opsFillTime,
+        alish.OPS_USER_OPINION  opsUserOpinion,
+        alish.OPS_ACTION  opsAction,
+        alish.OPS_MEMO  opsMemo,
+        alish.BUS_TABLE_NAME  busTableName,
+        alish.BUS_PK_NAME  busPkName,
+        alish.BUS_RECORD_ID  busRecordId,
+        alish.ROOT_ORG_ID rootOrgId
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaLogItemStateHistById" resultType="AeaLogItemStateHist">
+        select
+        <include refid="allColumns"/>
+        from AEA_LOG_ITEM_STATE_HIST
+        where STATE_HIST_ID = #{id}
+    </select>
+
+    <select id="getAeaLogItemStateHistByCorrectId" resultType="AeaLogItemStateHist">
+        SELECT
+        <include refid="allColumns_alish"/>
+        FROM AEA_LOG_ITEM_STATE_HIST alish, AEA_HI_ITEM_CORRECT_STATE_HIST ahicsh
+        WHERE
+        ahicsh.STATE_HIST_ID = alish.STATE_HIST_ID
+        AND
+        ahicsh.CORRECT_ID = #{correctId}
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaLogItemStateHist" resultType="AeaLogItemStateHist">
+        select
+        <include refid="allColumns"/>
+        from AEA_LOG_ITEM_STATE_HIST
+        <where>
+            <if test="stateHistId != null">
+                AND STATE_HIST_ID = #{stateHistId}
+            </if>
+            <if test="iteminstId != null">
+                AND ITEMINST_ID = #{iteminstId}
+            </if>
+            <if test="isFlowTrigger != null">
+                AND IS_FLOW_TRIGGER = #{isFlowTrigger}
+            </if>
+            <if test="appinstId != null">
+                AND APPINST_ID = #{appinstId}
+            </if>
+            <if test="taskinstId != null">
+                AND TASKINST_ID = #{taskinstId}
+            </if>
+            <if test="triggerTime != null">
+                AND TRIGGER_TIME = #{triggerTime}
+            </if>
+            <if test="oldState != null">
+                AND OLD_STATE = #{oldState}
+            </if>
+            <if test="newState != null">
+                AND NEW_STATE = #{newState}
+            </if>
+            <if test="opsOrgId != null">
+                AND OPS_ORG_ID = #{opsOrgId}
+            </if>
+            <if test="opsUserId != null">
+                AND OPS_USER_ID = #{opsUserId}
+            </if>
+            <if test="opsUserName != null">
+                AND OPS_USER_NAME = #{opsUserName}
+            </if>
+            <if test="opsFillTime != null">
+                AND OPS_FILL_TIME = #{opsFillTime}
+            </if>
+            <if test="opsUserOpinion != null">
+                AND OPS_USER_OPINION = #{opsUserOpinion}
+            </if>
+            <if test="opsAction != null">
+                AND OPS_ACTION = #{opsAction}
+            </if>
+            <if test="opsMemo != null">
+                AND OPS_MEMO = #{opsMemo}
+            </if>
+            <if test="busTableName != null">
+                AND BUS_TABLE_NAME = #{busTableName}
+            </if>
+            <if test="busPkName != null">
+                AND BUS_PK_NAME = #{busPkName}
+            </if>
+            <if test="busRecordId != null">
+                AND BUS_RECORD_ID = #{busRecordId}
+            </if>
+            <if test="rootOrgId != null">
+                AND ROOT_ORG_ID = #{rootOrgId}
+            </if>
+        </where>
+        ORDER BY TRIGGER_TIME DESC
+    </select>
+    <!--4 根据条件查询实体list,返回分页对象 -->
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaLogItemStateHist" parameterType="AeaLogItemStateHist">
+        insert into AEA_LOG_ITEM_STATE_HIST (STATE_HIST_ID, ITEMINST_ID, IS_FLOW_TRIGGER, APPINST_ID, TASKINST_ID,
+                                             TRIGGER_TIME, OLD_STATE, NEW_STATE, OPS_ORG_ID, OPS_USER_ID, OPS_USER_NAME,
+                                             OPS_FILL_TIME, OPS_USER_OPINION, OPS_ACTION, OPS_MEMO, BUS_TABLE_NAME,
+                                             BUS_PK_NAME, BUS_RECORD_ID,ROOT_ORG_ID)
+        values (#{stateHistId}, #{iteminstId}, #{isFlowTrigger}, #{appinstId}, #{taskinstId}, #{triggerTime},
+                #{oldState}, #{newState}, #{opsOrgId}, #{opsUserId}, #{opsUserName}, #{opsFillTime}, #{opsUserOpinion}, #{opsAction},
+                #{opsMemo}, #{busTableName}, #{busPkName}, #{busRecordId},#{rootOrgId})
+    </insert>
+    <!--6 修改实体对象 -->
+    <update id="updateAeaLogItemStateHist" parameterType="AeaLogItemStateHist">
+        update AEA_LOG_ITEM_STATE_HIST
+        <set>
+            <if test="stateHistId != null">
+                STATE_HIST_ID = #{stateHistId},
+            </if>
+            <if test="iteminstId != null">
+                ITEMINST_ID = #{iteminstId},
+            </if>
+            <if test="isFlowTrigger != null">
+                IS_FLOW_TRIGGER = #{isFlowTrigger},
+            </if>
+            <if test="appinstId != null">
+                APPINST_ID = #{appinstId},
+            </if>
+            <if test="taskinstId != null">
+                TASKINST_ID = #{taskinstId},
+            </if>
+            <if test="triggerTime != null">
+                TRIGGER_TIME = #{triggerTime},
+            </if>
+            <if test="oldState != null">
+                OLD_STATE = #{oldState},
+            </if>
+            <if test="newState != null">
+                NEW_STATE = #{newState},
+            </if>
+            <if test="newState != null">
+                OPS_ORG_ID = #{opsOrgId},
+            </if>
+            <if test="opsUserId != null">
+                OPS_USER_ID = #{opsUserId},
+            </if>
+            <if test="opsUserName != null">
+                OPS_USER_NAME = #{opsUserName},
+            </if>
+            <if test="opsFillTime != null">
+                OPS_FILL_TIME = #{opsFillTime},
+            </if>
+            <if test="opsUserOpinion != null">
+                OPS_USER_OPINION = #{opsUserOpinion},
+            </if>
+            <if test="opsAction != null">
+                OPS_ACTION = #{opsAction},
+            </if>
+            <if test="opsMemo != null">
+                OPS_MEMO = #{opsMemo},
+            </if>
+            <if test="busTableName != null">
+                BUS_TABLE_NAME = #{busTableName},
+            </if>
+            <if test="busPkName != null">
+                BUS_PK_NAME = #{busPkName},
+            </if>
+            <if test="busRecordId != null">
+                BUS_RECORD_ID = #{busRecordId},
+            </if>
+            <if test="rootOrgId != null">
+                ROOT_ORG_ID = #{rootOrgId},
+            </if>
+        </set>
+        where STATE_HIST_ID = #{stateHistId}
+    </update>
+    <!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaLogItemStateHist">
+        delete
+        from AEA_LOG_ITEM_STATE_HIST
+        where STATE_HIST_ID = #{id}
+    </delete>
+    <!--8 删除实体对象列表,根据主键ID列表 -->
+    <!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaLogItemStateHist" id="AeaLogItemStateHistMap">
+        <id property="stateHistId" column="STATE_HIST_ID"/>
+        <result property="iteminstId" column="ITEMINST_ID"/>
+        <result property="isFlowTrigger" column="IS_FLOW_TRIGGER"/>
+        <result property="appinstId" column="APPINST_ID"/>
+        <result property="taskinstId" column="TASKINST_ID"/>
+        <result property="triggerTime" column="TRIGGER_TIME"/>
+        <result property="oldState" column="OLD_STATE"/>
+        <result property="newState" column="NEW_STATE"/>
+        <result property="opsOrgId" column="OPS_ORG_ID"/>
+        <result property="opsUserId" column="OPS_USER_ID"/>
+        <result property="opsUserName" column="OPS_USER_NAME"/>
+        <result property="opsFillTime" column="OPS_FILL_TIME"/>
+        <result property="opsUserOpinion" column="OPS_USER_OPINION"/>
+        <result property="opsAction" column="OPS_ACTION"/>
+        <result property="opsMemo" column="OPS_MEMO"/>
+        <result property="busTableName" column="BUS_TABLE_NAME"/>
+        <result property="busPkName" column="BUS_PK_NAME"/>
+        <result property="busRecordId" column="BUS_RECORD_ID"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+    </resultMap>
+
+    <insert id="batchInsertAeaLogItemStateHist">
+        insert into AEA_LOG_ITEM_STATE_HIST (STATE_HIST_ID, ITEMINST_ID, IS_FLOW_TRIGGER, APPINST_ID, TASKINST_ID,
+                    TRIGGER_TIME, OLD_STATE, NEW_STATE, OPS_ORG_ID, OPS_USER_ID, OPS_USER_NAME,
+                    OPS_FILL_TIME, OPS_USER_OPINION, OPS_ACTION, OPS_MEMO, BUS_TABLE_NAME,
+                    BUS_PK_NAME, BUS_RECORD_ID,ROOT_ORG_ID)
+        values
+        <foreach collection="aeaLogItemStateHistList" item="aeaLogItemStateHist" separator=",">
+            (#{aeaLogItemStateHist.stateHistId}, #{aeaLogItemStateHist.iteminstId}, #{aeaLogItemStateHist.isFlowTrigger}, #{aeaLogItemStateHist.appinstId}, #{aeaLogItemStateHist.taskinstId}, #{aeaLogItemStateHist.triggerTime},
+            #{aeaLogItemStateHist.oldState}, #{aeaLogItemStateHist.newState}, #{aeaLogItemStateHist.opsOrgId}, #{aeaLogItemStateHist.opsUserId}, #{aeaLogItemStateHist.opsUserName}, #{aeaLogItemStateHist.opsFillTime}, #{aeaLogItemStateHist.opsUserOpinion}, #{aeaLogItemStateHist.opsAction},
+            #{aeaLogItemStateHist.opsMemo}, #{aeaLogItemStateHist.busTableName}, #{aeaLogItemStateHist.busPkName}, #{aeaLogItemStateHist.busRecordId}, #{aeaLogItemStateHist.rootOrgId})
+        </foreach>
+    </insert>
+
+    <select id="getInitStateAeaLogItemStateHist" resultType="AeaLogItemStateHist">
+        select
+        <include refid="allColumns"/>
+        from AEA_LOG_ITEM_STATE_HIST
+        where ITEMINST_ID = #{iteminstId} AND APPINST_ID = #{appinstId} AND IS_FLOW_TRIGGER = '1' AND TASKINST_ID IS null AND OLD_STATE is null
+    </select>
+
+    <select id="findSpacialAeaLogItemStateHist" resultType="com.augurit.aplanmis.common.vo.SupplyOrSpacialCommentVo">
+        SELECT alish.TASKINST_ID id,alish.OPS_USER_NAME man,case alish.NEW_STATE when '9' then '1' else '2' end
+        signState,alish.OPS_USER_OPINION
+        commentMessage,'特殊程序' nodeName,alish.TRIGGER_TIME endDate
+          from aea_log_item_state_hist alish
+          LEFT JOIN aea_hi_item_special_state_hist ahissh ON ahissh.STATE_HIST_ID=alish.STATE_HIST_ID
+          LEFT JOIN aea_hi_item_special ahis ON ahissh.SPECIAL_ID=ahis.SPECIAL_ID
+          where  alish.NEW_STATE in ('9','10') AND alish.TASKINST_ID=#{taskInstId}
+          <if test="rootOrgId!=null and rootOrgId!=''">
+              AND alish.ROOT_ORG_ID=#{rootOrgId}
+              AND ahis.ROOT_ORG_ID=#{rootOrgId}
+          </if>
+    </select>
+
+    <select id="findItemCorrectStateHist" resultType="com.augurit.aplanmis.common.vo.SupplyOrSpacialCommentVo">
+        SELECT alish.TASKINST_ID id,alish.OPS_USER_NAME man,case alish.NEW_STATE when '6' then '1' else '2' end
+        signState,alish.OPS_USER_OPINION
+        commentMessage,'补正' nodeName,alish.TRIGGER_TIME endDate
+          from aea_log_item_state_hist alish
+          LEFT JOIN aea_hi_item_correct_state_hist ahicsh ON ahicsh.STATE_HIST_ID=alish.STATE_HIST_ID
+          LEFT JOIN aea_hi_item_correct ahic ON ahicsh.CORRECT_ID=ahic.CORRECT_ID
+          where  alish.NEW_STATE in('6','7') AND alish.TASKINST_ID=#{taskInstId}
+        <if test="rootOrgId!=null and rootOrgId!=''">
+            AND alish.ROOT_ORG_ID=#{rootOrgId}
+            AND ahic.ROOT_ORG_ID=#{rootOrgId}
+        </if>
+    </select>
+
+</mapper>

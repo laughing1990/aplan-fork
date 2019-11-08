@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaTraceLogMapper" >
+
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns" >
+        LOG_ID  logId,
+        LOG_TITLE  logTitle,
+        LOG_TIME  logTime,
+        LOG_LEVEL  logLevel,
+        LOG_THREAD  logThread,
+        LOG_MESSAGE  logMessage,
+        LOG_EXCEPTION  logException,
+        USER_ID  userId,
+        USER_NAME  userName,
+        POS_ID  posId,
+        POS_NAME  posName,
+        ORG_ID  orgId,
+        ORG_NAME  orgName,
+        OPERATION_APP  operationApp,
+        OPERATION_MODULE  operationModule,
+        OPERATION_FUNC  operationFunc,
+        OPERATION_CLASS  operationClass,
+        OPERATION_METHOD  operationMethod,
+        OPERATION_DESC  operationDesc,
+        REMOTE_ADDR  remoteAddr,
+        USER_AGENT  userAgent,
+        REQUEST_PATH  requestPath,
+        REQUEST_PARAMS  requestParams,
+        REQUEST_METHOD  requestMethod,
+        OPERATION_RESULT  operationResult,
+        OPERATION_DURATION  operationDuration,
+        ROOT_ORG_ID rootOrgId
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaTraceLogById" resultType="AeaTraceLog" >
+        select
+            <include refid="allColumns"/>
+        from AEA_TRACE_LOG
+        where LOG_ID = #{id}
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaTraceLog" resultType="AeaTraceLog" >
+        select
+            <include refid="allColumns"/>
+        from    AEA_TRACE_LOG
+        <where>
+            <if test="logId != null" >
+            AND    LOG_ID = #{logId}
+            </if>
+            <if test="logTitle != null" >
+            AND    LOG_TITLE = #{logTitle}
+            </if>
+            <if test="logTime != null" >
+            AND    LOG_TIME = #{logTime}
+            </if>
+            <if test="logLevel != null" >
+            AND    LOG_LEVEL = #{logLevel}
+            </if>
+            <if test="logThread != null" >
+            AND    LOG_THREAD = #{logThread}
+            </if>
+            <if test="logMessage != null" >
+            AND    LOG_MESSAGE = #{logMessage}
+            </if>
+            <if test="logException != null" >
+            AND    LOG_EXCEPTION = #{logException}
+            </if>
+            <if test="userId != null" >
+            AND    USER_ID = #{userId}
+            </if>
+            <if test="userName != null" >
+            AND    USER_NAME = #{userName}
+            </if>
+            <if test="posId != null" >
+            AND    POS_ID = #{posId}
+            </if>
+            <if test="posName != null" >
+            AND    POS_NAME = #{posName}
+            </if>
+            <if test="orgId != null" >
+            AND    ORG_ID = #{orgId}
+            </if>
+            <if test="orgName != null" >
+            AND    ORG_NAME = #{orgName}
+            </if>
+            <if test="operationApp != null" >
+            AND    OPERATION_APP = #{operationApp}
+            </if>
+            <if test="operationModule != null" >
+            AND    OPERATION_MODULE = #{operationModule}
+            </if>
+            <if test="operationFunc != null" >
+            AND    OPERATION_FUNC = #{operationFunc}
+            </if>
+            <if test="operationClass != null" >
+            AND    OPERATION_CLASS = #{operationClass}
+            </if>
+            <if test="operationMethod != null" >
+            AND    OPERATION_METHOD = #{operationMethod}
+            </if>
+            <if test="operationDesc != null" >
+            AND    OPERATION_DESC = #{operationDesc}
+            </if>
+            <if test="remoteAddr != null" >
+            AND    REMOTE_ADDR = #{remoteAddr}
+            </if>
+            <if test="userAgent != null" >
+            AND    USER_AGENT = #{userAgent}
+            </if>
+            <if test="requestPath != null" >
+            AND    REQUEST_PATH = #{requestPath}
+            </if>
+            <if test="requestParams != null" >
+            AND    REQUEST_PARAMS = #{requestParams}
+            </if>
+            <if test="requestMethod != null" >
+            AND    REQUEST_METHOD = #{requestMethod}
+            </if>
+            <if test="operationResult != null" >
+            AND    OPERATION_RESULT = #{operationResult}
+            </if>
+            <if test="operationDuration != null" >
+            AND    OPERATION_DURATION = #{operationDuration}
+            </if>
+            <if test="rootOrgId != null" >
+            AND    ROOT_ORG_ID = #{rootOrgId}
+            </if>
+            <if test="startTime != null and endTime==null" >
+            AND  <![CDATA[ LOG_TIME >= #{startTime} ]]>
+            </if>
+            <if test="startTime==null and endTime != null" >
+            AND  <![CDATA[ LOG_TIME <= #{endTime} ]]>
+            </if>
+            <if test="startTime != null and endTime!=null" >
+            AND  ( LOG_TIME between #{startTime} and #{endTime} )
+            </if>
+            <if test="keyword!=null and keyword!='' ">
+            AND (
+                LOG_TITLE like concat('%',concat(#{keyword},'%')) or
+                LOG_MESSAGE like concat('%',concat(#{keyword},'%')) or
+                LOG_EXCEPTION like concat('%',concat(#{keyword},'%')) or
+                ORG_NAME like concat('%',concat(#{keyword},'%')) or
+                USER_NAME like concat('%',concat(#{keyword},'%')) or
+                REMOTE_ADDR like concat('%',concat(#{keyword},'%'))
+            )
+            </if>
+        </where>
+        order by LOG_TIME desc
+    </select>
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaTraceLog" parameterType="AeaTraceLog" >
+        insert into AEA_TRACE_LOG (
+           LOG_ID,
+           LOG_TITLE,
+           LOG_TIME,
+           LOG_LEVEL,
+           LOG_THREAD,
+           LOG_MESSAGE,
+           LOG_EXCEPTION,
+           USER_ID,
+           USER_NAME,
+           POS_ID,
+           POS_NAME,
+           ORG_ID,
+           ORG_NAME,
+           OPERATION_APP,
+           OPERATION_MODULE,
+           OPERATION_FUNC,
+           OPERATION_CLASS,
+           OPERATION_METHOD,
+           OPERATION_DESC,
+           REMOTE_ADDR,
+           USER_AGENT,
+           REQUEST_PATH,
+           REQUEST_PARAMS,
+           REQUEST_METHOD,
+           OPERATION_RESULT,
+           OPERATION_DURATION,
+           ROOT_ORG_ID
+        )  values  (
+            #{logId},
+            #{logTitle},
+            #{logTime},
+            #{logLevel},
+            #{logThread},
+            #{logMessage},
+            #{logException},
+            #{userId},
+            #{userName},
+            #{posId},
+            #{posName},
+            #{orgId},
+            #{orgName},
+            #{operationApp},
+            #{operationModule},
+            #{operationFunc},
+            #{operationClass},
+            #{operationMethod},
+            #{operationDesc},
+            #{remoteAddr},
+            #{userAgent},
+            #{requestPath},
+            #{requestParams},
+            #{requestMethod},
+            #{operationResult},
+            #{operationDuration},
+            #{rootOrgId}
+        )
+    </insert>
+
+    <!--6 修改实体对象 -->
+    <update id="updateAeaTraceLog" parameterType="AeaTraceLog" >
+        update AEA_TRACE_LOG
+        <set >
+            <if test="logId != null" >
+            LOG_ID = #{logId},
+            </if>
+            <if test="logTitle != null" >
+            LOG_TITLE = #{logTitle},
+            </if>
+            <if test="logTime != null" >
+            LOG_TIME = #{logTime},
+            </if>
+            <if test="logLevel != null" >
+            LOG_LEVEL = #{logLevel},
+            </if>
+            <if test="logThread != null" >
+            LOG_THREAD = #{logThread},
+            </if>
+            <if test="logMessage != null" >
+            LOG_MESSAGE = #{logMessage},
+            </if>
+            <if test="logException != null" >
+            LOG_EXCEPTION = #{logException},
+            </if>
+            <if test="userId != null" >
+            USER_ID = #{userId},
+            </if>
+            <if test="userName != null" >
+            USER_NAME = #{userName},
+            </if>
+            <if test="posId != null" >
+            POS_ID = #{posId},
+            </if>
+            <if test="posName != null" >
+            POS_NAME = #{posName},
+            </if>
+            <if test="orgId != null" >
+            ORG_ID = #{orgId},
+            </if>
+            <if test="orgName != null" >
+            ORG_NAME = #{orgName},
+            </if>
+            <if test="operationApp != null" >
+            OPERATION_APP = #{operationApp},
+            </if>
+            <if test="operationModule != null" >
+            OPERATION_MODULE = #{operationModule},
+            </if>
+            <if test="operationFunc != null" >
+            OPERATION_FUNC = #{operationFunc},
+            </if>
+            <if test="operationClass != null" >
+            OPERATION_CLASS = #{operationClass},
+            </if>
+            <if test="operationMethod != null" >
+            OPERATION_METHOD = #{operationMethod},
+            </if>
+            <if test="operationDesc != null" >
+            OPERATION_DESC = #{operationDesc},
+            </if>
+            <if test="remoteAddr != null" >
+            REMOTE_ADDR = #{remoteAddr},
+            </if>
+            <if test="userAgent != null" >
+            USER_AGENT = #{userAgent},
+            </if>
+            <if test="requestPath != null" >
+            REQUEST_PATH = #{requestPath},
+            </if>
+            <if test="requestParams != null" >
+            REQUEST_PARAMS = #{requestParams},
+            </if>
+            <if test="requestMethod != null" >
+            REQUEST_METHOD = #{requestMethod},
+            </if>
+            <if test="operationResult != null" >
+            OPERATION_RESULT = #{operationResult},
+            </if>
+            <if test="operationDuration != null" >
+            OPERATION_DURATION = #{operationDuration},
+            </if>
+            <if test="rootOrgId != null" >
+            ROOT_ORG_ID = #{rootOrgId},
+            </if>
+        </set>
+        where LOG_ID = #{logId}
+    </update>
+
+    <!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaTraceLog">
+        delete from AEA_TRACE_LOG where LOG_ID = #{id}
+    </delete>
+
+</mapper>

@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by Administrator    2019-07-04 17:13:41 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaItemRelevanceMapper">
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns">
+        RELEVANCE_ID  relevanceId,
+    CHILD_ITEM_ID  childItemId,
+    PARENT_ITEM_ID  parentItemId,
+    CREATER  creater,
+    CREATE_TIME  createTime,
+    MODIFIER  modifier,
+    MODIFY_TIME  modifyTime,
+    IS_DELETE  isDelete
+    </sql>
+
+    <sql id="allColumns_air">
+        air.RELEVANCE_ID  relevanceId,
+        air.CHILD_ITEM_ID  childItemId,
+        air.PARENT_ITEM_ID  parentItemId,
+        air.CREATER  creater,
+        air.CREATE_TIME  createTime,
+        air.MODIFIER  modifier,
+        air.MODIFY_TIME  modifyTime,
+        air.IS_DELETE  isDelete
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaItemRelevanceById" resultType="AeaItemRelevance">
+        select
+        <include refid="allColumns"/>
+        from AEA_ITEM_RELEVANCE
+        where RELEVANCE_ID = #{id}
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaItemRelevance" resultType="AeaItemRelevance">
+        select
+        <include refid="allColumns_air"/>,aib.ITEM_NAME itemName,o.ORG_NAME orgName
+        from AEA_ITEM_RELEVANCE air,AEA_ITEM_BASIC aib
+        LEFT JOIN opu_om_org o ON aib.ORG_ID = o.ORG_ID
+        <where>
+            air.PARENT_ITEM_ID = aib.ITEM_ID
+            <if test="relevanceId != null">
+                AND air.RELEVANCE_ID = #{relevanceId}
+            </if>
+            <if test="childItemId != null">
+                AND air.CHILD_ITEM_ID = #{childItemId}
+            </if>
+            <if test="parentItemId != null">
+                AND air.PARENT_ITEM_ID = #{parentItemId}
+            </if>
+            <if test="creater != null">
+                AND air.CREATER = #{creater}
+            </if>
+            <if test="createTime != null">
+                AND air.CREATE_TIME = #{createTime}
+            </if>
+            <if test="modifier != null">
+                AND air.MODIFIER = #{modifier}
+            </if>
+            <if test="modifyTime != null">
+                AND air.MODIFY_TIME = #{modifyTime}
+            </if>
+            <if test="isDelete != null">
+                AND air.IS_DELETE = #{isDelete}
+            </if>
+        </where>
+    </select>
+    <!--4 根据条件查询实体list,返回分页对象 -->
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaItemRelevance" parameterType="AeaItemRelevance">
+        insert into AEA_ITEM_RELEVANCE (RELEVANCE_ID, CHILD_ITEM_ID, PARENT_ITEM_ID, CREATER, CREATE_TIME, MODIFIER,
+                                        MODIFY_TIME, IS_DELETE)
+        values (#{relevanceId}, #{childItemId}, #{parentItemId}, #{creater}, #{createTime}, #{modifier}, #{modifyTime},
+                #{isDelete})
+    </insert>
+    <!--6 修改实体对象 -->
+    <update id="updateAeaItemRelevance" parameterType="AeaItemRelevance">
+        update AEA_ITEM_RELEVANCE
+        <set>
+            <if test="relevanceId != null">
+                RELEVANCE_ID = #{relevanceId},
+            </if>
+            <if test="childItemId != null">
+                CHILD_ITEM_ID = #{childItemId},
+            </if>
+            <if test="parentItemId != null">
+                PARENT_ITEM_ID = #{parentItemId},
+            </if>
+            <if test="creater != null">
+                CREATER = #{creater},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime},
+            </if>
+            <if test="modifier != null">
+                MODIFIER = #{modifier},
+            </if>
+            <if test="modifyTime != null">
+                MODIFY_TIME = #{modifyTime},
+            </if>
+            <if test="isDelete != null">
+                IS_DELETE = #{isDelete},
+            </if>
+        </set>
+        where RELEVANCE_ID = #{relevanceId}
+    </update>
+    <!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaItemRelevance">
+        delete
+        from AEA_ITEM_RELEVANCE
+        where RELEVANCE_ID = #{id}
+    </delete>
+    <!--8 删除实体对象列表,根据主键ID列表 -->
+    <!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaItemRelevance" id="AeaItemRelevanceMap">
+        <id property="relevanceId" column="RELEVANCE_ID"/>
+        <result property="childItemId" column="CHILD_ITEM_ID"/>
+        <result property="parentItemId" column="PARENT_ITEM_ID"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="modifier" column="MODIFIER"/>
+        <result property="modifyTime" column="MODIFY_TIME"/>
+        <result property="isDelete" column="IS_DELETE"/>
+    </resultMap>
+
+
+    <delete id="cancelItemRelation">
+        delete from   AEA_ITEM_RELEVANCE
+        where
+        CHILD_ITEM_ID = #{itemId}
+        and PARENT_ITEM_ID IN
+        <foreach collection="itemIds" item="id" index="i" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,210 @@
+package com.augurit.aplanmis.common.vo;
+
+import com.augurit.aplanmis.common.diyannotation.FiledNameIs;
+import com.augurit.aplanmis.common.domain.AeaImMajorQual;
+import com.augurit.aplanmis.common.domain.AeaImUnitRequire;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import java.util.List;
+
+/**
+ * @author tiantian
+ * @date 2019/6/11
+ */
+@Data
+@ApiModel("新增采购需求")
+public class SaveAeaImProjPurchaseVo {
+
+    @ApiModelProperty(value = "采购需求ID")
+    private String projPurchaseId;
+
+    @ApiModelProperty(value = "服务项目ID")
+    private String projInfoId; // (服务项目ID)
+
+    @NotBlank(message = "服务类型和中介服务事项关联ID不能为空")
+    @ApiModelProperty(value = "服务类型和中介服务事项关联ID，多个用,隔开", required = true)
+    private String serviceItemId; // (服务类型和中介服务事项关联ID)
+
+    @NotBlank(message = "服务类型ID不能为空")
+    @ApiModelProperty(value = "服务类型ID", required = true)
+    private String serviceId; // (服务类型ID)
+
+//    @NotBlank(message = "最低价格不能为空")
+    @ApiModelProperty(value = "最低价格（万元）",required = true)
+    private String basePrice; // (最低价格（万元）)
+
+    @ApiModelProperty(value = "竞价天数")
+    private String bidNum; // (竞价天数)
+    @ApiModelProperty(value = "竞价时间单位")
+    private String bjType; // (竞价时间单位)
+
+    @NotBlank(message = "竞价类型不能为空")
+    @ApiModelProperty(value = "竞价类型：1 随机中标，2 自主选择 3 竞价选取",required = true)
+    private String biddingType; // (竞价类型：1 随机中标，2 自主选择 3 竞价选取)
+    @ApiModelProperty(value = "备注")
+    private String memo; // (备注)
+    @ApiModelProperty(value = "最高价格（万元）")
+    private String highestPrice; // (最高价格（万元）)
+
+    @NotBlank(message = "服务时间说明不能为空")
+    @ApiModelProperty(value = "服务时间说明",required = true)
+    private String serviceTimeExplain; // (服务时间说明)
+
+    @NotBlank(message = "服务内容不能为空")
+    @ApiModelProperty(value = "服务内容",required = true)
+    private String serviceContent; // (服务内容)
+
+    @NotBlank(message = "业主联系人不能为空")
+    @ApiModelProperty(value = "业主联系人",required = true)
+    private String contacts; // (业主联系人)
+
+    @NotBlank(message = "联系电话不能为空")
+    @ApiModelProperty(value = "联系电话",required = true)
+    private String moblie; // (联系电话)
+    @ApiModelProperty(value = "金额说明")
+    private String amountExplain; // (金额说明)
+
+    @NotBlank(message = "是否为投资审批项目不能为空")
+    @ApiModelProperty(value = "是否为投资审批项目：1 是，0 否",required = true)
+
+    private String isApproveProj; // (是否为投资审批项目：1 是，0 否)
+    @ApiModelProperty(value = "关联的审批流水号")
+    private String applyinstCode; // (关联的审批流水号)
+    @ApiModelProperty(value = "是否现场见证：1 是， 0 否")
+    private String isLiveWitness; // (是否现场见证：1 是， 0 否)
+    @ApiModelProperty(value = "见证者1姓名")
+    private String witnessName1; // (见证者1姓名)
+    @ApiModelProperty(value = "见证者2姓名")
+    private String witnessName2; // (见证者2姓名)
+    @ApiModelProperty(value = "见证者3姓名")
+    private String witnessName3; // (见证者3姓名)
+    @ApiModelProperty(value = "见证者1电话")
+    private String witnessPhone1; // (见证者1电话)
+    @ApiModelProperty(value = "见证者2电话")
+    private String witnessPhone2; // (见证者2电话)
+    @ApiModelProperty(value = "见证者3电话")
+    private String witnessPhone3; // (见证者3电话)
+    @ApiModelProperty(value = "是否公示中选机构： 1 是， 0 否")
+    private String isDiscloseIm; // (是否公示中选机构： 1 是， 0 否)
+    @ApiModelProperty(value = "是否公示中标公告：1 是， 0 否")
+    private String isDiscloseBidding; // (是否公示中标公告：1 是， 0 否)
+
+    @NotBlank(message = "业主投诉电话不能为空")
+    @ApiModelProperty(value = "业主投诉电话",required = true)
+    private String ownerComplaintPhone; // (业主投诉电话)
+
+    //    @NotBlank(message = "是否确认金额不能为空")
+    @ApiModelProperty(value = "是否确认金额，1 是 0 否")
+    private String isDefineAmount;//是否确认金额，1 是 0 否
+
+    @NotNull(message = "采购项目信息不能为空")
+    @Valid
+    @ApiModelProperty(value = "采购项目",required = true)
+    private SaveAeaProjInfoVo saveAeaProjInfoVo;
+
+    @NotNull(message = "机构要求不能为空")
+    @Valid
+    @ApiModelProperty(value = "机构要求")
+    private AeaImUnitRequire aeaImUnitRequire;
+
+    @ApiModelProperty(value = "专业要求")
+    private List<AeaImMajorQual> aeaImMajorQuals;
+
+    @FiledNameIs(filedValue = "服务选择条件")
+    private String selectCondition;//服务选择条件：1 多个服务具备其一，0 多个服务都具备
+
+    @ApiModelProperty(value = "所选中介机构id")
+    private String agentUnitInfoId;
+
+    @ApiModelProperty(value = "截止日期 yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+//    @NotNull
+    private java.util.Date expirationDate;//截止日期
+
+
+    @ApiModelProperty(value = "选取中介时间 yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    private java.util.Date choiceImunitTime;
+
+    @ApiModelProperty(value = "业主委托人信息ID")
+    private String linkmanInfoId;
+
+    @ApiModelProperty(value = "最小下浮率%")
+    private String baseRate;
+
+    @ApiModelProperty(value = "最大下浮率%")
+    private String highestRate;
+
+    @ApiModelProperty(value = "报价方式,0 金额 1 下浮率")
+    private String quoteType;
+
+    @ApiModelProperty(value = "是否有企业回避：1 是，0 否")
+    private String isAvoid;
+
+    @ApiModelProperty(value = "【当IS_AVOID=1时必填】回避原因")
+    private String avoidReason;
+
+    @ApiModelProperty(value = "【当IS_AVOID=1时必填】回避单位ID，多个,隔开")
+    private String avoidUnitInfoIds;
+
+    @Data
+    @ApiModel("采购项目信息")
+    public static class SaveAeaProjInfoVo{
+
+        @ApiModelProperty(value = "审批项目编码")
+        @FiledNameIs(filedValue = "审批项目编码")
+        private String approvalCode; // (审批项目编码)
+
+        @ApiModelProperty(value = "审批项目id")
+        @FiledNameIs(filedValue = "审批项目id")
+        private String parentProjId; // (审批项目id)
+
+        @NotBlank(message = "项目编码不能为空")
+        @ApiModelProperty(value = "地方编码",required = true)
+        @FiledNameIs(filedValue = "地方编码")
+        private String localCode; // (地方编码)
+
+        @NotBlank(message = "项目名称不能为空")
+        @ApiModelProperty(value = "项目名称",required = true)
+        @FiledNameIs(filedValue = "项目名称")
+        private String projName; // (项目名称)
+
+        @ApiModelProperty(value = "是否为采购项目",notes = "1 是，0 否（投资审批项目）")
+        private String isPurchaseProj; // (是否为采购项目：1 是，0 否（投资审批项目）)
+
+        @NotBlank(message = "项目规模不能为空")
+        @ApiModelProperty(value = "项目规模",required = true)
+        @FiledNameIs(filedValue = "项目规模")
+        private String projScale; // (项目规模)
+
+        @NotBlank(message = "项目规模内容不能为空")
+        @ApiModelProperty(value = "项目规模内容",required = true)
+        @FiledNameIs(filedValue = "项目规模内容")
+        private String projScaleContent; // (项目规模内容)
+
+        @NotBlank(message = "是否为财政资金不能为空")
+        @ApiModelProperty(value = "是否为财政资金（资金来源)",notes = "1 是，0 不是",required = true)
+        @FiledNameIs(filedValue = "是否为财政资金（资金来源）：1 是，0 不是")
+        private String isFinancialFund; // (是否为财政资金（资金来源）：1 是，0 不是)
+
+        @ApiModelProperty(value = "财政资金比例",notes = "当 IS_FINANCIAL_FUND = 1，必填")
+        @FiledNameIs(filedValue = "财政资金比例：当 IS_FINANCIAL_FUND = 1，必填")
+        private String financialFundProportion; // (财政资金比例：当 IS_FINANCIAL_FUND = 1，必填)
+
+        @NotBlank(message = "是否为社会资金不能为空")
+        @ApiModelProperty(value = "是否为社会资金（资金来源）",notes = "1 是，0 不是")
+        @FiledNameIs(filedValue = "是否为社会资金（资金来源）：1 是，0 不是")
+        private String isSocialFund; // (是否为社会资金（资金来源）：1 是，0 不是)
+
+        @ApiModelProperty(value = "社会资金比例",notes = "当 IS_SOCIAL_FUND = 1，必填")
+        @FiledNameIs(filedValue = "社会资金比例：当 IS_SOCIAL_FUND = 1，必填")
+        private String socialFundProportion; // (社会资金比例：当 IS_SOCIAL_FUND = 1，必填)
+
+    }
+}

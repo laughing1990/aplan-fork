@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by Administrator    2019-08-03 10:29:47 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaHiItemCorrectDueIninstMapper">
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns">
+    DUE_ININST_ID  dueIninstId,
+    CORRECT_ID  correctId,
+    IS_NEW_INOUTINST  isNewInoutinst,
+    INOUTINST_ID  inoutinstId,
+    CORRECT_OPINION  correctOpinion,
+    CREATER  creater,
+    CREATE_TIME  createTime,
+    PAPER_COUNT paperCount,
+    COPY_COUNT  copyCount,
+    IS_NEED_ATT isNeedAtt,
+    ROOT_ORG_ID rootOrgId
+    </sql>
+
+    <sql id="allColumns_ahicdi">
+    ahicdi.DUE_ININST_ID  dueIninstId,
+    ahicdi.CORRECT_ID  correctId,
+    ahicdi.IS_NEW_INOUTINST  isNewInoutinst,
+    ahicdi.INOUTINST_ID  inoutinstId,
+    ahicdi.CORRECT_OPINION  correctOpinion,
+    ahicdi.CREATER  creater,
+    ahicdi.CREATE_TIME  createTime,
+    ahicdi.PAPER_COUNT paperCount,
+    ahicdi.COPY_COUNT  copyCount,
+    ahicdi.IS_NEED_ATT isNeedAtt,
+    ahicdi.ROOT_ORG_ID rootOrgId
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaHiItemCorrectDueIninstById" resultType="AeaHiItemCorrectDueIninst">
+        select
+        <include refid="allColumns"/>
+        from AEA_HI_ITEM_CORRECT_DUE_ININST
+        where DUE_ININST_ID = #{id}
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaHiItemCorrectDueIninst" resultType="AeaHiItemCorrectDueIninst">
+        select
+        <include refid="allColumns"/>
+        from AEA_HI_ITEM_CORRECT_DUE_ININST
+        <where>
+            <if test="dueIninstId != null">
+                AND DUE_ININST_ID = #{dueIninstId}
+            </if>
+            <if test="correctId != null">
+                AND CORRECT_ID = #{correctId}
+            </if>
+            <if test="isNewInoutinst != null">
+                AND IS_NEW_INOUTINST = #{isNewInoutinst}
+            </if>
+            <if test="inoutinstId != null">
+                AND INOUTINST_ID = #{inoutinstId}
+            </if>
+            <if test="correctOpinion != null">
+                AND CORRECT_OPINION = #{correctOpinion}
+            </if>
+            <if test="creater != null">
+                AND CREATER = #{creater}
+            </if>
+            <if test="createTime != null">
+                AND CREATE_TIME = #{createTime}
+            </if>
+            <if test="paperCount != null">
+                AND PAPER_COUNT = #{paperCount}
+            </if>
+            <if test="copyCount != null">
+                AND COPY_COUNT = #{copyCount}
+            </if>
+            <if test="isNeedAtt != null">
+                AND IS_NEED_ATT = #{isNeedAtt}
+            </if>
+            <if test="rootOrgId != null">
+                AND ROOT_ORG_ID = #{rootOrgId}
+            </if>
+        </where>
+    </select>
+    <!--4 根据条件查询实体list,返回分页对象 -->
+
+    <select id="getCorrectDueIninstByCorrectId" resultType="AeaHiItemCorrectDueIninst">
+        SELECT
+        <include refid="allColumns_ahicdi" />,ahim.MATINST_ID matinstId,ahim.MATINST_NAME matinstName,ahim.MAT_ID matId,aim.REVIEW_KEY_POINTS reviewKeyPoints,aim.REVIEW_SAMPLE_DOC reviewSampleDoc,aim.SAMPLE_DOC sampleDoc,aim.TEMPLATE_DOC templateDoc
+        FROM AEA_HI_ITEM_CORRECT_DUE_ININST ahicdi, AEA_HI_ITEM_INOUTINST ahii,AEA_HI_ITEM_MATINST ahim,AEA_ITEM_MAT aim
+        WHERE
+        ahii.INOUTINST_ID = ahicdi.INOUTINST_ID
+        AND ahim.MATINST_ID = ahii.MATINST_ID
+        AND aim.MAT_ID = ahim.MAT_ID
+        AND ahicdi.CORRECT_ID = #{correctId}
+        AND ahicdi.ROOT_ORG_ID = #{topOrgId}
+    </select>
+
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaHiItemCorrectDueIninst" parameterType="AeaHiItemCorrectDueIninst">
+    insert into AEA_HI_ITEM_CORRECT_DUE_ININST (
+DUE_ININST_ID  ,CORRECT_ID  ,IS_NEW_INOUTINST  ,INOUTINST_ID  ,CORRECT_OPINION  ,CREATER  ,CREATE_TIME,PAPER_COUNT,COPY_COUNT,IS_NEED_ATT,ROOT_ORG_ID
+    )values  (
+#{dueIninstId},#{correctId},#{isNewInoutinst},#{inoutinstId},#{correctOpinion},#{creater},  #{createTime},#{paperCount},#{copyCount},#{isNeedAtt},#{rootOrgId}
+    )
+</insert>
+
+    <insert id="batchInsertAeaHiItemCorrectDueIninst" parameterType="java.util.List">
+    insert into AEA_HI_ITEM_CORRECT_DUE_ININST (
+DUE_ININST_ID  ,CORRECT_ID  ,IS_NEW_INOUTINST  ,INOUTINST_ID  ,CORRECT_OPINION  ,CREATER  ,CREATE_TIME,PAPER_COUNT,COPY_COUNT,IS_NEED_ATT,ROOT_ORG_ID
+    )
+        <if test="_databaseId == 'oracle'">
+            <foreach collection="list" item="item" index="index" separator="union all">
+                (
+                SELECT
+                #{item.dueIninstId},#{item.correctId},#{item.isNewInoutinst},#{item.inoutinstId},#{item.correctOpinion},#{item.creater},  #{item.createTime},#{item.paperCount},#{item.copyCount},#{item.isNeedAtt},#{item.rootOrgId}
+                FROM dual
+                )
+            </foreach>
+        </if>
+        <if test="_databaseId == 'mysql'">
+            values
+            <foreach collection="list" item="item" index="index" separator=",">
+                (
+                #{item.dueIninstId},#{item.correctId},#{item.isNewInoutinst},#{item.inoutinstId},#{item.correctOpinion},#{item.creater},  #{item.createTime},#{item.paperCount},#{item.copyCount},#{item.isNeedAtt},#{item.rootOrgId}
+                )
+            </foreach>
+        </if>
+    </insert>
+
+    <!--6 修改实体对象 -->
+    <update id="updateAeaHiItemCorrectDueIninst" parameterType="AeaHiItemCorrectDueIninst">
+        update AEA_HI_ITEM_CORRECT_DUE_ININST
+        <set>
+            <if test="dueIninstId != null">
+                DUE_ININST_ID = #{dueIninstId},
+            </if>
+            <if test="correctId != null">
+                CORRECT_ID = #{correctId},
+            </if>
+            <if test="isNewInoutinst != null">
+                IS_NEW_INOUTINST = #{isNewInoutinst},
+            </if>
+            <if test="inoutinstId != null">
+                INOUTINST_ID = #{inoutinstId},
+            </if>
+            <if test="correctOpinion != null">
+                CORRECT_OPINION = #{correctOpinion},
+            </if>
+            <if test="creater != null">
+                CREATER = #{creater},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime},
+            </if>
+            <if test="paperCount != null">
+                PAPER_COUNT = #{paperCount},
+            </if>
+            <if test="copyCount != null">
+                COPY_COUNT = #{copyCount},
+            </if>
+            <if test="isNeedAtt != null">
+                IS_NEED_ATT = #{isNeedAtt},
+            </if>
+            <if test="rootOrgId != null">
+                ROOT_ORG_ID = #{rootOrgId}
+            </if>
+        </set>
+        where DUE_ININST_ID = #{dueIninstId}
+    </update>
+    <!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaHiItemCorrectDueIninst">
+        delete from   AEA_HI_ITEM_CORRECT_DUE_ININST
+        where
+    DUE_ININST_ID = #{id}
+    </delete>
+    <!--8 删除实体对象列表,根据主键ID列表 -->
+    <!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaHiItemCorrectDueIninst" id="AeaHiItemCorrectDueIninstMap">
+        <id property="dueIninstId" column="DUE_ININST_ID"/>
+        <result property="correctId" column="CORRECT_ID"/>
+        <result property="isNewInoutinst" column="IS_NEW_INOUTINST"/>
+        <result property="inoutinstId" column="INOUTINST_ID"/>
+        <result property="correctOpinion" column="CORRECT_OPINION"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="paperCount" column="PAPER_COUNT"/>
+        <result property="copyCount" column="COPY_COUNT"/>
+        <result property="isNeedAtt" column="IS_NEED_ATT"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+    </resultMap>
+</mapper>

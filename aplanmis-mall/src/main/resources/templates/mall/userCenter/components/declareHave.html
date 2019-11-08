@@ -1,0 +1,579 @@
+<link rel="stylesheet" href="../../../static/mall/css/userCenter/declarehave.css"
+  th:href="@{/mall/css/userCenter/declarehave.css}">
+<div class="wt-tab" id="declareHaveVue" v-cloak v-loading.fullscreen.lock="mloading" style="position: relative;">
+
+  <div v-if="!isProjDetail">
+    <p class="p-header">申报列表</p>
+    <ul class="wt-tab-nav-two">
+      <li :class="{'active':proType == 1}" data-id="#processProject" @click="loadProjByUnit(1);">办理中</li>
+      <p class="bottom-line"></p>
+      <li :class="{'active':proType == 0}" data-id="#endProject" @click="loadProjByUnit(0);">已办结</li>
+    </ul>
+    <div class="wt-tab-content">
+      <div class="wt-tab-item" v-show="proType == 1" id="processProject">
+        <div class="search-input">
+          <span class="search-title">项目/工程查询</span>
+          <input type="text" placeholder="请输入工程代码 / 项目代码 / 项目名称"  v-model="keyword">
+          <button class="search-btn" @click="pageNumDH = 1;getHadApplyItemList();"> <i class="el-icon-search" style="font-size: 16px;"></i>查询</button>
+        </div>
+        <table class="wt-table">
+          <thead>
+            <tr>
+              <th class="al" width="20%">申报流水号</th>
+              <th class="al" width="30%">项目代码 | 项目名称</th>
+              <th class="al" width="20%">阶段/事项名称</th>
+              <th width="20%">申报状态</th>
+              <th width="10%">操作</th>
+            </tr>
+          </thead>
+          <tbody id="inProgressProjBody">
+            <template v-if="hadApplyItemData.length>0">
+              <tr v-for="item in hadApplyItemData">
+                <td width="20%">{{item.applyinstCode}}</td>
+                <td class="al" width="30%">
+                  <el-tooltip placement="top" effect="light">
+                    <div slot="content">项目代码：{{item.localCode}}<br/> <br/>工程代码：{{item.gcbm}}<br /> <br/>项目/工程名称：{{item.projName}}</div>
+                    <div>
+                      <p>{{item.localCode}}</p>
+                      <span class="ellipsis pro-name">{{item.projName}}</span>
+                    </div>
+                  </el-tooltip>
+                </td>
+                <td class="al" width="20%">
+                  <el-tooltip placement="top" effect="light" v-if="item.isSeriesApprove == 1">
+                    <div slot="content">主题名称：{{item.themeName}}<br/> <br/> 事项名称：{{item.stageIteminstName}}</div>
+                    <div>
+                     <span class="ellipsis pro-name" >{{item.stageIteminstName}}</span>
+                    </div>
+                  </el-tooltip>
+                  <el-tooltip placement="top" effect="light" v-else>
+                    <div slot="content">主题名称：{{item.themeName}} <br/> <br/> 阶段名称：{{item.stageIteminstName}}</div>
+                    <div>
+                      <span class="ellipsis stageIteminstName-bg" >{{item.stageIteminstName}}</span>
+                    </div>
+                  </el-tooltip>
+                </td>
+                <td width="20%">
+                  <span class="applyinstState applyinstState1"
+                        v-if="item.applyinstState=='0'">已接件未审核</span>
+                  <span class="applyinstState applyinstState2"
+                        v-else-if="item.applyinstState=='1'">已接件并审核</span>
+                  <span class="applyinstState applyinstState3"
+                        v-else-if="item.applyinstState=='2'">已受理</span>
+                  <span class="applyinstState applyinstState4"
+                        v-else-if="item.applyinstState=='3'">
+                    待补全
+                    <el-tooltip effect="light" placement="top"><div
+                            slot="content">{{item.approveComments||'无'}}</div><span
+                            class="mstage-count not-allow-sel"><i class="el-icon-question"></i></span></el-tooltip>
+                  </span>
+                  </el-tooltip>
+                  </span>
+                  <span class="applyinstState applyinstState5"
+                        v-else-if="item.applyinstState=='4'">
+                    已补全
+                  </span>
+                  <span class="applyinstState applyinstState6"
+                        v-else-if="item.applyinstState=='5'">
+                    不予受理
+                    <el-tooltip effect="light" placement="top"><div
+                            slot="content">{{item.approveComments||'无'}}</div><span
+                            class="mstage-count not-allow-sel"><i class="el-icon-question"></i></span></el-tooltip>
+                  </span>
+                  <span class="applyinstState applyinstState7"
+                        v-else="item.applyinstState=='6'">已办结</span>
+                </td>
+                <!--<td width="20%"><i class="applyintState" :class="applyState(item.applyinstState)"></i> {{item.applyinstState}}</td>-->
+                <td width="10%" style="cursor: pointer">
+                  <span class="option-btn" style="display: inline-block;width: 50px;"  @click="lookProjDetail(item)">查看</span>
+                </td>
+              </tr>
+            </template>
+            <template v-else>
+              <tr v-if="noDataTip">
+                <td colspan="5" style="text-align: center;border-bottom:none; color: #909399;">{{noDataTip}}</td>
+              </tr>
+            </template>
+          </tbody>
+        </table>
+        <el-pagination background align="right" @size-change="handleSizeChangeDe" style="margin-top:20px;"
+          @current-change="handleCurrentChangeDe" :page-sizes="[10, 20, 30, 50]" :page-size="pageSizeDH"
+          :current-page="pageNumDH" layout="total,sizes, prev, pager, next, jumper" :total="totalDH"
+          v-show="totalDH>10">
+        </el-pagination>
+      </div>
+      <div class="wt-tab-item" v-show="proType == 0" id="endProject">
+        <div class="search-input">
+          <span class="search-title">项目/工程查询</span>
+          <input type="text" placeholder="请输入工程代码 / 项目代码 / 项目名称" id="keyword" v-model="keyword">
+          <button class="search-btn" @click="pageNumDH = 1; getHadApplyItemList();">查询</button>
+        </div>
+        <table class="wt-table">
+          <thead>
+            <tr>
+              <th>办结日期</th>
+              <th class="al">项目代码 | 项目名称</th>
+              <th class="al">阶段/事项名称</th>
+              <!-- <th>办结时长</th> -->
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <template v-if="hadApplyItemData.length>0">
+              <tr v-for="item in hadApplyItemData">
+                <td width="20%">{{item.endTime |timeFormat}}</td>
+                <td class="al" width="20%">
+                  {{item.localCode}}
+                  <span class="ellipsis pro-name" :title="item.projName">{{item.projName}}</span>
+                </td>
+                <td class="al" width="20%"><span class="ellipsis pro-name"
+                    :title="item.stageIteminstName">{{item.stageIteminstName}}</span></td>
+                <!-- <td width="20%">{{item.businessState}}</td> -->
+                <td width="20%" style="cursor: pointer">
+                  <span class="option-btn" style="display: inline-block;width: 50px;" @click="lookProjDetail(item)">查看</span>
+                </td>
+              </tr>
+            </template>
+            <template v-else>
+              <tr v-if="noDataTip">
+                <td colspan="4" style="text-align: center;border-bottom:none;color: #909399;">{{noDataTip}}</td>
+              </tr>
+            </template>
+          </tbody>
+        </table>
+        <el-pagination background align="right" @size-change="handleSizeChangeDe"
+          @current-change="handleCurrentChangeDe" :page-sizes="[10, 20, 30, 50]" :page-size="pageSizeDH"
+          :current-page="pageNumDH" layout="total,sizes, prev, pager, next, jumper" :total="totalDH"
+          v-show="totalDH>10">
+        </el-pagination>
+      </div>
+    </div>
+  </div>
+  <div id="projectDetail" class="dl-project-detail" v-else v-loading="mloading2">
+    <div class="return-list">
+      <el-button @click="isProjDetail = false;">返回</el-button>
+    </div>
+    <h2 class="mt20 proj-title">{{projDetailData.aeaProjInfo.projName}}</h2>
+    <div class="mb20  proj-module">
+    <div class="mt20 module-content">
+      <table class="nor-table" border="0" cellpadding="0" cellspacing="0">
+        <!-- 单项 -->
+        <tbody v-if="projDetailData.isSeriesApprove == 1">
+        <tr>
+          <th>事项名称</th>
+          <td style=" width: 74%;">{{projDetailData.iteminstName || '暂无'}}</td>
+        </tr>
+        <tr>
+          <th>申报流水号</th>
+          <td>{{projDetailData.applyinstCode || '暂无'}}</td>
+        </tr>
+        </template>
+        </tbody>
+        <!-- 并联 -->
+        <tbody v-else>
+        <tr>
+          <th>主题-阶段名称</th>
+          <td style="width: 74%;">{{projDetailData.themeStageName || '暂无'}}</td>
+        </tr>
+        <tr>
+          <th>申报流水号</th>
+          <td>{{projDetailData.applyinstCode || '暂无'}}</td>
+        </tr>
+        </tbody>
+      </table>
+      <!--<div class="collpase-pandel" @click="isShowAll = !isShowAll;">{{isShowAll? '收起': '展开'}}
+        <i :class="[isShowAll ? 'el-icon-arrow-up':'el-icon-arrow-down']"></i>
+      </div>-->
+    </div>
+  </div>
+    <div class="mb20 mt60 proj-module">
+      <h4 class="mb20">项目/工程信息</h4>
+      <div class="mt20 module-content">
+        <table class="nor-table" border="0" cellpadding="0" cellspacing="0">
+          <!-- 单项  v-if="projDetailData.isSeriesApprove == 1" -->
+          <tbody>
+          <tr>
+            <th>项目/工程名称</th>
+            <td colspan="3">{{projDetailData.aeaProjInfo.projName || '暂无'}}</td>
+          </tr>
+          <tr>
+            <th>项目代码</th>
+            <td>{{projDetailData.aeaProjInfo.localCode || '暂无'}}</td>
+            <th>工程代码</th>
+            <td>{{projDetailData.aeaProjInfo.gcbm || '暂无'}}</td>
+          </tr>
+            <tr>
+              <th>审批行政区划</th>
+              <td>{{projDetailData.aeaProjInfo.regionalism || '暂无'}}</td>
+              <th>建设地点</th>
+              <td>{{projDetailData.aeaProjInfo.projectAddress || '暂无'}}</td>
+            </tr>
+          <tr>
+            <th>资金来源</th>
+            <td>{{projDetailData.aeaProjInfo.financialSource | '暂无'}}</td>
+            <th>是否外资</th>
+            <td>{{projDetailData.aeaProjInfo.isForeign=='1'?'是':'否'}}</td>
+          </tr>
+          <tr>
+            <th>投资类型</th>
+            <td>{{projDetailData.aeaProjInfo.investType|'暂无'}}</td>
+            <th>土地来源</th>
+            <td>{{projDetailData.aeaProjInfo.landSource || '暂无'}}</td>
+          </tr>
+          <tr>
+            <th>是否完成区域评估</th>
+            <td>{{projDetailData.aeaProjInfo.isAreaEstimate=='1'?'是':'否'}}</td>
+            <th>土地是否带设计方案</th>
+            <td>{{projDetailData.aeaProjInfo.isDesignSolution=='1'?'是':'否'}}</td>
+          </tr>
+          <tr>
+            <th>立项类型</th>
+            <td>{{projDetailData.aeaProjInfo.projType | '暂无'}}</td>
+            <th>项目类型</th>
+            <td>{{projDetailData.aeaProjInfo.themeType | '暂无'}}</td>
+          </tr>
+          <tr>
+            <th>建设性质</th>
+            <td>{{projDetailData.aeaProjInfo.projNature || '暂无'}}</td>
+            <th>工程分类</th>
+            <td>{{projDetailData.aeaProjInfo.projCategory || '暂无'}}</td>
+          </tr>
+          <tr>
+            <th>项目开工时间</th>
+            <td>{{projDetailData.aeaProjInfo.nstartTime || '暂无'}}</td>
+            <th>项目建成时间</th>
+            <td>{{projDetailData.aeaProjInfo.endTime || '暂无'}}</td>
+          </tr>
+          <tr>
+            <th>总投资（万元）</th>
+            <td>{{projDetailData.aeaProjInfo.investSum || '暂无'}}</td>
+            <th>总建筑面积</th>
+            <td>{{projDetailData.aeaProjInfo.foreignBuildingArea || '暂无'}}</td>
+          </tr>
+          <tr>
+            <th>用地面积（m&sup2;）</th>
+            <td>{{projDetailData.aeaProjInfo.xmYdmj || '暂无'}}</td>
+            <th>重点项目</th>
+            <td>{{projDetailData.aeaProjInfo.projLevel | '暂无'}}</td>
+          </tr>
+
+          <tr>
+            <th>国标行业</th>
+            <td>{{projDetailData.aeaProjInfo.theIndustry | '暂无'}}</td>
+            <th>国际行业代码发布年代</th>
+            <td>{{projDetailData.aeaProjInfo.gbCodeYear | '暂无'}}</td>
+          <tr>
+            <th>建设规模及内容</th>
+            <td colspan="3">
+              {{projDetailData.aeaProjInfo.scaleContent || '暂无'}}
+            </td>
+          </tr>
+          </tr>
+
+            <template v-if="isShowAll">
+              <tr>
+                <th>项目地址</th>
+                <td colspan="3">
+                  {{projDetailData.aeaProjInfo.projAddr || '暂无'}}
+                </td>
+              </tr>
+              <tr>
+                <th>四至范围</th>
+                <td colspan="3">
+                  东至-{{projDetailData.aeaProjInfo.eastScope || '无'}}
+                  西至-{{projDetailData.aeaProjInfo.southScope || '无'}}
+                  南至-{{projDetailData.aeaProjInfo.westScope || '无'}}
+                  北至-{{projDetailData.aeaProjInfo.northScope || '无'}}
+                </td>
+              </tr>
+
+            </template>
+          </tbody>
+        </table>
+        <div class="collpase-pandel" @click="isShowAll = !isShowAll;">{{isShowAll? '收起': '展开'}}
+          <i :class="[isShowAll ? 'el-icon-arrow-up':'el-icon-arrow-down']"></i>
+        </div>
+      </div>
+    </div>
+    <div class="mt60 proj-module">
+      <h4 class="mb20">申报主体信息</h4>
+      <div class="mt20 module-content">
+        <table class="nor-table" border="0" cellpadding="0" cellspacing="0">
+          <tbody>
+            <tr v-if="projDetailData.role != 0">
+              <th>企业名称</th>
+              <td>{{projDetailData.aeaUnitInfo.applicant || '暂无'}}</td>
+              <th>统一社会信用代码</th>
+              <td>{{projDetailData.aeaUnitInfo.unifiedSocialCreditCode || '暂无'}}</td>
+            </tr>
+            <tr>
+              <th>申请人</th>
+              <td>{{projDetailData.aeaLinkmanInfo.linkmanName || '暂无'}}</td>
+              <th>身份证</th>
+              <td>{{projDetailData.aeaLinkmanInfo.linkmanCertNo || '暂无'}}</td>
+            </tr>
+            <tr>
+              <th>联系电话</th>
+              <td colspan="3">{{projDetailData.aeaLinkmanInfo.linkmanMobilePhone || '暂无'}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="mt60 proj-module" v-if="projDetailData.isNeedState == 1">
+      <h4 class="mb20">办事情形</h4>
+      <template v-if="projDetailData.stateList.length">
+        <div class="mt20 pd10 module-content content-border">
+          <div class="mb20 box" v-for="(item, index) in projDetailData.stateList">
+            <p class="question">{{index + 1}}、{{item.question}}</p>
+            <p class="mt10 answer">{{item.answer}}</p>
+          </div>
+        </div>
+      </template>
+      <template v-else>
+        <p class="pl20 non-data">暂无数据</p>
+      </template>
+    </div>
+    <div class="mt60 proj-module" v-if="projDetailData.isSeriesApprove == 0">
+      <h4 class="mb20">事项（含情形）列表</h4>
+      <div class="mt20 module-content">
+        <el-table :data="showMatterList" class="scrollable mt20" style="width: 100%;"
+          :header-cell-style="{background:'#f7f8fa'}">
+
+          <el-table-column type="expand">
+            <template slot-scope="props">
+              <el-form label-position="left" inline class="demo-table-expand">
+                <div class="mt20 pd10 module-content content-border"
+                     v-if="props.row.itemStateinsts && props.row.itemStateinsts.length>0">
+                  <div class="mb20 box" v-for="(item, index) in props.row.itemStateinsts">
+                    <p class="question">{{index + 1}}、{{item.question}}</p>
+                    <p class="mt10 answer">{{item.answer}}</p>
+                  </div>
+                </div>
+                <div class="mt20 pd10 module-content content-border" v-else>
+
+                  暂无情形
+
+                </div>
+              </el-form>
+            </template>
+          </el-table-column>
+
+          <el-table-column label="序号" width="55">
+            <template scope="scope">
+              {{scope.$index+1}}
+            </template>
+          </el-table-column>
+          <el-table-column prop="iteminstName" label="事项名称">
+          </el-table-column>
+          <el-table-column prop="approveOrgName" label="征求部门">
+          </el-table-column>
+          <el-table-column prop="" label="审批状态">
+            <template scope="scope">
+              <span>{{scope.row.iteminstState | iteminstStateFormat}}</span>
+            </template>
+          </el-table-column>
+        </el-table>
+        <div class="collpase-pandel"
+          @click="isMatterShowAll = !isMatterShowAll; changeMatterListShow(showMatterList, allMatterList,isMatterShowAll, 'matter')"
+          v-if="allMatterList.length>5">{{isMatterShowAll? '收起': '展开'}}
+          <i :class="[isMatterShowAll ? 'el-icon-arrow-up':'el-icon-arrow-down']"></i>
+        </div>
+      </div>
+    </div>
+    <div class="mt60 proj-module">
+      <h4 class="mb20">材料列表</h4>
+      <div class="mt20 module-content">
+        <el-table :data="showMaterialList" class="scrollable mt20" style="width: 100%;"
+          :header-cell-style="{background:'#f7f8fa'}">
+          <el-table-column label="序号" min-width="45">
+            <template scope="scope">
+              {{scope.$index+1}}
+            </template>
+          </el-table-column>
+          <el-table-column prop="matName" label="材料名称" min-width="300">
+          </el-table-column>
+          <el-table-column label="原件是否已验" min-width="100">
+            <template scope="scope">
+              {{(scope.row.realPaperCount&&scope.row.realPaperCount>=1)?'是':'否'}}
+            </template>
+          </el-table-column>
+          <el-table-column label="复印件是否已验收" min-width="100">
+            <template scope="scope">
+              {{(scope.row.realCopyCount&&scope.row.realCopyCount>=1)? '是':'否'}}
+            </template>
+          </el-table-column>
+          <el-table-column label="电子件信息">
+            <template scope="scope">
+              <el-button size="small" type="default" disabled
+                         v-if="(!scope.row.attCount||scope.row.attCount==0)">未上传
+              </el-button>
+              <el-button size="small" type="default" @click="showElectronDialog(scope.row)" v-else>
+                已上传（{{scope.row.attCount}}）
+              </el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+        <div class="collpase-pandel"
+          @click="isMaterialShowAll = !isMaterialShowAll; changeMatterListShow(showMaterialList, allMaterialList,isMaterialShowAll, 'material')"
+          v-if="allMaterialList.length>5">{{isMaterialShowAll? '收起': '展开'}}
+          <i :class="[isMaterialShowAll ? 'el-icon-arrow-up':'el-icon-arrow-down']"></i>
+        </div>
+      </div>
+    </div>
+    <div class="mt60 proj-module">
+      <h4 class="mb20">办证取件方式</h4>
+      <div class="mt20 module-content">
+        <table class="nor-table" border="0" cellpadding="0" cellspacing="0">
+          <tbody>
+            <template v-if="projDetailData.aeaHiSmsInfo.receiveMode == 1">
+              <tr>
+                <th>领取模式</th>
+                <td colspan="3">窗口领取</td>
+              </tr>
+              <tr>
+                <th>领证人姓名</th>
+                <td>{{projDetailData.aeaHiSmsInfo.addresseeName}}</td>
+                <th>领证人联系方式</th>
+                <td>{{projDetailData.aeaHiSmsInfo.addresseePhone}}</td>
+              </tr>
+              <tr>
+                <th>领证人身份证</th>
+                <td colspan="3">{{projDetailData.aeaHiSmsInfo.addresseeIdcard}}</td>
+              </tr>
+            </template>
+            <template v-else>
+              <tr>
+                <th>领取模式</th>
+                <td colspan="3">邮政快递</td>
+              </tr>
+              <tr>
+                <th>取件方式</th>
+                <td colspan="3">{{projDetailData.aeaHiSmsInfo.smsType == 1 ? '普通快递':'上门取件'}}</td>
+              </tr>
+              <tr>
+                <th>收件人姓名</th>
+                <td>{{projDetailData.aeaHiSmsInfo.addresseeName}}</td>
+                <th>收件人联系方式</th>
+                <td>{{projDetailData.aeaHiSmsInfo.addresseePhone}}</td>
+              </tr>
+              <tr>
+                <th>收件人身份证</th>
+                <td colspan="3">{{projDetailData.aeaHiSmsInfo.addresseeIdcard}}</td>
+              </tr>
+              <tr>
+                <th>收件人所在区域</th>
+                <td colspan="3">
+                  {{projDetailData.aeaHiSmsInfo.addresseeProvince}}&nbsp;
+                  {{projDetailData.aeaHiSmsInfo.senderCity}}&nbsp;
+                  {{projDetailData.aeaHiSmsInfo.senderCounty}}
+                </td>
+              </tr>
+              <tr>
+                <th>收件人详细地址</th>
+                <td colspan="3">{{projDetailData.aeaHiSmsInfo.addresseeAddr}}</td>
+              </tr>
+            </template>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- 项目详情-材料列表-文件dialog -->
+  <el-dialog class="normal-dialog" title="电子件" :visible.sync="isShowElectronDialog" width="600">
+    <el-table :data="electronFileList" class="scrollable mt20" style="width: 100%;"
+      :header-cell-style="{background:'#f7f8fa'}">
+      <el-table-column label="序号" width="55">
+        <template scope="scope">
+          {{scope.$index+1}}
+        </template>
+      </el-table-column>
+      <el-table-column prop="fileName" label="文件名称">
+      </el-table-column>
+      <el-table-column label="操作" width="100">
+        <template scope="scope">
+          <i title="预览" class="el-icon-search" @click="filePreview(scope.row)" style="cursor: pointer;"></i>
+          &nbsp;&nbsp;
+          <i title="下载" class="el-icon-download" @click="downloadFile(scope.row)" style="cursor: pointer;"></i>
+        </template>
+      </el-table-column>
+    </el-table>
+  </el-dialog>
+
+</div>
+
+<script src="../../../static/mall/js/userCenter/components/declareHave.js"
+  th:src="@{/mall/js/userCenter/components/declareHave.js}" type="text/javascript"></script>
+
+<style>
+  #declareHaveVue .parallel-appr-title{
+    width:930px;
+    height:48px;
+    line-height: 48px;
+    background:rgba(255,252,238,1);
+    border:1px solid rgba(255,184,34,1);
+    opacity:0.76;
+    border-radius:4px;
+
+  }
+  #declareHaveVue  thead tr th {
+    width:930px;
+    height:60px;
+    background:rgba(249,251,253,1);
+    font-size:14px;
+    font-family:Microsoft YaHei;
+    font-weight:400;
+    color:rgba(127,133,144,1);
+  }
+  .wt-table th, .wt-table td{
+    font-size:14px;
+    font-family:Microsoft YaHei;
+    font-weight:400;
+    color:rgba(87,89,98,1);
+  }
+  .wt-tab-nav-two{
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    flex-wrap: wrap;
+    padding-left: 0;
+    margin-bottom: 0;
+  }
+  .wt-tab-nav-two li{
+    font-size: 16px;
+    width: 160px;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    background:rgba(249,251,253,1);
+    border:1px solid rgba(230,234,244,1);
+	cursor: pointer;
+  }
+  .wt-tab-nav-two li.active{
+    background: #fff;
+    border-bottom: none;
+  }
+  .wt-tab-nav-two .bottom-line{
+    display: inline-block;
+    width: 12px;
+    height: 1px;
+    background:rgba(230,234,244,1);
+    margin-top: 39px;
+  }
+  .applyintState{
+    width:8px;
+    height:8px;
+    border-radius:50%;
+    display: inline-block;
+  }
+  .bg1{
+    background:rgba(0,193,97,1);
+  }
+  .bg2{
+    background:#457EFF;
+  }
+  .bg3{
+    background: #B7C8DC;
+  }
+</style>

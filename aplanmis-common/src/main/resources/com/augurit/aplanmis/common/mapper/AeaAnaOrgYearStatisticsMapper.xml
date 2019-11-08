@@ -1,0 +1,398 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by zhangwn    2019-09-06 13:46:58 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaAnaOrgYearStatisticsMapper" >
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns" >
+        ORG_YEAR_STATISTICS_ID  orgYearStatisticsId,
+        STATISTICS_RECORD_ID  statisticsRecordId,
+        ORG_ID  orgId,
+        ORG_NAME  orgName,
+        REGION_ID  regionId,
+        REGION_NAME  regionName,
+        ITEM_ID  itemId,
+        ITEM_NAME  itemName,
+        APPLYINST_SOURCE  applyinstSource,
+        YEAR_APPLY_COUNT  yearApplyCount,
+        ALL_APPLY_COUNT  allApplyCount,
+        APPLY_LRR  applyLrr,
+        ALL_IN_SUPPLEMENT_COUNT  allInSupplementCount,
+        ALL_SUPPLEMENTED_COUNT  allSupplementedCount,
+        YEAR_ACCEPTANCE_COUNT  yearAcceptanceCount,
+        ALL_ACCEPTANCE_COUNT  allAcceptanceCount,
+        ACCEPTANCE_LRR  acceptanceLrr,
+        YEAR_OUT_SCOPE_COUNT  yearOutScopeCount,
+        ALL_OUT_SCOPE_COUNT  allOutScopeCount,
+        OUT_SCOPE_LRR  outScopeLrr,
+        YEAR_COMPLETED_COUNT  yearCompletedCount,
+        ALL_COMPLETED_COUNT  allCompletedCount,
+        COMPLETED_LRR  completedLrr,
+        YEAR_SPECIFIC_ROUTINE_COUNT  yearSpecificRoutineCount,
+        ALL_SPECIFIC_ROUTINE_COUNT  allSpecificRoutineCount,
+        SPECIFIC_ROUTINE_LRR  specificRoutineLrr,
+        ALL_WARINING_COUNT  allWariningCount,
+        YEAR_OVER_TIME_COUNT  yearOverTimeCount,
+        ALL_OVER_TIME_COUNT  allOverTimeCount,
+        OVER_TIME_LRR  overTimeLrr,
+        ALL_ACCEPTANCE_RATE  allAcceptanceRate,
+        ALL_OUT_SCOPE_RATE  allOutScopeRate,
+        ALL_OVER_TIME_RATE  allOverTimeRate,
+        ALL_COMPLETED_RATE  allCompletedRate,
+        STATISTICS_START_DATE  statisticsStartDate,
+        STATISTICS_END_DATE  statisticsEndDate,
+        STATISTICS_YEAR  statisticsYear,
+        ROOT_ORG_ID  rootOrgId
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaAnaOrgYearStatisticsById" resultType="AeaAnaOrgYearStatistics" >
+        select
+        <include refid="allColumns"/>
+        from    AEA_ANA_ORG_YEAR_STATISTICS
+        where    ORG_YEAR_STATISTICS_ID = #{id}
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaAnaOrgYearStatistics" resultType="AeaAnaOrgYearStatistics" >
+        select
+        <include refid="allColumns"/>
+        from    AEA_ANA_ORG_YEAR_STATISTICS
+        <where>
+            <if test="orgYearStatisticsId != null" >
+                AND    ORG_YEAR_STATISTICS_ID = #{orgYearStatisticsId}
+            </if>
+            <if test="statisticsRecordId != null" >
+                AND    STATISTICS_RECORD_ID = #{statisticsRecordId}
+            </if>
+            <if test="orgId != null" >
+                AND    ORG_ID = #{orgId}
+            </if>
+            <if test="orgName != null" >
+                AND    ORG_NAME = #{orgName}
+            </if>
+            <if test="regionId != null" >
+                AND    REGION_ID = #{regionId}
+            </if>
+            <if test="regionName != null" >
+                AND    REGION_NAME = #{regionName}
+            </if>
+            <if test="itemId != null" >
+                AND    ITEM_ID = #{itemId}
+            </if>
+            <if test="itemName != null" >
+                AND    ITEM_NAME = #{itemName}
+            </if>
+            <if test="applyinstSource != null" >
+                AND    APPLYINST_SOURCE = #{applyinstSource}
+            </if>
+            <if test="yearApplyCount != null" >
+                AND    YEAR_APPLY_COUNT = #{yearApplyCount}
+            </if>
+            <if test="allApplyCount != null" >
+                AND    ALL_APPLY_COUNT = #{allApplyCount}
+            </if>
+            <if test="applyLrr != null" >
+                AND    APPLY_LRR = #{applyLrr}
+            </if>
+            <if test="allInSupplementCount != null" >
+                AND    ALL_IN_SUPPLEMENT_COUNT = #{allInSupplementCount}
+            </if>
+            <if test="allSupplementedCount != null" >
+                AND    ALL_SUPPLEMENTED_COUNT = #{allSupplementedCount}
+            </if>
+            <if test="yearAcceptanceCount != null" >
+                AND    YEAR_ACCEPTANCE_COUNT = #{yearAcceptanceCount}
+            </if>
+            <if test="allAcceptanceCount != null" >
+                AND    ALL_ACCEPTANCE_COUNT = #{allAcceptanceCount}
+            </if>
+            <if test="acceptanceLrr != null" >
+                AND    ACCEPTANCE_LRR = #{acceptanceLrr}
+            </if>
+            <if test="yearOutScopeCount != null" >
+                AND    YEAR_OUT_SCOPE_COUNT = #{yearOutScopeCount}
+            </if>
+            <if test="allOutScopeCount != null" >
+                AND    ALL_OUT_SCOPE_COUNT = #{allOutScopeCount}
+            </if>
+            <if test="outScopeLrr != null" >
+                AND    OUT_SCOPE_LRR = #{outScopeLrr}
+            </if>
+            <if test="yearCompletedCount != null" >
+                AND    YEAR_COMPLETED_COUNT = #{yearCompletedCount}
+            </if>
+            <if test="allCompletedCount != null" >
+                AND    ALL_COMPLETED_COUNT = #{allCompletedCount}
+            </if>
+            <if test="completedLrr != null" >
+                AND    COMPLETED_LRR = #{completedLrr}
+            </if>
+            <if test="yearSpecificRoutineCount != null" >
+                AND    YEAR_SPECIFIC_ROUTINE_COUNT = #{yearSpecificRoutineCount}
+            </if>
+            <if test="allSpecificRoutineCount != null" >
+                AND    ALL_SPECIFIC_ROUTINE_COUNT = #{allSpecificRoutineCount}
+            </if>
+            <if test="specificRoutineLrr != null" >
+                AND    SPECIFIC_ROUTINE_LRR = #{specificRoutineLrr}
+            </if>
+            <if test="allWariningCount != null" >
+                AND    ALL_WARINING_COUNT = #{allWariningCount}
+            </if>
+            <if test="yearOverTimeCount != null" >
+                AND    YEAR_OVER_TIME_COUNT = #{yearOverTimeCount}
+            </if>
+            <if test="allOverTimeCount != null" >
+                AND    ALL_OVER_TIME_COUNT = #{allOverTimeCount}
+            </if>
+            <if test="overTimeLrr != null" >
+                AND    OVER_TIME_LRR = #{overTimeLrr}
+            </if>
+            <if test="allAcceptanceRate != null" >
+                AND    ALL_ACCEPTANCE_RATE = #{allAcceptanceRate}
+            </if>
+            <if test="allOutScopeRate != null" >
+                AND    ALL_OUT_SCOPE_RATE = #{allOutScopeRate}
+            </if>
+            <if test="allOverTimeRate != null" >
+                AND    ALL_OVER_TIME_RATE = #{allOverTimeRate}
+            </if>
+            <if test="allCompletedRate != null" >
+                AND    ALL_COMPLETED_RATE = #{allCompletedRate}
+            </if>
+            <if test="statisticsStartDate != null" >
+                AND    STATISTICS_START_DATE = #{statisticsStartDate}
+            </if>
+            <if test="statisticsEndDate != null" >
+                AND    STATISTICS_END_DATE = #{statisticsEndDate}
+            </if>
+            <if test="statisticsYear != null" >
+                AND    STATISTICS_YEAR = #{statisticsYear}
+            </if>
+            <if test="rootOrgId != null" >
+                AND    ROOT_ORG_ID = #{rootOrgId}
+            </if>
+        </where>
+    </select>
+    <!--4 根据条件查询实体list,返回分页对象 -->
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaAnaOrgYearStatistics" parameterType="AeaAnaOrgYearStatistics" >
+        insert into AEA_ANA_ORG_YEAR_STATISTICS (
+        ORG_YEAR_STATISTICS_ID  ,STATISTICS_RECORD_ID  ,ORG_ID  ,ORG_NAME  ,REGION_ID  ,REGION_NAME  ,ITEM_ID  ,ITEM_NAME  ,APPLYINST_SOURCE  ,YEAR_APPLY_COUNT  ,ALL_APPLY_COUNT  ,APPLY_LRR  ,ALL_IN_SUPPLEMENT_COUNT  ,ALL_SUPPLEMENTED_COUNT  ,YEAR_ACCEPTANCE_COUNT  ,ALL_ACCEPTANCE_COUNT  ,ACCEPTANCE_LRR  ,YEAR_OUT_SCOPE_COUNT  ,ALL_OUT_SCOPE_COUNT  ,OUT_SCOPE_LRR  ,YEAR_COMPLETED_COUNT  ,ALL_COMPLETED_COUNT  ,COMPLETED_LRR  ,YEAR_SPECIFIC_ROUTINE_COUNT  ,ALL_SPECIFIC_ROUTINE_COUNT  ,SPECIFIC_ROUTINE_LRR  ,ALL_WARINING_COUNT  ,YEAR_OVER_TIME_COUNT  ,ALL_OVER_TIME_COUNT  ,OVER_TIME_LRR  ,ALL_ACCEPTANCE_RATE  ,ALL_OUT_SCOPE_RATE  ,ALL_OVER_TIME_RATE  ,ALL_COMPLETED_RATE  ,STATISTICS_START_DATE  ,STATISTICS_END_DATE  ,STATISTICS_YEAR  ,ROOT_ORG_ID
+        )  values  (
+        #{orgYearStatisticsId},#{statisticsRecordId},#{orgId},#{orgName},#{regionId},#{regionName},#{itemId},#{itemName},#{applyinstSource},#{yearApplyCount},#{allApplyCount},#{applyLrr},#{allInSupplementCount},#{allSupplementedCount},#{yearAcceptanceCount},#{allAcceptanceCount},#{acceptanceLrr},#{yearOutScopeCount},#{allOutScopeCount},#{outScopeLrr},#{yearCompletedCount},#{allCompletedCount},#{completedLrr},#{yearSpecificRoutineCount},#{allSpecificRoutineCount},#{specificRoutineLrr},#{allWariningCount},#{yearOverTimeCount},#{allOverTimeCount},#{overTimeLrr},#{allAcceptanceRate},#{allOutScopeRate},#{allOverTimeRate},#{allCompletedRate},#{statisticsStartDate},#{statisticsEndDate},#{statisticsYear},  #{rootOrgId}
+        )
+    </insert>
+    <!--6 修改实体对象 -->
+    <update id="updateAeaAnaOrgYearStatistics" parameterType="AeaAnaOrgYearStatistics" >
+        update AEA_ANA_ORG_YEAR_STATISTICS
+        <set >
+            <if test="orgYearStatisticsId != null" >
+                ORG_YEAR_STATISTICS_ID = #{orgYearStatisticsId},
+            </if>
+            <if test="statisticsRecordId != null" >
+                STATISTICS_RECORD_ID = #{statisticsRecordId},
+            </if>
+            <if test="orgId != null" >
+                ORG_ID = #{orgId},
+            </if>
+            <if test="orgName != null" >
+                ORG_NAME = #{orgName},
+            </if>
+            <if test="regionId != null" >
+                REGION_ID = #{regionId},
+            </if>
+            <if test="regionName != null" >
+                REGION_NAME = #{regionName},
+            </if>
+            <if test="itemId != null" >
+                ITEM_ID = #{itemId},
+            </if>
+            <if test="itemName != null" >
+                ITEM_NAME = #{itemName},
+            </if>
+            <if test="applyinstSource != null" >
+                APPLYINST_SOURCE = #{applyinstSource},
+            </if>
+            <if test="yearApplyCount != null" >
+                YEAR_APPLY_COUNT = #{yearApplyCount},
+            </if>
+            <if test="allApplyCount != null" >
+                ALL_APPLY_COUNT = #{allApplyCount},
+            </if>
+            <if test="applyLrr != null" >
+                APPLY_LRR = #{applyLrr},
+            </if>
+            <if test="allInSupplementCount != null" >
+                ALL_IN_SUPPLEMENT_COUNT = #{allInSupplementCount},
+            </if>
+            <if test="allSupplementedCount != null" >
+                ALL_SUPPLEMENTED_COUNT = #{allSupplementedCount},
+            </if>
+            <if test="yearAcceptanceCount != null" >
+                YEAR_ACCEPTANCE_COUNT = #{yearAcceptanceCount},
+            </if>
+            <if test="allAcceptanceCount != null" >
+                ALL_ACCEPTANCE_COUNT = #{allAcceptanceCount},
+            </if>
+            <if test="acceptanceLrr != null" >
+                ACCEPTANCE_LRR = #{acceptanceLrr},
+            </if>
+            <if test="yearOutScopeCount != null" >
+                YEAR_OUT_SCOPE_COUNT = #{yearOutScopeCount},
+            </if>
+            <if test="allOutScopeCount != null" >
+                ALL_OUT_SCOPE_COUNT = #{allOutScopeCount},
+            </if>
+            <if test="outScopeLrr != null" >
+                OUT_SCOPE_LRR = #{outScopeLrr},
+            </if>
+            <if test="yearCompletedCount != null" >
+                YEAR_COMPLETED_COUNT = #{yearCompletedCount},
+            </if>
+            <if test="allCompletedCount != null" >
+                ALL_COMPLETED_COUNT = #{allCompletedCount},
+            </if>
+            <if test="completedLrr != null" >
+                COMPLETED_LRR = #{completedLrr},
+            </if>
+            <if test="yearSpecificRoutineCount != null" >
+                YEAR_SPECIFIC_ROUTINE_COUNT = #{yearSpecificRoutineCount},
+            </if>
+            <if test="allSpecificRoutineCount != null" >
+                ALL_SPECIFIC_ROUTINE_COUNT = #{allSpecificRoutineCount},
+            </if>
+            <if test="specificRoutineLrr != null" >
+                SPECIFIC_ROUTINE_LRR = #{specificRoutineLrr},
+            </if>
+            <if test="allWariningCount != null" >
+                ALL_WARINING_COUNT = #{allWariningCount},
+            </if>
+            <if test="yearOverTimeCount != null" >
+                YEAR_OVER_TIME_COUNT = #{yearOverTimeCount},
+            </if>
+            <if test="allOverTimeCount != null" >
+                ALL_OVER_TIME_COUNT = #{allOverTimeCount},
+            </if>
+            <if test="overTimeLrr != null" >
+                OVER_TIME_LRR = #{overTimeLrr},
+            </if>
+            <if test="allAcceptanceRate != null" >
+                ALL_ACCEPTANCE_RATE = #{allAcceptanceRate},
+            </if>
+            <if test="allOutScopeRate != null" >
+                ALL_OUT_SCOPE_RATE = #{allOutScopeRate},
+            </if>
+            <if test="allOverTimeRate != null" >
+                ALL_OVER_TIME_RATE = #{allOverTimeRate},
+            </if>
+            <if test="allCompletedRate != null" >
+                ALL_COMPLETED_RATE = #{allCompletedRate},
+            </if>
+            <if test="statisticsStartDate != null" >
+                STATISTICS_START_DATE = #{statisticsStartDate},
+            </if>
+            <if test="statisticsEndDate != null" >
+                STATISTICS_END_DATE = #{statisticsEndDate},
+            </if>
+            <if test="statisticsYear != null" >
+                STATISTICS_YEAR = #{statisticsYear},
+            </if>
+            <if test="rootOrgId != null" >
+                ROOT_ORG_ID = #{rootOrgId},
+            </if>
+        </set>
+        where ORG_YEAR_STATISTICS_ID = #{orgYearStatisticsId}
+    </update>
+    <!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaAnaOrgYearStatistics">
+        delete from   AEA_ANA_ORG_YEAR_STATISTICS
+        where
+        ORG_YEAR_STATISTICS_ID = #{id}
+    </delete>
+    <!--8 删除实体对象列表,根据主键ID列表 -->
+    <!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaAnaOrgYearStatistics" id="AeaAnaOrgYearStatisticsMap">
+        <id property="orgYearStatisticsId" column="ORG_YEAR_STATISTICS_ID"/>
+        <result property="statisticsRecordId" column="STATISTICS_RECORD_ID"/>
+        <result property="orgId" column="ORG_ID"/>
+        <result property="orgName" column="ORG_NAME"/>
+        <result property="regionId" column="REGION_ID"/>
+        <result property="regionName" column="REGION_NAME"/>
+        <result property="itemId" column="ITEM_ID"/>
+        <result property="itemName" column="ITEM_NAME"/>
+        <result property="applyinstSource" column="APPLYINST_SOURCE"/>
+        <result property="yearApplyCount" column="YEAR_APPLY_COUNT"/>
+        <result property="allApplyCount" column="ALL_APPLY_COUNT"/>
+        <result property="applyLrr" column="APPLY_LRR"/>
+        <result property="allInSupplementCount" column="ALL_IN_SUPPLEMENT_COUNT"/>
+        <result property="allSupplementedCount" column="ALL_SUPPLEMENTED_COUNT"/>
+        <result property="yearAcceptanceCount" column="YEAR_ACCEPTANCE_COUNT"/>
+        <result property="allAcceptanceCount" column="ALL_ACCEPTANCE_COUNT"/>
+        <result property="acceptanceLrr" column="ACCEPTANCE_LRR"/>
+        <result property="yearOutScopeCount" column="YEAR_OUT_SCOPE_COUNT"/>
+        <result property="allOutScopeCount" column="ALL_OUT_SCOPE_COUNT"/>
+        <result property="outScopeLrr" column="OUT_SCOPE_LRR"/>
+        <result property="yearCompletedCount" column="YEAR_COMPLETED_COUNT"/>
+        <result property="allCompletedCount" column="ALL_COMPLETED_COUNT"/>
+        <result property="completedLrr" column="COMPLETED_LRR"/>
+        <result property="yearSpecificRoutineCount" column="YEAR_SPECIFIC_ROUTINE_COUNT"/>
+        <result property="allSpecificRoutineCount" column="ALL_SPECIFIC_ROUTINE_COUNT"/>
+        <result property="specificRoutineLrr" column="SPECIFIC_ROUTINE_LRR"/>
+        <result property="allWariningCount" column="ALL_WARINING_COUNT"/>
+        <result property="yearOverTimeCount" column="YEAR_OVER_TIME_COUNT"/>
+        <result property="allOverTimeCount" column="ALL_OVER_TIME_COUNT"/>
+        <result property="overTimeLrr" column="OVER_TIME_LRR"/>
+        <result property="allAcceptanceRate" column="ALL_ACCEPTANCE_RATE"/>
+        <result property="allOutScopeRate" column="ALL_OUT_SCOPE_RATE"/>
+        <result property="allOverTimeRate" column="ALL_OVER_TIME_RATE"/>
+        <result property="allCompletedRate" column="ALL_COMPLETED_RATE"/>
+        <result property="statisticsStartDate" column="STATISTICS_START_DATE"/>
+        <result property="statisticsEndDate" column="STATISTICS_END_DATE"/>
+        <result property="statisticsYear" column="STATISTICS_YEAR"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+    </resultMap>
+
+    <delete id="deleteThisYearStatisticsData">
+        delete from   AEA_ANA_ORG_YEAR_STATISTICS
+        where
+        ROOT_ORG_ID = #{rootOrgId}
+        and STATISTICS_YEAR = #{year}
+    </delete>
+
+    <!--批量插入-->
+    <insert id="batchInserOrgYearStatisticst">
+        insert into AEA_ANA_ORG_YEAR_STATISTICS (
+        ORG_YEAR_STATISTICS_ID  ,STATISTICS_RECORD_ID  ,ORG_ID  ,ORG_NAME  ,REGION_ID  ,REGION_NAME  ,ITEM_ID  ,ITEM_NAME  ,APPLYINST_SOURCE  ,YEAR_APPLY_COUNT
+        ,ALL_APPLY_COUNT  ,APPLY_LRR  ,ALL_IN_SUPPLEMENT_COUNT  ,ALL_SUPPLEMENTED_COUNT  ,YEAR_ACCEPTANCE_COUNT  ,ALL_ACCEPTANCE_COUNT  ,ACCEPTANCE_LRR
+        ,YEAR_OUT_SCOPE_COUNT  ,ALL_OUT_SCOPE_COUNT  ,OUT_SCOPE_LRR  ,YEAR_COMPLETED_COUNT  ,ALL_COMPLETED_COUNT  ,COMPLETED_LRR  ,YEAR_SPECIFIC_ROUTINE_COUNT
+        ,ALL_SPECIFIC_ROUTINE_COUNT  ,SPECIFIC_ROUTINE_LRR  ,ALL_WARINING_COUNT  ,YEAR_OVER_TIME_COUNT  ,ALL_OVER_TIME_COUNT  ,OVER_TIME_LRR  ,ALL_ACCEPTANCE_RATE
+        ,ALL_OUT_SCOPE_RATE  ,ALL_OVER_TIME_RATE  ,ALL_COMPLETED_RATE  ,STATISTICS_START_DATE  ,STATISTICS_END_DATE  ,STATISTICS_YEAR  ,ROOT_ORG_ID
+        )  values
+        <foreach collection="orgYearStatisticsList" item="orgYearStatistics" separator=",">
+            (
+            #{orgYearStatistics.orgYearStatisticsId},#{orgYearStatistics.statisticsRecordId},#{orgYearStatistics.orgId},#{orgYearStatistics.orgName},
+            #{orgYearStatistics.regionId},#{orgYearStatistics.regionName},#{orgYearStatistics.itemId},#{orgYearStatistics.itemName},#{orgYearStatistics.applyinstSource},
+            #{orgYearStatistics.yearApplyCount},#{orgYearStatistics.allApplyCount},#{orgYearStatistics.applyLrr},#{orgYearStatistics.allInSupplementCount},
+            #{orgYearStatistics.allSupplementedCount},#{orgYearStatistics.yearAcceptanceCount},#{orgYearStatistics.allAcceptanceCount},#{orgYearStatistics.acceptanceLrr},
+            #{orgYearStatistics.yearOutScopeCount},#{orgYearStatistics.allOutScopeCount},#{orgYearStatistics.outScopeLrr},#{orgYearStatistics.yearCompletedCount},
+            #{orgYearStatistics.allCompletedCount},#{orgYearStatistics.completedLrr},#{orgYearStatistics.yearSpecificRoutineCount},#{orgYearStatistics.allSpecificRoutineCount},
+            #{orgYearStatistics.specificRoutineLrr},#{orgYearStatistics.allWariningCount},#{orgYearStatistics.yearOverTimeCount},#{orgYearStatistics.allOverTimeCount},
+            #{orgYearStatistics.overTimeLrr},#{orgYearStatistics.allAcceptanceRate},#{orgYearStatistics.allOutScopeRate},#{orgYearStatistics.allOverTimeRate},
+            #{orgYearStatistics.allCompletedRate},#{orgYearStatistics.statisticsStartDate},#{orgYearStatistics.statisticsEndDate},#{orgYearStatistics.statisticsYear},#{orgYearStatistics.rootOrgId}
+            )
+        </foreach>
+    </insert>
+
+    <select id="getAeaAnaOrgYearStatistics" resultType="AeaAnaOrgYearStatistics" >
+        select
+        <include refid="allColumns"/>
+        from  AEA_ANA_ORG_YEAR_STATISTICS
+        where
+        ORG_ID = #{orgId}
+        and ITEM_ID = #{itemId}
+        and STATISTICS_YEAR = #{year}
+    </select>
+</mapper>

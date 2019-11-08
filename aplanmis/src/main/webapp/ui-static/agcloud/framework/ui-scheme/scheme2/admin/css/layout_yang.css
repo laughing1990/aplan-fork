@@ -1,0 +1,48 @@
+@charset "utf-8";
+/* CSS Document */
+/*基于metronic 5 demo3 | 外框架样式 | yang2018.8.23*/
+
+/*全局*/
+body {
+	/*min-width: 1660px;*/
+	overflow: auto;
+}
+p{
+	margin-bottom: 0;
+}
+.m-body {
+	height: 100%;
+}
+.m--padding-left-8 {
+	padding-left: 8px!important;
+}
+.m--padding-top-12{
+	padding-top: 12px;
+}
+.m--margin-bottom-0{
+	margin-bottom: 0;
+}
+.m--margin-bottom-16
+{
+	margin-bottom: 16px;
+}
+.btn {
+   padding: 8px;
+   line-height: 1;
+}
+/*iframe中portlet高度100%*/
+.ag-iframe-portlet{ 
+	margin-bottom: 0!important;
+}
+/*表单部分*/
+.form-control {
+    padding: 10px 4px;
+    line-height: 1;
+}
+.form-control[readonly], .form-control {
+    border-color: #e8e8e8;
+}
+.input-group > .form-control{
+    border-radius: 4px;
+	text-indent: 5px;
+}

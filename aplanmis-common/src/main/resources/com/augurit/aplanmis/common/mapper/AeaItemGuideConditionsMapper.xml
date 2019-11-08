@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaItemGuideConditionsMapper" >
+
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns" >
+        ROWGUID  rowguid,
+        ITEM_VER_ID  itemVerId,
+        CONDITION_NAME  conditionName,
+        CONDITION_DESC  conditionDesc,
+        ORDERNUMBER  ordernumber,
+        ROOT_ORG_ID rootOrgId
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaItemGuideConditionsById" resultType="AeaItemGuideConditions" >
+        select
+        <include refid="allColumns"/>
+        from    AEA_ITEM_GUIDE_CONDITIONS
+        where    ROWGUID = #{id}
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaItemGuideConditions" resultType="AeaItemGuideConditions" >
+        select
+        <include refid="allColumns"/>
+        from    AEA_ITEM_GUIDE_CONDITIONS
+        <where>
+            <if test="rowguid != null" >
+                AND    ROWGUID = #{rowguid}
+            </if>
+            <if test="itemVerId != null" >
+                AND    ITEM_VER_ID = #{itemVerId}
+            </if>
+            <if test="conditionName != null" >
+                AND    CONDITION_NAME = #{conditionName}
+            </if>
+            <if test="conditionDesc != null" >
+                AND    CONDITION_DESC = #{conditionDesc}
+            </if>
+            <if test="ordernumber != null" >
+                AND    ORDERNUMBER = #{ordernumber}
+            </if>
+            <if test="rootOrgId != null" >
+                AND    ROOT_ORG_ID = #{rootOrgId}
+            </if>
+        </where>
+    </select>
+    <!--4 根据条件查询实体list,返回分页对象 -->
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaItemGuideConditions" parameterType="AeaItemGuideConditions" >
+        insert into AEA_ITEM_GUIDE_CONDITIONS (
+           ROWGUID  ,ITEM_VER_ID  ,CONDITION_NAME  ,CONDITION_DESC  ,ORDERNUMBER, ROOT_ORG_ID
+        )  values  (
+           #{rowguid},#{itemVerId},#{conditionName},#{conditionDesc},  #{ordernumber}, #{rootOrgId}
+        )
+    </insert>
+
+    <!--6 修改实体对象 -->
+    <update id="updateAeaItemGuideConditions" parameterType="AeaItemGuideConditions" >
+        update AEA_ITEM_GUIDE_CONDITIONS
+        <set >
+            <if test="rowguid != null" >
+                ROWGUID = #{rowguid},
+            </if>
+            <if test="itemVerId != null" >
+                ITEM_VER_ID = #{itemVerId},
+            </if>
+            <if test="conditionName != null" >
+                CONDITION_NAME = #{conditionName},
+            </if>
+            <if test="conditionDesc != null" >
+                CONDITION_DESC = #{conditionDesc},
+            </if>
+            <if test="ordernumber != null" >
+                ORDERNUMBER = #{ordernumber},
+            </if>
+            <if test="rootOrgId != null" >
+                ROOT_ORG_ID = #{rootOrgId},
+            </if>
+        </set>
+        where ROWGUID = #{rowguid}
+    </update>
+
+    <!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaItemGuideConditions">
+        delete from   AEA_ITEM_GUIDE_CONDITIONS where ID = #{id}
+    </delete>
+
+    <delete id="batchDeleteGuideConditionsByItemVerId">
+        delete from   AEA_ITEM_GUIDE_CONDITIONS
+        where  ITEM_VER_ID = #{itemVerId}
+          and  ROOT_ORG_ID = #{rootOrgId}
+    </delete>
+
+</mapper>

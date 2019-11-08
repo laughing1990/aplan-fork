@@ -1,0 +1,106 @@
+<div id="allDataShow" class="data-show-box box normal-module-box" v-cloak v-loading.fullscreen.lock="mloading">
+    <h2 class="box-tit">综合数据展示</h2>
+    <div class="data-show">
+        <ul class="data-show-list" @click="jumpModule">
+            <li>
+                <h4><span class="bg1"></span>可报名项目</h4><a href="javascript:;"
+                    data-moduleid="projectCanSignup">{{projectStatusObj.canBidNum || 0}}</a>
+            </li>
+            <li>
+                <h4><span class="bg2"></span>已报名项目</h4><a href="javascript:;"
+                    data-moduleid="projectSignup">{{projectStatusObj.signUpNum || 0}}</a>
+            </li>
+            <li>
+                <h4><span class="bg3"></span>已中选项目</h4><a href="javascript:;"
+                    data-moduleid="projectSelection">{{projectStatusObj.biddingNum || 0}}</a>
+            </li>
+            <li>
+                <h4><span class="bg4"></span>已签约项目</h4><a href="javascript:;" data-moduleid="projectSelection"
+                    data-protype="alreadysign">{{projectStatusObj.signContractNum || 0}}</a>
+            </li>
+            <li>
+                <h4><span class="bg5"></span>服务中项目</h4><a href="javascript:;"
+                    data-moduleid="projectService">{{projectStatusObj.serviceNum || 0}}</a>
+            </li>
+            <li>
+                <h4><span class="bg6"></span>综合评价</h4><a href="javascript:;">
+                    <span v-if="projectStatusObj.compEvaluation">{{projectStatusObj.compEvaluation}}</span>
+                    <span v-else style="font-size: 24px;">暂无评价</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+<script>
+    // var ctx = "http://192.168.14.40:8084/aplanmis-mall/"    //振强
+    var module1 = new Vue({
+        el: '#allDataShow',
+        mixins: [mixins],
+        data: function () {
+            return {
+                mloading: false,
+                projectStatusObj: {
+                    canBidNum: '', //可报名项目
+                    signUpNum: '', //已报名项目
+                    biddingNum: '', //已中选项目
+                    signContractNum: '', //已签约项目
+                    serviceNum: '', //服务中项目
+                    compEvaluation: '', //综合评价 
+                },
+            }
+        },
+        methods: {
+            init: function () {
+                this.fetchProjectAllStatus();
+            },
+            jumpModule: function ($event) {
+                var _target = $event.target;
+                if (_target.nodeName.toLowerCase() == "a") {
+                    var _moduleId = _target.dataset.moduleid; //跳转的模块id
+                    var _moduleType = _target.dataset.protype; //如果是已签约项目的点击
+                    if (_moduleId) {
+                        vm.moduleLoad(_moduleId + '.html', '#' + _moduleId);
+                        vm.agencyItemSelect = _moduleId;
+                        if (_moduleType && _moduleType === 'alreadysign') {
+                            setTimeout(function () {
+                                module1.projectSelectCheckData.isUploadContract = 1;
+                                module1.fetchSelectionProjectList();
+                            }, 300)
+                        }
+                    }
+                }
+            },
+            // 获取各种状态的项目对应的统计数据
+            fetchProjectAllStatus: function () {
+                var ts = this,
+                    _getData = {};
+                _getData.unitInfoId = JSON.parse(localStorage.getItem('loginInfo')).unitId;
+                ts.mloading = true;
+                request('', {
+                    url: ctx + 'aea/supermarket/bidProjectManage/info',
+                    type: 'get',
+                    data: _getData
+                }, function (res) {
+                    ts.mloading = false;
+                    if (res.success) {
+                        ts.projectStatusObj = res.content;
+                    } else {
+                        ts.$message({
+                            message: '数据加载失败',
+                            type: 'error'
+                        });
+                    }
+                }, function (msg) {
+                    ts.mloading = false;
+                    ts.$message({
+                        message: '加载失败',
+                        type: 'error'
+                    });
+                });
+            },
+        },
+        mounted: function () {
+            this.init();
+        },
+    })
+</script>

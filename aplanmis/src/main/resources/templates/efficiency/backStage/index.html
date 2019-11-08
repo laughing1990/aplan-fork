@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head th:fragment="commonheader(title)">
+  <meta charset="UTF-8">
+  <title>效能督查后台管理</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.css"
+    th:href="@{/agcloud/framework/js-lib/element-2/element.css}" />
+  <link rel="stylesheet"
+    href="/framework-ui/src/main/resources/static/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css"
+    th:href="@{/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css}">
+  <link rel="stylesheet"
+    href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/css/reset.css"
+    th:href="@{/agcloud/framework/js-lib/agcloud-lib/css/reset.css}">
+  <link rel="stylesheet" href="../../../static/searchTable/css/search-table.css"
+    th:href="@{/searchTable/css/search-table.css}">
+  <link rel="stylesheet" href="../../../static/efficiency/backStage/css/base.css"
+    th:href="@{/efficiency/backStage/css/base.css}">
+  <script>
+    var ctx = '[[@{/}]]';
+    // var ctx = "http://192.168.30.33:8083/aplanmis-front/"
+    // var ctx = "http://192.168.30.93:8083/aplanmis-front/"  //伟宁
+  </script>
+</head>
+
+<body class="gray-body">
+  <div class="search-table" id="searchTable" v-loading.fullscreen.lock="loading" :element-loading-text="loadingTip" v-cloak>
+    <div class="search-box">
+      <el-form class="search-from clearfix" label-width="100px" ref="handelRowForm" :model="handelRowForm" :rules="handelRowRules">
+        <el-col :sm="24" :md="24" :lg="7" class="search-item-fif">
+          <el-form-item label="搜索关键字" class="search-input search-box">
+            <el-input v-model="searchFrom.keyword" placeholder="请输入统计表名称等关键词">
+              <el-button slot="append" icon="el-icon-search" @click="tableDataSearch">查询</el-button>
+            </el-input>
+          </el-form-item>
+        </el-col>
+        <div class="fr">
+          <!-- <a class="el-button el-button--primary el-button--medium" target="_blank">新增</a> -->
+        </div>
+
+        <!-- 第二行操作行 -->
+        <el-col :sm="24" :md="24" :lg="15"  class="search-item-fif">
+          <el-form-item label="统计" class="ml20 inline-block static-date" prop="statisticsValue">
+            <el-select v-model="handelRowForm.statisticsValue" placeholder="请选择">
+              <el-option v-for="item in statisticsOptions" :key="item.value" :label="item.name" :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="日期" class="inline-block static-date" prop="statisticsDate">
+            <!-- <el-date-picker v-model="handelRowForm.statisticsDate" type="date" placeholder="选择日期" value-format="yyyy-MM-dd" :picker-options="pickerOptions0">
+            </el-date-picker> -->
+            <el-date-picker style="padding-top: 0px;" v-model="handelRowForm.statisticsDate" type="daterange" align="right" unlink-panels
+              range-separator="~" start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="pickerOptions0"
+              value-format="yyyy-MM-dd">
+            </el-date-picker>
+          </el-form-item>
+          <el-button class="ml20" type="primary" size="medium" style="margin-left: 21px;" icon="el-icon-circle-plus-outline" @click="createTable">生成</el-button>
+        </el-col>
+      </el-form>
+    </div>
+
+    <el-table class="search-content" :data="tableData" border stripe style="width: 100%">
+      <el-table-column min-width="200px" prop="reportName" label="统计表名称" show-overflow-tooltip
+        :formatter="formatTableCell">
+      </el-table-column>
+      <el-table-column prop="statisticsStartDate" label="开始日期" min-width="75" show-overflow-tooltip>
+        <template slot-scope="scope">
+          <span>{{scope.row.statisticsStartDate | dateFormat('yyyy-MM-dd')}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="statisticsEndDate" min-width="75" label="结束日期" show-overflow-tooltip>
+        <template slot-scope="scope">
+          <span>{{scope.row.statisticsEndDate | dateFormat('yyyy-MM-dd')}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column min-width="80" label="生成来源" show-overflow-tooltip :formatter="formatTableCell">
+        <template slot-scope="scope">
+          <span>{{scope.row.operateSource | operateSourceFormat}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column min-width="50" label="统计类型" show-overflow-tooltip :formatter="formatTableCell">
+        <template slot-scope="scope">
+          <span>{{scope.row.statisticsType | statisticsTypeFormat}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="creater" min-width="50" label="创建人" show-overflow-tooltip :formatter="formatTableCell">
+      </el-table-column>
+      <el-table-column prop="createTime" min-width="80" label="生成时间" show-overflow-tooltip>
+        <template slot-scope="scope">
+          <span>{{scope.row.createTime | dateFormat('yyyy-MM-dd')}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column width="180" label="操作" v-if="false">
+        <template slot-scope="scope">
+          <span class="op-btn btn_border_right"></span>
+          <span class="op-btn btn_border_right"></span>
+          <span class="op-btn"></span>
+        </template>
+      </el-table-column>
+    </el-table>
+    <el-pagination class="mt20 mb20 mr20 el-pagination-top" background align="right" @size-change="handleSizeChange"
+      @current-change="handleCurrentChange" :page-sizes="[10, 20, 30, 50]" :page-size="searchFrom.pageSize"
+      :current-page="searchFrom.pageNum" layout="total,sizes, prev, pager, next, jumper" :total="dataTotal"
+      v-show="dataTotal>10">
+    </el-pagination>
+  </div>
+  <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js"
+    th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>
+  <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js"
+    th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
+  <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js"
+    th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
+  <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js"
+    th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>
+  <script src="../../../static/efficiency/js/mixins.js" th:src="@{/efficiency/js/mixins.js}" type="text/javascript">
+  </script>
+  <script src="../../../static/efficiency/backStage/js/index.js" th:src="@{/efficiency/backStage/js/index.js}"
+    type="text/javascript"></script>
+</body>
+
+</html>

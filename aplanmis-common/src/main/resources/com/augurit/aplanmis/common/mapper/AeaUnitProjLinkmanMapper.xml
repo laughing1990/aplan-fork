@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by Administrator    2019-07-04 17:12:22 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaUnitProjLinkmanMapper">
+
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns">
+        ${alias}.PROJ_LINKMAN_ID  projLinkmanId ,
+        ${alias}.UNIT_PROJ_ID  unitProjId,
+        ${alias}.LINKMAN_INFO_ID  linkmanInfoId,
+        ${alias}.LINKMAN_TYPE  linkmanType,
+        ${alias}.CREATER  creater,
+        ${alias}.CREATE_TIME  createTime,
+        ${alias}.MODIFIER  modifier,
+        ${alias}.MODIFY_TIME  modifyTime,
+        ${alias}.IS_DELETED  isDeleted,
+
+        ${alias}.PROFESSION_CERT_TYPE  professionCertType,
+        ${alias}.PROFESSION_SEAL_NUM  professionSealNum,
+        ${alias}.TITLE_GRADE  titleGrade,
+        ${alias}.TITLE_CERT_NUM  titleCertNum,
+        ${alias}.REGISTER_NUM  registerNum,
+        ${alias}.SAFE_LICENCE_NUM  safeLicenceNum
+      <!--  ${alias}.PRJ_SPTY.prjSpty-->
+    </sql>
+
+    <!--1 根据主键ID查询单个实体 -->
+    <select id="getAeaUnitProjLinkmanById" resultType="AeaUnitProjLinkman">
+        select
+        <include refid="allColumns">
+            <property name="alias" value="aupl"/>
+        </include>
+        from AEA_UNIT_PROJ_LINKMAN aupl
+        where aupl.PROJ_LINKMAN_ID = #{projLinkmanId}
+    </select>
+
+    <!--2 根据条件查询-->
+    <select id="listAeaUnitProjLinkman" parameterType="AeaUnitProjLinkman"
+            resultType="com.augurit.aplanmis.common.domain.AeaUnitProjLinkman">
+        select
+        <include refid="allColumns">
+            <property name="alias" value="aupl"/>
+        </include>
+        from AEA_UNIT_PROJ_LINKMAN aupl
+        <where>
+            <if test="projLinkmanId!=null and projLinkmanId!='' ">
+                and aupl.PROJ_LINKMAN_ID=#{projLinkmanId}
+            </if>
+            <if test="projLinkmanId!=null and projLinkmanId!='' ">
+                and aupl.UNIT_PROJ_ID=#{unitProjId}
+            </if>
+            <if test="projLinkmanId!=null and projLinkmanId!='' ">
+                and aupl.LINKMAN_INFO_ID=#{linkmanInfoId}
+            </if>
+            <if test="projLinkmanId!=null and projLinkmanId!='' ">
+                and aupl.LINKMAN_TYPE=#{linkmanType}
+            </if>
+        </where>
+    </select>
+
+    <!--3 根据主键批量查询 -->
+    <select id="listAeaUnitProjLinkmanIds" resultType="AeaUnitProjLinkman">
+        select
+        <include refid="allColumns">
+            <property name="alias" value="aupl"/>
+        </include>
+        from AEA_UNIT_PROJ_LINKMAN aupl
+        <where>
+            aupl.PROJ_LINKMAN_ID in
+            <if test="_databaseId == 'oracle'">
+                <foreach collection="projLinkmanIds" item="projLinkmanId" open="(" separator="union all" close=")">
+                    #{projLinkmanId}
+                </foreach>
+            </if>
+            <if test="_databaseId == 'mysql'">
+                <foreach collection="projLinkmanIds" item="projLinkmanId" open="(" close=")" separator=",">
+                    #{projLinkmanId}
+                </foreach>
+            </if>
+        </where>
+        order by aupl.CREATE_TIME DESC
+    </select>
+
+    <!--4 更新单条信息 -->
+    <update id="updateAeaUnitProjLinkman" parameterType="AeaUnitProjLinkman">
+        update AEA_UNIT_PROJ_LINKMAN
+        <set>
+            <if test="unitProjId != null and unitProjId!='' ">
+                UNIT_PROJ_ID = #{unitProjId},
+            </if>
+            <if test="linkmanInfoId != null and linkmanInfoId!='' ">
+                LINKMAN_INFO_ID = #{linkmanInfoId},
+            </if>
+            <if test="linkmanType != null and linkmanType!='' ">
+                LINKMAN_TYPE = #{linkmanType},
+            </if>
+            <if test="creater != null and creater!='' ">
+                CREATER = #{creater},
+            </if>
+            <if test="createTime != null ">
+                CREATE_TIME = #{createTime},
+            </if>
+            <if test="modifier != null and modifier!='' ">
+                MODIFIER = #{modifier},
+            </if>
+            <if test="modifyTime != null">
+                MODIFY_TIME = #{modifyTime},
+            </if>
+            <if test="isDeleted != null and isDeleted!='' ">
+                IS_DELETED = #{isDeleted},
+            </if>
+        </set>
+        where PROJ_LINKMAN_ID = #{projLinkmanId}
+    </update>
+
+    <!--5 根据主键批量删除-->
+    <delete id="batchDelAeaUnitProjLinkmanByIds">
+        delete from AEA_UNIT_PROJ_LINKMAN where PROJ_LINKMAN_ID in
+        <foreach collection="projLinkmanIds" item="projLinkmanId" open="(" close=")" separator=",">
+            #{projLinkmanId}
+        </foreach>
+    </delete>
+
+    <!--6 单位ID|联系人ID|联系人类型查询 -->
+    <select id="queryAeaUnitProjLinkman" resultType="com.augurit.aplanmis.common.domain.AeaUnitProjLinkman">
+        select
+        <include refid="allColumns">
+            <property name="alias" value="aupl"/>
+        </include>
+        from AEA_UNIT_PROJ_LINKMAN aupl
+        <where>
+            <if test="linkmanInfoId!=null and linkmanInfoId!=''">
+                and aupl.LINKMAN_INFO_ID=#{linkmanInfoId}
+            </if>
+            <if test="linkmanType!=null and linkmanType!=''">
+                and aupl.LINKMAN_TYPE=#{linkmanType}
+            </if>
+            <if test="unitInfoId!=null and unitInfoId!=''">
+                and aupl.UNIT_PROJ_ID in(
+                select aup.UNIT_PROJ_ID from AEA_UNIT_PROJ aup where aup.UNIT_INFO_ID=#{unitInfoId} and
+                aup.is_deleted='0'
+                )
+            </if>
+        </where>
+    </select>
+
+
+    <!--7 新增实体对象 -->
+    <insert id="insertAeaUnitProjLinkman" parameterType="AeaUnitProjLinkman">
+        insert into AEA_UNIT_PROJ_LINKMAN (
+        PROJ_LINKMAN_ID ,UNIT_PROJ_ID ,LINKMAN_INFO_ID ,LINKMAN_TYPE  ,CREATER ,CREATE_TIME,IS_DELETED,PROFESSION_CERT_TYPE,PROFESSION_SEAL_NUM,TITLE_GRADE,TITLE_CERT_NUM,REGISTER_NUM,SAFE_LICENCE_NUM
+        ) values (
+        #{projLinkmanId},#{unitProjId},#{linkmanInfoId},#{linkmanType},#{creater},#{createTime},'0',#{professionCertType},#{professionSealNum},#{titleGrade},#{titleCertNum},#{registerNum},#{safeLicenceNum}
+        )
+    </insert>
+
+    <!-- 8 批量更新-->
+    <update id="batchUpdateAeaProjLinkman" parameterType="java.util.List">
+        <if test="_databaseId == 'oracle'">
+            <foreach collection="list" open="begin" close=";end;" separator=";" item="item">
+                update AEA_UNIT_PROJ_LINKMAN
+                <set>
+                    <if test="item.unitProjId != null and item.unitProjId!='' ">
+                        UNIT_PROJ_ID = #{item.unitProjId},
+                    </if>
+                    <if test="item.linkmanInfoId != null and item.linkmanInfoId!='' ">
+                        LINKMAN_INFO_ID = #{item.linkmanInfoId},
+                    </if>
+                    <if test="item.linkmanType != null and item.linkmanType!='' ">
+                        LINKMAN_TYPE = #{item.linkmanType},
+                    </if>
+                    <if test="item.creater != null and item.creater!='' ">
+                        CREATER = #{item.creater},
+                    </if>
+                    <if test="item.createTime != null and item.createTime!='' ">
+                        CREATE_TIME = #{item.createTime},
+                    </if>
+                    <if test="item.modifier != null and item.modifier!='' ">
+                        MODIFIER = #{item.modifier},
+                    </if>
+                    <if test="item.modifyTime != null and item.modifyTime!='' ">
+                        MODIFY_TIME = #{item.modifyTime},
+                    </if>
+                    <if test="item.isDeleted != null and item.isDeleted!='' ">
+                        IS_DELETED = #{item.isDeleted},
+                    </if>
+                </set>
+                where item.PROJ_LINKMAN_ID = #{projLinkmanId}
+            </foreach>
+        </if>
+        <if test="_databaseId == 'mysql'">
+            <foreach collection="list" open="" close="" separator=";" item="item">
+                update AEA_UNIT_PROJ_LINKMAN
+                <set>
+                    <if test="item.unitProjId != null and item.unitProjId!='' ">
+                        UNIT_PROJ_ID = #{unitProjId},
+                    </if>
+                    <if test="item.linkmanInfoId != null and item.linkmanInfoId!='' ">
+                        LINKMAN_INFO_ID = #{linkmanInfoId},
+                    </if>
+                    <if test="item.linkmanType != null and item.linkmanType!='' ">
+                        LINKMAN_TYPE = #{linkmanType},
+                    </if>
+                    <if test="item.creater != null and item.creater!='' ">
+                        CREATER = #{creater},
+                    </if>
+                    <if test="item.createTime != null  ">
+                        CREATE_TIME = #{createTime},
+                    </if>
+                    <if test="item.modifier != null and item.modifier!='' ">
+                        MODIFIER = #{item.modifier},
+                    </if>
+                    <if test="item.modifyTime != null  ">
+                        MODIFY_TIME = #{item.modifyTime},
+                    </if>
+                    <if test="item.isDeleted != null and item.isDeleted!='' ">
+                        IS_DELETED = #{item.isDeleted},
+                    </if>
+                </set>
+                where item.PROJ_LINKMAN_ID = #{projLinkmanId}
+            </foreach>
+        </if>
+    </update>
+
+    <!--9 批量插入-->
+    <insert id="batchInsertAeaUnitProjLinkman" parameterType="java.util.List">
+        insert into AEA_UNIT_PROJ_LINKMAN (
+        PROJ_LINKMAN_ID ,UNIT_PROJ_ID ,LINKMAN_INFO_ID ,LINKMAN_TYPE ,CREATER ,CREATE_TIME,IS_DELETED
+        )
+        <foreach collection="list" item="item" index="index" separator="UNION ALL">
+            select
+            #{item.projLinkmanId},#{item.unitProjId},#{item.linkmanInfoId},#{item.linkmanType},#{item.creater},#{item.createTime},'0'
+            from dual
+        </foreach>
+    </insert>
+
+    <!--10 根据 删除-->
+    <delete id="deleteAllByUnitProjId">
+        update AEA_UNIT_PROJ_LINKMAN aupl set aupl.IS_DELETED='1',aupl.MODIFIER=#{modifier},
+        <if test="_databaseId == 'oracle'">
+            aupl.MODIFY_TIME=(select sysdate from dual)
+        </if>
+        <if test="_databaseId == 'mysql'">
+            aupl.MODIFY_TIME=now()
+        </if>
+
+        where aupl.UNIT_PROJ_ID=#{unitProjId}
+    </delete>
+
+    <!--11-->
+    <select id="queryByUnitProjIdAndlinkType" resultType="com.augurit.aplanmis.common.domain.AeaUnitProjLinkman">
+        select
+        <include refid="allColumns">
+            <property name="alias" value="aupl"/>
+        </include>
+        ,ali.LINKMAN_NAME linkmanName
+        from AEA_UNIT_PROJ_LINKMAN aupl
+        left join AEA_LINKMAN_INFO ali on aupl.LINKMAN_INFO_ID=ali.LINKMAN_INFO_ID
+        <where>
+            aupl.IS_DELETED='0' and ali.IS_DELETED='0' and ali.IS_ACTIVE='1'
+            <if test="linkmanInfoId!=null and linkmanInfoId!=''">
+                and aupl.LINKMAN_INFO_ID=#{linkmanInfoId}
+            </if>
+            <if test="linkmanType!=null and linkmanType!=''">
+                and aupl.LINKMAN_TYPE=#{linkmanType}
+            </if>
+            <if test="unitProjId!=null and unitProjId!=''">
+                and aupl.UNIT_PROJ_ID =#{unitProjId}
+            </if>
+        </where>
+    </select>
+
+</mapper>

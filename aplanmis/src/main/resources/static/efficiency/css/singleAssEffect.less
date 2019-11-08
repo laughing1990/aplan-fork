@@ -1,0 +1,394 @@
+// 循环生成div的bg
+.intro-loop(@n, @i: 1) when (@i <=@n) {
+  .icon-@{i} {
+    background-image: url("../images/assignUser/icon-@{i}.png");
+    background-size: 100% 100%;
+  }
+
+  .intro-loop(@n, (@i + 1));
+}
+
+// 没有数据的展示
+.non-data {
+  background: url('../images/non-data.png') no-repeat center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  height: 216px !important;
+  width: 180px;
+  transform: translateX(-50%) translateY(-50%);
+}
+
+.box-card {
+
+  .el-card__header {
+    height: 48px !important;
+    line-height: 26px !important;
+    padding: 10px 20px;
+  }
+
+  .el-card__body {
+    // padding: 10px 20px;
+  }
+}
+
+.index-wrapper {
+  padding: 15px;
+  padding-bottom:0;
+  min-width: 1430px;
+  min-width: 1526px;
+
+  .status-card {
+    .status-card-item {
+      background: url(../images/sawtooth.png) no-repeat bottom;
+      float: left;
+      width: 16%;
+      margin: 0 0 0 0.8%;
+      height: 125px;
+      background-size: contain;
+      padding: 20px 10px 10px 16px;
+      color: #fff;
+      cursor: pointer;
+      border-radius: 2px;
+
+      .card-icon {
+        float: right;
+        display: inline-block;
+        // width: 30px;
+        // height: 32px;
+        width: 38px;
+        height: 40px;
+        margin-right: 10px;
+      }
+
+      .intro-loop(6); //调用循环生成bg
+    }
+
+    .status-card-item:hover {
+      opacity: .9;
+    }
+
+    .me-count {
+      // font-size: 28px;
+      font-size: 36px;
+      font-weight: bold;
+      padding-top: 5px;
+    }
+
+    .status-card-item:first-child {
+      margin-left: 0;
+    }
+
+    .status-card-item:last-child {
+      float: right;
+    }
+
+    // 网上待预审
+    .waring-status {
+      // background-color: #F0AB30;
+      background: url("../images/win/card-1.png") no-repeat center;
+      background-size: 100% 100%;
+    }
+
+    // 待补全
+    .waring-correct {
+      // background-color: #F09030;
+      background: url("../images/win/card-2.png") no-repeat center;
+      background-size: 100% 100%;
+    }
+
+    // 已补全
+    .alerdy-correct {
+      background-color: #30AFF0;
+      background: url("../images/win/card-3.png") no-repeat center;
+      background-size: 100% 100%;
+    }
+
+    // 不予受理
+    .not-shouli {
+      background-color: #9FA0B1;
+      background: url("../images/win/card-4.png") no-repeat center;
+      background-size: 100% 100%;
+    }
+
+    // 时限预警
+    .time-yujing {
+      background-color: #F0AB30;
+      background: url("../images/win/card-5.png") no-repeat center;
+      background-size: 100% 100%;
+    }
+
+    // 时限逾期
+    .time-yuqi {
+      background-color: #F23D5B;
+      background: url("../images/win/card-6.png") no-repeat center;
+      background-size: 100% 100%;
+    }
+
+    .percent-bt {
+      font-size: 12px;
+    }
+  }
+
+
+  // 部门事项
+  .depart-box {
+    .depart-chart {
+      // background: palegoldenrod;
+      height: 300px;
+    }
+
+    .depart-table {
+      // background: peru;
+      height: 300px;
+    }
+  }
+
+  // 月度，地区，主题申报
+  .declare-box {
+    .declare-month-and-area {
+      height: 736px;
+      height: 726px;
+
+      .declare-month {
+        height: 360px;
+        // height: 340px;
+        height: 348px;
+
+        .rander-box {
+          height: 262px;
+          // height: 240px;
+        }
+      }
+
+      .declare-area {
+        height: 360px;
+        // height: 340px;
+
+        .rander-box {
+          height: 262px;
+          // height: 240px;
+        }
+      }
+    }
+
+    .declare-theme {
+      height: 736px;
+      height: 720px;
+
+      .rander-box {
+        height: 635px;
+        height: 320px;
+        height: 315px;
+      }
+    }
+  }
+
+  // 主题申报异常排名，项目并联审批统计，申报来源统计
+  .bottom-show-box {
+
+    .theme-abnormal-box {
+      .rander-box {
+        height: 290px;
+      }
+    }
+
+    .half-box {
+      .left-box {
+        width: 49%;
+
+        .rander-box {
+          height: 290px;
+        }
+      }
+
+      .right-box {
+        width: 49%;
+
+        .rander-box {
+          height: 290px;
+        }
+      }
+    }
+  }
+}
+
+// 阴影前缀处理
+.shadow-pre (@shadow) {
+  -webkit-box-shadow: @shadow;
+  -moz-box-shadow: @shadow;
+  box-shadow: @shadow;
+}
+
+// 阴影
+.card-box-sd {
+  .shadow-pre(0px 0px 8px 0px rgba(50, 50, 50, 0.05));
+}
+
+// 处理角度
+.border-radius (@radius) {
+  -webkit-border-radius: @radius;
+  -moz-border-radius: @radius;
+  border-radius: @radius;
+}
+
+// 模块展示区样式
+.index-wrapper .module-wrap {
+
+  // / 工作量及效率模块样式
+  .module-workload {
+
+    // 接件总量与接件受理情况
+    .accept-rander-box {
+      height: 330px;
+    }
+  }
+}
+
+// 接件受理率样式
+.accept-box {
+  height: 424px;
+  position: absolute;
+  // top: 50px;
+  top: 70px;
+  left: 0;
+  width: 100%;
+  background: #fff;
+}
+
+.win-precent-box {
+  position: relative;
+  color: #575962;
+  padding-left: 10px;
+
+  .win-item {
+    display: inline-block;
+    // width: 230px;
+    width: 14.2%; //暂定14.2%
+    height: 108px;
+    cursor: pointer;
+
+    &:hover {
+      .win-content {
+        border: 1px solid #B7E1FF;
+      }
+    }
+
+    &.active {
+      .win-content {
+        // border: 1px solid #B7E1FF;
+        // background: rgba(22, 154, 255, 0.1);
+        border: 1px solid #1D9AFD;
+        background: #1D9AFD;
+        color: #fff;
+
+        .win-pie {
+          background: rgba(165, 211, 247, 0.1);
+        }
+      }
+    }
+
+    .win-title {
+      text-align: center;
+      font-size: 14px;
+      font-weight: bold;
+      margin-top: -10px
+    }
+
+    .win-content {
+      position: relative;
+      margin-top: 12px;
+      border: 1px solid #DCDFE6;
+      width: 80%;
+      height: 83px;
+      margin: 0 auto;
+      margin-top: 12px;
+      padding: 8px;
+      .border-radius(4px);
+
+      .win-precent {
+        width: 60px;
+        height: 65px;
+        line-height: 1;
+        text-align: center;
+        // margin-left: 40px;
+        width: 48px;
+        width: 40%;
+
+        p.tip {
+          font-size: 14px;
+          margin-top: 4px;
+        }
+
+        p.precent {
+          font-size: 18px;
+          font-weight: bold;
+          margin-top: 20px;
+        }
+      }
+
+      .win-pie {
+        width: 60px;
+        height: 65px;
+        line-height: 1;
+        text-align: center;
+        background: #fdfdfd;
+        // margin-right: 40px;
+        padding-top: 10px;
+        width: 48px;
+      }
+    }
+    .win-content:after{
+      position: absolute;
+      display: block;
+      content: '';
+      height: 52px;
+      width: 1px;
+      background: #DCDFE6;
+      left: 50%;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+  }
+
+  // 左右切换按钮
+  .swipe-btn{
+    display: inline-block;
+    // margin-top: -60px;
+    position: absolute;
+    top: 42%;
+    width: 36px;
+    height: 40px;
+    line-height: 40px;
+    cursor: pointer;
+    i{
+      font-size: 26px;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    &:hover{
+      i{
+        color: #3FA1FD;
+      }
+    }
+    &.active{
+      i{
+        color: #3FA1FD;
+        font-size: 32px;
+      }
+    }
+  }
+  .swipe-tabs-left{
+    // margin-left: -8px;
+    left: 0;
+  }
+  .swipe-tabs-right{
+    right: -10px;
+  }
+}
+
+.accept-effectchart-box {
+  height: 315px;
+}
+
+

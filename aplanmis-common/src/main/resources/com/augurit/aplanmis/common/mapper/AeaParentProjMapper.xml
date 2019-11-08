@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by 23948    2019-07-04 16:43:26 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaParentProjMapper">
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns">
+        NODE_PROJ_ID  nodeProjId,
+    PARENT_PROJ_ID  parentProjId,
+    CHILD_PROJ_ID  childProjId,
+    PROJ_SEQ  projSeq,
+    CREATER  creater,
+    CREATE_TIME  createTime,
+    MODIFIER  modifier,
+    MODIFY_TIME  modifyTime,
+    ROOT_ORG_ID rootOrgId
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaParentProjById" resultType="AeaParentProj">
+        select
+        <include refid="allColumns"/>
+        from AEA_PARENT_PROJ
+        where NODE_PROJ_ID = #{id}
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaParentProj" resultType="AeaParentProj">
+        select
+        <include refid="allColumns"/>
+        from AEA_PARENT_PROJ
+        <where>
+            <if test="nodeProjId != null">
+                AND NODE_PROJ_ID = #{nodeProjId}
+            </if>
+            <if test="parentProjId != null">
+                AND PARENT_PROJ_ID = #{parentProjId}
+            </if>
+            <if test="childProjId != null">
+                AND CHILD_PROJ_ID = #{childProjId}
+            </if>
+            <if test="projSeq != null">
+                AND PROJ_SEQ = #{projSeq}
+            </if>
+            <if test="creater != null">
+                AND CREATER = #{creater}
+            </if>
+            <if test="createTime != null">
+                AND CREATE_TIME = #{createTime}
+            </if>
+            <if test="modifier != null">
+                AND MODIFIER = #{modifier}
+            </if>
+            <if test="modifyTime != null">
+                AND MODIFY_TIME = #{modifyTime}
+            </if>
+            <if test="rootOrgId != null">
+                AND ROOT_ORG_ID = #{rootOrgId}
+            </if>
+        </where>
+    </select>
+    <!--4 根据条件查询实体list,返回分页对象 -->
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaParentProj" parameterType="AeaParentProj">
+        insert into AEA_PARENT_PROJ (NODE_PROJ_ID, PARENT_PROJ_ID, CHILD_PROJ_ID, PROJ_SEQ, CREATER, CREATE_TIME,
+                                     MODIFIER, MODIFY_TIME,ROOT_ORG_ID)
+        values (#{nodeProjId}, #{parentProjId}, #{childProjId}, #{projSeq}, #{creater}, #{createTime}, #{modifier},
+                #{modifyTime},#{rootOrgId})
+    </insert>
+    <!--6 修改实体对象 -->
+    <update id="updateAeaParentProj" parameterType="AeaParentProj">
+        update AEA_PARENT_PROJ
+        <set>
+            <if test="nodeProjId != null">
+                NODE_PROJ_ID = #{nodeProjId},
+            </if>
+            <if test="parentProjId != null">
+                PARENT_PROJ_ID = #{parentProjId},
+            </if>
+            <if test="childProjId != null">
+                CHILD_PROJ_ID = #{childProjId},
+            </if>
+            <if test="projSeq != null">
+                PROJ_SEQ = #{projSeq},
+            </if>
+            <if test="creater != null">
+                CREATER = #{creater},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime},
+            </if>
+            <if test="modifier != null">
+                MODIFIER = #{modifier},
+            </if>
+            <if test="modifyTime != null">
+                MODIFY_TIME = #{modifyTime},
+            </if>
+            <if test="rootOrgId != null">
+                ROOT_ORG_ID = #{rootOrgId},
+            </if>
+        </set>
+        where NODE_PROJ_ID = #{nodeProjId}
+    </update>
+    <!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaParentProj">
+        delete
+        from AEA_PARENT_PROJ
+        where NODE_PROJ_ID = #{id}
+    </delete>
+    <!--8 删除实体对象列表,根据主键ID列表 -->
+    <!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaParentProj" id="AeaParentProjMap">
+        <id property="nodeProjId" column="NODE_PROJ_ID"/>
+        <result property="parentProjId" column="PARENT_PROJ_ID"/>
+        <result property="childProjId" column="CHILD_PROJ_ID"/>
+        <result property="projSeq" column="PROJ_SEQ"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="modifier" column="MODIFIER"/>
+        <result property="modifyTime" column="MODIFY_TIME"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+    </resultMap>
+
+    <select id="getParentProjByProjInfoId" resultType="com.augurit.aplanmis.common.domain.AeaParentProj">
+        select
+        <include refid="allColumns"/>
+        from AEA_PARENT_PROJ
+        where child_proj_id = #{projInfoId}
+    </select>
+
+    <select id="listChildProjByProjInfoIds" resultType="com.augurit.aplanmis.common.domain.AeaParentProj">
+        select
+        <include refid="allColumns"/>
+        from AEA_PARENT_PROJ
+        where parent_proj_id in
+        <foreach collection="projInfoIds" item="pid" separator="," close=")" open="(">
+            #{pid}
+        </foreach>
+    </select>
+
+</mapper>

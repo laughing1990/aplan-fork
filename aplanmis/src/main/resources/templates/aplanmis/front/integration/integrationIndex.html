@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>
+      奥格工程建设项目联合审批系统
+  </title>
+  <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.css" th:href="@{/agcloud/framework/js-lib/element-2/element.css}"/>
+  <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css" th:href="@{/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css}">
+  <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/css/reset.css" th:href="@{/agcloud/framework/js-lib/agcloud-lib/css/reset.css}">
+  <link rel="stylesheet" href="../../../../static/aplanmis/front/integration/css/integrationIndex.css" th:href="@{/aplanmis/front/integration/css/integrationIndex.css}">
+  <script>
+     var ctx = '[[@{/}]]';
+     //var ctx = 'http://192.168.30.31:8083/aplanmis-front/'
+  </script>
+</head>
+<body>
+  <div id="demo" v-cloak>
+    <div class="demo-content clearfix">
+      <div class="demo-content-left">
+        <div class="content-left-item" style="height:317px;">
+          <p class="item-header">工作台</p>
+
+              <div class="search-box d-flex align-items-center">
+                <span>项目代码</span>
+                <el-input placeholder="请输入办件编号或办件人姓名等关键词搜索办件" clearable v-model="keyword">
+                    <template slot="append">
+                        <div @click="colligateQuery" class="colligateQuery">
+                            <i class="el-icon-search"></i> 办件查询
+                        </div>
+                    </template>
+                </el-input>
+              </div>
+
+              <div style="padding:0px 15px;">
+                  <ul class="btn-list d-flex justify-content-between">
+                     <li class="btn-item d-flex align-items-center justify-content-between">
+                          <div class="d-flex align-items-center">
+                          <p class="icon d-flex align-items-center justify-content-center">
+                              <img src="../../../../static/aplanmis/front/integration/images/1.png" th:src="@{/aplanmis/front/integration/images/1.png}" alt="">
+                          </p>
+                          <p class="name ellipsis"  title="网上预审">网上预审</p>
+                          </div>
+                          <p class="num">{{portalCountData.wang_shang_dai_yu_shen}}</p>
+                    </li>
+                    <li class="btn-item d-flex align-items-center justify-content-between" @click="showMoreDaiban()">
+                        <div class="d-flex align-items-center">
+                            <p class="icon d-flex align-items-center justify-content-center">
+                                <img src="../../../../static/aplanmis/front/integration/images/2.png" th:src="@{/aplanmis/front/integration/images/2.png}" alt="">
+                            </p>
+                            <p class="name ellipsis" title="待办工作">待办工作</p>
+                        </div>
+                        <p class="num">{{portalCountData.dai_ban}}</p>
+                    </li>
+                    <li class="btn-item d-flex align-items-center justify-content-between"  @click="showMoreYiban()">
+                        <div class="d-flex align-items-center">
+                            <p class="icon d-flex align-items-center justify-content-center">
+                                <img src="../../../../static/aplanmis/front/integration/images/3.png" th:src="@{/aplanmis/front/integration/images/3.png}" alt="">
+                            </p>
+                            <p class="name ellipsis" title="已办工作">已办工作</p>
+                        </div>
+                        <p class="num ellipsis">{{portalCountData.yi_ban}}</p>
+                    </li>
+                    <li class="btn-item d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center">
+                            <p class="icon d-flex align-items-center justify-content-center">
+                                <img src="../../../../static/aplanmis/front/integration/images/4.png" th:src="@{/aplanmis/front/integration/images/4.png}" alt="">
+                            </p>
+                            <p class="name ellipsis" title="材料补正">材料补正</p>
+                        </div>
+                        <p class="num">{{portalCountData.cai_liao_bu_zheng}}</p>
+                    </li>
+                    <li class="btn-item d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center">
+                            <p class="icon d-flex align-items-center justify-content-center">
+                                <img src="../../../../static/aplanmis/front/integration/images/5.png" th:src="@{/aplanmis/front/integration/images/5.png}" alt="">
+                            </p>
+                            <p class="name ellipsis" title="督办">督办</p>
+                        </div>
+                        <p class="num">{{portalCountData.du_ban}}</p>
+                    </li>
+                  </ul>
+                  <ul class="btn-list d-flex justify-content-between">
+                     <li class="btn-item d-flex align-items-center justify-content-between">
+                          <div class="d-flex align-items-center">
+                          <p class="icon d-flex align-items-center justify-content-center">
+                              <img src="../../../../static/aplanmis/front/integration/images/6.png" th:src="@{/aplanmis/front/integration/images/6.png}" alt="">
+                          </p>
+                          <p class="name ellipsis" title="逾期件">逾期件</p>
+                          </div>
+                          <p class="num">{{portalCountData.yu_qi}}</p>
+                    </li>
+                    <li class="btn-item d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center">
+                            <p class="icon d-flex align-items-center justify-content-center">
+                                <img src="../../../../static/aplanmis/front/integration/images/7.png" th:src="@{/aplanmis/front/integration/images/7.png}" alt="">
+                            </p>
+                            <p class="name ellipsis" title="作废件">作废件</p>
+                        </div>
+                        <p class="num">{{portalCountData.zuo_fei||0}}</p>
+                    </li>
+                    <li class="btn-item d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center">
+                            <p class="icon d-flex align-items-center justify-content-center">
+                                <img src="../../../../static/aplanmis/front/integration/images/8.png" th:src="@{/aplanmis/front/integration/images/8.png}" alt="">
+                            </p>
+                            <p class="name">挂起件</p>
+                        </div>
+                        <p class="num">{{portalCountData.gua_qi||0}}</p>
+                    </li>
+                    <li class="btn-item d-flex align-items-center justify-content-between" @click="parallelApprove()">
+                        <div class="d-flex align-items-center">
+                            <p class="icon d-flex align-items-center justify-content-center">
+                                <img src="../../../../static/aplanmis/front/integration/images/9.png" th:src="@{/aplanmis/front/integration/images/9.png}" alt="">
+                            </p>
+                            <p class="name">并联申报</p>
+                        </div>
+                        <!-- <p class="num">0</p> -->
+                    </li>
+                    <li class="btn-item d-flex align-items-center justify-content-between" @click="statisticalAnalysis()">
+                        <div class="d-flex align-items-center">
+                            <p class="icon d-flex align-items-center justify-content-center">
+                                <img src="../../../../static/aplanmis/front/integration/images/10.png" th:src="@{/aplanmis/front/integration/images/10.png}" alt="">
+                            </p>
+                            <p class="name">统计分析</p>
+                        </div>
+                        <!-- <p class="num">0</p> -->
+                    </li>
+                  </ul>
+              </div>
+        </div>
+        <!-- <div class="content-left-item">
+          <p class="item-header">项目类型办件数量</p>
+          <p class="item-header">统计数据</p>
+          <div class="item-content">
+              <div style="height: 20em">
+                  <div id="xiang_muban_jian" style="height: 100%"></div>
+              </div>
+          </div>
+        </div> -->
+        <!-- <div class="content-left-item">
+          <p class="item-header">每月办件数量</p>
+          <div class="item-content">
+              <div style="height: 20em">
+                  <div id="mei_yue_ban_jian" style="height: 100%"></div>
+              </div>
+          </div>
+        </div> -->
+        <div class="d-flex justify-content-between">
+            <div class="content-right-item" style="width:49.3%">
+                <p class="item-header d-flex justify-content-between align-items-center">
+                    <span>待办项目</span>
+                    <el-dropdown>
+                     <span class="el-icon-more"></span>
+                      <el-dropdown-menu slot="dropdown">
+                        <el-dropdown-item  @click.native="showMoreDaiban()">了解更多</el-dropdown-item>
+                      </el-dropdown-menu>
+                    </el-dropdown>
+                </p>
+                <div class="item-content">
+                    <div style="height: 20em">
+                        <el-table
+                                :data="tableData2"
+                                border
+                                height="280"
+                                style="width: 100%">
+                            <el-table-column
+                                    type="index"
+                                    label="序号"
+                                    align="center"
+                                    width="55">
+                            </el-table-column>
+                            <el-table-column
+                                    prop="PROJ_NAME"
+                                    label="项目名称">
+                                <template slot-scope="scope">
+                                    <p class="ellipsis" :title="scope.row.PROJ_NAME">{{scope.row.PROJ_NAME}}</p>
+                                </template>
+                            </el-table-column>
+                            <el-table-column
+                                    prop="NAME_"
+                                    label="当前节点"
+                                    align="center"
+                                    width="80">
+                            </el-table-column>
+                            <el-table-column
+                                    prop="APPLYINST_CODE"
+                                    label="剩余期限"
+                                    align="center"
+                                    width="160"
+                                    >
+                                    <template slot-scope="scope">
+                                        <div class="status danger" v-if="timeTypeobj[scope.$index].timeType == 'danger'">
+                                            {{timeTypeobj[scope.$index].timeText}}
+                                        </div>
+                                        <div class="status warning" v-else-if="timeTypeobj[scope.$index].timeType == 'warning'">
+                                            {{timeTypeobj[scope.$index].timeText}}
+                                        </div>
+                                        <div class="status safe" v-else>
+                                            {{timeTypeobj[scope.$index].timeText}}
+                                        </div>
+                                    </template>
+                            </el-table-column>
+                        </el-table>
+                        <!-- <div id="showMoreYiban" @click="showMoreYiban()"
+                             class="show_more" style="display: none;"> <el-link type="info">了解更多</el-link>
+                        </div> -->
+                    </div>
+                </div>
+            </div>
+            <div class="content-right-item" style="width:49.3%;">
+                <p class="item-header d-flex justify-content-between align-items-center">
+                    <span>审批进度</span>
+                    <span class="el-icon-more"></span>
+                </p>
+                <div class="item-content">
+                    <div style="height: 20em">
+                        <el-table
+                                :data="tableData4"
+                                border
+                                height="280"
+                                style="width: 100%">
+                            <el-table-column
+                                    type="index"
+                                    label="序号"
+                                    align="center"
+                                    width="55">
+                            </el-table-column>
+                            <el-table-column
+                                    prop="PROJ_NAME"
+                                    label="项目名称">
+                                <template slot-scope="scope">
+                                    <p class="ellipsis" :title="scope.row.PROJ_NAME">{{scope.row.PROJ_NAME}}</p>
+                                </template>
+                            </el-table-column>
+                            <el-table-column
+                                    prop="STAGE_NAME"
+                                    label="所在阶段"
+                                    width="160">
+                            </el-table-column>
+                        </el-table>
+                        <!-- <div id="showMoreYiban" @click="showMoreYiban()"
+                             class="show_more" style="display: none;"> <el-link type="info">了解更多</el-link>
+                        </div> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-left-item">
+          <p class="item-header">标准项目类型办件数量</p>
+          <div class="item-content">
+              <div style="height: 20em">
+                  <div id="xiang_muban_jian" style="height: 100%"></div>
+              </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="demo-content-right fr">
+        <div class="content-right-item" style="height: 317px;">
+          <p class="item-header d-flex justify-content-between align-items-center">
+              <span>通知公告</span>
+              <el-dropdown>
+                  <span class="el-icon-more"></span>
+                  <el-dropdown-menu slot="dropdown">
+                      <el-dropdown-item  @click.native="showMyNotice()">了解更多</el-dropdown-item>
+                  </el-dropdown-menu>
+              </el-dropdown>
+          </p>
+          <div class="item-content">
+              <div >
+                  <p id="nodata" class="empty" v-if="noticeContentData.length == 0">暂无数据</p>
+                  <ul v-else>
+                      <li v-for="(item,index) in noticeContentData"
+                          class="notice_li d-flex justify-content-between"
+                          @click="viewNoticeContent(item,index,$event)">
+                          <a href="javascript:;">
+                              <span>{{item.contentTitle}}</span>
+                          </a>
+                          <span class="time">{{item.createTime|formatDate}}</span>
+                      </li>
+                  </ul>
+                  <!-- <div id="showMoreNotice" @click="showMyNotice()"
+                       class="show_more" style="display: none;"> <el-link type="info">了解更多</el-link>
+                  </div> -->
+              </div>
+          </div>
+        </div>
+          <div class="content-right-item">
+              <p class="item-header d-flex justify-content-between align-items-center">
+                  <span>已办项目</span>
+                  <el-dropdown>
+                   <span class="el-icon-more"></span>
+                    <el-dropdown-menu slot="dropdown">
+                      <el-dropdown-item  @click.native="showMoreYiban()">了解更多</el-dropdown-item>
+                    </el-dropdown-menu>
+                  </el-dropdown>
+              </p>
+              <div class="item-content">
+                  <div style="height: 20em">
+                      <el-table
+                              :data="tableData3"
+                              border
+                              height="280"
+                              style="width: 100%">
+                          <el-table-column
+                                  type="index"
+                                  label="序号"
+                                  align="center"
+                                  width="55">
+                          </el-table-column>
+                          <el-table-column
+                                  prop="PROJ_NAME"
+                                  label="项目名称">
+                              <template slot-scope="scope">
+                                  <p class="ellipsis" :title="scope.row.PROJ_NAME">{{scope.row.PROJ_NAME}}</p>
+                              </template>
+                          </el-table-column>
+                          <el-table-column
+                                  prop="END_TIME_"
+                                  label="办结日期"
+                                  algin="center"
+                                  :formatter="formatDate"
+                                  width="100">
+                          </el-table-column>
+                          <el-table-column
+                                  prop="APPLYINST_CODE"
+                                  label="操作"
+                                  align="center"
+                                  width="80">
+                                  <template slot-scope="scope">
+                                      <el-button type="text"><span v-html="scope.row.btnWidgetRenderers"></span></el-button>
+                                  </template>
+                          </el-table-column>
+                      </el-table>
+                      <!-- <div id="showMoreYiban" @click="showMoreYiban()"
+                           class="show_more" style="display: none;"> <el-link type="info">了解更多</el-link>
+                      </div> -->
+                  </div>
+              </div>
+          </div>
+          <div class="content-right-item">
+              <p class="item-header d-flex justify-content-between align-items-center">
+                  <span>项目审批用时分析</span>
+              </p>
+                    <div class="item-content">
+                    <!-- <div style="height: 20em" id="projUseTime" >
+                    </div> -->
+                    <div style="height: 20em" id="mei_yue_ban_jian">
+
+                    </div>
+                </div>
+          </div>
+      </div>
+    </div>
+  </div>
+  <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js" th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>
+  <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js" th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
+  <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js" th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
+  <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js" th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>
+  <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/echarts-v4/echarts.min.js" th:src="@{/agcloud/framework/js-lib/echarts-v4/echarts.min.js}"></script>
+  <script src="../../../../static/aplanmis/front/integration/js/echart_tool.js" th:src="@{/aplanmis/front/integration/js/echart_tool.js}"></script>
+  <script src="../../../../static/aplanmis/front/integration/js/integrationIndex.js" th:src="@{/aplanmis/front/integration/js/integrationIndex.js}"></script>
+  <!--END:js文件-->
+</body>
+</html>

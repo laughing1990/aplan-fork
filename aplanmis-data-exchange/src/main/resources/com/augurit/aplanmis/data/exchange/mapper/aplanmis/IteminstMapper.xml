@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by yinlf    2019-08-31 10:58:11 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.data.exchange.mapper.aplanmis.IteminstMapper">
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns">
+        DFSJZJ  dfsjzj,
+        XZQHDM  xzqhdm,
+        GCDM  gcdm,
+        SPSXBM  spsxbm,
+        SPSXBBH  spsxbbh,
+        SPLCBM  splcbm,
+        SPLCBBH  splcbbh,
+        SPSXSLBM  spsxslbm,
+        SPBMBM  spbmbm,
+        SPBMMC  spbmmc,
+        SLFS  slfs,
+        GKFS  gkfs,
+        BLSPSLBM  blspslbm,
+        SXBLSX  sxblsx,
+        SJYXBS  sjyxbs
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getSpglXmspsxblxxbById" resultType="SpglXmspsxblxxb">
+        select
+        <include refid="allColumns"/>
+        from SPGL_XMSPSXBLXXB_VIEW
+        where DFSJZJ = #{dfsjzj}
+    </select>
+
+    <select id="listSpglXmspsxblxxbByTimeRange" resultType="SpglXmspsxblxxb">
+        select
+        <include refid="allColumns"/>
+        from SPGL_XMSPSXBLXXB_VIEW
+        <where>
+            <if test="startTime != null">
+                AND MODIFY_TIME &gt;= #{startTime}
+            </if>
+            <if test="endTime != null">
+                AND MODIFY_TIME &lt; #{endTime}
+            </if>
+        </where>
+    </select>
+
+    <select id="listSpglXmspfxsxblxxbByTimeRange" resultType="SpglXmspsxblxxb">
+        select
+        <include refid="allColumns"/>
+        from SPGL_XMSPFXSXBLXXB_VIEW
+        <where>
+            <if test="startTime != null">
+                AND MODIFY_TIME &gt;= #{startTime}
+            </if>
+            <if test="endTime != null">
+                AND MODIFY_TIME &lt; #{endTime}
+            </if>
+        </where>
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listSpglXmspsxblxxb" resultType="SpglXmspsxblxxb">
+        select
+        <include refid="allColumns"/>
+        from SPGL_XMSPSXBLXXB_VIEW
+        <where>
+            <if test="dfsjzj != null">
+                AND DFSJZJ = #{dfsjzj}
+            </if>
+            <if test="xzqhdm != null">
+                AND XZQHDM = #{xzqhdm}
+            </if>
+            <if test="gcdm != null">
+                AND GCDM = #{gcdm}
+            </if>
+            <if test="spsxbm != null">
+                AND SPSXBM = #{spsxbm}
+            </if>
+            <if test="spsxbbh != null">
+                AND SPSXBBH = #{spsxbbh}
+            </if>
+            <if test="splcbm != null">
+                AND SPLCBM = #{splcbm}
+            </if>
+            <if test="splcbbh != null">
+                AND SPLCBBH = #{splcbbh}
+            </if>
+            <if test="spsxslbm != null">
+                AND SPSXSLBM = #{spsxslbm}
+            </if>
+            <if test="spbmbm != null">
+                AND SPBMBM = #{spbmbm}
+            </if>
+            <if test="spbmmc != null">
+                AND SPBMMC = #{spbmmc}
+            </if>
+            <if test="slfs != null">
+                AND SLFS = #{slfs}
+            </if>
+            <if test="gkfs != null">
+                AND GKFS = #{gkfs}
+            </if>
+            <if test="blspslbm != null">
+                AND BLSPSLBM = #{blspslbm}
+            </if>
+            <if test="sxblsx != null">
+                AND SXBLSX = #{sxblsx}
+            </if>
+            <if test="sjyxbs != null">
+                AND SJYXBS = #{sjyxbs}
+            </if>
+        </where>
+    </select>
+</mapper>

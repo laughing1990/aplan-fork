@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by thinkpad    2019-06-12 16:11:39 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaImServiceLinkmanMapper">
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns">
+    SERVICE_LINKMAN_ID  serviceLinkmanId,
+    SERVICE_ID  serviceId,
+    LINKMAN_INFO_ID  linkmanInfoId,
+    UNIT_INFO_ID  unitInfoId,
+    IS_DELETE  isDelete,
+    CREATER  creater,
+    CREATE_TIME  createTime,
+    IS_HEAD  isHead,
+    AUDIT_FLAG  auditFlag,
+    PRACTISE_DATE  practiseDate
+    </sql>
+
+    <sql id="serviceLinkmanColumns">
+    serviceLinkman.SERVICE_LINKMAN_ID  serviceLinkmanId,
+    serviceLinkman.SERVICE_ID  serviceId,
+    serviceLinkman.LINKMAN_INFO_ID  linkmanInfoId,
+    serviceLinkman.UNIT_INFO_ID  unitInfoId,
+    serviceLinkman.IS_DELETE  isDelete,
+    serviceLinkman.CREATER  creater,
+    serviceLinkman.CREATE_TIME  createTime,
+    serviceLinkman.IS_HEAD  isHead,
+    serviceLinkman.AUDIT_FLAG  auditFlag,
+    serviceLinkman.PRACTISE_DATE  practiseDate
+    </sql>
+
+
+    <sql id="linkman_allColumns">
+        linkman.LINKMAN_INFO_ID  linkmanInfoId,
+        linkman.LINKMAN_TYPE  linkmanType,
+        linkman.LINKMAN_CATE  linkmanCate,
+        linkman.LINKMAN_NAME  linkmanName,
+        linkman.LINKMAN_ADDR  linkmanAddr,
+        linkman.LINKMAN_OFFICE_PHON  linkmanOfficePhon,
+        linkman.LINKMAN_MOBILE_PHONE  linkmanMobilePhone,
+        linkman.LINKMAN_FAX  linkmanFax,
+        linkman.LINKMAN_MAIL  linkmanMail,
+        linkman.LINKMAN_CERT_NO  linkmanCertNo,
+        linkman.IS_ACTIVE  isActive,
+        linkman.IS_DELETED  isDeleted,
+        linkman.LINKMAN_MEMO  linkmanMemo,
+        linkman.CREATER  creater,
+        linkman.CREATE_TIME  createTime,
+        linkman.MODIFIER  modifier,
+        linkman.MODIFY_TIME  modifyTime,
+        linkman.LOGIN_NAME loginName,
+        linkman.LOGIN_PWD loginPwd
+    </sql>
+
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaImServiceLinkmanById" resultType="AeaImServiceLinkman">
+        select
+        <include refid="allColumns"/>
+        from AEA_IM_SERVICE_LINKMAN
+        where SERVICE_LINKMAN_ID = #{id}
+        AND IS_DELETE = '0'
+    </select>
+
+    <!-- 根据服务ID查询单个实体 -->
+    <select id="getAeaImServiceLinkmanByServiceId" resultType="AeaImServiceLinkman">
+        select
+        <include refid="allColumns"/>
+        from AEA_IM_SERVICE_LINKMAN
+        where SERVICE_ID = #{serviceId}
+        AND LINKMAN_INFO_ID = #{linkmanInfoId}
+        AND IS_DELETE = '0'
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaImServiceLinkman" resultType="AeaImServiceLinkman">
+        select
+        <include refid="serviceLinkmanColumns"/>,linkmaninfo.LINKMAN_NAME linkmanName,service.SERVICE_NAME serviceName,
+        unit.APPLICANT applicant
+        from AEA_IM_SERVICE_LINKMAN serviceLinkman
+        INNER JOIN aea_linkman_info linkmaninfo on linkmaninfo.LINKMAN_INFO_ID = serviceLinkman.LINKMAN_INFO_ID
+        LEFT JOIN aea_im_service service on service.SERVICE_ID = serviceLinkman.SERVICE_ID
+        LEFT JOIN aea_unit_info unit on unit.UNIT_INFO_ID = serviceLinkman.UNIT_INFO_ID
+        <where>serviceLinkman.IS_DELETE = '0'
+            <if test="keyword!=null and keyword!='' ">
+                and (
+                unit.APPLICANT like concat('%',concat(#{keyword},'%')) or
+                service.SERVICE_NAME like concat('%',concat(#{keyword},'%')) or
+                linkmaninfo.LINKMAN_NAME like concat('%',concat(#{keyword},'%'))
+                )
+            </if>
+            <if test="serviceLinkmanId != null">
+                AND serviceLinkman.SERVICE_LINKMAN_ID = #{serviceLinkmanId}
+            </if>
+            <if test="serviceId != null">
+                AND serviceLinkman.SERVICE_ID = #{serviceId}
+            </if>
+            <if test="linkmanInfoId != null">
+                AND serviceLinkman.LINKMAN_INFO_ID = #{linkmanInfoId}
+            </if>
+            <if test="unitInfoId != null">
+                AND serviceLinkman.UNIT_INFO_ID = #{unitInfoId}
+            </if>
+            <if test="creater != null">
+                AND serviceLinkman.CREATER = #{creater}
+            </if>
+            <if test="createTime != null">
+                AND serviceLinkman.CREATE_TIME = #{createTime}
+            </if>
+            <if test="isHead != null">
+                AND serviceLinkman.IS_HEAD = #{isHead}
+            </if>
+            <if test="auditFlag != null">
+                AND serviceLinkman.AUDIT_FLAG = #{auditFlag}
+            </if>
+            <if test="practiseDate != null">
+                AND serviceLinkman.PRACTISE_DATE = #{practiseDate}
+            </if>
+        </where>
+        order by serviceLinkman.CREATE_TIME asc
+    </select>
+    <!--4 根据条件查询实体list,返回分页对象 -->
+    <select id="listAeaImServiceLinkmanByServiceId" resultType="AeaLinkmanInfo">
+        select
+        <include refid="linkman_allColumns"/>
+        ,service.SERVICE_NAME,servicelinkman.IS_HEAD,servicelinkman.AUDIT_FLAG
+        from AEA_LINKMAN_INFO linkman
+        LEFT JOIN aea_im_service_linkman servicelinkman on linkman.LINKMAN_INFO_ID = servicelinkman.LINKMAN_INFO_ID
+        LEFT JOIN aea_im_service service on service.SERVICE_ID = servicelinkman.SERVICE_ID
+        where servicelinkman.SERVICE_ID = #{serviceId}
+    </select>
+
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaImServiceLinkman" parameterType="AeaImServiceLinkman">
+    insert into AEA_IM_SERVICE_LINKMAN (
+SERVICE_LINKMAN_ID  ,SERVICE_ID  ,LINKMAN_INFO_ID  ,UNIT_INFO_ID  ,IS_DELETE  ,CREATER  ,CREATE_TIME  ,IS_HEAD  ,AUDIT_FLAG  ,PRACTISE_DATE  
+    )  values  (
+#{serviceLinkmanId},#{serviceId},#{linkmanInfoId},#{unitInfoId},#{isDelete},#{creater},#{createTime},#{isHead},#{auditFlag},  #{practiseDate}
+    )
+</insert>
+    <!--6 修改实体对象 -->
+    <update id="updateAeaImServiceLinkman" parameterType="AeaImServiceLinkman">
+        update AEA_IM_SERVICE_LINKMAN
+        <set>
+            <if test="serviceLinkmanId != null">
+                SERVICE_LINKMAN_ID = #{serviceLinkmanId},
+            </if>
+            <if test="serviceId != null">
+                SERVICE_ID = #{serviceId},
+            </if>
+            <if test="linkmanInfoId != null">
+                LINKMAN_INFO_ID = #{linkmanInfoId},
+            </if>
+            <if test="unitInfoId != null">
+                UNIT_INFO_ID = #{unitInfoId},
+            </if>
+            <if test="isDelete != null">
+                IS_DELETE = #{isDelete},
+            </if>
+            <if test="creater != null">
+                CREATER = #{creater},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime},
+            </if>
+            <if test="isHead != null">
+                IS_HEAD = #{isHead},
+            </if>
+            <if test="auditFlag != null">
+                AUDIT_FLAG = #{auditFlag},
+            </if>
+            <if test="practiseDate != null">
+                PRACTISE_DATE = #{practiseDate},
+            </if>
+            <if test="memo != null">
+                MEMO = #{memo},
+            </if>
+            <if test="auditTime != null">
+                AUDIT_TIME = #{auditTime},
+            </if>
+        </set>
+        where SERVICE_LINKMAN_ID = #{serviceLinkmanId}
+    </update>
+    <!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaImServiceLinkman">
+        delete from   AEA_IM_SERVICE_LINKMAN
+        where
+    SERVICE_LINKMAN_ID = #{id}
+    </delete>
+    <!--8 删除实体对象列表,根据主键ID列表 -->
+    <!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaImServiceLinkman" id="AeaImServiceLinkmanMap">
+        <id property="serviceLinkmanId" column="SERVICE_LINKMAN_ID"/>
+        <result property="serviceId" column="SERVICE_ID"/>
+        <result property="linkmanInfoId" column="LINKMAN_INFO_ID"/>
+        <result property="unitInfoId" column="UNIT_INFO_ID"/>
+        <result property="isDelete" column="IS_DELETE"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="isHead" column="IS_HEAD"/>
+        <result property="auditFlag" column="AUDIT_FLAG"/>
+        <result property="practiseDate" column="PRACTISE_DATE"/>
+    </resultMap>
+
+    <select id="listAeaImServiceLinkmanByUnitInfoId" resultType="AeaLinkmanInfo">
+        SELECT
+        ali.LINKMAN_INFO_ID linkmanInfoId,
+        ali.LINKMAN_NAME linkmanName,
+        ali.LINKMAN_CERT_NO linkmanCertNo,
+        ali.LINKMAN_MOBILE_PHONE linkmanMobilePhone,
+        ali.LINKMAN_MAIL linkmanMail,
+        aisl.IS_HEAD isHead,
+        aisl.AUDIT_FLAG auditFlag,
+        aisl.SERVICE_LINKMAN_ID serviceLinkmanId,
+        aisl.PRACTISE_DATE practiseDate,
+        aisl.SERVICE_ID serviceId,
+        aisl.AUDIT_FLAG auditFlag
+        FROM aea_im_service_linkman aisl
+        LEFT JOIN aea_linkman_info ali ON ali.LINKMAN_INFO_ID = aisl.LINKMAN_INFO_ID
+        WHERE aisl.IS_DELETE = '0' AND aisl.UNIT_INFO_ID = #{unitInfoId}
+        <if test="cardNo != null and cardNo!=''">
+            AND ali.LINKMAN_CERT_NO like concat('%',concat(#{cardNo},'%'))
+        </if>
+        <if test="auditFlag != null and auditFlag!=''">
+            AND aisl.AUDIT_FLAG = #{auditFlag}
+        </if>
+    </select>
+
+    <select id="getAeaImServiceLinkmanDetailById" resultType="AeaImServiceLinkman">
+        SELECT
+            ali.LINKMAN_INFO_ID 'linkmanInfo.linkmanInfoId',
+            TRIM(ali.LINKMAN_TYPE) 'linkmanInfo.linkmanType',
+            ali.LINKMAN_ADDR 'linkmanInfo.linkmanAddr',
+            ali.LINKMAN_MOBILE_PHONE 'linkmanInfo.linkmanMobilePhone',
+            ali.LINKMAN_MAIL 'linkmanInfo.linkmanMail',
+            ali.LINKMAN_NAME 'linkmanInfo.linkmanName',
+            ali.LINKMAN_CERT_NO 'linkmanInfo.linkmanCertNo',
+            ais.SERVICE_NAME 'service.serviceName',
+            ais.SERVICE_CODE 'service.serviceCode',
+            aui.APPLICANT 'unitInfo.applicant',
+            aui.IDCARD 'unitInfo.idcard',
+            aui.APPLICANT_DETAIL_SITE 'unitInfo.applicantDetailSite',
+            aui.IDREPRESENTATIVE 'unitInfo.idrepresentative',
+            aui.IDMOBILE 'unitInfo.idmobile',
+            aui.IDNO 'unitInfo.idno',
+            aui.UNIT_NATURE 'unitInfo.unitNature',
+            aui.REGISTERED_CAPITAL 'unitInfo.registeredCapital',
+            aui.REGISTER_AUTHORITY 'unitInfo.registerAuthority',
+            aui.MANAGEMENT_SCOPE 'unitInfo.managementScope',
+            aisl.IS_HEAD isHead,
+            aisl.AUDIT_FLAG auditFlag,
+            aisl.MEMO memo,
+            aisl.SERVICE_LINKMAN_ID serviceLinkmanId,
+            aisl.PRACTISE_DATE practiseDate,
+            aisl.SERVICE_ID serviceId,
+            aisl.UNIT_INFO_ID unitInfoId,
+            aisl.PRACTISE_DATE practiseDate
+        FROM aea_im_service_linkman aisl
+        LEFT JOIN aea_linkman_info ali ON ali.LINKMAN_INFO_ID = aisl.LINKMAN_INFO_ID
+        LEFT JOIN aea_im_service ais on ais.SERVICE_ID = aisl.SERVICE_ID
+        LEFT JOIN aea_unit_info aui on aui.UNIT_INFO_ID = aisl.UNIT_INFO_ID
+        WHERE aisl.IS_DELETE = '0' AND aisl.SERVICE_LINKMAN_ID = #{serviceLinkmanId}
+    </select>
+
+</mapper>

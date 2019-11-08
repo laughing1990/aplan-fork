@@ -1,0 +1,562 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by 98213    2019-09-18 10:32:28 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaAnaWinWeekStatisticsMapper">
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns">
+    WINDOW_WEEK_STATISTICS_ID  windowWeekStatisticsId,
+    STATISTICS_RECORD_ID  statisticsRecordId,
+    WINDOW_ID  windowId,
+    WINDOW_NAME  windowName,
+    REGION_ID  regionId,
+    REGION_NAME  regionName,
+    APPLY_SOURCE  applySource,
+    APPLY_RECORD_ID  applyRecordId,
+    APPLY_RECORD_NAME  applyRecordName,
+    DYBZSPJDXH  dybzspjdxh,
+    IS_NODE  isNode,
+    IS_PARALLEL  isParallel,
+    WEEK_APPLY_COUNT  weekApplyCount,
+    ALL_APPLY_COUNT  allApplyCount,
+    APPLY_LRR  applyLrr,
+    ALL_IN_SUPPLEMENT_COUNT  allInSupplementCount,
+    ALL_SUPPLEMENTED_COUNT  allSupplementedCount,
+    WEEK_PRE_ACCEPTANCE_COUNT  weekPreAcceptanceCount,
+    ALL_PRE_ACCEPTANCE_COUNT  allPreAcceptanceCount,
+    PRE_ACCEPTANCE_LRR  preAcceptanceLrr,
+    WEEK_OUT_SCOPE_COUNT  weekOutScopeCount,
+    ALL_OUT_SCOPE_COUNT  allOutScopeCount,
+    OUT_SCOPE_LRR  outScopeLrr,
+    WEEK_COMPLETED_COUNT  weekCompletedCount,
+    ALL_COMPLETED_COUNT  allCompletedCount,
+    COMPLETED_LRR  completedLrr,
+    WEEK_OVER_TIME_COUNT  weekOverTimeCount,
+    ALL_OVER_TIME_COUNT  allOverTimeCount,
+    OVER_TIME_LRR  overTimeLrr,
+    ALL_PRE_ACCEPTANCE_RATE  allPreAcceptanceRate,
+    ALL_OUT_SCOPE_RATE  allOutScopeRate,
+    ALL_OVER_TIME_RATE  allOverTimeRate,
+    ALL_COMPLETED_RATE  allCompletedRate,
+    STATISTICS_START_DATE  statisticsStartDate,
+    STATISTICS_END_DATE  statisticsEndDate,
+    STATISTICS_YEAR  statisticsYear,
+    WEEK_NUM  weekNum,
+    MODIFIER  modifier,
+    MODIFY_TIME  modifyTime,
+    ROOT_ORG_ID  rootOrgId
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaAnaWinWeekStatisticsById" resultType="AeaAnaWinWeekStatistics">
+        select
+        <include refid="allColumns"/>
+        from AEA_ANA_WIN_WEEK_STATISTICS
+        where WINDOW_WEEK_STATISTICS_ID = #{id}
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaAnaWinWeekStatistics" resultType="AeaAnaWinWeekStatistics">
+        select
+        <include refid="allColumns"/>
+        from AEA_ANA_WIN_WEEK_STATISTICS
+        <where>
+            <if test="windowWeekStatisticsId != null">
+                AND WINDOW_WEEK_STATISTICS_ID = #{windowWeekStatisticsId}
+            </if>
+            <if test="statisticsRecordId != null">
+                AND STATISTICS_RECORD_ID = #{statisticsRecordId}
+            </if>
+            <if test="windowId != null">
+                AND WINDOW_ID = #{windowId}
+            </if>
+            <if test="windowName != null">
+                AND WINDOW_NAME = #{windowName}
+            </if>
+            <if test="regionId != null">
+                AND REGION_ID = #{regionId}
+            </if>
+            <if test="regionName != null">
+                AND REGION_NAME = #{regionName}
+            </if>
+            <if test="applySource != null">
+                AND APPLY_SOURCE = #{applySource}
+            </if>
+            <if test="applyRecordId != null">
+                AND APPLY_RECORD_ID = #{applyRecordId}
+            </if>
+            <if test="applyRecordName != null">
+                AND APPLY_RECORD_NAME = #{applyRecordName}
+            </if>
+            <if test="dybzspjdxh != null">
+                AND DYBZSPJDXH = #{dybzspjdxh}
+            </if>
+            <if test="isNode != null">
+                AND IS_NODE = #{isNode}
+            </if>
+            <if test="isParallel != null">
+                AND IS_PARALLEL = #{isParallel}
+            </if>
+            <if test="weekApplyCount != null">
+                AND WEEK_APPLY_COUNT = #{weekApplyCount}
+            </if>
+            <if test="allApplyCount != null">
+                AND ALL_APPLY_COUNT = #{allApplyCount}
+            </if>
+            <if test="applyLrr != null">
+                AND APPLY_LRR = #{applyLrr}
+            </if>
+            <if test="allInSupplementCount != null">
+                AND ALL_IN_SUPPLEMENT_COUNT = #{allInSupplementCount}
+            </if>
+            <if test="allSupplementedCount != null">
+                AND ALL_SUPPLEMENTED_COUNT = #{allSupplementedCount}
+            </if>
+            <if test="weekPreAcceptanceCount != null">
+                AND WEEK_PRE_ACCEPTANCE_COUNT = #{weekPreAcceptanceCount}
+            </if>
+            <if test="allPreAcceptanceCount != null">
+                AND ALL_PRE_ACCEPTANCE_COUNT = #{allPreAcceptanceCount}
+            </if>
+            <if test="preAcceptanceLrr != null">
+                AND PRE_ACCEPTANCE_LRR = #{preAcceptanceLrr}
+            </if>
+            <if test="weekOutScopeCount != null">
+                AND WEEK_OUT_SCOPE_COUNT = #{weekOutScopeCount}
+            </if>
+            <if test="allOutScopeCount != null">
+                AND ALL_OUT_SCOPE_COUNT = #{allOutScopeCount}
+            </if>
+            <if test="outScopeLrr != null">
+                AND OUT_SCOPE_LRR = #{outScopeLrr}
+            </if>
+            <if test="weekCompletedCount != null">
+                AND WEEK_COMPLETED_COUNT = #{weekCompletedCount}
+            </if>
+            <if test="allCompletedCount != null">
+                AND ALL_COMPLETED_COUNT = #{allCompletedCount}
+            </if>
+            <if test="completedLrr != null">
+                AND COMPLETED_LRR = #{completedLrr}
+            </if>
+            <if test="weekOverTimeCount != null">
+                AND WEEK_OVER_TIME_COUNT = #{weekOverTimeCount}
+            </if>
+            <if test="allOverTimeCount != null">
+                AND ALL_OVER_TIME_COUNT = #{allOverTimeCount}
+            </if>
+            <if test="overTimeLrr != null">
+                AND OVER_TIME_LRR = #{overTimeLrr}
+            </if>
+            <if test="allPreAcceptanceRate != null">
+                AND ALL_PRE_ACCEPTANCE_RATE = #{allPreAcceptanceRate}
+            </if>
+            <if test="allOutScopeRate != null">
+                AND ALL_OUT_SCOPE_RATE = #{allOutScopeRate}
+            </if>
+            <if test="allOverTimeRate != null">
+                AND ALL_OVER_TIME_RATE = #{allOverTimeRate}
+            </if>
+            <if test="allCompletedRate != null">
+                AND ALL_COMPLETED_RATE = #{allCompletedRate}
+            </if>
+            <if test="statisticsStartDate != null">
+                AND STATISTICS_START_DATE = #{statisticsStartDate}
+            </if>
+            <if test="statisticsEndDate != null">
+                AND STATISTICS_END_DATE = #{statisticsEndDate}
+            </if>
+            <if test="statisticsYear != null">
+                AND STATISTICS_YEAR = #{statisticsYear}
+            </if>
+            <if test="weekNum != null">
+                AND WEEK_NUM = #{weekNum}
+            </if>
+            <if test="modifier != null">
+                AND MODIFIER = #{modifier}
+            </if>
+            <if test="modifyTime != null">
+                AND MODIFY_TIME = #{modifyTime}
+            </if>
+            <if test="rootOrgId != null">
+                AND ROOT_ORG_ID = #{rootOrgId}
+            </if>
+        </where>
+    </select>
+    <!--4 根据条件查询实体list,返回分页对象 -->
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaAnaWinWeekStatistics" parameterType="AeaAnaWinWeekStatistics">
+        insert into AEA_ANA_WIN_WEEK_STATISTICS (
+        WINDOW_WEEK_STATISTICS_ID  ,STATISTICS_RECORD_ID  ,WINDOW_ID  ,WINDOW_NAME  ,REGION_ID  ,REGION_NAME  ,APPLY_SOURCE  ,APPLY_RECORD_ID  ,APPLY_RECORD_NAME  ,DYBZSPJDXH  ,IS_NODE  ,IS_PARALLEL  ,WEEK_APPLY_COUNT  ,ALL_APPLY_COUNT  ,APPLY_LRR  ,ALL_IN_SUPPLEMENT_COUNT  ,ALL_SUPPLEMENTED_COUNT  ,WEEK_PRE_ACCEPTANCE_COUNT  ,ALL_PRE_ACCEPTANCE_COUNT  ,PRE_ACCEPTANCE_LRR  ,WEEK_OUT_SCOPE_COUNT  ,ALL_OUT_SCOPE_COUNT  ,OUT_SCOPE_LRR  ,WEEK_COMPLETED_COUNT  ,ALL_COMPLETED_COUNT  ,COMPLETED_LRR  ,WEEK_OVER_TIME_COUNT  ,ALL_OVER_TIME_COUNT  ,OVER_TIME_LRR  ,ALL_PRE_ACCEPTANCE_RATE  ,ALL_OUT_SCOPE_RATE  ,ALL_OVER_TIME_RATE  ,ALL_COMPLETED_RATE  ,STATISTICS_START_DATE  ,STATISTICS_END_DATE  ,STATISTICS_YEAR  ,WEEK_NUM  ,MODIFIER  ,MODIFY_TIME  ,ROOT_ORG_ID
+            )  values  (
+        #{windowWeekStatisticsId},#{statisticsRecordId},#{windowId},#{windowName},#{regionId},#{regionName},#{applySource},#{applyRecordId},#{applyRecordName},#{dybzspjdxh},#{isNode},#{isParallel},#{weekApplyCount},#{allApplyCount},#{applyLrr},#{allInSupplementCount},#{allSupplementedCount},#{weekPreAcceptanceCount},#{allPreAcceptanceCount},#{preAcceptanceLrr},#{weekOutScopeCount},#{allOutScopeCount},#{outScopeLrr},#{weekCompletedCount},#{allCompletedCount},#{completedLrr},#{weekOverTimeCount},#{allOverTimeCount},#{overTimeLrr},#{allPreAcceptanceRate},#{allOutScopeRate},#{allOverTimeRate},#{allCompletedRate},#{statisticsStartDate},#{statisticsEndDate},#{statisticsYear},#{weekNum},#{modifier},#{modifyTime},  #{rootOrgId}
+            )
+    </insert>
+    <!--6 修改实体对象 -->
+    <update id="updateAeaAnaWinWeekStatistics" parameterType="AeaAnaWinWeekStatistics">
+        update AEA_ANA_WIN_WEEK_STATISTICS
+        <set>
+            <if test="windowWeekStatisticsId != null">
+                WINDOW_WEEK_STATISTICS_ID = #{windowWeekStatisticsId},
+            </if>
+            <if test="statisticsRecordId != null">
+                STATISTICS_RECORD_ID = #{statisticsRecordId},
+            </if>
+            <if test="windowId != null">
+                WINDOW_ID = #{windowId},
+            </if>
+            <if test="windowName != null">
+                WINDOW_NAME = #{windowName},
+            </if>
+            <if test="regionId != null">
+                REGION_ID = #{regionId},
+            </if>
+            <if test="regionName != null">
+                REGION_NAME = #{regionName},
+            </if>
+            <if test="applySource != null">
+                APPLY_SOURCE = #{applySource},
+            </if>
+            <if test="applyRecordId != null">
+                APPLY_RECORD_ID = #{applyRecordId},
+            </if>
+            <if test="applyRecordName != null">
+                APPLY_RECORD_NAME = #{applyRecordName},
+            </if>
+            <if test="dybzspjdxh != null">
+                DYBZSPJDXH = #{dybzspjdxh},
+            </if>
+            <if test="isNode != null">
+                IS_NODE = #{isNode},
+            </if>
+            <if test="isParallel != null">
+                IS_PARALLEL = #{isParallel},
+            </if>
+            <if test="weekApplyCount != null">
+                WEEK_APPLY_COUNT = #{weekApplyCount},
+            </if>
+            <if test="allApplyCount != null">
+                ALL_APPLY_COUNT = #{allApplyCount},
+            </if>
+            <if test="applyLrr != null">
+                APPLY_LRR = #{applyLrr},
+            </if>
+            <if test="allInSupplementCount != null">
+                ALL_IN_SUPPLEMENT_COUNT = #{allInSupplementCount},
+            </if>
+            <if test="allSupplementedCount != null">
+                ALL_SUPPLEMENTED_COUNT = #{allSupplementedCount},
+            </if>
+            <if test="weekPreAcceptanceCount != null">
+                WEEK_PRE_ACCEPTANCE_COUNT = #{weekPreAcceptanceCount},
+            </if>
+            <if test="allPreAcceptanceCount != null">
+                ALL_PRE_ACCEPTANCE_COUNT = #{allPreAcceptanceCount},
+            </if>
+            <if test="preAcceptanceLrr != null">
+                PRE_ACCEPTANCE_LRR = #{preAcceptanceLrr},
+            </if>
+            <if test="weekOutScopeCount != null">
+                WEEK_OUT_SCOPE_COUNT = #{weekOutScopeCount},
+            </if>
+            <if test="allOutScopeCount != null">
+                ALL_OUT_SCOPE_COUNT = #{allOutScopeCount},
+            </if>
+            <if test="outScopeLrr != null">
+                OUT_SCOPE_LRR = #{outScopeLrr},
+            </if>
+            <if test="weekCompletedCount != null">
+                WEEK_COMPLETED_COUNT = #{weekCompletedCount},
+            </if>
+            <if test="allCompletedCount != null">
+                ALL_COMPLETED_COUNT = #{allCompletedCount},
+            </if>
+            <if test="completedLrr != null">
+                COMPLETED_LRR = #{completedLrr},
+            </if>
+            <if test="weekOverTimeCount != null">
+                WEEK_OVER_TIME_COUNT = #{weekOverTimeCount},
+            </if>
+            <if test="allOverTimeCount != null">
+                ALL_OVER_TIME_COUNT = #{allOverTimeCount},
+            </if>
+            <if test="overTimeLrr != null">
+                OVER_TIME_LRR = #{overTimeLrr},
+            </if>
+            <if test="allPreAcceptanceRate != null">
+                ALL_PRE_ACCEPTANCE_RATE = #{allPreAcceptanceRate},
+            </if>
+            <if test="allOutScopeRate != null">
+                ALL_OUT_SCOPE_RATE = #{allOutScopeRate},
+            </if>
+            <if test="allOverTimeRate != null">
+                ALL_OVER_TIME_RATE = #{allOverTimeRate},
+            </if>
+            <if test="allCompletedRate != null">
+                ALL_COMPLETED_RATE = #{allCompletedRate},
+            </if>
+            <if test="statisticsStartDate != null">
+                STATISTICS_START_DATE = #{statisticsStartDate},
+            </if>
+            <if test="statisticsEndDate != null">
+                STATISTICS_END_DATE = #{statisticsEndDate},
+            </if>
+            <if test="statisticsYear != null">
+                STATISTICS_YEAR = #{statisticsYear},
+            </if>
+            <if test="weekNum != null">
+                WEEK_NUM = #{weekNum},
+            </if>
+            <if test="modifier != null">
+                MODIFIER = #{modifier},
+            </if>
+            <if test="modifyTime != null">
+                MODIFY_TIME = #{modifyTime},
+            </if>
+            <if test="rootOrgId != null">
+                ROOT_ORG_ID = #{rootOrgId},
+            </if>
+        </set>
+        where WINDOW_WEEK_STATISTICS_ID = #{windowWeekStatisticsId}
+    </update>
+    <!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaAnaWinWeekStatistics">
+        delete from   AEA_ANA_WIN_WEEK_STATISTICS
+        where
+    WINDOW_WEEK_STATISTICS_ID = #{id}
+    </delete>
+
+    <delete id="deleteThisWeekStatisticsData">
+        delete from  AEA_ANA_WIN_WEEK_STATISTICS
+        where
+        STATISTICS_YEAR = #{year} and WEEK_NUM = #{weekNum} and ROOT_ORG_ID = #{rootOrgId}
+    </delete>
+
+    <select id="getWinApplyByTime" resultType="AeaAnaWinWeekStatistics">
+        select
+        window_id as windowId, sum(WEEK_APPLY_COUNT) as weekApplyCount, sum(WEEK_PRE_ACCEPTANCE_COUNT) as
+        weekPreAcceptanceCount
+        from AEA_ANA_WIN_WEEK_STATISTICS
+        <where>
+            <if test="year != null">
+                AND STATISTICS_YEAR = #{year}
+            </if>
+            <if test="weekNum != null">
+                AND WEEK_NUM = #{weekNum}
+            </if>
+            and ROOT_ORG_ID = #{rootOrgId}
+        </where>
+        group by window_id
+    </select>
+
+    <select id="getWeekStatisticsFromDay" resultType="com.augurit.aplanmis.common.vo.analyse.WinWeekCountVo">
+        select
+        a.*,
+        <if test="_databaseId == 'oracle'">
+            nvl(lastweek.WEEK_APPLY_COUNT,0) as lastweekApplyCount,
+            nvl(lastweek.WEEK_PRE_ACCEPTANCE_COUNT,0) as lastWeekPreAcceptacneCount,
+            nvl(lastweek.WEEK_OUT_SCOPE_COUNT,0) as lastWeekOutScopeCount,
+            nvl(lastweek.WEEK_COMPLETED_COUNT,0) as lastWeekCompletedCount,
+            nvl(lastweek.WEEK_OVER_TIME_COUNT,0) as lastWeekOverTimeCount
+        </if>
+        <if test="_databaseId == 'mysql'">
+            ifnull(lastweek.WEEK_APPLY_COUNT,0) as lastweekApplyCount,
+            ifnull(lastweek.WEEK_PRE_ACCEPTANCE_COUNT,0) as lastWeekPreAcceptacneCount,
+            ifnull(lastweek.WEEK_OUT_SCOPE_COUNT,0) as lastWeekOutScopeCount,
+            ifnull(lastweek.WEEK_COMPLETED_COUNT,0) as lastWeekCompletedCount,
+            ifnull(lastweek.WEEK_OVER_TIME_COUNT,0) as lastWeekOverTimeCount
+        </if>
+        from
+        (
+        select
+        WINDOW_ID AS windowId,
+        APPLY_SOURCE AS applySource,
+        APPLY_RECORD_ID AS applyRecordId,
+        IS_PARALLEL AS isParallel,
+        sum(DAY_APPLY_COUNT) AS weekApplyCount,
+        sum(ALL_IN_SUPPLEMENT_COUNT) as allInSupplementCount,
+        sum(ALL_SUPPLEMENTED_COUNT) as allSupplementedCount,
+        sum(DAY_PRE_ACCEPTANCE_COUNT) AS weekPreAcceptanceCount,
+        sum(DAY_OUT_SCOPE_COUNT) AS weekOutScopeCount,
+        sum(DAY_COMPLETED_COUNT) AS weekCompletedCount,
+        sum(DAY_OVER_TIME_COUNT) AS weekOverTimeCount
+        from
+        AEA_ANA_WIN_DAY_STATISTICS
+        where
+        ROOT_ORG_ID = #{rootOrgId}
+        <if test="_databaseId == 'oracle'">
+            and to_char(STATISTICS_DATE, 'yyyy-mm-dd HH24:mi:ss') <![CDATA[ >= ]]> #{startTime}
+            and to_char(STATISTICS_DATE, 'yyyy-mm-dd HH24:mi:ss') <![CDATA[ <= ]]> #{endTime}
+        </if>
+        <if test="_databaseId == 'mysql'">
+            and STATISTICS_DATE <![CDATA[ >= ]]> #{startTime}
+            and STATISTICS_DATE <![CDATA[ <= ]]> #{endTime}
+        </if>
+        group by WINDOW_ID, APPLY_SOURCE, APPLY_RECORD_ID, IS_PARALLEL
+        ) a
+        left join AEA_ANA_WIN_WEEK_STATISTICS lastweek on a.windowId = lastweek.WINDOW_ID
+        and a.applySource = lastweek.APPLY_SOURCE
+        and a.applyRecordId = lastweek.APPLY_RECORD_ID
+        and a.isParallel = lastweek.IS_PARALLEL
+        and lastweek.STATISTICS_YEAR = #{year} and lastweek.week_num = #{weekNum}
+    </select>
+
+    <insert id="batchInsertWeekStatisticsData">
+        insert into AEA_ANA_WIN_WEEK_STATISTICS (
+        WINDOW_WEEK_STATISTICS_ID ,STATISTICS_RECORD_ID ,WINDOW_ID ,WINDOW_NAME ,REGION_ID ,REGION_NAME ,APPLY_SOURCE
+        ,APPLY_RECORD_ID ,APPLY_RECORD_NAME ,DYBZSPJDXH ,IS_NODE ,IS_PARALLEL
+        ,WEEK_APPLY_COUNT ,ALL_APPLY_COUNT ,APPLY_LRR ,ALL_IN_SUPPLEMENT_COUNT ,ALL_SUPPLEMENTED_COUNT
+        ,WEEK_PRE_ACCEPTANCE_COUNT ,ALL_PRE_ACCEPTANCE_COUNT ,PRE_ACCEPTANCE_LRR ,WEEK_OUT_SCOPE_COUNT
+        ,ALL_OUT_SCOPE_COUNT ,OUT_SCOPE_LRR ,WEEK_COMPLETED_COUNT ,ALL_COMPLETED_COUNT ,COMPLETED_LRR
+        ,WEEK_OVER_TIME_COUNT ,ALL_OVER_TIME_COUNT ,OVER_TIME_LRR ,ALL_PRE_ACCEPTANCE_RATE ,ALL_OUT_SCOPE_RATE
+        ,ALL_OVER_TIME_RATE ,ALL_COMPLETED_RATE ,STATISTICS_START_DATE ,STATISTICS_END_DATE ,STATISTICS_YEAR ,WEEK_NUM
+        ,MODIFIER ,MODIFY_TIME ,ROOT_ORG_ID
+        ) values
+        <foreach collection="weekStatisticsList" item="weekStatistics" separator=",">
+            (
+            #{weekStatistics.windowWeekStatisticsId},#{weekStatistics.statisticsRecordId},#{weekStatistics.windowId},#{weekStatistics.windowName},#{weekStatistics.regionId},#{weekStatistics.regionName},#{weekStatistics.applySource},#{weekStatistics.applyRecordId},#{weekStatistics.applyRecordName},#{weekStatistics.dybzspjdxh},#{weekStatistics.isNode},#{weekStatistics.isParallel},#{weekStatistics.weekApplyCount},#{weekStatistics.allApplyCount},#{weekStatistics.applyLrr},#{weekStatistics.allInSupplementCount},#{weekStatistics.allSupplementedCount},#{weekStatistics.weekPreAcceptanceCount},#{weekStatistics.allPreAcceptanceCount},#{weekStatistics.preAcceptanceLrr},#{weekStatistics.weekOutScopeCount},#{weekStatistics.allOutScopeCount},#{weekStatistics.outScopeLrr},#{weekStatistics.weekCompletedCount},#{weekStatistics.allCompletedCount},#{weekStatistics.completedLrr},#{weekStatistics.weekOverTimeCount},#{weekStatistics.allOverTimeCount},#{weekStatistics.overTimeLrr},#{weekStatistics.allPreAcceptanceRate},#{weekStatistics.allOutScopeRate},#{weekStatistics.allOverTimeRate},#{weekStatistics.allCompletedRate},#{weekStatistics.statisticsStartDate},#{weekStatistics.statisticsEndDate},#{weekStatistics.statisticsYear},#{weekStatistics.weekNum},#{weekStatistics.modifier},#{weekStatistics.modifyTime},#{weekStatistics.rootOrgId}
+            )
+        </foreach>
+    </insert>
+
+    <!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaAnaWinWeekStatistics" id="AeaAnaWinWeekStatisticsMap">
+        <id property="windowWeekStatisticsId" column="WINDOW_WEEK_STATISTICS_ID"/>
+        <result property="statisticsRecordId" column="STATISTICS_RECORD_ID"/>
+        <result property="windowId" column="WINDOW_ID"/>
+        <result property="windowName" column="WINDOW_NAME"/>
+        <result property="regionId" column="REGION_ID"/>
+        <result property="regionName" column="REGION_NAME"/>
+        <result property="applySource" column="APPLY_SOURCE"/>
+        <result property="weekApplyCount" column="WEEK_APPLY_COUNT"/>
+        <result property="allApplyCount" column="ALL_APPLY_COUNT"/>
+        <result property="applyLrr" column="APPLY_LRR"/>
+        <result property="allInSupplementCount" column="ALL_IN_SUPPLEMENT_COUNT"/>
+        <result property="allSupplementedCount" column="ALL_SUPPLEMENTED_COUNT"/>
+        <result property="weekPreAcceptanceCount" column="WEEK_PRE_ACCEPTANCE_COUNT"/>
+        <result property="allPreAcceptanceCount" column="ALL_PRE_ACCEPTANCE_COUNT"/>
+        <result property="preAcceptanceLrr" column="PRE_ACCEPTANCE_LRR"/>
+        <result property="weekOutScopeCount" column="WEEK_OUT_SCOPE_COUNT"/>
+        <result property="allOutScopeCount" column="ALL_OUT_SCOPE_COUNT"/>
+        <result property="outScopeLrr" column="OUT_SCOPE_LRR"/>
+        <result property="weekCompletedCount" column="WEEK_COMPLETED_COUNT"/>
+        <result property="allCompletedCount" column="ALL_COMPLETED_COUNT"/>
+        <result property="completedLrr" column="COMPLETED_LRR"/>
+        <result property="weekOverTimeCount" column="WEEK_OVER_TIME_COUNT"/>
+        <result property="allOverTimeCount" column="ALL_OVER_TIME_COUNT"/>
+        <result property="overTimeLrr" column="OVER_TIME_LRR"/>
+        <result property="allPreAcceptanceRate" column="ALL_PRE_ACCEPTANCE_RATE"/>
+        <result property="allOutScopeRate" column="ALL_OUT_SCOPE_RATE"/>
+        <result property="allOverTimeRate" column="ALL_OVER_TIME_RATE"/>
+        <result property="allCompletedRate" column="ALL_COMPLETED_RATE"/>
+        <result property="statisticsStartDate" column="STATISTICS_START_DATE"/>
+        <result property="statisticsEndDate" column="STATISTICS_END_DATE"/>
+        <result property="statisticsYear" column="STATISTICS_YEAR"/>
+        <result property="weekNum" column="WEEK_NUM"/>
+        <result property="modifier" column="MODIFIER"/>
+        <result property="modifyTime" column="MODIFY_TIME"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+    </resultMap>
+
+    <select id="getWinShouliStatisticsByWeek" resultType="com.augurit.aplanmis.common.vo.analyse.WinApplyStatisticsVo">
+        select tt.*,asw.SORT_NO sortNo from(
+        select WINDOW_ID as windowId, WINDOW_NAME as windowName,
+        SUM(WEEK_APPLY_COUNT) as applyCount, SUM(WEEK_PRE_ACCEPTANCE_COUNT) as shouliCount, SUM(WEEK_OUT_SCOPE_COUNT) as
+        buyushouliCount,
+        SUM(WEEK_COMPLETED_COUNT) as banjieCount, SUM(WEEK_OVER_TIME_COUNT) as yuqiCount
+        from aea_ana_win_week_statistics
+        <where>
+            and WEEK_NUM <![CDATA[ >= ]]> #{startWeek}
+            and WEEK_NUM <![CDATA[ <= ]]> #{endWeek}
+            and root_org_id = #{rootOrgId}
+            <if test="windowId !=null and windowId != ''" >
+               and window_id = #{windowId}
+            </if>
+        </where>
+        group by WINDOW_ID ,WINDOW_NAME
+        )tt LEFT JOIN aea_service_window asw on tt.windowId = asw.WINDOW_ID
+        ORDER BY asw.SORT_NO
+    </select>
+
+    <select id="getStageGroupStatistics" resultType="com.augurit.aplanmis.common.vo.analyse.ThemeDayApplyRecord">
+        SELECT
+        aatws.DYBZSPJDXH DYBZSPJDXH,
+        aatws.IS_PARALLEL isParallel,
+        <if test="_databaseId == 'oracle'">
+            NVL(sum(aatws.WEEK_APPLY_COUNT),0) applyCount
+        </if>
+        <if test="_databaseId == 'mysql'">
+            IFNULL(sum(aatws.WEEK_APPLY_COUNT),0) applyCount
+        </if>
+
+        from aea_ana_theme_week_statistics aatws
+        where aatws.WEEK_NUM <![CDATA[ >= ]]> #{startWeekNum}
+        and aatws.WEEK_NUM <![CDATA[ <= ]]>  #{endWeekNum}
+        and aatws.STATISTICS_YEAR = #{thisYear}
+        and aatws.DYBZSPJDXH is not null
+        and aatws.ROOT_ORG_ID = #{rootOrgId}
+        GROUP BY
+        aatws.DYBZSPJDXH,
+        aatws.IS_PARALLEL
+
+    </select>
+
+    <select id="getThemeStageStatistics" resultType="com.augurit.aplanmis.common.vo.analyse.ThemeDayApplyRecord">
+        SELECT aatws.THEME_ID themeId,
+        aatws.THEME_NAME themeName,
+        aatws.DYBZSPJDXH DYBZSPJDXH,
+        aatws.IS_PARALLEL isParallel,
+        <if test="_databaseId == 'oracle'">
+            NVL(sum(aatws.WEEK_APPLY_COUNT),0) applyCount
+        </if>
+        <if test="_databaseId == 'mysql'">
+            IFNULL(sum(aatws.WEEK_APPLY_COUNT),0) applyCount
+        </if>
+
+        from aea_ana_theme_week_statistics aatws
+        where aatws.WEEK_NUM <![CDATA[ >= ]]> #{startWeekNum}
+        and aatws.WEEK_NUM <![CDATA[ <= ]]>  #{endWeekNum}
+        and aatws.STATISTICS_YEAR = #{thisYear}
+        and aatws.DYBZSPJDXH is not null
+        and aatws.ROOT_ORG_ID = #{rootOrgId}
+        GROUP BY aatws.THEME_ID,
+        aatws.DYBZSPJDXH,
+        aatws.IS_PARALLEL
+    </select>
+    <select id="getWinStageGroupStatistics" resultType="AeaAnaWinDayStatistics">
+
+        select  aawws.WINDOW_ID windowId,
+        aawws.DYBZSPJDXH dybzspjdxh,
+        aawws.IS_PARALLEL isParallel,
+        <if test="_databaseId == 'oracle'">
+            NVL(SUM(aawws.WEEK_APPLY_COUNT),0) dayApplyCount,
+            NVL(SUM(aawws.WEEK_PRE_ACCEPTANCE_COUNT),0) dayPreAcceptanceCount,
+            NVL(SUM(aawws.WEEK_OUT_SCOPE_COUNT),0)dayOutScopeCount,
+            NVL(SUM(aawws.WEEK_COMPLETED_COUNT),0)dayCompletedCount
+        </if>
+        <if test="_databaseId == 'mysql'">
+            IFNULL(SUM(aawws.WEEK_APPLY_COUNT),0) dayApplyCount,
+            IFNULL(SUM(aawws.WEEK_PRE_ACCEPTANCE_COUNT),0) dayPreAcceptanceCount,
+            IFNULL(SUM(aawws.WEEK_OUT_SCOPE_COUNT),0)dayOutScopeCount,
+            IFNULL(SUM(aawws.WEEK_COMPLETED_COUNT),0)dayCompletedCount
+        </if>
+
+        FROM aea_ana_win_week_statistics aawws
+        where aawws.ROOT_ORG_ID= #{rootOrgId}
+        <if test="windowId != null">
+            and aawws.WINDOW_ID = #{windowId}
+        </if>
+        and aawws.STATISTICS_YEAR= #{thisYear}
+        <if test="weekNumStart != null">
+            and aawws.WEEK_NUM <![CDATA[ >= ]]> #{weekNumStart}
+        </if>
+        <if test="weekNumEnd != null">
+            and aawws.WEEK_NUM <![CDATA[ <= ]]> #{weekNumEnd}
+        </if>
+
+        GROUP BY aawws.WINDOW_ID,
+        aawws.DYBZSPJDXH,
+        aawws.IS_PARALLEL
+    </select>
+</mapper>

@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by Administrator    2019-07-04 17:13:57 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaItemServiceWindowRelMapper">
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns">
+        ${alias}.WINDOW_REL_ID  windowRelId,
+    ${alias}.TABLE_NAME  tableName,
+    ${alias}.PK_NAME  pkName,
+    ${alias}.RECORD_ID  recordId,
+    ${alias}.WINDOW_ID  windowId,
+    ${alias}.CREATER  creater,
+    ${alias}.CREATE_TIME  createTime,
+    ${alias}.ROOT_ORG_ID  rootOrgId
+        </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaItemServiceWindowRelById" resultType="AeaItemServiceWindowRel">
+        select
+        <include refid="allColumns"><property name="alias" value="aiswr"/></include>
+        from AEA_ITEM_SERVICE_WINDOW_REL aiswr
+        where WINDOW_REL_ID = #{id}
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaItemServiceWindowRel" resultType="AeaItemServiceWindowRel">
+        select
+        <include refid="allColumns"><property name="alias" value="aiswr"/></include>
+        from AEA_ITEM_SERVICE_WINDOW_REL aiswr
+        <where>
+            <if test="windowRelId != null">
+                AND WINDOW_REL_ID = #{windowRelId}
+            </if>
+            <if test="tableName != null">
+                AND TABLE_NAME = #{tableName}
+            </if>
+            <if test="pkName != null">
+                AND PK_NAME = #{pkName}
+            </if>
+            <if test="recordId != null">
+                AND RECORD_ID = #{recordId}
+            </if>
+            <if test="windowId != null">
+                AND WINDOW_ID = #{windowId}
+            </if>
+            <if test="creater != null">
+                AND CREATER = #{creater}
+            </if>
+            <if test="createTime != null">
+                AND CREATE_TIME = #{createTime}
+            </if>
+            <if test="modifier != null">
+                AND MODIFIER = #{modifier}
+            </if>
+            <if test="modifyTime != null">
+                AND MODIFY_TIME = #{modifyTime}
+            </if>
+            <if test="rootOrgId != null">
+                AND ROOT_ORG_ID = #{rootOrgId}
+            </if>
+        </where>
+    </select>
+    <!--4 根据条件查询实体list,返回分页对象 -->
+
+    <select id="listAeaItemServiceWindowRelAndWindowInfo" resultType="AeaItemServiceWindowRel">
+        select
+        <include refid="allColumns"><property name="alias" value="aiswr"/></include>,aisw.window_name windowName,aisw.link_phone linkPhone,aisw.work_time workTime,aisw.window_address windowAddress,aisw.traffic_guide trafficGuide
+        from AEA_ITEM_SERVICE_WINDOW_REL aiswr
+        left join AEA_SERVICE_WINDOW aisw on aiswr.window_id=aisw.window_id
+        <where>
+            <if test="windowRelId != null">
+                AND aiswr.WINDOW_REL_ID = #{windowRelId}
+            </if>
+            <if test="tableName != null">
+                AND aiswr.TABLE_NAME = #{tableName}
+            </if>
+            <if test="pkName != null">
+                AND aiswr.PK_NAME = #{pkName}
+            </if>
+            <if test="recordId != null">
+                AND aiswr.RECORD_ID = #{recordId}
+            </if>
+            <if test="windowId != null">
+                AND aiswr.WINDOW_ID = #{windowId}
+            </if>
+            <if test="creater != null">
+                AND aiswr.CREATER = #{creater}
+            </if>
+            <if test="createTime != null">
+                AND aiswr.CREATE_TIME = #{createTime}
+            </if>
+            <if test="modifier != null">
+                AND aiswr.MODIFIER = #{modifier}
+            </if>
+            <if test="modifyTime != null">
+                AND aiswr.MODIFY_TIME = #{modifyTime}
+            </if>
+            <if test="rootOrgId != null">
+                AND aiswr.ROOT_ORG_ID = #{rootOrgId}
+                AND aisw.ROOT_ORG_ID = #{rootOrgId}
+            </if>
+        </where>
+    </select>
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaItemServiceWindowRel" parameterType="AeaItemServiceWindowRel">
+        insert into AEA_ITEM_SERVICE_WINDOW_REL (WINDOW_REL_ID, TABLE_NAME, PK_NAME, RECORD_ID, WINDOW_ID, CREATER,
+                                                 CREATE_TIME, MODIFIER, MODIFY_TIME,ROOT_ORG_ID)
+        values (#{windowRelId}, #{tableName}, #{pkName}, #{recordId}, #{windowId}, #{creater}, #{createTime},
+                #{modifier}, #{modifyTime},#{rootOrgId})
+    </insert>
+    <!--6 修改实体对象 -->
+    <update id="updateAeaItemServiceWindowRel" parameterType="AeaItemServiceWindowRel">
+        update AEA_ITEM_SERVICE_WINDOW_REL
+        <set>
+            <if test="windowRelId != null">
+                WINDOW_REL_ID = #{windowRelId},
+            </if>
+            <if test="tableName != null">
+                TABLE_NAME = #{tableName},
+            </if>
+            <if test="pkName != null">
+                PK_NAME = #{pkName},
+            </if>
+            <if test="recordId != null">
+                RECORD_ID = #{recordId},
+            </if>
+            <if test="windowId != null">
+                WINDOW_ID = #{windowId},
+            </if>
+            <if test="creater != null">
+                CREATER = #{creater},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime},
+            </if>
+            <if test="modifier != null">
+                MODIFIER = #{modifier},
+            </if>
+            <if test="modifyTime != null">
+                MODIFY_TIME = #{modifyTime},
+            </if>
+            <if test="rootOrgId != null">
+                ROOT_ORG_ID = #{rootOrgId},
+            </if>
+        </set>
+        where WINDOW_REL_ID = #{windowRelId}
+    </update>
+    <!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaItemServiceWindowRel">
+        delete
+        from AEA_ITEM_SERVICE_WINDOW_REL
+        where WINDOW_REL_ID = #{id}
+    </delete>
+    <!--8 删除实体对象列表,根据主键ID列表 -->
+    <!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaItemServiceWindowRel" id="AeaItemServiceWindowRelMap">
+        <id property="windowRelId" column="WINDOW_REL_ID"/>
+        <result property="tableName" column="TABLE_NAME"/>
+        <result property="pkName" column="PK_NAME"/>
+        <result property="recordId" column="RECORD_ID"/>
+        <result property="windowId" column="WINDOW_ID"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="modifier" column="MODIFIER"/>
+        <result property="modifyTime" column="MODIFY_TIME"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+    </resultMap>
+
+    <!-- 根据条件查询实体对象 -->
+    <select id="listAeaItemServiceWindowRelAndWindowInfoByKeyword" resultType="AeaItemServiceWindowRel">
+        select
+        window.WINDOW_NAME windowName,
+        window.WINDOW_ADDRESS windowAddress,
+        window.LINK_PHONE linkPhone,
+        window.WORK_TIME workTime,
+        window.TRAFFIC_GUIDE trafficGuide,
+        <include refid="allColumns"><property name="alias" value="windowRel"/></include>
+        from AEA_SERVICE_WINDOW_REL windowRel
+        left join AEA_SERVICE_WINDOW window on windowRel.WINDOW_ID = window.WINDOW_ID
+        <where>
+            <if test="windowRelId != null and windowRelId != '' ">
+                and windowRel.WINDOW_REL_ID = #{windowRelId}
+            </if>
+            <if test="tableName != null and tableName != '' ">
+                and windowRel.TABLE_NAME = #{tableName}
+            </if>
+            <if test="pkName != null and pkName != '' ">
+                and windowRel.PK_NAME = #{pkName}
+            </if>
+            <if test="recordId != null and recordId != '' ">
+                and windowRel.RECORD_ID = #{recordId}
+            </if>
+            <if test="windowId != null and windowId != '' ">
+                and windowRel.WINDOW_ID = #{windowId}
+            </if>
+            <if test="creater != null and creater != '' ">
+                and windowRel.CREATER = #{creater}
+            </if>
+            <if test="createrTime != null and createrTime != '' ">
+                and windowRel.CREATE_TIME = #{createrTime}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                and (
+                window.WINDOW_NAME like CONCAT(CONCAT('%',#{keyword}),'%')
+                or window.WINDOW_ADDRESS like CONCAT(CONCAT('%',#{keyword}),'%')
+                or window.LINK_PHONE like CONCAT(CONCAT('%',#{keyword}),'%')
+                )
+            </if>
+        </where>
+    </select>
+</mapper>

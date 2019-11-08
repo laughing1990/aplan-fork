@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by jjt    2018-11-19 22:00:28 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaItemGuideAccordingsMapper" >
+
+    <sql id="allColumns" >
+        ROWGUID  rowguid,
+        ITEM_VER_ID  itemVerId,
+        ACCORDINGNUMBER  accordingnumber,
+        BFJG  bfjg,
+        LAWNAME  lawname,
+        LAWSOUCR  lawsoucr,
+        ORDERNUMBER  ordernumber,
+        SSRQ  ssrq,
+        TERMSCONTENT  termscontent,
+        TERMSNUMBER  termsnumber,
+        FLFGQWGUID  flfgqwguid,
+        ROOT_ORG_ID rootOrgId
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaItemGuideAccordingsById" resultType="AeaItemGuideAccordings" >
+        select
+           <include refid="allColumns"/>
+        from    AEA_ITEM_GUIDE_ACCORDINGS
+        where    ROWGUID = #{id}
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaItemGuideAccordings" resultType="AeaItemGuideAccordings" >
+        select
+           <include refid="allColumns"/>
+        from    AEA_ITEM_GUIDE_ACCORDINGS
+        <where>
+            <if test="rowguid != null" >
+                AND    ROWGUID = #{rowguid}
+            </if>
+            <if test="itemVerId != null" >
+                AND    ITEM_VER_ID = #{itemVerId}
+            </if>
+            <if test="accordingnumber != null" >
+                AND    ACCORDINGNUMBER = #{accordingnumber}
+            </if>
+            <if test="bfjg != null" >
+                AND    BFJG = #{bfjg}
+            </if>
+            <if test="lawname != null" >
+                AND    LAWNAME = #{lawname}
+            </if>
+            <if test="lawsoucr != null" >
+                AND    LAWSOUCR = #{lawsoucr}
+            </if>
+            <if test="ordernumber != null" >
+                AND    ORDERNUMBER = #{ordernumber}
+            </if>
+            <if test="ssrq != null" >
+                AND    SSRQ = #{ssrq}
+            </if>
+            <if test="termscontent != null" >
+                AND    TERMSCONTENT = #{termscontent}
+            </if>
+            <if test="termsnumber != null" >
+                AND    TERMSNUMBER = #{termsnumber}
+            </if>
+            <if test="flfgqwguid != null" >
+                AND    FLFGQWGUID = #{flfgqwguid}
+            </if>
+            <if test="rootOrgId != null" >
+                AND    ROOT_ORG_ID =  #{rootOrgId}
+            </if>
+        </where>
+    </select>
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaItemGuideAccordings" parameterType="AeaItemGuideAccordings" >
+        insert into AEA_ITEM_GUIDE_ACCORDINGS (
+            ROWGUID  ,ITEM_VER_ID  ,ACCORDINGNUMBER  ,BFJG  ,LAWNAME  ,LAWSOUCR  ,ORDERNUMBER  ,SSRQ  ,TERMSCONTENT  ,TERMSNUMBER  ,FLFGQWGUID, ROOT_ORG_ID
+        )  values  (
+            #{rowguid},#{itemVerId},#{accordingnumber},#{bfjg},#{lawname},#{lawsoucr},#{ordernumber},#{ssrq},#{termscontent},#{termsnumber},  #{flfgqwguid}, #{rootOrgId}
+        )
+    </insert>
+
+    <!--6 修改实体对象 -->
+    <update id="updateAeaItemGuideAccordings" parameterType="AeaItemGuideAccordings" >
+        update AEA_ITEM_GUIDE_ACCORDINGS
+        <set >
+            <if test="rowguid != null" >
+                ROWGUID = #{rowguid},
+            </if>
+            <if test="itemVerId != null" >
+                ITEM_VER_ID = #{itemVerId},
+            </if>
+            <if test="accordingnumber != null" >
+                ACCORDINGNUMBER = #{accordingnumber},
+            </if>
+            <if test="bfjg != null" >
+                BFJG = #{bfjg},
+            </if>
+            <if test="lawname != null" >
+                LAWNAME = #{lawname},
+            </if>
+            <if test="lawsoucr != null" >
+                LAWSOUCR = #{lawsoucr},
+            </if>
+            <if test="ordernumber != null" >
+                ORDERNUMBER = #{ordernumber},
+            </if>
+            <if test="ssrq != null" >
+                SSRQ = #{ssrq},
+            </if>
+            <if test="termscontent != null" >
+                TERMSCONTENT = #{termscontent},
+            </if>
+            <if test="termsnumber != null" >
+                TERMSNUMBER = #{termsnumber},
+            </if>
+            <if test="flfgqwguid != null" >
+                FLFGQWGUID = #{flfgqwguid},
+            </if>
+            <if test="rootOrgId != null" >
+                ROOT_ORG_ID =  #{rootOrgId},
+            </if>
+        </set>
+        where ROWGUID = #{rowguid}
+    </update>
+
+    <!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaItemGuideAccordings">
+        delete from   AEA_ITEM_GUIDE_ACCORDINGS where ID = #{id}
+    </delete>
+
+    <delete id="batchDeleteGuideAccordingsByItemVerId">
+        delete from   AEA_ITEM_GUIDE_ACCORDINGS
+         where ITEM_VER_ID = #{itemVerId}
+           and ROOT_ORG_ID =  #{rootOrgId}
+    </delete>
+
+</mapper>

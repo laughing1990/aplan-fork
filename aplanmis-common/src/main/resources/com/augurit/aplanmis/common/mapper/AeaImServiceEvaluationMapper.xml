@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by thinkpad    2019-06-03 13:59:35 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaImServiceEvaluationMapper" >
+<!--1 返回所有字段的SQL字句 -->
+<sql id="allColumns" >
+    SERVICE_EVALUATION_ID  serviceEvaluationId,
+    UNIT_BIDDING_ID  unitBiddingId,
+    SERVICE_QUALITY  serviceQuality,
+    SERVICE_PRESCRIPTION  servicePrescription,
+    SERVICE_ATTITUDE  serviceAttitude,
+    SERVICE_CHARGE  serviceCharge,
+    SERVICE_STANDARD  serviceStandard,
+    EVALUATE_UNIT_ID  evaluateUnitId,
+    COMP_EVALUATION  compEvaluation,
+    CREATER  creater,
+    CREATE_TIME  createTime,
+    MEMO  memo,
+    IS_DELETE  isDelete,
+    AUDIT_FLAG auditFlag,
+    AUDIT_TIME auditTime,
+    AUDIT_OPINION auditOpinion,
+    ROOT_ORG_ID rootOrgId
+    </sql>
+
+
+    <sql id="allColumnsAlias">
+      ${alias}.SERVICE_EVALUATION_ID  serviceEvaluationId,
+      ${alias}.UNIT_BIDDING_ID  unitBiddingId,
+      ${alias}.SERVICE_QUALITY  serviceQuality,
+      ${alias}.SERVICE_PRESCRIPTION  servicePrescription,
+      ${alias}.SERVICE_ATTITUDE  serviceAttitude,
+      ${alias}.SERVICE_CHARGE  serviceCharge,
+      ${alias}.SERVICE_STANDARD  serviceStandard,
+      ${alias}.EVALUATE_UNIT_ID  evaluateUnitId,
+      ${alias}.COMP_EVALUATION  compEvaluation,
+      ${alias}.CREATER  creater,
+      ${alias}.CREATE_TIME  createTime,
+      ${alias}.MEMO  memo,
+      ${alias}.IS_DELETE  isDelete,
+      ${alias}.AUDIT_FLAG auditFlag,
+      ${alias}.AUDIT_TIME auditTime,
+      ${alias}.AUDIT_OPINION auditOpinion,
+      ${alias}.ROOT_ORG_ID rootOrgId
+    </sql>
+
+<!--2 根据主键ID查询单个实体 -->
+<select id="getAeaImServiceEvaluationById" resultType="AeaImServiceEvaluation" >
+    select
+    <include refid="allColumns"/>
+    from    AEA_IM_SERVICE_EVALUATION
+    where    SERVICE_EVALUATION_ID = #{id}
+</select>
+
+<!--3 根据条件查询实体list -->
+    <select id="listAeaImServiceEvaluation" resultType="AeaImServiceEvaluation" >
+        select
+        <include refid="allColumns"/>
+        from    AEA_IM_SERVICE_EVALUATION
+    <where>
+        <if test="serviceEvaluationId != null" >
+        AND    SERVICE_EVALUATION_ID = #{serviceEvaluationId}
+        </if>
+        <if test="unitBiddingId != null" >
+        AND    UNIT_BIDDING_ID = #{unitBiddingId}
+        </if>
+        <if test="serviceQuality != null" >
+        AND    SERVICE_QUALITY = #{serviceQuality}
+        </if>
+        <if test="servicePrescription != null" >
+        AND    SERVICE_PRESCRIPTION = #{servicePrescription}
+        </if>
+        <if test="serviceAttitude != null" >
+        AND    SERVICE_ATTITUDE = #{serviceAttitude}
+        </if>
+        <if test="serviceCharge != null" >
+        AND    SERVICE_CHARGE = #{serviceCharge}
+        </if>
+        <if test="serviceStandard != null" >
+        AND    SERVICE_STANDARD = #{serviceStandard}
+        </if>
+        <if test="evaluateUnitId != null" >
+        AND    EVALUATE_UNIT_ID = #{evaluateUnitId}
+        </if>
+        <if test="compEvaluation != null" >
+        AND    COMP_EVALUATION = #{compEvaluation}
+        </if>
+        <if test="creater != null" >
+        AND    CREATER = #{creater}
+        </if>
+        <if test="createTime != null" >
+        AND    CREATE_TIME = #{createTime}
+        </if>
+        <if test="memo != null" >
+        AND    MEMO = #{memo}
+        </if>
+        <if test="isDelete != null" >
+        AND    IS_DELETE = #{isDelete}
+        </if>
+
+        <if test="auditTime != null" >
+            AND    AUDIT_TIME = #{auditTime}
+        </if>
+
+
+        <if test="auditFlag != null" >
+            AND    AUDIT_FLAG = #{auditFlag}
+        </if>
+
+        <if test="auditOpinion != null" >
+            AND    AUDIT_OPINION = #{auditOpinion}
+        </if>
+        <if test="rootOrgId != null" >
+            AND    ROOT_ORG_ID = #{rootOrgId}
+        </if>
+    </where>
+    </select>
+<!--4 根据条件查询实体list,返回分页对象 -->
+
+<!--5 新增实体对象 -->
+<insert id="insertAeaImServiceEvaluation" parameterType="AeaImServiceEvaluation" >
+    insert into AEA_IM_SERVICE_EVALUATION (
+SERVICE_EVALUATION_ID  ,UNIT_BIDDING_ID  ,SERVICE_QUALITY  ,SERVICE_PRESCRIPTION  ,SERVICE_ATTITUDE  ,SERVICE_CHARGE  ,SERVICE_STANDARD  ,EVALUATE_UNIT_ID  ,COMP_EVALUATION  ,CREATER  ,CREATE_TIME  ,MEMO  ,IS_DELETE  ,AUDIT_FLAG,AUDIT_TIME,AUDIT_OPINION,ROOT_ORG_ID
+    )  values  (
+#{serviceEvaluationId},#{unitBiddingId},#{serviceQuality},#{servicePrescription},#{serviceAttitude},#{serviceCharge},#{serviceStandard},#{evaluateUnitId},#{compEvaluation},#{creater},#{createTime},#{memo},  #{isDelete},#{auditFlag},#{auditTime},#{auditOpinion},#{rootOrgId}
+    )
+</insert>
+
+<!--6 修改实体对象 -->
+<update id="updateAeaImServiceEvaluation" parameterType="AeaImServiceEvaluation" >
+    update AEA_IM_SERVICE_EVALUATION
+    <set >
+        <if test="serviceEvaluationId != null" >
+        SERVICE_EVALUATION_ID = #{serviceEvaluationId},
+        </if>
+        <if test="unitBiddingId != null" >
+        UNIT_BIDDING_ID = #{unitBiddingId},
+        </if>
+        <if test="serviceQuality != null" >
+        SERVICE_QUALITY = #{serviceQuality},
+        </if>
+        <if test="servicePrescription != null" >
+        SERVICE_PRESCRIPTION = #{servicePrescription},
+        </if>
+        <if test="serviceAttitude != null" >
+        SERVICE_ATTITUDE = #{serviceAttitude},
+        </if>
+        <if test="serviceCharge != null" >
+        SERVICE_CHARGE = #{serviceCharge},
+        </if>
+        <if test="serviceStandard != null" >
+        SERVICE_STANDARD = #{serviceStandard},
+        </if>
+        <if test="evaluateUnitId != null" >
+        EVALUATE_UNIT_ID = #{evaluateUnitId},
+        </if>
+        <if test="compEvaluation != null" >
+        COMP_EVALUATION = #{compEvaluation},
+        </if>
+        <if test="creater != null" >
+        CREATER = #{creater},
+        </if>
+        <if test="createTime != null" >
+        CREATE_TIME = #{createTime},
+        </if>
+        <if test="memo != null" >
+        MEMO = #{memo},
+        </if>
+        <if test="isDelete != null" >
+        IS_DELETE = #{isDelete},
+        </if>
+
+        <if test="auditTime != null" >
+            AUDIT_TIME = #{auditTime},
+        </if>
+        <if test="auditFlag != null" >
+            AUDIT_FLAG = #{auditFlag},
+        </if>
+
+        <if test="auditOpinion != null" >
+            AUDIT_OPINION = #{auditOpinion},
+        </if>
+        <if test="rootOrgId != null" >
+            ROOT_ORG_ID = #{rootOrgId},
+        </if>
+    </set>
+    where SERVICE_EVALUATION_ID = #{serviceEvaluationId}
+</update>
+<!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaImServiceEvaluation">
+        delete from   AEA_IM_SERVICE_EVALUATION
+        where
+    SERVICE_EVALUATION_ID = #{id}
+    </delete>
+<!--8 删除实体对象列表,根据主键ID列表 -->
+<!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaImServiceEvaluation" id="AeaImServiceEvaluationMap">
+        <id property="serviceEvaluationId" column="SERVICE_EVALUATION_ID"/>
+        <result property="unitBiddingId" column="UNIT_BIDDING_ID"/>
+        <result property="serviceQuality" column="SERVICE_QUALITY"/>
+        <result property="servicePrescription" column="SERVICE_PRESCRIPTION"/>
+        <result property="serviceAttitude" column="SERVICE_ATTITUDE"/>
+        <result property="serviceCharge" column="SERVICE_CHARGE"/>
+        <result property="serviceStandard" column="SERVICE_STANDARD"/>
+        <result property="evaluateUnitId" column="EVALUATE_UNIT_ID"/>
+        <result property="compEvaluation" column="COMP_EVALUATION"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="memo" column="MEMO"/>
+        <result property="isDelete" column="IS_DELETE"/>
+        <result property="auditFlag" column="AUDIT_FLAG"/>
+        <result property="auditTime" column="AUDIT_TIME"/>
+        <result property="auditOpinion" column="AUDIT_OPINION"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+    </resultMap>
+
+    <select id="listServiceEvaluationByUnitInfoIdAndServiceId" resultType="AeaImServiceEvaluation" >
+        select
+        aise.COMP_EVALUATION  compEvaluation
+        from    AEA_IM_SERVICE_EVALUATION aise
+        left join AEA_IM_UNIT_BIDDING aiub on aise.UNIT_BIDDING_ID = aiub.UNIT_BIDDING_ID
+        left join AEA_IM_UNIT_SERVICE aius on aius.UNIT_SERVICE_ID = aiub.UNIT_SERVICE_ID
+        <where>
+            aise.IS_DELETE != '1'
+            and aius.UNIT_INFO_ID = #{unitInfoId}
+            and aius.SERVICE_ID = #{serviceId}
+        </where>
+    </select>
+
+
+    <select id="listAuditServiceEvaluation" resultType="AeaImServiceEvaluation" >
+        select
+        <include refid="allColumnsAlias"><property name="alias" value="ev"></property></include>,
+        aui.APPLICANT evaluateUnitName,
+        api.PROJ_NAME projName
+        from    AEA_IM_SERVICE_EVALUATION ev left join AEA_UNIT_INFO aui
+        on aui.UNIT_INFO_ID = ev.EVALUATE_UNIT_ID
+        left join AEA_IM_UNIT_BIDDING aiub on aiub.UNIT_BIDDING_ID = ev.UNIT_BIDDING_ID
+        left join AEA_IM_PROJ_PURCHASE aipp on aipp.PROJ_PURCHASE_ID = aiub.PROJ_PURCHASE_ID
+        left join AEA_PROJ_INFO api on api.PROJ_INFO_ID = aipp.PROJ_INFO_ID
+        <where>
+            <if test="serviceEvaluationId != null" >
+                AND    ev.SERVICE_EVALUATION_ID = #{serviceEvaluationId}
+            </if>
+            <if test="unitBiddingId != null" >
+                AND    ev.UNIT_BIDDING_ID = #{unitBiddingId}
+            </if>
+            <if test="serviceQuality != null" >
+                AND    ev.SERVICE_QUALITY = #{serviceQuality}
+            </if>
+            <if test="servicePrescription != null" >
+                AND    ev.SERVICE_PRESCRIPTION = #{servicePrescription}
+            </if>
+            <if test="serviceAttitude != null" >
+                AND    ev.SERVICE_ATTITUDE = #{serviceAttitude}
+            </if>
+            <if test="serviceCharge != null" >
+                AND    ev.SERVICE_CHARGE = #{serviceCharge}
+            </if>
+            <if test="serviceStandard != null" >
+                AND    ev.SERVICE_STANDARD = #{serviceStandard}
+            </if>
+            <if test="evaluateUnitId != null" >
+                AND    EVALUATE_UNIT_ID = #{evaluateUnitId}
+            </if>
+            <if test="compEvaluation != null" >
+                AND    ev.COMP_EVALUATION = #{compEvaluation}
+            </if>
+            <if test="creater != null" >
+                AND    ev.CREATER = #{creater}
+            </if>
+            <if test="createTime != null" >
+                AND    ev.CREATE_TIME = #{createTime}
+            </if>
+            <if test="memo != null" >
+                AND    ev.MEMO = #{memo}
+            </if>
+            <if test="isDelete != null" >
+                AND    ev.IS_DELETE = #{isDelete}
+            </if>
+
+            <if test="auditTime != null" >
+                AND    ev.AUDIT_TIME = #{auditTime}
+            </if>
+            <if test="auditFlag != null" >
+                AND    ev.AUDIT_FLAG = #{auditFlag}
+            </if>
+
+            <if test="keyword != null and keyword!=''" >
+                AND (aui.APPLICANT LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                  or api.PROJ_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                )
+            </if>
+
+            <if test="auditOpinion != null" >
+                AND ev.AUDIT_OPINION = #{auditOpinion}
+            </if>
+            <if test="rootOrgId != null" >
+                AND ev.ROOT_ORG_ID = #{rootOrgId}
+            </if>
+        </where>
+
+        order by ev.CREATE_TIME desc
+    </select>
+</mapper>

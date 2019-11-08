@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<th:block th:include="common/common :: commonheader('材料补全收件清单打印')"/>
+	<th:block th:include="common/common :: ntkojs"/>
+
+	<script type="text/javascript">
+		var wordInfoData = null;            //word填充数据
+		//var applyinstId = '[[${applyinstId}]]'; //打印数据查询参数
+		var receiveId = '[[${receiveId}]]'; //打印数据查询参数-回执ID
+		var loadInfoResult = false;         //标识数据是否成功查询
+		var isMakeUp = '[[${isMakeUp}]]';  //是否补交
+
+		//覆盖文档打开回调方法
+		function ntkoondocumentopened(str, doc) {
+			TANGER_OCX_bDocOpen = !0;//true
+			//当前打开的文档类型 0=没有文档；100 =其他文档类型；1=word；2=Excel.Sheet或者 Excel.Chart ；
+			// 3=PowerPoint.Show；4= Visio.Drawing； 5=MSProject.Project；6= WPS Doc；7=Kingsoft.Sheet
+			opendoctype = TANGER_OCX_OBJ.DocType;
+			//saved属性用来判断文档是否被修改过,文档打开的时候设置成ture,当文档被修改,自动被设置为false,该属性由office提供.
+			//当电脑上安装的office没有激活的会报错。
+			// TANGER_OCX_OBJ.activeDocument.saved=true;
+			if (TANGER_OCX_bDocOpen) {                      //当文档完全打开
+				prohibitOperate();                          //设置禁用的操作
+				if (wordInfoData != null) setWordInfo(wordInfoData);         //设置书签的内容
+			}
+		}
+
+		function prohibitOperate() {
+			TANGER_OCX_OBJ.FileNew = false;          //禁止文件菜单的新建项
+			TANGER_OCX_OBJ.FileOpen = false;        //禁止文件菜单的打开项
+			TANGER_OCX_OBJ.FileClose = false;       //禁止文件菜单的关闭项
+			TANGER_OCX_OBJ.FileSave = true;        //禁止文件菜单的保存项
+			TANGER_OCX_OBJ.FileSaveAs = true;      //禁止文件菜单的另存为项
+		}
+
+		function initInfo() {
+			TANGER_OCX_OBJ = document.getElementById("TANGER_OCX");
+			//判断chrome的版本是否大于54，若大于54，使用代理解决问题
+			//本段代码一般放在TANGER_OCX_OBJ = document.getElementById("TANGER_OCX");代码后面。
+			var brower;
+			var regStr_Chrome = /chrome\/[\d.]+/gi;
+			var agent = navigator.userAgent.toLowerCase();
+			if (agent.indexOf("chrome") > 0) {
+				brower = agent.match(regStr_Chrome);
+			}
+			var verinfo = (brower + "").replace(/[^0-9.]/ig, "");
+			var uVerinfo = parseFloat(verinfo);
+			if (uVerinfo > 54) {
+				TANGER_OCX_OBJ = new Proxy(TANGER_OCX_OBJ, {
+					set: function (target, key, value, proxy) {
+						var func = target["setattribute"];
+						var args = new Array();
+						args[0] = key;
+						args[1] = value;
+						return (Reflect.apply(func, target, args));
+					},
+					get: function (target, key, proxy) {
+						var value = target[key];
+						if (typeof value == 'function') { // 为函数
+							return function () {
+								return Reflect.apply(value, target, arguments);
+							};
+						} else
+							return (value);
+					}
+				});
+			}
+			// TANGER_OCX_OBJ.IsShowFileErrorMsg = false;   //不弹出文件存取错误
+			objTitleBar();                                  //不显示标题
+			// TANGER_OCX_OBJ.FullScreenMode = true;       //全屏打开
+			loadWordInfoData();                             //加载数据
+			openWordTemplet();
+		}
+
+		//打开设置好的模板文档
+		function openWordTemplet() {
+			var url = ctx + "receive/ts/窗口材料补全清单.doc";
+			if (loadInfoResult)
+				TANGER_OCX_OBJ.BeginOpenFromURL(url, true, 'WPS.Document');     //打开模板文档
+		}
+
+		//设置word模板的值
+		function setWordInfo(jsonData) {
+			var table = TANGER_OCX_OBJ.ActiveDocument.Tables(1);    //选中第一个表格对象
+			var rowCount = 1;                                          //计算材料的行数
+			for (var key in jsonData) {
+				console.log(key);
+				if (key != 'allMatList' && key != 'attrMatList' && key != 'paperMatList' && jsonData[key] != null && jsonData[key] != '') {
+					TANGER_OCX_OBJ.SetBookmarkValue(key, jsonData[key]);
+					TANGER_OCX_OBJ.ActiveDocument.Bookmarks(key).Range.Select();               //选中书签的内容
+					TANGER_OCX_OBJ.ActiveDocument.Application.Selection.Font.Bold = false;    //不加粗
+					/*if(key == 'processingTime'&& jsonData[key] != ''){    //办理时限  （收件日的次工作日开始算，不含现场踏勘、公示、听证及征求相关部门意见时间）  38
+							var shuq1 = TANGER_OCX_OBJ.ActiveDocument.Bookmarks("processingTime");
+							var rang = TANGER_OCX_OBJ.ActiveDocument.Range(shuq1.End - 37, shuq1.End);
+							rang.Select();
+							rang.Font.Name = '宋体';
+							rang.Font.Size = 8;
+					}*/
+				} else if (key == 'allMatList') {    //所有材料
+					var plist = jsonData[key];
+					console.log(plist);
+					if (plist != null && plist.length > 0) {  //遍历所有材料
+						$.each(plist, function (i, p) {
+							var matType = '';
+							var matCount = '';
+							if (p.realPaperCount != null && p.realPaperCount > 0) {     //纸质原件
+								matCount = p.realPaperCount;
+								matType = '原件';
+							} else if (p.realCopyCount != null && p.realCopyCount > 0) {//纸质复印件
+								matCount = p.realCopyCount;
+								matType = '复印件';
+							} else if (p.attCount != null && p.attCount > 0) {     //电子材料
+								matCount = p.attCount;
+								matType = '电子材料';
+							}
+							var matName = p.matinstName;
+							if (rowCount > 3) {  //添加表格行数
+								table.rows.add();
+							}
+							var row = i + 2;
+							table.Cell(row, 1).range.Text = rowCount;   //设置单元格的值
+							table.Cell(row, 2).range.Text = matName;
+							table.Cell(row, 3).range.Text = matType;
+							table.Cell(row, 4).range.Text = matCount;
+							table.Cell(row, 5).range.Text = p.orgShortName;
+							rowCount++;
+						});
+					}
+				} else if (key == 'paperMatList') {    //纸质材料
+					var plist = jsonData[key];
+					if (plist != null && plist.length > 0) {  //遍历纸质材料
+						$.each(plist, function (i, p) {
+							var matType = '';
+							var matCount = '';
+							if (p.realPaperCount != null && p.realPaperCount > 0) {     //纸质原件
+								matCount = p.realPaperCount;
+								matType = '原件';
+							} else if (p.realCopyCount != null && p.realCopyCount > 0) {//纸质复印件
+								matCount = p.realCopyCount;
+								matType = '复印件';
+							}
+							var matName = p.matinstName;
+							if (rowCount > 3) {  //添加表格行数
+								table.rows.add();
+							}
+							var row = i + 2;
+							table.Cell(row, 1).range.Text = rowCount;   //设置单元格的值
+							table.Cell(row, 2).range.Text = matName;
+							table.Cell(row, 3).range.Text = matType;
+							table.Cell(row, 4).range.Text = matCount;
+							rowCount++;
+						});
+					}
+				} else if (key == 'attrMatList') {//遍历电子材料
+					var clist = jsonData[key];
+					if (clist != null && clist.length > 0) {
+						$.each(clist, function (i, c) {
+							var matType = '';
+							var matCount = '';
+							if (c.attCount != null && c.attCount > 0) {     //电子材料
+								matCount = c.attCount;
+								matType = '电子材料';
+							}
+							var matName = c.matinstName;
+							if (rowCount > 3) {  //添加表格行数
+								table.rows.add();
+							}
+							var row = rowCount + 1;
+							table.Cell(row, 1).range.Text = rowCount;   //设置单元格的值
+							table.Cell(row, 2).range.Text = matName;
+							table.Cell(row, 3).range.Text = matType;
+							table.Cell(row, 4).range.Text = matCount;
+							rowCount++;
+						});
+					}
+				}
+			}
+		}
+
+		//加载信息--物料回执
+		function loadWordInfoData() {
+			var url = ctx + '/rest/receive/getOneReceiveByReceiveId/' + receiveId;
+			$.ajax({
+				type: 'get',
+				url: url,
+				cache: false,
+				async: false,
+				data: {
+					//receiveId:receiveId,
+					//receiptType:'1',
+					isMakeUp: isMakeUp
+				},
+				dataType: 'json',
+				success: function (result) {
+					if (result != null) {
+						loadInfoResult = true;
+						converInfo(result);
+					}
+				},
+				error: function (msg) {
+					TANGER_OCX_OBJ.ShowTipMessage('提示', '数据加载失败！');
+				}
+			});
+		}
+
+		//转换打印数据
+		function converInfo(jsonObj) {
+			if (jsonObj == '' || typeof (jsonObj) == 'undefined') return '';
+			var tType = {'4': '分钟', '3': '小时', '1': '个工作日', '2': '个自然日'};//办理时限单位
+			var receiveDate = '';   //收件日期
+			var processingTime = '';//办理时限
+			var myDate = new Date();
+			var month = (myDate.getMonth() + 1) < 10 ? '0' + (myDate.getMonth() + 1) : myDate.getMonth() + 1;
+			var day = myDate.getDate() < 10 ? '0' + myDate.getDate() : myDate.getDate();
+			var printDate = myDate.getFullYear() + '/' + month + '/' + day;
+			var proposer = '';//申报主体
+			var proposerNo = '';//申报主体编号
+			var linkUser = '';
+			var linkPhone = '';
+			if (jsonObj.getMatDate != '' && jsonObj.getMatDate != null)
+				receiveDate = agcloud.utils.dateTimeFormat(jsonObj.getMatDate);
+			var tt = jsonObj.timeLimit;
+			if (tt != null && tt.length > 1) {
+				var t = tt.substring(tt.length - 1);
+				var num = tt.substring(0, tt.length - 1);
+				for (var k in tType) {
+					if (t.indexOf(k) != -1) {
+						processingTime = parseInt(num) + tType[k];// （收件日的次工作日开始算，不含现场踏勘、公示、听证及征求相关部门意见时间）
+						break;
+					}
+				}
+			}
+			if (jsonObj.agentName) {
+				proposer = jsonObj.agentName;
+				proposerNo = jsonObj.agentIdCard;
+				linkPhone = jsonObj.agentLinkmanTel;
+				linkUser = jsonObj.agentLinkmanName;
+			} else {
+				proposer = jsonObj.applicant;
+				proposerNo = jsonObj.applicantIDCard;
+				linkPhone = jsonObj.receiveUserMobile;
+				linkUser = jsonObj.receiveUserName;
+			}
+			/* var clist = jsonObj.attrMatList;
+			 if(clist != null && clist.length > 0){  //遍历电子材料
+					 $.each(clist, function (i, c) {
+							 electronicMats = electronicMats + c.matinstName + '、';
+					 });
+					 electronicMats = '电子材料：' + electronicMats.substring(0,electronicMats.length - 1);
+			 }
+			 var plist = jsonObj.paperMatList;*/
+
+
+			//模拟数据
+			wordInfoData = {
+				'DeclarationSubject': proposer,//申报主体
+				'numberCode': jsonObj.applyinstCode,                        //流水号
+				'DeclarationSubjectCode': proposerNo,     //主体编号
+				'transactor': linkUser,                                 //申办人姓名
+				'linkPhone': linkPhone,                              //联系电话
+				'itemName': jsonObj.iteminstName,                   //事项名称
+				'processingTime': processingTime,                                   //办理时限
+				'projName': jsonObj.projName,                                          //项目名称
+				// 'receiveDate':receiveDate,                             //收件日期
+				// 'consultPhone':'0769-22822222-813',                 //咨询电话
+				// 'complainPhone':'0769-12345',                                  //投诉电话
+				'paperMatList': jsonObj.paperMatList,                 //纸质材料
+				'attrMatList': jsonObj.attrMatList,                  //电子材料
+				'allMatList': jsonObj.allMatList,
+				'receiveOrgName': jsonObj.receiveOrgName
+			}
+		}
+	</script>
+
+</HEAD>
+
+<!--初始化-->
+<BODY onload="initInfo();">
+</BODY>
+</HTML>

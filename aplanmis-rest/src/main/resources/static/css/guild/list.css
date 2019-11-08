@@ -1,0 +1,259 @@
+.wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.wrapper .header-handel {
+    width: 100%;
+    height: 1.2rem;
+    line-height: 1.2rem;
+    padding: 0 20px;
+}
+
+.wrapper .header-handel .search-box {
+    display: inline-block;
+    vertical-align: middle;
+    width: 6rem;
+    height: 100%;
+    line-height: 1;
+    padding: 0.225rem 0;
+}
+
+.wrapper .header-handel .search-box .search {
+    height: 0.75rem;
+    line-height: 0.75rem;
+    border-radius: 0.38rem;
+    -webkit-border-radius: 0.38rem;
+    background: #F2F2F2;
+}
+
+.wrapper .header-handel .search-box .search .search-inp {
+    height: 100%;
+    width: 90%;
+    display: inline-block;
+    font-size: 0.3rem;
+    border: none;
+    outline: none;
+    background: none;
+    padding: 0 20px;
+}
+
+.wrapper .header-handel .search-box .search .search-btn {
+    display: inline-block;
+    vertical-align: middle;
+    width: 0.34rem;
+    height: 0.34rem;
+    background: url("../../imgs/guild/search_non.png") no-repeat center;
+    background-size: 100% 100%;
+}
+
+.wrapper .header-handel .search-box .search .search-btn.active {
+    background: url("../../imgs/guild/search_active.png") no-repeat center;
+    background-size: 100% 100%;
+}
+
+.wrapper .header-handel .filter-box {
+    display: inline-block;
+    vertical-align: middle;
+    width: 0.44rem;
+    height: 100%;
+    padding: 0.38rem 0;
+}
+
+.wrapper .header-handel .filter-box .filter {
+    height: 0.44rem;
+    background: url("../../imgs/guild/filter_btn.png") no-repeat center;
+    background-size: 100% 100%;
+}
+
+.wrapper .content {
+    width: 100%;
+    height: calc(100% - 1.2rem);
+}
+
+.wrapper .content .title-box {
+    width: 100%;
+    height: 1rem;
+    line-height: 1rem;
+}
+
+.wrapper .content .title-box .title-tip {
+    display: inline-block;
+    vertical-align: middle;
+    height: 0.32rem;
+    line-height: 0.32rem;
+    border-left: 10px solid #0187F2;
+    font-size: 0.32rem;
+    color: #474747;
+}
+
+.wrapper .content .list-box {
+    width: 100%;
+    height: calc(100% - 1rem);
+    font-size: 0.3rem;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+.wrapper .content .list-box .list-item {
+    width: 100%;
+    height: 1rem;
+    line-height: 1rem;
+    border-top: 1px solid #e5e5e5;
+    padding: 0 15px;
+}
+
+.wrapper .content .list-box .list-item .item-tag {
+    display: inline-block;
+    vertical-align: top;
+    width: 0.36rem;
+    height: 100%;
+}
+
+.wrapper .content .list-box .list-item .item-tag span {
+    display: inline-block;
+    height: 0.36rem;
+    width: 100%;
+    background: url("../../imgs/guild/guide.png") no-repeat center;
+    background-size: 100% 100%;
+    margin-top: 0.3rem;
+}
+
+.wrapper .content .list-box .list-item .item-tip {
+    display: inline-block;
+    width: 6rem;
+    color: #474747;
+    font-size: 0.3rem;
+    padding: 0 15px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.wrapper .content .list-box .list-item .item-right {
+    display: inline-block;
+    vertical-align: top;
+    width: 0.18rem;
+    height: 100%;
+}
+
+.wrapper .content .list-box .list-item .item-right span {
+    display: inline-block;
+    height: 0.28rem;
+    width: 100%;
+    background: url("../../imgs/guild/to_right.png") no-repeat center;
+    background-size: 100% 100%;
+    margin-top: 0.3rem;
+}
+
+.wrapper .filter-mask {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 99;
+}
+
+.wrapper .filter-slider {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 80%;
+    height: 100%;
+    background: #fff;
+    z-index: 100;
+    transform: translateX(100%);
+    transition: transform 0.1s ease-in;
+    overflow-y: scroll;
+}
+
+.wrapper .filter-slider .slider-content {
+    width: 100%;
+    height: calc(100% - 0.84rem);
+    overflow-y: scroll;
+}
+
+.wrapper .filter-slider .slider-content .filter-box {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.wrapper .filter-slider .slider-content .filter-box .filter-group {
+    padding: 20px 15px;
+    font-size: 0.25rem;
+    color: #999;
+}
+
+.wrapper .filter-slider .slider-content .filter-box .filter-content {
+    width: 100%;
+}
+
+.wrapper .filter-slider .slider-content .filter-box .filter-content .filter-item {
+    display: inline-block;
+    width: 1.74rem;
+    height: 0.94rem;
+    margin-left: 0.16rem;
+    margin-bottom: 0.16rem;
+    font-size: 0.22rem;
+    color: #666;
+    text-align: center;
+    background: #F5F5F5;
+    position: relative;
+}
+
+.wrapper .filter-slider .slider-content .filter-box .filter-content .filter-item span {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    width: 96%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.wrapper .filter-slider .slider-content .filter-box .filter-content .filter-item-active {
+    color: #0190F2;
+    background: url("../../imgs/guild/selected-bg.png") #EEF8FF no-repeat right bottom;
+}
+
+.wrapper .filter-slider .filter-handel {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 0.84rem;
+    line-height: 0.84rem;
+    font-size: 0;
+}
+
+.wrapper .filter-slider .filter-handel .handel {
+    display: inline-block;
+    vertical-align: top;
+    width: 50%;
+    text-align: center;
+    font-size: 0.30rem;
+}
+
+.wrapper .filter-slider .filter-handel .handel-left {
+    color: #666;
+    background: #F9EDDF;
+}
+
+.wrapper .filter-slider .filter-handel .handel-left.active {
+    color: #FF8800;
+}
+
+.wrapper .filter-slider .filter-handel .handel-right {
+    color: #fff;
+    background: #0190F2;
+}
+
+.wrapper .filter-slider-active {
+    transform: translateX(0);
+}

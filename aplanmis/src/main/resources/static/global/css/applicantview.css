@@ -1,0 +1,41 @@
+body {
+  padding: 20px;
+}
+.linkman-form .el-input {
+  width: 240px;
+}
+.linkman-form .fill-item .el-input,
+.linkman-form .fill-item .el-textarea {
+  width: 616px;
+}
+.index-wrapper {
+  width: 100%;
+  min-height: 100%;
+  border: 1px solid #e8e8e8;
+}
+.index-wrapper .title {
+  border-bottom: 1px solid #e8e8e8;
+  padding: 10px 12px;
+  font-size: 16px;
+  font-weight: 500;
+  font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+}
+.index-wrapper .tool-bar {
+  border-bottom: 1px solid #e8e8e8;
+  padding: 10px 12px;
+}
+.index-wrapper .tool-bar .bar-right .el-input {
+  width: 400px;
+}
+.upload-card {
+  border: 1px solid #ccc;
+  padding: 20px 20px 15px 20px;
+}
+.upload-card .upload-btn {
+  position: relative;
+}
+.upload-card .upload-btn .tip {
+  position: absolute;
+  top: 8px;
+  left: 110px;
+}

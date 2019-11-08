@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by ASUS    2018-11-14 11:00:08 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.agcloud.bpm.common.mapper.ActTplAppTriggerMapper" >
+<!--1 返回所有字段的SQL字句 -->
+<sql id="allColumns" >
+    TRIGGER_ID  triggerId,
+    APP_FLOWDEF_ID  appFlowdefId,
+    TRIGGER_ELEMENT_ID  triggerElementId,
+    TRIGGER_EVENT  triggerEvent,
+    TRIGGER_TYPE  triggerType,
+    TRIGGER_APP_ID  triggerAppId,
+    TRIGGER_APP_FLOWDEF_ID  triggerAppFlowdefId,
+    PRIORITY_ORDER  priorityOrder,
+    CREATER  creater,
+    CREATE_TIME  createTime,
+    MODIFIER  modifier,
+    MODIFY_TIME  modifyTime,
+    BUS_TABLE_NAME busTableName,
+    PK_NAME pkName,
+    BUS_RECORD_ID busRecordId,
+    IS_DELETED isDeleted,
+    IS_OUTER_FLOW isOuterFlow
+    </sql>
+
+<!--2 根据主键ID查询单个实体 -->
+<select id="getActTplAppTriggerById" resultType="ActTplAppTrigger" >
+    select
+    <include refid="allColumns"/>
+    from    ACT_TPL_APP_TRIGGER
+    where    TRIGGER_ID = #{id} and IS_DELETED = '0'
+</select>
+
+    <!--2 根据主键ID查询单个实体，包括逻辑删除的 -->
+    <select id="getAllActTplAppTriggerById" resultType="ActTplAppTrigger">
+        select
+        <include refid="allColumns"/>
+        from ACT_TPL_APP_TRIGGER
+        where TRIGGER_ID = #{id}
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listActTplAppTrigger" resultType="ActTplAppTrigger" >
+        select
+        <include refid="allColumns"/>
+        from    ACT_TPL_APP_TRIGGER
+    <where>
+        <if test="triggerId != null" >
+        AND    TRIGGER_ID = #{triggerId}
+        </if>
+        <if test="appFlowdefId != null " >
+        AND    APP_FLOWDEF_ID = #{appFlowdefId}
+        </if>
+        <if test="triggerElementId != null" >
+        AND    TRIGGER_ELEMENT_ID = #{triggerElementId}
+        </if>
+        <if test="triggerEvent != null" >
+        AND    TRIGGER_EVENT = #{triggerEvent}
+        </if>
+        <if test="triggerType != null" >
+        AND    TRIGGER_TYPE = #{triggerType}
+        </if>
+        <if test="triggerAppId != null" >
+        AND    TRIGGER_APP_ID = #{triggerAppId}
+        </if>
+        <if test="triggerAppFlowdefId != null" >
+        AND    TRIGGER_APP_FLOWDEF_ID = #{triggerAppFlowdefId}
+        </if>
+        <if test="priorityOrder != null" >
+        AND    PRIORITY_ORDER = #{priorityOrder}
+        </if>
+        <if test="creater != null" >
+        AND    CREATER = #{creater}
+        </if>
+        <if test="createTime != null" >
+        AND    CREATE_TIME = #{createTime}
+        </if>
+        <if test="modifier != null" >
+        AND    MODIFIER = #{modifier}
+        </if>
+        <if test="modifyTime != null" >
+        AND    MODIFY_TIME = #{modifyTime}
+        </if>
+        <if test="busTableName != null" >
+            AND    BUS_TABLE_NAME = #{busTableName}
+        </if>
+        <if test="pkName != null" >
+            AND    PK_NAME = #{pkName}
+        </if>
+        <if test="busRecordId != null" >
+            AND    BUS_RECORD_ID = #{busRecordId}
+        </if>
+        <if test="isOuterFlow != null" >
+            AND    IS_OUTER_FLOW = #{isOuterFlow}
+        </if>
+        and IS_DELETED = '0'
+    </where>
+    </select>
+<!--4 根据条件查询实体list,返回分页对象 -->
+
+<!--5 新增实体对象 -->
+<insert id="insertActTplAppTrigger" parameterType="ActTplAppTrigger" >
+    insert into ACT_TPL_APP_TRIGGER (
+      TRIGGER_ID  ,APP_FLOWDEF_ID  ,TRIGGER_ELEMENT_ID  ,TRIGGER_EVENT  ,TRIGGER_TYPE  ,TRIGGER_APP_ID  ,TRIGGER_APP_FLOWDEF_ID  ,
+      PRIORITY_ORDER  ,CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME,BUS_TABLE_NAME,PK_NAME,BUS_RECORD_ID,IS_DELETED,IS_OUTER_FLOW
+    )  values  (
+#{triggerId},#{appFlowdefId},#{triggerElementId},#{triggerEvent},#{triggerType},#{triggerAppId},#{triggerAppFlowdefId},
+#{priorityOrder},#{creater},#{createTime},#{modifier},  #{modifyTime},  #{busTableName},  #{pkName},  #{busRecordId},#{isDeleted},#{isOuterFlow}
+    )
+</insert>
+<!--6 修改实体对象 -->
+<update id="updateActTplAppTrigger" parameterType="ActTplAppTrigger" >
+    update ACT_TPL_APP_TRIGGER
+    <set >
+        <if test="triggerId != null " >
+        TRIGGER_ID = #{triggerId},
+        </if>
+        <if test="appFlowdefId != null" >
+        APP_FLOWDEF_ID = #{appFlowdefId},
+        </if>
+        <if test="triggerElementId != null " >
+        TRIGGER_ELEMENT_ID = #{triggerElementId},
+        </if>
+        <if test="triggerEvent != null" >
+        TRIGGER_EVENT = #{triggerEvent},
+        </if>
+        <if test="triggerType != null" >
+        TRIGGER_TYPE = #{triggerType},
+        </if>
+        <if test="triggerAppId != null" >
+        TRIGGER_APP_ID = #{triggerAppId},
+        </if>
+        <if test="triggerAppFlowdefId != null" >
+        TRIGGER_APP_FLOWDEF_ID = #{triggerAppFlowdefId},
+        </if>
+        <if test="priorityOrder != null" >
+        PRIORITY_ORDER = #{priorityOrder},
+        </if>
+        <if test="creater != null" >
+        CREATER = #{creater},
+        </if>
+        <if test="createTime != null" >
+        CREATE_TIME = #{createTime},
+        </if>
+        <if test="modifier != null" >
+        MODIFIER = #{modifier},
+        </if>
+        <if test="modifyTime != null" >
+        MODIFY_TIME = #{modifyTime},
+        </if>
+        <if test="busTableName != null" >
+            BUS_TABLE_NAME = #{busTableName},
+        </if>
+        <if test="pkName != null" >
+            PK_NAME = #{pkName},
+        </if>
+        <if test="busRecordId != null" >
+            BUS_RECORD_ID = #{busRecordId},
+        </if>
+        <if test="isDeleted != null" >
+            IS_DELETED = #{isDeleted},
+        </if>
+        <if test="isOuterFlow != null" >
+            IS_OUTER_FLOW = #{isOuterFlow}
+        </if>
+    </set>
+    where TRIGGER_ID = #{triggerId}
+</update>
+<!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteActTplAppTrigger">
+        update ACT_TPL_APP_TRIGGER set IS_DELETED = '1'
+        where
+    TRIGGER_ID = #{id}
+    </delete>
+<!--8 删除实体对象列表,根据主键ID列表 -->
+<!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="ActTplAppTrigger" id="ActTplAppTriggerMap">
+        <id property="triggerId" column="TRIGGER_ID"/>
+        <result property="appFlowdefId" column="APP_FLOWDEF_ID"/>
+        <result property="triggerElementId" column="TRIGGER_ELEMENT_ID"/>
+        <result property="triggerEvent" column="TRIGGER_EVENT"/>
+        <result property="triggerType" column="TRIGGER_TYPE"/>
+        <result property="triggerAppId" column="TRIGGER_APP_ID"/>
+        <result property="triggerAppFlowdefId" column="TRIGGER_APP_FLOWDEF_ID"/>
+        <result property="priorityOrder" column="PRIORITY_ORDER"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="modifier" column="MODIFIER"/>
+        <result property="modifyTime" column="MODIFY_TIME"/>
+        <result property="busTableName" column="BUS_TABLE_NAME"/>
+        <result property="pkName" column="PK_NAME"/>
+        <result property="busRecordId" column="BUS_RECORD_ID"/>
+        <result property="isDeleted" column="IS_DELETED"/>
+        <result property="isOuterFlow" column="IS_OUTER_FLOW"/>
+    </resultMap>
+
+    <select id="getActTplAppTriggerByAppFlowDefIds" resultType="ActTplAppTrigger" >
+        select
+        <include refid="allColumns"/>
+        from    ACT_TPL_APP_TRIGGER
+        where
+            TRIGGER_APP_ID = #{appId}
+            AND APP_FLOWDEF_ID in
+            <foreach collection="appFlowDefIds" index="index" item="appFlowdefId" open="(" separator="," close=")">
+                #{appFlowdefId}
+            </foreach>
+        and IS_DELETED = '0'
+    </select>
+</mapper>

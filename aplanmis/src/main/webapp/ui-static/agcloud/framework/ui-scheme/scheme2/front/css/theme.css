@@ -1,0 +1,2721 @@
+@charset "utf-8";
+
+/* metronic颜色样式覆盖 | 组件蓝色皮肤主题 | yang2018.8.16*/
+
+/***************************Begin::页面框架（头部和左侧菜单栏）--蓝色主题***************************/
+/**头部**/
+/*agcloud：header通栏背景色 --yang*/
+.m-page--wide .m-header.m-header-dark, .m-page--fluid .m-header.m-header-dark {
+	background-color: #188ae2;
+}
+.m-page--boxed .m-header .m-header-head {
+	background-color: #188ae2;
+}
+.m-brand.m-brand--skin-dark {
+	background: #188ae2;
+}
+
+/*agcloud：清除header右侧部分的阴影  原metronic demo1整体是左右结构，改为header通栏  --yang*/
+@media (min-width: 993px) {
+body.m-aside-left--skin-dark .m-header .m-header-head {
+	box-shadow: none;
+}
+}
+/*agcloud：右侧图标颜色改为淡蓝色 --yang*/
+.m-topbar .m-topbar__nav.m-nav > .m-nav__item > .m-nav__link .m-nav__link-icon > i:before {
+	background: #fff;
+	background-clip: text;
+	text-fill-color: transparent;
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+}
+
+/*agcloud:header右侧菜单 文字及图标颜色 方案1改为淡蓝色#c3e4fb --yang*/
+@media (min-width: 993px) {
+/*agcloud:菜单文字正常状态下颜色*/
+.m-header-menu.m-header-menu--skin-light .m-menu__nav > .m-menu__item > .m-menu__link .m-menu__link-text {
+    color: rgba(255, 255, 255, 0.9);
+}
+/*agcloud:菜单文字hover状态下颜色*/
+.m-header-menu.m-header-menu--skin-light .m-menu__nav > .m-menu__item:hover > .m-menu__link .m-menu__link-text, .m-header-menu.m-header-menu--skin-light .m-menu__nav > .m-menu__item.m-menu__item--hover > .m-menu__link .m-menu__link-text {
+	color: #fff;
+}
+/*agcloud:菜单前面图标正常状态下颜色*/
+.m-header-menu.m-header-menu--skin-light .m-menu__nav > .m-menu__item > .m-menu__link .m-menu__link-icon {
+	color: #c3e4fb;
+}
+/*agcloud:菜单前面图标hover状态下颜色*/
+.m-header-menu.m-header-menu--skin-light .m-menu__nav > .m-menu__item:hover > .m-menu__link .m-menu__link-icon, .m-header-menu.m-header-menu--skin-light .m-menu__nav > .m-menu__item.m-menu__item--hover > .m-menu__link .m-menu__link-icon {
+	color: #fff;
+}
+/*agcloud:菜单后面箭头图标正常状态下颜色*/
+.m-header-menu.m-header-menu--skin-light .m-menu__nav > .m-menu__item > .m-menu__link .m-menu__hor-arrow {
+	color: #c3e4fb;
+}
+/*agcloud:菜单后面箭头图标hover状态下颜色*/
+.m-header-menu.m-header-menu--skin-light .m-menu__nav > .m-menu__item:hover > .m-menu__link > .m-menu__hor-arrow, .m-header-menu.m-header-menu--skin-light .m-menu__nav > .m-menu__item.m-menu__item--hover > .m-menu__link > .m-menu__hor-arrow {
+	color: #fff;
+}
+}
+/*agcloud: 系统标题后面5.0标志和new标志颜色  --yang*/
+.m-badge.m-badge--brand {
+	background-color: #ffb822;
+	color: #ffffff;
+}
+/**收缩图标**/
+/*agcloud:收缩按钮颜色修改 --yang*/
+/*agcloud:header栏上收缩按钮正常状态颜色*/
+.m-brand.m-brand--skin-dark .m-brand__tools .m-brand__toggler span {
+	background: #c3e4fb;
+}
+.m-brand.m-brand--skin-dark .m-brand__tools .m-brand__toggler span::before, .m-brand.m-brand--skin-dark .m-brand__tools .m-brand__toggler span::after {
+	background: #c3e4fb;
+}
+/*agcloud:header栏上收缩按钮点击状态颜色*/
+.m-brand.m-brand--skin-dark .m-brand__tools .m-brand__toggler.m-brand__toggler--active span {
+	background: #fff;
+}
+.m-brand.m-brand--skin-dark .m-brand__tools .m-brand__toggler.m-brand__toggler--active span::before, .m-brand.m-brand--skin-dark .m-brand__tools .m-brand__toggler.m-brand__toggler--active span::after {
+	background: #fff;
+}
+/*agcloud:header栏上收缩按钮hover状态颜色*/
+.m-brand.m-brand--skin-dark .m-brand__tools .m-brand__toggler:hover span {
+	background: #fff;
+}
+.m-brand.m-brand--skin-dark .m-brand__tools .m-brand__toggler:hover span::before, .m-brand.m-brand--skin-dark .m-brand__tools .m-brand__toggler:hover span::after {
+	background: #fff;
+}
+
+/*agcloud:header栏上下拉菜单图标和文字颜色  --yang*/
+@media (min-width: 993px) {
+.m-header-menu.m-header-menu--submenu-skin-light .m-menu__nav > .m-menu__item .m-menu__submenu > .m-menu__subnav > .m-menu__item:hover > .m-menu__link .m-menu__link-icon, .m-header-menu.m-header-menu--submenu-skin-light .m-menu__nav > .m-menu__item .m-menu__submenu > .m-menu__subnav > .m-menu__item.m-menu__item--hover > .m-menu__link .m-menu__link-icon {
+	color: #36a3f7;
+}
+.m-header-menu.m-header-menu--submenu-skin-light .m-menu__nav > .m-menu__item .m-menu__submenu > .m-menu__subnav > .m-menu__item:hover > .m-menu__link .m-menu__link-text, .m-header-menu.m-header-menu--submenu-skin-light .m-menu__nav > .m-menu__item .m-menu__submenu > .m-menu__subnav > .m-menu__item.m-menu__item--hover > .m-menu__link .m-menu__link-text {
+	color: #36a3f7;
+}
+.m-header-menu.m-header-menu--submenu-skin-light .m-menu__nav > .m-menu__item .m-menu__submenu > .m-menu__subnav > .m-menu__item:hover > .m-menu__link > .m-menu__hor-arrow, .m-header-menu.m-header-menu--submenu-skin-light .m-menu__nav > .m-menu__item .m-menu__submenu > .m-menu__subnav > .m-menu__item.m-menu__item--hover > .m-menu__link > .m-menu__hor-arrow {
+	color: #36a3f7;
+}
+.m-header-menu.m-header-menu--submenu-skin-light .m-menu__nav > .m-menu__item .m-menu__submenu > .m-menu__subnav .m-menu__content .m-menu__inner > .m-menu__item:hover > .m-menu__link .m-menu__link-icon, .m-header-menu.m-header-menu--submenu-skin-light .m-menu__nav > .m-menu__item .m-menu__submenu > .m-menu__subnav .m-menu__content .m-menu__inner > .m-menu__item.m-menu__item--hover > .m-menu__link .m-menu__link-icon {
+	color: #36a3f7;
+}
+.m-header-menu.m-header-menu--submenu-skin-light .m-menu__nav > .m-menu__item .m-menu__submenu > .m-menu__subnav .m-menu__content .m-menu__inner > .m-menu__item:hover > .m-menu__link .m-menu__link-bullet.m-menu__link-bullet--dot > span, .m-header-menu.m-header-menu--submenu-skin-light .m-menu__nav > .m-menu__item .m-menu__submenu > .m-menu__subnav .m-menu__content .m-menu__inner > .m-menu__item.m-menu__item--hover > .m-menu__link .m-menu__link-bullet.m-menu__link-bullet--dot > span {
+	background-color: #36a3f7;
+}
+.m-header-menu.m-header-menu--submenu-skin-light .m-menu__nav > .m-menu__item .m-menu__submenu > .m-menu__subnav .m-menu__content .m-menu__inner > .m-menu__item:hover > .m-menu__link .m-menu__link-bullet.m-menu__link-bullet--line > span, .m-header-menu.m-header-menu--submenu-skin-light .m-menu__nav > .m-menu__item .m-menu__submenu > .m-menu__subnav .m-menu__content .m-menu__inner > .m-menu__item.m-menu__item--hover > .m-menu__link .m-menu__link-bullet.m-menu__link-bullet--line > span {
+	background-color: #36a3f7;
+}
+.m-header-menu.m-header-menu--submenu-skin-light .m-menu__nav > .m-menu__item .m-menu__submenu > .m-menu__subnav .m-menu__content .m-menu__inner > .m-menu__item:hover > .m-menu__link .m-menu__link-text, .m-header-menu.m-header-menu--submenu-skin-light .m-menu__nav > .m-menu__item .m-menu__submenu > .m-menu__subnav .m-menu__content .m-menu__inner > .m-menu__item.m-menu__item--hover > .m-menu__link .m-menu__link-text {
+	color: #36a3f7;
+}
+.m-header-menu.m-header-menu--submenu-skin-light .m-menu__nav > .m-menu__item .m-menu__submenu > .m-menu__subnav .m-menu__content .m-menu__inner > .m-menu__item:hover > .m-menu__link > .m-menu__hor-arrow, .m-header-menu.m-header-menu--submenu-skin-light .m-menu__nav > .m-menu__item .m-menu__submenu > .m-menu__subnav .m-menu__content .m-menu__inner > .m-menu__item.m-menu__item--hover > .m-menu__link > .m-menu__hor-arrow {
+	color: #36a3f7;
+}
+}
+/**左侧菜单**/
+/*agcloud:顶端第一个菜单 文字及图标的颜色  --yang*/
+.m-aside-menu.m-aside-menu--skin-dark .m-menu__nav > .m-menu__item.m-menu__item--active > .m-menu__heading .m-menu__link-text, .m-aside-menu.m-aside-menu--skin-dark .m-menu__nav > .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__link-text {
+	color: #36a3f7;
+}
+.m-aside-menu.m-aside-menu--skin-dark .m-menu__nav > .m-menu__item.m-menu__item--active > .m-menu__heading .m-menu__link-icon, .m-aside-menu.m-aside-menu--skin-dark .m-menu__nav > .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__link-icon {
+	color: #36a3f7;
+}
+/**右侧弹出框**/
+/*agcloud:右侧弹出面板 呼应主题色  --yang*/
+.m-tabs-line.m-tabs-line--brand.nav.nav-tabs .nav-link:hover, .m-tabs-line.m-tabs-line--brand.nav.nav-tabs .nav-link.active, .m-tabs-line.m-tabs-line--brand a.m-tabs__link:hover, .m-tabs-line.m-tabs-line--brand a.m-tabs__link.active {
+	color: #36a3f7;
+	border-bottom: 1px solid #36a3f7;
+}
+.m-messenger.m-messenger.m-messenger--message-arrow .m-messenger__message.m-messenger__message--out .m-messenger__message-arrow {
+	color: #36a3f7;
+}
+.m-messenger .m-messenger__messages .m-messenger__message.m-messenger__message--out .m-messenger__message-content {
+	background: #36a3f7;
+}
+.m-switch.m-switch--outline.m-switch--brand input:checked ~ span:after {
+	background-color: #36a3f7;
+}
+/***************************End::页面框架（头部和左侧菜单栏）--蓝色主题***************************/
+
+/***************************Begin::主体内容与主题色相关的样式--蓝色主题***************************/
+/**a链接**/
+/*agcloud:a链接颜色与主按钮保持一致 --yang*/
+a {
+	color: #36a3f7;
+}
+a:hover {
+	color: #1192f6;
+	text-decoration: none; /*agcloud：清除下划线 */
+}
+/*agcloud：常用more按钮下拉菜单的文字颜色*/
+.m-nav .m-nav__item:hover:not(.m-nav__item--disabled) > .m-nav__link .m-nav__link-icon, .m-nav .m-nav__item:hover:not(.m-nav__item--disabled) > .m-nav__link .m-nav__link-text, .m-nav .m-nav__item:hover:not(.m-nav__item--disabled) > .m-nav__link .m-nav__link-arrow, .m-nav .m-nav__item.m-nav__item--active > .m-nav__link .m-nav__link-icon, .m-nav .m-nav__item.m-nav__item--active > .m-nav__link .m-nav__link-text, .m-nav .m-nav__item.m-nav__item--active > .m-nav__link .m-nav__link-arrow {
+	color: #36a3f7;
+}
+.m-nav .m-nav__item:hover:not(.m-nav__item--disabled) > .m-nav__link .m-nav__link-bullet.m-nav__link-bullet--line > span, .m-nav .m-nav__item:hover:not(.m-nav__item--disabled) > .m-nav__link .m-nav__link-bullet.m-nav__link-bullet--dot > span, .m-nav .m-nav__item.m-nav__item--active > .m-nav__link .m-nav__link-bullet.m-nav__link-bullet--line > span, .m-nav .m-nav__item.m-nav__item--active > .m-nav__link .m-nav__link-bullet.m-nav__link-bullet--dot > span {
+	background-color: #36a3f7;
+}
+.m-nav.m-nav__item--disabled {
+	opacity: 0.7;
+	filter: alpha(opacity=70);
+}
+.m-nav .m-nav__section .m-nav__section-text {
+	color: #36a3f7;
+}
+/*agcloud：主题色相关 将所有 #36a3f7 改为 #36a3f7--yang*/
+.btn-brand {
+	background-color: #36a3f7;
+	border-color: #36a3f7;
+}
+.btn-brand.disabled, .btn-brand:disabled {
+	background-color: #36a3f7;
+	border-color: #36a3f7;
+}
+.btn-outline-brand {
+	color: #36a3f7;
+	border-color: #36a3f7;
+}
+.btn-outline-brand:hover {
+	background-color: #36a3f7;
+	border-color: #36a3f7;
+}
+.btn-outline-brand:focus, .btn-outline-brand.focus {
+	box-shadow: 0 0 0 0.2rem rgba(54, 163, 247, 0.5);
+}
+.btn-outline-brand.disabled, .btn-outline-brand:disabled {
+	color: #36a3f7;
+}
+.btn-outline-brand:not(:disabled):not(.disabled):active, .btn-outline-brand:not(:disabled):not(.disabled).active, .show > .btn-outline-brand.dropdown-toggle {
+	background-color: #36a3f7;
+	border-color: #36a3f7;
+}
+.btn-outline-brand:not(:disabled):not(.disabled):active:focus, .btn-outline-brand:not(:disabled):not(.disabled).active:focus, .show > .btn-outline-brand.dropdown-toggle:focus {
+	box-shadow: 0 0 0 0.2rem rgba(54, 163, 247, 0.5);
+}
+.alert.m-alert--outline.alert-brand {
+	border-color: #36a3f7;
+	color: #36a3f7;
+}
+.alert.m-alert--outline.alert-brand .close {
+	color: #36a3f7;
+}
+.alert.m-alert--outline.alert-brand .m-alert__icon i {
+	color: #36a3f7;
+}
+.alert.m-alert--outline.alert-brand.m-alert--icon-solid .m-alert__icon {
+	background: #36a3f7;
+}
+.alert.m-alert--outline.alert-brand.m-alert--icon-solid .m-alert__icon span {
+	border-left-color: #36a3f7;
+}
+.nav.nav-pills.nav-pills--brand .nav-link.active {
+	background: #36a3f7;
+}
+.nav.nav-pills.nav-pills--brand .nav-item.show .nav-link {
+	background: #36a3f7;
+}
+.m--font-brand {
+	color: #36a3f7 !important;
+}
+.m--bg-brand {
+	background-color: #36a3f7 !important;
+}
+.m--bg-fill-brand {
+	background-color: #36a3f7!important;
+}
+.m-datatable > .m-datatable__table > .m-datatable__foot .m-datatable__row > .m-datatable__cell .m-checkbox.m-checkbox--solid > input:checked ~ span {
+	background: #36a3f7;
+}
+.m-datatable > .m-datatable__pager > .m-datatable__pager-nav > li > .m-datatable__pager-link.m-datatable__pager-link--first:hover, .m-datatable > .m-datatable__pager > .m-datatable__pager-nav > li > .m-datatable__pager-link.m-datatable__pager-link--prev:hover, .m-datatable > .m-datatable__pager > .m-datatable__pager-nav > li > .m-datatable__pager-link.m-datatable__pager-link--next:hover, .m-datatable > .m-datatable__pager > .m-datatable__pager-nav > li > .m-datatable__pager-link.m-datatable__pager-link--last:hover {
+	background: #36a3f7;
+}
+.m-datatable > .m-datatable__pager > .m-datatable__pager-nav > li > .m-datatable__pager-link:hover {
+	background: #36a3f7;
+}
+.m-datatable > .m-datatable__pager > .m-datatable__pager-nav > li > .m-datatable__pager-link.m-datatable__pager-link--active {
+	background: #36a3f7;
+}
+.m-datatable > .m-datatable__pager > .m-datatable__pager-nav > li > .m-pager-input:focus {
+	background: #36a3f7;
+	border-color: #36a3f7;
+}
+.m-datatable > .m-datatable__pager > .m-datatable__pager-info .m-datatable__pager-size.show > .btn.dropdown-toggle {
+	background: #36a3f7;
+}
+.m-datatable.m-datatable--subtable > .m-datatable__table > .m-datatable__body .m-datatable__toggle-subtable > i {
+	color: #36a3f7;
+}
+.m-nav .m-nav__item:hover:not(.m-nav__item--disabled) > .m-nav__link .m-nav__link-icon, .m-nav .m-nav__item:hover:not(.m-nav__item--disabled) > .m-nav__link .m-nav__link-text, .m-nav .m-nav__item:hover:not(.m-nav__item--disabled) > .m-nav__link .m-nav__link-arrow, .m-nav .m-nav__item.m-nav__item--active > .m-nav__link .m-nav__link-icon, .m-nav .m-nav__item.m-nav__item--active > .m-nav__link .m-nav__link-text, .m-nav .m-nav__item.m-nav__item--active > .m-nav__link .m-nav__link-arrow {
+	color: #36a3f7;
+}
+.m-nav .m-nav__item:hover:not(.m-nav__item--disabled) > .m-nav__link .m-nav__link-bullet.m-nav__link-bullet--line > span, .m-nav .m-nav__item:hover:not(.m-nav__item--disabled) > .m-nav__link .m-nav__link-bullet.m-nav__link-bullet--dot > span, .m-nav .m-nav__item.m-nav__item--active > .m-nav__link .m-nav__link-bullet.m-nav__link-bullet--line > span, .m-nav .m-nav__item.m-nav__item--active > .m-nav__link .m-nav__link-bullet.m-nav__link-bullet--dot > span {
+	background-color: #36a3f7;
+}
+.m-nav .m-nav__section .m-nav__section-text {
+	color: #36a3f7;
+}
+.m-nav.m-nav--active-bg .m-nav__item.m-nav__item--active > .m-nav__link .m-nav__link-text {
+	color: #36a3f7;
+}
+.m-nav.m-nav--active-bg .m-nav__item > .m-nav__link.m-tabs__item--active .m-nav__link-text {
+	color: #36a3f7;
+}
+.m-nav.m-nav--skin-dark .m-nav__item:hover:not(.m-nav__item--disabled) > .m-nav__link .m-nav__link-icon, .m-nav.m-nav--skin-dark .m-nav__item:hover:not(.m-nav__item--disabled) > .m-nav__link .m-nav__link-text, .m-nav.m-nav--skin-dark .m-nav__item:hover:not(.m-nav__item--disabled) > .m-nav__link .m-nav__link-arrow, .m-nav.m-nav--skin-dark .m-nav__item.m-nav__item--active > .m-nav__link .m-nav__link-icon, .m-nav.m-nav--skin-dark .m-nav__item.m-nav__item--active > .m-nav__link .m-nav__link-text, .m-nav.m-nav--skin-dark .m-nav__item.m-nav__item--active > .m-nav__link .m-nav__link-arrow {
+	color: #36a3f7;
+}
+.m-nav.m-nav--skin-dark .m-nav__item:hover:not(.m-nav__item--disabled) > .m-nav__link .m-nav__link-bullet.m-nav__link-bullet--line > span, .m-nav.m-nav--skin-dark .m-nav__item:hover:not(.m-nav__item--disabled) > .m-nav__link .m-nav__link-bullet.m-nav__link-bullet--dot > span, .m-nav.m-nav--skin-dark .m-nav__item.m-nav__item--active > .m-nav__link .m-nav__link-bullet.m-nav__link-bullet--line > span, .m-nav.m-nav--skin-dark .m-nav__item.m-nav__item--active > .m-nav__link .m-nav__link-bullet.m-nav__link-bullet--dot > span {
+	background-color: #36a3f7;
+}
+.m-nav.m-nav--skin-dark .m-nav__section .m-nav__section-text {
+	color: #36a3f7;
+}
+.m-nav.m-nav--skin-dark.m-nav--active-bg .m-nav__item.m-nav__item--active > .m-nav__link .m-nav__link-text {
+	color: #36a3f7;
+}
+.m-nav.m-nav--skin-dark.m-nav--active-bg .m-nav__item > .m-nav__link.m-tabs__item--active .m-nav__link-text {
+	color: #36a3f7;
+}
+.m-nav-grid .m-nav-grid__row .m-nav-grid__item .m-nav-grid__text {
+	color: #36a3f7;
+}
+.m-nav-grid.m-nav-grid--skin-dark .m-nav-grid__row .m-nav-grid__item .m-nav-grid__text {
+	color: #36a3f7;
+}
+.m-scroll-top:hover > i {
+	color: #36a3f7;
+}
+.m-scroll-top.m-scroll-top--skin-dark:hover > i {
+	color: #36a3f7;
+}
+.m-dropdown.m-dropdown--skin-dark.m-dropdown--header-bg-fill.m-dropdown--arrow .m-dropdown__arrow {
+	color: #36a3f7;
+}
+.m-dropdown.m-dropdown--skin-dark.m-dropdown--header-bg-fill .m-dropdown__header {
+	background-color: #36a3f7;
+}
+.m-tabs-line.m-tabs-line--brand a.m-tabs__link:hover {
+	border-bottom: 1px solid #36a3f7;
+}
+.m-tabs-line.m-tabs-line--brand.nav.nav-tabs .nav-link:hover, .m-tabs-line.m-tabs-line--brand.nav.nav-tabs .nav-link.active, .m-tabs-line.m-tabs-line--brand a.m-tabs__link:hover, .m-tabs-line.m-tabs-line--brand a.m-tabs__link.active {
+	color: #36a3f7;
+	border-bottom: 1px solid #36a3f7;
+}
+.m-tabs-line.m-tabs-line--skin-dark.m-tabs-line--brand a.m-tabs__link:hover {
+	border-bottom: 1px solid #36a3f7;
+}
+.m-tabs-line.m-tabs-line--skin-dark.m-tabs-line--brand.nav.nav-tabs .nav-link:hover, .m-tabs-line.m-tabs-line--skin-dark.m-tabs-line--brand.nav.nav-tabs .nav-link.active, .m-tabs-line.m-tabs-line--skin-dark.m-tabs-line--brand a.m-tabs__link:hover, .m-tabs-line.m-tabs-line--skin-dark.m-tabs-line--brand a.m-tabs__link.active {
+	color: #36a3f7;
+	border-bottom: 1px solid #36a3f7;
+}
+.m-badge.m-badge--brand {
+	background-color: #36a3f7;
+}
+.m-link {
+	color: #36a3f7;
+}
+.m-link:hover {
+	color: #1192f6;  /*agcloud:hover与主按钮一致  --yang*/
+}
+.m-link:hover:after {
+	border-bottom: 1px solid #1192f6;
+	opacity: 0.3;
+	filter: alpha(opacity=30);
+}
+.m-link.m-link--skin-dark {
+	color: #36a3f7;
+}
+.m-link.m-link--brand {
+	color: #36a3f7;
+}
+.m-separator.m-separator--brand {
+	border-bottom: 1px solid #36a3f7;
+}
+.m-separator.m-separator--brand.m-separator--dashed {
+	border-bottom: 1px dashed #36a3f7;
+}
+.btn.m-btn--label-brand {
+	color: #36a3f7;
+}
+.btn-outline-brand.focus, .btn-outline-brand:focus, .btn-outline-brand:hover {
+	border-color: #36a3f7;
+	background: #36a3f7;
+}
+.btn.m-btn--air.btn-default, .btn.m-btn--air.btn-secondary {
+	-webkit-box-shadow: 0px 3px 20px 0px rgba(54, 163, 247, 0.17) !important;
+	-moz-box-shadow: 0px 3px 20px 0px rgba(54, 163, 247, 0.17) !important;
+	box-shadow: 0px 3px 20px 0px rgba(54, 163, 247, 0.17) !important;
+}
+.btn.m-btn--air.btn-default.focus, .btn.m-btn--air.btn-default:focus, .btn.m-btn--air.btn-default:hover:not(:disabled):not(.active), .btn.m-btn--air.btn-secondary.focus, .btn.m-btn--air.btn-secondary:focus, .btn.m-btn--air.btn-secondary:hover:not(:disabled):not(.active) {
+	-webkit-box-shadow: 0px 3px 20px 0px rgba(54, 163, 247, 0.26) !important;
+	-moz-box-shadow: 0px 3px 20px 0px rgba(54, 163, 247, 0.26) !important;
+	box-shadow: 0px 3px 20px 0px rgba(54, 163, 247, 0.26) !important;
+	background: #36a3f7 !important;
+	border-color: #36a3f7 !important;
+}
+.btn.m-btn--hover-brand:hover, .btn.m-btn--hover-brand.active, .btn.m-btn--hover-brand:active, .btn.m-btn--hover-brand:focus, .show > .btn.m-btn--hover-brand.dropdown-toggle {
+	border-color: #36a3f7 !important;
+	background-color: #36a3f7 !important;
+}
+.btn.m-btn--gradient-from-brand.m-btn--gradient-to-brand {
+	background: #36a3f7;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #36a3f7 30%, #36a3f7 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #36a3f7 30%, #36a3f7 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #36a3f7 30%, #36a3f7 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #36a3f7 30%, #36a3f7 100%);
+/* Standard syntax */ }
+.btn.m-btn--gradient-from-brand.m-btn--gradient-to-brand:hover, .btn.m-btn--gradient-from-brand.m-btn--gradient-to-brand.active, .btn.m-btn--gradient-from-brand.m-btn--gradient-to-brand:active, .btn.m-btn--gradient-from-brand.m-btn--gradient-to-brand:focus, .show > .btn.m-btn--gradient-from-brand.m-btn--gradient-to-brand.dropdown-toggle {
+	background: #1192f6;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #1192f6 30%, #1192f6 100%);   /*agcloud:与主按钮hover保持一致 默认#1192f6--yang*/
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #1192f6 30%, #1192f6 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #1192f6 30%, #1192f6 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #1192f6 30%, #1192f6 100%);
+/* Standard syntax */ }
+.btn.m-btn--gradient-from-brand.m-btn--gradient-to-metal {
+	background: #36a3f7;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #36a3f7 30%, #c4c5d6 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #36a3f7 30%, #c4c5d6 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #36a3f7 30%, #c4c5d6 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #36a3f7 30%, #c4c5d6 100%);
+/* Standard syntax */ }
+.btn.m-btn--gradient-from-brand.m-btn--gradient-to-metal:hover, .btn.m-btn--gradient-from-brand.m-btn--gradient-to-metal.active, .btn.m-btn--gradient-from-brand.m-btn--gradient-to-metal:active, .btn.m-btn--gradient-from-brand.m-btn--gradient-to-metal:focus, .show > .btn.m-btn--gradient-from-brand.m-btn--gradient-to-metal.dropdown-toggle {
+	background: #1192f6;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #1192f6 30%, #b2b3c9 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #1192f6 30%, #b2b3c9 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #1192f6 30%, #b2b3c9 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #1192f6 30%, #b2b3c9 100%);
+/* Standard syntax */ }
+.btn.m-btn--gradient-from-brand.m-btn--gradient-to-light {
+	background: #36a3f7;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #36a3f7 30%, #ffffff 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #36a3f7 30%, #ffffff 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #36a3f7 30%, #ffffff 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #36a3f7 30%, #ffffff 100%);
+/* Standard syntax */ }
+.btn.m-btn--gradient-from-brand.m-btn--gradient-to-light:hover, .btn.m-btn--gradient-from-brand.m-btn--gradient-to-light.active, .btn.m-btn--gradient-from-brand.m-btn--gradient-to-light:active, .btn.m-btn--gradient-from-brand.m-btn--gradient-to-light:focus, .show > .btn.m-btn--gradient-from-brand.m-btn--gradient-to-light.dropdown-toggle {
+	background: #1192f6;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #1192f6 30%, #f0f0f0 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #1192f6 30%, #f0f0f0 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #1192f6 30%, #f0f0f0 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #1192f6 30%, #f0f0f0 100%);
+/* Standard syntax */ }
+.btn.m-btn--gradient-from-brand.m-btn--gradient-to-accent {
+	background: #36a3f7;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #36a3f7 30%, #00c5dc 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #36a3f7 30%, #00c5dc 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #36a3f7 30%, #00c5dc 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #36a3f7 30%, #00c5dc 100%);
+/* Standard syntax */ }
+.btn.m-btn--gradient-from-brand.m-btn--gradient-to-accent:hover, .btn.m-btn--gradient-from-brand.m-btn--gradient-to-accent.active, .btn.m-btn--gradient-from-brand.m-btn--gradient-to-accent:active, .btn.m-btn--gradient-from-brand.m-btn--gradient-to-accent:focus, .show > .btn.m-btn--gradient-from-brand.m-btn--gradient-to-accent.dropdown-toggle {
+	background: #1192f6;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #1192f6 30%, #00aabd 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #1192f6 30%, #00aabd 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #1192f6 30%, #00aabd 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #1192f6 30%, #00aabd 100%);
+/* Standard syntax */ }
+.btn.m-btn--gradient-from-brand.m-btn--gradient-to-focus {
+	background: #36a3f7;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #36a3f7 30%, #00aeda 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #36a3f7 30%, #00aeda 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #36a3f7 30%, #00aeda 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #36a3f7 30%, #00aeda 100%);
+/* Standard syntax */ }
+.btn.m-btn--gradient-from-brand.m-btn--gradient-to-focus:hover, .btn.m-btn--gradient-from-brand.m-btn--gradient-to-focus.active, .btn.m-btn--gradient-from-brand.m-btn--gradient-to-focus:active, .btn.m-btn--gradient-from-brand.m-btn--gradient-to-focus:focus, .show > .btn.m-btn--gradient-from-brand.m-btn--gradient-to-focus.dropdown-toggle {
+	background: #1192f6;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #1192f6 30%, #06a3cb 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #1192f6 30%, #06a3cb 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #1192f6 30%, #06a3cb 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #1192f6 30%, #06a3cb 100%);
+/* Standard syntax */ }
+.btn.m-btn--gradient-from-brand.m-btn--gradient-to-primary {
+	background: #36a3f7;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #36a3f7 30%, #17a4e6 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #36a3f7 30%, #17a4e6 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #36a3f7 30%, #17a4e6 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #36a3f7 30%, #17a4e6 100%);
+/* Standard syntax */ }
+.btn.m-btn--gradient-from-brand.m-btn--gradient-to-primary:hover, .btn.m-btn--gradient-from-brand.m-btn--gradient-to-primary.active, .btn.m-btn--gradient-from-brand.m-btn--gradient-to-primary:active, .btn.m-btn--gradient-from-brand.m-btn--gradient-to-primary:focus, .show > .btn.m-btn--gradient-from-brand.m-btn--gradient-to-primary.dropdown-toggle {
+	background: #1192f6;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #1192f6 30%, #3f50d8 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #1192f6 30%, #3f50d8 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #1192f6 30%, #3f50d8 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #1192f6 30%, #3f50d8 100%);
+/* Standard syntax */ }
+.btn.m-btn--gradient-from-brand.m-btn--gradient-to-success {
+	background: #36a3f7;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #36a3f7 30%, #34bfa3 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #36a3f7 30%, #34bfa3 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #36a3f7 30%, #34bfa3 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #36a3f7 30%, #34bfa3 100%);
+/* Standard syntax */ }
+.btn.m-btn--gradient-from-brand.m-btn--gradient-to-success:hover, .btn.m-btn--gradient-from-brand.m-btn--gradient-to-success.active, .btn.m-btn--gradient-from-brand.m-btn--gradient-to-success:active, .btn.m-btn--gradient-from-brand.m-btn--gradient-to-success:focus, .show > .btn.m-btn--gradient-from-brand.m-btn--gradient-to-success.dropdown-toggle {
+	background: #1192f6;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #1192f6 30%, #2da78e 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #1192f6 30%, #2da78e 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #1192f6 30%, #2da78e 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #1192f6 30%, #2da78e 100%);
+/* Standard syntax */ }
+.btn.m-btn--gradient-from-brand.m-btn--gradient-to-info {
+	background: #36a3f7;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #36a3f7 30%, #36a3f7 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #36a3f7 30%, #36a3f7 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #36a3f7 30%, #36a3f7 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #36a3f7 30%, #36a3f7 100%);
+/* Standard syntax */ }
+.btn.m-btn--gradient-from-brand.m-btn--gradient-to-info:hover, .btn.m-btn--gradient-from-brand.m-btn--gradient-to-info.active, .btn.m-btn--gradient-from-brand.m-btn--gradient-to-info:active, .btn.m-btn--gradient-from-brand.m-btn--gradient-to-info:focus, .show > .btn.m-btn--gradient-from-brand.m-btn--gradient-to-info.dropdown-toggle {
+	background: #1192f6;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #1192f6 30%, #1996f6 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #1192f6 30%, #1996f6 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #1192f6 30%, #1996f6 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #1192f6 30%, #1996f6 100%);
+/* Standard syntax */ }
+.btn.m-btn--gradient-from-brand.m-btn--gradient-to-warning {
+	background: #36a3f7;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #36a3f7 30%, #ffb822 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #36a3f7 30%, #ffb822 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #36a3f7 30%, #ffb822 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #36a3f7 30%, #ffb822 100%);
+/* Standard syntax */ }
+.btn.m-btn--gradient-from-brand.m-btn--gradient-to-warning:hover, .btn.m-btn--gradient-from-brand.m-btn--gradient-to-warning.active, .btn.m-btn--gradient-from-brand.m-btn--gradient-to-warning:active, .btn.m-btn--gradient-from-brand.m-btn--gradient-to-warning:focus, .show > .btn.m-btn--gradient-from-brand.m-btn--gradient-to-warning.dropdown-toggle {
+	background: #1192f6;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #1192f6 30%, #ffae03 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #1192f6 30%, #ffae03 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #1192f6 30%, #ffae03 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #1192f6 30%, #ffae03 100%);
+/* Standard syntax */ }
+.btn.m-btn--gradient-from-brand.m-btn--gradient-to-danger {
+	background: #36a3f7;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #36a3f7 30%, #f4516c 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #36a3f7 30%, #f4516c 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #36a3f7 30%, #f4516c 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #36a3f7 30%, #f4516c 100%);
+/* Standard syntax */ }
+.btn.m-btn--gradient-from-brand.m-btn--gradient-to-danger:hover, .btn.m-btn--gradient-from-brand.m-btn--gradient-to-danger.active, .btn.m-btn--gradient-from-brand.m-btn--gradient-to-danger:active, .btn.m-btn--gradient-from-brand.m-btn--gradient-to-danger:focus, .show > .btn.m-btn--gradient-from-brand.m-btn--gradient-to-danger.dropdown-toggle {
+	background: #1192f6;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #1192f6 30%, #f23454 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #1192f6 30%, #f23454 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #1192f6 30%, #f23454 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #1192f6 30%, #f23454 100%);
+/* Standard syntax */ }
+.btn.btn-outline-brand {
+	color: #36a3f7;
+}
+.btn.m-btn--gradient-from-metal.m-btn--gradient-to-brand {
+	background: #c4c5d6;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #c4c5d6 30%, #36a3f7 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #c4c5d6 30%, #36a3f7 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #c4c5d6 30%, #36a3f7 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #c4c5d6 30%, #36a3f7 100%);
+/* Standard syntax */ }
+.btn.m-btn--gradient-from-light.m-btn--gradient-to-brand {
+	background: #ffffff;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #ffffff 30%, #36a3f7 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #ffffff 30%, #36a3f7 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #ffffff 30%, #36a3f7 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #ffffff 30%, #36a3f7 100%);
+/* Standard syntax */ }
+.btn.m-btn--gradient-from-light.m-btn--gradient-to-brand:hover, .btn.m-btn--gradient-from-light.m-btn--gradient-to-brand.active, .btn.m-btn--gradient-from-light.m-btn--gradient-to-brand:active, .btn.m-btn--gradient-from-light.m-btn--gradient-to-brand:focus, .show > .btn.m-btn--gradient-from-light.m-btn--gradient-to-brand.dropdown-toggle {
+	background: #f0f0f0;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #f0f0f0 30%, #1192f6 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #f0f0f0 30%, #1192f6 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #f0f0f0 30%, #1192f6 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #f0f0f0 30%, #1192f6 100%);
+/* Standard syntax */ }
+.btn.m-btn--gradient-from-accent.m-btn--gradient-to-brand {
+	background: #00c5dc;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #00c5dc 30%, #36a3f7 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #00c5dc 30%, #36a3f7 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #00c5dc 30%, #36a3f7 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #00c5dc 30%, #36a3f7 100%);
+/* Standard syntax */ }
+.btn.m-btn--gradient-from-accent.m-btn--gradient-to-brand:hover, .btn.m-btn--gradient-from-accent.m-btn--gradient-to-brand.active, .btn.m-btn--gradient-from-accent.m-btn--gradient-to-brand:active, .btn.m-btn--gradient-from-accent.m-btn--gradient-to-brand:focus, .show > .btn.m-btn--gradient-from-accent.m-btn--gradient-to-brand.dropdown-toggle {
+	background: #00aabd;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #00aabd 30%, #1192f6 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #00aabd 30%, #1192f6 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #00aabd 30%, #1192f6 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #00aabd 30%, #1192f6 100%);
+/* Standard syntax */ }
+.btn.m-btn--gradient-from-focus.m-btn--gradient-to-brand {
+	background: #00aeda;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #00aeda 30%, #36a3f7 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #00aeda 30%, #36a3f7 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #00aeda 30%, #36a3f7 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #00aeda 30%, #36a3f7 100%);
+/* Standard syntax */ }
+.btn.m-btn--gradient-from-focus.m-btn--gradient-to-brand:hover, .btn.m-btn--gradient-from-focus.m-btn--gradient-to-brand.active, .btn.m-btn--gradient-from-focus.m-btn--gradient-to-brand:active, .btn.m-btn--gradient-from-focus.m-btn--gradient-to-brand:focus, .show > .btn.m-btn--gradient-from-focus.m-btn--gradient-to-brand.dropdown-toggle {
+	background: #06a3cb;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #06a3cb 30%, #1192f6 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #06a3cb 30%, #1192f6 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #06a3cb 30%, #1192f6 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #06a3cb 30%, #1192f6 100%);
+/* Standard syntax */ }
+.btn.m-btn--gradient-from-focus.m-btn--gradient-to-metal {
+	background: #00aeda;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #00aeda 30%, #c4c5d6 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #00aeda 30%, #c4c5d6 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #00aeda 30%, #c4c5d6 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #00aeda 30%, #c4c5d6 100%);
+/* Standard syntax */ }
+.btn.m-btn--gradient-from-focus.m-btn--gradient-to-metal:hover, .btn.m-btn--gradient-from-focus.m-btn--gradient-to-metal.active, .btn.m-btn--gradient-from-focus.m-btn--gradient-to-metal:active, .btn.m-btn--gradient-from-focus.m-btn--gradient-to-metal:focus, .show > .btn.m-btn--gradient-from-focus.m-btn--gradient-to-metal.dropdown-toggle {
+	background: #06a3cb;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #06a3cb 30%, #b2b3c9 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #06a3cb 30%, #b2b3c9 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #06a3cb 30%, #b2b3c9 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #06a3cb 30%, #b2b3c9 100%);
+/* Standard syntax */ }
+.btn.m-btn--gradient-from-focus.m-btn--gradient-to-light {
+	background: #00aeda;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #00aeda 30%, #ffffff 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #00aeda 30%, #ffffff 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #00aeda 30%, #ffffff 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #00aeda 30%, #ffffff 100%);
+/* Standard syntax */ }
+.btn.m-btn--gradient-from-focus.m-btn--gradient-to-light:hover, .btn.m-btn--gradient-from-focus.m-btn--gradient-to-light.active, .btn.m-btn--gradient-from-focus.m-btn--gradient-to-light:active, .btn.m-btn--gradient-from-focus.m-btn--gradient-to-light:focus, .show > .btn.m-btn--gradient-from-focus.m-btn--gradient-to-light.dropdown-toggle {
+	background: #06a3cb;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #06a3cb 30%, #f0f0f0 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #06a3cb 30%, #f0f0f0 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #06a3cb 30%, #f0f0f0 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #06a3cb 30%, #f0f0f0 100%);
+/* Standard syntax */ }
+.btn.m-btn--gradient-from-focus.m-btn--gradient-to-accent {
+	background: #00aeda;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #00aeda 30%, #00c5dc 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #00aeda 30%, #00c5dc 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #00aeda 30%, #00c5dc 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #00aeda 30%, #00c5dc 100%);
+/* Standard syntax */ }
+.btn.m-btn--gradient-from-focus.m-btn--gradient-to-accent:hover, .btn.m-btn--gradient-from-focus.m-btn--gradient-to-accent.active, .btn.m-btn--gradient-from-focus.m-btn--gradient-to-accent:active, .btn.m-btn--gradient-from-focus.m-btn--gradient-to-accent:focus, .show > .btn.m-btn--gradient-from-focus.m-btn--gradient-to-accent.dropdown-toggle {
+	background: #06a3cb;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #06a3cb 30%, #00aabd 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #06a3cb 30%, #00aabd 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #06a3cb 30%, #00aabd 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #06a3cb 30%, #00aabd 100%);
+/* Standard syntax */ }
+.btn.m-btn--gradient-from-focus.m-btn--gradient-to-focus {
+	background: #00aeda;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #00aeda 30%, #00aeda 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #00aeda 30%, #00aeda 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #00aeda 30%, #00aeda 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #00aeda 30%, #00aeda 100%);
+/* Standard syntax */ }
+.btn.m-btn--gradient-from-focus.m-btn--gradient-to-focus:hover, .btn.m-btn--gradient-from-focus.m-btn--gradient-to-focus.active, .btn.m-btn--gradient-from-focus.m-btn--gradient-to-focus:active, .btn.m-btn--gradient-from-focus.m-btn--gradient-to-focus:focus, .show > .btn.m-btn--gradient-from-focus.m-btn--gradient-to-focus.dropdown-toggle {
+	background: #06a3cb;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #06a3cb 30%, #06a3cb 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #06a3cb 30%, #06a3cb 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #06a3cb 30%, #06a3cb 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #06a3cb 30%, #06a3cb 100%);
+/* Standard syntax */ }
+.btn.m-btn--gradient-from-focus.m-btn--gradient-to-primary {
+	background: #00aeda;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #00aeda 30%, #17a4e6 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #00aeda 30%, #17a4e6 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #00aeda 30%, #17a4e6 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #00aeda 30%, #17a4e6 100%);
+/* Standard syntax */ }
+.btn.m-btn--gradient-from-focus.m-btn--gradient-to-primary:hover, .btn.m-btn--gradient-from-focus.m-btn--gradient-to-primary.active, .btn.m-btn--gradient-from-focus.m-btn--gradient-to-primary:active, .btn.m-btn--gradient-from-focus.m-btn--gradient-to-primary:focus, .show > .btn.m-btn--gradient-from-focus.m-btn--gradient-to-primary.dropdown-toggle {
+	background: #06a3cb;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #06a3cb 30%, #3f50d8 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #06a3cb 30%, #3f50d8 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #06a3cb 30%, #3f50d8 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #06a3cb 30%, #3f50d8 100%);
+/* Standard syntax */ }
+.btn.m-btn--gradient-from-focus.m-btn--gradient-to-success {
+	background: #00aeda;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #00aeda 30%, #34bfa3 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #00aeda 30%, #34bfa3 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #00aeda 30%, #34bfa3 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #00aeda 30%, #34bfa3 100%);
+/* Standard syntax */ }
+.btn.m-btn--gradient-from-focus.m-btn--gradient-to-success:hover, .btn.m-btn--gradient-from-focus.m-btn--gradient-to-success.active, .btn.m-btn--gradient-from-focus.m-btn--gradient-to-success:active, .btn.m-btn--gradient-from-focus.m-btn--gradient-to-success:focus, .show > .btn.m-btn--gradient-from-focus.m-btn--gradient-to-success.dropdown-toggle {
+	background: #06a3cb;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #06a3cb 30%, #2da78e 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #06a3cb 30%, #2da78e 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #06a3cb 30%, #2da78e 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #06a3cb 30%, #2da78e 100%);
+/* Standard syntax */ }
+.btn.m-btn--gradient-from-focus.m-btn--gradient-to-info {
+	background: #00aeda;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #00aeda 30%, #36a3f7 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #00aeda 30%, #36a3f7 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #00aeda 30%, #36a3f7 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #00aeda 30%, #36a3f7 100%);
+/* Standard syntax */ }
+.btn.m-btn--gradient-from-focus.m-btn--gradient-to-info:hover, .btn.m-btn--gradient-from-focus.m-btn--gradient-to-info.active, .btn.m-btn--gradient-from-focus.m-btn--gradient-to-info:active, .btn.m-btn--gradient-from-focus.m-btn--gradient-to-info:focus, .show > .btn.m-btn--gradient-from-focus.m-btn--gradient-to-info.dropdown-toggle {
+	background: #06a3cb;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #06a3cb 30%, #1996f6 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #06a3cb 30%, #1996f6 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #06a3cb 30%, #1996f6 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #06a3cb 30%, #1996f6 100%);
+/* Standard syntax */ }
+.btn.m-btn--gradient-from-focus.m-btn--gradient-to-warning {
+	background: #00aeda;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #00aeda 30%, #ffb822 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #00aeda 30%, #ffb822 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #00aeda 30%, #ffb822 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #00aeda 30%, #ffb822 100%);
+/* Standard syntax */ }
+.btn.m-btn--gradient-from-focus.m-btn--gradient-to-warning:hover, .btn.m-btn--gradient-from-focus.m-btn--gradient-to-warning.active, .btn.m-btn--gradient-from-focus.m-btn--gradient-to-warning:active, .btn.m-btn--gradient-from-focus.m-btn--gradient-to-warning:focus, .show > .btn.m-btn--gradient-from-focus.m-btn--gradient-to-warning.dropdown-toggle {
+	background: #06a3cb;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #06a3cb 30%, #ffae03 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #06a3cb 30%, #ffae03 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #06a3cb 30%, #ffae03 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #06a3cb 30%, #ffae03 100%);
+/* Standard syntax */ }
+.btn.m-btn--gradient-from-focus.m-btn--gradient-to-danger {
+	background: #00aeda;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #00aeda 30%, #f4516c 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #00aeda 30%, #f4516c 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #00aeda 30%, #f4516c 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #00aeda 30%, #f4516c 100%);
+/* Standard syntax */ }
+.btn.m-btn--gradient-from-focus.m-btn--gradient-to-danger:hover, .btn.m-btn--gradient-from-focus.m-btn--gradient-to-danger.active, .btn.m-btn--gradient-from-focus.m-btn--gradient-to-danger:active, .btn.m-btn--gradient-from-focus.m-btn--gradient-to-danger:focus, .show > .btn.m-btn--gradient-from-focus.m-btn--gradient-to-danger.dropdown-toggle {
+	background: #06a3cb;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #06a3cb 30%, #f23454 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #06a3cb 30%, #f23454 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #06a3cb 30%, #f23454 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #06a3cb 30%, #f23454 100%);
+}
+.btn.btn-outline-focus {
+	color: #00aeda;
+}
+.btn.m-btn--hover-primary:hover, .btn.m-btn--hover-primary.active, .btn.m-btn--hover-primary:active, .btn.m-btn--hover-primary:focus, .show > .btn.m-btn--hover-primary.dropdown-toggle {
+	border-color: #17a4e6 !important;
+	background-color: #17a4e6 !important;
+}
+.btn.m-btn--gradient-from-primary.m-btn--gradient-to-brand:hover, .btn.m-btn--gradient-from-primary.m-btn--gradient-to-brand.active, .btn.m-btn--gradient-from-primary.m-btn--gradient-to-brand:active, .btn.m-btn--gradient-from-primary.m-btn--gradient-to-brand:focus, .show > .btn.m-btn--gradient-from-primary.m-btn--gradient-to-brand.dropdown-toggle {
+	background: #3f50d8;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #3f50d8 30%, #1192f6 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #3f50d8 30%, #1192f6 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #3f50d8 30%, #1192f6 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #3f50d8 30%, #1192f6 100%);
+/* Standard syntax */ }
+.btn.m-btn--gradient-from-primary.m-btn--gradient-to-metal {
+	background: #17a4e6;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #17a4e6 30%, #c4c5d6 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #17a4e6 30%, #c4c5d6 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #17a4e6 30%, #c4c5d6 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #17a4e6 30%, #c4c5d6 100%);
+/* Standard syntax */ }
+.btn.m-btn--gradient-from-primary.m-btn--gradient-to-metal:hover, .btn.m-btn--gradient-from-primary.m-btn--gradient-to-metal.active, .btn.m-btn--gradient-from-primary.m-btn--gradient-to-metal:active, .btn.m-btn--gradient-from-primary.m-btn--gradient-to-metal:focus, .show > .btn.m-btn--gradient-from-primary.m-btn--gradient-to-metal.dropdown-toggle {
+	background: #3f50d8;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #3f50d8 30%, #b2b3c9 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #3f50d8 30%, #b2b3c9 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #3f50d8 30%, #b2b3c9 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #3f50d8 30%, #b2b3c9 100%);
+/* Standard syntax */ }
+.btn.m-btn--gradient-from-primary.m-btn--gradient-to-light {
+	background: #17a4e6;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #17a4e6 30%, #ffffff 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #17a4e6 30%, #ffffff 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #17a4e6 30%, #ffffff 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #17a4e6 30%, #ffffff 100%);
+/* Standard syntax */ }
+.btn.m-btn--gradient-from-primary.m-btn--gradient-to-light:hover, .btn.m-btn--gradient-from-primary.m-btn--gradient-to-light.active, .btn.m-btn--gradient-from-primary.m-btn--gradient-to-light:active, .btn.m-btn--gradient-from-primary.m-btn--gradient-to-light:focus, .show > .btn.m-btn--gradient-from-primary.m-btn--gradient-to-light.dropdown-toggle {
+	background: #3f50d8;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #3f50d8 30%, #f0f0f0 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #3f50d8 30%, #f0f0f0 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #3f50d8 30%, #f0f0f0 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #3f50d8 30%, #f0f0f0 100%);
+/* Standard syntax */ }
+.btn.m-btn--gradient-from-primary.m-btn--gradient-to-accent {
+	background: #17a4e6;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #17a4e6 30%, #00c5dc 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #17a4e6 30%, #00c5dc 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #17a4e6 30%, #00c5dc 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #17a4e6 30%, #00c5dc 100%);
+/* Standard syntax */ }
+.btn.m-btn--gradient-from-primary.m-btn--gradient-to-accent:hover, .btn.m-btn--gradient-from-primary.m-btn--gradient-to-accent.active, .btn.m-btn--gradient-from-primary.m-btn--gradient-to-accent:active, .btn.m-btn--gradient-from-primary.m-btn--gradient-to-accent:focus, .show > .btn.m-btn--gradient-from-primary.m-btn--gradient-to-accent.dropdown-toggle {
+	background: #3f50d8;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #3f50d8 30%, #00aabd 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #3f50d8 30%, #00aabd 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #3f50d8 30%, #00aabd 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #3f50d8 30%, #00aabd 100%);
+/* Standard syntax */ }
+.btn.m-btn--gradient-from-primary.m-btn--gradient-to-focus {
+	background: #17a4e6;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #17a4e6 30%, #9816f4 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #17a4e6 30%, #9816f4 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #17a4e6 30%, #9816f4 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #17a4e6 30%, #9816f4 100%);
+/* Standard syntax */ }
+.btn.m-btn--gradient-from-primary.m-btn--gradient-to-focus:hover, .btn.m-btn--gradient-from-primary.m-btn--gradient-to-focus.active, .btn.m-btn--gradient-from-primary.m-btn--gradient-to-focus:active, .btn.m-btn--gradient-from-primary.m-btn--gradient-to-focus:focus, .show > .btn.m-btn--gradient-from-primary.m-btn--gradient-to-focus.dropdown-toggle {
+	background: #3f50d8;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #3f50d8 30%, #880be1 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #3f50d8 30%, #880be1 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #3f50d8 30%, #880be1 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #3f50d8 30%, #880be1 100%);
+/* Standard syntax */ }
+.btn.m-btn--gradient-from-primary.m-btn--gradient-to-primary {
+	background: #17a4e6;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #17a4e6 30%, #17a4e6 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #17a4e6 30%, #17a4e6 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #17a4e6 30%, #17a4e6 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #17a4e6 30%, #17a4e6 100%);
+/* Standard syntax */ }
+.btn.m-btn--gradient-from-primary.m-btn--gradient-to-primary:hover, .btn.m-btn--gradient-from-primary.m-btn--gradient-to-primary.active, .btn.m-btn--gradient-from-primary.m-btn--gradient-to-primary:active, .btn.m-btn--gradient-from-primary.m-btn--gradient-to-primary:focus, .show > .btn.m-btn--gradient-from-primary.m-btn--gradient-to-primary.dropdown-toggle {
+	background: #3f50d8;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #3f50d8 30%, #3f50d8 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #3f50d8 30%, #3f50d8 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #3f50d8 30%, #3f50d8 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #3f50d8 30%, #3f50d8 100%);
+/* Standard syntax */ }
+.btn.m-btn--gradient-from-primary.m-btn--gradient-to-success {
+	background: #17a4e6;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #17a4e6 30%, #34bfa3 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #17a4e6 30%, #34bfa3 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #17a4e6 30%, #34bfa3 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #17a4e6 30%, #34bfa3 100%);
+/* Standard syntax */ }
+.btn.m-btn--gradient-from-primary.m-btn--gradient-to-success:hover, .btn.m-btn--gradient-from-primary.m-btn--gradient-to-success.active, .btn.m-btn--gradient-from-primary.m-btn--gradient-to-success:active, .btn.m-btn--gradient-from-primary.m-btn--gradient-to-success:focus, .show > .btn.m-btn--gradient-from-primary.m-btn--gradient-to-success.dropdown-toggle {
+	background: #3f50d8;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #3f50d8 30%, #2da78e 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #3f50d8 30%, #2da78e 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #3f50d8 30%, #2da78e 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #3f50d8 30%, #2da78e 100%);
+/* Standard syntax */ }
+.btn.m-btn--gradient-from-primary.m-btn--gradient-to-info {
+	background: #17a4e6;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #17a4e6 30%, #36a3f7 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #17a4e6 30%, #36a3f7 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #17a4e6 30%, #36a3f7 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #17a4e6 30%, #36a3f7 100%);
+/* Standard syntax */ }
+.btn.m-btn--gradient-from-primary.m-btn--gradient-to-info:hover, .btn.m-btn--gradient-from-primary.m-btn--gradient-to-info.active, .btn.m-btn--gradient-from-primary.m-btn--gradient-to-info:active, .btn.m-btn--gradient-from-primary.m-btn--gradient-to-info:focus, .show > .btn.m-btn--gradient-from-primary.m-btn--gradient-to-info.dropdown-toggle {
+	background: #3f50d8;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #3f50d8 30%, #1996f6 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #3f50d8 30%, #1996f6 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #3f50d8 30%, #1996f6 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #3f50d8 30%, #1996f6 100%);
+/* Standard syntax */ }
+.btn.m-btn--gradient-from-primary.m-btn--gradient-to-warning {
+	background: #17a4e6;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #17a4e6 30%, #ffb822 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #17a4e6 30%, #ffb822 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #17a4e6 30%, #ffb822 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #17a4e6 30%, #ffb822 100%);
+/* Standard syntax */ }
+.btn.m-btn--gradient-from-primary.m-btn--gradient-to-warning:hover, .btn.m-btn--gradient-from-primary.m-btn--gradient-to-warning.active, .btn.m-btn--gradient-from-primary.m-btn--gradient-to-warning:active, .btn.m-btn--gradient-from-primary.m-btn--gradient-to-warning:focus, .show > .btn.m-btn--gradient-from-primary.m-btn--gradient-to-warning.dropdown-toggle {
+	background: #3f50d8;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #3f50d8 30%, #ffae03 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #3f50d8 30%, #ffae03 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #3f50d8 30%, #ffae03 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #3f50d8 30%, #ffae03 100%);
+/* Standard syntax */ }
+.btn.m-btn--gradient-from-primary.m-btn--gradient-to-danger {
+	background: #17a4e6;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #17a4e6 30%, #f4516c 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #17a4e6 30%, #f4516c 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #17a4e6 30%, #f4516c 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #17a4e6 30%, #f4516c 100%);
+/* Standard syntax */ }
+.btn.m-btn--gradient-from-primary.m-btn--gradient-to-danger:hover, .btn.m-btn--gradient-from-primary.m-btn--gradient-to-danger.active, .btn.m-btn--gradient-from-primary.m-btn--gradient-to-danger:active, .btn.m-btn--gradient-from-primary.m-btn--gradient-to-danger:focus, .show > .btn.m-btn--gradient-from-primary.m-btn--gradient-to-danger.dropdown-toggle {
+	background: #3f50d8;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #3f50d8 30%, #f23454 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #3f50d8 30%, #f23454 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #3f50d8 30%, #f23454 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #3f50d8 30%, #f23454 100%);
+/* Standard syntax */ }
+.btn.btn-outline-primary {
+	color: #17a4e6;
+}
+.btn.m-btn--gradient-from-success.m-btn--gradient-to-brand {
+	background: #34bfa3;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #34bfa3 30%, #36a3f7 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #34bfa3 30%, #36a3f7 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #34bfa3 30%, #36a3f7 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #34bfa3 30%, #36a3f7 100%);
+/* Standard syntax */ }
+.btn.m-btn--gradient-from-success.m-btn--gradient-to-brand:hover, .btn.m-btn--gradient-from-success.m-btn--gradient-to-brand.active, .btn.m-btn--gradient-from-success.m-btn--gradient-to-brand:active, .btn.m-btn--gradient-from-success.m-btn--gradient-to-brand:focus, .show > .btn.m-btn--gradient-from-success.m-btn--gradient-to-brand.dropdown-toggle {
+	background: #2da78e;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #2da78e 30%, #1192f6 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #2da78e 30%, #1192f6 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #2da78e 30%, #1192f6 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #2da78e 30%, #1192f6 100%);
+/* Standard syntax */ }
+.btn.m-btn--gradient-from-success.m-btn--gradient-to-focus {
+	background: #34bfa3;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #34bfa3 30%, #00aeda 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #34bfa3 30%, #00aeda 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #34bfa3 30%, #00aeda 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #34bfa3 30%, #00aeda 100%);
+/* Standard syntax */ }
+.btn.m-btn--gradient-from-success.m-btn--gradient-to-focus {
+	background: #34bfa3;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #34bfa3 30%, #00aeda 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #34bfa3 30%, #00aeda 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #34bfa3 30%, #00aeda 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #34bfa3 30%, #00aeda 100%);
+/* Standard syntax */ }
+.btn.m-btn--gradient-from-success.m-btn--gradient-to-focus:hover, .btn.m-btn--gradient-from-success.m-btn--gradient-to-focus.active, .btn.m-btn--gradient-from-success.m-btn--gradient-to-focus:active, .btn.m-btn--gradient-from-success.m-btn--gradient-to-focus:focus, .show > .btn.m-btn--gradient-from-success.m-btn--gradient-to-focus.dropdown-toggle {
+	background: #2da78e;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #2da78e 30%, #06a3cb 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #2da78e 30%, #06a3cb 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #2da78e 30%, #06a3cb 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #2da78e 30%, #06a3cb 100%);
+/* Standard syntax */ }
+.btn.m-btn--gradient-from-success.m-btn--gradient-to-primary {
+	background: #34bfa3;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #34bfa3 30%, #17a4e6 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #34bfa3 30%, #17a4e6 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #34bfa3 30%, #17a4e6 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #34bfa3 30%, #17a4e6 100%);
+/* Standard syntax */ }
+.btn.m-btn--gradient-from-warning.m-btn--gradient-to-brand {
+	background: #ffb822;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #ffb822 30%, #36a3f7 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #ffb822 30%, #36a3f7 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #ffb822 30%, #36a3f7 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #ffb822 30%, #36a3f7 100%);
+/* Standard syntax */ }
+.btn.m-btn--gradient-from-warning.m-btn--gradient-to-brand:hover, .btn.m-btn--gradient-from-warning.m-btn--gradient-to-brand.active, .btn.m-btn--gradient-from-warning.m-btn--gradient-to-brand:active, .btn.m-btn--gradient-from-warning.m-btn--gradient-to-brand:focus, .show > .btn.m-btn--gradient-from-warning.m-btn--gradient-to-brand.dropdown-toggle {
+	background: #ffae03;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #ffae03 30%, #1192f6 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #ffae03 30%, #1192f6 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #ffae03 30%, #1192f6 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #ffae03 30%, #1192f6 100%);
+/* Standard syntax */ }
+.btn.m-btn--gradient-from-warning.m-btn--gradient-to-focus {
+	background: #ffb822;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #ffb822 30%, #00aeda 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #ffb822 30%, #00aeda 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #ffb822 30%, #00aeda 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #ffb822 30%, #00aeda 100%);
+/* Standard syntax */ }
+.btn.m-btn--gradient-from-warning.m-btn--gradient-to-focus:hover, .btn.m-btn--gradient-from-warning.m-btn--gradient-to-focus.active, .btn.m-btn--gradient-from-warning.m-btn--gradient-to-focus:active, .btn.m-btn--gradient-from-warning.m-btn--gradient-to-focus:focus, .show > .btn.m-btn--gradient-from-warning.m-btn--gradient-to-focus.dropdown-toggle {
+	background: #ffae03;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #ffae03 30%, #880be1 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #ffae03 30%, #880be1 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #ffae03 30%, #880be1 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #ffae03 30%, #880be1 100%);
+/* Standard syntax */ }
+.btn.m-btn--gradient-from-warning.m-btn--gradient-to-primary {
+	background: #ffb822;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #ffb822 30%, #06a3cb 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #ffb822 30%, #06a3cb 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #ffb822 30%, #06a3cb 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #ffb822 30%, #06a3cb 100%);
+/* Standard syntax */ }
+.btn.m-btn--gradient-from-warning.m-btn--gradient-to-primary:hover, .btn.m-btn--gradient-from-warning.m-btn--gradient-to-primary.active, .btn.m-btn--gradient-from-warning.m-btn--gradient-to-primary:active, .btn.m-btn--gradient-from-warning.m-btn--gradient-to-primary:focus, .show > .btn.m-btn--gradient-from-warning.m-btn--gradient-to-primary.dropdown-toggle {
+	background: #ffae03;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #ffae03 30%, #0082d5 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #ffae03 30%, #0082d5 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #ffae03 30%, #0082d5 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #ffae03 30%, #0082d5 100%);
+/* Standard syntax */ }
+.btn.m-btn--gradient-from-danger.m-btn--gradient-to-brand {
+	background: #f4516c;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #f4516c 30%, #36a3f7 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #f4516c 30%, #36a3f7 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #f4516c 30%, #36a3f7 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #f4516c 30%, #36a3f7 100%);
+/* Standard syntax */ }
+.btn.m-btn--gradient-from-danger.m-btn--gradient-to-brand:hover, .btn.m-btn--gradient-from-danger.m-btn--gradient-to-brand.active, .btn.m-btn--gradient-from-danger.m-btn--gradient-to-brand:active, .btn.m-btn--gradient-from-danger.m-btn--gradient-to-brand:focus, .show > .btn.m-btn--gradient-from-danger.m-btn--gradient-to-brand.dropdown-toggle {
+	background: #f23454;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #f23454 30%, #1192f6 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #f23454 30%, #1192f6 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #f23454 30%, #1192f6 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #f23454 30%, #1192f6 100%);
+/* Standard syntax */ }
+.btn.m-btn--gradient-from-danger.m-btn--gradient-to-focus {
+	background: #f4516c;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #f4516c 30%, #00aeda 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #f4516c 30%, #00aeda 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #f4516c 30%, #00aeda 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #f4516c 30%, #00aeda 100%);
+/* Standard syntax */ }
+.btn.m-btn--gradient-from-danger.m-btn--gradient-to-focus:hover, .btn.m-btn--gradient-from-danger.m-btn--gradient-to-focus.active, .btn.m-btn--gradient-from-danger.m-btn--gradient-to-focus:active, .btn.m-btn--gradient-from-danger.m-btn--gradient-to-focus:focus, .show > .btn.m-btn--gradient-from-danger.m-btn--gradient-to-focus.dropdown-toggle {
+	background: #f23454;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #f23454 30%, #06a3cb 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #f23454 30%, #06a3cb 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #f23454 30%, #06a3cb 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #f23454 30%, #06a3cb 100%);
+/* Standard syntax */ }
+.btn.m-btn--gradient-from-danger.m-btn--gradient-to-primary {
+	background: #f4516c;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #f4516c 30%, #17a4e6 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #f4516c 30%, #17a4e6 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #f4516c 30%, #17a4e6 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #f4516c 30%, #17a4e6 100%);
+/* Standard syntax */ }
+.btn.m-btn--gradient-from-danger.m-btn--gradient-to-primary:hover, .btn.m-btn--gradient-from-danger.m-btn--gradient-to-primary.active, .btn.m-btn--gradient-from-danger.m-btn--gradient-to-primary:active, .btn.m-btn--gradient-from-danger.m-btn--gradient-to-primary:focus, .show > .btn.m-btn--gradient-from-danger.m-btn--gradient-to-primary.dropdown-toggle {
+	background: #f23454;
+	/* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(135deg, #f23454 30%, #0082d5 100%);
+	/* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(135deg, #f23454 30%, #0082d5 100%);
+	/* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(135deg, #f23454 30%, #0082d5 100%);
+	/* For Firefox 3.6 to 15 */
+	background: linear-gradient(135deg, #f23454 30%, #0082d5 100%);
+/* Standard syntax */ }
+.btn-group.m-btn-group--air {
+	-webkit-box-shadow: 0px 3px 20px 0px rgba(54, 163, 247, 0.17) !important;
+	-moz-box-shadow: 0px 3px 20px 0px rgba(54, 163, 247, 0.17) !important;
+	box-shadow: 0px 3px 20px 0px rgba(54, 163, 247, 0.17) !important;
+}
+.btn-group.m-btn-group--air .btn-default.focus, .btn-group.m-btn-group--air .btn-default:focus, .btn-group.m-btn-group--air .btn-default:hover:not(:disabled), .btn-group.m-btn-group--air .btn-secondary.focus, .btn-group.m-btn-group--air .btn-secondary:focus, .btn-group.m-btn-group--air .btn-secondary:hover:not(:disabled) {
+	background: #ffffff !important;
+	-webkit-box-shadow: 0px 3px 20px 0px rgba(54, 163, 247, 0.17) !important;
+	-moz-box-shadow: 0px 3px 20px 0px rgba(54, 163, 247, 0.17) !important;
+	box-shadow: 0px 3px 20px 0px rgba(54, 163, 247, 0.17) !important;
+}
+.m-spinner.m-spinner--brand {
+	background-color: #36a3f7;
+}
+.m-spinner.m-spinner--primary {
+	background-color: #17a4e6;
+}
+.m-loader.m-loader--brand:before {
+	border-top-color: #36a3f7;
+}
+.m-loader.m-loader--primary:before {
+	border-top-color: #17a4e6;
+}
+.m-list-search .m-list-search__results .m-list-search__result-category {
+	color: #36a3f7;
+}
+.m-list-search .m-list-search__results .m-list-search__result-item:hover .m-list-search__result-item-text {
+	color: #36a3f7;
+}
+.m-list-search.m-list-search--skin-dark .m-list-search__results .m-list-search__result-category {
+	color: #36a3f7;
+}
+.m-list-search.m-list-search--skin-dark .m-list-search__results .m-list-search__result-item:hover .m-list-search__result-item-text {
+	color: #36a3f7;
+}
+.m-list-search.m-list-search--skin-dark .m-list-search__results .m-list-search__result-category {
+	color: #36a3f7;
+}
+.m-list-search.m-list-search--skin-dark .m-list-search__results .m-list-search__result-item:hover .m-list-search__result-item-text {
+	color: #36a3f7;
+}
+.m-list-timeline .m-list-timeline__items .m-list-timeline__item .m-list-timeline__badge.m-list-timeline__badge--brand:before {
+	background-color: #36a3f7;
+}
+.m-list-timeline .m-list-timeline__items .m-list-timeline__item .m-list-timeline__badge.m-list-timeline__badge--focus:before {
+	background-color: #00aeda;
+}
+.m-list-timeline .m-list-timeline__items .m-list-timeline__item .m-list-timeline__badge.m-list-timeline__badge--primary:before {
+	background-color: #17a4e6;
+}
+.m-list-timeline.m-list-timeline--skin-dark .m-list-timeline__items .m-list-timeline__item .m-list-timeline__badge.m-list-timeline__badge--brand:before {
+	background-color: #36a3f7;
+}
+.m-list-timeline.m-list-timeline--skin-dark .m-list-timeline__items .m-list-timeline__item .m-list-timeline__badge.m-list-timeline__badge--primary:before {
+	background-color: #17a4e6;
+}
+.m-list-badge .m-list-badge__items .m-list-badge__item {
+	color: #36a3f7;
+}
+.m-list-badge .m-list-badge__items a.m-list-badge__item:hover {
+	background-color: #36a3f7;
+}
+.m-list-badge.m-list-badge--light-bg .m-list-badge__items .m-list-badge__item {
+	border: 1px solid #36a3f7;
+}
+.m-list-badge .m-list-badge__items .m-list-badge__item.m-list-badge__item--brand {
+	background-color: #36a3f7;
+}
+.m-list-badge .m-list-badge__items a.m-list-badge__item.m-list-badge__item--brand:hover {
+	background: #007edf;
+}
+.m-list-badge .m-list-badge__items .m-list-badge__item.m-list-badge__item--focus {
+	background-color: #00aeda;
+}
+.m-list-badge .m-list-badge__items a.m-list-badge__item.m-list-badge__item--focus:hover {
+	background: #009dc5;
+}
+.m-list-badge .m-list-badge__items .m-list-badge__item.m-list-badge__item--primary {
+	background-color: #17a4e6;
+}
+.m-messenger .m-messenger__messages .m-messenger__message.m-messenger__message--out .m-messenger__message-content {
+	background: #36a3f7;
+}
+.m-messenger.m-messenger.m-messenger--message-arrow .m-messenger__message.m-messenger__message--out .m-messenger__message-arrow {
+	color: #36a3f7;
+}
+.m-portlet .m-portlet__head .m-portlet__head-tools .m-portlet__nav .m-portlet__nav-item .m-portlet__nav-link.m-portlet__nav-link--icon:hover i {
+	color: #36a3f7;
+}
+.m-portlet.m-portlet--creative .m-portlet__head .m-portlet__head-caption .m-portlet__head-label.m-portlet__head-label--brand {
+	background: #36a3f7;
+}
+.m-portlet.m-portlet--creative .m-portlet__head .m-portlet__head-caption .m-portlet__head-label.m-portlet__head-label--focus {
+	background: #00aeda;
+}
+.m-portlet.m-portlet--creative .m-portlet__head .m-portlet__head-caption .m-portlet__head-label.m-portlet__head-label--primary {
+	background: #17a4e6;
+}
+.m-portlet.m-portlet--skin-dark.m-portlet--creative .m-portlet__head .m-portlet__head-caption .m-portlet__head-label.m-portlet__head-label--brand {
+	background: #36a3f7;
+}
+.m-portlet.m-portlet--skin-dark.m-portlet--creative .m-portlet__head .m-portlet__head-caption .m-portlet__head-label.m-portlet__head-label--focus {
+	background: #00aeda;
+}
+.m-portlet.m-portlet--skin-dark.m-portlet--creative .m-portlet__head .m-portlet__head-caption .m-portlet__head-label.m-portlet__head-label--primary {
+	background: #17a4e6;
+}
+.m-portlet.m-portlet--brand.m-portlet--head-solid-bg {
+	background: #36a3f7;
+	border-color: #36a3f7;
+}
+.m-portlet.m-portlet--brand.m-portlet--head-solid-bg .m-portlet__head {
+	background-color: #36a3f7;
+	border-color: #36a3f7;
+}
+.m-portlet.m-portlet--brand.m-portlet--head-solid-bg .m-portlet__foot {
+	border-color: #36a3f7;
+}
+.m-portlet.m-portlet--border-bottom-brand {
+	border-bottom: 3px solid #36a3f7;
+}
+.m-portlet.m-portlet--focus.m-portlet--head-solid-bg {
+	background: #00aeda;
+	border-color: #00aeda;
+}
+.m-portlet.m-portlet--focus.m-portlet--head-solid-bg .m-portlet__head {
+	background-color: #00aeda;
+	border-color: #00aeda;
+}
+.m-portlet.m-portlet--focus.m-portlet--head-solid-bg .m-portlet__foot {
+	background: white;
+	border-color: #00aeda;
+}
+.m-portlet.m-portlet--border-bottom-focus {
+	border-bottom: 3px solid #00aeda;
+}
+.m-portlet.m-portlet--primary.m-portlet--head-solid-bg {
+	background: #17a4e6;
+	border-color: #17a4e6;
+}
+.m-portlet.m-portlet--primary.m-portlet--head-solid-bg .m-portlet__head {
+	background-color: #17a4e6;
+	border-color: #17a4e6;
+}
+.m-portlet.m-portlet--primary.m-portlet--head-solid-bg .m-portlet__foot {
+	border-color: #17a4e6;
+}
+.m-portlet.m-portlet--border-bottom-primary {
+	border-bottom: 3px solid #17a4e6;
+}
+.m-timeline-3__item.m-timeline-3__item--brand:before {
+	background: #36a3f7;
+}
+.m-timeline-3__item.m-timeline-3__item--focus:before {
+	background: #00aeda;
+}
+.m-timeline-3__item.m-timeline-3__item--primary:before {
+	background: #17a4e6;
+}
+.m-widget2__item.m-widget2__item--brand:before {
+	background: #36a3f7;
+}
+.m-widget2__item.m-widget2__item--focus:before {
+	background: #00aeda;
+}
+.m-widget2__item.m-widget2__item--primary:before {
+	background: #17a4e6;
+}
+.m-checkbox.m-checkbox--brand > span:after {
+	border: solid #36a3f7;
+}
+.m-checkbox.m-checkbox--brand > input:disabled ~ span:after {
+	border-color: #36a3f7;
+}
+.m-checkbox.m-checkbox--brand > input:checked ~ span {
+	border: 1px solid #36a3f7;
+}
+.m-checkbox.m-checkbox--brand.m-checkbox--check-bold > input:checked ~ span {
+	border: 2px solid #36a3f7;
+}
+.m-checkbox.m-checkbox--focus > span:after {
+	border: solid #00aeda;
+}
+.m-checkbox.m-checkbox--focus > input:disabled ~ span:after {
+	border-color: #00aeda;
+}
+.m-checkbox.m-checkbox--focus > input:checked ~ span {
+	border: 1px solid #00aeda;
+}
+.m-checkbox.m-checkbox--focus.m-checkbox--check-bold > input:checked ~ span {
+	border: 2px solid #00aeda;
+}
+.m-checkbox.m-checkbox--focus.m-checkbox--solid > input:checked ~ span {
+	background: #00aeda;
+}
+.m-checkbox.m-checkbox--primary > span:after {
+	border: solid #17a4e6;
+}
+.m-checkbox.m-checkbox--primary > input:disabled ~ span:after {
+	border-color: #17a4e6;
+}
+.m-checkbox.m-checkbox--primary > input:checked ~ span {
+	border: 1px solid #17a4e6;
+}
+.m-checkbox.m-checkbox--primary.m-checkbox--check-bold > input:checked ~ span {
+	border: 2px solid #17a4e6;
+}
+.m-checkbox.m-checkbox--primary.m-checkbox--solid > input:checked ~ span {
+	background: #17a4e6;
+}
+.m-checkbox.m-checkbox--air > span {
+	-webkit-box-shadow: 0px 3px 20px 0px rgba(54, 163, 247, 0.11);
+	-moz-box-shadow: 0px 3px 20px 0px rgba(54, 163, 247, 0.11);
+	box-shadow: 0px 3px 20px 0px rgba(54, 163, 247, 0.11);
+}
+.m-radio.m-radio--brand > span:after {
+	border: solid #36a3f7;
+	background: #36a3f7;
+}
+.m-radio.m-radio--brand > input:disabled ~ span:after {
+	border-color: #36a3f7;
+}
+.m-radio.m-radio--brand > input:checked ~ span {
+	border: 1px solid #36a3f7;
+}
+.m-radio.m-radio--brand.m-radio--check-bold > input:checked ~ span {
+	border: 2px solid #36a3f7;
+}
+.m-radio.m-radio--brand.m-radio--solid > input:checked ~ span {
+	background: #36a3f7;
+}
+.m-radio.m-radio--focus > span:after {
+	border: solid #00aeda;
+	background: #00aeda;
+}
+.m-radio.m-radio--focus > input:disabled ~ span:after {
+	border-color: #00aeda;
+}
+.m-radio.m-radio--focus > input:checked ~ span {
+	border: 1px solid #00aeda;
+}
+.m-radio.m-radio--focus.m-radio--check-bold > input:checked ~ span {
+	border: 2px solid #00aeda;
+}
+.m-radio.m-radio--focus.m-radio--solid > input:checked ~ span {
+	background: #00aeda;
+}
+.m-radio.m-radio--primary > span:after {
+	border: solid #17a4e6;
+	background: #17a4e6;
+}
+.m-radio.m-radio--primary > input:disabled ~ span:after {
+	border-color: #17a4e6;
+}
+.m-radio.m-radio--primary > input:checked ~ span {
+	border: 1px solid #17a4e6;
+}
+.m-radio.m-radio--primary.m-radio--check-bold > input:checked ~ span {
+	border: 2px solid #17a4e6;
+}
+.m-radio.m-radio--primary.m-radio--solid > input:checked ~ span {
+	background: #17a4e6;
+}
+.m-checkbox.m-checkbox--skin-dark.m-checkbox--brand > span:after {
+	border: solid #36a3f7;
+}
+.m-checkbox.m-checkbox--skin-dark.m-checkbox--brand > input:disabled ~ span:after {
+	border-color: #36a3f7;
+}
+.m-checkbox.m-checkbox--skin-dark.m-checkbox--brand > input:checked ~ span {
+	border: 1px solid #36a3f7;
+}
+.m-checkbox.m-checkbox--skin-dark.m-checkbox--brand.m-checkbox--check-bold > input:checked ~ span {
+	border: 2px solid #36a3f7;
+}
+.m-checkbox.m-checkbox--skin-dark.m-checkbox--brand.m-checkbox--solid > input:checked ~ span {
+	background: #36a3f7;
+}
+.m-checkbox.m-checkbox--skin-dark.m-checkbox--focus > input:disabled ~ span:after {
+	border-color: #00aeda;
+}
+.m-checkbox.m-checkbox--skin-dark.m-checkbox--focus > input:checked ~ span {
+	border: 1px solid #00aeda;
+}
+.m-checkbox.m-checkbox--skin-dark.m-checkbox--focus.m-checkbox--check-bold > input:checked ~ span {
+	border: 2px solid #00aeda;
+}
+.m-checkbox.m-checkbox--skin-dark.m-checkbox--focus.m-checkbox--solid > input:checked ~ span {
+	background: #00aeda;
+}
+.m-checkbox.m-checkbox--skin-dark.m-checkbox--primary > span:after {
+	border: solid #17a4e6;
+}
+.m-checkbox.m-checkbox--skin-dark.m-checkbox--primary > input:disabled ~ span:after {
+	border-color: #17a4e6;
+}
+.m-checkbox.m-checkbox--skin-dark.m-checkbox--primary > input:checked ~ span {
+	border: 1px solid #17a4e6;
+}
+.m-checkbox.m-checkbox--skin-dark.m-checkbox--primary.m-checkbox--check-bold > input:checked ~ span {
+	border: 2px solid #17a4e6;
+}
+.m-checkbox.m-checkbox--skin-dark.m-checkbox--primary.m-checkbox--solid > input:checked ~ span {
+	background: #17a4e6;
+}
+.m-checkbox.m-checkbox--skin-dark.m-checkbox--air > span {
+	-webkit-box-shadow: 0px 3px 20px 0px rgba(54, 163, 247, 0.11);
+	-moz-box-shadow: 0px 3px 20px 0px rgba(54, 163, 247, 0.11);
+	box-shadow: 0px 3px 20px 0px rgba(54, 163, 247, 0.11);
+}
+.m-radio.m-radio--skin-dark.m-radio--brand > span:after {
+	border: solid #36a3f7;
+	background: #36a3f7;
+}
+.m-radio.m-radio--skin-dark.m-radio--brand > input:disabled ~ span:after {
+	border-color: #36a3f7;
+}
+.m-radio.m-radio--skin-dark.m-radio--brand > input:checked ~ span {
+	border: 1px solid #36a3f7;
+}
+.m-radio.m-radio--skin-dark.m-radio--brand.m-radio--check-bold > input:checked ~ span {
+	border: 2px solid #36a3f7;
+}
+.m-radio.m-radio--skin-dark.m-radio--brand.m-radio--solid > input:checked ~ span {
+	background: #36a3f7;
+}
+.m-radio.m-radio--skin-dark.m-radio--focus > span {
+	border: 1px solid #bdc3d4;
+}
+.m-radio.m-radio--skin-dark.m-radio--focus > span:after {
+	border: solid #00aeda;
+	background: #00aeda;
+}
+.m-radio.m-radio--skin-dark.m-radio--focus > input:disabled ~ span:after {
+	border-color: #00aeda;
+}
+.m-radio.m-radio--skin-dark.m-radio--focus > input:checked ~ span {
+	border: 1px solid #00aeda;
+}
+.m-radio.m-radio--skin-dark.m-radio--focus.m-radio--check-bold > input:checked ~ span {
+	border: 2px solid #00aeda;
+}
+.m-radio.m-radio--skin-dark.m-radio--focus.m-radio--solid > input:checked ~ span {
+	background: #00aeda;
+}
+.m-radio.m-radio--skin-dark.m-radio--primary > span:after {
+	border: solid #17a4e6;
+	background: #17a4e6;
+}
+.m-radio.m-radio--skin-dark.m-radio--primary > input:disabled ~ span:after {
+	border-color: #17a4e6;
+}
+.m-radio.m-radio--skin-dark.m-radio--primary > input:checked ~ span {
+	border: 1px solid #17a4e6;
+}
+.m-radio.m-radio--skin-dark.m-radio--primary.m-radio--check-bold > input:checked ~ span {
+	border: 2px solid #17a4e6;
+}
+.m-radio.m-radio--skin-dark.m-radio--primary.m-radio--solid > input:checked ~ span {
+	background: #17a4e6;
+}
+.m-radio.m-radio--skin-dark.m-radio--air > span {
+	-webkit-box-shadow: 0px 3px 20px 0px rgba(54, 163, 247, 0.11);
+	-moz-box-shadow: 0px 3px 20px 0px rgba(54, 163, 247, 0.11);
+	box-shadow: 0px 3px 20px 0px rgba(54, 163, 247, 0.11);
+}
+.m-checkbox.m-checkbox--state-brand > span {
+	border: 1px solid #36a3f7;
+}
+.m-checkbox.m-checkbox--state-brand > span:after {
+	border: solid #36a3f7;
+}
+.m-checkbox.m-checkbox--state-brand > input:disabled ~ span:after {
+	border-color: #36a3f7;
+}
+.m-checkbox.m-checkbox--state-brand > input:checked ~ span {
+	border: 1px solid #36a3f7;
+}
+.m-checkbox.m-checkbox--state-brand.m-checkbox--check-bold > input:checked ~ span {
+	border: 2px solid #36a3f7;
+}
+.m-checkbox.m-checkbox--state-brand.m-checkbox--solid > span {
+	background: #36a3f7;
+}
+.m-checkbox.m-checkbox--state-brand.m-checkbox--solid > input:checked ~ span {
+	background: #36a3f7;
+}
+.m-radio.m-radio--state-brand > span {
+	border: 1px solid #36a3f7;
+}
+.m-radio.m-radio--state-brand > span:after {
+	border: solid #36a3f7;
+	background: #36a3f7;
+}
+.m-radio.m-radio--state-brand > input:disabled ~ span:after {
+	border-color: #36a3f7;
+}
+.m-radio.m-radio--state-brand > input:checked ~ span {
+	border: 1px solid #36a3f7;
+}
+.m-radio.m-radio--state-brand.m-radio--check-bold > input:checked ~ span {
+	border: 2px solid #36a3f7;
+}
+.m-radio.m-radio--state-brand.m-radio--solid > span {
+	background: #36a3f7;
+}
+.m-radio.m-radio--state-brand.m-radio--solid > input:checked ~ span {
+	background: #36a3f7;
+}
+.m-checkbox.m-checkbox--state-focus > span {
+	border: 1px solid #00aeda;
+}
+.m-checkbox.m-checkbox--state-focus > span:after {
+	border: solid #00aeda;
+}
+.m-checkbox.m-checkbox--state-focus > input:disabled ~ span:after {
+	border-color: #00aeda;
+}
+.m-checkbox.m-checkbox--state-focus > input:checked ~ span {
+	border: 1px solid #00aeda;
+}
+.m-checkbox.m-checkbox--state-focus.m-checkbox--check-bold > input:checked ~ span {
+	border: 2px solid #00aeda;
+}
+.m-checkbox.m-checkbox--state-focus.m-checkbox--solid > span {
+	background: #00aeda;
+}
+.m-checkbox.m-checkbox--state-focus.m-checkbox--solid > input:checked ~ span {
+	background: #00aeda;
+}
+.m-radio.m-radio--state-focus > span {
+	border: 1px solid #00aeda;
+}
+.m-radio.m-radio--state-focus > span:after {
+	border: solid #00aeda;
+	background: #00aeda;
+}
+.m-radio.m-radio--state-focus > input:disabled ~ span:after {
+	border-color: #00aeda;
+}
+.m-radio.m-radio--state-focus > input:checked ~ span {
+	border: 1px solid #00aeda;
+}
+.m-radio.m-radio--state-focus.m-radio--check-bold > input:checked ~ span {
+	border: 2px solid #00aeda;
+}
+.m-radio.m-radio--state-focus.m-radio--solid > span {
+	background: #00aeda;
+}
+.m-radio.m-radio--state-focus.m-radio--solid > input:checked ~ span {
+	background: #00aeda;
+}
+.m-checkbox.m-checkbox--state-primary > span {
+	border: 1px solid #17a4e6;
+}
+.m-checkbox.m-checkbox--state-primary > span:after {
+	border: solid #17a4e6;
+}
+.m-checkbox.m-checkbox--state-primary > input:disabled ~ span:after {
+	border-color: #17a4e6;
+}
+.m-checkbox.m-checkbox--state-primary > input:checked ~ span {
+	border: 1px solid #17a4e6;
+}
+.m-checkbox.m-checkbox--state-primary.m-checkbox--check-bold > input:checked ~ span {
+	border: 2px solid #17a4e6;
+}
+.m-checkbox.m-checkbox--state-primary.m-checkbox--solid > span {
+	background: #17a4e6;
+}
+.m-checkbox.m-checkbox--state-primary.m-checkbox--solid > input:checked ~ span {
+	background: #17a4e6;
+}
+.m-radio.m-radio--state-primary > span {
+	border: 1px solid #17a4e6;
+}
+.m-radio.m-radio--state-primary > span:after {
+	border: solid #17a4e6;
+	background: #17a4e6;
+}
+.m-radio.m-radio--state-primary > input:disabled ~ span:after {
+	border-color: #17a4e6;
+}
+.m-radio.m-radio--state-primary > input:checked ~ span {
+	border: 1px solid #17a4e6;
+}
+.m-radio.m-radio--state-primary.m-radio--check-bold > input:checked ~ span {
+	border: 2px solid #17a4e6;
+}
+.m-radio.m-radio--state-primary.m-radio--solid > span {
+	background: #17a4e6;
+}
+.m-radio.m-radio--state-primary.m-radio--solid > input:checked ~ span {
+	background: #17a4e6;
+}
+.form-control.focus, .form-control:focus {
+	border-color: #36a3f7;
+}
+.form-control.m-input--solid:focus {
+	border-color: #36a3f7;
+}
+.form-control.m-input--air {
+	-webkit-box-shadow: 0px 3px 20px 0px rgba(54, 163, 247, 0.11);
+	-moz-box-shadow: 0px 3px 20px 0px rgba(54, 163, 247, 0.11);
+	box-shadow: 0px 3px 20px 0px rgba(54, 163, 247, 0.11);
+}
+.form-control.m-input--air:focus {
+	-webkit-box-shadow: 0px 3px 20px 0px rgba(54, 163, 247, 0.17);
+	-moz-box-shadow: 0px 3px 20px 0px rgba(54, 163, 247, 0.17);
+	box-shadow: 0px 3px 20px 0px rgba(54, 163, 247, 0.17);
+}
+.input-group.m-input-group--air {
+	-webkit-box-shadow: 0px 3px 20px 0px rgba(54, 163, 247, 0.11);
+	-moz-box-shadow: 0px 3px 20px 0px rgba(54, 163, 247, 0.11);
+	box-shadow: 0px 3px 20px 0px rgba(54, 163, 247, 0.11);
+}
+.input-group.m-input-group--solid .form-control:focus {
+	border-color: #36a3f7;
+}
+.custom-file .custom-file-input:focus + .custom-file-label {
+	border-color: #36a3f7;
+}
+.m-switch input:checked ~ span:after {
+	background-color: #36a3f7;
+	-webkit-box-shadow: 0px 3px 20px 0px rgba(54, 163, 247, 0.41);
+	-moz-box-shadow: 0px 3px 20px 0px rgba(54, 163, 247, 0.41);
+	box-shadow: 0px 3px 20px 0px rgba(54, 163, 247, 0.41);
+}
+.m-switch.m-switch--brand:not(.m-switch--outline) input:empty ~ span:before {
+	background-color: #36a3f7;
+}
+.m-switch.m-switch--brand:not(.m-switch--outline) input:checked ~ span:before {
+	background-color: #36a3f7;
+}
+.m-switch.m-switch--outline.m-switch--brand input:checked ~ span:after {
+	background-color: #36a3f7;
+}
+.m-switch.m-switch--focus:not(.m-switch--outline) input:empty ~ span:before {
+	background-color: #00aeda;
+}
+.m-switch.m-switch--focus:not(.m-switch--outline) input:empty ~ span:after {
+	color: #00aeda;
+}
+.m-switch.m-switch--focus:not(.m-switch--outline) input:checked ~ span:before {
+	background-color: #00aeda;
+}
+.m-switch.m-switch--outline.m-switch--focus input:checked ~ span:after {
+	background-color: #9816f4;
+}
+.m-switch.m-switch--primary:not(.m-switch--outline) input:empty ~ span:before {
+	background-color: #17a4e6;
+}
+.m-switch.m-switch--primary:not(.m-switch--outline) input:empty ~ span:after {
+	color: #17a4e6;
+}
+.m-switch.m-switch--primary:not(.m-switch--outline) input:checked ~ span:before {
+	background-color: #17a4e6;
+}
+.m-switch.m-switch--outline.m-switch--primary input:checked ~ span:after {
+	background-color: #17a4e6;
+}
+.has-success .form-control:focus {
+	border-color: #36a3f7;
+}
+.has-warning .form-control:focus {
+	border-color: #36a3f7;
+}
+.has-danger .form-control:focus {
+	border-color: #36a3f7;
+}
+.m-table.m-table--head-bg-brand thead th {
+	background: #36a3f7;
+}
+.m-table.m-table--head-separator-brand thead th {
+	border-bottom: 1px solid #36a3f7;
+}
+.m-table tr.m-table__row--brand th, .m-table tr.m-table__row--brand td {
+	background: #36a3f7;
+}
+.m-table.m-table--border-brand, .m-table.m-table--border-brand th, .m-table.m-table--border-brand td {
+	border-color: #36a3f7;
+}
+.m-table.m-table--head-bg-focus thead th {
+	background: #00aeda;
+}
+.m-table.m-table--head-separator-focus thead th {
+	border-bottom: 1px solid #00aeda;
+}
+.m-table tr.m-table__row--focus th, .m-table tr.m-table__row--focus td {
+	background: #00aeda;
+}
+.m-table.m-table--border-focus, .m-table.m-table--border-focus th, .m-table.m-table--border-focus td {
+	border-color: #00aeda;
+}
+.m-table.m-table--head-bg-primary thead th {
+	background: #17a4e6;
+}
+.m-table.m-table--head-separator-primary thead th {
+	border-bottom: 1px solid #17a4e6;
+}
+.m-table tr.m-table__row--primary th, .m-table tr.m-table__row--primary td {
+	background: #17a4e6;
+}
+.m-table.m-table--border-primary, .m-table.m-table--border-primary th, .m-table.m-table--border-primary td {
+	border-color: #17a4e6;
+}
+.m-wizard.m-wizard--1.m-wizard--brand .m-wizard__progress .progress .progress-bar {
+	background-color: #36a3f7;
+}
+.m-wizard.m-wizard--1.m-wizard--brand .m-wizard__progress .progress .progress-bar:after {
+	background-color: #36a3f7;
+}
+.m-wizard.m-wizard--1.m-wizard--brand .m-wizard__steps .m-wizard__step.m-wizard__step--done .m-wizard__step-info .m-wizard__step-number > span {
+	background-color: #36a3f7;
+}
+.m-wizard.m-wizard--1.m-wizard--focus .m-wizard__progress .progress .progress-bar {
+	background-color: #00aeda;
+}
+.m-wizard.m-wizard--1.m-wizard--focus .m-wizard__progress .progress .progress-bar:after {
+	background-color: #00aeda;
+}
+.m-wizard.m-wizard--1.m-wizard--focus .m-wizard__steps .m-wizard__step.m-wizard__step--done .m-wizard__step-info .m-wizard__step-number > span {
+	background-color: #00aeda;
+}
+.m-wizard.m-wizard--1.m-wizard--brand .m-wizard__steps .m-wizard__step.m-wizard__step--done .m-wizard__step-info a.m-wizard__step-number:hover > span {
+	background-color: #058df5;
+}
+.m-wizard.m-wizard--1.m-wizard--brand .m-wizard__steps .m-wizard__step.m-wizard__step--current .m-wizard__step-info .m-wizard__step-number > span {
+	background-color: #91cfff;
+}
+.m-wizard.m-wizard--1.m-wizard--brand .m-wizard__steps .m-wizard__step.m-wizard__step--current .m-wizard__step-info a.m-wizard__step-number:hover > span {
+	background-color: #5fb2f1;
+}
+.m-wizard.m-wizard--1.m-wizard--focus .m-wizard__progress .progress .progress-bar {
+	background-color: #00aeda;
+}
+.m-wizard.m-wizard--1.m-wizard--focus .m-wizard__progress .progress .progress-bar:after {
+	background-color: #00aeda;
+}
+.m-wizard.m-wizard--1.m-wizard--focus .m-wizard__steps .m-wizard__step.m-wizard__step--done .m-wizard__step-info .m-wizard__step-number > span {
+	background-color: #00aeda;
+}
+.m-wizard.m-wizard--1.m-wizard--focus .m-wizard__steps .m-wizard__step.m-wizard__step--done .m-wizard__step-info a.m-wizard__step-number:hover > span {
+	background-color: #00b3e1;
+}
+.m-wizard.m-wizard--1.m-wizard--focus .m-wizard__steps .m-wizard__step.m-wizard__step--current .m-wizard__step-info .m-wizard__step-number > span {
+	background-color: #3ecdf1;
+}
+.m-wizard.m-wizard--1.m-wizard--focus .m-wizard__steps .m-wizard__step.m-wizard__step--current .m-wizard__step-info a.m-wizard__step-number:hover > span {
+	background-color: #1dc8f3;
+}
+.m-wizard.m-wizard--1.m-wizard--primary .m-wizard__progress .progress .progress-bar {
+	background-color: #17a4e6;
+}
+.m-wizard.m-wizard--1.m-wizard--primary .m-wizard__progress .progress .progress-bar:after {
+	background-color: #17a4e6;
+}
+.m-wizard.m-wizard--1.m-wizard--primary .m-wizard__steps .m-wizard__step.m-wizard__step--done .m-wizard__step-info .m-wizard__step-number > span {
+	background-color: #17a4e6;
+}
+.m-wizard.m-wizard--2.m-wizard--brand .m-wizard__head .m-wizard__progress .progress .progress-bar {
+	background-color: #36a3f7;
+}
+.m-wizard.m-wizard--2.m-wizard--brand .m-wizard__head .m-wizard__steps .m-wizard__step.m-wizard__step--done .m-wizard__step-number > span {
+	background-color: #36a3f7;
+}
+.m-wizard.m-wizard--2.m-wizard--brand .m-wizard__head .m-wizard__steps .m-wizard__step.m-wizard__step--done a.m-wizard__step-number:hover > span {
+	background-color: #058df5;
+}
+.m-wizard.m-wizard--2.m-wizard--brand .m-wizard__head .m-wizard__steps .m-wizard__step.m-wizard__step--current .m-wizard__step-number > span {
+	background-color: #91cfff;
+}
+.m-wizard.m-wizard--2.m-wizard--brand .m-wizard__head .m-wizard__steps .m-wizard__step.m-wizard__step--current a.m-wizard__step-number:hover > span {
+	background-color: #5fb2f1;
+}
+.m-wizard.m-wizard--2.m-wizard--focus .m-wizard__head .m-wizard__progress .progress .progress-bar {
+	background-color: #00aeda;
+}
+.m-wizard.m-wizard--2.m-wizard--focus .m-wizard__head .m-wizard__steps .m-wizard__step.m-wizard__step--done .m-wizard__step-number > span {
+	background-color: #00aeda;
+}
+.m-wizard.m-wizard--2.m-wizard--focus .m-wizard__head .m-wizard__steps .m-wizard__step.m-wizard__step--done a.m-wizard__step-number:hover > span {
+	background-color: #00b3e1;
+}
+.m-wizard.m-wizard--2.m-wizard--focus .m-wizard__head .m-wizard__steps .m-wizard__step.m-wizard__step--current .m-wizard__step-number > span {
+	background-color: #3ecdf1;
+}
+.m-wizard.m-wizard--2.m-wizard--focus .m-wizard__head .m-wizard__steps .m-wizard__step.m-wizard__step--current a.m-wizard__step-number:hover > span {
+	background-color: #1dc8f3;
+}
+.m-wizard.m-wizard--2.m-wizard--primary .m-wizard__head .m-wizard__progress .progress .progress-bar {
+	background-color: #1192f6;
+}
+.m-wizard.m-wizard--2.m-wizard--primary .m-wizard__head .m-wizard__steps .m-wizard__step.m-wizard__step--done .m-wizard__step-number > span {
+	background-color: #1192f6;
+}
+.m-wizard.m-wizard--3.m-wizard--brand .m-wizard__head .m-wizard__progress .progress .progress-bar {
+	background-color: #36a3f7;
+}
+.m-wizard.m-wizard--3.m-wizard--brand .m-wizard__head .m-wizard__nav .m-wizard__steps .m-wizard__step.m-wizard__step--done .m-wizard__step-info a.m-wizard__step-number > span {
+	background-color: #36a3f7;
+}
+.m-wizard.m-wizard--3.m-wizard--brand .m-wizard__head .m-wizard__nav .m-wizard__steps .m-wizard__step.m-wizard__step--done .m-wizard__step-info a.m-wizard__step-number:hover > span {
+	background-color: #058df5;
+}
+.m-wizard.m-wizard--3.m-wizard--brand .m-wizard__head .m-wizard__nav .m-wizard__steps .m-wizard__step.m-wizard__step--current .m-wizard__step-info a.m-wizard__step-number > span {
+	background-color: #91cfff;
+}
+.m-wizard.m-wizard--3.m-wizard--brand .m-wizard__head .m-wizard__nav .m-wizard__steps .m-wizard__step.m-wizard__step--current .m-wizard__step-info a.m-wizard__step-number:hover > span {
+	background-color: #007edf;
+}
+.m-wizard.m-wizard--3.m-wizard--focus .m-wizard__head .m-wizard__progress .progress .progress-bar {
+	background-color: #00aeda;
+}
+.m-wizard.m-wizard--3.m-wizard--focus .m-wizard__head .m-wizard__nav .m-wizard__steps .m-wizard__step.m-wizard__step--done .m-wizard__step-info a.m-wizard__step-number > span {
+	background-color: #00aeda;
+}
+.m-wizard.m-wizard--3.m-wizard--focus .m-wizard__head .m-wizard__nav .m-wizard__steps .m-wizard__step.m-wizard__step--done .m-wizard__step-info a.m-wizard__step-number:hover > span {
+	background-color: #00b3e1;
+}
+.m-wizard.m-wizard--3.m-wizard--focus .m-wizard__head .m-wizard__nav .m-wizard__steps .m-wizard__step.m-wizard__step--current .m-wizard__step-info a.m-wizard__step-number > span {
+	background-color: #3ecdf1;
+}
+.m-wizard.m-wizard--3.m-wizard--focus .m-wizard__head .m-wizard__nav .m-wizard__steps .m-wizard__step.m-wizard__step--current .m-wizard__step-info a.m-wizard__step-number:hover > span {
+	background-color: #009dc5;
+}
+.m-wizard.m-wizard--3.m-wizard--primary .m-wizard__head .m-wizard__progress .progress .progress-bar {
+	background-color: #17a4e6;
+}
+.m-wizard.m-wizard--3.m-wizard--primary .m-wizard__head .m-wizard__nav .m-wizard__steps .m-wizard__step.m-wizard__step--done .m-wizard__step-info a.m-wizard__step-number > span {
+	background-color: #17a4e6;
+}
+.m-wizard.m-wizard--4.m-wizard--brand .m-wizard__head .m-wizard__nav .m-wizard__steps .m-wizard__step.m-wizard__step--done .m-wizard__step-info .m-wizard__step-icon > i {
+	color: #36a3f7;
+}
+.m-wizard.m-wizard--4.m-wizard--brand .m-wizard__head .m-wizard__nav .m-wizard__steps .m-wizard__step.m-wizard__step--current {
+	background-color: #36a3f7;
+}
+.m-wizard.m-wizard--4.m-wizard--brand .m-wizard__head .m-wizard__nav .m-wizard__steps .m-wizard__step.m-wizard__step--current .m-wizard__step-info a.m-wizard__step-number > span {
+	background-color: #0070c6;
+}
+.m-wizard.m-wizard--4.m-wizard--brand .m-wizard__head .m-wizard__nav .m-wizard__steps .m-wizard__step.m-wizard__step--current .m-wizard__step-info a.m-wizard__step-number:hover > span {
+	background-color: #0070c6;
+}
+.m-wizard.m-wizard--4.m-wizard--brand .m-wizard__head .m-wizard__nav .m-wizard__steps .m-wizard__step.m-wizard__step--current .m-wizard__step-info .m-wizard__step-icon > i {
+	color: #36a3f7;
+}
+.m-wizard.m-wizard--4.m-wizard--focus .m-wizard__head .m-wizard__nav .m-wizard__steps .m-wizard__step.m-wizard__step--done .m-wizard__step-info .m-wizard__step-icon > i {
+	color: #00aeda;
+}
+.m-wizard.m-wizard--4.m-wizard--focus .m-wizard__head .m-wizard__nav .m-wizard__steps .m-wizard__step.m-wizard__step--current {
+	background-color: #00aeda;
+}
+.m-wizard.m-wizard--4.m-wizard--focus .m-wizard__head .m-wizard__nav .m-wizard__steps .m-wizard__step.m-wizard__step--current .m-wizard__step-info a.m-wizard__step-number > span {
+	background-color: #008cb0;
+}
+.m-wizard.m-wizard--4.m-wizard--focus .m-wizard__head .m-wizard__nav .m-wizard__steps .m-wizard__step.m-wizard__step--current .m-wizard__step-info a.m-wizard__step-number:hover > span {
+	background-color: #009dc5;
+}
+.m-wizard.m-wizard--4.m-wizard--primary .m-wizard__head .m-wizard__nav .m-wizard__steps .m-wizard__step.m-wizard__step--done .m-wizard__step-info .m-wizard__step-icon > i {
+	color: #17a4e6;
+}
+.m-wizard.m-wizard--4.m-wizard--primary .m-wizard__head .m-wizard__nav .m-wizard__steps .m-wizard__step.m-wizard__step--current {
+	background-color: #17a4e6;
+}
+.m-wizard.m-wizard--4.m-wizard--primary .m-wizard__head .m-wizard__nav .m-wizard__steps .m-wizard__step.m-wizard__step--current .m-wizard__step-info .m-wizard__step-icon > i {
+	color: #17a4e6;
+}
+.m-wizard.m-wizard--5.m-wizard--brand .m-wizard__head .m-wizard__steps .m-wizard__step.m-wizard__step--current {
+	border-bottom: 2px solid #36a3f7;
+}
+.m-wizard.m-wizard--5.m-wizard--brand .m-wizard__head .m-wizard__steps .m-wizard__step.m-wizard__step--current .m-wizard__step-info .m-wizard__step-number .m-wizard__step-seq {
+	color: #36a3f7;
+}
+.m-wizard.m-wizard--5.m-wizard--brand .m-wizard__head .m-wizard__steps .m-wizard__step.m-wizard__step--current .m-wizard__step-info .m-wizard__step-number .m-wizard__step-label {
+	color: #36a3f7;
+}
+.m-wizard.m-wizard--5.m-wizard--brand .m-wizard__head .m-wizard__steps .m-wizard__step.m-wizard__step--current {
+	border-bottom: 2px solid #36a3f7;
+}
+.m-wizard.m-wizard--5.m-wizard--brand .m-wizard__head .m-wizard__steps .m-wizard__step.m-wizard__step--current .m-wizard__step-info .m-wizard__step-number .m-wizard__step-seq {
+	color: #36a3f7;
+}
+.m-wizard.m-wizard--5.m-wizard--brand .m-wizard__head .m-wizard__steps .m-wizard__step.m-wizard__step--current .m-wizard__step-info .m-wizard__step-number .m-wizard__step-label {
+	color: #36a3f7;
+}
+.m-wizard.m-wizard--5.m-wizard--focus .m-wizard__head .m-wizard__steps .m-wizard__step.m-wizard__step--current {
+	border-bottom: 2px solid #00aeda;
+}
+.m-wizard.m-wizard--5.m-wizard--focus .m-wizard__head .m-wizard__steps .m-wizard__step.m-wizard__step--current .m-wizard__step-info .m-wizard__step-number .m-wizard__step-seq {
+	color: #00aeda;
+}
+.m-wizard.m-wizard--5.m-wizard--focus .m-wizard__head .m-wizard__steps .m-wizard__step.m-wizard__step--current .m-wizard__step-info .m-wizard__step-number .m-wizard__step-label {
+	color: #00aeda;
+}
+.m-wizard.m-wizard--5.m-wizard--primary .m-wizard__head .m-wizard__steps .m-wizard__step.m-wizard__step--current {
+	border-bottom: 2px solid #17a4e6;
+}
+.m-wizard.m-wizard--5.m-wizard--primary .m-wizard__head .m-wizard__steps .m-wizard__step.m-wizard__step--current .m-wizard__step-info .m-wizard__step-number .m-wizard__step-seq {
+	color: #17a4e6;
+}
+.m-wizard.m-wizard--5.m-wizard--primary .m-wizard__head .m-wizard__steps .m-wizard__step.m-wizard__step--current .m-wizard__step-info .m-wizard__step-number .m-wizard__step-label {
+	color: #17a4e6;
+}
+.m-accordion.m-accordion--section .m-accordion__item .m-accordion__item-head {
+	color: #36a3f7 !important;
+}
+.m-accordion.m-accordion--section .m-accordion__item .m-accordion__item-head .m-accordion__item-mode {
+	color: #36a3f7 !important;
+}
+.m-accordion.m-accordion--section .m-accordion__item .m-accordion__item-head.collapsed {
+	color: #6bb2e9 !important;
+}
+.m-accordion.m-accordion--section .m-accordion__item .m-accordion__item-head.collapsed .m-accordion__item-mode {
+	color: #6bb2e9 !important;
+}
+.m-accordion .m-accordion__item--brand {
+	border: 1px solid #36a3f7 !important;
+}
+.m-accordion .m-accordion__item--brand .m-accordion__item-head, .m-accordion .m-accordion__item--brand .m-accordion__item-head:hover {
+	background-color: #058df5 !important;
+}
+.m-accordion .m-accordion__item--brand .m-accordion__item-head .m-accordion__item-mode {
+	color: #ffffff !important;
+}
+.m-accordion .m-accordion__item--brand .m-accordion__item-head.collapsed {
+	background-color: #36a3f7 !important;
+}
+.m-accordion .m-accordion__item--focus {
+	border: 1px solid #00aeda !important;
+}
+.m-accordion .m-accordion__item--focus .m-accordion__item-head, .m-accordion .m-accordion__item--focus .m-accordion__item-head:hover {
+	background-color: #00b3e1 !important;
+}
+.m-accordion .m-accordion__item--focus .m-accordion__item-head.collapsed {
+	background-color: #00aeda !important;
+}
+.m-accordion .m-accordion__item--primary {
+	border: 1px solid #17a4e6 !important;
+}
+.m-accordion .m-accordion__item--primary .m-accordion__item-head.collapsed {
+	background-color: #17a4e6 !important;
+}
+.datepicker tbody tr > td.day.selected, .datepicker tbody tr > td.day.selected:hover, .datepicker tbody tr > td.day.active, .datepicker tbody tr > td.day.active:hover {
+	background: #17a4e6;
+}
+.datepicker tbody tr > td.day.today {
+	background: #8cc3ed;
+}
+.datepicker tbody tr > td span.month.active:hover, .datepicker tbody tr > td span.month.active {
+	background: #17a4e6;
+}
+.datetimepicker tbody tr > td.day.selected, .datetimepicker tbody tr > td.day.active {
+	background: #17a4e6;
+}
+.datetimepicker tbody tr > td.day.today {
+	background: #8cc3ed;
+}
+.datetimepicker tbody tr > td span.hour.active:hover, .datetimepicker tbody tr > td span.hour.active, .datetimepicker tbody tr > td span.minute.active:hover, .datetimepicker tbody tr > td span.minute.active, .datetimepicker tbody tr > td span.month.active:hover, .datetimepicker tbody tr > td span.month.active {
+	background: #17a4e6;
+}
+.daterangepicker .daterangepicker_input .input-mini.active, .daterangepicker .daterangepicker_input .input-mini:focus {
+	border: 1px solid #36a3f7;
+}
+.daterangepicker tbody td.today {
+	background: #8cc3ed;
+}
+.daterangepicker tbody td.in-range, .daterangepicker tbody td.active {
+	background: #17a4e6;
+}
+.daterangepicker tbody td.in-range:hover, .daterangepicker tbody td.active:hover {
+	background: #17a4e6;
+}
+.daterangepicker select.monthselect.active, .daterangepicker select.monthselect:focus, .daterangepicker select.yearselect.active, .daterangepicker select.yearselect:focus, .daterangepicker select.hourselect.active, .daterangepicker select.hourselect:focus, .daterangepicker select.minuteselect.active, .daterangepicker select.minuteselect:focus, .daterangepicker select.ampmselect.active, .daterangepicker select.ampmselect:focus {
+	border: 1px solid #36a3f7;
+}
+.daterangepicker .ranges li.active {
+	background: #36a3f7;
+	border: 1px solid #36a3f7;
+}
+.m-bootstrap-touchspin-brand .bootstrap-touchspin .btn.focus, .m-bootstrap-touchspin-brand .bootstrap-touchspin .btn:focus, .m-bootstrap-touchspin-brand .bootstrap-touchspin .btn:hover {
+	background: #36a3f7 !important;
+}
+.bootstrap-switch .bootstrap-switch-handle-on.bootstrap-switch-brand, .bootstrap-switch .bootstrap-switch-handle-off.bootstrap-switch-brand {
+	background-color: #36a3f7;
+	border-color: #36a3f7;
+}
+.bootstrap-switch .bootstrap-switch-handle-on.bootstrap-switch-focus, .bootstrap-switch .bootstrap-switch-handle-off.bootstrap-switch-focus {
+	background-color: #00aeda;
+	border-color: #00aeda;
+}
+.bootstrap-switch .bootstrap-switch-handle-on.bootstrap-switch-primary, .bootstrap-switch .bootstrap-switch-handle-off.bootstrap-switch-primary {
+	background-color: #17a4e6;
+	border-color: #17a4e6;
+}
+.m-bootstrap-switch.m-bootstrap-switch--air .bootstrap-switch {
+	-webkit-box-shadow: 0px 3px 20px 0px rgba(54, 163, 247, 0.17);
+	-moz-box-shadow: 0px 3px 20px 0px rgba(54, 163, 247, 0.17);
+	box-shadow: 0px 3px 20px 0px rgba(54, 163, 247, 0.17);
+}
+.bootstrap-select.btn-group.show > .dropdown-toggle.btn-default, .bootstrap-select.btn-group.show > .dropdown-toggle.btn-secondary {
+	border-color: #36a3f7 !important;
+}
+.m-bootstrap-select.bootstrap-select.btn-group.m-bootstrap-select--air > .dropdown-toggle {
+	-webkit-box-shadow: 0px 3px 20px 0px rgba(54, 163, 247, 0.11);
+	-moz-box-shadow: 0px 3px 20px 0px rgba(54, 163, 247, 0.11);
+	box-shadow: 0px 3px 20px 0px rgba(54, 163, 247, 0.11);
+}
+.select2-container--default.select2-container--focus .select2-selection--multiple, .select2-container--default.select2-container--focus .select2-selection--single, .select2-container--default.select2-container--open .select2-selection--multiple, .select2-container--default.select2-container--open .select2-selection--single {
+	border-color: #36a3f7;
+}
+.m-select2.m-select2--air .select2-container--default .select2-selection--single, .m-select2.m-select2--air .select2-container--default .select2-selection--multiple {
+	-webkit-box-shadow: 0px 3px 20px 0px rgba(54, 163, 247, 0.11);
+	-moz-box-shadow: 0px 3px 20px 0px rgba(54, 163, 247, 0.11);
+	box-shadow: 0px 3px 20px 0px rgba(54, 163, 247, 0.11);
+}
+.noUi-target.m-nouislider.m-nouislider--connect-brand .noUi-connect {
+	background: #36a3f7;
+}
+.noUi-target.m-nouislider.m-nouislider--handle-brand .noUi-handle {
+	border: 0;
+	background: #36a3f7;
+	-webkit-box-shadow: 0 3px 6px -3px #36a3f7;
+	-moz-box-shadow: 0 3px 6px -3px #36a3f7;
+	box-shadow: 0 3px 6px -3px #36a3f7;
+}
+.noUi-target.m-nouislider.m-nouislider--connect-focus .noUi-connect {
+	background: #00aeda;
+}
+.noUi-target.m-nouislider.m-nouislider--handle-focus .noUi-handle {
+	border: 0;
+	background: #00aeda;
+	-webkit-box-shadow: 0 3px 6px -3px #00aeda;
+	-moz-box-shadow: 0 3px 6px -3px #00aeda;
+	box-shadow: 0 3px 6px -3px #00aeda;
+}
+.noUi-target.m-nouislider.m-nouislider--connect-primary .noUi-connect {
+	background: #17a4e6;
+}
+.noUi-target.m-nouislider.m-nouislider--handle-primary .noUi-handle {
+	border: 0;
+	background: #17a4e6;
+	-webkit-box-shadow: 0 3px 6px -3px #17a4e6;
+	-moz-box-shadow: 0 3px 6px -3px #17a4e6;
+	box-shadow: 0 3px 6px -3px #17a4e6;
+}
+.m-dropzone.m-dropzone--brand {
+	border-color: #36a3f7;
+}
+.m-dropzone.m-dropzone--focus {
+	border-color: #00aeda;
+}
+.m-dropzone.m-dropzone--primary {
+	border-color: #17a4e6;
+}
+.fc-unthemed .fc-list-item-title > a[href]:hover {
+	color: #36a3f7;
+}
+.fc-unthemed .fc-event.fc-start.m-fc-event--brand .fc-content:before, .fc-unthemed .fc-event-dot.fc-start.m-fc-event--brand .fc-content:before {
+	background: #36a3f7;
+}
+.fc-unthemed .fc-event.fc-not-start.fc-end.m-fc-event--solid-brand, .fc-unthemed .fc-event.fc-not-start.fc-not-end.m-fc-event--solid-brand, .fc-unthemed .fc-event.fc-start.m-fc-event--solid-brand, .fc-unthemed .fc-event-dot.fc-not-start.fc-end.m-fc-event--solid-brand, .fc-unthemed .fc-event-dot.fc-not-start.fc-not-end.m-fc-event--solid-brand, .fc-unthemed .fc-event-dot.fc-start.m-fc-event--solid-brand {
+	background: #36a3f7;
+}
+.fc-unthemed .fc-event.fc-start.m-fc-event--focus .fc-content:before, .fc-unthemed .fc-event-dot.fc-start.m-fc-event--focus .fc-content:before {
+	background: #00aeda;
+}
+.fc-unthemed .fc-event.fc-not-start.fc-end.m-fc-event--solid-focus, .fc-unthemed .fc-event.fc-not-start.fc-not-end.m-fc-event--solid-focus, .fc-unthemed .fc-event.fc-start.m-fc-event--solid-focus, .fc-unthemed .fc-event-dot.fc-not-start.fc-end.m-fc-event--solid-focus, .fc-unthemed .fc-event-dot.fc-not-start.fc-not-end.m-fc-event--solid-focus, .fc-unthemed .fc-event-dot.fc-start.m-fc-event--solid-focus {
+	background: #00aeda;
+}
+.fc-unthemed .fc-event.fc-start.m-fc-event--primary .fc-content:before, .fc-unthemed .fc-event-dot.fc-start.m-fc-event--primary .fc-content:before {
+	background: #17a4e6;
+}
+.fc-unthemed .fc-event.fc-not-start.fc-end.m-fc-event--solid-primary, .fc-unthemed .fc-event.fc-not-start.fc-not-end.m-fc-event--solid-primary, .fc-unthemed .fc-event.fc-start.m-fc-event--solid-primary, .fc-unthemed .fc-event-dot.fc-not-start.fc-end.m-fc-event--solid-primary, .fc-unthemed .fc-event-dot.fc-not-start.fc-not-end.m-fc-event--solid-primary, .fc-unthemed .fc-event-dot.fc-start.m-fc-event--solid-primary {
+	background: #17a4e6;
+}
+.fc-unthemed .fc-popover .fc-body .fc-event.fc-not-start.fc-not-end.m-fc-event--brand .fc-content:before, .fc-unthemed .fc-popover .fc-body .fc-event-dot.fc-not-start.fc-not-end.m-fc-event--brand .fc-content:before {
+	background: #36a3f7;
+}
+.fc-unthemed .fc-popover .fc-body .fc-event.fc-not-start.fc-not-end.m-fc-event--solid-brand, .fc-unthemed .fc-popover .fc-body .fc-event-dot.fc-not-start.fc-not-end.m-fc-event--solid-brand {
+	background: #36a3f7;
+}
+.fc-unthemed .fc-popover .fc-body .fc-event.fc-not-start.fc-not-end.m-fc-event--focus .fc-content:before, .fc-unthemed .fc-popover .fc-body .fc-event-dot.fc-not-start.fc-not-end.m-fc-event--focus .fc-content:before {
+	background: #00aeda;
+}
+.fc-unthemed .fc-popover .fc-body .fc-event.fc-not-start.fc-not-end.m-fc-event--solid-focus, .fc-unthemed .fc-popover .fc-body .fc-event-dot.fc-not-start.fc-not-end.m-fc-event--solid-focus {
+	background: #00aeda;
+}
+.fc-unthemed .fc-popover .fc-body .fc-event.fc-not-start.fc-not-end.m-fc-event--primary .fc-content:before, .fc-unthemed .fc-popover .fc-body .fc-event-dot.fc-not-start.fc-not-end.m-fc-event--primary .fc-content:before {
+	background: #17a4e6;
+}
+.fc-unthemed .fc-popover .fc-body .fc-event.fc-not-start.fc-not-end.m-fc-event--solid-primary, .fc-unthemed .fc-popover .fc-body .fc-event-dot.fc-not-start.fc-not-end.m-fc-event--solid-primary {
+	background: #17a4e6;
+}
+.fc-unthemed .fc-list-item.m-fc-event--solid-brand .fc-event-dot, .fc-unthemed .fc-list-item.m-fc-event--brand .fc-event-dot {
+	background: #36a3f7;
+	border-color: #36a3f7;
+}
+.fc-unthemed .fc-list-item.m-fc-event--solid-focus .fc-event-dot, .fc-unthemed .fc-list-item.m-fc-event--focus .fc-event-dot {
+	background: #00aeda;
+	border-color: #00aeda;
+}
+.fc-unthemed .fc-list-item.m-fc-event--solid-primary .fc-event-dot, .fc-unthemed .fc-list-item.m-fc-event--primary .fc-event-dot {
+	background: #17a4e6;
+	border-color: #17a4e6;
+}
+.fc-unthemed .fc-toolbar .fc-button:focus, .fc-unthemed .fc-toolbar .fc-button:active, .fc-unthemed .fc-toolbar .fc-button.fc-state-active {
+	background: #36a3f7;
+}
+.m-quick-sidebar .m-quick-sidebar__close:hover {
+	color: #36a3f7;
+}
+.m-quick-sidebar.m-quick-sidebar--skin-dark .m-quick-sidebar__close:hover {
+	color: #36a3f7;
+}
+.m-pricing-table-2 .m-pricing-table-2__head .btn-group .btn.active {
+	background: #36a3f7;
+}
+.m-pricing-table-3 .m-pricing-table-3__items .m-pricing-table-3__item.m-pricing-table-3__item--focus .m-pricing-table-3__price {
+	background-color: #5c9dcf;
+}
+.m-pricing-table-3 .m-pricing-table-3__items .m-pricing-table-3__item.m-pricing-table-3__item--focus .m-pricing-table-3__price .m-pricing-table-3__label {
+	color: #a1cdee;
+}
+.m-pricing-table-3 .m-pricing-table-3__items .m-pricing-table-3__item.m-pricing-table-3__item--focus .m-pricing-table-3__price .m-pricing-table-3__text {
+	color: #a1cdee;
+}
+.m-pricing-table-3 .m-pricing-table-3__items .m-pricing-table-3__item.m-pricing-table-3__item--focus .m-pricing-table-3__description {
+	color: #a1cdee;
+}
+.m-invoice-1 .m-invoice__wrapper .m-invoice__head .m-invoice__container .m-invoice__desc {
+	color: #9cc2df;
+}
+.m-invoice-1 .m-invoice__wrapper .m-invoice__head .m-invoice__container .m-invoice__items {
+	border-top: 1px solid #6bb2e9;
+}
+.m-invoice-1 .m-invoice__wrapper .m-invoice__head .m-invoice__container .m-invoice__items .m-invoice__item .m-invoice__text {
+	color: #9cc2df;
+}
+ .m-login.m-login--1 .m-login__wrapper .m-login__form .m-form__group .form-control:focus::-moz-placeholder {
+ color: #36a3f7;
+ opacity: 1;
+}
+ .m-login.m-login--1 .m-login__wrapper .m-login__form .m-form__group .form-control:focus:-ms-input-placeholder {
+ color: #36a3f7;
+}
+ .m-login.m-login--1 .m-login__wrapper .m-login__form .m-form__group .form-control:focus::-webkit-input-placeholder {
+ color: #36a3f7;
+}
+.m-login.m-login--2.m-login-2--skin-1 .m-login__container .m-login__head .m-login__desc {
+	color: #7fbdeb;
+}
+.m-login.m-login--2.m-login-2--skin-1 .m-login__container .m-login__form {
+	color: #7fbdeb;
+}
+.m-login.m-login--2.m-login-2--skin-1 .m-login__container .m-login__form .form-control {
+	color: #b6dcf8;
+	background: rgba(34, 50, 167, 0.4);
+}
+ .m-login.m-login--2.m-login-2--skin-1 .m-login__container .m-login__form .form-control::-moz-placeholder {
+ color: #6fb3e5;
+ opacity: 1;
+}
+ .m-login.m-login--2.m-login-2--skin-1 .m-login__container .m-login__form .form-control:-ms-input-placeholder {
+ color: #6fb3e5;
+}
+ .m-login.m-login--2.m-login-2--skin-1 .m-login__container .m-login__form .form-control::-webkit-input-placeholder {
+ color: #6fb3e5;
+}
+ .m-login.m-login--2.m-login-2--skin-1 .m-login__container .m-login__form .form-control:focus::-moz-placeholder {
+ color: #b6dcf8;
+ opacity: 1;
+}
+ .m-login.m-login--2.m-login-2--skin-1 .m-login__container .m-login__form .form-control:focus:-ms-input-placeholder {
+ color: #b6dcf8;
+}
+ .m-login.m-login--2.m-login-2--skin-1 .m-login__container .m-login__form .form-control:focus::-webkit-input-placeholder {
+ color: #b6dcf8;
+}
+.m-login.m-login--2.m-login-2--skin-1 .m-login__container .m-login__form .m-login__form-sub .m-checkbox {
+	color: #7fbdeb;
+}
+.m-login.m-login--2.m-login-2--skin-1 .m-login__container .m-login__form .m-login__form-sub .m-link {
+	color: #7fbdeb;
+}
+  .m-login.m-login--2.m-login-2--skin-1 .m-login__container .m-login__form .m-login__form-action .m-login__btn {
+    color: #6fb3e5;
+    border-color: #46a3e7;
+    background-color: transparent; }
+  .m-login.m-login--2.m-login-2--skin-1 .m-login__container .m-login__form .m-login__form-action .m-login__btn.m-login__btn--primary {
+    border-color: #7fbdeb; }
+.m-login.m-login--2.m-login-2--skin-1 .m-login__container .m-login__account .m-login__account-msg {
+  color: #7fbdeb; }
+
+.m-login.m-login--2.m-login-2--skin-1 .m-login__container .m-login__account .m-login__account-link {
+  color: #e3f2fd; }
+
+@media (max-width: 992px) {
+  .m-login.m-login--2.m-login-2--skin-1 .m-login__container .m-login__form .form-control {
+    background: rgba(34, 50, 167, 0.8); } }
+
+.m-login.m-login--2.m-login-2--skin-3 .m-login__container .m-login__head .m-login__title {
+  color: #3080ba; }
+
+.m-login.m-login--2.m-login-2--skin-3 .m-login__container .m-login__head .m-login__desc {
+  color: #3080ba; }
+
+.m-login.m-login--2.m-login-2--skin-3 .m-login__container .m-login__form {
+  color: #3080ba; }
+ .m-login.m-login--2.m-login-2--skin-3 .m-login__container .m-login__form .form-control {
+    color: #529ace;
+    background: #003256; }
+    .m-login.m-login--2.m-login-2--skin-3 .m-login__container .m-login__form .form-control::-moz-placeholder {
+      color: #418dc4;
+      opacity: 1; }
+    .m-login.m-login--2.m-login-2--skin-3 .m-login__container .m-login__form .form-control:-ms-input-placeholder {
+      color: #418dc4; }
+    .m-login.m-login--2.m-login-2--skin-3 .m-login__container .m-login__form .form-control::-webkit-input-placeholder {
+      color: #418dc4; }
+    .m-login.m-login--2.m-login-2--skin-3 .m-login__container .m-login__form .form-control:focus {
+      color: #72aad2; }
+      .m-login.m-login--2.m-login-2--skin-3 .m-login__container .m-login__form .form-control:focus::-moz-placeholder {
+        color: #529ace;
+        opacity: 1; }
+      .m-login.m-login--2.m-login-2--skin-3 .m-login__container .m-login__form .form-control:focus:-ms-input-placeholder {
+        color: #529ace; }
+      .m-login.m-login--2.m-login-2--skin-3 .m-login__container .m-login__form .form-control:focus::-webkit-input-placeholder {
+        color: #529ace; }
+ .m-login.m-login--2.m-login-2--skin-3 .m-login__container .m-login__form .m-login__form-sub .m-checkbox {
+    color: #3080ba; }
+  .m-login.m-login--2.m-login-2--skin-3 .m-login__container .m-login__form .m-login__form-sub .m-link {
+    color: #3080ba; }
+    .m-login.m-login--2.m-login-2--skin-3 .m-login__container .m-login__form .m-login__form-sub .m-link:hover {
+      color: #72aad2; }
+      .m-login.m-login--2.m-login-2--skin-3 .m-login__container .m-login__form .m-login__form-sub .m-link:hover:after {
+        border-bottom: 1px solid #72aad2;
+        opacity: 0.3 ;
+        filter: alpha(opacity=30) ; }
+
+.m-login.m-login--2.m-login-2--skin-3 .m-login__container .m-login__account .m-login__account-msg {
+  color: #3080ba; }
+
+.m-login.m-login--2.m-login-2--skin-3 .m-login__container .m-login__account .m-login__account-link {
+  color: #5ca1d3; }
+  .m-login.m-login--2.m-login-2--skin-3 .m-login__container .m-login__account .m-login__account-link:hover {
+    color: #81b4d9; }
+    .m-login.m-login--2.m-login-2--skin-3 .m-login__container .m-login__account .m-login__account-link:hover:after {
+      border-bottom: 1px solid #81b4d9;
+      opacity: 0.3 ;
+      filter: alpha(opacity=30) ; }
+ .m-login.m-login--5 .m-login__wrapper-2 .m-login__contanier .m-login__form .m-form__group .form-control:focus::-moz-placeholder {
+              color: #36a3f7;
+              opacity: 1; }
+            .m-login.m-login--5 .m-login__wrapper-2 .m-login__contanier .m-login__form .m-form__group .form-control:focus:-ms-input-placeholder {
+              color: #36a3f7; }
+            .m-login.m-login--5 .m-login__wrapper-2 .m-login__contanier .m-login__form .m-form__group .form-control:focus::-webkit-input-placeholder {
+              color: #36a3f7; }
+    .m-brand.m-brand--skin-dark .m-brand__tools .m-brand__toggler:hover span {
+      background: #36a3f7; }
+      .m-brand.m-brand--skin-dark .m-brand__tools .m-brand__toggler:hover span::before, .m-brand.m-brand--skin-dark .m-brand__tools .m-brand__toggler:hover span::after {
+        background: #36a3f7; }
+    .m-brand.m-brand--skin-dark .m-brand__tools .m-brand__toggler.m-brand__toggler--active span {
+      background: #36a3f7; }
+      .m-brand.m-brand--skin-dark .m-brand__tools .m-brand__toggler.m-brand__toggler--active span::before, .m-brand.m-brand--skin-dark .m-brand__tools .m-brand__toggler.m-brand__toggler--active span::after {
+        background: #36a3f7; }
+    .m-brand.m-brand--skin-light .m-brand__tools .m-brand__toggler:hover span {
+      background: #36a3f7; }
+      .m-brand.m-brand--skin-light .m-brand__tools .m-brand__toggler:hover span::before, .m-brand.m-brand--skin-light .m-brand__tools .m-brand__toggler:hover span::after {
+        background: #36a3f7; }
+    .m-brand.m-brand--skin-light .m-brand__tools .m-brand__toggler.m-brand__toggler--active span {
+      background: #36a3f7; }
+      .m-brand.m-brand--skin-light .m-brand__tools .m-brand__toggler.m-brand__toggler--active span::before, .m-brand.m-brand--skin-light .m-brand__tools .m-brand__toggler.m-brand__toggler--active span::after {
+        background: #36a3f7; }
+      .m-brand.m-brand--skin-light .m-brand__tools .m-brand__icon:hover > i {
+        color: #36a3f7; }
+        .m-topbar .m-topbar__nav.m-nav > .m-nav__item > .m-nav__link .m-nav__link-icon {
+          color: #06bdeb; }
+      .m-topbar .m-topbar__nav.m-nav > .m-nav__item.m-topbar__notifications.m-topbar__notifications--img.m-dropdown--arrow .m-dropdown__arrow {
+        color: #009be3; }
+      .m-topbar .m-topbar__nav.m-nav > .m-nav__item.m-topbar__quick-actions.m-topbar__quick-actions--img.m-dropdown--arrow .m-dropdown__arrow {
+        color: #0091d4; }
+      .m-topbar .m-topbar__nav.m-nav > .m-nav__item.m-topbar__user-profile.m-topbar__user-profile--img.m-dropdown--arrow .m-dropdown__arrow {
+        color: #0197dd; }
+      .m-aside-left-close.m-aside-left-close--skin-dark > i {
+        color: #4daedb; }
+      .m-aside-left-close.m-aside-left-close--skin-dark:hover {
+        background-color: #36a3f7; }
+   
+      .m-aside-left-close.m-aside-left-close--skin-light:hover {
+        background-color: #36a3f7; }
+
+      .m-aside-header-menu-mobile-close.m-aside-header-menu-mobile-close--skin-dark > i {
+        color: #4daedb; }
+      .m-aside-header-menu-mobile-close.m-aside-header-menu-mobile-close--skin-dark:hover {
+        background-color: #36a3f7; }
+      .m-aside-header-menu-mobile-close.m-aside-header-menu-mobile-close--skin-light:hover {
+        background-color: #36a3f7; }
+.m-header-menu.m-header-menu--skin-light .m-menu__nav > .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__link-icon {
+    color: #36a3f7; }
+  .m-header-menu.m-header-menu--skin-light .m-menu__nav > .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__link-bullet.m-menu__link-bullet--dot > span {
+    background-color: #36a3f7; }
+  .m-header-menu.m-header-menu--skin-light .m-menu__nav > .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__link-bullet.m-menu__link-bullet--line > span {
+    background-color: #36a3f7; }
+  .m-header-menu.m-header-menu--skin-light .m-menu__nav > .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__link-text {
+    color: #36a3f7; }
+  .m-header-menu.m-header-menu--skin-light .m-menu__nav > .m-menu__item.m-menu__item--active > .m-menu__link > .m-menu__hor-arrow {
+    color: #36a3f7; }
+  .m-header-menu.m-header-menu--skin-light .m-menu__nav > .m-menu__item:hover > .m-menu__link .m-menu__link-icon, .m-header-menu.m-header-menu--skin-light .m-menu__nav > .m-menu__item.m-menu__item--hover > .m-menu__link .m-menu__link-icon {
+    color: #fff; }
+  .m-header-menu.m-header-menu--skin-light .m-menu__nav > .m-menu__item:hover > .m-menu__link .m-menu__link-bullet.m-menu__link-bullet--dot > span, .m-header-menu.m-header-menu--skin-light .m-menu__nav > .m-menu__item.m-menu__item--hover > .m-menu__link .m-menu__link-bullet.m-menu__link-bullet--dot > span {
+    background-color: #36a3f7; }
+  .m-header-menu.m-header-menu--skin-light .m-menu__nav > .m-menu__item:hover > .m-menu__link .m-menu__link-bullet.m-menu__link-bullet--line > span, .m-header-menu.m-header-menu--skin-light .m-menu__nav > .m-menu__item.m-menu__item--hover > .m-menu__link .m-menu__link-bullet.m-menu__link-bullet--line > span {
+    background-color: #36a3f7; }
+  .m-header-menu.m-header-menu--skin-light .m-menu__nav > .m-menu__item:hover > .m-menu__link .m-menu__link-text, .m-header-menu.m-header-menu--skin-light .m-menu__nav > .m-menu__item.m-menu__item--hover > .m-menu__link .m-menu__link-text {
+    color: #fff; }
+  .m-header-menu.m-header-menu--skin-light .m-menu__nav > .m-menu__item:hover > .m-menu__link > .m-menu__hor-arrow, .m-header-menu.m-header-menu--skin-light .m-menu__nav > .m-menu__item.m-menu__item--hover > .m-menu__link > .m-menu__hor-arrow {
+    color: #36a3f7; }
+.m-header-menu.m-header-menu--submenu-skin-light .m-menu__nav > .m-menu__item .m-menu__submenu > .m-menu__subnav > .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__link-icon {
+      color: #36a3f7; }
+    .m-header-menu.m-header-menu--submenu-skin-light .m-menu__nav > .m-menu__item .m-menu__submenu > .m-menu__subnav > .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__link-bullet.m-menu__link-bullet--dot > span {
+      background-color: #36a3f7; }
+    .m-header-menu.m-header-menu--submenu-skin-light .m-menu__nav > .m-menu__item .m-menu__submenu > .m-menu__subnav > .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__link-bullet.m-menu__link-bullet--line > span {
+      background-color: #36a3f7; }
+    .m-header-menu.m-header-menu--submenu-skin-light .m-menu__nav > .m-menu__item .m-menu__submenu > .m-menu__subnav > .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__link-text {
+      color: #36a3f7; }
+    .m-header-menu.m-header-menu--submenu-skin-light .m-menu__nav > .m-menu__item .m-menu__submenu > .m-menu__subnav > .m-menu__item.m-menu__item--active > .m-menu__link > .m-menu__hor-arrow {
+      color: #36a3f7; }
+    .m-header-menu.m-header-menu--submenu-skin-light .m-menu__nav > .m-menu__item .m-menu__submenu > .m-menu__subnav > .m-menu__item:hover > .m-menu__link .m-menu__link-icon, .m-header-menu.m-header-menu--submenu-skin-light .m-menu__nav > .m-menu__item .m-menu__submenu > .m-menu__subnav > .m-menu__item.m-menu__item--hover > .m-menu__link .m-menu__link-icon {
+      color: #36a3f7; }
+    .m-header-menu.m-header-menu--submenu-skin-light .m-menu__nav > .m-menu__item .m-menu__submenu > .m-menu__subnav > .m-menu__item:hover > .m-menu__link .m-menu__link-bullet.m-menu__link-bullet--dot > span, .m-header-menu.m-header-menu--submenu-skin-light .m-menu__nav > .m-menu__item .m-menu__submenu > .m-menu__subnav > .m-menu__item.m-menu__item--hover > .m-menu__link .m-menu__link-bullet.m-menu__link-bullet--dot > span {
+      background-color: #36a3f7; }
+    .m-header-menu.m-header-menu--submenu-skin-light .m-menu__nav > .m-menu__item .m-menu__submenu > .m-menu__subnav > .m-menu__item:hover > .m-menu__link .m-menu__link-bullet.m-menu__link-bullet--line > span, .m-header-menu.m-header-menu--submenu-skin-light .m-menu__nav > .m-menu__item .m-menu__submenu > .m-menu__subnav > .m-menu__item.m-menu__item--hover > .m-menu__link .m-menu__link-bullet.m-menu__link-bullet--line > span {
+      background-color: #36a3f7; }
+    .m-header-menu.m-header-menu--submenu-skin-light .m-menu__nav > .m-menu__item .m-menu__submenu > .m-menu__subnav > .m-menu__item:hover > .m-menu__link .m-menu__link-text, .m-header-menu.m-header-menu--submenu-skin-light .m-menu__nav > .m-menu__item .m-menu__submenu > .m-menu__subnav > .m-menu__item.m-menu__item--hover > .m-menu__link .m-menu__link-text {
+      color: #36a3f7; }
+    .m-header-menu.m-header-menu--submenu-skin-light .m-menu__nav > .m-menu__item .m-menu__submenu > .m-menu__subnav > .m-menu__item:hover > .m-menu__link > .m-menu__hor-arrow, .m-header-menu.m-header-menu--submenu-skin-light .m-menu__nav > .m-menu__item .m-menu__submenu > .m-menu__subnav > .m-menu__item.m-menu__item--hover > .m-menu__link > .m-menu__hor-arrow {
+      color: #36a3f7; }
+ .m-header-menu.m-header-menu--submenu-skin-light .m-menu__nav > .m-menu__item .m-menu__submenu > .m-menu__subnav .m-menu__content .m-menu__inner > .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__link-icon {
+      color: #36a3f7; }
+    .m-header-menu.m-header-menu--submenu-skin-light .m-menu__nav > .m-menu__item .m-menu__submenu > .m-menu__subnav .m-menu__content .m-menu__inner > .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__link-bullet.m-menu__link-bullet--dot > span {
+      background-color: #36a3f7; }
+    .m-header-menu.m-header-menu--submenu-skin-light .m-menu__nav > .m-menu__item .m-menu__submenu > .m-menu__subnav .m-menu__content .m-menu__inner > .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__link-bullet.m-menu__link-bullet--line > span {
+      background-color: #36a3f7; }
+    .m-header-menu.m-header-menu--submenu-skin-light .m-menu__nav > .m-menu__item .m-menu__submenu > .m-menu__subnav .m-menu__content .m-menu__inner > .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__link-text {
+      color: #36a3f7; }
+    .m-header-menu.m-header-menu--submenu-skin-light .m-menu__nav > .m-menu__item .m-menu__submenu > .m-menu__subnav .m-menu__content .m-menu__inner > .m-menu__item.m-menu__item--active > .m-menu__link > .m-menu__hor-arrow {
+      color: #36a3f7; }
+    .m-header-menu.m-header-menu--submenu-skin-light .m-menu__nav > .m-menu__item .m-menu__submenu > .m-menu__subnav .m-menu__content .m-menu__inner > .m-menu__item:hover > .m-menu__link .m-menu__link-icon, .m-header-menu.m-header-menu--submenu-skin-light .m-menu__nav > .m-menu__item .m-menu__submenu > .m-menu__subnav .m-menu__content .m-menu__inner > .m-menu__item.m-menu__item--hover > .m-menu__link .m-menu__link-icon {
+      color: #36a3f7; }
+    .m-header-menu.m-header-menu--submenu-skin-light .m-menu__nav > .m-menu__item .m-menu__submenu > .m-menu__subnav .m-menu__content .m-menu__inner > .m-menu__item:hover > .m-menu__link .m-menu__link-bullet.m-menu__link-bullet--dot > span, .m-header-menu.m-header-menu--submenu-skin-light .m-menu__nav > .m-menu__item .m-menu__submenu > .m-menu__subnav .m-menu__content .m-menu__inner > .m-menu__item.m-menu__item--hover > .m-menu__link .m-menu__link-bullet.m-menu__link-bullet--dot > span {
+      background-color: #36a3f7; }
+    .m-header-menu.m-header-menu--submenu-skin-light .m-menu__nav > .m-menu__item .m-menu__submenu > .m-menu__subnav .m-menu__content .m-menu__inner > .m-menu__item:hover > .m-menu__link .m-menu__link-bullet.m-menu__link-bullet--line > span, .m-header-menu.m-header-menu--submenu-skin-light .m-menu__nav > .m-menu__item .m-menu__submenu > .m-menu__subnav .m-menu__content .m-menu__inner > .m-menu__item.m-menu__item--hover > .m-menu__link .m-menu__link-bullet.m-menu__link-bullet--line > span {
+      background-color: #36a3f7; }
+    .m-header-menu.m-header-menu--submenu-skin-light .m-menu__nav > .m-menu__item .m-menu__submenu > .m-menu__subnav .m-menu__content .m-menu__inner > .m-menu__item:hover > .m-menu__link .m-menu__link-text, .m-header-menu.m-header-menu--submenu-skin-light .m-menu__nav > .m-menu__item .m-menu__submenu > .m-menu__subnav .m-menu__content .m-menu__inner > .m-menu__item.m-menu__item--hover > .m-menu__link .m-menu__link-text {
+      color: #36a3f7; }
+    .m-header-menu.m-header-menu--submenu-skin-light .m-menu__nav > .m-menu__item .m-menu__submenu > .m-menu__subnav .m-menu__content .m-menu__inner > .m-menu__item:hover > .m-menu__link > .m-menu__hor-arrow, .m-header-menu.m-header-menu--submenu-skin-light .m-menu__nav > .m-menu__item .m-menu__submenu > .m-menu__subnav .m-menu__content .m-menu__inner > .m-menu__item.m-menu__item--hover > .m-menu__link > .m-menu__hor-arrow {
+      color: #36a3f7; }
+  .m-header-menu.m-header-menu--skin-dark .m-menu__nav > .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__link-text {
+    color: #36a3f7; }
+  .m-header-menu.m-header-menu--skin-dark .m-menu__nav > .m-menu__item:hover > .m-menu__link .m-menu__link-text, .m-header-menu.m-header-menu--skin-dark .m-menu__nav > .m-menu__item.m-menu__item--hover > .m-menu__link .m-menu__link-text {
+    color: #36a3f7; }
+    .m-header-menu.m-header-menu--submenu-skin-dark .m-menu__nav > .m-menu__item .m-menu__submenu > .m-menu__subnav > .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__link-text {
+      color: #36a3f7; }
+    .m-header-menu.m-header-menu--submenu-skin-dark .m-menu__nav > .m-menu__item .m-menu__submenu > .m-menu__subnav > .m-menu__item:hover > .m-menu__link .m-menu__link-text, .m-header-menu.m-header-menu--submenu-skin-dark .m-menu__nav > .m-menu__item .m-menu__submenu > .m-menu__subnav > .m-menu__item.m-menu__item--hover > .m-menu__link .m-menu__link-text {
+      color: #36a3f7; }
+    .m-header-menu.m-header-menu--submenu-skin-dark .m-menu__nav > .m-menu__item .m-menu__submenu > .m-menu__subnav .m-menu__content .m-menu__inner > .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__link-text {
+      color: #36a3f7; }
+    .m-header-menu.m-header-menu--submenu-skin-dark .m-menu__nav > .m-menu__item .m-menu__submenu > .m-menu__subnav .m-menu__content .m-menu__inner > .m-menu__item:hover > .m-menu__link .m-menu__link-text, .m-header-menu.m-header-menu--submenu-skin-dark .m-menu__nav > .m-menu__item .m-menu__submenu > .m-menu__subnav .m-menu__content .m-menu__inner > .m-menu__item.m-menu__item--hover > .m-menu__link .m-menu__link-text {
+      color: #36a3f7; }
+.m-aside-header-menu-mobile.m-aside-header-menu-mobile--skin-dark .m-menu__nav > .m-menu__item.m-menu__item--active > .m-menu__heading .m-menu__link-text,
+    .m-aside-header-menu-mobile.m-aside-header-menu-mobile--skin-dark .m-menu__nav > .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__link-text {
+      color: #36a3f7; }
+    .m-aside-header-menu-mobile.m-aside-header-menu-mobile--skin-dark .m-menu__nav > .m-menu__item.m-menu__item--active > .m-menu__heading .m-menu__link-icon,
+    .m-aside-header-menu-mobile.m-aside-header-menu-mobile--skin-dark .m-menu__nav > .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__link-icon {
+      color: #36a3f7; }
+    .m-aside-header-menu-mobile.m-aside-header-menu-mobile--skin-dark .m-menu__nav > .m-menu__item.m-menu__item--active > .m-menu__heading .m-menu__link-bullet.m-menu__link-bullet--dot > span,
+    .m-aside-header-menu-mobile.m-aside-header-menu-mobile--skin-dark .m-menu__nav > .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__link-bullet.m-menu__link-bullet--dot > span {
+      background-color: #36a3f7; }
+    .m-aside-header-menu-mobile.m-aside-header-menu-mobile--skin-dark .m-menu__nav > .m-menu__item.m-menu__item--active > .m-menu__heading .m-menu__link-bullet.m-menu__link-bullet--line > span,
+    .m-aside-header-menu-mobile.m-aside-header-menu-mobile--skin-dark .m-menu__nav > .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__link-bullet.m-menu__link-bullet--line > span {
+      background-color: #36a3f7; }
+    .m-aside-header-menu-mobile.m-aside-header-menu-mobile--skin-dark .m-menu__nav > .m-menu__item.m-menu__item--active > .m-menu__heading .m-menu__ver-arrow,
+    .m-aside-header-menu-mobile.m-aside-header-menu-mobile--skin-dark .m-menu__nav > .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__ver-arrow {
+      color: #36a3f7; }
+.m-aside-header-menu-mobile.m-aside-header-menu-mobile--skin-dark .m-menu__nav > .m-menu__item .m-menu__submenu .m-menu__item.m-menu__item--active > .m-menu__heading .m-menu__link-text,
+    .m-aside-header-menu-mobile.m-aside-header-menu-mobile--skin-dark .m-menu__nav > .m-menu__item .m-menu__submenu .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__link-text {
+      color: #36a3f7; }
+    .m-aside-header-menu-mobile.m-aside-header-menu-mobile--skin-dark .m-menu__nav > .m-menu__item .m-menu__submenu .m-menu__item.m-menu__item--active > .m-menu__heading .m-menu__link-icon,
+    .m-aside-header-menu-mobile.m-aside-header-menu-mobile--skin-dark .m-menu__nav > .m-menu__item .m-menu__submenu .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__link-icon {
+      color: #36a3f7; }
+    .m-aside-header-menu-mobile.m-aside-header-menu-mobile--skin-dark .m-menu__nav > .m-menu__item .m-menu__submenu .m-menu__item.m-menu__item--active > .m-menu__heading .m-menu__link-bullet.m-menu__link-bullet--dot > span,
+    .m-aside-header-menu-mobile.m-aside-header-menu-mobile--skin-dark .m-menu__nav > .m-menu__item .m-menu__submenu .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__link-bullet.m-menu__link-bullet--dot > span {
+      background-color: #36a3f7; }
+    .m-aside-header-menu-mobile.m-aside-header-menu-mobile--skin-dark .m-menu__nav > .m-menu__item .m-menu__submenu .m-menu__item.m-menu__item--active > .m-menu__heading .m-menu__link-bullet.m-menu__link-bullet--line > span,
+    .m-aside-header-menu-mobile.m-aside-header-menu-mobile--skin-dark .m-menu__nav > .m-menu__item .m-menu__submenu .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__link-bullet.m-menu__link-bullet--line > span {
+      background-color: #36a3f7; }
+    .m-aside-header-menu-mobile.m-aside-header-menu-mobile--skin-dark .m-menu__nav > .m-menu__item .m-menu__submenu .m-menu__item.m-menu__item--active > .m-menu__heading .m-menu__ver-arrow,
+    .m-aside-header-menu-mobile.m-aside-header-menu-mobile--skin-dark .m-menu__nav > .m-menu__item .m-menu__submenu .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__ver-arrow {
+      color: #36a3f7; }
+ .m-aside-header-menu-mobile.m-aside-header-menu-mobile--skin-light .m-menu__nav > .m-menu__item.m-menu__item--active > .m-menu__heading .m-menu__link-text,
+        .m-aside-header-menu-mobile.m-aside-header-menu-mobile--skin-light .m-menu__nav > .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__link-text {
+          color: #36a3f7; }
+        .m-aside-header-menu-mobile.m-aside-header-menu-mobile--skin-light .m-menu__nav > .m-menu__item.m-menu__item--active > .m-menu__heading .m-menu__link-icon,
+        .m-aside-header-menu-mobile.m-aside-header-menu-mobile--skin-light .m-menu__nav > .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__link-icon {
+          color: #36a3f7; }
+        .m-aside-header-menu-mobile.m-aside-header-menu-mobile--skin-light .m-menu__nav > .m-menu__item.m-menu__item--active > .m-menu__heading .m-menu__link-bullet.m-menu__link-bullet--dot > span,
+        .m-aside-header-menu-mobile.m-aside-header-menu-mobile--skin-light .m-menu__nav > .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__link-bullet.m-menu__link-bullet--dot > span {
+          background-color: #36a3f7; }
+        .m-aside-header-menu-mobile.m-aside-header-menu-mobile--skin-light .m-menu__nav > .m-menu__item.m-menu__item--active > .m-menu__heading .m-menu__link-bullet.m-menu__link-bullet--line > span,
+        .m-aside-header-menu-mobile.m-aside-header-menu-mobile--skin-light .m-menu__nav > .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__link-bullet.m-menu__link-bullet--line > span {
+          background-color: #36a3f7; }
+        .m-aside-header-menu-mobile.m-aside-header-menu-mobile--skin-light .m-menu__nav > .m-menu__item.m-menu__item--active > .m-menu__heading .m-menu__ver-arrow,
+        .m-aside-header-menu-mobile.m-aside-header-menu-mobile--skin-light .m-menu__nav > .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__ver-arrow {
+          color: #36a3f7; }
+ .m-aside-header-menu-mobile.m-aside-header-menu-mobile--skin-light .m-menu__nav > .m-menu__item .m-menu__submenu .m-menu__item.m-menu__item--active > .m-menu__heading .m-menu__link-text,
+        .m-aside-header-menu-mobile.m-aside-header-menu-mobile--skin-light .m-menu__nav > .m-menu__item .m-menu__submenu .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__link-text {
+          color: #36a3f7; }
+        .m-aside-header-menu-mobile.m-aside-header-menu-mobile--skin-light .m-menu__nav > .m-menu__item .m-menu__submenu .m-menu__item.m-menu__item--active > .m-menu__heading .m-menu__link-icon,
+        .m-aside-header-menu-mobile.m-aside-header-menu-mobile--skin-light .m-menu__nav > .m-menu__item .m-menu__submenu .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__link-icon {
+          color: #36a3f7; }
+        .m-aside-header-menu-mobile.m-aside-header-menu-mobile--skin-light .m-menu__nav > .m-menu__item .m-menu__submenu .m-menu__item.m-menu__item--active > .m-menu__heading .m-menu__link-bullet.m-menu__link-bullet--dot > span,
+        .m-aside-header-menu-mobile.m-aside-header-menu-mobile--skin-light .m-menu__nav > .m-menu__item .m-menu__submenu .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__link-bullet.m-menu__link-bullet--dot > span {
+          background-color: #36a3f7; }
+        .m-aside-header-menu-mobile.m-aside-header-menu-mobile--skin-light .m-menu__nav > .m-menu__item .m-menu__submenu .m-menu__item.m-menu__item--active > .m-menu__heading .m-menu__link-bullet.m-menu__link-bullet--line > span,
+        .m-aside-header-menu-mobile.m-aside-header-menu-mobile--skin-light .m-menu__nav > .m-menu__item .m-menu__submenu .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__link-bullet.m-menu__link-bullet--line > span {
+          background-color: #36a3f7; }
+        .m-aside-header-menu-mobile.m-aside-header-menu-mobile--skin-light .m-menu__nav > .m-menu__item .m-menu__submenu .m-menu__item.m-menu__item--active > .m-menu__heading .m-menu__ver-arrow,
+        .m-aside-header-menu-mobile.m-aside-header-menu-mobile--skin-light .m-menu__nav > .m-menu__item .m-menu__submenu .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__ver-arrow {
+          color: #36a3f7; }
+.m-aside-menu.m-aside-menu--skin-dark .m-menu__nav > .m-menu__item.m-menu__item--active > .m-menu__heading .m-menu__link-text,
+  .m-aside-menu.m-aside-menu--skin-dark .m-menu__nav > .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__link-text {
+    color: #36a3f7; }
+  .m-aside-menu.m-aside-menu--skin-dark .m-menu__nav > .m-menu__item.m-menu__item--active > .m-menu__heading .m-menu__link-icon,
+  .m-aside-menu.m-aside-menu--skin-dark .m-menu__nav > .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__link-icon {
+    color: #36a3f7; }
+  .m-aside-menu.m-aside-menu--skin-dark .m-menu__nav > .m-menu__item.m-menu__item--active > .m-menu__heading .m-menu__link-bullet.m-menu__link-bullet--dot > span,
+  .m-aside-menu.m-aside-menu--skin-dark .m-menu__nav > .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__link-bullet.m-menu__link-bullet--dot > span {
+    background-color: #36a3f7; }
+  .m-aside-menu.m-aside-menu--skin-dark .m-menu__nav > .m-menu__item.m-menu__item--active > .m-menu__heading .m-menu__link-bullet.m-menu__link-bullet--line > span,
+  .m-aside-menu.m-aside-menu--skin-dark .m-menu__nav > .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__link-bullet.m-menu__link-bullet--line > span {
+    background-color: #36a3f7; }
+  .m-aside-menu.m-aside-menu--skin-dark .m-menu__nav > .m-menu__item.m-menu__item--active > .m-menu__heading .m-menu__ver-arrow,
+  .m-aside-menu.m-aside-menu--skin-dark .m-menu__nav > .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__ver-arrow {
+    color: #36a3f7; }
+ .m-aside-menu.m-aside-menu--skin-dark .m-menu__nav > .m-menu__item .m-menu__submenu .m-menu__item.m-menu__item--active > .m-menu__heading .m-menu__link-text,
+  .m-aside-menu.m-aside-menu--skin-dark .m-menu__nav > .m-menu__item .m-menu__submenu .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__link-text {
+    color: #36a3f7; }
+  .m-aside-menu.m-aside-menu--skin-dark .m-menu__nav > .m-menu__item .m-menu__submenu .m-menu__item.m-menu__item--active > .m-menu__heading .m-menu__link-icon,
+  .m-aside-menu.m-aside-menu--skin-dark .m-menu__nav > .m-menu__item .m-menu__submenu .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__link-icon {
+    color: #36a3f7; }
+  .m-aside-menu.m-aside-menu--skin-dark .m-menu__nav > .m-menu__item .m-menu__submenu .m-menu__item.m-menu__item--active > .m-menu__heading .m-menu__link-bullet.m-menu__link-bullet--dot > span,
+  .m-aside-menu.m-aside-menu--skin-dark .m-menu__nav > .m-menu__item .m-menu__submenu .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__link-bullet.m-menu__link-bullet--dot > span {
+    background-color: #36a3f7; }
+  .m-aside-menu.m-aside-menu--skin-dark .m-menu__nav > .m-menu__item .m-menu__submenu .m-menu__item.m-menu__item--active > .m-menu__heading .m-menu__link-bullet.m-menu__link-bullet--line > span,
+  .m-aside-menu.m-aside-menu--skin-dark .m-menu__nav > .m-menu__item .m-menu__submenu .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__link-bullet.m-menu__link-bullet--line > span {
+    background-color: #36a3f7; }
+  .m-aside-menu.m-aside-menu--skin-dark .m-menu__nav > .m-menu__item .m-menu__submenu .m-menu__item.m-menu__item--active > .m-menu__heading .m-menu__ver-arrow,
+  .m-aside-menu.m-aside-menu--skin-dark .m-menu__nav > .m-menu__item .m-menu__submenu .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__ver-arrow {
+    color: #36a3f7; }
+ .m-aside-menu.m-aside-menu--skin-light .m-menu__nav > .m-menu__item.m-menu__item--active > .m-menu__heading .m-menu__link-text,
+      .m-aside-menu.m-aside-menu--skin-light .m-menu__nav > .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__link-text {
+        color: #36a3f7; }
+      .m-aside-menu.m-aside-menu--skin-light .m-menu__nav > .m-menu__item.m-menu__item--active > .m-menu__heading .m-menu__link-icon,
+      .m-aside-menu.m-aside-menu--skin-light .m-menu__nav > .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__link-icon {
+        color: #36a3f7; }
+      .m-aside-menu.m-aside-menu--skin-light .m-menu__nav > .m-menu__item.m-menu__item--active > .m-menu__heading .m-menu__link-bullet.m-menu__link-bullet--dot > span,
+      .m-aside-menu.m-aside-menu--skin-light .m-menu__nav > .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__link-bullet.m-menu__link-bullet--dot > span {
+        background-color: #36a3f7; }
+      .m-aside-menu.m-aside-menu--skin-light .m-menu__nav > .m-menu__item.m-menu__item--active > .m-menu__heading .m-menu__link-bullet.m-menu__link-bullet--line > span,
+      .m-aside-menu.m-aside-menu--skin-light .m-menu__nav > .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__link-bullet.m-menu__link-bullet--line > span {
+        background-color: #36a3f7; }
+      .m-aside-menu.m-aside-menu--skin-light .m-menu__nav > .m-menu__item.m-menu__item--active > .m-menu__heading .m-menu__ver-arrow,
+      .m-aside-menu.m-aside-menu--skin-light .m-menu__nav > .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__ver-arrow {
+        color: #36a3f7; }
+ .m-aside-menu.m-aside-menu--skin-light .m-menu__nav > .m-menu__item .m-menu__submenu .m-menu__item.m-menu__item--active > .m-menu__heading .m-menu__link-text,
+      .m-aside-menu.m-aside-menu--skin-light .m-menu__nav > .m-menu__item .m-menu__submenu .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__link-text {
+        color: #36a3f7; }
+      .m-aside-menu.m-aside-menu--skin-light .m-menu__nav > .m-menu__item .m-menu__submenu .m-menu__item.m-menu__item--active > .m-menu__heading .m-menu__link-icon,
+      .m-aside-menu.m-aside-menu--skin-light .m-menu__nav > .m-menu__item .m-menu__submenu .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__link-icon {
+        color: #36a3f7; }
+      .m-aside-menu.m-aside-menu--skin-light .m-menu__nav > .m-menu__item .m-menu__submenu .m-menu__item.m-menu__item--active > .m-menu__heading .m-menu__link-bullet.m-menu__link-bullet--dot > span,
+      .m-aside-menu.m-aside-menu--skin-light .m-menu__nav > .m-menu__item .m-menu__submenu .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__link-bullet.m-menu__link-bullet--dot > span {
+        background-color: #36a3f7; }
+      .m-aside-menu.m-aside-menu--skin-light .m-menu__nav > .m-menu__item .m-menu__submenu .m-menu__item.m-menu__item--active > .m-menu__heading .m-menu__link-bullet.m-menu__link-bullet--line > span,
+      .m-aside-menu.m-aside-menu--skin-light .m-menu__nav > .m-menu__item .m-menu__submenu .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__link-bullet.m-menu__link-bullet--line > span {
+        background-color: #36a3f7; }
+      .m-aside-menu.m-aside-menu--skin-light .m-menu__nav > .m-menu__item .m-menu__submenu .m-menu__item.m-menu__item--active > .m-menu__heading .m-menu__ver-arrow,
+      .m-aside-menu.m-aside-menu--skin-light .m-menu__nav > .m-menu__item .m-menu__submenu .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__ver-arrow {
+        color: #36a3f7; }
+ .m-aside-left--minimize .m-aside-menu.m-aside-menu--submenu-skin-dark .m-menu__nav .m-menu__item:not([data-menu-submenu-mode='accordion']).m-menu__item--hover > .m-menu__submenu .m-menu__subnav .m-menu__item.m-menu__item--active > .m-menu__heading .m-menu__link-text,
+      .m-aside-left--minimize .m-aside-menu.m-aside-menu--submenu-skin-dark .m-menu__nav .m-menu__item:not([data-menu-submenu-mode='accordion']).m-menu__item--hover > .m-menu__submenu .m-menu__subnav .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__link-text,
+      .m-aside-menu.m-aside-menu--dropdown.m-aside-menu--submenu-skin-dark .m-menu__nav .m-menu__item:not([data-menu-submenu-mode='accordion']).m-menu__item--hover > .m-menu__submenu .m-menu__subnav .m-menu__item.m-menu__item--active > .m-menu__heading .m-menu__link-text,
+      .m-aside-menu.m-aside-menu--dropdown.m-aside-menu--submenu-skin-dark .m-menu__nav .m-menu__item:not([data-menu-submenu-mode='accordion']).m-menu__item--hover > .m-menu__submenu .m-menu__subnav .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__link-text {
+        color: #36a3f7; }
+      .m-aside-left--minimize .m-aside-menu.m-aside-menu--submenu-skin-dark .m-menu__nav .m-menu__item:not([data-menu-submenu-mode='accordion']).m-menu__item--hover > .m-menu__submenu .m-menu__subnav .m-menu__item.m-menu__item--active > .m-menu__heading .m-menu__link-icon,
+      .m-aside-left--minimize .m-aside-menu.m-aside-menu--submenu-skin-dark .m-menu__nav .m-menu__item:not([data-menu-submenu-mode='accordion']).m-menu__item--hover > .m-menu__submenu .m-menu__subnav .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__link-icon,
+      .m-aside-menu.m-aside-menu--dropdown.m-aside-menu--submenu-skin-dark .m-menu__nav .m-menu__item:not([data-menu-submenu-mode='accordion']).m-menu__item--hover > .m-menu__submenu .m-menu__subnav .m-menu__item.m-menu__item--active > .m-menu__heading .m-menu__link-icon,
+      .m-aside-menu.m-aside-menu--dropdown.m-aside-menu--submenu-skin-dark .m-menu__nav .m-menu__item:not([data-menu-submenu-mode='accordion']).m-menu__item--hover > .m-menu__submenu .m-menu__subnav .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__link-icon {
+        color: #36a3f7; }
+      .m-aside-left--minimize .m-aside-menu.m-aside-menu--submenu-skin-dark .m-menu__nav .m-menu__item:not([data-menu-submenu-mode='accordion']).m-menu__item--hover > .m-menu__submenu .m-menu__subnav .m-menu__item.m-menu__item--active > .m-menu__heading .m-menu__link-bullet.m-menu__link-bullet--dot > span,
+      .m-aside-left--minimize .m-aside-menu.m-aside-menu--submenu-skin-dark .m-menu__nav .m-menu__item:not([data-menu-submenu-mode='accordion']).m-menu__item--hover > .m-menu__submenu .m-menu__subnav .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__link-bullet.m-menu__link-bullet--dot > span,
+      .m-aside-menu.m-aside-menu--dropdown.m-aside-menu--submenu-skin-dark .m-menu__nav .m-menu__item:not([data-menu-submenu-mode='accordion']).m-menu__item--hover > .m-menu__submenu .m-menu__subnav .m-menu__item.m-menu__item--active > .m-menu__heading .m-menu__link-bullet.m-menu__link-bullet--dot > span,
+      .m-aside-menu.m-aside-menu--dropdown.m-aside-menu--submenu-skin-dark .m-menu__nav .m-menu__item:not([data-menu-submenu-mode='accordion']).m-menu__item--hover > .m-menu__submenu .m-menu__subnav .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__link-bullet.m-menu__link-bullet--dot > span {
+        background-color: #36a3f7; }
+      .m-aside-left--minimize .m-aside-menu.m-aside-menu--submenu-skin-dark .m-menu__nav .m-menu__item:not([data-menu-submenu-mode='accordion']).m-menu__item--hover > .m-menu__submenu .m-menu__subnav .m-menu__item.m-menu__item--active > .m-menu__heading .m-menu__link-bullet.m-menu__link-bullet--line > span,
+      .m-aside-left--minimize .m-aside-menu.m-aside-menu--submenu-skin-dark .m-menu__nav .m-menu__item:not([data-menu-submenu-mode='accordion']).m-menu__item--hover > .m-menu__submenu .m-menu__subnav .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__link-bullet.m-menu__link-bullet--line > span,
+      .m-aside-menu.m-aside-menu--dropdown.m-aside-menu--submenu-skin-dark .m-menu__nav .m-menu__item:not([data-menu-submenu-mode='accordion']).m-menu__item--hover > .m-menu__submenu .m-menu__subnav .m-menu__item.m-menu__item--active > .m-menu__heading .m-menu__link-bullet.m-menu__link-bullet--line > span,
+      .m-aside-menu.m-aside-menu--dropdown.m-aside-menu--submenu-skin-dark .m-menu__nav .m-menu__item:not([data-menu-submenu-mode='accordion']).m-menu__item--hover > .m-menu__submenu .m-menu__subnav .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__link-bullet.m-menu__link-bullet--line > span {
+        background-color: #36a3f7; }
+      .m-aside-left--minimize .m-aside-menu.m-aside-menu--submenu-skin-dark .m-menu__nav .m-menu__item:not([data-menu-submenu-mode='accordion']).m-menu__item--hover > .m-menu__submenu .m-menu__subnav .m-menu__item.m-menu__item--active > .m-menu__heading .m-menu__ver-arrow,
+      .m-aside-left--minimize .m-aside-menu.m-aside-menu--submenu-skin-dark .m-menu__nav .m-menu__item:not([data-menu-submenu-mode='accordion']).m-menu__item--hover > .m-menu__submenu .m-menu__subnav .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__ver-arrow,
+      .m-aside-menu.m-aside-menu--dropdown.m-aside-menu--submenu-skin-dark .m-menu__nav .m-menu__item:not([data-menu-submenu-mode='accordion']).m-menu__item--hover > .m-menu__submenu .m-menu__subnav .m-menu__item.m-menu__item--active > .m-menu__heading .m-menu__ver-arrow,
+      .m-aside-menu.m-aside-menu--dropdown.m-aside-menu--submenu-skin-dark .m-menu__nav .m-menu__item:not([data-menu-submenu-mode='accordion']).m-menu__item--hover > .m-menu__submenu .m-menu__subnav .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__ver-arrow {
+        color: #36a3f7; }
+.m-aside-left--minimize .m-aside-menu.m-aside-menu--submenu-skin-light .m-menu__nav .m-menu__item:not([data-menu-submenu-mode='accordion']).m-menu__item--hover > .m-menu__submenu .m-menu__subnav .m-menu__item.m-menu__item--active > .m-menu__heading .m-menu__link-text,
+        .m-aside-left--minimize .m-aside-menu.m-aside-menu--submenu-skin-light .m-menu__nav .m-menu__item:not([data-menu-submenu-mode='accordion']).m-menu__item--hover > .m-menu__submenu .m-menu__subnav .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__link-text,
+        .m-aside-menu.m-aside-menu--dropdown.m-aside-menu--submenu-skin-light .m-menu__nav .m-menu__item:not([data-menu-submenu-mode='accordion']).m-menu__item--hover > .m-menu__submenu .m-menu__subnav .m-menu__item.m-menu__item--active > .m-menu__heading .m-menu__link-text,
+        .m-aside-menu.m-aside-menu--dropdown.m-aside-menu--submenu-skin-light .m-menu__nav .m-menu__item:not([data-menu-submenu-mode='accordion']).m-menu__item--hover > .m-menu__submenu .m-menu__subnav .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__link-text {
+          color: #36a3f7; }
+        .m-aside-left--minimize .m-aside-menu.m-aside-menu--submenu-skin-light .m-menu__nav .m-menu__item:not([data-menu-submenu-mode='accordion']).m-menu__item--hover > .m-menu__submenu .m-menu__subnav .m-menu__item.m-menu__item--active > .m-menu__heading .m-menu__link-icon,
+        .m-aside-left--minimize .m-aside-menu.m-aside-menu--submenu-skin-light .m-menu__nav .m-menu__item:not([data-menu-submenu-mode='accordion']).m-menu__item--hover > .m-menu__submenu .m-menu__subnav .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__link-icon,
+        .m-aside-menu.m-aside-menu--dropdown.m-aside-menu--submenu-skin-light .m-menu__nav .m-menu__item:not([data-menu-submenu-mode='accordion']).m-menu__item--hover > .m-menu__submenu .m-menu__subnav .m-menu__item.m-menu__item--active > .m-menu__heading .m-menu__link-icon,
+        .m-aside-menu.m-aside-menu--dropdown.m-aside-menu--submenu-skin-light .m-menu__nav .m-menu__item:not([data-menu-submenu-mode='accordion']).m-menu__item--hover > .m-menu__submenu .m-menu__subnav .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__link-icon {
+          color: #36a3f7; }
+        .m-aside-left--minimize .m-aside-menu.m-aside-menu--submenu-skin-light .m-menu__nav .m-menu__item:not([data-menu-submenu-mode='accordion']).m-menu__item--hover > .m-menu__submenu .m-menu__subnav .m-menu__item.m-menu__item--active > .m-menu__heading .m-menu__link-bullet.m-menu__link-bullet--dot > span,
+        .m-aside-left--minimize .m-aside-menu.m-aside-menu--submenu-skin-light .m-menu__nav .m-menu__item:not([data-menu-submenu-mode='accordion']).m-menu__item--hover > .m-menu__submenu .m-menu__subnav .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__link-bullet.m-menu__link-bullet--dot > span,
+        .m-aside-menu.m-aside-menu--dropdown.m-aside-menu--submenu-skin-light .m-menu__nav .m-menu__item:not([data-menu-submenu-mode='accordion']).m-menu__item--hover > .m-menu__submenu .m-menu__subnav .m-menu__item.m-menu__item--active > .m-menu__heading .m-menu__link-bullet.m-menu__link-bullet--dot > span,
+        .m-aside-menu.m-aside-menu--dropdown.m-aside-menu--submenu-skin-light .m-menu__nav .m-menu__item:not([data-menu-submenu-mode='accordion']).m-menu__item--hover > .m-menu__submenu .m-menu__subnav .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__link-bullet.m-menu__link-bullet--dot > span {
+          background-color: #36a3f7; }
+        .m-aside-left--minimize .m-aside-menu.m-aside-menu--submenu-skin-light .m-menu__nav .m-menu__item:not([data-menu-submenu-mode='accordion']).m-menu__item--hover > .m-menu__submenu .m-menu__subnav .m-menu__item.m-menu__item--active > .m-menu__heading .m-menu__link-bullet.m-menu__link-bullet--line > span,
+        .m-aside-left--minimize .m-aside-menu.m-aside-menu--submenu-skin-light .m-menu__nav .m-menu__item:not([data-menu-submenu-mode='accordion']).m-menu__item--hover > .m-menu__submenu .m-menu__subnav .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__link-bullet.m-menu__link-bullet--line > span,
+        .m-aside-menu.m-aside-menu--dropdown.m-aside-menu--submenu-skin-light .m-menu__nav .m-menu__item:not([data-menu-submenu-mode='accordion']).m-menu__item--hover > .m-menu__submenu .m-menu__subnav .m-menu__item.m-menu__item--active > .m-menu__heading .m-menu__link-bullet.m-menu__link-bullet--line > span,
+        .m-aside-menu.m-aside-menu--dropdown.m-aside-menu--submenu-skin-light .m-menu__nav .m-menu__item:not([data-menu-submenu-mode='accordion']).m-menu__item--hover > .m-menu__submenu .m-menu__subnav .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__link-bullet.m-menu__link-bullet--line > span {
+          background-color: #36a3f7; }
+        .m-aside-left--minimize .m-aside-menu.m-aside-menu--submenu-skin-light .m-menu__nav .m-menu__item:not([data-menu-submenu-mode='accordion']).m-menu__item--hover > .m-menu__submenu .m-menu__subnav .m-menu__item.m-menu__item--active > .m-menu__heading .m-menu__ver-arrow,
+        .m-aside-left--minimize .m-aside-menu.m-aside-menu--submenu-skin-light .m-menu__nav .m-menu__item:not([data-menu-submenu-mode='accordion']).m-menu__item--hover > .m-menu__submenu .m-menu__subnav .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__ver-arrow,
+        .m-aside-menu.m-aside-menu--dropdown.m-aside-menu--submenu-skin-light .m-menu__nav .m-menu__item:not([data-menu-submenu-mode='accordion']).m-menu__item--hover > .m-menu__submenu .m-menu__subnav .m-menu__item.m-menu__item--active > .m-menu__heading .m-menu__ver-arrow,
+        .m-aside-menu.m-aside-menu--dropdown.m-aside-menu--submenu-skin-light .m-menu__nav .m-menu__item:not([data-menu-submenu-mode='accordion']).m-menu__item--hover > .m-menu__submenu .m-menu__subnav .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__ver-arrow {
+          color: #36a3f7; }
+ .m-aside-left--minimize .m-aside-menu.m-aside-menu--skin-dark .m-menu__nav > .m-menu__item.m-menu__item--hover > .m-menu__link > .m-menu__link-icon, .m-aside-left--minimize .m-aside-menu.m-aside-menu--skin-dark .m-menu__nav > .m-menu__item.m-menu__item--open > .m-menu__link > .m-menu__link-icon {
+        color: #36a3f7; }
+ .m-subheader .m-subheader__breadcrumbs.m-nav > .m-nav__item > .m-nav__link:hover > .m-nav__link-text {
+      color: #36a3f7; }
+    .m-subheader .m-subheader__breadcrumbs.m-nav > .m-nav__item > .m-nav__link:hover > .m-nav__link-icon {
+      color: #36a3f7; }
+
+
+/***************************End::主体内容与主题色相关的样式--蓝色主题***************************/

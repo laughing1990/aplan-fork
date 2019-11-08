@@ -1,0 +1,102 @@
+.parallerStageSortDiv {
+    color: #464637;
+    font-size: 14px;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 300;
+}
+
+/**标题样式**/
+.parallerStageSortDiv .block_list-title {
+    padding: 10px;
+    text-align: center;
+    background: #abcdf1;
+}
+
+.parallerStageSortDiv ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: block;
+}
+
+.parallerStageSortDiv li {
+    background-color: #fff;
+    padding: 6px 0px;
+    display: list-item;
+    text-align: -webkit-match-parent;
+
+    /**边框样式**/
+    border: 1px solid transparent;
+    border-bottom: 1px solid #ebebeb;
+}
+
+/**
+    * 移动到li样式
+*/
+.block_ul_td li:hover {
+    background: #e7e8eb;
+    cursor: move;
+    cursor: -webkit-grabbing;
+}
+
+.parallerStageSortDiv .drag-handle_th {
+    text-align: center;
+    display: inline-block;
+    width: 8%;
+    font-weight: 600;
+}
+
+/**拖拽手把**/
+.parallerStageSortDiv .drag-handle_td {
+    text-align: center;
+    font: bold 16px Sans-Serif;
+    color: #5F9EDF;
+    display: inline-block;
+    width: 8%;
+}
+
+.parallerStageSortDiv .ostage_name_td {
+    display: inline-block;
+    width: 45%;
+}
+
+.trover {
+    background: #f9f9f9;
+}
+
+.trclick {
+    /*background: #f0f0f082;*/
+    background: #f0f0f0;
+}
+
+.row {
+    margin-left: 0px;
+    margin-right: 0px;
+}
+
+.verNoVisible {
+
+}
+
+.fixed-table-body::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+}
+
+.fixed-table-body::-webkit-scrollbar-track {
+    background: #fff;
+    border-radius: 2px;
+}
+
+.fixed-table-body::-webkit-scrollbar-thumb {
+    background: #e2e5ec;
+    border-radius: 2px;
+}
+
+.fixed-table-body::-webkit-scrollbar-thumb:hover {
+    background: #aaa;
+}
+
+.fixed-table-body::-webkit-scrollbar-corner {
+    background: #fff;
+}

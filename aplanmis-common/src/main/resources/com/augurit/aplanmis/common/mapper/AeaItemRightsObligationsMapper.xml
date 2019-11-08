@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by tiantian    2018-10-20 10:26:49 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaItemRightsObligationsMapper">
+    <sql id="allColumns">
+        rightObli.RIGHT_OBLI_ID rightObliId,
+        rightObli.ITEM_BASIC_ID itemBasicId,
+        rightObli.RIGHT_OBLI_DETAILS  rightObliDetails,
+        rightObli.RIGHT_OBLI_TYPE rightObliType,
+        rightObli.DATA_ID dataId,
+        rightObli.CREATER creater,
+        rightObli.CREATE_TIME createTime,
+        rightObli.MODIFIER modifier,
+        rightObli.MODIFY_TIME modifyTime
+    </sql>
+
+    <!-- 新增实体对象 -->
+    <insert id="insertAeaItemRightsObligations" parameterType="AeaItemRightsObligations">
+        insert into AEA_ITEM_RIGHTS_OBLIGATIONS (
+          RIGHT_OBLI_ID,
+          ITEM_BASIC_ID,
+          RIGHT_OBLI_DETAILS,
+          RIGHT_OBLI_TYPE,
+          DATA_ID,
+          CREATER,
+          CREATE_TIME,
+          MODIFIER,
+          MODIFY_TIME
+        ) values  (
+          #{rightObliId},
+          #{itemBasicId},
+          #{rightObliDetails},
+          #{rightObliType},
+          #{dataId},
+          #{creater},
+          #{createTime},
+          #{modifier},
+          #{modifyTime}
+        )
+    </insert>
+
+    <!-- 删除一条实体对象 -->
+    <delete id="deleteAeaItemRightsObligations" parameterType="java.lang.String">
+        delete AEA_ITEM_RIGHTS_OBLIGATIONS where RIGHT_OBLI_ID = #{rightObliId}
+    </delete>
+
+
+    <!-- 更新实体对象 -->
+    <update id="updateAeaItemRightsObligations" parameterType="AeaItemRightsObligations">
+      update AEA_ITEM_RIGHTS_OBLIGATIONS
+      <set>
+          <if test="rightObliId != null and rightObliId != '' ">
+              RIGHT_OBLI_ID = #{rightObliId},
+          </if>
+          <if test="itemBasicId != null and itemBasicId != '' ">
+              ITEM_BASIC_ID = #{itemBasicId},
+          </if>
+          <if test="rightObliDetails != null and rightObliDetails != '' ">
+              RIGHT_OBLI_DETAILS = #{rightObliDetails},
+          </if>
+          <if test="rightObliType != null and rightObliType != '' ">
+              RIGHT_OBLI_TYPE = #{rightObliType},
+          </if>
+          <if test="dataId != null and dataId != '' ">
+              DATA_ID = #{dataId},
+          </if>
+          <if test="creater != null and creater != '' ">
+              CREATER = #{creater},
+          </if>
+          <if test="createTime != null">
+              CREATE_TIME = #{createTime},
+          </if>
+          <if test="modifier != null and modifier != '' ">
+              MODIFIER = #{modifier},
+          </if>
+          <if test="modifyTime != null">
+              MODIFY_TIME = #{modifyTime}
+          </if>
+      </set>
+      where RIGHT_OBLI_ID = #{rightObliId}
+    </update>
+
+    <!-- 根据条件查询实体对象 -->
+    <select id="listAeaItemRightsObligations" resultType="AeaItemRightsObligations">
+      select
+        <include refid="allColumns" />,
+        itemBasic.ITEM_NAME itemName
+      from AEA_ITEM_RIGHTS_OBLIGATIONS rightObli left join AEA_ITEM_BASIC itemBasic on  rightObli.ITEM_BASIC_ID = itemBasic.ITEM_BASIC_ID
+      <where>
+          <if test="rightObliId != null and rightObliId != '' ">
+              AND rightObli.RIGHT_OBLI_ID = #{rightObliId}
+          </if>
+          <if test="itemBasicId != null and itemBasicId != '' ">
+              AND rightObli.ITEM_BASIC_ID = #{itemBasicId}
+          </if>
+          <if test="rightObliDetails != null and rightObliDetails != '' ">
+              AND rightObli.RIGHT_OBLI_DETAILS = #{rightObliDetails}
+          </if>
+          <if test="rightObliType != null and rightObliType != '' ">
+              AND rightObli.RIGHT_OBLI_TYPE = #{rightObliType}
+          </if>
+          <if test="dataId != null and dataId != '' ">
+              AND rightObli.rightObli.DATA_ID = #{dataId}
+          </if>
+          <if test="creater != null and creater != '' ">
+              AND rightObli.CREATER = #{creater}
+          </if>
+          <if test="createTime != null">
+              AND rightObli.CREATE_TIME = #{createTime}
+          </if>
+          <if test="modifier != null and modifier != '' ">
+              AND rightObli.MODIFIER = #{modifier}
+          </if>
+          <if test="modifyTime != null">
+              AND rightObli.MODIFY_TIME = #{modifyTime}
+          </if>
+          <if test="keyword != null and keyword != ''">
+              AND (rightObli.RIGHT_OBLI_DETAILS LIKE CONCAT(CONCAT('%',#{keyword}),'%') OR rightObli.RIGHT_OBLI_TYPE LIKE CONCAT(CONCAT('%',#{keyword}),'%'))
+          </if>
+      </where>
+    </select>
+
+    <delete id="batchDeleteAeaItemRightsObligations">
+      delete AEA_ITEM_RIGHTS_OBLIGATIONS where RIGHT_OBLI_ID in
+        <foreach collection="rightObliIds" item="rightObliId" open="(" close=")" separator=",">
+            #{rightObliId}
+        </foreach>
+    </delete>
+
+    <select id="getAeaItemRightsObligationsByItemId" resultType="AeaItemRightsObligations" >
+        select
+        <include refid="allColumns"/>
+        from    AEA_ITEM_RIGHTS_OBLIGATIONS rightObli
+        where    ITEM_BASIC_ID = #{itemBasicId}
+    </select>
+
+</mapper>

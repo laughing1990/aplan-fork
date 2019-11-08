@@ -1,0 +1,110 @@
+@charset "UTF-8";
+body{
+    font-family: Helvetica Neue,Helvetica,PingFang SC,\5FAE\8F6F\96C5\9ED1,Tahoma,Arial,sans-serif;;
+}
+a:hover{
+    text-decoration: none;
+}
+.layui-fluid{
+    padding-top: 60px;
+}
+.skipElem{
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    z-index: 999;
+    width: 100%;
+    background: #fff;
+    padding: 15px 20px 15px 20px;
+    box-sizing: border-box;
+    text-align: center;
+    border: 1px solid #e6e6e6;
+    border-top: 0px;
+}
+.skipElem label{
+    margin-bottom: 0px;
+}
+.skipElem .layui-btn-group a{
+    cursor: pointer;
+}
+.skipElem .layui-btn-group,.skipElem .bwizard,.skipElem .layui-btn-group label{
+    display: inline-block;
+    font-size: 16px;
+}
+.skipElem .layui-btn-group.changeDom{
+    padding-right: 40px;
+}
+.skipElem .layui-btn-group.changeDom a{
+    padding-right: 10px;
+}
+.skipElem .layui-btn-group.changeDom a{
+    font-size: 16px;
+}
+.skipElem .layui-btn-group a i{
+    transition: all 0.5s ease-in-out;
+    -o-transition: all 0.5s ease-in-out;
+    -ms-transition: all 0.5s ease-in-out;
+    -moz-transition: all 0.5s ease-in-out;
+    -webkit-transition: all 0.5s ease-in-out;
+    display: inline-block;
+}
+.skipElem .layui-btn-group a:hover i{
+    transform:rotate(360deg);
+    -ms-transform:rotate(360deg); /* Internet Explorer */
+    -moz-transform:rotate(360deg); /* Firefox */
+    -webkit-transform:rotate(360deg); /* Safari 和 Chrome */
+    -o-transform:rotate(360deg); /* Opera */
+}
+.skipElem .qxChangeDom a{
+    font-size: 16px;
+}
+.skipElem .qxChangeDom a i{
+    font-size: 18px;
+}
+.skipElem .qxChangeDom img{
+    margin-top: -5px;
+}
+.canvans_toolbar{
+    position: fixed;
+    left: 10px;
+    bottom: 10px;
+    text-align: right;
+    z-index: 999;
+}
+.layui-tab .layui-tab-title{
+    position: fixed;
+    z-index: 999;
+    right: 40px;
+    top: 10px;
+    text-align: right;
+    border: 0px;
+}
+::-webkit-scrollbar { width: 0px; height: 5px; -webkit-border-radius: 0px; }
+/* 节点样式 */
+jmnodes.theme-clouds jmnode{
+    -webkit-border-radius: 0px;
+    -moz-border-radius: 0px;
+    border-radius: 0px;
+    box-shadow: none;
+    background: transparent!important;
+    font: 14px Helvetica Neue,Helvetica,PingFang SC,\5FAE\8F6F\96C5\9ED1,Tahoma,Arial,sans-serif;
+
+}
+jmnodes.theme-clouds jmnode:hover{color:red;}
+jmnodes.theme-clouds jmnode.selected{color:red;}
+.myjmnode{
+    white-space: normal;
+    -ms-text-overflow: clip;
+    text-overflow: clip;
+}
+.canvans_toolbar button{
+    display: block;
+    margin-left: 10px;
+    margin-bottom: 10px;
+}
+select{
+    border-color: #C9C9C9!important;
+}
+jmnode .layui-form-checkbox{
+    margin-top: -18px!important;
+}

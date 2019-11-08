@@ -1,0 +1,39 @@
+
+/*表格行列的样式*/
+#customTable thead th{
+    border-top: 1px solid #ddd;
+}
+.table>tbody>tr>td{
+    border-left:0px;
+    border-right:0px;
+    border-color: #ddd;
+}
+.table>thead>tr>th{
+    border-left:0px;
+    border-right:0px;
+    border-color: #ddd;
+    height: 46px;
+    font-weight: bold;
+}
+.fixed-table-container{
+    border:none;
+}
+.bootstrap-table .page-item.active .page-link{
+    background-color:#44acfd;
+    border-color:#44acfd;
+}
+.bootstrap-table .dropdown-menu > .active > a, .dropdown-menu > .active > a:focus, .dropdown-menu > .active > a:hover{
+    background-color:#44acfd;
+}
+.bootstrap-table .dropdown-item .active, .dropdown-item:active{
+    background-color:#44acfd;
+}
+.bootstrap-table .dropdown-menu > li > a.active, .dropdown-menu > .dropdown-item.active{
+    background-color:#44acfd;
+}
+.bootstrap-table .fixed-table-pagination .btn::after{
+    display: none;
+}
+.bootstrap-table .fixed-table-pagination .page-item.active .page-link{
+    color: #ffffff;
+}

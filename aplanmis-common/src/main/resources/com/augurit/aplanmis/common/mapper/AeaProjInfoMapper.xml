@@ -1,0 +1,1882 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by 23948    2019-07-04 16:43:27 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaProjInfoMapper">
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns">
+        PROJ_INFO_ID  projInfoId,
+    LOCAL_CODE  localCode,
+    PROJ_NAME  projName,
+    PROJ_TYPE  projType,
+    PROJ_LEVEL  projLevel,
+    MAIN_CLASS  mainClass,
+    CENTRAL_CODE  centralCode,
+    IS_JGXM  isJgxm,
+    PROJ_URGENCY  projUrgency,
+    PROJ_ADDR  projAddr,
+    PROJ_CREATE_USER_CODE  projCreateUserCode,
+    PROJ_CREATE_USER  projCreateUser,
+    PROJ_CREATE_MOBILE  projCreateMobile,
+    BUILD_AREA_SUM  buildAreaSum,
+    CURRENT_PROGRESS  currentProgress,
+    PROJ_QUESTION  projQuestion,
+    PROJ_NATURE  projNature,
+    NSTART_TIME  nstartTime,
+    END_TIME  endTime,
+    INVEST_SUM  investSum,
+    PROJECT_ADDRESS  projectAddress,
+    AREA_DETAIL_CODE  areaDetailCode,
+    INDUSTRY  industry,
+    SCALE_CONTENT  scaleContent,
+    XM_YDMJ  xmYdmj,
+    XZYDMJ  xzydmj,
+    NYDMJ  nydmj,
+    XMZBJ  xmzbj,
+    FINANCIAL_SOURCE  financialSource,
+    CZZJLY  czzjly,
+    REGIONALISM  regionalism,
+    DISTRICT  district,
+    IS_FOREIGN  isForeign,
+    FOREIGN_INVOLVE_SECURITY  foreignInvolveSecurity,
+    FOREIGN_INVESTMENT_WAY  foreignInvestmentWay,
+    FOREIGN_POLICY_TYPE  foreignPolicyType,
+    FOREIGN_POLICY_ITEM  foreignPolicyItem,
+    FOREIGN_TOTAL_DOLLAR  foreignTotalDollar,
+    FOREIGN_TOTAL_RATE  foreignTotalRate,
+    FOREIGN_CAPITAL  foreignCapital,
+    FOREIGN_CAPITAL_DOLLAR  foreignCapitalDollar,
+    FOREIGN_CAPITAL_RATE  foreignCapitalRate,
+    INVESTOR  investor,
+    INVESTOR_COUNTRY  investorCountry,
+    INVESTOR_CAPITAL  investorCapital,
+    INVESTOR_CAPITAL_PERCENT  investorCapitalPercent,
+    INVESTOR_CAPITAL_TYPE  investorCapitalType,
+    FOREIGN_IS_ADD_INVESTMENT  foreignIsAddInvestment,
+    FOREIGN_LAND_WAY  foreignLandWay,
+    FOREIGN_LAND_AREA  foreignLandArea,
+    FOREIGN_BUILDING_AREA  foreignBuildingArea,
+    FOREIGN_IS_ADD_EQUIPMENT  foreignIsAddEquipment,
+    FOREIGN_EQUIPMENT_NUM  foreignEquipmentNum,
+    FOREIGN_IS_HAVE_DEPT  foreignIsHaveDept,
+    FOREIGN_DEPT_ADDRESS  foreignDeptAddress,
+    FOREIGN_DEPT_NATURE  foreignDeptNature,
+    FOREIGN_IS_SAME  foreignIsSame,
+    FOREIGN_CHINA_PERCENT  foreignChinaPercent,
+    FOREIGN_FOREIGN_PERCENT  foreignForeignPercent,
+    FOREIGN_MANAGEMENT  foreignManagement,
+    FOREIGN_TEL  foreignTel,
+    FOREIGN_FAX  foreignFax,
+    FOREIGN_ADDRESS  foreignAddress,
+    FOREIGN_REMARK  foreignRemark,
+    ABROAD_PROJECT_ADDRESS  abroadProjectAddress,
+    ABROAD_CHINESE_INVESTMENT  abroadChineseInvestment,
+    AREA_DETIAL  areaDetial,
+    THE_INDUSTRY  theIndustry,
+    FOREIGN_PROJECT_TYPE  foreignProjectType,
+    FOREIGN_APPROVE_NUM  foreignApproveNum,
+    FOREIGN_CHANGE_REASON  foreignChangeReason,
+    FOREIGN_SECURITY_NUM  foreignSecurityNum,
+    PROJECT_CREATE_USER  projectCreateUser,
+    PROJECT_CREATE_DATE  projectCreateDate,
+    PROJECT_STATUS  projectStatus,
+    INDUSTRY_MAIN_CLASS  industryMainClass,
+    INDUSTRY_SUB_CLASS  industrySubClass,
+    BUILD_TYPE  buildType,
+    INVEST_TYPE  investType,
+    LAND_SOURCE  landSource,
+    LAND_NATURE  landNature,
+    BUILD_NATURE  buildNature,
+    IS_DELETED  isDeleted,
+    THEME_ID  themeId,
+    THEME_VER_ID  themeVerId,
+    CREATER  creater,
+    CREATE_TIME  createTime,
+    MODIFIER  modifier,
+    MODIFY_TIME  modifyTime,
+    PROJ_CATEGORY  projCategory,
+    PROJ_STATE  projState,
+    HAVE_DETAIL  haveDetail,
+    PROJ_FLAG  projFlag,
+    GEO_OBJECTID  geoObjectid,
+    PROJ_SCALE  projScale,
+    PROJ_SCALE_CONTENT  projScaleContent,
+    IS_FINANCIAL_FUND  isFinancialFund,
+    FINANCIAL_FUND_PROPORTION  financialFundProportion,
+    IS_SOCIAL_FUND  isSocialFund,
+    SOCIAL_FUND_PROPORTION  socialFundProportion,
+    IS_INVALID_PROJ  isInvalidProj,
+    IS_PURCHASE_PROJ  isPurchaseProj,
+    GCBM  gcbm,
+    ROOT_ORG_ID rootOrgId,
+    east_scope eastScope,
+    south_scope southScope,
+    west_scope westScope,
+    north_scope northScope,
+    project_dept projectDept,
+    above_ground aboveGround,
+        under_ground underGround,
+        IS_DESIGN_SOLUTION isDesignSolution,
+        IS_AREA_ESTIMATE isAreaEstimate,
+        GB_CODE_YEAR gbCodeYear,
+        PROJ_FUNCTION projFunction,
+        SCALE_TYPE scaleType,
+        PROJ_NUM projNum,
+        APPROVAL_DEPT approvalDept,
+        APPROVAL_TIME approvalTime
+    </sql>
+
+    <sql id="allColumnsAlias">
+        ${alias}.PROJ_INFO_ID  projInfoId,
+        ${alias}.LOCAL_CODE  localCode,
+        ${alias}.PROJ_NAME  projName,
+        ${alias}.PROJ_TYPE  projType,
+        ${alias}.PROJ_LEVEL  projLevel,
+        ${alias}.MAIN_CLASS  mainClass,
+        ${alias}.CENTRAL_CODE  centralCode,
+        ${alias}.IS_JGXM  isJgxm,
+        ${alias}.PROJ_URGENCY  projUrgency,
+        ${alias}.PROJ_ADDR  projAddr,
+        ${alias}.PROJ_CREATE_USER_CODE  projCreateUserCode,
+        ${alias}.PROJ_CREATE_USER  projCreateUser,
+        ${alias}.PROJ_CREATE_MOBILE  projCreateMobile,
+        ${alias}.BUILD_AREA_SUM  buildAreaSum,
+        ${alias}.CURRENT_PROGRESS  currentProgress,
+        ${alias}.PROJ_QUESTION  projQuestion,
+        ${alias}.PROJ_NATURE  projNature,
+        ${alias}.NSTART_TIME  nstartTime,
+        ${alias}.END_TIME  endTime,
+        ${alias}.INVEST_SUM  investSum,
+        ${alias}.PROJECT_ADDRESS  projectAddress,
+        ${alias}.AREA_DETAIL_CODE  areaDetailCode,
+        ${alias}.INDUSTRY  industry,
+        ${alias}.SCALE_CONTENT  scaleContent,
+        ${alias}.XM_YDMJ  xmYdmj,
+        ${alias}.XZYDMJ  xzydmj,
+        ${alias}.NYDMJ  nydmj,
+        ${alias}.XMZBJ  xmzbj,
+        ${alias}.FINANCIAL_SOURCE  financialSource,
+        ${alias}.CZZJLY  czzjly,
+        ${alias}.REGIONALISM  regionalism,
+        ${alias}.DISTRICT  district,
+        ${alias}.IS_FOREIGN  isForeign,
+        ${alias}.FOREIGN_INVOLVE_SECURITY  foreignInvolveSecurity,
+        ${alias}.FOREIGN_INVESTMENT_WAY  foreignInvestmentWay,
+        ${alias}.FOREIGN_POLICY_TYPE  foreignPolicyType,
+        ${alias}.FOREIGN_POLICY_ITEM  foreignPolicyItem,
+        ${alias}.FOREIGN_TOTAL_DOLLAR  foreignTotalDollar,
+        ${alias}.FOREIGN_TOTAL_RATE  foreignTotalRate,
+        ${alias}.FOREIGN_CAPITAL  foreignCapital,
+        ${alias}.FOREIGN_CAPITAL_DOLLAR  foreignCapitalDollar,
+        ${alias}.FOREIGN_CAPITAL_RATE  foreignCapitalRate,
+        ${alias}.INVESTOR  investor,
+        ${alias}.INVESTOR_COUNTRY  investorCountry,
+        ${alias}.INVESTOR_CAPITAL  investorCapital,
+        ${alias}.INVESTOR_CAPITAL_PERCENT  investorCapitalPercent,
+        ${alias}.INVESTOR_CAPITAL_TYPE  investorCapitalType,
+        ${alias}.FOREIGN_IS_ADD_INVESTMENT  foreignIsAddInvestment,
+        ${alias}.FOREIGN_LAND_WAY  foreignLandWay,
+        ${alias}.FOREIGN_LAND_AREA  foreignLandArea,
+        ${alias}.FOREIGN_BUILDING_AREA  foreignBuildingArea,
+        ${alias}.FOREIGN_IS_ADD_EQUIPMENT  foreignIsAddEquipment,
+        ${alias}.FOREIGN_EQUIPMENT_NUM  foreignEquipmentNum,
+        ${alias}.FOREIGN_IS_HAVE_DEPT  foreignIsHaveDept,
+        ${alias}.FOREIGN_DEPT_ADDRESS  foreignDeptAddress,
+        ${alias}.FOREIGN_DEPT_NATURE  foreignDeptNature,
+        ${alias}.FOREIGN_IS_SAME  foreignIsSame,
+        ${alias}.FOREIGN_CHINA_PERCENT  foreignChinaPercent,
+        ${alias}.FOREIGN_FOREIGN_PERCENT  foreignForeignPercent,
+        ${alias}.FOREIGN_MANAGEMENT  foreignManagement,
+        ${alias}.FOREIGN_TEL  foreignTel,
+        ${alias}.FOREIGN_FAX  foreignFax,
+        ${alias}.FOREIGN_ADDRESS  foreignAddress,
+        ${alias}.FOREIGN_REMARK  foreignRemark,
+        ${alias}.ABROAD_PROJECT_ADDRESS  abroadProjectAddress,
+        ${alias}.ABROAD_CHINESE_INVESTMENT  abroadChineseInvestment,
+        ${alias}.AREA_DETIAL  areaDetial,
+        ${alias}.THE_INDUSTRY  theIndustry,
+        ${alias}.FOREIGN_PROJECT_TYPE  foreignProjectType,
+        ${alias}.FOREIGN_APPROVE_NUM  foreignApproveNum,
+        ${alias}.FOREIGN_CHANGE_REASON  foreignChangeReason,
+        ${alias}.FOREIGN_SECURITY_NUM  foreignSecurityNum,
+        ${alias}.PROJECT_CREATE_USER  projectCreateUser,
+        ${alias}.PROJECT_CREATE_DATE  projectCreateDate,
+        ${alias}.PROJECT_STATUS  projectStatus,
+        ${alias}.INDUSTRY_MAIN_CLASS  industryMainClass,
+        ${alias}.INDUSTRY_SUB_CLASS  industrySubClass,
+        ${alias}.BUILD_TYPE  buildType,
+        ${alias}.INVEST_TYPE  investType,
+        ${alias}.LAND_SOURCE  landSource,
+        ${alias}.LAND_NATURE  landNature,
+        ${alias}.BUILD_NATURE  buildNature,
+        ${alias}.IS_DELETED  isDeleted,
+        ${alias}.THEME_ID  themeId,
+        ${alias}.CREATER  creater,
+        ${alias}.CREATE_TIME  createTime,
+        ${alias}.MODIFIER  modifier,
+        ${alias}.MODIFY_TIME  modifyTime,
+        ${alias}.PROJ_CATEGORY  projCategory,
+        ${alias}.PROJ_STATE  projState,
+        ${alias}.HAVE_DETAIL  haveDetail,
+        ${alias}.PROJ_FLAG  projFlag,
+        ${alias}.GEO_OBJECTID  geoObjectid,
+        ${alias}.PROJ_SCALE  projScale,
+        ${alias}.PROJ_SCALE_CONTENT  projScaleContent,
+        ${alias}.IS_FINANCIAL_FUND  isFinancialFund,
+        ${alias}.FINANCIAL_FUND_PROPORTION  financialFundProportion,
+        ${alias}.IS_SOCIAL_FUND  isSocialFund,
+        ${alias}.SOCIAL_FUND_PROPORTION  socialFundProportion,
+        ${alias}.IS_INVALID_PROJ  isInvalidProj,
+        ${alias}.IS_PURCHASE_PROJ  isPurchaseProj,
+        ${alias}.GCBM gcbm,
+        ${alias}.ROOT_ORG_ID rootOrgId,
+        ${alias}.east_scope eastScope,
+        ${alias}.south_scope southScope,
+        ${alias}.west_scope westScope,
+        ${alias}.north_scope northScope,
+        ${alias}.project_dept projectDept,
+        ${alias}.above_ground aboveGround,
+        ${alias}.under_ground underGround,
+        ${alias}.IS_DESIGN_SOLUTION isDesignSolution,
+        ${alias}.IS_AREA_ESTIMATE isAreaEstimate,
+        ${alias}.GB_CODE_YEAR gbCodeYear
+
+    </sql>
+    <!-- 20190720 add xiaohutu -->
+    <sql id="aeaParentProjColumns">
+        app.NODE_PROJ_ID  nodeProjId,
+        app.PARENT_PROJ_ID  parentProjId,
+        app.CHILD_PROJ_ID  childProjId,
+        app.PROJ_SEQ  projSeq,
+        app.CREATER  creater,
+        app.CREATE_TIME  createTime,
+        app.MODIFIER  modifier,
+        app.MODIFY_TIME  modifyTime
+    </sql>
+
+
+    <sql id="conditionalQuerycolumnsAlias">
+        ${alias}.PROJ_INFO_ID  projInfoId,
+        ${alias}.LOCAL_CODE  localCode,
+        ${alias}.PROJ_NAME  projName,
+        ${alias}.PROJ_TYPE  projType,
+        ${alias}.PROJ_LEVEL  projLevel,
+        ${alias}.CENTRAL_CODE  centralCode,
+        ${alias}.PROJ_NATURE  projNature,
+        ${alias}.REGIONALISM  regionalism,
+        ${alias}.BUILD_NATURE  buildNature,
+        ${alias}.IS_DELETED  isDeleted,
+        ${alias}.THEME_ID  themeId,
+        ${alias}.BUILD_AREA_SUM  buildAreaSum,
+        CASE
+        WHEN ${alias}.MODIFY_TIME IS NULL THEN
+        ${alias}.CREATE_TIME
+        ELSE
+        ${alias}.MODIFY_TIME
+        END AS modifyTime,
+        ${alias}.GCBM gcbm,
+        ${alias}.ROOT_ORG_ID rootOrgId
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaProjInfoById" resultType="AeaProjInfo">
+        select
+        <include refid="allColumns"/>
+        from AEA_PROJ_INFO
+        where PROJ_INFO_ID = #{id}
+        AND IS_DELETED = '0'
+    </select>
+
+    <select id="getAeaProjInfoByGcbm" resultType="AeaProjInfo">
+        select
+        <include refid="allColumns"/>
+        from AEA_PROJ_INFO
+        where GCBM = #{gcbm}
+        AND IS_DELETED = '0'
+    </select>
+
+    <select id="findAeaProjInfoByKeyword" resultType="AeaProjInfo">
+        select
+        <include refid="allColumnsAlias">
+            <property name="alias" value="proj"></property>
+        </include>
+        ,r.region_name regionName,theme.theme_name themeName
+        from AEA_PROJ_INFO proj
+        left join bsc_dic_region r on r.region_id = proj.regionalism
+        left join aea_par_theme theme on theme.theme_id = proj.theme_id
+        where proj.IS_DELETED = '0'
+        <if test="keyword!=null and keyword!=''">
+            AND(proj.PROJ_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+            OR proj.LOCAL_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+            OR proj.CENTRAL_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+            OR proj.GCBM LIKE CONCAT(CONCAT('%',#{keyword}),'%'))
+        </if>
+        <if test="rootOrgId != null and rootOrgId !=''">
+            AND proj.ROOT_ORG_ID = #{rootOrgId}
+        </if>
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaProjInfo" resultType="AeaProjInfo">
+        select
+        <include refid="allColumns"/>
+        from AEA_PROJ_INFO
+        <where>
+            <if test="projInfoId != null">
+                AND PROJ_INFO_ID = #{projInfoId}
+            </if>
+            <if test="localCode != null">
+                AND LOCAL_CODE = #{localCode}
+            </if>
+            <if test="projName != null">
+                AND PROJ_NAME = #{projName}
+            </if>
+            <if test="projType != null">
+                AND PROJ_TYPE = #{projType}
+            </if>
+            <if test="projLevel != null">
+                AND PROJ_LEVEL = #{projLevel}
+            </if>
+            <if test="mainClass != null">
+                AND MAIN_CLASS = #{mainClass}
+            </if>
+            <if test="centralCode != null">
+                AND CENTRAL_CODE = #{centralCode}
+            </if>
+            <if test="isJgxm != null">
+                AND IS_JGXM = #{isJgxm}
+            </if>
+            <if test="projUrgency != null">
+                AND PROJ_URGENCY = #{projUrgency}
+            </if>
+            <if test="projAddr != null">
+                AND PROJ_ADDR = #{projAddr}
+            </if>
+            <if test="projCreateUserCode != null">
+                AND PROJ_CREATE_USER_CODE = #{projCreateUserCode}
+            </if>
+            <if test="projCreateUser != null">
+                AND PROJ_CREATE_USER = #{projCreateUser}
+            </if>
+            <if test="projCreateMobile != null">
+                AND PROJ_CREATE_MOBILE = #{projCreateMobile}
+            </if>
+            <if test="buildAreaSum != null">
+                AND BUILD_AREA_SUM = #{buildAreaSum}
+            </if>
+            <if test="currentProgress != null">
+                AND CURRENT_PROGRESS = #{currentProgress}
+            </if>
+            <if test="projQuestion != null">
+                AND PROJ_QUESTION = #{projQuestion}
+            </if>
+            <if test="projNature != null">
+                AND PROJ_NATURE = #{projNature}
+            </if>
+            <if test="nstartTime != null">
+                AND NSTART_TIME = #{nstartTime}
+            </if>
+            <if test="endTime != null">
+                AND END_TIME = #{endTime}
+            </if>
+            <if test="investSum != null">
+                AND INVEST_SUM = #{investSum}
+            </if>
+            <if test="projectAddress != null">
+                AND PROJECT_ADDRESS = #{projectAddress}
+            </if>
+            <if test="areaDetailCode != null">
+                AND AREA_DETAIL_CODE = #{areaDetailCode}
+            </if>
+            <if test="industry != null">
+                AND INDUSTRY = #{industry}
+            </if>
+            <if test="scaleContent != null">
+                AND SCALE_CONTENT = #{scaleContent}
+            </if>
+            <if test="xmYdmj != null">
+                AND XM_YDMJ = #{xmYdmj}
+            </if>
+            <if test="xzydmj != null">
+                AND XZYDMJ = #{xzydmj}
+            </if>
+            <if test="nydmj != null">
+                AND NYDMJ = #{nydmj}
+            </if>
+            <if test="xmzbj != null">
+                AND XMZBJ = #{xmzbj}
+            </if>
+            <if test="financialSource != null">
+                AND FINANCIAL_SOURCE = #{financialSource}
+            </if>
+            <if test="czzjly != null">
+                AND CZZJLY = #{czzjly}
+            </if>
+            <if test="regionalism != null">
+                AND REGIONALISM = #{regionalism}
+            </if>
+            <if test="district != null">
+                AND DISTRICT = #{district}
+            </if>
+            <if test="isForeign != null">
+                AND IS_FOREIGN = #{isForeign}
+            </if>
+            <if test="foreignInvolveSecurity != null">
+                AND FOREIGN_INVOLVE_SECURITY = #{foreignInvolveSecurity}
+            </if>
+            <if test="foreignInvestmentWay != null">
+                AND FOREIGN_INVESTMENT_WAY = #{foreignInvestmentWay}
+            </if>
+            <if test="foreignPolicyType != null">
+                AND FOREIGN_POLICY_TYPE = #{foreignPolicyType}
+            </if>
+            <if test="foreignPolicyItem != null">
+                AND FOREIGN_POLICY_ITEM = #{foreignPolicyItem}
+            </if>
+            <if test="foreignTotalDollar != null">
+                AND FOREIGN_TOTAL_DOLLAR = #{foreignTotalDollar}
+            </if>
+            <if test="foreignTotalRate != null">
+                AND FOREIGN_TOTAL_RATE = #{foreignTotalRate}
+            </if>
+            <if test="foreignCapital != null">
+                AND FOREIGN_CAPITAL = #{foreignCapital}
+            </if>
+            <if test="foreignCapitalDollar != null">
+                AND FOREIGN_CAPITAL_DOLLAR = #{foreignCapitalDollar}
+            </if>
+            <if test="foreignCapitalRate != null">
+                AND FOREIGN_CAPITAL_RATE = #{foreignCapitalRate}
+            </if>
+            <if test="investor != null">
+                AND INVESTOR = #{investor}
+            </if>
+            <if test="investorCountry != null">
+                AND INVESTOR_COUNTRY = #{investorCountry}
+            </if>
+            <if test="investorCapital != null">
+                AND INVESTOR_CAPITAL = #{investorCapital}
+            </if>
+            <if test="investorCapitalPercent != null">
+                AND INVESTOR_CAPITAL_PERCENT = #{investorCapitalPercent}
+            </if>
+            <if test="investorCapitalType != null">
+                AND INVESTOR_CAPITAL_TYPE = #{investorCapitalType}
+            </if>
+            <if test="foreignIsAddInvestment != null">
+                AND FOREIGN_IS_ADD_INVESTMENT = #{foreignIsAddInvestment}
+            </if>
+            <if test="foreignLandWay != null">
+                AND FOREIGN_LAND_WAY = #{foreignLandWay}
+            </if>
+            <if test="foreignLandArea != null">
+                AND FOREIGN_LAND_AREA = #{foreignLandArea}
+            </if>
+            <if test="foreignBuildingArea != null">
+                AND FOREIGN_BUILDING_AREA = #{foreignBuildingArea}
+            </if>
+            <if test="foreignIsAddEquipment != null">
+                AND FOREIGN_IS_ADD_EQUIPMENT = #{foreignIsAddEquipment}
+            </if>
+            <if test="foreignEquipmentNum != null">
+                AND FOREIGN_EQUIPMENT_NUM = #{foreignEquipmentNum}
+            </if>
+            <if test="foreignIsHaveDept != null">
+                AND FOREIGN_IS_HAVE_DEPT = #{foreignIsHaveDept}
+            </if>
+            <if test="foreignDeptAddress != null">
+                AND FOREIGN_DEPT_ADDRESS = #{foreignDeptAddress}
+            </if>
+            <if test="foreignDeptNature != null">
+                AND FOREIGN_DEPT_NATURE = #{foreignDeptNature}
+            </if>
+            <if test="foreignIsSame != null">
+                AND FOREIGN_IS_SAME = #{foreignIsSame}
+            </if>
+            <if test="foreignChinaPercent != null">
+                AND FOREIGN_CHINA_PERCENT = #{foreignChinaPercent}
+            </if>
+            <if test="foreignForeignPercent != null">
+                AND FOREIGN_FOREIGN_PERCENT = #{foreignForeignPercent}
+            </if>
+            <if test="foreignManagement != null">
+                AND FOREIGN_MANAGEMENT = #{foreignManagement}
+            </if>
+            <if test="foreignTel != null">
+                AND FOREIGN_TEL = #{foreignTel}
+            </if>
+            <if test="foreignFax != null">
+                AND FOREIGN_FAX = #{foreignFax}
+            </if>
+            <if test="foreignAddress != null">
+                AND FOREIGN_ADDRESS = #{foreignAddress}
+            </if>
+            <if test="foreignRemark != null">
+                AND FOREIGN_REMARK = #{foreignRemark}
+            </if>
+            <if test="abroadProjectAddress != null">
+                AND ABROAD_PROJECT_ADDRESS = #{abroadProjectAddress}
+            </if>
+            <if test="abroadChineseInvestment != null">
+                AND ABROAD_CHINESE_INVESTMENT = #{abroadChineseInvestment}
+            </if>
+            <if test="areaDetial != null">
+                AND AREA_DETIAL = #{areaDetial}
+            </if>
+            <if test="theIndustry != null">
+                AND THE_INDUSTRY = #{theIndustry}
+            </if>
+            <if test="foreignProjectType != null">
+                AND FOREIGN_PROJECT_TYPE = #{foreignProjectType}
+            </if>
+            <if test="foreignApproveNum != null">
+                AND FOREIGN_APPROVE_NUM = #{foreignApproveNum}
+            </if>
+            <if test="foreignChangeReason != null">
+                AND FOREIGN_CHANGE_REASON = #{foreignChangeReason}
+            </if>
+            <if test="foreignSecurityNum != null">
+                AND FOREIGN_SECURITY_NUM = #{foreignSecurityNum}
+            </if>
+            <if test="projectCreateUser != null">
+                AND PROJECT_CREATE_USER = #{projectCreateUser}
+            </if>
+            <if test="projectCreateDate != null">
+                AND PROJECT_CREATE_DATE = #{projectCreateDate}
+            </if>
+            <if test="projectStatus != null">
+                AND PROJECT_STATUS = #{projectStatus}
+            </if>
+            <if test="industryMainClass != null">
+                AND INDUSTRY_MAIN_CLASS = #{industryMainClass}
+            </if>
+            <if test="industrySubClass != null">
+                AND INDUSTRY_SUB_CLASS = #{industrySubClass}
+            </if>
+            <if test="buildType != null">
+                AND BUILD_TYPE = #{buildType}
+            </if>
+            <if test="investType != null">
+                AND INVEST_TYPE = #{investType}
+            </if>
+            <if test="landSource != null">
+                AND LAND_SOURCE = #{landSource}
+            </if>
+            <if test="landNature != null">
+                AND LAND_NATURE = #{landNature}
+            </if>
+            <if test="buildNature != null">
+                AND BUILD_NATURE = #{buildNature}
+            </if>
+            <if test="isDeleted != null">
+                AND IS_DELETED = #{isDeleted}
+            </if>
+            <if test="themeId != null">
+                AND THEME_ID = #{themeId}
+            </if>
+            <if test="creater != null">
+                AND CREATER = #{creater}
+            </if>
+            <if test="createTime != null">
+                AND CREATE_TIME = #{createTime}
+            </if>
+            <if test="modifier != null">
+                AND MODIFIER = #{modifier}
+            </if>
+            <if test="modifyTime != null">
+                AND MODIFY_TIME = #{modifyTime}
+            </if>
+            <if test="projCategory != null">
+                AND PROJ_CATEGORY = #{projCategory}
+            </if>
+            <if test="projState != null">
+                AND PROJ_STATE = #{projState}
+            </if>
+            <if test="haveDetail != null">
+                AND HAVE_DETAIL = #{haveDetail}
+            </if>
+            <if test="projFlag != null">
+                AND PROJ_FLAG = #{projFlag}
+            </if>
+            <if test="geoObjectid != null">
+                AND GEO_OBJECTID = #{geoObjectid}
+            </if>
+            <if test="projScale != null">
+                AND PROJ_SCALE = #{projScale}
+            </if>
+            <if test="projScaleContent != null">
+                AND PROJ_SCALE_CONTENT = #{projScaleContent}
+            </if>
+            <if test="isFinancialFund != null">
+                AND IS_FINANCIAL_FUND = #{isFinancialFund}
+            </if>
+            <if test="financialFundProportion != null">
+                AND FINANCIAL_FUND_PROPORTION = #{financialFundProportion}
+            </if>
+            <if test="isSocialFund != null">
+                AND IS_SOCIAL_FUND = #{isSocialFund}
+            </if>
+            <if test="socialFundProportion != null">
+                AND SOCIAL_FUND_PROPORTION = #{socialFundProportion}
+            </if>
+            <if test="isInvalidProj != null">
+                AND IS_INVALID_PROJ = #{isInvalidProj}
+            </if>
+            <if test="isPurchaseProj != null">
+                AND IS_PURCHASE_PROJ = #{isPurchaseProj}
+            </if>
+            <if test="gcbm != null">
+                AND GCBM = #{gcbm}
+            </if>
+            <if test="keyword!=null and keyword!=''">
+                AND(PROJ_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                OR LOCAL_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                OR CENTRAL_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                OR GCBM LIKE CONCAT(CONCAT('%',#{keyword}),'%'))
+            </if>
+            <if test="rootOrgId != null">
+                AND ROOT_ORG_ID = #{rootOrgId}
+            </if>
+            AND IS_DELETED = '0'
+        </where>
+    </select>
+    <!--4 根据条件查询实体list,返回分页对象 -->
+
+    <select id="findApplyProj" resultType="AeaProjInfo">
+        select
+        <include refid="allColumns"/>
+        from AEA_PROJ_INFO
+        WHERE PROJ_INFO_ID IN (
+        SELECT PROJ_INFO_ID
+        FROM AEA_APPLYINST_PROJ
+        WHERE APPLYINST_ID = #{applyinstId}
+        )
+        AND IS_DELETED = '0'
+    </select>
+
+    <select id="findChildProj" resultType="AeaProjInfo">
+        select
+        <include refid="allColumns"/>
+        from AEA_PROJ_INFO
+        WHERE PROJ_INFO_ID IN (
+        SELECT CHILD_PROJ_ID
+        FROM AEA_PARENT_PROJ
+        WHERE PARENT_PROJ_ID = #{projInfoId}
+        )
+        AND IS_DELETED = '0'
+    </select>
+    <select id="findParentProj" resultType="AeaProjInfo">
+        select
+        <include refid="allColumns"/>
+        from AEA_PROJ_INFO
+        WHERE PROJ_INFO_ID IN (
+        SELECT PARENT_PROJ_ID
+        FROM AEA_PARENT_PROJ
+        WHERE CHILD_PROJ_ID = #{projInfoId}
+        )
+        AND IS_DELETED = '0'
+    </select>
+
+    <select id="findAeaProjInfoByApplyLinkmanInfoId" resultType="AeaProjInfo">
+        select
+        <include refid="allColumns"/>
+        from AEA_PROJ_INFO
+        WHERE PROJ_INFO_ID IN (
+        SELECT PROJ_INFO_ID
+        FROM AEA_PROJ_LINKMAN
+        WHERE LINKMAN_INFO_ID = #{linkmanInfoId}
+        AND TYPE = 'apply'
+        )
+        AND IS_DELETED = '0'
+    </select>
+
+    <select id="findAeaProjInfoByLinkmanInfoId" resultType="AeaProjInfo">
+        select DISTINCT
+        <include refid="allColumns"/>
+        from AEA_PROJ_INFO
+        WHERE PROJ_INFO_ID IN (
+        SELECT PROJ_INFO_ID
+        FROM AEA_PROJ_LINKMAN
+        WHERE LINKMAN_INFO_ID = #{linkmanInfoId}
+        AND TYPE = 'link'
+        )
+        AND IS_DELETED = '0'
+    </select>
+
+    <select id="findAeaProjInfoByUnitInfoId" resultType="AeaProjInfo">
+        SELECT distinct
+        <include refid="allColumnsAlias">
+            <property name="alias" value="proj"></property>
+        </include>
+        FROM AEA_PROJ_INFO proj
+        LEFT JOIN AEA_UNIT_PROJ aup ON proj.PROJ_INFO_ID = aup.PROJ_INFO_ID
+        WHERE aup.UNIT_INFO_ID = #{unitInfoId}
+        and aup.is_deleted='0'
+        AND proj.IS_DELETED = '0'
+        order by proj.CREATE_TIME
+    </select>
+
+    <select id="findAeaProjInfoByLinkmanInfoIdAndUnitInfoId" resultType="AeaProjInfo">
+        select distinct aea_123.* from (
+        (select DISTINCT
+        <include refid="allColumnsAlias">
+            <property name="alias" value="proj"></property>
+        </include>
+        from AEA_PROJ_INFO proj
+        WHERE proj.PROJ_INFO_ID IN (
+        SELECT PROJ_INFO_ID
+        FROM AEA_PROJ_LINKMAN
+        WHERE
+        <if test="linkmanInfoId !=null and linkmanInfoId!=''">
+            LINKMAN_INFO_ID = #{linkmanInfoId}
+        </if>
+        <if test="linkmanInfoId ==null || linkmanInfoId==''">
+            LINKMAN_INFO_ID is null
+        </if>
+        AND TYPE = 'link'
+        )
+        AND proj.IS_DELETED = '0')
+        union all
+        (SELECT DISTINCT
+        <include refid="allColumnsAlias">
+            <property name="alias" value="proj"></property>
+        </include>
+        FROM AEA_PROJ_INFO proj
+        LEFT JOIN AEA_UNIT_PROJ aup ON proj.PROJ_INFO_ID = aup.PROJ_INFO_ID
+        WHERE
+        <if test="unitInfoId !=null and unitInfoId!=''">
+            aup.UNIT_INFO_ID = #{unitInfoId}
+        </if>
+        <if test="unitInfoId ==null || unitInfoId==''">
+            aup.UNIT_INFO_ID is null
+        </if>
+        and aup.is_deleted='0'
+        AND proj.IS_DELETED = '0')
+        ) aea_123
+    </select>
+    <select id="getAeaParentProjByChildId" resultType="com.augurit.aplanmis.common.domain.AeaParentProj">
+        select
+        <include refid="aeaParentProjColumns"/>
+        from AEA_PARENT_PROJ app where app.child_proj_id = #{projInfoId}
+    </select>
+    <select id="listAeaParentProj" resultType="com.augurit.aplanmis.common.domain.AeaParentProj">
+        select
+        <include refid="aeaParentProjColumns"/>
+        from AEA_PARENT_PROJ app
+        <where>
+            <if test="nodeProjId != null">
+                AND NODE_PROJ_ID = #{nodeProjId}
+            </if>
+            <if test="parentProjId != null">
+                AND PARENT_PROJ_ID = #{parentProjId}
+            </if>
+            <if test="childProjId != null">
+                AND CHILD_PROJ_ID = #{childProjId}
+            </if>
+            <if test="projSeq != null">
+                AND PROJ_SEQ = #{projSeq}
+            </if>
+            <if test="creater != null">
+                AND CREATER = #{creater}
+            </if>
+            <if test="createTime != null">
+                AND CREATE_TIME = #{createTime}
+            </if>
+            <if test="modifier != null">
+                AND MODIFIER = #{modifier}
+            </if>
+            <if test="modifyTime != null">
+                AND MODIFY_TIME = #{modifyTime}
+            </if>
+        </where>
+    </select>
+    <select id="getOnlyAeaProjInfoById" resultType="com.augurit.aplanmis.common.domain.AeaProjInfo">
+        select
+        <include refid="allColumnsAlias">
+            <property name="alias" value="api"></property>
+        </include>
+        ,app.PARENT_PROJ_ID parentProjId,app.PROJ_SEQ projSeq
+        FROM AEA_PROJ_INFO api
+        LEFT JOIN AEA_PARENT_PROJ app
+        on api.proj_info_id=app.child_proj_id
+        WHERE api.PROJ_INFO_ID = #{id}
+    </select>
+    <select id="listAeaProjInfoByIds" resultType="com.augurit.aplanmis.common.domain.AeaProjInfo">
+        select
+        <include refid="allColumnsAlias">
+            <property name="alias" value="api"></property>
+        </include>
+        ,app.PARENT_PROJ_ID parentProjId,app.PROJ_SEQ projSeq
+        FROM AEA_PROJ_INFO api
+        LEFT JOIN AEA_PARENT_PROJ app
+        on api.proj_info_id=app.child_proj_id
+        WHERE api.PROJ_INFO_ID in
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaProjInfo" parameterType="AeaProjInfo">
+        insert into AEA_PROJ_INFO (PROJ_INFO_ID, LOCAL_CODE, PROJ_NAME, PROJ_TYPE, PROJ_LEVEL, MAIN_CLASS, CENTRAL_CODE,
+                                   IS_JGXM, PROJ_URGENCY, PROJ_ADDR, PROJ_CREATE_USER_CODE, PROJ_CREATE_USER,
+                                   PROJ_CREATE_MOBILE, BUILD_AREA_SUM, CURRENT_PROGRESS, PROJ_QUESTION, PROJ_NATURE,
+                                   NSTART_TIME, END_TIME, INVEST_SUM, PROJECT_ADDRESS, AREA_DETAIL_CODE, INDUSTRY,
+                                   SCALE_CONTENT, XM_YDMJ, XZYDMJ, NYDMJ, XMZBJ, FINANCIAL_SOURCE, CZZJLY, REGIONALISM,
+                                   DISTRICT, IS_FOREIGN, FOREIGN_INVOLVE_SECURITY, FOREIGN_INVESTMENT_WAY,
+                                   FOREIGN_POLICY_TYPE, FOREIGN_POLICY_ITEM, FOREIGN_TOTAL_DOLLAR, FOREIGN_TOTAL_RATE,
+                                   FOREIGN_CAPITAL, FOREIGN_CAPITAL_DOLLAR, FOREIGN_CAPITAL_RATE, INVESTOR,
+                                   INVESTOR_COUNTRY, INVESTOR_CAPITAL, INVESTOR_CAPITAL_PERCENT, INVESTOR_CAPITAL_TYPE,
+                                   FOREIGN_IS_ADD_INVESTMENT, FOREIGN_LAND_WAY, FOREIGN_LAND_AREA,
+                                   FOREIGN_BUILDING_AREA, FOREIGN_IS_ADD_EQUIPMENT, FOREIGN_EQUIPMENT_NUM,
+                                   FOREIGN_IS_HAVE_DEPT, FOREIGN_DEPT_ADDRESS, FOREIGN_DEPT_NATURE, FOREIGN_IS_SAME,
+                                   FOREIGN_CHINA_PERCENT, FOREIGN_FOREIGN_PERCENT, FOREIGN_MANAGEMENT, FOREIGN_TEL,
+                                   FOREIGN_FAX, FOREIGN_ADDRESS, FOREIGN_REMARK, ABROAD_PROJECT_ADDRESS,
+                                   ABROAD_CHINESE_INVESTMENT, AREA_DETIAL, THE_INDUSTRY, FOREIGN_PROJECT_TYPE,
+                                   FOREIGN_APPROVE_NUM, FOREIGN_CHANGE_REASON, FOREIGN_SECURITY_NUM,
+                                   PROJECT_CREATE_USER, PROJECT_CREATE_DATE, PROJECT_STATUS, INDUSTRY_MAIN_CLASS,
+                                   INDUSTRY_SUB_CLASS, BUILD_TYPE, INVEST_TYPE, LAND_SOURCE, LAND_NATURE, BUILD_NATURE,
+                                   IS_DELETED, THEME_ID, CREATER, CREATE_TIME, MODIFIER, MODIFY_TIME, PROJ_CATEGORY,
+                                   PROJ_STATE, HAVE_DETAIL, PROJ_FLAG, GEO_OBJECTID, PROJ_SCALE, PROJ_SCALE_CONTENT,
+                                   IS_FINANCIAL_FUND, FINANCIAL_FUND_PROPORTION, IS_SOCIAL_FUND, SOCIAL_FUND_PROPORTION,
+                                   IS_INVALID_PROJ, IS_PURCHASE_PROJ, GCBM,ROOT_ORG_ID,EAST_SCOPE,SOUTH_SCOPE,
+                                   WEST_SCOPE,NORTH_SCOPE,IS_DESIGN_SOLUTION,IS_AREA_ESTIMATE,GB_CODE_YEAR)
+        values (#{projInfoId}, #{localCode}, #{projName}, #{projType}, #{projLevel}, #{mainClass}, #{centralCode},
+                #{isJgxm}, #{projUrgency}, #{projAddr}, #{projCreateUserCode}, #{projCreateUser}, #{projCreateMobile},
+                #{buildAreaSum}, #{currentProgress}, #{projQuestion}, #{projNature}, #{nstartTime}, #{endTime},
+                #{investSum}, #{projectAddress}, #{areaDetailCode}, #{industry}, #{scaleContent}, #{xmYdmj}, #{xzydmj},
+                #{nydmj}, #{xmzbj}, #{financialSource}, #{czzjly}, #{regionalism}, #{district}, #{isForeign},
+                #{foreignInvolveSecurity}, #{foreignInvestmentWay}, #{foreignPolicyType}, #{foreignPolicyItem},
+                #{foreignTotalDollar}, #{foreignTotalRate}, #{foreignCapital}, #{foreignCapitalDollar},
+                #{foreignCapitalRate}, #{investor}, #{investorCountry}, #{investorCapital}, #{investorCapitalPercent},
+                #{investorCapitalType}, #{foreignIsAddInvestment}, #{foreignLandWay}, #{foreignLandArea},
+                #{foreignBuildingArea}, #{foreignIsAddEquipment}, #{foreignEquipmentNum}, #{foreignIsHaveDept},
+                #{foreignDeptAddress}, #{foreignDeptNature}, #{foreignIsSame}, #{foreignChinaPercent},
+                #{foreignForeignPercent}, #{foreignManagement}, #{foreignTel}, #{foreignFax}, #{foreignAddress},
+                #{foreignRemark}, #{abroadProjectAddress}, #{abroadChineseInvestment}, #{areaDetial}, #{theIndustry},
+                #{foreignProjectType}, #{foreignApproveNum}, #{foreignChangeReason}, #{foreignSecurityNum},
+                #{projectCreateUser}, #{projectCreateDate}, #{projectStatus}, #{industryMainClass}, #{industrySubClass},
+                #{buildType}, #{investType}, #{landSource}, #{landNature}, #{buildNature}, #{isDeleted}, #{themeId},
+                #{creater}, #{createTime}, #{modifier}, #{modifyTime}, #{projCategory}, #{projState}, #{haveDetail},
+                #{projFlag}, #{geoObjectid}, #{projScale}, #{projScaleContent}, #{isFinancialFund},
+                #{financialFundProportion}, #{isSocialFund}, #{socialFundProportion}, #{isInvalidProj},
+                #{isPurchaseProj}, #{gcbm},#{rootOrgId},#{eastScope},#{southScope},#{westScope},#{northScope},
+                #{isDesignSolution},#{isAreaEstimate},#{gbCodeYear})
+    </insert>
+    <!--6 修改实体对象 -->
+    <update id="updateAeaProjInfo" parameterType="AeaProjInfo">
+        update AEA_PROJ_INFO
+        <set>
+            <if test="projInfoId != null">
+                PROJ_INFO_ID = #{projInfoId},
+            </if>
+            <if test="localCode != null">
+                LOCAL_CODE = #{localCode},
+            </if>
+            <if test="projName != null">
+                PROJ_NAME = #{projName},
+            </if>
+            <if test="projType != null">
+                PROJ_TYPE = #{projType},
+            </if>
+            <if test="projLevel != null">
+                PROJ_LEVEL = #{projLevel},
+            </if>
+            <if test="mainClass != null">
+                MAIN_CLASS = #{mainClass},
+            </if>
+            <if test="centralCode != null">
+                CENTRAL_CODE = #{centralCode},
+            </if>
+            <if test="isJgxm != null">
+                IS_JGXM = #{isJgxm},
+            </if>
+            <if test="projUrgency != null">
+                PROJ_URGENCY = #{projUrgency},
+            </if>
+            <if test="projAddr != null">
+                PROJ_ADDR = #{projAddr},
+            </if>
+            <if test="projCreateUserCode != null">
+                PROJ_CREATE_USER_CODE = #{projCreateUserCode},
+            </if>
+            <if test="projCreateUser != null">
+                PROJ_CREATE_USER = #{projCreateUser},
+            </if>
+            <if test="projCreateMobile != null">
+                PROJ_CREATE_MOBILE = #{projCreateMobile},
+            </if>
+            <if test="buildAreaSum != null">
+                BUILD_AREA_SUM = #{buildAreaSum},
+            </if>
+            <if test="currentProgress != null">
+                CURRENT_PROGRESS = #{currentProgress},
+            </if>
+            <if test="projQuestion != null">
+                PROJ_QUESTION = #{projQuestion},
+            </if>
+            <if test="projNature != null">
+                PROJ_NATURE = #{projNature},
+            </if>
+            <if test="nstartTime != null">
+                NSTART_TIME = #{nstartTime},
+            </if>
+            <if test="endTime != null">
+                END_TIME = #{endTime},
+            </if>
+            <if test="investSum != null">
+                INVEST_SUM = #{investSum},
+            </if>
+            <if test="projectAddress != null">
+                PROJECT_ADDRESS = #{projectAddress},
+            </if>
+            <if test="areaDetailCode != null">
+                AREA_DETAIL_CODE = #{areaDetailCode},
+            </if>
+            <if test="industry != null">
+                INDUSTRY = #{industry},
+            </if>
+            <if test="scaleContent != null">
+                SCALE_CONTENT = #{scaleContent},
+            </if>
+            <if test="xmYdmj != null">
+                XM_YDMJ = #{xmYdmj},
+            </if>
+            <if test="xzydmj != null">
+                XZYDMJ = #{xzydmj},
+            </if>
+            <if test="nydmj != null">
+                NYDMJ = #{nydmj},
+            </if>
+            <if test="xmzbj != null">
+                XMZBJ = #{xmzbj},
+            </if>
+            <if test="financialSource != null">
+                FINANCIAL_SOURCE = #{financialSource},
+            </if>
+            <if test="czzjly != null">
+                CZZJLY = #{czzjly},
+            </if>
+            <if test="regionalism != null">
+                REGIONALISM = #{regionalism},
+            </if>
+            <if test="district != null">
+                DISTRICT = #{district},
+            </if>
+            <if test="isForeign != null">
+                IS_FOREIGN = #{isForeign},
+            </if>
+            <if test="foreignInvolveSecurity != null">
+                FOREIGN_INVOLVE_SECURITY = #{foreignInvolveSecurity},
+            </if>
+            <if test="foreignInvestmentWay != null">
+                FOREIGN_INVESTMENT_WAY = #{foreignInvestmentWay},
+            </if>
+            <if test="foreignPolicyType != null">
+                FOREIGN_POLICY_TYPE = #{foreignPolicyType},
+            </if>
+            <if test="foreignPolicyItem != null">
+                FOREIGN_POLICY_ITEM = #{foreignPolicyItem},
+            </if>
+            <if test="foreignTotalDollar != null">
+                FOREIGN_TOTAL_DOLLAR = #{foreignTotalDollar},
+            </if>
+            <if test="foreignTotalRate != null">
+                FOREIGN_TOTAL_RATE = #{foreignTotalRate},
+            </if>
+            <if test="foreignCapital != null">
+                FOREIGN_CAPITAL = #{foreignCapital},
+            </if>
+            <if test="foreignCapitalDollar != null">
+                FOREIGN_CAPITAL_DOLLAR = #{foreignCapitalDollar},
+            </if>
+            <if test="foreignCapitalRate != null">
+                FOREIGN_CAPITAL_RATE = #{foreignCapitalRate},
+            </if>
+            <if test="investor != null">
+                INVESTOR = #{investor},
+            </if>
+            <if test="investorCountry != null">
+                INVESTOR_COUNTRY = #{investorCountry},
+            </if>
+            <if test="investorCapital != null">
+                INVESTOR_CAPITAL = #{investorCapital},
+            </if>
+            <if test="investorCapitalPercent != null">
+                INVESTOR_CAPITAL_PERCENT = #{investorCapitalPercent},
+            </if>
+            <if test="investorCapitalType != null">
+                INVESTOR_CAPITAL_TYPE = #{investorCapitalType},
+            </if>
+            <if test="foreignIsAddInvestment != null">
+                FOREIGN_IS_ADD_INVESTMENT = #{foreignIsAddInvestment},
+            </if>
+            <if test="foreignLandWay != null">
+                FOREIGN_LAND_WAY = #{foreignLandWay},
+            </if>
+            <if test="foreignLandArea != null">
+                FOREIGN_LAND_AREA = #{foreignLandArea},
+            </if>
+            <if test="foreignBuildingArea != null">
+                FOREIGN_BUILDING_AREA = #{foreignBuildingArea},
+            </if>
+            <if test="foreignIsAddEquipment != null">
+                FOREIGN_IS_ADD_EQUIPMENT = #{foreignIsAddEquipment},
+            </if>
+            <if test="foreignEquipmentNum != null">
+                FOREIGN_EQUIPMENT_NUM = #{foreignEquipmentNum},
+            </if>
+            <if test="foreignIsHaveDept != null">
+                FOREIGN_IS_HAVE_DEPT = #{foreignIsHaveDept},
+            </if>
+            <if test="foreignDeptAddress != null">
+                FOREIGN_DEPT_ADDRESS = #{foreignDeptAddress},
+            </if>
+            <if test="foreignDeptNature != null">
+                FOREIGN_DEPT_NATURE = #{foreignDeptNature},
+            </if>
+            <if test="foreignIsSame != null">
+                FOREIGN_IS_SAME = #{foreignIsSame},
+            </if>
+            <if test="foreignChinaPercent != null">
+                FOREIGN_CHINA_PERCENT = #{foreignChinaPercent},
+            </if>
+            <if test="foreignForeignPercent != null">
+                FOREIGN_FOREIGN_PERCENT = #{foreignForeignPercent},
+            </if>
+            <if test="foreignManagement != null">
+                FOREIGN_MANAGEMENT = #{foreignManagement},
+            </if>
+            <if test="foreignTel != null">
+                FOREIGN_TEL = #{foreignTel},
+            </if>
+            <if test="foreignFax != null">
+                FOREIGN_FAX = #{foreignFax},
+            </if>
+            <if test="foreignAddress != null">
+                FOREIGN_ADDRESS = #{foreignAddress},
+            </if>
+            <if test="foreignRemark != null">
+                FOREIGN_REMARK = #{foreignRemark},
+            </if>
+            <if test="abroadProjectAddress != null">
+                ABROAD_PROJECT_ADDRESS = #{abroadProjectAddress},
+            </if>
+            <if test="abroadChineseInvestment != null">
+                ABROAD_CHINESE_INVESTMENT = #{abroadChineseInvestment},
+            </if>
+            <if test="areaDetial != null">
+                AREA_DETIAL = #{areaDetial},
+            </if>
+            <if test="theIndustry != null">
+                THE_INDUSTRY = #{theIndustry},
+            </if>
+            <if test="foreignProjectType != null">
+                FOREIGN_PROJECT_TYPE = #{foreignProjectType},
+            </if>
+            <if test="foreignApproveNum != null">
+                FOREIGN_APPROVE_NUM = #{foreignApproveNum},
+            </if>
+            <if test="foreignChangeReason != null">
+                FOREIGN_CHANGE_REASON = #{foreignChangeReason},
+            </if>
+            <if test="foreignSecurityNum != null">
+                FOREIGN_SECURITY_NUM = #{foreignSecurityNum},
+            </if>
+            <if test="projectCreateUser != null">
+                PROJECT_CREATE_USER = #{projectCreateUser},
+            </if>
+            <if test="projectCreateDate != null">
+                PROJECT_CREATE_DATE = #{projectCreateDate},
+            </if>
+            <if test="projectStatus != null">
+                PROJECT_STATUS = #{projectStatus},
+            </if>
+            <if test="industryMainClass != null">
+                INDUSTRY_MAIN_CLASS = #{industryMainClass},
+            </if>
+            <if test="industrySubClass != null">
+                INDUSTRY_SUB_CLASS = #{industrySubClass},
+            </if>
+            <if test="buildType != null">
+                BUILD_TYPE = #{buildType},
+            </if>
+            <if test="investType != null">
+                INVEST_TYPE = #{investType},
+            </if>
+            <if test="landSource != null">
+                LAND_SOURCE = #{landSource},
+            </if>
+            <if test="landNature != null">
+                LAND_NATURE = #{landNature},
+            </if>
+            <if test="buildNature != null">
+                BUILD_NATURE = #{buildNature},
+            </if>
+            <if test="isDeleted != null">
+                IS_DELETED = #{isDeleted},
+            </if>
+            <if test="themeId != null">
+                THEME_ID = #{themeId},
+            </if>
+            <if test="creater != null">
+                CREATER = #{creater},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime},
+            </if>
+            <if test="modifier != null">
+                MODIFIER = #{modifier},
+            </if>
+            <if test="modifyTime != null">
+                MODIFY_TIME = #{modifyTime},
+            </if>
+            <if test="projCategory != null">
+                PROJ_CATEGORY = #{projCategory},
+            </if>
+            <if test="projState != null">
+                PROJ_STATE = #{projState},
+            </if>
+            <if test="haveDetail != null">
+                HAVE_DETAIL = #{haveDetail},
+            </if>
+            <if test="projFlag != null">
+                PROJ_FLAG = #{projFlag},
+            </if>
+            <if test="geoObjectid != null">
+                GEO_OBJECTID = #{geoObjectid},
+            </if>
+            <if test="projScale != null">
+                PROJ_SCALE = #{projScale},
+            </if>
+            <if test="projScaleContent != null">
+                PROJ_SCALE_CONTENT = #{projScaleContent},
+            </if>
+            <if test="isFinancialFund != null">
+                IS_FINANCIAL_FUND = #{isFinancialFund},
+            </if>
+            <if test="financialFundProportion != null">
+                FINANCIAL_FUND_PROPORTION = #{financialFundProportion},
+            </if>
+            <if test="isSocialFund != null">
+                IS_SOCIAL_FUND = #{isSocialFund},
+            </if>
+            <if test="socialFundProportion != null">
+                SOCIAL_FUND_PROPORTION = #{socialFundProportion},
+            </if>
+            <if test="isInvalidProj != null">
+                IS_INVALID_PROJ = #{isInvalidProj},
+            </if>
+            <if test="isPurchaseProj != null">
+                IS_PURCHASE_PROJ = #{isPurchaseProj},
+            </if>
+            <if test="gcbm != null">
+                GCBM = #{gcbm},
+            </if>
+            <if test="isDesignSolution != null">
+                IS_DESIGN_SOLUTION = #{isDesignSolution},
+            </if>
+            <if test="isAreaEstimate != null">
+                IS_AREA_ESTIMATE = #{isAreaEstimate},
+            </if>
+            <if test="gbCodeYear != null">
+                GB_CODE_YEAR = #{gbCodeYear},
+            </if>
+            <if test="eastScope != null">
+                east_scope = #{eastScope},
+            </if>
+            <if test="southScope != null">
+                south_scope = #{southScope},
+            </if>
+            <if test="northScope != null">
+                north_scope = #{northScope},
+            </if>
+            <if test="westScope != null">
+                west_scope = #{westScope},
+            </if>
+            <if test="aboveGround != null">
+                above_ground = #{aboveGround},
+            </if>
+            <if test="underGround != null">
+                under_ground = #{underGround},
+            </if>
+            <if test="projectDept != null">
+                project_dept = #{projectDept},
+            </if>
+            <if test="rootOrgId != null">
+                ROOT_ORG_ID = #{rootOrgId},
+            </if>
+
+            <if test="eastScope != null">
+                east_Scope = #{eastScope},
+            </if>
+            <if test="southScope != null">
+                south_Scope = #{southScope},
+            </if>
+            <if test="westScope != null">
+                west_Scope = #{westScope},
+            </if>
+            <if test="northScope != null">
+                north_scope = #{northScope},
+            </if>
+            <if test="isDesignSolution != null">
+                IS_DESIGN_SOLUTION = #{isDesignSolution},
+            </if>
+            <if test="isAreaEstimate != null">
+                IS_AREA_ESTIMATE = #{isAreaEstimate},
+            </if>
+            <if test="gbCodeYear != null">
+                GB_CODE_YEAR = #{gbCodeYear},
+            </if>
+            <if test="projFunction != null">
+                PROJ_FUNCTION = #{projFunction},
+            </if>
+            <if test="scaleType != null">
+                SCALE_TYPE = #{scaleType},
+            </if>
+            <if test="projNum != null">
+                PROJ_NUM = #{projNum},
+            </if>
+            <if test="approvalDept != null">
+                APPROVAL_DEPT = #{approvalDept},
+            </if>
+            <if test="approvalTime != null">
+                APPROVAL_TIME = #{approvalTime},
+            </if>
+
+        </set>
+        where PROJ_INFO_ID = #{projInfoId}
+    </update>
+    <!--7 删除实体对象,根据主键ID -->
+    <update id="deleteAeaProjInfo">
+        update AEA_PROJ_INFO
+        <set>
+            IS_DELETED = '1'
+        </set>
+        where PROJ_INFO_ID = #{id}
+    </update>
+
+    <!-- 批量删除-->
+    <update id="batchDeleteAeaProjInfo">
+        update AEA_PROJ_INFO
+        <set>
+            IS_DELETED = '1'
+        </set>
+        where PROJ_INFO_ID IN
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
+    <select id="getProjInfoByLocalCodes" resultType="AeaProjInfo">
+        select
+        <include refid="allColumns"/>
+        from AEA_PROJ_INFO
+        where IS_DELETED != '1' and LOCAL_CODE in
+        <if test="_databaseId == 'oracle'">
+            <foreach collection="localCodes" item="item" open="(" separator="union all" close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="_databaseId == 'mysql'">
+            <foreach collection="localCodes" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+
+    <select id="listProjByApplyinstId" resultType="AeaProjInfo" parameterType="string">
+        SELECT
+        <include refid="allColumnsAlias">
+            <property name="alias" value="api"></property>
+        </include>
+        FROM AEA_PROJ_INFO api
+        LEFT JOIN AEA_APPLYINST_PROJ ap
+        ON api.PROJ_INFO_ID=ap.PROJ_INFO_ID
+        WHERE ap.APPLYINST_ID=#{applyinstId}
+    </select>
+    <!--8 删除实体对象列表,根据主键ID列表 -->
+    <!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaProjInfo" id="AeaProjInfoMap">
+        <id property="projInfoId" column="PROJ_INFO_ID"/>
+        <result property="localCode" column="LOCAL_CODE"/>
+        <result property="projName" column="PROJ_NAME"/>
+        <result property="projType" column="PROJ_TYPE"/>
+        <result property="projLevel" column="PROJ_LEVEL"/>
+        <result property="mainClass" column="MAIN_CLASS"/>
+        <result property="centralCode" column="CENTRAL_CODE"/>
+        <result property="isJgxm" column="IS_JGXM"/>
+        <result property="projUrgency" column="PROJ_URGENCY"/>
+        <result property="projAddr" column="PROJ_ADDR"/>
+        <result property="projCreateUserCode" column="PROJ_CREATE_USER_CODE"/>
+        <result property="projCreateUser" column="PROJ_CREATE_USER"/>
+        <result property="projCreateMobile" column="PROJ_CREATE_MOBILE"/>
+        <result property="buildAreaSum" column="BUILD_AREA_SUM"/>
+        <result property="currentProgress" column="CURRENT_PROGRESS"/>
+        <result property="projQuestion" column="PROJ_QUESTION"/>
+        <result property="projNature" column="PROJ_NATURE"/>
+        <result property="nstartTime" column="NSTART_TIME"/>
+        <result property="endTime" column="END_TIME"/>
+        <result property="investSum" column="INVEST_SUM"/>
+        <result property="projectAddress" column="PROJECT_ADDRESS"/>
+        <result property="areaDetailCode" column="AREA_DETAIL_CODE"/>
+        <result property="industry" column="INDUSTRY"/>
+        <result property="scaleContent" column="SCALE_CONTENT"/>
+        <result property="xmYdmj" column="XM_YDMJ"/>
+        <result property="xzydmj" column="XZYDMJ"/>
+        <result property="nydmj" column="NYDMJ"/>
+        <result property="xmzbj" column="XMZBJ"/>
+        <result property="financialSource" column="FINANCIAL_SOURCE"/>
+        <result property="czzjly" column="CZZJLY"/>
+        <result property="regionalism" column="REGIONALISM"/>
+        <result property="district" column="DISTRICT"/>
+        <result property="isForeign" column="IS_FOREIGN"/>
+        <result property="foreignInvolveSecurity" column="FOREIGN_INVOLVE_SECURITY"/>
+        <result property="foreignInvestmentWay" column="FOREIGN_INVESTMENT_WAY"/>
+        <result property="foreignPolicyType" column="FOREIGN_POLICY_TYPE"/>
+        <result property="foreignPolicyItem" column="FOREIGN_POLICY_ITEM"/>
+        <result property="foreignTotalDollar" column="FOREIGN_TOTAL_DOLLAR"/>
+        <result property="foreignTotalRate" column="FOREIGN_TOTAL_RATE"/>
+        <result property="foreignCapital" column="FOREIGN_CAPITAL"/>
+        <result property="foreignCapitalDollar" column="FOREIGN_CAPITAL_DOLLAR"/>
+        <result property="foreignCapitalRate" column="FOREIGN_CAPITAL_RATE"/>
+        <result property="investor" column="INVESTOR"/>
+        <result property="investorCountry" column="INVESTOR_COUNTRY"/>
+        <result property="investorCapital" column="INVESTOR_CAPITAL"/>
+        <result property="investorCapitalPercent" column="INVESTOR_CAPITAL_PERCENT"/>
+        <result property="investorCapitalType" column="INVESTOR_CAPITAL_TYPE"/>
+        <result property="foreignIsAddInvestment" column="FOREIGN_IS_ADD_INVESTMENT"/>
+        <result property="foreignLandWay" column="FOREIGN_LAND_WAY"/>
+        <result property="foreignLandArea" column="FOREIGN_LAND_AREA"/>
+        <result property="foreignBuildingArea" column="FOREIGN_BUILDING_AREA"/>
+        <result property="foreignIsAddEquipment" column="FOREIGN_IS_ADD_EQUIPMENT"/>
+        <result property="foreignEquipmentNum" column="FOREIGN_EQUIPMENT_NUM"/>
+        <result property="foreignIsHaveDept" column="FOREIGN_IS_HAVE_DEPT"/>
+        <result property="foreignDeptAddress" column="FOREIGN_DEPT_ADDRESS"/>
+        <result property="foreignDeptNature" column="FOREIGN_DEPT_NATURE"/>
+        <result property="foreignIsSame" column="FOREIGN_IS_SAME"/>
+        <result property="foreignChinaPercent" column="FOREIGN_CHINA_PERCENT"/>
+        <result property="foreignForeignPercent" column="FOREIGN_FOREIGN_PERCENT"/>
+        <result property="foreignManagement" column="FOREIGN_MANAGEMENT"/>
+        <result property="foreignTel" column="FOREIGN_TEL"/>
+        <result property="foreignFax" column="FOREIGN_FAX"/>
+        <result property="foreignAddress" column="FOREIGN_ADDRESS"/>
+        <result property="foreignRemark" column="FOREIGN_REMARK"/>
+        <result property="abroadProjectAddress" column="ABROAD_PROJECT_ADDRESS"/>
+        <result property="abroadChineseInvestment" column="ABROAD_CHINESE_INVESTMENT"/>
+        <result property="areaDetial" column="AREA_DETIAL"/>
+        <result property="theIndustry" column="THE_INDUSTRY"/>
+        <result property="foreignProjectType" column="FOREIGN_PROJECT_TYPE"/>
+        <result property="foreignApproveNum" column="FOREIGN_APPROVE_NUM"/>
+        <result property="foreignChangeReason" column="FOREIGN_CHANGE_REASON"/>
+        <result property="foreignSecurityNum" column="FOREIGN_SECURITY_NUM"/>
+        <result property="projectCreateUser" column="PROJECT_CREATE_USER"/>
+        <result property="projectCreateDate" column="PROJECT_CREATE_DATE"/>
+        <result property="projectStatus" column="PROJECT_STATUS"/>
+        <result property="industryMainClass" column="INDUSTRY_MAIN_CLASS"/>
+        <result property="industrySubClass" column="INDUSTRY_SUB_CLASS"/>
+        <result property="buildType" column="BUILD_TYPE"/>
+        <result property="investType" column="INVEST_TYPE"/>
+        <result property="landSource" column="LAND_SOURCE"/>
+        <result property="landNature" column="LAND_NATURE"/>
+        <result property="buildNature" column="BUILD_NATURE"/>
+        <result property="isDeleted" column="IS_DELETED"/>
+        <result property="themeId" column="THEME_ID"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="modifier" column="MODIFIER"/>
+        <result property="modifyTime" column="MODIFY_TIME"/>
+        <result property="projCategory" column="PROJ_CATEGORY"/>
+        <result property="projState" column="PROJ_STATE"/>
+        <result property="haveDetail" column="HAVE_DETAIL"/>
+        <result property="projFlag" column="PROJ_FLAG"/>
+        <result property="geoObjectid" column="GEO_OBJECTID"/>
+        <result property="projScale" column="PROJ_SCALE"/>
+        <result property="projScaleContent" column="PROJ_SCALE_CONTENT"/>
+        <result property="isFinancialFund" column="IS_FINANCIAL_FUND"/>
+        <result property="financialFundProportion" column="FINANCIAL_FUND_PROPORTION"/>
+        <result property="isSocialFund" column="IS_SOCIAL_FUND"/>
+        <result property="socialFundProportion" column="SOCIAL_FUND_PROPORTION"/>
+        <result property="isInvalidProj" column="IS_INVALID_PROJ"/>
+        <result property="isPurchaseProj" column="IS_PURCHASE_PROJ"/>
+        <result property="gcbm" column="GCBM"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+        <result property="eastScope" column="east_scope"/>
+        <result property="southScope" column="south_scope"/>
+        <result property="westScope" column="west_scope"/>
+        <result property="northScope" column="north_scope"/>
+        <result property="projectDept" column="project_dept"/>
+        <result property="aboveGround" column="above_ground"/>
+        <result property="underGround" column="under_ground"/>
+        <result property="isDesignSolution" column="IS_DESIGN_SOLUTION"/>
+        <result property="isAreaEstimate" column="IS_AREA_ESTIMATE"/>
+        <result property="gbCodeYear" column="GB_CODE_YEAR"/>
+    </resultMap>
+
+    <!--根据projInfoId查询子项目列表-->
+    <select id="getChildProjListById" resultType="AeaProjInfo">
+        SELECT
+        <include refid="allColumnsAlias">
+            <property name="alias" value="api"></property>
+        </include>
+        FROM
+        aea_proj_info api
+        WHERE
+        api.PROJ_INFO_ID IN (
+        SELECT
+        app.child_proj_id
+        FROM
+        aea_parent_proj app
+        WHERE
+        app.parent_proj_id = #{projInfoId}
+        )
+        ORDER BY
+        api.CREATE_TIME DESC
+    </select>
+
+    <!-- insert-->
+    <insert id="insertAeaParentProj" parameterType="com.augurit.aplanmis.common.domain.AeaParentProj">
+      insert into AEA_PARENT_PROJ(
+          NODE_PROJ_ID,PARENT_PROJ_ID,CHILD_PROJ_ID,PROJ_SEQ,CREATER,CREATE_TIME,MODIFIER,
+          MODIFY_TIME
+      )
+      values (
+        #{nodeProjId},#{parentProjId},#{childProjId},#{projSeq},#{creater},#{createTime},#{modifier},#{modifyTime}
+      )
+    </insert>
+
+
+    <select id="getProjInfoByCode" resultType="AeaProjInfo">
+        select
+        <include refid="allColumns"/>
+        from AEA_PROJ_INFO
+        where LOCAL_CODE = #{localCode}
+    </select>
+
+    <!--8 根据parentid || childid || nodeId 删除 关联表-->
+    <delete id="delParentProjByCondition" parameterType="AeaParentProj">
+        delete from AEA_PARENT_PROJ
+        <where>
+            <if test="parentProjId!=null">
+                AND PARENT_PROJ_ID=#{parentProjId}
+            </if>
+            <if test="childProjId!=null">
+                and CHILD_PROJ_ID=#{childProjId}
+            </if>
+            <if test="nodeProjId!=null">
+                and NODE_PROJ_ID=#{nodeProjId}
+            </if>
+        </where>
+    </delete>
+
+    <!-- 5 根据id更新对象-->
+    <update id="updateAeaParentProj" parameterType="com.augurit.aplanmis.common.domain.AeaParentProj">
+        update AEA_PARENT_PROJ
+        <set>
+            <if test="parentProjId != null">
+                PARENT_PROJ_ID = #{parentProjId},
+            </if>
+            <if test="childProjId != null">
+                CHILD_PROJ_ID = #{childProjId},
+            </if>
+            <if test="projInfoId != null">
+                PROJ_SEQ = #{projSeq},
+            </if>
+            <if test="creater != null">
+                CREATER = #{creater},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime},
+            </if>
+            <if test="modifier != null">
+                MODIFIER = #{modifier},
+            </if>
+            <if test="modifyTime != null">
+                MODIFY_TIME = #{modifyTime},
+            </if>
+        </set>
+        where NODE_PROJ_ID = #{nodeProjId}
+    </update>
+
+    <!-- 获取业主单位未发布的项目列表 -->
+    <select id="getUnpublishedProjInfoList" resultType="AeaProjInfo">
+        SELECT distinct
+        api.PROJ_NAME,api.LOCAL_CODE,api.PROJ_INFO_ID
+        FROM
+        AEA_PROJ_INFO api left join AEA_IM_PROJ_PURCHASE aipp on api.PROJ_INFO_ID = aipp.PROJ_INFO_ID
+        left join AEA_UNIT_PROJ aup on api.PROJ_INFO_ID = aup.PROJ_INFO_ID
+        <where>
+            api.IS_DELETED != '1'
+            and aup.is_deleted='0'
+            and (api.IS_PURCHASE_PROJ != '1' or api.IS_PURCHASE_PROJ is null)
+            and aup.UNIT_INFO_ID = #{unitInfoId}
+            and api.PROJ_INFO_ID not in (select PROJ_INFO_ID from AEA_IM_PROJ_PURCHASE where AUDIT_FLAG != '3' and
+            AUDIT_FLAG != '5' and AUDIT_FLAG != '10' and IS_DELETED != '1')
+            <if test="localCode != null and localCode != ''">
+                AND (api.local_code LIKE CONCAT(CONCAT('%',#{localCode}),'%'))
+            </if>
+        </where>
+    </select>
+
+    <!-- 根据子项目id获取父项目信息 -->
+    <select id="getAeaProjInfoByChildProjId" resultType="AeaProjInfo">
+        SELECT api.PROJ_INFO_ID projInfoId, api.proj_name projName,api.local_code localCode,api.PROJ_SCALE projScale,api.FINANCIAL_SOURCE financialSource FROM aea_proj_info api
+        LEFT JOIN aea_parent_proj app ON api.PROJ_INFO_ID = app.PARENT_PROJ_ID
+        WHERE api.IS_DELETED = '0' AND app.CHILD_PROJ_ID = #{projInfoId}
+    </select>
+
+    <select id="getAeaProjInfoByApplyinstId" resultType="AeaProjInfo">
+        select
+        <include refid="allColumnsAlias">
+            <property name="alias" value="api"></property>
+        </include>
+        from aea_proj_info api ,aea_applyinst_proj apj where apj.PROJ_INFO_ID = api.PROJ_INFO_ID and
+        apj.APPLYINST_ID=#{applyinstId};
+
+    </select>
+
+    <!--0827 删除实体对象,根据主键ID  物理删除-->
+    <delete id="physicsDeleteAeaProjInfoByProjInfoId">
+    DELETE FROM AEA_PROJ_INFO WHERE PROJ_INFO_ID = #{id}
+    </delete>
+    <!--0827 将删除节点下的子节点加载到删除节点的父节点下-->
+    <update id="updateParentProjByChildProjIds">
+        update AEA_PARENT_PROJ set PARENT_PROJ_ID=#{parentProjId} where CHILD_PROJ_ID in
+
+        <foreach collection="childProjIds" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+    <!-- 12 根据childId 更新projSeq-->
+    <update id="updateProjSeqByChildId" parameterType="AeaParentProj">
+        update AEA_PARENT_PROJ
+        <set>
+            <if test="projSeq!=null">
+                PROJ_SEQ=#{projSeq},
+            </if>
+            <if test="modifier!=null">
+                MODIFIER=#{modifier},
+            </if>
+            <if test="modifyTime!=null">
+                MODIFY_TIME=#{modifyTime},
+            </if>
+        </set>
+
+        where CHILD_PROJ_ID=#{childProjId}
+    </update>
+
+
+    <!--  2查询节点下的所有子节点-->
+    <select id="listAllChildOfNodeTree" resultType="AeaParentProj">
+        select DISTINCT
+        <include refid="aeaParentProjColumns"/>
+        from AEA_PARENT_PROJ app start with app.PARENT_PROJ_ID =#{childProjId}
+        connect by app.PARENT_PROJ_ID=prior app.Child_Proj_Id
+
+    </select>
+
+
+    <!-- 5 根据节点查询该节点及其下的所有子节点的 AeaProjInfo；如果是rootId,会查询出来所有的节点，包括兄弟节点-->
+    <select id="listAllChildNodeOfNode" resultType="AeaProjInfo" parameterType="string">
+        SELECT
+        <include refid="allColumnsAlias">
+            <property name="alias" value="api"></property>
+        </include>
+        ,app.PARENT_PROJ_ID parentProjId,app.proj_seq projSeq
+        from AEA_PROJ_INFO api
+        left join AEA_PARENT_PROJ app
+        on app.child_proj_id=api.proj_info_id
+        WHERE api.PROJ_INFO_ID IN(
+        select DISTINCT proj.child_proj_id
+        from AEA_PARENT_PROJ proj
+        start with proj.PARENT_PROJ_ID =#{childProjId}
+        connect by proj.PARENT_PROJ_ID=prior proj.Child_Proj_Id
+        )
+        or api.PROJ_INFO_ID=#{childProjId}
+    </select>
+
+    <!--根据childId更新父ID和projSeq-->
+    <update id="updateParentProjByChildId" parameterType="AeaParentProj">
+        update AEA_PARENT_PROJ
+        <set>
+            <if test="parentProjId!=null">
+                PARENT_PROJ_ID=#{parentProjId},
+            </if>
+            <if test="projSeq!=null">
+                PROJ_SEQ=#{projSeq},
+            </if>
+            <if test="modifier!=null">
+                MODIFIER=#{modifier},
+            </if>
+            <if test="modifyTime!=null">
+                MODIFY_TIME=#{modifyTime},
+            </if>
+        </set>
+        where CHILD_PROJ_ID =#{childProjId}
+    </update>
+
+
+    <!-- 6 根据子节点查询该节点及其所有的父节点AeaProjInfo；如果是rootId查出来只会有一条root节点数据-->
+    <select id="listAllParentOfNode" resultType="AeaProjInfo" parameterType="string">
+        SELECT
+        <include refid="allColumnsAlias">
+            <property name="alias" value="api"></property>
+        </include>
+        ,app.PARENT_PROJ_ID parentProjId,app.proj_seq projSeq
+        from AEA_PROJ_INFO api
+        left join AEA_PARENT_PROJ app
+        on app.child_proj_id=api.proj_info_id
+
+        WHERE api.PROJ_INFO_ID IN(
+        select proj.parent_proj_id
+        from AEA_PARENT_PROJ proj
+        start with proj.CHILD_PROJ_ID=#{childProjId}
+        connect by prior proj.PARENT_PROJ_ID=proj.CHILD_PROJ_ID
+        )
+        or api.PROJ_INFO_ID=#{childProjId}
+    </select>
+
+
+    <!-- 根据申请实例id获取项目信息 -->
+    <select id="listAeaProjInfoByApplyinstId" resultType="AeaProjInfo">
+        select api.proj_name projName,api.local_code localCode,api.CENTRAL_CODE centralCode,aui.APPLICANT applicant,aui.IDCARD idCard
+        from
+        aea_proj_info api
+        left join aea_unit_proj aup
+        on api.PROJ_INFO_ID = aup.PROJ_INFO_ID
+        left join aea_unit_info aui
+        on aup.UNIT_INFO_ID = aui.UNIT_INFO_ID
+        left join aea_applyinst_proj aap
+        on aap.PROJ_INFO_ID = api.PROJ_INFO_ID
+        where aap.APPLYINST_ID = #{applyinstId} and aup.is_deleted='0'
+    </select>
+
+    <select id="getParentOrgName" resultType="java.lang.String">
+        select t.ORG_NAME from opu_om_org t
+        left join opu_om_org o
+        on o.PARENT_ORG_ID = t.ORG_ID
+        where o.org_id = #{orgId}
+    </select>
+
+    <select id="conditionalQueryAeaProjInfo" resultType="com.augurit.aplanmis.common.vo.AeaProjInfoVo">
+        select
+        <include refid="conditionalQuerycolumnsAlias">
+            <property name="alias" value="proj"></property>
+        </include>
+        ,r.region_name regionText,
+        theme.theme_name themeName,
+        case when parProj.PARENT_PROJ_ID is NULL then false else true end as hasChildren
+        from AEA_PROJ_INFO proj
+        <if test="handler">
+            inner join (
+            select distinct p.PROJ_INFO_ID
+            from aea_applyinst_proj ap
+            inner join aea_proj_info p on ap.PROJ_INFO_ID = p.PROJ_INFO_ID
+            inner join aea_hi_applyinst ahap on ahap.APPLYINST_ID = ap.APPLYINST_ID
+            inner join act_sto_appinst app ON app.MASTER_RECORD_ID = ahap.APPLYINST_ID
+            left join act_sto_appinst_subflow apps ON apps.APPINST_ID = app.APPINST_ID
+            inner join act_hi_taskinst t on t.proc_inst_id_ = apps.SUBFLOW_PROCINST_ID or t.proc_inst_id_ = app.PROCINST_ID
+            where t.ASSIGNEE_ = #{loginName}
+            union
+            select distinct p.PROJ_INFO_ID
+            from aea_applyinst_proj ap
+            inner join aea_proj_info p on ap.PROJ_INFO_ID = p.PROJ_INFO_ID
+            inner join aea_hi_applyinst ahap on ahap.APPLYINST_ID = ap.APPLYINST_ID
+            inner join aea_log_apply_state_hist alog on alog.APPLYINST_ID = ahap.APPLYINST_ID
+            where alog.OPS_USER_ID = #{userId}
+            union
+            select distinct p.PROJ_INFO_ID
+            from aea_applyinst_proj ap
+            inner join aea_proj_info p on ap.PROJ_INFO_ID = p.PROJ_INFO_ID
+            inner join aea_hi_applyinst ahap on ahap.APPLYINST_ID = ap.APPLYINST_ID
+            left join aea_hi_par_stageinst ahps on ahps.APPLYINST_ID = ahap.APPLYINST_ID and ahap.IS_SERIES_APPROVE = '0'
+            left join aea_hi_seriesinst ahs on ahap.APPLYINST_ID = ahs.APPLYINST_ID and ahap.IS_SERIES_APPROVE = '1'
+            inner join aea_hi_iteminst ahi on ahi.STAGEINST_ID = ahps.STAGEINST_ID or ahi.SERIESINST_ID = ahs.SERIESINST_ID
+            inner join aea_log_item_state_hist ilog on ilog.ITEMINST_ID = ahi.ITEMINST_ID
+            where ilog.OPS_USER_ID = #{userId}
+            ) handlertmp on handlertmp.PROJ_INFO_ID = proj.PROJ_INFO_ID
+        </if>
+        <if test="onlyOrg">
+            inner join (
+            select distinct p.PROJ_INFO_ID
+            from aea_applyinst_proj ap
+            inner join aea_proj_info p on ap.PROJ_INFO_ID = p.PROJ_INFO_ID
+            inner join aea_hi_applyinst ahap on ahap.APPLYINST_ID = ap.APPLYINST_ID
+            left join AEA_HI_SERIESINST ahs on ahs.APPLYINST_ID = ahap.APPLYINST_ID
+            left join AEA_HI_PAR_STAGEINST ahps on ahps.APPLYINST_ID = ahap.APPLYINST_ID
+            inner join AEA_HI_ITEMINST ahi on ahps.STAGEINST_ID = ahi.STAGEINST_ID or ahi.SERIESINST_ID = ahs.SERIESINST_ID
+            where
+                <foreach collection="currentUserOrgIdList" item="item" index="index" open=" " separator=" " close=" ">
+                    <if test="_databaseId == 'mysql'">
+                        <if test="index == 0">
+                            (
+                            ahi.APPROVE_ORG_ID = #{item}
+                            OR
+                            ahi.APPROVE_ORG_ID IN (
+                            select t.PARENT_ORG_ID AS ORG_ID from
+                            (select (select @id:=group_concat(PARENT_ORG_ID separator ',') from opu_om_org where
+                            find_in_set(ORG_ID,@id)) PARENT_ORG_ID
+                            from opu_om_org,(select @id:=#{item}) vars
+                            where @id is not null
+                            )t where t.PARENT_ORG_ID is not null
+                            )
+                            )
+                        </if>
+                        <if test="index != 0">
+                            OR (
+                            ahi.APPROVE_ORG_ID = #{item}
+                            OR
+                            ahi.APPROVE_ORG_ID IN (
+                            select t.PARENT_ORG_ID AS ORG_ID from
+                            (select (select @id:=group_concat(PARENT_ORG_ID separator ',') from opu_om_org where
+                            find_in_set(ORG_ID,@id)) PARENT_ORG_ID
+                            from opu_om_org,(select @id:=#{item}) vars
+                            where @id is not null
+                            )t where t.PARENT_ORG_ID is not null
+                            )
+                            )
+                        </if>
+                    </if>
+
+
+                    <if test="_databaseId == 'oracle'">
+                        <if test="index == 0">
+                            (
+                            ahi.APPROVE_ORG_ID = #{item}
+                            OR
+                            ahi.APPROVE_ORG_ID IN (
+                            select tmp.PARENT_ORG_ID
+                            from opu_om_org tmp
+                            start with tmp.ORG_ID=#{item}
+                            connect by prior tmp.PARENT_ORG_ID=proj.ORG_ID
+                            )
+                            )
+                        </if>
+                        <if test="index != 0">
+                            OR (
+                            ahi.APPROVE_ORG_ID = #{item}
+                            OR
+                            ahi.APPROVE_ORG_ID IN (
+                            select tmp.PARENT_ORG_ID
+                            from opu_om_org tmp
+                            start with tmp.ORG_ID=#{item}
+                            connect by prior tmp.PARENT_ORG_ID=proj.ORG_ID
+                            )
+                            )
+                        </if>
+
+                    </if>
+
+                </foreach>
+            ) onlyOrgTmp on onlyOrgTmp.PROJ_INFO_ID = proj.PROJ_INFO_ID
+        </if>
+        left join bsc_dic_region r on r.region_id = proj.regionalism
+        left join aea_par_theme theme on theme.theme_id = proj.theme_id
+        left join (
+            select DISTINCT p.PARENT_PROJ_ID from aea_parent_proj p inner join aea_proj_info aapi on p.CHILD_PROJ_ID = aapi.PROJ_INFO_ID where aapi.IS_DELETED = '0'
+        ) parProj on parProj.PARENT_PROJ_ID = proj.PROJ_INFO_ID
+        where proj.IS_DELETED = '0'
+        and ( proj.PROJ_FLAG is null or proj.PROJ_FLAG != 'r')
+        and proj.PROJ_INFO_ID not in (
+            select ar.CHILD_PROJ_ID from aea_parent_proj ar inner join aea_proj_info aapi on ar.PARENT_PROJ_ID = aapi.PROJ_INFO_ID
+            where (aapi.PROJ_FLAG != 'r' or aapi.PROJ_FLAG is null)
+            and aapi.IS_DELETED = '0'
+        )
+
+        <if test="onlyRegion">
+            and proj.REGIONALISM in
+            <foreach collection="selfAndChildRegionIds" item="id" open="(" separator="," close=")">
+            #{id}
+            </foreach>
+        </if>
+        <if test="keyword!=null and keyword!=''">
+            AND(proj.PROJ_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+            OR proj.LOCAL_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+            OR proj.CENTRAL_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+            OR proj.GCBM LIKE CONCAT(CONCAT('%',#{keyword}),'%'))
+        </if>
+        <if test="rootOrgId != null and rootOrgId !=''">
+            AND proj.ROOT_ORG_ID = #{rootOrgId}
+        </if>
+        <if test="projType != null and projType !=''">
+            AND proj.PROJ_TYPE = #{projType}
+        </if>
+        <if test="regionalism != null and regionalism !=''">
+            AND proj.REGIONALISM = #{regionalism}
+        </if>
+        <if test="projNature != null and projNature !=''">
+            AND proj.PROJ_NATURE = #{projNature}
+        </if>
+        <if test="projLevel != null and projLevel !=''">
+            AND proj.PROJ_LEVEL = #{projLevel}
+        </if>
+        <if test="minBuildAreaSum != null">
+            <![CDATA[ AND proj.BUILD_AREA_SUM >= #{minBuildAreaSum} ]]>
+        </if>
+        <if test="maxBuildAreaSum != null">
+            <![CDATA[ AND proj.BUILD_AREA_SUM <= #{maxBuildAreaSum} ]]>
+        </if>
+        <if test="_databaseId == 'oracle'">
+            <if test="modifyStartTime != null and modifyStartTime != '' ">
+                <![CDATA[ AND to_char(proj.MODIFY_TIME , 'yyyy-mm-dd')>=  #{modifyStartTime}   ]]>
+            </if>
+            <if test="modifyEndTime != null and modifyEndTime != '' ">
+                <![CDATA[ AND to_char(proj.MODIFY_TIME , 'yyyy-mm-dd')<=  #{modifyEndTime}   ]]>
+            </if>
+        </if>
+        <if test="_databaseId == 'mysql'">
+            <if test="modifyStartTime != null and modifyStartTime != '' ">
+                <![CDATA[ AND DATE_FORMAT(proj.MODIFY_TIME , '%Y-%m-%d')>=  #{modifyStartTime}   ]]>
+            </if>
+            <if test="modifyEndTime != null and modifyEndTime != '' ">
+                <![CDATA[ AND DATE_FORMAT(proj.MODIFY_TIME , '%Y-%m-%d')<=  #{modifyEndTime}   ]]>
+            </if>
+        </if>
+    </select>
+
+    <select id="listChildProjInfoByProjInfoId" resultType="com.augurit.aplanmis.common.vo.AeaProjInfoVo">
+        select
+        <include refid="conditionalQuerycolumnsAlias">
+            <property name="alias" value="proj"></property>
+        </include>
+        ,r.region_name regionText,
+        theme.theme_name themeName,
+        case when parProj.PARENT_PROJ_ID is NULL then false else true end as hasChildren
+        from aea_parent_proj appj
+        left join AEA_PROJ_INFO proj on appj.CHILD_PROJ_ID = proj.PROJ_INFO_ID
+        left join bsc_dic_region r on r.region_id = proj.regionalism
+        left join aea_par_theme theme on theme.theme_id = proj.theme_id
+        left join (
+        select DISTINCT p.PARENT_PROJ_ID from aea_parent_proj p
+        ) parProj on parProj.PARENT_PROJ_ID = proj.PROJ_INFO_ID
+        where proj.IS_DELETED = '0'
+        and appj.PARENT_PROJ_ID =#{projInfoId}
+    </select>
+
+    <update id="batchDeleteProjInfoAndChildProjInfo">
+        update AEA_PROJ_INFO
+        <set>
+            IS_DELETED = '1'
+        </set>
+        where PROJ_INFO_ID IN
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+
+        <foreach collection="ids" item="id" open=" " separator=" " close=" ">
+            OR PROJ_INFO_ID IN (
+              select ap.CHILD_PROJ_ID from AEA_PARENT_PROJ ap where ap.PROJ_SEQ like CONCAT (CONCAT('%.', #{id}), '.%')
+            )
+        </foreach>
+    </update>
+    
+    <select id="listBelongRegionAndChildRegionsByUserId" resultType="java.lang.String">
+        select
+            distinct region.REGION_ID
+        from  BSC_DIC_REGION region,opu_om_org org,OPU_OM_USER_ORG oouo
+        where oouo.user_id = #{userId} and oouo.org_id = org.org_id and org.org_deleted=0
+        and region.REGION_SEQ like CONCAT (CONCAT('%.', org.REGION_ID), '.%') and region.REGION_ID is not null
+    </select>
+
+</mapper>

@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaItemStateFormMapper" >
+
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns" >
+        itemStateForm.ITEM_STATE_FORM_ID as itemStateFormId,
+        itemStateForm.ITEM_VER_ID as itemVerId,
+        itemStateForm.ITEM_STATE_VER_ID as itemStateVerId,
+        itemStateForm.IS_STATE_FORM as isStateForm,
+        itemStateForm.ITEM_STATE_ID as itemStateId,
+        itemStateForm.FORM_ID as formId,
+        itemStateForm.SORT_NO as sortNo,
+        itemStateForm.CREATER as creater,
+        itemStateForm.CREATE_TIME as createTime
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaItemStateFormById" resultType="AeaItemStateForm" >
+        select
+        <include refid="allColumns"/>
+        from    AEA_ITEM_STATE_FORM itemStateForm
+        where   itemStateForm.ITEM_STATE_FORM_ID = #{id}
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaItemStateForm" parameterType="AeaItemStateForm" resultType="AeaItemStateForm" >
+        select
+        <include refid="allColumns"/>
+        from  AEA_ITEM_STATE_FORM itemStateForm
+        <where>
+            <if test="itemStateFormId != null and itemStateFormId!='' " >
+                and    itemStateForm.ITEM_STATE_FORM_ID = #{itemStateFormId}
+            </if>
+            <if test="itemVerId != null and itemVerId!='' " >
+                and    itemStateForm.ITEM_VER_ID = #{itemVerId}
+            </if>
+            <if test="itemStateVerId != null and itemStateVerId!='' " >
+                and    itemStateForm.ITEM_STATE_VER_ID = #{itemStateVerId}
+            </if>
+            <if test="isStateForm != null and isStateForm!='' " >
+                and    itemStateForm.IS_STATE_FORM = #{isStateForm}
+            </if>
+            <if test="itemStateId != null and itemStateId!='' " >
+                and    itemStateForm.ITEM_STATE_ID = #{itemStateId}
+            </if>
+            <if test="formId != null and formId!='' " >
+                and   itemStateForm.FORM_ID = #{formId}
+            </if>
+            <if test="sortNo != null" >
+                AND    itemStateForm.SORT_NO = #{sortNo}
+            </if>
+            <if test="creater != null" >
+                AND    itemStateForm.CREATER = #{creater}
+            </if>
+            <if test="createTime != null" >
+                AND    itemStateForm.CREATE_TIME = #{createTime}
+            </if>
+        </where>
+    </select>
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaItemStateForm" parameterType="AeaItemStateForm" >
+        insert into AEA_ITEM_STATE_FORM (
+            ITEM_STATE_FORM_ID,
+            ITEM_VER_ID,
+            ITEM_STATE_VER_ID,
+            IS_STATE_FORM,
+            ITEM_STATE_ID,
+            FORM_ID,
+            SORT_NO,
+            CREATER,
+            CREATE_TIME
+        )  values  (
+            #{itemStateFormId},
+            #{itemVerId},
+            #{itemStateVerId},
+            #{isStateForm},
+            #{itemStateId},
+            #{formId},
+            #{sortNo},
+            #{creater},
+            #{createTime}
+        )
+    </insert>
+
+    <!--6 修改实体对象 -->
+    <update id="updateAeaItemStateForm" parameterType="AeaItemStateForm" >
+        update AEA_ITEM_STATE_FORM
+        <set >
+            <if test="itemStateFormId != null" >
+                ITEM_STATE_FORM_ID = #{itemStateFormId},
+            </if>
+            <if test="itemVerId != null" >
+                ITEM_VER_ID = #{itemVerId},
+            </if>
+            <if test="itemStateVerId != null" >
+                ITEM_STATE_VER_ID = #{itemStateVerId},
+            </if>
+            <if test="isStateForm != null" >
+                IS_STATE_FORM = #{isStateForm},
+            </if>
+            <if test="itemStateId != null" >
+                ITEM_STATE_ID = #{itemStateId},
+            </if>
+            <if test="formId != null" >
+                FORM_ID = #{formId},
+            </if>
+            <if test="sortNo != null" >
+                SORT_NO = #{sortNo},
+            </if>
+            <if test="creater != null" >
+                CREATER = #{creater},
+            </if>
+            <if test="createTime != null" >
+                CREATE_TIME = #{createTime},
+            </if>
+        </set>
+        where ITEM_STATE_FORM_ID = #{itemStateFormId}
+    </update>
+
+    <!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaItemStateFormById">
+        delete from AEA_ITEM_STATE_FORM where ITEM_STATE_FORM_ID = #{id}
+    </delete>
+
+    <select id="listCurOrgForm" parameterType="AeaItemStateForm" resultType="AeaItemStateForm">
+        select
+            asfrom.FORM_ID  formId,
+            asfrom.FORM_ORG_ID  formOrgId,
+            asfrom.FORM_PROPERTY  formProperty,
+            asfrom.FORM_CODE  formCode,
+            asfrom.FORM_NAME  formName,
+            asfrom.IS_INNER_FORM  isInnerForm,
+            tmn.TMN_NAME formTmnName,
+            org.ORG_NAME orgName
+        from ACT_STO_FORM asfrom
+        left join opu_om_org org on org.ORG_ID = asfrom.FORM_ORG_ID
+        left join AGX_RS_TMN tmn on tmn.TMN_ID = asfrom.FORM_TMN_ID
+        <where>
+            and asfrom.IS_DELETED = '0'
+            and asfrom.FORM_ORG_ID = #{formOrgId}
+            and asfrom.IS_INNER_FORM = '0'
+            <if test="keyword != null and keyword !='' " >
+                and (
+                asfrom.FORM_CODE like CONCAT(CONCAT('%',#{keyword}),'%') or
+                asfrom.FORM_NAME like CONCAT(CONCAT('%',#{keyword}),'%')
+                )
+            </if>
+        </where>
+        order by asfrom.IS_INNER_FORM desc, asfrom.CREATE_TIME desc
+    </select>
+
+    <delete id="deleteAeaItemStateFormByCond" parameterType="AeaItemStateForm">
+        delete from AEA_ITEM_STATE_FORM
+        <where>
+            <if test="itemStateFormId != null and itemStateFormId!='' " >
+                and  ITEM_STATE_FORM_ID = #{itemStateFormId}
+            </if>
+            <if test="itemVerId != null and itemVerId!='' " >
+                and  ITEM_VER_ID = #{itemVerId}
+            </if>
+            <if test="itemStateVerId != null and itemStateVerId!='' " >
+                and  ITEM_STATE_VER_ID = #{itemStateVerId}
+            </if>
+            <if test="isStateForm != null and isStateForm!='' " >
+                and  IS_STATE_FORM = #{isStateForm}
+            </if>
+            <if test="itemStateId != null and itemStateId!='' " >
+                and  ITEM_STATE_ID = #{itemStateId}
+            </if>
+            <if test="formId != null and formId!='' " >
+                and  FORM_ID = #{formId}
+            </if>
+        </where>
+    </delete>
+
+    <select id="getMaxSortNo" resultType="java.lang.Long">
+        select
+           max(sort_no)
+        from AEA_ITEM_STATE_FORM itemStateForm
+        <where>
+            <if test="itemVerId != null and itemVerId!='' " >
+                and  itemStateForm.ITEM_VER_ID = #{itemVerId}
+            </if>
+            <if test="itemStateVerId != null and itemStateVerId!='' " >
+                and  itemStateForm.ITEM_STATE_VER_ID = #{itemStateVerId}
+            </if>
+        </where>
+    </select>
+
+    <select id="listItemStateFormRelInfo" parameterType="AeaItemStateForm" resultType="AeaItemStateForm">
+        select
+            itemStateForm.ITEM_STATE_FORM_ID AS itemStateFormId,
+            itemStateForm.ITEM_VER_ID AS itemVerId,
+            itemStateForm.ITEM_STATE_VER_ID AS itemStateVerId,
+            itemStateForm.IS_STATE_FORM AS isStateForm,
+            itemStateForm.ITEM_STATE_ID AS itemStateId,
+            itemStateForm.FORM_ID AS formId,
+            itemStateForm.SORT_NO AS sortNo,
+            itemStateForm.CREATER AS creater,
+            itemStateForm.CREATE_TIME AS createTime,
+            asfrom.FORM_ID as formId,
+            asfrom.FORM_ORG_ID as formOrgId,
+            asfrom.FORM_PROPERTY as formProperty,
+            asfrom.FORM_CODE as formCode,
+            asfrom.FORM_NAME as formName,
+            asfrom.IS_INNER_FORM as  isInnerForm,
+            asfrom.FORM_LOAD_URL as formLoadUrl
+        from AEA_ITEM_STATE_FORM itemStateForm, ACT_STO_FORM asfrom
+        <where>
+            and itemStateForm.FORM_ID = asfrom.FORM_ID
+            <if test="itemStateFormId != null and itemStateFormId!='' " >
+                and  itemStateForm.ITEM_STATE_FORM_ID = #{itemStateFormId}
+            </if>
+            <if test="itemVerId != null and itemVerId!='' " >
+                and  itemStateForm.ITEM_VER_ID = #{itemVerId}
+            </if>
+            <if test="itemStateVerId != null and itemStateVerId!='' " >
+                and  itemStateForm.ITEM_STATE_VER_ID = #{itemStateVerId}
+            </if>
+            <if test="isStateForm != null and isStateForm!='' " >
+                and  itemStateForm.IS_STATE_FORM = #{isStateForm}
+            </if>
+            <if test="itemStateId != null and itemStateId!='' " >
+                and  itemStateForm.ITEM_STATE_ID = #{itemStateId}
+            </if>
+            <if test="formId != null and formId!='' " >
+                and  itemStateForm.FORM_ID = #{formId}
+            </if>
+        </where>
+    </select>
+
+    <delete id="batchDelAeaItemStateFormByIds">
+        <if test="ids!=null and ids.length>0">
+            delete from AEA_ITEM_STATE_FORM where ITEM_STATE_FORM_ID in
+            <foreach collection="ids" item="id" open="(" close=")" separator=",">
+                #{id}
+            </foreach>
+        </if>
+    </delete>
+
+    <select id="listItemNoSelectForm" resultType="AeaItemStateForm">
+        select
+            asfrom.FORM_ID  formId,
+            asfrom.FORM_ORG_ID  formOrgId,
+            asfrom.FORM_PROPERTY  formProperty,
+            asfrom.FORM_CODE  formCode,
+            asfrom.FORM_NAME  formName,
+            asfrom.IS_INNER_FORM  isInnerForm,
+            tmn.TMN_NAME formTmnName,
+            org.ORG_NAME orgName
+        from ACT_STO_FORM asfrom
+        left join opu_om_org org on org.ORG_ID = asfrom.FORM_ORG_ID
+        left join AGX_RS_TMN tmn on tmn.TMN_ID = asfrom.FORM_TMN_ID
+        <where>
+            and asfrom.IS_DELETED = '0'
+            and asfrom.FORM_ORG_ID = #{formOrgId}
+            and asfrom.IS_INNER_FORM = '0'
+            and asfrom.FORM_ID not in (
+            select FORM_ID from AEA_ITEM_STATE_FORM as itemStateForm
+            <where>
+                and  itemStateForm.ITEM_VER_ID = #{itemVerId}
+                and  itemStateForm.ITEM_STATE_VER_ID = #{itemStateVerId}
+                <if test="isStateForm != null and isStateForm!='' " >
+                    and  itemStateForm.IS_STATE_FORM = #{isStateForm}
+                </if>
+                <if test="itemStateId != null and itemStateId!='' " >
+                    and  itemStateForm.ITEM_STATE_ID = #{itemStateId}
+                </if>
+            </where>
+            )
+            <if test="keyword != null and keyword !='' " >
+                and (
+                    asfrom.FORM_CODE like CONCAT(CONCAT('%',#{keyword}),'%') or
+                    asfrom.FORM_NAME like CONCAT(CONCAT('%',#{keyword}),'%')
+                )
+            </if>
+        </where>
+        order by asfrom.IS_INNER_FORM desc, asfrom.CREATE_TIME desc
+    </select>
+
+</mapper>

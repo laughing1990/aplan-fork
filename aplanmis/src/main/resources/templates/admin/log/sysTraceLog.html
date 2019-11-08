@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>系统跟踪日志</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!--引入样式-->
+    <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/metronic-5/vendors.bundle.css" th:href="@{/agcloud/framework/js-lib/metronic-5/vendors.bundle.css}">
+    <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/ui-private/default/common/css/metronic.css" th:href="@{/agcloud/framework/ui-private/default/common/css/metronic.css}">
+    <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.css" th:href="@{/agcloud/framework/js-lib/element-2/element.css}">
+    <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/ui-private/default/common/css/layout.css" th:href="@{/agcloud/framework/ui-private/default/common/css/layout.css}">
+    <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/ui-private/default/blue/css/theme.css" th:href="@{/agcloud/framework/ui-private/default/blue/css/theme.css}">
+    <link rel="stylesheet" href="../../../static/admin/log/css/sysTraceLog.css" th:href="@{/admin/log/css/sysTraceLog.css}">
+    <script>
+        var ctx = '[[@{/}]]';
+    </script>
+</head>
+<body>
+<div id="index" v-loading="loading" style="padding: 15px;">
+    <!-- 查询 -->
+    <div class="add-search clearfix" style="padding-bottom: 15px;">
+        <div class="float-right search-btn" style="padding-left: 10px;">
+            <div class="input-group search-key">
+                <input type="text" class="form-control" v-model="searchKey" placeholder="请输入查询关键字" style="width: 250px;">
+                <i class="la la-close clear-search" @click="searchKey='';startTime='';endTime='';page=1;searchRow();"></i>
+                <div class="input-group-append">
+                    <button class="btn btn-primary m-btn--icon" @click="searchRow()">
+                        <span><i class="fa fa-search"></i><span>查询</span></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="float-right">
+            日期：
+            <el-date-picker
+                label="开始时间"
+                v-model="startTime"
+                type="datetime"
+                format="yyyy-MM-dd HH:mm:ss"
+                placeholder="选择日期时间"
+                value-format="timestamp"
+                align="right"
+                :picker-options="pickerOptions">
+            </el-date-picker>
+            -
+            <el-date-picker
+                label="结束时间"
+                v-model="endTime"
+                type="datetime"
+                format="yyyy-MM-dd HH:mm:ss"
+                placeholder="选择日期时间"
+                value-format="timestamp"
+                align="right"
+                :picker-options="pickerOptions">
+            </el-date-picker>
+        </div>
+    </div>
+
+    <!-- 主要显示内容 -->
+    <el-table
+            :data="tableData.rows"
+            border style="width: 100%"
+            highlight-current-row
+            v-loading="loading"
+            @row-dblclick="dbclickRow">
+        <el-table-column prop="logTime" label="记录时间" align="center" width="210">
+            <template slot-scope="scope">
+                <p v-text="formatOperTime(scope.row.logTime, 'yyyy-MM-dd hh:mm:ss')"></p>
+            </template>
+        </el-table-column>
+        <el-table-column prop="orgName" label="组织名称" width="400"></el-table-column>
+        <el-table-column prop="userName" label="用户名称" width="280"></el-table-column>
+        <el-table-column prop="remoteAddr" label="客户端IP" align="center" width="210"></el-table-column>
+        <el-table-column prop="operationDesc" label="操作描述"></el-table-column>
+        <el-table-column prop="" label="操作" width="120" align="center">
+            <template slot-scope="scope">
+                <el-tooltip class="item" effect="dark" content="查看日志" placement="top-start">
+                    <el-button type="primary" icon="el-icon-search" circle @click="editRow(scope.row)"></el-button>
+                </el-tooltip>
+            </template>
+        </el-table-column>
+    </el-table>
+
+    <!-- 分页 -->
+    <el-pagination
+            background
+            align="right"
+            :pager-count="5"
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :page-sizes="[10, 20, 30, 50]"
+            :page-size="pageSize"
+            layout="total,sizes, prev, pager, next, jumper"
+            :total="tableData.total">
+    </el-pagination>
+
+    <!-- 新增/编辑页面 -->
+    <el-dialog title="查看日志" :visible.sync="dialogEditTable" class="edit-row" @closed="clearFormData">
+        <el-form :inline="true" :model="selRowData" ref="selRowData" style="height:450px; overflow:auto;">
+
+            <el-row>
+                <el-col :span="12">
+                    <el-form-item label="所属组织：" prop="orgName">
+                        <el-input v-model="selRowData.orgName" :readonly="true"></el-input>
+                    </el-form-item>
+                </el-col>
+
+                <el-col :span="12">
+                    <el-form-item label="用户名称：" prop="userName">
+                        <el-input v-model="selRowData.userName" :readonly="true"></el-input>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+
+            <el-row>
+                <el-col :span="12">
+                    <el-form-item label="客户端ip：" prop="remoteAddr">
+                        <el-input v-model="selRowData.remoteAddr" :readonly="true"></el-input>
+                    </el-form-item>
+                </el-col>
+
+                <el-col :span="12">
+                    <el-form-item label="登记时间：" prop="logTime">
+                        <el-date-picker
+                            v-model="selRowData.logTime"
+                            type="datetime" :readonly="true"
+                            style="width: 100%" >
+                        </el-date-picker>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+
+            <el-row>
+                <el-col :span="24">
+                    <el-form-item label="请求路径：" prop="requestPath" class="ops-memo">
+                        <el-input type="textarea" v-model="selRowData.requestPath" :rows="1" :readonly="true"></el-input>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+
+            <el-row>
+                <el-col :span="24">
+                    <el-form-item label="请求参数：" prop="requestParams" class="ops-memo">
+                        <el-input type="textarea" v-model="selRowData.requestParams" :rows="3" :readonly="true"></el-input>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+
+            <el-row>
+                <el-col :span="12">
+                    <el-form-item label="请求方式：" prop="requestMethod">
+                        <el-input v-model="selRowData.requestMethod" :readonly="true"></el-input>
+                    </el-form-item>
+                </el-col>
+
+                <el-col :span="12">
+                    <el-form-item label="操作耗时：" prop="operationDuration">
+                        <el-input v-model="selRowData.operationDuration" :readonly="true"></el-input>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+
+            <el-row>
+                <el-col :span="24">
+                    <el-form-item label="用户代理：" prop="userAgent" class="ops-memo">
+                        <el-input type="textarea" v-model="selRowData.userAgent" :rows="2"  :readonly="true"></el-input>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+
+            <el-row>
+                <el-col :span="24">
+                    <el-form-item label="操作描述：" prop="operationDesc" class="ops-memo">
+                        <el-input type="textarea" v-model="selRowData.operationDesc" :rows="4" :readonly="true"></el-input>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+
+            <el-row>
+                <el-col :span="24">
+                    <el-form-item label="日志信息：" prop="logMessage" class="ops-memo">
+                        <el-input type="textarea" v-model="selRowData.logMessage" :rows="4" :readonly="true"></el-input>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+
+            <el-row>
+                <el-col :span="24">
+                    <el-form-item label="异常信息：" prop="logException" class="ops-memo">
+                        <el-input type="textarea" v-model="selRowData.logException" :rows="4" :readonly="true"></el-input>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+
+        </el-form>
+
+        <div slot="footer" class="dialog-footer">
+            <button class="btn btn-secondary" @click="dialogEditTable=false">取消</button>
+        </div>
+    </el-dialog>
+</div>
+
+    <!-- 引入js文件 -->
+    <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js" th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>
+    <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js" th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
+    <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js" th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
+    <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js" th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>
+    <script type="text/javascript" src="../../../static/admin/log/js/sysTraceLog.js" th:src="@{/admin/log/js/sysTraceLog.js}"></script>
+</body>
+</html>

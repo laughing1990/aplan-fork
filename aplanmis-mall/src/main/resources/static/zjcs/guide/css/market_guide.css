@@ -1,0 +1,331 @@
+.mod {
+    width: 1200px;
+    margin: auto;
+    position: relative;
+    overflow: hidden;
+}
+/*当前位置*/
+.local-main {
+	width: 1200px;
+    height: 48px;
+    margin: 0 auto;
+}
+.local-main .local-icon {
+	width: 16px;
+	height: 18px;
+	display: inline-block;
+	background: url(../img/loca_ico.png) no-repeat;
+	vertical-align: middle;
+	margin-right: 6px;
+}
+.local-span,.local-main .local-a {
+    font-size: 14px;
+    line-height: 50px;
+    color: #333;
+    vertical-align: middle;
+}
+.local-main .local-a:hover,
+.local-main .local-a.active {
+	color: #3184FA;
+}
+
+
+/*超市指南*/
+.page-main {
+	min-height: 580px;
+	background: #fff;
+	position: relative;
+	margin-bottom: 30px;
+}
+.page-sidebar {
+	width: 200px;
+	height: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+	border-right: 1px solid #eee;
+	overflow-y: auto;
+}
+.page-sidebar .sidebar-tit {
+	height: 80px;
+	line-height: 80px;
+	text-align: center;
+	font-size: 18px;
+	border-bottom: 1px solid #eee;
+}
+.page-sidebar .nav-tree li {
+	cursor: pointer;
+	line-height: 48px;
+	text-align: center;
+	color: #333;
+	font-size: 15px;
+	border-left: 4px solid #fff;
+	transition: all .2s;
+}
+.page-sidebar .nav-tree li.active {
+	background: rgba(49,132,250,.1);
+	color: #3184fa;
+	border-left-color: #3184fa;
+}
+.sidebar-con {
+	margin-left: 200px;
+	padding: 20px;
+}
+.sidebar-con .ts-btn-group {
+	text-align: right;
+	margin-bottom: 15px;
+}
+.subtab-btn {
+	padding: 0 15px;
+	min-width: 80px;
+	display: inline-block;
+	line-height:36px;
+	text-align: center;
+	border:1px solid rgba(220,223,230,1);
+	border-radius:4px;
+	margin-left: 15px;
+	transition: all .2s;
+}
+.subtab-btn.active {
+	border-color: #4879E4;
+	background: #4879E4;
+	box-shadow:0px 5px 9px 1px rgba(72,121,228,0.2);
+	color: #fff;
+}
+.subtab-btn.cancel-btn:hover {
+	color: #333;
+	background: #eee;
+}
+.article-tit {
+	text-align: center;
+	font-size: 24px;
+	line-height: 2.2;
+	margin-bottom: 10px;
+}
+.guide-article p {
+	font-size:14px;
+	color: rgba(102,102,102,1);
+	line-height: 22px;
+	text-indent: 2em;
+	margin-bottom: 15px;
+}
+.guide-article h3 {
+	font-size:15px;
+	line-height:30px;
+	color: #333;
+}
+.guide-article h4 {
+	color: #666;
+	line-height:30px;
+	font-size: 14px;
+}
+.guide-article .marbottom {
+	margin-bottom: 15px;
+}
+.sidebar-item {
+	display: none;
+}
+.sidebar-item.active {
+	display: block;
+}
+
+
+/*å¼¹å‡ºå±‚*/
+.ts-modal .modal-dialog {
+	width: 640px;
+	margin: 8% auto;
+}
+.ts-modal .modal-content {
+	height: 450px;
+    position: relative;
+    background-color: #fff;
+    -webkit-background-clip: padding-box;
+    background-clip: padding-box;
+    border: none;
+    border-radius: 4px;
+    outline: 0;
+    -webkit-box-shadow: 0 3px 9px rgba(0,0,0,.1);
+    box-shadow: 0 3px 9px rgba(0,0,0,.1);
+}
+.ts-modal .modal-title {
+	font-size: 16px;
+	color: #666;
+	font-weight: 700;
+}
+.ts-modal .modal-body {
+	padding: 15px;
+	min-height: 330px;
+}
+.ts-modal .modal-header,.ts-modal .modal-footer {
+	border-color: #eee;
+}
+.ts-modal .modal-header .close {
+	width: 20px;
+	height: 20px;
+    float: right;
+    font-size: 21px;
+    font-weight: 700;
+    line-height: 1;
+    color: #000;
+    text-shadow: 0 1px 0 #fff;
+    filter: alpha(opacity=40);
+    opacity: .4;
+    margin-top: -4px;
+}
+.ts-modal .modal-header .close span {
+	font-size: 32px;
+	line-height: 24px;
+}
+.ts-modal .modal-footer .blue-btn:hover
+,.ts-modal .modal-footer .blue-btn:focus{
+	color: #fff;
+	box-shadow: none;
+}
+.ts-modal .modal-footer {
+	border-top: none;
+}
+.ts-modal .input-group label {
+	display: table-cell;
+	vertical-align: middle;
+	font-weight: 400;
+	width: 120px;
+	text-align: right;
+	padding-right: 15px;
+	color: #666;
+}
+.ts-modal .input-group {
+	margin: 15px 0;
+}
+.ts-modal .input-group .form-control:last-child {
+	border-radius: 4px;
+}
+.ts-modal .input-group .form-control {
+	height: 36px;
+	border-color: #dcdfe6;
+	width: 300px;
+	box-shadow: none;
+}
+.upload-btn {
+	position: relative;
+	margin: 5px 0;
+}
+.upload-btn .upload_file {
+	display: block;
+    width: 80px;
+    height: 36px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+    border-radius: 5px;
+}
+.upload-btn .blue-btn {
+	min-width: 80px;
+ 	line-height: 36px;
+ 	display: inline-block;
+ 	padding: 0 10px;
+ 	text-align: center;
+ 	margin: 0;
+}
+.item-list-wrap .form-group>label {
+	font-weight: 400;
+}
+
+/*2019-04-23é¡¹ç›®å‘å¸ƒ*/
+.ts-collapse {
+	padding: 0 10px;
+}
+.colla-con {
+	padding: 20px 0;
+	display: none;
+}
+.colla-con.active {
+	display: block;
+}
+.colla-title {
+    border-bottom: 1px solid #e1e9f5;
+    font-size: 16px;
+    color: #333;
+    height: 50px;
+    line-height: 50px;
+    padding: 0 18px 0 0;
+    cursor: pointer;
+    position: relative;
+}
+.colla-icon {
+	width: 22px;
+	height: 22px;
+	display: inline-block;
+	background: url(../img/page/info_ico.png) center center no-repeat;
+	margin-right: 8px;
+	vertical-align: middle;
+	margin-top: -3px;
+}
+*é¡¹ç›®ä¸šä¸»æ³¨å†Œ*/
+.register-modal .modal-content {
+	width:500px;
+	height:540px;
+	border-radius:10px;
+}
+.register-modal .modal-dialog {
+	width:500px;
+	margin: 5% auto;
+}
+.register-modal .modal-footer {
+	text-align: center;
+}
+.register-modal .register-select {
+	padding: 10px;
+}
+.register-modal .register-select h1 {
+	font-size:24px;
+	font-weight:400;
+	color:rgba(51,51,51,1);
+	line-height:24px;
+}
+.register-select .hint-box {
+	margin: 25px 0;
+}
+.register-select .note-txt {
+	font-size: 14px;
+	line-height: 24px;
+}
+.hint-box {
+	line-height: 22px;
+	background:rgba(255,136,0,0.03);
+	border:1px solid rgba(255,220,179,1);
+	color: #666666;
+	padding: 10px 30px;
+	text-align: center;
+	margin:  30px 0;
+}
+.hint-box>a {
+	color: #FF8800;
+}
+.form-item>label {
+    text-align: right;
+    font-size: 14px;
+    line-height: 16px;
+    color: #666;
+    padding-right: 12px;
+    width: 135px;
+    font-weight: 400;
+    vertical-align: middle;
+}
+.form-item .input-box {
+	display: table-cell;
+	width: 100%;
+}
+.red-cl {
+    color: #fa3131;
+}
+.form-item .input-box {
+	display: table-cell;
+	width: 100%;
+}
+.form-item .form-control {
+	border-radius: 0;
+	box-shadow: none;
+	height: 36px;
+    padding: 6px 10px;
+}

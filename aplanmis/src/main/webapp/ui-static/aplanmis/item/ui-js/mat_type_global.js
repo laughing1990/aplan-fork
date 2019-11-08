@@ -1,0 +1,409 @@
+var MAT_URL_PREFIX = ctx + '/aea/item/mat/';
+var parentMatTypeTree = null;
+var globalMatForm,
+    bootstrapTable,
+    globalMatValidator,
+    $globalMatDialog,
+    matTypeId = '';
+
+$(function () {
+    globalMatForm = $('#form_mat_global')[0];
+    $globalMatDialog = $('#dialog_mat_global');
+    bootstrapTable = $("#customTable");
+
+    globalMatValidator = $("#form_mat_global").validate({
+        // 定义校验规则
+        rules: {
+            matName: {
+                required: true,
+                maxlength: 100
+            }
+        },
+        messages: {
+            matName: {
+                required: '<font color="red">此项必填！</font>',
+                maxlength: "长度不能超过50个字母!"
+            }
+        },
+        // 提交表单
+        submitHandler: function () {
+            var formData = new FormData(globalMatForm);
+            // formData.append('matTypeId',matTypeId);
+
+            $.ajax({
+                type: 'post',
+                url: ctx + '/aea/item/mat/type/saveAeaItemMatType.do',
+                dataType: 'json',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (result) {
+                    if (result.success) {
+                        agcloud.ui.metronic.showSuccessTip('保存成功！', 1500);
+                        //$globalMatDialog.modal('hide');
+                        showContentContainer('container_mat_type_def_list');
+                        // 列表数据重新加载
+                        bootstrapTable.bootstrapTable('refresh');
+                        initMenuTree();
+                    } else {
+                        agcloud.ui.metronic.showSwal({type: 'error', message: '保存失败!'});
+                    }
+                }
+            });
+        }
+    });
+});
+function loadGlobalMat(id) {
+    if (id) {
+        if(id=='root'){
+            matTypeId = '';
+        }else {
+            matTypeId = id;
+        }
+        // 列表数据重新加载
+        bootstrapTable.bootstrapTable('refresh');
+    }
+}
+
+//修改入口
+//切换内容容器
+function showContentContainer(visualContainerId){
+    $('#contentContainer >div').each(function () {
+        if(visualContainerId==$(this).attr('id')){
+            $(this).css('display','block');
+        }
+        else{
+            $(this).css('display','none');
+        }
+    })
+}
+function loadMatTypeDefDetail(id) {
+    $.post(ctx + '/aea/item/mat/type/getAeaItemMatType.do', {id: id}, function (data) {
+        if (data) {
+            loadFormData(true,"#form_mat_global", data);
+            matTypeInfoTreeSelectNode(id);
+            showContentContainer('container_mat_type_def_edit');
+        } else {
+            agcloud.ui.metronic.showErrorTip("数据加载失败!", 1000);
+        }
+    });
+}
+
+function addGlobalMat(parentId) {
+    $("#ae_cert_header").html("新增材料类型定义");
+    initMatTypeForm();
+    //获取最大排序号显示出来
+    $.ajax({
+        url:ctx+"/aea/item/mat/type/getMaxSortNo.do",
+        type:"get",
+        cache:false,
+        success:function (result) {
+            console.log(result);
+            if(result.success){
+                $("#sortNo").val(result.message);
+            }
+        }
+    })
+    if (parentId!=null&&parentId!=undefined&&parentId!=''){
+        $("#chooseParentTypeId").val(parentId);
+    }
+    //开启编号验证
+    $("#typeCode").rules("remove");
+    $("#typeCode").rules("add", {
+        required: true, maxlength: 100, remote: ctx + '/aea/item/mat/type/checkMatTypeCode.do',
+        messages: {required: '<font color="red">此项必填！</font>', maxlength: '长度不能超过50个字母!', remote: '编号已存在!'}
+    });
+    $("#typeName").rules("remove");
+    $("#typeName").rules("add", {
+        required: true, maxlength: 100,
+        messages: {required: '<font color="red">此项必填！</font>', maxlength: '长度不能超过50个字母!'}
+    });
+    showContentContainer('container_mat_type_def_edit');
+}
+
+
+function initMatTypeForm() {
+    var inputArraytemp = $('#form_mat_global').serializeArray();
+    $.each(inputArraytemp, function(i, field){
+        $("input[name='" + field.name + "']").val("");
+    });
+    $("#isOfficialDoc").val("");
+    $("#isBasic").val("");
+    $("#isActive").val("");
+    $("textarea[name='typeMemo']").val("");
+}
+
+function loadGlobalMatTypeData(id, isView) {
+    $('#matTypeId').val('');//重置id reset对隐藏的input无效
+    $('#matHolder').selectpicker('val', "");        //默认选中
+    globalMatForm.reset();
+    $globalMatDialog.resetForm();
+    $("#typeCode").rules("remove");
+    if (isView) {
+        $('#btn_save').hide();
+        $('#dialog_mat_global_title').html('查看材料类型');
+    } else {
+        $('#btn_save').show();
+        $('#dialog_mat_global_title').html('编辑材料类型');
+        $("#typeCode").rules("add", {
+            required: true, maxlength: 100,
+            messages: {required: '<font color="red">此项必填！</font>', maxlength: '长度不能超过50个字母!'}
+        });
+    }
+    $('#dialog_mat_global_body').animate({scrollTop: 0}, 800);//滚动到顶部
+    $.post(ctx + '/aea/item/mat/type/getAeaItemMatType.do', {id: id}, function (data) {
+        if (data) {
+            loadFormData(true,"#form_mat_global", data);
+            $globalMatDialog.modal('show');
+        } else {
+            agcloud.ui.metronic.showErrorTip("数据加载失败!", 1000);
+        }
+    });
+}
+function delGlobalMatType(id) {
+    var msg = '确定要删除吗？';
+    swal({
+        title: '',
+        text: msg,
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonText: '确定',
+        cancelButtonText: '取消'
+    }).then(function (result) {
+        if (result.value) {
+            $.ajax({
+                type: 'post',
+                url: ctx + '/aea/item/mat/type/deleteAeaItemMatTypeById.do',
+                dataType: 'json',
+                data: {id: id},
+                success: function (result) {
+                    if (result.success) {
+                        agcloud.ui.metronic.showSuccessTip('删除成功！', 1000);
+                        bootstrapTable.bootstrapTable('refresh');
+                        initMenuTree();
+                    } else {
+                        agcloud.ui.metronic.showSwal({message: '删除失败!', type: 'error'});
+                    }
+                }
+            });
+        }
+    });
+}
+
+function batchDelGlobalMat() {
+    var checkboxs = $("#customTable").bootstrapTable('getSelections');
+    if (checkboxs.length == 0) {
+        swal('提示', '请勾选数据后操作！', 'info');
+        return false;
+    }
+    var ids = '';
+    for (var i = 0; i < checkboxs.length; i++) {
+        ids = ids + checkboxs[i]['matTypeId'] + ',';
+    }
+    ids = ids.substring(0, ids.length - 1);
+    var msg = '确定要批量删除吗？';
+    swal({
+        title: '',
+        text: msg,
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonText: '确定',
+        cancelButtonText: '取消'
+    }).then(function (result) {
+        if (result.value) {
+            $.ajax({
+                type: 'post',
+                url: ctx + '/aea/item/mat/type/batchDeleteAeaItemMatType.do',
+                dataType: 'json',
+                data: {ids: ids},
+                success: function (result) {
+                    if (result.success) {
+                        agcloud.ui.metronic.showSuccessTip('删除成功！', 1000);
+                        // 列表数据重新加载
+                        bootstrapTable.bootstrapTable('refresh');
+                        initMenuTree();
+                    } else {
+                        agcloud.ui.metronic.showSwal({message: '删除失败!', type: 'error'});
+                    }
+                }
+            });
+        }
+    });
+}
+
+function chooseParent() {
+    $("#select_parent_mat_type").modal("show");
+
+    var parentMatTypeTreeSettings = {
+        edit: {
+            enable: false,        //设置 zTree 是否处于编辑状态
+            showRemoveBtn: false,//设置是否显示删除按钮
+            showRenameBtn: false//设置是否显示编辑名称按钮
+        },
+        data: {
+            simpleData: {
+                enable: true,
+                idKey: "id",
+                pIdKey: "pId"
+                // rootPId: 0
+            }
+        },
+        view: {
+            selectedMulti: false,//设置是否允许同时选中多个节点
+            showTitle : false, //设置 zTree 是否显示节点的 title 提示信息(即节点 DOM 的 title 属性)。
+            showLine: false, //设置 zTree 是否显示节点之间的连线。
+            showHorizontal:true//设置是否水平平铺树（自定义属性）
+
+        },
+        check: {
+            enable: false,
+            chkboxType:{ "Y" : "", "N" : "" },
+            chkStyle: "checkbox"
+        },
+        //使用异步加载，必须设置 setting.async 中的各个属性
+        async: {
+            //设置 zTree 是否开启异步加载模式
+            enable: true,
+            autoParam:["id"],
+            dataType:"json",
+            type:"post",
+            url:ctx+'/aea/item/mat/type/getListMatTypeZtreeNode.do'
+        },
+        //用于捕获节点被点击的事件回调函数
+        callback: {
+            onClick: matTypeInfoTreeOnClick, //点击事件
+            //用于捕获异步加载正常结束的事件回调函数
+            onAsyncSuccess: onAsyncSuccessAppOrgTree
+            ,onExpand:function(event, treeId, treeNode, msg){
+            }
+        }
+    };
+    if(parentMatTypeTree) parentMatTypeTree.destroy();
+    parentMatTypeTree = $.fn.zTree.init($("#selectParentMatTypeTree"), parentMatTypeTreeSettings);
+}
+
+function matTypeInfoTreeOnClick(event, treeId, treeNode, clickFlag) {
+    $("#chooseParentTypeId").val(treeNode.id);
+    $("#select_parent_mat_type").modal("hide");
+}
+//
+// function parentDialogClose() {
+//     $("#select_parent_mat_type").modal("hide");
+// }
+
+// 格式化操作栏
+function operatorFormatter(value, row, index, field) {
+    var operatorStr = '<a href="javascript:loadMatTypeDefDetail(\''+row.matTypeId+'\');" class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill" title="编辑"><i class="la la-edit"></i></a>';
+    operatorStr = operatorStr + '<a href="javascript:delGlobalMatType(\'' + row.matTypeId + '\');" class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" title="删除"><i class="la la-trash"></i></a> </span>';
+    return operatorStr;
+}
+
+// 是否批文栏格式化
+function docFormatter(value, row, index, field) {
+    if(row.isOfficialDoc == 1) {
+        return "是";
+    } else {
+        return "否";
+    }
+}
+
+// 是否基础材料栏格式化
+function basicFormatter(value, row, index, field) {
+    if(row.isBasic == 1) {
+        return "是";
+    } else {
+        return "否";
+    }
+}
+
+// 是否启用栏格式化
+function activeFormatter(value, row, index, field) {
+    var id = row.matTypeId;
+    var isActive = row.isActive;
+    if (isActive == '1') {
+        return '<span class="m-switch m-switch--success">' +
+            '  <label>' +
+            '     <input type="checkbox" checked="checked" name="isActive" onclick="changeItemMatTypeIsActive(this,\'' + id + '\',\'' + isActive + '\');">' +
+            '     <span></span>' +
+            '   </label>' +
+            '</span>'
+    } else {
+        return '<span class="m-switch m-switch--success">' +
+            '  <label>' +
+            '     <input type="checkbox" name="isActive" onclick="changeItemMatTypeIsActive(this,\'' + id + '\',\'' + isActive + '\');">' +
+            '     <span></span>' +
+            '   </label>' +
+            '</span>'
+    }
+    /*if(row.isActive == 1) {
+        return "启用";
+    } else {
+        return "未启用";
+    }*/
+}
+
+function changeItemMatTypeIsActive(obj, id, isActive) {
+    var action = isActive == '1' ? "禁用" : "启用";
+    swal({
+        title: '提示信息',
+        text: "确定要" + action + "选中的记录吗?",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+    }).then(function (result) {
+        if (result.value) {
+            $.ajax({
+                url: ctx + '/aea/item/mat/type/changeIsActive.do',
+                type: 'POST',
+                data: {'matTypeId': id},
+                success: function (result) {
+                    if (result.success) {
+                        bootstrapTable.bootstrapTable('refresh');
+                    } else {
+                        swal('错误信息', result.message, 'error');
+                    }
+                },
+                error: function () {
+                    swal('错误信息', '服务器异常！', 'error');
+                }
+            });
+        } else {
+            isActive == '1' ? $(obj).prop("checked", true) : $(obj).prop("checked", false);
+        }
+    });
+}
+
+// 列表查询参数处理
+function dealQueryParams (params) {
+    //组装分页参数
+    var pageNum = (params.offset / params.limit) + 1;
+    var pagination = {
+        page : pageNum,
+        pages : pageNum,
+        perpage : params.limit
+    };
+    var sort = {
+        field : params.sort,
+        sort : params.order
+    };
+    var queryParam = {
+        pagination:pagination,
+        sort:sort
+    };
+    //组装查询参数
+    var typeCode = $("#input_mat_global_search").val();
+    if(typeCode != ''){
+        queryParam['keyword'] = typeCode;
+    }
+    // var matName = $("#mat_name_search").val();
+
+    return queryParam;
+}
+
+// 请空查询
+function clearSearch() {
+    $('#input_mat_global_search').val('');//搜索框置空
+    // 列表数据重新加载
+    bootstrapTable.bootstrapTable('refresh');
+}

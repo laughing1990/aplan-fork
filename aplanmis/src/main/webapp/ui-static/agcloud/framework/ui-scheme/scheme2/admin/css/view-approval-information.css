@@ -1,0 +1,275 @@
+
+a {
+    color: #555;
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: none;
+}
+h1, h2, h3, h4, h5, h6 {
+  font-weight: normal;
+  font-size: 100%;
+}
+/*公共类*/
+.fl {
+    float: left
+}
+.fr {
+    float: right
+}
+.al {
+    text-align: left
+}
+.ac {
+    text-align: center
+}
+.ar {
+    text-align: right
+}
+.hide {
+    display: none
+}
+.agcloud-navbar{
+  border: 0;
+  border-radius: 3px;
+  padding: .5rem 0;
+  color: #555;
+  background-color: #fff !important;
+  border-bottom: 1px dashed #ccc;
+}
+.agcloud-navbar>.agcloud-navbar-container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+}
+.agcloud-navbar-collapse {
+  display: flex !important;
+  flex-basis: auto;
+}
+.agcloud-navbar-tabs {
+  flex-direction: row;
+}
+.agcloud-navbar-tabs {
+  flex-direction: column;
+  padding-left: 0;
+  margin-bottom: 0;
+  list-style: none;
+}
+.agcloud-navbar-tabs li{
+  float: left;
+  padding: 0 5px;
+}
+.agcloud-navbar .agcloud-navbar-brand {
+  display: inline-block;
+  position: relative;
+  color: inherit;
+  font-size: 1.125rem;
+  font-weight: 700;
+  line-height: 24px;
+  margin-left: 1rem;
+  margin-right: 1rem;
+  white-space: nowrap;
+  height: 24px;
+  padding-left: 32px;
+}
+.agcloud-nav-icon{
+  position: relative;
+  color: inherit;
+  padding:.25rem .9375rem;
+  font-weight: 700;
+  font-size: 24px;
+  text-transform: uppercase;
+  border-radius: 5px;
+  line-height: 20px;
+  margin-right: 5px;
+}
+.agcloud-nav-icon:hover{
+  color: #ff9800;
+}
+.agcloud-nav-icon{
+  width: 24px;
+  height: 24px;
+  display: inline-block;
+}
+.agcloud-navbar-icon-question{
+  background:url(images/icon-questions.png) no-repeat 0 0;
+
+}
+.agcloud-navbar-icon-question:hover,.agcloud-navbar-icon-question.agcloud-icon-active{
+  background: url(images/icon-questions-hover.png) no-repeat 0 0;
+}
+.agcloud-navbar {
+  height: 42px;
+  border-bottom: 1px solid #ccc;
+}
+.agcloud-icon-data-dictionary {
+  background: url(../images/common/agcloud-icon-data-dictionary.png) no-repeat 0 0;
+}
+.agcloud-navbar .agcloud-navbar-brand {
+  height: 30px;
+  padding-left: 36px;
+  line-height: 30px;
+}
+.operate-btn {
+  padding: 16px 0 7px 16px;
+  border-bottom: 1px solid #ccc;
+}
+.operate-btn button {
+  margin-right: 7px;
+}
+
+/*BEGIN 纵向时间轴*/
+.vertical {
+  position: fixed;
+}
+.vertical-time-fixed{
+  width: 221px;
+  height: 497px;
+  display: none;
+}
+.vertical-time.on{
+  position: fixed;
+  top: 0px;
+  left: 0px;
+}
+.vertical-time ul{
+}
+.vertical-time ul li {
+  margin-top:28px;
+  display: flex;
+  display: -webkit-flex;
+  align-items: center;
+}
+.vertical-time ul li.ciclebox{
+  margin-left: 2px;
+  margin-bottom: 48px;
+}
+.vertical-time ul li a{
+  display: inline-block;
+  width: 140px;
+  text-align: right;
+  margin-right: 10px;
+  color: #969696;
+}
+.vertical-time ul li b{
+  display: block;
+  width: 11px;
+  height: 11px;
+  border: 2px solid #CED5DB;
+  border-radius: 50%;
+  position: relative;
+}
+.vertical-time ul li .line:after{
+  content: '';
+  display: block;
+  width: 1px;
+  height: 28px;
+  background-color: #E0E0E0;
+  position: absolute;
+  top: 10px;
+  left: 3px;
+}
+.vertical-time ul li.active a{
+  color: #36a3f7;
+}
+.vertical-time ul li.active b.cicle{
+  background-color:#36a3f7;
+  border-color: #36A3F7;
+}
+
+.vertical-time ul li b.cicle{
+  width: 8px;
+  height: 8px;
+  position: relative;
+  background:#CED5DB;
+}
+.vertical-time ul li b.cicle:after{
+  content: '';
+  display: block;
+  width: 1px;
+  height: 47px;
+  background-color: #E0E0E0;
+  position: absolute;
+  top: 8px;
+  left: 1px;
+}
+.vertical-time ul li.lilastCicle b:after{
+  content: '';
+  display: block;
+  height: 0px;
+}
+/*END 纵向时间轴*/
+#m_accordion_1_item_1_head,
+#m_accordion_2_item_1_head,
+#m_accordion_3_item_1_head{
+  color: #595959 !important;
+}
+.m-accordion__item-title:before {
+  content: '';
+  padding: 1px 3px;
+  background: #d3d7dc;
+  border-radius: 2px;
+}
+.m-accordion.m-accordion--section .m-accordion__item .m-accordion__item-head.collapsed .m-accordion__item-mode {
+  color: #595959 !important;
+}
+.div_step.active .m-accordion__item-title {
+  color: #36a0f7 !important;
+}
+.div_step.active .m-accordion__item-title:before {
+  content: '';
+  padding: 1px 3px;
+  background: #36a0f7;
+  border-radius: 2px;
+}
+.div_step.active .m-accordion.m-accordion--section .m-accordion__item .m-accordion__item-head.collapsed .m-accordion__item-mode {
+  color: #36a0f7 !important;
+}
+.m-accordion.m-accordion--section .m-accordion__item .m-accordion__item-body {
+  background: #fff;
+}
+.m-accordion__item-head {
+  position: relative;
+}
+.m-radio {
+  padding-left: 20px;
+}
+.m-form .m-form__group label {
+  position: relative;
+  vertical-align: sub;
+  padding-bottom: 10px;
+}
+.m-portlet {
+  box-shadow: none;
+}
+/*BEGIN  表格样式*/
+.div_step table{
+	background-color:#fbfbfb;
+	line-height: 25px;
+}
+.div_step table th{
+	background-color:#fff;
+}
+.div_step table td{
+	background-color: #fff;
+	text-align: center;
+}
+.div_step .table-bordered th{
+	background-color: #fbfbfb;
+	text-align: right;
+	width: 175px;
+}
+.div_step .table-bordered td{
+	text-align: left;
+}
+.div_step .table-bordered td, .table-bordered th{
+    border: 1px solid #E2E3E3;
+}
+.div_step .table-bordered thead tr th{
+	text-align: center;
+}
+.div_step tbody tr th,.table2 tbody tr td{
+	text-align: center;
+}
+/*END  表格样式*/

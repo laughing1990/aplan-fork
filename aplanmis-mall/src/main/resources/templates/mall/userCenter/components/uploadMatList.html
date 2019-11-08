@@ -1,0 +1,41 @@
+<div id="material">
+
+
+<p class="p-header">材料上传</p>
+<table id="iteminstTab" class="wt-table ac">
+    <thead>
+    <tr>
+        <th>序号</th>
+        <th width="10%">材料名称</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+      <template v-if="materialListData.lenght>0">
+        <tr v-for="item in materialListData">
+            <td >{{index +1}}</td>
+            <td>{{item.matName}}</td>
+            <td><span class="option-btn" @click="approveMat(item.applyinstId，item.taskId)">附件上传</span></td>
+        </tr>
+      </template>
+    <template v-else>
+        <tr><td colspan="10" style="text-align: center;border-bottom:none;color: #909399;">暂无数据</td></tr>
+    </template>
+    </tbody>
+</table>
+    <div style="margin-top:15px;" v-if="materialListData.length>0">
+        <el-pagination
+                background
+                align="right"
+                :pager-count="5"
+                @size-change="handleSizeChangeDe"
+                @current-change="handleCurrentChangeDe"
+                :page-sizes="[10, 20, 30, 50]"
+                :page-size="pageSizeDe"
+                layout="total,sizes, prev, pager, next, jumper"
+                :total="totalDe">
+        </el-pagination>
+    </div>
+</div>
+
+<script src="../../../static/mall/js/userCenter/components/uploadMatList.js" th:src="@{/mall/js/userCenter/components/matCompletionList.js}" type="text/javascript"></script>

@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.PortMapper">
+
+	<!-- 按项目类型统计 -->
+	<select id="findTotalItemBaseOnTheme" resultType="TotalItemForm">
+		SELECT THEME_CODE AS themeCode,THEME_NAME AS themeName,SUM(new_Item_) AS newItem,SUM(processing_Item_) AS processingItem,SUM(finish_Item_) AS finishItem,SUM(overdue_Item_) AS overdueItem FROM (SELECT THEME_CODE,THEME_NAME,GJBZSPLCLX,
+		CASE WHEN
+		DATE(START_TIME) &gt;= DATE(date_format(CURDATE(), '%Y-%m-01')) AND DATE(start_time) &lt; DATE(now())
+		THEN 1
+		ELSE 0 END AS new_Item_,
+		CASE WHEN END_TIME IS NULL THEN 1
+		ELSE 0 END AS processing_Item_,
+		CASE WHEN END_TIME IS NULL THEN 0
+		ELSE 1 END AS finish_Item_,
+		CASE WHEN SXBLSX - getEffectiveWorkDays(START_TIME,SPJSJZSJ) &lt; 0 THEN 1
+		ELSE 0 END AS overdue_Item_
+		FROM PORTAL_ITEMINST_THEME_VIEW) temp
+		GROUP BY THEME_CODE
+	</select>
+
+	<!-- 按标准项目类型统计 -->
+	<select id="findTotalItemBaseOnStandardTheme" resultType="TotalItemForm">
+		SELECT GJBZSPLCLX AS themeCode,SUM(new_Item_) AS newItem,SUM(processing_Item_) AS processingItem,SUM(finish_Item_) AS finishItem,SUM(overdue_Item_) AS overdueItem FROM (SELECT THEME_CODE,THEME_NAME,GJBZSPLCLX,
+		CASE WHEN
+		DATE(START_TIME) &gt;= DATE(date_format(CURDATE(), '%Y-%m-01')) AND DATE(start_time) &lt; DATE(now())
+		THEN 1
+		ELSE 0 END AS new_Item_,
+		CASE WHEN END_TIME IS NULL THEN 1
+		ELSE 0 END AS processing_Item_,
+		CASE WHEN END_TIME IS NULL THEN 0
+		ELSE 1 END AS finish_Item_,
+		CASE WHEN SXBLSX - getEffectiveWorkDays(START_TIME,SPJSJZSJ) &lt; 0 THEN 1
+		ELSE 0 END AS overdue_Item_
+		FROM PORTAL_ITEMINST_THEME_VIEW) temp
+		GROUP BY GJBZSPLCLX ORDER BY (GJBZSPLCLX+0)
+    </select>
+
+	<!-- 统计阶段用时-->
+	<select id="findStageUseDay" resultType="StageTotalForm">
+		SELECT STAGE_NAME AS stageName,avg(YS) avgUseWorkDay,avg(days) AS avgUseDay
+		FROM (
+			SELECT aha.APPLYINST_CODE, aps_123.STAGE_NAME AS STAGE_NAME,aps_123.SORT_NO, aha.CREATE_TIME, ahp.END_TIME_,getEffectiveWorkDays(aha.CREATE_TIME,ahp.END_TIME_) AS YS,datediff(ahp.END_TIME_,aha.CREATE_TIME) AS days
+				FROM ACT_HI_PROCINST ahp, ACT_STO_APPINST asa, AEA_HI_APPLYINST aha, ACT_HI_TASKINST arti, AEA_HI_PAR_STAGEINST ahs_123, AEA_PAR_STAGE aps_123
+				WHERE ahp.id_ = asa.PROCINST_ID
+					AND asa.MASTER_RECORD_ID = aha.APPLYINST_ID
+					AND arti.PROC_INST_ID_ = ahp.ID_
+					AND ahp.END_TIME_ IS NOT NULL
+					AND ahs_123.APPLYINST_ID = aha.APPLYINST_ID
+					AND aps_123.STAGE_ID = ahs_123.STAGE_ID
+		) aht_new_123
+		GROUP BY STAGE_NAME ORDER BY SORT_NO
+	</select>
+
+	<!-- 统计标准阶段用时-->
+	<select id="findStandardStageUseDay" resultType="StageTotalForm">
+		SELECT SORT_NO AS sortNo,avg(YS) avgUseWorkDay,avg(days) AS avgUseDay
+		FROM (
+			SELECT aha.APPLYINST_CODE, aps_123.DYBZSPJDXH AS SORT_NO, aha.CREATE_TIME, ahp.END_TIME_,getEffectiveWorkDays(aha.CREATE_TIME,ahp.END_TIME_) AS YS,datediff(ahp.END_TIME_,aha.CREATE_TIME) AS days
+				FROM ACT_HI_PROCINST ahp, ACT_STO_APPINST asa, AEA_HI_APPLYINST aha, ACT_HI_TASKINST arti, AEA_HI_PAR_STAGEINST ahs_123, AEA_PAR_STAGE aps_123
+				WHERE ahp.id_ = asa.PROCINST_ID
+					AND asa.MASTER_RECORD_ID = aha.APPLYINST_ID
+					AND arti.PROC_INST_ID_ = ahp.ID_
+					AND ahp.END_TIME_ IS NOT NULL
+					AND ahs_123.APPLYINST_ID = aha.APPLYINST_ID
+					AND aps_123.STAGE_ID = ahs_123.STAGE_ID
+					AND aps_123.DYBZSPJDXH IS NOT NULL
+		) aht_new_123
+		GROUP BY SORT_NO ORDER BY SORT_NO
+	</select>
+
+    <select id="countItemAndApply" resultType="TaskCountForm">
+		SELECT
+			TASK_ID AS taskId,DUE_NUM AS dueNum,getEffectiveWorkDays(ART_123.APPLY_TIME,NOW()) AS useWorkDay,TASK_DEF_KEY_ AS taskDefKey,SUSPENSION_STATE_ AS suspensionState
+		FROM
+		(
+        (SELECT art_123.ID_ AS TASK_ID,ahap_123.CREATE_TIME AS APPLY_TIME, aps_123.DUE_NUM AS DUE_NUM,art_123.TASK_DEF_KEY_,are_123.SUSPENSION_STATE_
+	FROM ACT_RU_TASK art_123
+		LEFT JOIN ACT_HI_PROCINST ahp_123 ON art_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
+		LEFT JOIN ACT_STO_APPINST asa_123 ON asa_123.procinst_id = ahp_123.PROC_INST_ID_
+		LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahap_123.APPLYINST_ID = asa_123.master_record_id
+		LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+		LEFT JOIN AEA_HI_PAR_STAGEINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+		LEFT JOIN AEA_PAR_STAGE aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
+		LEFT JOIN act_ru_execution are_123 ON art_123.EXECUTION_ID_ = are_123.ID_
+	WHERE 1 = 1
+		AND ahap_123.IS_SERIES_APPROVE = '0'
+		AND art_123.ASSIGNEE_ IS NOT NULL)
+	UNION
+	(SELECT art_123.ID_ AS TASK_ID,ahap_123.CREATE_TIME AS APPLY_TIME, aps_123.DUE_NUM AS DUE_NUM,art_123.TASK_DEF_KEY_,are_123.SUSPENSION_STATE_
+	FROM ACT_RU_TASK art_123
+		LEFT JOIN ACT_HI_PROCINST ahp_123 ON art_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
+		LEFT JOIN ACT_STO_APPINST_SUBFLOW asas_123 ON asas_123.SUBFLOW_PROCINST_ID = art_123.PROC_INST_ID_
+		LEFT JOIN ACT_STO_APPINST asa_123 ON asas_123.appinst_id = asa_123.APPINST_ID
+		LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahap_123.APPLYINST_ID = asa_123.master_record_id
+		LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+		LEFT JOIN AEA_HI_PAR_STAGEINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+		LEFT JOIN AEA_PAR_STAGE aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
+		LEFT JOIN act_ru_execution are_123 ON art_123.EXECUTION_ID_ = are_123.ID_
+	WHERE 1 = 1
+		AND ahap_123.IS_SERIES_APPROVE = '0'
+		AND art_123.ASSIGNEE_ IS NOT NULL)
+	UNION
+	(SELECT art_123.ID_ AS TASK_ID,ahap_123.CREATE_TIME AS APPLY_TIME, ai_123.DUE_NUM AS DUE_NUM,art_123.TASK_DEF_KEY_,are_123.SUSPENSION_STATE_
+	FROM ACT_RU_TASK art_123
+		LEFT JOIN ACT_HI_PROCINST ahp_123 ON art_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
+		LEFT JOIN ACT_STO_APPINST asa_123 ON asa_123.procinst_id = ahp_123.PROC_INST_ID_
+		LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahap_123.APPLYINST_ID = asa_123.master_record_id
+		LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+		LEFT JOIN AEA_HI_SERIESINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+		LEFT JOIN AEA_HI_ITEMINST ahi_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
+		LEFT JOIN AEA_ITEM_BASIC ai_123 ON ahi_123.ITEM_ID = ai_123.ITEM_ID
+		LEFT JOIN act_ru_execution are_123 ON art_123.EXECUTION_ID_ = are_123.ID_
+	WHERE 1 = 1
+		AND ahap_123.IS_SERIES_APPROVE = '1'
+		AND art_123.ASSIGNEE_ IS NOT NULL)
+	UNION
+	(SELECT art_123.ID_ AS TASK_ID,ahap_123.CREATE_TIME AS APPLY_TIME, ai_123.DUE_NUM AS DUE_NUM,art_123.TASK_DEF_KEY_,are_123.SUSPENSION_STATE_
+	FROM ACT_RU_TASK art_123
+		LEFT JOIN ACT_HI_PROCINST ahp_123 ON art_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
+		LEFT JOIN ACT_STO_APPINST_SUBFLOW asas_123 ON asas_123.SUBFLOW_PROCINST_ID = art_123.PROC_INST_ID_
+		LEFT JOIN ACT_STO_APPINST asa_123 ON asas_123.appinst_id = asa_123.APPINST_ID
+		LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahap_123.APPLYINST_ID = asa_123.master_record_id
+		LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+		LEFT JOIN AEA_HI_SERIESINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+		LEFT JOIN AEA_HI_ITEMINST ahi_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
+		LEFT JOIN AEA_ITEM_BASIC ai_123 ON ahi_123.ITEM_ID = ai_123.ITEM_ID
+		LEFT JOIN act_ru_execution are_123 ON art_123.EXECUTION_ID_ = are_123.ID_
+	WHERE 1 = 1
+		AND ahap_123.IS_SERIES_APPROVE = '1'
+		AND art_123.ASSIGNEE_ IS NOT NULL)
+		) ART_123
+    </select>
+</mapper>

@@ -1,0 +1,469 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by thinkpad    2019-06-03 17:58:23 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaImContractMapper" >
+<!--1 返回所有字段的SQL字句 -->
+<sql id="allColumns" >
+    CONTRACT_ID  contractId,
+    CONTRACT_NAME  contractName,
+    CONTRACT_CODE  contractCode,
+    PRICE  price,
+    SERVICE_START_TIME  serviceStartTime,
+    SERVICE_END_TIME  serviceEndTime,
+    SERVICE_CONTENT  serviceContent,
+    MEMO  memo,
+    SIGN_TIME  signTime,
+    SERVICE_UNIT_INFO_ID  serviceUnitInfoId,
+    OWNER_UNIT_INFO_ID  ownerUnitInfoId,
+    CREATER  creater,
+    CREATE_TIME  createTime,
+    IS_DELETE  isDelete,
+    MODIFIER  modifier,
+    MODIFY_TIME  modifyTime,
+    AUDIT_FLAG  auditFlag,
+    UNIT_BIDDING_ID  unitBiddingId,
+    IS_OWNER_UPLOAD  isOwnerUpload,
+    IS_CONFIRM  isConfirm,
+    PROJ_PURCHASE_ID  projPurchaseId,
+    AUDIT_TIME auditTime,
+    AUDIT_OPINION auditOpinion,
+    POSTPONE_SERVICE_END_TIME postponeServiceEndTime,
+    ROOT_ORG_ID rootOrgId
+    </sql>
+
+
+    <sql id="allColumnsAlias">
+    ${alias}.CONTRACT_ID  contractId,
+    ${alias}.CONTRACT_NAME  contractName,
+    ${alias}.CONTRACT_CODE  contractCode,
+    ${alias}.PRICE  price,
+    ${alias}.SERVICE_START_TIME  serviceStartTime,
+    ${alias}.SERVICE_END_TIME  serviceEndTime,
+    ${alias}.SERVICE_CONTENT  serviceContent,
+    ${alias}.MEMO  memo,
+    ${alias}.SIGN_TIME  signTime,
+    ${alias}.SERVICE_UNIT_INFO_ID  serviceUnitInfoId,
+    ${alias}.OWNER_UNIT_INFO_ID  ownerUnitInfoId,
+    ${alias}.CREATER  creater,
+    ${alias}.CREATE_TIME  createTime,
+    ${alias}.IS_DELETE  isDelete,
+    ${alias}.MODIFIER  modifier,
+    ${alias}.MODIFY_TIME  modifyTime,
+    ${alias}.AUDIT_FLAG  auditFlag,
+    ${alias}.UNIT_BIDDING_ID  unitBiddingId,
+    ${alias}.IS_OWNER_UPLOAD  isOwnerUpload,
+    ${alias}.IS_CONFIRM  isConfirm,
+    ${alias}.PROJ_PURCHASE_ID  projPurchaseId,
+    ${alias}.AUDIT_TIME auditTime,
+    ${alias}.AUDIT_OPINION auditOpinion,
+    ${alias}.POSTPONE_SERVICE_END_TIME postponeServiceEndTime,
+    ${alias}.ROOT_ORG_ID rootOrgId
+    </sql>
+
+<!--2 根据主键ID查询单个实体 -->
+<select id="getAeaImContractById" resultType="AeaImContract" >
+    select
+    <include refid="allColumns"/>
+    from    AEA_IM_CONTRACT
+    where    CONTRACT_ID = #{id}
+</select>
+
+<!--3 根据条件查询实体list -->
+    <select id="listAeaImContract" resultType="AeaImContract" >
+        select
+        <include refid="allColumns"/>
+        from    AEA_IM_CONTRACT
+    <where>
+        <if test="contractId != null" >
+        AND    CONTRACT_ID = #{contractId}
+        </if>
+        <if test="contractName != null" >
+        AND    CONTRACT_NAME = #{contractName}
+        </if>
+        <if test="contractCode != null" >
+        AND    CONTRACT_CODE = #{contractCode}
+        </if>
+        <if test="price != null" >
+        AND    PRICE = #{price}
+        </if>
+        <if test="serviceStartTime != null" >
+        AND    SERVICE_START_TIME = #{serviceStartTime}
+        </if>
+        <if test="serviceEndTime != null" >
+        AND    SERVICE_END_TIME = #{serviceEndTime}
+        </if>
+        <if test="serviceContent != null" >
+        AND    SERVICE_CONTENT = #{serviceContent}
+        </if>
+        <if test="memo != null" >
+        AND    MEMO = #{memo}
+        </if>
+        <if test="signTime != null" >
+        AND    SIGN_TIME = #{signTime}
+        </if>
+        <if test="serviceUnitInfoId != null" >
+        AND    SERVICE_UNIT_INFO_ID = #{serviceUnitInfoId}
+        </if>
+        <if test="ownerUnitInfoId != null" >
+        AND    OWNER_UNIT_INFO_ID = #{ownerUnitInfoId}
+        </if>
+        <if test="creater != null" >
+        AND    CREATER = #{creater}
+        </if>
+        <if test="createTime != null" >
+        AND    CREATE_TIME = #{createTime}
+        </if>
+        <if test="isDelete != null" >
+        AND    IS_DELETE = #{isDelete}
+        </if>
+        <if test="modifier != null" >
+        AND    MODIFIER = #{modifier}
+        </if>
+        <if test="modifyTime != null" >
+        AND    MODIFY_TIME = #{modifyTime}
+        </if>
+        <if test="auditFlag != null" >
+        AND    AUDIT_FLAG = #{auditFlag}
+        </if>
+        <if test="unitBiddingId != null" >
+        AND    UNIT_BIDDING_ID = #{unitBiddingId}
+        </if>
+        <if test="isOwnerUpload != null" >
+        AND    IS_OWNER_UPLOAD = #{isOwnerUpload}
+        </if>
+        <if test="isConfirm != null" >
+        AND    IS_CONFIRM = #{isConfirm}
+        </if>
+        <if test="projPurchaseId != null" >
+        AND    PROJ_PURCHASE_ID = #{projPurchaseId}
+        </if>
+
+        <if test="auditTime != null" >
+            AND    AUDIT_TIME = #{auditTime}
+        </if>
+
+        <if test="auditOpinion != null" >
+            AND    AUDIT_OPINION = #{auditOpinion}
+        </if>
+        <if test="rootOrgId != null" >
+            AND    ROOT_ORG_ID = #{rootOrgId}
+        </if>
+        <if test="postponeServiceEndTime != null" >
+            AND    POSTPONE_SERVICE_END_TIME = #{postponeServiceEndTime}
+        </if>
+
+        <if test="keyword != null and keyword!=''" >
+            AND (api.CONTRACT_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+              or api.CONTRACT_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+            )
+        </if>
+    </where>
+
+        order by CREATE_TIME desc;
+    </select>
+<!--4 根据条件查询实体list,返回分页对象 -->
+
+<!--5 新增实体对象 -->
+<insert id="insertAeaImContract" parameterType="AeaImContract" >
+    insert into AEA_IM_CONTRACT (
+CONTRACT_ID  ,CONTRACT_NAME  ,CONTRACT_CODE  ,PRICE  ,SERVICE_START_TIME  ,SERVICE_END_TIME  ,SERVICE_CONTENT  ,MEMO  ,SIGN_TIME  ,SERVICE_UNIT_INFO_ID  ,OWNER_UNIT_INFO_ID  ,CREATER  ,CREATE_TIME  ,IS_DELETE  ,MODIFIER  ,MODIFY_TIME  ,AUDIT_FLAG  ,UNIT_BIDDING_ID  ,IS_OWNER_UPLOAD  ,IS_CONFIRM  ,PROJ_PURCHASE_ID ,AUDIT_TIME,AUDIT_OPINION,POSTPONE_SERVICE_END_TIME,ROOT_ORG_ID
+    )  values  (
+#{contractId},#{contractName},#{contractCode},#{price},#{serviceStartTime},#{serviceEndTime},#{serviceContent},#{memo},#{signTime},#{serviceUnitInfoId},#{ownerUnitInfoId},#{creater},#{createTime},#{isDelete},#{modifier},#{modifyTime},#{auditFlag},#{unitBiddingId},#{isOwnerUpload},#{isConfirm},  #{projPurchaseId},#{auditTime},#{auditOpinion},#{postponeServiceEndTime},#{rootOrgId}
+    )
+</insert>
+
+<!--6 修改实体对象 -->
+<update id="updateAeaImContract" parameterType="AeaImContract" >
+    update AEA_IM_CONTRACT
+    <set >
+        <if test="contractId != null" >
+        CONTRACT_ID = #{contractId},
+        </if>
+        <if test="contractName != null" >
+        CONTRACT_NAME = #{contractName},
+        </if>
+        <if test="contractCode != null" >
+        CONTRACT_CODE = #{contractCode},
+        </if>
+        <if test="price != null" >
+        PRICE = #{price},
+        </if>
+        <if test="serviceStartTime != null" >
+        SERVICE_START_TIME = #{serviceStartTime},
+        </if>
+        <if test="serviceEndTime != null" >
+        SERVICE_END_TIME = #{serviceEndTime},
+        </if>
+        <if test="serviceContent != null" >
+        SERVICE_CONTENT = #{serviceContent},
+        </if>
+        <if test="memo != null" >
+        MEMO = #{memo},
+        </if>
+        <if test="signTime != null" >
+        SIGN_TIME = #{signTime},
+        </if>
+        <if test="serviceUnitInfoId != null" >
+        SERVICE_UNIT_INFO_ID = #{serviceUnitInfoId},
+        </if>
+        <if test="ownerUnitInfoId != null" >
+        OWNER_UNIT_INFO_ID = #{ownerUnitInfoId},
+        </if>
+        <if test="creater != null" >
+        CREATER = #{creater},
+        </if>
+        <if test="createTime != null" >
+        CREATE_TIME = #{createTime},
+        </if>
+        <if test="isDelete != null" >
+        IS_DELETE = #{isDelete},
+        </if>
+        <if test="modifier != null" >
+        MODIFIER = #{modifier},
+        </if>
+        <if test="modifyTime != null" >
+        MODIFY_TIME = #{modifyTime},
+        </if>
+        <if test="auditFlag != null" >
+        AUDIT_FLAG = #{auditFlag},
+        </if>
+        <if test="unitBiddingId != null" >
+        UNIT_BIDDING_ID = #{unitBiddingId},
+        </if>
+        <if test="isOwnerUpload != null" >
+        IS_OWNER_UPLOAD = #{isOwnerUpload},
+        </if>
+        <if test="isConfirm != null" >
+        IS_CONFIRM = #{isConfirm},
+        </if>
+        <if test="projPurchaseId != null" >
+        PROJ_PURCHASE_ID = #{projPurchaseId},
+        </if>
+
+        <if test="auditTime != null" >
+            AUDIT_TIME = #{auditTime},
+        </if>
+
+        <if test="auditOpinion != null" >
+            AUDIT_OPINION = #{auditOpinion},
+        </if>
+
+        <if test="postponeServiceEndTime != null" >
+            POSTPONE_SERVICE_END_TIME = #{postponeServiceEndTime},
+        </if>
+        <if test="rootOrgId != null" >
+            ROOT_ORG_ID = #{rootOrgId},
+        </if>
+    </set>
+    where CONTRACT_ID = #{contractId}
+</update>
+<!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaImContract">
+        delete from   AEA_IM_CONTRACT
+        where
+    CONTRACT_ID = #{id}
+    </delete>
+<!--8 删除实体对象列表,根据主键ID列表 -->
+<!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaImContract" id="AeaImContractMap">
+        <id property="contractId" column="CONTRACT_ID"/>
+        <result property="contractName" column="CONTRACT_NAME"/>
+        <result property="contractCode" column="CONTRACT_CODE"/>
+        <result property="price" column="PRICE"/>
+        <result property="serviceStartTime" column="SERVICE_START_TIME"/>
+        <result property="serviceEndTime" column="SERVICE_END_TIME"/>
+        <result property="serviceContent" column="SERVICE_CONTENT"/>
+        <result property="memo" column="MEMO"/>
+        <result property="signTime" column="SIGN_TIME"/>
+        <result property="serviceUnitInfoId" column="SERVICE_UNIT_INFO_ID"/>
+        <result property="ownerUnitInfoId" column="OWNER_UNIT_INFO_ID"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="isDelete" column="IS_DELETE"/>
+        <result property="modifier" column="MODIFIER"/>
+        <result property="modifyTime" column="MODIFY_TIME"/>
+        <result property="auditFlag" column="AUDIT_FLAG"/>
+        <result property="unitBiddingId" column="UNIT_BIDDING_ID"/>
+        <result property="isOwnerUpload" column="IS_OWNER_UPLOAD"/>
+        <result property="isConfirm" column="IS_CONFIRM"/>
+        <result property="projPurchaseId" column="PROJ_PURCHASE_ID"/>
+        <result property="auditTime" column="AUDIT_TIME"/>
+        <result property="auditOpinion" column="AUDIT_OPINION"/>
+        <result property="postponeServiceEndTime" column="POSTPONE_SERVICE_END_TIME"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+    </resultMap>
+    <select id="getFilesByRecordIds" resultType="com.augurit.agcloud.bsc.domain.BscAttDetail" >
+        select distinct
+        detail.DETAIL_ID  detailId,
+        detail.ATT_CODE  attCode,
+        detail.ATT_NAME  attName,
+        detail.ATT_SIZE  attSize,
+        detail.ATT_TYPE  attType,
+        detail.ATT_FORMAT  attFormat,
+        detail.SORT_NO  sortNo,
+        detail.ATT_PATH  attPath,
+        detail.ATT_DISK_NAME  attDiskName,
+        detail.DIR_ID  dirId,
+        detail.ORG_ID  orgId
+        from BSC_ATT_DETAIL detail, BSC_ATT_LINK link
+        <where>
+            detail.DETAIL_ID=link.DETAIL_ID
+            <if test="recordIds != null">
+                AND link.RECORD_ID in
+                <foreach collection="recordIds" index="index" item="recordId" open="(" separator="," close=")">
+                    #{recordId}
+                </foreach>
+            </if>
+            AND link.PK_NAME = #{pkName}
+            AND link.TABLE_NAME = #{tableName}
+            <if test="keyword != null and keyword!=''">
+                AND (
+                detail.ATT_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%') OR
+                detail.ATT_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%') OR
+                link.TABLE_NAME like CONCAT(CONCAT('%',#{keyword}),'%')
+                )
+            </if>
+        </where>
+        order by detail.CREATE_TIME DESC
+    </select>
+
+
+    <select id="getChosenProjInfoList" resultType="com.augurit.aplanmis.common.vo.ChosenProjInfoVo" >
+        select
+        aiub.PROJ_PURCHASE_ID projPurchaseId,
+        api.PROJ_NAME projName,
+        case when aic.CONTRACT_ID is null then aic.PRICE else aiub.REAL_PRICE end price,
+        aiub.BIDDING_TIME biddingTime,
+        aipp.AUDIT_FLAG projAuditFlag,
+        aic.AUDIT_FLAG contractAuditFlag,
+        aic.CONTRACT_ID contractId
+        from AEA_IM_UNIT_BIDDING aiub left join AEA_IM_PROJ_PURCHASE aipp on aiub.PROJ_PURCHASE_ID = aipp.PROJ_PURCHASE_ID
+        left join AEA_PROJ_INFO api on api.PROJ_INFO_ID = aipp.PROJ_INFO_ID
+        left join AEA_IM_CONTRACT aic on aic.PROJ_PURCHASE_ID = aipp.PROJ_PURCHASE_ID
+        <where>
+            aiub.UNIT_INFO_ID = #{unitInfoId}
+            and aiub.IS_DELETE != '1'
+            and aiub.IS_WON_BID = '1'
+            <if test="auditFlag != null and auditFlag!=''">
+                AND aipp.AUDIT_FLAG = #{auditFlag}
+            </if>
+            <if test="keyword != null and keyword!=''">
+                AND (
+                api.PROJ_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                )
+            </if>
+        </where>
+        order by aiub.BIDDING_TIME DESC
+    </select>
+
+
+
+    <select id="listAuditAeaImContract" resultType="AeaImContract" >
+        select
+        <include refid="allColumnsAlias"><property name="alias" value="tract"></property></include>,
+        api.PROJ_NAME projName
+        from    AEA_IM_CONTRACT tract
+        left join AEA_IM_PROJ_PURCHASE aipp on aipp.PROJ_PURCHASE_ID = tract.PROJ_PURCHASE_ID
+        left join AEA_PROJ_INFO api on api.PROJ_INFO_ID = aipp.PROJ_INFO_ID
+        <where>
+
+            tract.AUDIT_FLAG != '0'
+
+            <if test="contractId != null" >
+                AND    tract.CONTRACT_ID = #{contractId}
+            </if>
+            <if test="contractName != null" >
+                AND    tract.CONTRACT_NAME = #{contractName}
+            </if>
+            <if test="contractCode != null" >
+                AND    tract.CONTRACT_CODE = #{contractCode}
+            </if>
+            <if test="price != null" >
+                AND    tract.PRICE = #{price}
+            </if>
+            <if test="serviceStartTime != null" >
+                AND    tract.SERVICE_START_TIME = #{serviceStartTime}
+            </if>
+            <if test="serviceEndTime != null" >
+                AND    tract.SERVICE_END_TIME = #{serviceEndTime}
+            </if>
+            <if test="serviceContent != null" >
+                AND    tract.SERVICE_CONTENT = #{serviceContent}
+            </if>
+            <if test="memo != null" >
+                AND    tract.MEMO = #{memo}
+            </if>
+            <if test="signTime != null" >
+                AND    tract.SIGN_TIME = #{signTime}
+            </if>
+            <if test="serviceUnitInfoId != null" >
+                AND    tract.SERVICE_UNIT_INFO_ID = #{serviceUnitInfoId}
+            </if>
+            <if test="ownerUnitInfoId != null" >
+                AND    tract.OWNER_UNIT_INFO_ID = #{ownerUnitInfoId}
+            </if>
+            <if test="creater != null" >
+                AND    tract.CREATER = #{creater}
+            </if>
+            <if test="createTime != null" >
+                AND    tract.CREATE_TIME = #{createTime}
+            </if>
+            <if test="isDelete != null" >
+                AND    tract.IS_DELETE = #{isDelete}
+            </if>
+            <if test="modifier != null" >
+                AND    tract.MODIFIER = #{modifier}
+            </if>
+            <if test="modifyTime != null" >
+                AND    tract.MODIFY_TIME = #{modifyTime}
+            </if>
+            <if test="auditFlag != null" >
+                AND    tract.AUDIT_FLAG = #{auditFlag}
+            </if>
+            <if test="unitBiddingId != null" >
+                AND    tract.UNIT_BIDDING_ID = #{unitBiddingId}
+            </if>
+            <if test="isOwnerUpload != null" >
+                AND    tract.IS_OWNER_UPLOAD = #{isOwnerUpload}
+            </if>
+            <if test="isConfirm != null" >
+                AND    tract.IS_CONFIRM = #{isConfirm}
+            </if>
+            <if test="projPurchaseId != null" >
+                AND    tract.PROJ_PURCHASE_ID = #{projPurchaseId}
+            </if>
+
+            <if test="auditTime != null" >
+                AND    tract.AUDIT_TIME = #{auditTime}
+            </if>
+
+            <if test="auditOpinion != null" >
+                AND    tract.AUDIT_OPINION = #{auditOpinion}
+            </if>
+
+            <if test="postponeServiceEndTime != null" >
+                AND POSTPONE_SERVICE_END_TIME = #{postponeServiceEndTime}
+            </if>
+
+            <if test="keyword != null and keyword!=''" >
+                AND (tract.CONTRACT_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                or tract.CONTRACT_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                or api.PROJ_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                )
+            </if>
+        </where>
+
+        order by tract.CREATE_TIME desc
+    </select>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaImContractByProjPurchaseId" resultType="AeaImContract" >
+        select
+        <include refid="allColumnsAlias"><property name="alias" value="tract"></property></include>
+        from    AEA_IM_CONTRACT tract left join  AEA_IM_PROJ_PURCHASE aipp on tract.PROJ_PURCHASE_ID = aipp.PROJ_PURCHASE_ID
+        where    tract.PROJ_PURCHASE_ID = #{projPurchaseId}
+                and tract.IS_DELETE !='1'
+
+    </select>
+</mapper>

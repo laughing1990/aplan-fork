@@ -1,0 +1,1363 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by Administrator    2019-07-04 17:13:36 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaItemMatMapper">
+
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns">
+        MAT_ID  matId,
+        MAT_CODE  matCode,
+        MAT_NAME  matName,
+        IS_GLOBAL_SHARE  isGlobalShare,
+        MAT_TYPE_ID  matTypeId,
+        RECEIVE_MODE  receiveMode,
+        DUE_PAPER_COUNT  duePaperCount,
+        DUE_COPY_COUNT  dueCopyCount,
+        MAT_FROM  matFrom,
+        SAMPLE_DOC  sampleDoc,
+        TEMPLATE_DOC  templateDoc,
+        MAT_REQUIRE  matRequire,
+        MAT_BASIS  matBasis,
+        PAPER_IS_REQUIRE  paperIsRequire,
+        SORT_NO  sortNo,
+        MAT_MEMO  matMemo,
+        IS_ACTIVE  isActive,
+        IS_DELETED  isDeleted,
+        CREATER  creater,
+        CREATE_TIME  createTime,
+        MODIFIER  modifier,
+        MODIFY_TIME  modifyTime,
+        ATT_DIR_ID  attDirId,
+        MAT_HOLDER  matHolder,
+        IS_OFFICIAL_DOC  isOfficialDoc,
+        ATT_IS_REQUIRE  attIsRequire,
+        IS_COMMON  isCommon,
+        REVIEW_KEY_POINTS  reviewKeyPoints,
+        REVIEW_SAMPLE_DOC  reviewSampleDoc,
+        REVIEW_BASIS  reviewBasis,
+        MAT_FROM_DEPT  matFromDept,
+        DUE_PAPER_TYPE  duePaperType,
+        DUE_COPY_TYPE  dueCopyType,
+        PAPER_MAT_TYPE  paperMatType,
+        ZCQY  zcqy,
+        ROOT_ORG_ID rootOrgId
+    </sql>
+
+    <sql id="allColumns_aim">
+        aim.MAT_ID  matId,
+        aim.MAT_CODE  matCode,
+        aim.MAT_NAME  matName,
+        aim.IS_GLOBAL_SHARE  isGlobalShare,
+        aim.MAT_TYPE_ID  matTypeId,
+        aim.RECEIVE_MODE  receiveMode,
+        aim.DUE_PAPER_COUNT  duePaperCount,
+        aim.DUE_COPY_COUNT  dueCopyCount,
+        aim.MAT_FROM  matFrom,
+        aim.SAMPLE_DOC  sampleDoc,
+        aim.TEMPLATE_DOC  templateDoc,
+        aim.MAT_REQUIRE  matRequire,
+        aim.MAT_BASIS  matBasis,
+        aim.PAPER_IS_REQUIRE  paperIsRequire,
+        aim.SORT_NO  sortNo,
+        aim.MAT_MEMO  matMemo,
+        aim.IS_ACTIVE  isActive,
+        aim.IS_DELETED  isDeleted,
+        aim.CREATER  creater,
+        aim.CREATE_TIME  createTime,
+        aim.MODIFIER  modifier,
+        aim.MODIFY_TIME  modifyTime,
+        aim.ATT_DIR_ID  attDirId,
+        aim.MAT_HOLDER  matHolder,
+        aim.IS_OFFICIAL_DOC  isOfficialDoc,
+        aim.ATT_IS_REQUIRE  attIsRequire,
+        aim.IS_COMMON  isCommon,
+        aim.REVIEW_KEY_POINTS  reviewKeyPoints,
+        aim.REVIEW_SAMPLE_DOC  reviewSampleDoc,
+        aim.REVIEW_BASIS  reviewBasis,
+        aim.MAT_FROM_DEPT  matFromDept,
+        aim.DUE_PAPER_TYPE  duePaperType,
+        aim.DUE_COPY_TYPE  dueCopyType,
+        aim.PAPER_MAT_TYPE  paperMatType,
+        aim.ZCQY  zcqy,
+        aim.ROOT_ORG_ID rootOrgId
+    </sql>
+
+    <sql id="mat_allColumns">
+        mat.MAT_ID  matId,
+        mat.MAT_CODE  matCode,
+        mat.MAT_NAME  matName,
+        mat.IS_GLOBAL_SHARE  isGlobalShare,
+        mat.MAT_TYPE_ID  matTypeId,
+        mat.RECEIVE_MODE  receiveMode,
+        mat.DUE_PAPER_COUNT  duePaperCount,
+        mat.DUE_COPY_COUNT  dueCopyCount,
+        mat.MAT_FROM  matFrom,
+        mat.SAMPLE_DOC  sampleDoc,
+        mat.TEMPLATE_DOC  templateDoc,
+        mat.MAT_REQUIRE  matRequire,
+        mat.MAT_BASIS  matBasis,
+        mat.PAPER_IS_REQUIRE  paperIsRequire,
+        mat.MAT_MEMO  matMemo,
+        mat.IS_ACTIVE  isActive,
+        mat.IS_DELETED  isDeleted,
+        mat.CREATER  creater,
+        mat.CREATE_TIME  createTime,
+        mat.MODIFIER  modifier,
+        mat.MODIFY_TIME  modifyTime,
+        mat.ATT_DIR_ID  attDirId,
+        mat.MAT_HOLDER matHolder,
+        mat.IS_OFFICIAL_DOC isOfficialDoc,
+        mat.ATT_IS_REQUIRE attIsRequire,
+        mat.IS_COMMON  isCommon,
+        mat.REVIEW_KEY_POINTS  reviewKeyPoints,
+        mat.REVIEW_SAMPLE_DOC  reviewSampleDoc,
+        mat.REVIEW_BASIS  reviewBasis,
+        mat.MAT_FROM_DEPT matFromDept,
+        mat.DUE_PAPER_TYPE  duePaperType,
+        mat.DUE_COPY_TYPE  dueCopyType,
+        mat.PAPER_MAT_TYPE  paperMatType,
+        mat.ZCQY  zcqy,
+        mat.ROOT_ORG_ID rootOrgId
+    </sql>
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaItemMatById" resultType="AeaItemMat">
+        select
+        <include refid="allColumns"/>
+        from AEA_ITEM_MAT
+        where MAT_ID = #{id}
+        AND IS_DELETED = '0'
+    </select>
+
+    <select id="selectOneById" resultType="AeaItemMat">
+        select
+        <include refid="mat_allColumns"/>,
+        mattype.TYPE_NAME matTypeName
+        from AEA_ITEM_MAT mat
+        LEFT JOIN AEA_ITEM_MAT_TYPE mattype ON mat.MAT_TYPE_ID = mattype.MAT_TYPE_ID
+        where mat.MAT_ID = #{id}
+        AND mat.IS_DELETED = '0'
+    </select>
+
+    <select id="getMatListByItemStateIds" resultType="AeaItemMat">
+        SELECT
+        <include refid="allColumns_aim"/>
+        FROM
+        aea_item_mat aim,
+        aea_item_inout aii
+        WHERE
+        aim.MAT_ID = aii.MAT_ID
+        AND aim.IS_DELETED = '0'
+        AND aii.IS_DELETED = '0'
+        AND aii.IS_STATE_IN = '1'
+        AND aii.ITEM_STATE_ID IN
+        <if test="_databaseId == 'oracle'">
+            <foreach collection="ids" item="item" open="(" separator="union all" close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="_databaseId == 'mysql'">
+            <foreach collection="ids" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        GROUP BY aim.MAT_ID
+        ORDER BY aii.SORT_NO
+    </select>
+
+    <select id="getMatListByStageStateIds" resultType="AeaItemMat">
+        SELECT
+        <include refid="allColumns_aim"/>,api.IN_ID parInId,api.PAR_STATE_ID parStateId
+        FROM
+        aea_item_mat aim,
+        aea_par_in api
+        WHERE
+        aim.MAT_ID = api.MAT_ID
+        AND aim.IS_DELETED = '0'
+        AND api.IS_DELETED = '0'
+        AND api.IS_STATE_IN = '1'
+        AND api.PAR_STATE_ID IN
+        <if test="_databaseId == 'oracle'">
+            <foreach collection="ids" item="item" open="(" separator="union all" close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="_databaseId == 'mysql'">
+            <foreach collection="ids" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        GROUP BY aim.MAT_ID
+        ORDER BY api.SORT_NO
+    </select>
+
+    <select id="getMatListByStageStateIdsAndItemVerId" resultType="AeaItemMat">
+        SELECT
+        <include refid="allColumns_aim"/>,api.IN_ID parInId,api.PAR_STATE_ID parStateId
+        FROM
+        aea_item_mat aim,
+        aea_par_in api,
+        aea_par_stage_item apsi,
+        aea_par_stage_item_in apsii
+        WHERE
+        aim.MAT_ID = api.MAT_ID
+        AND aim.IS_DELETED = '0'
+        AND api.IS_DELETED = '0'
+        AND api.IS_STATE_IN = '1'
+        AND apsi.STAGE_ITEM_ID = apsii.STAGE_ITEM_ID
+        AND apsii.IN_ID = api.IN_ID
+        AND apsi.ITEM_VER_ID = #{itemVerId}
+        AND api.PAR_STATE_ID IN
+        <if test="_databaseId == 'oracle'">
+            <foreach collection="ids" item="item" open="(" separator="union all" close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="_databaseId == 'mysql'">
+            <foreach collection="ids" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        GROUP BY aim.MAT_ID
+        ORDER BY api.SORT_NO
+    </select>
+
+    <select id="getMatListByStageStateIdsAndMatinstId" resultType="AeaItemMat">
+        SELECT
+        <include refid="allColumns_aim"/>,api.IN_ID parInId,api.PAR_STATE_ID parStateId,
+        api.STAGE_ID stageId,apsi.ITEM_VER_ID itemVerId
+        FROM
+        aea_hi_item_matinst ahim,
+        aea_item_mat aim,
+        aea_par_in api,
+        aea_par_stage_item apsi,
+        aea_par_stage_item_in apsii
+        WHERE
+        aim.MAT_ID = api.MAT_ID
+        AND ahim.MAT_ID = aim.MAT_ID
+        AND ahim.MATINST_ID = #{matinstId}
+        AND aim.IS_DELETED = '0'
+        AND api.IS_DELETED = '0'
+        AND api.IS_STATE_IN = '1'
+        AND apsi.STAGE_ITEM_ID = apsii.STAGE_ITEM_ID
+        AND apsii.IN_ID = api.IN_ID
+        AND api.PAR_STATE_ID IN
+        <if test="_databaseId == 'oracle'">
+            <foreach collection="ids" item="item" open="(" separator="union all" close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="_databaseId == 'mysql'">
+            <foreach collection="ids" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        GROUP BY aim.MAT_ID
+        ORDER BY api.SORT_NO
+    </select>
+
+    <select id="getMatListByStageId" resultType="AeaItemMat">
+        SELECT
+        <include refid="allColumns_aim"/>
+        FROM
+        (
+        SELECT
+        aps.IS_NEED_STATE,
+        api.IS_STATE_IN,
+        api.PAR_STATE_ID,
+        api.SORT_NO AS SORT_NO_,
+        mat.*
+        FROM
+        aea_par_in api,
+        aea_item_mat mat,
+        aea_par_stage aps
+        WHERE
+        api.MAT_ID = mat.MAT_ID
+        AND aps.STAGE_ID = api.STAGE_ID
+        AND api.IS_DELETED = '0'
+        AND mat.IS_DELETED = '0'
+        AND aps.STAGE_ID = #{stageId}
+        ) aim
+        WHERE
+        ( aim.IS_NEED_STATE = '1' AND aim.IS_STATE_IN = '0'
+        <if test="isNeedStateMat !=null and isNeedStateMat == 1">
+            OR (
+            aim.IS_STATE_IN = '1'
+            AND
+            aim.PAR_STATE_ID IN (
+            SELECT
+            PAR_STATE_ID
+            FROM
+            aea_par_state
+            WHERE
+            STAGE_ID = #{stageId}
+            AND PARENT_STATE_ID IS NULL
+            AND IS_DELETED = '0'
+            )
+            )
+        </if>
+        )
+        OR ( aim.IS_NEED_STATE = '0' )
+        GROUP BY
+        aim.MAT_ID
+        ORDER BY aim.SORT_NO_
+    </select>
+
+    <select id="listMatListByStageId" resultType="AeaItemMat">
+        SELECT
+        <include refid="allColumns_aim"/>
+        FROM
+        (
+        SELECT
+        aps.IS_NEED_STATE,
+        api.IS_STATE_IN,
+        api.PAR_STATE_ID,
+        api.SORT_NO AS SORT_NO_,
+        mat.*
+        FROM
+        aea_par_in api
+        join aea_item_mat mat on api.MAT_ID = mat.MAT_ID
+        join aea_par_stage aps on aps.STAGE_ID = api.STAGE_ID
+        join aea_par_stage_item apsi on apsi.stage_id=aps.stage_id
+        join aea_par_stage_item_in apsii on apsii.STAGE_ITEM_ID=apsi.stage_item_id
+        WHERE api.IS_DELETED = '0'
+        AND mat.IS_DELETED = '0'
+        AND aps.STAGE_ID = #{stageId}
+        and apsii.in_id=api.in_id
+        <if test="itemVerIds != null and itemVerIds.size() > 0">
+            and apsi.item_ver_id in
+            <foreach collection="itemVerIds" item="itemVerId" separator="," open="(" close=")">
+                #{itemVerId}
+            </foreach>
+        </if>
+        ) aim
+    </select>
+
+    <select id="getMatListByItemVerIds" resultType="AeaItemMat">
+        SELECT
+        <include refid="allColumns_aim"/>,aim.INOUT_ID inId,aim.ITEM_STATE_ID itemStateId
+        FROM
+        (
+        SELECT
+        aib.IS_NEED_STATE,
+        aii.IS_STATE_IN,
+        aii.ITEM_STATE_ID,
+        aii.INOUT_ID,
+        aii.SORT_NO AS SORT_NO_,
+        mat.*
+        FROM
+        aea_item_mat mat,
+        aea_item_inout aii,
+        aea_item_basic aib,
+        aea_item_state_ver aisv
+        WHERE
+        mat.MAT_ID = aii.MAT_ID
+        AND aii.ITEM_VER_ID = aib.ITEM_VER_ID
+        AND aisv.ITEM_VER_ID = aib.ITEM_VER_ID
+        AND (
+        ( aib.IS_NEED_STATE = '1' AND ( aisv.VER_STATUS = '1' OR aisv.VER_STATUS = '2' ) )
+        OR (
+        aib.IS_NEED_STATE = '0'
+        AND ( aii.STATE_VER_ID IS NULL OR ( aii.STATE_VER_ID IS NOT NULL AND aisv.VER_STATUS != '3' ) )
+        )
+        )
+        AND aisv.IS_DELETED = '0'
+        AND aii.IS_DELETED = '0'
+        AND mat.IS_DELETED = '0'
+        <if test="isInput !=null and isInput == 1">
+            AND aii.STATE_VER_ID = aisv.ITEM_STATE_VER_ID
+        </if>
+        AND aii.IS_INPUT = #{isInput}
+        AND aib.ITEM_VER_ID IN
+        <if test="_databaseId == 'oracle'">
+            <foreach collection="itemVerIds" item="item" open="(" separator="union all" close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="_databaseId == 'mysql'">
+            <foreach collection="itemVerIds" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        ) aim
+        WHERE
+        (
+        aim.IS_NEED_STATE = '1'
+        AND aim.IS_STATE_IN = '0'
+        <if test="isNeedStateMat !=null and isNeedStateMat == 1">
+            OR (
+            aim.IS_STATE_IN = '1'
+            AND aim.ITEM_STATE_ID IN ( SELECT ITEM_STATE_ID FROM aea_item_state WHERE ITEM_VER_ID IN
+            <if test="_databaseId == 'oracle'">
+                <foreach collection="itemVerIds" item="item" open="(" separator="union all" close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="_databaseId == 'mysql'">
+                <foreach collection="itemVerIds" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            AND
+            IS_DELETED = '0' AND PARENT_STATE_ID IS NULL )
+            )
+        </if>
+        )
+        OR ( aim.IS_NEED_STATE = '0' )
+        GROUP BY
+        aim.MAT_ID
+        ORDER BY
+        aim.SORT_NO_
+    </select>
+
+    <select id="getMatListByItemVerIdAndStageId" resultType="AeaItemMat">
+        SELECT
+        <include refid="allColumns_aim"/>,aim.IN_ID parInId
+        FROM
+        (
+        SELECT
+        mat.*,
+        temp.IS_STATE_IN,
+        temp.STAGE_NAME,
+        temp.IS_NEED_STATE,
+        temp.IN_ID,
+        temp.SORT_NO_
+        FROM
+        aea_item_mat mat
+        INNER JOIN (
+        SELECT
+        api.MAT_ID,
+        api.IS_STATE_IN,
+        api.SORT_NO SORT_NO_,
+        api.IN_ID,
+        aps.STAGE_NAME,
+        aps.IS_NEED_STATE
+        FROM
+        aea_par_in api,
+        aea_par_stage_item_in apsii,
+        aea_par_stage aps,
+        aea_par_stage_item apsi
+        WHERE
+        aps.STAGE_ID = apsi.STAGE_ID
+        AND aps.ROOT_ORG_ID =#{rootOrgId}
+        AND api.ROOT_ORG_ID =#{rootOrgId}
+        AND aps.IS_DELETED = '0'
+        AND api.IS_DELETED = '0'
+        AND api.IN_ID = apsii.IN_ID
+        AND apsii.STAGE_ITEM_ID = apsi.STAGE_ITEM_ID
+        AND apsi.STAGE_ID = #{stageId}
+        AND apsi.ITEM_VER_ID = #{itemVerId}
+        ) temp ON mat.MAT_ID = temp.MAT_ID
+        WHERE
+        mat.IS_DELETED = '0'
+        ) aim
+        WHERE
+        ( aim.IS_NEED_STATE = '1' AND aim.IS_STATE_IN = '0'
+        <if test = "isNeedStateMat !=null and isNeedStateMat == 1" >
+        OR aim.IS_STATE_IN = '1'
+        </if>
+        )
+        OR ( aim.IS_NEED_STATE = '0' )
+        GROUP BY
+        aim.MAT_ID
+        ORDER BY
+        aim.SORT_NO_
+    </select>
+
+    <select id="getMatListByItemVerIdsAndStageId" resultType="AeaItemMat">
+        SELECT
+        <include refid="allColumns_aim"/>,aim.IN_ID parInId
+        FROM
+        (
+        SELECT
+        mat.*,
+        temp.IS_STATE_IN,
+        temp.STAGE_NAME,
+        temp.IS_NEED_STATE,
+        temp.IN_ID,
+        temp.SORT_NO_
+        FROM
+        aea_item_mat mat
+        INNER JOIN (
+        SELECT
+        api.MAT_ID,
+        api.IS_STATE_IN,
+        api.SORT_NO SORT_NO_,
+        api.IN_ID,
+        aps.STAGE_NAME,
+        aps.IS_NEED_STATE
+        FROM
+        aea_par_in api,
+        aea_par_stage_item_in apsii,
+        aea_par_stage aps,
+        aea_par_stage_item apsi
+        WHERE
+        aps.STAGE_ID = apsi.STAGE_ID
+        AND aps.IS_DELETED = '0'
+        AND api.IS_DELETED = '0'
+        AND api.IN_ID = apsii.IN_ID
+        AND apsii.STAGE_ITEM_ID = apsi.STAGE_ITEM_ID
+        AND apsi.STAGE_ID = #{stageId}
+        AND apsi.ITEM_VER_ID in
+        <if test="_databaseId == 'oracle'">
+            <foreach collection="ids" item="item" open="(" separator="union all" close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="_databaseId == 'mysql'">
+            <foreach collection="ids" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+
+        ) temp ON mat.MAT_ID = temp.MAT_ID
+        WHERE
+        mat.IS_DELETED = '0'
+        ) aim
+        WHERE
+        ( aim.IS_NEED_STATE = '1' AND aim.IS_STATE_IN = '0'
+        <if test = "isNeedStateMat !=null and isNeedStateMat == 1" >
+            OR aim.IS_STATE_IN = '1'
+        </if>
+        )
+        OR ( aim.IS_NEED_STATE = '0' )
+        GROUP BY
+        aim.MAT_ID
+        ORDER BY
+        aim.SORT_NO_
+    </select>
+
+    <select id="getMatListByIteminstId" resultType="AeaItemMat">
+        SELECT
+        <include refid="allColumns_aim"/>,aim.INOUT_ID inId,aim.ITEM_STATE_ID itemStateId
+        FROM
+        (
+        SELECT
+        aib.IS_NEED_STATE,
+        aii.IS_STATE_IN,
+        aii.ITEM_STATE_ID,
+        aii.INOUT_ID,
+        aii.SORT_NO AS SORT_NO_,
+        mat.*
+        FROM
+        aea_item_mat mat,
+        aea_item_inout aii,
+        aea_item_basic aib,
+        aea_hi_iteminst ahi,
+        aea_item_state_ver aisv
+        WHERE
+        mat.MAT_ID = aii.MAT_ID
+        AND aii.ITEM_VER_ID = aib.ITEM_VER_ID
+        AND aisv.ITEM_VER_ID = aib.ITEM_VER_ID
+        AND (
+        ( aib.IS_NEED_STATE = '1' AND ( aisv.VER_STATUS = '1' OR aisv.VER_STATUS = '2' ) )
+        OR (
+        aib.IS_NEED_STATE = '0'
+        AND ( aii.STATE_VER_ID IS NULL OR ( aii.STATE_VER_ID IS NOT NULL AND aisv.VER_STATUS != '3' ) )
+        )
+        )
+        AND aisv.IS_DELETED = '0'
+        AND aii.IS_DELETED = '0'
+        AND mat.IS_DELETED = '0'
+        <if test="isInput !=null and isInput == 1">
+            AND aii.STATE_VER_ID = aisv.ITEM_STATE_VER_ID
+        </if>
+        AND aii.IS_INPUT = #{isInput}
+        AND aib.ITEM_VER_ID = ahi.ITEM_VER_ID
+        AND ahi.ITEMINST_ID = #{iteminstId}
+        ) aim
+        WHERE
+        (
+        aim.IS_NEED_STATE = '1'
+        AND aim.IS_STATE_IN = '0'
+        <if test="isNeedStateMat !=null and isNeedStateMat == 1">
+            OR (
+            aim.IS_STATE_IN = '1'
+            AND aim.ITEM_STATE_ID IN (
+            SELECT ais.ITEM_STATE_ID
+            FROM aea_item_state ais,aea_hi_iteminst iteminst
+            WHERE
+            ais.ITEM_VER_ID =iteminst.ITEM_VER_ID
+            AND
+            iteminst.ITEMINST_ID = #{iteminstId}
+            AND
+            IS_DELETED = '0' AND PARENT_STATE_ID IS NULL )
+            )
+        </if>
+        )
+        OR ( aim.IS_NEED_STATE = '0' )
+        GROUP BY
+        aim.MAT_ID
+        ORDER BY
+        aim.SORT_NO_
+    </select>
+
+    <!--批量查询-->
+    <select id="listAeaItemMatByIds" resultType="com.augurit.aplanmis.common.domain.AeaItemMat">
+        select
+        <include refid="allColumns"/>
+        from AEA_ITEM_MAT
+        where MAT_ID in
+        <foreach collection="matIds" close=")" open="(" item="id" separator=",">#{id}</foreach>
+        AND IS_DELETED = '0'
+    </select>
+
+    <select id="getOfficeMatsByStageItemVerIds" resultType="AeaItemMat">
+        SELECT
+        <include refid="allColumns_aim"/>,apsm.IN_INOUT_ID inoutId
+        FROM
+        aea_par_stage aps,
+        aea_par_share_mat apsm,
+        aea_item_mat aim,
+        aea_item_inout aii,
+        aea_item_state_ver aisv,
+        aea_item_basic aib
+        WHERE
+        aps.THEME_VER_ID = apsm.THEME_VER_ID
+        AND
+        aisv.ITEM_VER_ID = apsm.IN_ITEM_VER_ID
+        AND
+        aib.ITEM_VER_ID = apsm.IN_ITEM_VER_ID
+        AND (
+        ( aib.IS_NEED_STATE = '1' AND ( aisv.VER_STATUS = '1' OR aisv.VER_STATUS = '2' ) )
+        OR (
+        aib.IS_NEED_STATE = '0'
+        AND ( aii.STATE_VER_ID IS NULL OR ( aii.STATE_VER_ID IS NOT NULL AND aisv.VER_STATUS != '3' ) )
+        )
+        )
+        AND
+        aisv.IS_DELETED = '0'
+        AND
+        apsm.IN_ITEM_STATE_VER_ID = aisv.ITEM_STATE_VER_ID
+        AND
+        aps.STAGE_ID = #{stageId}
+        AND
+        aps.HAND_WAY = '1'
+        AND
+        aii.INOUT_ID = apsm.IN_INOUT_ID
+        AND
+        aii.MAT_ID = aim.MAT_ID
+        AND
+        apsm.ROOT_ORG_ID = #{rootOrgId}
+        AND
+        aps.ROOT_ORG_ID = #{rootOrgId}
+        AND
+        aim.ROOT_ORG_ID = #{rootOrgId}
+        AND
+        aii.ROOT_ORG_ID = #{rootOrgId}
+        AND
+        aps.IS_DELETED = '0'
+        AND
+        aim.IS_DELETED = '0'
+        AND
+        aii.IS_DELETED = '0'
+        AND
+        apsm.IS_ACTIVE = '1'
+        AND
+        apsm.IN_ITEM_VER_ID IN
+        <if test="_databaseId == 'oracle'">
+            <foreach collection="itemVerIds" item="item" open="(" separator="union all" close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="_databaseId == 'mysql'">
+            <foreach collection="itemVerIds" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        ORDER BY
+        aim.SORT_NO
+    </select>
+
+    <select id="getParInMatsByStageItemVerIds" resultType="AeaItemMat">
+        SELECT
+        <include refid="allColumns_aim"/>
+        FROM aea_par_stage aps
+        join aea_par_stage_item apsi on aps.stage_id=apsi.stage_id
+        join aea_par_stage_item_in apsii on apsii.stage_item_id=apsi.stage_item_id
+        join aea_par_in api on api.in_id=apsii.in_id
+        join aea_item_mat aim on aim.mat_id=api.mat_id
+        where aps.stage_id=#{stageId}
+        and aps.root_org_id=#{rootOrgId}
+        and aps.is_deleted='0'
+        <if test="itemVerIds != null and itemVerIds.length != 0">
+            and apsi.item_ver_id in
+            <foreach collection="itemVerIds" open="(" close=")" separator="," item="itemVerId">
+                #{itemVerId}
+            </foreach>
+        </if>
+        and api.is_deleted='0'
+        and api.root_org_id=#{rootOrgId}
+        and api.stage_id=#{stageId}
+        and aim.is_deleted='0'
+        and aim.is_active='1'
+        and aim.root_org_id=#{rootOrgId}
+        order by apsii.sort_no asc
+    </select>
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaItemMat" parameterType="AeaItemMat">
+        insert into AEA_ITEM_MAT (MAT_ID, MAT_CODE, MAT_NAME, IS_GLOBAL_SHARE, MAT_TYPE_ID, RECEIVE_MODE,
+                                  DUE_PAPER_COUNT, DUE_COPY_COUNT, MAT_FROM, SAMPLE_DOC, TEMPLATE_DOC, MAT_REQUIRE,
+                                  MAT_BASIS, PAPER_IS_REQUIRE, SORT_NO, MAT_MEMO, IS_ACTIVE, IS_DELETED, CREATER,
+                                  CREATE_TIME, MODIFIER, MODIFY_TIME, ATT_DIR_ID, MAT_HOLDER, IS_OFFICIAL_DOC,
+                                  ATT_IS_REQUIRE, IS_COMMON, REVIEW_KEY_POINTS, REVIEW_SAMPLE_DOC, REVIEW_BASIS,
+                                  MAT_FROM_DEPT, DUE_PAPER_TYPE, DUE_COPY_TYPE, PAPER_MAT_TYPE, ZCQY,ROOT_ORG_ID)
+        values (#{matId}, #{matCode}, #{matName}, #{isGlobalShare}, #{matTypeId}, #{receiveMode}, #{duePaperCount},
+                #{dueCopyCount}, #{matFrom}, #{sampleDoc}, #{templateDoc}, #{matRequire}, #{matBasis},
+                #{paperIsRequire}, #{sortNo}, #{matMemo}, #{isActive}, #{isDeleted}, #{creater}, #{createTime},
+                #{modifier}, #{modifyTime}, #{attDirId}, #{matHolder}, #{isOfficialDoc}, #{attIsRequire}, #{isCommon},
+                #{reviewKeyPoints}, #{reviewSampleDoc}, #{reviewBasis}, #{matFromDept}, #{duePaperType}, #{dueCopyType},
+                #{paperMatType}, #{zcqy},#{rootOrgId})
+    </insert>
+
+    <!--6 修改实体对象 -->
+    <update id="updateOne" parameterType="AeaItemMat" >
+        update AEA_ITEM_MAT
+        <set >
+            <if test="matId != null" >
+                MAT_ID = #{matId},
+            </if>
+            <if test="matCode != null" >
+                MAT_CODE = #{matCode},
+            </if>
+            <if test="matName != null" >
+                MAT_NAME = #{matName},
+            </if>
+            <if test="isGlobalShare != null" >
+                IS_GLOBAL_SHARE = #{isGlobalShare},
+            </if>
+            <if test="matTypeId != null" >
+                MAT_TYPE_ID = #{matTypeId},
+            </if>
+            <if test="receiveMode != null" >
+                RECEIVE_MODE = #{receiveMode},
+            </if>
+            <if test="duePaperCount != null" >
+                DUE_PAPER_COUNT = #{duePaperCount},
+            </if>
+            <if test="dueCopyCount != null" >
+                DUE_COPY_COUNT = #{dueCopyCount},
+            </if>
+            <if test="matFrom != null" >
+                MAT_FROM = #{matFrom},
+            </if>
+            <if test="sampleDoc != null" >
+                SAMPLE_DOC = #{sampleDoc},
+            </if>
+            <if test="templateDoc != null" >
+                TEMPLATE_DOC = #{templateDoc},
+            </if>
+            <if test="matRequire != null" >
+                MAT_REQUIRE = #{matRequire},
+            </if>
+            <if test="matBasis != null" >
+                MAT_BASIS = #{matBasis},
+            </if>
+            <if test="paperIsRequire != null" >
+                PAPER_IS_REQUIRE = #{paperIsRequire},
+            </if>
+            <if test="sortNo != null" >
+                SORT_NO = #{sortNo},
+            </if>
+            <if test="matMemo != null" >
+                MAT_MEMO = #{matMemo},
+            </if>
+            <if test="isActive != null" >
+                IS_ACTIVE = #{isActive, jdbcType=VARCHAR},
+            </if>
+            <if test="isDeleted != null" >
+                IS_DELETED = #{isDeleted, jdbcType=VARCHAR},
+            </if>
+            <if test="creater != null" >
+                CREATER = #{creater},
+            </if>
+            <if test="createTime != null" >
+                CREATE_TIME = #{createTime},
+            </if>
+            <if test="modifier != null" >
+                MODIFIER = #{modifier},
+            </if>
+            <if test="modifyTime != null" >
+                MODIFY_TIME = #{modifyTime},
+            </if>
+            <if test="attDirId != null" >
+                ATT_DIR_ID = #{attDirId},
+            </if>
+            <if test="matHolder != null and matHolder!='' " >
+                MAT_HOLDER = #{matHolder},
+            </if>
+            <if test="isOfficialDoc != null" >
+                IS_OFFICIAL_DOC = #{isOfficialDoc},
+            </if>
+            <if test="attIsRequire != null " >
+                ATT_IS_REQUIRE = #{attIsRequire},
+            </if>
+            <if test="isCommon != null" >
+                IS_COMMON = #{isCommon},
+            </if>
+            <if test="reviewKeyPoints != null" >
+                REVIEW_KEY_POINTS = #{reviewKeyPoints},
+            </if>
+            <if test="reviewSampleDoc != null" >
+                REVIEW_SAMPLE_DOC = #{reviewSampleDoc},
+            </if>
+            <if test="reviewBasis != null" >
+                REVIEW_BASIS = #{reviewBasis},
+            </if>
+            <if test="matFromDept != null" >
+                MAT_FROM_DEPT = #{matFromDept},
+            </if>
+            <if test="duePaperType != null" >
+                DUE_PAPER_TYPE = #{duePaperType},
+            </if>
+            <if test="dueCopyType != null" >
+                DUE_COPY_TYPE = #{dueCopyType},
+            </if>
+            <if test="paperMatType != null" >
+                PAPER_MAT_TYPE = #{paperMatType},
+            </if>
+            <if test="zcqy != null" >
+                ZCQY = #{zcqy},
+            </if>
+            <if test="rootOrgId != null">
+                ROOT_ORG_ID = #{rootOrgId},
+            </if>
+        </set>
+        where MAT_ID = #{matId}
+    </update>
+
+    <update id="updateAeaItemMat" parameterType="AeaItemMat" >
+        update AEA_ITEM_MAT
+        <set >
+            <if test="matId != null" >
+                MAT_ID = #{matId},
+            </if>
+            <if test="matCode != null" >
+                MAT_CODE = #{matCode},
+            </if>
+            <if test="matName != null" >
+                MAT_NAME = #{matName},
+            </if>
+            <if test="isGlobalShare != null" >
+                IS_GLOBAL_SHARE = #{isGlobalShare},
+            </if>
+            <if test="matTypeId != null" >
+                MAT_TYPE_ID = #{matTypeId},
+            </if>
+            <if test="receiveMode != null" >
+                RECEIVE_MODE = #{receiveMode},
+            </if>
+            <if test="duePaperCount != null" >
+                DUE_PAPER_COUNT = #{duePaperCount},
+            </if>
+            <if test="dueCopyCount != null" >
+                DUE_COPY_COUNT = #{dueCopyCount},
+            </if>
+            <if test="matFrom != null" >
+                MAT_FROM = #{matFrom},
+            </if>
+            <if test="sampleDoc != null" >
+                SAMPLE_DOC = #{sampleDoc},
+            </if>
+            <if test="templateDoc != null" >
+                TEMPLATE_DOC = #{templateDoc},
+            </if>
+            <if test="matRequire != null" >
+                MAT_REQUIRE = #{matRequire},
+            </if>
+            <if test="matBasis != null" >
+                MAT_BASIS = #{matBasis},
+            </if>
+            <if test="paperIsRequire != null" >
+                PAPER_IS_REQUIRE = #{paperIsRequire},
+            </if>
+            <if test="sortNo != null" >
+                SORT_NO = #{sortNo},
+            </if>
+            <if test="matMemo != null" >
+                MAT_MEMO = #{matMemo},
+            </if>
+            <if test="isActive != null" >
+                IS_ACTIVE = #{isActive, jdbcType=VARCHAR},
+            </if>
+            <if test="isDeleted != null" >
+                IS_DELETED = #{isDeleted, jdbcType=VARCHAR},
+            </if>
+            <if test="creater != null" >
+                CREATER = #{creater},
+            </if>
+            <if test="createTime != null" >
+                CREATE_TIME = #{createTime},
+            </if>
+            <if test="modifier != null" >
+                MODIFIER = #{modifier},
+            </if>
+            <if test="modifyTime != null" >
+                MODIFY_TIME = #{modifyTime},
+            </if>
+            <if test="attDirId != null" >
+                ATT_DIR_ID = #{attDirId},
+            </if>
+            <if test="matHolder != null and matHolder!='' " >
+                MAT_HOLDER = #{matHolder},
+            </if>
+            <if test="isOfficialDoc != null" >
+                IS_OFFICIAL_DOC = #{isOfficialDoc},
+            </if>
+            <if test="attIsRequire != null " >
+                ATT_IS_REQUIRE = #{attIsRequire},
+            </if>
+            <if test="isCommon != null" >
+                IS_COMMON = #{isCommon},
+            </if>
+            <if test="reviewKeyPoints != null" >
+                REVIEW_KEY_POINTS = #{reviewKeyPoints},
+            </if>
+            <if test="reviewSampleDoc != null" >
+                REVIEW_SAMPLE_DOC = #{reviewSampleDoc},
+            </if>
+            <if test="reviewBasis != null" >
+                REVIEW_BASIS = #{reviewBasis},
+            </if>
+            <if test="matFromDept != null" >
+                MAT_FROM_DEPT = #{matFromDept},
+            </if>
+            <if test="duePaperType != null" >
+                DUE_PAPER_TYPE = #{duePaperType},
+            </if>
+            <if test="dueCopyType != null" >
+                DUE_COPY_TYPE = #{dueCopyType},
+            </if>
+            <if test="paperMatType != null" >
+                PAPER_MAT_TYPE = #{paperMatType},
+            </if>
+            <if test="zcqy != null" >
+                ZCQY = #{zcqy},
+            </if>
+            <if test="rootOrgId != null">
+                ROOT_ORG_ID = #{rootOrgId},
+            </if>
+        </set>
+        where MAT_ID = #{matId}
+    </update>
+
+    <!--7 删除实体对象,根据主键ID -->
+    <update id="deleteAeaItemMatById">
+        update AEA_ITEM_MAT
+        <set>
+            IS_DELETED = '1'
+        </set>
+        where MAT_ID = #{id}
+    </update>
+
+    <!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaItemMat" id="AeaItemMatMap">
+        <id property="matId" column="MAT_ID"/>
+        <result property="matCode" column="MAT_CODE"/>
+        <result property="matName" column="MAT_NAME"/>
+        <result property="isGlobalShare" column="IS_GLOBAL_SHARE"/>
+        <result property="matTypeId" column="MAT_TYPE_ID"/>
+        <result property="receiveMode" column="RECEIVE_MODE"/>
+        <result property="duePaperCount" column="DUE_PAPER_COUNT"/>
+        <result property="dueCopyCount" column="DUE_COPY_COUNT"/>
+        <result property="matFrom" column="MAT_FROM"/>
+        <result property="sampleDoc" column="SAMPLE_DOC"/>
+        <result property="templateDoc" column="TEMPLATE_DOC"/>
+        <result property="matRequire" column="MAT_REQUIRE"/>
+        <result property="matBasis" column="MAT_BASIS"/>
+        <result property="paperIsRequire" column="PAPER_IS_REQUIRE"/>
+        <result property="sortNo" column="SORT_NO"/>
+        <result property="matMemo" column="MAT_MEMO"/>
+        <result property="isActive" column="IS_ACTIVE"/>
+        <result property="isDeleted" column="IS_DELETED"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="modifier" column="MODIFIER"/>
+        <result property="modifyTime" column="MODIFY_TIME"/>
+        <result property="attDirId" column="ATT_DIR_ID"/>
+        <result property="matHolder" column="MAT_HOLDER"/>
+        <result property="isOfficialDoc" column="IS_OFFICIAL_DOC"/>
+        <result property="attIsRequire" column="ATT_IS_REQUIRE"/>
+        <result property="isCommon" column="IS_COMMON"/>
+        <result property="reviewKeyPoints" column="REVIEW_KEY_POINTS"/>
+        <result property="reviewSampleDoc" column="REVIEW_SAMPLE_DOC"/>
+        <result property="reviewBasis" column="REVIEW_BASIS"/>
+        <result property="matFromDept" column="MAT_FROM_DEPT"/>
+        <result property="duePaperType" column="DUE_PAPER_TYPE"/>
+        <result property="dueCopyType" column="DUE_COPY_TYPE"/>
+        <result property="paperMatType" column="PAPER_MAT_TYPE"/>
+        <result property="zcqy" column="ZCQY"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+
+    </resultMap>
+
+    <select id="listAeaItemMat" resultType="AeaItemMat">
+        select
+           <include refid="allColumns"/>
+        from AEA_ITEM_MAT matbak
+        <where>
+            <if test="busiType =='item'">
+                and matbak.MAT_ID not in(
+                    select
+                       mat.MAT_ID
+                    from AEA_ITEM_INOUT iout, AEA_ITEM_MAT mat
+                    <where>
+                        and iout.MAT_ID = mat.MAT_ID
+                        and iout.ROOT_ORG_ID = mat.ROOT_ORG_ID
+                        and iout.FILE_TYPE = 'mat'
+                        and iout.IS_DELETED = '0'
+                        <if test="itemVerId != null and itemVerId!='' ">
+                            and iout.ITEM_VER_ID = #{itemVerId}
+                        </if>
+                        <if test="isInput != null and isInput!='' ">
+                            and iout.IS_INPUT = #{isInput}
+                        </if>
+                        <if test="stateVerId != null and stateVerId!='' ">
+                            and iout.STATE_VER_ID = #{stateVerId}
+                        </if>
+                        <if test="isStateIn != null and isStateIn!= '' ">
+                            and iout.IS_STATE_IN = #{isStateIn}
+                        </if>
+                        <if test="itemStateId != null and itemStateId!= '' ">
+                            and iout.ITEM_STATE_ID = #{itemStateId}
+                        </if>
+                        <if test="rootOrgId != null and rootOrgId!= '' ">
+                            and iout.ROOT_ORG_ID = #{rootOrgId}
+                        </if>
+                    </where>
+                )
+            </if>
+            <if test="busiType =='stage'">
+                and matbak.MAT_ID not in(
+                    select
+                       mat.MAT_ID
+                    from AEA_PAR_IN parIn, AEA_ITEM_MAT mat
+                    <where>
+                        and parIn.MAT_ID = mat.MAT_ID
+                        and parIn.ROOT_ORG_ID = mat.ROOT_ORG_ID
+                        and parIn.FILE_TYPE = 'mat'
+                        and parIn.IS_DELETED = '0'
+                        <if test="stageId  != null and stageId !='' ">
+                            and parIn.STAGE_ID = #{stageId}
+                        </if>
+                        <if test="isInput != null and isInput!='' ">
+                            and parIn.IS_INPUT = #{isInput}
+                        </if>
+                        <if test="isStateIn != null and isStateIn!= '' ">
+                            and parIn.IS_STATE_IN = #{isStateIn}
+                        </if>
+                        <if test="parStateId != null and parStateId!= '' ">
+                            and parIn.PAR_STATE_ID = #{parStateId}
+                        </if>
+                        <if test="rootOrgId != null and rootOrgId!= '' ">
+                            and parIn.ROOT_ORG_ID = #{rootOrgId}
+                        </if>
+                    </where>
+                )
+            </if>
+            <if test="keyword != null and keyword != ''">
+                and (
+                   MAT_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%') OR
+                   MAT_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                )
+            </if>
+            <if test="matId != null">
+                and MAT_ID = #{matId}
+            </if>
+            <if test="matCode != null">
+                and MAT_CODE = #{matCode}
+            </if>
+            <if test="matName != null">
+                and MAT_NAME = #{matName}
+            </if>
+            <if test="isGlobalShare != null">
+                and IS_GLOBAL_SHARE = #{isGlobalShare}
+            </if>
+            <if test="matTypeId != null and matTypeId!='' ">
+                and MAT_TYPE_ID = #{matTypeId}
+            </if>
+            <if test="receiveMode != null">
+                and RECEIVE_MODE = #{receiveMode}
+            </if>
+            <if test="duePaperCount != null">
+                and DUE_PAPER_COUNT = #{duePaperCount}
+            </if>
+            <if test="dueCopyCount != null">
+                and DUE_COPY_COUNT = #{dueCopyCount}
+            </if>
+            <if test="matFrom != null">
+                and MAT_FROM = #{matFrom}
+            </if>
+            <if test="sampleDoc != null">
+                and SAMPLE_DOC = #{sampleDoc}
+            </if>
+            <if test="templateDoc != null">
+                and TEMPLATE_DOC = #{templateDoc}
+            </if>
+            <if test="matRequire != null">
+                and MAT_REQUIRE = #{matRequire}
+            </if>
+            <if test="matBasis != null">
+                and MAT_BASIS = #{matBasis}
+            </if>
+            <if test="paperIsRequire != null">
+                and PAPER_IS_REQUIRE = #{paperIsRequire}
+            </if>
+            <if test="sortNo != null">
+                and SORT_NO = #{sortNo}
+            </if>
+            <if test="matMemo != null">
+                and MAT_MEMO = #{matMemo}
+            </if>
+            <if test="isActive != null">
+                and IS_ACTIVE = #{isActive, jdbcType=VARCHAR}
+            </if>
+            <if test="isDeleted != null">
+                and IS_DELETED = #{isDeleted, jdbcType=VARCHAR}
+            </if>
+            <if test="creater != null">
+                and CREATER = #{creater}
+            </if>
+            <if test="createTime != null">
+                and CREATE_TIME = #{createTime}
+            </if>
+            <if test="modifier != null">
+                and MODIFIER = #{modifier}
+            </if>
+            <if test="modifyTime != null">
+                and MODIFY_TIME = #{modifyTime}
+            </if>
+            <if test="attDirId != null">
+                and ATT_DIR_ID = #{attDirId}
+            </if>
+            <if test="matHolder != null and matHolder!='' ">
+                and MAT_HOLDER = #{matHolder}
+            </if>
+            <if test="isOfficialDoc != null">
+                and IS_OFFICIAL_DOC = #{isOfficialDoc}
+            </if>
+            <if test="attIsRequire != null ">
+                and ATT_IS_REQUIRE = #{attIsRequire}
+            </if>
+            <if test="isCommon != null">
+                and IS_COMMON = #{isCommon}
+            </if>
+            <if test="reviewKeyPoints != null">
+                and REVIEW_KEY_POINTS = #{reviewKeyPoints}
+            </if>
+            <if test="reviewSampleDoc != null">
+                and REVIEW_SAMPLE_DOC = #{reviewSampleDoc}
+            </if>
+            <if test="reviewBasis != null">
+                and REVIEW_BASIS = #{reviewBasis}
+            </if>
+            <if test="matFromDept != null">
+                and MAT_FROM_DEPT = #{matFromDept}
+            </if>
+            <if test="duePaperType != null">
+                and DUE_PAPER_TYPE = #{duePaperType}
+            </if>
+            <if test="dueCopyType != null">
+                and DUE_COPY_TYPE = #{dueCopyType}
+            </if>
+            <if test="paperMatType != null">
+                and PAPER_MAT_TYPE = #{paperMatType}
+            </if>
+            <if test="zcqy != null">
+                and ZCQY = #{zcqy}
+            </if>
+            <if test="rootOrgId != null">
+                and ROOT_ORG_ID = #{rootOrgId}
+            </if>
+            and IS_DELETED = '0'
+        </where>
+        order by CREATE_TIME desc, SORT_NO desc
+    </select>
+
+    <select id="checkMatCode" resultType="java.lang.Integer">
+        select count(*) from AEA_ITEM_MAT
+        <where>
+            and ROOT_ORG_ID = #{rootOrgId}
+            and MAT_CODE = #{matCode}
+            <if test="matId != null and matId!='' ">
+                and MAT_ID != #{matId}
+            </if>
+        </where>
+    </select>
+
+    <select id="getMaxSortNo" resultType="java.lang.Long">
+        select max(SORT_NO) from AEA_ITEM_MAT where ROOT_ORG_ID = #{rootOrgId}
+    </select>
+
+    <delete id="batchDeleteAeaItemMatByIds" parameterType="string">
+        update AEA_ITEM_MAT
+        <set>
+            IS_DELETED = '1'
+        </set>
+        where MAT_ID in
+        <foreach collection="ids" item="id" index="i" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="listAeaItemMatByItemId" resultType="AeaItemMat" >
+        SELECT
+            aim.MAT_ID  matId,
+            aim.MAT_CODE  matCode,
+            aim.MAT_NAME  matName,
+            aim.IS_GLOBAL_SHARE  isGlobalShare,
+            aim.MAT_TYPE_ID  matTypeId,
+            aim.RECEIVE_MODE  receiveMode,
+            aim.DUE_PAPER_COUNT  duePaperCount,
+            aim.DUE_COPY_COUNT  dueCopyCount,
+            aim.MAT_FROM  matFrom,
+            aim.SAMPLE_DOC  sampleDoc,
+            aim.TEMPLATE_DOC  templateDoc,
+            aim.MAT_REQUIRE  matRequire,
+            aim.MAT_BASIS  matBasis,
+            aim.PAPER_IS_REQUIRE  paperIsRequire,
+            aim.SORT_NO  sortNo,
+            aim.MAT_MEMO  matMemo,
+            aim.IS_ACTIVE  isActive,
+            aim.IS_DELETED  isDeleted,
+            aim.CREATER  creater,
+            aim.CREATE_TIME  createTime,
+            aim.MODIFIER  modifier,
+            aim.MODIFY_TIME  modifyTime,
+            aim.ATT_DIR_ID  attDirId,
+            aim.MAT_HOLDER matHolder,
+            aim.IS_OFFICIAL_DOC isOfficialDoc,
+            aim.ATT_IS_REQUIRE  attIsRequire,
+            aim.IS_COMMON  isCommon,
+            aim.REVIEW_KEY_POINTS  reviewKeyPoints,
+            aim.REVIEW_SAMPLE_DOC  reviewSampleDoc,
+            aim.REVIEW_BASIS  reviewBasis,
+            aim.MAT_FROM_DEPT  matFromDept,
+            aim.DUE_PAPER_TYPE  duePaperType,
+            aim.DUE_COPY_TYPE  dueCopyType,
+            aim.PAPER_MAT_TYPE  paperMatType
+        FROM AEA_ITEM_MAT aim, AEA_ITEM_INOUT aii
+        WHERE aim.MAT_ID = aii.MAT_ID
+          AND aii.IS_INPUT = '1'
+          AND aim.PAPER_IS_REQUIRE = '1'
+          AND aim.IS_DELETED = '0'
+          AND aii.IS_DELETED = '0'
+          AND aii.ITEM_ID = #{itemId}
+    </select>
+
+    <update id="batchDeleteAeaItemMatByInoutIds" parameterType="list">
+        update AEA_ITEM_MAT
+        <set >
+            IS_DELETED = '1'
+        </set>
+        where MAT_ID in
+        (select mat_id from aea_item_inout where inout_id in
+        <foreach collection="inoutIds" item="id" index="i" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        )
+        and is_common='0'
+        and is_global_share='0'
+    </update>
+
+    <update id="deleteAeaItemMatByStateId">
+        update aea_item_mat mat
+           set mat.is_deleted = '1'
+        where mat.mat_id in(
+            select mat_id
+              from aea_item_inout
+             where file_type = 'mat'
+               and ITEM_VER_ID = #{itemVerId}
+               and STATE_VER_ID = #{stateVerId}
+               and ITEM_STATE_ID = #{itemStateId}
+               and ROOT_ORG_ID = #{rootOrgId}
+        )
+        and mat.is_common = '0'
+        and mat.is_global_share = '0'
+    </update>
+
+    <select id="listAeaItemMatByParInNoState" resultType="AeaItemMat" >
+        select
+        <include refid="mat_allColumns"/>,par.SORT_NO sortNo
+        from AEA_ITEM_MAT mat
+        left join AEA_PAR_IN par on mat.MAT_ID = par.MAT_ID
+        where 1=1
+        and par.STAGE_ID = #{stageId}
+        and par.IS_DELETED ='0' order by par.SORT_NO
+    </select>
+
+    <select id="listAeaItemMatByParIn" resultType="AeaItemMat" >
+        SELECT
+        <include refid="mat_allColumns"/>,par.SORT_NO sortNo
+        FROM AEA_PAR_IN par
+        left join AEA_ITEM_MAT mat ON mat.mat_id = par.mat_id
+        WHERE
+        par.stage_id = #{stageId}
+        and par.PAR_STATE_ID = #{stateId}
+        and mat.is_deleted = '0'
+        and par.is_deleted = '0'
+        AND mat.IS_COMMON='0'
+        and par.IS_STATE_IN = '1'
+        order by par.SORT_NO
+    </select>
+
+    <select id="listStageNoSelectGlobalMat" resultType="AeaItemMat">
+        select
+            <include refid="mat_allColumns"/>
+        from AEA_ITEM_MAT mat
+        <where>
+            and mat.ROOT_ORG_ID = #{rootOrgId}
+            and mat.IS_GLOBAL_SHARE = '1'
+            and mat.IS_DELETED = '0'
+            and mat.IS_COMMON='1'
+            <if test="keyword != null and keyword != ''">
+            and (
+                mat.MAT_NAME like CONCAT(CONCAT('%',#{keyword}),'%') OR
+                mat.MAT_CODE like CONCAT(CONCAT('%',#{keyword}),'%')
+            )
+            </if>
+            and mat.MAT_ID not in(
+                select distinct MAT_ID from AEA_PAR_IN
+                <where>
+                    and  ROOT_ORG_ID = #{rootOrgId}
+                    and  STAGE_ID = #{stageId}
+                    and  FILE_TYPE = 'mat'
+                    and  IS_DELETED = '0'
+                </where>
+            )
+        </where>
+    </select>
+
+    <select id="listItemInOutNoSelectGlobalMat" resultType="AeaItemMat">
+        select
+           <include refid="mat_allColumns"/>
+        from AEA_ITEM_MAT mat
+        <where>
+            and ROOT_ORG_ID = #{rootOrgId}
+            and MAT.IS_GLOBAL_SHARE = '1'
+            and MAT.IS_DELETED = '0'
+            and MAT.IS_COMMON = '1'
+            <if test="keyword != null and keyword != ''">
+                and (
+                    mat.MAT_NAME like CONCAT(CONCAT('%',#{keyword}),'%') OR
+                    mat.MAT_CODE like CONCAT(CONCAT('%',#{keyword}),'%')
+                )
+            </if>
+            and mat.MAT_ID not in(
+                select MAT_ID from AEA_ITEM_INOUT
+                <where>
+                    and  ROOT_ORG_ID = #{rootOrgId}
+                    and  ITEM_VER_ID = #{itemVerId}
+                    <if test="stateVerId!=null and stateVerId!='' ">
+                    and  STATE_VER_ID = #{stateVerId}
+                    </if>
+                    and  IS_INPUT = #{isInput}
+                    and  FILE_TYPE = 'mat'
+                    and  IS_DELETED = '0'
+                </where>
+            )
+        </where>
+    </select>
+
+</mapper>

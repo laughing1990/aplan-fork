@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by chenzh    2019-07-04 16:18:34 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaParThemeVerMapper">
+
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns">
+        ${alias}.THEME_VER_ID  themeVerId,
+        ${alias}.THEME_ID  themeId,
+        ${alias}.VER_NUM  verNum,
+        ${alias}.IS_ACTIVE  isActive,
+        ${alias}.IS_DELETED  isDeleted,
+        ${alias}.VER_MEMO  verMemo,
+        ${alias}.CREATER  creater,
+        ${alias}.CREATE_TIME  createTime,
+        ${alias}.MODIFIER  modifier,
+        ${alias}.MODIFY_TIME  modifyTime,
+        ${alias}.IS_PUBLISH  isPublish,
+        ${alias}.ROOT_ORG_ID  rootOrgId,
+        ${alias}.THEME_VER_DIAGRAM themeVerDiagram
+    </sql>
+
+    <select id="selectOneById" resultType="AeaParThemeVer" >
+        select
+            <include refid="allColumns">
+                <property name="alias" value="themeVer"/>
+            </include>,
+            theme.THEME_NAME themeName
+        from AEA_PAR_THEME_VER themeVer,AEA_PAR_THEME theme
+        where  themeVer.THEME_VER_ID = #{id}
+          and themeVer.IS_DELETED = '0'
+          and themeVer.THEME_ID = theme.THEME_ID
+    </select>
+
+    <select id="listAeaParThemeVer" resultType="AeaParThemeVer">
+        select
+            <include refid="allColumns">
+                <property name="alias" value="themeVer"/>
+            </include>,
+            theme.THEME_NAME themeName
+        from AEA_PAR_THEME_VER themeVer,AEA_PAR_THEME theme
+        <where>
+            and themeVer.IS_DELETED = '0'
+            and themeVer.THEME_ID = theme.THEME_ID
+            <if test="themeVerId != null">
+                and themeVer.THEME_VER_ID = #{themeVerId}
+            </if>
+            <if test="themeId != null">
+                and themeVer.THEME_ID = #{themeId}
+            </if>
+            <if test="verNum != null">
+                and themeVer.VER_NUM = #{verNum}
+            </if>
+            <if test="isActive != null">
+                and themeVer.IS_ACTIVE = #{isActive, jdbcType=VARCHAR}
+            </if>
+            <if test="isPublish != null">
+                and themeVer.IS_PUBLISH = #{isPublish, jdbcType=VARCHAR}
+            </if>
+            <if test="verMemo != null">
+                and themeVer.VER_MEMO = #{verMemo}
+            </if>
+            <if test="creater != null">
+                and themeVer.CREATER = #{creater}
+            </if>
+            <if test="createTime != null">
+                and themeVer.CREATE_TIME = #{createTime}
+            </if>
+            <if test="modifier != null">
+                and themeVer.MODIFIER = #{modifier}
+            </if>
+            <if test="modifyTime != null">
+                and themeVer.MODIFY_TIME = #{modifyTime}
+            </if>
+            <if test="themeVerDiagram != null">
+                and themeVer.THEME_VER_DIAGRAM = #{themeVerDiagram}
+            </if>
+            <if test="rootOrgId != null">
+                and themeVer.ROOT_ORG_ID = #{rootOrgId}
+            </if>
+        </where>
+        order by themeVer.VER_NUM desc,themeVer.CREATE_TIME desc
+    </select>
+
+    <!--5 新增实体对象 -->
+    <insert id="insertOne" parameterType="AeaParThemeVer">
+        insert into AEA_PAR_THEME_VER (
+            THEME_VER_ID,
+            THEME_ID,
+            VER_NUM,
+            IS_ACTIVE,
+            IS_PUBLISH,
+            IS_DELETED,
+            VER_MEMO,
+            CREATER,
+            CREATE_TIME,
+            MODIFIER,
+            MODIFY_TIME,
+            THEME_VER_DIAGRAM,
+            ROOT_ORG_ID
+        )  values  (
+            #{themeVerId},
+            #{themeId},
+            #{verNum},
+            #{isActive, jdbcType=VARCHAR},
+            #{isPublish, jdbcType=VARCHAR},
+            #{isDeleted, jdbcType=VARCHAR},
+            #{verMemo},
+            #{creater},
+            #{createTime},
+            #{modifier},
+            #{modifyTime},
+            #{themeVerDiagram},
+            #{rootOrgId}
+        )
+    </insert>
+
+    <!--6 修改实体对象 -->
+    <update id="updateOne" parameterType="AeaParThemeVer">
+        update AEA_PAR_THEME_VER
+        <set >
+            <if test="themeVerId != null and themeVerId!='' " >
+                THEME_VER_ID = #{themeVerId},
+            </if>
+            <if test="themeId != null and themeId!='' " >
+                THEME_ID = #{themeId},
+            </if>
+            <if test="verNum != null and verNum!='' " >
+                VER_NUM = #{verNum},
+            </if>
+            <if test="isActive != null" >
+                IS_ACTIVE = #{isActive,jdbcType=VARCHAR},
+            </if>
+            <if test="isPublish != null" >
+                IS_PUBLISH = #{isPublish, jdbcType=VARCHAR},
+            </if>
+            <if test="isDeleted != null" >
+                IS_DELETED = #{isDeleted, jdbcType=VARCHAR},
+            </if>
+            <if test="verMemo != null" >
+                VER_MEMO = #{verMemo},
+            </if>
+            <if test="creater != null and creater!='' " >
+                CREATER = #{creater},
+            </if>
+            <if test="createTime != null" >
+                CREATE_TIME = #{createTime},
+            </if>
+            <if test="modifier != null and modifier!='' " >
+                MODIFIER = #{modifier},
+            </if>
+            <if test="modifyTime != null" >
+                MODIFY_TIME = #{modifyTime},
+            </if>
+            <if test="themeVerDiagram != null" >
+                THEME_VER_DIAGRAM = #{themeVerDiagram},
+            </if>
+            <if test="rootOrgId != null">
+                ROOT_ORG_ID = #{rootOrgId},
+            </if>
+        </set>
+        where THEME_VER_ID = #{themeVerId}
+    </update>
+    <update id="setThemeVerDiagramNull">
+        update AEA_PAR_THEME_VER set THEME_VER_DIAGRAM = null  where THEME_VER_ID = #{themeVerId}
+    </update>
+
+    <update id="deleteById">
+        update AEA_PAR_THEME_VER set IS_DELETED = '1' where THEME_VER_ID = #{id}
+    </update>
+
+    <select id="getAeaParThemeVerByThemeIdAndVerNum" resultType="AeaParThemeVer">
+        select
+           <include refid="allColumns">
+               <property name="alias" value="aptv"/>
+           </include>
+        from AEA_PAR_THEME_VER aptv
+        where 1=1
+          and ROOT_ORG_ID = #{rootOrgId}
+          and THEME_ID = #{themeId}
+          and VER_NUM = #{verNum}
+          and IS_PUBLISH in ('1', '2')
+          and IS_ACTIVE = '1'
+          and IS_DELETED = '0'
+    </select>
+
+    <update id="deprecateAllTestRunAndPublishedVersion">
+        update AEA_PAR_THEME_VER set IS_PUBLISH = '3'
+        <where>
+            and THEME_ID = #{themeId}
+            and THEME_VER_ID != #{themeVerId}
+            and IS_DELETED = '0'
+            and IS_PUBLISH in ('2','1')
+            and ROOT_ORG_ID = #{rootOrgId}
+        </where>
+    </update>
+
+    <select id="listThemeVerByItemIdAndItemVerId" resultType="AeaParThemeVer">
+        select
+            <include refid="allColumns">
+                <property name="alias" value="themeVer"/>
+            </include>,
+            theme.THEME_NAME themeName
+        from AEA_PAR_THEME_VER themeVer, AEA_PAR_THEME theme
+        <where>
+            and themeVer.THEME_ID = theme.THEME_ID
+            and themeVer.ROOT_ORG_ID = theme.ROOT_ORG_ID
+            and themeVer.ROOT_ORG_ID = #{rootOrgId}
+            and theme.IS_DELETED = '0'
+            and themeVer.IS_DELETED = '0'
+            and themeVer.IS_PUBLISH in ('0', '1', '2')
+            and themeVer.THEME_VER_ID in (
+                select distinct THEME_VER_ID
+                from aea_par_stage
+                where STAGE_ID in (
+                    select distinct STAGE_ID
+                    from aea_par_stage_item
+                    where ITEM_ID = #{itemId}
+                      and ITEM_VER_ID = #{itemVerId}
+                )
+                and ROOT_ORG_ID = #{rootOrgId}
+            )
+        </where>
+        order by theme.THEME_TYPE asc, theme.SORT_NO asc, theme.CREATE_TIME asc, themeVer.VER_NUM desc, themeVer.CREATE_TIME desc
+    </select>
+
+    <select id="getAeaParThemeVerById" resultType="com.augurit.aplanmis.common.domain.AeaParThemeVer">
+        select
+        <include refid="allColumns">
+            <property name="alias" value="themeVer"/>
+        </include>
+        from AEA_PAR_THEME_VER themeVer
+        where THEME_VER_ID = #{id}
+    </select>
+
+    <resultMap type="AeaParThemeVer" id="AeaParThemeVerMap">
+        <id property="themeVerId" column="THEME_VER_ID"/>
+        <result property="themeId" column="THEME_ID"/>
+        <result property="verNum" column="VER_NUM"/>
+        <result property="isActive" column="IS_ACTIVE"/>
+        <result property="isDeleted" column="IS_DELETED"/>
+        <result property="verMemo" column="VER_MEMO"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="modifier" column="MODIFIER"/>
+        <result property="modifyTime" column="MODIFY_TIME"/>
+        <result property="isPublish" column="IS_PUBLISH"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+    </resultMap>
+
+    <select id="listThemeVerByThemeIds" resultType="AeaParThemeVer">
+        select
+        <include refid="allColumns">
+            <property name="alias" value="themeVer"/>
+        </include>
+        from AEA_PAR_THEME_VER themeVer
+        where
+            themeVer.IS_DELETED = '0'
+            and themeVer.THEME_ID in(${themeIds})
+        order by themeVer.VER_NUM desc,themeVer.CREATE_TIME desc
+    </select>
+
+    <select id="getTestRunOrPublishedVer" resultType="com.augurit.aplanmis.common.domain.AeaParThemeVer">
+        select
+        <include refid="allColumns">
+            <property name="alias" value="themeVer"/>
+        </include>
+        from AEA_PAR_THEME_VER themeVer
+        where theme_id = #{themeId}
+        and root_org_id=#{rootOrgId}
+        and is_deleted='0'
+        and is_publish in('1', '2')
+        order by ver_num desc
+        limit 1
+    </select>
+</mapper>

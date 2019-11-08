@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>收费信息</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!--引入样式-->
+    <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/metronic-5/vendors.bundle.css" th:href="@{/agcloud/framework/js-lib/metronic-5/vendors.bundle.css}">
+    <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/ui-private/default/common/css/metronic.css" th:href="@{/agcloud/framework/ui-private/default/common/css/metronic.css}">
+    <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.css" th:href="@{/agcloud/framework/js-lib/element-2/element.css}">
+    <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/ui-private/default/common/css/layout.css" th:href="@{/agcloud/framework/ui-private/default/common/css/layout.css}">
+    <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/ui-private/default/blue/css/theme.css" th:href="@{/agcloud/framework/ui-private/default/blue/css/theme.css}">
+    <!-- 业务样式 -->
+    <link rel="stylesheet" href="../../../../static/admin/item/guide/css/chargeIndex.css" th:href="@{/admin/item/guide/css/chargeIndex.css}">
+    <script>
+        var ctx = '[[@{/}]]';
+        var itemVerId = '[[${itemVerId}]]';
+        var curIsEditable = [[${curIsEditable}]];
+    </script>
+</head>
+<body>
+<div id="index" v-loading="loading" style="padding: 15px;">
+    <!-- 查询 -->
+    <div class="add-search clearfix" style="padding-bottom: 15px;">
+        <button v-show="curIsEditable" type="button" class="btn btn-primary" @click="editRow('',0)">新增</button>
+        <button v-show="curIsEditable" type="button" class="btn btn-outline-danger" @click="batchDelData">删除</button>
+        <div class="float-right search-btn" style="padding-left: 10px;">
+            <div class="input-group search-key">
+                <input type="text" class="form-control" v-model="searchKey" placeholder="请输入查询关键字" style="width: 250px;">
+                <i class="la la-close clear-search" @click="searchKey='';page=1;searchRow();"></i>
+                <div class="input-group-append">
+                    <button class="btn btn-primary m-btn--icon" @click="searchRow()">
+                        <span><i class="fa fa-search"></i><span>查询</span></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 主要显示内容 -->
+    <el-table
+        ref="chargesTb"
+        :data="tableData.rows"
+        border style="width: 100%"
+        highlight-current-row
+        v-loading="loading"
+        @row-dblclick="dbclickRow"
+        @row-click="clickRow"
+        @selection-change="handleSelChange">
+        <el-table-column type="selection" align="center"></el-table-column>
+        <el-table-column prop="feeName" label="收费项目" align="left"></el-table-column>
+        <el-table-column prop="feeOrg" label="收费主体" align="left"></el-table-column>
+        <el-table-column prop="feeStand" label="收费标准" align="left"></el-table-column>
+        <el-table-column prop="isDesc" label="是否允许减免" align="center" width="130">
+            <template slot-scope="scope">
+                {{scope.row.isDesc == '1' ? '允许' : '不允许'}}
+            </template>
+        </el-table-column>
+        <el-table-column prop="ordernum" label="排序" align="center" width="130"></el-table-column>
+        <el-table-column prop="" label="操作" width="130" align="center">
+            <template slot-scope="scope">
+                <el-button v-show="curIsEditable" type="primary" icon="el-icon-edit" circle @click="editRow(scope.row,1)"></el-button>
+                <el-button v-show="!curIsEditable" type="primary" icon="el-icon-search" circle @click="editRow(scope.row,1)"></el-button>
+                <el-button v-show="curIsEditable" type="danger" icon="el-icon-delete" circle @click="deleteData(scope.row)"></el-button>
+            </template>
+        </el-table-column>
+    </el-table>
+
+    <!-- 分页 -->
+    <el-pagination
+        background
+        align="right"
+        :pager-count="5"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :page-sizes="[10, 20, 30, 50]"
+        :page-size="pageSize"
+        layout="total,sizes, prev, pager, next, jumper"
+        :total="tableData.total">
+    </el-pagination>
+
+    <!-- 新增/编辑页面 -->
+    <el-dialog :title="dialogTitie" :visible.sync="dialogEditTable" class="edit-row" @closed="clearFormData">
+        <el-form :inline="true" :model="selRowData" :rules="rules" ref="selRowData" :style="{height: '465px', overflow:'auto'}">
+
+            <input type="hidden" :value="selRowData.rowguid">
+            <input type="hidden" :value="selRowData.itemVerId">
+            <input type="hidden" :value="selRowData.feeTypeText"/>
+            <input type="hidden" :value="selRowData.isDescText"/>
+
+            <el-row>
+                <el-col :span="24">
+                    <el-form-item label="收费名目：" prop="feeName" class="ops-memo">
+                        <el-input type="textarea" v-model="selRowData.feeName" rows="1"></el-input>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+
+            <el-row>
+                <el-col :span="24">
+                    <el-form-item label="收费主体：" prop="feeOrg" class="ops-memo">
+                        <el-input type="textarea" v-model="selRowData.feeOrg" rows="1"></el-input>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+
+            <el-row>
+                <el-col :span="24">
+                    <el-form-item label="收费排序：" prop="ordernum" class="ops-memo2">
+                        <el-input type="ordernum" v-model.number="selRowData.ordernum" autocomplete="off"></el-input>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+
+            <el-row>
+                <el-col :span="12">
+                    <el-form-item label="收费性质：" prop="feeType">
+                        <el-select v-model="selRowData.feeType" @change="feeTypeFunc">
+                            <el-option value="1" label="行政事业性收费"></el-option>
+                            <el-option value="2" label="经营服务性收费"></el-option>
+                        </el-select>
+                    </el-form-item>
+                </el-col>
+
+                <el-col :span="12">
+                    <el-form-item label="是否允许减免：" prop="isDesc">
+                        <el-select v-model="selRowData.isDesc" @change="isDescFunc">
+                            <el-option value="0" label="不允许"></el-option>
+                            <el-option value="1" label="允许"></el-option>
+                        </el-select>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+
+            <el-row>
+                <el-col :span="24">
+                    <el-form-item label="收费标准：" prop="feeStand" class="ops-memo">
+                        <el-input type="textarea" v-model="selRowData.feeStand" rows="8"></el-input>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+
+            <el-row>
+                <el-col :span="24">
+                    <el-form-item label="收费依据：" prop="bylaw" class="ops-memo">
+                        <el-input type="textarea" v-model="selRowData.bylaw" rows="8"></el-input>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+
+            <el-row>
+                <el-col :span="24">
+                    <el-form-item label="收费减免情形：" prop="descExplain" v-if="selRowData.isDesc=='1'" class="ops-memo">
+                        <el-input type="textarea" v-model="selRowData.descExplain" rows="8"></el-input>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+
+            <el-row>
+                <el-col :span="24">
+                    <el-form-item label="减免情形依据：" prop="descLaw" v-if="selRowData.isDesc=='1'" class="ops-memo">
+                        <el-input type="textarea" v-model="selRowData.descLaw" rows="8"></el-input>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+
+            <el-row>
+                <el-col :span="24">
+                    <el-form-item label="备注说明：" prop="remark" class="ops-memo">
+                        <el-input type="textarea" v-model="selRowData.remark" rows="4"></el-input>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+
+        </el-form>
+
+        <div slot="footer" class="dialog-footer">
+            <button class="btn btn-secondary" @click="dialogEditTable=false">取消</button>
+            <button class="btn btn-primary" v-if="isShow" @click="saveEdit('selRowData', selRowData)">保存</button>
+        </div>
+    </el-dialog>
+</div>
+
+<!-- 引入js文件 -->
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js" th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js" th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js" th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js" th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>
+<!-- 业务js -->
+<script type="text/javascript" src="../../../../static/admin/item/guide/js/chargeIndex.js" th:src="@{/admin/item/guide/js/chargeIndex.js}"></script>
+</body>
+</html>

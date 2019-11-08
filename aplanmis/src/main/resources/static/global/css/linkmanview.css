@@ -1,0 +1,63 @@
+body {
+  padding: 20px;
+  min-height: 100%;
+}
+.linkman-form .el-input {
+  width: 240px;
+}
+.linkman-form .fill-item .el-input,
+.linkman-form .fill-item .el-textarea {
+  width: 616px;
+}
+.select-drop-box {
+  position: absolute;
+  top: 40px;
+  width: 100%;
+  height: 200px;
+  overflow-y: auto;
+  border: 1px solid #e5e5e5;
+  z-index: 99;
+  background: #fff;
+  border-radius: 4px;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+}
+.select-drop-box li {
+  padding: 0 10px;
+  font-size: 16px;
+  border-bottom: 1px solid #e8e8e8;
+  cursor: pointer;
+}
+.select-drop-box li:hover {
+  background-color: #f5f7fa;
+}
+.index-wrapper {
+  width: 100%;
+  border: 1px solid #e8e8e8;
+  min-height: 100%;
+}
+.index-wrapper .title {
+  border-bottom: 1px solid #e8e8e8;
+  padding: 10px 12px;
+  font-size: 16px;
+  font-weight: 500;
+  font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+}
+.index-wrapper .tool-bar {
+  border-bottom: 1px solid #e8e8e8;
+  padding: 10px 12px;
+}
+.index-wrapper .tool-bar .bar-right .el-input {
+  width: 400px;
+}
+.upload-card {
+  border: 1px solid #ccc;
+  padding: 20px 20px 15px 20px;
+}
+.upload-card .upload-btn {
+  position: relative;
+}
+.upload-card .upload-btn .tip {
+  position: absolute;
+  top: 8px;
+  left: 110px;
+}

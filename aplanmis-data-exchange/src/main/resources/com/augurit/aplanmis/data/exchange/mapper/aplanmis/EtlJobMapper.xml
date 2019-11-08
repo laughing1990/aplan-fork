@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by yinlf    2019-09-26 17:36:23 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.data.exchange.mapper.aplanmis.EtlJobMapper">
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns">
+        job_id  jobId,
+        job_name  jobName,
+        run_status  runStatus,
+        start_time  startTime,
+        end_time  endTime
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getEtlJobById" resultType="EtlJob">
+        select
+        <include refid="allColumns"/>
+        from ETL_JOB
+        where job_id = #{id}
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listEtlJob" resultType="EtlJob">
+        select
+        <include refid="allColumns"/>
+        from ETL_JOB
+        <where>
+            <if test="jobId != null">
+                AND job_id = #{jobId}
+            </if>
+            <if test="jobName != null">
+                AND job_name = #{jobName}
+            </if>
+            <if test="runStatus != null">
+                AND run_status = #{runStatus}
+            </if>
+            <if test="startTime != null">
+                AND start_time = #{startTime}
+            </if>
+            <if test="endTime != null">
+                AND end_time = #{endTime}
+            </if>
+        </where>
+    </select>
+    <!--4 根据条件查询实体list,返回分页对象 -->
+
+    <!--5 新增实体对象 -->
+    <insert id="insertEtlJob" parameterType="EtlJob">
+        insert into ETL_JOB (
+    job_id  ,job_name  ,run_status  ,start_time  ,end_time  
+        )  values  (
+    #{jobId},#{jobName},#{runStatus},#{startTime},  #{endTime}
+        )
+    </insert>
+    <!--6 修改实体对象 -->
+    <update id="updateEtlJob" parameterType="EtlJob">
+        update ETL_JOB
+        <set>
+            <if test="jobId != null">
+                job_id = #{jobId},
+            </if>
+            <if test="jobName != null">
+                job_name = #{jobName},
+            </if>
+            <if test="runStatus != null">
+                run_status = #{runStatus},
+            </if>
+            <if test="startTime != null">
+                start_time = #{startTime},
+            </if>
+            <if test="endTime != null">
+                end_time = #{endTime},
+            </if>
+        </set>
+        where job_id = #{jobId}
+    </update>
+    <!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteEtlJob">
+        delete from ETL_JOB
+        where job_id = #{id}
+    </delete>
+    <!--8 删除实体对象列表,根据主键ID列表 -->
+    <!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="EtlJob" id="EtlJobMap">
+        <id property="jobId" column="job_id"/>
+        <result property="jobName" column="job_name"/>
+        <result property="runStatus" column="run_status"/>
+        <result property="startTime" column="start_time"/>
+        <result property="endTime" column="end_time"/>
+    </resultMap>
+</mapper>

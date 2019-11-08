@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by Administrator    2019-08-29 10:26:52 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaParStagePartformMapper" >
+
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns" >
+        ${alias}.STAGE_PARTFORM_ID  stagePartformId,
+        ${alias}.PARTFORM_NAME  partformName,
+        ${alias}.STAGE_ID  stageId,
+        ${alias}.PARTFORM_ID  partformId,
+        ${alias}.SORT_NO  sortNo,
+        ${alias}.USE_EL  useEl,
+        ${alias}.EL_CONTENT  elContent,
+        ${alias}.CREATER  creater,
+        ${alias}.CREATE_TIME  createTime,
+        ${alias}.IS_SMART_FORM isSmartForm,
+        ${alias}.FORM_URL formUrl
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getStagePartformById" resultType="AeaParStagePartform" >
+        select
+            <include refid="allColumns">
+                <property name="alias" value="partform"/>
+            </include>
+        from  AEA_PAR_STAGE_PARTFORM partform
+        where partform.STAGE_PARTFORM_ID = #{id}
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listStagePartform" resultType="AeaParStagePartform" >
+        select
+            <include refid="allColumns">
+                <property name="alias" value="partform"/>
+            </include>
+        from  AEA_PAR_STAGE_PARTFORM partform
+        <where>
+            <if test="stagePartformId != null" >
+                AND partform.STAGE_PARTFORM_ID = #{stagePartformId}
+            </if>
+            <if test="partformName != null" >
+                AND partform.PARTFORM_NAME = #{partformName}
+            </if>
+            <if test="stageId != null" >
+                AND partform.STAGE_ID = #{stageId}
+            </if>
+            <if test="partformId != null" >
+                AND partform.PARTFORM_ID = #{partformId}
+            </if>
+            <if test="sortNo != null" >
+                AND partform.SORT_NO = #{sortNo}
+            </if>
+            <if test="useEl != null" >
+                AND partform.USE_EL = #{useEl}
+            </if>
+            <if test="elContent != null" >
+                AND partform.EL_CONTENT = #{elContent}
+            </if>
+            <if test="creater != null" >
+                AND partform.CREATER = #{creater}
+            </if>
+            <if test="createTime != null" >
+                AND partform.CREATE_TIME = #{createTime}
+            </if>
+            <if test="isSmartForm != null and isSmartForm!='' " >
+                AND partform.IS_SMART_FORM = #{isSmartForm}
+            </if>
+            <if test="formUrl != null and formUrl!='' " >
+                AND partform.FORM_URL = #{formUrl}
+            </if>
+            <if test="keyword!=null and keyword!=''">
+               AND  partform.PARTFORM_NAME like concat('%', concat(#{keyword}, '%'))
+            </if>
+        </where>
+    </select>
+
+    <select id="listStagePartformRelFormInfo" resultType="AeaParStagePartform" >
+        select
+            <include refid="allColumns">
+                <property name="alias" value="partform"/>
+            </include>,
+            asf.FORM_NAME formName
+        from AEA_PAR_STAGE_PARTFORM partform
+        left join ACT_STO_FORM asf on (
+                partform.PARTFORM_ID = asf.FORM_ID
+            and asf.IS_DELETED = '0'
+            and asf.FORM_PROPERTY in ( 'smart-biz', 'smart-flow' )
+            and partform.PARTFORM_ID is not null
+            and partform.PARTFORM_ID !=''
+            and partform.IS_SMART_FORM = '1'
+        )
+        <where>
+            <if test="stagePartformId != null" >
+                AND partform.STAGE_PARTFORM_ID = #{stagePartformId}
+            </if>
+            <if test="partformName != null" >
+                AND partform.PARTFORM_NAME = #{partformName}
+            </if>
+            <if test="stageId != null" >
+                AND partform.STAGE_ID = #{stageId}
+            </if>
+            <if test="partformId != null" >
+                AND partform.PARTFORM_ID = #{partformId}
+            </if>
+            <if test="useEl != null" >
+                AND partform.USE_EL = #{useEl}
+            </if>
+            <if test="elContent != null" >
+                AND partform.EL_CONTENT = #{elContent}
+            </if>
+            <if test="creater != null" >
+                AND partform.CREATER = #{creater}
+            </if>
+            <if test="createTime != null" >
+                AND partform.CREATE_TIME = #{createTime}
+            </if>
+            <if test="isSmartForm != null and isSmartForm!='' " >
+                AND partform.IS_SMART_FORM = #{isSmartForm}
+            </if>
+            <if test="formUrl != null and formUrl!='' " >
+                AND partform.FORM_URL = #{formUrl}
+            </if>
+            <if test="keyword!=null and keyword!=''">
+                AND (
+                    partform.PARTFORM_NAME like concat('%', concat(#{keyword}, '%')) or
+                    asf.FORM_NAME like concat('%', concat(#{keyword}, '%'))
+                )
+            </if>
+        </where>
+        order by partform.SORT_NO asc, partform.CREATE_TIME asc
+    </select>
+
+    <!--5 新增实体对象 -->
+    <insert id="insertStagePartform" parameterType="AeaParStagePartform" >
+        insert into AEA_PAR_STAGE_PARTFORM (
+            STAGE_PARTFORM_ID,
+            PARTFORM_NAME,
+            STAGE_ID,
+            PARTFORM_ID,
+            SORT_NO,
+            USE_EL,
+            EL_CONTENT,
+            CREATER,
+            CREATE_TIME,
+            IS_SMART_FORM,
+            FORM_URL
+        )  values  (
+            #{stagePartformId},
+            #{partformName},
+            #{stageId},
+            #{partformId},
+            #{sortNo},
+            #{useEl},
+            #{elContent},
+            #{creater},
+            #{createTime},
+            #{isSmartForm},
+            #{formUrl}
+        )
+    </insert>
+
+    <!--6 修改实体对象 -->
+    <update id="updateStagePartform" parameterType="AeaParStagePartform" >
+        update AEA_PAR_STAGE_PARTFORM
+        <set >
+            <if test="stagePartformId != null" >
+            STAGE_PARTFORM_ID = #{stagePartformId},
+            </if>
+            <if test="partformName != null" >
+            PARTFORM_NAME = #{partformName},
+            </if>
+            <if test="stageId != null" >
+            STAGE_ID = #{stageId},
+            </if>
+            <if test="partformId != null" >
+            PARTFORM_ID = #{partformId},
+            </if>
+            <if test="sortNo != null" >
+            SORT_NO = #{sortNo},
+            </if>
+            <if test="useEl != null" >
+            USE_EL = #{useEl},
+            </if>
+            <if test="elContent != null" >
+            EL_CONTENT = #{elContent},
+            </if>
+            <if test="creater != null" >
+            CREATER = #{creater},
+            </if>
+            <if test="createTime != null" >
+            CREATE_TIME = #{createTime},
+            </if>
+            <if test="isSmartForm != null and isSmartForm!='' " >
+            IS_SMART_FORM = #{isSmartForm},
+            </if>
+            <if test="formUrl != null and formUrl!='' " >
+            FORM_URL = #{formUrl},
+            </if>
+        </set>
+        where STAGE_PARTFORM_ID = #{stagePartformId}
+    </update>
+
+    <!--7 删除实体对象,根据主键ID -->
+    <delete id="delStagePartformById">
+        delete from AEA_PAR_STAGE_PARTFORM where STAGE_PARTFORM_ID = #{id}
+    </delete>
+
+    <delete id="batchDelStagePartformByIds">
+        delete from AEA_PAR_STAGE_PARTFORM where STAGE_PARTFORM_ID in
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="getMaxSortNo" resultType="java.lang.Long">
+        select max(SORT_NO) from AEA_PAR_STAGE_PARTFORM where STAGE_ID = #{stageId}
+    </select>
+
+    <select id="listPartFormNoSelectForm" resultType="AeaParStagePartform">
+        select
+            asfrom.FORM_ID as partformId,
+            asfrom.FORM_ORG_ID  formOrgId,
+            asfrom.FORM_PROPERTY  formProperty,
+            asfrom.FORM_CODE  formCode,
+            asfrom.FORM_NAME  formName,
+            asfrom.IS_INNER_FORM  isInnerForm,
+            tmn.TMN_NAME formTmnName,
+            org.ORG_NAME orgName
+        from ACT_STO_FORM asfrom
+        left join opu_om_org org on org.ORG_ID = asfrom.FORM_ORG_ID
+        left join AGX_RS_TMN tmn on tmn.TMN_ID = asfrom.FORM_TMN_ID
+        <where>
+            and asfrom.IS_DELETED = '0'
+            and asfrom.FORM_ORG_ID = #{formOrgId}
+            and asfrom.FORM_ID not in (
+                select
+                    PARTFORM_ID
+                from AEA_PAR_STAGE_PARTFORM
+                where STAGE_ID = #{stageId}
+                  and STAGE_PARTFORM_ID = #{stagePartformId}
+                  and PARTFORM_ID is not null
+                  and PARTFORM_ID !=''
+                  and IS_SMART_FORM = '1'
+            )
+            and  asfrom.FORM_PROPERTY in ( 'smart-biz', 'smart-flow' )
+            <if test="keyword != null and keyword !='' " >
+            and (
+                asfrom.FORM_CODE like CONCAT(CONCAT('%',#{keyword}),'%') or
+                asfrom.FORM_NAME like CONCAT(CONCAT('%',#{keyword}),'%')
+            )
+            </if>
+        </where>
+        order by asfrom.IS_INNER_FORM desc, asfrom.CREATE_TIME desc
+    </select>
+
+    <resultMap type="AeaParStagePartform" id="AeaParStagePartformMap">
+        <id property="stagePartformId" column="STAGE_PARTFORM_ID"/>
+        <result property="partformName" column="PARTFORM_NAME"/>
+        <result property="stageId" column="STAGE_ID"/>
+        <result property="partformId" column="PARTFORM_ID"/>
+        <result property="sortNo" column="SORT_NO"/>
+        <result property="useEl" column="USE_EL"/>
+        <result property="elContent" column="EL_CONTENT"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+    </resultMap>
+    
+</mapper>

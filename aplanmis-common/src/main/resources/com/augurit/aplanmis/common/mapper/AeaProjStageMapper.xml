@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by yinlf    2019-09-03 11:18:18 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaProjStageMapper">
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns">
+        PROJ_STAGE_ID  projStageId,
+        PROJ_INFO_ID  projInfoId,
+        STANDARD_SORT_NO  standardSortNo,
+        STAGE_STATE  stageState,
+        FIRST_APPLY_TIME  firstApplyTime,
+        PASS_TIME  passTime,
+        PASS_NATURE_DAYS  passNatureDays,
+        PASS_WORKING_DAYS  passWorkingDays,
+        CREATER  creater,
+        CREATE_TIME  createTime
+    </sql>
+
+    <sql id="aea_hi_par_stageinst_colums">
+        ${alias}.STAGEINST_ID  stageinstId,
+        ${alias}.THEME_VER_ID  themeVerId,
+        ${alias}.STAGE_ID  stageId,
+        ${alias}.START_TIME  startTime,
+        ${alias}.END_TIME  endTime,
+        ${alias}.STAGEINST_STATE  stageinstState,
+        ${alias}.STAGEINST_MEMO  stageinstMemo,
+        ${alias}.CREATER  creater,
+        ${alias}.CREATE_TIME  createTime,
+        ${alias}.MODIFIER  modifier,
+        ${alias}.MODIFY_TIME  modifyTime,
+        ${alias}.APPINST_ID  appinstId,
+        ${alias}.APPLYINST_ID  applyinstId,
+        ${alias}.BUSINESS_STATE  businessState,
+        ${alias}.ROOT_ORG_ID  rootOrgId
+    </sql>
+
+    <sql id="aea_item_basic_colums">
+        ${alias}.ITEM_BASIC_ID  itemBasicId,
+        ${alias}.ITEM_ID  itemId,
+        ${alias}.ITEM_VER_ID  itemVerId,
+        ${alias}.ITEM_CODE  itemCode,
+        ${alias}.ITEM_NAME  itemName,
+        ${alias}.ORG_ID  orgId,
+        ${alias}.ITEM_TYPE  itemType,
+        ${alias}.BJ_TYPE  bjType,
+        ${alias}.ACCEPT_MODE  acceptMode,
+        ${alias}.HANDLE_ARTICLE  handleArticle,
+        ${alias}.HANDLE_FLOW  handleFlow,
+        ${alias}.DUE_NUM  dueNum,
+        ${alias}.SEND_RESULT_MODE  sendResultMode,
+        ${alias}.DOC_TEMPLATE  docTemplate,
+        ${alias}.APPLY_TABLE_DEMO  applyTableDemo,
+        ${alias}.APPLY_TABLE_TEMPLATE  applyTableTemplate,
+        ${alias}.STANDARD_ITEM_CODE  standardItemCode,
+        ${alias}.ITEM_MEMO  itemMemo,
+        ${alias}.CREATER  creater,
+        ${alias}.CREATE_TIME  createTime,
+        ${alias}.MODIFIER  modifier,
+        ${alias}.MODIFY_TIME  modifyTime,
+        ${alias}.APP_ID  appId,
+        ${alias}.ITEM_DIR_ID  itemDirId,
+        ${alias}.INNER_APP_ID  innerAppId,
+        ${alias}.ITEM_PROPERTY  itemProperty,
+        ${alias}.DIRECTORYCODE  directorycode,
+        ${alias}.DIRECTORY_ID  directoryId,
+        ${alias}.BASECODE  basecode,
+        ${alias}.WTBM  wtbm,
+        ${alias}.SQJB  sqjb,
+        ${alias}.SFZHLR  sfzhlr,
+        ${alias}.SLYJ  slyj,
+        ${alias}.BBH  bbh,
+        ${alias}.SXMLZT  sxmlzt,
+        ${alias}.FBSJ  fbsj,
+        ${alias}.SSSJ  sssj,
+        ${alias}.ISOLD  isold,
+        ${alias}.SFWSBL  sfwsbl,
+        ${alias}.BWSBLLY  bwsblly,
+        ${alias}.UNONLINEREASONOTHER  unonlinereasonother,
+        ${alias}.SFCZWTXFTZSSQK  sfczwtxftzssqk,
+        ${alias}.FZCD  fzcd,
+        ${alias}.SSCODE  sscode,
+        ${alias}.SXGLFSLX  sxglfslx,
+        ${alias}.WTFQFX  wtfqfx,
+        ${alias}.WTFQQTSM  wtfqqtsm,
+        ${alias}.SLFS  slfs,
+        ${alias}.IS_NEED_STATE  isNeedState,
+        ${alias}.IS_MILESTONE_ITEM  isMilestoneItem,
+        ${alias}.OUTER_SYSTEM_HANDLE  outerSystemHandle,
+        ${alias}.OUTER_SYSTEM_DESC  outerSystemDesc,
+        ${alias}.OUTER_SYSTEM_URL  outerSystemUrl,
+        ${alias}.IS_ASYN  isAsyn,
+        ${alias}.ASYN_TIME  asynTime,
+        ${alias}.IS_LOCAL  isLocal,
+        ${alias}.IS_FEE  isFee,
+        ${alias}.XKDX  xkdx,
+        ${alias}.ITEM_ALIAS  itemAlias,
+        ${alias}.IS_NEED_FRONT_COND  isNeedFrontCond,
+        ${alias}.AREA_CODE  areaCode,
+        ${alias}.AREA_CODE_NAME  areaCodeName,
+        ${alias}.KP_ITEM_ID  kpItemId,
+        ${alias}.ITEM_NATURE  itemNature,
+        ${alias}.SFSXGZCNZ  sfsxgzcnz,
+        ${alias}.ROOT_ORG_ID rootOrgId,
+        ${alias}.IS_CATALOG isCatalog,
+        ${alias}.GUIDE_ORG_NAME guideOrgName,
+        ${alias}.REGION_ID regionId
+    </sql>
+
+    <sql id="aea_hi_iteminst_cloums">
+        ${alias}.ITEMINST_ID  iteminstId,
+        ${alias}.ITEM_ID  itemId,
+        ${alias}.ITEMINST_CODE  iteminstCode,
+        ${alias}.ITEMINST_NAME  iteminstName,
+        ${alias}.APPROVE_ORG_ID  approveOrgId,
+        ${alias}.IS_LACK_ITEMINST  isLackIteminst,
+        ${alias}.IS_SERIES_APPROVE  isSeriesApprove,
+        ${alias}.THEME_VER_ID  themeVerId,
+        ${alias}.STAGEINST_ID  stageinstId,
+        ${alias}.SERIESINST_ID  seriesinstId,
+        ${alias}.START_TIME  startTime,
+        ${alias}.REGISTER_TIME  registerTime,
+        ${alias}.SIGN_TIME  signTime,
+        ${alias}.END_TIME  endTime,
+        ${alias}.PUBLIC_MODE  publicMode,
+        ${alias}.ITEMINST_STATE  iteminstState,
+        ${alias}.INNER_APPINST_ID  innerAppinstId,
+        ${alias}.CREATER  creater,
+        ${alias}.CREATE_TIME  createTime,
+        ${alias}.MODIFIER  modifier,
+        ${alias}.MODIFY_TIME  modifyTime,
+        ${alias}.ITEMINST_LEVEL  iteminstLevel,
+        ${alias}.BUSINESS_STATE  businessState,
+        ${alias}.ITEM_VER_ID  itemVerId,
+        ${alias}.IS_JOIN_APPROVAL  isJoinApproval,
+        ${alias}.ITEM_APPLY_CODE itemApplyCode,
+        ${alias}.IS_TOLERANCE_ACCEPT isToleranceAccept,
+        ${alias}.IS_SMS_SEND isSmsSend,
+        ${alias}.SMS_SEND_TIME smsSendTime,
+        ${alias}.ROOT_ORG_ID rootOrgId,
+        ${alias}.PROCINST_ID procinstId
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaProjStageById" resultType="AeaProjStage">
+        select
+        <include refid="allColumns"/>
+        from AEA_PROJ_STAGE
+        where PROJ_STAGE_ID = #{id}
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaProjStage" resultType="AeaProjStage">
+        select
+        <include refid="allColumns"/>
+        from AEA_PROJ_STAGE
+        <where>
+            <if test="projStageId != null">
+                AND PROJ_STAGE_ID = #{projStageId}
+            </if>
+            <if test="projInfoId != null">
+                AND PROJ_INFO_ID = #{projInfoId}
+            </if>
+            <if test="standardSortNo != null">
+                AND STANDARD_SORT_NO = #{standardSortNo}
+            </if>
+            <if test="stageState != null">
+                AND STAGE_STATE = #{stageState}
+            </if>
+            <if test="firstApplyTime != null">
+                AND FIRST_APPLY_TIME = #{firstApplyTime}
+            </if>
+            <if test="passTime != null">
+                AND PASS_TIME = #{passTime}
+            </if>
+            <if test="passNatureDays != null">
+                AND PASS_NATURE_DAYS = #{passNatureDays}
+            </if>
+            <if test="passWorkingDays != null">
+                AND PASS_WORKING_DAYS = #{passWorkingDays}
+            </if>
+            <if test="creater != null">
+                AND CREATER = #{creater}
+            </if>
+            <if test="createTime != null">
+                AND CREATE_TIME = #{createTime}
+            </if>
+        </where>
+    </select>
+    <!--4 根据条件查询实体list,返回分页对象 -->
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaProjStage" parameterType="AeaProjStage">
+        insert into AEA_PROJ_STAGE (
+    PROJ_STAGE_ID  ,PROJ_INFO_ID  ,STANDARD_SORT_NO  ,STAGE_STATE  ,FIRST_APPLY_TIME  ,PASS_TIME  ,PASS_NATURE_DAYS  ,PASS_WORKING_DAYS  ,CREATER  ,CREATE_TIME
+        )  values  (
+    #{projStageId},#{projInfoId},#{standardSortNo},#{stageState},#{firstApplyTime},#{passTime},#{passNatureDays},#{passWorkingDays},#{creater},  #{createTime}
+        )
+    </insert>
+    <!--6 修改实体对象 -->
+    <update id="updateAeaProjStage" parameterType="AeaProjStage">
+        update AEA_PROJ_STAGE
+        <set>
+            <if test="projStageId != null">
+                PROJ_STAGE_ID = #{projStageId},
+            </if>
+            <if test="projInfoId != null">
+                PROJ_INFO_ID = #{projInfoId},
+            </if>
+            <if test="standardSortNo != null">
+                STANDARD_SORT_NO = #{standardSortNo},
+            </if>
+            <if test="stageState != null">
+                STAGE_STATE = #{stageState},
+            </if>
+            <if test="firstApplyTime != null">
+                FIRST_APPLY_TIME = #{firstApplyTime},
+            </if>
+            <if test="passTime != null">
+                PASS_TIME = #{passTime},
+            </if>
+            <if test="passNatureDays != null">
+                PASS_NATURE_DAYS = #{passNatureDays},
+            </if>
+            <if test="passWorkingDays != null">
+                PASS_WORKING_DAYS = #{passWorkingDays},
+            </if>
+            <if test="creater != null">
+                CREATER = #{creater},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime},
+            </if>
+        </set>
+        where PROJ_STAGE_ID = #{projStageId}
+    </update>
+    <!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaProjStage">
+        delete from AEA_PROJ_STAGE
+        where PROJ_STAGE_ID = #{id}
+    </delete>
+    <!--8 删除实体对象列表,根据主键ID列表 -->
+    <!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaProjStage" id="AeaProjStageMap">
+        <id property="projStageId" column="PROJ_STAGE_ID"/>
+        <result property="projInfoId" column="PROJ_INFO_ID"/>
+        <result property="standardSortNo" column="STANDARD_SORT_NO"/>
+        <result property="stageState" column="STAGE_STATE"/>
+        <result property="firstApplyTime" column="FIRST_APPLY_TIME"/>
+        <result property="passTime" column="PASS_TIME"/>
+        <result property="passNatureDays" column="PASS_NATURE_DAYS"/>
+        <result property="passWorkingDays" column="PASS_WORKING_DAYS"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+    </resultMap>
+
+    <select id="getAeaParStageByProjInfoIdAndStandardSortNo" resultType="AeaProjStage">
+        select
+        <include refid="allColumns"/>
+        from AEA_PROJ_STAGE
+        where PROJ_INFO_ID = #{projInfoId}
+        AND STANDARD_SORT_NO = #{standardSortNo}
+    </select>
+
+    <select id="findAeaParStageByProjInfoId" resultType="AeaProjStage">
+        select
+        <include refid="allColumns"/>
+        from AEA_PROJ_STAGE
+        where PROJ_INFO_ID = #{projInfoId}
+    </select>
+
+    <select id="getProjInfoIdAndStageIdByIteminstId" resultType="ProjStageForm">
+        SELECT aap_123.PROJ_INFO_ID projInfoId,aps_123.DYBZSPJDXH standardSortNo
+        FROM aea_hi_iteminst ahi_123
+            INNER JOIN aea_hi_par_stageinst ahps_123  ON ahi_123.STAGEINST_ID = ahps_123.STAGEINST_ID
+            INNER JOIN aea_par_stage aps_123 ON aps_123.STAGE_ID = ahps_123.STAGE_ID
+            INNER JOIN aea_applyinst_proj aap_123 ON aap_123.APPLYINST_ID = ahps_123.APPLYINST_ID
+        WHERE ITEMINST_ID = #{iteminstId}
+    </select>
+
+    <select id="getProjInfoIdAndStageIdByApplyinstId" resultType="ProjStageForm">
+        SELECT aap_123.PROJ_INFO_ID projInfoId,aps_123.DYBZSPJDXH standardSortNo
+        FROM aea_hi_par_stageinst ahps_123
+            INNER JOIN aea_par_stage aps_123 ON aps_123.STAGE_ID = ahps_123.STAGE_ID
+            INNER JOIN aea_applyinst_proj aap_123 ON aap_123.APPLYINST_ID = ahps_123.APPLYINST_ID
+		WHERE aap_123.APPLYINST_ID = #{applyinstId}
+    </select>
+
+    <select id="getStageinstByProjInfoIdAndStanrdSortNo" resultType="AeaHiParStageinst">
+        SELECT
+        <include refid="aea_hi_par_stageinst_colums">
+            <property name="alias" value="ahps_123"/>
+        </include>
+        FROM aea_hi_par_stageinst ahps_123
+            INNER JOIN aea_par_stage aps_123 ON aps_123.STAGE_ID = ahps_123.STAGE_ID
+            INNER JOIN aea_applyinst_proj aap_123 ON aap_123.APPLYINST_ID = ahps_123.APPLYINST_ID
+        WHERE aap_123.proj_info_id = #{projInfoId} AND aps_123.DYBZSPJDXH = #{standardSortNo}
+        ORDER BY ahps_123.CREATE_TIME DESC
+    </select>
+
+    <select id="getAllMilestoneItemByStageId" resultType="AeaItemBasic">
+        SELECT
+        <include refid="aea_item_basic_colums">
+            <property name="alias" value="aib_123"/>
+        </include>
+        FROM  AEA_ITEM_BASIC aib_123
+            INNER JOIN AEA_PAR_STAGE_ITEM apsi_123 ON aib_123.ITEM_VER_ID = apsi_123.ITEM_VER_ID
+        WHERE apsi_123.STAGE_ID = #{stageId}
+            AND apsi_123.IS_OPTION_ITEM = '0'
+            AND IS_MILESTONE_ITEM = '1'
+    </select>
+    
+    <select id="findEndIteminstByProjInfoAndItemId" resultType="AeaHiIteminst">
+        SELECT
+        <include refid="aea_hi_iteminst_cloums">
+            <property name="alias" value="ahi_123"/>
+        </include>
+        FROM aea_hi_iteminst ahi_123
+            INNER JOIN aea_hi_par_stageinst ahps_123 ON ahi_123.STAGEINST_ID = ahps_123.STAGEINST_ID
+            INNER JOIN aea_applyinst_proj aap_123 ON aap_123.APPLYINST_ID = ahps_123.APPLYINST_ID
+        WHERE aap_123.PROJ_INFO_ID = #{projInfoId}
+            AND ITEM_ID IN
+            <foreach collection="itemIds" item="itemId" open="(" close=")" separator=",">
+                #{itemId}
+            </foreach>
+            AND ITEMINST_STATE IN ('11','12')
+    </select>
+
+</mapper>

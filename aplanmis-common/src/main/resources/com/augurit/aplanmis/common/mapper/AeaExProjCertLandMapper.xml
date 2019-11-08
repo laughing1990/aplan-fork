@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by Administrator    2019-10-29 19:48:12 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaExProjCertLandMapper" >
+<!--1 返回所有字段的SQL字句 -->
+<sql id="allColumns" >
+    CERT_LAND_ID  certLandId,
+    PROJ_INFO_ID  projInfoId,
+    CERT_LAND_CODE  certLandCode,
+    LAND_NATURE  landNature,
+    LAND_AREA_VALUE  landAreaValue,
+    LAND_AREA_UNIT  landAreaUnit,
+    GOV_ORG_CODE  govOrgCode,
+    GOV_ORG_NAME  govOrgName,
+    PUBLISH_TIME  publishTime,
+    CERT_LAND_MEMO  certLandMemo,
+    CREATER  creater,
+    CREATE_TIME  createTime,
+    MODIFIER  modifier,
+    MODIFY_TIME  modifyTime,
+    ROOT_ORG_ID  rootOrgId
+    </sql>
+
+<!--2 根据主键ID查询单个实体 -->
+<select id="getAeaExProjCertLandById" resultType="com.augurit.aplanmis.common.domain.AeaExProjCertLand" >
+    select
+    <include refid="allColumns"/>
+    from    AEA_EX_PROJ_CERT_LAND
+    where    CERT_LAND_ID = #{id}
+</select>
+
+<!--3 根据条件查询实体list -->
+    <select id="listAeaExProjCertLand" resultType="com.augurit.aplanmis.common.domain.AeaExProjCertLand" >
+        select
+        <include refid="allColumns"/>
+        from    AEA_EX_PROJ_CERT_LAND
+    <where>
+        <if test="certLandId != null" >
+        AND    CERT_LAND_ID = #{certLandId}
+        </if>
+        <if test="projInfoId != null" >
+        AND    PROJ_INFO_ID = #{projInfoId}
+        </if>
+        <if test="certLandCode != null" >
+        AND    CERT_LAND_CODE = #{certLandCode}
+        </if>
+        <if test="landNature != null" >
+        AND    LAND_NATURE = #{landNature}
+        </if>
+        <if test="landAreaValue != null" >
+        AND    LAND_AREA_VALUE = #{landAreaValue}
+        </if>
+        <if test="landAreaUnit != null" >
+        AND    LAND_AREA_UNIT = #{landAreaUnit}
+        </if>
+        <if test="govOrgCode != null" >
+        AND    GOV_ORG_CODE = #{govOrgCode}
+        </if>
+        <if test="govOrgName != null" >
+        AND    GOV_ORG_NAME = #{govOrgName}
+        </if>
+        <if test="publishTime != null" >
+        AND    PUBLISH_TIME = #{publishTime}
+        </if>
+        <if test="certLandMemo != null" >
+        AND    CERT_LAND_MEMO = #{certLandMemo}
+        </if>
+        <if test="creater != null" >
+        AND    CREATER = #{creater}
+        </if>
+        <if test="createTime != null" >
+        AND    CREATE_TIME = #{createTime}
+        </if>
+        <if test="modifier != null" >
+        AND    MODIFIER = #{modifier}
+        </if>
+        <if test="modifyTime != null" >
+        AND    MODIFY_TIME = #{modifyTime}
+        </if>
+        <if test="rootOrgId != null" >
+        AND    ROOT_ORG_ID = #{rootOrgId}
+        </if>
+    </where>
+    </select>
+<!--4 根据条件查询实体list,返回分页对象 -->
+
+<!--5 新增实体对象 -->
+<insert id="insertAeaExProjCertLand" parameterType="com.augurit.aplanmis.common.domain.AeaExProjCertLand" >
+    insert into AEA_EX_PROJ_CERT_LAND (
+CERT_LAND_ID  ,PROJ_INFO_ID  ,CERT_LAND_CODE  ,LAND_NATURE  ,LAND_AREA_VALUE  ,LAND_AREA_UNIT  ,GOV_ORG_CODE  ,GOV_ORG_NAME  ,PUBLISH_TIME  ,CERT_LAND_MEMO  ,CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME  ,ROOT_ORG_ID  
+    )  values  (
+#{certLandId},#{projInfoId},#{certLandCode},#{landNature},#{landAreaValue},#{landAreaUnit},#{govOrgCode},#{govOrgName},#{publishTime},#{certLandMemo},#{creater},#{createTime},#{modifier},#{modifyTime},  #{rootOrgId}
+    )
+</insert>
+<!--6 修改实体对象 -->
+<update id="updateAeaExProjCertLand" parameterType="com.augurit.aplanmis.common.domain.AeaExProjCertLand" >
+    update AEA_EX_PROJ_CERT_LAND
+    <set >
+        <if test="certLandId != null" >
+        CERT_LAND_ID = #{certLandId},
+        </if>
+        <if test="projInfoId != null" >
+        PROJ_INFO_ID = #{projInfoId},
+        </if>
+        <if test="certLandCode != null" >
+        CERT_LAND_CODE = #{certLandCode},
+        </if>
+        <if test="landNature != null" >
+        LAND_NATURE = #{landNature},
+        </if>
+        <if test="landAreaValue != null" >
+        LAND_AREA_VALUE = #{landAreaValue},
+        </if>
+        <if test="landAreaUnit != null" >
+        LAND_AREA_UNIT = #{landAreaUnit},
+        </if>
+        <if test="govOrgCode != null" >
+        GOV_ORG_CODE = #{govOrgCode},
+        </if>
+        <if test="govOrgName != null" >
+        GOV_ORG_NAME = #{govOrgName},
+        </if>
+        <if test="publishTime != null" >
+        PUBLISH_TIME = #{publishTime},
+        </if>
+        <if test="certLandMemo != null" >
+        CERT_LAND_MEMO = #{certLandMemo},
+        </if>
+        <if test="creater != null" >
+        CREATER = #{creater},
+        </if>
+        <if test="createTime != null" >
+        CREATE_TIME = #{createTime},
+        </if>
+        <if test="modifier != null" >
+        MODIFIER = #{modifier},
+        </if>
+        <if test="modifyTime != null" >
+        MODIFY_TIME = #{modifyTime},
+        </if>
+        <if test="rootOrgId != null" >
+        ROOT_ORG_ID = #{rootOrgId},
+        </if>
+    </set>
+    where CERT_LAND_ID = #{certLandId}
+</update>
+<!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaExProjCertLand">
+        delete from   AEA_EX_PROJ_CERT_LAND
+        where
+    CERT_LAND_ID = #{id}
+    </delete>
+<!--8 删除实体对象列表,根据主键ID列表 -->
+<!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="com.augurit.aplanmis.common.domain.AeaExProjCertLand" id="AeaExProjCertLandMap">
+        <id property="certLandId" column="CERT_LAND_ID"/>
+        <result property="projInfoId" column="PROJ_INFO_ID"/>
+        <result property="certLandCode" column="CERT_LAND_CODE"/>
+        <result property="landNature" column="LAND_NATURE"/>
+        <result property="landAreaValue" column="LAND_AREA_VALUE"/>
+        <result property="landAreaUnit" column="LAND_AREA_UNIT"/>
+        <result property="govOrgCode" column="GOV_ORG_CODE"/>
+        <result property="govOrgName" column="GOV_ORG_NAME"/>
+        <result property="publishTime" column="PUBLISH_TIME"/>
+        <result property="certLandMemo" column="CERT_LAND_MEMO"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="modifier" column="MODIFIER"/>
+        <result property="modifyTime" column="MODIFY_TIME"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+    </resultMap>
+</mapper>

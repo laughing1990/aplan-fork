@@ -1,0 +1,63 @@
+// 全局人员库
+body {
+  padding: 20px;
+}
+
+// 联系人表单
+.linkman-form {
+  .el-input {
+    width: 240px;
+  }
+
+  .fill-item {
+
+    .el-input,
+    .el-textarea {
+      width: 616px;
+    }
+  }
+}
+
+// 定义border
+@line-border: 1px solid #e8e8e8;
+
+.index-wrapper {
+  width: 100%;
+  min-height: 100%;
+  border: @line-border;
+
+  .title {
+    border-bottom: @line-border;
+    padding: 10px 12px;
+    font-size: 16px;
+    font-weight: 500;
+    font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+  }
+
+  .tool-bar {
+    border-bottom: @line-border;
+    padding: 10px 12px;
+
+    .bar-right {
+      .el-input {
+        width: 400px;
+      }
+    }
+  }
+}
+
+// 附件上传
+.upload-card {
+  border: 1px solid #ccc;
+  padding: 20px 20px 15px 20px;
+
+  .upload-btn {
+    position: relative;
+
+    .tip {
+      position: absolute;
+      top: 8px;
+      left: 110px;
+    }
+  }
+}

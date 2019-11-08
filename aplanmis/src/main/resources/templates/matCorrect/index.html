@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <link rel="stylesheet" href="../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.css" th:href="@{/agcloud/framework/js-lib/element-2/element.css}">
+  <link rel="stylesheet" href="../../static/matCorrect/css/reset.css" th:href="@{/matCorrect/css/reset.css}">
+  <link rel="stylesheet" href="../../static/matCorrect/css/base.css" th:href="@{/matCorrect/css/base.css}">
+  <link rel="stylesheet" href="../../static/matCorrect/css/index.css" th:href="@{/matCorrect/css/index.css}">
+  <script>
+    var ctx = "[[@{/}]]";
+    // var ctx = "http://192.168.30.180:8083/aplanmis-front/"
+    // var ctx = "http://192.168.14.9:8083/aplanmis-front/"
+    // var ctx = "http://39.107.139.174:8083/aplanmis-front/";
+  </script>
+</head>
+
+<body>
+  <div id="matCorrect" v-cloak v-loading.fullscreen.lock="mloading">
+    <div class="content">
+      <!-- 右侧导航 -->
+      <div class="right-handel-pandel">
+        <div class="vertical-tab">
+          <ul>
+            <li class="vertical-label" v-for="(item, index) in verticalTabData" :class="activeTab==index?'active':item.target" data-name="item.target" @click="targetCollapse(item.target,index)">
+              <a :href="'#'+item.target">{{item.label}}</a>
+            </li>
+          </ul>
+        </div>
+        <!-- 右侧操作按钮栏 -->
+        <div class="right-bottom-btn">
+          <el-button type="primary" circle @click="saveMaterialListApi('6')" :disabled="allPageInfoData.correctState !=6">
+            暂存
+          </el-button>
+          <el-button type="primary" circle @click="saveMaterialList('7')" :disabled="allPageInfoData.correctState !=6">
+            补正<br />结束</el-button>
+            <el-button type="success" circle @click="printReceipt"
+                       :disabled="allPageInfoData.correctState !=6 && allPageInfoData.correctState !=7 && allPageInfoData.correctState !=8">
+                打印<br/>回执
+            </el-button>
+          <el-button type="danger" circle @click="saveMaterialListApi('5')"
+                     :disabled="allPageInfoData.correctState !=6">
+            不予<br />受理
+          </el-button>
+        </div>
+      </div>
+      <el-collapse v-model="activeNames">
+        <!--  基本信息  start  -->
+        <el-collapse-item class="clearfix" name="1" id="baseInfo">
+          <template slot="title">
+            <i class="header-icon el-icon-document-copy"></i>基本信息
+          </template>
+          <el-form :inline="true" :model="supplemetForm" :rules="supplementFormRules" label-width="140px" class="demo-form-inline supplement-form" ref="supplemetForm">
+            <el-form-item class="half-item" label="办件流水号：">
+              <span class="color-999">{{supplemetForm.applyinstCode || '暂无'}}</span>
+            </el-form-item>
+            <el-form-item class="half-item" label="项目编号：">
+              <span class="color-999">{{supplemetForm.localCode || '暂无'}}</span>
+            </el-form-item>
+            <el-form-item class="half-item" label="项目名称：">
+              <span class="color-999">{{supplemetForm.projInfoName || '暂无'}}</span>
+            </el-form-item>
+              <el-form-item class="half-item" label="业主单位：">
+              <span class="color-999">{{supplemetForm.owner}}</span>
+            </el-form-item>
+            <el-form-item class="half-item" label="补正截止日期：">
+              <span class="color-999">{{supplemetForm.correctDueTime | formatDate('yyyy-MM-dd')}}</span>
+            </el-form-item>
+            <el-form-item class="half-item" label="补正天数(工作日)：">
+              <span class="color-999">{{supplemetForm.correctDueDays || '暂无'}}</span>
+            </el-form-item>
+            <el-form-item class="half-item" label="事项名称：">
+              <span class="color-999">{{supplemetForm.iteminstName || '暂无'}}</span>
+            </el-form-item>
+              <el-form-item class="half-item" label="审批单位：">
+              <span class="color-999">{{supplemetForm.chargeOrgName || '暂无'}}</span>
+            </el-form-item>
+          </el-form>
+        </el-collapse-item>
+        <!--  基本信息  end  -->
+        <!--  材料补正  start  -->
+        <el-collapse-item class="clearfix" name="2" id="materialSupplement">
+          <template slot="title">
+            <i class="header-icon el-icon-document-copy"></i>材料补正
+          </template>
+          <el-form :rules="materialListForm.rules" :model="materialListForm" ref="materialListForm" class="material-form">
+            <!-- test -->
+            <el-table :data="materialListForm.materialList" row-key="matId" style="width: 100%" border class="my-el-table" :header-cell-style="{background:'#f7f8fa'}">
+              <el-table-column align="center" label="序号" width="60">
+                <template slot-scope="scope">
+                  <span>{{scope.$index+1}}</span>
+                </template>
+              </el-table-column>
+              <el-table-column prop="matinstName" label="材料名称" width="440" align="left">
+              </el-table-column>
+              <el-table-column label="补正要点" width="80" align="center">
+                <template slot-scope="scope">
+                  <el-tooltip class="my-el-tooltip" effect="dark" placement="top">
+                    <div class="white-wrap lineh15" slot="content">{{scope.row.reviewKeyPoints || '无'}}</div>
+                    <i class="el-icon-info"></i>
+                  </el-tooltip>
+                </template>
+              </el-table-column>
+              <el-table-column label="类型" width="80" align="center">
+                <template slot-scope="scope">
+                  <div class="cell-div" v-if="scope.row.paperDueIninstId">原件</div>
+                  <div class="cell-div" v-if="scope.row.copyDueIninstId">复印件</div>
+                  <div class="cell-div" v-if="scope.row.attDueIninstId">电子件</div>
+                </template>
+              </el-table-column>
+              <el-table-column label="应收" width="80" align="center">
+                <template slot-scope="scope">
+                  <div class="cell-div" v-if="scope.row.paperDueIninstId">{{scope.row.paperCount || '0'}}</div>
+                  <div class="cell-div" v-if="scope.row.copyDueIninstId">{{scope.row.copyCount || '0'}}</div>
+                  <div class="cell-div" v-if="scope.row.attDueIninstId">{{scope.row.isNeedAtt? '必须': '非必须'}}</div>
+                </template>
+              </el-table-column>
+              <el-table-column label="已收/验" width="80" align="center">
+                <template slot-scope="scope">
+                  <div class="cell-div" v-if="scope.row.paperDueIninstId">
+                    <el-form-item :prop="'materialList.' + scope.$index + '.realPaperCount'" :rules='(scope.row.paperDueIninstId && allPageInfoData.correctState == 6)?materialListForm.rules.realPaperCount: []' v-if="scope.row.paperDueIninstId">
+                      <el-input size="mini" v-model="scope.row.realPaperCount" v-if="allPageInfoData.correctState == 6">
+                      </el-input>
+                      <span v-else>{{scope.row.realPaperCount || '0'}}</span>
+                    </el-form-item>
+                    <span v-else>无</span>
+                  </div>
+                  <div class="cell-div" v-if="scope.row.copyDueIninstId">
+                    <el-form-item :prop="'materialList.' + scope.$index + '.realCopyCount'" :rules='(scope.row.copyDueIninstId && allPageInfoData.correctState == 6)?materialListForm.rules.realCopyCount: []' v-if="scope.row.copyDueIninstId">
+                      <el-input size="mini" v-model="scope.row.realCopyCount" v-if="allPageInfoData.correctState == 6">
+                      </el-input>
+                      <span v-else>{{scope.row.realCopyCount || '0'}}</span>
+                    </el-form-item>
+                    <span v-else>无</span>
+                  </div>
+                  <div class="cell-div" v-if="scope.row.attDueIninstId">
+                    <el-form-item :prop="'materialList.' + scope.$index + '.attCount'" :rules="(scope.row.isNeedAtt && scope.row.attRealIninstId && allPageInfoData.correctState == 6)?materialListForm.rules.attCount : []" v-if="scope.row.attMatinstId" style="position: absolute;
+                      left: 16%;
+                      top: 25%;
+                      margin-left: -4px;
+                      width: 50px;">
+                      <span>{{scope.row.attCount || '0'}}</span>
+                    </el-form-item>
+                    <span v-else>无</span>
+                  </div>
+                </template>
+              </el-table-column>
+              <el-table-column label="补正意见" align="center">
+                <template slot-scope="scope">
+                  <div class="cell-div" v-if="scope.row.paperDueIninstId">
+                    <el-scrollbar class="cell-scroll">
+                      <p>{{scope.row.paperDueIninstOpinion || '暂无'}}</p>
+                    </el-scrollbar>
+                  </div>
+                  <div class="cell-div" v-if="scope.row.copyDueIninstId">
+                    <el-scrollbar class="cell-scroll">
+                      <p>{{scope.row.copyDueIninstOpinion || '暂无'}}</p>
+                    </el-scrollbar>
+                  </div>
+                  <div class="cell-div" v-if="scope.row.attDueIninstId">
+                    <el-scrollbar class="cell-scroll">
+                      <p>{{scope.row.attDueIninstOpinion || '暂无'}}</p>
+                    </el-scrollbar>
+                  </div>
+                </template>
+              </el-table-column>
+              <el-table-column align="center" label="操作" width="80">
+                <template slot-scope="scope">
+                    <div class="cell-div" v-if="scope.row.paperDueIninstId"><p>/</p></div>
+                    <div class="cell-div" v-if="scope.row.copyDueIninstId"><p>/</p></div>
+                  <div class="cell-div" style="line-height: 28px; height: 60px;" v-if="scope.row.attDueIninstId">
+                    <el-button class="mt10" size="mini" type="primary" style="padding: 4px 15px;" :disabled="!scope.row.attMatinstId || allPageInfoData.correctState !=6" @click="showFileListDialog(scope.row)">查看</el-button>
+                    <el-button class="ml0" size="mini" type="success" style="padding: 4px 15px;" @click="openUploadDialog(scope.row)" :disabled="!scope.row.attMatinstId || allPageInfoData.correctState !=6">上传</el-button>
+                  </div>
+                  <!-- <div class="cell-div" v-if="!scope.row.attDueIninstId">
+                    <el-button class="mt10" size="mini" type="primary" v-if="scope.row.attMatinstId && allPageInfoData.correctState ==6" @click="showFileListDialog(scope.row)">查看</el-button>
+                    <el-button class="mt10 ml0" size="mini" type="success" @click="openUploadDialog(scope.row)" v-if="scope.row.attMatinstId && allPageInfoData.correctState ==6">上传</el-button>
+                  </div> -->
+                </template>
+              </el-table-column>
+            </el-table>
+            <!-- test -->
+            <!-- <el-form-item class="fill-item mt20" label="备注：">
+              <el-input type="textarea" placeholder="请输入备注" v-model="materialListForm.materialSupplementRemark" :disabled="allPageInfoData.correctState !=6">
+              </el-input>
+            </el-form-item> -->
+            <el-form-item class="fill-item mt20" label="备注：">
+              <el-input type="textarea" placeholder="请输入备注" v-model="materialListForm.materialSupplementRemark"
+                        disabled>
+              </el-input>
+            </el-form-item>
+          </el-form>
+        </el-collapse-item>
+        <!--  材料补正  end  -->
+        <!--  窗口信息  start  -->
+        <el-collapse-item class="clearfix" name="3" id="windowInfo">
+          <template slot="title">
+            <i class="header-icon el-icon-document-copy"></i>窗口信息
+          </template>
+          <el-form :inline="true" :model="supplemetForm" :rules="supplementFormRules" label-width="140px" class="demo-form-inline supplement-form" ref="winForm">
+            <el-form-item class="fill-item" label="窗口负责人：">
+              <span class="color-999">{{supplemetForm.windowUserName || '暂无'}}</span>
+            </el-form-item>
+            <el-form-item class="half-item" label="经办人：">
+              <span class="color-999">{{supplemetForm.opsUserName || '暂无'}}</span>
+            </el-form-item>
+            <el-form-item class="half-item" label="经办日期：">
+              <span class="color-999">{{supplemetForm.opsTime | formatDate('yyyy-MM-dd')}}</span>
+            </el-form-item>
+            <el-form-item class="half-item" label="补正结束人：">
+              <span class="color-999">{{supplemetForm.correctUserName || '暂无'}}</span>
+            </el-form-item>
+            <el-form-item class="half-item" label="补正结束日期：">
+              <span class="color-999">{{supplemetForm.correctEndTime | formatDate('yyyy-MM-dd')}}</span>
+            </el-form-item>
+            <el-form-item class="half-item" label="打印人：">
+              <span class="color-999">{{supplemetForm.printUserName || '暂无'}}</span>
+            </el-form-item>
+            <el-form-item class="half-item" label="打印日期：">
+              <span class="color-999">{{supplemetForm.printTime | formatDate('yyyy-MM-dd')}}</span>
+            </el-form-item>
+            <!-- <el-form-item class="fill-item mt20" label="补正意见：">
+              <el-input type="textarea" placeholder="请输入补正意见" v-model="materialListForm.materialSupplementDesc" :disabled="allPageInfoData.correctState !=6">
+              </el-input>
+            </el-form-item> -->
+            <el-form-item class="fill-item mt20" label="补正意见：">
+              <el-input type="textarea" placeholder="请输入补正意见" v-model="materialListForm.materialSupplementDesc"
+                        :disabled="allPageInfoData.correctState ==7">
+              </el-input>
+            </el-form-item>
+          </el-form>
+        </el-collapse-item>
+        <!--  窗口信息  end  -->
+      </el-collapse>
+      <!-- 保存 -->
+      <!-- <div class="mt20 al-right">
+        <el-button type="primary" >保存</el-button>
+      </div> -->
+    </div>
+    <!-- 材料补正列表电子件附件的dialog -->
+    <el-dialog title="文件列表" :visible.sync="fileListDialog" width="600px">
+      <el-button class="ml20" size="mini" type="danger" @click="delFileForMaterial('batch')">删除</el-button>
+      <el-table :data="enclosureListForMaterial" class="scrollable mt20" style="width: 100%; max-height: 580px; overflow-y:auto;" :header-cell-style="{background:'#f7f8fa'}" @selection-change="handleSelectionChangeForMaterial">
+        <el-table-column type="selection" width="55">
+        </el-table-column>
+        <el-table-column type="index" width="50" label="序号">
+        </el-table-column>
+        <el-table-column prop="fileName" label="文件名称">
+        </el-table-column>
+        <el-table-column label="上传时间">
+          <template slot-scope="scope">{{scope.row.updateTime | formatDate('yyyy-MM-dd')}}</template>
+        </el-table-column>
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <span class="inline-block table-btn" @click="filePreview(scope.row)"><i class="el-icon-search"></i></span>
+            <span class="inline-block table-btn btn-hv-danger" @click="delFileForMaterial(scope.row.fileId)"><i class="el-icon-delete"></i></span>
+          </template>
+        </el-table-column>
+      </el-table>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="fileListDialog = false">关 闭</el-button>
+      </span>
+    </el-dialog>
+    <!-- 材料补正列表电子件===》文件上传--->
+    <el-dialog title="文件上传" :visible.sync="fileUploadDialogState" width="600px" class="file-upload-dialog" @closed="closeUploadDialog">
+      <el-upload class="enclosure-upload-file-ref inlineblock-midd al-center" ref="enclosureFileUploadRef" drag action="" :multiple="true" :on-change="enclosureFileSelectChange" :on-remove="enclosureFileSelectRemove" :auto-upload="false">
+        <i class="el-icon-upload"></i>
+        <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em>
+          <!-- <p>上传的附件不可超过10MB，禁止上传以下的附件类型：.exe,.sh,.bat,.com,.dll</p> -->
+        </div>
+      </el-upload>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="fileUploadDialogState = false">关 闭</el-button>
+        <el-button type="primary" @click="fileUploadAndSaveFile">上 传</el-button>
+      </span>
+    </el-dialog>
+    <el-dialog title="打印回执" :visible.sync="pdfPreviewState" width="1000px" class="file-upload-dialog" @closed="closeUploadDialog">
+      <div class="serviceBox">
+        <ul class="receive-list">
+          <li :key="index" :class="receiveId==item.receiveId?'active':''" v-for="(item,index) in receiveList" @click="jumpToPrintReceipt(item.receiveId)">
+            <span>{{item.receiptType=='6'?'补正回执':'物料回执'}}</span>
+          </li>
+        </ul>
+      </div>
+      <iframe :src="pdfSrc" width="80%" height="100%" style="min-height: 460px;"></iframe>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="pdfPreviewState = false">关 闭</el-button>
+      </span>
+    </el-dialog>
+    <!--  预览pdf弹窗-->
+    <el-dialog title="预览" :visible.sync="prePdfVisible" ref="prePdfRef" class="special-dialog" top="10vh"
+               @close="closePdfDialog">
+      <div class="special-iframe-box">
+        <iframe :src="pdfSrc" class='ltab-iframe'></iframe>
+      </div>
+    </el-dialog>
+  </div>
+</body>
+<script src="../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js" th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>
+<script src="../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js" th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
+<script src="../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js" th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
+<script th:src="@{/preview/pdfjs/build/pdf.js}"></script>
+<script src="../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js" th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>
+<script src="../../static/matCorrect/js/index.js" th:src="@{/matCorrect/js/index.js}"></script>
+
+</html>

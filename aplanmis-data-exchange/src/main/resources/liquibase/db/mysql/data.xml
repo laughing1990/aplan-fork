@@ -1,0 +1,32 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <preConditions>
+        <dbms type="mysql"/>
+    </preConditions>
+    <changeSet id="201910091707" author="yinlf" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            DELETE FROM `bsc_job_timer` WHERE TIMER_ID = 'b04377e2-7aff-48e2-8f0e-9885b79133af';
+            INSERT INTO `bsc_job_timer` VALUES ('b04377e2-7aff-48e2-8f0e-9885b79133af', '数据上传省系统', ' 工改系统数据上传', 'uploadAndNoticeJob', 'UploadAndNoticeJob', 'uploadAndNotice', '0 0/5 * * * ?', '1', '0', NULL, '', '1','0');
+        </sql>
+    </changeSet>
+
+    <changeSet id="201910101024" author="yinlf" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            update ETL_JOB set start_time = '2016-01-01';
+        </sql>
+    </changeSet>
+
+    <changeSet id="201910152001" author="yinlf">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            UPDATE bsc_job_timer SET BUSS_FLAG = 'aplanmis-data-exchange' WHERE TIMER_ID = 'b04377e2-7aff-48e2-8f0e-9885b79133af';
+        </sql>
+    </changeSet>
+
+    <changeSet id="201910241036" author="yinlf">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            INSERT INTO `bsc_rule_code` VALUES ('369541', 'ETL_JOB_ERROR-CODE', '定时上传流水号', 1, 1, 4, '{value}', NULL, '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+        </sql>
+    </changeSet>
+ </databaseChangeLog>

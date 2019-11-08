@@ -1,0 +1,203 @@
+.bodyCss{
+    width:100%;
+    background:#f2f6f9;
+}
+#app{
+    width: 1200px;
+    margin: 0 auto;
+    background: #fff;
+    min-height: 700px;
+}
+.main-content{
+    /*background:#fff;*/
+    /*min-height: 700px;*/
+}
+.footer{
+    height:115px;
+}
+/*竞价公告*/
+.jjgg-query .zjjg-search label {
+    width: 9.5%;
+}
+.jjgg-query .selected-tit {
+    width: auto;
+}
+.jjgg-query .service-type {
+    width: 90%;
+}
+
+/*超市指南*/
+.page-main {
+    min-height: 580px;
+    background: #fff;
+    position: relative;
+    margin-bottom: 30px;
+}
+.page-sidebar {
+    width: 200px;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-right: 1px solid #eee;
+    overflow-y: auto;
+}
+.page-sidebar .sidebar-tit {
+    height: 80px;
+    line-height: 80px;
+    text-align: center;
+    font-size: 18px;
+    border-bottom: 1px solid #eee;
+}
+.page-sidebar .nav-tree li {
+    cursor: pointer;
+    line-height: 48px;
+    text-align: center;
+    color: #333;
+    font-size: 15px;
+    border-left: 4px solid #fff;
+    transition: all .2s;
+}
+.page-sidebar .nav-tree li.active {
+    background: rgba(49,132,250,.1);
+    color: #3184fa;
+    border-left-color: #3184fa;
+}
+.sidebar-con {
+    margin-left: 200px;
+    padding: 20px;
+}
+.sidebar-con .ts-btn-group {
+    text-align: right;
+    margin-bottom: 15px;
+}
+.subtab-btn {
+    padding: 0 15px;
+    min-width: 80px;
+    display: inline-block;
+    line-height:36px;
+    text-align: center;
+    border:1px solid rgba(220,223,230,1);
+    border-radius:4px;
+    margin-left: 15px;
+    transition: all .2s;
+}
+.subtab-btn.active {
+    border-color: #4879E4;
+    background: #4879E4;
+    box-shadow:0px 5px 9px 1px rgba(72,121,228,0.2);
+    color: #fff;
+}
+.subtab-btn.cancel-btn:hover {
+    color: #333;
+    background: #eee;
+}
+.article-tit {
+    text-align: center;
+    font-size: 24px;
+    line-height: 2.2;
+    margin-bottom: 10px;
+}
+.guide-article p {
+    font-size:14px;
+    color: rgba(102,102,102,1);
+    line-height: 22px;
+    text-indent: 2em;
+    margin-bottom: 15px;
+}
+.guide-article h3 {
+    font-size:15px;
+    line-height:30px;
+    color: #333;
+}
+.guide-article h4 {
+    color: #666;
+    line-height:30px;
+    font-size: 14px;
+}
+.guide-article .marbottom {
+    margin-bottom: 15px;
+}
+
+/*公示公告*/
+.sidebar-con .service-tit {
+    margin-top: 0;
+}
+.tzgg-wrap .notice-list li {
+    padding: 15px 0;
+    padding-left: 12px;
+    border-bottom: 1px solid #f2f6f9;
+}
+.tzgg-wrap .notice-list li:hover span,
+.tzgg-wrap .notice-list li:hover a {
+    color: #3184FA;
+}
+.notice-list {
+    margin: 15px 0;
+}
+.notice-list li {
+    padding: 5px 0;
+    position: relative;
+    overflow: hidden;
+    padding-left: 12px;
+}
+.notice-list li:before {
+    content: '';
+    height: 4px;
+    width: 4px;
+    display: inline-block;
+    background: #3184FA;
+    position: absolute;
+    left: 0;
+    top: 50%;
+    margin-top: -2px;
+}
+.notice-list li a {
+    width: 65%;
+    float: left;
+    display: block;
+    line-height: 22px;
+    color: #555;
+    transition: all .2s;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+.notice-list li a:hover {
+    color: #3184FA;
+}
+.notice-time {
+    float: right;
+    color: #999;
+    line-height: 22px;
+    font-size: 14px;
+}
+.service-tit {
+    margin: 15px 0 10px;
+    padding-left: 8px;
+    line-height: 20px;
+    font-size: 20px;
+    color: #333;
+    border-left: 5px solid #3184fa;
+}
+.text{
+    text-indent: 30pt;
+    font-size: 16px;
+    line-height: 40px;
+}
+.second-page{
+    padding: 21px 37px 0;
+}
+.pdfBox{
+    width:100%;
+    height:30px;
+
+}
+.pdfBox a{
+    width:100%;
+    height:100%;
+    display:block;
+}
+.pdfBox h2{
+    margin-bottom: 100px;
+}

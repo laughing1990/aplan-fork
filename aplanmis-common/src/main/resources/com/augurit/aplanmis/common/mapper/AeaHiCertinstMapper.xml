@@ -1,0 +1,565 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by Administrator    2019-07-04 16:45:10 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaHiCertinstMapper">
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns">
+        CERTINST_ID  certinstId,
+    CERT_ID  certId,
+    UNIT_INFO_ID  unitInfoId,
+    PROJ_INFO_ID  projInfoId,
+    ATT_LINK_ID  attLinkId,
+    CREATER  creater,
+    CREATE_TIME  createTime,
+    MODIFIER  modifier,
+    MODIFY_TIME  modifyTime,
+    CERTINST_CODE  certinstCode,
+    CERTINST_NAME  certinstName,
+    ISSUE_DATE  issueDate,
+    TERM_START  termStart,
+    TERM_END  termEnd,
+    CA_INFO  caInfo,
+    CERT_OWNER  certOwner,
+    ISSUE_ORG_ID  issueOrgId,
+    TERM_NUM  termNum,
+    TERM_UNIT  termUnit,
+    FLXL  flxl,
+    APPLYINST_ID  applyinstId,
+    LINKMAN_INFO_ID  linkmanInfoId,
+    QUAL_LEVEL_ID  qualLevelId,
+    ROOT_ORG_ID rootOrgId,
+    MEMO memo,
+    MANAGEMENT_SCOPE managementScope
+    </sql>
+
+    <sql id="aliasColumns">
+         ${alias}.CERTINST_ID  certinstId,
+    ${alias}.CERT_ID  certId,
+    ${alias}.UNIT_INFO_ID  unitInfoId,
+    ${alias}.PROJ_INFO_ID  projInfoId,
+    ${alias}.ATT_LINK_ID  attLinkId,
+    ${alias}.CREATER  creater,
+    ${alias}.CREATE_TIME  createTime,
+    ${alias}.MODIFIER  modifier,
+    ${alias}.MODIFY_TIME  modifyTime,
+    ${alias}.CERTINST_CODE  certinstCode,
+    ${alias}.CERTINST_NAME  certinstName,
+    ${alias}.ISSUE_DATE  issueDate,
+    ${alias}.TERM_START  termStart,
+    ${alias}.TERM_END  termEnd,
+    ${alias}.CA_INFO  caInfo,
+    ${alias}.CERT_OWNER  certOwner,
+    ${alias}.ISSUE_ORG_ID  issueOrgId,
+    ${alias}.TERM_NUM  termNum,
+    ${alias}.TERM_UNIT  termUnit,
+    ${alias}.FLXL  flxl,
+    ${alias}.APPLYINST_ID  applyinstId,
+    ${alias}.LINKMAN_INFO_ID  linkmanInfoId,
+    ${alias}.QUAL_LEVEL_ID  qualLevelId,
+    ${alias}.MEMO memo,
+    ${alias}.MANAGEMENT_SCOPE managementScope
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaHiCertinstById" resultType="AeaHiCertinst">
+        select
+        <include refid="aliasColumns">
+            <property name="alias" value="ahc"/>
+        </include>
+        ,ooo.ORG_NAME issueOrgName
+        from AEA_HI_CERTINST ahc
+        left join opu_om_org ooo on ooo.ORG_ID=ahc.ISSUE_ORG_ID
+        where CERTINST_ID = #{id}
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaHiCertinst" resultType="AeaHiCertinst">
+        select
+        <include refid="allColumns"/>
+        from AEA_HI_CERTINST
+        <where>
+            <if test="certinstId != null">
+                AND CERTINST_ID = #{certinstId}
+            </if>
+            <if test="certId != null">
+                AND CERT_ID = #{certId}
+            </if>
+            <if test="unitInfoId != null">
+                AND UNIT_INFO_ID = #{unitInfoId}
+            </if>
+            <if test="projInfoId != null">
+                AND PROJ_INFO_ID = #{projInfoId}
+            </if>
+            <if test="attLinkId != null">
+                AND ATT_LINK_ID = #{attLinkId}
+            </if>
+            <if test="creater != null">
+                AND CREATER = #{creater}
+            </if>
+            <if test="createTime != null">
+                AND CREATE_TIME = #{createTime}
+            </if>
+            <if test="modifier != null">
+                AND MODIFIER = #{modifier}
+            </if>
+            <if test="modifyTime != null">
+                AND MODIFY_TIME = #{modifyTime}
+            </if>
+            <if test="certinstCode != null">
+                AND CERTINST_CODE = #{certinstCode}
+            </if>
+            <if test="certinstName != null">
+                AND CERTINST_NAME = #{certinstName}
+            </if>
+            <if test="issueDate != null">
+                AND ISSUE_DATE = #{issueDate}
+            </if>
+            <if test="termStart != null">
+                AND TERM_START = #{termStart}
+            </if>
+            <if test="termEnd != null">
+                AND TERM_END = #{termEnd}
+            </if>
+            <if test="caInfo != null">
+                AND CA_INFO = #{caInfo}
+            </if>
+            <if test="certOwner != null">
+                AND CERT_OWNER = #{certOwner}
+            </if>
+            <if test="issueOrgId != null">
+                AND ISSUE_ORG_ID = #{issueOrgId}
+            </if>
+            <if test="termNum != null">
+                AND TERM_NUM = #{termNum}
+            </if>
+            <if test="termUnit != null">
+                AND TERM_UNIT = #{termUnit}
+            </if>
+            <if test="flxl != null">
+                AND FLXL = #{flxl}
+            </if>
+            <if test="applyinstId != null">
+                AND APPLYINST_ID = #{applyinstId}
+            </if>
+            <if test="linkmanInfoId != null">
+                AND LINKMAN_INFO_ID = #{linkmanInfoId}
+            </if>
+            <if test="qualLevelId != null">
+                AND QUAL_LEVEL_ID = #{qualLevelId}
+            </if>
+            <if test="rootOrgId != null">
+                AND ROOT_ORG_ID = #{rootOrgId}
+            </if>
+        </where>
+    </select>
+    <!--4 根据条件查询实体list,返回分页对象 -->
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaHiCertinst" parameterType="AeaHiCertinst">
+        insert into AEA_HI_CERTINST (CERTINST_ID, CERT_ID, UNIT_INFO_ID, PROJ_INFO_ID, ATT_LINK_ID, CREATER,
+                                     CREATE_TIME, MODIFIER, MODIFY_TIME, CERTINST_CODE, CERTINST_NAME, ISSUE_DATE,
+                                     TERM_START, TERM_END, CA_INFO, CERT_OWNER, ISSUE_ORG_ID, TERM_NUM, TERM_UNIT, FLXL,
+                                     APPLYINST_ID, LINKMAN_INFO_ID, QUAL_LEVEL_ID,ROOT_ORG_ID,MEMO,MANAGEMENT_SCOPE)
+        values (#{certinstId}, #{certId}, #{unitInfoId}, #{projInfoId}, #{attLinkId}, #{creater}, #{createTime},
+                #{modifier}, #{modifyTime}, #{certinstCode}, #{certinstName}, #{issueDate}, #{termStart}, #{termEnd},
+                #{caInfo}, #{certOwner}, #{issueOrgId}, #{termNum}, #{termUnit}, #{flxl}, #{applyinstId},
+                #{linkmanInfoId}, #{qualLevelId},#{rootOrgId},#{memo},#{managementScope})
+    </insert>
+    <!--6 修改实体对象 -->
+    <update id="updateAeaHiCertinst" parameterType="AeaHiCertinst">
+        update AEA_HI_CERTINST
+        <set>
+            <if test="certinstId != null">
+                CERTINST_ID = #{certinstId},
+            </if>
+            <if test="certId != null">
+                CERT_ID = #{certId},
+            </if>
+            <if test="unitInfoId != null">
+                UNIT_INFO_ID = #{unitInfoId},
+            </if>
+            <if test="projInfoId != null">
+                PROJ_INFO_ID = #{projInfoId},
+            </if>
+            <if test="attLinkId != null">
+                ATT_LINK_ID = #{attLinkId},
+            </if>
+            <if test="creater != null">
+                CREATER = #{creater},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime},
+            </if>
+            <if test="modifier != null">
+                MODIFIER = #{modifier},
+            </if>
+            <if test="modifyTime != null">
+                MODIFY_TIME = #{modifyTime},
+            </if>
+            <if test="certinstCode != null">
+                CERTINST_CODE = #{certinstCode},
+            </if>
+            <if test="certinstName != null">
+                CERTINST_NAME = #{certinstName},
+            </if>
+            <if test="issueDate != null">
+                ISSUE_DATE = #{issueDate},
+            </if>
+            <if test="termStart != null">
+                TERM_START = #{termStart},
+            </if>
+            <if test="termEnd != null">
+                TERM_END = #{termEnd},
+            </if>
+            <if test="caInfo != null">
+                CA_INFO = #{caInfo},
+            </if>
+            <if test="certOwner != null">
+                CERT_OWNER = #{certOwner},
+            </if>
+            <if test="issueOrgId != null">
+                ISSUE_ORG_ID = #{issueOrgId},
+            </if>
+            <if test="termNum != null">
+                TERM_NUM = #{termNum},
+            </if>
+            <if test="termUnit != null">
+                TERM_UNIT = #{termUnit},
+            </if>
+            <if test="flxl != null">
+                FLXL = #{flxl},
+            </if>
+            <if test="applyinstId != null">
+                APPLYINST_ID = #{applyinstId},
+            </if>
+            <if test="linkmanInfoId != null">
+                LINKMAN_INFO_ID = #{linkmanInfoId},
+            </if>
+            <if test="qualLevelId != null">
+                QUAL_LEVEL_ID = #{qualLevelId},
+            </if>
+            <if test="rootOrgId != null">
+                ROOT_ORG_ID = #{rootOrgId},
+            </if>
+            <if test="memo != null">
+                MEMO = #{memo},
+            </if>
+            <if test="managementScope != null">
+                MANAGEMENT_SCOPE = #{managementScope},
+            </if>
+        </set>
+        where CERTINST_ID = #{certinstId}
+    </update>
+    <!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaHiCertinst">
+        delete
+        from AEA_HI_CERTINST
+        where CERTINST_ID = #{id}
+    </delete>
+    <delete id="batchDeleteAeaHiCertinst">
+        delete from aea_hi_certinst WHERE CERTINST_ID IN
+        <foreach collection="certinstIds" item="id" separator="," open="(" close=")">#{id}</foreach>
+    </delete>
+    <!--8 删除实体对象列表,根据主键ID列表 -->
+    <!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaHiCertinst" id="AeaHiCertinstMap">
+        <id property="certinstId" column="CERTINST_ID"/>
+        <result property="certId" column="CERT_ID"/>
+        <result property="unitInfoId" column="UNIT_INFO_ID"/>
+        <result property="projInfoId" column="PROJ_INFO_ID"/>
+        <result property="attLinkId" column="ATT_LINK_ID"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="modifier" column="MODIFIER"/>
+        <result property="modifyTime" column="MODIFY_TIME"/>
+        <result property="certinstCode" column="CERTINST_CODE"/>
+        <result property="certinstName" column="CERTINST_NAME"/>
+        <result property="issueDate" column="ISSUE_DATE"/>
+        <result property="termStart" column="TERM_START"/>
+        <result property="termEnd" column="TERM_END"/>
+        <result property="caInfo" column="CA_INFO"/>
+        <result property="certOwner" column="CERT_OWNER"/>
+        <result property="issueOrgId" column="ISSUE_ORG_ID"/>
+        <result property="termNum" column="TERM_NUM"/>
+        <result property="termUnit" column="TERM_UNIT"/>
+        <result property="flxl" column="FLXL"/>
+        <result property="applyinstId" column="APPLYINST_ID"/>
+        <result property="linkmanInfoId" column="LINKMAN_INFO_ID"/>
+        <result property="qualLevelId" column="QUAL_LEVEL_ID"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+    </resultMap>
+    <select id="getAeaHiCertinstByIds" resultType="AeaHiCertinst">
+        select aui.APPLICANT issueOrgName,
+        <include refid="aliasColumns">
+            <property name="alias" value="ahc"/>
+        </include>
+        from AEA_HI_CERTINST ahc
+        LEFT JOIN aea_unit_info aui on aui.UNIT_INFO_ID = ahc.UNIT_INFO_ID where ahc.CERTINST_ID in
+        <foreach collection="ids" open="(" close=")" separator="," item="id">
+            #{id}
+        </foreach>
+    </select>
+
+    <!--查询中介机构下资格证书列表 0b1c323b-7247-4762-a72d-774fc4e07e8f-->
+    <select id="listAgentCertinst" resultType="com.augurit.aplanmis.common.domain.AgentCertinst">
+        SELECT
+        ahc.CERTINST_ID certinstId,
+        ahc.CERTINST_NAME certinstName,
+        ahc.TERM_START termStart,
+        ahc.TERM_END termEnd,
+        ahc.MANAGEMENT_SCOPE managementScope,
+        ahc.ISSUE_DATE issueDate,
+        (SELECT o.ORG_NAME FROM OPU_OM_ORG o WHERE o.ORG_ID = ahc.ISSUE_ORG_ID) orgName
+        FROM AEA_HI_CERTINST ahc
+        WHERE ahc.CERTINST_ID IN (
+        SELECT abc.CERTINST_ID FROM aea_bus_certinst abc, aea_im_unit_service aius
+        WHERE abc.BUS_RECORD_ID = aius.UNIT_SERVICE_ID
+        AND abc.BUS_TABLE_NAME = 'AEA_IM_UNIT_SERVICE' AND abc.PK_NAME = 'UNIT_SERVICE_ID'
+        AND abc.IS_DELETE = '0' AND aius.IS_DELETE = '0' AND aius.AUDIT_FLAG = '1' AND aius.UNIT_INFO_ID = #{unitInfoId}
+        <if test="unitServiceId != null and unitServiceId != ''">
+            AND aius.UNIT_SERVICE_ID = #{unitServiceId}
+        </if>
+        )
+    </select>
+
+    <!--查询资质证书信息-->
+    <select id="getAgentCertinstDetail" resultType="com.augurit.aplanmis.common.domain.AgentCertinst">
+        SELECT
+            ahc.CERTINST_ID certinstId,
+            ahc.CERTINST_NAME certinstName,
+            aiql.QUAL_LEVEL_NAME qualLevelName,
+            (SELECT aui.APPLICANT FROM aea_unit_info aui WHERE aui.UNIT_INFO_ID = ahc.UNIT_INFO_ID) applicant,
+            (SELECT aiq.QUAL_NAME FROM aea_im_qual aiq WHERE aiq.QUAL_ID = temp.QUAL_ID) qualName
+        FROM aea_hi_certinst ahc
+        LEFT JOIN aea_im_qual_level aiql on ahc.QUAL_LEVEL_ID = aiql.QUAL_LEVEL_ID
+        LEFT JOIN (
+            SELECT aicm.CERTINST_ID, MAX(aism.QUAL_ID) QUAL_ID
+            FROM aea_im_certinst_major aicm, aea_im_service_major aism
+            WHERE aicm.MAJOR_ID = aism.MAJOR_ID AND aicm.IS_DELETE = '0' AND aism.IS_DELETE = '0'
+            GROUP BY aicm.CERTINST_ID) temp
+        ON ahc.CERTINST_ID = temp.CERTINST_ID
+        WHERE ahc.CERTINST_ID = #{certinstId}
+    </select>
+
+    <sql id="certinstColumns">
+    hicert.CERTINST_ID  certinstId,
+    hicert.CERT_ID  certId,
+    hicert.UNIT_INFO_ID  unitInfoId,
+    hicert.PROJ_INFO_ID  projInfoId,
+    hicert.CREATER  creater,
+    hicert.CREATE_TIME  createTime,
+    hicert.MODIFIER  modifier,
+    hicert.MODIFY_TIME  modifyTime,
+    hicert.CERTINST_CODE  certinstCode,
+    hicert.CERTINST_NAME  certinstName,
+    hicert.ISSUE_DATE issueDate,
+    hicert.TERM_START termStart,
+    hicert.TERM_END termEnd,
+    hicert.CA_INFO caInfo,
+    hicert.CERT_OWNER certOwner,
+    hicert.ISSUE_ORG_ID issueOrgId,
+    hicert.TERM_NUM termNum,
+    hicert.TERM_UNIT termUnit,
+    hicert.APPLYINST_ID applyinstId,
+    hicert.FLXL  flxl,
+    hicert.LINKMAN_INFO_ID  linkmanInfoId,
+    hicert.QUAL_LEVEL_ID  qualLevelId
+    </sql>
+
+    <select id="getAeaImMajorLevelAndCertinstByServiceId" resultType="com.augurit.aplanmis.common.domain.AeaHiCertinst">
+        select<include refid="certinstColumns"/>,
+        serviceMajor.MAJOR_NAME,
+        qualLevel.QUAL_LEVEL_NAME
+        from aea_hi_certinst hicert
+        LEFT JOIN aea_im_certinst_major cermajor on hicert.CERTINST_ID = cermajor.CERTINST_ID
+        LEFT JOIN aea_im_service_major serviceMajor on serviceMajor.MAJOR_ID = cermajor.MAJOR_ID
+        LEFT JOIN aea_im_qual qual on serviceMajor.QUAL_ID = qual.QUAL_ID
+        LEFT JOIN aea_im_service_qual serviceQual on serviceQual.QUAL_ID = qual.QUAL_ID
+        LEFT JOIN aea_im_major_qual majorQual on majorQual.MAJOR_ID = serviceMajor.MAJOR_ID
+        LEFT JOIN aea_im_qual_level qualLevel on majorQual.QUAL_LEVEL_ID = qualLevel.QUAL_LEVEL_ID
+        LEFT JOIN aea_im_unit_service aius on aius.SERVICE_ID = serviceQual.SERVICE_ID
+
+        where serviceQual.SERVICE_ID = #{serviceId} AND aius.UNIT_INFO_ID = #{unitInfoId}
+
+    </select>
+
+    <select id="getFilesByRecordIds" resultType="com.augurit.agcloud.bsc.domain.BscAttDetail">
+        select distinct
+        detail.DETAIL_ID detailId,
+        detail.ATT_CODE attCode,
+        detail.ATT_NAME attName,
+        detail.ATT_SIZE attSize,
+        detail.ATT_TYPE attType,
+        detail.ATT_FORMAT attFormat,
+        detail.SORT_NO sortNo,
+        -- detail.IS_DB_STORE isDbStore,
+        detail.ATT_PATH attPath,
+        detail.IS_ENCRYPT isEncrypt,
+        detail.MESSAGE_DIGEST messageDigest,
+        detail.MEMO1 memo1,
+        detail.MEMO2 memo2,
+        detail.MEMO3 memo3,
+        detail.MEMO4 memo4,
+        detail.MEMO5 memo5,
+        detail.MEMO6 memo6,
+        detail.CREATER creater,
+        detail.CREATE_TIME createTime,
+        detail.MODIFIER modifier,
+        detail.MODIFY_TIME modifyTime,
+        detail.ATT_DISK_NAME attDiskName,
+        detail.ENCRYPT_CLASS encryptClass,
+        -- detail.IS_RELATIVE isRelative,
+        detail.DIR_ID dirId,
+        detail.ORG_ID orgId
+        from BSC_ATT_DETAIL detail, BSC_ATT_LINK link
+        <where>
+            detail.DETAIL_ID=link.DETAIL_ID
+            <if test="recordIds != null">
+                AND link.RECORD_ID in
+                <foreach collection="recordIds" index="index" item="recordId" open="(" separator="," close=")">
+                    #{recordId}
+                </foreach>
+            </if>
+            AND link.PK_NAME = #{pkName}
+            AND link.TABLE_NAME = #{tableName}
+            <if test="keyword != null and keyword!=''">
+                AND (
+                detail.ATT_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%') OR
+                detail.ATT_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%') OR
+                link.TABLE_NAME like CONCAT(CONCAT('%',#{keyword}),'%')
+                )
+            </if>
+        </where>
+        order by detail.CREATE_TIME DESC
+    </select>
+
+    <select id="listAeaHiCertinstByBusRecord" resultType="com.augurit.aplanmis.common.vo.AeaHiCertinstBVo">
+        SELECT
+        <include refid="aliasColumns">
+            <property name="alias" value="ahc"></property>
+        </include>
+        ,
+        aiql.QUAL_LEVEL_NAME qualLevelName,
+        (SELECT aiq.QUAL_NAME FROM aea_im_qual aiq WHERE aiq.QUAL_ID = temp.QUAL_ID) qualName
+        FROM AEA_HI_CERTINST ahc
+        LEFT JOIN aea_im_qual_level aiql on aiql.QUAL_LEVEL_ID = ahc.QUAL_LEVEL_ID
+        LEFT JOIN (
+        SELECT aicm.CERTINST_ID, MAX(aism.QUAL_ID) QUAL_ID
+        FROM aea_im_certinst_major aicm, aea_im_service_major aism
+        WHERE aicm.MAJOR_ID = aism.MAJOR_ID AND aicm.IS_DELETE = '0' AND aism.IS_DELETE = '0'
+        GROUP BY aicm.CERTINST_ID) temp
+        ON ahc.CERTINST_ID = temp.CERTINST_ID
+        WHERE ahc.CERTINST_ID IN (
+        SELECT abc.CERTINST_ID FROM aea_bus_certinst abc
+        <choose>
+            <when test="type != null and type == '1'.toString()">
+                , aea_im_unit_service aius
+                WHERE abc.BUS_RECORD_ID = aius.UNIT_SERVICE_ID
+                AND abc.BUS_TABLE_NAME = 'AEA_IM_UNIT_SERVICE' AND abc.PK_NAME = 'UNIT_SERVICE_ID'
+                AND abc.IS_DELETE = '0' AND aius.IS_DELETE = '0' AND aius.AUDIT_FLAG = '1' AND aius.UNIT_INFO_ID =
+                #{typeId}
+            </when>
+            <when test="type != null and type == '2'.toString()">
+                , aea_im_service_linkman aisl
+                WHERE abc.BUS_RECORD_ID = aisl.SERVICE_LINKMAN_ID
+                AND UPPER(abc.BUS_TABLE_NAME) = 'AEA_IM_SERVICE_LINKMAN' AND UPPER(abc.PK_NAME) = 'SERVICE_LINKMAN_ID'
+                AND abc.IS_DELETE = '0' AND aisl.IS_DELETE = '0' AND aisl.AUDIT_FLAG = '1' AND aisl.LINKMAN_INFO_ID =
+                #{typeId}
+            </when>
+        </choose>
+        )
+    </select>
+
+
+    <select id="getAeaHiCertinstVoByLinkmanInfoId" resultType="com.augurit.aplanmis.common.vo.AeaHiCertinstBVo">
+        select
+        <include refid="certinstColumns"/>
+        from aea_hi_certinst hicert
+        where hicert.LINKMAN_INFO_ID = #{linkmanInfoId}
+
+    </select>
+
+    <select id="getAeaHiCertinstByBusCertinst" resultType="com.augurit.aplanmis.common.vo.AeaHiCertinstBVo">
+        select
+        <include refid="aliasColumns">
+            <property name="alias" value="hiCert"></property>
+        </include>
+        ,
+        qlevel.QUAL_LEVEL_NAME qualLevelName,
+        qual.QUAL_NAME qualName
+        from (
+        select * from aea_bus_certinst cer where cer.BUS_TABLE_NAME=#{busTableName} and cer.BUS_RECORD_ID =
+        #{busRecordId}
+        ) buscert
+        LEFT JOIN aea_hi_certinst hiCert on hiCert.CERTINST_ID = buscert.CERTINST_ID
+        LEFT JOIN aea_im_qual_level qlevel on qlevel.QUAL_LEVEL_ID = hiCert.QUAL_LEVEL_ID
+        LEFT JOIN (
+        SELECT aicm.CERTINST_ID, MAX(aism.QUAL_ID) QUAL_ID
+        FROM aea_im_certinst_major aicm, aea_im_service_major aism
+        WHERE aicm.MAJOR_ID = aism.MAJOR_ID AND aicm.IS_DELETE = '0' AND aism.IS_DELETE = '0'
+        GROUP BY aicm.CERTINST_ID) temp
+        ON buscert.CERTINST_ID = temp.CERTINST_ID
+        LEFT JOIN aea_im_qual qual ON temp.QUAL_ID = qual.QUAL_ID
+    </select>
+
+    <select id="getAeaHiCertinstVoById" resultType="com.augurit.aplanmis.common.vo.AeaHiCertinstBVo">
+        select
+        <include refid="aliasColumns">
+            <property name="alias" value="cer"></property>
+        </include>
+        ,
+        ql.QUAL_LEVEL_NAME qualLevelName
+        from aea_hi_certinst cer,aea_im_qual_level ql
+        where ql.QUAL_LEVEL_ID = cer.QUAL_LEVEL_ID
+        and cer.CERTINST_ID = #{certinstId}
+    </select>
+
+    <select id="getAeaHiCertinstByIteminstId" resultType="com.augurit.aplanmis.common.domain.AeaHiCertinst">
+        select
+        <include refid="aliasColumns">
+            <property name="alias" value="ahc"/>
+        </include>
+        ,aui.APPLICANT applicant,ooo.ORG_NAME issueOrgName
+        from aea_hi_certinst ahc
+        left join aea_unit_info aui on aui.UNIT_INFO_ID=ahc.UNIT_INFO_ID
+        left join opu_om_org ooo on ooo.ORG_ID=ahc.ISSUE_ORG_ID
+        where ahc.CERTINST_ID in (
+        select ahii.CERTINST_ID from aea_hi_item_inoutinst ahii where ahii.ITEMINST_ID=#{iteminstId}
+        )
+    </select>
+
+    <select id="getAeaHiCertinstByUnitServiceId" resultType="com.augurit.aplanmis.common.vo.AeaHiCertinstBVo">
+        select
+        <include refid="aliasColumns">
+            <property name="alias" value="hiCert"></property>
+        </include>
+        ,
+        qlevel.QUAL_LEVEL_NAME qualLevelName,
+        qual.QUAL_NAME qualName
+        from (
+        select * from aea_bus_certinst cer where cer.BUS_TABLE_NAME="AEA_IM_UNIT_SERVICE" and cer.BUS_RECORD_ID =
+        #{unitServiceId}
+        ) buscert
+        LEFT JOIN aea_hi_certinst hiCert on hiCert.CERTINST_ID = buscert.CERTINST_ID
+        LEFT JOIN aea_im_qual_level qlevel on qlevel.QUAL_LEVEL_ID = hiCert.QUAL_LEVEL_ID
+        LEFT JOIN aea_im_certinst_major cm on cm.CERTINST_ID = hiCert.CERTINST_ID
+        LEFT JOIN aea_im_service_major smajor on cm.MAJOR_ID = smajor.MAJOR_ID
+        LEFT JOIN aea_im_qual qual ON smajor.QUAL_ID = qual.QUAL_ID
+    </select>
+
+    <select id="listAeaHiCertinstByIteminstIds" resultType="com.augurit.aplanmis.common.domain.AeaHiCertinst">
+        select
+        <include refid="aliasColumns">
+            <property name="alias" value="ahc"/>
+        </include>
+        ,aui.APPLICANT applicant,ooo.ORG_NAME issueOrgName
+        from aea_hi_certinst ahc
+        left join aea_unit_info aui on aui.UNIT_INFO_ID=ahc.UNIT_INFO_ID
+        left join opu_om_org ooo on ooo.ORG_ID=ahc.ISSUE_ORG_ID
+        where ahc.CERTINST_ID in (
+        select ahii.CERTINST_ID from aea_hi_item_inoutinst ahii where ahii.ITEMINST_ID in
+            <foreach collection="iteminstIds" item="iteminstId" separator="," open="(" close=")">#{iteminstId}</foreach>
+        )
+    </select>
+</mapper>

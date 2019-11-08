@@ -1,0 +1,28 @@
+.contextMenuDiv {
+
+    position: absolute;
+    visibility: hidden;
+    z-index: 90;
+    background-color: #fff;
+    width: 200px;
+}
+
+.list-group-item {
+
+    display: block;
+    color: #595959;
+    text-indent: 10px;
+    height: 42px;
+    font-size: 14px;
+}
+
+.contextMenuDiv a:hover {
+
+    background: #36a3f7;
+    color: #ffff;
+}
+
+.list-group-item i{
+
+    margin-right: 10px;
+}

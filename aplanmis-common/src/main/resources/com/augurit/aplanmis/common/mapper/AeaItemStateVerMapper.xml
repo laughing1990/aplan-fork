@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by Administrator    2019-07-04 17:14:03 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaItemStateVerMapper">
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns">
+        ITEM_STATE_VER_ID  itemStateVerId,
+        ITEM_ID  itemId,
+        ITEM_VER_ID  itemVerId,
+        VER_STATUS  verStatus,
+        IS_DELETED  isDeleted,
+        CREATER  creater,
+        CREATE_TIME  createTime,
+        MODIFIER  modifier,
+        MODIFY_TIME  modifyTime,
+        VER_NUM  verNum,
+        ROOT_ORG_ID rootOrgId
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaItemStateVerById" resultType="AeaItemStateVer">
+        select
+        <include refid="allColumns"/>
+        from AEA_ITEM_STATE_VER
+        where ITEM_STATE_VER_ID = #{id}
+        AND IS_DELETED = '0'
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaItemStateVer" resultType="AeaItemStateVer">
+        select
+        <include refid="allColumns"/>
+        from AEA_ITEM_STATE_VER
+        <where>
+            <if test="itemStateVerId != null">
+                AND ITEM_STATE_VER_ID = #{itemStateVerId}
+            </if>
+            <if test="itemId != null">
+                AND ITEM_ID = #{itemId}
+            </if>
+            <if test="itemVerId != null">
+                AND ITEM_VER_ID = #{itemVerId}
+            </if>
+            <if test="verStatus != null">
+                AND VER_STATUS = #{verStatus}
+            </if>
+            <if test="isDeleted != null">
+                AND IS_DELETED = #{isDeleted}
+            </if>
+            <if test="creater != null">
+                AND CREATER = #{creater}
+            </if>
+            <if test="createTime != null">
+                AND CREATE_TIME = #{createTime}
+            </if>
+            <if test="modifier != null">
+                AND MODIFIER = #{modifier}
+            </if>
+            <if test="modifyTime != null">
+                AND MODIFY_TIME = #{modifyTime}
+            </if>
+            <if test="verNum != null">
+                AND VER_NUM = #{verNum}
+            </if>
+            <if test="rootOrgId != null">
+                AND ROOT_ORG_ID = #{rootOrgId}
+            </if>
+            AND IS_DELETED = '0'
+        </where>
+        order by VER_NUM desc, CREATE_TIME desc
+    </select>
+
+    <!--4 根据条件查询实体list,返回分页对象 -->
+    <select id="getMaxStateVerId" resultType="AeaItemStateVer">
+        select
+            <include refid="allColumns"/>
+        from aea_item_state_ver
+        where ITEM_VER_ID = #{itemVerId}
+          and VER_NUM = (
+             select
+                max(VER_NUM)
+             from aea_item_state_ver
+             where ITEM_VER_ID = #{itemVerId}
+              and VER_STATUS in('1','2')
+              and IS_DELETED = '0'
+          )
+    </select>
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaItemStateVer" parameterType="AeaItemStateVer">
+        insert into AEA_ITEM_STATE_VER (ITEM_STATE_VER_ID, ITEM_ID, ITEM_VER_ID, VER_STATUS, IS_DELETED, CREATER,
+                                        CREATE_TIME, MODIFIER, MODIFY_TIME, VER_NUM,ROOT_ORG_ID)
+        values (#{itemStateVerId}, #{itemId}, #{itemVerId}, #{verStatus}, #{isDeleted}, #{creater}, #{createTime},
+                #{modifier}, #{modifyTime}, #{verNum},#{rootOrgId})
+    </insert>
+    <!--6 修改实体对象 -->
+    <update id="updateAeaItemStateVer" parameterType="AeaItemStateVer">
+        update AEA_ITEM_STATE_VER
+        <set>
+            <if test="itemStateVerId != null">
+                ITEM_STATE_VER_ID = #{itemStateVerId},
+            </if>
+            <if test="itemId != null">
+                ITEM_ID = #{itemId},
+            </if>
+            <if test="itemVerId != null">
+                ITEM_VER_ID = #{itemVerId},
+            </if>
+            <if test="verStatus != null">
+                VER_STATUS = #{verStatus},
+            </if>
+            <if test="isDeleted != null">
+                IS_DELETED = #{isDeleted},
+            </if>
+            <if test="creater != null">
+                CREATER = #{creater},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime},
+            </if>
+            <if test="modifier != null">
+                MODIFIER = #{modifier},
+            </if>
+            <if test="modifyTime != null">
+                MODIFY_TIME = #{modifyTime},
+            </if>
+            <if test="verNum != null">
+                VER_NUM = #{verNum},
+            </if>
+            <if test="rootOrgId != null">
+                ROOT_ORG_ID = #{rootOrgId},
+            </if>
+        </set>
+        where ITEM_STATE_VER_ID = #{itemStateVerId}
+    </update>
+
+    <!--7 删除实体对象,根据主键ID -->
+    <update id="deleteAeaItemStateVer">
+        update AEA_ITEM_STATE_VER
+        <set>
+            IS_DELETED = '1'
+        </set>
+        where ITEM_STATE_VER_ID = #{id}
+    </update>
+
+    <!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaItemStateVer" id="AeaItemStateVerMap">
+        <id property="itemStateVerId" column="ITEM_STATE_VER_ID"/>
+        <result property="itemId" column="ITEM_ID"/>
+        <result property="itemVerId" column="ITEM_VER_ID"/>
+        <result property="verStatus" column="VER_STATUS"/>
+        <result property="isDeleted" column="IS_DELETED"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="modifier" column="MODIFIER"/>
+        <result property="modifyTime" column="MODIFY_TIME"/>
+        <result property="verNum" column="VER_NUM"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+    </resultMap>
+
+    <sql id="listAeaItemStateVersionByQueryCriteriaSql">
+        <where>
+            <if test="itemStateVerId != null">
+                ITEM_STATE_VER_ID = #{itemStateVerId}
+            </if>
+            <if test="itemStateVerIdNotEq != null">
+                ITEM_STATE_VER_ID != #{itemStateVerIdNotEq}
+            </if>
+            <if test="itemId != null">
+                and ITEM_ID = #{itemId}
+            </if>
+            <if test="itemVerId != null">
+                and ITEM_VER_ID = #{itemVerId}
+            </if>
+            <if test="verStatus != null">
+                and VER_STATUS = #{verStatus, jdbcType=VARCHAR}
+            </if>
+            <if test="isDeleted != null">
+                and IS_DELETED = #{isDeleted}
+            </if>
+            <if test="creater != null">
+                and CREATER = #{creater}
+            </if>
+            <if test="modifier != null">
+                and MODIFIER = #{modifier}
+            </if>
+            <if test="rootOrgId != null">
+                and ROOT_ORG_ID = #{rootOrgId}
+            </if>
+        </where>
+    </sql>
+
+    <select id="listAeaItemStateVersionByQueryCriteria" parameterType="com.augurit.aplanmis.common.qo.state.AeaItemStateVersionQo" resultMap="AeaItemStateVerMap">
+        select * from AEA_ITEM_STATE_VER
+        <include refid="listAeaItemStateVersionByQueryCriteriaSql"/>
+        <choose>
+            <when test="orderByField != null and orderByDirection != null">
+                order by ${orderByField} ${orderByDirection}
+            </when>
+            <otherwise>
+                order by VER_NUM desc
+            </otherwise>
+        </choose>
+    </select>
+
+    <select id="listAeaItemStateVersion"  resultMap="AeaItemStateVerMap">
+        select * from AEA_ITEM_STATE_VER
+        <where>
+            and IS_DELETED = '0'
+            <if test="itemStateVerId != null">
+                and ITEM_STATE_VER_ID = #{itemStateVerId}
+            </if>
+            <if test="itemId != null">
+                and ITEM_ID = #{itemId}
+            </if>
+            <if test="itemVerId != null">
+                and ITEM_VER_ID = #{itemVerId}
+            </if>
+            <if test="verStatus!=null">
+                and VER_STATUS = #{verStatus}
+            </if>
+            <if test="rootOrgId != null">
+                and ROOT_ORG_ID = #{rootOrgId}
+            </if>
+        </where>
+        order by VER_NUM desc, CREATE_TIME desc
+    </select>
+
+    <select id="getCountUnPublishedByItemVerId" resultType="java.lang.Long">
+        select count(*) from AEA_ITEM_STATE_VER
+        <where>
+            and IS_DELETED = '0'
+            and VER_STATUS = '0'
+            and ITEM_VER_ID = #{itemVerId}
+        </where>
+    </select>
+
+    <select id="listTestRunOrPublishedItemStateVer" resultMap="AeaItemStateVerMap">
+        select * from AEA_ITEM_STATE_VER
+        <where>
+            and IS_DELETED = '0'
+            and VER_STATUS in ( '1','2')
+            and ITEM_VER_ID = #{itemVerId}
+            and ROOT_ORG_ID = #{rootOrgId}
+        </where>
+        order by VER_NUM desc
+    </select>
+
+    <update id="deprecateAllTestRunAndPublishedVersion">
+        update AEA_ITEM_STATE_VER set VER_STATUS = '3'
+        <where>
+            and ROOT_ORG_ID = #{rootOrgId}
+            and ITEM_VER_ID = #{itemVerId}
+            and ITEM_STATE_VER_ID != #{stateVerId}
+            and IS_DELETED = '0'
+            and VER_STATUS in ('2','1')
+        </where>
+    </update>
+
+</mapper>

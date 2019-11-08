@@ -1,0 +1,507 @@
+body {
+  background-color: #f2f3f8;
+}
+
+.intro-loop(@n, @i: 1) when (@i <=@n) {
+  .icon-@{i} {
+    background-image: url("../images/windowIndex/icon-@{i}.png");
+    background-size: 100% 100%;
+  }
+
+  .intro-loop(@n, (@i + 1));
+}
+
+// 圆角生成
+.border-radius (@radius) {
+  -webkit-border-radius: @radius;
+  -moz-border-radius: @radius;
+  border-radius: @radius;
+}
+
+// 没有数据的展示
+.non-data {
+  background: url('../images/non-data.png') no-repeat center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  height: 200px !important;
+  width: 180px;
+  transform: translateX(-50%) translateY(-50%);
+}
+
+.box-card {
+  .el-card__header {
+    padding: 5px 20px !important;
+    .el-input{
+      width: 350px;
+      .el-input__inner{
+        height: 32px!important;
+        line-height: 32px!important;
+      }
+      // 输入框内的搜索按钮
+      .el-input-group__append{
+        padding: 0 9px;
+      }
+    }
+  }
+
+  .el-card__body {
+    padding: 15px !important;
+  }
+
+  .card-title {
+    color: #575962;
+    font-weight: normal;
+    font-size: 16px;
+    display: inline-block;
+    vertical-align: middle;
+    transform: translateY(5px);
+  }
+
+  
+  
+}
+
+// /* 公告+消息-card */
+// .notice-box-card {
+//   .el-card__body{
+//     padding: 15px 0!important;
+//   }
+// }
+
+// 强制重置el-input中的-e-button的颜色
+.el-input-group__append {
+  background: #4EB2FD !important;
+  border: #4EB2FD !important;
+  color: #fff !important;
+}
+
+// 数字标记
+.num-badge {
+  display: inline-block;
+  background: #FF6C69;
+  color: #fff;
+  padding: 1px 10px;
+  -webkit-border-radius: 12px;
+  -moz-border-radius: 12px;
+  border-radius: 12px;
+  margin-left:2px;
+  font-size: 12px;
+  font-weight: 400;
+  border: 3px solid rgba(255, 239, 239, 1);
+  -webkit-box-shadow: 0px 0px 8px 0px rgba(50, 50, 50, 0.05);
+  -moz-box-shadow: 0px 0px 8px 0px rgba(50, 50, 50, 0.05);
+  box-shadow: 0px 0px 8px 0px rgba(50, 50, 50, 0.05);
+}
+
+// 查看更多
+.more-tip{
+  font-size: 14px;
+  font-weight: normal;
+  margin-left: 16px;
+}
+// 表格操作按钮
+.tbop-btn-color(@color, @hoverColor){
+  display: inline-block;
+  padding: 0px 10px;
+  border: 1px solid @color;
+  color: @color;
+  &:hover{
+    background: @hoverColor;
+    border: 1px solid@hoverColor;
+    color: #fff;
+  }
+}
+// 普通表格操作按钮
+.normal-tabop-btn {
+  .border-radius(12px);
+  .tbop-btn-color(#457EFF,#44ACFD)
+}
+
+// 紧急表格操作按钮
+.urgent-tabop-btn{
+  .border-radius(12px);
+  .tbop-btn-color(#FF6C69,#FF7C79)
+}
+
+// primary状态表格操作按钮
+.primary-tabop-btn{
+  .border-radius(12px);
+  .tbop-btn-color(#44ACFD,rgb(98, 178, 240))
+}
+
+.index-wrapper {
+  position: relative;
+  padding: 15px;
+  height: 100%;
+  overflow-y: auto;
+  min-width: 1400px;
+
+  // 主体
+  .index-content {
+    width: 100%;
+    padding-right: 497px;
+    padding-right: 578px;
+
+    // 表格区
+    .table-box {
+      height: 400px;
+      height: 278px;
+      height: 266px;
+      height: 370px;
+      height: 312px;
+      height: 322px;
+    }
+  }
+
+  // 右侧
+  .index-right {
+    position: absolute;
+    top: 0;
+    right: 15px;
+    width: 482px;
+    width: 564px;
+    padding-bottom: 15px;
+    background: #f2f3f8;
+
+    // 工作台
+    .workbench {
+      margin-top: 1px;
+      .bench-item {
+        position: relative;
+        width: 170px;
+        // height: 110px;
+
+        // 改版后
+        height: 100px;
+
+        display: inline-block;
+        vertical-align: top;
+        text-align: center;
+        line-height: 90px;
+        background: #fff;
+        color: #575962;
+        border: 1px solid #DCDFE6;
+        margin-right: 10px;
+        // margin-bottom: 10px;
+
+        // 改版后的
+        margin-bottom: 12px;
+
+        cursor: pointer;
+        // .border-radius(10px);
+
+         // 改版后的
+        .border-radius(4px);
+
+        &:nth-child(3n+3) {
+          margin-right: 0;
+        }
+        // 改版新增
+        &:nth-last-of-type(1),&:nth-last-of-type(2),&:nth-last-of-type(3){
+          margin-bottom: -1px;
+        } 
+
+        &:hover {
+          // background: #457EFF;
+          // color: #fff;
+          // box-shadow: 0px 3px 5px 0px rgba(0, 0, 0, 0.04);
+          // .item-count,
+          // .item-name {
+          //   color: #fff;
+          // }
+
+          // 改版后的
+          border: 1px solid #169AFF;
+          .item-count{
+            color: #169AFF;
+          }
+        }
+
+        .item-icon {
+          position: absolute;
+          top: 50%;
+          left: 15px;
+          margin-top: -32px;
+          display: inline-block;
+          width: 64px;
+          height: 64px;
+        }
+
+        .intro-loop(9); //调用循环生成bg
+
+        .item-count {
+          // line-height: 1;
+          // margin-top: 30px;
+          // font-size: 28px;
+          // font-weight: bold;
+          // color: #3F4047;
+          // // padding-left: 12px;
+          // padding-left: 76px;
+          // text-align: left;
+
+          // 改版后的
+          line-height: 1;
+          margin-top: 26px;
+          font-size: 28px;
+          font-weight: bold;
+          color: #3F4047;
+          padding-left: 70px;
+          text-align: right;
+          padding-right: 16px;
+          margin-top: 50px;
+        }
+
+        .item-name {
+          // line-height: 1;
+          // font-size: 14px;
+          // margin-top: 12px;
+          // color: #575962;
+          // padding-left: 76px;
+          // text-align: left;
+
+          // 改版后的
+          line-height: 1;
+          font-size: 14px;
+          margin-top: 22px;
+          text-align: left;
+          position: absolute;
+          top: 0px;
+          right: 14px;
+          font-weight: 400;
+          color: #575962;
+        }
+      }
+    }
+
+    // 通知公告,个人消息
+    .notice-new-box {
+      // height: 160px;
+      // height: 226px;
+      height: 530px;
+      overflow-y: auto;
+
+      .new-item {
+        padding: 12px 2px 12px 4px;
+        // padding: 12px 15px 12px 15px;
+        border-bottom: 1px dashed #EBEDF2;
+        position: relative;
+        font-size: 14px;
+
+        &:hover{
+          background: #eceff8;
+        }
+
+        .item-content {
+          max-width: 68%;
+          color: #575962;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          display: inline-block;
+        }
+
+        .item-is-new {
+          color: #f56c6c;
+          font-style: italic;
+          font-weight: bold;
+          // margin-left: 10px;
+          font-size: 12px;
+          display: inline-block;
+          vertical-align: top;
+          width: 38px;
+          height: 18px;
+          background: url('../images/item-is-new.png') no-repeat center;
+        }
+
+        .item-time {
+          position: absolute;
+          right: 2px;
+          top: 50%;
+          transform: translateY(-50%);
+          color: #AFB2C1;
+        }
+      }
+    }
+
+    .box-card {
+      .el-card__header {
+        padding: 10px 20px !important;
+        .card-title{
+          height: 22px;
+        }
+      }    
+    }
+  }
+
+  // 部门事项
+  .depart-box {
+    .depart-chart {
+      // background: palegoldenrod;
+      height: 300px;
+    }
+
+    .depart-table {
+      // background: peru;
+      height: 300px;
+    }
+  }
+
+  // 月度，地区，主题申报
+  .declare-box {
+    .declare-month-and-area {
+      height: 736px;
+
+      .declare-month {
+        height: 360px;
+
+        .rander-box {
+          height: 260px;
+        }
+      }
+
+      .declare-area {
+        height: 360px;
+
+        .rander-box {
+          height: 260px;
+        }
+      }
+    }
+
+    .declare-theme {
+      height: 736px;
+
+      .rander-box {
+        height: 635px;
+        height: 320px;
+      }
+    }
+  }
+
+  // 主题申报异常排名，项目并联审批统计，申报来源统计
+  .bottom-show-box {
+
+    .theme-abnormal-box {
+      .rander-box {
+        height: 290px;
+      }
+    }
+
+    .half-box {
+      .left-box {
+        width: 49%;
+
+        .rander-box {
+          height: 290px;
+        }
+      }
+
+      .right-box {
+        width: 49%;
+
+        .rander-box {
+          height: 290px;
+        }
+      }
+    }
+  }
+}
+
+.flow_steps{
+  float: left;
+  // width: 170px;
+  // 改版后的
+  width: 100%;
+}
+
+.stage{
+  margin-bottom: 0;
+}
+.stage li{
+  padding: 0px 4px 0  14px;
+  line-height: 26px;
+  background: #e2e2e2;
+  display:inline-block;
+  color: #fff;
+  position: relative;
+  margin-right: 1px;
+}
+.stage li:after{
+  content: '';
+  display: block;
+  border-top: 13px solid transparent;
+  border-bottom: 13px solid transparent;
+  border-left: 13px solid #e2e2e2;
+  position: absolute;
+  right: -13px;
+  top: 0;
+  z-index: 10;
+}
+.stage li:before{
+  content: '';
+  display: block;
+  border-top: 13px solid transparent;
+  border-bottom: 13px solid transparent;
+  border-left: 13px solid #fff;
+  position: absolute;
+  left: 0px;
+  top: 0;
+}
+
+.stage li:first-child{
+  border-radius: 4px 0 0 4px;
+}
+.stage li:last-child,
+.stageEnd {
+  border-radius: 0px 4px 4px 0px;
+  padding-right: 12px;
+
+  // 改版后的新增
+  vertical-align: top;
+  overflow: hidden;
+  height: 26px;
+  // width: calc(~ "100% - 84px");
+  color:#575962;
+  background: #E2E2E2;
+  line-height: 16px;
+}
+.stage li:first-child:before{
+  display: none;
+}
+.stage li.stage-success{
+  background: #2FCC7F;
+}
+.stage li.stage-success:after{
+  border-left: 13px solid #2FCC7F;
+}
+.stage li.current{
+  background: #36a3f7;
+
+  // 改版后
+  // background: #34BFA3;
+}
+.stage li.current:after{
+  content: '';
+  display: block;
+  border-top: 13px solid transparent;
+  border-bottom: 13px solid transparent;
+  border-left: 13px solid #36a3f7;
+  // 改版后
+  // border-left: 13px solid #34BFA3;
+  position: absolute;
+  right: -13px;
+  top: 0;
+  z-index: 10;
+}
+.stage li:last-child:after,.stage li.current.stageEnd:after{
+  display: none;
+}
+.stage li.current.stageEnd:after{
+}
+.stage .item{
+  background-color:#36a3f7;
+  border-radius: 4px!important;
+  line-height: 18px;
+  padding: 6px 2px 6px 12px;
+}

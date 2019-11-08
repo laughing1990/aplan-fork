@@ -1,0 +1,116 @@
+<!--@Author: ZL-->
+<!--@Date:   2019/06/14-->
+<!--@Last Modified by:   ZL-->
+<!--@Last Modified time: $ $-->
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>唐山市中介服务网上超市</title>
+  <link rel="shortcut icon" href="../../../static/zjcs/common/images/favicon.ico" th:href="@{/zjcs/common/images/favicon.ico}">
+  <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.css"
+    th:href="@{/agcloud/framework/js-lib/element-2/element.css}" />
+  <link rel="stylesheet"
+    href="/framework-ui/src/main/resources/static/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css"
+    th:href="@{/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css}">
+  <link rel="stylesheet" href="../../../static/zjcs/common/css/reset.css" th:href="@{/zjcs/common/css/reset.css}">
+  <link rel="stylesheet" href="../../../static/zjcs/beSelectionNotice/css/index.css"
+    th:href="@{/zjcs/beSelectionNotice/css/index.css}">
+  </link>
+
+  <script>
+    var ctx = '[[@{/}]]';
+    // var ctx = 'http://192.168.30.209:8084/aplanmis-mall/';
+  </script>
+</head>
+
+<body>
+  <div id="details" v-cloak>
+    <div class="header">
+      <iframe src="../common/header.html" th:src="@{../header.html}" frameborder="0"></iframe>
+    </div>
+    <div class="main-content detail__content clearfix" :style="{minHeight:contentMinHeight+'px'}">
+      <div class="breadcrumb">
+        <a href="index.html#contractNotice" class="breadcrumb__link">合同公示</a>
+        <span class="breadcrumb__separator">/</span>
+        <span>公告详情</span>
+      </div>
+      <div class="article-tit mt-2">{{purchaseDetails.projName}}
+      </div>
+      <ul>
+        <li>
+          <b>采购项目名称：</b>
+          <div class="txt">{{purchaseDetails.projName}}</div>
+        </li>
+        <li>
+          <b>采购项目编码：</b>
+          <div class="txt">{{purchaseDetails.localCode}}</div>
+        </li>
+        <li>
+          <b>项目业主：</b>
+          <div class="txt">{{purchaseDetails.contract['ownerUnitInfoName']}}</div>
+        </li>
+        <li>
+          <b>服务机构：</b>
+          <div class="txt">
+            {{purchaseDetails.contract.serviceUnitInfoName}}
+          </div>
+        </li>
+        <li>
+          <b>合同名称：</b>
+          <div class="txt">{{purchaseDetails.contract.contractName}}</div>
+        </li>
+
+        <li>
+          <b>合同编号：</b>
+          <div class="txt">
+            <p>{{purchaseDetails.contract.contractCode}}</p>
+          </div>
+        </li>
+        <li>
+          <b>合同签订时间：</b>
+          <div class="txt">{{purchaseDetails.contract.signTime | formatDate}}</div>
+        </li>
+        <li>
+          <b>合同服务期限：</b>
+          <div class="txt">{{purchaseDetails.contract.serviceStartTime | formatDate}} ~
+            {{purchaseDetails.contract.serviceEndTime | formatDate}}</div>
+        </li>
+        <li>
+          <b>服务内容：</b>
+          <div class="txt">{{purchaseDetails.contract.serviceContent}}</div>
+        </li>
+        <template v-if="purchaseDetails.requireExplainFile">
+          <li class="download-file">
+            <b style="vertical-align: top;">合同附件：</b>
+            <a v-if="purchaseDetails.contract.bscAttForms.length>0" v-for="item in purchaseDetails.contract.bscAttForms" href="javascript:;" @click="downloadContractEnclosure(item)">
+              {{item.attName}}
+            </a>
+            <a v-else>
+              暂无文件
+            </a>
+          </li>
+        </template>
+
+      </ul>
+    </div>
+    <div class="footer" :class="isScroll?'':'fixed-bottom'">
+      <iframe src="../common/footer.html" th:src="@{../footer.html}" frameborder="0"></iframe>
+    </div>
+  </div>
+  <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js"
+    th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>
+  <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js"
+    th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
+  <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js"
+    th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
+  <script src="../../../static/common/js/common.js" th:src="@{/common/js/common.js}"></script>
+
+  <script src="../../../static/zjcs/beSelectionNotice/js/contractNoticeDetail.js"
+    th:src="@{/zjcs/beSelectionNotice/js/contractNoticeDetail.js}"></script>
+</body>
+
+</html>

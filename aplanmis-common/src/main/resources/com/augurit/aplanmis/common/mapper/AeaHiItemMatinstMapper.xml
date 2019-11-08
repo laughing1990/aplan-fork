@@ -1,0 +1,858 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by Administrator    2019-07-04 16:45:14 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaHiItemMatinstMapper">
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns">
+        MATINST_ID  matinstId,
+        MAT_ID  matId,
+        REAL_PAPER_COUNT  realPaperCount,
+        REAL_COPY_COUNT  realCopyCount,
+        ATT_COUNT  attCount,
+        CREATER  creater,
+        CREATE_TIME  createTime,
+        MODIFIER  modifier,
+        MODIFY_TIME  modifyTime,
+        MATINST_CODE  matinstCode,
+        MATINST_NAME  matinstName,
+        UNIT_INFO_ID  unitInfoId,
+        PROJ_INFO_ID  projInfoId,
+        OFFICIAL_DOC_NO  officialDocNo,
+        OFFICIAL_DOC_TITLE  officialDocTitle,
+        OFFICIAL_DOC_DUE_DATE  officialDocDueDate,
+        OFFICIAL_DOC_PUBLISH_DATE  officialDocPublishDate,
+        ROOT_ORG_ID rootOrgId,
+        MEMO memo,
+        MATINST_SOURCE matinstSource,
+        LINKMAN_INFO_ID linkmanInfoId
+    </sql>
+
+    <sql id="allColumns_ahim">
+        ahim.MATINST_ID  matinstId,
+        ahim.MAT_ID  matId,
+        ahim.REAL_PAPER_COUNT  realPaperCount,
+        ahim.REAL_COPY_COUNT  realCopyCount,
+        ahim.ATT_COUNT  attCount,
+        ahim.CREATER  creater,
+        ahim.CREATE_TIME  createTime,
+        ahim.MODIFIER  modifier,
+        ahim.MODIFY_TIME  modifyTime,
+        ahim.MATINST_CODE  matinstCode,
+        ahim.MATINST_NAME  matinstName,
+        ahim.UNIT_INFO_ID  unitInfoId,
+        ahim.PROJ_INFO_ID  projInfoId,
+        ahim.OFFICIAL_DOC_NO  officialDocNo,
+        ahim.OFFICIAL_DOC_TITLE  officialDocTitle,
+        ahim.OFFICIAL_DOC_DUE_DATE  officialDocDueDate,
+        ahim.OFFICIAL_DOC_PUBLISH_DATE  officialDocPublishDate,
+        ahim.ROOT_ORG_ID rootOrgId,
+        ahim.MEMO memo,
+        ahim.MATINST_SOURCE matinstSource,
+        ahim.LINKMAN_INFO_ID linkmanInfoId
+    </sql>
+    <sql id="BSC_ATT_DETAIL_COLUMN_PREFIX" >
+        detail.DETAIL_ID detailId,
+        detail.ATT_CODE attCode,
+        detail.ATT_NAME attName,
+        detail.ATT_SIZE attSize,
+        detail.ATT_TYPE attType,
+        detail.ATT_FORMAT attFormat,
+        detail.SORT_NO sortNo,
+        detail.STORE_TYPE storeType,
+        detail.ATT_PATH attPath,
+        detail.IS_RELATIVE_PATH isRelativePath,
+        detail.IS_ENCRYPT isEncrypt,
+        detail.ENCRYPT_CLASS encryptClass,
+        detail.MESSAGE_DIGEST messageDigest,
+        detail.MEMO1 memo1,
+        detail.MEMO2 memo2,
+        detail.MEMO3 memo3,
+        detail.MEMO4 memo4,
+        detail.MEMO5 memo5,
+        detail.MEMO6 memo6,
+        detail.CREATER creater,
+        detail.CREATE_TIME createTime,
+        detail.MODIFIER, MODIFY_TIME modifyTime,
+        detail.ATT_DISK_NAME attDiskName,
+        detail.ORG_ID orgId,
+        detail.DIR_ID dir,
+        detail.OBJECT_ID objectId,
+        detail.GEO_OBJECT_ID geoObjectId,
+        detail.IS_NEED_PDF isNeedPdf,
+        detail.IS_CONVERT_PDF isConvertPdf,
+        detail.CONVERT_PDF_RESULT convertPdfResult,
+        detail.CONVERT_PDF_TIME convertPdfTime
+    </sql>
+    <sql id="BSC_ATT_LINK_COLUMN" >
+        link.LINK_ID linkId, link.TABLE_NAME tableName, link.RECORD_ID recordId,link.PK_NAME pkName,link.DIR_ID dirId,link.LINK_TYPE linkType
+    </sql>
+    <sql id="allColumn">
+        <include refid="BSC_ATT_LINK_COLUMN" />,
+        <include refid="BSC_ATT_DETAIL_COLUMN_PREFIX" />
+    </sql>
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaHiItemMatinstById" resultType="AeaHiItemMatinst">
+        select
+        <include refid="allColumns"/>
+        from AEA_HI_ITEM_MATINST
+        where MATINST_ID = #{id}
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaHiItemMatinst" resultType="AeaHiItemMatinst">
+        select
+        <include refid="allColumns"/>
+        from AEA_HI_ITEM_MATINST
+        <where>
+            <if test="matinstId != null">
+                AND MATINST_ID = #{matinstId}
+            </if>
+            <if test="matId != null">
+                AND MAT_ID = #{matId}
+            </if>
+            <if test="realPaperCount != null">
+                AND REAL_PAPER_COUNT = #{realPaperCount}
+            </if>
+            <if test="realCopyCount != null">
+                AND REAL_COPY_COUNT = #{realCopyCount}
+            </if>
+            <if test="attCount != null">
+                AND ATT_COUNT = #{attCount}
+            </if>
+            <if test="matinstCode != null">
+                AND MATINST_CODE = #{matinstCode}
+            </if>
+            <if test="matinstName != null">
+                AND MATINST_NAME = #{matinstName}
+            </if>
+            <if test="unitInfoId != null">
+                AND UNIT_INFO_ID = #{unitInfoId}
+            </if>
+            <if test="projInfoId != null">
+                AND PROJ_INFO_ID = #{projInfoId}
+            </if>
+            <if test="officialDocNo != null">
+                AND OFFICIAL_DOC_NO = #{officialDocNo}
+            </if>
+            <if test="officialDocTitle != null">
+                AND OFFICIAL_DOC_TITLE = #{officialDocTitle}
+            </if>
+            <if test="officialDocDueDate != null">
+                AND OFFICIAL_DOC_DUE_DATE = #{officialDocDueDate}
+            </if>
+            <if test="officialDocPublishDate != null">
+                AND OFFICIAL_DOC_PUBLISH_DATE = #{officialDocPublishDate}
+            </if>
+            <if test="rootOrgId != null">
+                AND ROOT_ORG_ID = #{rootOrgId}
+            </if>
+            <if test="memo != null">
+                AND MEMO = #{memo}
+            </if>
+            <if test="matinstSource != null">
+                AND MATINST_SOURCE = #{matinstSource}
+            </if>
+            <if test="linkmanInfoId != null">
+                AND LINKMAN_INFO_ID = #{linkmanInfoId}
+            </if>
+        </where>
+    </select>
+
+    <select id="getMatinstListByProjInfoIdAndMatIds" resultType="AeaHiItemMatinst">
+        select
+        <include refid="allColumns"/>
+        from AEA_HI_ITEM_MATINST
+        where
+        PROJ_INFO_ID = #{projInfoid}
+        AND
+        MAT_ID IN
+        <if test="_databaseId == 'oracle'">
+            <foreach collection="matIds" item="item" index="index" open="(" separator="union all" close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="_databaseId == 'mysql'">
+            <foreach collection="matIds" item="item" index="index" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+
+    <select id="getMatinstListByStageinstId" resultType="AeaHiItemMatinst">
+        select
+        <include refid="allColumns_ahim"/>
+        FROM
+        aea_hi_item_inoutinst ahii,
+        aea_hi_item_matinst ahim
+        WHERE
+        ahii.MATINST_ID = ahim.MATINST_ID
+        AND ahii.IS_COLLECTED = '1'
+        AND ahii.ROOT_ORG_ID = #{rootOrgId}
+        AND ahii.ITEMINST_ID IN ( SELECT ITEMINST_ID FROM aea_hi_iteminst WHERE STAGEINST_ID = #{stageinstId} )
+    </select>
+
+    <select id="getMatinstListByIteminstIds" resultType="AeaHiItemMatinst">
+        SELECT
+        <include refid="allColumns"/>
+        FROM
+        aea_hi_item_matinst
+        WHERE
+        MATINST_ID IN (
+        SELECT
+        ahii.MATINST_ID
+        FROM
+        aea_hi_item_inoutinst ahii,
+        aea_item_inout aii
+        WHERE
+        ahii.ITEM_INOUT_ID = aii.INOUT_ID
+        AND aii.IS_INPUT = #{isInput}
+        AND aii.IS_DELETED = '0'
+        AND ahii.IS_COLLECTED = '1'
+        AND ahii.ITEMINST_ID IN
+        <if test="_databaseId == 'oracle'">
+            <foreach collection="iteminstIds" item="item" open="(" separator="union all" close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="_databaseId == 'mysql'">
+            <foreach collection="iteminstIds" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        )
+    </select>
+    <select id="getMatinstListByIteminstIdsAndKeyword" resultType="AeaHiItemMatinst">
+        SELECT
+        <include refid="allColumns"/>
+        FROM
+        aea_hi_item_matinst
+        WHERE
+        MATINST_ID IN (
+        SELECT
+        ahii.MATINST_ID
+        FROM
+        aea_hi_item_inoutinst ahii,
+        aea_item_inout aii
+        WHERE
+        ahii.ITEM_INOUT_ID = aii.INOUT_ID
+        AND aii.IS_INPUT = #{isInput}
+        AND aii.IS_DELETED = '0'
+        AND ahii.IS_COLLECTED = '1'
+        AND ahii.ITEMINST_ID IN
+        <if test="_databaseId == 'oracle'">
+            <foreach collection="iteminstIds" item="item" open="(" separator="union all" close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="_databaseId == 'mysql'">
+            <foreach collection="iteminstIds" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        )
+        <if test="keyword != null and keyword !=''">
+            AND MATINST_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+        </if>
+    </select>
+
+    <select id="getOutputMatinstListByStageinstId" resultType="AeaHiItemMatinst">
+        SELECT
+        <include refid="allColumns"/>
+        FROM
+        aea_hi_item_matinst
+        WHERE
+        MATINST_ID IN (
+        SELECT
+        ahii.MATINST_ID
+        FROM
+        aea_hi_item_inoutinst ahii,
+        aea_item_inout aii
+        WHERE
+        ahii.ITEM_INOUT_ID = aii.INOUT_ID
+        AND aii.IS_INPUT = '0'
+        AND aii.IS_DELETED = '0'
+        AND ahii.IS_COLLECTED = '1'
+        AND ahii.ITEMINST_ID IN
+        (
+        SELECT ITEMINST_ID FROM aea_hi_iteminst WHERE STAGEINST_ID =#{stageinstId}
+        )
+        )
+    </select>
+
+    <select id="getMatinstListByStageIteminstId" resultType="AeaHiItemMatinst">
+        select
+        <include refid="allColumns_ahim"/>
+        FROM
+        aea_hi_item_inoutinst ahii,
+        aea_hi_item_matinst ahim
+        WHERE
+        ahii.MATINST_ID = ahim.MATINST_ID
+        AND ahii.IS_PAR_IN = '1'
+        AND ahii.IS_COLLECTED = '1'
+        AND ahii.ITEMINST_ID = #{iteminstId}
+    </select>
+
+    <select id="listAeaHiItemMatinstByIds" resultType="com.augurit.aplanmis.common.domain.AeaHiItemMatinst">
+        select
+        <include refid="allColumns"/>
+        from AEA_HI_ITEM_MATINST
+        where MATINST_ID IN
+        <foreach collection="matinstIds" item="id" close=")" open="(" separator=",">#{id}</foreach>
+    </select>
+
+    <select id="listUnitAttMatinst" resultType="com.augurit.aplanmis.common.domain.AeaHiItemMatinst">
+        select
+        <include refid="allColumns"/>
+        from AEA_HI_ITEM_MATINST
+        <where>
+            ( ATT_COUNT IS NOT NULL AND ATT_COUNT >0)
+            <if test="matCode != null">
+                AND MATINST_CODE = #{matCode}
+            </if>
+            <if test="unitInfoIds != null">
+                AND (
+                <foreach collection="unitInfoIds" index="index" item="unitInfoId" open="" separator=" OR " close="">
+                    UNIT_INFO_ID LIKE CONCAT(CONCAT('%',#{unitInfoId}),'%')
+                </foreach>
+                )
+            </if>
+            <if test="linkmanInfoId !=null">
+                AND LINKMAN_INFO_ID = #{linkmanInfoId}
+            </if>
+        </where>
+        ORDER BY CREATE_TIME DESC
+    </select>
+
+    <select id="getAeaHiItemMatinstFile" resultType="com.augurit.agcloud.bsc.domain.BscAttDetail">
+        select distinct
+        detail.DETAIL_ID detailId,
+        detail.ATT_CODE attCode,
+        detail.ATT_NAME attName,
+        detail.ATT_SIZE attSize,
+        detail.ATT_TYPE attType,
+        detail.ATT_FORMAT attFormat,
+        detail.SORT_NO sortNo,
+        -- detail.IS_DB_STORE isDbStore,
+        detail.ATT_PATH attPath,
+        detail.IS_ENCRYPT isEncrypt,
+        detail.MESSAGE_DIGEST messageDigest,
+        detail.MEMO1 memo1,
+        detail.MEMO2 memo2,
+        detail.MEMO3 memo3,
+        detail.MEMO4 memo4,
+        detail.MEMO5 memo5,
+        detail.MEMO6 memo6,
+        detail.CREATER creater,
+        detail.CREATE_TIME createTime,
+        detail.MODIFIER modifier,
+        detail.MODIFY_TIME modifyTime,
+        detail.ATT_DISK_NAME attDiskName,
+        detail.ENCRYPT_CLASS encryptClass,
+        -- detail.IS_RELATIVE isRelative,
+        detail.DIR_ID dirId,
+        detail.ORG_ID orgId
+        from BSC_ATT_DETAIL detail, BSC_ATT_LINK link
+        <where>
+            detail.DETAIL_ID=link.DETAIL_ID
+
+            <if test="recordIds != null">
+                AND link.RECORD_ID in
+                <foreach collection="recordIds" index="index" item="recordId" open="(" separator="," close=")">
+                    #{recordId}
+                </foreach>
+            </if>
+            AND link.PK_NAME = #{pkName}
+            AND link.TABLE_NAME = #{tableName}
+            <if test="keyword != null and keyword!=''">
+                AND (
+                detail.ATT_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%') OR
+                detail.ATT_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%') OR
+                link.TABLE_NAME like CONCAT(CONCAT('%',#{keyword}),'%')
+                )
+            </if>
+
+            <if test="excludeIds != null">
+                AND detail.DETAIL_ID not in (select d.DETAIL_ID from BSC_ATT_DETAIL d, BSC_ATT_LINK l where
+                d.DETAIL_ID=l.DETAIL_ID and l.RECORD_ID in
+                <foreach collection="excludeIds" index="index" item="excludeId" open="(" separator="," close=")">
+                    #{excludeId}
+                </foreach>
+                )
+            </if>
+        </where>
+        order by detail.CREATE_TIME DESC
+    </select>
+    <select id="listProjAeaHiItemMatinst" resultType="com.augurit.aplanmis.common.domain.AeaHiItemMatinst">
+        select
+        <include refid="allColumns"/>
+        from AEA_HI_ITEM_MATINST
+        <where>
+            <if test="matCodes != null">
+                AND MATINST_CODE in (
+                <foreach collection="matCodes" item="matCode" separator="," open="" close="">
+                    #{matCode}
+                </foreach>
+                )
+            </if>
+            <if test="projInfoIds != null">
+                AND (
+                <foreach collection="projInfoIds" index="index" item="projInfoId" open="" separator=" OR " close="">
+                    PROJ_INFO_ID = #{projInfoId}
+                </foreach>
+                )
+            </if>
+            <if test="unitInfoIds != null">
+                AND unit_info_id in (
+                <foreach collection="unitInfoIds" item="unitInfoId" separator=",">
+                    #{unitInfoId}
+                </foreach>
+                )
+            </if>
+
+        </where>
+    </select>
+
+    <!--4 根据条件查询实体list,返回分页对象 -->
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaHiItemMatinst" parameterType="AeaHiItemMatinst">
+        insert into AEA_HI_ITEM_MATINST (MATINST_ID, MAT_ID, REAL_PAPER_COUNT, REAL_COPY_COUNT, ATT_COUNT, CREATER,
+                                         CREATE_TIME, MODIFIER, MODIFY_TIME, MATINST_CODE, MATINST_NAME, UNIT_INFO_ID,
+                                         PROJ_INFO_ID, OFFICIAL_DOC_NO, OFFICIAL_DOC_TITLE, OFFICIAL_DOC_DUE_DATE,
+        OFFICIAL_DOC_PUBLISH_DATE,ROOT_ORG_ID,MEMO,MATINST_SOURCE,LINKMAN_INFO_ID)
+        values (#{matinstId}, #{matId}, #{realPaperCount}, #{realCopyCount}, #{attCount}, #{creater}, #{createTime},
+                #{modifier}, #{modifyTime}, #{matinstCode}, #{matinstName}, #{unitInfoId}, #{projInfoId},
+        #{officialDocNo}, #{officialDocTitle}, #{officialDocDueDate},
+        #{officialDocPublishDate},#{rootOrgId},#{memo},#{matinstSource},#{linkmanInfoId})
+    </insert>
+
+    <insert id="batchInsertAeaHiItemMatinst" parameterType="java.util.List">
+        insert into AEA_HI_ITEM_MATINST (MATINST_ID, MAT_ID, REAL_PAPER_COUNT, REAL_COPY_COUNT, ATT_COUNT, CREATER,
+        CREATE_TIME, MODIFIER, MODIFY_TIME, MATINST_CODE, MATINST_NAME, UNIT_INFO_ID,
+        PROJ_INFO_ID, OFFICIAL_DOC_NO, OFFICIAL_DOC_TITLE, OFFICIAL_DOC_DUE_DATE,
+        OFFICIAL_DOC_PUBLISH_DATE,ROOT_ORG_ID,MEMO,MATINST_SOURCE,LINKMAN_INFO_ID)
+        <if test="_databaseId == 'oracle'">
+            <foreach collection="list" item="item" index="index" separator="union all">
+                (
+                SELECT
+                #{item.matinstId}, #{item.matId}, #{item.realPaperCount}, #{item.realCopyCount}, #{item.attCount},
+                #{item.creater}, #{item.createTime},
+                #{item.modifier}, #{item.modifyTime}, #{item.matinstCode}, #{item.matinstName}, #{item.unitInfoId},
+                #{item.projInfoId},
+                #{item.officialDocNo}, #{item.officialDocTitle}, #{item.officialDocDueDate},
+                #{item.officialDocPublishDate},#{item.rootOrgId},#{item.memo},#{item.matinstSource},#{item.linkmanInfoId}
+                FROM dual
+                )
+            </foreach>
+        </if>
+        <if test="_databaseId == 'mysql'">
+            values
+            <foreach collection="list" item="item" index="index" separator=",">
+                (#{item.matinstId}, #{item.matId}, #{item.realPaperCount}, #{item.realCopyCount}, #{item.attCount},
+                #{item.creater}, #{item.createTime},
+                #{item.modifier}, #{item.modifyTime}, #{item.matinstCode}, #{item.matinstName}, #{item.unitInfoId},
+                #{item.projInfoId},
+                #{item.officialDocNo}, #{item.officialDocTitle}, #{item.officialDocDueDate},
+                #{item.officialDocPublishDate},
+                #{item.rootOrgId},#{item.memo},#{item.matinstSource},#{item.linkmanInfoId})
+            </foreach>
+        </if>
+
+
+    </insert>
+
+    <!--6 修改实体对象 -->
+    <update id="updateAeaHiItemMatinst" parameterType="AeaHiItemMatinst">
+        update AEA_HI_ITEM_MATINST
+        <set>
+            <if test="matinstId != null">
+                MATINST_ID = #{matinstId},
+            </if>
+            <if test="matId != null">
+                MAT_ID = #{matId},
+            </if>
+            <if test="realPaperCount != null">
+                REAL_PAPER_COUNT = #{realPaperCount},
+            </if>
+            <if test="realCopyCount != null">
+                REAL_COPY_COUNT = #{realCopyCount},
+            </if>
+            <if test="attCount != null">
+                ATT_COUNT = #{attCount},
+            </if>
+            <if test="creater != null">
+                CREATER = #{creater},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime},
+            </if>
+            <if test="modifier != null">
+                MODIFIER = #{modifier},
+            </if>
+            <if test="modifyTime != null">
+                MODIFY_TIME = #{modifyTime},
+            </if>
+            <if test="matinstCode != null">
+                MATINST_CODE = #{matinstCode},
+            </if>
+            <if test="matinstName != null">
+                MATINST_NAME = #{matinstName},
+            </if>
+            <if test="unitInfoId != null">
+                UNIT_INFO_ID = #{unitInfoId},
+            </if>
+            <if test="projInfoId != null">
+                PROJ_INFO_ID = #{projInfoId},
+            </if>
+            <if test="officialDocNo != null">
+                OFFICIAL_DOC_NO = #{officialDocNo},
+            </if>
+            <if test="officialDocTitle != null">
+                OFFICIAL_DOC_TITLE = #{officialDocTitle},
+            </if>
+            <if test="officialDocDueDate != null">
+                OFFICIAL_DOC_DUE_DATE = #{officialDocDueDate},
+            </if>
+            <if test="officialDocPublishDate != null">
+                OFFICIAL_DOC_PUBLISH_DATE = #{officialDocPublishDate},
+            </if>
+            <if test="rootOrgId != null">
+                ROOT_ORG_ID = #{rootOrgId},
+            </if>
+            <if test="memo != null">
+                MEMO = #{memo},
+            </if>
+            <if test="matinstSource != null">
+                MATINST_SOURCE = #{matinstSource},
+            </if>
+            <if test="linkmanInfoId != null">
+                LINKMAN_INFO_ID = #{linkmanInfoId}
+            </if>
+        </set>
+        where MATINST_ID = #{matinstId}
+    </update>
+
+    <update id="batchUpdateAeaHiItemMatinst" parameterType="java.util.List">
+        <if test="_databaseId == 'oracle'">
+            <foreach collection="list" open="begin" close=";end;" separator=";" item="item">
+                update AEA_HI_ITEM_MATINST
+                <set>
+                    <if test="item.matinstId != null">
+                        MATINST_ID = #{item.matinstId},
+                    </if>
+                    <if test="item.matId != null">
+                        MAT_ID = #{item.matId},
+                    </if>
+                    <if test="item.realPaperCount != null">
+                        REAL_PAPER_COUNT = #{item.realPaperCount},
+                    </if>
+                    <if test="item.realCopyCount != null">
+                        REAL_COPY_COUNT = #{item.realCopyCount},
+                    </if>
+                    <if test="item.attCount != null">
+                        ATT_COUNT = #{item.attCount},
+                    </if>
+                    <if test="item.creater != null">
+                        CREATER = #{item.creater},
+                    </if>
+                    <if test="item.createTime != null">
+                        CREATE_TIME = #{item.createTime},
+                    </if>
+                    <if test="item.modifier != null">
+                        MODIFIER = #{item.modifier},
+                    </if>
+                    <if test="item.modifyTime != null">
+                        MODIFY_TIME = #{item.modifyTime},
+                    </if>
+                    <if test="item.matinstCode != null">
+                        MATINST_CODE = #{item.matinstCode},
+                    </if>
+                    <if test="item.matinstName != null">
+                        MATINST_NAME = #{item.matinstName},
+                    </if>
+                    <if test="item.unitInfoId != null">
+                        UNIT_INFO_ID = #{item.unitInfoId},
+                    </if>
+                    <if test="item.projInfoId != null">
+                        PROJ_INFO_ID = #{item.projInfoId},
+                    </if>
+                    <if test="item.officialDocNo != null">
+                        OFFICIAL_DOC_NO = #{item.officialDocNo},
+                    </if>
+                    <if test="item.officialDocTitle != null">
+                        OFFICIAL_DOC_TITLE = #{item.officialDocTitle},
+                    </if>
+                    <if test="item.officialDocDueDate != null">
+                        OFFICIAL_DOC_DUE_DATE = #{item.officialDocDueDate},
+                    </if>
+                    <if test="item.officialDocPublishDate != null">
+                        OFFICIAL_DOC_PUBLISH_DATE = #{item.officialDocPublishDate},
+                    </if>
+                    <if test="item.rootOrgId != null">
+                        ROOT_ORG_ID = #{item.rootOrgId},
+                    </if>
+                    <if test="item.memo != null">
+                        MEMO = #{item.memo},
+                    </if>
+                    <if test="item.matinstSource != null">
+                        MATINST_SOURCE = #{item.matinstSource},
+                    </if>
+                    <if test="item.linkmanInfoId != null">
+                        LINKMAN_INFO_ID = #{item.linkmanInfoId}
+                    </if>
+                </set>
+                where MATINST_ID = #{item.matinstId}
+            </foreach>
+        </if>
+        <if test="_databaseId == 'mysql'">
+            <foreach collection="list" open="" close="" separator=";" item="item">
+                update AEA_HI_ITEM_MATINST
+                <set>
+                    <if test="item.matinstId != null">
+                        MATINST_ID = #{item.matinstId},
+                    </if>
+                    <if test="item.matId != null">
+                        MAT_ID = #{item.matId},
+                    </if>
+                    <if test="item.realPaperCount != null">
+                        REAL_PAPER_COUNT = #{item.realPaperCount},
+                    </if>
+                    <if test="item.realCopyCount != null">
+                        REAL_COPY_COUNT = #{item.realCopyCount},
+                    </if>
+                    <if test="item.attCount != null">
+                        ATT_COUNT = #{item.attCount},
+                    </if>
+                    <if test="item.creater != null">
+                        CREATER = #{item.creater},
+                    </if>
+                    <if test="item.createTime != null">
+                        CREATE_TIME = #{item.createTime},
+                    </if>
+                    <if test="item.modifier != null">
+                        MODIFIER = #{item.modifier},
+                    </if>
+                    <if test="item.modifyTime != null">
+                        MODIFY_TIME = #{item.modifyTime},
+                    </if>
+                    <if test="item.matinstCode != null">
+                        MATINST_CODE = #{item.matinstCode},
+                    </if>
+                    <if test="item.matinstName != null">
+                        MATINST_NAME = #{item.matinstName},
+                    </if>
+                    <if test="item.unitInfoId != null">
+                        UNIT_INFO_ID = #{item.unitInfoId},
+                    </if>
+                    <if test="item.projInfoId != null">
+                        PROJ_INFO_ID = #{item.projInfoId},
+                    </if>
+                    <if test="item.officialDocNo != null">
+                        OFFICIAL_DOC_NO = #{item.officialDocNo},
+                    </if>
+                    <if test="item.officialDocTitle != null">
+                        OFFICIAL_DOC_TITLE = #{item.officialDocTitle},
+                    </if>
+                    <if test="item.officialDocDueDate != null">
+                        OFFICIAL_DOC_DUE_DATE = #{item.officialDocDueDate},
+                    </if>
+                    <if test="item.officialDocPublishDate != null">
+                        OFFICIAL_DOC_PUBLISH_DATE = #{item.officialDocPublishDate},
+                    </if>
+                    <if test="item.rootOrgId != null">
+                        ROOT_ORG_ID = #{item.rootOrgId},
+                    </if>
+                    <if test="item.memo != null">
+                        MEMO = #{item.memo},
+                    </if>
+                    <if test="item.matinstSource != null">
+                        MATINST_SOURCE = #{item.matinstSource},
+                    </if>
+                    <if test="item.linkmanInfoId != null">
+                        LINKMAN_INFO_ID = #{item.linkmanInfoId}
+                    </if>
+                </set>
+                where MATINST_ID = #{item.matinstId}
+            </foreach>
+        </if>
+
+
+    </update>
+
+    <!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaHiItemMatinst">
+        delete
+        from AEA_HI_ITEM_MATINST
+        where MATINST_ID = #{id}
+    </delete>
+
+    <delete id="deleteAeaHiItemMatinsts" parameterType="java.util.Arrays">
+        delete
+        from AEA_HI_ITEM_MATINST
+        where MATINST_ID IN
+        <if test="_databaseId == 'oracle'">
+            <foreach collection="ids" item="item" open="(" separator="union all" close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="_databaseId == 'mysql'">
+            <foreach collection="ids" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+    </delete>
+
+    <delete id="deleteBscAttLink">
+        delete from BSC_ATT_LINK
+        where 1=1
+        <if test="recordId!=null and recordId!=''">
+            and RECORD_ID = #{recordId}
+        </if>
+        <if test="detailId!=null and detailId!=''">
+            AND DETAIL_ID = #{detailId}
+        </if>
+        <if test="dirId!=null and dirId!=''">
+            and DIR_ID = #{dirId}
+        </if>
+        <if test="linkId!=null and linkId!=''">
+            and LINK_ID = #{linkId}
+        </if>
+    </delete>
+
+    <select id="getBscAttLinkByDetailId" resultType="com.augurit.agcloud.bsc.domain.BscAttLink">
+        select
+        link.LINK_ID linkId,
+        link.RECORD_ID recordId,
+        link.DETAIL_ID detailId
+        from BSC_ATT_DETAIL detail, BSC_ATT_LINK link
+        <where>
+            detail.DETAIL_ID=link.DETAIL_ID
+            <if test="detailId != null and detailId!=''">
+                AND link.DETAIL_ID = #{detailId}
+            </if>
+        </where>
+        order by detail.CREATE_TIME DESC
+    </select>
+
+    <select id="selectMatinstByIteminstIds" parameterType="java.util.List" resultType="AeaHiItemMatinst">
+        SELECT
+        DISTINCT ahim.MATINST_ID matinstId,
+        ahim.MAT_ID matId,
+        ahim.REAL_PAPER_COUNT realPaperCount,
+        ahim.REAL_COPY_COUNT realCopyCount,
+        ahim.ATT_COUNT attCount,
+        ahim.CREATER creater,
+        ahim.CREATE_TIME createTime,
+        ahim.MODIFIER modifier,
+        ahim.MODIFY_TIME modifyTime,
+        ahim.MATINST_CODE matinstCode,
+        ahim.MATINST_NAME matinstName,
+        ahim.UNIT_INFO_ID unitInfoId,
+        ahim.PROJ_INFO_ID projInfoId,
+        ahim.OFFICIAL_DOC_NO officialDocNo,
+        ahim.OFFICIAL_DOC_TITLE officialDocTitle,
+        ahim.OFFICIAL_DOC_DUE_DATE officialDocDueDate,
+        ahim.OFFICIAL_DOC_PUBLISH_DATE officialDocPublishDate,
+        aim.IS_OFFICIAL_DOC isOfficialDoc,
+        OPU_OM_ORG.ORG_ID orgId,
+        OPU_OM_ORG.ORG_NAME orgName,
+        OPU_OM_ORG.ORG_SHORT_NAME1 orgShortName
+        FROM AEA_HI_ITEM_MATINST ahim
+        JOIN AEA_HI_ITEM_INOUTINST ahii ON ahim.MATINST_ID=ahii.MATINST_ID
+        JOIN AEA_HI_ITEMINST ahii_1 ON ahii_1.ITEMINST_ID=ahii.ITEMINST_ID
+        JOIN OPU_OM_ORG ON OPU_OM_ORG.org_id=ahii_1.approve_org_id
+        JOIN AEA_ITEM_MAT aim on ( aim.MAT_ID=ahim.MAT_ID AND aim.IS_DELETED = '0')
+        WHERE ahii.IS_COLLECTED='1'
+        AND ahii_1.ITEMINST_ID IN
+        <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        ORDER BY orgShortName,orgName
+    </select>
+    <!--8 删除实体对象列表,根据主键ID列表 -->
+    <!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaHiItemMatinst" id="AeaHiItemMatinstMap">
+        <id property="matinstId" column="MATINST_ID"/>
+        <result property="matId" column="MAT_ID"/>
+        <result property="realPaperCount" column="REAL_PAPER_COUNT"/>
+        <result property="realCopyCount" column="REAL_COPY_COUNT"/>
+        <result property="attCount" column="ATT_COUNT"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="modifier" column="MODIFIER"/>
+        <result property="modifyTime" column="MODIFY_TIME"/>
+        <result property="matinstCode" column="MATINST_CODE"/>
+        <result property="matinstName" column="MATINST_NAME"/>
+        <result property="unitInfoId" column="UNIT_INFO_ID"/>
+        <result property="projInfoId" column="PROJ_INFO_ID"/>
+        <result property="officialDocNo" column="OFFICIAL_DOC_NO"/>
+        <result property="officialDocTitle" column="OFFICIAL_DOC_TITLE"/>
+        <result property="officialDocDueDate" column="OFFICIAL_DOC_DUE_DATE"/>
+        <result property="officialDocPublishDate" column="OFFICIAL_DOC_PUBLISH_DATE"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+        <result property="memo" column="MEMO"/>
+        <result property="matinstSource" column="MATINST_SOURCE"/>
+        <result property="linkmanInfoId" column="LINKMAN_INFO_ID"/>
+    </resultMap>
+
+    <select id="listOfficialDocsByIteminstId" resultMap="AeaHiItemMatinstMap" parameterType="string">
+        SELECT
+        matinst.*
+        FROM
+        AEA_HI_ITEM_MATINST matinst
+        JOIN AEA_HI_ITEM_INOUTINST inoutinst ON inoutinst.MATINST_ID = matinst.MATINST_ID
+        JOIN AEA_ITEM_MAT mat ON ( mat.MAT_ID = matinst.MAT_ID AND mat.IS_DELETED = '0' AND mat.IS_OFFICIAL_DOC = '1')
+        JOIN aea_item_inout aii ON ( aii.MAT_ID = matinst.MAT_ID AND aii.IS_INPUT = '0' AND aii.IS_DELETED = '0')
+        JOIN aea_hi_iteminst ahi ON ( ahi.ITEMINST_ID = inoutinst.ITEMINST_ID AND ahi.ITEM_VER_ID = aii.ITEM_VER_ID )
+        WHERE
+        inoutinst.ITEMINST_ID = #{iteminstId}
+        ORDER BY
+        matinst.CREATE_TIME DESC
+    </select>
+
+    <select id="matinstbeLong2MatId" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM
+        AEA_HI_ITEM_MATINST
+        WHERE
+        MATINST_ID = #{matinstId}
+        AND
+        MAT_ID = #{matId}
+        AND
+        ROOT_ORG_ID = #{rootOrgId}
+    </select>
+
+    <select id="listBscRootAttByUser" resultType="BscAttForm">
+        select
+        <include refid="allColumn"/>
+        from
+        BSC_ATT_DETAIL detail, BSC_ATT_LINK link
+        <where>
+            detail.DETAIL_ID = link.DETAIL_ID
+            AND link.LINK_TYPE = 'a'
+            AND link.DIR_ID IS NULL
+            AND link.TABLE_NAME = #{tableName}
+            AND link.PK_NAME = #{pkName}
+            AND link.RECORD_ID = #{recordId}
+            AND detail.ORG_ID = #{orgId}
+
+        </where>
+        order by detail.CREATE_TIME DESC
+    </select>
+
+    <select id="listAttachmentsByIteminstId" resultType="com.augurit.aplanmis.common.domain.AeaHiItemMatinst">
+        select
+        <include refid="allColumns"/>
+        from aea_hi_item_matinst ahim
+        join aea_hi_item_inoutinst ahii on ahim.matinst_id=ahii.matinst_id
+        join aea_item_mat aim on aim.mat_id=ahim.mat_id
+        where ahii.iteminst_id=#{iteminstId}
+        and ahim.ROOT_ORG_ID=#{rootOrgId}
+        <if test="matType == 'OFFICE'">
+            and aim.IS_OFFICIAL_DOC='1'
+        </if>
+        and ahim.att_count>0
+    </select>
+
+</mapper>

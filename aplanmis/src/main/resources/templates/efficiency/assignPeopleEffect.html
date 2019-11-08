@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>委办局效能督查</title>
+  <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.css"
+    th:href="@{/agcloud/framework/js-lib/element-2/element.css}">
+  <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/css/reset.css"
+    th:href="@{/agcloud/framework/js-lib/agcloud-lib/css/reset.css}">
+    
+  <link rel="stylesheet" href="../../static/efficiency/common/css/base.css"
+    th:href="@{/efficiency/common/css/base.css}">
+  <link rel="stylesheet" href="../../static/efficiency/css/assignPeopleEfect.css"
+    th:href="@{/efficiency/css/assignPeopleEfect.css}">
+  <script>
+    var ctx = "[[@{/}]]";
+    // var ctx = "http://192.168.30.33:8083/aplanmis-front/";
+    // var ctx = "http://192.168.20.6:8001/aplanmis-analyse/"; //彭洁
+  </script>
+</head>
+
+<body>
+  <div class="index-wrapper" id="effectSupervisionAssign" v-cloak v-loading.fullscreen.lock="loading">
+    <!-- 办件状态统计 -->
+    <el-card class="box-card">
+      <div slot="header" class="clearfix">
+        <span class="card-title">办件状态统计</span>
+      </div>
+      <div class="status-card clearfix">
+        <div class="status-card-item" v-for="(item, index) in statusCardData" @click="selectStateForWorkbench(item)"
+          :class="item.statusClass?item.statusClass:'waiting1-status'">
+          <span>{{item.name}}</span>
+          <div class="card-icon" :class="'icon-' + parseInt(index + 1)"></div>
+          <p class="me-count">{{item.count}}</p>
+          <p class="percent-bt"  v-if="false">
+            <span class="mr10">同比 {{item.onYearonyearBasis || '无'}}
+              <i class="el-icon-caret-top"></i>
+            </span>
+            <span>环比 {{item.linkRelativeRatio || '无'}}
+              <i class="el-icon-caret-bottom"></i>
+            </span>
+          </p>
+        </div>
+      </div>
+    </el-card>
+
+    <!-- 部门办理事项统计 -->
+    <el-card class="box-card mt15">
+      <div slot="header" class="clearfix">
+        <span class="card-title">部门办理事项统计</span>
+        <div class="fr color-999 filter-bar">
+          <a href="javascript:;" class="mr20 time-span" :class="[selectedDepartAcceptType == 'yesterDay'? 'color-457EFF':'']" @click="searchDepartAcceptForTimeRange('yesterDay')">昨日</a>
+          <a href="javascript:;" class="mr20 time-span" :class="[selectedDepartAcceptType == 'curWeek'? 'color-457EFF':'']" @click="searchDepartAcceptForTimeRange('curWeek')">本周</a>
+          <a href="javascript:;" class="mr20 time-span" :class="[selectedDepartAcceptType == 'curMonth'? 'color-457EFF':'']" @click="searchDepartAcceptForTimeRange('curMonth')">本月</a>
+          <el-date-picker v-model="departAcceptTimeRange" type="daterange" align="right" size="mini" unlink-panels
+            range-separator="~" start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="pickerOptions"
+            value-format="yyyy-MM-dd" @change="departAcceptTimeRangeChange">
+          </el-date-picker>
+        </div>
+      </div>
+      <div class="depart-box">
+        <el-row :gutter="40">
+          <el-col :xs="24" :sm="24" :md="10" :lg="10" :xl="10" class="pr">
+            <div class="mb10 depart-chart" id="departAcceptBarChart"></div>
+            <div class="mb10 depart-chart non-data" v-show="!departAcceptBarChart"></div>
+          </el-col>
+          <el-col :xs="24" :sm="24" :md="14" :lg="14" :xl="14">
+            <div class="mb10 depart-table">
+              <el-table :data="departAcceptTableList" class="scrollable" style="width: 100%;" height="280"
+                :cell-style="{fontSize: '12px'}" :header-cell-style="{fontSize:'12px'}">
+                <!-- <el-table-column prop="sortNo" label="排名" width="50">
+                </el-table-column> -->
+                <el-table-column prop="orgName" label="部门" min-width="140">
+                </el-table-column>
+                <el-table-column prop="receiptCount" label="接件事项数" sortable width="110">
+                </el-table-column>
+                <el-table-column prop="acceptCount" label="受理事项数">
+                </el-table-column>
+                <el-table-column prop="notAcceptCount" label="不予受理数">
+                </el-table-column>
+                <el-table-column prop="completedCount" label="办结事项数">
+                </el-table-column>
+                <el-table-column  label="办结率" sortable>
+                  <template slot-scope="scope">
+                    <span>{{(scope.row.completedRate * 100).toFixed(2) +'%' ||'0'}}</span>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="overdueCount" label="逾期数">
+                </el-table-column>
+                <el-table-column label="逾期率" sortable>
+                  <template slot-scope="scope">
+                    <span>{{(scope.row.overdueRate * 100).toFixed(2) +'%' || '0'}}</span>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
+          </el-col>
+        </el-row>
+      </div>
+    </el-card>
+
+    <!-- 月度，地区 -->
+    <el-row :gutter="15" class="mt15 bottom-show-box">
+      <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+        <div class="mb10 theme-abnormal-box">
+          <el-card class="box-card pr">
+            <div slot="header" class="clearfix">
+              <span class="card-title">月度事项受理统计</span>
+              <div class="fr color-999 filter-bar">
+                <el-date-picker v-model="monthAcceptTimeRange" type="monthrange" align="right" size="mini" unlink-panels
+                  range-separator="~" start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="pickerOptions"
+                  value-format="yyyy-MM-dd" @change="monthAcceptTimeRangeChange">
+                </el-date-picker>
+              </div>
+            </div>
+            <div class="rander-box" id="monthAcceptLineChart"></div>
+            <div class="mb10 rander-box non-data" v-show="!monthAcceptLineChart"></div>
+          </el-card>
+        </div>
+      </el-col>
+      <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+        <div class="mb10 theme-abnormal-box">
+          <el-card class="box-card pr">
+            <div slot="header" class="clearfix">
+              <span class="card-title">地区办件统计</span>
+              <div class="fr color-999 filter-bar">
+                <el-date-picker v-model="areaDeclareBarChartTimeRange" type="daterange" align="right" size="mini"
+                  unlink-panels range-separator="~" start-placeholder="开始日期" end-placeholder="结束日期"
+                  :picker-options="pickerOptions" value-format="yyyy-MM-dd" @change="areaDeclareTimeRangeChange">
+                </el-date-picker>
+              </div>
+            </div>
+            <div class="rander-box" id="areaDeclareBarChart"></div>
+            <div class="mb10 rander-box non-data" v-show="!areaDeclareBarChart"></div>
+          </el-card>
+        </div>
+      </el-col>
+    </el-row>
+
+    <!-- 事项办理异常排名，项目并联审批统计，申报来源统计 -->
+    <el-row :gutter="15" class="bottom-show-box" style="margin-top: 5px;">
+      <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+        <div class="mb10 theme-abnormal-box">
+          <el-card class="box-card">
+            <div slot="header" class="clearfix">
+              <span class="card-title">事项办理异常排名</span>
+            </div>
+            <div class="rander-box">
+              <el-table :data="matterHandelTableList" class="scrollable" style="width: 100%;" height="280"
+                :header-cell-style="{fontSize:'12px'}">
+                <el-table-column prop="sortNo" label="排名" width="50">
+                </el-table-column>
+                <el-table-column prop="itemName" label="事项" min-width="200">
+                </el-table-column>
+                <el-table-column prop="orgName" label="部门">
+                </el-table-column>
+                <el-table-column prop="notAcceptRate" label="不予受理率" sortable width="110">
+                </el-table-column>
+                <el-table-column prop="overdueRate" label="逾期率" sortable width="90">
+                </el-table-column>
+              </el-table>
+            </div>
+          </el-card>
+        </div>
+      </el-col>
+      <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+        <div class="mb10 half-box clearfix">
+          <div class="left-box fl">
+            <el-card class="box-card pr">
+              <div slot="header" class="clearfix">
+                <span class="card-title">项目并联审批统计</span>
+              </div>
+              <div class="rander-box" id="projectParallelApprovalPieChart"></div>
+              <div class="mb10 rander-box non-data" v-show="!projectParallelApprovalPieChart"></div>
+            </el-card>
+          </div>
+          <div class="left-box fr">
+            <el-card class="box-card pr">
+              <div slot="header" class="clearfix">
+                <span class="card-title">申报来源统计</span>
+              </div>
+              <div class="rander-box" id="declareSourcePieChart"></div>
+              <div class="mb10 rander-box non-data" v-show="!declareSourcePieChart"></div>
+            </el-card>
+          </div>
+        </div>
+      </el-col>
+    </el-row>
+
+  </div>
+
+  <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js"
+    th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>
+  <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js"
+    th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
+  <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js"
+    th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
+  <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/echarts-v4/echarts.min.js"
+    th:src="@{/agcloud/framework/js-lib/echarts-v4/echarts.min.js}"></script>
+  <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js"
+    th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>
+
+  <script src="../../static/efficiency/js/echartOptions.js" th:src="@{/efficiency/js/echartOptions.js}"
+    type="text/javascript"></script>
+  <script src="../../static/efficiency/js/mixins.js" th:src="@{/efficiency/js/mixins.js}"
+    type="text/javascript"></script>
+  <script src="../../static/efficiency/js/assignPeopleEffect.js"
+    th:src="@{/efficiency/js/assignPeopleEffect.js}" type="text/javascript">
+  </script>
+</body>
+
+</html>

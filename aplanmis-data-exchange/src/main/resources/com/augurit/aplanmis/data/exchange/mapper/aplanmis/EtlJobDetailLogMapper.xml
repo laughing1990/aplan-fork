@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by yinlf    2019-10-24 14:58:33 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.data.exchange.mapper.aplanmis.EtlJobDetailLogMapper" >
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns" >
+        detail_log_id  detailLogId,
+        job_log_id  jobLogId,
+        table_name  tableName,
+        read_num  readNum,
+        written_num  writtenNum,
+        error_num  errorNum,
+        create_time  createTime
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getEtlJobDetailLogById" resultType="EtlJobDetailLog" >
+        select
+        <include refid="allColumns"/>
+        from    ETL_JOB_DETAIL_LOG
+        where    detail_log_id = #{id}
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listEtlJobDetailLog" resultType="EtlJobDetailLog">
+        select
+        <include refid="allColumns"/>
+        from ETL_JOB_DETAIL_LOG
+        <where>
+            <if test="detailLogId != null" >
+            AND    detail_log_id = #{detailLogId}
+            </if>
+            <if test="jobLogId != null" >
+            AND    job_log_id = #{jobLogId}
+            </if>
+            <if test="tableName != null" >
+            AND    table_name = #{tableName}
+            </if>
+            <if test="readNum != null" >
+            AND    read_num = #{readNum}
+            </if>
+            <if test="writtenNum != null" >
+            AND    written_num = #{writtenNum}
+            </if>
+            <if test="errorNum != null" >
+            AND    error_num = #{errorNum}
+            </if>
+            <if test="createTime != null" >
+            AND    create_time = #{createTime}
+            </if>
+        </where>
+    </select>
+    <!--4 根据条件查询实体list,返回分页对象 -->
+
+    <!--5 新增实体对象 -->
+    <insert id="insertEtlJobDetailLog" parameterType="EtlJobDetailLog" >
+        insert into ETL_JOB_DETAIL_LOG (
+          job_log_id  ,table_name  ,read_num  ,written_num  ,error_num  ,create_time
+        )  values  (
+          #{jobLogId},#{tableName},#{readNum},#{writtenNum},#{errorNum},  #{createTime}
+        )
+    </insert>
+    <!--6 修改实体对象 -->
+    <update id="updateEtlJobDetailLog" parameterType="EtlJobDetailLog" >
+        update ETL_JOB_DETAIL_LOG
+        <set >
+            <if test="detailLogId != null" >
+            detail_log_id = #{detailLogId},
+            </if>
+            <if test="jobLogId != null" >
+            job_log_id = #{jobLogId},
+            </if>
+            <if test="tableName != null" >
+            table_name = #{tableName},
+            </if>
+            <if test="readNum != null" >
+            read_num = #{readNum},
+            </if>
+            <if test="writtenNum != null" >
+            written_num = #{writtenNum},
+            </if>
+            <if test="errorNum != null" >
+            error_num = #{errorNum},
+            </if>
+            <if test="createTime != null" >
+            create_time = #{createTime},
+            </if>
+        </set>
+        where detail_log_id = #{detailLogId}
+    </update>
+    <!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteEtlJobDetailLog">
+        delete from ETL_JOB_DETAIL_LOG
+        where detail_log_id = #{id}
+    </delete>
+</mapper>

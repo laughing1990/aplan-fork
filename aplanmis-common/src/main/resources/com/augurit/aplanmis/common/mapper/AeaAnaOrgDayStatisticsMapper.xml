@@ -1,0 +1,551 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by zhangwn    2019-09-03 10:55:42 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaAnaOrgDayStatisticsMapper" >
+<!--1 返回所有字段的SQL字句 -->
+<sql id="allColumns" >
+    ORG_DAY_STATISTICS_ID  orgDayStatisticsId,
+    STATISTICS_RECORD_ID  statisticsRecordId,
+    ORG_ID  orgId,
+    ORG_NAME  orgName,
+    REGION_ID  regionId,
+    REGION_NAME  regionName,
+    ITEM_ID  itemId,
+    ITEM_NAME  itemName,
+    APPLYINST_SOURCE  applyinstSource,
+    DAY_APPLY_COUNT  dayApplyCount,
+    ALL_APPLY_COUNT  allApplyCount,
+    APPLY_LRR  applyLrr,
+    ALL_IN_SUPPLEMENT_COUNT  allInSupplementCount,
+    ALL_SUPPLEMENTED_COUNT  allSupplementedCount,
+    DAY_ACCEPTANCE_COUNT  dayAcceptanceCount,
+    ALL_ACCEPTANCE_COUNT  allAcceptanceCount,
+    ACCEPTANCE_LRR  acceptanceLrr,
+    DAY_OUT_SCOPE_COUNT  dayOutScopeCount,
+    ALL_OUT_SCOPE_COUNT  allOutScopeCount,
+    OUT_SCOPE_LRR  outScopeLrr,
+    DAY_COMPLETED_COUNT  dayCompletedCount,
+    ALL_COMPLETED_COUNT  allCompletedCount,
+    COMPLETED_LRR  completedLrr,
+    DAY_SPECIFIC_ROUTINE_COUNT  daySpecificRoutineCount,
+    ALL_SPECIFIC_ROUTINE_COUNT  allSpecificRoutineCount,
+    SPECIFIC_ROUTINE_LRR  specificRoutineLrr,
+    ALL_WARINING_COUNT  allWariningCount,
+    DAY_OVER_TIME_COUNT  dayOverTimeCount,
+    ALL_OVER_TIME_COUNT  allOverTimeCount,
+    OVER_TIME_LRR  overTimeLrr,
+    ALL_ACCEPTANCE_RATE  allAcceptanceRate,
+    ALL_OUT_SCOPE_RATE  allOutScopeRate,
+    ALL_OVER_TIME_RATE  allOverTimeRate,
+    ALL_COMPLETED_RATE  allCompletedRate,
+    STATISTICS_DATE  statisticsDate,
+    ROOT_ORG_ID  rootOrgId
+    </sql>
+
+<!--2 根据主键ID查询单个实体 -->
+<select id="getAeaAnaOrgDayStatisticsById" resultType="AeaAnaOrgDayStatistics" >
+    select
+    <include refid="allColumns"/>
+    from    AEA_ANA_ORG_DAY_STATISTICS
+    where    ORG_DAY_STATISTICS_ID = #{id}
+</select>
+
+<!--3 根据条件查询实体list -->
+    <select id="listAeaAnaOrgDayStatistics" resultType="AeaAnaOrgDayStatistics" >
+        select
+        <include refid="allColumns"/>
+        from    AEA_ANA_ORG_DAY_STATISTICS
+    <where>
+        <if test="orgDayStatisticsId != null" >
+        AND    ORG_DAY_STATISTICS_ID = #{orgDayStatisticsId}
+        </if>
+        <if test="statisticsRecordId != null" >
+        AND    STATISTICS_RECORD_ID = #{statisticsRecordId}
+        </if>
+        <if test="orgId != null" >
+        AND    ORG_ID = #{orgId}
+        </if>
+        <if test="orgName != null" >
+        AND    ORG_NAME = #{orgName}
+        </if>
+        <if test="regionId != null" >
+        AND    REGION_ID = #{regionId}
+        </if>
+        <if test="regionName != null" >
+        AND    REGION_NAME = #{regionName}
+        </if>
+        <if test="itemId != null" >
+        AND    ITEM_ID = #{itemId}
+        </if>
+        <if test="itemName != null" >
+        AND    ITEM_NAME = #{itemName}
+        </if>
+        <if test="applyinstSource != null" >
+            AND    APPLYINST_SOURCE = #{applyinstSource}
+        </if>
+        <if test="dayApplyCount != null" >
+        AND    DAY_APPLY_COUNT = #{dayApplyCount}
+        </if>
+        <if test="allApplyCount != null" >
+        AND    ALL_APPLY_COUNT = #{allApplyCount}
+        </if>
+        <if test="applyLrr != null" >
+        AND    APPLY_LRR = #{applyLrr}
+        </if>
+        <if test="allInSupplementCount != null" >
+        AND    ALL_IN_SUPPLEMENT_COUNT = #{allInSupplementCount}
+        </if>
+        <if test="allSupplementedCount != null" >
+        AND    ALL_SUPPLEMENTED_COUNT = #{allSupplementedCount}
+        </if>
+        <if test="dayAcceptanceCount != null" >
+        AND    DAY_ACCEPTANCE_COUNT = #{dayAcceptanceCount}
+        </if>
+        <if test="allAcceptanceCount != null" >
+        AND    ALL_ACCEPTANCE_COUNT = #{allAcceptanceCount}
+        </if>
+        <if test="acceptanceLrr != null" >
+        AND    ACCEPTANCE_LRR = #{acceptanceLrr}
+        </if>
+        <if test="dayOutScopeCount != null" >
+        AND    DAY_OUT_SCOPE_COUNT = #{dayOutScopeCount}
+        </if>
+        <if test="allOutScopeCount != null" >
+        AND    ALL_OUT_SCOPE_COUNT = #{allOutScopeCount}
+        </if>
+        <if test="outScopeLrr != null" >
+        AND    OUT_SCOPE_LRR = #{outScopeLrr}
+        </if>
+        <if test="dayCompletedCount != null" >
+        AND    DAY_COMPLETED_COUNT = #{dayCompletedCount}
+        </if>
+        <if test="allCompletedCount != null" >
+        AND    ALL_COMPLETED_COUNT = #{allCompletedCount}
+        </if>
+        <if test="completedLrr != null" >
+        AND    COMPLETED_LRR = #{completedLrr}
+        </if>
+        <if test="daySpecificRoutineCount != null" >
+        AND    DAY_SPECIFIC_ROUTINE_COUNT = #{daySpecificRoutineCount}
+        </if>
+        <if test="allSpecificRoutineCount != null" >
+        AND    ALL_SPECIFIC_ROUTINE_COUNT = #{allSpecificRoutineCount}
+        </if>
+        <if test="specificRoutineLrr != null" >
+        AND    SPECIFIC_ROUTINE_LRR = #{specificRoutineLrr}
+        </if>
+        <if test="dayWariningCount != null" >
+        AND    DAY_WARINING_COUNT = #{dayWariningCount}
+        </if>
+        <if test="allWariningCount != null" >
+        AND    ALL_WARINING_COUNT = #{allWariningCount}
+        </if>
+        <if test="wariningLrr != null" >
+        AND    WARINING_LRR = #{wariningLrr}
+        </if>
+        <if test="dayOverTimeCount != null" >
+        AND    DAY_OVER_TIME_COUNT = #{dayOverTimeCount}
+        </if>
+        <if test="allOverTimeCount != null" >
+        AND    ALL_OVER_TIME_COUNT = #{allOverTimeCount}
+        </if>
+        <if test="overTimeLrr != null" >
+        AND    OVER_TIME_LRR = #{overTimeLrr}
+        </if>
+        <if test="allAcceptanceRate != null" >
+        AND    ALL_ACCEPTANCE_RATE = #{allAcceptanceRate}
+        </if>
+        <if test="allOutScopeRate != null" >
+        AND    ALL_OUT_SCOPE_RATE = #{allOutScopeRate}
+        </if>
+        <if test="allOverTimeRate != null" >
+        AND    ALL_OVER_TIME_RATE = #{allOverTimeRate}
+        </if>
+        <if test="allCompletedRate != null" >
+        AND    ALL_COMPLETED_RATE = #{allCompletedRate}
+        </if>
+        <if test="statisticsDate != null" >
+        AND    STATISTICS_DATE = #{statisticsDate}
+        </if>
+        <if test="rootOrgId != null" >
+        AND    ROOT_ORG_ID = #{rootOrgId}
+        </if>
+    </where>
+    </select>
+<!--4 根据条件查询实体list,返回分页对象 -->
+
+<!--5 新增实体对象 -->
+<insert id="insertAeaAnaOrgDayStatistics" parameterType="AeaAnaOrgDayStatistics" >
+    insert into AEA_ANA_ORG_DAY_STATISTICS (
+ORG_DAY_STATISTICS_ID  ,STATISTICS_RECORD_ID  ,ORG_ID  ,ORG_NAME  ,REGION_ID  ,REGION_NAME  ,ITEM_ID  ,ITEM_NAME  ,APPLYINST_SOURCE  ,DAY_APPLY_COUNT  ,ALL_APPLY_COUNT  ,APPLY_LRR  ,ALL_IN_SUPPLEMENT_COUNT  ,ALL_SUPPLEMENTED_COUNT  ,DAY_ACCEPTANCE_COUNT  ,ALL_ACCEPTANCE_COUNT  ,ACCEPTANCE_LRR  ,DAY_OUT_SCOPE_COUNT  ,ALL_OUT_SCOPE_COUNT  ,OUT_SCOPE_LRR  ,DAY_COMPLETED_COUNT  ,ALL_COMPLETED_COUNT  ,COMPLETED_LRR  ,DAY_SPECIFIC_ROUTINE_COUNT  ,ALL_SPECIFIC_ROUTINE_COUNT  ,SPECIFIC_ROUTINE_LRR  ,ALL_WARINING_COUNT ,DAY_OVER_TIME_COUNT  ,ALL_OVER_TIME_COUNT  ,OVER_TIME_LRR  ,ALL_ACCEPTANCE_RATE  ,ALL_OUT_SCOPE_RATE  ,ALL_OVER_TIME_RATE  ,ALL_COMPLETED_RATE  ,STATISTICS_DATE  ,ROOT_ORG_ID
+    )  values  (
+#{orgDayStatisticsId},#{statisticsRecordId},#{orgId},#{orgName},#{regionId},#{regionName},#{itemId},#{itemName},#{applyinstSource},#{dayApplyCount},#{allApplyCount},#{applyLrr},#{allInSupplementCount},#{allSupplementedCount},#{dayAcceptanceCount},#{allAcceptanceCount},#{acceptanceLrr},#{dayOutScopeCount},#{allOutScopeCount},#{outScopeLrr},#{dayCompletedCount},#{allCompletedCount},#{completedLrr},#{daySpecificRoutineCount},#{allSpecificRoutineCount},#{specificRoutineLrr},#{allWariningCount},#{dayOverTimeCount},#{allOverTimeCount},#{overTimeLrr},#{allAcceptanceRate},#{allOutScopeRate},#{allOverTimeRate},#{allCompletedRate},#{statisticsDate},  #{rootOrgId}
+    )
+</insert>
+<!--6 修改实体对象 -->
+<update id="updateAeaAnaOrgDayStatistics" parameterType="AeaAnaOrgDayStatistics" >
+    update AEA_ANA_ORG_DAY_STATISTICS
+    <set >
+        <if test="orgDayStatisticsId != null" >
+        ORG_DAY_STATISTICS_ID = #{orgDayStatisticsId},
+        </if>
+        <if test="statisticsRecordId != null" >
+        STATISTICS_RECORD_ID = #{statisticsRecordId},
+        </if>
+        <if test="orgId != null" >
+        ORG_ID = #{orgId},
+        </if>
+        <if test="orgName != null" >
+        ORG_NAME = #{orgName},
+        </if>
+        <if test="regionId != null" >
+        REGION_ID = #{regionId},
+        </if>
+        <if test="regionName != null" >
+        REGION_NAME = #{regionName},
+        </if>
+        <if test="itemId != null" >
+        ITEM_ID = #{itemId},
+        </if>
+        <if test="itemName != null" >
+        ITEM_NAME = #{itemName},
+        </if>
+        <if test="applyinstSource != null" >
+            APPLYINST_SOURCE = #{applyinstSource},
+        </if>
+        <if test="dayApplyCount != null" >
+        DAY_APPLY_COUNT = #{dayApplyCount},
+        </if>
+        <if test="allApplyCount != null" >
+        ALL_APPLY_COUNT = #{allApplyCount},
+        </if>
+        <if test="applyLrr != null" >
+        APPLY_LRR = #{applyLrr},
+        </if>
+        <if test="allInSupplementCount != null" >
+        ALL_IN_SUPPLEMENT_COUNT = #{allInSupplementCount},
+        </if>
+        <if test="allSupplementedCount != null" >
+        ALL_SUPPLEMENTED_COUNT = #{allSupplementedCount},
+        </if>
+        <if test="dayAcceptanceCount != null" >
+        DAY_ACCEPTANCE_COUNT = #{dayAcceptanceCount},
+        </if>
+        <if test="allAcceptanceCount != null" >
+        ALL_ACCEPTANCE_COUNT = #{allAcceptanceCount},
+        </if>
+        <if test="acceptanceLrr != null" >
+        ACCEPTANCE_LRR = #{acceptanceLrr},
+        </if>
+        <if test="dayOutScopeCount != null" >
+        DAY_OUT_SCOPE_COUNT = #{dayOutScopeCount},
+        </if>
+        <if test="allOutScopeCount != null" >
+        ALL_OUT_SCOPE_COUNT = #{allOutScopeCount},
+        </if>
+        <if test="outScopeLrr != null" >
+        OUT_SCOPE_LRR = #{outScopeLrr},
+        </if>
+        <if test="dayCompletedCount != null" >
+        DAY_COMPLETED_COUNT = #{dayCompletedCount},
+        </if>
+        <if test="allCompletedCount != null" >
+        ALL_COMPLETED_COUNT = #{allCompletedCount},
+        </if>
+        <if test="completedLrr != null" >
+        COMPLETED_LRR = #{completedLrr},
+        </if>
+        <if test="daySpecificRoutineCount != null" >
+        DAY_SPECIFIC_ROUTINE_COUNT = #{daySpecificRoutineCount},
+        </if>
+        <if test="allSpecificRoutineCount != null" >
+        ALL_SPECIFIC_ROUTINE_COUNT = #{allSpecificRoutineCount},
+        </if>
+        <if test="specificRoutineLrr != null" >
+        SPECIFIC_ROUTINE_LRR = #{specificRoutineLrr},
+        </if>
+        <if test="allWariningCount != null" >
+        ALL_WARINING_COUNT = #{allWariningCount},
+        </if>
+        <if test="dayOverTimeCount != null" >
+        DAY_OVER_TIME_COUNT = #{dayOverTimeCount},
+        </if>
+        <if test="allOverTimeCount != null" >
+        ALL_OVER_TIME_COUNT = #{allOverTimeCount},
+        </if>
+        <if test="overTimeLrr != null" >
+        OVER_TIME_LRR = #{overTimeLrr},
+        </if>
+        <if test="allAcceptanceRate != null" >
+        ALL_ACCEPTANCE_RATE = #{allAcceptanceRate},
+        </if>
+        <if test="allOutScopeRate != null" >
+        ALL_OUT_SCOPE_RATE = #{allOutScopeRate},
+        </if>
+        <if test="allOverTimeRate != null" >
+        ALL_OVER_TIME_RATE = #{allOverTimeRate},
+        </if>
+        <if test="allCompletedRate != null" >
+        ALL_COMPLETED_RATE = #{allCompletedRate},
+        </if>
+        <if test="statisticsDate != null" >
+        STATISTICS_DATE = #{statisticsDate},
+        </if>
+        <if test="rootOrgId != null" >
+        ROOT_ORG_ID = #{rootOrgId},
+        </if>
+    </set>
+    where ORG_DAY_STATISTICS_ID = #{orgDayStatisticsId}
+</update>
+<!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaAnaOrgDayStatistics">
+        delete from   AEA_ANA_ORG_DAY_STATISTICS
+        where
+    ORG_DAY_STATISTICS_ID = #{id}
+    </delete>
+<!--8 删除实体对象列表,根据主键ID列表 -->
+<!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaAnaOrgDayStatistics" id="AeaAnaOrgDayStatisticsMap">
+        <id property="orgDayStatisticsId" column="ORG_DAY_STATISTICS_ID"/>
+        <result property="statisticsRecordId" column="STATISTICS_RECORD_ID"/>
+        <result property="orgId" column="ORG_ID"/>
+        <result property="orgName" column="ORG_NAME"/>
+        <result property="regionId" column="REGION_ID"/>
+        <result property="regionName" column="REGION_NAME"/>
+        <result property="itemId" column="ITEM_ID"/>
+        <result property="itemName" column="ITEM_NAME"/>
+        <result property="applyinstSource" column="APPLYINST_SOURCE"/>
+        <result property="dayApplyCount" column="DAY_APPLY_COUNT"/>
+        <result property="allApplyCount" column="ALL_APPLY_COUNT"/>
+        <result property="applyLrr" column="APPLY_LRR"/>
+        <result property="allInSupplementCount" column="ALL_IN_SUPPLEMENT_COUNT"/>
+        <result property="allSupplementedCount" column="ALL_SUPPLEMENTED_COUNT"/>
+        <result property="dayAcceptanceCount" column="DAY_ACCEPTANCE_COUNT"/>
+        <result property="allAcceptanceCount" column="ALL_ACCEPTANCE_COUNT"/>
+        <result property="acceptanceLrr" column="ACCEPTANCE_LRR"/>
+        <result property="dayOutScopeCount" column="DAY_OUT_SCOPE_COUNT"/>
+        <result property="allOutScopeCount" column="ALL_OUT_SCOPE_COUNT"/>
+        <result property="outScopeLrr" column="OUT_SCOPE_LRR"/>
+        <result property="dayCompletedCount" column="DAY_COMPLETED_COUNT"/>
+        <result property="allCompletedCount" column="ALL_COMPLETED_COUNT"/>
+        <result property="completedLrr" column="COMPLETED_LRR"/>
+        <result property="daySpecificRoutineCount" column="DAY_SPECIFIC_ROUTINE_COUNT"/>
+        <result property="allSpecificRoutineCount" column="ALL_SPECIFIC_ROUTINE_COUNT"/>
+        <result property="specificRoutineLrr" column="SPECIFIC_ROUTINE_LRR"/>
+        <result property="allWariningCount" column="ALL_WARINING_COUNT"/>
+        <result property="dayOverTimeCount" column="DAY_OVER_TIME_COUNT"/>
+        <result property="allOverTimeCount" column="ALL_OVER_TIME_COUNT"/>
+        <result property="overTimeLrr" column="OVER_TIME_LRR"/>
+        <result property="allAcceptanceRate" column="ALL_ACCEPTANCE_RATE"/>
+        <result property="allOutScopeRate" column="ALL_OUT_SCOPE_RATE"/>
+        <result property="allOverTimeRate" column="ALL_OVER_TIME_RATE"/>
+        <result property="allCompletedRate" column="ALL_COMPLETED_RATE"/>
+        <result property="statisticsDate" column="STATISTICS_DATE"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+    </resultMap>
+
+    <!--批量插入-->
+    <insert id="batchInserOrgDayStatisticst">
+        insert into AEA_ANA_ORG_DAY_STATISTICS (
+        ORG_DAY_STATISTICS_ID  ,STATISTICS_RECORD_ID  ,ORG_ID  ,ORG_NAME  ,REGION_ID  ,REGION_NAME  ,ITEM_ID  ,ITEM_NAME  ,APPLYINST_SOURCE  ,DAY_APPLY_COUNT  ,ALL_APPLY_COUNT  ,APPLY_LRR  ,ALL_IN_SUPPLEMENT_COUNT  ,ALL_SUPPLEMENTED_COUNT  ,DAY_ACCEPTANCE_COUNT  ,ALL_ACCEPTANCE_COUNT  ,ACCEPTANCE_LRR  ,DAY_OUT_SCOPE_COUNT  ,ALL_OUT_SCOPE_COUNT  ,OUT_SCOPE_LRR  ,DAY_COMPLETED_COUNT  ,ALL_COMPLETED_COUNT  ,COMPLETED_LRR  ,DAY_SPECIFIC_ROUTINE_COUNT  ,ALL_SPECIFIC_ROUTINE_COUNT  ,SPECIFIC_ROUTINE_LRR  ,ALL_WARINING_COUNT  ,DAY_OVER_TIME_COUNT  ,ALL_OVER_TIME_COUNT  ,OVER_TIME_LRR  ,ALL_ACCEPTANCE_RATE  ,ALL_OUT_SCOPE_RATE  ,ALL_OVER_TIME_RATE  ,ALL_COMPLETED_RATE  ,STATISTICS_DATE  ,ROOT_ORG_ID
+        )  values
+        <foreach collection="orgDayStatisticsList" item="orgDayStatistics" separator=",">
+            (
+              #{orgDayStatistics.orgDayStatisticsId},#{orgDayStatistics.statisticsRecordId},#{orgDayStatistics.orgId},#{orgDayStatistics.orgName},#{orgDayStatistics.regionId},#{orgDayStatistics.regionName},
+              #{orgDayStatistics.itemId},#{orgDayStatistics.itemName},#{orgDayStatistics.applyinstSource},#{orgDayStatistics.dayApplyCount},#{orgDayStatistics.allApplyCount},#{orgDayStatistics.applyLrr},#{orgDayStatistics.allInSupplementCount},
+              #{orgDayStatistics.allSupplementedCount},#{orgDayStatistics.dayAcceptanceCount},#{orgDayStatistics.allAcceptanceCount},#{orgDayStatistics.acceptanceLrr},
+              #{orgDayStatistics.dayOutScopeCount},#{orgDayStatistics.allOutScopeCount},#{orgDayStatistics.outScopeLrr},#{orgDayStatistics.dayCompletedCount},#{orgDayStatistics.allCompletedCount},
+              #{orgDayStatistics.completedLrr},#{orgDayStatistics.daySpecificRoutineCount},#{orgDayStatistics.allSpecificRoutineCount},#{orgDayStatistics.specificRoutineLrr},
+              #{orgDayStatistics.allWariningCount},#{orgDayStatistics.dayOverTimeCount},#{orgDayStatistics.allOverTimeCount},#{orgDayStatistics.overTimeLrr},#{orgDayStatistics.allAcceptanceRate},
+              #{orgDayStatistics.allOutScopeRate},#{orgDayStatistics.allOverTimeRate},#{orgDayStatistics.allCompletedRate},#{orgDayStatistics.statisticsDate},  #{orgDayStatistics.rootOrgId}
+            )
+        </foreach>
+    </insert>
+
+    <select id="getAeaAnaOrgDayStatistics" resultType="AeaAnaOrgDayStatistics" >
+        select
+        <include refid="allColumns"/>
+        from  AEA_ANA_ORG_DAY_STATISTICS
+        where ORG_ID = #{orgId}
+        and  ITEM_ID = #{itemId}
+        and STATISTICS_DATE = #{statisticsDate}
+        and APPLYINST_SOURCE = #{applySource}
+    </select>
+
+    <select id="queryAeaAnaOrgDayStatistics" resultType="AeaAnaOrgDayStatistics" >
+        select
+        <include refid="allColumns"/>
+        from  AEA_ANA_ORG_DAY_STATISTICS
+        where ORG_ID = #{orgId}
+        <if test="itemId != null and itemId != ''" >
+            and  ITEM_ID = #{itemId}
+        </if>
+        <if test="applySource != null and applySource != ''" >
+            and  APPLYINST_SOURCE = #{applySource}
+        </if>
+        and STATISTICS_DATE IN
+        <foreach collection="statisticsDateList" item="statisticsDate" index="index" open="(" close=")" separator=",">
+            #{statisticsDate}
+        </foreach>
+        order by STATISTICS_DATE
+    </select>
+
+    <select id="queryAeaAnaOrgDayStatisticsGreaterThanStartTime" resultType="AeaAnaOrgDayStatistics" >
+        select
+        <include refid="allColumns"/>
+        from  AEA_ANA_ORG_DAY_STATISTICS
+        where ORG_ID = #{orgId}
+        <if test="itemId != null and itemId != ''" >
+            and  ITEM_ID = #{itemId}
+        </if>
+        <if test="startTime != null and startTime != ''" >
+            and STATISTICS_DATE &gt;= #{startTime}
+        </if>
+        <if test="endTime != null and endTime != ''" >
+            and STATISTICS_DATE &lt;= #{endTime}
+        </if>
+        order by STATISTICS_DATE
+    </select>
+
+    <delete id="deleteThisDayStatisticsData">
+        delete from  AEA_ANA_ORG_DAY_STATISTICS
+        where
+        STATISTICS_DATE = #{statisticsDate}
+        AND ROOT_ORG_ID = #{rootOrgId}
+    </delete>
+
+    <select id="getDayStatistics" resultType="AeaAnaOrgDayStatistics">
+        SELECT
+        SUM(aaods.DAY_APPLY_COUNT)DAY_APPLY_COUNT,
+        SUM(aaods.DAY_ACCEPTANCE_COUNT) DAY_ACCEPTANCE_COUNT,
+        SUM(aaods.DAY_OUT_SCOPE_COUNT)DAY_OUT_SCOPE_COUNT,
+        SUM(aaods.DAY_COMPLETED_COUNT)DAY_COMPLETED_COUNT,
+        SUM(aaods.DAY_OVER_TIME_COUNT)DAY_OVER_TIME_COUNT
+        from aea_ana_org_day_statistics aaods
+        where aaods.STATISTICS_DATE <![CDATA[>= ]]>> #{startTime}
+        and aaods.STATISTICS_DATE <![CDATA[ <= ]]>> #{endTime}
+        and aaods.ORG_ID = #{orgId}
+        and aaods.ROOT_ORG_ID =#{rootOrgId}
+
+    </select>
+
+    <select id="listApplyUnusualStatistic" resultType="com.augurit.aplanmis.common.vo.analyse.ApplyUnusualStatisticVo">
+        SELECT CONCAT(CAST(round(temp.notAcceptRate * 100,1) AS CHAR), '%') as notAcceptRate,
+               CONCAT(CAST(round(temp.overdueRate * 100,1) AS CHAR), '%')  as overdueRate,
+               temp.ORG_ID                                                as orgId,
+               temp.ORG_NAME                                              as orgName,
+               temp.ITEM_ID                                               as itemId,
+               temp.ITEM_NAME                                             as itemName,
+               (@i := @i + 1)                                             as sortNo
+        from (
+                 SELECT aaods.ORG_ID,
+                        aaods.ORG_NAME,
+                        aaods.ITEM_ID,
+                        aaods.ITEM_NAME,
+                        sum(aaods.ALL_OUT_SCOPE_COUNT) /
+                        (sum(aaods.ALL_OUT_SCOPE_COUNT) + sum(aaods.ALL_ACCEPTANCE_COUNT)) notAcceptRate,
+                        sum(aaods.ALL_OVER_TIME_COUNT) / sum(aaods.ALL_ACCEPTANCE_COUNT)   overdueRate,
+                        sum(aaods.ALL_OUT_SCOPE_COUNT) /
+                        (sum(aaods.ALL_OUT_SCOPE_COUNT) + sum(aaods.ALL_ACCEPTANCE_COUNT)) +
+                        sum(aaods.ALL_OVER_TIME_COUNT) / sum(aaods.ALL_ACCEPTANCE_COUNT)   allUnusualRate
+
+                 from aea_ana_org_day_statistics aaods
+                 where 1 = 1
+                   and aaods.ROOT_ORG_ID = #{rootOrgId}
+                 group by aaods.ITEM_ID,aaods.ORG_ID
+             ) temp,
+             (SELECT @i := 0) AS it
+
+        ORDER BY temp.allUnusualRate desc
+    </select>
+
+    <select id="getOrgDayStatistics" resultType="com.augurit.aplanmis.common.vo.analyse.ItemDetailFormVo">
+        SELECT
+        aaods.ORG_ID orgId,
+        aaods.ORG_NAME orgName,
+        aaods.ITEM_ID itemId,
+        aaods.ITEM_NAME itemName,
+        aaods.APPLYINST_SOURCE applyinstSource,
+        SUM(aaods.DAY_APPLY_COUNT) receiptCount,
+        sum(aaods.DAY_ACCEPTANCE_COUNT) acceptCount,
+        SUM(aaods.DAY_OVER_TIME_COUNT) overdueCount
+        from
+        aea_ana_org_day_statistics aaods
+        where aaods.STATISTICS_DATE <![CDATA[ >= ]]> #{startDate}
+        and aaods.STATISTICS_DATE <![CDATA[ <= ]]> #{endDate}
+        <if test="orgId != null and orgId !=''">
+            and aaods.ORG_ID= #{orgId}
+        </if>
+
+        and aaods.ROOT_ORG_ID= #{rootOrgId}
+        GROUP BY aaods.ORG_ID,aaods.ITEM_ID,aaods.APPLYINST_SOURCE
+
+    </select>
+
+    <select id="getDayStatisticsCompletedByArea" resultType="com.augurit.aplanmis.common.vo.analyse.OrgAreaStatisticsVo">
+        SELECT
+        SUM(aaods.DAY_COMPLETED_COUNT) as areaCount,
+        REGION_NAME as regionName,
+        REGION_ID as regionId
+        from aea_ana_org_day_statistics aaods
+        where aaods.STATISTICS_DATE <![CDATA[ >= ]]> #{startTime}
+        and aaods.STATISTICS_DATE <![CDATA[ <= ]]> #{endTime}
+        group by REGION_ID, REGION_NAME
+    </select>
+
+    <select id="getOrgItemAcceptStatistics" resultType="AeaAnaOrgDayStatistics">
+        select * from (
+        select
+        ORG_ID as orgId, ORG_NAME as orgName, ITEM_ID as itemId, ITEM_NAME as itemName,
+        sum(DAY_APPLY_COUNT) as dayApplyCount, sum(DAY_ACCEPTANCE_COUNT) as dayAcceptanceCount
+        from AEA_ANA_ORG_DAY_STATISTICS
+        where
+        ROOT_ORG_ID = #{rootOrgId}
+        <if test="orgId != null and orgId != ''">
+            and ORG_ID = #{orgId}
+        </if>
+        <if test="_databaseId == 'oracle'">
+            and to_char(STATISTICS_DATE,'yyyy-mm-dd') <![CDATA[ >= ]]> #{startTime}
+            and to_char(STATISTICS_DATE,'yyyy-mm-dd') <![CDATA[ <= ]]> #{endTime}
+        </if>
+        <if test="_databaseId == 'mysql'">
+            and DATE_FORMAT(STATISTICS_DATE,'%Y-%m-%d') <![CDATA[ >= ]]> #{startTime}
+            and DATE_FORMAT(STATISTICS_DATE,'%Y-%m-%d') <![CDATA[ <= ]]> #{endTime}
+        </if>
+        group by ORG_ID, ORG_NAME, ITEM_ID, ITEM_NAME
+        ) a
+        order by dayApplyCount
+    </select>
+
+    <select id="getOrgItemAcceptStatisticsByDay"
+            resultType="com.augurit.aplanmis.common.vo.analyse.OrgItemStatisticsVo">
+        select
+        <if test="_databaseId == 'oracle'">
+            to_char(STATISTICS_DATE,'yyyy-mm-dd') as day,
+        </if>
+        <if test="_databaseId == 'mysql'">
+            DATE_FORMAT(STATISTICS_DATE,'%Y-%m-%d') as day,
+        </if>
+        sum(DAY_APPLY_COUNT) as apply, sum(DAY_ACCEPTANCE_COUNT) as acceptDeal
+        from AEA_ANA_ORG_DAY_STATISTICS
+        where
+        ROOT_ORG_ID = #{rootOrgId}
+        <if test="orgId != null and orgId != ''">
+            and ORG_ID = #{orgId}
+        </if>
+        <if test="itemId != null and itemId != ''">
+            and ITEM_ID = #{itemId}
+        </if>
+        <if test="_databaseId == 'oracle'">
+            and to_char(STATISTICS_DATE,'yyyy-mm-dd') <![CDATA[ >= ]]> #{startTime}
+            and to_char(STATISTICS_DATE,'yyyy-mm-dd') <![CDATA[ <= ]]> #{endTime}
+            group by to_char(STATISTICS_DATE,'yyyy-mm-dd')
+        </if>
+        <if test="_databaseId == 'mysql'">
+            and DATE_FORMAT(STATISTICS_DATE,'%Y-%m-%d') <![CDATA[ >= ]]> #{startTime}
+            and DATE_FORMAT(STATISTICS_DATE,'%Y-%m-%d') <![CDATA[ <= ]]> #{endTime}
+            group by STATISTICS_DATE
+        </if>
+    </select>
+</mapper>

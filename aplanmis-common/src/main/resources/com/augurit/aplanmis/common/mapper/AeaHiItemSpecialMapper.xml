@@ -1,0 +1,368 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by Administrator    2019-08-03 10:33:44 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaHiItemSpecialMapper" >
+<!--1 返回所有字段的SQL字句 -->
+<sql id="allColumns" >
+    SPECIAL_ID  specialId,
+    ITEMINST_ID  iteminstId,
+    APPLYINST_ID  applyinstId,
+    PROJ_INFO_ID  projInfoId,
+    IS_FLOW_TRIGGER  isFlowTrigger,
+    APPINST_ID  appinstId,
+    SPECIAL_TYPE  specialType,
+    SPECIAL_DUE_DAYS  specialDueDays,
+    SPECIAL_DUE_TIME  specialDueTime,
+    SPECIAL_REASON  specialReason,
+    SPECIAL_MEMO  specialMemo,
+    APPROVE_RESULT  approveResult,
+    APPROVE_USER_ID  approveUserId,
+    APPROVE_USER_NAME  approveUserName,
+    APPROVE_OPINION  approveOpinion,
+    APPROVE_TIME  approveTime,
+    CHARGE_ORG_ID  chargeOrgId,
+    CHARGE_ORG_NAME  chargeOrgName,
+    WINDOW_USER_ID  windowUserId,
+    WINDOW_USER_NAME  windowUserName,
+    WINDOW_PHONE  windowPhone,
+    OPS_USER_ID  opsUserId,
+    OPS_USER_NAME  opsUserName,
+    OPS_TIME  opsTime,
+    PRINT_USER_ID  printUserId,
+    PRINT_USER_NAME  printUserName,
+    PRINT_TIME  printTime,
+    SPECIAL_STATE  specialState,
+    CREATER  creater,
+    CREATE_TIME  createTime,
+    MODIFIER  modifier,
+    MODIFY_TIME  modifyTime,
+    ROOT_ORG_ID rootOrgId,
+    SPECIAL_DUE_WAY specialDueWay,
+    SPECIAL_START_MAT_ID specialStartMatId,
+    SPECIAL_END_MAT_ID specialEndMatId,
+    SPECIAL_RESULT specialResult,
+    MONEY money
+    </sql>
+
+<!--2 根据主键ID查询单个实体 -->
+<select id="getAeaHiItemSpecialById" resultType="AeaHiItemSpecial" >
+    select
+    <include refid="allColumns"/>
+    from    AEA_HI_ITEM_SPECIAL
+    where    SPECIAL_ID = #{id}
+</select>
+
+<!--3 根据条件查询实体list -->
+    <select id="listAeaHiItemSpecial" resultType="AeaHiItemSpecial" >
+        select
+        <include refid="allColumns"/>
+        from    AEA_HI_ITEM_SPECIAL
+    <where>
+        <if test="specialId != null" >
+        AND    SPECIAL_ID = #{specialId}
+        </if>
+        <if test="iteminstId != null" >
+        AND    ITEMINST_ID = #{iteminstId}
+        </if>
+        <if test="applyinstId != null" >
+        AND    APPLYINST_ID = #{applyinstId}
+        </if>
+        <if test="projInfoId != null" >
+        AND    PROJ_INFO_ID = #{projInfoId}
+        </if>
+        <if test="isFlowTrigger != null" >
+        AND    IS_FLOW_TRIGGER = #{isFlowTrigger}
+        </if>
+        <if test="appinstId != null" >
+        AND    APPINST_ID = #{appinstId}
+        </if>
+        <if test="specialType != null" >
+        AND    SPECIAL_TYPE = #{specialType}
+        </if>
+        <if test="specialDueDays != null" >
+        AND    SPECIAL_DUE_DAYS = #{specialDueDays}
+        </if>
+        <if test="specialDueTime != null" >
+        AND    SPECIAL_DUE_TIME = #{specialDueTime}
+        </if>
+        <if test="specialReason != null" >
+        AND    SPECIAL_REASON = #{specialReason}
+        </if>
+        <if test="specialMemo != null" >
+        AND    SPECIAL_MEMO = #{specialMemo}
+        </if>
+        <if test="approveResult != null" >
+        AND    APPROVE_RESULT = #{approveResult}
+        </if>
+        <if test="approveUserId != null" >
+        AND    APPROVE_USER_ID = #{approveUserId}
+        </if>
+        <if test="approveUserName != null" >
+        AND    APPROVE_USER_NAME = #{approveUserName}
+        </if>
+        <if test="approveOpinion != null" >
+        AND    APPROVE_OPINION = #{approveOpinion}
+        </if>
+        <if test="approveTime != null" >
+        AND    APPROVE_TIME = #{approveTime}
+        </if>
+        <if test="chargeOrgId != null" >
+        AND    CHARGE_ORG_ID = #{chargeOrgId}
+        </if>
+        <if test="chargeOrgName != null" >
+        AND    CHARGE_ORG_NAME = #{chargeOrgName}
+        </if>
+        <if test="windowUserId != null" >
+        AND    WINDOW_USER_ID = #{windowUserId}
+        </if>
+        <if test="windowUserName != null" >
+        AND    WINDOW_USER_NAME = #{windowUserName}
+        </if>
+        <if test="windowPhone != null" >
+        AND    WINDOW_PHONE = #{windowPhone}
+        </if>
+        <if test="opsUserId != null" >
+        AND    OPS_USER_ID = #{opsUserId}
+        </if>
+        <if test="opsUserName != null" >
+        AND    OPS_USER_NAME = #{opsUserName}
+        </if>
+        <if test="opsTime != null" >
+        AND    OPS_TIME = #{opsTime}
+        </if>
+        <if test="printUserId != null" >
+        AND    PRINT_USER_ID = #{printUserId}
+        </if>
+        <if test="printUserName != null" >
+        AND    PRINT_USER_NAME = #{printUserName}
+        </if>
+        <if test="printTime != null" >
+        AND    PRINT_TIME = #{printTime}
+        </if>
+        <if test="specialState != null" >
+        AND    SPECIAL_STATE = #{specialState}
+        </if>
+        <if test="creater != null" >
+        AND    CREATER = #{creater}
+        </if>
+        <if test="createTime != null" >
+        AND    CREATE_TIME = #{createTime}
+        </if>
+        <if test="modifier != null" >
+        AND    MODIFIER = #{modifier}
+        </if>
+        <if test="modifyTime != null" >
+        AND    MODIFY_TIME = #{modifyTime}
+        </if>
+        <if test="rootOrgId != null" >
+            AND    ROOT_ORG_ID = #{rootOrgId}
+        </if>
+        <if test="specialDueWay != null" >
+            AND    SPECIAL_DUE_WAY = #{specialDueWay}
+        </if>
+        <if test="specialStartMatId != null">
+            AND SPECIAL_START_MAT_ID = #{specialStartMatId}
+        </if>
+        <if test="specialEndMatId != null">
+            AND SPECIAL_END_MAT_ID = #{specialEndMatId}
+        </if>
+        <if test="specialResult != null">
+            AND SPECIAL_RESULT = #{specialResult}
+        </if>
+        <if test="money != null">
+            AND MONEY = #{money}
+        </if>
+
+    </where>
+    order by CREATE_TIME desc
+    </select>
+<!--4 根据条件查询实体list,返回分页对象 -->
+
+<!--5 新增实体对象 -->
+<insert id="insertAeaHiItemSpecial" parameterType="AeaHiItemSpecial" >
+    insert into AEA_HI_ITEM_SPECIAL (
+    SPECIAL_ID ,ITEMINST_ID ,APPLYINST_ID ,PROJ_INFO_ID ,IS_FLOW_TRIGGER ,APPINST_ID ,SPECIAL_TYPE ,SPECIAL_DUE_DAYS
+    ,SPECIAL_DUE_TIME ,SPECIAL_REASON ,SPECIAL_MEMO ,APPROVE_RESULT ,APPROVE_USER_ID ,APPROVE_USER_NAME ,APPROVE_OPINION
+    ,APPROVE_TIME ,CHARGE_ORG_ID ,CHARGE_ORG_NAME ,WINDOW_USER_ID ,WINDOW_USER_NAME ,WINDOW_PHONE ,OPS_USER_ID
+    ,OPS_USER_NAME ,OPS_TIME ,PRINT_USER_ID ,PRINT_USER_NAME ,PRINT_TIME ,SPECIAL_STATE ,CREATER ,CREATE_TIME ,MODIFIER
+    ,MODIFY_TIME,ROOT_ORG_ID,SPECIAL_DUE_WAY,SPECIAL_START_MAT_ID,SPECIAL_END_MAT_ID,SPECIAL_RESULT,MONEY
+    )  values  (
+    #{specialId},#{iteminstId},#{applyinstId},#{projInfoId},#{isFlowTrigger},#{appinstId},#{specialType},#{specialDueDays},#{specialDueTime},#{specialReason},#{specialMemo},#{approveResult},#{approveUserId},#{approveUserName},#{approveOpinion},#{approveTime},#{chargeOrgId},#{chargeOrgName},#{windowUserId},#{windowUserName},#{windowPhone},#{opsUserId},#{opsUserName},#{opsTime},#{printUserId},#{printUserName},#{printTime},#{specialState},#{creater},#{createTime},#{modifier},
+    #{modifyTime},#{rootOrgId},#{specialDueWay},#{specialStartMatId},#{specialEndMatId},#{specialResult},#{money}
+    )
+</insert>
+<!--6 修改实体对象 -->
+<update id="updateAeaHiItemSpecial" parameterType="AeaHiItemSpecial" >
+    update AEA_HI_ITEM_SPECIAL
+    <set >
+        <if test="specialId != null" >
+        SPECIAL_ID = #{specialId},
+        </if>
+        <if test="iteminstId != null" >
+        ITEMINST_ID = #{iteminstId},
+        </if>
+        <if test="applyinstId != null" >
+        APPLYINST_ID = #{applyinstId},
+        </if>
+        <if test="projInfoId != null" >
+        PROJ_INFO_ID = #{projInfoId},
+        </if>
+        <if test="isFlowTrigger != null" >
+        IS_FLOW_TRIGGER = #{isFlowTrigger},
+        </if>
+        <if test="appinstId != null" >
+        APPINST_ID = #{appinstId},
+        </if>
+        <if test="specialType != null" >
+        SPECIAL_TYPE = #{specialType},
+        </if>
+        <if test="specialDueDays != null" >
+        SPECIAL_DUE_DAYS = #{specialDueDays},
+        </if>
+        <if test="specialDueTime != null" >
+        SPECIAL_DUE_TIME = #{specialDueTime},
+        </if>
+        <if test="specialReason != null" >
+        SPECIAL_REASON = #{specialReason},
+        </if>
+        <if test="specialMemo != null" >
+        SPECIAL_MEMO = #{specialMemo},
+        </if>
+        <if test="approveResult != null" >
+        APPROVE_RESULT = #{approveResult},
+        </if>
+        <if test="approveUserId != null" >
+        APPROVE_USER_ID = #{approveUserId},
+        </if>
+        <if test="approveUserName != null" >
+        APPROVE_USER_NAME = #{approveUserName},
+        </if>
+        <if test="approveOpinion != null" >
+        APPROVE_OPINION = #{approveOpinion},
+        </if>
+        <if test="approveTime != null" >
+        APPROVE_TIME = #{approveTime},
+        </if>
+        <if test="chargeOrgId != null" >
+        CHARGE_ORG_ID = #{chargeOrgId},
+        </if>
+        <if test="chargeOrgName != null" >
+        CHARGE_ORG_NAME = #{chargeOrgName},
+        </if>
+        <if test="windowUserId != null" >
+        WINDOW_USER_ID = #{windowUserId},
+        </if>
+        <if test="windowUserName != null" >
+        WINDOW_USER_NAME = #{windowUserName},
+        </if>
+        <if test="windowPhone != null" >
+        WINDOW_PHONE = #{windowPhone},
+        </if>
+        <if test="opsUserId != null" >
+        OPS_USER_ID = #{opsUserId},
+        </if>
+        <if test="opsUserName != null" >
+        OPS_USER_NAME = #{opsUserName},
+        </if>
+        <if test="opsTime != null" >
+        OPS_TIME = #{opsTime},
+        </if>
+        <if test="printUserId != null" >
+        PRINT_USER_ID = #{printUserId},
+        </if>
+        <if test="printUserName != null" >
+        PRINT_USER_NAME = #{printUserName},
+        </if>
+        <if test="printTime != null" >
+        PRINT_TIME = #{printTime},
+        </if>
+        <if test="specialState != null" >
+        SPECIAL_STATE = #{specialState},
+        </if>
+        <if test="creater != null" >
+        CREATER = #{creater},
+        </if>
+        <if test="createTime != null" >
+        CREATE_TIME = #{createTime},
+        </if>
+        <if test="modifier != null" >
+        MODIFIER = #{modifier},
+        </if>
+        <if test="modifyTime != null" >
+        MODIFY_TIME = #{modifyTime},
+        </if>
+        <if test="rootOrgId != null" >
+            ROOT_ORG_ID = #{rootOrgId},
+        </if>
+        <if test="specialDueWay != null" >
+            SPECIAL_DUE_WAY = #{specialDueWay},
+        </if>
+        <if test="specialStartMatId != null">
+            SPECIAL_START_MAT_ID = #{specialStartMatId},
+        </if>
+        <if test="specialEndMatId != null">
+            SPECIAL_END_MAT_ID = #{specialEndMatId},
+        </if>
+        <if test="specialResult != null">
+            SPECIAL_RESULT = #{specialResult},
+        </if>
+        <if test="money != null">
+            MONEY = #{money},
+        </if>
+    </set>
+    where SPECIAL_ID = #{specialId}
+</update>
+<!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaHiItemSpecial">
+        delete from   AEA_HI_ITEM_SPECIAL
+        where
+    SPECIAL_ID = #{id}
+    </delete>
+<!--8 删除实体对象列表,根据主键ID列表 -->
+<!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaHiItemSpecial" id="AeaHiItemSpecialMap">
+        <id property="specialId" column="SPECIAL_ID"/>
+        <result property="iteminstId" column="ITEMINST_ID"/>
+        <result property="applyinstId" column="APPLYINST_ID"/>
+        <result property="projInfoId" column="PROJ_INFO_ID"/>
+        <result property="isFlowTrigger" column="IS_FLOW_TRIGGER"/>
+        <result property="appinstId" column="APPINST_ID"/>
+        <result property="specialType" column="SPECIAL_TYPE"/>
+        <result property="specialDueDays" column="SPECIAL_DUE_DAYS"/>
+        <result property="specialDueTime" column="SPECIAL_DUE_TIME"/>
+        <result property="specialReason" column="SPECIAL_REASON"/>
+        <result property="specialMemo" column="SPECIAL_MEMO"/>
+        <result property="approveResult" column="APPROVE_RESULT"/>
+        <result property="approveUserId" column="APPROVE_USER_ID"/>
+        <result property="approveUserName" column="APPROVE_USER_NAME"/>
+        <result property="approveOpinion" column="APPROVE_OPINION"/>
+        <result property="approveTime" column="APPROVE_TIME"/>
+        <result property="chargeOrgId" column="CHARGE_ORG_ID"/>
+        <result property="chargeOrgName" column="CHARGE_ORG_NAME"/>
+        <result property="windowUserId" column="WINDOW_USER_ID"/>
+        <result property="windowUserName" column="WINDOW_USER_NAME"/>
+        <result property="windowPhone" column="WINDOW_PHONE"/>
+        <result property="opsUserId" column="OPS_USER_ID"/>
+        <result property="opsUserName" column="OPS_USER_NAME"/>
+        <result property="opsTime" column="OPS_TIME"/>
+        <result property="printUserId" column="PRINT_USER_ID"/>
+        <result property="printUserName" column="PRINT_USER_NAME"/>
+        <result property="printTime" column="PRINT_TIME"/>
+        <result property="specialState" column="SPECIAL_STATE"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="modifier" column="MODIFIER"/>
+        <result property="modifyTime" column="MODIFY_TIME"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+        <result property="specialDueWay" column="SPECIAL_DUE_WAY"/>
+        <result property="specialStartMatId" column="SPECIAL_START_MAT_ID"/>
+        <result property="specialEndMatId" column="SPECIAL_END_MAT_ID"/>
+        <result property="specialResult" column="SPECIAL_RESULT"/>
+        <result property="money" column="MONEY"/>
+
+    </resultMap>
+    <select id="getAeaHiItemSpecialByIteminstId" resultType="AeaHiItemSpecial">
+        select <include refid="allColumns"></include> from AEA_HI_ITEM_SPECIAL where ITEMINST_ID = #{iteminstId} ORDER BY modify_time desc
+    </select>
+</mapper>

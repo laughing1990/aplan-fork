@@ -1,0 +1,222 @@
+.operate-btn {
+  padding: 16px 0 7px 16px;
+  border-bottom: 1px solid #ccc;
+}
+.operate-btn button {
+  margin-right: 7px;
+}
+.operate-btn .btn-group button {
+  margin-right: 2px;
+}
+.operate-btn .btn-group {
+  margin-right: 20px;
+}
+/*BEGIN 纵向时间轴*/
+.vertical {
+  position: fixed;
+}
+.vertical-time ul{
+  padding-left: 0;
+  font-weight: 700;
+  border-right: 1px solid #e2e2e2;
+}
+.vertical-time ul li {
+  margin-top:28px;
+  cursor: pointer;
+  display: flex;
+  display: -webkit-flex;
+  align-items: center;
+}
+.vertical-time ul li a{
+  display: inline-block;
+  width: 140px;
+  text-align: right;
+  padding-right: 10px;
+  color: #969696;
+}
+.vertical-time ul li .line:after{
+  content: '';
+  display: block;
+  width: 1px;
+  height: 28px;
+  background-color: #E0E0E0;
+  position: absolute;
+  top: 10px;
+  left: 3px;
+}
+.vertical-time ul li.active a{
+  color: #36a3f7;
+  border-right: 4px solid #36a3f7;
+}
+
+/*.vertical-time ul li b.cicle{
+  width: 8px;
+  height: 8px;
+  position: relative;
+  background:#CED5DB;
+}
+.vertical-time ul li b.cicle:after{
+  content: '';
+  display: block;
+  width: 1px;
+  height: 47px;
+  background-color: #E0E0E0;
+  position: absolute;
+  top: 8px;
+  left: 1px;
+}
+.vertical-time ul li.lilastCicle b:after{
+  content: '';
+  display: block;
+  height: 0px;
+}*/
+/*END 纵向时间轴*/
+#m_accordion_1_item_1_head,
+#m_accordion_2_item_1_head,
+#m_accordion_3_item_1_head{
+  color: #595959 !important;
+}
+.m-accordion__item-title:before {
+  content: '';
+  padding: 1px 3px;
+  background: #d3d7dc;
+  border-radius: 2px;
+}
+.m-accordion.m-accordion--section .m-accordion__item .m-accordion__item-head.collapsed .m-accordion__item-mode {
+  color: #595959 !important;
+}
+.div_step.active .m-accordion__item-title {
+  color: #36a0f7 !important;
+}
+.div_step.active .m-accordion__item-title:before {
+  content: '';
+  padding: 1px 3px;
+  background: #36a0f7;
+  border-radius: 2px;
+}
+.div_step.active .m-accordion.m-accordion--section .m-accordion__item .m-accordion__item-head.collapsed .m-accordion__item-mode {
+  color: #36a0f7 !important;
+}
+.m-accordion.m-accordion--section .m-accordion__item .m-accordion__item-body {
+  background: #fff;
+}
+.m-accordion__item-head {
+  position: relative;
+}
+.m-radio, .m-checkbox {
+  padding-left: 30px;
+}
+.m-form .m-form__group label {
+  position: relative;
+  vertical-align: sub;
+  padding-bottom: 10px;
+}
+.m-radio > span, .m-checkbox > span {
+  top: -2px;
+  left: 5px;
+}
+.m-portlet {
+  box-shadow: none;
+}
+.m-portlet-left {
+  margin-left: 200px;   
+  width: 80%;
+}
+.fa-question-circle {
+  color: #e4e4e4;
+  font-size: 20px;
+  line-height: 37px;
+  padding-left: 7px;
+}
+.form-group-title {
+  width: 100%;
+  color: #36a3f7;
+  padding-bottom: 5px;
+  font-size: 15px;
+  border-bottom: 1px solid #e8e8e8;
+}
+.form-group-title .la-save {
+  vertical-align: sub;
+  padding-right: 3px;
+  font-size: 22px;
+}
+.m-form__group.row .m-radio-inline {
+  margin-top: calc(0.65rem + 1px);
+}
+#m_accordion_3_item_1_body .m-accordion__item-content {
+  padding: 20px 0;
+}
+.table thead {
+  background: #fbfbfb;
+}
+#m_accordion_3_item_1_body thead th, #m_accordion_3_item_1_body td {
+  vertical-align: middle;
+  border-color: #e8e8e8;
+  border-width: 1px;
+}
+.header-add-btn {
+  position: fixed;
+  width: 100%;
+  top: 0px;
+  background: rgb(255, 255, 255);
+  z-index: 1;
+}
+.file-info {
+  margin-top: 10px;
+}
+.table td, .table th {
+  vertical-align: middle;
+}
+.modal-footer {
+  display: block;
+}
+.start-upload {
+  display: none;
+}
+#getFile .modal-body button {
+  margin: 20px;
+}
+#registerList .table tr:nth-child(even){
+  background: #fbfbfb;
+}
+
+.matters-subtitle{
+    font-size: 1.7rem;
+    font-weight: 700;
+    line-height: 2.4rem;
+    color: #0d1c28;
+    border-bottom: .2rem solid #0d1c28;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+}
+table{
+    min-width: 668px;
+    font-size: 0.9rem;
+    border-collapse:collapse; 
+}
+table th, table tr, table td{
+  font-weight: normal !important;
+  border:#ccc solid 1px;
+  text-align: left;
+  padding: 5px 5px 5px 5px;
+}
+table th{
+  width:7rem;
+      background-color: #f2f2f2;
+}
+table td{
+  width: 18rem;
+}
+h3{
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #000;
+}
+.col6{
+    float: left;
+    width: 50%;
+    height: 100%;
+}
+.div_step{
+  color: #000;
+}

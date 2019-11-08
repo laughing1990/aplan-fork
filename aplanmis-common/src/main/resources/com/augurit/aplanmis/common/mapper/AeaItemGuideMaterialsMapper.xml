@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by jjt    2018-11-19 22:01:49 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaItemGuideMaterialsMapper" >
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns" >
+        INTERMEDIARYSERVICESCODE  intermediaryservicescode,
+        ITEM_VER_ID  itemVerId,
+        MATERIAL_NAME  materialName,
+        MATERIAL_TYPE  materialType,
+        MATERIAL_TYPE_TEXT  materialTypeText,
+        ROWGUID  rowguid,
+        SOURCE_EXPLAIN  sourceExplain,
+        SOURCE_TYPE  sourceType,
+        SOURCE_TTYPE_TEXT  sourceTtypeText,
+        ZZHDZB  zzhdzb,
+        ZZHDZB_TEXT  zzhdzbText,
+        ZZZ_EXAMPLE_GUID  zzzExampleGuid,
+        INTERMEDIARYSERVICES  intermediaryservices,
+        ZZZ_FILL_EXPLIAN  zzzFillExplian,
+        ROOT_ORG_ID rootOrgId
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaItemGuideMaterialsById" resultType="AeaItemGuideMaterials" >
+        select
+        <include refid="allColumns"/>
+        from    AEA_ITEM_GUIDE_MATERIALS
+        where    ROWGUID = #{id}
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaItemGuideMaterials" resultType="AeaItemGuideMaterials" >
+        select
+        <include refid="allColumns"/>
+        from    AEA_ITEM_GUIDE_MATERIALS
+        <where>
+            <if test="intermediaryservicescode != null" >
+                AND    INTERMEDIARYSERVICESCODE = #{intermediaryservicescode}
+            </if>
+            <if test="itemVerId != null" >
+                AND    ITEM_VER_ID = #{itemVerId}
+            </if>
+            <if test="materialName != null" >
+                AND    MATERIAL_NAME = #{materialName}
+            </if>
+            <if test="materialType != null" >
+                AND    MATERIAL_TYPE = #{materialType}
+            </if>
+            <if test="materialTypeText != null" >
+                AND    MATERIAL_TYPE_TEXT = #{materialTypeText}
+            </if>
+            <if test="rowguid != null" >
+                AND    ROWGUID = #{rowguid}
+            </if>
+            <if test="sourceExplain != null" >
+                AND    SOURCE_EXPLAIN = #{sourceExplain}
+            </if>
+            <if test="sourceType != null" >
+                AND    SOURCE_TYPE = #{sourceType}
+            </if>
+            <if test="sourceTtypeText != null" >
+                AND    SOURCE_TTYPE_TEXT = #{sourceTtypeText}
+            </if>
+            <if test="zzhdzb != null" >
+                AND    ZZHDZB = #{zzhdzb}
+            </if>
+            <if test="zzhdzbText != null" >
+                AND    ZZHDZB_TEXT = #{zzhdzbText}
+            </if>
+            <if test="zzzExampleGuid != null" >
+                AND    ZZZ_EXAMPLE_GUID = #{zzzExampleGuid}
+            </if>
+            <if test="intermediaryservices != null" >
+                AND    INTERMEDIARYSERVICES = #{intermediaryservices}
+            </if>
+            <if test="zzzFillExplian != null" >
+                AND    ZZZ_FILL_EXPLIAN = #{zzzFillExplian}
+            </if>
+            <if test="rootOrgId != null" >
+                AND    ROOT_ORG_ID = #{rootOrgId}
+            </if>
+        </where>
+    </select>
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaItemGuideMaterials" parameterType="AeaItemGuideMaterials" >
+        insert into AEA_ITEM_GUIDE_MATERIALS (
+            INTERMEDIARYSERVICESCODE,
+            ITEM_VER_ID,
+            MATERIAL_NAME,
+            MATERIAL_TYPE,
+            MATERIAL_TYPE_TEXT,
+            ROWGUID,
+            SOURCE_EXPLAIN,
+            SOURCE_TYPE,
+            SOURCE_TTYPE_TEXT,
+            ZZHDZB,
+            ZZHDZB_TEXT,
+            ZZZ_EXAMPLE_GUID,
+            INTERMEDIARYSERVICES,
+            ZZZ_FILL_EXPLIAN,
+            ROOT_ORG_ID
+        )  values  (
+            #{intermediaryservicescode},
+            #{itemVerId},
+            #{materialName},
+            #{materialType},
+            #{materialTypeText},
+            #{rowguid},
+            #{sourceExplain},
+            #{sourceType},
+            #{sourceTtypeText},
+            #{zzhdzb},
+            #{zzhdzbText},
+            #{zzzExampleGuid},
+            #{intermediaryservices},
+            #{zzzFillExplian},
+            #{rootOrgId}
+        )
+    </insert>
+
+    <!--6 修改实体对象 -->
+    <update id="updateAeaItemGuideMaterials" parameterType="AeaItemGuideMaterials" >
+        update AEA_ITEM_GUIDE_MATERIALS
+        <set >
+            <if test="intermediaryservicescode != null" >
+                INTERMEDIARYSERVICESCODE = #{intermediaryservicescode},
+            </if>
+            <if test="itemVerId != null" >
+                ITEM_VER_ID = #{itemVerId},
+            </if>
+            <if test="materialName != null" >
+                MATERIAL_NAME = #{materialName},
+            </if>
+            <if test="materialType != null" >
+                MATERIAL_TYPE = #{materialType},
+            </if>
+            <if test="materialTypeText != null" >
+                MATERIAL_TYPE_TEXT = #{materialTypeText},
+            </if>
+            <if test="rowguid != null" >
+                ROWGUID = #{rowguid},
+            </if>
+            <if test="sourceExplain != null" >
+                SOURCE_EXPLAIN = #{sourceExplain},
+            </if>
+            <if test="sourceType != null" >
+                SOURCE_TYPE = #{sourceType},
+            </if>
+            <if test="sourceTtypeText != null" >
+                SOURCE_TTYPE_TEXT = #{sourceTtypeText},
+            </if>
+            <if test="zzhdzb != null" >
+                ZZHDZB = #{zzhdzb},
+            </if>
+            <if test="zzhdzbText != null" >
+                ZZHDZB_TEXT = #{zzhdzbText},
+            </if>
+            <if test="zzzExampleGuid != null" >
+                ZZZ_EXAMPLE_GUID = #{zzzExampleGuid},
+            </if>
+            <if test="intermediaryservices != null" >
+                INTERMEDIARYSERVICES = #{intermediaryservices},
+            </if>
+            <if test="zzzFillExplian != null" >
+                ZZZ_FILL_EXPLIAN = #{zzzFillExplian},
+            </if>
+            <if test="rootOrgId != null" >
+                ROOT_ORG_ID = #{rootOrgId},
+            </if>
+        </set>
+        where ROWGUID = #{rowguid}
+    </update>
+
+    <delete id="deleteAeaItemGuideMaterials">
+        delete from AEA_ITEM_GUIDE_MATERIALS where ID = #{id}
+    </delete>
+
+    <delete id="batchDeleteGuideMaterialsByItemVerId">
+        delete from AEA_ITEM_GUIDE_MATERIALS where ITEM_VER_ID = #{itemVerId} and ROOT_ORG_ID = #{rootOrgId}
+    </delete>
+
+</mapper>

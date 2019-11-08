@@ -1,0 +1,202 @@
+buildscript {
+    ext {
+        springBootVersion = '2.0.3.RELEASE'
+        flowableVersion = '6.3.0'
+        agcloudVersion = '5.0.0'
+    }
+    repositories {
+        mavenLocal()
+        maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
+group = 'com.augurit.aplanmis'
+version = '4.0'
+
+allprojects {
+    apply plugin: 'java'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+
+    sourceCompatibility = 1.8
+
+    ext {
+        springCloudVersion = 'Finchley.RELEASE'
+        flowableVersion = '6.3.0'
+        agcloudVersion = '5.0.0'
+    }
+
+    tasks.withType(JavaCompile) {
+        options.encoding = "UTF-8"
+    }
+
+    repositories {
+        mavenLocal()
+        maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+        //agcloud私服仓库
+        maven { url 'http://39.107.139.174:8081/repository/agcloud-public/' }
+        // 中央仓库
+        mavenCentral()
+    }
+
+    dependencies {
+        compile('mysql:mysql-connector-java:5.1.44')
+        compile('com.alibaba:fastjson:1.2.41')
+        compile('com.belerweb:pinyin4j:2.5.1')
+        compile('commons-io:commons-io:2.5')
+        compile('commons-net:commons-net:3.3')
+        compile('com.github.pagehelper:pagehelper:5.1.2')
+        compile('javax.servlet:jstl:1.2')
+        compile('javax.servlet.jsp:jsp-api:2.2')
+	    compile ('io.jsonwebtoken:jjwt:0.7.0')
+        compile('org.apache.commons:commons-lang3:3.7')
+        compile('org.slf4j:log4j-over-slf4j:1.7.25')
+
+        compile('org.springframework.boot:spring-boot-starter')
+        compile('org.springframework.boot:spring-boot-starter-web')
+        //增加thymeleaf 支持
+        compile('org.springframework.boot:spring-boot-starter-thymeleaf')
+
+        compile('com.alibaba:druid:1.1.9')
+        compile('com.alibaba:druid-spring-boot-starter:1.1.13')
+        compile('org.mybatis:mybatis-typehandlers-jsr310:1.0.2')
+        compile('org.mybatis.spring.boot:mybatis-spring-boot-starter:1.3.1')
+
+//        compile group: 'org.mybatis.spring.boot', name: 'mybatis-spring-boot-starter', version: '2.1.0'
+        compile('redis.clients:jedis:2.9.0')
+
+        compile 'org.springframework:spring-oxm:5.0.7.RELEASE'
+
+        compile("org.springframework.boot:spring-boot-starter-actuator")
+        // lombok
+        compile ('org.projectlombok:lombok:1.18.2')
+        annotationProcessor "org.projectlombok:lombok:1.18.2"
+
+        compile('io.springfox:springfox-swagger2:2.9.2')
+        compile('io.springfox:springfox-swagger-ui:2.9.2')
+        compile ('io.springfox:springfox-swagger2:2.9.2'){
+            exclude group: 'io.swagger', module: 'swagger-models'
+        }
+        compile 'io.swagger:swagger-models:1.5.21'
+        compile('com.github.xiaoymin:swagger-bootstrap-ui:1.9.4')
+
+        // 腾讯云jar包
+        compile ('com.github.tencentyun:tls-sig-api:1.2')
+        //通用 依赖包
+        compile('cn.meddb:ueditor:20180110')
+        compile('com.fasterxml.uuid:java-uuid-generator:3.1.5')
+        compile('com.googlecode.aviator:aviator:4.0.0-RC')
+        compile('com.janeluo:ikanalyzer:2012_u6')
+        compile('commons-codec:commons-codec:1.9')
+        compile('jmagick:jmagick:6.2.4')
+        compile('commons-lang:commons-lang:2.6')
+        compile("org.aspectj:aspectjweaver:1.8.13")
+        compile('org.json:json:20180130')
+        compile('org.jsoup:jsoup:1.11.3')
+        compile('commons-collections:commons-collections:3.2.2')
+        compile('commons-fileupload:commons-fileupload:1.3.1')
+        compile('joda-time:joda-time:2.9.9')
+        compile('org.apache.ant:ant:1.10.1')
+        compile('org.apache.httpcomponents:httpmime:4.5.5')
+        compile('org.apache.poi:poi:3.10-FINAL')
+        compile('org.apache.poi:poi-ooxml:3.10-FINAL')
+        compile('org.springframework.data:spring-data-redis:2.0.8.RELEASE')
+        compile('org.springframework.mobile:spring-mobile-device:1.1.4.RELEASE')
+        compile('org.xhtmlrenderer:flying-saucer-pdf:9.0.3')
+        compile('de.odysseus.juel:juel-impl:2.2.7')
+//        compile "com.augurit:dbutil:0.1"
+
+        //依赖的agcloud相关jar
+        compile('oracle:ojdbc:6')
+        compile('mysql:mysql-connector-java')
+        //compile "com.augurit.agcloud:agcloud-framework:${agcloudVersion}"
+        compile "com.augurit.agcloud:agcloud-framework-ui:${agcloudVersion}"
+
+        compile "com.augurit.agcloud:agcloud-aoa:${agcloudVersion}"
+        compile "com.augurit.agcloud:agcloud-aoa-ui:${agcloudVersion}"
+
+        compile "com.augurit.agcloud:agcloud-bsc:${agcloudVersion}"
+        compile "com.augurit.agcloud:agcloud-bsc-ui:${agcloudVersion}"
+
+        compile "com.augurit.agcloud:agcloud-agx:${agcloudVersion}"
+        compile "com.augurit.agcloud:agcloud-agx-common:${agcloudVersion}"
+
+//        compile "com.augurit.agcloud:agcloud-bpm-common:${agcloudVersion}"
+//        compile "com.augurit.agcloud:agcloud-bpm-admin:${agcloudVersion}"
+//        compile "com.augurit.agcloud:agcloud-bpm-admin-ui:${agcloudVersion}"
+//        compile "com.augurit.agcloud:agcloud-bpm-front:${agcloudVersion}"
+//        compile "com.augurit.agcloud:agcloud-bpm-front-ui:${agcloudVersion}"
+
+//        compile "com.augurit.agcloud:agcloud-meta:${agcloudVersion}"
+//        compile "com.augurit.agcloud:agcloud-meta-ui:${agcloudVersion}"
+
+        compile "com.augurit.agcloud:agcloud-opus-common:${agcloudVersion}"
+        compile "com.augurit.agcloud:agcloud-opus-admin:${agcloudVersion}"
+        compile "com.augurit.agcloud:agcloud-opus-admin-ui:${agcloudVersion}"
+        compile "com.augurit.agcloud:agcloud-opus-front:${agcloudVersion}"
+        compile "com.augurit.agcloud:agcloud-opus-front-ui:${agcloudVersion}"
+
+        /*compile "com.augurit.agcloud:flowable-bpmn-converter-agcloud:${flowableVersion}"
+        compile "com.augurit.agcloud:flowable-bpmn-model-agcloud:${flowableVersion}"
+        compile "com.augurit.agcloud:flowable-engine-agcloud:${flowableVersion}"
+        compile "com.augurit.agcloud:flowable-task-service-agcloud:${flowableVersion}"
+        compile "com.augurit.agcloud:flowable-task-service-api-agcloud:${flowableVersion}"
+        compile "com.augurit.agcloud:flowable-variable-service-api:${flowableVersion}"
+        compile "com.augurit.agcloud:flowable-variable-service:${flowableVersion}"
+        compile "com.augurit.agcloud:flowable-spring-common:${flowableVersion}"
+        compile "com.augurit.agcloud:flowable-spring-boot-starter-process:${flowableVersion}"
+        compile "com.augurit.agcloud:flowable-spring-boot-autoconfigure:${flowableVersion}"
+        compile "com.augurit.agcloud:flowable-spring:${flowableVersion}"
+        compile "com.augurit.agcloud:flowable-process-validation:${flowableVersion}"
+        compile "com.augurit.agcloud:flowable-job-spring-service:${flowableVersion}"
+        compile "com.augurit.agcloud:flowable-job-service-api:${flowableVersion}"
+        compile "com.augurit.agcloud:flowable-job-service:${flowableVersion}"
+        compile "com.augurit.agcloud:flowable-image-generator:${flowableVersion}"
+        compile "com.augurit.agcloud:flowable-idm-spring:${flowableVersion}"
+        compile "com.augurit.agcloud:flowable-idm-engine:${flowableVersion}"
+        compile "com.augurit.agcloud:flowable-idm-api:${flowableVersion}"
+        compile "com.augurit.agcloud:flowable-identitylink-service-api:${flowableVersion}"
+        compile "com.augurit.agcloud:flowable-identitylink-service:${flowableVersion}"
+        compile "com.augurit.agcloud:flowable-form-model:${flowableVersion}"
+        compile "com.augurit.agcloud:flowable-form-api:${flowableVersion}"
+        compile "com.augurit.agcloud:flowable-engine-common-api:${flowableVersion}"
+        compile "com.augurit.agcloud:flowable-engine-common:${flowableVersion}"
+        compile "com.augurit.agcloud:flowable-dmn-model:${flowableVersion}"
+        compile "com.augurit.agcloud:flowable-dmn-api:${flowableVersion}"
+        compile "com.augurit.agcloud:flowable-content-api:${flowableVersion}"
+        compile "com.augurit.agcloud:flowable-cmmn-model:${flowableVersion}"
+        compile "com.augurit.agcloud:flowable-cmmn-api:${flowableVersion}"
+        compile "com.augurit.agcloud:agcloud-bpm-rest:${agcloudVersion}"*/
+
+        compile("org.liquibase:liquibase-core:3.6.3")
+
+        //bsc依赖
+        compile('org.jodconverter:jodconverter-core:4.2.0')
+
+        compile 'com.github.aaitmouloud:springfox-collection-example-plugin:2.9.2'
+        //gson
+        compile("com.google.code.gson:gson:2.6.1")
+        compile 'com.ning:async-http-client:1.9.32'
+
+        testCompile('org.springframework.boot:spring-boot-starter-test')
+        testCompile('org.junit.jupiter:junit-jupiter-engine:5.0.2')
+        testCompile('org.junit.platform:junit-platform-runner:1.0.2')
+        testCompile('org.junit.platform:junit-platform-console-standalone:1.0.2')
+    }
+
+    dependencyManagement {
+        imports {
+            mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+        }
+    }
+}
+
+subprojects {
+    version = '0.1'
+}
+
+
+

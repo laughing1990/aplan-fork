@@ -1,0 +1,107 @@
+/*
+* @Author: ZL
+* @Date:   $ $
+* @Last Modified by:   ZL
+* @Last Modified time: $ $
+*/
+/*登录框*/
+.login-container {
+  width: 800px;
+  height: 520px;
+  background: #fff;
+  box-shadow: 0 2px 10px rgba(72,121,228,.25);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-left: -400px;
+  margin-top: -260px;
+  overflow: hidden;
+}
+.login-pic {
+  width: 50%;
+  height: 100%;
+  float: left;
+  background: #3184fa;
+  text-align: center;
+}
+.login-pic img {
+  margin: auto;
+}
+.login-logo {
+  padding: 50px 0 80px;
+}
+.login-box {
+  width: 50%;
+  height: 100%;
+  float: left;
+  padding: 0 40px;
+}
+.sign-icon {
+  text-align: center;
+  margin: 30px 0 20px;
+}
+.sign-icon>i {
+  width: 72px;
+  height: 72px;
+  display: inline-block;
+  border-radius: 50%;
+  background: #3184fa url(../images/login_tag-xj.png) center center no-repeat;
+}
+.login-tab {
+  margin-bottom: 50px;
+}
+.login-tab-tit li {
+  width: 50%;
+  height: 36px;
+  line-height: 36px;
+  color: #333;
+  font-size: 14px;
+  float: left;
+  text-align: center;
+  cursor: pointer;
+  vertical-align: middle;
+}
+.login-tab-tit li.active {
+  color: #3184fa;
+  font-size: 20px;
+}
+.login-form .el-input__prefix i {
+  font-size: 22px;
+}
+.login-form .el-input__inner {
+  border: none;
+  border-bottom: 1px solid #ccc;
+  border-radius: 0;
+  padding-left: 40px;
+}
+.login-form .el-input__inner:focus {
+  border: none;
+  border-bottom: 1px solid #3184fa;
+  border-radius: 0;
+  color: #3184fa;
+}
+.login-form .el-input__inner:focus ~ .el-input__prefix {
+  color: #3184fa;
+  transition: all 0s;
+}
+.login-form .el-form-item .el-button {
+  width: 100%;
+  font-size: 15px;
+  border: 0;
+  cursor: pointer;
+  text-decoration: none;
+  font-weight: 100;
+  box-shadow: 0 4px 20px rgba(72,121,228,.3);
+  border-radius: 0;
+}
+.login-form .el-form-item .el-button--primary {
+  background: #3184fa;
+  color: #fff;
+}
+.login-form .el-form-item .el-button:hover {
+  color: #fff;
+  background: #3184fa;
+}
+.login-form .password {
+  margin-bottom: 40px;
+}

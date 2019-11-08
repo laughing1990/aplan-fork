@@ -1,0 +1,164 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <preConditions>
+        <dbms type="mysql"/>
+    </preConditions>
+
+    <changeSet id="201907251151" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            INSERT INTO `opu_rs_func` (`FUNC_ID`, `APP_SOFT_ID`, `FUNC_CODE`, `FUNC_NAME`, `FUNC_TYPE`, `FUNC_INVOKE_TYPE`, `FUNC_INVOKE_URL`, `FUNC_INVOKE_PARAM`, `FUNC_SORT_NO`, `PARENT_FUNC_ID`, `FUNC_LEVEL`, `FUNC_SEQ`, `FUNC_SUB_COUNT`, `IS_AUTO_IMPORT`, `IS_ACTIVE_FUNC`, `FUNC_DELETED`, `FUNC_DESC`, `FUNC_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `FUNC_INVOKE_ACTIVITY`, `WIDGET_TYPE`, `FUNC_ICON_CSS`, `WIDGET_IS_CONFIG`, `WIDGET_IS_VISIABLE`, `FUNC_SHORTCUT_KEY`, `WIDGET_IS_USE_TPL`, `TMN_ID`, `IS_IMG_ICON`, `SMALL_IMG_PATH`, `MIDDLE_IMG_PATH`, `BIG_IMG_PATH`, `HUGE_IMG_PATH`) VALUES ('ba9274dd-024c-4c1d-8526-624d60db34a4', 'bd57d0be-8884-4a4e-a41e-98070d2f56db', 'opu-rs-func-00000000066', '事项下放', 'func', '0', '/aea/item/delegateIndex.do', NULL, '13', '9b1fbbea-ad63-4040-86a8-6345f4b189e1', '2', '.9b1fbbea-ad63-4040-86a8-6345f4b189e1.ba9274dd-024c-4c1d-8526-624d60db34a4.', '0', '0', '1', '0', NULL, NULL, 'beb9e669-9056-4bce-8c08-779271a7b6f2', '2019-07-25 11:35:33', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '0', NULL, NULL, '0', NULL, NULL, NULL, NULL);
+            INSERT INTO `opu_rs_role_func` (`ROLE_FUNC_ID`, `ROLE_ID`, `FUNC_ID`) VALUES ('02761bc3-50ce-4aca-abb7-6f489eafab25', '6c9fd702-0c30-44a3-be5d-807fd4c34f39', 'ba9274dd-024c-4c1d-8526-624d60db34a4');
+            INSERT INTO `opu_rs_menu` (`MENU_ID`, `MENU_CODE`, `MENU_NAME`, `MENU_ICON_CSS`, `NET_TMN_ID`, `APP_SOFT_ID`, `FUNC_ID`, `PARENT_MENU_ID`, `MENU_LEVEL`, `MENU_SEQ`, `MENU_SORT_NO`, `IS_ACTIVE`, `IS_LEAF`, `SUB_COUNT`, `ACTIVE_SUB_COUNT`, `PAGE_OPEN_MODE`, `SMALL_IMG_PATH`, `MIDDLE_IMG_PATH`, `BIG_IMG_PATH`, `MENU_MEMO`, `MENU_DELETED`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `MENU_INVOKE_ACTIVITY`, `MENU_INVOKE_TYPE`, `IS_SINGLE_URL`, `AUTO_SWITCH`, `MENU_INNER_URL`, `MENU_GOV_URL`, `MENU_OUTER_URL`, `MENU_TAG_URL`, `IS_RECENTLY_ADD`, `IS_SHORTCUT_MENU`, `SHORTCUT_SORT_NO`, `HUGE_IMG_PATH`, `IS_IMG_ICON`) VALUES ('72a32d2b-5a2a-45ee-a94b-bbe843bad91f', 'opu-rs-menu-00000000186', '事项下放', 'm-menu__link-icon flaticon-file-1', '623baeff-8079-4762-bb8f-becddc20b463', 'bd57d0be-8884-4a4e-a41e-98070d2f56db', 'ba9274dd-024c-4c1d-8526-624d60db34a4', 'd0fd9ca7-dfc0-4dc5-9fe6-816c0ca54a70', '2', '.d0fd9ca7-dfc0-4dc5-9fe6-816c0ca54a70.72a32d2b-5a2a-45ee-a94b-bbe843bad91f.', '7', '1', '1', '0', '0', 'default', NULL, NULL, NULL, NULL, '0', 'beb9e669-9056-4bce-8c08-779271a7b6f2', '2019-07-25 11:35:33', 'beb9e669-9056-4bce-8c08-779271a7b6f2', '2019-07-25 11:37:21', NULL, 'h', '0', '0', 'http://192.168.30.120:8083/aplanmis-front/aea/item/delegateIndex.do', 'http://192.168.30.120:8083/aplanmis-front/aea/item/delegateIndex.do', 'http://192.168.30.120:8083/aplanmis-front/aea/item/delegateIndex.do', NULL, NULL, NULL, NULL, NULL, '0');
+        </sql>
+    </changeSet>
+
+    <changeSet id="201907291531" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            update bsc_att_link set TABLE_NAME = 'AEA_SERVICE_LEGAL_CLAUSE' where TABLE_NAME = 'AEA_ITEM_SERVICE_LEGAL_CLAUSE';
+            update bsc_att_link set TABLE_NAME = 'AEA_SERVICE_LEGAL' where TABLE_NAME = 'AEA_ITEM_SERVICE_LEGAL';
+            update bsc_att_link set TABLE_NAME = 'AEA_SERVICE_WINDOW' where TABLE_NAME = 'AEA_ITEM_SERVICE_WINDOW';
+        </sql>
+    </changeSet>
+
+    <changeSet id="201907291659" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            INSERT INTO `bsc_dic_code_type` (`TYPE_ID`, `TYPE_CODE`, `TYPE_NAME`, `IS_TREE`, `IS_ACTIVE`, `TYPE_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES ('3ddc0c74-98b9-4525-a5d2-94a9c9b2b01b', 'WINDOW_TYPE', '窗口类型', '0', '1', NULL, NULL, '2019-07-25 11:12:42', NULL, '2019-07-25 11:12:42', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`, `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES ('2f6977df-0728-4f75-8169-f0d40dc94b2e', '3ddc0c74-98b9-4525-a5d2-94a9c9b2b01b', '1', '收费发证窗口', '1', '1', '', NULL, NULL, '0', NULL, NULL, '2019-07-25 11:12:42', NULL, '2019-07-25 11:13:49', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`, `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES ('6ccf0d3c-de2b-446e-9bb0-b0cab82a0c7f', '3ddc0c74-98b9-4525-a5d2-94a9c9b2b01b', '0', '综合窗口', '1', '0', '', NULL, NULL, '0', NULL, NULL, '2019-07-25 11:12:42', NULL, '2019-07-25 11:13:34', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+        </sql>
+    </changeSet>
+
+    <changeSet id="201908011000" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            INSERT INTO `opu_rs_func` (`FUNC_ID`, `APP_SOFT_ID`, `FUNC_CODE`, `FUNC_NAME`, `FUNC_TYPE`, `FUNC_INVOKE_TYPE`, `FUNC_INVOKE_URL`, `FUNC_INVOKE_PARAM`, `FUNC_SORT_NO`, `PARENT_FUNC_ID`, `FUNC_LEVEL`, `FUNC_SEQ`, `FUNC_SUB_COUNT`, `IS_AUTO_IMPORT`, `IS_ACTIVE_FUNC`, `FUNC_DELETED`, `FUNC_DESC`, `FUNC_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `FUNC_INVOKE_ACTIVITY`, `WIDGET_TYPE`, `FUNC_ICON_CSS`, `WIDGET_IS_CONFIG`, `WIDGET_IS_VISIABLE`, `FUNC_SHORTCUT_KEY`, `WIDGET_IS_USE_TPL`, `TMN_ID`, `IS_IMG_ICON`, `SMALL_IMG_PATH`, `MIDDLE_IMG_PATH`, `BIG_IMG_PATH`, `HUGE_IMG_PATH`) VALUES ('c921779e-4994-45a7-88be-47e299747f11', 'bd57d0be-8884-4a4e-a41e-98070d2f56db', 'opu-rs-func-00000000067', '总表管理', 'func', '0', '/aea/par/indexOneForm.do', NULL, '14', '9b1fbbea-ad63-4040-86a8-6345f4b189e1', '2', '.9b1fbbea-ad63-4040-86a8-6345f4b189e1.c921779e-4994-45a7-88be-47e299747f11.', '0', '0', '1', '0', NULL, NULL, 'beb9e669-9056-4bce-8c08-779271a7b6f2', '2019-08-01 09:53:43', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '0', NULL, NULL, '0', NULL, NULL, NULL, NULL);
+            INSERT INTO `opu_rs_role_func` (`ROLE_FUNC_ID`, `ROLE_ID`, `FUNC_ID`) VALUES ('3f6ca9da-0a8d-47c3-8f78-7947cd2ad4c5', '6c9fd702-0c30-44a3-be5d-807fd4c34f39', 'c921779e-4994-45a7-88be-47e299747f11');
+            INSERT INTO `opu_rs_menu` (`MENU_ID`, `MENU_CODE`, `MENU_NAME`, `MENU_ICON_CSS`, `NET_TMN_ID`, `APP_SOFT_ID`, `FUNC_ID`, `PARENT_MENU_ID`, `MENU_LEVEL`, `MENU_SEQ`, `MENU_SORT_NO`, `IS_ACTIVE`, `IS_LEAF`, `SUB_COUNT`, `ACTIVE_SUB_COUNT`, `PAGE_OPEN_MODE`, `SMALL_IMG_PATH`, `MIDDLE_IMG_PATH`, `BIG_IMG_PATH`, `MENU_MEMO`, `MENU_DELETED`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `MENU_INVOKE_ACTIVITY`, `MENU_INVOKE_TYPE`, `IS_SINGLE_URL`, `AUTO_SWITCH`, `MENU_INNER_URL`, `MENU_GOV_URL`, `MENU_OUTER_URL`, `MENU_TAG_URL`, `IS_RECENTLY_ADD`, `IS_SHORTCUT_MENU`, `SHORTCUT_SORT_NO`, `HUGE_IMG_PATH`, `IS_IMG_ICON`) VALUES ('22d45e2b-672b-4211-8c22-060eef22aa1a', 'opu-rs-menu-00000000188', '总表管理', 'm-menu__link-icon flaticon-file-1', '623baeff-8079-4762-bb8f-becddc20b463', 'bd57d0be-8884-4a4e-a41e-98070d2f56db', 'c921779e-4994-45a7-88be-47e299747f11', 'd0fd9ca7-dfc0-4dc5-9fe6-816c0ca54a70', '2', '.d0fd9ca7-dfc0-4dc5-9fe6-816c0ca54a70.22d45e2b-672b-4211-8c22-060eef22aa1a.', '13', '1', '1', '0', '0', 'default', NULL, NULL, NULL, NULL, '0', 'beb9e669-9056-4bce-8c08-779271a7b6f2', '2019-08-01 09:53:43', 'beb9e669-9056-4bce-8c08-779271a7b6f2', '2019-08-01 09:55:07', NULL, 'h', '0', '0', 'http://192.168.30.120:8083/aplanmis-front/aea/par/indexOneForm.do', 'http://192.168.30.120:8083/aplanmis-front/aea/par/indexOneForm.do', 'http://192.168.30.120:8083/aplanmis-front/aea/par/indexOneForm.do', NULL, NULL, NULL, NULL, NULL, '0');
+        </sql>
+    </changeSet>
+
+    <changeSet id="201908071152" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            update aea_par_oneform  set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_item  set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_item_ver  set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_item_seq  set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_item_basic  set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+        </sql>
+    </changeSet>
+
+    <changeSet id="201908071336" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            update opu_rs_func set FUNC_INVOKE_URL ='/aea/service/legal/indexAeaServiceLegal.do' where FUNC_NAME like '%法律法规%';
+            update opu_rs_menu set MENU_INNER_URL='http://192.168.30.120:8083/aplanmis-front/aea/service/legal/indexAeaServiceLegal.do'  where MENU_NAME like '%法律法规%';
+            UPDATE opu_rs_func SET FUNC_INVOKE_URL = '/aea/service/window/index.do' WHERE FUNC_NAME LIKE '%服务窗口%';
+            UPDATE opu_rs_menu
+            SET MENU_INNER_URL = 'http://localhost:8083/aplanmis-front/aea/service/window/index.do',
+                MENU_OUTER_URL = 'http://localhost:8083/aplanmis-front/aea/service/window/index.do',
+                MENU_GOV_URL = 'http://localhost:8083/aplanmis-front/aea/service/window/index.do'
+            WHERE MENU_NAME LIKE '%服务窗口%';
+        </sql>
+    </changeSet>
+
+    <changeSet id="201908081055" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            update aea_service_legal set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_service_legal_clause set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_service_window  set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_service_window_item SET ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_service_window_stage SET ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_service_window_user SET ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_item_mat_type set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_item_mat set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_cert set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_cert_type set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+        </sql>
+    </changeSet>
+
+    <changeSet id="201908121356" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            update aea_item_guide_attr set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+        </sql>
+    </changeSet>
+
+    <changeSet id="201908271338" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            update aea_par_theme set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_par_theme_seq set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_par_theme_ver set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_par_state_item set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_par_state set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_par_stage_questions set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_par_stage_guide set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_par_stage_charges set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_par_stage set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_par_share_mat set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_par_oneform set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_par_in set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_item_state_ver set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_item_state set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_item_service_basic set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_item_cond set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_item_directory set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_item_guide set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_item_guide_accordings set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_item_guide_charges set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_item_guide_conditions set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_item_guide_departments set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_item_guide_extend set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_item_guide_matconditions set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_item_guide_materials set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_item_guide_questions set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_item_guide_specials set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_item_inout set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+            update aea_item_priv set ROOT_ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6';
+        </sql>
+    </changeSet>
+
+    <changeSet id="201908271425" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            UPDATE aea_service_window SET region_range = ( CASE WHEN region_range IS NULL THEN '1' ELSE region_range END );
+            UPDATE aea_service_window SET IS_PUBLIC = ( CASE WHEN IS_PUBLIC IS NULL THEN '1' ELSE IS_PUBLIC END );
+            UPDATE aea_service_window SET IS_ACTIVE = ( CASE WHEN IS_ACTIVE IS NULL THEN '1' ELSE IS_ACTIVE END );
+            UPDATE aea_service_window SET WINDOW_TYPE = ( CASE WHEN WINDOW_TYPE IS NULL THEN '1' ELSE WINDOW_TYPE END );
+            UPDATE aea_service_window SET IS_ALL_ITEM = ( CASE WHEN IS_ALL_ITEM IS NULL THEN '1' ELSE IS_ALL_ITEM END );
+            UPDATE aea_service_window SET IS_ALL_STAGE = ( CASE WHEN IS_ALL_STAGE IS NULL THEN '1' ELSE IS_ALL_STAGE END );
+        </sql>
+    </changeSet>
+
+    <changeSet id="201908301359" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            INSERT INTO `opu_rs_func` (`FUNC_ID`, `APP_SOFT_ID`, `FUNC_CODE`, `FUNC_NAME`, `FUNC_TYPE`, `FUNC_INVOKE_TYPE`, `FUNC_INVOKE_URL`, `FUNC_INVOKE_PARAM`, `FUNC_SORT_NO`, `PARENT_FUNC_ID`, `FUNC_LEVEL`, `FUNC_SEQ`, `FUNC_SUB_COUNT`, `IS_AUTO_IMPORT`, `IS_ACTIVE_FUNC`, `FUNC_DELETED`, `FUNC_DESC`, `FUNC_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `FUNC_INVOKE_ACTIVITY`, `WIDGET_TYPE`, `FUNC_ICON_CSS`, `WIDGET_IS_CONFIG`, `WIDGET_IS_VISIABLE`, `FUNC_SHORTCUT_KEY`, `WIDGET_IS_USE_TPL`, `TMN_ID`, `IS_IMG_ICON`, `SMALL_IMG_PATH`, `MIDDLE_IMG_PATH`, `BIG_IMG_PATH`, `HUGE_IMG_PATH`) VALUES ('094c1dc0-a0c6-4e9f-8076-b84fac41f366', 'bd57d0be-8884-4a4e-a41e-98070d2f56db', 'opu-rs-func-0000000099', '主题导航定义', 'func', '0', '/par/theme/navIndex.do', NULL, '15', '9b1fbbea-ad63-4040-86a8-6345f4b189e1', '2', '.9b1fbbea-ad63-4040-86a8-6345f4b189e1.094c1dc0-a0c6-4e9f-8076-b84fac41f366.', '0', '0', '1', '0', NULL, NULL, 'beb9e669-9056-4bce-8c08-779271a7b6f2', '2019-08-29 16:01:28', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '0', NULL, NULL, '0', NULL, NULL, NULL, NULL);
+            INSERT INTO `opu_rs_role_func` (`ROLE_FUNC_ID`, `ROLE_ID`, `FUNC_ID`) VALUES ('c3674920-76a1-481c-b86a-dc1e2bd7a52b', '6c9fd702-0c30-44a3-be5d-807fd4c34f39', '094c1dc0-a0c6-4e9f-8076-b84fac41f366');
+            INSERT INTO `opu_rs_func` (`FUNC_ID`, `APP_SOFT_ID`, `FUNC_CODE`, `FUNC_NAME`, `FUNC_TYPE`, `FUNC_INVOKE_TYPE`, `FUNC_INVOKE_URL`, `FUNC_INVOKE_PARAM`, `FUNC_SORT_NO`, `PARENT_FUNC_ID`, `FUNC_LEVEL`, `FUNC_SEQ`, `FUNC_SUB_COUNT`, `IS_AUTO_IMPORT`, `IS_ACTIVE_FUNC`, `FUNC_DELETED`, `FUNC_DESC`, `FUNC_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `FUNC_INVOKE_ACTIVITY`, `WIDGET_TYPE`, `FUNC_ICON_CSS`, `WIDGET_IS_CONFIG`, `WIDGET_IS_VISIABLE`, `FUNC_SHORTCUT_KEY`, `WIDGET_IS_USE_TPL`, `TMN_ID`, `IS_IMG_ICON`, `SMALL_IMG_PATH`, `MIDDLE_IMG_PATH`, `BIG_IMG_PATH`, `HUGE_IMG_PATH`) VALUES ('094c1dc0-a0c6-4e9f-8076-b84fac41f366', 'bd57d0be-8884-4a4e-a41e-98070d2f56db', 'opu-rs-func-0000000099', '主题导航定义', 'func', '0', '/par/theme/navIndex.do', NULL, '15', '9b1fbbea-ad63-4040-86a8-6345f4b189e1', '2', '.9b1fbbea-ad63-4040-86a8-6345f4b189e1.094c1dc0-a0c6-4e9f-8076-b84fac41f366.', '0', '0', '1', '0', NULL, NULL, 'beb9e669-9056-4bce-8c08-779271a7b6f2', '2019-08-29 16:01:28', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '0', NULL, NULL, '0', NULL, NULL, NULL, NULL);
+        </sql>
+    </changeSet>
+
+    <changeSet id="201910192326" author="qinjianping" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            UPDATE bsc_dic_code_item
+            SET ORG_ID = '0368948a-1cdf-4bf8-a828-71d796ba89f6'
+            WHERE
+            TYPE_ID IN (
+            SELECT
+            TYPE_ID
+            FROM
+            bsc_dic_code_type
+            WHERE
+            TYPE_CODE IN (
+            'XM_NATURE',
+            'XM_PROJECT_LEVEL',
+            'PROJECT_CLASS',
+            'XM_TDLY',
+            'XM_GCFL',
+            'XM_TZLX',
+            'XM_GBHY',
+            'XM_ZJLY'
+            )
+            );
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

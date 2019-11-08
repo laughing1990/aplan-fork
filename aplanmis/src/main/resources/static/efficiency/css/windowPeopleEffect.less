@@ -1,0 +1,251 @@
+// 循环生成div的bg
+.intro-loop(@n, @i: 1) when (@i <=@n) {
+  .icon-@{i} {
+    background-image: url("../images/windowUser/icon-@{i}.png");
+    background-size: 100% 100%;
+  }
+
+  .intro-loop(@n, (@i + 1));
+}
+
+// 没有数据的展示
+.non-data {
+  background: url('../images/non-data.png') no-repeat center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  height: 216px!important;
+  width: 180px;
+  transform: translateX(-50%) translateY(-50%);
+}
+
+.box-card {
+
+  .el-card__header {
+    height: 48px!important;
+    line-height: 26px!important;
+    padding: 10px 20px;
+  }
+  .el-card__body{
+    // padding: 10px 20px;
+  }
+}
+
+.index-wrapper {
+  padding: 15px;
+  padding-bottom: 5px;
+
+  .status-card {
+    .status-card-item {
+      background: url(../images/sawtooth.png) no-repeat bottom;
+      float: left;
+      width: 16%;
+      margin: 0 0 16px 0.8%;
+      height: 90px;
+      background-size: contain;
+      padding: 10px 10px 10px 16px;
+      color: #fff;
+      cursor: pointer;
+      border-radius: 2px;
+
+      .card-icon {
+        float: right;
+        display: inline-block;
+        width: 30px;
+        height: 32px;
+      }
+
+      .intro-loop(6); //调用循环生成bg
+    }
+
+    .status-card-item:hover {
+      opacity: .9;
+    }
+
+    .me-count {
+      font-size: 28px;
+      padding-top: 5px;
+    }
+
+    .status-card-item:first-child {
+      margin-left: 0;
+    }
+
+    .status-card-item:last-child {
+      float: right;
+    }
+
+    .waring-status {
+      background-color: #F0AB30;
+    }
+
+    // 待补全
+    .waring-correct {
+      background-color: #F09030;
+    }
+
+    // 已补全
+    .alerdy-correct {
+      background-color: #30AFF0;
+    }
+
+    // 不予受理
+    .not-shouli {
+      background-color: #9FA0B1;
+    }
+
+    // 时限预警
+    .time-yujing {
+      background-color: #F0AB30;
+    }
+
+    // 时限逾期
+    .time-yuqi {
+      background-color: #F23D5B;
+    }
+
+    .percent-bt {
+      font-size: 12px;
+
+      span {}
+    }
+  }
+  
+  // @media screen and (max-width: 1376px) {
+  //   .status-card {
+  //     text-align: center;
+  //     .status-card-item {
+  //       background: url(../images/sawtooth.png) no-repeat bottom;
+  //       float: left;
+  //       width: 30%;
+  //       margin: 0 14px 16px 14px;
+  //       height: 90px;
+  //       background-size: contain;
+  //       padding: 10px 10px 10px 16px;
+  //       color: #fff;
+  //       cursor: pointer;
+  //       border-radius: 2px;
+  //       min-width: 190px;
+  //     }
+  //     .status-card-item:last-child {
+  //       float: right;
+  //     }
+  
+  //     .waring-status {
+  //       background-color: #F0AB30;
+  //     }
+  
+  //     // 待补全
+  //     .waring-correct {
+  //       background-color: #F09030;
+  //     }
+  
+  //     // 已补全
+  //     .alerdy-correct {
+  //       background-color: #30AFF0;
+  //     }
+  
+  //     // 不予受理
+  //     .not-shouli {
+  //       background-color: #9FA0B1;
+  //     }
+  
+  //     // 时限预警
+  //     .time-yujing {
+  //       background-color: #F0AB30;
+  //     }
+  
+  //     // 时限逾期
+  //     .time-yuqi {
+  //       background-color: #F23D5B;
+  //     }
+  //     .status-card-item:last-child {
+  //       float: left;
+  //     }
+  //     .status-card-item:first-child {
+  //       margin-left: 14px;
+  //     }
+  //   }
+  // }
+
+  // 部门事项
+  .depart-box {
+    .depart-chart {
+      // background: palegoldenrod;
+      height: 300px;
+    }
+
+    .depart-table {
+      // background: peru;
+      height: 300px;
+    }
+  }
+
+  // 月度，地区，主题申报
+  .declare-box {
+    .declare-month-and-area {
+      height: 736px;
+      height: 726px;
+
+      .declare-month {
+        height: 360px;
+        // height: 340px;
+        height: 348px;
+
+        .rander-box {
+          height: 262px;
+          // height: 240px;
+        }
+      }
+
+      .declare-area {
+        height: 360px;
+        // height: 340px;
+
+        .rander-box {
+          height: 262px;
+          // height: 240px;
+        }
+      }
+    }
+
+    .declare-theme {
+      height: 736px;
+      height: 720px;
+
+      .rander-box {
+        height: 635px;
+        height: 320px;
+        height: 315px;
+      }
+    }
+  }
+
+  // 主题申报异常排名，项目并联审批统计，申报来源统计
+  .bottom-show-box {
+
+    .theme-abnormal-box {
+      .rander-box {
+        height: 290px;
+      }
+    }
+
+    .half-box {
+      .left-box {
+        width: 49%;
+
+        .rander-box {
+          height: 290px;
+        }
+      }
+
+      .right-box {
+        width: 49%;
+
+        .rander-box {
+          height: 290px;
+        }
+      }
+    }
+  }
+}

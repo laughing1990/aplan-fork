@@ -1,0 +1,422 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by tiantian    2018-10-20 10:42:40 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaImUnitBiddingMapper">
+    <!--1 返回所有字段的SQL字句 -->
+
+    <sql id="allColumns">
+        UNIT_BIDDING_ID  unitBiddingId,
+        PROJ_PURCHASE_ID  projPurchaseId,
+        UNIT_INFO_ID  unitInfoId,
+        IS_WON_BID  isWonBid,
+        AUDIT_FLAG  auditFlag,
+        IS_DELETE  isDelete,
+        CREATER  creater,
+        CREATE_TIME  createTime,
+        MODIFIER  modifier,
+        MODIFY_TIME  modifyTime,
+        LINKMAN_INFO_ID  linkmanInfoId,
+        MEMO  memo,
+        UNIT_SERVICE_ID  unitServiceId,
+        BIDDING_TIME  biddingTime,
+        IS_CANCEL_SIGNUP  isCancelSignup,
+        IS_UPLOAD_CONTRACT isUploadContract,
+        IS_UPLOAD_RESULT isUploadResult,
+        IS_EVALUATE isEvaluate,
+        ROOT_ORG_ID rootOrgId
+    </sql>
+
+
+    <sql id="allColumnsAlias">
+        ${alias}.UNIT_BIDDING_ID  unitBiddingId,
+        ${alias}.PROJ_PURCHASE_ID  projPurchaseId,
+        ${alias}.UNIT_INFO_ID  unitInfoId,
+        ${alias}.IS_WON_BID  isWonBid,
+        ${alias}.AUDIT_FLAG  auditFlag,
+        ${alias}.IS_DELETE  isDelete,
+        ${alias}.CREATER  creater,
+        ${alias}.CREATE_TIME  createTime,
+        ${alias}.MODIFIER  modifier,
+        ${alias}.MODIFY_TIME  modifyTime,
+        ${alias}.LINKMAN_INFO_ID  linkmanInfoId,
+        ${alias}.MEMO  memo,
+        ${alias}.UNIT_SERVICE_ID  unitServiceId,
+        ${alias}.BIDDING_TIME  biddingTime,
+        ${alias}.IS_CANCEL_SIGNUP  isCancelSignup,
+        ${alias}.IS_UPLOAD_CONTRACT isUploadContract,
+        ${alias}.IS_UPLOAD_RESULT isUploadResult,
+        ${alias}.IS_EVALUATE isEvaluate,
+        ${alias}.ROOT_ORG_ID rootOrgId
+    </sql>
+
+    <!-- 新增实体对象 -->
+    <insert id="insertAeaImUnitBidding" parameterType="AeaImUnitBidding">
+        insert into AEA_IM_UNIT_BIDDING(
+        UNIT_BIDDING_ID  ,PROJ_PURCHASE_ID  ,UNIT_INFO_ID ,
+        IS_WON_BID  ,AUDIT_FLAG ,IS_DELETE  ,CREATER  ,
+        CREATE_TIME  ,MODIFIER  ,MODIFY_TIME  ,LINKMAN_INFO_ID  ,
+        MEMO  ,UNIT_SERVICE_ID,IS_CANCEL_SIGNUP,IS_UPLOAD_CONTRACT,IS_UPLOAD_RESULT,IS_EVALUATE,ROOT_ORG_ID
+        )  values  (
+        #{unitBiddingId},#{projPurchaseId},#{unitInfoId},
+        #{isWonBid},#{auditFlag},#{isDelete},#{creater},
+        #{createTime},#{modifier},#{modifyTime},#{linkmanInfoId},
+        #{memo},#{unitServiceId},#{isCancelSignup},#{isUploadContract},#{isUploadResult},#{isEvaluate},#{rootOrgId}
+        )
+  </insert>
+
+    <select id="listAeaImUnitBidding" resultType="AeaImUnitBidding">
+        select
+        <include refid="allColumns"/>,
+        (
+        SELECT MAX(aibp.PRICE) FROM aea_im_bidding_price aibp
+        WHERE aibp.IS_DELETE = '0' AND aibp.IS_CHOICE = '1'
+        AND aibp.UNIT_BIDDING_ID = UNIT_BIDDING_ID
+        ) realPrice
+        from AEA_IM_UNIT_BIDDING
+        <where>
+            <if test="unitBiddingId != null">
+                AND UNIT_BIDDING_ID = #{unitBiddingId}
+            </if>
+            <if test="projPurchaseId != null">
+                AND PROJ_PURCHASE_ID = #{projPurchaseId}
+            </if>
+            <if test="unitInfoId != null">
+                AND UNIT_INFO_ID = #{unitInfoId}
+            </if>
+            <if test="isWonBid != null">
+                AND IS_WON_BID = #{isWonBid}
+            </if>
+            <if test="auditFlag != null">
+                AND AUDIT_FLAG = #{auditFlag}
+            </if>
+            <if test="isDelete != null">
+                AND IS_DELETE = #{isDelete}
+            </if>
+            <if test="creater != null">
+                AND CREATER = #{creater}
+            </if>
+            <if test="createTime != null">
+                AND CREATE_TIME = #{createTime}
+            </if>
+            <if test="modifier != null">
+                AND MODIFIER = #{modifier}
+            </if>
+            <if test="modifyTime != null">
+                AND MODIFY_TIME = #{modifyTime}
+            </if>
+            <if test="linkmanInfoId != null">
+                AND LINKMAN_INFO_ID = #{linkmanInfoId}
+            </if>
+            <if test="memo != null">
+                AND MEMO = #{memo}
+            </if>
+            <if test="unitServiceId != null">
+                AND UNIT_SERVICE_ID = #{unitServiceId}
+            </if>
+            <if test="biddingTime != null">
+                AND BIDDING_TIME = #{biddingTime}
+            </if>
+            <if test="isCancelSignup != null">
+                AND IS_CANCEL_SIGNUP = #{isCancelSignup}
+            </if>
+
+            <if test="isUploadContract != null">
+                AND IS_UPLOAD_CONTRACT = #{isUploadContract}
+            </if>
+
+            <if test="isUploadResult != null">
+                AND IS_UPLOAD_RESULT = #{isUploadResult}
+            </if>
+
+            <if test="isEvaluate != null">
+                AND IS_EVALUATE = #{isEvaluate}
+            </if>
+
+            <if test="rootOrgId != null">
+                AND ROOT_ORG_ID = #{rootOrgId}
+            </if>
+        </where>
+    </select>
+
+    <!-- 修改实体对象 -->
+    <update id="updateAeaImUnitBidding" parameterType="AeaImUnitBidding">
+        update AEA_IM_UNIT_BIDDING
+        <set>
+            <if test="unitBiddingId != null">
+                UNIT_BIDDING_ID = #{unitBiddingId},
+            </if>
+            <if test="projPurchaseId != null">
+                PROJ_PURCHASE_ID = #{projPurchaseId},
+            </if>
+            <if test="unitInfoId != null">
+                UNIT_INFO_ID = #{unitInfoId},
+            </if>
+            <if test="isWonBid != null">
+                IS_WON_BID = #{isWonBid},
+            </if>
+            <if test="auditFlag != null">
+                AUDIT_FLAG = #{auditFlag},
+            </if>
+            <if test="isDelete != null">
+                IS_DELETE = #{isDelete},
+            </if>
+            <if test="creater != null">
+                CREATER = #{creater},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime},
+            </if>
+            <if test="modifier != null">
+                MODIFIER = #{modifier},
+            </if>
+            <if test="modifyTime != null">
+                MODIFY_TIME = #{modifyTime},
+            </if>
+            <if test="linkmanInfoId != null">
+                LINKMAN_INFO_ID = #{linkmanInfoId},
+            </if>
+            <if test="memo != null">
+                MEMO = #{memo},
+            </if>
+            <if test="unitServiceId != null">
+                UNIT_SERVICE_ID = #{unitServiceId},
+            </if>
+            <if test="biddingTime != null">
+                BIDDING_TIME = #{biddingTime},
+            </if>
+            <if test="isCancelSignup != null">
+                IS_CANCEL_SIGNUP = #{isCancelSignup},
+            </if>
+            <if test="isUploadContract != null">
+                IS_UPLOAD_CONTRACT = #{isUploadContract},
+            </if>
+            <if test="isUploadResult != null">
+                IS_UPLOAD_RESULT = #{isUploadResult},
+            </if>
+            <if test="isEvaluate != null">
+                IS_EVALUATE = #{isEvaluate},
+            </if>
+            <if test="rootOrgId != null">
+                ROOT_ORG_ID = #{rootOrgId},
+            </if>
+        </set>
+        where UNIT_BIDDING_ID = #{unitBiddingId}
+    </update>
+
+    <select id="listJoining" resultType="AeaImUnitBidding">
+         SELECT
+            api.proj_name projName,
+            aipp.proj_service_id projServiceId
+        FROM
+            AEA_IM_UNIT_BIDDING aiub
+            LEFT JOIN aea_im_proj_purchase aipp ON aipp.proj_service_id = aiub.proj_service_id
+            LEFT JOIN aea_proj_info api ON api.proj_info_id = aipp.proj_info_id
+    </select>
+
+    <!--机构中选记录列表 '0b1c323b-7247-4762-a72d-774fc4e07e8f' -->
+    <select id="listWinBidService" resultType="com.augurit.aplanmis.common.domain.AeaUnitBiddingAndEvaluation">
+        SELECT
+        aipp.PROJ_PURCHASE_ID projPurchaseId,
+        api.PROJ_NAME projName,
+        (CASE aipp.AUDIT_FLAG
+        WHEN '0' THEN '未提交'
+        WHEN '1' THEN '服务中'
+        WHEN '2' THEN '服务完成'
+        WHEN '3' THEN '服务中止'
+        WHEN '4' THEN '审核中'
+        WHEN '5' THEN '退回'
+        WHEN '6' THEN '报名中'
+        WHEN '7' THEN '选取中'
+        WHEN '8' THEN '选取开始'
+        WHEN '9' THEN '已选取'
+        WHEN '10' THEN '无效' ELSE ''
+        END) auditFlag,
+        (SELECT aui.APPLICANT FROM aea_unit_info aui WHERE aui.UNIT_INFO_ID = aipp.PUBLISH_UNIT_INFO_ID) applicant,
+        aipp.BIDDING_TYPE biddingType,
+        aise.COMP_EVALUATION compEvaluation,
+        aise.SERVICE_QUALITY serviceQuality,
+        aise.SERVICE_PRESCRIPTION servicePrescription,
+        aise.SERVICE_ATTITUDE serviceAttitude,
+        aise.SERVICE_CHARGE serviceCharge,
+        aise.SERVICE_STANDARD serviceStandard,
+        aise.MEMO memo
+        FROM aea_im_unit_bidding aiub
+        LEFT JOIN aea_im_service_evaluation aise ON aiub.UNIT_BIDDING_ID = aise.UNIT_BIDDING_ID AND aise.IS_DELETE = '0'
+        LEFT JOIN aea_im_proj_purchase aipp ON aiub.PROJ_PURCHASE_ID = aipp.PROJ_PURCHASE_ID
+        LEFT JOIN aea_proj_info api ON api.PROJ_INFO_ID = aipp.PROJ_INFO_ID
+        WHERE aiub.IS_WON_BID = '1' AND aiub.IS_CANCEL_SIGNUP = '0'
+        AND aiub.IS_DELETE = '0' AND aipp.IS_DELETE = '0'
+        AND aiub.UNIT_INFO_ID = #{unitInfoId}
+        <if test="projName!=null and projName!=''">
+            AND api.PROJ_NAME LIKE concat('%',concat(#{projName},'%'))
+        </if>
+        <if test="serviceId!=null and serviceId!=''">
+            AND aipp.SERVICE_ID = #{serviceId}
+        </if>
+    </select>
+
+    <!-- 中介机构综合评价 -->
+    <select id="getUnitServiceEvaluation" resultType="AeaUnitBiddingAndEvaluation">
+        SELECT
+            AVG(aise.COMP_EVALUATION) compEvaluation
+        FROM aea_im_unit_bidding aiub
+        LEFT JOIN aea_im_service_evaluation aise
+        on aise.UNIT_BIDDING_ID = aiub.UNIT_BIDDING_ID
+        WHERE aiub.IS_DELETE = '0' AND aise.IS_DELETE = '0' AND aiub.IS_WON_BID = '1' AND aiub.IS_CANCEL_SIGNUP = '0'
+        AND aise.AUDIT_FLAG = '1'
+        AND aiub.UNIT_INFO_ID = #{unitInfoId}
+        GROUP BY aiub.UNIT_INFO_ID
+    </select>
+
+    <!-- 统计中介机构项目报名综合数据 -->
+    <select id="countUnitBiddingInfo" resultType="java.lang.Long">
+        SELECT COUNT(1) FROM aea_im_unit_bidding aiub
+        LEFT JOIN aea_im_proj_purchase aipp ON aiub.PROJ_PURCHASE_ID = aipp.PROJ_PURCHASE_ID
+        WHERE aiub.IS_DELETE = '0' AND aiub.IS_CANCEL_SIGNUP = '0'
+        <choose>
+            <!-- 已中选项目 -->
+            <when test="type != null and type == '1'.toString()">
+                AND aiub.IS_WON_BID = '1' AND aipp.AUDIT_FLAG != '10'
+            </when>
+            <!-- 已签约项目 -->
+            <when test="type != null and type == '2'.toString()">
+                AND aiub.IS_WON_BID = '1' AND aiub.IS_UPLOAD_CONTRACT = '1' AND aipp.AUDIT_FLAG != '10'
+            </when>
+            <!-- 服务中项目 -->
+            <when test="type != null and type == '3'.toString()">
+                AND aiub.IS_WON_BID = '1' AND aiub.IS_UPLOAD_CONTRACT = '1' AND aipp.AUDIT_FLAG = '1'
+            </when>
+        </choose>
+        AND aiub.UNIT_INFO_ID = #{unitInfoId}
+    </select>
+
+    <!-- 获取中介机构报价项目列表 -->
+    <select id="listUnitBidding" resultType="AeaImUnitBidding">
+        SELECT
+        aiub.UNIT_BIDDING_ID unitBiddingId,
+        aipp.PROJ_PURCHASE_ID projPurchaseId,
+        aipp.EXPIRATION_DATE expirationDate,
+        aiub.IS_UPLOAD_CONTRACT isUploadContract,
+        aiub.IS_UPLOAD_RESULT isUploadResult,
+        api.PROJ_NAME projName,
+        aipp.AUDIT_FLAG purchaseAuditFlag,
+        aipp.AUDIT_FLAG,
+        /*(CASE aipp.AUDIT_FLAG
+        WHEN '0' THEN '未提交'
+        WHEN '1' THEN '服务中'
+        WHEN '2' THEN '服务完成'
+        WHEN '3' THEN '服务中止'
+        WHEN '4' THEN '审核中'
+        WHEN '5' THEN '退回'
+        WHEN '6' THEN '报名中'
+        WHEN '7' THEN '选取中'
+        WHEN '8' THEN '选取开始'
+        WHEN '9' THEN '已选取'
+        WHEN '10' THEN '无效'
+        WHEN '11' THEN '待选取'
+        WHEN '12' THEN '已过时' ELSE ''
+        END) auditFlag,*/
+        aipp.BIDDING_TYPE biddingType,
+        <if test="type != null and (type == '1'.toString() or type == '3'.toString())">
+            (
+            SELECT MAX(aibp.PRICE) FROM aea_im_bidding_price aibp
+            WHERE aibp.IS_DELETE = '0' AND aibp.IS_CHOICE = '1'
+            AND aibp.UNIT_BIDDING_ID = aiub.UNIT_BIDDING_ID
+            ) realPrice,
+            aic.PRICE contractPrice,
+            aic.AUDIT_FLAG contractFlag,
+            aic.CONTRACT_ID contractId,
+            aic.IS_OWNER_UPLOAD isOwnerUpload,
+            aic.SERVICE_START_TIME serviceStartTime,
+            aic.SERVICE_END_TIME serviceEndTime,
+        </if>
+        <if test="type != null and type == '3'.toString()">
+            aisr.AUDIT_FLAG resultFlag,
+            aisr.SERVICE_RESULT_ID serviceResultId,
+        </if>
+        aipp.BASE_PRICE basePrice,
+        aipp.HIGHEST_PRICE highestPrice,
+        aiub.BIDDING_TIME biddingTime,
+        aipp.CHOICE_IMUNIT_TIME choiceImunitTime
+        FROM aea_im_unit_bidding aiub
+        LEFT JOIN aea_im_proj_purchase aipp ON aiub.PROJ_PURCHASE_ID = aipp.PROJ_PURCHASE_ID
+        LEFT JOIN aea_proj_info api ON api.PROJ_INFO_ID = aipp.PROJ_INFO_ID
+        <if test="type != null and (type == '1'.toString() or type == '3'.toString())">
+            LEFT JOIN aea_im_contract aic ON aic.UNIT_BIDDING_ID = aiub.UNIT_BIDDING_ID AND aic.IS_DELETE = '0'
+        </if>
+        <if test="type != null and type == '3'.toString()">
+            LEFT JOIN aea_im_service_result aisr ON aisr.UNIT_BIDDING_ID = aiub.UNIT_BIDDING_ID
+        </if>
+        WHERE aiub.IS_CANCEL_SIGNUP = '0'
+        AND aiub.IS_DELETE = '0' AND aipp.IS_DELETE = '0'
+        <if test="aeaImUnitBidding != null and aeaImUnitBidding.unitInfoId != null and aeaImUnitBidding.unitInfoId != ''">
+            AND aiub.UNIT_INFO_ID = #{aeaImUnitBidding.unitInfoId}
+        </if>
+        <if test="aeaImUnitBidding != null and aeaImUnitBidding.unitBiddingId != null and aeaImUnitBidding.unitBiddingId != ''">
+            AND aiub.UNIT_BIDDING_ID = #{aeaImUnitBidding.unitBiddingId}
+        </if>
+        <choose>
+            <!-- 已中选项目 -->
+            <when test="type != null and type == '1'.toString()">
+                AND aiub.IS_WON_BID = '1' AND aipp.AUDIT_FLAG != '10'
+            </when>
+            <!-- 已签约项目 -->
+            <when test="type != null and type == '2'.toString()">
+                AND aiub.IS_WON_BID = '1' AND aiub.IS_UPLOAD_CONTRACT = '1' AND aipp.AUDIT_FLAG != '10'
+            </when>
+            <!-- 服务的项目 -->
+            <when test="type != null and type == '3'.toString()">
+                AND aiub.IS_WON_BID = '1' AND aiub.IS_UPLOAD_CONTRACT = '1' AND aipp.AUDIT_FLAG in ('1', '2', '3')
+            </when>
+        </choose>
+        <if test="aeaImUnitBidding != null and aeaImUnitBidding.projName != null and aeaImUnitBidding.projName != ''">
+            AND api.PROJ_NAME LIKE concat('%',concat(#{aeaImUnitBidding.projName},'%'))
+        </if>
+        <if test="aeaImUnitBidding != null and aeaImUnitBidding.biddingType != null and aeaImUnitBidding.biddingType != ''">
+            AND aipp.BIDDING_TYPE = #{aeaImUnitBidding.biddingType}
+        </if>
+        <if test="aeaImUnitBidding != null and aeaImUnitBidding.auditFlag != null and aeaImUnitBidding.auditFlag != ''">
+            AND aipp.AUDIT_FLAG = #{aeaImUnitBidding.auditFlag}
+        </if>
+        <if test="aeaImUnitBidding!=null and aeaImUnitBidding.isWonBid!=null and aeaImUnitBidding.isWonBid!=''">
+            and aiub.IS_WON_BID=#{aeaImUnitBidding.isWonBid}
+        </if>
+        <if test="aeaImUnitBidding != null and aeaImUnitBidding.isUploadContract != null and aeaImUnitBidding.isUploadContract != ''">
+            AND aiub.IS_UPLOAD_CONTRACT = #{aeaImUnitBidding.isUploadContract}
+        </if>
+        <if test="type!=null and type==0">
+            and aipp.AUDIT_FLAG not in('0','4','5','10')
+        </if>
+    </select>
+
+    <!-- 获取中介机构报名信息 -->
+    <select id="getUnitBiddingAndLinkman" resultType="AeaImUnitBidding">
+        SELECT
+            aiub.UNIT_BIDDING_ID unitBiddingId,
+            ali.LINKMAN_NAME linkmanName,
+            ali.LINKMAN_MAIL linkmanMail,
+            ali.LINKMAN_MOBILE_PHONE linkmanMobilePhone
+        FROM aea_im_unit_bidding aiub
+        LEFT JOIN aea_linkman_info ali ON aiub.LINKMAN_INFO_ID = ali.LINKMAN_INFO_ID
+        WHERE aiub.IS_DELETE = '0' AND aiub.UNIT_BIDDING_ID = #{unitBiddingId}
+    </select>
+
+
+    <select id="listUnitBiddingByProjPurchaseId" resultType="AeaImUnitBidding">
+        select
+        <include refid="allColumnsAlias">
+            <property name="alias" value="aiub"></property>
+        </include>
+        ,
+        aui.APPLICANT
+        from AEA_IM_UNIT_BIDDING aiub,aea_unit_info aui
+        <where>
+            aiub.UNIT_INFO_ID = aui.UNIT_INFO_ID
+            <if test="projPurchaseId != null">
+                AND PROJ_PURCHASE_ID = #{projPurchaseId}
+            </if>
+            AND IS_DELETE = '0'
+        </where>
+    </select>
+</mapper>

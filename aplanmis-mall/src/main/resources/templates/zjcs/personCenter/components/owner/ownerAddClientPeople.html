@@ -1,0 +1,493 @@
+<div id="addClientPeople" class="box normal-module-box add-client-people-box">
+    <h2 class="box-tit clearfix" v-if="clientIsList">委托人列表
+            <el-button class="to-add-btn" type="primary" size="medium" @click="clientIsList = false; fetchUnitConcatList()"
+            style="z-index: 9; position: absolute; top: 0;right: 0;" v-if="clientIsList">
+            添加委托人账号
+        </el-button>
+    </h2>
+    <div class="client-box pandel">
+        
+        <!-- 委托人列表 -->
+        <div class="client-list pandel mt20" v-if="clientIsList">
+            <el-row class="handel">
+                <el-col :span="10">
+                    <el-input placeholder="姓名/身份证/账号" class="input-with-select" v-model="clientCheckData.keyword">
+                        <template slot="prepend">查询条件：</template>
+                        <el-button slot="append" icon="el-icon-search" @click="clientSearch"></el-button>
+                    </el-input>
+                </el-col>
+            </el-row>
+            <div class="list mt20">
+                <el-table :data="clientList" class="scrollable" stripe style="width: 100%;"
+                    :header-cell-style="{background:'#f7f8fa'}">
+                    <el-table-column label="序号" width="50">
+                        <template scope="scope"><span>{{scope.$index + 1}}</span></template>
+                    </el-table-column>
+                    <el-table-column label="姓名">
+                        <template scope="scope">
+                            <span class="list-icon" :class="[scope.row.isAdministrators == 1 ? 'admin-icon':'person-icon']"></span>
+                            <span>{{scope.row.linkmanName}}</span>
+                        </template>
+                    </el-table-column>
+                    <!-- <el-table-column label="身份证号码">
+                    <template scope="scope"><span>{{scope.row.linkmanCertNo | sfzHideLast}}</span></template>
+                </el-table-column> -->
+                    <el-table-column prop="linkmanCertNo" label="身份证号码"></el-table-column>
+                    <el-table-column prop="linkmanMobilePhone" label="电话号码"></el-table-column>
+                    <el-table-column prop="linkmanMail" label="邮箱"></el-table-column>
+                    <el-table-column prop="loginName" label="账号"></el-table-column>
+                    <el-table-column label="操作">
+                        <template scope="scope">
+                            <a class="a-color4879E4" href="javascript:;" v-if="scope.row.isAdministrators == 1"
+                                @click="handelClientUnitOther(scope.row, 'relieveAdmin')">解除管理员</a>
+                            <a class="a-color4879E4" href="javascript:;" v-else
+                                @click="handelClientUnitOther(scope.row, 'setAdmin')">设为管理员</a>
+                            <a class="a-color4879E4" href="javascript:;"
+                                @click="handelClientUnitOther(scope.row, 'relieveBind')">解除绑定</a>
+                        </template>
+                    </el-table-column>
+                </el-table>
+            </div>
+            <div class="pager">
+                <el-pagination background align="right" @size-change="clientListSizeChange"
+                    @current-change="clientListPageChange" :page-sizes="[10, 20, 30, 50]"
+                    :page-size="clientCheckData.pageSize" :current-page="clientCheckData.pageNum"
+                    layout="total,sizes, prev, pager, next, jumper" :total="clientTotal" v-show="clientTotal>10">
+                </el-pagination>
+            </div>
+        </div>
+        <!-- 添加委托人 -->
+        <div class="client-add pandel" v-else>
+            <el-row>
+                <el-col :span="4">
+                    <h5>添加委托人账号</h5>
+                </el-col>
+                <el-col :span="4" :offset="16" class="text-right">
+                    <el-button type="normal" @click="returnClientList">返回列表</el-button>
+                </el-col>
+            </el-row>
+            <el-tabs v-model="isRelationOthers" @tab-click="">
+                <el-tab-pane label="单位联系人账号" name="list">
+                    <el-table :data="unitConcatList" class="scrollable" style="width: 100%;"
+                        :header-cell-style="{background:'#f7f8fa'}">
+                        <el-table-column label="序号" width="50">
+                            <template scope="scope"><span>{{scope.$index + 1}}</span></template>
+                        </el-table-column>
+                        <el-table-column prop="linkmanName" label="姓名"></el-table-column>
+                        <!-- <el-table-column label="身份证号码">
+                          <template scope="scope"><span>{{scope.row.linkmanCertNo | sfzHideLast}}</span></template>
+                      </el-table-column> -->
+                        <el-table-column prop="linkmanCertNo" label="身份证号码"></el-table-column>
+                        <el-table-column prop="linkmanMobilePhone" label="电话号码"></el-table-column>
+                        <el-table-column prop="linkmanMail" label="邮箱"></el-table-column>
+                        <el-table-column prop="loginName" label="账号"></el-table-column>
+                        <el-table-column label="操作">
+                            <template scope="scope">
+                                <a class="a-color4879E4" href="javascript:;"
+                                    @click="handelClientUnitOther(scope.row, 'setBind')">绑定账号</a>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                    <el-pagination background align="right" @size-change="unitConcatListSizeChange"
+                        @current-change="unitConcatListPageChange" :page-sizes="[10, 20, 30, 50]"
+                        :page-size="unitConcatCheckData.pageSize" :current-page="unitConcatCheckData.pageNum"
+                        layout="total,sizes, prev, pager, next, jumper" :total="unitConcatTotal" v-show="unitConcatTotal>10"
+                        v-if="unitConcatList.length">
+                    </el-pagination>
+                </el-tab-pane>
+                <el-tab-pane label="关联其他账号" name="relation">
+                    <el-row>
+                        身份证号码：
+                        <el-input class="w-200 mr20" placeholder="请输入身份证号" v-model="otherConcatCheckData.linkmanCertNo" @keyup.enter.native="fetchOtherConcatList">
+                        </el-input>
+                        账号：
+                        <el-input class="w-200 mr20" placeholder="请输入账号" v-model="otherConcatCheckData.loginName" @keyup.enter.native="fetchOtherConcatList">
+                        </el-input>
+                        <el-button type="primary" size="medium" @click="fetchOtherConcatList">查询</el-button>
+                    </el-row>
+                    <el-table :data="otherConcatList" class="scrollable mt20" style="width: 100%;" empty-text="请输入身份证或账号绑定委托人"
+                        :header-cell-style="{background:'#f7f8fa'}">
+                        <el-table-column label="序号" width="50">
+                            <template scope="scope"><span>{{scope.$index + 1}}</span></template>
+                        </el-table-column>
+                        <el-table-column prop="linkmanName" label="姓名"></el-table-column>
+                        <el-table-column label="身份证号码">
+                            <template scope="scope"><span>{{scope.row.linkmanCertNo | sfzHideLast}}</span></template>
+                        </el-table-column>
+                        <el-table-column prop="linkmanMobilePhone" label="电话号码"></el-table-column>
+                        <el-table-column prop="linkmanMail" label="邮箱"></el-table-column>
+                        <el-table-column label="账号">
+                            <template scope="scope">
+                                <span>{{scope.row.loginName == null ? '未注册': scope.row.loginName}}</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="操作">
+                            <template scope="scope">
+                                <a class="a-color4879E4" href="javascript:;"
+                                    @click="handelClientUnitOther(scope.row, 'setBind')">绑定账号</a>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                    <el-pagination background align="right" @size-change="otherConcatListSizeChange"
+                        @current-change="otherConcatListPageChange" :page-sizes="[10, 20, 30, 50]"
+                        :page-size="otherConcatCheckData.pageSize" :current-page="otherConcatCheckData.pageNum"
+                        layout="total,sizes, prev, pager, next, jumper" :total="otherConcatTotal" v-show="otherConcatTotal>10"
+                        v-if="otherConcatList.length">
+                    </el-pagination>
+                </el-tab-pane>
+            </el-tabs>
+        </div>
+    </div>
+    <!-- 添加委托人模块-绑定账号 -->
+    <el-dialog title="绑定账号" :visible.sync="clientAccountBindDialog" width="300px" center>
+        <el-input placeholder="请输入账号" readonly v-model="clientAccountBindData.loginName"></el-input>
+        <el-input class="mt20" placeholder="请输入密码" v-model="clientAccountBindData.loginPwd"></el-input>
+        <span slot="footer" class="dialog-footer" style="display: inline-block; margin: 20px;">
+            <!-- <el-button @click="clientAccountBindDialog = false">取 消</el-button> -->
+            <el-button class="w-200" type="primary" @click="clientAccountBindSub">绑&nbsp;定</el-button>
+        </span>
+    </el-dialog>
+</div>
+<script>
+    var module1 = new Vue({
+        el: '#addClientPeople',
+        mixins: [mixins],
+        data: function () {
+            return {
+                // 页面loading
+                loading: false,
+
+                // 页面app高度和内容content高度
+                appH: '',
+                contentH: '',
+                // 当前账号信息
+                currentLoginInfo: {
+                    unitInfoId: '',
+                },
+
+                // 委托人列表
+                clientList: [],
+                // 委托人查询参数
+                clientCheckData: {
+                    pageNum: 1,
+                    pageSize: 10,
+                    isBindAccount: 1,
+                    keyword: "",
+                    unitInfoId: ''
+                },
+                // 委托人-总数
+                clientTotal: 0,
+                // 当前是添加委托人还是委托人列表
+                clientIsList: true,
+                // 单位联系人账号or关联其他账号
+                isRelationOthers: 'list',
+                // 单位联系人账号列表
+                unitConcatList: [],
+                //单位联系人查询参数
+                unitConcatCheckData: {
+                    pageNum: 1,
+                    pageSize: 10,
+                    isBindAccount: 0,
+                    unitInfoId: ''
+                },
+                // 单位联系人-总数
+                unitConcatTotal: 0,
+                // 关联其他联系人账号列表
+                otherConcatList: [],
+                //关联其他联系人查询参数
+                otherConcatCheckData: {
+                    linkmanCertNo: '',
+                    loginName: '',
+                    pageNum: 1,
+                    pageSize: 10,
+
+                },
+                // 关联其他联系人-总数
+                otherConcatTotal: 0,
+                // 绑定账号dialog
+                clientAccountBindDialog: false,
+                // 绑定账号，账号，密码回显
+                clientAccountBindData: {
+                    loginName: '',
+                    loginPwd: '',
+                },
+                // 委托人当前操作行
+                clientCurEditRow: {},
+            }
+        },
+        methods: {
+            init: function () {
+                var _curUserInfo = JSON.parse(localStorage.getItem('loginInfo'));
+                this.currentLoginInfo.unitInfoId = _curUserInfo.unitId;
+                this.fetchClientList();
+            },
+            // 委托人模块
+            // 返回列表
+            returnClientList: function () {
+                var ts = this;
+                ts.clientIsList = true; //切换成委托人列表模块
+                ts.isRelationOthers = 'list'; //添加委托人模块中，默认显示“单位联系人账号模块”
+                ts.unitConcatCheckData.pageNum = 1; //单位联系人查询参数默认为第一页
+                ts.fetchClientList(); //返回列表-重新获取委托人list
+            },
+            // 获取委托人列表
+            fetchClientList: function () {
+                var ts = this;
+                ts.clientCheckData.unitInfoId = ts.currentLoginInfo.unitInfoId;
+                ts.loading = true;
+                request('', {
+                    url: ctx + 'aea/supermarket/clientManage/getLinkmanListByCond',
+                    type: 'get',
+                    data: ts.clientCheckData,
+                }, function (res) {
+                    console.log(res)
+                    ts.loading = false;
+                    if (res.success) {
+                        ts.clientList = res.content.rows;
+                        ts.clientTotal = res.content.total;
+                    } else {
+                        ts.$message({
+                            message: '加载失败',
+                            type: 'error'
+                        });
+                    }
+                }, function (msg) {
+                    ts.loading = false;
+                    ts.$message({
+                        message: '加载失败',
+                        type: 'error'
+                    });
+                });
+            },
+            // 委托人列表查询
+            clientSearch: function () {
+                var ts = this;
+                ts.clientCheckData.pageNum = 1;
+                ts.fetchClientList();
+            },
+            // 委托人切换页码
+            clientListPageChange: function (val) {
+                var ts = this;
+                ts.clientCheckData.pageNum = val;
+                ts.fetchClientList();
+            },
+            // 委托人切换页面大小
+            clientListSizeChange: function (val) {
+                var ts = this;
+                ts.clientCheckData.pageSize = val;
+                ts.fetchClientList();
+            },
+            // 获取单位联系人列表
+            fetchUnitConcatList: function () {
+                var ts = this;
+                ts.unitConcatCheckData.unitInfoId = ts.currentLoginInfo.unitInfoId;
+                ts.loading = true;
+                request('', {
+                    url: ctx + 'aea/supermarket/clientManage/getLinkmanListByCond',
+                    type: 'get',
+                    data: ts.unitConcatCheckData,
+                }, function (res) {
+                    console.log(res)
+                    ts.loading = false;
+                    if (res.success) {
+                        ts.unitConcatList = res.content.rows;
+                        ts.unitConcatTotal = res.content.total;
+                    } else {
+                        ts.$message({
+                            message: '加载失败',
+                            type: 'error'
+                        });
+                    }
+                }, function (msg) {
+                    ts.loading = false;
+                    ts.$message({
+                        message: '加载失败',
+                        type: 'error'
+                    });
+                });
+            },
+            // 单位联系人切换页码
+            unitConcatListPageChange: function (val) {
+                var ts = this;
+                ts.unitConcatCheckData.pageNum = val;
+                ts.fetchUnitConcatList();
+            },
+            // 单位联系人切换页面大小
+            unitConcatListSizeChange: function (val) {
+                var ts = this;
+                ts.unitConcatCheckData.pageSize = val;
+                ts.fetchUnitConcatList();
+            },
+            // 获取关联其他账号列表
+            fetchOtherConcatList: function () {
+                var ts = this,
+                    _checkData = ts.otherConcatCheckData;
+                if (!_checkData.linkmanCertNo && !_checkData.loginName) return ts.$message({
+                    message: '请输入查询信息'
+                })
+                ts.otherConcatCheckData.unitInfoId = ts.currentLoginInfo.unitInfoId;
+                ts.loading = true;
+                request('', {
+                    url: ctx + 'aea/supermarket/clientManage/getLinkmanList',
+                    type: 'get',
+                    data: ts.otherConcatCheckData,
+                }, function (res) {
+                    console.log(res)
+                    ts.loading = false;
+                    if (res.success) {
+                        ts.otherConcatList = res.content.rows;
+                        ts.otherConcatTotal = res.content.total;
+                    } else {
+                        ts.$message({
+                            message: '加载失败',
+                            type: 'error'
+                        });
+                    }
+                }, function (msg) {
+                    ts.loading = false;
+                    ts.$message({
+                        message: '加载失败',
+                        type: 'error'
+                    });
+                });
+            },
+            // 其他联系人切换页码
+            otherConcatListPageChange: function (val) {
+                var ts = this;
+                ts.otherConcatCheckData.pageNum = val;
+                ts.fetchOtherConcatList();
+            },
+            // 其他联系人切换页面大小
+            otherConcatListSizeChange: function (val) {
+                var ts = this;
+                ts.otherConcatCheckData.pageSize = val;
+                ts.fetchOtherConcatList();
+            },
+            // 委托人，单位联系人，其他联系人的表格操作
+            handelClientUnitOther: function (row, type) {
+                var ts = this,
+                    _sendData = {},
+                    _tip = '';
+                ts.clientCurEditRow = row; //当前操作行赋值
+                _sendData.linkmanInfoId = row.linkmanInfoId;
+                _sendData.unitInfoId = ts.currentLoginInfo.unitInfoId;
+                if (type == 'relieveAdmin') {
+                    _sendData.isAdministrators = 0;
+                    _tip = "您确定解除当前账号管理员身份吗？"
+                } else if (type == 'setAdmin') {
+                    _sendData.isAdministrators = 1;
+                    _tip = "您确定设置当前账号为管理员吗？"
+                } else if (type == 'relieveBind') {
+                    _sendData.isBindAccount = 0;
+                    _tip = "您确定解绑当前账号吗？"
+                } else {
+                    // 绑定账号走模态框
+                    ts.clientAccountBindDialog = true;
+                    ts.clientAccountBindData.loginName = row.linkmanMobilePhone || row.linkmanCertNo;
+                    ts.clientAccountBindData.loginPwd = ""; //清掉上一次的数据
+                    return;
+                }
+                confirmMsg('', _tip, function () {
+                    ts.loading = true;
+                    request('', {
+                        url: ctx + 'aea/supermarket/clientManage/putLinkman',
+                        type: 'post',
+                        data: _sendData,
+                    }, function (res) {
+                        ts.loading = false;
+                        if (res.success) {
+                            if (['relieveAdmin', 'setAdmin', 'relieveBind'].indexOf(type) !=
+                                -1) {
+                                ts.fetchClientList();
+                            } else {
+                                ts.fetchUnitConcatList();
+                            }
+                            ts.$message({
+                                message: '操作成功！',
+                                type: 'success'
+                            });
+                        } else {
+                            ts.$message({
+                                message: '操作失败',
+                                type: 'error'
+                            });
+                        }
+                    }, function (msg) {
+                        ts.loading = false;
+                        ts.$message({
+                            message: '操作失败',
+                            type: 'error'
+                        });
+                    });
+                })
+            },
+            // 绑定dialog绑定事件
+            clientAccountBindSub: function () {
+                var ts = this,
+                    _sendData = {};
+
+                _sendData.linkmanInfoId = ts.clientCurEditRow.linkmanInfoId;
+                _sendData.unitInfoId = ts.currentLoginInfo.unitInfoId;
+                _sendData.isBindAccount = 1;
+                _sendData.loginName = ts.clientAccountBindData.loginName;
+                _sendData.loginPwd = ts.clientAccountBindData.loginPwd;
+
+                if (!_sendData.loginPwd.length) return ts.$message({
+                    message: '请输入密码'
+                })
+
+                ts.loading = true;
+                request('', {
+                    url: ctx + 'aea/supermarket/clientManage/putLinkman',
+                    type: 'post',
+                    data: _sendData,
+                }, function (res) {
+                    ts.loading = false;
+                    if (res.success) {
+                        ts.clientAccountBindDialog = false; //隐藏dialog
+                        ts.$message({
+                            message: '绑定成功！',
+                            type: 'success'
+                        })
+                        if (ts.isRelationOthers == 'list') {
+                            ts.fetchUnitConcatList();
+                        } else {
+                            // 绑定成功后，重置 其他联系人表格
+                            ts.otherConcatList = [];
+                            ts.otherConcatTotal = 0;
+                            ts.otherConcatCheckData = {
+                                linkmanCertNo: '',
+                                loginName: '',
+                                pageNum: 1,
+                                pageSize: 10,
+                            };
+                        }
+
+                    } else {
+                        ts.$message({
+                            message: '操作失败',
+                            type: 'error'
+                        });
+                    }
+                }, function (msg) {
+                    ts.loading = false;
+                    ts.$message({
+                        message: '操作失败',
+                        type: 'error'
+                    });
+                });
+            },
+        },
+        mounted: function() {
+            this.init();
+        },
+        filters: {
+            // 身份证隐藏后几位
+            sfzHideLast: function (num) {
+                if (!num) return;
+                var _cutNum = num.slice(0, 11);
+                return num + "****";
+            },
+        },
+    })
+</script>

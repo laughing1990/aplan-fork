@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by Augurit    2019-07-09 10:20:43 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaImClientServiceMapper">
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns">
+    CLIENT_SERVICE_ID  clientServiceId,
+    UNIT_SERVICE_ID  unitServiceId,
+    UNIT_LINKMAN_ID  unitLinkmanId,
+    IS_DELETED  isDeleted,
+    CREATER  creater,
+    CREATE_TIME  createTime
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaImClientServiceById" resultType="AeaImClientService">
+        select
+        <include refid="allColumns"/>
+        from AEA_IM_CLIENT_SERVICE
+        where CLIENT_SERVICE_ID = #{id}
+        AND IS_DELETED = '0'
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaImClientService" resultType="AeaImClientService">
+        select
+        <include refid="allColumns"/>
+        from AEA_IM_CLIENT_SERVICE
+        <where>
+            <if test="clientServiceId != null">
+                AND CLIENT_SERVICE_ID = #{clientServiceId}
+            </if>
+            <if test="unitServiceId != null">
+                AND UNIT_SERVICE_ID = #{unitServiceId}
+            </if>
+            <if test="unitLinkmanId != null">
+                AND UNIT_LINKMAN_ID = #{unitLinkmanId}
+            </if>
+            <if test="isDeleted != null">
+                AND IS_DELETED = #{isDeleted}
+            </if>
+            <if test="creater != null">
+                AND CREATER = #{creater}
+            </if>
+            <if test="createTime != null">
+                AND CREATE_TIME = #{createTime}
+            </if>
+            AND IS_DELETED = '0'
+        </where>
+    </select>
+    <!--4 根据条件查询实体list,返回分页对象 -->
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaImClientService" parameterType="AeaImClientService">
+    insert into AEA_IM_CLIENT_SERVICE (
+CLIENT_SERVICE_ID  ,UNIT_SERVICE_ID  ,UNIT_LINKMAN_ID  ,IS_DELETED  ,CREATER  ,CREATE_TIME  
+    )  values  (
+#{clientServiceId},#{unitServiceId},#{unitLinkmanId},#{isDeleted},#{creater},  #{createTime}
+    )
+</insert>
+    <!--6 修改实体对象 -->
+    <update id="updateAeaImClientService" parameterType="AeaImClientService">
+        update AEA_IM_CLIENT_SERVICE
+        <set>
+            <if test="clientServiceId != null">
+                CLIENT_SERVICE_ID = #{clientServiceId},
+            </if>
+            <if test="unitServiceId != null">
+                UNIT_SERVICE_ID = #{unitServiceId},
+            </if>
+            <if test="unitLinkmanId != null">
+                UNIT_LINKMAN_ID = #{unitLinkmanId},
+            </if>
+            <if test="isDeleted != null">
+                IS_DELETED = #{isDeleted},
+            </if>
+            <if test="creater != null">
+                CREATER = #{creater},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime},
+            </if>
+        </set>
+        where CLIENT_SERVICE_ID = #{clientServiceId}
+    </update>
+    <!--7 删除实体对象,根据主键ID -->
+    <update id="deleteAeaImClientService">
+        update AEA_IM_CLIENT_SERVICE
+        <set>
+            IS_DELETED = '1'
+        </set>
+        where CLIENT_SERVICE_ID = #{id}
+    </update>
+    <!--8 删除实体对象列表,根据主键ID列表 -->
+    <!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaImClientService" id="AeaImClientServiceMap">
+        <id property="clientServiceId" column="CLIENT_SERVICE_ID"/>
+        <result property="unitServiceId" column="UNIT_SERVICE_ID"/>
+        <result property="unitLinkmanId" column="UNIT_LINKMAN_ID"/>
+        <result property="isDeleted" column="IS_DELETED"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+    </resultMap>
+
+    <delete id="deleteAeaImClientServiceByUnitLinkmanId">
+        update AEA_IM_CLIENT_SERVICE set IS_DELETED = '1'
+        where UNIT_LINKMAN_ID = #{unitLinkmanId}
+    </delete>
+
+    <select id="listClientServiceLinkmanInfo" resultType="AeaLinkmanInfo">
+        SELECT
+            ali.LINKMAN_INFO_ID linkmanInfoId,
+            ali.LINKMAN_NAME linkmanName,
+            ali.LINKMAN_MOBILE_PHONE linkmanMobilePhone,
+            ali.LINKMAN_CERT_NO linkmanCertNo
+        FROM aea_im_client_service aics
+        LEFT JOIN aea_im_unit_service aius ON aius.UNIT_SERVICE_ID = aics.UNIT_SERVICE_ID
+        LEFT JOIN aea_unit_linkman aul ON aul.UNIT_LINKMAN_ID = aics.UNIT_LINKMAN_ID
+        LEFT JOIN aea_linkman_info ali ON ali.LINKMAN_INFO_ID = aul.LINKMAN_INFO_ID
+        WHERE aics.IS_DELETED = '0' AND ali.IS_DELETED = '0'
+        AND aius.SERVICE_ID = #{serviceId} AND aius.UNIT_INFO_ID = #{unitInfoId}
+    </select>
+</mapper>

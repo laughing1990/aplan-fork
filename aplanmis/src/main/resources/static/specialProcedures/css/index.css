@@ -1,0 +1,999 @@
+/*
+* @Author: ZL
+* @Date:   $ $
+* @Last Modified by:   ZL
+* @Last Modified time: $ $
+*/
+body {
+    background-color: #fff;
+    padding: 25px;
+    color: #575962;
+}
+textarea {
+    font-family: Microsoft YaHei,Helvetica Neue,Helvetica,PingFang SC,Hiragino Sans GB,Microsoft YaHei UI,\\5FAE\8F6F\96C5\9ED1,Arial,sans-serif;
+}
+/*element 样式重置 start*/
+.el-collapse {
+    border: none;
+}
+.el-collapse-item__header {
+    height: 50px;
+    line-height: 50px;
+    padding-left: 16px;
+    font-size: 16px;
+    position: relative;
+    width: 100%;
+    color: #575962;
+    font-weight: 700;
+    border-bottom: 2px solid #E0E3E9;
+}
+.el-collapse-item__header.is-active {
+    border-bottom: 2px solid #36A3F7;
+    color: #169aff;
+}
+.el-collapse-item__content {
+    color: #575962;
+    padding-bottom: 0;
+}
+.el-collapse-item__arrow {
+    margin: 0 18px 0 auto;
+    font-size: 20px;
+    float: right;
+    line-height: 42px;
+}
+.el-collapse-item__header.is-active .el-collapse-item__arrow {
+    color: #169aff;
+}
+.el-collapse-item__header .header-icon {
+    font-size: 22px;
+    margin-right: 5px;
+}
+.el-collapse-item {
+    margin-bottom: 15px;
+}
+.el-input-group__append {
+    color: #fff;
+    border-color: #169aff;
+    background: #169aff;
+}
+.el-button--primary {
+    border-color: #169aff;
+    background: #169aff;
+}
+.el-input__inner {
+    border-color: #DCDFE6;
+    height: 34px;
+    line-height: 34px;
+    color: #575962;
+    padding: 0 10px;
+}
+.el-form-item.is-success .el-input__inner, .el-form-item.is-success .el-input__inner:focus, .el-form-item.is-success .el-textarea__inner, .el-form-item.is-success .el-textarea__inner:focus {
+    border-color: #DCDFE6;
+}
+.el-form-item__content, .el-form-item__label {
+    line-height: 31px;
+    color: #575962;
+}
+.el-autocomplete {
+    line-height: 34px;
+    height: 34px;
+}
+.el-form-item {
+    margin-bottom: 14px;
+}
+.el-input-group__append button.el-button i[class^=el-icon-] {
+    font-size: 16px;
+}
+.el-button {
+    padding: 9px 20px;
+}
+.el-collapse-item__wrap {
+    overflow: visible;
+    position: relative;
+    border: none;
+    padding: 15px 30px;
+}
+.el-button--mini, .el-button--mini.is-round {
+    padding: 7px 15px;
+}
+.el-upload__text {
+    color: #7C828D;
+    margin-top: 65px;
+    position: relative;
+    text-align: center;
+}
+.el-table thead.is-group th {
+    background: #fbfbfb;
+}
+.el-dialog__header {
+    border-bottom: 1px solid #e0e3e9;
+}
+.el-dialog__body .el-form {
+    padding: 10px 40px 0 0;
+}
+.el-dialog__body {
+    padding: 20px 0;
+}
+.el-dialog__footer {
+    padding: 0px 20px 20px;
+}
+.dg-modal-add-linkmain-info .el-select {
+    width: 100%;
+}
+.el-form-item__error {
+    padding-top: 0;
+}
+.el-input-group__prepend div.el-select .el-input__inner {
+    color: #575962;
+    padding-right: 20px;
+}
+.el-input__icon {
+    line-height: 34px;
+}
+.el-input__suffix {
+    right: 2px;
+}
+.el-loading-mask {
+    position: fixed;
+}
+.el-table__expanded-cell[class*=cell] {
+    padding: 10px 40px;
+}
+/*上传样式重置*/
+.el-upload-list__item .el-progress {
+    left: 0;
+}
+.el-upload-list__item-name {
+    display: inline-block;
+}
+.el-upload-list__item-status-label {
+    right: 15px;
+    top: 0;
+}
+.el-upload-list__item {
+    width: auto;
+    display: inline-block;
+    margin-left: 10px;
+    line-height: normal;
+    padding: 5px 0;
+}
+/*element 样式重置 end*/
+#approve {
+    padding-right: 30px;
+    padding-bottom: 80px;
+}
+.title-nav {
+    line-height: 40px;
+    border: 1px solid rgba(255, 184, 34, 0.5);
+    border-radius: 4px;
+    text-align: center;
+    font-size: 15px;
+    margin-bottom: 15px;
+    background: rgba(255, 184, 34, 0.1);
+}
+.title-nav a {
+    color: #169aff;
+}
+.notice {
+    color: #afb2c1;
+}
+/*左侧纵向导航 start*/
+.vertical-tab {
+    width: 140px;
+    position: fixed;
+    top: 40px;
+    right: 30px;
+    text-align: left;
+    color: #999;
+    padding: 17px 0;
+    border-left: 3px solid #e0e3e9;
+}
+.vertical-tab li {
+    height: 40px;
+    line-height: 40px;
+    padding-left: 15px;
+}
+.vertical-tab .vertical-label.active {
+    color: #169aff;
+    border-left: 3px solid #169aff;
+    margin-left: -3px;
+}
+/*左侧纵向导航 end*/
+.search-proj-info {
+    width: 80%;
+    margin: 30px auto 19px;
+}
+.search-proj-info .el-autocomplete {
+    display: block;
+    height: 44px;
+    line-height: 44px;
+    margin-right: 136px;
+}
+.search-proj-info .el-input__inner {
+    height: 44px;
+    line-height: 44px;
+}
+.search-proj-info .el-form-item__content {
+    position: relative;
+}
+.search-proj-info .el-button {
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 44px;
+}
+.search-proj-info .el-button i {
+    font-size: 17px;
+    vertical-align: middle;
+}
+.search-proj-info .el-form-item__label {
+    line-height: 44px;
+    font-size: 16px;
+}
+/*基本信息 start*/
+#projName .el-autocomplete {
+    display: block;
+}
+.input-inline {
+    width: 50%;
+    float: left;
+}
+.input-inline .el-select {
+    width: 100%;
+}
+.input-block {
+    width: 100%;
+}
+.checked-opt {
+    margin-left: 200px;
+}
+.checked-opt .el-checkbox {
+    z-index: 10;
+    margin-right: 15px;
+}
+.proj-code-info {
+    position: relative;
+}
+.proj-code-info .el-form-item__content {
+    margin-right: 125px;
+}
+.proj-code-info .el-form-item__content .el-button {
+    position: absolute;
+    right: -125px;
+    top: 0;
+    height: 34px;
+    padding: 0 16px;
+    color: #169aff;
+    border-color: #169aff;
+}
+.proj-code-info .el-form-item__content .el-button i {
+    font-size: 16px;
+    vertical-align: middle;
+    margin-right: 5px;
+}
+/*基本信息 end*/
+/*申办主体信息  start*/
+.apply-info-title {
+    color: #17a2b8;
+    font-size: 16px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #e8e8e8;
+    margin-bottom: 10px;
+}
+.info-header .el-form-item__label {
+    font-size: 16px;
+    padding-right: 30px;
+    font-weight: bold;
+}
+#applyInfo .search-edit-item .el-form-item__content {
+    margin-right: 60px;
+    height: 34px;
+}
+#applyInfo .search-edit-item .el-form-item__content .item-right-btn {
+    position: absolute;
+    top: 1px;
+    right: -60px;
+    height: 34px;
+    line-height: 34px;
+    padding: 0 16px;
+}
+#applyInfo .search-edit-item .el-form-item__content .item-right-btn i {
+    font-size: 20px;
+}
+#applyInfo .el-form {
+    padding-top: 10px;
+}
+.select-and-input .el-input-group__prepend {
+    width: 200px;
+    background: #fff;
+    text-align: right;
+    padding: 0;
+    border: none;
+}
+.select-and-input {
+    margin-bottom: 16px;
+}
+.select-and-input .el-select {
+    width: 75%;
+    margin-right: 5px;
+    border-radius: 4px;
+    line-height: 34px;
+    height: 34px;
+    border: 1px solid #d9d9d9;
+}
+
+#applyInfo .el-autocomplete {
+    width: 100%;
+}
+.is-jinban {
+    margin-left: 15px;
+}
+.is-jinban .el-switch__label.is-active {
+    color: #575962;
+}
+/*申办主体信息  end*/
+/*  申报阶段 start  */
+.theme-type-list {
+    text-align: center;
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+.theme-type-list span {
+    cursor: pointer;
+    height: 40px;
+    line-height: 36px;
+    border: 1px solid #E0E3E9;
+    margin: 0;
+    display: inline-block;
+    padding: 0 30px;
+    border-right: none;
+}
+.theme-type-list span:first-child {
+    border-radius: 4px 0 0 4px;
+}
+.theme-type-list span:last-child {
+    border-right: 1px solid #E0E3E9 ;
+    border-radius: 0 4px 4px 0;
+}
+.theme-type-list span.active {
+    color: #FFF;
+    background: #169aff;
+    border-color: #169aff;
+}
+.apply-theme {
+    line-height: 55px;
+    text-align: center;
+}
+.apply-theme .theme-list-item {
+    border: 1px solid #169aff;
+    width: 60%;
+    border-radius: 4px;
+    padding: 0 10px;
+    display: inline-block;
+    margin-bottom: 10px;
+    text-align: left;
+}
+.apply-theme .theme-list-item.no-sel-theme {
+    border: 1px dashed #E0E3E9;
+    color: #169AFF;
+    text-align: center;
+}
+.apply-theme .theme-list-item.no-sel-theme span {
+    display: inline-block;
+    height: 100%;
+    width: 100%;
+    cursor: pointer;
+}
+.apply-theme .theme-list-item.no-sel-theme i {
+    font-size: 24px;
+    vertical-align: sub;
+    padding-right: 5px;
+}
+.apply-theme img {
+    margin: 8px 10px 8px 0;
+    height: 38px;
+    float: left;
+}
+.pro-type-item {
+    border: 1px solid #D9D9D9;
+    border-radius: 4px;
+    margin: 0 15px 15px 15px;
+    height: 70px;
+    line-height: 64px;
+    padding: 0 10px;
+    cursor: pointer;
+}
+.pro-type-item.active {
+    color: #169aff;
+    border-color: #169aff;
+    position: relative;
+}
+.pro-type-item.active:after {
+    content: '';
+    display: inline;
+    position: absolute;
+    bottom: -1px;
+    right: -1px;
+    padding: 13px 16px;
+    background: url(../imgs/check_icon_blue.png) no-repeat;
+}
+.pro-type-item img {
+    margin: 5px 10px 5px 0;
+    height: 54px;
+    float: left;
+}
+.status-img {
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    margin: 30px 0 20px 0;
+    text-align: center;
+}
+.status-img-item {
+    width: 25%;
+    font-size: 16px;
+    line-height: 22px;
+    font-weight: bold;
+    color: #ADADAD;
+    position: relative;
+    float: left;
+    cursor: pointer;
+}
+.status-img-item .stage-img {
+    width: 115px;
+    height: 115px;
+    margin: auto;
+    border-radius: 50%;
+    padding: 10px 0;
+    background: rgba(230, 245, 255, 1);
+    margin-bottom: 15px;
+}
+.status-img-item .stage-img.purple-circle {
+    background: rgba(231, 229, 255, 1);
+}
+.status-img-item .stage-img.ye-circle {
+    background: rgba(255, 242, 227, 1);
+}
+.status-img-item .stage-img.gre-circle {
+    background: rgba(240, 255, 216, 1);
+}
+.status-img-item.active .stage-img {
+    width: 130px;
+    height: 130px;
+    padding: 17px 0;
+    position: relative;
+    top: -6px;
+    margin-bottom: 0px;
+}
+.status-img-item:before {
+    content: '';
+    display: inline-block;
+    height: 3px;
+    position: absolute;
+    left: -30%;
+    right: 70%;
+    top: 54px;
+    background: #E0E0E0;
+}
+/*.status-img-item.active:before {*/
+/*background: #169aff;*/
+/*}*/
+.status-img-item.active {
+    color: #169aff;
+}
+.status-img-item:first-child:before {
+    height: 0;
+}
+.status-img-item img {
+    display: inline-block;
+    margin-bottom: 10px;
+    width: 95px;
+    height: 95px;
+}
+.sel-status > p.m-font-gary {
+    margin-bottom: 8px;
+}
+.m-font-gary {
+    color: #999;
+}
+.sel-status-item {
+    border: 1px solid #e8e8e8;
+    border-bottom: none;
+    padding: 5px 8px;
+    margin: 0;
+}
+.sel-status-item:last-child {
+    border-bottom: 1px solid #e8e8e8;
+}
+.sel-status-item .el-radio-group, .sel-status-item .el-checkbox-group {
+    padding: 0 0 5px 20px;
+}
+.red-star {
+    color: red;
+    vertical-align: middle;
+    padding: 0 6px;
+}
+.line-type {
+    border-bottom: 1px solid #E0E3E9;
+    height: 30px;
+    line-height: 30px;
+    padding: 0 30px;
+    margin: 20px 0 15px 0;
+}
+.line-type li {
+    padding: 0 20px;
+    height: 30px;
+    line-height: 30px;
+    font-size: 16px;
+    cursor: pointer;
+}
+.line-type li.active {
+    border-bottom: 3px solid #169aff;
+    color: #169aff;
+}
+/*  申报阶段 end  */
+/*  申报表单 事项列表 start  */
+.files-form {
+    color: #169aff;
+    display: inline-block;
+    width: 15%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    word-wrap: normal;
+}
+.pro-core {
+    font-size: 15px;
+    font-weight: bold;
+    line-height: 34px;
+    margin: 15px 0 5px 0;
+}
+#eventList .el-table {
+    margin: 10px 0 20px 0;
+}
+.isTag{
+    margin-left: 5px;
+    border-radius: 13px;
+    padding: 2px 6px;
+    color: white;
+    line-height: normal;
+    font-size: 12px;
+    white-space: nowrap;
+}
+.isTag.isRecommend{
+    background-color: #FF8800;
+}
+.isTag.isDone{
+    background-color: #34bfa3;
+}
+#showNonCoreItemDiv > div {
+    margin-top: 15px;
+    width: 220px;
+    border: 1px solid #D9D9D9;
+    border-radius: 4px;
+    padding: 8px 10px;
+    margin-right: 50px;
+    float: left;
+    position: relative;
+}
+#showNonCoreItemDiv > div a p.ellipsis {
+    font-weight: lighter;
+    height: 32px;
+    line-height: 29px;
+}
+#showNonCoreItemDiv > div .isTag{
+    position: absolute;
+    right: -20px;
+    top: -10px;
+}
+/*  申报表单 事项列表 end  */
+/*  材料清单 start  */
+.fileDiv {
+    border: 1px dashed #D2D2D2;
+    min-height: 170px;
+    margin-bottom: 10px;
+}
+.fileDiv.is-sel-file .upload-flie {
+    width: 130px;
+    float: right;
+    min-height: 170px;
+    height: 100%;
+    position: relative;
+}
+.fileDiv.is-sel-file .el-upload-dragger {
+    width: 110px;
+    height: 110px;
+    margin: 7px;
+    padding-top: 0;
+    border-radius: 0;
+}
+.fileDiv.is-sel-file .submit-file {
+    position: absolute;
+    bottom: 7px;
+    right: 7px;
+}
+.el-icon-plus {
+    background-color: rgba(242, 242, 242, 0.56);
+    box-sizing: border-box;
+    width: 110px;
+    height: 110px;
+    cursor: pointer;
+    line-height: 110px;
+    font-size: 40px;
+    color: #d7d7d7;
+    font-weight: bold;
+}
+.upload-flie {
+    height: 100%;
+    min-height: 120px;
+    width: 100%;
+    position: relative;
+}
+.imitate-upload-pic {
+    line-height: normal;
+}
+.file-list-ul {
+    margin-right: 130px;
+    padding: 10px;
+    border-right: 1px dashed #D2D2D2;
+    min-height: 170px;
+}
+.el-upload-dragger {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    border: none;
+    padding-top: 50px;
+}
+/*  材料清单 end  */
+.right-bottom-btn {
+    position: fixed;
+    right: 20px;
+    bottom: 15px;
+    z-index: 1000;
+}
+.right-bottom-btn .el-button.is-circle {
+    display: block;
+    height: 65px;
+    width: 65px;
+    text-align: center;
+    padding: 12px 0;
+    margin: 0 0 10px 0;
+    box-shadow: 0 2px 10px #09baff !important;
+    border: none;
+}
+.right-bottom-btn .el-button.is-circle.el-button--danger {
+    background: #F4516C;
+    box-shadow: 0px 4px 20px 0px rgba(244,81,108,0.5)!important;
+}
+/*项目树窗口 start*/
+.search-proj .el-input {
+    width: 70%;
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+.search-proj .el-input:last-child {
+    margin-bottom: 0;
+}
+.search-proj {
+    border-bottom: 1px solid #e0e3e9;
+    padding: 0 20px 20px 20px;
+}
+.project-tree .el-tree {
+    padding: 20px;
+    max-height: 500px;
+    min-height: 200px;
+}
+.tree-icon-name i {
+    color: #61BBFF;
+    padding-right: 6px;
+    font-size: 16px;
+}
+/*项目树窗口 end*/
+/*选择主题窗口 start*/
+.theme-name.ellipsis {
+    display: inline-block;
+    width: 80%;
+    vertical-align: bottom;
+}
+/*选择主题窗口 end*/
+/*申办主体信息 start*/
+.select-option-ul .el-icon-delete {
+    line-height: 34px;
+}
+.sel-btn {
+    position: relative;
+}
+.sel-btn .el-form-item__content {
+    margin-right: 40px;
+}
+.sel-btn .el-form-item__content .el-select {
+    position: absolute;
+    width: 100%;
+}
+.sel-btn .el-button {
+    padding: 9px;
+    position: absolute;
+    border-radius: 0 4px 4px 0;
+    right: 0;
+}
+.sel-btn .el-button+.el-button {
+    border-radius: 4px;
+    right: -40px;
+}
+/*申办主体信息 end*/
+
+.notice-pop {
+    height: 30px;
+    line-height: 30px;
+    color: #7C828D;
+    cursor: pointer;
+}
+.mat-file-list {
+    padding: 0 25px;
+}
+.mat-file-list .td-cust {
+    height: 34px;
+    line-height: 34px;
+    margin-top: 10px;
+}
+.file-image img {
+    height: 30px;
+    margin-right: 5px;
+}
+.upload-flie-icon.el-icon-upload {
+    font-size: 24px;
+    color: #169aff;
+}
+.upload-flie-icon.el-icon-search {
+    font-size: 20px;
+}
+/*文件上传下载弹窗*/
+.upload-flie-dialog .el-dialog__body{
+    padding: 15px 10px 30px 10px;
+}
+.upload-flie-dialog .file-opt-btn {
+    padding: 0 10px 10px 10px;
+    border-bottom: 1px solid #E0E3E9;
+    margin-bottom: 10px;
+}
+.upload-flie-dialog .upload-s-file {
+    display: inline-block;
+    height: 34px;
+    line-height: 34px;
+    margin: 0 10px;
+}
+.upload-flie-dialog .upload-s-file .el-button {
+    font-size: 14px;
+}
+.file-list-tab {
+    padding: 10px 15px;
+    border-bottom: 1px solid #E0E3E9;
+}
+.file-list-tab:last-child {
+    border-bottom: none;
+}
+.file-name {
+    color: DarkOrange;
+    cursor: default;
+}
+.file-icon-btn {
+    text-align: center;
+}
+.file-icon-btn span {
+    cursor: pointer;
+    font-size: 18px;
+    padding: 0 5px;
+}
+.comments-content {
+    border: 1px solid #ebedf2;
+    margin: 0 30px;
+}
+.com-header {
+    height: 42px;
+    line-height: 42px;
+    background-color: #f4f4f4;
+    padding: 0 14px;
+}
+.comments-content .el-row {
+    margin: 10px;
+}
+.comments-content .el-col .el-select {
+    width: 100%;
+}
+.comments-content .el-col .el-button {
+    margin-left: 10px;
+}
+.edit-comments .el-dialog__body {
+    padding: 20px 30px;
+}
+.tree-right-btn {
+    position: fixed;
+    z-index: 90;
+    background-color: #fff;
+    width: 200px;
+    border: 1px solid #E0E3E9;
+}
+.tree-right-btn .list-group-item {
+    display: block;
+    color: #595959;
+    height: 42px;
+    font-size: 14px;
+    padding-left: 15px;
+    line-height: 42px;
+    border-bottom: 1px solid #E0E3E9;
+}
+.tree-right-btn .list-group-item:last-child {
+    border-bottom: none;
+}
+.proj-tree-dialog .el-dialog__body {
+    position: relative;
+}
+.themeTypeList {
+    text-align: center;
+    font-size: 18px;
+    margin-bottom: 20px;
+}
+.themeTypeList span {
+    margin: 0 10px;
+    position: relative;
+    cursor: pointer;
+}
+.themeTypeList span.active {
+    color: #FF8800;
+}
+.themeTypeList span:before {
+    content: '';
+    position: absolute;
+    display: inline-block;
+    width: 1px;
+    right: -10px;
+    background: #E0E3E9;
+    bottom: 2px;
+    top: 4px;
+}
+.themeTypeList span:last-child:before {
+    width: 0;
+}
+.themeTypeList span.active:after {
+    content: '';
+    position: absolute;
+    display: inline-block;
+    width: 80%;
+    left: 10%;
+    height: 4px;
+    background: #FF8800;
+    bottom: -10px;
+    border-radius: 8px;
+}
+.help-line-theme {
+    text-align: center;
+}
+.help-line-theme .theme-list-item img {
+    margin-right: 10px;
+    display: block;
+    float: left;
+    max-width: 54px;
+    width: 28%;
+}
+.help-line-theme .theme-list-item .theme-name {
+    width: 65%;
+    float: left;
+}
+.help-line-theme .theme-list-item {
+    width: 220px;
+    min-width: 220px;
+    border: 1px solid #D9D9D9;
+    border-radius: 4px;
+    padding: 8px 10px;
+    margin-right: 15px;
+    float: left;
+    height: 70px;
+    margin-bottom: 10px;
+    display: inline-block;
+    text-align: left;
+}
+.help-line-theme .theme-list-item.active {
+    color: #36a3f7;
+    border-color: #36a3f7;
+    position: relative;
+}
+.help-line-theme .theme-list-item.active:after {
+    content: '';
+    display: inline;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    padding: 13px 16px;
+    background: url(../imgs/check_icon_blue.png) no-repeat;
+}
+.check-item .el-checkbox__label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    word-wrap: normal;
+    width: 320px;
+    vertical-align: text-bottom;
+}
+.get-result-form .el-autocomplete {
+    width: 100%;
+}
+.col-status-z {
+    position: relative;
+    padding-left: 60px;
+}
+.col-status-z .col-s-title {
+    width: 50px;
+    height: 100%;
+    text-align: center;
+    padding: 0 15px;
+    background:  rgba(78, 178, 253, 0.1);
+    position: absolute;
+    left: -30px;
+    top: 0;
+    bottom: 0;
+    color:  rgba(130, 172, 202, 0.5);
+    padding: 20px 15px\9;
+}
+.col-status-z.active .col-s-title {
+    background:  #4eb2fd;
+    color: #fff;
+}
+.col-status-z:before {
+    content: '';
+    width: 0;
+    position: absolute;
+    left: -30px;
+    top: 0;
+    height: 0;
+    border-left: 25px solid transparent;
+    border-right: 25px solid transparent;
+    border-top: 16px solid #fff;
+    z-index: 100;
+}
+.col-status-z:after {
+    content: '';
+    width: 0;
+    position: absolute;
+    left: -30px;
+    bottom: -16px;
+    height: 0;
+    border-left: 25px solid transparent;
+    border-right: 25px solid transparent;
+    border-top: 16px solid rgba(78, 178, 253, 0.1);
+    z-index: 100;
+}
+.col-status-z.active:after {
+    border-top: 16px solid #4eb2fd;
+}
+.el-select-dropdown {
+    max-width: 680px;
+}
+.refused-modal .el-select {
+    width: 100%;
+}
+.mat-name-sel {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    word-wrap: normal;
+    width: 90%;
+}
+.handle-icon span {
+    padding-right: 10px;
+}
+.col-status-z .el-table__expanded-cell[class*=cell] {
+    padding: 0 40px;
+}
+.expand-coreItem .sel-status-item {
+    border: none;
+    border-bottom: 1px solid #e8e8e8;
+}
+.expand-coreItem .el-form-item__content, .expand-coreItem .el-form-item__label {
+    line-height: 28px;
+}
+.expand-coreItem .sel-status-item:last-child {
+    border-bottom: none;
+}

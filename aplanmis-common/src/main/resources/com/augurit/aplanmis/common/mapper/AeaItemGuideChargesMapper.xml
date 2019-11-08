@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by jjt    2018-11-28 15:58:57 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaItemGuideChargesMapper" >
+
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns" >
+        ROWGUID  rowguid,
+        ITEM_VER_ID  itemVerId,
+        FEE_NAME  feeName,
+        FEE_ORG  feeOrg,
+        FEE_TYPE  feeType,
+        FEE_TYPE_TEXT  feeTypeText,
+        FEE_STand  feeStand,
+        BYLAW  bylaw,
+        IS_DESC  isDesc,
+        IS_DESC_TEXT  isDescText,
+        DESC_EXPLAIN  descExplain,
+        DESC_LAW  descLaw,
+        REMARK  remark,
+        ORDERNUM  ordernum,
+        ROOT_ORG_ID rootOrgId
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaItemGuideChargesById" resultType="AeaItemGuideCharges" >
+        select
+        <include refid="allColumns"/>
+        from  AEA_ITEM_GUIDE_CHARGES
+        where ROWGUID = #{id}
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaItemGuideCharges" resultType="AeaItemGuideCharges" >
+        select
+        <include refid="allColumns"/>
+        from    AEA_ITEM_GUIDE_CHARGES
+        <where>
+            <if test="rowguid != null" >
+                and    ROWGUID = #{rowguid}
+            </if>
+            <if test="itemVerId != null" >
+                and    ITEM_VER_ID = #{itemVerId}
+            </if>
+            <if test="feeName != null" >
+                and    FEE_NAME = #{feeName}
+            </if>
+            <if test="feeOrg != null" >
+                and    FEE_ORG = #{feeOrg}
+            </if>
+            <if test="feeType != null" >
+                and    FEE_TYPE = #{feeType}
+            </if>
+            <if test="feeTypeText != null" >
+                and    FEE_TYPE_TEXT = #{feeTypeText}
+            </if>
+            <if test="feeStand != null" >
+                and    FEE_STAND = #{feeStand}
+            </if>
+            <if test="bylaw != null" >
+                and    BYLAW = #{bylaw}
+            </if>
+            <if test="isDesc != null" >
+                and    IS_DESC = #{isDesc}
+            </if>
+            <if test="isDescText != null" >
+                and    IS_DESC_TEXT = #{isDescText}
+            </if>
+            <if test="descExplain != null" >
+                and    DESC_EXPLAIN = #{descExplain}
+            </if>
+            <if test="descLaw != null" >
+                and    DESC_LAW = #{descLaw}
+            </if>
+            <if test="remark != null" >
+                and    REMARK = #{remark}
+            </if>
+            <if test="ordernum != null" >
+                and    ORDERNUM = #{ordernum}
+            </if>
+            <if test="rootOrgId != null" >
+                and    ROOT_ORG_ID = #{rootOrgId}
+            </if>
+            <if test="keyword!=null and keyword!='' ">
+                and (
+                    FEE_NAME like concat('%',concat(#{keyword},'%')) or
+                    FEE_ORG like concat('%',concat(#{keyword},'%')) or
+                    FEE_STAND like concat('%',concat(#{keyword},'%'))
+                )
+            </if>
+        </where>
+        order by ORDERNUM desc
+    </select>
+    <!--4 根据条件查询实体list,返回分页对象 -->
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaItemGuideCharges" parameterType="AeaItemGuideCharges" >
+        insert into AEA_ITEM_GUIDE_CHARGES (
+            ROWGUID,
+            ITEM_VER_ID,
+            FEE_NAME,
+            FEE_ORG,
+            FEE_TYPE,
+            FEE_TYPE_TEXT,
+            FEE_STAND,
+            BYLAW,
+            IS_DESC,
+            IS_DESC_TEXT,
+            DESC_EXPLAIN,
+            DESC_LAW,
+            REMARK,
+            ORDERNUM,
+            ROOT_ORG_ID
+        )  values  (
+            #{rowguid},
+            #{itemVerId},
+            #{feeName},
+            #{feeOrg},
+            #{feeType},
+            #{feeTypeText},
+            #{feeStand},
+            #{bylaw},
+            #{isDesc},
+            #{isDescText},
+            #{descExplain},
+            #{descLaw},
+            #{remark},
+            #{ordernum},
+            #{rootOrgId}
+        )
+    </insert>
+
+    <!--6 修改实体对象 -->
+    <update id="updateAeaItemGuideCharges" parameterType="AeaItemGuideCharges" >
+        update AEA_ITEM_GUIDE_CHARGES
+        <set >
+            <if test="rowguid != null" >
+                ROWGUID = #{rowguid},
+            </if>
+            <if test="itemVerId != null" >
+                ITEM_VER_ID = #{itemVerId},
+            </if>
+            <if test="feeName != null" >
+                FEE_NAME = #{feeName},
+            </if>
+            <if test="feeOrg != null" >
+                FEE_ORG = #{feeOrg},
+            </if>
+            <if test="feeType != null" >
+                FEE_TYPE = #{feeType},
+            </if>
+            <if test="feeTypeText != null" >
+                FEE_TYPE_TEXT = #{feeTypeText},
+            </if>
+            <if test="feeStand != null" >
+                FEE_STand = #{feeStand},
+            </if>
+            <if test="bylaw != null" >
+                BYLAW = #{bylaw},
+            </if>
+            <if test="isDesc != null" >
+                IS_DESC = #{isDesc},
+            </if>
+            <if test="isDescText != null" >
+                IS_DESC_TEXT = #{isDescText},
+            </if>
+            <if test="descExplain != null" >
+                DESC_EXPLAIN = #{descExplain},
+            </if>
+            <if test="descLaw != null" >
+                DESC_LAW = #{descLaw},
+            </if>
+            <if test="remark != null" >
+                REMARK = #{remark},
+            </if>
+            <if test="ordernum != null" >
+                ORDERNUM = #{ordernum},
+            </if>
+            <if test="rootOrgId != null" >
+               ROOT_ORG_ID = #{rootOrgId},
+            </if>
+        </set>
+        where ROWGUID = #{rowguid}
+    </update>
+
+    <!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaItemGuideChargesById">
+        delete from  AEA_ITEM_GUIDE_CHARGES
+        where ROWGUID = #{id}
+    </delete>
+
+    <delete id="batchDelAeaItemGuideChargesByIds">
+        delete from  AEA_ITEM_GUIDE_CHARGES where ROWGUID in
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="batchDelGuideChargesByItemVerId" parameterType="java.lang.String">
+        delete from  AEA_ITEM_GUIDE_CHARGES
+        where ITEM_VER_ID = #{itemVerId}
+          and ROOT_ORG_ID = #{rootOrgId}
+    </delete>
+
+    <select id="getMaxSortNoByItemVerId" resultType="java.lang.Long">
+        select
+             max(ORDERNUM)
+         from AEA_ITEM_GUIDE_CHARGES
+        where ITEM_VER_ID = #{itemVerId}
+          and ROOT_ORG_ID = #{rootOrgId}
+    </select>
+
+</mapper>

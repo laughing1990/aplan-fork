@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<title>唐山市工程建设项目联合审批系统网上办事大厅</title>
+	</head>
+	<body>
+		<div id="mainIndex" v-cloak>
+			<section>
+				<div class="banner-img">
+					<div class="wt-search">
+						<div class="search-input index-input">
+							<div>
+								<input type="text" v-model.trim="itemListKeyword" @keyup.13="searchItemList();"placeholder="查询事项 / 主题（请输入事项名称 / 主题名称 / 阶段名称）  "><el-button class="search-btn" @click="searchItemList();">查询</el-button>
+							</div>
+							<!--<div v-else>
+								<input type="text" v-model="themeListKeyword" @keyup.13="searchThemeList();"  placeholder="请输入事项名称 / 主题名称 / 阶段名称 " ><el-button  class="search-btn"   @click="searchThemeList();">查询</el-button>
+							</div>-->
+<!--							<div class="triangle"></div>-->
+						</div>
+					</div>
+				</div>
+			</section>
+			<section v-show="applyinstFlag == 1">
+				<div class="wt-content" style="padding-bottom: 50px;">
+					<!-- floor1分类申报 start -->
+					<div class="floor margin-top-40" style="height: auto;" v-loading="themeLoading">
+						<div class="wt-tab" id="floorTab">
+							<ul class="wt-tab-nav" id="mallThemeTypeList">
+								<li data-id="#themeApproval" :class="{'active':approvalwayTypeFlag}" @click="approvalwayTypeFlag = true">按主题申报</li>
+								<li data-id="#proApproval" :class="{'active':!approvalwayTypeFlag}" @click="approvalwayTypeFlag = false">按部门申报</li>
+							</ul>
+							<div class="wt-tab-content" style="padding-top: 18px;">
+								<!-- 按主题申报 start -->
+								<transition name="el-fade-in-linear">
+									<div class="wt-tab-item" id="themeApproval" v-show="approvalwayTypeFlag">
+										<div class="guide-content-left" v-loading="themeLoading">
+											<ul id="themeul">
+												<el-collapse accordion v-model="approvalWayActiveName" @change="approvelWayActiveChange">
+													<el-collapse-item :name="index+1" v-for="(item, index) in themeListData" :key="index">
+														<template slot="title">
+															<li class="theme-type" :class="{'active':approvalWayActiveName === (index+1)}">
+																<p class="theme-type-name ellipsis">
+																	<i class="theme-type-icon"></i>
+																	{{item.themeTypeName}} <i class="tooggle-icon"></i></p>
+															</li>
+														</template>
+														<li class="theme-type active">
+															<ul class="theme-type-list">
+																<li class="theme-type-item ellipsisLn" :class="{'active':activeSub === indexSub}" @click="goToGuid(itemSub,indexSub)"
+																 v-for="(itemSub, indexSub) in item.themeList" :key="indexSub">{{(indexSub+1)+'、'+itemSub.themeName}}</li>
+															</ul>
+														</li>
+													</el-collapse-item>
+												</el-collapse>
+											</ul>
+											<div class="toggle" style="display: none;">
+												<ul class="toggle-dots">
+													<li class="active"></li>
+													<li></li>
+												</ul>
+											</div>
+										</div>
+										<div class="guide-content-right" >
+											<p class="theme-type-header">
+												<span><i class="notice"></i> 申报说明：</span>
+												<button class="red-btn" :loading="showProcessLoading" style="cursor: pointer;" id="showProcessButton" @click="showProcess()">查看流程图</button>
+											</p>
+											<p class="theme-type-explain" id="themeMemo" style="line-height: 25px;" v-html="themeMemo"></p>
+
+											<div v-show="isNode" class="wt-phase1" style="padding-top: 20px;">
+												<div class="wt-tab-item" id="mainLine">
+													<p class="p-header-phase1"><i class="approve-icon"></i> 并联申报</p>
+													<ul class="index-phase1 clearfix" id="stageImg">
+														<li class="show">
+															<img src="../../static/mall/images/index/立项用地许可.png" alt="">
+															<div class="stage-name">
+																<p class="ellipsis">立项用地许可阶段</p>
+																<p class="stage-dealine">14个工作日</p>
+															</div>
+														</li>
+														<li class="show" onclick="goToStage('A00001','03b61f98-a815-491a-8a41-bb1b29d9885d','e86e64f3-c9ef-4098-b3f9-bc62909b447f')">
+															<img src="../../static/mall/images/index/工程建设许可.png" alt="">
+															<div class="stage-name">
+																<p class="ellipsis">工程建设许可阶段</p>
+																<p class="stage-dealine">10个工作日</p>
+															</div>
+														</li>
+														<li class="show" onclick="goToStage('A00001','03b61f98-a815-491a-8a41-bb1b29d9885d','d3f58fd3-71bf-4bc6-a147-a46cc3b62db1')"><img
+															 src="../../static/mall/images/index/施工许可.png" alt="">
+															<div class="stage-name">
+																<p class="ellipsis">施工许可阶段</p>
+																<p class="stage-dealine">13个工作日</p>
+															</div>
+														</li>
+														<li class="show" onclick="goToStage('A00001','03b61f98-a815-491a-8a41-bb1b29d9885d','8001b4ab-a0f2-45a0-b58f-35e86827ab2a')"><img
+															 src="../../static/mall/images/index/竣工验收.png" alt="">
+															<div class="stage-name">
+																<p class="ellipsis">竣工验收阶段</p>
+																<p class="stage-dealine">8个工作日</p>
+															</div>
+														</li>
+													</ul>
+													<div class="prev-item" onclick="prevItem(this,'#mainLine #stageImg li')" style="display: none;">&lt;</div>
+													<div class="next-item" onclick="nextItem(this,'#mainLine #stageImg li')" style="display: none;">&gt;</div>
+												</div>
+												<div class="wt-tab-item" id="auxiliaryLine">
+													<p class="p-header-phase1"><i class="serve-icon"></i>服务协同</p>
+													<ul class="index-phase1 clearfix" id="stageAuxiliaryImg">
+														<li class="show" onclick="goToStage('A00001','03b61f98-a815-491a-8a41-bb1b29d9885d','97ed335a-691a-4173-8767-9afa94273988')">
+															<img src="../../static/mall/images/index/" alt="">
+															<div class="stage-name">
+																<p class="ellipsis">服务协同测试</p>
+																<p class="stage-dealine">1个工作日</p>
+															</div>
+														</li>
+													</ul>
+													<div class="prev-item" onclick="prevItem(this,'#auxiliaryLine #stageAuxiliaryImg li')" style="display:none;">&lt;</div>
+													<div class="next-item" onclick="nextItem(this,'#auxiliaryLine #stageAuxiliaryImg li')" style="display: none;">&gt;</div>
+												</div>
+											</div>
+
+											<div  v-show="!isNode" class="wt-phase1" style="padding-top: 20px;">
+												<div class="wt-phase-style-2">
+													<div class="wt-tab-item" id="mainLine2">
+<!--														<p class="p-header-phase1"><i class="approve-icon"></i> 并联申报</p>-->
+														<ul class="index-phase1 clearfix" id="stageImg2">
+															<li class="show">
+																<img src="../../static/mall/images/index/立项用地许可.png" alt="">
+																<div class="stage-name">
+																	<p class="ellipsis">立项用地许可阶段</p>
+																	<p class="stage-dealine">14个工作日</p>
+																</div>
+															</li>
+															<li class="show" onclick="goToStage('A00001','03b61f98-a815-491a-8a41-bb1b29d9885d','e86e64f3-c9ef-4098-b3f9-bc62909b447f')">
+																<img src="../../static/mall/images/index/工程建设许可.png" alt="">
+																<div class="stage-name">
+																	<p class="ellipsis">工程建设许可阶段</p>
+																	<p class="stage-dealine">10个工作日</p>
+																</div>
+															</li>
+															<li class="show" onclick="goToStage('A00001','03b61f98-a815-491a-8a41-bb1b29d9885d','d3f58fd3-71bf-4bc6-a147-a46cc3b62db1')"><img
+																	src="../../static/mall/images/index/施工许可.png" alt="">
+																<div class="stage-name">
+																	<p class="ellipsis">施工许可阶段</p>
+																	<p class="stage-dealine">13个工作日</p>
+																</div>
+															</li>
+															<li class="show" onclick="goToStage('A00001','03b61f98-a815-491a-8a41-bb1b29d9885d','8001b4ab-a0f2-45a0-b58f-35e86827ab2a')"><img
+																	src="../../static/mall/images/index/竣工验收.png" alt="">
+																<div class="stage-name">
+																	<p class="ellipsis">竣工验收阶段</p>
+																	<p class="stage-dealine">8个工作日</p>
+																</div>
+															</li>
+														</ul>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</transition>
+								<!-- 按主题申报 end -->
+								<!-- 按部门申报 start -->
+								<transition name="el-fade-in-linear">
+									<div class="wt-tab-item" id="proApproval" v-show="!approvalwayTypeFlag">
+										<div class="sel-department">
+											<div  style="position: relative;">
+												<span class="el-dropdown-link" @click="chooseCityItem">
+												  <span class="unitName ellipsis">{{cityOrgName}}</span>
+													<i v-show="secAeaOrgVo.length>0" class="el-icon-arrow-right" style="vertical-align: sub;cursor: pointer;margin-left: 0px;"></i>
+												</span>
+												<span class="el-dropdown-link" style="margin-left: 10px;margin-right: 10px;" v-show="secAeaOrgVo.length>0">
+												  <span class="unitName ellipsis">{{aeaActiveOrgName}}</span>
+													<i  class="el-icon-arrow-down el-icon--right"></i>
+													<ul class="el-dropdown-menu el-popper">
+														<div class="location">当前定位：<span>{{aeaActiveOrgName}}</span></div>
+														<li class="el-dropdown-menu__item" :class="{areaOn:areaOnIndex == index}"  v-for="(item,index) in secAeaOrgVo" @click="chooseAreaItem(item,index)">
+															{{item.orgName}}
+														</li>
+													</ul>
+												</span>
+												<span class="el-dropdown-link" style="margin-left: 10px;margin-right: 10px;"  v-show="childAeaOrgVo.length>0">
+													<span class="unitName ellipsis">{{childAeaOrgVoOrgName}}</span>
+													  <i  class="el-icon-arrow-down el-icon--right"></i>
+													  <ul class="el-dropdown-menu el-popper" >
+														  <div class="location">当前定位：<span>{{childAeaOrgVoOrgName}}</span></div>
+														  <li class="el-dropdown-menu__item" :class="{cityOn:cityOnIndex == index}" v-for="(item,index) in childAeaOrgVo"  @click="choosechildAeaOrgVoItem(item,index)">
+															  {{item.orgName}}
+														  </li>
+													  </ul>
+												</span>
+												<span class="total-department">共{{OrgListData.length}}个部门</span>
+											</div>
+										</div>
+										<div class="department-list" style="margin-top: 12px;" v-if="OrgListData.length>0">
+											<span class="department-name" v-for="(item, index) in OrgListData" onclick="goToOrg(this)" :key="index" :id="item.orgId"
+											 :name="item.orgName">{{item.orgName}}</span>
+											<a href="#" class="show-more-department" ref="showmoredepartment" @click="expandAllDep">全部展开</a>
+										</div>
+										<div class="department-list" style="margin-top: 12px;" v-else>
+											<div class="contract-box contract-non-box"></div>
+										</div>
+									</div>
+								</transition>
+								<!-- 按部门申报 end -->
+							</div>
+						</div>
+					</div>
+					<!-- floor1分类申报 end -->
+					<div class="quick-entry margin-top-40">
+						<p class="p-header">快捷入口</p>
+						<ul class="publicity">
+							<li><a target="_blank" th:href="@{/mall/file/tangshan/shortcutEntry/唐政办发（2019）1号唐山市深化工程建设项目审批制度改革实施方案.pdf}">
+									<img src="../../static/mall/images/index/entry-icon1.png" th:src="@{/mall/images/index/entry-icon1.png}" alt="" />
+									<p>政策文件</p>
+								</a>
+							</li>
+								<li><a target="_blank" href="/aplanmis-mall/supermarket/main/index.html">
+										<img src="../../static/mall/images/index/entry-icon2.png" th:src="@{/mall/images/index/entry-icon2.png}" alt="" />
+										<p>事项清单</p>
+									</a></li>
+							<li><a target="_blank" th:href="@{/mall/file/tangshan/shortcutEntry/流程图.pdf}">
+									<img src="../../static/mall/images/index/entry-icon3.png" th:src="@{/mall/images/index/entry-icon3.png}" alt="" />
+									<p>改革流程图</p>
+								</a></li>
+							<li><a href="#">
+									<img src="../../static/mall/images/index/download.png" th:src="@{/mall/images/index/download.png}" alt="" />
+									<p>审批细则</p>
+								</a></li>
+						</ul>
+					</div>
+
+					<!-- floor2审批情况 start -->
+					<div class="floor margin-top-40" style="position: relative;">
+						<p class="p-header">审批情况</p>
+						<p class="look-more" @click="getApplyinstList()">
+							<img src="../../static/mall/images/index/MORE.png" th:src="@{/mall/images/index/MORE.png}" alt="" />
+						</p>
+						<table class="wt-table">
+							<thead>
+								<tr>
+									<th width="13%">申报流水号</th>
+									<th width="17%">项目/工程名称</th>
+									<th width="20%">事项名称</th>
+									<th width="12%">承办单位</th>
+									<th width="8%">申报日期</th>
+									<!--<th width="10%">承诺期限</th>
+									<th width="8%">办结日期</th>-->
+									<th width="12%" style="text-align: center;">办件状态</th>
+								</tr>
+							</thead>
+						</table>
+						<div id="demo" style="overflow: hidden; height: 350px;">
+							<div id="demo1">
+								<table class="wt-table">
+									<div v-if="approveListData.length > 0">
+											<tr style="height: 50px;" v-for="(item,index) in approveListData">
+												<td width="13%">{{item.applyinstCode}}</td>
+												<td width="17%">{{item.projName}}</td>
+												<td width="20%">{{item.itemName}}</td>
+												<td width="12%">{{item.orgName}}</td>
+												<td v-if="item.startTime!=null" width="8%">{{item.startTime | formatDate}}</td>
+												<td v-if="item.startTime==null" width="8%"></td>
+												<!--<td width="10%" style="text-indent:20px;">
+													<span>{{item.dueNum}}工作日</span>
+												</td>
+												<td v-if="item.endTime!=null" width="8%">{{item.endTime | formatDate}}</td>
+												<td v-if="item.endTime==null" width="8%"></td>-->
+												<td width="12%" style="text-align: center;">
+													<span class="iteminstState state1" v-if="item.iteminstState=='1'">已接件</span>
+
+													<span class="iteminstState state2" style="color:red;" v-else-if="item.iteminstState=='2'">已撤件</span>
+
+													<span class="iteminstState state3" v-else-if="item.iteminstState=='3'">已受理</span>
+
+													<span class="iteminstState state4"  v-else-if="item.iteminstState=='4'">不受理</span>
+
+													<span class="iteminstState state5" style="text-indent:10px;" v-else-if="item.iteminstState=='5'">不予受理</span>
+
+													<span class="iteminstState state6" style="width: 100px;text-indent: 5px;" v-else-if="item.iteminstState=='6'">补正（开始）</span>
+
+													<span class="iteminstState state7" style="width: 100px;text-indent: 5px;" v-else-if="item.iteminstState=='7'">补正（结束）</span>
+
+													<span class="iteminstState state8" style="text-indent:10px;" v-else-if="item.iteminstState=='8'">部门开始办理</span>
+
+													<span class="iteminstState state9" style="text-indent:10px;" v-else-if="item.iteminstState=='9'">特别程序（开始）</span>
+
+													<span class="iteminstState state10" style="text-indent:10px;" v-else-if="item.iteminstState=='10'">特别程序（结束）</span>
+
+													<span class="iteminstState state11" style="text-indent:10px;" v-else-if="item.iteminstState=='11'">办结（通过）</span>
+
+													<span class="iteminstState state12" style="text-indent:10px;" v-else-if="item.iteminstState=='12'">办结（容缺通过）</span>
+
+													<span class="iteminstState state13" style="text-indent:10px;" v-else-if="item.iteminstState=='13'">办结（不通过）</span>
+
+													<span class="iteminstState state14"  v-else-if="item.iteminstState=='14'">撤回</span>
+
+													<span class="iteminstState state15"  v-else-if="item.iteminstState=='15'">撤销</span>
+
+													<span v-else>-</span>
+												</td>
+											</tr>
+									</div>
+									<div v-else>
+										<tr class="noData">
+											<td colspan="16">暂无审批数据</td>
+										</tr>
+									</div>
+								</table>
+							</div>
+							<div id="demo2">
+
+							</div>
+						</div>
+					</div>
+					<!-- floor2审批情况 end -->
+
+					<!-- floor3统计 公告 start -->
+					<div class="floor row-floor margin-top-40">
+						<!-- 办件统计 start -->
+						<div class="all-pro-done">
+							<p class="p-header">办件统计</p>
+							<div class="pro-done-item">
+								<div class="count-box clearfix">
+									<div class="count-icon fl bg1" ></div>
+									<div class="count-num fl">
+										<p class="count" v-text="staticData.nowMonthCount"></p>
+										<p class="count-text">本月接件数</p>
+									</div>
+								</div>
+								<div class="count-box clearfix">
+									<div class="count-icon fl bg2" ></div>
+									<div class="count-num fl">
+
+										<p class="count" v-text="staticData.nowMonthComplete"></p>
+										<p  class="count-text">本月办结数</p>
+									</div>
+								</div>
+								<div class="count-box clearfix">
+									<div class="count-icon fl  bg3" ></div>
+									<div class="count-num fl">
+
+										<p class="count" v-text="staticData.allCount"></p>
+										<p  class="count-text">累计接件数</p>
+									</div>
+								</div>
+								<div class="count-box clearfix">
+									<div class="count-icon fl bg4" ></div>
+									<div class="count-num fl">
+
+										<p class="count" v-text="staticData.allComplete"></p>
+										<p  class="count-text">累计办结数</p>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- 办件统计 end -->
+						<!-- 公告动态 start -->
+						<div class="news">
+							<p class="p-header">审批信息公示</p>
+							<ul class="publicity">
+								<li><a href="javascript:;">
+										<img src="../../static/mall/images/index/approval1.png" th:src="@{/mall/images/index/approval1.png}" alt="" />
+										<p>受理情况</p>
+									</a>
+									<div class="wrapper">
+										<p  @click="showApprovalPublicity(1)">查看详情</p>
+									</div>
+								</li>
+								<li ><a href="javascript:;">
+										<img src="../../static/mall/images/index/approval2.png" th:src="@{/mall/images/index/approval2.png}" alt="" />
+										<p>拟审批意见</p>
+									</a>
+									<div class="wrapper">
+										<p @click="showApprovalPublicity(2)">查看详情</p>
+									</div>
+								</li>
+								<li ><a href="javascript:;">
+										<img src="../../static/mall/images/index/approval3.png" th:src="@{/mall/images/index/approval3.png}" alt="" />
+										<p>审批决定</p>
+									</a>
+									<div class="wrapper">
+										<p @click="showApprovalPublicity(3)">查看详情</p>
+									</div>
+								</li>
+							</ul>
+						</div>
+						<!-- 公告动态 end -->
+					</div>
+					<!-- floor3统计 公告 end -->
+				</div>
+			</section>
+			<!--所有办件 str-->
+			<section v-show="applyinstFlag == 2">
+				<div class="wt-content" style="padding-bottom: 50px;">
+					<div class="floor margin-top-40" style="position:relative;">
+						<p class="p-header">所有办件</p>
+						<div class="back">
+							<el-button plain @click="backToIndex">返回首页</el-button>
+						</div>
+						<table class="wt-table" id="applyinstTable" v-loading="searchBtnLoading">
+							<thead>
+								<tr>
+									<th width="5%">序号</th>
+									<th width="13%">申报流水号</th>
+									<th width="17%">项目名称</th>
+									<th width="15%">事项名称</th>
+									<th width="8%">承办单位</th>
+									<th width="10%">申报日期</th>
+									<th width="10%">承诺期限</th>
+									<th width="10%">办结日期</th>
+									<th width="12%">办件状态</th>
+								</tr>
+							</thead>
+							<tbody>
+								<template v-if="applyinstListTableData.length>0">
+									<tr v-for="(item, index) in applyinstListTableData" :key="index">
+										<td width="5%">{{index+1}}</td>
+										<td width="13%">{{item.applyinstCode}}</td>
+										<td width="17%">{{item.projName}}</td>
+										<td width="15%">{{item.itemName}}</td>
+										<td width="8%">{{item.orgName}}</td>
+										<td width="10%">{{item.startTime | formatDate}}</td>
+										<td width="10%" style="text-indent:20px;">
+											<span>{{item.dueNum}}工作日</span>
+										</td>
+										<td width="10%">{{item.endTime | formatDate}}</td>
+										<td width="12%" style="text-align: center;">
+
+											<span class="iteminstState state1" v-if="item.iteminstState=='1'">已接件</span>
+
+											<span class="iteminstState state2" style="color:red;" v-else-if="item.iteminstState=='2'">已撤件</span>
+
+											<span class="iteminstState state3" v-else-if="item.iteminstState=='3'">已受理</span>
+
+											<span class="iteminstState state4"  v-else-if="item.iteminstState=='4'">不受理</span>
+
+											<span class="iteminstState state5" style="text-indent:10px;" v-else-if="item.iteminstState=='5'">不予受理</span>
+
+											<span class="iteminstState state6" style="text-indent:10px;" v-else-if="item.iteminstState=='6'">补正（开始）</span>
+
+											<span class="iteminstState state7" style="text-indent:10px;" v-else-if="item.iteminstState=='7'">补正（结束）</span>
+
+											<span class="iteminstState state8" style="text-indent:10px;" v-else-if="item.iteminstState=='8'">部门开始办理</span>
+
+											<span class="iteminstState state9" style="text-indent:10px;" v-else-if="item.iteminstState=='9'">特别程序（开始）</span>
+
+											<span class="iteminstState state10" style="text-indent:10px;" v-else-if="item.iteminstState=='10'">特别程序（结束）</span>
+
+											<span class="iteminstState state11" style="text-indent:10px;" v-else-if="item.iteminstState=='11'">办结（通过）</span>
+
+											<span class="iteminstState state12" style="text-indent:10px;" v-else-if="item.iteminstState=='12'">办结（容缺通过）</span>
+
+											<span class="iteminstState state13" style="text-indent:10px;" v-else-if="item.iteminstState=='13'">办结（不通过）</span>
+
+											<span class="iteminstState state14"  v-else-if="item.iteminstState=='14'">撤回</span>
+
+											<span class="iteminstState state15"  v-else-if="item.iteminstState=='15'">撤销</span>
+
+											<span v-else>-</span>
+										</td>
+									</tr>
+								</template>
+								<template v-else>
+									<tr>
+										<td colspan="9">暂无数据</td>
+									</tr>
+								</template>
+							</tbody>
+						</table>
+						<div style="margin-top:15px;">
+							<el-pagination v-if="applyinstListTableData.length>0" background align="right" :pager-count="5" @size-change="handleSizeChange"
+							 @current-change="handleCurrentChange" :page-sizes="[10, 20, 30, 50]" :page-size="pageSize" layout="total,sizes, prev, pager, next, jumper"
+							 :total="total">
+							</el-pagination>
+						</div>
+					</div>
+				</div>
+			</section>
+			<!--所有办件 end-->
+
+			<!--审批消息公示 str-->
+			<section v-show="applyinstFlag == 3">
+				<div class="wt-content">
+					<div class="bread-nav">
+						<i class="icon-map"></i>
+						<span class="nav-tip">当前位置：</span>
+						<a @click="applyinstFlag = 1">首页</a>
+						<i class="right-arrow">&gt;</i>
+						<a @click="applyinstFlag = 3">审批消息公示</a>
+					</div>
+					<div class="floor margin-top-20">
+						<div class="wt-tab">
+							<ul class="wt-tab-nav">
+								<li class="" :class="{'active':proApprovalNum == 1}" data-id="#proApproval" @click="proApprovalNum = 1">受理情况</li>
+								<li class="" :class="{'active':proApprovalNum == 2}" data-id="#draftApproval" @click="proApprovalNum = 2">拟审批意见</li>
+								<li class="" :class="{'active':proApprovalNum == 3}" data-id="#descidApproval" @click="proApprovalNum = 3">审批决定</li>
+							</ul>
+						</div>
+					</div>
+					<div class="wt-tab-item " v-show="proApprovalNum == 1">
+						<div>
+							<div class="search-input">
+								<input class="draftCode" type="text" placeholder="申报流水号" v-model="applyinstCode">
+								<input class="draftName" type="text" placeholder="项目/工程名称" v-model="projInfoName">
+								<button  class="search-btn searchApproveDataList" @click="getApproveDataList(num)"><i class="el-icon-search" style="font-size: 16px;"></i>查询</button>
+							</div>
+							<table class="wt-table">
+								<thead>
+									<tr>
+										<th style="width:5%;">序号</th>
+										<th style="width:10%;">申报流水号</th>
+										<th style="width:20%;">项目/工程名称</th>
+										<th style="width:20%;">申报单位/个人</th>
+										<th style="width:10%;">受理日期</th>
+										<th style="width:5%;">申报状态</th>
+									</tr>
+								</thead>
+								<tbody>
+									<template v-if="ProApproveListData.length!== undefined && ProApproveListData.length >0">
+										<tr v-for="(item, index) in ProApproveListData" :key="index">
+											<td width="5%">{{index+1}}</td>
+											<td width="10%">{{item.applyinstCode}}</td>
+											<td width="20%">{{item.projName}}</td>
+											<td width="15%">{{item.applySubjectName}}</td>
+
+											<td width="10%">{{item.startTime|formatDate}}</td>
+
+											<td width="10%">
+												<span class="applyinstState applyinstState1"
+													  v-if="item.applyinstState=='0'">已接件未审核</span>
+												<span class="applyinstState applyinstState2"
+													  v-else-if="item.applyinstState=='1'">已接件并审核</span>
+												<span class="applyinstState applyinstState3"
+													  v-else-if="item.applyinstState=='2'">已受理</span>
+												<span class="applyinstState applyinstState4"
+													  v-else-if="item.applyinstState=='3'">待补全</span>
+												<span class="applyinstState applyinstState5"
+													  v-else-if="item.applyinstState=='4'">已补全</span>
+												<span class="applyinstState applyinstState6"
+													  v-else-if="item.applyinstState=='5'">不予受理</span>
+												<span class="applyinstState applyinstState7"
+													  v-else="item.applyinstState=='6'">已办结</span>
+											</td>
+										</tr>
+									</template>
+									<template v-else>
+										<tr>
+											<td colspan="6">暂无数据</td>
+										</tr>
+									</template>
+								</tbody>
+							</table>
+							<div style="margin-top:15px;">
+								<el-pagination v-if="ProApproveListData.length>0" background align="right" :pager-count="5" @size-change="handleSizeChangeApprove"
+								 @current-change="handleCurrentChangeApprove" :page-sizes="[10, 20, 30, 50]" :page-size="pageSize" layout="total,sizes, prev, pager, next, jumper"
+								 :total="total">
+								</el-pagination>
+							</div>
+						</div>
+					</div>
+					<div class="wt-tab-item " v-show="proApprovalNum == 2">
+						<div>
+							<div class="search-input">
+								<input class="draftCode" type="text" placeholder="申报流水号" v-model="applyinstCode">
+								<input class="draftName" type="text" placeholder="项目/工程名称" v-model="projInfoName">
+								<button class="search-btn searchApproveDataList"  @click="getApproveDataList(num)"><i class="el-icon-search" style="font-size: 16px;"></i>查询</button>
+							</div>
+							<table class="wt-table">
+								<thead>
+									<tr>
+										<th style="width:5%;">序号</th>
+										<th style="width:10%;">申报流水号</th>
+										<th style="width:20%;">项目/工程名称</th>
+										<th style="width:20%;">申报单位/个人</th>
+										<th style="width:10%;">公示时间</th>
+										<th style="width:5%;">申报状态</th>
+									</tr>
+								</thead>
+								<tbody>
+									<template v-if="ProApproveListData.length!== undefined && ProApproveListData.length >0">
+										<tr v-for="(item, index) in ProApproveListData" :key="index">
+											<td width="5%">{{index+1}}</td>
+											<td width="10%">{{item.applyinstCode}}</td>
+											<td width="20%">{{item.projName}}</td>
+											<td width="15%">{{item.applySubjectName}}</td>
+
+											<td width="10%">{{item.startTime|formatDate}}</td>
+
+											<td width="10%">
+												<span class="applyinstState applyinstState1"
+													  v-if="item.applyinstState=='0'">已接件未审核</span>
+												<span class="applyinstState applyinstState2"
+													  v-else-if="item.applyinstState=='1'">已接件并审核</span>
+												<span class="applyinstState applyinstState3"
+													  v-else-if="item.applyinstState=='2'">已受理</span>
+												<span class="applyinstState applyinstState4"
+													  v-else-if="item.applyinstState=='3'">待补全</span>
+												<span class="applyinstState applyinstState5"
+													  v-else-if="item.applyinstState=='4'">已补全</span>
+												<span class="applyinstState applyinstState6"
+													  v-else-if="item.applyinstState=='5'">不予受理</span>
+												<span class="applyinstState applyinstState7"
+													  v-else="item.applyinstState=='6'">已办结</span>
+											</td>
+										</tr>
+									</template>
+									<template v-else>
+										<tr>
+											<td colspan="6">暂无数据</td>
+										</tr>
+									</template>
+								</tbody>
+							</table>
+							<div style="margin-top:15px;">
+								<el-pagination v-if="ProApproveListData.length>0" background align="right" :pager-count="5" @size-change="handleSizeChangeApprove"
+								 @current-change="handleCurrentChangeApprove" :page-sizes="[10, 20, 30, 50]" :page-size="pageSize" layout="total,sizes, prev, pager, next, jumper"
+								 :total="total">
+								</el-pagination>
+							</div>
+						</div>
+					</div>
+					<div class="wt-tab-item " v-show="proApprovalNum == 3">
+						<div>
+							<div class="search-input">
+								<input class="draftCode" type="text" placeholder="申报流水号" v-model="applyinstCode">
+								<input class="draftName" type="text" placeholder="项目/工程名称" v-model="projInfoName">
+								<button class="search-btn searchApproveDataList"  @click="getApproveDataList(num)"><i class="el-icon-search" style="font-size: 16px;"></i>查询</button>
+							</div>
+							<table class="wt-table">
+								<thead>
+									<tr>
+										<th style="width:5%;">序号</th>
+										<th style="width:10%;">申报流水号</th>
+										<th style="width:20%;">项目/工程名称</th>
+										<th style="width:20%;">申报单位/个人</th>
+										<th style="width:10%;">审批时间</th>
+										<th style="width:5%;">申报状态</th>
+									</tr>
+								</thead>
+								<tbody>
+									<template v-if="ProApproveListData.length!== undefined && ProApproveListData.length >0">
+										<tr v-for="(item, index) in ProApproveListData" :key="index">
+											<td width="5%">{{index+1}}</td>
+											<td width="10%">{{item.applyinstCode}}</td>
+											<td width="20%">{{item.projName}}</td>
+											<td width="15%">{{item.applySubjectName}}</td>
+
+											<td width="10%">{{item.startTime|formatDate}}</td>
+
+											<td width="10%">
+												<span class="applyinstState applyinstState1"
+													  v-if="item.applyinstState=='0'">已接件未审核</span>
+												<span class="applyinstState applyinstState2"
+													  v-else-if="item.applyinstState=='1'">已接件并审核</span>
+												<span class="applyinstState applyinstState3"
+													  v-else-if="item.applyinstState=='2'">已受理</span>
+												<span class="applyinstState applyinstState4"
+													  v-else-if="item.applyinstState=='3'">待补全</span>
+												<span class="applyinstState applyinstState5"
+													  v-else-if="item.applyinstState=='4'">已补全</span>
+												<span class="applyinstState applyinstState6"
+													  v-else-if="item.applyinstState=='5'">不予受理</span>
+												<span class="applyinstState applyinstState7"
+													  v-else="item.applyinstState=='6'">已办结</span>
+											</td>
+										</tr>
+									</template>
+									<template v-else>
+										<tr>
+											<td colspan="6">暂无数据</td>
+										</tr>
+									</template>
+								</tbody>
+							</table>
+							<div style="margin-top:15px;">
+								<el-pagination v-if="ProApproveListData.length>0" background align="right" :pager-count="5" @size-change="handleSizeChangeApprove"
+								 @current-change="handleCurrentChangeApprove" :page-sizes="[10, 20, 30, 50]" :page-size="pageSize" layout="total,sizes, prev, pager, next, jumper"
+								 :total="total">
+								</el-pagination>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+			<!--审批消息公示 end-->
+
+			<!--查询事项和主题  str-->
+			<section class="search-matter-section"  v-show="applyinstFlag == 4">
+				<div class="wt-content">
+					<div class="floor" style="position:relative;padding-top: 20px;">
+						<div class="w-radio-con">
+							<ul class="w-radio-con-left">
+								<li  :class="itemListActiveName==1? 'itemListActiveName' : ''" @click="itemListActiveName = 1">事项<span class="num">{{itemListTotal}}</span></li>
+								<li  :class="itemListActiveName==2? 'itemListActiveName' : ''" @click="itemListActiveName = 2">主题<span class="num">{{themeListTotal}}</span></li>
+							</ul>
+							<!--<div class="w-radio-con-left">
+								<el-radio v-model="selectType" label="1">查事项</el-radio>
+								<el-radio v-model="selectType" label="2">查主题</el-radio>
+							</div>-->
+							<div  class="w-radio-con-right">
+								<!--<span>共16项检索结果</span>-->
+								<el-button plain @click="backToIndex">返回首页</el-button>
+							</div>
+						</div>
+
+							<div v-show="itemListActiveName == 1" class="itemListActiveName-content-1">
+								<ul class="w-con-list" v-loading="itemListLoading">
+									<li class="w-con-list-item" v-for="(item,index) in itemListData">
+										<p class="name"><span v-show="item.regionName">【{{item.regionName}}】</span>{{item.itemName||'暂无'}}</p>
+										<div class="btn-box">
+											<el-button @click="goToBszn(item)">办事指南</el-button>
+											<el-button @click="goToSingleDeclare(item.itemVerId,item.parentItemId)">我要申报</el-button>
+										</div>
+										<p class="code">事项编码：{{item.itemCode||'暂无'}}</p>
+										<div class="des"><span>承办单位：{{item.orgName||'-'}}  </span> <span>申报对象：{{item.serveTypeText||'-'}}</span>
+											<span>咨询电话：{{item.orgTel||'-'}}</span></div>
+									</li>
+									<!--<li class="w-con-list-item">
+										<p class="name">【唐山市丰南区】建设用地（含临时用地）规划许可证核发</p>
+										<div class="btn-box">
+											<el-button>办事指南</el-button>
+											<el-button>我要申报</el-button>
+										</div>
+										<p class="code">事项编码：350200426602287S130000</p>
+										<div class="des"><span>受理部门：唐山市财政局  </span>  <span>申报对象：单位</span>    <span>咨询电话：05927703815</span> </div>
+									</li>-->
+									<div class="no-data" style="text-align: center;padding: 30px;" v-show="itemListTotal == 0 ">
+										暂无记录
+									</div>
+									<div class="load-more" v-show="itemListTotal != 0 ">
+										<a @click="getMoreItemList()" v-if="itemListMoreFlag">加载更多<i class="el-icon-bottom"></i></a>
+										<span class="no-more-content" v-else>无更多内容</span>
+									</div>
+								</ul>
+							</div>
+
+							<div v-show="itemListActiveName == 2"  class="itemListActiveName-content-2">
+								<ul class="w-con-list" v-loading="themeListLoading">
+									<li class="w-con-list-item" v-for="(item,index) in themeListData2">
+										<div class="theme-name">
+											<p class="theme-type">{{item.themeType}}</p>
+											<p class="theme-title">{{item.themeName||"暂无"}}</p>
+											<p class="theme-title-icon" @click="showProcess(item.themeId)" title="查看流程图">
+												<img src="../../static/mall/images/index/organization-fill.png" th:src="@{/mall/images/index/organization-fill.png}" alt="" />
+											</p>
+										</div>
+										<div class="theme-des">
+											<p>主题说明：{{item.themeMemo||'暂无'}}</p>
+										</div>
+										<div class="theme-stage">
+											<template v-if="item.stageList">
+												<p v-for="(itemSub , indexSub) in item.stageList" @click="goToGuideStage(item,itemSub,index)">
+													<img :src="ctx + stageImgUrl[indexSub]" alt="" />
+													<span>{{itemSub.stageName||'-'}}</span>
+												</p>
+											</template>
+										</div>
+									</li>
+									<div class="no-data" style="text-align: center;padding: 30px;background:#fff;" v-show="themeListTotal == 0 ">
+										暂无记录
+									</div>
+									<div class="load-more" v-show="themeListTotal != 0">
+										<a @click="getMoreThemeList()" v-if="themeListMoreFlag">加载更多<i class="el-icon-bottom"></i></a>
+										<span v-else class="no-more-content">无更多内容</span>
+									</div>
+								</ul>
+							</div>
+					</div>
+					<div class="returntothetop-box" @click="returnTop" id="toTop">
+						<img src="../../static/mall/images/index/returntothetop.png" th:src="@{/mall/images/index/returntothetop.png}" alt="" style="margin-top: 20px;" />
+						<span>回到顶部</span>
+					</div>
+				</div>
+			</section>
+			<!--查询事项和主题 end-->
+
+		</div>
+		<script src="../../static/mall/js/main/mainIndex.js" th:src="@{/mall/js/main/mainIndex.js}" type="text/javascript"></script>
+	</body>
+</html>

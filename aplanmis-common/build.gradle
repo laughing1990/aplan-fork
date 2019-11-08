@@ -1,0 +1,76 @@
+plugins {
+    id 'eclipse'
+}
+
+archivesBaseName = 'aplanmis-common'
+ext {
+    flowableVersion = '6.3.0'
+    agcloudVersion = '5.0.0'
+}
+
+jar {
+    enabled = true
+}
+
+dependencies {
+    //compile 'com.augurit.agcloud:agcloud-framework:${agcloudVersion}'
+    compile ('com.augurit.agcloud:agcloud-framework-no-sso:5.0.1')
+    //compile 'com.augurit.agcloud:agcloud-opus-common:${agcloudVersion}'
+    compile('commons-beanutils:commons-beanutils:1.9.3')
+    compile('io.jsonwebtoken:jjwt:0.7.0')
+    //qrcode
+    compile('net.glxn.qrgen:javase:2.0')
+    compile('org.apache.httpcomponents:httpclient:4.5.5')
+
+//    compile('org.springframework.boot:spring-boot-devtools')
+
+        compile "com.augurit.agcloud:agcloud-bpm-common:${agcloudVersion}"
+        compile "com.augurit.agcloud:agcloud-bpm-admin:${agcloudVersion}"
+        compile "com.augurit.agcloud:agcloud-bpm-admin-ui:${agcloudVersion}"
+        compile "com.augurit.agcloud:agcloud-bpm-front:${agcloudVersion}"
+        compile "com.augurit.agcloud:agcloud-bpm-front-ui:${agcloudVersion}"
+
+//    compile "com.augurit.agcloud:agcloud-opus-common:${agcloudVersion}"
+//    compile "com.augurit.agcloud:agcloud-opus-admin:${agcloudVersion}"
+//    compile "com.augurit.agcloud:agcloud-opus-admin-ui:${agcloudVersion}"
+//    compile "com.augurit.agcloud:agcloud-opus-front:${agcloudVersion}"
+//    compile "com.augurit.agcloud:agcloud-opus-front-ui:${agcloudVersion}"
+
+
+    compile "com.augurit.agcloud:flowable-bpmn-converter-agcloud:${flowableVersion}"
+    compile "com.augurit.agcloud:flowable-bpmn-model-agcloud:${flowableVersion}"
+    compile "com.augurit.agcloud:flowable-engine-agcloud:${flowableVersion}"
+    compile "com.augurit.agcloud:flowable-task-service-agcloud:${flowableVersion}"
+    compile "com.augurit.agcloud:flowable-task-service-api-agcloud:${flowableVersion}"
+    compile "com.augurit.agcloud:flowable-variable-service-api:${flowableVersion}"
+    compile "com.augurit.agcloud:flowable-variable-service:${flowableVersion}"
+    compile "com.augurit.agcloud:flowable-spring-common:${flowableVersion}"
+    compile "com.augurit.agcloud:flowable-spring-boot-starter-process:${flowableVersion}"
+    compile "com.augurit.agcloud:flowable-spring-boot-autoconfigure:${flowableVersion}"
+    compile "com.augurit.agcloud:flowable-spring:${flowableVersion}"
+    compile "com.augurit.agcloud:flowable-process-validation:${flowableVersion}"
+    compile "com.augurit.agcloud:flowable-job-spring-service:${flowableVersion}"
+    compile "com.augurit.agcloud:flowable-job-service-api:${flowableVersion}"
+    compile "com.augurit.agcloud:flowable-job-service:${flowableVersion}"
+    compile "com.augurit.agcloud:flowable-image-generator:${flowableVersion}"
+    compile "com.augurit.agcloud:flowable-idm-spring:${flowableVersion}"
+    compile "com.augurit.agcloud:flowable-idm-engine:${flowableVersion}"
+    compile "com.augurit.agcloud:flowable-idm-api:${flowableVersion}"
+    compile "com.augurit.agcloud:flowable-identitylink-service-api:${flowableVersion}"
+    compile "com.augurit.agcloud:flowable-identitylink-service:${flowableVersion}"
+    compile "com.augurit.agcloud:flowable-form-model:${flowableVersion}"
+    compile "com.augurit.agcloud:flowable-form-api:${flowableVersion}"
+    compile "com.augurit.agcloud:flowable-engine-common-api:${flowableVersion}"
+    compile "com.augurit.agcloud:flowable-engine-common:${flowableVersion}"
+    compile "com.augurit.agcloud:flowable-dmn-model:${flowableVersion}"
+    compile "com.augurit.agcloud:flowable-dmn-api:${flowableVersion}"
+    compile "com.augurit.agcloud:flowable-content-api:${flowableVersion}"
+    compile "com.augurit.agcloud:flowable-cmmn-model:${flowableVersion}"
+    compile "com.augurit.agcloud:flowable-cmmn-api:${flowableVersion}"
+    compile "com.augurit.agcloud:agcloud-bpm-rest:${agcloudVersion}"
+
+    compile ('ognl:ognl:3.2.10')
+
+    compile fileTree(include: ['*.jar'], dir: 'src\\main\\resources\\libs')
+    implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+}

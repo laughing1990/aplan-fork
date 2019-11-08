@@ -1,0 +1,682 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by 98213    2019-09-18 10:32:17 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaAnaWinMonthStatisticsMapper">
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns">
+    WINDOW_MONTH_STATISTICS_ID  windowMonthStatisticsId,
+    STATISTICS_RECORD_ID  statisticsRecordId,
+    WINDOW_ID  windowId,
+    WINDOW_NAME  windowName,
+    REGION_ID  regionId,
+    REGION_NAME  regionName,
+    APPLY_SOURCE  applySource,
+    APPLY_RECORD_ID  applyRecordId,
+    APPLY_RECORD_NAME  applyRecordName,
+    DYBZSPJDXH  dybzspjdxh,
+    IS_NODE  isNode,
+    IS_PARALLEL  isParallel,
+    MONTH_APPLY_COUNT  monthApplyCount,
+    ALL_APPLY_COUNT  allApplyCount,
+    APPLY_ON_YOY_BASIS  applyOnYoyBasis,
+    APPLY_LRR  applyLrr,
+    ALL_IN_SUPPLEMENT_COUNT  allInSupplementCount,
+    IN_SUPPLEMENT_ON_YOY_BASIS  inSupplementOnYoyBasis,
+    IN_SUPPLEMENT_LRR  inSupplementLrr,
+    ALL_SUPPLEMENTED_COUNT  allSupplementedCount,
+    SUPPLEMENTED_ON_YOY_BASIS  supplementedOnYoyBasis,
+    SUPPLEMENTED_LRR  supplementedLrr,
+    MONTH_PRE_ACCEPTANCE_COUNT  monthPreAcceptanceCount,
+    ALL_PRE_ACCEPTANCE_COUNT  allPreAcceptanceCount,
+    PRE_ACCEPTANCE_ON_YOY_BASIS  preAcceptanceOnYoyBasis,
+    PRE_ACCEPTANCE_LRR  preAcceptanceLrr,
+    MONTH_OUT_SCOPE_COUNT  monthOutScopeCount,
+    ALL_OUT_SCOPE_COUNT  allOutScopeCount,
+    OUT_SCOPE_ON_YOY_BASIS  outScopeOnYoyBasis,
+    OUT_SCOPE_LRR  outScopeLrr,
+    MONTH_COMPLETED_COUNT  monthCompletedCount,
+    ALL_COMPLETED_COUNT  allCompletedCount,
+    COMPLETED_ON_YOY_BASIS  completedOnYoyBasis,
+    COMPLETED_LRR  completedLrr,
+    MONTH_OVER_TIME_COUNT  monthOverTimeCount,
+    ALL_OVER_TIME_COUNT  allOverTimeCount,
+    OVER_TIME_ON_YOY_BASIS  overTimeOnYoyBasis,
+    OVER_TIME_LRR  overTimeLrr,
+    ALL_PRE_ACCEPTANCE_RATE  allPreAcceptanceRate,
+    ALL_OUT_SCOPE_RATE  allOutScopeRate,
+    ALL_OVER_TIME_RATE  allOverTimeRate,
+    ALL_COMPLETED_RATE  allCompletedRate,
+    STATISTICS_START_DATE  statisticsStartDate,
+    STATISTICS_END_DATE  statisticsEndDate,
+    STATISTICS_MONTH  statisticsMonth,
+    MODIFIER  modifier,
+    MODIFY_TIME  modifyTime,
+    ROOT_ORG_ID  rootOrgId
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaAnaWinMonthStatisticsById" resultType="AeaAnaWinMonthStatistics">
+        select
+        <include refid="allColumns"/>
+        from AEA_ANA_WIN_MONTH_STATISTICS
+        where WINDOW_MONTH_STATISTICS_ID = #{id}
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaAnaWinMonthStatistics" resultType="AeaAnaWinMonthStatistics">
+        select
+        <include refid="allColumns"/>
+        from AEA_ANA_WIN_MONTH_STATISTICS
+        <where>
+            <if test="windowMonthStatisticsId != null">
+                AND WINDOW_MONTH_STATISTICS_ID = #{windowMonthStatisticsId}
+            </if>
+            <if test="statisticsRecordId != null">
+                AND STATISTICS_RECORD_ID = #{statisticsRecordId}
+            </if>
+            <if test="windowId != null">
+                AND WINDOW_ID = #{windowId}
+            </if>
+            <if test="windowName != null">
+                AND WINDOW_NAME = #{windowName}
+            </if>
+            <if test="regionId != null">
+                AND REGION_ID = #{regionId}
+            </if>
+            <if test="regionName != null">
+                AND REGION_NAME = #{regionName}
+            </if>
+            <if test="applySource != null">
+                AND APPLY_SOURCE = #{applySource}
+            </if>
+            <if test="applyRecordId != null">
+                AND APPLY_RECORD_ID = #{applyRecordId}
+            </if>
+            <if test="applyRecordName != null">
+                AND APPLY_RECORD_NAME = #{applyRecordName}
+            </if>
+            <if test="dybzspjdxh != null">
+                AND DYBZSPJDXH = #{dybzspjdxh}
+            </if>
+            <if test="isNode != null">
+                AND IS_NODE = #{isNode}
+            </if>
+            <if test="isParallel != null">
+                AND IS_PARALLEL = #{isParallel}
+            </if>
+            <if test="monthApplyCount != null">
+                AND MONTH_APPLY_COUNT = #{monthApplyCount}
+            </if>
+            <if test="allApplyCount != null">
+                AND ALL_APPLY_COUNT = #{allApplyCount}
+            </if>
+            <if test="applyOnYoyBasis != null">
+                AND APPLY_ON_YOY_BASIS = #{applyOnYoyBasis}
+            </if>
+            <if test="applyLrr != null">
+                AND APPLY_LRR = #{applyLrr}
+            </if>
+            <if test="allInSupplementCount != null">
+                AND ALL_IN_SUPPLEMENT_COUNT = #{allInSupplementCount}
+            </if>
+            <if test="inSupplementOnYoyBasis != null">
+                AND IN_SUPPLEMENT_ON_YOY_BASIS = #{inSupplementOnYoyBasis}
+            </if>
+            <if test="inSupplementLrr != null">
+                AND IN_SUPPLEMENT_LRR = #{inSupplementLrr}
+            </if>
+            <if test="allSupplementedCount != null">
+                AND ALL_SUPPLEMENTED_COUNT = #{allSupplementedCount}
+            </if>
+            <if test="supplementedOnYoyBasis != null">
+                AND SUPPLEMENTED_ON_YOY_BASIS = #{supplementedOnYoyBasis}
+            </if>
+            <if test="supplementedLrr != null">
+                AND SUPPLEMENTED_LRR = #{supplementedLrr}
+            </if>
+            <if test="monthPreAcceptanceCount != null">
+                AND MONTH_PRE_ACCEPTANCE_COUNT = #{monthPreAcceptanceCount}
+            </if>
+            <if test="allPreAcceptanceCount != null">
+                AND ALL_PRE_ACCEPTANCE_COUNT = #{allPreAcceptanceCount}
+            </if>
+            <if test="preAcceptanceOnYoyBasis != null">
+                AND PRE_ACCEPTANCE_ON_YOY_BASIS = #{preAcceptanceOnYoyBasis}
+            </if>
+            <if test="preAcceptanceLrr != null">
+                AND PRE_ACCEPTANCE_LRR = #{preAcceptanceLrr}
+            </if>
+            <if test="monthOutScopeCount != null">
+                AND MONTH_OUT_SCOPE_COUNT = #{monthOutScopeCount}
+            </if>
+            <if test="allOutScopeCount != null">
+                AND ALL_OUT_SCOPE_COUNT = #{allOutScopeCount}
+            </if>
+            <if test="outScopeOnYoyBasis != null">
+                AND OUT_SCOPE_ON_YOY_BASIS = #{outScopeOnYoyBasis}
+            </if>
+            <if test="outScopeLrr != null">
+                AND OUT_SCOPE_LRR = #{outScopeLrr}
+            </if>
+            <if test="monthCompletedCount != null">
+                AND MONTH_COMPLETED_COUNT = #{monthCompletedCount}
+            </if>
+            <if test="allCompletedCount != null">
+                AND ALL_COMPLETED_COUNT = #{allCompletedCount}
+            </if>
+            <if test="completedOnYoyBasis != null">
+                AND COMPLETED_ON_YOY_BASIS = #{completedOnYoyBasis}
+            </if>
+            <if test="completedLrr != null">
+                AND COMPLETED_LRR = #{completedLrr}
+            </if>
+            <if test="monthOverTimeCount != null">
+                AND MONTH_OVER_TIME_COUNT = #{monthOverTimeCount}
+            </if>
+            <if test="allOverTimeCount != null">
+                AND ALL_OVER_TIME_COUNT = #{allOverTimeCount}
+            </if>
+            <if test="overTimeOnYoyBasis != null">
+                AND OVER_TIME_ON_YOY_BASIS = #{overTimeOnYoyBasis}
+            </if>
+            <if test="overTimeLrr != null">
+                AND OVER_TIME_LRR = #{overTimeLrr}
+            </if>
+            <if test="allPreAcceptanceRate != null">
+                AND ALL_PRE_ACCEPTANCE_RATE = #{allPreAcceptanceRate}
+            </if>
+            <if test="allOutScopeRate != null">
+                AND ALL_OUT_SCOPE_RATE = #{allOutScopeRate}
+            </if>
+            <if test="allOverTimeRate != null">
+                AND ALL_OVER_TIME_RATE = #{allOverTimeRate}
+            </if>
+            <if test="allCompletedRate != null">
+                AND ALL_COMPLETED_RATE = #{allCompletedRate}
+            </if>
+            <if test="statisticsStartDate != null">
+                AND STATISTICS_START_DATE = #{statisticsStartDate}
+            </if>
+            <if test="statisticsEndDate != null">
+                AND STATISTICS_END_DATE = #{statisticsEndDate}
+            </if>
+            <if test="statisticsMonth != null">
+                AND STATISTICS_MONTH = #{statisticsMonth}
+            </if>
+            <if test="modifier != null">
+                AND MODIFIER = #{modifier}
+            </if>
+            <if test="modifyTime != null">
+                AND MODIFY_TIME = #{modifyTime}
+            </if>
+            <if test="rootOrgId != null">
+                AND ROOT_ORG_ID = #{rootOrgId}
+            </if>
+            <if test="startTime != null and startTime != ''">
+                and STATISTICS_MONTH &gt;= #{startTime}
+            </if>
+            <if test="endTime != null and endTime != ''">
+                and STATISTICS_MONTH &lt;= #{endTime}
+            </if>
+        </where>
+        order by STATISTICS_MONTH desc
+    </select>
+    <!--4 根据条件查询实体list,返回分页对象 -->
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaAnaWinMonthStatistics" parameterType="AeaAnaWinMonthStatistics">
+        insert into AEA_ANA_WIN_MONTH_STATISTICS (
+        WINDOW_MONTH_STATISTICS_ID  ,STATISTICS_RECORD_ID  ,WINDOW_ID  ,WINDOW_NAME  ,REGION_ID  ,REGION_NAME  ,APPLY_SOURCE  ,APPLY_RECORD_ID  ,APPLY_RECORD_NAME  ,DYBZSPJDXH  ,IS_NODE  ,IS_PARALLEL  ,MONTH_APPLY_COUNT  ,ALL_APPLY_COUNT  ,APPLY_ON_YOY_BASIS  ,APPLY_LRR  ,ALL_IN_SUPPLEMENT_COUNT  ,IN_SUPPLEMENT_ON_YOY_BASIS  ,IN_SUPPLEMENT_LRR  ,ALL_SUPPLEMENTED_COUNT  ,SUPPLEMENTED_ON_YOY_BASIS  ,SUPPLEMENTED_LRR  ,MONTH_PRE_ACCEPTANCE_COUNT  ,ALL_PRE_ACCEPTANCE_COUNT  ,PRE_ACCEPTANCE_ON_YOY_BASIS  ,PRE_ACCEPTANCE_LRR  ,MONTH_OUT_SCOPE_COUNT  ,ALL_OUT_SCOPE_COUNT  ,OUT_SCOPE_ON_YOY_BASIS  ,OUT_SCOPE_LRR  ,MONTH_COMPLETED_COUNT  ,ALL_COMPLETED_COUNT  ,COMPLETED_ON_YOY_BASIS  ,COMPLETED_LRR  ,MONTH_OVER_TIME_COUNT  ,ALL_OVER_TIME_COUNT  ,OVER_TIME_ON_YOY_BASIS  ,OVER_TIME_LRR  ,ALL_PRE_ACCEPTANCE_RATE  ,ALL_OUT_SCOPE_RATE  ,ALL_OVER_TIME_RATE  ,ALL_COMPLETED_RATE  ,STATISTICS_START_DATE  ,STATISTICS_END_DATE  ,STATISTICS_MONTH  ,MODIFIER  ,MODIFY_TIME  ,ROOT_ORG_ID
+            )  values  (
+        #{windowMonthStatisticsId},#{statisticsRecordId},#{windowId},#{windowName},#{regionId},#{regionName},#{applySource},#{applyRecordId},#{applyRecordName},#{dybzspjdxh},#{isNode},#{isParallel},#{monthApplyCount},#{allApplyCount},#{applyOnYoyBasis},#{applyLrr},#{allInSupplementCount},#{inSupplementOnYoyBasis},#{inSupplementLrr},#{allSupplementedCount},#{supplementedOnYoyBasis},#{supplementedLrr},#{monthPreAcceptanceCount},#{allPreAcceptanceCount},#{preAcceptanceOnYoyBasis},#{preAcceptanceLrr},#{monthOutScopeCount},#{allOutScopeCount},#{outScopeOnYoyBasis},#{outScopeLrr},#{monthCompletedCount},#{allCompletedCount},#{completedOnYoyBasis},#{completedLrr},#{monthOverTimeCount},#{allOverTimeCount},#{overTimeOnYoyBasis},#{overTimeLrr},#{allPreAcceptanceRate},#{allOutScopeRate},#{allOverTimeRate},#{allCompletedRate},#{statisticsStartDate},#{statisticsEndDate},#{statisticsMonth},#{modifier},#{modifyTime},  #{rootOrgId}
+            )
+    </insert>
+    <!--6 修改实体对象 -->
+    <update id="updateAeaAnaWinMonthStatistics" parameterType="AeaAnaWinMonthStatistics">
+        update AEA_ANA_WIN_MONTH_STATISTICS
+        <set>
+            <if test="windowMonthStatisticsId != null">
+                WINDOW_MONTH_STATISTICS_ID = #{windowMonthStatisticsId},
+            </if>
+            <if test="statisticsRecordId != null">
+                STATISTICS_RECORD_ID = #{statisticsRecordId},
+            </if>
+            <if test="windowId != null">
+                WINDOW_ID = #{windowId},
+            </if>
+            <if test="windowName != null">
+                WINDOW_NAME = #{windowName},
+            </if>
+            <if test="regionId != null">
+                REGION_ID = #{regionId},
+            </if>
+            <if test="regionName != null">
+                REGION_NAME = #{regionName},
+            </if>
+            <if test="applySource != null">
+                APPLY_SOURCE = #{applySource},
+            </if>
+            <if test="monthApplyCount != null">
+                MONTH_APPLY_COUNT = #{monthApplyCount},
+            </if>
+            <if test="applyRecordId != null">
+                APPLY_RECORD_ID = #{applyRecordId},
+            </if>
+            <if test="applyRecordName != null">
+                APPLY_RECORD_NAME = #{applyRecordName},
+            </if>
+            <if test="dybzspjdxh != null">
+                DYBZSPJDXH = #{dybzspjdxh},
+            </if>
+            <if test="isNode != null">
+                IS_NODE = #{isNode},
+            </if>
+            <if test="isParallel != null">
+                IS_PARALLEL = #{isParallel},
+            </if>
+            <if test="allApplyCount != null">
+                ALL_APPLY_COUNT = #{allApplyCount},
+            </if>
+            <if test="applyOnYoyBasis != null">
+                APPLY_ON_YOY_BASIS = #{applyOnYoyBasis},
+            </if>
+            <if test="applyLrr != null">
+                APPLY_LRR = #{applyLrr},
+            </if>
+            <if test="allInSupplementCount != null">
+                ALL_IN_SUPPLEMENT_COUNT = #{allInSupplementCount},
+            </if>
+            <if test="inSupplementOnYoyBasis != null">
+                IN_SUPPLEMENT_ON_YOY_BASIS = #{inSupplementOnYoyBasis},
+            </if>
+            <if test="inSupplementLrr != null">
+                IN_SUPPLEMENT_LRR = #{inSupplementLrr},
+            </if>
+            <if test="allSupplementedCount != null">
+                ALL_SUPPLEMENTED_COUNT = #{allSupplementedCount},
+            </if>
+            <if test="supplementedOnYoyBasis != null">
+                SUPPLEMENTED_ON_YOY_BASIS = #{supplementedOnYoyBasis},
+            </if>
+            <if test="supplementedLrr != null">
+                SUPPLEMENTED_LRR = #{supplementedLrr},
+            </if>
+            <if test="monthPreAcceptanceCount != null">
+                MONTH_PRE_ACCEPTANCE_COUNT = #{monthPreAcceptanceCount},
+            </if>
+            <if test="allPreAcceptanceCount != null">
+                ALL_PRE_ACCEPTANCE_COUNT = #{allPreAcceptanceCount},
+            </if>
+            <if test="preAcceptanceOnYoyBasis != null">
+                PRE_ACCEPTANCE_ON_YOY_BASIS = #{preAcceptanceOnYoyBasis},
+            </if>
+            <if test="preAcceptanceLrr != null">
+                PRE_ACCEPTANCE_LRR = #{preAcceptanceLrr},
+            </if>
+            <if test="monthOutScopeCount != null">
+                MONTH_OUT_SCOPE_COUNT = #{monthOutScopeCount},
+            </if>
+            <if test="allOutScopeCount != null">
+                ALL_OUT_SCOPE_COUNT = #{allOutScopeCount},
+            </if>
+            <if test="outScopeOnYoyBasis != null">
+                OUT_SCOPE_ON_YOY_BASIS = #{outScopeOnYoyBasis},
+            </if>
+            <if test="outScopeLrr != null">
+                OUT_SCOPE_LRR = #{outScopeLrr},
+            </if>
+            <if test="monthCompletedCount != null">
+                MONTH_COMPLETED_COUNT = #{monthCompletedCount},
+            </if>
+            <if test="allCompletedCount != null">
+                ALL_COMPLETED_COUNT = #{allCompletedCount},
+            </if>
+            <if test="completedOnYoyBasis != null">
+                COMPLETED_ON_YOY_BASIS = #{completedOnYoyBasis},
+            </if>
+            <if test="completedLrr != null">
+                COMPLETED_LRR = #{completedLrr},
+            </if>
+            <if test="monthOverTimeCount != null">
+                MONTH_OVER_TIME_COUNT = #{monthOverTimeCount},
+            </if>
+            <if test="allOverTimeCount != null">
+                ALL_OVER_TIME_COUNT = #{allOverTimeCount},
+            </if>
+            <if test="overTimeOnYoyBasis != null">
+                OVER_TIME_ON_YOY_BASIS = #{overTimeOnYoyBasis},
+            </if>
+            <if test="overTimeLrr != null">
+                OVER_TIME_LRR = #{overTimeLrr},
+            </if>
+            <if test="allPreAcceptanceRate != null">
+                ALL_PRE_ACCEPTANCE_RATE = #{allPreAcceptanceRate},
+            </if>
+            <if test="allOutScopeRate != null">
+                ALL_OUT_SCOPE_RATE = #{allOutScopeRate},
+            </if>
+            <if test="allOverTimeRate != null">
+                ALL_OVER_TIME_RATE = #{allOverTimeRate},
+            </if>
+            <if test="allCompletedRate != null">
+                ALL_COMPLETED_RATE = #{allCompletedRate},
+            </if>
+            <if test="statisticsStartDate != null">
+                STATISTICS_START_DATE = #{statisticsStartDate},
+            </if>
+            <if test="statisticsEndDate != null">
+                STATISTICS_END_DATE = #{statisticsEndDate},
+            </if>
+            <if test="statisticsMonth != null">
+                STATISTICS_MONTH = #{statisticsMonth},
+            </if>
+            <if test="modifier != null">
+                MODIFIER = #{modifier},
+            </if>
+            <if test="modifyTime != null">
+                MODIFY_TIME = #{modifyTime},
+            </if>
+            <if test="rootOrgId != null">
+                ROOT_ORG_ID = #{rootOrgId},
+            </if>
+        </set>
+        where WINDOW_MONTH_STATISTICS_ID = #{windowMonthStatisticsId}
+    </update>
+    <!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaAnaWinMonthStatistics">
+        delete from   AEA_ANA_WIN_MONTH_STATISTICS
+        where
+    WINDOW_MONTH_STATISTICS_ID = #{id}
+    </delete>
+    <!--8 删除实体对象列表,根据主键ID列表 -->
+
+    <delete id="deleteThisMonthStatisticsData">
+        delete from AEA_ANA_WIN_MONTH_STATISTICS
+        where
+          STATISTICS_MONTH = #{month} and ROOT_ORG_ID = #{rootOrgId}
+    </delete>
+
+    <insert id="batchInsertMonthStatisticsData">
+        insert into AEA_ANA_WIN_MONTH_STATISTICS (
+        WINDOW_MONTH_STATISTICS_ID ,STATISTICS_RECORD_ID ,WINDOW_ID ,WINDOW_NAME ,REGION_ID ,REGION_NAME ,APPLY_SOURCE
+        ,APPLY_RECORD_ID ,APPLY_RECORD_NAME ,DYBZSPJDXH ,IS_NODE ,IS_PARALLEL
+        ,MONTH_APPLY_COUNT ,ALL_APPLY_COUNT ,APPLY_ON_YOY_BASIS ,APPLY_LRR ,ALL_IN_SUPPLEMENT_COUNT
+        ,IN_SUPPLEMENT_ON_YOY_BASIS ,IN_SUPPLEMENT_LRR ,ALL_SUPPLEMENTED_COUNT ,SUPPLEMENTED_ON_YOY_BASIS
+        ,SUPPLEMENTED_LRR ,MONTH_PRE_ACCEPTANCE_COUNT ,ALL_PRE_ACCEPTANCE_COUNT ,PRE_ACCEPTANCE_ON_YOY_BASIS
+        ,PRE_ACCEPTANCE_LRR ,MONTH_OUT_SCOPE_COUNT ,ALL_OUT_SCOPE_COUNT ,OUT_SCOPE_ON_YOY_BASIS ,OUT_SCOPE_LRR
+        ,MONTH_COMPLETED_COUNT ,ALL_COMPLETED_COUNT ,COMPLETED_ON_YOY_BASIS ,COMPLETED_LRR ,MONTH_OVER_TIME_COUNT
+        ,ALL_OVER_TIME_COUNT ,OVER_TIME_ON_YOY_BASIS ,OVER_TIME_LRR ,ALL_PRE_ACCEPTANCE_RATE ,ALL_OUT_SCOPE_RATE
+        ,ALL_OVER_TIME_RATE ,ALL_COMPLETED_RATE ,STATISTICS_START_DATE ,STATISTICS_END_DATE ,STATISTICS_MONTH ,MODIFIER
+        ,MODIFY_TIME ,ROOT_ORG_ID
+        ) values
+        <foreach collection="monthStatisticsList" item="monthStatistics" separator=",">
+            (
+            #{monthStatistics.windowMonthStatisticsId},#{monthStatistics.statisticsRecordId},#{monthStatistics.windowId},#{monthStatistics.windowName},#{monthStatistics.regionId},#{monthStatistics.regionName},#{monthStatistics.applySource},
+            #{monthStatistics.applyRecordId},#{monthStatistics.applyRecordName},#{monthStatistics.dybzspjdxh},#{monthStatistics.isNode},#{monthStatistics.isParallel},#{monthStatistics.monthApplyCount},
+            #{monthStatistics.allApplyCount},#{monthStatistics.applyOnYoyBasis},#{monthStatistics.applyLrr},#{monthStatistics.allInSupplementCount},#{monthStatistics.inSupplementOnYoyBasis},#{monthStatistics.inSupplementLrr},#{monthStatistics.allSupplementedCount},
+            #{monthStatistics.supplementedOnYoyBasis},#{monthStatistics.supplementedLrr},#{monthStatistics.monthPreAcceptanceCount},#{monthStatistics.allPreAcceptanceCount},#{monthStatistics.preAcceptanceOnYoyBasis},#{monthStatistics.preAcceptanceLrr},#{monthStatistics.monthOutScopeCount},
+            #{monthStatistics.allOutScopeCount},#{monthStatistics.outScopeOnYoyBasis},#{monthStatistics.outScopeLrr},#{monthStatistics.monthCompletedCount},#{monthStatistics.allCompletedCount},#{monthStatistics.completedOnYoyBasis},#{monthStatistics.completedLrr},
+            #{monthStatistics.monthOverTimeCount},#{monthStatistics.allOverTimeCount},#{monthStatistics.overTimeOnYoyBasis},#{monthStatistics.overTimeLrr},#{monthStatistics.allPreAcceptanceRate},#{monthStatistics.allOutScopeRate},#{monthStatistics.allOverTimeRate},
+            #{monthStatistics.allCompletedRate},#{monthStatistics.statisticsStartDate},#{monthStatistics.statisticsEndDate},#{monthStatistics.statisticsMonth},#{monthStatistics.modifier},#{monthStatistics.modifyTime},
+            #{monthStatistics.rootOrgId}
+            )
+        </foreach>
+    </insert>
+
+    <select id="getWinApplyByTime" resultType="AeaAnaWinMonthStatistics">
+        select
+        window_id as windowId, sum(MONTH_APPLY_COUNT) as monthApplyCount, sum(MONTH_PRE_ACCEPTANCE_COUNT) as
+        monthPreAcceptanceCount
+        from AEA_ANA_WIN_MONTH_STATISTICS
+        <where>
+            <if test="month != null">
+                AND STATISTICS_MONTH = #{month}
+            </if>
+            and ROOT_ORG_ID = #{rootOrgId}
+        </where>
+        group by window_id
+    </select>
+
+    <select id="getMonthStatisticsFromDay" resultType="com.augurit.aplanmis.common.vo.analyse.WinMonthCountVo">
+        select a.*,
+        <if test="_databaseId == 'oracle'">
+            nvl(lastmonth.MONTH_APPLY_COUNT, 0) as lastMonthApplyCount,
+            nvl(lastmonth.ALL_IN_SUPPLEMENT_COUNT, 0) as lastMonthInSupplementCount,
+            nvl(lastmonth.ALL_SUPPLEMENTED_COUNT, 0) as lastMonthSupplementedCount,
+            nvl(lastmonth.MONTH_PRE_ACCEPTANCE_COUNT, 0) as lastMonthPreAcceptacneCount,
+            nvl(lastmonth.MONTH_OUT_SCOPE_COUNT, 0) as lastMonthOutScopeCount,
+            nvl(lastmonth.MONTH_COMPLETED_COUNT, 0) as lastMonthCompletedCount,
+            nvl(lastmonth.MONTH_OVER_TIME_COUNT, 0) as lastMonthOverTimeCount,
+            nvl(lastyear.MONTH_APPLY_COUNT, 0) as lastYearApplyCount,
+            nvl(lastyear.ALL_IN_SUPPLEMENT_COUNT, 0) as lastYearInSupplementCount,
+            nvl(lastyear.ALL_SUPPLEMENTED_COUNT, 0) as lastYearSupplementedCount,
+            nvl(lastyear.MONTH_PRE_ACCEPTANCE_COUNT, 0) as lastYearPreAcceptacneCount,
+            nvl(lastyear.MONTH_OUT_SCOPE_COUNT, 0) as lastYearOutScopeCount,
+            nvl(lastyear.MONTH_COMPLETED_COUNT, 0) as lastYearCompletedCount,
+            nvl(lastyear.MONTH_OVER_TIME_COUNT, 0) as lastYearOverTimeCount
+        </if>
+        <if test="_databaseId == 'mysql'">
+            ifnull(lastmonth.MONTH_APPLY_COUNT, 0) as lastMonthApplyCount,
+            ifnull(lastmonth.ALL_IN_SUPPLEMENT_COUNT, 0) as lastMonthInSupplementCount,
+            ifnull(lastmonth.ALL_SUPPLEMENTED_COUNT, 0) as lastMonthSupplementedCount,
+            ifnull(lastmonth.MONTH_PRE_ACCEPTANCE_COUNT, 0) as lastMonthPreAcceptacneCount,
+            ifnull(lastmonth.MONTH_OUT_SCOPE_COUNT, 0) as lastMonthOutScopeCount,
+            ifnull(lastmonth.MONTH_COMPLETED_COUNT, 0) as lastMonthCompletedCount,
+            ifnull(lastmonth.MONTH_OVER_TIME_COUNT, 0) as lastMonthOverTimeCount,
+            ifnull(lastyear.MONTH_APPLY_COUNT, 0) as lastYearApplyCount,
+            ifnull(lastyear.ALL_IN_SUPPLEMENT_COUNT, 0) as lastYearInSupplementCount,
+            ifnull(lastyear.ALL_SUPPLEMENTED_COUNT, 0) as lastYearSupplementedCount,
+            ifnull(lastyear.MONTH_PRE_ACCEPTANCE_COUNT, 0) as lastYearPreAcceptacneCount,
+            ifnull(lastyear.MONTH_OUT_SCOPE_COUNT, 0) as lastYearOutScopeCount,
+            ifnull(lastyear.MONTH_COMPLETED_COUNT, 0) as lastYearCompletedCount,
+            ifnull(lastyear.MONTH_OVER_TIME_COUNT, 0) as lastYearOverTimeCount
+        </if>
+        from (
+            select
+        WINDOW_ID as windowId,
+        APPLY_SOURCE as applySource,
+        APPLY_RECORD_ID as applyRecordId,
+        IS_PARALLEL as isParallel,
+        SUM(DAY_APPLY_COUNT) as monthApplyCount,
+        SUM(ALL_IN_SUPPLEMENT_COUNT) as allInSupplementCount,
+        SUM(ALL_SUPPLEMENTED_COUNT) as allSupplementedCount,
+        SUM(DAY_PRE_ACCEPTANCE_COUNT) as monthPreAcceptanceCount,
+        SUM(DAY_OUT_SCOPE_COUNT) as monthOutScopeCount,
+        SUM(DAY_COMPLETED_COUNT) as monthCompletedCount,
+        SUM(DAY_OVER_TIME_COUNT) as monthOverTimeCount
+            from
+        AEA_ANA_WIN_DAY_STATISTICS
+            where
+        ROOT_ORG_ID = #{rootOrgId}
+        <if test="_databaseId == 'oracle'">
+            and to_char(STATISTICS_DATE, 'yyyy-mm-dd HH24:mi:ss') <![CDATA[ >= ]]> #{startTime}
+            and to_char(STATISTICS_DATE, 'yyyy-mm-dd HH24:mi:ss') <![CDATA[ <= ]]> #{endTime}
+        </if>
+        <if test="_databaseId == 'mysql'">
+            and STATISTICS_DATE <![CDATA[ >= ]]> #{startTime}
+            and STATISTICS_DATE <![CDATA[ <= ]]> #{endTime}
+        </if>
+            group by
+        WINDOW_ID, REGION_ID, APPLY_SOURCE, APPLY_RECORD_ID, IS_PARALLEL) a
+        left join AEA_ANA_WIN_MONTH_STATISTICS lastmonth on a.windowId = lastmonth.WINDOW_ID and a.applySource =
+        lastmonth.APPLY_SOURCE
+        and a.applyRecordId = lastmonth.APPLY_RECORD_ID
+        and a.isParallel = lastmonth.IS_PARALLEL
+        and lastmonth.STATISTICS_MONTH = #{lastMonth}
+        left join AEA_ANA_WIN_MONTH_STATISTICS lastyear on a.windowId = lastyear.WINDOW_ID and a.applySource =
+        lastyear.APPLY_SOURCE
+        and a.applyRecordId = lastmonth.APPLY_RECORD_ID
+        and a.isParallel = lastmonth.IS_PARALLEL
+        and lastyear.STATISTICS_MONTH = #{lastYear}
+    </select>
+
+    <select id="getWinShouliStatisticsByMonth" resultType="hashmap">
+        select SUM(MONTH_PRE_ACCEPTANCE_COUNT) as shouliCount, SUM(MONTH_OUT_SCOPE_COUNT) as buyushouliCount,
+        SUM(MONTH_OVER_TIME_COUNT) as yuqiCount, SUM(MONTH_COMPLETED_COUNT) as banjieCount, STATISTICS_MONTH as month
+        from AEA_ANA_WIN_MONTH_STATISTICS
+        <where>
+            and STATISTICS_MONTH <![CDATA[ >= ]]> #{startMonth}
+            and STATISTICS_MONTH <![CDATA[ <= ]]> #{endMonth}
+            and ROOT_ORG_ID = #{rootOrgId}
+        </where>
+        group by STATISTICS_MONTH
+    </select>
+
+    <select id="getWinApplyStatisticsByMonth"
+            resultType="com.augurit.aplanmis.common.vo.analyse.WinMonthApplyStatisticsVo">
+        select SUM(MONTH_PRE_ACCEPTANCE_COUNT) as shouliCount, SUM(MONTH_OUT_SCOPE_COUNT) as buyushouliCount,
+        SUM(MONTH_OVER_TIME_COUNT) as yuqiCount, SUM(MONTH_COMPLETED_COUNT) as banjieCount, STATISTICS_MONTH as month
+        from AEA_ANA_WIN_MONTH_STATISTICS
+        <where>
+            and STATISTICS_MONTH <![CDATA[ >= ]]> #{startMonth}
+            and STATISTICS_MONTH <![CDATA[ <= ]]> #{endMonth}
+            and ROOT_ORG_ID = #{rootOrgId}
+        </where>
+        group by STATISTICS_MONTH
+    </select>
+
+    <select id="getWinShouliStatisticsByMonth2" resultType="com.augurit.aplanmis.common.vo.analyse.WinApplyStatisticsVo">
+      select tt.*,asw.SORT_NO sortNo from(
+        select WINDOW_ID as windowId, WINDOW_NAME as windowName,
+        SUM(MONTH_APPLY_COUNT) as applyCount, SUM(MONTH_PRE_ACCEPTANCE_COUNT) as shouliCount, SUM(MONTH_OUT_SCOPE_COUNT) as
+        buyushouliCount,
+        SUM(MONTH_COMPLETED_COUNT) as banjieCount, SUM(MONTH_OVER_TIME_COUNT) as yuqiCount
+        from aea_ana_win_month_statistics
+
+        where
+        STATISTICS_MONTH <![CDATA[ >= ]]> #{startMonth}
+        and STATISTICS_MONTH <![CDATA[ <= ]]> #{endMonth}
+        and ROOT_ORG_ID = #{rootOrgId}
+        <if test="windowId != null and windowId !=''">
+            and window_id = #{windowId}
+        </if>
+        GROUP BY WINDOW_ID ,WINDOW_NAME
+        )tt LEFT JOIN aea_service_window asw on tt.windowId = asw.WINDOW_ID
+      ORDER BY asw.SORT_NO
+    </select>
+
+    <select id="getStageGroupStatistics" resultType="com.augurit.aplanmis.common.vo.analyse.ThemeDayApplyRecord">
+        SELECT
+        aatms.DYBZSPJDXH dybzspjdxh,
+        aatms.IS_PARALLEL isParallel,
+        <if test="_databaseId == 'oracle'">
+            NVL(sum(aatms.MONTH_APPLY_COUNT),0) applyCount
+        </if>
+        <if test="_databaseId == 'mysql'">
+            IFNULL(sum(aatms.MONTH_APPLY_COUNT),0) applyCount
+        </if>
+
+        from aea_ana_theme_month_statistics aatms
+        where aatms.STATISTICS_MONTH <![CDATA[ >= ]]> #{startYearMonth}
+        and aatms.STATISTICS_MONTH <![CDATA[<= ]]> #{endYearMonth}
+        and aatms.DYBZSPJDXH is not null
+        and aatms.ROOT_ORG_ID = #{rootOrgId}
+        GROUP BY
+        aatms.DYBZSPJDXH,
+        aatms.IS_PARALLEL
+
+    </select>
+    <select id="getThemeStageStatistics" resultType="com.augurit.aplanmis.common.vo.analyse.ThemeDayApplyRecord">
+        SELECT aatms.THEME_ID themeId,
+        aatms.THEME_NAME themeName,
+        aatms.DYBZSPJDXH dybzspjdxh,
+        aatms.IS_PARALLEL isParallel,
+        <if test="_databaseId == 'oracle'">
+            NVL(sum(aatms.MONTH_APPLY_COUNT),0) applyCount
+        </if>
+        <if test="_databaseId == 'mysql'">
+            IFNULL(sum(aatms.MONTH_APPLY_COUNT),0) applyCount
+        </if>
+
+        from aea_ana_theme_month_statistics aatms
+        where aatms.STATISTICS_MONTH <![CDATA[ >= ]]> #{startYearMonth}
+        and aatms.STATISTICS_MONTH <![CDATA[<= ]]> #{endYearMonth}
+        and aatms.DYBZSPJDXH is not null
+        and aatms.ROOT_ORG_ID = #{rootOrgId}
+        GROUP BY aatms.THEME_ID ,
+        aatms.DYBZSPJDXH,
+        aatms.IS_PARALLEL
+
+    </select>
+    <select id="getWinStageGroupStatistics" resultType="AeaAnaWinDayStatistics">
+
+        select
+        aawms.WINDOW_ID windowId,
+        aawms.DYBZSPJDXH dybzspjdxh,
+        aawms.IS_PARALLEL isParallel,
+        <if test="_databaseId == 'oracle'">
+            NVL(SUM(aawms.MONTH_APPLY_COUNT),0) dayApplyCount,
+            NVL(SUM(aawms.MONTH_PRE_ACCEPTANCE_COUNT),0) dayPreAcceptanceCount,
+            NVL(SUM(aawms.MONTH_OUT_SCOPE_COUNT),0)dayOutScopeCount,
+            NVL(SUM(aawms.MONTH_COMPLETED_COUNT),0)dayCompletedCount
+        </if>
+        <if test="_databaseId == 'mysql'">
+            IFNULL(SUM(aawms.MONTH_APPLY_COUNT),0) dayApplyCount,
+            IFNULL(SUM(aawms.MONTH_PRE_ACCEPTANCE_COUNT),0) dayPreAcceptanceCount,
+            IFNULL(SUM(aawms.MONTH_OUT_SCOPE_COUNT),0)dayOutScopeCount,
+            IFNULL(SUM(aawms.MONTH_COMPLETED_COUNT),0)dayCompletedCount
+        </if>
+
+        from
+        aea_ana_win_month_statistics aawms
+        where aawms.ROOT_ORG_ID= #{rootOrgId}
+        <if test="windowId !=null ">
+            and aawms.WINDOW_ID = #{windowId}
+        </if>
+        <if test="yearMonthStart !=null">
+            and aawms.STATISTICS_MONTH <![CDATA[ >= ]]> #{yearMonthStart}
+        </if>
+        <if test="yearMonthEnd !=null">
+            and aawms.STATISTICS_MONTH <![CDATA[ <= ]]> #{yearMonthEnd}
+        </if>
+        GROUP BY aawms.WINDOW_ID,
+        aawms.DYBZSPJDXH,
+        aawms.IS_PARALLEL
+    </select>
+    <resultMap type="AeaAnaWinMonthStatistics" id="AeaAnaWinMonthStatisticsMap">
+        <id property="windowMonthStatisticsId" column="WINDOW_MONTH_STATISTICS_ID"/>
+        <result property="statisticsRecordId" column="STATISTICS_RECORD_ID"/>
+        <result property="windowId" column="WINDOW_ID"/>
+        <result property="windowName" column="WINDOW_NAME"/>
+        <result property="regionId" column="REGION_ID"/>
+        <result property="regionName" column="REGION_NAME"/>
+        <result property="applySource" column="APPLY_SOURCE"/>
+        <result property="monthApplyCount" column="MONTH_APPLY_COUNT"/>
+        <result property="allApplyCount" column="ALL_APPLY_COUNT"/>
+        <result property="applyOnYoyBasis" column="APPLY_ON_YOY_BASIS"/>
+        <result property="applyLrr" column="APPLY_LRR"/>
+        <result property="allInSupplementCount" column="ALL_IN_SUPPLEMENT_COUNT"/>
+        <result property="inSupplementOnYoyBasis" column="IN_SUPPLEMENT_ON_YOY_BASIS"/>
+        <result property="inSupplementLrr" column="IN_SUPPLEMENT_LRR"/>
+        <result property="allSupplementedCount" column="ALL_SUPPLEMENTED_COUNT"/>
+        <result property="supplementedOnYoyBasis" column="SUPPLEMENTED_ON_YOY_BASIS"/>
+        <result property="supplementedLrr" column="SUPPLEMENTED_LRR"/>
+        <result property="monthPreAcceptanceCount" column="MONTH_PRE_ACCEPTANCE_COUNT"/>
+        <result property="allPreAcceptanceCount" column="ALL_PRE_ACCEPTANCE_COUNT"/>
+        <result property="preAcceptanceOnYoyBasis" column="PRE_ACCEPTANCE_ON_YOY_BASIS"/>
+        <result property="preAcceptanceLrr" column="PRE_ACCEPTANCE_LRR"/>
+        <result property="monthOutScopeCount" column="MONTH_OUT_SCOPE_COUNT"/>
+        <result property="allOutScopeCount" column="ALL_OUT_SCOPE_COUNT"/>
+        <result property="outScopeOnYoyBasis" column="OUT_SCOPE_ON_YOY_BASIS"/>
+        <result property="outScopeLrr" column="OUT_SCOPE_LRR"/>
+        <result property="monthCompletedCount" column="MONTH_COMPLETED_COUNT"/>
+        <result property="allCompletedCount" column="ALL_COMPLETED_COUNT"/>
+        <result property="completedOnYoyBasis" column="COMPLETED_ON_YOY_BASIS"/>
+        <result property="completedLrr" column="COMPLETED_LRR"/>
+        <result property="monthOverTimeCount" column="MONTH_OVER_TIME_COUNT"/>
+        <result property="allOverTimeCount" column="ALL_OVER_TIME_COUNT"/>
+        <result property="overTimeOnYoyBasis" column="OVER_TIME_ON_YOY_BASIS"/>
+        <result property="overTimeLrr" column="OVER_TIME_LRR"/>
+        <result property="allPreAcceptanceRate" column="ALL_PRE_ACCEPTANCE_RATE"/>
+        <result property="allOutScopeRate" column="ALL_OUT_SCOPE_RATE"/>
+        <result property="allOverTimeRate" column="ALL_OVER_TIME_RATE"/>
+        <result property="allCompletedRate" column="ALL_COMPLETED_RATE"/>
+        <result property="statisticsStartDate" column="STATISTICS_START_DATE"/>
+        <result property="statisticsEndDate" column="STATISTICS_END_DATE"/>
+        <result property="statisticsMonth" column="STATISTICS_MONTH"/>
+        <result property="modifier" column="MODIFIER"/>
+        <result property="modifyTime" column="MODIFY_TIME"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+    </resultMap>
+</mapper>

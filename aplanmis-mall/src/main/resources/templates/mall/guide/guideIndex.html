@@ -1,0 +1,1374 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>办事指南</title>
+    <link rel="stylesheet" href="../../static/mall/css/guide/guideIndex.css" th:href="@{/mall/css/guide/guideIndex.css}">
+
+    <script>
+        var ctx = "[[@{/}]]";
+    </script>
+</head>
+<body>
+    <div id="guideIndex">
+      <section>
+        <div class="wt-content">
+          <div class="local-main">
+            <span class="local-icon"></span>
+            <span class="local-span">当前位置：</span>
+            <a class="local-a" :href= "ctx+'rest/main/toIndexPage'">首页</a>
+            <span class="local-span">&gt;</span>
+            <a class="local-a active" href="javascript:void(0);" @click="isSinglePage=false">办事指南 </a>
+          </div> 
+          <!-- floor1分类申报 start -->
+          <div class="floor margin-top-40" v-show="!isSinglePage">
+            <div class="wt-tab" id="floorTab">
+              <ul class="wt-tab-nav" id="mallThemeTypeList">
+                <li data-id="#themeApproval" :class="{'active':approvalwayTypeFlag}" @click="approvalwayTypeFlag = true">按主题申报</li>
+                <li data-id="#proApproval" :class="{'active':!approvalwayTypeFlag}" @click="approvalwayTypeFlag = false;getOrgId()">按部门申报</li>
+              </ul>
+              <div class="sel-department" v-show="!approvalwayTypeFlag">
+                <div  style="position: relative;">
+                  <span class="el-dropdown-link" @click="chooseCityItem"  style="margin-left: 10px;margin-right: 10px;">
+                    <span class="unitName ellipsis">{{cityOrgName}}</span>
+                      <i v-show="secAeaOrgVo.length>0"  class="el-icon-arrow-right" style="vertical-align: sub;cursor: pointer;margin-left: 0px;"></i>
+                  </span>
+                  <span class="el-dropdown-link" v-show="secAeaOrgVo.length>0" style="margin-right: 10px;">
+                    <span class="unitName ellipsis">{{aeaActiveOrgName}}</span>
+                      <i  class="el-icon-arrow-down el-icon--right"></i>
+                      <ul class="el-dropdown-menu el-popper">
+                          <div class="location">当前定位：<span>{{aeaActiveOrgName}}</span></div>
+                          <li class="el-dropdown-menu__item" :class="{areaOn:areaOnIndex == index}"  v-for="(item,index) in secAeaOrgVo" @click="chooseAreaItem(item,index)">
+                              {{item.orgName}}
+                          </li>
+                      </ul>
+                  </span>
+                  <span class="el-dropdown-link"  v-show="childAeaOrgVo.length>0" style="margin-left: 10px;margin-right: 10px;">
+                    <span class="unitName ellipsis">{{childAeaOrgVoOrgName}}</span>
+                      <i  class="el-icon-arrow-down el-icon--right"></i>
+                      <ul class="el-dropdown-menu el-popper" >
+                          <div class="location">当前定位：<span>{{childAeaOrgVoOrgName}}</span></div>
+                          <li class="el-dropdown-menu__item" :class="{cityOn:cityOnIndex == index}" v-for="(item,index) in childAeaOrgVo"  @click="choosechildAeaOrgVoItem(item,index)">
+                              {{item.orgName}}
+                          </li>
+                      </ul>
+                  </span>
+                  <span class="total-department">共{{OrgListData.length}}个部门</span>
+                </div>
+              </div>
+              <div class="wt-tab-content" style="padding-top: 16px;">
+                  <!-- 按主题申报 start -->
+                  <transition name="el-fade-in-linear">
+                      <div class="wt-tab-item clearfix" id="themeApproval" v-show="approvalwayTypeFlag" >
+                          <div class="guide-content-left"  v-loading="themeLoading">
+                              <ul id="themeul">
+                                  <el-collapse v-model="approvalWayActiveName" @change="approvelWayActiveChange">
+                                      <el-collapse-item :name="index+1" v-for="(item, index) in themeListData" :key="index">
+                                        <template slot="title">
+                                          <li class="theme-type theme-list active" >
+                                            <p class="theme-type-name ellipsis"><i class="theme-type-icon"></i>{{item.themeTypeName}} <i class="tooggle-icon"></i></p>
+                                          </li>
+                                        </template>
+                                        <li class="theme-type active">
+                                          <ul class="theme-type-list">
+                                            <li class="theme-type-item ellipsisLn" :id='itemSub.themeId' :class="index==0 && indexSub==0?'active':''" @click="goToGuid($event,itemSub.themeId,indexSub,itemSub.themeMemo)" v-for="(itemSub, indexSub) in item.themeList" :key="indexSub">{{(indexSub+1)+'、'+itemSub.themeName}}</li>
+                                          </ul>
+                                        </li>
+                                      </el-collapse-item>
+                               
+                                  </el-collapse>
+                              </ul>
+                              <div class="toggle" style="display: none;">
+                                  <ul class="toggle-dots">
+                                      <li class="active"></li>
+                                      <li></li>
+                                  </ul>
+                              </div>
+                          </div>
+                          <div class="guide-content-right" v-loading='memoLoading'>
+                              <p class="theme-type-header">
+                                  <span><i class="notice"></i>申报说明：</span>
+                                  <button class="red-btn" style="cursor: pointer;" id="showProcessButton" @click="showProcess()">查看流程图</button>
+                              </p>
+                              <p class="theme-type-explain" id="themeMemo" v-html="themeMemo"></p>
+                              <div class="wt-phase1" id="guideMainLine" style="padding-top: 20px;">
+                                  <div class="wt-tab-item" id="mainLine" v-show="countStageType1">
+                                      <p class="p-header-phase1"><i class="approve-icon"></i> 并联申报</p>
+                                      <ul class="index-phase1 clearfix" id="stageImg">
+                                        
+                                      </ul>
+                                      <div class="mainContent">
+                                        <ul class="items">
+                                          <li v-for="(item,index) in infoData" :class="index==0?'activeLi':''" :title="item" @click="tableToggle($event,index)" v-show="item">
+                                          <span>{{item}}</span></li>
+                                        </ul>
+                                        <div class="table table0" v-if='curIndex==0' v-bind="guideDetailed" style="margin-top: 10px;">
+                                            <table class="wt-custom_table" style="width:912px;">
+                                                <tbody>
+                                                <tr>
+                                                    <td width="20%" class="left-td-custom_bg">审批对象</td>
+                                                    <td width="30%" class="right-td-custom">
+                                                        {{guideDetailed.applyObj?guideDetailed.applyObj:'无'}}
+                                                    </td>
+                                                    <td width="20%" class="left-td-custom_bg">受理时间</td>
+                                                    <td width="30%" class="right-td-custom">
+                                                        <div style="line-height: 23px;">
+                                                            {{guideDetailed.slsj?guideDetailed.slsj:'无'}}
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td width="20%" class="left-td-custom_bg">收费标准及依据</td>
+                                                    <td width="30%" class="right-td-custom">
+                                                        <div>
+                                                            <p>
+                                                                收费标准：{{guideDetailed.byLaw?guideDetailed.byLaw:'无'}}</p>
+                                                            <p>
+                                                                收费依据：{{guideDetailed.feeStand?guideDetailed.feeStand:'无'}}</p>
+                                                        </div>
+                                                    </td>
+                                                    <td width="20%" class="left-td-custom_bg">投诉监督电话</td>
+                                                    <td width="30%" class="right-td-custom">
+                                                        <div>
+                                                            {{guideDetailed.comsupTel?guideDetailed.comsupTel:'无'}}
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td width="20%" class="left-td-custom_bg">办理地点</td>
+                                                    <td width="80%" class="right-td-custom" colspan="3">
+                                                        <div v-if="guideDetailed.blddList !== undefined && guideDetailed.blddList.length >0">
+                                                            <p v-for="item in guideDetailed.blddList">{{item}}</p>
+                                                        </div>
+                                                        <div v-else>
+                                                            无
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td width="20%" class="left-td-custom_bg">温馨提示</td>
+                                                    <td width="80%" class="right-td-custom" colspan="3">
+                                                        <div style="line-height: 23px;">
+                                                            <p v-html="guideDetailed.warmPrompt"
+                                                               v-if='guideDetailed.warmPrompt'></p>
+                                                            <p v-else >无</p>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td width="20%" class="left-td-custom_bg">申请条件</td>
+                                                    <td width="80%" class="right-td-custom" colspan="3">
+                                                        <div>
+                                                            <p v-html="guideDetailed.acceptCond"
+                                                               v-if='guideDetailed.acceptCond'></p>
+                                                            <p v-else>无</p>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td width="20%" class="left-td-custom_bg">申报方式</td>
+                                                    <td width="80%" class="right-td-custom" colspan="3">
+                                                        <div style="line-height: 23px;">
+                                                            <p v-for="sbfsItem in guideDetailed.sbfsList"
+                                                               v-html="sbfsItem" v-if='guideDetailed.sbfsList'></p>
+                                                            <p v-else>无</p>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td width="20%" class="left-td-custom_bg">办理时限</td>
+                                                    <td width="80%" class="right-td-custom" colspan="3">
+                                                        <div style="line-height: 23px;">
+                                                            <p v-html="guideDetailed.handleTimelimitDesc"
+                                                               v-if='guideDetailed.handleTimelimitDesc'></p>
+                                                            <p v-else >无</p>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td width="20%" class="left-td-custom_bg">备注</td>
+                                                    <td width="80%" class="right-td-custom" colspan="3">
+                                                        <div style="line-height: 23px;">
+                                                            <p v-html="guideDetailed.guideDemo"
+                                                               v-if='guideDetailed.guideDemo'></p>
+                                                            <p v-else style="padding-top: 10px;">无</p>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="table table1" v-if='curIndex==1'>
+                                          <div v-for="(basicItem,index) in guideDetailed.basicList">
+                                            <p class="detail-title">{{index+1+'、'+basicItem.itemName}}</p>
+                                            <div class="guide-detail-atr" v-if="basicItem.list!== undefined && basicItem.list.length >0">
+                                                <el-table
+                                                        :data="basicItem.list"
+                                                        border
+                                                        style="width: 100%">
+                                                    <el-table-column
+                                                            prop="legalName"
+                                                            label="法律法规名称"
+                                                            width="180">
+                                                    </el-table-column>
+                                                    <el-table-column
+                                                            prop="clauseTitle"
+                                                            label="条款名称"
+                                                            width="180">
+                                                    </el-table-column>
+                                                    <el-table-column
+                                                            prop="clauseContent"
+                                                            label="条款具体内容">
+                                                    </el-table-column>
+                                                </el-table>
+                                            </div>
+                                            <span v-else style="padding-left: 20px;">暂无审批依据</span>
+                                          </div>
+                                        </div>
+                                        <div class="table table2" v-if='curIndex==2' v-html='guideDetailed.handleFlow'></div>
+                                          <div class="table table3" v-if='curIndex==3' style="height: 500px;">
+<!--                                          <img src="" alt="" v-if="guideDetailed.guideAtt"/>-->
+                                          <iframe v-if="guideDetailed.guideAtt" :src="getViewIframeSrc" frameborder="0" height="100%" width="100%"></iframe>
+                                          <p v-else>【暂无流程图】</p>
+                                        </div>
+                                        <div class="table table0" v-if='curIndex==4'>
+                                          <el-table
+                                            border
+                                            class='el-table'
+                                            :data="guideDetailed.concList"
+                                            style="width: 100%">
+                                            <el-table-column prop="itemName" label="事项名称" min-width="320" ></el-table-column>
+                                            <el-table-column prop="itemCode" label="事项编号" width="240" ></el-table-column>
+                                            <el-table-column prop="dueNum" label="时限(工作日)" width="120" ></el-table-column>
+                                            <el-table-column prop="orgName" label="承办单位" width="200" ></el-table-column>
+                                          </el-table>
+                                        </div>
+                                        <div class="table table0" v-if='curIndex==5'>
+                                          <el-table
+                                            border
+                                            class='el-table'
+                                            :data="guideDetailed.parallelList"
+                                            style="width: 100%">
+                                              <el-table-column prop="itemName" label="事项名称" min-width="320" ></el-table-column>
+                                              <el-table-column prop="itemCode" label="事项编号" width="240" ></el-table-column>
+                                              <el-table-column prop="dueNum" label="时限(工作日)" width="120" ></el-table-column>
+                                              <el-table-column prop="orgName" label="承办单位" width="200" ></el-table-column>
+                                          </el-table>
+                                        </div>
+                                        <div class="table table1" v-if='curIndex==6'>
+                                            <!--<div v-if="guideDetailed.handWay==1 && guideDetailed.matList!=undefined && guideDetailed.matList.length >0">-->
+                                            <!--<div v-for="(matItem,index) in guideDetailed.matList">-->
+                                            <!--<p class="detail-title">{{(index+1)+'、'+matItem.matName}}</p>-->
+                                            <!--</div>-->
+                                            <!--</div>-->
+                                            <div>
+                                              <div v-for="(concItem,index) in guideDetailed.concList">
+                                                  <p class="detail-title">{{index+1+'、'+concItem.itemName}}</p>
+                                                  <div v-if="concItem.matList!== undefined && concItem.matList.length >0">
+                                                      <p class="guide-detail-atr" style="padding-left: 20px;"
+                                                         v-for="(metrailItem,metrailIndex in concItem.matList">
+                                                          {{(metrailIndex+1)+'、'+metrailItem.matName}}</p>
+                                                  </div>
+                                                  <p v-else style="padding-left: 44px;color: gray;">该事项暂无材料</p>
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div class="table table1" v-if='curIndex==7'>
+                                          <div v-for="(concItem,index) in guideDetailed.parallelList">
+                                            <p class="detail-title">{{index+1+'、'+concItem.itemName}}</p>
+                                            <div v-if="concItem.matList!== undefined && concItem.matList.length >0">
+                                              <p class="guide-detail-atr" style="padding-left: 20px;" v-for="(metrailItem,metrailIndex in concItem.matList" v-if="concItem.matList">{{(metrailIndex+1)+'、'+metrailItem.matName}}</p>
+                                            </div>
+                                              <p v-else style="padding-left: 44px;color: gray">该事项暂无材料</p>
+                                          </div>
+                                        </div>
+                                      </div>
+                                      <div class="prev-item" onclick="prevItem(this,'#mainLine #stageImg li')" style="display: none;">&lt;</div>
+                                      <div class="next-item" onclick="nextItem(this,'#mainLine #stageImg li')" style="display: none;">&gt;</div>
+                                  </div>
+                                  <div class="wt-tab-item" id="auxiliaryLine" v-show="countStageType2">
+                                      <p class="p-header-phase1"> <i class="serve-icon"></i>服务协同</p>
+                                      <ul class="index-phase1 clearfix" id="stageAuxiliaryImg">
+
+                                      </ul>
+                                     <!-- <div class="line-wrappper">
+                                        <div class="triang"></div>
+                                      </div>-->
+                                      <div class="mainContent">
+                                        <ul class="items2">
+                                          <li v-for="(item,index) in infoData" :class="index==0?'activeLi':''" :title="item" @click="tableToggle2($event,index)" v-show="item">
+                                          <span>{{item}}</span></li>
+                                        </ul>
+                                        <div class="table table0" v-if='curIndex2==0' v-bind="guideDetailed2" style="margin-top: 10px;">
+                                            <table class="wt-custom_table" style="width:912px;">
+                                                <tbody>
+                                                <tr>
+                                                    <td width="20%" class="left-td-custom_bg">审批对象</td>
+                                                    <td width="30%" class="right-td-custom">
+                                                        {{guideDetailed2.applyObj?guideDetailed2.applyObj:'无'}}
+                                                    </td>
+                                                    <td width="20%" class="left-td-custom_bg">受理时间</td>
+                                                    <td width="30%" class="right-td-custom">
+                                                        <div style="line-height: 23px;">
+                                                            {{guideDetailed2.slsj?guideDetailed2.slsj:'无'}}
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td width="20%" class="left-td-custom_bg">收费标准及依据</td>
+                                                    <td width="30%" class="right-td-custom">
+                                                        <div>
+                                                            <p>
+                                                                收费标准：{{guideDetailed2.byLaw?guideDetailed2.byLaw:'无'}}</p>
+                                                            <p>
+                                                                收费依据：{{guideDetailed2.feeStand?guideDetailed2.feeStand:'无'}}</p>
+                                                        </div>
+                                                    </td>
+                                                    <td width="20%" class="left-td-custom_bg">投诉监督电话</td>
+                                                    <td width="30%" class="right-td-custom">
+                                                        <div>
+                                                            {{guideDetailed2.comsupTel?guideDetailed2.comsupTel:'无'}}
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td width="20%" class="left-td-custom_bg">办理地点</td>
+                                                    <td width="80%" class="right-td-custom" colspan="3">
+                                                        <div v-if="guideDetailed2.blddList !== undefined && guideDetailed2.blddList.length >0">
+                                                            <p v-for="item in guideDetailed2.blddList">{{item}}</p>
+                                                        </div>
+                                                        <div v-else>
+                                                            无
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td width="20%" class="left-td-custom_bg">温馨提示</td>
+                                                    <td width="80%" class="right-td-custom" colspan="3">
+                                                        <div style="line-height: 23px;">
+                                                            <p v-html="guideDetailed2.warmPrompt"
+                                                               v-if='guideDetailed2.warmPrompt'></p>
+                                                            <p v-else >无</p>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td width="20%" class="left-td-custom_bg">申请条件</td>
+                                                    <td width="80%" class="right-td-custom" colspan="3">
+                                                        <div>
+                                                            <p v-html="guideDetailed2.acceptCond"
+                                                               v-if='guideDetailed2.acceptCond'></p>
+                                                            <p v-else>无</p>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td width="20%" class="left-td-custom_bg">申报方式</td>
+                                                    <td width="80%" class="right-td-custom" colspan="3">
+                                                        <div style="line-height: 23px;">
+                                                            <p v-for="sbfsItem in guideDetailed2.sbfsList"
+                                                               v-html="sbfsItem" v-if='guideDetailed2.sbfsList'></p>
+                                                            <p v-else>无</p>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td width="20%" class="left-td-custom_bg">办理时限</td>
+                                                    <td width="80%" class="right-td-custom" colspan="3">
+                                                        <div style="line-height: 23px;">
+                                                            <p v-html="guideDetailed2.handleTimelimitDesc"
+                                                               v-if='guideDetailed2.handleTimelimitDesc'></p>
+                                                            <p v-else >无</p>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td width="20%" class="left-td-custom_bg">备注</td>
+                                                    <td width="80%" class="right-td-custom" colspan="3">
+                                                        <div style="line-height: 23px;">
+                                                            <p v-html="guideDetailed2.guideDemo"
+                                                               v-if='guideDetailed2.guideDemo'></p>
+                                                            <p v-else style="padding-top: 10px;">无</p>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="table table1" v-if='curIndex2==1'>
+                                          <div v-for="(basicItem,index) in guideDetailed2.basicList">
+                                            <p class="detail-title">{{index+1+'、'+basicItem.itemName}}</p>
+                                            <div class="guide-detail-atr" v-if="basicItem.list!== undefined && basicItem.list.length >0">
+                                                <!--<span v-for="subBasicItem in basicItem.list">{{subBasicItem.clauseContent}}; </span>-->
+                                                <el-table
+                                                        :data="basicItem.list"
+                                                        border
+                                                        style="width: 100%">
+                                                    <el-table-column
+                                                            prop="legalName"
+                                                            label="法律法规名称"
+                                                            width="180">
+                                                    </el-table-column>
+                                                    <el-table-column
+                                                            prop="clauseTitle"
+                                                            label="条款名称"
+                                                            width="180">
+                                                    </el-table-column>
+                                                    <el-table-column
+                                                            prop="clauseContent"
+                                                            label="条款具体内容">
+                                                    </el-table-column>
+                                                </el-table>
+                                            </div>
+                                            <span v-else style="padding-left: 20px;">暂无审批依据</span>
+                                          </div>
+                                        </div>
+                                        <div class="table table2" v-if='curIndex2==2' v-html='guideDetailed2.handleFlow'></div>
+                                        <div class="table table3" v-if='curIndex2==3' >
+                                          <img src="" alt="" v-if="guideDetailed2.guideAtt"/>
+                                          <p v-else>【暂无流程图】</p>
+                                        </div>
+                                        <div class="table table0" v-if='curIndex2==4'>
+                                          <el-table
+                                            border
+                                            class='el-table'
+                                            :data="guideDetailed2.concList"
+                                            style="width: 100%">
+                                              <el-table-column prop="itemName" label="事项名称" min-width="320" ></el-table-column>
+                                              <el-table-column prop="itemCode" label="事项编号" width="240" ></el-table-column>
+                                              <el-table-column prop="dueNum" label="时限(工作日)" width="120" ></el-table-column>
+                                              <el-table-column prop="orgName" label="承办单位" width="200" ></el-table-column>
+                                          </el-table>
+                                        </div>
+                                        <div class="table table0" v-if='curIndex2==5'>
+                                          <el-table
+                                            border
+                                            class='el-table'
+                                            :data="guideDetailed2.parallelList"
+                                            style="width: 100%">
+                                              <el-table-column prop="itemName" label="事项名称" min-width="320" ></el-table-column>
+                                              <el-table-column prop="itemCode" label="事项编号" width="240" ></el-table-column>
+                                              <el-table-column prop="dueNum" label="时限(工作日)" width="120" ></el-table-column>
+                                              <el-table-column prop="orgName" label="承办单位" width="200" ></el-table-column>
+                                          </el-table>
+                                        </div>
+                                          <div class="table table1" v-if='curIndex2==6'>
+                                              <!--<div v-if="guideDetailed2.handWay==1 && guideDetailed2.matList!=undefined && guideDetailed2.matList.length >0">-->
+                                              <!--<div v-for="(matItem,index) in guideDetailed2.matList">-->
+                                              <!--<p class="detail-title">{{(index+1)+'、'+matItem.matName}}</p>-->
+                                              <!--</div>-->
+                                              <!--</div>-->
+                                              <div>
+                                                  <div v-for="(concItem,index) in guideDetailed2.concList">
+                                                      <p class="detail-title">{{index+1+'、'+concItem.itemName}}</p>
+                                                      <div v-if="concItem.matList!== undefined && concItem.matList.length >0">
+                                                          <p class="guide-detail-atr" style="padding-left: 20px;"
+                                                             v-for="(metrailItem,metrailIndex in concItem.matList">
+                                                              {{(metrailIndex+1)+'、'+metrailItem.matName}}</p>
+                                                      </div>
+                                                      <p v-else style="padding-left: 44px;color: gray">该事项暂无材料</p>
+                                                  </div>
+                                              </div>
+                                          </div>
+                                        <div class="table table1" v-if='curIndex2==7'>
+                                          <div v-for="(concItem,index) in guideDetailed2.parallelList">
+                                            <p class="detail-title">{{index+1+'、'+concItem.itemName}}</p>
+                                            <div v-if="concItem.matList!== undefined && concItem.matList.length >0">
+                                              <p class="guide-detail-atr" style="padding-left: 20px;" v-for="(metrailItem,metrailIndex in concItem.matList">{{(metrailIndex+1)+'、'+metrailItem.matName}}</p>
+                                            </div>
+                                              <p v-else style="padding-left: 44px;color: gray">该事项暂无材料</p>
+                                          </div>
+                                        </div>
+                                      </div>
+                                      <div class="prev-item" onclick="prevItem(this,'#mainLine #stageImg li')" style="display: none;">&lt;</div>
+                                      <div class="next-item" onclick="nextItem(this,'#mainLine #stageImg li')" style="display: none;">&gt;</div>
+                                  </div>
+                              </div>
+
+                          </div>
+                        <!--<a :href="ctx+'rest/main/toIndexPage#/userCenterIndex'"><el-button type="primary" class="imediaBtn">立即办理</el-button></a>-->
+                      </div>
+                  </transition>
+                  <!-- 按主题申报 end -->
+                  <!-- 按部门申报 start -->
+                  <transition name="el-fade-in-linear">
+                    <div class="wt-tab-item" id="proApproval" v-show="!approvalwayTypeFlag">
+                      <div class="department-list">
+                        <span class="department-name" @click="toggleOrg($event,item)" v-for="(item, index) in OrgListData" :id="item.orgId" :key="index" :class="index==0?'orgActive':''">{{item.orgName}}</span>
+                      </div>
+                    <!--  <div class="department-list" style="margin-top: 12px;" v-else>
+                        <div class="contract-box contract-non-box"></div>
+                      </div>-->
+                    </div>
+                  </transition>
+                  <transition name="el-fade-in-linear">
+                    <div class="wt-tab-item" id="proApproval2" v-show="!approvalwayTypeFlag" v-loading="orgLoading">
+                      <p class="table-title">
+                        <span>部门：{{orgItem}}</span>
+                        (共{{orgNum}}个事项)
+                      </p>
+                      <el-table :data="tableData" class="scrollable" border ref="singleTable" width="100%"  :header-cell-style="{background:'#f7f8fa',fontSize:'14px'}">
+                        <el-table-column prop="itemName" label="事项列表" >
+                        </el-table-column>
+                        <el-table-column prop="orgName"  label="审批部门" ></el-table-column>
+                        <el-table-column prop="dueNum"  label="审批时限" width="80" align="center">
+                        </el-table-column>
+                        <el-table-column prop="time1"  label="办事指南" width="80" align="center">
+                          <template slot-scope="scope">
+                              <img src="../../static/mall/images/icon/guide.png" th:src="@{/mall/images/icon/guide.png}"
+                                   height="22" width="20" alt=""
+                                   @click="singleTitle=scope.row.itemName;switchSinglePage(scope.row)"/>
+                          </template>
+                        </el-table-column>
+                        <el-table-column prop="time2"  label="单项申报" width="80" align="center">
+                          <template slot-scope="scope">
+                            <a :href="ctx+'rest/main/toIndexPage?itemVerId='+scope.row.itemVerId+'&&projInfoId='+itemProjInfoId+'&&flag=singleD#declare'">
+                              <img src="../../static/mall/images/icon/declare.png" th:src="@{/mall/images/icon/declare.png}" height="22" width="20" alt="" />
+                            </a>
+                          </template>
+                        </el-table-column>
+                      </el-table>
+                      <el-pagination
+                        background
+                        align="right"
+                        :pager-count="5"
+                        @size-change="handleSizeChange"
+                        @current-change="handleCurrentChange"
+                        :page-sizes="[10, 20, 30, 50]"
+                        :page-size="pageSize"
+                        :current-page="page"
+                        layout="total,sizes, prev, pager, next, jumper"
+                        :total="total">
+                      </el-pagination>
+                    </div>
+                  </transition>
+                  <!-- 按部门申报 end -->
+              </div>
+            </div>
+          </div>
+          <div class="singlePage" v-show="isSinglePage">
+            <div class="tab-content miniScrollbar">
+              <div class="tab-pane active" id="approval_tab_1" role="tabpanel">
+                <div class="clearfix para-approve-content">
+                  <div class="vertical" id="menu">
+                    <div class="vertical-time">
+                      <ul>
+                        <li>
+                          <a href="javascript:;"></a>
+                          <b class="line"></b>
+                        </li>
+                        <li class="ciclebox" :class="index==0?'active':''" :data-name="'div_step_'+(index+1)" v-for="(item,index) in navList">
+                          <a :href="'#div_step_'+(index+1)">{{item}}</a>
+                          <b class="cicle"></b>
+                        </li>
+                        <li class="lilastCicle">
+                          <a href="javascript:;"></a>
+                          <b></b>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                  <div class="vertical-right">
+                    <h1>{{singleTitle}}</h1>
+                    <div class="single-content">
+                      <div class="left-content">
+<!--                        <div class="left-btn">-->
+<!--                          <el-button type="primary" @click="toUserCenterindexPage(detailData.aeaItemGuide.itemVerId)">立即办理 >></el-button>-->
+<!--                          <el-button style="color:#3E97DF;" @click="toMeterial">材料清单</el-button>-->
+<!--                        </div>-->
+                        <div class="approveContent" id="approveContent" role="tablist" v-bind="detailData">
+                          <!--begin::Item-->
+                          <div class="div-step" id="div_step_1">
+                            <div class="step-title activeT" style="margin-top: 12px;">基本信息</div>
+                            <div class="single-table">
+                                <table class="wt-custom_table" style="width: 804px;">
+                                    <tbody>
+                                    <tr>
+                                        <td width="20%" class="left-td-custom_bg">事项名称</td>
+                                        <td width="30%" class="right-td-custom">
+                                            {{detailData.aeaItemGuide?detailData.aeaItemGuide.taskName:'无'}}
+                                        </td>
+                                        <td width="20%" class="left-td-custom_bg">事项类型</td>
+                                        <td width="30%" class="right-td-custom">
+                                            <div style="line-height: 23px;">
+                                                {{detailData.aeaItemGuide?detailData.aeaItemGuide.taskTypeText:'无'}}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td width="20%" class="left-td-custom_bg">基本编码</td>
+                                        <td width="30%" class="right-td-custom">
+                                            <div>
+                                               {{detailData.aeaItemGuide?detailData.aeaItemGuide.catlogCode==""?detailData.aeaItemGuide.catlogCode:'无':'无'}}
+                                            </div>
+                                        </td>
+                                        <td width="20%" class="left-td-custom_bg">实施编码</td>
+                                        <td width="30%" class="right-td-custom">
+                                            <div>
+                                                {{detailData.aeaItemGuide?detailData.aeaItemGuide.taskCode:'无'}}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td width="20%" class="left-td-custom_bg">行使层级</td>
+                                        <td width="30%" class="right-td-custom">
+                                            <div>
+                                                {{detailData.aeaItemGuide?detailData.aeaItemGuide.useLevelText:'无'}}
+                                            </div>
+                                        </td>
+                                        <td width="20%" class="left-td-custom_bg">数量限制</td>
+                                        <td width="30%" class="right-td-custom">
+                                            <div>
+                                                {{detailData.aeaItemGuideExtend?detailData.aeaItemGuideExtend.isLimitText:'无'}}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td width="20%" class="left-td-custom_bg">实施主体</td>
+                                        <td width="30%" class="right-td-custom">
+                                            <div>
+                                                {{detailData.aeaItemGuide?detailData.aeaItemGuide.deptName:'无'}}
+                                            </div>
+                                        </td>
+                                        <td width="20%" class="left-td-custom_bg">实施主体性质</td>
+                                        <td width="30%" class="right-td-custom">
+                                            <div>
+                                                {{detailData.aeaItemGuide?detailData.aeaItemGuide.deptTypeText:'无'}}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td width="20%" class="left-td-custom_bg">法定办结时限</td>
+                                        <td width="30%" class="right-td-custom">
+                                            <div style="position: relative;">
+                                                  <span>
+                                                      {{detailData.aeaItemGuide?detailData.aeaItemGuide.anticipateDay:'无'}}{{detailData.aeaItemGuide?detailData.aeaItemGuide.anticipateTypeText:'无'}}
+                                                  </span>
+                                                   <el-tooltip :content="detailData.aeaItemGuide?detailData.aeaItemGuide.crbjsxsm?detailData.aeaItemGuide.crbjsxsm:'无':'无'" placement="top" effect="light" v-show="detailData.aeaItemGuide && detailData.aeaItemGuide.crbjsxsm">
+                                                        <div class="el-icon-warning-outline" style="font-size: 18px;vertical-align: middle;position: absolute;top: 1px;"></div>
+                                                   </el-tooltip>
+                                            </div>
+                                        </td>
+                                        <td width="20%" class="left-td-custom_bg">承诺办结时限</td>
+                                        <td width="30%" class="right-td-custom">
+                                            <div style="position: relative;">
+                                              <span>
+                                                  {{detailData.aeaItemGuide?detailData.aeaItemGuide.promiseDay:'无'}}{{detailData.aeaItemGuide?detailData.aeaItemGuide.promiseTypeText:'无'}}
+                                              </span>
+                                                <el-tooltip :content="detailData.aeaItemGuide?detailData.aeaItemGuide.fdblsxsm?detailData.aeaItemGuide.fdblsxsm:'无':'无'" placement="top" effect="light" v-show="detailData.aeaItemGuide && detailData.aeaItemGuide.fdblsxsm">
+                                                    <div class="el-icon-warning-outline" style="font-size: 18px;vertical-align: middle;position: absolute;top: 1px;"></div>
+                                                </el-tooltip>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr v-show="singleTable1">
+                                        <td width="20%" class="left-td-custom_bg">结果名称</td>
+                                        <td width="30%" class="right-td-custom">
+                                            <div>
+                                                {{detailData.aeaItemGuide?detailData.aeaItemGuideExtend.resultName:'无'}}
+                                            </div>
+                                        </td>
+                                        <td width="20%" class="left-td-custom_bg">结果样本</td>
+                                        <td width="30%" class="right-td-custom">
+                                            <div>
+                                                {{detailData.aeaItemGuide?detailData.aeaItemGuideExtend.resultGuid:'无'}}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr v-show="singleTable1">
+                                        <td width="20%" class="left-td-custom_bg">办件类型</td>
+                                        <td width="30%" class="right-td-custom">
+                                            <div>
+                                                {{detailData.aeaItemGuide?detailData.aeaItemGuide.projectTypeTexy:'无'}}
+                                            </div>
+                                        </td>
+                                        <td width="20%" class="left-td-custom_bg">审批服务形式</td>
+                                        <td width="30%" class="right-td-custom">
+                                            <div>
+                                                {{detailData.aeaItemGuideExtend?detailData.aeaItemGuideExtend.serviceTypeText:'无'}}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr v-show="singleTable1">
+                                        <td width="20%" class="left-td-custom_bg">办理形式</td>
+                                        <td width="30%" class="right-td-custom">
+                                            <div>
+                                                {{detailData.aeaItemGuide?detailData.aeaItemGuide.handleTypeText:'无'}}
+                                            </div>
+                                        </td>
+                                        <td width="20%" class="left-td-custom_bg">业务系统</td>
+                                        <td width="30%" class="right-td-custom">
+                                            <div>
+                                                {{detailData.aeaItemGuideExtend?detailData.aeaItemGuideExtend.xtmc:'无'}}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr v-show="singleTable1">
+                                        <td width="20%" class="left-td-custom_bg">支持预约办理</td>
+                                        <td width="30%" class="right-td-custom">
+                                            <div>
+                                                {{detailData.aeaItemGuideExtend?detailData.aeaItemGuideExtend.isScheduleText:'无'}}
+                                            </div>
+                                        </td>
+                                        <td width="20%" class="left-td-custom_bg">支持物流快递</td>
+                                        <td width="30%" class="right-td-custom">
+                                            <div>
+                                                {{detailData.aeaItemGuideExtend?detailData.aeaItemGuideExtend.isExpressText:'无'}}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr v-show="singleTable1">
+                                        <td width="20%" class="left-td-custom_bg">权力来源</td>
+                                        <td width="30%" class="right-td-custom">
+                                            <div>
+                                                {{detailData.aeaItemGuide?detailData.aeaItemGuide.itemsourceText:'无'}}
+                                            </div>
+                                        </td>
+                                        <td width="20%" class="left-td-custom_bg">联办机构</td>
+                                        <td width="30%" class="right-td-custom">
+                                            <div>
+                                                {{detailData.aeaItemGuideExtend?detailData.aeaItemGuideExtend.otherDept:'无'}}
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                    <tr v-show="singleTable1">
+                                        <td width="20%" class="left-td-custom_bg">行使内容</td>
+                                        <td width="80%" class="right-td-custom" colspan="3">
+                                            <div style="line-height: 23px;">
+                                              {{detailData.aeaItemGuideExtend?detailData.aeaItemGuideExtend.xsnr:'无'}}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr v-show="singleTable1">
+                                        <td width="20%" class="left-td-custom_bg">通办范围</td>
+                                        <td width="80%" class="right-td-custom" colspan="3">
+                                            <div style="line-height: 23px;">
+                                                {{detailData.aeaItemGuideExtend?detailData.aeaItemGuideExtend.handleAreaText:'无'}}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                               <!-- <el-row>
+                                <el-col :span="5" class="tr">
+                                  <div class="grid-content">事项名称</div>
+                                </el-col>
+                                <el-col :span="7" class="td">
+                                  <div class="grid-content">{{detailData.aeaItemGuide?detailData.aeaItemGuide.taskName:'无'}}</div>
+                                </el-col>
+                                <el-col :span="5" class="tr">
+                                  <div class="grid-content">事项类型</div>
+                                </el-col>
+                                <el-col :span="7" class="td">
+                                  <div class="grid-content">{{detailData.aeaItemGuide?detailData.aeaItemGuide.taskTypeText:'无'}}</div>
+                                </el-col>
+                              </el-row>
+                              <el-row>
+                                <el-col :span="5" class="tr">
+                                  <div class="grid-content">基本编码</div>
+                                </el-col>
+                                <el-col :span="7" class="td">
+                                  <div class="grid-content">{{detailData.aeaItemGuide?detailData.aeaItemGuide.catlogCode:'无'}}</div>
+                                </el-col>
+                                <el-col :span="5" class="tr">
+                                  <div class="grid-content">实施编码</div>
+                                </el-col>
+                                <el-col :span="7" class="td">
+                                  <div class="grid-content">{{detailData.aeaItemGuide?detailData.aeaItemGuide.taskCode:'无'}}</div>
+                                </el-col>
+                              </el-row>
+                              <el-row>
+                                <el-col :span="5" class="tr">
+                                  <div class="grid-content">行使层级</div>
+                                </el-col>
+                                <el-col :span="7" class="td">
+                                  <div class="grid-content">{{detailData.aeaItemGuide?detailData.aeaItemGuide.useLevelText:'无'}}</div>
+                                </el-col>
+                                <el-col :span="5" class="tr">
+                                  <div class="grid-content">数量限制</div>
+                                </el-col>
+                                <el-col :span="7" class="td">
+                                  <div class="grid-content">{{detailData.aeaItemGuideExtend?detailData.aeaItemGuideExtend.isLimitText:'无'}}</div>
+                                </el-col>
+                              </el-row>
+                              <el-row>
+                                <el-col :span="5" class="tr">
+                                  <div class="grid-content">实施主体</div>
+                                </el-col>
+                                <el-col :span="7" class="td">
+                                  <div class="grid-content">{{detailData.aeaItemGuide?detailData.aeaItemGuide.deptName:'无'}}</div>
+                                </el-col>
+                                <el-col :span="5" class="tr">
+                                  <div class="grid-content">实施主体性质</div>
+                                </el-col>
+                                <el-col :span="7" class="td">
+                                  <div class="grid-content">{{detailData.aeaItemGuide?detailData.aeaItemGuide.deptTypeText:'无'}}</div>
+                                </el-col>
+                              </el-row>
+                              <el-row>
+                                <el-col :span="5" class="tr">
+                                  <div class="grid-content">法定办结时限</div>
+                                </el-col>
+                                <el-col :span="7" class="td">
+                                  <div class="grid-content" >
+                                      <div style="position: relative;">
+                                          <span>
+                                              {{detailData.aeaItemGuide?detailData.aeaItemGuide.anticipateDay:'无'}}{{detailData.aeaItemGuide?detailData.aeaItemGuide.anticipateTypeText:'无'}}
+                                          </span>
+                                          <el-tooltip :content="detailData.aeaItemGuide?detailData.aeaItemGuide.crbjsxsm?detailData.aeaItemGuide.crbjsxsm:'无':'无'" placement="top" effect="light" v-show="detailData.aeaItemGuide && detailData.aeaItemGuide.crbjsxsm">
+                                              <div class="el-icon-warning-outline" style="font-size: 18px;vertical-align: middle;position: absolute;top: 1px;"></div>
+                                          </el-tooltip>
+                                      </div>
+                                  </div>
+                                </el-col>
+                                <el-col :span="5" class="tr">
+                                  <div class="grid-content">承诺办结时限</div>
+                                </el-col>
+                                <el-col :span="7" class="td">
+                                  <div class="grid-content" >
+                                      <div style="position: relative;">
+                                          <span>
+                                              {{detailData.aeaItemGuide?detailData.aeaItemGuide.promiseDay:'无'}}{{detailData.aeaItemGuide?detailData.aeaItemGuide.promiseTypeText:'无'}}
+                                          </span>
+                                          <el-tooltip :content="detailData.aeaItemGuide?detailData.aeaItemGuide.fdblsxsm?detailData.aeaItemGuide.fdblsxsm:'无':'无'" placement="top" effect="light" v-show="detailData.aeaItemGuide && detailData.aeaItemGuide.fdblsxsm">
+                                              <div class="el-icon-warning-outline" style="font-size: 18px;vertical-align: middle;position: absolute;top: 1px;"></div>
+                                          </el-tooltip>
+                                      </div>
+                                  </div>
+                                </el-col>
+                              </el-row>
+                              <el-row v-show="singleTable1">
+                                <el-col :span="5" class="tr">
+                                  <div class="grid-content">结果名称</div>
+                                </el-col>
+                                <el-col :span="7" class="td">
+                                  <div class="grid-content">{{detailData.aeaItemGuide?detailData.aeaItemGuideExtend.resultName:'无'}}</div>
+                                </el-col>
+                                <el-col :span="5" class="tr">
+                                  <div class="grid-content">结果样本</div>
+                                </el-col>
+                                <el-col :span="7" class="td">
+                                  <div class="grid-content">{{detailData.aeaItemGuide?detailData.aeaItemGuideExtend.resultGuid:'无'}}</div>
+                                </el-col>
+                              </el-row>
+                              <el-row v-show="singleTable1">
+                                <el-col :span="5" class="tr">
+                                  <div class="grid-content">办件类型</div>
+                                </el-col>
+                                <el-col :span="7" class="td">
+                                  <div class="grid-content">{{detailData.aeaItemGuide?detailData.aeaItemGuide.projectTypeTexy:'无'}}</div>
+                                </el-col>
+                                <el-col :span="5" class="tr">
+                                  <div class="grid-content">审批服务形式</div>
+                                </el-col>
+                                <el-col :span="7" class="td">
+                                  <div class="grid-content">{{detailData.aeaItemGuideExtend?detailData.aeaItemGuideExtend.serviceTypeText:'无'}}</div>
+                                </el-col>
+                              </el-row>
+                              <el-row v-show="singleTable1">
+                                <el-col :span="5" class="tr">
+                                  <div class="grid-content">办理形式</div>
+                                </el-col>
+                                <el-col :span="7" class="td">
+                                  <div class="grid-content">{{detailData.aeaItemGuide?detailData.aeaItemGuide.handleTypeText:'无'}}</div>
+                                </el-col>
+                                <el-col :span="5" class="tr">
+                                  <div class="grid-content">业务系统</div>
+                                </el-col>
+                                <el-col :span="7" class="td">
+                                  <div class="grid-content">{{detailData.aeaItemGuideExtend?detailData.aeaItemGuideExtend.xtmc:'无'}}</div>
+                                </el-col>
+                              </el-row>
+                              <el-row v-show="singleTable1">
+                                <el-col :span="5" class="tr">
+                                  <div class="grid-content">支持预约办理</div>
+                                </el-col>
+                                <el-col :span="7" class="td">
+                                  <div class="grid-content">{{detailData.aeaItemGuideExtend?detailData.aeaItemGuideExtend.isScheduleText:'无'}}</div>
+                                </el-col>
+                                <el-col :span="5" class="tr">
+                                  <div class="grid-content">支持物流快递</div>
+                                </el-col>
+                                <el-col :span="7" class="td">
+                                  <div class="grid-content">{{detailData.aeaItemGuideExtend?detailData.aeaItemGuideExtend.isExpressText:'无'}}</div>
+                                </el-col>
+                              </el-row>
+                              <el-row v-show="singleTable1">
+                                <el-col :span="5" class="tr">
+                                  <div class="grid-content">权力来源</div>
+                                </el-col>
+                                <el-col :span="7" class="td">
+                                  <div class="grid-content">{{detailData.aeaItemGuide?detailData.aeaItemGuide.itemsourceText:'无'}}</div>
+                                </el-col>
+                                <el-col :span="5" class="tr">
+                                  <div class="grid-content">联办机构</div>
+                                </el-col>
+                                <el-col :span="7" class="td">
+                                  <div class="grid-content">{{detailData.aeaItemGuideExtend?detailData.aeaItemGuideExtend.otherDept:'无'}}</div>
+                                </el-col>
+                              </el-row>
+                              <el-row v-show="singleTable1">
+                                <el-col :span="5" class="tr">
+                                  <div class="grid-content">行使内容</div>
+                                </el-col>
+                                <el-col :span="19" class="td">
+                                  <div class="grid-content">{{detailData.aeaItemGuideExtend?detailData.aeaItemGuideExtend.xsnr:'无'}}</div>
+                                </el-col>
+                              </el-row>
+                              <el-row v-show="singleTable1">
+                                <el-col :span="5" class="tr">
+                                  <div class="grid-content">通办范围</div>
+                                </el-col>
+                                <el-col :span="19" class="td">
+                                  <div class="grid-content">{{detailData.aeaItemGuideExtend?detailData.aeaItemGuideExtend.handleAreaText:'无'}}</div>
+                                </el-col>
+                              </el-row>-->
+                            </div>
+                            <div class="control singleTable1Btn" @click="singleTable1=!singleTable1">{{!singleTable1?'展开':'收起'}}
+                              <i :class="!singleTable1?'el-icon-arrow-down':'el-icon-arrow-up'"></i>
+                            </div>
+                          </div>
+                          <!--end::Item-->
+                          <!--begin::Item-->
+                          <div class="div-step" id="div_step_2">
+                            <div class="step-title">范围与条件</div>
+                            <p class="subTitle">受理范围</p>
+                            <div class="single-table">
+                                <table class="wt-custom_table" style="width: 804px;">
+                                    <tbody>
+                                        <tr>
+                                            <td width="20%" class="left-td-custom_bg">主题分类</td>
+                                            <td width="80%" class="right-td-custom" colspan="3">
+                                                <div style="line-height: 23px;">
+                                                    {{detailData.aeaItemGuideExtend ? detailData.aeaItemGuideExtend.themeNaturalTypeText?detailData.aeaItemGuideExtend.themeNaturalTypeText:'无':'无'}}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td width="20%" class="left-td-custom_bg">服务对象</td>
+                                            <td width="80%" class="right-td-custom" colspan="3">
+                                                <div style="line-height: 23px;">
+                                                    {{detailData.aeaItemGuide? detailData.aeaItemGuide.serveTypeText?detailData.aeaItemGuide.serveTypeText:'无':'无'}}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td width="20%" class="left-td-custom_bg">申请内容</td>
+                                            <td width="80%" class="right-td-custom" colspan="3">
+                                                <div style="line-height: 23px;">
+                                                    {{detailData.aeaItemGuideExtend? detailData.aeaItemGuideExtend.zzzSqnr?detailData.aeaItemGuideExtend.zzzSqnr:'无':'无'}}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td width="20%" class="left-td-custom_bg">申请内容</td>
+                                            <td width="80%" class="right-td-custom" colspan="3">
+                                                <div style="line-height: 23px;">
+                                                    {{detailData.aeaItemGuideExtend? detailData.aeaItemGuideExtend.zzzSqnr?detailData.aeaItemGuideExtend.zzzSqnr:'无':'无'}}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                              <!--<el-row>
+                                <el-col :span="4" class="tr">
+                                  <div class="grid-content">主题分类</div>
+                                </el-col>
+                                <el-col :span="20" class="td">
+                                  <div class="grid-content">{{detailData.aeaItemGuideExtend ? detailData.aeaItemGuideExtend.themeNaturalTypeText?detailData.aeaItemGuideExtend.themeNaturalTypeText:'无':'无'}}</div>
+                                </el-col>
+                              </el-row>
+                              <el-row>
+                                <el-col :span="4" class="tr">
+                                  <div class="grid-content">服务对象</div>
+                                </el-col>
+                                <el-col :span="20" class="td">
+                                  <div class="grid-content">{{detailData.aeaItemGuide? detailData.aeaItemGuide.serveTypeText?detailData.aeaItemGuide.serveTypeText:'无':'无'}}</div>
+                                </el-col>
+                              </el-row>
+                              <el-row>
+                                <el-col :span="4" class="tr">
+                                  <div class="grid-content">申请内容</div>
+                                </el-col>
+                                <el-col :span="20" class="td">
+                                  <div class="grid-content">{{detailData.aeaItemGuideExtend? detailData.aeaItemGuideExtend.zzzSqnr?detailData.aeaItemGuideExtend.zzzSqnr:'无':'无'}}</div>
+                                </el-col>
+                              </el-row>-->
+                            </div>
+                            <p class="subTitle">受理条件</p>
+                            <p class="contion" v-html="detailData.aeaItemGuide? detailData.aeaItemGuide.acceptCondition?detailData.aeaItemGuide.acceptCondition:'无':'无'"></p>
+                          </div>
+                          <!--end::Item-->
+                          <!--begin::Item-->
+                          <div class="div-step" id="div_step_3">
+                            <div class="step-title">办理流程</div>
+
+                            <p class="subTitle">网上办理流程</p>
+                            <template v-if="detailData.aeaItemGuide">
+                                <template v-if="detailData.aeaItemGuide.wsbllc">
+                                  <p v-html="detailData.aeaItemGuide? detailData.aeaItemGuide.wsbllc?detailData.aeaItemGuide.wsbllc:'无':'无'"class="marginTL"></p>
+                                  <el-button type="primary" size="mini" :loading="showProcessLoading" @click="wslct=true">查看流程图</el-button>
+                                </template>
+                                <template v-else>
+                                  <p class="noData">无</p>
+                                </template>
+                            </template>
+                            <template v-else>
+                              <p class="noData">无</p>
+                            </template>
+
+                            <p class="subTitle">窗口办理流程</p>
+                            <template v-if="detailData.aeaItemGuide">
+                              <template v-if="detailData.aeaItemGuide.ckbllc">
+                                <p v-html="detailData.aeaItemGuide? detailData.aeaItemGuide.ckbllc?detailData.aeaItemGuide.wsbllc:'无':'无'"class="marginTL"></p>
+                                <el-button type="primary" size="mini" @click="cklct=true">查看流程图</el-button>
+                              </template>
+                              <template v-else>
+                                <p class="noData">无</p>
+                              </template>
+                            </template>
+                            <template v-else>
+                              <p class="noData">无</p>
+                            </template>
+                          </div>
+                          <div class="div-step" id="div_step_4">
+                            <div class="step-title">办事情形(可选择办事情形查看所需要的办事材料)
+                            </div>
+                            <template v-if="stateListFlag">
+                              <div v-for="(item,index) in detailData.stateList">
+                                <div v-if="item.answerType=='s'||item.answerType=='y'">
+                                  <p><h3 style="margin: 10px 0">{{item.stateName}}</h3><i class="red-waring" v-if="item.mustAnswer==1">*</i></p>
+                                  <label class="radiobox" v-for="(radioItem,radioIndex) in item.answerStates">
+                                    <input :id="radioItem.itemStateId" :parentId="radioItem.parentStateId" :name="'radio'+(index+1)" type="radio" onchange="matChange(this)" >
+                                    {{radioItem.stateName}}
+                                    <span></span>
+                                  </label>
+                                </div>
+                                <div v-else>
+                                  <p><h3 style="margin: 10px 0">{{item.stateName}}</h3><i class="red-waring" v-if="item.mustAnswer==1">*</i></p>
+                                  <label class="radiobox" v-for="(radioItem,radioIndex) in item.answerStates">
+                                    <input :id="radioItem.itemStateId" :parentId="radioItem.parentStateId" :data-value="radioItem" :name="'radio'+(index+1)" type="checkbox"  onchange="matChange(this)" >
+                                    {{radioItem.stateName}}
+                                    <span></span>
+                                  </label>
+                                </div>
+                              </div>
+                              <div class="childState"></div>
+                              <el-button type="primary" @click="getMatState" style="margin-top: 25px;">查看材料</el-button>
+                            </template>
+                            <template v-else>
+                              <p class="noData">无</p>
+                            </template>
+                          </div>
+                          <div class="div-step" id="div_step_5">
+                            <div class="step-title">所需材料</div>
+                            <el-table
+                              border
+                              class='el-table'
+                              :data="detailData.matList"
+                              style="width: 100%">
+                              <el-table-column type="index"></el-table-column>
+                              <el-table-column prop="matName" label="材料名称" ></el-table-column>
+                              <el-table-column prop="reviewKeyPoints" label="材料要求" ></el-table-column>
+                              <el-table-column prop="matFrom" label="来源" ></el-table-column>
+                              <el-table-column prop="matMemo" label="填报须知" ></el-table-column>
+                              <el-table-column label="资料下载">
+                                <template slot-scope="scope">
+                                  <a href="javascript:void(0);" @click="showMatFiles(scope.row,'TEMPLATE_DOC')">空表<i class="el-icon-download"></i></a><br />
+                                  <a href="javascript:void(0);" @click="showMatFiles(scope.row,'SAMPLE_DOC')">样表<i class="el-icon-download"></i></a>
+                                </template>
+                              </el-table-column>
+                            </el-table>
+                          </div>
+                          <div class="div-step" id="div_step_6">
+                            <div class="step-title">咨询监督</div>
+                            <div class="step6_content">
+                             <!-- <div class="consult">
+                                <ul>
+                                  <li><h4>咨询方式</h4></li>
+                                  <li>咨询电话：{{detailData.aeaItemGuide? detailData.aeaItemGuide.linkway:'无'}}</li>
+                                  <li>咨询地址：{{detailData.aeaItemGuideExtend? detailData.aeaItemGuideExtend.zxckaddress:'无'}}</li>
+                                  <li>咨询网址：<a :href="detailData.aeaItemGuideExtend?detailData.aeaItemGuideExtend.ssjgwz:'javascript:void(0);'">{{detailData.aeaItemGuideExtend?detailData.aeaItemGuideExtend.ssjgwz:'无'}}</a></li>
+                                  <li>政务微博：{{detailData.aeaItemGuideExtend? detailData.aeaItemGuideExtend.zxzwwbwz:'无'}}</li>
+                                  <li>微信号：{{detailData.aeaItemGuideExtend? detailData.aeaItemGuideExtend.zxwxh:'无'}}</li>
+                                  <li>电子邮箱：{{detailData.aeaItemGuideExtend? detailData.aeaItemGuideExtend.zxdzyx:'无'}}</li>
+                                  <li>信函地址：{{detailData.aeaItemGuideExtend? detailData.aeaItemGuideExtend.zxxhyjdz:'无'}}</li>
+                                </ul>
+                              </div>
+                              <div class="monitor">
+                                <ul>
+                                  <li><h4>监督方式</h4></li>
+                                  <li>投诉电话：{{detailData.aeaItemGuide? detailData.aeaItemGuide.tstel:'无'}}</li>
+                                  <li>投诉地址：{{detailData.aeaItemGuide? detailData.aeaItemGuide.tsckaddress:'无'}}</li>
+                                  <li>投诉网址：<a :href="detailData.aeaItemGuide? detailData.aeaItemGuide.wstswz:'javascript:void(0);'">{{detailData.aeaItemGuide? detailData.aeaItemGuide.wstswz:'无'}}</a></li>
+                                  <li>电子邮箱：{{detailData.aeaItemGuide? detailData.aeaItemGuide.tsdzyx:'无'}}</li>
+                                  <li>信函地址：{{detailData.aeaItemGuide? detailData.aeaItemGuide.xhtsdz:'无'}}</li>
+                                </ul>
+                              </div>-->
+                              <div class="table table0">
+                                <el-row>
+                                  <el-col :span="4" class="tr">
+                                    <div class="grid-content">咨询地址</div>
+                                  </el-col>
+                                  <el-col :span="8" class="td">
+                                    <div class="grid-content">{{detailData.aeaItemGuideExtend? detailData.aeaItemGuideExtend.zxckaddress:'无'}}</div>
+                                  </el-col>
+                                    <el-col :span="4" class="tr">
+                                        <div class="grid-content">咨询网址</div>
+                                    </el-col>
+                                    <el-col :span="8" class="td">
+                                        <div class="grid-content">{{detailData.aeaItemGuideExtend? detailData.aeaItemGuideExtend.ssjgwz:'无'}}</div>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col :span="4" class="tr">
+                                        <div class="grid-content">咨询政务微博</div>
+                                    </el-col>
+                                    <el-col :span="8" class="td">
+                                        <div class="grid-content">{{detailData.aeaItemGuideExtend? detailData.aeaItemGuideExtend.zxzwwbwz:'无'}}</div>
+                                    </el-col>
+                                  <el-col :span="4" class="tr">
+                                    <div class="grid-content">咨询微信号：</div>
+                                  </el-col>
+                                  <el-col :span="8" class="td">
+                                      <div class="grid-content">{{detailData.aeaItemGuideExtend? detailData.aeaItemGuideExtend.zxwxh:'无'}}</div>
+                                  </el-col>
+
+                                </el-row>
+                                <el-row>
+                                  <el-col :span="4" class="tr">
+                                    <div class="grid-content">咨询电子邮箱：</div>
+                                  </el-col>
+                                  <el-col :span="8" class="td">
+                                      <div class="grid-content">{{detailData.aeaItemGuideExtend? detailData.aeaItemGuideExtend.zxdzyx:'无'}}</div>
+                                  </el-col>
+                                  <el-col :span="4" class="tr">
+                                    <div class="grid-content">咨询信函地址</div>
+                                  </el-col>
+                                  <el-col :span="8" class="td">
+                                    <div class="grid-content">{{detailData.aeaItemGuideExtend? detailData.aeaItemGuideExtend.zxxhyjdz:'无'}}</div>
+                                  </el-col>
+                                </el-row>
+
+
+
+                                  <el-row>
+                                      <el-col :span="4" class="tr">
+                                          <div class="grid-content">咨询电话</div>
+                                      </el-col>
+                                      <el-col :span="8" class="td">
+                                          <div class="grid-content">{{detailData.aeaItemGuide? detailData.aeaItemGuide.linkway:'无'}}</div>
+                                      </el-col>
+                                      <el-col :span="4" class="tr">
+                                          <div class="grid-content">投诉电话</div>
+                                      </el-col>
+                                      <el-col :span="8" class="td">
+                                          <div class="grid-content">{{detailData.aeaItemGuide? detailData.aeaItemGuide.tstel:'无'}}</div>
+                                      </el-col>
+                                  </el-row>
+                                  <el-row>
+                                      <el-col :span="4" class="tr">
+                                          <div class="grid-content">投诉地址</div>
+                                      </el-col>
+                                      <el-col :span="8" class="td">
+                                          <div class="grid-content">{{detailData.aeaItemGuide? detailData.aeaItemGuide.tsckaddress:'无'}}</div>
+                                      </el-col>
+                                      <el-col :span="4" class="tr">
+                                          <div class="grid-content">投诉网址：</div>
+                                      </el-col>
+                                      <el-col :span="8" class="td">
+                                          <div class="grid-content">{{detailData.aeaItemGuide? detailData.aeaItemGuide.wstswz:'无'}}</div>
+                                      </el-col>
+
+                                  </el-row>
+                                  <el-row>
+                                      <el-col :span="4" class="tr">
+                                          <div class="grid-content">投诉电子邮箱：</div>
+                                      </el-col>
+                                      <el-col :span="8" class="td">
+                                          <div class="grid-content">{{detailData.aeaItemGuide? detailData.aeaItemGuide.tsdzyx:'无'}}</div>
+                                      </el-col>
+                                      <el-col :span="4" class="tr">
+                                          <div class="grid-content">投诉信函地址</div>
+                                      </el-col>
+                                      <el-col :span="8" class="td">
+                                          <div class="grid-content">{{detailData.aeaItemGuide? detailData.aeaItemGuide.xhtsdz:'无'}}</div>
+                                      </el-col>
+                                  </el-row>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="div-step" id="div_step_7">
+                            <div class="step-title">窗口办理</div>
+                            <ul v-for="(item,index) in detailData.windowRelList" v-if="index==0" class="ckbl">
+                              <li><h4>{{item.windowName?item.windowName:'无'}}</h4></li>
+                              <li>办公电话：{{item.linkPhone?item.linkPhone:'无'}}</li>
+                              <li>办公时间：{{item.workTime?item.workTime:'无'}}</li>
+                              <li>办公时间：{{item.windowAddress?item.windowAddress:'无'}}</li>
+                              <li>位置指引：{{item.trafficGuide?item.trafficGuide:'无'}}</li>
+                            </ul>
+                            <ul v-for="(item,index) in detailData.windowRelList" v-if="index!=0 && showAll"class="ckbl">
+                              <li><h4>{{item.windowName?item.windowName:'无'}}</h4></li>
+                              <li>办公电话：{{item.linkPhone?item.linkPhone:'无'}}</li>
+                              <li>办公时间：{{item.workTime?item.workTime:'无'}}</li>
+                              <li>办公时间：{{item.windowAddress?item.windowAddress:'无'}}</li>
+                              <li>位置指引：{{item.trafficGuide?item.trafficGuide:'无'}}</li>
+                            </ul>
+                            <el-button type="primary" style="margin-top: 20px;" size="mini" @click="showAll=!showAll">{{showAll?"收起所有窗口信息":'查看所有窗口信息'}}</el-button>
+                          </div>
+                          <div class="div-step" id="div_step_8">
+                            <div class="step-title">许可收费</div>
+                            <p>{{detailData.aeaItemGuide?detailData.aeaItemGuide.trafficGuide:'无'}}</p>
+                          </div>
+                          <div class="div-step" id="div_step_9">
+                            <div class="step-title">中介服务</div>
+                            <el-table
+                              border
+                              class='el-table'
+                              :data="detailData.materuslsList"
+                              style="width: 100%">
+                              <el-table-column prop="intermediaryservices" label="中介服务事项名称" ></el-table-column>
+                              <el-table-column prop="intermediaryservicescode" label="中介服务事项编码" ></el-table-column>
+                              <el-table-column prop="itemType" label="详情" >
+                                <template>
+                                  <a href="javascript:void(0)">查看详情</a>
+                                </template>
+                              </el-table-column>
+                            </el-table>
+                          </div>
+                          <div class="div-step" id="div_step_10">
+                            <div class="step-title">设定依据</div>
+                            <el-table
+                              border
+                              class='el-table'
+                              :data="detailData.basicList"
+                              style="width: 100%">
+                                <el-table-column prop="legalName" label="法律法规名称"></el-table-column>
+                              <el-table-column prop="clauseContent" label="条款内容" ></el-table-column>
+                                <el-table-column prop="exeDate" label="实施日期">
+                                <template slot-scope='scope'>
+                                    {{dateFormat(scope.row.exeDate)}}
+                                </template>
+                              </el-table-column>
+                            </el-table>
+                          </div>
+                          <div class="div-step" id="div_step_11">
+                            <div class="step-title">权利与义务</div>
+                            <ul class="ckbl">
+                              <li><h4>申请人依法享有以下权利</h4></li>
+                              <li>{{detailData.aeaItemGuideExtend?detailData.aeaItemGuideExtend.sqrql:'无'}}</li>
+                              <li><h4>申请人依法享有以下义务</h4></li>
+                              <li>{{detailData.aeaItemGuideExtend?detailData.aeaItemGuideExtend.sqryw:'无'}}</li>
+                            </ul>
+                          </div>
+                          <div class="div-step" id="div_step_12">
+                            <div class="step-title">法律救援</div>
+                            <div class="step12_content">
+                              <div class="reconsider">
+                                <ul>
+                                  <li><h4>行政复议</h4></li>
+                                  <li>部门：{{detailData.aeaItemGuideExtend?detailData.aeaItemGuideExtend.xzfybm:'无'}}</li>
+                                  <li>地址：{{detailData.aeaItemGuideExtend?detailData.aeaItemGuideExtend.xzfydz:'无'}}</li>
+                                  <li>电话：{{detailData.aeaItemGuideExtend?detailData.aeaItemGuideExtend.xzfydh:'无'}}</li>
+                                  <li>网址： {{detailData.aeaItemGuideExtend?detailData.aeaItemGuideExtend.xzfywz:'无'}}</li>
+                                </ul>
+                              </div>
+                              <div class="lawsuit">
+                                <ul>
+                                  <li><h4>行政诉讼</h4></li>
+                                  <li>部门：{{detailData.aeaItemGuideExtend?detailData.aeaItemGuideExtend.xzssbm:'无'}}</li>
+                                  <li>地址：{{detailData.aeaItemGuideExtend?detailData.aeaItemGuideExtend.xzssdz:'无'}}</li>
+                                  <li>电话：{{detailData.aeaItemGuideExtend?detailData.aeaItemGuideExtend.xzssdh:'无'}}</li>
+                                  <li>网址： {{detailData.aeaItemGuideExtend?detailData.aeaItemGuideExtend.xzsswz:'无'}}</li>
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="right-content">
+                        <div class="assist-exchange">
+                          <a href="http://www.gdzwfw.gov.cn/hzjl/forum-36-1.html" target="_blank">互助交流平台</a>
+                          <span class="arrow-right"></span>
+                        </div>
+                        <div class="orgAndTheme">
+                          <ul>
+                            <li class="org">
+                              <h2>主管部门</h2>
+                              <p><a href="javascript:void(0);">{{detailData.aeaItemGuide?detailData.aeaItemGuide.deptName:'无'}}</a></p>
+                            </li>
+                          </ul>
+                        </div>
+                        <div class="evaluate">
+                          <ul>
+                            <li><h2>办事满意度</h2></li>
+                            <li class="score">
+                              <span>办事评价得分</span>
+                              <el-rate v-model="score" disabled></el-rate>
+                            </li>
+                          </ul>
+                        </div>
+                        <div class="other">
+                          <el-button type="primary" style="margin-bottom:16px;"
+                                     @click="toUserCenterindexPage(detailData.aeaItemGuide.itemVerId)">立即办理 >></el-button>
+                          <ul>
+                            <li class="tableLine"></li>
+                            <li><h2 style="margin-top: 15px;">服务承诺</h2></li>
+                            <li>
+                                <ul class="date">
+                                  <li>
+                                    <p v-if="detailData.aeaItemGuide">{{detailData.aeaItemGuide.anticipateDay||'0'}}个{{detailData.aeaItemGuide.anticipateTypeText||'工作日'}}</p>
+                                    <p v-else>无</p>
+                                    <p>法定办结时限</p>
+                                  </li>
+                                  <li>
+                                    <p v-if="detailData.aeaItemGuide">{{detailData.aeaItemGuide.promiseDay}}个{{detailData.aeaItemGuide.promiseTypeText}}</p>
+                                    <p v-else>无</p>
+                                    <p>承诺办结时限</p>
+                                  </li>
+                                </ul>
+                            </li>
+                            <div class="tableLine"></div>
+                            <li><h2 style="margin-top: 15px;">常见问题</h2></li>
+<!--                            <template v-if="detailData.questions">-->
+
+                                <p class="questions-way">无</p>
+<!--                            </template>-->
+                          </ul>
+                          
+                        </div>
+                      </div>
+                    </div><!--                                <li v-for='(item,index) in detailData.questions'>{{(index+1)}}、{{item.question}}</li>-->
+                      <!--                            </template>-->
+                      <!--                            <template v-else>-->
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <el-dialog title="流程图" :visible.sync="wslct" width="760px" :fullscreen="false">
+          <img style="height: 100%;;width:100%;" :src="ctx+'/rest/file/applydetail/mat/download/'+detailData.aeaItemGuide.wsbllct" alt="流程图片"  v-if="detailData.aeaItemGuide && detailData.aeaItemGuide.wsbllct!=undefined && detailData.aeaItemGuide.wsbllct!=null"/>
+          <p v-else>【暂无流程图】</p>
+        </el-dialog>
+        <el-dialog title="流程图" :visible.sync="cklct" width="760px">
+          <img style="height: 100%;width:100%;" :src="ctx+'/rest/file/applydetail/mat/download/'+detailData.aeaItemGuide.ckbllct" alt="流程图片"   v-if="detailData.aeaItemGuide && detailData.aeaItemGuide.ckbllct!=undefined && detailData.aeaItemGuide.ckbllct!=null"/>
+          <p v-else>【暂无流程图】</p>
+        </el-dialog>
+        <el-dialog title="查看样本" :visible.sync="matDialog" width="760px">
+          <ul v-if="mats!== undefined && mats.length >0" class="matBox">
+            <li v-for="item in mats" @click="download(item)">
+              <img src="../../static/mall/images/icon/guide.png" alt="" />
+              <a href="javascript:void(0);">{{item.attName}}</a>
+            </li>
+          </ul>
+          <p v-else style="margin:10px 0;">无模板</p>
+          <el-button type="primary" @click="matDialog=false">关闭</el-button>
+        </el-dialog>
+      </section>
+    </div>
+
+    <script src="../../static/mall/js/guide/guideIndex.js" th:src="@{/mall/js/guide/guideIndex.js}" type="text/javascript"></script>
+</body>
+</html>

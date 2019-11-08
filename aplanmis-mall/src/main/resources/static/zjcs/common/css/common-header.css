@@ -1,0 +1,144 @@
+body {
+  background: #fff;
+}
+#headerFooter {
+  overflow: hidden;
+}
+.logo-wrap {
+  width: 1200px;
+  margin: auto;
+  height: 80px;
+  line-height: 80px;
+  border-bottom: 1px solid #EBECF1;
+  overflow: hidden;
+}
+.quick-menu li {
+  float: left;
+}
+.quick-menu a:hover {
+  text-decoration: none;
+  color: #3184FA;
+}
+.quick-menu li.register:before {
+  padding: 0 4px 0 8px;
+  color: #ccc;
+  content: "/\00a0";
+}
+.content-iframe {
+  width: 100%;
+  height: 100%;
+}
+.content-iframe iframe {
+  height: 100%;
+  width: 100%;
+}
+.ts-nav-bar {
+  width: 1200px;
+  margin: auto;
+  height: 60px;
+  line-height: 55px;
+}
+.ts-nav-bar li {
+  float: left;
+  font-size: 16px;
+  transition: all .2s;
+  margin-right: 52px;
+  background: none;
+  border-bottom: 3px solid #fff;
+  cursor: pointer;
+}
+.ts-nav-bar li.active {
+  font-weight: 700;
+  color: #3184FA;
+  border-bottom-color: #3184FA;
+}
+.search-sel {
+  background: none;
+  border-color: #ccc;
+}
+.el-input__inner {
+  height: 34px;
+  line-height: 34px;
+}
+.el-input__icon {
+  line-height: 34px;
+  font-size: 20px;
+  font-weight: bold;
+  color: #3184FA;
+}
+.el-select .el-input {
+  width: 70px;
+  padding: 0;
+}
+.el-input--suffix .el-input__inner {
+  padding: 0 10px !important;
+}
+.input-with-select .el-input-group__prepend {
+  background-color: #fff;
+}
+.el-select-dropdown__item.selected {
+  color: #3184FA;
+}
+.ts-footer {
+  /*height: 115px;*/
+  background: #363C49;
+  padding: 30px 0;
+  width: 100%;
+}
+.mod {
+  width: 1200px;
+  margin: auto;
+  overflow: hidden;
+}
+.ts-footer .foot-link {
+  text-align: right;
+  display: block;
+  width: 20%;
+}
+.footer-txt {
+  width: 80%;
+  text-align: center;
+  color: #B6B6B6;
+  line-height: 24px;
+}
+.ts-nav-bar .input-with-select {
+  width: 340px;
+}
+.span-a{
+  cursor: pointer;
+  color: #3184FA;
+}
+.select .el-input__inner{
+  width:77px;
+}
+.select .el-input__suffix{
+  right:-19px;
+}
+
+.select-box {
+  overflow: hidden;
+  margin-bottom: 40px;
+}
+.select-box .el-select {
+  width: 390px;
+  margin-left: 10px;
+}
+.select-box .el-select:first-child {
+  margin-left: 0;
+}
+.select-box .el-input__inner {
+  height: 34px;
+  line-height: 34px;
+  border-radius: 0;
+}
+.ts-footer .el-select .el-input {
+  width: auto;
+}
+
+.ts-footer .select-box {
+  margin-bottom: 21px;
+}
+
+.breadcrumb a {
+  color: #333;
+}

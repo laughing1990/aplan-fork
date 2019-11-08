@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaParStageGuideMapper">
+    <sql id="allColumns">
+        GUIDE_ID guideId,
+        STAGE_ID stageId,
+        APPLY_OBJ applyObj,
+        ACCEPT_COND acceptCond,
+        LEGAL_DAY legalDay,
+        LEGAL_TYPE legalType,
+        LEGAL_DESC legalDesc,
+        PROMISE_DAY promiseDay,
+        PROMISE_TYPE promiseType,
+        PROMISE_DESC promiseDesc,
+        COMSUP_ADDRESS comsupAddress,
+        COMSUP_EMAIL comsupEmail,
+        COMSUP_LETTER comsupLetter,
+        COMSUP_TEL comsupTel,
+        COMSUP_ONLINE comsupOnline,
+        CKBLLC ckbllc,
+        CKBLLCT ckbllct,
+        WSBLLC wsbllc,
+        WSBLLCT wsbllct,
+        HANDLE_FLOW handleFlow,
+        HANDLE_TIMELIMIT_DESC handleTimelimitDesc,
+        GUIDE_DEMO guideDemo,
+        WARM_PROMPT warmPrompt,
+        GUIDE_ATT guideAtt,
+        ROOT_ORG_ID rootOrgId
+
+    </sql>
+
+    <select id="getAeaParStageGuideByStageId" resultType="com.augurit.aplanmis.common.domain.AeaParStageGuide">
+        select
+           <include refid="allColumns"/>
+        from AEA_PAR_STAGE_GUIDE
+        where STAGE_ID = #{stageId}
+          and ROOT_ORG_ID = #{rootOrgId}
+    </select>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaParStageGuideById" resultType="AeaParStageGuide" >
+        select
+        <include refid="allColumns"/>
+        from    AEA_PAR_STAGE_GUIDE
+        where    GUIDE_ID = #{id}
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaParStageGuide" resultType="AeaParStageGuide">
+        select
+        <include refid="allColumns"/>
+        from AEA_PAR_STAGE_GUIDE
+        <where>
+            <if test="guideId != null">
+                AND GUIDE_ID = #{guideId}
+            </if>
+            <if test="stageId != null">
+                AND STAGE_ID = #{stageId}
+            </if>
+            <if test="applyObj != null">
+                AND APPLY_OBJ = #{applyObj}
+            </if>
+            <if test="acceptCond != null">
+                AND ACCEPT_COND = #{acceptCond}
+            </if>
+            <if test="legalDay != null">
+                AND LEGAL_DAY = #{legalDay}
+            </if>
+            <if test="legalType != null">
+                AND LEGAL_TYPE = #{legalType}
+            </if>
+            <if test="legalDesc != null">
+                AND LEGAL_DESC = #{legalDesc}
+            </if>
+            <if test="promiseDay != null">
+                AND PROMISE_DAY = #{promiseDay}
+            </if>
+            <if test="promiseType != null">
+                AND PROMISE_TYPE = #{promiseType}
+            </if>
+            <if test="promiseDesc != null">
+                AND PROMISE_DESC = #{promiseDesc}
+            </if>
+            <if test="comsupAddress != null">
+                AND COMSUP_ADDRESS = #{comsupAddress}
+            </if>
+            <if test="comsupEmail != null">
+                AND COMSUP_EMAIL = #{comsupEmail}
+            </if>
+            <if test="comsupLetter != null">
+                AND COMSUP_LETTER = #{comsupLetter}
+            </if>
+            <if test="comsupTel != null">
+                AND COMSUP_TEL = #{comsupTel}
+            </if>
+            <if test="comsupOnline != null">
+                AND COMSUP_ONLINE = #{comsupOnline}
+            </if>
+            <if test="ckbllc != null">
+                AND CKBLLC = #{ckbllc}
+            </if>
+            <if test="ckbllct != null">
+                AND CKBLLCT = #{ckbllct}
+            </if>
+            <if test="wsbllc != null">
+                AND WSBLLC = #{wsbllc}
+            </if>
+            <if test="wsbllct != null">
+                AND WSBLLCT = #{wsbllct}
+            </if>
+            <if test="handleFlow != null">
+                AND HANDLE_FLOW = #{handleFlow}
+            </if>
+            <if test="handleTimelimitDesc != null">
+                AND HANDLE_TIMELIMIT_DESC = #{handleTimelimitDesc}
+            </if>
+            <if test="guideDemo != null">
+                AND GUIDE_DEMO = #{guideDemo}
+            </if>
+            <if test="warmPrompt != null">
+                AND WARM_PROMPT = #{warmPrompt}
+            </if>
+            <if test="guideAtt != null">
+                AND GUIDE_ATT = #{guideAtt}
+            </if>
+            <if test="rootOrgId != null">
+                AND ROOT_ORG_ID = #{rootOrgId}
+            </if>
+        </where>
+    </select>
+    <!--4 根据条件查询实体list,返回分页对象 -->
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaParStageGuide" parameterType="AeaParStageGuide">
+    insert into AEA_PAR_STAGE_GUIDE (
+GUIDE_ID  ,STAGE_ID  ,APPLY_OBJ  ,ACCEPT_COND  ,LEGAL_DAY  ,LEGAL_TYPE  ,LEGAL_DESC  ,PROMISE_DAY  ,PROMISE_TYPE  ,PROMISE_DESC  ,COMSUP_ADDRESS  ,COMSUP_EMAIL  ,COMSUP_LETTER  ,COMSUP_TEL  ,COMSUP_ONLINE  ,CKBLLC  ,CKBLLCT  ,WSBLLC  ,WSBLLCT  ,HANDLE_FLOW  ,HANDLE_TIMELIMIT_DESC  ,GUIDE_DEMO  ,WARM_PROMPT  ,GUIDE_ATT,ROOT_ORG_ID
+    )  values  (
+#{guideId},#{stageId},#{applyObj},#{acceptCond},#{legalDay},#{legalType},#{legalDesc},#{promiseDay},#{promiseType},#{promiseDesc},#{comsupAddress},#{comsupEmail},#{comsupLetter},#{comsupTel},#{comsupOnline},#{ckbllc},#{ckbllct},#{wsbllc},#{wsbllct},#{handleFlow},#{handleTimelimitDesc},#{guideDemo},#{warmPrompt},  #{guideAtt},#{rootOrgId}
+    )
+</insert>
+    <!--6 修改实体对象 -->
+    <update id="updateAeaParStageGuide" parameterType="AeaParStageGuide">
+        update AEA_PAR_STAGE_GUIDE
+        <set>
+            <if test="guideId != null">
+                GUIDE_ID = #{guideId},
+            </if>
+            <if test="stageId != null">
+                STAGE_ID = #{stageId},
+            </if>
+            <if test="applyObj != null">
+                APPLY_OBJ = #{applyObj},
+            </if>
+            <if test="acceptCond != null">
+                ACCEPT_COND = #{acceptCond},
+            </if>
+            <if test="legalDay != null">
+                LEGAL_DAY = #{legalDay},
+            </if>
+            <if test="legalType != null">
+                LEGAL_TYPE = #{legalType},
+            </if>
+            <if test="legalDesc != null">
+                LEGAL_DESC = #{legalDesc},
+            </if>
+            <if test="promiseDay != null">
+                PROMISE_DAY = #{promiseDay},
+            </if>
+            <if test="promiseType != null">
+                PROMISE_TYPE = #{promiseType},
+            </if>
+            <if test="promiseDesc != null">
+                PROMISE_DESC = #{promiseDesc},
+            </if>
+            <if test="comsupAddress != null">
+                COMSUP_ADDRESS = #{comsupAddress},
+            </if>
+            <if test="comsupEmail != null">
+                COMSUP_EMAIL = #{comsupEmail},
+            </if>
+            <if test="comsupLetter != null">
+                COMSUP_LETTER = #{comsupLetter},
+            </if>
+            <if test="comsupTel != null">
+                COMSUP_TEL = #{comsupTel},
+            </if>
+            <if test="comsupOnline != null">
+                COMSUP_ONLINE = #{comsupOnline},
+            </if>
+            <if test="ckbllc != null">
+                CKBLLC = #{ckbllc},
+            </if>
+            <if test="ckbllct != null">
+                CKBLLCT = #{ckbllct},
+            </if>
+            <if test="wsbllc != null">
+                WSBLLC = #{wsbllc},
+            </if>
+            <if test="wsbllct != null">
+                WSBLLCT = #{wsbllct},
+            </if>
+            <if test="handleFlow != null">
+                HANDLE_FLOW = #{handleFlow},
+            </if>
+            <if test="handleTimelimitDesc != null">
+                HANDLE_TIMELIMIT_DESC = #{handleTimelimitDesc},
+            </if>
+            <if test="guideDemo != null">
+                GUIDE_DEMO = #{guideDemo},
+            </if>
+            <if test="warmPrompt != null">
+                WARM_PROMPT = #{warmPrompt},
+            </if>
+            <if test="guideAtt != null">
+                GUIDE_ATT = #{guideAtt},
+            </if>
+            <if test="rootOrgId != null">
+                ROOT_ORG_ID = #{rootOrgId},
+            </if>
+        </set>
+        where GUIDE_ID = #{guideId}
+    </update>
+    <!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaParStageGuide">
+        delete from   AEA_PAR_STAGE_GUIDE
+        where
+    GUIDE_ID = #{id}
+    </delete>
+    <!--8 删除实体对象列表,根据主键ID列表 -->
+    <!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaParStageGuide" id="AeaParStageGuideMap">
+        <id property="guideId" column="GUIDE_ID"/>
+        <result property="stageId" column="STAGE_ID"/>
+        <result property="applyObj" column="APPLY_OBJ"/>
+        <result property="acceptCond" column="ACCEPT_COND"/>
+        <result property="legalDay" column="LEGAL_DAY"/>
+        <result property="legalType" column="LEGAL_TYPE"/>
+        <result property="legalDesc" column="LEGAL_DESC"/>
+        <result property="promiseDay" column="PROMISE_DAY"/>
+        <result property="promiseType" column="PROMISE_TYPE"/>
+        <result property="promiseDesc" column="PROMISE_DESC"/>
+        <result property="comsupAddress" column="COMSUP_ADDRESS"/>
+        <result property="comsupEmail" column="COMSUP_EMAIL"/>
+        <result property="comsupLetter" column="COMSUP_LETTER"/>
+        <result property="comsupTel" column="COMSUP_TEL"/>
+        <result property="comsupOnline" column="COMSUP_ONLINE"/>
+        <result property="ckbllc" column="CKBLLC"/>
+        <result property="ckbllct" column="CKBLLCT"/>
+        <result property="wsbllc" column="WSBLLC"/>
+        <result property="wsbllct" column="WSBLLCT"/>
+        <result property="handleFlow" column="HANDLE_FLOW"/>
+        <result property="handleTimelimitDesc" column="HANDLE_TIMELIMIT_DESC"/>
+        <result property="guideDemo" column="GUIDE_DEMO"/>
+        <result property="warmPrompt" column="WARM_PROMPT"/>
+        <result property="guideAtt" column="GUIDE_ATT"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+    </resultMap>
+
+    <select id="getAeaParStageGuideById2" resultType="java.util.HashMap">
+        select *
+        from AEA_PAR_STAGE_GUIDE
+        where GUIDE_ID = #{id}
+    </select>
+</mapper>

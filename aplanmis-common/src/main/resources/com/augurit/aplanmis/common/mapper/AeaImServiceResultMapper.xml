@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by tiantian    2019-06-20 09:10:47 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaImServiceResultMapper" >
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns" >
+    SERVICE_RESULT_ID  serviceResultId,
+    UPLOAD_TIME  uploadTime,
+    END_TIME  endTime,
+    MEMO  memo,
+    PROJ_PURCHASE_ID  projPurchaseId,
+    AUDIT_FLAG  auditFlag,
+    CREATER  creater,
+    CREATE_TIME  createTime,
+    MODIFIER  modifier,
+    MODIFY_TIME  modifyTime,
+    LINKMAN_INFO_ID  linkmanInfoId,
+    UNIT_BIDDING_ID  unitBiddingId,
+    IS_EXTERNAL_UPLOAD  isExternalUpload,
+    ROOT_ORG_ID rootOrgId
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaImServiceResultById" resultType="AeaImServiceResult" >
+        select
+        <include refid="allColumns"/>
+        from    AEA_IM_SERVICE_RESULT
+        where    SERVICE_RESULT_ID = #{id}
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaImServiceResult" resultType="AeaImServiceResult" >
+        select
+        <include refid="allColumns"/>
+        from    AEA_IM_SERVICE_RESULT
+        <where>
+            <if test="serviceResultId != null" >
+                AND    SERVICE_RESULT_ID = #{serviceResultId}
+            </if>
+            <if test="uploadTime != null" >
+                AND    UPLOAD_TIME = #{uploadTime}
+            </if>
+            <if test="endTime != null" >
+                AND    END_TIME = #{endTime}
+            </if>
+            <if test="memo != null" >
+                AND    MEMO = #{memo}
+            </if>
+            <if test="projPurchaseId != null" >
+                AND    PROJ_PURCHASE_ID = #{projPurchaseId}
+            </if>
+            <if test="auditFlag != null" >
+                AND    AUDIT_FLAG = #{auditFlag}
+            </if>
+            <if test="creater != null" >
+                AND    CREATER = #{creater}
+            </if>
+            <if test="createTime != null" >
+                AND    CREATE_TIME = #{createTime}
+            </if>
+            <if test="modifier != null" >
+                AND    MODIFIER = #{modifier}
+            </if>
+            <if test="modifyTime != null" >
+                AND    MODIFY_TIME = #{modifyTime}
+            </if>
+            <if test="linkmanInfoId != null" >
+                AND    LINKMAN_INFO_ID = #{linkmanInfoId}
+            </if>
+            <if test="unitBiddingId != null" >
+                AND    UNIT_BIDDING_ID = #{unitBiddingId}
+            </if>
+            <if test="isExternalUpload != null" >
+                AND    IS_EXTERNAL_UPLOAD = #{isExternalUpload}
+            </if>
+            <if test="rootOrgId != null" >
+                AND    ROOT_ORG_ID = #{rootOrgId}
+            </if>
+        </where>
+    </select>
+    <!--4 根据条件查询实体list,返回分页对象 -->
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaImServiceResult" parameterType="AeaImServiceResult" >
+    insert into AEA_IM_SERVICE_RESULT (
+SERVICE_RESULT_ID  ,UPLOAD_TIME  ,END_TIME  ,MEMO  ,PROJ_PURCHASE_ID  ,AUDIT_FLAG  ,CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME  ,LINKMAN_INFO_ID  ,UNIT_BIDDING_ID  ,IS_EXTERNAL_UPLOAD,ROOT_ORG_ID
+    )  values  (
+#{serviceResultId},#{uploadTime},#{endTime},#{memo},#{projPurchaseId},#{auditFlag},#{creater},#{createTime},#{modifier},#{modifyTime},#{linkmanInfoId},#{unitBiddingId},  #{isExternalUpload},#{rootOrgId}
+    )
+</insert>
+    <!--6 修改实体对象 -->
+    <update id="updateAeaImServiceResult" parameterType="AeaImServiceResult" >
+        update AEA_IM_SERVICE_RESULT
+        <set >
+            <if test="serviceResultId != null" >
+                SERVICE_RESULT_ID = #{serviceResultId},
+            </if>
+            <if test="uploadTime != null" >
+                UPLOAD_TIME = #{uploadTime},
+            </if>
+            <if test="endTime != null" >
+                END_TIME = #{endTime},
+            </if>
+            <if test="memo != null" >
+                MEMO = #{memo},
+            </if>
+            <if test="projPurchaseId != null" >
+                PROJ_PURCHASE_ID = #{projPurchaseId},
+            </if>
+            <if test="auditFlag != null" >
+                AUDIT_FLAG = #{auditFlag},
+            </if>
+            <if test="creater != null" >
+                CREATER = #{creater},
+            </if>
+            <if test="createTime != null" >
+                CREATE_TIME = #{createTime},
+            </if>
+            <if test="modifier != null" >
+                MODIFIER = #{modifier},
+            </if>
+            <if test="modifyTime != null" >
+                MODIFY_TIME = #{modifyTime},
+            </if>
+            <if test="linkmanInfoId != null" >
+                LINKMAN_INFO_ID = #{linkmanInfoId},
+            </if>
+            <if test="unitBiddingId != null" >
+                UNIT_BIDDING_ID = #{unitBiddingId},
+            </if>
+            <if test="isExternalUpload != null" >
+                IS_EXTERNAL_UPLOAD = #{isExternalUpload},
+            </if>
+            <if test="rootOrgId != null" >
+                ROOT_ORG_ID = #{rootOrgId},
+            </if>
+        </set>
+        where SERVICE_RESULT_ID = #{serviceResultId}
+    </update>
+    <!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaImServiceResult">
+        delete from   AEA_IM_SERVICE_RESULT
+        where
+    SERVICE_RESULT_ID = #{id}
+    </delete>
+    <!--8 删除实体对象列表,根据主键ID列表 -->
+    <!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaImServiceResult" id="AeaImServiceResultMap">
+        <id property="serviceResultId" column="SERVICE_RESULT_ID"/>
+        <result property="uploadTime" column="UPLOAD_TIME"/>
+        <result property="endTime" column="END_TIME"/>
+        <result property="memo" column="MEMO"/>
+        <result property="projPurchaseId" column="PROJ_PURCHASE_ID"/>
+        <result property="auditFlag" column="AUDIT_FLAG"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="modifier" column="MODIFIER"/>
+        <result property="modifyTime" column="MODIFY_TIME"/>
+        <result property="linkmanInfoId" column="LINKMAN_INFO_ID"/>
+        <result property="unitBiddingId" column="UNIT_BIDDING_ID"/>
+        <result property="isExternalUpload" column="IS_EXTERNAL_UPLOAD"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+    </resultMap>
+
+
+
+    <select id="getServiceProjInfoList" resultType="com.augurit.aplanmis.common.vo.ServiceProjInfoVo" >
+        select
+        aipp.PROJ_PURCHASE_ID projPurchaseId,
+        api.PROJ_NAME projName,
+        aic.PRICE price,
+        aic.SERVICE_START_TIME serviceStartTime,
+        aic.SERVICE_END_TIME serviceEndTime,
+        aipp.AUDIT_FLAG projAuditFlag,
+        aic.CONTRACT_ID contractId,
+        aisr.SERVICE_RESULT_ID  serviceResultId,
+        aiub.UNIT_BIDDING_ID unitBiddingId,
+        aisr.AUDIT_FLAG resultAuditFlag
+        from AEA_IM_CONTRACT aic
+        left join AEA_IM_PROJ_PURCHASE aipp on aic.PROJ_PURCHASE_ID = aipp.PROJ_PURCHASE_ID
+        left join AEA_PROJ_INFO api on api.PROJ_INFO_ID = aipp.PROJ_INFO_ID
+        left join AEA_IM_UNIT_BIDDING aiub on aiub.PROJ_PURCHASE_ID = aipp.PROJ_PURCHASE_ID
+        left join AEA_IM_SERVICE_RESULT aisr on aisr.UNIT_BIDDING_ID = aiub.UNIT_BIDDING_ID
+        <where>
+            aiub.UNIT_INFO_ID = #{unitInfoId}
+            and aiub.IS_DELETE != '1'
+            and aiub.IS_WON_BID = '1'
+            and aic.AUDIT_FLAG = '1'
+            and aic.IS_DELETE != '1'
+            <if test="auditFlag != null and auditFlag!=''">
+                AND aipp.AUDIT_FLAG = #{auditFlag}
+            </if>
+            <if test="keyword != null and keyword!=''">
+                AND (
+                api.PROJ_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                )
+            </if>
+        </where>
+        order by aic.SIGN_TIME DESC
+    </select>
+</mapper>

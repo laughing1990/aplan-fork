@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by tiantian    2018-10-20 10:26:49 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaItemAgencyAuxMapper">
+    <sql id="allColumns">
+        agencyAux.AGENCY_AUX_ID agencyAuxId,
+        agencyAux.AGENCY_ID agencyId,
+        agencyAux.AUX_SERVICE_ID  auxServiceId,
+        agencyAux.CREATER creater,
+        agencyAux.CREATE_TIME createrTime,
+        agencyAux.MODIFIER modifier,
+        agencyAux.MODIFY_TIME modifyTime
+    </sql>
+
+    <!-- 新增实体对象 -->
+    <insert id="insertAeaItemAgencyAux" parameterType="AeaItemAgencyAux">
+        insert into AEA_ITEM_AGENCY_AUX (
+        AGENCY_AUX_ID,
+        AGENCY_ID,
+        AUX_SERVICE_ID,
+        CREATER,
+        CREATE_TIME,
+        MODIFIER,
+        MODIFY_TIME
+        ) values  (
+        #{agencyAuxId},
+        #{agencyId},
+        #{auxServiceId},
+        #{creater},
+        #{createrTime},
+        #{modifier},
+        #{modifyTime}
+        )
+    </insert>
+
+    <!-- 删除一条实体对象 -->
+    <delete id="deleteAeaItemAgencyAux" parameterType="java.lang.String">
+        delete AEA_ITEM_AGENCY_AUX where AGENCY_AUX_ID = #{agencyAuxId}
+    </delete>
+
+    <!-- 更新实体对象 -->
+    <update id="updateAeaItemAgencyAux" parameterType="AeaItemAgencyAux">
+        update AEA_ITEM_AGENCY_AUX
+        <set>
+            <if test="agencyAuxId != null and agencyAuxId != '' ">
+                AGENCY_AUX_ID = #{agencyAuxId},
+            </if>
+            <if test="agencyId != null and agencyId != '' ">
+                AGENCY_ID = #{agencyId},
+            </if>
+            <if test="auxServiceId != null and auxServiceId != '' ">
+                AUX_SERVICE_ID = #{auxServiceId},
+            </if>
+            <if test="creater != null and creater != '' ">
+                CREATER = #{creater},
+            </if>
+            <if test="createrTime != null and createrTime != '' ">
+                CREATE_TIME = #{createrTime},
+            </if>
+            <if test="modifier != null and modifier != '' ">
+                MODIFIER = #{modifier},
+            </if>
+            <if test="modifyTime != null and modifyTime != '' ">
+                MODIFY_TIME = #{modifyTime},
+            </if>
+        </set>
+        where AGENCY_AUX_ID = #{agencyAuxId}
+    </update>
+
+    <!-- 根据条件查询实体对象 -->
+    <select id="listAeaItemAgencyAux" resultType="AeaItemAgencyAux">
+        select
+        <include refid="allColumns" />
+        from AEA_ITEM_AGENCY_AUX agencyAux
+        <where>
+            <if test="agencyAuxId != null and agencyAuxId != '' ">
+                AND agencyAux.AGENCY_AUX_ID = #{agencyAuxId}
+            </if>
+            <if test="agencyId != null and agencyId != '' ">
+                AND agencyAux.AGENCY_ID = #{agencyId}
+            </if>
+            <if test="auxServiceId != null and auxServiceId != '' ">
+                AND agencyAux.AUX_SERVICE_ID = #{auxServiceId}
+            </if>
+            <if test="creater != null and creater != '' ">
+                AND agencyAux.CREATER = #{creater}
+            </if>
+            <if test="createrTime != null and createrTime != '' ">
+                AND agencyAux.CREATE_TIME = #{createrTime}
+            </if>
+            <if test="modifier != null and modifier != '' ">
+                AND agencyAux.MODIFIER = #{modifier}
+            </if>
+            <if test="modifyTime != null and modifyTime != '' ">
+                AND agencyAux.MODIFY_TIME = #{modifyTime}
+            </if>
+        </where>
+    </select>
+
+    <select id="getAeaItemAgencyAuxById" parameterType="java.lang.String" resultType="AeaItemAgencyAux">
+        select
+        <include refid="allColumns" />
+        from AEA_ITEM_AGENCY_AUX agencyAux
+        where agencyAux.AGENCY_AUX_ID = #{agencyAuxId}
+    </select>
+
+    <delete id="batchDeleteAeaItemAgency">
+        delete AEA_ITEM_AGENCY_AUX where AGENCY_AUX_ID in
+        <foreach collection="agencyAuxIds" item="agencyAuxId" open="(" close=")" separator=",">
+            #{agencyAuxId}
+        </foreach>
+    </delete>
+
+    <select id="getAeaItemAgencyAuxByAgencyId" resultType="AeaItemAgencyAux">
+        select
+        <include refid="allColumns" />
+        from AEA_ITEM_AGENCY_AUX agencyAux
+        where agencyAux.AGENCY_ID = #{agencyId}
+    </select>
+
+</mapper>

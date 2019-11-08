@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by 27398    2018-11-14 21:06:01 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaItemAuxServiceMapper" >
+<!--1 返回所有字段的SQL字句 -->
+<sql id="allColumns" >
+    AUX_SERVICE_ID  auxServiceId,
+    FWXMMC  fwxmmc,
+    XZFWJGFS  xzfwjgfs,
+    FWJGMC  fwjgmc,
+    FWJGXZ  fwjgxz,
+    FWSX  fwsx,
+    SYQX  syqx,
+    YWSF  ywsf,
+    SFLX  sflx,
+    SFBZ  sfbz,
+    SFJMQX  sfjmqx
+    </sql>
+
+<!--2 根据主键ID查询单个实体 -->
+<select id="getAeaItemAuxServiceById" resultType="AeaItemAuxService" >
+    select
+    <include refid="allColumns"/>
+    from    AEA_ITEM_AUX_SERVICE
+    where    AUX_SERVICE_ID = #{auxServiceId}
+</select>
+
+<!--3 根据条件查询实体list -->
+    <select id="listAeaItemAuxService" resultType="AeaItemAuxService" >
+        select
+        <include refid="allColumns"/>
+        from    AEA_ITEM_AUX_SERVICE
+    <where>
+        <if test="auxServiceId != null" >
+        AND    AUX_SERVICE_ID = #{auxServiceId}
+        </if>
+        <if test="fwxmmc != null" >
+        AND    FWXMMC = #{fwxmmc}
+        </if>
+        <if test="xzfwjgfs != null" >
+        AND    XZFWJGFS = #{xzfwjgfs}
+        </if>
+        <if test="fwjgmc != null" >
+        AND    FWJGMC = #{fwjgmc}
+        </if>
+        <if test="fwjgxz != null" >
+        AND    FWJGXZ = #{fwjgxz}
+        </if>
+        <if test="fwsx != null" >
+        AND    FWSX = #{fwsx}
+        </if>
+        <if test="syqx != null" >
+        AND    SYQX = #{syqx}
+        </if>
+        <if test="ywsf != null" >
+        AND    YWSF = #{ywsf}
+        </if>
+        <if test="sflx != null" >
+        AND    SFLX = #{sflx}
+        </if>
+        <if test="sfbz != null" >
+        AND    SFBZ = #{sfbz}
+        </if>
+        <if test="sfjmqx != null" >
+        AND    SFJMQX = #{sfjmqx}
+        </if>
+    </where>
+    </select>
+<!--4 根据条件查询实体list,返回分页对象 -->
+
+<!--5 新增实体对象 -->
+<insert id="insertAeaItemAuxService" parameterType="AeaItemAuxService" >
+    insert into AEA_ITEM_AUX_SERVICE (
+AUX_SERVICE_ID  ,FWXMMC  ,XZFWJGFS  ,FWJGMC  ,FWJGXZ  ,FWSX  ,SYQX  ,YWSF  ,SFLX  ,SFBZ  ,SFJMQX  
+    )  values  (
+#{auxServiceId},#{fwxmmc},#{xzfwjgfs},#{fwjgmc},#{fwjgxz},#{fwsx},#{syqx},#{ywsf},#{sflx},#{sfbz},  #{sfjmqx}
+    )
+</insert>
+<!--6 修改实体对象 -->
+<update id="updateAeaItemAuxService" parameterType="AeaItemAuxService" >
+    update AEA_ITEM_AUX_SERVICE
+    <set >
+        <if test="auxServiceId != null" >
+        AUX_SERVICE_ID = #{auxServiceId},
+        </if>
+        <if test="fwxmmc != null" >
+        FWXMMC = #{fwxmmc},
+        </if>
+        <if test="xzfwjgfs != null" >
+        XZFWJGFS = #{xzfwjgfs},
+        </if>
+        <if test="fwjgmc != null" >
+        FWJGMC = #{fwjgmc},
+        </if>
+        <if test="fwjgxz != null" >
+        FWJGXZ = #{fwjgxz},
+        </if>
+        <if test="fwsx != null" >
+        FWSX = #{fwsx},
+        </if>
+        <if test="syqx != null" >
+        SYQX = #{syqx},
+        </if>
+        <if test="ywsf != null" >
+        YWSF = #{ywsf},
+        </if>
+        <if test="sflx != null" >
+        SFLX = #{sflx},
+        </if>
+        <if test="sfbz != null" >
+        SFBZ = #{sfbz},
+        </if>
+        <if test="sfjmqx != null" >
+        SFJMQX = #{sfjmqx},
+        </if>
+    </set>
+    where AUX_SERVICE_ID = #{auxServiceId}
+</update>
+<!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaItemAuxService">
+        delete from   AEA_ITEM_AUX_SERVICE
+        where
+    AUX_SERVICE_ID = #{auxServiceId}
+    </delete>
+<!--8 删除实体对象列表,根据主键ID列表 -->
+<!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaItemAuxService" id="AeaItemAuxServiceMap">
+        <id property="auxServiceId" column="AUX_SERVICE_ID"/>
+        <result property="fwxmmc" column="FWXMMC"/>
+        <result property="xzfwjgfs" column="XZFWJGFS"/>
+        <result property="fwjgmc" column="FWJGMC"/>
+        <result property="fwjgxz" column="FWJGXZ"/>
+        <result property="fwsx" column="FWSX"/>
+        <result property="syqx" column="SYQX"/>
+        <result property="ywsf" column="YWSF"/>
+        <result property="sflx" column="SFLX"/>
+        <result property="sfbz" column="SFBZ"/>
+        <result property="sfjmqx" column="SFJMQX"/>
+    </resultMap>
+</mapper>

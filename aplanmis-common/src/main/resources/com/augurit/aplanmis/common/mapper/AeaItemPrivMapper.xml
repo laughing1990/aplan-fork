@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by yinlf    2019-07-25 14:14:42 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaItemPrivMapper">
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns">
+        PRIV_ID  privId,
+        ITEM_VER_ID  itemVerId,
+        REGION_ID  regionId,
+        ROOT_ORG_ID  rootOrgId,
+        ORG_ID  orgId,
+        IS_ACTIVE  isActive,
+        USE_EL  useEl,
+        EL_EXPR  elExpr,
+        ALLOW_MANUAL  allowManual,
+        CREATER  creater,
+        CREATE_TIME  createTime,
+        MODIFIER  modifier,
+        MODIFY_TIME  modifyTime
+    </sql>
+
+    <sql id="aip_allColumns" >
+        aip.PRIV_ID  privId,
+        aip.ITEM_VER_ID  itemVerId,
+        aip.REGION_ID  regionId,
+        aip.ROOT_ORG_ID  rootOrgId,
+        aip.ORG_ID  orgId,
+        aip.IS_ACTIVE  isActive,
+        aip.USE_EL  useEl,
+        aip.EL_EXPR  elExpr,
+        aip.ALLOW_MANUAL  allowManual,
+        aip.CREATER  creater,
+        aip.CREATE_TIME  createTime,
+        aip.MODIFIER  modifier,
+        aip.MODIFY_TIME  modifyTime
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaItemPrivById" resultType="AeaItemPriv">
+        select
+        <include refid="allColumns"/>
+        from AEA_ITEM_PRIV
+        where PRIV_ID = #{id}
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaItemPriv" resultType="AeaItemPriv">
+        select
+        <include refid="allColumns"/>
+        from AEA_ITEM_PRIV
+        <where>
+            <if test="privId != null">
+                AND PRIV_ID = #{privId}
+            </if>
+            <if test="itemVerId != null">
+                AND ITEM_VER_ID = #{itemVerId}
+            </if>
+            <if test="regionId != null">
+                AND REGION_ID = #{regionId}
+            </if>
+            <if test="rootOrgId != null">
+                AND ROOT_ORG_ID = #{rootOrgId}
+            </if>
+            <if test="orgId != null">
+                AND ORG_ID = #{orgId}
+            </if>
+            <if test="isActive != null">
+                AND IS_ACTIVE = #{isActive}
+            </if>
+            <if test="useEl != null">
+                AND USE_EL = #{useEl}
+            </if>
+            <if test="elExpr != null">
+                AND EL_EXPR = #{elExpr}
+            </if>
+            <if test="allowManual != null">
+                AND ALLOW_MANUAL = #{allowManual}
+            </if>
+            <if test="creater != null">
+                AND CREATER = #{creater}
+            </if>
+            <if test="createTime != null">
+                AND CREATE_TIME = #{createTime}
+            </if>
+            <if test="modifier != null">
+                AND MODIFIER = #{modifier}
+            </if>
+            <if test="modifyTime != null">
+                AND MODIFY_TIME = #{modifyTime}
+            </if>
+        </where>
+    </select>
+    <!--4 根据条件查询实体list,返回分页对象 -->
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaItemPriv" parameterType="AeaItemPriv">
+        insert into AEA_ITEM_PRIV (
+    PRIV_ID  ,ITEM_VER_ID  ,REGION_ID  ,ROOT_ORG_ID  ,ORG_ID  ,IS_ACTIVE  ,USE_EL  ,EL_EXPR  ,ALLOW_MANUAL  ,CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME  
+        )  values  (
+    #{privId},#{itemVerId},#{regionId},#{rootOrgId},#{orgId},#{isActive},#{useEl},#{elExpr},#{allowManual},#{creater},#{createTime},#{modifier},  #{modifyTime}
+        )
+    </insert>
+    <!--6 修改实体对象 -->
+    <update id="updateAeaItemPriv" parameterType="AeaItemPriv">
+        update AEA_ITEM_PRIV
+        <set>
+            <if test="privId != null">
+                PRIV_ID = #{privId},
+            </if>
+            <if test="itemVerId != null">
+                ITEM_VER_ID = #{itemVerId},
+            </if>
+            <if test="regionId != null">
+                REGION_ID = #{regionId},
+            </if>
+            <if test="rootOrgId != null">
+                ROOT_ORG_ID = #{rootOrgId},
+            </if>
+            <if test="orgId != null">
+                ORG_ID = #{orgId},
+            </if>
+            <if test="isActive != null">
+                IS_ACTIVE = #{isActive},
+            </if>
+            <if test="useEl != null">
+                USE_EL = #{useEl},
+            </if>
+            <if test="elExpr != null">
+                EL_EXPR = #{elExpr},
+            </if>
+            <if test="allowManual != null">
+                ALLOW_MANUAL = #{allowManual},
+            </if>
+            <if test="creater != null">
+                CREATER = #{creater},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime},
+            </if>
+            <if test="modifier != null">
+                MODIFIER = #{modifier},
+            </if>
+            <if test="modifyTime != null">
+                MODIFY_TIME = #{modifyTime},
+            </if>
+        </set>
+        where PRIV_ID = #{privId}
+    </update>
+    <!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaItemPriv">
+        delete from AEA_ITEM_PRIV
+        where PRIV_ID = #{id}
+    </delete>
+    <!--8 删除实体对象列表,根据主键ID列表 -->
+    <!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaItemPriv" id="AeaItemPrivMap">
+        <id property="privId" column="PRIV_ID"/>
+        <result property="itemVerId" column="ITEM_VER_ID"/>
+        <result property="regionId" column="REGION_ID"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+        <result property="orgId" column="ORG_ID"/>
+        <result property="isActive" column="IS_ACTIVE"/>
+        <result property="useEl" column="USE_EL"/>
+        <result property="elExpr" column="EL_EXPR"/>
+        <result property="allowManual" column="ALLOW_MANUAL"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="modifier" column="MODIFIER"/>
+        <result property="modifyTime" column="MODIFY_TIME"/>
+    </resultMap>
+
+    <select id="findItemPrivByRegionIdAndItemVerId" resultType="AeaItemPriv">
+        select
+        <include refid="allColumns"/>
+        from AEA_ITEM_PRIV
+        where REGION_ID = #{regionId}
+            AND IS_ACTIVE = '1'
+            AND ITEM_VER_ID IN
+        <foreach collection="itemVerIds" item="itemVerId" open="(" separator="," close=")">
+            #{itemVerId}
+        </foreach>
+    </select>
+
+    <delete id="deleteAeaItemPrivByItemVerIdAndRegionIdAndOrgId">
+        delete from AEA_ITEM_PRIV
+        where ITEM_VER_ID = #{itemVerId} AND REGION_ID = #{regionId} AND ORG_ID = #{orgId}
+    </delete>
+
+    <select id="listPrivListByItemVerId" resultType="AeaItemPriv" >
+        select
+            <include refid="aip_allColumns"/>,
+            bdr.REGION_NAME regionName,
+            org.ORG_NAME orgName
+        FROM AEA_ITEM_PRIV aip
+        LEFT JOIN bsc_dic_region bdr ON aip.REGION_ID = bdr.REGION_ID
+        LEFT JOIN opu_om_org org ON aip.ORG_ID = org.ORG_ID
+        WHERE ITEM_VER_ID = #{itemVerId}
+        <if test="keyword != null and keyword !='' ">
+            AND (
+                org.ORG_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%') OR
+                bdr.REGION_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+            )
+        </if>
+    </select>
+</mapper>

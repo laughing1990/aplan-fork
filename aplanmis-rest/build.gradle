@@ -1,0 +1,26 @@
+archivesBaseName = 'aplanmis-rest'
+
+apply plugin: 'war'
+
+dependencies {
+	compile project(':aplanmis-common')
+
+	compile('io.jsonwebtoken:jjwt:0.7.0')
+	compile('net.glxn.qrgen:javase:2.0')
+	compile group: 'org.apache.poi', name: 'poi', version: '4.0.1'
+	compile('org.springframework.boot:spring-boot-starter-freemarker:2.0.1.RELEASE')
+	compile('org.springframework.cloud:spring-cloud-starter-oauth2')
+//	compile('org.locationtech.jts:jts-core:1.16.0')
+	compile "com.augurit.agcloud:agcloud-framework-no-sso:${agcloudVersion}"
+
+	compile('org.htmlparser:htmlparser:1.6')
+	compile('org.tinyjee.jgraphx:jgraphx:1.10.4.1')
+
+	compile("org.webjars:jquery:3.4.0")
+	compile("org.webjars:bootstrap:4.3.1")
+	compile("org.webjars:webjars-locator:0.36")
+
+	compile fileTree(include: ['*.jar'], dir: 'lib')
+	
+	runtime("org.apache.tomcat.embed:tomcat-embed-jasper")
+}

@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by zhangwn    2019-09-23 16:10:17 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaAnaWinUseTimeStatisticsMapper" >
+<!--1 返回所有字段的SQL字句 -->
+<sql id="allColumns" >
+    USE_TIME_STATISTICS_ID  useTimeStatisticsId,
+    STATISTICS_RECORD_ID  statisticsRecordId,
+    APPLYINST_ID  applyinstId,
+    TIMERULE_INST_ID  timeruleInstId,
+    USE_TIME_TYPE  useTimeType,
+    IS_COMPLETED  isCompleted,
+    IS_SERIES_APPROVE  isSeriesApprove,
+    STAGE_NAME  stageName,
+    THEME_NAME  themeName,
+    ITEM_NAME  itemName,
+    ITEM_PROPERTY  itemProperty,
+    WINDOW_ID  windowId,
+    WINDOW_NAME  windowName,
+    PROJ_NAME  projName,
+    REGION_ID  regionId,
+    REGION_NAME  regionName,
+    APPLY_SOURCE  applySource,
+    TIME_LIMIT  timeLimit,
+    TIMERULE_UNIT  timeruleUnit,
+    USE_LIMIT_TIME  useLimitTime,
+    REMAINING_TIME  remainingTime,
+    OVERDUE_TIME  overdueTime,
+    USE_TIME_RATE  useTimeRate,
+    IS_ALL_COUNT  isAllCount,
+    STATISTICS_START_DATE  statisticsStartDate,
+    STATISTICS_END_DATE  statisticsEndDate,
+    MEMO  memo,
+    CREATER  creater,
+    CREATE_TIME  createTime,
+    ROOT_ORG_ID  rootOrgId
+    </sql>
+
+<!--2 根据主键ID查询单个实体 -->
+<select id="getAeaAnaWinUseTimeStatisticsById" resultType="AeaAnaWinUseTimeStatistics" >
+    select
+    <include refid="allColumns"/>
+    from    AEA_ANA_WIN_USE_TIME_STATISTICS
+    where    USE_TIME_STATISTICS_ID = #{id}
+</select>
+
+<!--3 根据条件查询实体list -->
+    <select id="listAeaAnaWinUseTimeStatistics" resultType="AeaAnaWinUseTimeStatistics" >
+        select
+        <include refid="allColumns"/>
+        from    AEA_ANA_WIN_USE_TIME_STATISTICS
+    <where>
+        <if test="useTimeStatisticsId != null" >
+        AND    USE_TIME_STATISTICS_ID = #{useTimeStatisticsId}
+        </if>
+        <if test="statisticsRecordId != null" >
+        AND    STATISTICS_RECORD_ID = #{statisticsRecordId}
+        </if>
+        <if test="applyinstId != null" >
+        AND    APPLYINST_ID = #{applyinstId}
+        </if>
+        <if test="timeruleInstId != null" >
+        AND    TIMERULE_INST_ID = #{timeruleInstId}
+        </if>
+        <if test="useTimeType != null" >
+        AND    USE_TIME_TYPE = #{useTimeType}
+        </if>
+        <if test="isCompleted != null" >
+        AND    IS_COMPLETED = #{isCompleted}
+        </if>
+        <if test="isSeriesApprove != null" >
+        AND    IS_SERIES_APPROVE = #{isSeriesApprove}
+        </if>
+        <if test="stageName != null" >
+        AND    STAGE_NAME = #{stageName}
+        </if>
+        <if test="themeName != null" >
+        AND    THEME_NAME = #{themeName}
+        </if>
+        <if test="itemName != null" >
+        AND    ITEM_NAME = #{itemName}
+        </if>
+        <if test="itemProperty != null" >
+        AND    ITEM_PROPERTY = #{itemProperty}
+        </if>
+        <if test="windowId != null" >
+        AND    WINDOW_ID = #{windowId}
+        </if>
+        <if test="windowName != null" >
+        AND    WINDOW_NAME = #{windowName}
+        </if>
+        <if test="projName != null" >
+        AND    PROJ_NAME = #{projName}
+        </if>
+        <if test="regionId != null" >
+        AND    REGION_ID = #{regionId}
+        </if>
+        <if test="regionName != null" >
+        AND    REGION_NAME = #{regionName}
+        </if>
+        <if test="applySource != null" >
+        AND    APPLY_SOURCE = #{applySource}
+        </if>
+        <if test="timeLimit != null" >
+        AND    TIME_LIMIT = #{timeLimit}
+        </if>
+        <if test="timeruleUnit != null" >
+        AND    TIMERULE_UNIT = #{timeruleUnit}
+        </if>
+        <if test="useLimitTime != null" >
+        AND    USE_LIMIT_TIME = #{useLimitTime}
+        </if>
+        <if test="remainingTime != null" >
+        AND    REMAINING_TIME = #{remainingTime}
+        </if>
+        <if test="overdueTime != null" >
+        AND    OVERDUE_TIME = #{overdueTime}
+        </if>
+        <if test="useTimeRate != null" >
+        AND    USE_TIME_RATE = #{useTimeRate}
+        </if>
+        <if test="isAllCount != null" >
+        AND    IS_ALL_COUNT = #{isAllCount}
+        </if>
+        <if test="statisticsStartDate != null" >
+        AND    STATISTICS_START_DATE = #{statisticsStartDate}
+        </if>
+        <if test="statisticsEndDate != null" >
+        AND    STATISTICS_END_DATE = #{statisticsEndDate}
+        </if>
+        <if test="memo != null" >
+        AND    MEMO = #{memo}
+        </if>
+        <if test="creater != null" >
+        AND    CREATER = #{creater}
+        </if>
+        <if test="createTime != null" >
+        AND    CREATE_TIME = #{createTime}
+        </if>
+        <if test="rootOrgId != null" >
+        AND    ROOT_ORG_ID = #{rootOrgId}
+        </if>
+    </where>
+    </select>
+<!--4 根据条件查询实体list,返回分页对象 -->
+
+<!--5 新增实体对象 -->
+<insert id="insertAeaAnaWinUseTimeStatistics" parameterType="AeaAnaWinUseTimeStatistics" >
+    insert into AEA_ANA_WIN_USE_TIME_STATISTICS (
+USE_TIME_STATISTICS_ID  ,STATISTICS_RECORD_ID  ,APPLYINST_ID  ,TIMERULE_INST_ID  ,USE_TIME_TYPE  ,IS_COMPLETED  ,IS_SERIES_APPROVE  ,STAGE_NAME  ,THEME_NAME  ,ITEM_NAME  ,ITEM_PROPERTY  ,WINDOW_ID  ,WINDOW_NAME  ,PROJ_NAME  ,REGION_ID  ,REGION_NAME  ,APPLY_SOURCE  ,TIME_LIMIT  ,TIMERULE_UNIT  ,USE_LIMIT_TIME  ,REMAINING_TIME  ,OVERDUE_TIME  ,USE_TIME_RATE  ,IS_ALL_COUNT  ,STATISTICS_START_DATE  ,STATISTICS_END_DATE  ,MEMO  ,CREATER  ,CREATE_TIME  ,ROOT_ORG_ID  
+    )  values  (
+#{useTimeStatisticsId},#{statisticsRecordId},#{applyinstId},#{timeruleInstId},#{useTimeType},#{isCompleted},#{isSeriesApprove},#{stageName},#{themeName},#{itemName},#{itemProperty},#{windowId},#{windowName},#{projName},#{regionId},#{regionName},#{applySource},#{timeLimit},#{timeruleUnit},#{useLimitTime},#{remainingTime},#{overdueTime},#{useTimeRate},#{isAllCount},#{statisticsStartDate},#{statisticsEndDate},#{memo},#{creater},#{createTime},  #{rootOrgId}
+    )
+</insert>
+<!--6 修改实体对象 -->
+<update id="updateAeaAnaWinUseTimeStatistics" parameterType="AeaAnaWinUseTimeStatistics" >
+    update AEA_ANA_WIN_USE_TIME_STATISTICS
+    <set >
+        <if test="useTimeStatisticsId != null" >
+        USE_TIME_STATISTICS_ID = #{useTimeStatisticsId},
+        </if>
+        <if test="statisticsRecordId != null" >
+        STATISTICS_RECORD_ID = #{statisticsRecordId},
+        </if>
+        <if test="applyinstId != null" >
+        APPLYINST_ID = #{applyinstId},
+        </if>
+        <if test="timeruleInstId != null" >
+        TIMERULE_INST_ID = #{timeruleInstId},
+        </if>
+        <if test="useTimeType != null" >
+        USE_TIME_TYPE = #{useTimeType},
+        </if>
+        <if test="isCompleted != null" >
+        IS_COMPLETED = #{isCompleted},
+        </if>
+        <if test="isSeriesApprove != null" >
+        IS_SERIES_APPROVE = #{isSeriesApprove},
+        </if>
+        <if test="stageName != null" >
+        STAGE_NAME = #{stageName},
+        </if>
+        <if test="themeName != null" >
+        THEME_NAME = #{themeName},
+        </if>
+        <if test="itemName != null" >
+        ITEM_NAME = #{itemName},
+        </if>
+        <if test="itemProperty != null" >
+        ITEM_PROPERTY = #{itemProperty},
+        </if>
+        <if test="windowId != null" >
+        WINDOW_ID = #{windowId},
+        </if>
+        <if test="windowName != null" >
+        WINDOW_NAME = #{windowName},
+        </if>
+        <if test="projName != null" >
+        PROJ_NAME = #{projName},
+        </if>
+        <if test="regionId != null" >
+        REGION_ID = #{regionId},
+        </if>
+        <if test="regionName != null" >
+        REGION_NAME = #{regionName},
+        </if>
+        <if test="applySource != null" >
+        APPLY_SOURCE = #{applySource},
+        </if>
+        <if test="timeLimit != null" >
+        TIME_LIMIT = #{timeLimit},
+        </if>
+        <if test="timeruleUnit != null" >
+        TIMERULE_UNIT = #{timeruleUnit},
+        </if>
+        <if test="useLimitTime != null" >
+        USE_LIMIT_TIME = #{useLimitTime},
+        </if>
+        <if test="remainingTime != null" >
+        REMAINING_TIME = #{remainingTime},
+        </if>
+        <if test="overdueTime != null" >
+        OVERDUE_TIME = #{overdueTime},
+        </if>
+        <if test="useTimeRate != null" >
+        USE_TIME_RATE = #{useTimeRate},
+        </if>
+        <if test="isAllCount != null" >
+        IS_ALL_COUNT = #{isAllCount},
+        </if>
+        <if test="statisticsStartDate != null" >
+        STATISTICS_START_DATE = #{statisticsStartDate},
+        </if>
+        <if test="statisticsEndDate != null" >
+        STATISTICS_END_DATE = #{statisticsEndDate},
+        </if>
+        <if test="memo != null" >
+        MEMO = #{memo},
+        </if>
+        <if test="creater != null" >
+        CREATER = #{creater},
+        </if>
+        <if test="createTime != null" >
+        CREATE_TIME = #{createTime},
+        </if>
+        <if test="rootOrgId != null" >
+        ROOT_ORG_ID = #{rootOrgId},
+        </if>
+    </set>
+    where USE_TIME_STATISTICS_ID = #{useTimeStatisticsId}
+</update>
+<!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaAnaWinUseTimeStatistics">
+        delete from   AEA_ANA_WIN_USE_TIME_STATISTICS
+        where
+    USE_TIME_STATISTICS_ID = #{id}
+    </delete>
+<!--8 删除实体对象列表,根据主键ID列表 -->
+<!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaAnaWinUseTimeStatistics" id="AeaAnaWinUseTimeStatisticsMap">
+        <id property="useTimeStatisticsId" column="USE_TIME_STATISTICS_ID"/>
+        <result property="statisticsRecordId" column="STATISTICS_RECORD_ID"/>
+        <result property="applyinstId" column="APPLYINST_ID"/>
+        <result property="timeruleInstId" column="TIMERULE_INST_ID"/>
+        <result property="useTimeType" column="USE_TIME_TYPE"/>
+        <result property="isCompleted" column="IS_COMPLETED"/>
+        <result property="isSeriesApprove" column="IS_SERIES_APPROVE"/>
+        <result property="stageName" column="STAGE_NAME"/>
+        <result property="themeName" column="THEME_NAME"/>
+        <result property="itemName" column="ITEM_NAME"/>
+        <result property="itemProperty" column="ITEM_PROPERTY"/>
+        <result property="windowId" column="WINDOW_ID"/>
+        <result property="windowName" column="WINDOW_NAME"/>
+        <result property="projName" column="PROJ_NAME"/>
+        <result property="regionId" column="REGION_ID"/>
+        <result property="regionName" column="REGION_NAME"/>
+        <result property="applySource" column="APPLY_SOURCE"/>
+        <result property="timeLimit" column="TIME_LIMIT"/>
+        <result property="timeruleUnit" column="TIMERULE_UNIT"/>
+        <result property="useLimitTime" column="USE_LIMIT_TIME"/>
+        <result property="remainingTime" column="REMAINING_TIME"/>
+        <result property="overdueTime" column="OVERDUE_TIME"/>
+        <result property="useTimeRate" column="USE_TIME_RATE"/>
+        <result property="isAllCount" column="IS_ALL_COUNT"/>
+        <result property="statisticsStartDate" column="STATISTICS_START_DATE"/>
+        <result property="statisticsEndDate" column="STATISTICS_END_DATE"/>
+        <result property="memo" column="MEMO"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+    </resultMap>
+
+    <delete id="deleteAeaAnaWinUseTimeStatisticsByWindow">
+        delete
+        from AEA_ANA_WIN_USE_TIME_STATISTICS
+        where WINDOW_ID = #{windowId}
+        and ROOT_ORG_ID = #{rootOrgId}
+    </delete>
+</mapper>

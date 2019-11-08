@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by 23948    2019-07-04 16:40:49 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaUnitProjMapper">
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns">
+        UNIT_PROJ_ID unitProjId,
+        UNIT_INFO_ID unitInfoId,
+        IS_OWNER isOwner,
+        PROJ_INFO_ID projInfoId,
+        CREATER creater,
+        CREATE_TIME createTime,
+        UNIT_TYPE unitType,
+        LINKMAN_INFO_ID linkmanInfoId,
+        is_deleted isDeleted
+    </sql>
+    <sql id="alias_allColumns">
+        distinct (${alias}.UNIT_INFO_ID) unitInfoId,
+        ${alias}.APPLICANT applicant,
+        ${alias}.IDTYPE idtype,
+        ${alias}.IDCARD idcard,
+        ${alias}.CONTACT contact,
+        ${alias}.MOBILE mobile,
+        ${alias}.EMAIL email,
+        ${alias}.APPLICANT_DISTRICT applicantDistrict,
+        ${alias}.APPLICANT_DETAIL_SITE applicantDetailSite,
+        ${alias}.IDREPRESENTATIVE idrepresentative,
+        ${alias}.IDMOBILE idmobile,
+        ${alias}.IDNO idno,
+        ${alias}.IS_DELETED isDeleted,
+        ${alias}.CREATER creater,
+        ${alias}.CREATE_TIME createTime,
+        ${alias}.MODIFIER modifier,
+        ${alias}.MODIFY_TIME modifyTime,
+        ${alias}.IS_PRIMARY_UNIT isPrimaryUnit,
+        ${alias}.PARENT_ID parentId,
+        ${alias}.UNIT_INFO_SEQ unitInfoSeq,
+        ${alias}.LOGIN_NAME loginName,
+        ${alias}.UNIT_TYPE unitType,
+        ${alias}.LOGIN_PWD loginPwd,
+        ${alias}.MANAGEMENT_SCOPE managementScope,
+        ${alias}.REGISTERED_CAPITAL registeredCapital,
+        ${alias}.REGISTER_AUTHORITY registerAuthority,
+        ${alias}.UNIT_NATURE unitNature,
+        ${alias}.POSTAL_CODE postalCode,
+        ${alias}.IS_IM_UNIT isImUnit,
+        ${alias}.IMG_URL imgUrl,
+        ${alias}.IS_OWNER_UNIT isOwnerUnit,
+        ${alias}.indu_comm_reg_num induCommRegNum,
+        ${alias}.organizational_code organizationalCode,
+        ${alias}.unified_Social_Credit_Code unifiedSocialCreditCode,
+        ${alias}.taxpayer_Num taxpayerNum,
+        ${alias}.credit_Flag_Num creditFlagNum
+    </sql>
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaUnitProjById" resultType="AeaUnitProj">
+        select
+        <include refid="allColumns"/>
+        from AEA_UNIT_PROJ
+        where UNIT_PROJ_ID = #{id}
+    </select>
+
+    <select id="findUnitPorojByProjInfoIdAndUnitInfoId" resultType="AeaUnitProj">
+        select
+        <include refid="allColumns"/>
+        from AEA_UNIT_PROJ
+        where PROJ_INFO_ID = #{projInfoId}
+        AND UNIT_INFO_ID = #{unitInfoId}
+        AND IS_OWNER = #{isOwner}
+        and is_deleted='0'
+    </select>
+
+    <select id="findUnitPorojByProjInfoIdsAndUnitInfoIds" resultType="AeaUnitProj">
+        select
+        <include refid="allColumns"/>
+        from AEA_UNIT_PROJ
+        where PROJ_INFO_ID IN
+        <foreach collection="projInfoIds" item="projInfoId" open="(" separator="," close=")">
+            #{projInfoId}
+        </foreach>
+        AND UNIT_INFO_ID IN
+        <foreach collection="unitInfoIds" item="unitInfoId" open="(" separator="," close=")">
+            #{unitInfoId}
+        </foreach>
+        AND IS_OWNER = #{isOwner}
+        and is_deleted='0'
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaUnitProj" resultType="AeaUnitProj">
+        select
+        <include refid="allColumns"/>
+        from AEA_UNIT_PROJ
+        <where>
+            is_deleted='0'
+            <if test="unitProjId != null">
+                AND UNIT_PROJ_ID = #{unitProjId}
+            </if>
+            <if test="unitInfoId != null">
+                AND UNIT_INFO_ID = #{unitInfoId}
+            </if>
+            <if test="isOwner != null">
+                AND IS_OWNER = #{isOwner}
+            </if>
+            <if test="projInfoId != null">
+                AND PROJ_INFO_ID = #{projInfoId}
+            </if>
+            <if test="creater != null">
+                AND CREATER = #{creater}
+            </if>
+            <if test="unitType != null">
+                AND UNIT_TYPE = #{unitType}
+            </if>
+            <if test="linkmanInfoId != null">
+                AND LINKMAN_INFO_ID = #{linkmanInfoId}
+            </if>
+        </where>
+    </select>
+    <!--4 根据条件查询实体list,返回分页对象 -->
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaUnitProj" parameterType="AeaUnitProj">
+        insert into AEA_UNIT_PROJ (UNIT_PROJ_ID, UNIT_INFO_ID, IS_OWNER, PROJ_INFO_ID, CREATER, CREATE_TIME,UNIT_TYPE, LINKMAN_INFO_ID, is_deleted )
+        values (#{unitProjId}, #{unitInfoId}, #{isOwner}, #{projInfoId}, #{creater}, #{createTime},#{unitType},#{linkmanInfoId}, #{isDeleted})
+    </insert>
+
+    <insert id="batchInsertAeaUnitProj" parameterType="AeaUnitProj">
+        insert into AEA_UNIT_PROJ (UNIT_PROJ_ID, UNIT_INFO_ID, IS_OWNER, PROJ_INFO_ID, CREATER, CREATE_TIME,UNIT_TYPE,
+        LINKMAN_INFO_ID, is_deleted )
+        values
+        <foreach collection="aeaUnitProjList" item="aeaUnitProj" separator=",">
+            (#{aeaUnitProj.unitProjId}, #{aeaUnitProj.unitInfoId}, #{aeaUnitProj.isOwner}, #{aeaUnitProj.projInfoId},
+            #{aeaUnitProj.creater}, #{aeaUnitProj.createTime}, #{aeaUnitProj.unitType}, #{aeaUnitProj.linkmanInfoId},
+            #{aeaUnitProj.isDeleted})
+        </foreach>
+    </insert>
+
+    <!--6 修改实体对象 -->
+    <update id="updateAeaUnitProj" parameterType="AeaUnitProj">
+        update AEA_UNIT_PROJ
+        <set>
+            <if test="unitProjId != null">
+                UNIT_PROJ_ID = #{unitProjId},
+            </if>
+            <if test="unitInfoId != null">
+                UNIT_INFO_ID = #{unitInfoId},
+            </if>
+            <if test="isOwner != null">
+                IS_OWNER = #{isOwner},
+            </if>
+            <if test="projInfoId != null">
+                PROJ_INFO_ID = #{projInfoId},
+            </if>
+            <if test="creater != null">
+                CREATER = #{creater},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime},
+            </if>
+            <if test="unitType != null">
+                UNIT_TYPE = #{unitType},
+            </if>
+            <if test="linkmanInfoId != null">
+                LINKMAN_INFO_ID = #{linkmanInfoId},
+            </if>
+            <if test="isDeleted != null">
+                is_deleted = #{isDeleted}
+            </if>
+        </set>
+        where UNIT_PROJ_ID = #{unitProjId}
+    </update>
+    <!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaUnitProj">
+        delete
+        from AEA_UNIT_PROJ
+        where UNIT_PROJ_ID = #{id}
+    </delete>
+
+    <update id="batchDeleteUnitProj">
+        update AEA_UNIT_PROJ
+        set is_deleted='1'
+        where PROJ_INFO_ID = #{projId}
+        <if test="isOwner!=null and isOwner !=''">
+            AND IS_OWNER = #{isOwner}
+        </if>
+        AND UNIT_INFO_ID IN
+        <foreach collection="unitInfoIds" item="unitInfoId" open="(" separator="," close=")">
+            #{unitInfoId}
+        </foreach>
+    </update>
+
+    <update id="batchDeleteAllUnitProjByProjInfoId">
+        update AEA_UNIT_PROJ
+        set is_deleted='1'
+        where PROJ_INFO_ID = #{projId}
+    </update>
+
+    <!--11 根据条件查询实体list -->
+    <select id="listProjUnitInfo" resultType="AeaUnitInfo">
+        select
+        ui.UNIT_INFO_ID unitInfoId,
+        ui.APPLICANT applicant,
+        ui.IDTYPE idtype,
+        ui.IDCARD idcard,
+        ui.CONTACT contact,
+        ui.MOBILE mobile,
+        ui.EMAIL email,
+        ui.APPLICANT_DISTRICT applicantDistrict,
+        ui.APPLICANT_DETAIL_SITE applicantDetailSite,
+        ui.IDREPRESENTATIVE idrepresentative,
+        ui.IDMOBILE idmobile,
+        ui.IDNO idno,
+        ui.IS_DELETED isDeleted,
+        ui.CREATER creater,
+        ui.CREATE_TIME createTime,
+        ui.MODIFIER modifier,
+        ui.MODIFY_TIME modifyTime,
+        ui.IS_PRIMARY_UNIT isPrimaryUnit,
+        ui.PARENT_ID parentId,
+        ui.UNIT_INFO_SEQ unitInfoSeq,
+        ui.LOGIN_NAME loginName,
+        up.PROJ_INFO_ID projInfoId,
+        up.UNIT_PROJ_ID unitProjId,
+        up.UNIT_TYPE unitType,
+        up.IS_OWNER isOwner
+        from AEA_UNIT_PROJ up
+        LEFT JOIN AEA_UNIT_INFO ui ON up.UNIT_INFO_ID = ui.UNIT_INFO_ID
+        <where>
+            AND ui.IS_DELETED = '0'
+            <if test="unitProjId != null">
+                AND up.UNIT_PROJ_ID = #{unitProjId}
+            </if>
+            <if test="unitInfoId != null">
+                AND up.UNIT_INFO_ID = #{unitInfoId}
+            </if>
+            <if test="isOwner != null">
+                AND up.IS_OWNER = #{isOwner}
+            </if>
+            <if test="projInfoId != null">
+                AND up.PROJ_INFO_ID = #{projInfoId}
+            </if>
+            <if test="unitType != null">
+                AND up.UNIT_TYPE = #{unitType}
+            </if>
+        </where>
+        ORDER BY up.CREATE_TIME DESC
+    </select>
+    <!--根据主键批量查询单位信息-->
+    <select id="getAeaUnitProjByUnitProjIds" resultType="com.augurit.aplanmis.common.domain.AeaUnitInfo">
+        select
+        <include refid="alias_allColumns">
+            <property name="alias" value="aui"/>
+        </include>
+        ,aup.IS_OWNER isOwner from AEA_UNIT_PROJ aup
+        LEFT JOIN AEA_UNIT_INFO aui on aup.UNIT_INFO_ID=aui.UNIT_INFO_ID WHERE aup.UNIT_PROJ_ID in
+        <foreach collection="unitProjIds" close=")" open="(" item="id" separator=",">#{id}</foreach>
+        and aup.is_deleted='0'
+    </select>
+
+    <!--0827 删除实体对象,根据项目ID projInfoId -->
+    <update id="deleteAeaUnitProjByProjInfoId">
+        update AEA_UNIT_PROJ
+        set is_deleted='1'
+        where
+        PROJ_INFO_ID = #{projInfoId}
+    </update>
+
+    <select id="findUnitProjByProjIdAndUnitIdAndunitType" resultType="AeaUnitProj">
+        select
+        <include refid="allColumns"/>
+        from AEA_UNIT_PROJ
+        <where>
+            is_deleted='0'
+            <if test="projInfoId!=null and projInfoId!='' ">AND PROJ_INFO_ID = #{projInfoId}</if>
+            <if test="unitInfoId!=null and unitInfoId!='' ">AND UNIT_INFO_ID = #{unitInfoId}</if>
+            <if test="unitType!=null and unitType!='' ">AND UNIT_TYPE = #{unitType}</if>
+        </where>
+    </select>
+
+    <!--8 删除实体对象列表,根据主键ID列表 -->
+    <!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaUnitProj" id="AeaUnitProjMap">
+        <id property="unitProjId" column="UNIT_PROJ_ID"/>
+        <result property="unitInfoId" column="UNIT_INFO_ID"/>
+        <result property="isOwner" column="IS_OWNER"/>
+        <result property="projInfoId" column="PROJ_INFO_ID"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="unitType" column="UNIT_TYPE"/>
+        <result property="linkmanInfoId" column="LINKMAN_INFO_ID"/>
+        <result property="isDeleted" column="is_deleted"/>
+    </resultMap>
+</mapper>

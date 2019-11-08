@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaImBiddingEmployeesMapper">
+
+    <insert id="insertAeaImBiddingEmployeesList" parameterType="java.util.List">
+        insert into AEA_IM_BIDDING_EMPLOYEES (
+            BIDDING_EMPLOYEES_ID, UNIT_BIDDING_ID, SERVICE_LINKMAN_ID, IS_DELETE, CREATER, CREATE_TIME
+        ) values
+        <foreach collection="list" item="item" separator=",">
+            (
+                #{item.biddingEmployeesId}, #{item.unitBiddingId}, #{item.serviceLinkmanId}, #{item.isDelete}, #{item.creater}, #{item.createTime}
+            )
+        </foreach>
+    </insert>
+
+
+
+    <!-- 获取中介机构报名联系人列表 -->
+    <select id="listAeaImBiddingEmployeesByUnitBiddingId" resultType="AeaImBiddingEmployees">
+        SELECT
+            aibe.BIDDING_EMPLOYEES_ID biddingEmployeesId,
+            ali.LINKMAN_NAME linkmanName,
+            ali.LINKMAN_MAIL linkmanMail,
+            ali.LINKMAN_MOBILE_PHONE linkmanMobilePhone
+        FROM aea_im_bidding_employees aibe
+        LEFT JOIN aea_im_service_linkman aisl ON aibe.SERVICE_LINKMAN_ID = aisl.SERVICE_LINKMAN_ID
+        LEFT JOIN aea_linkman_info ali ON aisl.LINKMAN_INFO_ID = ali.LINKMAN_INFO_ID
+        WHERE aibe.IS_DELETE = '0' AND aibe.UNIT_BIDDING_ID = #{unitBiddingId}
+    </select>
+</mapper>

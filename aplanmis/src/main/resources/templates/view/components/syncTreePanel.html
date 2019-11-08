@@ -1,0 +1,20 @@
+<template id="syncTreePanel" th:fragment="syncTreePanel">
+    <span>
+        <el-input style="width:85%;" placeholder="请选择" v-model="inputText" v-on:click.native="treeVisible = true" readonly></el-input>
+        <el-dialog :title="title" :visible.sync="treeVisible">
+            <div>
+                <div  style="margin-bottom: 10px;margin-left: 10px;">
+                    <el-input style="width:70%;"
+                              placeholder="输入关键字进行过滤"
+                              v-model="filterText">
+                    </el-input>
+                    <el-button @click="queryCheckedTree"
+                               style="margin-left:10px;height: 34px;line-height: 34px;padding: 0px 14px;">查询
+                    </el-button>
+                    <el-button @click="resetChecked" style="height: 34px;line-height: 34px;padding: 0px 14px;">清空</el-button>
+                </div>
+                <el-tree :data="syncTree" :props="treeProps" show-checkbox @check-change="handleCheckChange" class="filter-tree" :filter-node-method="filterNode" ref="tree" node-key="id"></el-tree>
+            </div>
+        </el-dialog>
+    </span>
+</template>

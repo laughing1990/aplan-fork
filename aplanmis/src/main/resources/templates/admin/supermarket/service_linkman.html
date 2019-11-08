@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<!--引入公共css-->
+	<th:block th:include="common/common :: commonheader('审核从业人员')"/>
+	<style type="text/css">
+		.row {
+			margin-left: 0px;
+			margin-left: 0px;
+		}
+	</style>
+</head>
+<body>
+<div id="mainContentPanel" style="width: 100%;height: 100%;margin: 25px;">
+	<el-divider></el-divider>
+	<h3 class="m-portlet__head-text">
+		从业人员列表
+	</h3>
+	<div style="padding: 10px 0px;">
+
+		<div class="search-box">
+			<el-form class="search-from clearfix" label-width="100px">
+				<el-col :span="16" class="search-item-fif">
+					<el-form-item label="搜索关键字：" class="search-input">
+						<el-input v-model="searchForm.keyword" placeholder="请输入单位名称 / 从业人员姓名 /服务名称">
+							<el-button slot="append" icon="el-icon-search" @click="getAuditLinkManList">查询</el-button>
+						</el-input>
+					</el-form-item>
+				</el-col>
+			</el-form>
+		</div>
+		<el-table :data="listAeaImServiceLinkman" border>
+			<el-table-column label="序号" width="55">
+				<template slot-scope="scope">
+					{{scope.$index+1}}
+				</template>
+			</el-table-column>
+			<el-table-column prop="linkmanName" label="姓名"></el-table-column>
+			<el-table-column prop="serviceName" label="服务名称"></el-table-column>
+			<el-table-column label="资质证书">
+				<template slot-scope="scope">
+					<p v-for="item in scope.row.certinst">{{item.qualName}}</p>
+				</template>
+			</el-table-column>
+			<el-table-column prop="applicant" label="单位名称"></el-table-column>
+			<el-table-column prop="auditFlag" label="审核情况" width="100" align="center" :formatter="formatAudioFlag"></el-table-column>
+			<el-table-column prop="createTime" label="提交时间" :formatter="formatDateTime"></el-table-column>
+			<el-table-column label="审核" width="100px">
+				<template slot-scope="scope">
+					<el-button v-if="scope.row.auditFlag!=1" type="text" class="el-icon-edit" style="font-size:1.3rem" @click.native="auditLinkman(scope.row)">
+					</el-button>
+					<el-button type="text" v-else style="font-size:1.3rem" class="el-icon-search" @click.native="auditLinkman(scope.row)">
+					</el-button>
+				</template>
+			</el-table-column>
+		</el-table>
+		<el-pagination
+				background
+				align="right"
+				:pager-count="5"
+				@size-change="handleSizeChange2"
+				@current-change="handleCurrentChange2"
+				:page-sizes="[10, 20, 30, 50]"
+				:page-size="searchForm.pageSize"
+				:current-page="searchForm.pageNum"
+				layout="total,sizes, prev, pager, next, jumper"
+				:total="searchForm.total">
+		</el-pagination>
+	</div>
+</div>
+
+
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js" th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js" th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js" th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js" th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>
+<script src="../../../static/common/js/axios.min.js" th:src="@{/common/js/axios.min.js}"></script>
+<script>
+	var vm = new Vue({
+		el: '#mainContentPanel',
+		data: function () {
+			return {
+
+				certinstMajor: [], // 专业
+				defaultProps: {
+					children: 'child',
+					label: 'name'
+				},
+				listAeaImServiceLinkman: [],
+				linkListPage: {
+					pageNum: 1,
+					pageSize: 10,
+					total: 0
+				},
+				searchForm: {
+					total: 0,
+					pageNum: 1,
+					pageSize: 10,
+					keyword: ''
+				}
+			}
+		},
+		mounted: function () {
+			this.getAuditLinkManList();
+		},
+		methods: {
+			handleSizeChange2: function (val) {
+				this.searchForm.pageSize = val;
+				this.getAuditLinkManList();
+			},
+			handleCurrentChange2: function (val) {
+				this.searchForm.pageNum = val;
+				this.getAuditLinkManList();
+			},
+			getAuditLinkManList: function () {
+				var _this = this;
+				request('', {
+					url: ctx + 'supermarket/serviceLinkman/getListAeaImServiceLinkman',
+					data: _this.searchForm,
+					type: 'get'
+				}, function (data) {
+					if (data.success) {
+						_this.listAeaImServiceLinkman = data.content.rows;
+						_this.searchForm.total = data.content.total;
+					} else {
+						// _that.$message({
+						// 	message: data.message ? data.message : '信息保存失败',
+						// 	type: 'error'
+						// });
+					}
+				}, function (msg) {
+					/*_that.$message({
+						message: msg.message ? msg.message : '服务请求失败',
+						type: 'error'
+					});*/
+				})
+			},
+			auditLinkman: function (row) {
+				// var url = ctx + '/supermarket/serviceLinkman/getAeaImServiceLinkman.do?serviceLinkmanId=' + row.serviceLinkmanId;
+				var url = ctx + '/supermarket/serviceLinkman/serviceLinkmanDetail.html?serviceLinkmanId=' + row.serviceLinkmanId;
+				window.location.href = url;
+			},
+			//格式化审核状态
+			formatAudioFlag: function (row, column, cellValue, index) {
+				switch (cellValue) {
+					case '0':
+						return '审核失败';
+					case '1':
+						return '已审核';
+					case '2':
+						return '审核中';
+					default:
+						return '审核中';
+				}
+			},
+			formatDateTime: function (row, column, cellValue, index) {
+				var oDate = new Date(cellValue),
+						oYear = oDate.getFullYear(),
+						oMonth = oDate.getMonth() + 1,
+						oDay = oDate.getDate(),
+						oHour = oDate.getHours(),
+						oMin = oDate.getMinutes(),
+						oSec = oDate.getSeconds();
+				var oTime = oYear + '-' + this.getzf(oMonth) + '-' + this.getzf(oDay) + ' ' + this.getzf(oHour) + ':' + this.getzf(oMin) + ':' + this.getzf(oSec);//最后拼接时间
+				return oTime;
+			},
+			//补0操作
+			getzf: function (num) {
+				if (parseInt(num) < 10) {
+					num = '0' + num;
+				}
+				return num;
+			}
+		}
+	})
+</script>
+</body>
+</html>

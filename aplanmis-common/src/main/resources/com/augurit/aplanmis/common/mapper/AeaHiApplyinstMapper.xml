@@ -1,0 +1,1038 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by Administrator    2019-07-04 16:45:08 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaHiApplyinstMapper">
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns">
+        APPLYINST_ID  applyinstId,
+        APPLYINST_CODE  applyinstCode,
+        APPLYINST_SOURCE  applyinstSource,
+        QUEUE_NO  queueNo,
+        IS_SERIES_APPROVE  isSeriesApprove,
+        APPLYINST_MEMO  applyinstMemo,
+        APPLYINST_STATE  applyinstState,
+        ACCEPT_TIME  acceptTime,
+        END_TIME  endTime,
+        IS_DELETED  isDeleted,
+        CREATER  creater,
+        CREATE_TIME  createTime,
+        MODIFIER  modifier,
+        MODIFY_TIME  modifyTime,
+        LINKMAN_INFO_ID  linkmanInfoId,
+        BRANCH_ORG  branchOrg,
+        APPLY_SUBJECT  applySubject,
+        IS_SERVICE_COOPERATIVE  isServiceCooperative,
+        IS_SMS_SEND isSmsSend,
+        SMS_SEND_TIME smsSendTime,
+        ROOT_ORG_ID rootOrgId
+    </sql>
+    <sql id="allas_Columns">
+        ${alias}.APPLYINST_ID  applyinstId,
+        ${alias}.APPLYINST_CODE  applyinstCode,
+        ${alias}.APPLYINST_SOURCE  applyinstSource,
+        ${alias}.QUEUE_NO  queueNo,
+        ${alias}.IS_SERIES_APPROVE  isSeriesApprove,
+        ${alias}.APPLYINST_MEMO  applyinstMemo,
+        ${alias}.APPLYINST_STATE  applyinstState,
+        ${alias}.ACCEPT_TIME  acceptTime,
+        ${alias}.END_TIME  endTime,
+        ${alias}.IS_DELETED  isDeleted,
+        ${alias}.CREATER  creater,
+        ${alias}.CREATE_TIME  createTime,
+        ${alias}.MODIFIER  modifier,
+        ${alias}.MODIFY_TIME  modifyTime,
+        ${alias}.LINKMAN_INFO_ID  linkmanInfoId,
+        ${alias}.BRANCH_ORG  branchOrg,
+        ${alias}.APPLY_SUBJECT  applySubject,
+        ${alias}.IS_SERVICE_COOPERATIVE  isServiceCooperative,
+        ${alias}.IS_SMS_SEND isSmsSend,
+        ${alias}.SMS_SEND_TIME smsSendTime,
+        ${alias}.ROOT_ORG_ID rootOrgId
+    </sql>
+    <sql id="applyinstColumns">
+        aha.APPLYINST_ID  applyinstId,
+        aha.APPLYINST_CODE  applyinstCode,
+        aha.APPLYINST_SOURCE  applyinstSource,
+        aha.QUEUE_NO  queueNo,
+        aha.IS_SERIES_APPROVE  isSeriesApprove,
+        aha.APPLYINST_MEMO  applyinstMemo,
+        aha.APPLYINST_STATE  applyinstState,
+        aha.ACCEPT_TIME  acceptTime,
+        aha.END_TIME  endTime,
+        aha.IS_DELETED  isDeleted,
+        aha.CREATER  creater,
+        aha.CREATE_TIME  createTime,
+        aha.MODIFIER  modifier,
+        aha.MODIFY_TIME  modifyTime,
+        aha.LINKMAN_INFO_ID linkmanInfoId,
+        aha.APPLY_SUBJECT applySubject,
+        aha.BRANCH_ORG branchOrg
+    </sql>
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaHiApplyinstById" resultType="AeaHiApplyinst">
+        select
+        <include refid="allColumns"/>
+        from AEA_HI_APPLYINST
+        where APPLYINST_ID = #{id}
+        AND IS_DELETED = '0'
+    </select>
+
+    <select id="getAeaHiApplyinstByCode" resultType="AeaHiApplyinst">
+        select
+        <include refid="allColumns"/>
+        from AEA_HI_APPLYINST
+        where APPLYINST_CODE = #{code}
+        AND IS_DELETED = '0'
+    </select>
+
+    <select id="getAllApplyinstesByProjInfoId" resultType="AeaHiApplyinst">
+        SELECT
+        <include refid="applyinstColumns"/>
+        FROM
+        AEA_HI_APPLYINST aha,AEA_APPLYINST_PROJ aap
+        WHERE
+        aha.APPLYINST_ID = aap.APPLYINST_ID
+        AND
+        aha.IS_DELETED = '0'
+        AND
+        aha.ROOT_ORG_ID = #{rootOrgId}
+        AND
+        aap.PROJ_INFO_ID = #{projInfoId}
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaHiApplyinst" resultType="AeaHiApplyinst">
+        select
+        <include refid="allColumns"/>
+        from AEA_HI_APPLYINST
+        <where>
+            <if test="applyinstId != null">
+                AND APPLYINST_ID = #{applyinstId}
+            </if>
+            <if test="applyinstCode != null">
+                AND APPLYINST_CODE = #{applyinstCode}
+            </if>
+            <if test="applyinstSource != null">
+                AND APPLYINST_SOURCE = #{applyinstSource}
+            </if>
+            <if test="queueNo != null">
+                AND QUEUE_NO = #{queueNo}
+            </if>
+            <if test="isSeriesApprove != null">
+                AND IS_SERIES_APPROVE = #{isSeriesApprove}
+            </if>
+            <if test="applyinstMemo != null">
+                AND APPLYINST_MEMO = #{applyinstMemo}
+            </if>
+            <if test="applyinstState != null">
+                AND APPLYINST_STATE = #{applyinstState}
+            </if>
+            <if test="isDeleted != null">
+                AND IS_DELETED = #{isDeleted}
+            </if>
+            <if test="creater != null">
+                AND CREATER = #{creater}
+            </if>
+            <if test="createTime != null">
+                AND CREATE_TIME = #{createTime}
+            </if>
+            <if test="modifier != null">
+                AND MODIFIER = #{modifier}
+            </if>
+            <if test="modifyTime != null">
+                AND MODIFY_TIME = #{modifyTime}
+            </if>
+            <if test="linkmanInfoId != null">
+                AND LINKMAN_INFO_ID = #{linkmanInfoId}
+            </if>
+            <if test="branchOrg != null">
+                AND BRANCH_ORG = #{branchOrg}
+            </if>
+            <if test="applySubject != null">
+                AND APPLY_SUBJECT = #{applySubject}
+            </if>
+            <if test="isServiceCooperative != null">
+                AND IS_SERVICE_COOPERATIVE = #{isServiceCooperative}
+            </if>
+            <if test="isSmsSend != null">
+                AND IS_SMS_SEND = #{isSmsSend}
+            </if>
+            <if test="smsSendTime != null">
+                AND SMS_SEND_TIME = #{smsSendTime}
+            </if>
+            <if test="rootOrgId != null">
+                AND ROOT_ORG_ID = #{rootOrgId}
+            </if>
+            <if test="acceptTime != null">
+                AND ACCEPT_TIME = #{acceptTime}
+            </if>
+            <if test="endTime != null">
+                AND END_TIME = #{endTime}
+            </if>
+            AND IS_DELETED = '0'
+        </where>
+    </select>
+
+    <select id="listAeaHiApplyinstByLinkmanInfoId" resultType="AeaHiApplyinst">
+        select
+        <include refid="allColumns"/>
+        from AEA_HI_APPLYINST
+        <where>
+            LINKMAN_INFO_ID = #{linkmanInfoId}
+            AND IS_DELETED = '0'
+        </where>
+    </select>
+
+    <select id="listAeaHiApplyinstByState" resultType="AeaHiApplyinst">
+        select
+        <include refid="allColumns"/>
+        from AEA_HI_APPLYINST
+        <where>1=1
+            <if test="state != null and state != ''">
+                AND APPLYINST_STATE = #{state}
+            </if>
+            <if test="rootOrgId != null and rootOrgId != ''">
+                AND ROOT_ORG_ID = #{rootOrgId}
+            </if>
+            AND IS_DELETED = '0'
+        </where>
+    </select>
+
+    <select id="listAeaHiApplyinstByStates" resultType="AeaHiApplyinst">
+        select
+        <include refid="allColumns"/>
+        from AEA_HI_APPLYINST
+        <where>
+            <if test="states!=null and states.size()>0">
+                AND applyinst_state IN
+                <foreach collection="states" open="(" close=")" separator="," item="state">
+                    #{state}
+                </foreach>
+            </if>
+            <if test="rootOrgId != null and rootOrgId != ''">
+                AND ROOT_ORG_ID = #{rootOrgId}
+            </if>
+            AND IS_DELETED = '0'
+        </where>
+    </select>
+    <!--4 根据条件查询实体list,返回分页对象 -->
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaHiApplyinst" parameterType="AeaHiApplyinst">
+        insert into AEA_HI_APPLYINST (APPLYINST_ID, APPLYINST_CODE, APPLYINST_SOURCE, QUEUE_NO, IS_SERIES_APPROVE,
+                                      APPLYINST_MEMO, APPLYINST_STATE, ACCEPT_TIME,END_TIME, IS_DELETED, CREATER, CREATE_TIME, MODIFIER,
+                                      MODIFY_TIME, LINKMAN_INFO_ID, BRANCH_ORG, APPLY_SUBJECT, IS_SERVICE_COOPERATIVE,IS_SMS_SEND,SMS_SEND_TIME,ROOT_ORG_ID)
+        values (#{applyinstId}, #{applyinstCode}, #{applyinstSource}, #{queueNo}, #{isSeriesApprove}, #{applyinstMemo},
+                #{applyinstState}, #{acceptTime},#{endTime}, #{isDeleted}, #{creater}, #{createTime}, #{modifier}, #{modifyTime},
+                #{linkmanInfoId}, #{branchOrg}, #{applySubject}, #{isServiceCooperative},#{isSmsSend},#{smsSendTime},#{rootOrgId})
+    </insert>
+    <!--6 修改实体对象 -->
+    <update id="updateAeaHiApplyinst" parameterType="AeaHiApplyinst">
+        update AEA_HI_APPLYINST
+        <set>
+            <if test="applyinstId != null">
+                APPLYINST_ID = #{applyinstId},
+            </if>
+            <if test="applyinstCode != null">
+                APPLYINST_CODE = #{applyinstCode},
+            </if>
+            <if test="applyinstSource != null">
+                APPLYINST_SOURCE = #{applyinstSource},
+            </if>
+            <if test="queueNo != null">
+                QUEUE_NO = #{queueNo},
+            </if>
+            <if test="isSeriesApprove != null">
+                IS_SERIES_APPROVE = #{isSeriesApprove},
+            </if>
+            <if test="applyinstMemo != null">
+                APPLYINST_MEMO = #{applyinstMemo},
+            </if>
+            <if test="applyinstState != null">
+                APPLYINST_STATE = #{applyinstState},
+            </if>
+            <if test="acceptTime != null">
+                ACCEPT_TIME = #{acceptTime},
+            </if>
+            <if test="endTime != null">
+                END_TIME = #{endTime},
+            </if>
+            <if test="isDeleted != null">
+                IS_DELETED = #{isDeleted},
+            </if>
+            <if test="creater != null">
+                CREATER = #{creater},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime},
+            </if>
+            <if test="modifier != null">
+                MODIFIER = #{modifier},
+            </if>
+            <if test="modifyTime != null">
+                MODIFY_TIME = #{modifyTime},
+            </if>
+            <if test="linkmanInfoId != null">
+                LINKMAN_INFO_ID = #{linkmanInfoId},
+            </if>
+            <if test="branchOrg != null">
+                BRANCH_ORG = #{branchOrg},
+            </if>
+            <if test="applySubject != null">
+                APPLY_SUBJECT = #{applySubject},
+            </if>
+            <if test="isServiceCooperative != null">
+                IS_SERVICE_COOPERATIVE = #{isServiceCooperative},
+            </if>
+            <if test="isSmsSend != null">
+                IS_SMS_SEND = #{isSmsSend},
+            </if>
+            <if test="smsSendTime != null">
+                SMS_SEND_TIME = #{smsSendTime},
+            </if>
+            <if test="rootOrgId != null">
+                ROOT_ORG_ID = #{rootOrgId},
+            </if>
+        </set>
+        where APPLYINST_ID = #{applyinstId}
+    </update>
+    <!--7 删除实体对象,根据主键ID -->
+    <update id="deleteAeaHiApplyinst">
+        update AEA_HI_APPLYINST
+        <set>
+            IS_DELETED = '1'
+        </set>
+        where APPLYINST_ID = #{id}
+    </update>
+
+
+    <select id="searchApproveDataList" resultType="com.augurit.aplanmis.common.dto.ApproveDataDto">
+        select aea_123.* from (
+        SELECT DISTINCT
+        aha.APPLYINST_CODE applyinstCode,
+        aha.APPLYINST_STATE applyinstState,
+        aha.CREATE_TIME startTime,
+        aha.MODIFY_TIME assigneeTime,
+        api.PROJ_NAME projName,
+        aui.APPLICANT applySubjectName
+        FROM
+        aea_hi_applyinst aha
+        LEFT JOIN aea_applyinst_proj aap ON aha.APPLYINST_ID = aap.APPLYINST_ID
+        LEFT JOIN aea_proj_info api ON aap.PROJ_INFO_ID = api.PROJ_INFO_ID
+        LEFT JOIN aea_applyinst_unit_proj aaup ON aaup.APPLYINST_ID = aha.APPLYINST_ID
+        LEFT JOIN aea_unit_proj aup ON aup.UNIT_PROJ_ID = aaup.UNIT_PROJ_ID
+        LEFT JOIN aea_unit_info aui ON aui.UNIT_INFO_ID = aup.UNIT_INFO_ID
+        WHERE
+        aha.IS_DELETED != 1
+        AND api.IS_DELETED != 1
+        AND aaup.IS_DELETED != 1
+        AND aui.IS_DELETED != 1
+        AND aha.APPLY_SUBJECT = '1'
+        <if test="states !=null and states.size()>0">
+            AND aha.APPLYINST_STATE IN
+            <foreach collection="states" open="(" close=")" separator="," item="state">
+                #{state}
+            </foreach>
+        </if>
+        <if test="applyinstCode!=null and applyinstCode!=''">
+            and aha.APPLYINST_CODE =#{applyinstCode}
+        </if>
+        <if test="projInfoName!=null and projInfoName!=''">
+            and api.PROJ_NAME like CONCAT('%',#{projInfoName},'%')
+        </if>
+        <if test="rootOrgId!=null and rootOrgId!=''">
+            and api.ROOT_ORG_ID = #{rootOrgId}
+            and aha.ROOT_ORG_ID = #{rootOrgId}
+        </if>
+        UNION ALL
+        SELECT DISTINCT
+        aha.APPLYINST_CODE applyinstCode,
+        aha.APPLYINST_STATE applyinstState,
+        aha.CREATE_TIME startTime,
+        aha.MODIFY_TIME assigneeTime,
+        api.PROJ_NAME projName,
+        ali.LINKMAN_NAME applySubjectName
+        FROM
+        aea_hi_applyinst aha
+        LEFT JOIN aea_applyinst_proj aap ON aha.APPLYINST_ID = aap.APPLYINST_ID
+        LEFT JOIN aea_proj_info api ON aap.PROJ_INFO_ID = api.PROJ_INFO_ID
+        LEFT JOIN aea_proj_linkman apl ON api.PROJ_INFO_ID = apl.PROJ_INFO_ID
+        AND aha.LINKMAN_INFO_ID = apl.LINKMAN_INFO_ID
+        LEFT JOIN aea_linkman_info ali ON apl.LINKMAN_INFO_ID = ali.LINKMAN_INFO_ID
+        WHERE
+        aha.IS_DELETED != 1
+        AND api.IS_DELETED != 1
+        AND ali.IS_DELETED != 1
+        AND aha.APPLY_SUBJECT = '0'
+        <if test="states !=null and states.size()>0">
+            AND aha.APPLYINST_STATE IN
+            <foreach collection="states" open="(" close=")" separator="," item="state">
+                #{state}
+            </foreach>
+        </if>
+        <if test="applyinstCode!=null and applyinstCode!=''">
+            and aha.APPLYINST_CODE =#{applyinstCode}
+        </if>
+        <if test="projInfoName!=null and projInfoName!=''">
+            and api.PROJ_NAME like CONCAT('%',#{projInfoName},'%')
+        </if>
+        <if test="rootOrgId!=null and rootOrgId!=''">
+            and api.ROOT_ORG_ID = #{rootOrgId}
+            and aha.ROOT_ORG_ID = #{rootOrgId}
+        </if>
+        ) aea_123 order by aea_123.startTime desc
+    </select>
+
+    <select id="countCurrentMonthApplyinstByApplyinstStates" resultType="int">
+        select
+        count(1)
+        from AEA_HI_APPLYINST
+        <where>
+            IS_DELETED = '0'
+            <if test="states !=null and states.size()>0">
+                AND applyinst_state IN
+                <foreach collection="states" open="(" close=")" separator="," item="state">
+                    #{state}
+                </foreach>
+            </if>
+
+            <if test="_databaseId == 'oracle'">
+                and to_char(CREATE_TIME,'yyyy')=to_char(sysdate,'yyyy')
+            </if>
+            <if test="_databaseId == 'mysql'">
+                and date_format(CREATE_TIME, '%Y%m') = date_format(curdate(), '%Y%m')
+            </if>
+            <if test="rootOrgId != null and rootOrgId != ''">
+                AND ROOT_ORG_ID = #{rootOrgId}
+            </if>
+        </where>
+    </select>
+    <select id="getDueNumAndUnit" resultType="com.augurit.aplanmis.common.domain.AeaHiApplyinst">
+        SELECT aha.APPLYINST_ID applyinstId,
+        CASE aha.IS_SERIES_APPROVE
+        WHEN 0 THEN
+        ( SELECT aps.DUE_NUM FROM aea_hi_par_stageinst ahps LEFT JOIN aea_par_stage aps ON aps.STAGE_ID = ahps.STAGE_ID WHERE ahps.APPLYINST_ID = #{applyinstId}
+            ) ELSE (
+        SELECT
+            aib.DUE_NUM
+        FROM aea_hi_seriesinst ahs
+            LEFT JOIN aea_hi_iteminst ahi ON ahi.SERIESINST_ID = ahs.SERIESINST_ID
+            LEFT JOIN aea_item_basic aib ON aib.ITEM_VER_ID = ahi.ITEM_VER_ID
+        WHERE ahs.APPLYINST_ID = #{applyinstId}
+        )
+        END dueNum,
+        CASE aha.IS_SERIES_APPROVE
+        WHEN 0 THEN
+        ( SELECT aps.DUE_UNIT FROM aea_hi_par_stageinst ahps LEFT JOIN aea_par_stage aps ON aps.STAGE_ID = ahps.STAGE_ID WHERE ahps.APPLYINST_ID = #{applyinstId}
+            ) ELSE (
+        SELECT
+            aib.BJ_TYPE
+        FROM aea_hi_seriesinst ahs
+            LEFT JOIN aea_hi_iteminst ahi ON ahi.SERIESINST_ID = ahs.SERIESINST_ID
+            LEFT JOIN aea_item_basic aib ON aib.ITEM_VER_ID = ahi.ITEM_VER_ID
+        WHERE ahs.APPLYINST_ID = #{applyinstId}
+        )
+        END dueUnit
+        FROM aea_hi_applyinst aha
+        WHERE aha.APPLYINST_ID = #{applyinstId}
+    </select>
+
+    <select id="listAeaHiApplyinstByIds" resultType="com.augurit.aplanmis.common.domain.AeaHiApplyinst">
+        select
+        <include refid="allColumns"/>
+        from AEA_HI_APPLYINST
+        where APPLYINST_ID in
+        <foreach collection="ids" open="(" close=")" separator="," item="id">
+            #{id}
+        </foreach>
+        AND IS_DELETED = '0'
+    </select>
+
+
+
+    <select id="listApplyInstListByUser" resultType="AeaHiApplyinst">
+        select
+            <include refid="applyinstColumns"/>
+            from  aea_hi_applyinst aha
+			inner join aea_applyinst_unit_proj aaup on aha.applyinst_id = aaup.applyinst_id
+			inner join aea_unit_proj aup on aup.unit_proj_id = aaup.unit_proj_id
+			    where aup.unit_info_id = #{unitInfoId}
+				and	aha.IS_DELETED != 1
+        UNION
+        select
+            <include refid="applyinstColumns"/>
+            from aea_hi_applyinst aha
+			inner join aea_proj_linkman apl on apl.applyinst_id = aha.applyinst_id
+			        where apl.linkman_info_id = #{userInfoId}
+					and apl.TYPE = 'apply'
+					and	aha.IS_DELETED != 1
+    </select>
+
+    <select id="listApplyInstIdAndStateByProjInfoIdAndUser" resultType="AeaHiApplyinst">
+        select distinct t1.applyinst_id applyinstId,t1.applyinst_state applyinstState,t1.stage_id stageId,t1.stageinst_id stageinstId,t1.IS_SERIES_APPROVE isSeriesApprove from
+        (select
+            aaup.applyinst_id,aaup.create_time,aha.applyinst_state,ahs.stage_id,'' stageinst_id,aha.IS_SERIES_APPROVE
+        from aea_applyinst_unit_proj aaup
+        left join  aea_hi_applyinst aha on aaup.applyinst_id=aha.applyinst_id
+        left join aea_hi_seriesinst ahs on ahs.applyinst_id=aha.applyinst_id
+        inner join aea_unit_proj aup
+            on aaup.unit_proj_id = aup.unit_proj_id
+        inner join aea_unit_info aui
+            on aui.unit_info_id = aup.unit_info_id
+        where aup.unit_info_id = #{unitInfoId}
+            <if test="isSeriesApprove!=null and isSeriesApprove!=''">
+               and aha.IS_SERIES_APPROVE=#{isSeriesApprove}
+            </if>
+        <if test="projInfoId!=null and projInfoId!=''">
+            and aup.proj_info_id = #{projInfoId}
+        </if>
+        union
+        select
+            apl.applyinst_id,apl.create_time,aha.applyinst_state,ahs.stage_id,'' stageinst_id,aha.IS_SERIES_APPROVE
+        from aea_proj_linkman apl
+        left join  aea_hi_applyinst aha on apl.applyinst_id=aha.applyinst_id
+        left join aea_hi_seriesinst ahs on ahs.applyinst_id=aha.applyinst_id
+        inner join aea_linkman_info ali
+            on apl.linkman_info_id = ali.linkman_info_id
+        where apl.LINKMAN_INFO_ID = #{userInfoId}
+        <if test="isSeriesApprove!=null and isSeriesApprove!=''">
+            and aha.IS_SERIES_APPROVE=#{isSeriesApprove}
+        </if>
+        <if test="projInfoId!=null and projInfoId!=''">
+            and apl.proj_info_id = #{projInfoId}
+        </if>
+        union
+        select
+        aaup.applyinst_id,aaup.create_time,aha.applyinst_state,ahps.stage_id,ahps.stageinst_id,aha.IS_SERIES_APPROVE
+        from aea_applyinst_unit_proj aaup
+        left join  aea_hi_applyinst aha on aaup.applyinst_id=aha.applyinst_id
+        left join aea_hi_par_stageinst ahps on ahps.applyinst_id=aha.applyinst_id
+        inner join aea_unit_proj aup
+        on aaup.unit_proj_id = aup.unit_proj_id
+        inner join aea_unit_info aui
+        on aui.unit_info_id = aup.unit_info_id
+        where aup.unit_info_id = #{unitInfoId}
+        <if test="isSeriesApprove!=null and isSeriesApprove!=''">
+            and aha.IS_SERIES_APPROVE=#{isSeriesApprove}
+        </if>
+        <if test="projInfoId!=null and projInfoId!=''">
+            and aup.proj_info_id = #{projInfoId}
+        </if>
+        union
+        select
+        apl.applyinst_id,apl.create_time,aha.applyinst_state,ahps.stage_id,ahps.stageinst_id,aha.IS_SERIES_APPROVE
+        from aea_proj_linkman apl
+        left join  aea_hi_applyinst aha on apl.applyinst_id=aha.applyinst_id
+        left join aea_hi_par_stageinst ahps on ahps.applyinst_id=aha.applyinst_id
+        inner join aea_linkman_info ali
+        on apl.linkman_info_id = ali.linkman_info_id
+        where apl.LINKMAN_INFO_ID = #{userInfoId}
+        <if test="isSeriesApprove!=null and isSeriesApprove!=''">
+            and aha.IS_SERIES_APPROVE=#{isSeriesApprove}
+        </if>
+        <if test="projInfoId!=null and projInfoId!=''">
+            and apl.proj_info_id = #{projInfoId}
+        </if>
+            )t1
+
+            order by t1.create_time asc
+    </select>
+
+    <select id="getAeaHiApplyinstByProjInfoId" resultType="AeaHiApplyinst">
+        select
+        <include refid="applyinstColumns"/>
+        from AEA_HI_APPLYINST aha
+        where exists(select * from AEA_APPLYINST_PROJ aap where aha.APPLYINST_ID=aap.APPLYINST_ID and aap.PROJ_INFO_ID
+        LIKE CONCAT(CONCAT('%',#{projInfoId}),'%'))
+    </select>
+
+    <select id="queryAeaHiApplyinst" resultType="AeaHiApplyinst">
+        select
+        <include refid="allColumns"/>
+        from AEA_HI_APPLYINST
+        <where>
+            <if test="states!=null and states.size()>0">
+                AND applyinst_state IN
+                <foreach collection="states" open="(" close=")" separator="," item="state">
+                    #{state}
+                </foreach>
+            </if>
+            <if test="rootOrgId != null and rootOrgId != ''">
+                AND ROOT_ORG_ID = #{rootOrgId}
+            </if>
+            <if test="startTime != null and startTime != ''">
+                AND CREATE_TIME &gt;= #{startTime}
+            </if>
+            <if test="endTime != null and endTime != ''">
+                AND CREATE_TIME &lt;= #{endTime}
+            </if>
+            AND IS_DELETED = '0'
+        </where>
+    </select>
+    <select id="listAeaHiApplyinstByStageId" resultType="AeaHiApplyinst">
+
+        select <include refid="allas_Columns"><property name="alias" value="aha"></property></include> from aea_hi_applyinst aha ,
+        aea_hi_par_stageinst ahps
+        where aha.APPLYINST_ID = ahps.APPLYINST_ID
+
+        and ahps.STAGE_ID=#{stageId}
+        and aha.IS_SERIES_APPROVE='0'
+        and aha.IS_DELETED ='0'
+        and aha.ROOT_ORG_ID = #{rootOrgId}
+        and ahps.ROOT_ORG_ID = #{rootOrgId}
+        union
+        select <include refid="allas_Columns"><property name="alias" value="aha"></property></include> from aea_hi_applyinst aha ,aea_hi_seriesinst ahs
+        where ahs.stage_id = #{stageId}
+        and aha.APPLYINST_ID = ahs.APPLYINST_ID
+        and aha.IS_SERIES_APPROVE='1'
+        and aha.IS_DELETED ='0'
+        and ahs.ROOT_ORG_ID = #{rootOrgId}
+        and aha.ROOT_ORG_ID = #{rootOrgId}
+    </select>
+
+    <select id="getAeaHiApplyinstByStageIdAndStates" resultType="AeaHiApplyinst">
+            select <include refid="allas_Columns"><property name="alias" value="aha"></property></include>
+
+                    from aea_hi_applyinst aha ,
+                    aea_hi_par_stageinst ahps
+                    where aha.APPLYINST_ID = ahps.APPLYINST_ID
+                    and ahps.STAGE_ID=#{stageId}
+                    and aha.IS_SERIES_APPROVE='0'
+                    and aha.IS_DELETED ='0'
+                    <if test="states !=null">
+                        and aha.APPLYINST_STATE in
+                        <foreach collection="states" item="item" open="(" separator="," close=")">
+                            #{item}
+                        </foreach>
+                    </if>
+                    <if test="startTime != null">
+                        and aha.CREATE_TIME <![CDATA[ >= ]]> STR_TO_DATE(concat(#{startTime},' 00:00:01'), '%Y-%m-%d %H:%i:%s')
+                    </if>
+                    <if test="endTime != null">
+                        and aha.CREATE_TIME <![CDATA[ <= ]]> STR_TO_DATE(concat(#{endTime},' 23:59:59'), '%Y-%m-%d %H:%i:%s')
+                    </if>
+                    <if test="source != null">
+                        and aha.APPLYINST_SOURCE = #{source}
+                    </if>
+                    and aha.ROOT_ORG_ID = #{rootOrgId}
+                    and ahps.ROOT_ORG_ID = #{rootOrgId}
+                    union
+                    select <include refid="allas_Columns"><property name="alias" value="aha"></property></include>
+                    from aea_hi_applyinst aha ,aea_hi_seriesinst ahs
+                    where ahs.stage_id = #{stageId}
+                    and aha.APPLYINST_ID = ahs.APPLYINST_ID
+                    and aha.IS_SERIES_APPROVE='1'
+                    and aha.IS_DELETED ='0'
+                    <if test="startTime != null">
+                        and aha.CREATE_TIME <![CDATA[ >= ]]> STR_TO_DATE(concat(#{startTime},' 00:00:01'), '%Y-%m-%d %H:%i:%s')
+                    </if>
+                    <if test="endTime != null">
+                        and  aha.CREATE_TIME <![CDATA[ <= ]]> STR_TO_DATE(concat(#{endTime},' 23:59:59'), '%Y-%m-%d %H:%i:%s')
+                    </if>
+                    <if test="source != null">
+                        and aha.APPLYINST_SOURCE = #{source}
+                    </if>
+                    and ahs.ROOT_ORG_ID = #{rootOrgId}
+                    and aha.ROOT_ORG_ID = #{rootOrgId}
+                    and ahs.IS_PARALLEL = #{isParallel}
+
+
+
+    </select>
+
+    <select id="listAeaHiApplyinstWithWindow" resultType="AeaHiApplyinst">
+        select gg.* from (select
+        asti.INST_STATE state,
+        aha.APPLYINST_ID applyinstId,
+        aha.APPLYINST_CODE applyinstCode,
+        aha.APPLYINST_SOURCE applyinstSource,
+        aha.CREATE_TIME createTime,
+        aha.creater creater,
+        aha.APPLYINST_STATE applyinstState,
+        aha.ACCEPT_TIME acceptTime,
+        aha.END_TIME endTime,
+        ali.LINKMAN_NAME linkmanName,
+        case aha.IS_SERIES_APPROVE when '1' THEN '单项' ELSE '并联' end isSeriesApprove,
+        aps_123.STAGE_NAME AS stageName,
+        temp1.PROJ_NAME projName,
+        temp1.REGIONALISM AS regionId,
+        theme.THEME_NAME themeName
+        ,t.ID_ as taskId
+
+        from aea_hi_applyinst aha
+        LEFT JOIN aea_applyinst_proj aap on aap.APPLYINST_ID = aha.APPLYINST_ID
+
+        LEFT JOIN aea_hi_par_stageinst ahps on ahps.APPLYINST_ID= aha.APPLYINST_ID
+        LEFT JOIN act_sto_appinst asp on asp.APPINST_ID = ahps.APPINST_ID
+
+        LEFT JOIN act_sto_timerule_inst asti on asti.APP_FLOWDEF_ID = asp.APP_FLOWDEF_ID AND asti.PROC_INST_ID = asp.PROCINST_ID
+
+        LEFT JOIN aea_linkman_info ali on ali.LINKMAN_INFO_ID = aha.LINKMAN_INFO_ID
+        LEFT JOIN aea_par_stage aps_123 ON aps_123.STAGE_ID = ahps.STAGE_ID
+        LEFT JOIN aea_par_theme_ver ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
+        LEFT JOIN aea_par_theme theme ON theme.THEME_ID = ver.THEME_ID
+        LEFT JOIN (
+        SELECT
+        ap.APPLYINST_ID AS APPLYINST_ID,
+        GROUP_CONCAT(p.PROJ_NAME SEPARATOR ',') AS PROJ_NAME,
+        p.REGIONALISM AS REGIONALISM
+        FROM
+        aea_applyinst_proj ap
+        LEFT JOIN aea_proj_info p ON ap.PROJ_INFO_ID = p.PROJ_INFO_ID
+        GROUP BY
+        ap.APPLYINST_ID
+        ) temp1 ON temp1.APPLYINST_ID = aha.APPLYINST_ID
+
+        LEFT JOIN act_sto_appinst app ON app.MASTER_RECORD_ID =  aha.APPLYINST_ID
+        LEFT JOIN act_ru_task t ON t.PROC_INST_ID_ = app.PROCINST_ID
+        where
+        aha.IS_SERIES_APPROVE='0'
+        and aha.ROOT_ORG_ID = #{rootOrgId}
+        and aha.IS_DELETED = '0'
+        and ahps.ROOT_ORG_ID = #{rootOrgId}
+        and asp.ROOT_ORG_ID = #{rootOrgId}
+        UNION
+        select
+        asti.INST_STATE state,
+        aha.APPLYINST_ID applyinstId,
+        aha.APPLYINST_CODE applyinstCode,
+        aha.APPLYINST_SOURCE applyinstSource,
+        aha.CREATE_TIME createTime,
+        aha.creater creater,
+        aha.APPLYINST_STATE applyinstState,
+        aha.ACCEPT_TIME acceptTime,
+        aha.END_TIME endTime,
+        ali.LINKMAN_NAME linkmanName,
+        case aha.IS_SERIES_APPROVE when '1' THEN '单项' ELSE '并联' end isSeriesApprove,
+        aps_123.STAGE_NAME AS stageName,
+        temp1.PROJ_NAME projName,
+        temp1.REGIONALISM AS regionId,
+        NULL as  themeName
+        ,t.ID_ as taskId
+        from aea_hi_applyinst aha
+        LEFT JOIN aea_hi_seriesinst ahs on ahs.APPLYINST_ID= aha.APPLYINST_ID
+        LEFT JOIN act_sto_appinst asp on asp.APPINST_ID = ahs.APPINST_ID
+        LEFT JOIN act_sto_timerule_inst asti on asti.APP_FLOWDEF_ID = asp.APP_FLOWDEF_ID AND asti.PROC_INST_ID =  asp.PROCINST_ID
+
+        LEFT JOIN aea_linkman_info ali on ali.LINKMAN_INFO_ID = aha.LINKMAN_INFO_ID
+        LEFT JOIN aea_par_stage aps_123 ON aps_123.STAGE_ID = ahs.STAGE_ID
+
+        LEFT JOIN (
+        SELECT
+        ap.APPLYINST_ID AS APPLYINST_ID,
+        p.REGIONALISM AS REGIONALISM,
+        GROUP_CONCAT(p.PROJ_NAME SEPARATOR ',') AS PROJ_NAME
+        FROM
+        aea_applyinst_proj ap
+        LEFT JOIN aea_proj_info p ON ap.PROJ_INFO_ID = p.PROJ_INFO_ID
+        GROUP BY
+        ap.APPLYINST_ID
+        ) temp1 ON temp1.APPLYINST_ID = aha.APPLYINST_ID
+
+        LEFT JOIN act_sto_appinst app ON app.MASTER_RECORD_ID =  aha.APPLYINST_ID
+        LEFT JOIN act_ru_task t ON t.PROC_INST_ID_ = app.PROCINST_ID
+        where
+        aha.IS_SERIES_APPROVE='1'
+
+        and aha.ROOT_ORG_ID = #{rootOrgId}
+        and aha.IS_DELETED = '0'
+        and ahs.ROOT_ORG_ID = #{rootOrgId}
+        and asp.ROOT_ORG_ID = #{rootOrgId}
+        )gg where 1=1
+        <if test="applyinstState !=null and applyinstState !=''">
+          and  gg.applyinstState = #{applyinstState}
+        </if>
+        <if test="state!=null and state!=''">
+            and state= #{state}
+        </if>
+        <if test="keyword !=null and keyword !='' ">
+            and ( gg.themeName like concat('%',#{keyword},'%')
+            or gg.projName like concat('%',#{keyword},'%')
+            or gg.stageName like concat('%',#{keyword},'%'))
+        </if>
+          order by gg.createTime desc
+
+    </select>
+
+    <select id="listAeaHiApplyinstWangShangDaiYuShen" resultType="AeaHiApplyinst">
+        select * from (
+SELECT
+	ahap_123.APPLYINST_ID AS applyinstId,
+	ahap_123.APPLYINST_CODE AS applyinstCode,
+	temp1.PROJ_NAME AS projName,
+	ahap_123.APPLYINST_SOURCE AS applyinstSource,
+	ali_123.LINKMAN_NAME AS linkmanName,
+	CASE  ahap_123.IS_SERIES_APPROVE when '1' THEN '单项' else '并联' end AS isSeriesApprove,
+	theme.THEME_NAME AS themeName,
+	aps_123.STAGE_NAME AS stageName,
+	ahap_123.CREATE_TIME AS createTime,
+	t.ID_ taskId
+FROM
+	aea_hi_applyinst ahap_123
+LEFT JOIN aea_linkman_info ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+LEFT JOIN aea_hi_par_stageinst ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+LEFT JOIN aea_par_stage aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
+LEFT JOIN aea_par_theme_ver ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
+LEFT JOIN aea_par_theme theme ON theme.THEME_ID = ver.THEME_ID
+LEFT JOIN (
+	SELECT
+		ap.APPLYINST_ID AS APPLYINST_ID,
+		GROUP_CONCAT(p.PROJ_NAME SEPARATOR ',') AS PROJ_NAME
+	FROM
+		aea_applyinst_proj ap
+	LEFT JOIN aea_proj_info p ON ap.PROJ_INFO_ID = p.PROJ_INFO_ID
+	GROUP BY
+		ap.APPLYINST_ID
+) temp1 ON temp1.APPLYINST_ID = ahap_123.APPLYINST_ID
+LEFT JOIN act_sto_appinst app ON app.MASTER_RECORD_ID =  ahap_123.APPLYINST_ID
+LEFT JOIN act_ru_task t ON t.PROC_INST_ID_ = app.PROCINST_ID
+WHERE
+	ahap_123.IS_SERIES_APPROVE = '0'
+AND (ahap_123.APPLYINST_STATE = '0' or ahap_123.APPLYINST_STATE = '4')
+AND APPLYINST_SOURCE = 'net'
+AND t.ASSIGNEE_ = #{userName}
+
+
+UNION
+SELECT
+	ahap_123.APPLYINST_ID AS applyinstId,
+	ahap_123.APPLYINST_CODE AS applyinstCode,
+	temp1.PROJ_NAME AS projName,
+	ahap_123.APPLYINST_SOURCE AS applyinstSource,
+	ali_123.LINKMAN_NAME AS linkmanName,
+	CASE  ahap_123.IS_SERIES_APPROVE when '1' THEN '单项' else '并联' end AS isSeriesApprove,
+	theme.THEME_NAME AS themeName,
+	aps_123.STAGE_NAME AS stageName,
+	ahap_123.CREATE_TIME AS createTime,
+	t.ID_ taskId
+FROM
+	aea_hi_applyinst ahap_123
+LEFT JOIN aea_linkman_info ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+LEFT JOIN aea_hi_par_stageinst ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+LEFT JOIN aea_par_stage aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
+LEFT JOIN aea_par_theme_ver ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
+LEFT JOIN aea_par_theme theme ON theme.THEME_ID = ver.THEME_ID
+LEFT JOIN (
+	SELECT
+		ap.APPLYINST_ID AS APPLYINST_ID,
+		GROUP_CONCAT(p.PROJ_NAME SEPARATOR ',') AS PROJ_NAME
+	FROM
+		aea_applyinst_proj ap
+	LEFT JOIN aea_proj_info p ON ap.PROJ_INFO_ID = p.PROJ_INFO_ID
+	GROUP BY
+		ap.APPLYINST_ID
+) temp1 ON temp1.APPLYINST_ID = ahap_123.APPLYINST_ID
+LEFT JOIN act_sto_appinst app ON app.MASTER_RECORD_ID =  ahap_123.APPLYINST_ID
+LEFT JOIN act_sto_appinst_subflow apps ON apps.APPINST_ID =  app.APPINST_ID
+LEFT JOIN act_ru_task t ON t.PROC_INST_ID_ = apps.SUBFLOW_PROCINST_ID
+WHERE
+	ahap_123.IS_SERIES_APPROVE = '0'
+AND (ahap_123.APPLYINST_STATE = '0' or ahap_123.APPLYINST_STATE = '4')
+AND APPLYINST_SOURCE = 'net'
+AND t.ASSIGNEE_ = #{userName}
+
+
+UNION
+SELECT
+	ahap_123.APPLYINST_ID AS applyinstId,
+	ahap_123.APPLYINST_CODE AS applyinstCode,
+	temp1.PROJ_NAME AS projName,
+	ahap_123.APPLYINST_SOURCE AS applyinstSource,
+	ali_123.LINKMAN_NAME AS linkmanName,
+	CASE  ahap_123.IS_SERIES_APPROVE when '1' THEN '单项' else '并联' end  AS isSeriesApprove,
+	NULL AS themeName,
+	ahi_123.ITEMINST_NAME AS stageName,
+	ahap_123.CREATE_TIME AS createTime,
+	t.ID_ taskId
+FROM
+	aea_hi_applyinst ahap_123
+LEFT JOIN aea_linkman_info ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+LEFT JOIN aea_hi_seriesinst ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+LEFT JOIN aea_hi_iteminst ahi_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
+LEFT JOIN (
+	SELECT
+		ap.APPLYINST_ID AS APPLYINST_ID,
+		GROUP_CONCAT(p.PROJ_NAME SEPARATOR ',') AS PROJ_NAME
+	FROM
+		aea_applyinst_proj ap
+	LEFT JOIN aea_proj_info p ON ap.PROJ_INFO_ID = p.PROJ_INFO_ID
+	GROUP BY
+		ap.APPLYINST_ID
+) temp1 ON temp1.APPLYINST_ID = ahap_123.APPLYINST_ID
+LEFT JOIN act_sto_appinst app ON app.MASTER_RECORD_ID =  ahap_123.APPLYINST_ID
+LEFT JOIN act_ru_task t ON t.PROC_INST_ID_ = app.PROCINST_ID
+WHERE
+	ahap_123.IS_SERIES_APPROVE = '1'
+AND (ahap_123.APPLYINST_STATE = '0' or ahap_123.APPLYINST_STATE = '4')
+AND APPLYINST_SOURCE = 'net'
+AND t.ASSIGNEE_ = #{userName}
+
+
+
+UNION
+SELECT
+	ahap_123.APPLYINST_ID AS applyinstId,
+	ahap_123.APPLYINST_CODE AS applyinstCode,
+	temp1.PROJ_NAME AS projName,
+	ahap_123.APPLYINST_SOURCE AS applyinstSource,
+	ali_123.LINKMAN_NAME AS linkmanName,
+	CASE  ahap_123.IS_SERIES_APPROVE when '1' THEN '单项' else '并联' end AS isSeriesApprove,
+	NULL AS themeName,
+	ahi_123.ITEMINST_NAME AS stageName,
+	ahap_123.CREATE_TIME AS createTime,
+	t.ID_ taskId
+FROM
+	aea_hi_applyinst ahap_123
+LEFT JOIN aea_linkman_info ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+LEFT JOIN aea_hi_seriesinst ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+LEFT JOIN aea_hi_iteminst ahi_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
+LEFT JOIN (
+	SELECT
+		ap.APPLYINST_ID AS APPLYINST_ID,
+		GROUP_CONCAT(p.PROJ_NAME SEPARATOR ',') AS PROJ_NAME
+	FROM
+		aea_applyinst_proj ap
+	LEFT JOIN aea_proj_info p ON ap.PROJ_INFO_ID = p.PROJ_INFO_ID
+	GROUP BY
+		ap.APPLYINST_ID
+) temp1 ON temp1.APPLYINST_ID = ahap_123.APPLYINST_ID
+LEFT JOIN act_sto_appinst app ON app.MASTER_RECORD_ID =  ahap_123.APPLYINST_ID
+LEFT JOIN act_sto_appinst_subflow apps ON apps.APPINST_ID =  app.APPINST_ID
+LEFT JOIN act_ru_task t ON t.PROC_INST_ID_ = apps.SUBFLOW_PROCINST_ID
+WHERE
+	ahap_123.IS_SERIES_APPROVE = '1'
+AND (ahap_123.APPLYINST_STATE = '0' or ahap_123.APPLYINST_STATE = '4')
+AND APPLYINST_SOURCE = 'net'
+AND t.ASSIGNEE_ = #{userName}
+
+
+)gg where 1=1
+<if test="keyword != null and keyword !=''">
+        and ( gg.themeName like concat('%',#{keyword},'%')
+        or gg.projName like concat('%',#{keyword},'%')
+        or gg.stageName like concat('%',#{keyword},'%'))
+    </if>
+    </select>
+
+
+    <select id="getApplyinstByProjCodeAndIteminstId" resultType="AeaHiApplyinst">
+        SELECT
+        <include refid="applyinstColumns"/>, api.LOCAL_CODE localCode,
+        api.CENTRAL_CODE centralCode,
+        ahi.APPROVE_ORG_ID approveOrgId,
+        ahi.BUSINESS_STATE businessState,
+        ahi.ITEMINST_STATE iteminstState,
+        ahi.ITEMINST_ID iteminstId,
+        aib.ITEM_NAME itemName,
+        aib.ITEM_CODE itemCode,
+        aib.ITEM_PROPERTY ItemProperty
+        FROM
+        aea_proj_info api
+        LEFT JOIN aea_applyinst_proj aap ON api.PROJ_INFO_ID = aap.PROJ_INFO_ID
+        LEFT JOIN aea_hi_applyinst aha ON aha.APPLYINST_ID = aap.APPLYINST_ID
+        LEFT JOIN aea_hi_seriesinst ahs ON ahs.APPLYINST_ID = aha.APPLYINST_ID
+        LEFT JOIN aea_hi_iteminst ahi ON ahi.SERIESINST_ID = ahs.SERIESINST_ID
+        LEFT JOIN aea_item_ver aiv ON aiv.ITEM_VER_ID = ahi.ITEM_VER_ID
+        LEFT JOIN aea_item_basic aib ON aib.ITEM_VER_ID = aiv.ITEM_VER_ID
+        AND aib.ITEM_ID = aiv.ITEM_ID
+        WHERE
+        (api.LOCAL_CODE=#{projCode} or api.CENTRAL_CODE=#{projCode}) AND ahi.ITEMINST_ID=#{iteminstId}
+        AND api.IS_DELETED != 1
+        AND aha.IS_DELETED != 1
+        AND aiv.IS_DELETED != 1
+        UNION ALL
+        SELECT
+        <include refid="applyinstColumns"/>, api.LOCAL_CODE localCode,
+        api.CENTRAL_CODE centralCode,
+        ahi.APPROVE_ORG_ID approveOrgId,
+        ahi.BUSINESS_STATE businessState,
+        ahi.ITEMINST_STATE iteminstState,
+        ahi.ITEMINST_ID iteminstId,
+        aib.ITEM_NAME itemName,
+        aib.ITEM_CODE itemCode,
+        aib.ITEM_PROPERTY ItemProperty
+        FROM
+        aea_proj_info api
+        LEFT JOIN aea_applyinst_proj aap ON api.PROJ_INFO_ID = aap.PROJ_INFO_ID
+        LEFT JOIN aea_hi_applyinst aha ON aha.APPLYINST_ID = aap.APPLYINST_ID
+        LEFT JOIN aea_hi_par_stageinst ahas ON ahas.APPLYINST_ID = aha.APPLYINST_ID
+        LEFT JOIN aea_hi_iteminst ahi ON ahas.STAGEINST_ID = ahi.STAGEINST_ID
+        LEFT JOIN aea_item_ver aiv ON aiv.ITEM_VER_ID = ahi.ITEM_VER_ID
+        LEFT JOIN aea_item_basic aib ON aib.ITEM_VER_ID = aiv.ITEM_VER_ID
+        AND aib.ITEM_ID = aiv.ITEM_ID
+        WHERE
+        (api.LOCAL_CODE=#{projCode} or api.CENTRAL_CODE=#{projCode}) AND ahi.ITEMINST_ID=#{iteminstId}
+        AND api.IS_DELETED != 1
+        AND aha.IS_DELETED != 1
+        AND aiv.IS_DELETED != 1
+    </select>
+
+
+    <select id="getProcInstIdByApplyinstIdOrApplyinstCode" resultType="string">
+        SELECT DISTINCT ahp_123.PROC_INST_ID_
+        from ACT_HI_PROCINST ahp_123
+        LEFT JOIN ACT_STO_APPINST asa_123 ON asa_123.procinst_id = ahp_123.PROC_INST_ID_
+        LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahap_123.APPLYINST_ID = asa_123.master_record_id
+        where 1=1
+        <if test="applyinstCode!=null and applyinstCode!=''">
+            and ahap_123.APPLYINST_CODE=#{applyinstCode}
+        </if>
+        <if test="applyinstId!=null and applyinstId!=''">
+            and ahap_123.APPLYINST_ID=#{applyinstId}
+        </if>
+    </select>
+
+    <select id="getParalleApproveDataByIteminstIdAndProjCode" resultType="AeaHiApplyinst">
+        SELECT
+            aha.APPLYINST_ID applyinstId,
+            aha.APPLYINST_CODE applyinstCode,
+            api.LOCAL_CODE localCode,
+            api.CENTRAL_CODE centralCode,
+            ahi.APPROVE_ORG_ID approveOrgId,
+            ahi.BUSINESS_STATE businessState,
+            ahi.ITEMINST_STATE iteminstState,
+            ahi.ITEMINST_ID iteminstId,
+            aib.ITEM_NAME itemName
+        FROM
+            aea_proj_info api
+        LEFT JOIN aea_applyinst_proj aap ON api.PROJ_INFO_ID = aap.PROJ_INFO_ID
+        LEFT JOIN aea_hi_applyinst aha ON aha.APPLYINST_ID = aap.APPLYINST_ID
+        LEFT JOIN aea_hi_par_stageinst ahas ON ahas.APPLYINST_ID = aha.APPLYINST_ID
+        LEFT JOIN aea_hi_iteminst ahi ON ahas.STAGEINST_ID = ahi.STAGEINST_ID
+        AND ahas.STAGEINST_ID = (
+            SELECT
+                STAGEINST_ID
+            FROM
+                aea_hi_iteminst ahi_123
+            WHERE
+                ahi_123.iteminst_id = #{iteminstId}
+        )
+        LEFT JOIN aea_item_ver aiv ON aiv.ITEM_VER_ID = ahi.ITEM_VER_ID
+        LEFT JOIN aea_item_basic aib ON aib.ITEM_VER_ID = aiv.ITEM_VER_ID
+        AND aib.ITEM_ID = aiv.ITEM_ID
+        WHERE
+            (api.LOCAL_CODE=#{projCode} or api.CENTRAL_CODE=#{projCode})
+        AND api.IS_DELETED != 1
+        AND aha.IS_DELETED != 1
+        AND aiv.IS_DELETED != 1
+    </select>
+
+    <select id="getAeaHiApplyinstByStageIdAndStatesIsParallel" resultType="AeaHiApplyinst">
+        select <include refid="allas_Columns"><property name="alias" value="aha"></property></include>
+        from aea_hi_applyinst aha ,aea_hi_seriesinst ahs
+        where ahs.stage_id = #{stageId}
+        and aha.APPLYINST_ID = ahs.APPLYINST_ID
+        and aha.IS_SERIES_APPROVE='1'
+        and aha.IS_DELETED ='0'
+        <if test="startTime != null">
+            and aha.CREATE_TIME <![CDATA[ >= ]]> STR_TO_DATE(concat(#{startTime},' 00:00:01'), '%Y-%m-%d %H:%i:%s')
+        </if>
+        <if test="endTime != null">
+            and  aha.CREATE_TIME <![CDATA[ <= ]]> STR_TO_DATE(concat(#{endTime},' 23:59:59'), '%Y-%m-%d %H:%i:%s')
+        </if>
+        and ahs.ROOT_ORG_ID = #{rootOrgId}
+        and aha.ROOT_ORG_ID = #{rootOrgId}
+        and ahs.IS_PARALLEL = #{isParallel}
+    </select>
+</mapper>

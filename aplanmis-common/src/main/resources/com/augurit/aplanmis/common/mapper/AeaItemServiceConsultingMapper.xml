@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by tiantian    2018-10-20 10:50:46 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaItemServiceConsultingMapper" >
+<!--1 返回所有字段的SQL字句 -->
+<sql id="allColumns" >
+    SERVICE_CONSULTING_ID  serviceConsultingId,
+    ITEM_BASIC_ID  itemBasicId,
+    GWZZHQX  gwzzhqx,
+    ZXGZCX  zxgzcx,
+    CJWT  cjwt,
+    DZ  dz,
+    DH  dh,
+    ZXDZ  zxdz,
+    WBWZ  wbwz,
+    WXH  wxh,
+    EMAIL  email,
+    YZBM  yzbm,
+    YJDZ  yjdz,
+    HFSXHXS  hfsxhxs,
+    HFBM  hfbm,
+    DATA_ID  dataId,
+    SERVICE_TYPE serviceType
+    </sql>
+
+<!--2 根据主键ID查询单个实体 -->
+<select id="getAeaItemServiceConsultingById" resultType="AeaItemServiceConsulting" >
+    select
+        <include refid="allColumns"/>
+    from    AEA_ITEM_SERVICE_CONSULTING
+    where    SERVICE_CONSULTING_ID = #{id}
+</select>
+
+<!--3 根据条件查询实体list -->
+    <select id="listAeaItemServiceConsulting" resultType="AeaItemServiceConsulting" >
+        select
+        <include refid="allColumns"/>
+        from    AEA_ITEM_SERVICE_CONSULTING
+        <where>
+            <if test="serviceConsultingId != null" >
+            AND    SERVICE_CONSULTING_ID = #{serviceConsultingId}
+            </if>
+            <if test="itemBasicId != null" >
+            AND    ITEM_BASIC_ID = #{itemBasicId}
+            </if>
+            <if test="gwzzhqx != null" >
+            AND    GWZZHQX = #{gwzzhqx}
+            </if>
+            <if test="zxgzcx != null" >
+            AND    ZXGZCX = #{zxgzcx}
+            </if>
+            <if test="cjwt != null" >
+            AND    CJWT = #{cjwt}
+            </if>
+            <if test="dz != null" >
+            AND    DZ = #{dz}
+            </if>
+            <if test="dh != null" >
+            AND    DH = #{dh}
+            </if>
+            <if test="zxdz != null" >
+            AND    ZXDZ = #{zxdz}
+            </if>
+            <if test="wbwz != null" >
+            AND    WBWZ = #{wbwz}
+            </if>
+            <if test="wxh != null" >
+            AND    WXH = #{wxh}
+            </if>
+            <if test="email != null" >
+            AND    EMAIL = #{email}
+            </if>
+            <if test="yzbm != null" >
+            AND    YZBM = #{yzbm}
+            </if>
+            <if test="yjdz != null" >
+            AND    YJDZ = #{yjdz}
+            </if>
+            <if test="hfsxhxs != null" >
+            AND    HFSXHXS = #{hfsxhxs}
+            </if>
+            <if test="hfbm != null" >
+            AND    HFBM = #{hfbm}
+            </if>
+            <if test="dataId != null" >
+            AND    DATA_ID = #{dataId}
+            </if>
+            <if test="serviceType != null" >
+            AND    SERVICE_TYPE = #{serviceType}
+            </if>
+            <if test="keyword != null and keyword != ''">
+            AND    GWZZHQX LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+            </if>
+        </where>
+    </select>
+<!--4 根据条件查询实体list,返回分页对象 -->
+
+<!--5 新增实体对象 -->
+<insert id="insertAeaItemServiceConsulting" parameterType="AeaItemServiceConsulting" >
+    insert into AEA_ITEM_SERVICE_CONSULTING (
+SERVICE_CONSULTING_ID  ,ITEM_BASIC_ID  ,GWZZHQX  ,ZXGZCX  ,CJWT  ,DZ  ,DH  ,ZXDZ  ,WBWZ  ,WXH  ,EMAIL  ,YZBM  ,YJDZ  ,HFSXHXS  ,HFBM  ,DATA_ID,SERVICE_TYPE
+    )  values  (
+#{serviceConsultingId},#{itemBasicId},#{gwzzhqx},#{zxgzcx},#{cjwt},#{dz},#{dh},#{zxdz},#{wbwz},#{wxh},#{email},#{yzbm},#{yjdz},#{hfsxhxs},#{hfbm},  #{dataId},#{serviceType}
+    )
+</insert>
+
+<!--6 修改实体对象 -->
+<update id="updateAeaItemServiceConsulting" parameterType="AeaItemServiceConsulting" >
+    update AEA_ITEM_SERVICE_CONSULTING
+    <set >
+        <if test="serviceConsultingId != null" >
+        SERVICE_CONSULTING_ID = #{serviceConsultingId},
+        </if>
+        <if test="itemBasicId != null" >
+        ITEM_BASIC_ID = #{itemBasicId},
+        </if>
+        <if test="gwzzhqx != null" >
+        GWZZHQX = #{gwzzhqx},
+        </if>
+        <if test="zxgzcx != null" >
+        ZXGZCX = #{zxgzcx},
+        </if>
+        <if test="cjwt != null" >
+        CJWT = #{cjwt},
+        </if>
+        <if test="dz != null" >
+        DZ = #{dz},
+        </if>
+        <if test="dh != null" >
+        DH = #{dh},
+        </if>
+        <if test="zxdz != null" >
+        ZXDZ = #{zxdz},
+        </if>
+        <if test="wbwz != null" >
+        WBWZ = #{wbwz},
+        </if>
+        <if test="wxh != null" >
+        WXH = #{wxh},
+        </if>
+        <if test="email != null" >
+        EMAIL = #{email},
+        </if>
+        <if test="yzbm != null" >
+        YZBM = #{yzbm},
+        </if>
+        <if test="yjdz != null" >
+        YJDZ = #{yjdz},
+        </if>
+        <if test="hfsxhxs != null" >
+        HFSXHXS = #{hfsxhxs},
+        </if>
+        <if test="hfbm != null" >
+        HFBM = #{hfbm},
+        </if>
+        <if test="dataId != null" >
+        DATA_ID = #{dataId},
+        </if>
+        <if test="serviceType != null and serviceType!='' " >
+        SERVICE_TYPE = #{serviceType},
+        </if>
+    </set>
+    where SERVICE_CONSULTING_ID = #{serviceConsultingId}
+</update>
+
+    <delete id="deleteAeaItemServiceConsulting">
+        delete from   AEA_ITEM_SERVICE_CONSULTING
+        where SERVICE_CONSULTING_ID = #{id}
+    </delete>
+
+    <select id="getAeaItemServiceConsultingByItemId" resultType="AeaItemServiceConsulting" >
+        select
+        <include refid="allColumns"/>
+        from    AEA_ITEM_SERVICE_CONSULTING
+        where    ITEM_BASIC_ID = #{itemBasicId}
+    </select>
+
+</mapper>

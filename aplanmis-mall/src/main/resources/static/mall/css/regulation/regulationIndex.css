@@ -1,0 +1,65 @@
+#regulation{
+    padding-bottom: 50px;
+}
+.wt-header-tab {
+    box-shadow: 0px 7px 13px 0px rgba(59,97,183,0.1);
+}
+.el-table .cell{
+	font-size: 14px;
+	font-family:Microsoft YaHei;
+	color: #575962;
+}
+.local-main{
+    margin-top:32px;
+}
+.local-icon{
+    padding:2px 10px;
+    background: url(../../images/icon/icon_local.png) no-repeat;
+}
+
+.wt-tab-content .department-list {
+    text-align: left;
+    height: 600px;
+    overflow-y: scroll;
+}
+.department-list .department-name {
+    display: block;
+    width:265px;
+    height:48px;
+    background:rgba(241,242,243,1);
+    text-align: center;
+    line-height: 48px;
+    margin:0 35px 10px 4px;
+    cursor: pointer;
+}
+.department-list .department-name:hover{
+    color: #fff;
+}
+.orgActive {
+    color: #fff!important;
+    background: #457EFF !important;
+}
+
+.table-title{
+    width: 880px;
+    height: 46px;
+    line-height: 46px;
+    padding-left: 16px;
+    margin-bottom:20px;
+    background: rgba(246, 179, 127, 0.1);
+    border: 1px solid rgba(246, 179, 127, 1);
+}
+.table-title>span{
+    font-size: 16px;
+    font-weight: bold;
+    color: #45484B;
+}
+.el-table__empty-block{
+    height: auto;
+}
+
+.wt-tab-content .department-list{
+    width: 310px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}

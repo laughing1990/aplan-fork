@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by tiantian    2018-10-20 10:26:49 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaItemServiceServeMapper">
+    <sql id="allColumns">
+        service.SERVICE_SERVE_ID serviceServeId,
+        service.ITEM_BASIC_ID itemBasicId,
+        service.CKFW  ckfw,
+        service.WSFWSD wsfwsd,
+        service.DCCS dccs,
+        service.XTJSF xtjsf,
+        service.YWXTMC ywxtmc,
+        service.SFXYSFYZ sfxysfyz,
+        service.SFYZSFXYCA sfyzsfxyca,
+        service.CASFSW  casfsw,
+        service.ZXSBFW  zxsbfw,
+        service.ZXSBFWDZ  zxsbfwdz,
+        service.WSZXFW  wszxfw,
+        service.WSZXFWDZ  wszxfwdz,
+        service.JGCXFW  jgcxfw,
+        service.JGCXFWDZ  jgcxfwdz,
+        service.JDCXFW  jdcxfw,
+        service.JDCXFWDZ  jdcxfwdz,
+        service.YYFW  yyfw,
+        service.CKBLJDCX ckbljdcx,
+        service.APPLICANT_AID applicantAid,
+        service.TBFW  tbfw,
+        service.PAYONLINE payonline,
+        service.EXPRESS express,
+        service.BJLX  bjlx,
+        service.DATA_ID dataId,
+        service.CKFW_IDS  ckfwIds,
+        service.NET_HALL_CODE netHallCode
+    </sql>
+
+    <insert id="insertAeaItemServiceServe" parameterType="AeaItemServiceServe">
+      insert into AEA_ITEM_SERVICE_SERVE(
+        SERVICE_SERVE_ID,
+        ITEM_BASIC_ID,
+        CKFW,
+        WSFWSD,
+        DCCS,
+        XTJSF,
+        YWXTMC,
+        SFXYSFYZ,
+        SFYZSFXYCA,
+        CASFSW,
+        ZXSBFW,
+        ZXSBFWDZ,
+        WSZXFW,
+        WSZXFWDZ,
+        JGCXFW,
+        JGCXFWDZ,
+        JDCXFW,
+        JDCXFWDZ,
+        YYFW,
+        CKBLJDCX,
+        APPLICANT_AID,
+        TBFW,
+        PAYONLINE,
+        EXPRESS,
+        BJLX,
+        DATA_ID,
+        CKFW_IDS,
+        NET_HALL_CODE
+      ) values(
+        #{serviceServeId},
+        #{itemBasicId},
+        #{ckfw},
+        #{wsfwsd},
+        #{dccs},
+        #{xtjsf},
+        #{ywxtmc},
+        #{sfxysfyz},
+        #{sfyzsfxyca},
+        #{casfsw},
+        #{zxsbfw},
+        #{zxsbfwdz},
+        #{wszxfw},
+        #{wszxfwdz},
+        #{jgcxfw},
+        #{jgcxfwdz},
+        #{jdcxfw},
+        #{jdcxfwdz},
+        #{yyfw},
+        #{ckbljdcx},
+        #{applicantAid},
+        #{tbfw},
+        #{payonline},
+        #{express},
+        #{bjlx},
+        #{dataId},
+        #{ckfwIds},
+        #{netHallCode}
+      )
+    </insert>
+
+    <delete id="deleteAeaItemServiceServeById" parameterType="java.lang.String">
+        delete AEA_ITEM_SERVICE_SERVE where SERVICE_SERVE_ID = #{serviceServeId}
+    </delete>
+
+    <delete id="batchDeleteAeaItemServiceServe">
+        delete AEA_ITEM_SERVICE_SERVE where SERVICE_SERVE_ID in
+        <foreach collection="serviceServeIds" item="serviceServeId" open="(" close=")" separator=",">
+            #{serviceServeId}
+        </foreach>
+    </delete>
+    
+    <update id="updateAeaItemServiceServeById" parameterType="AeaItemServiceServe">
+        update AEA_ITEM_SERVICE_SERVE
+        <set>
+            <if test="serviceServeId != null and serviceServeId != '' ">
+                SERVICE_SERVE_ID = #{serviceServeId},
+            </if>
+            <if test="itemBasicId != null and itemBasicId != '' ">
+              ITEM_BASIC_ID = #{itemBasicId},
+            </if>
+            <if test="ckfw != null">
+              CKFW = #{ckfw},
+            </if>
+            <if test="wsfwsd != null and wsfwsd != '' ">
+              WSFWSD = #{wsfwsd},
+            </if>
+            <if test="dccs != null and dccs != '' ">
+                DCCS = #{dccs},
+            </if>
+            <if test="xtjsf != null and xtjsf != '' ">
+                XTJSF = #{xtjsf},
+            </if>
+            <if test="ywxtmc != null and ywxtmc != '' ">
+                YWXTMC = #{ywxtmc},
+            </if>
+            <if test="sfxysfyz != null and sfxysfyz != '' ">
+                SFXYSFYZ = #{sfxysfyz},
+            </if>
+            <if test="sfyzsfxyca != null and sfyzsfxyca != '' ">
+                SFYZSFXYCA = #{sfyzsfxyca},
+            </if>
+            <if test="casfsw != null and casfsw != '' ">
+                CASFSW = #{casfsw},
+            </if>
+            <if test="zxsbfw != null and zxsbfw != '' ">
+                ZXSBFW = #{zxsbfw},
+            </if>
+            <if test="zxsbfwdz != null">
+                ZXSBFWDZ = #{zxsbfwdz},
+            </if>
+            <if test="wszxfw != null and wszxfw != '' ">
+                WSZXFW = #{wszxfw},
+            </if>
+            <if test="wszxfwdz != null">
+                WSZXFWDZ = #{wszxfwdz},
+            </if>
+            <if test="jgcxfw != null and jgcxfw != '' ">
+                JGCXFW = #{jgcxfw},
+            </if>
+            <if test="jgcxfwdz != null">
+                JGCXFWDZ = #{jgcxfwdz},
+            </if>
+            <if test="jdcxfw != null and jdcxfw != '' ">
+                JDCXFW = #{jdcxfw},
+            </if>
+            <if test="jdcxfwdz != null">
+                JDCXFWDZ = #{jdcxfwdz},
+            </if>
+            <if test="yyfw != null and yyfw != '' ">
+                YYFW = #{yyfw},
+            </if>
+            <if test="ckbljdcx != null and ckbljdcx != '' ">
+                CKBLJDCX = #{ckbljdcx},
+            </if>
+            <if test="applicantAid != null and applicantAid != '' ">
+                APPLICANT_AID = #{applicantAid},
+            </if>
+            <if test="tbfw != null and tbfw !='' ">
+                TBFW = #{tbfw},
+            </if>
+            <if test="payonline != null and payonline != '' ">
+                PAYONLINE = #{payonline},
+            </if>
+            <if test="express != null and express != '' ">
+                EXPRESS = #{express},
+            </if>
+            <if test="bjlx != null and bjlx != '' ">
+                BJLX = #{bjlx},
+            </if>
+            <if test="dataId != null and dataId != '' ">
+                DATA_ID = #{dataId},
+            </if>
+            <if test="ckfwIds != null">
+                CKFW_IDS = #{ckfwIds},
+            </if>
+            <if test="netHallCode != null and netHallCode != '' ">
+                NET_HALL_CODE = #{netHallCode},
+            </if>
+        </set>
+        where SERVICE_SERVE_ID = #{serviceServeId}
+    </update>
+
+    <select id="getAeaItemServiceServeById" parameterType="java.lang.String" resultType="AeaItemServiceServe">
+        select
+          <include refid="allColumns" />
+        from AEA_ITEM_SERVICE_SERVE service
+        where service.SERVICE_SERVE_ID = #{serviceServeId}
+    </select>
+
+    <select id="listAeaItemServiceServe" resultType="AeaItemServiceServe">
+        select
+        <include refid="allColumns" />
+        from AEA_ITEM_SERVICE_SERVE service
+        <where>
+            <if test="serviceServeId != null and serviceServeId != '' ">
+                AND service.SERVICE_SERVE_ID = #{serviceServeId}
+            </if>
+            <if test="itemBasicId != null and itemBasicId != '' ">
+                AND service.ITEM_BASIC_ID = #{itemBasicId}
+            </if>
+            <if test="ckfw != null">
+                AND service.CKFW = #{ckfw}
+            </if>
+            <if test="wsfwsd != null and wsfwsd != '' ">
+                AND service.WSFWSD = #{wsfwsd}
+            </if>
+            <if test="dccs != null and dccs != '' ">
+                AND service.DCCS = #{dccs}
+            </if>
+            <if test="xtjsf != null and xtjsf != '' ">
+                AND service.XTJSF = #{xtjsf}
+            </if>
+            <if test="ywxtmc != null and ywxtmc != '' ">
+                AND service.YWXTMC = #{ywxtmc}
+            </if>
+            <if test="sfxysfyz != null and sfxysfyz != '' ">
+                AND service.SFXYSFYZ = #{sfxysfyz}
+            </if>
+            <if test="sfyzsfxyca != null and sfyzsfxyca != '' ">
+                AND service.SFYZSFXYCA = #{sfyzsfxyca}
+            </if>
+            <if test="casfsw != null and casfsw != '' ">
+                AND service.CASFSW = #{casfsw}
+            </if>
+            <if test="zxsbfw != null and zxsbfw != '' ">
+                AND service.ZXSBFW = #{zxsbfw}
+            </if>
+            <if test="zxsbfwdz != null and zxsbfwdz != '' ">
+                AND service.ZXSBFWDZ = #{zxsbfwdz}
+            </if>
+            <if test="wszxfw != null and wszxfw != '' ">
+                AND service.WSZXFW = #{wszxfw}
+            </if>
+            <if test="wszxfwdz != null and wszxfwdz != '' ">
+                AND service.WSZXFWDZ = #{wszxfwdz}
+            </if>
+            <if test="jgcxfw != null and jgcxfw != '' ">
+                AND service.JGCXFW = #{jgcxfw}
+            </if>
+            <if test="jgcxfwdz != null and jgcxfwdz != '' ">
+                AND service.JGCXFWDZ = #{jgcxfwdz}
+            </if>
+            <if test="jdcxfw != null and jdcxfw != '' ">
+                AND service.JDCXFW = #{jdcxfw}
+            </if>
+            <if test="jdcxfwdz != null and jdcxfwdz != '' ">
+                AND service.JDCXFWDZ = #{jdcxfwdz}
+            </if>
+            <if test="yyfw != null and yyfw != '' ">
+                AND service.YYFW = #{yyfw}
+            </if>
+            <if test="ckbljdcx != null and ckbljdcx != '' ">
+                AND service.CKBLJDCX = #{ckbljdcx}
+            </if>
+            <if test="applicantAid != null and applicantAid != '' ">
+                AND service.APPLICANT_AID = #{applicantAid}
+            </if>
+            <if test="tbfw != null and tbfw !='' ">
+                AND service.TBFW = #{tbfw}
+            </if>
+            <if test="payonline != null and payonline != '' ">
+                AND service.PAYONLINE = #{payonline}
+            </if>
+            <if test="express != null and express != '' ">
+                AND service.EXPRESS = #{express}
+            </if>
+            <if test="bjlx != null and bjlx != '' ">
+                AND service.BJLX = #{bjlx}
+            </if>
+            <if test="dataId != null and dataId != '' ">
+                AND service.DATA_ID = #{dataId}
+            </if>
+            <if test="ckfwIds != null">
+                AND service.CKFW_IDS = #{ckfwIds}
+            </if>
+            <if test="netHallCode != null and netHallCode != '' ">
+                AND service.NET_HALL_CODE = #{netHallCode}
+            </if>
+            <if test="keyword != null and keyword != '' ">
+                AND (service.CKFW LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                  OR service.YWXTMC LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                  OR service.NET_HALL_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                )
+            </if>
+        </where>
+    </select>
+
+    <select id="getAeaItemServiceServeByitemBasicId" parameterType="java.lang.String" resultType="AeaItemServiceServe">
+        select
+        <include refid="allColumns" />
+        from AEA_ITEM_SERVICE_SERVE service
+        where service.ITEM_BASIC_ID = #{itemBasicId}
+    </select>
+
+</mapper>

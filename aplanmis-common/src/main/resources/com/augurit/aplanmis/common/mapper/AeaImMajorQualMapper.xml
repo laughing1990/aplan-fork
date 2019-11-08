@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by tiantian    2019-06-11 18:54:38 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaImMajorQualMapper" >
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns" >
+    MAJOR_QUAL_ID  majorQualId,
+    MAJOR_ID  majorId,
+    IS_DELETE  isDelete,
+    CREATER  creater,
+    CREATE_TIME  createTime,
+    QUAL_LEVEL_ID  qualLevelId,
+    UNIT_REQUIRE_ID  unitRequireId
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaImMajorQualById" resultType="AeaImMajorQual" >
+        select
+        <include refid="allColumns"/>
+        from    AEA_IM_MAJOR_QUAL
+        where    MAJOR_QUAL_ID = #{id}
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaImMajorQual" resultType="AeaImMajorQual" >
+        select
+        <include refid="allColumns"/>
+        from    AEA_IM_MAJOR_QUAL
+        <where>
+            <if test="majorQualId != null" >
+                AND    MAJOR_QUAL_ID = #{majorQualId}
+            </if>
+            <if test="majorId != null" >
+                AND    MAJOR_ID = #{majorId}
+            </if>
+            <if test="isDelete != null" >
+                AND    IS_DELETE = #{isDelete}
+            </if>
+            <if test="creater != null" >
+                AND    CREATER = #{creater}
+            </if>
+            <if test="createTime != null" >
+                AND    CREATE_TIME = #{createTime}
+            </if>
+            <if test="qualLevelId != null" >
+                AND    QUAL_LEVEL_ID = #{qualLevelId}
+            </if>
+            <if test="unitRequireId != null" >
+                AND    UNIT_REQUIRE_ID = #{unitRequireId}
+            </if>
+        </where>
+    </select>
+    <!--4 根据条件查询实体list,返回分页对象 -->
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaImMajorQual" parameterType="AeaImMajorQual" >
+    insert into AEA_IM_MAJOR_QUAL (
+MAJOR_QUAL_ID  ,MAJOR_ID  ,IS_DELETE  ,CREATER  ,CREATE_TIME  ,QUAL_LEVEL_ID  ,UNIT_REQUIRE_ID
+    )  values  (
+#{majorQualId},#{majorId},#{isDelete},#{creater},#{createTime},#{qualLevelId},  #{unitRequireId}
+    )
+</insert>
+    <!--6 修改实体对象 -->
+    <update id="updateAeaImMajorQual" parameterType="AeaImMajorQual" >
+        update AEA_IM_MAJOR_QUAL
+        <set >
+            <if test="majorQualId != null" >
+                MAJOR_QUAL_ID = #{majorQualId},
+            </if>
+            <if test="majorId != null" >
+                MAJOR_ID = #{majorId},
+            </if>
+            <if test="isDelete != null" >
+                IS_DELETE = #{isDelete},
+            </if>
+            <if test="creater != null" >
+                CREATER = #{creater},
+            </if>
+            <if test="createTime != null" >
+                CREATE_TIME = #{createTime},
+            </if>
+            <if test="qualLevelId != null" >
+                QUAL_LEVEL_ID = #{qualLevelId},
+            </if>
+            <if test="unitRequireId != null" >
+                UNIT_REQUIRE_ID = #{unitRequireId},
+            </if>
+        </set>
+        where MAJOR_QUAL_ID = #{majorQualId}
+    </update>
+    <!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaImMajorQual">
+        delete from   AEA_IM_MAJOR_QUAL
+        where
+    MAJOR_QUAL_ID = #{id}
+    </delete>
+    <!--8 删除实体对象列表,根据主键ID列表 -->
+    <!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaImMajorQual" id="AeaImMajorQualMap">
+        <id property="majorQualId" column="MAJOR_QUAL_ID"/>
+        <result property="majorId" column="MAJOR_ID"/>
+        <result property="isDelete" column="IS_DELETE"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="qualLevelId" column="QUAL_LEVEL_ID"/>
+        <result property="unitRequireId" column="UNIT_REQUIRE_ID"/>
+    </resultMap>
+
+    <select id="listAeaImMajorQualVo" resultType="com.augurit.aplanmis.common.vo.AeaImMajorQualVo" >
+        select
+        aimq.MAJOR_QUAL_ID  majorQualId,
+        aimq.MAJOR_ID  majorId,
+        aimq.QUAL_LEVEL_ID  qualLevelId,
+        aism.PARENT_MAJOR_ID parentMajorId,
+        aism.MAJOR_NAME majorName,
+        aism.MAJOR_SEQ majorSeq
+        from AEA_IM_MAJOR_QUAL aimq
+        left join AEA_IM_SERVICE_MAJOR aism on aimq.MAJOR_ID = aism.MAJOR_ID
+        <where>
+            <if test="qualId != null" >
+                AND    aism.QUAL_ID = #{qualId}
+            </if>
+            <if test="qualLevelId != null" >
+                AND    aimq.QUAL_LEVEL_ID = #{qualLevelId}
+            </if>
+            <if test="unitRequireId != null" >
+                AND    aimq.UNIT_REQUIRE_ID = #{unitRequireId}
+            </if>
+
+        </where>
+    </select>
+
+    <!--根据中介机构要求id返回资质要求 -->
+    <select id="listAeaImMajorQualByUnitRequireId" resultType="com.augurit.aplanmis.common.vo.AeaImMajorQualVo" >
+        SELECT DISTINCT
+            aism.MAJOR_ID majorId,
+            aism.MAJOR_NAME majorName,
+            aism.MAJOR_SEQ majorSeq,
+            aism.PARENT_MAJOR_ID parentMajorId,
+            aism.QUAL_ID qualId,
+            temp.QUAL_LEVEL_ID qualLevelId,
+            (SELECT aiq.QUAL_NAME FROM aea_im_qual aiq WHERE aiq.QUAL_ID = aism.QUAL_ID) qualName,
+            (SELECT aiql.QUAL_LEVEL_NAME FROM aea_im_qual_level aiql WHERE aiql.QUAL_LEVEL_ID = temp.QUAL_LEVEL_ID) qualLevelName
+        FROM (
+            SELECT
+                aism1.MAJOR_SEQ MAJOR_SEQ,
+                aimq.QUAL_LEVEL_ID
+                FROM aea_im_major_qual aimq, aea_im_service_major aism1
+                WHERE aism1.MAJOR_ID = aimq.MAJOR_ID AND aism1.IS_DELETE = '0' AND aimq.IS_DELETE = '0'
+                AND aimq.UNIT_REQUIRE_ID = #{unitRequireId}
+        ) temp, aea_im_service_major aism WHERE INSTR(temp.MAJOR_SEQ, aism.MAJOR_ID) > 0
+    </select>
+
+
+    <update id="deleteAeaImMajorQualByUnitRequireId" parameterType="java.lang.String">
+        update AEA_IM_MAJOR_QUAL set IS_DELETE = '1'
+        where UNIT_REQUIRE_ID = #{unitRequireId}
+    </update>
+
+</mapper>

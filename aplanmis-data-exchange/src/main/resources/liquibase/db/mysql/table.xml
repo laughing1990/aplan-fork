@@ -1,0 +1,48 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <preConditions>
+        <dbms type="mysql"/>
+    </preConditions>
+    <changeSet id="201910231000" author="yinlf" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `etl_error_log`
+            ADD COLUMN `ERR_VALUE` varchar(50) COMMENT '发生错误列的值' AFTER `ERR_COLUMN`,
+            ADD COLUMN `DIAGNOSE_RESULT` varchar(255) COMMENT '程序诊断结果' AFTER `ERR_VALUE`,
+            ADD COLUMN `IS_SOLVE` char(1) COMMENT '是否已解决' AFTER `DIAGNOSE_RESULT`;
+        </sql>
+    </changeSet>
+
+    <changeSet id="201910231727" author="yinlf" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            CREATE TABLE `etl_job_log`  (
+                `job_log_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
+                `job_log_code` varchar(255) COMMENT '上传批次',
+                `read_num` int(11) COMMENT '读取数据',
+                `written_num` int(11) COMMENT '写入数据',
+                `error_num` int(11) COMMENT '发生错误数',
+                `solve_num` int(11) COMMENT '已解决数',
+                `start_time` datetime(0) COMMENT '开始时间',
+                `end_time` datetime(0) COMMENT '结束时间',
+                `create_time` datetime(0) COMMENT '创建时间',
+                PRIMARY KEY (`job_log_id`) USING BTREE
+            )  COMMENT = '定时上传执行日志' ROW_FORMAT = Dynamic;
+            CREATE TABLE `etl_job_detail_log`  (
+                `detail_log_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
+                `job_log_id` int(11) NOT NULL COMMENT '上传记录ID',
+                `table_name` varchar(50) not null COMMENT '上传表名',
+                `read_num` int(11) COMMENT '读取数据',
+                `written_num` int(11) COMMENT '写入数据',
+                `error_num` int(11) COMMENT '发生错误数',
+                `create_time` datetime(0) COMMENT '创建时间',
+                PRIMARY KEY (`detail_log_id`) USING BTREE,
+                CONSTRAINT `fk_detail_log_job_log` FOREIGN KEY (`job_log_id`) REFERENCES `etl_job_log` (`job_log_id`)
+            )  COMMENT = '定时上传执行详细日志' ROW_FORMAT = Dynamic;
+            ALTER TABLE `etl_error_log`
+            ADD COLUMN `job_log_id` int(11) COMMENT '执行JOB的ID' AFTER `LOG_ID`,
+            ADD CONSTRAINT `FK_ERROR_LOG_JOB_LOB` FOREIGN KEY (`job_log_id`) REFERENCES `etl_job_log` (`job_log_id`);
+        </sql>
+    </changeSet>
+</databaseChangeLog>

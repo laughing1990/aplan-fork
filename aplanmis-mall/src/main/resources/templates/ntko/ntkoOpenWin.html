@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="common/common :: commonheader('打开文档窗口')" />
+    <!--此浏览器页面用于打开ntko控件窗口-->
+    <script type="text/javascript">
+        var url = '[[${jumpUrl}]]';
+        //服务器路径
+        var preUrl = 'http://' + window.location.host;
+        //请求跳转的url
+
+        //完整的url
+        var jumpUrl = preUrl + (decodeURIComponent(url).indexOf(ctx) != -1 ? decodeURIComponent(url) : ctx + decodeURIComponent(url));
+
+        //打开窗口
+        function openFileWin() {
+            var ntkoed = ntkoIsInstalled();
+            setTimeout(function () {					//设置延时等页面加载控件完成
+                if (ntkoed && url) {
+                    // ntkoBrowser.openWindow(jumpUrl);
+                    ntkoBrowser.openWindow(jumpUrl, "唐山市工程建设项目联合审批系统", "32DE3E7B56039EC193F0D80A9E1B0012756D9AE6");
+                    window.close();
+                }
+            }, 200);
+        }
+
+        //关闭窗口
+        function closeWin(url) {
+            //这个url要跟打开窗口的url一模一样
+            ntkoBrowser.ntkoClose(url);
+        }
+
+        function ntkoIsInstalled() {
+            //判断插件是否安装
+            var ntkoed = ntkoBrowser.ExtensionInstalled();
+
+            if (!ntkoed) {
+                var iTop = ntkoBrowser.NtkoiTop();   		  //获得窗口的垂直位置;
+                var iLeft = ntkoBrowser.NtkoiLeft();        //获得窗口的水平位置;
+                var url = ctx + '/rest/ntko/noInstall';
+                window.open(url, "", "height=200px,width=500px,top=" + iTop + "px,left=" + iLeft + "px,titlebar=no,toolbar=no,menubar=no,scrollbars=auto,resizeable=no,location=no,status=no");
+            }
+            return ntkoed;
+        }
+
+        //在父页面定义的跨浏览器插件应用程序关闭事件响应方法，且方法名不能自定义，必须是ntkoCloseEvent
+        function ntkoCloseEvent() {
+            console.log('跨浏览器插件应用程序窗口已关闭');
+        }
+
+        //在父页面定义的用于接收子页面回传值的方法，方法名可以自定义，定义后的方法名需要在子页面中通过window.external.SetReturnValueToParentPage进行注册
+        function OnData(argv1, argv2) {
+            console.log('value1:' + argv1);
+            console.log('value2:' + argv2);
+        }
+
+        //在子页面定义的向父页面回传值的方法，方法名可以自定义。（这个方法要定义在子页面）
+        // function ntkoSendDataToParentPage(){
+        //     var varData = new Array();
+        //     varData.push('value1');
+        //     varData.push('value2');
+        //     ntkoBrowser.ntkoSetReturnValueToParentPage("OnData",varData);
+        // }
+    </script>
+</head>
+<body onload="openFileWin()">
+
+</body>
+<th:block th:include="common/common :: commonfooter" />
+<!--ntko插件-->
+<script type="text/javascript" src="../../static/ntko/js/ntkobackground.min.js" th:src="@{/mall/ntko/js/ntkobackground.min.js}"></script>
+</html>

@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by zhangwn    2019-09-04 15:08:10 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaAnaStatisticsRecordMapper">
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns">
+    STATISTICS_RECORD_ID  statisticsRecordId,
+    REPORT_ID  reportId,
+    REPORT_NAME  reportName,
+    STATISTICS_START_DATE  statisticsStartDate,
+    STATISTICS_END_DATE  statisticsEndDate,
+    OPERATE_SOURCE  operateSource,
+    STATISTICS_TYPE  statisticsType,
+    CREATER  creater,
+    CREATE_TIME  createTime,
+    MODIFIER  modifier,
+    MODIFY_TIME  modifyTime,
+    ROOT_ORG_ID  rootOrgId
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaAnaStatisticsRecordById" resultType="AeaAnaStatisticsRecord">
+        select
+        <include refid="allColumns"/>
+        from AEA_ANA_STATISTICS_RECORD
+        where STATISTICS_RECORD_ID = #{id}
+    </select>
+
+    <select id="listStatisticsRecord" resultType="AeaAnaStatisticsRecord">
+        select
+        <include refid="allColumns"/>
+        from AEA_ANA_STATISTICS_RECORD
+        <where>
+            <if test="keyword != null and keyword != ''">
+                AND (
+                    REPORT_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                    OR OPERATE_SOURCE = #{keyword}
+                    OR STATISTICS_TYPE = #{keyword}
+                )
+            </if>
+        </where>
+        ORDER BY CREATE_TIME DESC
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaAnaStatisticsRecord" resultType="AeaAnaStatisticsRecord">
+        select
+        <include refid="allColumns"/>
+        from AEA_ANA_STATISTICS_RECORD
+        <where>
+            <if test="statisticsRecordId != null">
+                AND STATISTICS_RECORD_ID = #{statisticsRecordId}
+            </if>
+            <if test="reportId != null">
+                AND REPORT_ID = #{reportId}
+            </if>
+            <if test="reportName != null">
+                AND REPORT_NAME = #{reportName}
+            </if>
+            <if test="statisticsStartDate != null">
+                AND STATISTICS_START_DATE = #{statisticsStartDate}
+            </if>
+            <if test="statisticsEndDate != null">
+                AND STATISTICS_END_DATE = #{statisticsEndDate}
+            </if>
+            <if test="operateSource != null">
+                AND OPERATE_SOURCE = #{operateSource}
+            </if>
+            <if test="statisticsType != null">
+                AND STATISTICS_TYPE = #{statisticsType}
+            </if>
+            <if test="creater != null">
+                AND CREATER = #{creater}
+            </if>
+            <if test="createTime != null">
+                AND CREATE_TIME = #{createTime}
+            </if>
+            <if test="modifier != null">
+                AND MODIFIER = #{modifier}
+            </if>
+            <if test="modifyTime != null">
+                AND MODIFY_TIME = #{modifyTime}
+            </if>
+            <if test="rootOrgId != null">
+                AND ROOT_ORG_ID = #{rootOrgId}
+            </if>
+        </where>
+    </select>
+    <!--4 根据条件查询实体list,返回分页对象 -->
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaAnaStatisticsRecord" parameterType="AeaAnaStatisticsRecord">
+    insert into AEA_ANA_STATISTICS_RECORD (
+STATISTICS_RECORD_ID  ,REPORT_ID  ,REPORT_NAME  ,STATISTICS_START_DATE  ,STATISTICS_END_DATE  ,OPERATE_SOURCE  ,STATISTICS_TYPE  ,CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME  ,ROOT_ORG_ID
+    )  values  (
+#{statisticsRecordId},#{reportId},#{reportName},#{statisticsStartDate},#{statisticsEndDate},#{operateSource},#{statisticsType},#{creater},#{createTime},#{modifier},#{modifyTime},  #{rootOrgId}
+    )
+</insert>
+    <!--6 修改实体对象 -->
+    <update id="updateAeaAnaStatisticsRecord" parameterType="AeaAnaStatisticsRecord">
+        update AEA_ANA_STATISTICS_RECORD
+        <set>
+            <if test="statisticsRecordId != null">
+                STATISTICS_RECORD_ID = #{statisticsRecordId},
+            </if>
+            <if test="reportId != null">
+                REPORT_ID = #{reportId},
+            </if>
+            <if test="reportName != null">
+                REPORT_NAME = #{reportName},
+            </if>
+            <if test="statisticsStartDate != null">
+                STATISTICS_START_DATE = #{statisticsStartDate},
+            </if>
+            <if test="statisticsEndDate != null">
+                STATISTICS_END_DATE = #{statisticsEndDate},
+            </if>
+            <if test="operateSource != null">
+                OPERATE_SOURCE = #{operateSource},
+            </if>
+            <if test="statisticsType != null">
+                STATISTICS_TYPE = #{statisticsType},
+            </if>
+            <if test="creater != null">
+                CREATER = #{creater},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime},
+            </if>
+            <if test="modifier != null">
+                MODIFIER = #{modifier},
+            </if>
+            <if test="modifyTime != null">
+                MODIFY_TIME = #{modifyTime},
+            </if>
+            <if test="rootOrgId != null">
+                ROOT_ORG_ID = #{rootOrgId},
+            </if>
+        </set>
+        where STATISTICS_RECORD_ID = #{statisticsRecordId}
+    </update>
+    <!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaAnaStatisticsRecord">
+        delete from   AEA_ANA_STATISTICS_RECORD
+        where
+    STATISTICS_RECORD_ID = #{id}
+    </delete>
+    <!--8 删除实体对象列表,根据主键ID列表 -->
+    <!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaAnaStatisticsRecord" id="AeaAnaStatisticsRecordMap">
+        <id property="statisticsRecordId" column="STATISTICS_RECORD_ID"/>
+        <result property="reportId" column="REPORT_ID"/>
+        <result property="reportName" column="REPORT_NAME"/>
+        <result property="statisticsStartDate" column="STATISTICS_START_DATE"/>
+        <result property="statisticsEndDate" column="STATISTICS_END_DATE"/>
+        <result property="operateSource" column="OPERATE_SOURCE"/>
+        <result property="statisticsType" column="STATISTICS_TYPE"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="modifier" column="MODIFIER"/>
+        <result property="modifyTime" column="MODIFY_TIME"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+    </resultMap>
+
+    <select id="getAeaAnaStatisticsRecord" resultType="AeaAnaStatisticsRecord">
+        select
+        <include refid="allColumns"/>
+        from AEA_ANA_STATISTICS_RECORD
+        where REPORT_ID = #{reportId}
+        and REPORT_NAME = #{reportName}
+        and STATISTICS_START_DATE = #{statisticsStartDate}
+        and STATISTICS_END_DATE = #{statisticsEndDate}
+        and OPERATE_SOURCE = #{operateSource}
+        and STATISTICS_TYPE = #{statisticsType}
+        and CREATER = #{creater}
+        and ROOT_ORG_ID = #{rootOrgId}
+    </select>
+</mapper>

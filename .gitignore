@@ -1,0 +1,104 @@
+# Compiled class file
+*.class
+
+# Log file
+*.log
+
+# BlueJ files
+*.ctxt
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files #
+*.war
+*.nar
+*.ear
+*.tar.gz
+*.rar
+*.log*
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
+
+/build/
+!gradle/wrapper/gradle-wrapper.jar
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
+.gradle
+*.iws
+*.iml
+*.ipr
+/out/
+
+rebel.xml
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+aplanmis/out/
+aplanmis-common/out/
+
+.vscode/
+/aplanmis-mall/build
+/aplanmis-mall/out
+/aplanmis-common/out
+/aplanmis-common/build
+aplanmis-common/src/main/resources/rebel-remote.xml
+aplanmis-common/src/main/resources/rebel.xml
+aplanmis-mall/src/main/resources/rebel-remote.xml
+aplanmis-mall/src/main/resources/rebel.xml
+/aplanmis-dao/out
+/aplanmis-dao/build
+/aplanmis-dao/log
+/aplanmis-analyse/log
+/aplanmis-analyse/build
+/aplanmis-rest/build
+/aplanmis-rest/out
+
+/aplanmis-mall/log
+
+/gradlew/
+/gradlew.bat
+/aplanmis/build/
+/aplanmis/log/
+/log/
+
+/gradle/
+/aplanmis-analyse/build/
+/aplanmis-analyse/out/
+/aplanmis/src/main/resources/application-lwq.properties
+
+/aplanmis/fastjson-1.2.56.jar
+/aplanmis/gson-2.8.6.jar
+/aplanmis/formdesigner.jar
+/aplanmis/htmllexer.jar
+/aplanmis/htmlparser.jar
+/aplanmis/jsoup-1.12.1.jar
+/aplanmis-rest/src/main/resources/application-lwq.properties
+
+# vs code
+/aplanmis/bin
+/aplanmis-analyse/bin
+/aplanmis-common/bin
+/aplanmis-mall/bin
+/aplanmis-rest/bin
+/aplanmis/src/main/resources/rebel-remote.xml
+/aplanmis-analyse/src/main/resources/rebel-remote.xml
+/aplanmis-rest/src/main/resources/rebel-remote.xml
+/aplanmis-mall/src/main/resources/application-lwq.properties
+
+/aplanmis-data-exchange/out/**
+/aplanmis-data-exchange/build/**

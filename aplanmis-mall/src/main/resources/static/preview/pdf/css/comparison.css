@@ -1,0 +1,200 @@
+#slider {
+    position:absolute;
+    width:4px;margin-left:-2px;
+    left:50%;    
+    top:0;bottom:0;
+    background-color:#03ca13;
+    cursor:col-resize;z-index:10;
+} 
+
+#buttonWraper{
+    font-size:16px;
+    position:fixed;
+    bottom:0;right:0;
+    box-shadow: 0 0 5px #aaa;
+    padding:10px;
+    line-height:2em;
+    background-color:rgba(255, 255, 255, 0.8);
+    z-index:1000;
+    border:1px solid #aaa;
+    border-radius:4px;
+    max-width: 300px;
+}
+
+.btn-run {
+    padding: 5px;
+    font-size: 1em;
+    border-radius: 2em;
+    margin: .5em;
+    width: 10em;
+    height: auto;
+    color: #fff;
+    background-color: #146aff;
+}
+.btn-run:hover{
+    background-color:#146aff; 
+    color:#ff0;   
+}
+.btn-run:focus{
+    outline:none;
+}
+.comparison-area{position:absolute;outline:2px solid #f00;animation: higchange 1s  ease-in  infinite ;}
+/*#areadv div.dd{margin:10px 0;padding:5px;border-bottom:1px solid #ddd;position:relative;cursor:pointer;}
+#areadv div.dd>i{display:inline-block;margin-right:.5em;font-style:normal;}
+#areadv div.dd>canvas{margin-left:20px;}
+#areadv h3{margin:0;padding:10px;}*/
+#comparison_result h3{font-size:1em;}
+#comparison_result>i {
+    overflow: auto;
+    margin-bottom: 3px;
+    border: 1px solid #aaa;
+    padding: 4px 8px;
+    max-width: 300px;
+    background-color: #fff;
+    display: inline-block;
+    height: 1em;
+    line-height: 1em;
+    border-radius: 30px;
+    margin-right: 3px;
+    max-height: 100px;
+    font-style:normal;
+    cursor:pointer;
+}
+#comparison_result>i:hover{
+    background-color:#ff0;
+}
+.btnLoadPDF{
+    position:absolute;cursor:pointer;
+    left:50%;top:0;
+    border-style:solid;
+    border-color:#00d81f;
+    border-width:0 3px 3px 3px;
+    height:36px;width:80px;line-height:36px;text-align:center;
+    margin-left:-40px;
+    border-radius:0 0 4px 4px;
+    background-color:#00d81f;
+    color:#fff;font-weight:bold;text-shadow:0 0 5px #333;
+    -webkit-transition: all 0.2s, color 0.2s;
+	-moz-transition: all 0.2s, color 0.2s;
+	transition: all 0.2s, color 0.2s;
+}
+.btnLoadPDF:hover{
+    box-shadow:0 0 40px #015e00;
+    background-color:#00b219;
+}
+
+@keyframes higchange {
+    0%{ box-shadow: 0 0 4px #f00}
+    50%{ box-shadow: 0 0 40px #f00}
+    100%{ box-shadow: 0 0 4px #f00}
+}
+
+.loading-radx {
+    display:none;
+    background-color:rgba(76, 255, 123, 0.26);
+    position:absolute;
+    top:0;bottom:0;
+    border-right:3px solid #00d81f;
+    border-left:3px solid #00d81f;
+    -webkit-animation: loading-rada 3s linear infinite;
+    animation: loading-rada 3s linear infinite;
+}
+@-webkit-keyframes rada {
+  0% {right:auto;left:0;width:0}
+  50%{right:0;left:0;width:100%}
+  51%{right:auto;left:100%;width:0;}
+  100% {right:0;left:0%;width:100%}
+}
+
+
+/*.view, .list{
+    position:absolute;
+    left:0;right:0;
+    top:0;bottom:0;
+}
+.view{background-color:#555;overflow:hidden;}*/
+.workarea{position:absolute;}
+.workarea canvas{position:absolute;}
+
+.backImg{
+    display:inline-block;
+    max-height:100px;
+    max-width:100px;
+}
+.progressDiv {
+    position:absolute;
+    background-color:rgba(135,206,235,0.3);
+}
+#verticalLine,#separator {
+    display:none;
+    background:#0071ca;
+    cursor:e-resize;
+    top:0;bottom:0;
+    left:50%;
+    margin-left:-4px;
+    position:fixed;
+    width:8px;
+    z-index:199;
+}
+.compareIndex {
+    border-radius:25px;
+    background-color:red;
+    text-align:center;
+    color:white;
+    position:absolute;
+    width:50px;
+    height:50px;
+    line-height:50px;
+    font-size:2em;
+    left:0;
+    top:0;
+    margin-left:-50px;
+    margin-top:-25px;
+    /*border:1px solid red;*/
+}
+
+#dvProcess{
+    position:fixed;
+    z-index:10000;
+    width:20em; height:auto;line-height:2em;padding:1em;
+    font-size:16px;
+    background-color:#555;
+    color:#fff;
+    left:50%;margin-left:-11em;
+    bottom:50px;
+    overflow:auto;
+    white-space:normal;
+    word-wrap:break-word;
+    word-break:break-all;
+    text-align:center;overflow:hidden;
+}
+#dvProcess p{margin:0; line-height:2em;}
+#dvProcess > .curMessage {
+    background-color:#efdd28;
+    color:#d00;
+}
+
+#buttonWraper .info{
+    padding: 7px;
+    bottom: 10px;margin-top:.5em;
+    right: 10px;
+    text-align:center;
+    display: block;
+    height: 1em;
+    line-height: 1em;
+    font-size: 14px;
+}
+#buttonWraper .info b{
+    color:#fff;
+    padding:0 5px;
+    margin-left:5px;
+}
+
+.comparison-area.clicked{
+    outline-color:#00b219;
+    animation:none;
+}
+
+.comparison-area.clicked .compareIndex{
+    background-color:#00b219;
+}

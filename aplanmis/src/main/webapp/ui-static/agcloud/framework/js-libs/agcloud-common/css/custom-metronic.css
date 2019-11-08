@@ -1,0 +1,120 @@
+﻿@charset "utf-8";
+/* CSS Document */
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	font-family: "Arial", "Microsoft YaHei", "黑体", "宋体", sans-serif;
+}
+.form-control,.btn.m-btn--custom{
+	font-family: "Arial", "Microsoft YaHei", "黑体", "宋体", sans-serif;
+}
+.m-page--wide .m-header.m-header-dark,
+.m-page--fluid .m-header.m-header-dark {
+  background-color: #282a3c; 
+}
+.m-page--boxed .m-header .m-header-head {
+  background-color: #282a3c; 
+}
+ .m-topbar .m-topbar__nav.m-nav > .m-nav__item > .m-nav__link .m-nav__link-icon > i:before {
+  background:#868aa8;
+  background-clip: text;
+  text-fill-color: transparent;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent; 	
+}
+@media (min-width: 993px) {
+  .m-brand {
+	  width:292px;
+      padding: 0; 
+    }	
+  .m-brand .m-brand__logo{
+	  float: right;
+	  padding-top: 11px;
+	}
+  .m-brand .m-brand__tools{
+	  float: left;
+	  padding-top: 15px;
+	  width: 60px;
+	  text-align: center;
+	}
+}
+@media (min-width: 993px) {
+  .m-header-menu {
+    margin: 0 0 0 50px; 
+	}
+}
+.m-aside-menu.m-aside-menu--skin-dark .m-menu__nav > .m-menu__item.m-menu__item--open {
+  background-color: #262838; 
+}
+@media (min-width: 993px) {
+  .m-aside-left--minimize .m-aside-left {
+    width: 60px;
+   }
+  .m-aside-left--minimize .m-aside-menu .m-menu__nav > .m-menu__item.m-menu__item--hover > .m-menu__submenu {
+     top: 0;
+     bottom: auto;
+     display: block !important;
+     margin-left: 61px !important; }
+}
+.m-aside-left--minimize .m-aside-menu .m-menu__nav > .m-menu__item.m-menu__item--hover > .m-menu__link {
+        width: 60px; 
+}
+/**更改metronic 5默认的header栏高度，原是70px,改为60px**/
+@media (min-width: 993px){
+	.m-header {
+    height: 60px;
+	}
+	.m-header-menu {
+    height: 60px;
+	}
+	.m-brand .m-brand__logo, .m-brand .m-brand__tools {
+    height: 60px !important;
+	}
+}
+.m-topbar {
+    height: 60px;
+}
+@media (min-width: 993px){
+	.m-header--fixed .m-body {
+    padding-top: 60px !important;
+	}
+}
+/**END:更改header栏高度**/
+/**登录界面**/
+@media (max-width: 992px){
+	.m-login.m-login--2 .m-login__wrapper {
+    width: 100%;
+    position: relative;
+	}
+}
+.m-login.m-login--2 .m-login__wrapper .m-login__container {
+/*    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-left: -194px;
+    margin-top: -221px;*/
+	margin-top: 100px;
+}
+.m-login.m-login--2 .m-login__wrapper .m-login__container .m-login__form .m-form__group .form-control {
+  /*  padding: 1rem 2rem;*/
+}
+.m-login.m-login--2 .m-login__wrapper .m-login__container .m-login__form .m-login__form-action .m-login__btn {
+    /*padding: 1rem 2rem;*/
+}
+.m-login.m-login--2 .m-login__wrapper .m-login__container .m-login__form .m-login__form-action {
+    margin-top: 0; 
+}
+.m-badge.m-badge--brand {
+    background-color: #ffb822;
+    color: #ffffff;
+}

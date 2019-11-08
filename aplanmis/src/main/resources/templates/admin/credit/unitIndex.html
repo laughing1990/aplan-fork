@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!--引入样式-->
+    <link rel="stylesheet"
+          href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/metronic-5/vendors.bundle.css"
+          th:href="@{/agcloud/framework/js-lib/metronic-5/vendors.bundle.css}">
+    <link rel="stylesheet"
+          href="/framework-ui/src/main/resources/static/agcloud/framework/ui-private/default/common/css/metronic.css"
+          th:href="@{/agcloud/framework/ui-private/default/common/css/metronic.css}">
+    <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.css"
+          th:href="@{/agcloud/framework/js-lib/element-2/element.css}">
+    <link rel="stylesheet"
+          href="/framework-ui/src/main/resources/static/agcloud/framework/ui-private/default/common/css/layout.css"
+          th:href="@{/agcloud/framework/ui-private/default/common/css/layout.css}">
+    <link rel="stylesheet"
+          href="/framework-ui/src/main/resources/static/agcloud/framework/ui-private/default/blue/css/theme.css"
+          th:href="@{/agcloud/framework/ui-private/default/blue/css/theme.css}">
+
+    <link rel="stylesheet" href="../../../static/admin/credit/css/unit.css" th:href="@{/admin/credit/css/unit.css}">
+
+    <script>
+        var ctx = '[[@{/}]]';
+    </script>
+</head>
+<body>
+<div id="index" v-cloak v-loading.fullscreen.lock="loading" style="padding: 15px;">
+    <div class="add-search clearfix" style="padding-bottom: 15px;">
+        <button type="button" class="btn btn-primary" @click="addCreditUnit()">新增</button>
+        <button type="button" class="btn btn-outline-danger" @click="batchDelData">删除</button>
+        <div class="float-right search-btn" style="padding-left: 10px;">
+            <div class="input-group search-key">
+                <input type="text" class="form-control" v-model="searchKey" placeholder="请输入查询关键字"
+                       style="width: 250px;">
+                <i class="la la-close clear-search" @click="clearAndReloadDataTable"></i>
+                <div class="input-group-append">
+                    <button class="btn btn-primary m-btn--icon" @click="reloadDataTable">
+                        <span><i class="fa fa-search"></i><span>查询</span></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <el-table
+            :data="unitTableData.list"
+            style="width: 100%"
+            row-key="creditUnitInfoId"
+            border
+            lazy
+            v-loading="loading"
+            @row-dblclick=""
+            @selection-change="handleSelChange"
+            :load="load">
+        <el-table-column type="selection" align="center"></el-table-column>
+        <el-table-column
+                prop="applicant"
+                label="名称"
+                width="350">
+        </el-table-column>
+        <el-table-column
+                prop="unifiedSocialCreditCode"
+                label="统一社会信用代码"
+                width="300">
+        </el-table-column>
+        <el-table-column
+                prop="idrepresentative"
+                label="法人姓名"
+                width="150">
+        </el-table-column>
+        <el-table-column
+                prop="applicantDetailSite"
+                label="具体地址">
+        </el-table-column>
+        <el-table-column prop="" label="操作" width="200" fixed="right" align="center">
+            <template slot-scope="scope">
+                <a href="javascript:;" class="btn-table" @click="editCreditUnit(scope.row)">编辑</a>
+                <a href="javascript:;" class="btn-table" @click="delCreditUnit(scope.row)">删除</a>
+                <a href="javascript:;" class="btn-table" @click="addCreditUnit(scope.row)">添加子单位</a>
+            </template>
+        </el-table-column>
+    </el-table>
+
+    <!-- 分页 -->
+    <el-pagination
+            background
+            align="right"
+            :pager-count="5"
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :page-sizes="[10, 20, 30, 50]"
+            :page-size.sync="pageSize"
+            layout="total,sizes, prev, pager, next, jumper"
+            :total="unitTableData.total"
+            :current-page.sync="page"
+    >
+    </el-pagination>
+
+    <el-dialog :title="dialogTitle" :visible.sync="unitDialogState" width="860px" @closed="dialogClose">
+        <el-form :model="unitFormData" :rules="rules" ref="manForm" :inline="true" label-width="150px"
+                 class="linkman-form">
+
+            <el-form-item class="fill-item" label="单位名称" prop="applicant">
+                <el-input placeholder="请输入单位名称" v-model="unitFormData.applicant"></el-input>
+            </el-form-item>
+
+            <el-form-item class="fill-item" label="统一社会信用代码" prop="unifiedSocialCreditCode">
+                <el-input placeholder="请输入统一社会信用代码" v-model="unitFormData.unifiedSocialCreditCode"></el-input>
+            </el-form-item>
+
+            <el-form-item label="组织机构代码" prop="organizationalCode">
+                <el-input placeholder="请输入组织机构代码" v-model="unitFormData.organizationalCode"></el-input>
+            </el-form-item>
+
+            <el-form-item label="工商登记号" prop="induCommRegNum">
+                <el-input placeholder="请输入工商登记号" v-model="unitFormData.induCommRegNum"></el-input>
+            </el-form-item>
+
+            <el-form-item label="纳税人识别号" prop="taxpayerNum">
+                <el-input placeholder="请输入纳税人识别号" v-model="unitFormData.taxpayerNum"></el-input>
+            </el-form-item>
+
+            <el-form-item label="信用标记码" prop="creditFlagNum">
+                <el-input placeholder="请输入信用标记码" v-model="unitFormData.creditFlagNum"></el-input>
+            </el-form-item>
+
+            <el-form-item label="是否主单位" prop="isPrimaryUnit">
+                <el-radio-group v-model="unitFormData.isPrimaryUnit" style="width: 240px;">
+                    <el-radio label="1">主单位</el-radio>
+                    <el-radio label="0">副单位</el-radio>
+                </el-radio-group>
+            </el-form-item>
+
+            <el-form-item label="角色">
+                <el-checkbox-group v-model="roles" @change="roleChange">
+                    <el-checkbox label="isImUnit">中介机构</el-checkbox>
+                    <el-checkbox label="isOwnerUnit">业主单位</el-checkbox>
+                </el-checkbox-group>
+            </el-form-item>
+
+            <el-form-item label="单位性质" prop="unitNature">
+                <el-select placeholder="请选择" v-model="unitFormData.unitNature">
+                    <el-option label="企业" value="1"></el-option>
+                    <el-option label="事业单位" value="2"></el-option>
+                    <el-option label="社会组织" value="3"></el-option>
+                </el-select>
+            </el-form-item>
+
+            <el-form-item  label="单位类型" prop="unitType">
+                <el-select placeholder="请选择" v-model="unitFormData.unitType">
+                    <el-option v-for="item in unitTypeOptions" :label="item.label" :value="item.value"></el-option>
+                </el-select>
+            </el-form-item>
+
+            <el-form-item  label="邮政编码" prop="postalCode">
+                <el-input placeholder="请输入邮政编码" v-model="unitFormData.postalCode"></el-input>
+            </el-form-item>
+
+            <el-form-item  label="单位证照类型" prop="idtype">
+                <el-select placeholder="请选择" v-model="unitFormData.idtype">
+                    <el-option v-for="item in IDTypeOptions" :label="item.label" :value="item.value"></el-option>
+                </el-select>
+            </el-form-item>
+
+            <el-form-item class="fill-item" label="所属单位" prop="globalUnitInfoName">
+                <el-input placeholder="选择所属全局单位" readonly v-model="unitFormData.globalUnitInfoName" @focus="selUnitInfo">
+                    <el-button slot="append" icon="el-icon-search" @click="selUnitInfo"></el-button>
+                </el-input>
+            </el-form-item>
+
+            <el-form-item  label="注册资本" prop="registeredCapital">
+                <el-input placeholder="请输入注册资本" v-model="unitFormData.registeredCapital"></el-input>
+            </el-form-item>
+
+            <el-form-item  label="注册登记机关" prop="registerAuthority">
+                <el-input placeholder="请输入注册登记机关" v-model="unitFormData.registerAuthority"></el-input>
+            </el-form-item>
+
+            <el-form-item class="fill-item" label="经营范围" prop="managementScope">
+                <el-input type="textarea" placeholder="请输入经营范围" v-model="unitFormData.managementScope"></el-input>
+            </el-form-item>
+
+            <el-form-item label="法定代表人" prop="idrepresentative">
+                <el-input placeholder="请输入法定代表人" v-model="unitFormData.idrepresentative"></el-input>
+            </el-form-item>
+
+            <el-form-item label="身份证号码" prop="idno">
+                <el-input placeholder="请输入身份证号码" v-model="unitFormData.idno"></el-input>
+            </el-form-item>
+
+            <el-form-item label="联系人姓名" prop="contact">
+                <el-input placeholder="请输入联系人姓名" v-model="unitFormData.contact"></el-input>
+            </el-form-item>
+
+            <el-form-item label="联系电话" prop="idmobile">
+                <el-input placeholder="请输入联系电话" v-model="unitFormData.idmobile"></el-input>
+            </el-form-item>
+
+            <el-form-item label="联系人电子邮箱" prop="email">
+                <el-input placeholder="请输入联系人电子邮箱" v-model="unitFormData.email"></el-input>
+            </el-form-item>
+
+            <el-form-item label="单位登录名" prop="loginName">
+                <el-input placeholder="请输入单位登录名" v-model="unitFormData.loginName"></el-input>
+            </el-form-item>
+
+            <el-form-item label="登录密码" prop="loginPwd">
+                <el-input placeholder="请输入登录密码" v-model="unitFormData.loginPwd"></el-input>
+            </el-form-item>
+
+            <el-form-item label="是否同步：" prop="isSync" >
+                <el-select v-model="unitFormData.isSync">
+                    <el-option value="0" label="手动录入"></el-option>
+                    <el-option value="1" label="自动同步"></el-option>
+                </el-select>
+            </el-form-item>
+
+            <el-form-item class="fill-item" label="具体地址" prop="applicantDetailSite">
+                <el-input type="textarea" placeholder="请输入具体地址" v-model="unitFormData.applicantDetailSite" rows="2"></el-input>
+            </el-form-item>
+
+            <el-form-item class="fill-item" label="同步来源" prop="syncSource" :style="{display:displaySync}">
+                <el-input type="textarea" placeholder="请输入经营范围" v-model="unitFormData.syncSource"></el-input>
+            </el-form-item>
+
+            <el-form-item class="fill-item" label="同步时间" prop="syncTime" :style="{display:displaySync}">
+                <el-date-picker
+                        readonly
+                        v-model="unitFormData.syncTime"
+                        type="datetime"
+                        placeholder="选择日期时间">
+                </el-date-picker>
+            </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+            <el-button @click="unitDialogState = false">取 消</el-button>
+            <el-button type="primary" @click="saveCreditUnit">保 存</el-button>
+        </span>
+    </el-dialog>
+
+    <!-- 企业单位 -->
+    <el-dialog title="选择企业单位" :visible.sync="dialogSelUnit" class="sel-apartment set-admin edit-row"
+               width="800px" height="600px">
+        <div class="tree-left float-left">
+            <p class="sel-title">选择：</p>
+            <el-input
+                    class="search-apartment"
+                    placeholder="搜索企业单位"
+                    v-model="unitFilterText" @input="selUnitInfo">
+                <i slot="prefix" class="el-input__icon el-icon-search"></i>
+                <i slot="suffix" class="el-input__icon el-icon-close" @click="clearUnitSearch"></i>
+            </el-input>
+            <el-tree
+                    :style="{height:fullHeight-400+'px',overflow:'auto'}"
+                    :data="selUnitTreeData"
+                    :expand-on-click-node="false"
+                    highlight-current
+                    :props="defaultProps"
+                    node-key="id"
+                    @node-click="clickSelUnit"
+                    :default-expanded-keys="selUnitRootNodeId">
+                    <span class="custom-tree-node" slot-scope="scope">
+                        <span>
+                            <i :class="'fa fa-folder'"></i>{{ scope.data.label }}
+                        </span>
+                    </span>
+            </el-tree>
+        </div>
+        <div class="selected-apartm">
+            <p class="sel-title">已选：</p>
+            <div class="selected-list"
+                 :style="{height:fullHeight-350+'px',overflow:'auto'}">
+                <p v-for="(item,index) in selUnitInfoList"
+                   :id="item.id"
+                   class="selected-item">{{item.label}}
+                    <i class="la la-close float-right" @click="removeSelUnit(item,index)"></i>
+                </p>
+            </div>
+        </div>
+        <div slot="footer" class="dialog-footer">
+            <el-button type="primary" @click="saveSelUnit">保存</el-button>
+            <el-button @click="closeSelUnitInfo">取消</el-button>
+        </div>
+    </el-dialog>
+
+    <!--<el-dialog title="全局单位库" :visible.sync="globalUnitDialogState" width="850px" >-->
+        <!--<div class="add-search clearfix" style="padding-bottom: 15px;">-->
+            <!--<div class="float-right search-btn" style="padding-left: 10px;">-->
+                <!--<div class="input-group search-key">-->
+                    <!--<input type="text" class="form-control" v-model="searchKey2" placeholder="请输入查询关键字"-->
+                           <!--style="width: 250px;">-->
+                    <!--<i class="la la-close clear-search" @click="clearAndReloadGlobalUnitDataTable"></i>-->
+                    <!--<div class="input-group-append">-->
+                        <!--<button class="btn btn-primary m-btn&#45;&#45;icon" @click="reloadGlobalUnitDataTable">-->
+                            <!--<span><i class="fa fa-search"></i><span>查询</span></span>-->
+                        <!--</button>-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</div>-->
+        <!--<el-table-->
+                <!--ref="globalUnitTable"-->
+                <!--:data="globalUnitTableData.list"-->
+                <!--style="width: 100%"-->
+                <!--row-key="unitInfoId"-->
+                <!--border-->
+                <!--height="300"-->
+                <!--highlight-current-row-->
+                <!--v-loading="loading2"-->
+                <!--@current-change="globalUnitTableCurrentChange"-->
+        <!--&gt;-->
+            <!--<el-table-column-->
+                    <!--prop="applicant"-->
+                    <!--label="名称"-->
+                    <!--width="230">-->
+            <!--</el-table-column>-->
+            <!--<el-table-column-->
+                    <!--prop="unifiedSocialCreditCode"-->
+                    <!--label="统一社会信用代码"-->
+                    <!--width="180">-->
+            <!--</el-table-column>-->
+            <!--<el-table-column-->
+                    <!--prop="idrepresentative"-->
+                    <!--label="法人姓名"-->
+                    <!--width="150">-->
+            <!--</el-table-column>-->
+            <!--<el-table-column-->
+                    <!--prop="applicantDetailSite"-->
+                    <!--label="具体地址">-->
+            <!--</el-table-column>-->
+
+        <!--</el-table>-->
+        <!--<el-pagination-->
+                <!--style="margin-bottom: 15px;"-->
+                <!--background-->
+                <!--align="right"-->
+                <!--:pager-count="5"-->
+                <!--@size-change="handleSizeChange2"-->
+                <!--@current-change="handleCurrentChange2"-->
+                <!--:page-sizes="[5,10, 20, 30, 50]"-->
+                <!--:page-size.sync="pageSize2"-->
+                <!--layout="total,sizes, prev, pager, next, jumper"-->
+                <!--:total="globalUnitTableData.total"-->
+                <!--:current-page.sync="page2"-->
+        <!--&gt;-->
+        <!--</el-pagination>-->
+
+         <!--<span slot="footer" class="dialog-footer">-->
+            <!--<el-button @click="globalUnitDialogState = false">取 消</el-button>-->
+             <!--<el-button @click="clearGlobalUnitSelection">清空选择</el-button>-->
+            <!--<el-button type="primary" @click="saveGlobalUnitSelection">保 存</el-button>-->
+        <!--</span>-->
+    <!--</el-dialog>-->
+
+</div>
+
+
+<!-- 引入js文件 -->
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js"
+        th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js"
+        th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js"
+        th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js"
+        th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>
+<script type="text/javascript" src="../../../static/admin/credit/js/unitIndex.js"
+        th:src="@{/admin/credit/js/unitIndex.js}"></script>
+
+</body>
+</html>

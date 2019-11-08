@@ -1,0 +1,260 @@
+<!--@Author: ZL-->
+<!--@Date:   2019/06/14-->
+<!--@Last Modified by:   ZL-->
+<!--@Last Modified time: $ $-->
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>唐山市中介服务网上超市</title>
+  <link rel="shortcut icon" href="../../../static/zjcs/common/images/favicon.ico" th:href="@{/zjcs/common/images/favicon.ico}">
+  <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.css"
+    th:href="@{/agcloud/framework/js-lib/element-2/element.css}" />
+  <link rel="stylesheet"
+    href="/framework-ui/src/main/resources/static/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css"
+    th:href="@{/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css}">
+  <link rel="stylesheet" href="../../../static/zjcs/common/css/reset.css" th:href="@{/zjcs/common/css/reset.css}">
+  <link rel="stylesheet" href="../../../static/zjcs/procurementNotice/css/index.css"
+    th:href="@{/zjcs/procurementNotice/css/index.css}">
+  </link>
+
+  <script>
+    var ctx = '[[@{/}]]';
+    // var ctx = 'http://192.168.30.209:8084/aplanmis-mall/';
+  </script>
+</head>
+
+<body>
+  <div id="details" v-cloak>
+    <div class="header">
+      <iframe src="../common/header.html" th:src="@{../header.html}" frameborder="0"></iframe>
+    </div>
+    <div class="main-content detail__content clearfix" :style="{minHeight:contentMinHeight+'px'}">
+      <div class="breadcrumb">
+        <a href="index.html" class="breadcrumb__link">采购公告</a>
+        <span class="breadcrumb__separator">/</span>
+        <span class="" @click="qualificationTree=false">公告详情</span>
+        <template v-if="qualificationTree">
+          <span class="breadcrumb__separator">/</span>
+          <span class="">资质等级树</span>
+        </template>
+      </div>
+      <template v-if="!qualificationTree">
+        <!-- 跳转 -->
+        <div class="jump-box" v-if="isShowSignBtn && !(purchaseDetails.expirationDate > new Date().getTime())">
+          <el-button type="primary" @click="jumpToSignPandel">我要报名</el-button>
+        </div>
+        <!-- 增加提示 -->
+        <div class="sign-tip-box">
+          <div class="tip-card card-warning">
+            <div class="icon">
+              <i class="el-icon-user"></i>
+            </div>
+            <div class="txt">
+              <p>已有{{purchaseDetails.unitBiddingCount || 0}}家中介报名参加</p>
+            </div>
+          </div>
+          <div class="tip-card card-success">
+            <div class="icon">
+              <i class="el-icon-time"></i>
+            </div>
+            <div class="txt" v-if="purchaseDetails.expirationDate < new Date().getTime()">
+                <p>报名结束</p>
+            </div>
+            <div class="txt" v-else>
+              <p>报名时间</p>
+              <p>{{purchaseDetails.expirationDate | formatDateTime}}</p>
+            </div>
+          </div>
+        </div>
+        <div class="article-tit mt-2">关于为【{{purchaseDetails.projName}}】，公开选取【{{purchaseDetails.serviceContent}}】机构的公告</div>
+        <ul>
+          <li>
+            <b>项目业主：</b>
+            <div class="txt">{{purchaseDetails.applicant}}</div>
+          </li>
+          <li>
+            <b>采购项目名称：</b>
+            <div class="txt">{{purchaseDetails.projName}}</div>
+          </li>
+          <li>
+            <b>中介服务事项：</b>
+            <div class="txt">
+              <a :href="'../imServices.html?itemBasicId='+purchaseDetails.itemBasicId">
+                {{purchaseDetails.serviceName}}</a>
+            </div>
+          </li>
+          <li>
+            <b>投资审批项目：</b>
+            <div class="txt">{{purchaseDetails.isApproveProj==1?'是':'否'}}</div>
+          </li>
+          <li>
+            <b>采购项目编码：</b>
+            <div class="txt">{{purchaseDetails.localCode}}</div>
+          </li>
+          <li>
+            <b>项目规模：</b>
+            <div class="txt">
+              <p>{{purchaseDetails.projScale}}</p>
+            </div>
+          </li>
+          <!--<li>-->
+          <!--<b>所需服务：</b>-->
+          <!--<div class="txt">{{purchaseDetails.serviceContent}}</div>-->
+          <!--</li>-->
+          <li>
+            <b>服务内容：</b>
+            <div class="txt">{{purchaseDetails.serviceContent}}</div>
+          </li>
+          <li>
+            <b>中介机构要求：</b>
+            <div class="txt">
+              {{purchaseDetails | agentRequireFormat}}
+            </div>
+          </li>
+
+          <li v-if="purchaseDetails.isQualRequire == 1">
+            <b>资质（资格）要求说明：</b>
+            <div class="txt" v-if="purchaseDetails.qualRequireExplain">
+              {{purchaseDetails.qualRequireExplain}}
+              <a href="javascript:;"
+                @click="qualificationTree=true;showQualificationTree(purchaseDetails.projPurchaseId )"
+                style="padding-left: 20px;">查看资质等级树</a>
+            </div>
+          </li>
+          <template v-if="purchaseDetails.isRegisterRequire == 1">
+            <li>
+              <b>执业（职业）人员总数：</b>
+              <div class="txt">{{purchaseDetails.registerTotal}}</div>
+            </li>
+            <li>
+              <b>执业（职业）人员要求说明：</b>
+              <div class="txt">{{purchaseDetails.registerRequire}}</div>
+            </li>
+          </template>
+          <li v-if="purchaseDetails.isRecordRequire == 1">
+            <b>备案要求说明：</b>
+            <div class="txt">{{purchaseDetails.recordRequireExplain}}</div>
+          </li>
+          <li>
+            <b>其他要求说明：</b>
+            <div class="txt">{{purchaseDetails.recordRequireExplain}}</div>
+          </li>
+          <li>
+            <b>竞价天数：</b>
+            <div class="txt">{{purchaseDetails.bidNum?purchaseDetails.bidNum+'个工作日内完成':''}}</div>
+          </li>
+          <!--<li>-->
+          <!--<b>服务金额：</b>-->
+          <!--<div class="txt">暂不做评估与测算</div>-->
+          <!--</li>-->
+          <li>
+            <b>金额说明：</b>
+            <div class="txt">{{purchaseDetails.amountExplain}}</div>
+          </li>
+          <!--<li>-->
+          <!--<b>调配择优球数比例：</b>-->
+          <!--<div class="txt">%</div>-->
+          <!--</li>-->
+          <li>
+            <b>竞价类型：</b>
+            <!-- <div class="txt">{{purchaseDetails.biddingType==1?'随机中标':'自主选'}}</div> -->
+            <div class="txt">{{purchaseDetails.biddingType | biddingTypeFormat}}</div>
+          </li>
+          <!-- 回避 -->
+          <template v-if="purchaseDetails.biddingType != 2">
+            <li>
+              <b>是否有回避情况：</b>
+              <div class="txt">
+                {{purchaseDetails.isAvoid == 1? '是': '否' }}
+              </div>
+            </li>
+            <template v-if="purchaseDetails.isAvoid == 1">
+              <li>
+                <b>回避单位：</b>
+                <div class="txt">
+                  {{purchaseDetails.avoidUnitInfos}}
+                </div>
+              </li>
+              <li>
+                <b>回避原因：</b>
+                <div class="txt">
+                  {{purchaseDetails.iavoidReason || '暂无'}}
+                </div>
+              </li>
+            </template>
+          </template>
+          <!--<li>-->
+          <!--<b>有无回避情况：</b>-->
+          <!--<div class="txt">否</div>-->
+          <!--</li>-->
+          <li>
+            <b>是否现场见证：</b>
+            <div class="txt">{{purchaseDetails.isLiveWitness==1?'是':'否'}}</div>
+          </li>
+          <!--<li>-->
+          <!--<b>截止报名时间：</b>-->
+          <!--<div class="txt">-->
+          <!--2019-06-18 16:30-->
+          <!--</div>-->
+          <!--</li>-->
+          <li>
+            <b>审核时间：</b>
+            <div class="txt">
+              {{purchaseDetails.auditTime | formatDate }}
+            </div>
+          </li>
+          <li>
+            <b>项目业主业务咨询电话：</b>
+            <div class="txt">{{purchaseDetails.moblie}}</div>
+          </li>
+          <template v-if="purchaseDetails.requireExplainFile">
+            <li class="download-file">
+              <b style="vertical-align: top;">要求说明文件下载：</b>
+              <a v-if="fileList.length>0" :href="ctx + 'supermarket/purchase/downloadAttachment/'+item.detailId"
+                v-for="item in fileList">
+                {{item.attName}}
+              </a>
+              <a v-else>
+                暂无文件
+              </a>
+            </li>
+          </template>
+
+        </ul>
+      </template>
+      <template v-else>
+        <el-tabs type="border-card" class="selected-quals-tab">
+          <el-tab-pane v-for="(item, index) in selectedQuals" :label="item.qualName">
+            <template>
+              <el-tabs type="card" class="aea-qual-levels">
+                <el-tab-pane v-for="(itemLevels, ind) in item.aeaImQualLevels" :label="itemLevels.qualLevelName">
+                  <el-tree :data="itemLevels.majors" :props="defaultProps"></el-tree>
+                </el-tab-pane>
+              </el-tabs>
+            </template>
+          </el-tab-pane>
+        </el-tabs>
+      </template>
+    </div>
+    <div class="footer" :class="isScroll?'':'fixed-bottom'">
+      <iframe src="../common/footer.html" th:src="@{../footer.html}" frameborder="0"></iframe>
+    </div>
+  </div>
+  <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js"
+    th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>
+  <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js"
+    th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
+  <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js"
+    th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
+<!--  <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js"-->
+<!--    th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>-->
+  <script src="../../../static/common/js/common.js" th:src="@{/common/js/common.js}"></script>
+
+  <script src="../../../static/zjcs/procurementNotice/js/details.js" th:src="@{/zjcs/procurementNotice/js/details.js}"></script>
+</body>
+
+</html>

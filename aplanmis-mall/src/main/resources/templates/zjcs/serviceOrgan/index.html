@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<title>中介服务机构</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<link rel="shortcut icon" href="../../../static/zjcs/common/images/favicon.ico" th:href="@{/zjcs/common/images/favicon.ico}">
+
+	<link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css" th:href="@{/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css}">
+	<link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.css" th:href="@{/agcloud/framework/js-lib/element-2/element.css}">
+	<link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/ui-private/default/common/css/layout.css" th:href="@{/agcloud/framework/ui-private/default/common/css/layout.css}">
+	<link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/ui-private/default/blue/css/theme.css" th:href="@{/agcloud/framework/ui-private/default/blue/css/theme.css}">
+	<link rel="stylesheet" href="../../../static/zjcs/common/css/reset.css" th:href="@{/zjcs/common/css/reset.css}">
+
+	<link rel="stylesheet" href="../../../static/zjcs/serviceOrgan/css/index.css" th:href="@{/zjcs/serviceOrgan/css/index.css}">
+	<script>
+		var ctx = '[[@{/}]]';
+        // var ctx = 'http://192.168.32.46:8084/aplanmis-mall/';
+		// var ctx = 'http://192.168.14.2:8084/aplanmis-mall/';
+	</script>
+</head>
+<body class="scrollable bodyCss">
+<div class="header">
+	<iframe src="../common/header.html" th:src="@{/supermarket/main/header.html}" frameborder="0" width="100%" height="100%"></iframe>
+</div>
+<div class="main-content">
+	<div id="app" class="content" v-cloak v-loading="loading">
+		<!--  <div class="local-main">
+			 <span class="local-icon"></span>
+			 <span class="local-span">当前位置：</span>
+			 <a class="local-a" href="index.html">首页</a>
+			 <span class="local-span">&gt;</span>
+			 <a class="local-a active" href="#">中介机构 </a>
+		 </div> -->
+		<div class="first" v-if="tab==1">
+			<div class="tabs-container normal">
+				<ul class="tabs">
+					<li class="tabs__item active" @click="tabChange1($event,'0')"><a href="javascript:void(0);">入驻机构</a></li>
+					<li class="tabs__item" @click="tabChange1($event,'1')"><a href="javascript:void(0);">入驻服务</a></li>
+					<li class="tabs__item" @click="tabChange1($event,'2')"><a href="javascript:void(0);">入驻公示</a></li>
+				</ul>
+			</div>
+			<div class="search-card" :class="[!isUp ? 'menuHide' : '']">
+				<div class="right-btn-group opt-btn">
+					<el-form ref="form" :model="form" label-width="150px">
+						<el-form-item label="中介服务机构名称" class="inoputW">
+							<el-input v-model="form.applicant" class="search-btn">
+								<el-button slot="append" icon="el-icon-search" type="primary" @click="checkOrg">搜索</el-button>
+							</el-input>
+
+							<!--<el-button type="primary" @click="showTable()" v-if="curTab==0">查询</el-button>-->
+							<!--<el-button type="primary" @click="showService()" v-if="curTab==1">查询</el-button>-->
+							<!--<el-button type="primary" @click="showAuditFlag()" v-if="curTab==2">查询</el-button>-->
+
+							<!--  <div class="input-group-append">
+									 <button class="btn btn-primary m-btn--icon" @click="showTable()">
+										 <span>
+											 <span style="paddingLeft:0;">查询</span>
+										 </span>
+									 </button>
+								 </div> -->
+						</el-form-item>
+						<el-form-item label="星级评价" v-if="curTab=='0'">
+							<el-select v-model="form.compEvaluation" @change="forceUpdate">
+								<el-option :label="item.label" :value="item.value" :key="index" v-for="(item,index) in option"></el-option>
+							</el-select>
+						</el-form-item>
+						<el-form-item label="综合评价" v-if="curTab=='1'">
+							<el-select v-model="form.compEvaluation" @change="forceUpdate">
+								<el-option :label="item.label" :value="item.value" :key="index" v-for="(item,index) in option"></el-option>
+							</el-select>
+						</el-form-item>
+						<el-form-item label="服务类型">
+							<el-checkbox-group v-model="checkboxGroup" class="checkgroup">
+								<el-checkbox v-for="(item,index) in checkboxs" :key="index" :label="item.serviceId">
+									{{item.serviceName}}
+								</el-checkbox>
+							</el-checkbox-group>
+							<!--<div class="slide-control control-down" @click="toggle($event)">-->
+								<!--<span v-if="!isUp">-->
+								  <!--<span>展开</span>-->
+								  <!--<i class="el-icon-arrow-down"></i>-->
+								<!--</span>-->
+											<!--<span v-else>-->
+								  <!--<span>收起</span>-->
+								  <!--<i class="el-icon-arrow-up"></i>-->
+								<!--</span>-->
+							<!--</div>-->
+						</el-form-item>
+
+
+					</el-form>
+				</div>
+				<div class="selected-type sortord">
+					<div class="selected-tit">排序方式</div>
+					<ul class="sortord-type" style="paddingLeft: 5px;">
+						<li>
+							<span>入驻时间：</span>
+							<span class="switch-box">
+										<a class="active" href="javascript:;" @click="timeSort($event,' ')">升序</a>
+										<a href="javascript:;" @click="timeSort($event,'desc')">降序</a>
+									</span>
+
+						</li>
+						<li>
+							<span>总体评价：</span>
+							<span class="switch-box">
+										<a class="active" href="javascript:;" @click="assessSort($event,' ')">升序</a>
+										<a href="javascript:;" @click="assessSort($event,'desc')">降序</a>
+									</span>
+						</li>
+						<li>
+							<span>成交数量：</span>
+							<span class="switch-box">
+										<a class="active" href="javascript:;" @click="">升序</a>
+										<a href="javascript:;" @click="">降序</a>
+									</span>
+						</li>
+					</ul>
+				</div>
+			</div>
+			<div>
+				<div class="showMore-btn" @click="toggle">
+					<span v-if="!isUp">
+					  <span>展开</span>
+					  <i class="el-icon-arrow-down"></i>
+					</span>
+					<span v-else>
+					  <span>收起</span>
+					  <i class="el-icon-arrow-up"></i>
+					</span>
+				</div>
+			</div>
+			<div class="table-card">
+				<div class="table1" v-if="curTab=='0'">
+					<div class="query-con clearfix">
+						<div class="query-item media" v-for="item in options">
+							<div class="media-left media-middle">
+								<img class="media-object" :src="ctx+item.imgUrl" v-if="item.imgUrl">
+								<img class="media-object" src="../../../static/zjcs/serviceOrgan/img/nopic.jpg" th:src="@{/zjcs/serviceOrgan/img/nopic.jpg}" v-else>
+								<!-- <img  :src="'../../../static/'+item.imgUrl" alt="..."> -->
+								<div class="broken-record" v-if="item.breakFaithRecordNum>0">失信记录{{item.breakFaithRecordNum}}</div>
+							</div>
+							<div class="media-body">
+								<div class="organize-listTit">
+									<a class="media-heading" href="#" @click="detailClick(item);tab=2;">{{item.applicant}}</a>
+									<!--<i class="icon-noCollect"></i>-->
+								</div>
+								<p :title="item.serviceName"><b>服务：</b>{{item.serviceName}}</p>
+								<p><b>成交记录：</b>{{item.serviceNum?item.serviceNum:0}}笔</p>
+								<p>
+									<b>总体评价：</b>
+									<el-rate
+											v-if="item.compEvaluation"
+											v-model="item.compEvaluation"
+											disabled
+											show-score
+											text-color="#ff9900"
+											score-template="{value}">
+									</el-rate>
+									<span v-else>暂无评价</span>
+								</p>
+							</div>
+							<!-- <div class="media-right">
+								<i class="collect-icon active"></i>
+							</div> -->
+						</div>
+					</div>
+					<!--    <el-table :data="tableData" class="scrollable" border ref="singleTable"  :header-cell-style="{background:'#f7f8fa',color:'#606266',fontWeight:'bold'}" @cell-click="cellClick">
+							 <el-table-column prop="name" label="中介服务机构名称">
+								 <template slot-scope="scope">
+									 <a href="javascript:void(0);" @click="tab=false;">{{scope.row.name}}</a>
+								 </template>
+							 </el-table-column>
+							 <el-table-column prop="organType"  label="机构类型 " width="120"></el-table-column>
+							 <el-table-column prop="serviceType"  label="服务类型" ></el-table-column>
+							 <el-table-column prop="QCellCore"  label="归属地" width="120"></el-table-column>
+							 <el-table-column prop="start"  label="星级评价">
+								 <template slot-scope="scope">
+									 <el-rate
+										 v-model="scope.row.start"
+										 disabled
+										 show-score
+										 text-color="#ff9900"
+										 score-template="{value}">
+									 </el-rate>
+								 </template>
+							 </el-table-column>
+							 <el-table-column prop="promise"  label="一般失信行为"  width="120">
+								 <template slot-scope="scope">
+									 {{scope.row.promise?scope.row.promise:"暂无记录"}}
+								 </template>
+							 </el-table-column>
+						 </el-table> -->
+					<el-pagination
+							background
+							align="right"
+							v-show="pagination"
+							:pager-count="5"
+							@size-change="handleSizeChange"
+							@current-change="handleCurrentChange"
+							:page-sizes="[10, 20, 30, 50]"
+							:page-size="pageSize"
+							:current-page="page"
+							layout="total,sizes, prev, pager, next, jumper"
+							:total="total">
+					</el-pagination>
+				</div>
+				<div class="table2" v-if="curTab=='1'">
+					<el-card class="box-card" v-for="item in cardItem">
+						<div slot="header" class="clearfix">
+							<span @click="detailClick(item);tab=2;">{{item.applicant}}</span>
+						</div>
+						<div class="text item">
+							<div class="leftItem" @click="switchPage(item)">
+								<!-- <img :src=(item.img?item.img:'../../../static/serviceOrgan/img/gckc_ico.png') alt="" width="60" height="50" th:src="@{/serviceOrgan/img/gckc_ico.png}"/> -->
+								<img class="media-object" width="60" height="50" :src="ctx+item.imgUrl">
+								<p>{{item.serviceName}}</p>
+							</div>
+							<div class="rightItem">
+								<ul>
+									<li>
+										<span>服务信息：</span>
+										<span>{{item.serviceName}}</span>
+									</li>
+									<li>
+										<span>综合评价：</span>
+										<el-rate
+												v-if="item.compEvaluation"
+												v-model="item.compEvaluation"
+												disabled
+												show-score
+												text-color="#ff9900"
+												score-template="{value}">
+										</el-rate>
+										<span v-else>暂无评价</span>
+									</li>
+								</ul>
+							</div>
+						</div>
+					</el-card>
+					<el-pagination
+							background
+							v-show="pagination2"
+							align="right"
+							:pager-count="5"
+							@size-change="handleSizeChange3"
+							@current-change="handleCurrentChange3"
+							:page-sizes="[10, 20, 30, 50]"
+							:page-size="pageSize3"
+							:current-page="page3"
+							layout="total,sizes, prev, pager, next, jumper"
+							:total="total3">
+					</el-pagination>
+				</div>
+				<div class="table3" v-if="curTab=='2'">
+					<div class="showDataNums">共{{total2}}项查询记录</div>
+					<el-table :data="tableData2" class="scrollable" ref="singleTable" :header-cell-style="{background:'#F9FBFD',color:'#606266',fontWeight:'bold'}" @cell-click="">
+						<el-table-column prop="applicant" label="中介机构名称">
+							<template slot-scope="scope">
+								<span style="color: #457EFF;">{{scope.row.applicant}}</span>
+							 </template>
+							<!--  <template slot-scope="scope">
+								 <a href="javascript:void(0);" @click="showOrganDetail(scope.row);tab=3;">{{scope.row.applicant}}</a>
+							 </template> -->
+						</el-table-column>
+						<el-table-column prop="serviceName" label="服务类型"></el-table-column>
+						<el-table-column prop="auditFlag" label="状态" width="120">
+							<template slot-scope="scope">
+								<span v-if="scope.row.auditFlag=='0'" class="icon-status icon-unPass">审核失败</span>
+								<span v-if="scope.row.auditFlag=='1'" class="icon-status icon-pass">已审核</span>
+								<span v-if="scope.row.auditFlag=='2'" class="icon-status icon-passing">审核中</span>
+								<span v-if="scope.row.auditFlag=='4'" class="icon-status icon-publicity">公示中</span>
+							</template>
+						</el-table-column>
+						<!-- <el-table-column prop="time"  label="公示结束时间"></el-table-column> -->
+					</el-table>
+					<el-pagination
+							v-show="pagination3"
+							background
+							align="right"
+							:pager-count="5"
+							@size-change="handleSizeChange2"
+							@current-change="handleCurrentChange2"
+							:page-sizes="[10, 20, 30, 50]"
+							:page-size="pageSize2"
+							:current-page="page2"
+							layout="total,sizes, prev, pager, next, jumper"
+							:total="total2">
+					</el-pagination>
+				</div>
+			</div>
+		</div>
+		<div class="second" v-if="tab==2">
+			<div class="nav">
+          <span class="bread-nav">
+            <i class="fa fa-map-marker-alt map-icon"></i>
+            <a v-for="(item,index) in navItemObj"
+               :class="index == (navItemObj.length-1) ? 'last-nav':'first-nav'"
+               @click="breadNavClick(index)"
+               href="#">{{item}}
+              <i v-if="index < (navItemObj.length-1)" class="next-node">></i>
+            </a>
+          </span>
+				<!-- <button type="button" class="btn btn-secondary back" @click="tab=1;">返回列表</button> -->
+				<el-button @click="tab=1;curTab=0" class="back">返回列表</el-button>
+			</div>
+			<div class="detailContent">
+				<div class="header-container wrap-container">
+					<h2 class="headTitle">{{organDetail.applicant}}</h2>
+					<span class="headImg">
+              <img src="" alt="" style="display:none;"/>
+              <img src="../../../static/zjcs/serviceOrgan/img/icon_license.png" height="30" width="30" alt="" th:src="@{/zjcs/serviceOrgan/img/icon_license.png}"/>
+            </span>
+				</div>
+				<div class="body-container">
+					<div class="row">
+						<div class="info col-md-4 col-sm-6 col-xs-12">
+                <span>
+                  <b>{{organDetail.idTypeName ? organDetail.idTypeName:'组织机构'}}:</b>{{organDetail.idcard}}
+                </span>
+						</div>
+						<div class="info col-md-4 col-sm-6 col-xs-12">
+                <span>
+                  <b>机构性质：</b>{{organDetail.unitNature==1?'企业':organDetail.unitNature==2?'事业单位':'社会组织'}}
+                </span>
+						</div>
+						<div class="info col-md-4 col-sm-6 col-xs-12">
+                <span>
+                  <b>法人代表：</b>{{organDetail.idrepresentative}}
+                </span>
+						</div>
+						<div class="info col-md-4 col-sm-6 col-xs-12">
+                <span>
+                  <b>经营有效期： </b>{{organDetail.validity}}
+                </span>
+						</div>
+						<div class="info col-md-4 col-sm-6 col-xs-12">
+                <span>
+                  <b>注册资金（万元）：</b>{{organDetail.registeredCapital}}
+                </span>
+						</div>
+						<div class="info col-md-4 col-sm-6 col-xs-12">
+                <span>
+                  <b>联系邮箱：</b>{{organDetail.email}}
+                </span>
+						</div>
+						<div class="info col-md-4 col-sm-6 col-xs-12">
+                <span>
+                  <b>联系人： </b>{{organDetail.contact}}
+                </span>
+						</div>
+						<div class="info col-md-4 col-sm-6 col-xs-12">
+                <span>
+                  <b>联系电话：</b>{{organDetail.mobile}}
+                </span>
+						</div>
+						<div class="info col-md-4 col-sm-6 col-xs-12">
+                <span>
+                  <b>办公地址：</b>{{organDetail.applicantDetailSite}}
+                </span>
+						</div>
+					</div>
+					<el-tabs v-model="activeName4" type="card" @tab-click="handleClick">
+						<el-tab-pane label="所有服务" name="tabs-first">
+							<el-card class="box-card box-card2" v-for="item in cardItem2">
+								<div class="text item">
+									<div class="leftItem" @click="switchPage(item)">
+										<img class="media-object" :src="ctx+item.imgUrl">
+
+										<p>{{item.serviceName}}</p>
+									</div>
+									<div class="rightItem">
+										<ul>
+											<li>
+												<span>服务信息：</span>
+												<span>{{item.serviceName}}</span>
+											</li>
+											<li>
+												<span>综合评价：</span>
+												<el-rate
+														v-if="item.compEvaluation"
+														v-model="item.compEvaluation"
+														disabled
+														show-score
+														text-color="#ff9900"
+														score-template="{value}">
+												</el-rate>
+												<span v-else>暂无评价</span>
+											</li>
+										</ul>
+									</div>
+								</div>
+							</el-card>
+							<el-pagination
+									v-show="pagination4"
+									background
+									align="right"
+									:pager-count="5"
+									@size-change="handleSizeChange6"
+									@current-change="handleCurrentChange6"
+									:page-sizes="[10, 20, 30, 50]"
+									:page-size="pageSize6"
+									:current-page="page6"
+									layout="total,sizes, prev, pager, next, jumper"
+									:total="total6">
+							</el-pagination>
+						</el-tab-pane>
+						<el-tab-pane label="所有资格信息" name="tabs-second">
+							<h5 style="fontWeight:bold;">资质证书信息</h5>
+							<el-table :data="tableData5" class="scrollable" border ref="singleTable" :header-cell-style="{background:'#f7f8fa',color:'#606266',fontWeight:'bold'}" @cell-click="">
+								<el-table-column prop="certinstName" label="资质名称">
+									<template slot-scope="scope">
+										<a href="javascript:void(0);" @click="switchPageBook(scope.row)">{{scope.row.certinstName}}</a>
+									</template>
+								</el-table-column>
+								<el-table-column prop="orgName" label="认证单位 "></el-table-column>
+								<el-table-column prop="issueDate" label="获取资质日期">
+									<template slot-scope="scope">
+										{{dateFormat(scope.row.issueDate)}}
+									</template>
+								</el-table-column>
+								<el-table-column prop="termEnd" label="资质有效期">
+									<template slot-scope="scope">
+										{{dateFormat(scope.row.termEnd)}}
+									</template>
+								</el-table-column>
+							</el-table>
+						</el-tab-pane>
+						<el-tab-pane label="中选记录" name="tabs-third">
+							<div class="personSearch personSearch2">
+								<span class="child">姓名</span>
+								<el-input
+										class="search-org2"
+										placeholder=""
+										v-model="filterText1"
+								>
+									<i slot="suffix" class="el-input__icon el-icon-close" @click="filterText1=''"></i>
+								</el-input>
+								<span>服务类型</span>
+								<el-select v-model="assessType" @change="forceUpdate;showlistWinBidService(curItem)">
+									<el-option :label="item.serviceName" :value="item.serviceId" :key="index" v-for="(item,index) in serviceSelect"></el-option>
+								</el-select>
+								<span>综合评价：</span>
+								<el-rate
+										v-model="assessLevel"
+										disabled
+										show-score
+										text-color="#ff9900"
+										score-template="{value}">
+								</el-rate>
+							</div>
+
+							<el-table :data="tableData4" class="scrollable" border ref="singleTable" :header-cell-style="{background:'#f7f8fa',color:'#606266',fontWeight:'bold'}" @cell-click="">
+								<el-table-column type="expand">
+									<template slot-scope="props">
+										<el-form label-position="left" class="demo-table-expand">
+											<el-form-item label="选取方式 ">
+												<span>{{ props.row.biddingType=="1"?'随机抽取':props.row.biddingType=="2"?'直接选取':'竞价选取' }}</span>
+											</el-form-item>
+											<el-form-item label="评价 ">
+												<span v-if="!props.row.compEvaluation">暂无评价</span>
+												<el-rate
+														v-else
+														v-model="props.row.compEvaluation"
+														disabled
+														show-score
+														text-color="#ff9900"
+														score-template="{value}">
+												</el-rate>
+											</el-form-item>
+											<el-form-item label="评价详情 ">
+												<span>{{ props.row.memo?props.row.memo:'暂无评价' }}</span>
+											</el-form-item>
+										</el-form>
+									</template>
+								</el-table-column>
+								<el-table-column prop="projName" label="项目名称" width="300">
+									<template slot-scope="scope">
+										<a href="javascript:void(0);" @click="jumpToPurchase(scope.row)">{{scope.row.projName}}</a>
+									</template>
+								</el-table-column>
+								<el-table-column prop="auditFlag" label="状态"></el-table-column>
+								<el-table-column prop="applicant" label="采购单位"></el-table-column>
+								<el-table-column prop="compEvaluation" label="项目评价">
+									<template slot-scope="scope">
+										<span v-if="!scope.row.compEvaluation">暂无评价</span>
+										<el-rate
+												v-else
+												v-model="scope.row.compEvaluation"
+												disabled
+												show-score
+												text-color="#ff9900"
+												score-template="{value}">
+										</el-rate>
+									</template>
+								</el-table-column>
+							</el-table>
+							<el-pagination
+									background
+									v-show="pagination5"
+									align="right"
+									:pager-count="5"
+									@size-change="handleSizeChange4"
+									@current-change="handleCurrentChange4"
+									:page-sizes="[10, 20, 30, 50]"
+									:page-size="pageSize4"
+									:current-page="page4"
+									layout="total,sizes, prev, pager, next, jumper"
+									:total="total4">
+							</el-pagination>
+						</el-tab-pane>
+						<el-tab-pane label="联系信息" name="tabs-fourth">
+							<el-tabs v-model="activeName2" @tab-click="handleClick" class="activeName2">
+								<el-tab-pane label="机构联系信息" name="infoTabs1" class="infoTabs1">
+									<ul>
+										<li>
+											<b>办公地址</b>
+											<span>{{organDetail.applicantDetailSite}}</span>
+										</li>
+										<li>
+											<b>邮编</b>
+											<span>{{organDetail.postalCode}}</span>
+										</li>
+										<li>
+											<b>联系人</b>
+											<span>{{organDetail.contact}}</span>
+										</li>
+										<li>
+											<b>联系邮箱</b>
+											<span>{{organDetail.email}}</span>
+										</li>
+										<li>
+											<b>联系电话</b>
+											<span>{{organDetail.mobile}}</span>
+										</li>
+									</ul>
+								</el-tab-pane>
+								<el-tab-pane label="业务授权人信息" name="infoTabs2">
+									<div class="info-tab-box">
+										<ul>
+											<li class="infoBoxItem" v-for="item in infoBox">
+												<div class="infoLabel">{{item.serviceName}}</div>
+												<ul>
+													<li v-for="val in item.linkmanList">
+														<div>
+															<span>业务授权人</span>
+															<span>{{val.linkmanName}}</span>
+														</div>
+														<div>
+															<span>联系方式</span>
+															<span>{{cutStr(val.linkmanMobilePhone)}}</span>
+														</div>
+													</li>
+												</ul>
+											</li>
+										</ul>
+									</div>
+								</el-tab-pane>
+							</el-tabs>
+						</el-tab-pane>
+						<el-tab-pane label="执业/职业人员信息" name="tabs-fifth">
+							<div class="personSearch">
+								<span class="child">姓名</span>
+								<el-input v-model="personName" class="child"></el-input>
+								<el-button type="primary" @click="showlistAgentLinkmanCertinst(curItem)">查询</el-button>
+
+							</div>
+
+							<el-table :data="tableData3" class="scrollable" border ref="singleTable" :header-cell-style="{background:'#f7f8fa',color:'#606266',fontWeight:'bold'}" @cell-click="cellClick">
+								<el-table-column prop="linkmanName" label="姓名" width="100" align="center"></el-table-column>
+								<el-table-column prop="certinstName" label="已有资格证书/职称证书"></el-table-column>
+								<el-table-column prop="serviceName" label="可提供服务的类型"></el-table-column>
+							</el-table>
+							<el-pagination
+									v-show="pagination6"
+									background
+									align="right"
+									:pager-count="5"
+									@size-change="handleSizeChange5"
+									@current-change="handleCurrentChange5"
+									:page-sizes="[10, 20, 30, 50]"
+									:page-size="pageSize5"
+									:current-page="page5"
+									layout="total,sizes, prev, pager, next, jumper"
+									:total="total5">
+							</el-pagination>
+						</el-tab-pane>
+					</el-tabs>
+				</div>
+			</div>
+		</div>
+		<div class="third" v-if="tab==3">
+			<div class="nav">
+				<!-- <button type="button" class="btn btn-secondary back" @click="tab=1;">返回列表</button> -->
+				<el-button @click="tab=1;curTab=0" class="back">返回列表</el-button>
+			</div>
+			<p>中介机构处于入驻公示状态，公众可对中介机构的信息进行意见反馈，公示结束后将成功入驻。</p>
+			<div class="detailContent" v-bind="noticeInfo">
+				<div class="head">
+					<h2>{{noticeInfo.applicant}}</h2>
+					<div class="tips">
+						<span>公示时间</span><br/>
+						<span>2019-06-11 16:39:39 至 2019-06-18 23:59:59</span>
+					</div>
+				</div>
+				<el-tabs v-model="activeName3" type="card" @tab-click="handleClick">
+					<el-tab-pane label="基本信息" name="tabs-first">
+						<div class="wrap-container info-tab-box">
+							<div class="wrap-contxt mydata-list mini" style="border-bottom: none;">
+								<div class="row">
+									<div class="mydata-item clearfix col-md-6">
+										<div class="title">机构性质</div>
+										<div class="value">
+											<!--  {{noticeInfo.unitNature==1?:'企业':noticeInfo.unitNature==2?:'事业单位':'社会组织'}} -->
+										</div>
+									</div>
+									<div class="mydata-item clearfix col-md-6">
+										<div class="title">归属地</div>
+										<div class="value">
+											赤坎区
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="mydata-item clearfix col-md-6">
+										<div class="title">
+											{{noticeInfo.idTypeName}}
+										</div>
+										<div class="value">
+											{{noticeInfo.idcard}}
+										</div>
+									</div>
+									<div class="mydata-item clearfix col-md-6">
+										<div class="title">法定代表人</div>
+										<div class="value">
+											{{noticeInfo.idrepresentative}}
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="mydata-item clearfix col-md-6">
+										<div class="title">注册资本币种</div>
+										<div class="value">
+											人民币
+										</div>
+									</div>
+									<div class="mydata-item clearfix col-md-6">
+										<div class="title">注册资金（万元）</div>
+										<div class="value">
+											{{noticeInfo.registeredCapital}}
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="mydata-item clearfix col-md-6">
+
+										<div class="title">经营有效期（起）</div>
+										<div class="value">
+											2018年03月16日
+										</div>
+									</div>
+									<div class="mydata-item clearfix col-md-6">
+
+										<div class="title">经营有效期（止）</div>
+										<div class="value">
+											长期有效
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="mydata-item clearfix col-md-6">
+										<div class="title">注册地行政区划</div>
+										<div class="value">
+											赤坎区
+										</div>
+									</div>
+									<div class="mydata-item clearfix col-md-6">
+										<div class="title">注册地址</div>
+										<div class="value">
+											广东省湛江市赤坎区湛江市赤坎区康宁路21号第三层
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="mydata-item clearfix col-md-6">
+										<div class="title">登记部门行政区划</div>
+										<div class="value">
+											赤坎区
+										</div>
+									</div>
+									<div class="mydata-item clearfix col-md-6">
+										<div class="title">登记部门</div>
+										<div class="value">
+											湛江市工商行政管理局赤坎分局
+										</div>
+									</div>
+								</div>
+								<div class="mydata-item clearfix">
+									<div class="title">办公地址</div>
+									<div class="value">
+										湛江市赤坎区康宁路21号第三层
+									</div>
+								</div>
+								<div class="mydata-item clearfix">
+									<div class="title">经营范围</div>
+									<div class="value">
+										动、植物检验服务，食品检验服务，农药、化肥检验服务及其他产品检验服务；环境监测（包括水、空气、废气、废料、环境噪声的检测），海域使用评估、论证服务，海水环境保护服务，海洋工程咨询服务。（依法须经批准的项目，经相关部门批准后方可开展经营活动。）〓
+									</div>
+								</div>
+							</div>
+						</div>
+					</el-tab-pane>
+					<el-tab-pane label="资格信息" name="tabs-second">
+						<el-table :data="tableData8" class="scrollable" border ref="singleTable" :header-cell-style="{background:'#f7f8fa',color:'#606266',fontWeight:'bold'}" @cell-click="">
+							<el-table-column type="expand">
+								<template slot-scope="props">
+									<el-form label-position="left" class="demo-table-expand">
+										<el-form-item label="业务范围 ">
+											<el-input type="textarea" v-model="form.desc" :rows="2"></el-input>
+										</el-form-item>
+										<el-form-item label="收费标准 ">
+											<el-input type="textarea" v-model="form.desc" :rows="2"></el-input>
+										</el-form-item>
+										<el-form-item label="服务承诺 ">
+											<el-input type="textarea" v-model="form.desc" :rows="2"></el-input>
+										</el-form-item>
+									</el-form>
+								</template>
+							</el-table-column>
+							<el-table-column prop="projectName" label="资格证书编号"></el-table-column>
+							<el-table-column prop="status" label="出证部门"></el-table-column>
+							<el-table-column prop="purchasing" label="出证部门行政区划"></el-table-column>
+							<el-table-column prop="assess" label="获取资质日期"></el-table-column>
+							<el-table-column prop="assess" label="资格有效期"></el-table-column>
+						</el-table>
+						<!--  <el-pagination
+							 v-show="pagination7"
+							 background
+							 align="right"
+							 :pager-count="5"
+							 @size-change="handleSizeChange9"
+							 @current-change="handleCurrentChange9"
+							 :page-sizes="[10, 20, 30, 50]"
+							 :page-size="pageSize9"
+							 :current-page="page9"
+							 layout="total,sizes, prev, pager, next, jumper"
+							 :total="total9">
+						 </el-pagination> -->
+					</el-tab-pane>
+					<el-tab-pane label="业务授权人信息" name="tabs-third">
+						<div class="personSearch">
+							<span class="child">姓名</span>
+							<el-input v-model="personName3" class="child"></el-input>
+							<el-button type="primary" @click="">查询</el-button>
+
+						</div>
+
+						<el-table :data="tableData7" class="scrollable" border ref="singleTable" :header-cell-style="{background:'#f7f8fa',color:'#606266',fontWeight:'bold'}" @cell-click="cellClick">
+							<el-table-column prop="personName" label="业务授权人"></el-table-column>
+							<el-table-column prop="hasCertifcate" label="授权的服务类型"></el-table-column>
+							<el-table-column prop="serviceType" label="是否实名"></el-table-column>
+						</el-table>
+						<!-- <el-pagination
+							background
+							align="right"
+							:pager-count="5"
+							@size-change="handleSizeChange8"
+							@current-change="handleCurrentChange8"
+							:page-sizes="[10, 20, 30, 50]"
+							:page-size="pageSize8"
+							:current-page="page8"
+							layout="total,sizes, prev, pager, next, jumper"
+							:total="total8">
+						</el-pagination> -->
+					</el-tab-pane>
+					<el-tab-pane label="执业、职业人员信息" name="tabs-fourth">
+						<div class="personSearch">
+							<span class="child">姓名</span>
+							<el-input v-model="personName2" class="child"></el-input>
+							<el-button type="primary" @click="">查询</el-button>
+
+						</div>
+
+						<el-table :data="tableData6" class="scrollable" border ref="singleTable" :header-cell-style="{background:'#f7f8fa',color:'#606266',fontWeight:'bold'}" @cell-click="cellClick">
+							<el-table-column prop="personName" label="姓名"></el-table-column>
+							<el-table-column prop="hasCertifcate" label="已有资格证书/职称证书"></el-table-column>
+							<el-table-column prop="serviceType" label="可提供服务的类型"></el-table-column>
+						</el-table>
+						<!--  <el-pagination
+							 background
+							 align="right"
+							 :pager-count="5"
+							 @size-change="handleSizeChange7"
+							 @current-change="handleCurrentChange7"
+							 :page-sizes="[10, 20, 30, 50]"
+							 :page-size="pageSize7"
+							 :current-page="page7"
+							 layout="total,sizes, prev, pager, next, jumper"
+							 :total="total7">
+						 </el-pagination> -->
+					</el-tab-pane>
+				</el-tabs>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="footer">
+	<iframe src="../common/footer.html" th:src="@{/supermarket/main/footer.html}" frameborder="0" width="100%" height="100%"></iframe>
+</div>
+
+</body>
+<!-- <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/metronic-5/vendors.bundle.js" th:src="@{/agcloud/framework/js-lib/metronic-5/vendors.bundle.js}" type="text/javascript"></script> -->
+<!-- <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/metronic-5/scripts.bundle.js" th:src="@{/agcloud/framework/js-lib/metronic-5/scripts.bundle.js}" type="text/javascript"></script> -->
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js" th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>
+
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js" th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js" th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
+<!--<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js" th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>-->
+<script src="../../../static/common/js/common.js" th:src="@{/common/js/common.js}"></script>
+
+<script src="../../../static/zjcs/serviceOrgan/js/index.js" th:src="@{/zjcs/serviceOrgan/js/index.js}" type="text/javascript"></script>
+</html>

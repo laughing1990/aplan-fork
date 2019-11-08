@@ -1,0 +1,685 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <preConditions>
+        <dbms type="mysql"/>
+    </preConditions>
+    
+    <changeSet id="20190725114550" author="xiong" failOnError="false">
+        <dropNotNullConstraint tableName="aea_hi_sms_info" columnName="applyinst_id" columnDataType="varchar(50)"/>
+    </changeSet>
+
+    <changeSet id="201907301210" author="qinjp" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_hi_iteminst`
+            ADD COLUMN `ITEM_APPLY_CODE`  varchar(50) NULL COMMENT '事项申报流水号';
+        </sql>
+    </changeSet>
+
+    <changeSet id="201908081111" author="sam" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_hi_applyinst`
+            MODIFY COLUMN `APPLYINST_STATE`  varchar(1) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '申报状态：0已接件未审核（适用于网厅）、1已接件并审核、2已受理、3待补全、4已补全、5不予受理、6已办结' AFTER `APPLYINST_MEMO`;
+        </sql>
+    </changeSet>
+
+    <changeSet id="20190814142907" author="xiong" failOnError="false">
+        <preConditions>
+            <not>
+                <columnExists tableName="aea_hi_item_stateinst" columnName="stageinst_id"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="aea_hi_item_stateinst">
+            <column name="stageinst_id" type="varchar(50)" remarks="阶段实例id，当进行简单合并申报时，建立阶段与事项情形实例的关联"/>
+        </addColumn>
+    </changeSet>
+
+    <!--<changeSet id="201908141722" author="sam" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_hi_iteminst`
+            ADD COLUMN `IS_TOLERANCE_ACCEPT`  char(1) NULL COMMENT '是否容缺受理，1表示是，0表示否' AFTER `ITEM_APPLY_CODE`;
+        </sql>
+    </changeSet>-->
+
+    <!--<changeSet id="201908191513" author="sam" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `act_sto_appinst`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NOT NULL COMMENT '顶级orgId' AFTER `TRIGGER_ID`;
+
+            ALTER TABLE `act_sto_appinst_subflow`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NOT NULL COMMENT '顶级orgId' AFTER `MODIFTY_TIME`;
+
+            ALTER TABLE `act_sto_timerule`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NOT NULL COMMENT '顶级orgId' AFTER `MODIFY_TIME`;
+
+            ALTER TABLE `act_tpl_app_flowdef`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NOT NULL COMMENT '顶级orgId' AFTER `MODIFY_TIME`;
+
+            ALTER TABLE `act_tpl_priv_procform`
+            ADD COLUMN `ROOT_ORG_ID`  varchar(50) NOT NULL COMMENT '顶级orgId' AFTER `MODIFY_TIME`;
+        </sql>
+    </changeSet>-->
+
+    <changeSet id="20190820090158" author="xiong">
+        <preConditions>
+            <not>
+                <columnExists tableName="aea_proj_info" columnName="theme_ver_id"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="aea_proj_info">
+            <column name="theme_ver_id" remarks="主题版本id" type="varchar(50)"/>
+        </addColumn>
+        <createIndex tableName="aea_proj_info" indexName="api_idx_theme_ver_id">
+            <column name="theme_ver_id"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="20190820093240" author="xiong" failOnError="false">
+        <sql>
+            alter table aea_hi_par_stageinst modify STAGEINST_STATE varchar(2) DEFAULT NULL COMMENT
+            '阶段状态：1表示已接件，2表示预收件，3不收件，4受理，5不予受理，6材料补录，7待补正受理，8审核通过，9审核不通过，10待发证，11待退件，12办结，13 整改';
+        </sql>
+    </changeSet>
+
+    <changeSet id="20190820143559" author="zhangwn" failOnError="false">
+        <sql>
+            ALTER TABLE bsc_att_detail MODIFY COLUMN IS_CONVERT_PDF char(1) DEFAULT NULL COMMENT '转换PDF状态，0表示没有转，1表示已转换，2表示转换中';
+        </sql>
+    </changeSet>
+
+    <changeSet id="20190830150659" author="zhangwn" failOnError="false">
+        <sql>
+            ALTER TABLE `aea_hi_iteminst` ADD COLUMN `PROCINST_ID`  varchar(50) NULL COMMENT '流程实例ID';
+            ALTER TABLE `aea_hi_seriesinst` ADD COLUMN `STATE_ID`  varchar(50) NULL COMMENT '所属阶段定义';
+            ALTER TABLE `aea_hi_seriesinst` ADD COLUMN `IS_PARALLEL`  varchar(1) NULL COMMENT '是否并行推进事项。0表示否，1表示是';
+        </sql>
+    </changeSet>
+
+
+    <!--<changeSet id="20190830113047" author="sam" failOnError="false">
+        <sql>
+            ALTER TABLE `act_sto_proc_susp_act`
+            MODIFY COLUMN `DURATION`  double(30,0) NULL DEFAULT NULL COMMENT '挂起有效自然日持续时间（毫秒）' AFTER `ACTIVATE_TIME`,
+            ADD COLUMN `TASKINST_ID`  varchar(50) NULL COMMENT '任务实例ID' AFTER `PROCINST_ID`,
+            ADD COLUMN `WORK_DAY_DURATION`  double(30,0) NULL COMMENT '挂起有效工作日持续时间（毫秒）' AFTER `DURATION`,
+            ADD COLUMN `DAY`  double(10,2) NULL COMMENT '挂起自然日天数' AFTER `WORK_DAY_DURATION`,
+            ADD COLUMN `WORK_DAY`  double(10,2) NULL COMMENT '挂起工作日天数' AFTER `DAY`;
+            ALTER TABLE `act_sto_proc_susp_act`
+            CHANGE COLUMN `DAY` `NATURE_DAY`  double(10,2) NULL DEFAULT NULL COMMENT '挂起自然日天数' AFTER `WORK_DAY_DURATION`;
+
+            ALTER TABLE `act_tpl_app_flowdef`
+            DROP COLUMN `LIMIT_IS_WORK_DAY`,
+            DROP COLUMN `TIME_LIMIT_UNIT`;
+            ALTER TABLE `act_tpl_app_flowdef`
+            MODIFY COLUMN `USE_EL`  varchar(1) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '是否使用EL表达式  0启用  1禁用' AFTER `START_EL`,
+            MODIFY COLUMN `FLOW_DEF_VERSION`  double(22,0) NULL DEFAULT NULL COMMENT '流程定义版本，不填写则启动 最新版本流程' AFTER `USE_EL`,
+            MODIFY COLUMN `LIMIT_IS_WORK_DAY`  varchar(1) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '0 是 1 否' AFTER `FLOW_DEF_VERSION`,
+            MODIFY COLUMN `TIME_LIMIT_UNIT`  varchar(5) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL AFTER `LIMIT_IS_WORK_DAY`,
+            MODIFY COLUMN `TIME_LIMIT`  varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL AFTER `TIME_LIMIT_UNIT`,
+            ADD COLUMN `TIME_RULE_ID`  varchar(50) NULL COMMENT '时限计算规则ID' AFTER `TIME_LIMIT_UNIT`;
+
+            ALTER TABLE `act_hi_procinst`
+            DROP COLUMN `LIMIT_IS_WORK_DAY_`,
+            DROP COLUMN `TIME_LIMIT_UNIT_`,
+            DROP COLUMN `TIME_LIMIT_`;
+
+            ALTER TABLE `act_sto_column`
+            ADD COLUMN `DEFAULT_LIST_ORDER_TYPE`  varchar(4) NULL COMMENT '默认排序方式(asc:正序、desc:倒序)' AFTER `DEFAULT_LIST_ORDER`;
+            update act_sto_column set DEFAULT_LIST_ORDER_TYPE = 'desc' WHERE DEFAULT_LIST_ORDER_TYPE is NULL;
+        </sql>
+    </changeSet>-->
+
+    <changeSet id="20190830164359" author="zhangwn" failOnError="false">
+        <sql>
+            ALTER TABLE `aea_hi_seriesinst` CHANGE `STATE_ID` `STAGE_ID` varchar(50) NULL COMMENT '所属阶段定义';
+        </sql>
+    </changeSet>
+
+    <!--<changeSet id="201908311103" author="yinlf" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_unit_proj`
+            ADD COLUMN `UNIT_TYPE` char(2) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '单位类型，来自于数据字典，包括：1 建设单位、2 施工单位、3 勘察单位、4 设计单位、5 监理单位、6 代建单位、7 经办单位、8 其他、9审图机构';
+        </sql>
+    </changeSet>-->
+
+    <!--<changeSet id="20190831160244" author="xiong" failOnError="false">
+        <preConditions>
+            <not>
+                <columnExists tableName="aea_proj_info" columnName="garden"/>
+            </not>
+        </preConditions>
+        <sql endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            alter table aea_proj_info add garden varchar(255) default null comment '园区';
+            alter table aea_proj_info add street varchar(255) default null comment '街道';
+            alter table aea_proj_info add east_scope varchar(255) default null comment '东至';
+            alter table aea_proj_info add south_scope varchar(255) default null comment '南至';
+            alter table aea_proj_info add west_scope varchar(255) default null comment '西至';
+            alter table aea_proj_info add north_scope varchar(255) default null comment '北至';
+            alter table aea_proj_info add project_dept varchar(255) default null comment '立项部门';
+            alter table aea_proj_info add above_ground varchar(20) default null comment '地上面积 单位: 平方米';
+            alter table aea_proj_info add under_ground varchar(20) default null comment '地下面积 单位: 平方米';
+        </sql>
+    </changeSet>-->
+
+    <changeSet id="20190902151340" author="xiong" failOnError="false">
+        <sql endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            alter table aea_hi_applyinst modify column branch_org varchar(4000);
+        </sql>
+    </changeSet>
+
+    <changeSet id="20190904141737" author="xiong" failOnError="false">
+        <preConditions>
+            <not>
+                <columnExists tableName="aea_unit_info" columnName="indu_comm_reg_num"/>
+            </not>
+        </preConditions>
+        <sql splitStatements="true">
+            alter table aea_unit_info add indu_comm_reg_num varchar(64) default null comment '工商登记号';
+            alter table aea_unit_info add organizational_code varchar(64) default null comment '组织机构代码';
+            alter table aea_unit_info add unified_social_credit_code varchar(64) default null comment '统一社会信用代码';
+        </sql>
+    </changeSet>
+
+    <changeSet id="20190904144903" author="xiong" failOnError="false">
+        <preConditions>
+            <columnExists tableName="aea_unit_info" columnName="indu_comm_reg_num"/>
+        </preConditions>
+        <sql>
+            update aea_unit_info set indu_comm_reg_num=idcard where idtype='1';
+            update aea_unit_info set organizational_code=idcard where idtype in('3', '4');
+            update aea_unit_info set unified_social_credit_code=idcard where idtype='2';
+        </sql>
+    </changeSet>
+
+    <!--<changeSet id="20190905093057" author="xiong" failOnError="false">
+        <preConditions>
+            <foreignKeyConstraintExists foreignKeyName="FK_AEA_APPLYINST_UNIT_PROJ_U"
+                                        foreignKeyTableName="aea_applyinst_unit_proj"/>
+        </preConditions>
+        <sql>
+            alter table aea_applyinst_unit_proj drop foreign key FK_AEA_APPLYINST_UNIT_PROJ_U;
+        </sql>
+    </changeSet>-->
+
+    <!--<changeSet id="201909051618" author="yinlf" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            CREATE TABLE `aea_proj_stage` (
+            `PROJ_STAGE_ID` varchar(50) NOT NULL COMMENT '主键',
+            `PROJ_INFO_ID` varchar(50) NOT NULL COMMENT '项目ID',
+            `STAGE_ID` varchar(50) NOT NULL COMMENT '阶段ID',
+            `STAGE_STATE` char(1) NOT NULL COMMENT '阶段状态，0表示未申报，1表示进行中，2表示已通过',
+            `FIRST_APPLY_TIME` datetime DEFAULT NULL,
+            `PASS_TIME` datetime DEFAULT NULL,
+            `PASS_NATURE_DAYS` tinyint(4) DEFAULT NULL,
+            `PASS_WORKING_DAYS` tinyint(4) DEFAULT NULL,
+            `CREATER` varchar(50) NOT NULL COMMENT '创建人',
+            `CREATE_TIME` datetime NOT NULL COMMENT '创建时间',
+            PRIMARY KEY (`PROJ_STAGE_ID`) USING BTREE
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='单位与项目关联表';
+        </sql>
+    </changeSet>-->
+
+    <!--<changeSet id="201909061654" author="yinlf" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_proj_stage`
+            CHANGE COLUMN `STAGE_ID` `STANDARD_SORT_NO` varchar(10) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '标准阶段序号' AFTER `PROJ_INFO_ID`;
+        </sql>
+    </changeSet>-->
+
+    <changeSet id="201909111241" author="qinjp" failOnError="false">
+        <preConditions>
+            <not>
+                <columnExists tableName="aea_unit_info" columnName="TAXPAYER_NUM"/>
+            </not>
+        </preConditions>
+        <sql splitStatements="true">
+            alter table aea_unit_info add TAXPAYER_NUM varchar(64) default null comment '纳税人识别号';
+            alter table aea_unit_info add CREDIT_FLAG_NUM varchar(64) default null comment '信用标记码';
+        </sql>
+    </changeSet>
+
+    <!--<changeSet id="201909121651" author="sam" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_service_window_stage`
+            ADD COLUMN `REGION_RANGE` char(1) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '办理范围，0表示全市通办，1表示属地办理' AFTER `IS_ACTIVE`;
+        </sql>
+    </changeSet>-->
+
+    <changeSet id="201909151316" author="zhangwn" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_log_apply_state_hist`
+            ADD COLUMN `OPS_WINDOW_ID`  varchar(50) NULL COMMENT '办理窗口ID' AFTER `NEW_STATE`;
+            ALTER TABLE `aea_hi_applyinst`
+            MODIFY COLUMN `ROOT_ORG_ID`  varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '根组织 ID' AFTER `SMS_SEND_TIME`;
+            ALTER TABLE `aea_log_item_state_hist`
+            ADD COLUMN `OPS_ORG_ID`  varchar(50) NULL COMMENT '办件所属委办局组织ID' AFTER `NEW_STATE`;
+        </sql>
+    </changeSet>
+    <changeSet id="201909190939" author="chenjw" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_hi_item_special`
+            MODIFY COLUMN `WINDOW_USER_ID`  varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '综窗负责人ID' AFTER `CHARGE_ORG_NAME`;
+             </sql>
+    </changeSet>
+    <changeSet id="201909191608" author="chenjw" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_hi_item_special`
+            MODIFY COLUMN `SPECIAL_STATE`  char(2) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '特殊程序状态，9表示开始，10表示结束' AFTER `PRINT_TIME`;
+        </sql>
+    </changeSet>
+
+    <changeSet id="2019091918570002" author="sam" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_item_basic`
+            MODIFY COLUMN `ITEM_CATEGORY_MARK`  varchar(200) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '事项分类唯一标记（仅供工作流使用)必填' AFTER `REGION_ID`;
+        </sql>
+    </changeSet>
+
+    <!--<changeSet id="2019092419250001" author="sam" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `act_ru_task`
+            ADD COLUMN `CONCLUSION_OPTION_VALUE_`  varchar(2) NULL COMMENT '办理结论值' AFTER `BUS_RECORD_ID_`;
+
+            ALTER TABLE `act_hi_taskinst`
+            ADD COLUMN `CONCLUSION_OPTION_VALUE_`  varchar(2) NULL COMMENT '办理结论值' AFTER `BUS_RECORD_ID_`;
+
+            ALTER TABLE `act_ru_task`
+            ADD COLUMN `CONCLUSION_GROUP_CODE_`  varchar(100) NULL COMMENT '办理结论组编号' AFTER `CONCLUSION_OPTION_VALUE_`;
+
+            ALTER TABLE `act_hi_taskinst`
+            ADD COLUMN `CONCLUSION_GROUP_CODE_`  varchar(100) NULL COMMENT '办理结论组编号' AFTER `CONCLUSION_OPTION_VALUE_`;
+        </sql>
+    </changeSet>-->
+
+    <changeSet id="201909242028" author="yinlf" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_service_window`
+            ADD COLUMN `STAGE_ITEM_FILTER` char(1) COMMENT '并联使用事项过滤，0表示不过滤，1表示过滤' AFTER `REGION_RANGE`;
+        </sql>
+    </changeSet>
+
+    <changeSet id="2019092509570001" author="sam" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_hi_applyinst`
+            MODIFY COLUMN `APPLYINST_STATE`  varchar(1) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '申报状态：0已接件未审核（适用于网厅）、1 已接件并审核、2窗口受理、3待补全、4补全待确认、5不予受理、6已办结' AFTER `APPLYINST_MEMO`,
+            ADD COLUMN `ACCEPT_TIME`  datetime NULL COMMENT '窗口受理时间，第一次发生STATE=2的时间点' AFTER `APPLYINST_STATE`;
+
+
+            ALTER TABLE `aea_hi_iteminst`
+            MODIFY COLUMN `ITEMINST_STATE`  varchar(2) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '事项实例状态，1已接件，2已撤件，3部门受理 ，4不受理，5不予受理，6补正（开始），7补正（结束），8部门开始办理，9特别程序（开始），10特别程序（结束），11办结（通过），12办结（容缺通过），13办结（不通 过），14撤回，15撤销' AFTER `PUBLIC_MODE`,
+            ADD COLUMN `ACCEPT_TIME`  datetime NULL COMMENT '部门受理时间，第一次发生STATE=3的时间点' AFTER `ITEMINST_STATE`;
+
+        </sql>
+    </changeSet>
+    <changeSet id="201909262003001" author="sam" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `act_sto_remind` DROP FOREIGN KEY `act_sto_remind_ibfk_1`;
+
+            ALTER TABLE `act_sto_remind` DROP FOREIGN KEY `act_sto_remind_ibfk_2`;
+        </sql>
+    </changeSet>
+
+    <changeSet id="201910091632001" author="sam" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_proj_info`
+            DROP COLUMN `garden`,
+            DROP COLUMN `street`,
+            ADD COLUMN `IS_DESIGN_SOLUTION`  char(1) NULL COMMENT '土地是否带设计方案，0不是，1是' AFTER `under_ground`,
+            ADD COLUMN `IS_AREA_ESTIMATE`  char(1) NULL COMMENT '是否完成区域评估，0不是，1是' AFTER `IS_DESIGN_SOLUTION`,
+            ADD COLUMN `GB_CODE_YEAR`  varchar(4) NULL COMMENT '国标行业代码发布年代，如：2017' AFTER `IS_AREA_ESTIMATE`;
+        </sql>
+    </changeSet>
+
+    <changeSet id="20191011164856" author="zhangwn" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            alter table aea_ana_org_day_statistics modify REGION_ID varchar(50) default NULL COMMENT '行政区划ID（区县级以下的需要换算成区县级）';
+            alter table aea_ana_org_day_statistics modify REGION_NAME varchar(200) default NULL COMMENT '行政区划名称';
+            alter table aea_ana_org_week_statistics modify REGION_ID varchar(50) default NULL COMMENT '行政区划ID（区县级以下的需要换算成区县级）';
+            alter table aea_ana_org_week_statistics modify REGION_NAME varchar(200) default NULL COMMENT '行政区划名称';
+            alter table aea_ana_org_month_statistics modify REGION_ID varchar(50) default NULL COMMENT '行政区划ID（区县级以下的需要换算成区县级）';
+            alter table aea_ana_org_month_statistics modify REGION_NAME varchar(200) default NULL COMMENT '行政区划名称';
+            alter table aea_ana_org_year_statistics modify REGION_ID varchar(50) default NULL COMMENT '行政区划ID（区县级以下的需要换算成区县级）';
+            alter table aea_ana_org_year_statistics modify REGION_NAME varchar(200) default NULL COMMENT '行政区划名称';
+            alter table aea_ana_win_day_statistics modify REGION_ID varchar(50) default NULL COMMENT '行政区划ID（区县级以下的需要换算成区县级）';
+            alter table aea_ana_win_day_statistics modify REGION_NAME varchar(200) default NULL COMMENT '行政区划名称';
+            alter table aea_ana_win_week_statistics modify REGION_ID varchar(50) default NULL COMMENT '行政区划ID（区县级以下的需要换算成区县级）';
+            alter table aea_ana_win_week_statistics modify REGION_NAME varchar(200) default NULL COMMENT '行政区划名称';
+            alter table aea_ana_win_month_statistics modify REGION_ID varchar(50) default NULL COMMENT '行政区划ID（区县级以下的需要换算成区县级）';
+            alter table aea_ana_win_month_statistics modify REGION_NAME varchar(200) default NULL COMMENT '行政区划名称';
+            alter table aea_ana_win_year_statistics modify REGION_ID varchar(50) default NULL COMMENT '行政区划ID（区县级以下的需要换算成区县级）';
+            alter table aea_ana_win_year_statistics modify REGION_NAME varchar(200) default NULL COMMENT '行政区划名称';
+        </sql>
+    </changeSet>
+
+    <changeSet id="20191012093636" author="xiong" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `act_sto_form`
+            MODIFY COLUMN `FORM_LAYOUT_HTML` longblob NULL COMMENT '表单布局html' AFTER `TECH_ID`;
+        </sql>
+    </changeSet>
+
+    <changeSet id="20191012172311" author="chendx" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_hi_iteminst`
+            MODIFY COLUMN `ITEM_APPLY_CODE` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL
+            COMMENT '工单号【广东专用】' AFTER `IS_JOIN_APPROVAL`;
+        </sql>
+    </changeSet>
+
+    <changeSet id="201910151456" author="zhangwn" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `bsc_job_timer`
+            MODIFY COLUMN `BUSS_FLAG` varchar(100) NOT NULL COMMENT '业务标识。默认是应用启动名称spring.application.name';
+        </sql>
+    </changeSet>
+
+    <changeSet id="20191015111529" author="xiong" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_proj_info`
+            MODIFY COLUMN `XM_YDMJ` double(14,2) NULL DEFAULT NULL COMMENT '用地面积（平方米）' AFTER `SCALE_CONTENT`;
+        </sql>
+    </changeSet>
+
+    <!--<changeSet id="201910171342" author="zhangwn" failOnError="false">
+        <comment>定时器表字段删除</comment>
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `bsc_job_timer` DROP COLUMN `IS_SYSTEM_STARTUP`;
+        </sql>
+    </changeSet>-->
+
+    <changeSet id="201910211013" author="zhangwn" failOnError="false">
+        <comment>主题统计表添加阶段信息存储</comment>
+        <sql splitStatements="true">
+            alter table aea_ana_theme_day_statistics add DYBZSPJDXH varchar(200) default null
+            comment '对应国家标准审批阶段，多选，1 立项用地规划许可 2 立项用地规划许可 3 施工许可 4 竣工验收 5 并行推进' after APPLY_RECORD_NAME;
+            alter table aea_ana_theme_day_statistics add IS_NODE varchar(1) default null comment '1表示主线，2表示辅线 3技术审查' after DYBZSPJDXH;
+            alter table aea_ana_theme_week_statistics add DYBZSPJDXH varchar(200) default null
+            comment '对应国家标准审批阶段，多选，1 立项用地规划许可 2 立项用地规划许可 3 施工许可 4 竣工验收 5 并行推进' after APPLY_RECORD_NAME;
+            alter table aea_ana_theme_week_statistics add IS_NODE varchar(1) default null comment '1表示主线，2表示辅线 3技术审查' after DYBZSPJDXH;
+            alter table aea_ana_theme_month_statistics add DYBZSPJDXH varchar(200) default null
+            comment '对应国家标准审批阶段，多选，1 立项用地规划许可 2 立项用地规划许可 3 施工许可 4 竣工验收 5 并行推进' after APPLY_RECORD_NAME;
+            alter table aea_ana_theme_month_statistics add IS_NODE varchar(1) default null comment '1表示主线，2表示辅线 3技术审查' after DYBZSPJDXH;
+            alter table aea_ana_theme_year_statistics add DYBZSPJDXH varchar(200) default null
+            comment '对应国家标准审批阶段，多选，1 立项用地规划许可 2 立项用地规划许可 3 施工许可 4 竣工验收 5 并行推进' after APPLY_RECORD_NAME;
+            alter table aea_ana_theme_year_statistics add IS_NODE varchar(1) default null comment '1表示主线，2表示辅线 3技术审查' after DYBZSPJDXH;
+
+            alter table aea_ana_theme_day_statistics add IS_PARALLEL varchar(1) default null comment '是否并行推进事项。0表示否，1表示是' after IS_NODE;
+            alter table aea_ana_theme_week_statistics add IS_PARALLEL varchar(1) default null comment '是否并行推进事项。0表示否，1表示是' after IS_NODE;
+            alter table aea_ana_theme_month_statistics add IS_PARALLEL varchar(1) default null comment '是否并行推进事项。0表示否，1表示是' after IS_NODE;
+            alter table aea_ana_theme_year_statistics add IS_PARALLEL varchar(1) default null comment '是否并行推进事项。0表示否，1表示是' after IS_NODE;
+        </sql>
+    </changeSet>
+
+    <changeSet id="2019102214270001" author="sam" failOnError="false">
+        <comment>修改催办提醒类型字段</comment>
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `act_sto_remind`
+            MODIFY COLUMN `REMIND_MODE`  varchar(1) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '提醒类型：n表示应用内，m表示短信；' AFTER `REMIND_CONTENT`;
+            ALTER TABLE `act_sto_remind`
+            MODIFY COLUMN `REMIND_MODE`  varchar(1) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '催办提醒类型：p表示人工创建，s表示系统自动提醒' AFTER `REMIND_CONTENT`,
+            MODIFY COLUMN `REMIND_TYPE`  varchar(1) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '提醒类型：n表示应用内，m表示短信；' AFTER `REMIND_LEVEL`;
+        </sql>
+    </changeSet>
+
+    <changeSet id="201910241751" author="zhangwn" failOnError="false">
+        <comment>修改统计环比字段数据长度</comment>
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE aea_ana_win_day_statistics MODIFY COLUMN APPLY_LRR double(6,2) NOT NULL COMMENT '日接件数环比';
+            ALTER TABLE aea_ana_win_day_statistics MODIFY COLUMN PRE_ACCEPTANCE_LRR double(6,2) NOT NULL COMMENT '日预受理数环比';
+            ALTER TABLE aea_ana_win_day_statistics MODIFY COLUMN OUT_SCOPE_LRR double(6,2) NOT NULL COMMENT '日不予受理数环比';
+            ALTER TABLE aea_ana_win_day_statistics MODIFY COLUMN COMPLETED_LRR double(6,2) NOT NULL COMMENT '日办结数环比';
+            ALTER TABLE aea_ana_win_day_statistics MODIFY COLUMN OVER_TIME_LRR double(6,2) NOT NULL COMMENT '日逾期数环比';
+            ALTER TABLE aea_ana_win_week_statistics MODIFY COLUMN APPLY_LRR double(6,2) NOT NULL COMMENT '周接件数环比';
+            ALTER TABLE aea_ana_win_week_statistics MODIFY COLUMN PRE_ACCEPTANCE_LRR double(6,2) NOT NULL COMMENT '周预受理数环比';
+            ALTER TABLE aea_ana_win_week_statistics MODIFY COLUMN OUT_SCOPE_LRR double(6,2) NOT NULL COMMENT '周不予受理数环比';
+            ALTER TABLE aea_ana_win_week_statistics MODIFY COLUMN COMPLETED_LRR double(6,2) NOT NULL COMMENT '周办结数环比';
+            ALTER TABLE aea_ana_win_week_statistics MODIFY COLUMN OVER_TIME_LRR double(6,2) NOT NULL COMMENT '周逾期数环比';
+            ALTER TABLE aea_ana_win_month_statistics MODIFY COLUMN APPLY_LRR double(6,2) NOT NULL COMMENT '月接件数环比';
+            ALTER TABLE aea_ana_win_month_statistics MODIFY COLUMN PRE_ACCEPTANCE_LRR double(6,2) NOT NULL COMMENT '月预受理数环比';
+            ALTER TABLE aea_ana_win_month_statistics MODIFY COLUMN OUT_SCOPE_LRR double(6,2) NOT NULL COMMENT '月不予受理数环比';
+            ALTER TABLE aea_ana_win_month_statistics MODIFY COLUMN COMPLETED_LRR double(6,2) NOT NULL COMMENT '月办结数环比';
+            ALTER TABLE aea_ana_win_month_statistics MODIFY COLUMN OVER_TIME_LRR double(6,2) NOT NULL COMMENT '月逾期数环比';
+            ALTER TABLE aea_ana_win_year_statistics MODIFY COLUMN APPLY_LRR double(6,2) NOT NULL COMMENT '年接件数环比';
+            ALTER TABLE aea_ana_win_year_statistics MODIFY COLUMN PRE_ACCEPTANCE_LRR double(6,2) NOT NULL COMMENT '年预受理数环比';
+            ALTER TABLE aea_ana_win_year_statistics MODIFY COLUMN OUT_SCOPE_LRR double(6,2) NOT NULL COMMENT '年不予受理数环比';
+            ALTER TABLE aea_ana_win_year_statistics MODIFY COLUMN COMPLETED_LRR double(6,2) NOT NULL COMMENT '年办结数环比';
+            ALTER TABLE aea_ana_win_year_statistics MODIFY COLUMN OVER_TIME_LRR double(6,2) NOT NULL COMMENT '年逾期数环比';
+            ALTER TABLE aea_ana_theme_day_statistics MODIFY COLUMN APPLY_LRR double(6,2) NOT NULL COMMENT '日接件数环比';
+            ALTER TABLE aea_ana_theme_day_statistics MODIFY COLUMN PRE_ACCEPTANCE_LRR double(6,2) NOT NULL COMMENT '日预受理数环比';
+            ALTER TABLE aea_ana_theme_day_statistics MODIFY COLUMN OUT_SCOPE_LRR double(6,2) NOT NULL COMMENT '日不予受理数环比';
+            ALTER TABLE aea_ana_theme_day_statistics MODIFY COLUMN COMPLETED_LRR double(6,2) NOT NULL COMMENT '日办结数环比';
+            ALTER TABLE aea_ana_theme_day_statistics MODIFY COLUMN OVER_TIME_LRR double(6,2) NOT NULL COMMENT '日逾期数环比';
+            ALTER TABLE aea_ana_theme_week_statistics MODIFY COLUMN APPLY_LRR double(6,2) NOT NULL COMMENT '周接件数环比';
+            ALTER TABLE aea_ana_theme_week_statistics MODIFY COLUMN PRE_ACCEPTANCE_LRR double(6,2) NOT NULL COMMENT '周预受理数环比';
+            ALTER TABLE aea_ana_theme_week_statistics MODIFY COLUMN OUT_SCOPE_LRR double(6,2) NOT NULL COMMENT '周不予受理数环比';
+            ALTER TABLE aea_ana_theme_week_statistics MODIFY COLUMN COMPLETED_LRR double(6,2) NOT NULL COMMENT '周办结数环比';
+            ALTER TABLE aea_ana_theme_week_statistics MODIFY COLUMN OVER_TIME_LRR double(6,2) NOT NULL COMMENT '周逾期数环比';
+            ALTER TABLE aea_ana_theme_month_statistics MODIFY COLUMN APPLY_LRR double(6,2) NOT NULL COMMENT '月接件数环比';
+            ALTER TABLE aea_ana_theme_month_statistics MODIFY COLUMN PRE_ACCEPTANCE_LRR double(6,2) NOT NULL COMMENT '月预受理数环比';
+            ALTER TABLE aea_ana_theme_month_statistics MODIFY COLUMN OUT_SCOPE_LRR double(6,2) NOT NULL COMMENT '月不予受理数环比';
+            ALTER TABLE aea_ana_theme_month_statistics MODIFY COLUMN COMPLETED_LRR double(6,2) NOT NULL COMMENT '月办结数环比';
+            ALTER TABLE aea_ana_theme_month_statistics MODIFY COLUMN OVER_TIME_LRR double(6,2) NOT NULL COMMENT '月逾期数环比';
+            ALTER TABLE aea_ana_theme_year_statistics MODIFY COLUMN APPLY_LRR double(6,2) NOT NULL COMMENT '年接件数环比';
+            ALTER TABLE aea_ana_theme_year_statistics MODIFY COLUMN PRE_ACCEPTANCE_LRR double(6,2) NOT NULL COMMENT '年预受理数环比';
+            ALTER TABLE aea_ana_theme_year_statistics MODIFY COLUMN OUT_SCOPE_LRR double(6,2) NOT NULL COMMENT '年不予受理数环比';
+            ALTER TABLE aea_ana_theme_year_statistics MODIFY COLUMN COMPLETED_LRR double(6,2) NOT NULL COMMENT '年办结数环比';
+            ALTER TABLE aea_ana_theme_year_statistics MODIFY COLUMN OVER_TIME_LRR double(6,2) NOT NULL COMMENT '年逾期数环比';
+            ALTER TABLE aea_ana_org_day_statistics MODIFY COLUMN APPLY_LRR double(6,2) NOT NULL COMMENT '日接件数环比';
+            ALTER TABLE aea_ana_org_day_statistics MODIFY COLUMN ACCEPTANCE_LRR double(6,2) NOT NULL COMMENT '日受理数环比';
+            ALTER TABLE aea_ana_org_day_statistics MODIFY COLUMN OUT_SCOPE_LRR double(6,2) NOT NULL COMMENT '日不予受理数环比';
+            ALTER TABLE aea_ana_org_day_statistics MODIFY COLUMN COMPLETED_LRR double(6,2) NOT NULL COMMENT '日办结数环比';
+            ALTER TABLE aea_ana_org_day_statistics MODIFY COLUMN SPECIFIC_ROUTINE_LRR double(6,2) NOT NULL COMMENT '特殊程序数环比';
+            ALTER TABLE aea_ana_org_day_statistics MODIFY COLUMN OVER_TIME_LRR double(6,2) NOT NULL COMMENT '日逾期数环比';
+            ALTER TABLE aea_ana_org_week_statistics MODIFY COLUMN APPLY_LRR double(6,2) NOT NULL COMMENT '周接件数环比';
+            ALTER TABLE aea_ana_org_week_statistics MODIFY COLUMN ACCEPTANCE_LRR double(6,2) NOT NULL COMMENT '周受理数环比';
+            ALTER TABLE aea_ana_org_week_statistics MODIFY COLUMN OUT_SCOPE_LRR double(6,2) NOT NULL COMMENT '周不予受理数环比';
+            ALTER TABLE aea_ana_org_week_statistics MODIFY COLUMN COMPLETED_LRR double(6,2) NOT NULL COMMENT '周办结数环比';
+            ALTER TABLE aea_ana_org_week_statistics MODIFY COLUMN SPECIFIC_ROUTINE_LRR double(6,2) NOT NULL COMMENT '特殊程序数环比';
+            ALTER TABLE aea_ana_org_week_statistics MODIFY COLUMN OVER_TIME_LRR double(6,2) NOT NULL COMMENT '周逾期数环比';
+            ALTER TABLE aea_ana_org_month_statistics MODIFY COLUMN APPLY_LRR double(6,2) NOT NULL COMMENT '月接件数环比';
+            ALTER TABLE aea_ana_org_month_statistics MODIFY COLUMN ACCEPTANCE_LRR double(6,2) NOT NULL COMMENT '月受理数环比';
+            ALTER TABLE aea_ana_org_month_statistics MODIFY COLUMN OUT_SCOPE_LRR double(6,2) NOT NULL COMMENT '月不予受理数环比';
+            ALTER TABLE aea_ana_org_month_statistics MODIFY COLUMN COMPLETED_LRR double(6,2) NOT NULL COMMENT '月办结数环比';
+            ALTER TABLE aea_ana_org_month_statistics MODIFY COLUMN SPECIFIC_ROUTINE_LRR double(6,2) NOT NULL COMMENT '特殊程序数环比';
+            ALTER TABLE aea_ana_org_month_statistics MODIFY COLUMN OVER_TIME_LRR double(6,2) NOT NULL COMMENT '月逾期数环比';
+            ALTER TABLE aea_ana_org_month_statistics MODIFY COLUMN APPLY_LRR double(6,2) NOT NULL COMMENT '年接件数环比';
+            ALTER TABLE aea_ana_org_month_statistics MODIFY COLUMN ACCEPTANCE_LRR double(6,2) NOT NULL COMMENT '年受理数环比';
+            ALTER TABLE aea_ana_org_month_statistics MODIFY COLUMN OUT_SCOPE_LRR double(6,2) NOT NULL COMMENT '年不予受理数环比';
+            ALTER TABLE aea_ana_org_month_statistics MODIFY COLUMN COMPLETED_LRR double(6,2) NOT NULL COMMENT '年办结数环比';
+            ALTER TABLE aea_ana_org_month_statistics MODIFY COLUMN SPECIFIC_ROUTINE_LRR double(6,2) NOT NULL COMMENT '特殊程序数环比';
+            ALTER TABLE aea_ana_org_month_statistics MODIFY COLUMN OVER_TIME_LRR double(6,2) NOT NULL COMMENT '年逾期数环比';
+        </sql>
+    </changeSet>
+
+    <changeSet id="201910251149001" author="sam" failOnError="false">
+        <comment>申报实例表添加办结时间</comment>
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_hi_applyinst`
+            ADD COLUMN `END_TIME`  datetime NULL COMMENT '办结时间，申报办结时填充' AFTER `ACCEPT_TIME`;
+        </sql>
+    </changeSet>
+
+    <changeSet id="201910251139" author="zhangwn" failOnError="false">
+    <comment>窗口表添加统计图表颜色字段</comment>
+        <sql splitStatements="true">
+            alter table aea_service_window add ECHARTS_COLOR varchar(20) default null
+            comment '窗口颜色，效能督查统计图表使用' after STAGE_ITEM_FILTER;
+        </sql>
+    </changeSet>
+
+    <changeSet id="201910281404" author="chendx" failOnError="false">
+        <comment>特殊程序表增加两个字段用于关联开始和结束是的附件</comment>
+        <sql splitStatements="true">
+            ALTER TABLE aea_hi_item_special
+            ADD COLUMN SPECIAL_START_MAT_ID varchar(50) NOT NULL COMMENT '发起特殊程序时用于关联附件的id' AFTER `SPECIAL_DUE_WAY`,
+            ADD COLUMN SPECIAL_END_MAT_ID varchar(50) NOT NULL COMMENT '结束特殊程序时用于关联附件的id' AFTER `SPECIAL_START_MAT_ID`;
+        </sql>
+    </changeSet>
+    <changeSet id="201910281514001" author="chenjw" failOnError="false">
+        <comment>主题相关统计添加来源字段</comment>
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_ana_theme_day_statistics`
+            ADD COLUMN `APPLYINST_SOURCE`  varchar(3) NOT NULL COMMENT '申报来源，net表示网上申报，win表示窗口申报' AFTER `IS_PARALLEL`;
+            ALTER TABLE `aea_ana_theme_month_statistics`
+            ADD COLUMN `APPLYINST_SOURCE`  varchar(3) NOT NULL COMMENT '申报来源，net表示网上申报，win表示窗口申报' AFTER `IS_PARALLEL`;
+            ALTER TABLE `aea_ana_theme_week_statistics`
+            ADD COLUMN `APPLYINST_SOURCE`  varchar(3) NOT NULL COMMENT '申报来源，net表示网上申报，win表示窗口申报' AFTER `IS_PARALLEL`;
+            ALTER TABLE `aea_ana_theme_year_statistics`
+            ADD COLUMN `APPLYINST_SOURCE`  varchar(3) NOT NULL COMMENT '申报来源，net表示网上申报，win表示窗口申报' AFTER `IS_PARALLEL`;
+        </sql>
+    </changeSet>
+
+    <changeSet id="201910281532" author="zhangwn" failOnError="false">
+        <comment>窗口表添加统计图表颜色字段</comment>
+        <sql splitStatements="true">
+            alter table aea_service_window add ECHARTS_COLOR varchar(20) default null
+            comment '窗口颜色，效能督查统计图表使用' after STAGE_ITEM_FILTER;
+        </sql>
+    </changeSet>
+
+    <changeSet id="201910281633" author="chenzh" failOnError="false">
+        <sql splitStatements="true">
+            ALTER TABLE `aea_im_proj_purchase`
+            MODIFY COLUMN `PUBLISH_UNIT_INFO_ID` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT
+            '业主单位ID' AFTER `PROJ_INFO_ID`;
+        </sql>
+    </changeSet>
+
+    <changeSet id="201910291029" author="chendx" failOnError="false">
+        <sql splitStatements="true">
+            ALTER TABLE `aea_hi_item_special`
+            ADD COLUMN `SPECIAL_RESULT` varchar(255) NULL COMMENT '特殊程序结果' AFTER `SPECIAL_END_MAT_ID`,
+            ADD COLUMN `MONEY` double(10, 0) NULL COMMENT '收费金额，单位：元' AFTER `SPECIAL_RESULT`;
+        </sql>
+    </changeSet>
+
+    <changeSet id="20191029163542" author="xiong" failOnError="false">
+        <preConditions>
+            <not>
+                <columnExists tableName="aea_unit_proj" columnName="is_deleted"/>
+            </not>
+        </preConditions>
+        <sql splitStatements="true">
+            ALTER TABLE `aea_unit_proj`
+            ADD COLUMN `is_deleted` char(1) NOT NULL DEFAULT 0 COMMENT '逻辑删除' AFTER `LINKMAN_INFO_ID`;
+        </sql>
+    </changeSet>
+
+    <changeSet id="201910310923" author="chenzh" failOnError="false">
+        <sql splitStatements="true">
+            ALTER TABLE `act_sto_timerule_inst`
+            ADD COLUMN `OVERDUE_DATE` datetime(0) NULL COMMENT '逾期日期' AFTER `OVERDUE_TIME`;
+        </sql>
+    </changeSet>
+
+    <changeSet id="201911011019" author="mayh" failOnError="false">
+        <sql splitStatements="true">
+            ALTER TABLE aea_ana_win_day_statistics ADD APPLY_RECORD_ID VARCHAR(50) NOT NULL COMMENT '阶段/辅线/并行推进事项ID'
+            AFTER APPLY_SOURCE;
+            ALTER TABLE aea_ana_win_day_statistics ADD APPLY_RECORD_NAME varchar(200) NOT NULL COMMENT '阶段/辅线/并行推进事项名称'
+            AFTER APPLY_RECORD_ID;
+            ALTER TABLE aea_ana_win_day_statistics ADD DYBZSPJDXH VARCHAR (200) DEFAULT NULL COMMENT '对应国家标准审批阶段，多选，1
+            立项用地规划许可 2 立项用地规划许可 3 施工许可 4 竣工验收 5 并行推进' AFTER APPLY_RECORD_NAME;
+            ALTER TABLE aea_ana_win_day_statistics ADD IS_NODE VARCHAR (1) DEFAULT NULL COMMENT '1表示主线，2表示辅线 3技术审查'
+            AFTER DYBZSPJDXH;
+            ALTER TABLE aea_ana_win_day_statistics ADD IS_PARALLEL VARCHAR (1) DEFAULT NULL COMMENT '是否并行推进事项。0表示否，1表示是'
+            AFTER IS_NODE;
+
+            ALTER TABLE aea_ana_win_week_statistics ADD APPLY_RECORD_ID VARCHAR(50) NOT NULL COMMENT '阶段/辅线/并行推进事项ID'
+            AFTER APPLY_SOURCE;
+            ALTER TABLE aea_ana_win_week_statistics ADD APPLY_RECORD_NAME varchar(200) NOT NULL COMMENT '阶段/辅线/并行推进事项名称'
+            AFTER APPLY_RECORD_ID;
+            ALTER TABLE aea_ana_win_week_statistics ADD DYBZSPJDXH VARCHAR (200) DEFAULT NULL COMMENT '对应国家标准审批阶段，多选，1
+            立项用地规划许可 2 立项用地规划许可 3 施工许可 4 竣工验收 5 并行推进' AFTER APPLY_RECORD_NAME;
+            ALTER TABLE aea_ana_win_week_statistics ADD IS_NODE VARCHAR (1) DEFAULT NULL COMMENT '1表示主线，2表示辅线 3技术审查'
+            AFTER DYBZSPJDXH;
+            ALTER TABLE aea_ana_win_week_statistics ADD IS_PARALLEL VARCHAR (1) DEFAULT NULL COMMENT
+            '是否并行推进事项。0表示否，1表示是' AFTER IS_NODE;
+
+            ALTER TABLE aea_ana_win_month_statistics ADD APPLY_RECORD_ID VARCHAR(50) NOT NULL COMMENT '阶段/辅线/并行推进事项ID'
+            AFTER APPLY_SOURCE;
+            ALTER TABLE aea_ana_win_month_statistics ADD APPLY_RECORD_NAME varchar(200) NOT NULL COMMENT
+            '阶段/辅线/并行推进事项名称' AFTER APPLY_RECORD_ID;
+            ALTER TABLE aea_ana_win_month_statistics ADD DYBZSPJDXH VARCHAR (200) DEFAULT NULL COMMENT '对应国家标准审批阶段，多选，1
+            立项用地规划许可 2 立项用地规划许可 3 施工许可 4 竣工验收 5 并行推进' AFTER APPLY_RECORD_NAME;
+            ALTER TABLE aea_ana_win_month_statistics ADD IS_NODE VARCHAR (1) DEFAULT NULL COMMENT '1表示主线，2表示辅线 3技术审查'
+            AFTER DYBZSPJDXH;
+            ALTER TABLE aea_ana_win_month_statistics ADD IS_PARALLEL VARCHAR (1) DEFAULT NULL COMMENT
+            '是否并行推进事项。0表示否，1表示是' AFTER IS_NODE;
+
+            ALTER TABLE aea_ana_win_year_statistics ADD APPLY_RECORD_ID VARCHAR(50) NOT NULL COMMENT '阶段/辅线/并行推进事项ID'
+            AFTER APPLY_SOURCE;
+            ALTER TABLE aea_ana_win_year_statistics ADD APPLY_RECORD_NAME varchar(200) NOT NULL COMMENT '阶段/辅线/并行推进事项名称'
+            AFTER APPLY_RECORD_ID;
+            ALTER TABLE aea_ana_win_year_statistics ADD DYBZSPJDXH VARCHAR (200) DEFAULT NULL COMMENT '对应国家标准审批阶段，多选，1
+            立项用地规划许可 2 立项用地规划许可 3 施工许可 4 竣工验收 5 并行推进' AFTER APPLY_RECORD_NAME;
+            ALTER TABLE aea_ana_win_year_statistics ADD IS_NODE VARCHAR (1) DEFAULT NULL COMMENT '1表示主线，2表示辅线 3技术审查'
+            AFTER DYBZSPJDXH;
+            ALTER TABLE aea_ana_win_year_statistics ADD IS_PARALLEL VARCHAR (1) DEFAULT NULL COMMENT
+            '是否并行推进事项。0表示否，1表示是' AFTER IS_NODE;
+        </sql>
+    </changeSet>
+
+    <changeSet id="201911011411" author="zhangwn" failOnError="false">
+        <comment>部门办件统计添加来源字段</comment>
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_ana_org_day_statistics`
+            ADD COLUMN `APPLYINST_SOURCE`  varchar(3) NOT NULL COMMENT '申报来源，net表示网上申报，win表示窗口申报' AFTER `ITEM_NAME`;
+            ALTER TABLE `aea_ana_org_week_statistics`
+            ADD COLUMN `APPLYINST_SOURCE`  varchar(3) NOT NULL COMMENT '申报来源，net表示网上申报，win表示窗口申报' AFTER `ITEM_NAME`;
+            ALTER TABLE `aea_ana_org_month_statistics`
+            ADD COLUMN `APPLYINST_SOURCE`  varchar(3) NOT NULL COMMENT '申报来源，net表示网上申报，win表示窗口申报' AFTER `ITEM_NAME`;
+            ALTER TABLE `aea_ana_org_year_statistics`
+            ADD COLUMN `APPLYINST_SOURCE`  varchar(3) NOT NULL COMMENT '申报来源，net表示网上申报，win表示窗口申报' AFTER `ITEM_NAME`;
+        </sql>
+    </changeSet>
+
+    <changeSet id="201910311400" author="dengzq" failOnError="false">
+        <sql splitStatements="true">
+            CREATE TABLE `aea_ex_proj_money` (
+            `MONEY_ID` varchar(50) NOT NULL DEFAULT '' COMMENT '主键',
+            `PROJ_INFO_ID` varchar(50) NOT NULL COMMENT '项目ID',
+            `GOV_FINANCE` float NOT NULL COMMENT '各级政府财政资金投资',
+            `STATE_ENTERPRICE` float NOT NULL COMMENT '国有企业资金投资',
+            `STATE_INVESTMENT` float DEFAULT NULL COMMENT '国家融资',
+            `INTERNATIONAL_INVESTMENT` float DEFAULT NULL COMMENT '国际组织或外国政府资金',
+            `COLLECTIVE_INVESTMENT` float DEFAULT NULL COMMENT '集体经济组织投资',
+            `FOREIGN_INVESTMENT` float DEFAULT NULL COMMENT '外商（国）投资',
+            `HK_INVESTMENT` float DEFAULT NULL COMMENT '港澳台投资',
+            `PRIVATE_INVESTMENT` float DEFAULT NULL COMMENT '私（民）营投资',
+            `OTHER_INVESTMENT` float DEFAULT NULL COMMENT '其他资金来源',
+            `GOV_ORG_CONFIRM_TIME` datetime DEFAULT NULL COMMENT '建设行业主管部门确认时间',
+            `GOV_ORG_CODE` varchar(50) DEFAULT NULL COMMENT '建设行业主管部门行政单位组织代码',
+            `GOV_ORG_NAME` varchar(200) NOT NULL COMMENT '建设行业主管部门行政单位名称',
+            `GOV_AREA_CODE` varchar(20) DEFAULT NULL COMMENT '建设行业主管部门行政单位区域码',
+            `CREATER` varchar(50) DEFAULT NULL COMMENT '创建人',
+            `CREATE_TIME` datetime NOT NULL COMMENT '创建时间',
+            `MODIFIER` varchar(50) DEFAULT NULL COMMENT '修改人',
+            `MODIFY_TIME` datetime DEFAULT NULL COMMENT '修改时间',
+            `ROOT_ORG_ID` varchar(50) DEFAULT NULL COMMENT '所属根组织ID',
+            PRIMARY KEY (`MONEY_ID`) USING BTREE
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='项目资金来源构成比例'
+        </sql>
+    </changeSet>
+
+    <changeSet id="201911011405" author="dengzq" failOnError="false">
+        <sql splitStatements="true">
+            ALTER TABLE `aea_proj_info`
+            ADD COLUMN `PROJ_FUNCTION` char(1) NULL COMMENT '项目用途，来自于数据字典',
+            ADD COLUMN `SCALE_TYPE` char(2) NULL COMMENT '建设规模类型，来自于数据字典，7特大型工程、8大型工程、9中型工程、10小型工程',
+            ADD COLUMN `PROJ_NUM` varchar(50) NULL COMMENT '立项文号',
+            ADD COLUMN `APPROVAL_DEPT` varchar(200) NULL COMMENT '立项批准机关',
+            ADD COLUMN `APPROVAL_TIME` datetime NULL COMMENT '立项批准时间';
+        </sql>
+    </changeSet>
+
+    <changeSet id="201911051720" author="chendx" failOnError="false">
+        <comment>部门办件统计添加来源字段</comment>
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `act_tpl_app_flowdef`
+            ADD COLUMN `IS_DELETED` char(1) NULL DEFAULT 0 COMMENT '逻辑删除字段，1表示已删除 0表示未删除' AFTER `ROOT_ORG_ID`;
+        </sql>
+    </changeSet>
+</databaseChangeLog>

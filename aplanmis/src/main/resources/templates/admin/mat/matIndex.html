@@ -1,0 +1,318 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>材料标准清单</title>
+  <link rel="stylesheet" href="../../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.css" th:href="@{/agcloud/framework/js-lib/element-2/element.css}" />
+  <link rel="stylesheet" href="../../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css" th:href="@{/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css}">
+  <link rel="stylesheet" href="../../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/ui-private/default/common/css/layout.css" th:href="@{/agcloud/framework/ui-private/default/common/css/layout.css}">
+  <link rel="stylesheet" href="../../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/ui-private/default/blue/css/theme.css" th:href="@{/agcloud/framework/ui-private/default/blue/css/theme.css}">
+  <link rel="stylesheet" href="../../../static/admin/mat/css/matIndex.css" th:href="@{/admin/mat/css/matIndex.css}">
+  <style>
+    .el-button+.el-button {
+         margin-left: 5px;
+     }
+
+     .input {
+       margin-left: 68%;
+     }
+
+     .el-button--medium {
+         padding: 10px 12px;
+         font-size: 14px;
+         border-radius: 4px;
+     }
+  </style>
+  <script>
+    var ctx = '[[@{/}]]';
+    // var ctx = 'http://39.107.139.174:8083/aplanmis-front/';
+
+      var ctx = 'http://192.168.30.120:8083/aplanmis-front/';
+      // var ctx = 'http://192.168.32.2:8083/aplanmis-front/';
+
+  </script>
+</head>
+
+<body>
+  <div class='loading' v-show="pageLoading">
+    <div class="tips">
+      <i class="el-icon-loading"></i>
+      <p>请稍后</p>
+    </div>
+  </div>
+  <div id="app" v-cloak>
+    <div class="matList">
+      <p class="title">材料标准清单</p>
+      <div class='btns'>
+        <el-button type="primary" size='medium' @click="addType">新增</el-button>
+        <el-button size='medium' @click="delateAllWindow" type="danger">删除</el-button>
+        <el-button size='medium' @click="showData">刷新</el-button>
+        <el-input placeholder="请输入关键字..." v-model="keyword" class="input input-with-select" style='width: 250px;'>
+        </el-input>
+        <el-button size='medium' type="primary" @click="showData">查询</el-button>
+        <el-button size='medium' @click="keyword='';showData()">清空</el-button>
+      </div>
+      <el-table :data="tableData" border style="width: 100%;margin: 5px;" highlight-current-row @selection-change="handleSelectionChange" @row-click='rowClick' ref="table">
+        <el-table-column type="selection" width="55"></el-table-column>
+        <el-table-column prop="matCode" label="材料编号"></el-table-column>
+        <el-table-column prop="matName" label="材料名称"></el-table-column>
+        <el-table-column prop="matFrom" label="材料来源">
+          <template slot-scope='scope'>
+            {{scope.row.matFrom | resource}}
+          </template>
+        </el-table-column>
+        <el-table-column prop="matTypeName" label="材料类别"></el-table-column>
+        <el-table-column label="操作" width='120' align="center">
+          <template slot-scope='scope'>
+            <el-button type="primary" icon="el-icon-edit" circle @click="editWindow(scope.row);treeEdit = false"></el-button>
+            <el-button type="danger" icon="el-icon-delete" circle @click="delateWindow(scope.row)"></el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <el-pagination background align="right" :pager-count="5" @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-sizes="[10, 20, 30, 50]" :page-size="pageSize" :current-page="pageNum" layout="total,sizes, prev, pager, next, jumper" :total="total">
+      </el-pagination>
+    </div>
+    <!-- 弹出层 -->
+    <div class="right-sidebar" :class="showRightSlider?'show':''" v-loading='master'>
+      <div class="right-sidebar-content">
+        <p>{{matLabel}}</p>
+        <div class='form' :style="{height:treeLeftHeight+'px'}">
+          <el-form label-position="right" label-width="120px" :model="formData" ref="form" :rules="rules" :inline='true'>
+            <el-form-item prop="" v-show='false'>
+              <el-input v-model="formData.matId"></el-input>
+            </el-form-item>
+            <el-form-item prop="" v-show='false'>
+              <el-input v-model="formData.isGlobalShare"></el-input>
+            </el-form-item>
+            <el-form-item prop="" v-show='false'>
+              <el-input v-model="formData.isActive"></el-input>
+            </el-form-item>
+            <el-form-item label="材料类别" prop="matTypeName">
+              <el-input v-model="formData.matTypeName" readonly placeholder="请选择材料类别" style="width:390px;">
+                <template slot="append"><span style="cursor:pointer;" @click="matDialog=true;">选择</span></template>
+              </el-input>
+            </el-form-item>
+            <el-form-item label="材料名称" prop="matName">
+              <el-input v-model="formData.matName" placeholder="请输入材料名称" style="width:390px;"></el-input>
+            </el-form-item>
+            <el-form-item label="材料编号" prop="matCode">
+              <el-input v-model="formData.matCode" placeholder="请输入材料编号" style="width:390px;"></el-input>
+            </el-form-item>
+            <el-form-item label="是否通用材料" prop="isCommon">
+              <!-- <el-input v-model="formData.isCommon" placeholder="" style="width:390px;"></el-input> -->
+              <el-radio-group v-model="formData.isCommon" style="width:390px;">
+                <el-radio label="1">是</el-radio>
+                <el-radio label="0">否</el-radio>
+              </el-radio-group>
+            </el-form-item>
+            <el-form-item label="是否支持容缺" prop="zcqy">
+              <el-radio-group v-model="formData.zcqy" style="width:390px;">
+                <el-radio label="1">是</el-radio>
+                <el-radio label="0">否</el-radio>
+              </el-radio-group>
+            </el-form-item>
+            <el-form-item label="是否批文批复" prop="isOfficialDoc">
+              <el-radio-group v-model="formData.isOfficialDoc" style="width:390px;">
+                <el-radio label="1">是</el-radio>
+                <el-radio label="0">否</el-radio>
+              </el-radio-group>
+            </el-form-item>
+            <el-form-item label="材料来源" prop="matFrom">
+              <el-checkbox-group v-model="matFrom" style="width:390px;">
+                <el-checkbox key="1" label="1">行政机关</el-checkbox>
+                <el-checkbox key="2" label="2">企事业单位</el-checkbox>
+                <el-checkbox key="3" label="3">社会组织</el-checkbox>
+                <el-checkbox key="4" label="4">申请人</el-checkbox>
+                <el-checkbox key="5" label="5">中介服务</el-checkbox>
+              </el-checkbox-group>
+            </el-form-item>
+            <el-form-item label="材料来源部门" prop="matFromDept">
+              <el-input v-model="formData.matFromDept" placeholder="请输入材料来源部门" style="width:390px;"></el-input>
+            </el-form-item>
+            <el-form-item label="模板文档" prop="fileList">
+              <el-upload class="upload-demo" action="" :on-change="enclosureFileSelectChange" :file-list="fileList" name="templateDocFile" :show-file-list="false" :auto-upload="false" style="width:318px">
+                <el-button size="small" type="primary">点击上传</el-button>
+              </el-upload>
+              <el-button size="small" type="primary" class="reviewbtn" @click="templateDialog=true;templateClick('template')" v-show="formData.templateDocCount>0">{{formData.templateDocCount}}个附件</el-button>
+              <ul class="pjfile-list">
+                <li v-for="(item, index) in fileList" :key="index"><i class="el-icon-document"></i> {{item.attName?item.attName:item.name}}
+                  <a href="javascript:;" @click="removeAttr(item,'template')">删除</a>
+                </li>
+              </ul>
+            </el-form-item>
+            <el-form-item label="样本文档" prop="fileList2">
+              <el-upload class="upload-demo" action="" :on-change="enclosureFileSelectChange2" :file-list="fileList2" name="sampleDocFile" :show-file-list="false" :auto-upload="false" style="width:318px">
+                <el-button size="small" type="primary">点击上传</el-button>
+              </el-upload>
+              <el-button size="small" type="primary" class="reviewbtn" @click="sampleDialog=true;templateClick('sample')" v-show="formData.sampleDocCount>0">{{formData.sampleDocCount}}个附件</el-button>
+              <ul class="pjfile-list">
+                <li v-for="(item, index) in fileList2" :key="index"><i class="el-icon-document"></i> {{item.attName?item.attName:item.name}}
+                  <a href="javascript:;" @click="removeAttr(item,'sample')">删除</a>
+                </li>
+              </ul>
+            </el-form-item>
+            <el-form-item label="审查样本" prop="fileList3">
+              <el-upload class="upload-demo" action="" :on-change="enclosureFileSelectChange3" :file-list="fileList3" name="reviewSampleDocFile" :show-file-list="false" :auto-upload="false" style="width:318px" accept=".jpg,.jpeg,.png,.gif,.bmp,.pdf,.JPG,.JPEG,.PBG,.GIF,.BMP,.PDF">
+                <el-button size="small" type="primary">点击上传</el-button>
+              </el-upload>
+              <el-button size="small" type="primary" class="reviewbtn" @click="reviewSampleDialog=true;templateClick('reviewSample')" v-show="formData.reviewSampleDocCount>0">{{formData.reviewSampleDocCount}}个附件</el-button>
+              <ul class="pjfile-list">
+                <li v-for="(item, index) in fileList3" :key="index"><i class="el-icon-document"></i> {{item.attName?item.attName:item.name}}
+                  <a href="javascript:;" @click="removeAttr(item,'reviewSample')">删除</a>
+                </li>
+              </ul>
+            </el-form-item>
+            <el-form-item label="审查要点" prop="reviewKeyPoints">
+              <el-input type="textarea" v-model="formData.reviewKeyPoints" placeholder="请输入审查要点" rows="8" style="width:390px;"></el-input>
+            </el-form-item>
+            <el-form-item label="审查依据" prop="reviewBasis">
+              <el-input type="textarea" v-model="formData.reviewBasis" placeholder="请输入审查依据" rows="8" style="width:390px;"></el-input>
+            </el-form-item>
+            <el-form-item label="纸质是否必需" prop="paperIsRequire">
+              <el-radio-group v-model="formData.paperIsRequire" style="width:390px;">
+                <el-radio label="1">必须</el-radio>
+                <el-radio label="0">非必须</el-radio>
+              </el-radio-group>
+            </el-form-item>
+            <el-form-item label="电子是否必须" prop="attIsRequire">
+              <el-radio-group v-model="formData.attIsRequire" style="width:390px;">
+                <el-radio label="1">必须</el-radio>
+                <el-radio label="0">非必须</el-radio>
+              </el-radio-group>
+            </el-form-item>
+            <el-form-item label="纸质材料类型" prop="paperMatType">
+              <el-select v-model="formData.paperMatType" placeholder="请选择材料类型" style="width: 390px;">
+                <el-option label="无" value="0"></el-option>
+                <el-option label="A3" value="1"></el-option>
+                <el-option label="A4" value="2"></el-option>
+                <el-option label="A5" value="3"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="原件验收" prop="duePaperType">
+              <el-select v-model="formData.duePaperType" placeholder="请选择原件验收" style="width: 390px;">
+                <el-option label="请选择" value=" "></el-option>
+                <el-option label="无" value="0"></el-option>
+                <el-option label="验" value="1"></el-option>
+                <el-option label="收" value="2"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="原件数" prop="duePaperCount">
+              <el-input v-model="formData.duePaperCount" type="number" autocomplete='off' placeholder="请输入原件数" style="width:390px;"></el-input>
+              <!-- <el-input-number v-model="formData.duePaperCount" placeholder="请输入原件数" controls-position="right" :min="0" :max="10000000" style="width:390px;"></el-input-number> -->
+            </el-form-item>
+            <el-form-item label="复印件验收类型" prop="dueCopyType">
+              <el-select v-model="formData.dueCopyType" placeholder="请选择附件验收类型" style="width: 390px;">
+                <el-option label="请选择" value=" "></el-option>
+                <el-option label="无" value="0"></el-option>
+                <el-option label="验" value="1"></el-option>
+                <el-option label="收" value="2"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="复印件数" prop="dueCopyCount">
+              <el-input v-model="formData.dueCopyCount" type="number" autocomplete='off' placeholder="请输入复印件数" style="width:390px;"></el-input>
+              <!-- <el-input-number v-model="formData.dueCopyCount" placeholder="请输入复印件数" controls-position="right" :min="0" :max="10000000" style="width:390px;"></el-input-number> -->
+            </el-form-item>
+            <el-form-item label="备注" prop="matMemo">
+              <el-input type="textarea" v-model="formData.matMemo" placeholder="请输入备注" rows="8" style="width:390px;"></el-input>
+            </el-form-item>
+          </el-form>
+          <div class="silder-footer">
+            <el-button type="primary" size='medium' @click="checkCode">保存</el-button>
+            <el-button size='medium' @click="showRightSlider=false">取消</el-button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="right-sidebar-overlay" v-show="showRightSlider" @click="showRightSlider = false"></div>
+    <!-- 选择材料弹窗 -->
+    <el-dialog title="选择材料类型" :visible.sync="matDialog" class="edit-row2" width="500px" top="9vh">
+      <el-tree :data="regionData" class="filter-tree tree1" default-expand-all :expand-on-click-node="false" highlight-current :style="{height:treeLeftHeight-300+'px',overflow: 'auto'}" :filter-node-method="filterNodeOrg" node-key="id" @node-click="regionTreeNode" ref="Tree">
+      </el-tree>
+      <div class="matFooter">
+        <el-button type="primary" size='medium' @click="chooseMat">保存</el-button>
+        <el-button size='medium' @click="matDialog=false">取消</el-button>
+      </div>
+    </el-dialog>
+    <!-- 模板附件弹窗 -->
+    <el-dialog title="查看附件" :visible.sync="templateDialog" class="edit-row2" width="800px" top="9vh">
+      <el-table :data="templateData" border style="width: 100%;margin: 5px;height:529px;overflow-y:auto;">
+        <el-table-column prop="attName" label="附件名称">
+          <template slot-scope='scope'>
+            <a href="javascript:void(0);" @click="previewOrDownload(scope.row)">{{scope.row.attName}}</a>
+          </template>
+        </el-table-column>
+        <el-table-column prop="attFormat" label="附件类型"></el-table-column>
+        <el-table-column prop="attSize" label="附件大小（KB）">
+          <template slot-scope='scope'>
+            {{scope.row.attSize | sizeFixed}}
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" width='120' align="center">
+          <template slot-scope='scope'>
+            <i class='el-icon-delete cup' style="margin-left: 10px;" @click="deleteAttr(scope.row,'template')"></i>
+          </template>
+        </el-table-column>
+      </el-table>
+      <div class="adjunct-footer">
+        <el-button size='medium' @click="templateDialog=false">关闭</el-button>
+      </div>
+    </el-dialog>
+    <!-- 样本附件弹窗 -->
+    <el-dialog title="查看附件" :visible.sync="sampleDialog" class="edit-row2" width="800px" top="9vh">
+      <el-table :data="sampleData" border style="width: 100%;margin: 5px;height:529px;overflow-y:auto;">
+        <el-table-column prop="attName" label="附件名称">
+          <template slot-scope='scope'>
+            <a href="javascript:void(0);" @click="previewOrDownload(scope.row)">{{scope.row.attName}}</a>
+          </template>
+        </el-table-column>
+        <el-table-column prop="attFormat" label="附件类型"></el-table-column>
+        <el-table-column prop="attSize" label="附件大小（KB）">
+          <template slot-scope='scope'>
+            {{scope.row.attSize | sizeFixed}}
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" width='120' align="center">
+          <template slot-scope='scope'>
+            <i class='el-icon-delete cup' style="margin-left: 10px;" @click="deleteAttr(scope.row,'sample')"></i>
+          </template>
+        </el-table-column>
+      </el-table>
+      <div class="adjunct-footer">
+        <el-button size='medium' @click="sampleDialog=false">关闭</el-button>
+      </div>
+    </el-dialog>
+    <!-- 审查样本附件弹窗 -->
+    <el-dialog title="查看附件" :visible.sync="reviewSampleDialog" class="edit-row2" width="800px" top="9vh">
+      <el-table :data="reviewSampleData" border style="width: 100%;margin: 5px;height:529px;overflow-y:auto;">
+        <el-table-column prop="attName" label="附件名称">
+          <template slot-scope='scope'>
+            <a href="javascript:void(0);" @click="previewOrDownload(scope.row)">{{scope.row.attName}}</a>
+          </template>
+        </el-table-column>
+        <el-table-column prop="attFormat" label="附件类型"></el-table-column>
+        <el-table-column prop="attSize" label="附件大小（KB）">
+          <template slot-scope='scope'>
+            {{scope.row.attSize | sizeFixed}}
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" width='120' align="center">
+          <template slot-scope='scope'>
+            <i class='el-icon-delete cup' style="margin-left: 10px;" @click="deleteAttr(scope.row,'reviewSample')"></i>
+          </template>
+        </el-table-column>
+      </el-table>
+      <div class="adjunct-footer">
+        <el-button size='medium' @click="reviewSampleDialog=false">关闭</el-button>
+      </div>
+    </el-dialog>
+  </div>
+  <script src="../../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js" th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>
+  <script src="../../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js" th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
+  <script src="../../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js" th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
+  <script src="../../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js" th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>
+  <script src="../../../static/admin/mat/js/matIndex.js" th:src="@{/admin/mat/js/matIndex.js}"></script>
+</body>
+
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title> test rappid </title>
+    <link rel="stylesheet" type="text/css" href="../rappid/build/rappid.min.css"></link>
+    <link rel="stylesheet" type="text/css" href="../rappid/apps/KitchenSink/css/style.css"></link>
+    <link rel="stylesheet" type="text/css" href="../rappid/apps/KitchenSink/css/theme-picker.css"></link>
+    <link rel="stylesheet" type="text/css" href="../rappid/apps/KitchenSink/css/style.dark.css"></link>
+    <link rel="stylesheet" type="text/css" href="../rappid/apps/KitchenSink/css/style.material.css"></link>
+    <link rel="stylesheet" type="text/css" href="../rappid/apps/KitchenSink/css/style.modern.css"></link>
+    <link rel="stylesheet" type="text/css" href="../rappid/dist/joint.ui.stencil.min.css">
+    <!--<link rel="stylesheet" type="text/css" href="../rappid/apps/BPMNEditor/css/bpmn.css">-->
+</head>
+<body>
+<div id="app">
+    <div class="app-header">
+        <div class="app-title">
+            <h1>Rappid</h1>
+        </div>
+        <div class="toolbar-container"></div>
+    </div>
+    <div class="app-body">
+        <div class="stencil-container"></div>
+        <div class="paper-container"></div>
+        <div class="inspector-container"></div>
+        <div class="navigator-container"></div>
+    </div>
+</div>
+<!--<script src = "https://resources.jointjs.com/js/vendor/jquery/jquery.min.js"></script>-->
+<!--<script src = "https://resources.jointjs.com/js/main.js"></script>-->
+<script src = "../rappid/node_modules/jquery/dist/jquery.js"></script>
+<script src = "../rappid/node_modules/lodash/index.js"></script>
+<script src = "../rappid/node_modules/backbone/backbone.js"></script>
+<script src = "../rappid/node_modules/graphlib/dist/graphlib.core.js"></script>
+<script src = "../rappid/node_modules/dagre/dist/dagre.core.js"></script>
+<script src = "../rappid/build/rappid.min.js"></script>
+<script src = "../rappid/apps/KitchenSink/js/config/halo.js"></script>
+<script src = "../rappid/apps/KitchenSink/js/config/selection.js"></script>
+<script src = "../rappid/apps/KitchenSink/js/config/inspector.js"></script>
+<script src = "../rappid/apps/KitchenSink/js/config/stencil.js"></script>
+<script src = "../rappid/apps/KitchenSink/js/config/toolbar.js"></script>
+<script src = "../rappid/apps/KitchenSink/js/config/sample-graphs.js"></script>
+<script src = "../rappid/apps/KitchenSink/js/views/main.js"></script>
+<script src = "../rappid/apps/KitchenSink/js/views/theme-picker.js"></script>
+<script src = "../rappid/apps/KitchenSink/js/models/joint.shapes.app.js"></script>
+<script src = "../rappid/apps/KitchenSink/js/views/navigator.js"></script>
+<!--<script src = "../rappid/apps/BPMNEditor/src/bpmn.js"></script>-->
+<script>
+    joint.setTheme('modern');
+    app = new App.MainView({ el: '#app' });
+    /*themePicker = new App.ThemePicker({ mainView: app });
+    themePicker.render().$el.appendTo(document.body);*/
+    window.addEventListener('load', function() {
+        // app.graph.fromJSON(JSON.parse(App.config.sampleGraphs.emergencyProcedure));
+        // JSON.stringify(graph.toJSON())
+    });
+    $(function(){
+        loadAdv();
+        $('#btn-to-back').on('click', function(){
+            var data = {};
+            data.name = '阶段'+Math.floor(Math.random()*10+1);
+            data.json = app.graph.toJSON();
+            var temp = sessionStorage.getItem('temp');
+            if(!temp){
+                temp = [];
+                temp.push(data);
+            }else{
+                temp = JSON.parse(temp);
+                if(temp.length<5){
+                    temp.push(data);
+                }
+            }
+
+
+           window.sessionStorage.setItem('temp', JSON.stringify(temp));
+        });
+    });
+    function loadAdv(){
+        console.log('loadAdv');
+        var temp = sessionStorage.getItem('temp');
+        if(temp){
+            temp = JSON.parse(temp);
+            $.each(temp, function(ind, ele){
+                $('div[data-name=adv] div').append($('<div>').text(ele.name));
+            })
+        }
+    }
+
+
+</script>
+<!--<div class="joint-toolbar joint-theme-picker joint-theme-modern"><div class="joint-toolbar-group joint-theme-modern" data-group="default"><div class="joint-widget joint-theme-modern" data-type="selectButtonGroup" data-name="theme-picker"><div class="joint-select-button-group joint-theme-modern" data-tooltip="Change Theme" data-tooltip-position="bottom"><div class="select-button-group-button selected">Modern</div><div class="select-button-group-button">Dark</div><div class="select-button-group-button">Material</div></div></div></div></div>`-->
+<!--<script>
+    (function() {
+        var fs = (document.location.protocol === 'file:');
+        var ff = (navigator.userAgent.toLowerCase().indexOf('firefox') !== -1);
+        if (fs && !ff) {
+            (new joint.ui.Dialog({
+                width: 300,
+                type: 'alert',
+                title: 'Local File',
+                content: $('#message-fs').show()
+            })).open();
+        }
+    })();
+</script>-->
+</body>
+</html>

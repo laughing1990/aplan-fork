@@ -1,0 +1,130 @@
+@charset "utf-8";
+/* CSS Document */
+/*基于metronic 5 demo3 | 综合受理页面样式 | yang2018.8.23*/
+
+/******************************BEGIN:待办工作统计模块******************************/
+.row.m-row--no-padding div.col-xl-6 {
+    padding-left: 0!important;
+	padding-right: 0!important;
+}
+.row {
+     margin-right: 0; 
+     margin-left: 0; 
+}
+.row.m-row--no-padding .m-widget24{
+	background-color: #fff; 
+	-webkit-box-shadow: 0px 1px 15px 1px rgba(69,65,78,0.08);
+    box-shadow: 0px 1px 15px 1px rgba(69,65,78,0.08);
+	border-radius: 4px;
+	padding: 12px 0;
+}
+.row.m-row--no-padding > div {
+    padding-left: 8px;
+    padding-right: 8px;
+	border-right: 0;
+}
+.row.m-row--no-padding  div:first-child {
+    padding-left: 0;
+}
+.row.m-row--no-padding  div:last-child {
+    padding-right: 0;
+}
+.row.m-row--no-padding .m-widget24 .col-xl-6:first-child{
+	border-right: 1px solid #d9d9d9;
+}  
+.row.m-row--no-padding .ag-row-foot-color{
+    height: 5px;
+    border-radius: 0 0 4px 4px;
+}
+.row.m-row--no-padding .ag-row-foot-color.ag-row-foot-blue{
+	background-color: #36a3f7;
+}
+.row.m-row--no-padding .ag-row-foot-color.ag-row-foot-green{
+	background-color: #34bfa3;
+}
+.row.m-row--no-padding .ag-row-foot-color.ag-row-foot-orange{
+	background-color: #ffb822;
+}
+.ag-deal .btn.btn-outline-warning.active,.ag-deal .btn.btn-outline-warning.focus,.ag-deal .btn.btn-outline-warning:focus,.ag-deal  .btn.btn-outline-warning:hover:not(:disabled) {
+    color: #fff !important; }
+
+.row.m-row--no-padding .ag-row-foot-color.ag-row-foot-purple{
+	background-color: #5867dd;
+}
+.ag-data-number{
+	font-size: 40px;
+	font-weight: 700;
+	color: #32323d;
+	display: block;
+}
+.ag-deal .btn{
+	height: 24px;
+	line-height: 24px;
+	padding: 0 10px;
+	margin-top: 8px;	
+}
+/*表格*/
+
+.ag-count-down{
+	height: 24px;
+	line-height: 24px;
+	padding: 0 10px;
+}
+.btn-outline-info.ag-count-down:hover {
+    color: #36a3f7!important;
+    background-color: #fff;
+    border-color: #36a3f7;
+}
+.btn.btn-outline-info.ag-count-down.active, .btn.btn-outline-info.ag-count-down.focus, .btn.btn-outline-info.ag-count-down:focus, .btn.btn-outline-info.ag-count-down:hover:not(:disabled) {
+    color: #36a3f7 !important;
+	    background-color: #fff;
+    border-color: #36a3f7;
+	cursor: none;
+}
+/*table中项目类型图标*/
+.table-list-icon {
+	display: inline-block;
+	vertical-align: middle;
+	margin-right: 5px;
+	width: 29px;
+	height: 33px;
+}
+.table-list-icon.hezhun{
+	background: url(../images/common/hezhun-table-list-icon.png) no-repeat 0 0;
+
+}
+.table-list-icon.shenpi{
+	background: url(../images/common/shenpi-table-list-icon.png) no-repeat 0 0;
+}
+.table-list-icon.beian{
+	background: url(../images/common/beian-table-list-icon.png) no-repeat 0 0;
+}
+
+/*查询框*/
+.cxbox{
+	padding: 20px;
+}
+.cxbox .form-control.m-input--solid{
+	border: 1px solid #e8e8e8;
+	background-color: #fff;
+	height: 40px;
+}
+.cxbox .btn{
+	border-radius: 4px!important;
+	border-top-left-radius: 0!important;
+    border-bottom-left-radius: 0!important;
+}
+.cxbox a.gjcx{
+	height: 40px;
+	line-height: 40px;
+	padding: 0 20px;	
+	cursor: pointer;
+	color: #36a3f7;
+}
+.input-group {
+    width: 900px;
+}
+.cxbox .btn.new_project{
+	padding: 10px 20px;
+	border-radius: 4px!important;
+}

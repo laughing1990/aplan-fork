@@ -1,0 +1,582 @@
+/*重置 element str */
+.el-checkbox__input.is-checked .el-checkbox__inner, .el-checkbox__input.is-indeterminate .el-checkbox__inner{
+    background-color: #457EFF;
+    border-color: #457EFF;
+}
+.el-dialog__header {
+    border: none;
+    height: 44px;
+    line-height: 44px;
+    color: #fff;
+    background: #457EFF;
+    padding: 0 15px;
+}
+.el-dialog__title{
+    color: #ffffff;
+    line-height: 45px;
+}
+.el-dialog__headerbtn{
+    top: 16px;
+    color: #ffffff;
+}
+.el-dialog__headerbtn .el-dialog__close{
+    color: #ffffff;
+    transition: all 0.2ms;
+}
+.el-dialog__headerbtn .el-dialog__close:hover{
+    transform: scale(1.2);
+}
+.matFileListTable.el-table{
+    user-select: none;
+}
+.matFileListTable.el-table th>.cell{
+    font-size:14px;
+    font-family:Microsoft YaHei;
+    font-weight:400;
+    color:rgba(127,133,144,1);
+}
+
+/*  tree str*/
+.tree-left .el-tree-node__content {
+    height: 40px;
+}
+.tree-left .el-tree--highlight-current .el-tree-node.is-current>.el-tree-node__content {
+    background: #EAF6FF;
+    border-right: 4px solid #169AFF;
+}
+.tree-left .el-tree-node__content:hover {
+    background: #f3f6f9;
+}
+.tree-left .el-tree-node__label:before {
+    content: "\f101";
+    font-family: Flaticon;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    line-height: 1;
+    text-decoration: inherit;
+    text-rendering: optimizeLegibility;
+    text-transform: none;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+    font-smoothing: antialiased;
+    padding-right: 5px;
+    color: #afb2c1;
+    font-size: 16px;
+}
+.tree-left .el-tree-node__children .el-tree-node__label:before {
+    content: "\f07b";
+    color: #C3E5FF;
+    font-size: 16px;
+    padding-right: 5px;
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+    display: inline-block;
+    font-style: normal;
+    font-variant: normal;
+    text-rendering: auto;
+    line-height: 1;
+}
+/*  tree end*/
+ .matFileListTable .el-table__fixed{
+    /*overflow: visible!important;*/
+}
+/*重置 element end */
+
+
+
+[v-cloak] {
+    display: none;
+}
+.mt20{
+    margin-top: 20px;
+}
+#myCloundSpaces{
+    margin: 0px auto;
+    width: 1200px;
+}
+.user-pro-item>div>i{
+    transition: all 0.3s;
+}
+.user-pro-item>div>i.close {
+    transform: rotate(180deg);
+}
+.user-pro-list .user-pro-item .user-pro-item-parent{
+    cursor: pointer;
+    width: 240px;
+    padding: 10px auto;
+    padding: 10px 0px;
+    padding-left: 15px;
+}
+.user-pro-list .user-pro-item .user-pro-item-parent.active{
+    background: #ffffff;
+}
+
+.matFileListTable .fileName{
+    color:#3F4047;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    word-wrap: normal;
+    max-width: 80%;
+}
+.matFileListTable .fontSize{
+    color: #7F8590;
+    font-size:14px;
+}
+
+.my-clound-spaces-left{
+    width: 240px;
+    height: 100%;
+    margin-right: 30px;
+    background: #F9FBFD;
+    float: left;
+    box-shadow: 0px 5px 6px rgba(120,47,224,0.08);
+}
+.my-clound-spaces-left .user-company{
+    width:240px;
+    height:120px;
+    background:linear-gradient(45deg,rgba(88,210,255,0.85),rgba(69,126,255,0.85));
+    border-radius:4px 4px 0px 0px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+.my-clound-spaces-left .user-company .company-name{
+    font-size:30px;
+    font-family:Microsoft YaHei;
+    font-weight:bold;
+    color:rgba(255,255,255,1);
+}
+.user-pro-item li.active {
+    background: #ffffff;
+}
+.father-process{
+    width:170px;
+    height:4px;
+    background:rgba(61,114,230,1);
+    border-radius:2px;
+    margin-bottom: 6px;
+}
+.child-process{
+    width:80px;
+    height:4px;
+    background:rgba(255,255,255,1);
+    border-radius:2px;
+}
+.right-click-opt {
+    display: none;
+    background: #fff;
+    position: absolute;
+    width:90px;
+    background:rgba(255,255,255,1);
+    box-shadow:0px 6px 16px 0px rgba(64,93,160,0.24);
+    border-radius:10px;
+    color: #595762;
+    font-size: 14px;
+    z-index: 99999;
+}
+#right-click-opt-table{
+    width: 90px;
+    height:126px;
+    right: 8px;
+}
+.right-click-opt p {
+    margin: 8px 20px;
+    cursor: pointer;
+}
+.right-click-opt p:hover{
+    color:#169aff;
+}
+.map-icon {
+    color: #169AFF;
+    font-size: 18px;
+}
+.my-clound-space-size{
+    font-size:12px;
+    font-family:Microsoft YaHei;
+    color:rgba(255,255,255,1);
+    margin-top: 6px;
+    text-align: left;
+}
+.my-clound-spaces-left .add{
+    width:218px;
+    height:30px;
+    line-height: 30px;
+    background:rgba(255,255,255,1);
+    border:1px dashed rgba(101,147,251,1);
+    border-radius:4px;
+    text-align: center;
+    margin-top:10px;
+    margin-bottom:17px;
+    margin-left:auto;
+    margin-right:auto;
+}
+.my-clound-spaces-right{
+    width: 930px;
+    float: left;
+}
+.my-clound-spaces-right .tips{
+    width: 930px;
+    height: 48px;
+    background: rgba(255,252,238,1);
+    border: 1px solid rgba(255,184,34,1);
+    border-radius: 4px;
+    margin-bottom: 12px;
+    line-height: 24px;
+    padding: 10px;
+}
+
+.my-clound-spaces-right  .operation-box{
+    float: left;
+    position: relative;
+    overflow: hidden;
+}
+.my-clound-spaces-right  .operation-box button{
+    height: 34px;
+    line-height: 9px;
+    width: 86px;
+    padding: 0px;
+}
+.my-clound-spaces-right  .operation-box button.download-btn{
+    color: #457EFF;
+    border: 1px solid #457EFF;
+    background: none;
+}
+.my-clound-spaces-right  .operation-box button.trash-btn{
+    color: #FF6F6C;
+    border: 1px solid #FF6F6C;
+    background: none;
+}
+.my-clound-spaces-right  .operation-box .upload-file{
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    position: absolute;
+    top: 2px;
+    left: -68px;
+    width: 151px;
+    height: 40px;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.my-clound-spaces-right .search-box {
+    width: 250px;
+    float: right;
+}
+.my-clound-spaces-right .input[type=radio]:checked ~ span{
+    border: none;
+}
+.my-clound-spaces-right input[type=radio] ~ span {
+    width: initial;
+    height: initial;
+    border-radius: initial;
+    position: initial;
+}
+.my-clound-spaces-right input[type=radio]:checked ~ span{
+    border: 1px solid #457EFF;
+}
+.my-clound-spaces-right .el-radio-button__orig-radio:checked+.el-radio-button__inner{
+    background: #457EFF;
+}
+.my-clound-spaces-right .folder-box{
+    line-height: 40px;
+    margin-top: 12px;
+    margin-bottom: 5px;
+}
+.my-clound-spaces-right .folder-box .folder-num{
+    color: #7F8590;
+}
+
+.matFileListTable .ag{
+    width: 1em;
+    vertical-align: -0.15em;
+    fill: currentColor;
+    overflow: hidden;
+    line-height: 40px;
+    font-size: 35px;
+    margin: 10px auto;
+    color: #333;
+    -webkit-transition: font-size 0.25s linear, width 0.25s linear;
+    -moz-transition: font-size 0.25s linear, width 0.25s linear;
+    transition: font-size 0.25s linear, width 0.25s linear;
+    vertical-align: sub;
+}
+.matFileListTable .el-icon-view{
+    font-size: 16px;
+    color: #457EFF;
+    margin-right: 20px;
+}
+.matFileListTable .ag-filetype-txt{
+    color:#55d7e0;
+}
+.matFileListTable .ag-filetype-xsl{
+    color: #8bc755;
+}
+.matFileListTable .ag-filetype-doc{
+    color: #ff8800;
+}
+.matFileListTable .ag-filetype-pdf{
+    color: #ea4318;
+}
+.matFileListTable .ag-filetype-jpg{
+    color: #3db6fb;
+}
+.matFileListTable .ag-filetype-gif{
+    color: #84DC00;
+}
+.matFileListTable .ag-filetype-png{
+    color: #FCCC00;
+}
+.matFileListTable .ag-filetype-zip{
+    color: #DC4EC1;
+}
+.matFileListTable .ag-filetype-rar{
+    color: #8D51DB;
+}
+.matFileListTable .ag-folder-fill{
+    color: #ff8800;
+}
+.matFileListTable .ag-filetype-html{
+    color: #6CB600;
+}
+.matFileListTable .ag-filetype-mov{
+    color: #B0D700;
+}
+.matFileListTable .ag-filetype-rp{
+    color: #713CBE;
+}
+.matFileListTable .ag-filetype-ppt{
+    color: #F85207;
+}
+.matFileListTable .ag-filetype-exe{
+    color: #F6E400;
+}
+.matFileListTable .ag-filetype-wps{
+    color: #33D39D;
+}
+.matFileListTable .download{
+    display: none;
+    vertical-align: middle;
+    cursor: pointer;
+    margin-top: 10px;
+    color: #457EFF;
+    font-size: 20px;
+}
+.matFileListTable .el-table__body tr.hover-row .download{
+    display: block;
+}
+.matFileListTable .el-table__body tr.hover-row .download:hover #right-click-opt-table{
+    display: block;
+}
+
+.view-model ul li {
+    width: 113px;
+    text-align: center;
+    margin-top: 15px;
+    margin-right: 40px;
+    cursor: pointer;
+}
+.view-model .file-icon{
+    height: 86px;
+    display: flex;
+    align-items: center;
+}
+.view-model .file-name{
+    margin-top: 6px;
+    width:116px;
+    height:24px;
+    line-height: 24px;
+    border-radius:4px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    word-wrap: normal;
+}
+.view-model .choose-num{
+    font-size:14px;
+    color: #7F8590;
+}
+.view-model .choose-num .el-checkbox__label{
+    font-size:14px;
+    color: #7F8590;
+}
+.view-model ul li.active .file-icon{
+    background:rgba(243,245,251,1);
+    border-radius:4px;
+}
+.view-model ul li.active .file-name{
+    background:rgba(69,126,255,1);
+    color: #fff;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    word-wrap: normal;
+}
+
+.addDirDialog .el-dialog,.addFilesDialog .el-dialog,.reNameFilesDialog .el-dialog{
+    background: #F0F3F6;
+}
+.el-dialog__footer{
+    padding: 10px 20px 10px;
+}
+.addDirForm-box{
+    width:776px;
+    height:267px;
+    background:rgba(255,255,255,1);
+    display: flex;
+    align-items: center;
+}
+.addDirDialog .el-dialog__body{
+    padding: 12px;
+}
+.reNameDirForm-box{
+    background: #fff;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    padding-left: 15px;
+}
+.reNameFilesDialog .el-dialog__body{
+    padding-top: 20px;
+    padding-bottom: 0px;
+}
+
+.addFileForm-box .userCenterMenList{
+    height: 300px;
+    overflow: hidden;
+    background: #ffffff;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+}
+.addFileForm-box .user-pro-item li.active{
+    background: #457EFF;
+    color: #ffffff;
+}
+.addFilesDialog .el-dialog__body{
+    padding: 20px 20px 15px;
+}
+.add-icon-bg{
+    margin: -4px 3px;
+    width: 15px;
+    height: 15px;
+    cursor: pointer;
+    background: url(../../images/userCenter/icon-tree_77d7929.png) 0 0 no-repeat;
+    background-position: -30px -22px;
+    display: inline-block;
+}
+.add-icon-bg.close{
+    background-position: -30px 0;
+}
+/*上传文件进度提示 str */
+.el-notification {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    width: 330px;
+    padding: 14px 26px 14px 13px;
+    border-radius: 8px;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    position: fixed;
+    background-color: #fff;
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, .1);
+    -webkit-transition: opacity .3s, left .3s, right .3s, top .4s, bottom .3s, -webkit-transform .3s;
+    transition: opacity .3s, left .3s, right .3s, top .4s, bottom .3s, -webkit-transform .3s;
+    transition: opacity .3s, transform .3s, left .3s, right .3s, top .4s, bottom .3s;
+    transition: opacity .3s, transform .3s, left .3s, right .3s, top .4s, bottom .3s, -webkit-transform .3s;
+    overflow: hidden;
+    bottom: 6px;
+    right:-400px;
+}
+.el-notification {
+    width: 400px;
+    padding: 0;
+    box-shadow:0px 6px 16px 0px rgba(64,93,160,0.24);
+    border-radius:4px;
+}
+.el-notification.right {
+    right: 0px;
+    z-index: 2000;
+}
+.el-notification__group {
+    margin-left: 0;
+}
+
+.el-notification__title {
+    width: 400px;
+    height: 40px;
+    line-height: 40px;
+    background:rgba(87,89,98,1);
+    color: #ffffff;
+    font-size: 16px;
+    text-indent: 25px;
+}
+.el-notification__content {
+    margin: 0;
+}
+.el-notification__content {
+    font-size: 14px;
+    line-height: 21px;
+    color: #606266;
+    text-align: justify;
+}
+.el-notification__content .upload-file-item {
+    height: 50px;
+    line-height: 50px;
+    border: 1px  solid #E6EAF4;
+    position: relative;
+}
+.el-notification__content .upload-file-proccess{
+    width:50%;
+    height:50px;
+    background:rgba(231,244,255,1);
+    position: absolute;
+    top: 0px;
+    left: 0px;
+}
+.el-notification__content .upload-file-des{
+    width:100%;
+    height:50px;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    margin-left: 20px;
+}
+.el-notification__content .upload-file-des .fileName{
+    color: #575962;
+    font-size: 14px;
+    max-width: 56%;
+}
+.el-notification__content .upload-file-des .fileSize{
+    color: #575962;
+    font-size: 14px;
+    margin-right: 25px;
+}
+.el-notification__content .upload-file-des .ag{
+    font-size: 25px;
+}
+.notificationCloseBtn{
+    position: absolute;
+    top: 11px;
+    right: 17px;
+    cursor: pointer;
+    color: #909399;
+    font-size: 20px;
+}
+.el-notification img{
+    vertical-align: middle;
+}
+/*上传文件进度提示 end */
+
+.noFileData{
+    text-align: center;
+    margin-top: 25px
+}

@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by yinlf    2019-08-31 10:58:09 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.data.exchange.mapper.aplanmis.ApplyProjMapper">
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns">
+        DFSJZJ  dfsjzj,
+        XZQHDM  xzqhdm,
+        XMDM  xmdm,
+        XMMC  xmmc,
+        GCDM  gcdm,
+        GCFW  gcfw,
+        QJDGCDM  qjdgcdm,
+        XMTZLY  xmtzly,
+        TDHQFS  tdhqfs,
+        TDSFDSJFA  tdsfdsjfa,
+        SFWCQYPG  sfwcqypg,
+        SPLCLX  splclx,
+        LXLX  lxlx,
+        GCFL  gcfl,
+        JSXZ  jsxz,
+        XMZJSX  xmzjsx,
+        GBHYDMFBND  gbhydmfbnd,
+        GBHY  gbhy,
+        NKGSJ  nkgsj,
+        NJCSJ  njcsj,
+        XMSFWQBJ  xmsfwqbj,
+        XMWQBJSJ  xmwqbjsj,
+        ZTZE  ztze,
+        JSDDXZQH  jsddxzqh,
+        JSDD  jsdd,
+        XMJSDDX  xmjsddx,
+        XMJSDDY  xmjsddy,
+        JSGMJNR  jsgmjnr,
+        YDMJ  ydmj,
+        JZMJ  jzmj,
+        SBSJ  sbsj,
+        SPLCBM  splcbm,
+        SPLCBBH  splcbbh,
+        SJYXBS  sjyxbs
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getSpglXmjbxxbByDfsjzj" resultType="SpglXmjbxxb">
+        select
+        <include refid="allColumns"/>
+        from SPGL_XMJBXXB_VIEW
+        where DFSJZJ = #{dfsjzj}
+    </select>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getSpglXmjbxxbByXzqhdmAndGcdM" resultType="SpglXmjbxxb">
+        select
+        <include refid="allColumns"/>
+        from SPGL_XMJBXXB_VIEW
+        where XZQHDM = #{xzqhdm} AND GCDM = #{gcdm}
+    </select>
+
+    <select id="listSpglXmjbxxbByTimeRange" resultType="SpglXmjbxxb">
+        select
+        <include refid="allColumns"/>
+        from SPGL_XMJBXXB_VIEW
+        <where>
+            <if test="startTime != null">
+                AND MODIFY_TIME &gt;= #{startTime}
+            </if>
+            <if test="endTime != null">
+                AND MODIFY_TIME &lt; #{endTime}
+            </if>
+        </where>
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listSpglXmjbxxb" resultType="SpglXmjbxxb">
+        select
+        <include refid="allColumns"/>
+        from SPGL_XMJBXXB_VIEW
+        <where>
+            <if test="dfsjzj != null">
+                AND DFSJZJ = #{dfsjzj}
+            </if>
+            <if test="xzqhdm != null">
+                AND XZQHDM = #{xzqhdm}
+            </if>
+            <if test="xmdm != null">
+                AND XMDM = #{xmdm}
+            </if>
+            <if test="xmmc != null">
+                AND XMMC = #{xmmc}
+            </if>
+            <if test="gcdm != null">
+                AND GCDM = #{gcdm}
+            </if>
+            <if test="gcfw != null">
+                AND GCFW = #{gcfw}
+            </if>
+            <if test="qjdgcdm != null">
+                AND QJDGCDM = #{qjdgcdm}
+            </if>
+            <if test="xmtzly != null">
+                AND XMTZLY = #{xmtzly}
+            </if>
+            <if test="tdhqfs != null">
+                AND TDHQFS = #{tdhqfs}
+            </if>
+            <if test="tdsfdsjfa != null">
+                AND TDSFDSJFA = #{tdsfdsjfa}
+            </if>
+            <if test="sfwcqypg != null">
+                AND SFWCQYPG = #{sfwcqypg}
+            </if>
+            <if test="splclx != null">
+                AND SPLCLX = #{splclx}
+            </if>
+            <if test="lxlx != null">
+                AND LXLX = #{lxlx}
+            </if>
+            <if test="gcfl != null">
+                AND GCFL = #{gcfl}
+            </if>
+            <if test="jsxz != null">
+                AND JSXZ = #{jsxz}
+            </if>
+            <if test="xmzjsx != null">
+                AND XMZJSX = #{xmzjsx}
+            </if>
+            <if test="gbhydmfbnd != null">
+                AND GBHYDMFBND = #{gbhydmfbnd}
+            </if>
+            <if test="gbhy != null">
+                AND GBHY = #{gbhy}
+            </if>
+            <if test="nkgsj != null">
+                AND NKGSJ = #{nkgsj}
+            </if>
+            <if test="njcsj != null">
+                AND NJCSJ = #{njcsj}
+            </if>
+            <if test="xmsfwqbj != null">
+                AND XMSFWQBJ = #{xmsfwqbj}
+            </if>
+            <if test="xmwqbjsj != null">
+                AND XMWQBJSJ = #{xmwqbjsj}
+            </if>
+            <if test="ztze != null">
+                AND ZTZE = #{ztze}
+            </if>
+            <if test="jsddxzqh != null">
+                AND JSDDXZQH = #{jsddxzqh}
+            </if>
+            <if test="jsdd != null">
+                AND JSDD = #{jsdd}
+            </if>
+            <if test="xmjsddx != null">
+                AND XMJSDDX = #{xmjsddx}
+            </if>
+            <if test="xmjsddy != null">
+                AND XMJSDDY = #{xmjsddy}
+            </if>
+            <if test="jsgmjnr != null">
+                AND JSGMJNR = #{jsgmjnr}
+            </if>
+            <if test="ydmj != null">
+                AND YDMJ = #{ydmj}
+            </if>
+            <if test="jzmj != null">
+                AND JZMJ = #{jzmj}
+            </if>
+            <if test="sbsj != null">
+                AND SBSJ = #{sbsj}
+            </if>
+            <if test="splcbm != null">
+                AND SPLCBM = #{splcbm}
+            </if>
+            <if test="splcbbh != null">
+                AND SPLCBBH = #{splcbbh}
+            </if>
+            <if test="sjyxbs != null">
+                AND SJYXBS = #{sjyxbs}
+            </if>
+        </where>
+    </select>
+</mapper>

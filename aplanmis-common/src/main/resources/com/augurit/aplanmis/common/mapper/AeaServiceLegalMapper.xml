@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by tiantian    2018-10-20 10:50:57 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaServiceLegalMapper" >
+
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns" >
+        LEGAL_ID  legalId,
+        LEGAL_NAME  legalName,
+        LEGAL_LEVEL  legalLevel,
+        BASIC_NO  basicNo,
+        ISSUE_ORG  issueOrg,
+        EXE_DATE  exeDate,
+        UPDATE_DATE  updateDate,
+        SERVICE_LEGAL_ATT  serviceLegalAtt,
+        SERVICE_LEGAL_MEMO  serviceLegalMemo,
+        PARENT_LEGAL_ID  parentLegalId,
+        LEGAL_SEQ  legalSeq,
+        CREATER  creater,
+        CREATE_TIME  createTime,
+        MODIFIER  modifier,
+        MODIFY_TIME  modifyTime,
+        ROOT_ORG_ID   rootOrgId
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaServiceLegalById" resultType="AeaServiceLegal" >
+        select
+            <include refid="allColumns"/>
+        from  AEA_SERVICE_LEGAL
+        where LEGAL_ID = #{id}
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaServiceLegal" resultType="AeaServiceLegal" >
+        select
+        <include refid="allColumns"/>
+        from    AEA_SERVICE_LEGAL
+    <where>
+        <if test="legalId != null" >
+        AND    LEGAL_ID = #{legalId}
+        </if>
+        <if test="legalName != null" >
+        AND    LEGAL_NAME = #{legalName}
+        </if>
+        <if test="legalLevel != null" >
+        AND    LEGAL_LEVEL = #{legalLevel}
+        </if>
+        <if test="basicNo != null" >
+        AND    BASIC_NO = #{basicNo}
+        </if>
+        <if test="issueOrg != null" >
+        AND    ISSUE_ORG = #{issueOrg}
+        </if>
+        <if test="exeDate != null" >
+        AND    EXE_DATE = #{exeDate}
+        </if>
+        <if test="updateDate != null" >
+        AND    UPDATE_DATE = #{updateDate}
+        </if>
+        <if test="serviceLegalAtt != null" >
+        AND    SERVICE_LEGAL_ATT = #{serviceLegalAtt}
+        </if>
+        <if test="serviceLegalMemo != null" >
+        AND    SERVICE_LEGAL_MEMO = #{serviceLegalMemo}
+        </if>
+        <if test="parentLegalId != null" >
+        AND    PARENT_LEGAL_ID = #{parentLegalId}
+        </if>
+        <if test="legalSeq != null" >
+        AND    LEGAL_SEQ = #{legalSeq}
+        </if>
+        <if test="rootOrgId != null" >
+        AND    ROOT_ORG_ID = #{rootOrgId}
+        </if>
+    </where>
+    </select>
+
+<!--5 新增实体对象 -->
+<insert id="insertAeaServiceLegal" parameterType="AeaServiceLegal" >
+    insert into AEA_SERVICE_LEGAL (
+        LEGAL_ID  ,
+        LEGAL_NAME  ,
+        LEGAL_LEVEL  ,
+        BASIC_NO  ,
+        ISSUE_ORG  ,
+        EXE_DATE  ,
+        UPDATE_DATE  ,
+        SERVICE_LEGAL_ATT  ,
+        SERVICE_LEGAL_MEMO  ,
+        PARENT_LEGAL_ID  ,
+        LEGAL_SEQ,
+        CREATER,
+        CREATE_TIME,
+        MODIFIER,
+        MODIFY_TIME,
+        ROOT_ORG_ID
+    )  values  (
+        #{legalId},
+        #{legalName},
+        #{legalLevel},
+        #{basicNo},
+        #{issueOrg},
+        #{exeDate},
+        #{updateDate},
+        #{serviceLegalAtt},
+        #{serviceLegalMemo},
+        #{parentLegalId},
+        #{legalSeq},
+        #{creater},
+        #{createTime},
+        #{modifier},
+        #{modifyTime},
+        #{rootOrgId}
+
+    )
+</insert>
+
+<!--6 修改实体对象 -->
+<update id="updateAeaServiceLegal" parameterType="AeaServiceLegal" >
+    update AEA_SERVICE_LEGAL
+    <set >
+        <if test="legalId != null" >
+        LEGAL_ID = #{legalId},
+        </if>
+        <if test="legalName != null" >
+        LEGAL_NAME = #{legalName},
+        </if>
+        <if test="legalLevel != null" >
+        LEGAL_LEVEL = #{legalLevel},
+        </if>
+        <if test="basicNo != null" >
+        BASIC_NO = #{basicNo},
+        </if>
+        <if test="issueOrg != null" >
+        ISSUE_ORG = #{issueOrg},
+        </if>
+        <if test="exeDate != null" >
+        EXE_DATE = #{exeDate},
+        </if>
+        <if test="updateDate != null" >
+        UPDATE_DATE = #{updateDate},
+        </if>
+        <if test="serviceLegalAtt != null" >
+        SERVICE_LEGAL_ATT = #{serviceLegalAtt},
+        </if>
+        <if test="serviceLegalMemo != null" >
+        SERVICE_LEGAL_MEMO = #{serviceLegalMemo},
+        </if>
+        <if test="parentLegalId != null" >
+        PARENT_LEGAL_ID = #{parentLegalId},
+        </if>
+        <if test="legalSeq != null" >
+        LEGAL_SEQ = #{legalSeq},
+        </if>
+        <if test="creater != null" >
+        CREATER = #{creater},
+        </if>
+        <if test="createTime != null" >
+        CREATE_TIME = #{createTime},
+        </if>
+        <if test="modifier != null" >
+        MODIFIER = #{modifier},
+        </if>
+        <if test="modifyTime != null" >
+        MODIFY_TIME = #{modifyTime},
+        </if>
+        <if test="rootOrgId != null" >
+        ROOT_ORG_ID = #{rootOrgId},
+        </if>
+    </set>
+    where LEGAL_ID = #{legalId}
+</update>
+
+    <!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaServiceLegal">
+        delete from   AEA_SERVICE_LEGAL where LEGAL_ID = #{id}
+    </delete>
+
+    <select id="listOtherLegalByLegalId" resultType="AeaServiceLegal">
+        select
+            <include refid="allColumns"/>
+        from  AEA_SERVICE_LEGAL
+        <where>
+            and ROOT_ORG_ID = #{rootOrgId}
+            and LEGAL_SEQ not like CONCAT(CONCAT('%.', #{id}), '.%')
+        </where>
+        order by CREATE_TIME asc
+    </select>
+
+    <select id="listAllRelChildLegal" resultType="AeaServiceLegal">
+        select
+            <include refid="allColumns"/>
+        from  AEA_SERVICE_LEGAL
+        <where>
+            and LEGAL_ID != #{id}
+            and ROOT_ORG_ID = #{rootOrgId}
+            and LEGAL_SEQ like CONCAT(CONCAT('%.', #{id}), '.%')
+        </where>
+        order by CREATE_TIME asc
+    </select>
+
+    <!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaServiceLegal" id="AeaServiceLegalMap">
+        <id property="legalId" column="LEGAL_ID"/>
+        <result property="legalName" column="LEGAL_NAME"/>
+        <result property="legalLevel" column="LEGAL_LEVEL"/>
+        <result property="basicNo" column="BASIC_NO"/>
+        <result property="issueOrg" column="ISSUE_ORG"/>
+        <result property="exeDate" column="EXE_DATE"/>
+        <result property="updateDate" column="UPDATE_DATE"/>
+        <result property="serviceLegalAtt" column="SERVICE_LEGAL_ATT"/>
+        <result property="serviceLegalMemo" column="SERVICE_LEGAL_MEMO"/>
+        <result property="parentLegalId" column="PARENT_LEGAL_ID"/>
+        <result property="legalSeq" column="LEGAL_SEQ"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="modifier" column="MODIFIER"/>
+        <result property="modifyTime" column="MODIFY_TIME"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+    </resultMap>
+
+</mapper>

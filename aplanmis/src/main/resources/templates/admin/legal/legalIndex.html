@@ -1,0 +1,156 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>法律法规/条款</title>
+  <link rel="stylesheet" href="../../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.css" th:href="@{/agcloud/framework/js-lib/element-2/element.css}" />
+  <link rel="stylesheet" href="../../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css" th:href="@{/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css}">
+  <link rel="stylesheet" href="../../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/ui-private/default/common/css/layout.css" th:href="@{/agcloud/framework/ui-private/default/common/css/layout.css}">
+  <link rel="stylesheet" href="../../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/ui-private/default/blue/css/theme.css" th:href="@{/agcloud/framework/ui-private/default/blue/css/theme.css}">
+  <link rel="stylesheet" href="../../../static/admin/legal/css/legalIndex.css" th:href="@{/admin/legal/css/legalIndex.css}">
+  <script>
+    var ctx = '[[@{/}]]';
+      // var ctx = 'http://192.168.30.120:8083/aplanmis-front/';
+      // var ctx = 'http://192.168.32.2:8083/aplanmis-front/';
+    </script>
+</head>
+
+<body>
+  <div class='loading' v-if="pageLoading">
+    <div class="tips">
+      <i class="el-icon-loading"></i>
+      <p>请稍后</p>
+    </div>
+  </div>
+  <div id="app" v-cloak>
+    <div class='certLibrary'>
+      <p class="title">法律法规/条款</p>
+      <div class="btns">
+        <el-input placeholder="请输入关键字..." v-model="keyword2" class="input-with-select" style='width:300px;'>
+        </el-input>
+        <!-- <el-button type="primary" size='medium'>查询</el-button> -->
+        <el-button size='medium' style="margin-left: 5px" @click="keyword2=''">清空</el-button>
+        <el-button size='medium' @click="unfold">展开</el-button>
+        <el-button size='medium' @click="fold">折叠</el-button>
+      </div>
+      <el-tree :data="regionData" class="filter-tree tree1" default-expand-all :expand-on-click-node="false" highlight-current :style="{height:treeLeftHeight+'px',overflow: 'auto'}" :filter-node-method="filterNodeOrg" node-key="id" @node-contextmenu="treeNodeRightClick" @node-click="regionTreeNode" ref="Tree">
+        <span class="custom-tree-node" slot-scope="scope">
+          <span style="display:flex;">
+            <i :class="scope.data.type=='legal'||scope.data.type=='root'?'folder'
+                :'file'" class="icon"></i><span>{{scope.data.label}}</span>
+          </span>
+        </span>
+      </el-tree>
+    </div>
+    <!--左侧树右键展开-->
+    <div class="right-click-opt" v-show="showRightClick" @mouseleave="showRightClick=false">
+      <p @click="addType(leftSelNodeData);showRightSlider=true;item='law'" v-if="notLaw"><i class="el-icon-circle-plus-outline"></i>&nbsp;新增法律法规</p>
+      <p @click="addClause(leftSelNodeData);showRightSlider=true;item='clause';" v-if="notRoot"><i class="el-icon-circle-plus-outline"></i>&nbsp;新增条款</p>
+      <p @click="editLaw(leftSelNodeData);showRightSlider=true;item='law'" v-if="notRoot"><i class="el-icon-edit-outline"></i>&nbsp;编辑法律法规</p>
+      <p @click="delateLaw(leftSelNodeData)" v-if="notRoot"><i class="el-icon-delete"></i>&nbsp;删除法律法规</p>
+      <p @click="editClause(leftSelNodeData);showRightSlider=true;item='clause';" v-if="!notRoot&&!notLaw"><i class="el-icon-edit-outline"></i>&nbsp;编辑条款</p>
+      <p @click="delateClause(leftSelNodeData)" v-if="!notRoot&&!notLaw"><i class="el-icon-delete"></i>&nbsp;删除条款</p>
+    </div>
+    <!-- 弹出层 -->
+    <div class="right-sidebar" :class="showRightSlider?'show':''">
+      <div class="right-sidebar-content">
+        <div v-if="item=='law'">
+          <p class="label">{{lawLabel}}</p>
+          <el-form label-position="right" label-width="120px" :model="formData" ref="form" :rules="rules" :inline='true'>
+            <el-form-item prop="" v-show='false'>
+              <el-input v-model="formData.legalId"></el-input>
+            </el-form-item>
+            <el-form-item prop="" v-show='false'>
+              <el-input v-model="formData.parentLegalId"></el-input>
+            </el-form-item>
+            <el-form-item label="法律法规名称" prop="legalName">
+              <el-input v-model="formData.legalName" placeholder="" style="width:390px;"></el-input>
+            </el-form-item>
+            <el-form-item label="法律法规层级" prop="legalLevel">
+              <el-input v-model="formData.legalLevel" placeholder="" style="width:390px;"></el-input>
+            </el-form-item>
+            <el-form-item label="依据文号" prop="basicNo">
+              <el-input v-model="formData.basicNo" placeholder="" style="width:390px;"></el-input>
+            </el-form-item>
+            <el-form-item label="颁发机构" prop="issueOrg">
+              <el-input v-model="formData.issueOrg" placeholder="" style="width:390px;"></el-input>
+            </el-form-item>
+            <el-form-item label="实施日期" prop="exeDate">
+              <el-date-picker v-model="formData.exeDate" format="yyyy-MM-dd" value-format="timestamp" type="date" placeholder="选择日期" style="width:390px;">
+              </el-date-picker>
+            </el-form-item>
+            <el-form-item label="法律法规文件" prop="serviceLegalAttFile">
+              <el-upload class="upload-demo" action="" :on-change="enclosureFileSelectChange" :file-list="fileList" name="mapAttFile" multiple :show-file-list="false" :auto-upload="false" style="width:350px">
+                <el-button size="small" type="primary">点击上传</el-button>
+              </el-upload>
+              <ul class="pjfile-list">
+                <li v-for="(item, index) in fileList" :key="index"><i class="el-icon-document"></i> {{item.attName?item.attName:item.name}}
+                  <div class="attBtn">
+                    <a href="javascript:;" @click="deleteLawAttr(item)">删除</a>
+                    <a href="javascript:;" @click="previewAttr(item)" v-if="isEdit && item.attFormat=='png'||item.attFormat=='jpg'||item.attFormat=='jpeg'||item.attFormat=='gpe'||item.attFormat=='gif'"> 预览</a>
+                    <a href="javascript:;" @click="downloadAttr(item)" v-else-if="isEdit">下载</a>
+                  </div>
+                </li>
+              </ul>
+            </el-form-item>
+            <el-form-item label="备注" prop="serviceLegalMemo">
+              <el-input v-model="formData.serviceLegalMemo" rows='8' type="textarea" placeholder="" style="width:390px;"></el-input>
+            </el-form-item>
+          </el-form>
+          <div class="silder-footer">
+            <el-button type="primary" size='medium' @click="lawSave()">保存</el-button>
+            <el-button size='medium' @click="showRightSlider=false">取消</el-button>
+          </div>
+        </div>
+        <div v-if="item=='clause'">
+          <p class="label">{{clauseLabel}}</p>
+          <el-form label-position="right" label-width="120px" :model="formData2" ref="form2" :rules="rules2" :inline='true'>
+            <el-form-item prop="" v-show='false'>
+              <el-input v-model="formData2.legalId"></el-input>
+            </el-form-item>
+            <el-form-item prop="" v-show='false'>
+              <el-input v-model="formData2.legalClauseId"></el-input>
+            </el-form-item>
+            <el-form-item label="条款号" prop="clauseTitle">
+              <el-input v-model="formData2.clauseTitle" placeholder="" style="width:390px;"></el-input>
+            </el-form-item>
+            <el-form-item label="条款具体内容" prop="clauseContent">
+              <el-input v-model="formData2.clauseContent" placeholder="" rows='8' type="textarea" style="width:390px;"></el-input>
+            </el-form-item>
+            <el-form-item label="条款内容附件" prop="clauseAttFile">
+              <el-upload class="upload-demo" action="" :on-change="enclosureFileSelectChange2" :file-list="fileList2" name="mapAttFile" multiple :show-file-list="false" :auto-upload="false" style="width:350px">
+                <el-button size="small" type="primary">点击上传</el-button>
+              </el-upload>
+              <ul class="pjfile-list">
+                <li v-for="(item, index) in fileList2" :key="index"><i class="el-icon-document"></i> {{item.attName?item.attName:item.name}}
+                  <div class="attBtn">
+                    <a href="javascript:;" @click="deleteClauseAttr(item)">删除</a>
+                    <a href="javascript:;" @click="previewAttr(item)" v-if="isEdit && item.attFormat=='png'||item.attFormat=='jpg'||item.attFormat=='jpeg'||item.attFormat=='gpe'||item.attFormat=='gif'"> 预览</a>
+                    <a href="javascript:;" @click="downloadAttr(item)" v-else-if="isEdit">下载</a>
+                  </div>
+                </li>
+              </ul>
+            </el-form-item>
+            <el-form-item label="排序" prop="sortNo">
+              <el-input v-model="formData2.sortNo" placeholder="" style="width:390px;"></el-input>
+            </el-form-item>
+          </el-form>
+          <div class="silder-footer">
+            <el-button type="primary" size='medium' @click="clauseSave">保存</el-button>
+            <el-button size='medium' @click="showRightSlider=false">取消</el-button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="right-sidebar-overlay" v-show="showRightSlider" @click="showRightSlider = false"></div>
+  </div>
+  <script src="../../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js" th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>
+  <script src="../../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js" th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
+  <script src="../../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js" th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
+  <script src="../../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js" th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>
+  <script type="text/javascript" src="../../../static/admin/legal/js/legalIndex.js" th:src="@{/admin/legal/js/legalIndex.js}"></script>
+</body>
+
+</html>

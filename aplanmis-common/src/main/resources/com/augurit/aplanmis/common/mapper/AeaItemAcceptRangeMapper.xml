@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by Augurit    2018-10-11 16:38:05 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaItemAcceptRangeMapper" >
+
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns" >
+        ID  id,
+        ITEM_BASIC_ID  itemBasicId,
+        SQR  sqr,
+        SQNR  sqnr,
+        SQTJ  sqtj,
+        DATA_ID  dataId,
+        CREATER  creater,
+        CREATE_TIME  createTime,
+        MODIFIER  modifier,
+        MODIFY_TIME  modifyTime,
+        SSML  ssml,
+        BMFL  bmfl
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaItemAcceptRangeById" resultType="AeaItemAcceptRange" >
+        select
+        <include refid="allColumns"/>
+        from    AEA_ITEM_ACCEPT_RANGE
+        where    ID = #{id}
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaItemAcceptRange" resultType="AeaItemAcceptRange" >
+        select
+        <include refid="allColumns"/>
+        from    AEA_ITEM_ACCEPT_RANGE
+        <where>
+            <if test="id != null" >
+            AND    ID = #{id}
+            </if>
+            <if test="itemBasicId != null" >
+            AND    ITEM_BASIC_ID = #{itemBasicId}
+            </if>
+            <if test="sqr != null" >
+            AND    SQR = #{sqr}
+            </if>
+            <if test="sqnr != null" >
+            AND    SQNR = #{sqnr}
+            </if>
+            <if test="sqtj != null" >
+            AND    SQTJ = #{sqtj}
+            </if>
+            <if test="dataId != null" >
+            AND    DATA_ID = #{dataId}
+            </if>
+            <if test="creater != null" >
+            AND    CREATER = #{creater}
+            </if>
+            <if test="createTime != null" >
+            AND    CREATE_TIME = #{createTime}
+            </if>
+            <if test="modifier != null" >
+            AND    MODIFIER = #{modifier}
+            </if>
+            <if test="modifyTime != null" >
+            AND    MODIFY_TIME = #{modifyTime}
+            </if>
+            <if test="ssml != null" >
+            AND    SSML = #{ssml}
+            </if>
+            <if test="bmfl != null" >
+            AND    BMFL = #{bmfl}
+            </if>
+        </where>
+    </select>
+<!--4 根据条件查询实体list,返回分页对象 -->
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaItemAcceptRange" parameterType="AeaItemAcceptRange" >
+        insert into AEA_ITEM_ACCEPT_RANGE (
+        ID  ,ITEM_BASIC_ID,SQR  ,SQNR  ,SQTJ  ,DATA_ID  ,CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME  ,SSML  ,BMFL
+            )  values  (
+        #{id,jdbcType=VARCHAR},#{itemBasicId,jdbcType=VARCHAR},#{sqr,jdbcType=CLOB},#{sqnr,jdbcType=CLOB},#{sqtj,jdbcType=CLOB},#{dataId,jdbcType=VARCHAR},#{creater,jdbcType=VARCHAR},#{createTime,jdbcType=DATE},#{modifier,jdbcType=VARCHAR},#{modifyTime,jdbcType=DATE},#{ssml,jdbcType=VARCHAR},#{bmfl,jdbcType=VARCHAR}
+            )
+    </insert>
+
+    <!--6 修改实体对象 -->
+    <update id="updateAeaItemAcceptRange" parameterType="AeaItemAcceptRange" >
+        update AEA_ITEM_ACCEPT_RANGE
+        <set >
+            <if test="id != null" >
+            ID = #{id},
+            </if>
+            <if test="itemBasicId != null" >
+            ITEM_BASIC_ID = #{itemBasicId},
+            </if>
+            <if test="sqr != null" >
+            SQR = #{sqr},
+            </if>
+            <if test="sqnr != null" >
+            SQNR = #{sqnr},
+            </if>
+            <if test="sqtj != null" >
+            SQTJ = #{sqtj},
+            </if>
+            <if test="dataId != null" >
+            DATA_ID = #{dataId},
+            </if>
+            <if test="creater != null" >
+            CREATER = #{creater},
+            </if>
+            <if test="createTime != null" >
+            CREATE_TIME = #{createTime},
+            </if>
+            <if test="modifier != null" >
+            MODIFIER = #{modifier},
+            </if>
+            <if test="modifyTime != null" >
+            MODIFY_TIME = #{modifyTime},
+            </if>
+            <if test="ssml != null" >
+            SSML = #{ssml},
+            </if>
+            <if test="bmfl != null" >
+            BMFL = #{bmfl},
+            </if>
+        </set>
+        where ID = #{id}
+    </update>
+
+    <!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaItemAcceptRange">
+        delete from   AEA_ITEM_ACCEPT_RANGE where ID = #{id}
+    </delete>
+
+    <!--8 根据事项ID查询单个实体 -->
+    <select id="getAeaItemAcceptRangeByItemBasicId" resultType="AeaItemAcceptRange" >
+        select
+        <include refid="allColumns"/>
+        from    AEA_ITEM_ACCEPT_RANGE
+        where    ITEM_BASIC_ID = #{itemBasicId}
+    </select>
+
+</mapper>

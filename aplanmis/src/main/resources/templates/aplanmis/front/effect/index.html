@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>效能督查</title>
+    <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/ui-private/common/element-2/element.css" th:href="@{/agcloud/framework/ui-private/common/element-2/element.css}">
+    <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/ui-private/default/common/css/layout.css" th:href="@{/agcloud/framework/ui-private/default/common/css/layout.css}">
+
+    <link rel="stylesheet" href="/aplanmis/front/effect/css/effect.css" th:href="@{/aplanmis/front/effect/css/effect.css}">
+    <style>
+        .flow_steps{
+            float: left;
+            width: 170px;
+        }
+        .el-table .cell {
+            display: block;
+        }
+        .stage{
+            margin-bottom: 0;
+        }
+        .stage li{
+            padding: 0px 4px 0  14px;
+            line-height: 26px;
+            background: #e2e2e2;
+            display:inline-block;
+            color: #fff;
+            position: relative;
+            margin-right: 1px;
+        }
+        .stage li:after{
+            content: '';
+            display: block;
+            border-top: 13px solid transparent;
+            border-bottom: 13px solid transparent;
+            border-left: 13px solid #e2e2e2;
+            position: absolute;
+            right: -13px;
+            top: 0;
+            z-index: 10;
+        }
+        .stage li:before{
+            content: '';
+            display: block;
+            border-top: 13px solid transparent;
+            border-bottom: 13px solid transparent;
+            border-left: 13px solid #fff;
+            position: absolute;
+            left: 0px;
+            top: 0;
+        }
+
+        .stage li:first-child{
+            border-radius: 4px 0 0 4px;
+        }
+        .stage li:last-child,.stageEnd{
+            border-radius: 0px 4px 4px 0px;
+            padding-right: 12px;
+        }
+        .stage li:first-child:before{
+            display: none;
+        }
+        .stage li.stage-success{
+            background: #34bfa3;
+        }
+        .stage li.stage-success:after{
+            border-left: 13px solid #34bfa3;
+        }
+        .stage li.current{
+            background: #36a3f7;
+        }
+        .stage li.current:after{
+            content: '';
+            display: block;
+            border-top: 13px solid transparent;
+            border-bottom: 13px solid transparent;
+            border-left: 13px solid #36a3f7;
+            position: absolute;
+            right: -13px;
+            top: 0;
+            z-index: 10;
+        }
+        .stage li:last-child:after,.stage li.current.stageEnd:after{
+            display: none;
+        }
+        .stage li.current.stageEnd:after{
+        }
+        .stage .item{
+            background-color:#36a3f7;
+            border-radius: 4px!important;
+            line-height: 18px;
+            padding: 6px 2px 6px 12px;
+        }
+    </style>
+    <script th:inline="javascript">
+        var ctx = [[@{/}]];
+    </script>
+</head>
+<body>
+<div id="index" v-cloak style="padding:15px" v-loading="tableLoading">
+    <div class="status-card clearfix" >
+        <div class="status-card-item"
+             v-for="(item, index) in statusCardData"
+             @click="changeTableData(item, index)"
+             :class="item.statusClass?item.statusClass:'waiting1-status'">
+            <span>{{item.name}}</span>
+            <img class="fr" :src="ctx+item.imgSrc" alt="">
+            <p class="me-count">{{item.count}}</p>
+        </div>
+    </div>
+
+    <div class="table-content" :style="{height: curHeight - 36 +'px'}">
+        <p class="status-sel-name">{{selStatus}}</p>
+        <div style="margin-bottom: 15px;width: 25%;float:right">
+            <el-input placeholder="请输入查询内容"  class="input-with-select" v-model="keyword">
+                <el-button slot="append" icon="el-icon-search" @click="searchTableData"></el-button>
+            </el-input>
+        </div>
+
+        <div style="margin-top: 10px;">
+            <el-table style="width: 100%" :data="listTableData.list" >
+                <el-table-column type=index
+                        prop="index"
+                        label="序号"
+                        width="50">
+                </el-table-column>
+                <el-table-column
+                        prop="applyinstCode"
+                        label="申报流水号"
+                        width="170">
+                </el-table-column>
+                <el-table-column
+                        prop="projName"
+                        label="项目名称">
+                </el-table-column>
+                <el-table-column
+                        prop="applyinstSource"
+                        label="申报来源"
+                        width="120">
+                </el-table-column>
+                <!--<el-table-column
+                        prop="linkMan"
+                        label="申请人"
+                        width="100">
+                </el-table-column>-->
+                <el-table-column
+                        prop="isSeriesApprove"
+                        label="类型"
+                        width="80">
+                </el-table-column>
+                <el-table-column
+                        prop="taskName"
+                        label="当前节点"
+                        width="80">
+                </el-table-column>
+                <el-table-column
+                        prop="iteminstStageName"
+                        label="阶段/事项/辅线名称"
+                        width="170">
+                    <template slot-scope="scope">
+                        <div class="flow_steps" v-if="scope.row.isSeriesApprove=='并联'&& scope.row.iteminstStageName.indexOf('立项用地')!=-1">
+                            <ul class="stage">
+                                <li class="current">立项用地</li>
+                                <li>&nbsp;</li>
+                                <li>&nbsp;</li>
+                                <li>&nbsp;</li>
+                            </ul>
+                        </div>
+                        <div class="flow_steps" v-if="scope.row.isSeriesApprove=='并联' && scope.row.iteminstStageName.indexOf('工程建设')!=-1">
+                            <ul class="stage">
+                                <li>&nbsp;</li>
+                                <li class="current">工程建设</li>
+                                <li>&nbsp;</li>
+                                <li>&nbsp;</li>
+                            </ul>
+                        </div>
+                        <div class="flow_steps" v-if="scope.row.isSeriesApprove=='并联' && scope.row.iteminstStageName.indexOf('施工许可')!=-1">
+                            <ul class="stage">
+                                <li>&nbsp;</li>
+                                <li>&nbsp;</li>
+                                <li class="current">施工许可</li>
+                                <li>&nbsp;</li>
+                            </ul>
+                        </div>
+                        <div class="flow_steps" v-if="scope.row.isSeriesApprove=='并联' && scope.row.iteminstStageName.indexOf('竣工验收')!=-1">
+                            <ul class="stage">
+                                <li>&nbsp;</li>
+                                <li>&nbsp;</li>
+                                <li>&nbsp;</li>
+                                <li class="current">竣工验收</li>
+                            </ul>
+                        </div>
+                        <div v-if="scope.row.isSeriesApprove=='并联'
+                            && scope.row.iteminstStageName.indexOf('立项用地')==-1
+                            && scope.row.iteminstStageName.indexOf('工程建设')==-1
+                            && scope.row.iteminstStageName.indexOf('施工许可')==-1
+                            && scope.row.iteminstStageName.indexOf('竣工验收')==-1
+                            ">
+                            {{scope.row.iteminstStageName}}
+                        </div>
+                        <div v-if="scope.row.isSeriesApprove=='串联'">
+                            {{scope.row.iteminstStageName}}
+                        </div>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                        prop="approveUserName"
+                        label="审批人"
+                        width="100">
+                </el-table-column>
+                <el-table-column
+                        sortable
+                        prop="applyinstTimeStr"
+                        label="受理时间"
+                        width="180">
+                </el-table-column>
+                <el-table-column
+                        prop="handle_"
+                        label="操作"
+                        width="100">
+                    <template slot-scope="scope">
+                        <el-button icon="el-icon-edit"
+                                size="mini"
+                                @click="handleRemind(scope.$index, scope.row)">督办</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+            <el-pagination background
+                           hide-on-single-page
+                           align="right"
+                           :pager-count="5"
+                           @size-change="handleSizeChange"
+                           @current-change="handleCurrentChange"
+                           :page-sizes="[10, 20, 30, 50]"
+                           :page-size="pageSize"
+                           layout="total,sizes, prev, pager, next, jumper"
+                           :total="listTableData.total">
+            </el-pagination>
+        </div>
+    </div>
+
+    <!-- 督办弹窗 -->
+    <el-dialog :title="handleTitle" :visible.sync="handleDialog" class="handleDialog" width="888px">
+        <div class="sel-box">
+            <div class="sel sel-left">
+                <div class="sel-left-head">
+                    <div class="person person1">
+                        <span>接收人：</span>
+                        <el-select
+                                v-model="recievePeron"
+                                multiple
+                                filterable
+                                allow-create
+                                default-first-option
+                                style="width:430px"
+                                class="personSelect"
+                                :popper-append-to-body="false"
+                                @focus="focus"
+                                :filter-method="filter"
+                                @remove-tag="removeTag"
+                        >
+                            <el-option
+                                    v-for="item in recieveSerch"
+                                    :key="item.userId"
+                                    :label="item.userName"
+                                    :value="item.userId">
+                            </el-option>
+                        </el-select>
+                    </div>
+                    <div class="person person2">
+                        <span>抄送人：</span>
+                        <el-select
+                                v-model="copySendPeron"
+                                multiple
+                                filterable
+                                allow-create
+                                default-first-option
+                                style="width:430px"
+                                class="personSelect"
+                                :popper-append-to-body="false"
+                                @focus="focus2"
+                                :filter-method="filter2"
+                                @remove-tag="removeTag"
+                                :loading="loading"
+                        >
+                            <el-option
+                                    v-for="item in copySendSerch"
+                                    :key="item.userId"
+                                    :label="item.userName"
+                                    :value="item.userId">
+                            </el-option>
+                        </el-select>
+                    </div>
+                </div>
+                <div class="sel-left-body">
+                    <el-input type="textarea" v-model="textarea" class="textarea"></el-input>
+                </div>
+                <div class="sel-left-foot" style="margin-top:10px;">
+                    <el-select v-model="type" placeholder="请选择督办方式">
+                        <el-option label="应用内" value="n"></el-option>
+                        <el-option label="短信" value="m"></el-option>
+                        <el-option label="邮件" value="e"></el-option>
+                    </el-select>
+                    <el-select v-model="level" placeholder="请选择督办等级">
+                        <el-option label="非常紧急" value="u"></el-option>
+                        <el-option label="紧急" value="h"></el-option>
+                        <el-option label="平急" value="l"></el-option>
+                    </el-select><br />
+<!--                    <button type="button" class="btn btn-primary" @click="sendData" style="margin-top:10px;">发送</button>-->
+                    <el-button type="primary" @click="sendData" style="margin-top: 10px">发送</el-button>
+                </div>
+            </div>
+            <div class="sel sel-right">
+                <p>在办人员</p>
+                <el-table :data="tableData" class="scrollable" style="margin-top: 10px;width: 100%;" @selection-change="handleSelectionChange"  highlight-current-row @row-click="handleSelectionChange2"  row-key="id" ref="table" height="380px">
+                    <el-table-column type="selection" align="center" width="40"></el-table-column>
+                    <el-table-column label="全选" align="left">
+                        <template slot-scope="scope">
+                            <i class="el-icon-user-solid"></i>
+                            {{scope.row.userName+' ('+scope.row.procName+'--'+scope.row.taskName+')'}}
+                        </template>
+                    </el-table-column>
+                </el-table>
+            </div>
+        </div>
+
+    </el-dialog>
+</div>
+
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js" th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js" th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}" type="text/javascript"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/ui-private/common/element-2/element.js" th:src="@{/agcloud/framework/ui-private/common/element-2/element.js}" type="text/javascript"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/ui-private/common/js/common.js" th:src="@{/agcloud/framework/ui-private/common/js/common.js}" type="text/javascript"></script>
+
+<script type="text/javascript"  th:src="@{/aplanmis/front/effect/js/effect.js}"></script>
+</body>
+</html>

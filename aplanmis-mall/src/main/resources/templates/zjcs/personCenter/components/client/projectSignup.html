@@ -1,0 +1,761 @@
+<!-- 报名的项目 -->
+<div id="projectSignup" class="box project-singnup-module" v-cloak v-loading.fullscreen.lock="mloading">
+	<h2 class="box-tit">报名的项目</h2>
+	<div class="pandel mt20" v-if="!isSignupProjectInfoPandel">
+		<el-row class="inlineblock-midd">
+			项目名称：
+			<el-input class="w-200 mr20" placeholder="请输入要查询的项目名称" v-model="signupPeojectCheckData.projName"
+			          @keyup.enter.native="checkSignupProjectList">
+			</el-input>
+			选取方式：
+			<el-select placeholder="请选择选取方式" v-model="signupPeojectCheckData.biddingType" :popper-append-to-body="false">
+				<el-option v-for="item in selectionMethodOptions" :key="item.value" :label="item.label"
+				           :value="item.value">
+				</el-option>
+			</el-select>
+			<el-button class="ml20" type="primary" size="medium" @click="checkSignupProjectList">查询</el-button>
+		</el-row>
+		<el-table :data="signupProjectList" class="scrollable mt20" style="width: 100%;"
+		          :header-cell-style="{background:'#f7f8fa'}">
+			<el-table-column prop="projName" label="项目名称" width="200"></el-table-column>
+			<el-table-column prop="basePrice" label="竞价金额（元）"></el-table-column>
+			<el-table-column label="选取方式">
+				<template scope="scope">
+					<span>{{scope.row.biddingType | biddingTypeFormat}}</span>
+				</template>
+			</el-table-column>
+			<el-table-column prop="auditFlag" label="项目状态" :formatter="formatAuditFlag">
+			</el-table-column>
+			<el-table-column label="选取时间" width="160">
+				<template scope="scope">
+					<span>{{scope.row.choiceImunitTime | dateFormat('y-m-d hh:mm:ss') || '暂无'}}</span>
+				</template>
+			</el-table-column>
+			<el-table-column label="操作" width="240">
+				<template scope="scope">
+					<el-button class="line-disabled-btn a-color4879E4" type="text" @click="wantPrice(scope.row)"
+					           :disabled="isShowWantPriceBtn(scope.row)">我要竞价
+					</el-button>
+					<a class="a-color4879E4" href="javascript:;" @click="seeSignupInfo(scope.row)">查看报名</a>
+					<a class="a-color4879E4" href="javascript:;" @click="revokeSignup(scope.row)">撤销报名</a>
+					<!-- <a class="a-color4879E4" href="javascript:;" @click="revokeSignup(scope.row)" v-if="scope.row.auditFlag != '服务完成'">撤销报名</a> -->
+				</template>
+			</el-table-column>
+		</el-table>
+		<el-pagination background align="right" @size-change="signupProjectListSizeChange"
+		               @current-change="signupProjectListPageChange" :page-sizes="[10, 20, 30, 50]"
+		               :page-size="signupPeojectCheckData.pageSize" :current-page="signupPeojectCheckData.pageNum"
+		               layout="total,sizes, prev, pager, next, jumper" :total="signupProjectTotal" v-show="signupProjectTotal>10">
+		</el-pagination>
+	</div>
+	<!-- 当前报名的项目的操作进去的pandel -->
+	<div class="signup-project-info pandel" v-else>
+		<!-- 我要竞价页 -->
+		<div style="width: 100%;" v-if="biddingPriceOrSignupInfoFlag === 1">
+			<!-- 操作 -->
+			<div class="info-header clearfix">
+				<div class="handel text-right fr">
+					<el-button @click="returnSignupProjectList">返回列表</el-button>
+				</div>
+			</div>
+			<!-- 项目竞价title -->
+			<div class="info-title">
+				【项目竞价】{{curSignUpProjectDetail.projName || '无'}}
+			</div>
+
+			<!-- 项目基本信息 （打开agent_item_bidding.html）-->
+			<div class="info-item">
+				<h2 class="item-title active" @click="expandProjectInfoItem"><i class="item-icon"></i>项目基本信息<i
+						class="arrow-icon"></i></h2>
+				<div class="item-detail">
+					<el-row class="mb20">
+						<el-col class="text-right" :span="5">服务事项：</el-col>
+						<el-col class="text-left pl10" :span="19">{{curSignUpProjectDetail.itemName || '无'}}</el-col>
+					</el-row>
+					<el-row class="mb20">
+						<el-col class="text-right" :span="5">事项对应部门：</el-col>
+						<el-col class="text-left pl10" :span="19">{{curSignUpProjectDetail.orgName || '无'}}</el-col>
+					</el-row>
+					<el-row class="mb20">
+						<el-col class="text-right" :span="5">服务类型：</el-col>
+						<el-col class="text-left pl10" :span="19">{{curSignUpProjectDetail.serviceName || '无'}}
+						</el-col>
+					</el-row>
+					<el-row class="mb20">
+						<el-col class="text-right" :span="5">服务时限：</el-col>
+						<el-col class="text-left pl10" :span="19">{{curSignUpProjectDetail.serviceTimeExplain || '无'}}
+						</el-col>
+					</el-row>
+					<el-row class="mb20">
+						<el-col class="text-right" :span="5">服务金额：</el-col>
+						<el-col class="text-left pl10" :span="19">
+							{{curSignUpProjectDetail.basePrice | priceFormat}}
+						</el-col>
+					</el-row>
+				</div>
+			</div>
+
+			<!-- 竞价过程 -->
+			<div class="info-item price-procss">
+				<h2 class="item-title active" @click="expandProjectInfoItem"><i class="item-icon"></i>竞价过程<i
+						class="arrow-icon"></i></h2>
+				<div class="item-detail">
+					<div class="price-show-box">
+						<el-row class="mb20">
+							<el-col class="text-right" :span="8">报名截止时间：</el-col>
+							<el-col class="text-left pl10" :span="16">
+								{{curSignUpProjectDetail.expirationDate | dateFormat('y-m-d hh:mm:ss') ||'无'}}
+							</el-col>
+						</el-row>
+						<el-row class="mb20">
+							<el-col class="text-right" :span="8">当前报名中介：</el-col>
+							<el-col class="text-left pl10" :span="16">
+								<b>{{curSignUpProjectDetail.unitBiddingCount ||'0'}}</b> 家
+							</el-col>
+						</el-row>
+						<el-row class="mb20">
+							<el-col class="text-right" :span="8">当前最低价格：</el-col>
+							<el-col class="text-left pl10" :span="16">{{biddingProcessInfo.priceLowest}}</el-col>
+						</el-row>
+						<el-row class="mb20">
+							<el-col class="text-right" :span="8">当前最高价格：</el-col>
+							<el-col class="text-left pl10" :span="16">{{biddingProcessInfo.priceHighest}}</el-col>
+						</el-row>
+						<el-row class="mb20">
+							<el-col class="text-right" :span="8">你的报价：</el-col>
+							<!--                             <el-col class="text-left pl10" :span="16"><b-->
+							<!--                                     style="color: #fa9931;">{{biddingProcessInfo.youBiddingPrice | priceFormat}}</b></el-col>-->
+							<el-col class="text-left pl10" :span="16"><b
+									style="color: #fa9931;">{{biddingProcessInfo.unitPrice | priceFormat}}</b></el-col>
+
+						</el-row>
+						<el-row class="mb20">
+							<el-col class="text-right" :span="8">温馨提示：</el-col>
+							<el-col class="text-left pl10" :span="16">您还没有报价，若在规定的时间内没有报价，竞价将结束！</el-col>
+						</el-row>
+					</div>
+					<div class="my-price-box">
+						<p class="bidding-rule"><a href="javascript:;" @click="showBiddingPriceRules">竞价规则<i
+								class="help-ico"></i></a></p>
+						<div class="form-group input-money">
+							<label>请输入您本次出价金额</label>
+							<input type="number" class="form-control my-price-inp" v-model="youBiddingPrice"/>
+							<el-button v-if="curHandelRow.biddingType == 1" type="primary ml20" @click="offerAPrice"
+							           :disabled="alreadyPushYouPriceOnce || biddingProcessInfo.unitPrice">
+								确定出价
+							</el-button>
+							<el-button v-else type="primary ml20" @click="offerAPrice">确定出价</el-button>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+		<!-- 查看报名页 -->
+		<div style="width: 100%;" v-else>
+			<!-- 操作 -->
+			<div class="info-header clearfix">
+				<div class="handel text-right fr">
+					<el-button @click="isSignupProjectInfoPandel = false">返回列表</el-button>
+				</div>
+			</div>
+			<!-- 查看报名-项目名称title -->
+			<div class="info-title">
+				{{signupProjectData.projectBaseInfo.projName || '无'}}
+			</div>
+			<!-- 项目基本信息 -->
+			<div class="info-item">
+				<h2 class="item-title active" @click="expandProjectInfoItem"><i class="item-icon"></i>项目基本信息<i
+						class="arrow-icon"></i></h2>
+				<div class="item-detail">
+					<el-row class="mb20">
+						<el-col class="text-right" :span="5">服务事项：</el-col>
+						<el-col class="text-left pl10" :span="19">
+							{{signupProjectData.projectBaseInfo.itemName || '无'}}
+						</el-col>
+					</el-row>
+					<el-row class="mb20">
+						<el-col class="text-right" :span="5">涉及行政部门：</el-col>
+						<el-col class="text-left pl10" :span="19"> {{signupProjectData.projectBaseInfo.orgName || '无'}}
+						</el-col>
+					</el-row>
+					<el-row class="mb20">
+						<el-col class="text-right" :span="5">服务类型：</el-col>
+						<el-col class="text-left pl10" :span="19">
+							{{signupProjectData.projectBaseInfo.serviceName || '无'}}
+						</el-col>
+					</el-row>
+					<el-row class="mb20">
+						<el-col class="text-right" :span="5">服务时限：</el-col>
+						<el-col class="text-left pl10" :span="19">
+							{{signupProjectData.projectBaseInfo.serviceTimeExplain || '无'}}
+						</el-col>
+					</el-row>
+					<el-row class="mb20">
+						<el-col class="text-right" :span="5">服务金额：</el-col>
+						<el-col class="text-left pl10" :span="19">
+							{{signupProjectData.projectBaseInfo.basePrice || '无'}}
+						</el-col>
+					</el-row>
+					<el-row class="mb20">
+						<el-col class="text-right" :span="5">报名截止时间：</el-col>
+						<el-col class="text-left pl10" :span="19">
+							{{signupProjectData.projectBaseInfo.expirationDate | dateFormat('y-m-d hh:mm:ss') || '无'}}
+						</el-col>
+					</el-row>
+					<el-row class="mb20">
+						<el-col class="text-right" :span="5">选取中介时间：</el-col>
+						<el-col class="text-left pl10" :span="19">
+							{{curHandelRow.choiceImunitTime | dateFormat('y-m-d hh:mm:ss') || '无'}}
+						</el-col>
+					</el-row>
+					<el-row class="mb20">
+						<el-col class="text-right" :span="5">选取方式：</el-col>
+						<el-col class="text-left pl10" :span="19">
+							{{curHandelRow.biddingType | biddingTypeFormat}}
+						</el-col>
+					</el-row>
+				</div>
+			</div>
+			<!-- 报名信息 -->
+			<div class="info-item">
+				<h2 class="item-title active" @click="expandProjectInfoItem"><i class="item-icon"></i>报名信息<i
+						class="arrow-icon"></i></h2>
+				<div class="item-detail">
+					<el-row class="mb20">
+						<el-col class="text-right" :span="5">中介机构名称：</el-col>
+						<el-col class="text-left pl10" :span="19">{{signupProjectData.unitInfo.applicant || '无'}}
+						</el-col>
+					</el-row>
+					<el-row class="mb20">
+						<el-col class="text-right" :span="5">联系地址：</el-col>
+						<el-col class="text-left pl10" :span="19">
+							{{signupProjectData.unitInfo.applicantDetailSite || '无'}}
+						</el-col>
+					</el-row>
+					<el-row class="mb20">
+						<el-col class="text-right" :span="5">社会信用代码：</el-col>
+						<el-col class="text-left pl10" :span="19">
+							{{signupProjectData.unitInfo.idTypeName || '无'}}
+						</el-col>
+					</el-row>
+					<el-row class="mb20">
+						<el-col class="text-right" :span="5">企业联系号码：</el-col>
+						<el-col class="text-left pl10" :span="19">
+							{{signupProjectData.unitInfo.mobile || '无'}}
+						</el-col>
+					</el-row>
+					<el-row class="mb20">
+						<el-col class="text-right" :span="5">邮政编号：</el-col>
+						<el-col class="text-left pl10" :span="19">
+							{{signupProjectData.unitInfo.postalCode || '无'}}
+						</el-col>
+					</el-row>
+					<el-row class="mb20">
+						<el-col class="text-right" :span="5">业务授权人：</el-col>
+						<el-col class="text-left pl10" :span="19">
+							{{signupProjectData.unitBidding.linkmanName || '无'}}
+						</el-col>
+					</el-row>
+					<el-row class="mb20">
+						<el-col class="text-right" :span="5">授权人联系号码：</el-col>
+						<el-col class="text-left pl10" :span="19">
+							{{signupProjectData.unitBidding.linkmanMobilePhone || '无'}}
+						</el-col>
+					</el-row>
+					<el-row class="mb20">
+						<el-col class="text-right" :span="5">授权人邮箱：</el-col>
+						<el-col class="text-left pl10" :span="19">
+							{{signupProjectData.unitBidding.linkmanMail || '无'}}
+						</el-col>
+					</el-row>
+					<el-row class="mb20">
+						<el-col class="text-right" :span="5">从业人员：</el-col>
+						<el-col class="text-left pl10" :span="19">
+							<p v-for="item in signupProjectData.unitBidding.biddingEmployeesList">
+								<span>{{item.linkmanName}}</span>
+								<span>Phone：{{item.linkmanMobilePhone}}，</span>
+								<span>Mail：{{item.linkmanMail}}</span>
+							</p>
+						</el-col>
+					</el-row>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- 所有中介事项的dialog -->
+	<el-dialog class="bidding-price-dialog" title="竞价规则" :visible.sync="biddingPriceRulesDialogState" width="400px"
+	           center>
+		<p>1、报价仅能低于当前报价。若当前报价是最低价，其他机构也可竞最低价，
+			并且一同进入随机抽取环节进行选取。</p>
+		<p>2、出价成功，且当前价格不是最低价，进行 5 分钟倒计时，5 分钟之内，无
+			更低报价者，则当前报价的中介机构竞价成功。</p>
+		<p>3、出价成功，且当前价格已经最低价，进行 5 分钟倒计时，其他机构也可竞
+			最低价，但是倒计时不再重置。</p>
+		<p>4、若项目竞价方式是金额竞价，每次出价幅度不得少于最低价的 2%。若项
+			目竞价方式是下浮率竞价，每次出价幅度不能少于最低下浮率的 20%。</p>
+	</el-dialog>
+</div>
+<script>
+	//  var ctx = "http://192.168.14.6:8084/aplanmis-mall/" //振强
+	var module1 = new Vue({
+		el: '#projectSignup',
+		mixins: [mixins],
+		data: function () {
+			return {
+				// 页面loading
+				mloading: false,
+
+				// 报名的项目-列表
+				signupProjectList: [],
+				signupPeojectCheckData: {
+					pageNum: 1,
+					pageSize: 10,
+					projName: '', //项目名称
+					biddingType: '', //选取方式
+					type: 0, //0-报名项目 1-中选项目 2-已签约项目 3-服务中项目
+					unitInfoId: ''
+				},
+				//  报名的项目-总数
+				signupProjectTotal: 0,
+				//  选取方式-options
+				selectionMethodOptions: [{
+					label: '随机抽取',
+					value: 1
+				}, {
+					label: '直接抽取',
+					value: 2
+				}, {
+					label: '竞价抽取',
+					value: 3
+				}],
+				//  是否展示我要竞价的详情模块
+				isSignupProjectInfoPandel: false,
+				//  展示的是我要竞价的详情 还是 查看报名的详情
+				biddingPriceOrSignupInfoFlag: 1, // 1-竞价页  2-查看报名页
+				//  当前操作行
+				curHandelRow: {},
+
+				//  我要竞价页相关
+				// 项目基本信息
+				curSignUpProjectDetail: {
+					projName: '', //项目名
+					itemName: '', //中介服务事项
+					parentItemName: '', //涉及的行政事项
+					orgName: '', //事项对应部门
+					expirationDate: '', //竞价截止时间
+					unitBiddingCount: '', //已有参与竞价的中介数量
+					serviceName: '', //服务类型
+					serviceTimeExplain: '', //服务时间说明
+					basePrice: '' // 服务金额
+				},
+				//  你的出价
+				youBiddingPrice: '',
+				// 竞价过程信息
+				biddingProcessInfo: {
+					priceHighest: 0,
+					priceLowest: 0,
+					unitPrice: 0,
+				},
+				//  是否已经出价了一次
+				alreadyPushYouPriceOnce: false,
+				//  竞价过程-轮询计时器
+				biddingTimer: 0,
+				//  竞价规则模态框
+				biddingPriceRulesDialogState: false,
+
+				//  查看报名页相关
+				//  报名页数据
+				signupProjectData: {
+					//  基本信息
+					projectBaseInfo: {
+						projName: '', //项目名
+						itemName: '', //中介服务事项
+						parentItemName: '', //涉及的行政事项
+						orgName: '', //事项对应部门
+						expirationDate: '', //竞价截止时间
+						unitBiddingCount: '', //已有参与竞价的中介数量
+						serviceName: '', //服务类型
+						serviceTimeExplain: '', //服务时间说明
+						basePrice: '' // 服务金额
+					},
+					//  报名信息
+					unitBidding: {
+						linkmanName: '', //业务授权人
+						linkmanMobilePhone: '', //授权人联系号
+						linkmanMail: '', //授权人邮箱
+						biddingEmployeesList: [], //从业人员
+					},
+					// 企业信息
+					unitInfo: {
+						applicant: "唐山鸿图水利工程设计有限公司", // 中介机构名称
+						applicantDetailSite: "唐山市高新区荣华东道69号", // 联系地址
+						idTypeName: "社会信用代码", //统一社会信用代码
+						mobile: "123", //企业联系号码
+						postalCode: "063000", //邮政编号
+					},
+				},
+			}
+		},
+		methods: {
+			init: function () {
+				this.fetchSignUpProjectList();
+			},
+
+			// 返回报名项目列表
+			returnSignupProjectList: function () {
+				var ts = this;
+				ts.isSignupProjectInfoPandel = false;
+				ts.biddingPriceOrSignupInfoFlag = 1;
+				clearTimeout(ts.biddingTimer);
+			},
+
+			//  项目列表相关
+			// 获取报名的项目列表
+			fetchSignUpProjectList: function () {
+				var ts = this;
+				ts.signupPeojectCheckData.unitInfoId = JSON.parse(localStorage.getItem('loginInfo'))
+						.unitId;
+				ts.mloading = true;
+				request('', {
+					url: ctx + 'aea/supermarket/bidProjectManage/listUnitBiddingProjPurchase',
+					type: 'get',
+					data: ts.signupPeojectCheckData,
+				}, function (res) {
+					ts.mloading = false;
+					if (res.success) {
+						ts.signupProjectList = res.content.rows;
+						ts.signupProjectTotal = res.content.total;
+					} else {
+						ts.$message({
+							message: '加载失败',
+							type: 'error'
+						});
+					}
+				}, function (msg) {
+					ts.mloading = false;
+					ts.$message({
+						message: '加载失败',
+						type: 'error'
+					});
+				});
+			},
+			//  查询
+			checkSignupProjectList: function () {
+				this.signupPeojectCheckData.pageNum = 1;
+				this.fetchSignUpProjectList();
+			},
+			// 换页
+			signupProjectListPageChange: function (val) {
+				this.signupPeojectCheckData.pageNum = val;
+				this.fetchSignUpProjectList();
+			},
+			// 页码大小切换
+			signupProjectListSizeChange: function (val) {
+				this.signupPeojectCheckData.pageSize = val;
+				this.fetchSignUpProjectList();
+			},
+			//  撤销报名
+			revokeSignup: function (row) {
+				var ts = this,
+						_sendData = {};
+				_sendData.unitBiddingId = row.unitBiddingId;
+				confirmMsg('', '您确定撤销当前报名吗？', function () {
+					ts.mloading = true;
+					request('', {
+						url: ctx + 'aea/supermarket/bidProjectManage/cancelProjPurchase',
+						type: 'post',
+						data: _sendData,
+					}, function (res) {
+						ts.mloading = false;
+						if (res.success) {
+							//  撤销成功后重新获取表格数据
+							ts.fetchSignUpProjectList();
+							ts.$message({
+								message: '撤销成功！',
+								type: 'success'
+							});
+						} else {
+							ts.$message({
+								message: res.message,
+								type: 'error'
+							});
+						}
+					}, function (msg) {
+						ts.mloading = false;
+						ts.$message({
+							message: '网络错误！',
+							type: 'error'
+						});
+					});
+				});
+			},
+
+			//  我要竞价相关
+			// 点击报名的项目中的-我要竞价操作
+			wantPrice: function (row) {
+				this.isSignupProjectInfoPandel = true;
+				this.biddingPriceOrSignupInfoFlag = 1; // 1-竞价页  2-查看报名页
+				this.curHandelRow = JSON.parse(JSON.stringify(row));
+				this.fetchCurSignUpProjectDetail(row);
+				this.initHandLPrice(row); //开始轮询获取竞价的最大最小值
+			},
+			// 获取项目基本信息
+			fetchCurSignUpProjectDetail: function (row) {
+				var ts = this,
+						_getData = {};
+				_getData.projPurchaseId = row.projPurchaseId;
+				ts.mloading = true;
+				request('', {
+					url: ctx + 'supermarket/purchase/getPublicProjPurchaseDatail',
+					type: 'post',
+					data: _getData,
+				}, function (res) {
+					ts.mloading = false;
+					if (res.success) {
+						ts.initProjectDetailBasicInfo(res.content);
+					} else {
+						ts.isSignupProjectInfoPandel = false;
+						ts.$message({
+							message: '项目详情加载失败！',
+							type: 'error'
+						});
+					}
+				}, function (msg) {
+					ts.mloading = false;
+					ts.isSignupProjectInfoPandel = false;
+					ts.$message({
+						message: '网络错误！',
+						type: 'error'
+					});
+				});
+			},
+			// 项目详情初始化基本信息
+			initProjectDetailBasicInfo: function (info) {
+				var ts = this,
+						_basicInfoObj = ts.curSignUpProjectDetail;
+				for (var k in _basicInfoObj) {
+					if (info[k] && info[k] !== null) {
+						_basicInfoObj[k] = info[k];
+					} else {
+						_basicInfoObj[k] = '';
+					}
+				}
+			},
+			//开始轮询获取竞价的最大最小值
+			initHandLPrice: function (row) {
+				var ts = this;
+				ts.pollingFetchHandLPrice(row);
+				ts.biddingTimer = setTimeout(function () {
+					ts.initHandLPrice(row);
+				}, 10000)
+			},
+			//  轮询获取竞价过程中的最低、最高价格
+			pollingFetchHandLPrice: function (row) {
+				var ts = this,
+						_getData = {};
+				_getData.projPurchaseId = row.projPurchaseId;
+				_getData.unitBiddingId = row.unitBiddingId;
+				request('', {
+					url: ctx + 'aea/supermarket/bidProjectManage/getBiddingPriceDetail',
+					type: 'get',
+					data: _getData,
+				}, function (res) {
+					if (res.success) {
+						if (JSON.stringify(res.content) !== '{}') {
+							ts.biddingProcessInfo.priceHighest = res.content.highestPrice || 0;
+							ts.biddingProcessInfo.priceLowest = res.content.basePrice || 0;
+							//  if(!res.content.unitPrice || res.content.unitPrice === null){
+
+							//  }
+							ts.biddingProcessInfo.unitPrice = res.content.unitPrice || 0;
+						}
+
+					}
+				}, function (msg) {
+
+				});
+			},
+			//  确定出价
+			offerAPrice: function () {
+				var ts = this,
+						_sendData = {};
+				_sendData.unitBiddingId = ts.curHandelRow.unitBiddingId;
+				_sendData.price = ts.youBiddingPrice;
+				ts.mloading = true;
+				request('', {
+					url: ctx + 'aea/supermarket/bidProjectManage/biddingProjPurchase',
+					type: 'post',
+					data: _sendData,
+				}, function (res) {
+					ts.mloading = false;
+					if (res.success) {
+						ts.$message({
+							message: '出价成功！',
+							type: 'success'
+						});
+						ts.alreadyPushYouPriceOnce = true;
+						//出价成功后回显价格
+						ts.biddingProcessInfo.unitPrice = ts.youBiddingPrice;
+					} else {
+						ts.$message({
+							message: res.message,
+							type: 'error'
+						});
+					}
+				}, function (msg) {
+					ts.mloading = false;
+					ts.$message({
+						message: '网络错误！',
+						type: 'error'
+					});
+				});
+			},
+			//  展示竞价规则
+			showBiddingPriceRules: function () {
+				this.biddingPriceRulesDialogState = true;
+			},
+			//  是否可以竞价
+			isShowWantPriceBtn: function (row) {
+				if (new Date().getTime() > row.choiceImunitTime) {
+					if (row.purchaseAuditFlag == 7 || row.purchaseAuditFlag == 11) {
+						return false;
+					} else {
+						return true;
+					}
+				}
+				return true;
+			},
+
+			//  查看报名操作
+			seeSignupInfo: function (row) {
+				this.isSignupProjectInfoPandel = true;
+				this.biddingPriceOrSignupInfoFlag = 2; // 1-竞价页  2-查看报名页
+				this.curHandelRow = JSON.parse(JSON.stringify(row));
+				this.fetchCurProjectSignupInfo(row);
+			},
+			// 获取当前项目的的查看报名相关信息
+			fetchCurProjectSignupInfo: function (row) {
+				var ts = this,
+						_getData = {};
+				_getData.projPurchaseId = row.projPurchaseId;
+				_getData.unitInfoId = JSON.parse(localStorage.getItem('loginInfo')).unitId;
+				_getData.unitBiddingId = row.unitBiddingId;
+				ts.mloading = true;
+				request('', {
+					url: ctx + 'aea/supermarket/bidProjectManage/getSignUpDetail',
+					type: 'get',
+					data: _getData,
+				}, function (res) {
+					ts.mloading = false;
+					if (res.success) {
+						ts.initSignupProjectInfo(res.content);
+					} else {
+						ts.isSignupProjectInfoPandel = false;
+						ts.$message({
+							message: '查看报名信息加载失败！',
+							type: 'error'
+						});
+					}
+				}, function (msg) {
+					ts.mloading = false;
+					ts.isSignupProjectInfoPandel = false;
+					ts.$message({
+						message: '网络错误！',
+						type: 'error'
+					});
+				});
+			},
+			//  数据赋值-报名信息
+			initSignupProjectInfo: function (info) {
+				var baseInfo = info.projPurchase, //基本信息
+						_unitInfo = info.unitInfo, //接口的企业信息
+						_unitBidding = info.unitBidding, //接口的报名信息
+						_basicSignupInfo = this.signupProjectData.projectBaseInfo, //data定义的基本信息
+						_unitSignInfo = this.signupProjectData.unitInfo, //data定义的企业信息
+						_unitBiddingSignInfo = this.signupProjectData.unitBidding; //data定义的企业信息
+				for (var k in _basicSignupInfo) {
+					if (baseInfo[k] && baseInfo[k] !== null) {
+						_basicSignupInfo[k] = baseInfo[k];
+					} else {
+						_basicSignupInfo[k] = '';
+					}
+				}
+				for (var t in _unitSignInfo) {
+					if (_unitInfo[t] && _unitInfo[t] !== null) {
+						_unitSignInfo[t] = _unitInfo[t];
+					} else {
+						_unitSignInfo[t] = '';
+					}
+				}
+				for (var u in _unitBiddingSignInfo) {
+					if (_unitBidding[u] && _unitBidding[u] !== null) {
+						_unitBiddingSignInfo[u] = _unitBidding[u];
+					} else {
+						_unitBiddingSignInfo[u] = '';
+					}
+				}
+			},
+			formatAuditFlag: function (row, column, value, index) {
+				switch (value) {
+					case '0':
+						return "未提交";
+					case '1':
+						return "服务中";
+					case '2':
+						return "服务完成";
+					case '3':
+						return "服务中止";
+					case '4':
+						return "审核中";
+					case '5':
+						return "退回";
+					case '6':
+						return "报名中";
+					case '7':
+						return "选取中";
+					case '8':
+						return "选取开始";
+					case '9':
+						return "已选取";
+					case '10':
+						return "无效";
+					case '11':
+						return "待选取";
+					case '12':
+						return "已过时";
+				}
+				return value;
+			}
+		},
+		mounted: function () {
+			this.init();
+		},
+		filters: {
+			//  抽取方式
+			biddingTypeFormat: function (val) {
+				if (!val) return '暂无';
+				return val == 1 ? '随机抽取' : (val == 2 ? '直接抽取' : '竞价抽取');
+			},
+			//  我的竞价
+			priceFormat: function (val) {
+				if (!val) return 0;
+				var _val = parseInt(val);
+				if (_val > 10000) {
+					return (_val / 10000).toFixed(0) + '万'
+				}
+				return _val;
+			},
+		},
+	})
+</script>
+<style>
+	/* 表格不能点击按钮 */
+	.line-disabled-btn.is-disabled.el-button--text {
+		color: #666 !important;
+	}
+
+	.line-disabled-btn:hover {
+		text-decoration: underline;
+	}
+</style>

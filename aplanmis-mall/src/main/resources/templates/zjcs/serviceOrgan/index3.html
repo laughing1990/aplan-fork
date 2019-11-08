@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>中介服务超市</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="shortcut icon" href="../../../static/zjcs/common/images/favicon.ico" th:href="@{/zjcs/common/images/favicon.ico}">
+     <!-- <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/metronic-5/vendors.bundle.css" th:href="@{/agcloud/framework/js-lib/metronic-5/vendors.bundle.css}"> -->
+    <!-- <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/ui-private/default/common/css/metronic.css" th:href="@{/agcloud/framework/ui-private/default/common/css/metronic.css}"> -->
+    <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.css" th:href="@{/agcloud/framework/js-lib/element-2/element.css}">
+    <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/ui-private/default/common/css/layout.css" th:href="@{/agcloud/framework/ui-private/default/common/css/layout.css}">
+    <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/ui-private/default/blue/css/theme.css" th:href="@{/agcloud/framework/ui-private/default/blue/css/theme.css}">
+    <link rel="stylesheet" href="../../../static/zjcs/common/css/reset.css" th:href="@{/zjcs/common/css/reset.css}">
+
+    <link rel="stylesheet" href="../../../static/zjcs/serviceOrgan/css/viewer.min.css" th:href="@{/zjcs/serviceOrgan/css/viewer.min.css}">
+    <link rel="stylesheet" href="../../../static/zjcs/serviceOrgan/css/index.css" th:href="@{/zjcs/serviceOrgan/css/index.css}">
+    <script>
+        var ctx = '[[@{/}]]';
+        // var ctx = 'http://192.168.14.6:8084/aplanmis-mall/';
+        //  var ctx = 'http://192.168.14.9:8084/aplanmis-mall/';
+        // var ctx = 'http://192.168.14.40:8084/aplanmis-mall/';
+    </script>
+</head>
+<body class="scrollable bodyCss">
+  <div class="header">
+    <iframe src="../common/header.html" th:src="@{header.html}" frameborder="0" width="100%" height="100%"></iframe>
+  </div>
+  <div class="main-content">
+    <div id="app" class="content" v-cloak v-loading="loading">
+      <h3></h3>
+      <div class="bookContent">
+        <div class="book" id="book">
+          <img :src="imgUrlCss" height="450" width="650" alt="" @click="previewRow()"/>
+          <p ><span @click="previewRow()">{{dataInfo.certinstName}}.jpg</span></p>
+        </div>
+        <div class="bookInfo">
+          <div class="infoTitle">资质证书信息</div>
+          <div class="row">
+            <div class="info col-md-6 col-sm-6 col-xs-12">
+              <span>
+                <b>中介机构：</b><span>{{dataInfo.applicant}}</span>
+              </span>
+            </div>
+            <div class="info col-md-6 col-sm-6 col-xs-12">
+              <span>
+                <b>资质类型：</b><span>{{dataInfo.qualName}}</span>
+              </span>
+            </div>
+          </div>
+          <div class="childItem">资质专业/子项：</div>
+          <el-tabs v-model="treeTab" type="card" @tab-click="" class="card">
+            <el-tab-pane :label="treeLabel" name="tabs-first">
+              <div class="tree" :style="{height:treeLeftHeight + 'px'}">
+                  <el-tree
+                    :data="treeData" 
+                    class="filter-tree tree"
+                    default-expand-all
+                    :props="defaultProps"
+                    :expand-on-click-node="false"
+                    highlight-current
+                    node-key="majorId"
+                    ref="treeLeft1">
+                  </el-tree>
+              </div>
+            </el-tab-pane>
+          </el-tabs>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer">
+    <iframe src="../common/footer.html" th:src="@{footer.html}" frameborder="0" width="100%" height="100%"></iframe>
+  </div>
+    
+</body>
+<!-- <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/metronic-5/vendors.bundle.js" th:src="@{/agcloud/framework/js-lib/metronic-5/vendors.bundle.js}" type="text/javascript"></script> -->
+<!-- <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/metronic-5/scripts.bundle.js" th:src="@{/agcloud/framework/js-lib/metronic-5/scripts.bundle.js}" type="text/javascript"></script> -->
+
+
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js" th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>
+
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js" th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js" th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
+<!--<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js" th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>-->
+<script src="../../../static/common/js/common.js" th:src="@{/common/js/common.js}"></script>
+<script src="../../../static/zjcs/serviceOrgan/js/index3.js" th:src="@{/zjcs/serviceOrgan/js/index3.js}" type="text/javascript"></script>
+<script src="../../../static/zjcs/serviceOrgan/js/viewer.min.js" th:src="@{/zjcs/serviceOrgan/js/viewer.min.js}" type="text/javascript"></script>
+
+
+</html>

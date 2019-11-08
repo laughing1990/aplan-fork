@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by tiantian    2019-06-11 17:29:32 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaImUnitRequireMapper" >
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns" >
+    UNIT_REQUIRE_ID  unitRequireId,
+    IS_QUAL_REQUIRE  isQualRequire,
+    QUAL_REQUIRE_TYPE  qualRequireType,
+    QUAL_REQUIRE  qualRequire,
+    QUAL_REQUIRE_EXPLAIN  qualRequireExplain,
+    QUAL_RECORD_REQUIRE  qualRecordRequire,
+    PROMISE_SERVICE  promiseService,
+    OTHER_REQUIRE_EXPLAIN  otherRequireExplain,
+    IS_REGISTER_REQUIRE  isRegisterRequire,
+    REGISTER_TOTAL  registerTotal,
+    REGISTER_REQUIRE  registerRequire,
+    IS_RECORD_REQUIRE  isRecordRequire,
+    RECORD_REQUIRE_EXPLAIN  recordRequireExplain,
+    ROOT_ORG_ID rootOrgId
+    </sql>
+
+    <sql id="allColumnsAlias" >
+        ${alias}.UNIT_REQUIRE_ID  unitRequireId,
+        ${alias}.IS_QUAL_REQUIRE  isQualRequire,
+        ${alias}.QUAL_REQUIRE_TYPE  qualRequireType,
+        ${alias}.QUAL_REQUIRE  qualRequire,
+        ${alias}.QUAL_REQUIRE_EXPLAIN  qualRequireExplain,
+        ${alias}.QUAL_RECORD_REQUIRE  qualRecordRequire,
+        ${alias}.PROMISE_SERVICE  promiseService,
+        ${alias}.OTHER_REQUIRE_EXPLAIN  otherRequireExplain,
+        ${alias}.IS_REGISTER_REQUIRE  isRegisterRequire,
+        ${alias}.REGISTER_TOTAL  registerTotal,
+        ${alias}.REGISTER_REQUIRE  registerRequire,
+        ${alias}.IS_RECORD_REQUIRE  isRecordRequire,
+        ${alias}.RECORD_REQUIRE_EXPLAIN  recordRequireExplain,
+        ${alias}.ROOT_ORG_ID  rootOrgId
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaImUnitRequireById" resultType="AeaImUnitRequire" >
+        select
+        <include refid="allColumns"/>
+        from    AEA_IM_UNIT_REQUIRE
+        where    UNIT_REQUIRE_ID = #{id}
+    </select>
+
+    <select id="getAeaImUnitRequireByItemVerId" resultType="AeaImUnitRequire" >
+        select
+        <include refid="allColumnsAlias"><property name="alias" value="aiur"></property></include>
+        from    AEA_IM_ITEM_EXPLAIN aiie,AEA_IM_UNIT_REQUIRE aiur
+        where   aiie.UNIT_REQUIRE_ID = aiur.UNIT_REQUIRE_ID
+        and aiie.ITEM_VER_ID = #{itemVerId}
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listAeaImUnitRequire" resultType="AeaImUnitRequire" >
+        select
+        <include refid="allColumns"/>
+        from    AEA_IM_UNIT_REQUIRE
+        <where>
+            <if test="unitRequireId != null" >
+                AND    UNIT_REQUIRE_ID = #{unitRequireId}
+            </if>
+            <if test="isQualRequire != null" >
+                AND    IS_QUAL_REQUIRE = #{isQualRequire}
+            </if>
+            <if test="qualRequireType != null" >
+                AND    QUAL_REQUIRE_TYPE = #{qualRequireType}
+            </if>
+            <if test="qualRequire != null" >
+                AND    QUAL_REQUIRE = #{qualRequire}
+            </if>
+            <if test="qualRequireExplain != null" >
+                AND    QUAL_REQUIRE_EXPLAIN = #{qualRequireExplain}
+            </if>
+            <if test="qualRecordRequire != null" >
+                AND    QUAL_RECORD_REQUIRE = #{qualRecordRequire}
+            </if>
+            <if test="promiseService != null" >
+                AND    PROMISE_SERVICE = #{promiseService}
+            </if>
+            <if test="otherRequireExplain != null" >
+                AND    OTHER_REQUIRE_EXPLAIN = #{otherRequireExplain}
+            </if>
+            <if test="isRegisterRequire != null" >
+                AND    IS_REGISTER_REQUIRE = #{isRegisterRequire}
+            </if>
+            <if test="registerTotal != null" >
+                AND    REGISTER_TOTAL = #{registerTotal}
+            </if>
+            <if test="registerRequire != null" >
+                AND    REGISTER_REQUIRE = #{registerRequire}
+            </if>
+            <if test="isRecordRequire != null" >
+                AND    IS_RECORD_REQUIRE = #{isRecordRequire}
+            </if>
+            <if test="recordRequireExplain != null" >
+                AND    RECORD_REQUIRE_EXPLAIN = #{recordRequireExplain}
+            </if>
+            <if test="rootOrgId != null" >
+                AND    ROOT_ORG_ID = #{rootOrgId}
+            </if>
+        </where>
+    </select>
+    <!--4 根据条件查询实体list,返回分页对象 -->
+
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaImUnitRequire" parameterType="AeaImUnitRequire" >
+    insert into AEA_IM_UNIT_REQUIRE (
+UNIT_REQUIRE_ID  ,IS_QUAL_REQUIRE  ,QUAL_REQUIRE_TYPE  ,QUAL_REQUIRE  ,QUAL_REQUIRE_EXPLAIN  ,QUAL_RECORD_REQUIRE  ,PROMISE_SERVICE  ,OTHER_REQUIRE_EXPLAIN  ,IS_REGISTER_REQUIRE  ,REGISTER_TOTAL  ,REGISTER_REQUIRE  ,IS_RECORD_REQUIRE  ,RECORD_REQUIRE_EXPLAIN,ROOT_ORG_ID
+    )  values  (
+#{unitRequireId},#{isQualRequire},#{qualRequireType},#{qualRequire},#{qualRequireExplain},#{qualRecordRequire},#{promiseService},#{otherRequireExplain},#{isRegisterRequire},#{registerTotal},#{registerRequire},#{isRecordRequire},  #{recordRequireExplain},#{rootOrgId}
+    )
+</insert>
+    <!--6 修改实体对象 -->
+    <update id="updateAeaImUnitRequire" parameterType="AeaImUnitRequire" >
+        update AEA_IM_UNIT_REQUIRE
+        <set >
+            <if test="unitRequireId != null" >
+                UNIT_REQUIRE_ID = #{unitRequireId},
+            </if>
+            <if test="isQualRequire != null" >
+                IS_QUAL_REQUIRE = #{isQualRequire},
+            </if>
+            <if test="qualRequireType != null" >
+                QUAL_REQUIRE_TYPE = #{qualRequireType},
+            </if>
+            <if test="qualRequire != null" >
+                QUAL_REQUIRE = #{qualRequire},
+            </if>
+            <if test="qualRequireExplain != null" >
+                QUAL_REQUIRE_EXPLAIN = #{qualRequireExplain},
+            </if>
+            <if test="qualRecordRequire != null" >
+                QUAL_RECORD_REQUIRE = #{qualRecordRequire},
+            </if>
+            <if test="promiseService != null" >
+                PROMISE_SERVICE = #{promiseService},
+            </if>
+            <if test="otherRequireExplain != null" >
+                OTHER_REQUIRE_EXPLAIN = #{otherRequireExplain},
+            </if>
+            <if test="isRegisterRequire != null" >
+                IS_REGISTER_REQUIRE = #{isRegisterRequire},
+            </if>
+            <if test="registerTotal != null" >
+                REGISTER_TOTAL = #{registerTotal},
+            </if>
+            <if test="registerRequire != null" >
+                REGISTER_REQUIRE = #{registerRequire},
+            </if>
+            <if test="isRecordRequire != null" >
+                IS_RECORD_REQUIRE = #{isRecordRequire},
+            </if>
+            <if test="recordRequireExplain != null" >
+                RECORD_REQUIRE_EXPLAIN = #{recordRequireExplain},
+            </if>
+            <if test="rootOrgId != null" >
+                ROOT_ORG_ID = #{rootOrgId},
+            </if>
+        </set>
+        where UNIT_REQUIRE_ID = #{unitRequireId}
+    </update>
+    <!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaImUnitRequire">
+        delete from   AEA_IM_UNIT_REQUIRE
+        where
+    UNIT_REQUIRE_ID = #{id}
+    </delete>
+    <!--8 删除实体对象列表,根据主键ID列表 -->
+    <!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaImUnitRequire" id="AeaImUnitRequireMap">
+        <id property="unitRequireId" column="UNIT_REQUIRE_ID"/>
+        <result property="isQualRequire" column="IS_QUAL_REQUIRE"/>
+        <result property="qualRequireType" column="QUAL_REQUIRE_TYPE"/>
+        <result property="qualRequire" column="QUAL_REQUIRE"/>
+        <result property="qualRequireExplain" column="QUAL_REQUIRE_EXPLAIN"/>
+        <result property="qualRecordRequire" column="QUAL_RECORD_REQUIRE"/>
+        <result property="promiseService" column="PROMISE_SERVICE"/>
+        <result property="otherRequireExplain" column="OTHER_REQUIRE_EXPLAIN"/>
+        <result property="isRegisterRequire" column="IS_REGISTER_REQUIRE"/>
+        <result property="registerTotal" column="REGISTER_TOTAL"/>
+        <result property="registerRequire" column="REGISTER_REQUIRE"/>
+        <result property="isRecordRequire" column="IS_RECORD_REQUIRE"/>
+        <result property="recordRequireExplain" column="RECORD_REQUIRE_EXPLAIN"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+    </resultMap>
+</mapper>

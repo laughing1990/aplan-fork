@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<HTML lang="en" xmlns:th="http://www.thymeleaf.org">
+<HEAD>
+    <meta charset="UTF-8">
+    <th:block th:include="common/common :: commonheader('在线预览图片文件')"/>
+    <script type="text/javascript" src="../../static/preview/jquery-viewer1/js/viewer.js" th:src="@{/preview/jquery-viewer1/js/viewer.js}"></script>
+
+    <link rel="stylesheet" href="../../static/preview/jquery-viewer1/css/viewer.css" th:href="@{/preview/jquery-viewer1/css/viewer.css}">
+    <link rel="stylesheet" href="../../static/preview/css/show_image.css" th:href="@{/preview/css/show_image.css}">
+    <script>
+        if ("[[${emtpyResult}]]" == '1') {
+            $(function () {
+                $('body').append('<h4 style="color:red">文件不存在！</h4>');
+            });
+        } else {
+            window.addEventListener('DOMContentLoaded', function () {
+                var image = new Image();
+                // var fullBase64 = '${fullBase64}';
+                var fullBase64 = '[[${fullBase64}]]';
+                image.src = fullBase64;
+                image.alt = '[[${fileName}]]';
+                var viewer = new Viewer(image, {
+                    backdrop: "static",
+                    toolbar: {
+                        oneToOne: {size: 'large'},
+                        zoomIn: {size: 'large'},
+                        zoomOut: {size: 'large'},
+                        reset: {size: 'large'},
+                        rotateLeft: {size: 'large'},
+                        rotateRight: {size: 'large'},
+                        flipHorizontal: {size: 'large'},
+                        flipVertical: {size: 'large'},
+                        download: {
+                            size: 'large',
+                            click: function () {
+                                if (window.navigator.msSaveOrOpenBlob) {
+                                    var bstr = atob(fullBase64.split(',')[1]);
+                                    var n = bstr.length;
+                                    var u8arr = new Uint8Array(n);
+                                    while (n--) {
+                                        u8arr[n] = bstr.charCodeAt(n)
+                                    }
+                                    var blob = new Blob([u8arr])
+                                    window.navigator.msSaveOrOpenBlob(blob, '[[${fileName}]]');/*   '${fileName}'*/
+                                } else {
+                                    // 这里就按照chrome等新版浏览器来处理
+                                    var a = document.createElement('a')
+                                    a.href = viewer.image.src;
+                                    a.download = viewer.image.alt;
+                                    document.body.appendChild(a);
+                                    a.click();
+                                    document.body.removeChild(a);
+                                }
+                            }
+                        },
+                    },
+                    hidden: function () {
+                        window.opener = null;
+                        window.open("", "_self", "");
+                        window.close();
+                        //viewer.destroy();
+                    },
+                });
+                viewer.show();
+            });
+        }
+    </script>
+</HEAD>
+
+<BODY><!-- onload="load_drawings();"-->
+<div class="container">
+    <div id="image" style="display:none">
+    </div>
+</div>
+</BODY>
+<th:block th:include="common/common :: commonfooter"/>
+</HTML>

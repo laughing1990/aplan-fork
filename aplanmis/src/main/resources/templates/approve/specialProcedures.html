@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <!--引入公共css-->
+  <meta charset="UTF-8">
+  <title>特殊程序</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <!--引入公共css-->
+  <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.css"
+        th:href="@{/agcloud/framework/js-lib/element-2/element.css}"/>
+  <link rel="stylesheet"
+        href="/framework-ui/src/main/resources/static/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css"
+        th:href="@{/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css}">
+  <link rel="stylesheet"
+        href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/css/reset.css"
+        th:href="@{/agcloud/framework/js-lib/agcloud-lib/css/reset.css}">
+  
+  <link rel="stylesheet" href="../../static/agcloud/bpm/front/process/diagram/display/jquery.qtip.min.css"
+        th:href="@{/agcloud/bpm/front/process/diagram/display/jquery.qtip.min.css}">
+  <link rel="stylesheet" href="../../static/approve/css/special.css" th:href="@{/approve/css/special.css}">
+  <script>
+    var ctx = '[[@{/}]]';
+  </script>
+  <script src="../../static/approve/js/ip.js" th:src="@{/approve/js/ip.js}"></script>
+  <script>
+    var applyinstId = __STATIC.getUrlParam('applyinstId');
+    var iteminstId = __STATIC.getUrlParam('iteminstId');
+    var isApprover = __STATIC.getUrlParam('isApprover');//0: 窗口人员; 1: 审批人员
+    var taskinstId = __STATIC.getUrlParam('taskId');
+    var processInstanceId = __STATIC.getUrlParam('processInstanceId');
+  </script>
+  <style>
+    .el-table .warning-row {
+      background: #DBE0E6;
+    }
+    
+    .el-header {
+      background-color: #B3C0D1;
+      color: #333;
+      text-align: center;
+      line-height: 60px;
+      
+    }
+  </style>
+</head>
+
+<body>
+
+<el-container>
+  <!--头部标题-->
+  <el-header style="text-align: center; font-size: 25px;  line-height: 60px">
+    <div overflow="center" style="height: 65px;"><span>特殊程序表</span></div>
+  </el-header>
+  <!--主体部分-->
+  <el-main>
+    <div id="approve" v-cloak v-loading="loading">
+      <div class="content">
+        <!--<el-collapse v-model="activeNames">-->
+        <!--  领件人主体信息  start  -->
+        <!--<el-collapse-item  class="clearfix" name="1" id="receiver" >-->
+        
+        <el-form label-width="160px"
+                 ref="specialInfoForm"
+                 :model="specialForm" :rules="specialFormRules">
+          
+          <div class="clearfix">
+            <!--暂时不显示
+            <el-form-item class="input-inline" label="事项编号：" prop="iteminstCode">
+              <template v-if="isDisable">{{specialForm.iteminstCode}}</template>
+              <template v-else>
+                <el-input v-model="specialForm.iteminstCode" id="iteminstCode" placeholder="事项编号" readonly></el-input>
+              </template>
+            </el-form-item>
+            <el-form-item class="input-inline" label="事项名称：" prop="iteminstName">
+              <template v-if="isDisable">{{specialForm.iteminstName}}</template>
+              <template v-else>
+                <el-input v-model="specialForm.iteminstName" id="iteminstName" placeholder="事项名称" readonly></el-input>
+              </template>
+            </el-form-item>-->
+            <el-form-item class="input-inline" label="类型：" prop="specialType">
+              <!--<el-input v-model="specialForm.specialType" id="specialType" placeholder="运单号"></el-input>-->
+              <el-select v-model="specialForm.specialType"
+                         prop="specialType"
+                         placeholder="--请选择类型--" :disabled="isDisable">
+                <el-option v-for="(item,index) in specialTypeList"
+                           :key="item.itemCode"
+                           :label="item.itemName"
+                           :value="item.itemCode">
+                </el-option>
+              </el-select>
+
+
+            </el-form-item>
+            <el-form-item class="input-inline" label="办理方式：" prop="specialDueWay">
+              <!--<el-input v-model="specialForm.specialDueWay" id="specialDueWay" placeholder="办理方式" :disabled="isDisable"></el-input>-->
+              <template v-if="isDisable">{{specialForm.specialDueWay}}</template>
+              <template v-else>
+                <el-input v-model="specialForm.specialDueWay" id="specialDueWay" placeholder="办理方式"></el-input>
+              </template>
+            </el-form-item>
+            <el-form-item class="input-inline" label="办理期限：" prop="specialDueTime">
+              <!-- <el-date-picker v-model="specialForm.specialDueTime" type="date" placeholder="选择日期" value-format="yyyy-MM-dd" :readonly="isDisable">
+               </el-date-picker>-->
+              <template v-if="isDisable">{{specialForm.specialDueTime}}</template>
+              <template v-else>
+                <el-date-picker v-model="specialForm.specialDueTime" type="date" placeholder="选择日期"
+                                value-format="yyyy-MM-dd" :readonly="isDisable" @change="specialDueTimeChange">
+                </el-date-picker>
+              </template>
+            </el-form-item>
+            <el-form-item class="input-inline" label="天数：" prop="specialDueDays">
+              <!--<el-input v-model="specialForm.specialDueDays" id="specialDueDays" placeholder="天数" :disabled="isDisable"></el-input>-->
+              <template v-if="isDisable">{{specialForm.specialDueDays}}</template>
+              <template v-else>
+                <el-input v-model="specialForm.specialDueDays" id="specialDueDays" placeholder="天数" readonly></el-input>
+              </template>
+            </el-form-item>
+          </div>
+          
+          <el-form-item class="input-block" label="客户名称：" prop="customer">
+            <!--<el-input v-model="specialForm.customer" id="customer" placeholder="客户名称" disabled></el-input>-->
+            <template v-if="isDisable">{{specialForm.customer}}</template>
+            <template v-else>
+              <el-input v-model="specialForm.customer" id="customer" placeholder="客户名称" readonly></el-input>
+            </template>
+          </el-form-item>
+          <el-form-item class="input-block" label="联系地址：" prop="linkAddr">
+            <!--<el-input v-model="specialForm.linkAddr" id="linkAddr" placeholder="联系地址" disabled></el-input>-->
+            <template v-if="isDisable">{{specialForm.linkAddr}}</template>
+            <template v-else>
+              <el-input v-model="specialForm.linkAddr" id="linkAddr" placeholder="联系地址" readonly></el-input>
+            </template>
+          </el-form-item>
+          <div class="clearfix">
+            <el-form-item class="input-inline" label="联系方式：" prop="linkPhone">
+              <!--<el-input v-model="specialForm.linkPhone" id="linkPhone" placeholder="联系方式" disabled></el-input>-->
+              <template v-if="isDisable">{{specialForm.linkPhone}}</template>
+              <template v-else>
+                <el-input v-model="specialForm.linkPhone" id="linkPhone" placeholder="联系方式" readonly></el-input>
+              </template>
+            </el-form-item>
+            <el-form-item class="input-inline" label="联系人：" prop="linkman">
+              <!--<el-input v-model="specialForm.linkman" id="linkman" placeholder="联系人" disabled></el-input>-->
+              <template v-if="isDisable">{{specialForm.linkman}}</template>
+              <template v-else>
+                <el-input v-model="specialForm.linkman" id="linkman" placeholder="联系人" readonly></el-input>
+              </template>
+            </el-form-item>
+
+
+          </div>
+          <el-form-item class="input-block" label="原因：" prop="specialReason">
+            <el-input type="textarea" v-model="specialForm.specialReason" :readonly="isDisable"></el-input>
+          </el-form-item>
+          
+          <el-form-item class="input-block" label="备注：" prop="specialMemo">
+            <el-input type="textarea" v-model="specialForm.specialMemo" :readonly="isDisable"></el-input>
+          </el-form-item>
+         <!-- 隐藏，暂无审批功能
+         <div class="clearfix">
+            <el-row>
+              <el-col :span="8">
+                <el-form-item label="审批结果：" prop="approveResult">
+                  <el-radio-group v-model="specialForm.approveResult" :disabled="isDisable">
+                    <el-radio label="1">批准</el-radio>
+                    <el-radio label="0">不批准</el-radio>
+                  
+                  </el-radio-group>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="批准人：" prop="approveUserName">
+                  &lt;!&ndash;<el-input v-model="specialForm.approveUserName" id="approveUserName" placeholder="批准人" :disabled="isDisable"></el-input>&ndash;&gt;
+                  <template v-if="isDisable">{{specialForm.approveUserName}}</template>
+                  <template v-else>
+                    &lt;!&ndash; <el-input v-model="specialForm.approveUserName" id="approveUserName" placeholder="批准人"></el-input>
+                     &ndash;&gt;
+                    <el-select v-model="specialForm.approveUserId" @change="currentSel"
+                               prop="specialType"
+                               placeholder="&#45;&#45;请选择类型&#45;&#45;" :disabled="isDisable">
+                      <el-option v-for="(item,index) in orgUserList"
+                                 :key="item.userId"
+                                 :label="item.userName"
+                                 :value="item.userId">
+                      </el-option>
+                    </el-select>
+                  </template>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="批准日期：" prop="approveTime">
+                  &lt;!&ndash; <el-date-picker v-model="specialForm.approveTime" type="date" placeholder="批准日期" value-format="yyyy-MM-dd" :readonly="isDisable">
+                   </el-date-picker>&ndash;&gt;
+                  <template v-if="isDisable">{{specialForm.approveTime}}</template>
+                  <template v-else>
+                    <el-date-picker v-model="specialForm.approveTime" type="date" placeholder="选择日期"
+                                    value-format="yyyy-MM-dd">
+                    </el-date-picker>
+                  </template>
+                </el-form-item>
+              </el-col>
+            </el-row>
+          
+          </div>
+          <el-form-item class="input-block" label="批准意见：" prop="approveOpinion">
+            <el-input type="textarea" v-model="specialForm.approveOpinion" :readonly="isDisable"></el-input>
+          </el-form-item>-->
+          <el-form-item class="input-block" label="负责部门名称：" prop="chargeOrgName">
+            <!--<el-input v-model="specialForm.chargeOrgName" id="chargeOrgName" placeholder="负责部门名称" disabled></el-input>-->
+            <template v-if="isDisable">{{specialForm.chargeOrgName}}</template>
+            <template v-else>
+              <el-input v-model="specialForm.chargeOrgName" id="chargeOrgName" placeholder="负责部门名称" readonly></el-input>
+            </template>
+          </el-form-item>
+          <div class="clearfix">
+            <el-form-item class="input-inline" label="负责人姓名：" prop="windowUserName">
+              <el-input v-model="specialForm.windowUserName" id="windowUserName" placeholder="窗口负责人姓名"></el-input>
+            </el-form-item>
+            <el-form-item class="input-inline" label="负责人联系电话：" prop="windowPhone">
+              <el-input v-model="specialForm.windowPhone" id="windowPhone" placeholder="窗口联系电话"></el-input>
+            </el-form-item>
+            <el-form-item class="input-inline" label="经办人：" prop="opsUserName">
+              <!--<el-input v-model="specialForm.opsUserName" id="opsUserName" placeholder="经办人" :disabled="isDisable"></el-input>-->
+              <template v-if="isDisable">{{specialForm.opsUserName}}</template>
+              <template v-else>
+                <el-input v-model="specialForm.opsUserName" id="opsUserName" placeholder="经办人" readonly></el-input>
+              </template>
+            </el-form-item>
+            <el-form-item class="input-inline" label="经办时间：" prop="opsTime">
+              <!--<el-date-picker v-model="specialForm.opsTime" type="date" placeholder="批准日期" value-format="yyyy-MM-dd" :readonly="isDisable">-->
+              <template v-if="isDisable">{{specialForm.opsTime}}</template>
+              <template v-else>
+                <el-date-picker v-model="specialForm.opsTime" type="date" placeholder="经办时间"
+                                value-format="yyyy-MM-dd" readonly></el-date-picker>
+
+              </template>
+              </el-date-picker>
+              <!--<el-input v-model="specialForm.opsTime" id="opsTime" placeholder="经办时间"></el-input>-->
+            </el-form-item>
+            <!--
+            <el-form-item class="input-inline" label="打印人：">
+              &lt;!&ndash;<el-input v-model="specialForm.printUserName" id="printUserName" placeholder="打印人" ></el-input>&ndash;&gt;
+              <template v-if="isDisable">{{specialForm.printUserName}}</template>
+              <template v-else>
+                <el-input v-model="specialForm.printUserName" id="printUserName" placeholder="打印人"
+                          :readonly="isDisable"></el-input>
+              </template>
+            </el-form-item>
+            <el-form-item class="input-inline" label="打印时间：">
+              &lt;!&ndash;<el-input v-model="specialForm.printTime" id="printTime" placeholder="打印时间"></el-input>&ndash;&gt;
+              <el-date-picker v-model="specialForm.printTime" type="date" placeholder="打印时间" value-format="yyyy-MM-dd"
+                              :readonly="isDisable">
+              </el-date-picker>
+            </el-form-item>-->
+          </div>
+        
+        </el-form>
+        
+        
+        <!--</el-collapse-item>-->
+        <!--  收件人主体信息  end  -->
+        
+        
+        <div style="float: right;">
+          <el-button type="primary" icon="el-icon-wallet" @click="saveSpecial()" v-if="isDisable == false">特殊程序开始
+          </el-button>
+          <!--<el-button type="primary" icon="el-icon-wallet"  @click="doPrint()">打印通知书</el-button>-->
+          <el-button type="primary" icon="el-icon-wallet" @click="stopSpecial()" v-if="isDisable == true">结束特殊程序
+          </el-button>
+          <el-button type="danger" icon="el-icon-wallet" @click="close()">关闭</el-button>
+        </div>
+        <!--</el-collapse>-->
+      
+      </div>
+    
+    
+    </div>
+  </el-main>
+</el-container>
+
+</body>
+<!--引入公共js-->
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js"
+        th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js"
+        th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js"
+        th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js"
+        th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>
+<script src="https://cdn.bootcss.com/axios/0.19.0/axios.min.js"></script>
+<script src="../../static/approve/js/special.js" th:src="@{/approve/js/special.js}"></script>
+
+</html>

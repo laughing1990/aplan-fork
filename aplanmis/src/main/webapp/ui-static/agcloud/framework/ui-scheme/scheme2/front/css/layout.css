@@ -1,0 +1,209 @@
+@charset "utf-8";
+
+/* CSS Document */
+/*基于metronic 5 demo3 | 除颜色外的样式覆盖 | yang2018.8.16*/
+
+/*全局*/
+body{
+	font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif!important;
+	/*min-width: 1660px;*/
+	overflow: hidden;
+}
+.m-body {
+	height: 100%;
+}
+
+/******************************BEGIN:头部header******************************/
+
+/*调整header的高度*/
+.m-header {
+	height: 60px; /*m5默认80px;*/
+}
+/*调整logo模块高度*/
+.m-brand .m-brand__logo, .m-brand .m-brand__tools {
+	height: 60px !important;  /*m5默认80px;*/
+}
+/*一级菜单高度*/
+.m-header-menu {
+    margin: 0 0 0 100px; /*m5默认 0 0 0 10px;*/
+	height: 60px;
+	line-height: 60px;
+}
+/*一级菜单字号16px*/
+.m-header-menu .m-menu__nav > .m-menu__item > .m-menu__link .m-menu__link-text {
+    font-size: 16px;
+}
+/*一级菜单，每个菜单的间距*/
+.m-header-menu .m-menu__nav > .m-menu__item {
+    padding: 0px 30px;
+}
+/*菜单hover样式*/
+.m-header-menu .m-menu__nav > .m-menu__item:hover{
+	background-color: rgba(0,0,0,0.05);
+	border-left: 1px solid rgba(255,255,255,0.12);
+	border-right: 1px solid rgba(255,255,255,0.12);	
+	padding: 0 29px;
+}
+/*当前选中菜单样式*/
+.m-header-menu .m-menu__nav > .m-menu__item.m-menu__item--hover{
+	background-color: rgba(0,0,0,0.1);
+    border-left: 1px solid rgba(255,255,255,0.2);
+	border-right: 1px solid rgba(255,255,255,0.2);	
+	padding: 0 29px;
+}
+/*header渐变色*/
+.m-page--wide .m-header, .m-page--fluid .m-header {
+	background: -webkit-linear-gradient(left, #008af4, #00d0d6); /* Safari 5.1 - 6.0 */
+	background: -o-linear-gradient(right, #008af4, #00d0d6); /* Opera 11.1 - 12.0 */
+	background: -moz-linear-gradient(right, #008af4, #00d0d6); /* Firefox 3.6 - 15 */
+	background: linear-gradient(to right, #008af4, #00d0d6); /* 标准的语法（必须放在最后） */
+}
+/*系统标题长度*/
+.m-brand{
+	width:480px;
+	padding: 0;
+}
+/*右侧工具栏高度*/
+.m-topbar .m-topbar__nav.m-nav{
+	height: 60px;
+}
+/*右侧工具栏头像*/
+.m-nav.m-nav--inline > .m-nav__item > .m-nav__link {
+    padding: 0;
+}
+.m-topbar .m-topbar__nav.m-nav > .m-nav__item > .m-nav__link .m-topbar__userpic img {
+    max-width: 45px !important;
+}
+
+/******************************END:头部header******************************/
+/******************************BEGIN:左侧菜单******************************/
+/*左侧菜单栏宽度*/
+.m-aside-left{
+	width: 122px;
+}
+/*底色颜色*/
+.m-aside-left.m-aside-left--skin-dark {
+    background-color: #2b3448;
+}
+/*左侧菜单选中底色*/
+.m-aside-menu .m-menu__nav > .m-menu__item.m-menu__item--active > .m-menu__link {
+    background: #232b3e;
+}
+/*红色数字 内边距增大*/
+.m-badge{
+	padding: 0 3px;
+}
+/*红色数字定位*/
+.m-aside-menu .m-menu__nav > .m-menu__item > .m-menu__link > .m-menu__link-title .m-menu__link-wrap .m-menu__link-badge{
+	top:15px;
+	right: 15px;
+}
+
+/*左侧菜单字号*/
+.m-aside-menu .m-menu__nav > .m-menu__item > .m-menu__link .m-menu__link-text{
+	font-size: 15px;
+}
+/*菜单图标颜色*/
+.m-aside-menu.m-aside-menu--skin-dark .m-menu__nav > .m-menu__item > .m-menu__heading .m-menu__link-icon, .m-aside-menu.m-aside-menu--skin-dark .m-menu__nav > .m-menu__item > .m-menu__link .m-menu__link-icon {
+    color: #7988a8;
+}
+/*菜单选中时，图标和文字颜色*/
+.m-aside-menu .m-menu__nav > .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__link-icon {
+    color: #adcfeb !important;
+}
+.m-aside-menu .m-menu__nav > .m-menu__item.m-menu__item--active > .m-menu__link .m-menu__link-text {
+    color: #adcfeb !important;
+}
+
+/******************************END:左侧菜单******************************/
+
+/******************************BEGIN:右侧内容******************************/
+/*顶部选项卡*/
+.m-wrapper .nav-tabs{
+	background-color: #fff;
+	-webkit-box-shadow: 0px 1px 15px 1px rgba(69, 65, 78, 0.08);
+    -moz-box-shadow: 0px 1px 15px 1px rgba(69, 65, 78, 0.08);
+    box-shadow: 0px 1px 15px 1px rgba(69, 65, 78, 0.08);
+	height: 40px;
+	line-height: 40px;
+	padding: 0;
+	margin-bottom: 0;
+	position: relative;
+
+}
+.m-tabs-line .m-tabs__link {
+     padding: 0; 
+}
+.m-tabs-line.m-tabs-line--info.nav.nav-tabs .nav-link:hover, .m-tabs-line.m-tabs-line--info.nav.nav-tabs .nav-link.active, .m-tabs-line.m-tabs-line--info a.m-tabs__link:hover, .m-tabs-line.m-tabs-line--info a.m-tabs__link.active {
+    height: 40PX;
+}
+.m-tabs-line.m-tabs-line--2x a.m-tabs__link:hover{
+	border-bottom-width: 0 !important;
+}
+.m-tabs-line.m-tabs-line--2x a.m-tabs__link.active {
+    border-bottom-width: 3px !important;
+}
+.nav-tabs.m-tabs-line .m-tabs__item{
+	min-width: 120px;
+	text-align: center;
+	margin-right: 10px;
+	margin-bottom: -1px;	
+}
+.nav-tabs.m-tabs-line .nav-item.position-absolute{
+	right: 0;
+	width: 36px;
+	height: 40px;
+	border-left: 1px solid #d9d9d9;
+}
+.nav-tabs li .fa-times {
+	font-size: 1.2rem!important;
+    position: relative;
+    display: inline-block;
+    width: 20px;
+    font-weight: 100;
+    top: -1px;
+    margin-left: 8px;
+    text-align: center;
+    color: #898b96;
+    -webkit-text-stroke: 1px #fff;
+}
+.m-tabs-line .m-tabs__link {
+    font-size: 15px;
+}
+.nav.nav-pills .nav-link i, .nav.nav-tabs .nav-link i {
+    margin-right: -0.5rem;
+}
+.nav-link.m-tabs__link.dropdown-toggle{
+	text-align: center;
+	width: 36px;
+	height: 40px;
+	padding-top: 12px;
+}
+.m-tabs-line.nav.nav-tabs .nav-link, .m-tabs-line a.m-tabs__link{
+	
+}
+.dropdown-menu > li > a, .dropdown-menu > .dropdown-item {
+    padding: 0px 10px;
+}
+.nav-link.dropdown-toggle:after, .btn.dropdown-toggle:after {
+	display: none;
+}
+/*iframe框架内容*/
+.iframe-wrapper{
+	width: 100%; 
+	padding: 15px 15px 15px 15px;
+	overflow:hidden;
+	display:block; 
+	height: calc( 100vh - 100px);
+}
+.iframe-wrapper .iframe{
+	width: 100%;
+	height: 100%;
+	background-color: #fff; 
+	-webkit-box-shadow: 0px 1px 15px 1px rgba(69,65,78,0.08);
+    box-shadow: 0px 1px 15px 1px rgba(69,65,78,0.08);
+	padding: 10px;
+	overflow: hidden;
+
+}
+/******************************END:右侧内容******************************/

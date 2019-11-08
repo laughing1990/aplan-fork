@@ -1,0 +1,58 @@
+#index {
+    padding: 10px;
+}
+
+.el-form {
+    padding-top: 20px;
+}
+
+.el-form-item__label {
+    width: 30%;
+    text-align: right;
+}
+
+.el-form--inline .el-form-item {
+
+    margin-right: 0;
+    width: 99%;
+}
+
+.el-form--inline .el-form-item__content {
+    width: 70%;
+}
+
+.el-form-item__content .el-select {
+    width: 100%;
+}
+
+.ops-memo .el-form-item__label {
+
+    width: 15%;
+    float: left;
+}
+.ops-memo .el-form-item__content {
+
+    display: block;
+    width: 100%;
+}
+
+.ops-memo2 .el-form-item__label {
+
+    width: 15%;
+    float: left;
+}
+
+.ops-memo2 .el-form-item__content {
+
+    width: 85%;
+}
+
+.ops-memo .el-textarea {
+
+    position: relative;
+    display: inline-block;
+    width: 85%;
+    vertical-align: bottom;
+    font-size: 14px;
+}
+

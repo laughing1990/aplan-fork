@@ -1,0 +1,2213 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <preConditions>
+        <dbms type="mysql"/>
+    </preConditions>
+
+    <changeSet id="20190802165534huangzl-smartform-init" author="huangzl" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            <![CDATA[
+
+/*设计器相关数据*/
+select * from act_sto_vision
+where vision_ID like 'pc-%';
+INSERT INTO `act_sto_vision` (`VISION_ID`, `VISION_CODE`, `VISION_CONTENT`, `IS_LOCK`, `IS_ACTIVE`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `VISION_MEMO`, `VISION_NAME`) VALUES ('pc-checkbox', 'checkbox', '<input id=\'{htmlViewId}\' viewclass=\'CheckBoxView\' type=\'checkbox\' binding=\'{elemId}\'  style=\'width:100%\'></input>', '1', '1', 'admin', '2019-05-29 00:00:00', NULL, NULL, NULL, '复选框');
+INSERT INTO `act_sto_vision` (`VISION_ID`, `VISION_CODE`, `VISION_CONTENT`, `IS_LOCK`, `IS_ACTIVE`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `VISION_MEMO`, `VISION_NAME`) VALUES ('pc-radio', 'radio', '<input id=\'{htmlViewId}\' viewclass=\'RadioBoxView\' type=\'radio\' binding=\'{elemId}\'  style=\'width:100%\'></input>', '1', '1', 'admin', '2019-05-29 00:00:00', NULL, NULL, NULL, '单选按钮');
+INSERT INTO `act_sto_vision` (`VISION_ID`, `VISION_CODE`, `VISION_CONTENT`, `IS_LOCK`, `IS_ACTIVE`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `VISION_MEMO`, `VISION_NAME`) VALUES ('pc-selectfield', 'selectfield', '<select id=\'{htmlViewId}\' tag=\'select\' viewclass=\'SelectView\' binding=\'{elemId}\' style=\'width:100%\'></select>', '1', '1', 'admin', '2019-05-29 00:00:00', NULL, NULL, NULL, '下拉框');
+INSERT INTO `act_sto_vision` (`VISION_ID`, `VISION_CODE`, `VISION_CONTENT`, `IS_LOCK`, `IS_ACTIVE`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `VISION_MEMO`, `VISION_NAME`) VALUES ('pc-textarea', 'textarea', '<textarea id=\'{htmlViewId}\' viewclass=\'TextAreaView\' binding=\'{elemId}\'  style=\'width:100%\'></textarea>', '1', '1', 'admin', '2019-05-29 00:00:00', NULL, NULL, NULL, '单行文本');
+INSERT INTO `act_sto_vision` (`VISION_ID`, `VISION_CODE`, `VISION_CONTENT`, `IS_LOCK`, `IS_ACTIVE`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `VISION_MEMO`, `VISION_NAME`) VALUES ('pc-textfield', 'textfield', '\"<input id=\'{htmlViewId}\' tag=\'textfield\' viewclass=\'InputView\' type=\'text\' value=\'\' binding=\'{elemId}\'  style=\'width:100%\'></input>', '1', '1', 'admin', '2019-05-29 00:00:00', NULL, NULL, NULL, '单行文本');
+
+select * from act_sto_widget
+where WIDGET_ID in(
+'20001'
+,'20002'
+,'20003'
+,'20004'
+,'20005'
+);
+INSERT INTO `act_sto_widget` (`WIDGET_ID`, `TECH_ID`, `WIDGET_CODE`, `WIDGET_NAME`, `WIDGET_RENDERER`, `IS_LOCK`, `IS_ACTIVE`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `CATEGORY_ID`, `PARENT_WIDGET_ID`, `WIDGET_SEQ`, `IS_COMPOSITE_WIDGET`, `VISION_ID`, `IS_CONTAINER_WIDGET`, `TMN_ID`, `SORT_NO`, `WIDGET_TYPE`) VALUES ('20001', '44e1f3d3-223d-415a-a371-4abe026055a8', 'textfield', '单行文本框', 'textfield', '1', '1', '369', '2019-05-29 00:00:00', NULL, NULL, '234443', NULL, NULL, '0', 'pc-textfield', NULL, '1', '1', NULL);
+INSERT INTO `act_sto_widget` (`WIDGET_ID`, `TECH_ID`, `WIDGET_CODE`, `WIDGET_NAME`, `WIDGET_RENDERER`, `IS_LOCK`, `IS_ACTIVE`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `CATEGORY_ID`, `PARENT_WIDGET_ID`, `WIDGET_SEQ`, `IS_COMPOSITE_WIDGET`, `VISION_ID`, `IS_CONTAINER_WIDGET`, `TMN_ID`, `SORT_NO`, `WIDGET_TYPE`) VALUES ('20002', '44e1f3d3-223d-415a-a371-4abe026055a8', 'selectfield', '下拉框', 'selectfield', '1', '1', '369', '2019-05-29 00:00:00', NULL, NULL, '234443', NULL, NULL, '0', 'pc-selectfield', NULL, '1', '2', NULL);
+INSERT INTO `act_sto_widget` (`WIDGET_ID`, `TECH_ID`, `WIDGET_CODE`, `WIDGET_NAME`, `WIDGET_RENDERER`, `IS_LOCK`, `IS_ACTIVE`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `CATEGORY_ID`, `PARENT_WIDGET_ID`, `WIDGET_SEQ`, `IS_COMPOSITE_WIDGET`, `VISION_ID`, `IS_CONTAINER_WIDGET`, `TMN_ID`, `SORT_NO`, `WIDGET_TYPE`) VALUES ('20003', '44e1f3d3-223d-415a-a371-4abe026055a8', 'textarea', '多行文本框', 'textarea', '1', '1', '369', '2019-05-29 00:00:00', NULL, NULL, '234443', NULL, NULL, '0', 'pc-textarea', NULL, '1', '3', NULL);
+INSERT INTO `act_sto_widget` (`WIDGET_ID`, `TECH_ID`, `WIDGET_CODE`, `WIDGET_NAME`, `WIDGET_RENDERER`, `IS_LOCK`, `IS_ACTIVE`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `CATEGORY_ID`, `PARENT_WIDGET_ID`, `WIDGET_SEQ`, `IS_COMPOSITE_WIDGET`, `VISION_ID`, `IS_CONTAINER_WIDGET`, `TMN_ID`, `SORT_NO`, `WIDGET_TYPE`) VALUES ('20004', '44e1f3d3-223d-415a-a371-4abe026055a8', 'checkbox', '复选框', 'checkbox', '1', '1', '369', '2019-05-29 00:00:00', NULL, NULL, '234443', NULL, NULL, '0', 'pc-checkbox', NULL, '1', '4', NULL);
+INSERT INTO `act_sto_widget` (`WIDGET_ID`, `TECH_ID`, `WIDGET_CODE`, `WIDGET_NAME`, `WIDGET_RENDERER`, `IS_LOCK`, `IS_ACTIVE`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `CATEGORY_ID`, `PARENT_WIDGET_ID`, `WIDGET_SEQ`, `IS_COMPOSITE_WIDGET`, `VISION_ID`, `IS_CONTAINER_WIDGET`, `TMN_ID`, `SORT_NO`, `WIDGET_TYPE`) VALUES ('20005', '44e1f3d3-223d-415a-a371-4abe026055a8', 'radio', '单选按钮', 'radio', '1', '1', '369', '2019-05-29 00:00:00', NULL, NULL, '234443', NULL, NULL, '0', 'pc-radio', NULL, '1', '5', NULL);
+
+select * from act_sto_widget_key
+where WIDGET_ID in(
+'20001'
+,'20002'
+,'20003'
+,'20004'
+,'20005'
+);
+INSERT INTO `act_sto_widget_key` (`KEY_ID`, `WIDGET_ID`, `KEY_CODE`, `KEY_LABEL`, `IS_REQUIRED`, `VALUE_TIPS`, `VALUE_LENGTH_LIMIT`, `VALUE_DEFAULT`, `HTML_COMP`, `IS_DIC_CODE`, `DIC_CODE_TYPE`, `IS_LOCK`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `IS_ACTIVE`, `SORT_NO`) VALUES ('2000101', '20001', 'title', '标题', '1', '单行文本框', '50', '单行文本框', 'text', '0', NULL, '0', '369', '2018-06-01 00:00:00', NULL, NULL, '1', '1');
+INSERT INTO `act_sto_widget_key` (`KEY_ID`, `WIDGET_ID`, `KEY_CODE`, `KEY_LABEL`, `IS_REQUIRED`, `VALUE_TIPS`, `VALUE_LENGTH_LIMIT`, `VALUE_DEFAULT`, `HTML_COMP`, `IS_DIC_CODE`, `DIC_CODE_TYPE`, `IS_LOCK`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `IS_ACTIVE`, `SORT_NO`) VALUES ('2000102', '20001', 'tips', '提示文字', '0', '请输入文本', '50', '请输入文本', 'text', '0', NULL, '0', '369', '2018-06-01 00:00:00', NULL, NULL, '1', '3');
+INSERT INTO `act_sto_widget_key` (`KEY_ID`, `WIDGET_ID`, `KEY_CODE`, `KEY_LABEL`, `IS_REQUIRED`, `VALUE_TIPS`, `VALUE_LENGTH_LIMIT`, `VALUE_DEFAULT`, `HTML_COMP`, `IS_DIC_CODE`, `DIC_CODE_TYPE`, `IS_LOCK`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `IS_ACTIVE`, `SORT_NO`) VALUES ('2000103', '20001', 'required', '验证', '1', '是否必填', '1', '0', 'checkbox', '0', NULL, '0', '369', '2018-06-01 00:00:00', NULL, NULL, '1', '5');
+INSERT INTO `act_sto_widget_key` (`KEY_ID`, `WIDGET_ID`, `KEY_CODE`, `KEY_LABEL`, `IS_REQUIRED`, `VALUE_TIPS`, `VALUE_LENGTH_LIMIT`, `VALUE_DEFAULT`, `HTML_COMP`, `IS_DIC_CODE`, `DIC_CODE_TYPE`, `IS_LOCK`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `IS_ACTIVE`, `SORT_NO`) VALUES ('2000104', '20001', 'dbColumnName', '表字段(英文)', '1', '请输入3-30个英文字母(含下划线)', '50', NULL, 'text', '0', NULL, '0', '369', '2018-06-01 00:00:00', NULL, NULL, '1', '2');
+INSERT INTO `act_sto_widget_key` (`KEY_ID`, `WIDGET_ID`, `KEY_CODE`, `KEY_LABEL`, `IS_REQUIRED`, `VALUE_TIPS`, `VALUE_LENGTH_LIMIT`, `VALUE_DEFAULT`, `HTML_COMP`, `IS_DIC_CODE`, `DIC_CODE_TYPE`, `IS_LOCK`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `IS_ACTIVE`, `SORT_NO`) VALUES ('2000105', '20001', 'maxLimit', '最大长度', '1', '128', '128', '128', 'text', '0', NULL, '0', '369', '2018-04-06 00:00:00', NULL, NULL, '1', '4');
+INSERT INTO `act_sto_widget_key` (`KEY_ID`, `WIDGET_ID`, `KEY_CODE`, `KEY_LABEL`, `IS_REQUIRED`, `VALUE_TIPS`, `VALUE_LENGTH_LIMIT`, `VALUE_DEFAULT`, `HTML_COMP`, `IS_DIC_CODE`, `DIC_CODE_TYPE`, `IS_LOCK`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `IS_ACTIVE`, `SORT_NO`) VALUES ('2000201', '20002', 'title', '标题', '1', '下拉框', '50', '下拉框', 'text', '0', NULL, '0', '369', '2018-06-01 00:00:00', NULL, NULL, '1', '1');
+INSERT INTO `act_sto_widget_key` (`KEY_ID`, `WIDGET_ID`, `KEY_CODE`, `KEY_LABEL`, `IS_REQUIRED`, `VALUE_TIPS`, `VALUE_LENGTH_LIMIT`, `VALUE_DEFAULT`, `HTML_COMP`, `IS_DIC_CODE`, `DIC_CODE_TYPE`, `IS_LOCK`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `IS_ACTIVE`, `SORT_NO`) VALUES ('2000202', '20002', 'tips', '提示文字', '0', '请选择', '50', '请选择', 'text', '0', NULL, '0', '369', '2018-06-01 00:00:00', NULL, NULL, '1', '3');
+INSERT INTO `act_sto_widget_key` (`KEY_ID`, `WIDGET_ID`, `KEY_CODE`, `KEY_LABEL`, `IS_REQUIRED`, `VALUE_TIPS`, `VALUE_LENGTH_LIMIT`, `VALUE_DEFAULT`, `HTML_COMP`, `IS_DIC_CODE`, `DIC_CODE_TYPE`, `IS_LOCK`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `IS_ACTIVE`, `SORT_NO`) VALUES ('2000203', '20002', 'required', '验证', '1', '是否必填', '1', '0', 'checkbox', '0', NULL, '0', '369', '2018-06-01 00:00:00', NULL, NULL, '1', '5');
+INSERT INTO `act_sto_widget_key` (`KEY_ID`, `WIDGET_ID`, `KEY_CODE`, `KEY_LABEL`, `IS_REQUIRED`, `VALUE_TIPS`, `VALUE_LENGTH_LIMIT`, `VALUE_DEFAULT`, `HTML_COMP`, `IS_DIC_CODE`, `DIC_CODE_TYPE`, `IS_LOCK`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `IS_ACTIVE`, `SORT_NO`) VALUES ('2000204', '20002', 'dbColumnName', '表字段(英文)', '1', '请输入3-30个英文字母(含下划线)', '50', NULL, 'text', '0', NULL, '0', '369', '2018-06-01 00:00:00', NULL, NULL, '1', '2');
+INSERT INTO `act_sto_widget_key` (`KEY_ID`, `WIDGET_ID`, `KEY_CODE`, `KEY_LABEL`, `IS_REQUIRED`, `VALUE_TIPS`, `VALUE_LENGTH_LIMIT`, `VALUE_DEFAULT`, `HTML_COMP`, `IS_DIC_CODE`, `DIC_CODE_TYPE`, `IS_LOCK`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `IS_ACTIVE`, `SORT_NO`) VALUES ('2000205', '20002', 'maxLimit', '最大长度', '1', '128', '128', '128', 'text', '0', NULL, '0', '369', '2018-04-06 00:00:00', NULL, NULL, '1', '4');
+INSERT INTO `act_sto_widget_key` (`KEY_ID`, `WIDGET_ID`, `KEY_CODE`, `KEY_LABEL`, `IS_REQUIRED`, `VALUE_TIPS`, `VALUE_LENGTH_LIMIT`, `VALUE_DEFAULT`, `HTML_COMP`, `IS_DIC_CODE`, `DIC_CODE_TYPE`, `IS_LOCK`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `IS_ACTIVE`, `SORT_NO`) VALUES ('2000210', '20002', 'dictTypeCode', '数据字典编号', '1', NULL, '50', 'COMMON_POS', 'select', '1', NULL, '0', '369', '2018-05-25 00:00:00', NULL, NULL, '1', '10');
+INSERT INTO `act_sto_widget_key` (`KEY_ID`, `WIDGET_ID`, `KEY_CODE`, `KEY_LABEL`, `IS_REQUIRED`, `VALUE_TIPS`, `VALUE_LENGTH_LIMIT`, `VALUE_DEFAULT`, `HTML_COMP`, `IS_DIC_CODE`, `DIC_CODE_TYPE`, `IS_LOCK`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `IS_ACTIVE`, `SORT_NO`) VALUES ('2000301', '20003', 'title', '标题', '1', '多行文本框', '50', '多行文本框', 'text', '0', NULL, '0', '369', '2018-06-01 00:00:00', NULL, NULL, '1', '1');
+INSERT INTO `act_sto_widget_key` (`KEY_ID`, `WIDGET_ID`, `KEY_CODE`, `KEY_LABEL`, `IS_REQUIRED`, `VALUE_TIPS`, `VALUE_LENGTH_LIMIT`, `VALUE_DEFAULT`, `HTML_COMP`, `IS_DIC_CODE`, `DIC_CODE_TYPE`, `IS_LOCK`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `IS_ACTIVE`, `SORT_NO`) VALUES ('2000302', '20003', 'tips', '提示文字', '0', '请输入文本', '50', '请输入文本', 'text', '0', NULL, '0', '369', '2018-06-01 00:00:00', NULL, NULL, '1', '3');
+INSERT INTO `act_sto_widget_key` (`KEY_ID`, `WIDGET_ID`, `KEY_CODE`, `KEY_LABEL`, `IS_REQUIRED`, `VALUE_TIPS`, `VALUE_LENGTH_LIMIT`, `VALUE_DEFAULT`, `HTML_COMP`, `IS_DIC_CODE`, `DIC_CODE_TYPE`, `IS_LOCK`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `IS_ACTIVE`, `SORT_NO`) VALUES ('2000303', '20003', 'required', '验证', '1', '是否必填', '1', '0', 'checkbox', '0', NULL, '0', '369', '2018-06-01 00:00:00', NULL, NULL, '1', '5');
+INSERT INTO `act_sto_widget_key` (`KEY_ID`, `WIDGET_ID`, `KEY_CODE`, `KEY_LABEL`, `IS_REQUIRED`, `VALUE_TIPS`, `VALUE_LENGTH_LIMIT`, `VALUE_DEFAULT`, `HTML_COMP`, `IS_DIC_CODE`, `DIC_CODE_TYPE`, `IS_LOCK`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `IS_ACTIVE`, `SORT_NO`) VALUES ('2000304', '20003', 'dbColumnName', '表字段(英文)', '1', '请输入3-30个英文字母(含下划线)', '50', NULL, 'text', '0', NULL, '0', '369', '2018-06-01 00:00:00', NULL, NULL, '1', '2');
+INSERT INTO `act_sto_widget_key` (`KEY_ID`, `WIDGET_ID`, `KEY_CODE`, `KEY_LABEL`, `IS_REQUIRED`, `VALUE_TIPS`, `VALUE_LENGTH_LIMIT`, `VALUE_DEFAULT`, `HTML_COMP`, `IS_DIC_CODE`, `DIC_CODE_TYPE`, `IS_LOCK`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `IS_ACTIVE`, `SORT_NO`) VALUES ('2000305', '20003', 'maxLimit', '最大长度', '1', '512', '512', '512', 'text', '0', NULL, '0', '369', '2018-04-06 00:00:00', NULL, NULL, '1', '4');
+INSERT INTO `act_sto_widget_key` (`KEY_ID`, `WIDGET_ID`, `KEY_CODE`, `KEY_LABEL`, `IS_REQUIRED`, `VALUE_TIPS`, `VALUE_LENGTH_LIMIT`, `VALUE_DEFAULT`, `HTML_COMP`, `IS_DIC_CODE`, `DIC_CODE_TYPE`, `IS_LOCK`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `IS_ACTIVE`, `SORT_NO`) VALUES ('2000401', '20004', 'title', '标题', '1', '复选框', '50', '复选框', 'text', '0', NULL, '0', '369', '2018-06-01 00:00:00', NULL, NULL, '1', '1');
+INSERT INTO `act_sto_widget_key` (`KEY_ID`, `WIDGET_ID`, `KEY_CODE`, `KEY_LABEL`, `IS_REQUIRED`, `VALUE_TIPS`, `VALUE_LENGTH_LIMIT`, `VALUE_DEFAULT`, `HTML_COMP`, `IS_DIC_CODE`, `DIC_CODE_TYPE`, `IS_LOCK`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `IS_ACTIVE`, `SORT_NO`) VALUES ('2000402', '20004', 'tips', '提示文字', '0', '请勾选', '50', '请勾选', 'text', '0', NULL, '0', '369', '2018-06-01 00:00:00', NULL, NULL, '1', '3');
+INSERT INTO `act_sto_widget_key` (`KEY_ID`, `WIDGET_ID`, `KEY_CODE`, `KEY_LABEL`, `IS_REQUIRED`, `VALUE_TIPS`, `VALUE_LENGTH_LIMIT`, `VALUE_DEFAULT`, `HTML_COMP`, `IS_DIC_CODE`, `DIC_CODE_TYPE`, `IS_LOCK`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `IS_ACTIVE`, `SORT_NO`) VALUES ('2000403', '20004', 'required', '验证', '1', '是否必填', '1', '0', 'checkbox', '0', NULL, '0', '369', '2018-06-01 00:00:00', NULL, NULL, '1', '5');
+INSERT INTO `act_sto_widget_key` (`KEY_ID`, `WIDGET_ID`, `KEY_CODE`, `KEY_LABEL`, `IS_REQUIRED`, `VALUE_TIPS`, `VALUE_LENGTH_LIMIT`, `VALUE_DEFAULT`, `HTML_COMP`, `IS_DIC_CODE`, `DIC_CODE_TYPE`, `IS_LOCK`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `IS_ACTIVE`, `SORT_NO`) VALUES ('2000404', '20004', 'dbColumnName', '表字段(英文)', '1', '请输入3-30个英文字母(含下划线)', '50', NULL, 'text', '0', NULL, '0', '369', '2018-06-01 00:00:00', NULL, NULL, '1', '2');
+INSERT INTO `act_sto_widget_key` (`KEY_ID`, `WIDGET_ID`, `KEY_CODE`, `KEY_LABEL`, `IS_REQUIRED`, `VALUE_TIPS`, `VALUE_LENGTH_LIMIT`, `VALUE_DEFAULT`, `HTML_COMP`, `IS_DIC_CODE`, `DIC_CODE_TYPE`, `IS_LOCK`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `IS_ACTIVE`, `SORT_NO`) VALUES ('2000405', '20004', 'maxLimit', '最大长度', '1', '512', '512', '512', 'text', '0', NULL, '0', '369', '2018-04-06 00:00:00', NULL, NULL, '1', '4');
+INSERT INTO `act_sto_widget_key` (`KEY_ID`, `WIDGET_ID`, `KEY_CODE`, `KEY_LABEL`, `IS_REQUIRED`, `VALUE_TIPS`, `VALUE_LENGTH_LIMIT`, `VALUE_DEFAULT`, `HTML_COMP`, `IS_DIC_CODE`, `DIC_CODE_TYPE`, `IS_LOCK`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `IS_ACTIVE`, `SORT_NO`) VALUES ('2000410', '20004', 'dictTypeCode', '数据字典编号', '1', NULL, '50', 'COMMON_POS', 'select', '1', NULL, '0', '369', '2018-05-25 00:00:00', NULL, NULL, '1', '10');
+INSERT INTO `act_sto_widget_key` (`KEY_ID`, `WIDGET_ID`, `KEY_CODE`, `KEY_LABEL`, `IS_REQUIRED`, `VALUE_TIPS`, `VALUE_LENGTH_LIMIT`, `VALUE_DEFAULT`, `HTML_COMP`, `IS_DIC_CODE`, `DIC_CODE_TYPE`, `IS_LOCK`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `IS_ACTIVE`, `SORT_NO`) VALUES ('2000501', '20005', 'title', '标题', '1', '单选按钮', '50', '单选按钮', 'text', '0', NULL, '0', '369', '2018-06-01 00:00:00', NULL, NULL, '1', '1');
+INSERT INTO `act_sto_widget_key` (`KEY_ID`, `WIDGET_ID`, `KEY_CODE`, `KEY_LABEL`, `IS_REQUIRED`, `VALUE_TIPS`, `VALUE_LENGTH_LIMIT`, `VALUE_DEFAULT`, `HTML_COMP`, `IS_DIC_CODE`, `DIC_CODE_TYPE`, `IS_LOCK`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `IS_ACTIVE`, `SORT_NO`) VALUES ('2000502', '20005', 'tips', '提示文字', '0', '请选择', '50', '请选择', 'text', '0', NULL, '0', '369', '2018-06-01 00:00:00', NULL, NULL, '1', '3');
+INSERT INTO `act_sto_widget_key` (`KEY_ID`, `WIDGET_ID`, `KEY_CODE`, `KEY_LABEL`, `IS_REQUIRED`, `VALUE_TIPS`, `VALUE_LENGTH_LIMIT`, `VALUE_DEFAULT`, `HTML_COMP`, `IS_DIC_CODE`, `DIC_CODE_TYPE`, `IS_LOCK`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `IS_ACTIVE`, `SORT_NO`) VALUES ('2000503', '20005', 'required', '验证', '1', '是否必填', '1', '0', 'checkbox', '0', NULL, '0', '369', '2018-06-01 00:00:00', NULL, NULL, '1', '5');
+INSERT INTO `act_sto_widget_key` (`KEY_ID`, `WIDGET_ID`, `KEY_CODE`, `KEY_LABEL`, `IS_REQUIRED`, `VALUE_TIPS`, `VALUE_LENGTH_LIMIT`, `VALUE_DEFAULT`, `HTML_COMP`, `IS_DIC_CODE`, `DIC_CODE_TYPE`, `IS_LOCK`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `IS_ACTIVE`, `SORT_NO`) VALUES ('2000504', '20005', 'dbColumnName', '表字段(英文)', '1', '请输入3-30个英文字母(含下划线)', '50', NULL, 'text', '0', NULL, '0', '369', '2018-06-01 00:00:00', NULL, NULL, '1', '2');
+INSERT INTO `act_sto_widget_key` (`KEY_ID`, `WIDGET_ID`, `KEY_CODE`, `KEY_LABEL`, `IS_REQUIRED`, `VALUE_TIPS`, `VALUE_LENGTH_LIMIT`, `VALUE_DEFAULT`, `HTML_COMP`, `IS_DIC_CODE`, `DIC_CODE_TYPE`, `IS_LOCK`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `IS_ACTIVE`, `SORT_NO`) VALUES ('2000505', '20005', 'maxLimit', '最大长度', '1', '512', '512', '512', 'text', '0', NULL, '0', '369', '2018-04-06 00:00:00', NULL, NULL, '1', '4');
+INSERT INTO `act_sto_widget_key` (`KEY_ID`, `WIDGET_ID`, `KEY_CODE`, `KEY_LABEL`, `IS_REQUIRED`, `VALUE_TIPS`, `VALUE_LENGTH_LIMIT`, `VALUE_DEFAULT`, `HTML_COMP`, `IS_DIC_CODE`, `DIC_CODE_TYPE`, `IS_LOCK`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `IS_ACTIVE`, `SORT_NO`) VALUES ('2000510', '20005', 'dictTypeCode', '数据字典编号', '1', NULL, '50', 'COMMON_POS', 'select', '1', NULL, '0', '369', '2018-05-25 00:00:00', NULL, NULL, '1', '10');
+
+
+
+/**************修改****************/
+update act_sto_widget
+set WIDGET_NAME='单行文本框'
+where WIDGET_ID='20001';
+update act_sto_widget_key
+set VALUE_TIPS='单行文本框'
+,VALUE_DEFAULT='单行文本框'
+where KEY_ID='2000101';
+update act_sto_widget
+set WIDGET_NAME='多行文本框'
+where WIDGET_ID='20003';
+update act_sto_widget_key
+set VALUE_TIPS='多行文本框'
+,VALUE_DEFAULT='多行文本框'
+where KEY_ID='2000301';
+
+select * from act_sto_widget
+where WIDGET_ID='20001'
+or  WIDGET_ID='20003';
+select * from act_sto_widget_key
+where KEY_ID='2000101'
+or KEY_ID='2000301';
+
+
+/*数据字典*/
+SELECT	*FROM bsc_dic_code_type
+WHERE TYPE_CODE IN('COMMON_POS','COMMON_SEX');
+SELECT 	*FROM 	bsc_dic_code_item
+WHERE TYPE_ID IN (
+		SELECT type_id FROM bsc_dic_code_type
+		WHERE		TYPE_CODE IN('COMMON_POS','COMMON_SEX')
+);
+INSERT INTO `bsc_dic_code_type` (`TYPE_ID`, `TYPE_CODE`, `TYPE_NAME`, `IS_TREE`, `IS_ACTIVE`, `TYPE_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES ('22ba14f4-5b14-4051-ba0b-09dd47922101', 'COMMON_SEX', '性别', '0', '1', NULL, NULL, '2019-05-15 16:05:48', NULL, '2019-05-15 16:05:48', 'A');
+INSERT INTO `bsc_dic_code_type` (`TYPE_ID`, `TYPE_CODE`, `TYPE_NAME`, `IS_TREE`, `IS_ACTIVE`, `TYPE_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES ('22ba14f4-5b14-4051-ba0b-09dd47922102', 'COMMON_POS', '岗位', '0', '1', NULL, NULL, '2019-05-15 16:05:48', NULL, '2019-05-15 16:05:48', 'A');
+
+INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`, `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES ('31725803-1710-4376-be08-78abae490101', '22ba14f4-5b14-4051-ba0b-09dd47922101', '1', '男', '1', '10', NULL, NULL, '0', '0', NULL, NULL, NULL, NULL, NULL, '012aa547-7104-418d-87cc-824f24f1a278');
+INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`, `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES ('31725803-1710-4376-be08-78abae490102', '22ba14f4-5b14-4051-ba0b-09dd47922101', '2', '女', '1', '10', NULL, NULL, '0', '0', NULL, NULL, NULL, NULL, NULL, '012aa547-7104-418d-87cc-824f24f1a278');
+INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`, `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES ('31725803-1710-4376-be08-78abae490201', '22ba14f4-5b14-4051-ba0b-09dd47922102', '1', '初级', '1', '10', NULL, NULL, '0', '0', NULL, NULL, NULL, NULL, NULL, '012aa547-7104-418d-87cc-824f24f1a278');
+INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`, `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES ('31725803-1710-4376-be08-78abae490202', '22ba14f4-5b14-4051-ba0b-09dd47922102', '2', '中级', '1', '10', NULL, NULL, '0', '0', NULL, NULL, NULL, NULL, NULL, '012aa547-7104-418d-87cc-824f24f1a278');
+INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`, `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES ('31725803-1710-4376-be08-78abae490203', '22ba14f4-5b14-4051-ba0b-09dd47922102', '3', '高级', '1', '10', NULL, NULL, '0', '0', NULL, NULL, NULL, NULL, NULL, '012aa547-7104-418d-87cc-824f24f1a278');
+
+
+            ]]>
+        </sql>
+    </changeSet>
+
+    <changeSet id="20190805104316huangzl-smartform-adapter-dict-org" author="huangzl" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            <![CDATA[
+/*适应工程建设4.0的 ORG_ID */
+update bsc_dic_code_type
+set ORG_ID='0368948a-1cdf-4bf8-a828-71d796ba89f6'
+where TYPE_ID in (
+'22ba14f4-5b14-4051-ba0b-09dd47922101'
+,'22ba14f4-5b14-4051-ba0b-09dd47922102'
+);
+update bsc_dic_code_item
+set ORG_ID='0368948a-1cdf-4bf8-a828-71d796ba89f6'
+where TYPE_ID in (
+'22ba14f4-5b14-4051-ba0b-09dd47922101'
+,'22ba14f4-5b14-4051-ba0b-09dd47922102'
+);
+            ]]>
+        </sql>
+    </changeSet>
+    <changeSet id="20190807102845huangzl-smartform-adapter-tech_id" author="huangzl" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            <![CDATA[
+            update act_sto_widget
+            set tech_id='8dccbc9d-37be-4b62-806d-976d4edcadff'
+            where tech_id='44e1f3d3-223d-415a-a371-4abe026055a8'
+            ;
+            ]]>
+        </sql>
+    </changeSet>
+
+    <changeSet id="201908141726" author="sam" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            update aea_hi_iteminst set IS_TOLERANCE_ACCEPT = '0' where IS_TOLERANCE_ACCEPT is null;
+        </sql>
+    </changeSet>
+
+    <!--<changeSet id="201908261015" author="xiaohutu" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_item_basic` ADD INDEX `ROOT_ORG_ID`(`ROOT_ORG_ID`) USING BTREE COMMENT 'ROOT_ORG_ID';
+            ALTER TABLE `aea_item_ver` ADD INDEX `ROOT_ORG_ID`(`ROOT_ORG_ID`) USING BTREE COMMENT 'ROOT_ORG_ID';
+
+            ALTER TABLE `aea_hi_par_stateinst` ADD INDEX `STAGEINST_ID`(`STAGEINST_ID`) USING BTREE COMMENT
+            'STAGEINST_ID';
+            ALTER TABLE `aea_hi_par_stateinst` ADD INDEX `ROOT_ORG_ID`(`ROOT_ORG_ID`) USING BTREE COMMENT 'ROOT_ORG_ID';
+
+            ALTER TABLE `aea_par_in` ADD INDEX `ROOT_ORG_ID`(`ROOT_ORG_ID`) USING BTREE COMMENT 'ROOT_ORG_ID';
+            ALTER TABLE `aea_par_in` ADD INDEX `STAGE_ID`(`STAGE_ID`) USING BTREE COMMENT 'STAGE_ID';
+
+            ALTER TABLE `aea_par_state` ADD INDEX `ROOT_ORG_ID`(`ROOT_ORG_ID`) USING BTREE COMMENT 'ROOT_ORG_ID';
+            ALTER TABLE `aea_par_state` ADD INDEX `PARENT_STATE_ID`(`PARENT_STATE_ID`) USING BTREE COMMENT
+            'PARENT_STATE_ID';
+            ALTER TABLE `aea_par_state` ADD INDEX `STAGE_ID`(`STAGE_ID`) USING BTREE COMMENT 'STAGE_ID';
+
+            ALTER TABLE `aea_hi_par_stageinst` ADD INDEX `ROOT_ORG_ID`(`ROOT_ORG_ID`) USING BTREE COMMENT 'ROOT_ORG_ID';
+            ALTER TABLE `aea_hi_par_stageinst` ADD INDEX `APPLYINST_ID`(`APPLYINST_ID`) USING BTREE COMMENT
+            'APPLYINST_ID';
+            ALTER TABLE `aea_hi_par_stageinst` ADD INDEX `STAGE_ID`(`STAGE_ID`) USING BTREE COMMENT 'STAGE_ID';
+        </sql>
+    </changeSet>-->
+
+
+    <changeSet id="20190826145302huangzl-smartform-componentadd" author="huangzl" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            <![CDATA[
+INSERT INTO `act_sto_vision` (`VISION_ID`, `VISION_CODE`, `VISION_CONTENT`, `IS_LOCK`, `IS_ACTIVE`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `VISION_MEMO`, `VISION_NAME`) VALUES ('pc-date', 'date', '<input id=\'{htmlViewId}\' viewclass=\'DateView\' type=\'text\' value=\'\' binding=\'{elemId}\'  style=\'width:100%\'></input>', '1', '1', 'admin', '2019-05-29 00:00:00', NULL, NULL, NULL, '日期');
+INSERT INTO `act_sto_vision` (`VISION_ID`, `VISION_CODE`, `VISION_CONTENT`, `IS_LOCK`, `IS_ACTIVE`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `VISION_MEMO`, `VISION_NAME`) VALUES ('pc-number', 'number', '<input id=\'{htmlViewId}\' viewclass=\'NumberView\' type=\'text\' value=\'\' binding=\'{elemId}\'  style=\'width:100%\'></input>', '1', '1', 'admin', '2019-05-29 00:00:00', NULL, NULL, NULL, '数值类型');
+INSERT INTO `act_sto_vision` (`VISION_ID`, `VISION_CODE`, `VISION_CONTENT`, `IS_LOCK`, `IS_ACTIVE`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `VISION_MEMO`, `VISION_NAME`) VALUES ('pc-hidden', 'hidden', '<input id=\'{htmlViewId}\' viewclass=\'HiddenView\' type=\'text\' value=\'\' binding=\'{elemId}\'  style=\'width:100%\'></input>', '1', '1', 'admin', '2019-05-29 00:00:00', NULL, NULL, NULL, '隐藏域');
+
+INSERT INTO act_sto_widget(`WIDGET_ID`, `TECH_ID`, `WIDGET_CODE`, `WIDGET_NAME`, `WIDGET_RENDERER`, `IS_LOCK`, `IS_ACTIVE`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `CATEGORY_ID`, `PARENT_WIDGET_ID`, `WIDGET_SEQ`, `IS_COMPOSITE_WIDGET`, `VISION_ID`, `IS_CONTAINER_WIDGET`, `TMN_ID`, `SORT_NO`, `WIDGET_TYPE`) VALUES ('20006', '8dccbc9d-37be-4b62-806d-976d4edcadff', 'date', '日期', 'date', '1', '1', '369', '2019-05-29 00:00:00', NULL, NULL, '234443', NULL, NULL, '0', 'pc-date', NULL, '1', '1', NULL);
+INSERT INTO act_sto_widget(`WIDGET_ID`, `TECH_ID`, `WIDGET_CODE`, `WIDGET_NAME`, `WIDGET_RENDERER`, `IS_LOCK`, `IS_ACTIVE`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `CATEGORY_ID`, `PARENT_WIDGET_ID`, `WIDGET_SEQ`, `IS_COMPOSITE_WIDGET`, `VISION_ID`, `IS_CONTAINER_WIDGET`, `TMN_ID`, `SORT_NO`, `WIDGET_TYPE`) VALUES ('20007', '8dccbc9d-37be-4b62-806d-976d4edcadff', 'number', '数值类型', 'number', '1', '1', '369', '2019-05-29 00:00:00', NULL, NULL, '234443', NULL, NULL, '0', 'pc-number', NULL, '1', '1', NULL);
+INSERT INTO act_sto_widget(`WIDGET_ID`, `TECH_ID`, `WIDGET_CODE`, `WIDGET_NAME`, `WIDGET_RENDERER`, `IS_LOCK`, `IS_ACTIVE`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `CATEGORY_ID`, `PARENT_WIDGET_ID`, `WIDGET_SEQ`, `IS_COMPOSITE_WIDGET`, `VISION_ID`, `IS_CONTAINER_WIDGET`, `TMN_ID`, `SORT_NO`, `WIDGET_TYPE`) VALUES ('20008', '8dccbc9d-37be-4b62-806d-976d4edcadff', 'hidden', '隐藏域', 'hidden', '1', '1', '369', '2019-05-29 00:00:00', NULL, NULL, '234443', NULL, NULL, '0', 'pc-hidden', NULL, '1', '1', NULL);
+
+
+INSERT INTO `act_sto_widget_key` (`KEY_ID`, `WIDGET_ID`, `KEY_CODE`, `KEY_LABEL`, `IS_REQUIRED`, `VALUE_TIPS`, `VALUE_LENGTH_LIMIT`, `VALUE_DEFAULT`, `HTML_COMP`, `IS_DIC_CODE`, `DIC_CODE_TYPE`, `IS_LOCK`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `IS_ACTIVE`, `SORT_NO`) VALUES ('2000601', '20006', 'title', '标题', '1', '日期', '50', '日期', 'text', '0', NULL, '0', '369', '2018-06-01 00:00:00', NULL, NULL, '1', '1');
+INSERT INTO `act_sto_widget_key` (`KEY_ID`, `WIDGET_ID`, `KEY_CODE`, `KEY_LABEL`, `IS_REQUIRED`, `VALUE_TIPS`, `VALUE_LENGTH_LIMIT`, `VALUE_DEFAULT`, `HTML_COMP`, `IS_DIC_CODE`, `DIC_CODE_TYPE`, `IS_LOCK`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `IS_ACTIVE`, `SORT_NO`) VALUES ('2000602', '20006', 'tips', '提示文字', '0', '请输入日期', '50', '请输入日期', 'text', '0', NULL, '0', '369', '2018-06-01 00:00:00', NULL, NULL, '1', '3');
+INSERT INTO `act_sto_widget_key` (`KEY_ID`, `WIDGET_ID`, `KEY_CODE`, `KEY_LABEL`, `IS_REQUIRED`, `VALUE_TIPS`, `VALUE_LENGTH_LIMIT`, `VALUE_DEFAULT`, `HTML_COMP`, `IS_DIC_CODE`, `DIC_CODE_TYPE`, `IS_LOCK`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `IS_ACTIVE`, `SORT_NO`) VALUES ('2000603', '20006', 'required', '验证', '1', '是否必填', '1', '0', 'checkbox', '0', NULL, '0', '369', '2018-06-01 00:00:00', NULL, NULL, '1', '5');
+INSERT INTO `act_sto_widget_key` (`KEY_ID`, `WIDGET_ID`, `KEY_CODE`, `KEY_LABEL`, `IS_REQUIRED`, `VALUE_TIPS`, `VALUE_LENGTH_LIMIT`, `VALUE_DEFAULT`, `HTML_COMP`, `IS_DIC_CODE`, `DIC_CODE_TYPE`, `IS_LOCK`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `IS_ACTIVE`, `SORT_NO`) VALUES ('2000604', '20006', 'dbColumnName', '表字段(英文)', '1', '请输入3-30个英文字母(含下划线)', '50', NULL, 'text', '0', NULL, '0', '369', '2018-06-01 00:00:00', NULL, NULL, '1', '2');
+
+INSERT INTO `act_sto_widget_key` (`KEY_ID`, `WIDGET_ID`, `KEY_CODE`, `KEY_LABEL`, `IS_REQUIRED`, `VALUE_TIPS`, `VALUE_LENGTH_LIMIT`, `VALUE_DEFAULT`, `HTML_COMP`, `IS_DIC_CODE`, `DIC_CODE_TYPE`, `IS_LOCK`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `IS_ACTIVE`, `SORT_NO`) VALUES ('2000701', '20007', 'title', '标题', '1', '数值类型', '50', '数值类型', 'text', '0', NULL, '0', '369', '2018-06-01 00:00:00', NULL, NULL, '1', '1');
+INSERT INTO `act_sto_widget_key` (`KEY_ID`, `WIDGET_ID`, `KEY_CODE`, `KEY_LABEL`, `IS_REQUIRED`, `VALUE_TIPS`, `VALUE_LENGTH_LIMIT`, `VALUE_DEFAULT`, `HTML_COMP`, `IS_DIC_CODE`, `DIC_CODE_TYPE`, `IS_LOCK`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `IS_ACTIVE`, `SORT_NO`) VALUES ('2000702', '20007', 'tips', '提示文字', '0', '请输入数值', '50', '请输入数值', 'text', '0', NULL, '0', '369', '2018-06-01 00:00:00', NULL, NULL, '1', '3');
+INSERT INTO `act_sto_widget_key` (`KEY_ID`, `WIDGET_ID`, `KEY_CODE`, `KEY_LABEL`, `IS_REQUIRED`, `VALUE_TIPS`, `VALUE_LENGTH_LIMIT`, `VALUE_DEFAULT`, `HTML_COMP`, `IS_DIC_CODE`, `DIC_CODE_TYPE`, `IS_LOCK`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `IS_ACTIVE`, `SORT_NO`) VALUES ('2000703', '20007', 'required', '验证', '1', '是否必填', '1', '0', 'checkbox', '0', NULL, '0', '369', '2018-06-01 00:00:00', NULL, NULL, '1', '5');
+INSERT INTO `act_sto_widget_key` (`KEY_ID`, `WIDGET_ID`, `KEY_CODE`, `KEY_LABEL`, `IS_REQUIRED`, `VALUE_TIPS`, `VALUE_LENGTH_LIMIT`, `VALUE_DEFAULT`, `HTML_COMP`, `IS_DIC_CODE`, `DIC_CODE_TYPE`, `IS_LOCK`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `IS_ACTIVE`, `SORT_NO`) VALUES ('2000704', '20007', 'dbColumnName', '表字段(英文)', '1', '请输入3-30个英文字母(含下划线)', '50', NULL, 'text', '0', NULL, '0', '369', '2018-06-01 00:00:00', NULL, NULL, '1', '2');
+INSERT INTO `act_sto_widget_key` (`KEY_ID`, `WIDGET_ID`, `KEY_CODE`, `KEY_LABEL`, `IS_REQUIRED`, `VALUE_TIPS`, `VALUE_LENGTH_LIMIT`, `VALUE_DEFAULT`, `HTML_COMP`, `IS_DIC_CODE`, `DIC_CODE_TYPE`, `IS_LOCK`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `IS_ACTIVE`, `SORT_NO`) VALUES ('2000705', '20007', 'maxLimit', '最大长度', '1', '32', '32', '32', 'text', '0', NULL, '0', '369', '2018-04-06 00:00:00', NULL, NULL, '1', '4');
+INSERT INTO `act_sto_widget_key` (`KEY_ID`, `WIDGET_ID`, `KEY_CODE`, `KEY_LABEL`, `IS_REQUIRED`, `VALUE_TIPS`, `VALUE_LENGTH_LIMIT`, `VALUE_DEFAULT`, `HTML_COMP`, `IS_DIC_CODE`, `DIC_CODE_TYPE`, `IS_LOCK`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `IS_ACTIVE`, `SORT_NO`) VALUES ('2000707', '20007', 'decimalLength', '小数位数', '1', '0', '0', '0', 'text', '0', NULL, '0', '369', '2018-04-06 00:00:00', NULL, NULL, '1', '7');
+
+INSERT INTO `act_sto_widget_key` (`KEY_ID`, `WIDGET_ID`, `KEY_CODE`, `KEY_LABEL`, `IS_REQUIRED`, `VALUE_TIPS`, `VALUE_LENGTH_LIMIT`, `VALUE_DEFAULT`, `HTML_COMP`, `IS_DIC_CODE`, `DIC_CODE_TYPE`, `IS_LOCK`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `IS_ACTIVE`, `SORT_NO`) VALUES ('2000801', '20008', 'title', '标题', '1', '隐藏域', '50', '隐藏域', 'text', '0', NULL, '0', '369', '2018-06-01 00:00:00', NULL, NULL, '1', '1');
+INSERT INTO `act_sto_widget_key` (`KEY_ID`, `WIDGET_ID`, `KEY_CODE`, `KEY_LABEL`, `IS_REQUIRED`, `VALUE_TIPS`, `VALUE_LENGTH_LIMIT`, `VALUE_DEFAULT`, `HTML_COMP`, `IS_DIC_CODE`, `DIC_CODE_TYPE`, `IS_LOCK`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `IS_ACTIVE`, `SORT_NO`) VALUES ('2000802', '20008', 'tips', '提示文字', '0', '请输入文本', '50', '请输入文本', 'text', '0', NULL, '0', '369', '2018-06-01 00:00:00', NULL, NULL, '1', '3');
+INSERT INTO `act_sto_widget_key` (`KEY_ID`, `WIDGET_ID`, `KEY_CODE`, `KEY_LABEL`, `IS_REQUIRED`, `VALUE_TIPS`, `VALUE_LENGTH_LIMIT`, `VALUE_DEFAULT`, `HTML_COMP`, `IS_DIC_CODE`, `DIC_CODE_TYPE`, `IS_LOCK`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `IS_ACTIVE`, `SORT_NO`) VALUES ('2000803', '20008', 'required', '验证', '1', '是否必填', '1', '0', 'checkbox', '0', NULL, '0', '369', '2018-06-01 00:00:00', NULL, NULL, '1', '5');
+INSERT INTO `act_sto_widget_key` (`KEY_ID`, `WIDGET_ID`, `KEY_CODE`, `KEY_LABEL`, `IS_REQUIRED`, `VALUE_TIPS`, `VALUE_LENGTH_LIMIT`, `VALUE_DEFAULT`, `HTML_COMP`, `IS_DIC_CODE`, `DIC_CODE_TYPE`, `IS_LOCK`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `IS_ACTIVE`, `SORT_NO`) VALUES ('2000804', '20008', 'dbColumnName', '表字段(英文)', '1', '请输入3-30个英文字母(含下划线)', '50', NULL, 'text', '0', NULL, '0', '369', '2018-06-01 00:00:00', NULL, NULL, '1', '2');
+INSERT INTO `act_sto_widget_key` (`KEY_ID`, `WIDGET_ID`, `KEY_CODE`, `KEY_LABEL`, `IS_REQUIRED`, `VALUE_TIPS`, `VALUE_LENGTH_LIMIT`, `VALUE_DEFAULT`, `HTML_COMP`, `IS_DIC_CODE`, `DIC_CODE_TYPE`, `IS_LOCK`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `IS_ACTIVE`, `SORT_NO`) VALUES ('2000805', '20008', 'maxLimit', '最大长度', '1', '128', '128', '128', 'text', '0', NULL, '0', '369', '2018-04-06 00:00:00', NULL, NULL, '1', '4');
+
+            ]]>
+        </sql>
+    </changeSet>
+
+    <changeSet id="201908281614" author="xiaohutu" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `bsc_att_link`
+            MODIFY COLUMN `DETAIL_ID` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '附件文件记录ID'
+            AFTER `RECORD_ID`,
+            ADD COLUMN `DIR_ID` varchar(50) NULL COMMENT '附件文件夹ID' AFTER `DETAIL_ID`,
+            ADD COLUMN `LINK_TYPE` char(1) NULL COMMENT '连接类型，a表示附件，d代表文件夹' AFTER `DIR_ID`;
+        </sql>
+    </changeSet>
+
+    <changeSet id="201908301544" author="chenzh" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_hi_item_matinst`
+            ADD COLUMN `MEMO` varchar(1000) NULL COMMENT '备注' AFTER `ROOT_ORG_ID`;
+        </sql>
+    </changeSet>
+    <changeSet id="20190901161424" author="huangzl" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            update act_sto_widget
+            set SORT_NO='6'
+            where WIDGET_ID='20006';
+            update act_sto_widget
+            set SORT_NO='7'
+            where WIDGET_ID='20007';
+            update act_sto_widget
+            set SORT_NO='8'
+            where WIDGET_ID='20008';
+            update act_sto_vision set vision_name='数字' where vision_id='pc-number';
+            update act_sto_widget set widget_name='数字' where widget_id='20007';
+            update act_sto_widget_key
+            set VALUE_TIPS='数字'
+            ,VALUE_DEFAULT='数字'
+            where key_id='2000701';
+
+        </sql>
+    </changeSet>
+
+    <changeSet id="201908311151" author="chenzh" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `act_sto_timerule_inst`
+            MODIFY COLUMN `USE_LIMIT_TIME` double(30, 1) NULL COMMENT '已用时' AFTER `IS_CONCLUDING`,
+            MODIFY COLUMN `REMAINING_TIME` double(30, 1) NULL COMMENT '剩余用时' AFTER `USE_LIMIT_TIME`,
+            MODIFY COLUMN `OVERDUE_TIME` double(30, 1) NULL COMMENT '逾期用时' AFTER `REMAINING_TIME`;
+        </sql>
+    </changeSet>
+
+    <changeSet id="20190905203423" author="sam" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            update act_sto_view set IS_APP_VIEW = '1' where VIEW_CODE in
+            ('view-code-00000051','view-code-00000058','view-code-00000059');
+            update act_ru_task set sign_state_ = '1',sign_time_=CREATE_TIME_ where sign_state_ is null;
+        </sql>
+    </changeSet>
+
+    <changeSet id="20190912114201" author="sam" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            update act_sto_element set IS_DELETED = '1' where ELEMENT_ID = 'b139a3da-0e08-441b-bc72-14cde358dce8';
+            delete from act_tpl_priv_procform where element_id = 'b139a3da-0e08-441b-bc72-14cde358dce8';
+        </sql>
+    </changeSet>
+
+    <changeSet id="201909121511001" author="sam" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            update act_sto_view set SQL_TEXT =
+            "SELECT
+            ART_123.*
+            FROM
+            (
+            (
+            SELECT
+            art_123.ID_ TASK_ID,
+            ahap_123.APPLYINST_CODE APPLYINST_CODE,
+            aps_123.STAGE_NAME ITEMINST_STAGE_NAME,
+            ali_123.LINKMAN_NAME LINKMAN_NAME,
+            ahap_123.APPLYINST_SOURCE APPLYINST_SOURCE,
+            art_123.CREATE_TIME_ CREATE_TIME_,
+            ahp_123.START_TIME_ START_TIME,
+            ahap_123.CREATE_TIME APPLY_TIME,
+            art_123.NAME_ NAME_,
+            aps_123.DUE_NUM DUE_NUM,
+            '并联' AS IS_SERIES_APPROVE,
+            'undefined' AS busRecordId,
+            'undefined' AS ITEM_PROPERTY,
+            '0' AS APPLY_TYPE,
+            proj.PROJ_NAME,
+            theme.THEME_NAME,
+            '' itemName,
+            ti.REMAINING_TIME REMAINING_TIME,
+            ti.OVERDUE_TIME OVERDUE_TIME,
+            art_123.SIGN_STATE_
+            FROM
+            ACT_RU_TASK art_123
+            LEFT JOIN ACT_HI_PROCINST ahp_123 ON art_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
+            LEFT JOIN ACT_STO_APPINST asa_123 ON asa_123.procinst_id = ahp_123.PROC_INST_ID_
+            LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahap_123.APPLYINST_ID = asa_123.master_record_id
+            LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+            LEFT JOIN AEA_HI_PAR_STAGEINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN AEA_PAR_STAGE aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
+            LEFT JOIN AEA_PAR_THEME_VER ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
+            LEFT JOIN aea_applyinst_proj ap ON ap.APPLYINST_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN aea_proj_info proj ON proj.PROJ_INFO_ID = ap.PROJ_INFO_ID
+            LEFT JOIN aea_par_theme theme ON theme.THEME_ID = proj.THEME_ID
+            LEFT JOIN act_sto_timerule_inst ti ON ti.PROC_INST_ID = AHP_123.PROC_INST_ID_
+            WHERE
+            1 = 1
+            AND ahap_123.IS_SERIES_APPROVE = '0'
+            AND art_123.ASSIGNEE_ = '#[currentUser]'
+            AND ahap_123.APPLYINST_STATE NOT IN ('0', '1', '3', '5', '6')
+            AND ahap_123.APPLYINST_STATE != '0'
+            )
+            UNION
+            (
+            SELECT
+            art_123.ID_ TASK_ID,
+            ahap_123.APPLYINST_CODE APPLYINST_CODE,
+            aps_123.STAGE_NAME ITEMINST_STAGE_NAME,
+            ali_123.LINKMAN_NAME LINKMAN_NAME,
+            ahap_123.APPLYINST_SOURCE APPLYINST_SOURCE,
+            art_123.CREATE_TIME_ CREATE_TIME_,
+            ahp_123.START_TIME_ START_TIME,
+            ahap_123.CREATE_TIME AS APPLY_TIME,
+            art_123.NAME_ NAME_,
+            aps_123.DUE_NUM DUE_NUM,
+            '并联' AS IS_SERIES_APPROVE,
+            'undefined' AS busRecordId,
+            'undefined' AS ITEM_PROPERTY,
+            '0' AS APPLY_TYPE,
+            proj.PROJ_NAME,
+            theme.THEME_NAME,
+            hi.ITEMINST_NAME itemName,
+            ti.REMAINING_TIME REMAINING_TIME,
+            ti.OVERDUE_TIME OVERDUE_TIME,
+            art_123.SIGN_STATE_
+            FROM
+            ACT_RU_TASK art_123
+            LEFT JOIN ACT_HI_PROCINST ahp_123 ON art_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
+            LEFT JOIN ACT_STO_APPINST_SUBFLOW asas_123 ON asas_123.SUBFLOW_PROCINST_ID = art_123.PROC_INST_ID_
+            LEFT JOIN ACT_STO_APPINST asa_123 ON asas_123.appinst_id = asa_123.APPINST_ID
+            LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahap_123.APPLYINST_ID = asa_123.master_record_id
+            LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+            LEFT JOIN AEA_HI_PAR_STAGEINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN AEA_PAR_STAGE aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
+            LEFT JOIN AEA_PAR_THEME_VER ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
+            LEFT JOIN aea_applyinst_proj ap ON ap.APPLYINST_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN aea_proj_info proj ON proj.PROJ_INFO_ID = ap.PROJ_INFO_ID
+            LEFT JOIN aea_par_theme theme ON theme.THEME_ID = proj.THEME_ID
+            LEFT JOIN act_ru_variable rv ON rv.PROC_INST_ID_ = ahp_123.ID_
+            LEFT JOIN aea_hi_iteminst hi ON hi.iteminst_id = rv.text_
+            LEFT JOIN act_sto_timerule_inst ti ON ti.PROC_INST_ID = AHP_123.PROC_INST_ID_
+            WHERE
+            1 = 1
+            AND ahap_123.IS_SERIES_APPROVE = '0'
+            AND hi.ITEMINST_STATE NOT IN ('2', '4', '5', '6', '14', '15')
+            AND ahap_123.APPLYINST_STATE != '0'
+            AND art_123.ASSIGNEE_ = '#[currentUser]'
+            AND rv.name_ = '$BUS_CURRENT_ITEMINST_ID'
+            )
+            UNION
+            (
+            SELECT
+            art_123.ID_ TASK_ID,
+            ahap_123.APPLYINST_CODE APPLYINST_CODE,
+            ahi_123.ITEMINST_NAME ITEMINST_STAGE_NAME,
+            ali_123.LINKMAN_NAME LINKMAN_NAME,
+            ahap_123.APPLYINST_SOURCE AS APPLYINST_SOURCE,
+            art_123.CREATE_TIME_ AS CREATE_TIME_,
+            ahp_123.START_TIME_ AS START_TIME,
+            ahap_123.CREATE_TIME AS APPLY_TIME,
+            art_123.NAME_ NAME_,
+            ai_123.DUE_NUM DUE_NUM,
+            '串联' AS IS_SERIES_APPROVE,
+            ahi_123.ITEMINST_ID busRecordId,
+            ai_123.ITEM_PROPERTY AS ITEM_PROPERTY,
+            '1' AS APPLY_TYPE,
+            proj.PROJ_NAME,
+            '' AS THEME_NAME,
+            ahi_123.ITEMINST_NAME itemName,
+            ti.REMAINING_TIME REMAINING_TIME,
+            ti.OVERDUE_TIME OVERDUE_TIME,
+            art_123.SIGN_STATE_
+            FROM
+            ACT_RU_TASK art_123
+            LEFT JOIN ACT_HI_PROCINST ahp_123 ON art_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
+            LEFT JOIN ACT_STO_APPINST asa_123 ON asa_123.procinst_id = ahp_123.PROC_INST_ID_
+            LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahap_123.APPLYINST_ID = asa_123.master_record_id
+            LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+            LEFT JOIN AEA_HI_SERIESINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN AEA_HI_ITEMINST ahi_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
+            LEFT JOIN AEA_ITEM_BASIC ai_123 ON ahi_123.ITEM_ID = ai_123.ITEM_ID
+            LEFT JOIN aea_applyinst_proj ap ON ap.APPLYINST_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN aea_proj_info proj ON proj.PROJ_INFO_ID = ap.PROJ_INFO_ID
+            LEFT JOIN act_sto_timerule_inst ti ON ti.PROC_INST_ID = AHP_123.PROC_INST_ID_
+            WHERE
+            1 = 1
+            AND ahap_123.IS_SERIES_APPROVE = '1'
+            AND ahi_123.ITEMINST_STATE NOT IN ('2', '4', '5', '6', '14', '15')
+            AND ahap_123.APPLYINST_STATE != '0'
+            AND art_123.ASSIGNEE_ = '#[currentUser]'
+            )
+            UNION
+            (
+            SELECT
+            art_123.ID_ TASK_ID,
+            ahap_123.APPLYINST_CODE APPLYINST_CODE,
+            ahi_123.ITEMINST_NAME ITEMINST_STAGE_NAME,
+            ali_123.LINKMAN_NAME LINKMAN_NAME,
+            ahap_123.APPLYINST_SOURCE AS APPLYINST_SOURCE,
+            art_123.CREATE_TIME_ AS CREATE_TIME_,
+            ahp_123.START_TIME_ AS START_TIME,
+            ahap_123.CREATE_TIME AS APPLY_TIME,
+            art_123.NAME_ NAME_,
+            ai_123.DUE_NUM DUE_NUM,
+            '串联' AS IS_SERIES_APPROVE,
+            ahi_123.ITEMINST_ID busRecordId,
+            ai_123.ITEM_PROPERTY AS ITEM_PROPERTY,
+            '1' AS APPLY_TYPE,
+            proj.PROJ_NAME,
+            '' AS THEME_NAME,
+            ahi_123.ITEMINST_NAME itemName,
+            ti.REMAINING_TIME REMAINING_TIME,
+            ti.OVERDUE_TIME OVERDUE_TIME,
+            art_123.SIGN_STATE_
+            FROM
+            ACT_RU_TASK art_123
+            LEFT JOIN ACT_HI_PROCINST ahp_123 ON art_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
+            LEFT JOIN ACT_STO_APPINST_SUBFLOW asas_123 ON asas_123.SUBFLOW_PROCINST_ID = art_123.PROC_INST_ID_
+            LEFT JOIN ACT_STO_APPINST asa_123 ON asas_123.appinst_id = asa_123.APPINST_ID
+            LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahap_123.APPLYINST_ID = asa_123.master_record_id
+            LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+            LEFT JOIN AEA_HI_SERIESINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN AEA_HI_ITEMINST ahi_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
+            LEFT JOIN AEA_ITEM_BASIC ai_123 ON ahi_123.ITEM_ID = ai_123.ITEM_ID
+            LEFT JOIN aea_applyinst_proj ap ON ap.APPLYINST_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN aea_proj_info proj ON proj.PROJ_INFO_ID = ap.PROJ_INFO_ID
+            LEFT JOIN act_sto_timerule_inst ti ON ti.PROC_INST_ID = AHP_123.PROC_INST_ID_
+            WHERE
+            1 = 1
+            AND ahap_123.IS_SERIES_APPROVE = '1'
+            AND ahi_123.ITEMINST_STATE NOT IN ('2', '4', '5', '6', '14', '15')
+            AND ahap_123.APPLYINST_STATE != '0'
+            AND art_123.ASSIGNEE_ = '#[currentUser]'
+            )
+            ) ART_123
+            WHERE
+            1 = 1
+            GROUP BY
+            ART_123.TASK_ID"
+            where VIEW_ID = '9aea00ed-ee86-4d7d-ba6b-ebbe89705b86';
+        </sql>
+    </changeSet>
+
+    <changeSet id="20190912114201" author="sam" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            update act_sto_element set IS_DELETED = '1' where ELEMENT_ID = 'b139a3da-0e08-441b-bc72-14cde358dce8';
+            delete from act_tpl_priv_procform where element_id = 'b139a3da-0e08-441b-bc72-14cde358dce8';
+        </sql>
+    </changeSet>
+
+    <changeSet id="201909121511002" author="sam" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            update act_sto_view set SQL_TEXT =
+            "SELECT
+            ART_123.*
+            FROM
+            (
+            (
+            SELECT
+            art_123.ID_ TASK_ID,
+            ahap_123.APPLYINST_CODE APPLYINST_CODE,
+            aps_123.STAGE_NAME ITEMINST_STAGE_NAME,
+            ali_123.LINKMAN_NAME LINKMAN_NAME,
+            ahap_123.APPLYINST_SOURCE APPLYINST_SOURCE,
+            art_123.CREATE_TIME_ CREATE_TIME_,
+            ahp_123.START_TIME_ START_TIME,
+            ahap_123.CREATE_TIME APPLY_TIME,
+            art_123.NAME_ NAME_,
+            aps_123.DUE_NUM DUE_NUM,
+            '并联' AS IS_SERIES_APPROVE,
+            'undefined' AS busRecordId,
+            'undefined' AS ITEM_PROPERTY,
+            '0' AS APPLY_TYPE,
+            proj.PROJ_NAME,
+            theme.THEME_NAME,
+            '' itemName,
+            ti.REMAINING_TIME REMAINING_TIME,
+            ti.OVERDUE_TIME OVERDUE_TIME,
+            art_123.SIGN_STATE_
+            FROM
+            ACT_RU_TASK art_123
+            LEFT JOIN ACT_HI_PROCINST ahp_123 ON art_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
+            LEFT JOIN ACT_STO_APPINST asa_123 ON asa_123.procinst_id = ahp_123.PROC_INST_ID_
+            LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahap_123.APPLYINST_ID = asa_123.master_record_id
+            LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+            LEFT JOIN AEA_HI_PAR_STAGEINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN AEA_PAR_STAGE aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
+            LEFT JOIN AEA_PAR_THEME_VER ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
+            LEFT JOIN aea_applyinst_proj ap ON ap.APPLYINST_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN aea_proj_info proj ON proj.PROJ_INFO_ID = ap.PROJ_INFO_ID
+            LEFT JOIN aea_par_theme theme ON theme.THEME_ID = proj.THEME_ID
+            LEFT JOIN act_sto_timerule_inst ti ON ti.PROC_INST_ID = AHP_123.PROC_INST_ID_
+            WHERE
+            1 = 1
+            AND ahap_123.IS_SERIES_APPROVE = '0'
+            AND art_123.ASSIGNEE_ = '#[currentUser]'
+            AND ahap_123.APPLYINST_STATE NOT IN ('0', '1', '3', '5', '6')
+            AND ahap_123.APPLYINST_STATE != '0'
+            )
+            UNION
+            (
+            SELECT
+            art_123.ID_ TASK_ID,
+            ahap_123.APPLYINST_CODE APPLYINST_CODE,
+            aps_123.STAGE_NAME ITEMINST_STAGE_NAME,
+            ali_123.LINKMAN_NAME LINKMAN_NAME,
+            ahap_123.APPLYINST_SOURCE APPLYINST_SOURCE,
+            art_123.CREATE_TIME_ CREATE_TIME_,
+            ahp_123.START_TIME_ START_TIME,
+            ahap_123.CREATE_TIME AS APPLY_TIME,
+            art_123.NAME_ NAME_,
+            aps_123.DUE_NUM DUE_NUM,
+            '并联' AS IS_SERIES_APPROVE,
+            'undefined' AS busRecordId,
+            'undefined' AS ITEM_PROPERTY,
+            '0' AS APPLY_TYPE,
+            proj.PROJ_NAME,
+            theme.THEME_NAME,
+            hi.ITEMINST_NAME itemName,
+            ti.REMAINING_TIME REMAINING_TIME,
+            ti.OVERDUE_TIME OVERDUE_TIME,
+            art_123.SIGN_STATE_
+            FROM
+            ACT_RU_TASK art_123
+            LEFT JOIN ACT_HI_PROCINST ahp_123 ON art_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
+            LEFT JOIN ACT_STO_APPINST_SUBFLOW asas_123 ON asas_123.SUBFLOW_PROCINST_ID = art_123.PROC_INST_ID_
+            LEFT JOIN ACT_STO_APPINST asa_123 ON asas_123.appinst_id = asa_123.APPINST_ID
+            LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahap_123.APPLYINST_ID = asa_123.master_record_id
+            LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+            LEFT JOIN AEA_HI_PAR_STAGEINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN AEA_PAR_STAGE aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
+            LEFT JOIN AEA_PAR_THEME_VER ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
+            LEFT JOIN aea_applyinst_proj ap ON ap.APPLYINST_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN aea_proj_info proj ON proj.PROJ_INFO_ID = ap.PROJ_INFO_ID
+            LEFT JOIN aea_par_theme theme ON theme.THEME_ID = proj.THEME_ID
+            LEFT JOIN act_ru_variable rv ON rv.PROC_INST_ID_ = ahp_123.ID_
+            LEFT JOIN aea_hi_iteminst hi ON hi.iteminst_id = rv.text_
+            LEFT JOIN act_sto_timerule_inst ti ON ti.PROC_INST_ID = AHP_123.PROC_INST_ID_
+            WHERE
+            1 = 1
+            AND ahap_123.IS_SERIES_APPROVE = '0'
+            AND hi.ITEMINST_STATE NOT IN ('1','2', '4', '5', '6', '14', '15')
+            AND ahap_123.APPLYINST_STATE != '0'
+            AND art_123.ASSIGNEE_ = '#[currentUser]'
+            AND rv.name_ = '$BUS_CURRENT_ITEMINST_ID'
+            )
+            UNION
+            (
+            SELECT
+            art_123.ID_ TASK_ID,
+            ahap_123.APPLYINST_CODE APPLYINST_CODE,
+            ahi_123.ITEMINST_NAME ITEMINST_STAGE_NAME,
+            ali_123.LINKMAN_NAME LINKMAN_NAME,
+            ahap_123.APPLYINST_SOURCE AS APPLYINST_SOURCE,
+            art_123.CREATE_TIME_ AS CREATE_TIME_,
+            ahp_123.START_TIME_ AS START_TIME,
+            ahap_123.CREATE_TIME AS APPLY_TIME,
+            art_123.NAME_ NAME_,
+            ai_123.DUE_NUM DUE_NUM,
+            '串联' AS IS_SERIES_APPROVE,
+            ahi_123.ITEMINST_ID busRecordId,
+            ai_123.ITEM_PROPERTY AS ITEM_PROPERTY,
+            '1' AS APPLY_TYPE,
+            proj.PROJ_NAME,
+            '' AS THEME_NAME,
+            ahi_123.ITEMINST_NAME itemName,
+            ti.REMAINING_TIME REMAINING_TIME,
+            ti.OVERDUE_TIME OVERDUE_TIME,
+            art_123.SIGN_STATE_
+            FROM
+            ACT_RU_TASK art_123
+            LEFT JOIN ACT_HI_PROCINST ahp_123 ON art_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
+            LEFT JOIN ACT_STO_APPINST asa_123 ON asa_123.procinst_id = ahp_123.PROC_INST_ID_
+            LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahap_123.APPLYINST_ID = asa_123.master_record_id
+            LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+            LEFT JOIN AEA_HI_SERIESINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN AEA_HI_ITEMINST ahi_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
+            LEFT JOIN AEA_ITEM_BASIC ai_123 ON ahi_123.ITEM_ID = ai_123.ITEM_ID
+            LEFT JOIN aea_applyinst_proj ap ON ap.APPLYINST_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN aea_proj_info proj ON proj.PROJ_INFO_ID = ap.PROJ_INFO_ID
+            LEFT JOIN act_sto_timerule_inst ti ON ti.PROC_INST_ID = AHP_123.PROC_INST_ID_
+            WHERE
+            1 = 1
+            AND ahap_123.IS_SERIES_APPROVE = '1'
+            AND ahi_123.ITEMINST_STATE NOT IN ('1','2', '4', '5', '6', '14', '15')
+            AND ahap_123.APPLYINST_STATE != '0'
+            AND art_123.ASSIGNEE_ = '#[currentUser]'
+            )
+            UNION
+            (
+            SELECT
+            art_123.ID_ TASK_ID,
+            ahap_123.APPLYINST_CODE APPLYINST_CODE,
+            ahi_123.ITEMINST_NAME ITEMINST_STAGE_NAME,
+            ali_123.LINKMAN_NAME LINKMAN_NAME,
+            ahap_123.APPLYINST_SOURCE AS APPLYINST_SOURCE,
+            art_123.CREATE_TIME_ AS CREATE_TIME_,
+            ahp_123.START_TIME_ AS START_TIME,
+            ahap_123.CREATE_TIME AS APPLY_TIME,
+            art_123.NAME_ NAME_,
+            ai_123.DUE_NUM DUE_NUM,
+            '串联' AS IS_SERIES_APPROVE,
+            ahi_123.ITEMINST_ID busRecordId,
+            ai_123.ITEM_PROPERTY AS ITEM_PROPERTY,
+            '1' AS APPLY_TYPE,
+            proj.PROJ_NAME,
+            '' AS THEME_NAME,
+            ahi_123.ITEMINST_NAME itemName,
+            ti.REMAINING_TIME REMAINING_TIME,
+            ti.OVERDUE_TIME OVERDUE_TIME,
+            art_123.SIGN_STATE_
+            FROM
+            ACT_RU_TASK art_123
+            LEFT JOIN ACT_HI_PROCINST ahp_123 ON art_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
+            LEFT JOIN ACT_STO_APPINST_SUBFLOW asas_123 ON asas_123.SUBFLOW_PROCINST_ID = art_123.PROC_INST_ID_
+            LEFT JOIN ACT_STO_APPINST asa_123 ON asas_123.appinst_id = asa_123.APPINST_ID
+            LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahap_123.APPLYINST_ID = asa_123.master_record_id
+            LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+            LEFT JOIN AEA_HI_SERIESINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN AEA_HI_ITEMINST ahi_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
+            LEFT JOIN AEA_ITEM_BASIC ai_123 ON ahi_123.ITEM_ID = ai_123.ITEM_ID
+            LEFT JOIN aea_applyinst_proj ap ON ap.APPLYINST_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN aea_proj_info proj ON proj.PROJ_INFO_ID = ap.PROJ_INFO_ID
+            LEFT JOIN act_sto_timerule_inst ti ON ti.PROC_INST_ID = AHP_123.PROC_INST_ID_
+            WHERE
+            1 = 1
+            AND ahap_123.IS_SERIES_APPROVE = '1'
+            AND ahi_123.ITEMINST_STATE NOT IN ('2', '4', '5', '6', '14', '15')
+            AND ahap_123.APPLYINST_STATE != '0'
+            AND art_123.ASSIGNEE_ = '#[currentUser]'
+            )
+            ) ART_123
+            WHERE
+            1 = 1
+            GROUP BY
+            ART_123.TASK_ID"
+            where VIEW_ID = '9aea00ed-ee86-4d7d-ba6b-ebbe89705b86';
+        </sql>
+    </changeSet>
+
+    <!--<changeSet id="201909171636" author="xiaohutu" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_proj_linkman` ADD INDEX `APPLYINST_ID`(`APPLYINST_ID`) USING BTREE COMMENT 'APPLYINST_ID';
+            ALTER TABLE `aea_proj_linkman` ADD INDEX `PROJ_INFO_ID`(`PROJ_INFO_ID`) USING BTREE COMMENT 'PROJ_INFO_ID';
+
+            ALTER TABLE `aea_credit_redblack` ADD INDEX `UNIT_INFO_ID`(`UNIT_INFO_ID`) USING BTREE COMMENT
+            'UNIT_INFO_ID';
+            ALTER TABLE `aea_credit_redblack` ADD INDEX `LINKMAN_INFO_ID`(`LINKMAN_INFO_ID`) USING BTREE COMMENT
+            'LINKMAN_INFO_ID';
+
+        </sql>
+    </changeSet>-->
+
+    <!--<changeSet id="201909172053" author="qinjp" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            INSERT INTO `bsc_dic_code_type` (`TYPE_ID`, `TYPE_CODE`, `TYPE_NAME`, `IS_TREE`, `IS_ACTIVE`,
+            `TYPE_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES
+            ('qinjianping-add-applyinst-state', 'APPLYINST_STATE', '申报状态', '0', '1', NULL, NULL, '2019-08-09 16:19:00',
+            NULL, NULL, '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_type` (`TYPE_ID`, `TYPE_CODE`, `TYPE_NAME`, `IS_TREE`, `IS_ACTIVE`,
+            `TYPE_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES
+            ('b50c2ad8-91b6-4480-8983-5e0fb08fc281', 'ITEMINST_STATE', '事项实例状态', '0', '1', NULL, NULL, '2018-12-13
+            15:15:50', NULL, '2018-12-13 15:15:50', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+
+
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`,
+            `SORT_NO`, `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`,
+            `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES ('0844da84-3050-4080-aeeb-b2b05fee0def',
+            'b50c2ad8-91b6-4480-8983-5e0fb08fc281', '11', '办结（通过）', '1', '11', NULL, NULL, '0', '0', NULL, NULL,
+            '2018-12-13 15:17:37', NULL, '2018-12-13 15:17:37', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`,
+            `SORT_NO`, `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`,
+            `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES ('123946c2-c9de-4249-849b-288d222f1f41',
+            'b50c2ad8-91b6-4480-8983-5e0fb08fc281', '2', '已撤件', '1', '1', NULL, NULL, '0', '0', NULL, NULL, '2018-12-13
+            15:15:50', NULL, '2018-12-13 15:16:09', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`,
+            `SORT_NO`, `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`,
+            `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES ('17a4cdfe-57f5-4f6e-9049-b16371d09637',
+            'b50c2ad8-91b6-4480-8983-5e0fb08fc281', '7', '补正（结束）', '1', '7', NULL, NULL, '0', '0', NULL, NULL,
+            '2018-12-13 15:17:17', NULL, '2018-12-20 17:27:02', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`,
+            `SORT_NO`, `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`,
+            `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES ('19a6e834-d6fb-4117-9c8c-ebee922657e7',
+            'b50c2ad8-91b6-4480-8983-5e0fb08fc281', '3', '已受理', '1', '3', NULL, NULL, '0', '0', NULL, NULL, '2018-12-13
+            15:16:18', NULL, '2018-12-13 15:16:18', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`,
+            `SORT_NO`, `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`,
+            `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES ('2d70e1a7-3f9c-4253-bb16-499a69f34800',
+            'b50c2ad8-91b6-4480-8983-5e0fb08fc281', '9', '特别程序（开始）', '1', '9', NULL, NULL, '0', '0', NULL, NULL,
+            '2018-12-13 15:16:56', NULL, '2018-12-20 17:26:35', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`,
+            `SORT_NO`, `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`,
+            `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES ('43255677-9943-4249-82c1-96ae1d0906a8',
+            'b50c2ad8-91b6-4480-8983-5e0fb08fc281', '10', '特别程序（结束）', '1', '10', NULL, NULL, '0', '0', NULL, NULL,
+            '2018-12-13 15:17:27', NULL, '2018-12-13 15:17:27', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`,
+            `SORT_NO`, `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`,
+            `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES ('4523cc20-462d-4dcd-95fc-64e3e4430cd6',
+            'b50c2ad8-91b6-4480-8983-5e0fb08fc281', '5', '不予受理', '1', '5', NULL, NULL, '0', '0', NULL, NULL, '2018-12-13
+            15:16:38', NULL, '2018-12-13 15:16:38', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`,
+            `SORT_NO`, `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`,
+            `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES ('7362ae82-cd25-43cd-8617-9cee3e5ac066',
+            'b50c2ad8-91b6-4480-8983-5e0fb08fc281', '15', '撤销', '1', '15', NULL, NULL, '0', '0', NULL, NULL, '2018-12-13
+            15:19:04', NULL, '2018-12-13 15:19:04', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`,
+            `SORT_NO`, `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`,
+            `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES ('ce7302f8-b792-4570-938e-ea7f6a08c540',
+            'b50c2ad8-91b6-4480-8983-5e0fb08fc281', '14', '撤回', '1', '14', NULL, NULL, '0', '0', NULL, NULL, '2018-12-13
+            15:18:53', NULL, '2018-12-13 15:18:53', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`,
+            `SORT_NO`, `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`,
+            `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES ('d050a6db-a31a-4235-b185-ed798446fe12',
+            'b50c2ad8-91b6-4480-8983-5e0fb08fc281', '6', '补正（开始）', '1', '6', NULL, NULL, '0', '0', NULL, NULL,
+            '2018-12-13 15:17:06', NULL, '2018-12-20 17:26:55', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`,
+            `SORT_NO`, `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`,
+            `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES ('d2228b35-6a28-4a16-b5ba-3547dacb244a',
+            'b50c2ad8-91b6-4480-8983-5e0fb08fc281', '12', '办结（容缺通过）', '1', '12', NULL, NULL, '0', '0', NULL, NULL,
+            '2018-12-13 15:17:50', NULL, '2018-12-13 15:17:50', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`,
+            `SORT_NO`, `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`,
+            `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES ('da99103b-8927-4941-add5-fc024dd9348a',
+            'b50c2ad8-91b6-4480-8983-5e0fb08fc281', '4', '不受理', '1', '4', NULL, NULL, '0', '0', NULL, NULL, '2018-12-13
+            15:16:26', NULL, '2018-12-13 15:16:26', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`,
+            `SORT_NO`, `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`,
+            `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES ('de795d86-874f-4cf3-85c7-82b96a0f8afb',
+            'b50c2ad8-91b6-4480-8983-5e0fb08fc281', '13', '办结（不通过）', '1', '13', NULL, NULL, '0', '0', NULL, NULL,
+            '2018-12-13 15:18:01', NULL, '2018-12-13 15:18:01', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`,
+            `SORT_NO`, `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`,
+            `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES ('e4a1b841-9167-4782-ac35-dfd5d87e793a',
+            'b50c2ad8-91b6-4480-8983-5e0fb08fc281', '8', '部门开始办理', '1', '8', NULL, NULL, '0', '0', NULL, NULL,
+            '2018-12-13 15:16:47', NULL, '2018-12-20 17:26:30', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`,
+            `SORT_NO`, `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`,
+            `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES ('eca01fb7-b0e7-4e36-a890-2b20cf72a24c',
+            'b50c2ad8-91b6-4480-8983-5e0fb08fc281', '1', '已接件', '1', '0', NULL, NULL, '0', '0', NULL, NULL, '2018-12-13
+            15:15:50', NULL, '2018-12-13 15:16:02', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+
+
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`,
+            `SORT_NO`, `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`,
+            `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES ('qinjianping-add-applyinst-state-item1',
+            'qinjianping-add-applyinst-state', '0', '已接件未审核', '1', '3', NULL, NULL, '0', '0', NULL, NULL, '2018-12-03
+            15:43:18', NULL, '2018-12-03 15:43:18', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`,
+            `SORT_NO`, `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`,
+            `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES ('qinjianping-add-applyinst-state-item2',
+            'qinjianping-add-applyinst-state', '1', '已接件并审核', '1', '3', NULL, NULL, '0', '0', NULL, NULL, '2018-12-03
+            15:43:18', NULL, '2018-12-03 15:43:18', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`,
+            `SORT_NO`, `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`,
+            `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES ('qinjianping-add-applyinst-state-item3',
+            'qinjianping-add-applyinst-state', '2', '已受理', '1', '3', NULL, NULL, '0', '0', NULL, NULL, '2018-12-03
+            15:43:18', NULL, '2018-12-03 15:43:18', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`,
+            `SORT_NO`, `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`,
+            `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES ('qinjianping-add-applyinst-state-item4',
+            'qinjianping-add-applyinst-state', '3', '待补全', '1', '3', NULL, NULL, '0', '0', NULL, NULL, '2018-12-03
+            15:43:18', NULL, '2018-12-03 15:43:18', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`,
+            `SORT_NO`, `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`,
+            `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES ('qinjianping-add-applyinst-state-item5',
+            'qinjianping-add-applyinst-state', '4', '已补全', '1', '3', NULL, NULL, '0', '0', NULL, NULL, '2018-12-03
+            15:43:18', NULL, '2018-12-03 15:43:18', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`,
+            `SORT_NO`, `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`,
+            `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES ('qinjianping-add-applyinst-state-item6',
+            'qinjianping-add-applyinst-state', '5', '不予受理', '1', '3', NULL, NULL, '0', '0', NULL, NULL, '2018-12-03
+            15:43:18', NULL, '2018-12-03 15:43:18', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`,
+            `SORT_NO`, `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`,
+            `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES ('qinjianping-add-applyinst-state-item7',
+            'qinjianping-add-applyinst-state', '6', '已办结', '1', '3', NULL, NULL, '0', '0', NULL, NULL, '2018-12-03
+            15:43:18', NULL, '2018-12-03 15:43:18', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+        </sql>
+    </changeSet>-->
+
+    <changeSet id="2019091810350001" author="sam" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            update act_sto_view set SQL_TEXT = "SELECT
+            ART_123.*
+            FROM
+            (
+            (
+            SELECT
+            art_123.ID_ TASK_ID,
+            ahap_123.APPLYINST_CODE APPLYINST_CODE,
+            aps_123.STAGE_NAME ITEMINST_STAGE_NAME,
+            ali_123.LINKMAN_NAME LINKMAN_NAME,
+            ahap_123.APPLYINST_SOURCE APPLYINST_SOURCE,
+            art_123.CREATE_TIME_ CREATE_TIME_,
+            ahp_123.START_TIME_ START_TIME,
+            ahap_123.CREATE_TIME APPLY_TIME,
+            art_123.NAME_ NAME_,
+            aps_123.DUE_NUM DUE_NUM,
+            '并联' AS IS_SERIES_APPROVE,
+            'undefined' AS busRecordId,
+            'undefined' AS ITEM_PROPERTY,
+            '0' AS APPLY_TYPE,
+            proj.PROJ_NAME,
+            theme.THEME_NAME,
+            '' itemName,
+            ti.REMAINING_TIME REMAINING_TIME,
+            ti.OVERDUE_TIME OVERDUE_TIME,
+            art_123.SIGN_STATE_
+            FROM
+            ACT_RU_TASK art_123
+            LEFT JOIN ACT_HI_PROCINST ahp_123 ON art_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
+            LEFT JOIN ACT_STO_APPINST asa_123 ON asa_123.procinst_id = ahp_123.PROC_INST_ID_
+            LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahap_123.APPLYINST_ID = asa_123.master_record_id
+            LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+            LEFT JOIN AEA_HI_PAR_STAGEINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN AEA_PAR_STAGE aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
+            LEFT JOIN AEA_PAR_THEME_VER ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
+            LEFT JOIN aea_applyinst_proj ap ON ap.APPLYINST_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN aea_proj_info proj ON proj.PROJ_INFO_ID = ap.PROJ_INFO_ID
+            LEFT JOIN aea_par_theme theme ON theme.THEME_ID = proj.THEME_ID
+            LEFT JOIN act_sto_timerule_inst ti ON ti.PROC_INST_ID = AHP_123.PROC_INST_ID_
+            WHERE
+            1 = 1
+            AND ahap_123.IS_SERIES_APPROVE = '0'
+            AND art_123.ASSIGNEE_ = '#[currentUser]'
+            AND ahap_123.APPLYINST_STATE NOT IN ('0', '1', '3', '5', '6')
+            AND ahap_123.APPLYINST_STATE != '0'
+            )
+            UNION
+            (
+            SELECT
+            art_123.ID_ TASK_ID,
+            ahap_123.APPLYINST_CODE APPLYINST_CODE,
+            aps_123.STAGE_NAME ITEMINST_STAGE_NAME,
+            ali_123.LINKMAN_NAME LINKMAN_NAME,
+            ahap_123.APPLYINST_SOURCE APPLYINST_SOURCE,
+            art_123.CREATE_TIME_ CREATE_TIME_,
+            ahp_123.START_TIME_ START_TIME,
+            ahap_123.CREATE_TIME AS APPLY_TIME,
+            art_123.NAME_ NAME_,
+            aps_123.DUE_NUM DUE_NUM,
+            '并联' AS IS_SERIES_APPROVE,
+            'undefined' AS busRecordId,
+            'undefined' AS ITEM_PROPERTY,
+            '0' AS APPLY_TYPE,
+            proj.PROJ_NAME,
+            theme.THEME_NAME,
+            hi.ITEMINST_NAME itemName,
+            ti.REMAINING_TIME REMAINING_TIME,
+            ti.OVERDUE_TIME OVERDUE_TIME,
+            art_123.SIGN_STATE_
+            FROM
+            ACT_RU_TASK art_123
+            LEFT JOIN ACT_HI_PROCINST ahp_123 ON art_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
+            LEFT JOIN ACT_STO_APPINST_SUBFLOW asas_123 ON asas_123.SUBFLOW_PROCINST_ID = art_123.PROC_INST_ID_
+            LEFT JOIN ACT_STO_APPINST asa_123 ON asas_123.appinst_id = asa_123.APPINST_ID
+            LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahap_123.APPLYINST_ID = asa_123.master_record_id
+            LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+            LEFT JOIN AEA_HI_PAR_STAGEINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN AEA_PAR_STAGE aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
+            LEFT JOIN AEA_PAR_THEME_VER ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
+            LEFT JOIN aea_applyinst_proj ap ON ap.APPLYINST_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN aea_proj_info proj ON proj.PROJ_INFO_ID = ap.PROJ_INFO_ID
+            LEFT JOIN aea_par_theme theme ON theme.THEME_ID = proj.THEME_ID
+            LEFT JOIN act_ru_variable rv ON rv.PROC_INST_ID_ = ahp_123.ID_
+            LEFT JOIN aea_hi_iteminst hi ON hi.iteminst_id = rv.text_
+            LEFT JOIN act_sto_timerule_inst ti ON ti.PROC_INST_ID = AHP_123.PROC_INST_ID_
+            WHERE
+            1 = 1
+            AND ahap_123.IS_SERIES_APPROVE = '0'
+            AND hi.ITEMINST_STATE NOT IN (
+            '1',
+            '2',
+            '4',
+            '5',
+            '6',
+            '14',
+            '15'
+            )
+            AND ahap_123.APPLYINST_STATE != '0'
+            AND art_123.ASSIGNEE_ = '#[currentUser]'
+            AND rv.name_ = '$BUS_CURRENT_ITEMINST_ID'
+            )
+            UNION
+            (
+            SELECT
+            art_123.ID_ TASK_ID,
+            ahap_123.APPLYINST_CODE APPLYINST_CODE,
+            aps_123.STAGE_NAME ITEMINST_STAGE_NAME,
+            ali_123.LINKMAN_NAME LINKMAN_NAME,
+            ahap_123.APPLYINST_SOURCE APPLYINST_SOURCE,
+            art_123.CREATE_TIME_ CREATE_TIME_,
+            ahp_123.START_TIME_ START_TIME,
+            ahap_123.CREATE_TIME AS APPLY_TIME,
+            art_123.NAME_ NAME_,
+            aps_123.DUE_NUM DUE_NUM,
+            '并联' AS IS_SERIES_APPROVE,
+            'undefined' AS busRecordId,
+            'undefined' AS ITEM_PROPERTY,
+            '0' AS APPLY_TYPE,
+            proj.PROJ_NAME,
+            theme.THEME_NAME,
+            '' itemName,
+            ti.REMAINING_TIME REMAINING_TIME,
+            ti.OVERDUE_TIME OVERDUE_TIME,
+            art_123.SIGN_STATE_
+            FROM
+            ACT_RU_TASK art_123
+            LEFT JOIN ACT_HI_PROCINST ahp_123 ON art_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
+            LEFT JOIN ACT_STO_APPINST_SUBFLOW asas_123 ON asas_123.SUBFLOW_PROCINST_ID = art_123.PROC_INST_ID_
+            LEFT JOIN ACT_STO_APPINST asa_123 ON asas_123.appinst_id = asa_123.APPINST_ID
+            LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahap_123.APPLYINST_ID = asa_123.master_record_id
+            LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+            LEFT JOIN AEA_HI_PAR_STAGEINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN AEA_PAR_STAGE aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
+            LEFT JOIN AEA_PAR_THEME_VER ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
+            LEFT JOIN aea_applyinst_proj ap ON ap.APPLYINST_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN aea_proj_info proj ON proj.PROJ_INFO_ID = ap.PROJ_INFO_ID
+            LEFT JOIN aea_par_theme theme ON theme.THEME_ID = proj.THEME_ID
+            LEFT JOIN act_sto_timerule_inst ti ON ti.PROC_INST_ID = AHP_123.PROC_INST_ID_
+            WHERE
+            1 = 1
+            AND ahap_123.IS_SERIES_APPROVE = '0'
+            AND ahap_123.APPLYINST_STATE != '0'
+            AND art_123.ASSIGNEE_ = '#[currentUser]'
+            )
+            UNION
+            (
+            SELECT
+            art_123.ID_ TASK_ID,
+            ahap_123.APPLYINST_CODE APPLYINST_CODE,
+            ahi_123.ITEMINST_NAME ITEMINST_STAGE_NAME,
+            ali_123.LINKMAN_NAME LINKMAN_NAME,
+            ahap_123.APPLYINST_SOURCE AS APPLYINST_SOURCE,
+            art_123.CREATE_TIME_ AS CREATE_TIME_,
+            ahp_123.START_TIME_ AS START_TIME,
+            ahap_123.CREATE_TIME AS APPLY_TIME,
+            art_123.NAME_ NAME_,
+            ai_123.DUE_NUM DUE_NUM,
+            '串联' AS IS_SERIES_APPROVE,
+            ahi_123.ITEMINST_ID busRecordId,
+            ai_123.ITEM_PROPERTY AS ITEM_PROPERTY,
+            '1' AS APPLY_TYPE,
+            proj.PROJ_NAME,
+            '' AS THEME_NAME,
+            ahi_123.ITEMINST_NAME itemName,
+            ti.REMAINING_TIME REMAINING_TIME,
+            ti.OVERDUE_TIME OVERDUE_TIME,
+            art_123.SIGN_STATE_
+            FROM
+            ACT_RU_TASK art_123
+            LEFT JOIN ACT_HI_PROCINST ahp_123 ON art_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
+            LEFT JOIN ACT_STO_APPINST asa_123 ON asa_123.procinst_id = ahp_123.PROC_INST_ID_
+            LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahap_123.APPLYINST_ID = asa_123.master_record_id
+            LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+            LEFT JOIN AEA_HI_SERIESINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN AEA_HI_ITEMINST ahi_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
+            LEFT JOIN AEA_ITEM_BASIC ai_123 ON ahi_123.ITEM_ID = ai_123.ITEM_ID
+            LEFT JOIN aea_applyinst_proj ap ON ap.APPLYINST_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN aea_proj_info proj ON proj.PROJ_INFO_ID = ap.PROJ_INFO_ID
+            LEFT JOIN act_sto_timerule_inst ti ON ti.PROC_INST_ID = AHP_123.PROC_INST_ID_
+            WHERE
+            1 = 1
+            AND ahap_123.IS_SERIES_APPROVE = '1'
+            AND ahi_123.ITEMINST_STATE NOT IN (
+            '1',
+            '2',
+            '4',
+            '5',
+            '6',
+            '14',
+            '15'
+            )
+            AND ahap_123.APPLYINST_STATE != '0'
+            AND art_123.ASSIGNEE_ = '#[currentUser]'
+            )
+            UNION
+            (
+            SELECT
+            art_123.ID_ TASK_ID,
+            ahap_123.APPLYINST_CODE APPLYINST_CODE,
+            ahi_123.ITEMINST_NAME ITEMINST_STAGE_NAME,
+            ali_123.LINKMAN_NAME LINKMAN_NAME,
+            ahap_123.APPLYINST_SOURCE AS APPLYINST_SOURCE,
+            art_123.CREATE_TIME_ AS CREATE_TIME_,
+            ahp_123.START_TIME_ AS START_TIME,
+            ahap_123.CREATE_TIME AS APPLY_TIME,
+            art_123.NAME_ NAME_,
+            ai_123.DUE_NUM DUE_NUM,
+            '串联' AS IS_SERIES_APPROVE,
+            ahi_123.ITEMINST_ID busRecordId,
+            ai_123.ITEM_PROPERTY AS ITEM_PROPERTY,
+            '1' AS APPLY_TYPE,
+            proj.PROJ_NAME,
+            '' AS THEME_NAME,
+            ahi_123.ITEMINST_NAME itemName,
+            ti.REMAINING_TIME REMAINING_TIME,
+            ti.OVERDUE_TIME OVERDUE_TIME,
+            art_123.SIGN_STATE_
+            FROM
+            ACT_RU_TASK art_123
+            LEFT JOIN ACT_HI_PROCINST ahp_123 ON art_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
+            LEFT JOIN ACT_STO_APPINST_SUBFLOW asas_123 ON asas_123.SUBFLOW_PROCINST_ID = art_123.PROC_INST_ID_
+            LEFT JOIN ACT_STO_APPINST asa_123 ON asas_123.appinst_id = asa_123.APPINST_ID
+            LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahap_123.APPLYINST_ID = asa_123.master_record_id
+            LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+            LEFT JOIN AEA_HI_SERIESINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN AEA_HI_ITEMINST ahi_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
+            LEFT JOIN AEA_ITEM_BASIC ai_123 ON ahi_123.ITEM_ID = ai_123.ITEM_ID
+            LEFT JOIN aea_applyinst_proj ap ON ap.APPLYINST_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN aea_proj_info proj ON proj.PROJ_INFO_ID = ap.PROJ_INFO_ID
+            LEFT JOIN act_sto_timerule_inst ti ON ti.PROC_INST_ID = AHP_123.PROC_INST_ID_
+            WHERE
+            1 = 1
+            AND ahap_123.IS_SERIES_APPROVE = '1'
+            AND ahi_123.ITEMINST_STATE NOT IN ('2', '4', '5', '6', '14', '15')
+            AND ahap_123.APPLYINST_STATE != '0'
+            AND art_123.ASSIGNEE_ = '#[currentUser]'
+            )
+            ) ART_123
+            WHERE
+            1 = 1
+            GROUP BY
+            ART_123.TASK_ID" where view_id = '9aea00ed-ee86-4d7d-ba6b-ebbe89705b86';
+        </sql>
+    </changeSet>
+    <changeSet id="201909181036001" author="sam" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            update act_sto_view set SQL_TEXT = "SELECT
+            aht_123.*
+            FROM
+            (
+            SELECT
+            temp.*
+            FROM
+            (
+            (
+            SELECT
+            aht_123.ID_ TASK_ID,
+            ahap_123.APPLYINST_CODE APPLYINST_CODE,
+            aps_123.STAGE_NAME ITEMINST_STAGE_NAME,
+            ali_123.LINKMAN_NAME LINKMAN_NAME,
+            ahap_123.APPLYINST_SOURCE APPLYINST_SOURCE,
+            aht_123.END_TIME_ END_TIME_,
+            aht_123.NAME_ NAME_,
+            aps_123.DUE_NUM DUE_NUM,
+            '并联' AS IS_SERIES_APPROVE,
+            'undefined' AS busRecordId,
+            '0' AS APPLY_TYPE,
+            temp1.PROJ_NAME,
+            theme.THEME_NAME,
+            hi.ITEMINST_NAME itemName,
+            aht_123.TASK_DEF_KEY_ TASK_DEF_KEY
+            FROM
+            ACT_HI_TASKINST aht_123
+            LEFT JOIN ACT_HI_PROCINST ahp_123 ON aht_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
+            LEFT JOIN ACT_STO_APPINST asa_123 ON asa_123.procinst_id = ahp_123.PROC_INST_ID_
+            LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahap_123.APPLYINST_ID = asa_123.master_record_id
+            LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+            LEFT JOIN AEA_HI_PAR_STAGEINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN AEA_PAR_STAGE aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
+            LEFT JOIN AEA_PAR_THEME_VER ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
+            LEFT JOIN AEA_PAR_THEME theme ON theme.THEME_ID = ver.THEME_ID
+            LEFT JOIN (
+            SELECT
+            ap.APPLYINST_ID,
+            GROUP_CONCAT(p.PROJ_NAME) PROJ_NAME
+            FROM
+            aea_applyinst_proj ap
+            LEFT JOIN aea_proj_info p ON ap.proj_info_id = p.proj_info_id
+            GROUP BY
+            ap.APPLYINST_ID
+            ) temp1 ON temp1.APPLYINST_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN act_hi_varinst hv ON hv.PROC_INST_ID_ = ahp_123.PROC_INST_ID_
+            AND hv.name_ = '$BUS_CURRENT_ITEMINST_ID'
+            LEFT JOIN aea_hi_iteminst hi ON hi.iteminst_id = hv.text_
+            WHERE
+            1 = 1
+            AND ahap_123.IS_SERIES_APPROVE = '0'
+            AND aht_123.ASSIGNEE_ = '#[currentUser]'
+            AND aht_123.END_TIME_ IS NOT NULL
+            AND aht_123.DELETE_REASON_ IS NULL
+            )
+            UNION
+            (
+            SELECT
+            aht_123.ID_ TASK_ID,
+            ahap_123.APPLYINST_CODE APPLYINST_CODE,
+            aps_123.STAGE_NAME ITEMINST_STAGE_NAME,
+            ali_123.LINKMAN_NAME LINKMAN_NAME,
+            ahap_123.APPLYINST_SOURCE APPLYINST_SOURCE,
+            aht_123.END_TIME_ END_TIME_,
+            aht_123.NAME_ NAME_,
+            aps_123.DUE_NUM DUE_NUM,
+            '并联' AS IS_SERIES_APPROVE,
+            'undefined' AS busRecordId,
+            '0' AS APPLY_TYPE,
+            temp1.PROJ_NAME,
+            theme.THEME_NAME,
+            hi.ITEMINST_NAME itemName,
+            aht_123.TASK_DEF_KEY_ TASK_DEF_KEY
+            FROM
+            ACT_HI_TASKINST aht_123
+            LEFT JOIN ACT_HI_PROCINST ahp_123 ON aht_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
+            LEFT JOIN act_sto_appinst_subflow asas_123 ON asas_123.SUBFLOW_PROCINST_ID = ahp_123.PROC_INST_ID_
+            LEFT JOIN ACT_STO_APPINST asa_123 ON asa_123.APPINST_ID = asas_123.APPINST_ID
+            LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahap_123.APPLYINST_ID = asa_123.master_record_id
+            LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+            LEFT JOIN AEA_HI_PAR_STAGEINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN AEA_PAR_STAGE aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
+            LEFT JOIN AEA_PAR_THEME_VER ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
+            LEFT JOIN AEA_PAR_THEME theme ON theme.THEME_ID = ver.THEME_ID
+            LEFT JOIN (
+            SELECT
+            ap.APPLYINST_ID,
+            GROUP_CONCAT(p.PROJ_NAME) PROJ_NAME
+            FROM
+            aea_applyinst_proj ap
+            LEFT JOIN aea_proj_info p ON ap.proj_info_id = p.proj_info_id
+            GROUP BY
+            ap.APPLYINST_ID
+            ) temp1 ON temp1.APPLYINST_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN act_hi_varinst hv ON hv.PROC_INST_ID_ = ahp_123.PROC_INST_ID_
+            AND hv.name_ = '$BUS_CURRENT_ITEMINST_ID'
+            LEFT JOIN aea_hi_iteminst hi ON hi.iteminst_id = hv.text_
+            WHERE
+            1 = 1
+            AND ahap_123.IS_SERIES_APPROVE = '0'
+            AND aht_123.ASSIGNEE_ = '#[currentUser]'
+            AND aht_123.END_TIME_ IS NOT NULL
+            AND aht_123.DELETE_REASON_ IS NULL
+            )
+            UNION
+            (
+            SELECT
+            aht_123.ID_ TASK_ID,
+            ahap_123.APPLYINST_CODE APPLYINST_CODE,
+            ahi_123.ITEMINST_NAME ITEMINST_STAGE_NAME,
+            ali_123.LINKMAN_NAME LINKMAN_NAME,
+            ahap_123.APPLYINST_SOURCE AS APPLYINST_SOURCE,
+            aht_123.END_TIME_ AS END_TIME_,
+            aht_123.NAME_ NAME_,
+            ai_123.DUE_NUM DUE_NUM,
+            '串联' AS IS_SERIES_APPROVE,
+            ahi_123.ITEMINST_ID busRecordId,
+            '1' AS APPLY_TYPE,
+            temp1.PROJ_NAME,
+            '' AS THEME_NAME,
+            ahi_123.ITEMINST_NAME itemName,
+            aht_123.TASK_DEF_KEY_ TASK_DEF_KEY
+            FROM
+            ACT_HI_TASKINST aht_123
+            LEFT JOIN ACT_HI_PROCINST ahp_123 ON aht_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
+            LEFT JOIN ACT_STO_APPINST asa_123 ON asa_123.procinst_id = ahp_123.PROC_INST_ID_
+            LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahap_123.APPLYINST_ID = asa_123.master_record_id
+            LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+            LEFT JOIN AEA_HI_SERIESINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN AEA_HI_ITEMINST ahi_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
+            LEFT JOIN AEA_ITEM_BASIC ai_123 ON ahi_123.ITEM_ID = ai_123.ITEM_ID
+            LEFT JOIN (
+            SELECT
+            ap.APPLYINST_ID,
+            GROUP_CONCAT(p.PROJ_NAME) PROJ_NAME
+            FROM
+            aea_applyinst_proj ap
+            LEFT JOIN aea_proj_info p ON ap.proj_info_id = p.proj_info_id
+            GROUP BY
+            ap.APPLYINST_ID
+            ) temp1 ON temp1.APPLYINST_ID = ahap_123.APPLYINST_ID
+            WHERE
+            1 = 1
+            AND ahap_123.IS_SERIES_APPROVE = '1'
+            AND aht_123.ASSIGNEE_ = '#[currentUser]'
+            AND aht_123.END_TIME_ IS NOT NULL
+            AND aht_123.DELETE_REASON_ IS NULL
+            )
+            UNION
+            (
+            SELECT
+            aht_123.ID_ TASK_ID,
+            ahap_123.APPLYINST_CODE APPLYINST_CODE,
+            ahi_123.ITEMINST_NAME ITEMINST_STAGE_NAME,
+            ali_123.LINKMAN_NAME LINKMAN_NAME,
+            ahap_123.APPLYINST_SOURCE AS APPLYINST_SOURCE,
+            aht_123.END_TIME_ AS END_TIME_,
+            aht_123.NAME_ NAME_,
+            ai_123.DUE_NUM DUE_NUM,
+            '串联' AS IS_SERIES_APPROVE,
+            ahi_123.ITEMINST_ID busRecordId,
+            '1' AS APPLY_TYPE,
+            temp1.PROJ_NAME,
+            '' AS THEME_NAME,
+            ahi_123.ITEMINST_NAME itemName,
+            aht_123.TASK_DEF_KEY_ TASK_DEF_KEY
+            FROM
+            ACT_HI_TASKINST aht_123
+            LEFT JOIN ACT_HI_PROCINST ahp_123 ON aht_123.PROC_INST_ID_ = AHP_123.PROC_INST_ID_
+            LEFT JOIN ACT_STO_APPINST_SUBFLOW asas_123 ON asas_123.SUBFLOW_PROCINST_ID = aht_123.PROC_INST_ID_
+            LEFT JOIN ACT_STO_APPINST asa_123 ON asas_123.appinst_id = asa_123.APPINST_ID
+            LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahap_123.APPLYINST_ID = asa_123.master_record_id
+            LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+            LEFT JOIN AEA_HI_SERIESINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN AEA_HI_ITEMINST ahi_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
+            LEFT JOIN AEA_ITEM_BASIC ai_123 ON ahi_123.ITEM_ID = ai_123.ITEM_ID
+            LEFT JOIN (
+            SELECT
+            ap.APPLYINST_ID,
+            GROUP_CONCAT(p.PROJ_NAME) PROJ_NAME
+            FROM
+            aea_applyinst_proj ap
+            LEFT JOIN aea_proj_info p ON ap.proj_info_id = p.proj_info_id
+            GROUP BY
+            ap.APPLYINST_ID
+            ) temp1 ON temp1.APPLYINST_ID = ahap_123.APPLYINST_ID
+            WHERE
+            1 = 1
+            AND ahap_123.IS_SERIES_APPROVE = '1'
+            AND aht_123.ASSIGNEE_ = '#[currentUser]'
+            AND aht_123.END_TIME_ IS NOT NULL
+            AND aht_123.DELETE_REASON_ IS NULL
+            )
+            ) temp
+            GROUP BY
+            TASK_ID
+            ) aht_123
+            WHERE
+            1 = 1" where view_id = 'efaa7f54-9a40-40fc-a1e7-bc7aedfb90dd';
+        </sql>
+    </changeSet>
+
+    <changeSet id="201909181043" author="yinlf" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            UPDATE act_sto_view
+            SET SQL_TEXT = "SELECT temp_table.*
+            FROM (
+            SELECT aiv_123.ITEM_VER_ID, aiv_123.ITEM_ID, aiv_123.VER_NUM, aib_123.ITEM_CODE, aib_123.ITEM_NAME
+            , aib_123.ORG_ID, aib_123.XKDX, aib_123.ITEM_PROPERTY, aib_123.DUE_NUM AS DUE_NUM, aib_123.BJ_TYPE
+            , ooo_123.ORG_NAME
+            FROM AEA_ITEM_VER aiv_123
+            LEFT JOIN AEA_ITEM_BASIC aib_123 ON aiv_123.ITEM_VER_ID = aib_123.ITEM_VER_ID
+            LEFT JOIN OPU_OM_ORG ooo_123 ON aib_123.org_id = ooo_123.org_id
+            WHERE 1 = 1
+            AND aiv_123.IS_DELETED = 0
+            AND aiv_123.ITEM_VER_STATUS IN ('1', '2')
+            AND aib_123.item_nature = '0'
+            AND aiv_123.ITEM_VER_ID IN (
+            SELECT ITEM_VER_ID
+            FROM aea_service_window_item
+            WHERE WIND_ID IN (
+            SELECT asw_123.WINDOW_ID
+            FROM aea_service_window asw_123
+            INNER JOIN aea_service_window_user aswu_123 ON asw_123.WINDOW_ID = aswu_123.WINDOW_ID
+            INNER JOIN opu_om_user usr_123 ON usr_123.USER_ID = aswu_123.USER_ID AND usr_123.LOGIN_NAME =
+            '#[currentUser]'
+            WHERE aswu_123.IS_ACTIVE = '1'
+            AND asw_123.IS_ACTIVE = '1' AND asw_123.IS_ALL_ITEM = '0'
+            )
+            AND IS_ACTIVE = '1'
+            )
+            UNION
+            SELECT aiv_123.ITEM_VER_ID, aiv_123.ITEM_ID, aiv_123.VER_NUM, aib_123.ITEM_CODE, aib_123.ITEM_NAME
+            , aib_123.ORG_ID, aib_123.XKDX, aib_123.ITEM_PROPERTY, aib_123.DUE_NUM AS DUE_NUM, aib_123.BJ_TYPE
+            , ooo_123.ORG_NAME
+            FROM AEA_ITEM_VER aiv_123
+            LEFT JOIN AEA_ITEM_BASIC aib_123 ON aiv_123.ITEM_VER_ID = aib_123.ITEM_VER_ID
+            LEFT JOIN OPU_OM_ORG ooo_123 ON aib_123.org_id = ooo_123.org_id
+            WHERE 1 = 1
+            AND aiv_123.IS_DELETED = 0
+            AND aiv_123.ITEM_VER_STATUS IN ('1', '2')
+            AND aib_123.item_nature = '0'
+            AND aib_123.IS_CATALOG = '0'
+            AND EXISTS (
+            SELECT asw_123.WINDOW_ID
+            FROM aea_service_window asw_123
+            INNER JOIN aea_service_window_user aswu_123 ON asw_123.WINDOW_ID = aswu_123.WINDOW_ID
+            INNER JOIN opu_om_user usr_123 ON usr_123.USER_ID = aswu_123.USER_ID AND usr_123.LOGIN_NAME =
+            '#[currentUser]'
+            WHERE aswu_123.IS_ACTIVE = '1'
+            AND asw_123.IS_ALL_ITEM = '1' AND asw_123.IS_ACTIVE = '1'
+            )
+            ) temp_table
+            WHERE 1 = 1" WHERE VIEW_ID = "4b5ed782-a5b0-4a37-a84c-47e8b6e5fb66"
+        </sql>
+    </changeSet>
+
+    <changeSet id="201909191356" author="xiaohutu" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_hi_receive` ADD INDEX `RECEIVE_MEMO`(`RECEIVE_MEMO`) USING BTREE COMMENT 'RECEIVE_MEMO';
+            ALTER TABLE `aea_hi_receive` ADD INDEX `APPLYINST_ID`(`APPLYINST_ID`) USING BTREE COMMENT 'APPLYINST_ID';
+            ALTER TABLE `aea_hi_receive` ADD INDEX `RECEIPT_TYPE`(`RECEIPT_TYPE`) USING BTREE COMMENT 'RECEIPT_TYPE';
+        </sql>
+    </changeSet>
+
+    <changeSet id="2019091918530001" author="sam" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            UPDATE aea_item_basic a
+            SET ITEM_CATEGORY_MARK = (
+            SELECT
+            c.ITEM_CATEGORY_MARK
+            FROM
+            (
+            SELECT
+            b.ITEM_CATEGORY_MARK,
+            a.*
+            FROM
+            (
+            SELECT
+            ib.ITEM_BASIC_ID,
+            i.PARENT_ITEM_ID,
+            ib.IS_CATALOG
+            FROM
+            aea_item_basic ib,
+            aea_item i
+            WHERE
+            ib.item_id = i.ITEM_ID
+            AND ib.IS_CATALOG = '0'
+            ) a
+            INNER JOIN aea_item_basic b ON b.item_id = a.PARENT_ITEM_ID
+            GROUP BY
+            ITEM_BASIC_ID
+            ) c
+            WHERE
+            c.ITEM_BASIC_ID = a.ITEM_BASIC_ID
+            ) WHERE a.IS_CATALOG = '0';
+        </sql>
+    </changeSet>
+
+    <changeSet id="201909191948" author="xiaohutu" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_credit_summary` ADD INDEX `CREDIT_UNIT_INFO_ID`(`CREDIT_UNIT_INFO_ID`) USING BTREE COMMENT
+            'CREDIT_UNIT_INFO_ID';
+            ALTER TABLE `aea_credit_unit_info` ADD INDEX `UNIFIED_SOCIAL_CREDIT_CODE`(`UNIFIED_SOCIAL_CREDIT_CODE`)
+            USING BTREE COMMENT 'UNIFIED_SOCIAL_CREDIT_CODE';
+        </sql>
+    </changeSet>
+
+    <changeSet id="201909210958" author="yinlf" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            UPDATE act_sto_view SET SQL_TEXT = "SELECT temp_table.*
+            FROM (SELECT ahi_123.ITEMINST_ID, ahap_123.APPLYINST_CODE, temp1.PROJ_NAME, ali_123.LINKMAN_NAME
+            , CASE ahap_123.IS_SERIES_APPROVE
+            WHEN '1' THEN '单项'
+            ELSE '并联'
+            END AS IS_SERIES_APPROVE, theme.THEME_NAME, aps_123.STAGE_NAME, ahi_123.ITEMINST_NAME, ahap_123.CREATE_TIME
+            , CONVERT(MAX(aht_123.ID_ + 0), CHAR) AS TASK_ID
+            FROM AEA_HI_ITEMINST ahi_123
+            LEFT JOIN AEA_HI_PAR_STAGEINST ahs_123 ON ahi_123.STAGEINST_ID = ahs_123.STAGEINST_ID
+            LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN AEA_PAR_STAGE aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
+            LEFT JOIN AEA_PAR_THEME_VER ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
+            LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+            LEFT JOIN AEA_PAR_THEME theme ON theme.THEME_ID = ver.THEME_ID
+            LEFT JOIN (
+            SELECT ap.APPLYINST_ID, GROUP_CONCAT(p.PROJ_NAME) AS PROJ_NAME
+            FROM aea_applyinst_proj ap
+            LEFT JOIN aea_proj_info p ON ap.proj_info_id = p.proj_info_id
+            GROUP BY ap.APPLYINST_ID
+            ) temp1
+            ON temp1.APPLYINST_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN ACT_HI_TASKINST aht_123 ON aht_123.PROC_INST_ID_ = ahi_123.PROCINST_ID
+            WHERE ahi_123.IS_SERIES_APPROVE = '0'
+            AND aht_123.ASSIGNEE_ = '#[currentUser]'
+            GROUP BY ahi_123.ITEMINST_ID
+            UNION
+            SELECT ahi_123.ITEMINST_ID, ahap_123.APPLYINST_CODE, temp1.PROJ_NAME, ali_123.LINKMAN_NAME
+            , CASE ahap_123.IS_SERIES_APPROVE
+            WHEN '1' THEN '单项'
+            ELSE '并联'
+            END AS IS_SERIES_APPROVE, NULL AS THEME_NAME, NULL AS STAGE_NAME, ahi_123.ITEMINST_NAME,
+            ahap_123.CREATE_TIME
+            , CONVERT(MAX(aht_123.ID_ + 0), CHAR) AS TASK_ID
+            FROM AEA_HI_ITEMINST ahi_123
+            LEFT JOIN AEA_HI_SERIESINST ahs_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
+            LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+            LEFT JOIN (
+            SELECT ap.APPLYINST_ID, GROUP_CONCAT(p.PROJ_NAME) AS PROJ_NAME
+            FROM aea_applyinst_proj ap
+            LEFT JOIN aea_proj_info p ON ap.proj_info_id = p.proj_info_id
+            GROUP BY ap.APPLYINST_ID
+            ) temp1
+            ON temp1.APPLYINST_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN ACT_HI_TASKINST aht_123 ON aht_123.PROC_INST_ID_ = ahi_123.PROCINST_ID
+            WHERE ahi_123.IS_SERIES_APPROVE = '1'
+            AND aht_123.ASSIGNEE_ = '#[currentUser]'
+            GROUP BY ahi_123.ITEMINST_ID) temp_table
+            WHERE 1 = 1"
+            WHERE VIEW_CODE = "view-code-00000053"
+        </sql>
+    </changeSet>
+
+
+    <changeSet id="201909210959" author="yinlf" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            UPDATE act_sto_view SET SQL_TEXT = "SELECT temp_table.*
+            FROM (SELECT ahi_123.ITEMINST_ID, ahap_123.APPLYINST_CODE, temp1.PROJ_NAME, ali_123.LINKMAN_NAME
+            , CASE ahap_123.IS_SERIES_APPROVE
+            WHEN '1' THEN '单项'
+            ELSE '并联'
+            END AS IS_SERIES_APPROVE, theme.THEME_NAME, aps_123.STAGE_NAME, ahi_123.ITEMINST_NAME, ahap_123.CREATE_TIME
+            , CONVERT(MAX(aht_123.ID_ + 0), CHAR) AS TASK_ID
+            FROM AEA_HI_ITEMINST ahi_123
+            LEFT JOIN AEA_HI_PAR_STAGEINST ahs_123 ON ahi_123.STAGEINST_ID = ahs_123.STAGEINST_ID
+            LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN AEA_PAR_STAGE aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
+            LEFT JOIN AEA_PAR_THEME_VER ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
+            LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+            LEFT JOIN AEA_PAR_THEME theme ON theme.THEME_ID = ver.THEME_ID
+            LEFT JOIN (
+            SELECT ap.APPLYINST_ID, GROUP_CONCAT(p.PROJ_NAME) AS PROJ_NAME
+            FROM aea_applyinst_proj ap
+            LEFT JOIN aea_proj_info p ON ap.proj_info_id = p.proj_info_id
+            GROUP BY ap.APPLYINST_ID
+            ) temp1
+            ON temp1.APPLYINST_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN ACT_HI_TASKINST aht_123 ON aht_123.PROC_INST_ID_ = ahi_123.PROCINST_ID
+            WHERE ahi_123.IS_SERIES_APPROVE = '0'
+            AND ahi_123.IS_TOLERANCE_ACCEPT = '1'
+            AND aht_123.ASSIGNEE_ = '#[currentUser]'
+            GROUP BY ahi_123.ITEMINST_ID
+            UNION
+            SELECT ahi_123.ITEMINST_ID, ahap_123.APPLYINST_CODE, temp1.PROJ_NAME, ali_123.LINKMAN_NAME
+            , CASE ahap_123.IS_SERIES_APPROVE
+            WHEN '1' THEN '单项'
+            ELSE '并联'
+            END AS IS_SERIES_APPROVE, NULL AS THEME_NAME, NULL AS STAGE_NAME, ahi_123.ITEMINST_NAME,
+            ahap_123.CREATE_TIME
+            , CONVERT(MAX(aht_123.ID_ + 0), CHAR) AS TASK_ID
+            FROM AEA_HI_ITEMINST ahi_123
+            LEFT JOIN AEA_HI_SERIESINST ahs_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
+            LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+            LEFT JOIN (
+            SELECT ap.APPLYINST_ID, GROUP_CONCAT(p.PROJ_NAME) AS PROJ_NAME
+            FROM aea_applyinst_proj ap
+            LEFT JOIN aea_proj_info p ON ap.proj_info_id = p.proj_info_id
+            GROUP BY ap.APPLYINST_ID
+            ) temp1
+            ON temp1.APPLYINST_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN ACT_HI_TASKINST aht_123 ON aht_123.PROC_INST_ID_ = ahi_123.PROCINST_ID
+            WHERE ahi_123.IS_SERIES_APPROVE = '1'
+            AND ahi_123.IS_TOLERANCE_ACCEPT = '1'
+            AND aht_123.ASSIGNEE_ = '#[currentUser]'
+            GROUP BY ahi_123.ITEMINST_ID) temp_table
+            WHERE 1 = 1"
+            WHERE VIEW_CODE = "view-code-00000042"
+        </sql>
+    </changeSet>
+
+    <changeSet id="201909211000" author="yinlf" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            UPDATE act_sto_view SET SQL_TEXT = "SELECT temp_table.*
+            FROM (SELECT ahi_123.ITEMINST_ID, ahap_123.APPLYINST_CODE, temp1.PROJ_NAME, ali_123.LINKMAN_NAME
+            , CASE ahap_123.IS_SERIES_APPROVE
+            WHEN '1' THEN '单项'
+            ELSE '并联'
+            END AS IS_SERIES_APPROVE, theme.THEME_NAME, aps_123.STAGE_NAME, ahi_123.ITEMINST_NAME, ahap_123.CREATE_TIME
+            , CONVERT(MAX(aht_123.ID_ + 0), CHAR) AS TASK_ID
+            FROM AEA_HI_ITEMINST ahi_123
+            LEFT JOIN AEA_HI_PAR_STAGEINST ahs_123 ON ahi_123.STAGEINST_ID = ahs_123.STAGEINST_ID
+            LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN AEA_PAR_STAGE aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
+            LEFT JOIN AEA_PAR_THEME_VER ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
+            LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+            LEFT JOIN AEA_PAR_THEME theme ON theme.THEME_ID = ver.THEME_ID
+            LEFT JOIN (
+            SELECT ap.APPLYINST_ID, GROUP_CONCAT(p.PROJ_NAME) AS PROJ_NAME
+            FROM aea_applyinst_proj ap
+            LEFT JOIN aea_proj_info p ON ap.proj_info_id = p.proj_info_id
+            GROUP BY ap.APPLYINST_ID
+            ) temp1
+            ON temp1.APPLYINST_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN ACT_HI_TASKINST aht_123 ON aht_123.PROC_INST_ID_ = ahi_123.PROCINST_ID
+            WHERE ahi_123.IS_SERIES_APPROVE = '0'
+            AND ahi_123.ITEMINST_STATE = '12'
+            AND aht_123.ASSIGNEE_ = '#[currentUser]'
+            GROUP BY ahi_123.ITEMINST_ID
+            UNION
+            SELECT ahi_123.ITEMINST_ID, ahap_123.APPLYINST_CODE, temp1.PROJ_NAME, ali_123.LINKMAN_NAME
+            , CASE ahap_123.IS_SERIES_APPROVE
+            WHEN '1' THEN '单项'
+            ELSE '并联'
+            END AS IS_SERIES_APPROVE, NULL AS THEME_NAME, NULL AS STAGE_NAME, ahi_123.ITEMINST_NAME,
+            ahap_123.CREATE_TIME
+            , CONVERT(MAX(aht_123.ID_ + 0), CHAR) AS TASK_ID
+            FROM AEA_HI_ITEMINST ahi_123
+            LEFT JOIN AEA_HI_SERIESINST ahs_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
+            LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+            LEFT JOIN (
+            SELECT ap.APPLYINST_ID, GROUP_CONCAT(p.PROJ_NAME) AS PROJ_NAME
+            FROM aea_applyinst_proj ap
+            LEFT JOIN aea_proj_info p ON ap.proj_info_id = p.proj_info_id
+            GROUP BY ap.APPLYINST_ID
+            ) temp1
+            ON temp1.APPLYINST_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN ACT_HI_TASKINST aht_123 ON aht_123.PROC_INST_ID_ = ahi_123.PROCINST_ID
+            WHERE ahi_123.IS_SERIES_APPROVE = '1'
+            AND ahi_123.ITEMINST_STATE = '12'
+            AND aht_123.ASSIGNEE_ = '#[currentUser]'
+            GROUP BY ahi_123.ITEMINST_ID) temp_table
+            WHERE 1 = 1"
+            WHERE VIEW_CODE = "view-code-00000046"
+        </sql>
+    </changeSet>
+
+    <changeSet id="201909211001" author="yinlf" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            UPDATE act_sto_view SET SQL_TEXT = "SELECT temp_table.*
+            FROM (SELECT ahi_123.ITEMINST_ID, ahap_123.APPLYINST_CODE, temp1.PROJ_NAME, ali_123.LINKMAN_NAME
+            , CASE ahap_123.IS_SERIES_APPROVE
+            WHEN '1' THEN '单项'
+            ELSE '并联'
+            END AS IS_SERIES_APPROVE, theme.THEME_NAME, aps_123.STAGE_NAME, ahi_123.ITEMINST_NAME, ahap_123.CREATE_TIME
+            , CONVERT(MAX(aht_123.ID_ + 0), CHAR) AS TASK_ID
+            FROM AEA_HI_ITEMINST ahi_123
+            LEFT JOIN AEA_HI_PAR_STAGEINST ahs_123 ON ahi_123.STAGEINST_ID = ahs_123.STAGEINST_ID
+            LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN AEA_PAR_STAGE aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
+            LEFT JOIN AEA_PAR_THEME_VER ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
+            LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+            LEFT JOIN AEA_PAR_THEME theme ON theme.THEME_ID = ver.THEME_ID
+            LEFT JOIN (
+            SELECT ap.APPLYINST_ID, GROUP_CONCAT(p.PROJ_NAME) AS PROJ_NAME
+            FROM aea_applyinst_proj ap
+            LEFT JOIN aea_proj_info p ON ap.proj_info_id = p.proj_info_id
+            GROUP BY ap.APPLYINST_ID
+            ) temp1
+            ON temp1.APPLYINST_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN ACT_HI_TASKINST aht_123 ON aht_123.PROC_INST_ID_ = ahi_123.PROCINST_ID
+            WHERE ahi_123.IS_SERIES_APPROVE = '0'
+            AND ahi_123.ITEMINST_STATE = '7'
+            AND aht_123.ASSIGNEE_ = '#[currentUser]'
+            GROUP BY ahi_123.ITEMINST_ID
+            UNION
+            SELECT ahi_123.ITEMINST_ID, ahap_123.APPLYINST_CODE, temp1.PROJ_NAME, ali_123.LINKMAN_NAME
+            , CASE ahap_123.IS_SERIES_APPROVE
+            WHEN '1' THEN '单项'
+            ELSE '并联'
+            END AS IS_SERIES_APPROVE, NULL AS THEME_NAME, NULL AS STAGE_NAME, ahi_123.ITEMINST_NAME,
+            ahap_123.CREATE_TIME
+            , CONVERT(MAX(aht_123.ID_ + 0), CHAR) AS TASK_ID
+            FROM AEA_HI_ITEMINST ahi_123
+            LEFT JOIN AEA_HI_SERIESINST ahs_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
+            LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+            LEFT JOIN (
+            SELECT ap.APPLYINST_ID, GROUP_CONCAT(p.PROJ_NAME) AS PROJ_NAME
+            FROM aea_applyinst_proj ap
+            LEFT JOIN aea_proj_info p ON ap.proj_info_id = p.proj_info_id
+            GROUP BY ap.APPLYINST_ID
+            ) temp1
+            ON temp1.APPLYINST_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN ACT_HI_TASKINST aht_123 ON aht_123.PROC_INST_ID_ = ahi_123.PROCINST_ID
+            WHERE ahi_123.IS_SERIES_APPROVE = '1'
+            AND ahi_123.ITEMINST_STATE = '7'
+            AND aht_123.ASSIGNEE_ = '#[currentUser]'
+            GROUP BY ahi_123.ITEMINST_ID) temp_table
+            WHERE 1 = 1"
+            WHERE VIEW_CODE = "view-code-00000044"
+        </sql>
+    </changeSet>
+
+    <changeSet id="201909211002" author="yinlf" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            UPDATE act_sto_view SET SQL_TEXT = "SELECT temp_table.*
+            FROM (SELECT ahi_123.ITEMINST_ID, ahap_123.APPLYINST_CODE, temp1.PROJ_NAME, ali_123.LINKMAN_NAME
+            , CASE ahap_123.IS_SERIES_APPROVE
+            WHEN '1' THEN '单项'
+            ELSE '并联'
+            END AS IS_SERIES_APPROVE, theme.THEME_NAME, aps_123.STAGE_NAME, ahi_123.ITEMINST_NAME, ahap_123.CREATE_TIME
+            , CONVERT(MAX(aht_123.ID_ + 0), CHAR) AS TASK_ID
+            FROM AEA_HI_ITEMINST ahi_123
+            LEFT JOIN AEA_HI_PAR_STAGEINST ahs_123 ON ahi_123.STAGEINST_ID = ahs_123.STAGEINST_ID
+            LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN AEA_PAR_STAGE aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
+            LEFT JOIN AEA_PAR_THEME_VER ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
+            LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+            LEFT JOIN AEA_PAR_THEME theme ON theme.THEME_ID = ver.THEME_ID
+            LEFT JOIN (
+            SELECT ap.APPLYINST_ID, GROUP_CONCAT(p.PROJ_NAME) AS PROJ_NAME
+            FROM aea_applyinst_proj ap
+            LEFT JOIN aea_proj_info p ON ap.proj_info_id = p.proj_info_id
+            GROUP BY ap.APPLYINST_ID
+            ) temp1
+            ON temp1.APPLYINST_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN ACT_HI_TASKINST aht_123 ON aht_123.PROC_INST_ID_ = ahi_123.PROCINST_ID
+            WHERE ahi_123.IS_SERIES_APPROVE = '0'
+            AND ahi_123.ITEMINST_STATE = '9'
+            AND aht_123.ASSIGNEE_ = '#[currentUser]'
+            GROUP BY ahi_123.ITEMINST_ID
+            UNION
+            SELECT ahi_123.ITEMINST_ID, ahap_123.APPLYINST_CODE, temp1.PROJ_NAME, ali_123.LINKMAN_NAME
+            , CASE ahap_123.IS_SERIES_APPROVE
+            WHEN '1' THEN '单项'
+            ELSE '并联'
+            END AS IS_SERIES_APPROVE, NULL AS THEME_NAME, NULL AS STAGE_NAME, ahi_123.ITEMINST_NAME,
+            ahap_123.CREATE_TIME
+            , CONVERT(MAX(aht_123.ID_ + 0), CHAR) AS TASK_ID
+            FROM AEA_HI_ITEMINST ahi_123
+            LEFT JOIN AEA_HI_SERIESINST ahs_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
+            LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+            LEFT JOIN (
+            SELECT ap.APPLYINST_ID, GROUP_CONCAT(p.PROJ_NAME) AS PROJ_NAME
+            FROM aea_applyinst_proj ap
+            LEFT JOIN aea_proj_info p ON ap.proj_info_id = p.proj_info_id
+            GROUP BY ap.APPLYINST_ID
+            ) temp1
+            ON temp1.APPLYINST_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN ACT_HI_TASKINST aht_123 ON aht_123.PROC_INST_ID_ = ahi_123.PROCINST_ID
+            WHERE ahi_123.IS_SERIES_APPROVE = '1'
+            AND ahi_123.ITEMINST_STATE = '9'
+            AND aht_123.ASSIGNEE_ = '#[currentUser]'
+            GROUP BY ahi_123.ITEMINST_ID) temp_table
+            WHERE 1 = 1"
+            WHERE VIEW_CODE = "view-code-00000045"
+        </sql>
+    </changeSet>
+
+    <changeSet id="201909211003" author="yinlf" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            UPDATE act_sto_view SET SQL_TEXT = "SELECT temp_table.*
+            FROM (SELECT ahi_123.ITEMINST_ID, ahap_123.APPLYINST_CODE, temp1.PROJ_NAME, ali_123.LINKMAN_NAME
+            , CASE ahap_123.IS_SERIES_APPROVE
+            WHEN '1' THEN '单项'
+            ELSE '并联'
+            END AS IS_SERIES_APPROVE, theme.THEME_NAME, aps_123.STAGE_NAME, ahi_123.ITEMINST_NAME, ahap_123.CREATE_TIME
+            , CONVERT(MAX(aht_123.ID_ + 0), CHAR) AS TASK_ID
+            FROM AEA_HI_ITEMINST ahi_123
+            LEFT JOIN AEA_HI_PAR_STAGEINST ahs_123 ON ahi_123.STAGEINST_ID = ahs_123.STAGEINST_ID
+            LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN AEA_PAR_STAGE aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
+            LEFT JOIN AEA_PAR_THEME_VER ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
+            LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+            LEFT JOIN AEA_PAR_THEME theme ON theme.THEME_ID = ver.THEME_ID
+            LEFT JOIN (
+            SELECT ap.APPLYINST_ID, GROUP_CONCAT(p.PROJ_NAME) AS PROJ_NAME
+            FROM aea_applyinst_proj ap
+            LEFT JOIN aea_proj_info p ON ap.proj_info_id = p.proj_info_id
+            GROUP BY ap.APPLYINST_ID
+            ) temp1
+            ON temp1.APPLYINST_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN ACT_HI_TASKINST aht_123 ON aht_123.PROC_INST_ID_ = ahi_123.PROCINST_ID
+            WHERE ahi_123.IS_SERIES_APPROVE = '0'
+            AND ahi_123.ITEMINST_STATE = '13'
+            AND aht_123.ASSIGNEE_ = '#[currentUser]'
+            GROUP BY ahi_123.ITEMINST_ID
+            UNION
+            SELECT ahi_123.ITEMINST_ID, ahap_123.APPLYINST_CODE, temp1.PROJ_NAME, ali_123.LINKMAN_NAME
+            , CASE ahap_123.IS_SERIES_APPROVE
+            WHEN '1' THEN '单项'
+            ELSE '并联'
+            END AS IS_SERIES_APPROVE, NULL AS THEME_NAME, NULL AS STAGE_NAME, ahi_123.ITEMINST_NAME,
+            ahap_123.CREATE_TIME
+            , CONVERT(MAX(aht_123.ID_ + 0), CHAR) AS TASK_ID
+            FROM AEA_HI_ITEMINST ahi_123
+            LEFT JOIN AEA_HI_SERIESINST ahs_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
+            LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+            LEFT JOIN (
+            SELECT ap.APPLYINST_ID, GROUP_CONCAT(p.PROJ_NAME) AS PROJ_NAME
+            FROM aea_applyinst_proj ap
+            LEFT JOIN aea_proj_info p ON ap.proj_info_id = p.proj_info_id
+            GROUP BY ap.APPLYINST_ID
+            ) temp1
+            ON temp1.APPLYINST_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN ACT_HI_TASKINST aht_123 ON aht_123.PROC_INST_ID_ = ahi_123.PROCINST_ID
+            WHERE ahi_123.IS_SERIES_APPROVE = '1'
+            AND ahi_123.ITEMINST_STATE = '13'
+            AND aht_123.ASSIGNEE_ = '#[currentUser]'
+            GROUP BY ahi_123.ITEMINST_ID) temp_table
+            WHERE 1 = 1"
+            WHERE VIEW_CODE = "view-code-00000048"
+        </sql>
+    </changeSet>
+
+    <changeSet id="201909211004" author="yinlf" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            UPDATE act_sto_view SET SQL_TEXT = "SELECT temp_table.*
+            FROM (SELECT ahi_123.ITEMINST_ID, ahap_123.APPLYINST_CODE, temp1.PROJ_NAME, ali_123.LINKMAN_NAME
+            , CASE ahap_123.IS_SERIES_APPROVE
+            WHEN '1' THEN '单项'
+            ELSE '并联'
+            END AS IS_SERIES_APPROVE, theme.THEME_NAME, aps_123.STAGE_NAME, ahi_123.ITEMINST_NAME, ahap_123.CREATE_TIME
+            , CONVERT(MAX(aht_123.ID_ + 0), CHAR) AS TASK_ID
+            FROM AEA_HI_ITEMINST ahi_123
+            LEFT JOIN AEA_HI_PAR_STAGEINST ahs_123 ON ahi_123.STAGEINST_ID = ahs_123.STAGEINST_ID
+            LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN AEA_PAR_STAGE aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
+            LEFT JOIN AEA_PAR_THEME_VER ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
+            LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+            LEFT JOIN AEA_PAR_THEME theme ON theme.THEME_ID = ver.THEME_ID
+            LEFT JOIN (
+            SELECT ap.APPLYINST_ID, GROUP_CONCAT(p.PROJ_NAME) AS PROJ_NAME
+            FROM aea_applyinst_proj ap
+            LEFT JOIN aea_proj_info p ON ap.proj_info_id = p.proj_info_id
+            GROUP BY ap.APPLYINST_ID
+            ) temp1
+            ON temp1.APPLYINST_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN ACT_HI_TASKINST aht_123 ON aht_123.PROC_INST_ID_ = ahi_123.PROCINST_ID
+            WHERE ahi_123.IS_SERIES_APPROVE = '0'
+            AND ahi_123.ITEMINST_STATE = '5'
+            AND aht_123.ASSIGNEE_ = '#[currentUser]'
+            GROUP BY ahi_123.ITEMINST_ID
+            UNION
+            SELECT ahi_123.ITEMINST_ID, ahap_123.APPLYINST_CODE, temp1.PROJ_NAME, ali_123.LINKMAN_NAME
+            , CASE ahap_123.IS_SERIES_APPROVE
+            WHEN '1' THEN '单项'
+            ELSE '并联'
+            END AS IS_SERIES_APPROVE, NULL AS THEME_NAME, NULL AS STAGE_NAME, ahi_123.ITEMINST_NAME,
+            ahap_123.CREATE_TIME
+            , CONVERT(MAX(aht_123.ID_ + 0), CHAR) AS TASK_ID
+            FROM AEA_HI_ITEMINST ahi_123
+            LEFT JOIN AEA_HI_SERIESINST ahs_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
+            LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
+            LEFT JOIN (
+            SELECT ap.APPLYINST_ID, GROUP_CONCAT(p.PROJ_NAME) AS PROJ_NAME
+            FROM aea_applyinst_proj ap
+            LEFT JOIN aea_proj_info p ON ap.proj_info_id = p.proj_info_id
+            GROUP BY ap.APPLYINST_ID
+            ) temp1
+            ON temp1.APPLYINST_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN ACT_HI_TASKINST aht_123 ON aht_123.PROC_INST_ID_ = ahi_123.PROCINST_ID
+            WHERE ahi_123.IS_SERIES_APPROVE = '1'
+            AND ahi_123.ITEMINST_STATE = '5'
+            AND aht_123.ASSIGNEE_ = '#[currentUser]'
+            GROUP BY ahi_123.ITEMINST_ID) temp_table
+            WHERE 1 = 1"
+            WHERE VIEW_CODE = "view-code-00000049"
+        </sql>
+    </changeSet>
+
+    <!--<changeSet id="201909211122" author="chenzh" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_unit_proj`
+            ADD COLUMN `LINKMAN_INFO_ID` varchar(50) NULL COMMENT '单位项目负责人' AFTER `UNIT_TYPE`,
+            ADD CONSTRAINT `FK_AEA_UNIT_PROJ_L` FOREIGN KEY (`LINKMAN_INFO_ID`) REFERENCES `aea_linkman_info`
+            (`LINKMAN_INFO_ID`) ON DELETE RESTRICT ON UPDATE RESTRICT;
+            ALTER TABLE `aea_hi_certinst`
+            ADD COLUMN `MEMO` varchar(2000) NULL COMMENT '备注' AFTER `ROOT_ORG_ID`;
+        </sql>
+    </changeSet>-->
+
+    <!--<changeSet id="201909211210" author="zhangwn" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            INSERT INTO `bsc_dic_code_type` (`TYPE_ID`, `TYPE_CODE`, `TYPE_NAME`, `IS_TREE`, `IS_ACTIVE`, `TYPE_MEMO`,
+            `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES
+            ('431f5f5c-44e2-459b-a130-bea991dd4340', 'WIN_WORK_SPACE_VIEW_CODE', '窗口首页工作台视图编号', '0', '1', NULL, NULL,
+            '2019-09-20 15:18:45', NULL, '2019-09-20 15:18:45', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('02bbb860-14ca-4814-a659-91e0d318b23c',
+            '431f5f5c-44e2-459b-a130-bea991dd4340', '不予受理', 'view-code-00000040', '1', '3', '', NULL, '0', '0', NULL,
+            NULL, '2019-09-20 15:21:05', NULL, '2019-09-20 17:02:48', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('489801d1-a672-41cb-8a49-0c6b1480e6ae',
+            '431f5f5c-44e2-459b-a130-bea991dd4340', '补全待确认', 'view-code-00000037', '1', '2', '', NULL, '0', '0', NULL,
+            NULL, '2019-09-20 15:20:46', NULL, '2019-09-21 11:35:44', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('81c39519-6c98-4fd9-a4af-2b547b017c8b',
+            '431f5f5c-44e2-459b-a130-bea991dd4340', '网上待预审', 'view-code-00000051', '1', '0', '', NULL, NULL, '0', NULL,
+            NULL, '2019-09-20 15:18:45', NULL, '2019-09-20 17:02:14', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('92a29289-ca33-4de3-8146-5d4dbca3d1b8',
+            '431f5f5c-44e2-459b-a130-bea991dd4340', '申报预警', 'view-code-00000058', '1', '4', '', NULL, '0', '0', NULL,
+            NULL, '2019-09-20 15:22:52', NULL, '2019-09-21 11:35:20', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('a08b1a38-a86d-4f39-8233-3463b6ad2658',
+            '431f5f5c-44e2-459b-a130-bea991dd4340', '项目数', '/rest/project/list', '1', '6', '', NULL, '0', '0', NULL,
+            NULL, '2019-09-21 11:31:48', NULL, '2019-09-21 11:31:48', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('a68bc5a8-de0e-4946-8650-0b54fd52bb9b',
+            '431f5f5c-44e2-459b-a130-bea991dd4340', '待补全', 'view-code-00000063', '1', '1', '', NULL, NULL, '0', NULL,
+            NULL, '2019-09-20 15:18:45', NULL, '2019-09-21 11:35:38', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('e29042c2-9d8c-448a-b125-302bc4a7311d',
+            '431f5f5c-44e2-459b-a130-bea991dd4340', '待办任务', 'view-code-00000058', '1', '7', '', NULL, '0', '0', NULL,
+            NULL, '2019-09-21 11:32:27', NULL, '2019-09-21 11:32:27', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('eb7f8836-f7d8-4ca8-bdcf-b1bdbdf693f8',
+            '431f5f5c-44e2-459b-a130-bea991dd4340', '申报逾期', 'view-code-00000058', '1', '5', '', NULL, '0', '0', NULL,
+            NULL, '2019-09-20 17:03:33', NULL, '2019-09-21 11:35:31', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('f7a5e490-00a0-4d21-88ec-5b83d9afea50',
+            '431f5f5c-44e2-459b-a130-bea991dd4340', '已办任务', 'view-code-00000059', '1', '8', '', NULL, '0', '0', NULL,
+            NULL, '2019-09-21 11:32:49', NULL, '2019-09-21 11:32:49', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+        </sql>
+    </changeSet>-->
+
+    <!--<changeSet id="201909211417" author="chenzh" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_hi_applyinst_correct`
+            CHANGE COLUMN `APPLYINST_IDS` `APPLYINST_ID` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL
+            COMMENT '申报实例ID' AFTER `APPLYINST_CORRECT_ID`;
+        </sql>
+    </changeSet>-->
+
+    <changeSet id="201909231437" author="xiaohutu" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_cert`
+            MODIFY COLUMN `ATT_DIR_ID` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '所属文件库ID' ;
+
+        </sql>
+    </changeSet>
+
+    <changeSet id="201909241121" author="xiaohutu" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_hi_certinst`
+            MODIFY COLUMN `UNIT_INFO_ID` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '业主单位ID'
+            AFTER `CERT_ID`;
+        </sql>
+    </changeSet>
+
+    <changeSet id="201909251019" author="xiaohutu" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            UPDATE `aea_cert_type` SET `TYPE_CODE` = '201909231336', `TYPE_NAME` = '施工许可证', `SORT_NO` = 6, `TYPE_MEMO` =
+            '施工许可证-勿删', `IS_ACTIVE` = '1', `IS_DELETED` = '0', `CREATER` = 'beb9e669-9056-4bce-8c08-779271a7b6f2',
+            `CREATE_TIME` = '2019-08-20 10:44:19', `MODIFIER` = NULL, `MODIFY_TIME` = NULL, `PARENT_TYPE_ID` = '',
+            `TYPE_SEQ` = '.125c4dc4-f575-49e6-b5bc-3afb9e72591a.', `SUB_COUNT` = 0, `ROOT_ORG_ID` =
+            '0368948a-1cdf-4bf8-a828-71d796ba89f6' WHERE `CERT_TYPE_ID` = '125c4dc4-f575-49e6-b5bc-3afb9e72591a';
+
+            UPDATE `bsc_dic_code_item` SET `ITEM_NAME` = '窗口受理' WHERE `ITEM_ID` =
+            '19a6e834-d6fb-4117-9c8c-ebee922657e7';
+            UPDATE `bsc_dic_code_item` SET `ITEM_NAME` = '部门受理' WHERE `ITEM_ID` =
+            'e4a1b841-9167-4782-ac35-dfd5d87e793a';
+        </sql>
+    </changeSet>
+
+    <!--<changeSet id="201909251001" author="xiaohutu" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+
+
+            INSERT INTO `aea_cert`(`CERT_ID`, `CERT_CODE`, `CERT_NAME`, `ATT_DIR_ID`, `CERT_TYPE_ID`, `CERT_MEMO`,
+            `IS_DELETED`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `CERT_HOLDER`, `SOFTWARE_ENV`,
+            `BUS_ACTION`, `DUE_NUM`, `DUE_UNIT`, `SORT_NO`, `ROOT_ORG_ID`) VALUES
+            ('6e8c1a62-b78e-4e22-baa2-f404400b3262', '130202201909200101', '建筑工程施工许可证', '00000',
+            '125c4dc4-f575-49e6-b5bc-3afb9e72591a', NULL, '0', '勿删', '2019-09-23 13:39:56', NULL, NULL, NULL, NULL,
+            NULL, NULL, NULL, 0, '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `aea_cert`(`CERT_ID`, `CERT_CODE`, `CERT_NAME`, `ATT_DIR_ID`, `CERT_TYPE_ID`, `CERT_MEMO`,
+            `IS_DELETED`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `CERT_HOLDER`, `SOFTWARE_ENV`,
+            `BUS_ACTION`, `DUE_NUM`, `DUE_UNIT`, `SORT_NO`, `ROOT_ORG_ID`) VALUES
+            ('125c4dc4-f575-49e6-b5bc-3afb9e72591a', '201909231434000123', '节能审查', NULL,
+            '125c4dc4-f575-49e6-b5bc-3afb9e72591a', NULL, '0', '小糊涂', '2019-09-24 14:37:18', NULL, NULL, NULL, NULL,
+            NULL, NULL, NULL, 1, '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+        </sql>
+    </changeSet>-->
+    <!--修改中介超市服务图标路径-->
+    <changeSet id="201910081723" author="lwq" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            update aea_im_service set IMG_URL=if(INSTR(IMG_URL,'zjcs')!=1,CONCAT('zjcs/',IMG_URL),IMG_URL);
+        </sql>
+    </changeSet>
+
+    <changeSet id="201910110949" author="CZH" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_hi_item_matinst`
+            MODIFY COLUMN `UNIT_INFO_ID` varchar(1500) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL
+            COMMENT '业主单位ID【当MATINST_SOURCE=u】' AFTER `MATINST_NAME`,
+            ADD COLUMN `MATINST_SOURCE` char(1) NULL COMMENT '材料来源，u表示单位，l表示个人，默认是u' AFTER `MEMO`,
+            ADD COLUMN `LINKMAN_INFO_ID` varchar(50) NULL COMMENT '联系人ID【当MATINST_SOURCE=l】' AFTER `MATINST_SOURCE`,
+            ADD CONSTRAINT `FK_AEA_HI_ITEM_MATINST_L` FOREIGN KEY (`LINKMAN_INFO_ID`) REFERENCES `aea_linkman_info`
+            (`LINKMAN_INFO_ID`) ON DELETE RESTRICT ON UPDATE RESTRICT;;
+        </sql>
+    </changeSet>
+
+    <!--委办局首页工作台跳转字典配置-->
+    <changeSet id="201910121018" author="chenjw" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            INSERT INTO `bsc_dic_code_type` (`TYPE_ID`, `TYPE_CODE`, `TYPE_NAME`, `IS_TREE`, `IS_ACTIVE`, `TYPE_MEMO`,
+            `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES
+            ('c4b4b8af-ccdc-4a0f-973d-ceb93e74828c', 'ORG_WORK_SPACE_VIEW_CODE', '委办局首页工作台', '0', '1', NULL, NULL,
+            '2019-10-10 19:50:02', NULL, '2019-10-10 19:50:02', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('13129cab-e25f-4c28-bef4-6c31f2d386f4',
+            'c4b4b8af-ccdc-4a0f-973d-ceb93e74828c', '时限预警', '/apanmis/page/queryWaitDoTasksIndex.html', '1', '5', '',
+            NULL, '0', '0', NULL, NULL, '2019-10-10 20:01:39', NULL, '2019-10-11 10:02:58',
+            '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('2cda63d6-c1cd-4c00-a067-8769f9074406',
+            'c4b4b8af-ccdc-4a0f-973d-ceb93e74828c', '待办', '/apanmis/page/queryWaitDoTasksIndex.html', '1', '7', '',
+            NULL, '0', '0', NULL, NULL, '2019-10-10 20:02:29', NULL, '2019-10-10 20:02:29',
+            '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('3174ed75-b036-4359-a18e-e35147c438ec',
+            'c4b4b8af-ccdc-4a0f-973d-ceb93e74828c', '时限逾期', '/apanmis/page/queryWaitDoTasksIndex.html', '1', '6', '',
+            NULL, '0', '0', NULL, NULL, '2019-10-10 20:02:11', NULL, '2019-10-11 10:03:03',
+            '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('68811c3c-75ee-4f05-b17c-18f360bb557a',
+            'c4b4b8af-ccdc-4a0f-973d-ceb93e74828c', '补正待确认', '/apanmis/page/queryUnConfirmItemCorrectTasksIndex.html',
+            '1', '2', '', NULL, '0', '0', NULL, NULL, '2019-10-10 20:00:41', NULL, '2019-10-10 20:00:41',
+            '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('7e4bc9c8-8ed1-4def-831f-39f979d606fc',
+            'c4b4b8af-ccdc-4a0f-973d-ceb93e74828c', '已办', '/apanmis/page/queryDoneTasksIndex.html', '1', '8', '', NULL,
+            '0', '0', NULL, NULL, '2019-10-10 20:02:47', NULL, '2019-10-10 20:02:47',
+            '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('91f6b8bc-0156-46ef-abfc-069bd6182887',
+            'c4b4b8af-ccdc-4a0f-973d-ceb93e74828c', '所有办件', '/apanmis/page/queryPartsIndex.html', '1', '0', '', NULL,
+            NULL, '0', NULL, NULL, '2019-10-10 19:50:02', NULL, '2019-10-10 20:00:01',
+            '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('bcda3f4c-7e70-4eb7-bb70-e64380c42a45',
+            'c4b4b8af-ccdc-4a0f-973d-ceb93e74828c', '不予受理', '/apanmis/page/queryItemOutScopeIndex.html', '1', '4', '',
+            NULL, '0', '0', NULL, NULL, '2019-10-10 20:01:20', NULL, '2019-10-10 20:01:20',
+            '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('dee2d441-9bfa-46db-8a2c-781c1621dca6',
+            'c4b4b8af-ccdc-4a0f-973d-ceb93e74828c', '不通过', '/apanmis/page/queryItemDisgreeIndex.html', '1', '3', '',
+            NULL, '0', '0', NULL, NULL, '2019-10-10 20:01:03', NULL, '2019-10-10 20:01:03',
+            '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('ef1764a0-538e-43ba-850c-0269552e0e4e',
+            'c4b4b8af-ccdc-4a0f-973d-ceb93e74828c', '待补证', '/apanmis/page/queryNeedCorrectTasksIndex.html', '1', '1',
+            '', NULL, NULL, '0', NULL, NULL, '2019-10-10 19:50:02', NULL, '2019-10-10 20:00:20',
+            '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+        </sql>
+    </changeSet>
+
+    <changeSet id="20191012115010" author="xiong">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            update aea_proj_info set gcbm=replace(gcbm, '#', '-');
+        </sql>
+    </changeSet>
+
+    <changeSet id="20191013-001" author="lwq" failOnError="false">
+        <comment>增加aea_hi_certinst字段</comment>
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_hi_certinst`
+            ADD COLUMN `MANAGEMENT_SCOPE` varchar(2000) DEFAULT NULL COMMENT '业务范围' AFTER `MEMO`;
+        </sql>
+    </changeSet>
+
+    <changeSet id="201910151458" author="zhangwn" failOnError="false">
+        <comment>bsc定时器改造，修改业务标识字段数据</comment>
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            UPDATE bsc_job_timer SET BUSS_FLAG = 'aplanmis-front' WHERE BUSS_FLAG = '0'
+        </sql>
+    </changeSet>
+
+    <changeSet id="201910281800" author="chenzh" failOnError="false">
+        <comment>bsc定时器改造，修改业务标识字段数据</comment>
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            UPDATE bsc_job_timer SET BUSS_FLAG = 'aplanmis-front-ProcessTimer' WHERE TIMER_NAME = '时限计算定时器'
+        </sql>
+    </changeSet>
+
+    <changeSet id="20191015185733" author="xiong" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            INSERT INTO `bsc_rule_code` (`CODE_ID`, `CODE_IC`, `CODE_NAME`, `CODE_VALUE_NEXT`, `CODE_VALUE_INCREASE`,
+            `CODE_VALUE_CHAR_COUNT`, `CODE_TEMPLATE`, `CODE_MEMO`, `ORG_ID`)
+            select LOWER(UUID()), iteminst_code, '办件编号', count(1) + 1, 1, 4 , concat(replace(substr(create_time, 1, 10),
+            '-', ''), '{value}'), replace(substr(create_time, 1, 10), '-', ''), root_org_id from aea_hi_iteminst t
+            group by t.iteminst_code, t.root_org_id, substr(create_time, 1, 10)
+            ;
+
+            INSERT INTO `bsc_rule_code` (`CODE_ID`, `CODE_IC`, `CODE_NAME`, `CODE_VALUE_NEXT`, `CODE_VALUE_INCREASE`,
+            `CODE_VALUE_CHAR_COUNT`, `CODE_TEMPLATE`, `CODE_MEMO`, `ORG_ID`)
+            select LOWER(UUID()), local_code, '工程编码', count(1) + 1, 1, 4, '-{value}', '工程编码', root_org_id from
+            aea_proj_info t
+            where proj_flag='c' and local_code is not null
+            group by local_code, root_org_id
+            ;
+
+            update aea_hi_iteminst t0
+            join (
+            select @x:=@x+1 varnum, if (@xcode=iteminst_code and @xtime=substr(t.create_time, 1, 10), @x, @x:=1) cnt,
+            @xcode:=iteminst_code, @xtime:=substr(t.create_time, 1, 10) daystr, t.iteminst_code, t.create_time,
+            t.root_org_id
+            from
+            (select iteminst_code, create_time, root_org_id from aea_hi_iteminst
+            order by iteminst_code asc, create_time asc, root_org_id asc
+            ) t, (select @x:=0, @xcode:=null, @xtime:=null) t2
+            ) t1 on t0.iteminst_code=t1.iteminst_code and t0.root_org_id=t1.root_org_id and
+            t0.create_time=t1.create_time
+            set t0.iteminst_code=CONCAT(t0.iteminst_code, replace(substr(t1.daystr, 1, 10), '-', ''), lpad(t1.cnt, 4,
+            '0'))
+            ;
+        </sql>
+    </changeSet>
+
+    <changeSet id="201910171336" author="zhangwn" failOnError="false">
+        <comment>添加扫描转换pdf文件定时器</comment>
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            INSERT INTO `bsc_job_timer` (`TIMER_ID`, `TIMER_NAME`, `TIMER_DESC`, `TIMER_BEAN_ID`, `TIMER_CLASS`,
+            `TIMER_METHOD`, `TIMER_CRON`, `RUM_LOCK`, `RUN_END_STATUS`, `RUN_END_TIME`, `RUN_EXCEPTION`, `IS_ACTIVE`,
+            `BUSS_FLAG`)
+            VALUES ('a694240c-025e-4849-ac11-4d0195927333', '扫描转换pdf文件定时器', '扫描转换pdf文件定时器，每隔5秒扫描一次', 'covertpdfService',
+            'CovertpdfService', 'scanCovertpdf', '0/5 * * * * ?', '1', '0', NULL, '', '1', 'aplanmis-covertpdf');
+        </sql>
+    </changeSet>
+    <changeSet id="201910171432001" author="xiaohutu" failOnError="false">
+        <comment>增加项目单位联系人类型表</comment>
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            CREATE TABLE IF NOT EXISTS `aea_unit_proj_linkman` (
+            `PROJ_LINKMAN_ID` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '主键',
+            `UNIT_PROJ_ID` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '单位与项目关联ID',
+            `LINKMAN_INFO_ID` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '联系人ID',
+            `LINKMAN_TYPE` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '人员类型，来自于数据字典，包括：1
+            负责人、2 总监理工程师',
+            `CREATER` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '创建人',
+            `CREATE_TIME` datetime(0) NOT NULL COMMENT '创建时间',
+            PRIMARY KEY (`PROJ_LINKMAN_ID`) USING BTREE,
+            INDEX `FK_AEA_UNIT_PROJ_L`(`LINKMAN_INFO_ID`) USING BTREE,
+            INDEX `FK_AEA_UNIT_PROJ_LINKMAN_UPI`(`UNIT_PROJ_ID`) USING BTREE,
+            CONSTRAINT `FK_AEA_UNIT_PROJ_LINKMAN_UPI` FOREIGN KEY (`UNIT_PROJ_ID`) REFERENCES `aea_unit_proj`
+            (`UNIT_PROJ_ID`) ON DELETE RESTRICT ON UPDATE RESTRICT
+            ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '项目与单位的联系人关联表' ROW_FORMAT =
+            Dynamic;
+        </sql>
+    </changeSet>
+
+    <changeSet id="201910101549001" author="xiaohutu" failOnError="false">
+        <comment>增加项目单位联系人类型数据字典</comment>
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            INSERT INTO `bsc_dic_code_type`(`TYPE_ID`, `TYPE_CODE`, `TYPE_NAME`, `IS_TREE`, `IS_ACTIVE`,
+            `TYPE_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES
+            ('80b315c0-a95b-45ec-a5d2-5938ba9f69c9', 'PROJ_UNIT_LINKMAN_TYPE', '项目单位联系人类型', '0', '1', NULL, NULL,
+            '2019-10-17 15:45:39', NULL, '2019-10-17 15:45:39', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`,
+            `SORT_NO`, `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`,
+            `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES ('5831ed2e-d9fd-4a25-8861-d7ef2f7bde2f',
+            '80b315c0-a95b-45ec-a5d2-5938ba9f69c9', '1', '负责人', '1', 0, '', NULL, NULL, 0, NULL, NULL, '2019-10-17
+            15:45:39', NULL, '2019-10-17 15:46:25', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`,
+            `SORT_NO`, `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`,
+            `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES ('7842db46-381e-4fa7-be29-274b9c85796d',
+            '80b315c0-a95b-45ec-a5d2-5938ba9f69c9', '2', '总监理工程师', '1', 1, '', NULL, NULL, 0, NULL, NULL, '2019-10-17
+            15:45:39', NULL, '2019-10-17 15:46:41', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+        </sql>
+    </changeSet>
+    <changeSet id="201910181115001" author="xiaohutu" failOnError="false">
+        <comment>aea_unit_proj_linkman 增加修改字段</comment>
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_unit_proj_linkman`
+            ADD COLUMN `MODIFIER` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '修改人'
+            AFTER `CREATE_TIME`,
+            ADD COLUMN `MODIFY_TIME` datetime NULL DEFAULT NULL COMMENT '修改时间' AFTER `MODIFIER`,
+            ADD COLUMN `IS_DELETED` char(1) NULL COMMENT '是否逻辑删除，0表示正常，1表示已删除' AFTER `MODIFY_TIME`;
+        </sql>
+    </changeSet>
+
+    <changeSet id="201910211628" author="zhangwn" failOnError="false">
+        <comment>添加效能督查统计定时器</comment>
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            INSERT INTO `bsc_job_timer` (`TIMER_ID`, `TIMER_NAME`, `TIMER_DESC`, `TIMER_BEAN_ID`, `TIMER_CLASS`, `TIMER_METHOD`, `TIMER_CRON`, `RUM_LOCK`, `RUN_END_STATUS`, `RUN_END_TIME`, `RUN_EXCEPTION`, `IS_ACTIVE`, `BUSS_FLAG`)
+            VALUES ('a694240c-025e-4849-ac11-4d0195921234', '部门办件统计定时器', '部门办件统计定时器，每天凌晨3点开始统计', 'orgStatisticsJob', 'OrgStatisticsJob', 'orgStatisticsJob', '0 0 3 * * ?', '1', '0', NULL, '', '1', 'aplanmis-front');
+            INSERT INTO `bsc_job_timer` (`TIMER_ID`, `TIMER_NAME`, `TIMER_DESC`, `TIMER_BEAN_ID`, `TIMER_CLASS`, `TIMER_METHOD`, `TIMER_CRON`, `RUM_LOCK`, `RUN_END_STATUS`, `RUN_END_TIME`, `RUN_EXCEPTION`, `IS_ACTIVE`, `BUSS_FLAG`)
+            VALUES ('a694240c-025e-4849-ac11-4d0195921235', '主题申报统计定时器', '主题申报统计定时器，每天凌晨3点开始统计', 'themeStatisticsJob', 'ThemeStatisticsJob', 'themeStatisticsJob', '0 0 3 * * ?', '1', '0', NULL, '', '1', 'aplanmis-front');
+            INSERT INTO `bsc_job_timer` (`TIMER_ID`, `TIMER_NAME`, `TIMER_DESC`, `TIMER_BEAN_ID`, `TIMER_CLASS`, `TIMER_METHOD`, `TIMER_CRON`, `RUM_LOCK`, `RUN_END_STATUS`, `RUN_END_TIME`, `RUN_EXCEPTION`, `IS_ACTIVE`, `BUSS_FLAG`)
+            VALUES ('a694240c-025e-4849-ac11-4d0195921236', '窗口申报统计定时器', '窗口申报统计定时器，每天凌晨3点开始统计', 'winStatisticsJob', 'WinStatisticsJob', 'winStatisticsJob', '0 0 3 * * ?', '1', '0', NULL, '', '1', 'aplanmis-front');
+            INSERT INTO `bsc_job_timer` (`TIMER_ID`, `TIMER_NAME`, `TIMER_DESC`, `TIMER_BEAN_ID`, `TIMER_CLASS`, `TIMER_METHOD`, `TIMER_CRON`, `RUM_LOCK`, `RUN_END_STATUS`, `RUN_END_TIME`, `RUN_EXCEPTION`, `IS_ACTIVE`, `BUSS_FLAG`)
+            VALUES ('a694240c-025e-4849-ac11-4d0195921237', '窗口申报最长延期及最短用时统计', '窗口申报最长延期及最短用时统计，每天凌晨3点开始统计', 'winUseTimeStatisticsJob', 'WinUseTimeStatisticsJob', 'winUseTimeStatisticsJob', '0 0 3 * * ?', '1', '0', NULL, '', '1', 'aplanmis-front');
+            INSERT INTO `bsc_job_timer` (`TIMER_ID`, `TIMER_NAME`, `TIMER_DESC`, `TIMER_BEAN_ID`, `TIMER_CLASS`, `TIMER_METHOD`, `TIMER_CRON`, `RUM_LOCK`, `RUN_END_STATUS`, `RUN_END_TIME`, `RUN_EXCEPTION`, `IS_ACTIVE`, `BUSS_FLAG`)
+            VALUES ('a694240c-025e-4849-ac11-4d0195921238', '部门办件最长延期及最短用时统计', '部门办件最长延期及最短用时统计，每天凌晨3点开始统计', 'orgUseTimeStatisticsJob', 'OrgUseTimeStatisticsJob', 'orgUseTimeStatisticsJob', '0 0 3 * * ?', '1', '0', NULL, '', '1', 'aplanmis-front');
+        </sql>
+    </changeSet>
+
+    <changeSet id="201910251208" author="zhangwn" failOnError="false">
+        <comment>数据字典添加图表颜色</comment>
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            INSERT INTO `bsc_dic_code_type` (`TYPE_ID`, `TYPE_CODE`, `TYPE_NAME`, `IS_TREE`, `IS_ACTIVE`, `TYPE_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `ORG_ID`)
+            VALUES ('fa6c9d0c-c15e-4a9b-840a-0be34b8309c7', 'WIN_ECHARTS_COLOR', '效能督查图表使用颜色', '0', '1', NULL, NULL, '2019-10-25 10:19:52', NULL, '2019-10-25 11:47:27', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`, `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES ('04b8d39b-f847-4df0-a703-d036afce1398', 'fa6c9d0c-c15e-4a9b-840a-0be34b8309c7', '#5c86ff', '蓝色？', '1', '13', '', NULL, '0', '0', NULL, NULL, '2019-10-25 12:00:49', NULL, '2019-10-25 12:00:49', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`, `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES ('15fe611c-ac91-4fdf-86dd-a305acbb1442', 'fa6c9d0c-c15e-4a9b-840a-0be34b8309c7', '#07cdc6', '深一点青色', '1', '16', '', NULL, '0', '0', NULL, NULL, '2019-10-25 12:02:51', NULL, '2019-10-25 12:07:14', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`, `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES ('1bef1ca1-90bd-4116-9f4c-12bd57cf8101', 'fa6c9d0c-c15e-4a9b-840a-0be34b8309c7', '#4eb2fd', '浅浅蓝色', '1', '15', '', NULL, '0', '0', NULL, NULL, '2019-10-25 12:01:59', NULL, '2019-10-25 12:01:59', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`, `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES ('399475e7-cb33-49bb-88f6-5fec71d122d7', 'fa6c9d0c-c15e-4a9b-840a-0be34b8309c7', '#e690d0', '粉色', '1', '8', '', NULL, '0', '0', NULL, NULL, '2019-10-25 11:17:03', NULL, '2019-10-25 11:55:29', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`, `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES ('3af11695-db67-4d2d-b462-f87f635f6fa2', 'fa6c9d0c-c15e-4a9b-840a-0be34b8309c7', '#169aff', '浅蓝色', '1', '14', '', NULL, '0', '0', NULL, NULL, '2019-10-25 12:01:24', NULL, '2019-10-25 12:01:24', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`, `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES ('45db021b-3c0a-463a-a705-11ea1ab282a9', 'fa6c9d0c-c15e-4a9b-840a-0be34b8309c7', '#fa7292', '浅红色', '1', '6', '', NULL, '0', '0', NULL, NULL, '2019-10-25 11:16:06', NULL, '2019-10-25 11:54:10', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`, `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES ('4bcad975-6264-45cd-8244-06b4f458c887', 'fa6c9d0c-c15e-4a9b-840a-0be34b8309c7', '#00c161', '绿色', '1', '17', '', NULL, '0', '0', NULL, NULL, '2019-10-25 12:04:03', NULL, '2019-10-25 12:04:03', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`, `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES ('55cd6a57-4f4b-4ac4-bef8-faf6fc20e0e7', 'fa6c9d0c-c15e-4a9b-840a-0be34b8309c7', '#32c4e8', '浅蓝色', '1', '1', '', NULL, NULL, '0', NULL, NULL, '2019-10-25 10:19:52', NULL, '2019-10-25 12:03:39', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`, `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES ('56942df4-df74-4c30-ba4e-dc553ebc7a1c', 'fa6c9d0c-c15e-4a9b-840a-0be34b8309c7', '#66dfe2', '浅青色', '1', '2', '', NULL, '0', '0', NULL, NULL, '2019-10-25 11:14:25', NULL, '2019-10-25 11:52:22', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`, `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES ('68106d63-bd7b-44c0-aba6-1fd9e3a0beda', 'fa6c9d0c-c15e-4a9b-840a-0be34b8309c7', '#8378e8', '紫色', '1', '11', '', NULL, '0', '0', NULL, NULL, '2019-10-25 11:23:34', NULL, '2019-10-25 11:56:52', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`, `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES ('70dd3755-d873-4741-80ff-76065c611707', 'fa6c9d0c-c15e-4a9b-840a-0be34b8309c7', '#fe9e7f', '橘色', '1', '5', '', NULL, '0', '0', NULL, NULL, '2019-10-25 11:15:53', NULL, '2019-10-25 11:53:42', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`, `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES ('8bb8ad84-ddb4-4be4-b910-139ee6036ded', 'fa6c9d0c-c15e-4a9b-840a-0be34b8309c7', '#e062ac', '粉红色', '1', '7', '', NULL, '0', '0', NULL, NULL, '2019-10-25 11:16:44', NULL, '2019-10-25 11:54:55', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`, `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES ('8de91b9f-22de-4490-8c2d-e239a0fbac50', 'fa6c9d0c-c15e-4a9b-840a-0be34b8309c7', '#feda5f', '浅黄色', '1', '4', '', NULL, '0', '0', NULL, NULL, '2019-10-25 11:15:10', NULL, '2019-10-25 11:53:17', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`, `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES ('a52115a6-0b3a-43b6-9066-a3770b84e0ce', 'fa6c9d0c-c15e-4a9b-840a-0be34b8309c7', '#ffb822', '橘黄色', '1', '18', '', NULL, '0', '0', NULL, NULL, '2019-10-25 12:04:31', NULL, '2019-10-25 12:04:31', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`, `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES ('abdb8b6e-2426-4638-bcf2-2fe60e6414de', 'fa6c9d0c-c15e-4a9b-840a-0be34b8309c7', '#4e5e79', '深灰色', '1', '20', '', NULL, '0', '0', NULL, NULL, '2019-10-25 12:05:10', NULL, '2019-10-25 12:05:10', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`, `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES ('add56e17-1e50-4050-b0e6-079714b5c375', 'fa6c9d0c-c15e-4a9b-840a-0be34b8309c7', '#9ee5b8', '浅绿色', '1', '3', '', NULL, '0', '0', NULL, NULL, '2019-10-25 11:14:46', NULL, '2019-10-25 11:52:45', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`, `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES ('b31a65da-7fe7-4be6-92a7-dec164c00b88', 'fa6c9d0c-c15e-4a9b-840a-0be34b8309c7', '#96bffd', '不知道什么色', '1', '12', '', NULL, '0', '0', NULL, NULL, '2019-10-25 11:23:54', NULL, '2019-10-25 11:57:10', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`, `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES ('b7fe412b-3745-4e0b-b63a-c30052920653', 'fa6c9d0c-c15e-4a9b-840a-0be34b8309c7', '#38a1d9', '蓝色', '1', '0', '', NULL, NULL, '0', NULL, NULL, '2019-10-25 10:19:52', NULL, '2019-10-25 11:49:27', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`, `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES ('facf91c3-8590-4071-8b73-f9972a19c03e', 'fa6c9d0c-c15e-4a9b-840a-0be34b8309c7', '#785447', '咖啡色', '1', '19', '', NULL, '0', '0', NULL, NULL, '2019-10-25 12:04:49', NULL, '2019-10-25 12:04:49', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`, `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES ('fcd7f268-cee1-4ef8-aae7-f36faab9f886', 'fa6c9d0c-c15e-4a9b-840a-0be34b8309c7', '#e7bcf2', '浅粉色', '1', '9', '', NULL, '0', '0', NULL, NULL, '2019-10-25 11:17:23', NULL, '2019-10-25 11:55:54', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`, `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES ('fdab83fd-b2f4-4ad1-bf3d-0b647a85b63d', 'fa6c9d0c-c15e-4a9b-840a-0be34b8309c7', '#9d96f3', '浅紫色', '1', '10', '', NULL, '0', '0', NULL, NULL, '2019-10-25 11:17:42', NULL, '2019-10-25 11:56:31', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+        </sql>
+    </changeSet>
+
+    <changeSet id="201910281405" author="chendx" failOnError="false">
+        <comment>特殊程序类型新增三种类型</comment>
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('88b58a0e-3559-4cbe-a4a7-b1d1d4ab3f58',
+            '2170fdca-fa9f-4feb-b9a8-696a08936113', '5', '环评公示', '1', 4, '', NULL, 0, 0, NULL, NULL, '2019-10-28
+            11:30:20', NULL, '2019-10-28 11:30:28', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('2b6f7d7f-9485-488c-af0f-b1fcc88eacaa',
+            '2170fdca-fa9f-4feb-b9a8-696a08936113', '4', '专家评审', '1', 3, '', NULL, 0, 0, NULL, NULL, '2019-10-28
+            11:30:03', NULL, '2019-10-28 11:30:03', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item`(`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`,
+            `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`,
+            `MODIFY_TIME`, `ORG_ID`) VALUES ('6efe7686-bc20-4047-b3d3-c201b15c145d',
+            '2170fdca-fa9f-4feb-b9a8-696a08936113', '3', '招投标', '1', 2, '', NULL, 0, 0, NULL, NULL, '2019-10-28
+            11:29:41', NULL, '2019-10-28 11:29:41', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+        </sql>
+    </changeSet>
+    <changeSet id="201911021002001" author="xiaohutu" failOnError="false">
+        <comment>中介超市采购需求表增加字段</comment>
+        <sql>
+            ALTER TABLE `aea_im_proj_purchase`
+            ADD COLUMN `PUBLISH_LINKMAN_INFO_ID` varchar(50) NULL COMMENT '发布人ID，当申报人为个人主体时' AFTER `PUBLISH_UNIT_INFO_ID`;
+
+            ALTER TABLE `aea_im_purchaseinst`
+            ADD COLUMN `PROCESSINST_ID` varchar(50) NULL COMMENT '流程实例ID' AFTER `APPLY_DATA`;
+
+            ALTER TABLE `aea_im_purchaseinst`
+            ADD COLUMN `TASK_ID` varchar(50) NULL COMMENT '任务ID' AFTER `PROCESSINST_ID`;
+        </sql>
+    </changeSet>
+
+    <changeSet id="201911011600" author="dengzq" failOnError="false">
+        <comment>增加项目用途、建设规模类型数据字典</comment>
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            INSERT INTO `bsc_dic_code_type` (`TYPE_ID`,`TYPE_CODE`,`TYPE_NAME`,`IS_TREE`,`IS_ACTIVE`,`TYPE_MEMO`,`CREATER`,`CREATE_TIME`,`MODIFIER`,`MODIFY_TIME`,`ORG_ID`) VALUES ('3492ea81-e2d4-4b73-aad9-d9402dfe0879','XM_FUNCTION','项目用途','0','1',NULL,NULL,'2019-11-01 16:08:51',NULL,'2019-11-01 16:26:59','0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_type` (`TYPE_ID`,`TYPE_CODE`,`TYPE_NAME`,`IS_TREE`,`IS_ACTIVE`,`TYPE_MEMO`,`CREATER`,`CREATE_TIME`,`MODIFIER`,`MODIFY_TIME`,`ORG_ID`) VALUES ('cac94378-2c68-471a-95c8-f25b8536030b','XM_SCALE_TYPE','建设规模类型','0','1',NULL,NULL,'2019-11-01 16:24:02',NULL,'2019-11-01 16:24:02','0368948a-1cdf-4bf8-a828-71d796ba89f6');
+
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`,`TYPE_ID`,`ITEM_CODE`,`ITEM_NAME`,`IS_ACTIVE`,`SORT_NO`,`PARENT_ID`,`ITEM_SEQ`,`ITEM_LEVEL`,`SUB_COUNT`,`ITEM_MEMO`,`CREATER`,`CREATE_TIME`,`MODIFIER`,`MODIFY_TIME`,`ORG_ID`) VALUES ('0bcff616-7f8e-4b45-af28-c6cc64406715','3492ea81-e2d4-4b73-aad9-d9402dfe0879','20','热力','1',20,'',NULL,0,0,NULL,NULL,'2019-11-01 16:21:30',NULL,'2019-11-01 16:21:30','0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`,`TYPE_ID`,`ITEM_CODE`,`ITEM_NAME`,`IS_ACTIVE`,`SORT_NO`,`PARENT_ID`,`ITEM_SEQ`,`ITEM_LEVEL`,`SUB_COUNT`,`ITEM_MEMO`,`CREATER`,`CREATE_TIME`,`MODIFIER`,`MODIFY_TIME`,`ORG_ID`) VALUES ('0bd2a3b7-e226-47aa-a86c-d8fa0c603334','3492ea81-e2d4-4b73-aad9-d9402dfe0879','22','桥隧','1',22,'',NULL,0,0,NULL,NULL,'2019-11-01 16:21:53',NULL,'2019-11-01 16:21:53','0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`,`TYPE_ID`,`ITEM_CODE`,`ITEM_NAME`,`IS_ACTIVE`,`SORT_NO`,`PARENT_ID`,`ITEM_SEQ`,`ITEM_LEVEL`,`SUB_COUNT`,`ITEM_MEMO`,`CREATER`,`CREATE_TIME`,`MODIFIER`,`MODIFY_TIME`,`ORG_ID`) VALUES ('0c4e7f51-db4f-443b-a6fb-7236c815866b','3492ea81-e2d4-4b73-aad9-d9402dfe0879','17','给水','1',17,'',NULL,0,0,NULL,NULL,'2019-11-01 16:20:59',NULL,'2019-11-01 16:20:59','0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`,`TYPE_ID`,`ITEM_CODE`,`ITEM_NAME`,`IS_ACTIVE`,`SORT_NO`,`PARENT_ID`,`ITEM_SEQ`,`ITEM_LEVEL`,`SUB_COUNT`,`ITEM_MEMO`,`CREATER`,`CREATE_TIME`,`MODIFIER`,`MODIFY_TIME`,`ORG_ID`) VALUES ('294b49a3-1f94-4a88-b16c-67f097106440','3492ea81-e2d4-4b73-aad9-d9402dfe0879','2','居住建筑配套工程','1',2,'',NULL,NULL,0,NULL,NULL,'2019-11-01 16:08:51',NULL,'2019-11-01 16:18:41','0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`,`TYPE_ID`,`ITEM_CODE`,`ITEM_NAME`,`IS_ACTIVE`,`SORT_NO`,`PARENT_ID`,`ITEM_SEQ`,`ITEM_LEVEL`,`SUB_COUNT`,`ITEM_MEMO`,`CREATER`,`CREATE_TIME`,`MODIFIER`,`MODIFY_TIME`,`ORG_ID`) VALUES ('34793ff4-5b2e-4a49-a226-9685cdbe5e42','3492ea81-e2d4-4b73-aad9-d9402dfe0879','13','农业建筑配套工程','1',13,'',NULL,0,0,NULL,NULL,'2019-11-01 16:20:18',NULL,'2019-11-01 16:20:18','0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`,`TYPE_ID`,`ITEM_CODE`,`ITEM_NAME`,`IS_ACTIVE`,`SORT_NO`,`PARENT_ID`,`ITEM_SEQ`,`ITEM_LEVEL`,`SUB_COUNT`,`ITEM_MEMO`,`CREATER`,`CREATE_TIME`,`MODIFIER`,`MODIFY_TIME`,`ORG_ID`) VALUES ('470acb59-6b1f-40e1-a07d-901c32372bcf','3492ea81-e2d4-4b73-aad9-d9402dfe0879','7','科教文卫建筑','1',7,'',NULL,0,0,NULL,NULL,'2019-11-01 16:19:25',NULL,'2019-11-01 16:19:25','0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`,`TYPE_ID`,`ITEM_CODE`,`ITEM_NAME`,`IS_ACTIVE`,`SORT_NO`,`PARENT_ID`,`ITEM_SEQ`,`ITEM_LEVEL`,`SUB_COUNT`,`ITEM_MEMO`,`CREATER`,`CREATE_TIME`,`MODIFIER`,`MODIFY_TIME`,`ORG_ID`) VALUES ('48d302bb-9603-4b2e-9d2a-58241f87668e','3492ea81-e2d4-4b73-aad9-d9402dfe0879','11','商住楼','1',11,'',NULL,0,0,NULL,NULL,'2019-11-01 16:20:00',NULL,'2019-11-01 16:20:00','0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`,`TYPE_ID`,`ITEM_CODE`,`ITEM_NAME`,`IS_ACTIVE`,`SORT_NO`,`PARENT_ID`,`ITEM_SEQ`,`ITEM_LEVEL`,`SUB_COUNT`,`ITEM_MEMO`,`CREATER`,`CREATE_TIME`,`MODIFIER`,`MODIFY_TIME`,`ORG_ID`) VALUES ('53194651-1404-4512-8f42-c21a92594770','3492ea81-e2d4-4b73-aad9-d9402dfe0879','6','旅游建筑','1',6,'',NULL,0,0,NULL,NULL,'2019-11-01 16:19:15',NULL,'2019-11-01 16:19:15','0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`,`TYPE_ID`,`ITEM_CODE`,`ITEM_NAME`,`IS_ACTIVE`,`SORT_NO`,`PARENT_ID`,`ITEM_SEQ`,`ITEM_LEVEL`,`SUB_COUNT`,`ITEM_MEMO`,`CREATER`,`CREATE_TIME`,`MODIFIER`,`MODIFY_TIME`,`ORG_ID`) VALUES ('59962b7c-8278-473d-b654-5292c2e40f7e','3492ea81-e2d4-4b73-aad9-d9402dfe0879','1','居住建筑','1',1,'',NULL,NULL,0,NULL,NULL,'2019-11-01 16:08:51',NULL,'2019-11-01 16:18:16','0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`,`TYPE_ID`,`ITEM_CODE`,`ITEM_NAME`,`IS_ACTIVE`,`SORT_NO`,`PARENT_ID`,`ITEM_SEQ`,`ITEM_LEVEL`,`SUB_COUNT`,`ITEM_MEMO`,`CREATER`,`CREATE_TIME`,`MODIFIER`,`MODIFY_TIME`,`ORG_ID`) VALUES ('59c8fca5-7e90-40ec-ab39-e62a5c13c91f','3492ea81-e2d4-4b73-aad9-d9402dfe0879','19','燃气','1',19,'',NULL,0,0,NULL,NULL,'2019-11-01 16:21:22',NULL,'2019-11-01 16:21:22','0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`,`TYPE_ID`,`ITEM_CODE`,`ITEM_NAME`,`IS_ACTIVE`,`SORT_NO`,`PARENT_ID`,`ITEM_SEQ`,`ITEM_LEVEL`,`SUB_COUNT`,`ITEM_MEMO`,`CREATER`,`CREATE_TIME`,`MODIFIER`,`MODIFY_TIME`,`ORG_ID`) VALUES ('6a06fc5f-8f8c-4175-9ca1-6770b01d6468','3492ea81-e2d4-4b73-aad9-d9402dfe0879','21','道路','1',21,'',NULL,0,0,NULL,NULL,'2019-11-01 16:21:39',NULL,'2019-11-01 16:21:39','0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`,`TYPE_ID`,`ITEM_CODE`,`ITEM_NAME`,`IS_ACTIVE`,`SORT_NO`,`PARENT_ID`,`ITEM_SEQ`,`ITEM_LEVEL`,`SUB_COUNT`,`ITEM_MEMO`,`CREATER`,`CREATE_TIME`,`MODIFIER`,`MODIFY_TIME`,`ORG_ID`) VALUES ('6a69ed15-5d0a-48a7-8433-4be8bfcd37e4','3492ea81-e2d4-4b73-aad9-d9402dfe0879','12','农业建筑','1',12,'',NULL,0,0,NULL,NULL,'2019-11-01 16:20:08',NULL,'2019-11-01 16:20:08','0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`,`TYPE_ID`,`ITEM_CODE`,`ITEM_NAME`,`IS_ACTIVE`,`SORT_NO`,`PARENT_ID`,`ITEM_SEQ`,`ITEM_LEVEL`,`SUB_COUNT`,`ITEM_MEMO`,`CREATER`,`CREATE_TIME`,`MODIFIER`,`MODIFY_TIME`,`ORG_ID`) VALUES ('79eac42f-813f-4f7e-9467-acf9f9d2b661','3492ea81-e2d4-4b73-aad9-d9402dfe0879','26','其他','1',26,'',NULL,0,0,NULL,NULL,'2019-11-01 16:22:24',NULL,'2019-11-01 16:22:24','0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`,`TYPE_ID`,`ITEM_CODE`,`ITEM_NAME`,`IS_ACTIVE`,`SORT_NO`,`PARENT_ID`,`ITEM_SEQ`,`ITEM_LEVEL`,`SUB_COUNT`,`ITEM_MEMO`,`CREATER`,`CREATE_TIME`,`MODIFIER`,`MODIFY_TIME`,`ORG_ID`) VALUES ('79f72645-233e-4176-ac08-acc7e7f69c70','3492ea81-e2d4-4b73-aad9-d9402dfe0879','18','排水','1',18,'',NULL,0,0,NULL,NULL,'2019-11-01 16:21:09',NULL,'2019-11-01 16:21:09','0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`,`TYPE_ID`,`ITEM_CODE`,`ITEM_NAME`,`IS_ACTIVE`,`SORT_NO`,`PARENT_ID`,`ITEM_SEQ`,`ITEM_LEVEL`,`SUB_COUNT`,`ITEM_MEMO`,`CREATER`,`CREATE_TIME`,`MODIFIER`,`MODIFY_TIME`,`ORG_ID`) VALUES ('7b391060-8625-4732-9804-399d78e2bbea','3492ea81-e2d4-4b73-aad9-d9402dfe0879','23','风景园林','1',23,'',NULL,0,0,NULL,NULL,'2019-11-01 16:22:01',NULL,'2019-11-01 16:22:01','0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`,`TYPE_ID`,`ITEM_CODE`,`ITEM_NAME`,`IS_ACTIVE`,`SORT_NO`,`PARENT_ID`,`ITEM_SEQ`,`ITEM_LEVEL`,`SUB_COUNT`,`ITEM_MEMO`,`CREATER`,`CREATE_TIME`,`MODIFIER`,`MODIFY_TIME`,`ORG_ID`) VALUES ('7c99e6f1-8c4e-43af-a9cb-813c672aed87','3492ea81-e2d4-4b73-aad9-d9402dfe0879','14','工业建筑','1',14,'',NULL,0,0,NULL,NULL,'2019-11-01 16:20:31',NULL,'2019-11-01 16:20:31','0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`,`TYPE_ID`,`ITEM_CODE`,`ITEM_NAME`,`IS_ACTIVE`,`SORT_NO`,`PARENT_ID`,`ITEM_SEQ`,`ITEM_LEVEL`,`SUB_COUNT`,`ITEM_MEMO`,`CREATER`,`CREATE_TIME`,`MODIFIER`,`MODIFY_TIME`,`ORG_ID`) VALUES ('98f4f708-5e10-4232-a5a5-71a0e2474923','3492ea81-e2d4-4b73-aad9-d9402dfe0879','9','通信建筑','1',9,'',NULL,0,0,NULL,NULL,'2019-11-01 16:19:40',NULL,'2019-11-01 16:19:40','0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`,`TYPE_ID`,`ITEM_CODE`,`ITEM_NAME`,`IS_ACTIVE`,`SORT_NO`,`PARENT_ID`,`ITEM_SEQ`,`ITEM_LEVEL`,`SUB_COUNT`,`ITEM_MEMO`,`CREATER`,`CREATE_TIME`,`MODIFIER`,`MODIFY_TIME`,`ORG_ID`) VALUES ('9b14e452-bfc5-4816-9e4f-2f17eef5a441','3492ea81-e2d4-4b73-aad9-d9402dfe0879','24','环境园林','1',24,'',NULL,0,0,NULL,NULL,'2019-11-01 16:22:09',NULL,'2019-11-01 16:22:09','0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`,`TYPE_ID`,`ITEM_CODE`,`ITEM_NAME`,`IS_ACTIVE`,`SORT_NO`,`PARENT_ID`,`ITEM_SEQ`,`ITEM_LEVEL`,`SUB_COUNT`,`ITEM_MEMO`,`CREATER`,`CREATE_TIME`,`MODIFIER`,`MODIFY_TIME`,`ORG_ID`) VALUES ('a05dfea9-92cc-4a7c-8c94-407aad6d4b58','3492ea81-e2d4-4b73-aad9-d9402dfe0879','10','公共配套工程','1',10,'',NULL,0,0,NULL,NULL,'2019-11-01 16:19:52',NULL,'2019-11-01 16:19:52','0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`,`TYPE_ID`,`ITEM_CODE`,`ITEM_NAME`,`IS_ACTIVE`,`SORT_NO`,`PARENT_ID`,`ITEM_SEQ`,`ITEM_LEVEL`,`SUB_COUNT`,`ITEM_MEMO`,`CREATER`,`CREATE_TIME`,`MODIFIER`,`MODIFY_TIME`,`ORG_ID`) VALUES ('ad45b8e4-1c8f-480f-9eec-8818809bc397','3492ea81-e2d4-4b73-aad9-d9402dfe0879','25','公共交通','1',25,'',NULL,0,0,NULL,NULL,'2019-11-01 16:22:16',NULL,'2019-11-01 16:22:16','0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`,`TYPE_ID`,`ITEM_CODE`,`ITEM_NAME`,`IS_ACTIVE`,`SORT_NO`,`PARENT_ID`,`ITEM_SEQ`,`ITEM_LEVEL`,`SUB_COUNT`,`ITEM_MEMO`,`CREATER`,`CREATE_TIME`,`MODIFIER`,`MODIFY_TIME`,`ORG_ID`) VALUES ('c94208a5-b66b-4abb-8a25-0a5d81bf9c9b','3492ea81-e2d4-4b73-aad9-d9402dfe0879','15','工业建筑配套工程','1',15,'',NULL,0,0,NULL,NULL,'2019-11-01 16:20:38',NULL,'2019-11-01 16:20:38','0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`,`TYPE_ID`,`ITEM_CODE`,`ITEM_NAME`,`IS_ACTIVE`,`SORT_NO`,`PARENT_ID`,`ITEM_SEQ`,`ITEM_LEVEL`,`SUB_COUNT`,`ITEM_MEMO`,`CREATER`,`CREATE_TIME`,`MODIFIER`,`MODIFY_TIME`,`ORG_ID`) VALUES ('cd69a81a-689f-4c4c-b4c3-9edcbbe13422','3492ea81-e2d4-4b73-aad9-d9402dfe0879','5','商业建筑','1',5,'',NULL,0,0,NULL,NULL,'2019-11-01 16:19:08',NULL,'2019-11-01 16:19:08','0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`,`TYPE_ID`,`ITEM_CODE`,`ITEM_NAME`,`IS_ACTIVE`,`SORT_NO`,`PARENT_ID`,`ITEM_SEQ`,`ITEM_LEVEL`,`SUB_COUNT`,`ITEM_MEMO`,`CREATER`,`CREATE_TIME`,`MODIFIER`,`MODIFY_TIME`,`ORG_ID`) VALUES ('d9a5be3f-4777-4840-87cf-fa498b329e00','3492ea81-e2d4-4b73-aad9-d9402dfe0879','16','其他','1',16,'',NULL,0,0,NULL,NULL,'2019-11-01 16:20:47',NULL,'2019-11-01 16:20:47','0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`,`TYPE_ID`,`ITEM_CODE`,`ITEM_NAME`,`IS_ACTIVE`,`SORT_NO`,`PARENT_ID`,`ITEM_SEQ`,`ITEM_LEVEL`,`SUB_COUNT`,`ITEM_MEMO`,`CREATER`,`CREATE_TIME`,`MODIFIER`,`MODIFY_TIME`,`ORG_ID`) VALUES ('ef63c760-fa41-4f07-a4c0-4cb7020c0e6c','3492ea81-e2d4-4b73-aad9-d9402dfe0879','3','公共建筑','1',3,'',NULL,0,0,NULL,NULL,'2019-11-01 16:18:50',NULL,'2019-11-01 16:18:50','0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`,`TYPE_ID`,`ITEM_CODE`,`ITEM_NAME`,`IS_ACTIVE`,`SORT_NO`,`PARENT_ID`,`ITEM_SEQ`,`ITEM_LEVEL`,`SUB_COUNT`,`ITEM_MEMO`,`CREATER`,`CREATE_TIME`,`MODIFIER`,`MODIFY_TIME`,`ORG_ID`) VALUES ('f02bdf48-8b3e-4b9c-b867-1c6c0554cb1f','3492ea81-e2d4-4b73-aad9-d9402dfe0879','4','办公建筑','1',4,'',NULL,0,0,NULL,NULL,'2019-11-01 16:18:58',NULL,'2019-11-01 16:18:58','0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`,`TYPE_ID`,`ITEM_CODE`,`ITEM_NAME`,`IS_ACTIVE`,`SORT_NO`,`PARENT_ID`,`ITEM_SEQ`,`ITEM_LEVEL`,`SUB_COUNT`,`ITEM_MEMO`,`CREATER`,`CREATE_TIME`,`MODIFIER`,`MODIFY_TIME`,`ORG_ID`) VALUES ('ff51ce7b-0176-4b7c-8e2a-6299be7d75e4','3492ea81-e2d4-4b73-aad9-d9402dfe0879','8','交通运输类','1',8,'',NULL,0,0,NULL,NULL,'2019-11-01 16:19:32',NULL,'2019-11-01 16:19:32','0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`,`TYPE_ID`,`ITEM_CODE`,`ITEM_NAME`,`IS_ACTIVE`,`SORT_NO`,`PARENT_ID`,`ITEM_SEQ`,`ITEM_LEVEL`,`SUB_COUNT`,`ITEM_MEMO`,`CREATER`,`CREATE_TIME`,`MODIFIER`,`MODIFY_TIME`,`ORG_ID`) VALUES ('693e1a9d-64d2-4f0f-8bbf-136ae88410d1','cac94378-2c68-471a-95c8-f25b8536030b','7','特大型工程 ','1',1,'',NULL,0,0,NULL,NULL,'2019-11-01 16:24:25',NULL,'2019-11-01 16:24:25','0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`,`TYPE_ID`,`ITEM_CODE`,`ITEM_NAME`,`IS_ACTIVE`,`SORT_NO`,`PARENT_ID`,`ITEM_SEQ`,`ITEM_LEVEL`,`SUB_COUNT`,`ITEM_MEMO`,`CREATER`,`CREATE_TIME`,`MODIFIER`,`MODIFY_TIME`,`ORG_ID`) VALUES ('80b1bbef-44a8-4e54-8d6d-c1adb826abb6','cac94378-2c68-471a-95c8-f25b8536030b','9','中型工程','1',3,'',NULL,NULL,0,NULL,NULL,'2019-11-01 16:24:02',NULL,'2019-11-01 16:25:41','0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`,`TYPE_ID`,`ITEM_CODE`,`ITEM_NAME`,`IS_ACTIVE`,`SORT_NO`,`PARENT_ID`,`ITEM_SEQ`,`ITEM_LEVEL`,`SUB_COUNT`,`ITEM_MEMO`,`CREATER`,`CREATE_TIME`,`MODIFIER`,`MODIFY_TIME`,`ORG_ID`) VALUES ('dcae84ea-561a-428b-9664-262bd7b8784c','cac94378-2c68-471a-95c8-f25b8536030b','8','大型工程 ','1',2,'',NULL,NULL,0,NULL,NULL,'2019-11-01 16:24:02',NULL,'2019-11-01 16:25:24','0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` (`ITEM_ID`,`TYPE_ID`,`ITEM_CODE`,`ITEM_NAME`,`IS_ACTIVE`,`SORT_NO`,`PARENT_ID`,`ITEM_SEQ`,`ITEM_LEVEL`,`SUB_COUNT`,`ITEM_MEMO`,`CREATER`,`CREATE_TIME`,`MODIFIER`,`MODIFY_TIME`,`ORG_ID`) VALUES ('fd54fe8d-3923-4b59-b4a0-f28807f6aeac','cac94378-2c68-471a-95c8-f25b8536030b','10','小型工程','1',4,'',NULL,0,0,NULL,NULL,'2019-11-01 16:25:51',NULL,'2019-11-01 16:25:51','0368948a-1cdf-4bf8-a828-71d796ba89f6');
+        </sql>
+    </changeSet>
+    <changeSet id="201911071109001" author="xiaohutu" failOnError="false">
+        <comment>采购历史状态表更新状态字段</comment>
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_im_purchaseinst`
+            CHANGE COLUMN `PURCHASE_FLAG` `OLD_PURCHASE_FLAG` varchar(2) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT
+            '旧采购需求状态：0：未提交，1：服务中，2：服务完成，3：服务中止，4：审核中，5：退回，6：报名中，7：选取中，8：选取开始，9：已选取，10：无效，11：待选取，12：已过时' AFTER `PROJ_PURCHASE_ID`,
+            ADD COLUMN `NEW_PURCHASE_FLAG` varchar(255) NULL COMMENT '新采购需求状态' AFTER `OLD_PURCHASE_FLAG`;
+        </sql>
+    </changeSet>
+</databaseChangeLog>

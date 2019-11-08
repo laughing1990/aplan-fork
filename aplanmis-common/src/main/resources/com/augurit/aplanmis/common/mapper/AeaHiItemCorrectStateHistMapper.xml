@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by Administrator    2019-08-03 10:32:34 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaHiItemCorrectStateHistMapper" >
+<!--1 返回所有字段的SQL字句 -->
+<sql id="allColumns" >
+    CORRECT_STATE_HIST_ID  correctStateHistId,
+    CORRECT_ID  correctId,
+    STATE_HIST_ID  stateHistId,
+    CREATER  creater,
+    CREATE_TIME  createTime
+    </sql>
+
+<!--2 根据主键ID查询单个实体 -->
+<select id="getAeaHiItemCorrectStateHistById" resultType="AeaHiItemCorrectStateHist" >
+    select
+    <include refid="allColumns"/>
+    from    AEA_HI_ITEM_CORRECT_STATE_HIST
+    where    CORRECT_STATE_HIST_ID = #{id}
+</select>
+
+<!--3 根据条件查询实体list -->
+    <select id="listAeaHiItemCorrectStateHist" resultType="AeaHiItemCorrectStateHist" >
+        select
+        <include refid="allColumns"/>
+        from    AEA_HI_ITEM_CORRECT_STATE_HIST
+    <where>
+        <if test="correctStateHistId != null" >
+        AND    CORRECT_STATE_HIST_ID = #{correctStateHistId}
+        </if>
+        <if test="correctId != null" >
+        AND    CORRECT_ID = #{correctId}
+        </if>
+        <if test="stateHistId != null" >
+        AND    STATE_HIST_ID = #{stateHistId}
+        </if>
+        <if test="creater != null" >
+        AND    CREATER = #{creater}
+        </if>
+        <if test="createTime != null" >
+        AND    CREATE_TIME = #{createTime}
+        </if>
+    </where>
+    </select>
+<!--4 根据条件查询实体list,返回分页对象 -->
+
+<!--5 新增实体对象 -->
+<insert id="insertAeaHiItemCorrectStateHist" parameterType="AeaHiItemCorrectStateHist" >
+    insert into AEA_HI_ITEM_CORRECT_STATE_HIST (
+CORRECT_STATE_HIST_ID  ,CORRECT_ID  ,STATE_HIST_ID  ,CREATER  ,CREATE_TIME  
+    )  values  (
+#{correctStateHistId},#{correctId},#{stateHistId},#{creater},  #{createTime}
+    )
+</insert>
+<!--6 修改实体对象 -->
+<update id="updateAeaHiItemCorrectStateHist" parameterType="AeaHiItemCorrectStateHist" >
+    update AEA_HI_ITEM_CORRECT_STATE_HIST
+    <set >
+        <if test="correctStateHistId != null" >
+        CORRECT_STATE_HIST_ID = #{correctStateHistId},
+        </if>
+        <if test="correctId != null" >
+        CORRECT_ID = #{correctId},
+        </if>
+        <if test="stateHistId != null" >
+        STATE_HIST_ID = #{stateHistId},
+        </if>
+        <if test="creater != null" >
+        CREATER = #{creater},
+        </if>
+        <if test="createTime != null" >
+        CREATE_TIME = #{createTime},
+        </if>
+    </set>
+    where CORRECT_STATE_HIST_ID = #{correctStateHistId}
+</update>
+<!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaHiItemCorrectStateHist">
+        delete from   AEA_HI_ITEM_CORRECT_STATE_HIST
+        where
+    CORRECT_STATE_HIST_ID = #{id}
+    </delete>
+<!--8 删除实体对象列表,根据主键ID列表 -->
+<!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaHiItemCorrectStateHist" id="AeaHiItemCorrectStateHistMap">
+        <id property="correctStateHistId" column="CORRECT_STATE_HIST_ID"/>
+        <result property="correctId" column="CORRECT_ID"/>
+        <result property="stateHistId" column="STATE_HIST_ID"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+    </resultMap>
+</mapper>

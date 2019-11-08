@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by yinlf    2019-08-31 10:58:05 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.data.exchange.mapper.aplanmis.ThemeVerMapper">
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns">
+        DFSJZJ  dfsjzj,
+        XZQHDM  xzqhdm,
+        SPLCBM  splcbm,
+        SPLCMC  splcmc,
+        SPLCBBH  splcbbh,
+        SPLCSXSJ  splcsxsj,
+        SPLCLX  splclx,
+        SPLCSM  splcsm,
+        FJMC  fjmc,
+        FJLX  fjlx,
+        FJID  fjid,
+        SJYXBS  sjyxbs,
+        MODIFY_TIME modifyTime
+    </sql>
+
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getSpglDfxmsplcxxbById" resultType="SpglDfxmsplcxxb">
+        select
+        <include refid="allColumns"/>
+        from SPGL_DFXMSPLCXXB_VIEW
+        where DFSJZJ = #{dfsjzj}
+    </select>
+
+    <select id="listSpglDfxmsplcxxbByTimeRange" resultType="SpglDfxmsplcxxb">
+        select
+        <include refid="allColumns"/>
+        from SPGL_DFXMSPLCXXB_VIEW
+        <where>
+            <if test="startTime != null">
+                AND MODIFY_TIME &gt;= #{startTime}
+            </if>
+            <if test="endTime != null">
+                AND MODIFY_TIME &lt; #{endTime}
+            </if>
+        </where>
+    </select>
+
+    <!--3 根据条件查询实体list -->
+    <select id="listSpglDfxmsplcxxb" resultType="SpglDfxmsplcxxb">
+        select
+        <include refid="allColumns"/>
+        from SPGL_DFXMSPLCXXB_VIEW
+        <where>
+            <if test="dfsjzj != null">
+                AND DFSJZJ = #{dfsjzj}
+            </if>
+            <if test="xzqhdm != null">
+                AND XZQHDM = #{xzqhdm}
+            </if>
+            <if test="splcbm != null">
+                AND SPLCBM = #{splcbm}
+            </if>
+            <if test="splcmc != null">
+                AND SPLCMC = #{splcmc}
+            </if>
+            <if test="splcbbh != null">
+                AND SPLCBBH = #{splcbbh}
+            </if>
+            <if test="splcsxsj != null">
+                AND SPLCSXSJ = #{splcsxsj}
+            </if>
+            <if test="splclx != null">
+                AND SPLCLX = #{splclx}
+            </if>
+            <if test="splcsm != null">
+                AND SPLCSM = #{splcsm}
+            </if>
+            <if test="fjmc != null">
+                AND FJMC = #{fjmc}
+            </if>
+            <if test="fjlx != null">
+                AND FJLX = #{fjlx}
+            </if>
+            <if test="fjid != null">
+                AND FJID = #{fjid}
+            </if>
+            <if test="sjyxbs != null">
+                AND SJYXBS = #{sjyxbs}
+            </if>
+        </where>
+    </select>
+</mapper>
