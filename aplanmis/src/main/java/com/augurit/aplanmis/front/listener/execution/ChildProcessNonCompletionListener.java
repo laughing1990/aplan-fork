@@ -1,6 +1,8 @@
 package com.augurit.aplanmis.front.listener.execution;
 
 import com.augurit.agcloud.bpm.common.domain.ActStoAppinstSubflow;
+import com.augurit.agcloud.bpm.common.domain.BpmTaskSendConfig;
+import com.augurit.agcloud.bpm.common.domain.BpmTaskSendObject;
 import com.augurit.agcloud.bpm.common.service.ActStoAppinstSubflowService;
 import com.augurit.agcloud.bpm.common.utils.SpringContextHolder;
 import com.augurit.agcloud.framework.security.SecurityContext;
@@ -8,16 +10,22 @@ import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.constants.ItemStatus;
 import com.augurit.aplanmis.common.domain.AeaHiApplyinst;
 import com.augurit.aplanmis.common.domain.AeaHiIteminst;
+import com.augurit.aplanmis.common.event.AplanmisEventPublisher;
+import com.augurit.aplanmis.common.event.def.BpmNodeSendAplanmisEvent;
 import com.augurit.aplanmis.common.mapper.AeaHiIteminstMapper;
 import com.augurit.aplanmis.common.service.instance.AeaHiIteminstService;
-import org.flowable.bpmn.model.FlowElement;
-import org.flowable.bpmn.model.Gateway;
+import org.flowable.bpmn.model.*;
+import org.flowable.bpmn.model.Process;
+import org.flowable.engine.RepositoryService;
 import org.flowable.engine.RuntimeService;
 import org.flowable.engine.TaskService;
 import org.flowable.engine.delegate.DelegateExecution;
 import org.flowable.engine.delegate.ExecutionListener;
 import org.flowable.engine.impl.util.CommandContextUtil;
 import org.flowable.task.api.Task;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -34,6 +42,8 @@ public class ChildProcessNonCompletionListener implements ExecutionListener {
         RuntimeService runtimeService = CommandContextUtil.getProcessEngineConfiguration().getRuntimeService();
         TaskService taskService = CommandContextUtil.getProcessEngineConfiguration().getTaskService();
         ActStoAppinstSubflowService actStoAppinstSubflowService = SpringContextHolder.getBean(ActStoAppinstSubflowService.class);
+        AplanmisEventPublisher publisher = SpringContextHolder.getBean(AplanmisEventPublisher.class);
+        RepositoryService repositoryService = CommandContextUtil.getProcessEngineConfiguration().getRepositoryService();
 
         try {
 
@@ -79,6 +89,33 @@ public class ChildProcessNonCompletionListener implements ExecutionListener {
                 taskService.complete(task.getId());
             }
 
+            //触发流程发送事件，用于窗口办结发送短信
+            BpmnModel bpmnModel = repositoryService.getBpmnModel(task.getProcessDefinitionId());
+            Process process = (Process)bpmnModel.getProcesses().get(0);
+            FlowElement flowElement = process.getFlowElement("banjie");
+            if(flowElement!=null && flowElement instanceof UserTask){
+                UserTask userTask = (UserTask)flowElement;
+                String assigneeStr = userTask.getAssignee();
+
+                if("$INITIATOR".equals(assigneeStr)){
+                    assigneeStr = (String) runtimeService.getVariable(task.getProcessInstanceId(),"$INITIATOR");
+                }
+                if(StringUtils.isBlank(assigneeStr))
+                    assigneeStr = userTask.getAssigneeRange();
+
+                if(StringUtils.isNotBlank(assigneeStr)) {
+                    BpmTaskSendObject sendObject = new BpmTaskSendObject();
+                    sendObject.setTaskId(parentTaskId);
+                    BpmTaskSendConfig bpmTaskSendConfig = new BpmTaskSendConfig();
+                    bpmTaskSendConfig.setDestActId("banjie");
+                    bpmTaskSendConfig.setUserTask(true);
+                    bpmTaskSendConfig.setAssignees(assigneeStr);
+                    List<BpmTaskSendConfig> list = new ArrayList<>();
+                    list.add(bpmTaskSendConfig);
+                    sendObject.setSendConfigs(list);
+                    publisher.publishEvent(new BpmNodeSendAplanmisEvent(this, sendObject));
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

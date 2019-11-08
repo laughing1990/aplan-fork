@@ -26,7 +26,7 @@ var vm = new Vue({
 			ts.loading = true;
 
 			request('', {
-				url: ctx + '/rest/conditional/query/listSeriesApplyItem',
+				url: ctx + 'rest/conditional/query/listSeriesApplyItem',
 				type: 'get',
 				data: ts.searchFrom
 			}, function (res) {

@@ -81,7 +81,7 @@ var vm = new Vue({
             ts.loading = true;
 
             request('', {
-                url: ctx + '/win/efficiency/supervision/listOverdueApply',
+                url: ctx + 'win/efficiency/supervision/listOverdueApply',
                 type: 'get',
                 data: ts.searchFrom
             }, function (res) {
@@ -102,7 +102,7 @@ var vm = new Vue({
             var ts = this;
             // ts.loading = true;
             request('', {
-                url: ctx + '/rest/conditional/query/apply/dic/list',
+                url: ctx + 'rest/conditional/query/apply/dic/list',
                 type: 'get',
                 data: {}
             }, function (res) {
@@ -137,7 +137,7 @@ var vm = new Vue({
                 // ts.loading = true;
                 var themeId = this.searchFrom.theme;
                 request('', {
-                    url: ctx + '/rest/conditional/query/theme/stage/list',
+                    url: ctx + 'rest/conditional/query/theme/stage/list',
                     type: 'get',
                     data: {themeId: themeId}
                 }, function (res) {
@@ -179,20 +179,20 @@ var vm = new Vue({
         //导出
         exportExcel: function () {
             var param = encodeURI(JSON.stringify(this.searchFrom));
-            window.location.href = ctx + "/rest/conditional/query/export/applyinfo" + "?param=" + param;
+            window.location.href = ctx + "rest/conditional/query/export/applyinfo" + "?param=" + param;
         },
         //查看详情
         viewDetail: function (row) {
             var ts = this;
             ts.loading = true;
             request('', {
-                url: ctx + '/rest/conditional/query/queryApplyInfoTaskId',
+                url: ctx + 'rest/conditional/query/queryApplyInfoTaskId',
                 type: 'get',
                 data: {applyinstId: row.applyinstId}
             }, function (res) {
                 ts.loading = false;
                 if (res.success) {
-                    window.open(ctx + '/apanmis/page/stageApproveIndex?isNotCompareAssignee=true&taskId=' + res.content.taskId + '&viewId=' + res.content.viewId, '_blank');
+                    window.open(ctx + 'apanmis/page/stageApproveIndex?isNotCompareAssignee=true&taskId=' + res.content.taskId + '&viewId=' + res.content.viewId, '_blank');
                 } else {
                     return ts.apiMessage(res.message, 'error')
                 }
@@ -205,7 +205,7 @@ var vm = new Vue({
 
             var ts = this;
             request('', {
-                url: ctx + '/rest/conditional/query/tree/industry',
+                url: ctx + 'rest/conditional/query/tree/industry',
                 type: 'get',
                 async: true,
                 data: {}

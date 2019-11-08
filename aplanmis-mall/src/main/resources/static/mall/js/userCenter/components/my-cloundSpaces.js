@@ -140,6 +140,7 @@
             },
             //Tree右键
             rigthClickTree:function($event,item,level){
+                var _this = this;
                 $event.returnValue = false;
                 $event.cancelBubble = true;
                 if (item) {
@@ -147,7 +148,10 @@
                 }
                 this.delDirId = item.dirId;
                 this.level = level;
-                this.$set(this.addDirFormData,'chooseSuperDir',this.delDirId)
+                console.log(this.delDirId)
+                setTimeout(function () {
+                    _this.$set(_this.addDirFormData,'chooseSuperDir',_this.delDirId)
+                },1000)
             },
 
             // table 右键
@@ -220,7 +224,9 @@
                     }, function(err) {
                         _this.$message.error('请求接口出错了哦!');
                     })
-                }, '', '确定', '取消')
+                },function(){
+                    console.log("取消");
+                }, '确定', '取消')
             },
 
             // 重命名

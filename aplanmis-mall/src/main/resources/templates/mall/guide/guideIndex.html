@@ -1363,9 +1363,9 @@
             <p v-else>【暂无流程图】</p>
         </el-dialog>-->
           <div title="流程图" v-show="wslct" >
-              <ul id="wsb1" v-if="detailData.aeaItemGuide && detailData.aeaItemGuide.wsbllct!=undefined && detailData.aeaItemGuide.wsbllct!=null">
+              <ul id="wsb1" v-if="detailData.aeaItemGuide && detailData.aeaItemGuide.wsbllct!=undefined && detailData.aeaItemGuide.wsbllct!=null && detailData.aeaItemGuide.wsbllct!=''">
                   <li>
-                      <img :data-original="dataOriginal(detailData.aeaItemGuide.wsbllct)" :href="dataOriginal(detailData.aeaItemGuide.wsbllct)" style="display: none" alt="暂无流程图">
+                      <img :data-original="dataOriginal(detailData.aeaItemGuide.wsbllct)" :href="dataOriginal(detailData.aeaItemGuide.wsbllct)" style="display: none" alt="流程图">
                   </li>
               </ul>
               <p v-else>【暂无流程图】</p>
@@ -1375,9 +1375,9 @@
           <p v-else>【暂无流程图】</p>
         </el-dialog>-->
           <div title="流程图" v-show="cklct" >
-              <ul id="wsb2" v-if="detailData.aeaItemGuide && detailData.aeaItemGuide.ckbllct!=undefined && detailData.aeaItemGuide.ckbllct!=null">
+              <ul id="wsb2" v-if="detailData.aeaItemGuide && detailData.aeaItemGuide.ckbllct!=undefined && detailData.aeaItemGuide.ckbllct!=null && detailData.aeaItemGuide.ckbllct!=''">
                   <li>
-                      <img :data-original="dataOriginal(detailData.aeaItemGuide.ckbllct)" :href="dataOriginal(detailData.aeaItemGuide.ckbllct)" style="display: none" alt="暂无流程图">
+                      <img :data-original="dataOriginal(detailData.aeaItemGuide.ckbllct)" :href="dataOriginal(detailData.aeaItemGuide.ckbllct)" style="display: none" alt="流程图">
                   </li>
               </ul>
               <p v-else>【暂无流程图】</p>

@@ -119,7 +119,9 @@ textarea {
     line-height: 34px;
     color: #575962;
 }
-
+.el-form-item__content .el-input-group {
+    vertical-align: baseline;
+}
 .el-autocomplete {
     line-height: 34px;
     height: 34px;
@@ -1515,4 +1517,111 @@ textarea {
 
 .linkman-set .linkman-set-item {
     margin-bottom: 10px;
+}
+.input-with-select .el-select {
+    width: 150px;
+}
+.sources-proportion .input-inline .el-form-item__label {
+    width: 120px !important;
+    padding-right: 5px;
+}
+.sources-proportion .input-inline .el-form-item__content {
+    margin-left: 120px !important;
+}
+
+.apt-tree-tab .aptTreeTitle {
+    color: #3184fa;
+}
+
+.apt-tree-tab .el-tabs--border-card > .el-tabs__header .el-tabs__item.is-active {
+    color: #3184fa;
+}
+
+.apt-tree-tab .el-tabs--border-card > .el-tabs__content {
+    padding: 0px;
+}
+
+.apt-tree-tab .el-tree {
+    padding: 30px 15px;
+}
+
+.apt-tree-tab .el-tabs--border-card {
+    border: none;
+    box-shadow: none;
+}
+.apply-theme {
+    line-height: 55px;
+    text-align: center;
+}
+.apply-theme .theme-list-item {
+    border: 1px solid #169aff;
+    width: 60%;
+    border-radius: 4px;
+    padding: 0 10px;
+    display: inline-block;
+    margin: 15px 0 10px 0;
+    text-align: left;
+}
+.apply-theme .theme-list-item.no-sel-theme {
+    border: 2px dashed #E0E3E9;
+    color: #169AFF;
+    text-align: center;
+}
+.apply-theme .theme-list-item.no-sel-theme span {
+    display: inline-block;
+    height: 100%;
+    width: 100%;
+    cursor: pointer;
+}
+.apply-theme .theme-list-item.no-sel-theme i {
+    font-size: 24px;
+    vertical-align: sub;
+    padding-right: 5px;
+}
+.apply-theme img {
+    margin: 8px 10px 8px 0;
+    height: 38px;
+    float: left;
+}
+.ref-unit-list .el-dialog__body {
+    padding: 20px;
+}
+.ref-unit-list .search-box {
+    width: 300px;
+}
+.ref-unit-list .el-pagination {
+    margin-top: 10px;
+}
+.edit-item-detail .upload-card .upload-btn {
+    position: relative;
+}
+.edit-item-detail .upload-card .pjfile-list {
+    width: 30%;
+}
+.edit-item-detail .upload-card .pjfile-list li {
+    margin: 10px 0;
+    color: #474747;
+}
+.edit-item-detail .upload-card .pjfile-list li .debtn {
+    color: #F12E2E;
+    float: right;
+}
+.edit-item-detail .upload-card {
+    border: 1px solid #ccc;
+    padding: 20px 20px 15px 20px;
+}
+.edit-item-detail .note-txt {
+    font-size: 12px;
+    color: #747474;
+    vertical-align: middle;
+    margin: 10px 0 20px 0;
+}
+.edit-item-detail .upload-card .upload-btn {
+    position: relative;
+}
+.matterUploadFile {
+    display: inline-block;
+}
+.edit-item-detail .upload-card .pjfile-list {
+    width: 30%;
 }
