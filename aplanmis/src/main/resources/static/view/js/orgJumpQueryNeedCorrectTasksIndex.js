@@ -50,7 +50,7 @@ var vm = new Vue({
             ts.loading = true;
             ts.searchFrom.entrust = entrust;
             request('', {
-                url: ctx + '/rest/conditional/jump/listNeedCorrectTasks',
+                url: ctx + 'rest/conditional/jump/listNeedCorrectTasks',
                 type: 'get',
                 data: ts.searchFrom
             }, function (res) {
@@ -71,7 +71,7 @@ var vm = new Vue({
             var ts = this;
             ts.loading = true;
             request('', {
-                url: ctx + '/rest/conditional/jump/task/dic/list',
+                url: ctx + 'rest/conditional/jump/task/dic/list',
                 type: 'get',
                 data: {}
             }, function (res) {
@@ -91,7 +91,7 @@ var vm = new Vue({
         //补正
         viewDetail:function (row) {
             var correctId = row.correctId;
-            var urltemp = ctx+'/rest/correct/index.html?correctId='+correctId;
+            var urltemp = ctx+'rest/correct/index.html?correctId='+correctId;
             var parentIfreamUrl = window.frames.location.href;
             urltemp = urltemp +'&parentIfreamUrl='+parentIfreamUrl;
             var data = {
@@ -108,7 +108,7 @@ var vm = new Vue({
         queryOrganizer: function () {
             var ts = this;
             request('', {
-                url: ctx + '/rest/conditional/jump/listNeedCorrectTasksOrganizer',
+                url: ctx + 'rest/conditional/jump/listNeedCorrectTasksOrganizer',
                 type: 'get',
                 data: {},
                 async: true
