@@ -82,41 +82,30 @@ var app = new Vue({
   },
   created: function() {
     this.getLandAreaType();
-    this.getFieldType();
     this.showData();
 
     $(".loading").hide();
   },
   methods: {
 
-    // 获取用地单位
+    // 获取用地单位/性质
     getLandAreaType: function() {
       var vm = this;
       // vm.loading = true;
       request('', {
-        type: 'post',
-        url: ctx + 'rest/form/tceop/landAreaType',
-        data: {},
+        type: 'get',
+        url: ctx + 'rest/dict/code/multi/items/list',
+        data: {
+          dicCodeTypeCodes: 'Land_Area_Type,XM_FIELD_TYPE'
+        },
       }, function(res) {
-        vm.landAreaUnitSite = res;
+        vm.landAreaUnitSite = res.content.Land_Area_Type;
+        vm.fieldType = res.content.XM_FIELD_TYPE;
       }, function(err) {
         vm.$message.error('服务器错了哦!');
       })
     },
-    // 获取用地性质
-    getFieldType: function() {
-      var vm = this;
-      // vm.loading = true;
-      request('', {
-        type: 'post',
-        url: ctx + 'rest/form/tceop/fieldType',
-        data: {},
-      }, function(res) {
-        vm.fieldType = res;
-      }, function(err) {
-        vm.$message.error('服务器错了哦!');
-      })
-    },
+
     // 请求table数据
     showData: function() {
       var vm = this;

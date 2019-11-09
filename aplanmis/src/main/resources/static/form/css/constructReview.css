@@ -1,5 +1,6 @@
 body {
   padding: 16px;
+  margin: 0;
   background: #f2f3f8;
 }
 
@@ -221,7 +222,7 @@ body {
 #app {
   /*padding: 20px 120px 80px 120px;*/
   padding: 20px 16px 80px;
-background: #fff;
+  background: #fff;
 }
 
 .header {
@@ -237,7 +238,7 @@ background: #fff;
 }
 
 .allWidth {
-  width: 130%;
+  width: 134.5%;
 }
 
 .form-title {
@@ -246,7 +247,7 @@ background: #fff;
 }
 
 .el-form-item__content {
-  width: 64%;
+  width: 61%;
 }
 
 .form-title .el-form-item__content {
@@ -297,6 +298,7 @@ background: #fff;
 
 .el-col {
   display: flex;
+  margin-bottom: 1%;
 }
 
 .el-col:nth-child(1) {
@@ -317,4 +319,16 @@ background: #fff;
 .el-col>span i {
   color: #F56C6C;
   margin-right: 4px;
+}
+
+.item-left-btn {
+  padding: 6px 14px;
+}
+
+.item-left-btn i {
+  font-size: 19px;
+}
+
+.el-autocomplete {
+  width: 100%;
 }
