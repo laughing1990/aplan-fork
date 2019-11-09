@@ -91,7 +91,7 @@ public class AeaProjDrawingSerivceImpl implements AeaProjDrawingSerivce {
                                 String linkmanInfoId = fuzeren.getLinkmanInfoId();
                                 AeaLinkmanInfo idcard = aeaLinkmanInfoMapper.getAeaLinkmanInfoById(linkmanInfoId);
                                 aeaProjDrawing.setProjectLeaderCertNum(idcard.getLinkmanCertNo());
-                                aeaProjDrawing.setProjectLeaderCertNum(fuzeren.getLinkmanCertNo());
+
                             }
                         }
                     }
@@ -122,7 +122,12 @@ public class AeaProjDrawingSerivceImpl implements AeaProjDrawingSerivce {
                             //在 单位项目联系人表里继续查 如果有信息就封装
                             List<AeaUnitProjLinkman> linkmanList = aeaUnitProjLinkmanMapper.listfuzeren(query);
                             if (linkmanList.size()>0) {
+
                                 AeaUnitProjLinkman linkman = linkmanList.get(0);
+                                //如果是负责人就不在人员设置里显示
+                                if(linkman.getLinkmanType()!=null){
+                                    continue;
+                                }
                                 aeaUnitProjLinkman.setPrjSpty(linkman.getPrjSpty());
                                 aeaUnitProjLinkman.setTitleCertNum(linkman.getTitleCertNum());
                                 aeaUnitProjLinkman.setProjLinkmanId(linkman.getProjLinkmanId());
