@@ -49,12 +49,12 @@
         },
         created: function () {
             // this.projInfoId = this.getUrlParam('projInfoId');
-            this.projInfoId = '012c4996-b14f-42c4-8d87-b2f347b27276';
+            this.projInfoId = '09485014-cfe9-4815-b9e3-13f24035220b';
         },
         mounted: function () {
             this.getProjTypeNature('C_TENDER_TYPE,C_AGENT_TYPE,XM_DWLX');
             this.getGovAreaCode();
-            // if (this.projInfoId) this.getDetail();
+            if (this.projInfoId) this.getDetail();
         },
         methods: {
             // 招投标信息模块保存
@@ -67,14 +67,17 @@
                     if (valid) {
                         request('', {
                             url: ctx + 'rest/form/project/bid/saveAeaExProjBid',
-                            data: params,
-                            type: 'post'
+                            data: JSON.stringify(params),
+                            type: 'post',
+                            ContentType: 'application/json'
                         }, function (data) {
                             if (data.success) {
                                 _that.$message({
                                     message: '信息保存成功',
                                     type: 'success'
                                 });
+
+                                _that.biddingInfo = data.content;
                             } else {
                                 _that.$message({
                                     message: data.message ? data.message : '信息保存失败',
