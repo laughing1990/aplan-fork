@@ -226,4 +226,11 @@ public interface AeaProjInfoService {
      * @return
      */
     List<String> getProjAddressRegion(String projInfoId);
+
+    /**
+     * 新增单体工程信息
+     *
+     * @param aeaProjInfo
+     */
+    public AeaProjInfo addChildProjInfo(AeaProjInfo aeaProjInfo) throws Exception;
 }

@@ -728,8 +728,58 @@ public class AeaProjInofServiceImpl implements AeaProjInfoService {
         return regionIds;
     }
 
+    @Override
+    public AeaProjInfo addChildProjInfo(AeaProjInfo aeaProjInfo) throws Exception {
+        if (StringUtils.isNotBlank(aeaProjInfo.getParentProjId()) && StringUtils.isNotBlank(aeaProjInfo.getProjName())) {
+            AeaProjInfo proj = new AeaProjInfo();
+            proj.setProjName(aeaProjInfo.getProjName().trim());
+            List<AeaProjInfo> checkNameProj = aeaProjInfoMapper.listAeaProjInfo(aeaProjInfo);
+            //查询是否有重名的项目工程
+            if (checkNameProj != null && checkNameProj.size() > 0) {
+                return null;
+            }
 
-    /*mysql 数据库查询树结构方法*/
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            proj.setProjInfoId(aeaProjInfo.getParentProjId());
+            AeaProjInfo parentProj = aeaProjInfoMapper.getOnlyAeaProjInfoById(aeaProjInfo.getParentProjId());
+            if (null == parentProj) {
+                return null;
+            }
+
+            String rootOrgId = SecurityContext.getCurrentOrgId();
+            String childGcbm = gcbmBscRuleCodeStrategy.generateCode(parentProj.getLocalCode(), parentProj.getLocalCode(), "工程编码", rootOrgId);
+            if (childGcbm != null) {
+                //新增子项目
+                String childNodeId = UUID.randomUUID().toString();
+                proj.setProjInfoId(childNodeId);
+                proj.setLocalCode(parentProj.getLocalCode());
+                proj.setGcbm(childGcbm);
+                proj.setProjName(aeaProjInfo.getProjName().trim());
+                proj.setForeignRemark(aeaProjInfo.getForeignRemark());
+                proj.setProjFlag("c");  //r表示ROOT项目，p表示发改项目，c表示子项目或子子项目
+                proj.setHaveDetail("1");
+                proj.setIsDeleted("0");
+                // 主题保持一致
+                proj.setThemeId(parentProj.getThemeId());
+                proj.setCreater(SecurityContext.getCurrentUserName());
+                proj.setCreateTime(new Date());
+                proj.setProjectCreateDate(dateFormat.format(new Date()));
+                aeaProjInfoMapper.insertAeaProjInfo(proj);
+
+                //增加父子项目关联
+                AeaParentProj aeaParentProj = new AeaParentProj();
+                aeaParentProj.setNodeProjId(UUID.randomUUID().toString());
+                aeaParentProj.setParentProjId(parentProj.getProjInfoId());
+                aeaParentProj.setChildProjId(proj.getProjInfoId());
+                aeaParentProj.setCreater(SecurityContext.getCurrentUserName());
+                aeaParentProj.setCreateTime(new Date());
+                aeaProjInfoMapper.insertAeaParentProj(aeaParentProj);
+
+                return proj;
+            }
+        }
+        return null;
+    }
 
     /**
      * 判断是数据库类型是否是mysql

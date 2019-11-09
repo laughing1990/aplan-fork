@@ -831,4 +831,16 @@
             alter table `aea_par_front_itemform` change column `FRONT_PARTFORM_ID` `FRONT_ITEMFORM_ID` varchar(50) NOT NULL COMMENT 'ID';
         </sql>
     </changeSet>
+
+    <changeSet id="201911081722" author="ouym" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_proj_info`
+            ADD COLUMN `ABOVE_FLOOR` int(5) NULL DEFAULT NULL COMMENT '地上层数' AFTER `APPROVAL_TIME`,
+            ADD COLUMN `UNDER_FLOOR` int(5) NULL COMMENT '地下层数' AFTER `ABOVE_FLOOR`,
+            ADD COLUMN `ABOVE_HEIGHT` double(10, 2) NULL COMMENT '地上建筑高度（米）' AFTER `UNDER_FLOOR`,
+            ADD COLUMN `UNDER_DEPTH` double(10, 2) NULL COMMENT '地下建筑深度（米）' AFTER `ABOVE_HEIGHT`,
+            ADD COLUMN `LENGTH` double(10, 2) NULL COMMENT '长度（米）' AFTER `UNDER_DEPTH`,
+            ADD COLUMN `SPAN` double(10, 2) NULL DEFAULT NULL COMMENT '垮度（米）' AFTER `LENGTH`;
+        </sql>
+    </changeSet>
 </databaseChangeLog>
