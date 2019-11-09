@@ -18,6 +18,7 @@ import com.augurit.aplanmis.common.service.form.AeaProjDrawingSerivce;
 import com.augurit.aplanmis.common.service.linkman.AeaLinkmanInfoService;
 import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
 import com.augurit.aplanmis.common.vo.AeaProjDrawing;
+import com.augurit.aplanmis.common.vo.AeaProjDrawingVo;
 import com.augurit.aplanmis.front.subject.linkman.serivce.RestLinkmanService;
 import com.augurit.aplanmis.front.subject.linkman.vo.LinkmanAddVo;
 import com.augurit.aplanmis.front.subject.unit.vo.UnitVo;
@@ -26,6 +27,7 @@ import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.augurit.agcloud.framework.ui.pager.PageHelper;
@@ -48,13 +50,13 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
-* 施工图审查信息-Controller 页面控制转发类
-、*/
+ * 施工图审查信息-Controller 页面控制转发类
+ 、*/
 @RestController
 @RequestMapping("/aea/ex/proj/drawing")
 public class AeaExProjDrawingController {
 
-private static Logger logger = LoggerFactory.getLogger(AeaExProjDrawingController.class);
+    private static Logger logger = LoggerFactory.getLogger(AeaExProjDrawingController.class);
 
     @Autowired
     private AeaExProjDrawingService aeaExProjDrawingService;
@@ -112,12 +114,12 @@ private static Logger logger = LoggerFactory.getLogger(AeaExProjDrawingControlle
             object.put("aeaExProjDrawing",new AeaExProjDrawing());
         }
 
-       return  new ContentResultForm<JSONObject>(true,object);
+        return  new ContentResultForm<JSONObject>(true,object);
     }
 
 
     @RequestMapping("/updateAeaExProjDrawing.do")
-        public ResultForm updateAeaExProjDrawing(AeaExProjDrawing aeaExProjDrawing) throws Exception {
+    public ResultForm updateAeaExProjDrawing(AeaExProjDrawing aeaExProjDrawing) throws Exception {
         logger.debug("更新客户档案信息Form对象，对象为：{}", aeaExProjDrawing);
         aeaExProjDrawingService.updateAeaExProjDrawing(aeaExProjDrawing);
         return new ResultForm(true);
@@ -125,106 +127,35 @@ private static Logger logger = LoggerFactory.getLogger(AeaExProjDrawingControlle
 
 
     /**
-    * 保存或编辑施工图审查信息
+     * 保存或编辑施工图审查信息
 
-    */
+     */
     @RequestMapping("/saveAeaExProjDrawing.do")
-    public ResultForm saveAeaExProjDrawing(AeaExProjDrawing aeaExProjDrawing, List<AeaProjDrawing> aeaProjDrawing) throws Exception {
+    public ResultForm saveAeaExProjDrawing(@RequestBody AeaProjDrawingVo aeaProjDrawingVo) throws Exception {
      /*   if(result.hasErrors()) {
             logger.error("保存施工图审查信息Form对象出错");
             throw new InvalidParameterException(aeaExProjDrawing);
         }*/
 
+        AeaExProjDrawing aeaExProjDrawing = new AeaExProjDrawing();
+
+        voToPojo(aeaProjDrawingVo,aeaExProjDrawing);
+
         if(aeaExProjDrawing.getDrawingId()!=null&&!"".equals(aeaExProjDrawing.getDrawingId())){
             aeaExProjDrawingService.updateAeaExProjDrawing(aeaExProjDrawing);
         }else{
-        if(aeaExProjDrawing.getDrawingId()==null||"".equals(aeaExProjDrawing.getDrawingId()))
-            aeaExProjDrawing.setDrawingId(UUID.randomUUID().toString());
+            if(aeaExProjDrawing.getDrawingId()==null||"".equals(aeaExProjDrawing.getDrawingId()))
+                aeaExProjDrawing.setDrawingId(UUID.randomUUID().toString());
             aeaExProjDrawingService.saveAeaExProjDrawing(aeaExProjDrawing);
         }
+
+        List<AeaProjDrawing> aeaProjDrawing = aeaProjDrawingVo.getAeaProjDrawing();
 
         aeaProjDrawingSerivce.saveAeaProjDrawing(aeaProjDrawing);
 
 
-        return  new ContentResultForm<AeaExProjDrawing>(true,aeaExProjDrawing);
+        return  new ContentResultForm<AeaProjDrawingVo>(true,aeaProjDrawingVo);
     }
-
-    //项目主体类型
-    @RequestMapping("/XmDwlx")
-    public List<BscDicCodeItem> xmDwlx(){
-        String XmDwlx  = "XM_DWLX";
-        BscDicCodeType typeByTypeCode = bscDicCodeService.getTypeByTypeCode(XmDwlx, SecurityContext.getCurrentOrgId());
-        if (typeByTypeCode==null){
-            return null;
-        }
-        else {
-            List<BscDicCodeItem> XmType = bscDicCodeService.getItemsByTypeCode(typeByTypeCode.getTypeCode());
-            return XmType;
-        }
-    }
-    //职称等级
-    @RequestMapping("/jobTitle")
-    public List<BscDicCodeItem> jobTille(){
-        String landAreaType = "JOB_TITLE";
-        BscDicCodeType typeByTypeCode = bscDicCodeService.getTypeByTypeCode(landAreaType, SecurityContext.getCurrentOrgId());
-        if (typeByTypeCode==null){
-            return null;
-        }
-        else {
-            List<BscDicCodeItem> areaType = bscDicCodeService.getItemsByTypeCode(typeByTypeCode.getTypeCode());
-            return areaType;
-        }
-    }
-//审查人员专业
-    @RequestMapping("/prjType")
-    public List<BscDicCodeItem> getprjType(){
-        String landAreaType = "C_PRJ_SPTY";
-        BscDicCodeType code = bscDicCodeService.getTypeByTypeCode(landAreaType, SecurityContext.getCurrentOrgId());
-        if (code==null){
-            return null;
-        }
-        else {
-            List<BscDicCodeItem> prjType = bscDicCodeService.getItemsByTypeCode(code.getTypeCode());
-            return prjType;
-        }
-    }
-    //项目单位联系人类型     101001 勘察项目负责人
-    @RequestMapping("/linkmanType")
-    public List<BscDicCodeItem> getRole(){
-        String landAreaType = "PROJ_UNIT_LINKMAN_TYPE";
-        BscDicCodeType typeByTypeCode = bscDicCodeService.getTypeByTypeCode(landAreaType, SecurityContext.getCurrentOrgId());
-        if (typeByTypeCode==null){
-            return null;
-        }
-        else {
-            List<BscDicCodeItem> linkmanType = bscDicCodeService.getItemsByTypeCode(typeByTypeCode.getTypeCode());
-            return linkmanType;
-        }
-    }
-//执业注册证类型
-    @RequestMapping("/certifiType")
-    public List<BscDicCodeItem> getCertifi(){
-        String landAreaType = "REGIST_CERTIFI_TYPE";
-        BscDicCodeType typeByTypeCode = bscDicCodeService.getTypeByTypeCode(landAreaType, SecurityContext.getCurrentOrgId());
-        if (typeByTypeCode==null){
-            return null;
-        }
-        else {
-            List<BscDicCodeItem> certifiType = bscDicCodeService.getItemsByTypeCode(typeByTypeCode.getTypeCode());
-            return certifiType;
-        }
-    }
-
-/*
-    @RequestMapping("/deleteAeaExProjDrawingById.do")
-    public ResultForm deleteAeaExProjDrawingById(String id) throws Exception{
-        logger.debug("删除施工图审查信息Form对象，对象id为：{}", id);
-        if(id!=null)
-            aeaExProjDrawingService.deleteAeaExProjDrawingById(id);
-        return new ResultForm(true);
-    }
-*/
-
 
 
     @ApiOperation(value = "根据企业单位名称模糊查询")
@@ -277,6 +208,25 @@ private static Logger logger = LoggerFactory.getLogger(AeaExProjDrawingControlle
     }
 
 
-
+    //vo 转对象
+    public AeaExProjDrawing voToPojo(AeaProjDrawingVo aeaProjDrawingVo,AeaExProjDrawing aeaExProjDrawing){
+        aeaExProjDrawing.setDrawingId(aeaProjDrawingVo.getDrawingId());
+        aeaExProjDrawing.setProjInfoId(aeaProjDrawingVo.getProjInfoId());
+        aeaExProjDrawing.setProvinceProjCode(aeaProjDrawingVo.getProvinceProjCode());
+        aeaExProjDrawing.setDrawingQuabookCode(aeaProjDrawingVo.getDrawingQuabookCode());
+        aeaExProjDrawing.setInverstmentMoeny(aeaProjDrawingVo.getInverstmentMoeny());
+        aeaExProjDrawing.setApproveDrawingArea(aeaProjDrawingVo.getApproveDrawingArea());
+        aeaExProjDrawing.setApproveStartTime(aeaProjDrawingVo.getApproveStartTime());
+        aeaExProjDrawing.setApproveEndTime(aeaProjDrawingVo.getApproveEndTime());
+        aeaExProjDrawing.setIsOncePass(aeaProjDrawingVo.getIsOncePass());
+        aeaExProjDrawing.setOncePassAgainstCount(aeaProjDrawingVo.getOncePassAgainstCount());
+        aeaExProjDrawing.setOncePassAgainstItem(aeaProjDrawingVo.getOncePassAgainstItem());
+        aeaExProjDrawing.setApproveOpinion(aeaProjDrawingVo.getApproveOpinion());
+        aeaExProjDrawing.setApproveConfirmTime(aeaProjDrawingVo.getApproveConfirmTime());
+        aeaExProjDrawing.setGovOrgAreaCode(aeaProjDrawingVo.getGovOrgAreaCode());
+        aeaExProjDrawing.setGovOrgCode(aeaProjDrawingVo.getGovOrgCode());
+        aeaExProjDrawing.setGovOrgName(aeaProjDrawingVo.getGovOrgName());
+        return aeaExProjDrawing;
+    }
 
 }

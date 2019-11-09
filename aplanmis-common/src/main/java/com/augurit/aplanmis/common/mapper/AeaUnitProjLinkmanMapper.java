@@ -100,4 +100,12 @@ public interface AeaUnitProjLinkmanMapper {
      * @return AeaUnitProjLinkman
      */
     List<AeaUnitProjLinkman> queryByUnitProjIdAndlinkType(@Param("unitProjId") String unitProjId, @Param("linkmanInfoId") String linkmanInfoId, @Param("linkmanType") String linkmanType);
+
+    /**
+     * 12 查找负责人
+     *
+     * @param aeaUnitProjLinkman 查询条件
+     * @return List<AeaUnitProjLinkman>
+     */
+    List<AeaUnitProjLinkman> listfuzeren(AeaUnitProjLinkman aeaUnitProjLinkman);
 }

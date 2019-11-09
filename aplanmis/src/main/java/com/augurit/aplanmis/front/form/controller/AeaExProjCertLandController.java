@@ -55,7 +55,7 @@ private static Logger logger = LoggerFactory.getLogger(AeaExProjCertLandControll
     private BscDicCodeService bscDicCodeService;
 
 
-    @RequestMapping("/index.html")
+        @RequestMapping("/index.html")
     public ModelAndView indexAeaExProjCertLand(String projInfoId){
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.addObject("projInfoId", projInfoId);

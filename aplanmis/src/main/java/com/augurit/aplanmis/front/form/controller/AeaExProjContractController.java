@@ -56,16 +56,9 @@ private static Logger logger = LoggerFactory.getLogger(AeaExProjContractControll
       String landAreaType = "contract_type";
       BscDicCodeType typeByTypeCode = bscDicCodeService.getTypeByTypeCode(landAreaType, SecurityContext.getCurrentOrgId());
       if (typeByTypeCode==null){
-          BscDicCodeType bscDicCodeType = new BscDicCodeType();
-          bscDicCodeType.setTypeId(UUID.randomUUID().toString());
-          bscDicCodeType.setTypeCode(landAreaType);
-          bscDicCodeType.setTypeName("合同类型");
-          bscDicCodeType.setTypeIsTree("0");
-          bscDicCodeType.setTypeIsActive("1");
-          bscDicCodeType.setOrgId(SecurityContext.getCurrentOrgId());
-          bscDicCodeService.saveType(bscDicCodeType);
-          List<BscDicCodeItem> areaType = bscDicCodeService.getItemsByTypeCode(bscDicCodeType.getTypeCode());
-          return areaType;
+
+
+          return null;
       }
       else {
           List<BscDicCodeItem> areaType = bscDicCodeService.getItemsByTypeCode(typeByTypeCode.getTypeCode());
