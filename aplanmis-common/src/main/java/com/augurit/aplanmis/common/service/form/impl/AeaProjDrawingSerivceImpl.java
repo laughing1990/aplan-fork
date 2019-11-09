@@ -91,7 +91,7 @@ public class AeaProjDrawingSerivceImpl implements AeaProjDrawingSerivce {
                                 String linkmanInfoId = fuzeren.getLinkmanInfoId();
                                 AeaLinkmanInfo idcard = aeaLinkmanInfoMapper.getAeaLinkmanInfoById(linkmanInfoId);
                                 aeaProjDrawing.setProjectLeaderCertNum(idcard.getLinkmanCertNo());
-                                aeaProjDrawing.setProjectLeaderCertNum(fuzeren.getLinkmanCertNo());
+
                             }
                         }
                     }
