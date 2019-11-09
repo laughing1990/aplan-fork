@@ -732,8 +732,6 @@ public class AeaProjInofServiceImpl implements AeaProjInfoService {
     public AeaProjInfo addChildProjInfo(AeaProjInfo aeaProjInfo) throws Exception {
         String parentProjId = aeaProjInfo.getParentProjId();
         if (StringUtils.isNotBlank(parentProjId) && StringUtils.isNotBlank(aeaProjInfo.getProjName())) {
-            AeaProjInfo proj = new AeaProjInfo();
-            proj.setProjName(aeaProjInfo.getProjName().trim());
             List<AeaProjInfo> checkNameProj = aeaProjInfoMapper.listAeaProjInfo(aeaProjInfo);
             //查询是否有重名的项目工程
             if (checkNameProj != null && checkNameProj.size() > 0) {
@@ -751,31 +749,29 @@ public class AeaProjInofServiceImpl implements AeaProjInfoService {
             if (childGcbm != null) {
                 //新增子项目
                 String childNodeId = UUID.randomUUID().toString();
-                proj.setProjInfoId(childNodeId);
-                proj.setLocalCode(parentProj.getLocalCode());
-                proj.setGcbm(childGcbm);
-                proj.setProjName(aeaProjInfo.getProjName().trim());
-                proj.setForeignRemark(aeaProjInfo.getForeignRemark());
-                proj.setProjFlag("c");  //r表示ROOT项目，p表示发改项目，c表示子项目或子子项目
-                proj.setHaveDetail("1");
-                proj.setIsDeleted("0");
+                aeaProjInfo.setProjInfoId(childNodeId);
+                aeaProjInfo.setLocalCode(parentProj.getLocalCode());
+                aeaProjInfo.setGcbm(childGcbm);
+                aeaProjInfo.setProjFlag("c");  //r表示ROOT项目，p表示发改项目，c表示子项目或子子项目
+                aeaProjInfo.setHaveDetail("1");
+                aeaProjInfo.setIsDeleted("0");
                 // 主题保持一致
-                proj.setThemeId(parentProj.getThemeId());
-                proj.setCreater(SecurityContext.getCurrentUserName());
-                proj.setCreateTime(new Date());
-                proj.setProjectCreateDate(dateFormat.format(new Date()));
-                aeaProjInfoMapper.insertAeaProjInfo(proj);
+                aeaProjInfo.setThemeId(parentProj.getThemeId());
+                aeaProjInfo.setCreater(SecurityContext.getCurrentUserName());
+                aeaProjInfo.setCreateTime(new Date());
+                aeaProjInfo.setProjectCreateDate(dateFormat.format(new Date()));
+                aeaProjInfoMapper.insertAeaProjInfo(aeaProjInfo);
 
                 //增加父子项目关联
                 AeaParentProj aeaParentProj = new AeaParentProj();
                 aeaParentProj.setNodeProjId(UUID.randomUUID().toString());
                 aeaParentProj.setParentProjId(parentProj.getProjInfoId());
-                aeaParentProj.setChildProjId(proj.getProjInfoId());
+                aeaParentProj.setChildProjId(aeaProjInfo.getProjInfoId());
                 aeaParentProj.setCreater(SecurityContext.getCurrentUserName());
                 aeaParentProj.setCreateTime(new Date());
                 aeaProjInfoMapper.insertAeaParentProj(aeaParentProj);
 
-                return proj;
+                return aeaProjInfo;
             }
         }
         return null;

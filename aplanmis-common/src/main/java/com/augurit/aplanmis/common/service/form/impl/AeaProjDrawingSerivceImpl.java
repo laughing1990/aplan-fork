@@ -123,21 +123,23 @@ public class AeaProjDrawingSerivceImpl implements AeaProjDrawingSerivce {
                             List<AeaUnitProjLinkman> linkmanList = aeaUnitProjLinkmanMapper.listfuzeren(query);
                             if (linkmanList.size()>0) {
 
-                                AeaUnitProjLinkman linkman = linkmanList.get(0);
-                                //如果是负责人就不在人员设置里显示
-                                if(linkman.getLinkmanType()!=null){
-                                    continue;
-                                }
-                                aeaUnitProjLinkman.setPrjSpty(linkman.getPrjSpty());
-                                aeaUnitProjLinkman.setTitleCertNum(linkman.getTitleCertNum());
-                                aeaUnitProjLinkman.setProjLinkmanId(linkman.getProjLinkmanId());
-                                aeaUnitProjLinkman.setLinkmanType(linkman.getLinkmanType());
-                                aeaUnitProjLinkman.setProfessionCertType(linkman.getProfessionCertType());
-                                aeaUnitProjLinkman.setProfessionSealNum(linkman.getProfessionSealNum());
-                                aeaUnitProjLinkman.setRegisterNum(linkman.getRegisterNum());
-                                aeaUnitProjLinkman.setTitleGrade(linkman.getTitleGrade());
+                                for ( int i =0;i>linkmanList.size();i++ ) {
+                                    AeaUnitProjLinkman linkman = linkmanList.get(i);
+                                    //如果是负责人就不在人员设置里显示
+                                    if ("101001".equals(linkman.getLinkmanType()) || "502001".equals(linkman.getLinkmanType()) || "102001".equals(linkman.getLinkmanType())) {
+                                        continue;
+                                    }
+                                    aeaUnitProjLinkman.setPrjSpty(linkman.getPrjSpty());
+                                    aeaUnitProjLinkman.setTitleCertNum(linkman.getTitleCertNum());
+                                    aeaUnitProjLinkman.setProjLinkmanId(linkman.getProjLinkmanId());
+                                    aeaUnitProjLinkman.setLinkmanType(linkman.getLinkmanType());
+                                    aeaUnitProjLinkman.setProfessionCertType(linkman.getProfessionCertType());
+                                    aeaUnitProjLinkman.setProfessionSealNum(linkman.getProfessionSealNum());
+                                    aeaUnitProjLinkman.setRegisterNum(linkman.getRegisterNum());
+                                    aeaUnitProjLinkman.setTitleGrade(linkman.getTitleGrade());
 
-                                linkmen.add(aeaUnitProjLinkman);
+                                    linkmen.add(aeaUnitProjLinkman);
+                                }
                             }
                         }
                         aeaProjDrawing.setLinkmen(linkmen);

@@ -853,7 +853,7 @@
                                    IS_FINANCIAL_FUND, FINANCIAL_FUND_PROPORTION, IS_SOCIAL_FUND, SOCIAL_FUND_PROPORTION,
                                    IS_INVALID_PROJ, IS_PURCHASE_PROJ, GCBM,ROOT_ORG_ID,EAST_SCOPE,SOUTH_SCOPE,
                                    WEST_SCOPE,NORTH_SCOPE,IS_DESIGN_SOLUTION,IS_AREA_ESTIMATE,GB_CODE_YEAR,
-                                   ABOVE_FLOOR,UNDER_FLOOR,ABOVE_HEIGHT,UNDER_DEPTH,LENGTH,SPAN)
+                                   above_ground,under_ground,ABOVE_FLOOR,UNDER_FLOOR,ABOVE_HEIGHT,UNDER_DEPTH,LENGTH,SPAN)
         values (#{projInfoId}, #{localCode}, #{projName}, #{projType}, #{projLevel}, #{mainClass}, #{centralCode},
                 #{isJgxm}, #{projUrgency}, #{projAddr}, #{projCreateUserCode}, #{projCreateUser}, #{projCreateMobile},
                 #{buildAreaSum}, #{currentProgress}, #{projQuestion}, #{projNature}, #{nstartTime}, #{endTime},
@@ -875,7 +875,7 @@
                 #{financialFundProportion}, #{isSocialFund}, #{socialFundProportion}, #{isInvalidProj},
                 #{isPurchaseProj}, #{gcbm},#{rootOrgId},#{eastScope},#{southScope},#{westScope},#{northScope},
                 #{isDesignSolution},#{isAreaEstimate},#{gbCodeYear},
-                #{aboveFloor},#{underFloor},#{aboveHeight},#{underDepth},#{length},#{span})
+                #{aboveGround},#{underGround},#{aboveFloor},#{underFloor},#{aboveHeight},#{underDepth},#{length},#{span})
     </insert>
     <!--6 修改实体对象 -->
     <update id="updateAeaProjInfo" parameterType="AeaProjInfo">
