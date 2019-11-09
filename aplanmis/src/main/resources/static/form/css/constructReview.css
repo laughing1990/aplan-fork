@@ -117,7 +117,7 @@ body {
 
 .el-form-item__content,
 .el-form-item__label {
-  line-height: 34px;
+  /*line-height: 34px;*/
   color: #575962;
 }
 
@@ -250,6 +250,14 @@ body {
   width: 61%;
 }
 
+.dialog .el-form-item__content {
+  width: 68%;
+}
+
+.dg-modal-add-linkmain-info .el-dialog__footer {
+  padding: 0px 86px 32px;
+}
+
 .form-title .el-form-item__content {
   width: 100%;
 }
@@ -331,4 +339,14 @@ body {
 
 .el-autocomplete {
   width: 100%;
+}
+
+.el-dialog__header .el-dialog__title,
+.el-dialog__headerbtn .el-dialog__close {
+  color: #fff;
+  font-size: 16px;
+}
+
+.el-dialog__header .el-dialog__title {
+  line-height: 42px;
 }

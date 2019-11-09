@@ -1,6 +1,44 @@
 var app = new Vue({
   el: '#app',
   data: function() {
+    var checkMissValue = function(rule, value, callback) {
+      if (value === '' || value === undefined || value === null) {
+        callback(new Error('该输入项为必输项！'));
+      } else if (value.toString().trim() === '') {
+        callback(new Error('该输入项为必输项！'));
+      } else {
+        callback();
+      }
+    };
+    // 输入为整数数字 大于等于0
+    var checkMissNum = function(rule, value, callback) {
+      if (value) {
+        var flag = !/^[+]{0,1}(\d+)$/.test(value);
+        if (flag) {
+          return callback(new Error('格式错误'));
+        } else {
+          callback();
+        }
+
+      } else {
+        callback();
+      }
+    };
+    var checkPhoneNum = function(rule, value, callback) {
+      if (value === '' || value === undefined || value.trim() === '') {
+        callback(new Error('必填字段！'));
+      } else if (value) {
+        var flag = !/^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/.test(value) && !(/^1(3|4|5|6|7|8|9)\d{9}$/.test(value));
+        if (flag) {
+          return callback(new Error('格式不正确'));
+        } else {
+          callback();
+        }
+
+      } else {
+        callback();
+      }
+    };
     return {
       dialogTitie: '',
       pageLoading: false,
@@ -19,6 +57,22 @@ var app = new Vue({
       linkmanType2: [], //不包含101001 勘察项目负责人  502001施工图审查机构项目负责人  102001设计项目负责人
       person: [],
       projNameSelect: [],
+      addEditManModalShow: false,
+      addEditManModalTitle: '',
+      addEditManform: {},
+      unitInfoIdList: [],
+      addEditManModalFlag: 'add',
+      addLinkManRules: {
+        linkmanName: [
+          { required: true, validator: checkMissValue, trigger: 'blur' },
+        ],
+        linkmanCertNo: [
+          { required: true, validator: checkMissValue, trigger: 'blur' },
+        ],
+        linkmanMobilePhone: [
+          { required: true, validator: checkPhoneNum, trigger: 'blur' },
+        ]
+      },
       rules: {
         drawingQuabookCode: [
           { required: true, message: '请输入施工图审查合格书编号' },
@@ -85,9 +139,11 @@ var app = new Vue({
     // this.getPrjType();
     // this.getLinkmanType();
     // this.getCertifiType();
+    this.projInfoId = '031fb1ad-71b9-41af-8fe0-7df5b449a16d';
+
     this.getAllType();
     this.showData();
-
+    this.getUnit();
     $(".loading").hide();
   },
   methods: {
@@ -153,11 +209,116 @@ var app = new Vue({
         vm.$message.error('服务器错了哦!');
       })
     },
+    // 获取单位
+    getUnit: function() {
+      var vm = this;
+      // vm.loading = true;
+      request('', {
+        type: 'get',
+        url: ctx + 'rest/unit/list/by/' + this.projInfoId,
+        data: {},
+      }, function(res) {
+        vm.unitInfoIdList = res.content;
+      }, function(err) {
+        vm.$message.error('服务器错了哦!');
+      })
+    },
+    // 保存联系人信息
+    saveAeaLinkmanInfo: function(linkmanType) {
+      var _that = this;
+      _that.addEditManform.linkmanType = linkmanType
+      _that.$refs['addEditManform'].validate(function(valid) {
+        if (valid) {
+          _that.loading = true;
+          var url, msg;
+          if (_that.addEditManModalFlag == 'edit') {
+            url = 'rest/linkman/edit';
+            msg = '编辑联系人信息保存成功';
+          } else {
+            url = 'rest/linkman/save'
+            msg = '新增联系人信息保存成功';
+          }
+          request('', {
+            url: ctx + url,
+            type: 'post',
+            data: _that.addEditManform
+          }, function(result) {
+            if (result.success) {
+              _that.$message({
+                message: '保存成功',
+                type: 'success'
+              });
+              // _that.addEditManPerform.linkmanName = _that.addEditManform.linkmanName;
+              // _that.addEditManPerform.linkmanId = result.content;
+              // _that.addEditManPerform.linkmanMail = _that.addEditManform.linkmanMail;
+              // _that.addEditManPerform.linkmanCertNo = _that.addEditManform.linkmanCertNo;
+              // _that.addEditManPerform.linkmanMobilePhone = _that.addEditManform.linkmanMobilePhone;
+              _that.addEditManModalShow = false;
+              _that.loading = false;
+            }
+          }, function(msg) {
+            _that.$message({
+              message: msg.message ? msg.message : '保存失败！',
+              type: 'error'
+            });
+            _that.loading = false;
+          });
+        } else {
+          _that.$message({
+            message: '请输入完整的联系人信息！',
+            type: 'error'
+          });
+          return false;
+        }
+      });
+    },
+    // 反显联系人信息
+    backDLinkmanInfo: function(data, formData) {
+      var _that = this;
+      if (data.linkmanInfoId) {
+        request('', {
+          url: ctx + 'rest/linkman/one/' + data.linkmanInfoId,
+          type: 'get'
+        }, function(result) {
+          if (result.success) {
+            _that.addEditManform = result.content;
+            if (formData == '') {
+              _that.addEditManform.unitName = data.applicant;
+              _that.addEditManform.unitInfoId = data.unitInfoId;
+            } else {
+              _that.addEditManform.unitName = formData.applicant;
+              _that.addEditManform.unitInfoId = formData.unitInfoId;
+            }
+          }
+        }, function(msg) {
+          alertMsg('', '服务请求失败', '关闭', 'error', true);
+        });
+      } else {
+        _that.aeaLinkmanInfoList = {};
+      }
+    },
+    addPerson: function(row) {
+      this.addEditManform = {};
+      this.addEditManModalShow = true;
+      this.addEditManModalTitle = '新增联系人';
+      this.addEditManform.applicant = row.applicant;
+      this.addEditManform.unitInfoId = row.unitInfoId;
+    },
+    edit: function(row, formData) {
+      // this.addEditManform = row;
+      this.addEditManModalShow = true;
+      this.addEditManModalTitle = '编辑联系人';
+      this.backDLinkmanInfo(row, formData);
+      // this.addEditManform.linkmanName = row.projectLeader;
+      // this.addEditManform.linkmanCertNo = row.projectLeaderCertNum;
+      // this.addEditManform.linkmanInfoId = row.linkmanInfoId;
+
+    },
     // 人员设置选择人员
     selTypeLinkman: function(typeData, manData) {
-      typeData.linkmanName = manData.linkmanName;
-      typeData.linkmanInfoId = manData.linkmanId;
-      typeData.projectLeaderCertNum = manData.linkmanCertNo;
+      typeData.linkmanName = manData.addressName;
+      typeData.linkmanInfoId = manData.addressId;
+      typeData.projectLeaderCertNum = manData.addressIdCard;
     },
     // 人员设置选择人员
     selTypeLinkman2: function(typeData, manData) {
@@ -231,7 +392,7 @@ var app = new Vue({
         type: 'post',
         url: ctx + 'aea/ex/proj/drawing/index.do',
         data: {
-          projInfoId: '031fb1ad-71b9-41af-8fe0-7df5b449a16d'
+          projInfoId: this.projInfoId
         },
       }, function(res) {
         vm.formData = res.content;

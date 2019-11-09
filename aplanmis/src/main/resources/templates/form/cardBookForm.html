@@ -13,6 +13,8 @@
     var projInfoId= '[[${projInfoId}]]'; 
   // var ctx = 'http://192.168.32.48:8083/aplanmis-front/';
   // var ctx = 'http://192.168.15.26:8083/aplanmis-front/';
+  // var ctx = 'http://192.168.17.10:8083/aplanmis-front/';
+
   </script>
 </head>
 
@@ -31,7 +33,7 @@
           <i class="header-icon icon ag ag-project-info"></i>建设项目两证一书信息
         </template>
         <p class='header'>建设项目用地规划许可证</p>
-        <el-form label-position="right" label-width="210px" :model="formData" ref="form" :rules="rules" :inline='true'>
+        <el-form label-width="210px" :model="formData" ref="form" :rules="rules">
           <el-form-item prop="" v-show='false'>
             <el-input v-model="formData.certLandId"></el-input>
           </el-form-item>
