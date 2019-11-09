@@ -730,7 +730,8 @@ public class AeaProjInofServiceImpl implements AeaProjInfoService {
 
     @Override
     public AeaProjInfo addChildProjInfo(AeaProjInfo aeaProjInfo) throws Exception {
-        if (StringUtils.isNotBlank(aeaProjInfo.getParentProjId()) && StringUtils.isNotBlank(aeaProjInfo.getProjName())) {
+        String parentProjId = aeaProjInfo.getParentProjId();
+        if (StringUtils.isNotBlank(parentProjId) && StringUtils.isNotBlank(aeaProjInfo.getProjName())) {
             AeaProjInfo proj = new AeaProjInfo();
             proj.setProjName(aeaProjInfo.getProjName().trim());
             List<AeaProjInfo> checkNameProj = aeaProjInfoMapper.listAeaProjInfo(aeaProjInfo);
@@ -740,8 +741,7 @@ public class AeaProjInofServiceImpl implements AeaProjInfoService {
             }
 
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            proj.setProjInfoId(aeaProjInfo.getParentProjId());
-            AeaProjInfo parentProj = aeaProjInfoMapper.getOnlyAeaProjInfoById(aeaProjInfo.getParentProjId());
+            AeaProjInfo parentProj = aeaProjInfoMapper.getAeaProjInfoById(parentProjId);
             if (null == parentProj) {
                 return null;
             }
