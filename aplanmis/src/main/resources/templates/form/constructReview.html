@@ -30,7 +30,7 @@
         <template slot="title">
           <i class="header-icon icon ag ag-project-info"></i>施工图审查信息
         </template>
-        <el-form label-width="220px" :model="formData" ref="form" :rules="rules">
+        <el-form label-width="220px" :model="formData" ref="form" :rules="rules" v-if="formData.aeaExProjDrawing">
           <el-form-item prop="aeaExProjDrawing.drawingId" v-show='false'>
             <el-input v-model="formData.aeaExProjDrawing.drawingId"></el-input>
           </el-form-item>
@@ -127,7 +127,7 @@
               <el-button icon="el-icon-edit-outline" type="primary" class="item-left-btn" @click="addEditManModalFlag='add';edit(formData.drawings[2],'')" title="编辑" style="margin-left:5px;"></el-button>
             </el-form-item>
             <el-form-item class="input-inline" prop="drawings[2].projectLeaderCertNum" label='图审机构项目负责人身份证号码'>
-              <el-input v-model="formData.drawings[2].projectLeaderCertNum" placeholder="请输入图审机构项目负责人身份证号码" disabled="true"></el-input>
+              <el-input v-model="formData.drawings[2].projectLeaderCertNum" placeholder="请输入图审机构项目负责人身份证号码" disabled></el-input>
             </el-form-item>
           </div>
           <div class="clearfix">
@@ -166,7 +166,7 @@
             <el-form-item class="input-inline allWidth" label="人员设置" prop="induCommRegNum">
               <el-row class="linkman-set-item" v-for="(type,index) in formData.drawings[2].linkmen" :key="index">
                 <el-col :span="1">
-                  <el-button v-if="index==0" icon="el-icon-circle-plus-outline" type="primary" class="item-left-btn" @click="addLinkmanTypes(formData.drawings[2].linkmen)" title="新增"></el-button>
+                  <el-button v-if="index==0" icon="el-icon-circle-plus-outline" type="primary" class="item-left-btn" @click="addLinkmanTypes(formData.drawings[2].linkmen,formData.drawings[2])" title="新增"></el-button>
                   <el-button v-else icon="el-icon-remove-outline" type="primary" @click="delLinkmanTypes(formData.drawings[2].linkmen,index)" class="item-left-btn" title="删除"></el-button>
                 </el-col>
                 <el-col :span="4">
@@ -181,7 +181,7 @@
                     <el-option v-for="item in person" :key="item.addressId" @click.native="selTypeLinkman2(type,item)" :label="item.addressName" :value="item.addressName">
                     </el-option>
                   </el-select>
-                  <el-button icon="el-icon-edit-outline" type="primary" class="item-left-btn" @click="edit(type,formData.drawings[2])" title="编辑" style="margin-left:5px;height:33px;"></el-button>
+                  <el-button icon="el-icon-edit-outline" type="primary" class="item-left-btn" @click="edit(type,formData.drawings[2])" title="编辑" style="margin-left:12px;height:33px;"></el-button>
                 </el-col>
                 <el-col :span="6">
                   <span><i>*</i>身份证号</span>
@@ -227,7 +227,7 @@
               <el-button icon="el-icon-edit-outline" type="primary" class="item-left-btn" @click="addEditManModalFlag='add';edit(formData.drawings[0],'')" title="编辑" style="margin-left:5px;"></el-button>
             </el-form-item>
             <el-form-item class="input-inline" prop="drawings[0].projectLeaderCertNum" label='图审机构项目负责人身份证号码'>
-              <el-input v-model="formData.drawings[0].projectLeaderCertNum" placeholder="请输入图审机构项目负责人身份证号码" disabled="true"></el-input>
+              <el-input v-model="formData.drawings[0].projectLeaderCertNum" placeholder="请输入图审机构项目负责人身份证号码" disabled></el-input>
             </el-form-item>
           </div>
           <div class="clearfix">
@@ -292,7 +292,7 @@
               <el-button icon="el-icon-edit-outline" type="primary" class="item-left-btn" @click="addEditManModalFlag='add';edit(formData.drawings[1],'')" title="编辑" style="margin-left:5px;"></el-button>
             </el-form-item>
             <el-form-item class="input-inline" prop="drawings[1].projectLeaderCertNum" label='图审机构项目负责人身份证号码'>
-              <el-input v-model="formData.drawings[1].projectLeaderCertNum" placeholder="请输入图审机构项目负责人身份证号码" disabled="true"></el-input>
+              <el-input v-model="formData.drawings[1].projectLeaderCertNum" placeholder="请输入图审机构项目负责人身份证号码" disabled></el-input>
             </el-form-item>
           </div>
           <div class="clearfix">
@@ -331,7 +331,7 @@
             <el-form-item class="input-inline allWidth" label="人员设置" prop="induCommRegNum">
               <el-row class="linkman-set-item" v-for="(type,index) in formData.drawings[1].linkmen" :key="index">
                 <el-col :span="1">
-                  <el-button v-if="index==0" icon="el-icon-circle-plus-outline" type="primary" class="item-left-btn" @click="addLinkmanTypes(formData.drawings[1].linkmen)" title="新增"></el-button>
+                  <el-button v-if="index==0" icon="el-icon-circle-plus-outline" type="primary" class="item-left-btn" @click="addLinkmanTypes(formData.drawings[1].linkmen,formData.drawings[1])" title="新增"></el-button>
                   <el-button v-else icon="el-icon-remove-outline" type="primary" @click="delLinkmanTypes(formData.drawings[1].linkmen,index)" class="item-left-btn" title="删除"></el-button>
                 </el-col>
                 <el-col :span="4">
@@ -346,7 +346,7 @@
                     <el-option v-for="item in person" :key="item.addressId" @click.native="selTypeLinkman2(type,item)" :label="item.addressName" :value="item.addressName">
                     </el-option>
                   </el-select>
-                  <el-button icon="el-icon-edit-outline" type="primary" class="item-left-btn" @click="edit(type,formData.drawings[1])" title="编辑" style="margin-left:5px;height:33px;"></el-button>
+                  <el-button icon="el-icon-edit-outline" type="primary" class="item-left-btn" @click="edit(type,formData.drawings[1])" title="编辑" style="margin-left:12px;height:33px;"></el-button>
                 </el-col>
                 <el-col :span="6">
                   <span><i>*</i>身份证号</span>
@@ -375,7 +375,7 @@
           <!-- <el-select v-model="addEditManform.unitName" placeholder="请选择单位">
             <el-option v-for="(item,index) in unitInfoIdList" :key="index" :label="item.applicant" :value="item.unitInfoId"></el-option>
           </el-select> -->
-          <el-input v-model="addEditManform.unitName" placeholder="" disabled="true"></el-input>
+          <el-input v-model="addEditManform.unitName" placeholder="" disabled></el-input>
         </el-form-item>
         <el-form-item label="联系人姓名：" prop="linkmanName">
           <el-input v-model="addEditManform.linkmanName" placeholder="请输入联系人姓名"></el-input>

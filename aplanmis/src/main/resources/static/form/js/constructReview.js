@@ -74,72 +74,100 @@ var app = new Vue({
         ]
       },
       rules: {
-        drawingQuabookCode: [
+        'aeaExProjDrawing.drawingQuabookCode': [
           { required: true, message: '请输入施工图审查合格书编号' },
         ],
-        inverstmentMoeny: [
-          { required: true, message: '请输入投资额' },
+        'aeaExProjDrawing.inverstmentMoeny': [
+          { required: true, message: '请输入投资额', trigger: ['blur', 'change'] },
         ],
-        approveDrawingArea: [
+        'aeaExProjDrawing.approveDrawingArea': [
           { required: true, message: '请输入图审面积' },
         ],
-        approveStartTime: [
+        'aeaExProjDrawing.approveStartTime': [
           { required: true, message: '请选择开始审查日期' },
         ],
-        approveEndTime: [
+        'aeaExProjDrawing.approveEndTime': [
           { required: true, message: '请选择审查完成日期' },
         ],
-        isOncePass: [
+        'aeaExProjDrawing.isOncePass': [
           { required: true, message: '请选择一次审查是否通过' },
         ],
-        oncePassAgainstCount: [
+        'aeaExProjDrawing.oncePassAgainstCount': [
           { required: true, message: '请输入一次审查时违反强条数' },
         ],
-        oncePassAgainstItem: [
+        'aeaExProjDrawing.oncePassAgainstItem': [
           { required: true, message: '请输入一次审查时违反的强条条目' },
         ],
-        approveOpinion: [
+        'aeaExProjDrawing.approveOpinion': [
           { required: true, message: '请输入施工图审查意见' },
         ],
-        approveConfirmTime: [
+        'aeaExProjDrawing.approveConfirmTime': [
           { required: true, message: '请选择审图确认时间' },
         ],
-        govOrgCode: [
+        'aeaExProjDrawing.govOrgCode': [
           { required: true, message: '请输入审图确认的行政单位机构代码' },
         ],
-        govOrgName: [
+        'aeaExProjDrawing.govOrgName': [
           { required: true, message: '请输入审图确认的行政单位名称' },
         ],
-        govOrgAreaCode: [
+        'aeaExProjDrawing.govOrgAreaCode': [
           { required: true, message: '请输入审图确认的行政单位区域码' },
         ],
-        organizationalCode: [
+        'drawings[0].organizationalCode': [
           { required: true, message: '请输入组织机构代码' },
         ],
-        applicant: [
+        'drawings[0].applicant': [
           { required: true, message: '请输入单位名称' },
         ],
-        unitType: [
+        'drawings[0].unitType': [
           { required: true, message: '请选择项目主体类型' },
         ],
-        projectLeader: [
+        'drawings[0].projectLeader': [
           { required: true, message: '请选择图审机构项目负责人' },
         ],
-        projectLeaderCertNum: [
+        'drawings[0].projectLeaderCertNum': [
           { required: true, message: '请输入图审机构项目负责人身份证号码' },
-        ]
+        ],
+        'drawings[2].organizationalCode': [
+          { required: true, message: '请输入组织机构代码' },
+        ],
+        'drawings[2].applicant': [
+          { required: true, message: '请输入单位名称' },
+        ],
+        'drawings[2].unitType': [
+          { required: true, message: '请选择项目主体类型' },
+        ],
+        'drawings[2].projectLeader': [
+          { required: true, message: '请选择图审机构项目负责人' },
+        ],
+        'drawings[2].projectLeaderCertNum': [
+          { required: true, message: '请输入图审机构项目负责人身份证号码' },
+        ],
+        'drawings[1].organizationalCode': [
+          { required: true, message: '请输入组织机构代码' },
+        ],
+        'drawings[1].applicant': [
+          { required: true, message: '请输入单位名称' },
+        ],
+        'drawings[1].unitType': [
+          { required: true, message: '请选择项目主体类型' },
+        ],
+        'drawings[1].projectLeader': [
+          { required: true, message: '请选择图审机构项目负责人' },
+        ],
+        'drawings[1].projectLeaderCertNum': [
+          { required: true, message: '请输入图审机构项目负责人身份证号码' },
+        ],
 
       }
 
     }
   },
   created: function() {
-    // this.getXmDwlx();
-    // this.getJobTitle();
-    // this.getPrjType();
-    // this.getLinkmanType();
-    // this.getCertifiType();
     this.projInfoId = '031fb1ad-71b9-41af-8fe0-7df5b449a16d';
+
+  },
+  mounted: function() {
 
     this.getAllType();
     this.showData();
@@ -180,7 +208,7 @@ var app = new Vue({
       // vm.loading = true;
       request('', {
         type: 'get',
-        url: ctx + 'aea/ex/proj/drawing/list',
+        url: ctx + 'rest/form/drawing/list',
         data: {
           keyword: '',
           unitInfoId: row.unitInfoId,
@@ -301,7 +329,7 @@ var app = new Vue({
       this.addEditManform = {};
       this.addEditManModalShow = true;
       this.addEditManModalTitle = '新增联系人';
-      this.addEditManform.applicant = row.applicant;
+      this.addEditManform.unitName = row.applicant;
       this.addEditManform.unitInfoId = row.unitInfoId;
     },
     edit: function(row, formData) {
@@ -327,13 +355,14 @@ var app = new Vue({
       typeData.linkmanCertNo = manData.addressIdCard;
     },
     // 新增人员设置
-    addLinkmanTypes: function(row) {
+    addLinkmanTypes: function(row, data) {
       var dataType = {
         linkmanInfoId: '',
         linkmanType: '',
         linkmanName: '',
         linkmanCertNo: '',
         prjSpty: '',
+        unitProjId: row[0].unitProjId
       }
       row.push(dataType);
     },
@@ -390,7 +419,7 @@ var app = new Vue({
       // vm.loading = true;
       request('', {
         type: 'post',
-        url: ctx + 'aea/ex/proj/drawing/index.do',
+        url: ctx + 'rest/form/drawing/index.do',
         data: {
           projInfoId: this.projInfoId
         },
@@ -428,7 +457,13 @@ var app = new Vue({
     save: function(formData) {
       var _this = this;
       this.$refs['form'].validate(function(valid) {
-        if (!valid) return false;
+        if (!valid) {
+          _that.$message({
+            message: '请输入完整的联系人信息！',
+            type: 'error'
+          });
+          return false;
+        };
         // var aeaExProjDrawing = {
         //   projInfoId: 'a',
         //   drawingId: _this.formData.aeaExProjDrawing.aaa || '',
@@ -454,7 +489,7 @@ var app = new Vue({
         _this.formData.aeaExProjDrawing.aeaProjDrawing = _this.formData.drawings;
         request('', {
           type: 'post',
-          url: ctx + 'aea/ex/proj/drawing/saveAeaExProjDrawing.do',
+          url: ctx + 'rest/form/drawing/saveAeaExProjDrawing.do',
           ContentType: 'application/json',
           data: JSON.stringify(_this.formData.aeaExProjDrawing)
         }, function(res) {
