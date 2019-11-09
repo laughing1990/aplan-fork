@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by 刘赵雄    2019-10-31 15:56:12 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaExProjBidMapper" >
+<!--1 返回所有字段的SQL字句 -->
+<sql id="allColumns" >
+    BID_ID  bidId,
+    PROJ_INFO_ID  projInfoId,
+    PROVINCE_PROJ_CODE  provinceProjCode,
+    WIN_BID_NOTICE_CODE  winBidNoticeCode,
+    BID_SECTION_NAME  bidSectionName,
+    BID_SECTION_ADDR  bidSectionAddr,
+    UNIT_ADDR  unitAddr,
+    BID_TYPE  bidType,
+    BID_MODE  bidMode,
+    BID_SECTION_MONEY  bidSectionMoney,
+    BID_SECTION_AREA  bidSectionArea,
+    BID_SECTION_SPAN  bidSectionSpan,
+    BID_SECTION_LENGTH  bidSectionLength,
+    WIN_BID_TIME  winBidTime,
+    WIN_BID_MONEY  winBidMoney,
+    BID_CONFIRM_TIME  bidConfirmTime,
+    GOV_ORG_CODE  govOrgCode,
+    GOV_ORG_NAME  govOrgName,
+    GOV_AREA_CODE  govAreaCode,
+    BID_MEMO  bidMemo,
+    CREATER  creater,
+    CREATE_TIME  createTime,
+    MODIFIER  modifier,
+    MODIFY_TIME  modifyTime,
+    ROOT_ORG_ID  rootOrgId
+    </sql>
+
+<!--2 根据项目ID查询单个实体 -->
+<select id="getAeaExProjBidByProjId" resultType="AeaExProjBid" >
+    select
+    <include refid="allColumns"/>
+    from    AEA_EX_PROJ_BID
+    where    PROJ_INFO_ID = #{projId} limit 1
+</select>
+
+
+<!--5 新增实体对象 -->
+<insert id="insertAeaExProjBid" parameterType="AeaExProjBid" >
+    insert into AEA_EX_PROJ_BID (
+BID_ID  ,PROJ_INFO_ID  ,PROVINCE_PROJ_CODE  ,WIN_BID_NOTICE_CODE  ,BID_SECTION_NAME  ,BID_SECTION_ADDR  ,UNIT_ADDR  ,BID_TYPE  ,BID_MODE  ,BID_SECTION_MONEY  ,BID_SECTION_AREA  ,BID_SECTION_SPAN  ,BID_SECTION_LENGTH  ,WIN_BID_TIME  ,WIN_BID_MONEY  ,BID_CONFIRM_TIME  ,GOV_ORG_CODE  ,GOV_ORG_NAME  ,GOV_AREA_CODE  ,BID_MEMO  ,CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME  ,ROOT_ORG_ID  
+    )  values  (
+#{bidId},#{projInfoId},#{provinceProjCode},#{winBidNoticeCode},#{bidSectionName},#{bidSectionAddr},#{unitAddr},#{bidType},#{bidMode},#{bidSectionMoney},#{bidSectionArea},#{bidSectionSpan},#{bidSectionLength},#{winBidTime},#{winBidMoney},#{bidConfirmTime},#{govOrgCode},#{govOrgName},#{govAreaCode},#{bidMemo},#{creater},#{createTime},#{modifier},#{modifyTime},  #{rootOrgId}
+    )
+</insert>
+<!--6 修改实体对象 -->
+<update id="updateAeaExProjBid" parameterType="AeaExProjBid" >
+    update AEA_EX_PROJ_BID
+    <set >
+        <if test="bidId != null" >
+        BID_ID = #{bidId},
+        </if>
+        <if test="projInfoId != null" >
+        PROJ_INFO_ID = #{projInfoId},
+        </if>
+        <if test="provinceProjCode != null" >
+        PROVINCE_PROJ_CODE = #{provinceProjCode},
+        </if>
+        <if test="winBidNoticeCode != null" >
+        WIN_BID_NOTICE_CODE = #{winBidNoticeCode},
+        </if>
+        <if test="bidSectionName != null" >
+        BID_SECTION_NAME = #{bidSectionName},
+        </if>
+        <if test="bidSectionAddr != null" >
+        BID_SECTION_ADDR = #{bidSectionAddr},
+        </if>
+        <if test="unitAddr != null" >
+        UNIT_ADDR = #{unitAddr},
+        </if>
+        <if test="bidType != null" >
+        BID_TYPE = #{bidType},
+        </if>
+        <if test="bidMode != null" >
+        BID_MODE = #{bidMode},
+        </if>
+        <if test="bidSectionMoney != null" >
+        BID_SECTION_MONEY = #{bidSectionMoney},
+        </if>
+        <if test="bidSectionArea != null" >
+        BID_SECTION_AREA = #{bidSectionArea},
+        </if>
+        <if test="bidSectionSpan != null" >
+        BID_SECTION_SPAN = #{bidSectionSpan},
+        </if>
+        <if test="bidSectionLength != null" >
+        BID_SECTION_LENGTH = #{bidSectionLength},
+        </if>
+        <if test="winBidTime != null" >
+        WIN_BID_TIME = #{winBidTime},
+        </if>
+        <if test="winBidMoney != null" >
+        WIN_BID_MONEY = #{winBidMoney},
+        </if>
+        <if test="bidConfirmTime != null" >
+        BID_CONFIRM_TIME = #{bidConfirmTime},
+        </if>
+        <if test="govOrgCode != null" >
+        GOV_ORG_CODE = #{govOrgCode},
+        </if>
+        <if test="govOrgName != null" >
+        GOV_ORG_NAME = #{govOrgName},
+        </if>
+        <if test="govAreaCode != null" >
+        GOV_AREA_CODE = #{govAreaCode},
+        </if>
+        <if test="bidMemo != null" >
+        BID_MEMO = #{bidMemo},
+        </if>
+        <if test="creater != null" >
+        CREATER = #{creater},
+        </if>
+        <if test="createTime != null" >
+        CREATE_TIME = #{createTime},
+        </if>
+        <if test="modifier != null" >
+        MODIFIER = #{modifier},
+        </if>
+        <if test="modifyTime != null" >
+        MODIFY_TIME = #{modifyTime},
+        </if>
+        <if test="rootOrgId != null" >
+        ROOT_ORG_ID = #{rootOrgId},
+        </if>
+    </set>
+    where BID_ID = #{bidId}
+</update>
+
+<!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaExProjBid" id="AeaExProjBidMap">
+        <id property="bidId" column="BID_ID"/>
+        <result property="projInfoId" column="PROJ_INFO_ID"/>
+        <result property="provinceProjCode" column="PROVINCE_PROJ_CODE"/>
+        <result property="winBidNoticeCode" column="WIN_BID_NOTICE_CODE"/>
+        <result property="bidSectionName" column="BID_SECTION_NAME"/>
+        <result property="bidSectionAddr" column="BID_SECTION_ADDR"/>
+        <result property="unitAddr" column="UNIT_ADDR"/>
+        <result property="bidType" column="BID_TYPE"/>
+        <result property="bidMode" column="BID_MODE"/>
+        <result property="bidSectionMoney" column="BID_SECTION_MONEY"/>
+        <result property="bidSectionArea" column="BID_SECTION_AREA"/>
+        <result property="bidSectionSpan" column="BID_SECTION_SPAN"/>
+        <result property="bidSectionLength" column="BID_SECTION_LENGTH"/>
+        <result property="winBidTime" column="WIN_BID_TIME"/>
+        <result property="winBidMoney" column="WIN_BID_MONEY"/>
+        <result property="bidConfirmTime" column="BID_CONFIRM_TIME"/>
+        <result property="govOrgCode" column="GOV_ORG_CODE"/>
+        <result property="govOrgName" column="GOV_ORG_NAME"/>
+        <result property="govAreaCode" column="GOV_AREA_CODE"/>
+        <result property="bidMemo" column="BID_MEMO"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="modifier" column="MODIFIER"/>
+        <result property="modifyTime" column="MODIFY_TIME"/>
+        <result property="rootOrgId" column="ROOT_ORG_ID"/>
+    </resultMap>
+</mapper>
