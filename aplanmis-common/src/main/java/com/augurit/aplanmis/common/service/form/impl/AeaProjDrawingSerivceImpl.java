@@ -1,16 +1,16 @@
 package com.augurit.aplanmis.common.service.form.impl;
 
 import com.augurit.agcloud.framework.security.SecurityContext;
-import com.augurit.agcloud.framework.util.CollectionUtils;
 import com.augurit.agcloud.framework.util.StringUtils;
-import com.augurit.aplanmis.common.domain.*;
+import com.augurit.aplanmis.common.domain.AeaLinkmanInfo;
+import com.augurit.aplanmis.common.domain.AeaUnitInfo;
+import com.augurit.aplanmis.common.domain.AeaUnitProj;
+import com.augurit.aplanmis.common.domain.AeaUnitProjLinkman;
 import com.augurit.aplanmis.common.mapper.*;
 import com.augurit.aplanmis.common.service.form.AeaProjDrawingSerivce;
 import com.augurit.aplanmis.common.vo.AeaProjDrawing;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -123,7 +123,7 @@ public class AeaProjDrawingSerivceImpl implements AeaProjDrawingSerivce {
                             List<AeaUnitProjLinkman> linkmanList = aeaUnitProjLinkmanMapper.listfuzeren(query);
                             if (linkmanList.size()>0) {
 
-                                for ( int i =0;i>linkmanList.size();i++ ) {
+                                for (int i = 0; i < linkmanList.size(); i++) {
                                     AeaUnitProjLinkman linkman = linkmanList.get(i);
                                     //如果是负责人就不在人员设置里显示
                                     if ("101001".equals(linkman.getLinkmanType()) || "502001".equals(linkman.getLinkmanType()) || "102001".equals(linkman.getLinkmanType())) {
