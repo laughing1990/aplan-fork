@@ -174,8 +174,8 @@ var app = new Vue({
     }
   },
   created: function() {
-    this.projInfoId = '031fb1ad-71b9-41af-8fe0-7df5b449a16d';
-
+    // this.projInfoId = '031fb1ad-71b9-41af-8fe0-7df5b449a16d';
+    this.projInfoId = this.getUrlParam('projInfoId');
   },
   mounted: function() {
 
@@ -185,6 +185,11 @@ var app = new Vue({
     $(".loading").hide();
   },
   methods: {
+    // 获取页面的URL参数
+    getUrlParam: function(val) {
+      var svalue = location.search.match(new RegExp("[\?\&]" + val + "=([^\&]*)(\&?)", "i"));
+      return svalue ? svalue[1] : svalue;
+    },
     // 请求table数据
     showData: function() {
       var vm = this;

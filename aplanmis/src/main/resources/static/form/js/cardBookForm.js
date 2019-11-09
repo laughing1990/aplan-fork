@@ -81,13 +81,22 @@ var app = new Vue({
     }
   },
   created: function() {
+    this.projInfoId = this.getUrlParam('projInfoId');
+
+
+  },
+  mounted: function() {
     this.getLandAreaType();
     this.showData();
 
     $(".loading").hide();
   },
   methods: {
-
+    // 获取页面的URL参数
+    getUrlParam: function(val) {
+      var svalue = location.search.match(new RegExp("[\?\&]" + val + "=([^\&]*)(\&?)", "i"));
+      return svalue ? svalue[1] : svalue;
+    },
     // 获取用地单位/性质
     getLandAreaType: function() {
       var vm = this;
@@ -114,7 +123,7 @@ var app = new Vue({
         type: 'post',
         url: ctx + 'rest/form/tceop/getTceop.do',
         data: {
-          projInfoId: 'q'
+          projInfoId: this.projInfoId
         },
       }, function(res) {
         vm.formData = res;
@@ -153,7 +162,7 @@ var app = new Vue({
       this.$refs['form'].validate(function(valid) {
         if (!valid) return false;
         var param = {
-          projInfoId: 'q',
+          projInfoId: _this.projInfoId,
           certLandId: _this.formData.certLandId || '',
           certProjectId: _this.formData2.certProjectId || '',
           siteId: _this.formData3.siteId || '',
