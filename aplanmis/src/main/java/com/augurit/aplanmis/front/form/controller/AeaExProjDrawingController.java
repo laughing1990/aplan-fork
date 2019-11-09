@@ -53,7 +53,8 @@ import java.util.stream.Collectors;
  * 施工图审查信息-Controller 页面控制转发类
  、*/
 @RestController
-@RequestMapping("/aea/ex/proj/drawing")
+@RequestMapping("/rest/form/drawing")
+// /rest/form/drawing
 public class AeaExProjDrawingController {
 
     private static Logger logger = LoggerFactory.getLogger(AeaExProjDrawingController.class);
