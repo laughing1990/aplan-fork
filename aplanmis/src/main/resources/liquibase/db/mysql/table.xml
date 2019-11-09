@@ -831,4 +831,50 @@
             alter table `aea_par_front_itemform` change column `FRONT_PARTFORM_ID` `FRONT_ITEMFORM_ID` varchar(50) NOT NULL COMMENT 'ID';
         </sql>
     </changeSet>
+
+    <changeSet id="201911081722" author="ouym" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_proj_info`
+            ADD COLUMN `ABOVE_FLOOR` int(5) NULL DEFAULT NULL COMMENT '地上层数' AFTER `APPROVAL_TIME`,
+            ADD COLUMN `UNDER_FLOOR` int(5) NULL COMMENT '地下层数' AFTER `ABOVE_FLOOR`,
+            ADD COLUMN `ABOVE_HEIGHT` double(10, 2) NULL COMMENT '地上建筑高度（米）' AFTER `UNDER_FLOOR`,
+            ADD COLUMN `UNDER_DEPTH` double(10, 2) NULL COMMENT '地下建筑深度（米）' AFTER `ABOVE_HEIGHT`,
+            ADD COLUMN `LENGTH` double(10, 2) NULL COMMENT '长度（米）' AFTER `UNDER_DEPTH`,
+            ADD COLUMN `SPAN` double(10, 2) NULL DEFAULT NULL COMMENT '垮度（米）' AFTER `LENGTH`;
+        </sql>
+    </changeSet>
+
+    <changeSet id="201911091630" author="liuzhaoxiong" failOnError="false">
+        <comment>招投标信息</comment>
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            CREATE TABLE `aea_ex_proj_bid` (
+            `BID_ID` varchar(50) NOT NULL DEFAULT '' COMMENT '主键',
+            `PROJ_INFO_ID` varchar(50) NOT NULL COMMENT '项目ID',
+            `PROVINCE_PROJ_CODE` varchar(50) NOT NULL COMMENT '省级项目编号',
+            `WIN_BID_NOTICE_CODE` varchar(50) NOT NULL COMMENT '中标通知书编号',
+            `BID_SECTION_NAME` varchar(200) DEFAULT NULL COMMENT '标段名称',
+            `BID_SECTION_ADDR` varchar(500) DEFAULT NULL COMMENT '标段地址',
+            `UNIT_ADDR` varchar(1000) DEFAULT NULL COMMENT '单位地址',
+            `BID_TYPE` varchar(200) DEFAULT NULL COMMENT '招标类型，来自于数据字典',
+            `BID_MODE` varchar(255) DEFAULT NULL COMMENT '招标方式，来自于数据字典',
+            `BID_SECTION_MONEY` float DEFAULT NULL COMMENT '标段金额，单位：万元',
+            `BID_SECTION_AREA` float DEFAULT NULL COMMENT '表单面积，单位：平方米',
+            `BID_SECTION_SPAN` float DEFAULT NULL COMMENT '跨度，单位：米',
+            `BID_SECTION_LENGTH` float DEFAULT NULL COMMENT '长度，单位：里',
+            `WIN_BID_TIME` datetime DEFAULT NULL COMMENT '中标日期',
+            `WIN_BID_MONEY` float DEFAULT NULL COMMENT '实际中标金额，单位：万元',
+            `BID_CONFIRM_TIME` datetime DEFAULT NULL COMMENT '招投标确认时间',
+            `GOV_ORG_CODE` varchar(50) DEFAULT NULL COMMENT '招投标确认行政单位机构代码',
+            `GOV_ORG_NAME` varchar(200) DEFAULT NULL COMMENT '招投标确认行政单位名称',
+            `GOV_AREA_CODE` varchar(50) DEFAULT NULL COMMENT '招投标确认行政单位区域码',
+            `BID_MEMO` varchar(500) DEFAULT NULL COMMENT '备注',
+            `CREATER` varchar(50) DEFAULT NULL COMMENT '创建人',
+            `CREATE_TIME` datetime NOT NULL COMMENT '创建时间',
+            `MODIFIER` varchar(50) DEFAULT NULL COMMENT '修改人',
+            `MODIFY_TIME` datetime DEFAULT NULL COMMENT '修改时间',
+            `ROOT_ORG_ID` varchar(50) DEFAULT NULL COMMENT '所属根组织ID',
+            PRIMARY KEY (`BID_ID`) USING BTREE
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='招投标信息';
+        </sql>
+    </changeSet>
 </databaseChangeLog>

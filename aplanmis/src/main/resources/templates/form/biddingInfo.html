@@ -193,7 +193,7 @@
                             </el-select>
                         </el-form-item>
                         <el-form-item label="招标方式" class="input-inline" prop="bidMode">
-                            <el-select v-model="biddingInfo.bidMode" placeholder="请选择">
+                            <el-select v-model="biddingInfo.bidMode" placeholder="请选择" @change="bidModeSelect">
                                 <el-option v-for="(item, index) in bidModeOptions" :key="index" :label="item.itemName"
                                     :value="item.itemId"></el-option>
                             </el-select>
@@ -275,7 +275,7 @@
                         </el-form-item>
                     </div>
 
-                    <div v-if="biddingInfo.bidMode != 'f3632ed9-f728-436f-92f6-4c88c7bbba86'">
+                    <div v-if="isShowFoot && biddingInfo.agencyUnits.length">
                         <div class="second-title">招标代理机构</div>
 
                         <div class="clearfix">
