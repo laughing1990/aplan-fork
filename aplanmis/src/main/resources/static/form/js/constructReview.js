@@ -86,6 +86,7 @@ var app = new Vue({
         'aeaExProjDrawing.approveStartTime': [
           { required: true, message: '请选择开始审查日期' },
         ],
+
         'aeaExProjDrawing.approveEndTime': [
           { required: true, message: '请选择审查完成日期' },
         ],
@@ -122,6 +123,9 @@ var app = new Vue({
         'drawings[0].unitType': [
           { required: true, message: '请选择项目主体类型' },
         ],
+        'drawings[0].prjSpty': [
+          { required: true, message: '请选择审查专业' },
+        ],
         'drawings[0].projectLeader': [
           { required: true, message: '请选择图审机构项目负责人' },
         ],
@@ -142,6 +146,12 @@ var app = new Vue({
         ],
         'drawings[2].projectLeaderCertNum': [
           { required: true, message: '请输入图审机构项目负责人身份证号码' },
+        ],
+        'drawings[2].prjSpty': [
+          { required: true, message: '请选择审查专业' },
+        ],
+        'drawings[1].prjSpty': [
+          { required: true, message: '请选择审查专业' },
         ],
         'drawings[1].organizationalCode': [
           { required: true, message: '请输入组织机构代码' },
@@ -175,6 +185,52 @@ var app = new Vue({
     $(".loading").hide();
   },
   methods: {
+    // 请求table数据
+    showData: function() {
+      var vm = this;
+      // vm.loading = true;
+      request('', {
+        type: 'post',
+        url: ctx + 'rest/form/drawing/index.do',
+        data: {
+          projInfoId: this.projInfoId
+        },
+      }, function(res) {
+        vm.formData = res.content;
+        for (var i = 0; i < vm.formData.drawings.length; i++) {
+          if (vm.formData.drawings[i].linkmen.length == 0) {
+            if (i == 2) {
+              var dataType = {
+                linkmanInfoId: '',
+                linkmanType: '502001',
+                linkmanName: '',
+                linkmanCertNo: '',
+                prjSpty: '',
+                unitProjId: vm.formData.drawings[i].unitProjId
+              }
+              var dataType2 = {
+                linkmanInfoId: '',
+                linkmanType: '502002',
+                linkmanName: '',
+                linkmanCertNo: '',
+                prjSpty: '',
+                unitProjId: vm.formData.drawings[i].unitProjId
+              }
+              vm.formData.drawings[i].linkmen.push(dataType);
+              vm.formData.drawings[i].linkmen.push(dataType2);
+            } else {
+              vm.addLinkmanTypes(vm.formData.drawings[i].linkmen, vm.formData.drawings[i]);
+            }
+          }
+        }
+        vm.$nextTick(function() {
+          vm.$refs['form'].clearValidate();
+
+        });
+      }, function(err) {
+        vm.$message.error('服务器错了哦!');
+      })
+    },
     // 请求各个类型数据
     getAllType: function() {
       var vm = this;
@@ -358,11 +414,11 @@ var app = new Vue({
     addLinkmanTypes: function(row, data) {
       var dataType = {
         linkmanInfoId: '',
-        linkmanType: '',
+        linkmanType: '104001',
         linkmanName: '',
         linkmanCertNo: '',
         prjSpty: '',
-        unitProjId: row[0].unitProjId
+        unitProjId: data.unitProjId
       }
       row.push(dataType);
     },
@@ -413,28 +469,7 @@ var app = new Vue({
         cb([]);
       }
     },
-    // 请求table数据
-    showData: function() {
-      var vm = this;
-      // vm.loading = true;
-      request('', {
-        type: 'post',
-        url: ctx + 'rest/form/drawing/index.do',
-        data: {
-          projInfoId: this.projInfoId
-        },
-      }, function(res) {
-        vm.formData = res.content;
-        console.log(res.content);
 
-        // vm.$nextTick(function() {
-        //   vm.$refs['form'].clearValidate();
-
-        // });
-      }, function(err) {
-        vm.$message.error('服务器错了哦!');
-      })
-    },
     formatNumber: function(n) {
       n = n.toString()
       return n[1] ? n : '0' + n
