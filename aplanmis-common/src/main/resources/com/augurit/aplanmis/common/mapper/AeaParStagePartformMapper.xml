@@ -74,6 +74,7 @@
                AND  partform.PARTFORM_NAME like concat('%', concat(#{keyword}, '%'))
             </if>
         </where>
+        order by partform.SORT_NO, partform.CREATE_TIME
     </select>
 
     <select id="listStagePartformRelFormInfo" resultType="AeaParStagePartform" >
