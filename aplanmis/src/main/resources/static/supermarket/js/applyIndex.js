@@ -479,18 +479,18 @@ var vm = new Vue({
         aeaImMajorQuals: [],
         isSocialFund: '0',
         financialSource: [],
-      },
-      aeaImUnitRequire: {
-        isQualRequire: '',
-        isRegisterRequire: '',
-        isRecordRequire: '',
-        promiseService: '',
-        qualRequireType: '', // 资质要求
-        qualRequireExplain: '',
-        registerTotal: '',
-        registerRequire: '',
-        recordRequireExplain: '',
-        otherRequireExplain: '',
+        aeaImUnitRequire: {
+          isQualRequire: '',
+          isRegisterRequire: '',
+          isRecordRequire: '',
+          promiseService: '',
+          qualRequireType: '', // 资质要求
+          qualRequireExplain: '',
+          registerTotal: '',
+          registerRequire: '',
+          recordRequireExplain: '',
+          otherRequireExplain: '',
+        }
       },
       projScaleOptions: [{
         value: '投资额（元）',
@@ -564,19 +564,17 @@ var vm = new Vue({
         ],
         financialSource: [
           { required: true, message: '请至少选择一种资金来源', trigger: ['change'] },
-        ]
-      },
-      aeaImUnitRequireRules: {
-        qualRequireExplain: [
+        ],
+        'aeaImUnitRequire.qualRequireExplain': [
           { required: true, message: '请填写资质要求说明', trigger: ['blur'] },
         ],
-        registerTotal: [
+        'aeaImUnitRequire.registerTotal': [
           { required: true, message: '请填写执业/职业人员总数', trigger: ['blur'] },
         ],
-        recordRequireExplain: [
+        'aeaImUnitRequire.recordRequireExplain': [
           { required: true, message: '请填写备案要求说明', trigger: ['blur'] },
         ],
-        registerRequire: [
+        'aeaImUnitRequire.registerRequire': [
           { required: true, message: '请填写执业/职业人员要求', trigger: ['blur'] },
         ]
       },
@@ -637,9 +635,9 @@ var vm = new Vue({
     },
     // 中介服务要求change
     isRequireChange: function(val){
-      if(this.aeaImUnitRequire.isQualRequire||this.aeaImUnitRequire.isRecordRequire||this.aeaImUnitRequire.isRegisterRequire){
+      if(this.purchaseProj.aeaImUnitRequire.isQualRequire||this.purchaseProj.aeaImUnitRequire.isRecordRequire||this.purchaseProj.aeaImUnitRequire.isRegisterRequire){
         this.notOnlyService = true;
-      }else if(this.aeaImUnitRequire.promiseService) {
+      }else if(this.purchaseProj.aeaImUnitRequire.promiseService) {
         this.onlyService = true;
       }else {
         this.notOnlyService = false;
@@ -2907,7 +2905,6 @@ var vm = new Vue({
         matinstsIds: _that.selMatinstIds,
         projInfoId: _that.projInfoId,
         buildProjUnitMap: buildProjUnitMap,
-        aeaImUnitRequire: _that.aeaImUnitRequire,
       };
       parmas = $.extend(parmas, _that.purchaseProj);
       _that.progressDialogVisible = true;
