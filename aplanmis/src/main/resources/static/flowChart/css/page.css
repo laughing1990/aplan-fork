@@ -244,6 +244,11 @@ input[type="number"] {
     margin-top: 5px;
 }
 
+.app-table-u.base-info {
+    width: 850px;
+    margin-top: 0px;
+}
+
 .app-table-u td {
     line-height: 20px;
     font-size: 14px;
@@ -252,9 +257,19 @@ input[type="number"] {
 }
 
 td.bg-grey {
-    color: #7F8590;
     background: #f3f6f9;
     width: 120px;
+    font-weight: bold;
+    color: #575962;
+}
+
+.base-info td.bg-grey {
+    text-align: right;
+    width: 140px;
+}
+
+.base-info td {
+    padding: 15px 20px;
 }
 
 td.bg-grey.w1 {

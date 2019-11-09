@@ -264,39 +264,24 @@
 
         <!-- 上传文件进度提示 str--->
         <div role="alert" class="el-notification " style="bottom: 16px; z-index: 2000;" id="el-notification">
-            <!---->
             <div class="el-notification__group matFileListTable">
                 <h2 class="el-notification__title">正在上传</h2>
                 <div class="el-notification__content">
                     <div class="upload-file-item" v-for="(item,index) in uploadFile">
-                        <div class="upload-file-proccess" :style="{ width:item.uploadedPer + '%' }"></div>
+                        <div class="upload-file-proccess" :id="'proccess'+index"></div>
                         <div class="upload-file-des clearfix">
                             <span class="fileName fl">
                                 <i class="ag" :class="getFileTypeIcon(item.attFormat)"></i>
-                                {{item.name}}
+                              {{item.name}}
                             </span>
                             <p class="fileSize fr">
-                                <span>{{item.uploadedSize > item.filesSize?item.filesSize : item.uploadedSize}} / {{item.filesSize}}</span>
+                                <span><i :id="'uploadedSize'+index"></i> / {{item.filesSize}}</span>
                                 <span class="el-icon-success" v-show="item.uploadedPer == 100 " style="color: #00C161;margin-right: 9px;"></span>
                                 <!-- <span class="el-icon-circle-close" v-else style="margin-right: 20px;"></span>-->
                                  <span class="el-icon-info" style="color:rgb(255, 75, 71);margin-right: 9px;" v-show="item.error" title="上传失败"></span>
                             </p>
                         </div>
                     </div>
-                    <!--<div class="upload-file-item">
-                        <div class="upload-file-proccess"></div>
-                        <div class="upload-file-des clearfix">
-                            <span class="fileName fl">
-                                <i class="ag" :class="getFileTypeIcon('png')"></i>
-                                 XXX相关文件.pdf
-                            </span>
-                            <p class="fileSize fr">
-                                <span>1.6MB / 6.7MB</span>
-                                <span class="el-icon-success" style="color: #00C161;margin-right: 25px;"></span>
-                                <span class="el-icon-circle-close"  style="margin-right: 20px;"></span>
-                            </p>
-                        </div>
-                    </div>-->
                 </div>
                 <div class="notificationCloseBtn el-icon-close" id="close"></div>
             </div>
@@ -305,7 +290,7 @@
     </div>
     <!--左侧树右键展开 str-->
     <div class="right-click-opt" id="right-click-opt-tree" @mouseleave="hideClickOpt">
-        <p @click="addDirDialogFlag = true;" v-show="level == 1">新增</p>
+        <p @click="addDirDialogFlag = true;clearFormData();" v-show="level == 1">新增</p>
         <p @click="deleteDir()">删除</p>
         <p @click="reNameDialogFlag = true;isReNameFile = 0">重命名</p>
     </div>

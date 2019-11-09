@@ -42,7 +42,7 @@ var vm = new Vue({
             ts.loading = true;
 
             request('', {
-                url: ctx + '/win/efficiency/supervision/listPreliminaryTasks',
+                url: ctx + 'win/efficiency/supervision/listPreliminaryTasks',
                 type: 'get',
                 data: ts.searchFrom
             }, function (res) {
@@ -61,7 +61,7 @@ var vm = new Vue({
         //预审
         viewDetail: function (row) {
 
-            var url = ctx + '/apanmis/page/stageApproveIndex?taskId=' + row.taskId + '&viewId=' + row.viewId;
+            var url = ctx + 'apanmis/page/stageApproveIndex?taskId=' + row.taskId + '&viewId=' + row.viewId;
             if (row.busRecordId) {
                 url = url + '&busRecordId=' + row.busRecordId;
             }

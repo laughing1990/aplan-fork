@@ -51,7 +51,7 @@ var vm = new Vue({
             ts.loading = true;
 
             request('', {
-                url: ctx + '/rest/conditional/query/listConcludedTasks',
+                url: ctx + 'rest/conditional/query/listConcludedTasks',
                 type: 'get',
                 data: ts.searchFrom
             }, function (res) {
@@ -69,7 +69,7 @@ var vm = new Vue({
         },
         //查看详情
         viewDetail:function (row) {
-            var url = ctx+'/apanmis/page/stageApproveIndex?taskId='+row.taskId+'&viewId='+row.viewId;
+            var url = ctx+'apanmis/page/stageApproveIndex?taskId='+row.taskId+'&viewId='+row.viewId;
             if(row.busRecordId){
                 url = url + '&busRecordId='+row.busRecordId;
             }

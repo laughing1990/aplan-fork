@@ -9,6 +9,8 @@ var guideIndex = (function () {
     var ele,
         eleLen;
     var window = this;
+
+    var viewer;// viewer 对象
     getGuideDetail = function (e, stageId) {
         if (e) {
             // $(e.target).parent().addClass('activeLi').siblings().removeClass('activeLi');
@@ -322,6 +324,25 @@ var guideIndex = (function () {
                                 vm.goToGuid('', vm.sessionStorage.themeId, 0, vm.sessionStorage.themeMemo);
                             })
                         }
+                        setTimeout(function(){
+                            if(vm.themeListData.length  === 1){
+                                $(".theme-type .theme-type-list").css({'height':664+'px'});
+                            }else if(vm.themeListData.length  === 2){
+                                $(".theme-type .theme-type-list").css({'height':604+'px'});
+                            }else if(vm.themeListData.length  === 3){
+                                $(".theme-type. .theme-type-list").css({'height':549+'px'});
+                            }else if(vm.themeListData.length  === 4){
+                                $(".theme-type .theme-type-list").css({'height':494+'px'});
+                            }else if(vm.themeListData.length  === 5){
+                                $(".theme-type .theme-type-list").css({'height':438+'px'});
+                            }else if(vm.themeListData.length  === 6){
+                                $(".theme-type .theme-type-list").css({'height':386+'px'});
+                            }else if(vm.themeListData.length  === 7){
+                                $(".theme-type .theme-type-list").css({'height':203+'px'});
+                            }else if(vm.themeListData.length  === 8){
+                                $(".theme-type .theme-type-list").css({'height':146+'px'});
+                            }
+                        },0);
                     } else {
                         vm.themeLoading = false;
                         vm.$message.error(res.message);
@@ -912,6 +933,15 @@ var guideIndex = (function () {
                     });
                 }
             },
+            // 查看流程图
+            previewRow:function (detailId) {
+                if(viewer)viewer.destroy();//当存在viewer对象，先销毁
+                viewer = new Viewer(document.getElementById(detailId), {
+                    url: 'data-original'
+                });
+                viewer.show();//展示图片
+            },
+
             handleSizeChange: function (val) {
                 this.pageSize = val;
                 this.getItemList(this.orgId);
@@ -921,7 +951,13 @@ var guideIndex = (function () {
                 this.getItemList(this.orgId);
             },
         },
-        computed: {},
+        computed: {
+            dataOriginal:function() {
+                return function (detailId) {
+                    return ctx+'/rest/file/applydetail/mat/download/' + detailId
+                }
+            },
+        },
         watch: {}
     })
     function goToStageApply(){

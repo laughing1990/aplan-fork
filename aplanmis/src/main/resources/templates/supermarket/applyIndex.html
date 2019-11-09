@@ -8,12 +8,12 @@
 <head>
 	<!--公共css,js-->
 	<th:block th:include="common/common :: commonheader('中介服务采购')"/>
-	<link rel="stylesheet" href="../../static/supermarket/css/applyIndex.css" th:href="@{/apply/css/index.css}">
+	<link rel="stylesheet" href="../../static/supermarket/css/applyIndex.css" th:href="@{/supermarket/css/applyIndex.css}">
 
 	<script>
-		// var ctx = '[[@{/}]]';
-		/*var ctx = 'http://192.168.30.33:8083/aplanmis-front/';*/
-		var itemVerId = '[[${itemVerId}]]';
+    // var ctx = '[[@{/}]]';
+    /*var ctx = 'http://192.168.30.33:8083/aplanmis-front/';*/
+    var itemVerId = '[[${itemVerId}]]';
 	</script>
 </head>
 
@@ -85,6 +85,28 @@
 				</el-form>
 			</el-collapse-item>
 			<!--end-->
+			<!--选主题 start-->
+			<!--<el-collapse-item class="clearfix" name="7" id="selTheme" v-if="selThemeShow">-->
+			<!--<template slot="title">-->
+			<!--<i class="header-icon el-icon-info"></i>选择主题-->
+			<!--</template>-->
+			<!--<div class="credit-box">-->
+			<!--<i class="credit-box-icon el-icon-warning"></i>-->
+			<!--提示：当前项目/工程无对应主题，为保证单项能够在并联主题下申报，请先选择对应主题，再开始申报单项。-->
+			<!--</div>-->
+			<!--<div class="apply-theme clearfix">-->
+			<!--<div class="theme-list-item" v-if="selTheme.themeId">-->
+			<!--<img class="text-left" src="../../../apply/imgs/pro_type_4.png">-->
+			<!--<span class="theme-name ellipsis">{{selTheme.themeName}}</span>-->
+			<!--</div>-->
+			<!--<div class="theme-list-item no-sel-theme" v-else>-->
+			<!--<span @click="showSelThemeDia"> <i class="el-icon-circle-plus-outline"></i>请选择审批主题</span>-->
+			<!--</div>-->
+			<!--<el-button style="margin-left: 10px;border-color: #169aff;color: #169aff;" circle icon="el-icon-refresh"-->
+			<!--v-show="selTheme.themeId" @click="selThemeDialogShow=true"></el-button>-->
+			<!--</div>-->
+			<!--</el-collapse-item>-->
+			<!--选主题 end-->
 			<!--  基本信息  start  -->
 			<el-collapse-item class="clearfix" name="1" id="baseInfo">
 				<template slot="title">
@@ -100,7 +122,7 @@
 								</el-tooltip>
 								项目代码
 							</template>
-							<el-input name="localCode" :disabled="linkQuerySucc" v-model="projBascInfoShow.localCode" placeholder="投资平台登记的项目代码"></el-input>
+							<el-input :disabled="linkQuerySucc" v-model="projBascInfoShow.localCode" placeholder="投资平台登记的项目代码"></el-input>
 						</el-form-item>
 						<el-form-item class="input-inline" prop="gcbm">
 							<template slot="label">
@@ -382,7 +404,7 @@
 					<!--企业申报主体 start-->
 					<el-form v-if="applySubjectType==1 || applySubjectType==2">
 						<el-form label-width="200px" class="clearfix" v-for="(jiansheFromItem,index) in jiansheFrom" :ref="'jianshe_'+index" :rules="rulesCompanyForm" :model="jiansheFromItem" :key="index">
-							<p v-show="index==0" class="apply-info-title">建设单位信息</p>
+							<p v-show="index==0" class="apply-info-title">建设单位</p>
 							<!--v-show="agentChecked && (index==0)"-->
 							<!-- 信用记录-->
 							<div class="credit-box" v-show="jiansheFromItem.loseCreditCount>0">
@@ -395,7 +417,7 @@
 							<input type="hidden" name="linkmanId" :value="jiansheFromItem.linkmanId">
 							<el-col :span="11" class="fl">
 								<el-form-item label="单位类型" prop="unitType">
-									<el-select v-model="jiansheFromItem.unitType" placeholder="请选择">
+									<el-select disabled v-model="jiansheFromItem.unitType" placeholder="请选择">
 										<el-option v-for="(item,indexOp) in xmdwlxList" :key="indexOp" :label="item.itemName" :value="item.itemCode"></el-option>
 									</el-select>
 								</el-form-item>
@@ -433,8 +455,8 @@
 											<span class="fr el-icon-delete" @click.stop="delLinkman(item2,jiansheFromItem,index)"></span>
 										</el-option>
 									</el-select>
-									<el-button type="primary" class="add-link-man" icon="el-icon-circle-plus-outline" @click="addLinkman('',jiansheFromItem);jingbanFlag=false" title="新增"></el-button>
-									<el-button icon="el-icon-edit-outline" type="primary" class="item-right-btn" @click="addLinkman(jiansheFromItem,jiansheFromItem);jingbanFlag=false" title="编辑"></el-button>
+									<el-button type="primary" class="add-link-man" icon="el-icon-circle-plus-outline" @click="addLinkman('',jiansheFromItem);" title="新增"></el-button>
+									<el-button icon="el-icon-edit-outline" type="primary" class="item-right-btn" @click="addLinkman(jiansheFromItem,jiansheFromItem);" title="编辑"></el-button>
 								</el-form-item>
 							</el-col>
 							<el-col :span="11" class="fr">
@@ -530,7 +552,7 @@
 						</el-form>
 						<el-col :span="24" class="ar">
 							<el-form-item>
-								<el-button type="primary" size="small" plain @click="addUnitInfoForm(1)">+ 新增单位
+								<el-button type="primary" size="small" plain @click="addUnitInfoForm(1)">+ 新增建设单位
 								</el-button>
 							</el-form-item>
 						</el-col>
@@ -544,236 +566,430 @@
 						<i class="header-icon el-icon-info"></i>采购中介服务
 					</template>
 					<div id="parstatediv">
-						<el-form label-width="176px" ref="purchaseProj" :model="purchaseProj">
+						<el-form label-width="140px" ref="purchaseProj" :rules="purchaseProjRules" :model="purchaseProj">
 							<div class="clearfix">
-								<el-form-item class="input-inline" prop="localCode">
-									<template slot="label">
-										<!--<el-tooltip class="item" content="暂无" effect="dark" placement="right-start">-->
-											<!--<i class="ag ag-help"></i>-->
-										<!--</el-tooltip>-->
-										采购项目编码
-									</template>
-									<el-input name="localCode" v-model="projBascInfoShow.localCode" placeholder="采购项目编码"></el-input>
+								<el-form-item class="input-inline" label="采购项目编码" prop="localCode">
+									<el-input v-model="purchaseProj.localCode" placeholder="采购项目编码"></el-input>
 								</el-form-item>
-								<el-form-item class="input-inline" prop="localCode">
-									<template slot="label">
-										<!--<el-tooltip class="item" effect="dark" placement="right-start">-->
-											<!--<i class="ag ag-help"></i>-->
-										<!--</el-tooltip>-->
-										业主单位
-									</template>
-									<el-input v-model="projBascInfoShow.localCode" placeholder="投资平台登记的项目代码"></el-input>
+								<el-form-item class="input-inline" label="采购项目名称" prop="projName">
+									<el-input name="projName" v-model="purchaseProj.projName" placeholder="请输入采购项目名称"></el-input>
+								</el-form-item>
+
+								<el-form-item class="input-inline" label="投资审批项目" prop="isApproveProj">
+									<el-radio-group v-model="purchaseProj.isApproveProj">
+										<el-radio label="1">是</el-radio>  <!-- isFinancialFund-->
+										<el-radio label="0">否</el-radio>  <!-- isSocialFund-->
+									</el-radio-group>
+								</el-form-item>
+								<el-form-item class="input-inline" label="项目规模" prop="projScaleContent">
+									<el-input placeholder="请输入项目规模" v-model="purchaseProj.projScaleContent" class="input-with-select">
+										<el-select v-model="purchaseProj.projScale" slot="prepend" placeholder="请选择">
+											<el-option v-for="item in projScaleOptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
+										</el-select>
+									</el-input>
 								</el-form-item>
 							</div>
-							<el-form-item label="采购项目名称" class="proj-code-info" prop="projName">
-								<el-input name="projName" :disabled="linkQuerySucc" v-model="projBascInfoShow.projName" placeholder="请输入项目/工程名称"></el-input>
+							<el-form-item label="资金来源" prop="financialSource">
+								<el-checkbox-group v-model="purchaseProj.financialSource" @change="financialSourceChange">
+									<el-checkbox label="isFinancialFund">财政资金</el-checkbox>
+									<el-checkbox label="isSocialFund">社会资金</el-checkbox>
+								</el-checkbox-group>
 							</el-form-item>
-							<el-form-item label="项目规模" prop="projType">
-								<el-input v-model="projBascInfoShow.purchaseProjScale">
-									<el-select placeholder="请选择" slot="prepend" v-model="projBascInfoShow.purchaseProjScale" :popper-append-to-body="false">
-										<el-option v-for="item in projScaleOptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
-									</el-select>
-								</el-input>
-
+							<el-form-item label="资金来源比例" class="sources-proportion">
+								<el-form-item v-if="purchaseProj.isFinancialFund==1"
+															prop="financialFundProportion"
+															label="财政资金（%）"
+															class="input-inline">
+									<el-input v-model="purchaseProj.financialFundProportion" placeholder="请输入财政资金比例"></el-input>
+								</el-form-item>
+								<el-form-item v-if="purchaseProj.isSocialFund==1" label="社会资金（%）"
+															prop="socialFundProportion" class="input-inline">
+									<el-input v-model="purchaseProj.socialFundProportion" placeholder="请输入社会资金比例"></el-input>
+								</el-form-item>
 							</el-form-item>
-							<el-form-item class="input-inline" label="资金来源" prop="financialSource">
-								<!--											<el-select v-model="projBascInfoShow.financialSource" placeholder="请选择资金来源">-->
-								<!--												<el-option v-for="item in zjlyList" :key="item.id" :label="item.itemName" :value="item.itemCode"></el-option>-->
-								<!--											</el-select>-->
-								<el-checkbox v-model="isFinancialFund">财政资金</el-checkbox>
-								<el-checkbox v-model="isSocialFund">社会资金</el-checkbox>
-							</el-form-item>
-
-							<el-form-item label="资金来源比例" class="proj-code-info" prop="projName">
-								<el-input name="projName" :disabled="linkQuerySucc" v-model="projBascInfoShow.projName" placeholder="请输入项目/工程名称"></el-input>
-							</el-form-item>
-							<el-form-item label="所需服务" class="proj-code-info" prop="projName">
-								<el-select :popper-append-to-body="false" placeholder="所需服务" style="width:820px;" value-key="serviceId" @change="needServiceListChange">
-									<el-option :label="item.serviceName" :value="item" :key="item.serviceId" v-for="(item, index) in needServiceList"></el-option>
+							<el-form-item label="所需服务" prop="serviceId">
+								<el-select placeholder="请选择所需服务" v-model="purchaseProj.serviceId"
+													 style="width: 100%;">
+									<el-option :label="item.serviceName"
+														 :value="item.serviceId"
+														 :key="item.serviceId"
+														 @click.native="selService(item)"
+														 v-for="(item, index) in needServiceList"></el-option>
 								</el-select>
 							</el-form-item>
-							<el-form-item label="服务时限说明" class="proj-code-info" prop="projName">
-								<el-input name="projName" :disabled="linkQuerySucc" v-model="projBascInfoShow.projName" placeholder="请输入项目/工程名称"></el-input>
+							<el-form-item label="服务时限说明" prop="serviceTimeExplain">
+								<el-input  v-model="purchaseProj.serviceTimeExplain" placeholder="请输入服务时限说明"></el-input>
 							</el-form-item>
-							<el-form-item prop="scaleContent">
+							<el-form-item prop="serviceContent">
 								<template slot="label">
 									<el-tooltip class="item" effect="dark" content="备注：涉及工程项目的，应当包含工程项目地址、项目基本情况(包含建设规模、建设面积、资金投入等具体参数)。涉及土地、房产评估的、应当包含土地、房产面积、预算价格等内容。" placement="right-start">
 										<i class="ag ag-help"></i>
 									</el-tooltip>
 									服务内容
 								</template>
-								<el-input v-model="projBascInfoShow.scaleContent" type="textarea" placeholder="请填写建设内容"></el-input>
+								<el-input v-model="purchaseProj.serviceContent" type="textarea" placeholder="请填写建设内容"></el-input>
 							</el-form-item>
-							<el-form-item label="中介服务机构要求" class="proj-code-info" prop="projName">
-								<el-checkbox label="isQualRequire" v-model="isQualRequire" :disabled="needs">资质(资格)要求</el-checkbox>
-								<el-checkbox label="isRegisterRequire" v-model="isRegisterRequire" :disabled="needs">执业/职业人员要求
-								</el-checkbox>
-								<el-checkbox label="isRecordRequire" v-model="isRecordRequire" :disabled="needs">备案要求</el-checkbox>
-								<el-checkbox label="promiseService" v-model="promiseService" :disabled="unNeeds">仅承诺服务即可</el-checkbox>
+							<el-form v-model="aeaImUnitRequire" label-width="176px" name="aeaImUnitRequire" ref="aeaImUnitRequire">
+								<el-form-item label="中介服务机构要求" class="proj-code-info" required>
+									<el-checkbox v-model="aeaImUnitRequire.isQualRequire"
+															 :disabled="onlyService"
+															 @change="isRequireChange">资质(资格)要求</el-checkbox>
+									<el-checkbox v-model="aeaImUnitRequire.isRegisterRequire"
+															 :disabled="onlyService"
+															 @change="isRequireChange">执业/职业人员要求</el-checkbox>
+									<el-checkbox v-model="aeaImUnitRequire.isRecordRequire"
+															 :disabled="onlyService"
+															 @change="isRequireChange">备案要求</el-checkbox>
+									<el-checkbox v-model="aeaImUnitRequire.promiseService"
+															 :disabled="notOnlyService"
+															 @change="isRequireChange">仅承诺服务即可</el-checkbox>
+								</el-form-item>
 
-							</el-form-item>
-							<el-form-item label="选取中介机构方式">
+								<div v-if="aeaImUnitRequire.isQualRequire">
+									<el-form-item label="资质要求" prop="qualRequireType">
+										<template slot="label">
+											<el-tooltip class="item" effect="dark" content="备注：涉及工程项目的，应当包含工程项目地址、项目基本情况(包含建设规模、建设面积、资金投入等具体参数)。涉及土地、房产评估的、应当包含土地、房产面积、预算价格等内容。" placement="right-start">
+												<i class="ag ag-help"></i>
+											</el-tooltip>
+											资质要求
+										</template>
+										<el-radio-group v-model="aeaImUnitRequire.qualRequireType">
+											<el-radio label="1">多个资质子项符合其一</el-radio>
+											<el-radio label="0">需要同时符合所有选中资质子项</el-radio>
+										</el-radio-group>
+									</el-form-item>
+									<el-form-item class="apt-tree-tab">
+										<div>
+											<p class="aptTreeTitle" @click="aptTreeaFlag = !aptTreeaFlag">
+												<i class="header-icon" :class="aptTreeaFlag?'el-icon-caret-top':'el-icon-caret-bottom'"></i>
+												{{aptTreeaFlag?'收起资质树':'展开资质树'}}
+											</p>
+										</div>
+										<div v-if="aptTreeaFlag" style="border:1px solid #ced4da;max-width: 821px;">
+											<el-tabs type="border-card" v-model="activeSN" @tab-click="handleClickAtiveQA">
+												<el-tab-pane :label="item.qualName" v-for="(item, index1) in qualArry" :key="item.qualId">
+													<el-tabs type="border-card" v-model="activeLE" @tab-click="handleClickAtiveLE">
+														<el-tab-pane :label="item.qualLevelName" v-for="(item, index2) in needServiceList2" :key="item.qualLevelId">
+														</el-tab-pane>
+													</el-tabs>
+												</el-tab-pane>
+											</el-tabs>
+											<el-tree
+												:data="serviceTreeData"
+												show-checkbox
+												default-expand-all
+												node-key="id"
+												ref="treeService"
+												empty-text="请先选择所需服务"
+												highlight-current
+												@check="handleServiceTreeData"
+												:props="defaultProps">
+											</el-tree>
+										</div>
+									</el-form-item>
+									<el-form-item prop="qualRequireExplain">
+										<template slot="label">
+											<el-tooltip class="item" effect="dark" content="备注：请说明资质/分类的具体要求，如行业、专业、等级等。" placement="right-start">
+												<i class="ag ag-help"></i>
+											</el-tooltip>
+											资质要求说明
+										</template>
+										<el-input type="textarea" v-model="aeaImUnitRequire.qualRequireExplain" placeholder="请填写资质要求说明"></el-input>
+									</el-form-item>
+								</div>
+								<div v-if="aeaImUnitRequire.isRegisterRequire">
+									<el-form-item prop="registerTotal">
+										<template slot="label">
+											<el-tooltip class="item" effect="dark" content="备注：请填写为本项目提供服务的中介机构持证执业(职业)人员总数要求。" placement="right-start">
+												<i class="ag ag-help"></i>
+											</el-tooltip>
+											执业/职业人员总数
+										</template>
+										<el-input type="text" v-model="aeaImUnitRequire.registerTotal" placeholder="请填写执业/职业人员总数"></el-input>
+									</el-form-item>
+									<el-form-item prop="registerRequire">
+										<template slot="label">
+											<el-tooltip class="item" effect="dark" content="备注：该要求将公示于前台采购公告中。" placement="right-start">
+												<i class="ag ag-help"></i>
+											</el-tooltip>
+											执业/职业人员要求
+										</template>
+										<el-input type="textarea" v-model="aeaImUnitRequire.registerRequire"></el-input>
+									</el-form-item>
+								</div>
+								<div v-if="aeaImUnitRequire.isRecordRequire">
+									<el-form-item prop="recordRequireExplain">
+										<template slot="label">
+											<el-tooltip class="item" effect="dark" content="备注：该要求将公示于前台采购公告中。" placement="right-start">
+												<i class="ag ag-help"></i>
+											</el-tooltip>
+											备案要求说明
+										</template>
+										<el-input type="textarea" v-model="aeaImUnitRequire.recordRequireExplain"></el-input>
+									</el-form-item>
+								</div>
+								<el-form-item prop="otherRequireExplain">
+									<template slot="label">
+										<el-tooltip class="item" effect="dark" content="备注：应当包含土地、房产面积、预算价格等内容。" placement="right-start">
+											<i class="ag ag-help"></i>
+										</el-tooltip>
+										其他要求说明
+									</template>
+									<el-input v-model="aeaImUnitRequire.otherRequireExplain" type="textarea"></el-input>
+								</el-form-item>
+							</el-form>
+
+							<el-form-item label="选取中介机构方式" prop="biddingType">
 								<el-radio-group v-model="purchaseProj.biddingType">
 									<el-radio label="1">随机抽取</el-radio>
 									<el-radio label="2">直接抽取</el-radio>
 									<el-radio label="3">竞价选取</el-radio>
 								</el-radio-group>
 							</el-form-item>
-							<el-form-item label="是否确认金额" v-show="purchaseProj.biddingType=='1'">
-								<el-radio-group v-model="purchaseProj.isDefineAmount">
-									<el-radio label="1">确定服务金额</el-radio>
-									<el-radio label="0">暂不做评估与预算</el-radio>
-								</el-radio-group>
-							</el-form-item>
-							<div v-show="purchaseProj.isDefineAmount=='1'">
-								<el-form-item label="服务金额">
-									<el-input name="projName" :disabled="linkQuerySucc" v-model="projBascInfoShow.projName" placeholder="请输入项目/工程名称"></el-input>
-								</el-form-item>
-								<el-form-item label="金额大写">
-									<el-input name="projName" :disabled="linkQuerySucc" v-model="projBascInfoShow.projName" placeholder="请输入项目/工程名称"></el-input>
-								</el-form-item>
-							</div>
-							<el-form-item label="是否有回避情况">
-								<el-radio-group v-model="purchaseProj.isDefineAmount">
-									<el-radio label="1">是</el-radio>
-									<el-radio label="0">否</el-radio>
-								</el-radio-group>
-							</el-form-item>
-							<div v-show="purchaseProj.isAvoid=='1'">
-
-								<el-form-item label="回避单位">
+							<!--随机抽取 str-->
+							<div class="" v-if="purchaseProj.biddingType == 1">
+								<el-form-item label="是否确认金额" prop="isDefineAmount">
 									<el-radio-group v-model="purchaseProj.isDefineAmount">
-										<el-radio label="1">是</el-radio>
-										<el-radio label="0">否</el-radio>
+										<el-radio label="1">确定服务金额</el-radio>
+										<el-radio label="0">暂不做评估与预算</el-radio>
 									</el-radio-group>
 								</el-form-item>
-								<el-form-item label="回避原因">
-									<el-input></el-input>
-								</el-form-item>
-							</div>
-							<!--直接选取 str-->
-							<div class="" v-show="biddingType == 2">
-								<el-form-item label="是否确定服务金额">
-									<el-radio label="1" v-model="purchaseProj.isDefineAmount">确定服务金额</el-radio>
-								</el-form-item>
-								<template v-show="purchaseProj.isDefineAmount == 1">
-									<el-form-item label="服务金额">
-										<el-input type="number"></el-input>
+								<div class="clearfix" v-if="purchaseProj.isDefineAmount==1">
+									<el-form-item  class="input-inline" label="服务金额（万元）" prop="basePrice">
+										<el-input type="number" v-model="purchaseProj.basePrice" @input="function(val){changeInputPrice(val,'basePrice')}"></el-input>
 									</el-form-item>
-									<el-form-item label="金额大写">
-										<el-input type="number"></el-input>
+									<el-form-item  class="input-inline" label="金额大写">
+										<el-input type="text" v-model="purchaseProj.basePriceDx"></el-input>
 									</el-form-item>
-								</template>
-								<el-form-item label="查看符合条件的中介机构">
-									<el-input></el-input>
-									<template slot="scope">
-										<el-button type="primary" @click="getAgentUnitInfoList">查看</el-button>
-									</template>
-								</el-form-item>
-							</div>
-							<!--直接选取 end-->
-							<!--竞价选取 str-->
-							<div class="" v-if="biddingType == 3">
-								<el-form-item label="报价方式">
-									<el-radio-group v-model="purchaseProj.quoteType">
-										<el-radio label="0">服务金额</el-radio>
-										<el-radio label="1">下浮率</el-radio>
-									</el-radio-group>
-								</el-form-item>
-								<template v-if="purchaseProj.quoteType == 1">
-									<el-form-item label="下浮率">
-										<el-input></el-input>
-										<!--												<el-input type="text"  v-model="form.basePrice" @input="basePriceblur"></el-input>-->
-									</el-form-item>
-									<el-form-item label="">
-										<el-input></el-input>
-									</el-form-item>
-									<el-form-item label="至">
-										<el-input></el-input>
-										<!--												<el-input type="text"  v-model="form.highestPriceblur" @input="basePriceblur"></el-input>-->
-									</el-form-item>
-									<el-form-item label="">
-										<el-input></el-input>
-									</el-form-item>
-								</template>
-								<template v-else>
-									<el-form-item label="服务金额">
-										<!--												<el-input type="text" class="form-control" v-model="form.basePrice" @input="basePriceblur"></el-input> 元-->
-									</el-form-item>
-									<el-form-item label="至">
-										<!--												<el-input type="text" class="form-control" v-model="form.highestPrice" @input="highestPriceblur"></el-input> 元-->
-									</el-form-item>
-
-									<el-form-item label="金额大写">
-										<!--												<el-input type="text" v-model="form.basePriceDx" @input="basePriceblur"></el-input> 元-->
-									</el-form-item>
-									<el-form-item label="至">
-										<!--												<el-input type="text"  v-model="form.highestPriceDx" @input="highestPriceblur"></el-input> 元-->
-									</el-form-item>
-								</template>
-								<el-form-item label="是否有回避情况">
+								</div>
+								<el-form-item label="是否有回避情况" prop="isAvoid">
 									<el-radio-group v-model="purchaseProj.isAvoid">
 										<el-radio label="1">是</el-radio>
 										<el-radio label="0">否</el-radio>
 									</el-radio-group>
 								</el-form-item>
-								<el-form-item label="回避单位" v-show="purchaseProj.isAvoid">
-									<el-inpu></el-inpu>
-								</el-form-item>
-								<el-form-item label="回避原因">
-									<!--											<el-input type="textarea" class="form-control" style="width: 825px;" v-model="form.avoidReason"></el-input>-->
-								</el-form-item>
-
+								<div v-if="purchaseProj.isAvoid==1">
+									<el-form-item label="回避单位" prop="avoidUnitInfoIds" required>
+										<el-button type="primary" @click="selectOrgan" size="mini">选择单位</el-button>
+										<el-table :data="avoidData" stripe border ref="multipleTable2" style="margin-top: 10px;">
+											<el-table-column prop="applicant" label="公司名称"></el-table-column>
+										</el-table>
+									</el-form-item>
+									<el-form-item label="回避原因" prop="avoidReason">
+										<div class="input-box">
+											<el-input type="textarea" v-model="purchaseProj.avoidReason"></el-input>
+										</div>
+									</el-form-item>
+								</div>
 							</div>
-							<el-form-item class="input-inline" label="报名截止时间">
-								<el-date-picker stye="width:823px;" v-model="purchaseProj.expirationDate" type="datetime" value-format="yyyy-MM-dd HH:mm:ss" placeholder="选择日期时间" :popper-append-to-body="false" default-time="00:00:00"></el-date-picker>
-							</el-form-item>
-							<el-form-item class="input-inline" label="选取中介时间">
-								<el-date-picker stye="width:823px;" v-model="purchaseProj.choiceImunitTime" type="datetime" :popper-append-to-body="false" value-format="yyyy-MM-dd HH:mm:ss" placeholder="选择日期时间" default-time="00:00:00"></el-date-picker>
-							</el-form-item>
+							<!--随机抽取 str-->
+							<!--直接选取 str-->
+							<div class="" v-if="purchaseProj.biddingType == 2">
+								<!--<el-form-item label="是否确认金额" prop="isDefineAmount">-->
+								<!--<el-radio-group v-model="purchaseProj.isDefineAmount">-->
+								<!--<el-radio label="1">确定服务金额</el-radio>-->
+								<!--&lt;!&ndash;<el-radio label="0">暂不做评估与预算</el-radio>&ndash;&gt;-->
+								<!--</el-radio-group>-->
+								<!--</el-form-item>-->
+								<div class="clearfix">
+									<el-form-item  class="input-inline" label="服务金额（万元）" prop="basePrice">
+										<el-input type="number" v-model="purchaseProj.basePrice" @input="function(val){changeInputPrice(val,'basePrice')}"></el-input>
+									</el-form-item>
+									<el-form-item  class="input-inline" label="金额大写" prop="basePriceDx">
+										<el-input type="text" v-model="purchaseProj.basePriceDx"></el-input>
+									</el-form-item>
+									<el-form-item class="input-inline" label="查看符合条件的中介机构" prop="deparment">
+										<el-button type="primary" size="mini" @click="getAgentUnitInfoList">查看</el-button>
+									</el-form-item>
+									<el-form-item class="input-inline" label="指定的中介机构">
+										<p>{{multipleSelection3[0].agentUnitName}}</p>
+									</el-form-item>
+								</div>
+							</div>
+							<!--直接选取 end-->
+							<!--竞价选取 str-->
+							<div class="" v-if="purchaseProj.biddingType == 3">
+								<!--<el-form-item label="报价方式" prop="quoteType">-->
+								<!--<el-radio-group v-model="purchaseProj.quoteType">-->
+								<!--<el-radio label="0">服务金额</el-radio>-->
+								<!--<el-radio label="1">下浮率</el-radio>-->
+								<!--</el-radio-group>-->
+								<!--</el-form-item>-->
+								<!--<div class="clearfix" v-show="purchaseProj.quoteType == 1">-->
+								<!--<el-form-item class="input-inline" label="下浮率（%）" prop="baseRate">-->
+								<!--<el-input type="text" v-model="purchaseProj.baseRate"></el-input>-->
+								<!--</el-form-item>-->
+								<!--<el-form-item class="input-inline" label="至（%）" prop="highestRate">-->
+								<!--<el-input type="text" v-model="purchaseProj.highestRate"></el-input>-->
+								<!--</el-form-item>-->
+								<!--</div>-->
+								<div class="clearfix">
+									<el-form-item class="input-inline" label="服务金额（万元）" prop="basePrice">
+										<el-input type="text" v-model="purchaseProj.basePrice" @input="function(val){changeInputPrice(val,'basePrice')}"></el-input>
+									</el-form-item>
+									<el-form-item class="input-inline" label="至（万元）" prop="highestPrice">
+										<el-input type="text" v-model="purchaseProj.highestPrice" @input="function(val){changeInputPrice(val,'hPrice')}"></el-input>
+									</el-form-item>
+									<el-form-item class="input-inline" label="金额大写" prop="basePriceDx">
+										<el-input type="text" v-model="purchaseProj.basePriceDx"></el-input>
+									</el-form-item>
+									<el-form-item class="input-inline" label="至" prop="highestPriceDx">
+										<el-input type="text" v-model="purchaseProj.highestPriceDx"></el-input>
+									</el-form-item>
+								</div>
+								<el-form-item label="是否有回避情况" prop="isAvoid">
+									<el-radio-group v-model="purchaseProj.isAvoid">
+										<el-radio label="1">是</el-radio>
+										<el-radio label="0">否</el-radio>
+									</el-radio-group>
+								</el-form-item>
+								<div v-if="purchaseProj.isAvoid==1">
+									<el-form-item label="回避单位" prop="avoidUnitInfoIds" required>
+										<el-button type="primary" @click="selectOrgan" size="mini">选择单位</el-button>
+										<el-table :data="avoidData" stripe border ref="multipleTable2" style="margin-top: 10px;">
+											<el-table-column prop="applicant" label="公司名称"></el-table-column>
+										</el-table>
+									</el-form-item>
+									<el-form-item label="回避原因" prop="avoidReason">
+										<div class="input-box">
+											<el-input type="textarea" v-model="purchaseProj.avoidReason"></el-input>
+										</div>
+									</el-form-item>
+								</div>
+							</div>
+							<div class="clearfix">
+								<el-form-item class="input-inline" label="报名截止时间">
+									<el-date-picker v-model="purchaseProj.expirationDate" type="datetime" value-format="yyyy-MM-dd HH:mm:ss" placeholder="选择日期时间" default-time="00:00:00"></el-date-picker>
+								</el-form-item>
+								<el-form-item class="input-inline" label="选取中介时间">
+									<el-date-picker v-model="purchaseProj.choiceImunitTime" type="datetime" value-format="yyyy-MM-dd HH:mm:ss" placeholder="选择日期时间" default-time="00:00:00"></el-date-picker>
+								</el-form-item>
+							</div>
 							<el-form-item label="金额说明">
-								<el-input type="text"></el-input>
+								<el-input type="textarea" v-model="purchaseProj.amountExplain"></el-input>
 							</el-form-item>
-							<el-form-item class="input-inline" label="中选机构公示">
-								<el-radio-group v-model="purchaseProj.isDiscloseIm">
-									<el-radio label="1">是</el-radio>
-									<el-radio label="0">否</el-radio>
-								</el-radio-group>
-							</el-form-item>
-							<el-form-item class="input-inline" label="中选公告公示">
-								<el-radio-group v-model="purchaseProj.isDiscloseBidding">
-									<el-radio label="1">是</el-radio>
-									<el-radio label="0">否</el-radio>
-								</el-radio-group>
-							</el-form-item>
-							<el-form-item label="见证现场竞价选 取、摇珠">
-								<el-radio-group v-model="purchaseProj.isLiveWitness">
-									<el-radio label="1">是</el-radio>
-									<el-radio label="0">否</el-radio>
-									<p class="note-txt">备注：见证现场竞价选取、摇珠的参与者可填写1人，最多可填3人。</p>
-								</el-radio-group>
-							</el-form-item>
-							<div v-if="purchaseProj.isLiveWitness=='1'">
-								<el-form-item class="input-inline" label="见证人姓名"></el-form-item>
-								<el-form-item class="input-inline" label="联系电话"></el-form-item>
-								<el-form-item class="input-inline" label="见证人姓名"></el-form-item>
-								<el-form-item class="input-inline" label="联系电话"></el-form-item>
-								<el-form-item class="input-inline" label="见证人姓名"></el-form-item>
-								<el-form-item class="input-inline" label="联系电话"></el-form-item>
+							<div class="clearfix">
+								<el-form-item class="input-inline" label="中选机构公示">
+									<el-radio-group v-model="purchaseProj.isDiscloseIm">
+										<el-radio label="1">是</el-radio>
+										<el-radio label="0">否</el-radio>
+									</el-radio-group>
+								</el-form-item>
+								<el-form-item class="input-inline" label="中选公告公示">
+									<el-radio-group v-model="purchaseProj.isDiscloseBidding">
+										<el-radio label="1">是</el-radio>
+										<el-radio label="0">否</el-radio>
+									</el-radio-group>
+								</el-form-item>
+								<!--<el-form-item class="input-inline" label="">-->
+								<!--<template slot="label">-->
+								<!--<el-tooltip class="item" effect="dark" content="备注：见证现场竞价选取、摇珠的参与者可填写1人，最多可填3人。" placement="right-start">-->
+								<!--<i class="ag ag-help"></i>-->
+								<!--</el-tooltip>-->
+								<!--见证现场竞价选取、摇珠-->
+								<!--</template>-->
+								<!--<el-radio-group v-model="purchaseProj.isLiveWitness">-->
+								<!--<el-radio label="1">是</el-radio>-->
+								<!--<el-radio label="0">否</el-radio>-->
+								<!--</el-radio-group>-->
+								<!--</el-form-item>-->
 							</div>
-							<el-form-item class="input-inline" label="项目业主业务咨询电话"></el-form-item>
-							<el-form-item class="input-inline" label="投诉质疑"></el-form-item>
+
+							<!--<div class="clearfix" v-if="purchaseProj.isLiveWitness=='1'">-->
+							<!--<el-form-item class="input-inline" label="见证人姓名">-->
+							<!--<el-input v-model="purchaseProj.witnessName1"></el-input>-->
+							<!--</el-form-item>-->
+							<!--<el-form-item class="input-inline" label="联系电话">-->
+							<!--<el-input v-model="purchaseProj.witnessPhone1"></el-input>-->
+							<!--</el-form-item>-->
+							<!--<el-form-item class="input-inline" label="见证人姓名">-->
+							<!--<el-input v-model="purchaseProj.witnessName3"></el-input>-->
+							<!--</el-form-item>-->
+							<!--<el-form-item class="input-inline" label="联系电话">-->
+							<!--<el-input v-model="purchaseProj.witnessPhone2"></el-input>-->
+							<!--</el-form-item>-->
+							<!--<el-form-item class="input-inline" label="见证人姓名">-->
+							<!--<el-input v-model="purchaseProj.witnessName3"></el-input>-->
+							<!--</el-form-item>-->
+							<!--<el-form-item class="input-inline" label="联系电话">-->
+							<!--<el-input v-model="purchaseProj.witnessPhone3"></el-input>-->
+							<!--</el-form-item>-->
+							<!--</div>-->
+							<div class="clearfix">
+								<el-form-item class="input-inline" label="项目业主业务咨询电话" prop="moblie">
+									<el-input v-model="purchaseProj.moblie"></el-input>
+								</el-form-item>
+								<el-form-item class="input-inline" label="业主投诉电话" prop="ownerComplaintPhone">
+									<el-input v-model="purchaseProj.ownerComplaintPhone"></el-input>
+								</el-form-item>
+							</div>
 						</el-form>
 					</div>
 
 				</el-collapse-item>
+				<!--附件 start-->
+				<el-collapse-item name="5" id="fileList">
+					<template slot="title">
+						<i class="header-icon el-icon-info"></i>附件
+					</template>
+					<div class="item-detail edit-item-detail">
+						<div class="upload-card">
+							<div class="upload-btn">
+								<el-upload
+									class="matterUploadFile"
+									:show-file-list="false"
+									action="123"
+									multiple
+									:limit="3"
+									:auto-upload="false">
+									<el-button type="primary">上传文件</el-button>
+								</el-upload>
+								<span class="ml-3" slot="tip" style="position: absolute;left: 110px;top: 5px;">上传的附件不可超过10MB，禁止上传以下的附件类型：.exe,.sh,.bat,.com,.dll</span>
+							</div>
+							<ul class="pjfile-list">
+								<li v-for="(item, index) in fileList1" :key="index">
+									{{item.name}}<a class="debtn" href="javascript:;" @click="deluploadImg1(item,index)">删除</a></li>
+							</ul>
+						</div>
+						<p class="note-txt">备注：您可上传购买中介服务的政府批文及财政资金安排批文的相关文件，便于项目审批，不供公示下载。</p>
+						<div class="upload-card mt20">
+							<div class="upload-btn">
+								<el-upload
+									class="matterUploadFile"
+									action="dakdsk"
+									:show-file-list="false"
+									multiple
+									:limit="10"
+									:auto-upload="false">
+									<el-button type="primary">上传文件</el-button>
+								</el-upload>
+								<span class="ml-3" slot="tip" style="position: absolute;left: 110px;top: 5px;">上传的附件不可超过10MB，禁止上传以下的附件类型：.exe,.sh,.bat,.com,.dll</span>
+							</div>
+							<ul class="pjfile-list">
+								<li v-for="(item, index) in fileList2" :key="index">
+									{{item.name}}<a class="debtn" href="javascript:;" @click="deluploadImg2(item,index)">删除</a></li>
+							</ul>
+						</div>
+						<p class="note-txt mt-1">备注：您可上传采购项目要求说明，可供中介机构查看下载。</p>
+					</div>
+				</el-collapse-item>
+				<!--附件 end-->
 				<!--材料一单清 start-->
 				<el-collapse-item name="4" id="matsList">
 					<template slot="title">
 						<i class="header-icon el-icon-info"></i>材料一单清
 					</template>
 					<div class="fileDiv" v-loading="loadingFile" element-loading-text="文件上传中" element-loading-spinner="el-icon-loading" element-loading-background="rgba(0, 0, 0, 0.3)" :class="this.AllFileList.length>0?'is-sel-file':''">
-						<el-upload ref="uploadFile" class="upload-flie" :auto-upload="false" drag :show-file-list="false" :file-list="fileList" :action="ctx+'rest/mats/att/upload/auto'" multiple :http-request="myUploadFile" :on-change="fileChange">
+						<el-upload ref="uploadFile"
+											 class="upload-flie"
+											 :auto-upload="false"
+											 drag
+											 :show-file-list="false"
+											 :file-list="fileList"
+											 :action="ctx+'rest/mats/att/upload/auto'"
+											 multiple
+											 :http-request="myUploadFile"
+											 :on-change="fileChange">
 							<i slot="trigger" v-show="this.AllFileList.length>0" class="el-icon-plus"></i>
 							<el-button class="submit-file" v-show="this.AllFileList.length>0" size="small" type="primary" @click="submitUpload">一键自动分拣
 							</el-button>
@@ -915,12 +1131,9 @@
 			</template>
 		</el-collapse>
 		<div class="right-bottom-btn" v-if="true">
-			<!--showMoreProjInfo-->
-			<el-button type="danger" circle @click="showCommentDialog('3')">不予<br/>受理</el-button>
-			<el-button circle @click="showCommentDialog('5')">材料<br/>补全</el-button>
+			<!--<el-button type="danger" circle @click="showCommentDialog('3')">不予<br/>受理</el-button>-->
 			<el-button circle @click="showCommentDialog('1')">打印<br/>回执</el-button>
 			<el-button type="primary" circle @click="showCommentDialog('0')">发起<br/>申报</el-button>
-			<!--<el-button type="primary" circle @click="queryReceiveList('1')">回执<br/>列表</el-button>-->
 		</div>
 		<!--新增编辑联系人 start-->
 		<el-dialog :title="addEditManModalTitle" :visible.sync="addEditManModalShow" width="750px" class="dg-modal-add-linkmain-info" @close="resetForm('addEditManform')">
@@ -1281,6 +1494,75 @@
 			</div>
 		</el-dialog>
 		<!--选择主题 end-->
+		<!-- 选择回避单位 str -->
+		<el-dialog title="回避单位" :visible.sync="avoidOrgan" width="750px" class="ref-unit-list">
+			<div class="dialog-footer">
+				<el-button type="primary" @click="chooseOrgan">选择</el-button>
+				<div class="search-box fr">
+					<el-input placeholder="请输入关键字进行搜索" v-model="organWord" class="input-with-select" clearable>
+						<i slot="suffix" class="el-input__icon el-icon-search" @click="serachOrgan()"></i>
+					</el-input>
+				</div>
+			</div>
+			<el-table :data="avoidList" stripe border highlight-current-row ref="multipleTable3" @selection-change="handleSelectionChange4" style="margin-top: 10px;width: 100%;">
+				<el-table-column type="selection" width="40"></el-table-column>
+				<el-table-column prop="applicant" label="单位名称" width=""></el-table-column>
+			</el-table>
+			<el-pagination
+				v-show="total4>10"
+				background
+				align="right"
+				:pager-count="5"
+				@size-change="handleSizeChange4"
+				@current-change="handleCurrentChange4"
+				:page-sizes="[10, 20, 30, 50]"
+				:page-size="pageSize4"
+				:current-page="pageNum4"
+				layout="total,sizes, prev, pager, next, jumper"
+				:total="total4">
+			</el-pagination>
+		</el-dialog>
+		<!-- 选择回避单位 end-->
+		<!--项目树窗口 start-->
+		<el-dialog title="查看项目工程结构" :visible.sync="projectTreeInfoModal" class="proj-tree-dialog"
+							 @closed="clearTreeChildInfo()" width="750px">
+			<div class="project-tree">
+				<div class="search-proj" v-if="!addChildProjShow">
+					<el-input suffix-icon="el-icon-search" :inline="true" placeholder="输入关键字" v-model="searchProjfilterText">
+					</el-input>
+					<el-button @click="clearProjfilterText">清空</el-button>
+				</div>
+				<div class="search-proj" v-else>
+					<el-input :inline="true" placeholder="请输入子项目工程名称" v-model="childProjName">
+					</el-input>
+					<el-input :inline="true" placeholder="请输入子项目工程备注" v-model="childProjText">
+					</el-input>
+					<el-button type="primary" @click="saveAddChildProj()">确认</el-button>
+					<el-button type="danger" @click="addChildProjShow=false">取消</el-button>
+				</div>
+
+				<el-tree :data="projTree" :props="projTreeDefaultProps" default-expand-all show-checkbox
+								 :expand-on-click-node="false" :check-on-click-node="true" highlight-current @node-click="selChildProj"
+								 @node-contextmenu="showRightBtnList" :check-strictly="true" :filter-node-method="filterProjNode"
+								 ref="projTree">
+            <span class="custom-tree-node" slot-scope="scope">
+              <span class="tree-icon-name">
+                <i
+									:class="scope.data.icon?scope.data.icon:scope.data.children?'el-icon-folder-opened':'el-icon-tickets'"></i>{{ scope.data.name}}
+              </span>
+            </span>
+				</el-tree>
+				<div class="tree-right-btn" v-show="treeRightBtnList" :style="{top:treeBtnTop+'px',left:treeBtnLeft+'px'}">
+					<a href="javascript:void(0);" class="list-group-item" @click="addChildChildProj();">
+						<i class="el-icon-circle-plus-outline"></i>新增子工程
+					</a>
+					<a href="javascript:void(0);" class="list-group-item" @click="delChildChildProj();">
+						<i class="el-icon-delete"></i>删除子工程
+					</a>
+				</div>
+			</div>
+		</el-dialog>
+		<!--项目树窗口 end-->
 	</div>
 </div>
 </body>

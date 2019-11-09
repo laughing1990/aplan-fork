@@ -534,7 +534,7 @@ var mixins = {
             },
 
             //行业分类请求地址
-            industryRequestUrl:ctx + '/rest/conditional/query/tree/industry',
+            industryRequestUrl:ctx + 'rest/conditional/query/tree/industry',
 
             // 行政分区级联-prop
             regionalismProps: {
@@ -545,7 +545,7 @@ var mixins = {
             },
 
             //行政分区请求地址
-            regionalismRequestUrl:ctx + '/rest/conditional/query/listBscDicRegion',
+            regionalismRequestUrl:ctx + 'rest/conditional/query/listBscDicRegion',
         }
     },
     methods: {
@@ -703,7 +703,7 @@ var mixins = {
             var ts = this;
             // ts.loading = true;
             request('', {
-                url: ctx + '/rest/conditional/query/task/dic/list',
+                url: ctx + 'rest/conditional/query/task/dic/list',
                 type: 'get',
                 data: {}
             }, function (res) {

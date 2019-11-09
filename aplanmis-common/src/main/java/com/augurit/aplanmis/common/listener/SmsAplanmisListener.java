@@ -21,9 +21,8 @@ import com.augurit.aplanmis.common.shortMessage.AplanmisSmsConfigProperties;
 import com.augurit.aplanmis.common.shortMessage.converter.SendSmsRemindContentConverter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
-import org.flowable.bpmn.model.BpmnModel;
+import org.flowable.bpmn.model.*;
 import org.flowable.bpmn.model.Process;
-import org.flowable.bpmn.model.UserTask;
 import org.flowable.engine.RepositoryService;
 import org.flowable.engine.TaskService;
 import org.flowable.task.api.Task;
@@ -176,9 +175,10 @@ public class SmsAplanmisListener {
 
             String taskName = "";
 
-            Task currTask = taskService.createTaskQuery().processInstanceId(procinstId).singleResult();
-            if(currTask!=null)
-                taskName = currTask.getName();
+            List<Task> list = taskService.createTaskQuery().processInstanceId(procinstId).list();
+            if(list != null && list.size() > 0){
+                taskName = list.get(0).getName();
+            }
 
             String phoneNum = "";
             if(StringUtils.isNotBlank(linkmanInfoId)) {
@@ -419,22 +419,53 @@ public class SmsAplanmisListener {
                 for(BpmTaskSendConfig sendConfig:sendConfigs){
                     String assignees = sendConfig.getAssignees();
 
-                    if(StringUtils.isNotBlank(assignees)){
-                        String destActId = sendConfig.getDestActId();
+                    String destActId = sendConfig.getDestActId();
+                    BpmnModel bpmnModel = repositoryService.getBpmnModel(task.getProcessDefinitionId());
+                    Process process = (Process)bpmnModel.getProcesses().get(0);
+                    FlowElement flowElement = process.getFlowElement(destActId);
 
-                        BpmnModel bpmnModel = repositoryService.getBpmnModel(task.getProcessDefinitionId());
-                        Process process = (Process)bpmnModel.getProcesses().get(0);
-                        UserTask currTaskElement = (UserTask)process.getFlowElement(destActId);
-                        String taskName = currTaskElement.getName();
-
-                        List<String> assigneeList = new ArrayList<>();
+                    List<String> assigneeList = new ArrayList<>();
+                    String taskName = "";
+                    if(sendConfig.isUserTask()&&StringUtils.isNotBlank(assignees)){
+                        UserTask currTaskElement = (UserTask)flowElement;
+                        taskName = currTaskElement.getName();
 
                         if(assignees.indexOf(",")!=-1){
                             assigneeList.addAll(Arrays.asList(assignees.split(",")));
                         }else{
                             assigneeList.add(assignees);
                         }
+                    }else if(!sendConfig.isUserTask()){//适配下一个节点为非人工节点时，判断是否为路由节点，如果是，向下找一级(目前只查找了下一级为用户节点并且配置为具体的受理人或者受理人范围时生效)
+                        if(flowElement instanceof Gateway){
+                            Gateway gateway = (Gateway)flowElement;
+                            List<SequenceFlow> outSeqs = gateway.getOutgoingFlows();
+                            if(outSeqs!=null&&outSeqs.size()>0){
+                                for(SequenceFlow flow:outSeqs){
+                                    FlowElement targetFlowElement = flow.getTargetFlowElement();
+                                    if(targetFlowElement instanceof UserTask){
+                                        taskName = ((UserTask)targetFlowElement).getName();
 
+                                        String assigneeStr = ((UserTask)targetFlowElement).getAssignee();
+                                        if(StringUtils.isBlank(assigneeStr)){
+                                            assigneeStr = ((UserTask)targetFlowElement).getAssigneeRange();
+                                        }
+
+                                        if(StringUtils.isNotBlank(assigneeStr)){
+                                            if(assigneeStr.indexOf(",")>-1){
+                                                if(assigneeStr.indexOf(",")!=-1){
+                                                    assigneeList.addAll(Arrays.asList(assigneeStr.split(",")));
+                                                }else{
+                                                    assigneeList.add(assigneeStr);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    if(assigneeList.size()>0){
                         for(String assignee:assigneeList){
                             if (StringUtils.isNotBlank(assignee)) {//有受理人才发送短信通知
                                 String phoneNum = "";

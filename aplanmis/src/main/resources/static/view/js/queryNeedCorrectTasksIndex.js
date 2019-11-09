@@ -53,7 +53,7 @@ var vm = new Vue({
             ts.loading = true;
 
             request('', {
-                url: ctx + '/rest/conditional/query/listNeedCorrectTasks',
+                url: ctx + 'rest/conditional/query/listNeedCorrectTasks',
                 type: 'get',
                 data: ts.searchFrom
             }, function (res) {
@@ -72,7 +72,7 @@ var vm = new Vue({
         //补正
         viewDetail:function (row) {
             var correctId = row.correctId;
-            var urltemp = ctx+'/rest/correct/index.html?correctId='+correctId;
+            var urltemp = ctx+'rest/correct/index.html?correctId='+correctId;
             var parentIfreamUrl = window.frames.location.href;
             urltemp = urltemp +'&parentIfreamUrl='+parentIfreamUrl;
             var data = {
@@ -89,7 +89,7 @@ var vm = new Vue({
         queryOrganizer: function () {
             var ts = this;
             request('', {
-                url: ctx + '/rest/conditional/query/listNeedCorrectTasksOrganizer',
+                url: ctx + 'rest/conditional/query/listNeedCorrectTasksOrganizer',
                 type: 'get',
                 data: {},
                 async: true
@@ -109,7 +109,7 @@ var vm = new Vue({
             confirmMsg("确认信息", "确认发送短信提醒吗？", function () {
                 ts.loading = true;
                 request('', {
-                    url: ctx + '/rest/conditional/query/sendSms',
+                    url: ctx + 'rest/conditional/query/sendSms',
                     type: 'get',
                     data: {iteminstId: row.iteminstId}
                 }, function (res) {

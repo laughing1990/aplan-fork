@@ -737,7 +737,7 @@ var vm = new Vue({
                 });
             }
 
-            _this.$refs['receInfo2'].validate(function (valid) {
+            _this.$refs['ItemSmsInfoForm'].validate(function (valid) {
                 if (!valid) {
                     _this.$message({
                         message: '请输入完整信息！',
@@ -928,12 +928,14 @@ var vm = new Vue({
         //更新单个事项出证详情
         updateSendItemInfo: function () {
             var _this = this;
+            var validateResult = true;
             _this.$refs['ItemSmsInfoForm'].validate(function (valid) {
                 if (!valid) {
                     _this.$message({
                         message: '请输入完整信息！',
                         type: 'error'
                     });
+                    validateResult = validateResult && false;
                     return false;
                 }
             });
@@ -958,26 +960,28 @@ var vm = new Vue({
             //封装采集参数
             var param = _this.ItemSmsInfoForm;
             var str = JSON.stringify(param);
+            if(validateResult){
+                request('', {
+                    url: ctx + 'rest/certificate/updateSendItemInfo',
+                    type: 'post',
+                    data: {'jsonstr': str}
+                }, function (result) {
+                    if (result.success) {
+                        _this.$message({
+                            message: '更新成功',
+                            type: 'success'
+                        });
+                        _this.editItemSmsInfoModalShow = false;
+                    }
 
-            request('', {
-                url: ctx + 'rest/certificate/updateSendItemInfo',
-                type: 'post',
-                data: {'jsonstr': str}
-            }, function (result) {
-                if (result.success) {
+                }, function (msg) {
                     _this.$message({
-                        message: '更新成功',
-                        type: 'success'
+                        message: '服务请求失败',
+                        type: 'error'
                     });
-                    _this.editItemSmsInfoModalShow = false;
-                }
-
-            }, function (msg) {
-                _this.$message({
-                    message: '服务请求失败',
-                    type: 'error'
                 });
-            });
+            }
+
 
 
         },

@@ -170,46 +170,46 @@
         </div>
         <!-- 概要信息 -->
         <div class="det-content-u" v-show="detailTabsActiveCode=='base'">
-          <div class="det-simple-box">
-            <div class="det-simple-row c-f">
-              <div class="simple-row-left">事项名称：</div>
-              <div class="simple-row-value">{{aeaHiIteminst.iteminstName}}</div>
-            </div>
-            <div class="det-simple-row c-f">
-              <div class="simple-row-left">承办机构：</div>
-              <div class="simple-row-value">{{aeaHiIteminst.approveOrgName}}</div>
-            </div>
-          </div>
-          <div class="det-simple-row c-f">
-            <div class="simple-row-left">承诺工作日：</div>
-            <div class="simple-row-value">{{aeaHiIteminst.dueNum}}天</div>
-          </div>
-          <div class="det-simple-row c-f">
-            <div class="simple-row-left">审批状态：</div>
-            <div class="simple-row-value">
-              <div class="row-item-status"
-                   :class="[stateStyleInfo[aeaHiIteminst.iteminstState].colorClass]">
-                <i class="ag" :class="[stateStyleInfo[aeaHiIteminst.iteminstState].iconClass]"></i>
-                {{stateStyleInfo[aeaHiIteminst.iteminstState].label}}
-              </div>
-            </div>
-          </div>
-          <div class="det-simple-row c-f" v-if="['4','5'].indexOf(aeaHiIteminst.iteminstState)!=-1">
-            <div class="simple-row-left">不受理原因：</div>
-            <div class="simple-row-value">{{aeaHiIteminst.reason}}</div>
-          </div>
-          <div class="det-simple-row c-f" v-if="['1','2'].indexOf(aeaHiIteminst.iteminstState)==-1">
-            <div class="simple-row-left">受理时间：</div>
-            <div class="simple-row-value">{{formatDate(aeaHiIteminst.acceptTime)}}</div>
-          </div>
-          <div class="det-simple-row c-f" v-if="['11','12','13'].indexOf(aeaHiIteminst.iteminstState)!=-1">
-            <div class="simple-row-left">办结时间：</div>
-            <div class="simple-row-value">{{formatDate(aeaHiIteminst.endTime)}}</div>
-          </div>
-          <div class="det-simple-row c-f" v-if="['11','12','13'].indexOf(aeaHiIteminst.iteminstState)!=-1">
-            <div class="simple-row-left">实际工作日：</div>
-            <div class="simple-row-value">{{aeaHiIteminst.realTime}}</div>
-          </div>
+          <table class="app-table-u base-info">
+            <tr>
+              <td class="bg-grey">事项名称</td>
+              <td>{{aeaHiIteminst.iteminstName}}</td>
+            </tr>
+            <tr>
+              <td class="bg-grey">承办机构</td>
+              <td>{{aeaHiIteminst.approveOrgName}}</td>
+            </tr>
+            <tr>
+              <td class="bg-grey">承诺工作日</td>
+              <td>{{aeaHiIteminst.dueNum}}天</td>
+            </tr>
+            <tr>
+              <td class="bg-grey">审批状态</td>
+              <td>
+                <div class="row-item-status"
+                     :class="[stateStyleInfo[aeaHiIteminst.iteminstState].colorClass]">
+                  <i class="ag" :class="[stateStyleInfo[aeaHiIteminst.iteminstState].iconClass]"></i>
+                  {{stateStyleInfo[aeaHiIteminst.iteminstState].label}}
+                </div>
+              </td>
+            </tr>
+            <tr v-if="['4','5'].indexOf(aeaHiIteminst.iteminstState)!=-1">
+              <td class="bg-grey">不受理原因</td>
+              <td>{{aeaHiIteminst.reason}}</td>
+            </tr>
+            <tr v-if="['1','2'].indexOf(aeaHiIteminst.iteminstState)==-1">
+              <td class="bg-grey">受理时间</td>
+              <td>{{formatDate(aeaHiIteminst.acceptTime)}}</td>
+            </tr>
+            <tr v-if="['11','12','13'].indexOf(aeaHiIteminst.iteminstState)!=-1">
+              <td class="bg-grey">办结时间</td>
+              <td>{{formatDate(aeaHiIteminst.endTime)}}</td>
+            </tr>
+            <tr v-if="['11','12','13'].indexOf(aeaHiIteminst.iteminstState)!=-1">
+              <td class="bg-grey">实际工作日</td>
+              <td>{{aeaHiIteminst.realTime}}</td>
+            </tr>
+          </table>
         </div>
         <!-- 审批过程 -->
         <div class="det-content-u" v-show="detailTabsActiveCode=='process'">
@@ -368,7 +368,7 @@
               </tr>
             </table>
           </div>
-          <div v-if="!supplyList||!supplyList.length" style="padding: 5px 0 0 10px;">未发起过材料补正</div>
+          <div v-if="!supplyList||!supplyList.length" style="padding: 5px 0 0 10px;">暂无数据</div>
         </div>
         <!-- 特殊程序 -->
         <div class="det-content-u" v-show="detailTabsActiveCode=='special'">
@@ -459,7 +459,7 @@
               </tr>
             </table>
           </div>
-          <div v-if="!specialList||!specialList.length" style="padding: 5px 0 0 10px;">未发起过特殊程序</div>
+          <div v-if="!specialList||!specialList.length" style="padding: 5px 0 0 10px;">暂无数据</div>
         </div>
         <!-- 批文批复 -->
         <div class="det-content-u" v-show="detailTabsActiveCode=='doc'">

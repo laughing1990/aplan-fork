@@ -5,31 +5,31 @@
 <mapper namespace="com.augurit.aplanmis.common.mapper.AeaServiceWindowMapper">
 
     <sql id="allColumns">
-        window.WINDOW_ID windowId,
-        window.WINDOW_NAME windowName,
-        window.REGION_ID  regionId,
-        window.ORG_ID orgId,
-        window.LINK_PHONE linkPhone,
-        window.WORK_TIME workTime,
-        window.WINDOW_ADDRESS windowAddress,
-        window.TRAFFIC_GUIDE trafficGuide,
-        window.WINDOW_MEMO windowMemo,
-        window.MAP_URL  mapUrl,
-        window.MAP_ATT mapAtt,
-        window.CREATER  creater,
-        window.CREATE_TIME  createTime,
-        window.MODIFIER  modifier,
-        window.MODIFY_TIME  modifyTime,
-        window.SORT_NO as sortNo,
-        window.IS_ACTIVE as isActive,
-        window.WINDOW_TYPE as windowType,
-        window.IS_PUBLIC as isPublic,
-        window.IS_ALL_ITEM as isAllItem,
-        window.IS_ALL_STAGE as isAllStage,
-        window.ROOT_ORG_ID  rootOrgId,
-        window.REGION_RANGE regionRange,
-        window.STAGE_ITEM_FILTER stageItemFilter,
-        window.ECHARTS_COLOR echartsColor
+        ${alias}.WINDOW_ID windowId,
+        ${alias}.WINDOW_NAME windowName,
+        ${alias}.REGION_ID  regionId,
+        ${alias}.ORG_ID orgId,
+        ${alias}.LINK_PHONE linkPhone,
+        ${alias}.WORK_TIME workTime,
+        ${alias}.WINDOW_ADDRESS windowAddress,
+        ${alias}.TRAFFIC_GUIDE trafficGuide,
+        ${alias}.WINDOW_MEMO windowMemo,
+        ${alias}.MAP_URL  mapUrl,
+        ${alias}.MAP_ATT mapAtt,
+        ${alias}.CREATER  creater,
+        ${alias}.CREATE_TIME  createTime,
+        ${alias}.MODIFIER  modifier,
+        ${alias}.MODIFY_TIME  modifyTime,
+        ${alias}.SORT_NO as sortNo,
+        ${alias}.IS_ACTIVE as isActive,
+        ${alias}.WINDOW_TYPE as windowType,
+        ${alias}.IS_PUBLIC as isPublic,
+        ${alias}.IS_ALL_ITEM as isAllItem,
+        ${alias}.IS_ALL_STAGE as isAllStage,
+        ${alias}.ROOT_ORG_ID  rootOrgId,
+        ${alias}.REGION_RANGE regionRange,
+        ${alias}.STAGE_ITEM_FILTER stageItemFilter,
+        ${alias}.ECHARTS_COLOR echartsColor
     </sql>
 
     <!-- 新增实体对象 -->
@@ -179,13 +179,16 @@
 
     <select id="getAeaServiceWindowById" parameterType="java.lang.String" resultType="AeaServiceWindow">
         select
-           <include refid="allColumns" />,
+        <include refid="allColumns">
+            <property name="alias" value="asw"/>
+        </include>
+        ,
            org.org_name orgName,
            region.region_name regionName
-        from AEA_SERVICE_WINDOW window
-        left join opu_om_org org on org.ORG_ID = window.ORG_ID
-        left join bsc_dic_region region on region.REGION_ID = window.REGION_ID
-        where window.WINDOW_ID = #{windowId}
+        from AEA_SERVICE_WINDOW asw
+        left join opu_om_org org on org.ORG_ID = asw.ORG_ID
+        left join bsc_dic_region region on region.REGION_ID = asw.REGION_ID
+        where asw.WINDOW_ID = #{windowId}
     </select>
 
     <delete id="batchDeleteAeaServiceWindow">
@@ -197,10 +200,12 @@
 
     <select id="listUnselectedServiceWindow" resultType="AeaServiceWindow">
         select
-           <include refid="allColumns" />
-        from AEA_SERVICE_WINDOW window
+        <include refid="allColumns">
+            <property name="alias" value="asw"/>
+        </include>
+        from AEA_SERVICE_WINDOW asw
         <where>
-            and window.WINDOW_ID not in (
+            and asw.WINDOW_ID not in (
                 select distinct windowRel.WINDOW_ID from AEA_SERVICE_WINDOW_REL windowRel
                 <where>
                     <if test="tableName != null and tableName != '' ">
@@ -215,71 +220,71 @@
                 </where>
             )
             <if test="windowId != null and windowId != '' ">
-                and  window.WINDOW_ID = #{windowId}
+                and asw.WINDOW_ID = #{windowId}
             </if>
             <if test="windowName != null and  windowName != '' ">
-                and  window.WINDOW_NAME = #{windowName}
+                and asw.WINDOW_NAME = #{windowName}
             </if>
             <if test="regionId != null and   regionId != '' ">
-                and   window.REGION_ID = #{regionId}
+                and asw.REGION_ID = #{regionId}
             </if>
             <if test="orgId != null and   orgId != '' ">
-                and   window.ORG_ID = #{orgId}
+                and asw.ORG_ID = #{orgId}
             </if>
             <if test="linkPhone != null and  linkPhone != '' ">
-                and  window.LINK_PHONE = #{linkPhone}
+                and asw.LINK_PHONE = #{linkPhone}
             </if>
             <if test="workTime != null and  workTime != '' ">
-                and  window.WORK_TIME = #{workTime}
+                and asw.WORK_TIME = #{workTime}
             </if>
             <if test="windowAddress != null and  windowAddress != '' ">
-                and  window.WINDOW_ADDRESS = #{windowAddress}
+                and asw.WINDOW_ADDRESS = #{windowAddress}
             </if>
             <if test="trafficGuide != null and  trafficGuide != '' ">
-                and  window.TRAFFIC_GUIDE = #{trafficGuide}
+                and asw.TRAFFIC_GUIDE = #{trafficGuide}
             </if>
             <if test="windowMemo != null and  windowMemo != '' ">
-                and  window.WINDOW_MEMO = #{windowMemo}
+                and asw.WINDOW_MEMO = #{windowMemo}
             </if>
             <if test="mapUrl != null and  mapUrl != '' ">
-                and  window.MAP_URL = #{mapUrl}
+                and asw.MAP_URL = #{mapUrl}
             </if>
             <if test="mapAtt != null">
-                and  window.MAP_ATT = #{mapAtt}
+                and asw.MAP_ATT = #{mapAtt}
             </if>
             <if test="sortNo != null" >
-                and window.SORT_NO = #{sortNo}
+                and asw.SORT_NO = #{sortNo}
             </if>
             <if test="isActive != null" >
-                and window.IS_ACTIVE = #{isActive}
+                and asw.IS_ACTIVE = #{isActive}
             </if>
             <if test="windowType != null" >
-                and window.WINDOW_TYPE = #{windowType}
+                and asw.WINDOW_TYPE = #{windowType}
             </if>
             <if test="isPublic != null" >
-                and window.IS_PUBLIC = #{isPublic}
+                and asw.IS_PUBLIC = #{isPublic}
             </if>
             <if test="isAllItem != null" >
-                and window.IS_ALL_ITEM = #{isAllItem}
+                and asw.IS_ALL_ITEM = #{isAllItem}
             </if>
             <if test="isAllStage != null" >
-                and window.IS_ALL_STAGE = #{isAllStage}
+                and asw.IS_ALL_STAGE = #{isAllStage}
             </if>
             <if test="rootOrgId != null" >
-                and window.ROOT_ORG_ID = #{rootOrgId}
+                and asw.ROOT_ORG_ID = #{rootOrgId}
             </if>
             <if test="regionRange != null" >
-                and window.REGION_RANGE = #{regionRange}
+                and asw.REGION_RANGE = #{regionRange}
             </if>
             <if test="stageItemFilter != null" >
-                AND window.STAGE_ITEM_FILTER = #{stageItemFilter}
+                AND asw.STAGE_ITEM_FILTER = #{stageItemFilter}
             </if>
             <if test="keyword != null and  keyword != ''">
                 and  (
-                       window.WINDOW_NAME like CONCAT(CONCAT('%',#{keyword}),'%')
-                    or window.WINDOW_ADDRESS like CONCAT(CONCAT('%',#{keyword}),'%')
-                    or window.WINDOW_MEMO like CONCAT(CONCAT('%',#{keyword}),'%')
-                    or window.LINK_PHONE like CONCAT(CONCAT('%',#{keyword}),'%')
+                asw.WINDOW_NAME like CONCAT(CONCAT('%',#{keyword}),'%')
+                or asw.WINDOW_ADDRESS like CONCAT(CONCAT('%',#{keyword}),'%')
+                or asw.WINDOW_MEMO like CONCAT(CONCAT('%',#{keyword}),'%')
+                or asw.LINK_PHONE like CONCAT(CONCAT('%',#{keyword}),'%')
                 )
             </if>
         </where>
@@ -287,8 +292,10 @@
 
     <select id="findAllAeaServiceWindow" resultType="AeaServiceWindow">
         select
-        <include refid="allColumns" />
-        from AEA_SERVICE_WINDOW window
+        <include refid="allColumns">
+            <property name="alias" value="asw"/>
+        </include>
+        from AEA_SERVICE_WINDOW asw
         where 1 = 1
         <if test="rootOrgId != null">
             and ROOT_ORG_ID = #{rootOrgId}
@@ -297,9 +304,11 @@
 
     <select id="findAeaServiceWindowByRegionId" resultType="AeaServiceWindow">
         select
-        <include refid="allColumns" />
-        from AEA_SERVICE_WINDOW window
-        WHERE window.REGION_ID = #{regionId}
+        <include refid="allColumns">
+            <property name="alias" value="asw"/>
+        </include>
+        from AEA_SERVICE_WINDOW asw
+        WHERE asw.REGION_ID = #{regionId}
         <if test="rootOrgId != null">
             and ROOT_ORG_ID = #{rootOrgId}
         </if>
@@ -307,9 +316,11 @@
 
     <select id="findWindowByItemVerId" resultType="AeaServiceWindow">
         select
-        <include refid="allColumns" />
-        from AEA_SERVICE_WINDOW window
-        WHERE window.WINDOW_ID IN (
+        <include refid="allColumns">
+            <property name="alias" value="asw"/>
+        </include>
+        from AEA_SERVICE_WINDOW asw
+        WHERE asw.WINDOW_ID IN (
             SELECT WIND_ID
             FROM aea_service_window_item
             WHERE ITEM_VER_ID = #{itemVerId}
@@ -318,171 +329,176 @@
 
     <select id="findAeaServiceWindowByUserId" resultType="AeaServiceWindow">
         select
-        <include refid="allColumns" />
-        from AEA_SERVICE_WINDOW window
-        WHERE window.WINDOW_ID IN (
-            SELECT WINDOW_ID
-            FROM aea_service_window_user
-            WHERE USER_ID = #{userId}
+        <include refid="allColumns">
+            <property name="alias" value="asw"/>
+        </include>
+        from AEA_SERVICE_WINDOW asw
+        WHERE asw.WINDOW_ID IN (
+        SELECT aswu.WINDOW_ID FROM aea_service_window_user aswu WHERE aswu.USER_ID = #{userId}
         )
     </select>
 
     <select id="listAeaServiceWindow" resultType="AeaServiceWindow">
         select
-            <include refid="allColumns" />,
+        <include refid="allColumns">
+            <property name="alias" value="asw"/>
+        </include>
+        ,
             org.org_name orgName,
             region.region_name regionName
-        from AEA_SERVICE_WINDOW window
-        left join opu_om_org org on org.ORG_ID = window.ORG_ID
-        left join bsc_dic_region region on region.REGION_ID = window.REGION_ID
+        from AEA_SERVICE_WINDOW asw
+        left join opu_om_org org on org.ORG_ID = asw.ORG_ID
+        left join bsc_dic_region region on region.REGION_ID = asw.REGION_ID
         <where>
             <if test="windowId != null and windowId != '' ">
-                and  window.WINDOW_ID = #{windowId}
+                and asw.WINDOW_ID = #{windowId}
             </if>
             <if test="windowName != null and  windowName != '' ">
-                and  window.WINDOW_NAME = #{windowName}
+                and asw.WINDOW_NAME = #{windowName}
             </if>
             <if test="regionId != null and  regionId != '' ">
-                and  window.REGION_ID = #{regionId}
+                and asw.REGION_ID = #{regionId}
             </if>
             <if test="orgId != null and  orgId != '' ">
-                and  window.ORG_ID = #{orgId}
+                and asw.ORG_ID = #{orgId}
             </if>
             <if test="linkPhone != null and  linkPhone != '' ">
-                and  window.LINK_PHONE = #{linkPhone}
+                and asw.LINK_PHONE = #{linkPhone}
             </if>
             <if test="workTime != null and  workTime != '' ">
-                and  window.WORK_TIME = #{workTime}
+                and asw.WORK_TIME = #{workTime}
             </if>
             <if test="windowAddress != null and  windowAddress != '' ">
-                and  window.WINDOW_ADDRESS = #{windowAddress}
+                and asw.WINDOW_ADDRESS = #{windowAddress}
             </if>
             <if test="trafficGuide != null and  trafficGuide != '' ">
-                and  window.TRAFFIC_GUIDE = #{trafficGuide}
+                and asw.TRAFFIC_GUIDE = #{trafficGuide}
             </if>
             <if test="windowMemo != null and  windowMemo != '' ">
-                and  window.WINDOW_MEMO = #{windowMemo}
+                and asw.WINDOW_MEMO = #{windowMemo}
             </if>
             <if test="mapUrl != null and  mapUrl != '' ">
-                and  window.MAP_URL = #{mapUrl}
+                and asw.MAP_URL = #{mapUrl}
             </if>
             <if test="mapAtt != null">
-                and  window.MAP_ATT = #{mapAtt}
+                and asw.MAP_ATT = #{mapAtt}
             </if>
             <if test="sortNo != null" >
-                and window.SORT_NO = #{sortNo}
+                and asw.SORT_NO = #{sortNo}
             </if>
             <if test="isActive != null" >
-                and window.IS_ACTIVE = #{isActive}
+                and asw.IS_ACTIVE = #{isActive}
             </if>
             <if test="windowType != null" >
-                and window.WINDOW_TYPE = #{windowType}
+                and asw.WINDOW_TYPE = #{windowType}
             </if>
             <if test="isPublic != null" >
-                and window.IS_PUBLIC = #{isPublic}
+                and asw.IS_PUBLIC = #{isPublic}
             </if>
             <if test="isAllItem != null" >
-                and window.IS_ALL_ITEM = #{isAllItem}
+                and asw.IS_ALL_ITEM = #{isAllItem}
             </if>
             <if test="isAllStage != null" >
-                and window.IS_ALL_STAGE = #{isAllStage}
+                and asw.IS_ALL_STAGE = #{isAllStage}
             </if>
             <if test="rootOrgId != null" >
-                and window.ROOT_ORG_ID = #{rootOrgId}
+                and asw.ROOT_ORG_ID = #{rootOrgId}
             </if>
             <if test="regionRange != null" >
-                and window.REGION_RANGE = #{regionRange}
+                and asw.REGION_RANGE = #{regionRange}
             </if>
             <if test="stageItemFilter != null" >
-                AND window.STAGE_ITEM_FILTER = #{stageItemFilter}
+                AND asw.STAGE_ITEM_FILTER = #{stageItemFilter}
             </if>
             <if test="keyword != null and keyword != ''">
                 and (
-                window.WINDOW_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                asw.WINDOW_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 or org.org_name LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 or region.region_name LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 )
             </if>
         </where>
-        order by window.SORT_NO desc, region.REGIONAL_LEVEL asc, org.ORG_LEVEL asc, org.ORG_SORT_NO asc
+        order by asw.SORT_NO desc, region.REGIONAL_LEVEL asc, org.ORG_LEVEL asc, org.ORG_SORT_NO asc
     </select>
 
     <select id="listItemUnselectedWindow" resultType="AeaServiceWindow">
         select
-           <include refid="allColumns" />
-        from AEA_SERVICE_WINDOW window
+        <include refid="allColumns">
+            <property name="alias" value="asw"/>
+        </include>
+        from AEA_SERVICE_WINDOW asw
         <where>
-            and window.WINDOW_ID not in (
+            and asw.WINDOW_ID not in (
             select distinct WIND_ID
             from AEA_SERVICE_WINDOW_ITEM
             where ITEM_VER_ID = #{itemVerId}
             )
             <if test="windowId != null and windowId != '' ">
-                and  window.WINDOW_ID = #{windowId}
+                and asw.WINDOW_ID = #{windowId}
             </if>
             <if test="windowName != null and  windowName != '' ">
-                and  window.WINDOW_NAME = #{windowName}
+                and asw.WINDOW_NAME = #{windowName}
             </if>
             <if test="regionId != null and   regionId != '' ">
-                and   window.REGION_ID = #{regionId}
+                and asw.REGION_ID = #{regionId}
             </if>
             <if test="orgId != null and   orgId != '' ">
-                and   window.ORG_ID = #{orgId}
+                and asw.ORG_ID = #{orgId}
             </if>
             <if test="linkPhone != null and  linkPhone != '' ">
-                and  window.LINK_PHONE = #{linkPhone}
+                and asw.LINK_PHONE = #{linkPhone}
             </if>
             <if test="workTime != null and  workTime != '' ">
-                and  window.WORK_TIME = #{workTime}
+                and asw.WORK_TIME = #{workTime}
             </if>
             <if test="windowAddress != null and  windowAddress != '' ">
-                and  window.WINDOW_ADDRESS = #{windowAddress}
+                and asw.WINDOW_ADDRESS = #{windowAddress}
             </if>
             <if test="trafficGuide != null and  trafficGuide != '' ">
-                and  window.TRAFFIC_GUIDE = #{trafficGuide}
+                and asw.TRAFFIC_GUIDE = #{trafficGuide}
             </if>
             <if test="windowMemo != null and  windowMemo != '' ">
-                and  window.WINDOW_MEMO = #{windowMemo}
+                and asw.WINDOW_MEMO = #{windowMemo}
             </if>
             <if test="mapUrl != null and  mapUrl != '' ">
-                and  window.MAP_URL = #{mapUrl}
+                and asw.MAP_URL = #{mapUrl}
             </if>
             <if test="mapAtt != null">
-                and  window.MAP_ATT = #{mapAtt}
+                and asw.MAP_ATT = #{mapAtt}
             </if>
             <if test="sortNo != null" >
-                and window.SORT_NO = #{sortNo}
+                and asw.SORT_NO = #{sortNo}
             </if>
             <if test="isActive != null" >
-                and window.IS_ACTIVE = #{isActive}
+                and asw.IS_ACTIVE = #{isActive}
             </if>
             <if test="windowType != null" >
-                and window.WINDOW_TYPE = #{windowType}
+                and asw.WINDOW_TYPE = #{windowType}
             </if>
             <if test="isPublic != null" >
-                and window.IS_PUBLIC = #{isPublic}
+                and asw.IS_PUBLIC = #{isPublic}
             </if>
             <if test="isAllItem != null" >
-                and window.IS_ALL_ITEM = #{isAllItem}
+                and asw.IS_ALL_ITEM = #{isAllItem}
             </if>
             <if test="isAllStage != null" >
-                and window.IS_ALL_STAGE = #{isAllStage}
+                and asw.IS_ALL_STAGE = #{isAllStage}
             </if>
             <if test="rootOrgId != null" >
-                and window.ROOT_ORG_ID = #{rootOrgId}
+                and asw.ROOT_ORG_ID = #{rootOrgId}
             </if>
             <if test="regionRange != null" >
-                and window.REGION_RANGE = #{regionRange}
+                and asw.REGION_RANGE = #{regionRange}
             </if>
             <if test="stageItemFilter != null" >
-                AND window.STAGE_ITEM_FILTER = #{stageItemFilter}
+                AND asw.STAGE_ITEM_FILTER = #{stageItemFilter}
             </if>
             <if test="keyword != null and  keyword != ''">
                 and  (
-                window.WINDOW_NAME like CONCAT(CONCAT('%',#{keyword}),'%')
-                or window.WINDOW_ADDRESS like CONCAT(CONCAT('%',#{keyword}),'%')
-                or window.WINDOW_MEMO like CONCAT(CONCAT('%',#{keyword}),'%')
-                or window.LINK_PHONE like CONCAT(CONCAT('%',#{keyword}),'%')
+                asw.WINDOW_NAME like CONCAT(CONCAT('%',#{keyword}),'%')
+                or asw.WINDOW_ADDRESS like CONCAT(CONCAT('%',#{keyword}),'%')
+                or asw.WINDOW_MEMO like CONCAT(CONCAT('%',#{keyword}),'%')
+                or asw.LINK_PHONE like CONCAT(CONCAT('%',#{keyword}),'%')
                 )
             </if>
         </where>
@@ -490,80 +506,82 @@
 
     <select id="listStageUnselectedWindow" resultType="AeaServiceWindow">
         select
-        <include refid="allColumns" />
-        from AEA_SERVICE_WINDOW window
+        <include refid="allColumns">
+            <property name="alias" value="asw"/>
+        </include>
+        from AEA_SERVICE_WINDOW asw
         <where>
-            and window.WINDOW_ID not in (
+            and asw.WINDOW_ID not in (
             select distinct WIND_ID
             from AEA_SERVICE_WINDOW_STAGE
             where STAGE_ID = #{stageId}
             )
             <if test="windowId != null and windowId != '' ">
-                and  window.WINDOW_ID = #{windowId}
+                and asw.WINDOW_ID = #{windowId}
             </if>
             <if test="windowName != null and  windowName != '' ">
-                and  window.WINDOW_NAME = #{windowName}
+                and asw.WINDOW_NAME = #{windowName}
             </if>
             <if test="regionId != null and   regionId != '' ">
-                and   window.REGION_ID = #{regionId}
+                and asw.REGION_ID = #{regionId}
             </if>
             <if test="orgId != null and   orgId != '' ">
-                and   window.ORG_ID = #{orgId}
+                and asw.ORG_ID = #{orgId}
             </if>
             <if test="linkPhone != null and  linkPhone != '' ">
-                and  window.LINK_PHONE = #{linkPhone}
+                and asw.LINK_PHONE = #{linkPhone}
             </if>
             <if test="workTime != null and  workTime != '' ">
-                and  window.WORK_TIME = #{workTime}
+                and asw.WORK_TIME = #{workTime}
             </if>
             <if test="windowAddress != null and  windowAddress != '' ">
-                and  window.WINDOW_ADDRESS = #{windowAddress}
+                and asw.WINDOW_ADDRESS = #{windowAddress}
             </if>
             <if test="trafficGuide != null and  trafficGuide != '' ">
-                and  window.TRAFFIC_GUIDE = #{trafficGuide}
+                and asw.TRAFFIC_GUIDE = #{trafficGuide}
             </if>
             <if test="windowMemo != null and  windowMemo != '' ">
-                and  window.WINDOW_MEMO = #{windowMemo}
+                and asw.WINDOW_MEMO = #{windowMemo}
             </if>
             <if test="mapUrl != null and  mapUrl != '' ">
-                and  window.MAP_URL = #{mapUrl}
+                and asw.MAP_URL = #{mapUrl}
             </if>
             <if test="mapAtt != null">
-                and  window.MAP_ATT = #{mapAtt}
+                and asw.MAP_ATT = #{mapAtt}
             </if>
             <if test="sortNo != null" >
-                and window.SORT_NO = #{sortNo}
+                and asw.SORT_NO = #{sortNo}
             </if>
             <if test="isActive != null" >
-                and window.IS_ACTIVE = #{isActive}
+                and asw.IS_ACTIVE = #{isActive}
             </if>
             <if test="windowType != null" >
-                and window.WINDOW_TYPE = #{windowType}
+                and asw.WINDOW_TYPE = #{windowType}
             </if>
             <if test="isPublic != null" >
-                and window.IS_PUBLIC = #{isPublic}
+                and asw.IS_PUBLIC = #{isPublic}
             </if>
             <if test="isAllItem != null" >
-                and window.IS_ALL_ITEM = #{isAllItem}
+                and asw.IS_ALL_ITEM = #{isAllItem}
             </if>
             <if test="isAllStage != null" >
-                and window.IS_ALL_STAGE = #{isAllStage}
+                and asw.IS_ALL_STAGE = #{isAllStage}
             </if>
             <if test="rootOrgId != null" >
-                and window.ROOT_ORG_ID = #{rootOrgId}
+                and asw.ROOT_ORG_ID = #{rootOrgId}
             </if>
             <if test="regionRange != null" >
-                and window.REGION_RANGE = #{regionRange}
+                and asw.REGION_RANGE = #{regionRange}
             </if>
             <if test="stageItemFilter != null" >
-                AND window.STAGE_ITEM_FILTER = #{stageItemFilter}
+                AND asw.STAGE_ITEM_FILTER = #{stageItemFilter}
             </if>
             <if test="keyword != null and  keyword != ''">
                 and  (
-                window.WINDOW_NAME like CONCAT(CONCAT('%',#{keyword}),'%')
-                or window.WINDOW_ADDRESS like CONCAT(CONCAT('%',#{keyword}),'%')
-                or window.WINDOW_MEMO like CONCAT(CONCAT('%',#{keyword}),'%')
-                or window.LINK_PHONE like CONCAT(CONCAT('%',#{keyword}),'%')
+                asw.WINDOW_NAME like CONCAT(CONCAT('%',#{keyword}),'%')
+                or asw.WINDOW_ADDRESS like CONCAT(CONCAT('%',#{keyword}),'%')
+                or asw.WINDOW_MEMO like CONCAT(CONCAT('%',#{keyword}),'%')
+                or asw.LINK_PHONE like CONCAT(CONCAT('%',#{keyword}),'%')
                 )
             </if>
         </where>

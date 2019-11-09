@@ -40,7 +40,7 @@ public interface AeaAnaWinDayStatisticsMapper {
 
     List<WinApplyStatisticsVo> getWinApplyStatistics2(@Param("startTime") String startTime, @Param("endTime") String endTime, @Param("rootOrgId") String rootOrgId, @Param("windowId") String windowId) throws Exception;
 
-    long getApplyCount(@Param("startTime") String startTime, @Param("endTime") String endTime, @Param("windowId") String windowId, @Param("rootOrgId") String currentOrgId);
+    Long getApplyCount(@Param("startTime") String startTime, @Param("endTime") String endTime, @Param("windowId") String windowId, @Param("rootOrgId") String currentOrgId);
 
     List<WinApplyStatisticsVo> getWinAcceptStatistics(@Param("startTime") String startTime, @Param("endTime") String endTime, @Param("rootOrgId") String rootOrgId) throws Exception;
 

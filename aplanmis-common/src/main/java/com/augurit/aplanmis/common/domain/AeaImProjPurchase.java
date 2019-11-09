@@ -255,6 +255,11 @@ public class AeaImProjPurchase implements Serializable {
     private List<BscAttForm> officialRemarkBscAttForms;
     private List<BscAttForm> requireExplainBscAttForms;
 
+    private String taskId;
+    private String processinstId;
+    private String isOwnFile;
+    private String operateDescribe;
+    private String operateAction;
 
     public AeaImProjPurchase() {
         this.isDelete = "0";

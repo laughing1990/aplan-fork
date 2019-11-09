@@ -1,6 +1,8 @@
 package com.augurit.aplanmis.front.listener.execution;
 
 import com.augurit.agcloud.bpm.common.domain.ActStoAppinstSubflow;
+import com.augurit.agcloud.bpm.common.domain.BpmTaskSendConfig;
+import com.augurit.agcloud.bpm.common.domain.BpmTaskSendObject;
 import com.augurit.agcloud.bpm.common.service.ActStoAppinstSubflowService;
 import com.augurit.agcloud.bpm.common.utils.SpringContextHolder;
 import com.augurit.agcloud.framework.security.SecurityContext;
@@ -8,12 +10,19 @@ import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.constants.ApplyState;
 import com.augurit.aplanmis.common.constants.ItemStatus;
 import com.augurit.aplanmis.common.domain.*;
+import com.augurit.aplanmis.common.event.AplanmisEventPublisher;
+import com.augurit.aplanmis.common.event.def.BpmNodeSendAplanmisEvent;
 import com.augurit.aplanmis.common.mapper.AeaHiIteminstMapper;
 import com.augurit.aplanmis.common.mapper.AeaHiParStageinstMapper;
 import com.augurit.aplanmis.common.mapper.AeaHiSmsInfoMapper;
 import com.augurit.aplanmis.common.mapper.AeaLinkmanInfoMapper;
 import com.augurit.aplanmis.common.service.instance.AeaHiApplyinstService;
 import com.augurit.aplanmis.common.service.instance.AeaHiParStageinstService;
+import org.flowable.bpmn.model.BpmnModel;
+import org.flowable.bpmn.model.FlowElement;
+import org.flowable.bpmn.model.Process;
+import org.flowable.bpmn.model.UserTask;
+import org.flowable.engine.RepositoryService;
 import org.flowable.engine.RuntimeService;
 import org.flowable.engine.TaskService;
 import org.flowable.engine.delegate.DelegateExecution;
@@ -21,6 +30,7 @@ import org.flowable.engine.delegate.ExecutionListener;
 import org.flowable.engine.impl.util.CommandContextUtil;
 import org.flowable.task.api.Task;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -39,6 +49,8 @@ public class StageProcFinishSuccessOrFailExecutionListener implements ExecutionL
         AeaLinkmanInfoMapper aeaLinkmanInfoMapper = SpringContextHolder.getBean(AeaLinkmanInfoMapper.class);
         AeaHiApplyinstService aeaHiApplyinstService = SpringContextHolder.getBean(AeaHiApplyinstService.class);
         AeaHiParStageinstService aeaHiParStageinstService = SpringContextHolder.getBean(AeaHiParStageinstService.class);
+        AplanmisEventPublisher publisher = SpringContextHolder.getBean(AplanmisEventPublisher.class);
+        RepositoryService repositoryService = SpringContextHolder.getBean(RepositoryService.class);
 
         String procInstId = delegateExecution.getProcessInstanceId();
 
@@ -90,6 +102,34 @@ public class StageProcFinishSuccessOrFailExecutionListener implements ExecutionL
                         Task task = taskService.createTaskQuery().taskId(parentTaskId).singleResult();
                         if (task != null) {
                             taskService.complete(parentTaskId, new String[]{"banjie"}, (Map) null);
+
+                            //触发流程发送事件，用于窗口办结发送短信
+                            BpmnModel bpmnModel = repositoryService.getBpmnModel(task.getProcessDefinitionId());
+                            Process process = (Process)bpmnModel.getProcesses().get(0);
+                            FlowElement flowElement = process.getFlowElement("banjie");
+                            if(flowElement!=null && flowElement instanceof UserTask){
+                                UserTask userTask = (UserTask)flowElement;
+                                String assigneeStr = userTask.getAssignee();
+
+                                if("$INITIATOR".equals(assigneeStr)){
+                                    assigneeStr = (String) runtimeService.getVariable(task.getProcessInstanceId(),"$INITIATOR");
+                                }
+                                if(StringUtils.isBlank(assigneeStr))
+                                    assigneeStr = userTask.getAssigneeRange();
+
+                                if(StringUtils.isNotBlank(assigneeStr)) {
+                                    BpmTaskSendObject sendObject = new BpmTaskSendObject();
+                                    sendObject.setTaskId(parentTaskId);
+                                    BpmTaskSendConfig bpmTaskSendConfig = new BpmTaskSendConfig();
+                                    bpmTaskSendConfig.setDestActId("banjie");
+                                    bpmTaskSendConfig.setUserTask(true);
+                                    bpmTaskSendConfig.setAssignees(assigneeStr);
+                                    List<BpmTaskSendConfig> list = new ArrayList<>();
+                                    list.add(bpmTaskSendConfig);
+                                    sendObject.setSendConfigs(list);
+                                    publisher.publishEvent(new BpmNodeSendAplanmisEvent(this, sendObject));
+                                }
+                            }
 //                            aeaHiParStageinstService.updateBusinessStateByApplyinstId(aeaHiApplyinst.getApplyinstId(),);
 //                            aeaHiParStageinstService.updateBusinessStateByApplyinstId(aeaHiApplyinst.getApplyinstId(),);
                         }
