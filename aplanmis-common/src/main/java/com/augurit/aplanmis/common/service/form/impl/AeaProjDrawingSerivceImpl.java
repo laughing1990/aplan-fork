@@ -88,6 +88,9 @@ public class AeaProjDrawingSerivceImpl implements AeaProjDrawingSerivce {
                                 aeaProjDrawing.setTitleCertNum(fuzeren.getTitleCertNum());
                                 aeaProjDrawing.setTitleGrade(fuzeren.getTitleGrade());
                                 aeaProjDrawing.setPrjSpty(fuzeren.getPrjSpty());
+                                String linkmanInfoId = fuzeren.getLinkmanInfoId();
+                                AeaLinkmanInfo idcard = aeaLinkmanInfoMapper.getAeaLinkmanInfoById(linkmanInfoId);
+                                aeaProjDrawing.setProjectLeaderCertNum(idcard.getLinkmanCertNo());
                                 aeaProjDrawing.setProjectLeaderCertNum(fuzeren.getLinkmanCertNo());
                             }
                         }
