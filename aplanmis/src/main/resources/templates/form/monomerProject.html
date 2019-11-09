@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<!--公共头部，到时候统一替换模块引入-->
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:fragment="commonheader(title)">
+    <meta charset="UTF-8">
+    <title th:text="${title}">单体工程信息</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.css"
+        th:href="@{/agcloud/framework/js-lib/element-2/element.css}" />
+    <link rel="stylesheet"
+        href="/framework-ui/src/main/resources/static/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css"
+        th:href="@{/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css}">
+    <link rel="stylesheet"
+        href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/css/reset.css"
+        th:href="@{/agcloud/framework/js-lib/agcloud-lib/css/reset.css}">
+    <style>
+        .custor {
+            cursor: pointer;
+        }
+    </style>
+    <script>
+        var ctx = '[[@{/}]]';
+        // var ctx = 'http://192.168.15.81:8083/aplanmis-front/';
+        var ctx = 'http://192.168.15.159:8083/aplanmis-front/';
+    </script>
+
+    <!--折叠百叶窗公共css，到时候提取出来做公共模块-->
+    <style>
+        .gray-body {
+            background-color: #f2f3f8;
+            padding: 16px;
+        }
+
+        #monomerProject {
+            padding: 16px;
+            background-color: #fff;
+        }
+
+        .el-collapse-item__wrap {
+            overflow: visible;
+            position: relative;
+            border: none;
+            padding: 15px 30px;
+        }
+
+        .el-collapse {
+            border: none;
+        }
+
+        .el-collapse-item__header {
+            height: 50px;
+            line-height: 50px;
+            padding-left: 16px;
+            font-size: 16px;
+            position: relative;
+            width: 100%;
+            color: #575962;
+            font-weight: 700;
+            border-bottom: 2px solid #E0E3E9;
+        }
+
+        .el-collapse-item__header.is-active {
+            border-bottom: 2px solid #36A3F7;
+            color: #169aff;
+        }
+
+        .el-collapse-item__content {
+            color: #575962;
+            padding-bottom: 0;
+        }
+
+        .el-collapse-item__arrow {
+            margin: 0 18px 0 auto;
+            font-size: 20px;
+            float: right;
+            line-height: 42px;
+        }
+
+        .el-collapse-item__header.is-active .el-collapse-item__arrow,
+        .el-collapse-item__header.is-active .header-icon {
+            color: #169aff;
+        }
+
+        .el-collapse-item__header .header-icon {
+            font-size: 22px;
+            margin-right: 5px;
+            color: #aaa;
+            font-weight: normal;
+        }
+
+        .el-collapse-item {
+            margin-bottom: 15px;
+        }
+
+        .input-inline {
+            width: 33%;
+            float: left;
+        }
+
+        /* .input-inline:nth-child(even) {
+            width: 33%;
+            float: right;
+        } */
+
+        .second-title {
+            position: relative;
+            font-size: 16px;
+            color: #17A2B8;
+            padding: 10px 0;
+            margin-bottom: 30px;
+        }
+
+        .second-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background-color: #DCDFE6;
+        }
+
+        .foot-btn {
+            text-align: right;
+            margin-top: 20px;
+        }
+
+        .foot-btn .el-button {
+            width: 72px;
+            padding: 9px 0;
+            text-align: center;
+        }
+
+        .el-input__inner {
+            height: 34px;
+            line-height: 34px;
+        }
+
+        .el-select {
+            width: 100%;
+        }
+
+        .el-date-editor.el-input,
+        .el-date-editor.el-input__inner {
+            width: 100%;
+        }
+
+        .doubleLine label {
+            line-height: 19px;
+        }
+
+        .addBtn {
+            margin-bottom: 11px;
+        }
+
+        .addBtn .el-button {
+            padding: 9px 19px;
+        }
+
+        .addBtn .el-icon-circle-plus-outline {
+            color: #169AFF;
+        }
+
+        .edit {
+            color: #169AFF;
+            margin-right: 14px;
+            cursor: pointer;
+        }
+
+        .del {
+            color: #FF4B47;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body class="gray-body">
+    <div id="monomerProject" v-cloak>
+        <el-collapse v-model="activeNames">
+            <el-collapse-item class="clearfix" name="1" id="baseInfo">
+                <template slot="title">
+                    <i class="header-icon icon ag ag-project-info"></i>单体工程信息
+                </template>
+
+                <div class="addBtn">
+                    <el-button icon="el-icon-circle-plus-outline" @click="addData">新增</el-button>
+                </div>
+
+                <el-table :data="tableData" border style="width: 100%" :header-cell-style="{background:'#F5F7FA'}">
+                    <el-table-column type="index" label="序号" width="50">
+                    </el-table-column>
+                    <el-table-column prop="projName" label="工程名称" width="180">
+                    </el-table-column>
+                    <el-table-column prop="aboveGround" label="地上面积（平方米）">
+                    </el-table-column>
+                    <el-table-column prop="underGround" label="地下面积（平方米）">
+                    </el-table-column>
+                    <el-table-column prop="aboveFloor" label="地上层数">
+                    </el-table-column>
+                    <el-table-column prop="underFloor" label="地下层数">
+                    </el-table-column>
+                    <el-table-column prop="aboveHeight" label="地上建筑高度（米）">
+                    </el-table-column>
+                    <el-table-column prop="underDepth" label="地下建筑深度（米）">
+                    </el-table-column>
+                    <el-table-column prop="length" label="长度（米）">
+                    </el-table-column>
+                    <el-table-column prop="span" label="跨度（米）">
+                    </el-table-column>
+                    <el-table-column label="操作" width="180">
+                        <template slot-scope="scope">
+                            <span class="edit" @click="editData(scope.row)">编辑</span>
+                            <span class="del" @click="delData(scope.row)">删除</span>
+                        </template>
+                    </el-table-column>
+                </el-table>
+                <!-- <div class="foot-btn">
+                    <el-button type="primary" @click="save">保 存</el-button>
+                </div> -->
+            </el-collapse-item>
+        </el-collapse>
+
+        <!-- 新增，编辑弹窗 -->
+        <el-dialog :title="formTitle" :visible.sync="isShowDialog" width="80%" :before-close="handleClose">
+            <el-form ref="form" :model="formData" label-width="170px" :rules="rules">
+                <div class="clearfix">
+                    <el-form-item class="input-inline" label="工程名称：" prop="projName">
+                        <el-input v-model="formData.projName"></el-input>
+                    </el-form-item>
+                    <el-form-item class="input-inline" label="地上面积（平方米）：" prop="aboveGround">
+                        <el-input v-model="formData.aboveGround"></el-input>
+                    </el-form-item>
+                    <el-form-item class="input-inline" label="地下面积（平方米）：" prop="underGround">
+                        <el-input v-model="formData.underGround"></el-input>
+                    </el-form-item>
+
+                    <el-form-item class="input-inline" label="地上层数：" prop="aboveFloor">
+                        <el-input v-model="formData.aboveFloor"></el-input>
+                    </el-form-item>
+                    <el-form-item class="input-inline" label="地下层数：" prop="underFloor">
+                        <el-input v-model="formData.underFloor"></el-input>
+                    </el-form-item>
+                    <el-form-item class="input-inline" label="地上建筑高度（米）：" prop="aboveHeight">
+                        <el-input v-model="formData.aboveHeight"></el-input>
+                    </el-form-item>
+
+                    <el-form-item class="input-inline" label="地下建筑深度（米）：" prop="underDepth">
+                        <el-input v-model="formData.underDepth"></el-input>
+                    </el-form-item>
+                    <el-form-item class="input-inline" label="长度（米）：" prop="length">
+                        <el-input v-model="formData.length"></el-input>
+                    </el-form-item>
+                    <el-form-item class="input-inline" label="跨度（米）：" prop="span">
+                        <el-input v-model="formData.span"></el-input>
+                    </el-form-item>
+                </div>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="cancleForm">取 消</el-button>
+                <el-button type="primary" @click="submitForm">确 定</el-button>
+            </div>
+        </el-dialog>
+    </div>
+</body>
+
+</html>
+
+<!--公共底部到时候去掉，统一用模块引入-->
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js"
+    th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/polyfill.min.js"
+    th:src="@{/agcloud/framework/js-lib/element-2/polyfill.min.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js"
+    th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js"
+    th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
+<script src="../../static/common/js/axios.min.js" th:src="@{/common/js/axios.min.js}"></script>
+<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js"
+    th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>
+
+
+
+<script src="../../static/form/js/monomerProject.js" th:src="@{/form/js/monomerProject.js}" type="text/javascript">
+</script>

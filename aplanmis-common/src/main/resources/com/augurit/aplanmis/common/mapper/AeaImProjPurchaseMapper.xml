@@ -371,6 +371,22 @@ HIGHEST_RATE,QUOTE_TYPE,ROOT_ORG_ID
         where PROJ_PURCHASE_ID = #{projPurchaseId}
     </update>
 
+    <update id="updateProjPurchaseState">
+        update AEA_IM_PROJ_PURCHASE
+        <set>
+            <if test="auditFlag != null">
+                AUDIT_FLAG = #{auditFlag},
+            </if>
+            <if test="modifier != null">
+                MODIFIER = #{modifier},
+            </if>
+            <if test="modifyTime != null">
+                MODIFY_TIME = #{modifyTime}
+            </if>
+        </set>
+        where PROJ_PURCHASE_ID = #{projPurchaseId}
+    </update>
+
     <!--根据服务项目ID查询单个实体 -->
     <select id="getAeaImProjPurchaseByProjInfoId" resultType="AeaImProjPurchase">
         select

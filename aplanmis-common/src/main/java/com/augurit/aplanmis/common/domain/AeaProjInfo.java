@@ -270,6 +270,19 @@ public class AeaProjInfo implements Serializable {
     @ApiModelProperty("立项批准时间")
     private java.util.Date approvalTime; // (立项批准时间)
 
+    @ApiModelProperty("地上层数")
+    private java.lang.Integer aboveFloor;//("地上层数")
+    @ApiModelProperty("地下层数")
+    private java.lang.Integer underFloor;//("地下层数")
+    @ApiModelProperty("地上建筑高度（米）")
+    private java.lang.Double aboveHeight; // (地上建筑高度（米）)
+    @ApiModelProperty("地下建筑深度（米）")
+    private java.lang.Double underDepth; // (地下建筑深度（米）)
+    @ApiModelProperty("长度（米）")
+    private java.lang.Double length; // (长度（米）)
+    @ApiModelProperty("垮度（米）")
+    private java.lang.Double span; // (垮度（米）)
+
     //非表字段
     @ApiModelProperty("关键字")
     private String keyword;

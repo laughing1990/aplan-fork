@@ -285,4 +285,39 @@ public class RestProjectController {
         return new ContentResultForm<>(true, aeaProjInfo, "Add project success");
     }
 
+    @ApiOperation(value = "根据projInfoId获取单体工程信息")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "projInfoId", value = "项目id", required = true, dataType = "String"),
+    })
+    @GetMapping("/childProjectList/{projInfoId}")
+    public ContentResultForm<List<AeaProjInfo>> childProjectList(@PathVariable String projInfoId) {
+        Assert.isTrue(StringUtils.isNotBlank(projInfoId), "projInfoId is null");
+        List<AeaProjInfo> childProjectList = aeaProjInfoService.findChildProj(projInfoId);
+        return new ContentResultForm<>(true, childProjectList, "Query child project success");
+    }
+
+    @ApiOperation(value = "新增单体工程信息")
+    @PostMapping("/save/childProject")
+    public ContentResultForm<AeaProjInfo> saveChildProject(@RequestBody AeaProjInfo aeaProjInfo) throws Exception {
+        Assert.isTrue(StringUtils.isNotBlank(aeaProjInfo.getParentProjId()), "parentProjInfoId is null");
+        AeaProjInfo child = aeaProjInfoService.addChildProjInfo(aeaProjInfo);
+        return new ContentResultForm<AeaProjInfo>(true, child, "Save child project success.");
+    }
+
+    @ApiOperation(value = "编辑单体工程信息")
+    @PostMapping("/edit/childProject")
+    public ContentResultForm<AeaProjInfo> editChildProject(@RequestBody AeaProjInfo aeaProjInfo) throws Exception {
+        Assert.isTrue(StringUtils.isNotBlank(aeaProjInfo.getProjInfoId()), "childProjInfoId is null");
+        aeaProjInfoService.updateAeaProjInfo(aeaProjInfo);
+        return new ContentResultForm<AeaProjInfo>(true, null,"Edit child project success.");
+    }
+
+    @ApiOperation(value = "删除单体工程信息")
+    @PostMapping("/delete/childProject")
+    public ContentResultForm<String> deleteChildProjectByParam(String childProjInfoId) throws Exception {
+        Assert.isTrue(StringUtils.isNotBlank(childProjInfoId), "childProjInfoId is null");
+        aeaProjInfoService.deleteChildChildProj(childProjInfoId);
+        return new ContentResultForm<>(true, childProjInfoId, "Delete child project success.");
+    }
+
 }

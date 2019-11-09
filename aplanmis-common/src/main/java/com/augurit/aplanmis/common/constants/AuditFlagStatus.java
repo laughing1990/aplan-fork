@@ -33,13 +33,13 @@ public class AuditFlagStatus {
     /*选取开始*/
     public static final String CHOOSE_START = "8";
 
-    /*已选取*/
+    /*已选取，待确认*/
     public static final String CHOOSE_END = "9";
 
     /*无效*/
     public static final String INVALID = "10";
 
-    /*带选取*/
+    /*待选取*/
     public static final String WAIT_CHOOSE = "11";
 
     /*已过时*/
@@ -53,4 +53,12 @@ public class AuditFlagStatus {
 
     /*办结不通过*/
     public static final String DISAGREE = "15";
+
+    /*待上传合同*/
+    public static final String UPLOAD_CONTRACT = "16";
+
+    /*待确认合同*/
+    public static final String CONFIRM_CONTRACT = "17";
+
+
 }

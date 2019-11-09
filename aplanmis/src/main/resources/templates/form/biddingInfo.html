@@ -193,7 +193,7 @@
                             </el-select>
                         </el-form-item>
                         <el-form-item label="招标方式" class="input-inline" prop="bidMode">
-                            <el-select v-model="biddingInfo.bidMode" placeholder="请选择">
+                            <el-select v-model="biddingInfo.bidMode" placeholder="请选择" @change="bidModeSelect">
                                 <el-option v-for="(item, index) in bidModeOptions" :key="index" :label="item.itemName"
                                     :value="item.itemId"></el-option>
                             </el-select>
@@ -247,81 +247,95 @@
                     <div class="second-title">中标单位</div>
 
                     <div class="clearfix">
-                        <el-form-item label="组织机构代码" class="input-inline" prop="winBidUnits[0].organizationalCode" :rules="[
+                        <el-form-item label="组织机构代码" class="input-inline" prop="winBidUnits[0].organizationalCode"
+                            :rules="[
                         { required: true, message: '组织机构代码不得为空！', trigger: 'change' }]">
-                            <el-input name="localCode" v-model="biddingInfo.winBidUnits[0].organizationalCode" placeholder="请输入实际中标金额">
+                            <el-input name="localCode" v-model="biddingInfo.winBidUnits[0].organizationalCode"
+                                placeholder="请输入实际中标金额">
                             </el-input>
                         </el-form-item>
-                        <el-form-item label="统一社会信用代码" class="input-inline" prop="winBidUnits[0].unifiedSocialCreditCode">
+                        <el-form-item label="统一社会信用代码" class="input-inline"
+                            prop="winBidUnits[0].unifiedSocialCreditCode">
                             <el-input name="localCode" v-model="biddingInfo.winBidUnits[0].unifiedSocialCreditCode"
                                 placeholder="请输入实际中标金额">
                             </el-input>
                         </el-form-item>
                         <el-form-item label="单位名称" class="input-inline" prop="winBidUnits[0].applicant" :rules="[
                         { required: true, message: '单位名称不得为空！', trigger: 'change' }]">
-                            <el-input name="localCode" v-model="biddingInfo.winBidUnits[0].applicant" placeholder="请输入实际中标金额">
+                            <el-input name="localCode" v-model="biddingInfo.winBidUnits[0].applicant"
+                                placeholder="请输入实际中标金额">
                             </el-input>
                         </el-form-item>
                         <el-form-item label="项目主体类型" class="input-inline" prop="winBidUnits[0].unitType" :rules="[
                         { required: true, message: '项目主体类型不得为空！', trigger: 'change' }]">
                             <el-select v-model="biddingInfo.winBidUnits[0].unitType" disabled placeholder="请选择">
-                                <el-option v-for="(item, index) in projectType" :key="index"
-                                    :label="item.itemName" :value="item.itemId"></el-option>
+                                <el-option v-for="(item, index) in projectType" :key="index" :label="item.itemName"
+                                    :value="item.itemId"></el-option>
                             </el-select>
                         </el-form-item>
                     </div>
 
-                    <div class="second-title">招标代理机构</div>
+                    <div v-if="isShowFoot && biddingInfo.agencyUnits.length">
+                        <div class="second-title">招标代理机构</div>
 
-                    <div class="clearfix">
-                        <el-form-item label="组织机构代码" class="input-inline" prop="agencyUnits[0].organizationalCode" :rules="[
+                        <div class="clearfix">
+                            <el-form-item label="组织机构代码" class="input-inline" prop="agencyUnits[0].organizationalCode"
+                                :rules="[
                         { required: true, message: '组织机构代码不得为空！', trigger: 'change' }]">
-                            <el-input name="localCode" v-model="biddingInfo.agencyUnits[0].organizationalCode" placeholder="请输入实际中标金额">
-                            </el-input>
-                        </el-form-item>
-                        <el-form-item label="统一社会信用代码" class="input-inline" prop="agencyUnits[0].unifiedSocialCreditCode">
-                            <el-input name="localCode" v-model="biddingInfo.agencyUnits[0].unifiedSocialCreditCode"
-                                placeholder="请输入实际中标金额">
-                            </el-input>
-                        </el-form-item>
-                        <el-form-item label="单位名称" class="input-inline" prop="agencyUnits[0].applicant" :rules="[
+                                <el-input name="localCode" v-model="biddingInfo.agencyUnits[0].organizationalCode"
+                                    placeholder="请输入实际中标金额">
+                                </el-input>
+                            </el-form-item>
+                            <el-form-item label="统一社会信用代码" class="input-inline"
+                                prop="agencyUnits[0].unifiedSocialCreditCode">
+                                <el-input name="localCode" v-model="biddingInfo.agencyUnits[0].unifiedSocialCreditCode"
+                                    placeholder="请输入实际中标金额">
+                                </el-input>
+                            </el-form-item>
+                            <el-form-item label="单位名称" class="input-inline" prop="agencyUnits[0].applicant" :rules="[
                         { required: true, message: '单位名称不得为空！', trigger: 'change' }]">
-                            <el-input name="localCode" v-model="biddingInfo.agencyUnits[0].applicant" placeholder="请输入实际中标金额">
-                            </el-input>
-                        </el-form-item>
-                        <el-form-item label="项目主体类型" class="input-inline" prop="agencyUnits[0].unitType" :rules="[
+                                <el-input name="localCode" v-model="biddingInfo.agencyUnits[0].applicant"
+                                    placeholder="请输入实际中标金额">
+                                </el-input>
+                            </el-form-item>
+                            <el-form-item label="项目主体类型" class="input-inline" prop="agencyUnits[0].unitType" :rules="[
                         { required: true, message: '项目主体类型不得为空！', trigger: 'change' }]">
-                            <el-select v-model="biddingInfo.agencyUnits[0].unitType" disabled placeholder="请选择">
-                                <el-option v-for="(item, index) in projectType" :key="index"
-                                    :label="item.itemName" :value="item.itemId"></el-option>
-                            </el-select>
-                        </el-form-item>
-                    </div>
+                                <el-select v-model="biddingInfo.agencyUnits[0].unitType" disabled placeholder="请选择">
+                                    <el-option v-for="(item, index) in projectType" :key="index" :label="item.itemName"
+                                        :value="item.itemId"></el-option>
+                                </el-select>
+                            </el-form-item>
+                        </div>
 
-                    <div class="second-title">造价咨询单位</div>
+                        <div class="second-title">造价咨询单位</div>
 
-                    <div class="clearfix">
-                        <el-form-item label="组织机构代码" class="input-inline" prop="costUnits[0].organizationalCode" :rules="[
+                        <div class="clearfix">
+                            <el-form-item label="组织机构代码" class="input-inline" prop="costUnits[0].organizationalCode"
+                                :rules="[
                         { required: true, message: '组织机构代码不得为空！', trigger: 'change' }]">
-                            <el-input name="localCode" v-model="biddingInfo.costUnits[0].organizationalCode" placeholder="请输入实际中标金额">
-                            </el-input>
-                        </el-form-item>
-                        <el-form-item label="统一社会信用代码" class="input-inline" prop="costUnits[0].unifiedSocialCreditCode">
-                            <el-input name="localCode" v-model="biddingInfo.costUnits[0].unifiedSocialCreditCode"
-                                placeholder="请输入实际中标金额">
-                            </el-input>
-                        </el-form-item>
-                        <el-form-item label="单位名称" class="input-inline" prop="costUnits[0].applicant">
-                            <el-input name="localCode" v-model="biddingInfo.costUnits[0].applicant" placeholder="请输入实际中标金额">
-                            </el-input>
-                        </el-form-item>
-                        <el-form-item label="项目主体类型" class="input-inline" prop="costUnits[0].unitType" :rules="[
+                                <el-input name="localCode" v-model="biddingInfo.costUnits[0].organizationalCode"
+                                    placeholder="请输入实际中标金额">
+                                </el-input>
+                            </el-form-item>
+                            <el-form-item label="统一社会信用代码" class="input-inline"
+                                prop="costUnits[0].unifiedSocialCreditCode">
+                                <el-input name="localCode" v-model="biddingInfo.costUnits[0].unifiedSocialCreditCode"
+                                    placeholder="请输入实际中标金额">
+                                </el-input>
+                            </el-form-item>
+                            <el-form-item label="单位名称" class="input-inline" prop="costUnits[0].applicant">
+                                <el-input name="localCode" v-model="biddingInfo.costUnits[0].applicant"
+                                    placeholder="请输入实际中标金额">
+                                </el-input>
+                            </el-form-item>
+                            <el-form-item label="项目主体类型" class="input-inline" prop="costUnits[0].unitType" :rules="[
                         { required: true, message: '项目主体类型不得为空！', trigger: 'change' }]">
-                            <el-select v-model="biddingInfo.costUnits[0].unitType" disabled placeholder="请选择">
-                                <el-option v-for="(item, index) in projectType" :key="index"
-                                    :label="item.itemName" :value="item.itemId"></el-option>
-                            </el-select>
-                        </el-form-item>
+                                <el-select v-model="biddingInfo.costUnits[0].unitType" disabled placeholder="请选择">
+                                    <el-option v-for="(item, index) in projectType" :key="index" :label="item.itemName"
+                                        :value="item.itemId"></el-option>
+                                </el-select>
+                            </el-form-item>
+                        </div>
                     </div>
                 </el-form>
                 <div class="foot-btn">

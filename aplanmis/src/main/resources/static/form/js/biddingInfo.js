@@ -44,17 +44,18 @@
                 bidTypeOptions: [], // 招标类型下拉选项arr
                 bidModeOptions: [], // 招标方式下拉选项arr
                 govAreaCodeOptions: [], // 招投标确认的行政单位区域码下拉选项arr
-                projectType: [] // 项目主体类型下拉选项arr
+                projectType: [], // 项目主体类型下拉选项arr
+                isShowFoot: false // 是否显示‘招标代理机构’和‘造价咨询单位’
             }
         },
         created: function () {
             // this.projInfoId = this.getUrlParam('projInfoId');
-            this.projInfoId = '012c4996-b14f-42c4-8d87-b2f347b27276';
+            this.projInfoId = '09485014-cfe9-4815-b9e3-13f24035220b';
         },
         mounted: function () {
             this.getProjTypeNature('C_TENDER_TYPE,C_AGENT_TYPE,XM_DWLX');
             this.getGovAreaCode();
-            // if (this.projInfoId) this.getDetail();
+            if (this.projInfoId) this.getDetail();
         },
         methods: {
             // 招投标信息模块保存
@@ -67,14 +68,17 @@
                     if (valid) {
                         request('', {
                             url: ctx + 'rest/form/project/bid/saveAeaExProjBid',
-                            data: params,
-                            type: 'post'
+                            data: JSON.stringify(params),
+                            type: 'post',
+                            ContentType: 'application/json'
                         }, function (data) {
                             if (data.success) {
                                 _that.$message({
                                     message: '信息保存成功',
                                     type: 'success'
                                 });
+
+                                _that.biddingInfo = data.content;
                             } else {
                                 _that.$message({
                                     message: data.message ? data.message : '信息保存失败',
@@ -104,6 +108,10 @@
                 }, function (data) {
                     if (data.success) {
                         _that.biddingInfo = data.content;
+
+                        if (_that.biddingInfo.bidMode != 'f3632ed9-f728-436f-92f6-4c88c7bbba86') {
+                            _that.isShowFoot = true;
+                        }
                     } else {
                         _that.$message({
                             message: data.message ? data.message : '招投标信息查询失败',
@@ -162,6 +170,32 @@
                 var svalue = location.search.match(new RegExp("[\?\&]" + val + "=([^\&]*)(\&?)", "i"));
                 return svalue ? svalue[1] : svalue;
             },
+            // 招标方式下拉改版时触发
+            bidModeSelect: function(val) {                
+                if (val == 'f3632ed9-f728-436f-92f6-4c88c7bbba86') {
+                    // 直接委托
+                    this.biddingInfo.agencyUnits.splice(0, 1);
+                    this.biddingInfo.costUnits.splice(0, 1);
+                    this.isShowFoot = false;
+                } else {
+                    // 其他委托
+                    // 招标代理机构
+                    this.biddingInfo.agencyUnits.splice(0, 1, {
+                        organizationalCode: '',
+                        unifiedSocialCreditCode: '',
+                        applicant: '',
+                        unitType: '31725803-1710-4376-be08-78abae406a02'
+                    });
+                    // 造价咨询单位
+                    this.biddingInfo.costUnits.splice(0, 1, {
+                        organizationalCode: '',
+                        unifiedSocialCreditCode: '',
+                        applicant: '',
+                        unitType: '1e18c273-7531-4fa6-86f3-fd5bfb6bd9e1'
+                    });
+                    this.isShowFoot = true;
+                }
+            }
         }
     })
 })()

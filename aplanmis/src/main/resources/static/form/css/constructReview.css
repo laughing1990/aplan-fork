@@ -1,5 +1,6 @@
 body {
   padding: 16px;
+  margin: 0;
   background: #f2f3f8;
 }
 
@@ -116,7 +117,7 @@ body {
 
 .el-form-item__content,
 .el-form-item__label {
-  line-height: 34px;
+  /*line-height: 34px;*/
   color: #575962;
 }
 
@@ -221,7 +222,7 @@ body {
 #app {
   /*padding: 20px 120px 80px 120px;*/
   padding: 20px 16px 80px;
-background: #fff;
+  background: #fff;
 }
 
 .header {
@@ -237,7 +238,7 @@ background: #fff;
 }
 
 .allWidth {
-  width: 130%;
+  width: 134.5%;
 }
 
 .form-title {
@@ -246,7 +247,15 @@ background: #fff;
 }
 
 .el-form-item__content {
-  width: 64%;
+  width: 61%;
+}
+
+.dialog .el-form-item__content {
+  width: 68%;
+}
+
+.dg-modal-add-linkmain-info .el-dialog__footer {
+  padding: 0px 86px 32px;
 }
 
 .form-title .el-form-item__content {
@@ -263,6 +272,10 @@ background: #fff;
 
 .input-inline:not(.form-title):nth-child(even) {
   float: right;
+}
+
+.form-title .el-form-item__content {
+  margin-left: 0 !important;
 }
 
 .input-with-select .el-input-group__append .el-select {
@@ -297,6 +310,7 @@ background: #fff;
 
 .el-col {
   display: flex;
+  margin-bottom: 1%;
 }
 
 .el-col:nth-child(1) {
@@ -317,4 +331,26 @@ background: #fff;
 .el-col>span i {
   color: #F56C6C;
   margin-right: 4px;
+}
+
+.item-left-btn {
+  padding: 6px 14px;
+}
+
+.item-left-btn i {
+  font-size: 19px;
+}
+
+.el-autocomplete {
+  width: 100%;
+}
+
+.el-dialog__header .el-dialog__title,
+.el-dialog__headerbtn .el-dialog__close {
+  color: #fff;
+  font-size: 16px;
+}
+
+.el-dialog__header .el-dialog__title {
+  line-height: 42px;
 }

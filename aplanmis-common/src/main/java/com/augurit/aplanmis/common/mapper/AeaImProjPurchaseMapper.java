@@ -9,6 +9,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -87,4 +88,6 @@ public interface AeaImProjPurchaseMapper {
     List<Map<String, Object>> queryIntermediaryList(@Param("projPurchaseId") String projPurchaseId);
 
     void updateIntermediaryWonBidStatus(String unitBiddingId);
+
+    void updateProjPurchaseState(@Param("auditFlag") String auditFlag, @Param("modifier") String modifier, @Param("modifyTime") Date modifyTime, @Param("projPurchaseId") String projPurchaseId);
 }

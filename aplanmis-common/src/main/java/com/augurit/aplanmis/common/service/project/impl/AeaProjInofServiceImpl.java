@@ -728,8 +728,54 @@ public class AeaProjInofServiceImpl implements AeaProjInfoService {
         return regionIds;
     }
 
+    @Override
+    public AeaProjInfo addChildProjInfo(AeaProjInfo aeaProjInfo) throws Exception {
+        String parentProjId = aeaProjInfo.getParentProjId();
+        if (StringUtils.isNotBlank(parentProjId) && StringUtils.isNotBlank(aeaProjInfo.getProjName())) {
+            List<AeaProjInfo> checkNameProj = aeaProjInfoMapper.listAeaProjInfo(aeaProjInfo);
+            //查询是否有重名的项目工程
+            if (checkNameProj != null && checkNameProj.size() > 0) {
+                return null;
+            }
 
-    /*mysql 数据库查询树结构方法*/
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            AeaProjInfo parentProj = aeaProjInfoMapper.getAeaProjInfoById(parentProjId);
+            if (null == parentProj) {
+                return null;
+            }
+
+            String rootOrgId = SecurityContext.getCurrentOrgId();
+            String childGcbm = gcbmBscRuleCodeStrategy.generateCode(parentProj.getLocalCode(), parentProj.getLocalCode(), "工程编码", rootOrgId);
+            if (childGcbm != null) {
+                //新增子项目
+                String childNodeId = UUID.randomUUID().toString();
+                aeaProjInfo.setProjInfoId(childNodeId);
+                aeaProjInfo.setLocalCode(parentProj.getLocalCode());
+                aeaProjInfo.setGcbm(childGcbm);
+                aeaProjInfo.setProjFlag("c");  //r表示ROOT项目，p表示发改项目，c表示子项目或子子项目
+                aeaProjInfo.setHaveDetail("1");
+                aeaProjInfo.setIsDeleted("0");
+                // 主题保持一致
+                aeaProjInfo.setThemeId(parentProj.getThemeId());
+                aeaProjInfo.setCreater(SecurityContext.getCurrentUserName());
+                aeaProjInfo.setCreateTime(new Date());
+                aeaProjInfo.setProjectCreateDate(dateFormat.format(new Date()));
+                aeaProjInfoMapper.insertAeaProjInfo(aeaProjInfo);
+
+                //增加父子项目关联
+                AeaParentProj aeaParentProj = new AeaParentProj();
+                aeaParentProj.setNodeProjId(UUID.randomUUID().toString());
+                aeaParentProj.setParentProjId(parentProj.getProjInfoId());
+                aeaParentProj.setChildProjId(aeaProjInfo.getProjInfoId());
+                aeaParentProj.setCreater(SecurityContext.getCurrentUserName());
+                aeaParentProj.setCreateTime(new Date());
+                aeaProjInfoMapper.insertAeaParentProj(aeaParentProj);
+
+                return aeaProjInfo;
+            }
+        }
+        return null;
+    }
 
     /**
      * 判断是数据库类型是否是mysql

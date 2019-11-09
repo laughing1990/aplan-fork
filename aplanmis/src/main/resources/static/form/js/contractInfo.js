@@ -44,22 +44,37 @@ var app = new Vue({
     }
   },
   created: function() {
+    this.projInfoId = this.getUrlParam('projInfoId');
+
+
+  },
+  mounted: function() {
+
     this.getContractType();
     this.showData();
 
     $(".loading").hide();
   },
+
   methods: {
+    // 获取页面的URL参数
+    getUrlParam: function(val) {
+      var svalue = location.search.match(new RegExp("[\?\&]" + val + "=([^\&]*)(\&?)", "i"));
+      return svalue ? svalue[1] : svalue;
+    },
     // 请求table数据
     getContractType: function() {
       var vm = this;
       // vm.loading = true;
+
       request('', {
-        type: 'post',
-        url: ctx + 'rest/form/contra/contractType',
-        data: {},
+        type: 'get',
+        url: ctx + 'rest/dict/code/multi/items/list',
+        data: {
+          dicCodeTypeCodes: 'contract_type'
+        },
       }, function(res) {
-        vm.fieldType = res;
+        vm.fieldType = res.content.contract_type;
       }, function(err) {
         vm.$message.error('服务器错了哦!');
       })
@@ -72,7 +87,7 @@ var app = new Vue({
         type: 'post',
         url: ctx + 'rest/form/contra/getAeaExProjContract.do',
         data: {
-          projInfoId: 'a'
+          projInfoId: this.projInfoId
         },
       }, function(res) {
         vm.formData = res;
@@ -109,7 +124,7 @@ var app = new Vue({
       this.$refs['form'].validate(function(valid) {
         if (!valid) return false;
         var param = {
-          projInfoId: 'a',
+          projInfoId: _this.projInfoId,
           contractId: _this.formData.contractId || '',
           provinceProjCode: _this.formData.provinceProjCode || '',
           contractCode: _this.formData.contractCode || '',

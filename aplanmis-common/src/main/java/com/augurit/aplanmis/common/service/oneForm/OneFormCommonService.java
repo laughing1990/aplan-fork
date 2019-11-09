@@ -9,6 +9,7 @@ import com.augurit.aplanmis.common.domain.AeaParStagePartform;
 import com.augurit.aplanmis.common.service.admin.oneform.AeaParStagePartformService;
 import com.augurit.aplanmis.front.basis.stage.service.RestStageService;
 import com.augurit.aplanmis.front.basis.stage.vo.OneFormStageRequest;
+import com.augurit.aplanmis.front.basis.stage.vo.StageDevFormVo;
 import com.augurit.aplanmis.front.basis.stage.vo.StageItemFormVo;
 import org.apache.commons.beanutils.BeanComparator;
 import org.slf4j.Logger;
@@ -59,6 +60,7 @@ public class OneFormCommonService {
             List<AeaParStagePartform> listAeaParStagePartform =null;
             AeaParStagePartform aeaParStagePartform = new AeaParStagePartform();
             aeaParStagePartform.setStageId(oneFormStageRequest.getStageId());
+            aeaParStagePartform.setIsSmartForm("1");// 过滤开发表单
             listAeaParStagePartform = aeaParStagePartformService.listStagePartform(aeaParStagePartform);
 
             //事项表单和扩展表单合并
@@ -82,14 +84,40 @@ public class OneFormCommonService {
         }
         return result;
     }
-    public ContentResultForm<String> renderHtmlFormContainer(OneFormStageRequest oneFormStageRequest,SFRenderConfig sFRenderConfig) {
-        ContentResultForm<String> result = new ContentResultForm<String>(false, "", "");
+    public ContentResultForm<Map> renderHtmlFormContainer(OneFormStageRequest oneFormStageRequest,SFRenderConfig sFRenderConfig) throws Exception {
+        ContentResultForm<Map> result = new ContentResultForm(false, "", "");
         if (StringUtils.isBlank(oneFormStageRequest.getApplyinstId())) {
             result.setMessage("申报实例ID不能为空!!");
         }
         else{
+            Map<String, Object> resultMap = new HashMap();
             List<SFFormParam> listSFFormParam = genListSFFormParam4OneForm(oneFormStageRequest);
-            result= sFFormMultipleRender.renderHtmlFormContainer(listSFFormParam,sFRenderConfig);
+            ContentResultForm<String> sfFormResult = sFFormMultipleRender.renderHtmlFormContainer(listSFFormParam,sFRenderConfig);
+            resultMap.put("sfForm", sfFormResult.getContent());
+
+            // 查询开发表单
+            List<StageDevFormVo> stageDevFormList = new ArrayList<>();
+            AeaParStagePartform aeaParStagePartform = new AeaParStagePartform();
+            aeaParStagePartform.setStageId(oneFormStageRequest.getStageId());
+            aeaParStagePartform.setIsSmartForm("0");
+            aeaParStagePartform.setSortNo(null);
+            List<AeaParStagePartform> aeaParStagePartformList = aeaParStagePartformService.listStagePartform(aeaParStagePartform);
+
+            if (aeaParStagePartformList != null && aeaParStagePartformList.size() > 0) {
+                String projInfoId = oneFormStageRequest.getProjInfoId();
+
+                for (AeaParStagePartform parStagePartform : aeaParStagePartformList) {
+                    StageDevFormVo stageDevFormVo = new StageDevFormVo();
+                    stageDevFormVo.setFormId(parStagePartform.getStagePartformId());
+                    stageDevFormVo.setFormName(parStagePartform.getPartformName());
+                    stageDevFormVo.setFormUrl(parStagePartform.getFormUrl().replace("{projInfoId}", "projInfoId=" + projInfoId));
+                    stageDevFormList.add(stageDevFormVo);
+                }
+            }
+
+            resultMap.put("devForm", stageDevFormList);
+            result.setSuccess(true);
+            result.setContent(resultMap);
         }
         return result;
     }

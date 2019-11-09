@@ -1,5 +1,6 @@
 body {
   padding: 16px;
+  margin: 0;
   background: #f2f3f8;
 }
 
@@ -237,7 +238,7 @@ body {
 }
 
 .el-form-item__content {
-  width: 63%;
+  width: 61%;
 }
 
 .el-form-item__content .el-date-editor {

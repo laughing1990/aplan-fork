@@ -81,42 +81,40 @@ var app = new Vue({
     }
   },
   created: function() {
+    this.projInfoId = this.getUrlParam('projInfoId');
+
+
+  },
+  mounted: function() {
     this.getLandAreaType();
-    this.getFieldType();
     this.showData();
 
     $(".loading").hide();
   },
   methods: {
-
-    // 获取用地单位
+    // 获取页面的URL参数
+    getUrlParam: function(val) {
+      var svalue = location.search.match(new RegExp("[\?\&]" + val + "=([^\&]*)(\&?)", "i"));
+      return svalue ? svalue[1] : svalue;
+    },
+    // 获取用地单位/性质
     getLandAreaType: function() {
       var vm = this;
       // vm.loading = true;
       request('', {
-        type: 'post',
-        url: ctx + 'rest/form/tceop/landAreaType',
-        data: {},
+        type: 'get',
+        url: ctx + 'rest/dict/code/multi/items/list',
+        data: {
+          dicCodeTypeCodes: 'Land_Area_Type,XM_FIELD_TYPE'
+        },
       }, function(res) {
-        vm.landAreaUnitSite = res;
+        vm.landAreaUnitSite = res.content.Land_Area_Type;
+        vm.fieldType = res.content.XM_FIELD_TYPE;
       }, function(err) {
         vm.$message.error('服务器错了哦!');
       })
     },
-    // 获取用地性质
-    getFieldType: function() {
-      var vm = this;
-      // vm.loading = true;
-      request('', {
-        type: 'post',
-        url: ctx + 'rest/form/tceop/fieldType',
-        data: {},
-      }, function(res) {
-        vm.fieldType = res;
-      }, function(err) {
-        vm.$message.error('服务器错了哦!');
-      })
-    },
+
     // 请求table数据
     showData: function() {
       var vm = this;
@@ -125,7 +123,7 @@ var app = new Vue({
         type: 'post',
         url: ctx + 'rest/form/tceop/getTceop.do',
         data: {
-          projInfoId: 'q'
+          projInfoId: this.projInfoId
         },
       }, function(res) {
         vm.formData = res;
@@ -164,7 +162,7 @@ var app = new Vue({
       this.$refs['form'].validate(function(valid) {
         if (!valid) return false;
         var param = {
-          projInfoId: 'q',
+          projInfoId: _this.projInfoId,
           certLandId: _this.formData.certLandId || '',
           certProjectId: _this.formData2.certProjectId || '',
           siteId: _this.formData3.siteId || '',
