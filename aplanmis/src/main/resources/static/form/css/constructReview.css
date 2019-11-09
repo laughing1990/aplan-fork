@@ -274,6 +274,10 @@ body {
   float: right;
 }
 
+.form-title .el-form-item__content {
+  margin-left: 0 !important;
+}
+
 .input-with-select .el-input-group__append .el-select {
   width: 85px;
 }
