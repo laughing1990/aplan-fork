@@ -2,6 +2,7 @@ package com.augurit.aplanmis.common.service.unit;
 
 import com.augurit.aplanmis.common.domain.AeaUnitInfo;
 import com.augurit.aplanmis.common.domain.AeaUnitProj;
+import com.augurit.aplanmis.common.domain.ExSJUnitFromDetails;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 
@@ -281,4 +282,11 @@ public interface AeaUnitInfoService {
     List<AeaUnitInfo> getUnitInfoByLinkmanInfoId(String linkmanInfoId);
 
     List<AeaUnitInfo> getUnitInfoListByIdCard(String idcard);
+
+    /**
+     * 单位模糊搜索，供施工和监理单位信息使用
+     * @param keyword
+     * @return
+     */
+    List<ExSJUnitFromDetails> findAeaExProBuildUnitInfoByKeyword(String keyword);
 }

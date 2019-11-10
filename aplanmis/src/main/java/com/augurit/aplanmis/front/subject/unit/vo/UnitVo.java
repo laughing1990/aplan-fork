@@ -38,6 +38,9 @@ public class UnitVo {
     // 法定代表人证件号
     @ApiModelProperty(value = "法定代表人证件号")
     private String idno;
+    //法人联系电话
+    @ApiModelProperty(value = "法人联系电话")
+    private String idmobile;
     // 联系人id
     @ApiModelProperty(value = "联系人id")
     private String linkmanId;
@@ -67,6 +70,14 @@ public class UnitVo {
     private String taxpayerNum;
     @ApiModelProperty(value = "信用标记码", dataType = "string")
     private String creditFlagNum;
+    @ApiModelProperty(value = "安全生产许可证编号", dataType = "string")
+    private String safeLicenceNum;
+    @ApiModelProperty(value = "资质等级名称", dataType = "string")
+    private String qualLevelName;
+    @ApiModelProperty(value = "证照编码", dataType = "string")
+    private String certinstCode;
+    @ApiModelProperty(value = "注册编号", dataType = "string")
+    private String registerNum;
 
     public static UnitVo from(AeaUnitInfo aeaUnitInfo, AeaLinkmanInfo aeaLinkmanInfo) {
         UnitVo unitVo = new UnitVo();
@@ -75,6 +86,7 @@ public class UnitVo {
         //unitVo.setIdtype(aeaUnitInfo.getIdtype());
        // unitVo.setIdcard(aeaUnitInfo.getIdcard());
         unitVo.setIdrepresentative(aeaUnitInfo.getIdrepresentative());
+        unitVo.setIdmobile(aeaUnitInfo.getIdmobile());
         unitVo.setIdno(aeaUnitInfo.getIdno());
         unitVo.setApplicantDetailSite(aeaUnitInfo.getApplicantDetailSite());
         unitVo.setInduCommRegNum(aeaUnitInfo.getInduCommRegNum());

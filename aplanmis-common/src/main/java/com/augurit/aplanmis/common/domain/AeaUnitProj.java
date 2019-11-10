@@ -28,6 +28,9 @@ public class AeaUnitProj implements Serializable {
     private java.util.Date createTime; // (创建时间)
     private String linkmanInfoId;//(单位项目负责人)
     private String isDeleted;
+    private String qualLevelId;//所属资质等级ID（对应AEA_IM_QUAL_LEVEL表）
+    private String certinstId;//证书实例表ID
+    private String safeLicenceNum;//安全生产许可证编号
 
     public static AeaUnitProj initIsDeleted(AeaUnitProj aeaUnitProj) {
         aeaUnitProj.setIsDeleted("0");

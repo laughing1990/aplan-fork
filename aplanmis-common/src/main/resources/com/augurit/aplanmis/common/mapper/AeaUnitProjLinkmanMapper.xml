@@ -47,13 +47,13 @@
             <if test="projLinkmanId!=null and projLinkmanId!='' ">
                 and aupl.PROJ_LINKMAN_ID=#{projLinkmanId}
             </if>
-            <if test="projLinkmanId!=null and projLinkmanId!='' ">
+            <if test="unitProjId!=null and unitProjId!='' ">
                 and aupl.UNIT_PROJ_ID=#{unitProjId}
             </if>
-            <if test="projLinkmanId!=null and projLinkmanId!='' ">
+            <if test="linkmanInfoId!=null and linkmanInfoId!='' ">
                 and aupl.LINKMAN_INFO_ID=#{linkmanInfoId}
             </if>
-            <if test="projLinkmanId!=null and projLinkmanId!='' ">
+            <if test="linkmanType!=null and linkmanType!='' ">
                 and aupl.LINKMAN_TYPE=#{linkmanType}
             </if>
         </where>
@@ -110,6 +110,24 @@
             <if test="isDeleted != null and isDeleted!='' ">
                 IS_DELETED = #{isDeleted},
             </if>
+            <if test="professionCertType != null and professionCertType!='' ">
+                PROFESSION_CERT_TYPE = #{professionCertType},
+            </if>
+            <if test="professionSealNum != null and professionSealNum!='' ">
+                PROFESSION_SEAL_NUM = #{professionSealNum},
+            </if>
+            <if test="titleGrade != null and titleGrade!='' ">
+                TITLE_GRADE = #{titleGrade},
+            </if>
+            <if test="titleCertNum != null and titleCertNum!='' ">
+                TITLE_CERT_NUM = #{titleCertNum},
+            </if>
+            <if test="safeLicenceNum != null and safeLicenceNum!='' ">
+                SAFE_LICENCE_NUM = #{safeLicenceNum},
+            </if>
+            <if test="registerNum !=null and registerNum !='' ">
+                REGISTER_NUM = #{registerNum}
+            </if>
         </set>
         where PROJ_LINKMAN_ID = #{projLinkmanId}
     </update>
@@ -149,9 +167,9 @@
     <!--7 新增实体对象 -->
     <insert id="insertAeaUnitProjLinkman" parameterType="AeaUnitProjLinkman">
         insert into AEA_UNIT_PROJ_LINKMAN (
-        PROJ_LINKMAN_ID ,UNIT_PROJ_ID ,LINKMAN_INFO_ID ,LINKMAN_TYPE  ,CREATER ,CREATE_TIME,IS_DELETED,PROFESSION_CERT_TYPE,PROFESSION_SEAL_NUM,TITLE_GRADE,TITLE_CERT_NUM,REGISTER_NUM,SAFE_LICENCE_NUM,PRJ_SPTY
+        PROJ_LINKMAN_ID ,UNIT_PROJ_ID ,LINKMAN_INFO_ID ,LINKMAN_TYPE  ,CREATER ,CREATE_TIME,IS_DELETED,PROFESSION_CERT_TYPE,PROFESSION_SEAL_NUM,TITLE_GRADE,TITLE_CERT_NUM,REGISTER_NUM,SAFE_LICENCE_NUM,PRJ_SPTY,REGISTER_NUM
         ) values (
-        #{projLinkmanId},#{unitProjId},#{linkmanInfoId},#{linkmanType},#{creater},#{createTime},'0',#{professionCertType},#{professionSealNum},#{titleGrade},#{titleCertNum},#{registerNum},#{safeLicenceNum},#{prjSpty}
+        #{projLinkmanId},#{unitProjId},#{linkmanInfoId},#{linkmanType},#{creater},#{createTime},'0',#{professionCertType},#{professionSealNum},#{titleGrade},#{titleCertNum},#{registerNum},#{safeLicenceNum},#{prjSpty},#{registerNum}
         )
     </insert>
 
@@ -295,6 +313,21 @@
 
         </where>
     </select>
-
+    <select id="findPersonSetting" resultType="PersonSetting">
+        select
+        <include refid="allColumns">
+            <property name="alias" value="aupl"/>
+        </include>
+        ,ali.LINKMAN_NAME linkmanName,
+        ali.LINKMAN_CERT_NO linkmanCertNo
+        from AEA_UNIT_PROJ_LINKMAN aupl
+        left join AEA_LINKMAN_INFO ali on aupl.LINKMAN_INFO_ID=ali.LINKMAN_INFO_ID
+        <where>
+            aupl.IS_DELETED='0' and ali.IS_DELETED='0' and ali.IS_ACTIVE='1'
+            <if test="unitProjId!=null and unitProjId!=''">
+                and aupl.UNIT_PROJ_ID =#{unitProjId}
+            </if>
+        </where>
+    </select>
 
 </mapper>

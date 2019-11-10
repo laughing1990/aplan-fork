@@ -2,6 +2,7 @@ package com.augurit.aplanmis.common.mapper;
 
 import com.augurit.aplanmis.common.domain.AeaLinkmanInfo;
 import com.augurit.aplanmis.common.domain.AeaUnitInfo;
+import com.augurit.aplanmis.common.domain.ExSJUnitFromDetails;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -76,4 +77,11 @@ public interface AeaUnitInfoMapper {
      * @return
      */
     List<AeaUnitInfo> getAeaUintListByProjInfoIdAndUnitYype(@Param("projInfoId") String projInfoId,@Param("unitType") String unitType);
+    /**
+     * 模糊查询，供施工和监理单位表单使用
+     * @param keyword
+     * @param rootOrgId
+     * @return
+     */
+    List<ExSJUnitFromDetails> findAeaExProBuildUnitInfoByKeyword(@Param("keyword") String keyword, @Param("rootOrgId") String rootOrgId);
 }
