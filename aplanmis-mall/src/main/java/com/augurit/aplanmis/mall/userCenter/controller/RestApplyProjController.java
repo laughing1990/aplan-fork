@@ -371,4 +371,18 @@ public class RestApplyProjController {
             return new ResultForm(false, e.getMessage());
         }
     }
+
+    //------------------保存项目信息--------------
+    @PostMapping("/withDraw/{applyInstId}")
+    @ApiOperation(value = "撤回办件")
+    @ApiImplicitParams({
+            @ApiImplicitParam(value = "applyInstId", name = "申请实例ID", required = true, dataType = "object")})
+    public ResultForm withDraw(@PathVariable("applyInstId") String applyInstId) {
+        try {
+            restUserCenterService.withDrawProject(applyInstId);
+            return new ResultForm(true, "操作成功");
+        } catch (Exception e) {
+            return new ResultForm(false, e.getMessage());
+        }
+    }
 }

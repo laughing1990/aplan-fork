@@ -113,7 +113,7 @@ public class OrgEfficiencySupervisionController {
     @ApiOperation(value = "委办局-本周部门办理事项统计")
     public ContentResultForm queryThisWeekOrgHandleItemStatistics() {
         try {
-            List<ItemDetailFormVo> result = orgEfficiencySupersionService.queryOrgHandleItemStatisticsToNow("W");
+            List<ItemDetailFormVo> result = orgEfficiencySupersionService.queryOrgHandleItemStatisticsToYesterday("W");
             return new ContentResultForm<>(true, result, "查询成功！");
         } catch (Exception e) {
             e.printStackTrace();
@@ -125,7 +125,7 @@ public class OrgEfficiencySupervisionController {
     @ApiOperation(value = "委办局-本月部门办理事项统计")
     public ContentResultForm queryThisMonthOrgHandleItemStatistics() {
         try {
-            List<ItemDetailFormVo> result = orgEfficiencySupersionService.queryOrgHandleItemStatisticsToNow("M");
+            List<ItemDetailFormVo> result = orgEfficiencySupersionService.queryOrgHandleItemStatisticsToYesterday("M");
             return new ContentResultForm<>(true, result, "查询成功！");
         } catch (Exception e) {
             e.printStackTrace();
