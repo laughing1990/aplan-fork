@@ -12,4 +12,10 @@ public interface RestUserCenterService {
 
     public String saveProjectInfo(HttpServletRequest request, AeaProjInfo aeaProjInfo) throws Exception;
 
+    /**
+     * 撤回办件,即将申报实例记录标志为逻辑删除
+     * @param applyInstId
+     */
+    void withDrawProject(String applyInstId) throws Exception;
+
 }

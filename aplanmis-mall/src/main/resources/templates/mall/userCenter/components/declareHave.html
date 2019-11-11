@@ -20,17 +20,17 @@
           <thead>
             <tr>
               <th class="al" width="20%">申报流水号</th>
-              <th class="al" width="30%">项目代码 | 项目名称</th>
+              <th class="al" width="25%">项目代码 | 项目名称</th>
               <th class="al" width="20%">阶段/事项名称</th>
               <th width="20%">申报状态</th>
-              <th width="10%">操作</th>
+              <th class="al" width="15%">操作</th>
             </tr>
           </thead>
           <tbody id="inProgressProjBody">
             <template v-if="hadApplyItemData.length>0">
               <tr v-for="item in hadApplyItemData">
                 <td width="20%">{{item.applyinstCode}}</td>
-                <td class="al" width="30%">
+                <td class="al" width="20%">
                   <el-tooltip placement="top" effect="light">
                     <div slot="content">项目代码：{{item.localCode}}<br/> <br/>工程代码：{{item.gcbm}}<br /> <br/>项目/工程名称：{{item.projName}}</div>
                     <div>
@@ -84,8 +84,10 @@
                         v-else="item.applyinstState=='6'">已办结</span>
                 </td>
                 <!--<td width="20%"><i class="applyintState" :class="applyState(item.applyinstState)"></i> {{item.applyinstState}}</td>-->
-                <td width="10%" style="cursor: pointer">
+                <td width="20%" style="cursor: pointer" class="al" style="width: 120px;">
                   <span class="option-btn" style="display: inline-block;width: 50px;"  @click="lookProjDetail(item)">查看</span>
+                  <span v-if="item.applyinstState=='0'" class="option-btn" style="display: inline-block;width: 50px;"  @click="withDraw(item)">撤件</span>
+                  <span v-else="item.applyinstState!='0'" class="option-btn"  style="display: inline-block;width: 50px;"  title="目前支持撤回已接件未审核状态的办件">撤件</span>
                 </td>
               </tr>
             </template>
