@@ -3,6 +3,7 @@ package com.augurit.aplanmis.front.form.controller;
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.aplanmis.common.domain.AeaExProjBid;
+import com.augurit.aplanmis.common.domain.AeaProjInfo;
 import com.augurit.aplanmis.common.domain.AeaUnitInfo;
 import com.augurit.aplanmis.common.domain.AeaUnitProj;
 import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
@@ -70,18 +71,25 @@ public class AeaExProjBidController {
         try {
             if (projId != null && !"".equals(projId)) {
                 logger.debug("根据ID获取AeaExProjBid对象，ID为：{}", projId);
-                AeaExProjBidVo aeaExProjBidVo = new AeaExProjBidVo();
-                AeaExProjBid aeaExProjBid = aeaExProjBidService.getAeaExProjBidByProjId(projId);
-                if (aeaExProjBid != null) {
-                    aeaExProjBidVo = AeaExProjBidVo.from(aeaExProjBid);
+                //判断项目是否存在
+                AeaProjInfo aeaProjInfo = aeaExProjBidService.getProjInfoByProjId(projId);
+                if (aeaProjInfo != null) {
+                    AeaExProjBidVo aeaExProjBidVo = new AeaExProjBidVo();
+                    AeaExProjBid aeaExProjBid = aeaExProjBidService.getAeaExProjBidByProjId(projId);
+                    if (aeaExProjBid != null) {
+                        aeaExProjBidVo = AeaExProjBidVo.from(aeaExProjBid);
+                    }
+                    List<AeaUnitInfo> winBidUnitList = aeaUnitInfoService.findUnitProjByProjInfoIdAndType(projId, WINBID_UNIT);//WINBID_UNIT
+                    List<AeaUnitInfo> agencyUnitList = aeaUnitInfoService.findUnitProjByProjInfoIdAndType(projId, AGENT_UNIT);//AGENT_UNIT
+                    List<AeaUnitInfo> costUnitList = aeaUnitInfoService.findUnitProjByProjInfoIdAndType(projId, COST_UNIT);//COST_UNIT
+                    aeaExProjBidVo.setWinBidUnits(winBidUnitList);
+                    aeaExProjBidVo.setAgencyUnits(agencyUnitList);
+                    aeaExProjBidVo.setCostUnits(costUnitList);
+                    return new ContentResultForm<AeaExProjBidVo>(true, aeaExProjBidVo);
+                } else {
+                    logger.debug("根据项目Id找不到项目信息，请重新确认！");
+                    return new ContentResultForm<AeaExProjBidVo>(false, null,"根据项目Id找不到项目信息，请重新确认！");
                 }
-                List<AeaUnitInfo> winBidUnitList = aeaUnitInfoService.findUnitProjByProjInfoIdAndType(projId, WINBID_UNIT);//WINBID_UNIT
-                List<AeaUnitInfo> agencyUnitList = aeaUnitInfoService.findUnitProjByProjInfoIdAndType(projId, AGENT_UNIT);//AGENT_UNIT
-                List<AeaUnitInfo> costUnitList = aeaUnitInfoService.findUnitProjByProjInfoIdAndType(projId, COST_UNIT);//COST_UNIT
-                aeaExProjBidVo.setWinBidUnits(winBidUnitList);
-                aeaExProjBidVo.setAgencyUnits(agencyUnitList);
-                aeaExProjBidVo.setCostUnits(costUnitList);
-                return new ContentResultForm<AeaExProjBidVo>(true, aeaExProjBidVo);
             } else {
                 logger.debug("构建新的AeaExProjBid对象");
                 return new ContentResultForm<AeaExProjBidVo>(true, new AeaExProjBidVo());
