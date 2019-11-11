@@ -56,12 +56,12 @@ public interface AeaAnaOrgDayStatisticsMapper {
 
     /**
      * 查询部门统计日期大于等于startTime小于等于endTime的统计数据
-     * @param orgId
+     * @param orgIds
      * @param itemId
      * @param startTime
      * @return
      */
-    public List<AeaAnaOrgDayStatistics> queryAeaAnaOrgDayStatisticsGreaterThanStartTime(@Param("orgId") String orgId, @Param("itemId") String itemId, @Param("startTime") String startTime,@Param("endTime") String endTime);
+    public List<AeaAnaOrgDayStatistics> queryAeaAnaOrgDayStatisticsGreaterThanStartTime(@Param("orgIds") String[] orgIds, @Param("itemId") String itemId, @Param("startTime") String startTime,@Param("endTime") String endTime);
 
     /**
      * 查询时间段内的部门接件情况统计

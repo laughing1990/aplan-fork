@@ -395,7 +395,10 @@ ORG_DAY_STATISTICS_ID  ,STATISTICS_RECORD_ID  ,ORG_ID  ,ORG_NAME  ,REGION_ID  ,R
         select
         <include refid="allColumns"/>
         from  AEA_ANA_ORG_DAY_STATISTICS
-        where ORG_ID = #{orgId}
+        where ORG_ID IN
+        <foreach collection="orgIds" item="orgId" index="index" open="(" close=")" separator=",">
+            #{orgId}
+        </foreach>
         <if test="itemId != null and itemId != ''" >
             and  ITEM_ID = #{itemId}
         </if>
@@ -405,7 +408,7 @@ ORG_DAY_STATISTICS_ID  ,STATISTICS_RECORD_ID  ,ORG_ID  ,ORG_NAME  ,REGION_ID  ,R
         <if test="endTime != null and endTime != ''" >
             and STATISTICS_DATE &lt;= #{endTime}
         </if>
-        order by STATISTICS_DATE
+        order by ORG_ID,STATISTICS_DATE
     </select>
 
     <delete id="deleteThisDayStatisticsData">
