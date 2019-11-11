@@ -168,6 +168,27 @@ var vm = new Vue({
         })
       });
     },
+    //撤件
+    withDraw:function(item){
+        var _this=this;
+        confirmMsg('','此操作将撤回办件,确定要撤回吗？',function(){
+          request('',{
+            type:'post',
+            url:ctx+'/rest/user/withDraw/'+item.applyinstId,
+            data:{
+              applyInstId : item.applyinstId
+            }
+          },function (res) {
+            _this.$message({
+              message: '撤回成功',
+              type: 'success'
+            });
+            _this.getHadApplyItemList();
+          },function (err) {
+            _this.$message.error('服务器错了哦!');
+          })
+        })
+    },
     // 项目详情-事项列表-收起展开事项数据
     changeMatterListShow: function (showlist, alllist, identify, type) {
       //  console.log(showlist, alllist, identify)

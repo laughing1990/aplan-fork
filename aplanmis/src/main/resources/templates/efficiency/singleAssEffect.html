@@ -90,7 +90,7 @@
                 <div class="accept-rander-box">
                   <el-table :data="itemHandelTableList" border style="width: 100%" height='330'
                     :header-cell-style="{padding:'5px 0', color: '#575962'}">
-                    <el-table-column prop="itemName" label="事项名称" min-width="180" :formatter="formatterTableCell"
+                    <el-table-column prop="itemName" label="事项名称" min-width="100" :formatter="formatterTableCell"
                       :show-overflow-tooltip="true">
                     </el-table-column>
                     <el-table-column prop="receiptCount" label="接件数" :formatter="formatterTableCell" width="100">
@@ -128,7 +128,10 @@
               <div class="win-precent-box clearfix" :class="[isSmallWin? 'mb45':'']">
                 <div class="win-item" v-for="item in accepConnectionWinList" :key="item.windId"
                   :class="[item.select ? 'active':'']" @click="fetchSelectedWinAccepConnectionEffectData(item)">
-                  <p class="ellipsis win-title">{{item.winName}}</p>
+                  <!-- <p class="ellipsis pdlr40 win-title">{{item.winName}}</p> -->
+                  <el-tooltip class="item" effect="dark" :content="item.winName" placement="top">
+                    <p class="ellipsis pdlr40 win-title">{{item.winName}}</p>
+                  </el-tooltip>
                   <div class="win-content clearfix">
                     <div class="fl win-precent">
                       <p class="tip">已接件</p>

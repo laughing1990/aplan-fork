@@ -10,19 +10,19 @@
                         organizationalCode: '',
                         unifiedSocialCreditCode: '',
                         applicant: '',
-                        unitType: '8c0173dd-f2cb-48f9-8233-e27d0b7ed941'
+                        unitType: '17'
                     }],
                     agencyUnits: [{
                         organizationalCode: '',
                         unifiedSocialCreditCode: '',
                         applicant: '',
-                        unitType: '31725803-1710-4376-be08-78abae406a02'
+                        unitType: '2'
                     }],
                     costUnits: [{
                         organizationalCode: '',
                         unifiedSocialCreditCode: '',
                         applicant: '',
-                        unitType: '1e18c273-7531-4fa6-86f3-fd5bfb6bd9e1'
+                        unitType: '14'
                     }]
                 },
                 biddingInfoRules: {
@@ -45,7 +45,8 @@
                 bidModeOptions: [], // 招标方式下拉选项arr
                 govAreaCodeOptions: [], // 招投标确认的行政单位区域码下拉选项arr
                 projectType: [], // 项目主体类型下拉选项arr
-                isShowFoot: false // 是否显示‘招标代理机构’和‘造价咨询单位’
+                isShowFoot: false, // 是否显示‘招标代理机构’和‘造价咨询单位’
+                projNameSelect: [], // 下拉选择项目名数组
             }
         },
         created: function () {
@@ -110,6 +111,12 @@
                         _that.biddingInfo = data.content;
 
                         if (_that.biddingInfo.bidMode != 'f3632ed9-f728-436f-92f6-4c88c7bbba86') {
+                            _that.biddingInfo.winBidUnits.splice(0, 1, {
+                                organizationalCode: '',
+                                unifiedSocialCreditCode: '',
+                                applicant: '',
+                                unitType: '17'
+                            });
                             _that.isShowFoot = true;
                         }
                     } else {
@@ -171,7 +178,7 @@
                 return svalue ? svalue[1] : svalue;
             },
             // 招标方式下拉改版时触发
-            bidModeSelect: function(val) {                
+            bidModeSelect: function (val) {
                 if (val == 'f3632ed9-f728-436f-92f6-4c88c7bbba86') {
                     // 直接委托
                     this.biddingInfo.agencyUnits.splice(0, 1);
@@ -184,17 +191,57 @@
                         organizationalCode: '',
                         unifiedSocialCreditCode: '',
                         applicant: '',
-                        unitType: '31725803-1710-4376-be08-78abae406a02'
+                        unitType: '2'
                     });
                     // 造价咨询单位
                     this.biddingInfo.costUnits.splice(0, 1, {
                         organizationalCode: '',
                         unifiedSocialCreditCode: '',
                         applicant: '',
-                        unitType: '1e18c273-7531-4fa6-86f3-fd5bfb6bd9e1'
+                        unitType: '14'
                     });
                     this.isShowFoot = true;
                 }
+            },
+            // 项目名称过滤
+            createFilter: function (queryString) {
+                return function (projNameSelect) {
+                    return (projNameSelect.value.toLowerCase());
+                };
+            },
+            // 单位名称模糊查询
+            querySearchJiansheName: function (queryString, cb) {
+                var _that = this;
+                if (typeof (queryString) != 'undefined') queryString = queryString.trim();
+                if (queryString != '' && queryString.length >= 2) {
+                    request('', {
+                        url: ctx + 'rest/unit/list',
+                        type: 'get',
+                        data: { "keyword": queryString, "projInfoId": _that.projInfoId },
+                    }, function (result) {
+                        if (result) {
+                            _that.projNameSelect = result.content;
+
+                            _that.projNameSelect.map(function (item) {
+                                if (item) {
+                                    Vue.set(item, 'value', item.applicant);
+                                }
+                            })
+                            var results = queryString ? _that.projNameSelect.filter(_that.createFilter(queryString)) : _that.projNameSelect;
+                            // 调用 callback 返回建议列表的数据
+                            cb(results);
+                        }
+                    }, function (msg) {
+                        cb([]);
+                    })
+                } else {
+                    cb([]);
+                }
+            },
+            // 选中单位名称后设置相关信息
+            setUnitInfo: function(val, obj){
+                Vue.set(obj, 'organizationalCode', val.organizationalCode);
+                Vue.set(obj, 'unifiedSocialCreditCode', val.unifiedSocialCreditCode);
             }
         }
     })

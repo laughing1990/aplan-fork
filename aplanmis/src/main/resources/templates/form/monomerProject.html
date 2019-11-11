@@ -23,7 +23,8 @@
     <script>
         var ctx = '[[@{/}]]';
         // var ctx = 'http://192.168.15.81:8083/aplanmis-front/';
-        var ctx = 'http://192.168.15.159:8083/aplanmis-front/';
+        // var ctx = 'http://192.168.15.159:8083/aplanmis-front/';
+        // var ctx = 'http://192.168.32.53:8083/aplanmis-front/';
     </script>
 
     <!--折叠百叶窗公共css，到时候提取出来做公共模块-->
@@ -173,6 +174,45 @@
             color: #FF4B47;
             cursor: pointer;
         }
+
+        .el-dialog {
+            background-color: #F0F3F6;
+        }
+
+        .formBody {
+            padding-top: 20px;
+            background-color: #fff;
+        }
+
+        .el-dialog__body {
+            padding: 15px;
+        }
+
+        .el-dialog__header {
+            padding: 10px 20px 10px;
+            background-color: #169AFF;
+        }
+
+        .el-dialog__title {
+            font-size: 16px;
+            color: #fff;
+        }
+
+        .el-dialog__headerbtn {
+            top: 16px;
+        }
+
+        .el-dialog__headerbtn .el-dialog__close {
+            color: #fff;
+        }
+
+        .el-dialog__footer {
+            padding-top: 0;
+        }
+
+        .monomer-footer .el-button {
+            padding: 9px 28px;
+        }
     </style>
 </head>
 
@@ -224,40 +264,42 @@
 
         <!-- 新增，编辑弹窗 -->
         <el-dialog :title="formTitle" :visible.sync="isShowDialog" width="80%" :before-close="handleClose">
-            <el-form ref="form" :model="formData" label-width="170px" :rules="rules">
-                <div class="clearfix">
-                    <el-form-item class="input-inline" label="工程名称：" prop="projName">
-                        <el-input v-model="formData.projName"></el-input>
-                    </el-form-item>
-                    <el-form-item class="input-inline" label="地上面积（平方米）：" prop="aboveGround">
-                        <el-input v-model="formData.aboveGround"></el-input>
-                    </el-form-item>
-                    <el-form-item class="input-inline" label="地下面积（平方米）：" prop="underGround">
-                        <el-input v-model="formData.underGround"></el-input>
-                    </el-form-item>
+            <div class="formBody">
+                <el-form ref="form" :model="formData" label-width="170px" :rules="rules">
+                    <div class="clearfix">
+                        <el-form-item class="input-inline" label="工程名称：" prop="projName">
+                            <el-input v-model="formData.projName"></el-input>
+                        </el-form-item>
+                        <el-form-item class="input-inline" label="地上面积（平方米）：" prop="aboveGround">
+                            <el-input v-model="formData.aboveGround"></el-input>
+                        </el-form-item>
+                        <el-form-item class="input-inline" label="地下面积（平方米）：" prop="underGround">
+                            <el-input v-model="formData.underGround"></el-input>
+                        </el-form-item>
 
-                    <el-form-item class="input-inline" label="地上层数：" prop="aboveFloor">
-                        <el-input v-model="formData.aboveFloor"></el-input>
-                    </el-form-item>
-                    <el-form-item class="input-inline" label="地下层数：" prop="underFloor">
-                        <el-input v-model="formData.underFloor"></el-input>
-                    </el-form-item>
-                    <el-form-item class="input-inline" label="地上建筑高度（米）：" prop="aboveHeight">
-                        <el-input v-model="formData.aboveHeight"></el-input>
-                    </el-form-item>
+                        <el-form-item class="input-inline" label="地上层数：" prop="aboveFloor">
+                            <el-input v-model="formData.aboveFloor"></el-input>
+                        </el-form-item>
+                        <el-form-item class="input-inline" label="地下层数：" prop="underFloor">
+                            <el-input v-model="formData.underFloor"></el-input>
+                        </el-form-item>
+                        <el-form-item class="input-inline" label="地上建筑高度（米）：" prop="aboveHeight">
+                            <el-input v-model="formData.aboveHeight"></el-input>
+                        </el-form-item>
 
-                    <el-form-item class="input-inline" label="地下建筑深度（米）：" prop="underDepth">
-                        <el-input v-model="formData.underDepth"></el-input>
-                    </el-form-item>
-                    <el-form-item class="input-inline" label="长度（米）：" prop="length">
-                        <el-input v-model="formData.length"></el-input>
-                    </el-form-item>
-                    <el-form-item class="input-inline" label="跨度（米）：" prop="span">
-                        <el-input v-model="formData.span"></el-input>
-                    </el-form-item>
-                </div>
-            </el-form>
-            <div slot="footer" class="dialog-footer">
+                        <el-form-item class="input-inline" label="地下建筑深度（米）：" prop="underDepth">
+                            <el-input v-model="formData.underDepth"></el-input>
+                        </el-form-item>
+                        <el-form-item class="input-inline" label="长度（米）：" prop="length">
+                            <el-input v-model="formData.length"></el-input>
+                        </el-form-item>
+                        <el-form-item class="input-inline" label="跨度（米）：" prop="span">
+                            <el-input v-model="formData.span"></el-input>
+                        </el-form-item>
+                    </div>
+                </el-form>
+            </div>
+            <div slot="footer" class="dialog-footer monomer-footer">
                 <el-button @click="cancleForm">取 消</el-button>
                 <el-button type="primary" @click="submitForm">确 定</el-button>
             </div>

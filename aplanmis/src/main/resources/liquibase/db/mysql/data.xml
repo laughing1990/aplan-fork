@@ -2252,4 +2252,27 @@ INSERT INTO `act_sto_widget_key` (`KEY_ID`, `WIDGET_ID`, `KEY_CODE`, `KEY_LABEL`
 
         </sql>
     </changeSet>
+
+    <changeSet id="201911111112" author="chenzh" failOnError="false">
+        <comment>获取流程定义的时限，更新到timerule_inst表</comment>
+        <sql splitStatements="true">
+            UPDATE act_sto_timerule_inst asti,
+            (
+            SELECT
+            ataf.APP_FLOWDEF_ID,
+            ataf.TIME_LIMIT
+            FROM
+            act_tpl_app_flowdef ataf,
+            ( SELECT APP_FLOWDEF_ID, TIME_LIMIT, ORG_ID FROM act_sto_timerule_inst WHERE IS_CONCLUDING = '0' ) temp
+            WHERE
+            ataf.APP_FLOWDEF_ID = temp.APP_FLOWDEF_ID
+            AND ataf.TIME_LIMIT != temp.TIME_LIMIT
+            AND ataf.IS_DELETED = '0'
+            AND ataf.ROOT_ORG_ID = temp.ORG_ID
+            ) temp2
+            SET asti.TIME_LIMIT = temp2.TIME_LIMIT
+            WHERE
+            asti.APP_FLOWDEF_ID = temp2.APP_FLOWDEF_ID
+        </sql>
+    </changeSet>
 </databaseChangeLog>

@@ -22,7 +22,8 @@
     </style>
     <script>
         var ctx = '[[@{/}]]';
-        var ctx = 'http://192.168.15.159:8083/aplanmis-front/';
+        // var ctx = 'http://192.168.15.159:8083/aplanmis-front/';
+        // var ctx = 'http://192.168.32.53:8083/aplanmis-front/';
     </script>
 
     <!--折叠百叶窗公共css，到时候提取出来做公共模块-->
@@ -141,7 +142,8 @@
         }
 
         .el-date-editor.el-input,
-        .el-date-editor.el-input__inner {
+        .el-date-editor.el-input__inner,
+        .el-autocomplete {
             width: 100%;
         }
 
@@ -262,15 +264,19 @@
                         </el-form-item>
                         <el-form-item label="单位名称" class="input-inline" prop="winBidUnits[0].applicant" :rules="[
                         { required: true, message: '单位名称不得为空！', trigger: 'change' }]">
-                            <el-input name="localCode" v-model="biddingInfo.winBidUnits[0].applicant"
+                            <!-- <el-input name="localCode" v-model="biddingInfo.winBidUnits[0].applicant"
                                 placeholder="请输入实际中标金额">
-                            </el-input>
+                            </el-input> -->
+                            <el-autocomplete :trigger-on-focus="false" :fetch-suggestions="querySearchJiansheName"
+                                @select="function(value) {setUnitInfo(value, biddingInfo.winBidUnits[0])}"
+                                v-model="biddingInfo.winBidUnits[0].applicant" placeholder="请输入单位名称">
+                            </el-autocomplete>
                         </el-form-item>
                         <el-form-item label="项目主体类型" class="input-inline" prop="winBidUnits[0].unitType" :rules="[
                         { required: true, message: '项目主体类型不得为空！', trigger: 'change' }]">
                             <el-select v-model="biddingInfo.winBidUnits[0].unitType" disabled placeholder="请选择">
                                 <el-option v-for="(item, index) in projectType" :key="index" :label="item.itemName"
-                                    :value="item.itemId"></el-option>
+                                    :value="item.itemCode"></el-option>
                             </el-select>
                         </el-form-item>
                     </div>
@@ -294,15 +300,19 @@
                             </el-form-item>
                             <el-form-item label="单位名称" class="input-inline" prop="agencyUnits[0].applicant" :rules="[
                         { required: true, message: '单位名称不得为空！', trigger: 'change' }]">
-                                <el-input name="localCode" v-model="biddingInfo.agencyUnits[0].applicant"
+                                <!-- <el-input name="localCode" v-model="biddingInfo.agencyUnits[0].applicant"
                                     placeholder="请输入实际中标金额">
-                                </el-input>
+                                </el-input> -->
+                                <el-autocomplete :trigger-on-focus="false" :fetch-suggestions="querySearchJiansheName"
+                                    @select="function(value) {setUnitInfo(value, biddingInfo.agencyUnits[0])}"
+                                    v-model="biddingInfo.agencyUnits[0].applicant" placeholder="请输入单位名称">
+                                </el-autocomplete>
                             </el-form-item>
                             <el-form-item label="项目主体类型" class="input-inline" prop="agencyUnits[0].unitType" :rules="[
                         { required: true, message: '项目主体类型不得为空！', trigger: 'change' }]">
                                 <el-select v-model="biddingInfo.agencyUnits[0].unitType" disabled placeholder="请选择">
                                     <el-option v-for="(item, index) in projectType" :key="index" :label="item.itemName"
-                                        :value="item.itemId"></el-option>
+                                        :value="item.itemCode"></el-option>
                                 </el-select>
                             </el-form-item>
                         </div>
@@ -324,15 +334,19 @@
                                 </el-input>
                             </el-form-item>
                             <el-form-item label="单位名称" class="input-inline" prop="costUnits[0].applicant">
-                                <el-input name="localCode" v-model="biddingInfo.costUnits[0].applicant"
+                                <!-- <el-input name="localCode" v-model="biddingInfo.costUnits[0].applicant"
                                     placeholder="请输入实际中标金额">
-                                </el-input>
+                                </el-input> -->
+                                <el-autocomplete :trigger-on-focus="false" :fetch-suggestions="querySearchJiansheName"
+                                    @select="function(value) {setUnitInfo(value, biddingInfo.costUnits[0])}"
+                                    v-model="biddingInfo.costUnits[0].applicant" placeholder="请输入单位名称">
+                                </el-autocomplete>
                             </el-form-item>
                             <el-form-item label="项目主体类型" class="input-inline" prop="costUnits[0].unitType" :rules="[
                         { required: true, message: '项目主体类型不得为空！', trigger: 'change' }]">
                                 <el-select v-model="biddingInfo.costUnits[0].unitType" disabled placeholder="请选择">
                                     <el-option v-for="(item, index) in projectType" :key="index" :label="item.itemName"
-                                        :value="item.itemId"></el-option>
+                                        :value="item.itemCode"></el-option>
                                 </el-select>
                             </el-form-item>
                         </div>
