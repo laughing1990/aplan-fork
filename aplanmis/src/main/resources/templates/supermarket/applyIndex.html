@@ -936,11 +936,14 @@
 								<el-upload
 									class="matterUploadFile"
 									:show-file-list="false"
-									action="123"
-									multiple
-									:limit="3"
-									:auto-upload="false">
-									<el-button type="primary">上传文件</el-button>
+									:action="enclosureFileUploadAction"
+                  :limit="1"
+                  name="officialRemarkFile"
+                  :before-upload="enclosureFileUploadBefore"
+                  :on-success="enclosureFileUploadSuccess"
+                  :on-error="enclosureFileUploadError"
+									:auto-upload="true">
+									<el-button type="primary" @click="enclosureFileType('officialRemark')">上传文件</el-button>
 								</el-upload>
 								<span class="ml-3" slot="tip" style="position: absolute;left: 110px;top: 5px;">上传的附件不可超过10MB，禁止上传以下的附件类型：.exe,.sh,.bat,.com,.dll</span>
 							</div>
@@ -954,12 +957,15 @@
 							<div class="upload-btn">
 								<el-upload
 									class="matterUploadFile"
-									action="dakdsk"
+									action="enclosureFileUploadAction"
 									:show-file-list="false"
-									multiple
-									:limit="10"
-									:auto-upload="false">
-									<el-button type="primary">上传文件</el-button>
+                  :limit="1"
+                  name="requireExplainFile"
+                  :before-upload="enclosureFileUploadBefore"
+                  :on-success="enclosureFileUploadSuccess"
+                  :on-error="enclosureFileUploadError"
+									:auto-upload="true">
+									<el-button type="primary" @click="enclosureFileType('requireExplain')">上传文件</el-button>
 								</el-upload>
 								<span class="ml-3" slot="tip" style="position: absolute;left: 110px;top: 5px;">上传的附件不可超过10MB，禁止上传以下的附件类型：.exe,.sh,.bat,.com,.dll</span>
 							</div>
