@@ -591,6 +591,10 @@ var vm = new Vue({
       notOnlyService: false, // 不仅承诺服务即可
       fileList1: [],
       fileList2: [],
+      officialRemarkFile: '',  //批文文件id
+      requireExplainFile: '',  //要求说明文件id
+      enclosureFileUploadType: 'officialRemark',  //officialRemark为批文文件，requireExplain为要求说明文件
+      enclosureFileUploadAction: ctx + 'market/uploadFiles',  //附件上传接口
     }
   },
   mounted: function () {
@@ -2905,6 +2909,8 @@ var vm = new Vue({
         matinstsIds: _that.selMatinstIds,
         projInfoId: _that.projInfoId,
         buildProjUnitMap: buildProjUnitMap,
+        officialRemarkFile: _that.officialRemarkFile || '', //附件-批文文件id
+        requireExplainFile: _that.requireExplainFile || '', //附件-要求说明文件id
       };
       parmas = $.extend(parmas, _that.purchaseProj);
       _that.progressDialogVisible = true;
@@ -3387,6 +3393,61 @@ var vm = new Vue({
     // 新增人员设置
     delLinkmanTypes: function (row, index) {
       row.splice(index, 1);
+    },
+
+    // 附件---
+    // 附件上传before
+    enclosureFileUploadBefore: function(file){
+      var ts = this,
+        file = file;
+      var fileMaxSize = 1024 * 1024 * 10; // 10MB为最大限制
+      // 文件类型
+      // 检查文件类型
+      var index = file.name.lastIndexOf(".");
+      var ext = file.name.substr(index + 1);
+      if (['exe', 'sh', 'bat', 'com', 'dll'].indexOf(ext) !== -1) {
+        ts.$message({
+          message: '请上传非.exe,.sh,.bat,.com,.dll文件',
+        });
+        return false;
+      };
+      // 检查文件大小
+      if (file.size > fileMaxSize) {
+        ts.$message({
+          message: '请上传大小在10M以内的文件',
+        });
+        return false;
+      };
+      return true;
+    },
+    // 附件上传-类型
+    enclosureFileType: function(type){
+      this.enclosureFileUploadType = type;
+      // console.log(this.enclosureFileUploadType)
+    },
+    // 附件上传-success
+    enclosureFileUploadSuccess: function(response, file, fileList){
+      // console.log(response)
+      if(response.success && response.content){
+        this.$message({
+          message: '上传成功！',
+          type: 'success'
+        });
+      }else{
+        return;
+      }
+      this.enclosureFileUploadType === 'officialRemark' 
+        ? this.officialRemarkFile = response.content 
+        : this.requireExplainFile = response.content;
+      
+    },
+    // 附件上传-error
+    enclosureFileUploadError: function(err, file, fileList){
+      // console.log(err)
+      this.$message({
+        message: err.message,
+        type: 'error'
+      });
     },
   },
   filters: {

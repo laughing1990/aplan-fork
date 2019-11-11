@@ -94,6 +94,17 @@
             editData: function (item) {
                 this.isShowDialog = true;
                 this.formData = JSON.parse(JSON.stringify(item));
+                
+                // this.formData.projName = item.projName;
+                // this.formData.aboveGround = item.aboveGround;
+                // this.formData.underGround = item.underGround;
+                // this.formData.aboveFloor = item.aboveFloor;
+                // this.formData.underFloor = item.underFloor;
+                // this.formData.aboveHeight = item.aboveHeight;
+                // this.formData.underDepth = item.underDepth;
+                // this.formData.length = item.length;
+                // this.formData.span = item.span;
+                    
                 this.isAdd = '0';
                 this.formTitle = '编辑单体工程';
                 this.childInfoId = item.projInfoId;
@@ -103,37 +114,57 @@
                 var _that = this;
                 var params = {
                     childProjInfoId: item.projInfoId
-                }
+                };
 
-                request('', {
-                    url: ctx + 'rest/project/delete/childProject',
-                    data: params,
-                    type: 'post'
-                }, function (data) {
-                    if (data.success) {
-                        _that.$message({
-                            message: '删除成功',
-                            type: 'success'
-                        });
+                confirmMsg('提示信息：', '你确定要删除该工程吗？', function () {
+                    _that.loading = true;
+                    request('', {
+                        url: ctx + 'rest/project/delete/childProject',
+                        data: params,
+                        type: 'post'
+                    }, function (data) {
+                        if (data.success) {
+                            _that.$message({
+                                message: '删除成功',
+                                type: 'success'
+                            });
 
-                        _that.getDetail();
-                    } else {
+                            _that.loading = false;
+                            _that.getDetail();
+                        } else {
+                            _that.$message({
+                                message: data.message ? data.message : '删除失败',
+                                type: 'error'
+                            });
+
+                            _that.loading = false;
+                        };
+                    }, function (msg) {
                         _that.$message({
-                            message: data.message ? data.message : '删除失败',
+                            message: msg.message ? msg.message : '服务请求失败',
                             type: 'error'
                         });
-                    };
-                }, function (msg) {
-                    _that.$message({
-                        message: msg.message ? msg.message : '服务请求失败',
-                        type: 'error'
+
+                        _that.loading = false;
                     });
-                });
+                }, function () { }, '确定', '取消', 'warning', true);
+
+
             },
             // from数据提交
             submitForm: function () {
                 var _that = this;
-                var params = this.formData;
+                var params = {
+                    projName: _that.formData.projName,
+                    aboveGround: _that.formData.aboveGround,
+                    underGround: _that.formData.underGround,
+                    aboveFloor: _that.formData.aboveFloor,
+                    underFloor: _that.formData.underFloor,
+                    aboveHeight: _that.formData.aboveHeight,
+                    underDepth: _that.formData.underDepth,
+                    length: _that.formData.length,
+                    span: _that.formData.span
+                };
 
                 _that.$refs['form'].validate(function (valid) {
                     if (valid) {
