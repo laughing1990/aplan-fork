@@ -1479,7 +1479,32 @@
         <where>
             ahap_123.IS_SERIES_APPROVE = '0'
             AND ahap_123.APPLYINST_STATE = '6'
-            AND aht_123.ASSIGNEE_ = #{loginName}
+            AND aht_123.ASSIGNEE_ in (
+                SELECT
+                    ht.ASSIGNEE_
+                FROM
+                    act_hi_taskinst ht
+                WHERE
+                    ht.ASSIGNEE_ = #{loginName}
+                    and (ht.PROC_INST_ID_ IN (
+                    SELECT
+                    app.PROCINST_ID
+                    FROM
+                    act_sto_appinst app
+                    WHERE
+                    app.master_record_id = ahap_123.applyinst_id
+                    )
+                    OR ht.PROC_INST_ID_ IN (
+                    SELECT
+                    sub.SUBFLOW_PROCINST_ID
+                    FROM
+                    act_sto_appinst app,
+                    act_sto_appinst_subflow sub
+                    WHERE
+                    app.APPINST_ID = sub.APPINST_ID
+                    AND app.master_record_id = ahap_123.applyinst_id
+                    ))
+            )
             <if test="theme != null and theme != '' ">
                 AND theme.THEME_ID = #{theme}
             </if>
@@ -1536,7 +1561,32 @@
         <where>
             ahap_123.IS_SERIES_APPROVE = '0'
             AND ahap_123.APPLYINST_STATE = '6'
-            AND aht_123.ASSIGNEE_ = #{loginName}
+            AND aht_123.ASSIGNEE_ in (
+            SELECT
+            ht.ASSIGNEE_
+            FROM
+            act_hi_taskinst ht
+            WHERE
+            ht.ASSIGNEE_ = #{loginName}
+            and (ht.PROC_INST_ID_ IN (
+            SELECT
+            app.PROCINST_ID
+            FROM
+            act_sto_appinst app
+            WHERE
+            app.master_record_id = ahap_123.applyinst_id
+            )
+            OR ht.PROC_INST_ID_ IN (
+            SELECT
+            sub.SUBFLOW_PROCINST_ID
+            FROM
+            act_sto_appinst app,
+            act_sto_appinst_subflow sub
+            WHERE
+            app.APPINST_ID = sub.APPINST_ID
+            AND app.master_record_id = ahap_123.applyinst_id
+            ))
+            )
             <if test="theme != null and theme != '' ">
                 AND theme.THEME_ID = #{theme}
             </if>
@@ -1593,7 +1643,32 @@
         <where>
             ahap_123.IS_SERIES_APPROVE = '1'
             AND ahap_123.APPLYINST_STATE = '6'
-            AND aht_123.ASSIGNEE_ = #{loginName}
+            AND aht_123.ASSIGNEE_ in (
+            SELECT
+            ht.ASSIGNEE_
+            FROM
+            act_hi_taskinst ht
+            WHERE
+            ht.ASSIGNEE_ = #{loginName}
+            and (ht.PROC_INST_ID_ IN (
+            SELECT
+            app.PROCINST_ID
+            FROM
+            act_sto_appinst app
+            WHERE
+            app.master_record_id = ahap_123.applyinst_id
+            )
+            OR ht.PROC_INST_ID_ IN (
+            SELECT
+            sub.SUBFLOW_PROCINST_ID
+            FROM
+            act_sto_appinst app,
+            act_sto_appinst_subflow sub
+            WHERE
+            app.APPINST_ID = sub.APPINST_ID
+            AND app.master_record_id = ahap_123.applyinst_id
+            ))
+            )
             <include refid="baseConditionalQuery">
             </include>
 
@@ -1646,7 +1721,32 @@
         <where>
             ahap_123.IS_SERIES_APPROVE = '1'
             AND ahap_123.APPLYINST_STATE = '6'
-            AND aht_123.ASSIGNEE_ = #{loginName}
+            AND aht_123.ASSIGNEE_ in (
+            SELECT
+            ht.ASSIGNEE_
+            FROM
+            act_hi_taskinst ht
+            WHERE
+            ht.ASSIGNEE_ = #{loginName}
+            and (ht.PROC_INST_ID_ IN (
+            SELECT
+            app.PROCINST_ID
+            FROM
+            act_sto_appinst app
+            WHERE
+            app.master_record_id = ahap_123.applyinst_id
+            )
+            OR ht.PROC_INST_ID_ IN (
+            SELECT
+            sub.SUBFLOW_PROCINST_ID
+            FROM
+            act_sto_appinst app,
+            act_sto_appinst_subflow sub
+            WHERE
+            app.APPINST_ID = sub.APPINST_ID
+            AND app.master_record_id = ahap_123.applyinst_id
+            ))
+            )
             <include refid="baseConditionalQuery">
             </include>
         </where>
