@@ -877,4 +877,13 @@
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='招投标信息';
         </sql>
     </changeSet>
+
+    <changeSet id="201911111625" author="liaojj" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_unit_proj`
+            ADD COLUMN `QUAL_LEVEL_ID` varchar(50) NULL DEFAULT NULL COMMENT '所属资质等级ID（对应AEA_IM_QUAL_LEVEL表）',
+            ADD COLUMN `CERTINST_ID` varchar(50) NULL DEFAULT NULL COMMENT '证书实例表ID',
+            ADD COLUMN `SAFE_LICENCE_NUM` varchar(50) NULL DEFAULT NULL COMMENT '安全生产许可证编号';
+        </sql>
+    </changeSet>
 </databaseChangeLog>

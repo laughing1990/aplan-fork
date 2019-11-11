@@ -13,7 +13,7 @@
         CREATE_TIME createTime,
         UNIT_TYPE unitType,
         LINKMAN_INFO_ID linkmanInfoId,
-        is_deleted isDeleted，
+        is_deleted isDeleted,
         QUAL_LEVEL_ID qualLevelId,
         CERTINST_ID certinstId,
         SAFE_LICENCE_NUM safeLicenceNum
