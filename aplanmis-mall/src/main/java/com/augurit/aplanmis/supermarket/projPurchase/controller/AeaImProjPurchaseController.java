@@ -17,7 +17,7 @@ import com.augurit.aplanmis.common.utils.CommonTools;
 import com.augurit.aplanmis.common.utils.FileUtils;
 import com.augurit.aplanmis.common.vo.*;
 import com.augurit.aplanmis.supermarket.contract.service.AeaImContractService;
-import com.augurit.aplanmis.supermarket.projPurchase.service.AeaImProjPurchaseService;
+import com.augurit.aplanmis.supermarket.projPurchase.service.ProjPurchaseService;
 import com.augurit.aplanmis.supermarket.projPurchase.vo.OwnerIndexData;
 import com.augurit.aplanmis.supermarket.projPurchase.vo.QueryUnpublishedProjInfo;
 import com.augurit.aplanmis.supermarket.projPurchase.vo.SelectedQualMajorRequire;
@@ -55,7 +55,7 @@ public class AeaImProjPurchaseController {
     private static Logger logger = LoggerFactory.getLogger(AeaImProjPurchaseController.class);
 
     @Autowired
-    private AeaImProjPurchaseService aeaImProjPurchaseService;
+    private ProjPurchaseService projPurchaseService;
     @Autowired
     private FileUtilsService fileUtilsService;
 
@@ -77,7 +77,7 @@ public class AeaImProjPurchaseController {
             int pageSize = queryUnpublishedProjInfo.getPageSize();
             String projCode = queryUnpublishedProjInfo.getProjCode();
             Page page = new Page(pageNum, pageSize > 0 ? pageSize : 10);
-            List<AeaProjInfo> list = aeaImProjPurchaseService.getUnpublishedProjInfoList(projCode, page, request);
+            List<AeaProjInfo> list = projPurchaseService.getUnpublishedProjInfoList(projCode, page, request);
             return new ContentRestResult<EasyuiPageInfo<AeaProjInfo>>(true, PageHelper.toEasyuiPageInfo(new PageInfo(list)));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -92,13 +92,13 @@ public class AeaImProjPurchaseController {
     })
     @PostMapping(value = "/getProUnitLinkInfo/{projInfoId}")
     public ContentRestResult<ProUnitLinkVo> getProUnitLinkInfo(@PathVariable("projInfoId") String projInfoId, HttpServletRequest request) {
-        return new ContentRestResult<>(true, aeaImProjPurchaseService.getProUnitLinkInfo(projInfoId, request));
+        return new ContentRestResult<>(true, projPurchaseService.getProUnitLinkInfo(projInfoId, request));
     }
 
     @ApiOperation(value = "获取项目信息", notes = "获取项目信息,包括单位信息和联系人信息,用于新增采购需求", httpMethod = "POST")
     @PostMapping(value = "/getProUnitLinkInfo")
     public ContentRestResult<ProUnitLinkVo> getProUnitLinkInfo(HttpServletRequest request) {
-        return new ContentRestResult<>(true, aeaImProjPurchaseService.getProUnitLinkInfo(null, request));
+        return new ContentRestResult<>(true, projPurchaseService.getProUnitLinkInfo(null, request));
     }
 
 
@@ -116,7 +116,7 @@ public class AeaImProjPurchaseController {
             if (pageNum != null && pageSize != null) {
                 page = new Page(pageNum, pageSize > 0 ? pageSize : 10);
             }
-            List<AeaItemServiceVo> list = aeaImProjPurchaseService.getAgentServiceItemList(keyword, page);
+            List<AeaItemServiceVo> list = projPurchaseService.getAgentServiceItemList(keyword, page);
             return new ContentRestResult<EasyuiPageInfo<AeaItemServiceVo>>(true, PageHelper.toEasyuiPageInfo(new PageInfo(list)));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -131,7 +131,7 @@ public class AeaImProjPurchaseController {
     @PostMapping(value = "/getItemServiceList/{itemVerId}")
     public ContentRestResult<List<AeaImServiceVo>> getItemServiceList(@PathVariable("itemVerId") String itemVerId) {
         try {
-            List<AeaImServiceVo> list = aeaImProjPurchaseService.getItemServiceListByItemVerId(itemVerId);
+            List<AeaImServiceVo> list = projPurchaseService.getItemServiceListByItemVerId(itemVerId);
             return new ContentRestResult<>(true, list);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -149,7 +149,7 @@ public class AeaImProjPurchaseController {
         }
 
         try {
-            AeaImProjPurchase aeaImProjPurchase = aeaImProjPurchaseService.saveAeaImProjPurchase(saveAeaImProjPurchaseVo, request);
+            AeaImProjPurchase aeaImProjPurchase = projPurchaseService.saveAeaImProjPurchase(saveAeaImProjPurchaseVo, request);
             return new ContentRestResult<>(true, aeaImProjPurchase.getProjPurchaseId());
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -161,7 +161,7 @@ public class AeaImProjPurchaseController {
     @PostMapping(value = "/getAgentUnitInfoList", produces = "application/json;charset=UTF-8")
     public ContentRestResult<List<AgentUnitInfoVo>> getAgentUnitInfoList(@RequestBody QueryAgentUnitInfoVo queryAgentUnitInfo) {
         try {
-            return new ContentRestResult<>(true, aeaImProjPurchaseService.getAgentUnitInfoList(queryAgentUnitInfo));
+            return new ContentRestResult<>(true, projPurchaseService.getAgentUnitInfoList(queryAgentUnitInfo));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return new ContentRestResult(false, null, e.getMessage());
@@ -176,7 +176,7 @@ public class AeaImProjPurchaseController {
         int pageSize = queryProjPurchaseVo.getPageSize();
 
         Page page = new Page(pageNum, pageSize > 0 ? pageSize : 10);
-        List<AeaImProjPurchase> list = aeaImProjPurchaseService.getPublicProjPurchaseList(queryProjPurchaseVo, page);
+        List<AeaImProjPurchase> list = projPurchaseService.getPublicProjPurchaseList(queryProjPurchaseVo, page);
         return new ContentRestResult<>(true, PageHelper.toEasyuiPageInfo(new PageInfo(list)));
     }
 
@@ -186,13 +186,13 @@ public class AeaImProjPurchaseController {
     })
     @PostMapping(value = "/getPublicProjPurchaseDatail")
     public ContentRestResult<AeaImProjPurchaseDetailVo> getPublicProjPurchaseDatail(String projPurchaseId) throws Exception {
-        return new ContentRestResult<>(true, aeaImProjPurchaseService.getPublicProjPurchaseDatail(projPurchaseId));
+        return new ContentRestResult<>(true, projPurchaseService.getPublicProjPurchaseDatail(projPurchaseId));
     }
 
     @ApiOperation(value = "获取所有服务列表", notes = "获取所有服务列表")
     @PostMapping(value = "/getAllService")
     public ContentRestResult<List<AeaImService>> getAllService() throws Exception {
-        return new ContentRestResult<>(true, aeaImProjPurchaseService.getAllService());
+        return new ContentRestResult<>(true, projPurchaseService.getAllService());
     }
 
     @ApiOperation(value = "获取采购需求文件列表", notes = "获取采购需求文件列表")
@@ -201,7 +201,7 @@ public class AeaImProjPurchaseController {
     })
     @PostMapping(value = "/getRequireExplainFileList/{requireExplainFile}")
     public ContentRestResult<List<BscAttForm>> getRequireExplainFileList(@PathVariable("requireExplainFile") String requireExplainFile) throws Exception {
-        return new ContentRestResult<>(true, aeaImProjPurchaseService.getRequireExplainFileList(requireExplainFile));
+        return new ContentRestResult<>(true, projPurchaseService.getRequireExplainFileList(requireExplainFile));
     }
 
     @ApiOperation(value = "获取采购需求批文文件列表", notes = "获取采购需求批文文件列表")
@@ -210,7 +210,7 @@ public class AeaImProjPurchaseController {
     })
     @PostMapping(value = "/getOfficialRemarkFileList/{officialRemarkFile}")
     public ContentRestResult<List<BscAttForm>> getOfficialRemarkFileList(@PathVariable("officialRemarkFile") String officialRemarkFile) throws Exception {
-        return new ContentRestResult<>(true, aeaImProjPurchaseService.getOfficialRemarkFileList(officialRemarkFile));
+        return new ContentRestResult<>(true, projPurchaseService.getOfficialRemarkFileList(officialRemarkFile));
     }
 
     @ApiOperation(value = "下载文件", notes = "下载文件")
@@ -250,7 +250,7 @@ public class AeaImProjPurchaseController {
     })
     @PostMapping("/getSelectedQualMajorRequire/{projPurchaseId}")
     public ContentRestResult<SelectedQualMajorRequire> getSelectedQualMajorRequire(@PathVariable("projPurchaseId") String projPurchaseId) throws Exception {
-        return new ContentRestResult<>(true, aeaImProjPurchaseService.getSelectedQualMajorRequire(projPurchaseId));
+        return new ContentRestResult<>(true, projPurchaseService.getSelectedQualMajorRequire(projPurchaseId));
     }
 
 
@@ -263,7 +263,7 @@ public class AeaImProjPurchaseController {
     @PostMapping("/getAeaUnitInfoByPage")
     public ContentRestResult<EasyuiPageInfo<AeaUnitInfo>> getAeaUnitInfoByPage(String keyword, int pageNum, int pageSize) throws Exception {
         Page page = new Page(pageNum, pageSize > 0 ? pageSize : 10);
-        List<AeaUnitInfo> list = aeaImProjPurchaseService.getAeaUnitInfoByPage(keyword, page);
+        List<AeaUnitInfo> list = projPurchaseService.getAeaUnitInfoByPage(keyword, page);
         return new ContentRestResult<>(true, PageHelper.toEasyuiPageInfo(new PageInfo(list)));
     }
 
@@ -280,7 +280,7 @@ public class AeaImProjPurchaseController {
     @PostMapping(value = "/showProjPurchaseByProjPurchaseId")
     public ContentRestResult<ShowProjPurchaseVo> showProjPurchaseByProjPurchaseId(String projPurchaseId) {
         try {
-            ShowProjPurchaseVo showProjPurchaseVo = aeaImProjPurchaseService.showProjPurchaseByProjPurchaseId(projPurchaseId);
+            ShowProjPurchaseVo showProjPurchaseVo = projPurchaseService.showProjPurchaseByProjPurchaseId(projPurchaseId);
             return new ContentRestResult<>(true, showProjPurchaseVo);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -296,7 +296,7 @@ public class AeaImProjPurchaseController {
     @PostMapping(value = "/submitProjPurchaseByProjPurchaseId")
     public RestResult submitProjPurchaseByProjPurchaseId(String projPurchaseId, HttpServletRequest request) {
         try {
-            aeaImProjPurchaseService.submitProjPurchaseByProjPurchaseId(projPurchaseId, request);
+            projPurchaseService.submitProjPurchaseByProjPurchaseId(projPurchaseId, request);
             return new ContentRestResult<>(true);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -315,7 +315,7 @@ public class AeaImProjPurchaseController {
         }
 
         try {
-            AeaImProjPurchase aeaImProjPurchase = aeaImProjPurchaseService.updateProjPurchase(saveAeaImProjPurchaseVo, request);
+            AeaImProjPurchase aeaImProjPurchase = projPurchaseService.updateProjPurchase(saveAeaImProjPurchaseVo, request);
             return new ContentRestResult<>(true, aeaImProjPurchase.getProjPurchaseId());
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -339,7 +339,7 @@ public class AeaImProjPurchaseController {
         }
 
         try {
-            aeaImProjPurchaseService.revisedProjPurchase(saveAeaImProjPurchaseVo, operateDescribe, files, request);
+            projPurchaseService.revisedProjPurchase(saveAeaImProjPurchaseVo, operateDescribe, files, request);
             return new ContentRestResult<>(true);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -565,7 +565,7 @@ public class AeaImProjPurchaseController {
     public ResultForm getProjPurchaseInfoByProjPurchaseId(String projPurchaseId) {
         ContentResultForm resultForm = new ContentResultForm(false);
         try {
-            resultForm = aeaImProjPurchaseService.getProjPurchaseInfoByProjPurchaseId(projPurchaseId);
+            resultForm = projPurchaseService.getProjPurchaseInfoByProjPurchaseId(projPurchaseId);
         } catch (Exception e) {
             resultForm.setMessage("错误信息：" + e.getMessage());
             return resultForm;
@@ -586,7 +586,7 @@ public class AeaImProjPurchaseController {
         ContentResultForm resultForm = new ContentResultForm(false);
         try {
             if (StringUtils.isNotBlank(projPurchaseId)) {
-                resultForm = aeaImProjPurchaseService.queryIntermediaryList(projPurchaseId, pageSize, pageNum);
+                resultForm = projPurchaseService.queryIntermediaryList(projPurchaseId, pageSize, pageNum);
             }
         } catch (Exception e) {
             resultForm.setMessage("错误信息：" + e.getMessage());
@@ -607,7 +607,7 @@ public class AeaImProjPurchaseController {
         ContentResultForm resultForm = new ContentResultForm(false);
         try {
             if (StringUtils.isNotBlank(unitBiddingId) && StringUtils.isNotBlank(projPurchaseId)) {
-                resultForm = aeaImProjPurchaseService.updateIntermediaryWonBidStatus(unitBiddingId, projPurchaseId);
+                resultForm = projPurchaseService.updateIntermediaryWonBidStatus(unitBiddingId, projPurchaseId);
             }
         } catch (Exception e) {
             resultForm.setMessage("错误信息：" + e.getMessage());
@@ -632,7 +632,7 @@ public class AeaImProjPurchaseController {
         try {
             if (aeaImProjPurchase != null) {
                 aeaImProjPurchase.setAuditFlags(auditFlags);
-                resultForm = aeaImProjPurchaseService.listProjPurchase(aeaImProjPurchase, pageSize, pageNum);
+                resultForm = projPurchaseService.listProjPurchase(aeaImProjPurchase, pageSize, pageNum);
             }
         } catch (Exception e) {
             resultForm.setMessage("错误信息：" + e.getMessage());
@@ -652,7 +652,7 @@ public class AeaImProjPurchaseController {
     @PostMapping(value = "/applyProjPurchaseInvalid")
     public ResultForm applyProjPurchaseInvalid(String projPurchaseId, String memo, @RequestParam(name = "file", required = false) List<MultipartFile> files, HttpServletRequest request) {
         try {
-            aeaImProjPurchaseService.applyProjPurchaseInvalid(projPurchaseId, memo, files, request);
+            projPurchaseService.applyProjPurchaseInvalid(projPurchaseId, memo, files, request);
             return new ResultForm(true);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -670,7 +670,7 @@ public class AeaImProjPurchaseController {
     public ResultForm getPublishingInfoByProjPurchaseId(String projPurchaseId, String unitInfoId) {
         ContentResultForm resultForm = new ContentResultForm(false);
         try {
-            resultForm = aeaImProjPurchaseService.getPublishingInfoByProjPurchaseId(projPurchaseId, unitInfoId);
+            resultForm = projPurchaseService.getPublishingInfoByProjPurchaseId(projPurchaseId, unitInfoId);
         } catch (Exception e) {
             resultForm.setMessage("错误信息：" + e.getMessage());
             return resultForm;
@@ -687,7 +687,7 @@ public class AeaImProjPurchaseController {
     public ResultForm reselectProjPurchase(String projPurchaseId, @RequestParam(name = "file", required = false) List<MultipartFile> files, String memo, HttpServletRequest request) {
         ContentResultForm resultForm = new ContentResultForm(false);
         try {
-            AeaImProjPurchase aeaImProjPurchase = aeaImProjPurchaseService.reselectProjPurchase(projPurchaseId, memo, files, request);
+            AeaImProjPurchase aeaImProjPurchase = projPurchaseService.reselectProjPurchase(projPurchaseId, memo, files, request);
             if (aeaImProjPurchase != null) {
                 resultForm.setSuccess(true);
             } else {
@@ -708,7 +708,7 @@ public class AeaImProjPurchaseController {
     public ResultForm reselectProjPurchase(String unitInfoId) {
         ContentResultForm resultForm = new ContentResultForm(false);
         try {
-            List<AeaImService> list = aeaImProjPurchaseService.getServiceTypeList(unitInfoId);
+            List<AeaImService> list = projPurchaseService.getServiceTypeList(unitInfoId);
             if (list != null) {
                 resultForm.setSuccess(true);
                 resultForm.setContent(list);
@@ -740,7 +740,7 @@ public class AeaImProjPurchaseController {
         }
 
         try {
-            aeaImProjPurchaseService.applyPostponeService(applyPostponeServiceData, memo, files, request);
+            projPurchaseService.applyPostponeService(applyPostponeServiceData, memo, files, request);
             return new RestResult(true);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -760,7 +760,7 @@ public class AeaImProjPurchaseController {
         try {
 
             if (StringUtils.isNotBlank(unitInfoId) || StringUtils.isNotBlank(linkmanInfoId)) {
-                OwnerIndexData ownerIndexData = aeaImProjPurchaseService.showProjPurchaseData(unitInfoId, linkmanInfoId);
+                OwnerIndexData ownerIndexData = projPurchaseService.showProjPurchaseData(unitInfoId, linkmanInfoId);
                 return new ContentResultForm<>(true, ownerIndexData, "success");
 
             }
@@ -782,7 +782,7 @@ public class AeaImProjPurchaseController {
         }
 
         try {
-            return new ContentResultForm(true, aeaImProjPurchaseService.getProjInfoByLocalCode(localCode));
+            return new ContentResultForm(true, projPurchaseService.getProjInfoByLocalCode(localCode));
         } catch (Exception e) {
             e.printStackTrace();
             return new ContentResultForm(false, e.getMessage());
