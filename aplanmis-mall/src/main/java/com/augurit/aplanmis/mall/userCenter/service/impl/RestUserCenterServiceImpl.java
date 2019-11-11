@@ -4,12 +4,14 @@ import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.constants.DeletedStatus;
 import com.augurit.aplanmis.common.constants.UnitType;
+import com.augurit.aplanmis.common.domain.AeaHiApplyinst;
 import com.augurit.aplanmis.common.domain.AeaParentProj;
 import com.augurit.aplanmis.common.domain.AeaProjInfo;
 import com.augurit.aplanmis.common.domain.AeaUnitProj;
 import com.augurit.aplanmis.common.mapper.AeaProjInfoMapper;
 import com.augurit.aplanmis.common.mapper.AeaProjLinkmanMapper;
 import com.augurit.aplanmis.common.mapper.AeaUnitProjMapper;
+import com.augurit.aplanmis.common.service.instance.AeaHiApplyinstService;
 import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
 import com.augurit.aplanmis.common.utils.SessionUtil;
 import com.augurit.aplanmis.common.vo.LoginInfoVo;
@@ -31,7 +33,8 @@ public class RestUserCenterServiceImpl implements RestUserCenterService {
     @Autowired
     private AeaUnitProjMapper aeaUnitProjMapper;
     @Autowired
-    private AeaProjLinkmanMapper aeaProjLinkmanMapper;
+    private AeaHiApplyinstService aeaHiApplyinstService;
+
 
     @Override
     public String saveChildProject(HttpServletRequest request, AeaProjInfo aeaProjInfo) throws Exception {
@@ -114,6 +117,14 @@ public class RestUserCenterServiceImpl implements RestUserCenterService {
         }
 
         return aeaProjInfo.getProjInfoId();
+    }
+
+    @Override
+    public void withDrawProject(String applyInstId) throws Exception{
+        AeaHiApplyinst aeaHiApplyinst = new AeaHiApplyinst();
+        aeaHiApplyinst.setApplyinstId(applyInstId);
+        aeaHiApplyinst.setIsDeleted("1");
+        aeaHiApplyinstService.updateAeaHiApplyinst(aeaHiApplyinst);
     }
 
     public static void main(String[] args) {
