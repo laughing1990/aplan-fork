@@ -64,11 +64,11 @@
             }
         },
         created: function () {
-            // this.projInfoId = this.getUrlParam('projInfoId');
-            this.projInfoId = '012c4996-b14f-42c4-8d87-b2f347b27276';
+            this.projInfoId = this.getUrlParam('projInfoId');
+            // this.projInfoId = '012c4996-b14f-42c4-8d87-b2f347b27276';
         },
         mounted: function () {
-            this.getDetail();
+            if (this.projInfoId) this.getDetail();
         },
         methods: {
             // 重置弹窗表单数据

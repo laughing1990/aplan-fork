@@ -50,8 +50,8 @@
             }
         },
         created: function () {
-            // this.projInfoId = this.getUrlParam('projInfoId');
-            this.projInfoId = '09485014-cfe9-4815-b9e3-13f24035220b';
+            this.projInfoId = this.getUrlParam('projInfoId');
+            // this.projInfoId = '09485014-cfe9-4815-b9e3-13f24035220b';
         },
         mounted: function () {
             this.getProjTypeNature('C_TENDER_TYPE,C_AGENT_TYPE,XM_DWLX');
