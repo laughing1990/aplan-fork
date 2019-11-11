@@ -426,7 +426,7 @@ public class OrgEfficiencySupersionServiceImpl implements OrgEfficiencySupersion
     @Override
     public Map<String, Object> getOrgItemStatistics(String startDate, String endDate, String type, boolean isCurrent, String orgId) throws Exception{
 
-        if (isCurrent == true) {
+        if (isCurrent) {
             List<OpuOmOrg> opuOmOrgs = opuOmOrgMapper.listBelongOrgByUserId(SecurityContext.getCurrentUserId());
             if (!opuOmOrgs.isEmpty()) {
                 OpuOmOrg opuOmOrg = opuOmOrgs.get(0);
