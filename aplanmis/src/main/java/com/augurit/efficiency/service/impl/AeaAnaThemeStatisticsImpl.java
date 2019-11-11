@@ -621,7 +621,8 @@ public class AeaAnaThemeStatisticsImpl {
         AeaAnaThemeDayStatistics onedayBeforStastics = themeDayStatisticsMapper.getAeaAnaThemeDayStatisticsBySatgeIdAndThemeId(themeId, stageId, oneDayBeforeStart,oneDayBeforeEnd, rootOrgId,isParallel, source);
 
         //昨天逾期总数加当天逾期数
-        long allOverTimeCount = dayOverTimeCount - onedayBeforStastics.getAllOverTimeCount();
+        long allOverTimeCount = dayOverTimeCount + onedayBeforStastics.getAllOverTimeCount();
+        //接件数
         dayApplyCount = unapprovalApply +approvedApply;
         double applyLrr = calculateGrowRate(onedayBeforStastics.getDayApplyCount(), dayApplyCount);
         double preAcceptanceLrr = calculateGrowRate(onedayBeforStastics.getDayPreAcceptanceCount(),  hisPreAccept);
