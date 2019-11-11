@@ -438,11 +438,9 @@ public class RestSpecialRrocedureService {
     public String getSpecialEndDate(int dueNum, String startDate) throws Exception {
         String currentOrgId = SecurityContext.getCurrentOrgId();
         Date start = format.parse(startDate);
-        Date temp = start;
-        for (int i = 0; i < dueNum; i++) {
-            temp = workdayHolidayService.nextWorkday(temp, currentOrgId);
-        }
-        String endDate = this.format.format(temp);
+        start = workdayHolidayService.nextDay(start);
+        Date specialEndDate = workdayHolidayService.calWorkdayFrom(start,dueNum, currentOrgId);
+        String endDate = this.format.format(specialEndDate);
         return endDate;
     }
 }
