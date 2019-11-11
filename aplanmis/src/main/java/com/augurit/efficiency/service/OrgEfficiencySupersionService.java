@@ -32,7 +32,7 @@ public interface OrgEfficiencySupersionService {
 
     List<ItemDetailFormVo> queryOrgHandleItemStatistics(String startTime, String endTime) throws Exception;
 
-    List<ItemDetailFormVo> queryOrgHandleItemStatisticsToNow(String type) throws Exception;
+    List<ItemDetailFormVo> queryOrgHandleItemStatisticsToYesterday(String type) throws Exception;
 
     List<OrgAreaStatisticsVo> queryStatisticsCompletedByArea(String startTime, String endTime) throws Exception;
 

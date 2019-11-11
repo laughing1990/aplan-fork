@@ -285,6 +285,7 @@ public class OrgEfficiencySupersionServiceImpl implements OrgEfficiencySupersion
             throw new RuntimeException("查询开始时间不能大于今天。");
         }
         String rootOrgId = SecurityContext.getCurrentOrgId();
+        List<String> orgIdList = new ArrayList<>();
         List<AeaItemBasic> orgInfoList = aeaItemBasicMapper.listOrgInfoByRootOrgId(rootOrgId);
         for (int i = 0, len = orgInfoList.size(); i < len; i++) {
             AeaItemBasic basic = orgInfoList.get(i);
@@ -293,17 +294,25 @@ public class OrgEfficiencySupersionServiceImpl implements OrgEfficiencySupersion
             ItemDetailFormVo vo = new ItemDetailFormVo();
             vo.setOrgId(orgId);
             vo.setOrgName(orgName);
-            //统计startTime至endTime（不包含今天）
-            List<AeaAnaOrgDayStatistics> list = aeaAnaOrgDayStatisticsMapper.queryAeaAnaOrgDayStatisticsGreaterThanStartTime(orgId, null, startTime, endTime);
-            if (list != null && list.size() > 0) {
-                for (int k = 0, length = list.size(); k < length; k++) {
-                    AeaAnaOrgDayStatistics orgDayStatistics = list.get(k);
-                    covertItemDetailFormVo(vo, orgDayStatistics);
-                }
-            }
-            if (StringUtils.isNotBlank(vo.getOrgName())) {
-                setItemDetailFormVorRate(vo);
+            orgIdList.add(orgId);
+            if(!result.contains(vo)){
                 result.add(vo);
+            }
+        }
+        String[] orgIds = orgIdList.toArray(new String[orgIdList.size()]);
+        List<AeaAnaOrgDayStatistics> list = aeaAnaOrgDayStatisticsMapper.queryAeaAnaOrgDayStatisticsGreaterThanStartTime(orgIds, null, startTime, endTime);
+        if (list != null && list.size() > 0) {
+            for(int i=0,len=result.size();i<len;i++){
+                ItemDetailFormVo vo = result.get(i);
+                for(int j=0;j<list.size();j++){
+                    AeaAnaOrgDayStatistics orgDayStatistics = list.get(j);
+                    if(vo.getOrgId().equals(orgDayStatistics.getOrgId())){
+                        covertItemDetailFormVo(vo, orgDayStatistics);
+                        list.remove(orgDayStatistics);
+                        j--;
+                    }
+                }
+                setItemDetailFormVorRate(vo);
             }
         }
         return result;
@@ -319,11 +328,11 @@ public class OrgEfficiencySupersionServiceImpl implements OrgEfficiencySupersion
         if (vo != null && oneOrg != null) {
             vo.setOrgId(oneOrg.getOrgId());
             vo.setOrgName(oneOrg.getOrgName());
-            Integer receiptCount = vo.getReceiptCount();
-            Integer acceptCount = vo.getAcceptCount();
-            Integer notAcceptCount = vo.getNotAcceptCount();
-            Integer completedCount = vo.getCompletedCount();
-            Integer overdueCount = vo.getOverdueCount();
+            int receiptCount = vo.getReceiptCount();
+            int acceptCount = vo.getAcceptCount();
+            int notAcceptCount = vo.getNotAcceptCount();
+            int completedCount = vo.getCompletedCount();
+            int overdueCount = vo.getOverdueCount();
             vo.setReceiptCount(receiptCount + oneOrg.getDayApplyCount());
             vo.setAcceptCount(acceptCount + oneOrg.getDayAcceptanceCount());
             vo.setNotAcceptCount(notAcceptCount + oneOrg.getDayOutScopeCount());
@@ -354,10 +363,11 @@ public class OrgEfficiencySupersionServiceImpl implements OrgEfficiencySupersion
     /**
      * 根据不同类型，查询今日、本周、本月的部门办理事项统计
      *
-     * @param type D表示今日，W表示本周，M表示本月
+     * @param type W表示本周，M表示本月
      * @return
      */
-    public List<ItemDetailFormVo> queryOrgHandleItemStatisticsToNow(String type) {
+    @Override
+    public List<ItemDetailFormVo> queryOrgHandleItemStatisticsToYesterday(String type) {
         List<ItemDetailFormVo> result = new ArrayList<>();
         String rootOrgId = SecurityContext.getCurrentOrgId();
         List<AeaItemBasic> orgInfoList = aeaItemBasicMapper.listOrgInfoByRootOrgId(rootOrgId);
