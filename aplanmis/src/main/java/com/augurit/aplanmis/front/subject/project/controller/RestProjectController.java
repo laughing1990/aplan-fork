@@ -320,4 +320,12 @@ public class RestProjectController {
         return new ContentResultForm<>(true, childProjInfoId, "Delete child project success.");
     }
 
+    @ApiOperation(value = "跳转前端单体工程信息页面")
+    @RequestMapping("/childProject/index.html")
+    public ModelAndView childProjectIndex(){
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("form/monomerProject");
+        return modelAndView;
+    }
+
 }
