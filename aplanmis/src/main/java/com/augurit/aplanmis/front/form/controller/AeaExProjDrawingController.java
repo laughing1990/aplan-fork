@@ -89,10 +89,11 @@ public class AeaExProjDrawingController {
 
     @RequestMapping("/index.do")
     public  ResultForm getAeaExProjDrawing(String projInfoId) throws Exception {
+        try {
 
         JSONObject object = new JSONObject();
         List<AeaProjDrawing> aeaProjDrawing = aeaProjDrawingSerivce.getAeaProjDrawing(projInfoId);
-        if (aeaProjDrawing != null){
+        if (aeaProjDrawing != null&&aeaProjDrawing.size()>0){
             logger.debug("根据ID获取AeaExProjDrawing对象，ID为：{}", projInfoId);
             object.put(  "drawings",aeaProjDrawingSerivce.getAeaProjDrawing(projInfoId));
         }
@@ -116,6 +117,9 @@ public class AeaExProjDrawingController {
         }
 
         return  new ContentResultForm<JSONObject>(true,object);
+        }catch(Exception e){
+            return new ContentResultForm<JSONObject>(false, new JSONObject(),"施工图审查信息！原因："+e.getMessage());
+        }
     }
 
 
@@ -123,6 +127,7 @@ public class AeaExProjDrawingController {
     public ResultForm updateAeaExProjDrawing(AeaExProjDrawing aeaExProjDrawing) throws Exception {
         logger.debug("更新客户档案信息Form对象，对象为：{}", aeaExProjDrawing);
         aeaExProjDrawingService.updateAeaExProjDrawing(aeaExProjDrawing);
+
         return new ResultForm(true);
     }
 
@@ -137,7 +142,7 @@ public class AeaExProjDrawingController {
             logger.error("保存施工图审查信息Form对象出错");
             throw new InvalidParameterException(aeaExProjDrawing);
         }*/
-
+        try {
         AeaExProjDrawing aeaExProjDrawing = new AeaExProjDrawing();
 
         voToPojo(aeaProjDrawingVo,aeaExProjDrawing);
@@ -156,6 +161,10 @@ public class AeaExProjDrawingController {
 
 
         return  new ContentResultForm<AeaProjDrawingVo>(true,aeaProjDrawingVo);
+
+        }catch(Exception e){
+            return new ContentResultForm<JSONObject>(false, new JSONObject(),"施工图审查信息！原因："+e.getMessage());
+        }
     }
 
 
