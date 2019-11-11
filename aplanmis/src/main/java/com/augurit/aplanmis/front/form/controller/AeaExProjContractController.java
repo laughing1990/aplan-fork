@@ -73,8 +73,13 @@ private static Logger logger = LoggerFactory.getLogger(AeaExProjContractControll
             AeaExProjContract contractQuery = new AeaExProjContract();
             contractQuery.setProjInfoId(projInfoId);
             List<AeaExProjContract> aeaExProjContracts = aeaExProjContractService.listAeaExProjContract(contractQuery);
-            AeaExProjContract aeaExProjContract = aeaExProjContracts.get(0);
-            return aeaExProjContract;
+            if (aeaExProjContracts.size()>0){
+                AeaExProjContract aeaExProjContract = aeaExProjContracts.get(0);
+                return aeaExProjContract;
+
+            }else {
+                return new AeaExProjContract();
+            }
         }
         else {
             logger.debug("构建新的AeaExProjContract对象");
