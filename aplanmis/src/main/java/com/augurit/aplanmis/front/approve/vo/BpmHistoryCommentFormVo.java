@@ -29,6 +29,9 @@ public class BpmHistoryCommentFormVo {
     @ApiModelProperty(value = "附件个数", required = true, dataType = "int")
     private Integer attDetailNum;
 
+    @ApiModelProperty(value = "流程实例ID", required = true, dataType="string")
+    private String processInstanceId;
+
     @ApiModelProperty(value = "任务ID", required = true, dataType="string")
     private String taskId;
 

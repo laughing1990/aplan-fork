@@ -33,7 +33,6 @@ import org.flowable.engine.HistoryService;
 import org.flowable.engine.TaskService;
 import org.flowable.engine.history.HistoricProcessInstance;
 import org.flowable.task.api.Task;
-import org.flowable.task.api.TaskInfo;
 import org.flowable.task.api.history.HistoricTaskInstance;
 import org.flowable.variable.api.history.HistoricVariableInstance;
 import org.springframework.beans.BeanUtils;
@@ -293,10 +292,8 @@ public class RestBpmService {
     private void convertToTree(List<BpmHistoryCommentFormVo> parentNodeList, String applyinstId) throws Exception {
         if (parentNodeList != null && parentNodeList.size() > 0) {
             for (BpmHistoryCommentFormVo bpmHistoryCommentFormVo : parentNodeList) {
-                String taskId = bpmHistoryCommentFormVo.getTaskId();
-                boolean isDealing = bpmHistoryCommentFormVo.isDealingTask();
                 if (bpmHistoryCommentFormVo.getChildNode() == null) {
-                    List<BpmHistoryCommentFormVo> childNodeList = listHistoryCommentByTaskId(taskId, isDealing, applyinstId, bpmHistoryCommentFormVo);
+                    List<BpmHistoryCommentFormVo> childNodeList = listHistoryCommentByTaskId(applyinstId, bpmHistoryCommentFormVo);
                     if (childNodeList != null && childNodeList.size() > 0) {
                         convertToTree(childNodeList, applyinstId);
                     }
@@ -342,29 +339,12 @@ public class RestBpmService {
         }
     }
 
-    public List<BpmHistoryCommentFormVo> listHistoryCommentByTaskId(String taskId, boolean isDealing, String applyinstId, BpmHistoryCommentFormVo parentNode) throws Exception {
-        String processInstanceId = null;
-        HistoricTaskInstance historicTaskInstance;
+    public List<BpmHistoryCommentFormVo> listHistoryCommentByTaskId(String applyinstId, BpmHistoryCommentFormVo parentNode) throws Exception {
+        String processInstanceId = parentNode.getProcessInstanceId();
+        String taskId = parentNode.getTaskId();
         List<BpmHistoryCommentFormVo> childNodes = null;
         List<BpmHistoryCommentFormVo> results = new ArrayList<>();
         String itemProcInstId = null;//事项关联的流程实例id
-        if (StringUtils.isBlank(taskId)) return null;
-        TaskInfo task;
-        if (isDealing) {
-            //父节点正在办理的情况
-            task = taskService.createTaskQuery().taskId(taskId).singleResult();
-            if (task != null) {
-                processInstanceId = task.getProcessInstanceId();
-            }
-        } else {
-            //父节点已经办理完成的情况
-            task = historyService.createHistoricTaskInstanceQuery().taskId(taskId).singleResult();
-            if (task == null) {
-                return null;
-            }
-            processInstanceId = task.getProcessInstanceId();
-        }
-        parentNode.setApproveResult(task.getConclusionOptionValue());
         //根据父流程的流程变量获取子流程实例id
         String subProcessInstanceId;
         ActStoAppinst actStoAppinst = actStoAppinstMapper.getActStoAppinstByProcInstId(processInstanceId);
@@ -427,8 +407,6 @@ public class RestBpmService {
         String nodeName = parentNode.getNodeName();
         String isItemNode = "0";
         String iteminstId = null;
-        Integer tscxNum = 0;
-        Integer bzNum = 0;
         String approveOrgName = null;
         if (StringUtils.isNotBlank(itemProcInstId)) {
             //这里通过流程实例获取事项实例的方式有点问题，如果出现多次触发同一事项的子流程则会出现覆盖和数据丢失的问题，所以原则上，同一个事项实例只能对应一个事项审批流程
@@ -444,21 +422,6 @@ public class RestBpmService {
                 nodeName = aeaHiIteminst.getIteminstName();
                 isItemNode = "1";
                 approveOrgName = aeaHiIteminst.getApproveOrgName();
-//                iteminstId = aeaHiIteminst.getIteminstId();
-                //查询特殊程序和补正次数 功能迁移到
-//                AeaLogItemStateHist query = new AeaLogItemStateHist();
-//                query.setIteminstId(iteminstId);
-//                List<AeaLogItemStateHist> aeaLogItemStateHists = aeaLogItemStateHistService.findAeaLogItemStateHist(query);
-//                for (AeaLogItemStateHist alish : aeaLogItemStateHists) {
-//                    if ("6".equals(alish.getNewState())) {
-//                        //进入补正
-//                        bzNum++;
-//                    }
-//                    if ("9".equals(alish.getNewState())) {
-//                        //进入特殊程序
-//                        tscxNum++;
-//                    }
-//                }
             }
         }
         if (aeaHiApplyinst != null && "1".equals(aeaHiApplyinst.getIsSeriesApprove()) && "部门审批".equals(parentNode.getNodeName()) && StringUtils.isNotBlank(itemProcInstId)) {
@@ -469,8 +432,6 @@ public class RestBpmService {
             itemNode.setChildNode(results);
             itemNode.setIteminstId(iteminstId);
             itemNode.setOrgName(approveOrgName);
-//            itemNode.setBzNum(bzNum);
-//            itemNode.setTscxNum(tscxNum);
             HistoricProcessInstance historicProcessInstance = historyService.createHistoricProcessInstanceQuery().processInstanceId(itemProcInstId).singleResult();
             if (historicProcessInstance != null && historicProcessInstance.getEndTime() != null) {
                 itemNode.setEndDate(historicProcessInstance.getEndTime());
@@ -485,9 +446,6 @@ public class RestBpmService {
             if (StringUtils.isNotBlank(approveOrgName)) {
                 parentNode.setOrgName(approveOrgName);
             }
-            ;
-//            parentNode.setBzNum(bzNum)
-//            parentNode.setTscxNum(tscxNum);
         }
         //过滤重复的节点，即多工作项合并
         List<BpmHistoryCommentFormVo> temp = new ArrayList<>();
