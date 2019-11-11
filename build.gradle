@@ -37,7 +37,8 @@ allprojects {
         mavenLocal()
         maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
         //agcloud私服仓库
-        maven { url 'http://39.107.139.174:8081/repository/agcloud-public/' }
+        maven { url 'http://192.168.30.192:8081/nexus/repository/agcloud/' }
+//        maven { url 'http://39.107.139.174:8081/repository/agcloud-public/' }
         // 中央仓库
         mavenCentral()
     }
