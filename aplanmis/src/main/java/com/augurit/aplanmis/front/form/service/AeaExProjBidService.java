@@ -1,6 +1,7 @@
 package com.augurit.aplanmis.front.form.service;
 
 import com.augurit.aplanmis.common.domain.AeaExProjBid;
+import com.augurit.aplanmis.common.domain.AeaProjInfo;
 
 /**
 * 招投标信息-Service服务调用接口类
@@ -19,5 +20,7 @@ public interface AeaExProjBidService {
     public void updateAeaExProjBid(AeaExProjBid aeaExProjBid) throws Exception;
 
     public AeaExProjBid getAeaExProjBidByProjId(String projId) throws Exception;
+
+    public AeaProjInfo getProjInfoByProjId(String projId) throws Exception;
 
 }

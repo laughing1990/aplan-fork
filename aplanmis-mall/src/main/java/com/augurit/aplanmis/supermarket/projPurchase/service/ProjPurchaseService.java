@@ -1,4 +1,4 @@
-package com.augurit.aplanmis.supermarket.projPurchase.service.impl;
+package com.augurit.aplanmis.supermarket.projPurchase.service;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -22,7 +22,6 @@ import com.augurit.aplanmis.common.utils.BusinessUtils;
 import com.augurit.aplanmis.common.utils.FileUtils;
 import com.augurit.aplanmis.common.utils.SessionUtil;
 import com.augurit.aplanmis.common.vo.*;
-import com.augurit.aplanmis.supermarket.projPurchase.service.AeaImProjPurchaseService;
 import com.augurit.aplanmis.supermarket.projPurchase.vo.*;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
@@ -41,7 +40,7 @@ import java.util.*;
 
 @Service
 @Transactional
-public class AeaImProjPurchaseServiceImpl implements AeaImProjPurchaseService {
+public class ProjPurchaseService {
     @Autowired
     private AeaImProjPurchaseMapper aeaImProjPurchaseMapper;
 
@@ -90,9 +89,6 @@ public class AeaImProjPurchaseServiceImpl implements AeaImProjPurchaseService {
     @Autowired
     private BscAttMapper bscAttMapper;
 
-//    @Autowired
-//    private WorkdayHolidayService workdayHolidayService;
-
     @Autowired
     private AeaImServiceItemMapper aeaImServiceItemMapper;
 
@@ -117,18 +113,17 @@ public class AeaImProjPurchaseServiceImpl implements AeaImProjPurchaseService {
     @Autowired
     AeaImAvoidUnitMapper aeaImAvoidUnitMapper;
 
-    @Override
+
     public List<AeaImProjPurchase> getProjPurchaseList(AeaImProjPurchase aeaImProjPurchase, Page page) {
         PageHelper.startPage(page);
         return aeaImProjPurchaseMapper.listAeaImProjPurchaseForMyProj(aeaImProjPurchase);
     }
 
-    @Override
     public AeaImProjPurchase getProjPurchaseById(String projPurchaseId) {
         return aeaImProjPurchaseMapper.listbid(projPurchaseId);
     }
 
-    @Override
+
     public ProjPurchaseStatisticsVo getStaticDataForProjPurchase() {
         AeaImProjPurchase query = new AeaImProjPurchase();
         ProjPurchaseStatisticsVo vo = new ProjPurchaseStatisticsVo();
@@ -137,7 +132,6 @@ public class AeaImProjPurchaseServiceImpl implements AeaImProjPurchaseService {
         return vo;
     }
 
-    @Override
     public List<AeaImProjPurchase> getProjListByLocalCode(String keyword, Page page) {
         AeaImProjPurchase aeaImProjPurchase = new AeaImProjPurchase();
         if (StringUtils.isNotBlank(keyword)) {
@@ -146,7 +140,6 @@ public class AeaImProjPurchaseServiceImpl implements AeaImProjPurchaseService {
         return getProjPurchaseList(aeaImProjPurchase, page);
     }
 
-    @Override
     public AeaImProjPurchase saveAeaImProjPurchase(SaveAeaImProjPurchaseVo aeaImProjPurchaseVo, HttpServletRequest request) throws Exception {
 
         LoginInfoVo loginInfoVo = SessionUtil.getLoginInfo(request);
@@ -446,13 +439,11 @@ public class AeaImProjPurchaseServiceImpl implements AeaImProjPurchaseService {
         return aeaImProjPurchase;
     }
 
-    @Override
     public AeaImProjPurchase updateProjPurchase(SaveAeaImProjPurchaseVo aeaImProjPurchaseVo, HttpServletRequest request) throws Exception {
 
         return updateProjPurchase(aeaImProjPurchaseVo, request, new String[]{AuditFlagStatus.NO_COMMIT, AuditFlagStatus.AUDIT_RETURN});
     }
 
-    @Override
     public void revisedProjPurchase(SaveAeaImProjPurchaseVo saveAeaImProjPurchaseVo, String operateDescribe, List<MultipartFile> files, HttpServletRequest request) throws Exception {
         LoginInfoVo loginInfoVo = SessionUtil.getLoginInfo(request);
         checkIsOwner(loginInfoVo);
@@ -602,43 +593,6 @@ public class AeaImProjPurchaseServiceImpl implements AeaImProjPurchaseService {
         aeaImMajorQualMapper.insertAeaImMajorQual(aeaImMajorQual);
     }
 
-//    /**
-//     * 获取截止日期
-//     * @param bjType 2 自然日 1工作日
-//     * @param bidNum 天数
-//     * @return
-//     */
-//    private Date getExpirationDate(String bjType, String bidNum){
-//
-//        Date expirationDate = DateUtils.ModifyBackPartDate(DateUtils.getTomorrow(new Date()), 0, 0, 0);
-//        Calendar calendar = Calendar.getInstance();
-//        calendar.setTime(expirationDate);
-//
-//        if(StringUtils.isNotBlank(bidNum)) {
-//            int num = Integer.parseInt(bidNum);
-//
-//            if(num <= 0){
-//                return calendar.getTime();
-//            }
-//
-//            if ("2".equals(bjType)) {//自然日
-//                calendar.add(Calendar.DATE, num);
-//            }else {//工作日
-//                for (int i = 0; i < num; i++) {
-//                    calendar.add(Calendar.DATE, 1);
-//                    if (workdayHolidayService.isHoliday(calendar.getTime(),topOrgId)) {
-//                        i--;
-//                    }
-//                }
-//            }
-//
-//            return calendar.getTime();
-//        }
-//
-//        return calendar.getTime();
-//    }
-
-    @Override
     public List<AeaProjInfo> getUnpublishedProjInfoList(String localCode, Page page, HttpServletRequest request) throws Exception {
         LoginInfoVo loginInfoVo = SessionUtil.getLoginInfo(request);
         checkIsOwner(loginInfoVo);
@@ -718,7 +672,6 @@ public class AeaImProjPurchaseServiceImpl implements AeaImProjPurchaseService {
         }
     }
 
-    @Override
     public ProUnitLinkVo getProUnitLinkInfo(String projInfoId, HttpServletRequest request) {
         LoginInfoVo loginInfoVo = SessionUtil.getLoginInfo(request);
         checkIsOwner(loginInfoVo);
@@ -771,7 +724,6 @@ public class AeaImProjPurchaseServiceImpl implements AeaImProjPurchaseService {
         return proUnitLinkVo;
     }
 
-    @Override
     public List<AeaItemServiceVo> getAgentServiceItemList(String keyword, Page page) {
 
         if (page != null) {
@@ -782,7 +734,6 @@ public class AeaImProjPurchaseServiceImpl implements AeaImProjPurchaseService {
 
     }
 
-    @Override
     public List<AeaImServiceVo> getItemServiceListByItemVerId(String itemVerId) throws Exception {
         List<AeaImServiceVo> serviceVoList = aeaImServiceMapper.listAeaImServiceVoByItemVerId(itemVerId);
 
@@ -819,7 +770,6 @@ public class AeaImProjPurchaseServiceImpl implements AeaImProjPurchaseService {
         return serviceVoList;
     }
 
-    @Override
     public List<AgentUnitInfoVo> getAgentUnitInfoList(QueryAgentUnitInfoVo queryAgentUnitInfo) throws Exception {
 
         List<AgentUnitInfoVo> agentUnitInfoVos = new ArrayList<>();
@@ -1093,7 +1043,6 @@ public class AeaImProjPurchaseServiceImpl implements AeaImProjPurchaseService {
         return false;
     }
 
-    @Override
     public List<AeaImProjPurchase> getPublicProjPurchaseList(QueryProjPurchaseVo queryProjPurchaseVo, Page page) {
         if (page != null) {
             PageHelper.startPage(page);
@@ -1107,7 +1056,6 @@ public class AeaImProjPurchaseServiceImpl implements AeaImProjPurchaseService {
         return aeaImProjPurchaseMapper.listPublicProjPurchaseByQueryProjPurchaseVo(queryProjPurchaseVo);
     }
 
-    @Override
     public AeaImProjPurchaseDetailVo getPublicProjPurchaseDatail(String projPurchaseId) throws Exception {
         AeaImProjPurchaseDetailVo aeaImProjPurchaseDetailVo = aeaImProjPurchaseMapper.getAeaImProjPurchaseDetailVoById(projPurchaseId);
 
@@ -1128,7 +1076,6 @@ public class AeaImProjPurchaseServiceImpl implements AeaImProjPurchaseService {
         return null;
     }
 
-    @Override
     public List<AeaImService> getAllService() throws Exception {
         AeaImService aeaImService = new AeaImService();
         aeaImService.setIsActive("1");
@@ -1137,19 +1084,16 @@ public class AeaImProjPurchaseServiceImpl implements AeaImProjPurchaseService {
         return aeaImServiceMapper.listAeaImService(aeaImService);
     }
 
-    @Override
     public List<BscAttForm> getRequireExplainFileList(String requireExplainFile) throws Exception {
         return bscAttMapper.listAttLinkAndDetail("AEA_IM_PROJ_PURCHASE", "REQUIRE_EXPLAIN_FILE",
                 requireExplainFile, null, topOrgId, null);
     }
 
-    @Override
     public List<BscAttForm> getOfficialRemarkFileList(String officialRemarkFile) throws Exception {
         return bscAttMapper.listAttLinkAndDetail("AEA_IM_PROJ_PURCHASE", "OFFICIAL_REMARK_FILE",
                 officialRemarkFile, null, topOrgId, null);
     }
 
-    @Override
     public SelectedQualMajorRequire getSelectedQualMajorRequire(String projPurchaseId) throws Exception {
 
         SelectedQualMajorRequire selectedQualMajorRequire = new SelectedQualMajorRequire();
@@ -1326,8 +1270,6 @@ public class AeaImProjPurchaseServiceImpl implements AeaImProjPurchaseService {
         return aeaImServiceMajorMapper.listAeaImServiceMajor(queryMajor);
     }
 
-
-    @Override
     public List<AeaUnitInfo> getAeaUnitInfoByPage(String keyword, Page page) throws Exception {
         if (page != null) {
             PageHelper.startPage(page);
@@ -1478,7 +1420,6 @@ public class AeaImProjPurchaseServiceImpl implements AeaImProjPurchaseService {
         return matchUnitInfos;
     }
 
-    @Override
     public ShowProjPurchaseVo showProjPurchaseByProjPurchaseId(String projPurchaseId) throws Exception {
         if (StringUtils.isNotBlank(projPurchaseId)) {
             AeaImProjPurchase aeaImProjPurchase = aeaImProjPurchaseMapper.getAeaImProjPurchaseByProjPurchaseId(projPurchaseId);
@@ -1533,7 +1474,6 @@ public class AeaImProjPurchaseServiceImpl implements AeaImProjPurchaseService {
         return null;
     }
 
-    @Override
     public void submitProjPurchaseByProjPurchaseId(String projPurchaseId, HttpServletRequest request) throws Exception {
 
         LoginInfoVo loginInfoVo = SessionUtil.getLoginInfo(request);
@@ -1557,7 +1497,6 @@ public class AeaImProjPurchaseServiceImpl implements AeaImProjPurchaseService {
     }
 
 
-    @Override
     public ContentResultForm listProjPurchase(AeaImProjPurchase aeaImProjPurchase, int pageSize, int pageNum) {
         ContentResultForm resultForm = new ContentResultForm(false);
         if (aeaImProjPurchase != null && pageSize > 0 && pageNum > 0 &&
@@ -1574,7 +1513,6 @@ public class AeaImProjPurchaseServiceImpl implements AeaImProjPurchaseService {
         return resultForm;
     }
 
-    @Override
     public ContentResultForm getProjPurchaseInfoByProjPurchaseId(String projPurchaseId) throws Exception {
         ContentResultForm resultForm = new ContentResultForm(false);
         if (StringUtils.isNotBlank(projPurchaseId)) {
@@ -1593,7 +1531,6 @@ public class AeaImProjPurchaseServiceImpl implements AeaImProjPurchaseService {
         return resultForm;
     }
 
-    @Override
     public void applyProjPurchaseInvalid(String projPurchaseId, String memo, List<MultipartFile> files, HttpServletRequest request) throws Exception {
 
         LoginInfoVo loginInfoVo = SessionUtil.getLoginInfo(request);
@@ -1682,8 +1619,6 @@ public class AeaImProjPurchaseServiceImpl implements AeaImProjPurchaseService {
         aeaImProjPurchaseMapper.updateAeaImProjPurchase(updateAeaImProjPurchase);
     }
 
-
-    @Override
     public ContentResultForm getPublishingInfoByProjPurchaseId(String projPurchaseId, String unitInfoId) throws Exception {
         ContentResultForm resultForm = new ContentResultForm(false);
         if (StringUtils.isNotBlank(projPurchaseId)) {
@@ -1760,7 +1695,6 @@ public class AeaImProjPurchaseServiceImpl implements AeaImProjPurchaseService {
         return null;
     }
 
-    @Override
     public void applyPostponeService(ApplyPostponeServiceData applyPostponeServiceData, String memo, List<MultipartFile> files, HttpServletRequest request) throws Exception {
         LoginInfoVo loginInfoVo = SessionUtil.getLoginInfo(request);
         checkIsOwner(loginInfoVo);
@@ -1802,7 +1736,6 @@ public class AeaImProjPurchaseServiceImpl implements AeaImProjPurchaseService {
         aeaImPurchaseinstMapper.updateAeaImPurchaseinst(aeaImPurchaseinst);
     }
 
-    @Override
     public OwnerIndexData showProjPurchaseData(String unitInfoId, String linkmanInfoId) throws Exception {
         OwnerIndexData ownerIndexData = new OwnerIndexData();
         try {
@@ -1822,7 +1755,6 @@ public class AeaImProjPurchaseServiceImpl implements AeaImProjPurchaseService {
 
     }
 
-    @Override
     public AeaProjInfo getProjInfoByLocalCode(String localCode) throws Exception {
         List<AeaProjInfo> aeaProjInfoList = aeaProjInfoMapper.getProjInfoByCode(localCode);
         if (aeaProjInfoList != null && aeaProjInfoList.size() > 0) {
@@ -1832,7 +1764,6 @@ public class AeaImProjPurchaseServiceImpl implements AeaImProjPurchaseService {
         return null;
     }
 
-    @Override
     public ContentResultForm queryIntermediaryList(String projPurchaseId, int pageSize, int pageNum) {
         ContentResultForm resultForm = new ContentResultForm(false);
         if (pageSize > 0 && pageNum > 0) {
@@ -1848,7 +1779,6 @@ public class AeaImProjPurchaseServiceImpl implements AeaImProjPurchaseService {
         return resultForm;
     }
 
-    @Override
     public ContentResultForm updateIntermediaryWonBidStatus(String unitBiddingId, String projPurchaseId) throws Exception {
         ContentResultForm resultForm = new ContentResultForm(false);
         aeaImProjPurchaseMapper.updateIntermediaryWonBidStatus(unitBiddingId);
@@ -1862,7 +1792,6 @@ public class AeaImProjPurchaseServiceImpl implements AeaImProjPurchaseService {
         return resultForm;
     }
 
-    @Override
     public void updateAeaImProjPurchase(AeaImProjPurchase aeaImProjPurchase) throws Exception {
         aeaImProjPurchaseMapper.updateAeaImProjPurchase(aeaImProjPurchase);
     }
