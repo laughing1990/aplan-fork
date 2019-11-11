@@ -105,6 +105,8 @@ public class OrgEfficiencySupersionServiceImpl implements OrgEfficiencySupersion
             if (!opuOmOrgs.isEmpty()) {
                 OpuOmOrg opuOmOrg = opuOmOrgs.get(0);
                 orgId = opuOmOrg.getOrgId();
+            }else{
+                throw new Exception("找不到当前用户所属部门orgId");
             }
         }
 
@@ -441,6 +443,8 @@ public class OrgEfficiencySupersionServiceImpl implements OrgEfficiencySupersion
             if (!opuOmOrgs.isEmpty()) {
                 OpuOmOrg opuOmOrg = opuOmOrgs.get(0);
                 orgId = opuOmOrg.getOrgId();
+            }else {
+                throw new Exception("找不到当前部门的orgId");
             }
         }
 

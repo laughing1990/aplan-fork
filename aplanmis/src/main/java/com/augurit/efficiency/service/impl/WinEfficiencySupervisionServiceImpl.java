@@ -2125,7 +2125,7 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
 
         } else {
             if (!DateUtils.checkTimeParam(startTime, endTime, "yyyy-MM-dd")) {
-                throw new Exception("传入的时间参数欧问题。。。");
+                throw new Exception("传入的时间参数有问题。。。");
             }
             LocalDate endDate = LocalDate.parse(endTime, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
             if (!LocalDate.now().isAfter(endDate)) {//结束日期只能统计到昨天
@@ -2208,7 +2208,7 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
 
         } else {
             if (!DateUtils.checkTimeParam(startTime, endTime, "yyyy-MM-dd")) {
-                throw new Exception("传入的时间参数欧问题。。。");
+                throw new Exception("传入的时间参数有问题。。。");
             }
             LocalDate endDate = LocalDate.parse(endTime, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
             if (!LocalDate.now().isAfter(endDate)) {//结束日期只能统计到昨天
@@ -2298,7 +2298,7 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
             list = aeaAnaWinMonthStatisticsMapper.getStageGroupStatistics(yearMonth, yearMonth, rootOrgId);
         } else {
             if (!DateUtils.checkTimeParam(startTime, endTime, "yyyy-MM-dd")) {
-                throw new Exception("传入的时间参数欧问题。。。");
+                throw new Exception("传入的时间参数有问题。。。");
             }
             LocalDate endDate = LocalDate.parse(endTime, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
             if (!LocalDate.now().isAfter(endDate)) {//结束日期只能统计到昨天
@@ -2371,7 +2371,7 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
             list = aeaAnaWinMonthStatisticsMapper.getWinStageGroupStatistics(yearMonth, yearMonth, rootOrgId, windowId);
         } else {
             if (!DateUtils.checkTimeParam(startTime, endTime, "yyyy-MM-dd")) {
-                throw new Exception("传入的时间参数欧问题。。。");
+                throw new Exception("传入的时间参数有问题。。。");
             }
             LocalDate endDate = LocalDate.parse(endTime, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
             if (!LocalDate.now().isAfter(endDate)) {//结束日期只能统计到昨天
@@ -2401,7 +2401,7 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
 
         } else {
             if (!DateUtils.checkTimeParam(startTime, endTime, "yyyy-MM-dd")) {
-                throw new Exception("传入的时间参数欧问题。。。");
+                throw new Exception("传入的时间参数有问题。。。");
             }
             LocalDate endDate = LocalDate.parse(endTime, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
             if (!LocalDate.now().isAfter(endDate)) {//结束日期只能统计到昨天
@@ -2549,7 +2549,7 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
 
         } else {
             if (!DateUtils.checkTimeParam(startTime, endTime, "yyyy-MM-dd")) {
-                throw new Exception("传入的时间参数欧问题。。。");
+                throw new Exception("传入的时间参数有问题。。。");
             }
             LocalDate endDate = LocalDate.parse(endTime, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
             if (!LocalDate.now().isAfter(endDate)) {//结束日期只能统计到昨天
@@ -2601,7 +2601,7 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
 
         } else {
             if (!DateUtils.checkTimeParam(startTime, endTime, "yyyy-MM-dd")) {
-                throw new Exception("传入的时间参数欧问题。。。");
+                throw new Exception("传入的时间参数有问题。。。");
             }
             LocalDate endDate = LocalDate.parse(endTime, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
             if (!LocalDate.now().isAfter(endDate)) {//结束日期只能统计到昨天
