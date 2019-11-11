@@ -20,17 +20,17 @@
           <thead>
             <tr>
               <th class="al" width="20%">申报流水号</th>
-              <th class="al" width="25%">项目代码 | 项目名称</th>
-              <th class="al" width="20%">阶段/事项名称</th>
-              <th width="20%">申报状态</th>
-              <th class="al" width="15%">操作</th>
+              <th class="al" width="18%">项目代码 | 项目名称</th>
+              <th class="al" width="18%">阶段/事项名称</th>
+              <th width="22%">申报状态</th>
+              <th  width="20%">操作</th>
             </tr>
           </thead>
           <tbody id="inProgressProjBody">
             <template v-if="hadApplyItemData.length>0">
               <tr v-for="item in hadApplyItemData">
                 <td width="20%">{{item.applyinstCode}}</td>
-                <td class="al" width="20%">
+                <td class="al" width="18%">
                   <el-tooltip placement="top" effect="light">
                     <div slot="content">项目代码：{{item.localCode}}<br/> <br/>工程代码：{{item.gcbm}}<br /> <br/>项目/工程名称：{{item.projName}}</div>
                     <div>
@@ -39,21 +39,21 @@
                     </div>
                   </el-tooltip>
                 </td>
-                <td class="al" width="20%">
+                <td class="al" width="18%">
                   <el-tooltip placement="top" effect="light" v-if="item.isSeriesApprove == 1">
                     <div slot="content">主题名称：{{item.themeName}}<br/> <br/> 事项名称：{{item.stageIteminstName}}</div>
                     <div>
-                     <span class="ellipsis pro-name" >{{item.stageIteminstName}}</span>
+                     <span class=" pro-name" >{{item.stageIteminstName}}</span>
                     </div>
                   </el-tooltip>
                   <el-tooltip placement="top" effect="light" v-else>
                     <div slot="content">主题名称：{{item.themeName}} <br/> <br/> 阶段名称：{{item.stageIteminstName}}</div>
                     <div>
-                      <span class="ellipsis stageIteminstName-bg" >{{item.stageIteminstName}}</span>
+                      <span class="stageIteminstName-bg" >{{item.stageIteminstName}}</span>
                     </div>
                   </el-tooltip>
                 </td>
-                <td width="20%">
+                <td width="22%">
                   <span class="applyinstState applyinstState1"
                         v-if="item.applyinstState=='0'">已接件未审核</span>
                   <span class="applyinstState applyinstState2"
@@ -84,10 +84,10 @@
                         v-else="item.applyinstState=='6'">已办结</span>
                 </td>
                 <!--<td width="20%"><i class="applyintState" :class="applyState(item.applyinstState)"></i> {{item.applyinstState}}</td>-->
-                <td width="20%" style="cursor: pointer" class="al" style="width: 120px;">
-                  <span class="option-btn" style="display: inline-block;width: 50px;"  @click="lookProjDetail(item)">查看</span>
-                  <span v-if="item.applyinstState=='0'" class="option-btn" style="display: inline-block;width: 50px;"  @click="withDraw(item)">撤件</span>
-                  <span v-else="item.applyinstState!='0'" class="option-btn"  style="display: inline-block;width: 50px;"  title="目前支持撤回已接件未审核状态的办件">撤件</span>
+                <td width="20%" style="cursor: pointer">
+                  <a class="option-btn" style="float:left;display: inline-block;width: 50px;"  @click="lookProjDetail(item)">查看</a>
+                  <a v-if="item.applyinstState=='0'" class="option-btn" style="display: inline-block;width: 50px;"  @click="withDraw(item)">撤件</a>
+                  <a v-else="item.applyinstState!='0'" class="option-btn"  style="display: inline-block;width: 50px;"  title="只能撤回已接件未审核状态的办件">撤件</a>
                 </td>
               </tr>
             </template>
