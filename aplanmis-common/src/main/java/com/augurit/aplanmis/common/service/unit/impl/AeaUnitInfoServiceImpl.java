@@ -9,6 +9,7 @@ import com.augurit.aplanmis.common.constants.DeletedStatus;
 import com.augurit.aplanmis.common.domain.AeaApplyinstUnitProj;
 import com.augurit.aplanmis.common.domain.AeaUnitInfo;
 import com.augurit.aplanmis.common.domain.AeaUnitProj;
+import com.augurit.aplanmis.common.domain.ExSJUnitFromDetails;
 import com.augurit.aplanmis.common.mapper.AeaApplyinstUnitProjMapper;
 import com.augurit.aplanmis.common.mapper.AeaUnitInfoMapper;
 import com.augurit.aplanmis.common.mapper.AeaUnitProjMapper;
@@ -374,5 +375,11 @@ public class AeaUnitInfoServiceImpl implements AeaUnitInfoService {
         AeaUnitInfo query=new AeaUnitInfo();
         query.setUnifiedSocialCreditCode(idcard);
         return aeaUnitInfoMapper.listAeaUnitInfo(query);
+    }
+
+    @Override
+    public List<ExSJUnitFromDetails> findAeaExProBuildUnitInfoByKeyword(String keyword) {
+        LOGGER.debug("搜索单位信息");
+        return aeaUnitInfoMapper.findAeaExProBuildUnitInfoByKeyword(keyword,SecurityContext.getCurrentOrgId());
     }
 }

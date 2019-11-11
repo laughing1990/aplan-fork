@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by zhangwn    2019-09-03 10:55:42 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaExProjBuildMapper" >
+    <sql id="allColumns">
+        BUILD_ID buildId,
+        PROJ_INFO_ID projInfoId,
+        PROVINCE_PROJ_CODE provinceProjCode,
+        CONTRACT_START_BUILD_TIME contractStartBuildTime,
+        CONTRACT_END_BUILD_TIME contractEndBuildTime,
+        BUILD_AREA buildArea,
+        STRUCTURE_SYSTEM structureSystem,
+        QUA_CHECK_NUM quaCheckNum,
+        BUILD_MEMO buildMemo,
+        CREATER creater,
+        CREATE_TIME createTime,
+        MODIFIER modifier,
+        MODIFY_TIME modifyTime,
+        ROOT_ORG_ID rootOrgId
+    </sql>
+
+    <insert id="insertAeaExProjBuild" parameterType="AeaExProjBuild">
+      insert into aea_ex_proj_build
+        (BUILD_ID,PROJ_INFO_ID,PROVINCE_PROJ_CODE,CONTRACT_START_BUILD_TIME,CONTRACT_END_BUILD_TIME,BUILD_AREA,STRUCTURE_SYSTEM,QUA_CHECK_NUM,BUILD_MEMO,CREATER,CREATE_TIME,MODIFIER,MODIFY_TIME,ROOT_ORG_ID)
+        values
+        (#{buildId},#{projInfoId},#{provinceProjCode},#{contractStartBuildTime},#{contractEndBuildTime},#{buildArea},#{structureSystem},#{quaCheckNum},#{buildMemo},#{creater},#{createTime},#{modifier},#{modifyTime},#{rootOrgId})
+    </insert>
+    
+    <update id="updateAeaExProjBuild" parameterType="AeaExProjBuild">
+        update aea_ex_proj_build
+        <set >
+            <if test="projInfoId != null" >
+                PROJ_INFO_ID = #{projInfoId},
+            </if>
+            <if test="provinceProjCode != null" >
+                PROVINCE_PROJ_CODE = #{provinceProjCode},
+            </if>
+            <if test="contractStartBuildTime != null" >
+                CONTRACT_START_BUILD_TIME = #{contractStartBuildTime},
+            </if>
+            <if test="contractEndBuildTime != null" >
+                CONTRACT_END_BUILD_TIME = #{contractEndBuildTime},
+            </if>
+            <if test="buildArea != null" >
+                BUILD_AREA = #{buildArea},
+            </if>
+            <if test="structureSystem != null" >
+                STRUCTURE_SYSTEM = #{structureSystem},
+            </if>
+            <if test="quaCheckNum != null" >
+                QUA_CHECK_NUM = #{quaCheckNum},
+            </if>
+            <if test="buildMemo != null" >
+                BUILD_MEMO = #{buildMemo},
+            </if>
+            <if test="creater != null" >
+                CREATER = #{creater},
+            </if>
+            <if test="modifier != null" >
+                MODIFIER = #{modifier},
+            </if>
+            <if test="modifyTime != null" >
+                MODIFY_TIME = #{modifyTime},
+            </if>
+            <if test="rootOrgId != null" >
+                MODIFY_TIME = #{rootOrgId},
+            </if>
+        </set>
+        where BUILD_ID = #{buildId}
+    </update>
+
+    <select id="getAeaExProjBuildByProjId" resultType="AeaExProjBuild">
+        select
+        <include refid="allColumns"/>
+        from aea_ex_proj_build
+        where PROJ_INFO_ID = #{projInfoId}
+    </select>
+
+</mapper>

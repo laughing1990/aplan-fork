@@ -13,7 +13,10 @@
         CREATE_TIME createTime,
         UNIT_TYPE unitType,
         LINKMAN_INFO_ID linkmanInfoId,
-        is_deleted isDeleted
+        is_deleted isDeleted，
+        QUAL_LEVEL_ID qualLevelId,
+        CERTINST_ID certinstId,
+        SAFE_LICENCE_NUM safeLicenceNum
     </sql>
     <sql id="alias_allColumns">
         distinct (${alias}.UNIT_INFO_ID) unitInfoId,
@@ -121,8 +124,8 @@
 
     <!--5 新增实体对象 -->
     <insert id="insertAeaUnitProj" parameterType="AeaUnitProj">
-        insert into AEA_UNIT_PROJ (UNIT_PROJ_ID, UNIT_INFO_ID, IS_OWNER, PROJ_INFO_ID, CREATER, CREATE_TIME,UNIT_TYPE, LINKMAN_INFO_ID, is_deleted )
-        values (#{unitProjId}, #{unitInfoId}, #{isOwner}, #{projInfoId}, #{creater}, #{createTime},#{unitType},#{linkmanInfoId}, #{isDeleted})
+        insert into AEA_UNIT_PROJ (UNIT_PROJ_ID, UNIT_INFO_ID, IS_OWNER, PROJ_INFO_ID, CREATER, CREATE_TIME,UNIT_TYPE, LINKMAN_INFO_ID, is_deleted ,QUAL_LEVEL_ID,CERTINST_ID,SAFE_LICENCE_NUM)
+        values (#{unitProjId}, #{unitInfoId}, #{isOwner}, #{projInfoId}, #{creater}, #{createTime},#{unitType},#{linkmanInfoId}, #{isDeleted},#{qualLevelId},#{certinstId},#{safeLicenceNum})
     </insert>
 
     <insert id="batchInsertAeaUnitProj" parameterType="AeaUnitProj">
@@ -165,7 +168,16 @@
                 LINKMAN_INFO_ID = #{linkmanInfoId},
             </if>
             <if test="isDeleted != null">
-                is_deleted = #{isDeleted}
+                is_deleted = #{isDeleted},
+            </if>
+            <if test="qualLevelId != null">
+                QUAL_LEVEL_ID = #{qualLevelId},
+            </if>
+            <if test="certinstId != null">
+                CERTINST_ID = #{certinstId},
+            </if>
+            <if test="safeLicenceNum != null">
+                SAFE_LICENCE_NUM=#{safeLicenceNum}
             </if>
         </set>
         where UNIT_PROJ_ID = #{unitProjId}

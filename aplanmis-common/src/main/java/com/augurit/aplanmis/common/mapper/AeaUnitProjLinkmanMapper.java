@@ -1,6 +1,7 @@
 package com.augurit.aplanmis.common.mapper;
 
 import com.augurit.aplanmis.common.domain.AeaUnitProjLinkman;
+import com.augurit.aplanmis.common.domain.PersonSetting;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -108,4 +109,9 @@ public interface AeaUnitProjLinkmanMapper {
      * @return List<AeaUnitProjLinkman>
      */
     List<AeaUnitProjLinkman> listfuzeren(AeaUnitProjLinkman aeaUnitProjLinkman);
+
+    /**
+     * 搜索单位人员信息
+     */
+    List<PersonSetting> findPersonSetting(@Param("unitProjId") String unitProjId);
 }
