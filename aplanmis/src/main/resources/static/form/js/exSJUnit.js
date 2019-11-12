@@ -428,7 +428,8 @@ var vm = new Vue({
             applyJianli.linkmanType = _that.C_PRJ_PERSON_POST.gongchengjianli;
             var a = [gongchengzong,shigongzong,shigongzhuanyefenbao,shigonglaowufenbao,applyJianli];
             _that.exSJAllUnit.aeaExProjBuildUnitInfo = JSON.stringify(a);
-            _that.$refs['unitInfoShowFrom'].validate(function (valid){
+            debugger;
+            _that.$refs['unitInfoShowFrom','gongchengzongFrom','applyShigongzongFrom','applyShigongzhuanyefenbaoFrom','applyShigonglaowufenbaoFrom','applyJianliFrom'].validate(function (valid){
                 if(valid){
                     request('',{
                         url: ctx + '/rest/from/exSJUnit/saveOrUpdateSJUnitInfo',
@@ -448,6 +449,11 @@ var vm = new Vue({
                             });
                         }
                     })
+                }else {
+                    _that.$message({
+                        message: '请输入必填字段',
+                        type: 'error'
+                    });
                 }
             })
         },
@@ -569,6 +575,7 @@ var vm = new Vue({
             }else if(flag == 'applyJianliFrom'){
                 val.personSetting = JSON.parse (JSON.stringify(val.personSetting));
                 this.applyJianliFrom = val;
+                this.applyJianliFrom.unitType = '11';
             }
         },
         // 人员设置选择人员

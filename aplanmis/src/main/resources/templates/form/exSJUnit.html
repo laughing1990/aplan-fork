@@ -164,7 +164,7 @@
                                            v-for="(item2, index2) in unitLinkManOptions"
                                            :key="index2"
                                            :label="item2.addressName"
-                                           @click.native="selLinkman(item2,index,'shigongzongchenbao')"
+                                           @click.native="selLinkman(item2,index,'applyShigongzongFrom')"
                                            :value="item2.addressId">
                                     <span class="fl">{{ item2.addressName }}</span>
                                     <span class="fr el-icon-delete" @click.stop="delLinkman(item2,applyShigongzongFrom,index)"></span>
@@ -536,8 +536,9 @@
                     <input type="hidden" name="projLinkmanId" :value="applyJianliFrom.projLinkmanId">
                     <el-col :span="12">
                         <el-form-item label="组织机构代码" prop="organizationalCode">
-                            <el-autocomplete :trigger-on-focus="false" v-model="applyJianliFrom.organizationalCode" placeholder="请输入组织机构代码">
-                            </el-autocomplete>
+                            <!--<el-autocomplete :trigger-on-focus="false" v-model="applyJianliFrom.organizationalCode" placeholder="请输入组织机构代码">-->
+                            <!--</el-autocomplete>-->
+                            <el-input v-model="applyJianliFrom.organizationalCode" placeholder="请输入组织机构代码"></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="12">
@@ -557,8 +558,7 @@
                         <el-form-item label="项目主体类型" prop="unitType" class="input-ex">
                             <!--<el-input v-model="applyJianliFrom.unitType" placeholder="请输入项目主体类型">-->
                             <!--</el-input>-->
-                            <el-select disabled v-model="applyJianliFrom.unitType" filterable placeholder="项目主体类型" @click.native="getProjThemeIdList"
-                                       :loading="loadingThemeIdList">
+                            <el-select disabled v-model="applyJianliFrom.unitType" filterable placeholder="项目主体类型">
                                 <el-option v-for="item in prjEntType" :key="item.itemId" :label="item.itemName" :value="item.itemCode">
                                 </el-option>
                             </el-select>
@@ -659,7 +659,7 @@
                                                @click="addLinkmanTypes(applyJianliFrom.personSetting)"
                                                title="新增"></el-button>
                                     <el-button v-else
-                                               icon="el-icon-remove-outline"施工总承包单位
+                                               icon="el-icon-remove-outline"
                                                type="primary"
                                                @click="delLinkmanTypes(applyJianliFrom.personSetting,index)"
                                                class="item-left-btn" title="删除"></el-button>
