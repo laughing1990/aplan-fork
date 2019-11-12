@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/rest/Checker")
+@RequestMapping("/rest/checker")
 @Api(value = "单项、阶段前置条件检测", tags = "单项前置条件检测")
 public class AeaCheckerController {
 
