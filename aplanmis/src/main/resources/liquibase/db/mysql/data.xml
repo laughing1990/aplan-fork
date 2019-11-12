@@ -2328,4 +2328,12 @@ INSERT INTO `act_sto_widget_key` (`KEY_ID`, `WIDGET_ID`, `KEY_CODE`, `KEY_LABEL`
             INSERT INTO `bsc_dic_code_item` VALUES ('bbcf8c85-95b3-435a-99ce-0f241d020e0c', '22cfe743-9653-467a-8242-83b006b4dfdd', '9', '工程总承包', '1', 4, '', NULL, 0, 0, NULL, NULL, '2019-11-11 11:26:20', NULL, '2019-11-11 11:26:20', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
         </sql>
     </changeSet>
+
+    <changeSet id="201911121428" author="linpx" failOnError="false">
+        <comment>修复历史申报的办结时间字段</comment>
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            UPDATE aea_hi_applyinst ahi JOIN aea_log_apply_state_hist hist ON ahi.APPLYINST_ID = hist.APPLYINST_ID SET ahi.END_TIME = hist.TRIGGER_TIME
+            WHERE hist.NEW_STATE = '6' AND ahi.END_TIME IS NULL;
+        </sql>
+    </changeSet>
 </databaseChangeLog>
