@@ -224,6 +224,7 @@ var pager = new Vue({
             filePreviewCount: 0,
             // 当前的事项实例
             row:null,
+            noDataTip: '暂无数据'
         }
     },
     mounted: function () {

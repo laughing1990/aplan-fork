@@ -201,6 +201,7 @@ var module1 = new Vue({
       //是否保存
       filePreviewCount: 0, // 查询预览是否成功次数
       applyinstCorrectId: '', // 材料补全实例id
+      noDataTip: '暂无数据'
     }
   },
   mounted: function () {

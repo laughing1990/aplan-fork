@@ -4,6 +4,7 @@ import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.UUID;
 
 /**
@@ -50,5 +51,6 @@ public class AeaProjLinkman implements Serializable {
         this.type = type;
         this.applyinstId = applyinstId;
         this.creater = creater;
+        this.createTime = new Date();
     }
 }

@@ -51,6 +51,7 @@ public class AeaImPurchaseinst implements Serializable {
 
     public void buildImPurchaseinst(String projPurchaseId, String purchaseFlag, String parentPurchaseinstId, String linkmanInfoId, String isOwnFile, String creater, String rootOrgId) {
         this.purchaseinstId = UUID.randomUUID().toString();
+        this.projPurchaseId = projPurchaseId;
         this.oldPurchaseFlag = purchaseFlag;
         this.newPurchaseFlag = purchaseFlag;
         this.parentPurchaseinstId = parentPurchaseinstId;

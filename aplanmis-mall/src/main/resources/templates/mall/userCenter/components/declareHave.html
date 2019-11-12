@@ -87,7 +87,7 @@
                 <td width="20%" style="cursor: pointer">
                   <a class="option-btn" style="float:left;display: inline-block;width: 50px;"  @click="lookProjDetail(item)">查看</a>
                   <a v-if="item.applyinstState=='0'" class="option-btn" style="display: inline-block;width: 50px;"  @click="withDraw(item)">撤件</a>
-                  <a v-else="item.applyinstState!='0'" class="option-btn"  style="display: inline-block;width: 50px;"  title="只能撤回已接件未审核状态的办件">撤件</a>
+                  <a v-else="item.applyinstState!='0'" class="option-btn"  style="display: inline-block;width: 50px;"  title="只可撤回未正式受理申报">撤件</a>
                 </td>
               </tr>
             </template>

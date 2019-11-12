@@ -515,6 +515,7 @@ public class RestImApplyService {
 
         //保存采购项目信息表
         aeaImProjPurchaseMapper.insertAeaImProjPurchase(aeaImProjPurchase);
+        data.setProjPurchaseId(aeaImProjPurchase.getProjPurchaseId());
         this.savePurchaseinst(data);
 
         //创建投资项目和采购需求项目ID关联
@@ -536,13 +537,11 @@ public class RestImApplyService {
                     break;
                 }
             }
+
         }
         //保存项目联系人关系
-        if (StringUtils.isNotBlank(linkmanInfoId)) {
-            AeaProjLinkman aeaProjLinkman = new AeaProjLinkman(aeaProjInfo.getProjInfoId(), linkmanInfoId, "link", data.getApplyinstId(), data.getCreater());
-            aeaProjLinkmanMapper.insertAeaProjLinkman(aeaProjLinkman);
-        }
-
+        AeaProjLinkman aeaProjLinkman = new AeaProjLinkman(aeaProjInfo.getProjInfoId(), linkmanInfoId, "link", data.getApplyinstId(), data.getCreater());
+        aeaProjLinkmanMapper.insertAeaProjLinkman(aeaProjLinkman);
 
         //保存企业报价
         if (AeaImProjPurchase.BiddingType.自主选择.getType().equals(aeaImProjPurchase.getBiddingType())) {
