@@ -31,6 +31,8 @@ public class AeaExProjBuildUnitInfo implements Serializable {
 
     private String linkmanMobilePhone;//负责人电话
 
+    private String linkmanCertNo;//负责人身份证
+
     private String projLinkmanId;//主键
 
     private String registerNum;//负责人注册编号

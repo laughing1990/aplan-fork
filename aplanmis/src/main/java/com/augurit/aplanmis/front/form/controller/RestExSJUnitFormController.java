@@ -8,7 +8,6 @@ import com.augurit.aplanmis.common.mapper.AeaUnitProjLinkmanMapper;
 import com.augurit.aplanmis.common.service.linkman.AeaLinkmanInfoService;
 import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
 import com.augurit.aplanmis.front.form.service.RestExSJUnitFormService;
-import com.augurit.aplanmis.front.form.vo.ExSJAllUnit;
 import com.augurit.aplanmis.front.subject.unit.vo.UnitVo;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.internal.util.privilegedactions.GetDeclaredConstructors;
@@ -18,10 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -65,8 +61,11 @@ public class RestExSJUnitFormController {
     }
 
     private ExSJUnitFromDetails getUnitVo(ExSJUnitFromDetails u) {
-        List<PersonSetting> personSetting = aeaUnitProjLinkmanMapper.findPersonSetting(u.getUnitProjId());
-        if (personSetting.size() == 0){
+        List<PersonSetting> personSetting = new ArrayList<>();
+        if(u.getUnitProjId()!=null){
+            personSetting = aeaUnitProjLinkmanMapper.findPersonSetting(u.getUnitProjId());
+        }
+        if (personSetting!=null && personSetting.size() == 0 ){
             personSetting.add(new PersonSetting());
         }
         u.setPersonSetting(personSetting);

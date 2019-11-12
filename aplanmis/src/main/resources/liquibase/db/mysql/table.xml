@@ -886,4 +886,54 @@
             ADD COLUMN `SAFE_LICENCE_NUM` varchar(50) NULL DEFAULT NULL COMMENT '安全生产许可证编号';
         </sql>
     </changeSet>
+
+    <changeSet id="201911120941" author="liaojj" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            CREATE TABLE `aea_ex_proj_build` (
+            `BUILD_ID` varchar(50) NOT NULL DEFAULT '' COMMENT '主键',
+            `PROJ_INFO_ID` varchar(50) NOT NULL COMMENT '项目ID',
+            `PROVINCE_PROJ_CODE` varchar(50) NOT NULL COMMENT '省级项目编号',
+            `CONTRACT_START_BUILD_TIME` datetime DEFAULT NULL COMMENT '合同开工日期',
+            `CONTRACT_END_BUILD_TIME` datetime DEFAULT NULL COMMENT '合同竣工时间',
+            `BUILD_AREA` float DEFAULT NULL COMMENT '施工面积，单位：平方米',
+            `STRUCTURE_SYSTEM` varchar(50) DEFAULT NULL COMMENT '结构体系，来自于数据字典',
+            `QUA_CHECK_NUM` varchar(50) DEFAULT NULL COMMENT '质量监督注册号',
+            `BUILD_MEMO` varchar(500) DEFAULT NULL COMMENT '备注',
+            `CREATER` varchar(50) DEFAULT NULL COMMENT '创建人',
+            `CREATE_TIME` datetime NOT NULL COMMENT '创建时间',
+            `MODIFIER` varchar(50) DEFAULT NULL COMMENT '修改人',
+            `MODIFY_TIME` datetime DEFAULT NULL COMMENT '修改时间',
+            `ROOT_ORG_ID` varchar(50) DEFAULT NULL COMMENT '所属根组织ID',
+            PRIMARY KEY (`BUILD_ID`) USING BTREE
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='施工及监理单位信息';
+        </sql>
+    </changeSet>
+
+    <changeSet id="201911120941" author="liaojj" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            CREATE TABLE `aea_ex_proj_build` (
+            `BUILD_ID` varchar(50) NOT NULL DEFAULT '' COMMENT '主键',
+            `PROJ_INFO_ID` varchar(50) NOT NULL COMMENT '项目ID',
+            `PROVINCE_PROJ_CODE` varchar(50) NOT NULL COMMENT '省级项目编号',
+            `CONTRACT_START_BUILD_TIME` datetime DEFAULT NULL COMMENT '合同开工日期',
+            `CONTRACT_END_BUILD_TIME` datetime DEFAULT NULL COMMENT '合同竣工时间',
+            `BUILD_AREA` float DEFAULT NULL COMMENT '施工面积，单位：平方米',
+            `STRUCTURE_SYSTEM` varchar(50) DEFAULT NULL COMMENT '结构体系，来自于数据字典',
+            `QUA_CHECK_NUM` varchar(50) DEFAULT NULL COMMENT '质量监督注册号',
+            `BUILD_MEMO` varchar(500) DEFAULT NULL COMMENT '备注',
+            `CREATER` varchar(50) DEFAULT NULL COMMENT '创建人',
+            `CREATE_TIME` datetime NOT NULL COMMENT '创建时间',
+            `MODIFIER` varchar(50) DEFAULT NULL COMMENT '修改人',
+            `MODIFY_TIME` datetime DEFAULT NULL COMMENT '修改时间',
+            `ROOT_ORG_ID` varchar(50) DEFAULT NULL COMMENT '所属根组织ID',
+            PRIMARY KEY (`BUILD_ID`) USING BTREE
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='施工及监理单位信息';
+        </sql>
+    </changeSet>
+    <changeSet id="201911121012" author="liaojj" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_unit_info`
+            ADD COLUMN `isGD` char(1) DEFAULT NULL COMMENT '是否省内企业，1表示省内企业，0表示进粤企业'
+        </sql>
+    </changeSet>
 </databaseChangeLog>

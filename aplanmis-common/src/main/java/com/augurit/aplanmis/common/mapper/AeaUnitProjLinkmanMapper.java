@@ -114,4 +114,5 @@ public interface AeaUnitProjLinkmanMapper {
      * 搜索单位人员信息
      */
     List<PersonSetting> findPersonSetting(@Param("unitProjId") String unitProjId);
+    List<AeaUnitProjLinkman> listAeaUnitProjLinkmanPersonsetting(AeaUnitProjLinkman aeaUnitProjLinkman);
 }

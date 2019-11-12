@@ -3,6 +3,7 @@ package com.augurit.aplanmis.common.domain;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -36,10 +37,12 @@ public class AeaExProjBuild implements Serializable {
     @ApiModelProperty("创建人")
     private java.lang.String creater;
     @ApiModelProperty("创建时间")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
     @ApiModelProperty("修改人")
     private java.lang.String modifier;
     @ApiModelProperty("修改时间")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private java.lang.String modifyTime;
     @ApiModelProperty("所属根组织ID")
     private java.lang.String rootOrgId;
