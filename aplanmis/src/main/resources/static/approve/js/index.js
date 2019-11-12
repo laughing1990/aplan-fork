@@ -2286,15 +2286,9 @@ var vm = new Vue({
       } else {
         var iIndex = -1;
         vm.mutiCheckedMan.forEach(function (u, ii) {
-          var flag = false;
-          vm.mutiCheckedNames.forEach(function (uu, uii) {
-            if (u.destActName == uu) {
-              flag = true;
-            }
-            if (!flag) {
-              iIndex = ii
-            }
-          })
+          if (u.destActName == name){
+            iIndex = ii;
+          }
         });
         vm.mutiCheckedMan.splice(iIndex, 1);
       }
