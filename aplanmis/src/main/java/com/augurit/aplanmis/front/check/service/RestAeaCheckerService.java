@@ -1,4 +1,4 @@
-package com.augurit.aplanmis.front.checker.service;
+package com.augurit.aplanmis.front.check.service;
 
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.ui.result.ResultForm;

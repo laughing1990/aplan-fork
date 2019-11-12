@@ -46180,7 +46180,7 @@ function checkPointerAndTrigger(controller, eventName, behaviorToCheck, e, conto
 }
 
 function trigger(controller, eventName, behaviorToCheck, e, contollerEvent) {
-    // Also provide behavior checker for event listener, for some case that
+    // Also provide behavior check for event listener, for some case that
     // multiple components share one listener.
     contollerEvent.isAvailableBehavior = bind(isAvailableBehavior, null, behaviorToCheck, e);
     controller.trigger(eventName, contollerEvent);

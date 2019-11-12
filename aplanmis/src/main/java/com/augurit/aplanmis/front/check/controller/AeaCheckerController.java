@@ -1,8 +1,8 @@
-package com.augurit.aplanmis.front.checker.controller;
+package com.augurit.aplanmis.front.check.controller;
 
 import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.agcloud.framework.util.StringUtils;
-import com.augurit.aplanmis.front.checker.service.RestAeaCheckerService;
+import com.augurit.aplanmis.front.check.service.RestAeaCheckerService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/rest/checker")
+@RequestMapping("/rest/check")
 @Api(value = "单项、阶段前置条件检测", tags = "单项前置条件检测")
 public class AeaCheckerController {
 
