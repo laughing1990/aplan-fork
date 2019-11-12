@@ -217,6 +217,7 @@
                                         <el-option v-for="item in unitLinkManOptions" :key="item.addressId" @click.native="selTypeLinkman(type,item)" :label="item.addressName" :value="item.addressName"></el-option></el-select>
                                 </el-col>
                                 <input type="hidden" name="linkmanInfoId" :value="type.linkmanInfoId">
+                                <input type="hidden" name="projLinkmanId" :value="type.projLinkmanId">
                                 <el-col :span="6" style="width:32% !important;">
                                     <el-form-item class="linkmanCertNo" label="身份证号码" label-width="96px" prop="linkmanCertNo">
                                         <el-input style="width:135px" v-model="type.linkmanCertNo" placeholder="请输入身份证号码"></el-input></el-form-item>
@@ -360,6 +361,7 @@
                                     </el-select>
                                 </el-col>
                                 <input name="linkmanInfoId" :value="type.linkmanInfoId" type="hidden">
+                                <input type="hidden" name="projLinkmanId" :value="type.projLinkmanId">
                                 <el-col :span="6" style="width:32% !important;">
                                     <el-form-item class="linkmanCertNo" label="身份证号码" label-width="96px" prop="linkmanCertNo">
                                         <el-input style="width:135px" v-model="type.linkmanCertNo" placeholder="请输入身份证号码"></el-input>
@@ -511,6 +513,7 @@
                                 </el-col>
                                 <el-col :span="6" style="width:32% !important;">
                                     <input type="hidden" name="linkmanInfoId" :value="type.linkmanInfoId">
+                                    <input type="hidden" name="projLinkmanId" :value="type.projLinkmanId">
                                     <el-form-item class="linkmanCertNo" label="身份证号码" label-width="96px" prop="linkmanCertNo">
                                         <el-input style="width:135px" v-model="type.linkmanCertNo" placeholder="请输入身份证号码"></el-input>
                                     </el-form-item>
@@ -691,6 +694,7 @@
                                 </el-col>
                                 <el-form-item label="" class="proj-addr-scope">
                                     <input type="hidden" name="linkmanInfoId" :value="type.linkmanInfoId">
+                                    <input type="hidden" name="projLinkmanId" :value="type.projLinkmanId">
                                     <div class="proj-addr-item">
                                         <span class="input-label">身份证</span>
                                         <el-input v-model="type.linkmanCertNo" placeholder="请输入身份证"></el-input>
