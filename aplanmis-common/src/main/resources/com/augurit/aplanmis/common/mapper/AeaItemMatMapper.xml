@@ -155,7 +155,7 @@
         aea_item_mat aim
         join aea_item_inout aii on aim.MAT_ID = aii.MAT_ID
         left join aea_cert cert on cert.cert_id=aim.cert_id
-        left join act_sto_form form.form_id=aim.sto_form_id
+        left join act_sto_form form on form.form_id=aim.sto_form_id
         WHERE aim.IS_DELETED = '0'
         AND aii.IS_DELETED = '0'
         AND aii.IS_STATE_IN = '1'
@@ -182,7 +182,7 @@
         aea_item_mat aim
         join aea_par_in api on aim.MAT_ID = api.MAT_ID
         left join aea_cert cert on cert.cert_id=aim.cert_id
-        left join act_sto_form form.form_id=aim.sto_form_id
+        left join act_sto_form form on form.form_id=aim.sto_form_id
         WHERE aim.IS_DELETED = '0'
         AND api.IS_DELETED = '0'
         AND api.IS_STATE_IN = '1'
@@ -341,7 +341,7 @@
         </if>
         ) aim
         left join aea_cert cert on cert.cert_id=aim.cert_id
-        left join act_sto_form form.form_id=aim.sto_form_id
+        left join act_sto_form form on form.form_id=aim.sto_form_id
     </select>
 
     <select id="getMatListByItemVerIds" resultType="AeaItemMat">
@@ -393,7 +393,7 @@
         </if>
         ) aim
         left join aea_cert cert on cert.cert_id=aim.cert_id
-        left join act_sto_form form.form_id=aim.sto_form_id
+        left join act_sto_form form on form.form_id=aim.sto_form_id
         WHERE
         (
         aim.IS_NEED_STATE = '1'
