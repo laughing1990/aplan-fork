@@ -124,7 +124,7 @@
 
     <!--5 新增实体对象 -->
     <insert id="insertAeaUnitProj" parameterType="AeaUnitProj">
-        insert into AEA_UNIT_PROJ (UNIT_PROJ_ID, UNIT_INFO_ID, IS_OWNER, PROJ_INFO_ID, CREATER, CREATE_TIME,UNIT_TYPE, LINKMAN_INFO_ID, is_deleted ,QUAL_LEVEL_ID,CERTINST_ID,SAFE_LICENCE_NUM)
+        insert into AEA_UNIT_PROJ (UNIT_PROJ_ID, UNIT_INFO_ID, IS_OWNER, PROJ_INFO_ID, CREATER, CREATE_TIME,UNIT_TYPE, LINKMAN_INFO_ID, is_deleted,QUAL_LEVEL_ID,CERTINST_ID,SAFE_LICENCE_NUM )
         values (#{unitProjId}, #{unitInfoId}, #{isOwner}, #{projInfoId}, #{creater}, #{createTime},#{unitType},#{linkmanInfoId}, #{isDeleted},#{qualLevelId},#{certinstId},#{safeLicenceNum})
     </insert>
 

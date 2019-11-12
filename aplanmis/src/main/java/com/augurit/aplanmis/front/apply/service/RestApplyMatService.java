@@ -327,14 +327,10 @@ public class RestApplyMatService {
         if ("root".equalsIgnoreCase(parentId)) {
             //root材料
             matList = aeaItemMatService.getMatListByItemVerIds(itemVerIds, "1", "1");
-            //root情形问答
-            //aeaItemStates = aeaItemStateService.listAeaItemStateByParentId(itemVerId, null, parentId, SecurityContext.getCurrentOrgId());
         } else {
             //选择的情形材料
             String[] stateIds = {parentId};
             matList = aeaItemMatService.getMatListByItemStateIds(stateIds);
-            //子情形列表
-            //aeaItemStates = aeaItemStateService.listAeaItemStateByParentItemStateId(parentId);
         }
         //处理材料
         for (AeaItemMat mat : matList) {

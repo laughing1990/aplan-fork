@@ -26,7 +26,7 @@
         values
         (#{buildId},#{projInfoId},#{provinceProjCode},#{contractStartBuildTime},#{contractEndBuildTime},#{buildArea},#{structureSystem},#{quaCheckNum},#{buildMemo},#{creater},#{createTime},#{modifier},#{modifyTime},#{rootOrgId})
     </insert>
-    
+
     <update id="updateAeaExProjBuild" parameterType="AeaExProjBuild">
         update aea_ex_proj_build
         <set >

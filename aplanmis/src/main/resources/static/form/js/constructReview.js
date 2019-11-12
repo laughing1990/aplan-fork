@@ -174,9 +174,9 @@ var app = new Vue({
     }
   },
   created: function() {
-    this.projInfoId = '0';
+    // this.projInfoId = '0';
     // this.projInfoId = '002dbf94-2e5c-4e4a-9190-d793aa7806a4';
-    // this.projInfoId = this.getUrlParam('projInfoId');
+    this.projInfoId = this.getUrlParam('projInfoId');
   },
   mounted: function() {
 
