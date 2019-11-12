@@ -21,7 +21,7 @@ var vm = new Vue({
 				organizerId: '',
 				keyword: ''
 			},
-			//承办单位
+			//实施主体
 			organizerList: []
 
 		}

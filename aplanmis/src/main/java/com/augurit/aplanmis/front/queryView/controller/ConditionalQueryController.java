@@ -411,7 +411,7 @@ public class ConditionalQueryController {
     }
 
     @GetMapping("/listNeedCorrectTasksOrganizer")
-    @ApiOperation(value = "获取有待补正办件的承办单位")
+    @ApiOperation(value = "获取有待补正办件的实施主体")
     public ResultForm listNeedCorrectTasksOrganizer() {
         try {
             List<OpuOmOrg> list = conditionalQueryService.listNeedCorrectTasksOrganizer();

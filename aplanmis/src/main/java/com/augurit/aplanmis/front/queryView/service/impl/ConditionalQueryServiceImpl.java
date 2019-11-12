@@ -674,7 +674,7 @@ public class ConditionalQueryServiceImpl implements ConditionalQueryService {
     }
 
     /**
-     * 处理承诺时限显示
+     * 处理承诺办结时限显示
      * @param info
      */
     private void loadDueNumText(BaseInfo info) {

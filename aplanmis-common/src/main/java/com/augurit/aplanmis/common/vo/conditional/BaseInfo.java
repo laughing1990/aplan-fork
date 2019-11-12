@@ -74,10 +74,10 @@ public class BaseInfo implements Serializable {
     @ApiModelProperty(value = "剩余/逾期用时显示文本")
     protected String remainingOrOverTimeText;
 
-    @ApiModelProperty(value = "法定时限")
+    @ApiModelProperty(value = "法定办结时限")
     protected Double dueNum;
 
-    @ApiModelProperty(value = "法定时限显示")
+    @ApiModelProperty(value = "法定办结时限显示")
     protected String dueNumText;
 
     @ApiModelProperty(value = "是否已办结,1为是,0为否")

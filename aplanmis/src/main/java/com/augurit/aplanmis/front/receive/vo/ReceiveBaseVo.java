@@ -146,10 +146,10 @@ public class ReceiveBaseVo implements Serializable {
     @ApiModelProperty(value = "时限")
     private String timeLimit;
 
-    @ApiModelProperty(value = "承诺时限数字")
+    @ApiModelProperty(value = "承诺办结时限数字")
     private Double dueNum;
 
-    @ApiModelProperty(value = "承诺时限单位")
+    @ApiModelProperty(value = "承诺办结时限单位")
     private String dueUnit;
 
     @ApiModelProperty(value = "打印时间")

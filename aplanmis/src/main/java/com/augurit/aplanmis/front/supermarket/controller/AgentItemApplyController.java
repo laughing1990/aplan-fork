@@ -33,7 +33,6 @@ public class AgentItemApplyController {
     @ApiOperation(value = "中介事项申报 -->唐山模式，发起申报", httpMethod = "POST")
     public ContentResultForm<String> startSeriesFlow(@RequestBody AgentItemApplyData agentItemApplyData) throws Exception {
         String applyinstIdParam = agentItemApplyData.getApplyinstId();
-        String applySubject = agentItemApplyData.getApplySubject();
         ImItemApplyData applyData = agentItemApplyData.createItemApplyData();
         //发起中介事项流程
         ApplyinstResult result = restImApplyService.purchaseStartProcess(applyData);

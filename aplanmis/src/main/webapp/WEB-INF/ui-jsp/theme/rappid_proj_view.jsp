@@ -405,8 +405,8 @@
 
 <div class="table-cell-hover" id="itemTableInfo"><p style="    margin-top: 20px;padding-right:7px;"><i class="circle circleBg1" style="margin-left:5px;background: #4EB1FD; width: 10px; height: 10px; border-radius: 50%; display: inline-block; position: absolute; left: 7px; top: 25px;"></i>
     <span style="display: inline-block;"></span></p>
-    <p>承办单位：<span>市自然资源局</span></p>
-    <p>承诺时限：<span>10</span>&nbsp;个工作日</p>
+    <p>实施主体：<span>市自然资源局</span></p>
+    <p>承诺办结时限：<span>10</span>&nbsp;个工作日</p>
     <p>实际时限：<span>10</span>&nbsp;个工作日</p>
     <p>事项开始时间：<span>2019-09-27</span></p>
     <p>事项结束时间：<span>-</span></p>

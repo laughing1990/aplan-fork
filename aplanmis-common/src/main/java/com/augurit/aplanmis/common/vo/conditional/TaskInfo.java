@@ -74,7 +74,7 @@ public class TaskInfo extends BaseInfo implements Serializable {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm", locale = "zh", timezone = "GMT+8")
     private Date arriveTime;
 
-    @ApiModelProperty(value = "承办单位")
+    @ApiModelProperty(value = "实施主体")
     private String organizer;
 
     @ApiModelProperty(value = "设定补正/补全时间")

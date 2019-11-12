@@ -42,7 +42,7 @@ public class SpotRegistrationItemVo {
     private String serviceObjectCode = "5";
     @ApiModelProperty(name = "allowManual", value = "是否允许人工选择下级承办组织，0表示禁止，1表示允许", allowableValues = "0, 1")
     private String allowManual;
-    @ApiModelProperty(name = "bjType", value = "承诺时限单位")
+    @ApiModelProperty(name = "bjType", value = "承诺办结时限单位")
     private String bjType;
     @ApiModelProperty(name = "dueNum", value = "办理时限")
     private Double dueNum;

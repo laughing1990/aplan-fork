@@ -93,7 +93,7 @@
 					</el-form-item>
 				</el-col>
 				<el-col :span="8">
-					<el-form-item label="承办单位">
+					<el-form-item label="实施主体">
 						<el-select v-model="searchFrom.organizerId" placeholder="请选择" clearable>
 							<el-option
 									v-for="item in organizerList"
@@ -207,7 +207,7 @@
 		<!-- <el-table-column
 						 prop="organizer"
 						 min-width="80"
-						 label="承办单位"
+						 label="实施主体"
 						 show-overflow-tooltip >
 				 <template scope="scope">
 						 <span>{{scope.row.organizer?scope.row.organizer:'-'}}</span>

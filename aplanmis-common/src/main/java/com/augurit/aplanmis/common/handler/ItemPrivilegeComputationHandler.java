@@ -267,10 +267,10 @@ public final class ItemPrivilegeComputationHandler {
         @ApiModelProperty(name = "itemName", value = "事项名称", dataType = "string")
         private String itemName;
 
-        @ApiModelProperty(name = "orgName", value = "承办机构", dataType = "string")
+        @ApiModelProperty(name = "orgName", value = "实施主体", dataType = "string")
         private String orgName;
 
-        @ApiModelProperty(name = "orgId", value = "承办机构id", dataType = "string")
+        @ApiModelProperty(name = "orgId", value = "实施主体id", dataType = "string")
         private String orgId;
 
         @ApiModelProperty(value = "行政区划ID", dataType = "string")
@@ -338,10 +338,10 @@ public final class ItemPrivilegeComputationHandler {
     public static class CarryOutItem {
         private String itemVerId;
 
-        @ApiModelProperty(value = "承办机构", dataType = "string")
+        @ApiModelProperty(value = "实施主体", dataType = "string")
         private String orgName;
 
-        @ApiModelProperty(value = "承办机构id", dataType = "string")
+        @ApiModelProperty(value = "实施主体id", dataType = "string")
         private String orgId;
 
         @ApiModelProperty(value = "行政区划ID", dataType = "string")

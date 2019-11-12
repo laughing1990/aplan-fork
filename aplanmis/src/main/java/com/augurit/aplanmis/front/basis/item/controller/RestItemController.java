@@ -90,7 +90,7 @@ public class RestItemController {
             spotRegistrationItemVo.setProcedureName(names);
 
         }
-        // 设置事项承办机构信息
+        // 设置事项实施主体信息
         List<AeaItemPriv> currentUserItemPriv = aeaItemPrivService.findCurrentUserItemPriv(itemVerId);
         if (CollectionUtils.isNotEmpty(currentUserItemPriv) && StringUtils.isNotBlank(currentUserItemPriv.get(0).getOrgId())) {
             AeaItemPriv aeaItemPriv = currentUserItemPriv.get(0);

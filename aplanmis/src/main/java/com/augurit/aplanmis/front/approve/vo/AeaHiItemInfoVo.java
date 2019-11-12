@@ -87,7 +87,7 @@ public class AeaHiItemInfoVo {
     @ApiModelProperty(value = "实施编码", required = true, dataType = "string")
     private String ssCode;
 
-    @ApiModelProperty(value = "分局承办单位", required = true, dataType = "string")
+    @ApiModelProperty(value = "分局实施主体", required = true, dataType = "string")
     private String branchOrgName;
 
     @ApiModelProperty(value = "单项办件类型", required = true, dataType = "string")
