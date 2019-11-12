@@ -88,7 +88,7 @@ public class OrgEfficiencySupersionServiceImpl implements OrgEfficiencySupersion
     @Override
     public List<ApplyUnusualStatisticVo> queryItemExceptionStatistics(String rootOrgId) {
         List<ApplyUnusualStatisticVo> res = aeaAnaOrgDayStatisticsMapper.listApplyUnusualStatistic(rootOrgId);
-        res.removeIf(it -> (it.getNotAcceptRate() == null && it.getOverdueRate() == null));
+        //res.removeIf(it -> (it.getNotAcceptRate() == null && it.getOverdueRate() == null));
         return res;
     }
 

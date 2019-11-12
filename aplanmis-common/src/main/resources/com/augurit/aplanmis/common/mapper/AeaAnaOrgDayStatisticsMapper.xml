@@ -434,24 +434,21 @@ ORG_DAY_STATISTICS_ID  ,STATISTICS_RECORD_ID  ,ORG_ID  ,ORG_NAME  ,REGION_ID  ,R
     </select>
 
     <select id="listApplyUnusualStatistic" resultType="com.augurit.aplanmis.common.vo.analyse.ApplyUnusualStatisticVo">
-        SELECT CONCAT(CAST(round(temp.notAcceptRate * 100,1) AS CHAR), '%') as notAcceptRate,
-               CONCAT(CAST(round(temp.overdueRate * 100,1) AS CHAR), '%')  as overdueRate,
+        SELECT CASE WHEN temp.notAcceptRate is null then '-' else CONCAT( CAST( round( temp.notAcceptRate * 100, 1 ) AS CHAR ), '%' ) end as notAcceptRate,
+	           CASE WHEN temp.overdueRate is null then '-' else CONCAT( CAST( round( temp.overdueRate * 100, 1 ) AS CHAR ), '%' ) end as overdueRate,
                temp.ORG_ID                                                as orgId,
                temp.ORG_NAME                                              as orgName,
                temp.ITEM_ID                                               as itemId,
                temp.ITEM_NAME                                             as itemName,
                (@i := @i + 1)                                             as sortNo
-        from (
+        FROM (
                  SELECT aaods.ORG_ID,
                         aaods.ORG_NAME,
                         aaods.ITEM_ID,
                         aaods.ITEM_NAME,
                         sum(aaods.ALL_OUT_SCOPE_COUNT) /
                         (sum(aaods.ALL_OUT_SCOPE_COUNT) + sum(aaods.ALL_ACCEPTANCE_COUNT)) notAcceptRate,
-                        sum(aaods.ALL_OVER_TIME_COUNT) / sum(aaods.ALL_ACCEPTANCE_COUNT)   overdueRate,
-                        sum(aaods.ALL_OUT_SCOPE_COUNT) /
-                        (sum(aaods.ALL_OUT_SCOPE_COUNT) + sum(aaods.ALL_ACCEPTANCE_COUNT)) +
-                        sum(aaods.ALL_OVER_TIME_COUNT) / sum(aaods.ALL_ACCEPTANCE_COUNT)   allUnusualRate
+                        sum(aaods.ALL_OVER_TIME_COUNT) / sum(aaods.ALL_ACCEPTANCE_COUNT)   overdueRate
 
                  from aea_ana_org_day_statistics aaods
                  where 1 = 1
@@ -459,8 +456,10 @@ ORG_DAY_STATISTICS_ID  ,STATISTICS_RECORD_ID  ,ORG_ID  ,ORG_NAME  ,REGION_ID  ,R
                  group by aaods.ITEM_ID,aaods.ORG_ID
              ) temp,
              (SELECT @i := 0) AS it
-
-        ORDER BY temp.allUnusualRate desc
+        WHERE
+	    temp.notAcceptRate is not null or temp.overdueRate is not null
+        ORDER BY
+        (CASE WHEN temp.notAcceptRate is null then 0 else temp.notAcceptRate end )+(CASE WHEN temp.overdueRate is null then 0 else temp.overdueRate end) desc
     </select>
 
     <select id="getOrgDayStatistics" resultType="com.augurit.aplanmis.common.vo.analyse.ItemDetailFormVo">
