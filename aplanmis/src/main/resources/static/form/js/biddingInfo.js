@@ -275,6 +275,7 @@
             setUnitInfo: function (val, obj) {
                 Vue.set(obj, 'organizationalCode', val.organizationalCode);
                 Vue.set(obj, 'unifiedSocialCreditCode', val.unifiedSocialCreditCode);
+                Vue.set(obj, 'unitInfoId', val.unitInfoId);
             }
         }
     })
