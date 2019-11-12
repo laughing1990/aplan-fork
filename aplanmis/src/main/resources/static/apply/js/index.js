@@ -2328,7 +2328,7 @@ var vm = new Vue({
       Vue.set(item, 'isImplement', true); // 是否实施事项
       Vue.set(item, 'disabled', false); // 行政区划是否可选
       Vue.set(item, 'implementItemVerId', ''); // 实施事项版本Id
-      Vue.set(item, 'notRegionData', false); // 无匹配的行政区划及承办单位
+      Vue.set(item, 'notRegionData', false); // 无匹配的行政区划及实施主体
       Vue.set(item, 'itemHaved', false); // 判断实施事项是否已存在
       Vue.set(item, 'preItemCheckPassed', true); // 前置事项检查是否可选
       if(_that.itemVerIdsStringAll.indexOf(item.itemVerId)<0){
@@ -2356,7 +2356,7 @@ var vm = new Vue({
         }
       }
     },
-    // 行政区划承办机构选中获得orgId
+    // 行政区划实施主体选中获得orgId
     getItemOrgId: function(data,index,item,flag){ // flag = 'core' 并行事项
       var selItemVer = (this.parallelItems.length>0)?this.$refs.parallelItemsTable.selection:[]; // 所有选择的并联审批事项
       var selCoreItemVer = (this.coreItems.length>0)?this.$refs.coreItemsTable.selection:[]; // 所有选择的并行审批事项
@@ -3088,7 +3088,7 @@ var vm = new Vue({
       _that.stateIds = [];
       _that.submitCommentsType = val;
       if(allowToApply&&_that.submitCommentsType!='4'){
-        alertMsg('', '事项无匹配的行政区划及承办单位', '关闭', 'error', true);
+        alertMsg('', '事项无匹配的行政区划及实施主体', '关闭', 'error', true);
         return true;
       }
       var selItemVer = (_that.parallelItems.length>0)?_that.$refs.parallelItemsTable.selection:[]; // 所有选择的并联审批事项
@@ -3456,17 +3456,17 @@ var vm = new Vue({
       var selItemVer = (_that.parallelItems.length>0)?_that.$refs.parallelItemsTable.selection:[]; // 所有选择的并联审批事项
       var selCoreItems = (_that.coreItems.length>0)?_that.$refs.coreItemsTable.selection:[]; // 所有选择的并行审批事项
       var strVer = ''; // 并联事项id集合
-      var selItemVerFlag = true; // 并连事项行政区划或承办单位是否选择
-      var selCoreItemsFlag = true; // 并行事项行政区划或承办单位是否选择
+      var selItemVerFlag = true; // 并连事项行政区划或实施主体是否选择
+      var selCoreItemsFlag = true; // 并行事项行政区划或实施主体是否选择
       var flagMeg = ''; // 错误提示
       // 并联分局承办集合
       selItemVer.map(function(item){
         if(item.implementItemVerId){
           itemVerIds.push(item.implementItemVerId);
         }else{
-          // alertMsg('', '请选择并联事项行政区划或承办单位', '关闭', 'error', true);
+          // alertMsg('', '请选择并联事项行政区划或实施主体', '关闭', 'error', true);
           selItemVerFlag = false;
-          flagMeg = '请选择并联事项行政区划或承办单位';
+          flagMeg = '请选择并联事项行政区划或实施主体';
         }
         strVer += 'itemids='+item.itemId+'&'
         // if(item.isBranch==true){
@@ -3487,8 +3487,8 @@ var vm = new Vue({
           propulsionItemVerIds.push(item.implementItemVerId);
         }else{
           selCoreItemsFlag = false;
-          flagMeg = '请选择并行事项行政区划或承办单位';
-          // alertMsg('', '请选择并行事项行政区划或承办单位', '关闭', 'error', true);
+          flagMeg = '请选择并行事项行政区划或实施主体';
+          // alertMsg('', '请选择并行事项行政区划或实施主体', '关闭', 'error', true);
           // return false;
         }
         // if(item.isBranch==true){

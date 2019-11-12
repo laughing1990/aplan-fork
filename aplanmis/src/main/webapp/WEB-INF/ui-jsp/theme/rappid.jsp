@@ -392,15 +392,15 @@
                                 </div>
                                 <div class="col-lg-12 col-md-12 col-sm-12">
                                     <div class="form-group">
-                                        <label class="col-lg-3 col-md-3 control-label">承诺时限</label>
+                                        <label class="col-lg-3 col-md-3 control-label">承诺办结时限</label>
                                         <div class="col-lg-9 col-md-9">
-                                        <input type="number" name="dueNum" class="form-control" data-field="stage/dueNum" value="1" placeholder="承诺时限">
+                                        <input type="number" name="dueNum" class="form-control" data-field="stage/dueNum" value="1" placeholder="承诺办结时限">
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-lg-12 col-md-12 col-sm-12">
                                     <div class="form-group">
-                                        <label class="col-lg-3 col-md-3 control-label">承诺时限单位:</label>
+                                        <label class="col-lg-3 col-md-3 control-label">承诺办结时限单位:</label>
                                         <div class="col-lg-9 col-md-9">
                                         <select type="text" class="form-control" name="dueUnit" data-field="stage/dueUnit" value="">
                                             <c:forEach items="${dueUnit}" var="unit">

@@ -51,11 +51,11 @@
         </el-row>
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="承诺时限：">{{itemBasicInfo.dueNum}}{{itemBasicInfo.bjType | formatBjType}}
+            <el-form-item label="承诺办结时限：">{{itemBasicInfo.dueNum}}{{itemBasicInfo.bjType | formatBjType}}
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="承办单位：">{{itemBasicInfo.orgName}}
+            <el-form-item label="实施主体：">{{itemBasicInfo.orgName}}
             </el-form-item>
           </el-col>
         </el-row>
@@ -1031,7 +1031,7 @@
           <td><div class="cell">{{applySuccessProjInfo.iteminstCode}}</div></td>
         </tr>
         <tr>
-          <th><div class="cell">承办单位</div></th>
+          <th><div class="cell">实施主体</div></th>
           <td><div class="cell">{{applySuccessProjInfo.approveOrgName}}</div></td>
             <th>
                 <div class="cell">办件类型</div>
@@ -1263,7 +1263,7 @@
               row-key="itemId"
               style="width: 100%">
       <el-table-column label="事项名称" prop="itemName" min-width="200"></el-table-column>
-      <el-table-column label="承办单位" width="160" prop="orgName"></el-table-column>
+      <el-table-column label="实施主体" width="160" prop="orgName"></el-table-column>
       <el-table-column label="办事指南" width="85" align="center">
         <template slot-scope="scope">
           <a href="javascript:;" class="guid-icon handel-icon" @click="goToBszn(scope.row)"></a>

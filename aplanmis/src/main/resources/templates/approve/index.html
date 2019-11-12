@@ -49,6 +49,18 @@
     <div class="top-btns-status c-f">
       <!-- 直接显示的按钮 -->
       <div class="l" v-for="item in buttonDataShow" v-if="item.isHidden == 0" v-html="item.elementRender"></div>
+
+        <button class="btn btn-outline-info" style="text-align: center" bpm:hasPriv="win_banjie" value="查看流程图test222" onclick="showDiagramDialog()">查看流程图test111</button>
+        <!--<el-select v-model="value" bpm:hasPriv="win_banjie" placeholder="请选择">
+          <el-option
+                  v-for="item in testData"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+          </el-option>
+        </el-select>-->
+        <bpm:btn code="win_banjie" id="win_banjie" v-for="item in testData" lable="item.label" value="item.value"></bpm:btn>
+
       <!-- 更多按钮 -->
       <el-dropdown v-show="showMenuMore" style="margin-top:5px;cursor:pointer;">
           <span class="el-dropdown-link">
@@ -1207,7 +1219,7 @@
         <!-- <el-input placeholder="请输入审批事项名称" v-model="supplemetForm.iteminstName" disabled></el-input> -->
         <span class="color-999">{{supplemetForm.iteminstName || '暂无'}}</span>
       </el-form-item>
-      <el-form-item class="half-item" label="审批单位">
+      <el-form-item class="half-item" label="实施主体">
         <!-- <el-input placeholder="请输入负责部门名称" v-model="supplemetForm.approveOrgName" disabled></el-input> -->
         <!-- <span class="color-999">{{supplemetForm.approveOrgName || '暂无'}}</span> -->
         <span class="color-999">{{supplemetForm.chargeOrgName || '暂无'}}</span>

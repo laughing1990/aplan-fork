@@ -173,7 +173,7 @@
                                     <img v-show="(item.itemStateType == 0 && item.iteminstState == 13)||(item.itemStateType == 0 && item.iteminstState == 14)||(item.itemStateType == 0 && item.iteminstState == 15)" th:src="@{/mall/images/lifeCycle/butongguo.png}" class="state-table-img">
                                     <div class="table-cell-hover" v-show="item.itemStateType != 2">
                                         <p><i class="circle" :class="circleBgFn(item.iteminstState)"></i><span>{{item.itemName}}</span></p>
-                                        <p>承办单位：{{item.orgName}}</p>
+                                        <p>实施主体：{{item.orgName}}</p>
                                         <p>时限（工作日）：{{item.dueNum?item.dueNum+'个工作日':'-'}}</p>
                                         <p>事项开始时间：{{item.iteminstStartTime | dateFormat}}</p>
                                         <p>事项结束时间：{{item.iteminstEndTime | dateFormat}}</p>
@@ -210,7 +210,7 @@
                                     <img v-show="item.itemStateType == 0" th:src="@{/mall/images/lifeCycle/butongguo.png}" class="state-table-img">
                                     <div class="table-cell-hover" v-show="item.itemStateType != 2">
                                         <p><i class="circle" :class="circleBgFn(item.iteminstState)"></i><span>{{item.itemName}}</span></p>
-                                        <p>承办单位：{{item.orgName}}</p>
+                                        <p>实施主体：{{item.orgName}}</p>
                                         <p>时限（工作日）：{{item.dueNum?item.dueNum+'个工作日':'-'}}</p>
                                         <p>事项开始时间：{{item.iteminstStartTime | dateFormat}}</p>
                                         <p>事项结束时间：{{item.iteminstEndTime | dateFormat}}</p>

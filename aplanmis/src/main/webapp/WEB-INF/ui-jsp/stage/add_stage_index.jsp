@@ -227,12 +227,12 @@
                         <div id="m_tabs_1_2" class="tab-pane" role="tabpanel" style="height: 450px;">
 
                             <div class="form-group m-form__group row" >
-                                <label class="col-lg-2 col-form-label" style="text-align: right;">承诺时限计量:</label>
+                                <label class="col-lg-2 col-form-label" style="text-align: right;">承诺办结时限计量:</label>
                                 <div class="col-lg-4">
                                     <input type="number" class="form-control m-input" name="dueNum" value="1"/>
                                 </div>
 
-                                <label class="col-lg-2 col-form-label" style="text-align: right;">承诺时限单位:</label>
+                                <label class="col-lg-2 col-form-label" style="text-align: right;">承诺办结时限单位:</label>
                                 <div class="col-lg-4">
                                     <select type="text" class="form-control" name="dueUnit" value="">
                                         <option value="">请选择</option>
