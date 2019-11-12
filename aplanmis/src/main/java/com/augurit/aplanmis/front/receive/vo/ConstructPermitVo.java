@@ -8,12 +8,14 @@ import com.augurit.aplanmis.common.utils.DateUtils;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
 @ApiModel("建筑施工许可证对象")
+@EqualsAndHashCode(callSuper = true)
 public class ConstructPermitVo extends AeaHiCertinst {
     @ApiModelProperty("建筑施工许可证编号")
     private String constructPermitCode;

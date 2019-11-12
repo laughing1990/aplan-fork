@@ -1,15 +1,12 @@
 package com.augurit.aplanmis.front.certificate.vo;
 
 import com.augurit.aplanmis.common.domain.AeaHiCertinst;
-import com.augurit.aplanmis.common.vo.AeaHiCertinstBVo;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import org.springframework.format.annotation.DateTimeFormat;
+import lombok.EqualsAndHashCode;
 
-import java.util.Date;
-
+@EqualsAndHashCode(callSuper = true)
 @Data
 @ApiModel("证照实例参数")
 public class CertinstParamVo extends AeaHiCertinst {

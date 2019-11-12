@@ -2,12 +2,14 @@ package com.augurit.aplanmis.front.basis.item.vo;
 
 import com.augurit.aplanmis.common.domain.AeaHiIteminst;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * @author:chendx
  * @date: 2019-10-31
  * @time: 14:09
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class AeaHiIteminstVo extends AeaHiIteminst {
     /**

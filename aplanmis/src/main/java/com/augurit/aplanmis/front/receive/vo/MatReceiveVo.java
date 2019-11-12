@@ -3,12 +3,14 @@ package com.augurit.aplanmis.front.receive.vo;
 import com.augurit.aplanmis.common.domain.AeaHiItemMatinst;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 import java.util.List;
 
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class MatReceiveVo extends ReceiveBaseVo {
 
     @ApiModelProperty(value = "纸质材料")
