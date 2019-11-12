@@ -74,7 +74,6 @@
                     <input type="hidden" name="linkmanInfoId" :value="gongchengzongFrom.linkmanInfoId">
                     <el-col :span="12">
                             <el-form-item label="工程总承包项目经理" no-data-text="暂无数据" prop="linkmanName" class="sel-btn">
-                                <input type="hidden" name="linkmanInfoId" :value="gongchengzongFrom.linkmanInfoId">
                                 <el-select v-model="gongchengzongFrom.linkmanName" :loading="loadingUnitLinkMan"
                                            @click.native="getUnitLinkManList(gongchengzongFrom)" required placeholder="--请选择--">
                                     <el-option class="select-option-ul"
@@ -196,7 +195,7 @@
                     <el-col :span="12" class="fl linkman-set">
                         <el-form-item label="人员设置" prop="induCommRegNum">
                             <el-row class="linkman-set-item" v-for="(type,index) in applyShigongzongFrom.personSetting" :key="index">
-                                <el-col :span="2" style="width:5.5% !important;">
+                                <el-col :span="2" style="width:4.5% !important;">
                                     <el-button v-if="index==0"
                                                icon="el-icon-circle-plus-outline"
                                                type="primary"
@@ -327,7 +326,7 @@
                     <el-col :span="12" class="fl linkman-set">
                         <el-form-item label="人员设置" prop="induCommRegNum">
                             <el-row class="linkman-set-item" v-for="(type,index) in applyShigongzhuanyefenbaoFrom.personSetting" :key="index">
-                                <el-col :span="2" style="width:5.5% !important;">
+                                <el-col :span="2" style="width:4.5% !important;">
                                     <el-button v-if="index==0"
                                                icon="el-icon-circle-plus-outline"
                                                type="primary"
@@ -472,7 +471,7 @@
                     <el-col :span="12" class="fl linkman-set">
                         <el-form-item label="人员设置" prop="induCommRegNum">
                             <el-row class="linkman-set-item" v-for="(type,index) in applyShigonglaowufenbaoFrom.personSetting" :key="index">
-                                <el-col :span="2" style="width:5.5% !important;">
+                                <el-col :span="2" style="width:4.5% !important;">
                                     <el-button v-if="index==0"
                                                icon="el-icon-circle-plus-outline"
                                                type="primary"
@@ -651,7 +650,7 @@
                     <el-col :span="12" class="fl linkman-set">
                         <el-form-item label="人员设置" prop="induCommRegNum">
                             <el-row class="linkman-set-item" v-for="(type,index) in applyJianliFrom.personSetting" :key="index">
-                                <el-col :span="2">
+                                <el-col :span="2" style="width:4.5% !important;">
                                     <el-button v-if="index==0"
                                                icon="el-icon-circle-plus-outline"
                                                type="primary"

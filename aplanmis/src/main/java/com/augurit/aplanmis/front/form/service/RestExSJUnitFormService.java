@@ -290,7 +290,12 @@ public class RestExSJUnitFormService {
                         listperson.add(person);
                     }
                 }
-                aeaExProjBuildUnitInfo.setPersonSetting(listperson);
+                if(listperson != null &&listperson.size()>0){
+                    aeaExProjBuildUnitInfo.setPersonSetting(listperson);
+                }else {
+                    listperson.add(new PersonSetting());
+                    aeaExProjBuildUnitInfo.setPersonSetting(listperson);
+                }
                 String unitType = aeaExProjBuildUnitInfo.getUnitType();
                 if(unitType !=null){
                     if (unitType.equals(this.gongchengzongchengbao)) {

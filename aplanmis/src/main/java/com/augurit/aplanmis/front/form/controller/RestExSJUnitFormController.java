@@ -38,25 +38,37 @@ public class RestExSJUnitFormController {
 
     @PostMapping("/saveOrUpdateSJUnitInfo")
     public ContentResultForm<String> saveOrUpdateSJUnitInfo(AeaExProjBuild aeaExProjBuild) throws Exception{
-        restExSJUnitFormService.saveOrUpdateSJUnitInfo(aeaExProjBuild);
-        return new ContentResultForm<>(true,"", "Save success");
+        try {
+            restExSJUnitFormService.saveOrUpdateSJUnitInfo(aeaExProjBuild);
+            return new ContentResultForm<>(true,"", "Save success");
+        }catch (Exception e){
+            return new ContentResultForm<>(true,e.getMessage(), "error");
+        }
     }
 
     @GetMapping("/initExSJUnit")
     public ContentResultForm<Map<String,Object>> initExSJUnit(@RequestParam(required = false) String projInfoId) throws Exception {
         Map<String, Object> map =null;
-        if(projInfoId!=null){
-            map = restExSJUnitFormService.initExSJUnit(projInfoId);
+        try {
+            if(projInfoId!=null){
+                map = restExSJUnitFormService.initExSJUnit(projInfoId);
+            }
+            return new ContentResultForm<>(true, map, "Query success");
+        }catch (Exception e){
+            return new ContentResultForm(true, e.getMessage(), "error");
         }
-        return new ContentResultForm<>(true, map, "Query success");
     }
 
     @GetMapping("/list")
     public ContentResultForm<Set<ExSJUnitFromDetails>> list(@RequestParam(required = false) String keyword, @RequestParam(required = false) String projInfoId){
-        List<ExSJUnitFromDetails> aeaExProBuildUnitInfoByKeyword = aeaUnitInfoService.findAeaExProBuildUnitInfoByKeyword(keyword);
-        Set<ExSJUnitFromDetails> unitsByKeyword = aeaExProBuildUnitInfoByKeyword.stream().map(this::getUnitVo).collect(Collectors.toSet());
-        Map<String,Object> map = new HashMap<String,Object>();
-        return new ContentResultForm<>(true, unitsByKeyword, "Query success");
+        try {
+            List<ExSJUnitFromDetails> aeaExProBuildUnitInfoByKeyword = aeaUnitInfoService.findAeaExProBuildUnitInfoByKeyword(keyword);
+            Set<ExSJUnitFromDetails> unitsByKeyword = aeaExProBuildUnitInfoByKeyword.stream().map(this::getUnitVo).collect(Collectors.toSet());
+            Map<String,Object> map = new HashMap<String,Object>();
+            return new ContentResultForm<>(true, unitsByKeyword, "Query success");
+        }catch (Exception e){
+            return new ContentResultForm(true, e.getMessage(), "error");
+        }
     }
 
     private ExSJUnitFromDetails getUnitVo(ExSJUnitFromDetails u) {
