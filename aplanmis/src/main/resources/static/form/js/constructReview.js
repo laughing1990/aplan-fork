@@ -174,8 +174,9 @@ var app = new Vue({
     }
   },
   created: function() {
-    // this.projInfoId = '031fb1ad-71b9-41af-8fe0-7df5b449a16d';
-    this.projInfoId = this.getUrlParam('projInfoId');
+    this.projInfoId = '0';
+    // this.projInfoId = '002dbf94-2e5c-4e4a-9190-d793aa7806a4';
+    // this.projInfoId = this.getUrlParam('projInfoId');
   },
   mounted: function() {
 
@@ -201,7 +202,21 @@ var app = new Vue({
           projInfoId: this.projInfoId
         },
       }, function(res) {
+        if (!res.success) {
+          vm.$message({
+            message: res.message,
+            type: 'error'
+          });
+          return;
+        }
+
         vm.formData = res.content;
+        if (vm.formData.drawings == 0) {
+          vm.formData.drawings[0] = [];
+          vm.formData.drawings[1] = [];
+          vm.formData.drawings[2] = [];
+          return
+        }
         for (var i = 0; i < vm.formData.drawings.length; i++) {
           if (vm.formData.drawings[i].linkmen.length == 0) {
             if (i == 2) {

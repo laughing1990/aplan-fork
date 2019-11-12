@@ -10,6 +10,7 @@ var app = new Vue({
       activeNames: '1',
       fieldType: [],
       landAreaUnitSite: [],
+      region: [],
       moneyType: '人民币',
       rules: {
         provinceProjCode: [
@@ -52,6 +53,7 @@ var app = new Vue({
 
     this.getContractType();
     this.showData();
+    this.getRegion();
 
     $(".loading").hide();
   },
@@ -79,6 +81,21 @@ var app = new Vue({
         vm.$message.error('服务器错了哦!');
       })
     },
+    // 请求下拉
+    getRegion: function() {
+      var vm = this;
+      // vm.loading = true;
+
+      request('', {
+        type: 'get',
+        url: ctx + 'rest/org/region/list',
+        data: {},
+      }, function(res) {
+        vm.region = res.content;
+      }, function(err) {
+        vm.$message.error('服务器错了哦!');
+      })
+    },
     // 请求table数据
     showData: function() {
       var vm = this;
@@ -90,7 +107,15 @@ var app = new Vue({
           projInfoId: this.projInfoId
         },
       }, function(res) {
-        vm.formData = res;
+        if (!res.success) {
+          vm.$message({
+            message: res.message,
+            type: 'error'
+          });
+
+          return;
+        }
+        vm.formData = res.content;
 
         vm.$nextTick(function() {
           vm.$refs['form'].clearValidate();
