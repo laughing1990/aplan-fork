@@ -494,12 +494,12 @@ public class RestImApplyService {
 
         aeaImProjPurchase.setUnitRequireId(aeaImUnitRequire.getUnitRequireId());
 
-        //保存资质专业要求---fixme 页面有问题，先注释，qualLevelId没有传过来
+        //保存资质专业要求
         List<AeaImMajorQual> aeaImMajorQuals = data.getAeaImMajorQuals();
         if (aeaImMajorQuals != null && "1".equals(aeaImUnitRequire.getIsQualRequire())) {
             for (AeaImMajorQual aeaImMajorQual : aeaImMajorQuals) {
                 aeaImMajorQual.buildImMajor(aeaImUnitRequire.getUnitRequireId(), data.getCreater());
-                //aeaImMajorQualMapper.insertAeaImMajorQual(aeaImMajorQual);
+                aeaImMajorQualMapper.insertAeaImMajorQual(aeaImMajorQual);
             }
         }
         //保存采购项目
@@ -515,6 +515,7 @@ public class RestImApplyService {
 
         //保存采购项目信息表
         aeaImProjPurchaseMapper.insertAeaImProjPurchase(aeaImProjPurchase);
+        data.setProjPurchaseId(aeaImProjPurchase.getProjPurchaseId());
         this.savePurchaseinst(data);
 
         //创建投资项目和采购需求项目ID关联
@@ -536,13 +537,11 @@ public class RestImApplyService {
                     break;
                 }
             }
+
         }
         //保存项目联系人关系
-        if (StringUtils.isNotBlank(linkmanInfoId)) {
-            AeaProjLinkman aeaProjLinkman = new AeaProjLinkman(aeaProjInfo.getProjInfoId(), linkmanInfoId, "link", data.getApplyinstId(), data.getCreater());
-            aeaProjLinkmanMapper.insertAeaProjLinkman(aeaProjLinkman);
-        }
-
+        AeaProjLinkman aeaProjLinkman = new AeaProjLinkman(aeaProjInfo.getProjInfoId(), linkmanInfoId, "link", data.getApplyinstId(), data.getCreater());
+        aeaProjLinkmanMapper.insertAeaProjLinkman(aeaProjLinkman);
 
         //保存企业报价
         if (AeaImProjPurchase.BiddingType.自主选择.getType().equals(aeaImProjPurchase.getBiddingType())) {
