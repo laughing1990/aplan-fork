@@ -168,7 +168,13 @@
                             <el-input v-model="exProjFrom.govOrgName" placeholder="请输入建设行业主管部门确认的行政单位名称"></el-input>
                         </el-form-item>
                         <el-form-item class="input-inline" label="建设行业主管部门确认的行政单位区域码" prop="govAreaCode">
-                            <el-input v-model="exProjFrom.govAreaCode" placeholder="请输入建设行业主管部门确认的行政单位区域码"></el-input>
+                            <el-select v-model="exProjFrom.govAreaCode" placeholder="请选择建设行业主管部门确认的行政单位区域码">
+                                <el-option v-for="(item, index) in govAreaCodeList"
+                                           :key="index"
+                                           :label="item.regionName"
+                                           :value="item.regionNum">
+                                </el-option>
+                            </el-select>
                         </el-form-item>
                     </div>
 

@@ -19,6 +19,7 @@ var vm = new Vue({
             projFunctionList: [], // 项目用途列表
             scaleTypeList: [], // 建设规模类型列表
             projLevelList: [], // 立项级别列表
+            govAreaCodeList: [], // 行政单位区域码列表
             exProjFrom: {},
             exProjFromRules: {
                 buildType: [
@@ -86,7 +87,7 @@ var vm = new Vue({
                     { required: true, message: '请填写建设行业主管部门确认的行政单位名称', trigger: 'blur' }
                 ],
                 govAreaCode: [
-                    { required: true, message: '请填写建设行业主管部门确认的行政单位区域码', trigger: 'blur' }
+                    { required: true, message: '请选择建设行业主管部门确认的行政单位区域码', trigger: 'change' }
                 ]
             }
         }
@@ -95,6 +96,7 @@ var vm = new Vue({
         var _that = this;
         _that.exProjFrom.projInfoId = projInfoId;
         _that.getDictList('XM_JZLX,PROJECT_PROPERTY,XM_FUNCTION,XM_SCALE_TYPE,XM_PROJECT_LEVEL');
+        _that.getGovAreaCodeList();
         _that.getExProjForm();
     },
     computed: {
@@ -129,6 +131,24 @@ var vm = new Vue({
                     _that.projFunctionList = result.content.XM_FUNCTION;
                     _that.scaleTypeList = result.content.XM_SCALE_TYPE;
                     _that.projLevelList = result.content.XM_PROJECT_LEVEL;
+                }
+            }, function (msg) {
+                _that.$message({
+                    message: '服务请求失败',
+                    type: 'error'
+                });
+            });
+        },
+        // 获取行政单位区域码
+        getGovAreaCodeList: function () {
+            var _that = this;
+            request('', {
+                url: ctx + 'rest/org/region/list',
+                type: 'get',
+                data: {}
+            }, function (result) {
+                if (result.content) {
+                    _that.govAreaCodeList = result.content;
                 }
             }, function (msg) {
                 _that.$message({

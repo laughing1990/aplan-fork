@@ -64,16 +64,25 @@
             }
         },
         created: function () {
-            // this.projInfoId = this.getUrlParam('projInfoId');
-            this.projInfoId = '012c4996-b14f-42c4-8d87-b2f347b27276';
+            this.projInfoId = this.getUrlParam('projInfoId');
+            // this.projInfoId = '012c4996-b14f-42c4-8d87-b2f347b27276';
         },
         mounted: function () {
-            this.getDetail();
+            if (this.projInfoId) this.getDetail();
         },
         methods: {
             // 重置弹窗表单数据
             resetForm: function () {
                 this.$refs.form.resetFields();
+                this.formData.projName = '';
+                this.formData.aboveGround = '';
+                this.formData.underGround = '';
+                this.formData.aboveFloor = '';
+                this.formData.underFloor = '';
+                this.formData.aboveHeight = '';
+                this.formData.underDepth = '';
+                this.formData.length = '';
+                this.formData.span = '';
             },
             cancleForm: function () {
                 this.resetForm();
@@ -94,20 +103,10 @@
             editData: function (item) {
                 this.isShowDialog = true;
                 this.formData = JSON.parse(JSON.stringify(item));
-                
-                // this.formData.projName = item.projName;
-                // this.formData.aboveGround = item.aboveGround;
-                // this.formData.underGround = item.underGround;
-                // this.formData.aboveFloor = item.aboveFloor;
-                // this.formData.underFloor = item.underFloor;
-                // this.formData.aboveHeight = item.aboveHeight;
-                // this.formData.underDepth = item.underDepth;
-                // this.formData.length = item.length;
-                // this.formData.span = item.span;
-                    
+                this.formData.projInfoId = item.projInfoId;
+  
                 this.isAdd = '0';
                 this.formTitle = '编辑单体工程';
-                this.childInfoId = item.projInfoId;
             },
             // 删除数据
             delData: function (item) {
@@ -154,23 +153,22 @@
             // from数据提交
             submitForm: function () {
                 var _that = this;
-                var params = {
-                    projName: _that.formData.projName,
-                    aboveGround: _that.formData.aboveGround,
-                    underGround: _that.formData.underGround,
-                    aboveFloor: _that.formData.aboveFloor,
-                    underFloor: _that.formData.underFloor,
-                    aboveHeight: _that.formData.aboveHeight,
-                    underDepth: _that.formData.underDepth,
-                    length: _that.formData.length,
-                    span: _that.formData.span
-                };
 
                 _that.$refs['form'].validate(function (valid) {
                     if (valid) {
                         if (_that.isAdd === '1') {
-                            delete params.projInfoId;
-                            params.parentProjId = _that.projInfoId;
+                            var params = {
+                                projName: _that.formData.projName,
+                                aboveGround: _that.formData.aboveGround,
+                                underGround: _that.formData.underGround,
+                                aboveFloor: _that.formData.aboveFloor,
+                                underFloor: _that.formData.underFloor,
+                                aboveHeight: _that.formData.aboveHeight,
+                                underDepth: _that.formData.underDepth,
+                                length: _that.formData.length,
+                                span: _that.formData.span,
+                                parentProjId: _that.projInfoId
+                            };
                             // 新增
                             request('', {
                                 url: ctx + 'rest/project/save/childProject',
@@ -200,8 +198,18 @@
                                 });
                             });
                         } else {
-                            delete params.parentProjId;
-                            params.projInfoId = _that.projInfoId;
+                            var params = {
+                                projName: _that.formData.projName,
+                                aboveGround: _that.formData.aboveGround,
+                                underGround: _that.formData.underGround,
+                                aboveFloor: _that.formData.aboveFloor,
+                                underFloor: _that.formData.underFloor,
+                                aboveHeight: _that.formData.aboveHeight,
+                                underDepth: _that.formData.underDepth,
+                                length: _that.formData.length,
+                                span: _that.formData.span,
+                                projInfoId: _that.formData.projInfoId
+                            };
                             // 编辑                           
                             request('', {
                                 url: ctx + 'rest/project/edit/childProject',

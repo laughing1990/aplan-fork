@@ -37,7 +37,7 @@ allprojects {
         mavenLocal()
         maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
         //agcloud私服仓库
-        maven { url 'http://39.107.139.174:8081/repository/agcloud-public/' }
+        maven { url 'http://106.52.77.101:8081/repository/agcloud-public/' }
         // 中央仓库
         mavenCentral()
     }
@@ -110,7 +110,7 @@ allprojects {
 //        compile "com.augurit:dbutil:0.1"
 
         //依赖的agcloud相关jar
-        compile('oracle:ojdbc:6')
+//        compile('oracle:ojdbc:6')
         compile('mysql:mysql-connector-java')
         //compile "com.augurit.agcloud:agcloud-framework:${agcloudVersion}"
         compile "com.augurit.agcloud:agcloud-framework-ui:${agcloudVersion}"
