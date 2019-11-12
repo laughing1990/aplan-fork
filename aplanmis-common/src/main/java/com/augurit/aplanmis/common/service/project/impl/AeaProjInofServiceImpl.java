@@ -632,7 +632,7 @@ public class AeaProjInofServiceImpl implements AeaProjInfoService {
             return false;
         }
         //查询被删除项目的父项目，如果删除项目下边有子项目，将子项目挂在在父项目上
-        AeaProjInfo delProjParentInfo = aeaProjInfoMapper.getOnlyAeaProjInfoById(delProjInfo.getParentProjId());//待删除项目 父项目
+        AeaProjInfo delProjParentInfo = aeaProjInfoMapper.getAeaProjInfoById(delProjInfo.getParentProjId());//待删除项目 父项目
         if ("r".equals(delProjParentInfo.getProjFlag())) {
 //            resultForm.setMessage("1");
             return false;

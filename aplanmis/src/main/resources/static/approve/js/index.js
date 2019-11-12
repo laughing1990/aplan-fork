@@ -535,7 +535,7 @@ var vm = new Vue({
       // if(window) return null;
       vm.parentPageLoading = true;
       request('', {
-        url: ctx + 'rest/correct/detail/list?iteminstId=' + vm.iteminstId,
+        url: ctx + 'rest/correct/detail/list?iteminstId=' + vm.iteminstId + '&applyinstId=' + vm.masterEntityKey,
         // url: ctx + 'rest/correct/detail/list?iteminstId=988347fc-fde9-4067-8558-f45f1e3d9955',
         type: 'get',
       }, function (res) {

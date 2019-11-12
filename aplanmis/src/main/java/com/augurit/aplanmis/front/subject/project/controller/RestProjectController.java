@@ -300,29 +300,41 @@ public class RestProjectController {
     @PostMapping("/save/childProject")
     public ContentResultForm<AeaProjInfo> saveChildProject(@RequestBody AeaProjInfo aeaProjInfo) throws Exception {
         Assert.isTrue(StringUtils.isNotBlank(aeaProjInfo.getParentProjId()), "parentProjInfoId is null");
+        AeaProjInfo parent = aeaProjInfoService.getAeaProjInfoByProjInfoId(aeaProjInfo.getParentProjId());
+        if (parent == null) {
+            return new ContentResultForm<AeaProjInfo>(false, null, "Save child project failed because parent project information does not exist.");
+        }
         AeaProjInfo child = aeaProjInfoService.addChildProjInfo(aeaProjInfo);
         return new ContentResultForm<AeaProjInfo>(true, child, "Save child project success.");
     }
 
     @ApiOperation(value = "编辑单体工程信息")
     @PostMapping("/edit/childProject")
-    public ContentResultForm<AeaProjInfo> editChildProject(@RequestBody AeaProjInfo aeaProjInfo) throws Exception {
+    public ContentResultForm<String> editChildProject(@RequestBody AeaProjInfo aeaProjInfo) throws Exception {
         Assert.isTrue(StringUtils.isNotBlank(aeaProjInfo.getProjInfoId()), "childProjInfoId is null");
+        AeaProjInfo info = aeaProjInfoService.getAeaProjInfoByProjInfoId(aeaProjInfo.getProjInfoId());
+        if (info == null) {
+            return new ContentResultForm<>(false, aeaProjInfo.getProjInfoId(), "Edit child project failed because project information does not exist.");
+        }
         aeaProjInfoService.updateAeaProjInfo(aeaProjInfo);
-        return new ContentResultForm<AeaProjInfo>(true, null,"Edit child project success.");
+        return new ContentResultForm<>(true, aeaProjInfo.getProjInfoId(), "Edit child project success.");
     }
 
     @ApiOperation(value = "删除单体工程信息")
     @PostMapping("/delete/childProject")
     public ContentResultForm<String> deleteChildProjectByParam(String childProjInfoId) throws Exception {
         Assert.isTrue(StringUtils.isNotBlank(childProjInfoId), "childProjInfoId is null");
+        AeaProjInfo info = aeaProjInfoService.getAeaProjInfoByProjInfoId(childProjInfoId);
+        if (info == null) {
+            return new ContentResultForm<>(false, childProjInfoId, "Delete child project failed because project information does not exist.");
+        }
         aeaProjInfoService.deleteChildChildProj(childProjInfoId);
         return new ContentResultForm<>(true, childProjInfoId, "Delete child project success.");
     }
 
     @ApiOperation(value = "跳转前端单体工程信息页面")
     @RequestMapping("/childProject/index.html")
-    public ModelAndView childProjectIndex(){
+    public ModelAndView childProjectIndex() {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("form/monomerProject");
         return modelAndView;
