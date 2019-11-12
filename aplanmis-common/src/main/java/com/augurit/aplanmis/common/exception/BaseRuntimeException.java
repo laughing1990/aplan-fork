@@ -1,8 +1,10 @@
 package com.augurit.aplanmis.common.exception;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class BaseRuntimeException extends RuntimeException {
     //默认异常
     private int errorCode = 601;

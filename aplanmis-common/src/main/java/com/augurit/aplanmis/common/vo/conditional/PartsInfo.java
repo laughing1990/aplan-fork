@@ -3,6 +3,7 @@ package com.augurit.aplanmis.common.vo.conditional;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
 
@@ -10,6 +11,7 @@ import java.io.Serializable;
  * @author tiantian
  * @date 2019/9/7
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 @ApiModel(value = "办件查询返回信息")
 public class PartsInfo extends BaseInfo implements Serializable {

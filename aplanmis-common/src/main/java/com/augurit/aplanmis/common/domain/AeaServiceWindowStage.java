@@ -1,13 +1,13 @@
 package com.augurit.aplanmis.common.domain;
 
-import java.io.Serializable;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
-
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.io.Serializable;
+
+@EqualsAndHashCode(callSuper = true)
 @ApiModel
 @Data
 public class AeaServiceWindowStage extends AeaServiceWindow implements Serializable {

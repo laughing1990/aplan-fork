@@ -5,6 +5,7 @@ import com.augurit.aplanmis.common.domain.AeaImProjPurchase;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.List;
 
@@ -14,6 +15,7 @@ import java.util.List;
  */
 @Data
 @ApiModel("采购需求详细信息")
+@EqualsAndHashCode(callSuper = true)
 public class AeaImProjPurchaseDetailVo extends AeaImProjPurchase {
 
     @ApiModelProperty(value = "项目规模")

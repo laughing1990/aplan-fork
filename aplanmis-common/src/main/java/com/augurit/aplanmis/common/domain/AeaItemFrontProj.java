@@ -57,4 +57,9 @@ public class AeaItemFrontProj implements Serializable{
 
     @ApiModelProperty("根组织ID")
     private String rootOrgId;
+
+
+    //非表字段
+    //查询关键字
+    private String keyword;
 }

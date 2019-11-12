@@ -5,6 +5,7 @@ import com.augurit.agcloud.framework.ui.ztree.ZtreeNode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.util.Assert;
@@ -25,6 +26,7 @@ import java.util.List;
  */
 @Data
 @ApiModel("事项情形实体类")
+@EqualsAndHashCode(callSuper = true)
 public class AeaItemState extends ZtreeNode implements Serializable {
 // ----------------------------------------------------- Properties
 

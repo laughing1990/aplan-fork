@@ -27,11 +27,13 @@ public class ExSJUnitFromDetails implements Serializable {
 
     private String linkmanMobilePhone;//负责人电话
 
+    private String linkmanCertNo;//负责人证件号码
+
     private String projLinkmanId;//主键
 
     private String registerNum;//负责人注册编号
 
-    private String pSafeLicenceNum;//安全生产考核合格证号
+    private String personSafeLicenceNum;//安全生产考核合格证号
 
     private String qualLevelId;//所属资质等级ID（对应AEA_IM_QUAL_LEVEL表） aea_unit_proj
 
@@ -43,7 +45,7 @@ public class ExSJUnitFromDetails implements Serializable {
 
     private String certinstCode;//证书编码
 
-    private String uSafeLicenceNum;//安全生产许可证编号 aea_unit_proj
+    private String unitSafeLicenceNum;//安全生产许可证编号 aea_unit_proj
 
     private String organizationalCode;//组织机构代码 aea_unit_info
 

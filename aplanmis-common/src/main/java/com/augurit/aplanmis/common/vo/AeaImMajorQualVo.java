@@ -3,6 +3,7 @@ package com.augurit.aplanmis.common.vo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * @author tiantian
@@ -10,6 +11,7 @@ import lombok.Data;
  */
 @Data
 @ApiModel("专业资质要求")
+@EqualsAndHashCode(callSuper = true)
 public class AeaImMajorQualVo extends BusinessZtreeNode<AeaImMajorQualVo> {
 
     @ApiModelProperty(value = "专业资质关联ID")

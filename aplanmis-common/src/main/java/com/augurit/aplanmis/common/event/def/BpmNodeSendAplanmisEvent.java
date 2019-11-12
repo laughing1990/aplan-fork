@@ -4,10 +4,12 @@ import com.augurit.agcloud.bpm.common.domain.BpmTaskSendObject;
 import com.augurit.aplanmis.common.event.AplanmisEvent;
 import com.augurit.aplanmis.common.event.AplanmisEventType;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * 流程发送事件定义
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class BpmNodeSendAplanmisEvent extends AplanmisEvent {
     private BpmTaskSendObject taskSendObject;

@@ -12,7 +12,7 @@ import com.augurit.aplanmis.common.vo.AeaImProjPurchaseDetailVo;
 import com.augurit.aplanmis.supermarket.agentService.service.UnitAgentService;
 import com.augurit.aplanmis.supermarket.agentService.vo.AgentUnitDetailVo;
 import com.augurit.aplanmis.supermarket.bidProPurchase.service.BidProjectService;
-import com.augurit.aplanmis.supermarket.projPurchase.service.AeaImProjPurchaseService;
+import com.augurit.aplanmis.supermarket.projPurchase.service.ProjPurchaseService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
@@ -39,7 +39,7 @@ public class BidProjectController {
     private BidProjectService projectService;
 
     @Autowired
-    private AeaImProjPurchaseService aeaImProjPurchaseService;
+    private ProjPurchaseService projPurchaseService;
 
     @Autowired
     private UnitAgentService unitAgentService;
@@ -235,7 +235,7 @@ public class BidProjectController {
             Map result = new HashMap();
 
             // 查询项目详情
-            AeaImProjPurchaseDetailVo aeaImProjPurchaseDetailVo = aeaImProjPurchaseService.getPublicProjPurchaseDatail(projPurchaseId);
+            AeaImProjPurchaseDetailVo aeaImProjPurchaseDetailVo = projPurchaseService.getPublicProjPurchaseDatail(projPurchaseId);
             result.put("projPurchase", aeaImProjPurchaseDetailVo);
 
             // 查询中介详情

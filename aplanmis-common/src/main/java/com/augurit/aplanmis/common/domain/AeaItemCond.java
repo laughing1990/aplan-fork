@@ -4,6 +4,7 @@ import com.augurit.agcloud.framework.ui.ztree.ZtreeNode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.annotation.Transient;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -15,6 +16,7 @@ import java.util.List;
 /**
  * 事项前提条件表-模型
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 @ApiModel("前置条件实体")
 public class AeaItemCond extends ZtreeNode implements Serializable {

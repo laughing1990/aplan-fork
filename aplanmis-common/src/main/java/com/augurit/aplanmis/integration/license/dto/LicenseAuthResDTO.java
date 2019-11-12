@@ -1,6 +1,7 @@
 package com.augurit.aplanmis.integration.license.dto;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.List;
 
@@ -10,6 +11,7 @@ import java.util.List;
  * @desc
  **/
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class LicenseAuthResDTO extends PubResponseDTO<List<LicenseDTO>>{
     private String[] auth_codes;
 }

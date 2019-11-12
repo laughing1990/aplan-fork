@@ -82,6 +82,7 @@ var app = new Vue({
   },
   created: function() {
     this.projInfoId = this.getUrlParam('projInfoId');
+    // this.projInfoId = '0';
 
 
   },
@@ -126,9 +127,17 @@ var app = new Vue({
           projInfoId: this.projInfoId
         },
       }, function(res) {
-        vm.formData = res;
-        vm.formData2 = res;
-        vm.formData3 = res;
+        if (!res.success) {
+          vm.$message({
+            message: res.message,
+            type: 'error'
+          });
+
+          return;
+        }
+        vm.formData = res.content;
+        vm.formData2 = res.content;
+        vm.formData3 = res.content;
         vm.$nextTick(function() {
           vm.$refs['form'].clearValidate();
           vm.$refs['form2'].clearValidate();

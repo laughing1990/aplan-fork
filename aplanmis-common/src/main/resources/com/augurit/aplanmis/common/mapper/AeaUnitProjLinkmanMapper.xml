@@ -313,6 +313,7 @@
 
         </where>
     </select>
+
     <select id="findPersonSetting" resultType="PersonSetting">
         select
         <include refid="allColumns">
@@ -326,6 +327,30 @@
             aupl.IS_DELETED='0' and ali.IS_DELETED='0' and ali.IS_ACTIVE='1'
             <if test="unitProjId!=null and unitProjId!=''">
                 and aupl.UNIT_PROJ_ID =#{unitProjId}
+            </if>
+        </where>
+    </select>
+
+    <select id="listAeaUnitProjLinkmanPersonsetting" parameterType="AeaUnitProjLinkman"
+            resultType="com.augurit.aplanmis.common.domain.AeaUnitProjLinkman">
+        select
+        <include refid="allColumns">
+            <property name="alias" value="aupl"/>
+        </include>
+        from AEA_UNIT_PROJ_LINKMAN aupl
+        <where>
+            aupl.LINKMAN_TYPE != '104001' and aupl.LINKMAN_TYPE != '104002' and aupl.LINKMAN_TYPE != '105001'
+            <if test="projLinkmanId!=null and projLinkmanId!='' ">
+                and aupl.PROJ_LINKMAN_ID=#{projLinkmanId}
+            </if>
+            <if test="unitProjId!=null and unitProjId!='' ">
+                and aupl.UNIT_PROJ_ID=#{unitProjId}
+            </if>
+            <if test="linkmanInfoId!=null and linkmanInfoId!='' ">
+                and aupl.LINKMAN_INFO_ID=#{linkmanInfoId}
+            </if>
+            <if test="linkmanType!=null and linkmanType!='' ">
+                and aupl.LINKMAN_TYPE=#{linkmanType}
             </if>
         </where>
     </select>

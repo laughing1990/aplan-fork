@@ -183,5 +183,20 @@ public class SeriesApplyHandleVo {
 
         @ApiModelProperty(value = "是否支持容缺 0 否 1是")
         private String zcqy;
+
+        @ApiModelProperty(value = "材料性质", notes = "m: 普通材料; c: 证照材料; f: 在线表单")
+        private String matProp;
+
+        @ApiModelProperty(value = "证照定义ID")
+        private String certId;
+
+        @ApiModelProperty(value = "扩展字段：证照名称")
+        private String certName;
+
+        @ApiModelProperty(value = "表单定义ID")
+        private String formId;
+
+        @ApiModelProperty(value = "扩展字段：表单名称")
+        private String formName;
     }
 }

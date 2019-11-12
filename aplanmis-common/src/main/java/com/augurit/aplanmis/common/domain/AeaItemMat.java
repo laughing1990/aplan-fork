@@ -6,6 +6,7 @@ import com.augurit.aplanmis.common.vo.AeaItemMatAttr;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
@@ -17,6 +18,7 @@ import java.util.UUID;
  */
 @Data
 @ApiModel(description = " 事项材料定义表")
+@EqualsAndHashCode(callSuper = true)
 public class AeaItemMat extends MindBaseNode {
 
     private static final long serialVersionUID = 1L;

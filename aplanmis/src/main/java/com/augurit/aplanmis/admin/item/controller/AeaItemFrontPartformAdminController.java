@@ -1,19 +1,21 @@
 package com.augurit.aplanmis.admin.item.controller;
 
-import com.augurit.agcloud.framework.exception.InvalidParameterException;
+
+import com.augurit.agcloud.framework.ui.pager.EasyuiPageInfo;
+import com.augurit.agcloud.framework.ui.pager.PageHelper;
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
+import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.domain.AeaItemFrontPartform;
 import com.augurit.aplanmis.common.service.admin.item.AeaItemFrontPartformAdminService;
+import com.augurit.aplanmis.common.vo.AeaItemFrontPartformVo;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.ModelAndView;
 
 import java.util.UUID;
 
@@ -36,69 +38,74 @@ private static Logger logger = LoggerFactory.getLogger(AeaItemFrontPartformAdmin
     @Autowired
     private AeaItemFrontPartformAdminService aeaItemFrontPartformService;
 
-
-    @RequestMapping("/indexAeaItemFrontPartform.do")
-    public ModelAndView indexAeaItemFrontPartform(AeaItemFrontPartform aeaItemFrontPartform, String infoType){
-        return new ModelAndView("aea/item/front/front_partform_index");
-    }
-
-    @RequestMapping("/listAeaItemFrontPartform.do")
-    public PageInfo<AeaItemFrontPartform> listAeaItemFrontPartform(  AeaItemFrontPartform aeaItemFrontPartform, Page page) throws Exception {
-        logger.debug("分页查询，过滤条件为{}，查询关键字为{}", aeaItemFrontPartform);
-        return aeaItemFrontPartformService.listAeaItemFrontPartform(aeaItemFrontPartform,page);
+    @RequestMapping("/listAeaItemFrontPartformByPage.do")
+    public EasyuiPageInfo<AeaItemFrontPartformVo> listAeaItemFrontPartformByPage(AeaItemFrontPartform aeaItemFrontPartform, Page page){
+        PageInfo<AeaItemFrontPartformVo> pageInfo =  aeaItemFrontPartformService.listAeaItemFrontPartformVoByPage(aeaItemFrontPartform, page);
+        return PageHelper.toEasyuiPageInfo(pageInfo);
     }
 
     @RequestMapping("/getAeaItemFrontPartform.do")
-    public AeaItemFrontPartform getAeaItemFrontPartform(String id) throws Exception {
-        if (id != null){
-            logger.debug("根据ID获取AeaItemFrontPartform对象，ID为：{}", id);
-            return aeaItemFrontPartformService.getAeaItemFrontPartformById(id);
-        }
-        else {
-            logger.debug("构建新的AeaItemFrontPartform对象");
-            return new AeaItemFrontPartform();
+    public ResultForm getAeaItemFrontPartform(String frontPartformId){
+        try {
+            if (StringUtils.isNotBlank(frontPartformId)) {
+                return new ContentResultForm<>(true, aeaItemFrontPartformService.getAeaItemFrontPartformVoById(frontPartformId));
+            } else {
+                return new ResultForm(false, "frontPartformId不能为空");
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return new ResultForm(false, e.getMessage());
         }
     }
 
-    @RequestMapping("/updateAeaItemFrontPartform.do")
-        public ResultForm updateAeaItemFrontPartform(AeaItemFrontPartform aeaItemFrontPartform) throws Exception {
-        logger.debug("更新客户档案信息Form对象，对象为：{}", aeaItemFrontPartform);
-        aeaItemFrontPartformService.updateAeaItemFrontPartform(aeaItemFrontPartform);
-        return new ResultForm(true);
-    }
+    @RequestMapping("/saveOrUpdateAeaItemFrontPartform.do")
+    public ResultForm saveOrUpdateAeaItemFrontPartform(AeaItemFrontPartform aeaItemFrontPartform){
 
+        try {
+            if (aeaItemFrontPartform.getFrontPartformId() != null && !"".equals(aeaItemFrontPartform.getFrontPartformId())) {
+                aeaItemFrontPartformService.updateAeaItemFrontPartform(aeaItemFrontPartform);
+            } else {
+                if (aeaItemFrontPartform.getFrontPartformId() == null || "".equals(aeaItemFrontPartform.getFrontPartformId()))
+                    aeaItemFrontPartform.setFrontPartformId(UUID.randomUUID().toString());
+                aeaItemFrontPartformService.saveAeaItemFrontPartform(aeaItemFrontPartform);
+            }
 
-    /**
-    * 保存或编辑事项的前置检查事项
-    * @param aeaItemFrontPartform 事项的前置检查事项
-    * @param result 校验对象
-    * @return 返回结果对象 包含结果信息
-    * @throws Exception
-    */
-    @RequestMapping("/saveAeaItemFrontPartform.do")
-    public ResultForm saveAeaItemFrontPartform(AeaItemFrontPartform aeaItemFrontPartform, BindingResult result) throws Exception {
-        if(result.hasErrors()) {
-            logger.error("保存事项的前置检查事项Form对象出错");
-            throw new InvalidParameterException(aeaItemFrontPartform);
+            return new ContentResultForm<>(true, aeaItemFrontPartform);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return new ResultForm(false, e.getMessage());
+
         }
-
-        if(aeaItemFrontPartform.getFrontPartformId()!=null&&!"".equals(aeaItemFrontPartform.getFrontPartformId())){
-            aeaItemFrontPartformService.updateAeaItemFrontPartform(aeaItemFrontPartform);
-        }else{
-        if(aeaItemFrontPartform.getFrontPartformId()==null||"".equals(aeaItemFrontPartform.getFrontPartformId()))
-            aeaItemFrontPartform.setFrontPartformId(UUID.randomUUID().toString());
-            aeaItemFrontPartformService.saveAeaItemFrontPartform(aeaItemFrontPartform);
-        }
-
-        return  new ContentResultForm<AeaItemFrontPartform>(true,aeaItemFrontPartform);
     }
 
     @RequestMapping("/deleteAeaItemFrontPartformById.do")
-    public ResultForm deleteAeaItemFrontPartformById(String id) throws Exception{
-        logger.debug("删除事项的前置检查事项Form对象，对象id为：{}", id);
-        if(id!=null)
-            aeaItemFrontPartformService.deleteAeaItemFrontPartformById(id);
-        return new ResultForm(true);
+    public ResultForm deleteAeaItemFrontPartformById(String id)  {
+        try {
+            logger.debug("删除事项的扩展表单前置检测表Form对象，对象id为：{}", id);
+            if (StringUtils.isNotBlank(id))
+                aeaItemFrontPartformService.deleteAeaItemFrontPartformById(id);
+            return new ResultForm(true);
+        }catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return new ResultForm(false, e.getMessage());
+
+        }
+    }
+
+    @RequestMapping("/getMaxSortNo.do")
+    public ResultForm getMaxSortNo(AeaItemFrontPartform aeaItemFrontPartform) {
+        try {
+            return new ContentResultForm<>(true, aeaItemFrontPartformService.getMaxSortNo(aeaItemFrontPartform));
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return new ResultForm(false, e.getMessage());
+        }
+    }
+
+    @RequestMapping("/listSelectItemFrontPartformByPage.do")
+    public EasyuiPageInfo<AeaItemFrontPartformVo> listSelectItemFrontPartformByPage(AeaItemFrontPartform aeaItemFrontPartform, Page page) {
+        PageInfo<AeaItemFrontPartformVo> pageInfo = aeaItemFrontPartformService.listSelectItemFrontPartformByPage(aeaItemFrontPartform, page);
+        return PageHelper.toEasyuiPageInfo(pageInfo);
     }
 
 }

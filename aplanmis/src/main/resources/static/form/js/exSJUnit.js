@@ -14,7 +14,45 @@ var vm = new Vue({
                 callback();
             }
         };
+        var checkPhoneNum = function (rule, value, callback) {
+            if (value === '' || value === undefined || value.trim() === '') {
+                callback(new Error('必填字段！'));
+            } else if (value) {
+                var flag = !/^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/.test(value) && !(/^1(3|4|5|6|7|8|9)\d{9}$/.test(value));
+                if (flag) {
+                    return callback(new Error('格式不正确'));
+                } else {
+                    callback();
+                }
+
+            } else {
+                callback();
+            }
+        };
+        var checkMissValue = function (rule, value, callback) {
+            if (value === '' || value ===undefined || value ===null) {
+                callback(new Error('该输入项为必输项！'));
+            }else if(value.toString().trim() === ''){
+                callback(new Error('该输入项为必输项！'));
+            } else {
+                callback();
+            }
+        };
         return{
+            C_PRJ_ENT_TYPE:{
+                gongchengzongchengbao:'9',//工程总承包单位
+                shigongzongbao:'6',//施工总包
+                shigongfenbao:'7',//施工分包
+                laowufenbao:'8',//劳务分包
+                gongchengjianli:'11'//工程监理
+            },
+            C_PRJ_PERSON_POST:{
+                gongchengzongchengbao:'104001',//工程总承包单位
+                shigongzongbao:'104001',//施工总包
+                shigongfenbao:'104002',//施工分包
+                laowufenbao:'104002',//劳务分包
+                gongchengjianli:'105001'//工程监理
+            },
             projInfoId:'',
             loading: false, // 页面加载遮罩
             verticalTabData: [ // 左侧纵向导航数据
@@ -23,6 +61,25 @@ var vm = new Vue({
                     target: 'baseInfo'
                 },
             ],
+            addEditManModalTitle: '新增联系人',
+            addEditManModalFlag: 'edit',
+            addEditManModalShow: false, // 是否显示新增编辑联系人窗口
+            addEditManform: {
+                unitInfoId:'',
+            },  // 新增编辑联系人信息
+            addEditManPerform: {},  // 新增编辑联系人信息
+            projInfoId: '', // 查询项目id
+            addLinkManRules: { // 新增编辑联系人校验
+                linkmanName: [
+                    { required: true,validator: checkMissValue, trigger: 'blur' },
+                ],
+                linkmanCertNo: [
+                    { required: true,validator: checkMissValue, trigger: 'blur' },
+                ],
+                linkmanMobilePhone:[
+                    { required: true,validator: checkPhoneNum, trigger: 'blur' },
+                ]
+            },
             activeNames: ['1', '2', '3', '4', '5', '6'],// el-collapse 默认展开列表
             unitInfoShowFromRules: {  // 基本信息校验
                 provinceProjCode: [
@@ -61,42 +118,42 @@ var vm = new Vue({
                     { required: true,message: '请填写工程总承包项目经理联系电话！', trigger: ['change'] }
                 ]
             },
-            rulesApplyShigongzongFrom: {//施工总承包单位校验
-                applicant: [
-                    { required: true,message: '请输入单位名称！', trigger: ['change'] },
-                ],
-                qualLevelName:[
-                    { required: true,message: '请输入资质等级！', trigger: ['change'] },
-                ],
-                certinstCode:[
-                    { required: true,message: '请输入证书编号！', trigger: ['change'] },
-                ],
-                safeLicenceNum:[
-                    { required: true,message: '请输入安全生产许可证编号！', trigger: ['change'] },
-                ],
-                idrepresentative:[
-                    { required: true,message: '请输入法定代表人！', trigger: ['change'] },
-                ],
-                idmobile:[
-                    {validator:checkNumFloat, trigger: ['blur'] },
-                    { required: true,message: '请填写法定代表人联系电话！', trigger: ['change'] }
-                ],
-                projectManager:[
-                    { required: true,message: '请输入项目负责人（项目经理）！', trigger: ['change'] },
-                ],
-                registerNum:[
-                    { required: true,message: '请输入注册编号！', trigger: ['change'] },
-                ],
-                safeLicenceNum:[
-                    { required: true,message: '请输入安全生产考核合格证号！', trigger: ['change'] },
-                ],
-                projectManagerTel:[
-                    { required: true,message: '请输入项目负责人（项目经理）联系电话！', trigger: ['change'] },
-                ],
-                idCard:[
-                    { required: false,message: '请输入身份证号码！', trigger: ['change'] },
-                ]
-            },
+            // rulesApplyShigongzongFrom: {//施工总承包单位校验
+            //     applicant: [
+            //         { required: true,message: '请输入单位名称！', trigger: ['change'] },
+            //     ],
+            //     qualLevelName:[
+            //         { required: true,message: '请输入资质等级！', trigger: ['change'] },
+            //     ],
+            //     certinstCode:[
+            //         { required: true,message: '请输入证书编号！', trigger: ['change'] },
+            //     ],
+            //     // safeLicenceNum:[
+            //     //     { required: true,message: '请输入安全生产许可证编号！', trigger: ['change'] },
+            //     // ],
+            //     idrepresentative:[
+            //         { required: true,message: '请输入法定代表人！', trigger: ['change'] },
+            //     ],
+            //     idmobile:[
+            //         {validator:checkNumFloat, trigger: ['blur'] },
+            //         { required: true,message: '请填写法定代表人联系电话！', trigger: ['change'] }
+            //     ],
+            //     projectManager:[
+            //         { required: true,message: '请输入项目负责人（项目经理）！', trigger: ['change'] },
+            //     ],
+            //     registerNum:[
+            //         { required: true,message: '请输入注册编号！', trigger: ['change'] },
+            //     ],
+            //     // safeLicenceNum:[
+            //     //     { required: true,message: '请输入安全生产考核合格证号！', trigger: ['change'] },
+            //     // ],
+            //     projectManagerTel:[
+            //         { required: true,message: '请输入项目负责人（项目经理）联系电话！', trigger: ['change'] },
+            //     ],
+            //     idCard:[
+            //         { required: false,message: '请输入身份证号码！', trigger: ['change'] },
+            //     ]
+            // },
             rulesShigongzhuanyefenbaoFrom:{
                 applylinkUnitName:[
                     { required: true,message: '请输入单位名称!', trigger: ['change'] },
@@ -122,9 +179,9 @@ var vm = new Vue({
                 registrationNo:[
                     { required: true,message: '请输入注册编号!', trigger: ['change'] },
                 ],
-                pSafetyAssessNo:[
-                    { required: true,message: '请输入安全生产考核合格证号!', trigger: ['change'] },
-                ],
+                // pSafetyAssessNo:[
+                //     { required: true,message: '请输入安全生产考核合格证号!', trigger: ['change'] },
+                // ],
                 applyLinkmanTel:[
                     { required: true,message: '请输入专业分包技术负责人联系电话!', trigger: ['change'] },
                 ],
@@ -157,9 +214,9 @@ var vm = new Vue({
                 registrationNo:[
                     { required: true,message: '请输入注册编号!', trigger: ['change'] },
                 ],
-                pSafetyAssessNo:[
-                    { required: true,message: '请输入安全生产考核合格证号!', trigger: ['change'] },
-                ],
+                // pSafetyAssessNo:[
+                //     { required: true,message: '请输入安全生产考核合格证号!', trigger: ['change'] },
+                // ],
                 projectManagerTel:[
                     { required: true,message: '请输入劳务分包技术负责人联系电话!', trigger: ['change'] },
                 ]
@@ -189,7 +246,15 @@ var vm = new Vue({
             },
             loadingUnitLinkMan:false,
             unitInfoShowFrom:{
-                projInfoId:'',//项目id
+                aeaExProjBuildUnitInfo: '',
+                buildArea: "",
+                buildId: "",
+                contractEndBuildTime: "",
+                contractStartBuildTime: "",
+                projInfoId: "",
+                provinceProjCode: "",
+                quaCheckNum: "",
+                structureSystem: ""
             },//单位基本信息
             showVerLen: 1, // 显示左侧纵向导航栏的长度
             activeTab: 0,
@@ -202,6 +267,8 @@ var vm = new Vue({
             qualLevelName:[],//资历等级
             unitLinkManOptions:[],//联系人
             applyShigongzongFrom: {
+                registerNum : '',
+                personSafeLicenceNum : '',
                 personSetting:[{
                     linkmanType:'',
                     linkmanInfoId:'',
@@ -213,6 +280,8 @@ var vm = new Vue({
                 }]
             },  // 施工总承包单位信息
             applyShigongzhuanyefenbaoFrom:{
+                registerNum : '',
+                personSafeLicenceNum : '',
                 personSetting:[{
                     linkmanType:'',
                     linkmanInfoId:'',
@@ -224,6 +293,8 @@ var vm = new Vue({
                 }],
             },//施工专业分包单位信息
             applyShigonglaowufenbaoFrom:{
+                registerNum : '',
+                personSafeLicenceNum : '',
                 personSetting:[{
                     linkmanType:'',
                     linkmanInfoId:'',
@@ -235,6 +306,8 @@ var vm = new Vue({
                 }],
             },//施工劳务分包单位信息
             applyJianliFrom:{
+                registerNum : '',
+                personSafeLicenceNum : '',
                 personSetting:[{
                     linkmanType:'',
                     linkmanInfoId:'',
@@ -242,7 +315,7 @@ var vm = new Vue({
                     safeLicenceNum:'',
                     professionCertType:'',
                     titleCertNum:'',
-                    linkmanCertNo:''
+                    linkmanCertNo:'',
                 }],
             },//监理单位信息
             gongchengzongFrom:{},//工程总承包单位信息
@@ -254,7 +327,7 @@ var vm = new Vue({
     mounted:function(){
         var _that = this;
         _that.initPage();
-        _that.getInfoByDataDictionary('STRUCTURESYSTEM,PROJ_UNIT_LINKMAN_TYPE,XM_DWLX,JIANGLI_LINKMAN_TYPE,PROFESSION_CERT_TYPE,TITLE_CERT_NUM');
+        _that.getInfoByDataDictionary('C_TITLE,C_STRUCT_TYPE,C_PRJ_PERSON_POST,C_REG_LCN_TYPE,C_PRJ_ENT_TYPE');
         _that.getQualLevel('danweizilidengji');
         _that.initExSJUnitFromPage();
     },
@@ -281,9 +354,15 @@ var vm = new Vue({
                 },
                 type:'get',
             },function (data) {
-                debugger;
                 if( data.content.unitInfoShowFrom){
-                    _that.unitInfoShowFrom = data.content.unitInfoShowFrom;
+                    _that.unitInfoShowFrom.buildArea = data.content.unitInfoShowFrom.buildArea;
+                    _that.unitInfoShowFrom.buildId = data.content.unitInfoShowFrom.buildId;
+                    _that.unitInfoShowFrom.contractEndBuildTime = data.content.unitInfoShowFrom.contractEndBuildTime;
+                    _that.unitInfoShowFrom.contractStartBuildTime = data.content.unitInfoShowFrom.contractStartBuildTime;
+                    _that.unitInfoShowFrom.projInfoId = data.content.unitInfoShowFrom.projInfoId;
+                    _that.unitInfoShowFrom.provinceProjCode = data.content.unitInfoShowFrom.provinceProjCode;
+                    _that.unitInfoShowFrom.quaCheckNum = data.content.unitInfoShowFrom.quaCheckNum;
+                    _that.unitInfoShowFrom.structureSystem = data.content.unitInfoShowFrom.structureSystem;
                 }
                 if(data.content.gongchengzongFrom){
                     _that.gongchengzongFrom = data.content.gongchengzongFrom;
@@ -327,21 +406,22 @@ var vm = new Vue({
         saveOrUpdateSJUnitFrom(){
             var _that = this;
             _that.exSJAllUnit = JSON.parse (JSON.stringify(_that.unitInfoShowFrom));
+            //_that.exSJAllUnit.creatTime = new Date(_that.exSJAllUnit.creatTime);
             var gongchengzong = JSON.parse(JSON.stringify(_that.gongchengzongFrom));
-            gongchengzong.unitType = "9";
-            gongchengzong.linkmanType = "104001";
+            gongchengzong.unitType = _that.C_PRJ_ENT_TYPE.gongchengzongchengbao;
+            gongchengzong.linkmanType = _that.C_PRJ_PERSON_POST.gongchengzongchengbao;
             var shigongzong = JSON.parse(JSON.stringify(_that.applyShigongzongFrom));
-            shigongzong.unitType = "10";
-            shigongzong.linkmanType = "104001";
+            shigongzong.unitType = _that.C_PRJ_ENT_TYPE.shigongzongbao;
+            shigongzong.linkmanType = _that.C_PRJ_PERSON_POST.shigongzongbao;
             var shigongzhuanyefenbao = JSON.parse(JSON.stringify(_that.applyShigongzhuanyefenbaoFrom));
-            shigongzhuanyefenbao.unitType="6";
-            shigongzhuanyefenbao.linkmanType = "104002";
+            shigongzhuanyefenbao.unitType = _that.C_PRJ_ENT_TYPE.shigongfenbao;;
+            shigongzhuanyefenbao.linkmanType = _that.C_PRJ_PERSON_POST.shigongfenbao;
             var shigonglaowufenbao = JSON.parse(JSON.stringify(_that.applyShigonglaowufenbaoFrom));
-            shigonglaowufenbao.unitType="8";
-            shigonglaowufenbao.linkmanType = "104002";
+            shigonglaowufenbao.unitType = _that.C_PRJ_ENT_TYPE.laowufenbao;
+            shigonglaowufenbao.linkmanType = _that.C_PRJ_PERSON_POST.laowufenbao;
             var applyJianli = JSON.parse(JSON.stringify(_that.applyJianliFrom));
-            applyJianli.unitType="19"
-            shigonglaowufenbao.linkmanType = "105001";
+            applyJianli.unitType = _that.C_PRJ_ENT_TYPE.gongchengjianli;
+            applyJianli.linkmanType = _that.C_PRJ_PERSON_POST.gongchengjianli;
             var a = [gongchengzong,shigongzong,shigongzhuanyefenbao,shigonglaowufenbao,applyJianli];
             _that.exSJAllUnit.aeaExProjBuildUnitInfo = JSON.stringify(a);
             _that.$refs['unitInfoShowFrom'].validate(function (valid){
@@ -376,11 +456,11 @@ var vm = new Vue({
                 data: {'dicCodeTypeCodes': code}
             },function (data) {
                 if(data.content){
-                    _that.structureSystem = data.content.STRUCTURESYSTEM;
-                    _that.projUnitLinkmanType = data.content.PROJ_UNIT_LINKMAN_TYPE;
-                    _that.jiangliLinkmanType = data.content.JIANGLI_LINKMAN_TYPE;
-                    _that.professionCertType = data.content.PROFESSION_CERT_TYPE;
-                    _that.titleCertNum = data.content.TITLE_CERT_NUM;
+                    _that.structureSystem = data.content.C_STRUCT_TYPE;
+                    _that.projUnitLinkmanType = data.content.C_PRJ_PERSON_POST;
+                    _that.jiangliLinkmanType = data.content.C_PRJ_PERSON_POST;
+                    _that.professionCertType = data.content.C_REG_LCN_TYPE;
+                    _that.titleCertNum = data.content.C_TITLE;
                 }else {
                     _that.$message({
                         message: '服务请求失败',
@@ -409,25 +489,27 @@ var vm = new Vue({
         },
         // 根据单位id获取关联联系人
         getUnitLinkManList: function(row) {
-            var _that = this;
-            _that.loadingUnitLinkMan = true;
-            request('', {
-                url: ctx + 'rest/linkman/list',
-                type: 'get',
-                data: {
-                    keyword: '',
-                    unitInfoId: row.unitInfoId ? row.unitInfoId : '',
-                    projInfoId: _that.projInfoId,
+            if(row.unitInfoId){
+                var _that = this;
+                _that.loadingUnitLinkMan = true;
+                request('', {
+                    url: ctx + 'rest/linkman/list',
+                    type: 'get',
+                    data: {
+                        keyword: '',
+                        unitInfoId: row.unitInfoId ? row.unitInfoId : '',
+                        projInfoId: _that.projInfoId,
 
-                }
-            }, function (data) {
-                _that.loadingUnitLinkMan = false;
-                if (data.success) {
-                    _that.unitLinkManOptions = data.content;
-                }
-            }, function (msg) {
-                _that.loadingUnitLinkMan = false;
-            });
+                    }
+                }, function (data) {
+                    _that.loadingUnitLinkMan = false;
+                    if (data.success) {
+                        _that.unitLinkManOptions = data.content;
+                    }
+                }, function (msg) {
+                    _that.loadingUnitLinkMan = false;
+                });
+            }
         },
         //单位名称模糊查询
         querySearchJiansheName: function(queryString, cb){
@@ -468,19 +550,19 @@ var vm = new Vue({
         selUnitInfo: function(val,flag, index){
             console.log(val,flag);
             if(flag=='shigongzongchengbao'){
-                val.personSetting = JSON.parse (JSON.stringify(val.personSetting))
+                val.personSetting = JSON.parse (JSON.stringify(val.personSetting));
                 this.applyShigongzongFrom = val;
             }else if(flag == 'gongchengzongFrom'){
-                val.personSetting = JSON.parse (JSON.stringify(val.personSetting))
+                val.personSetting = JSON.parse (JSON.stringify(val.personSetting));
                 this.gongchengzongFrom = val;
             }else if(flag == 'applyShigongzhuanyefenbaoFrom'){
-                val.personSetting = JSON.parse (JSON.stringify(val.personSetting))
+                val.personSetting = JSON.parse (JSON.stringify(val.personSetting));
                 this.applyShigongzhuanyefenbaoFrom = val;
             }else if(flag == 'applyShigonglaowufenbaoFrom'){
-                val.personSetting = JSON.parse (JSON.stringify(val.personSetting))
+                val.personSetting = JSON.parse (JSON.stringify(val.personSetting));
                 this.applyShigonglaowufenbaoFrom = val;
             }else if(flag == 'applyJianliFrom'){
-                val.personSetting = JSON.parse (JSON.stringify(val.personSetting))
+                val.personSetting = JSON.parse (JSON.stringify(val.personSetting));
                 this.applyJianliFrom = val;
             }
         },
@@ -488,8 +570,223 @@ var vm = new Vue({
         selTypeLinkman: function (typeData,manData) {
             typeData.linkmanName = manData.addressName;
             typeData.linkmanCertNo = manData.addressIdCard;
-            typeData.safeLicenceNum = manData.addressIdCard;
             typeData.linkmanInfoId = manData.addressId
+        },
+        //选择项目负责人
+        selLinkman: function(data,ind1,type){
+            debugger;
+            var _that = this;
+            if(type == 'shigongzongchenbao'){
+                if(data){
+                    _that.applyShigongzongFrom.linkmanName = data.addressName;
+                    _that.applyShigongzongFrom.linkmanId = data.addressId;
+                    _that.applyShigongzongFrom.linkmanInfoId = data.addressId;
+                    _that.applyShigongzongFrom.linkmanMail = data.addressMail;
+                    _that.applyShigongzongFrom.linkmanCertNo = data.addressIdCard;
+                    _that.applyShigongzongFrom.linkmanMobilePhone = data.addressPhone;
+                    _that.applyShigongzongFrom.registerNum = '';
+                    _that.applyShigongzongFrom.personSafeLicenceNum = '';
+                }
+            }
+            if(type == 'shigongzhuanyefenbao'){
+                if(data){
+                    _that.applyShigongzhuanyefenbaoFrom.linkmanName = data.addressName;
+                    _that.applyShigongzhuanyefenbaoFrom.linkmanId = data.addressId;
+                    _that.applyShigongzhuanyefenbaoFrom.linkmanInfoId = data.addressId;
+                    _that.applyShigongzhuanyefenbaoFrom.linkmanMail = data.addressMail;
+                    _that.applyShigongzhuanyefenbaoFrom.linkmanCertNo = data.addressIdCard;
+                    _that.applyShigongzhuanyefenbaoFrom.linkmanMobilePhone = data.addressPhone;
+                    _that.applyShigongzhuanyefenbaoFrom.registerNum = '';
+                    _that.applyShigongzhuanyefenbaoFrom.personSafeLicenceNum = '';
+                }
+            }
+            if(type == 'shigonglaowufenbao'){
+                if(data){
+                    _that.applyShigonglaowufenbaoFrom.linkmanName = data.addressName;
+                    _that.applyShigonglaowufenbaoFrom.linkmanId = data.addressId;
+                    _that.applyShigonglaowufenbaoFrom.linkmanInfoId = data.addressId;
+                    _that.applyShigonglaowufenbaoFrom.linkmanMail = data.addressMail;
+                    _that.applyShigonglaowufenbaoFrom.linkmanCertNo = data.addressIdCard;
+                    _that.applyShigonglaowufenbaoFrom.linkmanMobilePhone = data.addressPhone;
+                    _that.applyShigonglaowufenbaoFrom.registerNum = '';
+                    _that.applyShigonglaowufenbaoFrom.personSafeLicenceNum = '';
+                }
+            }
+            if(type == 'jianli'){
+                if(data){
+                    _that.applyJianliFrom.linkmanName = data.addressName;
+                    _that.applyJianliFrom.linkmanId = data.addressId;
+                    _that.applyJianliFrom.linkmanInfoId = data.addressId;
+                    _that.applyJianliFrom.linkmanMail = data.addressMail;
+                    _that.applyJianliFrom.linkmanCertNo = data.addressIdCard;
+                    _that.applyJianliFrom.linkmanMobilePhone = data.addressPhone;
+                    _that.applyJianliFrom.registerNum = '';
+                    _that.applyJianliFrom.personSafeLicenceNum = '';
+                }
+            }
+        },
+        // 删除联系人
+        delLinkman: function (data,parentData,ind) {
+            debugger;
+            var _that = this;
+            if(!data.addressId){
+                alertMsg('提示信息', '联系人ID为空', '关闭', 'warning', true);
+                return;
+            }else{
+                confirmMsg('此操作影响：','确定要删除该联系人吗？',function(){
+                    request('', {
+                        url: ctx + 'rest/linkman/delete/by/unit',
+                        type: 'post',
+                        data: {linkmanInfoId:data.addressId,unitInfoId:parentData.unitInfoId}
+                    }, function (result) {
+                        if(result.success){
+                            _that.$message({
+                                message: '联系人删除成功',
+                                type: 'success'
+                            });
+                        }else {
+                            _that.$message({
+                                message: result.message?result.message:'联系人删除失败',
+                                type: 'error'
+                            });
+                        }
+                    },function(msg){
+                        _that.$message({
+                            message: msg.message ? msg.message : '删除失败',
+                            type: 'error'
+                        });
+                    })
+                },function(){},'确定','取消','warning',true)
+            }
+        },
+        // 新增编辑联系人信息
+        addLinkman: function(data,parData){
+            var _that = this;
+            _that.addEditManModalShow = true;
+            _that.getUnitsListByProjInfoId();
+            _that.addEditManPerform = parData
+            if(!_that.projInfoId){
+                if(data){
+                    _that.addEditManModalTitle = '编辑联系人';
+                    _that.addEditManModalFlag = 'edit';
+                    if(!data.linkmanInfoId){
+                        alertMsg('提示信息', '请选择联系人！', '关闭', 'error', true);
+                        return;
+                    }else{
+                        _that.backDLinkmanInfo(data,parData);
+                    }
+                }else {
+                    _that.addEditManModalTitle = '新增联系人';
+                    _that.addEditManform = {};
+                    _that.addEditManModalFlag = 'add';
+                    if(parData.unitInfoId){
+                        _that.addEditManform.unitInfoId = parData.unitInfoId;
+                        _that.addEditManform.unitName = parData.applicant;
+                    }else {
+                        _that.addEditManform.unitInfoId = '';
+                        _that.addEditManform.unitName = parData.applicant
+                    }
+                }
+            }else {
+                alertMsg('', '请先查出项目信息！', '关闭', 'error', true);
+            }
+        },
+        // 根据项目ID查找关联的单位列表
+        getUnitsListByProjInfoId: function(){
+            var _that = this;
+            _that.loading = true;
+            if(_that.applyShigongzongFrom.unitInfoId){
+                var unitInfoId = _that.applyShigongzongFrom.unitInfoId;
+            }
+            request('', {
+                url: ctx + 'rest/unit/list/by/'+unitInfoId,
+                type: 'get',
+            }, function (result) {
+                if(result.success){
+                    _that.unitInfoIdList = result.content;
+                    _that.loading = false;
+                }
+            }, function (msg) {
+                _that.$message({
+                    message: '服务请求失败！',
+                    type: 'error'
+                });
+                _that.loading = false;
+            });
+        },
+        // 反显联系人信息
+        backDLinkmanInfo: function(data,parData){
+            var _that = this;
+            if(data.linkmanInfoId){
+                request('', {
+                    url: ctx + 'rest/linkman/one/'+data.linkmanInfoId,
+                    type: 'get'
+                }, function (result) {
+                    if(result.success){
+                        _that.addEditManform = result.content;
+                        _that.addEditManform.unitInfoId = parData.unitInfoId;
+                        _that.addEditManform.unitName = parData.applicant;
+                    }
+                }, function (msg) {
+                    alertMsg('', '服务请求失败', '关闭', 'error', true);
+                });
+            }else{
+                _that.aeaLinkmanInfoList = {};
+            }
+        },
+        // 保存联系人信息
+        saveAeaLinkmanInfo: function (linkmanType) {
+            var _that = this;
+            _that.addEditManform.linkmanType=linkmanType
+            _that.$refs['addEditManform'].validate(function (valid) {
+                if (valid) {
+                    _that.loading = true;
+                    var url, msg;
+                    if(_that.addEditManModalFlag=='edit'){
+                        url = 'rest/linkman/edit';
+                        msg = '编辑联系人信息保存成功';
+                    }else {
+                        url = 'rest/linkman/save'
+                        msg = '新增联系人信息保存成功';
+                    }
+                    request('', {
+                        url: ctx + url,
+                        type: 'post',
+                        data: _that.addEditManform
+                    }, function (result) {
+                        if(result.success){
+                            _that.$message({
+                                message: '保存成功',
+                                type: 'success'
+                            });
+                            _that.addEditManPerform.linkmanName = _that.addEditManform.linkmanName;
+                            _that.addEditManPerform.linkmanId = result.content;
+                            _that.addEditManPerform.linkmanMail = _that.addEditManform.linkmanMail;
+                            _that.addEditManPerform.linkmanCertNo = _that.addEditManform.linkmanCertNo;
+                            _that.addEditManPerform.linkmanMobilePhone = _that.addEditManform.linkmanMobilePhone;
+                            _that.addEditManModalShow = false;
+                            _that.loading = false;
+                        }
+                    }, function (msg) {
+                        _that.$message({
+                            message: msg.message?msg.message:'保存失败！',
+                            type: 'error'
+                        });
+                        _that.loading = false;
+                    });
+                } else {
+                    _that.$message({
+                        message: '请输入完整的联系人信息！',
+                        type: 'error'
+                    });
+                    return false;
+                }
+            });
+        },
+        // 重置表单
+        resetForm: function(formName) {
+            this.$refs[formName].resetFields();
+            this.selectMat = '';
         },
     }
 })
