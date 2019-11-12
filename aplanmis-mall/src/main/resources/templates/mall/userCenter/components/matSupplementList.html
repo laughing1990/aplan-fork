@@ -40,7 +40,7 @@
 <!--            </el-table-column>-->
 <!--        </el-table>-->
 
-        <table class="wt-table">
+        <table class="wt-table" v-if="materialListData.length>0">
             <thead>
             <tr>
                 <th class="al" width="20%">办件编号</th>
@@ -52,7 +52,6 @@
             </tr>
             </thead>
             <tbody id="inProgressProjBody">
-            <template v-if="materialListData.length>0">
                 <tr v-for="item in materialListData">
                     <td class="al" width="20%">{{item.iteminstCode}}</td>
                     <td class="al" width="20%">{{item.applyinstCode}}</td>
@@ -89,12 +88,23 @@
                         <a class="color3e97df" href="javascript:;" @click="fetchPageInfo(item)">进入补正</a>
                     </td>
                 </tr>
-            </template>
-            <template v-else>
-                <tr v-if="noDataTip">
+            </tbody>
+        </table>
+        <table class="wt-table" v-else>
+            <thead>
+            <tr>
+                <th class="al" width="20%">办件编号</th>
+                <th class="al" width="20%">申报流水号</th>
+                <th class="al" width="15%">项目代码 | 项目名称</th>
+                <th class="al" width="15%">阶段/事项/辅线名称</th>
+                <th class="al" width="10%">反馈意见</th>
+                <th class="al" width="15%">操作</th>
+            </tr>
+            </thead>
+            <tbody id="inProgressProjBody">
+                <tr>
                     <td colspan="5" style="text-align: center;border-bottom:none; color: #909399;">{{noDataTip}}</td>
                 </tr>
-            </template>
             </tbody>
         </table>
 

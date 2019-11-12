@@ -254,6 +254,16 @@ public class AeaSeriesService {
         isBranchHandle.put(itemBasicByItemVerId.getItemCategoryMark(), false);
         seriesApplyinst.setIsBranchHandle(isBranchHandle);
 
+        //把所有情形丢到变量里，用于流程启动情形
+        if (stateIds != null && stateIds.length > 0) {
+            Map<String, Boolean> stateinsts = new HashMap();
+            for (String stateId : stateIds) {
+                stateinsts.put(stateId, true);
+            }
+            if (stateinsts.size() > 0)
+                seriesApplyinst.setStateinsts(stateinsts);
+        }
+
         //3、情形实例
         aeaHiItemStateinstService.batchInsertAeaHiItemStateinst(seriesApplyinstId, aeaHiSeriesinst.getSeriesinstId(),null, stateIds, SecurityContext.getCurrentUserName());
 

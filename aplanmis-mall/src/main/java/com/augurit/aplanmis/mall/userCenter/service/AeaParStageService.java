@@ -337,6 +337,16 @@ public class AeaParStageService {
             aeaHiApplyinst.setApprovalOrgCode(approveOrgMap);
             aeaHiApplyinst.setIteminsts(iteminstMap);
 
+            //把所有情形丢到变量里，用于流程启动情形
+            if (stateIds != null && stateIds.length > 0) {
+                Map<String, Boolean> stateinsts = new HashMap();
+                for (String stateId : stateIds) {
+                    stateinsts.put(stateId, true);
+                }
+                if (stateinsts.size() > 0)
+                    aeaHiApplyinst.setStateinsts(stateinsts);
+            }
+
             //6、启动主流程
             BpmProcessInstance bpmProcessInstance = aeaBpmProcessService.startFlow(appId, appinstId, aeaHiApplyinst);
 
