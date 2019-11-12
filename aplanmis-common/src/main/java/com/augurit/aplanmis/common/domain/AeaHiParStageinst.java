@@ -45,8 +45,8 @@ public class AeaHiParStageinst implements Serializable {
     private String stageName; // (阶段名称)
     private Integer sortNo;
     @Size(max = 22)
-    private Double dueNum; // (承诺时限数字)
-    private String dueUnit; // (承诺时限单位)
+    private Double dueNum; // (承诺办结时限数字)
+    private String dueUnit; // (承诺办结时限单位)
     private String iconCss; // (图标CSS样式)
     private String bgCss; // (背景CSS样式)
     /**

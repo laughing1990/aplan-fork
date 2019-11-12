@@ -28,7 +28,7 @@ public class SeriesApplyResultVo {
     //事项信息
     @ApiModelProperty(value = "事项名称")
     private String itemName;
-    @ApiModelProperty(value = "承办单位")
+    @ApiModelProperty(value = "实施主体")
     private String approveOrgName;
     @ApiModelProperty(value = "事项实施编码")
     private String iteminstCode;

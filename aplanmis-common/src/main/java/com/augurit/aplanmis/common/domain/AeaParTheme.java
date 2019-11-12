@@ -25,8 +25,8 @@ public class AeaParTheme implements Serializable {
     private String themeCode;//主题编码
     @ApiModelProperty("主题类型")
     private String themeType; // 主题类型
-    private Long dueNum; // (承诺时限数字)
-    private String dueUnit; // (承诺时限单位)
+    private Long dueNum; // (承诺办结时限数字)
+    private String dueUnit; // (承诺办结时限单位)
     private String complainPhone; // (投诉电话)
     private String hotlinePhone; // (咨询电话)
     private String handleAddress; // (办理地点)

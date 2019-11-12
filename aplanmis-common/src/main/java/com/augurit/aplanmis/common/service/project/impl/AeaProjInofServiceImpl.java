@@ -730,19 +730,10 @@ public class AeaProjInofServiceImpl implements AeaProjInfoService {
 
     @Override
     public AeaProjInfo addChildProjInfo(AeaProjInfo aeaProjInfo) throws Exception {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String parentProjId = aeaProjInfo.getParentProjId();
         if (StringUtils.isNotBlank(parentProjId) && StringUtils.isNotBlank(aeaProjInfo.getProjName())) {
-            List<AeaProjInfo> checkNameProj = aeaProjInfoMapper.listAeaProjInfo(aeaProjInfo);
-            //查询是否有重名的项目工程
-            if (checkNameProj != null && checkNameProj.size() > 0) {
-                return null;
-            }
-
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             AeaProjInfo parentProj = aeaProjInfoMapper.getAeaProjInfoById(parentProjId);
-            if (null == parentProj) {
-                return null;
-            }
 
             String rootOrgId = SecurityContext.getCurrentOrgId();
             String childGcbm = gcbmBscRuleCodeStrategy.generateCode(parentProj.getLocalCode(), parentProj.getLocalCode(), "工程编码", rootOrgId);

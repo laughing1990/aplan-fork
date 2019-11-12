@@ -209,7 +209,7 @@
                                                             data-align="center" data-colspan="1" data-width="50">是否分情形</th>
                                                         <th data-field="isOptionItem" data-formatter="isOptionItemFormatter"
                                                             data-align="center" data-colspan="1" data-width="50">是否设置</br>可选事项</th>
-                                                        <th data-field="dueNum" data-align="center" data-colspan="1" data-width="50">承诺时限</th>
+                                                        <th data-field="dueNum" data-align="center" data-colspan="1" data-width="50">承诺办结时限</th>
                                                         <th data-field="dueUnit" data-formatter="dueUnitFormatter"
                                                             data-align="center" data-colspan="1" data-width="50">时限单位</th>
                                                         <th data-field="" data-formatter="operatorFormatter" data-align="center" data-colspan="1" data-width="130">操作</th>
@@ -277,7 +277,7 @@
                                                             data-align="center" data-colspan="1" data-width="50">是否分情形</th>
                                                         <th data-field="isOptionItem" data-formatter="isOptionItemFormatter"
                                                             data-align="center" data-colspan="1" data-width="50">是否设置<br/>可选事项</th>
-                                                        <th data-field="dueNum" data-align="center" data-colspan="1" data-width="50">承诺时限</th>
+                                                        <th data-field="dueNum" data-align="center" data-colspan="1" data-width="50">承诺办结时限</th>
                                                         <th data-field="dueUnit"  data-formatter="dueUnitFormatter"
                                                             data-align="center" data-colspan="1" data-width="50">时限单位</th>
                                                         <th data-field="" data-formatter="operatorFormatter" data-align="center" data-colspan="1" data-width="130">操作</th>
