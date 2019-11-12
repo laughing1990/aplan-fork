@@ -6,6 +6,7 @@ import com.augurit.aplanmis.common.dto.ProjStateDto;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.List;
 import java.util.Set;
@@ -15,6 +16,7 @@ import java.util.Set;
  */
 @Data
 @ApiModel("  生命周期图VO")
+@EqualsAndHashCode(callSuper = true)
 public class LifeCycleInfoVo extends ProjStateDto{
 
 

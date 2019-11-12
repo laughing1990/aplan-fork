@@ -9,6 +9,7 @@ import com.augurit.aplanmis.common.vo.SaveAeaImProjPurchaseVo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.List;
 
@@ -16,6 +17,7 @@ import java.util.List;
  * @author tiantian
  * @date 2019/6/21
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 @ApiModel
 public class ShowProjPurchaseVo extends AeaImProjPurchase {
