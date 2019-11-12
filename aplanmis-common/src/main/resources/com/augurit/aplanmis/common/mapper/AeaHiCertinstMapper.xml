@@ -166,6 +166,40 @@
                 #{caInfo}, #{certOwner}, #{issueOrgId}, #{termNum}, #{termUnit}, #{flxl}, #{applyinstId},
                 #{linkmanInfoId}, #{qualLevelId},#{rootOrgId},#{memo},#{managementScope})
     </insert>
+
+    <insert id="batchInsertAeaHiCertinst" parameterType="AeaHiCertinst">
+        insert into AEA_HI_CERTINST (CERTINST_ID, CERT_ID, UNIT_INFO_ID, PROJ_INFO_ID, ATT_LINK_ID, CREATER,
+        CREATE_TIME, MODIFIER, MODIFY_TIME, CERTINST_CODE, CERTINST_NAME, ISSUE_DATE,
+        TERM_START, TERM_END, CA_INFO, CERT_OWNER, ISSUE_ORG_ID, TERM_NUM, TERM_UNIT, FLXL,
+        APPLYINST_ID, LINKMAN_INFO_ID, QUAL_LEVEL_ID,ROOT_ORG_ID,MEMO,MANAGEMENT_SCOPE)
+        <if test="_databaseId == 'oracle'">
+            <foreach collection="certinsts" item="item" index="index" separator="union all">
+                (
+                SELECT
+                #{item.certinstId}, #{item.certId}, #{item.unitInfoId}, #{item.projInfoId}, #{item.attLinkId},
+                #{item.creater}, #{item.createTime},
+                #{item.modifier}, #{item.modifyTime}, #{item.certinstCode}, #{item.certinstName}, #{item.issueDate},
+                #{item.termStart}, #{item.termEnd},
+                #{item.caInfo}, #{item.certOwner}, #{item.issueOrgId}, #{item.termNum}, #{item.termUnit}, #{item.flxl},
+                #{item.applyinstId},
+                #{item.linkmanInfoId}, #{item.qualLevelId},#{item.rootOrgId},#{item.memo},#{item.managementScope}
+                FROM dual
+                )
+            </foreach>
+        </if>
+        <if test="_databaseId == 'mysql'">
+            values
+            <foreach collection="certinsts" item="item" index="index" separator=",">
+                (#{item.certinstId}, #{item.certId}, #{item.unitInfoId}, #{item.projInfoId}, #{item.attLinkId},
+                #{item.creater}, #{item.createTime},
+                #{item.modifier}, #{item.modifyTime}, #{item.certinstCode}, #{item.certinstName}, #{item.issueDate},
+                #{item.termStart}, #{item.termEnd},
+                #{item.caInfo}, #{item.certOwner}, #{item.issueOrgId}, #{item.termNum}, #{item.termUnit}, #{item.flxl},
+                #{item.applyinstId},
+                #{item.linkmanInfoId}, #{item.qualLevelId},#{item.rootOrgId},#{item.memo},#{item.managementScope})
+            </foreach>
+        </if>
+    </insert>
     <!--6 修改实体对象 -->
     <update id="updateAeaHiCertinst" parameterType="AeaHiCertinst">
         update AEA_HI_CERTINST

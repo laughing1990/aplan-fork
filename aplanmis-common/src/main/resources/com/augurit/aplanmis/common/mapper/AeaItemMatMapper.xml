@@ -150,7 +150,7 @@
 
     <select id="getMatListByItemStateIds" resultType="AeaItemMat">
         SELECT
-        <include refid="allColumns_aim"/>, cert.cert_name certName, form.form_name formName
+        <include refid="allColumns_aim"/>, aii.item_ver_id itemVerId, cert.cert_name certName, form.form_name formName
         FROM
         aea_item_mat aim
         join aea_item_inout aii on aim.MAT_ID = aii.MAT_ID
@@ -176,11 +176,15 @@
 
     <select id="getMatListByStageStateIds" resultType="AeaItemMat">
         SELECT
-        <include refid="allColumns_aim"/>,api.IN_ID parInId,api.PAR_STATE_ID parStateId, cert.cert_name certName,
+        <include refid="allColumns_aim"/>,apsi.item_ver_id itemVerId, api.IN_ID parInId,api.PAR_STATE_ID parStateId,
+        cert.cert_name certName,
         form.form_name formName
         FROM
         aea_item_mat aim
         join aea_par_in api on aim.MAT_ID = api.MAT_ID
+        join aea_par_stage aps on aps.STAGE_ID = api.STAGE_ID
+        join aea_par_stage_item apsi on apsi.stage_id=aps.stage_id
+        join aea_par_stage_item_in apsii on apsii.stage_item_id=apsi.stage_item_id and apsii.in_id=api.in_id
         left join aea_cert cert on cert.cert_id=aim.cert_id
         left join act_sto_form form on form.form_id=aim.sto_form_id
         WHERE aim.IS_DELETED = '0'
@@ -268,7 +272,7 @@
 
     <select id="getMatListByStageId" resultType="AeaItemMat">
         SELECT
-        <include refid="allColumns_aim"/>, cert.cert_name certName, form.form_name formName
+        <include refid="allColumns_aim"/>, aim.itemVerId, cert.cert_name certName, form.form_name formName
         FROM
         (
         SELECT
@@ -276,11 +280,14 @@
         api.IS_STATE_IN,
         api.PAR_STATE_ID,
         api.SORT_NO AS SORT_NO_,
+        apsi.item_ver_id itemVerId,
         mat.*
         FROM
         aea_par_in api
         join aea_item_mat mat on api.MAT_ID = mat.MAT_ID
         join aea_par_stage aps on aps.STAGE_ID = api.STAGE_ID
+        join aea_par_stage_item apsi on apsi.stage_id=aps.stage_id
+        join aea_par_stage_item_in apsii on apsii.stage_item_id=apsi.stage_item_id and apsii.in_id=api.in_id
         WHERE api.IS_DELETED = '0'
         AND mat.IS_DELETED = '0'
         AND aps.STAGE_ID = #{stageId}
@@ -314,7 +321,7 @@
 
     <select id="listMatListByStageId" resultType="AeaItemMat">
         SELECT
-        <include refid="allColumns_aim"/>, cert.cert_name certName, form.form_name formName
+        <include refid="allColumns_aim"/>, aim.itemVerId, cert.cert_name certName, form.form_name formName
         FROM
         (
         SELECT
@@ -322,6 +329,7 @@
         api.IS_STATE_IN,
         api.PAR_STATE_ID,
         api.SORT_NO AS SORT_NO_,
+        apsi.item_ver_id itemVerId,
         mat.*
         FROM
         aea_par_in api
@@ -346,7 +354,8 @@
 
     <select id="getMatListByItemVerIds" resultType="AeaItemMat">
         SELECT
-        <include refid="allColumns_aim"/>,aim.INOUT_ID inId,aim.ITEM_STATE_ID itemStateId, cert.cert_name certName,
+        <include refid="allColumns_aim"/>,aim.INOUT_ID inId,aim.ITEM_STATE_ID itemStateId, aim.itemVerId, cert.cert_name
+        certName,
         form.form_name formName
         FROM
         (
@@ -356,6 +365,7 @@
         aii.ITEM_STATE_ID,
         aii.INOUT_ID,
         aii.SORT_NO AS SORT_NO_,
+        aib.item_ver_id itemVerId,
         mat.*
         FROM
         aea_item_mat mat,

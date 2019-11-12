@@ -51,7 +51,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -308,7 +307,7 @@ public class RestApplyMatAndAttachmentController {
 
     @PostMapping("/matinst/batch/save")
     @ApiOperation("申报页面根据材料定义生成材料实例id")
-    public ContentResultForm<List<Mat2MatInstVo>> saveMatinsts(@Valid @RequestBody SaveMatinstVo saveMatinstVo) {
+    public ContentResultForm<List<Mat2MatInstVo>> saveMatinsts(@RequestBody SaveMatinstVo saveMatinstVo) {
         List<Mat2MatInstVo> mat2MatInstVos = restApplyMatService.saveMatinsts(saveMatinstVo);
         return new ContentResultForm<>(true, mat2MatInstVos, "Batch save matinst success");
     }
