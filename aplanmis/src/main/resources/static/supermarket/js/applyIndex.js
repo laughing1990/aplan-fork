@@ -715,10 +715,11 @@ var vm = new Vue({
       this.purchaseProj.serviceItemId = serviceItem.serviceItemId;
       if(serviceItem.aeaImQualVos&&serviceItem.aeaImQualVos.length>0){
         this.qualArry = serviceItem.aeaImQualVos;
+        this.qualLevelId = serviceItem.aeaImQualVos[0].qualLevelId;
         if(serviceItem.aeaImQualVos[0].aeaImQualLevels){
           this.needServiceList2 = serviceItem.aeaImQualVos[0].aeaImQualLevels;
         }else {
-          this.qualLevelId = serviceItem.aeaImQualVos[0].qualLevelId
+
         }
         if(serviceItem.aeaImQualVos[0].aeaImServiceMajors){
           this.serviceTreeData = serviceItem.aeaImQualVos[0].aeaImServiceMajors;

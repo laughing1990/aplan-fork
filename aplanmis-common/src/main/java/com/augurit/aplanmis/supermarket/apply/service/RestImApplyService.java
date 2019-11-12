@@ -494,12 +494,12 @@ public class RestImApplyService {
 
         aeaImProjPurchase.setUnitRequireId(aeaImUnitRequire.getUnitRequireId());
 
-        //保存资质专业要求
+        //保存资质专业要求---fixme 页面有问题，先注释，qualLevelId没有传过来
         List<AeaImMajorQual> aeaImMajorQuals = data.getAeaImMajorQuals();
         if (aeaImMajorQuals != null && "1".equals(aeaImUnitRequire.getIsQualRequire())) {
             for (AeaImMajorQual aeaImMajorQual : aeaImMajorQuals) {
                 aeaImMajorQual.buildImMajor(aeaImUnitRequire.getUnitRequireId(), data.getCreater());
-                aeaImMajorQualMapper.insertAeaImMajorQual(aeaImMajorQual);
+                //aeaImMajorQualMapper.insertAeaImMajorQual(aeaImMajorQual);
             }
         }
         //保存采购项目
