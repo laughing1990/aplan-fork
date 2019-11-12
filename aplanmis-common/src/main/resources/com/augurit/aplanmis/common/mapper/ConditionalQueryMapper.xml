@@ -55,10 +55,10 @@
                 <![CDATA[ AND to_char(aht_123.END_TIME_ , 'yyyy-mm-dd')<=  #{processEndTime}   ]]>
             </if>
             <if test="concludedStartTime != null and concludedStartTime != '' ">
-                <![CDATA[ AND to_char(hist.TRIGGER_TIME , 'yyyy-mm-dd')>=  #{concludedStartTime}   ]]>
+                <![CDATA[ AND to_char(ahap_123.END_TIME , 'yyyy-mm-dd')>=  #{concludedStartTime}   ]]>
             </if>
             <if test="concludedEndTime != null and concludedEndTime != '' ">
-                <![CDATA[ AND to_char(hist.TRIGGER_TIME , 'yyyy-mm-dd')<=  #{concludedEndTime}   ]]>
+                <![CDATA[ AND to_char(ahap_123.END_TIME , 'yyyy-mm-dd')<=  #{concludedEndTime}   ]]>
             </if>
 
         </if>
@@ -88,10 +88,10 @@
                 <![CDATA[ AND DATE_FORMAT(aht_123.END_TIME_ , '%Y-%m-%d')<=  #{processEndTime}   ]]>
             </if>
             <if test="concludedStartTime != null and concludedStartTime != '' ">
-                <![CDATA[ AND DATE_FORMAT(hist.TRIGGER_TIME , '%Y-%m-%d')>=  #{concludedStartTime}   ]]>
+                <![CDATA[ AND DATE_FORMAT(ahap_123.END_TIME , '%Y-%m-%d')>=  #{concludedStartTime}   ]]>
             </if>
             <if test="concludedEndTime != null and concludedEndTime != '' ">
-                <![CDATA[ AND DATE_FORMAT(hist.TRIGGER_TIME , '%Y-%m-%d')<=  #{concludedEndTime}   ]]>
+                <![CDATA[ AND DATE_FORMAT(ahap_123.END_TIME , '%Y-%m-%d')<=  #{concludedEndTime}   ]]>
             </if>
         </if>
 
@@ -1451,7 +1451,8 @@
         temp1.GCBM AS gcbm,
         ahp_123.ID_ AS procInstId,
         aht_123.ID_ AS taskId,
-        hist.TRIGGER_TIME AS concludedTime,
+--         hist.TRIGGER_TIME AS concludedTime,
+        ahap_123.END_TIME AS concludedTime,
         ahap_123.CREATE_TIME AS applyTime,
         ahap_123.ACCEPT_TIME AS acceptTime,
         theme.THEME_NAME AS themeName,
@@ -1474,13 +1475,13 @@
         LEFT JOIN AEA_PAR_THEME theme ON theme.THEME_ID = ver.THEME_ID
         LEFT JOIN act_hi_taskinst aht_123 ON aht_123.PROC_INST_ID_ = ahp_123.ID_
         LEFT JOIN act_sto_timerule_inst ti ON ti.PROC_INST_ID = AHP_123.PROC_INST_ID_
-        LEFT JOIN (
-        SELECT
-        ahist.APPLYINST_ID,MAX(TRIGGER_TIME) AS TRIGGER_TIME
-        FROM aea_log_apply_state_hist ahist
-        WHERE ahist.NEW_STATE = '6'
-        GROUP BY APPLYINST_ID
-        ) hist ON hist.APPLYINST_ID = ahap_123.APPLYINST_ID
+--         LEFT JOIN (
+--         SELECT
+--         ahist.APPLYINST_ID,MAX(TRIGGER_TIME) AS TRIGGER_TIME
+--         FROM aea_log_apply_state_hist ahist
+--         WHERE ahist.NEW_STATE = '6'
+--         GROUP BY APPLYINST_ID
+--         ) hist ON hist.APPLYINST_ID = ahap_123.APPLYINST_ID
         <where>
             ahap_123.IS_SERIES_APPROVE = '0'
             AND ahap_123.APPLYINST_STATE = '6'
@@ -1507,7 +1508,8 @@
         temp1.GCBM AS gcbm,
         ahp_123.ID_ AS procInstId,
         aht_123.ID_ AS taskId,
-        hist.TRIGGER_TIME AS concludedTime,
+--         hist.TRIGGER_TIME AS concludedTime,
+        ahap_123.END_TIME AS concludedTime,
         ahap_123.CREATE_TIME AS applyTime,
         ahap_123.ACCEPT_TIME AS acceptTime,
         theme.THEME_NAME AS themeName,
@@ -1533,13 +1535,13 @@
         LEFT JOIN AEA_PAR_THEME theme ON theme.THEME_ID = ver.THEME_ID
         LEFT JOIN act_hi_taskinst aht_123 ON aht_123.PROC_INST_ID_ = ahp_123.ID_
         LEFT JOIN act_sto_timerule_inst ti ON ti.PROC_INST_ID = AHP_123.PROC_INST_ID_
-        LEFT JOIN (
-        SELECT
-        ahist.APPLYINST_ID,MAX(TRIGGER_TIME) AS TRIGGER_TIME
-        FROM aea_log_apply_state_hist ahist
-        WHERE ahist.NEW_STATE = '6'
-        GROUP BY APPLYINST_ID
-        ) hist ON hist.APPLYINST_ID = ahap_123.APPLYINST_ID
+--         LEFT JOIN (
+--         SELECT
+--         ahist.APPLYINST_ID,MAX(TRIGGER_TIME) AS TRIGGER_TIME
+--         FROM aea_log_apply_state_hist ahist
+--         WHERE ahist.NEW_STATE = '6'
+--         GROUP BY APPLYINST_ID
+--         ) hist ON hist.APPLYINST_ID = ahap_123.APPLYINST_ID
         <where>
             ahap_123.IS_SERIES_APPROVE = '0'
             AND ahap_123.APPLYINST_STATE = '6'
@@ -1566,7 +1568,8 @@
         temp1.GCBM AS gcbm,
         ahp_123.ID_ AS procInstId,
         aht_123.ID_ AS taskId,
-        hist.TRIGGER_TIME AS concludedTime,
+--         hist.TRIGGER_TIME AS concludedTime,
+        ahap_123.END_TIME AS concludedTime,
         ahap_123.CREATE_TIME AS applyTime,
         ahap_123.ACCEPT_TIME AS acceptTime,
         NULL AS themeName,
@@ -1592,13 +1595,13 @@
         LEFT JOIN act_sto_timerule_inst ti ON ti.PROC_INST_ID = ahi_123.PROCINST_ID
         LEFT JOIN AEA_ITEM_BASIC ai_123 ON ahi_123.ITEM_ID = ai_123.ITEM_ID AND ahi_123.ITEM_VER_ID = ai_123.ITEM_VER_ID
         LEFT JOIN act_hi_taskinst aht_123 ON aht_123.PROC_INST_ID_ = ahp_123.ID_
-        LEFT JOIN (
-        SELECT
-        ahist.APPLYINST_ID,MAX(TRIGGER_TIME) AS TRIGGER_TIME
-        FROM aea_log_apply_state_hist ahist
-        WHERE ahist.NEW_STATE = '6'
-        GROUP BY APPLYINST_ID
-        ) hist ON hist.APPLYINST_ID = ahap_123.APPLYINST_ID
+--         LEFT JOIN (
+--         SELECT
+--         ahist.APPLYINST_ID,MAX(TRIGGER_TIME) AS TRIGGER_TIME
+--         FROM aea_log_apply_state_hist ahist
+--         WHERE ahist.NEW_STATE = '6'
+--         GROUP BY APPLYINST_ID
+--         ) hist ON hist.APPLYINST_ID = ahap_123.APPLYINST_ID
         <where>
             ahap_123.IS_SERIES_APPROVE = '1'
             AND ahap_123.APPLYINST_STATE = '6'
@@ -1623,7 +1626,8 @@
         temp1.GCBM AS gcbm,
         ahp_123.ID_ AS procInstId,
         aht_123.ID_ AS taskId,
-        hist.TRIGGER_TIME AS concludedTime,
+--         hist.TRIGGER_TIME AS concludedTime,
+        ahap_123.END_TIME AS concludedTime,
         ahap_123.CREATE_TIME AS applyTime,
         ahap_123.ACCEPT_TIME AS acceptTime,
         NULL AS themeName,
@@ -1645,13 +1649,13 @@
         LEFT JOIN act_sto_timerule_inst ti ON ti.PROC_INST_ID = ahi_123.PROCINST_ID
         LEFT JOIN AEA_ITEM_BASIC ai_123 ON ahi_123.ITEM_ID = ai_123.ITEM_ID AND ahi_123.ITEM_VER_ID = ai_123.ITEM_VER_ID
         LEFT JOIN act_hi_taskinst aht_123 ON aht_123.PROC_INST_ID_ = ahp_123.ID_
-        LEFT JOIN (
-        SELECT
-        ahist.APPLYINST_ID,MAX(TRIGGER_TIME) AS TRIGGER_TIME
-        FROM aea_log_apply_state_hist ahist
-        WHERE ahist.NEW_STATE = '6'
-        GROUP BY APPLYINST_ID
-        ) hist ON hist.APPLYINST_ID = ahap_123.APPLYINST_ID
+--         LEFT JOIN (
+--         SELECT
+--         ahist.APPLYINST_ID,MAX(TRIGGER_TIME) AS TRIGGER_TIME
+--         FROM aea_log_apply_state_hist ahist
+--         WHERE ahist.NEW_STATE = '6'
+--         GROUP BY APPLYINST_ID
+--         ) hist ON hist.APPLYINST_ID = ahap_123.APPLYINST_ID
         <where>
             ahap_123.IS_SERIES_APPROVE = '1'
             AND ahap_123.APPLYINST_STATE = '6'

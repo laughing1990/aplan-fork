@@ -944,4 +944,11 @@
         </sql>
     </changeSet>
 
+
+    <changeSet id="201911121459" author="liaojj" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_unit_info`
+            CHANGE COLUMN `isGD` `IS_GD` char(1)
+        </sql>
+    </changeSet>
 </databaseChangeLog>

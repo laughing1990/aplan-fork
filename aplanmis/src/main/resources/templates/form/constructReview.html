@@ -46,7 +46,7 @@
           </div>
           <div class="clearfix">
             <el-form-item class="input-inline" required label="投资额（万元）" prop="aeaExProjDrawing.inverstmentMoeny">
-              <el-input v-model="formData.aeaExProjDrawing.inverstmentMoeny" placeholder="请输入投资额"></el-input>
+              <el-input v-model.number="formData.aeaExProjDrawing.inverstmentMoeny" placeholder="请输入投资额"></el-input>
             </el-form-item>
             <el-form-item class="input-inline" label="图审面积（平方米）" prop="aeaExProjDrawing.approveDrawingArea">
               <el-input v-model="formData.aeaExProjDrawing.approveDrawingArea" placeholder="请输入图审面积"></el-input>
@@ -221,15 +221,15 @@
             </el-form-item>
           </div>
           <div class="clearfix">
-            <el-form-item class="input-inline" prop="drawings[0].projectLeader" label="图审机构项目负责人">
-              <el-select v-model="formData.drawings[0].projectLeader" filterable placeholder="请选择图审机构项目负责人" @click.native="getLinkMan(formData.drawings[0])" style="width:76%;">
+            <el-form-item class="input-inline" prop="drawings[0].projectLeader" label="勘察单位项目负责人">
+              <el-select v-model="formData.drawings[0].projectLeader" filterable placeholder="请选择勘察单位项目负责人" @click.native="getLinkMan(formData.drawings[0])" style="width:76%;">
                 <el-option :label="item.addressName" :value="item.addressId" v-for="item in person" @click.native="selTypeLinkman(formData.drawings[0],item)"></el-option>
               </el-select>
               <el-button icon="el-icon-circle-plus-outline" type="primary" class="item-left-btn" @click="addPerson(formData.drawings[0]);addEditManModalFlag='add'" title="新增" style="margin-left:5px;"></el-button>
               <el-button icon="el-icon-edit-outline" type="primary" class="item-left-btn" @click="addEditManModalFlag='add';edit(formData.drawings[0],'')" title="编辑" style="margin-left:5px;"></el-button>
             </el-form-item>
-            <el-form-item class="input-inline" prop="drawings[0].projectLeaderCertNum" label='图审机构项目负责人身份证号码'>
-              <el-input v-model="formData.drawings[0].projectLeaderCertNum" placeholder="请输入图审机构项目负责人身份证号码" disabled></el-input>
+            <el-form-item class="input-inline" prop="drawings[0].projectLeaderCertNum" label='勘察单位项目负责人身份证号码'>
+              <el-input v-model="formData.drawings[0].projectLeaderCertNum" placeholder="请输入勘察单位项目负责人身份证号码" disabled></el-input>
             </el-form-item>
           </div>
           <div class="clearfix">
@@ -286,15 +286,15 @@
             </el-form-item>
           </div>
           <div class="clearfix">
-            <el-form-item class="input-inline" prop="drawings[1].projectLeader" label="图审机构项目负责人">
-              <el-select v-model="formData.drawings[1].projectLeader" filterable placeholder="请选择图审机构项目负责人" @click.native="getPerson(formData.drawings[1])" style="width:76%">
+            <el-form-item class="input-inline" prop="drawings[1].projectLeader" label="设计单位项目负责人">
+              <el-select v-model="formData.drawings[1].projectLeader" filterable placeholder="请选择设计单位项目负责人" @click.native="getPerson(formData.drawings[1])" style="width:76%">
                 <el-option :label="item.addressName" :value="item.addressId" v-for="item in person" @click.native="selTypeLinkman(formData.drawings[1],item)"></el-option>
               </el-select>
               <el-button icon="el-icon-circle-plus-outline" type="primary" class="item-left-btn" @click="addPerson(formData.drawings[1]);addEditManModalFlag='add'" title="新增" style="margin-left:5px;"></el-button>
               <el-button icon="el-icon-edit-outline" type="primary" class="item-left-btn" @click="addEditManModalFlag='add';edit(formData.drawings[1],'')" title="编辑" style="margin-left:5px;"></el-button>
             </el-form-item>
-            <el-form-item class="input-inline" prop="drawings[1].projectLeaderCertNum" label='图审机构项目负责人身份证号码'>
-              <el-input v-model="formData.drawings[1].projectLeaderCertNum" placeholder="请输入图审机构项目负责人身份证号码" disabled></el-input>
+            <el-form-item class="input-inline" prop="drawings[1].projectLeaderCertNum" label='设计单位项目负责人身份证号码'>
+              <el-input v-model="formData.drawings[1].projectLeaderCertNum" placeholder="请输入设计单位项目负责人身份证号码" disabled></el-input>
             </el-form-item>
           </div>
           <div class="clearfix">

@@ -48,7 +48,6 @@ public class RestExSJUnitFormController {
         if(projInfoId!=null){
             map = restExSJUnitFormService.initExSJUnit(projInfoId);
         }
-        ContentResultForm<Map<String, Object>> query_success = new ContentResultForm<>(true, map, "Query success");
         return new ContentResultForm<>(true, map, "Query success");
     }
 

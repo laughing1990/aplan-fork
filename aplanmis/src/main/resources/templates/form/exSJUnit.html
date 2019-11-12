@@ -7,18 +7,6 @@
 <body class="gray-body">
 <div id="approve" v-cloak v-loading="loading">
     <div class="content">
-        <div class="vertical-tab">
-            <ul>
-                <!--<li class="vertical-label"-->
-                <!--v-show="index<showVerLen"-->
-                <!--v-for="(item, index) in verticalTabData"-->
-                <!--:class="activeTab==index?'active':item.target"-->
-                <!--data-name="item.target"-->
-                <!--:key="index">-->
-                <!--<a :href="'#'+item.target">{{item.label}}</a>-->
-                <!--</li>-->
-            </ul>
-        </div>
         <el-collapse v-model="activeNames">
             <!--  基本信息  start  -->
             <el-collapse-item class="clearfix" name="1" id="baseInfo">
@@ -85,10 +73,25 @@
                     </el-col>
                     <input type="hidden" name="linkmanInfoId" :value="gongchengzongFrom.linkmanInfoId">
                     <el-col :span="12">
-                        <el-form-item label="工程总承包项目经理" prop="linkmanMobilePhone">
-                            <el-input v-model="gongchengzongFrom.linkmanName" placeholder="请输入工程总承包项目经理">
-                            </el-input>
-                        </el-form-item>
+                            <el-form-item label="工程总承包项目经理" no-data-text="暂无数据" prop="linkmanName" class="sel-btn">
+                                <input type="hidden" name="linkmanInfoId" :value="gongchengzongFrom.linkmanInfoId">
+                                <el-select v-model="gongchengzongFrom.linkmanName" :loading="loadingUnitLinkMan"
+                                           @click.native="getUnitLinkManList(gongchengzongFrom)" required placeholder="--请选择--">
+                                    <el-option class="select-option-ul"
+                                               v-for="(item2, index2) in unitLinkManOptions"
+                                               :key="index2"
+                                               :label="item2.addressName"
+                                               @click.native="selLinkman(item2,index,'gongchengzongFrom')"
+                                               :value="item2.addressId">
+                                        <span class="fl">{{ item2.addressName }}</span>
+                                        <span class="fr el-icon-delete" @click.stop="delLinkman(item2,gongchengzongFrom,index)"></span>
+                                    </el-option>
+                                </el-select>
+                                <el-button type="primary" class="add-link-man" icon="el-icon-circle-plus-outline"
+                                           @click="addLinkman('',gongchengzongFrom)" title="新增"></el-button>
+                                <el-button icon="el-icon-edit-outline" type="primary" class="item-right-btn"
+                                           @click="addLinkman(gongchengzongFrom,gongchengzongFrom)" title="编辑"></el-button>
+                            </el-form-item>
                     </el-col>
                     <el-col :span="12">
                         <el-form-item label="工程总承包项目经理联系电话" prop="linkmanMobilePhone">
@@ -153,7 +156,6 @@
                             <!--<el-input v-model="applyShigongzongFrom.linkmanName" placeholder="请输入项目负责人">-->
                             <!--</el-input>-->
                         <!--</el-form-item>-->
-
                         <el-form-item label="项目负责人（项目经理）" no-data-text="暂无数据" prop="linkmanName" class="sel-btn">
                             <input type="hidden" name="linkmanInfoId" :value="applyShigongzongFrom.linkmanInfoId">
                             <el-select v-model="applyShigongzongFrom.linkmanName" :loading="loadingUnitLinkMan"
@@ -173,7 +175,6 @@
                             <el-button icon="el-icon-edit-outline" type="primary" class="item-right-btn"
                                        @click="addLinkman(applyShigongzongFrom,applyShigongzongFrom)" title="编辑"></el-button>
                         </el-form-item>
-
                     </el-col>
                     <el-col :span="12">
                         <el-form-item label="注册编号" prop="registerNum">
@@ -553,17 +554,22 @@
                         </el-form-item>
                     </el-col>
                     <el-col :span="12">
-                        <el-form-item label="项目主体类型" prop="unitType">
-                            <el-input v-model="applyJianliFrom.unitType" placeholder="请输入项目主体类型">
-                            </el-input>
+                        <el-form-item label="项目主体类型" prop="unitType" class="input-ex">
+                            <!--<el-input v-model="applyJianliFrom.unitType" placeholder="请输入项目主体类型">-->
+                            <!--</el-input>-->
+                            <el-select disabled v-model="applyJianliFrom.unitType" filterable placeholder="项目主体类型" @click.native="getProjThemeIdList"
+                                       :loading="loadingThemeIdList">
+                                <el-option v-for="item in prjEntType" :key="item.itemId" :label="item.itemName" :value="item.itemCode">
+                                </el-option>
+                            </el-select>
                         </el-form-item>
                     </el-col>
                     <el-col :span="12">
-                        <el-form-item class="input-ex" prop="isGD">
+                        <el-form-item class="input-ex" prop="isGd">
                             <template slot="label">
                                 是否省内企业
                             </template>
-                            <el-radio-group v-model="applyJianliFrom.isGD">
+                            <el-radio-group v-model="applyJianliFrom.isGd">
                                 <el-radio label="1" value="1" key="1">是</el-radio>
                                 <el-radio label="0" value="0" key="0">否</el-radio>
                             </el-radio-group>
@@ -717,8 +723,8 @@
             <el-form :model="addEditManform" ref="addEditManform" label-width="180px" :rules="addLinkManRules">
                 <el-form-item label="所在单位：" required>
                     <el-select v-model="addEditManform.unitName" placeholder="请选择单位">
-                        <el-option v-for="(item,index) in unitInfoIdList" :key="index" :label="item.applicant"
-                                   :value="item.unitInfoId"></el-option>
+                        <!--<el-option v-for="(item,index) in unitInfoIdList" :key="index" :label="item.applicant"-->
+                                   <!--:value="item.unitInfoId"></el-option>-->
                     </el-select>
                 </el-form-item>
                 <el-form-item label="联系人姓名：" prop="linkmanName">

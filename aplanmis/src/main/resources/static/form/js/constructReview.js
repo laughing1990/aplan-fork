@@ -42,7 +42,9 @@ var app = new Vue({
     return {
       dialogTitie: '',
       pageLoading: false,
-      formData: {},
+      formData: {
+        drawings: []
+      },
       total: 0,
       tableData: [],
       activeNames: '1',
@@ -174,9 +176,9 @@ var app = new Vue({
     }
   },
   created: function() {
-    // this.projInfoId = '0';
+    // this.projInfoId = '031fb1ad-71b9-41af-8fe0-7df5b449a16d';
     // this.projInfoId = '002dbf94-2e5c-4e4a-9190-d793aa7806a4';
-    this.projInfoId = this.getUrlParam('projInfoId');
+    // this.projInfoId = this.getUrlParam('projInfoId');
   },
   mounted: function() {
 
@@ -191,65 +193,93 @@ var app = new Vue({
       var svalue = location.search.match(new RegExp("[\?\&]" + val + "=([^\&]*)(\&?)", "i"));
       return svalue ? svalue[1] : svalue;
     },
+    init: function() {
+      for (var i = 0; i < this.formData.drawings.length; i++) {
+        if (this.formData.drawings[i].linkmen.length == 0) {
+          if (i == 2) {
+            var dataType = {
+              linkmanInfoId: '',
+              linkmanType: '502001',
+              linkmanName: '',
+              linkmanCertNo: '',
+              prjSpty: '',
+              unitProjId: this.formData.drawings[i].unitProjId
+            }
+            var dataType2 = {
+              linkmanInfoId: '',
+              linkmanType: '502002',
+              linkmanName: '',
+              linkmanCertNo: '',
+              prjSpty: '',
+              unitProjId: this.formData.drawings[i].unitProjId
+            }
+            this.formData.drawings[i].linkmen.push(dataType);
+            this.formData.drawings[i].linkmen.push(dataType2);
+          } else {
+            this.addLinkmanTypes(this.formData.drawings[i].linkmen, this.formData.drawings[i]);
+          }
+        }
+      }
+    },
     // 请求table数据
     showData: function() {
       var vm = this;
       // vm.loading = true;
       request('', {
-        type: 'post',
-        url: ctx + 'rest/form/drawing/index.do',
-        data: {
-          projInfoId: this.projInfoId
-        },
-      }, function(res) {
-        if (!res.success) {
-          vm.$message({
-            message: res.message,
-            type: 'error'
-          });
-          return;
-        }
+          type: 'post',
+          url: ctx + 'rest/form/drawing/index.do',
+          data: {
+            projInfoId: this.projInfoId
+          },
+        }, function(res) {
+          if (vm.formData.drawings.length == 0) {
+            vm.$set(vm.formData, 'aeaExProjDrawing', {});
 
-        vm.formData = res.content;
-        if (vm.formData.drawings == 0) {
-          vm.formData.drawings[0] = [];
-          vm.formData.drawings[1] = [];
-          vm.formData.drawings[2] = [];
-          return
-        }
-        for (var i = 0; i < vm.formData.drawings.length; i++) {
-          if (vm.formData.drawings[i].linkmen.length == 0) {
-            if (i == 2) {
-              var dataType = {
-                linkmanInfoId: '',
-                linkmanType: '502001',
-                linkmanName: '',
-                linkmanCertNo: '',
-                prjSpty: '',
-                unitProjId: vm.formData.drawings[i].unitProjId
-              }
-              var dataType2 = {
-                linkmanInfoId: '',
-                linkmanType: '502002',
-                linkmanName: '',
-                linkmanCertNo: '',
-                prjSpty: '',
-                unitProjId: vm.formData.drawings[i].unitProjId
-              }
-              vm.formData.drawings[i].linkmen.push(dataType);
-              vm.formData.drawings[i].linkmen.push(dataType2);
-            } else {
-              vm.addLinkmanTypes(vm.formData.drawings[i].linkmen, vm.formData.drawings[i]);
-            }
+            vm.formData.drawings = [];
+
+            vm.formData.drawings[0] = {};
+            vm.formData.drawings[1] = {};
+            vm.formData.drawings[2] = {};
+            vm.formData.drawings[0].linkmen = [];
+            vm.formData.drawings[1].linkmen = [];
+            vm.formData.drawings[2].linkmen = [];
+            vm.formData.drawings[0].linkmanType = '104002';
+            vm.formData.drawings[1].linkmanType = '104002';
+            vm.formData.drawings[2].linkmanType = '104002';
           }
-        }
-        vm.$nextTick(function() {
-          vm.$refs['form'].clearValidate();
+          vm.init();
+          if (!res.success) {
+            vm.$message({
+              message: res.message,
+              type: 'error'
+            });
 
-        });
-      }, function(err) {
-        vm.$message.error('服务器错了哦!');
-      })
+            return;
+          }
+
+          vm.formData = res.content;
+          // if (vm.formData.drawings == 0) {
+          //   vm.formData.drawings[0] = {};
+          //   vm.formData.drawings[1] = {};
+          //   vm.formData.drawings[2] = {};
+          //   vm.formData.drawings[0].linkmen = [];
+          //   vm.formData.drawings[1].linkmen = [];
+          //   vm.formData.drawings[2].linkmen = [];
+          //   vm.formData.drawings[0].linkmanType = '104002';
+          //   vm.formData.drawings[1].linkmanType = '104002';
+          //   vm.formData.drawings[2].linkmanType = '104002';
+          //   vm.init();
+          //   return;
+          // }
+
+          vm.$nextTick(function() {
+            vm.$refs['form'].clearValidate();
+
+          });
+        },
+        function(err) {
+          vm.$message.error('服务器错了哦!');
+        })
     },
     // 请求各个类型数据
     getAllType: function() {
@@ -268,6 +298,7 @@ var app = new Vue({
         vm.linkmanType = res.content.PROJ_UNIT_LINKMAN_TYPE; //请求项目单位联系人类型
         vm.linkmanType2 = res.content.PROJ_UNIT_LINKMAN_TYPE; //请求项目单位联系人类型
         vm.CertifiType = res.content.REGIST_CERTIFI_TYPE; //请求执业注册证类型
+
 
         for (var i = 0; i < vm.linkmanType2.length; i++) {
           if (vm.linkmanType2[i].itemCode == '101001' || vm.linkmanType2[i].itemCode == '102001' || vm.linkmanType2[i].itemCode == '502001') {
@@ -352,11 +383,7 @@ var app = new Vue({
                 message: '保存成功',
                 type: 'success'
               });
-              // _that.addEditManPerform.linkmanName = _that.addEditManform.linkmanName;
-              // _that.addEditManPerform.linkmanId = result.content;
-              // _that.addEditManPerform.linkmanMail = _that.addEditManform.linkmanMail;
-              // _that.addEditManPerform.linkmanCertNo = _that.addEditManform.linkmanCertNo;
-              // _that.addEditManPerform.linkmanMobilePhone = _that.addEditManform.linkmanMobilePhone;
+
               _that.addEditManModalShow = false;
               _that.loading = false;
             }
@@ -519,25 +546,7 @@ var app = new Vue({
           });
           return false;
         };
-        // var aeaExProjDrawing = {
-        //   projInfoId: 'a',
-        //   drawingId: _this.formData.aeaExProjDrawing.aaa || '',
-        //   provinceProjCode: _this.formData.aeaExProjDrawing.aaa || '',
-        //   drawingQuabookCode: _this.formData.aeaExProjDrawing.aaa || '',
-        //   inverstmentMoeny: _this.formData.aeaExProjDrawing.aaa || '',
-        //   approveDrawingArea: _this.formData.aeaExProjDrawing.aaa || '',
-        //   approveStartTime: _this.formData.aeaExProjDrawing.aaa || '',
-        //   approveEndTime: _this.formData.aeaExProjDrawing.aaa || '',
-        //   isOncePass: _this.formData.aeaExProjDrawing.aaa || '',
-        //   oncePassAgainstCount: _this.formData.aeaExProjDrawing.aaa || '',
-        //   oncePassAgainstItem: _this.formData.aeaExProjDrawing.aaa || '',
-        //   approveOpinion: _this.formData.aeaExProjDrawing.aaa || '',
-        //   approveConfirmTime: _this.formData.aeaExProjDrawing.aaa || '',
-        //   govOrgCode: _this.formData.aeaExProjDrawing.aaa || '',
-        //   govOrgName: _this.formData.aeaExProjDrawing.aaa || '',
-        //   govOrgAreaCode: _this.formData.aeaExProjDrawing.aaa || ''
-        // }
-        // var aeaProjDrawing = []
+
         _this.formData.aeaExProjDrawing.approveStartTime = _this.formatTime(_this.formData.aeaExProjDrawing.approveStartTime, 'Y-M-D') || '';
         _this.formData.aeaExProjDrawing.approveEndTime = _this.formatTime(_this.formData.aeaExProjDrawing.approveEndTime, 'Y-M-D') || '';
         _this.formData.aeaExProjDrawing.approveConfirmTime = _this.formatTime(_this.formData.aeaExProjDrawing.approveConfirmTime, 'Y-M-D') || '';
@@ -567,7 +576,7 @@ var app = new Vue({
 
     },
     // 解决sleect选不中值问题
-    forceUpdate: function() {
+    forceUpdate: function(e) {
       this.$forceUpdate()
     },
   },
