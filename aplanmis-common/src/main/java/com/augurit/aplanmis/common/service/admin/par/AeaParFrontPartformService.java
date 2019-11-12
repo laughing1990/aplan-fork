@@ -38,4 +38,6 @@ public interface AeaParFrontPartformService {
 
     AeaParFrontPartformVo getAeaParFrontPartformVoById(String frontPartformId) throws Exception;
 
+    List<AeaParFrontPartformVo> getAeaParFrontPartformVoByStageId(String stageId);
+
 }

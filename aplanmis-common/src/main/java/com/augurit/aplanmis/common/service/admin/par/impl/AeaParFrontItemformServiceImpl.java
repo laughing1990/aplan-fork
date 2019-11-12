@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -63,7 +64,7 @@ public class AeaParFrontItemformServiceImpl implements AeaParFrontItemformServic
             throw new InvalidParameterException(id);
         }
         String[] ids = id.split(",");
-        for(String frontItemformId :ids) {
+        for (String frontItemformId : ids) {
             aeaParFrontItemformMapper.deleteAeaParFrontItemform(frontItemformId);
         }
     }
@@ -100,11 +101,11 @@ public class AeaParFrontItemformServiceImpl implements AeaParFrontItemformServic
     }
 
     @Override
-    public Long getMaxSortNo(AeaParFrontItemform aeaParFrontItemform)throws Exception{
+    public Long getMaxSortNo(AeaParFrontItemform aeaParFrontItemform) throws Exception {
         Long sortNo = aeaParFrontItemformMapper.getMaxSortNo(aeaParFrontItemform);
-        if(sortNo==null){
+        if (sortNo == null) {
             sortNo = 1l;
-        }else{
+        } else {
             sortNo = sortNo + 1;
         }
 
@@ -127,16 +128,23 @@ public class AeaParFrontItemformServiceImpl implements AeaParFrontItemformServic
         return aeaParFrontItemformMapper.getAeaParFrontItemformVoById(frontItemformId);
     }
 
-    private void checkSame(AeaParFrontItemform aeaParFrontItemform) throws Exception{
+    private void checkSame(AeaParFrontItemform aeaParFrontItemform) throws Exception {
         AeaParFrontItemform queryParFrontItemform = new AeaParFrontItemform();
         queryParFrontItemform.setStageId(aeaParFrontItemform.getStageId());
         queryParFrontItemform.setStageItemId(aeaParFrontItemform.getStageItemId());
         List<AeaParFrontItemform> list = aeaParFrontItemformMapper.listAeaParFrontItemform(queryParFrontItemform);
-        if(list.size()>0){
+        if (list.size() > 0) {
             throw new RuntimeException("已有配置相同的前置事项表单检测!");
         }
 
     }
 
+    @Override
+    public List<AeaParFrontItemformVo> getAeaParFrontItemformVoByStageId(String stageId) {
+        List<AeaParFrontItemformVo> aeaParFrontItemformVos = new ArrayList();
+        if (StringUtils.isBlank(stageId)) return aeaParFrontItemformVos;
+        aeaParFrontItemformVos.addAll(aeaParFrontItemformMapper.getAeaParFrontItemformVoByStageId(stageId, SecurityContext.getCurrentOrgId()));
+        return aeaParFrontItemformVos;
+    }
 }
 

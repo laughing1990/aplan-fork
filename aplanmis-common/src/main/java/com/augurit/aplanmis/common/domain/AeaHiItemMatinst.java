@@ -88,6 +88,15 @@ public class AeaHiItemMatinst implements Serializable {
     @ApiModelProperty(value = "备注")
     private String memo;
 
+    @ApiModelProperty(value = "材料性质，m表示普通材料，c表示证照材料，f表示在线表单")
+    private String matProp;
+
+    @ApiModelProperty(value = "证照实例id")
+    private String certinstId;
+
+    @ApiModelProperty(value = "表单实例id")
+    private String forminstId;
+
     @ApiModelProperty(value = "业主个人ID")
     private String linkmanInfoId;
 

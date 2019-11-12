@@ -10,11 +10,13 @@ import com.augurit.aplanmis.common.vo.LinkmanTypeVo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.validation.constraints.NotEmpty;
 import java.util.ArrayList;
 import java.util.List;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @ApiModel("领件人vo")
 public class SmsInfoVo extends AeaProjInfo {

@@ -40,6 +40,26 @@
         where FRONT_STAGE_ID = #{id}
     </select>
 
+    <select id="getHistStageByStageId" resultType="com.augurit.aplanmis.common.vo.AeaParFrontStageVo">
+        select
+        <include refid="allColumnsAlias">
+            <property name="alias" value="apfs"></property>
+        </include>
+        ,aps.STAGE_NAME histStageName
+        from AEA_PAR_FRONT_STAGE apfs
+        left join aea_par_stage aps on aps.STAGE_ID = apfs.HIST_STAGE_ID
+        <where>
+            apfs.IS_ACTIVE = '1'
+            <if test="stageId != null">
+                AND apfs.STAGE_ID = #{stageId}
+            </if>
+            <if test="rootOrgId != null">
+                AND apfs.ROOT_ORG_ID = #{rootOrgId}
+            </if>
+        </where>
+        order by apfs.SORT_NO
+    </select>
+
     <!--3 根据条件查询实体list -->
     <select id="listAeaParFrontStage" resultType="AeaParFrontStage">
         select

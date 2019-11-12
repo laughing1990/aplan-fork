@@ -40,6 +40,29 @@
         where FRONT_PARTFORM_ID = #{id}
     </select>
 
+    <select id="getAeaParFrontPartformVoByStageId" resultType="com.augurit.aplanmis.common.vo.AeaParFrontPartformVo">
+        select
+        <include refid="allColumnsAlias">
+            <property name="alias" value="apfp"></property>
+        </include>
+        ,
+        apsp.PARTFORM_NAME partformName,
+        apsp.IS_SMART_FORM isSmartForm,
+        apsp.PARTFORM_ID partformId
+        from AEA_PAR_FRONT_PARTFORM apfp
+        left join aea_par_stage_partform apsp on apsp.STAGE_PARTFORM_ID = apfp.STAGE_PARTFORM_ID
+        <where>
+            apfp.IS_ACTIVE = '1'
+            <if test="stageId != null">
+                AND apfp.STAGE_ID = #{stageId}
+            </if>
+            <if test="rootOrgId != null">
+                AND apfp.ROOT_ORG_ID = #{rootOrgId}
+            </if>
+        </where>
+        order by apfp.SORT_NO
+    </select>
+
     <!--3 根据条件查询实体list -->
     <select id="listAeaParFrontPartform" resultType="AeaParFrontPartform">
         select

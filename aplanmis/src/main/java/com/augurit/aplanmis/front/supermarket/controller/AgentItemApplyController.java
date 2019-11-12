@@ -13,6 +13,7 @@ import com.augurit.aplanmis.supermarket.apply.vo.ImPurchaseData;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,6 +32,7 @@ public class AgentItemApplyController {
 
     @PostMapping("/series/processflow/start")
     @ApiOperation(value = "中介事项申报 -->唐山模式，发起申报", httpMethod = "POST")
+    @Transactional
     public ContentResultForm<String> startSeriesFlow(@RequestBody AgentItemApplyData agentItemApplyData) throws Exception {
         String applyinstIdParam = agentItemApplyData.getApplyinstId();
         ImItemApplyData applyData = agentItemApplyData.createItemApplyData();

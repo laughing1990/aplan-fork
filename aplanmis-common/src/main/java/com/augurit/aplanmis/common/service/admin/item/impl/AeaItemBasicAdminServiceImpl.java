@@ -1325,4 +1325,18 @@ public class AeaItemBasicAdminServiceImpl implements AeaItemBasicAdminService {
         itemBasics.addAll(aeaItemBasicMapper.getAeaItemBasicsListByOutputMatId(matId, SecurityContext.getCurrentOrgId()));
         return itemBasics;
     }
+
+    /**
+     * 根据项目ID获取已经办结通过或者办结容缺通过的事项
+     *
+     * @param projInfoId
+     * @return
+     */
+    @Override
+    public List<AeaItemBasic> getCompletedItemBasicByProjInfoId(String projInfoId) {
+        List<AeaItemBasic> itemBasics = new ArrayList();
+        if (StringUtils.isBlank(projInfoId)) return itemBasics;
+        itemBasics.addAll(aeaItemBasicMapper.getCompletedItemBasicByProjInfoId(projInfoId, SecurityContext.getCurrentOrgId()));
+        return itemBasics;
+    }
 }

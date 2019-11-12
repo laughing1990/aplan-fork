@@ -38,7 +38,30 @@
     where    FRONT_PARTFORM_ID = #{id}
 </select>
 
-<!--3 根据条件查询实体list -->
+    <select id="getAeaItemFrontPartformVoByItemVerId"
+            resultType="com.augurit.aplanmis.common.vo.AeaItemFrontPartformVo">
+        select
+        <include refid="allColumnsAlias">
+            <property name="alias" value="aifp"></property>
+        </include>
+        ,
+        aip.PARTFORM_NAME partformName,
+        aip.IS_SMART_FORM isSmartForm,
+        aip.PARTFORM_ID partformId
+        from AEA_ITEM_FRONT_PARTFORM aifp
+        left join aea_item_partform aip on aip.ITEM_PARTFORM_ID = aifp.ITEM_PARTFORM_ID
+        <where>
+            aifp.IS_ACTIVE = '1'
+            <if test="itemVerId != null">
+                AND aifp.ITEM_VER_ID = #{itemVerId}
+            </if>
+            <if test="rootOrgId != null">
+                AND aifp.ROOT_ORG_ID = #{rootOrgId}
+            </if>
+        </where>
+    </select>
+
+    <!--3 根据条件查询实体list -->
     <select id="listAeaItemFrontPartform" resultType="AeaItemFrontPartform" >
         select
         <include refid="allColumns"/>

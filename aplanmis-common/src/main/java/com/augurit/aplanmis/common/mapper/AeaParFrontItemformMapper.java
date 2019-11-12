@@ -38,4 +38,5 @@ public interface AeaParFrontItemformMapper {
 
     AeaParFrontItemformVo getAeaParFrontItemformVoById(@Param("id") String id) throws Exception;
 
+    List<AeaParFrontItemformVo> getAeaParFrontItemformVoByStageId(@Param("stageId") String stageId, @Param("rootOrgId") String rootOrgId);
 }
