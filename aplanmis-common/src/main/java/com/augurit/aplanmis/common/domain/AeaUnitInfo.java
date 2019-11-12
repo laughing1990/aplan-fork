@@ -77,6 +77,7 @@ public class AeaUnitInfo implements Serializable {
     private java.lang.String isOwnerUnit; // (是否为业主单位：1 是，0 否)
     private String rootOrgId;//根组织ID
     private String unitProjUnitType;// 项目的单位类型
+    private String isGd;//是否属于省内企业
 
     //非表字段
     private String keyword;

@@ -61,5 +61,7 @@ public class ExSJUnitFromDetails implements Serializable {
 
     private String linkmanType;//承担角色
 
-    private List<PersonSetting> personSetting;//人员设置
+    private String isGd;//是否属于省内企业
+
+  private List<PersonSetting> personSetting;//人员设置
 }
