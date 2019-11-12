@@ -489,7 +489,7 @@ public class RestImApplyService {
         //保存机构要求
         AeaImUnitRequire aeaImUnitRequire = data.getAeaImUnitRequire();
         aeaImUnitRequire.setUnitRequireId(UuidUtil.generateUuid());
-        aeaImUnitRequire.setRootOrgId(SecurityContext.getCurrentOrgId());
+        aeaImUnitRequire.setRootOrgId(data.getRootOrgId());
         aeaImUnitRequireMapper.insertAeaImUnitRequire(aeaImUnitRequire);
 
         aeaImProjPurchase.setUnitRequireId(aeaImUnitRequire.getUnitRequireId());

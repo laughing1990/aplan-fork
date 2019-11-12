@@ -1,6 +1,7 @@
 package com.augurit.aplanmis.front.supermarket.vo;
 
 import com.augurit.agcloud.framework.security.SecurityContext;
+import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.diyannotation.FiledNameIs;
 import com.augurit.aplanmis.common.domain.AeaImMajorQual;
 import com.augurit.aplanmis.common.domain.AeaImUnitRequire;
@@ -256,6 +257,27 @@ public class AgentItemApplyData {
 
         } else {
             purchaseData.setPublishUnitInfoId(this.buildProjUnitMap.get(0).getUnitIds().get(0));
+        }
+        AeaImUnitRequire aeaImUnitRequire = purchaseData.getAeaImUnitRequire();
+        if (null != aeaImUnitRequire) {
+            String isQualRequire = aeaImUnitRequire.getIsQualRequire();
+            String isRecordRequire = aeaImUnitRequire.getIsRecordRequire();
+            String isRegisterRequire = aeaImUnitRequire.getIsRegisterRequire();
+            if (StringUtils.isNotBlank(isQualRequire) || isQualRequire.equals("true")) {
+                aeaImUnitRequire.setIsQualRequire("1");
+            } else {
+                aeaImUnitRequire.setIsQualRequire("0");
+            }
+            if (StringUtils.isNotBlank(isRecordRequire) || isRecordRequire.equals("true")) {
+                aeaImUnitRequire.setIsRecordRequire("1");
+            } else {
+                aeaImUnitRequire.setIsRecordRequire("0");
+            }
+            if (StringUtils.isNotBlank(isRegisterRequire) || isRegisterRequire.equals("true")) {
+                aeaImUnitRequire.setIsRegisterRequire("1");
+            } else {
+                aeaImUnitRequire.setIsRegisterRequire("0");
+            }
         }
         return purchaseData;
     }
