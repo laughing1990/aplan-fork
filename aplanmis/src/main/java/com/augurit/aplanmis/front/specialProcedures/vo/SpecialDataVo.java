@@ -4,6 +4,7 @@ import com.augurit.agcloud.bsc.domain.BscAttForm;
 import com.augurit.aplanmis.common.domain.AeaHiItemSpecial;
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.List;
 
@@ -14,6 +15,7 @@ import java.util.List;
  */
 @Data
 @ApiModel(value = "特殊程序返回前端实体，包括附件信息")
+@EqualsAndHashCode(callSuper = true)
 public class SpecialDataVo extends AeaHiItemSpecial {
 
     private List<BscAttForm> specialStartMatList;

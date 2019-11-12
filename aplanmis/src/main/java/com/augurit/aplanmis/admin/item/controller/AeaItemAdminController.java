@@ -142,7 +142,7 @@ public class AeaItemAdminController {
     private void loadBscItemData(ModelMap modelMap) {
 
         String topOrgId = SecurityContext.getCurrentOrgId();
-        // 数据字段承诺时限单位
+        // 数据字段承诺办结时限单位
         List<BscDicCodeItem> dueUnits = bscDicCodeService.getActiveItemsByTypeCode("DUE_UNIT_TYPE", topOrgId);
         modelMap.put("dueUnits", dueUnits);
 

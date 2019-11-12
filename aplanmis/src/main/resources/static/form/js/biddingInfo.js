@@ -51,7 +51,7 @@
         },
         created: function () {
             this.projInfoId = this.getUrlParam('projInfoId');
-            // this.projInfoId = '09485014-cfe9-4815-b9e3-13f24035220b';
+            // this.projInfoId = '01263565-b7b4-4088-88b8-fb7959d219e1';
         },
         mounted: function () {
             this.getProjTypeNature('C_TENDER_TYPE,C_AGENT_TYPE,XM_DWLX');
@@ -116,16 +116,36 @@
                     if (data.success) {
                         _that.biddingInfo = data.content;
 
+                        // 中标单位
+                        if (!_that.biddingInfo.winBidUnits.length) {
+                            _that.biddingInfo.winBidUnits.splice(0, 1, {
+                                organizationalCode: '',
+                                unifiedSocialCreditCode: '',
+                                applicant: '',
+                                unitType: '17'
+                            });
+                        }
+                        // 招标代理机构
+                        if (!_that.biddingInfo.agencyUnits.length) {
+                            _that.biddingInfo.agencyUnits.splice(0, 1, {
+                                organizationalCode: '',
+                                unifiedSocialCreditCode: '',
+                                applicant: '',
+                                unitType: '2'
+                            });
+                        }
+                        // 造价咨询单位
+                        if (!_that.biddingInfo.costUnits.length) {
+                            _that.biddingInfo.costUnits.splice(0, 1, {
+                                organizationalCode: '',
+                                unifiedSocialCreditCode: '',
+                                applicant: '',
+                                unitType: '14'
+                            });
+                        }
+
                         // 其他委托
                         if (_that.biddingInfo.bidMode != '3') {
-                            if (!_that.biddingInfo.winBidUnits.length) {
-                                _that.biddingInfo.winBidUnits.splice(0, 1, {
-                                    organizationalCode: '',
-                                    unifiedSocialCreditCode: '',
-                                    applicant: '',
-                                    unitType: '17'
-                                });
-                            }
                             _that.isShowFoot = true;
                         }
                     } else {

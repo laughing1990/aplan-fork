@@ -1,19 +1,18 @@
 package com.augurit.aplanmis.front.form.controller;
+
 import com.augurit.agcloud.bsc.domain.BscDicCodeItem;
 import com.augurit.agcloud.bsc.domain.BscDicCodeType;
 import com.augurit.agcloud.bsc.sc.dic.code.service.BscDicCodeService;
 import com.augurit.agcloud.framework.security.SecurityContext;
-import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
-import com.augurit.agcloud.framework.exception.InvalidParameterException;
+import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.aplanmis.common.domain.AeaExProjContract;
+import com.augurit.aplanmis.common.domain.AeaProjInfo;
 import com.augurit.aplanmis.common.service.form.AeaExProjContractService;
-import com.github.pagehelper.Page;
-import com.github.pagehelper.PageInfo;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.validation.BindingResult;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
@@ -35,6 +34,8 @@ private static Logger logger = LoggerFactory.getLogger(AeaExProjContractControll
     private AeaExProjContractService aeaExProjContractService;
     @Autowired
     private BscDicCodeService bscDicCodeService;
+    @Autowired
+    private AeaProjInfoService aeaProjInfoService;
 
 
 
@@ -57,34 +58,40 @@ private static Logger logger = LoggerFactory.getLogger(AeaExProjContractControll
       BscDicCodeType typeByTypeCode = bscDicCodeService.getTypeByTypeCode(landAreaType, SecurityContext.getCurrentOrgId());
       if (typeByTypeCode==null){
 
-
           return null;
       }
       else {
           List<BscDicCodeItem> areaType = bscDicCodeService.getItemsByTypeCode(typeByTypeCode.getTypeCode());
           return areaType;
       }
+
   }
 
     @RequestMapping("/getAeaExProjContract.do")
-    public AeaExProjContract getAeaExProjContract(String projInfoId) throws Exception {
-        if (projInfoId != null){
+    public ResultForm getAeaExProjContract(String projInfoId) throws Exception {
+
+        if (projInfoId==null||"".equals(projInfoId)){
+            return new ResultForm(false, "获取项目信息失败，项目id "+projInfoId);
+        }
+
+        AeaProjInfo aeaProjInfoByProjInfoId = aeaProjInfoService.getAeaProjInfoByProjInfoId(projInfoId);
+        if (aeaProjInfoByProjInfoId==null)
+        {
+            return new ResultForm(false, "获取项目信息失败，项目id "+projInfoId);
+        }
             logger.debug("根据ID获取AeaExProjContract对象，ID为：{}", projInfoId);
             AeaExProjContract contractQuery = new AeaExProjContract();
             contractQuery.setProjInfoId(projInfoId);
             List<AeaExProjContract> aeaExProjContracts = aeaExProjContractService.listAeaExProjContract(contractQuery);
             if (aeaExProjContracts.size()>0){
                 AeaExProjContract aeaExProjContract = aeaExProjContracts.get(0);
-                return aeaExProjContract;
+
+                return new ContentResultForm<AeaExProjContract>(true, aeaExProjContract);
 
             }else {
-                return new AeaExProjContract();
+                return new ContentResultForm<AeaExProjContract>(true, new AeaExProjContract());
             }
-        }
-        else {
-            logger.debug("构建新的AeaExProjContract对象");
-            return new AeaExProjContract();
-        }
+
     }
 
     @RequestMapping("/updateAeaExProjContract.do")
@@ -98,16 +105,22 @@ private static Logger logger = LoggerFactory.getLogger(AeaExProjContractControll
     /**
     * 保存或编辑合同信息
     * @param aeaExProjContract 合同信息
-    * @param result 校验对象
+
     * @return 返回结果对象 包含结果信息
     * @throws Exception
     */
     @RequestMapping("/saveAeaExProjContract.do")
-    public ResultForm saveAeaExProjContract(AeaExProjContract aeaExProjContract, BindingResult result) throws Exception {
-        if(result.hasErrors()) {
-            logger.error("保存合同信息Form对象出错");
-            throw new InvalidParameterException(aeaExProjContract);
+    public ResultForm saveAeaExProjContract(AeaExProjContract aeaExProjContract) throws Exception {
+        if (aeaExProjContract.getProjInfoId()==null||"".equals(aeaExProjContract.getProjInfoId())){
+            return new ResultForm(false, "获取项目信息失败，项目id "+aeaExProjContract.getProjInfoId());
         }
+
+        AeaProjInfo aeaProjInfoByProjInfoId = aeaProjInfoService.getAeaProjInfoByProjInfoId(aeaExProjContract.getProjInfoId());
+        if (aeaProjInfoByProjInfoId==null)
+        {
+            return new ResultForm(false, "获取项目信息失败，项目id "+aeaExProjContract.getProjInfoId());
+        }
+
 
         if(aeaExProjContract.getContractId()!=null&&!"".equals(aeaExProjContract.getContractId())){
             aeaExProjContractService.updateAeaExProjContract(aeaExProjContract);

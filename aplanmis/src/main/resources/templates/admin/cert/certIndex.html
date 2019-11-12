@@ -184,11 +184,11 @@
                 <el-option label="工程项目" value="p"></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="承诺时限计量" prop="dueNum">
+            <el-form-item label="承诺办结时限计量" prop="dueNum">
               <el-input v-model="formData2.dueNum" type="number" autocomplete='off' placeholder="" style="width:390px;"></el-input>
               <!-- <el-input-number v-model="formData2.dueNum" controls-position="right" :min="0" :max="10000000" style="width:390px;"></el-input-number> -->
             </el-form-item>
-            <el-form-item label="承诺时限单位" prop="dueUnit">
+            <el-form-item label="承诺办结时限单位" prop="dueUnit">
               <el-select v-model="formData2.dueUnit" @change="forceUpdate" style="width:390px;">
                 <el-option label="请选择" value=""></el-option>
                 <el-option label="工作日" value="1"></el-option>

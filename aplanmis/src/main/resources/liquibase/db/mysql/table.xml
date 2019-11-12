@@ -936,4 +936,12 @@
             ADD COLUMN `isGD` char(1) DEFAULT NULL COMMENT '是否省内企业，1表示省内企业，0表示进粤企业'
         </sql>
     </changeSet>
+
+    <changeSet id="201911121453" author="fenggy" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            alter table aea_unit_proj_linkman modify COLUMN PRJ_SPTY varchar(50) DEFAULT NULL COMMENT '审查人员专业 C_PRJ_SPTY 数据字典';
+
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

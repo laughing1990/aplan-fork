@@ -12,7 +12,6 @@ var checkPhone = function (rule, value, callback) {
 		}
 	}
 };
-//  var ctx = 'http://192.168.14.2:8084/aplanmis-mall/';
 var module1 = new Vue({
 	el: '#addNeedPaurse',
 	mixins: [mixins],
@@ -248,31 +247,6 @@ var module1 = new Vue({
 				vm.$message({message: '加载失败', type: 'error'});
 			});
 		},
-
-		/*checkNode: function () {
-			var _this = this;
-			request('', {
-				url: ctx + 'supermarket/purchase/getProjInfoByLocalCode', type: 'get', data: {
-					localCode: this.form.approvalCode
-				}
-			}, function (data) {
-				if (!data.content) {
-					_this.$message({
-						message: '项目不存在，请重新填写',
-						type: 'error'
-					});
-					_this.form.approvalCode = '';
-				} else {
-					_this.proj = true;
-					_this.projName = data.content.projName;
-				}
-			}, function (msg) {
-				_this.$message({
-					message: '加载失败',
-					type: 'error'
-				});
-			});
-		},*/
 
 		saveForm: function (formName) {
 			var vm = this;

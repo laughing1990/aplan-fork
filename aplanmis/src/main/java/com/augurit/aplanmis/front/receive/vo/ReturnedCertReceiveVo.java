@@ -2,7 +2,9 @@ package com.augurit.aplanmis.front.receive.vo;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class ReturnedCertReceiveVo extends ReceiveBaseVo {
     @ApiModelProperty(value = "领证人")

@@ -126,7 +126,7 @@ public class ConditionalQueryRequest implements Serializable {
     @ApiModelProperty(value = "设定补正/补全结束时间")
     private String correctDueEndTime;
 
-    @ApiModelProperty(value = "承办单位id")
+    @ApiModelProperty(value = "实施主体id")
     private String organizerId;
 
     @ApiModelProperty(value = "补正/补全开始时间")

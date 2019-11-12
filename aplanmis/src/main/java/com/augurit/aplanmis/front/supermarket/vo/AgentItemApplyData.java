@@ -1,12 +1,14 @@
 package com.augurit.aplanmis.front.supermarket.vo;
 
 import com.augurit.agcloud.framework.security.SecurityContext;
+import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.diyannotation.FiledNameIs;
 import com.augurit.aplanmis.common.domain.AeaImMajorQual;
 import com.augurit.aplanmis.common.domain.AeaImUnitRequire;
 import com.augurit.aplanmis.front.apply.vo.BuildProjUnitVo;
 import com.augurit.aplanmis.supermarket.apply.vo.ImItemApplyData;
 import com.augurit.aplanmis.supermarket.apply.vo.ImPurchaseData;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -35,8 +37,8 @@ public class AgentItemApplyData {
     private String appId;
     @ApiModelProperty(value = "事项版本ID", required = true)
     private String itemVerId;
-    @ApiModelProperty(value = "分局承办；并行推进事项分局承办，格式为：[{\"itemVerId\":\"111\",\"branchOrg\":\"222\"}]", required = true)
-    private String branchOrgMap;
+    //    @ApiModelProperty(value = "分局承办；并行推进事项分局承办，格式为：[{\"itemVerId\":\"111\",\"branchOrg\":\"222\"}]", required = true)
+//    private String branchOrgMap;
     @ApiModelProperty(value = "项目ID", required = true)
     private String projInfoId;
     @ApiModelProperty(value = "经办单位ID集合", hidden = true)
@@ -112,18 +114,6 @@ public class AgentItemApplyData {
 
     @ApiModelProperty(value = "是否现场见证：1 是， 0 否", hidden = true)
     private String isLiveWitness = "0";
-    /*@ApiModelProperty(value = "见证者1姓名")
-    private String witnessName1;
-    @ApiModelProperty(value = "见证者2姓名")
-    private String witnessName2;
-    @ApiModelProperty(value = "见证者3姓名")
-    private String witnessName3;
-    @ApiModelProperty(value = "见证者1电话")
-    private String witnessPhone1;
-    @ApiModelProperty(value = "见证者2电话")
-    private String witnessPhone2;
-    @ApiModelProperty(value = "见证者3电话")
-    private String witnessPhone3;*/
     @ApiModelProperty(value = "是否公示中选机构： 1 是， 0 否")
     private String isDiscloseIm;
     @ApiModelProperty(value = "是否公示中标公告：1 是， 0 否")
@@ -153,11 +143,13 @@ public class AgentItemApplyData {
 
     @ApiModelProperty(value = "截止日期 yyyy-MM-dd HH:mm:ss")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date expirationDate;
 
 
     @ApiModelProperty(value = "选取中介时间 yyyy-MM-dd HH:mm:ss")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date choiceImunitTime;
 
     @ApiModelProperty(value = "业主委托人信息ID")
@@ -265,6 +257,27 @@ public class AgentItemApplyData {
 
         } else {
             purchaseData.setPublishUnitInfoId(this.buildProjUnitMap.get(0).getUnitIds().get(0));
+        }
+        AeaImUnitRequire aeaImUnitRequire = purchaseData.getAeaImUnitRequire();
+        if (null != aeaImUnitRequire) {
+            String isQualRequire = aeaImUnitRequire.getIsQualRequire();
+            String isRecordRequire = aeaImUnitRequire.getIsRecordRequire();
+            String isRegisterRequire = aeaImUnitRequire.getIsRegisterRequire();
+            if (StringUtils.isNotBlank(isQualRequire) || isQualRequire.equals("true")) {
+                aeaImUnitRequire.setIsQualRequire("1");
+            } else {
+                aeaImUnitRequire.setIsQualRequire("0");
+            }
+            if (StringUtils.isNotBlank(isRecordRequire) || isRecordRequire.equals("true")) {
+                aeaImUnitRequire.setIsRecordRequire("1");
+            } else {
+                aeaImUnitRequire.setIsRecordRequire("0");
+            }
+            if (StringUtils.isNotBlank(isRegisterRequire) || isRegisterRequire.equals("true")) {
+                aeaImUnitRequire.setIsRegisterRequire("1");
+            } else {
+                aeaImUnitRequire.setIsRegisterRequire("0");
+            }
         }
         return purchaseData;
     }

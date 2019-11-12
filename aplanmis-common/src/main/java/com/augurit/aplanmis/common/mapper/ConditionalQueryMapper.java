@@ -55,7 +55,7 @@ public interface ConditionalQueryMapper {
     List<TaskInfo> listPickupCheckTasksFinishByPage(ConditionalQueryRequest conditionalQueryRequest) throws Exception;
 
     /**
-     * 获取有待补正办件的承办单位
+     * 获取有待补正办件的实施主体
      *
      * @return
      * @throws Exception

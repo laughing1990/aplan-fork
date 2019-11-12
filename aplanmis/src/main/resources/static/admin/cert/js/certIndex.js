@@ -467,7 +467,7 @@ var app = new Vue({
         vm.$message.error('服务器错了哦!');
       })
     },
-    // 获取承诺时限单位
+    // 获取承诺办结时限单位
     getListDueUnitType: function() {
       var vm = this;
       request('', {

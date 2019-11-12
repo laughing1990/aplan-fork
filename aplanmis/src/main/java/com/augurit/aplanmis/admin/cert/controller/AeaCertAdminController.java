@@ -73,7 +73,7 @@ public class AeaCertAdminController {
 
         OpuOmOrg topOrg = opuOmOrgService.getTopOrgByCurOrgId(SecurityContext.getCurrentOrgId());
         if (topOrg != null) {
-            // 数据字典承诺时限单位
+            // 数据字典承诺办结时限单位
             List<BscDicCodeItem> dueUnits = bscDicCodeService.getActiveItemsByTypeCode("DUE_UNIT_TYPE", topOrg.getOrgId());
             modelMap.put("dueUnits", dueUnits);
 
@@ -260,7 +260,7 @@ public class AeaCertAdminController {
         return aeaCertAdminService.gtreeAttDirForEui(SecurityContext.getCurrentOrgId());
     }
 
-    @ApiOperation(value = "获取承诺时限单位数据字典", notes = "获取承诺时限单位数据字典")
+    @ApiOperation(value = "获取承诺办结时限单位数据字典", notes = "获取承诺办结时限单位数据字典")
     @RequestMapping(value = "/listDueUnitType.do", method = {RequestMethod.GET, RequestMethod.POST})
     public List<BscDicCodeItem> listDueUnitType() throws Exception {
 

@@ -4,11 +4,13 @@ import com.augurit.aplanmis.common.domain.AeaHiItemSpecial;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
 
 @Data
 @ApiModel(value = "特殊程序Vo信息")
+@EqualsAndHashCode(callSuper = true)
 public class SpecialParamVo extends AeaHiItemSpecial implements Serializable {
     @ApiModelProperty(name = "customer", value = "客户名称")
     private String customer;//客户名称

@@ -163,7 +163,6 @@ var vm = new Vue({
         recordId: null,
       },//attLink用于附件关联多个业务ID
       btnDisable: true,//附件管理的按钮是否可点击，如果还没启动流程，处于起草页面则不能点击
-      
       //审批界面业务逻辑参数
       buttonData: [], // 动态按钮数据
       showMenuMore: false,
