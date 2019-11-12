@@ -5,6 +5,7 @@ import com.augurit.aplanmis.common.domain.AeaHiCertinst;
 import com.augurit.aplanmis.common.domain.AeaImQual;
 import com.augurit.aplanmis.common.domain.AeaImServiceMajor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
 import java.util.List;
@@ -16,6 +17,7 @@ import java.util.List;
  * @date Created in 2019/6/5/005 15:39
  */
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class AeaHiCertinstBVo extends AeaHiCertinst implements Serializable {
 
     private String qualLevelName; //等级名称

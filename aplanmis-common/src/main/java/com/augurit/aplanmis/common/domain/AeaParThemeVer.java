@@ -6,6 +6,7 @@ import com.augurit.aplanmis.common.constants.ActiveStatus;
 import com.augurit.aplanmis.common.constants.DeletedStatus;
 import com.augurit.aplanmis.common.constants.PublishStatus;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
@@ -15,6 +16,7 @@ import java.util.Date;
  * 主题最大版本号表-模型
  */
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class AeaParThemeVer extends ZtreeNode implements Serializable {
 
     private static final long serialVersionUID = 1L;

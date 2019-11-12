@@ -4,6 +4,7 @@ import com.augurit.aplanmis.common.vo.BusinessZtreeNode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
@@ -11,6 +12,7 @@ import java.io.Serializable;
 /**
 * -模型
 */
+@EqualsAndHashCode(callSuper = true)
 @Data
 @ApiModel("专业表实体")
 public class AeaImServiceMajor extends BusinessZtreeNode<AeaImServiceMajor> implements Serializable{

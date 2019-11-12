@@ -2,6 +2,7 @@ package com.augurit.aplanmis.common.domain;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
 /**
@@ -19,6 +20,7 @@ import java.io.Serializable;
 </ul>
 */
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class AeaHiSmsSendItem  extends AeaHiSmsSendBean implements Serializable{
 
 private static final long serialVersionUID = 1L;

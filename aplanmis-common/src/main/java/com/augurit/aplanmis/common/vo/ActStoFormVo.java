@@ -2,10 +2,11 @@ package com.augurit.aplanmis.common.vo;
 
 import com.augurit.agcloud.bpm.common.domain.ActStoForm;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
-import java.util.List;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class ActStoFormVo  extends ActStoForm implements Serializable {
 

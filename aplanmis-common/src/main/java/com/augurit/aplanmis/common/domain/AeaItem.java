@@ -2,6 +2,7 @@ package com.augurit.aplanmis.common.domain;
 
 import com.augurit.agcloud.framework.ui.ztree.ZtreeNode;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
@@ -9,6 +10,7 @@ import java.io.Serializable;
 /**
  * -模型
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class AeaItem extends ZtreeNode implements Serializable {
 

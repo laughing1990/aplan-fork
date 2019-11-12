@@ -3,11 +3,13 @@ package com.augurit.aplanmis.supermarket.utils;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * @author tiantian
  * @date 2019/6/13
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 @ApiModel("带数据的请求返回")
 public class ContentRestResult<T>  extends RestResult{
