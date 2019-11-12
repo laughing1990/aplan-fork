@@ -17,11 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -45,7 +41,7 @@ public class ItemItemChecker extends AbstractChecker<AeaItemBasic> {
     private AeaItemBasicAdminService aeaItemBasicAdminService;
 
     @Override
-    public void doCheck(AeaItemBasic aeaItemBasic, CheckerContext checkerContext) throws ItemItemCheckException {
+    public String doCheck(AeaItemBasic aeaItemBasic, CheckerContext checkerContext) throws ItemItemCheckException {
         if (Status.ON.equals(aeaItemBasic.getIsCheckItem())) {
             log.info("事项: " + aeaItemBasic.getItemName() + " 需要对前置事项进行检查");
 
@@ -102,11 +98,13 @@ public class ItemItemChecker extends AbstractChecker<AeaItemBasic> {
                 }
                 if (errroMessage.length() > 0) {
                     String error = "[" + errroMessage.substring(0, errroMessage.length() - 1) + "]";
-                    throw new ItemItemCheckException("该事项下的" + error + "前置检查不通过.");
+//                    throw new ItemItemCheckException("该事项下的" + error + "前置检查不通过.");
+                    return "请先办理以下事项：【" + error + "】";
                 }
 
                 log.info("事项: " + aeaItemBasic.getItemName() + " 前置事项检查通过.");
             }
         }
+        return null;
     }
 }

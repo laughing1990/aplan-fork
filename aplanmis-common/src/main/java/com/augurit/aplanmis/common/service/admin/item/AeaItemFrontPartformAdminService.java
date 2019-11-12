@@ -8,23 +8,29 @@ import com.github.pagehelper.PageInfo;
 import java.util.List;
 
 /**
-* 事项的前置检查事项-Service服务调用接口类
-*/
+ * 事项的前置检查事项-Service服务调用接口类
+ */
 public interface AeaItemFrontPartformAdminService {
 
-     void saveAeaItemFrontPartform(AeaItemFrontPartform aeaItemFrontPartform) ;
-     void updateAeaItemFrontPartform(AeaItemFrontPartform aeaItemFrontPartform) ;
-     void deleteAeaItemFrontPartformById(String id) ;
-     PageInfo<AeaItemFrontPartform> listAeaItemFrontPartform(AeaItemFrontPartform aeaItemFrontPartform, Page page) ;
-     AeaItemFrontPartform getAeaItemFrontPartformById(String id) ;
-     List<AeaItemFrontPartform> listAeaItemFrontPartform(AeaItemFrontPartform aeaItemFrontPartform) ;
+    void saveAeaItemFrontPartform(AeaItemFrontPartform aeaItemFrontPartform);
 
-     PageInfo<AeaItemFrontPartformVo> listAeaItemFrontPartformVoByPage(AeaItemFrontPartform aeaItemFrontPartform, Page page);
+    void updateAeaItemFrontPartform(AeaItemFrontPartform aeaItemFrontPartform);
 
-     Long getMaxSortNo(AeaItemFrontPartform aeaItemFrontPartform);
+    void deleteAeaItemFrontPartformById(String id);
 
-     PageInfo<AeaItemFrontPartformVo> listSelectItemFrontPartformByPage(AeaItemFrontPartform aeaItemFrontPartform, Page page) ;
+    PageInfo<AeaItemFrontPartform> listAeaItemFrontPartform(AeaItemFrontPartform aeaItemFrontPartform, Page page);
 
-     AeaItemFrontPartformVo getAeaItemFrontPartformVoById(String frontPartformId);
+    AeaItemFrontPartform getAeaItemFrontPartformById(String id);
 
+    List<AeaItemFrontPartform> listAeaItemFrontPartform(AeaItemFrontPartform aeaItemFrontPartform);
+
+    PageInfo<AeaItemFrontPartformVo> listAeaItemFrontPartformVoByPage(AeaItemFrontPartform aeaItemFrontPartform, Page page);
+
+    Long getMaxSortNo(AeaItemFrontPartform aeaItemFrontPartform);
+
+    PageInfo<AeaItemFrontPartformVo> listSelectItemFrontPartformByPage(AeaItemFrontPartform aeaItemFrontPartform, Page page);
+
+    AeaItemFrontPartformVo getAeaItemFrontPartformVoById(String frontPartformId);
+
+    List<AeaItemFrontPartformVo> getAeaItemFrontPartformVoByItemVerId(String itemVerId);
 }

@@ -30,4 +30,6 @@ public class AeaParFrontItemVo implements Serializable {
 
     //前置事项名称
     private String itemName;
+    private String isCatalog;// 1：标准事项，0：实施事项
+    private String itemId;//事项ID
 }

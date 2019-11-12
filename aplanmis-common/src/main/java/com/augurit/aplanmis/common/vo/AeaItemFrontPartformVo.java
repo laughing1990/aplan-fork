@@ -29,6 +29,7 @@ public class AeaItemFrontPartformVo implements Serializable {
 
     private String isSmartForm;//是否智能表单
     private String partformName;//阶段扩展表单名称
-
+    private String partformId;//智能表单ID
+    private String delformId;//开发表单ID
 
 }
