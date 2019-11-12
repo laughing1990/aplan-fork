@@ -51,7 +51,7 @@
         },
         created: function () {
             this.projInfoId = this.getUrlParam('projInfoId');
-            // this.projInfoId = '01263565-b7b4-4088-88b8-fb7959d219e1';
+            // this.projInfoId = 'ceb078f2-4f57-48d1-9d5e-68137de3e704';
         },
         mounted: function () {
             this.getProjTypeNature('C_TENDER_TYPE,C_AGENT_TYPE,XM_DWLX');
