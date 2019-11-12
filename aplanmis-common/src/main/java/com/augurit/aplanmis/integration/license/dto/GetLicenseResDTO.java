@@ -1,6 +1,7 @@
 package com.augurit.aplanmis.integration.license.dto;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * @author ZhangXinhui
@@ -8,5 +9,6 @@ import lombok.Data;
  * @desc
  **/
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class GetLicenseResDTO extends PubResponseDTO<LicenseDTO> {
 }

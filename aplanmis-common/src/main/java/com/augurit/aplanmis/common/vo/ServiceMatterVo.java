@@ -4,6 +4,7 @@ import com.augurit.aplanmis.common.domain.AeaImUnitService;
 import com.augurit.aplanmis.common.domain.AeaItemBasic;
 import com.augurit.aplanmis.common.domain.AeaLinkmanInfo;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.List;
  * @date Created in 2019/6/5/005 14:07
  */
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class ServiceMatterVo extends AeaImUnitService implements Serializable {
     private String serviceName; //中介服务名称
 //    private String linkmanInfoName;//从业人员名称

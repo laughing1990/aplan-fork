@@ -11,21 +11,21 @@ import java.util.List;
 */
 public interface AeaItemFrontItemAdminService {
 
-     void saveAeaItemFront(AeaItemFrontItem aeaItemFront);
-
-     void updateAeaItemFront(AeaItemFrontItem aeaItemFront);
-
-     void deleteAeaItemFrontById(String id);
-
-     PageInfo<AeaItemFrontItem> listAeaItemFront(AeaItemFrontItem aeaItemFront, Page page);
-
-     AeaItemFrontItem getAeaItemFrontById(String id);
-
-     List<AeaItemFrontItem> listAeaItemFront(AeaItemFrontItem aeaItemFront);
-
      List<AeaItemFrontItem> listItemsByItemVerId(String itemVerId);
 
      void batchSaveFrontItem(String itemVerId, String[] frontItemVerIds, String[] sortNos);
 
      void batchDelItemByItemVerId(String itemVerId);
+
+     void saveAeaItemFrontItem(AeaItemFrontItem aeaItemFrontItem);
+
+     void updateAeaItemFrontItem(AeaItemFrontItem aeaItemFrontItem);
+
+     void deleteAeaItemFrontItemById(String id);
+
+     PageInfo<AeaItemFrontItem> listAeaItemFrontItemByPage(AeaItemFrontItem aeaItemFrontItem, Page page);
+
+     Long getMaxSortNo(AeaItemFrontItem aeaItemFrontItem);
+
+     AeaItemFrontItem getAeaItemFrontItemByFrontItemId(String frontItemId);
 }

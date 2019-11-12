@@ -81,4 +81,6 @@ public interface AeaItemAdminService {
     Set<String> getItemParentIdsByItemId(String parentItemId, Set<String> sets);
 
     List<AeaItem> getUnSelectedParFrontItemTree(String stageId,String frontItemId);
+
+    List<AeaItem> getUnSelectedItemFrontItemTree(String itemVerId,String frontItemId);
 }

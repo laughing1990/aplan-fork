@@ -3,11 +3,13 @@ package com.augurit.aplanmis.common.event.def;
 import com.augurit.aplanmis.common.event.AplanmisEvent;
 import com.augurit.aplanmis.common.event.AplanmisEventType;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * @author yinlf
  * @Date 2019/9/3
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class ItemCompletedEvent extends AplanmisEvent {
 

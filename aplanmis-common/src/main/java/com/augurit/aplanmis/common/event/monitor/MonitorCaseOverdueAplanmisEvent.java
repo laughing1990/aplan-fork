@@ -3,11 +3,13 @@ package com.augurit.aplanmis.common.event.monitor;
 import com.augurit.aplanmis.common.event.AplanmisEvent;
 import com.augurit.aplanmis.common.event.AplanmisEventType;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /*
 办件逾期事件
  */
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class MonitorCaseOverdueAplanmisEvent extends AplanmisEvent {
 
     /*

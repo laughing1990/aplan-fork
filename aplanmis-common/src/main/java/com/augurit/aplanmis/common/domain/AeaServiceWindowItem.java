@@ -3,6 +3,7 @@ package com.augurit.aplanmis.common.domain;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.springframework.format.annotation.DateTimeFormat;
 
 /**
@@ -14,6 +15,7 @@ import org.springframework.format.annotation.DateTimeFormat;
  */
 @Data
 @ApiModel(description = "事项窗口关联表")
+@EqualsAndHashCode(callSuper = true)
 public class AeaServiceWindowItem extends AeaServiceWindow  {
 
     private static final long serialVersionUID = 1L;

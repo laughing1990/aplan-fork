@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
@@ -17,6 +18,7 @@ import java.util.List;
  */
 @Data
 @ApiModel(value = "查询返回信息")
+@EqualsAndHashCode(callSuper = true)
 public class TaskInfo extends BaseInfo implements Serializable {
     private static final long serialVersionUID = 1L;
 

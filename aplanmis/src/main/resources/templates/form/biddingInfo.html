@@ -191,13 +191,13 @@
                         <el-form-item label="招标类型" class="input-inline" prop="bidType">
                             <el-select v-model="biddingInfo.bidType" placeholder="请选择">
                                 <el-option v-for="(item, index) in bidTypeOptions" :key="index" :label="item.itemName"
-                                    :value="item.itemId"></el-option>
+                                    :value="item.itemCode"></el-option>
                             </el-select>
                         </el-form-item>
                         <el-form-item label="招标方式" class="input-inline" prop="bidMode">
                             <el-select v-model="biddingInfo.bidMode" placeholder="请选择" @change="bidModeSelect">
                                 <el-option v-for="(item, index) in bidModeOptions" :key="index" :label="item.itemName"
-                                    :value="item.itemId"></el-option>
+                                    :value="item.itemCode"></el-option>
                             </el-select>
                         </el-form-item>
                         <el-form-item label="标段金额（万元）" class="input-inline" prop="bidSectionMoney">
