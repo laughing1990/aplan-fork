@@ -11,6 +11,7 @@ import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.ui.pager.EasyuiPageInfo;
 import com.augurit.agcloud.framework.ui.pager.PageHelper;
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
+import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.constants.ActiveStatus;
 import com.augurit.aplanmis.common.constants.AuditFlagEnum;
@@ -22,6 +23,10 @@ import com.augurit.aplanmis.common.utils.BusinessUtils;
 import com.augurit.aplanmis.common.utils.FileUtils;
 import com.augurit.aplanmis.common.utils.SessionUtil;
 import com.augurit.aplanmis.common.vo.*;
+import com.augurit.aplanmis.supermarket.apply.service.RestImApplyService;
+import com.augurit.aplanmis.supermarket.apply.vo.ApplyinstResult;
+import com.augurit.aplanmis.supermarket.apply.vo.ImItemApplyData;
+import com.augurit.aplanmis.supermarket.apply.vo.ImPurchaseData;
 import com.augurit.aplanmis.supermarket.projPurchase.vo.*;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
@@ -1380,5 +1385,31 @@ public class ProjPurchaseService {
 
     public void updateAeaImProjPurchase(AeaImProjPurchase aeaImProjPurchase) throws Exception {
         aeaImProjPurchaseMapper.updateAeaImProjPurchase(aeaImProjPurchase);
+    }
+
+    @Autowired
+    private RestImApplyService restImApplyService;
+
+    /**
+     * 发布项目采购需求并启动流程---唐山模式
+     *
+     * @param purchaseVo
+     * @return
+     */
+    public ResultForm startProjPurchaseAndProcess(SaveAeaImProjPurchaseVo purchaseVo) throws Exception {
+        //String applyinstIdParam = purchaseVo.getApplyinstId();
+        ImItemApplyData applyData = purchaseVo.createItemApplyData();
+        //发起中介事项流程
+        ApplyinstResult result = restImApplyService.purchaseStartProcess(applyData);
+        String applyinstId = result.getApplyinstId();
+        String applyinstCode = result.getApplyinstCode();
+        //保存采购信息
+        ImPurchaseData purchaseData = purchaseVo.createPurchaseData(applyinstId, applyinstCode);
+        restImApplyService.savePurchaseProjInfo(purchaseData);
+//        //保存受理回执，物料回执
+//        if (StringUtils.isBlank(applyinstIdParam)) {
+//            receiveService.saveReceive(new String[]{applyinstId}, new String[]{"1", "2"}, SecurityContext.getCurrentUserName(), "");
+//        }
+        return new ContentResultForm<>(true, applyinstId, "Series start process success");
     }
 }

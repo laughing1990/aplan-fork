@@ -160,6 +160,22 @@ public class AeaImProjPurchaseController {
         }
     }
 
+    @ApiOperation(value = "新增采购需求并发起流程", notes = "业主单位个人中心新增采购需求,批文文件上传officialRemarkFile，要求说明文件上传requireExplainFile")
+    @PostMapping(value = "/startProjPurchase")
+    public RestResult startProjPurchase(@Valid SaveAeaImProjPurchaseVo saveAeaImProjPurchaseVo) {
+
+        try {
+            //AeaImProjPurchase aeaImProjPurchase =
+            projPurchaseService.startProjPurchaseAndProcess(saveAeaImProjPurchaseVo);
+//            return new ContentRestResult<>(true, aeaImProjPurchase.getProjPurchaseId());
+            return new RestResult(true, "");
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return new ContentRestResult<>(false, null, e.getMessage());
+        }
+    }
+
+
     @ApiOperation(value = "查询符合条件的中介机构", notes = "查询符合条件的中介机构")
     @PostMapping(value = "/getAgentUnitInfoList", produces = "application/json;charset=UTF-8")
     public ContentRestResult<List<AgentUnitInfoVo>> getAgentUnitInfoList(@RequestBody QueryAgentUnitInfoVo queryAgentUnitInfo) {

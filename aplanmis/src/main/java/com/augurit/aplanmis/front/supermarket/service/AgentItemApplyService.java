@@ -148,7 +148,7 @@ public class AgentItemApplyService {
 
     private SeriesApplyDataVo changeToSeriesApplyDataVo(AgentItemApplyData data) {
         AeaItemBasic aeaItemBasic = aeaItemBasicMapper.getAeaItemBasicByItemVerId(data.getItemVerId(), SecurityContext.getCurrentOrgId());
-        data.setIsParallel("0");
+//        data.setIsParallel("0");
         data.setAppId(aeaItemBasic.getAppId());
         SeriesApplyDataVo vo = new SeriesApplyDataVo();
         BeanUtils.copyProperties(data, vo);

@@ -41,8 +41,8 @@ public class AgentItemApplyData {
 //    private String branchOrgMap;
     @ApiModelProperty(value = "项目ID", required = true)
     private String projInfoId;
-    @ApiModelProperty(value = "经办单位ID集合", hidden = true)
-    private String[] handleUnitIds;
+//    @ApiModelProperty(value = "经办单位ID集合", hidden = true)
+//    private String[] handleUnitIds;
 
     @ApiModelProperty(value = "建设单位Map集合，key为projInfoId,格式为[{projInfoId1:[unitId1,unitId1]}]", required = true)
     private List<BuildProjUnitVo> buildProjUnitMap;
@@ -53,12 +53,12 @@ public class AgentItemApplyData {
     @ApiModelProperty(value = "申请联系人ID,", notes = "当申报主体为个人时：必输")
     private String applyLinkmanId;
 
-    @ApiModelProperty(value = "情形ID集合", hidden = true)
-    private String[] stateIds;
-    @ApiModelProperty(value = "是否并行推行：0表示否，1表示是,", hidden = true)
-    private String isParallel;
-    @ApiModelProperty(value = "并行推进阶段ID", hidden = true)
-    private String stageId;
+//    @ApiModelProperty(value = "情形ID集合", hidden = true)
+//    private String[] stateIds;
+//    @ApiModelProperty(value = "是否并行推行：0表示否，1表示是,", hidden = true)
+//    private String isParallel;
+//    @ApiModelProperty(value = "并行推进阶段ID", hidden = true)
+//    private String stageId;
 
     //采购项目信息
     @ApiModelProperty(value = "采购需求ID", hidden = true)
