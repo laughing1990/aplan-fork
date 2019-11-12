@@ -230,7 +230,8 @@ public class AeaItemAdminController {
     public ModelAndView frontCheckManage(String busiType, String busiId, String stateVerId, ModelMap modelMap) {
 
         handleItemVerIsEditable(busiType, busiId, stateVerId, false, modelMap);
-        return new ModelAndView("ui-jsp/kitymind/item/front/set_front_check_manage");
+//        return new ModelAndView("ui-jsp/kitymind/item/front/set_front_check_manage");
+        return new ModelAndView("ui-jsp/kitymind/item/frontCheck/front_check_manage_index");
     }
 
     /**
@@ -444,6 +445,12 @@ public class AeaItemAdminController {
     @RequestMapping("/getUnSelectedParFrontItemTree.do")
     public List<AeaItem> getUnSelectedParFrontItemTree(String stageId,String frontItemId) {
         List<AeaItem> list = aeaItemAdminService.getUnSelectedParFrontItemTree(stageId,frontItemId);
+        return list;
+    }
+
+    @RequestMapping("/getUnSelectedItemFrontItemTree.do")
+    public List<AeaItem> getUnSelectedItemFrontItemTree(String itemVerId,String frontItemId) {
+        List<AeaItem> list = aeaItemAdminService.getUnSelectedItemFrontItemTree(itemVerId,frontItemId);
         return list;
     }
 }

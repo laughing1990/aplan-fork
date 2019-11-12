@@ -72,4 +72,7 @@ public class AeaItemFrontItem implements Serializable{
 
     @ApiModelProperty("扩展字段：前置事项标准事项指导部门")
     private String frontCkGuideOrgName;
+
+    @ApiModelProperty("扩展字段：查询关键字")
+    private String keyword;
 }
