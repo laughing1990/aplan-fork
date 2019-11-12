@@ -2957,4 +2957,33 @@
         order by org.ORG_LEVEL asc, org.ORG_SORT_NO asc, aib.CREATE_TIME desc
     </select>
 
+    <select id="listUnSelectedItemFrontItemBasicByItemVerId" resultType="com.augurit.aplanmis.common.domain.AeaItemBasic">
+        select
+        <include refid="aib_allColumns"/>,
+        itemVer.ver_num verNum,
+        itemVer.item_ver_status itemVerStatus,
+        org.ORG_NAME orgName,
+        item.PARENT_ITEM_ID parentItemId,
+        bdr.region_name regionName
+        from AEA_ITEM_BASIC aib
+        join (select item_ver_id, ver_num, ITEM_VER_STATUS from aea_item_ver ver
+        join (select ITEM_ID, max(VER_NUM) maxNum from aea_item_ver where IS_DELETED='0' and ITEM_VER_STATUS in
+        ('2','1') group by ITEM_ID ) maxVer
+        on ver.item_id = maxVer.item_id and ver.VER_NUM = maxVer.maxNum ) itemVer on aib.ITEM_VER_ID =
+        itemVer.ITEM_VER_ID
+        left join OPU_OM_ORG org on ( org.ORG_ID = aib.ORG_ID and org.ORG_DELETED = '0' )
+        left join AEA_ITEM item on item.ITEM_ID = aib.ITEM_ID
+        left JOIN bsc_dic_region bdr on aib.region_id=bdr.region_id
+        <where>
+            aib.ROOT_ORG_ID = #{rootOrgId}
+            and aib.item_ver_id not in (
+            select aifi.FRONT_ITEM_VER_ID from aea_item_front_item aifi where aifi.ITEM_VER_ID = #{itemVerId}
+            <if test="frontItemId != null and frontItemId !='' " >
+                and aifi.FRONT_ITEM_ID != #{frontItemId}
+            </if>
+            )
+        </where>
+        order by org.ORG_LEVEL asc, org.ORG_SORT_NO asc, aib.CREATE_TIME desc
+    </select>
+
 </mapper>

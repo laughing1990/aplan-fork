@@ -74,7 +74,9 @@
           </div>
           <div class="clearfix">
             <el-form-item class="input-inline" label="合同确认的行政单位区域码" prop="govOrgAreaCode">
-              <el-input v-model="formData.govOrgAreaCode" placeholder="请输入合同确认的行政单位区域码"></el-input>
+              <el-select v-model="formData.govOrgAreaCode" placeholder="请选择合同确认的行政单位区域码" @change="forceUpdate">
+                <el-option :label="item.regionName" :value="item.regionNum" :key='item.regionId' v-for="item in region"></el-option>
+              </el-select>
             </el-form-item>
           </div>
         </el-form>

@@ -1,15 +1,16 @@
-package com.augurit.aplanmis.common.domain;
+package com.augurit.aplanmis.common.vo;
 
-import io.swagger.annotations.ApiModel;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
 
+/**
+ * @author tiantian
+ * @date 2019/11/11
+ */
 @Data
-@ApiModel(description = " 事项的前置检查事项")
-public class AeaItemFrontPartform implements Serializable {
-
+public class AeaItemFrontPartformVo implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private String frontPartformId; // (ID)
@@ -26,6 +27,8 @@ public class AeaItemFrontPartform implements Serializable {
     private java.util.Date modifyTime; // ()
     private String rootOrgId; // (根组织id)
 
-    //非表字段
-    private String keyword;
+    private String isSmartForm;//是否智能表单
+    private String partformName;//阶段扩展表单名称
+
+
 }

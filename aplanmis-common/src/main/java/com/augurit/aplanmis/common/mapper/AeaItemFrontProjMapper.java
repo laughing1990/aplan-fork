@@ -23,4 +23,7 @@ public interface AeaItemFrontProjMapper {
      List <AeaItemFrontProj> listAeaItemFrontProj(AeaItemFrontProj aeaItemFrontProj) ;
 
      AeaItemFrontProj getAeaItemFrontProjById(@Param("id") String id) ;
+
+     Long getMaxSortNo(AeaItemFrontProj aeaItemFrontProj);
+
 }

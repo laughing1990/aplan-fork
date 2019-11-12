@@ -1,6 +1,7 @@
 package com.augurit.aplanmis.common.mapper;
 
 import com.augurit.aplanmis.common.domain.AeaItemFrontPartform;
+import com.augurit.aplanmis.common.vo.AeaItemFrontPartformVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -19,4 +20,12 @@ public interface AeaItemFrontPartformMapper {
      void deleteAeaItemFrontPartform(@Param("id") String id) ;
      List <AeaItemFrontPartform> listAeaItemFrontPartform(AeaItemFrontPartform aeaItemFrontPartform) ;
      AeaItemFrontPartform getAeaItemFrontPartformById(@Param("id") String id) ;
+
+     List<AeaItemFrontPartformVo> listAeaItemFrontPartformVo(AeaItemFrontPartform aeaItemFrontPartform) ;
+
+     Long getMaxSortNo(AeaItemFrontPartform aeaItemFrontPartform) ;
+
+     List<AeaItemFrontPartformVo> listSelectItemFrontPartform(AeaItemFrontPartform aeaItemFrontPartform) ;
+
+     AeaItemFrontPartformVo getAeaItemFrontPartformVoById(@Param("id") String id) ;
 }

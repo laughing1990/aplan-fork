@@ -30,67 +30,13 @@ public class AeaItemFrontItemAdminServiceImpl implements AeaItemFrontItemAdminSe
     private static Logger logger = LoggerFactory.getLogger(AeaItemFrontItemAdminServiceImpl.class);
 
     @Autowired
-    private AeaItemFrontItemMapper aeaItemFrontMapper;
-
-    @Override
-    public void saveAeaItemFront(AeaItemFrontItem aeaItemFront) {
-
-        aeaItemFront.setRootOrgId(SecurityContext.getCurrentOrgId());
-        aeaItemFront.setIsActive(Status.ON);
-        aeaItemFront.setCreater(SecurityContext.getCurrentUserId());
-        aeaItemFront.setCreateTime(new Date());
-        aeaItemFrontMapper.insertAeaItemFront(aeaItemFront);
-    }
-
-    @Override
-    public void updateAeaItemFront(AeaItemFrontItem aeaItemFront) {
-
-        aeaItemFrontMapper.updateAeaItemFront(aeaItemFront);
-    }
-
-    @Override
-    public void deleteAeaItemFrontById(String id) {
-
-        if(StringUtils.isBlank(id)){
-            throw new InvalidParameterException("参数id为空!");
-        }
-        aeaItemFrontMapper.deleteAeaItemFront(id);
-    }
-
-    @Override
-    public PageInfo<AeaItemFrontItem> listAeaItemFront(AeaItemFrontItem aeaItemFront,Page page) {
-
-        aeaItemFront.setRootOrgId(SecurityContext.getCurrentOrgId());
-        PageHelper.startPage(page);
-        List<AeaItemFrontItem> list = aeaItemFrontMapper.listAeaItemFront(aeaItemFront);
-        logger.debug("成功执行分页查询！！");
-        return new PageInfo<AeaItemFrontItem>(list);
-    }
-
-    @Override
-    public AeaItemFrontItem getAeaItemFrontById(String id) {
-
-        if(StringUtils.isBlank(id)){
-            throw new InvalidParameterException("参数id为空!");
-        }
-        logger.debug("根据ID获取Form对象，ID为：{}", id);
-        return aeaItemFrontMapper.getAeaItemFrontById(id);
-    }
-
-    @Override
-    public List<AeaItemFrontItem> listAeaItemFront(AeaItemFrontItem aeaItemFront) {
-
-        aeaItemFront.setRootOrgId(SecurityContext.getCurrentOrgId());
-        List<AeaItemFrontItem> list = aeaItemFrontMapper.listAeaItemFront(aeaItemFront);
-        logger.debug("成功执行查询list！！");
-        return list;
-    }
+    private AeaItemFrontItemMapper aeaItemFrontItemMapper;
 
     @Override
     public List<AeaItemFrontItem> listItemsByItemVerId(String itemVerId){
 
         String rootOrgId = SecurityContext.getCurrentOrgId();
-        List<AeaItemFrontItem> list = aeaItemFrontMapper.listItemsByItemVerId(itemVerId, rootOrgId);
+        List<AeaItemFrontItem> list = aeaItemFrontItemMapper.listItemsByItemVerId(itemVerId, rootOrgId);
         logger.debug("成功执行查询list！！");
         return list;
     }
@@ -116,7 +62,7 @@ public class AeaItemFrontItemAdminServiceImpl implements AeaItemFrontItemAdminSe
                     aeaItemFront.setCreater(userId);
                     aeaItemFront.setCreateTime(new Date());
                     aeaItemFront.setRootOrgId(rootOrgId);
-                    aeaItemFrontMapper.insertAeaItemFront(aeaItemFront);
+                    aeaItemFrontItemMapper.insertAeaItemFront(aeaItemFront);
                 }
             }
         }
@@ -126,8 +72,79 @@ public class AeaItemFrontItemAdminServiceImpl implements AeaItemFrontItemAdminSe
     public void batchDelItemByItemVerId(String itemVerId){
 
         if(StringUtils.isNotBlank(itemVerId)){
-            aeaItemFrontMapper.batchDelItemByItemVerId(itemVerId);
+            aeaItemFrontItemMapper.batchDelItemByItemVerId(itemVerId);
         }
+    }
+
+
+    @Override
+    public void saveAeaItemFrontItem(AeaItemFrontItem aeaItemFrontItem){
+        checkSame(aeaItemFrontItem);
+
+        aeaItemFrontItem.setCreateTime(new Date());
+        aeaItemFrontItem.setCreater(SecurityContext.getCurrentUserId());
+        aeaItemFrontItem.setRootOrgId(SecurityContext.getCurrentOrgId());
+        aeaItemFrontItemMapper.insertAeaItemFront(aeaItemFrontItem);
+    }
+
+    @Override
+    public void updateAeaItemFrontItem(AeaItemFrontItem aeaItemFrontItem){
+        checkSame(aeaItemFrontItem);
+
+        aeaItemFrontItem.setModifyTime(new Date());
+        aeaItemFrontItem.setModifier(SecurityContext.getCurrentUserId());
+        aeaItemFrontItemMapper.updateAeaItemFront(aeaItemFrontItem);
+    }
+
+    @Override
+    public void deleteAeaItemFrontItemById(String id){
+        if (StringUtils.isBlank(id)) {
+            throw new InvalidParameterException(id);
+        }
+        String[] ids = id.split(",");
+        for(String frontItemId :ids) {
+            aeaItemFrontItemMapper.deleteAeaItemFront(frontItemId);
+        }
+    }
+
+    @Override
+    public PageInfo<AeaItemFrontItem> listAeaItemFrontItemByPage(AeaItemFrontItem aeaItemFrontItem, Page page){
+        PageHelper.startPage(page);
+        List<AeaItemFrontItem> list = aeaItemFrontItemMapper.listAeaItemFrontItem(aeaItemFrontItem);
+        logger.debug("成功执行分页查询！！");
+        return new PageInfo<>(list);
+    }
+
+    @Override
+    public AeaItemFrontItem getAeaItemFrontItemByFrontItemId(String frontItemId){
+        if (StringUtils.isBlank(frontItemId)) {
+            throw new InvalidParameterException(frontItemId);
+        }
+        logger.debug("根据ID获取Form对象，ID为：{}", frontItemId);
+        return aeaItemFrontItemMapper.getAeaItemFrontItemByFrontItemId(frontItemId);
+    }
+
+    @Override
+    public Long getMaxSortNo(AeaItemFrontItem aeaItemFrontItem){
+        Long sortNo = aeaItemFrontItemMapper.getMaxSortNo(aeaItemFrontItem);
+        if(sortNo==null){
+            sortNo = 1l;
+        }else{
+            sortNo = sortNo + 1;
+        }
+
+        return sortNo;
+    }
+
+    private void checkSame(AeaItemFrontItem aeaItemFrontItem){
+        AeaItemFrontItem queryItemFrontItem = new AeaItemFrontItem();
+        queryItemFrontItem.setFrontCkItemVerId(aeaItemFrontItem.getFrontCkItemVerId());
+        queryItemFrontItem.setItemVerId(aeaItemFrontItem.getItemVerId());
+        List<AeaItemFrontItem> list = aeaItemFrontItemMapper.listAeaItemFront(queryItemFrontItem);
+        if(list.size()>0){
+            throw new RuntimeException("已有配置相同的前置事项检测!");
+        }
+
     }
 }
 
