@@ -16,12 +16,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 /**
-* 事项的前置检查事项-Service服务接口实现类
-*/
+ * 事项的前置检查事项-Service服务接口实现类
+ */
 @Service
 @Transactional
 public class AeaItemFrontPartformAdminServiceImpl implements AeaItemFrontPartformAdminService {
@@ -58,13 +59,13 @@ public class AeaItemFrontPartformAdminServiceImpl implements AeaItemFrontPartfor
             throw new InvalidParameterException(id);
         }
         String[] ids = id.split(",");
-        for(String frontPartformId :ids) {
+        for (String frontPartformId : ids) {
             aeaItemFrontPartformMapper.deleteAeaItemFrontPartform(frontPartformId);
         }
     }
 
     @Override
-    public PageInfo<AeaItemFrontPartform> listAeaItemFrontPartform(AeaItemFrontPartform aeaItemFrontPartform,Page page) {
+    public PageInfo<AeaItemFrontPartform> listAeaItemFrontPartform(AeaItemFrontPartform aeaItemFrontPartform, Page page) {
 
         PageHelper.startPage(page);
         List<AeaItemFrontPartform> list = aeaItemFrontPartformMapper.listAeaItemFrontPartform(aeaItemFrontPartform);
@@ -75,8 +76,8 @@ public class AeaItemFrontPartformAdminServiceImpl implements AeaItemFrontPartfor
     @Override
     public AeaItemFrontPartform getAeaItemFrontPartformById(String id) {
 
-        if(id == null)
-        throw new InvalidParameterException(id);
+        if (id == null)
+            throw new InvalidParameterException(id);
         logger.debug("根据ID获取Form对象，ID为：{}", id);
         return aeaItemFrontPartformMapper.getAeaItemFrontPartformById(id);
     }
@@ -89,19 +90,19 @@ public class AeaItemFrontPartformAdminServiceImpl implements AeaItemFrontPartfor
         return list;
     }
 
-    private void checkSame(AeaItemFrontPartform aeaItemFrontPartform){
+    private void checkSame(AeaItemFrontPartform aeaItemFrontPartform) {
         AeaItemFrontPartform queryItemFrontPartform = new AeaItemFrontPartform();
         queryItemFrontPartform.setItemVerId(aeaItemFrontPartform.getItemVerId());
         queryItemFrontPartform.setItemPartformId(aeaItemFrontPartform.getItemPartformId());
         List<AeaItemFrontPartform> list = aeaItemFrontPartformMapper.listAeaItemFrontPartform(queryItemFrontPartform);
-        if(list.size()>0){
+        if (list.size() > 0) {
             throw new RuntimeException("已有配置相同的前置扩事项展表单检测!");
         }
 
     }
 
     @Override
-    public PageInfo<AeaItemFrontPartformVo> listAeaItemFrontPartformVoByPage(AeaItemFrontPartform aeaItemFrontPartform, Page page){
+    public PageInfo<AeaItemFrontPartformVo> listAeaItemFrontPartformVoByPage(AeaItemFrontPartform aeaItemFrontPartform, Page page) {
         PageHelper.startPage(page);
         List<AeaItemFrontPartformVo> list = aeaItemFrontPartformMapper.listAeaItemFrontPartformVo(aeaItemFrontPartform);
         logger.debug("成功执行分页查询！！");
@@ -109,11 +110,11 @@ public class AeaItemFrontPartformAdminServiceImpl implements AeaItemFrontPartfor
     }
 
     @Override
-    public Long getMaxSortNo(AeaItemFrontPartform aeaItemFrontPartform){
+    public Long getMaxSortNo(AeaItemFrontPartform aeaItemFrontPartform) {
         Long sortNo = aeaItemFrontPartformMapper.getMaxSortNo(aeaItemFrontPartform);
-        if(sortNo==null){
+        if (sortNo == null) {
             sortNo = 1l;
-        }else{
+        } else {
             sortNo = sortNo + 1;
         }
 
@@ -134,6 +135,15 @@ public class AeaItemFrontPartformAdminServiceImpl implements AeaItemFrontPartfor
             throw new InvalidParameterException(frontPartformId);
         }
         return aeaItemFrontPartformMapper.getAeaItemFrontPartformVoById(frontPartformId);
+    }
+
+    @Override
+    public List<AeaItemFrontPartformVo> getAeaItemFrontPartformVoByItemVerId(String itemVerId) {
+
+        List<AeaItemFrontPartformVo> aeaItemFrontPartformVos = new ArrayList();
+        if (StringUtils.isBlank(itemVerId)) return aeaItemFrontPartformVos;
+        aeaItemFrontPartformVos.addAll(aeaItemFrontPartformMapper.getAeaItemFrontPartformVoByItemVerId(itemVerId, SecurityContext.getCurrentOrgId()));
+        return aeaItemFrontPartformVos;
     }
 }
 

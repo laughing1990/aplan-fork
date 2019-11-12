@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -63,7 +64,7 @@ public class AeaParFrontStageServiceImpl implements AeaParFrontStageService {
             throw new InvalidParameterException(id);
         }
         String[] ids = id.split(",");
-        for(String frontStageId :ids) {
+        for (String frontStageId : ids) {
             aeaParFrontStageMapper.deleteAeaParFrontStage(frontStageId);
         }
     }
@@ -91,19 +92,19 @@ public class AeaParFrontStageServiceImpl implements AeaParFrontStageService {
         return list;
     }
 
-    private void checkSame(AeaParFrontStage aeaParFrontStage) throws Exception{
+    private void checkSame(AeaParFrontStage aeaParFrontStage) throws Exception {
         AeaParFrontStage queryParFrontStage = new AeaParFrontStage();
         queryParFrontStage.setStageId(aeaParFrontStage.getStageId());
         queryParFrontStage.setHistStageId(aeaParFrontStage.getHistStageId());
         List<AeaParFrontStage> list = aeaParFrontStageMapper.listAeaParFrontStage(queryParFrontStage);
-        if(list.size()>0){
+        if (list.size() > 0) {
             throw new RuntimeException("已有配置相同的前置阶段检测!");
         }
 
     }
 
     @Override
-    public PageInfo<AeaParFrontStageVo> listAeaParFrontStageVoByPage(AeaParFrontStage aeaParFrontStage, Page page) throws Exception{
+    public PageInfo<AeaParFrontStageVo> listAeaParFrontStageVoByPage(AeaParFrontStage aeaParFrontStage, Page page) throws Exception {
         PageHelper.startPage(page);
         List<AeaParFrontStageVo> list = aeaParFrontStageMapper.listAeaParFrontStageVo(aeaParFrontStage);
         logger.debug("成功执行分页查询！！");
@@ -111,11 +112,11 @@ public class AeaParFrontStageServiceImpl implements AeaParFrontStageService {
     }
 
     @Override
-    public Long getMaxSortNo(AeaParFrontStage aeaParFrontStage)throws Exception{
+    public Long getMaxSortNo(AeaParFrontStage aeaParFrontStage) throws Exception {
         Long sortNo = aeaParFrontStageMapper.getMaxSortNo(aeaParFrontStage);
-        if(sortNo==null){
+        if (sortNo == null) {
             sortNo = 1l;
-        }else{
+        } else {
             sortNo = sortNo + 1;
         }
 
@@ -131,9 +132,15 @@ public class AeaParFrontStageServiceImpl implements AeaParFrontStageService {
     }
 
     @Override
-    public List<AeaParFrontStageVo> listSelectParFrontStage(AeaParFrontStage aeaParFrontStage)throws Exception{
+    public List<AeaParFrontStageVo> listSelectParFrontStage(AeaParFrontStage aeaParFrontStage) throws Exception {
         return aeaParFrontStageMapper.listSelectParFrontStage(aeaParFrontStage);
     }
 
+    @Override
+    public List<AeaParFrontStageVo> getHistStageByStageId(String stageId) {
+        List<AeaParFrontStageVo> aeaParFrontStageVos = new ArrayList();
+        if (StringUtils.isBlank(stageId)) return aeaParFrontStageVos;
+        return aeaParFrontStageMapper.getHistStageByStageId(stageId, SecurityContext.getCurrentOrgId());
+    }
 }
 

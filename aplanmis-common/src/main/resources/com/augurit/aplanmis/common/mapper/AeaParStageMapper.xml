@@ -54,20 +54,70 @@
     <!--2 根据主键ID查询单个实体 -->
     <select id="getAeaParStageById" resultType="AeaParStage">
         select
-            <include refid="allColumns">
-                <property name="alias" value="aps"/>
-            </include>
+        <include refid="allColumns">
+            <property name="alias" value="aps"/>
+        </include>
         from AEA_PAR_STAGE aps
         where aps.STAGE_ID = #{id}
-          and aps.IS_DELETED = '0'
+        and aps.IS_DELETED = '0'
+    </select>
+
+    <select id="getCompletedStageByProjInfoId" resultType="AeaParStage">
+        SELECT
+        <include refid="allColumns">
+            <property name="alias" value="aps"/>
+        </include>
+        FROM
+        aea_par_stage aps,
+        aea_hi_par_stageinst ahps,
+        aea_hi_applyinst aha,
+        aea_applyinst_proj aap
+        WHERE
+        aps.STAGE_ID = ahps.STAGE_ID
+        AND aps.IS_DELETED = '0'
+        AND aap.PROJ_INFO_ID = #{projInfoId}
+        AND aap.APPLYINST_ID = aha.APPLYINST_ID
+        AND aha.APPLYINST_STATE = '6'
+        AND aha.IS_SERIES_APPROVE = '0'
+        AND aha.IS_DELETED = '0'
+        AND aha.ROOT_ORG_ID = #{rootOrgId}
+        AND ahps.ROOT_ORG_ID = #{rootOrgId}
+        AND aps.ROOT_ORG_ID = #{rootOrgId}
+        AND ahps.APPLYINST_ID = aha.APPLYINST_ID
+        AND ahps.stage_id NOT IN (
+        SELECT
+        ahps.STAGE_ID
+        FROM
+        aea_hi_iteminst ahi,
+        aea_hi_par_stageinst ahps,
+        aea_hi_applyinst aha,
+        aea_applyinst_proj aap
+        WHERE
+        ahi.STAGEINST_ID = ahps.STAGEINST_ID
+        AND ahi.ITEMINST_STATE != '11'
+        AND ahi.ITEMINST_STATE != '12'
+        AND aap.PROJ_INFO_ID = #{projInfoId}
+        AND aap.APPLYINST_ID = aha.APPLYINST_ID
+        AND aha.APPLYINST_ID = ahps.APPLYINST_ID
+        AND aha.APPLYINST_STATE = '6'
+        AND aha.IS_SERIES_APPROVE = '0'
+        AND aha.IS_DELETED = '0'
+        AND aha.ROOT_ORG_ID = #{rootOrgId}
+        AND ahps.ROOT_ORG_ID = #{rootOrgId}
+        AND ahi.ROOT_ORG_ID = #{rootOrgId}
+        GROUP BY
+        ahps.STAGE_ID
+        )
+        GROUP BY
+        aps.STAGE_ID
     </select>
 
     <!--3 根据条件查询实体list -->
     <select id="listAeaParStage" resultType="AeaParStage">
         select
-            <include refid="allColumns">
-                <property name="alias" value="aps"/>
-            </include>
+        <include refid="allColumns">
+            <property name="alias" value="aps"/>
+        </include>
         from AEA_PAR_STAGE aps
         <where>
             <if test="stageId != null">
@@ -148,8 +198,8 @@
             <if test="stageEl != null">
                 AND STAGE_EL = #{stageEl}
             </if>
-            <if test="isCheckItem != null" >
-                AND    IS_CHECK_ITEM = #{isCheckItem}
+            <if test="isCheckItem != null">
+                AND IS_CHECK_ITEM = #{isCheckItem}
             </if>
             <if test="lcbsxlx != null">
                 AND LCBSXLX = #{lcbsxlx}
@@ -164,31 +214,31 @@
                 AND ROOT_ORG_ID = #{rootOrgId}
             </if>
             <if test="isShowItem != null">
-                AND IS_SHOW_ITEM  = #{isShowItem}
+                AND IS_SHOW_ITEM = #{isShowItem}
             </if>
             <if test="dygjbzfxfw != null">
-                AND DYGJBZFXFW  = #{dygjbzfxfw}
+                AND DYGJBZFXFW = #{dygjbzfxfw}
             </if>
-            <if test="isCheckItemform != null" >
-                AND    IS_CHECK_ITEMFORM = #{isCheckItemform}
+            <if test="isCheckItemform != null">
+                AND IS_CHECK_ITEMFORM = #{isCheckItemform}
             </if>
-            <if test="isCheckPartform != null" >
-                AND    IS_CHECK_PARTFORM = #{isCheckPartform}
+            <if test="isCheckPartform != null">
+                AND IS_CHECK_PARTFORM = #{isCheckPartform}
             </if>
-            <if test="isCheckProj != null" >
-                AND    IS_CHECK_PROJ = #{isCheckProj}
+            <if test="isCheckProj != null">
+                AND IS_CHECK_PROJ = #{isCheckProj}
             </if>
-            <if test="isCheckStage != null" >
-                AND    IS_CHECK_STAGE = #{isCheckStage}
+            <if test="isCheckStage != null">
+                AND IS_CHECK_STAGE = #{isCheckStage}
             </if>
-            <if test="keyword != null and keyword !='' " >
+            <if test="keyword != null and keyword !='' ">
                 AND (
-                    STAGE_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%') OR
-                    STAGE_MEMO LIKE CONCAT(CONCAT('%',#{keyword}),'%') OR
-                    STAGE_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                STAGE_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%') OR
+                STAGE_MEMO LIKE CONCAT(CONCAT('%',#{keyword}),'%') OR
+                STAGE_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 )
             </if>
-            AND  IS_DELETED = '0'
+            AND IS_DELETED = '0'
         </where>
         order by IS_NODE asc, SORT_NO asc, CREATE_TIME asc
     </select>
@@ -289,53 +339,53 @@
     <!--6 修改实体对象 -->
     <update id="updateAeaParStage" parameterType="AeaParStage">
         update AEA_Par_STAGE
-        <set >
-            <if test="stageId != null and stageId!='' " >
+        <set>
+            <if test="stageId != null and stageId!='' ">
                 STAGE_ID = #{stageId},
             </if>
-            <if test="stageName != null and stageName!='' " >
+            <if test="stageName != null and stageName!='' ">
                 STAGE_NAME = #{stageName},
             </if>
             <if test="stageCode!=null and stageCode!='' ">
                 STAGE_CODE = #{stageCode},
             </if>
-            <if test="themeVerId != null and themeVerId!='' " >
-                THEME_VER_ID  = #{themeVerId},
+            <if test="themeVerId != null and themeVerId!='' ">
+                THEME_VER_ID = #{themeVerId},
             </if>
-            <if test="appId != null and appId!='' " >
+            <if test="appId != null and appId!='' ">
                 APP_ID = #{appId},
             </if>
-            <if test="dueNum != null and dueNum!='' " >
+            <if test="dueNum != null and dueNum!='' ">
                 DUE_NUM = #{dueNum},
             </if>
-            <if test="dueUnit != null and dueUnit!='' " >
+            <if test="dueUnit != null and dueUnit!='' ">
                 DUE_UNIT = #{dueUnit},
             </if>
-            <if test="sortNo != null and sortNo!='' " >
+            <if test="sortNo != null and sortNo!='' ">
                 SORT_NO = #{sortNo},
             </if>
-            <if test="iconCss != null" >
+            <if test="iconCss != null">
                 ICON_CSS = #{iconCss},
             </if>
-            <if test="bgCss != null" >
+            <if test="bgCss != null">
                 BG_CSS = #{bgCss},
             </if>
-            <if test="stageMemo != null" >
+            <if test="stageMemo != null">
                 STAGE_MEMO = #{stageMemo},
             </if>
-            <if test="creater != null and creater!='' " >
+            <if test="creater != null and creater!='' ">
                 CREATER = #{creater},
             </if>
-            <if test="createTime != null" >
+            <if test="createTime != null">
                 CREATE_TIME = #{createTime},
             </if>
-            <if test="modifier != null and modifier!='' " >
+            <if test="modifier != null and modifier!='' ">
                 MODIFIER = #{modifier},
             </if>
-            <if test="modifyTime != null" >
+            <if test="modifyTime != null">
                 MODIFY_TIME = #{modifyTime},
             </if>
-            <if test="isDeleted != null and isDeleted!='' " >
+            <if test="isDeleted != null and isDeleted!='' ">
                 IS_DELETED = #{isDeleted},
             </if>
             <if test="isNode!=null and isNode!='' ">
@@ -347,76 +397,76 @@
             <if test="statusCheckUrl!=null and statusCheckUrl!='' ">
                 STATUS_CHECK_URL = #{statusCheckUrl},
             </if>
-            <if test="smallImgPath != null" >
+            <if test="smallImgPath != null">
                 SMALL_IMG_PATH = #{smallImgPath},
             </if>
-            <if test="middleImgPath != null" >
+            <if test="middleImgPath != null">
                 MIDDLE_IMG_PATH = #{middleImgPath},
             </if>
-            <if test="bigImgPath != null" >
+            <if test="bigImgPath != null">
                 BIG_IMG_PATH = #{bigImgPath},
             </if>
-            <if test="hugeImgPath != null" >
+            <if test="hugeImgPath != null">
                 HUGE_IMG_PATH = #{hugeImgPath},
             </if>
-            <if test="isImgIcon != null" >
+            <if test="isImgIcon != null">
                 IS_IMG_ICON = #{isImgIcon},
             </if>
-            <if test="isOptionItem != null and isOptionItem!='' " >
+            <if test="isOptionItem != null and isOptionItem!='' ">
                 IS_OPTION_ITEM = #{isOptionItem},
             </if>
-            <if test="isSelItem != null and isSelItem!='' " >
+            <if test="isSelItem != null and isSelItem!='' ">
                 IS_SEL_ITEM = #{isSelItem},
             </if>
-            <if test="parentId != null" >
+            <if test="parentId != null">
                 PARENT_ID = #{parentId},
             </if>
-            <if test="noptItemShowNum != null" >
+            <if test="noptItemShowNum != null">
                 NOPT_ITEM_SHOW_NUM = #{noptItemShowNum},
             </if>
-            <if test="optItemShowNum != null" >
+            <if test="optItemShowNum != null">
                 OPT_ITEM_SHOW_NUM = #{optItemShowNum},
             </if>
-            <if test="useEl != null " >
+            <if test="useEl != null ">
                 USE_EL = #{useEl},
             </if>
-            <if test="stageEl != null " >
+            <if test="stageEl != null ">
                 STAGE_EL = #{stageEl},
             </if>
-            <if test="isCheckItem != null " >
+            <if test="isCheckItem != null ">
                 IS_CHECK_ITEM = #{isCheckItem},
             </if>
-            <if test="lcbsxlx != null " >
+            <if test="lcbsxlx != null ">
                 LCBSXLX = #{lcbsxlx},
             </if>
-            <if test="dybzspjdxh != null " >
+            <if test="dybzspjdxh != null ">
                 DYBZSPJDXH = #{dybzspjdxh},
             </if>
-            <if test="handWay != null " >
+            <if test="handWay != null ">
                 HAND_WAY = #{handWay},
             </if>
-            <if test="useOneForm != null " >
+            <if test="useOneForm != null ">
                 USE_ONE_FORM = #{useOneForm},
             </if>
             <if test="rootOrgId != null and rootOrgId !=''">
                 ROOT_ORG_ID = #{rootOrgId},
             </if>
             <if test="isShowItem != null and isShowItem!='' ">
-                IS_SHOW_ITEM  = #{isShowItem},
+                IS_SHOW_ITEM = #{isShowItem},
             </if>
             <if test="dygjbzfxfw != null">
-                DYGJBZFXFW  = #{dygjbzfxfw},
+                DYGJBZFXFW = #{dygjbzfxfw},
             </if>
-            <if test="isCheckItemform != null" >
+            <if test="isCheckItemform != null">
                 IS_CHECK_ITEMFORM = #{isCheckItemform},
             </if>
-            <if test="isCheckPartform != null" >
+            <if test="isCheckPartform != null">
                 IS_CHECK_PARTFORM = #{isCheckPartform},
             </if>
-            <if test="isCheckProj != null" >
+            <if test="isCheckProj != null">
                 IS_CHECK_PROJ = #{isCheckProj},
             </if>
-            <if test="isCheckStage != null" >
+            <if test="isCheckStage != null">
                 IS_CHECK_STAGE = #{isCheckStage},
             </if>
         </set>
@@ -429,13 +479,17 @@
 
     <select id="listAeaParStageByThemeVerId" resultType="AeaParStage">
         select
-        <include refid="allColumns"><property name="alias" value="aps"/></include>
+        <include refid="allColumns">
+            <property name="alias" value="aps"/>
+        </include>
         from AEA_PAR_STAGE aps where aps.THEME_VER_ID=#{themeVerId} and aps.IS_DELETED!=1 order By aps.sort_no
     </select>
 
     <select id="getAeaParStageListByIteminstId" resultType="AeaParStage">
         SELECT
-        <include refid="allColumns"><property name="alias" value="aps"/></include>
+        <include refid="allColumns">
+            <property name="alias" value="aps"/>
+        </include>
         FROM aea_par_stage aps
         LEFT JOIN aea_hi_par_stageinst ahps ON aps.STAGE_ID=ahps.STAGE_ID
         LEFT JOIN aea_hi_iteminst ahi ON ahi.STAGEINST_ID=ahps.STAGEINST_ID
@@ -489,8 +543,8 @@
     </resultMap>
 
     <delete id="deleteAeaParStageByIds">
-        update  AEA_Par_STAGE
-           set  IS_DELETED = '1'
+        update AEA_Par_STAGE
+        set IS_DELETED = '1'
         where
         <if test="stageIds!=null and stageIds.length > 0">
             STAGE_ID in
@@ -509,7 +563,7 @@
            and IS_DELETED = '0'
     </select>
 
-    <select id="getPrintInFormBillData" resultType="com.augurit.aplanmis.common.domain.InFormBill" >
+    <select id="getPrintInFormBillData" resultType="com.augurit.aplanmis.common.domain.InFormBill">
         select
             ai.ITEM_ID itemId,
             ai.ITEM_NAME itemName,
@@ -531,7 +585,7 @@
     </select>
 
     <select id="getAeaParStageByApplyinstId" resultType="AeaParStage">
-       SELECT
+        SELECT
         <include refid="allColumns">
             <property name="alias" value="aps"/>
         </include>
@@ -591,33 +645,33 @@
 
     <select id="listTestOrPublishThemeVerRelStage" resultType="AeaParStage">
         select
-            theme.THEME_ID as themeId,
-            theme.THEME_NAME as themeName,
-            theme.THEME_CODE as themeCode,
-            theme.THEME_VER_ID as themeVerId,
-            stage.STAGE_ID as stageId,
-            stage.STAGE_NAME as stageName,
-            stage.STAGE_CODE as stageCode,
-            stage.IS_NODE as isNode
+        theme.THEME_ID as themeId,
+        theme.THEME_NAME as themeName,
+        theme.THEME_CODE as themeCode,
+        theme.THEME_VER_ID as themeVerId,
+        stage.STAGE_ID as stageId,
+        stage.STAGE_NAME as stageName,
+        stage.STAGE_CODE as stageCode,
+        stage.IS_NODE as isNode
         from aea_par_stage stage,
         (
-            select
-            theme.THEME_ID,
-            theme.THEME_NAME,
-            theme.THEME_CODE,
-            theme.THEME_TYPE,
-            theme.SORT_NO,
-            theme.CREATE_TIME,
-            themeVer.THEME_VER_ID
-            from aea_par_theme theme, aea_par_theme_ver themeVer
-            <where>
-                and themeVer.THEME_ID = theme.THEME_ID
-                and theme.IS_DELETED = '0'
-                and theme.ROOT_ORG_ID = #{rootOrgId}
-                and themeVer.IS_DELETED = '0'
-                and themeVer.ROOT_ORG_ID = #{rootOrgId}
-                and themeVer.IS_PUBLISH in ('1', '2')
-            </where>
+        select
+        theme.THEME_ID,
+        theme.THEME_NAME,
+        theme.THEME_CODE,
+        theme.THEME_TYPE,
+        theme.SORT_NO,
+        theme.CREATE_TIME,
+        themeVer.THEME_VER_ID
+        from aea_par_theme theme, aea_par_theme_ver themeVer
+        <where>
+            and themeVer.THEME_ID = theme.THEME_ID
+            and theme.IS_DELETED = '0'
+            and theme.ROOT_ORG_ID = #{rootOrgId}
+            and themeVer.IS_DELETED = '0'
+            and themeVer.ROOT_ORG_ID = #{rootOrgId}
+            and themeVer.IS_PUBLISH in ('1', '2')
+        </where>
         ) theme
         <where>
             and stage.THEME_VER_ID = theme.THEME_VER_ID

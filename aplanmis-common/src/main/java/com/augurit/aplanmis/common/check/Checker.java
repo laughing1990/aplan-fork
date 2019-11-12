@@ -14,5 +14,5 @@ public interface Checker<O> {
      * @param checkerContext 上下文信息，如: 当前项目id
      * @throws CheckException 不通过时抛出的异常
      */
-    void check(O o, CheckerContext checkerContext) throws CheckException;
+    String check(O o, CheckerContext checkerContext) throws CheckException;
 }

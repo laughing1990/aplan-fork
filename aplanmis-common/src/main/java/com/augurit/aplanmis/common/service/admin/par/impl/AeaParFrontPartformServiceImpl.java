@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -63,7 +64,7 @@ public class AeaParFrontPartformServiceImpl implements AeaParFrontPartformServic
             throw new InvalidParameterException(id);
         }
         String[] ids = id.split(",");
-        for(String frontPartformId :ids) {
+        for (String frontPartformId : ids) {
             aeaParFrontPartformMapper.deleteAeaParFrontPartform(frontPartformId);
         }
     }
@@ -91,12 +92,12 @@ public class AeaParFrontPartformServiceImpl implements AeaParFrontPartformServic
         return list;
     }
 
-    private void checkSame(AeaParFrontPartform aeaParFrontPartform) throws Exception{
+    private void checkSame(AeaParFrontPartform aeaParFrontPartform) throws Exception {
         AeaParFrontPartform queryParFrontPartform = new AeaParFrontPartform();
         queryParFrontPartform.setStageId(aeaParFrontPartform.getStageId());
         queryParFrontPartform.setStagePartformId(aeaParFrontPartform.getStagePartformId());
         List<AeaParFrontPartform> list = aeaParFrontPartformMapper.listAeaParFrontPartform(queryParFrontPartform);
-        if(list.size()>0){
+        if (list.size() > 0) {
             throw new RuntimeException("已有配置相同的前置阶段扩展表单检测!");
         }
 
@@ -111,11 +112,11 @@ public class AeaParFrontPartformServiceImpl implements AeaParFrontPartformServic
     }
 
     @Override
-    public Long getMaxSortNo(AeaParFrontPartform aeaParFrontPartform)throws Exception{
+    public Long getMaxSortNo(AeaParFrontPartform aeaParFrontPartform) throws Exception {
         Long sortNo = aeaParFrontPartformMapper.getMaxSortNo(aeaParFrontPartform);
-        if(sortNo==null){
+        if (sortNo == null) {
             sortNo = 1l;
-        }else{
+        } else {
             sortNo = sortNo + 1;
         }
 
@@ -136,6 +137,15 @@ public class AeaParFrontPartformServiceImpl implements AeaParFrontPartformServic
             throw new InvalidParameterException(frontPartformId);
         }
         return aeaParFrontPartformMapper.getAeaParFrontPartformVoById(frontPartformId);
+    }
+
+    @Override
+    public List<AeaParFrontPartformVo> getAeaParFrontPartformVoByStageId(String stageId) {
+
+        List<AeaParFrontPartformVo> aeaParFrontPartformVos = new ArrayList();
+        if (StringUtils.isBlank(stageId)) return aeaParFrontPartformVos;
+        aeaParFrontPartformVos.addAll(aeaParFrontPartformMapper.getAeaParFrontPartformVoByStageId(stageId, SecurityContext.getCurrentOrgId()));
+        return aeaParFrontPartformVos;
     }
 }
 
