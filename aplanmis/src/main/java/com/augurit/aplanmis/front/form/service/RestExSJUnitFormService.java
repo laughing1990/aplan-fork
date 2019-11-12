@@ -290,18 +290,25 @@ public class RestExSJUnitFormService {
                         listperson.add(person);
                     }
                 }
-                aeaExProjBuildUnitInfo.setPersonSetting(listperson);
+                if(listperson != null &&listperson.size()>0){
+                    aeaExProjBuildUnitInfo.setPersonSetting(listperson);
+                }else {
+                    listperson.add(new PersonSetting());
+                    aeaExProjBuildUnitInfo.setPersonSetting(listperson);
+                }
                 String unitType = aeaExProjBuildUnitInfo.getUnitType();
-                if (unitType.equals(this.gongchengzongchengbao)) {
-                    map.put("gongchengzongFrom", aeaExProjBuildUnitInfo);
-                } else if (unitType.equals(this.shigongzongbao)) {
-                    map.put("applyShigongzongFrom", aeaExProjBuildUnitInfo);
-                } else if (unitType.equals(this.shigongfenbao)) {
-                    map.put("applyShigongzhuanyefenbaoFrom", aeaExProjBuildUnitInfo);
-                } else if (unitType.equals(this.laowufenbao)) {
-                    map.put("applyShigonglaowufenbaoFrom", aeaExProjBuildUnitInfo);
-                } else if (unitType.equals(this.gongchengjianli)) {
-                    map.put("applyJianliFrom", aeaExProjBuildUnitInfo);
+                if(unitType !=null){
+                    if (unitType.equals(this.gongchengzongchengbao)) {
+                        map.put("gongchengzongFrom", aeaExProjBuildUnitInfo);
+                    } else if (unitType.equals(this.shigongzongbao)) {
+                        map.put("applyShigongzongFrom", aeaExProjBuildUnitInfo);
+                    } else if (unitType.equals(this.shigongfenbao)) {
+                        map.put("applyShigongzhuanyefenbaoFrom", aeaExProjBuildUnitInfo);
+                    } else if (unitType.equals(this.laowufenbao)) {
+                        map.put("applyShigonglaowufenbaoFrom", aeaExProjBuildUnitInfo);
+                    } else if (unitType.equals(this.gongchengjianli)) {
+                        map.put("applyJianliFrom", aeaExProjBuildUnitInfo);
+                    }
                 }
             }
         }

@@ -799,6 +799,47 @@ var vm = new Vue({
 		// 查询符合条件的中介机构
 		getAgentUnitInfoList: function (itemVerId) {
 			console.log(itemVerId);
+			var vm = this;
+			var isQualRequire = ''
+
+			if (!vm.form.serviceId) {
+				this.$message({
+					message: '请先选择服务',
+					type: 'error'
+				});
+				return;
+			}
+
+			if (vm.checkList.indexOf('isQualRequire') == "-1") {
+				isQualRequire = '0';
+			} else {
+				isQualRequire = '1';
+			}
+			var params = JSON.stringify({
+				isQualRequire: isQualRequire, // 是否需要资质要求：1 需要，0 不需要
+				qualRequireType: vm.qualRequireType, // 资质要求：1 多个资质子项符合其一即可，0 需同时符合所有选中资质子项
+				serviceId: vm.form.serviceId, // 服务ID
+			})
+			if (vm.majorQualRequiresArry.lenght !== 0) {
+				vm.qualsArry.push({qualId: vm.qualId, majorQualRequires: vm.majorQualRequiresArry})
+				params.quals = vm.qualsArry
+			}
+			console.log("请求的参数", params);
+			request('', {
+				url: ctx + '/market/getAgentUnitInfoList', type: 'post', data: params,
+				ContentType: "application/json",
+			}, function (res) {
+				console.log("查询符合条件的中介机构", res)
+				if (res.success) {
+					vm.agentUnit = res.content;
+					vm.chooseAgentTabledialogTable = true;
+				} else {
+					vm.agentUnit = [];
+					vm.chooseAgentTabledialogTable = false;
+				}
+			}, function (msg) {
+				vm.$message({message: '加载失败', type: 'error'});
+			});
 		},
 		// 资质要求 切换tab
 		handleClickAtiveQA: function (tab) {

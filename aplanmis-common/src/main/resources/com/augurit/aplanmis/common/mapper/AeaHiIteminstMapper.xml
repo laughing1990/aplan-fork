@@ -1039,6 +1039,7 @@
             aup.UNIT_INFO_ID is null
         </if>
         AND aaup.APPLYINST_ID IS NOT NULL
+        AND aha.IS_DELETED !=1
         ) temp ON temp.APPLYINST_ID = ahs.APPLYINST_ID
         INNER JOIN aea_proj_info api ON api.PROJ_INFO_ID = temp.PROJ_INFO_ID
         INNER JOIN aea_item_basic aib ON ahi.ITEM_VER_ID = aib.ITEM_VER_ID
@@ -1093,6 +1094,7 @@
             aup.UNIT_INFO_ID is null
         </if>
         AND aaup.APPLYINST_ID IS NOT NULL
+        AND aha.IS_DELETED !=1
         ) temp ON temp.APPLYINST_ID = ahps.APPLYINST_ID
         INNER JOIN aea_proj_info api ON api.PROJ_INFO_ID = temp.PROJ_INFO_ID
         INNER JOIN aea_item_basic aib ON ahi.ITEM_VER_ID = aib.ITEM_VER_ID
@@ -1146,6 +1148,7 @@
             apl.LINKMAN_INFO_ID is null
         </if>
         AND apl.APPLYINST_ID IS NOT NULL
+        AND aha.IS_DELETED !=1
         ) temp ON temp.APPLYINST_ID = ahs.APPLYINST_ID
         INNER JOIN aea_proj_info api ON api.PROJ_INFO_ID = temp.PROJ_INFO_ID
         INNER JOIN aea_item_basic aib ON ahi.ITEM_VER_ID = aib.ITEM_VER_ID
@@ -1199,6 +1202,7 @@
             apl.LINKMAN_INFO_ID is null
         </if>
         AND apl.APPLYINST_ID IS NOT NULL
+        AND aha.IS_DELETED !=1
         ) temp ON temp.APPLYINST_ID = ahps.APPLYINST_ID
         INNER JOIN aea_proj_info api ON api.PROJ_INFO_ID = temp.PROJ_INFO_ID
         INNER JOIN aea_item_basic aib ON ahi.ITEM_VER_ID = aib.ITEM_VER_ID

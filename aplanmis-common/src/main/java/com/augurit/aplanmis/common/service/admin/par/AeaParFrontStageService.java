@@ -36,9 +36,8 @@ public interface AeaParFrontStageService {
 
     AeaParFrontStageVo getAeaParFrontStageVoById(String frontStageId) throws Exception;
 
-    List<AeaParFrontStageVo> listSelectParFrontStage(AeaParFrontStage aeaParFrontStage)throws Exception;
+    List<AeaParFrontStageVo> listSelectParFrontStage(AeaParFrontStage aeaParFrontStage) throws Exception;
 
-
-
+    List<AeaParFrontStageVo> getHistStageByStageId(String stageId);
 
 }

@@ -74,7 +74,6 @@
                     <input type="hidden" name="linkmanInfoId" :value="gongchengzongFrom.linkmanInfoId">
                     <el-col :span="12">
                             <el-form-item label="工程总承包项目经理" no-data-text="暂无数据" prop="linkmanName" class="sel-btn">
-                                <input type="hidden" name="linkmanInfoId" :value="gongchengzongFrom.linkmanInfoId">
                                 <el-select v-model="gongchengzongFrom.linkmanName" :loading="loadingUnitLinkMan"
                                            @click.native="getUnitLinkManList(gongchengzongFrom)" required placeholder="--请选择--">
                                     <el-option class="select-option-ul"
@@ -164,7 +163,7 @@
                                            v-for="(item2, index2) in unitLinkManOptions"
                                            :key="index2"
                                            :label="item2.addressName"
-                                           @click.native="selLinkman(item2,index,'shigongzongchenbao')"
+                                           @click.native="selLinkman(item2,index,'applyShigongzongFrom')"
                                            :value="item2.addressId">
                                     <span class="fl">{{ item2.addressName }}</span>
                                     <span class="fr el-icon-delete" @click.stop="delLinkman(item2,applyShigongzongFrom,index)"></span>
@@ -196,7 +195,7 @@
                     <el-col :span="12" class="fl linkman-set">
                         <el-form-item label="人员设置" prop="induCommRegNum">
                             <el-row class="linkman-set-item" v-for="(type,index) in applyShigongzongFrom.personSetting" :key="index">
-                                <el-col :span="2" style="width:5.5% !important;">
+                                <el-col :span="2" style="width:4.5% !important;">
                                     <el-button v-if="index==0"
                                                icon="el-icon-circle-plus-outline"
                                                type="primary"
@@ -218,6 +217,7 @@
                                         <el-option v-for="item in unitLinkManOptions" :key="item.addressId" @click.native="selTypeLinkman(type,item)" :label="item.addressName" :value="item.addressName"></el-option></el-select>
                                 </el-col>
                                 <input type="hidden" name="linkmanInfoId" :value="type.linkmanInfoId">
+                                <input type="hidden" name="projLinkmanId" :value="type.projLinkmanId">
                                 <el-col :span="6" style="width:32% !important;">
                                     <el-form-item class="linkmanCertNo" label="身份证号码" label-width="96px" prop="linkmanCertNo">
                                         <el-input style="width:135px" v-model="type.linkmanCertNo" placeholder="请输入身份证号码"></el-input></el-form-item>
@@ -327,7 +327,7 @@
                     <el-col :span="12" class="fl linkman-set">
                         <el-form-item label="人员设置" prop="induCommRegNum">
                             <el-row class="linkman-set-item" v-for="(type,index) in applyShigongzhuanyefenbaoFrom.personSetting" :key="index">
-                                <el-col :span="2" style="width:5.5% !important;">
+                                <el-col :span="2" style="width:4.5% !important;">
                                     <el-button v-if="index==0"
                                                icon="el-icon-circle-plus-outline"
                                                type="primary"
@@ -361,6 +361,7 @@
                                     </el-select>
                                 </el-col>
                                 <input name="linkmanInfoId" :value="type.linkmanInfoId" type="hidden">
+                                <input type="hidden" name="projLinkmanId" :value="type.projLinkmanId">
                                 <el-col :span="6" style="width:32% !important;">
                                     <el-form-item class="linkmanCertNo" label="身份证号码" label-width="96px" prop="linkmanCertNo">
                                         <el-input style="width:135px" v-model="type.linkmanCertNo" placeholder="请输入身份证号码"></el-input>
@@ -472,7 +473,7 @@
                     <el-col :span="12" class="fl linkman-set">
                         <el-form-item label="人员设置" prop="induCommRegNum">
                             <el-row class="linkman-set-item" v-for="(type,index) in applyShigonglaowufenbaoFrom.personSetting" :key="index">
-                                <el-col :span="2" style="width:5.5% !important;">
+                                <el-col :span="2" style="width:4.5% !important;">
                                     <el-button v-if="index==0"
                                                icon="el-icon-circle-plus-outline"
                                                type="primary"
@@ -512,6 +513,7 @@
                                 </el-col>
                                 <el-col :span="6" style="width:32% !important;">
                                     <input type="hidden" name="linkmanInfoId" :value="type.linkmanInfoId">
+                                    <input type="hidden" name="projLinkmanId" :value="type.projLinkmanId">
                                     <el-form-item class="linkmanCertNo" label="身份证号码" label-width="96px" prop="linkmanCertNo">
                                         <el-input style="width:135px" v-model="type.linkmanCertNo" placeholder="请输入身份证号码"></el-input>
                                     </el-form-item>
@@ -536,8 +538,9 @@
                     <input type="hidden" name="projLinkmanId" :value="applyJianliFrom.projLinkmanId">
                     <el-col :span="12">
                         <el-form-item label="组织机构代码" prop="organizationalCode">
-                            <el-autocomplete :trigger-on-focus="false" v-model="applyJianliFrom.organizationalCode" placeholder="请输入组织机构代码">
-                            </el-autocomplete>
+                            <!--<el-autocomplete :trigger-on-focus="false" v-model="applyJianliFrom.organizationalCode" placeholder="请输入组织机构代码">-->
+                            <!--</el-autocomplete>-->
+                            <el-input v-model="applyJianliFrom.organizationalCode" placeholder="请输入组织机构代码"></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="12">
@@ -557,8 +560,7 @@
                         <el-form-item label="项目主体类型" prop="unitType" class="input-ex">
                             <!--<el-input v-model="applyJianliFrom.unitType" placeholder="请输入项目主体类型">-->
                             <!--</el-input>-->
-                            <el-select disabled v-model="applyJianliFrom.unitType" filterable placeholder="项目主体类型" @click.native="getProjThemeIdList"
-                                       :loading="loadingThemeIdList">
+                            <el-select disabled v-model="applyJianliFrom.unitType" filterable placeholder="项目主体类型">
                                 <el-option v-for="item in prjEntType" :key="item.itemId" :label="item.itemName" :value="item.itemCode">
                                 </el-option>
                             </el-select>
@@ -651,7 +653,7 @@
                     <el-col :span="12" class="fl linkman-set">
                         <el-form-item label="人员设置" prop="induCommRegNum">
                             <el-row class="linkman-set-item" v-for="(type,index) in applyJianliFrom.personSetting" :key="index">
-                                <el-col :span="2">
+                                <el-col :span="2" style="width:4.5% !important;">
                                     <el-button v-if="index==0"
                                                icon="el-icon-circle-plus-outline"
                                                type="primary"
@@ -659,7 +661,7 @@
                                                @click="addLinkmanTypes(applyJianliFrom.personSetting)"
                                                title="新增"></el-button>
                                     <el-button v-else
-                                               icon="el-icon-remove-outline"施工总承包单位
+                                               icon="el-icon-remove-outline"
                                                type="primary"
                                                @click="delLinkmanTypes(applyJianliFrom.personSetting,index)"
                                                class="item-left-btn" title="删除"></el-button>
@@ -692,6 +694,7 @@
                                 </el-col>
                                 <el-form-item label="" class="proj-addr-scope">
                                     <input type="hidden" name="linkmanInfoId" :value="type.linkmanInfoId">
+                                    <input type="hidden" name="projLinkmanId" :value="type.projLinkmanId">
                                     <div class="proj-addr-item">
                                         <span class="input-label">身份证</span>
                                         <el-input v-model="type.linkmanCertNo" placeholder="请输入身份证"></el-input>

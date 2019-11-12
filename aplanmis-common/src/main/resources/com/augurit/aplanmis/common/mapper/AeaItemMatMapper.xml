@@ -44,7 +44,7 @@
         ROOT_ORG_ID rootOrgId,
         MAT_PROP matProp,
         CERT_ID certId,
-        STO_FORM_ID formId
+        STO_FORM_ID stoFormId
     </sql>
 
     <sql id="allColumns_aim">
@@ -86,7 +86,7 @@
         aim.ROOT_ORG_ID rootOrgId,
         aim.MAT_PROP matProp,
         aim.CERT_ID certId,
-        aim.STO_FORM_ID formId
+        aim.STO_FORM_ID stoFormId
     </sql>
 
     <sql id="mat_allColumns">
@@ -127,8 +127,9 @@
         mat.ROOT_ORG_ID rootOrgId,
         mat.MAT_PROP matProp,
         mat.CERT_ID certId,
-        mat.STO_FORM_ID formId
+        mat.STO_FORM_ID stoFormId
     </sql>
+
     <!--2 根据主键ID查询单个实体 -->
     <select id="getAeaItemMatById" resultType="AeaItemMat">
         select
@@ -150,7 +151,7 @@
 
     <select id="getMatListByItemStateIds" resultType="AeaItemMat">
         SELECT
-        <include refid="allColumns_aim"/>, cert.cert_name certName, form.form_name formName
+        <include refid="allColumns_aim"/>, aii.item_ver_id itemVerId, cert.cert_name certName, form.form_name formName
         FROM
         aea_item_mat aim
         join aea_item_inout aii on aim.MAT_ID = aii.MAT_ID
@@ -176,11 +177,15 @@
 
     <select id="getMatListByStageStateIds" resultType="AeaItemMat">
         SELECT
-        <include refid="allColumns_aim"/>,api.IN_ID parInId,api.PAR_STATE_ID parStateId, cert.cert_name certName,
+        <include refid="allColumns_aim"/>,apsi.item_ver_id itemVerId, api.IN_ID parInId,api.PAR_STATE_ID parStateId,
+        cert.cert_name certName,
         form.form_name formName
         FROM
         aea_item_mat aim
         join aea_par_in api on aim.MAT_ID = api.MAT_ID
+        join aea_par_stage aps on aps.STAGE_ID = api.STAGE_ID
+        join aea_par_stage_item apsi on apsi.stage_id=aps.stage_id
+        join aea_par_stage_item_in apsii on apsii.stage_item_id=apsi.stage_item_id and apsii.in_id=api.in_id
         left join aea_cert cert on cert.cert_id=aim.cert_id
         left join act_sto_form form on form.form_id=aim.sto_form_id
         WHERE aim.IS_DELETED = '0'
@@ -268,7 +273,7 @@
 
     <select id="getMatListByStageId" resultType="AeaItemMat">
         SELECT
-        <include refid="allColumns_aim"/>, cert.cert_name certName, form.form_name formName
+        <include refid="allColumns_aim"/>, aim.itemVerId, cert.cert_name certName, form.form_name formName
         FROM
         (
         SELECT
@@ -276,11 +281,14 @@
         api.IS_STATE_IN,
         api.PAR_STATE_ID,
         api.SORT_NO AS SORT_NO_,
+        apsi.item_ver_id itemVerId,
         mat.*
         FROM
         aea_par_in api
         join aea_item_mat mat on api.MAT_ID = mat.MAT_ID
         join aea_par_stage aps on aps.STAGE_ID = api.STAGE_ID
+        join aea_par_stage_item apsi on apsi.stage_id=aps.stage_id
+        join aea_par_stage_item_in apsii on apsii.stage_item_id=apsi.stage_item_id and apsii.in_id=api.in_id
         WHERE api.IS_DELETED = '0'
         AND mat.IS_DELETED = '0'
         AND aps.STAGE_ID = #{stageId}
@@ -314,7 +322,7 @@
 
     <select id="listMatListByStageId" resultType="AeaItemMat">
         SELECT
-        <include refid="allColumns_aim"/>, cert.cert_name certName, form.form_name formName
+        <include refid="allColumns_aim"/>, aim.itemVerId, cert.cert_name certName, form.form_name formName
         FROM
         (
         SELECT
@@ -322,6 +330,7 @@
         api.IS_STATE_IN,
         api.PAR_STATE_ID,
         api.SORT_NO AS SORT_NO_,
+        apsi.item_ver_id itemVerId,
         mat.*
         FROM
         aea_par_in api
@@ -346,7 +355,8 @@
 
     <select id="getMatListByItemVerIds" resultType="AeaItemMat">
         SELECT
-        <include refid="allColumns_aim"/>,aim.INOUT_ID inId,aim.ITEM_STATE_ID itemStateId, cert.cert_name certName,
+        <include refid="allColumns_aim"/>,aim.INOUT_ID inId,aim.ITEM_STATE_ID itemStateId, aim.itemVerId, cert.cert_name
+        certName,
         form.form_name formName
         FROM
         (
@@ -356,6 +366,7 @@
         aii.ITEM_STATE_ID,
         aii.INOUT_ID,
         aii.SORT_NO AS SORT_NO_,
+        aib.item_ver_id itemVerId,
         mat.*
         FROM
         aea_item_mat mat,
@@ -716,13 +727,13 @@
         MAT_BASIS, PAPER_IS_REQUIRE, SORT_NO, MAT_MEMO, IS_ACTIVE, IS_DELETED, CREATER,
         CREATE_TIME, MODIFIER, MODIFY_TIME, ATT_DIR_ID, MAT_HOLDER, IS_OFFICIAL_DOC,
         ATT_IS_REQUIRE, IS_COMMON, REVIEW_KEY_POINTS, REVIEW_SAMPLE_DOC, REVIEW_BASIS,
-        MAT_FROM_DEPT, DUE_PAPER_TYPE, DUE_COPY_TYPE, PAPER_MAT_TYPE, ZCQY,ROOT_ORG_ID,MAT_PROP,CERT_ID,FORM_ID)
+        MAT_FROM_DEPT, DUE_PAPER_TYPE, DUE_COPY_TYPE, PAPER_MAT_TYPE, ZCQY,ROOT_ORG_ID,MAT_PROP,CERT_ID,STO_FORM_ID)
         values (#{matId}, #{matCode}, #{matName}, #{isGlobalShare}, #{matTypeId}, #{receiveMode}, #{duePaperCount},
         #{dueCopyCount}, #{matFrom}, #{sampleDoc}, #{templateDoc}, #{matRequire}, #{matBasis},
         #{paperIsRequire}, #{sortNo}, #{matMemo}, #{isActive}, #{isDeleted}, #{creater}, #{createTime},
         #{modifier}, #{modifyTime}, #{attDirId}, #{matHolder}, #{isOfficialDoc}, #{attIsRequire}, #{isCommon},
         #{reviewKeyPoints}, #{reviewSampleDoc}, #{reviewBasis}, #{matFromDept}, #{duePaperType}, #{dueCopyType},
-        #{paperMatType}, #{zcqy},#{rootOrgId}, #{matProp}, #{certId}, #{formId} )
+        #{paperMatType}, #{zcqy},#{rootOrgId}, #{matProp}, #{certId}, #{stoFormId} )
     </insert>
 
     <!--6 修改实体对象 -->
@@ -843,8 +854,8 @@
             <if test="certId != null">
                 CERT_ID = #{certId},
             </if>
-            <if test="formId != null">
-                FORM_ID = #{formId},
+            <if test="stoFormId != null">
+                STO_FORM_ID = #{stoFormId},
             </if>
         </set>
         where MAT_ID = #{matId}
@@ -967,8 +978,8 @@
             <if test="certId != null">
                 CERT_ID = #{certId},
             </if>
-            <if test="formId != null">
-                FORM_ID = #{formId},
+            <if test="stoFormId != null">
+                STO_FORM_ID = #{stoFormId},
             </if>
         </set>
         where MAT_ID = #{matId}
@@ -1023,77 +1034,77 @@
         <result property="rootOrgId" column="ROOT_ORG_ID"/>
         <result property="matProp" column="MAT_PROP"/>
         <result property="certId" column="CERT_ID"/>
-        <result property="formId" column="FORM_ID"/>
+        <result property="stoFormId" column="STO_FORM_ID"/>
     </resultMap>
 
     <select id="listAeaItemMat" resultType="AeaItemMat">
         select
-        <include refid="allColumns"/>
+            <include refid="allColumns"/>
         from AEA_ITEM_MAT matbak
         <where>
             <if test="busiType =='item'">
                 and matbak.MAT_ID not in(
-                select
-                mat.MAT_ID
-                from AEA_ITEM_INOUT iout, AEA_ITEM_MAT mat
-                <where>
-                    and iout.MAT_ID = mat.MAT_ID
-                    and iout.ROOT_ORG_ID = mat.ROOT_ORG_ID
-                    and iout.FILE_TYPE = 'mat'
-                    and iout.IS_DELETED = '0'
-                    <if test="itemVerId != null and itemVerId!='' ">
-                        and iout.ITEM_VER_ID = #{itemVerId}
-                    </if>
-                    <if test="isInput != null and isInput!='' ">
-                        and iout.IS_INPUT = #{isInput}
-                    </if>
-                    <if test="stateVerId != null and stateVerId!='' ">
-                        and iout.STATE_VER_ID = #{stateVerId}
-                    </if>
-                    <if test="isStateIn != null and isStateIn!= '' ">
-                        and iout.IS_STATE_IN = #{isStateIn}
-                    </if>
-                    <if test="itemStateId != null and itemStateId!= '' ">
-                        and iout.ITEM_STATE_ID = #{itemStateId}
-                    </if>
-                    <if test="rootOrgId != null and rootOrgId!= '' ">
-                        and iout.ROOT_ORG_ID = #{rootOrgId}
-                    </if>
-                </where>
+                    select
+                        mat.MAT_ID
+                    from AEA_ITEM_INOUT iout, AEA_ITEM_MAT mat
+                    <where>
+                        and iout.MAT_ID = mat.MAT_ID
+                        and iout.ROOT_ORG_ID = mat.ROOT_ORG_ID
+                        and iout.FILE_TYPE = 'mat'
+                        and iout.IS_DELETED = '0'
+                        <if test="itemVerId != null and itemVerId!='' ">
+                            and iout.ITEM_VER_ID = #{itemVerId}
+                        </if>
+                        <if test="isInput != null and isInput!='' ">
+                            and iout.IS_INPUT = #{isInput}
+                        </if>
+                        <if test="stateVerId != null and stateVerId!='' ">
+                            and iout.STATE_VER_ID = #{stateVerId}
+                        </if>
+                        <if test="isStateIn != null and isStateIn!= '' ">
+                            and iout.IS_STATE_IN = #{isStateIn}
+                        </if>
+                        <if test="itemStateId != null and itemStateId!= '' ">
+                            and iout.ITEM_STATE_ID = #{itemStateId}
+                        </if>
+                        <if test="rootOrgId != null and rootOrgId!= '' ">
+                            and iout.ROOT_ORG_ID = #{rootOrgId}
+                        </if>
+                    </where>
                 )
             </if>
             <if test="busiType =='stage'">
                 and matbak.MAT_ID not in(
-                select
-                mat.MAT_ID
-                from AEA_PAR_IN parIn, AEA_ITEM_MAT mat
-                <where>
-                    and parIn.MAT_ID = mat.MAT_ID
-                    and parIn.ROOT_ORG_ID = mat.ROOT_ORG_ID
-                    and parIn.FILE_TYPE = 'mat'
-                    and parIn.IS_DELETED = '0'
-                    <if test="stageId  != null and stageId !='' ">
-                        and parIn.STAGE_ID = #{stageId}
-                    </if>
-                    <if test="isInput != null and isInput!='' ">
-                        and parIn.IS_INPUT = #{isInput}
-                    </if>
-                    <if test="isStateIn != null and isStateIn!= '' ">
-                        and parIn.IS_STATE_IN = #{isStateIn}
-                    </if>
-                    <if test="parStateId != null and parStateId!= '' ">
-                        and parIn.PAR_STATE_ID = #{parStateId}
-                    </if>
-                    <if test="rootOrgId != null and rootOrgId!= '' ">
-                        and parIn.ROOT_ORG_ID = #{rootOrgId}
-                    </if>
-                </where>
+                    select
+                       mat.MAT_ID
+                    from AEA_PAR_IN parIn, AEA_ITEM_MAT mat
+                    <where>
+                        and parIn.MAT_ID = mat.MAT_ID
+                        and parIn.ROOT_ORG_ID = mat.ROOT_ORG_ID
+                        and parIn.FILE_TYPE = 'mat'
+                        and parIn.IS_DELETED = '0'
+                        <if test="stageId  != null and stageId !='' ">
+                            and parIn.STAGE_ID = #{stageId}
+                        </if>
+                        <if test="isInput != null and isInput!='' ">
+                            and parIn.IS_INPUT = #{isInput}
+                        </if>
+                        <if test="isStateIn != null and isStateIn!= '' ">
+                            and parIn.IS_STATE_IN = #{isStateIn}
+                        </if>
+                        <if test="parStateId != null and parStateId!= '' ">
+                            and parIn.PAR_STATE_ID = #{parStateId}
+                        </if>
+                        <if test="rootOrgId != null and rootOrgId!= '' ">
+                            and parIn.ROOT_ORG_ID = #{rootOrgId}
+                        </if>
+                    </where>
                 )
             </if>
             <if test="keyword != null and keyword != ''">
                 and (
-                MAT_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%') OR
-                MAT_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                    MAT_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%') OR
+                    MAT_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 )
             </if>
             <if test="matId != null">
@@ -1350,7 +1361,7 @@
 
     <select id="listStageNoSelectGlobalMat" resultType="AeaItemMat">
         select
-        <include refid="mat_allColumns"/>
+            <include refid="mat_allColumns"/>
         from AEA_ITEM_MAT mat
         <where>
             and mat.ROOT_ORG_ID = #{rootOrgId}
@@ -1358,26 +1369,27 @@
             and mat.IS_DELETED = '0'
             and mat.IS_COMMON='1'
             <if test="keyword != null and keyword != ''">
-                and (
-                mat.MAT_NAME like CONCAT(CONCAT('%',#{keyword}),'%') OR
+            and (
+                mat.MAT_NAME like CONCAT(CONCAT('%',#{keyword}),'%') or
                 mat.MAT_CODE like CONCAT(CONCAT('%',#{keyword}),'%')
-                )
+            )
             </if>
             and mat.MAT_ID not in(
-            select distinct MAT_ID from AEA_PAR_IN
-            <where>
-                and  ROOT_ORG_ID = #{rootOrgId}
-                and  STAGE_ID = #{stageId}
-                and  FILE_TYPE = 'mat'
-                and  IS_DELETED = '0'
-            </where>
+                select
+                    distinct MAT_ID
+                from AEA_PAR_IN
+                <where>
+                    and  ROOT_ORG_ID = #{rootOrgId}
+                    and  STAGE_ID = #{stageId}
+                    and  IS_DELETED = '0'
+                </where>
             )
         </where>
     </select>
 
     <select id="listItemInOutNoSelectGlobalMat" resultType="AeaItemMat">
         select
-        <include refid="mat_allColumns"/>
+            <include refid="mat_allColumns"/>
         from AEA_ITEM_MAT mat
         <where>
             and ROOT_ORG_ID = #{rootOrgId}
@@ -1385,24 +1397,137 @@
             and MAT.IS_DELETED = '0'
             and MAT.IS_COMMON = '1'
             <if test="keyword != null and keyword != ''">
-                and (
+            and (
                 mat.MAT_NAME like CONCAT(CONCAT('%',#{keyword}),'%') OR
                 mat.MAT_CODE like CONCAT(CONCAT('%',#{keyword}),'%')
-                )
+            )
             </if>
             and mat.MAT_ID not in(
-            select MAT_ID from AEA_ITEM_INOUT
-            <where>
-                and  ROOT_ORG_ID = #{rootOrgId}
-                and  ITEM_VER_ID = #{itemVerId}
-                <if test="stateVerId!=null and stateVerId!='' ">
+                select
+                    distinct MAT_ID
+                from AEA_ITEM_INOUT
+                <where>
+                    and  ROOT_ORG_ID = #{rootOrgId}
+                    and  ITEM_VER_ID = #{itemVerId}
+                    <if test="stateVerId!=null and stateVerId!='' ">
                     and  STATE_VER_ID = #{stateVerId}
-                </if>
-                and  IS_INPUT = #{isInput}
-                and  FILE_TYPE = 'mat'
-                and  IS_DELETED = '0'
-            </where>
+                    </if>
+                    and  IS_INPUT = #{isInput}
+                    and  IS_DELETED = '0'
+                </where>
             )
+        </where>
+    </select>
+
+    <select id="listActStoForm" resultType="ActStoForm" >
+        select
+            asfrom.FORM_ID  formId,
+            asfrom.FORM_ORG_ID  formOrgId,
+            asfrom.FORM_PROPERTY  formProperty,
+            asfrom.FORM_CODE  formCode,
+            asfrom.FORM_NAME  formName,
+            asfrom.META_DB_TABLE_ID  metaDbTableId,
+            asfrom.PARENT_FORM_ID  parentFormId,
+            asfrom.FORM_SEQ  formSeq,
+            asfrom.CREATER  creater,
+            asfrom.CREATE_TIME  createTime,
+            asfrom.MODIFIER  modifier,
+            asfrom.MODIFY_TIME  modifyTime,
+            asfrom.IS_DELETED  isDeleted,
+            asfrom.FORM_TMN_ID  formTmnId,
+            asfrom.CATEGORY_ID  categoryId,
+            asfrom.IS_AUTO_BUILD_FORM  isAutoBuildForm,
+            asfrom.BUILD_FORM_TIME  buildFormTime,
+            asfrom.BUILD_FORM_PATH  buildFormPath,
+            asfrom.FORM_LOAD_URL  formLoadUrl,
+            asfrom.DEFAULT_LAYOUT_ID  defaultLayoutId,
+            asfrom.IS_META_DB_TABLE  isMetaDbTable,
+            asfrom.IS_AUTO_BUILD_TABLE  isAutoBuildTable,
+            asfrom.FORM_VERSION  formVersion,
+            asfrom.BUILD_TABLE_TIME  buildTableTime,
+            asfrom.IS_INNER_FORM  isInnerForm,
+            asfrom.IS_LOCK  isLock,
+            asfrom.TECH_ID  techId,
+            asfrom.form_layout_html formLayoutHtml,
+            tmn.TMN_NAME  formTmnName,
+            org.ORG_NAME orgName
+        from ACT_STO_FORM asfrom
+        left join opu_om_org org on asfrom.FORM_ORG_ID = org.ORG_ID
+        left join AGX_RS_TMN tmn on tmn.TMN_ID=asfrom.FORM_TMN_ID
+        <where>
+            <if test="formId != null and formId != ''" >
+                AND    asfrom.FORM_ID = #{formId}
+            </if>
+            <if test="formOrgId != null and formOrgId != ''" >
+                AND    asfrom.FORM_ORG_ID = #{formOrgId}
+            </if>
+            <if test="formProperty != null and formProperty != ''"  >
+                AND    asfrom.FORM_PROPERTY = #{formProperty}
+            </if>
+            <if test="formCode != null and formCode != ''" >
+                AND    asfrom.FORM_CODE = #{formCode}
+            </if>
+            <if test="formName != null and formName != ''" >
+                AND    asfrom.FORM_NAME = #{formName}
+            </if>
+            <if test="metaDbTableId != null and metaDbTableId != ''" >
+                AND    asfrom.META_DB_TABLE_ID = #{metaDbTableId}
+            </if>
+            <if test="parentFormId != null and parentFormId != ''" >
+                AND    asfrom.PARENT_FORM_ID = #{parentFormId}
+            </if>
+            <if test="formSeq != null and formOrgId != ''" >
+                AND    asfrom.FORM_SEQ = #{formSeq}
+            </if>
+            <if test="formTmnId != null and formTmnId != ''" >
+                AND    asfrom.FORM_TMN_ID = #{formTmnId}
+            </if>
+            <if test="categoryId != null and categoryId != ''" >
+                AND    asfrom.CATEGORY_ID = #{categoryId}
+            </if>
+            <if test="isAutoBuildForm != null and isAutoBuildForm != ''" >
+                AND    asfrom.IS_AUTO_BUILD_FORM = #{isAutoBuildForm}
+            </if>
+            <if test="buildFormTime != null and buildFormTime != ''" >
+                AND    asfrom.BUILD_FORM_TIME = #{buildFormTime}
+            </if>
+            <if test="buildFormPath != null and buildFormPath != ''" >
+                AND    asfrom.BUILD_FORM_PATH = #{buildFormPath}
+            </if>
+            <if test="formLoadUrl != null and formLoadUrl != ''" >
+                AND    asfrom.FORM_LOAD_URL = #{formLoadUrl}
+            </if>
+            <if test="defaultLayoutId != null and defaultLayoutId != ''" >
+                AND    asfrom.DEFAULT_LAYOUT_ID = #{defaultLayoutId}
+            </if>
+            <if test="isMetaDbTable != null and isMetaDbTable != ''" >
+                AND    asfrom.IS_META_DB_TABLE = #{isMetaDbTable}
+            </if>
+            <if test="isAutoBuildTable != null and isAutoBuildTable != ''" >
+                AND    asfrom.IS_AUTO_BUILD_TABLE = #{isAutoBuildTable}
+            </if>
+            <if test="formVersion != null and formVersion != ''" >
+                AND    asfrom.FORM_VERSION = #{formVersion}
+            </if>
+            <if test="buildTableTime != null and buildTableTime != ''" >
+                AND    asfrom.BUILD_TABLE_TIME = #{buildTableTime}
+            </if>
+            <if test="isInnerForm != null and isInnerForm != ''" >
+                AND    asfrom.IS_INNER_FORM = #{isInnerForm}
+            </if>
+            <if test="isLock != null and isLock != ''" >
+                AND    asfrom.IS_LOCK = #{isLock}
+            </if>
+            <if test="techId != null and techId != ''" >
+                AND    asfrom.TECH_ID = #{techId}
+            </if>
+            <if test="keyword != null and keyword !='' " >
+                AND (
+                asfrom.FORM_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%') OR
+                asfrom.FORM_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                )
+            </if>
+            AND asfrom.IS_DELETED = '0'
         </where>
     </select>
 

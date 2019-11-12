@@ -43,12 +43,12 @@ public class AeaParStageServiceImpl implements AeaParStageService {
      * @return List<AeaParStage>
      */
     @Override
-    public List<AeaParStage> listAeaParStageByThemeIdOrThemeVerId(String themeId, String themeVerId,String topOrgId) throws Exception {
-        if(StringUtils.isEmpty(topOrgId)){
-            topOrgId=SecurityContext.getCurrentOrgId();
+    public List<AeaParStage> listAeaParStageByThemeIdOrThemeVerId(String themeId, String themeVerId, String topOrgId) throws Exception {
+        if (StringUtils.isEmpty(topOrgId)) {
+            topOrgId = SecurityContext.getCurrentOrgId();
         }
         if (StringUtils.isEmpty(themeVerId) && !StringUtils.isEmpty(themeId)) {
-            AeaParThemeVer aeaParThemeVer = aeaParThemeService.getAeaParThemeVerByThemeIdAndVerNum(themeId, null,topOrgId );
+            AeaParThemeVer aeaParThemeVer = aeaParThemeService.getAeaParThemeVerByThemeIdAndVerNum(themeId, null, topOrgId);
             if (null != aeaParThemeVer) {
                 themeVerId = aeaParThemeVer.getThemeVerId();
             }
@@ -81,7 +81,7 @@ public class AeaParStageServiceImpl implements AeaParStageService {
                 themeId = projList.get(0).getThemeId();
             }
         }
-        AeaParThemeVer aeaParThemeVer = aeaParThemeService.getAeaParThemeVerByThemeIdAndVerNum(themeId, null,SecurityContext.getCurrentOrgId());
+        AeaParThemeVer aeaParThemeVer = aeaParThemeService.getAeaParThemeVerByThemeIdAndVerNum(themeId, null, SecurityContext.getCurrentOrgId());
         if (null != aeaParThemeVer) {
             return aeaParStageMapper.listAeaParStageByThemeVerId(aeaParThemeVer.getThemeVerId());
         }
@@ -90,30 +90,38 @@ public class AeaParStageServiceImpl implements AeaParStageService {
 
     @Override
     public AeaParStage getAeaParStageById(String id) throws Exception {
-        if(StringUtils.isEmpty(id)) throw new InvalidParameterException("参数id为空！");
+        if (StringUtils.isEmpty(id)) throw new InvalidParameterException("参数id为空！");
         return aeaParStageMapper.getAeaParStageById(id);
     }
 
     @Override
     public AeaParStage getAeaParStageByIteminstId(String iteminstId) throws Exception {
-        if(StringUtils.isEmpty(iteminstId)) throw new InvalidParameterException("参数iteminstId为空！");
-        List<AeaParStage> list=aeaParStageMapper.getAeaParStageListByIteminstId(iteminstId);
-        return list.size()>0?list.get(0):null;
+        if (StringUtils.isEmpty(iteminstId)) throw new InvalidParameterException("参数iteminstId为空！");
+        List<AeaParStage> list = aeaParStageMapper.getAeaParStageListByIteminstId(iteminstId);
+        return list.size() > 0 ? list.get(0) : null;
     }
 
     @Override
-    public AeaParStage getAeaParStageByApplyinstId(String applyinstId) throws Exception{
-        if(StringUtils.isEmpty(applyinstId)) throw new InvalidParameterException("参数applyinstId为空！");
-        List<AeaParStage> list=aeaParStageMapper.getAeaParStageByApplyinstId(applyinstId);
-        return list.size()>0?list.get(0):null;
+    public AeaParStage getAeaParStageByApplyinstId(String applyinstId) throws Exception {
+        if (StringUtils.isEmpty(applyinstId)) throw new InvalidParameterException("参数applyinstId为空！");
+        List<AeaParStage> list = aeaParStageMapper.getAeaParStageByApplyinstId(applyinstId);
+        return list.size() > 0 ? list.get(0) : null;
     }
 
     @Override
-    public List<String> getApplyInstStatusByProjInfoIdAndStageId(String stageId, String projInfoId,String unitInfoId,String linkmanInfoId) throws Exception {
-        if(StringUtils.isEmpty(stageId)) throw new InvalidParameterException("参数stageId为空！");
-        if(StringUtils.isEmpty(projInfoId)) throw new InvalidParameterException("参数projInfoId为空！");
-        if (StringUtils.isEmpty(unitInfoId)) return aeaParStageMapper.getApplyInstStatusByProjInfoIdAndStageIdAndLinkmanInfoId(stageId,projInfoId,linkmanInfoId);
-        return aeaParStageMapper.getApplyInstStatusByProjInfoIdAndStageIdAndUnitInfoId(stageId,projInfoId,unitInfoId);
+    public List<String> getApplyInstStatusByProjInfoIdAndStageId(String stageId, String projInfoId, String unitInfoId, String linkmanInfoId) throws Exception {
+        if (StringUtils.isEmpty(stageId)) throw new InvalidParameterException("参数stageId为空！");
+        if (StringUtils.isEmpty(projInfoId)) throw new InvalidParameterException("参数projInfoId为空！");
+        if (StringUtils.isEmpty(unitInfoId))
+            return aeaParStageMapper.getApplyInstStatusByProjInfoIdAndStageIdAndLinkmanInfoId(stageId, projInfoId, linkmanInfoId);
+        return aeaParStageMapper.getApplyInstStatusByProjInfoIdAndStageIdAndUnitInfoId(stageId, projInfoId, unitInfoId);
+    }
+
+    @Override
+    public List<AeaParStage> getCompletedStageByProjInfoId(String projInfoId) {
+        List<AeaParStage> stages = new ArrayList();
+        if (StringUtils.isEmpty(projInfoId)) return stages;
+        return aeaParStageMapper.getCompletedStageByProjInfoId(projInfoId, SecurityContext.getCurrentOrgId());
     }
 
 }

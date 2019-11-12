@@ -40,6 +40,31 @@
         where FRONT_ITEMFORM_ID = #{id}
     </select>
 
+    <select id="getAeaParFrontItemformVoByStageId" resultType="com.augurit.aplanmis.common.vo.AeaParFrontItemformVo">
+        select
+        <include refid="allColumnsAlias">
+            <property name="alias" value="apfi"></property>
+        </include>
+        ,
+        aib.ITEM_NAME itemName,
+        asf.FORM_NAME formName,
+        apsi.SUB_FORM_ID subFormId
+        from AEA_PAR_FRONT_ITEMFORM apfi
+        left join aea_par_stage_item apsi on apfi.STAGE_ITEM_ID = apsi.STAGE_ITEM_ID
+        left join aea_item_basic aib on aib.ITEM_VER_ID = apsi.ITEM_VER_ID
+        left join act_sto_form asf on asf.FORM_ID = apsi.SUB_FORM_ID
+        <where>
+            apfi.IS_ACTIVE = '1'
+            <if test="stageId != null">
+                AND apfi.STAGE_ID = #{stageId}
+            </if>
+            <if test="rootOrgId != null">
+                AND apfi.ROOT_ORG_ID = #{rootOrgId}
+            </if>
+        </where>
+        order by apfi.SORT_NO
+    </select>
+
     <!--3 根据条件查询实体list -->
     <select id="listAeaParFrontItemform" resultType="AeaParFrontItemform">
         select

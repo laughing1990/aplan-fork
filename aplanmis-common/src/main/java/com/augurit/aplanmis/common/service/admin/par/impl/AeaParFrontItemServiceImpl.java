@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -63,7 +64,7 @@ public class AeaParFrontItemServiceImpl implements AeaParFrontItemService {
             throw new InvalidParameterException(id);
         }
         String[] ids = id.split(",");
-        for(String frontItemId :ids) {
+        for (String frontItemId : ids) {
             aeaParFrontItemMapper.deleteAeaParFrontItem(frontItemId);
         }
     }
@@ -101,11 +102,11 @@ public class AeaParFrontItemServiceImpl implements AeaParFrontItemService {
     }
 
     @Override
-    public Long getMaxSortNo(AeaParFrontItem aeaParFrontItem)throws Exception{
+    public Long getMaxSortNo(AeaParFrontItem aeaParFrontItem) throws Exception {
         Long sortNo = aeaParFrontItemMapper.getMaxSortNo(aeaParFrontItem);
-        if(sortNo==null){
+        if (sortNo == null) {
             sortNo = 1l;
-        }else{
+        } else {
             sortNo = sortNo + 1;
         }
 
@@ -120,12 +121,22 @@ public class AeaParFrontItemServiceImpl implements AeaParFrontItemService {
         return aeaParFrontItemMapper.getAeaParFrontItemVoByFrontItemId(frontItemId);
     }
 
-    private void checkSame(AeaParFrontItem aeaParFrontItem) throws Exception{
+    @Override
+    public List<AeaParFrontItemVo> listAeaParFrontItemByStageId(String stageId) {
+        List<AeaParFrontItemVo> aeaParFrontItemVos = new ArrayList();
+        if (StringUtils.isBlank(stageId)) {
+            return aeaParFrontItemVos;
+        }
+        aeaParFrontItemVos.addAll(aeaParFrontItemMapper.listAeaParFrontItemByStageId(stageId, SecurityContext.getCurrentOrgId()));
+        return aeaParFrontItemVos;
+    }
+
+    private void checkSame(AeaParFrontItem aeaParFrontItem) throws Exception {
         AeaParFrontItem queryParFrontItem = new AeaParFrontItem();
         queryParFrontItem.setStageId(aeaParFrontItem.getStageId());
         queryParFrontItem.setItemVerId(aeaParFrontItem.getItemVerId());
         List<AeaParFrontItem> list = aeaParFrontItemMapper.listAeaParFrontItem(queryParFrontItem);
-        if(list.size()>0){
+        if (list.size() > 0) {
             throw new RuntimeException("已有配置相同的前置事项检测!");
         }
 

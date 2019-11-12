@@ -97,4 +97,6 @@ public interface AeaItemBasicAdminService {
     String createAppIdByItemName(String itemName);
 
     List<AeaItemBasic> getAeaItemBasicsListByOutputMatId(String matId) throws Exception;
+
+    List<AeaItemBasic> getCompletedItemBasicByProjInfoId(String projInfoId);
 }

@@ -15,18 +15,19 @@ import java.util.List;
 @Repository
 public interface AeaParStageMapper {
 
-    int insertAeaParStage(AeaParStage aeaParStage) ;
+    int insertAeaParStage(AeaParStage aeaParStage);
 
-    int updateAeaParStage(AeaParStage aeaParStage) ;
+    int updateAeaParStage(AeaParStage aeaParStage);
 
-    int deleteAeaParStage(@Param("id") String id) ;
+    int deleteAeaParStage(@Param("id") String id);
 
-    List<AeaParStage> listAeaParStage(AeaParStage aeaParStage) ;
+    List<AeaParStage> listAeaParStage(AeaParStage aeaParStage);
 
-    AeaParStage getAeaParStageById(@Param("id") String id) ;
+    AeaParStage getAeaParStageById(@Param("id") String id);
 
     /**
      * 根据主题版本ID查询版本列表
+     *
      * @param themeVerId 主题版本ID
      * @return List<AeaParStage>
      */
@@ -41,8 +42,8 @@ public interface AeaParStageMapper {
      * @param rootOrgId
      * @return
      */
-    Long getStageMaxSortNoByThemeVerId(@Param("themeVerId")String themeVerId,
-                                       @Param("rootOrgId")String rootOrgId);
+    Long getStageMaxSortNoByThemeVerId(@Param("themeVerId") String themeVerId,
+                                       @Param("rootOrgId") String rootOrgId);
 
     void deleteAeaParStageByIds(@Param("stageIds") String[] stageIds);
 
@@ -50,7 +51,7 @@ public interface AeaParStageMapper {
 
     List<AeaParStage> getAeaParStageByApplyinstId(@Param("applyinstId") String applyinstId);
 
-    List<String> getApplyInstStatusByProjInfoIdAndStageIdAndLinkmanInfoId(@Param("stageId") String stageId, @Param("projInfoId") String projInfoId,@Param("linkmanInfoId") String linkmanInfoId);
+    List<String> getApplyInstStatusByProjInfoIdAndStageIdAndLinkmanInfoId(@Param("stageId") String stageId, @Param("projInfoId") String projInfoId, @Param("linkmanInfoId") String linkmanInfoId);
 
 
     List<String> getApplyInstStatusByProjInfoIdAndStageIdAndUnitInfoId(@Param("stageId") String stageId, @Param("projInfoId") String projInfoId, @Param("unitInfoId") String unitInfoId);
@@ -58,12 +59,15 @@ public interface AeaParStageMapper {
 
     List<AeaParStage> listAeaParStageByIds(@Param("ids") List<String> ids);
 
-    List<AeaParStage> listTestOrPublishThemeVerRelStage(@Param("rootOrgId")String rootOrgId);
+    List<AeaParStage> listTestOrPublishThemeVerRelStage(@Param("rootOrgId") String rootOrgId);
 
     /**
      * 根据标准阶段序号(DYBZSPJDXH)查询所有阶段ID
+     *
      * @param xh
      * @return
      */
     List<String> getStageIdByDYBZSPJDXH(@Param("xh") String xh);
+
+    List<AeaParStage> getCompletedStageByProjInfoId(@Param("projInfoId") String projInfoId, @Param("rootOrgId") String rootOrgId);
 }

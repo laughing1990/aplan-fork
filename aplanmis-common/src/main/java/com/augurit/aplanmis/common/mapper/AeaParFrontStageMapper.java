@@ -4,6 +4,7 @@ import com.augurit.aplanmis.common.domain.AeaParFrontStage;
 import com.augurit.aplanmis.common.vo.AeaParFrontStageVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
@@ -18,6 +19,7 @@ import java.util.List;
  * </ul>
  */
 @Mapper
+@Repository
 public interface AeaParFrontStageMapper {
 
     void insertAeaParFrontStage(AeaParFrontStage aeaParFrontStage) throws Exception;
@@ -38,6 +40,6 @@ public interface AeaParFrontStageMapper {
 
     List<AeaParFrontStageVo> listSelectParFrontStage(AeaParFrontStage aeaParFrontStage) throws Exception;
 
-
+    List<AeaParFrontStageVo> getHistStageByStageId(@Param("stageId") String stageId, @Param("rootOrgId") String rootOrgId);
 
 }
