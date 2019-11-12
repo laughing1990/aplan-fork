@@ -98,10 +98,10 @@ public class ReceiveVo {
     private String iteminstName;
     @ApiModelProperty(value = "打印时间", required = true, dataType="string")
     private String printTime;
-    @ApiModelProperty(value = "承诺时限数字", required = true, dataType="long")
-    private Double dueNum; // (承诺时限数字)
-    @ApiModelProperty(value = "承诺时限单位", required = true, dataType="string")
-    private String dueUnit; // (承诺时限单位)
+    @ApiModelProperty(value = "承诺办结时限数字", required = true, dataType="long")
+    private Double dueNum; // (承诺办结时限数字)
+    @ApiModelProperty(value = "承诺办结时限单位", required = true, dataType="string")
+    private String dueUnit; // (承诺办结时限单位)
     @ApiModelProperty(value = "项目名称", required = true, dataType="string")
     private String itemName;
     @ApiModelProperty(value = "时间限制", required = true, dataType="string")

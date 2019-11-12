@@ -291,45 +291,82 @@ public class RestProjectController {
     })
     @GetMapping("/childProjectList/{projInfoId}")
     public ContentResultForm<List<AeaProjInfo>> childProjectList(@PathVariable String projInfoId) {
-        Assert.isTrue(StringUtils.isNotBlank(projInfoId), "projInfoId is null");
+        if(StringUtils.isBlank(projInfoId)){
+            return new ContentResultForm<>(false, null, "查询失败，主项目id不存在");
+        }
         List<AeaProjInfo> childProjectList = aeaProjInfoService.findChildProj(projInfoId);
-        return new ContentResultForm<>(true, childProjectList, "Query child project success");
+        return new ContentResultForm<>(true, childProjectList, "查询成功");
     }
 
     @ApiOperation(value = "新增单体工程信息")
     @PostMapping("/save/childProject")
     public ContentResultForm<AeaProjInfo> saveChildProject(@RequestBody AeaProjInfo aeaProjInfo) throws Exception {
-        Assert.isTrue(StringUtils.isNotBlank(aeaProjInfo.getParentProjId()), "parentProjInfoId is null");
-        AeaProjInfo parent = aeaProjInfoService.getAeaProjInfoByProjInfoId(aeaProjInfo.getParentProjId());
-        if (parent == null) {
-            return new ContentResultForm<AeaProjInfo>(false, null, "Save child project failed because parent project information does not exist.");
+        // 主项目id
+        String parentProjId = aeaProjInfo.getParentProjId();
+        if(StringUtils.isBlank(parentProjId)){
+            return new ContentResultForm<>(false, null, "操作失败，项目id不存在");
         }
+        // 查询主项目信息
+        AeaProjInfo parent = aeaProjInfoService.getAeaProjInfoByProjInfoId(parentProjId);
+        if (parent == null) {
+            return new ContentResultForm<AeaProjInfo>(false, null, "操作失败，主项目信息不存在");
+        }
+        //查询是否有重名的项目工程
+        if (StringUtils.isNotBlank(aeaProjInfo.getProjName())) {
+            AeaProjInfo info = new AeaProjInfo();
+            info.setProjName(aeaProjInfo.getProjName());
+            List<AeaProjInfo> checkNameProj = aeaProjInfoService.findAeaProjInfo(info);
+            if (checkNameProj != null && checkNameProj.size() > 0) {
+                return new ContentResultForm<AeaProjInfo>(false, null, "操作失败，项目名称已存在");
+            }
+        }
+
         AeaProjInfo child = aeaProjInfoService.addChildProjInfo(aeaProjInfo);
-        return new ContentResultForm<AeaProjInfo>(true, child, "Save child project success.");
+        return new ContentResultForm<AeaProjInfo>(true, child, "操作成功");
     }
 
     @ApiOperation(value = "编辑单体工程信息")
     @PostMapping("/edit/childProject")
     public ContentResultForm<String> editChildProject(@RequestBody AeaProjInfo aeaProjInfo) throws Exception {
-        Assert.isTrue(StringUtils.isNotBlank(aeaProjInfo.getProjInfoId()), "childProjInfoId is null");
-        AeaProjInfo info = aeaProjInfoService.getAeaProjInfoByProjInfoId(aeaProjInfo.getProjInfoId());
-        if (info == null) {
-            return new ContentResultForm<>(false, aeaProjInfo.getProjInfoId(), "Edit child project failed because project information does not exist.");
+        String projInfoInId = aeaProjInfo.getProjInfoId();
+        if(StringUtils.isBlank(projInfoInId)){
+            return new ContentResultForm<>(false, null, "操作失败，项目id不存在");
         }
+
+        AeaProjInfo info = aeaProjInfoService.getAeaProjInfoByProjInfoId(projInfoInId);
+        if (info == null) {
+            return new ContentResultForm<>(false, projInfoInId, "操作失败，项目信息不存在");
+        }
+
+        //查询是否有重名的项目工程
+        if (StringUtils.isNotBlank(aeaProjInfo.getProjName()) && StringUtils.isNotBlank(info.getProjName())) {
+            if(!aeaProjInfo.getProjName().equals(info.getProjName())){
+                AeaProjInfo entity = new AeaProjInfo();
+                info.setProjName(aeaProjInfo.getProjName());
+                List<AeaProjInfo> checkNameProj = aeaProjInfoService.findAeaProjInfo(entity);
+                if (checkNameProj != null && checkNameProj.size() > 0) {
+                    return new ContentResultForm<>(false, projInfoInId, "操作失败，项目名称已存在");
+                }
+            }
+        }
+
         aeaProjInfoService.updateAeaProjInfo(aeaProjInfo);
-        return new ContentResultForm<>(true, aeaProjInfo.getProjInfoId(), "Edit child project success.");
+        return new ContentResultForm<>(true, projInfoInId, "操作成功");
     }
 
     @ApiOperation(value = "删除单体工程信息")
     @PostMapping("/delete/childProject")
     public ContentResultForm<String> deleteChildProjectByParam(String childProjInfoId) throws Exception {
-        Assert.isTrue(StringUtils.isNotBlank(childProjInfoId), "childProjInfoId is null");
+        if(StringUtils.isBlank(childProjInfoId)){
+            return new ContentResultForm<>(false, null, "操作失败，项目id不存在");
+        }
+
         AeaProjInfo info = aeaProjInfoService.getAeaProjInfoByProjInfoId(childProjInfoId);
         if (info == null) {
-            return new ContentResultForm<>(false, childProjInfoId, "Delete child project failed because project information does not exist.");
+            return new ContentResultForm<>(false, childProjInfoId, "操作失败，项目信息不存在");
         }
         aeaProjInfoService.deleteChildChildProj(childProjInfoId);
-        return new ContentResultForm<>(true, childProjInfoId, "Delete child project success.");
+        return new ContentResultForm<>(true, childProjInfoId, "操作成功");
     }
 
     @ApiOperation(value = "跳转前端单体工程信息页面")

@@ -68,7 +68,7 @@ public class ApproveItemService {
         if (dic != null) {
             aeaHiIteminst.setIteminstState(dic.getItemName());
         }
-        //承诺办结时限=受理时间+承诺时限
+        //承诺办结时限=受理时间+承诺办结时限
         int dueNumInt = aeaItemBasic.getDueNum().intValue();
         if (aeaHiIteminst.getAcceptTime() != null) {
             Calendar c = Calendar.getInstance();

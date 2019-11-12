@@ -111,7 +111,7 @@ public class AeaHiIteminstVo {
     @ApiModelProperty(value = "审批部门", required = true, dataType="string")
     private String approveOrgName;
 
-    @ApiModelProperty(value = "承诺时限", required = true, dataType="long")
+    @ApiModelProperty(value = "承诺办结时限", required = true, dataType="long")
     private Double dueNum;
 
     @ApiModelProperty(value = "申报流水号", required = true, dataType="string")

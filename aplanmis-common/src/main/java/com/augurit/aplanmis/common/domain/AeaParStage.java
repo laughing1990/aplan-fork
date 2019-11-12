@@ -31,10 +31,10 @@ public class AeaParStage implements Serializable {
     @ApiModelProperty(value = "业务流程模板定义ID")
     private String appId;
 
-    @ApiModelProperty(value = "承诺时限")
+    @ApiModelProperty(value = "承诺办结时限")
     private Double dueNum;
 
-    @ApiModelProperty(value = "承诺时限单位")
+    @ApiModelProperty(value = "承诺办结时限单位")
     private String dueUnit;
 
     @ApiModelProperty(value = "排序号，从1， 2， 3， 4...")

@@ -979,7 +979,7 @@
                         class="ag ag-edit-circle-fill"></i>办理中</span>
                       <span v-show="scope.row.isRecommend==1&&scope.row.isDone!='HANDLING'&&scope.row.isDone!='FINISHED'" class="isTag isRecommend">推荐</span>
                       <p class="not-region-data" v-if="scope.row.itemHaved">* 该实施事项已存在，请勿重复选择!</p>
-                      <p class="not-region-data" v-if="scope.row.notRegionData">* 该事项无匹配的行政区划及承办单位</p>
+                      <p class="not-region-data" v-if="scope.row.notRegionData">* 该事项无匹配的行政区划及实施主体</p>
                     </template>
                   </el-table-column>
                   <el-table-column label="行政区划" width="200">
@@ -998,7 +998,7 @@
                       </div>
                     </template>
                   </el-table-column>
-                  <el-table-column prop="orgName" label="承办单位" width="340">
+                  <el-table-column prop="orgName" label="实施主体" width="340">
                     <template slot-scope="scope">
                       <div v-if="scope.row.isImplement==false">
                         <el-select v-model="scope.row.implementItemVerId"
@@ -1073,7 +1073,7 @@
                         class="ag ag-edit-circle-fill"></i>办理中</span>
                       <span v-show="scope.row.isRecommend==1&&scope.row.isDone!='HANDLING'&&scope.row.isDone!='FINISHED'" class="isTag isRecommend">推荐</span>
                       <p class="not-region-data" v-if="scope.row.itemHaved">* 该实施事项已存在，请勿重复选择!</p>
-                      <p class="not-region-data" v-if="scope.row.notRegionData">* 该事项无匹配的行政区划及承办单位</p>
+                      <p class="not-region-data" v-if="scope.row.notRegionData">* 该事项无匹配的行政区划及实施主体</p>
                     </template>
                   </el-table-column>
                   <el-table-column label="行政区划" width="200">
@@ -1091,7 +1091,7 @@
                       </div>
                     </template>
                   </el-table-column>
-                  <el-table-column prop="orgName" label="承办单位" width="340">
+                  <el-table-column prop="orgName" label="实施主体" width="340">
                     <template slot-scope="scope">
                       <div v-if="scope.row.isImplement==false">
                         <el-select v-model="scope.row.implementItemVerId"

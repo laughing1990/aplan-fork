@@ -1,28 +1,21 @@
 package com.augurit.aplanmis.front.form.controller;
 
 
-import com.augurit.agcloud.bsc.domain.BscDicCodeItem;
-import com.augurit.agcloud.bsc.domain.BscDicCodeType;
 import com.augurit.agcloud.bsc.sc.dic.code.service.BscDicCodeService;
-import com.augurit.agcloud.framework.security.SecurityContext;
-import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
-import com.augurit.agcloud.framework.exception.InvalidParameterException;
+import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.aplanmis.common.domain.AeaExProjCertLand;
 import com.augurit.aplanmis.common.domain.AeaExProjCertProject;
-import com.augurit.aplanmis.common.domain.AeaExProjContract;
 import com.augurit.aplanmis.common.domain.AeaExProjSite;
-import com.augurit.aplanmis.common.service.dic.BscDicCodeItemService;
+import com.augurit.aplanmis.common.domain.AeaProjInfo;
 import com.augurit.aplanmis.common.service.form.AeaExProjCertLandService;
 import com.augurit.aplanmis.common.service.form.AeaExProjCertProjectService;
 import com.augurit.aplanmis.common.service.form.AeaExProjSiteService;
+import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
 import com.augurit.aplanmis.common.vo.AeaCertiVo;
-import com.github.pagehelper.Page;
-import com.github.pagehelper.PageInfo;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.validation.BindingResult;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
@@ -49,10 +42,10 @@ private static Logger logger = LoggerFactory.getLogger(AeaExProjCertLandControll
     private AeaExProjSiteService aeaExProjSiteService;
 
     @Autowired
-    private BscDicCodeItemService bscDicCodeItemService;
+    private BscDicCodeService bscDicCodeService;
 
     @Autowired
-    private BscDicCodeService bscDicCodeService;
+    private AeaProjInfoService aeaProjInfoService;
 
 
         @RequestMapping("/index.html")
@@ -65,11 +58,19 @@ private static Logger logger = LoggerFactory.getLogger(AeaExProjCertLandControll
 
 //数据回显
     @RequestMapping("/getTceop.do")
-    public AeaCertiVo getAeaExProjCertLand(String projInfoId) throws Exception {
+    public ResultForm getAeaExProjCertLand(String projInfoId) throws Exception {
+        if(projInfoId==null||"".equals(projInfoId)){
+            return new ResultForm(false, "获取项目信息失败，项目id "+projInfoId);
+        }
+
+        AeaProjInfo aeaProjInfoByProjInfoId = aeaProjInfoService.getAeaProjInfoByProjInfoId(projInfoId);
+        if (aeaProjInfoByProjInfoId==null)
+        {
+            return new ResultForm(false, "获取项目信息失败，项目id "+projInfoId);
+        }
         AeaCertiVo aeaCertiVo = new AeaCertiVo();
         if (projInfoId != null){
             logger.debug("根据project ID获取vo对象，projInfoId：{}", projInfoId);
-
             AeaExProjCertLand landQuery = new AeaExProjCertLand();
             landQuery.setProjInfoId(projInfoId);
             List<AeaExProjCertLand> aeaExProjCertLands = aeaExProjCertLandService.listAeaExProjCertLand(landQuery);
@@ -84,8 +85,6 @@ private static Logger logger = LoggerFactory.getLogger(AeaExProjCertLandControll
                 aeaCertiVo.setGovOrgNameLand(aeaExProjCertLand.getGovOrgName());
                 aeaCertiVo.setPublishTimeLand(aeaExProjCertLand.getPublishTime());
             }
-
-
             AeaExProjCertProject projectQuery = new AeaExProjCertProject();
             projectQuery.setProjInfoId(projInfoId);
             List<AeaExProjCertProject> aeaExProjCertProjects = aeaExProjCertProjectService.listAeaExProjCertProject(projectQuery);
@@ -98,7 +97,6 @@ private static Logger logger = LoggerFactory.getLogger(AeaExProjCertLandControll
                 aeaCertiVo.setPublishOrgNameProject(aeaExProjCertProject.getPublishOrgName());
                 aeaCertiVo.setPublishTimeProject(aeaExProjCertProject.getPublishTime());
             }
-
 
             //建设项目选址意见书
             AeaExProjSite siteQuery = new AeaExProjSite();
@@ -116,50 +114,14 @@ private static Logger logger = LoggerFactory.getLogger(AeaExProjCertLandControll
                 aeaCertiVo.setPublishTimeSite(aeaExProjSite.getPublishTime());
             }
 
-            return aeaCertiVo;
+            return new ContentResultForm<AeaCertiVo>(true, aeaCertiVo);
         }
         else {
             logger.debug("构建新的aeaCertiVo对象");
-            return aeaCertiVo;
+            return new ContentResultForm<AeaCertiVo>(true, new AeaCertiVo());
         }
-    }
-/*    @RequestMapping("/listAeaExProjCertLand.do")
-    public PageInfo<AeaExProjCertLand> listAeaExProjCertLand(  AeaExProjCertLand aeaExProjCertLand, Page page) throws Exception {
-        logger.debug("分页查询，过滤条件为{}，查询关键字为{}", aeaExProjCertLand);
-        return aeaExProjCertLandService.listAeaExProjCertLand(aeaExProjCertLand,page);
-    }*/
-//用地面积单位（数据字典）
-    @RequestMapping("/landAreaType")
-    public List<BscDicCodeItem> getLandAreaType(){
-         String landAreaType = "Land_Area_Type";
-        BscDicCodeType typeByTypeCode = bscDicCodeService.getTypeByTypeCode(landAreaType, SecurityContext.getCurrentOrgId());
-        if (typeByTypeCode==null){
-            return null;
-        }
-        else {
-            List<BscDicCodeItem> areaType = bscDicCodeService.getItemsByTypeCode(typeByTypeCode.getTypeCode());
-            return areaType;
-        }
-    }
 
-    //用地性质
-    @RequestMapping("/fieldType")
-    public List<BscDicCodeItem> getXM_FIELD_TYPE(){
-        String landAreaType = "XM_FIELD_TYPE";
-        BscDicCodeType typeByTypeCode = bscDicCodeService.getTypeByTypeCode(landAreaType, SecurityContext.getCurrentOrgId());
-        List<BscDicCodeItem> fieldType = bscDicCodeService.getItemsByTypeCode(typeByTypeCode.getTypeCode());
-        return fieldType;
     }
-
-
-/*
-    @RequestMapping("/updateTceop.do")
-        public ResultForm updateAeaExProjCertLand(AeaExProjCertLand aeaExProjCertLand) throws Exception {
-        logger.debug("更新客户档案信息Form对象，对象为：{}", aeaExProjCertLand);
-        aeaExProjCertLandService.updateAeaExProjCertLand(aeaExProjCertLand);
-        return new ResultForm(true);
-    }
-*/
 
 
     /**
@@ -169,6 +131,14 @@ private static Logger logger = LoggerFactory.getLogger(AeaExProjCertLandControll
     @RequestMapping("/saveTceop.do")
     public ResultForm saveAeaExProjCertLand(AeaCertiVo aeaCertiVo) throws Exception {
 
+        if(aeaCertiVo.getProjInfoId()==null||"".equals(aeaCertiVo.getProjInfoId())){
+            return new ResultForm(false, "获取项目信息失败，项目id "+aeaCertiVo.getProjInfoId());
+        }
+        AeaProjInfo aeaProjInfoByProjInfoId = aeaProjInfoService.getAeaProjInfoByProjInfoId(aeaCertiVo.getProjInfoId());
+        if (aeaProjInfoByProjInfoId==null)
+        {
+            return new ResultForm(false, "获取项目信息失败，项目id "+aeaCertiVo.getProjInfoId());
+        }
 
         //建设项目用地规划许可证
         AeaExProjCertLand aeaExProjCertLand = new AeaExProjCertLand();

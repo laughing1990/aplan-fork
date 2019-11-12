@@ -29,7 +29,7 @@ public class AeaItemBasic implements Serializable {
     private String itemName; // (事项名称)
     private String orgId; // (组织ID)
     private String itemType; // 事项性质小分类，来自于数据字典
-    private String bjType; // (承诺时限单位)
+    private String bjType; // (承诺办结时限单位)
     private Long acceptMode; // (排序号)
     private String handleArticle; // (图标CSS样式)
     private String handleFlow; // (背景CSS样式)

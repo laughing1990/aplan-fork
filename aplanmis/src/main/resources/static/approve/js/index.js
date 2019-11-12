@@ -163,7 +163,6 @@ var vm = new Vue({
         recordId: null,
       },//attLink用于附件关联多个业务ID
       btnDisable: true,//附件管理的按钮是否可点击，如果还没启动流程，处于起草页面则不能点击
-      
       //审批界面业务逻辑参数
       buttonData: [], // 动态按钮数据
       showMenuMore: false,
@@ -535,7 +534,7 @@ var vm = new Vue({
       // if(window) return null;
       vm.parentPageLoading = true;
       request('', {
-        url: ctx + 'rest/correct/detail/list?iteminstId=' + vm.iteminstId,
+        url: ctx + 'rest/correct/detail/list?iteminstId=' + vm.iteminstId + '&applyinstId=' + vm.masterEntityKey,
         // url: ctx + 'rest/correct/detail/list?iteminstId=988347fc-fde9-4067-8558-f45f1e3d9955',
         type: 'get',
       }, function (res) {

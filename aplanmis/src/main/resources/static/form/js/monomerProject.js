@@ -65,7 +65,7 @@
         },
         created: function () {
             this.projInfoId = this.getUrlParam('projInfoId');
-            // this.projInfoId = '012c4996-b14f-42c4-8d87-b2f347b27276';
+            // this.projInfoId = '01263565-b7b4-4088-88b8-fb7959d219e1';
         },
         mounted: function () {
             if (this.projInfoId) this.getDetail();

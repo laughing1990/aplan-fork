@@ -2,7 +2,7 @@ var isDevelop = 0;
 if (isDevelop) {
   // ctx = '[[@{/}]]';
   // ctx = 'http://localhost:8083/aplanmis-front/';  // localhost
-  ctx = 'http://39.107.139.174:8083/aplanmis-front/';  // 174
+  ctx = 'http://106.52.77.101:8083/aplanmis-front/';  // 101
   // ctx = 'http://192.168.32.46:8083/aplanmis-front/';  // 李文钦
   // ctx = 'http://192.168.30.24:8083/aplanmis-front/';  // 陈锭星
   // ctx = 'http://192.168.30.24:6123/aplanmis-front/';  // 陈锭星

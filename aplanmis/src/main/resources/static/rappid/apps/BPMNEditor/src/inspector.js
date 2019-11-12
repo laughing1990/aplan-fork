@@ -319,13 +319,13 @@ window.inputs = {
             },
             'stage/dueNum': {
                 type: 'text',
-                label: '承诺时限',
+                label: '承诺办结时限',
                 group: '高级属性',
                 index: 8
             },
             'stage/dueUnit': {
                 type: 'select',
-                label: '承诺时限单位',
+                label: '承诺办结时限单位',
                 group: '高级属性',
                 index: 7
             },
@@ -417,13 +417,13 @@ window.inputs = {
             },
             'stage/dueNum': {
                 type: 'text',
-                label: '承诺时限',
+                label: '承诺办结时限',
                 group: '高级属性',
                 index: 8
             },
             'stage/dueUnit': {
                 type: 'select',
-                label: '承诺时限单位',
+                label: '承诺办结时限单位',
                 group: '高级属性',
                 index: 7
             },
@@ -515,13 +515,13 @@ window.inputs = {
             },
             'stage/dueNum': {
                 type: 'text',
-                label: '承诺时限',
+                label: '承诺办结时限',
                 group: '高级属性',
                 index: 8
             },
             'stage/dueUnit': {
                 type: 'select',
-                label: '承诺时限单位',
+                label: '承诺办结时限单位',
                 group: '高级属性',
                 index: 7
             },
@@ -613,13 +613,13 @@ window.inputs = {
             },
             'stage/dueNum': {
                 type: 'text',
-                label: '承诺时限',
+                label: '承诺办结时限',
                 group: '高级属性',
                 index: 8
             },
             'stage/dueUnit': {
                 type: 'select',
-                label: '承诺时限单位',
+                label: '承诺办结时限单位',
                 group: '高级属性',
                 index: 7
             },
@@ -711,13 +711,13 @@ window.inputs = {
             },
             'stage/dueNum': {
                 type: 'text',
-                label: '承诺时限',
+                label: '承诺办结时限',
                 group: '高级属性',
                 index: 8
             },
             'stage/dueUnit': {
                 type: 'select',
-                label: '承诺时限单位',
+                label: '承诺办结时限单位',
                 group: '高级属性',
                 index: 7
             },

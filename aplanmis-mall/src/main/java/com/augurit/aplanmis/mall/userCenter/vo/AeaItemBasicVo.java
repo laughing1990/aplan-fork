@@ -17,13 +17,13 @@ public class AeaItemBasicVo {
     private String iteminstState;
     @ApiModelProperty("事项实例历时")
     private Double iteminstRunTime;
-    @ApiModelProperty(value = "承诺时限数字")
+    @ApiModelProperty(value = "承诺办结时限数字")
     private Double dueNum;
     @ApiModelProperty("事项实例开始时间")
     private Date iteminstStartTime;
     @ApiModelProperty("事项实例结束时间")
     private Date iteminstEndTime;
-    @ApiModelProperty("承办单位")
+    @ApiModelProperty("实施主体")
     private String orgName;
     @ApiModelProperty("事项状态类型 0已办结 1办理中 2未办理")
     private String itemStateType;
