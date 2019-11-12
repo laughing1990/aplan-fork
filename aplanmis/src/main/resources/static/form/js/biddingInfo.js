@@ -65,6 +65,12 @@
                 var params = this.biddingInfo;
                 params.projInfoId = this.projInfoId;
 
+                if (params.bidMode == '3') {
+                    // 直接委托
+                    params.agencyUnits.splice(0, 1);
+                    params.costUnits.splice(0, 1);
+                }
+
                 _that.$refs['biddingInfo'].validate(function (valid) {
                     if (valid) {
                         request('', {
@@ -110,13 +116,16 @@
                     if (data.success) {
                         _that.biddingInfo = data.content;
 
-                        if (_that.biddingInfo.bidMode != 'f3632ed9-f728-436f-92f6-4c88c7bbba86') {
-                            _that.biddingInfo.winBidUnits.splice(0, 1, {
-                                organizationalCode: '',
-                                unifiedSocialCreditCode: '',
-                                applicant: '',
-                                unitType: '17'
-                            });
+                        // 其他委托
+                        if (_that.biddingInfo.bidMode != '3') {
+                            if (!_that.biddingInfo.winBidUnits.length) {
+                                _that.biddingInfo.winBidUnits.splice(0, 1, {
+                                    organizationalCode: '',
+                                    unifiedSocialCreditCode: '',
+                                    applicant: '',
+                                    unitType: '17'
+                                });
+                            }
                             _that.isShowFoot = true;
                         }
                     } else {
@@ -179,27 +188,31 @@
             },
             // 招标方式下拉改版时触发
             bidModeSelect: function (val) {
-                if (val == 'f3632ed9-f728-436f-92f6-4c88c7bbba86') {
+                if (val == '3') {
                     // 直接委托
-                    this.biddingInfo.agencyUnits.splice(0, 1);
-                    this.biddingInfo.costUnits.splice(0, 1);
+                    // this.biddingInfo.agencyUnits.splice(0, 1);
+                    // this.biddingInfo.costUnits.splice(0, 1);
                     this.isShowFoot = false;
                 } else {
                     // 其他委托
                     // 招标代理机构
-                    this.biddingInfo.agencyUnits.splice(0, 1, {
-                        organizationalCode: '',
-                        unifiedSocialCreditCode: '',
-                        applicant: '',
-                        unitType: '2'
-                    });
+                    if (!this.biddingInfo.agencyUnits.length) {
+                        this.biddingInfo.agencyUnits.splice(0, 1, {
+                            organizationalCode: '',
+                            unifiedSocialCreditCode: '',
+                            applicant: '',
+                            unitType: '2'
+                        });
+                    }
                     // 造价咨询单位
-                    this.biddingInfo.costUnits.splice(0, 1, {
-                        organizationalCode: '',
-                        unifiedSocialCreditCode: '',
-                        applicant: '',
-                        unitType: '14'
-                    });
+                    if (!this.biddingInfo.costUnits.length) {
+                        this.biddingInfo.costUnits.splice(0, 1, {
+                            organizationalCode: '',
+                            unifiedSocialCreditCode: '',
+                            applicant: '',
+                            unitType: '14'
+                        });
+                    }
                     this.isShowFoot = true;
                 }
             },
@@ -239,7 +252,7 @@
                 }
             },
             // 选中单位名称后设置相关信息
-            setUnitInfo: function(val, obj){
+            setUnitInfo: function (val, obj) {
                 Vue.set(obj, 'organizationalCode', val.organizationalCode);
                 Vue.set(obj, 'unifiedSocialCreditCode', val.unifiedSocialCreditCode);
             }
