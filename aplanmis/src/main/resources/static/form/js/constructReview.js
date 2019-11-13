@@ -278,11 +278,11 @@ var app = new Vue({
             vm.formDataSheJj = res.content.drawings[1] || {};
           }
 
-          if (vm.formDataTuShen.linkmen == undefined) {
+          if (vm.formDataTuShen.linkmen == undefined || vm.formDataTuShen.linkmen.length == 0) {
             vm.formDataTuShen.linkmen = [];
             vm.init('tushen');
           }
-          if (vm.formDataSheJj.linkmen == undefined) {
+          if (vm.formDataSheJj.linkmen == undefined || vm.formDataSheJj.linkmen.length == 0) {
             vm.formDataSheJj.linkmen = [];
             vm.init('sheji');
           }
