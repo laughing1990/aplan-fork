@@ -187,7 +187,7 @@ input[type="text"] {
   color: #333;
   font-size: 15px;
   border-left: 4px solid #fff;
-  transition: all .2s;
+  transition: all 0.2s;
 }
 .person-content-wrap .person-centre-box .menu-sidebar .menu-nav li > ul li.active {
   background: rgba(49, 132, 250, 0.1);
@@ -272,7 +272,7 @@ input[type="text"] {
 .person-content-wrap .person-centre-box .content-wrap .owner-content-wrap .data-show-box .data-show .data-show-list li > a {
   display: inline-block;
   font-size: 32px;
-  transition: all .2s;
+  transition: all 0.2s;
 }
 .person-content-wrap .person-centre-box .content-wrap .owner-content-wrap .normal-module-box {
   position: relative;
@@ -660,4 +660,10 @@ input[type="text"] {
 }
 .person-content-wrap .person-centre-box .content-wrap .owner-content-wrap .add-client-people-box .person-icon {
   background: url('../img/person_icon.png') no-repeat center;
+}
+.service-table-dialog .el-dialog__headerbtn {
+  top: 0;
+}
+.service-table-dialog .el-dialog__body {
+  padding: 20px;
 }

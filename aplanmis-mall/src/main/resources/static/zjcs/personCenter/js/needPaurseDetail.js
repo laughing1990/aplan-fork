@@ -117,10 +117,12 @@ var vm = new Vue({
         {
           label: '项目/工程信息',
           target: 'baseInfo'
-        }, {
-          label: '申报主体信息',
-          target: 'applyInfo'
-        }, {
+        },
+        // {
+        //   label: '申报主体信息',
+        //   target: 'applyInfo'
+        // }, 
+        {
           label: '采购中介服务',
           target: 'applyStage'
         }, {
@@ -595,17 +597,35 @@ var vm = new Vue({
       requireExplainFile: '',  //要求说明文件id
       enclosureFileUploadType: 'officialRemark',  //officialRemark为批文文件，requireExplain为要求说明文件
       enclosureFileUploadAction: ctx + 'market/uploadFiles',  //附件上传接口
+
+      // 中介服务事项
+      // 中介服务事项名称
+      agentServiceName: '',
+      // 中介服务事项列表的弹框
+      serviceTabledialogTable: false,
+      // 中介服务事项列表-查询参数
+      agentServiceItemCheckData: {
+        keyword: '',
+        pageNum: 1,
+        pageSize: 10,
+      },
+      // 中介服务事项列表-list
+      serviceItemTableList: [],
+      // 中介服务事项列表-total
+      serviceItemTotal: 0,
+      // 中介服务事项列表-选中list
+      serviceItemTableSelectedList: [],
     }
   },
   mounted: function () {
     var _that = this;
-    _that.itemVerId = itemVerId;
-    _that.getItemInfo();
+    // _that.itemVerId = itemVerId;
+    // _that.getItemInfo();
     _that.getProjTypeNature('PROJ_UNIT_LINKMAN_TYPE,XM_DWLX,XM_PROJECT_STEP,XM_PROJECT_LEVEL,XM_TZLX,XM_ZJLY,XM_GBHY,XM_TDLY,XM_NATURE,XM_GCFL');
     _that.getDistrictList();  // 获取行政区划
     _that.getGbhy();
     _that.getAutoProjCode(); // 自动生成项目编码
-    _that.getNeedServiceList(); // 获取所需服务
+    // _that.getNeedServiceList(); // 获取所需服务
     window.addEventListener('scroll', _that.handleScroll);
     window.addEventListener('resize', function (ev) {
       _that.curWidth = (document.documentElement.clientWidth || document.body.clientWidth);
@@ -2487,17 +2507,17 @@ var vm = new Vue({
       var projBascInfoFlag = true; // 项目/工程信息校验通过
       var perUnitMsg = "";
       // 判断个人申报主体必填是否已填
-      if (_that.applySubjectType == 0) {
-        _that.$refs['applicantPer'].validate(function (valid) {
-          if (valid) {
-            applicantPerFlag = true;
-          } else {
-            applicantPerFlag = false;
-            perUnitMsg = "请完善申办主体个人信息";
-            return false;
-          }
-        });
-      }
+      // if (_that.applySubjectType == 0) {
+      //   _that.$refs['applicantPer'].validate(function (valid) {
+      //     if (valid) {
+      //       applicantPerFlag = true;
+      //     } else {
+      //       applicantPerFlag = false;
+      //       perUnitMsg = "请完善申办主体个人信息";
+      //       return false;
+      //     }
+      //   });
+      // }
       _that.$refs['projBascInfoShowFrom'].validate(function (valid) {
         if (valid) {
           projBascInfoFlag = true;
@@ -2510,29 +2530,29 @@ var vm = new Vue({
         }
       })
       // 判断建设单位必填是否已填
-      if (jiansheUnitFormEleLen > 0) {
-        for (var i = 0; i < jiansheUnitFormEleLen; i++) {
-          var formRef = 'jianshe_' + i;
-          var validFun;
-          if ((typeof (_that.$refs[formRef].validate)) == 'function') {
-            validFun = _that.$refs[formRef].validate
-          } else {
-            validFun = _that.$refs[formRef][0].validate
-          }
-          validFun(function (valid) {
-            if (valid) {
-              jiansheUnitFlag = true;
-            } else {
-              jiansheUnitFlag = false;
-              perUnitMsg = "请完善申办主体建设单位信息"
-              return false;
-            }
-          });
-        }
-      } else if (jiansheUnitFormEleLen == 0 && _that.applySubjectType != 0) {
-        jiansheUnitFlag = false;
-        perUnitMsg = "请添加申办主体建设单位信息"
-      }
+      // if (jiansheUnitFormEleLen > 0) {
+      //   for (var i = 0; i < jiansheUnitFormEleLen; i++) {
+      //     var formRef = 'jianshe_' + i;
+      //     var validFun;
+      //     if ((typeof (_that.$refs[formRef].validate)) == 'function') {
+      //       validFun = _that.$refs[formRef].validate
+      //     } else {
+      //       validFun = _that.$refs[formRef][0].validate
+      //     }
+      //     validFun(function (valid) {
+      //       if (valid) {
+      //         jiansheUnitFlag = true;
+      //       } else {
+      //         jiansheUnitFlag = false;
+      //         perUnitMsg = "请完善申办主体建设单位信息"
+      //         return false;
+      //       }
+      //     });
+      //   }
+      // } else if (jiansheUnitFormEleLen == 0 && _that.applySubjectType != 0) {
+      //   jiansheUnitFlag = false;
+      //   perUnitMsg = "请添加申办主体建设单位信息"
+      // }
       if (projBascInfoFlag && applicantPerFlag && jiansheUnitFlag && jinbanUnitFlag) {
         _that.$refs['purchaseProj'].validate(function (valid1) {
           if(valid1){
@@ -3423,11 +3443,11 @@ var vm = new Vue({
     // 附件上传-类型
     enclosureFileType: function(type){
       this.enclosureFileUploadType = type;
+      // console.log(this.enclosureFileUploadType)
     },
     // 附件上传-success
     enclosureFileUploadSuccess: function(response, file, fileList){
-      this.progressDialogVisible = false;
-      this.uploadPercentage = 0;
+      // console.log(response)
       if(response.success && response.content){
         this.$message({
           message: '上传成功！',
@@ -3443,19 +3463,54 @@ var vm = new Vue({
     },
     // 附件上传-error
     enclosureFileUploadError: function(err, file, fileList){
-      this.progressDialogVisible = false;
-      this.uploadPercentage = 0;
+      // console.log(err)
       this.$message({
         message: err.message,
         type: 'error'
       });
     },
-    // 附件上传进度
-    enclosureFileUploadProcess: function(event, file, fileList){
-      this.progressDialogVisible = true;
-      this.uploadPercentage = +file.percentage.toFixed(0);
+
+    // 中介服务事项相关
+    // 获取中介服务事项列表
+    fetchAgentServiceItemList: function () {
+      var vm = this;
+			request('', {
+				url: ctx + 'supermarket/purchase/getAgentServiceItemList', type: 'post',
+				data: vm.agentServiceItemCheckData,
+			}, function (res) {
+				if (res.success) {
+					var content = res.content
+					vm.serviceItemTotal = res.content.total
+					vm.serviceItemTableList = content.rows
+				}
+			}, function (msg) {
+				vm.$message({message: '加载失败', type: 'error'});
+			});
     },
-    
+    serviceItemTableListSizeChange: function (val) {
+			this.agentServiceItemCheckData.pageSize = val;
+			this.fetchAgentServiceItemList()
+		},
+		serviceItemTableListCurrentChange: function (val) {
+			this.agentServiceItemCheckData.pageNum = val;
+			this.fetchAgentServiceItemList()
+    },
+     // 中介服务事项列表-勾选表格，选中某一项
+    serviceItemTableLisSelectionChange: function(list){
+      if(!list || !list.length>1)return this.$message({
+        message: '请选择一项中介服务事项'
+      })
+      this.serviceItemTableSelectedList = list;
+    },
+    // 中介服务事项列表-选中某一项后确定选择
+    serviceItemListChange: function () {
+      this.serviceTabledialogTable = false;  //确定后，隐藏掉弹出框
+      this.agentServiceName = this.serviceItemTableSelectedList[0].agentItemName;
+      this.itemVerId = this.serviceItemTableSelectedList[0].agentItemVerId;
+      this.getItemInfo();  // 获取当前选中中介服务事项的信息
+      this.getNeedServiceList(); // 获取所需服务
+    },
+
   },
   filters: {
     changeReceiveType: function (value) {
