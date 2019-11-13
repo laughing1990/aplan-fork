@@ -185,7 +185,7 @@ var app = new Vue({
     }
   },
   created: function() {
-    // this.projInfoId = '031fb1ad-71b9-41af-8fe0-7df5b449a16d';
+    // this.projInfoId = '04f0c482-0393-491c-8136-8c6050d9a99f';
     // this.projInfoId = '050de049-eb7e-459a-9340-9d4fb8120224';
     this.projInfoId = this.getUrlParam('projInfoId');
   },
@@ -193,7 +193,7 @@ var app = new Vue({
 
     this.getAllType();
     this.showData();
-    this.getUnit();
+    // this.getUnit();
     $(".loading").hide();
   },
   methods: {
@@ -252,11 +252,11 @@ var app = new Vue({
           vm.formDataTuShen = res.content.drawings[2] || {};
           vm.formDataKanCha = res.content.drawings[0] || {};
           vm.formDataSheJj = res.content.drawings[1] || {};
-          if (vm.formDataTuShen.linkmen.length == 0) {
+          if (vm.formDataTuShen.linkmen == undefined) {
             vm.formDataTuShen.linkmen = [];
             vm.init('tushen');
           }
-          if (vm.formDataSheJj.linkmen.length == 0) {
+          if (vm.formDataSheJj.linkmen == undefined) {
             vm.formDataSheJj.linkmen = [];
             vm.init('sheji');
           }
@@ -494,10 +494,10 @@ var app = new Vue({
     addLinkmanTypes: function(row, data) {
       var dataType = {
         linkmanInfoId: '',
-        linkmanType: '104001',
+        linkmanType: data.unitType == '3' ? '102003' : '502003',
         linkmanName: '',
         linkmanCertNo: '',
-        prjSpty: '',
+        prjSpty: '1',
         unitProjId: data.unitProjId
       }
       row.push(dataType);
@@ -584,6 +584,24 @@ var app = new Vue({
                 });
                 return false;
               };
+              for (var i = 0; i < formDataTuShen.linkmen.length; i++) {
+                if (formDataTuShen.linkmen[i].linkmanName == '') {
+                  _this.$message({
+                    message: '请设置人员！',
+                    type: 'error'
+                  });
+                  return false;
+                }
+              }
+              for (var i = 0; i < formDataSheJj.linkmen.length; i++) {
+                if (formDataSheJj.linkmen[i].linkmanName == '') {
+                  _this.$message({
+                    message: '请设置人员！',
+                    type: 'error'
+                  });
+                  return false;
+                }
+              }
               var drawings = [];
               drawings.push(formDataTuShen);
               drawings.push(formDataKanCha);

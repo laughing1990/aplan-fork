@@ -97,9 +97,9 @@ public class ItemItemChecker extends AbstractChecker<AeaItemBasic> {
                     }
                 }
                 if (errroMessage.length() > 0) {
-                    String error = "[" + errroMessage.substring(0, errroMessage.length() - 1) + "]";
+                    String error = "【" + errroMessage.substring(0, errroMessage.length() - 1) + "】";
 //                    throw new ItemItemCheckException("该事项下的" + error + "前置检查不通过.");
-                    return "请先办理以下事项：【" + error + "】";
+                    return "请先办理以下事项：" + error;
                 }
 
                 log.info("事项: " + aeaItemBasic.getItemName() + " 前置事项检查通过.");

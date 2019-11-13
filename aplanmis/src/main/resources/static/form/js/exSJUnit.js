@@ -259,6 +259,9 @@ var vm = new Vue({
             linkQuerySucc: false, // 项目代码工程编码是否可输入修改
             structureSystem:[],//结构体系
             projUnitLinkmanType:[],//人员类型
+            chengbaoProjUnitLinkmanType:[],//承包单位人员类型
+            fenbaoProjUnitLinkmanType:[],//分包单位人员类型
+            jianliProjUnitLinkmanType:[],//监理单位人员类型
             professionCertType:[],//执业注册证类型
             jiangliLinkmanType:[],//监理承担角色
             titleCertNum:[],//职称等级
@@ -321,6 +324,7 @@ var vm = new Vue({
                 aeaExProjBuildUnitInfo:'',
             },//所有表单集合
             personIdList: [],//人员批量删除
+
         }
     },
     mounted:function(){
@@ -464,7 +468,7 @@ var vm = new Vue({
         },
         delPeronSetting:function(){
             var _that = this;
-            if(_that.personIdList){
+            if(_that.personIdList && _that.personIdList!=""){
                 var parm = _that.personIdList.join();
                 request('',{
                     url: ctx + '/rest/from/exSJUnit/delPersonSetting',
@@ -495,13 +499,21 @@ var vm = new Vue({
                 if(data.content){
                     _that.structureSystem = data.content.C_STRUCT_TYPE;
                     _that.projUnitLinkmanType = data.content.C_PRJ_PERSON_POST;
-                    var arr = _that.projUnitLinkmanType;
-                    arr.map(function (value,index) {
-                        if(value.itemCode == "104001" || value.itemCode == "104002" || value.itemCode == "105001"){
-                            _that.projUnitLinkmanType.splice(index,1);
+                    _that.projUnitLinkmanType.map(function (value,index) {
+                        if(value.itemCode != "104001"){
+                            _that.chengbaoProjUnitLinkmanType.push(value);
                         }
-                    })
-                    _that.jiangliLinkmanType = data.content.C_PRJ_PERSON_POST;
+                    });
+                    _that.projUnitLinkmanType.map(function (value,index) {
+                        if(value.itemCode != "104002"){
+                            _that.fenbaoProjUnitLinkmanType.push(value);
+                        }
+                    });
+                    _that.projUnitLinkmanType.map(function (value,index) {
+                        if( value.itemCode != "105001"){
+                            _that.jiangliLinkmanType.push(value);
+                        }
+                    });
                     _that.professionCertType = data.content.C_REG_LCN_TYPE;
                     _that.titleCertNum = data.content.C_TITLE;
                     _that.prjEntType = data.content.C_PRJ_ENT_TYPE;

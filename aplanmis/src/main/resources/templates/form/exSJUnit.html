@@ -210,7 +210,7 @@
                                 </el-col>
                                 <el-col :span="4">
                                     <el-select v-model="type.linkmanType" filterable placeholder="请选中人员类型">
-                                        <el-option v-for="(item,index) in projUnitLinkmanType" :key="item.itemId" :label="item.itemName" :value="item.itemCode"></el-option></el-select>
+                                        <el-option v-for="(item,index) in chengbaoProjUnitLinkmanType" :key="item.itemId" :label="item.itemName" :value="item.itemCode"></el-option></el-select>
                                 </el-col>
                                 <el-col  class="name" :span="4">
                                     <el-select v-model="type.linkmanName" filterable placeholder="请选择联系人" @click.native="getUnitLinkManList(applyShigongzongFrom)" :loading="loadingUnitLinkMan">
@@ -342,7 +342,7 @@
                                 </el-col>
                                 <el-col :span="4">
                                     <el-select v-model="type.linkmanType" filterable placeholder="请选中人员类型" :loading="loadingUnitLinkMan">
-                                        <el-option v-for="(item,index) in projUnitLinkmanType" :key="item.itemId" :label="item.itemName" :value="item.itemCode"></el-option></el-select>
+                                        <el-option v-for="(item,index) in fenbaoProjUnitLinkmanType" :key="item.itemId" :label="item.itemName" :value="item.itemCode"></el-option></el-select>
                                 </el-col>
                                 <el-col  class="name" :span="4">
                                     <el-select
@@ -492,7 +492,7 @@
                                             filterable
                                             placeholder="请选中人员类型"
                                             :loading="loadingUnitLinkMan">
-                                        <el-option v-for="(item,index) in projUnitLinkmanType" :key="item.itemId" :label="item.itemName" :value="item.itemCode"></el-option>
+                                        <el-option v-for="(item,index) in fenbaoProjUnitLinkmanType" :key="item.itemId" :label="item.itemName" :value="item.itemCode"></el-option>
                                     </el-select>
                                 </el-col>
                                 <el-col class="name" :span="4">
@@ -615,9 +615,9 @@
                         </el-form-item>
                     </el-col>
                     <el-col :span="12">
-                        <el-form-item disabled label="承担角色" class="input-ex" prop="linkmanType">
-                            <el-select v-model="applyJianliFrom.linkmanType" placeholder="请选择承担角色">
-                                <el-option v-for="(i,index) in jiangliLinkmanType" :key="i.itemId" :label="i.itemName" :value="i.itemCode">
+                        <el-form-item label="承担角色" class="input-ex" prop="linkmanType">
+                            <el-select disabled v-model="applyJianliFrom.linkmanType" placeholder="请选择承担角色">
+                                <el-option v-for="(i,index) in projUnitLinkmanType" :key="i.itemId" :label="i.itemName" :value="i.itemCode">
                                 </el-option>
                             </el-select>
                         </el-form-item>
@@ -672,7 +672,7 @@
                                             filterable
                                             placeholder="请选中人员类型"
                                             :loading="loadingUnitLinkMan">
-                                        <el-option v-for="(item,index) in projUnitLinkmanType" :key="item.itemId" :label="item.itemName" :value="item.itemCode"></el-option>
+                                        <el-option v-for="(item,index) in jiangliLinkmanType" :key="item.itemId" :label="item.itemName" :value="item.itemCode"></el-option>
                                     </el-select>
                                 </el-col>
                                 <el-col :span="12">

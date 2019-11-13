@@ -182,7 +182,7 @@
                   </el-col>
                   <el-col :span="5">
                     <span><i>*</i>姓名</span>
-                    <el-select @change='forceUpdate' v-model="type.linkmanName" filterable placeholder="请选择联系人" @click.native="getPerson(formDataTuShen)">
+                    <el-select @change='forceUpdate' v-model="type.linkmanName" filterable placeholder="请选择联系人" @click.native="getPerson(formDataTuShen)" :class="type.linkmanName?'':'red'">
                       <el-option v-for="item in person" :key="item.addressId" @click.native="selTypeLinkman2(type,item)" :label="item.addressName" :value="item.addressName">
                       </el-option>
                     </el-select>
@@ -359,7 +359,7 @@
                   </el-col>
                   <el-col :span="5">
                     <span><i>*</i>姓名</span>
-                    <el-select @change='forceUpdate' v-model="type.linkmanName" filterable placeholder="请选择联系人" @click.native="getPerson(formDataSheJj)">
+                    <el-select @change='forceUpdate' v-model="type.linkmanName" filterable placeholder="请选择联系人" @click.native="getPerson(formDataSheJj)" :class="type.linkmanName?'':'red'">
                       <el-option v-for="item in person" :key="item.addressId" @click.native="selTypeLinkman2(type,item)" :label="item.addressName" :value="item.addressName">
                       </el-option>
                     </el-select>

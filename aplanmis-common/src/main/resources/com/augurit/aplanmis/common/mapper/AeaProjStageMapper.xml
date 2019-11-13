@@ -274,8 +274,12 @@
         FROM aea_hi_iteminst ahi_123
             INNER JOIN aea_hi_par_stageinst ahps_123  ON ahi_123.STAGEINST_ID = ahps_123.STAGEINST_ID
             INNER JOIN aea_par_stage aps_123 ON aps_123.STAGE_ID = ahps_123.STAGE_ID
+            INNER JOIN aea_par_theme_ver aptv ON aptv.THEME_VER_ID = aps_123.THEME_VER_ID
+			INNER JOIN aea_par_theme theme ON theme.THEME_ID = aptv.THEME_ID
             INNER JOIN aea_applyinst_proj aap_123 ON aap_123.APPLYINST_ID = ahps_123.APPLYINST_ID
         WHERE ITEMINST_ID = #{iteminstId}
+            AND  aps_123.IS_NODE = '1'
+			AND theme.THEME_TYPE != 'A00002'
     </select>
 
     <select id="getProjInfoIdAndStageIdByApplyinstId" resultType="ProjStageForm">
