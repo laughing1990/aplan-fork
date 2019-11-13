@@ -211,7 +211,7 @@ public class RestUserCenterController {
 
     @GetMapping("userinfo")
     @ApiOperation(value = "获取当前登录用户详情")
-    public ResultForm getUserInfo(HttpServletRequest request){
+    public ContentResultForm<UserInfoVo> getUserInfo(HttpServletRequest request){
         UserInfoVo userInfoVo = new UserInfoVo();
         LoginInfoVo user = SessionUtil.getLoginInfo(request);
 
@@ -238,7 +238,7 @@ public class RestUserCenterController {
             return new ContentResultForm<>(true,userInfoVo);
         } catch (Exception e) {
             e.printStackTrace();
-            return new ContentResultForm<>(false,"获取当前登录用户详情发生异常");
+            return new ContentResultForm<>(false,null,"获取当前登录用户详情发生异常");
         }
     }
 
