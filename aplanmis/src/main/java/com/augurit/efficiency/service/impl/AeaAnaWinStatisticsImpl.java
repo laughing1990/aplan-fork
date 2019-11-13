@@ -1,5 +1,6 @@
 package com.augurit.efficiency.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.augurit.agcloud.bsc.util.UuidUtil;
 import com.augurit.agcloud.framework.util.CollectionUtils;
 import com.augurit.agcloud.framework.util.StringUtils;
@@ -351,83 +352,92 @@ public class AeaAnaWinStatisticsImpl {
         List<WinWeekCountVo> weekStatisticsFromDay = aeaAnaWinWeekStatisticsMapper.getWeekStatisticsFromDay(startTime, endTime, year, weekNum - 1, sdf.format(preDate), rootOrgId);
         if (CollectionUtils.isNotEmpty(weekStatisticsFromDay)) {
             for (WinWeekCountVo winWeekCountVo : weekStatisticsFromDay) {
-                AeaAnaWinWeekStatistics winWeekStatistics = new AeaAnaWinWeekStatistics();
-                winWeekStatistics.setWindowWeekStatisticsId(UuidUtil.generateUuid());
-                winWeekStatistics.setStatisticsRecordId(record.getStatisticsRecordId());
 
-                //设置这周最新日统计的总数
-                winWeekStatistics.setWindowId(winWeekCountVo.getWindowId());
-                AeaServiceWindow window = aeaServiceWindowMapper.getAeaServiceWindowById(winWeekCountVo.getWindowId());
-                winWeekStatistics.setWindowName(window.getWindowName());
-                winWeekStatistics.setRegionId(window.getRegionId());
-                winWeekStatistics.setRegionName(window.getRegionName());
-                winWeekStatistics.setApplyRecordId(winWeekCountVo.getApplyRecordId());
-                AeaParStage stage = aeaParStageMapper.getAeaParStageById(winWeekCountVo.getApplyRecordId());
-                winWeekStatistics.setApplyRecordName(stage.getStageName());
-                winWeekStatistics.setDybzspjdxh(stage.getDybzspjdxh());
-                winWeekStatistics.setIsNode(stage.getIsNode());
-                winWeekStatistics.setIsParallel(winWeekCountVo.getIsParallel());
-                winWeekStatistics.setApplySource(winWeekCountVo.getApplySource());
+                AeaAnaWinWeekStatistics winWeekStatistics = null;
+                try {
+                    winWeekStatistics = new AeaAnaWinWeekStatistics();
+                    winWeekStatistics.setWindowWeekStatisticsId(UuidUtil.generateUuid());
+                    winWeekStatistics.setStatisticsRecordId(record.getStatisticsRecordId());
 
-                //获取最新的日数据
-                AeaAnaWinDayStatistics search = new AeaAnaWinDayStatistics();
-                search.setWindowId(winWeekCountVo.getWindowId());
-                search.setApplySource(winWeekCountVo.getApplySource());
-                search.setApplyRecordId(winWeekCountVo.getApplyRecordId());
-                search.setIsParallel(winWeekCountVo.getIsParallel());
-                search.setRootOrgId(rootOrgId);
-                search.setStartTime(sdf.format(monday));
-                search.setStartTime(sdf.format(sunday));
-                List<AeaAnaWinDayStatistics> recentWinDayStatistics = aeaAnaWinDayStatisticsMapper.listAeaAnaWinDayStatistics(search);
+                    //设置这周最新日统计的总数
+                    winWeekStatistics.setWindowId(winWeekCountVo.getWindowId());
+                    AeaServiceWindow window = aeaServiceWindowMapper.getAeaServiceWindowById(winWeekCountVo.getWindowId());
+                    winWeekStatistics.setWindowName(window.getWindowName());
+                    winWeekStatistics.setRegionId(window.getRegionId());
+                    winWeekStatistics.setRegionName(window.getRegionName());
+                    winWeekStatistics.setApplyRecordId(winWeekCountVo.getApplyRecordId());
+                    AeaParStage stage = aeaParStageMapper.getAeaParStageById(winWeekCountVo.getApplyRecordId());
+                    winWeekStatistics.setApplyRecordName(stage.getStageName());
+                    winWeekStatistics.setDybzspjdxh(stage.getDybzspjdxh());
+                    winWeekStatistics.setIsNode(stage.getIsNode());
+                    winWeekStatistics.setIsParallel(winWeekCountVo.getIsParallel());
+                    winWeekStatistics.setApplySource(winWeekCountVo.getApplySource());
 
-                if (CollectionUtils.isNotEmpty(recentWinDayStatistics)) {
-                    AeaAnaWinDayStatistics aeaAnaWinDayStatistics = recentWinDayStatistics.get(0);
-                    winWeekStatistics.setAllApplyCount(aeaAnaWinDayStatistics.getAllApplyCount());
-                    winWeekStatistics.setAllPreAcceptanceCount(aeaAnaWinDayStatistics.getAllInSupplementCount());
-                    winWeekStatistics.setAllOutScopeCount(aeaAnaWinDayStatistics.getAllOutScopeCount());
-                    winWeekStatistics.setAllCompletedCount(aeaAnaWinDayStatistics.getAllCompletedCount());
-                    winWeekStatistics.setAllOverTimeCount(aeaAnaWinDayStatistics.getAllOverTimeCount());
-                    winWeekStatistics.setAllPreAcceptanceRate(aeaAnaWinDayStatistics.getAllPreAcceptanceRate());
-                    winWeekStatistics.setAllOutScopeRate(aeaAnaWinDayStatistics.getAllOutScopeRate());
-                    winWeekStatistics.setAllOverTimeRate(aeaAnaWinDayStatistics.getAllOverTimeRate());
-                    winWeekStatistics.setAllCompletedRate(aeaAnaWinDayStatistics.getAllCompletedRate());
-                } else {
-                    winWeekStatistics.setAllApplyCount(0L);
-                    winWeekStatistics.setAllPreAcceptanceCount(0L);
-                    winWeekStatistics.setAllOutScopeCount(0L);
-                    winWeekStatistics.setAllCompletedCount(0L);
-                    winWeekStatistics.setAllOverTimeCount(0L);
-                    winWeekStatistics.setAllPreAcceptanceRate(0.0);
-                    winWeekStatistics.setAllOutScopeRate(0.0);
-                    winWeekStatistics.setAllOverTimeRate(0.0);
-                    winWeekStatistics.setAllCompletedRate(0.0);
+                    //获取最新的日数据
+                    AeaAnaWinDayStatistics search = new AeaAnaWinDayStatistics();
+                    search.setWindowId(winWeekCountVo.getWindowId());
+                    search.setApplySource(winWeekCountVo.getApplySource());
+                    search.setApplyRecordId(winWeekCountVo.getApplyRecordId());
+                    search.setIsParallel(winWeekCountVo.getIsParallel());
+                    search.setRootOrgId(rootOrgId);
+                    search.setStartTime(sdf.format(monday));
+                    search.setStartTime(sdf.format(sunday));
+                    List<AeaAnaWinDayStatistics> recentWinDayStatistics = aeaAnaWinDayStatisticsMapper.listAeaAnaWinDayStatistics(search);
+
+                    if (CollectionUtils.isNotEmpty(recentWinDayStatistics)) {
+                        AeaAnaWinDayStatistics aeaAnaWinDayStatistics = recentWinDayStatistics.get(0);
+                        winWeekStatistics.setAllApplyCount(aeaAnaWinDayStatistics.getAllApplyCount());
+                        winWeekStatistics.setAllPreAcceptanceCount(aeaAnaWinDayStatistics.getAllInSupplementCount());
+                        winWeekStatistics.setAllOutScopeCount(aeaAnaWinDayStatistics.getAllOutScopeCount());
+                        winWeekStatistics.setAllCompletedCount(aeaAnaWinDayStatistics.getAllCompletedCount());
+                        winWeekStatistics.setAllOverTimeCount(aeaAnaWinDayStatistics.getAllOverTimeCount());
+                        winWeekStatistics.setAllPreAcceptanceRate(aeaAnaWinDayStatistics.getAllPreAcceptanceRate());
+                        winWeekStatistics.setAllOutScopeRate(aeaAnaWinDayStatistics.getAllOutScopeRate());
+                        winWeekStatistics.setAllOverTimeRate(aeaAnaWinDayStatistics.getAllOverTimeRate());
+                        winWeekStatistics.setAllCompletedRate(aeaAnaWinDayStatistics.getAllCompletedRate());
+                    } else {
+                        winWeekStatistics.setAllApplyCount(0L);
+                        winWeekStatistics.setAllPreAcceptanceCount(0L);
+                        winWeekStatistics.setAllOutScopeCount(0L);
+                        winWeekStatistics.setAllCompletedCount(0L);
+                        winWeekStatistics.setAllOverTimeCount(0L);
+                        winWeekStatistics.setAllPreAcceptanceRate(0.0);
+                        winWeekStatistics.setAllOutScopeRate(0.0);
+                        winWeekStatistics.setAllOverTimeRate(0.0);
+                        winWeekStatistics.setAllCompletedRate(0.0);
+                    }
+
+                    //设置这周的周统计
+                    winWeekStatistics.setWeekApplyCount(winWeekCountVo.getWeekApplyCount());
+                    winWeekStatistics.setAllInSupplementCount(winWeekCountVo.getAllInSupplementCount());
+                    winWeekStatistics.setAllSupplementedCount(winWeekCountVo.getAllSupplementedCount());
+                    winWeekStatistics.setWeekPreAcceptanceCount(winWeekCountVo.getWeekPreAcceptanceCount());
+                    winWeekStatistics.setWeekOutScopeCount(winWeekCountVo.getWeekOutScopeCount());
+                    winWeekStatistics.setWeekCompletedCount(winWeekCountVo.getWeekCompletedCount());
+                    winWeekStatistics.setWeekOverTimeCount(winWeekCountVo.getWeekOverTimeCount());
+
+                    //计算环比
+                    winWeekStatistics.setApplyLrr(calculateGrowRate(winWeekCountVo.getLastWeekApplyCount(), winWeekCountVo.getWeekApplyCount()));
+                    winWeekStatistics.setPreAcceptanceLrr(calculateGrowRate(winWeekCountVo.getLastWeekPreAcceptacneCount(), winWeekCountVo.getWeekPreAcceptanceCount()));
+                    winWeekStatistics.setOutScopeLrr(calculateGrowRate(winWeekCountVo.getLastWeekOutScopeCount(), winWeekCountVo.getWeekOutScopeCount()));
+                    winWeekStatistics.setCompletedLrr(calculateGrowRate(winWeekCountVo.getLastWeekCompletedCount(), winWeekCountVo.getWeekCompletedCount()));
+                    winWeekStatistics.setOverTimeLrr(calculateGrowRate(winWeekCountVo.getLastWeekOverTimeCount(), winWeekCountVo.getWeekOverTimeCount()));
+
+                    winWeekStatistics.setStatisticsYear(Long.valueOf(year));
+                    winWeekStatistics.setWeekNum(Long.valueOf(weekNum));
+                    winWeekStatistics.setStatisticsStartDate(DateUtils.convertStringToDate(startTime, "yyyy-MM-dd HH:mm:ss"));
+                    winWeekStatistics.setStatisticsEndDate(DateUtils.convertStringToDate(endTime, "yyyy-MM-dd HH:mm:ss"));
+                    winWeekStatistics.setModifier(creater);
+                    winWeekStatistics.setModifyTime(new Date());
+                    winWeekStatistics.setRootOrgId(rootOrgId);
+
+                    result.add(winWeekStatistics);
+                } catch (Exception e) {
+                    log.error("窗口统计周统计失败："+e.getMessage());
+                    log.error("错误记录:"+JSONObject.toJSONString(winWeekCountVo));
+                    e.printStackTrace();
                 }
 
-                //设置这周的周统计
-                winWeekStatistics.setWeekApplyCount(winWeekCountVo.getWeekApplyCount());
-                winWeekStatistics.setAllInSupplementCount(winWeekCountVo.getAllInSupplementCount());
-                winWeekStatistics.setAllSupplementedCount(winWeekCountVo.getAllSupplementedCount());
-                winWeekStatistics.setWeekPreAcceptanceCount(winWeekCountVo.getWeekPreAcceptanceCount());
-                winWeekStatistics.setWeekOutScopeCount(winWeekCountVo.getWeekOutScopeCount());
-                winWeekStatistics.setWeekCompletedCount(winWeekCountVo.getWeekCompletedCount());
-                winWeekStatistics.setWeekOverTimeCount(winWeekCountVo.getWeekOverTimeCount());
-
-                //计算环比
-                winWeekStatistics.setApplyLrr(calculateGrowRate(winWeekCountVo.getLastWeekApplyCount(), winWeekCountVo.getWeekApplyCount()));
-                winWeekStatistics.setPreAcceptanceLrr(calculateGrowRate(winWeekCountVo.getLastWeekPreAcceptacneCount(), winWeekCountVo.getWeekPreAcceptanceCount()));
-                winWeekStatistics.setOutScopeLrr(calculateGrowRate(winWeekCountVo.getLastWeekOutScopeCount(), winWeekCountVo.getWeekOutScopeCount()));
-                winWeekStatistics.setCompletedLrr(calculateGrowRate(winWeekCountVo.getLastWeekCompletedCount(), winWeekCountVo.getWeekCompletedCount()));
-                winWeekStatistics.setOverTimeLrr(calculateGrowRate(winWeekCountVo.getLastWeekOverTimeCount(), winWeekCountVo.getWeekOverTimeCount()));
-
-                winWeekStatistics.setStatisticsYear(Long.valueOf(year));
-                winWeekStatistics.setWeekNum(Long.valueOf(weekNum));
-                winWeekStatistics.setStatisticsStartDate(DateUtils.convertStringToDate(startTime, "yyyy-MM-dd HH:mm:ss"));
-                winWeekStatistics.setStatisticsEndDate(DateUtils.convertStringToDate(endTime, "yyyy-MM-dd HH:mm:ss"));
-                winWeekStatistics.setModifier(creater);
-                winWeekStatistics.setModifyTime(new Date());
-                winWeekStatistics.setRootOrgId(rootOrgId);
-
-                result.add(winWeekStatistics);
             }
             if (result.size() > 0) {
                 //删除本周数据
@@ -482,95 +492,103 @@ public class AeaAnaWinStatisticsImpl {
         List<WinMonthCountVo> monthStatisticsFromDay = aeaAnaWinMonthStatisticsMapper.getMonthStatisticsFromDay(startTime, endTime, lastMonth, lastYear, sdf.format(preDate), rootOrgId);
         if (CollectionUtils.isNotEmpty(monthStatisticsFromDay)) {
             for (WinMonthCountVo winMonthCountVo : monthStatisticsFromDay) {
-                AeaAnaWinMonthStatistics winMonthStatistics = new AeaAnaWinMonthStatistics();
-                winMonthStatistics.setWindowMonthStatisticsId(UuidUtil.generateUuid());
-                winMonthStatistics.setStatisticsRecordId(record.getStatisticsRecordId());
+                try {
+                    AeaAnaWinMonthStatistics winMonthStatistics = new AeaAnaWinMonthStatistics();
+                    winMonthStatistics.setWindowMonthStatisticsId(UuidUtil.generateUuid());
+                    winMonthStatistics.setStatisticsRecordId(record.getStatisticsRecordId());
 
-                //设置这月最新日统计的总数
-                winMonthStatistics.setWindowId(winMonthCountVo.getWindowId());
-                AeaServiceWindow window = aeaServiceWindowMapper.getAeaServiceWindowById(winMonthCountVo.getWindowId());
-                winMonthStatistics.setWindowName(window.getWindowName());
-                winMonthStatistics.setRegionId(window.getRegionId());
-                winMonthStatistics.setRegionName(window.getRegionName());
-                winMonthStatistics.setApplySource(winMonthCountVo.getApplySource());
-                winMonthStatistics.setApplyRecordId(winMonthCountVo.getApplyRecordId());
-                AeaParStage stage = aeaParStageMapper.getAeaParStageById(winMonthCountVo.getApplyRecordId());
-                winMonthStatistics.setApplyRecordName(stage.getStageName());
-                winMonthStatistics.setDybzspjdxh(stage.getDybzspjdxh());
-                winMonthStatistics.setIsNode(stage.getIsNode());
-                winMonthStatistics.setIsParallel(winMonthCountVo.getIsParallel());
-                winMonthStatistics.setApplySource(winMonthCountVo.getApplySource());
+                    //设置这月最新日统计的总数
+                    winMonthStatistics.setWindowId(winMonthCountVo.getWindowId());
+                    AeaServiceWindow window = aeaServiceWindowMapper.getAeaServiceWindowById(winMonthCountVo.getWindowId());
+                    winMonthStatistics.setWindowName(window.getWindowName());
+                    winMonthStatistics.setRegionId(window.getRegionId());
+                    winMonthStatistics.setRegionName(window.getRegionName());
+                    winMonthStatistics.setApplySource(winMonthCountVo.getApplySource());
+                    winMonthStatistics.setApplyRecordId(winMonthCountVo.getApplyRecordId());
+                    AeaParStage stage = aeaParStageMapper.getAeaParStageById(winMonthCountVo.getApplyRecordId());
+                    winMonthStatistics.setApplyRecordName(stage.getStageName());
+                    winMonthStatistics.setDybzspjdxh(stage.getDybzspjdxh());
+                    winMonthStatistics.setIsNode(stage.getIsNode());
+                    winMonthStatistics.setIsParallel(winMonthCountVo.getIsParallel());
+                    winMonthStatistics.setApplySource(winMonthCountVo.getApplySource());
 
-                //获取最新的日数据
-                AeaAnaWinDayStatistics search = new AeaAnaWinDayStatistics();
-                search.setWindowId(winMonthCountVo.getWindowId());
-                search.setApplySource(winMonthCountVo.getApplySource());
-                search.setApplyRecordId(winMonthCountVo.getApplyRecordId());
-                search.setIsParallel(winMonthCountVo.getIsParallel());
-                search.setRootOrgId(rootOrgId);
-                search.setStartTime(sdf.format(firstDay));
-                search.setStartTime(sdf.format(lastDay));
-                List<AeaAnaWinDayStatistics> recentWinDayStatistics = aeaAnaWinDayStatisticsMapper.listAeaAnaWinDayStatistics(search);
+                    //获取最新的日数据
+                    AeaAnaWinDayStatistics search = new AeaAnaWinDayStatistics();
+                    search.setWindowId(winMonthCountVo.getWindowId());
+                    search.setApplySource(winMonthCountVo.getApplySource());
+                    search.setApplyRecordId(winMonthCountVo.getApplyRecordId());
+                    search.setIsParallel(winMonthCountVo.getIsParallel());
+                    search.setRootOrgId(rootOrgId);
+                    search.setStartTime(sdf.format(firstDay));
+                    search.setStartTime(sdf.format(lastDay));
+                    List<AeaAnaWinDayStatistics> recentWinDayStatistics = aeaAnaWinDayStatisticsMapper.listAeaAnaWinDayStatistics(search);
 
-                if (CollectionUtils.isNotEmpty(recentWinDayStatistics)) {
-                    AeaAnaWinDayStatistics aeaAnaWinDayStatistics = recentWinDayStatistics.get(0);
-                    winMonthStatistics.setAllApplyCount(aeaAnaWinDayStatistics.getAllApplyCount());
-                    winMonthStatistics.setAllPreAcceptanceCount(aeaAnaWinDayStatistics.getAllPreAcceptanceCount());
-                    winMonthStatistics.setAllOutScopeCount(aeaAnaWinDayStatistics.getAllOutScopeCount());
-                    winMonthStatistics.setAllCompletedCount(aeaAnaWinDayStatistics.getAllCompletedCount());
-                    winMonthStatistics.setAllOverTimeCount(aeaAnaWinDayStatistics.getAllOverTimeCount());
-                    winMonthStatistics.setAllPreAcceptanceRate(aeaAnaWinDayStatistics.getAllPreAcceptanceRate());
-                    winMonthStatistics.setAllOutScopeRate(aeaAnaWinDayStatistics.getAllOutScopeRate());
-                    winMonthStatistics.setAllOverTimeRate(aeaAnaWinDayStatistics.getAllOverTimeRate());
-                    winMonthStatistics.setAllCompletedRate(aeaAnaWinDayStatistics.getAllCompletedRate());
-                } else {
-                    winMonthStatistics.setAllApplyCount(0L);
-                    winMonthStatistics.setAllInSupplementCount(0L);
-                    winMonthStatistics.setAllSupplementedCount(0L);
-                    winMonthStatistics.setAllPreAcceptanceCount(0L);
-                    winMonthStatistics.setAllOutScopeCount(0L);
-                    winMonthStatistics.setAllCompletedCount(0L);
-                    winMonthStatistics.setAllOverTimeCount(0L);
-                    winMonthStatistics.setAllPreAcceptanceRate(0.0);
-                    winMonthStatistics.setAllOutScopeRate(0.0);
-                    winMonthStatistics.setAllOverTimeRate(0.0);
-                    winMonthStatistics.setAllCompletedRate(0.0);
+                    if (CollectionUtils.isNotEmpty(recentWinDayStatistics)) {
+                        AeaAnaWinDayStatistics aeaAnaWinDayStatistics = recentWinDayStatistics.get(0);
+                        winMonthStatistics.setAllApplyCount(aeaAnaWinDayStatistics.getAllApplyCount());
+                        winMonthStatistics.setAllPreAcceptanceCount(aeaAnaWinDayStatistics.getAllPreAcceptanceCount());
+                        winMonthStatistics.setAllOutScopeCount(aeaAnaWinDayStatistics.getAllOutScopeCount());
+                        winMonthStatistics.setAllCompletedCount(aeaAnaWinDayStatistics.getAllCompletedCount());
+                        winMonthStatistics.setAllOverTimeCount(aeaAnaWinDayStatistics.getAllOverTimeCount());
+                        winMonthStatistics.setAllPreAcceptanceRate(aeaAnaWinDayStatistics.getAllPreAcceptanceRate());
+                        winMonthStatistics.setAllOutScopeRate(aeaAnaWinDayStatistics.getAllOutScopeRate());
+                        winMonthStatistics.setAllOverTimeRate(aeaAnaWinDayStatistics.getAllOverTimeRate());
+                        winMonthStatistics.setAllCompletedRate(aeaAnaWinDayStatistics.getAllCompletedRate());
+                    } else {
+                        winMonthStatistics.setAllApplyCount(0L);
+                        winMonthStatistics.setAllInSupplementCount(0L);
+                        winMonthStatistics.setAllSupplementedCount(0L);
+                        winMonthStatistics.setAllPreAcceptanceCount(0L);
+                        winMonthStatistics.setAllOutScopeCount(0L);
+                        winMonthStatistics.setAllCompletedCount(0L);
+                        winMonthStatistics.setAllOverTimeCount(0L);
+                        winMonthStatistics.setAllPreAcceptanceRate(0.0);
+                        winMonthStatistics.setAllOutScopeRate(0.0);
+                        winMonthStatistics.setAllOverTimeRate(0.0);
+                        winMonthStatistics.setAllCompletedRate(0.0);
+                    }
+
+                    //设置这月的月统计
+                    winMonthStatistics.setMonthApplyCount(winMonthCountVo.getMonthApplyCount());
+                    winMonthStatistics.setAllInSupplementCount(winMonthCountVo.getAllInSupplementCount());
+                    winMonthStatistics.setAllSupplementedCount(winMonthCountVo.getAllSupplementedCount());
+                    winMonthStatistics.setMonthPreAcceptanceCount(winMonthCountVo.getMonthPreAcceptanceCount());
+                    winMonthStatistics.setMonthOutScopeCount(winMonthCountVo.getMonthOutScopeCount());
+                    winMonthStatistics.setMonthCompletedCount(winMonthCountVo.getMonthCompletedCount());
+                    winMonthStatistics.setMonthOverTimeCount(winMonthCountVo.getMonthOverTimeCount());
+
+                    //计算环比&同比
+                    winMonthStatistics.setApplyLrr(calculateGrowRate(winMonthCountVo.getLastMonthApplyCount(), winMonthCountVo.getMonthApplyCount()));
+                    winMonthStatistics.setInSupplementLrr(calculateGrowRate(winMonthCountVo.getLastMonthInSupplementCount(), winMonthCountVo.getAllInSupplementCount()));
+                    winMonthStatistics.setSupplementedLrr(calculateGrowRate(winMonthCountVo.getLastMonthSupplementedCount(), winMonthCountVo.getAllSupplementedCount()));
+                    winMonthStatistics.setPreAcceptanceLrr(calculateGrowRate(winMonthCountVo.getLastMonthPreAcceptacneCount(), winMonthCountVo.getMonthPreAcceptanceCount()));
+                    winMonthStatistics.setOutScopeLrr(calculateGrowRate(winMonthCountVo.getLastMonthOutScopeCount(), winMonthCountVo.getMonthOutScopeCount()));
+                    winMonthStatistics.setCompletedLrr(calculateGrowRate(winMonthCountVo.getLastMonthCompletedCount(), winMonthCountVo.getMonthCompletedCount()));
+                    winMonthStatistics.setOverTimeLrr(calculateGrowRate(winMonthCountVo.getLastMonthOverTimeCount(), winMonthCountVo.getMonthOverTimeCount()));
+
+                    winMonthStatistics.setApplyOnYoyBasis(calculateGrowRate(winMonthCountVo.getLastYearApplyCount(), winMonthCountVo.getMonthApplyCount()));
+                    winMonthStatistics.setInSupplementOnYoyBasis(calculateGrowRate(winMonthCountVo.getLastYearInSupplementCount(), winMonthCountVo.getAllInSupplementCount()));
+                    winMonthStatistics.setSupplementedOnYoyBasis(calculateGrowRate(winMonthCountVo.getLastYearSupplementedCount(), winMonthCountVo.getAllSupplementedCount()));
+                    winMonthStatistics.setPreAcceptanceOnYoyBasis(calculateGrowRate(winMonthCountVo.getLastYearPreAcceptacneCount(), winMonthCountVo.getMonthPreAcceptanceCount()));
+                    winMonthStatistics.setOutScopeOnYoyBasis(calculateGrowRate(winMonthCountVo.getLastYearOutScopeCount(), winMonthCountVo.getMonthOutScopeCount()));
+                    winMonthStatistics.setCompletedOnYoyBasis(calculateGrowRate(winMonthCountVo.getLastYearCompletedCount(), winMonthCountVo.getMonthCompletedCount()));
+                    winMonthStatistics.setOverTimeOnYoyBasis(calculateGrowRate(winMonthCountVo.getLastYearOverTimeCount(), winMonthCountVo.getMonthOverTimeCount()));
+
+                    winMonthStatistics.setStatisticsMonth(nowMonth);
+                    winMonthStatistics.setStatisticsStartDate(DateUtils.convertStringToDate(startTime, "yyyy-MM-dd HH:mm:ss"));
+                    winMonthStatistics.setStatisticsEndDate(DateUtils.convertStringToDate(endTime, "yyyy-MM-dd HH:mm:ss"));
+                    winMonthStatistics.setModifier(creater);
+                    winMonthStatistics.setModifyTime(new Date());
+                    winMonthStatistics.setRootOrgId(rootOrgId);
+
+                    result.add(winMonthStatistics);
+                }catch (Exception e){
+                    log.error("窗口统计月失败："+e.getMessage());
+                    log.error("失败记录："+JSONObject.toJSONString(winMonthCountVo));
+
+                    e.printStackTrace();
                 }
 
-                //设置这月的月统计
-                winMonthStatistics.setMonthApplyCount(winMonthCountVo.getMonthApplyCount());
-                winMonthStatistics.setAllInSupplementCount(winMonthCountVo.getAllInSupplementCount());
-                winMonthStatistics.setAllSupplementedCount(winMonthCountVo.getAllSupplementedCount());
-                winMonthStatistics.setMonthPreAcceptanceCount(winMonthCountVo.getMonthPreAcceptanceCount());
-                winMonthStatistics.setMonthOutScopeCount(winMonthCountVo.getMonthOutScopeCount());
-                winMonthStatistics.setMonthCompletedCount(winMonthCountVo.getMonthCompletedCount());
-                winMonthStatistics.setMonthOverTimeCount(winMonthCountVo.getMonthOverTimeCount());
-
-                //计算环比&同比
-                winMonthStatistics.setApplyLrr(calculateGrowRate(winMonthCountVo.getLastMonthApplyCount(), winMonthCountVo.getMonthApplyCount()));
-                winMonthStatistics.setInSupplementLrr(calculateGrowRate(winMonthCountVo.getLastMonthInSupplementCount(), winMonthCountVo.getAllInSupplementCount()));
-                winMonthStatistics.setSupplementedLrr(calculateGrowRate(winMonthCountVo.getLastMonthSupplementedCount(), winMonthCountVo.getAllSupplementedCount()));
-                winMonthStatistics.setPreAcceptanceLrr(calculateGrowRate(winMonthCountVo.getLastMonthPreAcceptacneCount(), winMonthCountVo.getMonthPreAcceptanceCount()));
-                winMonthStatistics.setOutScopeLrr(calculateGrowRate(winMonthCountVo.getLastMonthOutScopeCount(), winMonthCountVo.getMonthOutScopeCount()));
-                winMonthStatistics.setCompletedLrr(calculateGrowRate(winMonthCountVo.getLastMonthCompletedCount(), winMonthCountVo.getMonthCompletedCount()));
-                winMonthStatistics.setOverTimeLrr(calculateGrowRate(winMonthCountVo.getLastMonthOverTimeCount(), winMonthCountVo.getMonthOverTimeCount()));
-
-                winMonthStatistics.setApplyOnYoyBasis(calculateGrowRate(winMonthCountVo.getLastYearApplyCount(), winMonthCountVo.getMonthApplyCount()));
-                winMonthStatistics.setInSupplementOnYoyBasis(calculateGrowRate(winMonthCountVo.getLastYearInSupplementCount(), winMonthCountVo.getAllInSupplementCount()));
-                winMonthStatistics.setSupplementedOnYoyBasis(calculateGrowRate(winMonthCountVo.getLastYearSupplementedCount(), winMonthCountVo.getAllSupplementedCount()));
-                winMonthStatistics.setPreAcceptanceOnYoyBasis(calculateGrowRate(winMonthCountVo.getLastYearPreAcceptacneCount(), winMonthCountVo.getMonthPreAcceptanceCount()));
-                winMonthStatistics.setOutScopeOnYoyBasis(calculateGrowRate(winMonthCountVo.getLastYearOutScopeCount(), winMonthCountVo.getMonthOutScopeCount()));
-                winMonthStatistics.setCompletedOnYoyBasis(calculateGrowRate(winMonthCountVo.getLastYearCompletedCount(), winMonthCountVo.getMonthCompletedCount()));
-                winMonthStatistics.setOverTimeOnYoyBasis(calculateGrowRate(winMonthCountVo.getLastYearOverTimeCount(), winMonthCountVo.getMonthOverTimeCount()));
-
-                winMonthStatistics.setStatisticsMonth(nowMonth);
-                winMonthStatistics.setStatisticsStartDate(DateUtils.convertStringToDate(startTime, "yyyy-MM-dd HH:mm:ss"));
-                winMonthStatistics.setStatisticsEndDate(DateUtils.convertStringToDate(endTime, "yyyy-MM-dd HH:mm:ss"));
-                winMonthStatistics.setModifier(creater);
-                winMonthStatistics.setModifyTime(new Date());
-                winMonthStatistics.setRootOrgId(rootOrgId);
-
-                result.add(winMonthStatistics);
             }
             if (result.size() > 0) {
                 //删除本月数据
@@ -617,85 +635,94 @@ public class AeaAnaWinStatisticsImpl {
         List<WinYearCountVo> yearStatisticsFromMonth = aeaAnaWinYearStatisticsMapper.getYearStatisticsFromMonth(rootOrgId, startMonth, endMonth, Integer.parseInt(year) - 1, DateUtils.convertDateToString(preDate, "yyyy-MM-dd"));
         if (CollectionUtils.isNotEmpty(yearStatisticsFromMonth)) {
             for (WinYearCountVo winYearCountVo : yearStatisticsFromMonth) {
-                AeaAnaWinYearStatistics winYearStatistics = new AeaAnaWinYearStatistics();
-                winYearStatistics.setWindowYearStatisticsId(UuidUtil.generateUuid());
-                winYearStatistics.setStatisticsRecordId(record.getStatisticsRecordId());
+
+                AeaAnaWinYearStatistics winYearStatistics = null;
+                try {
+                    winYearStatistics = new AeaAnaWinYearStatistics();
+                    winYearStatistics.setWindowYearStatisticsId(UuidUtil.generateUuid());
+                    winYearStatistics.setStatisticsRecordId(record.getStatisticsRecordId());
 
 
-                //设置这年最新日统计的总数
-                winYearStatistics.setWindowId(winYearCountVo.getWindowId());
-                AeaServiceWindow window = aeaServiceWindowMapper.getAeaServiceWindowById(winYearCountVo.getWindowId());
-                winYearStatistics.setWindowName(window.getWindowName());
-                winYearStatistics.setRegionId(window.getRegionId());
-                winYearStatistics.setRegionName(window.getRegionName());
-                winYearStatistics.setApplyRecordId(winYearCountVo.getApplyRecordId());
-                AeaParStage stage = aeaParStageMapper.getAeaParStageById(winYearCountVo.getApplyRecordId());
-                winYearStatistics.setApplyRecordName(stage.getStageName());
-                winYearStatistics.setDybzspjdxh(stage.getDybzspjdxh());
-                winYearStatistics.setIsNode(stage.getIsNode());
-                winYearStatistics.setIsParallel(winYearCountVo.getIsParallel());
-                winYearStatistics.setApplySource(winYearCountVo.getApplySource());
+                    //设置这年最新日统计的总数
+                    winYearStatistics.setWindowId(winYearCountVo.getWindowId());
+                    AeaServiceWindow window = aeaServiceWindowMapper.getAeaServiceWindowById(winYearCountVo.getWindowId());
+                    winYearStatistics.setWindowName(window.getWindowName());
+                    winYearStatistics.setRegionId(window.getRegionId());
+                    winYearStatistics.setRegionName(window.getRegionName());
+                    winYearStatistics.setApplyRecordId(winYearCountVo.getApplyRecordId());
+                    AeaParStage stage = aeaParStageMapper.getAeaParStageById(winYearCountVo.getApplyRecordId());
+                    winYearStatistics.setApplyRecordName(stage.getStageName());
+                    winYearStatistics.setDybzspjdxh(stage.getDybzspjdxh());
+                    winYearStatistics.setIsNode(stage.getIsNode());
+                    winYearStatistics.setIsParallel(winYearCountVo.getIsParallel());
+                    winYearStatistics.setApplySource(winYearCountVo.getApplySource());
 
-                //获取最新的日数据
-                AeaAnaWinMonthStatistics search = new AeaAnaWinMonthStatistics();
-                search.setWindowId(winYearCountVo.getWindowId());
-                search.setApplySource(winYearCountVo.getApplySource());
-                search.setApplyRecordId(winYearCountVo.getApplyRecordId());
-                search.setIsParallel(winYearCountVo.getIsParallel());
-                search.setRootOrgId(rootOrgId);
-                search.setStartTime(startMonth);
-                search.setEndTime(endMonth);
-                List<AeaAnaWinMonthStatistics> recentWinMonthStatistics = aeaAnaWinMonthStatisticsMapper.listAeaAnaWinMonthStatistics(search);
+                    //获取最新的日数据
+                    AeaAnaWinMonthStatistics search = new AeaAnaWinMonthStatistics();
+                    search.setWindowId(winYearCountVo.getWindowId());
+                    search.setApplySource(winYearCountVo.getApplySource());
+                    search.setApplyRecordId(winYearCountVo.getApplyRecordId());
+                    search.setIsParallel(winYearCountVo.getIsParallel());
+                    search.setRootOrgId(rootOrgId);
+                    search.setStartTime(startMonth);
+                    search.setEndTime(endMonth);
+                    List<AeaAnaWinMonthStatistics> recentWinMonthStatistics = aeaAnaWinMonthStatisticsMapper.listAeaAnaWinMonthStatistics(search);
 
-                if (CollectionUtils.isNotEmpty(recentWinMonthStatistics)) {
-                    AeaAnaWinMonthStatistics aeaAnaWinMonthStatistics = recentWinMonthStatistics.get(0);
-                    winYearStatistics.setAllApplyCount(aeaAnaWinMonthStatistics.getAllApplyCount());
-                    winYearStatistics.setAllPreAcceptanceCount(aeaAnaWinMonthStatistics.getAllInSupplementCount());
-                    winYearStatistics.setAllOutScopeCount(aeaAnaWinMonthStatistics.getAllOutScopeCount());
-                    winYearStatistics.setAllCompletedCount(aeaAnaWinMonthStatistics.getAllCompletedCount());
-                    winYearStatistics.setAllOverTimeCount(aeaAnaWinMonthStatistics.getAllOverTimeCount());
-                    winYearStatistics.setAllPreAcceptanceRate(aeaAnaWinMonthStatistics.getAllPreAcceptanceRate());
-                    winYearStatistics.setAllOutScopeRate(aeaAnaWinMonthStatistics.getAllOutScopeRate());
-                    winYearStatistics.setAllOverTimeRate(aeaAnaWinMonthStatistics.getAllOverTimeRate());
-                    winYearStatistics.setAllCompletedRate(aeaAnaWinMonthStatistics.getAllCompletedRate());
-                } else {
-                    winYearStatistics.setAllApplyCount(0L);
-                    winYearStatistics.setAllPreAcceptanceCount(0L);
-                    winYearStatistics.setAllOutScopeCount(0L);
-                    winYearStatistics.setAllCompletedCount(0L);
-                    winYearStatistics.setAllOverTimeCount(0L);
-                    winYearStatistics.setAllPreAcceptanceRate(0.0);
-                    winYearStatistics.setAllOutScopeRate(0.0);
-                    winYearStatistics.setAllOverTimeRate(0.0);
-                    winYearStatistics.setAllCompletedRate(0.0);
+                    if (CollectionUtils.isNotEmpty(recentWinMonthStatistics)) {
+                        AeaAnaWinMonthStatistics aeaAnaWinMonthStatistics = recentWinMonthStatistics.get(0);
+                        winYearStatistics.setAllApplyCount(aeaAnaWinMonthStatistics.getAllApplyCount());
+                        winYearStatistics.setAllPreAcceptanceCount(aeaAnaWinMonthStatistics.getAllInSupplementCount());
+                        winYearStatistics.setAllOutScopeCount(aeaAnaWinMonthStatistics.getAllOutScopeCount());
+                        winYearStatistics.setAllCompletedCount(aeaAnaWinMonthStatistics.getAllCompletedCount());
+                        winYearStatistics.setAllOverTimeCount(aeaAnaWinMonthStatistics.getAllOverTimeCount());
+                        winYearStatistics.setAllPreAcceptanceRate(aeaAnaWinMonthStatistics.getAllPreAcceptanceRate());
+                        winYearStatistics.setAllOutScopeRate(aeaAnaWinMonthStatistics.getAllOutScopeRate());
+                        winYearStatistics.setAllOverTimeRate(aeaAnaWinMonthStatistics.getAllOverTimeRate());
+                        winYearStatistics.setAllCompletedRate(aeaAnaWinMonthStatistics.getAllCompletedRate());
+                    } else {
+                        winYearStatistics.setAllApplyCount(0L);
+                        winYearStatistics.setAllPreAcceptanceCount(0L);
+                        winYearStatistics.setAllOutScopeCount(0L);
+                        winYearStatistics.setAllCompletedCount(0L);
+                        winYearStatistics.setAllOverTimeCount(0L);
+                        winYearStatistics.setAllPreAcceptanceRate(0.0);
+                        winYearStatistics.setAllOutScopeRate(0.0);
+                        winYearStatistics.setAllOverTimeRate(0.0);
+                        winYearStatistics.setAllCompletedRate(0.0);
+                    }
+
+                    //设置这年的统计
+                    winYearStatistics.setYearApplyCount(winYearCountVo.getYearApplyCount());
+                    winYearStatistics.setAllInSupplementCount(winYearCountVo.getAllInSupplementCount());
+                    winYearStatistics.setAllSupplementedCount(winYearCountVo.getAllSupplementedCount());
+                    winYearStatistics.setYearPreAcceptanceCount(winYearCountVo.getYearPreAcceptanceCount());
+                    winYearStatistics.setYearOutScopeCount(winYearCountVo.getYearOutScopeCount());
+                    winYearStatistics.setYearCompletedCount(winYearCountVo.getYearCompletedCount());
+                    winYearStatistics.setYearOverTimeCount(winYearCountVo.getYearOverTimeCount());
+
+                    //计算环比
+                    winYearStatistics.setInSupplementLrr(calculateGrowRate(winYearCountVo.getLastYearInSupplementCount(), winYearCountVo.getAllInSupplementCount()));
+                    winYearStatistics.setSupplementedLrr(calculateGrowRate(winYearCountVo.getLastYearSupplementedCount(), winYearCountVo.getAllSupplementedCount()));
+                    winYearStatistics.setApplyLrr(calculateGrowRate(winYearCountVo.getLastYearApplyCount(), winYearCountVo.getYearApplyCount()));
+                    winYearStatistics.setPreAcceptanceLrr(calculateGrowRate(winYearCountVo.getLastYearPreAcceptacneCount(), winYearCountVo.getYearPreAcceptanceCount()));
+                    winYearStatistics.setOutScopeLrr(calculateGrowRate(winYearCountVo.getLastYearOutScopeCount(), winYearCountVo.getYearOutScopeCount()));
+                    winYearStatistics.setCompletedLrr(calculateGrowRate(winYearCountVo.getLastYearCompletedCount(), winYearCountVo.getYearCompletedCount()));
+                    winYearStatistics.setOverTimeLrr(calculateGrowRate(winYearCountVo.getLastYearOverTimeCount(), winYearCountVo.getYearOverTimeCount()));
+
+                    winYearStatistics.setStatisticsYear(Long.valueOf(year));
+                    winYearStatistics.setStatisticsStartDate(DateUtils.convertStringToDate(startTime, "yyyy-MM-dd HH:mm:ss"));
+                    winYearStatistics.setStatisticsEndDate(DateUtils.convertStringToDate(endTime, "yyyy-MM-dd HH:mm:ss"));
+                    winYearStatistics.setModifier(creater);
+                    winYearStatistics.setModifyTime(new Date());
+                    winYearStatistics.setRootOrgId(rootOrgId);
+
+                    result.add(winYearStatistics);
+                } catch (Exception e) {
+                   log.error("窗口统计年数据失败！"+e.getMessage());
+                   log.error("错误数据记录："+JSONObject.toJSONString(winYearCountVo));
+                   e.printStackTrace();
                 }
 
-                //设置这年的统计
-                winYearStatistics.setYearApplyCount(winYearCountVo.getYearApplyCount());
-                winYearStatistics.setAllInSupplementCount(winYearCountVo.getAllInSupplementCount());
-                winYearStatistics.setAllSupplementedCount(winYearCountVo.getAllSupplementedCount());
-                winYearStatistics.setYearPreAcceptanceCount(winYearCountVo.getYearPreAcceptanceCount());
-                winYearStatistics.setYearOutScopeCount(winYearCountVo.getYearOutScopeCount());
-                winYearStatistics.setYearCompletedCount(winYearCountVo.getYearCompletedCount());
-                winYearStatistics.setYearOverTimeCount(winYearCountVo.getYearOverTimeCount());
-
-                //计算环比
-                winYearStatistics.setInSupplementLrr(calculateGrowRate(winYearCountVo.getLastYearInSupplementCount(), winYearCountVo.getAllInSupplementCount()));
-                winYearStatistics.setSupplementedLrr(calculateGrowRate(winYearCountVo.getLastYearSupplementedCount(), winYearCountVo.getAllSupplementedCount()));
-                winYearStatistics.setApplyLrr(calculateGrowRate(winYearCountVo.getLastYearApplyCount(), winYearCountVo.getYearApplyCount()));
-                winYearStatistics.setPreAcceptanceLrr(calculateGrowRate(winYearCountVo.getLastYearPreAcceptacneCount(), winYearCountVo.getYearPreAcceptanceCount()));
-                winYearStatistics.setOutScopeLrr(calculateGrowRate(winYearCountVo.getLastYearOutScopeCount(), winYearCountVo.getYearOutScopeCount()));
-                winYearStatistics.setCompletedLrr(calculateGrowRate(winYearCountVo.getLastYearCompletedCount(), winYearCountVo.getYearCompletedCount()));
-                winYearStatistics.setOverTimeLrr(calculateGrowRate(winYearCountVo.getLastYearOverTimeCount(), winYearCountVo.getYearOverTimeCount()));
-
-                winYearStatistics.setStatisticsYear(Long.valueOf(year));
-                winYearStatistics.setStatisticsStartDate(DateUtils.convertStringToDate(startTime, "yyyy-MM-dd HH:mm:ss"));
-                winYearStatistics.setStatisticsEndDate(DateUtils.convertStringToDate(endTime, "yyyy-MM-dd HH:mm:ss"));
-                winYearStatistics.setModifier(creater);
-                winYearStatistics.setModifyTime(new Date());
-                winYearStatistics.setRootOrgId(rootOrgId);
-
-                result.add(winYearStatistics);
             }
             if (result.size() > 0) {
                 //删除本周数据
