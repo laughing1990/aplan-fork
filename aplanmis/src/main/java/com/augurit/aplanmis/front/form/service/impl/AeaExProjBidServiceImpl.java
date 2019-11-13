@@ -2,9 +2,11 @@ package com.augurit.aplanmis.front.form.service.impl;
 
 import com.augurit.agcloud.framework.exception.InvalidParameterException;
 import com.augurit.agcloud.framework.security.SecurityContext;
-import com.augurit.agcloud.framework.util.CollectionUtils;
 import com.augurit.agcloud.framework.util.StringUtils;
-import com.augurit.aplanmis.common.domain.*;
+import com.augurit.aplanmis.common.domain.AeaExProjBid;
+import com.augurit.aplanmis.common.domain.AeaProjInfo;
+import com.augurit.aplanmis.common.domain.AeaUnitInfo;
+import com.augurit.aplanmis.common.domain.AeaUnitProj;
 import com.augurit.aplanmis.common.mapper.AeaExProjBidMapper;
 import com.augurit.aplanmis.common.mapper.AeaProjInfoMapper;
 import com.augurit.aplanmis.common.mapper.AeaUnitProjMapper;
@@ -15,7 +17,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Assert;
 
 import java.util.Date;
 import java.util.List;
@@ -129,11 +130,16 @@ public class AeaExProjBidServiceImpl implements AeaExProjBidService {
             for (AeaUnitInfo aeaUnitInfo : aeaUnitInfos) {
                 if (aeaUnitInfo.getUnitInfoId() != null && !"".equals(aeaUnitInfo.getUnitInfoId())) {
                     aeaUnitInfoService.updateAeaUnitInfo(aeaUnitInfo);
-                    //保存项目单位关联表信息
-                    this.updateUnitProjInfo(aeaExProjBidVo.getProjInfoId(), aeaUnitInfo.getUnitInfoId(), aeaUnitInfo.getUnitProjId(),unitType);
+                    //如果本身有关联表记录则更新，否则重新保存项目单位关联表信息
+                    if(StringUtils.isNotBlank(aeaUnitInfo.getUnitProjId())) {
+                        this.updateUnitProjInfo(aeaExProjBidVo.getProjInfoId(), aeaUnitInfo.getUnitInfoId(), aeaUnitInfo.getUnitProjId(), unitType);
+                    }else{
+                        aeaUnitProjNewList.add(aeaExProjBidVo.toAeaUnitProj(aeaUnitInfo.getUnitInfoId(), unitType));
+                    }
                 } else {
                     aeaUnitInfo.setUnitInfoId(UUID.randomUUID().toString());
                     aeaUnitInfo.setUnitType(unitType);
+                    aeaUnitInfo.setIsOwner("0");
                     aeaUnitInfoService.insertAeaUnitInfo(aeaUnitInfo);
                     aeaUnitProjNewList.add(aeaExProjBidVo.toAeaUnitProj(aeaUnitInfo.getUnitInfoId(), unitType));
                 }
