@@ -1854,17 +1854,38 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
         }
         Map<String, Object> resultObj = new HashMap<>();
         if (result.size() > 0) {
-            List<String> title = result.stream().map(obj -> obj.getWindowName()).collect(Collectors.toList());
+//            List<String> title = result.stream().map(obj -> obj.getWindowName()).collect(Collectors.toList());
+            List<String> title = aeaServiceWindows.stream().map(obj -> obj.getWindowName()).collect(Collectors.toList());
             List<String> yiShouLi = new ArrayList<>();
             List<String> caiLiaoBuQuan = new ArrayList<>();
             List<String> buYuShouLi = new ArrayList<>();
             List<String> color = new ArrayList<>();
-            for (WinApplyStatisticsVo vo : result) {
+           /* for (WinApplyStatisticsVo vo : result) {
+
                 yiShouLi.add(vo.getShouliCount().toString());
                 caiLiaoBuQuan.add(vo.getCaiLiaoBuquanCount().toString());
                 buYuShouLi.add(vo.getBuyushouliCount().toString());
-            }
+            }*/
 
+            for(int i =0,len = aeaServiceWindows.size();i<len;i++){
+                AeaServiceWindow window = aeaServiceWindows.get(i);
+                boolean had = false;
+                for (WinApplyStatisticsVo vo : result) {
+
+                    if(window.getWindowId().equals(vo.getWindowId())){
+                        had = true;
+                        yiShouLi.add(vo.getShouliCount().toString());
+                        caiLiaoBuQuan.add(vo.getCaiLiaoBuquanCount().toString());
+                        buYuShouLi.add(vo.getBuyushouliCount().toString());
+                    }
+
+                }
+                if(!had){
+                    yiShouLi.add("0");
+                    caiLiaoBuQuan.add("0");
+                    buYuShouLi.add("0");
+                }
+            }
             resultObj.put("title", title);
             resultObj.put("yiShouLi", yiShouLi);
             resultObj.put("caiLiaoBuQuan", caiLiaoBuQuan);

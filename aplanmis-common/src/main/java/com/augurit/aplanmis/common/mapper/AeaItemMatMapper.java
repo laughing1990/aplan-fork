@@ -1,5 +1,6 @@
 package com.augurit.aplanmis.common.mapper;
 
+import com.augurit.agcloud.bpm.common.domain.ActStoForm;
 import com.augurit.aplanmis.common.domain.AeaItemMat;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -97,4 +98,6 @@ public interface AeaItemMatMapper {
     List<AeaItemMat> getOfficeMatsByStageItemVerIds(@Param("stageId") String stageId, @Param("itemVerIds") String[] itemVerIds, @Param("rootOrgId") String rootOrgId);
 
     List<AeaItemMat> getParInMatsByStageItemVerIds(@Param("stageId") String stageId, @Param("itemVerIds") String[] itemVerIds, @Param("rootOrgId") String rootOrgId);
+
+    List<ActStoForm> listActStoForm(ActStoForm stoForm);
 }

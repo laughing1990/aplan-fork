@@ -363,11 +363,9 @@ public class RestImApplyService {
     public ApplyinstResult purchaseStartProcess(ImItemApplyData applyData) throws Exception {
         ApplyinstResult result = new ApplyinstResult();
         String itemVerId = applyData.getItemVerId();
-        AeaItemBasic itemBasic = aeaItemBasicMapper.getAeaItemBasicByItemVerId(itemVerId, SecurityContext.getCurrentOrgId());
+        AeaItemBasic itemBasic = aeaItemBasicMapper.getAeaItemBasicByItemVerId(itemVerId, applyData.getRootOrgId());
 
         String appinstId = UUID.randomUUID().toString();//预先生成流程模板实例ID
-//        result.setAppinstId(appinstId);
-//        String branchOrgMap = applyData.getBranchOrgMap();
         String opuWinId = aeaServiceWindowService.getCurrentUserWindow() == null ? "" : aeaServiceWindowService.getCurrentUserWindow().getWindowId();
         AeaHiApplyinst seriesApplyinst = aeaHiApplyinstService.createAeaHiApplyinstAndTriggerAeaLogApplyStateHist(applyData.getApplySource(),
                 applyData.getApplySubject(), applyData.getLinkmanInfoId(), "1", null, null, appinstId, ApplyState.IM_MILESTONE_CHOOSE_IMUNIT.getValue(), opuWinId);//实例化串联申请实例
@@ -401,7 +399,7 @@ public class RestImApplyService {
 //        aeaHiItemStateinstService.batchInsertAeaHiItemStateinst(seriesApplyinstId, aeaHiSeriesinst.getSeriesinstId(), null, stateIds, SecurityContext.getCurrentUserName());
 
         //4、材料输入输出实例
-        aeaHiItemInoutinstService.batchInsertAeaHiItemInoutinst(applyData.getMatinstsIds(), applyinstId, SecurityContext.getCurrentUserName());
+        aeaHiItemInoutinstService.batchInsertAeaHiItemInoutinst(applyData.getMatinstsIds(), applyinstId, applyData.getCreater());
 
         //5、启动主流程
         BpmProcessInstance processInstance = aeaBpmProcessService.startFlow(itemBasic.getAppId(), appinstId, seriesApplyinst);
@@ -482,14 +480,13 @@ public class RestImApplyService {
         //参数校验
         this.validParams(data);
         String unitInfoId = data.getPublishUnitInfoId();
-//        String applySubject = data.getApplySubject();
+
         //初始化采购需求实体信息
         AeaImProjPurchase aeaImProjPurchase = data.createAeaImProjPurchase();
-
         //保存机构要求
         AeaImUnitRequire aeaImUnitRequire = data.getAeaImUnitRequire();
         aeaImUnitRequire.setUnitRequireId(UuidUtil.generateUuid());
-        aeaImUnitRequire.setRootOrgId(SecurityContext.getCurrentOrgId());
+        aeaImUnitRequire.setRootOrgId(data.getRootOrgId());
         aeaImUnitRequireMapper.insertAeaImUnitRequire(aeaImUnitRequire);
 
         aeaImProjPurchase.setUnitRequireId(aeaImUnitRequire.getUnitRequireId());
@@ -503,9 +500,9 @@ public class RestImApplyService {
             }
         }
         //保存采购项目
-        AeaProjInfo aeaProjInfo = data.createProjInfo(data);
-        aeaProjInfoMapper.insertAeaProjInfo(aeaProjInfo);
-        aeaImProjPurchase.setProjInfoId(aeaProjInfo.getProjInfoId());
+//        AeaProjInfo aeaProjInfo = data.createProjInfo(data);
+//        aeaProjInfoMapper.insertAeaProjInfo(aeaProjInfo);
+//        aeaImProjPurchase.setProjInfoId(aeaProjInfo.getProjInfoId());
 
         if ("0".equals(data.getApplySubject())) {
             aeaImProjPurchase.setPublishLinkmanInfoId(data.getPublishLinkmanInfoId());
@@ -515,13 +512,14 @@ public class RestImApplyService {
 
         //保存采购项目信息表
         aeaImProjPurchaseMapper.insertAeaImProjPurchase(aeaImProjPurchase);
+        data.setProjPurchaseId(aeaImProjPurchase.getProjPurchaseId());
         this.savePurchaseinst(data);
 
         //创建投资项目和采购需求项目ID关联
         if ("1".equals(data.getIsApproveProj())) {
-            String parentProjId = data.getProjInfoId();
-            String childProjId = aeaProjInfo.getProjInfoId();
-            String projSeq = data.getProjInfoId() + "," + data.getProjPurchaseId();
+            String parentProjId = data.getApproveProjInfoId();
+            String childProjId = data.getProjInfoId();
+            String projSeq = data.getApproveProjInfoId() + "," + data.getProjInfoId();
             AeaParentProj aeaParentProj = new AeaParentProj(parentProjId, childProjId, projSeq, data.getCreater(), data.getRootOrgId());
             aeaParentProjMapper.insertAeaParentProj(aeaParentProj);
         }
@@ -536,13 +534,11 @@ public class RestImApplyService {
                     break;
                 }
             }
+
         }
         //保存项目联系人关系
-        if (StringUtils.isNotBlank(linkmanInfoId)) {
-            AeaProjLinkman aeaProjLinkman = new AeaProjLinkman(aeaProjInfo.getProjInfoId(), linkmanInfoId, "link", data.getApplyinstId(), data.getCreater());
-            aeaProjLinkmanMapper.insertAeaProjLinkman(aeaProjLinkman);
-        }
-
+        AeaProjLinkman aeaProjLinkman = new AeaProjLinkman(data.getProjInfoId(), linkmanInfoId, "link", data.getApplyinstId(), data.getCreater());
+        aeaProjLinkmanMapper.insertAeaProjLinkman(aeaProjLinkman);
 
         //保存企业报价
         if (AeaImProjPurchase.BiddingType.自主选择.getType().equals(aeaImProjPurchase.getBiddingType())) {
@@ -559,7 +555,7 @@ public class RestImApplyService {
                 aeaImAvoidUnit.setAvoidUnitId(UuidUtil.generateUuid());
                 aeaImAvoidUnit.setUnitInfoId(avoidUnitInfoId);
                 aeaImAvoidUnit.setProjPurchaseId(aeaImProjPurchase.getProjPurchaseId());
-                aeaImAvoidUnit.setCreater(SecurityContext.getCurrentUserName());
+                aeaImAvoidUnit.setCreater(data.getCreater());
                 aeaImAvoidUnit.setCreateTime(new Date());
                 aeaImAvoidUnit.setIsDelete(DeletedStatus.NOT_DELETED.getValue());
                 aeaImAvoidUnitMapper.insertAeaImAvoidUnit(aeaImAvoidUnit);
@@ -569,6 +565,7 @@ public class RestImApplyService {
 
         return aeaImProjPurchase;
     }
+
 
     /**
      * 保存采购实例信息

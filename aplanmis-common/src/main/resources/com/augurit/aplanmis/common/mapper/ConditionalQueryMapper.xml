@@ -55,10 +55,10 @@
                 <![CDATA[ AND to_char(aht_123.END_TIME_ , 'yyyy-mm-dd')<=  #{processEndTime}   ]]>
             </if>
             <if test="concludedStartTime != null and concludedStartTime != '' ">
-                <![CDATA[ AND to_char(hist.TRIGGER_TIME , 'yyyy-mm-dd')>=  #{concludedStartTime}   ]]>
+                <![CDATA[ AND to_char(ahap_123.END_TIME , 'yyyy-mm-dd')>=  #{concludedStartTime}   ]]>
             </if>
             <if test="concludedEndTime != null and concludedEndTime != '' ">
-                <![CDATA[ AND to_char(hist.TRIGGER_TIME , 'yyyy-mm-dd')<=  #{concludedEndTime}   ]]>
+                <![CDATA[ AND to_char(ahap_123.END_TIME , 'yyyy-mm-dd')<=  #{concludedEndTime}   ]]>
             </if>
 
         </if>
@@ -88,10 +88,10 @@
                 <![CDATA[ AND DATE_FORMAT(aht_123.END_TIME_ , '%Y-%m-%d')<=  #{processEndTime}   ]]>
             </if>
             <if test="concludedStartTime != null and concludedStartTime != '' ">
-                <![CDATA[ AND DATE_FORMAT(hist.TRIGGER_TIME , '%Y-%m-%d')>=  #{concludedStartTime}   ]]>
+                <![CDATA[ AND DATE_FORMAT(ahap_123.END_TIME , '%Y-%m-%d')>=  #{concludedStartTime}   ]]>
             </if>
             <if test="concludedEndTime != null and concludedEndTime != '' ">
-                <![CDATA[ AND DATE_FORMAT(hist.TRIGGER_TIME , '%Y-%m-%d')<=  #{concludedEndTime}   ]]>
+                <![CDATA[ AND DATE_FORMAT(ahap_123.END_TIME , '%Y-%m-%d')<=  #{concludedEndTime}   ]]>
             </if>
         </if>
 
@@ -119,7 +119,6 @@
         temp1.LOCAL_CODE AS localCode,
         temp1.GCBM AS gcbm,
         ahap_123.APPLYINST_SOURCE AS applySource,
-        -- ali_123.LINKMAN_NAME AS linkmanName,
         CASE ahap_123.IS_SERIES_APPROVE
         WHEN '1' THEN
         '单项'
@@ -198,7 +197,6 @@
         </where>
         GROUP BY ap.APPLYINST_ID
         ) temp1 ON temp1.APPLYINST_ID = ahap_123.APPLYINST_ID
-        -- LEFT JOIN aea_linkman_info ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
         LEFT JOIN aea_hi_par_stageinst ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
         LEFT JOIN aea_par_stage aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
         LEFT JOIN aea_par_theme_ver ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
@@ -259,7 +257,6 @@
             temp1.LOCAL_CODE AS localCode,
             temp1.GCBM AS gcbm,
             ahap_123.APPLYINST_SOURCE AS applySource,
-            -- ali_123.LINKMAN_NAME AS linkmanName,
             CASE ahap_123.IS_SERIES_APPROVE
             WHEN '1' THEN
             '单项'
@@ -338,7 +335,6 @@
             </where>
             GROUP BY ap.APPLYINST_ID
             ) temp1 ON temp1.APPLYINST_ID = ahap_123.APPLYINST_ID
-            -- LEFT JOIN aea_linkman_info ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
             LEFT JOIN aea_hi_seriesinst ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
             LEFT JOIN aea_hi_iteminst ahi_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
             LEFT JOIN AEA_ITEM_BASIC ai_123 ON ahi_123.ITEM_ID = ai_123.ITEM_ID AND ahi_123.ITEM_VER_ID =
@@ -394,7 +390,6 @@
                 OR temp_123.gcbm LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 OR temp_123.itemName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 OR temp_123.stageName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
-                -- OR temp_123.linkmanName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 )
             </if>
         </where>
@@ -412,7 +407,6 @@
         temp1.PROJ_NAME AS projName,
         temp1.LOCAL_CODE AS localCode,
         temp1.GCBM AS gcbm,
-        -- ali_123.LINKMAN_NAME AS linkmanName,
         '并联' AS applyType,
         theme.THEME_NAME AS themeName,
         aps_123.STAGE_NAME AS stageName,
@@ -471,7 +465,6 @@
         </include>
         LEFT JOIN AEA_PAR_STAGE aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
         LEFT JOIN AEA_PAR_THEME_VER ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
-        -- LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
         LEFT JOIN AEA_PAR_THEME theme ON theme.THEME_ID = ver.THEME_ID
         LEFT JOIN act_sto_timerule_inst tinst ON tinst.PROC_INST_ID = ahi_123.PROCINST_ID AND tinst.ORG_ID =
         #{currentOrgId}
@@ -562,7 +555,6 @@
             temp1.PROJ_NAME AS projName,
             temp1.LOCAL_CODE AS localCode,
             temp1.GCBM AS gcbm,
-            -- ali_123.LINKMAN_NAME AS linkmanName,
             '单项' AS applyType,
             NULL AS themeName,
             NULL AS stageName,
@@ -621,7 +613,6 @@
             LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
             <include refid="leftJoinApplyinstProj">
             </include>
-            -- LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
             LEFT JOIN act_sto_timerule_inst tinst ON tinst.PROC_INST_ID = ahi_123.PROCINST_ID AND tinst.ORG_ID =
             #{currentOrgId}
             WHERE ahi_123.IS_SERIES_APPROVE = '1'
@@ -707,7 +698,6 @@
                 OR temp_123.gcbm LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 OR temp_123.itemName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 OR temp_123.stageName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
-                -- OR temp_123.linkmanName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 )
             </if>
         </where>
@@ -826,7 +816,6 @@
         ahap_123.APPLYINST_ID AS applyinstId,
         ahap_123.APPLYINST_CODE AS applyinstCode,
         aps_123.STAGE_NAME AS stageName,
-        -- ali_123.LINKMAN_NAME AS linkmanName,
         ahap_123.APPLYINST_SOURCE AS applySource,
         art_123.CREATE_TIME_ AS arriveTime,
         ahap_123.ACCEPT_TIME AS acceptTime,
@@ -854,7 +843,6 @@
         LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahap_123.APPLYINST_ID = asa_123.master_record_id
         <include refid="leftJoinApplyinstProj">
         </include>
-        -- LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
         LEFT JOIN AEA_HI_PAR_STAGEINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
         LEFT JOIN AEA_PAR_STAGE aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
         LEFT JOIN AEA_PAR_THEME_VER ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
@@ -878,7 +866,6 @@
         ahap_123.APPLYINST_ID AS applyinstId,
         ahap_123.APPLYINST_CODE AS applyinstCode,
         aps_123.STAGE_NAME AS stageName,
-        -- ali_123.LINKMAN_NAME AS linkmanName,
         ahap_123.APPLYINST_SOURCE AS applySource,
         art_123.CREATE_TIME_ AS arriveTime,
         ahap_123.ACCEPT_TIME AS acceptTime,
@@ -907,7 +894,6 @@
         LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahap_123.APPLYINST_ID = asa_123.master_record_id
         <include refid="leftJoinApplyinstProj">
         </include>
-        -- LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
         LEFT JOIN AEA_HI_PAR_STAGEINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
         LEFT JOIN AEA_PAR_STAGE aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
         LEFT JOIN AEA_PAR_THEME_VER ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
@@ -942,7 +928,6 @@
         ahap_123.APPLYINST_ID AS applyinstId,
         ahap_123.APPLYINST_CODE AS applyinstCode,
         aps_123.STAGE_NAME AS stageName,
-        -- ali_123.LINKMAN_NAME AS linkmanName,
         ahap_123.APPLYINST_SOURCE AS applySource,
         art_123.CREATE_TIME_ AS arriveTime,
         ahap_123.ACCEPT_TIME AS acceptTime,
@@ -971,7 +956,6 @@
         LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahap_123.APPLYINST_ID = asa_123.master_record_id
         <include refid="leftJoinApplyinstProj">
         </include>
-        -- LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
         LEFT JOIN AEA_HI_PAR_STAGEINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
         LEFT JOIN AEA_PAR_STAGE aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
         LEFT JOIN AEA_PAR_THEME_VER ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
@@ -995,7 +979,6 @@
         ahap_123.APPLYINST_ID AS applyinstId,
         ahap_123.APPLYINST_CODE AS applyinstCode,
         NULL AS stageName,
-        -- ali_123.LINKMAN_NAME AS linkmanName,
         ahap_123.APPLYINST_SOURCE AS applySource,
         art_123.CREATE_TIME_ AS arriveTime,
         ahap_123.ACCEPT_TIME AS acceptTime,
@@ -1023,7 +1006,6 @@
         LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahap_123.APPLYINST_ID = asa_123.master_record_id
         <include refid="leftJoinApplyinstProj">
         </include>
-        -- LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
         LEFT JOIN AEA_HI_SERIESINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
         LEFT JOIN AEA_HI_ITEMINST ahi_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
         LEFT JOIN AEA_ITEM_BASIC ai_123 ON ahi_123.ITEM_ID = ai_123.ITEM_ID AND ahi_123.ITEM_VER_ID = ai_123.ITEM_VER_ID
@@ -1053,7 +1035,6 @@
         ahap_123.APPLYINST_ID AS applyinstId,
         ahap_123.APPLYINST_CODE AS applyinstCode,
         NULL AS stageName,
-        -- ali_123.LINKMAN_NAME AS linkmanName,
         ahap_123.APPLYINST_SOURCE AS applySource,
         art_123.CREATE_TIME_ AS arriveTime,
         ahap_123.ACCEPT_TIME AS acceptTime,
@@ -1082,7 +1063,6 @@
         LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahap_123.APPLYINST_ID = asa_123.master_record_id
         <include refid="leftJoinApplyinstProj">
         </include>
-        -- LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
         LEFT JOIN AEA_HI_SERIESINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
         LEFT JOIN AEA_HI_ITEMINST ahi_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
         LEFT JOIN AEA_ITEM_BASIC ai_123 ON ahi_123.ITEM_ID = ai_123.ITEM_ID AND ahi_123.ITEM_VER_ID = ai_123.ITEM_VER_ID
@@ -1104,7 +1084,6 @@
             ART_123.applyinstId,
             ART_123.applyinstCode,
             ART_123.stageName,
-            -- ART_123.linkmanName,
             ART_123.applySource,
             ART_123.arriveTime,
             ART_123.acceptTime,
@@ -1141,7 +1120,6 @@
                 OR temp_123.gcbm LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 OR temp_123.itemName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 OR temp_123.stageName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
-                -- OR temp_123.linkmanName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 )
             </if>
         </where>
@@ -1162,7 +1140,6 @@
         ahap_123.APPLYINST_ID AS applyinstId,
         ahap_123.APPLYINST_CODE AS applyinstCode,
         aps_123.STAGE_NAME AS stageName,
-        -- ali_123.LINKMAN_NAME AS linkmanName,
         ahap_123.APPLYINST_SOURCE AS applySource,
         aht_123.END_TIME_ AS processTime,
         ahap_123.CREATE_TIME AS applyTime,
@@ -1190,7 +1167,6 @@
         LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahap_123.APPLYINST_ID = asa_123.master_record_id
         <include refid="leftJoinApplyinstProj">
         </include>
-        -- LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
         LEFT JOIN AEA_HI_PAR_STAGEINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
         LEFT JOIN AEA_PAR_STAGE aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
         LEFT JOIN AEA_PAR_THEME_VER ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
@@ -1221,7 +1197,6 @@
         ahap_123.APPLYINST_ID AS applyinstId,
         ahap_123.APPLYINST_CODE AS applyinstCode,
         aps_123.STAGE_NAME AS stageName,
-        -- ali_123.LINKMAN_NAME AS linkmanName,
         ahap_123.APPLYINST_SOURCE AS applySource,
         aht_123.END_TIME_ AS processTime,
         ahap_123.CREATE_TIME AS applyTime,
@@ -1250,7 +1225,6 @@
         LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahap_123.APPLYINST_ID = asa_123.master_record_id
         <include refid="leftJoinApplyinstProj">
         </include>
-        -- LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
         LEFT JOIN AEA_HI_PAR_STAGEINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
         LEFT JOIN AEA_PAR_STAGE aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
         LEFT JOIN AEA_PAR_THEME_VER ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
@@ -1283,7 +1257,6 @@
         ahap_123.APPLYINST_ID AS applyinstId,
         ahap_123.APPLYINST_CODE AS applyinstCode,
         NULL AS stageName,
-        -- ali_123.LINKMAN_NAME AS linkmanName,
         ahap_123.APPLYINST_SOURCE AS applySource,
         aht_123.END_TIME_ AS processTime,
         ahap_123.CREATE_TIME AS applyTime,
@@ -1311,7 +1284,6 @@
         LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahap_123.APPLYINST_ID = asa_123.master_record_id
         <include refid="leftJoinApplyinstProj">
         </include>
-        -- LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
         LEFT JOIN AEA_HI_SERIESINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
         LEFT JOIN AEA_HI_ITEMINST ahi_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
         LEFT JOIN act_sto_timerule_inst ti ON ti.PROC_INST_ID = ahi_123.PROCINST_ID
@@ -1333,7 +1305,6 @@
         ahap_123.APPLYINST_ID AS applyinstId,
         ahap_123.APPLYINST_CODE AS applyinstCode,
         NULL AS stageName,
-        -- ali_123.LINKMAN_NAME AS linkmanName,
         ahap_123.APPLYINST_SOURCE AS applySource,
         aht_123.END_TIME_ AS processTime,
         ahap_123.CREATE_TIME AS applyTime,
@@ -1362,7 +1333,6 @@
         LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahap_123.APPLYINST_ID = asa_123.master_record_id
         <include refid="leftJoinApplyinstProj">
         </include>
-        -- LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
         LEFT JOIN AEA_HI_SERIESINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
         LEFT JOIN AEA_HI_ITEMINST ahi_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
         LEFT JOIN act_sto_timerule_inst ti ON ti.PROC_INST_ID = ahi_123.PROCINST_ID
@@ -1385,7 +1355,6 @@
             temp.applyinstId,
             temp.applyinstCode,
             temp.stageName,
-            -- temp.linkmanName,
             temp.applySource,
             temp.processTime,
             temp.applyTime,
@@ -1420,7 +1389,6 @@
                 OR temp_123.gcbm LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 OR temp_123.itemName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 OR temp_123.stageName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
-                -- OR temp_123.linkmanName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 )
             </if>
         </where>
@@ -1440,7 +1408,6 @@
         ahap_123.APPLYINST_ID AS applyinstId,
         ahap_123.APPLYINST_CODE AS applyinstCode,
         aps_123.STAGE_NAME AS stageName,
-        -- ali_123.LINKMAN_NAME AS linkmanName,
         ahap_123.APPLYINST_SOURCE AS applySource,
         aps_123.DUE_NUM AS dueNum,
         '0' AS isSeriesApprove,
@@ -1451,7 +1418,7 @@
         temp1.GCBM AS gcbm,
         ahp_123.ID_ AS procInstId,
         aht_123.ID_ AS taskId,
-        hist.TRIGGER_TIME AS concludedTime,
+        ahap_123.END_TIME AS concludedTime,
         ahap_123.CREATE_TIME AS applyTime,
         ahap_123.ACCEPT_TIME AS acceptTime,
         theme.THEME_NAME AS themeName,
@@ -1467,20 +1434,12 @@
         </include>
         LEFT JOIN act_sto_appinst asa_123 ON asa_123.master_record_id = ahap_123.APPLYINST_ID
         LEFT JOIN act_hi_procinst ahp_123 ON ahp_123.PROC_INST_ID_ = asa_123.procinst_id
-        -- LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
         LEFT JOIN AEA_HI_PAR_STAGEINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
         LEFT JOIN AEA_PAR_STAGE aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
         LEFT JOIN AEA_PAR_THEME_VER ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
         LEFT JOIN AEA_PAR_THEME theme ON theme.THEME_ID = ver.THEME_ID
         LEFT JOIN act_hi_taskinst aht_123 ON aht_123.PROC_INST_ID_ = ahp_123.ID_
         LEFT JOIN act_sto_timerule_inst ti ON ti.PROC_INST_ID = AHP_123.PROC_INST_ID_
-        LEFT JOIN (
-        SELECT
-        ahist.APPLYINST_ID,MAX(TRIGGER_TIME) AS TRIGGER_TIME
-        FROM aea_log_apply_state_hist ahist
-        WHERE ahist.NEW_STATE = '6'
-        GROUP BY APPLYINST_ID
-        ) hist ON hist.APPLYINST_ID = ahap_123.APPLYINST_ID
         <where>
             ahap_123.IS_SERIES_APPROVE = '0'
             AND ahap_123.APPLYINST_STATE = '6'
@@ -1496,7 +1455,6 @@
         ahap_123.APPLYINST_ID AS applyinstId,
         ahap_123.APPLYINST_CODE AS applyinstCode,
         aps_123.STAGE_NAME AS stageName,
-        -- ali_123.LINKMAN_NAME linkmanName,
         ahap_123.APPLYINST_SOURCE applySource,
         aps_123.DUE_NUM AS dueNum,
         '0' AS isSeriesApprove,
@@ -1507,7 +1465,7 @@
         temp1.GCBM AS gcbm,
         ahp_123.ID_ AS procInstId,
         aht_123.ID_ AS taskId,
-        hist.TRIGGER_TIME AS concludedTime,
+        ahap_123.END_TIME AS concludedTime,
         ahap_123.CREATE_TIME AS applyTime,
         ahap_123.ACCEPT_TIME AS acceptTime,
         theme.THEME_NAME AS themeName,
@@ -1524,22 +1482,12 @@
         LEFT JOIN act_sto_appinst asa_123 ON asa_123.master_record_id = ahap_123.APPLYINST_ID
         LEFT JOIN act_sto_appinst_subflow asas_123 ON asas_123.APPINST_ID = asa_123.APPINST_ID
         LEFT JOIN act_hi_procinst ahp_123 ON ahp_123.PROC_INST_ID_ = asas_123.SUBFLOW_PROCINST_ID
-        -- LEFT JOIN act_hi_procinst ahp_123 ON ahp_123.PROC_INST_ID_ = asa_123.procinst_id
-        -- LEFT JOIN act_sto_appinst_subflow asas_123 ON asas_123.SUBFLOW_PROCINST_ID = ahp_123.PROC_INST_ID_
-        -- LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
         LEFT JOIN AEA_HI_PAR_STAGEINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
         LEFT JOIN AEA_PAR_STAGE aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
         LEFT JOIN AEA_PAR_THEME_VER ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
         LEFT JOIN AEA_PAR_THEME theme ON theme.THEME_ID = ver.THEME_ID
         LEFT JOIN act_hi_taskinst aht_123 ON aht_123.PROC_INST_ID_ = ahp_123.ID_
         LEFT JOIN act_sto_timerule_inst ti ON ti.PROC_INST_ID = AHP_123.PROC_INST_ID_
-        LEFT JOIN (
-        SELECT
-        ahist.APPLYINST_ID,MAX(TRIGGER_TIME) AS TRIGGER_TIME
-        FROM aea_log_apply_state_hist ahist
-        WHERE ahist.NEW_STATE = '6'
-        GROUP BY APPLYINST_ID
-        ) hist ON hist.APPLYINST_ID = ahap_123.APPLYINST_ID
         <where>
             ahap_123.IS_SERIES_APPROVE = '0'
             AND ahap_123.APPLYINST_STATE = '6'
@@ -1555,7 +1503,6 @@
         ahap_123.APPLYINST_ID AS applyinstId,
         ahap_123.APPLYINST_CODE AS applyinstCode,
         NULL AS stageName,
-        -- ali_123.LINKMAN_NAME AS linkmanName,
         ahap_123.APPLYINST_SOURCE AS applySource,
         ai_123.DUE_NUM AS dueNum,
         '1' AS isSeriesApprove,
@@ -1566,7 +1513,7 @@
         temp1.GCBM AS gcbm,
         ahp_123.ID_ AS procInstId,
         aht_123.ID_ AS taskId,
-        hist.TRIGGER_TIME AS concludedTime,
+        ahap_123.END_TIME AS concludedTime,
         ahap_123.CREATE_TIME AS applyTime,
         ahap_123.ACCEPT_TIME AS acceptTime,
         NULL AS themeName,
@@ -1584,21 +1531,11 @@
         LEFT JOIN act_sto_appinst asa_123 ON asa_123.master_record_id = ahap_123.APPLYINST_ID
         LEFT JOIN act_sto_appinst_subflow asas_123 ON asas_123.APPINST_ID = asa_123.APPINST_ID
         LEFT JOIN act_hi_procinst ahp_123 ON ahp_123.PROC_INST_ID_ = asas_123.SUBFLOW_PROCINST_ID
-        -- LEFT JOIN act_hi_procinst ahp_123 ON ahp_123.PROC_INST_ID_ = asa_123.procinst_id
-        -- LEFT JOIN ACT_STO_APPINST_SUBFLOW asas_123 ON asas_123.SUBFLOW_PROCINST_ID = AHP_123.PROC_INST_ID_
-        -- LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
         LEFT JOIN AEA_HI_SERIESINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
         LEFT JOIN AEA_HI_ITEMINST ahi_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
         LEFT JOIN act_sto_timerule_inst ti ON ti.PROC_INST_ID = ahi_123.PROCINST_ID
         LEFT JOIN AEA_ITEM_BASIC ai_123 ON ahi_123.ITEM_ID = ai_123.ITEM_ID AND ahi_123.ITEM_VER_ID = ai_123.ITEM_VER_ID
         LEFT JOIN act_hi_taskinst aht_123 ON aht_123.PROC_INST_ID_ = ahp_123.ID_
-        LEFT JOIN (
-        SELECT
-        ahist.APPLYINST_ID,MAX(TRIGGER_TIME) AS TRIGGER_TIME
-        FROM aea_log_apply_state_hist ahist
-        WHERE ahist.NEW_STATE = '6'
-        GROUP BY APPLYINST_ID
-        ) hist ON hist.APPLYINST_ID = ahap_123.APPLYINST_ID
         <where>
             ahap_123.IS_SERIES_APPROVE = '1'
             AND ahap_123.APPLYINST_STATE = '6'
@@ -1612,7 +1549,6 @@
         ahap_123.APPLYINST_ID AS applyinstId,
         ahap_123.APPLYINST_CODE AS applyinstCode,
         NULL AS stageName,
-        -- ali_123.LINKMAN_NAME AS linkmanName,
         ahap_123.APPLYINST_SOURCE AS applySource,
         ai_123.DUE_NUM AS dueNum,
         '1' AS isSeriesApprove,
@@ -1623,7 +1559,7 @@
         temp1.GCBM AS gcbm,
         ahp_123.ID_ AS procInstId,
         aht_123.ID_ AS taskId,
-        hist.TRIGGER_TIME AS concludedTime,
+        ahap_123.END_TIME AS concludedTime,
         ahap_123.CREATE_TIME AS applyTime,
         ahap_123.ACCEPT_TIME AS acceptTime,
         NULL AS themeName,
@@ -1639,19 +1575,11 @@
         </include>
         LEFT JOIN act_sto_appinst asa_123 ON asa_123.master_record_id = ahap_123.APPLYINST_ID
         LEFT JOIN act_hi_procinst ahp_123 ON ahp_123.PROC_INST_ID_ = asa_123.procinst_id
-        -- LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
         LEFT JOIN AEA_HI_SERIESINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
         LEFT JOIN AEA_HI_ITEMINST ahi_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
         LEFT JOIN act_sto_timerule_inst ti ON ti.PROC_INST_ID = ahi_123.PROCINST_ID
         LEFT JOIN AEA_ITEM_BASIC ai_123 ON ahi_123.ITEM_ID = ai_123.ITEM_ID AND ahi_123.ITEM_VER_ID = ai_123.ITEM_VER_ID
         LEFT JOIN act_hi_taskinst aht_123 ON aht_123.PROC_INST_ID_ = ahp_123.ID_
-        LEFT JOIN (
-        SELECT
-        ahist.APPLYINST_ID,MAX(TRIGGER_TIME) AS TRIGGER_TIME
-        FROM aea_log_apply_state_hist ahist
-        WHERE ahist.NEW_STATE = '6'
-        GROUP BY APPLYINST_ID
-        ) hist ON hist.APPLYINST_ID = ahap_123.APPLYINST_ID
         <where>
             ahap_123.IS_SERIES_APPROVE = '1'
             AND ahap_123.APPLYINST_STATE = '6'
@@ -1666,7 +1594,6 @@
             temp.applyinstId,
             temp.applyinstCode,
             temp.stageName,
-            -- temp.linkmanName,
             temp.applySource,
             temp.dueNum,
             temp.isSeriesApprove,
@@ -1700,7 +1627,6 @@
                 OR temp_123.gcbm LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 OR temp_123.itemName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 OR temp_123.stageName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
-                -- OR temp_123.linkmanName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 )
             </if>
         </where>
@@ -1718,7 +1644,6 @@
         temp1.LOCAL_CODE AS localCode,
         temp1.GCBM AS gcbm,
         ahap_123.APPLYINST_SOURCE AS applySource,
-        -- ali_123.LINKMAN_NAME AS linkmanName,
         CASE ahap_123.IS_SERIES_APPROVE when '1' THEN '单项' else '并联' end AS applyType,
         theme.THEME_NAME AS themeName,
         aps_123.STAGE_NAME AS stageName,
@@ -1745,7 +1670,6 @@
         </choose>
         <include refid="leftJoinApplyinstProj">
         </include>
-        -- LEFT JOIN aea_linkman_info ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
         LEFT JOIN aea_hi_par_stageinst ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
         LEFT JOIN aea_par_stage aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
         LEFT JOIN aea_par_theme_ver ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
@@ -1771,7 +1695,6 @@
         temp1.LOCAL_CODE AS localCode,
         temp1.GCBM AS gcbm,
         ahap_123.APPLYINST_SOURCE AS applySource,
-        -- ali_123.LINKMAN_NAME AS linkmanName,
         CASE ahap_123.IS_SERIES_APPROVE when '1' THEN '单项' else '并联' end AS applyType,
         NULL AS themeName,
         NULL AS stageName,
@@ -1798,7 +1721,6 @@
         </choose>
         <include refid="leftJoinApplyinstProj">
         </include>
-        -- LEFT JOIN aea_linkman_info ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
         LEFT JOIN aea_hi_seriesinst ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
         LEFT JOIN aea_hi_iteminst ahi_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
 
@@ -1819,7 +1741,6 @@
                 OR temp_123.gcbm LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 OR temp_123.itemName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 OR temp_123.stageName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
-                -- OR temp_123.linkmanName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 )
             </if>
         </where>
@@ -1837,7 +1758,6 @@
         temp1.LOCAL_CODE AS localCode,
         temp1.GCBM AS gcbm,
         ahap_123.APPLYINST_SOURCE AS applySource,
-        -- ali_123.LINKMAN_NAME AS linkmanName,
         CASE ahap_123.IS_SERIES_APPROVE when '1' THEN '单项' else '并联' end AS applyType,
         theme.THEME_NAME AS themeName,
         aps_123.STAGE_NAME AS stageName,
@@ -1848,7 +1768,6 @@
         aea_hi_applyinst ahap_123
         <include refid="leftJoinApplyinstProj">
         </include>
-        -- LEFT JOIN aea_linkman_info ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
         LEFT JOIN aea_hi_par_stageinst ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
         LEFT JOIN aea_par_stage aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
         LEFT JOIN aea_par_theme_ver ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
@@ -1857,16 +1776,9 @@
         LEFT JOIN act_ru_task t ON t.PROC_INST_ID_ = app.PROCINST_ID
         <where>
             ahap_123.IS_SERIES_APPROVE = '0'
+            AND ahap_123.IS_DELETED != '1'
             AND (ahap_123.APPLYINST_STATE = '0' or ahap_123.APPLYINST_STATE = '4')
             AND APPLYINST_SOURCE = 'net'
-
-            <!--<if test="userList != null and userList.size() > 0">-->
-            <!--AND t.ASSIGNEE_ IN-->
-            <!--<foreach collection="userList" item="item" open="(" separator="," close=")">-->
-            <!--#{item}-->
-            <!--</foreach>-->
-            <!--</if>-->
-
             AND t.ASSIGNEE_ = #{loginName}
 
             <if test="theme != null and theme != '' ">
@@ -1884,7 +1796,6 @@
         temp1.LOCAL_CODE AS localCode,
         temp1.GCBM AS gcbm,
         ahap_123.APPLYINST_SOURCE AS applySource,
-        -- ali_123.LINKMAN_NAME AS linkmanName,
         CASE ahap_123.IS_SERIES_APPROVE when '1' THEN '单项' else '并联' end AS applyType,
         theme.THEME_NAME AS themeName,
         aps_123.STAGE_NAME AS stageName,
@@ -1895,7 +1806,6 @@
         aea_hi_applyinst ahap_123
         <include refid="leftJoinApplyinstProj">
         </include>
-        -- LEFT JOIN aea_linkman_info ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
         LEFT JOIN aea_hi_par_stageinst ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
         LEFT JOIN aea_par_stage aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
         LEFT JOIN aea_par_theme_ver ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
@@ -1905,16 +1815,9 @@
         LEFT JOIN act_ru_task t ON t.PROC_INST_ID_ = apps.SUBFLOW_PROCINST_ID
         <where>
             ahap_123.IS_SERIES_APPROVE = '0'
+            AND ahap_123.IS_DELETED != '1'
             AND (ahap_123.APPLYINST_STATE = '0' or ahap_123.APPLYINST_STATE = '4')
             AND APPLYINST_SOURCE = 'net'
-            <!--<if test="userList != null and userList.size() > 0">-->
-            <!--AND t.ASSIGNEE_ IN-->
-            <!--<foreach collection="userList" item="item" open="(" separator="," close=")">-->
-            <!--#{item}-->
-            <!--</foreach>-->
-            <!--</if>-->
-
-
             AND t.ASSIGNEE_ = #{loginName}
 
             <if test="theme != null and theme != '' ">
@@ -1931,7 +1834,6 @@
         temp1.LOCAL_CODE AS localCode,
         temp1.GCBM AS gcbm,
         ahap_123.APPLYINST_SOURCE AS applySource,
-        -- ali_123.LINKMAN_NAME AS linkmanName,
         CASE ahap_123.IS_SERIES_APPROVE when '1' THEN '单项' else '并联' end AS applyType,
         NULL AS themeName,
         NULL AS stageName,
@@ -1942,22 +1844,15 @@
         aea_hi_applyinst ahap_123
         <include refid="leftJoinApplyinstProj">
         </include>
-        -- LEFT JOIN aea_linkman_info ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
         LEFT JOIN aea_hi_seriesinst ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
         LEFT JOIN aea_hi_iteminst ahi_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
         LEFT JOIN act_sto_appinst app ON app.MASTER_RECORD_ID = ahap_123.APPLYINST_ID
         LEFT JOIN act_ru_task t ON t.PROC_INST_ID_ = app.PROCINST_ID
         <where>
             ahap_123.IS_SERIES_APPROVE = '1'
+            AND ahap_123.IS_DELETED != '1'
             AND (ahap_123.APPLYINST_STATE = '0' or ahap_123.APPLYINST_STATE = '4')
             AND APPLYINST_SOURCE = 'net'
-            <!--<if test="userList != null and userList.size() > 0">-->
-            <!--AND t.ASSIGNEE_ IN-->
-            <!--<foreach collection="userList" item="item" open="(" separator="," close=")">-->
-            <!--#{item}-->
-            <!--</foreach>-->
-            <!--</if>-->
-
             AND t.ASSIGNEE_ = #{loginName}
 
             <include refid="baseConditionalQuery">
@@ -1971,7 +1866,6 @@
         temp1.LOCAL_CODE AS localCode,
         temp1.GCBM AS gcbm,
         ahap_123.APPLYINST_SOURCE AS applySource,
-        -- ali_123.LINKMAN_NAME AS linkmanName,
         CASE ahap_123.IS_SERIES_APPROVE when '1' THEN '单项' else '并联' end AS applyType,
         NULL AS THEME_NAME,
         NULL AS stageName,
@@ -1982,7 +1876,6 @@
         aea_hi_applyinst ahap_123
         <include refid="leftJoinApplyinstProj">
         </include>
-        -- LEFT JOIN aea_linkman_info ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
         LEFT JOIN aea_hi_seriesinst ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
         LEFT JOIN aea_hi_iteminst ahi_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
         LEFT JOIN act_sto_appinst app ON app.MASTER_RECORD_ID = ahap_123.APPLYINST_ID
@@ -1990,15 +1883,9 @@
         LEFT JOIN act_ru_task t ON t.PROC_INST_ID_ = apps.SUBFLOW_PROCINST_ID
         <where>
             ahap_123.IS_SERIES_APPROVE = '1'
+            AND ahap_123.IS_DELETED != '1'
             AND (ahap_123.APPLYINST_STATE = '0' or ahap_123.APPLYINST_STATE = '4')
             AND APPLYINST_SOURCE = 'net'
-            <!--<if test="userList != null and userList.size() > 0">-->
-            <!--AND t.ASSIGNEE_ IN-->
-            <!--<foreach collection="userList" item="item" open="(" separator="," close=")">-->
-            <!--#{item}-->
-            <!--</foreach>-->
-            <!--</if>-->
-
             AND t.ASSIGNEE_ = #{loginName}
 
             <include refid="baseConditionalQuery">
@@ -2014,7 +1901,6 @@
                 OR temp_123.gcbm LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 OR temp_123.itemName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 OR temp_123.stageName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
-                -- OR temp_123.linkmanName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 )
             </if>
         </where>
@@ -2032,7 +1918,6 @@
         temp1.LOCAL_CODE AS localCode,
         temp1.GCBM AS gcbm,
         ahap_123.APPLYINST_SOURCE AS applySource,
-        -- ali_123.LINKMAN_NAME AS linkmanName,
         CASE ahap_123.IS_SERIES_APPROVE when '1' THEN '单项' else '并联' end AS applyType,
         theme.THEME_NAME AS themeName,
         aps_123.STAGE_NAME AS stageName,
@@ -2043,7 +1928,6 @@
         aea_hi_applyinst ahap_123
         <include refid="leftJoinApplyinstProj">
         </include>
-        -- LEFT JOIN aea_linkman_info ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
         LEFT JOIN aea_hi_par_stageinst ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
         LEFT JOIN aea_par_stage aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
         LEFT JOIN aea_par_theme_ver ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
@@ -2077,7 +1961,6 @@
         temp1.LOCAL_CODE AS localCode,
         temp1.GCBM AS gcbm,
         ahap_123.APPLYINST_SOURCE AS applySource,
-        -- ali_123.LINKMAN_NAME AS linkmanName,
         CASE ahap_123.IS_SERIES_APPROVE when '1' THEN '单项' else '并联' end AS applyType,
         theme.THEME_NAME AS themeName,
         aps_123.STAGE_NAME AS stageName,
@@ -2088,7 +1971,6 @@
         aea_hi_applyinst ahap_123
         <include refid="leftJoinApplyinstProj">
         </include>
-        -- LEFT JOIN aea_linkman_info ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
         LEFT JOIN aea_hi_par_stageinst ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
         LEFT JOIN aea_par_stage aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
         LEFT JOIN aea_par_theme_ver ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
@@ -2120,7 +2002,6 @@
         temp1.LOCAL_CODE AS localCode,
         temp1.GCBM AS gcbm,
         ahap_123.APPLYINST_SOURCE AS applySource,
-        -- ali_123.LINKMAN_NAME AS linkmanName,
         CASE ahap_123.IS_SERIES_APPROVE when '1' THEN '单项' else '并联' end AS applyType,
         NULL AS themeName,
         NULL AS stageName,
@@ -2131,7 +2012,6 @@
         aea_hi_applyinst ahap_123
         <include refid="leftJoinApplyinstProj">
         </include>
-        -- LEFT JOIN aea_linkman_info ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
         LEFT JOIN aea_hi_seriesinst ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
         LEFT JOIN aea_hi_iteminst ahi_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
         LEFT JOIN act_sto_appinst app ON app.MASTER_RECORD_ID = ahap_123.APPLYINST_ID
@@ -2158,7 +2038,6 @@
         temp1.LOCAL_CODE AS localCode,
         temp1.GCBM AS gcbm,
         ahap_123.APPLYINST_SOURCE AS applySource,
-        -- ali_123.LINKMAN_NAME AS linkmanName,
         CASE ahap_123.IS_SERIES_APPROVE when '1' THEN '单项' else '并联' end AS applyType,
         NULL AS THEME_NAME,
         NULL AS stageName,
@@ -2169,7 +2048,6 @@
         aea_hi_applyinst ahap_123
         <include refid="leftJoinApplyinstProj">
         </include>
-        -- LEFT JOIN aea_linkman_info ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
         LEFT JOIN aea_hi_seriesinst ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
         LEFT JOIN aea_hi_iteminst ahi_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
         LEFT JOIN act_sto_appinst app ON app.MASTER_RECORD_ID = ahap_123.APPLYINST_ID
@@ -2198,7 +2076,6 @@
                 OR temp_123.gcbm LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 OR temp_123.itemName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 OR temp_123.stageName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
-                -- OR temp_123.linkmanName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 )
             </if>
         </where>
@@ -2218,7 +2095,6 @@
         temp1.LOCAL_CODE AS localCode,
         temp1.GCBM AS gcbm,
         ahap_123.APPLYINST_SOURCE AS applySource,
-        -- ali_123.LINKMAN_NAME AS linkmanName,
         case ahap_123.IS_SERIES_APPROVE when '1' THEN '单项' ELSE '并联' end applyType,
         theme.THEME_NAME AS themeName,
         aps_123.STAGE_NAME AS stageName,
@@ -2241,7 +2117,6 @@
                 AND asi_123.OPS_WINDOW_ID = #{windowId}
             </if>
         </if>
-        -- LEFT JOIN aea_linkman_info ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
         LEFT JOIN aea_hi_par_stageinst ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
         LEFT JOIN aea_par_stage aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
         LEFT JOIN aea_par_theme_ver ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
@@ -2263,7 +2138,6 @@
         temp1.LOCAL_CODE AS localCode,
         temp1.GCBM AS gcbm,
         ahap_123.APPLYINST_SOURCE AS applySource,
-        -- ali_123.LINKMAN_NAME AS linkmanName,
         case ahap_123.IS_SERIES_APPROVE when '1' THEN '单项' ELSE '并联' end applyType,
         NULL AS themeName,
         NULL AS stageName,
@@ -2285,7 +2159,6 @@
                 AND asi_123.OPS_WINDOW_ID = #{windowId}
             </if>
         </if>
-        -- LEFT JOIN aea_linkman_info ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
         LEFT JOIN aea_hi_seriesinst ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
         LEFT JOIN aea_hi_iteminst ahi_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
 
@@ -2306,7 +2179,6 @@
                 OR temp_123.gcbm LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 OR temp_123.itemName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 OR temp_123.stageName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
-                -- OR temp_123.linkmanName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 )
             </if>
         </where>
@@ -2323,7 +2195,6 @@
         temp1.PROJ_NAME AS projName,
         temp1.LOCAL_CODE AS localCode,
         temp1.GCBM AS gcbm,
-        -- ali_123.LINKMAN_NAME AS linkmanName,
         case ahap_123.IS_SERIES_APPROVE WHEN '1' THEN '单项' ELSE '并联' end AS applyType,
         ahap_123.APPLYINST_SOURCE AS applySource,
         theme.THEME_NAME AS themeName,
@@ -2355,7 +2226,6 @@
         </if>
         LEFT JOIN AEA_PAR_STAGE aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
         LEFT JOIN AEA_PAR_THEME_VER ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
-        -- LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
         LEFT JOIN AEA_PAR_THEME theme ON theme.THEME_ID = ver.THEME_ID
         INNER JOIN AEA_HI_ITEM_CORRECT ahic_123 ON ahic_123.APPLYINST_ID = ahap_123.APPLYINST_ID AND
         ahic_123.ITEMINST_ID = ahi_123.ITEMINST_ID AND ahic_123.CORRECT_STATE = '6'
@@ -2399,7 +2269,6 @@
         temp1.PROJ_NAME AS projName,
         temp1.LOCAL_CODE AS localCode,
         temp1.GCBM AS gcbm,
-        -- ali_123.LINKMAN_NAME AS linkmanName,
         case ahap_123.IS_SERIES_APPROVE WHEN '1' THEN '单项' ELSE '并联' end AS applyType,
         ahap_123.APPLYINST_SOURCE AS applySource,
         NULL AS themeName,
@@ -2429,7 +2298,6 @@
 
             )wi ON wi.APPLYINST_ID = ahap_123.APPLYINST_ID
         </if>
-        -- LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
         INNER JOIN AEA_HI_ITEM_CORRECT ahic_123 ON ahic_123.APPLYINST_ID = ahap_123.APPLYINST_ID AND
         ahic_123.ITEMINST_ID = ahi_123.ITEMINST_ID AND ahic_123.CORRECT_STATE = '6'
         LEFT JOIN opu_om_user oou ON ahic_123.CREATER = oou.USER_ID
@@ -2469,7 +2337,6 @@
                 OR temp_123.gcbm LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 OR temp_123.itemName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 OR temp_123.stageName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
-                -- OR temp_123.linkmanName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 )
             </if>
         </where>
@@ -2482,7 +2349,6 @@
         SELECT
         ahap_123.APPLYINST_ID AS applyinstId,
         ahap_123.APPLYINST_CODE AS applyinstCode,
-        -- ali_123.LINKMAN_NAME AS linkmanName,
         temp1.PROJ_NAME AS projName,
         temp1.LOCAL_CODE AS localCode,
         temp1.GCBM AS gcbm,
@@ -2515,7 +2381,6 @@
         LEFT JOIN AEA_HI_PAR_STAGEINST ahs_123 ON ahap_123.APPLYINST_ID = ahs_123.APPLYINST_ID
         LEFT JOIN AEA_PAR_STAGE aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
         LEFT JOIN AEA_PAR_THEME_VER ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
-        -- LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
         LEFT JOIN AEA_PAR_THEME theme ON theme.THEME_ID = ver.THEME_ID
         INNER JOIN AEA_HI_APPLYINST_CORRECT ahac_123 ON ahac_123.APPLYINST_ID = ahap_123.APPLYINST_ID AND
         ( ahac_123.CORRECT_STATE = '6' OR ahac_123.CORRECT_STATE IS NULL )
@@ -2551,7 +2416,6 @@
         SELECT
         ahap_123.APPLYINST_ID AS applyinstId,
         ahap_123.APPLYINST_CODE AS applyinstCode,
-        -- ali_123.LINKMAN_NAME AS linkmanName,
         temp1.PROJ_NAME AS projName,
         temp1.LOCAL_CODE AS localCode,
         temp1.GCBM AS gcbm,
@@ -2582,7 +2446,6 @@
             )wi ON wi.APPLYINST_ID = ahap_123.APPLYINST_ID
         </if>
         LEFT JOIN AEA_HI_SERIESINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
-        -- LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
         LEFT JOIN AEA_HI_ITEMINST ahi_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
         INNER JOIN AEA_HI_APPLYINST_CORRECT ahac_123 ON ahac_123.APPLYINST_ID = ahap_123.APPLYINST_ID AND
         ( ahac_123.CORRECT_STATE = '6' OR ahac_123.CORRECT_STATE IS NULL )
@@ -2618,7 +2481,6 @@
                 OR temp_123.gcbm LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 OR temp_123.itemName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 OR temp_123.stageName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
-                -- OR temp_123.linkmanName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 )
             </if>
         </where>
@@ -2636,7 +2498,6 @@
         temp1.LOCAL_CODE AS localCode,
         temp1.GCBM AS gcbm,
         ahap_123.APPLYINST_SOURCE AS applySource,
-        -- ali_123.LINKMAN_NAME AS linkmanName,
         case ahap_123.IS_SERIES_APPROVE WHEN '1' THEN '单项' ELSE '并联' end AS applyType,
         theme.THEME_NAME AS themeName,
         aps_123.STAGE_NAME AS stageName,
@@ -2662,7 +2523,6 @@
             )wi ON wi.APPLYINST_ID = ahap_123.APPLYINST_ID
         </if>
 
-        -- LEFT JOIN aea_linkman_info ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
         LEFT JOIN aea_hi_par_stageinst ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
         LEFT JOIN aea_par_stage aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
         LEFT JOIN aea_par_theme_ver ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
@@ -2703,7 +2563,6 @@
         temp1.LOCAL_CODE AS localCode,
         temp1.GCBM AS gcbm,
         ahap_123.APPLYINST_SOURCE AS applySource,
-        -- ali_123.LINKMAN_NAME AS linkmanName,
         case ahap_123.IS_SERIES_APPROVE WHEN '1' THEN '单项' ELSE '并联' end AS applyType,
         NULL AS themeName,
         NULL AS stageName,
@@ -2728,7 +2587,6 @@
 
             )wi ON wi.APPLYINST_ID = ahap_123.APPLYINST_ID
         </if>
-        -- LEFT JOIN aea_linkman_info ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
         LEFT JOIN aea_hi_seriesinst ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
         LEFT JOIN aea_hi_iteminst ahi_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
         INNER JOIN AEA_HI_APPLYINST_CORRECT ahac_123 ON ahac_123.APPLYINST_ID = ahap_123.APPLYINST_ID AND
@@ -2765,7 +2623,6 @@
                 OR temp_123.gcbm LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 OR temp_123.itemName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 OR temp_123.stageName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
-                -- OR temp_123.linkmanName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 )
             </if>
         </where>
@@ -2784,7 +2641,6 @@
         temp1.PROJ_NAME projName,
         temp1.LOCAL_CODE AS localCode,
         temp1.GCBM AS gcbm,
-        -- ali_123.LINKMAN_NAME linkmanName,
         '并联' AS applyType,
         theme.THEME_NAME themeName,
         theme.THEME_ID themeId,
@@ -2802,7 +2658,6 @@
         LEFT JOIN AEA_PAR_STAGE aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
         LEFT JOIN AEA_PAR_THEME_VER ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
         LEFT JOIN AEA_PAR_THEME theme ON theme.THEME_ID = ver.THEME_ID
-        -- LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
         <where>
             ahap_123.IS_SERIES_APPROVE = '0'
             AND ahap_123.APPLYINST_STATE IN ('6')
@@ -2821,7 +2676,6 @@
         temp1.PROJ_NAME projName,
         temp1.LOCAL_CODE AS localCode,
         temp1.GCBM AS gcbm,
-        -- ali_123.LINKMAN_NAME linkmanName,
         '单项' AS applyType,
         NULL AS themeName,
         NULL AS themeId,
@@ -2835,7 +2689,6 @@
         AEA_HI_APPLYINST ahap_123
         <include refid="leftJoinApplyinstProj">
         </include>
-        -- LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
         LEFT JOIN AEA_HI_SERIESINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
         LEFT JOIN AEA_HI_ITEMINST ahi_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
 
@@ -2859,7 +2712,6 @@
                 OR temp_123.localCode LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 OR temp_123.gcbm LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 OR temp_123.stageName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
-                -- OR temp_123.linkmanName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 )
             </if>
 
@@ -2914,7 +2766,6 @@
         temp1.PROJ_NAME projName,
         temp1.LOCAL_CODE AS localCode,
         temp1.GCBM AS gcbm,
-        -- ali_123.LINKMAN_NAME linkmanName,
         '并联' AS applyType,
         theme.THEME_NAME themeName,
         theme.THEME_ID themeId,
@@ -2931,7 +2782,6 @@
         LEFT JOIN AEA_PAR_STAGE aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
         LEFT JOIN AEA_PAR_THEME_VER ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
         LEFT JOIN AEA_PAR_THEME theme ON theme.THEME_ID = ver.THEME_ID
-        -- LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
         <where>
             ahap_123.IS_SERIES_APPROVE = '0'
             AND ahap_123.APPLYINST_STATE IN ('6')
@@ -2950,7 +2800,6 @@
         temp1.PROJ_NAME projName,
         temp1.LOCAL_CODE AS localCode,
         temp1.GCBM AS gcbm,
-        -- ali_123.LINKMAN_NAME linkmanName,
         '单项' AS applyType,
         NULL AS themeName,
         NULL AS themeId,
@@ -2963,7 +2812,6 @@
         AEA_HI_APPLYINST ahap_123
         <include refid="leftJoinApplyinstProj">
         </include>
-        -- LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
         LEFT JOIN AEA_HI_SERIESINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
         LEFT JOIN AEA_HI_ITEMINST ahi_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
 
@@ -2985,7 +2833,6 @@
                 OR temp_123.localCode LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 OR temp_123.gcbm LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 OR temp_123.stageName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
-                -- OR temp_123.linkmanName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 )
             </if>
 
@@ -3054,7 +2901,6 @@
         )wi ON wi.APPLYINST_ID = ahap_123.APPLYINST_ID
         LEFT JOIN AEA_PAR_STAGE aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
         LEFT JOIN AEA_PAR_THEME_VER ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
-        -- LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
         LEFT JOIN AEA_PAR_THEME theme ON theme.THEME_ID = ver.THEME_ID
         INNER JOIN AEA_HI_ITEM_CORRECT ahic_123 ON ahic_123.APPLYINST_ID = ahap_123.APPLYINST_ID AND
         ahic_123.ITEMINST_ID = ahi_123.ITEMINST_ID AND ahic_123.CORRECT_STATE = '6'
@@ -3083,7 +2929,6 @@
             </if>
         </where>
         )wi ON wi.APPLYINST_ID = ahap_123.APPLYINST_ID
-        -- LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
         INNER JOIN AEA_HI_ITEM_CORRECT ahic_123 ON ahic_123.APPLYINST_ID = ahap_123.APPLYINST_ID AND
         ahic_123.ITEMINST_ID = ahi_123.ITEMINST_ID AND ahic_123.CORRECT_STATE = '6'
         LEFT JOIN opu_om_user oou ON ahic_123.CREATER = oou.USER_ID
@@ -3111,7 +2956,6 @@
         temp1.PROJ_NAME projName,
         temp1.LOCAL_CODE AS localCode,
         temp1.GCBM AS gcbm,
-        -- ali_123.LINKMAN_NAME linkmanName,
         CASE
         ahap_123.IS_SERIES_APPROVE
         WHEN '1' THEN
@@ -3129,7 +2973,6 @@
         LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
         LEFT JOIN AEA_PAR_STAGE aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
         LEFT JOIN AEA_PAR_THEME_VER ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
-        -- LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
         LEFT JOIN AEA_PAR_THEME theme ON theme.THEME_ID = ver.THEME_ID
         <include refid="leftJoinApplyinstProj">
         </include>
@@ -3173,7 +3016,6 @@
         temp1.PROJ_NAME projName,
         temp1.LOCAL_CODE AS localCode,
         temp1.GCBM AS gcbm,
-        -- ali_123.LINKMAN_NAME linkmanName,
         CASE
         ahap_123.IS_SERIES_APPROVE
         WHEN '1' THEN
@@ -3189,7 +3031,6 @@
         AEA_HI_ITEMINST ahi_123
         LEFT JOIN AEA_HI_SERIESINST ahs_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
         LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
-        -- LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
         <include refid="leftJoinApplyinstProj">
         </include>
         LEFT JOIN ACT_HI_TASKINST aht_123 ON aht_123.PROC_INST_ID_ = ahi_123.PROCINST_ID
@@ -3228,7 +3069,6 @@
                 OR temp_123.gcbm LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 OR temp_123.itemName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 OR temp_123.stageName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
-                -- OR temp_123.linkmanName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 )
             </if>
         </where>
@@ -3250,7 +3090,6 @@
         temp1.PROJ_NAME projName,
         temp1.LOCAL_CODE AS localCode,
         temp1.GCBM AS gcbm,
-        -- ali_123.LINKMAN_NAME linkmanName,
         CASE
         ahap_123.IS_SERIES_APPROVE
         WHEN '1' THEN
@@ -3268,7 +3107,6 @@
         LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
         LEFT JOIN AEA_PAR_STAGE aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
         LEFT JOIN AEA_PAR_THEME_VER ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
-        -- LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
         LEFT JOIN AEA_PAR_THEME theme ON theme.THEME_ID = ver.THEME_ID
         <include refid="leftJoinApplyinstProj">
         </include>
@@ -3313,7 +3151,6 @@
         temp1.PROJ_NAME projName,
         temp1.LOCAL_CODE AS localCode,
         temp1.GCBM AS gcbm,
-        -- ali_123.LINKMAN_NAME linkmanName,
         CASE
         ahap_123.IS_SERIES_APPROVE
         WHEN '1' THEN
@@ -3329,7 +3166,6 @@
         AEA_HI_ITEMINST ahi_123
         LEFT JOIN AEA_HI_SERIESINST ahs_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
         LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
-        -- LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
         <include refid="leftJoinApplyinstProj">
         </include>
         LEFT JOIN ACT_HI_TASKINST aht_123 ON aht_123.PROC_INST_ID_ = ahi_123.PROCINST_ID
@@ -3369,7 +3205,6 @@
                 OR temp_123.gcbm LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 OR temp_123.itemName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 OR temp_123.stageName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
-                -- OR temp_123.linkmanName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 )
             </if>
         </where>
@@ -3390,7 +3225,6 @@
         temp1.PROJ_NAME projName,
         temp1.LOCAL_CODE AS localCode,
         temp1.GCBM AS gcbm,
-        -- ali_123.LINKMAN_NAME linkmanName,
         CASE
         ahap_123.IS_SERIES_APPROVE
         WHEN '1' THEN
@@ -3408,7 +3242,6 @@
         LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
         LEFT JOIN AEA_PAR_STAGE aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
         LEFT JOIN AEA_PAR_THEME_VER ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
-        -- LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
         LEFT JOIN AEA_PAR_THEME theme ON theme.THEME_ID = ver.THEME_ID
         <include refid="leftJoinApplyinstProj">
         </include>
@@ -3451,7 +3284,6 @@
         temp1.PROJ_NAME projName,
         temp1.LOCAL_CODE AS localCode,
         temp1.GCBM AS gcbm,
-        -- ali_123.LINKMAN_NAME linkmanName,
         CASE
         ahap_123.IS_SERIES_APPROVE
         WHEN '1' THEN
@@ -3467,7 +3299,6 @@
         AEA_HI_ITEMINST ahi_123
         LEFT JOIN AEA_HI_SERIESINST ahs_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
         LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
-        -- LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
         <include refid="leftJoinApplyinstProj">
         </include>
         LEFT JOIN ACT_HI_TASKINST aht_123 ON aht_123.PROC_INST_ID_ = ahi_123.PROCINST_ID
@@ -3506,7 +3337,6 @@
                 OR temp_123.gcbm LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 OR temp_123.itemName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 OR temp_123.stageName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
-                -- OR temp_123.linkmanName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 )
             </if>
         </where>
@@ -3526,7 +3356,6 @@
         temp1.PROJ_NAME projName,
         temp1.LOCAL_CODE AS localCode,
         temp1.GCBM AS gcbm,
-        -- ali_123.LINKMAN_NAME linkmanName,
         CASE
         ahap_123.IS_SERIES_APPROVE
         WHEN '1' THEN
@@ -3546,7 +3375,6 @@
         LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
         LEFT JOIN AEA_PAR_STAGE aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
         LEFT JOIN AEA_PAR_THEME_VER ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
-        -- LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
         LEFT JOIN AEA_PAR_THEME theme ON theme.THEME_ID = ver.THEME_ID
         <include refid="leftJoinApplyinstProj">
         </include>
@@ -3589,7 +3417,6 @@
         temp1.PROJ_NAME projName,
         temp1.LOCAL_CODE AS localCode,
         temp1.GCBM AS gcbm,
-        -- ali_123.LINKMAN_NAME linkmanName,
         CASE
         ahap_123.IS_SERIES_APPROVE
         WHEN '1' THEN
@@ -3606,7 +3433,6 @@
         AEA_HI_ITEMINST ahi_123
         LEFT JOIN AEA_HI_SERIESINST ahs_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
         LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
-        -- LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
         <include refid="leftJoinApplyinstProj">
         </include>
         LEFT JOIN ACT_HI_TASKINST aht_123 ON aht_123.PROC_INST_ID_ = ahi_123.PROCINST_ID
@@ -3647,7 +3473,6 @@
                 OR temp_123.gcbm LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 OR temp_123.itemName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 OR temp_123.stageName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
-                -- OR temp_123.linkmanName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 )
             </if>
         </where>
@@ -3671,7 +3496,6 @@
         aps_123.STAGE_NAME AS stageName,
         theme.THEME_NAME themeName,
         NULL AS itemName,
-        -- ali_123.LINKMAN_NAME AS linkmanName,
         CASE
         ahap_123.APPLYINST_SOURCE
         WHEN 'win' THEN
@@ -3689,7 +3513,6 @@
         LEFT JOIN ACT_STO_APPINST asa_123 ON asa_123.procinst_id = ahp_123.PROC_INST_ID_
         LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahap_123.APPLYINST_ID = asa_123.master_record_id
         <include refid="leftJoinApplyinstProj"></include>
-        -- LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
         LEFT JOIN AEA_HI_PAR_STAGEINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
         LEFT JOIN AEA_PAR_STAGE aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
         LEFT JOIN AEA_PAR_THEME_VER ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
@@ -3706,7 +3529,6 @@
         aps_123.STAGE_NAME AS stageName,
         theme.THEME_NAME themeName,
         NULL AS itemName,
-        -- ali_123.LINKMAN_NAME AS linkmanName,
         CASE
         ahap_123.APPLYINST_SOURCE
         WHEN 'win' THEN
@@ -3725,7 +3547,6 @@
         LEFT JOIN ACT_STO_APPINST asa_123 ON asas_123.appinst_id = asa_123.APPINST_ID
         LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahap_123.APPLYINST_ID = asa_123.master_record_id
         <include refid="leftJoinApplyinstProj"></include>
-        -- LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
         LEFT JOIN AEA_HI_PAR_STAGEINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
         LEFT JOIN AEA_PAR_STAGE aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
         LEFT JOIN AEA_PAR_THEME_VER ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
@@ -3742,7 +3563,6 @@
         NULL AS stageName,
         NULL AS themeName,
         ahi_123.ITEMINST_NAME AS itemName,
-        -- ali_123.LINKMAN_NAME AS linkmanName,
         CASE
         ahap_123.APPLYINST_SOURCE
         WHEN 'win' THEN
@@ -3760,7 +3580,6 @@
         LEFT JOIN ACT_STO_APPINST asa_123 ON asa_123.procinst_id = ahp_123.PROC_INST_ID_
         LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahap_123.APPLYINST_ID = asa_123.master_record_id
         <include refid="leftJoinApplyinstProj"></include>
-        -- LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
         LEFT JOIN AEA_HI_SERIESINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
         LEFT JOIN AEA_HI_ITEMINST ahi_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
         LEFT JOIN AEA_ITEM_BASIC ai_123 ON ahi_123.ITEM_ID = ai_123.ITEM_ID
@@ -3777,7 +3596,6 @@
         NULL AS stageName,
         NULL AS themeName,
         ahi_123.ITEMINST_NAME AS itemName,
-        -- ali_123.LINKMAN_NAME AS linkmanName,
         CASE
         ahap_123.APPLYINST_SOURCE
         WHEN 'win' THEN
@@ -3796,7 +3614,6 @@
         LEFT JOIN ACT_STO_APPINST asa_123 ON asas_123.appinst_id = asa_123.APPINST_ID
         LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahap_123.APPLYINST_ID = asa_123.master_record_id
         <include refid="leftJoinApplyinstProj"></include>
-        -- LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
         LEFT JOIN AEA_HI_SERIESINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
         LEFT JOIN AEA_HI_ITEMINST ahi_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
         LEFT JOIN AEA_ITEM_BASIC ai_123 ON ahi_123.ITEM_ID = ai_123.ITEM_ID
@@ -3817,7 +3634,6 @@
                 OR temp_123.localCode LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 OR temp_123.itemName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 OR temp_123.stageName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
-                -- OR temp_123.linkmanName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 )
             </if>
         </where>
@@ -3835,7 +3651,6 @@
         temp1.PROJ_NAME AS projName,
         temp1.LOCAL_CODE AS localCode,
         temp1.GCBM AS gcbm,
-        -- ali_123.LINKMAN_NAME AS linkmanName,
         case ahap_123.IS_SERIES_APPROVE WHEN '1' THEN '单项' ELSE '并联' end AS applyType,
         ahap_123.APPLYINST_SOURCE AS applySource,
         theme.THEME_NAME AS themeName,
@@ -3867,7 +3682,6 @@
         </if>
         LEFT JOIN AEA_PAR_STAGE aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
         LEFT JOIN AEA_PAR_THEME_VER ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
-        -- LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
         LEFT JOIN AEA_PAR_THEME theme ON theme.THEME_ID = ver.THEME_ID
         INNER JOIN AEA_HI_ITEM_CORRECT ahic_123 ON ahic_123.APPLYINST_ID = ahap_123.APPLYINST_ID AND
         ahic_123.ITEMINST_ID = ahi_123.ITEMINST_ID AND ahic_123.CORRECT_STATE = '7'
@@ -3910,7 +3724,6 @@
         temp1.PROJ_NAME AS projName,
         temp1.LOCAL_CODE AS localCode,
         temp1.GCBM AS gcbm,
-        -- ali_123.LINKMAN_NAME AS linkmanName,
         case ahap_123.IS_SERIES_APPROVE WHEN '1' THEN '单项' ELSE '并联' end AS applyType,
         ahap_123.APPLYINST_SOURCE AS applySource,
         NULL AS themeName,
@@ -3940,7 +3753,6 @@
 
             )wi ON wi.APPLYINST_ID = ahap_123.APPLYINST_ID
         </if>
-        -- LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
         INNER JOIN AEA_HI_ITEM_CORRECT ahic_123 ON ahic_123.APPLYINST_ID = ahap_123.APPLYINST_ID AND
         ahic_123.ITEMINST_ID = ahi_123.ITEMINST_ID AND ahic_123.CORRECT_STATE = '7'
         LEFT JOIN opu_om_user oou ON ahic_123.CREATER = oou.USER_ID
@@ -3984,7 +3796,6 @@
                 OR temp_123.gcbm LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 OR temp_123.itemName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 OR temp_123.stageName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
-                -- OR temp_123.linkmanName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 )
             </if>
         </where>
@@ -4002,7 +3813,6 @@
         temp1.PROJ_NAME AS projName,
         temp1.LOCAL_CODE AS localCode,
         temp1.GCBM AS gcbm,
-        -- ali_123.LINKMAN_NAME AS linkmanName,
         case ahap_123.IS_SERIES_APPROVE WHEN '1' THEN '单项' ELSE '并联' end AS applyType,
         ahap_123.APPLYINST_SOURCE AS applySource,
         theme.THEME_NAME AS themeName,
@@ -4039,7 +3849,6 @@
         </if>
         LEFT JOIN AEA_PAR_STAGE aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
         LEFT JOIN AEA_PAR_THEME_VER ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
-        -- LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
         LEFT JOIN AEA_PAR_THEME theme ON theme.THEME_ID = ver.THEME_ID
         INNER JOIN AEA_HI_ITEM_SPECIAL ahis_123 ON ahis_123.APPLYINST_ID = ahap_123.APPLYINST_ID AND
         ahis_123.ITEMINST_ID = ahi_123.ITEMINST_ID AND ahis_123.APPROVE_RESULT = '1' and ahis_123.SPECIAL_STATE='9'
@@ -4086,7 +3895,6 @@
         temp1.PROJ_NAME AS projName,
         temp1.LOCAL_CODE AS localCode,
         temp1.GCBM AS gcbm,
-        -- ali_123.LINKMAN_NAME AS linkmanName,
         case ahap_123.IS_SERIES_APPROVE WHEN '1' THEN '单项' ELSE '并联' end AS applyType,
         ahap_123.APPLYINST_SOURCE AS applySource,
         NULL AS themeName,
@@ -4121,7 +3929,6 @@
 
             )wi ON wi.APPLYINST_ID = ahap_123.APPLYINST_ID
         </if>
-        -- LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
         INNER JOIN AEA_HI_ITEM_SPECIAL ahis_123 ON ahis_123.APPLYINST_ID = ahap_123.APPLYINST_ID AND
         ahis_123.ITEMINST_ID = ahi_123.ITEMINST_ID AND ahis_123.APPROVE_RESULT = '1' and ahis_123.SPECIAL_STATE='9'
         LEFT JOIN opu_om_user oou ON ahis_123.OPS_USER_ID = oou.USER_ID
@@ -4163,7 +3970,6 @@
                 OR temp_123.gcbm LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 OR temp_123.itemName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 OR temp_123.stageName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
-                -- OR temp_123.linkmanName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 )
             </if>
         </where>
@@ -4182,7 +3988,6 @@
         temp1.PROJ_NAME projName,
         temp1.LOCAL_CODE AS localCode,
         temp1.GCBM AS gcbm,
-        -- ali_123.LINKMAN_NAME linkmanName,
         '并联' AS applyType,
         theme.THEME_NAME themeName,
         theme.THEME_ID themeId,
@@ -4200,7 +4005,6 @@
         LEFT JOIN AEA_PAR_STAGE aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
         LEFT JOIN AEA_PAR_THEME_VER ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
         LEFT JOIN AEA_PAR_THEME theme ON theme.THEME_ID = ver.THEME_ID
-        -- LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
         LEFT JOIN aea_hi_sms_info ahsi on ahsi.APPLYINST_ID = ahap_123.APPLYINST_ID
         <where>
             ahap_123.IS_SERIES_APPROVE = '0'
@@ -4220,7 +4024,6 @@
         temp1.PROJ_NAME projName,
         temp1.LOCAL_CODE AS localCode,
         temp1.GCBM AS gcbm,
-        -- ali_123.LINKMAN_NAME linkmanName,
         '单项' AS applyType,
         NULL AS themeName,
         NULL AS themeId,
@@ -4234,7 +4037,6 @@
         AEA_HI_APPLYINST ahap_123
         <include refid="leftJoinApplyinstProj">
         </include>
-        -- LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
         LEFT JOIN AEA_HI_SERIESINST ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
         LEFT JOIN AEA_HI_ITEMINST ahi_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
         LEFT JOIN aea_hi_sms_info ahsi on ahsi.APPLYINST_ID = ahap_123.APPLYINST_ID
@@ -4258,7 +4060,6 @@
                 OR temp_123.localCode LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 OR temp_123.gcbm LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 OR temp_123.stageName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
-                -- OR temp_123.linkmanName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 )
             </if>
 
@@ -4421,7 +4222,6 @@
         NULL AS itemName,
         '已接件' AS applyState,
         ahap_123.CREATE_TIME AS applyTime,
-        -- ali_123.LINKMAN_NAME AS linkmanName,
         ahap_123.APPLYINST_SOURCE applySource
         FROM
         aea_hi_applyinst ahap_123
@@ -4431,7 +4231,6 @@
         LEFT JOIN aea_par_stage aps_123 ON ahs_123.STAGE_ID = aps_123.STAGE_ID
         LEFT JOIN aea_par_theme_ver ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
         LEFT JOIN aea_par_theme theme ON theme.THEME_ID = ver.THEME_ID
-        -- LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
         <where>
             ahap_123.APPLYINST_SOURCE = 'win'
             AND ahap_123.IS_DELETED = '0'
@@ -4457,7 +4256,6 @@
         iteminst.ITEMINST_NAME AS itemName,
         '已接件' AS applyState,
         ahap_123.CREATE_TIME AS applyTime,
-        -- ali_123.LINKMAN_NAME AS linkmanName,
         ahap_123.APPLYINST_SOURCE applySource
 
         FROM
@@ -4466,7 +4264,6 @@
         </include>
         LEFT JOIN aea_hi_seriesinst ser ON ser.APPLYINST_ID = ahap_123.APPLYINST_ID
         LEFT JOIN aea_hi_iteminst iteminst ON iteminst.seriesinst_id = ser.seriesinst_id
-        -- LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
         <where>
             ahap_123.APPLYINST_SOURCE = 'win'
             AND ahap_123.IS_DELETED = '0'
@@ -4485,7 +4282,6 @@
                 OR temp_123.localCode LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 OR temp_123.itemName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 OR temp_123.stageName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
-                -- OR temp_123.linkmanName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 )
             </if>
         </where>
@@ -4504,7 +4300,6 @@
         temp1.PROJ_NAME AS projName,
         temp1.LOCAL_CODE AS localCode,
         temp1.GCBM AS gcbm,
-        -- ali_123.LINKMAN_NAME AS linkmanName,
         '并联' AS applyType,
         theme.THEME_NAME AS themeName,
         aps_123.STAGE_NAME AS stageName,
@@ -4532,7 +4327,6 @@
         </include>
         LEFT JOIN AEA_PAR_STAGE aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
         LEFT JOIN AEA_PAR_THEME_VER ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
-        -- LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
         LEFT JOIN AEA_PAR_THEME theme ON theme.THEME_ID = ver.THEME_ID
         LEFT JOIN act_sto_timerule_inst tinst ON tinst.PROC_INST_ID = ahi_123.PROCINST_ID AND tinst.ORG_ID =
         #{currentOrgId}
@@ -4581,7 +4375,6 @@
             temp1.PROJ_NAME AS projName,
             temp1.LOCAL_CODE AS localCode,
             temp1.GCBM AS gcbm,
-            -- ali_123.LINKMAN_NAME AS linkmanName,
             '单项' AS applyType,
             NULL AS themeName,
             NULL AS stageName,
@@ -4608,7 +4401,6 @@
             )wi ON wi.APPLYINST_ID = ahap_123.APPLYINST_ID
             <include refid="leftJoinApplyinstProj">
             </include>
-            -- LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
             LEFT JOIN act_sto_timerule_inst tinst ON tinst.PROC_INST_ID = ahi_123.PROCINST_ID AND tinst.ORG_ID =
             #{currentOrgId}
             WHERE ahi_123.IS_SERIES_APPROVE = '1'
@@ -4653,7 +4445,6 @@
                 OR temp_123.gcbm LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 OR temp_123.itemName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 OR temp_123.stageName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
-                -- OR temp_123.linkmanName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 )
             </if>
         </where>
@@ -4672,7 +4463,6 @@
         temp1.LOCAL_CODE AS localCode,
         temp1.GCBM AS gcbm,
         ahap_123.APPLYINST_SOURCE AS applySource,
-        -- ali_123.LINKMAN_NAME AS linkmanName,
         CASE ahap_123.IS_SERIES_APPROVE
         WHEN '1' THEN
         '单项'
@@ -4733,7 +4523,6 @@
         </where>
         GROUP BY ap.APPLYINST_ID
         ) temp1 ON temp1.APPLYINST_ID = ahap_123.APPLYINST_ID
-        -- LEFT JOIN aea_linkman_info ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
         INNER JOIN aea_hi_par_stageinst ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
         INNER JOIN aea_par_stage aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID AND aps_123.IS_NODE = '2'
         <if test="entrust">
@@ -4795,7 +4584,6 @@
                 OR temp_123.gcbm LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 OR temp_123.itemName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 OR temp_123.stageName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
-                -- OR temp_123.linkmanName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 )
             </if>
         </where>
@@ -4814,7 +4602,6 @@
         temp1.PROJ_NAME AS projName,
         temp1.LOCAL_CODE AS localCode,
         temp1.GCBM AS gcbm,
-        -- ali_123.LINKMAN_NAME AS linkmanName,
         '并联' AS applyType,
         theme.THEME_NAME AS themeName,
         aps_123.STAGE_NAME AS stageName,
@@ -4836,7 +4623,6 @@
         </include>
         INNER JOIN AEA_PAR_STAGE aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID AND aps_123.IS_NODE = '2'
         LEFT JOIN AEA_PAR_THEME_VER ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
-        -- LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
         LEFT JOIN AEA_PAR_THEME theme ON theme.THEME_ID = ver.THEME_ID
         LEFT JOIN act_sto_timerule_inst tinst ON tinst.PROC_INST_ID = ahi_123.PROCINST_ID AND tinst.ORG_ID =
         #{currentOrgId}
@@ -4924,7 +4710,6 @@
                 OR temp_123.gcbm LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 OR temp_123.itemName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 OR temp_123.stageName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
-                -- OR temp_123.linkmanName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 )
             </if>
         </where>
@@ -4945,7 +4730,6 @@
         temp1.PROJ_NAME projName,
         temp1.LOCAL_CODE AS localCode,
         temp1.GCBM AS gcbm,
-        -- ali_123.LINKMAN_NAME linkmanName,
         CASE
         ahap_123.IS_SERIES_APPROVE
         WHEN '1' THEN
@@ -4971,7 +4755,6 @@
         </if>
         LEFT JOIN AEA_PAR_STAGE aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
         LEFT JOIN AEA_PAR_THEME_VER ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
-        -- LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
         LEFT JOIN AEA_PAR_THEME theme ON theme.THEME_ID = ver.THEME_ID
         <include refid="leftJoinApplyinstProj">
         </include>
@@ -5014,7 +4797,6 @@
         temp1.PROJ_NAME projName,
         temp1.LOCAL_CODE AS localCode,
         temp1.GCBM AS gcbm,
-        -- ali_123.LINKMAN_NAME linkmanName,
         CASE
         ahap_123.IS_SERIES_APPROVE
         WHEN '1' THEN
@@ -5038,7 +4820,6 @@
             where alog.OPS_WINDOW_ID = #{windowId}
             )wi ON wi.APPLYINST_ID = ahap_123.APPLYINST_ID
         </if>
-        -- LEFT JOIN AEA_LINKMAN_INFO ali_123 ON ali_123.LINKMAN_INFO_ID = ahap_123.LINKMAN_INFO_ID
         <include refid="leftJoinApplyinstProj">
         </include>
         LEFT JOIN ACT_HI_TASKINST aht_123 ON aht_123.PROC_INST_ID_ = ahi_123.PROCINST_ID
@@ -5076,7 +4857,6 @@
                 OR temp_123.gcbm LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 OR temp_123.itemName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 OR temp_123.stageName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
-                -- OR temp_123.linkmanName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 )
             </if>
         </where>

@@ -2831,12 +2831,23 @@ var module1 = new Vue({
     // 上传电子件
     uploadFileCom: function(file){
       var _that = this;
+      var isAllowFile;
       var rowData = _that.selMatRowData;
       this.fileWinData = new FormData();
       file.forEach(function (u){
+        debugger;
+        // if (!_that.isAllowFile(u.file.name)){
+        //   _that.$message({
+        //     message: '不允许上传的文件类型',
+        //     type: 'error'
+        //   });
+        //   isAllowFile = false;
+        // }
         Vue.set(u.file,'fileName',u.file.name);
         _that.fileWinData.append('file', u.file);
+
       })
+      //if (!isAllowFile){ return ;}
       // Vue.set(file.file,'fileName',file.file.name);
       // this.fileWinData.append('file', file.file);
       this.fileWinData.append("matId", rowData.matId);
@@ -2892,6 +2903,19 @@ var module1 = new Vue({
         }
 
       });
+    },
+    //判断是否允许上传的文件
+    isAllowFile:function(fileName){
+      debugger;
+      var filetypes=[".jpg",".png",".rar",".txt",".zip",".doc",".ppt",".xls",".pdf",".docx",".xlsx"];
+      var fileend = fileName.substring(fileName.indexOf("."));
+      for(var i =0; i<filetypes.length;i++) {
+        if (filetypes[i] == fileend) {
+          return true;
+          break;
+        }
+      }
+      return false
     },
     // 一张表单获取并联申报实例化id
     getParallelApplyinstId: function(){
@@ -3371,7 +3395,7 @@ var module1 = new Vue({
     setImplementItem: function(item){
       var _that = this;
       Vue.set(item, 'disabled', false); // 行政区划是否可选
-      Vue.set(item, 'notRegionData', false); // 无匹配的行政区划及实施主体
+      Vue.set(item, 'notRegionData', false); // 无匹配的行政区划及承办单位
       Vue.set(item, 'preItemCheckPassed', true); // 前置事项检查是否可选
       if(item.isCatalog!=1){
         item.itemVerId = item.itemVerId
@@ -3407,7 +3431,7 @@ var module1 = new Vue({
         }
       }
     },
-    // 行政区划实施主体选中获得orgId
+    // 行政区划承办机构选中获得orgId
     getItemOrgId: function(data,index,item,flag){ // flag = 'core' 并行事项
       var selItemVer = this.$refs.parallelItemsTable.selection; // 所有选择的并联审批事项
       var selCoreItemVer = this.$refs.coreItemsTable?this.$refs.coreItemsTable.selection:''; // 所有选择的并行审批事项

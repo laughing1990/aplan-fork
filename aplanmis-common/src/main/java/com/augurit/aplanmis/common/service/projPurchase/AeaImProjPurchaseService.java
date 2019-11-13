@@ -2,6 +2,8 @@ package com.augurit.aplanmis.common.service.projPurchase;
 
 import com.augurit.aplanmis.common.domain.AeaImProjPurchase;
 import com.augurit.aplanmis.common.vo.AeaImServiceVo;
+import com.augurit.aplanmis.common.vo.AgentUnitInfoVo;
+import com.augurit.aplanmis.common.vo.QueryAgentUnitInfoVo;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -65,4 +67,13 @@ public interface AeaImProjPurchaseService {
      * @return
      */
     String uploadFiles(HttpServletRequest request) throws Exception;
+
+    /**
+     * 查询可服务的中介单位
+     *
+     * @param queryAgentUnitInfo
+     * @return
+     * @throws Exception
+     */
+    List<AgentUnitInfoVo> getAgentUnitInfoList(QueryAgentUnitInfoVo queryAgentUnitInfo) throws Exception;
 }

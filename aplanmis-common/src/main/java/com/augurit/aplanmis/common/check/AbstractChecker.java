@@ -16,15 +16,15 @@ public abstract class AbstractChecker<O> implements Checker<O> {
         log.info("前置检查: " + this.getClass());
     }
 
-    public void check(O o, CheckerContext checkerContext) throws CheckException {
+    public String check(O o, CheckerContext checkerContext) throws CheckException {
         Assert.notNull(o, "待检查的对象不能为空");
         Assert.notNull(checkerContext, "待检查上下文对象不能为空");
 
         beforeCheck(o);
 
-        doCheck(o, checkerContext);
+        return doCheck(o, checkerContext);
     }
 
-    protected abstract void doCheck(O o, CheckerContext checkerContext) throws CheckException;
+    protected abstract String doCheck(O o, CheckerContext checkerContext) throws CheckException;
 
 }

@@ -167,9 +167,9 @@
     <!--7 新增实体对象 -->
     <insert id="insertAeaUnitProjLinkman" parameterType="AeaUnitProjLinkman">
         insert into AEA_UNIT_PROJ_LINKMAN (
-        PROJ_LINKMAN_ID ,UNIT_PROJ_ID ,LINKMAN_INFO_ID ,LINKMAN_TYPE  ,CREATER ,CREATE_TIME,IS_DELETED,PROFESSION_CERT_TYPE,PROFESSION_SEAL_NUM,TITLE_GRADE,TITLE_CERT_NUM,REGISTER_NUM,SAFE_LICENCE_NUM,PRJ_SPTY,REGISTER_NUM
+        PROJ_LINKMAN_ID ,UNIT_PROJ_ID ,LINKMAN_INFO_ID ,LINKMAN_TYPE  ,CREATER ,CREATE_TIME,IS_DELETED,PROFESSION_CERT_TYPE,PROFESSION_SEAL_NUM,TITLE_GRADE,TITLE_CERT_NUM,REGISTER_NUM,SAFE_LICENCE_NUM,PRJ_SPTY
         ) values (
-        #{projLinkmanId},#{unitProjId},#{linkmanInfoId},#{linkmanType},#{creater},#{createTime},'0',#{professionCertType},#{professionSealNum},#{titleGrade},#{titleCertNum},#{registerNum},#{safeLicenceNum},#{prjSpty},#{registerNum}
+        #{projLinkmanId},#{unitProjId},#{linkmanInfoId},#{linkmanType},#{creater},#{createTime},'0',#{professionCertType},#{professionSealNum},#{titleGrade},#{titleCertNum},#{registerNum},#{safeLicenceNum},#{prjSpty}
         )
     </insert>
 

@@ -936,4 +936,34 @@
             ADD COLUMN `isGD` char(1) DEFAULT NULL COMMENT '是否省内企业，1表示省内企业，0表示进粤企业'
         </sql>
     </changeSet>
+
+    <changeSet id="201911121453" author="fenggy" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            alter table aea_unit_proj_linkman modify COLUMN PRJ_SPTY varchar(50) DEFAULT NULL COMMENT '审查人员专业 C_PRJ_SPTY 数据字典';
+
+        </sql>
+    </changeSet>
+
+
+    <changeSet id="201911121459" author="liaojj" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_unit_info`
+            CHANGE COLUMN `isGD` `IS_GD` char(1)
+        </sql>
+    </changeSet>
+
+    <changeSet id="20191112161110" author="xiong" failOnError="false">
+        <preConditions>
+            <not>
+                <columnExists tableName="aea_hi_item_matinst" columnName="mat_prop"/>
+            </not>
+        </preConditions>
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            alter table aea_hi_item_matinst add column `MAT_PROP` char(1) DEFAULT NULL COMMENT
+            '材料性质，m表示普通材料，c表示证照材料，f表示在线表单';
+            alter table aea_hi_item_matinst add column `CERTINST_ID` varchar(50) DEFAULT NULL COMMENT '证照实例ID';
+            alter table aea_hi_item_matinst add column `STO_FORMINST_ID` varchar(50) DEFAULT NULL COMMENT '表单实例ID';
+            update aea_hi_item_matinst set mat_prop='m';
+        </sql>
+    </changeSet>
 </databaseChangeLog>

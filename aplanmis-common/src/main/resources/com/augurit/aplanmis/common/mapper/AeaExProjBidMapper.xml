@@ -132,6 +132,72 @@ BID_ID  ,PROJ_INFO_ID  ,PROVINCE_PROJ_CODE  ,WIN_BID_NOTICE_CODE  ,BID_SECTION_N
     where BID_ID = #{bidId}
 </update>
 
+
+<select id="findUnitProjByProjInfoIdAndType" resultType="AeaUnitInfo">
+    SELECT
+        a.UNIT_INFO_ID  unitInfoId,
+        a.APPLICANT  applicant,
+        a.IDTYPE  idtype,
+        a.IDCARD  idcard,
+        a.indu_comm_reg_num induCommRegNum,
+        a.organizational_code organizationalCode,
+        a.UNIFIED_SOCIAL_CREDIT_CODE unifiedSocialCreditCode,
+        a.TAXPAYER_NUM taxpayerNum,
+        a.CREDIT_FLAG_NUM creditFlagNum,
+        a.CONTACT  contact,
+        a.MOBILE  mobile,
+        a.EMAIL  email,
+        a.APPLICANT_DISTRICT  applicantDistrict,
+        a.APPLICANT_DETAIL_SITE  applicantDetailSite,
+        a.IDREPRESENTATIVE  idrepresentative,
+        a.IDMOBILE  idmobile,
+        a.IDNO  idno,
+        a.IS_DELETED  isDeleted,
+        a.CREATER  creater,
+        a.CREATE_TIME  createTime,
+        a.MODIFIER  modifier,
+        a.MODIFY_TIME  modifyTime,
+        a.IS_PRIMARY_UNIT  isPrimaryUnit,
+        a.PARENT_ID  parentId,
+        a.UNIT_INFO_SEQ  unitInfoSeq,
+        a.LOGIN_NAME  loginName,
+        a.UNIT_TYPE  unitType,
+        a.LOGIN_PWD  loginPwd,
+        a.MANAGEMENT_SCOPE  managementScope,
+        a.REGISTERED_CAPITAL  registeredCapital,
+        a.REGISTER_AUTHORITY  registerAuthority,
+        a.UNIT_NATURE  unitNature,
+        a.POSTAL_CODE  postalCode,
+        a.IS_IM_UNIT  isImUnit,
+        a.IMG_URL  imgUrl,
+        a.IS_OWNER_UNIT  isOwnerUnit,
+        a.ROOT_ORG_ID rootOrgId,
+        b.UNIT_PROJ_ID unitProjId
+    FROM
+    AEA_UNIT_INFO a,
+    AEA_UNIT_PROJ b
+    WHERE
+    a.UNIT_INFO_ID = b.UNIT_INFO_ID
+    AND a.IS_DELETED = '0'
+    AND b.IS_DELETED = '0'
+    AND b.PROJ_INFO_ID = #{projInfoId}
+    AND a.UNIT_TYPE = #{unitType}
+    AND a.ROOT_ORG_ID=#{rootOrgId}
+</select>
+
+
+    <update id="batchDeleteUnitProjByType">
+        update AEA_UNIT_PROJ
+        set is_deleted='1'
+        where PROJ_INFO_ID = #{projId}
+
+        AND UNIT_TYPE IN
+        <foreach collection="unitTypes" item="unitType" open="(" separator="," close=")">
+            #{unitType}
+        </foreach>
+    </update>
+
+
 <!--9 返回所有字段的对象map,用于级联 -->
     <resultMap type="AeaExProjBid" id="AeaExProjBidMap">
         <id property="bidId" column="BID_ID"/>

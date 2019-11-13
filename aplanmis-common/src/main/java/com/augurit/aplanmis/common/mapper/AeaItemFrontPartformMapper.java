@@ -15,17 +15,23 @@ import java.util.List;
 @Repository
 public interface AeaItemFrontPartformMapper {
 
-     void insertAeaItemFrontPartform(AeaItemFrontPartform aeaItemFrontPartform) ;
-     void updateAeaItemFrontPartform(AeaItemFrontPartform aeaItemFrontPartform) ;
-     void deleteAeaItemFrontPartform(@Param("id") String id) ;
-     List <AeaItemFrontPartform> listAeaItemFrontPartform(AeaItemFrontPartform aeaItemFrontPartform) ;
-     AeaItemFrontPartform getAeaItemFrontPartformById(@Param("id") String id) ;
+    void insertAeaItemFrontPartform(AeaItemFrontPartform aeaItemFrontPartform);
 
-     List<AeaItemFrontPartformVo> listAeaItemFrontPartformVo(AeaItemFrontPartform aeaItemFrontPartform) ;
+    void updateAeaItemFrontPartform(AeaItemFrontPartform aeaItemFrontPartform);
 
-     Long getMaxSortNo(AeaItemFrontPartform aeaItemFrontPartform) ;
+    void deleteAeaItemFrontPartform(@Param("id") String id);
 
-     List<AeaItemFrontPartformVo> listSelectItemFrontPartform(AeaItemFrontPartform aeaItemFrontPartform) ;
+    List<AeaItemFrontPartform> listAeaItemFrontPartform(AeaItemFrontPartform aeaItemFrontPartform);
 
-     AeaItemFrontPartformVo getAeaItemFrontPartformVoById(@Param("id") String id) ;
+    AeaItemFrontPartform getAeaItemFrontPartformById(@Param("id") String id);
+
+    List<AeaItemFrontPartformVo> listAeaItemFrontPartformVo(AeaItemFrontPartform aeaItemFrontPartform);
+
+    Long getMaxSortNo(AeaItemFrontPartform aeaItemFrontPartform);
+
+    List<AeaItemFrontPartformVo> listSelectItemFrontPartform(AeaItemFrontPartform aeaItemFrontPartform);
+
+    List<AeaItemFrontPartformVo> getAeaItemFrontPartformVoByItemVerId(@Param("itemVerId") String itemVerId, @Param("rootOrgId") String rootOrgId);
+
+    AeaItemFrontPartformVo getAeaItemFrontPartformVoById(@Param("id") String id);
 }

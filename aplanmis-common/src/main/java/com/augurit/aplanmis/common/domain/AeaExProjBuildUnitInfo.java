@@ -65,6 +65,8 @@ public class AeaExProjBuildUnitInfo implements Serializable {
 
     private String linkmanType;//承担角色
 
+    private String isGd;//是否属于省内企业
+
     private String personSetting;//人员设置
 
     private List<PersonSetting> personSettings;

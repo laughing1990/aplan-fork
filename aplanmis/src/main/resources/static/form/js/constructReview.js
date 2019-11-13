@@ -42,7 +42,12 @@ var app = new Vue({
     return {
       dialogTitie: '',
       pageLoading: false,
-      formData: {},
+      formData: {
+        drawings: []
+      },
+      formDataTuShen: {},
+      formDataKanCha: {},
+      formDataSheJj: {},
       total: 0,
       tableData: [],
       activeNames: '1',
@@ -74,108 +79,114 @@ var app = new Vue({
         ]
       },
       rules: {
-        'aeaExProjDrawing.drawingQuabookCode': [
+        'drawingQuabookCode': [
           { required: true, message: '请输入施工图审查合格书编号' },
         ],
-        'aeaExProjDrawing.inverstmentMoeny': [
+        'inverstmentMoeny': [
           { required: true, message: '请输入投资额', trigger: ['blur', 'change'] },
         ],
-        'aeaExProjDrawing.approveDrawingArea': [
+        'approveDrawingArea': [
           { required: true, message: '请输入图审面积' },
         ],
-        'aeaExProjDrawing.approveStartTime': [
+        'approveStartTime': [
           { required: true, message: '请选择开始审查日期' },
         ],
 
-        'aeaExProjDrawing.approveEndTime': [
+        'approveEndTime': [
           { required: true, message: '请选择审查完成日期' },
         ],
-        'aeaExProjDrawing.isOncePass': [
+        'isOncePass': [
           { required: true, message: '请选择一次审查是否通过' },
         ],
-        'aeaExProjDrawing.oncePassAgainstCount': [
+        'oncePassAgainstCount': [
           { required: true, message: '请输入一次审查时违反强条数' },
         ],
-        'aeaExProjDrawing.oncePassAgainstItem': [
+        'oncePassAgainstItem': [
           { required: true, message: '请输入一次审查时违反的强条条目' },
         ],
-        'aeaExProjDrawing.approveOpinion': [
+        'approveOpinion': [
           { required: true, message: '请输入施工图审查意见' },
         ],
-        'aeaExProjDrawing.approveConfirmTime': [
+        'approveConfirmTime': [
           { required: true, message: '请选择审图确认时间' },
         ],
-        'aeaExProjDrawing.govOrgCode': [
+        'govOrgCode': [
           { required: true, message: '请输入审图确认的行政单位机构代码' },
         ],
-        'aeaExProjDrawing.govOrgName': [
+        'govOrgName': [
           { required: true, message: '请输入审图确认的行政单位名称' },
         ],
-        'aeaExProjDrawing.govOrgAreaCode': [
+        'govOrgAreaCode': [
           { required: true, message: '请输入审图确认的行政单位区域码' },
         ],
-        'drawings[0].organizationalCode': [
-          { required: true, message: '请输入组织机构代码' },
-        ],
-        'drawings[0].applicant': [
-          { required: true, message: '请输入单位名称' },
-        ],
-        'drawings[0].unitType': [
-          { required: true, message: '请选择项目主体类型' },
-        ],
-        'drawings[0].prjSpty': [
-          { required: true, message: '请选择审查专业' },
-        ],
-        'drawings[0].projectLeader': [
-          { required: true, message: '请选择图审机构项目负责人' },
-        ],
-        'drawings[0].projectLeaderCertNum': [
-          { required: true, message: '请输入图审机构项目负责人身份证号码' },
-        ],
-        'drawings[2].organizationalCode': [
-          { required: true, message: '请输入组织机构代码' },
-        ],
-        'drawings[2].applicant': [
-          { required: true, message: '请输入单位名称' },
-        ],
-        'drawings[2].unitType': [
-          { required: true, message: '请选择项目主体类型' },
-        ],
-        'drawings[2].projectLeader': [
-          { required: true, message: '请选择图审机构项目负责人' },
-        ],
-        'drawings[2].projectLeaderCertNum': [
-          { required: true, message: '请输入图审机构项目负责人身份证号码' },
-        ],
-        'drawings[2].prjSpty': [
-          { required: true, message: '请选择审查专业' },
-        ],
-        'drawings[1].prjSpty': [
-          { required: true, message: '请选择审查专业' },
-        ],
-        'drawings[1].organizationalCode': [
-          { required: true, message: '请输入组织机构代码' },
-        ],
-        'drawings[1].applicant': [
-          { required: true, message: '请输入单位名称' },
-        ],
-        'drawings[1].unitType': [
-          { required: true, message: '请选择项目主体类型' },
-        ],
-        'drawings[1].projectLeader': [
-          { required: true, message: '请选择图审机构项目负责人' },
-        ],
-        'drawings[1].projectLeaderCertNum': [
-          { required: true, message: '请输入图审机构项目负责人身份证号码' },
-        ],
 
-      }
+      },
+      rules2: {
+        'organizationalCode': [
+          { required: true, message: '请输入组织机构代码' },
+        ],
+        'applicant': [
+          { required: true, message: '请输入单位名称' },
+        ],
+        'unitType': [
+          { required: true, message: '请选择项目主体类型' },
+        ],
+        'prjSpty': [
+          { required: true, message: '请选择审查专业' },
+        ],
+        'projectLeader': [
+          { required: true, message: '请选择图审机构项目负责人' },
+        ],
+        'projectLeaderCertNum': [
+          { required: true, message: '请输入图审机构项目负责人身份证号码' },
+        ],
+      },
+      rules3: {
+        'organizationalCode': [
+          { required: true, message: '请输入组织机构代码' },
+        ],
+        'applicant': [
+          { required: true, message: '请输入单位名称' },
+        ],
+        'unitType': [
+          { required: true, message: '请选择项目主体类型' },
+        ],
+        'prjSpty': [
+          { required: true, message: '请选择审查专业' },
+        ],
+        'projectLeader': [
+          { required: true, message: '请选择勘查单位项目负责人' },
+        ],
+        'projectLeaderCertNum': [
+          { required: true, message: '请输入勘查单位项目负责人身份证号码' },
+        ],
+      },
+      rules4: {
+        'organizationalCode': [
+          { required: true, message: '请输入组织机构代码' },
+        ],
+        'applicant': [
+          { required: true, message: '请输入单位名称' },
+        ],
+        'unitType': [
+          { required: true, message: '请选择项目主体类型' },
+        ],
+        'prjSpty': [
+          { required: true, message: '请选择审查专业' },
+        ],
+        'projectLeader': [
+          { required: true, message: '请选择设计单位项目负责人' },
+        ],
+        'projectLeaderCertNum': [
+          { required: true, message: '请输入设计单位项目负责人身份证号码' },
+        ],
+      },
 
     }
   },
   created: function() {
-    // this.projInfoId = '0';
-    // this.projInfoId = '002dbf94-2e5c-4e4a-9190-d793aa7806a4';
+    // this.projInfoId = '031fb1ad-71b9-41af-8fe0-7df5b449a16d';
+    // this.projInfoId = '050de049-eb7e-459a-9340-9d4fb8120224';
     this.projInfoId = this.getUrlParam('projInfoId');
   },
   mounted: function() {
@@ -191,65 +202,98 @@ var app = new Vue({
       var svalue = location.search.match(new RegExp("[\?\&]" + val + "=([^\&]*)(\&?)", "i"));
       return svalue ? svalue[1] : svalue;
     },
+    init: function(formDataTuShen, formDataSheJj) {
+      var dataType = {
+        linkmanInfoId: '',
+        linkmanType: '502001',
+        linkmanName: '',
+        linkmanCertNo: '',
+        prjSpty: '',
+        unitProjId: ''
+      }
+      var dataType2 = {
+        linkmanInfoId: '',
+        linkmanType: '502002',
+        linkmanName: '',
+        linkmanCertNo: '',
+        prjSpty: '',
+        unitProjId: ''
+      }
+      var dataType3 = {
+        linkmanInfoId: '',
+        linkmanType: '102003',
+        linkmanName: '',
+        linkmanCertNo: '',
+        prjSpty: '',
+        unitProjId: ''
+      }
+      this.formDataTuShen.linkmen.push(dataType);
+      this.formDataTuShen.linkmen.push(dataType2);
+      this.formDataSheJj.linkmen.push(dataType3);
+
+    },
     // 请求table数据
     showData: function() {
       var vm = this;
       // vm.loading = true;
       request('', {
-        type: 'post',
-        url: ctx + 'rest/form/drawing/index.do',
-        data: {
-          projInfoId: this.projInfoId
-        },
-      }, function(res) {
-        if (!res.success) {
-          vm.$message({
-            message: res.message,
-            type: 'error'
-          });
-          return;
-        }
-
-        vm.formData = res.content;
-        if (vm.formData.drawings == 0) {
-          vm.formData.drawings[0] = [];
-          vm.formData.drawings[1] = [];
-          vm.formData.drawings[2] = [];
-          return
-        }
-        for (var i = 0; i < vm.formData.drawings.length; i++) {
-          if (vm.formData.drawings[i].linkmen.length == 0) {
-            if (i == 2) {
-              var dataType = {
-                linkmanInfoId: '',
-                linkmanType: '502001',
-                linkmanName: '',
-                linkmanCertNo: '',
-                prjSpty: '',
-                unitProjId: vm.formData.drawings[i].unitProjId
-              }
-              var dataType2 = {
-                linkmanInfoId: '',
-                linkmanType: '502002',
-                linkmanName: '',
-                linkmanCertNo: '',
-                prjSpty: '',
-                unitProjId: vm.formData.drawings[i].unitProjId
-              }
-              vm.formData.drawings[i].linkmen.push(dataType);
-              vm.formData.drawings[i].linkmen.push(dataType2);
-            } else {
-              vm.addLinkmanTypes(vm.formData.drawings[i].linkmen, vm.formData.drawings[i]);
-            }
+          type: 'post',
+          url: ctx + 'rest/form/drawing/index.do',
+          data: {
+            projInfoId: this.projInfoId
+          },
+        }, function(res) {
+          if (vm.formData.drawings.length == 0) {
+            vm.formDataTuShen = res.content.drawings[2] || {};
+            vm.formDataKanCha = res.content.drawings[0] || {};
+            vm.formDataSheJj = res.content.drawings[1] || {};
+            vm.formDataTuShen.linkmen = [];
+            vm.formDataKanCha.linkmen = [];
+            vm.formDataSheJj.linkmen = [];
+            vm.formDataTuShen.linkmanType = '104002';
+            vm.formDataKanCha.linkmanType = '104002';
+            vm.formDataSheJj.linkmanType = '104002';
           }
-        }
-        vm.$nextTick(function() {
-          vm.$refs['form'].clearValidate();
+          vm.init();
+          if (!res.success) {
+            vm.$message({
+              message: res.message,
+              type: 'error'
+            });
 
-        });
-      }, function(err) {
-        vm.$message.error('服务器错了哦!');
-      })
+            return;
+          }
+
+          // vm.formData = res.content.aeaExProjDrawing;
+
+          for (var key in res.content.aeaExProjDrawing) {
+            vm.$set(vm.formData, key, res.content.aeaExProjDrawing[key])
+          }
+
+          // vm.init();
+
+          // if (vm.formData.drawings == 0) {
+          //   vm.formData.drawings[0] = {};
+          //   vm.formData.drawings[1] = {};
+          //   vm.formData.drawings[2] = {};
+          //   vm.formData.drawings[0].linkmen = [];
+          //   vm.formData.drawings[1].linkmen = [];
+          //   vm.formData.drawings[2].linkmen = [];
+          //   vm.formData.drawings[0].linkmanType = '104002';
+          //   vm.formData.drawings[1].linkmanType = '104002';
+          //   vm.formData.drawings[2].linkmanType = '104002';
+          //   vm.init();
+          //   return;
+          // }
+
+          vm.$nextTick(function() {
+            vm.$refs['form'].clearValidate();
+
+          });
+        },
+        function(err) {
+          vm.$message.error('服务器错了哦!');
+        })
     },
     // 请求各个类型数据
     getAllType: function() {
@@ -268,6 +312,7 @@ var app = new Vue({
         vm.linkmanType = res.content.PROJ_UNIT_LINKMAN_TYPE; //请求项目单位联系人类型
         vm.linkmanType2 = res.content.PROJ_UNIT_LINKMAN_TYPE; //请求项目单位联系人类型
         vm.CertifiType = res.content.REGIST_CERTIFI_TYPE; //请求执业注册证类型
+
 
         for (var i = 0; i < vm.linkmanType2.length; i++) {
           if (vm.linkmanType2[i].itemCode == '101001' || vm.linkmanType2[i].itemCode == '102001' || vm.linkmanType2[i].itemCode == '502001') {
@@ -352,11 +397,7 @@ var app = new Vue({
                 message: '保存成功',
                 type: 'success'
               });
-              // _that.addEditManPerform.linkmanName = _that.addEditManform.linkmanName;
-              // _that.addEditManPerform.linkmanId = result.content;
-              // _that.addEditManPerform.linkmanMail = _that.addEditManform.linkmanMail;
-              // _that.addEditManPerform.linkmanCertNo = _that.addEditManform.linkmanCertNo;
-              // _that.addEditManPerform.linkmanMobilePhone = _that.addEditManform.linkmanMobilePhone;
+
               _that.addEditManModalShow = false;
               _that.loading = false;
             }
@@ -420,15 +461,23 @@ var app = new Vue({
     },
     // 人员设置选择人员
     selTypeLinkman: function(typeData, manData) {
-      typeData.linkmanName = manData.addressName;
-      typeData.linkmanInfoId = manData.addressId;
-      typeData.projectLeaderCertNum = manData.addressIdCard;
+      this.$set(typeData, 'linkmanCertNo', manData.addressName);
+      this.$set(typeData, 'linkmanInfoId', manData.addressId);
+      this.$set(typeData, 'projectLeaderCertNum', manData.addressIdCard);
+
+      // typeData.linkmanName = manData.addressName;
+      // typeData.linkmanInfoId = manData.addressId;
+      // typeData.projectLeaderCertNum = manData.addressIdCard;
     },
     // 人员设置选择人员
     selTypeLinkman2: function(typeData, manData) {
-      typeData.linkmanName = manData.addressName;
-      typeData.linkmanInfoId = manData.addressId;
-      typeData.linkmanCertNo = manData.addressIdCard;
+      this.$set(typeData, 'linkmanName', manData.addressName);
+      this.$set(typeData, 'linkmanInfoId', manData.addressId);
+      this.$set(typeData, 'linkmanCertNo', manData.addressIdCard);
+      this.forceUpdate();
+      // typeData.linkmanName = manData.addressName;
+      // typeData.linkmanInfoId = manData.addressId;
+      // typeData.linkmanCertNo = manData.addressIdCard;
     },
     // 新增人员设置
     addLinkmanTypes: function(row, data) {
@@ -454,11 +503,13 @@ var app = new Vue({
     },
     // 切换单位
     selUnitInfo: function(val, data) { // val选中单位信息 flag 单位类型（jingban,jianshe） index单位索引
-      console.log(val, flag);
       this.$set(data, 'organizationalCode', val.organizationalCode);
       this.$set(data, 'unifiedSocialCreditCode', val.unifiedSocialCreditCode);
       this.$set(data, 'applicant', val.applicant);
       this.$set(data, 'unitInfoId', val.unitInfoId);
+      for (var i = 0; i < data.linkmen.length; i++) {
+        data.linkmen[i].unitInfoId = val.unitInfoId;
+      }
     },
     //单位名称模糊查询
     querySearchJiansheName: function(queryString, cb) {
@@ -509,59 +560,54 @@ var app = new Vue({
       }
       return format;
     },
-    save: function(formData) {
+    save: function(formData, formDataTuShen, formDataKanCha, formDataSheJj) {
       var _this = this;
-      this.$refs['form'].validate(function(valid) {
-        if (!valid) {
-          _that.$message({
-            message: '请输入完整的联系人信息！',
-            type: 'error'
-          });
-          return false;
-        };
-        // var aeaExProjDrawing = {
-        //   projInfoId: 'a',
-        //   drawingId: _this.formData.aeaExProjDrawing.aaa || '',
-        //   provinceProjCode: _this.formData.aeaExProjDrawing.aaa || '',
-        //   drawingQuabookCode: _this.formData.aeaExProjDrawing.aaa || '',
-        //   inverstmentMoeny: _this.formData.aeaExProjDrawing.aaa || '',
-        //   approveDrawingArea: _this.formData.aeaExProjDrawing.aaa || '',
-        //   approveStartTime: _this.formData.aeaExProjDrawing.aaa || '',
-        //   approveEndTime: _this.formData.aeaExProjDrawing.aaa || '',
-        //   isOncePass: _this.formData.aeaExProjDrawing.aaa || '',
-        //   oncePassAgainstCount: _this.formData.aeaExProjDrawing.aaa || '',
-        //   oncePassAgainstItem: _this.formData.aeaExProjDrawing.aaa || '',
-        //   approveOpinion: _this.formData.aeaExProjDrawing.aaa || '',
-        //   approveConfirmTime: _this.formData.aeaExProjDrawing.aaa || '',
-        //   govOrgCode: _this.formData.aeaExProjDrawing.aaa || '',
-        //   govOrgName: _this.formData.aeaExProjDrawing.aaa || '',
-        //   govOrgAreaCode: _this.formData.aeaExProjDrawing.aaa || ''
-        // }
-        // var aeaProjDrawing = []
-        _this.formData.aeaExProjDrawing.approveStartTime = _this.formatTime(_this.formData.aeaExProjDrawing.approveStartTime, 'Y-M-D') || '';
-        _this.formData.aeaExProjDrawing.approveEndTime = _this.formatTime(_this.formData.aeaExProjDrawing.approveEndTime, 'Y-M-D') || '';
-        _this.formData.aeaExProjDrawing.approveConfirmTime = _this.formatTime(_this.formData.aeaExProjDrawing.approveConfirmTime, 'Y-M-D') || '';
-        _this.formData.aeaExProjDrawing.aeaProjDrawing = _this.formData.drawings;
-        request('', {
-          type: 'post',
-          url: ctx + 'rest/form/drawing/saveAeaExProjDrawing.do',
-          ContentType: 'application/json',
-          data: JSON.stringify(_this.formData.aeaExProjDrawing)
-        }, function(res) {
-          if (res.success) {
-            _this.$message({
-              message: '保存成功',
-              type: 'success'
-            });
-            _this.showData();
-          } else {
-            _this.$message({
-              message: '保存失败',
-              type: 'error'
-            });
-          }
-        }, function(err) {
-          _this.$message.error('服务器错了哦!');
+      _this.$refs['form'].validate(function(valid) {
+        _this.$refs['form2'].validate(function(valid) {
+          _this.$refs['form3'].validate(function(valid) {
+            _this.$refs['form4'].validate(function(valid) {
+              if (!valid) {
+                _this.$message({
+                  message: '请输入完整的联系人信息！',
+                  type: 'error'
+                });
+                return false;
+              };
+              var drawings = [];
+              drawings.push(formDataTuShen);
+              drawings.push(formDataKanCha);
+              drawings.push(formDataSheJj);
+              var aeaExProjDrawing = {};
+              _this.formData.approveStartTime = _this.formatTime(_this.formData.approveStartTime, 'Y-M-D') || '';
+              _this.formData.approveEndTime = _this.formatTime(_this.formData.approveEndTime, 'Y-M-D') || '';
+              _this.formData.approveConfirmTime = _this.formatTime(_this.formData.approveConfirmTime, 'Y-M-D') || '';
+              _this.formData.projInfoId = _this.projInfoId;
+
+              aeaExProjDrawing = _this.formData;
+              aeaExProjDrawing.aeaProjDrawing = drawings;
+              request('', {
+                type: 'post',
+                url: ctx + 'rest/form/drawing/saveAeaExProjDrawing.do',
+                ContentType: 'application/json',
+                data: JSON.stringify(aeaExProjDrawing)
+              }, function(res) {
+                if (res.success) {
+                  _this.$message({
+                    message: '保存成功',
+                    type: 'success'
+                  });
+                  _this.showData();
+                } else {
+                  _this.$message({
+                    message: '保存失败',
+                    type: 'error'
+                  });
+                }
+              }, function(err) {
+                _this.$message.error('服务器错了哦!');
+              })
+            })
+          })
         })
       })
 

@@ -43,7 +43,7 @@ public class RestExSJUnitFormService {
 
     public void saveOrUpdateSJUnitInfo(AeaExProjBuild aeaExProjBuild) throws Exception {
         if (aeaExProjBuild != null){
-            if(aeaExProjBuild.getBuildId()==null){
+            if(aeaExProjBuild.getBuildId()==null || aeaExProjBuild.getBuildId() ==""){
                 aeaExProjBuild.setBuildId(UuidUtil.generateUuid());
                 aeaExProjBuild.setCreateTime(new Date());
                 aeaExProjBuild.setRootOrgId(SecurityContext.getCurrentOrgId());
@@ -63,6 +63,7 @@ public class RestExSJUnitFormService {
             aeaUnitInfo.setIdmobile(exProjBuildUnitInfo.getIdmobile());
             aeaUnitInfo.setOrganizationalCode(exProjBuildUnitInfo.getOrganizationalCode());
             aeaUnitInfo.setUnifiedSocialCreditCode(exProjBuildUnitInfo.getUnifiedSocialCreditCode());
+            aeaUnitInfo.setIsGd(exProjBuildUnitInfo.getIsGd());
             if(aeaUnitInfo.getUnitInfoId() !=null){
                 aeaUnitInfoMapper.updateAeaUnitInfo(aeaUnitInfo);
             }else {
@@ -207,12 +208,14 @@ public class RestExSJUnitFormService {
                 AeaUnitProjLinkman managerInfo = new AeaUnitProjLinkman();//负责人相关信息
                 managerInfo.setUnitProjId(next.getUnitProjId());
                 managerInfo.setLinkmanInfoId(next.getLinkmanInfoId());
-                if(next.getUnitType().equals(this.gongchengzongchengbao) || next.getUnitType().equals(this.shigongzongbao)){
-                    managerInfo.setLinkmanType(this.gongchengzongchengbaoLinkType);
-                }else if(next.getUnitType().equals(this.shigongfenbao) || next.getUnitType().equals(this.laowufenbao)){
-                    managerInfo.setLinkmanType(this.laowufenbaoLinkType);
-                }else if(next.getUnitType().equals(this.gongchengjianli)){
-                    managerInfo.setLinkmanType(this.gongchengjianliLinkType);
+                if(next.getUnitType()!=null){
+                    if(next.getUnitType().equals(this.gongchengzongchengbao) || next.getUnitType().equals(this.shigongzongbao)){
+                        managerInfo.setLinkmanType(this.gongchengzongchengbaoLinkType);
+                    }else if(next.getUnitType().equals(this.shigongfenbao) || next.getUnitType().equals(this.laowufenbao)){
+                        managerInfo.setLinkmanType(this.laowufenbaoLinkType);
+                    }else if(next.getUnitType().equals(this.gongchengjianli)){
+                        managerInfo.setLinkmanType(this.gongchengjianliLinkType);
+                    }
                 }
                 List<AeaUnitProjLinkman> managerInfos = aeaUnitProjLinkmanMapper.listAeaUnitProjLinkman(managerInfo);
                 AeaImQualLevel aeaImQualLevelById = aeaImQualLevelMapper.getAeaImQualLevelById(next.getQualLevelId());
@@ -227,6 +230,7 @@ public class RestExSJUnitFormService {
                     aeaExProjBuildUnitInfo.setIdrepresentative(aeaUnitInfoById.getIdrepresentative());
                     aeaExProjBuildUnitInfo.setIdmobile(aeaUnitInfoById.getIdmobile());
                     aeaExProjBuildUnitInfo.setLinkmanInfoId(aeaUnitInfoById.getLinkmanInfoId());
+                    aeaExProjBuildUnitInfo.setIsGd(aeaUnitInfoById.getIsGd());
                 }
                 if (aeaLinkmanInfoById != null) {
                     aeaExProjBuildUnitInfo.setLinkmanInfoId(aeaLinkmanInfoById.getLinkmanInfoId());
@@ -286,18 +290,25 @@ public class RestExSJUnitFormService {
                         listperson.add(person);
                     }
                 }
-                aeaExProjBuildUnitInfo.setPersonSetting(listperson);
+                if(listperson != null &&listperson.size()>0){
+                    aeaExProjBuildUnitInfo.setPersonSetting(listperson);
+                }else {
+                    listperson.add(new PersonSetting());
+                    aeaExProjBuildUnitInfo.setPersonSetting(listperson);
+                }
                 String unitType = aeaExProjBuildUnitInfo.getUnitType();
-                if (unitType.equals(this.gongchengzongchengbao)) {
-                    map.put("gongchengzongFrom", aeaExProjBuildUnitInfo);
-                } else if (unitType.equals(this.shigongzongbao)) {
-                    map.put("applyShigongzongFrom", aeaExProjBuildUnitInfo);
-                } else if (unitType.equals(this.shigongfenbao)) {
-                    map.put("applyShigongzhuanyefenbaoFrom", aeaExProjBuildUnitInfo);
-                } else if (unitType.equals(this.laowufenbao)) {
-                    map.put("applyShigonglaowufenbaoFrom", aeaExProjBuildUnitInfo);
-                } else if (unitType.equals(this.gongchengjianli)) {
-                    map.put("applyJianliFrom", aeaExProjBuildUnitInfo);
+                if(unitType !=null){
+                    if (unitType.equals(this.gongchengzongchengbao)) {
+                        map.put("gongchengzongFrom", aeaExProjBuildUnitInfo);
+                    } else if (unitType.equals(this.shigongzongbao)) {
+                        map.put("applyShigongzongFrom", aeaExProjBuildUnitInfo);
+                    } else if (unitType.equals(this.shigongfenbao)) {
+                        map.put("applyShigongzhuanyefenbaoFrom", aeaExProjBuildUnitInfo);
+                    } else if (unitType.equals(this.laowufenbao)) {
+                        map.put("applyShigonglaowufenbaoFrom", aeaExProjBuildUnitInfo);
+                    } else if (unitType.equals(this.gongchengjianli)) {
+                        map.put("applyJianliFrom", aeaExProjBuildUnitInfo);
+                    }
                 }
             }
         }

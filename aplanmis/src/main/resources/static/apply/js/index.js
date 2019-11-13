@@ -75,7 +75,6 @@ var vm = new Vue({
       }
     };
     return {
-      demoStageId:"",
       isParallel: true, // true为并联
       projBascInfoShow: {
         isAreaEstimate: '0',
@@ -569,6 +568,9 @@ var vm = new Vue({
       unitLinkManOptions: [],
       matCodes: [], // 材料code集合
       oneformNameTitle: '一张表单', // 一张表单弹窗title
+      devFormUrl: '', // 一张表单url
+      stageFrontCheckFlag: true, // 阶段前置检测是否通过
+      stageFrontCheckMsg: '', // 阶段前置检测失败提示
     }
   },
   mounted: function () {
@@ -2245,18 +2247,6 @@ var vm = new Vue({
       this.optItemShowNum = data.optItemShowNum; // 并行事项展示条数
       this.noptItemShowNum = data.noptItemShowNum; // 并联事项展示条数
       this.parallelApplyinstId = '';
-      this.getStatusStateMats('','',stageId,'',true);  // 获取材料情形列表
-        //TODO
-        //todo 先写死
-        var fix_stageid='1dc08dc1-7ba6-4ccf-96cb-a8f7255cddbb';
-        this.demoStageId=fix_stageid;
-        if(data.useOneForm==1){
-            this.getOneFormList(stageId);//写死之前屏蔽
-            // this.getOneFormList(fix_stageid);
-        }else {
-            this.oneFormData=[]; //写死之前屏蔽
-            // this.getOneFormList(fix_stageid);
-        }
       if(data&&(data.handWay==0)){
         this.parallelItemsQuestionFlag=false; // 简单合并办理
       }else {
@@ -2267,6 +2257,29 @@ var vm = new Vue({
       }else {
         this.stageQuestionFlag=true; // 阶段下分情形
       }
+      var param = {stageId: stageId,projInfoId:this.projInfoId};
+      var _that = this;
+      // 阶段前置检测
+      request('', {
+        url: ctx + 'rest/check/stageFrontCheck',
+        type: 'post',
+        data: param,
+      }, function (result) {
+        if (result.success) {
+          _that.getStatusStateMats('','',stageId,'',true);  // 获取材料情形列表
+          if(data.useOneForm==1){
+            _that.getOneFormList(stageId);//写死之前屏蔽
+          }else {
+            _that.oneFormData=[]; //写死之前屏蔽
+          }
+          _that.stageFrontCheckFlag = true;
+        }else {
+          _that.stageFrontCheckFlag = false;
+          _that.stageFrontCheckMsg = result.message?result.message:'阶段前置检测失败';
+          alertMsg('', result.message?result.message:'阶段前置检测失败', '关闭', 'error', true);
+        }
+      }, function (msg) {})
+
     },
     // 获取事项列表
     getStageItems: function(stageId){
@@ -3085,6 +3098,10 @@ var vm = new Vue({
       var stateSel = _that.stateList;
       var stateSelLen = stateSel.length;
       var allowToApply=_that.getItemSelectionIsNotAllow(); // 获取已选事项是否有无匹配的行政区划
+      if(_that.stageFrontCheckFlag==false){
+        alertMsg('', _that.stageFrontCheckMsg, '关闭', 'error', true);
+        return false;
+      }
       _that.stateIds = [];
       _that.submitCommentsType = val;
       if(allowToApply&&_that.submitCommentsType!='4'){
@@ -4954,10 +4971,11 @@ var vm = new Vue({
       }, function (result) {
         if (result.success) {
           _that.oneFormDialogVisible = true;
-          $('#oneFormContent').html(result.content)
+          $('#oneFormContent').html(result.content.sfForm)
           _that.$nextTick(function(){
-            $('#oneFormContent').html(result.content)
+            $('#oneFormContent').html(result.content.sfForm)
           });
+          _that.devFormUrl = result.content.devForm;
         }else {
           _that.$message({
             message: result.content?result.content:'获取表单失败！',

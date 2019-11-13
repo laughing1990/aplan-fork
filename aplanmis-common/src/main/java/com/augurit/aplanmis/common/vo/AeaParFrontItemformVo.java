@@ -32,4 +32,6 @@ public class AeaParFrontItemformVo implements Serializable {
     private String itemName;
     //表单名称
     private String formName;
+    //表单ID
+    private String subFormId;
 }

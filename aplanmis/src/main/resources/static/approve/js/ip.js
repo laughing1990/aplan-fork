@@ -6,7 +6,7 @@ if (isDevelop) {
   // ctx = 'http://192.168.32.46:8083/aplanmis-front/';  // 李文钦
   // ctx = 'http://192.168.30.24:8083/aplanmis-front/';  // 陈锭星
   // ctx = 'http://192.168.30.24:6123/aplanmis-front/';  // 陈锭星
-  ctx = 'http://192.168.30.110:8083/aplanmis-front/'; // 邹永胜
+  // ctx = 'http://192.168.30.110:8083/aplanmis-front/'; // 邹永胜
   // ctx = 'http://192.168.14.2:8083/aplanmis-front/'; // 邓振强
   // ctx = 'http://192.168.17.15:8083/aplanmis-front/'; // 陈泽浩
   // ctx = 'http://192.168.15.59:8083/aplanmis-front/'; // 王玲
@@ -92,7 +92,7 @@ var __STATIC = {
     });
     return tmp;
   },
-  chineseIndexArr: ['一', '二', '三', '四', '五', '六', '七', '八', '九', '十','十一', '十二', '十三', '十四', '十五', '十六', '十七', '十八', '十九', '二十'],
+  chineseIndexArr: ['一', '二', '三', '四', '五', '六', '七', '八', '九', '十', '十一', '十二', '十三', '十四', '十五', '十六', '十七', '十八', '十九', '二十'],
   getChineseIndex: function (index, length) {
     var _index = length - index - 1;
     return __STATIC.chineseIndexArr[_index] || '20+';

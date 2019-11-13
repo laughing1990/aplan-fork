@@ -32,9 +32,10 @@ public interface AeaParFrontItemMapper {
 
     List<AeaParFrontItemVo> listAeaParFrontItemVo(AeaParFrontItem aeaParFrontItem) throws Exception;
 
-    Long getMaxSortNo(AeaParFrontItem aeaParFrontItem)throws Exception;
+    Long getMaxSortNo(AeaParFrontItem aeaParFrontItem) throws Exception;
 
     AeaParFrontItemVo getAeaParFrontItemVoByFrontItemId(@Param("frontItemId") String frontItemId) throws Exception;
 
+    List<AeaParFrontItemVo> listAeaParFrontItemByStageId(@Param("stageId") String stageId, @Param("rootOrgId") String rootOrgId);
 
 }
