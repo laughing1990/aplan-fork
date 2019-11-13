@@ -21,7 +21,7 @@ public class ImItemApplyData {
     private String itemVerId;
     //    @ApiModelProperty(value = "分局承办；并行推进事项分局承办，格式为：[{\"itemVerId\":\"111\",\"branchOrg\":\"222\"}]", required = true)
 //    private String branchOrgMap;
-    @ApiModelProperty(value = "项目ID", required = true)
+    @ApiModelProperty(value = "审批项目ID", required = true)
     private String projInfoId;
 
     @ApiModelProperty(value = "建设单位ID", required = true)

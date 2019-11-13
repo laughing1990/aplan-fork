@@ -3,18 +3,21 @@ package com.augurit.aplanmis.common.vo;
 import com.augurit.aplanmis.common.diyannotation.FiledNameIs;
 import com.augurit.aplanmis.common.domain.AeaImMajorQual;
 import com.augurit.aplanmis.common.domain.AeaImUnitRequire;
+import com.augurit.aplanmis.common.domain.AeaProjInfo;
 import com.augurit.aplanmis.supermarket.apply.vo.ImItemApplyData;
 import com.augurit.aplanmis.supermarket.apply.vo.ImPurchaseData;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import org.springframework.beans.BeanUtils;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author tiantian
@@ -156,19 +159,31 @@ public class SaveAeaImProjPurchaseVo {
     private String applySource = "net";
     @ApiModelProperty(value = "材料实例ID集合", required = true)
     private String[] matinstsIds;
-
-    public ImItemApplyData createItemApplyData() {
-        ImItemApplyData applyData = new ImItemApplyData();
-
-
-        return applyData;
-
-    }
+    private String creater;
+    private String rootOrgId;
 
     public ImPurchaseData createPurchaseData(String applyinstId, String applyinstCode) {
         ImPurchaseData purchaseData = new ImPurchaseData();
+        BeanUtils.copyProperties(this, purchaseData);
+        purchaseData.setApproveProjInfoId(this.projInfoId);
+        purchaseData.setProjPurchaseId(UUID.randomUUID().toString());
 
         return purchaseData;
+    }
+
+    public ImItemApplyData createItemApplyData() {
+        ImItemApplyData applyData = new ImItemApplyData();
+        BeanUtils.copyProperties(this, applyData);
+        return applyData;
+    }
+
+    //创建采购项目信息
+    public AeaProjInfo createAeaProjInfo() {
+        AeaProjInfo aeaProjInfo = new AeaProjInfo();
+        BeanUtils.copyProperties(this.saveAeaProjInfoVo, aeaProjInfo);
+        aeaProjInfo.setRootOrgId(this.rootOrgId);
+        aeaProjInfo.setCreater(this.creater);
+        return aeaProjInfo;
     }
 
 

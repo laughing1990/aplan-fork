@@ -1396,20 +1396,80 @@ public class ProjPurchaseService {
      * @param purchaseVo
      * @return
      */
-    public ResultForm startProjPurchaseAndProcess(SaveAeaImProjPurchaseVo purchaseVo) throws Exception {
-        //String applyinstIdParam = purchaseVo.getApplyinstId();
+    public ResultForm startProjPurchaseAndProcess(SaveAeaImProjPurchaseVo purchaseVo, HttpServletRequest request) throws Exception {
+        LoginInfoVo loginInfoVo = SessionUtil.getLoginInfo(request);
+        checkIsOwner(loginInfoVo);
+        this.validParams(purchaseVo);
+        String isPersonAccount = loginInfoVo.getIsPersonAccount();
+        purchaseVo.setRootOrgId(topOrgId);
+        if ("1".equals(isPersonAccount)) {//个人账号
+            purchaseVo.setApplySubject("0");
+            purchaseVo.setCreater(loginInfoVo.getPersonName());
+        } else {
+            purchaseVo.setCreater(loginInfoVo.getUnitName());
+            purchaseVo.setApplySubject("1");
+        }
+        //需要先保存 采购项目信息，发起事项流程时关联的是采购项目信息
+        AeaProjInfo aeaProjInfo = purchaseVo.createAeaProjInfo();
+        aeaProjInfoMapper.insertAeaProjInfo(aeaProjInfo);
+
         ImItemApplyData applyData = purchaseVo.createItemApplyData();
+        applyData.setProjInfoId(aeaProjInfo.getProjInfoId());//回填采购的项目ID
+        if (StringUtils.isNotBlank(isPersonAccount) && "0".equals(isPersonAccount)) {
+            //单位
+            applyData.setConstructionUnitId(loginInfoVo.getUnitId());
+        } else {
+            applyData.setApplyLinkmanId(loginInfoVo.getUserId());
+            applyData.setLinkmanInfoId(loginInfoVo.getUserId());
+        }
         //发起中介事项流程
         ApplyinstResult result = restImApplyService.purchaseStartProcess(applyData);
         String applyinstId = result.getApplyinstId();
         String applyinstCode = result.getApplyinstCode();
         //保存采购信息
         ImPurchaseData purchaseData = purchaseVo.createPurchaseData(applyinstId, applyinstCode);
+        purchaseData.setProjInfoId(aeaProjInfo.getProjInfoId());
         restImApplyService.savePurchaseProjInfo(purchaseData);
 //        //保存受理回执，物料回执
 //        if (StringUtils.isBlank(applyinstIdParam)) {
 //            receiveService.saveReceive(new String[]{applyinstId}, new String[]{"1", "2"}, SecurityContext.getCurrentUserName(), "");
 //        }
         return new ContentResultForm<>(true, applyinstId, "Series start process success");
+    }
+
+    public void validParams(SaveAeaImProjPurchaseVo purchaseVo) throws Exception {
+
+        if (purchaseVo == null) {
+            throw new RuntimeException("缺少采购信息");
+        }
+
+        AeaImUnitRequire aeaImUnitRequire = purchaseVo.getAeaImUnitRequire();
+
+        if (aeaImUnitRequire == null) {
+            throw new RuntimeException("缺少中介机构要求信息");
+        }
+
+        SaveAeaImProjPurchaseVo.SaveAeaProjInfoVo saveAeaProjInfoVo = purchaseVo.getSaveAeaProjInfoVo();
+
+        if (saveAeaProjInfoVo == null) {
+            throw new RuntimeException("缺少采购项目信息");
+        }
+
+        if (Status.ON.equals(purchaseVo.getIsApproveProj())) {
+            if (StringUtils.isBlank(saveAeaProjInfoVo.getParentProjId())) {
+                throw new RuntimeException("缺少审批项目信息");
+            }
+        }
+
+        if (Status.ON.equals(purchaseVo.getIsAvoid())) {
+            if (StringUtils.isBlank(purchaseVo.getAvoidReason())) {
+                throw new RuntimeException("缺少回避原因");
+            }
+
+            if (StringUtils.isBlank(purchaseVo.getAvoidUnitInfoIds())) {
+                throw new RuntimeException("缺少回避单位");
+            }
+        }
+
     }
 }
