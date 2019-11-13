@@ -38,7 +38,7 @@
         <div class="nickName-des" v-else>
           <div class="nickName-des-left">
             <p>联系人名：{{aeaLinkmanInfo.linkmanName||"-"}} </p>
-            <p>联系电话：{{aeaLinkmanInfo.linkmanOfficePhon && aeaLinkmanInfo.linkmanOfficePhon!=null?aeaLinkmanInfo.linkmanOfficePhon:"-"}}</p>
+            <p>联系电话：{{aeaLinkmanInfo.linkmanMobilePhone && aeaLinkmanInfo.linkmanMobilePhone!=null?aeaLinkmanInfo.linkmanMobilePhone:"-"}}</p>
           </div>
           <div class="nickName-des-right">
             <p>身份证号：{{aeaLinkmanInfo.linkmanCertNo||"-"}} </p>
@@ -188,7 +188,7 @@
               <div class="grid-content">电话</div>
             </el-col>
             <el-col :span="7" class="td">
-              <el-input v-model="aeaLinkmanInfo.linkmanOfficePhon" placeholder="请填写电话"></el-input>
+              <el-input v-model="aeaLinkmanInfo.linkmanMobilePhone" placeholder="请填写电话"></el-input>
             </el-col>
             <el-col :span="3" class="tr">
               <div class="grid-content">邮箱</div>
@@ -812,7 +812,7 @@
               linkmanInfoId: this.aeaLinkmanInfo.linkmanInfoId,
               linkmanName : this.aeaLinkmanInfo.linkmanName,
               linkmanCertNo : this.aeaLinkmanInfo.linkmanCertNo,
-              linkmanOfficePhon : this.aeaLinkmanInfo.linkmanOfficePhon,
+              linkmanMobilePhone : this.aeaLinkmanInfo.linkmanMobilePhone,
               linkmanMail : this.aeaLinkmanInfo.linkmanMail,
               linkmanAddr : this.aeaLinkmanInfo.linkmanAddr,
               loginName : this.aeaLinkmanInfo.loginName,

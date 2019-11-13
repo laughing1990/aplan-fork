@@ -6,13 +6,16 @@ import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.domain.AeaLinkmanInfo;
 import com.augurit.aplanmis.common.domain.AeaUnitInfo;
 import com.augurit.aplanmis.common.domain.AeaUnitLinkman;
+import com.augurit.aplanmis.common.mapper.AeaLinkmanInfoMapper;
 import com.augurit.aplanmis.common.mapper.AeaUnitLinkmanMapper;
 import com.augurit.aplanmis.common.service.linkman.AeaLinkmanInfoService;
 import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
 import com.augurit.aplanmis.common.utils.SessionUtil;
-import com.augurit.aplanmis.common.vo.AeaUnitInfoVo;
 import com.augurit.aplanmis.common.vo.LoginInfoVo;
 import com.augurit.aplanmis.mall.userCenter.constant.LoginUserRoleEnum;
+import com.augurit.aplanmis.mall.userCenter.service.RestUserCenterService;
+import com.augurit.aplanmis.mall.userCenter.vo.AeaLinkmanInfoVo;
+import com.augurit.aplanmis.mall.userCenter.vo.AeaUnitInfoVo;
 import com.augurit.aplanmis.mall.userCenter.vo.UserInfoVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -45,6 +48,10 @@ public class RestUserCenterController {
     private AeaLinkmanInfoService aeaLinkmanInfoService;
     @Autowired
     private AeaUnitLinkmanMapper aeaUnitLinkmanMapper;
+    @Autowired
+    private RestUserCenterService restUserCenterService;
+    @Autowired
+    private AeaLinkmanInfoMapper aeaLinkmanInfoMapper;
 
     @GetMapping("/toMyCloundSpacesPage")
     @ApiOperation(value = "法人空间我的首页")
@@ -186,11 +193,11 @@ public class RestUserCenterController {
     @ApiImplicitParam(value = "空值:查询所有人，1:查询委托人",name = "isAll",required = true,dataType = "string")
     public ResultForm getAllUnitLinkInfo(HttpServletRequest request, String isAll) throws Exception{
         LoginInfoVo user = SessionUtil.getLoginInfo(request);
-        List<AeaLinkmanInfo> linkmanInfoList = new ArrayList<>();
+        List<AeaLinkmanInfo> aeaLinkmanInfos = new ArrayList<>();
         if(user != null){
-            linkmanInfoList=aeaLinkmanInfoService.getAeaLinkmanInfoByUnitInfoIdAndIsBindAccount(user.getUnitId(),isAll);
+            aeaLinkmanInfos =  aeaLinkmanInfoMapper.getAeaLinkmanInfoByUnitInfoIdAndIsBindAccount(user.getUnitId(),isAll);
         }
-        return new ContentResultForm<>(true,linkmanInfoList);
+        return new ContentResultForm<>(true,aeaLinkmanInfos.stream().map(AeaLinkmanInfoVo::build).collect(Collectors.toList())) ;
     }
 
     //查询某单位的所有联系人列表
@@ -207,34 +214,39 @@ public class RestUserCenterController {
     public ResultForm getUserInfo(HttpServletRequest request){
         UserInfoVo userInfoVo = new UserInfoVo();
         LoginInfoVo user = SessionUtil.getLoginInfo(request);
-        if(user!=null){
-            if("1".equals(user.getIsPersonAccount())){//个人
-                AeaLinkmanInfo aeaLinkmanInfo=aeaLinkmanInfoService.getAeaLinkmanInfoByLinkmanInfoId(user.getUserId());
-                userInfoVo.setAeaLinkmanInfo(aeaLinkmanInfo);
-                userInfoVo.setRole(LoginUserRoleEnum.PERSONAL.getValue());
-            }else if(StringUtils.isNotBlank(user.getUserId())){//委托人
-                AeaLinkmanInfo aeaLinkmanInfo=aeaLinkmanInfoService.getAeaLinkmanInfoByLinkmanInfoId(user.getUserId());
-                List<AeaUnitInfo> aeaUnitList=aeaUnitInfoService.getUnitInfoByLinkmanInfoId(user.getUserId());
-                List<AeaUnitInfoVo> vos = aeaUnitList.stream().map(AeaUnitInfoVo::build).collect(Collectors.toList());
-                userInfoVo.setAeaUnitList(vos);
-                userInfoVo.setAeaLinkmanInfo(aeaLinkmanInfo);
-                userInfoVo.setRole(LoginUserRoleEnum.HANDLE.getValue());
-            }else{//企业
-                AeaUnitInfo aeaUnitInfo = aeaUnitInfoService.getAeaUnitInfoByUnitInfoId(user.getUnitId());
-                List<AeaLinkmanInfo> linkmanInfoList=aeaLinkmanInfoService.findAllUnitLinkman(user.getUnitId());
-                userInfoVo.setLinkmanInfoList(linkmanInfoList);
-                userInfoVo.setAeaUnitInfo(AeaUnitInfoVo.build(aeaUnitInfo));
-                userInfoVo.setRole(LoginUserRoleEnum.UNIT.getValue());
+
+        try {
+            if(user!=null){
+                if("1".equals(user.getIsPersonAccount())){//个人
+                    AeaLinkmanInfoVo aeaLinkmanInfo=restUserCenterService.getAeaLinkmanInfoByLinkmanInfoId(user.getUserId());
+                    userInfoVo.setAeaLinkmanInfo(aeaLinkmanInfo);
+                    userInfoVo.setRole(LoginUserRoleEnum.PERSONAL.getValue());
+                }else if(StringUtils.isNotBlank(user.getUserId())){//委托人
+                    AeaLinkmanInfoVo aeaLinkmanInfo=restUserCenterService.getAeaLinkmanInfoByLinkmanInfoId(user.getUserId());
+                    List<AeaUnitInfoVo> aeaUnitList=restUserCenterService.getUnitInfoListByLinkmanInfoId(user.getUserId());
+                    userInfoVo.setAeaUnitList(aeaUnitList);
+                    userInfoVo.setAeaLinkmanInfo(aeaLinkmanInfo);
+                    userInfoVo.setRole(LoginUserRoleEnum.HANDLE.getValue());
+                }else{//企业
+                    AeaUnitInfoVo aeaUnitInfo = restUserCenterService.getAeaUnitInfoByUnitInfoId(user.getUnitId());
+                    List<AeaLinkmanInfoVo> linkmanInfoList=restUserCenterService.findAllUnitLinkman(user.getUnitId());
+                    userInfoVo.setLinkmanInfoList(linkmanInfoList);
+                    userInfoVo.setAeaUnitInfo(aeaUnitInfo);
+                    userInfoVo.setRole(LoginUserRoleEnum.UNIT.getValue());
+                }
             }
+            return new ContentResultForm<>(true,userInfoVo);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ContentResultForm<>(false,"获取当前登录用户详情发生异常");
         }
-        return new ContentResultForm<>(true,userInfoVo);
     }
 
     @GetMapping("unitinfo/list/{linkmanInfoId}")
     @ApiOperation(value = "查询联系人单位列表")
     @ApiImplicitParam(value = "联系人id",name = "linkmanInfoId",required = true,dataType = "string")
     public ResultForm getUnitInfoByLinkmanInfoId (@PathVariable("linkmanInfoId") String linkmanInfoId) throws Exception {
-        return new ContentResultForm<>(true,aeaUnitInfoService.getUnitInfoByLinkmanInfoId(linkmanInfoId)) ;
+        return new ContentResultForm<>(true,restUserCenterService.getUnitInfoListByLinkmanInfoId(linkmanInfoId)) ;
     }
 
     @GetMapping("linkman/{linkmanInfoId}/{unitInfoId}")
@@ -244,13 +256,14 @@ public class RestUserCenterController {
     public ResultForm getByLinkmanInfoId (@PathVariable("linkmanInfoId") String linkmanInfoId,@PathVariable("unitInfoId") String unitInfoId) {
         if(StringUtils.isBlank(linkmanInfoId)) return new ResultForm(false,"联系人参数缺失");
         if(StringUtils.isBlank(unitInfoId)) return new ResultForm(false,"单位参数缺失");
-        AeaLinkmanInfo aeaLinkmanInfo = aeaLinkmanInfoService.getAeaLinkmanInfoByLinkmanInfoId(linkmanInfoId);
+        List<AeaUnitLinkman> unitLinkmans = new ArrayList<>();
+        AeaLinkmanInfoVo aeaLinkmanInfo;
+        try {
+        aeaLinkmanInfo=restUserCenterService.getAeaLinkmanInfoByLinkmanInfoId(linkmanInfoId);
         AeaUnitLinkman query=new AeaUnitLinkman();
         query.setUnitInfoId(unitInfoId);
         query.setLinkmanInfoId(linkmanInfoId);
-        List<AeaUnitLinkman> unitLinkmans = new ArrayList<>();
-        try {
-            unitLinkmans = aeaUnitLinkmanMapper.listAeaUnitLinkman(query);
+        unitLinkmans = aeaUnitLinkmanMapper.listAeaUnitLinkman(query);
         } catch (Exception e) {
             logger.error(e.getMessage(),e);
             return new ResultForm(false,"查找单位下的联系人信息失败");
@@ -264,7 +277,8 @@ public class RestUserCenterController {
     @ApiImplicitParams({@ApiImplicitParam(value = "姓名，电话，身份证号等关键字",name = "keyword",required = false,dataType = "string"),
             @ApiImplicitParam(value = "单位信息ID",name = "unitInfoId",required = false,dataType = "string")})
     public ResultForm getByIdCard (String keyword, String unitInfoId) throws Exception {
-        return new ContentResultForm<>(true,aeaLinkmanInfoService.getByKeyword(keyword,unitInfoId)) ;
+        List<AeaLinkmanInfo> aeaLinkmanInfos = aeaLinkmanInfoService.getByKeyword(keyword,unitInfoId);
+        return new ContentResultForm<>(true,aeaLinkmanInfos.stream().map(AeaLinkmanInfoVo::build).collect(Collectors.toList())) ;
     }
 
     /*******************************************企业中心模块数据请求结束*****************************************************/
