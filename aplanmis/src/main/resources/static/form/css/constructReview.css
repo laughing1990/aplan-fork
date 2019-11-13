@@ -358,3 +358,7 @@ body {
 .el-dialog__header .el-dialog__title {
   line-height: 42px;
 }
+
+.red .el-input__inner {
+  border-color: red;
+}
