@@ -53,4 +53,12 @@ public interface RestUserCenterService {
      */
     List<AeaLinkmanInfoVo> findAllUnitLinkman(String unitInfoId);
 
+    /**
+     * 校验参数userId是否属于当前单位
+     * @param userId
+     * @param request
+     * @return
+     */
+    Boolean isBelongUnit(String userId,HttpServletRequest request)throws Exception;
+
 }

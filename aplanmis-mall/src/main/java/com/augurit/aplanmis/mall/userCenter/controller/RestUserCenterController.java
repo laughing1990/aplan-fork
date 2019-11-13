@@ -121,15 +121,20 @@ public class RestUserCenterController {
     @ApiOperation("保存单位联系人信息及单位与联系人的关系")
     public ResultForm saveLinkmanAndUnitLinkman(AeaLinkmanInfo aeaLinkmanInfo, HttpServletRequest request){
         //要求：登录名，密码字段不用填，unitInfoId不为空
+        LoginInfoVo user = SessionUtil.getLoginInfo(request);
         if(StringUtils.isEmpty(aeaLinkmanInfo.getUnitInfoId()))  return new ResultForm(false,"单位为空");
+        //判断传参单位是否和后台缓存单位一致
+        if (!aeaLinkmanInfo.getUnitInfoId().equals(user.getUnitId())) return new ResultForm(false,"保存单位联系人信息及单位与联系人的关系失败");
         try {
             if(StringUtils.isNotBlank(aeaLinkmanInfo.getLinkmanInfoId())){
+                if (!restUserCenterService.isBelongUnit(aeaLinkmanInfo.getLinkmanInfoId(),request)) return new ResultForm(false,"保存单位联系人信息及单位与联系人的关系失败");
                 aeaLinkmanInfoService.updateAeaLinkmanInfo(aeaLinkmanInfo);
             }else{//根据身份证号码查询联系人，若已存在，则更新信息，若不存在，则新增
                 AeaLinkmanInfo query=new AeaLinkmanInfo();
                 query.setLinkmanCertNo(aeaLinkmanInfo.getLinkmanCertNo());
                 List<AeaLinkmanInfo> linkmans = aeaLinkmanInfoService.findLinkmanInfo(query);
                 if(linkmans.size()>0){
+                    if (!restUserCenterService.isBelongUnit(aeaLinkmanInfo.getLinkmanInfoId(),request)) return new ResultForm(false,"保存单位联系人信息及单位与联系人的关系失败");
                     aeaLinkmanInfo.setLinkmanInfoId(linkmans.get(0).getLinkmanInfoId());
                     aeaLinkmanInfoService.updateAeaLinkmanInfo(aeaLinkmanInfo);
                 }else{
@@ -151,7 +156,7 @@ public class RestUserCenterController {
             }
         } catch (Exception e) {
             logger.error(e.getMessage(),e);
-            return new ResultForm(false,"保存联系人信息失败");
+            return new ResultForm(false,"发生错误");
         }
         return new ResultForm(true,"success");
     }
@@ -162,17 +167,19 @@ public class RestUserCenterController {
     @ApiImplicitParams({@ApiImplicitParam(value = "单位Id",name = "unitInfoId",required = true,dataType = "string"),
             @ApiImplicitParam(value = "联系人Id",name = "linkmanInfoId",required = true,dataType = "string"),
             @ApiImplicitParam(value = "绑定关系0:解绑，1:绑定",name = "isBindAccount",required = true,dataType = "string")})
-    public ResultForm bindOrUnbindRelation(String unitInfoId,String linkmanInfoId,String isBindAccount){
+    public ResultForm bindOrUnbindRelation(String unitInfoId,String linkmanInfoId,String isBindAccount,HttpServletRequest request){
         AeaUnitLinkman aeaUnitLinkman = new AeaUnitLinkman();
         aeaUnitLinkman.setLinkmanInfoId(linkmanInfoId);
         aeaUnitLinkman.setUnitInfoId(unitInfoId);
         //isBindAccount=0解绑  isBindAccount=1绑定
         aeaUnitLinkman.setIsBindAccount(isBindAccount);
         try {
+            //权限校验
+            if (!restUserCenterService.isBelongUnit(linkmanInfoId,request)) return new ResultForm(false,"发生错误");
             aeaLinkmanInfoService.updateAeaUnitLinkmanByUnitAndLinkman(aeaUnitLinkman);
         } catch (Exception e) {
             logger.error(e.getMessage(),e);
-            return new ResultForm(false,e.getMessage());
+            return new ResultForm(false,"发生错误");
         }
         return new ResultForm(true,"success");
     }
@@ -182,8 +189,15 @@ public class RestUserCenterController {
     @ApiOperation(value = "删除联系人")
     @ApiImplicitParams({@ApiImplicitParam(value = "单位id",name = "unitInfoId",required = true,dataType = "string"),
             @ApiImplicitParam(value = "联系人id",name = "linkmanInfoId",required = true,dataType = "string")})
-    public ResultForm deleteRelation(@PathVariable("unitInfoId") String unitInfoId,@PathVariable("linkmanInfoId") String linkmanInfoId){
-        aeaLinkmanInfoService.deleteUnitLinkman(unitInfoId,linkmanInfoId);
+    public ResultForm deleteRelation(@PathVariable("unitInfoId") String unitInfoId,@PathVariable("linkmanInfoId") String linkmanInfoId,HttpServletRequest request){
+        try {
+            //权限校验
+            if (!restUserCenterService.isBelongUnit(linkmanInfoId,request)) return new ResultForm(false,"发生错误");
+            aeaLinkmanInfoService.deleteUnitLinkman(unitInfoId,linkmanInfoId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResultForm(false,"发生错误");
+        }
         return new ResultForm(true,"success");
     }
 
@@ -253,12 +267,15 @@ public class RestUserCenterController {
     @ApiOperation(value = "查询联系人信息")
     @ApiImplicitParams({@ApiImplicitParam(value = "单位id",name = "unitInfoId",required = true,dataType = "string"),
                 @ApiImplicitParam(value = "联系人id",name = "linkmanInfoId",required = true,dataType = "string")})
-    public ResultForm getByLinkmanInfoId (@PathVariable("linkmanInfoId") String linkmanInfoId,@PathVariable("unitInfoId") String unitInfoId) {
+    public ResultForm getByLinkmanInfoId (@PathVariable("linkmanInfoId") String linkmanInfoId,@PathVariable("unitInfoId") String unitInfoId,HttpServletRequest request) {
         if(StringUtils.isBlank(linkmanInfoId)) return new ResultForm(false,"联系人参数缺失");
         if(StringUtils.isBlank(unitInfoId)) return new ResultForm(false,"单位参数缺失");
+
         List<AeaUnitLinkman> unitLinkmans = new ArrayList<>();
-        AeaLinkmanInfoVo aeaLinkmanInfo;
+        AeaLinkmanInfoVo aeaLinkmanInfo = new AeaLinkmanInfoVo();
         try {
+            //权限校验
+        if (!restUserCenterService.isBelongUnit(linkmanInfoId,request)) return new ResultForm(false,"查找单位下的联系人信息失败");
         aeaLinkmanInfo=restUserCenterService.getAeaLinkmanInfoByLinkmanInfoId(linkmanInfoId);
         AeaUnitLinkman query=new AeaUnitLinkman();
         query.setUnitInfoId(unitInfoId);
@@ -272,17 +289,20 @@ public class RestUserCenterController {
         return new ContentResultForm<>(true,aeaLinkmanInfo) ;
     }
 
-    @GetMapping("linkman/list/key")
-    @ApiOperation(value = "根据姓名，电话，身份证号等关键字查询联系人列表")
-    @ApiImplicitParams({@ApiImplicitParam(value = "姓名，电话，身份证号等关键字",name = "keyword",required = false,dataType = "string"),
-            @ApiImplicitParam(value = "单位信息ID",name = "unitInfoId",required = false,dataType = "string")})
-    public ResultForm getByIdCard (String keyword, String unitInfoId) throws Exception {
-        List<AeaLinkmanInfo> aeaLinkmanInfos = aeaLinkmanInfoService.getByKeyword(keyword,unitInfoId);
-        return new ContentResultForm<>(true,aeaLinkmanInfos.stream().map(AeaLinkmanInfoVo::build).collect(Collectors.toList())) ;
-    }
+
 
     /*******************************************企业中心模块数据请求结束*****************************************************/
 
 
+
+
+//    @GetMapping("linkman/list/key")
+//    @ApiOperation(value = "根据姓名，电话，身份证号等关键字查询联系人列表")
+//    @ApiImplicitParams({@ApiImplicitParam(value = "姓名，电话，身份证号等关键字",name = "keyword",required = false,dataType = "string"),
+//            @ApiImplicitParam(value = "单位信息ID",name = "unitInfoId",required = false,dataType = "string")})
+//    public ResultForm getByIdCard (String keyword, String unitInfoId) throws Exception {
+//        List<AeaLinkmanInfo> aeaLinkmanInfos = aeaLinkmanInfoService.getByKeyword(keyword,unitInfoId);
+//        return new ContentResultForm<>(true,aeaLinkmanInfos.stream().map(AeaLinkmanInfoVo::build).collect(Collectors.toList())) ;
+//    }
 
 }
