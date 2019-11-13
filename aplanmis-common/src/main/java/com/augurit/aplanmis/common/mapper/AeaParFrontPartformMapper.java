@@ -37,4 +37,6 @@ public interface AeaParFrontPartformMapper {
     List<AeaParFrontPartformVo> listSelectParFrontPartform(AeaParFrontPartform aeaParFrontPartform) throws Exception;
 
     AeaParFrontPartformVo getAeaParFrontPartformVoById(@Param("id") String id) throws Exception;
+
+    List<AeaParFrontPartformVo> getAeaParFrontPartformVoByStageId(@Param("stageId") String stageId, @Param("rootOrgId") String rootOrgId);
 }

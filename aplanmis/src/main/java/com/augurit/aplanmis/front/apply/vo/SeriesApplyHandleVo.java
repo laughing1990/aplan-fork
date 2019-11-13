@@ -97,6 +97,9 @@ public class SeriesApplyHandleVo {
         // 备注说明
         @ApiModelProperty(value = "备注说明")
         private String stateMemo;
+
+        @ApiModelProperty(value = "流程情形")
+        private String isProcStartCond;
         // 材料
         private List<SeriesApplyHandleVo.MatVo> stateMats;
 
@@ -190,13 +193,16 @@ public class SeriesApplyHandleVo {
         @ApiModelProperty(value = "证照定义ID")
         private String certId;
 
-        @ApiModelProperty(value = "扩展字段：证照名称")
+        @ApiModelProperty(value = "证照名称")
         private String certName;
 
         @ApiModelProperty(value = "表单定义ID")
         private String formId;
 
-        @ApiModelProperty(value = "扩展字段：表单名称")
+        @ApiModelProperty(value = "表单名称")
         private String formName;
+
+        @ApiModelProperty(value = "材料绑定的事项版本id", notes = "证照材料需要这个字段去获取证照库的证照列表")
+        private String itemVerId;
     }
 }

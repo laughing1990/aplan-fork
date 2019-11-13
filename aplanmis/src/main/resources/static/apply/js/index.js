@@ -75,7 +75,6 @@ var vm = new Vue({
       }
     };
     return {
-      demoStageId:"",
       isParallel: true, // true为并联
       projBascInfoShow: {
         isAreaEstimate: '0',
@@ -280,7 +279,7 @@ var vm = new Vue({
           { required: true,message: '请选择投资类型！', trigger: ['change'] },
         ],
         gbCodeYear: [
-          { required: true,message: '请输入国标行业代码发布年代！', trigger: ['change'] },
+          { required: true,message: '请输入国标行业代码发布年代！', trigger: ['blur'] },
         ],
         theIndustry: [
           { required: true,message: '请选择国标行业！', trigger: ['blur', 'change'] },
@@ -292,18 +291,18 @@ var vm = new Vue({
           { required: true,message: '请选择拟建成时间！', trigger: ['change'] },
         ],
         scaleContent: [
-          { required: true,message: '请输入建设规模及内容！', trigger: ['change'] },
+          { required: true,message: '请输入建设规模及内容！', trigger: ['blur'] },
         ],
         xmYdmj: [
           {validator:checkNumFloat, trigger: ['blur'] },
-          { required: true,message: '请填写用地面积！', trigger: ['change'] }
+          { required: true,message: '请填写用地面积！', trigger: ['blur'] }
         ],
         xzydmj: [
           {validator:checkNumFloat, trigger: ['blur'] },
         ],
         buildAreaSum: [
           {validator:checkNumFloat, trigger: ['blur'] },
-          { required: true,message: '请填写建筑面积！', trigger: ['change'] }
+          { required: true,message: '请填写建筑面积！', trigger: ['blur'] }
         ],
         aboveGround: [
           {validator:checkNumFloat, trigger: ['blur'] },
@@ -313,7 +312,7 @@ var vm = new Vue({
         ],
         investSum: [
           {validator:checkNumFloat, trigger: ['blur'] },
-          { required: true,message: '请输入总投资！', trigger: ['change'] }
+          { required: true,message: '请输入总投资！', trigger: ['blur'] }
         ]
       },
       statusLineList: [], // 主题下阶段类型
@@ -569,6 +568,9 @@ var vm = new Vue({
       unitLinkManOptions: [],
       matCodes: [], // 材料code集合
       oneformNameTitle: '一张表单', // 一张表单弹窗title
+      devFormUrl: '', // 一张表单url
+      stageFrontCheckFlag: true, // 阶段前置检测是否通过
+      stageFrontCheckMsg: '', // 阶段前置检测失败提示
     }
   },
   mounted: function () {
@@ -604,6 +606,83 @@ var vm = new Vue({
     }
   },
   methods: {
+    // 生成项目编码
+    getLocalcode: function(){
+      var _that = this;
+      console.log(_that.projBascInfoShow.projName);
+      if(!_that.projBascInfoShow.projName){
+        _that.$message({
+          message: '请输入项目名称！',
+          type: 'error'
+        });
+        return false;
+      }
+      request('', {
+        url: ctx + 'rest/project/save/zbm',
+        type: 'post',
+        data: {projName: _that.projBascInfoShow.projName},
+      }, function (result) {
+        if (result.success) {
+          _that.searchKeyword = result.content.localCode;
+          _that.localCode = result.content.localCode;
+          _that.showMoreProjInfo = true;
+          _that.projName = _that.projBascInfoShow.projName;
+          _that.showVerLen = _that.verticalTabData.length;
+          _that.projBascInfoShow = result.content; // 项目主要信息
+          _that.getProjThemeIdList();
+          _that.themeId = result.content.themeId;
+          _that.themeType = result.content.themeType;
+          _that.applySubjectType = Number(result.content.applySubjectType); // 申办主体类型
+          _that.projInfoId = result.content.projInfoId;
+          if (!_that.projBascInfoShow.isAreaEstimate) _that.projBascInfoShow.isAreaEstimate = '0';
+          if (!_that.projBascInfoShow.isDesignSolution) _that.projBascInfoShow.isDesignSolution = '0';
+          if (!_that.projBascInfoShow.gbCodeYear) _that.projBascInfoShow.gbCodeYear = '2017';
+          if (!!_that.projBascInfoShow.projectAddress) _that.projBascInfoShow.projectAddress = _that.projBascInfoShow.projectAddress.split(',');
+          if (!!_that.projBascInfoShow.theIndustry) _that.$refs.gbhy.setCheckedKeys(_that.projBascInfoShow.theIndustry.split(','));
+          if(result.content.personalApplicant){
+            _that.applyPersonFrom = result.content.personalApplicant; // 个人申报主体信息
+          }
+          if(result.content.buildUnits){
+            _that.buildUnits = result.content.buildUnits; // 企业申报主体信息
+          }
+          if(result.content.otherUnits){
+            _that.otherUnits = result.content.otherUnits; // 个人申报主体信息
+          }
+          if(result.content.agentUnits){ // 存在经办单位
+            result.content.agentUnits.map(function(item){
+              var dataType = {
+                linkmanInfoId: '',
+                linkmanType: '',
+                linkmanName: ''
+              }
+              if(item.linkmanTypes&&item.linkmanTypes.length==0){
+                item.linkmanTypes.push(dataType)
+              }
+            })
+            _that.agentUnits = result.content.agentUnits;  // 经办单位信息
+            if(result.content.agentUnits.length>0){
+              _that.agentChecked = true; // 经办勾选
+            }
+          }else {
+            _that.agentUnits = [];
+            _that.agentChecked = false;
+          }
+          _that.setJiansheFrom();
+          _that.getSelThemeInfo(_that.themeType,_that.themeId)
+          _that.linkQuerySucc = true;
+          // 判断项目是否无编码申报
+          if((result.content.localCode.slice(0,3) == 'ZBM')){
+            _that.projSelect = false;
+            _that.approveNumClazz = false; // 不显示备案文号
+          }else {
+            _that.projSelect = true;
+            _that.approveNumClazz = true; // 显示备案文号
+          }
+          _that.getStageByThemeIdAndThemeStageId(_that.themeId,_that.projInfoId); // 获取阶段
+        }
+        _that.loading = false;
+      }, function (msg) {})
+    },
     // 获取可共享材料列表
     getShareMatsList: function () {
       var _that = this;
@@ -910,7 +989,9 @@ var vm = new Vue({
           if(data.content){
             var result = data.content;
             _that.searchKeyword = result.localCode;
+            _that.localCode = result.localCode;
             _that.showMoreProjInfo = true;
+            _that.projName = _that.projBascInfoShow.projName;
             _that.showVerLen = _that.verticalTabData.length;
             _that.projBascInfoShow = result; // 项目主要信息
             _that.getProjThemeIdList();
@@ -1212,7 +1293,7 @@ var vm = new Vue({
     saveOrUpdateProjFrom: function (isParallel) {
       var _that = this;
       var props = JSON.parse(JSON.stringify(_that.projBascInfoShow));
-      props.projectAddress = props.projectAddress.join(',');
+      props.projectAddress = props.projectAddress?props.projectAddress.join(','):'';
       _that.$refs['projBascInfoShowFrom'].validate(function (valid) {
         if(valid){
           request('', {
@@ -2245,18 +2326,6 @@ var vm = new Vue({
       this.optItemShowNum = data.optItemShowNum; // 并行事项展示条数
       this.noptItemShowNum = data.noptItemShowNum; // 并联事项展示条数
       this.parallelApplyinstId = '';
-      this.getStatusStateMats('','',stageId,'',true);  // 获取材料情形列表
-        //TODO
-        //todo 先写死
-        var fix_stageid='1dc08dc1-7ba6-4ccf-96cb-a8f7255cddbb';
-        this.demoStageId=fix_stageid;
-        if(data.useOneForm==1){
-            this.getOneFormList(stageId);//写死之前屏蔽
-            // this.getOneFormList(fix_stageid);
-        }else {
-            this.oneFormData=[]; //写死之前屏蔽
-            // this.getOneFormList(fix_stageid);
-        }
       if(data&&(data.handWay==0)){
         this.parallelItemsQuestionFlag=false; // 简单合并办理
       }else {
@@ -2267,6 +2336,29 @@ var vm = new Vue({
       }else {
         this.stageQuestionFlag=true; // 阶段下分情形
       }
+      var param = {stageId: stageId,projInfoId:this.projInfoId};
+      var _that = this;
+      // 阶段前置检测
+      request('', {
+        url: ctx + 'rest/check/stageFrontCheck',
+        type: 'post',
+        data: param,
+      }, function (result) {
+        if (result.success) {
+          _that.getStatusStateMats('','',stageId,'',true);  // 获取材料情形列表
+          if(data.useOneForm==1){
+            _that.getOneFormList(stageId);//写死之前屏蔽
+          }else {
+            _that.oneFormData=[]; //写死之前屏蔽
+          }
+          _that.stageFrontCheckFlag = true;
+        }else {
+          _that.stageFrontCheckFlag = false;
+          _that.stageFrontCheckMsg = result.message?result.message:'阶段前置检测失败';
+          alertMsg('', result.message?result.message:'阶段前置检测失败', '关闭', 'error', true);
+        }
+      }, function (msg) {})
+
     },
     // 获取事项列表
     getStageItems: function(stageId){
@@ -3085,6 +3177,10 @@ var vm = new Vue({
       var stateSel = _that.stateList;
       var stateSelLen = stateSel.length;
       var allowToApply=_that.getItemSelectionIsNotAllow(); // 获取已选事项是否有无匹配的行政区划
+      if(_that.stageFrontCheckFlag==false){
+        alertMsg('', _that.stageFrontCheckMsg, '关闭', 'error', true);
+        return false;
+      }
       _that.stateIds = [];
       _that.submitCommentsType = val;
       if(allowToApply&&_that.submitCommentsType!='4'){
@@ -4954,10 +5050,11 @@ var vm = new Vue({
       }, function (result) {
         if (result.success) {
           _that.oneFormDialogVisible = true;
-          $('#oneFormContent').html(result.content)
+          $('#oneFormContent').html(result.content.sfForm)
           _that.$nextTick(function(){
-            $('#oneFormContent').html(result.content)
+            $('#oneFormContent').html(result.content.sfForm)
           });
+          _that.devFormUrl = result.content.devForm;
         }else {
           _that.$message({
             message: result.content?result.content:'获取表单失败！',

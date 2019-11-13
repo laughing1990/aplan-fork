@@ -49,7 +49,7 @@
               </el-select>
             </el-form-item>
             <el-form-item class="input-inline" label="合同金额" prop="contractMoeny">
-              <el-input v-model.number="formData.contractMoeny" placeholder="请输入合同金额" class="input-with-select">
+              <el-input v-model="formData.contractMoeny" placeholder="请输入合同金额" class="input-with-select">
                 <el-select slot="append" placeholder="请选择" v-model='moneyType'>
                   <el-option label="万元" value="万元"></el-option>
                 </el-select>

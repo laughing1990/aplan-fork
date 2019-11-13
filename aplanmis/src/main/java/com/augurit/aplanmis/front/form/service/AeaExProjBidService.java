@@ -1,7 +1,9 @@
 package com.augurit.aplanmis.front.form.service;
 
-import com.augurit.aplanmis.common.domain.AeaExProjBid;
-import com.augurit.aplanmis.common.domain.AeaProjInfo;
+import com.augurit.aplanmis.common.domain.*;
+import com.augurit.aplanmis.front.form.vo.AeaExProjBidVo;
+
+import java.util.List;
 
 /**
 * 招投标信息-Service服务调用接口类
@@ -23,4 +25,14 @@ public interface AeaExProjBidService {
 
     public AeaProjInfo getProjInfoByProjId(String projId) throws Exception;
 
+    public List<AeaUnitInfo> findUnitProjByProjInfoIdAndType(String projInfoId, String unitType);
+
+    int updateAeaUnitProj(AeaUnitProj aeaUnitProj) throws Exception;
+
+    public void updateUnitProjInfo(String projId,String unitId,String unitProjId,String unitType) throws Exception;
+
+    public void delUnitProjInfo(String projId,List<String> unitTypes) throws Exception;
+
+
+    public void saveOrUpdateUnitInfo(AeaExProjBidVo aeaExProjBidVo, List<AeaUnitInfo> aeaUnitInfos, String unitType, List<AeaUnitProj> aeaUnitProjNewList) throws Exception;
 }

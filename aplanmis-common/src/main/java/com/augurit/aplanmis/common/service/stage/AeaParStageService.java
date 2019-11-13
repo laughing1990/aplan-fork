@@ -17,7 +17,7 @@ public interface AeaParStageService {
      * @param themeVerId 主题版本ID
      * @return List<AeaParStage>
      */
-    List<AeaParStage> listAeaParStageByThemeIdOrThemeVerId(String themeId, String themeVerId,String topOrgId) throws Exception;
+    List<AeaParStage> listAeaParStageByThemeIdOrThemeVerId(String themeId, String themeVerId, String topOrgId) throws Exception;
 
     /**
      * 根据 项目ID 或 编码（localCode||gcbm)
@@ -29,7 +29,8 @@ public interface AeaParStageService {
     List<AeaParStage> listAeaParStageByProjIdOrProjCode(String projInfoId, String projCode) throws Exception;
 
     /**
-     *  根据阶段ID查询阶段信息
+     * 根据阶段ID查询阶段信息
+     *
      * @param id
      * @return
      * @throws Exception
@@ -38,6 +39,7 @@ public interface AeaParStageService {
 
     /**
      * 根据事项实例ID查找所属阶段信息
+     *
      * @param iteminstId 事项实例ID
      * @return
      * @throws Exception
@@ -46,6 +48,7 @@ public interface AeaParStageService {
 
     /**
      * 根据申请实例ID查找所属阶段信息
+     *
      * @param applyinstId 申请实例ID
      * @return
      * @throws Exception
@@ -53,12 +56,20 @@ public interface AeaParStageService {
     AeaParStage getAeaParStageByApplyinstId(String applyinstId) throws Exception;
 
     /**
-     *  根据阶段ID、项目ID查询当前阶段的申请实例状态
-     * @param stageId 阶段ID
+     * 根据阶段ID、项目ID查询当前阶段的申请实例状态
+     *
+     * @param stageId    阶段ID
      * @param projInfoId 项目ID
      * @return
      * @throws Exception
      */
-    List<String> getApplyInstStatusByProjInfoIdAndStageId(String stageId,String projInfoId,String unitInfoId,String linkmanInfoId)throws Exception;
+    List<String> getApplyInstStatusByProjInfoIdAndStageId(String stageId, String projInfoId, String unitInfoId, String linkmanInfoId) throws Exception;
 
+    /**
+     * 根据项目ID获取已经办结或办结容缺通过的阶段信息
+     *
+     * @param projInfoId
+     * @return
+     */
+    List<AeaParStage> getCompletedStageByProjInfoId(String projInfoId);
 }

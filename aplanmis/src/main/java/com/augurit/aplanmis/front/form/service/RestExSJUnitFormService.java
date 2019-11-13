@@ -266,45 +266,81 @@ public class RestExSJUnitFormService {
                 //人员设置
                 AeaUnitProjLinkman aeaUnitProjLinkman = new AeaUnitProjLinkman();
                 aeaUnitProjLinkman.setUnitProjId(next.getUnitProjId());
-                List<AeaUnitProjLinkman> aeaUnitProjLinkmen = aeaUnitProjLinkmanMapper.listAeaUnitProjLinkmanPersonsetting(aeaUnitProjLinkman);
+                List<AeaUnitProjLinkman> aeaUnitProjLinkmen = aeaUnitProjLinkmanMapper.listAeaUnitProjLinkman(aeaUnitProjLinkman);
                 List<PersonSetting> listperson = new ArrayList<>();
                 if(aeaUnitProjLinkmen!=null&&aeaUnitProjLinkmen.size()>0){
                     for (Iterator<AeaUnitProjLinkman> aeaUnitProjLinkmanIterator = aeaUnitProjLinkmen.iterator(); aeaUnitProjLinkmanIterator.hasNext(); ) {
                         AeaUnitProjLinkman unitProjLinkman = aeaUnitProjLinkmanIterator.next();
-                        AeaLinkmanInfo personSetting = aeaLinkmanInfoMapper.getAeaLinkmanInfoById(unitProjLinkman.getLinkmanInfoId());
+                        String unitType = aeaExProjBuildUnitInfo.getUnitType();
                         //personsetting start
-                        PersonSetting person = new PersonSetting();
-                        if(unitProjLinkman!=null){
-                            person.setProjLinkmanId(unitProjLinkman.getProjLinkmanId());
-                            person.setLinkmanType(unitProjLinkman.getLinkmanType());
-                            person.setLinkmanInfoId(unitProjLinkman.getLinkmanInfoId());
-                            person.setSafeLicenceNum(unitProjLinkman.getSafeLicenceNum());
-                            person.setProfessionCertType(unitProjLinkman.getProfessionCertType());
-                            person.setTitleCertNum(unitProjLinkman.getTitleCertNum());
+                        PersonSetting person = null;
+                        if (unitType.equals(this.shigongzongbao)){
+                            if(unitProjLinkman!=null && !unitProjLinkman.getLinkmanType().equals(this.shigongzongbaoLinkType)){
+                                person = this.zhuzhuangPersonSetting(unitProjLinkman);
+                                person.setUnitProjId(next.getUnitProjId());
+
+                            }
+                        }else if(unitType.equals(this.shigongfenbao)){
+                            if(unitProjLinkman!=null && !unitProjLinkman.getLinkmanType().equals(this.shigongfenbaoLinkType)){
+                                person = this.zhuzhuangPersonSetting(unitProjLinkman);
+                                person.setUnitProjId(next.getUnitProjId());
+                            }
+                        }else if (unitType.equals(this.laowufenbao)){
+                            if(unitProjLinkman!=null && !unitProjLinkman.getLinkmanType().equals(this.laowufenbaoLinkType)){
+                                person = this.zhuzhuangPersonSetting(unitProjLinkman);
+                                person.setUnitProjId(next.getUnitProjId());
+                            }
+                        }else if(unitType.equals(this.gongchengjianli)){
+                            if(unitProjLinkman!=null && !unitProjLinkman.getLinkmanType().equals(this.gongchengjianliLinkType)){
+                                person = this.zhuzhuangPersonSetting(unitProjLinkman);
+                                person.setUnitProjId(next.getUnitProjId());
+                            }
                         }
-                        if(personSetting!=null){
-                            person.setLinkmanName(personSetting.getLinkmanName());
-                            person.setLinkmanCertNo(personSetting.getLinkmanCertNo());
+                        if(person != null){
+                            listperson.add(person);
                         }
-                        person.setUnitProjId(next.getUnitProjId());
-                        listperson.add(person);
                     }
                 }
-                aeaExProjBuildUnitInfo.setPersonSetting(listperson);
+                if(listperson != null &&listperson.size()>0){
+                    aeaExProjBuildUnitInfo.setPersonSetting(listperson);
+                }else {
+                    listperson.add(new PersonSetting());
+                    aeaExProjBuildUnitInfo.setPersonSetting(listperson);
+                }
                 String unitType = aeaExProjBuildUnitInfo.getUnitType();
-                if (unitType.equals(this.gongchengzongchengbao)) {
-                    map.put("gongchengzongFrom", aeaExProjBuildUnitInfo);
-                } else if (unitType.equals(this.shigongzongbao)) {
-                    map.put("applyShigongzongFrom", aeaExProjBuildUnitInfo);
-                } else if (unitType.equals(this.shigongfenbao)) {
-                    map.put("applyShigongzhuanyefenbaoFrom", aeaExProjBuildUnitInfo);
-                } else if (unitType.equals(this.laowufenbao)) {
-                    map.put("applyShigonglaowufenbaoFrom", aeaExProjBuildUnitInfo);
-                } else if (unitType.equals(this.gongchengjianli)) {
-                    map.put("applyJianliFrom", aeaExProjBuildUnitInfo);
+                if(unitType !=null){
+                    if (unitType.equals(this.gongchengzongchengbao)) {
+                        map.put("gongchengzongFrom", aeaExProjBuildUnitInfo);
+                    } else if (unitType.equals(this.shigongzongbao)) {
+                        map.put("applyShigongzongFrom", aeaExProjBuildUnitInfo);
+                    } else if (unitType.equals(this.shigongfenbao)) {
+                        map.put("applyShigongzhuanyefenbaoFrom", aeaExProjBuildUnitInfo);
+                    } else if (unitType.equals(this.laowufenbao)) {
+                        map.put("applyShigonglaowufenbaoFrom", aeaExProjBuildUnitInfo);
+                    } else if (unitType.equals(this.gongchengjianli)) {
+                        map.put("applyJianliFrom", aeaExProjBuildUnitInfo);
+                    }
                 }
             }
         }
         return map;
+    }
+
+    public PersonSetting zhuzhuangPersonSetting(AeaUnitProjLinkman aeaUnitProjLinkman){
+        PersonSetting person = new PersonSetting();
+        AeaLinkmanInfo aeaLinkmanInfoById = aeaLinkmanInfoMapper.getAeaLinkmanInfoById(aeaUnitProjLinkman.getLinkmanInfoId());
+        if(aeaUnitProjLinkman!=null){
+            person.setProjLinkmanId(aeaUnitProjLinkman.getProjLinkmanId());
+            person.setLinkmanType(aeaUnitProjLinkman.getLinkmanType());
+            person.setLinkmanInfoId(aeaUnitProjLinkman.getLinkmanInfoId());
+            person.setSafeLicenceNum(aeaUnitProjLinkman.getSafeLicenceNum());
+            person.setProfessionCertType(aeaUnitProjLinkman.getProfessionCertType());
+            person.setTitleCertNum(aeaUnitProjLinkman.getTitleCertNum());
+        }
+        if(aeaLinkmanInfoById!=null){
+            person.setLinkmanName(aeaLinkmanInfoById.getLinkmanName());
+            person.setLinkmanCertNo(aeaLinkmanInfoById.getLinkmanCertNo());
+        }
+        return person;
     }
 }

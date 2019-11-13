@@ -84,4 +84,6 @@ public interface AeaHiCertinstMapper {
      * @return
      */
     List<AeaHiCertinst> listAeaHiCertinstByIteminstIds(@Param("iteminstIds") String[] iteminstIds);
+
+    void batchInsertAeaHiCertinst(@Param("certinsts") List<AeaHiCertinst> certinsts);
 }

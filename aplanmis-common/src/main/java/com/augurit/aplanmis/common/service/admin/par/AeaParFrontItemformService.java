@@ -38,5 +38,5 @@ public interface AeaParFrontItemformService {
 
     AeaParFrontItemformVo getAeaParFrontItemformVoById(String frontItemformId) throws Exception;
 
-
+    List<AeaParFrontItemformVo> getAeaParFrontItemformVoByStageId(String stageId);
 }

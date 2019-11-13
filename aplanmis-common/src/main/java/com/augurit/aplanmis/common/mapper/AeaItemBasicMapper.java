@@ -114,6 +114,7 @@ public interface AeaItemBasicMapper {
 
     List<AeaItemBasic> listAeaItemBasicByOrgIds(@Param("itemBasic") AeaItemBasic aeaItemBasic,
                                                 @Param("orgIds") List<String> orgIds);
+
     /**
      * 查询部门事项以及标准事项
      *
@@ -180,18 +181,20 @@ public interface AeaItemBasicMapper {
      */
     List<String> getStageItemVerIdListByStageIdAndProjInfoId(@Param("stageId") String stageId, @Param("projInfoId") String projInfoId, @Param("rootOrgId") String rootOrgId);
 
-    List<OpuOmOrg> listOpuOmOrgByAllPropJoinItem(@Param("opuOmOrg") OpuOmOrg opuOmOrg,@Param("rootOrgId") String rootOrgId) ;
+    List<OpuOmOrg> listOpuOmOrgByAllPropJoinItem(@Param("opuOmOrg") OpuOmOrg opuOmOrg, @Param("rootOrgId") String rootOrgId);
 
     AeaItemBasic getLatestParentAeaItemBasicByChildItemId(@Param("itemId") String itemId, @Param("rootOrgId") String rootOrgId);
 
     void syncItemRegion(AeaItemBasic basic);
 
-    List<AeaItemBasic> checkUniqueItemCategoryMark(@Param("itemId")String itemId,
-                                                   @Param("isCatalog")String isCatalog,
-                                                   @Param("itemCategoryMark")String itemCategoryMark,
+    List<AeaItemBasic> checkUniqueItemCategoryMark(@Param("itemId") String itemId,
+                                                   @Param("isCatalog") String isCatalog,
+                                                   @Param("itemCategoryMark") String itemCategoryMark,
                                                    @Param("rootOrgId") String rootOrgId);
+
     /**
      * 查询所属顶级组织的事项审批部门信息
+     *
      * @param rootOrgId
      * @return
      */
@@ -199,6 +202,7 @@ public interface AeaItemBasicMapper {
 
     /**
      * 根据组织ID查询该组织下发布和试运行的所有实施事项
+     *
      * @param orgId
      * @return
      */
@@ -206,6 +210,7 @@ public interface AeaItemBasicMapper {
 
     /**
      * 根据机构获取最新版本事项
+     *
      * @param orgId
      * @param rootOrgId
      * @return
@@ -220,9 +225,9 @@ public interface AeaItemBasicMapper {
      * @param itemIds
      * @return
      */
-    List<AeaItemBasic> listSefAndChildLatestOkAeaItemBasic(@Param("rootOrgId")String rootOrgId,
-                                                           @Param("isCatalog")String isCatalog,
-                                                           @Param("itemIds")List<String> itemIds);
+    List<AeaItemBasic> listSefAndChildLatestOkAeaItemBasic(@Param("rootOrgId") String rootOrgId,
+                                                           @Param("isCatalog") String isCatalog,
+                                                           @Param("itemIds") List<String> itemIds);
 
     /**
      * 获取自己和子孙下级
@@ -232,9 +237,9 @@ public interface AeaItemBasicMapper {
      * @param itemIds
      * @return
      */
-    List<String> listSefAndChildLatestOkItemVerIds(@Param("rootOrgId")String rootOrgId,
-                                                   @Param("isCatalog")String isCatalog,
-                                                   @Param("itemIds")List<String> itemIds);
+    List<String> listSefAndChildLatestOkItemVerIds(@Param("rootOrgId") String rootOrgId,
+                                                   @Param("isCatalog") String isCatalog,
+                                                   @Param("itemIds") List<String> itemIds);
 
     /**
      * 通过事项版本集合和顶级部门获取事项数据
@@ -244,7 +249,7 @@ public interface AeaItemBasicMapper {
      * @return
      */
     List<AeaItemBasic> listAeaItemBasicByItemVerIdsAndOrgId(@Param("rootOrgId") String rootOrgId,
-                                                            @Param("itemVerIds")List<String> itemVerIds);
+                                                            @Param("itemVerIds") List<String> itemVerIds);
 
     List<AeaItemBasic> listAeaItemBasicByIteminstId(String iteminstId);
 
@@ -253,7 +258,9 @@ public interface AeaItemBasicMapper {
     //根据中介事项获取关联的行政事项列表
     List<AeaItemBasic> getAgentParentItem(@Param("itemId") String itemId, @Param("rootOrgId") String rootOrgId);
 
-    List<AeaItemBasic> listUnSelectedParFrontItemBasicByStageId(@Param("stageId") String stageId,@Param("frontItemId") String frontItemId,@Param("rootOrgId") String rootOrgId);
+    List<AeaItemBasic> listUnSelectedParFrontItemBasicByStageId(@Param("stageId") String stageId, @Param("frontItemId") String frontItemId, @Param("rootOrgId") String rootOrgId);
 
-    List<AeaItemBasic> listUnSelectedItemFrontItemBasicByItemVerId(@Param("itemVerId") String itemVerId,@Param("frontItemId") String frontItemId,@Param("rootOrgId") String rootOrgId);
+    List<AeaItemBasic> listUnSelectedItemFrontItemBasicByItemVerId(@Param("itemVerId") String itemVerId, @Param("frontItemId") String frontItemId, @Param("rootOrgId") String rootOrgId);
+
+    List<AeaItemBasic> getCompletedItemBasicByProjInfoId(@Param("projInfoId") String projInfoId, @Param("rootOrgId") String rootOrgId);
 }

@@ -56,30 +56,31 @@
             <input type="hidden" name="projInfoId" :value="projBascInfoShow.projInfoId">
             <div class="clearfix">
               <el-form-item class="input-inline" prop="localCode">
-                  <template slot="label">
-                    <el-tooltip class="item" effect="dark" content="填写全国统一项目代码(参考“投资项目基本信息共享规范”中的“投资项目统一代码规范”)。如果项目没有全国统一代码，填写地方项目编码。" placement="right-start">
-                      <i class="ag ag-help"></i>
-                    </el-tooltip>
-                    项目代码
-                  </template>
-                  <el-input name="localCode" :disabled="linkQuerySucc" v-model="projBascInfoShow.localCode" placeholder="投资平台登记的项目代码">
-                  </el-input>
+                <template slot="label">
+                  <el-tooltip class="item" effect="dark" content="填写全国统一项目代码(参考“投资项目基本信息共享规范”中的“投资项目统一代码规范”)。如果项目没有全国统一代码，填写地方项目编码。" placement="right-start">
+                    <i class="ag ag-help"></i>
+                  </el-tooltip>
+                  项目代码
+                </template>
+                <el-input name="localCode" :disabled="linkQuerySucc" v-model="projBascInfoShow.localCode" placeholder="投资平台登记的项目代码">
+                  <el-button slot="append" type="primary" :disabled="!localCode==''"  @click="getLocalcode()">生成编码</el-button>
+                </el-input>
               </el-form-item>
               <el-form-item class="input-inline" prop="gcbm">
-                  <template slot="label">
-                    <el-tooltip class="item" effect="dark" content="项目拆分为多个单项工程申报时，单项工程的唯一编码，如果项目不拆分，应与项目代码相同。" placement="right-start">
-                      <i class="ag ag-help"></i>
-                    </el-tooltip>
-                    工程代码
-                  </template>
-                  <el-input v-model="projBascInfoShow.gcbm" placeholder="请输入工程代码"></el-input>
+                <template slot="label">
+                  <el-tooltip class="item" effect="dark" content="项目拆分为多个单项工程申报时，单项工程的唯一编码，如果项目不拆分，应与项目代码相同。" placement="right-start">
+                    <i class="ag ag-help"></i>
+                  </el-tooltip>
+                  工程代码
+                </template>
+                <el-input v-model="projBascInfoShow.gcbm" placeholder="请输入工程代码"></el-input>
               </el-form-item>
             </div>
 
             <el-form-item label="项目/工程名称" class="proj-code-info" prop="projName">
-                <el-input name="projName" :disabled="linkQuerySucc" v-model="projBascInfoShow.projName" placeholder="请输入项目/工程名称">
-                </el-input>
-                <el-button @click="showProjTree()">项目工程</el-button>
+              <el-input name="projName" :disabled="linkQuerySucc" v-model="projBascInfoShow.projName" placeholder="请输入项目/工程名称">
+              </el-input>
+              <el-button type="primary" @click="showProjTree()">项目工程</el-button>
             </el-form-item>
 
             <div class="clearfix">
@@ -1805,7 +1806,12 @@
       <el-dialog @closed="uploadPercentage=0;progressDialogVisible=false" class="show-one-form" :title="oneformNameTitle" :close-on-press-escape="false" :close-on-click-modal="false"
         :width="(curWidth-20)+'px'" :visible.sync="oneFormDialogVisible">
         <!--<el-button type="primary" style="margin-left: 20px"><a target="_blank" :href="ctx+'rest/oneform/common/renderPage?applyinstId='+parallelApplyinstId+'&stageId='+stageId+'&'+formItemsIdStr+'&showBasicButton=false&includePlatformResource=true'">打印表单</a></el-button>-->
-        <div id="oneFormContent" :style="{height:(curHeight-84)+'px',overflow: 'auto'}"></div>
+        <div :style="{height:(curHeight-84)+'px',overflow: 'auto'}">
+          <div id="oneFormContent"></div>
+          <div class="form-iframe" v-if="devFormUrl.length>0" v-for="item in devFormUrl">
+            <iframe :src="item" frameborder="0"></iframe>
+          </div>
+        </div>
         <div class="right-bottom-btn" v-if="showMoreProjInfo">
           <el-button type="primary" circle><a target="_blank" :href="ctx+'rest/oneform/common/renderPage?applyinstId='+parallelApplyinstId+'&stageId='+stageId+'&'+formItemsIdStr+'&showBasicButton=false&includePlatformResource=true'">打印<br/>表单</a></el-button>
           <el-button circle @click="oneFormDialogVisible=false">关闭<br/>窗口</el-button>

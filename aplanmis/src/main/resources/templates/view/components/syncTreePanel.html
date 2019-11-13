@@ -1,4 +1,4 @@
-<template id="syncTreePanel" th:fragment="syncTreePanel">
+<template id="syncTreePanel" th:fragment="syncTreePanel" style="display: none">
     <span>
         <el-input style="width:85%;" placeholder="请选择" v-model="inputText" v-on:click.native="treeVisible = true" readonly></el-input>
         <el-dialog :title="title" :visible.sync="treeVisible">

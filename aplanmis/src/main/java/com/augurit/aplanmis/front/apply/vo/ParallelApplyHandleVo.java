@@ -214,6 +214,9 @@ public class ParallelApplyHandleVo {
 
         @ApiModelProperty(value = "扩展字段：表单名称")
         private String formName;
+
+        @ApiModelProperty(value = "材料绑定的事项版本id", notes = "证照材料需要这个字段去获取证照库的证照列表")
+        private String itemVerId;
     }
 
 }

@@ -11,6 +11,7 @@ import com.augurit.aplanmis.common.domain.AeaImService;
 import com.augurit.aplanmis.common.domain.AeaProjInfo;
 import com.augurit.aplanmis.common.domain.AeaUnitInfo;
 import com.augurit.aplanmis.common.service.file.FileUtilsService;
+import com.augurit.aplanmis.common.service.projPurchase.AeaImProjPurchaseService;
 import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
 import com.augurit.aplanmis.common.utils.BusinessUtils;
 import com.augurit.aplanmis.common.utils.CommonTools;
@@ -56,6 +57,8 @@ public class AeaImProjPurchaseController {
 
     @Autowired
     private ProjPurchaseService projPurchaseService;
+    @Autowired
+    private AeaImProjPurchaseService aeaImProjPurchaseService;
     @Autowired
     private FileUtilsService fileUtilsService;
 
@@ -157,11 +160,27 @@ public class AeaImProjPurchaseController {
         }
     }
 
+    @ApiOperation(value = "新增采购需求并发起流程", notes = "业主单位个人中心新增采购需求,批文文件上传officialRemarkFile，要求说明文件上传requireExplainFile")
+    @PostMapping(value = "/startProjPurchase")
+    public RestResult startProjPurchase(@Valid SaveAeaImProjPurchaseVo saveAeaImProjPurchaseVo, HttpServletRequest request) {
+
+        try {
+            //AeaImProjPurchase aeaImProjPurchase =
+            projPurchaseService.startProjPurchaseAndProcess(saveAeaImProjPurchaseVo, request);
+//            return new ContentRestResult<>(true, aeaImProjPurchase.getProjPurchaseId());
+            return new RestResult(true, "success");
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return new ContentRestResult<>(false, null, e.getMessage());
+        }
+    }
+
+
     @ApiOperation(value = "查询符合条件的中介机构", notes = "查询符合条件的中介机构")
     @PostMapping(value = "/getAgentUnitInfoList", produces = "application/json;charset=UTF-8")
     public ContentRestResult<List<AgentUnitInfoVo>> getAgentUnitInfoList(@RequestBody QueryAgentUnitInfoVo queryAgentUnitInfo) {
         try {
-            return new ContentRestResult<>(true, projPurchaseService.getAgentUnitInfoList(queryAgentUnitInfo));
+            return new ContentRestResult<>(true, aeaImProjPurchaseService.getAgentUnitInfoList(queryAgentUnitInfo));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return new ContentRestResult(false, null, e.getMessage());

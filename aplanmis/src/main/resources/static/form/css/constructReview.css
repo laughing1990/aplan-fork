@@ -241,6 +241,10 @@ body {
   width: 134.5%;
 }
 
+.allWidth .el-form-item__content {
+  width: 61.3%;
+}
+
 .form-title {
   width: 100%;
   float: left;
@@ -294,8 +298,8 @@ body {
   bottom: 200px;
   z-index: 1000;*/
   float: right;
-  /*margin-right: 91px;*/
-  margin-left: 90%;
+  margin-right: 91px;
+  /*margin-left: 90%;*/
 
 }
 
@@ -353,4 +357,8 @@ body {
 
 .el-dialog__header .el-dialog__title {
   line-height: 42px;
+}
+
+.red .el-input__inner {
+  border-color: red;
 }

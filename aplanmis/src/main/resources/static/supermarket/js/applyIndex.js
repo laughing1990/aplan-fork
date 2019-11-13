@@ -799,6 +799,47 @@ var vm = new Vue({
 		// 查询符合条件的中介机构
 		getAgentUnitInfoList: function (itemVerId) {
 			console.log(itemVerId);
+			var vm = this;
+			var isQualRequire = ''
+
+			if (!vm.form.serviceId) {
+				this.$message({
+					message: '请先选择服务',
+					type: 'error'
+				});
+				return;
+			}
+
+			if (vm.checkList.indexOf('isQualRequire') == "-1") {
+				isQualRequire = '0';
+			} else {
+				isQualRequire = '1';
+			}
+			var params = JSON.stringify({
+				isQualRequire: isQualRequire, // 是否需要资质要求：1 需要，0 不需要
+				qualRequireType: vm.qualRequireType, // 资质要求：1 多个资质子项符合其一即可，0 需同时符合所有选中资质子项
+				serviceId: vm.form.serviceId, // 服务ID
+			})
+			if (vm.majorQualRequiresArry.lenght !== 0) {
+				vm.qualsArry.push({qualId: vm.qualId, majorQualRequires: vm.majorQualRequiresArry})
+				params.quals = vm.qualsArry
+			}
+			console.log("请求的参数", params);
+			request('', {
+				url: ctx + '/market/getAgentUnitInfoList', type: 'post', data: params,
+				ContentType: "application/json",
+			}, function (res) {
+				console.log("查询符合条件的中介机构", res)
+				if (res.success) {
+					vm.agentUnit = res.content;
+					vm.chooseAgentTabledialogTable = true;
+				} else {
+					vm.agentUnit = [];
+					vm.chooseAgentTabledialogTable = false;
+				}
+			}, function (msg) {
+				vm.$message({message: '加载失败', type: 'error'});
+			});
 		},
 		// 资质要求 切换tab
 		handleClickAtiveQA: function (tab) {
@@ -3408,62 +3449,73 @@ var vm = new Vue({
 			row.splice(index, 1);
 		},
 
-		// 附件---
-		// 附件上传before
-		enclosureFileUploadBefore: function (file) {
-			var ts = this,
-					file = file;
-			var fileMaxSize = 1024 * 1024 * 10; // 10MB为最大限制
-			// 文件类型
-			// 检查文件类型
-			var index = file.name.lastIndexOf(".");
-			var ext = file.name.substr(index + 1);
-			if (['exe', 'sh', 'bat', 'com', 'dll'].indexOf(ext) !== -1) {
-				ts.$message({
-					message: '请上传非.exe,.sh,.bat,.com,.dll文件',
-				});
-				return false;
-			}
-			;
-			// 检查文件大小
-			if (file.size > fileMaxSize) {
-				ts.$message({
-					message: '请上传大小在10M以内的文件',
-				});
-				return false;
-			}
-			;
-			return true;
-		},
-		// 附件上传-类型
-		enclosureFileType: function (type) {
-			this.enclosureFileUploadType = type;
-			// console.log(this.enclosureFileUploadType)
-		},
-		// 附件上传-success
-		enclosureFileUploadSuccess: function (response, file, fileList) {
-			// console.log(response)
-			if (response.success && response.content) {
-				this.$message({
-					message: '上传成功！',
-					type: 'success'
-				});
-			} else {
-				return;
-			}
-			this.enclosureFileUploadType === 'officialRemark'
-					? this.officialRemarkFile = response.content
-					: this.requireExplainFile = response.content;
-
-		},
-		// 附件上传-error
-		enclosureFileUploadError: function (err, file, fileList) {
-			// console.log(err)
-			this.$message({
-				message: err.message,
-				type: 'error'
-			});
-		},
+		 // 附件---
+    // 附件上传before
+    enclosureFileUploadBefore: function(file){
+      var ts = this,
+        file = file;
+      var fileMaxSize = 1024 * 1024 * 10; // 10MB为最大限制
+      // 文件类型
+      // 检查文件类型
+      var index = file.name.lastIndexOf(".");
+      var ext = file.name.substr(index + 1);
+      if (['exe', 'sh', 'bat', 'com', 'dll'].indexOf(ext) !== -1) {
+        ts.$message({
+          message: '请上传非.exe,.sh,.bat,.com,.dll文件',
+        });
+        return false;
+      };
+      // 检查文件大小
+      if (file.size > fileMaxSize) {
+        ts.$message({
+          message: '请上传大小在10M以内的文件',
+        });
+        return false;
+      };
+      return true;
+    },
+    // 附件上传-类型
+    enclosureFileType: function(type){
+      this.enclosureFileUploadType = type;
+    },
+    // 附件上传-success
+    enclosureFileUploadSuccess: function(response, file, fileList){
+      // console.log(file)
+      this.progressDialogVisible = false;
+      this.uploadPercentage = 0;
+      if(response.success ){
+        this.$message({
+          message: '上传成功！',
+          type: 'success'
+        });
+      }else{
+        return;
+      }
+      if( this.enclosureFileUploadType === 'officialRemark' ){
+        this.officialRemarkFile = response.content;
+        this.fileList1 = [];
+        this.fileList1.push(file);
+      }else{
+        this.requireExplainFile = response.content;
+        this.fileList2 = [];
+        this.fileList2.push(file);;
+      }
+      
+    },
+    // 附件上传-error
+    enclosureFileUploadError: function(err, file, fileList){
+      this.progressDialogVisible = false;
+      this.uploadPercentage = 0;
+      this.$message({
+        message: err.message,
+        type: 'error'
+      });
+    },
+    // 附件上传进度
+    enclosureFileUploadProcess: function(event, file, fileList){
+      this.progressDialogVisible = true;
+      this.uploadPercentage = +file.percentage.toFixed(0);
+    },
 	},
 	filters: {
 		changeReceiveType: function (value) {

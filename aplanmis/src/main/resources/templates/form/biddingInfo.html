@@ -231,11 +231,11 @@
                             </el-date-picker>
                         </el-form-item>
                         <el-form-item label="招投标确认的行政单位机构代码" class="input-inline doubleLine" prop="govOrgCode">
-                            <el-input name="localCode" v-model="biddingInfo.govOrgCode" placeholder="请输入实际中标金额">
+                            <el-input name="localCode" v-model="biddingInfo.govOrgCode" placeholder="请输入行政单位机构代码">
                             </el-input>
                         </el-form-item>
                         <el-form-item label="招投标确认的行政单位名称" class="input-inline doubleLine" prop="govOrgName">
-                            <el-input name="localCode" v-model="biddingInfo.govOrgName" placeholder="请输入实际中标金额">
+                            <el-input name="localCode" v-model="biddingInfo.govOrgName" placeholder="请输入行政单位名称">
                             </el-input>
                         </el-form-item>
                         <el-form-item label="招投标确认的行政单位区域码" class="input-inline doubleLine" prop="govAreaCode">
@@ -253,13 +253,13 @@
                             :rules="[
                         { required: true, message: '组织机构代码不得为空！', trigger: 'change' }]">
                             <el-input name="localCode" v-model="biddingInfo.winBidUnits[0].organizationalCode"
-                                placeholder="请输入实际中标金额">
+                                placeholder="请输入组织机构代码">
                             </el-input>
                         </el-form-item>
                         <el-form-item label="统一社会信用代码" class="input-inline"
                             prop="winBidUnits[0].unifiedSocialCreditCode">
                             <el-input name="localCode" v-model="biddingInfo.winBidUnits[0].unifiedSocialCreditCode"
-                                placeholder="请输入实际中标金额">
+                                placeholder="请输入统一社会信用代码">
                             </el-input>
                         </el-form-item>
                         <el-form-item label="单位名称" class="input-inline" prop="winBidUnits[0].applicant" :rules="[
@@ -286,13 +286,13 @@
                                 :rules="[
                         { required: true, message: '组织机构代码不得为空！', trigger: 'change' }]">
                                 <el-input name="localCode" v-model="biddingInfo.agencyUnits[0].organizationalCode"
-                                    placeholder="请输入实际中标金额">
+                                    placeholder="请输入组织机构代码">
                                 </el-input>
                             </el-form-item>
                             <el-form-item label="统一社会信用代码" class="input-inline"
                                 prop="agencyUnits[0].unifiedSocialCreditCode">
                                 <el-input name="localCode" v-model="biddingInfo.agencyUnits[0].unifiedSocialCreditCode"
-                                    placeholder="请输入实际中标金额">
+                                    placeholder="请输入统一社会信用代码">
                                 </el-input>
                             </el-form-item>
                             <el-form-item label="单位名称" class="input-inline" prop="agencyUnits[0].applicant" :rules="[
@@ -318,13 +318,13 @@
                                 :rules="[
                         { required: true, message: '组织机构代码不得为空！', trigger: 'change' }]">
                                 <el-input name="localCode" v-model="biddingInfo.costUnits[0].organizationalCode"
-                                    placeholder="请输入实际中标金额">
+                                    placeholder="请输入组织机构代码">
                                 </el-input>
                             </el-form-item>
                             <el-form-item label="统一社会信用代码" class="input-inline"
                                 prop="costUnits[0].unifiedSocialCreditCode">
                                 <el-input name="localCode" v-model="biddingInfo.costUnits[0].unifiedSocialCreditCode"
-                                    placeholder="请输入实际中标金额">
+                                    placeholder="请输入统一社会信用代码">
                                 </el-input>
                             </el-form-item>
                             <el-form-item label="单位名称" class="input-inline" prop="costUnits[0].applicant">

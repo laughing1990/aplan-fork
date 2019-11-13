@@ -1,6 +1,21 @@
 var app = new Vue({
   el: '#app',
+
   data: function() {
+    // 输入为数字 大于等于0（浮点数）
+    var checkNumFloat = function(rule, value, callback) {
+      if (value) {
+        var flag = !/^[+]{0,1}(\d+)$|^[+]{0,1}(\d+\.\d+)$/.test(value);
+        if (flag) {
+          return callback(new Error('格式错误'));
+        } else {
+          callback();
+        }
+
+      } else {
+        callback();
+      }
+    };
     return {
       dialogTitie: '',
       pageLoading: false,
@@ -11,7 +26,7 @@ var app = new Vue({
       fieldType: [],
       landAreaUnitSite: [],
       region: [],
-      moneyType: '人民币',
+      moneyType: '万元',
       rules: {
         provinceProjCode: [
           { required: true, message: '请输入省级项目编号' },
@@ -23,6 +38,7 @@ var app = new Vue({
           { required: true, message: '请选择合同类别' },
         ],
         contractMoeny: [
+          { validator: checkNumFloat, trigger: ['blur'] },
           { required: true, message: '请输入合同金额' },
         ],
         contractSignTime: [
