@@ -101,6 +101,7 @@ var app = new Vue({
           { required: true, message: '请输入投资额', trigger: ['blur', 'change'] },
         ],
         'approveDrawingArea': [
+          { validator: checkNumFloat, trigger: ['blur'] },
           { required: true, message: '请输入图审面积' },
         ],
         'approveStartTime': [
