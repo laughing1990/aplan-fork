@@ -10,6 +10,20 @@ var app = new Vue({
         callback();
       }
     };
+    // 输入为数字 大于等于0（浮点数）
+    var checkNumFloat = function(rule, value, callback) {
+      if (value) {
+        var flag = !/^[+]{0,1}(\d+)$|^[+]{0,1}(\d+\.\d+)$/.test(value);
+        if (flag) {
+          return callback(new Error('格式错误'));
+        } else {
+          callback();
+        }
+
+      } else {
+        callback();
+      }
+    };
     // 输入为整数数字 大于等于0
     var checkMissNum = function(rule, value, callback) {
       if (value) {
@@ -83,6 +97,7 @@ var app = new Vue({
           { required: true, message: '请输入施工图审查合格书编号' },
         ],
         'inverstmentMoeny': [
+          { validator: checkNumFloat, trigger: ['blur'] },
           { required: true, message: '请输入投资额', trigger: ['blur', 'change'] },
         ],
         'approveDrawingArea': [
