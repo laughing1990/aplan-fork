@@ -2831,12 +2831,23 @@ var module1 = new Vue({
     // 上传电子件
     uploadFileCom: function(file){
       var _that = this;
+      var isAllowFile;
       var rowData = _that.selMatRowData;
       this.fileWinData = new FormData();
       file.forEach(function (u){
+        debugger;
+        // if (!_that.isAllowFile(u.file.name)){
+        //   _that.$message({
+        //     message: '不允许上传的文件类型',
+        //     type: 'error'
+        //   });
+        //   isAllowFile = false;
+        // }
         Vue.set(u.file,'fileName',u.file.name);
         _that.fileWinData.append('file', u.file);
+
       })
+      //if (!isAllowFile){ return ;}
       // Vue.set(file.file,'fileName',file.file.name);
       // this.fileWinData.append('file', file.file);
       this.fileWinData.append("matId", rowData.matId);
@@ -2892,6 +2903,19 @@ var module1 = new Vue({
         }
 
       });
+    },
+    //判断是否允许上传的文件
+    isAllowFile:function(fileName){
+      debugger;
+      var filetypes=[".jpg",".png",".rar",".txt",".zip",".doc",".ppt",".xls",".pdf",".docx",".xlsx"];
+      var fileend = fileName.substring(fileName.indexOf("."));
+      for(var i =0; i<filetypes.length;i++) {
+        if (filetypes[i] == fileend) {
+          return true;
+          break;
+        }
+      }
+      return false
     },
     // 一张表单获取并联申报实例化id
     getParallelApplyinstId: function(){
