@@ -4,24 +4,31 @@ import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.constants.DeletedStatus;
 import com.augurit.aplanmis.common.constants.UnitType;
-import com.augurit.aplanmis.common.domain.AeaHiApplyinst;
-import com.augurit.aplanmis.common.domain.AeaParentProj;
-import com.augurit.aplanmis.common.domain.AeaProjInfo;
-import com.augurit.aplanmis.common.domain.AeaUnitProj;
+import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.mapper.AeaProjInfoMapper;
 import com.augurit.aplanmis.common.mapper.AeaProjLinkmanMapper;
 import com.augurit.aplanmis.common.mapper.AeaUnitProjMapper;
 import com.augurit.aplanmis.common.service.instance.AeaHiApplyinstService;
+import com.augurit.aplanmis.common.service.linkman.AeaLinkmanInfoService;
 import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
+import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
+import com.augurit.aplanmis.common.utils.DesensitizedUtil;
 import com.augurit.aplanmis.common.utils.SessionUtil;
 import com.augurit.aplanmis.common.vo.LoginInfoVo;
 import com.augurit.aplanmis.mall.userCenter.service.RestUserCenterService;
+import com.augurit.aplanmis.mall.userCenter.vo.AeaLinkmanInfoVo;
+import com.augurit.aplanmis.mall.userCenter.vo.AeaUnitInfoVo;
+import com.google.common.base.Strings;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class RestUserCenterServiceImpl implements RestUserCenterService {
@@ -34,6 +41,10 @@ public class RestUserCenterServiceImpl implements RestUserCenterService {
     private AeaUnitProjMapper aeaUnitProjMapper;
     @Autowired
     private AeaHiApplyinstService aeaHiApplyinstService;
+    @Autowired
+    private AeaLinkmanInfoService aeaLinkmanInfoService;
+    @Autowired
+    private AeaUnitInfoService aeaUnitInfoService;
 
 
     @Override
@@ -127,10 +138,42 @@ public class RestUserCenterServiceImpl implements RestUserCenterService {
         aeaHiApplyinstService.updateAeaHiApplyinst(aeaHiApplyinst);
     }
 
+    @Override
+    public AeaLinkmanInfoVo getAeaLinkmanInfoByLinkmanInfoId(String userId) throws Exception {
+            AeaLinkmanInfo aeaLinkmanInfo=aeaLinkmanInfoService.getAeaLinkmanInfoByLinkmanInfoId(userId);
+            AeaLinkmanInfoVo aeaLinkmanInfoVo = new AeaLinkmanInfoVo();
+            BeanUtils.copyProperties(aeaLinkmanInfo,aeaLinkmanInfoVo);
+            aeaLinkmanInfoVo.setLinkmanCertNo(DesensitizedUtil.desensitizedIdNumber(aeaLinkmanInfoVo.getLinkmanCertNo()));
+            aeaLinkmanInfoVo.setLinkmanMobilePhone(DesensitizedUtil.desensitizedPhoneNumber(aeaLinkmanInfoVo.getLinkmanMobilePhone()));
+            return aeaLinkmanInfoVo;
+    }
+
+    @Override
+    public AeaUnitInfoVo getAeaUnitInfoByUnitInfoId(String unitInfoId) throws Exception {
+        AeaUnitInfo aeaUnitInfo = aeaUnitInfoService.getAeaUnitInfoByUnitInfoId(unitInfoId);
+        AeaUnitInfoVo aeaUnitInfoVo = new AeaUnitInfoVo();
+        BeanUtils.copyProperties(aeaUnitInfo,aeaUnitInfoVo);
+        aeaUnitInfoVo.setIdno(DesensitizedUtil.desensitizedIdNumber(aeaUnitInfoVo.getIdno()));
+        return aeaUnitInfoVo;
+    }
+
+    @Override
+    public List<AeaUnitInfoVo> getUnitInfoListByLinkmanInfoId(String userId) {
+        List<AeaUnitInfo> aeaUnitList=aeaUnitInfoService.getUnitInfoByLinkmanInfoId(userId);
+        return aeaUnitList.stream().map(AeaUnitInfoVo::build).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<AeaLinkmanInfoVo> findAllUnitLinkman(String unitInfoId) {
+        List<AeaLinkmanInfo> linkmanInfoList=aeaLinkmanInfoService.findAllUnitLinkman(unitInfoId);
+        return linkmanInfoList.stream().map(AeaLinkmanInfoVo::build).collect(Collectors.toList());
+    }
+
     public static void main(String[] args) {
         String gcbm = "abcd";
         int childNumber = 2;
         String projChildGcbm = gcbm + "-" + ("000" + (childNumber + 1)).substring(("000" + (childNumber + 1)).length() - 4);
         System.out.println(projChildGcbm);
     }
+
 }

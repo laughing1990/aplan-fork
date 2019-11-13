@@ -116,10 +116,11 @@
                 </el-autocomplete>
               </el-form-item>
               <el-form-item class="input-inline" prop="unitType" label='项目主体类型'>
-                <el-select @change='forceUpdate' v-model="formDataTuShen.unitType" placeholder="请选择项目主体类型">
-                  <!-- <el-option :label="item.itemName" :value="item.itemCode" v-for="item in proType"></el-option> -->
+                <!-- <el-select @change='forceUpdate' v-model="formDataTuShen.unitType" placeholder="请选择项目主体类型">
+                  <el-option :label="item.itemName" :value="item.itemCode" v-for="item in proType"></el-option>
                   <el-option label="施工图审查" value="13"></el-option>
-                </el-select>
+                </el-select> -->
+                <el-input value="施工图审查" disabled></el-input>
               </el-form-item>
             </div>
             <div class="clearfix">
@@ -194,7 +195,7 @@
                   </el-col>
                   <el-col :span="6">
                     <span><i>*</i>审查专业</span>
-                    <el-select @change='forceUpdate' v-model="type.prjSpty" placeholder="请选择审查专业" @click.native="">
+                    <el-select @change='forceUpdate' v-model="type.prjSpty" placeholder="请选择审查专业" @click.native="" :class="type.prjSpty?'':'red'">
                       <el-option v-for="item in prjType" :key="item.itemId" @click.native="" :label="item.itemName" :value="item.itemCode">
                       </el-option>
                     </el-select>
@@ -222,15 +223,16 @@
                 </el-autocomplete>
               </el-form-item>
               <el-form-item class="input-inline" prop="unitType" label='项目主体类型'>
-                <el-select @change='forceUpdate' v-model="formDataKanCha.unitType" placeholder="请选择项目主体类型">
-                  <!-- <el-option :label="item.itemName" :value="item.itemCode" v-for="item in proType"></el-option> -->
+                <!--  <el-select @change='forceUpdate' v-model="formDataKanCha.unitType" placeholder="请选择项目主体类型">
+                  <el-option :label="item.itemName" :value="item.itemCode" v-for="item in proType"></el-option>
                   <el-option label="工程勘察" value="4"></el-option>
-                </el-select>
+                </el-select> -->
+                <el-input value="工程勘察" disabled></el-input>
               </el-form-item>
             </div>
             <div class="clearfix">
               <el-form-item class="input-inline" prop="projectLeader" label="勘察单位项目负责人">
-                <el-select @change='forceUpdate' v-model="formDataKanCha.projectLeader" filterable placeholder="请选择勘察单位项目负责人" @click.native="getLinkMan(formDataKanCha)" style="width:76%;">
+                <el-select @change='forceUpdate' v-model="formDataKanCha.projectLeader" filterable placeholder="请选择勘察单位项目负责人" @click.native="getPerson(formDataKanCha)" style="width:76%;">
                   <el-option :label="item.addressName" :value="item.addressId" v-for="item in person" @click.native="selTypeLinkman(formDataKanCha,item)"></el-option>
                 </el-select>
                 <el-button icon="el-icon-circle-plus-outline" type="primary" class="item-left-btn" @click="addPerson(formDataKanCha);addEditManModalFlag='add'" title="新增" style="margin-left:5px;"></el-button>
@@ -293,10 +295,11 @@
                 </el-autocomplete>
               </el-form-item>
               <el-form-item class="input-inline" prop="unitType" label='项目主体类型'>
-                <el-select @change='forceUpdate' v-model="formDataSheJj.unitType" placeholder="请选择项目主体类型">
-                  <!-- <el-option :label="item.itemName" :value="item.itemCode" v-for="item in proType"></el-option> -->
+                <!-- <el-select @change='forceUpdate' v-model="formDataSheJj.unitType" placeholder="请选择项目主体类型">
+                  <el-option :label="item.itemName" :value="item.itemCode" v-for="item in proType"></el-option>
                   <el-option label="工程设计" value="3"></el-option>
-                </el-select>
+                </el-select> -->
+                <el-input value="工程设计" disabled></el-input>
               </el-form-item>
             </div>
             <div class="clearfix">
@@ -371,7 +374,7 @@
                   </el-col>
                   <el-col :span="6">
                     <span><i>*</i>审查专业</span>
-                    <el-select @change='forceUpdate' v-model="type.prjSpty" placeholder="请选择审查专业" @click.native="">
+                    <el-select @change='forceUpdate' v-model="type.prjSpty" placeholder="请选择审查专业" @click.native="" :class="type.prjSpty?'':'red'">
                       <el-option v-for="item in prjType" :key="item.itemId" @click.native="" :label="item.itemName" :value="item.itemCode">
                       </el-option>
                     </el-select>

@@ -3480,9 +3480,10 @@ var vm = new Vue({
     },
     // 附件上传-success
     enclosureFileUploadSuccess: function(response, file, fileList){
+      // console.log(file)
       this.progressDialogVisible = false;
       this.uploadPercentage = 0;
-      if(response.success && response.content){
+      if(response.success ){
         this.$message({
           message: '上传成功！',
           type: 'success'
@@ -3490,9 +3491,15 @@ var vm = new Vue({
       }else{
         return;
       }
-      this.enclosureFileUploadType === 'officialRemark' 
-        ? this.officialRemarkFile = response.content 
-        : this.requireExplainFile = response.content;
+      if( this.enclosureFileUploadType === 'officialRemark' ){
+        this.officialRemarkFile = response.content;
+        this.fileList1 = [];
+        this.fileList1.push(file);
+      }else{
+        this.requireExplainFile = response.content;
+        this.fileList2 = [];
+        this.fileList2.push(file);;
+      }
       
     },
     // 附件上传-error

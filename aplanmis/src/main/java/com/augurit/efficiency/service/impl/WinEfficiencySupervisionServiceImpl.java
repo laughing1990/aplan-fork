@@ -2437,19 +2437,39 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
         //计算时间段内的材料补全
 
         List<ThemeDayApplyRecord> applyRecords = aeaLogApplyStateHistMapper.getWindowApplyCountGroupByStage(windowId, "3", startTime, endTime, rootOrgId);
+        //单独算isPrarllel=1的，并行推进
+
+        for(int j = 0, len = list.size(); j < len; j++){
+            AeaAnaWinDayStatistics obj = list.get(j);
+            if ( "1".equals(obj.getIsParallel())  ) {
+                isParallelYiShouLi += obj.getDayPreAcceptanceCount();
+                isParallelBuYuShouLi += obj.getDayOutScopeCount();
+            }
+        }
+        for (int h = 0, len2 = applyRecords.size(); h < len2; h++) {
+            ThemeDayApplyRecord record = applyRecords.get(h);
+            if ( "1".equals(record.getIsParallel() ) ) {
+                isParallelCaiLiaoBuQuan += record.getCount();
+            }
+        }
+        //===
+
+
         for (int i = 0; i < 5; i++) {
 
             long yiShouLi = 0, buYuShouli = 0, caiLiaoBuQuan = 0;
+
             for (int j = 0, len = list.size(); j < len; j++) {
                 AeaAnaWinDayStatistics obj = list.get(j);
                 if (obj.getDybzspjdxh().indexOf(String.valueOf(i + 1)) != -1 && "0".equals(obj.getIsParallel())  ) {
                     yiShouLi += obj.getDayPreAcceptanceCount();
                     buYuShouli += obj.getDayOutScopeCount();
                 }
+                /*当前阶段包含并行的，组合阶段数据会重复
                 if (obj.getDybzspjdxh().indexOf(String.valueOf(i + 1)) != -1 && "1".equals(obj.getIsParallel())  ) {
                     isParallelYiShouLi += obj.getDayPreAcceptanceCount();
                     isParallelBuYuShouLi += obj.getDayOutScopeCount();
-                }
+                }*/
 
 
             }
@@ -2458,9 +2478,10 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
                 if (record.getDybzspjdxh().indexOf(String.valueOf(i + 1)) != -1 && "0".equals(record.getIsParallel())  ) {
                     caiLiaoBuQuan += record.getCount();
                 }
-                if (record.getDybzspjdxh().indexOf(String.valueOf(i + 1)) != -1 && "1".equals(record.getIsParallel() ) ) {
+                /*if (record.getDybzspjdxh().indexOf(String.valueOf(i + 1)) != -1 && "1".equals(record.getIsParallel() ) ) {
                     isParallelCaiLiaoBuQuan += record.getCount();
-                }
+                }*/
+
             }
             if (i == 4) {
                 yslList.add(yiShouLi + isParallelYiShouLi);
