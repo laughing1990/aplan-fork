@@ -14,7 +14,7 @@
     <script>
         var ctx = '[[@{/}]]';
     </script>
-<!--    <script src="../../static/approve/js/ip.js" th:src="@{/approve/js/ip.js}"></script>-->
+    <script src="../../static/approve/js/ip.js" th:src="@{/approve/js/ip.js}"></script>
     <style type="text/css">
         .remind_btn{
             color: white;
@@ -43,6 +43,17 @@
             padding: 10px 20px;
             min-height: 200px;
             font-size: 16px;
+        }
+        .more-time {
+          display: inline-block;
+          background: #DDDFE3;
+          position: relative;
+          width: 30px;
+          height: 24px;
+          line-height: 24px;
+          text-align: center;
+          border-radius: 12px;
+          color: #fff;
         }
     </style>
 </head>
@@ -277,13 +288,25 @@
             <el-table-column
                     sortable="custom"
                     prop="instState,timeruleUnit,overdueTime,remainingTime"
-                    min-width="105"
+                    min-width="100"
+                    min-width="148"
                     label="剩余时限">
                 <template slot-scope="scope">
                     <span class="bg-status green-deadline" v-if="!scope.row.instState">{{'剩余'+scope.row.dueNumText}}</span>
                     <span class="bg-status green-deadline" v-else-if="scope.row.instState=='1'">{{scope.row.remainingOrOverTimeText}}</span>
                     <span class="bg-status yellow-deadline" v-else-if="scope.row.instState=='2'">{{scope.row.remainingOrOverTimeText}}</span>
                     <span class="bg-status red-deadline" v-else-if="scope.row.instState=='3'">{{scope.row.remainingOrOverTimeText}}</span>
+<!--                    <el-tooltip  effect="light" placement="top" >-->
+<!--                      <div slot="content">-->
+<!--                        当前环节时限：剩余2天</br></br>-->
+<!--                        当前办件时限：剩余5天</br></br>-->
+<!--                        XXX组时限：逾期1天</br></br>-->
+<!--                        AAA组时限：剩余0.5天-->
+<!--                      </div>-->
+<!--                      <span class="more-time">-->
+<!--                        <i class="el-icon-more"></i>-->
+<!--                      </span>-->
+<!--                    </el-tooltip>-->
                 </template>
             </el-table-column>
             <el-table-column
