@@ -54,8 +54,8 @@ public class StageItemChecker extends AbstractChecker<AeaParStage> {
                     parFrontItemList.forEach(aeaParFrontItemVo -> {
                         message.append(aeaParFrontItemVo.getItemName()).append("、");
                     });
-                    String error = "[" + message.substring(0, message.length() - 1) + "]";
-                    return "请先办理以下事项：【" + error + "】";
+                    String error = "【" + message.substring(0, message.length() - 1) + "】";
+                    return "请先办理以下事项：" + error;
                 }
 
                 List<String> itemSeq = new ArrayList();
@@ -80,8 +80,8 @@ public class StageItemChecker extends AbstractChecker<AeaParStage> {
                 });
 
                 if (message.length() > 0) {
-                    String error = "[" + message.substring(0, message.length() - 1) + "]";
-                    return "请先办理以下事项：【" + error + "】";
+                    String error = "【" + message.substring(0, message.length() - 1) + "】";
+                    return "请先办理以下事项：" + error;
                 }
             }
         }

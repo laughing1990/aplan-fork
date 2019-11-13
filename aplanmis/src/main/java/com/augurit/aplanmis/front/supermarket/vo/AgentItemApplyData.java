@@ -5,6 +5,7 @@ import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.diyannotation.FiledNameIs;
 import com.augurit.aplanmis.common.domain.AeaImMajorQual;
 import com.augurit.aplanmis.common.domain.AeaImUnitRequire;
+import com.augurit.aplanmis.common.domain.AeaProjInfo;
 import com.augurit.aplanmis.front.apply.vo.BuildProjUnitVo;
 import com.augurit.aplanmis.supermarket.apply.vo.ImItemApplyData;
 import com.augurit.aplanmis.supermarket.apply.vo.ImPurchaseData;
@@ -39,7 +40,7 @@ public class AgentItemApplyData {
     private String itemVerId;
     //    @ApiModelProperty(value = "分局承办；并行推进事项分局承办，格式为：[{\"itemVerId\":\"111\",\"branchOrg\":\"222\"}]", required = true)
 //    private String branchOrgMap;
-    @ApiModelProperty(value = "项目ID", required = true)
+    @ApiModelProperty(value = "审批项目ID", required = true)
     private String projInfoId;
 //    @ApiModelProperty(value = "经办单位ID集合", hidden = true)
 //    private String[] handleUnitIds;
@@ -248,6 +249,7 @@ public class AgentItemApplyData {
         ImPurchaseData purchaseData = new ImPurchaseData();
         BeanUtils.copyProperties(this, purchaseData);
         purchaseData.setProjPurchaseId(UUID.randomUUID().toString());
+        purchaseData.setApproveProjInfoId(this.projInfoId);
         purchaseData.setApplyinstId(applyinstId);
         purchaseData.setApplyinstCode(applyinstCode);
         purchaseData.setCreater(SecurityContext.getCurrentUserName());
@@ -280,5 +282,14 @@ public class AgentItemApplyData {
             }
         }
         return purchaseData;
+    }
+
+    public AeaProjInfo createAeaProjInfo() {
+        AeaProjInfo projInfo = new AeaProjInfo();
+        BeanUtils.copyProperties(this, projInfo);
+        projInfo.setProjInfoId(UUID.randomUUID().toString());
+        projInfo.setCreater(SecurityContext.getCurrentUserName());
+        projInfo.setRootOrgId(SecurityContext.getCurrentOrgId());
+        return projInfo;
     }
 }

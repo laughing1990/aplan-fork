@@ -21,10 +21,11 @@
 
 <body  class="gray-body">
 
-<!--引入催办发送模块-->
-<div th:replace="../templates/view/components/sendRemind :: sendRemind"></div>
+
 
 <div class="search-table" id="searchTable" v-loading.fullscreen.lock="loading" v-cloak :style="{minHeight: (curHeight-32)+'px'}">
+    <!--引入催办发送模块-->
+    <div th:replace="../templates/view/components/sendRemind :: sendRemind"></div>
     <div class="search-box">
         <el-form  class="search-from clearfix" label-width="100px">
             <el-col :span="24" class="search-item-fif" style="width: 80%">

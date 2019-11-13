@@ -1045,12 +1045,11 @@
             <if test="busiType =='item'">
                 and matbak.MAT_ID not in(
                     select
-                        mat.MAT_ID
+                       mat.MAT_ID
                     from AEA_ITEM_INOUT iout, AEA_ITEM_MAT mat
                     <where>
                         and iout.MAT_ID = mat.MAT_ID
                         and iout.ROOT_ORG_ID = mat.ROOT_ORG_ID
-                        and iout.FILE_TYPE = 'mat'
                         and iout.IS_DELETED = '0'
                         <if test="itemVerId != null and itemVerId!='' ">
                             and iout.ITEM_VER_ID = #{itemVerId}
@@ -1081,7 +1080,6 @@
                     <where>
                         and parIn.MAT_ID = mat.MAT_ID
                         and parIn.ROOT_ORG_ID = mat.ROOT_ORG_ID
-                        and parIn.FILE_TYPE = 'mat'
                         and parIn.IS_DELETED = '0'
                         <if test="stageId  != null and stageId !='' ">
                             and parIn.STAGE_ID = #{stageId}
@@ -1221,8 +1219,8 @@
             <if test="certId != null">
                 and CERT_ID = #{certId}
             </if>
-            <if test="formId != null">
-                and FORM_ID = #{formId}
+            <if test="stoFormId != null">
+                and STO_FORM_ID = #{stoFormId}
             </if>
             and IS_DELETED = '0'
         </where>
@@ -1382,6 +1380,8 @@
                     and  ROOT_ORG_ID = #{rootOrgId}
                     and  STAGE_ID = #{stageId}
                     and  IS_DELETED = '0'
+                    and  MAT_ID IS NOT NULL
+                    and  MAT_ID != ''
                 </where>
             )
         </where>
@@ -1414,6 +1414,8 @@
                     </if>
                     and  IS_INPUT = #{isInput}
                     and  IS_DELETED = '0'
+                    and  MAT_ID IS NOT NULL
+                    and  MAT_ID != ''
                 </where>
             )
         </where>

@@ -393,7 +393,7 @@ var SyncTreePanel = {
         this.queryTree();
     },
     watch: {
-        filterText(val) {
+        filterText: function(val) {
             this.$refs.tree.filter(val);
         }
     }
