@@ -546,7 +546,7 @@
                     and ahs.APPLYINST_ID = aha.APPLYINST_ID
                     and aha.APPLYINST_SOURCE= #{source}
                     and aha.IS_SERIES_APPROVE = #{isApprove}
-                    and ahs.IS_PARALLEL= #{isApprove}
+        and ahs.IS_PARALLEL= #{isParallel}
                     and asti.PROC_INST_ID = ahi.PROCINST_ID
                     and asti.ORG_ID = #{rootOrgId}
                     and ahi.ROOT_ORG_ID = #{rootOrgId}
@@ -689,7 +689,7 @@
 
     <select id="getApplyByTheme" resultType="com.augurit.aplanmis.common.vo.analyse.ThemeApplyStatisticsVo">
         select THEME_ID as themeId, THEME_NAME as themeName, APPLYINST_SOURCE as applyinstSource,
-        sum(DAY_APPLY_COUNT) as apply, sum(DAY_PRE_ACCEPTANCE_COUNT) as acceptDeal, sum(DAY_OVER_TIME_COUNT) as overTime
+        sum(DAY_APPLY_COUNT) as apply, sum(DAY_PRE_ACCEPTANCE_COUNT) as acceptDeal, sum(DAY_OVER_TIME_COUNT) as overtime
         from
         AEA_ANA_THEME_DAY_STATISTICS
         <where>

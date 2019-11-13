@@ -495,11 +495,12 @@
     <select id="getApplyByTheme" resultType="com.augurit.aplanmis.common.vo.analyse.ThemeApplyStatisticsVo">
         select THEME_ID as themeId, THEME_NAME as themeName, APPLYINST_SOURCE as applyinstSource,
         sum(MONTH_APPLY_COUNT) as apply, sum(MONTH_PRE_ACCEPTANCE_COUNT) as acceptDeal, sum(MONTH_OVER_TIME_COUNT) as
-        overTime
-        from
+        overTime from
         AEA_ANA_THEME_MONTH_STATISTICS
         <where>
-            and STATISTICS_MONTH = #{month}
+            <if test="month != null and month != ''">
+                and STATISTICS_MONTH = #{month}
+            </if>
             and ROOT_ORG_ID = #{rootOrgId}
         </where>
         group by THEME_ID, THEME_NAME, APPLYINST_SOURCE

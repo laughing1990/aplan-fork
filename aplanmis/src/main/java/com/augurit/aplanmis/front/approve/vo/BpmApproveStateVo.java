@@ -37,4 +37,6 @@ public class BpmApproveStateVo {
     private String hasSpecial = "0";
     @ApiModelProperty(value = "是否发起过补正：1是 0否", required = true, dataType = "string")
     private String hasSupply = "0";
+    @ApiModelProperty(value = "是否显示一张表单：1是 0否", required = true, dataType = "string")
+    private String isShowOneForm = "0";
 }
