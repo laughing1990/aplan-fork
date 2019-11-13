@@ -95,7 +95,7 @@
         where LINKMAN_INFO_ID IN (
             SELECT LINKMAN_INFO_ID
             FROM aea_hi_applyinst
-            AND APPLYINST_ID = #{applyinstId}
+        where APPLYINST_ID = #{applyinstId}
         )
         AND IS_DELETED = '0'
     </select>

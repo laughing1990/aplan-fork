@@ -68,7 +68,7 @@ public class LoginController {
             return login;
         }catch (Exception e){
             logger.error(e.getMessage(),e);
-            return new ContentResultForm<>(false,e.getMessage());
+            return new ContentResultForm<>(false,"登录出错");
         }
     }
 
@@ -88,7 +88,7 @@ public class LoginController {
 
         }catch (Exception e){
             logger.error(e.getMessage(),e);
-            return new ResultForm(false,e.getMessage());
+            return new ResultForm(false,"退出登录");
         }
     }
 
@@ -100,7 +100,7 @@ public class LoginController {
             return commonLoginService.changeApplicant(request,unitInfoId);
         }catch (Exception e){
             logger.error(e.getMessage(),e);
-            return new ResultForm(false,e.getMessage());
+            return new ResultForm(false,"委托人切换单位接口出错");
         }
     }
 }

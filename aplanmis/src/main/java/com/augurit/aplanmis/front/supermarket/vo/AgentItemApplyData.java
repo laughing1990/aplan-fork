@@ -288,6 +288,7 @@ public class AgentItemApplyData {
         AeaProjInfo projInfo = new AeaProjInfo();
         BeanUtils.copyProperties(this, projInfo);
         projInfo.setProjInfoId(UUID.randomUUID().toString());
+        projInfo.setCreateTime(new Date());
         projInfo.setCreater(SecurityContext.getCurrentUserName());
         projInfo.setRootOrgId(SecurityContext.getCurrentOrgId());
         return projInfo;

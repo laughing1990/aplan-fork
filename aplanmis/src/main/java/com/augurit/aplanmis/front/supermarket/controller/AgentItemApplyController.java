@@ -58,7 +58,7 @@ public class AgentItemApplyController {
         restImApplyService.savePurchaseProjInfo(purchaseData);
         //保存受理回执，物料回执
         if (StringUtils.isBlank(applyinstIdParam)) {
-            receiveService.saveReceive(new String[]{applyinstId}, new String[]{"1", "2"}, SecurityContext.getCurrentUserName(), "");
+            receiveService.saveAgentItemReceive(applyinstId, new String[]{"1", "2"}, SecurityContext.getCurrentUserName(), agentItemApplyData.getComments());
         }
         return new ContentResultForm<>(true, applyinstId, "Series start process success");
     }
