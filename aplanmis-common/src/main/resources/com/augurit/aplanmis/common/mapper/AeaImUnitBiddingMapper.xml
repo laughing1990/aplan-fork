@@ -419,4 +419,12 @@
             AND IS_DELETE = '0'
         </where>
     </select>
+
+    <update id="updateWinBid">
+        update aea_im_unit_bidding aiub set aiub.IS_WON_BID='1' ,aiub.BIDDING_TIME=now()
+        where aiub.UNIT_BIDDING_ID=#{unitBiddingId}
+        <if test="projPurchaseId!=null and projPurchaseId!=''">
+            and aiub.PROJ_PURCHASE_ID=#{projPurchaseId}
+        </if>
+    </update>
 </mapper>
