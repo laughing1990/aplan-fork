@@ -226,7 +226,7 @@ var app = new Vue({
           linkmanName: '',
           linkmanCertNo: '',
           prjSpty: '1',
-          unitProjId: ''
+          unitProjId: '',
           unitInfoId: ''
         }
         this.formDataSheJj.linkmen.push(dataType3);
