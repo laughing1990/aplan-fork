@@ -202,34 +202,40 @@ var app = new Vue({
       var svalue = location.search.match(new RegExp("[\?\&]" + val + "=([^\&]*)(\&?)", "i"));
       return svalue ? svalue[1] : svalue;
     },
-    init: function(formDataTuShen, formDataSheJj) {
-      var dataType = {
-        linkmanInfoId: '',
-        linkmanType: '502001',
-        linkmanName: '',
-        linkmanCertNo: '',
-        prjSpty: '',
-        unitProjId: ''
+    init: function(val) {
+      if (val == 'sheji') {
+        var dataType3 = {
+          linkmanInfoId: '',
+          linkmanType: '102003',
+          linkmanName: '',
+          linkmanCertNo: '',
+          prjSpty: '1',
+          unitProjId: ''
+        }
+        this.formDataSheJj.linkmen.push(dataType3);
+
+      } else {
+        var dataType = {
+          linkmanInfoId: '',
+          linkmanType: '502003',
+          linkmanName: '',
+          linkmanCertNo: '',
+          prjSpty: '1',
+          unitProjId: ''
+        }
+        var dataType2 = {
+          linkmanInfoId: '',
+          linkmanType: '502002',
+          linkmanName: '',
+          linkmanCertNo: '',
+          prjSpty: '1',
+          unitProjId: ''
+        }
+
+        this.formDataTuShen.linkmen.push(dataType);
+        this.formDataTuShen.linkmen.push(dataType2);
       }
-      var dataType2 = {
-        linkmanInfoId: '',
-        linkmanType: '502002',
-        linkmanName: '',
-        linkmanCertNo: '',
-        prjSpty: '',
-        unitProjId: ''
-      }
-      var dataType3 = {
-        linkmanInfoId: '',
-        linkmanType: '102003',
-        linkmanName: '',
-        linkmanCertNo: '',
-        prjSpty: '',
-        unitProjId: ''
-      }
-      this.formDataTuShen.linkmen.push(dataType);
-      this.formDataTuShen.linkmen.push(dataType2);
-      this.formDataSheJj.linkmen.push(dataType3);
+
 
     },
     // 请求table数据
@@ -243,18 +249,23 @@ var app = new Vue({
             projInfoId: this.projInfoId
           },
         }, function(res) {
-          if (vm.formData.drawings.length == 0) {
-            vm.formDataTuShen = res.content.drawings[2] || {};
-            vm.formDataKanCha = res.content.drawings[0] || {};
-            vm.formDataSheJj = res.content.drawings[1] || {};
+          vm.formDataTuShen = res.content.drawings[2] || {};
+          vm.formDataKanCha = res.content.drawings[0] || {};
+          vm.formDataSheJj = res.content.drawings[1] || {};
+          if (vm.formDataTuShen.linkmen.length == 0) {
             vm.formDataTuShen.linkmen = [];
-            vm.formDataKanCha.linkmen = [];
-            vm.formDataSheJj.linkmen = [];
-            vm.formDataTuShen.linkmanType = '104002';
-            vm.formDataKanCha.linkmanType = '104002';
-            vm.formDataSheJj.linkmanType = '104002';
+            vm.init('tushen');
           }
-          vm.init();
+          if (vm.formDataSheJj.linkmen.length == 0) {
+            vm.formDataSheJj.linkmen = [];
+            vm.init('sheji');
+          }
+
+
+          vm.formDataTuShen.linkmanType = '502001';
+          vm.formDataKanCha.linkmanType = '101001';
+          vm.formDataSheJj.linkmanType = '102001';
+
           if (!res.success) {
             vm.$message({
               message: res.message,
