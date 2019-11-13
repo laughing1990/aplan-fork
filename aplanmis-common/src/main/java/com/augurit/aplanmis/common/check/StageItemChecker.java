@@ -52,10 +52,10 @@ public class StageItemChecker extends AbstractChecker<AeaParStage> {
 
                 if (itemBasics.size() < 1) {
                     parFrontItemList.forEach(aeaParFrontItemVo -> {
-                        message.append(aeaParFrontItemVo.getItemName()).append("、");
+                        message.append(aeaParFrontItemVo.getItemName() + "事项").append("、");
                     });
                     String error = "【" + message.substring(0, message.length() - 1) + "】";
-                    return "请先办理以下事项：" + error;
+                    return error + "尚未审批通过，无法申报【" + stage.getStageName() + "】。";
                 }
 
                 List<String> itemSeq = new ArrayList();
@@ -70,18 +70,18 @@ public class StageItemChecker extends AbstractChecker<AeaParStage> {
                 parFrontItemList.forEach(aeaParFrontItemVo -> {
                     if ("1".equals(aeaParFrontItemVo.getIsCatalog())) {
                         if (!itemSeqStr.contains(aeaParFrontItemVo.getItemId())) {
-                            message.append(aeaParFrontItemVo.getItemName()).append("、");
+                            message.append(aeaParFrontItemVo.getItemName() + "事项").append("、");
                         }
                     } else {
                         if (!ids.contains(aeaParFrontItemVo.getItemVerId())) {
-                            message.append(aeaParFrontItemVo.getItemName()).append("、");
+                            message.append(aeaParFrontItemVo.getItemName() + "事项").append("、");
                         }
                     }
                 });
 
                 if (message.length() > 0) {
                     String error = "【" + message.substring(0, message.length() - 1) + "】";
-                    return "请先办理以下事项：" + error;
+                    return error + "尚未审批通过，无法申报【" + stage.getStageName() + "】。";
                 }
             }
         }
