@@ -85,18 +85,6 @@ public class ImPurchaseData {
 
     @ApiModelProperty(value = "是否现场见证：1 是， 0 否", hidden = true)
     private String isLiveWitness = "0";
-    /* @ApiModelProperty(value = "见证者1姓名")
-     private String witnessName1;
-     @ApiModelProperty(value = "见证者2姓名")
-     private String witnessName2;
-     @ApiModelProperty(value = "见证者3姓名")
-     private String witnessName3;
-     @ApiModelProperty(value = "见证者1电话")
-     private String witnessPhone1;
-     @ApiModelProperty(value = "见证者2电话")
-     private String witnessPhone2;
-     @ApiModelProperty(value = "见证者3电话")
-     private String witnessPhone3;*/
     @ApiModelProperty(value = "是否公示中选机构： 1 是， 0 否")
     private String isDiscloseIm;
     @ApiModelProperty(value = "是否公示中标公告：1 是， 0 否")
@@ -153,9 +141,12 @@ public class ImPurchaseData {
 
     @ApiModelProperty(value = "【当IS_AVOID=1时必填】回避单位ID，多个,隔开")
     private String avoidUnitInfoIds;
-    @ApiModelProperty(value = "项目ID,当为采购项目时")
-    private String projInfoId;
+    @ApiModelProperty(value = "审批项目ID,当为采购项目时")
+    private String approveProjInfoId;
+
     //采购项目信息
+    @ApiModelProperty(value = "采购项目ID,当为采购项目时")
+    private String projInfoId;
     @NotBlank(message = "采购项目编码不能为空")
     @ApiModelProperty(value = "采购项目地方编码", required = true)
     @FiledNameIs(filedValue = "采购项目地方编码")
@@ -216,7 +207,6 @@ public class ImPurchaseData {
     private String applySubject;
 
     public AeaImProjPurchase createAeaImProjPurchase() {
-//        this.projPurchaseId = UUID.randomUUID().toString();
         AeaImProjPurchase aeaImProjPurchase = new AeaImProjPurchase();
         BeanUtils.copyProperties(this, aeaImProjPurchase);
         aeaImProjPurchase.setQuoteType("0");// 报价方式,0 金额 1 下浮率
@@ -226,26 +216,6 @@ public class ImPurchaseData {
         aeaImProjPurchase.setIsActive("1");
         aeaImProjPurchase.setCreateTime(new Date());
         return aeaImProjPurchase;
-        /*aeaImProjPurchase.setProjPurchaseId(this.projPurchaseId);
-        aeaImProjPurchase.setProjInfoId(this.projInfoId);
-        aeaImProjPurchase.setServiceItemId(this.serviceItemId);// 服务和中介服务事项关联ID
-        aeaImProjPurchase.setChoiceImunitTime(this.choiceImunitTime);// 选取中介时间
-        aeaImProjPurchase.setExpirationDate(this.getExpirationDate());// 截止日期
-        aeaImProjPurchase.setIsDefineAmount(this.getIsDefineAmount());// 是否确认金额，1 是 0 否
-        aeaImProjPurchase.setSelectCondition(this.getSelectCondition());// 服务选择条件：1 多个服务具备其一，0 多个服务都具备
-        aeaImProjPurchase.setOwnerComplaintPhone(this.ownerComplaintPhone);// 业主投诉电话
-        aeaImProjPurchase.setIsDiscloseIm(this.getIsDiscloseIm());// 是否公示中选机构： 1 是， 0 否
-        aeaImProjPurchase.setIsDiscloseBidding(this.getIsDiscloseBidding());// 是否公示中标公告：1 是， 0 否
-        aeaImProjPurchase.setApplyinstCode(this.getApplyinstCode());// 关联的审批流水号
-        aeaImProjPurchase.setIsApproveProj(isApproveProj);// 是否为投资审批项目：1 是，0 否
-        aeaImProjPurchase.setContacts(this.linkmanName);// 业主联系人
-        aeaImProjPurchase.setMoblie(this.getLinkmanMobilePhone());// 联系电话
-        aeaImProjPurchase.setBiddingType(this.getBiddingType());// 竞价类型：1 随机中标，2 自主选择
-        aeaImProjPurchase.setAuditFlag(AuditFlagStatus.WAIT_CHOOSE);// 采购需求状态：0：未提交，1：服务中，2：服务完成，3：服务中止，4：审核中，5：退回，6：报名中，7：选取中，8：选取开始，9：已选取，10：无效，11：待选取，12：已过时
-        aeaImProjPurchase.setBasePrice(this.getBasePrice());// 最低价格（万元）
-        aeaImProjPurchase.setHighestPrice(this.getHighestPrice());// 最高价格（万元）
-        aeaImProjPurchase.setServiceContent(this.getServiceContent());// 服务内容
-        aeaImProjPurchase.setLinkmanInfoId(linkmanInfoId);// 业主委托人信息ID*/
 
     }
 

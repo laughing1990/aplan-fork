@@ -18,15 +18,15 @@ public class LoginInfoVo implements Serializable {
     @ApiModelProperty(value = "单位ID")
     private String unitId;//单位ID
     @ApiModelProperty(value = "是否是管理员",notes = "1 是， 0 否")
-    private String isAdministrators; // 是否是管理员：1 是， 0 否
+    private String isAdministrators;
     @ApiModelProperty(value = "是否为个人账号",notes = "1 是， 0 否")
-    private String isPersonAccount; // 是否为个人账号：1 是， 0 否
+    private String isPersonAccount;
     @ApiModelProperty(value = "登录账号")
-    private String loginName;  // 登录账号
+    private String loginName;
     @ApiModelProperty(value = "个人名称")
-    private String personName;  // 个人名称
+    private String personName;
     @ApiModelProperty(value = "单位名称")
-    private String unitName; // 单位名称
+    private String unitName;
     @ApiModelProperty(value = "sessionId")
     private String sid; //  sessionId
     @ApiModelProperty(value = "是否业主",notes = "1 是， 0 否")
