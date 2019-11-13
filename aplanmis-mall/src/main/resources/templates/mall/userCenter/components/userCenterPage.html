@@ -412,17 +412,6 @@
   </div>
 
   <el-dialog :title="editTitle" :visible.sync="addPerson" width="800px">
-    <el-select clearable
-               :filterable="true"
-               :remote="true"
-               reserve-keyword @change="hangeSelectChange" @clear="clearSelect" :remote-method="remoteMethod"  value-key="linkmanCertNo" v-model="selectObj" filterable placeholder="请输入姓名/证件号码/手机号码查询" style="width:555px;margin-left: 119px;margin-bottom: 20px;">
-      <el-option
-              v-for="item in selectPeple"
-              :key="item.linkmanInfoId"
-              :label="item.linkmanName"
-              :value="item">
-      </el-option>
-    </el-select>
     <div style="display: inline-block;"  v-if="isAdd"> <span style="cursor:pointer;background: #457EFF;padding: 11px 15px;color: #fff;border-radius: 4px;" @click="searchLinkman"><i class="el-icon-search"></i>查询</span></div>
    <!-- <el-input v-model="keyword" placeholder="请输入姓名/证件号码/手机号码查询"style="width:555px;margin-left: 119px;margin-bottom: 20px;">
       <template slot="append" v-if="isAdd"> <span style="cursor:pointer;" @click="searchLinkman"><i class="el-icon-search"></i>查询</span></template>
@@ -435,7 +424,7 @@
           <el-input v-model="RowData.linkmanName" :clearable="true" placeholder="联系人姓名"style="width:210px;"></el-input>
       </el-form-item>
       <el-form-item label="证件号码" required prop="linkmanCertNo">
-        <el-input v-model="RowData.linkmanCertNo" placeholder="请输入姓名/证件号码/手机号码查询"style="width:210px;">
+        <el-input v-model="RowData.linkmanCertNo" placeholder="联系人身份证号"style="width:210px;">
         </el-input>
       </el-form-item>
       <el-form-item label="手机号码" required prop="linkmanMobilePhone">
