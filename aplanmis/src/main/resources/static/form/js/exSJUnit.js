@@ -320,6 +320,7 @@ var vm = new Vue({
             exSJAllUnit:{
                 aeaExProjBuildUnitInfo:'',
             },//所有表单集合
+            personIdList: [],//人员批量删除
         }
     },
     mounted:function(){
@@ -402,8 +403,12 @@ var vm = new Vue({
             };
             row.push(dataType);
         },
-        // 新增人员设置
+        // 删除人员设置
         delLinkmanTypes: function(row,index){
+            var _that = this;
+            if (row[index].projLinkmanId){
+                _that.personIdList.push(row[index].projLinkmanId)
+            }
             row.splice(index,1);
         },
         //保存（更新）表单信息
@@ -428,9 +433,9 @@ var vm = new Vue({
             applyJianli.linkmanType = _that.C_PRJ_PERSON_POST.gongchengjianli;
             var a = [gongchengzong,shigongzong,shigongzhuanyefenbao,shigonglaowufenbao,applyJianli];
             _that.exSJAllUnit.aeaExProjBuildUnitInfo = JSON.stringify(a);
-            debugger;
             _that.$refs['unitInfoShowFrom','gongchengzongFrom','applyShigongzongFrom','applyShigongzhuanyefenbaoFrom','applyShigonglaowufenbaoFrom','applyJianliFrom'].validate(function (valid){
                 if(valid){
+                    _that.delPeronSetting();
                     request('',{
                         url: ctx + '/rest/from/exSJUnit/saveOrUpdateSJUnitInfo',
                         data: _that.exSJAllUnit,
@@ -457,6 +462,28 @@ var vm = new Vue({
                 }
             })
         },
+        delPeronSetting:function(){
+            var _that = this;
+            if(_that.personIdList){
+                var parm = _that.personIdList.join();
+                request('',{
+                    url: ctx + '/rest/from/exSJUnit/delPersonSetting',
+                    data: {
+                        parm: parm
+                    },
+                    type: 'get',
+                },function (data) {
+                    if (data.success) {
+                        console.log("删除成功")
+                    }else {
+                        _that.$message({
+                            message: '删除人员失败',
+                            type: 'error'
+                        });
+                    }
+                })
+            }
+        },
         //从数据字典获取信息
         getInfoByDataDictionary:function(code){
             var _that = this;
@@ -468,6 +495,12 @@ var vm = new Vue({
                 if(data.content){
                     _that.structureSystem = data.content.C_STRUCT_TYPE;
                     _that.projUnitLinkmanType = data.content.C_PRJ_PERSON_POST;
+                    var arr = _that.projUnitLinkmanType;
+                    arr.map(function (value,index) {
+                        if(value.itemCode == "104001" || value.itemCode == "104002" || value.itemCode == "105001"){
+                            _that.projUnitLinkmanType.splice(index,1);
+                        }
+                    })
                     _that.jiangliLinkmanType = data.content.C_PRJ_PERSON_POST;
                     _that.professionCertType = data.content.C_REG_LCN_TYPE;
                     _that.titleCertNum = data.content.C_TITLE;
@@ -576,6 +609,7 @@ var vm = new Vue({
                 val.personSetting = JSON.parse (JSON.stringify(val.personSetting));
                 this.applyJianliFrom = val;
                 this.applyJianliFrom.unitType = '11';
+                this.applyJianliFrom.linkmanType = '105001';
             }
         },
         // 人员设置选择人员
@@ -586,7 +620,6 @@ var vm = new Vue({
         },
         //选择项目负责人
         selLinkman: function(data,ind1,type){
-            debugger;
             var _that = this;
             if(type == 'shigongzongchenbao'){
                 if(data){
@@ -651,7 +684,6 @@ var vm = new Vue({
         },
         // 删除联系人
         delLinkman: function (data,parentData,ind) {
-            debugger;
             var _that = this;
             if(!data.addressId){
                 alertMsg('提示信息', '联系人ID为空', '关闭', 'warning', true);
