@@ -92,6 +92,7 @@ public class AeaExProjBidController {
                 return new ContentResultForm<AeaExProjBidVo>(true, new AeaExProjBidVo());
             }
         }catch(Exception e){
+            logger.error("获取招标信息失败！原因："+e.getMessage());
             return new ContentResultForm<AeaExProjBidVo>(false, new AeaExProjBidVo(),"获取招标信息失败！原因："+e.getMessage());
         }
     }
@@ -106,6 +107,7 @@ public class AeaExProjBidController {
     @RequestMapping("/saveAeaExProjBid")
     @ApiOperation(value = "保存招投标单位信息")
     public ResultForm saveAeaExProjBid(@RequestBody  AeaExProjBidVo aeaExProjBidVo) {
+        ContentResultForm<AeaExProjBidVo> resultForm = new ContentResultForm<AeaExProjBidVo>(true);
         try {
             if (aeaExProjBidVo != null) {
                 //判断项目是否存在
@@ -117,11 +119,11 @@ public class AeaExProjBidController {
                         Assert.isTrue(aeaExProjBidVo.getAgencyUnits() != null, "其他类委托时，代理机构信息不能为空！");
                     }
                     //如果是直接委托，需要删除掉 招标代理、造价咨询 类型的关联表信息(暂时不保存)
-                    if(DIRECT_CONSIGN.equals(aeaExProjBidVo.getBidMode())){
-                        List<String> unitTypes=new ArrayList<String>();
+                    if (DIRECT_CONSIGN.equals(aeaExProjBidVo.getBidMode())) {
+                        List<String> unitTypes = new ArrayList<String>();
                         unitTypes.add(AGENT_UNIT);
                         unitTypes.add(COST_UNIT);
-                        aeaExProjBidService.delUnitProjInfo(aeaExProjBidVo.getProjInfoId(),unitTypes);
+                        aeaExProjBidService.delUnitProjInfo(aeaExProjBidVo.getProjInfoId(), unitTypes);
                     }
                     //招投标信息
                     if (aeaExProjBidVo.getBidId() != null && !"".equals(aeaExProjBidVo.getBidId())) {
@@ -136,30 +138,43 @@ public class AeaExProjBidController {
                     List<AeaUnitProj> aeaUnitProjNewList = new ArrayList<AeaUnitProj>();
                     //中标单位信息
                     List<AeaUnitInfo> winBidUnits = aeaExProjBidVo.getWinBidUnits();
-                    aeaExProjBidService.saveOrUpdateUnitInfo(aeaExProjBidVo,winBidUnits,WINBID_UNIT,aeaUnitProjNewList);
+                    aeaExProjBidService.saveOrUpdateUnitInfo(aeaExProjBidVo, winBidUnits, WINBID_UNIT, aeaUnitProjNewList);
 
                     //招商代理机构信息
                     List<AeaUnitInfo> agencyUnits = aeaExProjBidVo.getAgencyUnits();
-                    aeaExProjBidService.saveOrUpdateUnitInfo(aeaExProjBidVo,agencyUnits,AGENT_UNIT,aeaUnitProjNewList);
+                    aeaExProjBidService.saveOrUpdateUnitInfo(aeaExProjBidVo, agencyUnits, AGENT_UNIT, aeaUnitProjNewList);
 
                     //造价咨询单位信息
                     List<AeaUnitInfo> costUnits = aeaExProjBidVo.getCostUnits();
-                    aeaExProjBidService.saveOrUpdateUnitInfo(aeaExProjBidVo,costUnits,COST_UNIT,aeaUnitProjNewList);
+                    aeaExProjBidService.saveOrUpdateUnitInfo(aeaExProjBidVo, costUnits, COST_UNIT, aeaUnitProjNewList);
 
                     //新增保存项目与单位关联表信息
                     if (!aeaUnitProjNewList.isEmpty()) {
                         aeaUnitInfoService.batchInserAeaUnitProj(aeaUnitProjNewList);
                     }
 
+                    resultForm.setSuccess(true);
+                    resultForm.setMessage("保存成功！");
+                    resultForm.setContent(aeaExProjBidVo);
+
+                } else {
+                    logger.debug("根据项目Id找不到项目信息，请重新确认！");
+                    resultForm.setSuccess(false);
+                    resultForm.setMessage("根据项目Id找不到项目信息，请重新确认！");
                 }
             } else {
-                logger.debug("根据项目Id找不到项目信息，请重新确认！");
-                return new ContentResultForm<AeaExProjBidVo>(false, null, "根据项目Id找不到项目信息，请重新确认！");
+                logger.debug("保存信息不能为空！");
+                resultForm.setSuccess(false);
+                resultForm.setMessage("保存信息不能为空！");
             }
-            return new ContentResultForm<AeaExProjBid>(true, aeaExProjBidVo);
+
         } catch (Exception e) {
-            return new ContentResultForm<AeaExProjBidVo>(false, new AeaExProjBidVo(), "保存招标信息失败！原因：" + e.getMessage());
+            logger.error("保存招标信息失败！原因：" + e.getMessage());
+            resultForm.setSuccess(false);
+            resultForm.setMessage("保存招标信息失败！原因：" + e.getMessage());
+            resultForm.setContent(aeaExProjBidVo);
         }
+        return resultForm;
     }
 
 }

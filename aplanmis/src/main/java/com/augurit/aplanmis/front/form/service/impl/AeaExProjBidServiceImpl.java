@@ -110,6 +110,7 @@ public class AeaExProjBidServiceImpl implements AeaExProjBidService {
         aeaUnitProj.setUnitInfoId(unitId);
         aeaUnitProj.setUnitProjId(unitProjId);
         aeaUnitProj.setUnitType(unitType);
+        aeaUnitProj.setIsOwner("0");
         this.updateAeaUnitProj(aeaUnitProj);
     }
 
@@ -139,7 +140,6 @@ public class AeaExProjBidServiceImpl implements AeaExProjBidService {
                 } else {
                     aeaUnitInfo.setUnitInfoId(UUID.randomUUID().toString());
                     aeaUnitInfo.setUnitType(unitType);
-                    aeaUnitInfo.setIsOwner("0");
                     aeaUnitInfoService.insertAeaUnitInfo(aeaUnitInfo);
                     aeaUnitProjNewList.add(aeaExProjBidVo.toAeaUnitProj(aeaUnitInfo.getUnitInfoId(), unitType));
                 }
