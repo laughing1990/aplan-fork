@@ -81,6 +81,7 @@ public class AeaExProjDrawingController {
         if ( aeaProjInfoByProjInfoId==null  ){
             return new ResultForm(false, "获取项目信息失败，项目id "+projInfoId);
         }
+
         try {
         JSONObject object = new JSONObject();
         List<AeaProjDrawing> aeaProjDrawing = aeaProjDrawingSerivce.getAeaProjDrawing(projInfoId);
@@ -148,7 +149,7 @@ public class AeaExProjDrawingController {
 
         List<AeaProjDrawing> aeaProjDrawing = aeaProjDrawingVo.getAeaProjDrawing();
 
-        aeaProjDrawingSerivce.saveAeaProjDrawing(aeaProjDrawing);
+        aeaProjDrawingSerivce.saveAeaProjDrawing(aeaProjDrawingVo);
 
 
         return  new ContentResultForm<AeaProjDrawingVo>(true,aeaProjDrawingVo);
