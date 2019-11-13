@@ -273,9 +273,15 @@ var app = new Vue({
             vm.formDataKanCha = {};
             vm.formDataSheJj = {};
           } else {
-            vm.formDataTuShen = res.content.drawings[2] || {};
-            vm.formDataKanCha = res.content.drawings[0] || {};
-            vm.formDataSheJj = res.content.drawings[1] || {};
+            for (var i = 0; i < res.content.drawings.length; i++) {
+              if (res.content.drawings[i] == '13') {
+                vm.formDataTuShen = res.content.drawings[i] || {};
+              } else if (res.content.drawings[i] == '3') {
+                vm.formDataSheJj = res.content.drawings[i] || {};
+              } else {
+                vm.formDataKanCha = res.content.drawings[i] || {};
+              }
+            }
           }
 
           if (vm.formDataTuShen.linkmen == undefined || vm.formDataTuShen.linkmen.length == 0) {
