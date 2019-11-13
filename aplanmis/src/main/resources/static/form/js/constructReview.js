@@ -227,6 +227,7 @@ var app = new Vue({
           linkmanCertNo: '',
           prjSpty: '1',
           unitProjId: ''
+          unitInfoId: ''
         }
         this.formDataSheJj.linkmen.push(dataType3);
 
@@ -237,7 +238,8 @@ var app = new Vue({
           linkmanName: '',
           linkmanCertNo: '',
           prjSpty: '1',
-          unitProjId: ''
+          unitProjId: '',
+          unitInfoId: ''
         }
         var dataType2 = {
           linkmanInfoId: '',
@@ -245,7 +247,8 @@ var app = new Vue({
           linkmanName: '',
           linkmanCertNo: '',
           prjSpty: '1',
-          unitProjId: ''
+          unitProjId: '',
+          unitInfoId: ''
         }
 
         this.formDataTuShen.linkmen.push(dataType);
@@ -490,6 +493,7 @@ var app = new Vue({
         linkmanName: '',
         linkmanCertNo: '',
         prjSpty: '1',
+        unitInfoId: data.unitInfoId,
         unitProjId: data.unitProjId
       }
       row.push(dataType);
@@ -510,9 +514,12 @@ var app = new Vue({
       this.$set(data, 'unifiedSocialCreditCode', val.unifiedSocialCreditCode);
       this.$set(data, 'applicant', val.applicant);
       this.$set(data, 'unitInfoId', val.unitInfoId);
-      for (var i = 0; i < data.linkmen.length; i++) {
-        data.linkmen[i].unitInfoId = val.unitInfoId;
+      if (data.linkmen.length != 0) {
+        for (var i = 0; i < data.linkmen.length; i++) {
+          data.linkmen[i].unitInfoId = val.unitInfoId;
+        }
       }
+
     },
     //单位名称模糊查询
     querySearchJiansheName: function(queryString, cb) {
