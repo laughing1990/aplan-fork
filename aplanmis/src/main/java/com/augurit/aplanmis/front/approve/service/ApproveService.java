@@ -170,6 +170,7 @@ public class ApproveService {
                         stageName = stageName + "阶段";
                     }
                     bpmApproveStateVo.setStageOrItemName(stageName);
+                    bpmApproveStateVo.setIsShowOneForm(aeaParStage.getUseOneForm());
                     String code = "";
                     if (StringUtils.isNotBlank(taskId)) {
                         String iteminstId = this.getIteminstIdByTaskId(taskId);

@@ -8,9 +8,9 @@ var module1 = new Vue({
   el: '#singleDeclare',
   data: function () {
     var checkMissValue = function (rule, value, callback) {
-      if (value === '' || value ===undefined || value ===null) {
+      if (value === '' || value === undefined || value === null) {
         callback(new Error('该输入项为必输项！'));
-      }else if(value.toString().trim() === ''){
+      } else if (value.toString().trim() === '') {
         callback(new Error('该输入项为必输项！'));
       } else {
         callback();
@@ -18,7 +18,7 @@ var module1 = new Vue({
     };
     // 输入为数字 大于等于0
     var checkMissNum = function (rule, value, callback) {
-      if (value === '' || value === undefined || value ===null || value.toString().trim() === '') {
+      if (value === '' || value === undefined || value === null || value.toString().trim() === '') {
         callback(new Error('必填字段！'));
       } else if (value) {
         var flag = !/^[0-9]\d*$/.test(value) && !(/^[0-9]\d*$/.test(value));
@@ -70,11 +70,11 @@ var module1 = new Vue({
       loadingFileWin: false, // 窗口文件上传loading
       declareStep: 1, // 申报步骤 1-补全信息 2-选择主题 3-选择阶段 4-事项材料一单清
       declareStepList: [  // 所有的步骤
-        {num: '1',  name: '补全信息'},
-        {num: '2',  name: '前置条件'},
-        {num: '3',  name: '情形选择'},
-        {num: '4',  name: '材料一单清'},
-        {num: '5',  name: '完成申报'},
+        { num: '1', name: '补全信息' },
+        { num: '2', name: '前置条件' },
+        { num: '3', name: '情形选择' },
+        { num: '4', name: '材料一单清' },
+        { num: '5', name: '完成申报' },
       ],
       declareStepWidth: '', // 步骤类名
       isShowAll: false,  // 是否展示更多事项材料一单清
@@ -92,9 +92,9 @@ var module1 = new Vue({
       }, // 项目详细信息
       projTypeList: [], // 项目类型列表
       projNatureList: [], // 建设性质
-      districtList:[],//行政区划
-      projLevelList:[],//项目级别
-      projClassList:[],//立项类型
+      districtList: [],//行政区划
+      projLevelList: [],//项目级别
+      projClassList: [],//立项类型
       tzlxList: [], // 投资类型
       zjlyList: [], // 资源来源
       gbhyList: [], // 行业类别
@@ -119,42 +119,42 @@ var module1 = new Vue({
       countyList: [], // 区列表
       rulesResultForm: { // 办证结果取件方式信息校验
         addresseeName: [
-          { required: true,validator: checkMissValue, trigger: 'change' },
+          { required: true, validator: checkMissValue, trigger: 'change' },
         ],
         addresseePhone: [
-          { required: true,validator: checkMissValue, trigger: 'blur' },
+          { required: true, validator: checkMissValue, trigger: 'blur' },
         ],
-        addresseeIdcard:[
-          { required: true,validator: checkMissValue, trigger: 'blur' },
+        addresseeIdcard: [
+          { required: true, validator: checkMissValue, trigger: 'blur' },
         ]
       },
       rulesResultForm1: {
         addresseeName: [
-          { required: true,validator: checkMissValue, trigger: 'change' },
+          { required: true, validator: checkMissValue, trigger: 'change' },
         ],
         addresseePhone: [
-          { required: true,validator: checkMissValue, trigger: 'blur' },
+          { required: true, validator: checkMissValue, trigger: 'blur' },
         ],
-        addresseeIdcard:[
-          { required: true,validator: checkMissValue, trigger: 'blur' },
+        addresseeIdcard: [
+          { required: true, validator: checkMissValue, trigger: 'blur' },
         ],
         receiveMode: [
-          { required: true, message:"必选",trigger: 'change' },
+          { required: true, message: "必选", trigger: 'change' },
         ],
         smsType: [
-          { required: true, message:"必选",trigger: 'change' },
+          { required: true, message: "必选", trigger: 'change' },
         ],
         addresseeProvince: [
-          { required: true,validator: checkMissValue, trigger: ['change','blur'] },
+          { required: true, validator: checkMissValue, trigger: ['change', 'blur'] },
         ],
         addresseeCity: [
-          { required: true,validator: checkMissValue, trigger: ['change','blur'] },
+          { required: true, validator: checkMissValue, trigger: ['change', 'blur'] },
         ],
         addresseeCounty: [
-          { required: true,validator: checkMissValue, trigger: ['change','blur'] },
+          { required: true, validator: checkMissValue, trigger: ['change', 'blur'] },
         ],
         addresseeAddr: [
-          { required: true,validator: checkMissValue, trigger: 'blur' },
+          { required: true, validator: checkMissValue, trigger: 'blur' },
         ]
       },
       smsInfoId: '', // 领件人实例id
@@ -183,8 +183,8 @@ var module1 = new Vue({
       progressIntervalStop: false, // 定时器
       uploadPercentage: 0, // 进度条百分比
       progressStus: null, // 进度条状态
-        itemBasicInfo: {},//事项信息
-        itemBasicInfoShow:true,//是否展示事项信息
+      itemBasicInfo: {},//事项信息
+      itemBasicInfoShow: true,//是否展示事项信息
       baseInfoShow: true, // 是否展示项目基本信息
       applyObjectInfoShow: true, // 是否展示申报主体信息
       getResultFormShow: true, // 是否展示取件方式信息
@@ -193,103 +193,103 @@ var module1 = new Vue({
       applySuccessProjInfo2: true, // 是否展示完成申报信息
       applySuccessProjInfo3: true, // 是否展示完成申报信息
       //itemBasicInfo:{},
-      isAble:false,
+      isAble: false,
       rules: {
-          projName: [
-              {required: true, message: '请输入项目/工程名称', trigger: 'blur'},
-          ],
-          localCode: [
-              {required: true, message: '请输入项目代码', trigger: 'blur'},
-          ],
+        projName: [
+          { required: true, message: '请输入项目/工程名称', trigger: 'blur' },
+        ],
+        localCode: [
+          { required: true, message: '请输入项目代码', trigger: 'blur' },
+        ],
         gcbm: [
-          {required: true, message: '请输入工程代码', trigger: 'blur'},
+          { required: true, message: '请输入工程代码', trigger: 'blur' },
         ],
         regionalism: [
-          {required: true, message: '请选择行政区划', trigger: 'change'},
+          { required: true, message: '请选择行政区划', trigger: 'change' },
         ],
         projectAddress: [
-          {required: true, message: '请选择建设地点', trigger: 'change'},
+          { required: true, message: '请选择建设地点', trigger: 'change' },
         ],
         financialSource: [
-          {required: true, message: '请选择资金来源', trigger: 'change'},
+          { required: true, message: '请选择资金来源', trigger: 'change' },
         ],
         investType: [
-          {required: true, message: '请选择投资类型', trigger: 'change'},
+          { required: true, message: '请选择投资类型', trigger: 'change' },
         ],
         landSource: [
-          {required: true, message: '请选择土地来源', trigger: 'change'},
+          { required: true, message: '请选择土地来源', trigger: 'change' },
         ],
         projType: [
-          {required: true, message: '请选择立项类型', trigger: 'change'},
+          { required: true, message: '请选择立项类型', trigger: 'change' },
         ],
         themeId: [
-          {required: true, message: '请选择项目类型', trigger: 'change'},
+          { required: true, message: '请选择项目类型', trigger: 'change' },
         ],
         projNature: [
-          {required: true, message: '请选择建设性质', trigger: 'change'},
+          { required: true, message: '请选择建设性质', trigger: 'change' },
         ],
         projCategory: [
-          {required: true, message: '请选择工程分类', trigger: 'change'},
+          { required: true, message: '请选择工程分类', trigger: 'change' },
         ],
         nstartTime: [
-          {required: true, message: '请选择拟开工时间', trigger: 'blur'},
+          { required: true, message: '请选择拟开工时间', trigger: 'blur' },
         ],
         endTime: [
-          {required: true, message: '请选择拟建成时间', trigger: 'change'},
+          { required: true, message: '请选择拟建成时间', trigger: 'change' },
         ],
         investSum: [
-          {required: true, message: '请输入总投资', trigger: 'blur'},
+          { required: true, message: '请输入总投资', trigger: 'blur' },
         ],
         foreignBuildingArea: [
-          {required: true, message: '请输入总建筑面积', trigger: 'blur'},
+          { required: true, message: '请输入总建筑面积', trigger: 'blur' },
         ],
         xmYdmj: [
-          {required: true, message: '请输入用地面积', trigger: 'blur'},
+          { required: true, message: '请输入用地面积', trigger: 'blur' },
         ],
         gbCodeYear: [
-          {required: true, message: '请输入国标行业代码发布年代', trigger: 'blur'},
+          { required: true, message: '请输入国标行业代码发布年代', trigger: 'blur' },
         ],
         scaleContent: [
-          {required: true, message: '请输入建设规模及内容', trigger: 'blur'},
+          { required: true, message: '请输入建设规模及内容', trigger: 'blur' },
         ]
       },
       addLinkManRules: { // 新增编辑联系人校验
         linkmanName: [
-          { required: true,validator: checkMissValue, trigger: 'blur' },
+          { required: true, validator: checkMissValue, trigger: 'blur' },
         ],
         linkmanCertNo: [
-          { required: true,validator: checkMissValue, trigger: 'blur' },
+          { required: true, validator: checkMissValue, trigger: 'blur' },
         ],
-        linkmanMobilePhone:[
-          { required: true,validator: checkPhoneNum, trigger: 'blur' },
+        linkmanMobilePhone: [
+          { required: true, validator: checkPhoneNum, trigger: 'blur' },
         ]
       },
       rulesCompanyForm: { // 编辑新增单位信息校验
         unitType: [
-          { required: true,message: '请选择单位类型！', trigger: 'change' },
+          { required: true, message: '请选择单位类型！', trigger: 'change' },
         ],
         applicant: [
-          { required: true,validator: checkMissValue, trigger: 'blur' },
+          { required: true, validator: checkMissValue, trigger: 'blur' },
         ],
         idrepresentative: [
           { required: true, validator: checkMissValue, trigger: 'blur' },
         ],
         linkmanCertNo: [
-          { required: true,validator: checkMissValue, trigger: 'blur' },
+          { required: true, validator: checkMissValue, trigger: 'blur' },
         ],
         linkmanMobilePhone: [
-          { required: true,validator: checkPhoneNum, trigger: 'blur' },
+          { required: true, validator: checkPhoneNum, trigger: 'blur' },
         ],
         linkmanName: [
-          { required: true,message: '请选择联系人！', trigger: ['change','blur'] },
+          { required: true, message: '请选择联系人！', trigger: ['change', 'blur'] },
         ],
         unifiedSocialCreditCode: [
-          { required: true,validator: checkUnifiedSocialCreditCode, trigger: ['blur'] },
+          { required: true, validator: checkUnifiedSocialCreditCode, trigger: ['blur'] },
         ]
       },
       loadingProjInfo: false,
-      projInfoList:[],//项目信息
-      searchKeyword:'',
+      projInfoList: [],//项目信息
+      searchKeyword: '',
       creditTypeList: [], // 信用类型数据
       creditDiaVisible: false, // 是否展示信用弹窗
       creditDiaLoading: false, // 是否展示信用弹窗loading
@@ -339,7 +339,7 @@ var module1 = new Vue({
       myDirMatsId: [], // 我的空间材料列表Id
     }
   },
-  created:function(){
+  created: function () {
     this.GetRequest();
     this.getProjTypeNature(); // 数据字典查询项目类型
     this.getGbhy();
@@ -348,13 +348,13 @@ var module1 = new Vue({
   },
   mounted: function () {
     var _that = this;
-    if(_that.projInfoId!='null'){
+    if (_that.projInfoId != 'null') {
       _that.searchProjAllInfo(); // 获取项目信息
     }
   },
   methods: {
     // 文件上传获取我的材料列表
-    getMyMatsList: function(){
+    getMyMatsList: function () {
       var _that = this;
       var param = {
         pageSize: _that.myMatsPageSize,
@@ -368,25 +368,25 @@ var module1 = new Vue({
         data: param
       }, function (result) {
         _that.mySpaceLoading = false;
-        if(result){
-          _that.myMatsList = result.list?result.list:[];
+        if (result) {
+          _that.myMatsList = result.list ? result.list : [];
           var uploadFileIds = [];
-          if(_that.uploadTableData.length>0){
-            _that.uploadTableData.map(function(uploadItem){
-              if(uploadFileIds.indexOf(uploadItem.fileId)<0){
+          if (_that.uploadTableData.length > 0) {
+            _that.uploadTableData.map(function (uploadItem) {
+              if (uploadFileIds.indexOf(uploadItem.fileId) < 0) {
                 uploadFileIds.push(uploadItem.fileId);
               }
             });
           }
-          if(_that.myMatsList.length>0){
-            _that.myMatsList.map(function(item){
-              Vue.set(item,'checked',false);
-              if(uploadFileIds.indexOf(item.fileId)>-1){
+          if (_that.myMatsList.length > 0) {
+            _that.myMatsList.map(function (item) {
+              Vue.set(item, 'checked', false);
+              if (uploadFileIds.indexOf(item.fileId) > -1) {
                 item.checked = true;
               }
             })
           }
-          _that.myMatsTotal = result.total?result.total:0;
+          _that.myMatsTotal = result.total ? result.total : 0;
         }
       }, function (msg) {
         _that.mySpaceLoading = false;
@@ -394,75 +394,75 @@ var module1 = new Vue({
       });
     },
     // 文件上传获取我的云盘列表
-    getMyDirsList: function(row, treeNode, resolve){
+    getMyDirsList: function (row, treeNode, resolve) {
       var _that = this;
-      var dirId = row?row.dirId:'root';
+      var dirId = row ? row.dirId : 'root';
       _that.mySpaceLoading = true;
       request('', {
-        url: ctx + 'rest/cloud/dirAndAtt/list/'+dirId,
+        url: ctx + 'rest/cloud/dirAndAtt/list/' + dirId,
         type: 'get',
-        data: {dirId: dirId}
+        data: { dirId: dirId }
       }, function (result) {
         _that.mySpaceLoading = false;
-        if(result){
-          if(result.content.dirs.length>0){
+        if (result) {
+          if (result.content.dirs.length > 0) {
             result.content.dirs.map(function (dirsItem) {
-              if(typeof dirsItem.hasChildren == 'undefined'){
-                Vue.set(dirsItem,'hasChildren',true)
+              if (typeof dirsItem.hasChildren == 'undefined') {
+                Vue.set(dirsItem, 'hasChildren', true)
               }
-              if(typeof dirsItem.id == 'undefined'){
-                Vue.set(dirsItem,'id',dirsItem.dirId)
-              }else {
+              if (typeof dirsItem.id == 'undefined') {
+                Vue.set(dirsItem, 'id', dirsItem.dirId)
+              } else {
                 attsItem.id = attsItem.dirId
               }
             });
           }
-          if(_that.myDirMatsList.length>0){
+          if (_that.myDirMatsList.length > 0) {
             _that.myDirMatsList.map(function (dirMatsItem) {
-              if(_that.myDirMatsId.indexOf(dirMatsItem.detailId)<0){
+              if (_that.myDirMatsId.indexOf(dirMatsItem.detailId) < 0) {
                 _that.myDirMatsId.push(dirMatsItem.detailId);
               }
             });
           }
-          if(result.content.atts.length>0){
+          if (result.content.atts.length > 0) {
             result.content.atts.map(function (attsItem) {
-              if(typeof attsItem.checked == 'undefined'){
-                Vue.set(attsItem,'checked',false)
+              if (typeof attsItem.checked == 'undefined') {
+                Vue.set(attsItem, 'checked', false)
               }
-              if(typeof attsItem.hasCheck == 'undefined'){
-                Vue.set(attsItem,'hasCheck',true)
+              if (typeof attsItem.hasCheck == 'undefined') {
+                Vue.set(attsItem, 'hasCheck', true)
               }
-              if(typeof attsItem.id == 'undefined'){
-                Vue.set(attsItem,'id',attsItem.detailId)
-              }else {
+              if (typeof attsItem.id == 'undefined') {
+                Vue.set(attsItem, 'id', attsItem.detailId)
+              } else {
                 attsItem.id = attsItem.detailId
               }
-              if(_that.myDirMatsId.indexOf(attsItem.detailId)<0){
+              if (_that.myDirMatsId.indexOf(attsItem.detailId) < 0) {
                 _that.myDirMatsList.push(attsItem);
               }
             });
           }
-          if(!row){
+          if (!row) {
             _that.myDirsList = result.content.atts.concat(result.content.dirs);
-          }else {
+          } else {
             var childdrenArr = result.content.atts.concat(result.content.dirs);
             resolve(childdrenArr)
           }
 
           var uploadFileIds = [];
-          if(_that.uploadTableData.length>0){
-            _that.uploadTableData.map(function(uploadItem){
-              if(uploadFileIds.indexOf(uploadItem.fileId)<0){
+          if (_that.uploadTableData.length > 0) {
+            _that.uploadTableData.map(function (uploadItem) {
+              if (uploadFileIds.indexOf(uploadItem.fileId) < 0) {
                 uploadFileIds.push(uploadItem.fileId);
               }
             });
           }
-          if(_that.myDirMatsList.length>0){
-            _that.myDirMatsList.map(function(item){
-              if(typeof item.checked == 'undefined'){
-                Vue.set(item,'checked',false)
+          if (_that.myDirMatsList.length > 0) {
+            _that.myDirMatsList.map(function (item) {
+              if (typeof item.checked == 'undefined') {
+                Vue.set(item, 'checked', false)
               }
-              if(uploadFileIds.indexOf(item.detailId)>-1){
+              if (uploadFileIds.indexOf(item.detailId) > -1) {
                 item.checked = true;
               }
             })
@@ -474,41 +474,41 @@ var module1 = new Vue({
       });
     },
     // 模糊查询文件上传获取我的云盘c材料列表
-    getMyDirsListByKeyword: function(){
+    getMyDirsListByKeyword: function () {
       var _that = this;
-      if(!_that.myDirKeyword){
+      if (!_that.myDirKeyword) {
         _that.getMyDirsList();
-      }else {
+      } else {
         _that.mySpaceLoading = true;
         request('', {
-          url: ctx + 'rest/cloud/attByKeyword/list/'+_that.myDirKeyword,
+          url: ctx + 'rest/cloud/attByKeyword/list/' + _that.myDirKeyword,
           type: 'get',
         }, function (result) {
           _that.mySpaceLoading = false;
-          if(result){
-            _that.myDirsList = result.content?result.content:[];
+          if (result) {
+            _that.myDirsList = result.content ? result.content : [];
             var uploadFileIds = [];
-            if(_that.uploadTableData.length>0){
-              _that.uploadTableData.map(function(uploadItem){
-                if(uploadFileIds.indexOf(uploadItem.fileId)<0){
+            if (_that.uploadTableData.length > 0) {
+              _that.uploadTableData.map(function (uploadItem) {
+                if (uploadFileIds.indexOf(uploadItem.fileId) < 0) {
                   uploadFileIds.push(uploadItem.fileId);
                 }
               });
             }
-            if(_that.myDirsList.length>0){
-              _that.myDirsList.map(function(item){
-                if(typeof item.checked == 'undefined'){
-                  Vue.set(item,'checked',false)
+            if (_that.myDirsList.length > 0) {
+              _that.myDirsList.map(function (item) {
+                if (typeof item.checked == 'undefined') {
+                  Vue.set(item, 'checked', false)
                 }
-                if(typeof item.hasCheck == 'undefined'){
-                  Vue.set(item,'hasCheck',true)
+                if (typeof item.hasCheck == 'undefined') {
+                  Vue.set(item, 'hasCheck', true)
                 }
-                if(uploadFileIds.indexOf(item.detailId)>-1){
+                if (uploadFileIds.indexOf(item.detailId) > -1) {
                   item.checked = true;
                 }
-                if(typeof item.id == 'undefined'){
-                  Vue.set(item,'id',item.detailId)
-                }else {
+                if (typeof item.id == 'undefined') {
+                  Vue.set(item, 'id', item.detailId)
+                } else {
                   item.id = item.detailId
                 }
               })
@@ -523,74 +523,74 @@ var module1 = new Vue({
 
     },
     // 我的材料我的空间切换
-    fileSpaceTabClick: function(tab, event){
-      if(tab.name=='myMats'){
-        if(this.myMatsList.length==0){
+    fileSpaceTabClick: function (tab, event) {
+      if (tab.name == 'myMats') {
+        if (this.myMatsList.length == 0) {
           this.getMyMatsList();
         }
-      }else {
-        if(this.myDirsList.length==0){
+      } else {
+        if (this.myDirsList.length == 0) {
           this.getMyDirsList();
         }
       }
     },
     // 切换我的材料选中状态 flag ==dir 我的空间选中材料
-    changeMyMatSel: function(val,selMatData,flag){
-      console.log(val,selMatData);
+    changeMyMatSel: function (val, selMatData, flag) {
+      console.log(val, selMatData);
       console.log(this.selMatRowData);
       var _that = this;
-      var fileId = flag=='dir'?selMatData.detailId:selMatData.fileId;
+      var fileId = flag == 'dir' ? selMatData.detailId : selMatData.fileId;
       var param = {
         detailIds: fileId,
         matId: _that.selMatRowData.matId,
         matinstCode: _that.selMatRowData.matCode,
         matinstName: _that.selMatRowData.matName,
         projInfoId: _that.projInfoId,
-        matinstId: _that.selMatRowData.matinstId?_that.selMatRowData.matinstId:''
+        matinstId: _that.selMatRowData.matinstId ? _that.selMatRowData.matinstId : ''
       };
-      if(val){
+      if (val) {
         request('', {
           url: ctx + 'rest/file/cloud/uploadFile',
           type: 'post',
           data: param
         }, function (result) {
-          if(result){
+          if (result) {
             console.log(result);
             _that.selMatRowData.matinstId = result.content;
-            _that.getFileListWin(result.content,_that.selMatRowData);
+            _that.getFileListWin(result.content, _that.selMatRowData);
           }
-        }, function (msg) {});
-      }else {
-        _that.delSelectFileCom(_that.selMatRowData,selMatData,'',flag);
+        }, function (msg) { });
+      } else {
+        _that.delSelectFileCom(_that.selMatRowData, selMatData, '', flag);
       }
 
     },
     // 改变我的材料pageSize
-    myMatSizeChange: function(val){
+    myMatSizeChange: function (val) {
       this.myMatsPageSize = val;
       this.getMyMatsList();
     },
     // 改变我的材料pageNum
-    myMatCurrentChange: function(val){
+    myMatCurrentChange: function (val) {
       this.myMatsPageNum = val;
       this.getMyMatsList();
     },
     // 改变我的材料pageSize
-    myDirSizeChange: function(val){
+    myDirSizeChange: function (val) {
       this.myDirPageSize = val;
       this.getMyMatsList();
     },
     // 改变我的材料pageNum
-    myDirCurrentChange: function(val){
+    myDirCurrentChange: function (val) {
       this.myDirPageNum = val;
       this.getMyMatsList();
     },
     // 前置条件判断
-    beforeCheck: function(){
+    beforeCheck: function () {
       var _that = this;
       if (_that.projInfoId) {
         request('', {
-          url: ctx + 'rest/apply/common/item/frontItemIsDone/'+_that.itemVerId+'/'+_that.projInfoId,
+          url: ctx + 'rest/apply/common/item/frontItemIsDone/' + _that.itemVerId + '/' + _that.projInfoId,
           type: 'POST',
           data: {
             projInfoId: _that.projInfoId,
@@ -598,17 +598,17 @@ var module1 = new Vue({
           },
         }, function (result) {
           if (result.success) {
-            if(result.content.length>0){
+            if (result.content.length > 0) {
               _that.coreItems = result.content;
               _that.showItemsDia = true;
             }
-          }else {
+          } else {
             _that.$message({
               message: '获取前置事项失败！',
               type: 'error'
             });
           }
-        }, function (msg) {})
+        }, function (msg) { })
       } else {
         if (!_that.searchKeyword) {
           _that.$message({
@@ -624,32 +624,32 @@ var module1 = new Vue({
       }
     },
     // 跳转办事指南
-    goToBszn: function(data){
-      var itemVerId,itemName;
-      if(data.isCatalog==1){
-        itemVerId=data.baseItemVerId
-      }else {
-        itemVerId=data.itemVerId
+    goToBszn: function (data) {
+      var itemVerId, itemName;
+      if (data.isCatalog == 1) {
+        itemVerId = data.baseItemVerId
+      } else {
+        itemVerId = data.itemVerId
       }
       itemName = data.itemName;
-      var tempwindow=window.open(); // 先打开页面
-      setTimeout(function(){
-        tempwindow.location = ctx + 'rest/main/toIndexPage?itemVerId='+itemVerId+'&&itemName='+encodeURIComponent(encodeURIComponent(itemName))+'&&flag=bszn#/guideIndex';
-      },1000)
+      var tempwindow = window.open(); // 先打开页面
+      setTimeout(function () {
+        tempwindow.location = ctx + 'rest/main/toIndexPage?itemVerId=' + itemVerId + '&&itemName=' + encodeURIComponent(encodeURIComponent(itemName)) + '&&flag=bszn#/guideIndex';
+      }, 1000)
     },
     // 提示申报前置事项
-    alertMesBefore: function(){
-      if(this.coreItems.length>0){
+    alertMesBefore: function () {
+      if (this.coreItems.length > 0) {
         alertMsg('', '申报此事项前需先办理前置事项', '关闭', 'error', true);
       }
     },
     // 跳转到单项申报
-    goToSingleDeclare: function(itemVerId){
-      var projInfoIdDec=this.projInfoId;
-      var tempwindow=window.open(); // 先打开页面
-      setTimeout(function(){
-        tempwindow.location = ctx + 'rest/main/toIndexPage?itemVerId='+ itemVerId+'&&projInfoId='+projInfoIdDec+'&&flag=singleD#declare';
-      },400)
+    goToSingleDeclare: function (itemVerId) {
+      var projInfoIdDec = this.projInfoId;
+      var tempwindow = window.open(); // 先打开页面
+      setTimeout(function () {
+        tempwindow.location = ctx + 'rest/main/toIndexPage?itemVerId=' + itemVerId + '&&projInfoId=' + projInfoIdDec + '&&flag=singleD#declare';
+      }, 400)
     },
     // 重置表单
     resetForm: function (formName) {
@@ -657,8 +657,8 @@ var module1 = new Vue({
       this.selectMat = '';
     },
     // 选择企业联系人信息
-    selLinkman: function(pData,data,ind1){
-      if(pData){
+    selLinkman: function (pData, data, ind1) {
+      if (pData) {
         pData.selectedLinkman = {
           linkmanName: data.linkmanName,
           linkmanInfoId: data.linkmanInfoId,
@@ -667,7 +667,7 @@ var module1 = new Vue({
           linkmanMobilePhone: data.linkmanMobilePhone,
         }
       }
-      if(data){
+      if (data) {
         pData.linkmanName = data.linkmanName;
         pData.linkmanInfoId = data.linkmanInfoId;
         pData.linkmanMail = data.linkmanMail;
@@ -676,8 +676,8 @@ var module1 = new Vue({
       }
     },
     // 人员设置选择人员
-    selLinkmanTypes: function(pData,data){
-      if(pData){
+    selLinkmanTypes: function (pData, data) {
+      if (pData) {
         pData.linkmanName = data.linkmanName;
         pData.linkmanInfoId = data.linkmanInfoId;
         pData.linkmanMail = data.linkmanMail;
@@ -686,7 +686,7 @@ var module1 = new Vue({
       }
     },
     // 新增单位信息
-    addUnitInfoForm: function(){
+    addUnitInfoForm: function () {
       var _that = this;
       var obj = {
         applicant: '',
@@ -710,7 +710,7 @@ var module1 = new Vue({
       _that.jiansheFrom.push(obj);
     },
     // 新增人员设置
-    addLinkmanTypes: function(row){
+    addLinkmanTypes: function (row) {
       var dataType1 = {
         linkmanInfoId: '',
         linkmanType: '',
@@ -719,51 +719,51 @@ var module1 = new Vue({
       row.push(dataType1);
     },
     // 移除人员设置
-    delLinkmanTypes: function(row,index){
-      row.splice(index,1);
+    delLinkmanTypes: function (row, index) {
+      row.splice(index, 1);
     },
     // 新增编辑联系人信息
-    addLinkman: function(data,parData){
+    addLinkman: function (data, parData) {
       var _that = this;
       _that.addEditManModalShow = true;
       _that.addEditManPerform = parData;
-      if(_that.projInfoId){
-        if(data){
+      if (_that.projInfoId) {
+        if (data) {
           _that.addEditManModalTitle = '编辑联系人';
           _that.addEditManModalFlag = 'edit';
-          if(!data.linkmanInfoId){
+          if (!data.linkmanInfoId) {
             alertMsg('提示信息', '请选择联系人！', '关闭', 'error', true);
             return;
-          }else{
-            _that.backDLinkmanInfo(data,parData);
+          } else {
+            _that.backDLinkmanInfo(data, parData);
           }
-        }else {
+        } else {
           _that.addEditManModalTitle = '新增联系人';
           _that.addEditManform = {};
           _that.addEditManModalFlag = 'add';
-          if(parData.unitInfoId){
+          if (parData.unitInfoId) {
             _that.addEditManform.unitInfoId = parData.unitInfoId;
             _that.addEditManform.unitName = parData.applicant;
-          }else {
+          } else {
             _that.addEditManform.unitInfoId = '';
             _that.addEditManform.unitName = parData.applicant
           }
         }
-      }else {
+      } else {
         alertMsg('', '请先查出项目信息！', '关闭', 'error', true);
       }
     },
     // 反显联系人信息
-    backDLinkmanInfo: function(data,parData){
+    backDLinkmanInfo: function (data, parData) {
       var _that = this;
-      if(data.linkmanInfoId){
+      if (data.linkmanInfoId) {
         request('', {
-          url: ctx + 'rest/unit/getLinkmanInfoById/'+data.linkmanInfoId,
+          url: ctx + 'rest/unit/getLinkmanInfoById/' + data.linkmanInfoId,
           type: 'get',
           ContentType: 'application/json',
-          data: {linkmanInfoId:data.linkmanInfoId}
+          data: { linkmanInfoId: data.linkmanInfoId }
         }, function (result) {
-          if(result.success){
+          if (result.success) {
             _that.addEditManform = result.content;
             _that.addEditManform.unitInfoId = parData.unitInfoId;
             _that.addEditManform.unitName = parData.applicant;
@@ -771,14 +771,14 @@ var module1 = new Vue({
         }, function (msg) {
           alertMsg('', '服务请求失败', '关闭', 'error', true);
         });
-      }else{
+      } else {
         _that.aeaLinkmanInfoList = [];
       }
     },
     // 保存联系人信息
     saveAeaLinkmanInfo: function (linkmanType) {
       var _that = this;
-      _that.addEditManform.linkmanType=linkmanType
+      _that.addEditManform.linkmanType = linkmanType
       _that.$refs['addEditManform'].validate(function (valid) {
         if (valid) {
           _that.loading = true;
@@ -787,7 +787,7 @@ var module1 = new Vue({
             type: 'post',
             data: _that.addEditManform
           }, function (result) {
-            if(result.success){
+            if (result.success) {
               _that.$message({
                 message: '保存成功',
                 type: 'success'
@@ -802,7 +802,7 @@ var module1 = new Vue({
             }
           }, function (msg) {
             _that.$message({
-              message: msg.message?msg.message:'保存失败！',
+              message: msg.message ? msg.message : '保存失败！',
               type: 'error'
             });
             _that.loading = false;
@@ -817,53 +817,53 @@ var module1 = new Vue({
       });
     },
     // 删除联系人
-    delLinkman: function (data,parentData,ind) {
+    delLinkman: function (data, parentData, ind) {
       var _that = this;
-      if(!data.linkmanInfoId){
+      if (!data.linkmanInfoId) {
         alertMsg('提示信息', '联系人ID为空', '关闭', 'warning', true);
         return;
-      }else{
-        confirmMsg('此操作影响：','确定要删除该联系人吗？',function(){
+      } else {
+        confirmMsg('此操作影响：', '确定要删除该联系人吗？', function () {
           request('', {
-            url: ctx + 'rest/user/linkman/delete/'+parentData.unitInfoId+'/'+data.linkmanInfoId,
+            url: ctx + 'rest/user/linkman/delete/' + parentData.unitInfoId + '/' + data.linkmanInfoId,
             type: 'post',
-            data: {linkmanInfoId:data.linkmanInfoId,unitInfoId:parentData.unitInfoId}
+            data: { linkmanInfoId: data.linkmanInfoId, unitInfoId: parentData.unitInfoId }
           }, function (result) {
-            if(result.success){
+            if (result.success) {
               _that.$message({
                 message: '联系人删除成功',
                 type: 'success'
               });
-            }else {
+            } else {
               _that.$message({
-                message: result.message?result.message:'联系人删除失败',
+                message: result.message ? result.message : '联系人删除失败',
                 type: 'error'
               });
             }
-          },function(msg){
+          }, function (msg) {
             _that.$message({
               message: msg.message ? msg.message : '删除失败',
               type: 'error'
             });
           })
-        },function(){},'确定','取消','warning',true)
+        }, function () { }, '确定', '取消', 'warning', true)
       }
     },
     // 根据单位id获取关联联系人
-    getLinkManListByUnitId: function(item,unitInfoId,flag){
+    getLinkManListByUnitId: function (item, unitInfoId, flag) {
       var _that = this;
-      if(unitInfoId){
+      if (unitInfoId) {
         request('', {
-          url: ctx + 'rest/user/linkman/getByUnitInfoId/'+unitInfoId,
+          url: ctx + 'rest/user/linkman/getByUnitInfoId/' + unitInfoId,
           type: 'get',
           data: {
             unitInfoId: unitInfoId
           }
         }, function (data) {
-          if(data.success){
-            if(flag=='applyObjectInfo'){
+          if (data.success) {
+            if (flag == 'applyObjectInfo') {
               item.linkmanInfoList = data.content
-            }else {
+            } else {
               item.aeaLinkmanInfoList = data.content;
             }
           }
@@ -873,28 +873,28 @@ var module1 = new Vue({
             type: 'error'
           });
         });
-      }else {
-        item.aeaLinkmanInfoList=[];
+      } else {
+        item.aeaLinkmanInfoList = [];
       }
     },
-    setShowUnitMore: function(index){
-      if(this.showUnitListMore.indexOf(index)>-1){
-        this.showUnitListMore = this.showUnitListMore.filter(function(item) {
+    setShowUnitMore: function (index) {
+      if (this.showUnitListMore.indexOf(index) > -1) {
+        this.showUnitListMore = this.showUnitListMore.filter(function (item) {
           return item != index;
         });
-      }else {
+      } else {
         this.showUnitListMore.push(index);
       }
     },
     // 申办主体信息 企业非企业申报 单位名称模糊查询
-    querySearchJiansheName: function(queryString, cb){
+    querySearchJiansheName: function (queryString, cb) {
       var _that = this;
       if (typeof (queryString) != 'undefined') queryString = queryString.trim();
       if (queryString != '') {
         _that.projNameSelect = _that.projUnitList;
 
         _that.projNameSelect.map(function (item) {
-          if(item){
+          if (item) {
             Vue.set(item, 'value', item.applicant);
           }
         })
@@ -904,12 +904,12 @@ var module1 = new Vue({
       }
     },
     // 选择切换申办主体单位
-    selUnitInfo: function(val, index){ // val选中单位信息 index单位索引
-      if(this.jiansheFrom[index].unitInfoId != val.unitInfoId){
+    selUnitInfo: function (val, index) { // val选中单位信息 index单位索引
+      if (this.jiansheFrom[index].unitInfoId != val.unitInfoId) {
         this.getPersonOrUnitBlackByBizId(val);
       }
       this.jiansheFrom[index] = val;
-      if(val.aeaLinkmanInfoList&&val.aeaLinkmanInfoList.length>0){
+      if (val.aeaLinkmanInfoList && val.aeaLinkmanInfoList.length > 0) {
         this.jiansheFrom[index].linkmanInfoId = val.aeaLinkmanInfoList[0].linkmanInfoId;
         this.jiansheFrom[index].linkmanMail = val.aeaLinkmanInfoList[0].linkmanMail;
         this.jiansheFrom[index].linkmanMobilePhone = val.aeaLinkmanInfoList[0].linkmanMobilePhone;
@@ -925,7 +925,7 @@ var module1 = new Vue({
       request('', {
         url: ctx + 'bsc/dic/code/getItemTreeByTypeId.do',
         type: 'get',
-        data: {typeId: 'fadff496-cde1-4c72-90b8-766744b18cb9'},
+        data: { typeId: 'fadff496-cde1-4c72-90b8-766744b18cb9' },
       }, function (result) {
         if (result) {
           var arr = result;
@@ -960,9 +960,9 @@ var module1 = new Vue({
       if (queryString != '') {
         _that.loadingProjInfo = true;
         request('', {
-          url: ctx + 'rest/user/searchProj/projlist/'+queryString,
+          url: ctx + 'rest/user/searchProj/projlist/' + queryString,
           type: 'get',
-          data: {"keyword": queryString},
+          data: { "keyword": queryString },
         }, function (result) {
           if (result.content) {
             _that.projInfoList = result.content;
@@ -976,24 +976,24 @@ var module1 = new Vue({
         _that.projInfoList = [];
       }
     },
-    projNameSel:function(item){
+    projNameSel: function (item) {
       this.projInfoId = item.projInfoId;
       this.searchProjAllInfo();
       // this.beforeCheck();
       // this.searchKeyword = item.projName+' （'+item.localCode+'）';
     },
 
-    linkQuery:function(){
+    linkQuery: function () {
       var _that = this;
-      if("null"!=_that.projInfoId && _that.projInfoId){
+      if ("null" != _that.projInfoId && _that.projInfoId) {
         _that.searchProjAllInfo();
-      }else {
-        if(!_that.searchKeyword){
+      } else {
+        if (!_that.searchKeyword) {
           _that.$message({
             message: '请输入项目（工程）的代码或名称！',
             type: 'error'
           });
-        }else {
+        } else {
           _that.$message({
             message: '请先选择要查询的项目！',
             type: 'error'
@@ -1009,68 +1009,68 @@ var module1 = new Vue({
     //   }
     // },
     // 获取项目id 事项id
-    GetRequest: function() {
+    GetRequest: function () {
       var url = location.search; //获取url中"?"符后的字串
       var theRequest = new Object();
       if (url.indexOf("?") != -1) {
         var str = url.substr(1);
         strs = str.split("&");
-        for(var i = 0; i < strs.length; i ++) {
+        for (var i = 0; i < strs.length; i++) {
           theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
         }
       }
       this.projInfoId = theRequest.projInfoId;
-      this.itemVerId=theRequest.itemVerId;
+      this.itemVerId = theRequest.itemVerId;
       return theRequest;
     },
-      // 获取事项信息
-      getItemBaseInfo: function(){
-          var _that = this;
-          _that.loading = true;
-          request('', {
-              url: ctx+'rest/userCenter/apply/series/getItemBaseInfo/'+_that.itemVerId,
-              type: 'get',
-          }, function (data) {
-            _that.loading = false;
-              if(data.success){
-                  _that.itemBasicInfo = data.content;
-              }else {
-                  _that.$message({
-                      message: data.message?data.message:'获取事项信息失败',
-                      type: 'error'
-                  });
-
-              }
-          }, function (msg) {
-              _that.loading = false;
-              _that.$message({
-                  message: msg.message?msg.message:'获取事项信息失败',
-                  type: 'error'
-              });
-          });
-      },
-    // 获取项目详细信息
-    searchProjAllInfo: function(){
+    // 获取事项信息
+    getItemBaseInfo: function () {
       var _that = this;
       _that.loading = true;
       request('', {
-        url: ctx+'rest/userCenter/apply/series/baseInfo/'+_that.projInfoId+'/'+_that.itemVerId,
+        url: ctx + 'rest/userCenter/apply/series/getItemBaseInfo/' + _that.itemVerId,
         type: 'get',
       }, function (data) {
         _that.loading = false;
-        if(data.success){
+        if (data.success) {
+          _that.itemBasicInfo = data.content;
+        } else {
+          _that.$message({
+            message: data.message ? data.message : '获取事项信息失败',
+            type: 'error'
+          });
+
+        }
+      }, function (msg) {
+        _that.loading = false;
+        _that.$message({
+          message: msg.message ? msg.message : '获取事项信息失败',
+          type: 'error'
+        });
+      });
+    },
+    // 获取项目详细信息
+    searchProjAllInfo: function () {
+      var _that = this;
+      _that.loading = true;
+      request('', {
+        url: ctx + 'rest/userCenter/apply/series/baseInfo/' + _that.projInfoId + '/' + _that.itemVerId,
+        type: 'get',
+      }, function (data) {
+        _that.loading = false;
+        if (data.success) {
           _that.beforeCheck();
           _that.projInfoDetail = data.content.aeaProjInfo;
-          _that.jiansheFrom = data.content.aeaUnitInfos?data.content.aeaUnitInfos:[];
+          _that.jiansheFrom = data.content.aeaUnitInfos ? data.content.aeaUnitInfos : [];
           _that.projUnitList = JSON.parse(JSON.stringify(data.content.aeaUnitInfos));
           //_that.itemName = data.content.itemName;
           _that.isNeedFrontCond = data.content.isNeedFrontCond;
           _that.isNeedState = data.content.isNeedState;
-          _that.rootOrgId=data.content.aeaProjInfo.rootOrgId;
-          _that.themeId =data.content.aeaProjInfo.themeId;
-          _that.projType=data.content.aeaProjInfo.projType;
+          _that.rootOrgId = data.content.aeaProjInfo.rootOrgId;
+          _that.themeId = data.content.aeaProjInfo.themeId;
+          _that.projType = data.content.aeaProjInfo.projType;
           _that.projInfoId = data.content.aeaProjInfo.projInfoId;
-          _that.searchKeyword = data.content.aeaProjInfo.projName+' （'+data.content.aeaProjInfo.localCode+'）';
+          _that.searchKeyword = data.content.aeaProjInfo.projName + ' （' + data.content.aeaProjInfo.localCode + '）';
           _that.getApplyObjectInfo(); // 获取申报主体
 
           if (!_that.projInfoDetail.isAreaEstimate) _that.projInfoDetail.isAreaEstimate = '0';
@@ -1078,33 +1078,33 @@ var module1 = new Vue({
           if (!_that.projInfoDetail.gbCodeYear) _that.projInfoDetail.gbCodeYear = '2017';
           if (!!_that.projInfoDetail.projectAddress) _that.projInfoDetail.projectAddress = _that.projInfoDetail.projectAddress.split(',');
           if (!!_that.projInfoDetail.theIndustry) _that.$refs.gbhy.setCheckedKeys(_that.projInfoDetail.theIndustry.split(','));
-          if(data.content.aeaProjInfo.rootOrgId!=null&&""!=data.content.aeaProjInfo.rootOrgId) {
+          if (data.content.aeaProjInfo.rootOrgId != null && "" != data.content.aeaProjInfo.rootOrgId) {
             _that.querySelentDistrict(data.content.aeaProjInfo.rootOrgId);
             _that.querySelectDept(data.content.aeaProjInfo.rootOrgId);
           }
-          if(data.content.aeaProjInfo.themeId!=null&&""!=data.content.aeaProjInfo.themeId){
-            _that.isAble=true;
-          }else{
-            _that.isAble=false;
+          if (data.content.aeaProjInfo.themeId != null && "" != data.content.aeaProjInfo.themeId) {
+            _that.isAble = true;
+          } else {
+            _that.isAble = false;
           }
           _that.querySelecTheme(data.content.aeaProjInfo.projType);
 
-        }else {
+        } else {
           _that.$message({
-            message: data.message?data.message:'获取项目信息失败',
+            message: data.message ? data.message : '获取项目信息失败',
             type: 'error'
           });
         }
       }, function (msg) {
         _that.loading = false;
         _that.$message({
-          message: msg.message?msg.message:'获取项目信息失败',
+          message: msg.message ? msg.message : '获取项目信息失败',
           type: 'error'
         });
       });
     },
     // 移除declareStepList
-    removeDeclareStepList: function(_arr,name){
+    removeDeclareStepList: function (_arr, name) {
       var length = _arr.length;
       for (var i = 0; i < length; i++) {
         if (_arr[i].name == name) {
@@ -1133,17 +1133,17 @@ var module1 = new Vue({
         if (result.content) {
           _that.projTypeList = result.content.XM_PROJECT_STEP;
           _that.projNatureList = result.content.XM_NATURE;
-          _that.projLevelList=result.content.XM_PROJECT_LEVEL;
-          _that.projClassList=result.content.PROJECT_CLASS;
-          _that.tzlxList=result.content.XM_TZLX;
-          _that.zjlyList=result.content.XM_ZJLY;
-          _that.gbhyList=result.content.XM_GBHY;
-          _that.tdlyList=result.content.XM_TDLY;
-          _that.jsxzList=result.content.XM_NATURE;
-          _that.gcflList=result.content.XM_GCFL;
+          _that.projLevelList = result.content.XM_PROJECT_LEVEL;
+          _that.projClassList = result.content.PROJECT_CLASS;
+          _that.tzlxList = result.content.XM_TZLX;
+          _that.zjlyList = result.content.XM_ZJLY;
+          _that.gbhyList = result.content.XM_GBHY;
+          _that.tdlyList = result.content.XM_TDLY;
+          _that.jsxzList = result.content.XM_NATURE;
+          _that.gcflList = result.content.XM_GCFL;
           _that.xmdwlxList = result.content.XM_DWLX;
-          _that.projUnitLinkmanType=result.content.PROJ_UNIT_LINKMAN_TYPE;
-        }else {
+          _that.projUnitLinkmanType = result.content.PROJ_UNIT_LINKMAN_TYPE;
+        } else {
           _that.$message({
             message: data.message ? data.message : '获取数据字典失败',
             type: 'error'
@@ -1151,7 +1151,7 @@ var module1 = new Vue({
         }
       }, function (msg) {
         _that.$message({
-          message: msg.message?msg.message:'服务请求失败',
+          message: msg.message ? msg.message : '服务请求失败',
           type: 'error'
         });
       });
@@ -1162,7 +1162,7 @@ var module1 = new Vue({
       request('', {
         url: ctx + 'rest/apply/common/applyObject',
         type: 'get',
-        data: {projInfoId: _that.projInfoId}
+        data: { projInfoId: _that.projInfoId }
       }, function (result) {
         if (result.success) {
           var dataType2 = {
@@ -1176,19 +1176,19 @@ var module1 = new Vue({
             linkmanName: ''
           }
           _that.applyObjectInfo = result.content;
-          _that.jiansheFrom.map(function(unitItem){
+          _that.jiansheFrom.map(function (unitItem) {
             Vue.set(unitItem, 'linkmanInfoId', '');
             Vue.set(unitItem, 'linkmanMail', '');
             Vue.set(unitItem, 'linkmanMobilePhone', '');
             Vue.set(unitItem, 'linkmanName', '');
             Vue.set(unitItem, 'linkmanCertNo', '');
-            if(unitItem.linkmanTypes&&unitItem.linkmanTypes.length==0){
+            if (unitItem.linkmanTypes && unitItem.linkmanTypes.length == 0) {
               unitItem.linkmanTypes.push(dataType2)
             }
-            if(unitItem&&_that.applyObjectInfo.role==2){
+            if (unitItem && _that.applyObjectInfo.role == 2) {
               _that.getPersonOrUnitBlackByBizId(unitItem);
             }
-            if(unitItem.aeaLinkmanInfoList&&unitItem.aeaLinkmanInfoList.length>0){
+            if (unitItem.aeaLinkmanInfoList && unitItem.aeaLinkmanInfoList.length > 0) {
               unitItem.linkmanInfoId = unitItem.aeaLinkmanInfoList[0].linkmanInfoId;
               unitItem.linkmanMail = unitItem.aeaLinkmanInfoList[0].linkmanMail;
               unitItem.linkmanMobilePhone = unitItem.aeaLinkmanInfoList[0].linkmanMobilePhone;
@@ -1196,33 +1196,33 @@ var module1 = new Vue({
               unitItem.linkmanCertNo = unitItem.aeaLinkmanInfoList[0].linkmanCertNo;
             }
           })
-          if(_that.applyObjectInfo.role == 1){
+          if (_that.applyObjectInfo.role == 1) {
             _that.showObjectRole = true
             _that.applyObjectInfo.role = '2';
           }
-          if(_that.applyObjectInfo.aeaLinkmanInfo==null){
-            _that.applyObjectInfo.aeaLinkmanInfo={
+          if (_that.applyObjectInfo.aeaLinkmanInfo == null) {
+            _that.applyObjectInfo.aeaLinkmanInfo = {
               linkmanName: '',
               linkmanCertNo: '',
               linkmanMobilePhone: '',
             }
-          }else {
-            _that.userInfoId=_that.applyObjectInfo.aeaLinkmanInfo.linkmanInfoId;
+          } else {
+            _that.userInfoId = _that.applyObjectInfo.aeaLinkmanInfo.linkmanInfoId;
             _that.userLinkmanCertNo = _that.applyObjectInfo.aeaLinkmanInfo.linkmanCertNo;
           };
-          if(_that.applyObjectInfo.aeaUnitInfo==null){
-            _that.applyObjectInfo.aeaUnitInfo={
+          if (_that.applyObjectInfo.aeaUnitInfo == null) {
+            _that.applyObjectInfo.aeaUnitInfo = {
               applicant: '',
               idcard: '',
             }
-          }else {
+          } else {
             _that.unitInfoId = _that.applyObjectInfo.aeaUnitInfo.unitInfoId;
             _that.unifiedSocialCreditCode = _that.applyObjectInfo.aeaUnitInfo.unifiedSocialCreditCode;
-            if(_that.applyObjectInfo.aeaUnitInfo.linkmanTypes&&_that.applyObjectInfo.aeaUnitInfo.linkmanTypes.length==0){
+            if (_that.applyObjectInfo.aeaUnitInfo.linkmanTypes && _that.applyObjectInfo.aeaUnitInfo.linkmanTypes.length == 0) {
               _that.applyObjectInfo.aeaUnitInfo.linkmanTypes.push(dataType3)
             }
           };
-          if(result.content.linkmanInfoList&&result.content.linkmanInfoList.length>0){
+          if (result.content.linkmanInfoList && result.content.linkmanInfoList.length > 0) {
             _that.linkmanInfoList = result.content.linkmanInfoList;
             _that.applyObjectInfo.aeaUnitInfo.linkmanInfoId = result.content.linkmanInfoList[0].linkmanInfoId;
             _that.applyObjectInfo.aeaUnitInfo.linkmanMail = result.content.linkmanInfoList[0].linkmanMail;
@@ -1231,24 +1231,24 @@ var module1 = new Vue({
             _that.applyObjectInfo.aeaUnitInfo.linkmanCertNo = result.content.linkmanInfoList[0].linkmanCertNo;
             var selFirstMan = result.content.linkmanInfoList[0];
             _that.queryGetResultMan(selFirstMan)
-            _that.queryUnitLinkMan(selFirstMan,_that.applyObjectInfo.aeaUnitInfo);
-          }else {
+            _that.queryUnitLinkMan(selFirstMan, _that.applyObjectInfo.aeaUnitInfo);
+          } else {
             _that.queryGetResultMan(_that.applyObjectInfo.aeaLinkmanInfo)
           }
-          if(result.content.aeaUnitList&&result.content.aeaUnitList.length>0){
+          if (result.content.aeaUnitList && result.content.aeaUnitList.length > 0) {
             _that.aeaUnitList = result.content.aeaUnitList;
             _that.querySelentUnit(_that.aeaUnitList[0]);
           }
           _that.getPersonOrUnitBlackByBizId();
-        }else {
+        } else {
           _that.$message({
-            message: result.message?result.message:'获取申报主体信息失败',
+            message: result.message ? result.message : '获取申报主体信息失败',
             type: 'error'
           });
         }
       }, function (msg) {
         _that.$message({
-          message: msg.message?msg.message:'获取申报主体信息失败',
+          message: msg.message ? msg.message : '获取申报主体信息失败',
           type: 'error'
         });
       });
@@ -1259,7 +1259,7 @@ var module1 = new Vue({
 
       var linkmanInfoList = this.linkmanInfoList;
       linkmanInfoList.map(function (item) {
-        if(item){
+        if (item) {
           Vue.set(item, 'value', item.linkmanName);
         }
       })
@@ -1268,32 +1268,32 @@ var module1 = new Vue({
       cb(results);
       console.log(queryString);
     },
-    createFilter: function(queryString) {
-      return function(linkmanInfoList) {
+    createFilter: function (queryString) {
+      return function (linkmanInfoList) {
         return (linkmanInfoList.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
       };
     },
     // 获取办证结果领取人信息
     queryGetResultMan: function (data) {
       console.log(data);
-      if(data){
+      if (data) {
         var selData = JSON.parse(JSON.stringify(data));
         this.getResultForm.addresseeName = selData.linkmanName;
         this.getResultForm.addresseePhone = selData.linkmanMobilePhone;
         this.getResultForm.addresseeIdcard = selData.linkmanCertNo;
-      }else {
+      } else {
         this.getResultForm.addresseeName = '';
         this.getResultForm.addresseePhone = '';
         this.getResultForm.addresseeIdcard = '';
       }
     },
     // 获取企业联系人信息
-    queryUnitLinkMan: function (data,pData) {
+    queryUnitLinkMan: function (data, pData) {
       var selData = JSON.parse(JSON.stringify(data));
       this.userInfoId = data.linkmanInfoId;
       this.userLinkmanCertNo = this.applyObjectInfo.aeaLinkmanInfo.linkmanCertNo;
       this.applyObjectInfo.aeaLinkmanInfo = selData;
-      if(pData){
+      if (pData) {
         pData.selectedLinkman = {
           linkmanName: data.linkmanName,
           linkmanInfoId: data.linkmanInfoId,
@@ -1305,21 +1305,21 @@ var module1 = new Vue({
 
     },
     // 委托人获取单位信息
-    querySelentUnit: function(data){
+    querySelentUnit: function (data) {
       var cData = JSON.parse(JSON.stringify(data))
-      this.applyObjectInfo.aeaUnitInfo=cData;
+      this.applyObjectInfo.aeaUnitInfo = cData;
       this.unitInfoId = this.applyObjectInfo.aeaUnitInfo.unitInfoId;
       this.unifiedSocialCreditCode = this.applyObjectInfo.aeaUnitInfo.unifiedSocialCreditCode;
     },
     // 切换领证模式
     changeReceiveMode: function (val) {
-      if(val==0){
-        this.getResultForm.smsType=2;
+      if (val == 0) {
+        this.getResultForm.smsType = 2;
         this.queryProvince();
       }
     },
     // 获取省份信息
-    queryProvince: function(){
+    queryProvince: function () {
       var _that = this;
       request('', {
         url: ctx + 'rest/provinces',
@@ -1331,35 +1331,35 @@ var module1 = new Vue({
     },
     // 选择省份
     queryCityData: function (index) {
-      this.cityList=this.provinceList[index].cityList;
+      this.cityList = this.provinceList[index].cityList;
       this.queryAreaData(0);
       this.getResultForm.addresseeProvince = this.provinceList[index].code;
     },
     // 选择市地区
     queryAreaData: function (index) {
-      this.countyList=this.cityList[index].areaList;
-      this.getResultForm.addresseeCity=this.cityList[index].code;
+      this.countyList = this.cityList[index].areaList;
+      this.getResultForm.addresseeCity = this.cityList[index].code;
       this.queryCountyData(this.countyList[0].code);
     },
     // 选择地区
-    queryCountyData:function(code){
-      this.getResultForm.addresseeCounty=code;
+    queryCountyData: function (code) {
+      this.getResultForm.addresseeCounty = code;
     },
     // 保存保存领件人、项目信息 补全信息保存并下一步
     saveProOrSmsinfo: function () {
-      if(this.coreItems.length>0){
+      if (this.coreItems.length > 0) {
         this.showItemsDia = true;
         return false;
       }
-      var msg='';
+      var msg = '';
       var _that = this;
       var unitFlag = false; // 单位信息未完善
       var aeaUnitInfo = this.applyObjectInfo.aeaUnitInfo;
       var aeaLinkmanInfo = this.applyObjectInfo.aeaLinkmanInfo;
       var _linkmanTypes = [];
-      if(_that.applyObjectInfo.aeaUnitInfo&&_that.applyObjectInfo.aeaUnitInfo.linkmanTypes&&_that.applyObjectInfo.aeaUnitInfo.linkmanTypes.length>0){
-        _that.applyObjectInfo.aeaUnitInfo.linkmanTypes.map(function(itemType){
-          if(itemType.linkmanInfoId){
+      if (_that.applyObjectInfo.aeaUnitInfo && _that.applyObjectInfo.aeaUnitInfo.linkmanTypes && _that.applyObjectInfo.aeaUnitInfo.linkmanTypes.length > 0) {
+        _that.applyObjectInfo.aeaUnitInfo.linkmanTypes.map(function (itemType) {
+          if (itemType.linkmanInfoId) {
             var typeObj = {
               linkmanType: itemType.linkmanType,
               linkmanInfoId: itemType.linkmanInfoId,
@@ -1372,22 +1372,22 @@ var module1 = new Vue({
 
         })
       }
-      if(aeaUnitInfo.applicant||aeaUnitInfo.unifiedSocialCreditCode||aeaUnitInfo.idrepresentative||aeaLinkmanInfo.linkmanName||aeaLinkmanInfo.linkmanMobilePhone||aeaLinkmanInfo.linkmanCertNo){
+      if (aeaUnitInfo.applicant || aeaUnitInfo.unifiedSocialCreditCode || aeaUnitInfo.idrepresentative || aeaLinkmanInfo.linkmanName || aeaLinkmanInfo.linkmanMobilePhone || aeaLinkmanInfo.linkmanCertNo) {
         unitFlag = true;
       }
-      if(this.applyObjectInfo.role==0){
-        if(!this.userInfoId){
+      if (this.applyObjectInfo.role == 0) {
+        if (!this.userInfoId) {
           msg = '请前往企业中心完善申报主体申请人信息！';
         }
-      }else {
-        if(!this.unitInfoId||!unitFlag){
+      } else {
+        if (!this.unitInfoId || !unitFlag) {
           msg = '请前往企业中心完善申报主体企业信息！';
         }
       }
-      if(this.isBlack==true){
-        msg='申报主体已被纳入信用黑名单，无法申报项目！'
+      if (this.isBlack == true) {
+        msg = '申报主体已被纳入信用黑名单，无法申报项目！'
       }
-      if(msg){
+      if (msg) {
         alertMsg('', msg, '关闭', 'error', true);
         return false;
       }
@@ -1412,23 +1412,23 @@ var module1 = new Vue({
           }
         });
       }
-      var projNameValue=this.$refs.projName.value.trim();
-      var localCodeValue=this.$refs.localCode.value.trim();
-      var regionalism=this.$refs.regionalism.value.trim();
-      if(projNameValue==null||projNameValue==""){
-          return;
+      var projNameValue = this.$refs.projName.value.trim();
+      var localCodeValue = this.$refs.localCode.value.trim();
+      var regionalism = this.$refs.regionalism.value.trim();
+      if (projNameValue == null || projNameValue == "") {
+        return;
       }
-      if(localCodeValue==null||localCodeValue==""){
-          return;
+      if (localCodeValue == null || localCodeValue == "") {
+        return;
       }
-      if(regionalism==null||regionalism==""){
-          return;
+      if (regionalism == null || regionalism == "") {
+        return;
       }
 
-      _that.getResultForm.id=_that.smsInfoId;
+      _that.getResultForm.id = _that.smsInfoId;
       _that.$refs['projInfoForm'].validate(function (valid1) {
         if (valid1) {
-          if(jiansheUnitFlag) {
+          if (jiansheUnitFlag) {
             _that.$refs['resultForm'].validate(function (valid) {
               if (valid) {
                 _that.loading = true;
@@ -1479,13 +1479,13 @@ var module1 = new Vue({
                 });
               }
             });
-          }else {
+          } else {
             _that.$message({
               message: '请完善申办主体单位信息',
               type: 'error'
             });
           }
-        }else {
+        } else {
           _that.$message({
             message: '请完善项目/工程信息',
             type: 'error'
@@ -1495,25 +1495,25 @@ var module1 = new Vue({
 
     },
     // 获取前置条件
-    getPrecondition: function(){
+    getPrecondition: function () {
       var _that = this;
       _that.loading = true;
       request('', {
-        url: ctx+'rest/userCenter/apply/series/itemState/getTreeCondByItemVerId/'+ _that.itemVerId,
+        url: ctx + 'rest/userCenter/apply/series/itemState/getTreeCondByItemVerId/' + _that.itemVerId,
         type: 'get',
       }, function (data) {
-        if(data.success){
+        if (data.success) {
           _that.loading = false;
           _that.noNext = 0;
-          data.content.map(function(item){
-            if (item.muiltSelect!=null) {
+          data.content.map(function (item) {
+            if (item.muiltSelect != null) {
               Vue.set(item, 'selectAnswerId', []);
-            }else {
+            } else {
               Vue.set(item, 'selectAnswerId', '');
             }
           });
           _that.preconditionList = data.content;
-        }else {
+        } else {
           _that.loading = false;
           _that.$message({
             message: data.message ? data.message : '获取前置条件失败',
@@ -1527,51 +1527,51 @@ var module1 = new Vue({
     },
 
     // 选择前置条件保存并下一步
-    saveThemeAndNext: function(){
-      if(this.noNext>0){
+    saveThemeAndNext: function () {
+      if (this.noNext > 0) {
         alertMsg('', '不符合申报条件', '关闭', 'error', true);
         return false;
       }
-      var precondition=this.preconditionList
+      var precondition = this.preconditionList
       var preconditionLen = precondition.length;
-      for(var i=0;i<preconditionLen;i++){  // 并联情形id集合
-        if(precondition[i].muiltSelect>1){
-          if(precondition[i].selectAnswerId.length<precondition[i].muiltSelect){
+      for (var i = 0; i < preconditionLen; i++) {  // 并联情形id集合
+        if (precondition[i].muiltSelect > 1) {
+          if (precondition[i].selectAnswerId.length < precondition[i].muiltSelect) {
             alertMsg('', '请完整的选择前置条件', '关闭', 'error', true);
             return true;
           }
-        }else {
-          if(precondition[i].selectAnswerId==''){
+        } else {
+          if (precondition[i].selectAnswerId == '') {
             alertMsg('', '请选择前置条件', '关闭', 'error', true);
             return true;
           }
         }
       }
-      if(this.isNeedState==1){
+      if (this.isNeedState == 1) {
         this.getRootStateList();
-      }else {
+      } else {
         this.saveAndGetMats();
       }
     },
     // 根据事项id获取情形
-    getRootStateList: function(){
+    getRootStateList: function () {
       var _that = this;
       _that.loading = true;
       request('', {
-        url: ctx+'rest/userCenter/apply/series/itemState/list/'+_that.itemVerId,
+        url: ctx + 'rest/userCenter/apply/series/itemState/list/' + _that.itemVerId,
         type: 'get',
       }, function (data) {
-        if(data.success){
+        if (data.success) {
           _that.loading = false;
           _that.declareStep = 3;
           _that.stateList = data.content;
-          _that.stateList.map(function(item,ind){ // 情形下插入对应的情形
-            if(item.answerType!='s'&&item.answerType!='y'){
+          _that.stateList.map(function (item, ind) { // 情形下插入对应的情形
+            if (item.answerType != 's' && item.answerType != 'y') {
               Vue.set(item, 'selValue', []);
-              item.selectAnswerId=item.selValue;
+              item.selectAnswerId = item.selValue;
             }
           });
-        }else {
+        } else {
           _that.loading = false;
           _that.$message({
             message: data.message ? data.message : '保存失败',
@@ -1584,66 +1584,66 @@ var module1 = new Vue({
       });
     },
     // 根据前置条件获取子前置条件
-    getPreconditionClidrenList: function(pData,data,index,checkFlag){
+    getPreconditionClidrenList: function (pData, data, index, checkFlag) {
       var _that = this;
       var _condId = data.itemCondId;
       var _parentCondId = data.parentCondId; // 父id
       var cPreconditionList = _that.preconditionList;
       console.log(data);
       var cPreconditionIds = _that.getCoreItemsStatusListId(cPreconditionList)
-      if(checkFlag==false){
+      if (checkFlag == false) {
         var selPreconditionLen = cPreconditionList.length;
-        for (var i = 0;i<selPreconditionLen;i++) { // 清空情形下所对应情形
+        for (var i = 0; i < selPreconditionLen; i++) { // 清空情形下所对应情形
           var obj = cPreconditionList[i];
-          if (obj && (obj.condSeq.indexOf(_condId) >-1 )) {
+          if (obj && (obj.condSeq.indexOf(_condId) > -1)) {
             cPreconditionList.splice(i, 1);
             i--
           }
         }
-        if(data.sfzz==1){
+        if (data.sfzz == 1) {
           _that.noNext--;
         }
         return false
       }
 
-      if(data.sfzz==1&&cPreconditionIds.indexOf(_condId)==-1){
+      if (data.sfzz == 1 && cPreconditionIds.indexOf(_condId) == -1) {
         _that.noNext++;
       }
       request('', {
-        url: ctx+'rest/userCenter/apply/series/itemState/getChildAeaItemCondListByCondId/'+_condId,
-        data: {itemStateId: _condId},
+        url: ctx + 'rest/userCenter/apply/series/itemState/getChildAeaItemCondListByCondId/' + _condId,
+        data: { itemStateId: _condId },
         type: 'get'
       }, function (data) {
-        if(data.success){
-          if(checkFlag==true){
-            data.content.map(function(item,ind){ // 情形下插入对应的情形
-              if(item.muiltSelect!=null){
+        if (data.success) {
+          if (checkFlag == true) {
+            data.content.map(function (item, ind) { // 情形下插入对应的情形
+              if (item.muiltSelect != null) {
                 Vue.set(item, 'selectAnswerId', []);
-              }else {
+              } else {
                 Vue.set(item, 'selectAnswerId', '');
               }
-              cPreconditionList.splice((index+1+ind),0,item);
+              cPreconditionList.splice((index + 1 + ind), 0, item);
             });
-          }else {
+          } else {
             var stateListLen = cPreconditionList.length;
             for (var i = 0; i < stateListLen; i++) { // 清空情形下所对应情形
               var obj = cPreconditionList[i];
-              if (obj && (obj.condSeq.indexOf(_condId) >-1 )) {
-              // if (obj && (obj.parentCondId == _condId) || (obj && obj.parentCondId != null && (selPreconditionList.indexOf(obj.parentCondId) == -1))) {
+              if (obj && (obj.condSeq.indexOf(_condId) > -1)) {
+                // if (obj && (obj.parentCondId == _condId) || (obj && obj.parentCondId != null && (selPreconditionList.indexOf(obj.parentCondId) == -1))) {
                 cPreconditionList.splice(i, 1);
                 i--
               }
             }
             data.content.map(function (item, ind) { // 情形下插入对应的情形
-              if (item.muiltSelect!=null) {
+              if (item.muiltSelect != null) {
                 Vue.set(item, 'selectAnswerId', []);
-              }else {
+              } else {
                 Vue.set(item, 'selectAnswerId', '');
               }
               cPreconditionList.splice((index + 1 + ind), 0, item);
             });
           }
-        }else {
+        } else {
           _that.$message({
             message: '获取子情形失败',
             type: 'error'
@@ -1657,30 +1657,30 @@ var module1 = new Vue({
       });
     },
     // 根据情形获取子情形
-    getCoreStateBystatus: function(pData,data,index,checkFlag){
+    getCoreStateBystatus: function (pData, data, index, checkFlag) {
       var parentStateId = data.parentStateId;
       var _that = this;
       var questionStateId = pData.itemStateId;
       var cStateList = _that.stateList
       var _itemVerId = data.itemVerId;
-      var _parentId = data.itemStateId?data.itemStateId:'ROOT';
+      var _parentId = data.itemStateId ? data.itemStateId : 'ROOT';
       var selStateIds = [];
-      if(checkFlag==false){
+      if (checkFlag == false) {
         var stateListLen = cStateList.length;
-        selStateIds=_that.getCoreItemsStatusListId(cStateList);
-        for (var i = 0;i<stateListLen;i++) { // 清空情形下所对应情形
+        selStateIds = _that.getCoreItemsStatusListId(cStateList);
+        for (var i = 0; i < stateListLen; i++) { // 清空情形下所对应情形
           var obj = cStateList[i];
           // if(obj&&obj.stateSeq.indexOf(_parentId)>-1||(obj&&obj.parentStateId!=null&&(selStateIds.indexOf(obj.parentStateId)==-1))){
-          if(obj&&(obj.parentStateId == _parentId)||(obj&&obj.parentStateId!=null&&(selStateIds.indexOf(obj.parentStateId)==-1))){
+          if (obj && (obj.parentStateId == _parentId) || (obj && obj.parentStateId != null && (selStateIds.indexOf(obj.parentStateId) == -1))) {
             cStateList.splice(i, 1);
-            if(typeof(obj.selectAnswerId)=='object'&&obj.selectAnswerId.length>0){
-              obj.selectAnswerId.map(function(itemSel){
-                selStateIds=selStateIds.filter(function(item, index) {
+            if (typeof (obj.selectAnswerId) == 'object' && obj.selectAnswerId.length > 0) {
+              obj.selectAnswerId.map(function (itemSel) {
+                selStateIds = selStateIds.filter(function (item, index) {
                   return item !== itemSel;
                 })
               });
-            }else if(obj.selectAnswerId !== '') {
-              selStateIds=selStateIds.filter(function(item, index) {
+            } else if (obj.selectAnswerId !== '') {
+              selStateIds = selStateIds.filter(function (item, index) {
                 return item !== obj.selectAnswerId;
               })
             }
@@ -1690,35 +1690,35 @@ var module1 = new Vue({
         return false
       }
       request('', {
-        url: ctx+'rest/apply/common/itemState/findByParentItemStateId/'+_parentId+'/'+_itemVerId,
-        data: {itemStateId: _parentId},
+        url: ctx + 'rest/apply/common/itemState/findByParentItemStateId/' + _parentId + '/' + _itemVerId,
+        data: { itemStateId: _parentId },
         type: 'get'
       }, function (data) {
-        if(data.success){
-          if(checkFlag==true){
-            data.content.map(function(item,ind){ // 情形下插入对应的情形
-              if(item.answerType!='s'&&item.answerType!='y'){
+        if (data.success) {
+          if (checkFlag == true) {
+            data.content.map(function (item, ind) { // 情形下插入对应的情形
+              if (item.answerType != 's' && item.answerType != 'y') {
                 Vue.set(item, 'selValue', []);
-                item.selectAnswerId=item.selValue;
+                item.selectAnswerId = item.selValue;
               }
-              cStateList.splice((index+1+ind),0,item);
+              cStateList.splice((index + 1 + ind), 0, item);
             });
-          }else {
+          } else {
             var stateListLen = cStateList.length;
             selStateIds = _that.getCoreItemsStatusListId(cStateList);
             for (var i = 0; i < stateListLen; i++) { // 清空情形下所对应情形
               var obj = cStateList[i];
               // if(obj&&obj.stateSeq.indexOf(_parentId)>-1|| (obj && obj.parentStateId != null && (selStateIds.indexOf(obj.parentStateId) == -1))){
-              if(obj&&(obj.parentQuestionStateId == questionStateId)||(obj&&obj.parentStateId!=null&&(selStateIds.indexOf(obj.parentStateId)==-1))){
+              if (obj && (obj.parentQuestionStateId == questionStateId) || (obj && obj.parentStateId != null && (selStateIds.indexOf(obj.parentStateId) == -1))) {
                 cStateList.splice(i, 1);
-                if(typeof(obj.selectAnswerId)=='object'&&obj.selectAnswerId.length>0){
-                  obj.selectAnswerId.map(function(itemSel){
-                    selStateIds=selStateIds.filter(function(item, index) {
+                if (typeof (obj.selectAnswerId) == 'object' && obj.selectAnswerId.length > 0) {
+                  obj.selectAnswerId.map(function (itemSel) {
+                    selStateIds = selStateIds.filter(function (item, index) {
                       return item !== itemSel;
                     })
                   });
-                }else if(obj.selectAnswerId !== '') {
-                  selStateIds=selStateIds.filter(function(item, index) {
+                } else if (obj.selectAnswerId !== '') {
+                  selStateIds = selStateIds.filter(function (item, index) {
                     return item !== obj.selectAnswerId;
                   })
                 }
@@ -1733,7 +1733,7 @@ var module1 = new Vue({
               cStateList.splice((index + 1 + ind), 0, item);
             });
           }
-        }else {
+        } else {
           _that.$message({
             message: '获取子情形失败',
             type: 'error'
@@ -1747,19 +1747,19 @@ var module1 = new Vue({
       });
     },
     // 获取单事项情形列表id
-    getCoreItemsStatusListId: function(cStateList){
+    getCoreItemsStatusListId: function (cStateList) {
       var stateListLen = cStateList.length;
       var selStateIds = [];
-      for(var i=0;i<stateListLen;i++){  // 已选并联情形id集合
-        if(cStateList[i].selectAnswerId!==undefined||cStateList[i].selectAnswerId!==null){
-          if(typeof(cStateList[i].selectAnswerId)=='object'&&cStateList[i].selectAnswerId.length>0){
+      for (var i = 0; i < stateListLen; i++) {  // 已选并联情形id集合
+        if (cStateList[i].selectAnswerId !== undefined || cStateList[i].selectAnswerId !== null) {
+          if (typeof (cStateList[i].selectAnswerId) == 'object' && cStateList[i].selectAnswerId.length > 0) {
             selStateIds = selStateIds.concat(cStateList[i].selectAnswerId);
-          }else if(cStateList[i].selectAnswerId !== '') {
+          } else if (cStateList[i].selectAnswerId !== '') {
             selStateIds.push(cStateList[i].selectAnswerId);
           }
         }
       }
-      selStateIds=selStateIds.filter(function(item, index) {
+      selStateIds = selStateIds.filter(function (item, index) {
         //当前元素，在原始数组中的第一个索引==当前索引值，否则返回当前元素
         return selStateIds.indexOf(item, 0) === index
       })
@@ -1768,46 +1768,46 @@ var module1 = new Vue({
     // 上一页
     prevPage: function (page) {
 
-      if(this.isNeedFrontCond!=1&&page==2){
+      if (this.isNeedFrontCond != 1 && page == 2) {
         this.declareStep = 1;
-      }else if(this.isNeedState!=1&&page==3){
-        if(this.isNeedFrontCond!=1){
+      } else if (this.isNeedState != 1 && page == 3) {
+        if (this.isNeedFrontCond != 1) {
           this.declareStep = 1;
-        }else {
+        } else {
           this.declareStep = 2;
         }
-      }else {
+      } else {
         this.declareStep = page;
       }
     },
     // 保存并根据阶段ID、情形ID集合、事项版本ID集合获取材料一单清列表数据
-    saveAndGetMats: function(){
+    saveAndGetMats: function () {
       var _that = this;
       var stateSel = _that.stateList;
       var stateSelLen = stateSel.length;
       _that.stateIds = [];
-      for(var i=0;i<stateSelLen;i++){  // 并联情形id集合
-        if(stateSel[i].selectAnswerId==null||stateSel[i].selectAnswerId==''){
-          if(stateSel[i].mustAnswer==1){
-            _that.stateIds=[];
+      for (var i = 0; i < stateSelLen; i++) {  // 并联情形id集合
+        if (stateSel[i].selectAnswerId == null || stateSel[i].selectAnswerId == '') {
+          if (stateSel[i].mustAnswer == 1) {
+            _that.stateIds = [];
             alertMsg('', '请选择情形', '关闭', 'error', true);
             return true;
           }
         }
-        if(stateSel[i].selectAnswerId!==null||stateSel[i].selectAnswerId!==''){
-          if(typeof stateSel[i].selectAnswerId == 'object'){
+        if (stateSel[i].selectAnswerId !== null || stateSel[i].selectAnswerId !== '') {
+          if (typeof stateSel[i].selectAnswerId == 'object') {
             _that.stateIds = _that.stateIds.concat(stateSel[i].selectAnswerId);
-          }else {
+          } else {
             _that.stateIds.push(stateSel[i].selectAnswerId);
 
           }
         }
       }
-      var parmas={
+      var parmas = {
         itemVerId: _that.itemVerId,
         stateIds: _that.stateIds,
       };
-      _that.loading=true;
+      _that.loading = true;
       request('', {
         url: ctx + 'rest/userCenter/apply/series/mat/list',
         type: 'post',
@@ -1817,63 +1817,80 @@ var module1 = new Vue({
         _that.declareStep = 4;
         _that.showFileListKey = [];
         _that.allMatsTableData = result.content;
-        _that.showMatsTableData = result.content.slice(0,10);
-        _that.loading=false;
+        _that.showMatsTableData = result.content.slice(0, 10);
+        _that.loading = false;
       }, function (msg) {
-        _that.loading=false;
+        _that.loading = false;
       })
     },
     // 文件上传 change事件
-    fileChange: function(file, fileList){
+    fileChange: function (file, fileList) {
       var _that = this;
+
+      if (!_that.isSpecifiedFileType(file.name)) {
+        _that.$message({
+          message: '不允许上传的文件类型',
+          type: 'error'
+        });
+        return false;
+      }
+
       _that.AllFileListId = [];
-      if(fileList.length>0){
-        this.AllFileList = this.unique(fileList,'file');
-        this.AllFileList.map(function(item){
+      var newFileList = [];
+      if (fileList.length > 0) {
+        fileList.map(function (item) {
+          if (_that.isSpecifiedFileType(item.name)) {
+            newFileList.push(item);
+          };
+        });
+
+        this.AllFileList = this.unique(newFileList, 'file');
+        this.AllFileList.map(function (item) {
           _that.AllFileListId.push(item.name);
         });
-        _that.checkedSelFlie=_that.AllFileListId;
+        _that.checkedSelFlie = _that.AllFileListId;
       }
     },
-    myUploadFile: function(file){
+    myUploadFile: function (file) {
       var _that = this;
-      _that.checkedSelFlie.map(function(item){
-        if(item == file.file.name){
+
+      _that.checkedSelFlie.map(function (item) {
+        if (item == file.file.name) {
           _that.fileData.append('file', file.file);
         }
       });
     },
     // 一键分拣全选
-    handleCheckAllChange: function(val) {
+    handleCheckAllChange: function (val) {
       this.checkedSelFlie = val ? this.AllFileListId : [];
     },
     // 一键分拣勾选文件
-    handleCheckedCitiesChange: function(value) {
+    handleCheckedCitiesChange: function (value) {
       var checkedCount = value.length;
       this.checkAll = checkedCount === this.AllFileListId.length;
       this.checkedSelFlie = value;
     },
     // 获取材料id 材料实例id
-    getMatIdAndMatinstId: function(){
+    getMatIdAndMatinstId: function () {
       var _that = this;
-      _that.matIds=[];
-      _that.matinstIds=[];
+      _that.matIds = [];
+      _that.matinstIds = [];
       _that.attIsRequireFlag = true;
-      _that.allMatsTableData.map(function(item){
-        if(item.childs=='undefined'||item.childs==undefined){
-          Vue.set(item,'childs',[]);
+      _that.allMatsTableData.map(function (item) {
+        if (item.childs == 'undefined' || item.childs == undefined) {
+          Vue.set(item, 'childs', []);
         }
-        if(item.matinstId=='undefined'||item.matinstId==undefined){
-          Vue.set(item,'matinstId','');
+        if (item.matinstId == 'undefined' || item.matinstId == undefined) {
+          Vue.set(item, 'matinstId', '');
         }
-        if(item.zcqy==0&&item.attIsRequire==1){
+        if (item.zcqy == 0 && item.attIsRequire == 1) {
           console.log(item.matinstId);
-          if(!item.matinstId||item.childs.length==0){
+          if (!item.matinstId || item.childs.length == 0) {
             _that.attIsRequireFlag = false;
           }
         }
         _that.matIds.push(item.matId);
-        if( typeof item.matinstId !== "undefined"&&item.matinstId!=''){
+        if (typeof item.matinstId !== "undefined" && item.matinstId != '') {
           _that.matinstIds.push(item.matinstId)
         }
       });
@@ -1890,28 +1907,28 @@ var module1 = new Vue({
       this.fileData.append("unitInfoId", _that.unitInfoId);
       this.fileData.append("userInfoId", _that.userInfoId);
       this.uploadLogo = "1";
-      if(_that.checkedSelFlie.length==0){
+      if (_that.checkedSelFlie.length == 0) {
         alertMsg('', '请选择需要自动分拣的文件', '关闭', 'warning', true);
         return false;
-      }else {
+      } else {
         _that.loadingFile = true;
-        axios.post(ctx+'rest/apply/common/att/upload/auto',_that.fileData).then(function(res){
+        axios.post(ctx + 'rest/apply/common/att/upload/auto', _that.fileData).then(function (res) {
           _that.checkedSelFlie = [];
           _that.AllFileList = [];
           _that.loadingFile = false;
           _that.$refs.uploadFile.clearFiles();
           _that.checkAll = true;
           var matinstIdsObj = [];
-          res.data.content.map(function(item){
+          res.data.content.map(function (item) {
             _that.showFileListKey.push(item.matId);
-            _that.allMatsTableData.map(function(matItem){
-              if(item.matId == matItem.matId){
+            _that.allMatsTableData.map(function (matItem) {
+              if (item.matId == matItem.matId) {
                 matItem.matinstId = item.matinstId;
-                matItem.childs=item.fileList;
+                matItem.childs = item.fileList;
               }
             });
           });
-        }).catch(function(error){
+        }).catch(function (error) {
           if (error.response) {
             // content.onError('配时文件上传失败(' + error.response.status + ')，' + error.response.data);
           } else if (error.request) {
@@ -1926,48 +1943,48 @@ var module1 = new Vue({
 
     },
     // 材料 事项去重
-    unique: function(arr,flag) {
+    unique: function (arr, flag) {
       var result = {};
-      var  finalResult=[];
-      var arr=arr.reverse();
-      for(var i=0;i<arr.length;i++){
-        if(flag=='mats'){
-          result[arr[i].matId]=arr[i];
-        }else if(flag=='stage'){
-          result[arr[i].itemVerId]=arr[i];
-        }else if(flag=='file'){
-          result[arr[i].name]=arr[i];
+      var finalResult = [];
+      var arr = arr.reverse();
+      for (var i = 0; i < arr.length; i++) {
+        if (flag == 'mats') {
+          result[arr[i].matId] = arr[i];
+        } else if (flag == 'stage') {
+          result[arr[i].itemVerId] = arr[i];
+        } else if (flag == 'file') {
+          result[arr[i].name] = arr[i];
         }
       }
-      for(item in result){
+      for (item in result) {
         finalResult.push(result[item]);
       }
       return finalResult.reverse();
     },
     // 是否展示更多材料
-    toggleShowMatsMore:function(){
+    toggleShowMatsMore: function () {
       this.isShowAll = !this.isShowAll;
-      if(this.isShowAll===true){
+      if (this.isShowAll === true) {
         this.showMatsTableData = this.allMatsTableData
-      }else {
-        this.showMatsTableData = this.allMatsTableData.slice(0,10);
+      } else {
+        this.showMatsTableData = this.allMatsTableData.slice(0, 10);
       }
     },
     // 删除文件  flag ==dir 我的空间选中材料
-    delSelectFileCom: function(rowData,fileData,index,flag){
+    delSelectFileCom: function (rowData, fileData, index, flag) {
       var _that = this;
-      var detailIds = flag=='dir'?fileData.detailId:fileData.fileId;
+      var detailIds = flag == 'dir' ? fileData.detailId : fileData.fileId;
       request('', {
         type: 'get',
-        data: {matinstId: rowData.matinstId,detailIds:detailIds}
+        data: { matinstId: rowData.matinstId, detailIds: detailIds }
       }, function (res) {
-        if(res.success){
-          _that.getFileListWin(res.content,rowData);
+        if (res.success) {
+          _that.getFileListWin(res.content, rowData);
           // rowData.childs.splice(index,1);
-          var succMsg = index?'删除成功':'移除成功'
-          if(_that.myMatsList.length>0){
-            _that.myMatsList.map(function(item){
-              if(item.fileId==detailIds){
+          var succMsg = index ? '删除成功' : '移除成功'
+          if (_that.myMatsList.length > 0) {
+            _that.myMatsList.map(function (item) {
+              if (item.fileId == detailIds) {
                 item.checked = false;
               }
             });
@@ -1976,9 +1993,9 @@ var module1 = new Vue({
             message: succMsg,
             type: 'success'
           });
-        }else {
+        } else {
           _that.$message({
-            message: res.message?res.message:'删除失败',
+            message: res.message ? res.message : '删除失败',
             type: 'error'
           });
         }
@@ -1996,59 +2013,59 @@ var module1 = new Vue({
     //   window.open(ctx + 'rest/file/att/preview/'+detailId);
     // },
     // 获取文件后缀
-    getFileType: function(fileName){
-      var index1=fileName.lastIndexOf(".");
-      var index2=fileName.length;
-      var suffix=fileName.substring(index1+1, index2).toLowerCase();//后缀名
+    getFileType: function (fileName) {
+      var index1 = fileName.lastIndexOf(".");
+      var index2 = fileName.length;
+      var suffix = fileName.substring(index1 + 1, index2).toLowerCase();//后缀名
       return suffix;
     },
     // 预览电子件
-    filePreview: function(data,flag){ // flag==pdf 查看施工图
+    filePreview: function (data, flag) { // flag==pdf 查看施工图
       var detailId = data.fileId;
       var _that = this;
       var regText = /doc|docx|ppt|pptx|xls|xlsx|txt$/;
-      var fileName=data.fileName;
+      var fileName = data.fileName;
       var fileType = this.getFileType(fileName);
       var flashAttributes = '';
       _that.filePreviewCount++
-      if(flag=='pdf'){
-        var tempwindow=window.open(); // 先打开页面
-        setTimeout(function(){
-          tempwindow.location=ctx+'cod/drawing/drawingCheck?detailId='+detailId;
-        },1000)
-      }else {
-        if(fileType=='pdf'){
-          var tempwindow=window.open(); // 先打开页面
-          setTimeout(function(){
-            tempwindow.location=ctx+'previewPdf/view?detailId='+detailId;
-          },1000)
-        }else if(regText.test(fileType)){
+      if (flag == 'pdf') {
+        var tempwindow = window.open(); // 先打开页面
+        setTimeout(function () {
+          tempwindow.location = ctx + 'cod/drawing/drawingCheck?detailId=' + detailId;
+        }, 1000)
+      } else {
+        if (fileType == 'pdf') {
+          var tempwindow = window.open(); // 先打开页面
+          setTimeout(function () {
+            tempwindow.location = ctx + 'previewPdf/view?detailId=' + detailId;
+          }, 1000)
+        } else if (regText.test(fileType)) {
           // previewPdf/pdfIsCoverted
           _that.loading = true;
           request('', {
-            url: ctx + 'previewPdf/pdfIsCoverted?detailId='+detailId,
+            url: ctx + 'previewPdf/pdfIsCoverted?detailId=' + detailId,
             type: 'get',
           }, function (result) {
-            if(result.success){
+            if (result.success) {
               _that.loading = false;
-              var tempwindow=window.open(); // 先打开页面
-              setTimeout(function(){
-                tempwindow.location=ctx+'previewPdf/view?detailId='+detailId;
-              },1000)
-            }else {
-              if(_that.filePreviewCount>9){
+              var tempwindow = window.open(); // 先打开页面
+              setTimeout(function () {
+                tempwindow.location = ctx + 'previewPdf/view?detailId=' + detailId;
+              }, 1000)
+            } else {
+              if (_that.filePreviewCount > 9) {
                 confirmMsg('提示信息：', '文件预览请求中，是否继续等待？', function () {
-                  _that.filePreviewCount=0;
+                  _that.filePreviewCount = 0;
                   _that.filePreview(data);
                 }, function () {
-                  _that.filePreviewCount=0;
+                  _that.filePreviewCount = 0;
                   _that.loading = false;
                   return false;
                 }, '确定', '取消', 'warning', true)
-              }else {
-                setTimeout(function(){
+              } else {
+                setTimeout(function () {
                   _that.filePreview(data);
-                },1000)
+                }, 1000)
               }
             }
           }, function (msg) {
@@ -2058,42 +2075,54 @@ var module1 = new Vue({
               type: 'error'
             });
           })
-        }else {
+        } else {
           _that.loading = false;
-          var tempwindow=window.open(); // 先打开页面
-          setTimeout(function(){
+          var tempwindow = window.open(); // 先打开页面
+          setTimeout(function () {
             tempwindow.location = ctx + 'rest/file/att/preview?detailId=' + detailId + '&flashAttributes=' + flashAttributes;
-          },1000)
+          }, 1000)
         }
       }
     },
     // 下载电子件
-    downloadFile: function(detailIds){
-      window.open(ctx+'rest/file/applydetail/mat/download/'+detailIds)
+    downloadFile: function (detailIds) {
+      window.open(ctx + 'rest/file/applydetail/mat/download/' + detailIds)
     },
-    debounceHandler: function(file){
-      this.loadingFileWin = true;
+    debounceHandler: function (file) {
+      var _that = this;
+      _that.loadingFileWin = true;
+
+      if (!_that.isSpecifiedFileType(file.file.name)) {
+        _that.$message({
+          message: '不允许上传的文件类型',
+          type: 'error'
+        });
+        _that.loadingFileWin = false;
+
+        return false;
+      }
+
       this.debounce(this.uploadFileCom, file);
     },
-    debounce: function(func, file){
+    debounce: function (func, file) {
       var vm = this;
       window.clearTimeout(func.tId);
       func.temArr = func.temArr || [];
       func.temArr.push(file);
       console.log(file);
-      func.tId = window.setTimeout(function(){
+      func.tId = window.setTimeout(function () {
         this.loadingFileWin = false;
         func(func.temArr);
         func.temArr = [];
       }, 1000);
     },
     // 上传电子件
-    uploadFileCom: function(file){
+    uploadFileCom: function (file) {
       var _that = this;
       var rowData = _that.selMatRowData;
       this.fileWinData = new FormData();
       var isAllowFile;
-      file.forEach(function (u){
+      file.forEach(function (u) {
         // if (!_that.isAllowFile(u.file.name)){
         //   _that.$message({
         //     message: '不允许上传的文件类型',
@@ -2101,7 +2130,7 @@ var module1 = new Vue({
         //   });
         //   isAllowFile = false;
         // }
-        Vue.set(u.file,'fileName',u.file.name);
+        Vue.set(u.file, 'fileName', u.file.name);
         _that.fileWinData.append('file', u.file);
 
       })
@@ -2110,20 +2139,20 @@ var module1 = new Vue({
       // this.fileWinData.append('file', file.file);
       this.fileWinData.append("matId", rowData.matId);
       this.fileWinData.append("matinstCode", rowData.matCode);
-      this.fileWinData.append("matinstName", rowData.matName?rowData.matName:'');
+      this.fileWinData.append("matinstName", rowData.matName ? rowData.matName : '');
       this.fileWinData.append("projInfoId", _that.projInfoId);
-      this.fileWinData.append("matinstId", rowData.matinstId?rowData.matinstId:'');
+      this.fileWinData.append("matinstId", rowData.matinstId ? rowData.matinstId : '');
       _that.loadingFileWin = true;
-      axios.post(ctx+'rest/file/uploadFile',_that.fileWinData).then(function(res){
-        if(res.data.success){
-          file.forEach(function (u){
-            Vue.set(u.file,'matinstId',res.data.content);
+      axios.post(ctx + 'rest/file/uploadFile', _that.fileWinData).then(function (res) {
+        if (res.data.success) {
+          file.forEach(function (u) {
+            Vue.set(u.file, 'matinstId', res.data.content);
           })
           // Vue.set(file.file,'matinstId',res.data.content)
           _that.selMatinstId = res.data.content;
-          _that.getFileListWin(res.data.content,rowData);
-          _that.allMatsTableData.map(function(item){
-            if(item.matId == rowData.matId){
+          _that.getFileListWin(res.data.content, rowData);
+          _that.allMatsTableData.map(function (item) {
+            if (item.matId == rowData.matId) {
               item.matinstId = res.data.content;
               _that.showFileListKey.push(item.matId)
             }
@@ -2133,14 +2162,14 @@ var module1 = new Vue({
             message: '上传成功',
             type: 'success'
           });
-        }else {
+        } else {
           _that.loadingFileWin = false;
           _that.$message({
             message: '上传失败',
             type: 'error'
           });
         }
-      }).catch(function(error){
+      }).catch(function (error) {
         console.log(error, JSON.stringify(error));
         _that.loadingFileWin = false;
         if (error.response) {
@@ -2162,47 +2191,44 @@ var module1 = new Vue({
 
       });
     },
-    //判断是否允许上传的文件
-    isAllowFile:function(fileName){
-      debugger;
-      var filetypes=[".jpg",".png",".rar",".txt",".zip",".doc",".ppt",".xls",".pdf",".docx",".xlsx"];
-      var fileend = fileName.substring(fileName.indexOf("."));
-      for(var i =0; i<filetypes.length;i++) {
-        if (filetypes[i] == fileend) {
-          return true;
-          break;
-        }
+    // 判断文件类型是否存在规定的类型里
+    isSpecifiedFileType: function (fileName) {
+      var fileTypes = [".jpg", ".png", ".rar", ".txt", ".zip", ".doc", ".ppt", ".xls", ".pdf", ".docx", ".xlsx"];
+      var getFileType = fileName.substring(fileName.indexOf(".")).toLowerCase();
+      if (fileTypes.indexOf(getFileType) > -1) {
+        return true;
+      } else {
+        return false;
       }
-      return false
     },
     // 发起申报
-    startParalleApprove: function(){
+    startParalleApprove: function () {
       var _that = this;
-      var projInfoIds=[]; // 项目ID集合
-      var applySubjectType='';
+      var projInfoIds = []; // 项目ID集合
+      var applySubjectType = '';
       // 申报主体为1、2
       console.log(_that.applyObjectInfo.role);
-      if(_that.applyObjectInfo.role==2){
-        applySubjectType=1;
-      }else {
-        applySubjectType=0;
+      if (_that.applyObjectInfo.role == 2) {
+        applySubjectType = 1;
+      } else {
+        applySubjectType = 0;
       }
-      if(applySubjectType==0){
-        _that.unitInfoId='';
+      if (applySubjectType == 0) {
+        _that.unitInfoId = '';
         _that.unifiedSocialCreditCode = '';
         _that.userInfoId = _that.applyObjectInfo.aeaLinkmanInfo.linkmanInfoId;
         _that.userLinkmanCertNo = _that.applyObjectInfo.aeaLinkmanInfo.linkmanCertNo;
-      }else {
+      } else {
         _that.unitInfoId = this.applyObjectInfo.aeaUnitInfo.unitInfoId;
         _that.unifiedSocialCreditCode = _that.applyObjectInfo.aeaUnitInfo.unifiedSocialCreditCode;
       }
       projInfoIds.push(_that.projInfoId);
       _that.getMatIdAndMatinstId();
-      if(!_that.attIsRequireFlag){
+      if (!_that.attIsRequireFlag) {
         alertMsg('', '请上传所有必传的电子件', '关闭', 'warning', true);
         return false;
       }
-      var parmas={
+      var parmas = {
         applySource: 'net',
         applySubject: applySubjectType,
         applyinstId: _that.applyinstId,
@@ -2210,26 +2236,26 @@ var module1 = new Vue({
         linkmanInfoId: _that.userInfoId,
         matinstsIds: _that.matinstIds,
         projInfoIds: projInfoIds,
-        smsInfoId : _that.smsInfoId,
-        regionalism:_that.regionalism,
+        smsInfoId: _that.smsInfoId,
+        regionalism: _that.regionalism,
         stateIds: _that.stateIds,
         unitInfoId: _that.unitInfoId
       }
       _that.progressDialogVisible = true;
-      _that.progressIntervalStop=false;
-      _that.progressStus=null;
+      _that.progressIntervalStop = false;
+      _that.progressStus = null;
       _that.setUploadPercentage();
       request('', {
-        url: ctx+'rest/userCenter/apply/series/series/processflow/start',
+        url: ctx + 'rest/userCenter/apply/series/series/processflow/start',
         type: 'post',
         ContentType: 'application/json',
         timeout: 1000000,
         data: JSON.stringify(parmas)
       }, function (res) {
-        if(res.success){
-          _that.uploadPercentage=100;
-          _that.progressIntervalStop=true;
-          _that.progressStus='success';
+        if (res.success) {
+          _that.uploadPercentage = 100;
+          _that.progressIntervalStop = true;
+          _that.progressStus = 'success';
           _that.progressDialogVisible = false;
           _that.declareStep = 5;
           _that.applySuccessProjInfo = res.content;
@@ -2239,124 +2265,124 @@ var module1 = new Vue({
           var datestr = nowDate.getDate();
           var hourstr = Number(nowDate.getHours());
           var minstr = Number(nowDate.getMinutes());
-          var printstr = "您于" + yearstr + "年" + monthstr + "月" + datestr + "日" + hourstr + "时" + minstr + "分在唐山网上办事大厅申请的【"+_that.applySuccessProjInfo.projName+"】项目已经完成申报。";
+          var printstr = "您于" + yearstr + "年" + monthstr + "月" + datestr + "日" + hourstr + "时" + minstr + "分在唐山网上办事大厅申请的【" + _that.applySuccessProjInfo.projName + "】项目已经完成申报。";
 
-          _that.applySuccessProjInfo.printstr=printstr;
+          _that.applySuccessProjInfo.printstr = printstr;
           // _that.$nextTick(function(){
           //   alertMsg('', printstr, '确认', 'success', true,function(){
           //     window.location.href=ctx+'rest/user/toUserCenterindexPage';
           //   });
           // });
-        }else {
-          _that.progressIntervalStop=true;
-          _that.progressStus='error';
+        } else {
+          _that.progressIntervalStop = true;
+          _that.progressStus = 'error';
           _that.$message({
-            message: res.message?res.message:'提交申请失败！',
+            message: res.message ? res.message : '提交申请失败！',
             type: 'error'
           });
-          _that.$nextTick(function(){
+          _that.$nextTick(function () {
             _that.progressDialogVisible = false;
           });
         }
       }, function (msg) {
         _that.progressDialogVisible = false;
-        _that.progressIntervalStop=true;
-        _that.progressStus='error';
+        _that.progressIntervalStop = true;
+        _that.progressStus = 'error';
         alertMsg('', '服务请求失败', '关闭', 'error', true);
       });
     },
-    showUploadWindow: function(data,index){ // 展示文件上传下载弹窗
+    showUploadWindow: function (data, index) { // 展示文件上传下载弹窗
       var _that = this;
       _that.showUploadWindowFlag = true;
       _that.getMyMatsList();
       _that.selMatRowData = data;
       _that.selMatRowDataInd = index;
-      _that.selMatinstId = data.matinstId?data.matinstId:null;
-      _that.getFileListWin(_that.selMatinstId,data);
+      _that.selMatinstId = data.matinstId ? data.matinstId : null;
+      _that.getFileListWin(_that.selMatinstId, data);
     },
     // 切换选中的材料 flag==prev 上一个 next 下一个
-    changeRowDataSel: function(flag){
-      if(flag=='prev'){
-        if(this.selMatRowDataInd>0){
+    changeRowDataSel: function (flag) {
+      if (flag == 'prev') {
+        if (this.selMatRowDataInd > 0) {
           this.selMatRowDataInd--
         }
-      }else {
-        if(this.selMatRowDataInd<(this.allMatsTableData.length-1)){
+      } else {
+        if (this.selMatRowDataInd < (this.allMatsTableData.length - 1)) {
           this.selMatRowDataInd++
         }
       }
       this.selMatRowData = this.allMatsTableData[this.selMatRowDataInd];
-      this.selMatinstId = this.selMatRowData.matinstId?this.selMatRowData.matinstId:null;
-      this.getFileListWin(this.selMatinstId,this.selMatRowData);
+      this.selMatinstId = this.selMatRowData.matinstId ? this.selMatRowData.matinstId : null;
+      this.getFileListWin(this.selMatinstId, this.selMatRowData);
       console.log(this.selMatRowData);
     },
     // 设置进度条的值
     setUploadPercentage: function () {
       var _that = this;
-      _that.uploadPercentage=0;
-      var interval = setInterval(function(){
+      _that.uploadPercentage = 0;
+      var interval = setInterval(function () {
         _that.uploadPercentage += 3;
-        if(_that.uploadPercentage >= 96 || _that.progressIntervalStop == true){
+        if (_that.uploadPercentage >= 96 || _that.progressIntervalStop == true) {
           clearInterval(interval);
         }
       }, 300);
     },
     // 获取已上传文件列表
-    getFileListWin: function(matinstId,rowData){
+    getFileListWin: function (matinstId, rowData) {
       var _that = this;
       _that.selMatLoading = true;
       request('', {
-        url: ctx + 'rest/file/getAttFiles/'+matinstId,
+        url: ctx + 'rest/file/getAttFiles/' + matinstId,
         type: 'get',
-        data: {matinstId: matinstId}
+        data: { matinstId: matinstId }
       }, function (res) {
         _that.selMatLoading = false;
-        if(res.success){
-          if(res.content){
+        if (res.success) {
+          if (res.content) {
             _that.uploadTableData = res.content;
             _that.uploadFilesCount = res.content.length;
             var uploadFileIds = [];
-            if(_that.uploadTableData.length>0){
-              _that.uploadTableData.map(function(uploadItem){
-                if(uploadFileIds.indexOf(uploadItem.fileId)<0){
+            if (_that.uploadTableData.length > 0) {
+              _that.uploadTableData.map(function (uploadItem) {
+                if (uploadFileIds.indexOf(uploadItem.fileId) < 0) {
                   uploadFileIds.push(uploadItem.fileId);
                 }
               });
             }
-            if(_that.myMatsList.length>0){
-              _that.myMatsList.map(function(item){
-                if(typeof item.checked == undefined){
-                  Vue.set(item, 'checked',false);
+            if (_that.myMatsList.length > 0) {
+              _that.myMatsList.map(function (item) {
+                if (typeof item.checked == undefined) {
+                  Vue.set(item, 'checked', false);
                 }
-                if(uploadFileIds.length>0&&uploadFileIds.indexOf(item.fileId)>-1){
+                if (uploadFileIds.length > 0 && uploadFileIds.indexOf(item.fileId) > -1) {
                   item.checked = true;
-                }else {
+                } else {
                   item.checked = false;
                 }
               })
             }
-            if(_that.myDirMatsList.length>0){
-              _that.myDirMatsList.map(function(item){
-                if(typeof item.checked == undefined){
-                  Vue.set(item, 'checked',false);
+            if (_that.myDirMatsList.length > 0) {
+              _that.myDirMatsList.map(function (item) {
+                if (typeof item.checked == undefined) {
+                  Vue.set(item, 'checked', false);
                 }
-                if(uploadFileIds.length>0&&uploadFileIds.indexOf(item.detailId)>-1){
+                if (uploadFileIds.length > 0 && uploadFileIds.indexOf(item.detailId) > -1) {
                   item.checked = true;
-                }else {
+                } else {
                   item.checked = false;
                 }
               })
             }
-            if(_that.uploadFilesCount>0&&_that.showFileListKey.indexOf(rowData.matId)<0){
+            if (_that.uploadFilesCount > 0 && _that.showFileListKey.indexOf(rowData.matId) < 0) {
               _that.showFileListKey.push(rowData.matId);
             }
-            if(rowData){
-              rowData.childs=res.content;
+            if (rowData) {
+              rowData.childs = res.content;
             }
           }
-        }else {
+        } else {
           _that.$message({
-            message: res.message?res.message:'加载已上传材料列表失败',
+            message: res.message ? res.message : '加载已上传材料列表失败',
             type: 'error'
           });
         }
@@ -2371,14 +2397,14 @@ var module1 = new Vue({
 
     //获取行政分区列表
     querySelentDistrict: function (rootOrgId) {
-      var _that=this;
+      var _that = this;
       request('', {
         url: ctx + 'rest/org/region/list',
         type: 'get',
-        data: {rootOrgId: rootOrgId}
+        data: { rootOrgId: rootOrgId }
       }, function (result) {
         if (result.success) {
-          _that.districtList=result.content;
+          _that.districtList = result.content;
         }
       }, function (msg) {
         alertMsg('', '网络加载失败！', '关闭', 'error', true);
@@ -2387,14 +2413,14 @@ var module1 = new Vue({
 
     //获取部门组织
     querySelectDept: function (rootOrgId) {
-      var _that=this;
+      var _that = this;
       request('', {
         url: ctx + 'rest/user/getOrgs',
         type: 'get',
-        data: {rootOrgId: rootOrgId}
+        data: { rootOrgId: rootOrgId }
       }, function (result) {
         if (result.success) {
-          _that.orgList=result.content;
+          _that.orgList = result.content;
         }
       }, function (msg) {
         alertMsg('', '网络加载失败！', '关闭', 'error', true);
@@ -2402,14 +2428,14 @@ var module1 = new Vue({
     },
 
     querySelecTheme: function (themeType) {
-      var _that=this;
+      var _that = this;
       request('', {
         url: ctx + 'rest/user/getThemes',
         type: 'get',
         //data: {themeType:themeType}
       }, function (result) {
         if (result.success) {
-          _that.themeList=result.content;
+          _that.themeList = result.content;
         }
       }, function (msg) {
         alertMsg('', '网络加载失败！', '关闭', 'error', true);
@@ -2420,39 +2446,39 @@ var module1 = new Vue({
       var _that = this;
       var _bizCode = '', _bizType = '';
       _that.applyObjectInfo.role
-      if(_that.applyObjectInfo.role==0){
+      if (_that.applyObjectInfo.role == 0) {
         _bizCode = _that.userLinkmanCertNo;
         _bizType = 'l';
-      }else if(_that.applyObjectInfo.role==2) {
+      } else if (_that.applyObjectInfo.role == 2) {
         _bizCode = _that.unifiedSocialCreditCode;
         _bizType = 'u';
       }
       request('', {
         url: ctx + 'rest/user/credit/redblack/getPersonOrUnitBlackAndCreditListByBizCode',
         type: 'get',
-        data: {bizCode:_bizCode,bizType:_bizType}
+        data: { bizCode: _bizCode, bizType: _bizType }
       }, function (result) {
         if (result.success) {
-          if(result.content.isBlack==1) {
+          if (result.content.isBlack == 1) {
             _that.creditDiaVisible = true; // 展示信用记录弹窗
             _that.isBlack = true;
-          }else {
+          } else {
             _that.isBlack = false;
           }
           _that.loseCreditCount = 0;
           _that.creditTypeList = result.content.creditList;
-          result.content.creditList.map(function(item){
-            if(item.itemCode=='bad'&&item.summaries.length>0){
+          result.content.creditList.map(function (item) {
+            if (item.itemCode == 'bad' && item.summaries.length > 0) {
               _that.loseCreditCount = item.summaries.length;
             }
-            item.summaries.map(function(itemSum){
+            item.summaries.map(function (itemSum) {
               Vue.set(itemSum, 'isOpen', false);
             })
           });
           console.log(_that.creditTypeList);
-        }else {
+        } else {
           // _that.creditDiaVisible = false; // 展示信用记录弹窗
-          _that.$message.error(result.message?result.message:'获取信用状态失败！');
+          _that.$message.error(result.message ? result.message : '获取信用状态失败！');
         }
       }, function (msg) {
         // _that.creditDiaVisible = false; // 展示信用记录弹窗
@@ -2469,13 +2495,13 @@ var module1 = new Vue({
     }
     ,
     formatBjType: function (bjType) {
-        switch (bjType) {
-            case '1':
-                return '个工作日';
-            case '2':
-                return '个自然日';
-        }
-        return '个工作日'
+      switch (bjType) {
+        case '1':
+          return '个工作日';
+        case '2':
+          return '个自然日';
+      }
+      return '个工作日'
     }
   },
 });

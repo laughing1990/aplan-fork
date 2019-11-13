@@ -56,7 +56,7 @@ public class StageStageChecker extends AbstractChecker<AeaParStage> {
                         message.append(aeaParFrontStageVo.getHistStageName()).append("、");
                     });
                     String error = "【" + message.substring(0, message.length() - 1) + "】";
-                    return "请先办理以下阶段：" + error;
+                    return error + "尚未审批通过，无法申报【" + aeaParStage.getStageName() + "】。";
                 }
 
                 String stageIds = parStages.stream().map(AeaParStage::getStageId).collect(Collectors.joining(","));
@@ -68,7 +68,7 @@ public class StageStageChecker extends AbstractChecker<AeaParStage> {
 
                 if (message.length() > 0) {
                     String error = "【" + message.substring(0, message.length() - 1) + "】";
-                    return "请先办理以下阶段：" + error;
+                    return error + "尚未审批通过，无法申报【" + aeaParStage.getStageName() + "】。";
                 }
             }
         }

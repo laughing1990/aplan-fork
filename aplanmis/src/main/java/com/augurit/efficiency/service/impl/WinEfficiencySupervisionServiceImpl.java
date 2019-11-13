@@ -80,10 +80,6 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
     @Autowired
     private AeaLogApplyStateHistMapper aeaLogApplyStateHistMapper;
 
-    private static String YISHOULI = "yiShouLi";
-    private static String CAILIAOBUQUAN = "caiLiaoBuQuan";
-    private static String BUYUSHOULI = "buYuShouLi";
-
     /**
      * 主题申报统计
      *
@@ -169,62 +165,6 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
             }
             result.put("total", total);
             result.put("applyStatistics", themeApplyByTime);
-        }
-
-        String nowTime = DateUtils.convertDateToString(new Date(), "yyyy-MM-dd");
-        if (endTime.compareTo(nowTime) >= 0) {
-            //找到全部主题
-            AeaParTheme search = new AeaParTheme();
-            search.setIsActive("1");
-            search.setRootOrgId(SecurityContext.getCurrentOrgId());
-            List<AeaParTheme> themes = aeaParThemeMapper.listAeaParTheme(search);
-            //主题类型
-            List<BscDicCodeItem> themeType = bscDicCodeItemService.getActiveItemsByTypeCode("THEME_TYPE", SecurityContext.getCurrentOrgId());
-            Map<String, Long> themeTypeCount = new HashMap<>();
-            Map<String, String> themeNameMap = new HashMap<>();
-            for (BscDicCodeItem item : themeType) {
-                themeTypeCount.put(item.getItemCode(), 0L);
-                themeNameMap.put(item.getItemCode(), item.getItemName());
-            }
-
-            for (int i = 0, len = themes.size(); i < len; i++) {
-                AeaParTheme theme = themes.get(i);
-                List<AeaParThemeVer> themeVers = aeaParThemeVerMapper.listThemeVerByThemeIds("'" + theme.getThemeId() + "'");
-                String queryThemeVerIds = getqueryThemeVerIds(themeVers);
-                //对应时间段内申报的所属主题阶段实例数量
-                List<AeaHiParStageinst> stageinsts = aeaHiParStageinstMapper.queryThemeAeaHiParStageinsts(queryThemeVerIds, SecurityContext.getCurrentOrgId(), nowTime, nowTime, null);
-                //查询对应时间段内申报的所属主题并行推进事项实例数量
-                List<AeaHiSeriesinst> seriesinsts = aeaHiSeriesinstMapper.queryThemeAeaHiSeriesinsts(queryThemeVerIds, SecurityContext.getCurrentOrgId(), nowTime, nowTime, null);
-                int num = stageinsts.size() + seriesinsts.size();
-
-                Long count = themeTypeCount.get(theme.getThemeType());
-                themeTypeCount.put(theme.getThemeType(), count + num);
-            }
-
-            Long total = (Long) result.get("total");
-            List<ThemeApplyStatisticsVo> themeApplyByTime = (List<ThemeApplyStatisticsVo>) result.get("applyStatistics");
-            Set<String> themeTypeSet = themeTypeCount.keySet();
-            for (ThemeApplyStatisticsVo vo : themeApplyByTime) {
-                vo.setCount(themeTypeCount.get(vo.getCode()) + vo.getCount());
-                vo.setApplyCount(themeTypeCount.get(vo.getCode()) + vo.getApplyCount());
-                total += themeTypeCount.get(vo.getCode());
-                themeTypeSet.remove(vo.getCode());
-            }
-            //假如有新的主题类型
-            for (String type : themeTypeSet) {
-                ThemeApplyStatisticsVo vo = new ThemeApplyStatisticsVo();
-                vo.setCode(type);
-                vo.setName(themeNameMap.get(type));
-                vo.setCount(themeTypeCount.get(type));
-                vo.setApplyCount(vo.getCount());
-                total += vo.getCount();
-                themeApplyByTime.add(vo);
-            }
-            //计算百分比
-            for (ThemeApplyStatisticsVo vo : themeApplyByTime) {
-                vo.setPrecent(formatPercent(calculateRate(vo.getCount(), total)));
-            }
-            result.put("total", total);
         }
 
         return result;
@@ -369,34 +309,6 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
             result.put("applyStatistics", realstageTotalApplyByTime);
         }
 
-
-        String nowTime = DateUtils.convertDateToString(new Date(), "yyyy-MM-dd");
-        if (endTime.compareTo(nowTime) >= 0) {
-            Map<String, Long> nowStageCount = new HashMap<>();
-            for (StandardStageCode standardStageCode : StandardStageCode.values()) {
-                String value = standardStageCode.getValue();
-                String name = standardStageCode.getName();
-                //查询对应时间段内申报的对应阶段的阶段实例
-                List<AeaHiParStageinst> stageinsts = aeaHiParStageinstMapper.queryStageAeaHiParStageinsts(value, SecurityContext.getCurrentOrgId(), nowTime, nowTime, null);
-                //查询对应时间段内申报的对应阶段的并行推进事项实例
-                List<AeaHiSeriesinst> seriesinsts = aeaHiSeriesinstMapper.queryStageAeaHiSeriesinsts(value, SecurityContext.getCurrentOrgId(), nowTime, nowTime, null);
-                int num = stageinsts.size() + seriesinsts.size();
-                nowStageCount.put(standardStageCode.getValue(), Long.valueOf(num));
-            }
-
-            Long total = (Long) result.get("total");
-            List<StageApplyStatisticsVo> stageApplyByTime = (List<StageApplyStatisticsVo>) result.get("applyStatistics");
-            for (StageApplyStatisticsVo vo : stageApplyByTime) {
-                vo.setCount(nowStageCount.get(vo.getCode()) + vo.getApplyCount());
-                vo.setApplyCount(vo.getCount());
-                total += nowStageCount.get(vo.getCode());
-            }
-            for (StageApplyStatisticsVo vo : stageApplyByTime) {
-                vo.setPrecent(formatPercent(calculateRate(vo.getCount(), total)));
-            }
-            result.put("total", total);
-        }
-
         return result;
     }
 
@@ -452,14 +364,6 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
 
         //存储已统计window, 方便查找新申报的窗口（实时统计)
         Set<String> windowIds = new HashSet<>();
-        //如果结束日期参数大于等于今日，需要加上实时统计的数据
-        String nowTime = DateUtils.convertDateToString(new Date(), "yyyy-MM-dd");
-        String nowTimeStart = nowTime + " 00:00:00";
-        String nowTimeEnd = nowTime + " 23:59:59";
-        boolean onTime = false;
-        if (endTime.compareTo(nowTime) >= 0) {
-            onTime = true;
-        }
 
         for (String windowId : winApplyStatisticsMap.keySet()) {
             windowIds.add(windowId);
@@ -593,7 +497,6 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
      */
     @Override
     public List<ApplyThemeExceptionVo> queryApplyThemeExceptionStatistics() throws Exception {
-        //实时的数据
         //不予受理
         List<AeaAnaThemeDayStatistics> outScopeList = aeaAnaThemeDayStatisticsMapper.getOutScopeApplyByThemeStage(null, null, SecurityContext.getCurrentOrgId());
         Map<String, AeaAnaThemeDayStatistics> outScopeCount = new HashMap<>();
@@ -732,9 +635,6 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
     public PageInfo listPreliminaryTasksByPage(ConditionalQueryRequest conditionalQueryRequest, Page page) throws Exception {
         conditionalQueryRequest.setCurrentOrgId(SecurityContext.getCurrentOrgId());
 
-        String loginName = SecurityContext.getOpusLoginUser().getUser().getLoginName();
-        conditionalQueryRequest.setLoginName(loginName);
-
         if (conditionalQueryRequest.isEntrust()) {
             List<AeaServiceWindowUser> windows = aeaServiceWindowUserMapper.getAeaServiceWindowUserByUserId(SecurityContext.getCurrentUserId());
             if (CollectionUtils.isEmpty(windows)) {
@@ -757,6 +657,7 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
 
     @Override
     public PageInfo listDismissedApplyByPage(ConditionalQueryRequest conditionalQueryRequest, Page page) throws Exception {
+        conditionalQueryRequest.setCurrentOrgId(SecurityContext.getCurrentOrgId());
 
         if (conditionalQueryRequest.isEntrust()) {
             List<AeaServiceWindowUser> windows = aeaServiceWindowUserMapper.getAeaServiceWindowUserByUserId(SecurityContext.getCurrentUserId());
@@ -780,6 +681,8 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
 
     @Override
     public PageInfo listNeedCompletedApplyByPage(ConditionalQueryRequest conditionalQueryRequest, Page page) throws Exception {
+        conditionalQueryRequest.setCurrentOrgId(SecurityContext.getCurrentOrgId());
+
         if (conditionalQueryRequest.isEntrust()) {
             List<AeaServiceWindowUser> windows = aeaServiceWindowUserMapper.getAeaServiceWindowUserByUserId(SecurityContext.getCurrentUserId());
             if (CollectionUtils.isEmpty(windows)) {
@@ -802,6 +705,8 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
 
     @Override
     public PageInfo listNeedConfirmCompletedApplyByPage(ConditionalQueryRequest conditionalQueryRequest, Page page) throws Exception {
+        conditionalQueryRequest.setCurrentOrgId(SecurityContext.getCurrentOrgId());
+
         if (conditionalQueryRequest.isEntrust()) {
             List<AeaServiceWindowUser> windows = aeaServiceWindowUserMapper.getAeaServiceWindowUserByUserId(SecurityContext.getCurrentUserId());
             if (CollectionUtils.isEmpty(windows)) {
@@ -824,6 +729,7 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
 
     @Override
     public PageInfo listWarnApply(ConditionalQueryRequest conditionalQueryRequest, Page page) throws Exception {
+        conditionalQueryRequest.setCurrentOrgId(SecurityContext.getCurrentOrgId());
 
         if (conditionalQueryRequest.isEntrust()) {
             List<AeaServiceWindowUser> windows = aeaServiceWindowUserMapper.getAeaServiceWindowUserByUserId(SecurityContext.getCurrentUserId());
@@ -854,6 +760,7 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
 
     @Override
     public PageInfo listOverdueApply(ConditionalQueryRequest conditionalQueryRequest, Page page) throws Exception {
+        conditionalQueryRequest.setCurrentOrgId(SecurityContext.getCurrentOrgId());
 
         if (conditionalQueryRequest.isEntrust()) {
             List<AeaServiceWindowUser> windows = aeaServiceWindowUserMapper.getAeaServiceWindowUserByUserId(SecurityContext.getCurrentUserId());
@@ -1048,6 +955,7 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
 
     /**
      * 指定窗口时间段内每日的接件受理情况
+     *
      * @param winodwId
      * @param type
      * @param startTime
@@ -1082,6 +990,7 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
 
     /**
      * 当前窗口时间段内每日的接件受理情况
+     *
      * @param type
      * @param startTime
      * @param endTime
@@ -1100,6 +1009,7 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
 
     /**
      * 按主题统计办结申请的用时情况
+     *
      * @param type
      * @param startTime
      * @param endTime
@@ -1166,6 +1076,7 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
 
     /**
      * 按主题+窗口统计办结申请的用时情况
+     *
      * @param themeId
      * @param type
      * @param startTime
@@ -1266,6 +1177,9 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
         List<Map<String, Object>> dataList = new ArrayList<>();
         Map<String, List<ThemeApplyStatisticsVo>> collect = applyByTheme.stream().collect(Collectors.groupingBy(ThemeApplyStatisticsVo::getThemeId));
 
+        List<ThemeApplyStatisticsVo> allApplyByTheme = aeaAnaThemeMonthStatisticsMapper.getApplyByTheme(null, SecurityContext.getCurrentOrgId());
+        Map<String, List<ThemeApplyStatisticsVo>> allCollect = allApplyByTheme.stream().collect(Collectors.groupingBy(ThemeApplyStatisticsVo::getThemeId));
+
         List<BscDicCodeItem> colorList = bscDicCodeItemService.getActiveItemsByTypeCode("WIN_ECHARTS_COLOR", SecurityContext.getCurrentOrgId());
         int colorIndex = 0;
 
@@ -1273,6 +1187,9 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
             Long apply = 0L;
             Long acceptDeal = 0L;
             Long overTime = 0L;
+            Long allApply = 0L;
+            Long allAcceptDeal = 0L;
+            Long allOverTime = 0L;
 
             Map<String, Object> data = new HashMap<>();
             for (ThemeApplyStatisticsVo vo : entry.getValue()) {
@@ -1287,12 +1204,18 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
                 data.put("themeName", vo.getThemeName());
             }
 
+            for (ThemeApplyStatisticsVo vo : allCollect.get(entry.getKey())) {
+                allApply += vo.getApply();
+                allAcceptDeal += vo.getAcceptDeal();
+                allOverTime += vo.getOvertime();
+            }
+
             total += apply;
             data.put("apply", apply);
             data.put("acceptDeal", acceptDeal);
-            data.put("acceptDealRate", calculateRate(acceptDeal, apply));
+            data.put("acceptDealRate", calculateRate(allAcceptDeal, allApply));
             data.put("overTime", overTime);
-            data.put("overTimeRate", calculateRate(overTime, acceptDeal));
+            data.put("overTimeRate", calculateRate(allOverTime, allAcceptDeal));
             if (data.get("winApply") == null) {
                 data.put("winApply", 0L);
             }
@@ -2403,7 +2326,7 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
         }
 
 
-        return queryWinStageStatistics(list, type, rootOrgId, windowId,startTime,endTime);
+        return queryWinStageStatistics(list, type, rootOrgId, windowId, startTime, endTime);
     }
 
     private Map<String, Object> queryWinStageStatistics(List<AeaAnaWinDayStatistics> list, String type, String rootOrgId, String windowId, String startTime, String endTime) throws Exception {
@@ -2461,7 +2384,7 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
 
             for (int j = 0, len = list.size(); j < len; j++) {
                 AeaAnaWinDayStatistics obj = list.get(j);
-                if (obj.getDybzspjdxh().indexOf(String.valueOf(i + 1)) != -1 && "0".equals(obj.getIsParallel())  ) {
+                if (obj.getDybzspjdxh().indexOf(String.valueOf(i + 1)) != -1 && "0".equals(obj.getIsParallel())) {
                     yiShouLi += obj.getDayPreAcceptanceCount();
                     buYuShouli += obj.getDayOutScopeCount();
                 }
@@ -2475,7 +2398,7 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
             }
             for (int h = 0, len2 = applyRecords.size(); h < len2; h++) {
                 ThemeDayApplyRecord record = applyRecords.get(h);
-                if (record.getDybzspjdxh().indexOf(String.valueOf(i + 1)) != -1 && "0".equals(record.getIsParallel())  ) {
+                if (record.getDybzspjdxh().indexOf(String.valueOf(i + 1)) != -1 && "0".equals(record.getIsParallel())) {
                     caiLiaoBuQuan += record.getCount();
                 }
                 /*if (record.getDybzspjdxh().indexOf(String.valueOf(i + 1)) != -1 && "1".equals(record.getIsParallel() ) ) {
@@ -2549,32 +2472,33 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
 
 
         }
-        List<Map<String,Object>> dataList = new ArrayList<>();
-        long shouliCount=0,caiLiaoBuquanCount=0,buyushouliCount=0,jiejian=0;
+        List<Map<String, Object>> dataList = new ArrayList<>();
+        long shouliCount = 0, caiLiaoBuquanCount = 0, buyushouliCount = 0, jiejian = 0;
         if (resultList.size() > 0) {
             WinApplyStatisticsVo vo = resultList.get(0);
-             shouliCount = vo.getShouliCount();
-             caiLiaoBuquanCount = vo.getCaiLiaoBuquanCount();
-             buyushouliCount = vo.getBuyushouliCount();
+            shouliCount = vo.getShouliCount();
+            caiLiaoBuquanCount = vo.getCaiLiaoBuquanCount();
+            buyushouliCount = vo.getBuyushouliCount();
             jiejian = vo.getApplyCount();
         }
-        Map<String,Object> ysl = new HashMap<>();
-        ysl.put("name","已受理");
-        ysl.put("value",shouliCount);
-        Map<String,Object> clbq = new HashMap<>();
-        clbq.put("name","材料补全");
-        clbq.put("value",caiLiaoBuquanCount);
-        Map<String,Object> bysl = new HashMap<>();
-        bysl.put("name","不予受理");
-        bysl.put("value",buyushouliCount);
+        Map<String, Object> ysl = new HashMap<>();
+        ysl.put("name", "已受理");
+        ysl.put("value", shouliCount);
+        Map<String, Object> clbq = new HashMap<>();
+        clbq.put("name", "材料补全");
+        clbq.put("value", caiLiaoBuquanCount);
+        Map<String, Object> bysl = new HashMap<>();
+        bysl.put("name", "不予受理");
+        bysl.put("value", buyushouliCount);
         dataList.add(ysl);
         dataList.add(clbq);
         dataList.add(bysl);
-        Map<String,Object> result = new HashMap<>();
-        result.put("total",jiejian);
-        result.put("data",dataList);
+        Map<String, Object> result = new HashMap<>();
+        result.put("total", jiejian);
+        result.put("data", dataList);
         return result;
     }
+
     @Override
     public Map<String, Object> getWinStageLimitTimeStatistics(String startTime, String endTime, String type, boolean isCurrent, String windowId) throws Exception {
         if ("D".equals(type)) {
@@ -2601,34 +2525,35 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
         }
 
 
-        List<ApplyLimitTimeVo> list = efficiencySupervisionMapper.getWinLimitTimeStatistics(startTime,endTime,windowId,SecurityContext.getCurrentOrgId());
+        List<ApplyLimitTimeVo> list = efficiencySupervisionMapper.getWinLimitTimeStatistics(startTime, endTime, windowId, SecurityContext.getCurrentOrgId());
         List<Map<String, Object>> dataList = new ArrayList<>();
         int total = 0;
 
-        for(int i=0;i<3;i++){
-            Map<String ,Object> map = new HashMap<>();
-            String name = TimeruleInstState.getTimeruleInstState(String.valueOf(i+1)).getName();
+        for (int i = 0; i < 3; i++) {
+            Map<String, Object> map = new HashMap<>();
+            String name = TimeruleInstState.getTimeruleInstState(String.valueOf(i + 1)).getName();
             int count = 0;
-            for(ApplyLimitTimeVo vo :list){
-                if(vo.getInstState().equals(String.valueOf(i+1))){
+            for (ApplyLimitTimeVo vo : list) {
+                if (String.valueOf(i + 1).equals(vo.getInstState())) {
                     count += vo.getCount();
                     total += vo.getCount();
                     break;
                 }
             }
-            map.put("name",name);
-            map.put("value",count);
+            map.put("name", name);
+            map.put("value", count);
             dataList.add(map);
         }
 
-        Map<String,Object> result = new HashMap<String, Object>();
-        result.put("data",dataList);
-        result.put("total",total);
+        Map<String, Object> result = new HashMap<String, Object>();
+        result.put("data", dataList);
+        result.put("total", total);
         return result;
 
     }
+
     @Override
-    public Map<String, Object> getWinStageAvgLimitTimeStatistics(String startTime, String endTime, String type, boolean isCurrent, String windowId) throws Exception{
+    public Map<String, Object> getWinStageAvgLimitTimeStatistics(String startTime, String endTime, String type, boolean isCurrent, String windowId) throws Exception {
         if ("D".equals(type)) {
             String yesterday = DateUtils.convertDateToString(DateUtils.getPreDateByDate(new Date()), "yyyy-MM-dd");
             startTime = yesterday + " 00:00:00";
@@ -2651,40 +2576,42 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
                 endTime = yesterday + " 23:59:59";
             }
         }
-        List<ApplyLimitTimeVo> list = efficiencySupervisionMapper.getWinStageLimitTimeStatistics(startTime,endTime,windowId,SecurityContext.getCurrentOrgId());
+        List<ApplyLimitTimeVo> list = efficiencySupervisionMapper.getWinStageLimitTimeStatistics(startTime, endTime, windowId, SecurityContext.getCurrentOrgId());
         List<List<String>> resultDataList = new ArrayList<>();
         List<List<String>> winStageList = new ArrayList<>();
-        if(list.size()>0){
+        if (list.size() > 0) {
             List<String> dybzspjdxhList = new ArrayList<>();
-            dybzspjdxhList =  getGjbzjdInfo("code");
+            dybzspjdxhList = getGjbzjdInfo("code");
             Map<String, List<ApplyLimitTimeVo>> collect = list.stream().collect(Collectors.groupingBy(ApplyLimitTimeVo::getWindowId));
             Set<Map.Entry<String, List<ApplyLimitTimeVo>>> entries = collect.entrySet();
-            for(Map.Entry<String, List<ApplyLimitTimeVo>> entry: entries){
+            for (Map.Entry<String, List<ApplyLimitTimeVo>> entry : entries) {
                 List<ApplyLimitTimeVo> winList = entry.getValue();
 
                 List<String> dataList = new ArrayList<>();
                 String windowName = list.get(0).getWindowName();
                 dataList.add(windowName);
-                int isParallelCount = 0 ; double isParallelLimitTime =0.0;
+                int isParallelCount = 0;
+                double isParallelLimitTime = 0.0;
                 for (int i = 0, len = dybzspjdxhList.size(); i < len; i++) {
-                    int count = 0;double limitTime =0.0;
+                    int count = 0;
+                    double limitTime = 0.0;
                     for (int j = 0, len2 = list.size(); j < len2; j++) {
                         if (list.get(j).getDybzspjdxh().indexOf(dybzspjdxhList.get(i)) != -1 && "0".equals(list.get(j).getIsParallel())) {
-                            count +=1;
+                            count += 1;
                             limitTime += list.get(j).getUseLimitTime();
                         }
                         if (list.get(j).getDybzspjdxh().indexOf(dybzspjdxhList.get(i)) != -1 && "1".equals(list.get(j).getIsParallel())) {
-                            isParallelCount ++;
+                            isParallelCount++;
                             isParallelLimitTime += list.get(j).getUseLimitTime();
                         }
                     }
-                    String avgTime = getAvgTime(limitTime,count);
+                    String avgTime = getAvgTime(limitTime, count);
                     dataList.add(avgTime);
                 }
                 //将并行推进的事项的申报页加到dybzspjdxh=5的中去
                 double _tmp = Double.valueOf(dataList.get(dybzspjdxhList.size() - 1)) + isParallelCount;
                 dataList.remove(dybzspjdxhList.size() - 1);
-                dataList.add(getAvgTime(isParallelLimitTime,isParallelCount));
+                dataList.add(getAvgTime(isParallelLimitTime, isParallelCount));
                 winStageList.add(dataList);
             }
         }
@@ -2697,40 +2624,42 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
         if (aeaServiceWindows.size() == 0) throw new Exception("服务窗口为空！");
         //，默认是按sortNo降序的
         aeaServiceWindows = aeaServiceWindows.stream().sorted(Comparator.comparing(AeaServiceWindow::getSortNo)).collect(Collectors.toList());
-        for(AeaServiceWindow window :aeaServiceWindows){
+        for (AeaServiceWindow window : aeaServiceWindows) {
             boolean had = false;
-            for(int i=0,len = winStageList.size();i<len;i++){
-                if(winStageList.get(i).get(0).equals(window.getWindowName())){
+            for (int i = 0, len = winStageList.size(); i < len; i++) {
+                if (winStageList.get(i).get(0).equals(window.getWindowName())) {
                     had = true;
                     resultDataList.add(winStageList.get(i));
                     break;
                 }
             }
-            if(!had){
-                resultDataList.add(Arrays.asList(window.getWindowName(),"0","0","0","0","0"));
+            if (!had) {
+                resultDataList.add(Arrays.asList(window.getWindowName(), "0", "0", "0", "0", "0"));
             }
         }
 
-        Map<String,Object> result = new HashMap<>();
+        Map<String, Object> result = new HashMap<>();
         List<String> winNameList = aeaServiceWindows.stream().map(obj -> obj.getWindowName()).collect(Collectors.toList());
-        result.put("title",winNameList);
-        result.put("data",resultDataList);
+        result.put("title", winNameList);
+        result.put("data", resultDataList);
         return result;
     }
+
     /**
      * 计算平均时间
+     *
      * @param limitTime
      * @param count
      * @return
      */
     private String getAvgTime(double limitTime, int count) {
-        if(count ==0){
+        if (count == 0) {
             return "0";
         }
         BigDecimal b1 = new BigDecimal(limitTime);
         BigDecimal b2 = new BigDecimal(count);
 //        BigDecimal divide = b1.divide(b2, 2, BigDecimal.ROUND_HALF_UP);
-        BigDecimal divide = b1.divide(b2,  BigDecimal.ROUND_HALF_UP);
+        BigDecimal divide = b1.divide(b2, BigDecimal.ROUND_HALF_UP);
         return divide.toString();
     }
 }

@@ -56,30 +56,31 @@
             <input type="hidden" name="projInfoId" :value="projBascInfoShow.projInfoId">
             <div class="clearfix">
               <el-form-item class="input-inline" prop="localCode">
-                  <template slot="label">
-                    <el-tooltip class="item" effect="dark" content="填写全国统一项目代码(参考“投资项目基本信息共享规范”中的“投资项目统一代码规范”)。如果项目没有全国统一代码，填写地方项目编码。" placement="right-start">
-                      <i class="ag ag-help"></i>
-                    </el-tooltip>
-                    项目代码
-                  </template>
-                  <el-input name="localCode" :disabled="linkQuerySucc" v-model="projBascInfoShow.localCode" placeholder="投资平台登记的项目代码">
-                  </el-input>
+                <template slot="label">
+                  <el-tooltip class="item" effect="dark" content="填写全国统一项目代码(参考“投资项目基本信息共享规范”中的“投资项目统一代码规范”)。如果项目没有全国统一代码，填写地方项目编码。" placement="right-start">
+                    <i class="ag ag-help"></i>
+                  </el-tooltip>
+                  项目代码
+                </template>
+                <el-input name="localCode" :disabled="linkQuerySucc" v-model="projBascInfoShow.localCode" placeholder="投资平台登记的项目代码">
+                  <el-button slot="append" type="primary" :disabled="!localCode==''"  @click="getLocalcode()">生成编码</el-button>
+                </el-input>
               </el-form-item>
               <el-form-item class="input-inline" prop="gcbm">
-                  <template slot="label">
-                    <el-tooltip class="item" effect="dark" content="项目拆分为多个单项工程申报时，单项工程的唯一编码，如果项目不拆分，应与项目代码相同。" placement="right-start">
-                      <i class="ag ag-help"></i>
-                    </el-tooltip>
-                    工程代码
-                  </template>
-                  <el-input v-model="projBascInfoShow.gcbm" placeholder="请输入工程代码"></el-input>
+                <template slot="label">
+                  <el-tooltip class="item" effect="dark" content="项目拆分为多个单项工程申报时，单项工程的唯一编码，如果项目不拆分，应与项目代码相同。" placement="right-start">
+                    <i class="ag ag-help"></i>
+                  </el-tooltip>
+                  工程代码
+                </template>
+                <el-input v-model="projBascInfoShow.gcbm" placeholder="请输入工程代码"></el-input>
               </el-form-item>
             </div>
 
             <el-form-item label="项目/工程名称" class="proj-code-info" prop="projName">
-                <el-input name="projName" :disabled="linkQuerySucc" v-model="projBascInfoShow.projName" placeholder="请输入项目/工程名称">
-                </el-input>
-                <el-button @click="showProjTree()">项目工程</el-button>
+              <el-input name="projName" :disabled="linkQuerySucc" v-model="projBascInfoShow.projName" placeholder="请输入项目/工程名称">
+              </el-input>
+              <el-button type="primary" @click="showProjTree()">项目工程</el-button>
             </el-form-item>
 
             <div class="clearfix">
@@ -986,7 +987,7 @@
                     <template slot-scope="scope">
                       <div v-if="scope.row.isImplement==false">
                         <el-select v-model="scope.row.implementItemVerId"
-                          placeholder="请选择活动区域">
+                          placeholder="请选择行政区划">
                           <el-option v-for="(item,indexOp) in scope.row.carryOutItems"
                                      :key="indexOp"
                                      :label="item.regionName"
@@ -1002,7 +1003,7 @@
                     <template slot-scope="scope">
                       <div v-if="scope.row.isImplement==false">
                         <el-select v-model="scope.row.implementItemVerId"
-                          placeholder="请选择活动区域">
+                          placeholder="请选择实施主体">
                           <el-option v-for="(item,indexOp) in scope.row.carryOutItems" :label="item.orgName"
                                      :key="indexOp"
                                      @click.native="getItemOrgId(scope.row,scope.$index,item)" :value="item.itemVerId"></el-option>
@@ -1080,7 +1081,7 @@
                     <template slot-scope="scope">
                       <div v-if="scope.row.isImplement==false">
                         <el-select v-model="scope.row.implementItemVerId"
-                          placeholder="请选择活动区域">
+                          placeholder="请选择行政区划">
                           <el-option v-for="(item,indexOp) in scope.row.carryOutItems" :label="item.regionName"
                                      :key="indexOp"
                                      @click.native="getItemOrgId(scope.row,scope.$index,item, 'core')" :value="item.itemVerId"></el-option>
@@ -1095,7 +1096,7 @@
                     <template slot-scope="scope">
                       <div v-if="scope.row.isImplement==false">
                         <el-select v-model="scope.row.implementItemVerId"
-                          placeholder="请选择活动区域">
+                          placeholder="请选择实施主体">
                           <el-option v-for="(item,indexOp) in scope.row.carryOutItems" :label="item.orgName"
                                      :key="indexOp"
                                      @click.native="getItemOrgId(scope.row,scope.$index,item,'croe')" :value="item.itemVerId"></el-option>

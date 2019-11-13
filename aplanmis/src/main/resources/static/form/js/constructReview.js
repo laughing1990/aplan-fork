@@ -10,6 +10,20 @@ var app = new Vue({
         callback();
       }
     };
+    // 输入为数字 大于等于0（浮点数）
+    var checkNumFloat = function(rule, value, callback) {
+      if (value) {
+        var flag = !/^[+]{0,1}(\d+)$|^[+]{0,1}(\d+\.\d+)$/.test(value);
+        if (flag) {
+          return callback(new Error('格式错误'));
+        } else {
+          callback();
+        }
+
+      } else {
+        callback();
+      }
+    };
     // 输入为整数数字 大于等于0
     var checkMissNum = function(rule, value, callback) {
       if (value) {
@@ -83,9 +97,11 @@ var app = new Vue({
           { required: true, message: '请输入施工图审查合格书编号' },
         ],
         'inverstmentMoeny': [
+          { validator: checkNumFloat, trigger: ['blur'] },
           { required: true, message: '请输入投资额', trigger: ['blur', 'change'] },
         ],
         'approveDrawingArea': [
+          { validator: checkNumFloat, trigger: ['blur'] },
           { required: true, message: '请输入图审面积' },
         ],
         'approveStartTime': [
@@ -210,7 +226,8 @@ var app = new Vue({
           linkmanName: '',
           linkmanCertNo: '',
           prjSpty: '1',
-          unitProjId: ''
+          unitProjId: '',
+          unitInfoId: ''
         }
         this.formDataSheJj.linkmen.push(dataType3);
 
@@ -221,7 +238,8 @@ var app = new Vue({
           linkmanName: '',
           linkmanCertNo: '',
           prjSpty: '1',
-          unitProjId: ''
+          unitProjId: '',
+          unitInfoId: ''
         }
         var dataType2 = {
           linkmanInfoId: '',
@@ -229,7 +247,8 @@ var app = new Vue({
           linkmanName: '',
           linkmanCertNo: '',
           prjSpty: '1',
-          unitProjId: ''
+          unitProjId: '',
+          unitInfoId: ''
         }
 
         this.formDataTuShen.linkmen.push(dataType);
@@ -254,16 +273,22 @@ var app = new Vue({
             vm.formDataKanCha = {};
             vm.formDataSheJj = {};
           } else {
-            vm.formDataTuShen = res.content.drawings[2] || {};
-            vm.formDataKanCha = res.content.drawings[0] || {};
-            vm.formDataSheJj = res.content.drawings[1] || {};
+            for (var i = 0; i < res.content.drawings.length; i++) {
+              if (res.content.drawings[i].unitType == '13') {
+                vm.formDataTuShen = res.content.drawings[i] || {};
+              } else if (res.content.drawings[i].unitType == '3') {
+                vm.formDataSheJj = res.content.drawings[i] || {};
+              } else {
+                vm.formDataKanCha = res.content.drawings[i] || {};
+              }
+            }
           }
 
-          if (vm.formDataTuShen.linkmen == undefined) {
+          if (vm.formDataTuShen.linkmen == undefined || vm.formDataTuShen.linkmen.length == 0) {
             vm.formDataTuShen.linkmen = [];
             vm.init('tushen');
           }
-          if (vm.formDataSheJj.linkmen == undefined) {
+          if (vm.formDataSheJj.linkmen == undefined || vm.formDataSheJj.linkmen.length == 0) {
             vm.formDataSheJj.linkmen = [];
             vm.init('sheji');
           }
@@ -474,6 +499,7 @@ var app = new Vue({
         linkmanName: '',
         linkmanCertNo: '',
         prjSpty: '1',
+        unitInfoId: data.unitInfoId,
         unitProjId: data.unitProjId
       }
       row.push(dataType);
@@ -494,9 +520,12 @@ var app = new Vue({
       this.$set(data, 'unifiedSocialCreditCode', val.unifiedSocialCreditCode);
       this.$set(data, 'applicant', val.applicant);
       this.$set(data, 'unitInfoId', val.unitInfoId);
-      for (var i = 0; i < data.linkmen.length; i++) {
-        data.linkmen[i].unitInfoId = val.unitInfoId;
+      if (data.linkmen.length != 0) {
+        for (var i = 0; i < data.linkmen.length; i++) {
+          data.linkmen[i].unitInfoId = val.unitInfoId;
+        }
       }
+
     },
     //单位名称模糊查询
     querySearchJiansheName: function(queryString, cb) {

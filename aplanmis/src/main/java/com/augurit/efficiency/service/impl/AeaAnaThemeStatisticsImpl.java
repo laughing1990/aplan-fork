@@ -12,6 +12,7 @@ import com.augurit.aplanmis.common.vo.analyse.ThemeDayApplyRecord;
 import com.augurit.aplanmis.common.vo.analyse.ThemeMonthCountVo;
 import com.augurit.aplanmis.common.vo.analyse.ThemeWeekCountVo;
 import com.augurit.aplanmis.common.vo.analyse.YearCountVo;
+import com.github.pagehelper.PageHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -66,7 +67,8 @@ public class AeaAnaThemeStatisticsImpl {
     /**
      * 统计主题日办件
      * 一个主题有多个阶段，生成多条记录。
-     *统计方向，主题-阶段-申报实例（主题版本越多，查询统计越慢）
+     * 统计方向，主题-阶段-申报实例（主题版本越多，查询统计越慢）
+     *
      * @param rootOrgId
      * @param operateSource
      * @param creater
@@ -283,7 +285,7 @@ public class AeaAnaThemeStatisticsImpl {
                 themeMonthStatistics.setApplyinstSource(themeMonthCountVo.getApplyinstSource());
 
                 List<AeaAnaThemeDayStatistics> dayDataList = themeDayStatisticsMapper.getAeaAnaThemeDayStatistics(themeMonthCountVo.getThemeId(), themeMonthCountVo.getApplyRecordId(),
-                        themeMonthCountVo.getIsParallel(), themeMonthCountVo.getApplyinstSource(), rootOrgId, startTime, endTime);
+                        themeMonthCountVo.getIsParallel(), themeMonthCountVo.getApplyinstSource(), rootOrgId, sdf.format(firstDay), sdf.format(lastDay));
                 if (CollectionUtils.isNotEmpty(dayDataList)) {
                     AeaAnaThemeDayStatistics dayStatistics = dayDataList.get(0);
                     themeMonthStatistics.setAllApplyCount(dayStatistics.getAllApplyCount());
@@ -397,9 +399,9 @@ public class AeaAnaThemeStatisticsImpl {
                 AeaAnaThemeYearStatistics statistics = new AeaAnaThemeYearStatistics();
                 statistics.setAllApplyCount(obj.getAllApplyCount());
                 String[] states = {ApplyState.SUPPLEMENTARY.getValue()};
-                long yearAllSupplementary = getCount(obj.getApplyRecordId(), states, startDate, endDate,obj.getIsParallel(),rootOrgId,obj.getApplyinstSource());
+                long yearAllSupplementary = getCount(obj.getApplyRecordId(), states, startDate, endDate, obj.getIsParallel(), rootOrgId, obj.getApplyinstSource());
                 String[] states2 = {ApplyState.IN_THE_SUPPLEMENT.getValue()};
-                long yearAllInTheSupplement = getCount(obj.getApplyRecordId(), states2, startDate, endDate,obj.getIsParallel(),rootOrgId,obj.getApplyinstSource());
+                long yearAllInTheSupplement = getCount(obj.getApplyRecordId(), states2, startDate, endDate, obj.getIsParallel(), rootOrgId, obj.getApplyinstSource());
 
                 statistics.setYearApplyCount(obj.getThisYearApplyCount());
                 statistics.setYearCompletedCount(obj.getThisYearCompletedCount());
@@ -463,6 +465,7 @@ public class AeaAnaThemeStatisticsImpl {
 
     /**
      * 封装一个主题下一天的数据
+     *
      * @param themeId
      * @param themeName
      * @param statisticsRecordId
@@ -471,7 +474,7 @@ public class AeaAnaThemeStatisticsImpl {
      * @return
      */
     private List<AeaAnaThemeDayStatistics> packageDayStastics(String themeId, String themeName, String statisticsRecordId, Date statisticsStartDate, String rootOrgId) {
-       //获取该主题下的所有阶段stage
+        //获取该主题下的所有阶段stage
         List<AeaAnaThemeDayStatistics> themeDayList = new ArrayList<>();
         List<AeaParThemeVer> themeVers = aeaParThemeVerMapper.listThemeVerByThemeIds("'" + themeId + "'");
         String queryThemeVerIds = themeVers.stream().map(AeaParThemeVer::getThemeVerId).collect(Collectors.joining("','"));
@@ -479,7 +482,7 @@ public class AeaAnaThemeStatisticsImpl {
         List<Map<String, Object>> stageList = themeDayStatisticsMapper.queryThemeStageIds(queryThemeVerIds, rootOrgId);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String dateStr = sdf.format(statisticsStartDate);
-        String startTime = dateStr +" 00:00:00";
+        String startTime = dateStr + " 00:00:00";
         String endTime = dateStr + " 23:59:59";
 
         for (int i = 0, len = stageList.size(); i < len; i++) {
@@ -488,15 +491,15 @@ public class AeaAnaThemeStatisticsImpl {
 
             String stageName = stageList.get(i).get("stageName").toString();
             try {
-                String  dybzspjdxh = stageList.get(i).get("dybzspjdxh").toString();
+                String dybzspjdxh = stageList.get(i).get("dybzspjdxh").toString();
                 String isNode = stageList.get(i).get("isNode").toString();
 
                 //查询没有并行推进事项的
-                themeDayList.addAll(getStageDataByParallel(stageId,startTime,endTime,"0",rootOrgId,stageName,dybzspjdxh,isNode,themeId,themeName,statisticsRecordId,statisticsStartDate));
+                themeDayList.addAll(getStageDataByParallel(stageId, startTime, endTime, "0", rootOrgId, stageName, dybzspjdxh, isNode, themeId, themeName, statisticsRecordId, statisticsStartDate));
                 //查询是并行推进事项的
-                themeDayList.addAll(getStageDataByParallel(stageId,startTime,endTime,"1",rootOrgId,stageName,dybzspjdxh,isNode,themeId,themeName,statisticsRecordId,statisticsStartDate));
+                themeDayList.addAll(getStageDataByParallel(stageId, startTime, endTime, "1", rootOrgId, stageName, dybzspjdxh, isNode, themeId, themeName, statisticsRecordId, statisticsStartDate));
             } catch (Exception e) {
-                log.debug("统计主题日办件情况出错，主题themeId：{}，阶段stageId：{}，错误信息：{}",themeId,stageId,e.getMessage());
+                log.debug("统计主题日办件情况出错，主题themeId：{}，阶段stageId：{}，错误信息：{}", themeId, stageId, e.getMessage());
             }
 
         }
@@ -506,10 +509,11 @@ public class AeaAnaThemeStatisticsImpl {
 
     /**
      * 获取一个阶段下的统计数据（isParallel是否并行推进事项为主要维度）
+     *
      * @param stageId
      * @param
      * @param
-     * @param isParallel 是否并行推进0否1是
+     * @param isParallel          是否并行推进0否1是
      * @param rootOrgId
      * @param stageName
      * @param dybzspjdxh
@@ -520,38 +524,49 @@ public class AeaAnaThemeStatisticsImpl {
      * @param statisticsStartDate
      * @return
      */
-    private List<AeaAnaThemeDayStatistics> getStageDataByParallel(String stageId,String startTime,String endTime,String isParallel,String rootOrgId,String stageName,
-                                                  String dybzspjdxh,String isNode,String themeId,String themeName,String statisticsRecordId,Date statisticsStartDate) throws Exception{
+    private List<AeaAnaThemeDayStatistics> getStageDataByParallel(String stageId, String startTime, String endTime, String isParallel, String rootOrgId, String stageName,
+                                                                  String dybzspjdxh, String isNode, String themeId, String themeName, String statisticsRecordId, Date statisticsStartDate) throws Exception {
 
         List<AeaAnaThemeDayStatistics> result = new ArrayList<>();
         // 根据历史状态计算一下
         List<AeaLogApplyStateHist> changeHis = new ArrayList<>();
-        if("0".equals(isParallel)){
+        if ("0".equals(isParallel)) {
             //计算并联
-            List<AeaLogApplyStateHist> parChangeHis = logApplyStateHistMapper.getApplyChangeHis(stageId, startTime, endTime,isParallel,"0");
+            List<AeaLogApplyStateHist> parChangeHis = logApplyStateHistMapper.getApplyChangeHis(stageId, startTime, endTime, isParallel, "0");
             //计算单项
-            List<AeaLogApplyStateHist>  serChangeHis = logApplyStateHistMapper.getApplyChangeHis(stageId, startTime, endTime,isParallel,"1");
+            List<AeaLogApplyStateHist> serChangeHis = logApplyStateHistMapper.getApplyChangeHis(stageId, startTime, endTime, isParallel, "1");
             changeHis.addAll(parChangeHis);
             changeHis.addAll(serChangeHis);
 
 
-        }else{
+        } else {
 //            changeHis = logApplyStateHistMapper.getApplyChangeHisIsParallel(stageId, startDate, endDate,isParallel);
             //计算单项
-            List<AeaLogApplyStateHist>  serChangeHis = logApplyStateHistMapper.getApplyChangeHis(stageId, startTime, endTime,isParallel,"1");
+            List<AeaLogApplyStateHist> serChangeHis = logApplyStateHistMapper.getApplyChangeHis(stageId, startTime, endTime, isParallel, "1");
             changeHis.addAll(serChangeHis);
         }
 
 
         //按来源分组一次,数据会有两条了
-        if(changeHis.size()>0){
+        if (changeHis.size() > 0) {
             Map<String, List<AeaLogApplyStateHist>> collect = changeHis.stream().collect(Collectors.groupingBy(AeaLogApplyStateHist::getApplyinstSource));
             Set<Map.Entry<String, List<AeaLogApplyStateHist>>> entries = collect.entrySet();
-            for(Map.Entry<String, List<AeaLogApplyStateHist>> entry:entries){
+            for (Map.Entry<String, List<AeaLogApplyStateHist>> entry : entries) {
                 String source = entry.getKey();
                 List<AeaLogApplyStateHist> sourceList = entry.getValue();
-                result.add(getStageDataBySource(source,sourceList,stageId,rootOrgId,isParallel,startTime,endTime,
-                        themeId,themeName,stageName,dybzspjdxh,isNode,statisticsRecordId,statisticsStartDate)) ;
+                result.add(getStageDataBySource(source, sourceList, stageId, rootOrgId, isParallel, startTime, endTime,
+                        themeId, themeName, stageName, dybzspjdxh, isNode, statisticsRecordId, statisticsStartDate));
+            }
+        } else {
+            AeaAnaThemeDayStatistics win = getStageDataBySource("win", null, stageId, rootOrgId, isParallel, startTime, endTime,
+                    themeId, themeName, stageName, dybzspjdxh, isNode, statisticsRecordId, statisticsStartDate);
+            if (win != null) {
+                result.add(win);
+            }
+            AeaAnaThemeDayStatistics net = getStageDataBySource("net", null, stageId, rootOrgId, isParallel, startTime, endTime,
+                    themeId, themeName, stageName, dybzspjdxh, isNode, statisticsRecordId, statisticsStartDate);
+            if (net != null) {
+                result.add(net);
             }
         }
 
@@ -560,6 +575,7 @@ public class AeaAnaThemeStatisticsImpl {
 
     /**
      * 主题-来源的计算
+     *
      * @param source
      * @param sourceList
      * @param stageId
@@ -574,31 +590,33 @@ public class AeaAnaThemeStatisticsImpl {
      * @param statisticsRecordId
      * @param statisticsStartDate
      */
-    private AeaAnaThemeDayStatistics getStageDataBySource(String source, List<AeaLogApplyStateHist> sourceList, String stageId, String rootOrgId, String isParallel, String startTime, String endTime ,String themeId, String themeName, String stageName, String dybzspjdxh, String isNode, String statisticsRecordId, Date statisticsStartDate)
-    throws Exception{
+    private AeaAnaThemeDayStatistics getStageDataBySource(String source, List<AeaLogApplyStateHist> sourceList, String stageId, String rootOrgId, String isParallel, String startTime, String endTime, String themeId, String themeName, String stageName, String dybzspjdxh, String isNode, String statisticsRecordId, Date statisticsStartDate)
+            throws Exception {
         //查询当天逾期的东西
         List<ActStoTimeruleInst> actStoTimeruleInsts = new ArrayList<>();
 
-        if("0".equals(isParallel)){
-            actStoTimeruleInsts.addAll(themeDayStatisticsMapper.getStageStoTimeruleInst(stageId, "3", rootOrgId,isParallel,"0",source,startTime,endTime)) ;
-            actStoTimeruleInsts.addAll(themeDayStatisticsMapper.getStageStoTimeruleInst(stageId, "3", rootOrgId,isParallel,"1",source,startTime,endTime)) ;
-        }else{
-            actStoTimeruleInsts.addAll(themeDayStatisticsMapper.getStageStoTimeruleInst(stageId, "3", rootOrgId,isParallel,"1",source,startTime,endTime));
+        if ("0".equals(isParallel)) {
+            actStoTimeruleInsts.addAll(themeDayStatisticsMapper.getStageStoTimeruleInst(stageId, "3", rootOrgId, isParallel, "0", source, startTime, endTime));
+            actStoTimeruleInsts.addAll(themeDayStatisticsMapper.getStageStoTimeruleInst(stageId, "3", rootOrgId, isParallel, "1", source, startTime, endTime));
+        } else {
+            actStoTimeruleInsts.addAll(themeDayStatisticsMapper.getStageStoTimeruleInst(stageId, "3", rootOrgId, isParallel, "1", source, startTime, endTime));
         }
 
         long dayOverTimeCount = actStoTimeruleInsts.size();
 
+        if (dayOverTimeCount < 1 && sourceList == null) {
+            return null;
+        }
 
-
-        long dayApplyCount=0,unapprovalApply=0,approvedApply=0,hisPreAccept = 0, hisInsupplement = 0, hisSupplementary = 0, hisOutScope = 0, hisCompleted = 0;
-        if (sourceList.size() > 0) {
+        long dayApplyCount = 0, unapprovalApply = 0, approvedApply = 0, hisPreAccept = 0, hisInsupplement = 0, hisSupplementary = 0, hisOutScope = 0, hisCompleted = 0;
+        if (CollectionUtils.isNotEmpty(sourceList)) {
             Map<String, List<AeaLogApplyStateHist>> collect = sourceList.stream().collect(Collectors.groupingBy(AeaLogApplyStateHist::getNewState));
             for (String state : collect.keySet()) {
-                if(ApplyState.RECEIVE_UNAPPROVAL_APPLY.getValue().equals(state)){
+                if (ApplyState.RECEIVE_UNAPPROVAL_APPLY.getValue().equals(state)) {
                     unapprovalApply += collect.get(state).size();
-                }else if (ApplyState.RECEIVE_APPROVED_APPLY.getValue().equals(state)) {
+                } else if (ApplyState.RECEIVE_APPROVED_APPLY.getValue().equals(state)) {
                     approvedApply += collect.get(state).size();
-                }else if (ApplyState.ACCEPT_DEAL.getValue().equals(state)) {
+                } else if (ApplyState.ACCEPT_DEAL.getValue().equals(state)) {
                     hisPreAccept += collect.get(state).size();
                 } else if (ApplyState.IN_THE_SUPPLEMENT.getValue().equals(state)) {
                     hisInsupplement += collect.get(state).size();
@@ -613,28 +631,38 @@ public class AeaAnaThemeStatisticsImpl {
         }
 
         //从数据库获取前一天记录
-        String curDate = startTime.substring(0,10);
+        String curDate = startTime.substring(0, 10);
         String oneDayBefore = DateUtils.getPreDateByDate(curDate);
-        String oneDayBeforeStart = oneDayBefore +" 00:00:00";
-        String oneDayBeforeEnd = oneDayBefore +" 23:59:59";
+        String oneDayBeforeStart = oneDayBefore + " 00:00:00";
+        String oneDayBeforeEnd = oneDayBefore + " 23:59:59";
 
-        AeaAnaThemeDayStatistics onedayBeforStastics = themeDayStatisticsMapper.getAeaAnaThemeDayStatisticsBySatgeIdAndThemeId(themeId, stageId, oneDayBeforeStart,oneDayBeforeEnd, rootOrgId,isParallel, source);
+        AeaAnaThemeDayStatistics onedayBeforStastics = themeDayStatisticsMapper.getAeaAnaThemeDayStatisticsBySatgeIdAndThemeId(themeId, stageId, oneDayBeforeStart, oneDayBeforeEnd, rootOrgId, isParallel, source);
 
         //昨天逾期总数加当天逾期数
         long allOverTimeCount = dayOverTimeCount + onedayBeforStastics.getAllOverTimeCount();
         //接件数
-        dayApplyCount = unapprovalApply +approvedApply;
+        dayApplyCount = unapprovalApply + approvedApply;
         double applyLrr = calculateGrowRate(onedayBeforStastics.getDayApplyCount(), dayApplyCount);
-        double preAcceptanceLrr = calculateGrowRate(onedayBeforStastics.getDayPreAcceptanceCount(),  hisPreAccept);
-        double outScopeLrr = calculateGrowRate(onedayBeforStastics.getDayOutScopeCount(),  hisOutScope);
-        double completedLrr = calculateGrowRate(onedayBeforStastics.getDayCompletedCount(),  hisCompleted);
+        double preAcceptanceLrr = calculateGrowRate(onedayBeforStastics.getDayPreAcceptanceCount(), hisPreAccept);
+        double outScopeLrr = calculateGrowRate(onedayBeforStastics.getDayOutScopeCount(), hisOutScope);
+        double completedLrr = calculateGrowRate(onedayBeforStastics.getDayCompletedCount(), hisCompleted);
         double overTimeLrr = calculateGrowRate(onedayBeforStastics.getDayOverTimeCount(), dayOverTimeCount);
 
         //縂比率统计
+        PageHelper.startPage(1, 1);
+        List<AeaAnaThemeDayStatistics> aeaAnaThemeDayStatistics = themeDayStatisticsMapper.getAeaAnaThemeDayStatistics(themeId, stageId, isParallel, source, rootOrgId, null, null);
+        if (CollectionUtils.isNotEmpty(aeaAnaThemeDayStatistics)) {
+            AeaAnaThemeDayStatistics dayStatistics = aeaAnaThemeDayStatistics.get(0);
+            onedayBeforStastics.setAllPreAcceptanceCount(dayStatistics.getAllPreAcceptanceCount());
+            onedayBeforStastics.setAllApplyCount(dayStatistics.getAllApplyCount());
+            onedayBeforStastics.setAllOutScopeCount(dayStatistics.getAllOutScopeCount());
+            onedayBeforStastics.setAllCompletedCount(dayStatistics.getAllCompletedCount());
+        }
+
         long allPreAcceptanceCount = hisPreAccept + onedayBeforStastics.getAllPreAcceptanceCount();
         long allApplyCount = dayApplyCount + onedayBeforStastics.getAllApplyCount();
-        long allOutScopeCount = hisOutScope  + onedayBeforStastics.getAllOutScopeCount();
-        long allCompletedCount = hisCompleted  + onedayBeforStastics.getAllCompletedCount();
+        long allOutScopeCount = hisOutScope + onedayBeforStastics.getAllOutScopeCount();
+        long allCompletedCount = hisCompleted + onedayBeforStastics.getAllCompletedCount();
 
         double allPreAcceptanceRate = calculateRate(allPreAcceptanceCount, allApplyCount);//总预受理率（预受理数/接件数）
         double allOutScopeRate = calculateRate(allOutScopeCount, allApplyCount);//总不予受理率（不予受理数/接件数）
@@ -643,8 +671,8 @@ public class AeaAnaThemeStatisticsImpl {
 
 
         //从数据库查询全部已补全和待补全的
-        long allInSupplementCount = getAllInSupplementCount(stageId, null, null,isParallel,rootOrgId,source);
-        long allSupplementedCount = getAllSupplementedCount(stageId, null, null,isParallel,rootOrgId,source);
+        long allInSupplementCount = getAllInSupplementCount(stageId, null, null, isParallel, rootOrgId, source);
+        long allSupplementedCount = getAllSupplementedCount(stageId, null, null, isParallel, rootOrgId, source);
         //封裝數據
         AeaAnaThemeDayStatistics result = new AeaAnaThemeDayStatistics();
         result.setThemeDayStatisticsId(UUID.randomUUID().toString());
@@ -681,7 +709,7 @@ public class AeaAnaThemeStatisticsImpl {
         result.setStatisticsDate(statisticsStartDate);
         result.setRootOrgId(rootOrgId);
 
-        return  result;
+        return result;
     }
 
     /**
@@ -733,17 +761,17 @@ public class AeaAnaThemeStatisticsImpl {
     /**
      * 获取所有已补全的数量
      **/
-    private long getAllSupplementedCount(String stageId, String startTime, String endTime,String isParallel,String rootOrgId,String source) {
+    private long getAllSupplementedCount(String stageId, String startTime, String endTime, String isParallel, String rootOrgId, String source) {
         String[] states = {ApplyState.SUPPLEMENTARY.getValue()};
-        return getCount(stageId, states, startTime, endTime,isParallel,rootOrgId,source);
+        return getCount(stageId, states, startTime, endTime, isParallel, rootOrgId, source);
     }
 
     /**
      * 获取所有待补全数量
      **/
-    private long getAllInSupplementCount(String stageId, String startTime, String endTime,String isParallel,String rootOrgId,String source) {
+    private long getAllInSupplementCount(String stageId, String startTime, String endTime, String isParallel, String rootOrgId, String source) {
         String[] states = {ApplyState.IN_THE_SUPPLEMENT.getValue()};
-        return getCount(stageId, states, startTime, endTime,isParallel,rootOrgId ,source);
+        return getCount(stageId, states, startTime, endTime, isParallel, rootOrgId, source);
     }
 
     /**
@@ -752,14 +780,12 @@ public class AeaAnaThemeStatisticsImpl {
   /*  private long getApplyCount(String stageId, String startTime, String endTime) {
         return getCount(stageId, null, startTime, endTime);
     }*/
-
-
     private long getCount(String stageId, String[] states, String startTime, String endTime, String isParallel, String rootOrgId, String source) {
         List<AeaHiApplyinst> list = new ArrayList<>();
-        if("0".equals(isParallel)){
-            list = applyinstMapper.getAeaHiApplyinstByStageIdAndStates(stageId, states, startTime, endTime, rootOrgId, isParallel,source);
-        }else{
-            list = applyinstMapper.getAeaHiApplyinstByStageIdAndStatesIsParallel(stageId, states, startTime, endTime, rootOrgId, isParallel,source);
+        if ("0".equals(isParallel)) {
+            list = applyinstMapper.getAeaHiApplyinstByStageIdAndStates(stageId, states, startTime, endTime, rootOrgId, isParallel, source);
+        } else {
+            list = applyinstMapper.getAeaHiApplyinstByStageIdAndStatesIsParallel(stageId, states, startTime, endTime, rootOrgId, isParallel, source);
 
         }
         return list.size();
@@ -767,6 +793,7 @@ public class AeaAnaThemeStatisticsImpl {
 
     /**
      * 统计方向：申报-阶段—主题，计算耗费内存，统计速度会快一点，而且没有为空各统计字段全为0的情况
+     *
      * @param rootOrgId
      * @param operateSource
      * @param creater
@@ -791,14 +818,13 @@ public class AeaAnaThemeStatisticsImpl {
         //查并联的
         List<ThemeDayApplyRecord> parLogHisList = logApplyStateHistMapper.listLogApplyStateHistBySourecAndParallel(startTime, endTime, rootOrgId, "0", "0");
         //查串联，分并行的
-        List<ThemeDayApplyRecord> serLogHisList = logApplyStateHistMapper.listLogApplyStateHistBySourecAndParallel(startTime,endTime,rootOrgId,"1","0");
-        List<ThemeDayApplyRecord> serPstsllrlLogHisList = logApplyStateHistMapper.listLogApplyStateHistBySourecAndParallel(startTime,endTime,rootOrgId,"1","1");
+        List<ThemeDayApplyRecord> serLogHisList = logApplyStateHistMapper.listLogApplyStateHistBySourecAndParallel(startTime, endTime, rootOrgId, "1", "0");
+        List<ThemeDayApplyRecord> serPstsllrlLogHisList = logApplyStateHistMapper.listLogApplyStateHistBySourecAndParallel(startTime, endTime, rootOrgId, "1", "1");
 
         parLogHisList.addAll(serLogHisList);
         parLogHisList.addAll(serPstsllrlLogHisList);
 
-        result = packageThemeDayStastics(parLogHisList,statisticsRecord.getStatisticsRecordId(), statisticsRecord.getStatisticsStartDate(), rootOrgId);
-
+        result = packageThemeDayStastics(parLogHisList, statisticsRecord.getStatisticsRecordId(), statisticsRecord.getStatisticsStartDate(), rootOrgId);
 
 
         if (result.size() > 0) {
@@ -812,6 +838,7 @@ public class AeaAnaThemeStatisticsImpl {
 
     /**
      * 从applylog里面统计当天数据
+     *
      * @param logHisList
      * @param statisticsRecordId
      * @param statisticsStartDate
@@ -821,26 +848,26 @@ public class AeaAnaThemeStatisticsImpl {
     private List<AeaAnaThemeDayStatistics> packageThemeDayStastics(List<ThemeDayApplyRecord> logHisList, String statisticsRecordId, Date statisticsStartDate, String rootOrgId) {
         List<AeaAnaThemeDayStatistics> result = new ArrayList<>();
         List<List<ThemeDayApplyRecord>> detailList = new ArrayList<>();
-        if(!logHisList.isEmpty()){
+        if (!logHisList.isEmpty()) {
 
             //先按是否并行
             Map<String, List<ThemeDayApplyRecord>> collect = logHisList.stream().collect(Collectors.groupingBy(ThemeDayApplyRecord::getIsParallel));
             Set<Map.Entry<String, List<ThemeDayApplyRecord>>> entries = collect.entrySet();
-            for(Map.Entry<String, List<ThemeDayApplyRecord>> entry :entries){
+            for (Map.Entry<String, List<ThemeDayApplyRecord>> entry : entries) {
                 String key = entry.getKey();
                 List<ThemeDayApplyRecord> value = entry.getValue();
                 //按来源分组
                 Map<String, List<ThemeDayApplyRecord>> sourceCollent = value.stream().collect(Collectors.groupingBy(ThemeDayApplyRecord::getApplyinstSource));
                 Set<Map.Entry<String, List<ThemeDayApplyRecord>>> sourceEntry = sourceCollent.entrySet();
-                for(Map.Entry<String, List<ThemeDayApplyRecord>> sEntry:sourceEntry){
+                for (Map.Entry<String, List<ThemeDayApplyRecord>> sEntry : sourceEntry) {
                     detailList.add(sEntry.getValue());
                 }
             }
 
         }
 
-        for(int i=0,len=detailList.size();i<len;i++){
-            result.addAll(getThemeDayStatistics(detailList.get(i),statisticsRecordId,statisticsStartDate,rootOrgId));
+        for (int i = 0, len = detailList.size(); i < len; i++) {
+            result.addAll(getThemeDayStatistics(detailList.get(i), statisticsRecordId, statisticsStartDate, rootOrgId));
         }
 
         return result;
@@ -848,23 +875,23 @@ public class AeaAnaThemeStatisticsImpl {
 
     private List<AeaAnaThemeDayStatistics> getThemeDayStatistics(List<ThemeDayApplyRecord> records, String statisticsRecordId, Date startDate, String rootOrgId) {
         List<AeaAnaThemeDayStatistics> result = new ArrayList<>();
-        if(records!=null &&!records.isEmpty()){
+        if (records != null && !records.isEmpty()) {
             //按主题分组
             Map<String, List<ThemeDayApplyRecord>> themeCollect = records.stream().collect(Collectors.groupingBy(ThemeDayApplyRecord::getThemeId));
             Set<Map.Entry<String, List<ThemeDayApplyRecord>>> entries = themeCollect.entrySet();
 
-            for(Map.Entry<String, List<ThemeDayApplyRecord>> entry:entries){
+            for (Map.Entry<String, List<ThemeDayApplyRecord>> entry : entries) {
                 List<ThemeDayApplyRecord> stageRecord = entry.getValue();
                 //按阶段分组
                 Map<String, List<ThemeDayApplyRecord>> collect = stageRecord.stream().collect(Collectors.groupingBy(ThemeDayApplyRecord::getStageId));
                 Set<Map.Entry<String, List<ThemeDayApplyRecord>>> stateEntries = collect.entrySet();
-                 for(Map.Entry<String, List<ThemeDayApplyRecord>> en:stateEntries){
+                for (Map.Entry<String, List<ThemeDayApplyRecord>> en : stateEntries) {
                     String key = en.getKey();
                     List<ThemeDayApplyRecord> value = en.getValue();
                     //封装一条数据
-                     AeaAnaThemeDayStatistics dayStatistics = packageOneDayStatistics(statisticsRecordId, startDate, rootOrgId, key, value);
-                     result.add(dayStatistics);
-                 }
+                    AeaAnaThemeDayStatistics dayStatistics = packageOneDayStatistics(statisticsRecordId, startDate, rootOrgId, key, value);
+                    result.add(dayStatistics);
+                }
 
 
             }
@@ -881,57 +908,55 @@ public class AeaAnaThemeStatisticsImpl {
         String isParallel = applyRecord.getIsParallel();
         String applyinstSource = applyRecord.getApplyinstSource();
         String isApprove = applyRecord.getIsApprove();
-        long dayApplyCount=0,unapprovalApply=0,approvedApply=0,hisPreAccept = 0, hisInsupplement = 0, hisSupplementary = 0, hisOutScope = 0, hisCompleted = 0;
+        long dayApplyCount = 0, unapprovalApply = 0, approvedApply = 0, hisPreAccept = 0, hisInsupplement = 0, hisSupplementary = 0, hisOutScope = 0, hisCompleted = 0;
 
         Map<String, List<ThemeDayApplyRecord>> collect = records.stream().collect(Collectors.groupingBy(ThemeDayApplyRecord::getNewState));
         Set<Map.Entry<String, List<ThemeDayApplyRecord>>> entries = collect.entrySet();
-        for(Map.Entry<String, List<ThemeDayApplyRecord>> entry :entries){
+        for (Map.Entry<String, List<ThemeDayApplyRecord>> entry : entries) {
             List<ThemeDayApplyRecord> value = entry.getValue();
             String state = entry.getKey();
-            if (ApplyState.RECEIVE_UNAPPROVAL_APPLY.getValue().equals(state)){
+            if (ApplyState.RECEIVE_UNAPPROVAL_APPLY.getValue().equals(state)) {
                 unapprovalApply += value.size();
-            }else if(ApplyState.RECEIVE_APPROVED_APPLY.getValue().equals(state)){
-                approvedApply+= value.size();
-            }
-            else if(ApplyState.ACCEPT_DEAL.getValue().equals(state)){
-                hisPreAccept+= value.size();
-            }
-            else if(ApplyState.IN_THE_SUPPLEMENT.getValue().equals(state)){
-                hisInsupplement+= value.size();
-            }else if(ApplyState.SUPPLEMENTARY.getValue().equals(state)){
-                hisSupplementary+= value.size();
-            }else if(ApplyState.OUT_SCOPE.getValue().equals(state)){
-                hisOutScope+= value.size();
-            }else if(ApplyState.COMPLETED.getValue().equals(state)){
-                hisCompleted+= value.size();
+            } else if (ApplyState.RECEIVE_APPROVED_APPLY.getValue().equals(state)) {
+                approvedApply += value.size();
+            } else if (ApplyState.ACCEPT_DEAL.getValue().equals(state)) {
+                hisPreAccept += value.size();
+            } else if (ApplyState.IN_THE_SUPPLEMENT.getValue().equals(state)) {
+                hisInsupplement += value.size();
+            } else if (ApplyState.SUPPLEMENTARY.getValue().equals(state)) {
+                hisSupplementary += value.size();
+            } else if (ApplyState.OUT_SCOPE.getValue().equals(state)) {
+                hisOutScope += value.size();
+            } else if (ApplyState.COMPLETED.getValue().equals(state)) {
+                hisCompleted += value.size();
             }
         }
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String startDate = sdf.format(statisticsDate);
-        String startTime = startDate +" 00:00:00";
-        String endTime = startDate +" 23:59:59";
+        String startTime = startDate + " 00:00:00";
+        String endTime = startDate + " 23:59:59";
 
         ThemeDayApplyRecord tmp = records.get(0);
         //查询当天逾期的东西
-        List<ActStoTimeruleInst> actStoTimeruleInsts = themeDayStatisticsMapper.getStageStoTimeruleInst(stageId, "3", rootOrgId,isParallel, isApprove, applyinstSource,startTime,endTime);
+        List<ActStoTimeruleInst> actStoTimeruleInsts = themeDayStatisticsMapper.getStageStoTimeruleInst(stageId, "3", rootOrgId, isParallel, isApprove, applyinstSource, startTime, endTime);
         long dayOverTimeCount = actStoTimeruleInsts.size();
         String oneDayBefore = DateUtils.getPreDateByDate(startDate);
-        String oneDayBeforeStart = oneDayBefore +" 00:00:00";
-        String oneDayBeforeEnd = oneDayBefore +" 23:59:59";
-        AeaAnaThemeDayStatistics onedayBeforStastics = themeDayStatisticsMapper.getAeaAnaThemeDayStatisticsBySatgeIdAndThemeId(tmp.getThemeId(), stageId, oneDayBeforeStart,oneDayBeforeEnd, rootOrgId,isParallel,applyinstSource);
+        String oneDayBeforeStart = oneDayBefore + " 00:00:00";
+        String oneDayBeforeEnd = oneDayBefore + " 23:59:59";
+        AeaAnaThemeDayStatistics onedayBeforStastics = themeDayStatisticsMapper.getAeaAnaThemeDayStatisticsBySatgeIdAndThemeId(tmp.getThemeId(), stageId, oneDayBeforeStart, oneDayBeforeEnd, rootOrgId, isParallel, applyinstSource);
         long allOverTimeCount = dayOverTimeCount + onedayBeforStastics.getAllOverTimeCount();
-        dayApplyCount = unapprovalApply +approvedApply;
+        dayApplyCount = unapprovalApply + approvedApply;
         double applyLrr = calculateGrowRate(onedayBeforStastics.getDayApplyCount(), dayApplyCount);
-        double preAcceptanceLrr = calculateGrowRate(onedayBeforStastics.getDayPreAcceptanceCount(),  hisPreAccept);
-        double outScopeLrr = calculateGrowRate(onedayBeforStastics.getDayOutScopeCount(),  hisOutScope);
-        double completedLrr = calculateGrowRate(onedayBeforStastics.getDayCompletedCount(),  hisCompleted);
+        double preAcceptanceLrr = calculateGrowRate(onedayBeforStastics.getDayPreAcceptanceCount(), hisPreAccept);
+        double outScopeLrr = calculateGrowRate(onedayBeforStastics.getDayOutScopeCount(), hisOutScope);
+        double completedLrr = calculateGrowRate(onedayBeforStastics.getDayCompletedCount(), hisCompleted);
         double overTimeLrr = calculateGrowRate(onedayBeforStastics.getDayOverTimeCount(), dayOverTimeCount);
 
         //縂比率统计
         long allPreAcceptanceCount = hisPreAccept + onedayBeforStastics.getAllPreAcceptanceCount();
         long allApplyCount = dayApplyCount + onedayBeforStastics.getAllApplyCount();
-        long allOutScopeCount = hisOutScope  + onedayBeforStastics.getAllOutScopeCount();
-        long allCompletedCount = hisCompleted  + onedayBeforStastics.getAllCompletedCount();
+        long allOutScopeCount = hisOutScope + onedayBeforStastics.getAllOutScopeCount();
+        long allCompletedCount = hisCompleted + onedayBeforStastics.getAllCompletedCount();
 
         double allPreAcceptanceRate = calculateRate(allPreAcceptanceCount, allApplyCount);//总预受理率（预受理数/接件数）
         double allOutScopeRate = calculateRate(allOutScopeCount, allApplyCount);//总不予受理率（不予受理数/接件数）
@@ -940,8 +965,8 @@ public class AeaAnaThemeStatisticsImpl {
 
 
         //从数据库查询全部已补全和待补全的
-        long allInSupplementCount = getAllInSupplementCount(stageId, null, null,isParallel,rootOrgId,applyinstSource);
-        long allSupplementedCount = getAllSupplementedCount(stageId, null, null,isParallel,rootOrgId,applyinstSource);
+        long allInSupplementCount = getAllInSupplementCount(stageId, null, null, isParallel, rootOrgId, applyinstSource);
+        long allSupplementedCount = getAllSupplementedCount(stageId, null, null, isParallel, rootOrgId, applyinstSource);
         //封裝數據
         AeaAnaThemeDayStatistics result = new AeaAnaThemeDayStatistics();
         result.setThemeDayStatisticsId(UUID.randomUUID().toString());
