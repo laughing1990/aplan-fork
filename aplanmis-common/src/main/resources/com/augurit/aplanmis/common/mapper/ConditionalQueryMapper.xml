@@ -1776,6 +1776,7 @@
         LEFT JOIN act_ru_task t ON t.PROC_INST_ID_ = app.PROCINST_ID
         <where>
             ahap_123.IS_SERIES_APPROVE = '0'
+            AND ahap_123.IS_DELETED != '1'
             AND (ahap_123.APPLYINST_STATE = '0' or ahap_123.APPLYINST_STATE = '4')
             AND APPLYINST_SOURCE = 'net'
             AND t.ASSIGNEE_ = #{loginName}
@@ -1814,6 +1815,7 @@
         LEFT JOIN act_ru_task t ON t.PROC_INST_ID_ = apps.SUBFLOW_PROCINST_ID
         <where>
             ahap_123.IS_SERIES_APPROVE = '0'
+            AND ahap_123.IS_DELETED != '1'
             AND (ahap_123.APPLYINST_STATE = '0' or ahap_123.APPLYINST_STATE = '4')
             AND APPLYINST_SOURCE = 'net'
             AND t.ASSIGNEE_ = #{loginName}
@@ -1848,6 +1850,7 @@
         LEFT JOIN act_ru_task t ON t.PROC_INST_ID_ = app.PROCINST_ID
         <where>
             ahap_123.IS_SERIES_APPROVE = '1'
+            AND ahap_123.IS_DELETED != '1'
             AND (ahap_123.APPLYINST_STATE = '0' or ahap_123.APPLYINST_STATE = '4')
             AND APPLYINST_SOURCE = 'net'
             AND t.ASSIGNEE_ = #{loginName}
@@ -1880,6 +1883,7 @@
         LEFT JOIN act_ru_task t ON t.PROC_INST_ID_ = apps.SUBFLOW_PROCINST_ID
         <where>
             ahap_123.IS_SERIES_APPROVE = '1'
+            AND ahap_123.IS_DELETED != '1'
             AND (ahap_123.APPLYINST_STATE = '0' or ahap_123.APPLYINST_STATE = '4')
             AND APPLYINST_SOURCE = 'net'
             AND t.ASSIGNEE_ = #{loginName}
