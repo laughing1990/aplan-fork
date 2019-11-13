@@ -2351,6 +2351,7 @@ var vm = new Vue({
     },
     //流程发送
     doSendOperation: function (directSend) {
+      var vm = this;
       if (!directSend) {
         // if (vm.sendTaskInfo.userTask && vm.checkNull(vm.nextTaskAssigneeId)) {
         //   vm.$message.error('您选择的下一环节需要选择办理人，没有办理人无法发送！');
@@ -2372,9 +2373,19 @@ var vm = new Vue({
         }
         
         if (vm.sendTaskInfos.length > 1) {
-          var sendTip = "确认发送至 <span style='color:#22D479;font-size:18px' >&nbsp;" + vm.dealNull(vm.nextTask) + "</span>&nbsp;环节？";
+          var _nextTask = vm.dealNull(vm.nextTask);
+          var _nextTaskAssignee = vm.nextTaskAssignee;
+          if (vm.isMultiFlow) {
+            _nextTask = vm.mutiCheckedNames.join('、');
+            var _tmpArr = [];
+            vm.mutiCheckedMan.forEach(function(u){
+              _tmpArr.push(u.defaultSendAssignees || '暂无审批人');
+            });
+            _nextTaskAssignee = _tmpArr.join('、');
+          }
+          var sendTip = "确认发送至 <span style='color:#22D479;font-size:18px' >&nbsp;" + _nextTask + "</span>&nbsp;环节？";
           if (vm.checkNotNull(vm.nextTaskAssignee)) {
-            sendTip += "下一环节审批人为：<span style='color:#22D479;font-size:18px' >&nbsp;" + vm.nextTaskAssignee + "&nbsp;</span>";
+            sendTip += "下一环节审批人为：<span style='color:#22D479;font-size:18px' >&nbsp;" + _nextTaskAssignee + "&nbsp;</span>";
           }
           confirmMsg("确认发送信息", sendTip, function () {
             vm.sendOperation(directSend);

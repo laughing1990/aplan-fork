@@ -1,9 +1,11 @@
 package com.augurit.aplanmis.front.form.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.aplanmis.admin.market.qual.service.AeaImQualLevelService;
 import com.augurit.aplanmis.common.domain.*;
+import com.augurit.aplanmis.common.mapper.AeaProjInfoMapper;
 import com.augurit.aplanmis.common.mapper.AeaUnitProjLinkmanMapper;
 import com.augurit.aplanmis.common.service.linkman.AeaLinkmanInfoService;
 import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
@@ -35,14 +37,23 @@ public class RestExSJUnitFormController {
     private AeaImQualLevelService aeaImQualLevelService;
     @Autowired
     private RestExSJUnitFormService restExSJUnitFormService;
+    @Autowired
+    private AeaProjInfoMapper aeaProjInfoMapper;
 
     @PostMapping("/saveOrUpdateSJUnitInfo")
-    public ContentResultForm<String> saveOrUpdateSJUnitInfo(AeaExProjBuild aeaExProjBuild) throws Exception{
+    public ContentResultForm<String> saveOrUpdateSJUnitInfo(AeaExProjBuild aeaExProjBuild){
         try {
-            restExSJUnitFormService.saveOrUpdateSJUnitInfo(aeaExProjBuild);
-            return new ContentResultForm<>(true,"", "Save success");
+            AeaProjInfo aeaProjInfo = new AeaProjInfo();
+            aeaProjInfo.setProjInfoId(aeaExProjBuild.getProjInfoId());
+            List<AeaProjInfo> aeaProjInfos = aeaProjInfoMapper.listAeaProjInfo(aeaProjInfo);
+            if(aeaProjInfos !=null && aeaProjInfos.size()>0){
+                restExSJUnitFormService.saveOrUpdateSJUnitInfo(aeaExProjBuild);
+                return new ContentResultForm<>(true,"保存成功", "Save success");
+            }else {
+                return new ContentResultForm<>(false,"项目编码不存在", "error");
+            }
         }catch (Exception e){
-            return new ContentResultForm<>(true,e.getMessage(), "error");
+            return new ContentResultForm<>(false,e.getMessage(), "error");
         }
     }
 
@@ -67,7 +78,7 @@ public class RestExSJUnitFormController {
             Map<String,Object> map = new HashMap<String,Object>();
             return new ContentResultForm<>(true, unitsByKeyword, "Query success");
         }catch (Exception e){
-            return new ContentResultForm(true, e.getMessage(), "error");
+            return new ContentResultForm(false, e.getMessage(), "error");
         }
     }
 
@@ -95,5 +106,16 @@ public class RestExSJUnitFormController {
             collect = aeaImQualLevelService.listAeaImQualLevel(query).stream().collect(Collectors.toSet());
         }
         return new ContentResultForm<>(true, collect, "Query success");
+    }
+
+    @GetMapping("/delPersonSetting")
+    public ContentResultForm<String> delPersonSetting(@RequestParam(required = false) String parm){
+        try {
+            String[] split = parm.split(",");
+            aeaUnitProjLinkmanMapper.batchDelAeaUnitProjLinkmanByIds(split);
+            return new ContentResultForm<>(true,"删除成功","success");
+        }catch (Exception e){
+            return new ContentResultForm<>(false,e.getMessage(),"error");
+        }
     }
 }

@@ -615,7 +615,7 @@
                         </el-form-item>
                     </el-col>
                     <el-col :span="12">
-                        <el-form-item label="承担角色" class="input-ex" prop="linkmanType">
+                        <el-form-item disabled label="承担角色" class="input-ex" prop="linkmanType">
                             <el-select v-model="applyJianliFrom.linkmanType" placeholder="请选择承担角色">
                                 <el-option v-for="(i,index) in jiangliLinkmanType" :key="i.itemId" :label="i.itemName" :value="i.itemCode">
                                 </el-option>

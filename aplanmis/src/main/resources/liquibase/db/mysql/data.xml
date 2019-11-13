@@ -2336,4 +2336,16 @@ INSERT INTO `act_sto_widget_key` (`KEY_ID`, `WIDGET_ID`, `KEY_CODE`, `KEY_LABEL`
             WHERE hist.NEW_STATE = '6' AND ahi.END_TIME IS NULL;
         </sql>
     </changeSet>
+
+    <changeSet id="201911130915" author="liaojj" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            INSERT INTO `bsc_dic_code_type` VALUES ('22cfe743-9653-467a-8242-83b006b4dfdd', 'C_PRJ_ENT_TYPE', '项目主体类型', '0', '1', NULL, NULL, '2019-11-11 11:25:11', NULL, '2019-11-11 11:25:11', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` VALUES ('15ddcbb4-e9db-4d85-92f7-c4e6fd5a3085', '9ccf5675-4ef0-4d18-bf80-92a90afa95fb', '4', '助理级', '1', 4, '', NULL, 0, 0, NULL, NULL, '2019-11-11 11:02:19', NULL, '2019-11-11 11:02:19', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` VALUES ('495224e7-b8ae-4b12-9f19-b265a037082f', '9ccf5675-4ef0-4d18-bf80-92a90afa95fb', '2', '副高级', '1', 2, '', NULL, NULL, 0, NULL, NULL, '2019-11-7 11:45:17', NULL, '2019-11-7 11:45:47', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` VALUES ('60580be4-4632-4abd-a39a-1ce2eca29a5f', '9ccf5675-4ef0-4d18-bf80-92a90afa95fb', '5', '员级', '1', 5, '', NULL, 0, 0, NULL, NULL, '2019-11-11 11:02:26', NULL, '2019-11-11 11:02:26', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` VALUES ('dc983fb7-485b-499a-94c2-416f2f4656f3', '9ccf5675-4ef0-4d18-bf80-92a90afa95fb', '1', '正高级', '1', 1, '', NULL, NULL, 0, NULL, NULL, '2019-11-7 11:45:17', NULL, '2019-11-7 11:45:35', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+            INSERT INTO `bsc_dic_code_item` VALUES ('ff6cda0b-30ab-4f6d-b439-1e4916f17c42', '9ccf5675-4ef0-4d18-bf80-92a90afa95fb', '3', '中级', '1', 3, '', NULL, 0, 0, NULL, NULL, '2019-11-11 11:01:52', NULL, '2019-11-11 11:01:52', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+
+        </sql>
+    </changeSet>
 </databaseChangeLog>
