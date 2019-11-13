@@ -4,58 +4,17 @@ import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.agcloud.opus.common.domain.OpuOmOrg;
 import com.augurit.agcloud.opus.common.mapper.OpuOmOrgMapper;
-import com.augurit.aplanmis.common.domain.AeaApplyinstUnitProj;
-import com.augurit.aplanmis.common.domain.AeaHiApplyinst;
-import com.augurit.aplanmis.common.domain.AeaHiApplyinstCorrect;
-import com.augurit.aplanmis.common.domain.AeaHiApplyinstCorrectRealIninst;
-import com.augurit.aplanmis.common.domain.AeaHiItemCorrect;
-import com.augurit.aplanmis.common.domain.AeaHiItemCorrectRealIninst;
-import com.augurit.aplanmis.common.domain.AeaHiItemInoutinst;
-import com.augurit.aplanmis.common.domain.AeaHiItemMatinst;
-import com.augurit.aplanmis.common.domain.AeaHiIteminst;
-import com.augurit.aplanmis.common.domain.AeaHiReceive;
-import com.augurit.aplanmis.common.domain.AeaHiSmsInfo;
-import com.augurit.aplanmis.common.domain.AeaItemBasic;
-import com.augurit.aplanmis.common.domain.AeaLinkmanInfo;
-import com.augurit.aplanmis.common.domain.AeaProjInfo;
-import com.augurit.aplanmis.common.domain.AeaUnitInfo;
+import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.dto.AeaHiReceiveDto;
-import com.augurit.aplanmis.common.mapper.AeaApplyinstUnitProjMapper;
-import com.augurit.aplanmis.common.mapper.AeaHiApplyinstCorrectMapper;
-import com.augurit.aplanmis.common.mapper.AeaHiApplyinstCorrectRealIninstMapper;
-import com.augurit.aplanmis.common.mapper.AeaHiApplyinstMapper;
-import com.augurit.aplanmis.common.mapper.AeaHiItemCorrectMapper;
-import com.augurit.aplanmis.common.mapper.AeaHiItemCorrectRealIninstMapper;
-import com.augurit.aplanmis.common.mapper.AeaHiItemInoutinstMapper;
-import com.augurit.aplanmis.common.mapper.AeaHiItemMatinstMapper;
-import com.augurit.aplanmis.common.mapper.AeaHiIteminstMapper;
-import com.augurit.aplanmis.common.mapper.AeaHiReceiveMapper;
-import com.augurit.aplanmis.common.mapper.AeaHiSmsInfoMapper;
-import com.augurit.aplanmis.common.mapper.AeaItemBasicMapper;
-import com.augurit.aplanmis.common.mapper.AeaLinkmanInfoMapper;
-import com.augurit.aplanmis.common.mapper.AeaProjInfoMapper;
-import com.augurit.aplanmis.common.mapper.AeaUnitProjMapper;
+import com.augurit.aplanmis.common.mapper.*;
 import com.augurit.aplanmis.front.apply.vo.RefusedRecepitVo;
 import com.augurit.aplanmis.front.constant.ReceiveConstant;
-import com.augurit.aplanmis.front.receive.vo.AcceptReceiveVo;
-import com.augurit.aplanmis.front.receive.vo.AdministrativeLicenseReceiveVo;
-import com.augurit.aplanmis.front.receive.vo.MatCorrectVo;
-import com.augurit.aplanmis.front.receive.vo.MatReceiveVo;
-import com.augurit.aplanmis.front.receive.vo.ReceiveBaseVo;
-import com.augurit.aplanmis.front.receive.vo.ReturnedCertReceiveVo;
+import com.augurit.aplanmis.front.receive.vo.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -109,6 +68,21 @@ public class ReceiveService extends AbstractReceiveService {
     public boolean saveReceive(String[] applyinstId, String[] receiptTypes, String currentUser, String comments) throws Exception {
         //如果回执不满足各地市，请注释以下方法自己实现
         return super.saveReceive(applyinstId, receiptTypes, currentUser, comments);
+    }
+
+    /**
+     * 保存中介事项回执
+     *
+     * @param applyinstId
+     * @param receiptTypes
+     * @param currentUser
+     * @param comments
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public boolean saveAgentItemReceive(String applyinstId, String[] receiptTypes, String currentUser, String comments) throws Exception {
+        return super.saveAgentItemReceive(applyinstId, receiptTypes, currentUser, comments);
     }
 
     /**

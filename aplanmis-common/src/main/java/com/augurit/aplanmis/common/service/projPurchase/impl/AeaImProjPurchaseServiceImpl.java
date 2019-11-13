@@ -6,9 +6,9 @@ import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.constants.DeletedStatus;
 import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.mapper.*;
+import com.augurit.aplanmis.common.service.file.FileUtilsService;
 import com.augurit.aplanmis.common.service.projPurchase.AeaImProjPurchaseService;
 import com.augurit.aplanmis.common.utils.BusinessUtils;
-import com.augurit.aplanmis.common.utils.FileUtils;
 import com.augurit.aplanmis.common.vo.AeaImQualVo;
 import com.augurit.aplanmis.common.vo.AeaImServiceVo;
 import com.augurit.aplanmis.common.vo.AgentUnitInfoVo;
@@ -52,6 +52,8 @@ public class AeaImProjPurchaseServiceImpl implements AeaImProjPurchaseService {
 
     @Autowired
     private AeaImServiceMajorMapper aeaImServiceMajorMapper;
+    @Autowired
+    private FileUtilsService fileUtilsService;
 
     @Value("${dg.sso.access.platform.org.top-org-id}")
     protected String topOrgId;
@@ -169,31 +171,24 @@ public class AeaImProjPurchaseServiceImpl implements AeaImProjPurchaseService {
     @Override
     public String uploadFiles(HttpServletRequest request) throws Exception {
 
-        Boolean uploadFlag = false;
+//        Boolean uploadFlag = false;
         String resultRecordId = "";
         AeaImProjPurchase aeaImProjPurchase = new AeaImProjPurchase();
         if (request instanceof StandardMultipartHttpServletRequest) {
             StandardMultipartHttpServletRequest req = (StandardMultipartHttpServletRequest) request;
-
+            String recordId = UuidUtil.generateUuid();
             /***要求说明文件***/
             List<MultipartFile> requireExplainFiles = req.getFiles("requireExplainFile");
             if (requireExplainFiles != null && !requireExplainFiles.isEmpty()) {
-                String recordId = UuidUtil.generateUuid();
-                uploadFlag = FileUtils.uploadFile("AEA_IM_PROJ_PURCHASE", "REQUIRE_EXPLAIN_FILE", recordId, requireExplainFiles);
-                if (uploadFlag) {
-                    resultRecordId = recordId;
-                }
+                fileUtilsService.uploadAttachments("AEA_IM_PROJ_PURCHASE", "REQUIRE_EXPLAIN_FILE", recordId, requireExplainFiles);
             }
             /***批文文件***/
             List<MultipartFile> officialRemarkFiles = req.getFiles("officialRemarkFile");
             if (officialRemarkFiles != null && !officialRemarkFiles.isEmpty()) {
-                String recordId = UuidUtil.generateUuid();
-                ;
-                uploadFlag = FileUtils.uploadFile("AEA_IM_PROJ_PURCHASE", "OFFICIAL_REMARK_FILE", recordId, officialRemarkFiles);
-                if (uploadFlag) {
-                    resultRecordId = recordId;
-                }
+//                uploadFlag = FileUtils.uploadFile("AEA_IM_PROJ_PURCHASE", "OFFICIAL_REMARK_FILE", recordId, officialRemarkFiles);
+                fileUtilsService.uploadAttachments("AEA_IM_PROJ_PURCHASE", "OFFICIAL_REMARK_FILE", recordId, officialRemarkFiles);
             }
+            resultRecordId = recordId;
         }
 
         return resultRecordId;
