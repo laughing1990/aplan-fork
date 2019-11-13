@@ -2379,7 +2379,7 @@ var vm = new Vue({
             _nextTask = vm.mutiCheckedNames.join('、');
             var _tmpArr = [];
             vm.mutiCheckedMan.forEach(function(u){
-              _tmpArr.push(u.defaultSendAssignees);
+              _tmpArr.push(u.defaultSendAssignees || '暂无审批人');
             });
             _nextTaskAssignee = _tmpArr.join('、');
           }
