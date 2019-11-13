@@ -4,7 +4,7 @@ if (isDevelop) {
   // ctx = 'http://localhost:8083/aplanmis-front/'; // localhost
   ctx = 'http://106.52.77.101:8083/aplanmis-front/'; // 101
   // ctx = 'http://192.168.32.46:8083/aplanmis-front/'; // 李文钦
-  // ctx = 'http://192.168.30.24:8083/aplanmis-front/'; // 陈锭星
+  ctx = 'http://192.168.30.24:8083/aplanmis-front/'; // 陈锭星
   // ctx = 'http://192.168.30.24:6123/aplanmis-front/'; // 陈锭星
   // ctx = 'http://192.168.30.110:8083/aplanmis-front/'; // 邹永胜
   // ctx = 'http://192.168.14.2:8083/aplanmis-front/'; // 邓振强
