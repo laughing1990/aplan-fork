@@ -700,6 +700,62 @@
         group by THEME_ID, THEME_NAME, APPLYINST_SOURCE
     </select>
 
+    <select id="getTodayOverHisRecord" resultType="com.augurit.aplanmis.common.vo.analyse.ThemeDayApplyRecord">
+        select
+        ahs.STAGE_ID stageId,
+        aps.STAGE_NAME stageName,
+        aps.IS_NODE isNode,
+        aps.DYBZSPJDXH DYBZSPJDXH,
+        aha.APPLYINST_SOURCE applyinstSource,
+        aha.IS_SERIES_APPROVE isApprove,
+        apt.THEME_ID themeId,
+        apt.THEME_NAME themeName,
+        ahs.IS_PARALLEL isParallel,
+        'N' as newState
+
+        FROM
+        act_sto_timerule_inst asti
+        LEFT JOIN aea_hi_iteminst ahi on  asti.PROC_INST_ID = ahi.PROCINST_ID
+        LEFT JOIN aea_hi_seriesinst ahs on ahs.SERIESINST_ID = ahi.SERIESINST_ID
+        LEFT JOIN aea_hi_applyinst aha on aha.APPLYINST_ID = ahs.APPLYINST_ID
+        LEFT JOIN aea_par_stage aps on aps.STAGE_ID = ahs.STAGE_ID
+        LEFT JOIN aea_par_theme_ver aptv on aptv.THEME_VER_ID = aps.THEME_VER_ID
+        LEFT JOIN aea_par_theme apt on apt.THEME_ID = aptv.THEME_ID
+
+        where asti.OVERDUE_DATE <![CDATA[ >= ]]> #{startTime}
+        and asti.OVERDUE_DATE <![CDATA[ <= ]]> #{endTime}
+
+        and asti.INST_STATE='3'
+        and ahs.STAGE_ID is not null
+        and aha.ROOT_ORG_ID = #{rootOrgId}
+        union
+        select
+        ahps.STAGE_ID stageId,
+        aps.STAGE_NAME stageName,
+        aps.IS_NODE isNode,
+        aps.DYBZSPJDXH dybzspjdxh,
+        aha.APPLYINST_SOURCE applyinstSource,
+        aha.IS_SERIES_APPROVE isApprove,
+        apt.THEME_ID themeId,
+        apt.THEME_NAME themeName,
+        '0' as isParallel,
+        'N' as newState
+        FROM
+        act_sto_timerule_inst asti
+        LEFT JOIN act_sto_appinst asp on  asti.APP_FLOWDEF_ID = asp.APP_FLOWDEF_ID
+                AND asti.PROC_INST_ID = asp.PROCINST_ID
+        LEFT JOIN aea_hi_par_stageinst ahps on  asp.APPINST_ID = ahps.APPINST_ID
+        LEFT JOIN aea_hi_applyinst aha on aha.APPLYINST_ID = ahps.APPLYINST_ID
+        LEFT JOIN aea_par_stage aps on aps.STAGE_ID = ahps.STAGE_ID
+        LEFT JOIN aea_par_theme_ver aptv on aptv.THEME_VER_ID = ahps.THEME_VER_ID
+        LEFT JOIN aea_par_theme apt on apt.THEME_ID = aptv.THEME_ID
+        where asti.OVERDUE_DATE <![CDATA[ >= ]]> #{startTime}
+        and asti.OVERDUE_DATE <![CDATA[ <= ]]> #{endTime}
+        and asti.INST_STATE='3'
+        and ahps.STAGE_ID is not null
+        and aha.ROOT_ORG_ID= #{rootOrgId}
+
+    </select>
     <!--9 返回所有字段的对象map,用于级联 -->
     <resultMap type="AeaAnaThemeDayStatistics" id="AeaAnaThemeDayStatisticsMap">
         <id property="themeDayStatisticsId" column="THEME_DAY_STATISTICS_ID"/>

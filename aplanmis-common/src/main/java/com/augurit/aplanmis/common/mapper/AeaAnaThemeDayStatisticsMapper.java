@@ -4,6 +4,7 @@ import com.augurit.agcloud.bpm.common.domain.ActStoTimeruleInst;
 import com.augurit.aplanmis.common.domain.AeaAnaThemeDayStatistics;
 import com.augurit.aplanmis.common.vo.analyse.StageApplyStatisticsVo;
 import com.augurit.aplanmis.common.vo.analyse.ThemeApplyStatisticsVo;
+import com.augurit.aplanmis.common.vo.analyse.ThemeDayApplyRecord;
 import com.augurit.aplanmis.common.vo.analyse.ThemePeriodStatistics;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -61,4 +62,6 @@ public interface AeaAnaThemeDayStatisticsMapper {
     List<AeaAnaThemeDayStatistics> getOverTimeApply(@Param("rootOrgId") String rootOrgId);
 
     List<ThemeApplyStatisticsVo> getApplyByTheme(@Param("startTime") String startTime, @Param("endTime") String endTime, @Param("rootOrgId") String rootOrgId);
+
+    List<ThemeDayApplyRecord> getTodayOverHisRecord(@Param("rootOrgId") String rootOrgId, @Param("startTime") String startTime, @Param("endTime") String endTime);
 }
