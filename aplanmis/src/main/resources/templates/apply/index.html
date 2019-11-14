@@ -940,7 +940,9 @@
                     <template slot-scope="scope">
                       <el-form :model="stateSelVal" class="expand-coreItem">
                         <el-form-item class="sel-status-item" :required="item.mustAnswer==1"
-                          v-for="(item,index) in scope.row.questionStates" :key="index" :label="item.stateName">
+                                      v-if="item.itemShowFlag"
+                                      v-for="(item,index) in scope.row.questionStates"
+                                      :key="index" :label="item.stateName">
                           <p class="status-label">
                             <el-tooltip class="item" effect="light" :content="item.stateMemo?item.stateMemo:'无'"
                               placement="right">
@@ -951,6 +953,7 @@
                             <el-radio-group v-model="item.selectAnswerId">
                               <el-radio v-for="(itemAns,ind) in item.answerStates"
                                         :key="ind"
+                                        v-if="itemAns.isProcStartCond!='1'"
                                 @change="getCoreItemsStateMats(scope.row,item,itemAns,index,'parallelItem')"
                                 :value="itemAns.itemStateId" :label="itemAns.itemStateId" name="answer">
                                 {{itemAns.stateName}}</el-radio>
@@ -958,7 +961,9 @@
                           </template>
                           <template v-else>
                             <el-checkbox-group v-model="item.selectAnswerId" :required="item.mustAnswer==1">
-                              <el-checkbox v-for="(itemAns,indAns) in item.answerStates" :key="indAns" :value="itemAns.itemStateId"
+                              <el-checkbox v-for="(itemAns,indAns) in item.answerStates"
+                                           v-if="itemAns.isProcStartCond!='1'"
+                                           :key="indAns" :value="itemAns.itemStateId"
                                 @change="function(value){getCoreItemsStateMats(scope.row,item,itemAns,index,'parallelItem',value)}"
                                 :label="itemAns.itemStateId" name="answer">{{itemAns.stateName}}</el-checkbox>
                             </el-checkbox-group>

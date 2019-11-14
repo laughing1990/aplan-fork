@@ -4301,16 +4301,31 @@ var vm = new Vue({
           });
           var objStateMats = data.content.stateMats;
           objQuestionStates.map(function(item){
+            if(typeof item.itemShowFlag == "undefined"){
+              Vue.set(item, 'itemShowFlag', true);
+            }else {
+              item.itemShowFlag = true;
+            }
             if(item.answerType!='s'&&item.answerType!='y'){
               if(typeof item.selValue == "undefined"){
                 Vue.set(item, 'selValue', []);
               }else {
                 item.selValue = [];
               }
-
               item.selectAnswerId=item.selValue;
             }
             item.answerStates = _that.sortByKey(item.answerStates,'sortNo');
+            if(flag!=='coreItem'&&item.answerStates.length>0){
+              var itemShowFlag = 0;
+              item.answerStates.map(function (itemAnswer) {
+                if(itemAnswer.isProcStartCond==1){
+                  itemShowFlag++
+                }
+              });
+              if(itemShowFlag==item.answerStates.length){
+                item.itemShowFlag = false;
+              }
+            }
           });
           if(row.questionStates=='undefined'||row.questionStates==undefined){
             Vue.set(row, 'questionStates', objQuestionStates);
