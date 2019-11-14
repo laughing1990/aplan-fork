@@ -9,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.ServletContext;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,6 +25,8 @@ import java.util.Map;
 public class LicenseApiServiceImpl implements LicenseApiService {
     @Autowired
     private LicenseConfig licenseConfig;
+    @Autowired
+    private ServletContext servletContext;
 
     @Override
     public LoginResDTO login() throws Exception {
@@ -34,6 +38,22 @@ public class LicenseApiServiceImpl implements LicenseApiService {
         return send("/security/login", "post", null, data, null, LoginResDTO.class);
     }
 
+    @Override
+    public String getLoginToken() throws Exception {
+        Date now = new Date();
+        if (servletContext.getAttribute("third_parner_postal_login_tokenEntity") == null) {
+            LoginResDTO loginResDTO = login();
+            loginResDTO.setTimestamp(now);
+            servletContext.setAttribute("third_parner_postal_login_tokenEntity", loginResDTO);
+        }
+        LoginResDTO loginResDTO = (LoginResDTO) servletContext.getAttribute("third_parner_postal_login_tokenEntity");
+        if ((now.getTime() - loginResDTO.getTimestamp().getTime()) > (24 * 60 - 5) * 60 * 1000) {//超过23小时55分，重新登录
+            loginResDTO = login();
+            loginResDTO.setTimestamp(now);
+            servletContext.setAttribute("third_parner_postal_login_tokenEntity", loginResDTO);
+        }
+        return loginResDTO.getAccess_token();
+    }
 
     @Override
     public PubResponseDTO logout(String accessToken) throws Exception {

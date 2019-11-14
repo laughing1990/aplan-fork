@@ -23,8 +23,6 @@ import com.augurit.aplanmis.common.event.vo.ApplyEventVo;
 import com.augurit.aplanmis.common.event.vo.IteminstEventVo;
 import com.augurit.aplanmis.common.handler.BaseEnum;
 import com.augurit.aplanmis.common.mapper.*;
-import com.augurit.aplanmis.common.service.admin.opus.AplanmisOpuOmOrgAdminService;
-import com.augurit.aplanmis.common.service.area.RegionService;
 import com.augurit.aplanmis.common.shortMessage.AplanmisSmsConfigProperties;
 import com.augurit.aplanmis.common.utils.ExcelUtils;
 import com.augurit.aplanmis.common.vo.conditional.*;
@@ -109,10 +107,6 @@ public class ConditionalQueryServiceImpl implements ConditionalQueryService {
         //行政分区
         List<BscDicCodeItem> regionList = bscDicCodeService.getActiveItemsByTypeCode(DicConstants.XM_XZFQ, orgId);
         conditionalQueryDic.setRegionList(regionList);
-
-        //行政区划
-//        List<BscDicRegion> regionalismList = regionService.getBscDicRegionTreeList(orgId);
-//        conditionalQueryDic.setRegionalismList(regionalismList);
 
         //立项类型
         List<BscDicCodeItem> projTypeList = bscDicCodeService.getActiveItemsByTypeCode(DicConstants.XM_PROJECT_STEP, orgId);
@@ -358,9 +352,9 @@ public class ConditionalQueryServiceImpl implements ConditionalQueryService {
         excelParam.setFileName("申报数据导出.xls");
         excelParam.setSheetName("申报数据");
         excelParam.setTitleName("申报数据");
-        List<Integer> columnWidthList = Arrays.asList(2500, 3000, 6000, 6500, 3000, 7000, 7000, 6000, 3000, 3000, 3000, 4000);
-        List<String> rowTitleList = Arrays.asList("类型", "申报来源", "申请编号", "项目名称", "联系人", "阶段名称", "事项名称", "所属主题", "申报状态", "时限状态", "剩余/逾期用时", "申报时间");
-        List<String> fieldList = Arrays.asList("applyType", "applySource", "applyinstCode", "projName", "linkmanName", "stageName", "itemName", "themeName", "applyState", "instState", "remainingOrOverTimeText", "applyTime");
+        List<Integer> columnWidthList = Arrays.asList(2500, 3000, 6000, 6500, 7000, 7000, 6000, 3000, 3000, 3000, 4000);
+        List<String> rowTitleList = Arrays.asList("类型", "申报来源", "申请编号", "项目名称", "阶段名称", "事项名称", "所属主题", "申报状态", "时限状态", "剩余/逾期用时", "申报时间");
+        List<String> fieldList = Arrays.asList("applyType", "applySource", "applyinstCode", "projName", "stageName", "itemName", "themeName", "applyState", "instState", "remainingOrOverTimeText", "applyTime");
         excelParam.setColumnWidthList(columnWidthList);
         excelParam.setRowTitleList(rowTitleList);
         excelParam.setFieldList(fieldList);
@@ -514,9 +508,9 @@ public class ConditionalQueryServiceImpl implements ConditionalQueryService {
         excelParam.setFileName("办件数据导出.xls");
         excelParam.setSheetName("办件数据");
         excelParam.setTitleName("办件数据");
-        List<Integer> columnWidthList = Arrays.asList(2500, 3000, 6000, 6500, 7000, 7000, 3000, 5000, 4000, 3000, 3000, 4000);
-        List<String> rowTitleList = Arrays.asList("类型", "申报来源", "申报流水号", "项目名称", "事项名称", "阶段名称", "申请人", "所属主题", "申报状态", "业务状态", "剩余/逾期用时", "申报时间");
-        List<String> fieldList = Arrays.asList("applyType", "applySource", "applyinstCode", "projName", "itemName", "stageName", "linkmanName", "themeName", "iteminstState", "instState", "remainingOrOverTimeText", "applyTime");
+        List<Integer> columnWidthList = Arrays.asList(2500, 3000, 6000, 6500, 7000, 7000, 5000, 4000, 3000, 3000, 4000);
+        List<String> rowTitleList = Arrays.asList("类型", "申报来源", "申报流水号", "项目名称", "事项名称", "阶段名称",  "所属主题", "申报状态", "业务状态", "剩余/逾期用时", "申报时间");
+        List<String> fieldList = Arrays.asList("applyType", "applySource", "applyinstCode", "projName", "itemName", "stageName", "themeName", "iteminstState", "instState", "remainingOrOverTimeText", "applyTime");
         excelParam.setColumnWidthList(columnWidthList);
         excelParam.setRowTitleList(rowTitleList);
         excelParam.setFieldList(fieldList);
@@ -1331,9 +1325,9 @@ public class ConditionalQueryServiceImpl implements ConditionalQueryService {
         excelParam.setFileName("窗口经办办件数据导出.xls");
         excelParam.setSheetName("窗口经办办件数据");
         excelParam.setTitleName("窗口经办办件数据");
-        List<Integer> columnWidthList = Arrays.asList(2500, 3000, 6000, 6500, 7000, 7000, 3000, 5000, 4000, 3000, 3000, 4000);
-        List<String> rowTitleList = Arrays.asList("类型", "申报来源", "申报流水号", "项目名称", "事项名称", "阶段名称", "申请人", "所属主题", "申报状态", "业务状态", "剩余/逾期用时", "申报时间");
-        List<String> fieldList = Arrays.asList("applyType", "applySource", "applyinstCode", "projName", "itemName", "stageName", "linkmanName", "themeName", "iteminstState", "instState", "remainingOrOverTimeText", "applyTime");
+        List<Integer> columnWidthList = Arrays.asList(2500, 3000, 6000, 6500, 7000, 7000, 5000, 4000, 3000, 3000, 4000);
+        List<String> rowTitleList = Arrays.asList("类型", "申报来源", "申报流水号", "项目名称", "事项名称", "阶段名称", "所属主题", "申报状态", "业务状态", "剩余/逾期用时", "申报时间");
+        List<String> fieldList = Arrays.asList("applyType", "applySource", "applyinstCode", "projName", "itemName", "stageName", "themeName", "iteminstState", "instState", "remainingOrOverTimeText", "applyTime");
         excelParam.setColumnWidthList(columnWidthList);
         excelParam.setRowTitleList(rowTitleList);
         excelParam.setFieldList(fieldList);
@@ -1380,9 +1374,9 @@ public class ConditionalQueryServiceImpl implements ConditionalQueryService {
         excelParam.setFileName("辅线申报数据导出.xls");
         excelParam.setSheetName("辅线申报数据");
         excelParam.setTitleName("辅线申报数据");
-        List<Integer> columnWidthList = Arrays.asList(3000, 6000, 6500, 3000, 7000, 7000, 6000, 3000, 3000, 3000, 4000);
-        List<String> rowTitleList = Arrays.asList("申报来源", "申请编号", "项目名称", "联系人", "阶段名称", "事项名称", "所属主题", "申报状态", "时限状态", "剩余/逾期用时", "申报时间");
-        List<String> fieldList = Arrays.asList("applySource", "applyinstCode", "projName", "linkmanName", "stageName", "itemName", "themeName", "applyState", "instState", "remainingOrOverTimeText", "applyTime");
+        List<Integer> columnWidthList = Arrays.asList(3000, 6000, 6500, 7000, 7000, 6000, 3000, 3000, 3000, 4000);
+        List<String> rowTitleList = Arrays.asList("申报来源", "申请编号", "项目名称",  "阶段名称", "事项名称", "所属主题", "申报状态", "时限状态", "剩余/逾期用时", "申报时间");
+        List<String> fieldList = Arrays.asList("applySource", "applyinstCode", "projName",  "stageName", "itemName", "themeName", "applyState", "instState", "remainingOrOverTimeText", "applyTime");
         excelParam.setColumnWidthList(columnWidthList);
         excelParam.setRowTitleList(rowTitleList);
         excelParam.setFieldList(fieldList);
@@ -1429,9 +1423,9 @@ public class ConditionalQueryServiceImpl implements ConditionalQueryService {
         excelParam.setFileName("辅线办件数据导出.xls");
         excelParam.setSheetName("辅线办件数据");
         excelParam.setTitleName("辅线办件数据");
-        List<Integer> columnWidthList = Arrays.asList(3000, 6000, 6500, 7000, 7000, 3000, 5000, 4000, 3000, 3000, 4000);
-        List<String> rowTitleList = Arrays.asList("申报来源", "申报流水号", "项目名称", "事项名称", "阶段名称", "申请人", "所属主题", "申报状态", "业务状态", "剩余/逾期用时", "申报时间");
-        List<String> fieldList = Arrays.asList("applySource", "applyinstCode", "projName", "itemName", "stageName", "linkmanName", "themeName", "iteminstState", "instState", "remainingOrOverTimeText", "applyTime");
+        List<Integer> columnWidthList = Arrays.asList(3000, 6000, 6500, 7000, 7000,5000, 4000, 3000, 3000, 4000);
+        List<String> rowTitleList = Arrays.asList("申报来源", "申报流水号", "项目名称", "事项名称", "阶段名称", "所属主题", "申报状态", "业务状态", "剩余/逾期用时", "申报时间");
+        List<String> fieldList = Arrays.asList("applySource", "applyinstCode", "projName", "itemName", "stageName", "themeName", "iteminstState", "instState", "remainingOrOverTimeText", "applyTime");
         excelParam.setColumnWidthList(columnWidthList);
         excelParam.setRowTitleList(rowTitleList);
         excelParam.setFieldList(fieldList);
