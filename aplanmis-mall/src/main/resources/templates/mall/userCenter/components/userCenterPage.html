@@ -847,14 +847,6 @@
             return;
           }
 
-          if (!this.aeaLinkmanInfo.linkmanOfficePhon) {
-            this.$message({
-              message: '请输入电话号码',
-              type: 'error'
-            });
-            return;
-          }
-
           // 身份证号码为空或者判断当前的身份证号码是否有改动，有改动触发校验
           if (!param.linkmanCertNo || param.linkmanCertNo != this.backUpAeaLinkmanInfo.linkmanCertNo) {
             if (!this.cardReg(this.aeaLinkmanInfo.linkmanCertNo)) {
@@ -866,8 +858,8 @@
             }
           }
 
-          // 初始化的电话号码有值并且当前的电话号码是否有改动，有改动触发校验
-          if (!!this.backUpAeaLinkmanInfo.linkmanOfficePhon && param.linkmanOfficePhon != this.backUpAeaLinkmanInfo.linkmanOfficePhon) {
+          // 当前的电话号码有值并且当前的电话号码是否有改动，有改动触发校验
+          if (!!this.aeaLinkmanInfo.linkmanOfficePhon && param.linkmanOfficePhon != this.backUpAeaLinkmanInfo.linkmanOfficePhon) {
             if (!this.phoneReg(this.aeaLinkmanInfo.linkmanOfficePhon)) {
               this.$message({
                 message: '请输入正确的电话号码',
@@ -1065,8 +1057,8 @@
             }
           }
 
-          // 回显的电话号码有值并且当前的电话号码是否有改动，有改动触发校验
-          if (!!this.temporaryLinkman.linkmanMobilePhone && this.RowData.linkmanMobilePhone != this.temporaryLinkman.linkmanMobilePhone) {
+          // 当前的电话号码有值并且当前的电话号码是否有改动，有改动触发校验
+          if (!!this.RowData.linkmanMobilePhone && this.RowData.linkmanMobilePhone != this.temporaryLinkman.linkmanMobilePhone) {
             if (!this.phoneReg(this.RowData.linkmanMobilePhone)) {
               this.$message({
                 message: '请输入正确的电话号码',
