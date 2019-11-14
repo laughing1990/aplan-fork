@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by zhangwn    2019-11-12 09:41:55 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaItemOneformMapper" >
+<!--1 返回所有字段的SQL字句 -->
+<sql id="allColumns" >
+    ITEM_ONEFORM_ID  itemOneformId,
+    ITEM_VER_ID  itemVerId,
+    ONEFORM_ID  oneformId,
+    LINK_NAME  linkName,
+    SORT_NO  sortNo,
+    IS_ACTIVE  isActive,
+    CREATER  creater,
+    CREATE_TIME  createTime,
+    MODIFIER  modifier,
+    MODIFY_TIME  modifyTime
+    </sql>
+
+    <sql id="allColumns_alias" >
+    ${alias}.ITEM_ONEFORM_ID  itemOneformId,
+    ${alias}.ITEM_VER_ID  itemVerId,
+    ${alias}.ONEFORM_ID  oneformId,
+    ${alias}.LINK_NAME  linkName,
+    ${alias}.SORT_NO  sortNo,
+    ${alias}.IS_ACTIVE  isActive,
+    ${alias}.CREATER  creater,
+    ${alias}.CREATE_TIME  createTime,
+    ${alias}.MODIFIER  modifier,
+    ${alias}.MODIFY_TIME  modifyTime
+    </sql>
+
+<!--2 根据主键ID查询单个实体 -->
+<select id="getAeaItemOneformById" resultType="AeaItemOneform" >
+    select
+    <include refid="allColumns"/>
+    from    AEA_ITEM_ONEFORM
+    where    ITEM_ONEFORM_ID = #{id}
+</select>
+
+<!--3 根据条件查询实体list -->
+    <select id="listAeaItemOneform" resultType="AeaItemOneform" >
+        select
+        <include refid="allColumns"/>
+        from    AEA_ITEM_ONEFORM
+    <where>
+        <if test="itemOneformId != null" >
+        AND    ITEM_ONEFORM_ID = #{itemOneformId}
+        </if>
+        <if test="itemVerId != null" >
+        AND    ITEM_VER_ID = #{itemVerId}
+        </if>
+        <if test="oneformId != null" >
+        AND    ONEFORM_ID = #{oneformId}
+        </if>
+        <if test="linkName != null" >
+        AND    LINK_NAME = #{linkName}
+        </if>
+        <if test="sortNo != null" >
+        AND    SORT_NO = #{sortNo}
+        </if>
+        <if test="isActive != null" >
+        AND    IS_ACTIVE = #{isActive}
+        </if>
+        <if test="creater != null" >
+        AND    CREATER = #{creater}
+        </if>
+        <if test="createTime != null" >
+        AND    CREATE_TIME = #{createTime}
+        </if>
+        <if test="modifier != null" >
+        AND    MODIFIER = #{modifier}
+        </if>
+        <if test="modifyTime != null" >
+        AND    MODIFY_TIME = #{modifyTime}
+        </if>
+    </where>
+    </select>
+<!--4 根据条件查询实体list,返回分页对象 -->
+
+<!--5 新增实体对象 -->
+<insert id="insertAeaItemOneform" parameterType="AeaItemOneform" >
+    insert into AEA_ITEM_ONEFORM (
+ITEM_ONEFORM_ID  ,ITEM_VER_ID  ,ONEFORM_ID  ,LINK_NAME  ,SORT_NO  ,IS_ACTIVE  ,CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME  
+    )  values  (
+#{itemOneformId},#{itemVerId},#{oneformId},#{linkName},#{sortNo},#{isActive},#{creater},#{createTime},#{modifier},  #{modifyTime}
+    )
+</insert>
+<!--6 修改实体对象 -->
+<update id="updateAeaItemOneform" parameterType="AeaItemOneform" >
+    update AEA_ITEM_ONEFORM
+    <set >
+        <if test="itemOneformId != null" >
+        ITEM_ONEFORM_ID = #{itemOneformId},
+        </if>
+        <if test="itemVerId != null" >
+        ITEM_VER_ID = #{itemVerId},
+        </if>
+        <if test="oneformId != null" >
+        ONEFORM_ID = #{oneformId},
+        </if>
+        <if test="linkName != null" >
+        LINK_NAME = #{linkName},
+        </if>
+        <if test="sortNo != null" >
+        SORT_NO = #{sortNo},
+        </if>
+        <if test="isActive != null" >
+        IS_ACTIVE = #{isActive},
+        </if>
+        <if test="creater != null" >
+        CREATER = #{creater},
+        </if>
+        <if test="createTime != null" >
+        CREATE_TIME = #{createTime},
+        </if>
+        <if test="modifier != null" >
+        MODIFIER = #{modifier},
+        </if>
+        <if test="modifyTime != null" >
+        MODIFY_TIME = #{modifyTime},
+        </if>
+    </set>
+    where ITEM_ONEFORM_ID = #{itemOneformId}
+</update>
+<!--7 删除实体对象,根据主键ID -->
+    <delete id="deleteAeaItemOneform">
+        delete from   AEA_ITEM_ONEFORM
+        where
+    ITEM_ONEFORM_ID = #{id}
+    </delete>
+
+
+    <select id="listAeaItemOneFormByItemVerId" resultType="AeaItemOneform" >
+        select
+        <include refid="allColumns_alias"><property name="alias" value="aio"/></include>,
+        apo.ONEFORM_NAME oneformName
+        from    AEA_ITEM_ONEFORM aio
+        left join aea_oneform apo on aio.ONEFORM_ID = apo.ONEFORM_ID
+        where    aio.ITEM_VER_ID = #{itemVerId}
+        order by aio.SORT_NO asc
+    </select>
+
+<!--8 删除实体对象列表,根据主键ID列表 -->
+<!--9 返回所有字段的对象map,用于级联 -->
+    <resultMap type="AeaItemOneform" id="AeaItemOneformMap">
+        <id property="itemOneformId" column="ITEM_ONEFORM_ID"/>
+        <result property="itemVerId" column="ITEM_VER_ID"/>
+        <result property="oneformId" column="ONEFORM_ID"/>
+        <result property="linkName" column="LINK_NAME"/>
+        <result property="sortNo" column="SORT_NO"/>
+        <result property="isActive" column="IS_ACTIVE"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="modifier" column="MODIFIER"/>
+        <result property="modifyTime" column="MODIFY_TIME"/>
+    </resultMap>
+</mapper>
