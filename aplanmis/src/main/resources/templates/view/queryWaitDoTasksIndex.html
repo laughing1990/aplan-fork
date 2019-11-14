@@ -318,30 +318,18 @@
         <el-tooltip effect="light" placement="top"
                     v-if="scope.row.nodeTimelimitList&&scope.row.nodeTimelimitList.length">
           <div slot="content">
-            <div style="padding: 5px 0" v-for="uu in scope.row.nodeTimelimitList">
-              {{uu.name}}
-              <span class="bg-status green-deadline" v-if="!uu.instState">{{'剩余'+uu.text}}</span>
-              <span class="bg-status green-deadline" v-else-if="uu.instState=='1'">{{uu.text}}</span>
-              <span class="bg-status yellow-deadline" v-else-if="uu.instState=='2'">{{uu.text}}</span>
-              <span class="bg-status red-deadline"
-                    v-else-if="uu.instState=='3'">{{uu.text}}</span>
-            </div>
-            <!--            <div style="padding: 5px 0">-->
-            <!--              XX时限：-->
-            <!--              <span class="bg-status green-deadline">剩余20天</span>-->
-            <!--            </div>-->
-            <!--            <div style="padding: 5px 0">-->
-            <!--              XX时限：-->
-            <!--              <span class="bg-status green-deadline">剩余11天</span>-->
-            <!--            </div>-->
-            <!--            <div style="padding: 5px 0">-->
-            <!--              XX时限：-->
-            <!--              <span class="bg-status yellow-deadline">剩余1天</span>-->
-            <!--            </div>-->
-            <!--            <div style="padding: 5px 0">-->
-            <!--              XX时限：-->
-            <!--              <span class="bg-status red-deadline">逾期1天</span>-->
-            <!--            </div>-->
+            <table>
+              <tr style="height:35px;" v-for="uu in scope.row.nodeTimelimitList">
+                <td>{{uu.name}}：</td>
+                <td>
+                  <span class="bg-status green-deadline" v-if="!uu.instState">{{'剩余'+uu.text}}</span>
+                  <span class="bg-status green-deadline" v-else-if="uu.instState=='1'">{{uu.text}}</span>
+                  <span class="bg-status yellow-deadline" v-else-if="uu.instState=='2'">{{uu.text}}</span>
+                  <span class="bg-status red-deadline"
+                        v-else-if="uu.instState=='3'">{{uu.text}}</span>
+                </td>
+              </tr>
+            </table>
           </div>
           <span class="more-time">
             <i class="el-icon-more"></i>
