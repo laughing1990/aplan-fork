@@ -929,19 +929,22 @@
         //单位信息保存
         saveUnitinfo: function () {
           var _this = this;
-          var param = {
-            unitInfoId: this.aeaUnitInfo.unitInfoId,
-            applicant: this.aeaUnitInfo.applicant,
-            idcard: this.aeaUnitInfo.idcard,
-            unifiedSocialCreditCode: this.aeaUnitInfo.unifiedSocialCreditCode,
-            organizationalCode: this.aeaUnitInfo.organizationalCode,
-            induCommRegNum: this.aeaUnitInfo.induCommRegNum,
-            idrepresentative: this.aeaUnitInfo.idrepresentative,
-            idno: this.aeaUnitInfo.idno,
-            applicantDetailSite: this.aeaUnitInfo.applicantDetailSite,
-            loginName: this.aeaUnitInfo.loginName,
-            loginPwd: this.loginPwd2 ? hex_md5(this.loginPwd2) : this.aeaUnitInfo.loginPwd
-          }
+          // var param = {
+          //   unitInfoId: this.aeaUnitInfo.unitInfoId,
+          //   applicant: this.aeaUnitInfo.applicant,
+          //   idcard: this.aeaUnitInfo.idcard,
+          //   unifiedSocialCreditCode: this.aeaUnitInfo.unifiedSocialCreditCode,
+          //   organizationalCode: this.aeaUnitInfo.organizationalCode,
+          //   induCommRegNum: this.aeaUnitInfo.induCommRegNum,
+          //   idrepresentative: this.aeaUnitInfo.idrepresentative,
+          //   idno: this.aeaUnitInfo.idno,
+          //   applicantDetailSite: this.aeaUnitInfo.applicantDetailSite,
+          //   loginName: this.aeaUnitInfo.loginName,
+          //   loginPwd: this.loginPwd2 ? hex_md5(this.loginPwd2) : this.aeaUnitInfo.loginPwd
+          // }
+
+          var param = JSON.parse(JSON.stringify(this.aeaUnitInfo))
+          param.loginPwd = this.loginPwd2 ? hex_md5(this.loginPwd2) : this.aeaUnitInfo.loginPwd
 
           if (!this.aeaUnitInfo.idno) {
             this.$message({
@@ -1061,10 +1064,6 @@
               return;
             }
           }
-
-          console.log('RowData:',this.RowData)
-          console.log('temporaryLinkman:',this.temporaryLinkman)
-          console.log('phoneRge:', (!!this.temporaryLinkman.linkmanMobilePhone && this.RowData.linkmanMobilePhone != this.temporaryLinkman.linkmanMobilePhone))
 
           // 回显的电话号码有值并且当前的电话号码是否有改动，有改动触发校验
           if (!!this.temporaryLinkman.linkmanMobilePhone && this.RowData.linkmanMobilePhone != this.temporaryLinkman.linkmanMobilePhone) {
