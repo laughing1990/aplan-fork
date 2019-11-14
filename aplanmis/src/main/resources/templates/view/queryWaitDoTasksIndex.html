@@ -315,26 +315,28 @@
         <span class="bg-status yellow-deadline" v-else-if="scope.row.instState=='2'">{{scope.row.remainingOrOverTimeText}}</span>
         <span class="bg-status red-deadline"
               v-else-if="scope.row.instState=='3'">{{scope.row.remainingOrOverTimeText}}</span>
-        <el-tooltip effect="light" placement="top"
-                    v-if="scope.row.nodeTimelimitList&&scope.row.nodeTimelimitList.length">
-          <div slot="content">
-            <table>
-              <tr style="height:35px;" v-for="uu in scope.row.nodeTimelimitList">
-                <td>{{uu.name}}：</td>
-                <td>
-                  <span class="bg-status green-deadline" v-if="!uu.instState">{{'剩余'+uu.text}}</span>
-                  <span class="bg-status green-deadline" v-else-if="uu.instState=='1'">{{uu.text}}</span>
-                  <span class="bg-status yellow-deadline" v-else-if="uu.instState=='2'">{{uu.text}}</span>
-                  <span class="bg-status red-deadline"
-                        v-else-if="uu.instState=='3'">{{uu.text}}</span>
-                </td>
-              </tr>
-            </table>
-          </div>
-          <span class="more-time">
+        <el-popover
+            v-if="scope.row.nodeTimelimitList&&scope.row.nodeTimelimitList.length"
+            placement="right"
+            width="300"
+            trigger="hover">
+          <el-row :class="scope.row.nodeTimelimitList.length==1?'popover-item':'popover-item-border-bottom'"
+                  v-for="uu in scope.row.nodeTimelimitList">
+            <el-col class="wit-opc-color remind_text" :span="17">
+              {{uu.name}}：
+            </el-col>
+            <el-col :span="7">
+              <span class="bg-status green-deadline" v-if="!uu.instState">{{'剩余'+uu.text}}</span>
+              <span class="bg-status green-deadline" v-else-if="uu.instState=='1'">{{uu.text}}</span>
+              <span class="bg-status yellow-deadline" v-else-if="uu.instState=='2'">{{uu.text}}</span>
+              <span class="bg-status red-deadline"
+                    v-else-if="uu.instState=='3'">{{uu.text}}</span>
+            </el-col>
+          </el-row>
+          <span slot="reference" class="more-time">
             <i class="el-icon-more"></i>
           </span>
-        </el-tooltip>
+        </el-popover>
       </template>
     </el-table-column>
     <el-table-column
