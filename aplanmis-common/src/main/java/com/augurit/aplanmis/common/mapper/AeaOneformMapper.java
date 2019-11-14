@@ -30,4 +30,6 @@ public interface AeaOneformMapper {
     List<AeaOneform> listAeaOneformByStageId(@Param("stageId") String stageId, @Param("rootOrgId") String rootOrgId);
 
     void enOrDisableIsActive(@Param("id") String id);
+
+    List<AeaOneform> listAeaOneformNotInItem(AeaOneform aeaOneform);
 }

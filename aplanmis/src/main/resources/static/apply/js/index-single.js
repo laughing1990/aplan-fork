@@ -2160,6 +2160,15 @@ var vm = new Vue({
                 }
             }
         },
+      // 预览源文件
+      filePreview1: function(data){
+        var detailId = data.fileId;
+        var flashAttributes = '';
+        var tempwindow=window.open(); // 先打开页面
+        setTimeout(function(){
+          tempwindow.location=ctx+'rest/mats/att/preview?detailId='+detailId+'&flashAttributes='+flashAttributes;
+        },1000)
+      },
         // 勾选电子件
         selectionFileChange: function (val) {
             this.fileSelectionList = val;

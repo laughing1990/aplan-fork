@@ -33,9 +33,9 @@ import com.augurit.aplanmis.common.vo.diagram.BpmnDiagramAttrs;
 import com.augurit.aplanmis.common.vo.diagram.BpmnDiagramCell;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
-import org.apache.commons.beanutils.BeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
@@ -53,6 +53,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * 主题定义版本表-Service服务接口实现类
@@ -62,6 +63,11 @@ import java.util.*;
 public class AeaParThemeVerAdminServiceImpl implements AeaParThemeVerAdminService {
 
     private static Logger logger = LoggerFactory.getLogger(AeaParThemeVerAdminServiceImpl.class);
+
+    // 事项间距
+    private static final int activitySpace = 5;
+    //pool间距
+    private static final int poolSpace = 10;
 
     @Autowired
     private AeaParThemeMapper aeaParThemeMapper;
@@ -1494,19 +1500,6 @@ public class AeaParThemeVerAdminServiceImpl implements AeaParThemeVerAdminServic
     }
 
 
-    private void removeActivityByParentId(String parentId, JSONArray cells){
-        Iterator<Object> aiterator = cells.iterator();
-        while (aiterator.hasNext()){
-            Map next = (Map) aiterator.next();
-            if(next.get("type").toString().equals("bpmn.Activity") && next.get("parent") != null && next.get("parent").toString().equals(parentId)){
-                logger.info("removeid 1:"+next.get("id"));
-                aiterator.remove();
-                break;
-            }
-        }
-    }
-
-
     /**
      * 替换阶段名称
      *
@@ -1663,7 +1656,7 @@ public class AeaParThemeVerAdminServiceImpl implements AeaParThemeVerAdminServic
      * @param stageId
      * @param dueStr
      */
-    private int builtNewActivity(Map newActivity, String stageId, int currentStageY, String stageItemId, String itemName, String itemVerId, String isOptionItem, String dueStr) {
+    private int   builtNewActivity(Map newActivity, String stageId, int currentStageY, String stageItemId, String itemName, String itemVerId, String isOptionItem, String dueStr) {
 
         // 1.更换父id(stageId), 事项id
         newActivity.put("parent", stageId);
@@ -1681,6 +1674,7 @@ public class AeaParThemeVerAdminServiceImpl implements AeaParThemeVerAdminServic
         Map itemMap = new HashMap();
         itemMap.put("isOptionItem", isOptionItem);
         itemMap.put("itemVerId", itemVerId);
+        itemMap.put("itemId", stageItemId);
         attrs.put("item", itemMap);
 
         Map htmlMap = new HashMap(1);
@@ -1728,12 +1722,6 @@ public class AeaParThemeVerAdminServiceImpl implements AeaParThemeVerAdminServic
         return newheight+currentItemHeight+5; //事项div中的间距5px
     }
 
-    public static void main(String[] args) {
-        double a = 4, b=6;
-        System.out.println(a/b);
-        System.out.println(Double.valueOf(Math.ceil(a/b)).intValue());
-    }
-
 
     // 先从bpmnDiaGram json移除或添加响应的阶段
     private void handleStageJson(AeaParStage stage, JSONArray cells, int i, List<AeaParStageItem> relItems, String rootOrgId) {
@@ -1767,11 +1755,15 @@ public class AeaParThemeVerAdminServiceImpl implements AeaParThemeVerAdminServic
                 stages.put("lcbsxlx", stage.getLcbsxlx());
                 stages.put("isOptionItem", stage.getIsOptionItem());
                 stages.put("isSelItem", stage.getIsSelItem());
-                stages.put("isFrontCheckItem", stage.getIsCheckItem());
+                stages.put("isCheckItem", stage.getIsCheckItem());
                 stages.put("useOneForm", stage.getUseOneForm());
                 stages.put("dueUnit", stage.getDueUnit());
                 stages.put("dybzspjdxh", stage.getDybzspjdxh());
                 stages.put("isShowItem", stage.getIsShowItem());
+                stages.put("isCheckItemform", stage.getIsCheckItemform());
+                stages.put("isCheckPartform", stage.getIsCheckPartform());
+                stages.put("isCheckProj", stage.getIsCheckProj());
+                stages.put("isCheckStage", stage.getIsCheckStage());
 
                 String oldName =  stage.getStageName();// ((Map) obj.get("lanes")).get("label").toString();
 
@@ -2125,7 +2117,7 @@ public class AeaParThemeVerAdminServiceImpl implements AeaParThemeVerAdminServic
             newHPool.put("type", "bpmn.HPool"+((i+1)>4?4:(i+1)));
             newHPool.put("id", poolUuid);
             Map position = new HashMap();
-            position.put("x", (int)((Map)hPool.get("position")).get("x") + traslationX*i+10*i);
+            position.put("x", (int)((Map)hPool.get("position")).get("x") + traslationX*i+poolSpace*i);
             int y = (int) ((Map)hPool.get("position")).get("y");
             position.put("y", y);
             newHPool.put("position", position);
@@ -2139,7 +2131,7 @@ public class AeaParThemeVerAdminServiceImpl implements AeaParThemeVerAdminServic
             newActMap.put("parent", poolUuid);
 
             Map actPosition = new HashMap();
-            actPosition.put("x", (int)((Map)activity.get("position")).get("x") + traslationX*i+10*i);
+            actPosition.put("x", (int)((Map)activity.get("position")).get("x") + traslationX*i+poolSpace*i);
             int acty = (int) ((Map)activity.get("position")).get("y");
             actPosition.put("y", acty);
             newActMap.put("position", actPosition);
@@ -2163,7 +2155,7 @@ public class AeaParThemeVerAdminServiceImpl implements AeaParThemeVerAdminServic
             newHPool.put("embeds", arr);
 
             Map spoolPosition = new HashMap();
-            spoolPosition.put("x", (int)((Map)spool.get("position")).get("x") + traslationX*i+10*i);
+            spoolPosition.put("x", (int)((Map)spool.get("position")).get("x") + traslationX*i+poolSpace*i);
             int sacty = (int) ((Map)spool.get("position")).get("y");
             spoolPosition.put("y", sacty);
             newSPool.put("position", spoolPosition);
@@ -2183,7 +2175,7 @@ public class AeaParThemeVerAdminServiceImpl implements AeaParThemeVerAdminServic
             newSpoolActivity.put("parent", spoolUUid);
 
             Map spoolActPosition = new HashMap();
-            spoolActPosition.put("x", (int)((Map)spoolActivity.get("position")).get("x") + traslationX*i+10*i);
+            spoolActPosition.put("x", (int)((Map)spoolActivity.get("position")).get("x") + traslationX*i+poolSpace*i);
             int spoolacty = (int) ((Map)spoolActivity.get("position")).get("y");
             spoolActPosition.put("y", spoolacty);
             newSpoolActivity.put("position", spoolActPosition);
@@ -2203,8 +2195,10 @@ public class AeaParThemeVerAdminServiceImpl implements AeaParThemeVerAdminServic
             if(next.get("type").toString().equals("bpmn.Pool")){
                 pool.putAll(next);
                 next.put("stageIndex", 0);
-                String[] str = new String[1];
-                str[0] = mainStages.get(0).getStageId();
+                JSONArray str = new JSONArray();
+                str.add(mainStages.get(0).getStageId());
+//                String[] str = new String[1];
+//                str[0] = mainStages.get(0).getStageId();
                 next.put("parallel", str);
                 break;
             }
@@ -2221,14 +2215,16 @@ public class AeaParThemeVerAdminServiceImpl implements AeaParThemeVerAdminServic
             Map newPool = new HashMap();
             newPool.putAll(pool);
             newPool.put("stageIndex", i);
-            String[] str = new String[1];
-            str[0] = mainStages.get(i).getStageId();
+//            String[] str = new String[1];
+//            str[0] = mainStages.get(i).getStageId();
+            JSONArray str = new JSONArray();
+            str.add(mainStages.get(i).getStageId());
             newPool.put("parallel", str);
 
             newPool.put("type", "bpmn.Pool");
             newPool.put("id", poolUuid);
             Map position = new HashMap();
-            position.put("x", (int)((Map)pool.get("position")).get("x") + traslationX*i+10*i);
+            position.put("x", (int)((Map)pool.get("position")).get("x") + traslationX*i+poolSpace*i);
             int y = (int) ((Map)pool.get("position")).get("y");
             position.put("y", y);
             newPool.put("position", position);
@@ -2249,7 +2245,7 @@ public class AeaParThemeVerAdminServiceImpl implements AeaParThemeVerAdminServic
 
             Map actMap = new HashMap();
             actMap.put("x", traslationX*i+10);
-            actMap.put("x", (int)((Map)activity.get("position")).get("x") + traslationX*i+10*i);
+            actMap.put("x", (int)((Map)activity.get("position")).get("x") + traslationX*i+poolSpace*i);
             int acty = (int) ((Map)activity.get("position")).get("y");
             actMap.put("y", acty);
             newActivity.put("position", actMap);
@@ -2672,6 +2668,1195 @@ public class AeaParThemeVerAdminServiceImpl implements AeaParThemeVerAdminServic
         for(String set: remvoeMainStageIdSet){
             removeAssitStage(cells, set);
         }
+    }
+
+    public Map<String, Object> getAeaParThemeVerAndCells(AeaParStage stage){
+        Map<String, Object> map = new HashMap<>(2);
+        if(stage.getThemeVerId() == null && stage.getThemeCode() == null && stage.getThemeName() == null){
+            AeaParStage stageOld = aeaParStageAdminService.getAeaParStageById(stage.getStageId());
+            BeanUtils.copyProperties(stageOld, stage);
+        }
+        AeaParThemeVer themeVer = aeaParThemeVerMapper.getAeaParThemeVerById(stage.getThemeVerId());
+        map.put("aeaParThemeVer", themeVer);
+        if(themeVer != null){
+            String themeVerDiagram = themeVer.getThemeVerDiagram();
+            if(!StringUtils.isEmpty(themeVerDiagram)){
+                JSONObject diagram = (JSONObject) JSON.parse(themeVerDiagram);
+                map.put("aeaParThemeVerDiagram", diagram);
+                if(diagram != null){
+                    JSONArray cells = (JSONArray) diagram.get("cells");
+                    map.put("cells", cells);
+                }
+            }
+        }
+        try {
+            Map activity = getTemplateEleByType("bpmn.Activity", null);
+            Map pool = getTemplateEleByType("bpmn.Pool", null);
+            Map hPool = getTemplateEleByType("bpmn.Pool", null);
+            Map spool = getTemplateEleByType("bpmn.SPool", null);
+            map.put("activity", activity);
+            map.put("pool", pool);
+            map.put("hPool", hPool);
+            map.put("spool", spool);
+        } catch (Exception e) {
+            logger.error("DiagramException", e);
+        }
+
+        return map;
+    }
+
+    /**
+     *
+     * @param cells
+     * @param type
+     * @param xy x, y
+     * @return
+     */
+    private Map getMaxPoolByTypeAndXY(JSONArray cells, String type, String xy){
+        if(type.indexOf("bpmn.HPool") >= 0){
+            type = "bpmn.HPool";
+        }
+        Iterator<Object> iterator = cells.iterator();
+        int maxPosition = 0;
+        Map maxPositionPool = null;
+        while (iterator.hasNext()){
+            Map next = (Map) iterator.next();
+            Object eleType = next.get("type");
+            if(eleType != null){
+                if(eleType.toString().indexOf(type) >= 0){
+                    if(type == "bpmn.Pool"){
+                        Map parent = getCellsEleById(next.get("parent").toString(), cells);
+                        if (parent != null && parent.get("parralel") !=null && ((JSONArray)parent.get("parralel")).size() >2){
+                            break;
+                        }
+                    }
+                    Map position = (Map) next.get("position");
+                    if(xy.equals("x")){
+                        int oldX = new BigDecimal(position.get("x").toString()).intValue() + (int)getPosiOrSize(next,"size").get("height");
+                        if(oldX > maxPosition){
+                            maxPosition = oldX;
+                            maxPositionPool = next;
+                        }
+                    }else{
+                        int oldY = getEleYPlusHeight(next);
+                        if(oldY > maxPosition){
+                            maxPosition = oldY;
+                            maxPositionPool = next;
+                        }
+                    }
+                }
+            }
+        }
+        return maxPositionPool;
+    }
+
+
+    private Map getMaxPositionEleByParent(JSONArray cells, String parent, String xy){
+        Iterator<Object> iterator = cells.iterator();
+        int maxPosition = 0;
+        Map maxPositionEle = null;
+        while (iterator.hasNext()){
+            Map next = (Map) iterator.next();
+            Object parentType = next.get("parent");
+            if(parentType != null && parentType.equals(parent)){
+                Map position = (Map) next.get("position");
+                if(xy.equals("x")){
+                    int oldX = new BigDecimal(position.get("x").toString()).intValue();
+                    if(oldX > maxPosition){
+                        maxPosition = oldX;
+                        maxPositionEle = next;
+                    }
+                }else{
+                    int oldY = new BigDecimal(position.get("y").toString()).intValue();
+                    if(oldY > maxPosition){
+                        maxPosition = oldY;
+                        maxPositionEle = next;
+                    }
+                }
+            }
+        }
+        return maxPositionEle;
+    }
+
+    public void updateThemeVerDiagramStage(AeaParStage aeaParStage){
+        Map<String, Object> map = getAeaParThemeVerAndCells(aeaParStage);
+        Object object = null;
+        object = map.get("cells");
+        if(object != null){
+            JSONArray cells = (JSONArray) object;
+            Map ele = getCellsEleById(aeaParStage.getStageId(), cells);
+            if(ele != null){
+                updateStageInfo(ele, aeaParStage);
+            }
+
+            AeaParThemeVer themeVer = (AeaParThemeVer) map.get("aeaParThemeVer");
+            JSONObject diagram = (JSONObject) map.get("aeaParThemeVerDiagram");
+            themeVer.setThemeVerDiagram(JsonUtils.toJson(diagram));
+            aeaParThemeVerMapper.updateOne(themeVer);
+        }
+    }
+
+    private void updateStageInfo(Map ele, AeaParStage aeaParStage){
+        ele.put("auEleName", aeaParStage.getStageName());
+        Map lanes = new HashMap(1);
+        lanes.put("label", aeaParStage.getStageName());
+        ele.put("lanes", lanes);
+
+        Map content = new HashMap();//(Map) ((Map)ele.get("attrs")).get(".content");
+        if(content == null){
+            content = new HashMap(1);
+        }
+        content.put("html", aeaParStage.getStageName());
+        Map attrs = new HashMap();
+        attrs.putAll((Map) ele.get("attrs"));
+
+        attrs.put(".content", content);
+        Map stageo = (Map) attrs.get("stage");
+        Map stage = new HashMap();
+        if(stageo != null){
+            stage.putAll(stageo);
+        }
+
+        stage.put("useOneForm",aeaParStage.getUseOneForm());
+        stage.put("dueUnit",aeaParStage.getDueUnit());
+        stage.put("dueNum",aeaParStage.getDueNum());
+        stage.put("lcbsxlx",aeaParStage.getLcbsxlx());
+        stage.put("isOptionItem",aeaParStage.getIsOptionItem());
+        stage.put("isCheckItem",aeaParStage.getIsCheckItem());
+        stage.put("dybzspjdxh",aeaParStage.getDybzspjdxh());
+        stage.put("isNode",aeaParStage.getIsNode());
+        stage.put("isShowItem",aeaParStage.getIsShowItem());
+        stage.put("handWay",aeaParStage.getHandWay());
+        stage.put("stageCode",aeaParStage.getStageCode());
+        stage.put("isSelItem",aeaParStage.getIsSelItem());
+        stage.put("isCheckItem",aeaParStage.getIsCheckItem());
+        stage.put("isCheckItemform",aeaParStage.getIsCheckItemform());
+        stage.put("isCheckPartform",aeaParStage.getIsCheckPartform());
+        stage.put("isCheckProj",aeaParStage.getIsCheckProj());
+        stage.put("isCheckStage",aeaParStage.getIsCheckStage());
+        attrs.put("stage", stage);
+        ele.put("attrs", attrs);
+    }
+
+    /**
+     * 更新位置
+     * @param ele
+     * @param x
+     * @param y
+     */
+    private void updatePosition(Map ele, Integer x, Integer y){
+        Map positionMap = new HashMap(2);
+        if(x != null){
+            positionMap.put("x", x);
+        }else{
+            positionMap.put("x", ((Map) ele.get("position")).get("x"));
+        }
+        if(y != null){
+            positionMap.put("y", y);
+        }else{
+            positionMap.put("y", ((Map) ele.get("position")).get("y"));
+
+        }
+        ele.put("position", positionMap);
+    }
+
+    /**
+     * 位移装饰性元素：
+     * 当元素位置大于= comparex 时则移动 x
+     * 当元素位置大于= comparey 时则移动 y
+     * @param cells
+     * @param comparex
+     * @param comparey
+     * @param x
+     * @param y
+     */
+    private void moveEle(JSONArray cells, Integer comparex, Integer comparey, int x, int y){
+        Iterator<Object> iterator = cells.iterator();
+        while (iterator.hasNext()){
+            Map next = (Map) iterator.next();
+            int oldx = new BigDecimal(((Map) next.get("position")).get("x").toString()).intValue();
+            int oldy = new BigDecimal(((Map) next.get("position")).get("y").toString()).intValue();
+            if(comparex != null && comparex.compareTo(oldx)<0){
+                updatePosition(next, x, null);
+            }
+            if(comparey != null && comparey.compareTo(oldy)<0){
+                updatePosition(next, null, y);
+            }
+        }
+    }
+
+    private void moveEleJustAdd(List cells, int ajaustHeight,String xy){
+        Iterator<Object> iterator = cells.iterator();
+        while (iterator.hasNext()){
+            Map next = (Map) iterator.next();
+            int oldx = new BigDecimal(((Map) next.get("position")).get("x").toString()).intValue();
+            int oldy = new BigDecimal(((Map) next.get("position")).get("y").toString()).intValue();
+            if(xy.equals("x")){
+                updatePosition(next, oldx+ajaustHeight, null);
+            }
+            if(xy.equals("y")){
+                updatePosition(next, null, oldy+ajaustHeight);
+            }
+        }
+    }
+
+    /**
+     * 新增阶段
+     * 原来有全景流程图则新增阶段，否则不新增
+     * 思路step1：克隆最后一个阶段，0 设置stageid, 1.清除embeds, 2.更新stageInfo、stageName,  3.清楚辅线 4.处理位置
+     * step2:装饰性元素位移
+     * @param aeaParStage
+     */
+    public void insertThemeVerDiagramStage(AeaParStage aeaParStage){
+        Map<String, Object> map = getAeaParThemeVerAndCells(aeaParStage);
+        Object object = map.get("cells");
+        if(object == null){
+            return;
+        }
+        AeaParThemeVer themeVer = (AeaParThemeVer) map.get("aeaParThemeVer");
+        JSONObject diagram = (JSONObject) map.get("aeaParThemeVerDiagram");
+        JSONArray cells = (JSONArray) object;
+
+        Map hPool = null;
+        if(aeaParStage.getIsNode().equals("1")){
+            hPool = getMaxPoolByTypeAndXY(cells, "HPool", "x");
+        }
+        if(hPool == null){
+            return;
+        }
+
+        Map pool = new HashMap();
+        pool.putAll(hPool);
+        pool.put("id", aeaParStage.getStageId());
+        pool.remove("embeds");
+        updateStageInfo(pool, aeaParStage);
+        int x = new BigDecimal(((Map) pool.get("position")).get("x").toString()).intValue()+ (Integer)((Map) pool.get("size")).get("width");
+
+        //现移动元素再追加元素
+        moveEle(cells, x, null, x+(Integer)((Map) pool.get("size")).get("width")+poolSpace*3, 0);
+        x = x +poolSpace;
+        updatePosition(pool, x ,  new BigDecimal(((Map) pool.get("position")).get("y").toString()).intValue());
+
+        cells.add(pool);
+
+        themeVer.setThemeVerDiagram(JsonUtils.toJson(diagram));
+        aeaParThemeVerMapper.updateOne(themeVer);
+    }
+
+    /**
+     * 先绑定，将所有元素移动到辅线内.
+     * 如果全景图没有辅线则新增，如果有则移动到对应的主线
+     * 最后：1 调整主线内元素的位置， 2调整主线下元素的位置
+     * @param aeaParStage
+     */
+    public void bindAssitStage(AeaParStage aeaParStage) throws Exception {
+
+        Map<String, Object> map = getAeaParThemeVerAndCells(aeaParStage);
+        Object object = map.get("cells");
+        if(object == null){
+            return;
+        }
+        AeaParThemeVer themeVer = (AeaParThemeVer) map.get("aeaParThemeVer");
+        JSONObject diagram = (JSONObject) map.get("aeaParThemeVerDiagram");
+        JSONArray cells = (JSONArray) object;
+
+
+        Map mainStage = getCellsEleById(aeaParStage.getParentId(), cells);
+
+        Map oldMaxStageMap = getMaxPoolByTypeAndXY(cells, "HPool", "y");
+        int startY = getEleYPlusHeight(oldMaxStageMap);
+
+        List<Object> ajsutEles = needAjustPosiEles(cells, oldMaxStageMap);
+
+        Map assist = getCellsEleById(aeaParStage.getStageId(), cells);
+        //移动辅线及辅线事项元素位置
+        if(assist != null){
+            Map oldMainStageMap = getCellsEleById(assist.get("parent").toString(), cells);
+            int oldAssitHeight = getSize(assist,"y");
+            int oldAssitStartY = getSize(assist,"y")+getPosi(assist, "y");
+
+            JSONArray embeds = (JSONArray) oldMainStageMap.get("embeds");
+            if(embeds != null){
+                embeds.remove(assist.get("id"));
+            }
+
+            Map newMainMap = getCellsEleById(aeaParStage.getParentId(), cells);
+            JSONArray embeds1 = (JSONArray) newMainMap.get("embeds");
+            if(embeds1  == null){
+                embeds1 = new JSONArray();
+            }
+            embeds1.add(assist.get("id"));
+
+            newMainMap.put("embeds", embeds1);
+
+
+            int newStartY = 0;
+            Map maxPosiEle = getMaxPositionEleByParent(cells, newMainMap.get("id").toString(), "y");
+            if(maxPosiEle != null){
+                newStartY = getPosi(maxPosiEle,"y")+ getSize(maxPosiEle,"y")+20;
+            }else{
+                newStartY = getPosi(newMainMap,"y")+80+20;
+            }
+            //该辅线所有元素需要移动的xy
+            int resizeX = getPosi(assist,"x") - getPosi(newMainMap,"x") - activitySpace ;
+            int resizeY = getPosi(assist,"y") - newStartY;
+            Map assistPositionMap = getPosiOrSize(assist, "position");
+            //辅线起始xy
+            assistPositionMap.put("x", getPosi(newMainMap,"x") + activitySpace);
+            assistPositionMap.put("y", newStartY);
+
+            //浮现内元素起始xy
+            Iterator<Object> iterator = cells.iterator();
+            while (iterator.hasNext()){
+                Map next = (Map) iterator.next();
+                if(next.get("parent") != null && next.get("parent").toString().equals(assist.get("id"))){
+                    Map position = getPosiOrSize(next, "position");
+                    position.put("x", (Integer)position.get("x") - resizeX);
+                    position.put("y", (Integer)position.get("y") - resizeY);
+                }
+            }
+
+            setEleToMiddle(assist, newMainMap);
+
+            //最后将自己帮到新的阶段,移动自个子元素后，再将自己绑定
+            assist.put("parent", aeaParStage.getParentId());
+            //移除原阶段辅线后，调整原阶段该辅线后的元素位置y
+            whenRemoveEleThenAjustAfterThisEles(cells, oldMainStageMap.get("id").toString(), null, oldAssitHeight+activitySpace, oldAssitStartY);
+
+           /* Map newMainMaxEle = getMaxPositionEleByParent(cells, aeaParStage.getParentId(), "y");
+
+            int currentLastY = (newMainMaxEle==null? 0:(getSize(newMainMaxEle,"y")+getPosi(newMainMaxEle,"y")));
+            currentLastY = currentLastY+10;
+            int newMainStageY = getSize(newMainMap,"y")+getPosi(newMainMap,"y");
+            if(newMainStageY < currentLastY ){
+                Map size = getPosiOrSize(newMainMap, "size");
+                size.put("height", currentLastY - getPosi(newMainMap,"y"));
+//                Map newMaxStageMap = getMaxEleByTypeAndXY(cells, "HPool", "y");
+                stageNewEndY = currentLastY;
+            }else{
+                stageNewEndY = newMainStageY;
+            }*/
+        }else{
+            //新增辅线及对应的事项
+            Map spool = getTemplateEleByType("bpmn.SPool", null);
+            if(spool != null){
+
+                List<BscDicCodeItem> dueUnitType = bscDicCodeService.getActiveItemsByTypeCode("DUE_UNIT_TYPE", SecurityContext.getCurrentOrgId());
+
+                Map unitMap = new HashMap(dueUnitType.size());
+                for(BscDicCodeItem unit: dueUnitType){
+                    unitMap.put(unit.getItemCode(), unit.getItemName());
+                }
+
+                Map tempAssistItemMap = getTemplateEleByType("bpmn.Activity", spool.get("id").toString());
+
+                spool.remove("embeds");
+                spool.put("parent", aeaParStage.getParentId());
+                spool.put("id", aeaParStage.getStageId());
+                updateStageInfo(spool, aeaParStage);
+
+                Map mainStageMaxEle = getMaxPositionEleByParent(cells,mainStage.get("id").toString(), "y");
+                int currentHeightY = 0;
+                if(mainStageMaxEle == null){
+                    mainStageMaxEle = tempAssistItemMap;
+                    currentHeightY = getPosi(oldMaxStageMap,"y")+25+80;
+                }else{
+                    currentHeightY = getPosi(mainStageMaxEle,"y")+getSize(mainStageMaxEle,"y")+20+activitySpace;
+                }
+                int redunHeight = 0;
+
+                //设置辅线xy
+                getPosiOrSize(tempAssistItemMap,"position").put("x", getPosi(mainStageMaxEle,"x")+10);
+                Map spoolPosi = getPosiOrSize(spool, "position");
+//                spoolPosi.put("x", getPosi(mainStageMaxEle,"x"));
+                spoolPosi.put("y", currentHeightY );
+                redunHeight = currentHeightY;
+
+                setEleToMiddle(spool, mainStage);
+                setEleToMiddle(tempAssistItemMap, spool);
+
+                //添加事项
+                List<AeaParStageItem> relItems = aeaParStageItemMapper.listAeaStageItemByStageIdGroupByed(aeaParStage.getStageId(), "0", SecurityContext.getCurrentOrgId());
+                if(relItems != null && relItems.size()>0){
+                    currentHeightY = currentHeightY+30;
+                    redunHeight = redunHeight+30;
+                    addEmbedsToPool(spool, relItems);
+                    addItemToJsonAssist(aeaParStage.getStageId(), cells, relItems, tempAssistItemMap, currentHeightY, unitMap);
+
+                    Map newMainStageMaxEle = getMaxPositionEleByParent(cells, spool.get("id").toString(), "y");
+                    currentHeightY = getPosi(newMainStageMaxEle,"y")+getSize(newMainStageMaxEle,"y");
+                }
+                cells.add(spool);
+
+//                getPosiOrSize(spool, "size").put("height", currentHeightY - startY -20 );
+//                getPosiOrSize(mainStage, "size").put("height", currentHeightY  - getPosi(mainStage,"y")+10);
+                ajustSPoolAndPoolHeight(cells, spool);
+            }
+//
+//            Map currentStageEnd = getMaxEleByTypeAndXY(cells, "bpmn.HPool", "y");
+//            stageNewEndY = getSize(currentStageEnd,"y")+ getSize(currentStageEnd,"y");
+
+        }
+        ajustSPoolAndPoolHeight(cells, mainStage);
+        setPoolHeightInCommon(cells, "bpmn.HPool");
+        Map newMaxStageMap = getMaxPoolByTypeAndXY(cells, "HPool", "y");
+        ajustEleByOldPoolAndNewPool(ajsutEles, startY, newMaxStageMap);
+
+//        stageNewEndY = ajaustPoolHeightAndReturnMaxHeight(cells, "bpmn.HPool") + getPosi(oldMaxStageMap,"y");
+
+        themeVer.setThemeVerDiagram(JsonUtils.toJson(diagram));
+        aeaParThemeVerMapper.updateOne(themeVer);
+    }
+
+    /**
+     * 调整主线外并行外装饰元素或并行的高度
+     * @param needAjustsEles
+     * @param startY
+     * @param newPool
+     */
+    private void ajustEleByOldPoolAndNewPool( List<Object> needAjustsEles ,int startY, Map newPool){
+        if(needAjustsEles != null && needAjustsEles.size() >0 ){
+            int endY = getEleYPlusHeight(newPool);
+            int ajustHeight = endY - startY;
+            if(ajustHeight > 10 || ajustHeight < -10){
+                Iterator<Object> iterator = needAjustsEles.iterator();
+                while (iterator.hasNext()){
+                    Map next = (Map) iterator.next();
+                    getPosiOrSize(next, "position").put("y", getPosi(next, "y")+ajustHeight);
+                }
+            }
+        }
+    }
+
+
+    public List<Object> needAjustPosiEles(JSONArray cells, Map parentPool) {
+        if(parentPool == null){
+            return null;
+        }
+      /*  String type = parentPool.get("type").toString();
+        if(type.equals("bpmn.Pool")){
+            type = "bpmn.Pool";
+        }
+        if(type.indexOf("bpmn.HPool") >= 0){
+            type = "bpmn.HPool";
+        }*/
+        int startY = 0 ;
+        startY = getEleYPlusHeight(parentPool);
+        List list = new ArrayList<>();
+        Iterator<Object> iterator = cells.iterator();
+        while (iterator.hasNext()){
+            Map next = (Map) iterator.next();
+            if(getPosi(next,"y") > startY){
+                list.add(next);
+            }
+        }
+        return list;
+    }
+
+
+
+    private void addEmbedsToPool(Map pool, List<AeaParStageItem> relItems) {
+        JSONArray embeds = (JSONArray) pool.get("embeds");
+        if(embeds == null){
+            embeds = new JSONArray();
+        }
+        for(AeaParStageItem item: relItems){
+            embeds.add(item.getStageItemId());
+        }
+        pool.put("embeds", embeds);
+    }
+
+    private Map getPosiOrSize(Map ele, String type){
+        return (Map) ele.get(type);
+    }
+    private int getPosi(Map ele, String xy){
+        return (int) ((Map) ele.get("position")).get(xy);
+    }
+    private int getSize(Map ele, String xy){
+        return (int) ((Map) ele.get("size")).get(xy.equals("x")?"width":"height");
+    }
+
+    /**
+     * 获取模板元素
+     * @param type
+     * @param parent parent可为空，当为空则查找第一个，否则查找第一个子级
+     * @return
+     * @throws Exception
+     */
+    private Map getTemplateEleByType(String type, String parent) throws Exception {
+        String initBpmnDiagram = getInitBpmnDiagram("rappidWithParallelTemplate.json");
+        JSONObject bpmnDiaGram = (JSONObject) JSON.parse(initBpmnDiagram);
+        JSONArray cells = (JSONArray) bpmnDiaGram.get("cells");
+        Iterator<Object> iterator = cells.iterator();
+        Map result = null;
+        while (iterator.hasNext()){
+            Map next = (Map) iterator.next();
+            if(next.get("type").equals(type)){
+                if(parent == null){
+                    result = next;
+                    break;
+                }else{
+                    if(parent.equals(next.get("parent"))){
+                        result = next;
+                        break;
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
+     * 重新排列元素
+     * 当从父元素中间移除一个元素时，调整该元素后子元素的位置y
+     * @param cells
+     * @param parent
+     * @param removeHeight
+     * @param startY
+     */
+    private void whenRemoveEleThenAjustAfterThisEles(JSONArray cells, String parent, String realParent, int removeHeight, int startY){
+        Iterator<Object> iterator = cells.iterator();
+        while (iterator.hasNext()){
+            Map next = (Map) iterator.next();
+            if(getPosi(next,"y")>startY){
+                String eleparent = (String) next.get("parent");
+                if(eleparent != null && eleparent.equals(parent)){
+                    getPosiOrSize(next, "position").put("y", getPosi(next,"y")-removeHeight);
+                }
+                if(realParent != null){
+                    if(next.get("type").equals("bpmn.SPool") && eleparent != null && eleparent.equals(realParent) ){
+                        getPosiOrSize(next, "position").put("y", getPosi(next,"y")-removeHeight);
+                        whenRemoveEleThenAjustAfterThisEles(cells, next.get("id").toString(), null, removeHeight, startY);
+                    }
+
+                }
+            }
+        }
+    }
+
+    /**
+     * 调整主线、辅线高度，返回主线或并行的最大高度
+     * @param cells
+     * @param pool
+     */
+    private void ajustSPoolAndPoolHeight(JSONArray cells, Map pool){
+        String type = "bpmn.HPool";
+        if(pool.get("type").equals("bpmn.SPool")){
+            Iterator<Object> iterator = cells.iterator();
+            //调整辅线高度
+            while (iterator.hasNext()){
+                Map next = (Map) iterator.next();
+                if(next.get("type").equals("bpmn.SPool") && next.get("parent").equals(pool.get("id"))){
+                    Map maxEle = getMaxPositionEleByParent(cells, next.get("id").toString(), "y");
+                    int height  = 30;//头部20+10间隔
+                    if(maxEle != null){
+                         height = getPosi(maxEle, "y")+getSize(maxEle, "y") - getPosi(next, "y");
+                    }
+                    getPosiOrSize(next, "size").put("height", height+activitySpace);
+                }
+            }
+            Map maxEle = getMaxPositionEleByParent(cells, pool.get("id").toString(), "y");
+            int height = 30;
+            if(maxEle != null){
+                height = getPosi(maxEle, "y")+getSize(maxEle, "y") - getPosi(pool, "y");
+            }
+            getPosiOrSize(pool,"size").put("height", height+5);
+        }else{
+            //调整该主线,并行高度
+            Map maxEle = getMaxPositionEleByParent(cells, (String) pool.get("id"), "y");
+            if(maxEle != null){
+                int height = getPosi(maxEle, "y")+getSize(maxEle, "y") - getPosi(pool, "y");
+                getPosiOrSize(pool,"size").put("height", height+5);
+            }
+            if(pool.get("type").equals("bpmn.Pool")){
+                type = "bpmn.Pool";
+            }
+        }
+
+        /*int poolHeight = -1;
+        Map maxPoolEle = getMaxEleByTypeAndXY(cells, type, "y");
+
+        if(maxPoolEle != null){
+            poolHeight = getEleYPlusHeight(maxPoolEle) + 5;
+            //设置所有的主阶段或并行阶段高度一致
+            Iterator<Object> iteratorPool = cells.iterator();
+            while (iteratorPool.hasNext()){
+                Map poolEle = (Map) iteratorPool.next();
+                if(poolEle.get("type").toString().indexOf(type) >= 0){
+                    getPosiOrSize(poolEle, "y").put("height", poolHeight);
+                }
+            }
+        }
+        return poolHeight;*/
+        setPoolHeightInCommon(cells, type);
+    }
+
+    public int ajaustPoolHeightAndReturnMaxHeight(JSONArray cells, String type){
+        int maxHeight = 0;
+        Map maxEle = null;
+
+        Iterator<Object> iterator = cells.iterator();
+        while (iterator.hasNext()){
+            Map next = (Map) iterator.next();
+            if(next.get("type").toString().indexOf(type) >= 0){
+                maxEle = getMaxPositionEleByParent(cells, (String) next.get("id"), "y");
+                int height = 0;
+                if(maxEle != null){
+                     height = getEleYPlusHeight(maxEle) - getPosi(next, "y")+activitySpace;
+                }else{
+                    if(next.get("type").equals("bpmn.SPool") || next.get("type").equals("bpmn.Pool")){
+                        height = 35;
+                    }
+                    if(next.get("type").toString().indexOf("HPool") >=0 ){
+                        height = 90;
+                    }
+                }
+                getPosiOrSize(next,"size").put("height", height);
+            }
+        }
+        return maxHeight;
+    }
+
+    public int setPoolHeightInCommon(JSONArray cells, String type){
+        if(type.indexOf("bpmn.HPool") >= 0){
+            type = "bpmn.HPool";
+        }
+        int maxY = 0;
+        Map maxEle = null;
+
+        Iterator<Object> iterator = cells.iterator();
+        while (iterator.hasNext()){
+            Map next = (Map) iterator.next();
+            if(next.get("type").toString().indexOf(type) >= 0){
+                maxEle = getMaxPositionEleByParent(cells, (String) next.get("id"), "y");
+                if(maxEle != null){
+                    int currentY = getEleYPlusHeight(maxEle);
+                    if(currentY > maxY){
+                        maxY = currentY;
+                    }
+                }
+            }
+        }
+
+        Iterator<Object> iterator1 = cells.iterator();
+        while (iterator1.hasNext()){
+            Map next = (Map) iterator1.next();
+            if(next.get("type").toString().indexOf(type) >= 0 ){
+                getPosiOrSize(next, "size").put("height", maxY - getPosi(next,"y")+poolSpace);
+                if(maxY <= 0){
+                    getPosiOrSize(next, "size").put("height", 50);
+                }
+            }
+
+        };
+        return maxY;
+    }
+
+    public void addItemToDiagram(JSONArray cells, AeaParStage stage, AeaParStageItem item, String isOptionItem, Map hPool, Map templateActivity, Map pool){
+        Map modalActi = new HashMap();
+        Map parentPool = null;
+        Map templatePool = new HashMap();
+
+        List<Object> ajustEles = null;
+        Map oldMaxPool = null;
+        int startY = -1;
+        try{
+            parentPool = getCellsEleById(stage.getStageId(), cells);
+            if(parentPool == null){  //如果没有主线则返回
+                return;
+            }
+//            builtNewActivity(Map newActivity, String stageId, int currentStageY, String stageItemId, String itemName, String itemVerId, String isOptionItem, String dueStr)
+            if(stage.getIsNode().equals("2")){ //辅线,辅线只做并联事项
+                if(isOptionItem.equals("0")){
+                    Map maxEle = getMaxPositionEleByParent(cells, stage.getStageId(),"y");
+                    if(maxEle != null){
+                        modalActi.putAll(maxEle);
+                    }
+                    oldMaxPool = getCellsEleById(stage.getParentId(), cells);
+                    startY = getEleYPlusHeight(oldMaxPool);
+                    ajustEles = needAjustPosiEles(cells, oldMaxPool);
+
+                }
+
+            }else if(stage.getIsNode().equals("1")){
+                if(isOptionItem.equals("0")){ //并联
+                    oldMaxPool = parentPool;
+                    startY = getEleYPlusHeight(oldMaxPool);
+                    ajustEles = needAjustPosiEles(cells, parentPool);
+                    Map activity = getCellsEleByTypeAndParent(parentPool.get("id").toString(), "bpmn.Activity", cells);
+                    if(activity != null){
+                        modalActi.putAll(activity);
+                    }
+                }else if(isOptionItem.equals("1")){ //并行
+
+                    Map parallelPool = getParallelPoolByStageId(cells, stage.getStageId());
+                    if(parallelPool != null){
+                        setEleToMiddle(parallelPool, parentPool);
+                        parentPool = parallelPool;
+                        Map temp = getMaxPositionEleByParent(cells, parallelPool.get("id").toString(),"y");
+                        if(temp != null){
+                            modalActi.putAll(temp);
+                        }
+                    }else{
+                        templatePool.putAll(pool);
+                        templatePool.put("embeds", null);
+                        makeTemplatePoolToPool(cells, templatePool, parentPool);
+                        int parallely = getEleYPlusHeight(parentPool)+30;
+                        Map textMap = getXRangMaxYEle(cells,getPosi(parentPool,"x"), getPosi(parentPool,"x")+getSize(parentPool,"x"));
+                        if(textMap != null){
+                            int texty= getEleYPlusHeight(textMap)+30;
+                            if(texty > parallely){
+                                parallely = texty ;
+                            }
+                        }
+                        getPosiOrSize(templatePool,"position").put("y", parallely);
+
+                        cells.add(templatePool);
+                        parentPool = templatePool;
+                    }
+                    oldMaxPool = parentPool;
+                    startY = getEleYPlusHeight(oldMaxPool);
+                    ajustEles = needAjustPosiEles(cells, oldMaxPool);
+                }
+            }else{ //非并联并行返回
+                return;
+            }
+
+            //没添加一个事项，调整一次位置
+           // List<JSONArray> needAjustPosiEles = needAjustPosiEles(cells, getSize(parentPool, "y") + getPosi(parentPool, "y"));
+
+            if(modalActi.get("id") == null && modalActi.get("type") == null) { //如果主线、辅线、并行下无事项
+                modalActi.putAll(templateActivity);
+            }
+            Map maxEle = getMaxPositionEleByParent(cells, parentPool.get("id").toString(), "y");
+
+            int ajaustHeight = 0;
+            if(maxEle == null){
+                Map nSize = new HashMap();
+                nSize.put("width", getSize(parentPool,"x")-30);
+                nSize.put("height", getSize(modalActi, "y"));
+                modalActi.put("size", nSize);
+
+                Map position = getPosiOrSize(parentPool, "position");
+                Map actyPosi = new HashMap();
+                actyPosi.put("x", (int)position.get("x")+activitySpace);
+
+                if(parentPool.get("type").toString().indexOf("bpmn.HPool") >= 0){
+                    actyPosi.put("y", 70 + getPosi(parentPool,"y"));
+                    ajaustHeight  = 70;
+                }else{
+                    actyPosi.put("y", 30 + getPosi(parentPool,"y"));
+                    ajaustHeight  = 30;
+                }
+                modalActi.put("position", actyPosi);
+            }else{
+                Map position = getPosiOrSize(maxEle, "position");
+                Map actyPosi = new HashMap();
+                actyPosi.put("x", (int)position.get("x"));
+                ajaustHeight = getSize(modalActi, "y");
+
+                actyPosi.put("y", getPosi(maxEle, "y") + getSize(maxEle, "y") + activitySpace);
+                ajaustHeight = ajaustHeight + activitySpace;
+                modalActi.put("position", actyPosi);
+                if(maxEle.get("type").equals("bpmn.SPool")){
+                    ajaustHeight = ajaustHeight + activitySpace;
+                    getPosiOrSize(modalActi,"position").put("y", getPosi(modalActi, "y")+activitySpace);
+                }
+            }
+
+            String dueStr = "【<span>"+item.getDueNum()+"</span>个工作日】";
+            builtNewActivity(modalActi, parentPool.get("id").toString(),getPosi(modalActi,"y"), item.getStageItemId(), item.getItemName(),item.getItemVerId(),isOptionItem, dueStr);
+            JSONArray embeds = (JSONArray) parentPool.get("embeds");
+            if(embeds == null){
+                embeds = new JSONArray();
+            }
+            embeds.add(modalActi.get("id"));
+            parentPool.put("embeds", embeds);
+            Map itemMap = (Map) ((Map) modalActi.get("attrs")).get("item");
+            Map nItemMap = new HashMap();
+            nItemMap.putAll(itemMap);
+            nItemMap.put("isOptionItem", isOptionItem);
+            nItemMap.put("itemId", item.getItemId());
+            nItemMap.put("itemVerId", item.getItemId()+"*"+item.getItemVerId());
+            nItemMap.put("isOptionItem", isOptionItem);
+             ((Map) modalActi.get("attrs")).put("item", nItemMap);
+            setEleToMiddle(modalActi, parentPool);
+            modalActi.put("z", (int)parentPool.get("z")+1);
+            cells.add(modalActi);
+
+            String parentId = null;
+            if(parentPool.get("type").equals("bpmn.SPool")){
+                Map realPool = getCellsEleById(parentPool.get("parent").toString(), cells);
+                if(realPool != null){
+                    parentId = realPool.get("id").toString();
+                }
+            }
+            //
+            if(stage.getIsNode().equals("2") && isOptionItem.equals("0")){
+                whenRemoveEleThenAjustAfterThisEles(cells, stage.getParentId(), stage.getStageId(),  - (getSize(modalActi,"y")+activitySpace),getPosi(modalActi, "y"));
+            }
+            whenRemoveEleThenAjustAfterThisEles(cells, parentPool.get("id").toString(), parentId,  - (getSize(modalActi,"y")+activitySpace),getPosi(modalActi, "y"));
+
+            ajustSPoolAndPoolHeight(cells, parentPool);
+            setPoolHeightInCommon(cells, oldMaxPool.get("type").toString());
+            Map newMaxStageMap = getMaxPoolByTypeAndXY(cells, oldMaxPool.get("type").toString(), "y");
+            ajustEleByOldPoolAndNewPool(ajustEles, startY, newMaxStageMap);
+
+            //调整该元素后的高度
+//            moveEleJustAdd(needAjustPosiEles, ajaustHeight ,"y");
+
+        }catch (Exception e){
+            logger.error("diagramException:", e);
+        }
+
+    }
+
+    /**
+     * 获取x1 - x2范围内最高y的元素
+     * @param cells
+     * @param x1
+     * @param x2
+     * @return
+     */
+    private Map getXRangMaxYEle(JSONArray cells, int x1, int x2) {
+        Map result = null;
+        int y = 0;
+        Iterator<Object> iterator = cells.iterator();
+
+        while (iterator.hasNext()){
+            Map next = (Map) iterator.next();
+            int x3 = getPosi(next, "x");
+            if ( x1 <= x3 && x3 <= x2){
+                if(getPosi(next,"y") > y){
+                    y = getPosi(next, "y");
+                    result = next;
+                }
+            }
+        }
+        return result;
+    }
+
+    //    辅线后无主线，往辅线后添加主线
+    private void makeTemplatePoolToPool(JSONArray cells, Map templatePool, Map parentPool) {
+        int startx = getPosi(parentPool, "x");
+        int endx = startx + getSize(parentPool, "x");
+        int maxY = 0;
+        Iterator<Object> iterator = cells.iterator();
+        while (iterator.hasNext()){
+            Map next = (Map) iterator.next();
+            int nStartX = getPosi(next, "x");
+            if(nStartX >= startx && nStartX <= endx ){
+                if(getPosi(next,"y") > 0){
+                    maxY = getPosi(next, "y");
+                }
+            }
+        }
+
+        Map nPosi = new HashMap();
+
+        nPosi.put("y", maxY+20);
+        nPosi.put("x", getPosi(parentPool,"x"));
+        templatePool.put("position", nPosi);
+
+        Map nSize = new HashMap();
+        nSize.put("width", getSize(parentPool,"x"));
+        nSize.put("height", getSize(templatePool,"y"));
+
+//        String[] para = new String[1];
+//        para[0] = parentPool.get("id").toString();
+        JSONArray para = new JSONArray();
+        para.add(parentPool.get("id").toString());
+        templatePool.put("parallel", para);
+        templatePool.remove("parent");
+        templatePool.put("id", parentPool.get("id").toString()+"_a");
+    }
+
+    /**
+     * 设置元素在父项中间
+     * @param acti
+     * @param pool
+     */
+    private void setEleToMiddle(Map acti, Map pool){
+        int startx = getPosi(pool, "x");
+        int actiWidth = getSize(acti,"x");
+        int poolWidth = getSize(pool,"x");
+        if(actiWidth > poolWidth){
+            getPosiOrSize(acti,"size").put("width", poolWidth-poolSpace*4);
+        }
+        startx = startx +(getSize(pool,"x") - getSize(acti, "x"))/2;
+        getPosiOrSize(acti, "position").put("x", startx);
+    }
+
+    /**
+     * 获取并行阶段pool
+     * @param cells
+     * @param stageId
+     * @return
+     */
+    private Map getParallelPoolByStageId(JSONArray cells, String stageId) {
+        AtomicReference<Map> parallelPool = new AtomicReference<>();
+        getCellsEleById(stageId, cells);
+        cells.forEach(n ->{
+            Map next = (Map) n;
+            if(next.get("type").equals("bpmn.Pool")){
+                JSONArray parallel = (JSONArray) next.get("parallel");
+                if(parallel != null && parallel.size() == 1 && parallel.get(0).equals(stageId)){
+                    parallelPool.set(next);
+                }
+            }
+
+        });
+        return parallelPool.get();
+    }
+
+    public void removeEleFromDiagram(JSONArray cells, AeaParStage stage, String stageItemId, String isOptionItem) {
+        try{
+            Map parentPool = getCellsEleById( stage.getStageId(), cells);
+            if(isOptionItem.equals("1")){ //并行
+                parentPool = getParallelPoolByStageId(cells, stage.getStageId());
+            }
+            if(parentPool == null){
+                return;
+            }
+            Map activity = getCellsEleById(stageItemId, cells);
+            if(activity  == null) {
+                return;
+            }
+            ((JSONArray)parentPool.get("embeds")).remove(activity.get("id"));
+            cells.remove(activity);
+            String parentId = null;
+            Map  realParent = null;
+            if(parentPool.get("type").equals("bpmn.SPool")){
+               realParent = getCellsEleById(parentPool.get("parent").toString(),cells);
+               if (realParent != null){
+                   parentId = realParent.get("id").toString();
+                   whenRemoveEleThenAjustAfterThisEles(cells,parentId, parentPool.get("id").toString(),  getSize(activity,"y")+activitySpace, getPosi(activity, "y"));
+               }
+            }else{
+                realParent = parentPool;
+            }
+            int startY = -1;
+            List<Object> ajustEles = null;
+            ajustEles = needAjustPosiEles(cells, realParent);
+            startY = getEleYPlusHeight(realParent);
+
+            if(!parentPool.get("type").equals("bpmn.SPool")){
+                whenRemoveEleThenAjustAfterThisEles(cells, parentPool.get("id").toString(), null, getSize(activity,"y")+activitySpace, getPosi(activity, "y"));
+            }
+
+            ajustSPoolAndPoolHeight(cells, parentPool);
+            setPoolHeightInCommon(cells, realParent.get("type").toString());
+            Map newMaxStageMap = getMaxPoolByTypeAndXY(cells, realParent.get("type").toString(), "y");
+            ajustEleByOldPoolAndNewPool(ajustEles, startY, newMaxStageMap);
+
+
+            /*
+            ajustSPoolAndPoolHeight(cells, parentPool);
+            moveEleJustAdd(needAjustPosiEles, - (getSize(activity,"y")+activitySpace),"y");*/
+
+        }catch (Exception e){
+            logger.error("diagramException:", e);
+        }
+    }
+
+    private int getEleYPlusHeight(Map map){
+        return getPosi(map, "y") + getSize(map, "y");
+    }
+
+    public JSONObject getDiagramCellsByStageId(String stageId){
+        AeaParStage stage = aeaParStageAdminService.getAeaParStageById(stageId);
+        if(stage != null && stage.getThemeVerId() != null){
+            AeaParThemeVer themeVer = aeaParThemeVerMapper.getAeaParThemeVerById(stage.getThemeVerId());
+            if(themeVer != null && themeVer.getThemeVerDiagram() != null){
+                JSONObject bpmnDiaGram = (JSONObject) JSON.parse(themeVer.getThemeVerDiagram());
+                return bpmnDiaGram;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 删除阶段
+     * 先删除辅线，再删除并行，再删除主线
+     * @param stageId
+     */
+    public void removeStageFromDiagram(JSONArray cells, String stageId){
+        int startY = 0;
+        List ajustEles = null;
+        Map oldMaxPool = getCellsEleById(stageId, cells);
+
+        //并行
+        Map parallelPool = getParallelPoolByStageId(cells, stageId);
+        if(parallelPool != null){
+            deletePoolAndActivity(cells, parallelPool.get("id").toString());
+            startY = getEleYPlusHeight(parallelPool);
+            ajustEles = needAjustPosiEles(cells, parallelPool);
+            oldMaxPool = parallelPool;
+            whenRemoveEleThenAjustAfterThisEles(cells, parallelPool.get("id").toString(), null,  (getSize(parallelPool,"y")+activitySpace),getPosi(parallelPool, "y"));
+        }
+
+        Map pool = getCellsEleById(stageId, cells);
+        if(pool != null &&pool.get("type").equals("bpmn.SPool")){
+            Map parent = getCellsEleById(pool.get("parent").toString(), cells);
+            oldMaxPool = parent;
+            startY = getEleYPlusHeight(oldMaxPool);
+            ajustEles = needAjustPosiEles(cells, oldMaxPool);
+            whenRemoveEleThenAjustAfterThisEles(cells, pool.get("parent").toString(), pool.get("parent").toString(),  (getSize(pool,"y")+activitySpace),getPosi(pool, "y"));
+        }
+
+        //辅线
+        List<JSONObject> list = new ArrayList();
+        Iterator<Object> iterator = cells.iterator();
+        while (iterator.hasNext()){
+            JSONObject next = (JSONObject) iterator.next();
+            if(next.get("type").equals("bpmn.SPool") && next.get("parent") != null && next.get("parent").equals(stageId)){
+                list.add(next);
+            }
+        }
+        for(JSONObject assts: list){
+            deletePoolAndActivity(cells, assts.get("id").toString());
+        }
+
+        if(oldMaxPool != null){
+            ajustSPoolAndPoolHeight(cells, oldMaxPool);
+            setPoolHeightInCommon(cells, oldMaxPool.get("type").toString());
+            Map newMaxStageMap = getMaxPoolByTypeAndXY(cells, oldMaxPool.get("type").toString(), "y");
+            ajustEleByOldPoolAndNewPool(ajustEles, startY, newMaxStageMap);
+        }
+
+        //删除主线
+        deletePoolAndActivity(cells, stageId);
+
+
+    }
+
+    private void deletePoolAndActivity(JSONArray cells, String stageId) {
+        Iterator<Object> iterator = cells.iterator();
+        while (iterator.hasNext()){
+            Map next = (Map) iterator.next();
+            if(next.get("parent") != null && next.get("parent").equals(stageId)){
+                iterator.remove();
+            }
+            if(next.get("id").equals(stageId)){
+                iterator.remove();
+            }
+        }
+    }
+
+    @Override
+    public void updateDiagramActivityName(AeaItemBasic aeaItemBasic) {
+        List<AeaParThemeVer> list = aeaParThemeVerMapper.getNotExpireThemeverByItemId(aeaItemBasic.getItemId(),SecurityContext.getCurrentOrgId());
+        if(list != null){
+            for(AeaParThemeVer ver: list){
+                if(!org.springframework.util.StringUtils.isEmpty(ver.getThemeVerDiagram())){
+                    String theverDiagram = updateDiagramActivityName(ver.getThemeVerDiagram(), aeaItemBasic);
+                    if(theverDiagram != null){
+                        ver.setThemeVerDiagram(theverDiagram);
+                        aeaParThemeVerMapper.updateOne(ver);
+                    }
+                }
+            }
+        }
+
+    }
+
+
+    private String updateDiagramActivityName(String themeVerDiagram, AeaItemBasic aeaItemBasic) {
+        boolean needUpdate = false;
+        try{
+            JSONObject object = (JSONObject) JSONObject.parse(themeVerDiagram);
+            if(object == null){
+                return null;
+            }
+            JSONArray cells = (JSONArray) object.get("cells");
+            if(cells != null){
+                Iterator<Object> iterator = cells.iterator();
+                while (iterator.hasNext()){
+                    Map next = (Map) iterator.next();
+                    if(next.get("type").equals("bpmn.Activity") && ((Map)next.get("attrs")).get("item") != null){
+                        Map item = (Map) ((Map)next.get("attrs")).get("item");
+                        if(item.get("itemVerId")!= null && item.get("itemVerId").toString().indexOf(aeaItemBasic.getItemId()) >= 0){
+                            needUpdate = true;
+                            next.put("auEleName", aeaItemBasic.getItemName());
+                            next.put("content", aeaItemBasic.getItemName());
+                            ((Map)next.get("attrs")).put(".title", aeaItemBasic.getItemName());
+                            if(((Map)next.get("attrs")).get(".content") != null && ((Map)((Map)next.get("attrs")).get(".content")).get("html") != null){
+                                ((Map)((Map)next.get("attrs")).get(".content")).put("html","<div><div>"+aeaItemBasic.getItemName()+"</div><span >【<span>"+(aeaItemBasic.getDueNum()==null?0:aeaItemBasic.getDueNum())+"</span>个工作日】</span></div>");
+                            }
+                        }
+                    }
+                }
+            }
+            if(needUpdate){
+                return JsonUtils.toJson(object);
+            }
+        }catch (Exception e){
+            logger.error("DiagramParseExcetion:",e);
+        }
+        return null;
+    }
+
+    @Override
+    public void removeActivityFromDiagramInAllAeaThemeVer(String itemId) {
+        try{
+            List<AeaParThemeVer> list = aeaParThemeVerMapper.getNotExpireThemeverByItemId(itemId,SecurityContext.getCurrentOrgId());
+            if(list != null){
+                for(AeaParThemeVer ver: list){
+                    if(!org.springframework.util.StringUtils.isEmpty(ver.getThemeVerDiagram())){
+                        String themeverDiagram = removeActivityFromDiagramByItemId(ver.getThemeVerDiagram(), itemId);
+                        if(themeverDiagram != null){
+                            ver.setThemeVerDiagram(themeverDiagram);
+                            aeaParThemeVerMapper.updateOne(ver);
+                        }
+                    }
+                }
+            }
+        }catch (Exception e){
+            logger.error("", e);
+        }
+    }
+
+    private String removeActivityFromDiagramByItemId(String themeVerDiagram, String itemId) {
+        boolean needUpdate = false;
+        JSONObject object = (JSONObject) JSONObject.parse(themeVerDiagram);
+        if(object == null){
+            return null;
+        }
+        JSONArray cells = (JSONArray) object.get("cells");
+        if(cells == null){
+            return null;
+        }
+        Iterator<Object> iterator = cells.iterator();
+        while (iterator.hasNext()){
+            Map next = (Map) iterator.next();
+            if(next.get("type").equals("bpmn.Activity") && ((Map)next.get("attrs")).get("item") != null) {
+                Map item = (Map) ((Map) next.get("attrs")).get("item");
+                if (item.get("itemVerId") != null && item.get("itemVerId").toString().indexOf(itemId) >= 0) {
+                    Map parentPool = getCellsEleById(next.get("parent").toString(), cells);
+                    if(parentPool != null){
+                        String realParentId = null;
+                        if(parentPool.get("type").equals("bpmn.SPool")){
+                            Map realParent = getCellsEleById(parentPool.get("parent").toString(), cells);
+                            if(realParent != null){
+                                realParentId = realParent.get("id").toString();
+                            }
+                        }
+                        int startY = getPosi(next, "y")+getSize(next, "y");
+                        iterator.remove();
+                        ((JSONArray)parentPool.get("embeds")).remove(next.get("id"));
+                        whenRemoveEleThenAjustAfterThisEles(cells, next.get("parent").toString(),realParentId, getSize(next,"y")+activitySpace, startY);
+                        ajustSPoolAndPoolHeight(cells, parentPool);
+                        needUpdate = true;
+                    }
+
+                }
+            }
+        }
+        if(needUpdate){
+            return JsonUtils.toJson(object);
+        }
+
+        return null;
     }
 }
 

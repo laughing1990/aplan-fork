@@ -64,6 +64,7 @@ public class RestTimeruleinstServiceImpl implements RestTimeruleinstService {
         actStoTimeruleInst.setTimeruleInstId(UUID.randomUUID().toString());
         actStoTimeruleInst.setUseLimitTime(0d);
         actStoTimeruleInst.setOverdueTime(0d);
+        actStoTimeruleInst.setInstState("1");
         actStoTimeruleInst.setRemainingTime(Double.valueOf(appFlowdef.getTimeLimit() == null ? 1 : appFlowdef.getTimeLimit()));
         actStoTimeruleInstService.saveActStoTimeruleInst(actStoTimeruleInst);
     }

@@ -56,7 +56,7 @@
                     }
                     $.ajax({
                         type: 'post',
-                        url: ctx+'/aea/par/stage/partform/updateStagePartformSortNos.do',
+                        url: ctx+'/aea/item/partform/updateItemPartformSortNos.do',
                         dataType: 'json',
                         data: {
                             'ids': ids.toString(),
@@ -65,7 +65,7 @@
                         success: function (result) {
                             if (result.success) {
                                 // 重新加载数据
-                                searchStagePartform();
+                                searchItemPartform();
                             } else {
                                 swal('错误信息', '操作成功', 'error');
                             }
@@ -79,8 +79,8 @@
     //分类排序
     function sortStagePartform(){
 
-        $.post(ctx+'/aea/par/stage/partform/listStagePartformRelFormByNoPage.do',{
-            'stageId': currentBusiId,
+        $.post(ctx+'/aea/item/partform/listAeaItemPartformNoPage.do',{
+            'itemVerId': currentBusiId,
         }, function(data){
             if(data!=null&&data.length>0){
 
@@ -89,7 +89,7 @@
                 $("#sortStagePartformUl").html("");
 
                 for(var i=0;i<data.length;i++){
-                    var id = data[i].stagePartformId;
+                    var id = data[i].itemPartformId;
                     var name = data[i].partformName;
                     var liHtml = '<li name="sortStagePartformLi" category-id="'+ id +'">' +
                                      '<span class="drag-handle_td">&#9776;</span>' +

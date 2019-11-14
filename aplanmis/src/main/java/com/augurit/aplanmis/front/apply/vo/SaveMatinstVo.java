@@ -46,6 +46,9 @@ public class SaveMatinstVo {
         @ApiModelProperty(value = "证照名称")
         private String certName;
 
+        @ApiModelProperty(value = "用证码", notes = "与电子证照库关联")
+        private String authCode;
+
         @ApiModelProperty(value = "表单定义ID")
         private String formId;
 

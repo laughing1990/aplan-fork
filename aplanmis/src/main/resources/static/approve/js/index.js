@@ -1528,6 +1528,7 @@ var vm = new Vue({
         'isApprover',
         'masterEntityKey',
         'projectCode',
+        'viewId',
       ];
       var oneFormIndex = -1;
       lTabsData.forEach(function (u, i) {
@@ -2006,6 +2007,7 @@ var vm = new Vue({
       if (!data.attFormat) {
         data.attFormat = data.fileType;
       } // 文件类型
+      data.attFormat = (data.attFormat+'').toLowerCase();
       if (__STATIC.allowPreType[data.attFormat]) {
         return this.preFile(data, visibleKey);
       } // 预览pdf、doc等
@@ -2536,9 +2538,19 @@ var vm = new Vue({
             
           } else {
             //这里要在提交后的回调中调用到下一环节的提示信息，这两个变量会在操作过程中被改变，包括环节名称和处理人名称。
-            message = "流程已发送至 <span style='color:#22D479;font-size:18px' >&nbsp;" + vm.nextTask + "</span>&nbsp;环节";
+            var _nextTask = vm.nextTask;
+            var _nextTaskAssignee = vm.nextTaskAssignee;
+            if (vm.isMultiFlow) {
+              _nextTask = vm.mutiCheckedNames.join('、');
+              var _tmpArr = [];
+              vm.mutiCheckedMan.forEach(function(u){
+                _tmpArr.push(u.defaultSendAssignees || '暂无审批人');
+              });
+              _nextTaskAssignee = _tmpArr.join('、');
+            }
+            message = "流程已发送至 <span style='color:#22D479;font-size:18px' >&nbsp;" + _nextTask + "</span>&nbsp;环节";
             if (vm.checkNotNull(vm.nextTaskAssignee)) {
-              message += "，下一环节审批人为：<span style='color:#22D479;font-size:18px' >&nbsp;" + vm.nextTaskAssignee + "&nbsp;。</span>";
+              message += "，下一环节审批人为：<span style='color:#22D479;font-size:18px' >&nbsp;" + _nextTaskAssignee + "&nbsp;。</span>";
             }
           }
           
@@ -3067,11 +3079,21 @@ var vm = new Vue({
             this.certSelectionList = val;
     },*/
     testBtn: function () {
+      var vm = this;
+      var _nextTask = vm.nextTask;
+      var _nextTaskAssignee = vm.nextTaskAssignee;
+      if (vm.isMultiFlow) {
+        _nextTask = vm.mutiCheckedNames.join('、');
+        var _tmpArr = [];
+        vm.mutiCheckedMan.forEach(function(u){
+          _tmpArr.push(u.defaultSendAssignees || '暂无审批人');
+        });
+        _nextTaskAssignee = _tmpArr.join('、');
+      }
       var message = "<span style='color:#22D479;font-size:18px' >流程发送成功！</span>";
       message += "<span style='font-size:18px'>任务处理完毕，正等待其他用户处理！</span>";
-      
-      var message1 = "流程已发送至 <span style='color:#22D479;font-size:18px' >&nbsp;" + vm.nextTask + "</span>&nbsp;环节";
-      message1 += "，下一环节审批人为：<span style='color:#22D479;font-size:18px' >&nbsp;" + vm.nextTaskAssignee + "&nbsp;。</span>";
+      var message1 = "流程已发送至 <span style='color:#22D479;font-size:18px' >&nbsp;" + _nextTask + "</span>&nbsp;环节";
+      message1 += "，下一环节审批人为：<span style='color:#22D479;font-size:18px' >&nbsp;" + _nextTaskAssignee + "&nbsp;。</span>";
       this.$message({
         showClose: true,
         dangerouslyUseHTMLString: true,
@@ -3765,8 +3787,9 @@ var vm = new Vue({
           }, function (res) {
             ts.sloading = false;
             if (res.success) {
-              // ts.$message.success('保存成功！');
+              ts.$message.success('材料补全开始');
               ts.isShowMatmend = false;
+              delayRefreshWindow();
             } else {
               ts.$message.error(res.message);
             }
@@ -4203,9 +4226,19 @@ function makeCertification() {
 function testBtn() {
   var message = "<span style='color:#22D479;font-size:18px' >流程发送成功！</span>";
   message += "<span style='font-size:18px'>任务处理完毕，正等待其他用户处理！</span>";
+  var _nextTask = vm.nextTask;
+  var _nextTaskAssignee = vm.nextTaskAssignee;
+  if (vm.isMultiFlow) {
+    _nextTask = vm.mutiCheckedNames.join('、');
+    var _tmpArr = [];
+    vm.mutiCheckedMan.forEach(function(u){
+      _tmpArr.push(u.defaultSendAssignees || '暂无审批人');
+    });
+    _nextTaskAssignee = _tmpArr.join('、');
+  }
   
-  var message1 = "流程已发送至 <span style='color:#22D479;font-size:18px' >&nbsp;" + vm.nextTask + "</span>&nbsp;环节";
-  message1 += "，下一环节审批人为：<span style='color:#22D479;font-size:18px' >&nbsp;" + vm.nextTaskAssignee + "&nbsp;。</span>";
+  var message1 = "流程已发送至 <span style='color:#22D479;font-size:18px' >&nbsp;" + _nextTask + "</span>&nbsp;环节";
+  message1 += "，下一环节审批人为：<span style='color:#22D479;font-size:18px' >&nbsp;" + _nextTaskAssignee + "&nbsp;。</span>";
   this.$message({
     showClose: true,
     dangerouslyUseHTMLString: true,

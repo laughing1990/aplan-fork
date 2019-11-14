@@ -274,4 +274,19 @@
         order by ver_num desc
         limit 1
     </select>
+
+    <select id="getNotExpireThemeverByItemId" resultType="com.augurit.aplanmis.common.domain.AeaParThemeVer">
+        select
+        <include refid="allColumns">
+            <property name="alias" value="aptv"/>
+        </include>
+        from aea_par_theme_ver aptv
+        join aea_par_stage aps on aptv.THEME_VER_ID = aps.THEME_VER_ID and aps.IS_DELETED='0'
+        join aea_par_stage_item apsi on apsi.STAGE_ID = aps.STAGE_ID
+        where 1=1
+        and aptv.IS_PUBLISH != '3'
+        and apsi.ITEM_ID = #{itemId}
+        and aptv.root_org_id = #{rootOrgId}
+        group by aptv.THEME_VER_ID
+    </select>
 </mapper>

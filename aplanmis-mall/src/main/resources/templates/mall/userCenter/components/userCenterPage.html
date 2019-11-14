@@ -423,7 +423,7 @@
     </div>
 
     <el-dialog :title="editTitle" :visible.sync="addPerson" width="800px">
-      <el-select clearable :filterable="true" :remote="true" reserve-keyword @change="hangeSelectChange"
+      <!-- <el-select v-if="isAdd" clearable :filterable="true" :remote="true" reserve-keyword @change="hangeSelectChange"
         @clear="clearSelect" :remote-method="remoteMethod" value-key="linkmanCertNo" v-model="selectObj" filterable
         placeholder="请输入姓名/证件号码/手机号码查询" style="width:555px;margin-left: 119px;margin-bottom: 20px;">
         <el-option v-for="item in selectPeple" :key="item.linkmanInfoId" :label="item.linkmanName" :value="item">
@@ -431,10 +431,10 @@
       </el-select>
       <div style="display: inline-block;" v-if="isAdd"> <span
           style="cursor:pointer;background: #457EFF;padding: 11px 15px;color: #fff;border-radius: 4px;"
-          @click="searchLinkman"><i class="el-icon-search"></i>查询</span></div>
+          @click="searchLinkman"><i class="el-icon-search"></i>查询</span></div> -->
       <!-- <el-input v-model="keyword" placeholder="请输入姓名/证件号码/手机号码查询"style="width:555px;margin-left: 119px;margin-bottom: 20px;">
       <template slot="append" v-if="isAdd"> <span style="cursor:pointer;" @click="searchLinkman"><i class="el-icon-search"></i>查询</span></template>
-    </el-input>-->
+      </el-input>-->
       <el-form :inline="true" :model="RowData" label-width="120px" :rules="rules" ref="RowData"
         class="demo-form-inline">
         <el-form-item label="所在单位">
@@ -534,6 +534,8 @@
           aeaUnitInfo: {},
           // 备份企业信息
           backUpAeaUnitInfo: {},
+          // 临时联系人弹窗备份数据
+          temporaryLinkman: {},
           rules: {
             linkmanName: [
               { required: true, message: '请输入联系人姓名' }
@@ -629,12 +631,16 @@
         },
         //添加联系人按钮
         addPersonFun: function () {
-          var _this = this
+          var _this = this;
           this.addPerson = true;
           this.isAdd = true;
-          setTimeout(function () {
+          this.editTitle = "添加联系人";
+          // setTimeout(function () {
+          //   _this.$refs['RowData'].clearValidate();
+          // }, 20)
+          this.$nextTick(function () {
             _this.$refs['RowData'].clearValidate();
-          }, 20)
+          });
           this.RowData = new Object();
           this.RowData.applicant = this.aeaUnitInfo.applicant;
           this.RowData.unitInfoId = this.aeaUnitInfo.unitInfoId;
@@ -693,6 +699,9 @@
               _this.RowData = res.content;
               _this.RowData.applicant = _this.aeaUnitInfo.applicant;
               _this.RowData.unitInfoId = _this.aeaUnitInfo.unitInfoId;
+
+              // 备份联系人数据
+              _this.temporaryLinkman = JSON.parse(JSON.stringify(_this.RowData));
             } else {
               _this.$message.error(res.message);
             }
@@ -830,6 +839,14 @@
             loginPwd: this.loginPwd ? hex_md5(this.loginPwd) : this.aeaLinkmanInfo.loginPwd
           }
 
+          if (!this.aeaLinkmanInfo.linkmanCertNo) {
+            this.$message({
+              message: '请输入身份证号',
+              type: 'error'
+            });
+            return;
+          }
+
           // 身份证号码为空或者判断当前的身份证号码是否有改动，有改动触发校验
           if (!param.linkmanCertNo || param.linkmanCertNo != this.backUpAeaLinkmanInfo.linkmanCertNo) {
             if (!this.cardReg(this.aeaLinkmanInfo.linkmanCertNo)) {
@@ -841,8 +858,8 @@
             }
           }
 
-          // 初始化的电话号码有值并且当前的电话号码是否有改动，有改动触发校验
-          if (!!this.backUpAeaLinkmanInfo.linkmanOfficePhon && param.linkmanOfficePhon != this.backUpAeaLinkmanInfo.linkmanOfficePhon) {
+          // 当前的电话号码有值并且当前的电话号码是否有改动，有改动触发校验
+          if (!!this.aeaLinkmanInfo.linkmanOfficePhon && param.linkmanOfficePhon != this.backUpAeaLinkmanInfo.linkmanOfficePhon) {
             if (!this.phoneReg(this.aeaLinkmanInfo.linkmanOfficePhon)) {
               this.$message({
                 message: '请输入正确的电话号码',
@@ -904,18 +921,29 @@
         //单位信息保存
         saveUnitinfo: function () {
           var _this = this;
-          var param = {
-            unitInfoId: this.aeaUnitInfo.unitInfoId,
-            applicant: this.aeaUnitInfo.applicant,
-            idcard: this.aeaUnitInfo.idcard,
-            unifiedSocialCreditCode: this.aeaUnitInfo.unifiedSocialCreditCode,
-            organizationalCode: this.aeaUnitInfo.organizationalCode,
-            induCommRegNum: this.aeaUnitInfo.induCommRegNum,
-            idrepresentative: this.aeaUnitInfo.idrepresentative,
-            idno: this.aeaUnitInfo.idno,
-            applicantDetailSite: this.aeaUnitInfo.applicantDetailSite,
-            loginName: this.aeaUnitInfo.loginName,
-            loginPwd: this.loginPwd2 ? hex_md5(this.loginPwd2) : this.aeaUnitInfo.loginPwd
+          // var param = {
+          //   unitInfoId: this.aeaUnitInfo.unitInfoId,
+          //   applicant: this.aeaUnitInfo.applicant,
+          //   idcard: this.aeaUnitInfo.idcard,
+          //   unifiedSocialCreditCode: this.aeaUnitInfo.unifiedSocialCreditCode,
+          //   organizationalCode: this.aeaUnitInfo.organizationalCode,
+          //   induCommRegNum: this.aeaUnitInfo.induCommRegNum,
+          //   idrepresentative: this.aeaUnitInfo.idrepresentative,
+          //   idno: this.aeaUnitInfo.idno,
+          //   applicantDetailSite: this.aeaUnitInfo.applicantDetailSite,
+          //   loginName: this.aeaUnitInfo.loginName,
+          //   loginPwd: this.loginPwd2 ? hex_md5(this.loginPwd2) : this.aeaUnitInfo.loginPwd
+          // }
+
+          var param = JSON.parse(JSON.stringify(this.aeaUnitInfo))
+          param.loginPwd = this.loginPwd2 ? hex_md5(this.loginPwd2) : this.aeaUnitInfo.loginPwd
+
+          if (!this.aeaUnitInfo.idno) {
+            this.$message({
+              message: '请输入法人证件号',
+              type: 'error'
+            });
+            return;
           }
 
           // 法人证件号为空或者判断当前的法人证件号是否有改动，有改动触发校验
@@ -1001,13 +1029,7 @@
             });
             return;
           }
-          if (this.RowData.linkmanCertNo.length < 18) {
-            this.$message({
-              message: '请输入正确的身份证号',
-              type: 'error'
-            });
-            return;
-          }
+
           if (!this.RowData.linkmanCertNo) {
             this.$message({
               message: '请输入联系人身份证号',
@@ -1015,6 +1037,7 @@
             });
             return;
           }
+
           if (!this.RowData.linkmanMobilePhone) {
             this.$message({
               message: '请输入手机号',
@@ -1022,27 +1045,90 @@
             });
             return;
           }
-          if (this.RowData.linkmanMobilePhone.length < 11) {
-            this.$message({
-              message: '请输入正确的手机号',
-              type: 'error'
-            });
-            return;
+
+          // 判断当前的身份证号码是否有改动，有改动触发校验
+          if (this.RowData.linkmanCertNo != this.temporaryLinkman.linkmanCertNo) {
+            if (!this.cardReg(this.RowData.linkmanCertNo)) {
+              this.$message({
+                message: '请输入正确的身份证号',
+                type: 'error'
+              });
+              return;
+            }
           }
-          var param = {
-            // linkmanInfoId: '',
-            linkmanType: 'u',
-            unitInfoId: this.RowData.unitInfoId,
-            linkmanName: this.RowData.linkmanName,
-            linkmanCertNo: this.RowData.linkmanCertNo,
-            linkmanMobilePhone: this.RowData.linkmanMobilePhone,
-            linkmanOfficePhon: this.RowData.linkmanOfficePhon,
-            linkmanFax: this.RowData.linkmanFax,
-            linkmanMail: this.RowData.linkmanMail,
-            isBindAccount: this.RowData.isBindAccount,
-            linkmanAddr: this.RowData.linkmanAddr,
-            linkmanMemo: this.RowData.linkmanMemo
+
+          // 当前的电话号码有值并且当前的电话号码是否有改动，有改动触发校验
+          if (!!this.RowData.linkmanMobilePhone && this.RowData.linkmanMobilePhone != this.temporaryLinkman.linkmanMobilePhone) {
+            if (!this.phoneReg(this.RowData.linkmanMobilePhone)) {
+              this.$message({
+                message: '请输入正确的电话号码',
+                type: 'error'
+              });
+              return;
+            }
           }
+          // if (this.RowData.linkmanCertNo.length < 18) {
+          //   this.$message({
+          //     message: '请输入正确的身份证号',
+          //     type: 'error'
+          //   });
+          //   return;
+          // }
+          // if (!this.RowData.linkmanCertNo) {
+          //   this.$message({
+          //     message: '请输入联系人身份证号',
+          //     type: 'error'
+          //   });
+          //   return;
+          // }
+          // if (!this.RowData.linkmanMobilePhone) {
+          //   this.$message({
+          //     message: '请输入手机号',
+          //     type: 'error'
+          //   });
+          //   return;
+          // }
+          // if (this.RowData.linkmanMobilePhone.length < 11) {
+          //   this.$message({
+          //     message: '请输入正确的手机号',
+          //     type: 'error'
+          //   });
+          //   return;
+          // }
+
+          // 是否新增，反之编辑
+          if (this.isAdd) {
+            var param = {
+              // linkmanInfoId: '',
+              linkmanType: 'u',
+              unitInfoId: this.RowData.unitInfoId,
+              linkmanName: this.RowData.linkmanName,
+              linkmanCertNo: this.RowData.linkmanCertNo,
+              linkmanMobilePhone: this.RowData.linkmanMobilePhone,
+              linkmanOfficePhon: this.RowData.linkmanOfficePhon,
+              linkmanFax: this.RowData.linkmanFax,
+              linkmanMail: this.RowData.linkmanMail,
+              isBindAccount: this.RowData.isBindAccount,
+              linkmanAddr: this.RowData.linkmanAddr,
+              linkmanMemo: this.RowData.linkmanMemo
+            }
+          } else {
+            var param = {
+              linkmanInfoId: this.RowData.linkmanInfoId,
+              linkmanType: 'u',
+              unitInfoId: this.RowData.unitInfoId,
+              linkmanName: this.RowData.linkmanName,
+              linkmanCertNo: this.RowData.linkmanCertNo,
+              linkmanMobilePhone: this.RowData.linkmanMobilePhone,
+              linkmanOfficePhon: this.RowData.linkmanOfficePhon,
+              linkmanFax: this.RowData.linkmanFax,
+              linkmanMail: this.RowData.linkmanMail,
+              isBindAccount: this.RowData.isBindAccount,
+              linkmanAddr: this.RowData.linkmanAddr,
+              linkmanMemo: this.RowData.linkmanMemo
+            }
+          }
+
           request('', {
             url: ctx + 'rest/user/linkmanCascade/save',
             type: 'post',
@@ -1076,7 +1162,8 @@
 
         //验证手机号
         phoneReg: function (val) {
-          var phone = /(^1[3|4|5|7|8|9]\d{9}$)|(^09\d{8}$)/;
+          // var phone = /(^1[3|4|5|7|8|9]\d{9}$)|(^09\d{8}$)/;
+          var phone = /^1[3|4|5|7|8|9]\d{9}$/;
           return phone.test(val);
         },
         //验证身份证号

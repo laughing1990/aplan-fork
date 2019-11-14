@@ -965,6 +965,7 @@
                         </span>
                         <span class="file-icon-btn">
                           <span title="预览" class="el-icon-search" @click="filePreview(item)"></span>
+                          <span title="查看源文件" class="ag ag-preview" @click="filePreview1(item)"></span>
                           <span title="下载" class="el-icon-download" @click="downOneFile(item)"></span>
                           <span title="删除" class="el-icon-delete" @click="delOneFile(item,props.row)"></span>
                         </span>
@@ -1259,9 +1260,10 @@
           <el-table :data="uploadTableData" border @selection-change="selectionFileChange">
             <el-table-column type="selection" align="center" width="55"></el-table-column>
             <el-table-column prop="fileName" label="文件名"></el-table-column>
-            <el-table-column label="操作" align="center" width="200">
+            <el-table-column label="操作" align="center" width="310">
               <template slot-scope="scope">
                 <el-button type="primary" size="mini" :loading="loading" @click="filePreview(scope.row)">预览</el-button>
+                <el-button type="primary" size="mini" @click="filePreview1(scope.row)">查看源文件</el-button>
                 <el-button type="primary" size="mini" :disabled="getFileType(scope.row.fileName)!=='pdf'" @click="filePreview(scope.row,'pdf')">查看施工图</el-button>
               </template>
             </el-table-column>

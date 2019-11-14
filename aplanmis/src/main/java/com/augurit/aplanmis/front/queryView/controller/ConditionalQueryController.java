@@ -671,4 +671,16 @@ public class ConditionalQueryController {
             return new ResultForm(false, e.getMessage());
         }
     }
+
+    @GetMapping("/listStageConcludedApplyInfo")
+    @ApiOperation(value = "根据查询条件获取阶段已办结的申报")
+    public ResultForm listStageConcludedApplyInfo(ConditionalQueryRequest conditionalQueryRequest, Page page) {
+        try {
+            PageInfo partsInfoList = conditionalQueryService.listStageConcludedApplyInfoByPage(conditionalQueryRequest, page);
+            return new ContentResultForm<>(true, partsInfoList);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            return new ContentResultForm<>(false, null, e.getMessage());
+        }
+    }
 }

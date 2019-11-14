@@ -6,7 +6,6 @@ import com.augurit.agcloud.bpm.common.mapper.ActStoRemindReceiverMapper;
 import com.augurit.agcloud.bpm.common.service.ActStoAppinstSubflowService;
 import com.augurit.agcloud.bsc.domain.BscDicCodeItem;
 import com.augurit.agcloud.bsc.domain.BscDicCodeType;
-import com.augurit.agcloud.bsc.domain.BscDicRegion;
 import com.augurit.agcloud.bsc.sc.dic.code.service.BscDicCodeService;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.security.user.OpusLoginUser;
@@ -55,9 +54,6 @@ import java.util.stream.Collectors;
 public class ConditionalQueryServiceImpl implements ConditionalQueryService {
 
     @Autowired
-    private AplanmisOpuOmOrgAdminService opuOmOrgService;
-
-    @Autowired
     private BscDicCodeService bscDicCodeService;
 
     @Autowired
@@ -101,9 +97,6 @@ public class ConditionalQueryServiceImpl implements ConditionalQueryService {
 
     @Autowired
     OpuOmOrgMapper opuOmOrgMapper;
-
-    @Autowired
-    private RegionService regionService;
 
     @Override
     public ConditionalQueryDic applyConditionalQueryDic() {
@@ -451,10 +444,21 @@ public class ConditionalQueryServiceImpl implements ConditionalQueryService {
             List<OpuOmOrg> opuOmOrgList = opuOmOrgMapper.listBelongOrgByUserId(opusLoginUser.getUser().getUserId());
 
             Set<String> currentUserOrgIdList = new HashSet<>();
+            Set<String> selfAndParentOrgIdList = new HashSet<>();
             for(OpuOmOrg opuOmOrg: opuOmOrgList){
                 currentUserOrgIdList.add(opuOmOrg.getOrgId());
+                selfAndParentOrgIdList.add(opuOmOrg.getOrgId());
+                if(StringUtils.isNotBlank(opuOmOrg.getOrgSeq())){
+                    String[] orgIds = opuOmOrg.getOrgSeq().split(".");
+                    for(String id:orgIds){
+                        if(StringUtils.isNotBlank(id)){
+                            selfAndParentOrgIdList.add(id);
+                        }
+                    }
+                }
             }
             conditionalQueryRequest.setCurrentUserOrgIdList(currentUserOrgIdList);
+            conditionalQueryRequest.setSelfAndParentOrgIdList(selfAndParentOrgIdList);
         }
 
         if (conditionalQueryRequest.isHandler()) {
@@ -1451,6 +1455,24 @@ public class ConditionalQueryServiceImpl implements ConditionalQueryService {
         loadTaskInfo(taskList, "所有办件");
 
         return new PageInfo<>(taskList);
+    }
+
+
+    @Override
+    public PageInfo listStageConcludedApplyInfoByPage(ConditionalQueryRequest conditionalQueryRequest, Page page) throws Exception{
+        if (StringUtils.isNotBlank(conditionalQueryRequest.getIndustry())) {
+            conditionalQueryRequest.setIndustries(conditionalQueryRequest.getIndustry().trim().split(","));
+        }
+
+        changeOrderBySql(page);
+
+        PageHelper.startPage(page);
+
+        List<ApplyInfo> applyInfoList = conditionalQueryMapper.listStageConcludedApplyInfo(conditionalQueryRequest);
+
+        loadApplyinfo(applyInfoList);
+
+        return new PageInfo<>(applyInfoList);
     }
 
 

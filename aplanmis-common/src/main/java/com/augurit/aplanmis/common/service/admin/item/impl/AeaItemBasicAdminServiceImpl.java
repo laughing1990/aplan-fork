@@ -38,6 +38,7 @@ import com.augurit.aplanmis.common.exception.ResultFormException;
 import com.augurit.aplanmis.common.mapper.*;
 import com.augurit.aplanmis.common.service.admin.item.AeaItemBasicAdminService;
 import com.augurit.aplanmis.common.service.admin.item.AeaItemCondAdminService;
+import com.augurit.aplanmis.common.service.admin.par.AeaParThemeVerAdminService;
 import com.augurit.aplanmis.common.service.admin.tpl.DgActTplAppAdminService;
 import com.augurit.aplanmis.common.vo.ActTplAppTriggerAdminVo;
 import com.augurit.aplanmis.common.vo.AeaItemMatAttr;
@@ -149,6 +150,9 @@ public class AeaItemBasicAdminServiceImpl implements AeaItemBasicAdminService {
     @Autowired
     private OpuOmOrgMapper opuOmOrgMapper;
 
+    @Autowired
+    private AeaParThemeVerAdminService aeaParThemeVerAdminService;
+
     public static SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     @Value("${spring.datasource.url}")
@@ -223,6 +227,16 @@ public class AeaItemBasicAdminServiceImpl implements AeaItemBasicAdminService {
             tplApp.setAppComment(aeaItemBasic.getItemName());
             actTplAppMapper.updateActTplApp(tplApp);
         }
+        try {
+            AeaItemBasic oldBaisc = aeaItemBasicMapper.getAeaItemBasicById(aeaItemBasic.getItemBasicId());
+            if(oldBaisc != null ){
+                if((oldBaisc.getItemName() != null && aeaItemBasic.getItemName() != null &&!aeaItemBasic.getItemName().equals(oldBaisc.getItemName())) || (aeaItemBasic.getDueNum().intValue() != oldBaisc.getDueNum().intValue())){
+                    aeaParThemeVerAdminService.updateDiagramActivityName(aeaItemBasic);
+                }
+            }
+        } catch (Exception e) {
+            logger.error("",e);
+        }
         aeaItemBasic.setModifier(SecurityContext.getCurrentUserId());
         aeaItemBasic.setModifyTime(new Date());
         aeaItemBasicMapper.updateAeaItemBasic(aeaItemBasic);
@@ -275,10 +289,12 @@ public class AeaItemBasicAdminServiceImpl implements AeaItemBasicAdminService {
         if (StringUtils.isNotBlank(id)) {
             String rootOrgId = SecurityContext.getCurrentOrgId();
             aeaItemVerMapper.deleteAeaItemVerByItemId(id, rootOrgId);
+            aeaParThemeVerAdminService.removeActivityFromDiagramInAllAeaThemeVer(id);
             List<AeaItemBasic> allChildItems = aeaItemBasicMapper.listAllChildItems(id);
             if (allChildItems != null && allChildItems.size() > 0) {
                 for (AeaItemBasic item : allChildItems) {
                     aeaItemVerMapper.deleteAeaItemVerByItemId(item.getItemId(), rootOrgId);
+                    aeaParThemeVerAdminService.removeActivityFromDiagramInAllAeaThemeVer(item.getItemId());
                 }
             }
         }

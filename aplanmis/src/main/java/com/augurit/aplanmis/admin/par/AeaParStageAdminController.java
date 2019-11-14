@@ -151,8 +151,7 @@ public class AeaParStageAdminController {
     public ModelAndView frontCheckManage(ModelMap modelMap, String busiType, String busiId) {
 
         handleThemeVerIsEditable(modelMap, busiType, busiId);
-        return new ModelAndView("ui-jsp/kitymind/stage/frontCheck/front_check_manage_index");
-
+        return new ModelAndView("ui-jsp/kitymind/stage/oneform/par_stage_front_check");
     }
 
     /**
@@ -223,10 +222,19 @@ public class AeaParStageAdminController {
     public ResultForm updateAeaParStage(AeaParStage aeaParStage) {
 
         logger.debug("更新客户档案信息Form对象，对象为：{}", aeaParStage);
+        AeaParStage oldStage = aeaParStageAdminService.getAeaParStageById(aeaParStage.getStageId());
         aeaParStageAdminService.updateAeaParStage(aeaParStage);
+        if(oldStage != null && ( oldStage.getParentId() == null || !oldStage.getParentId().equals(aeaParStage.getParentId()))){
+            try {
+                oldStage.setParentId(aeaParStage.getParentId());
+                aeaParThemeVerAdminService.bindAssitStage(oldStage);
+            } catch (Exception e) {
+                logger.error("", e);
+            }
+        }
+
         return new ResultForm(true);
     }
-
 
     /**
      * 保存或编辑
@@ -240,50 +248,12 @@ public class AeaParStageAdminController {
 
             aeaParStageAdminService.updateAeaParStage(aeaParStage);
 
-            AeaParThemeVer themeVer = aeaParThemeVerAdminService.getAeaParThemeVerById(aeaParStage.getThemeVerId());
-            if(themeVer != null && StringUtils.isNotBlank(themeVer.getThemeVerDiagram())){
-                try{
-                    JSONObject json = JSONObject.parseObject(themeVer.getThemeVerDiagram());
-                    JSONArray cells = (JSONArray) json.get("cells");
-                    Map cell = aeaParThemeVerAdminService.getCellsEleById(aeaParStage.getStageId(), cells);
-                    if(cell != null && cell.get("attrs") != null && ((Map) cell.get("attrs")).get("stage") != null){
-                        Map stage = (Map) ((Map) cell.get("attrs")).get("stage");
-                        if(stage != null){
-                            stage.put("stageCode", aeaParStage.getStageCode());
-                            stage.put("dueNum", aeaParStage.getDueNum());
-                            stage.put("isNode", aeaParStage.getIsNode());
-                            stage.put("handWay", aeaParStage.getHandWay());
-                            stage.put("lcbsxlx", aeaParStage.getLcbsxlx());
-                            stage.put("isOptionItem", aeaParStage.getIsOptionItem());
-                            stage.put("isSelItem", aeaParStage.getIsSelItem());
-                            stage.put("isFrontCheckItem", aeaParStage.getIsCheckItem());
-                            stage.put("useOneForm", aeaParStage.getUseOneForm());
-                            stage.put("dueUnit", aeaParStage.getDueUnit());
-                            stage.put("dybzspjdxh", aeaParStage.getDybzspjdxh());
-                            stage.put("isShowItem", aeaParStage.getIsShowItem());
-
-                            Map attrs = (Map) cell.get("attrs");
-                            // 4.更换和添加中文
-                            String oldName = ((Map) cell.get("lanes")).get("label").toString();
-                            ((Map) cell.get("lanes")).put("label", aeaParStage.getStageName());
-                            cell.put("auEleName", aeaParStage.getStageName());
-
-                            ((Map)attrs.get(".content")).put("html", aeaParStage.getStageName());
-                            themeVer.setThemeVerDiagram(JsonUtils.toJson(json));
-                            aeaParThemeVerAdminService.updateAeaParThemeVer(themeVer);
-                        }
-                    }
-                }catch (Exception e){
-                    form.setSuccess(false);
-                    form.setMessage("已更新阶段，但对应的流程图更新不成功，请确认流程图是否正确。");
-                    logger.error("", e);
-                    return form;
-                }
-            }
+            aeaParThemeVerAdminService.updateThemeVerDiagramStage(aeaParStage);
         } else {
 
             aeaParStage.setStageId(UUID.randomUUID().toString());
             aeaParStageAdminService.saveAeaParStage(aeaParStage);
+            aeaParThemeVerAdminService.insertThemeVerDiagramStage(aeaParStage);
         }
         return new ContentResultForm<>(true, aeaParStage);
     }

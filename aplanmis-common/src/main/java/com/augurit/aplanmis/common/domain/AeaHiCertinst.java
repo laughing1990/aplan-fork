@@ -1,18 +1,16 @@
 package com.augurit.aplanmis.common.domain;
 
-import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
-
 import com.augurit.agcloud.bsc.domain.BscAttDetail;
-import com.augurit.agcloud.framework.security.SecurityContext;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
+
+import javax.validation.constraints.Size;
+import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
 
 /**
  * 电子证照实例表-模型
@@ -115,6 +113,10 @@ public class AeaHiCertinst implements Serializable {
     private String memo;
 
     private String managementScope;//业务范围
+
+    @ApiModelProperty(value = "用证码")
+    private String authCode;
+
     //额外字段
     @ApiModelProperty(name = "bscAttDetails", value = "附件列表", hidden = true)
     private List<BscAttDetail> bscAttDetails;

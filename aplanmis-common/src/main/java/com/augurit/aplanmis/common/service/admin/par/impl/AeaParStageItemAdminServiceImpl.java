@@ -1,21 +1,17 @@
 package com.augurit.aplanmis.common.service.admin.par.impl;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.augurit.agcloud.framework.constant.Status;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.ui.pager.EasyuiPageInfo;
 import com.augurit.agcloud.framework.ui.pager.PageHelper;
 import com.augurit.agcloud.framework.ui.ztree.ZtreeNode;
+import com.augurit.agcloud.framework.util.JsonUtils;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.agcloud.opus.common.domain.OpuOmOrg;
 import com.augurit.agcloud.opus.common.mapper.OpuOmOrgMapper;
-import com.augurit.aplanmis.common.domain.AeaItem;
-import com.augurit.aplanmis.common.domain.AeaItemBasic;
-import com.augurit.aplanmis.common.domain.AeaItemVer;
-import com.augurit.aplanmis.common.domain.AeaParStage;
-import com.augurit.aplanmis.common.domain.AeaParStageItem;
-import com.augurit.aplanmis.common.domain.AeaParStageItemIn;
-import com.augurit.aplanmis.common.domain.AeaParStateItem;
-import com.augurit.aplanmis.common.domain.AeaProjInfo;
+import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.mapper.AeaItemBasicMapper;
 import com.augurit.aplanmis.common.mapper.AeaItemMapper;
 import com.augurit.aplanmis.common.mapper.AeaItemVerMapper;
@@ -25,6 +21,7 @@ import com.augurit.aplanmis.common.mapper.AeaParStageMapper;
 import com.augurit.aplanmis.common.mapper.AeaParStateItemMapper;
 import com.augurit.aplanmis.common.mapper.AeaProjInfoMapper;
 import com.augurit.aplanmis.common.service.admin.par.AeaParStageItemAdminService;
+import com.augurit.aplanmis.common.service.admin.par.AeaParThemeVerAdminService;
 import com.augurit.aplanmis.common.service.item.AeaItemBasicService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
@@ -78,6 +75,9 @@ public class AeaParStageItemAdminServiceImpl implements AeaParStageItemAdminServ
 
     @Autowired
     private AeaProjInfoMapper aeaProjInfoMapper;
+
+    @Autowired
+    private AeaParThemeVerAdminService aeaParThemeVerAdminService;
 
     @Override
     public void saveAeaParStageItem(AeaParStageItem aeaParStageItem) {
@@ -205,6 +205,19 @@ public class AeaParStageItemAdminServiceImpl implements AeaParStageItemAdminServ
 
         AeaParStageItem parStageItem = new AeaParStageItem();
         if (StringUtils.isNotBlank(stageId)&&StringUtils.isNotBlank(isOptionItem)) {
+
+            AeaParStage queryStage = new AeaParStage();
+            queryStage.setStageId(stageId);
+            Map<String, Object> map = aeaParThemeVerAdminService.getAeaParThemeVerAndCells(queryStage);
+            JSONObject diagram  = null;
+            JSONArray cells = null;
+            AeaParThemeVer themeVer= null;
+            if(map != null && map.get("cells") != null){
+                diagram = (JSONObject) map.get("aeaParThemeVerDiagram");
+                themeVer = (AeaParThemeVer) map.get("aeaParThemeVer");
+                cells = (JSONArray) diagram.get("cells");
+            }
+
             parStageItem.setStageId(stageId);
             parStageItem.setIsOptionItem(isOptionItem);
             List<AeaParStageItem> stageItemList = aeaParStageItemMapper.listAeaParStageItem(parStageItem);
@@ -216,6 +229,21 @@ public class AeaParStageItemAdminServiceImpl implements AeaParStageItemAdminServ
                     aeaParStateItemMapper.deleteAeaParStateItem(aeaParStageItem.getStageItemId());
                     // 阶段事项
                     aeaParStageItemMapper.deleteAeaParStageItem(aeaParStageItem.getStageItemId());
+                    //从全景图中删除对应的事项
+                    aeaParThemeVerAdminService.removeEleFromDiagram(cells, queryStage, aeaParStageItem.getStageItemId(), isOptionItem);
+                }
+
+                if(themeVer != null){
+                    try{
+                        aeaParThemeVerAdminService.ajaustPoolHeightAndReturnMaxHeight(cells,"bpmn.SPool");
+                        aeaParThemeVerAdminService.ajaustPoolHeightAndReturnMaxHeight(cells,"bpmn.Pool");
+                        aeaParThemeVerAdminService.ajaustPoolHeightAndReturnMaxHeight(cells,"bpmn.HPool");
+                        aeaParThemeVerAdminService.setPoolHeightInCommon(cells,"bpmn.HPool");
+                        themeVer.setThemeVerDiagram(JsonUtils.toJson(diagram));
+                        aeaParThemeVerAdminService.updateAeaParThemeVer(themeVer);
+                    }catch (Exception e){
+                        logger.error("diagramException:", e);
+                    }
                 }
             }
         }
@@ -233,6 +261,25 @@ public class AeaParStageItemAdminServiceImpl implements AeaParStageItemAdminServ
     public void batchSaveStageItem(String stageId, String[] itemIds, String[] sortNos,String isOptionItem) {
 
         if (StringUtils.isNotBlank(stageId)) {
+            AeaParStage queryStage = new AeaParStage();
+            queryStage.setStageId(stageId);
+            Map<String, Object> map = aeaParThemeVerAdminService.getAeaParThemeVerAndCells(queryStage);
+            AeaParThemeVer themeVer = null;
+            JSONObject diagram  = null;
+            JSONArray cells = null;
+            Map activity = null;
+            Map pool = null;
+            Map hPool = null;
+            if(map != null && map.get("cells") != null){
+                themeVer = (AeaParThemeVer) map.get("aeaParThemeVer");
+                diagram = (JSONObject) map.get("aeaParThemeVerDiagram");
+                cells = (JSONArray) diagram.get("cells");
+                activity = (Map) map.get("activity");
+                pool = (Map) map.get("pool");
+                hPool = (Map) map.get("hPool");
+            }
+
+
             List<String> itemIdAndVerIdList = new ArrayList<>(Arrays.asList(itemIds));
             List<Map<String,String>> itemMapList = new ArrayList<>();
             itemIdAndVerIdList.forEach(s -> {
@@ -258,6 +305,8 @@ public class AeaParStageItemAdminServiceImpl implements AeaParStageItemAdminServ
                         aeaParStateItemMapper.deleteAeaParStateItem(vo.getStageItemId());
                         // 阶段事项
                         aeaParStageItemMapper.deleteAeaParStageItem(vo.getStageItemId());
+                        //从全景图中删除对应的事项
+                        aeaParThemeVerAdminService.removeEleFromDiagram(cells, queryStage, vo.getStageItemId(), isOptionItem);
                     }else{
                         // 旧的数据
                         oldItemIdList.add(vo.getItemId()+"*"+vo.getItemVerId());
@@ -284,6 +333,17 @@ public class AeaParStageItemAdminServiceImpl implements AeaParStageItemAdminServ
                         stageItem1.setIsOptionItem(isOptionItem);
                         aeaParStageItemMapper.insertAeaParStageItem(stageItem1);
 
+                        try {
+                            AeaItemBasic basic = aeaItemBasicMapper.getOneByItemVerId(stageItem1.getItemVerId(), SecurityContext.getCurrentOrgId());
+                            stageItem1.setItemName(basic.getItemName());
+                            stageItem1.setDueNum(String.valueOf(basic.getDueNum().intValue()));
+                            aeaParThemeVerAdminService.addItemToDiagram(cells, queryStage, stageItem1, isOptionItem, hPool, activity, pool);
+                        } catch (Exception e) {
+                            logger.error("DiagramException", e);
+                            e.printStackTrace();
+                        }
+
+
                     // 更新数据
                     }else{
                         if(oldStageItemList!=null&&oldStageItemList.size()>0){
@@ -298,8 +358,23 @@ public class AeaParStageItemAdminServiceImpl implements AeaParStageItemAdminServ
                     }
                 }
             }
+
+            if(themeVer != null){
+                try{
+                    aeaParThemeVerAdminService.ajaustPoolHeightAndReturnMaxHeight(cells,"bpmn.SPool");
+                    aeaParThemeVerAdminService.ajaustPoolHeightAndReturnMaxHeight(cells,"bpmn.Pool");
+                    aeaParThemeVerAdminService.ajaustPoolHeightAndReturnMaxHeight(cells,"bpmn.HPool");
+                    aeaParThemeVerAdminService.setPoolHeightInCommon(cells,"bpmn.HPool");
+                    themeVer.setThemeVerDiagram(JsonUtils.toJson(diagram));
+                    aeaParThemeVerAdminService.updateAeaParThemeVer(themeVer);
+                }catch (Exception e){
+                    logger.error("diagramException:", e);
+                }
+            }
         }
     }
+
+
 
     @Override
     public List<ZtreeNode> listStageItemTreeByStageId(String stageId) {
@@ -554,5 +629,4 @@ public class AeaParStageItemAdminServiceImpl implements AeaParStageItemAdminServ
         }
         return null;
     }
-
 }

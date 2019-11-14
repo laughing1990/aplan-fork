@@ -182,5 +182,13 @@ public interface ConditionalQueryMapper {
      */
     List<TaskInfo> listWindowItemOutScope(ConditionalQueryRequest conditionalQueryRequest) throws Exception;
 
+    /**
+     * 阶段办结申报
+     * @param conditionalQueryRequest
+     * @return
+     * @throws Exception
+     */
+    List<ApplyInfo> listStageConcludedApplyInfo(ConditionalQueryRequest conditionalQueryRequest) throws Exception;
+
 
 }

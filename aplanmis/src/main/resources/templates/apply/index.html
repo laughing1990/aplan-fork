@@ -940,7 +940,9 @@
                     <template slot-scope="scope">
                       <el-form :model="stateSelVal" class="expand-coreItem">
                         <el-form-item class="sel-status-item" :required="item.mustAnswer==1"
-                          v-for="(item,index) in scope.row.questionStates" :key="index" :label="item.stateName">
+                                      v-if="item.itemShowFlag"
+                                      v-for="(item,index) in scope.row.questionStates"
+                                      :key="index" :label="item.stateName">
                           <p class="status-label">
                             <el-tooltip class="item" effect="light" :content="item.stateMemo?item.stateMemo:'无'"
                               placement="right">
@@ -951,6 +953,7 @@
                             <el-radio-group v-model="item.selectAnswerId">
                               <el-radio v-for="(itemAns,ind) in item.answerStates"
                                         :key="ind"
+                                        v-if="itemAns.isProcStartCond!='1'"
                                 @change="getCoreItemsStateMats(scope.row,item,itemAns,index,'parallelItem')"
                                 :value="itemAns.itemStateId" :label="itemAns.itemStateId" name="answer">
                                 {{itemAns.stateName}}</el-radio>
@@ -958,7 +961,9 @@
                           </template>
                           <template v-else>
                             <el-checkbox-group v-model="item.selectAnswerId" :required="item.mustAnswer==1">
-                              <el-checkbox v-for="(itemAns,indAns) in item.answerStates" :key="indAns" :value="itemAns.itemStateId"
+                              <el-checkbox v-for="(itemAns,indAns) in item.answerStates"
+                                           v-if="itemAns.isProcStartCond!='1'"
+                                           :key="indAns" :value="itemAns.itemStateId"
                                 @change="function(value){getCoreItemsStateMats(scope.row,item,itemAns,index,'parallelItem',value)}"
                                 :label="itemAns.itemStateId" name="answer">{{itemAns.stateName}}</el-checkbox>
                             </el-checkbox-group>
@@ -1178,6 +1183,7 @@
                         </span>
                         <span class="file-icon-btn">
                           <span title="预览" class="el-icon-search" @click="filePreview(item)"></span>
+                          <span title="查看源文件" class="ag ag-preview" @click="filePreview1(item)"></span>
                           <span title="下载" class="el-icon-download" @click="downOneFile(item)"></span>
                           <span title="删除" class="el-icon-delete" @click="delOneFile(item,scope.row)"></span>
                         </span>
@@ -1486,9 +1492,11 @@
             <el-table-column type="selection" align="center" width="55">
             </el-table-column>
             <el-table-column prop="fileName" label="文件名"></el-table-column>
-            <el-table-column label="操作" align="center" width="200">
+            <el-table-column label="操作" align="center" width="310">
               <template slot-scope="scope">
                 <el-button type="primary" :loading="loading" size="mini" @click="filePreview(scope.row)">预览</el-button>
+                <el-button type="primary" size="mini" @click="filePreview1(scope.row)">查看源文件</el-button>
+
                 <el-button type="primary" size="mini" :disabled="getFileType(scope.row.fileName)!=='pdf'" @click="filePreview(scope.row,'pdf')">查看施工图</el-button>
               </template>
             </el-table-column>

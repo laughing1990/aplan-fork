@@ -207,6 +207,7 @@
         asp.PROCINST_ID AND tinst.ORG_ID = #{currentOrgId}
         WHERE
         ahap_123.IS_SERIES_APPROVE = '0'
+        AND ahap_123.IS_DELETED != '1'
         <if test="isConcluding != null and isConcluding != ''">
             AND tinst.IS_CONCLUDING = #{isConcluding}
         </if>
@@ -247,7 +248,7 @@
             AND tinst.INST_STATE = #{instState}
         </if>
 
-        <if test="approvalStage == null or approvalStage == '' ">
+        <if test="(approvalStage == null or approvalStage == '') and (theme == null or theme == '' ) ">
             UNION
             SELECT
             ahap_123.APPLYINST_ID AS applyinstId,
@@ -343,6 +344,7 @@
             #{currentOrgId}
             WHERE
             ahap_123.IS_SERIES_APPROVE = '1'
+            AND ahap_123.IS_DELETED != '1'
             <if test="isConcluding != null and isConcluding != ''">
                 AND tinst.IS_CONCLUDING = #{isConcluding}
             </if>
@@ -423,7 +425,6 @@
         ai_123.DUE_NUM AS dueNum,
         tinst.PROC_INST_ID AS procInstId
         FROM AEA_HI_ITEMINST ahi_123
-        LEFT JOIN AEA_ITEM_BASIC ai_123 ON ahi_123.ITEM_ID = ai_123.ITEM_ID AND ahi_123.ITEM_VER_ID = ai_123.ITEM_VER_ID
         <if test="handler">
 
             INNER JOIN (
@@ -434,10 +435,9 @@
             ahi_123.ITEMINST_ID
             FROM
             AEA_HI_ITEMINST ahi_123
-            LEFT JOIN AEA_HI_PAR_STAGEINST ahs_123 ON ahi_123.STAGEINST_ID = ahs_123.STAGEINST_ID
-            LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
-            LEFT JOIN act_sto_appinst app ON app.MASTER_RECORD_ID = ahap_123.APPLYINST_ID
-            LEFT JOIN act_hi_taskinst t on t.proc_inst_id_ = app.PROCINST_ID
+            INNER JOIN AEA_HI_PAR_STAGEINST ahs_123 ON ahi_123.STAGEINST_ID = ahs_123.STAGEINST_ID
+            INNER JOIN act_sto_appinst app ON app.MASTER_RECORD_ID = ahs_123.APPLYINST_ID
+            INNER JOIN act_hi_taskinst t on t.proc_inst_id_ = app.PROCINST_ID
             WHERE
             ahi_123.IS_SERIES_APPROVE = '0'
             AND t.ASSIGNEE_ = #{loginName}
@@ -446,11 +446,10 @@
             ahi_123.ITEMINST_ID
             FROM
             AEA_HI_ITEMINST ahi_123
-            LEFT JOIN AEA_HI_PAR_STAGEINST ahs_123 ON ahi_123.STAGEINST_ID = ahs_123.STAGEINST_ID
-            LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
-            LEFT JOIN act_sto_appinst app ON app.MASTER_RECORD_ID = ahap_123.APPLYINST_ID
-            LEFT JOIN act_sto_appinst_subflow apps ON apps.APPINST_ID = app.APPINST_ID
-            LEFT JOIN act_hi_taskinst t on t.proc_inst_id_ = apps.SUBFLOW_PROCINST_ID
+            INNER JOIN AEA_HI_PAR_STAGEINST ahs_123 ON ahi_123.STAGEINST_ID = ahs_123.STAGEINST_ID
+            INNER JOIN act_sto_appinst app ON app.MASTER_RECORD_ID = ahs_123.APPLYINST_ID
+            INNER JOIN act_sto_appinst_subflow apps ON apps.APPINST_ID = app.APPINST_ID
+            INNER JOIN act_hi_taskinst t on t.proc_inst_id_ = apps.SUBFLOW_PROCINST_ID
             WHERE
             ahi_123.IS_SERIES_APPROVE = '0'
             AND t.ASSIGNEE_ = #{loginName}
@@ -459,6 +458,7 @@
             ) task ON task.ITEMINST_ID = ahi_123.ITEMINST_ID
 
         </if>
+        LEFT JOIN AEA_ITEM_BASIC ai_123 ON ahi_123.ITEM_ID = ai_123.ITEM_ID AND ahi_123.ITEM_VER_ID = ai_123.ITEM_VER_ID
         LEFT JOIN AEA_HI_PAR_STAGEINST ahs_123 ON ahi_123.STAGEINST_ID = ahs_123.STAGEINST_ID
         LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
         <include refid="leftJoinApplyinstProj">
@@ -469,46 +469,15 @@
         LEFT JOIN act_sto_timerule_inst tinst ON tinst.PROC_INST_ID = ahi_123.PROCINST_ID AND tinst.ORG_ID =
         #{currentOrgId}
         WHERE ahi_123.IS_SERIES_APPROVE = '0'
+        AND ahap_123.IS_DELETED != '1'
         <if test="isConcluding != null and isConcluding != ''">
             AND tinst.IS_CONCLUDING = #{isConcluding}
         </if>
-
-
         <if test="entrust">
-            AND (
-            <foreach collection="currentUserOrgIdList" item="item" index="index" open=" " separator=" " close=" ">
-
-                <if test="index == 0">
-                    (
-                    ahi_123.APPROVE_ORG_ID = #{item}
-                    OR
-                    ahi_123.APPROVE_ORG_ID IN (
-                    select t.PARENT_ORG_ID AS ORG_ID from
-                    (select (select @id:=group_concat(PARENT_ORG_ID separator ',') from opu_om_org where
-                    find_in_set(ORG_ID,@id)) PARENT_ORG_ID
-                    from opu_om_org,(select @id:=#{item}) vars
-                    where @id is not null
-                    )t where t.PARENT_ORG_ID is not null
-                    )
-                    )
-                </if>
-                <if test="index != 0">
-                    OR (
-                    ahi_123.APPROVE_ORG_ID = #{item}
-                    OR
-                    ahi_123.APPROVE_ORG_ID IN (
-                    select t.PARENT_ORG_ID AS ORG_ID from
-                    (select (select @id:=group_concat(PARENT_ORG_ID separator ',') from opu_om_org where
-                    find_in_set(ORG_ID,@id)) PARENT_ORG_ID
-                    from opu_om_org,(select @id:=#{item}) vars
-                    where @id is not null
-                    )t where t.PARENT_ORG_ID is not null
-                    )
-                    )
-                </if>
-
+            AND ahi_123.APPROVE_ORG_ID IN
+            <foreach collection="selfAndParentOrgIdList" item="item" index="index" open=" ( " separator=", " close=" ) ">
+                #{item}
             </foreach>
-            )
         </if>
 
         <if test="theme != null and theme != '' ">
@@ -547,7 +516,7 @@
         <if test="instState != null and instState != '' ">
             AND tinst.INST_STATE = #{instState}
         </if>
-        <if test="approvalStage == null or approvalStage == '' ">
+        <if test="(approvalStage == null or approvalStage == '') and (theme == null or theme == '' ) ">
             UNION
             SELECT
             ahi_123.ITEMINST_ID AS iteminstId,
@@ -571,8 +540,6 @@
             ai_123.DUE_NUM AS dueNum,
             tinst.PROC_INST_ID AS procInstId
             FROM AEA_HI_ITEMINST ahi_123
-            LEFT JOIN AEA_ITEM_BASIC ai_123 ON ahi_123.ITEM_ID = ai_123.ITEM_ID AND ahi_123.ITEM_VER_ID =
-            ai_123.ITEM_VER_ID
             <if test="handler">
 
                 INNER JOIN (
@@ -583,10 +550,9 @@
                 ahi_123.ITEMINST_ID
                 FROM
                 AEA_HI_ITEMINST ahi_123
-                LEFT JOIN AEA_HI_SERIESINST ahs_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
-                LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
-                LEFT JOIN act_sto_appinst app ON app.MASTER_RECORD_ID = ahap_123.APPLYINST_ID
-                LEFT JOIN act_hi_taskinst t on t.proc_inst_id_ = app.PROCINST_ID
+                INNER JOIN AEA_HI_SERIESINST ahs_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
+                INNER JOIN act_sto_appinst app ON app.MASTER_RECORD_ID = ahs_123.APPLYINST_ID
+                INNER JOIN act_hi_taskinst t on t.proc_inst_id_ = app.PROCINST_ID
                 WHERE
                 ahi_123.IS_SERIES_APPROVE = '1'
                 AND t.ASSIGNEE_ = #{loginName}
@@ -595,11 +561,10 @@
                 ahi_123.ITEMINST_ID
                 FROM
                 AEA_HI_ITEMINST ahi_123
-                LEFT JOIN AEA_HI_SERIESINST ahs_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
-                LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
-                LEFT JOIN act_sto_appinst app ON app.MASTER_RECORD_ID = ahap_123.APPLYINST_ID
-                LEFT JOIN act_sto_appinst_subflow apps ON apps.APPINST_ID = app.APPINST_ID
-                LEFT JOIN act_hi_taskinst t on t.proc_inst_id_ = apps.SUBFLOW_PROCINST_ID
+                INNER JOIN AEA_HI_SERIESINST ahs_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
+                INNER JOIN act_sto_appinst app ON app.MASTER_RECORD_ID = ahs_123.APPLYINST_ID
+                INNER JOIN act_sto_appinst_subflow apps ON apps.APPINST_ID = app.APPINST_ID
+                INNER JOIN act_hi_taskinst t on t.proc_inst_id_ = apps.SUBFLOW_PROCINST_ID
                 WHERE
                 ahi_123.IS_SERIES_APPROVE = '1'
                 AND t.ASSIGNEE_ = #{loginName}
@@ -609,6 +574,8 @@
                 ) task ON task.ITEMINST_ID = ahi_123.ITEMINST_ID
 
             </if>
+            LEFT JOIN AEA_ITEM_BASIC ai_123 ON ahi_123.ITEM_ID = ai_123.ITEM_ID AND ahi_123.ITEM_VER_ID =
+            ai_123.ITEM_VER_ID
             LEFT JOIN AEA_HI_SERIESINST ahs_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
             LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
             <include refid="leftJoinApplyinstProj">
@@ -616,46 +583,16 @@
             LEFT JOIN act_sto_timerule_inst tinst ON tinst.PROC_INST_ID = ahi_123.PROCINST_ID AND tinst.ORG_ID =
             #{currentOrgId}
             WHERE ahi_123.IS_SERIES_APPROVE = '1'
-
+            AND ahap_123.IS_DELETED != '1'
             <if test="isConcluding != null and isConcluding != ''">
                 AND tinst.IS_CONCLUDING = #{isConcluding}
             </if>
 
             <if test="entrust">
-                AND (
-                <foreach collection="currentUserOrgIdList" item="item" index="index" open=" " separator=" " close=" ">
-
-                    <if test="index == 0">
-                        (
-                        ahi_123.APPROVE_ORG_ID = #{item}
-                        OR
-                        ahi_123.APPROVE_ORG_ID IN (
-                        select t.PARENT_ORG_ID AS ORG_ID from
-                        (select (select @id:=group_concat(PARENT_ORG_ID separator ',') from opu_om_org where
-                        find_in_set(ORG_ID,@id)) PARENT_ORG_ID
-                        from opu_om_org,(select @id:=#{item}) vars
-                        where @id is not null
-                        )t where t.PARENT_ORG_ID is not null
-                        )
-                        )
-                    </if>
-                    <if test="index != 0">
-                        OR (
-                        ahi_123.APPROVE_ORG_ID = #{item}
-                        OR
-                        ahi_123.APPROVE_ORG_ID IN (
-                        select t.PARENT_ORG_ID AS ORG_ID from
-                        (select (select @id:=group_concat(PARENT_ORG_ID separator ',') from opu_om_org where
-                        find_in_set(ORG_ID,@id)) PARENT_ORG_ID
-                        from opu_om_org,(select @id:=#{item}) vars
-                        where @id is not null
-                        )t where t.PARENT_ORG_ID is not null
-                        )
-                        )
-                    </if>
-
+                AND ahi_123.APPROVE_ORG_ID IN
+                <foreach collection="selfAndParentOrgIdList" item="item" index="index" open=" ( " separator=", " close=" ) ">
+                    #{item}
                 </foreach>
-                )
             </if>
 
             <if test="_databaseId == 'oracle'">
@@ -704,92 +641,118 @@
     </select>
 
     <select id="queryApplyInfoTaskId" resultType="java.lang.String">
-		SELECT
-			ahti_123.ID_ AS TASK_ID
-		FROM
-			AEA_HI_APPLYINST ahap_123
-		LEFT JOIN act_sto_appinst asa_123 ON asa_123.master_record_id = ahap_123.APPLYINST_ID
-		LEFT JOIN act_hi_procinst ahp_123 ON ahp_123.PROC_INST_ID_ = asa_123.procinst_id
-		LEFT JOIN act_hi_taskinst ahti_123 ON ahti_123.PROC_INST_ID_ = ahp_123.ID_
-		WHERE
-			ahap_123.APPLYINST_ID = #{applyinstId}
-        AND ahti_123.ID_ IS NOT NULL
-		UNION
-			SELECT
-				ahti_123.ID_ TASK_ID
-			FROM
-				AEA_HI_APPLYINST ahap_123
-			LEFT JOIN act_sto_appinst asa_123 ON asa_123.master_record_id = ahap_123.APPLYINST_ID
-			LEFT JOIN act_hi_procinst ahp_123 ON ahp_123.PROC_INST_ID_ = asa_123.procinst_id
-			LEFT JOIN act_sto_appinst_subflow asas_123 ON asas_123.SUBFLOW_PROCINST_ID = ahp_123.PROC_INST_ID_
-			LEFT JOIN act_hi_taskinst ahti_123 ON ahti_123.PROC_INST_ID_ = ahp_123.ID_
-			WHERE
-			    ahap_123.APPLYINST_ID = #{applyinstId}
-			AND ahti_123.ID_ IS NOT NULL
+        (SELECT
+            ahti_123.ID_ AS TASK_ID
+            FROM
+            AEA_HI_APPLYINST ahap_123
+            LEFT JOIN act_sto_appinst asa_123 ON asa_123.master_record_id = ahap_123.APPLYINST_ID
+            LEFT JOIN act_hi_procinst ahp_123 ON ahp_123.PROC_INST_ID_ = asa_123.procinst_id
+            LEFT JOIN act_hi_taskinst ahti_123 ON ahti_123.PROC_INST_ID_ = ahp_123.ID_
+            WHERE
+            ahap_123.APPLYINST_ID = #{applyinstId}
+            AND ahti_123.ID_ IS NOT NULL
+
+            <if test="_databaseId == 'mysql'">
+                LIMIT 1
+            </if>
+        )
+        UNION
+        (
+            SELECT
+            ahti_123.ID_ TASK_ID
+            FROM
+            AEA_HI_APPLYINST ahap_123
+            LEFT JOIN act_sto_appinst asa_123 ON asa_123.master_record_id = ahap_123.APPLYINST_ID
+            LEFT JOIN act_sto_appinst_subflow asas_123 ON asas_123.APPINST_ID = asa_123.APPINST_ID
+            LEFT JOIN act_hi_procinst ahp_123 ON ahp_123.PROC_INST_ID_ = asas_123.SUBFLOW_PROCINST_ID
+            LEFT JOIN act_hi_taskinst ahti_123 ON ahti_123.PROC_INST_ID_ = ahp_123.ID_
+            WHERE
+            ahap_123.APPLYINST_ID = #{applyinstId}
+            AND ahti_123.ID_ IS NOT NULL
+            <if test="_databaseId == 'mysql'">
+                LIMIT 1
+            </if>
+        )
     </select>
 
     <select id="queryItemInfoTaskId" resultType="java.lang.String">
-        SELECT
-        t.ID_ TASK_ID
-        FROM
-        AEA_HI_ITEMINST ahi_123
-        LEFT JOIN AEA_HI_PAR_STAGEINST ahs_123 ON ahi_123.STAGEINST_ID = ahs_123.STAGEINST_ID
-        LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
-        LEFT JOIN act_sto_appinst app ON app.MASTER_RECORD_ID = ahap_123.APPLYINST_ID
-        LEFT JOIN act_hi_taskinst t on t.proc_inst_id_ = app.PROCINST_ID
-        WHERE
-        ahi_123.IS_SERIES_APPROVE = '0'
-        <if test="loginName != null and loginName != '' ">
-            AND t.ASSIGNEE_ = #{loginName}
-        </if>
-        AND ahi_123.ITEMINST_ID = #{iteminstId}
+        (
+            SELECT
+            t.ID_ TASK_ID
+            FROM
+            AEA_HI_ITEMINST ahi_123
+            LEFT JOIN AEA_HI_PAR_STAGEINST ahs_123 ON ahi_123.STAGEINST_ID = ahs_123.STAGEINST_ID
+            LEFT JOIN act_sto_appinst app ON app.MASTER_RECORD_ID = ahs_123.APPLYINST_ID
+            LEFT JOIN act_hi_taskinst t on t.proc_inst_id_ = app.PROCINST_ID
+            WHERE
+            ahi_123.IS_SERIES_APPROVE = '0'
+            <if test="loginName != null and loginName != '' ">
+                AND t.ASSIGNEE_ = #{loginName}
+            </if>
+            AND ahi_123.ITEMINST_ID = #{iteminstId}
+            <if test="_databaseId == 'mysql'">
+                LIMIT 1
+            </if>
+        )
         UNION
-        SELECT
-        t.ID_ TASK_ID
-        FROM
-        AEA_HI_ITEMINST ahi_123
-        LEFT JOIN AEA_HI_PAR_STAGEINST ahs_123 ON ahi_123.STAGEINST_ID = ahs_123.STAGEINST_ID
-        LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
-        LEFT JOIN act_sto_appinst app ON app.MASTER_RECORD_ID = ahap_123.APPLYINST_ID
-        LEFT JOIN act_sto_appinst_subflow apps ON apps.APPINST_ID = app.APPINST_ID
-        LEFT JOIN act_hi_taskinst t on t.proc_inst_id_ = apps.SUBFLOW_PROCINST_ID
-        WHERE
-        ahi_123.IS_SERIES_APPROVE = '0'
-        <if test="loginName != null and loginName != '' ">
-            AND t.ASSIGNEE_ = #{loginName}
-        </if>
-        AND ahi_123.ITEMINST_ID = #{iteminstId}
+        (
+            SELECT
+            t.ID_ TASK_ID
+            FROM
+            AEA_HI_ITEMINST ahi_123
+            LEFT JOIN AEA_HI_PAR_STAGEINST ahs_123 ON ahi_123.STAGEINST_ID = ahs_123.STAGEINST_ID
+            LEFT JOIN act_sto_appinst app ON app.MASTER_RECORD_ID = ahs_123.APPLYINST_ID
+            LEFT JOIN act_sto_appinst_subflow apps ON apps.APPINST_ID = app.APPINST_ID
+            LEFT JOIN act_hi_taskinst t on t.proc_inst_id_ = apps.SUBFLOW_PROCINST_ID
+            WHERE
+            ahi_123.IS_SERIES_APPROVE = '0'
+            <if test="loginName != null and loginName != '' ">
+                AND t.ASSIGNEE_ = #{loginName}
+            </if>
+            AND ahi_123.ITEMINST_ID = #{iteminstId}
+            <if test="_databaseId == 'mysql'">
+                LIMIT 1
+            </if>
+        )
         UNION
-        SELECT
-        t.ID_ TASK_ID
-        FROM
-        AEA_HI_ITEMINST ahi_123
-        LEFT JOIN AEA_HI_SERIESINST ahs_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
-        LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
-        LEFT JOIN act_sto_appinst app ON app.MASTER_RECORD_ID = ahap_123.APPLYINST_ID
-        LEFT JOIN act_hi_taskinst t on t.proc_inst_id_ = app.PROCINST_ID
-        WHERE
-        ahi_123.IS_SERIES_APPROVE = '1'
-        <if test="loginName != null and loginName != '' ">
-            AND t.ASSIGNEE_ = #{loginName}
-        </if>
-        AND ahi_123.ITEMINST_ID = #{iteminstId}
+        (
+            SELECT
+            t.ID_ TASK_ID
+            FROM
+            AEA_HI_ITEMINST ahi_123
+            LEFT JOIN AEA_HI_SERIESINST ahs_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
+            LEFT JOIN act_sto_appinst app ON app.MASTER_RECORD_ID = ahs_123.APPLYINST_ID
+            LEFT JOIN act_hi_taskinst t on t.proc_inst_id_ = app.PROCINST_ID
+            WHERE
+            ahi_123.IS_SERIES_APPROVE = '1'
+            <if test="loginName != null and loginName != '' ">
+                AND t.ASSIGNEE_ = #{loginName}
+            </if>
+            AND ahi_123.ITEMINST_ID = #{iteminstId}
+            <if test="_databaseId == 'mysql'">
+                LIMIT 1
+            </if>
+        )
         UNION
-        SELECT
-        t.ID_ TASK_ID
-        FROM
-        AEA_HI_ITEMINST ahi_123
-        LEFT JOIN AEA_HI_SERIESINST ahs_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
-        LEFT JOIN AEA_HI_APPLYINST ahap_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
-        LEFT JOIN act_sto_appinst app ON app.MASTER_RECORD_ID = ahap_123.APPLYINST_ID
-        LEFT JOIN act_sto_appinst_subflow apps ON apps.APPINST_ID = app.APPINST_ID
-        LEFT JOIN act_hi_taskinst t on t.proc_inst_id_ = apps.SUBFLOW_PROCINST_ID
-        WHERE
-        ahi_123.IS_SERIES_APPROVE = '1'
-        <if test="loginName != null and loginName != '' ">
-            AND t.ASSIGNEE_ = #{loginName}
-        </if>
-        AND ahi_123.ITEMINST_ID = #{iteminstId}
+        (
+            SELECT
+            t.ID_ TASK_ID
+            FROM
+            AEA_HI_ITEMINST ahi_123
+            LEFT JOIN AEA_HI_SERIESINST ahs_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
+            LEFT JOIN act_sto_appinst app ON app.MASTER_RECORD_ID = ahs_123.APPLYINST_ID
+            LEFT JOIN act_sto_appinst_subflow apps ON apps.APPINST_ID = app.APPINST_ID
+            LEFT JOIN act_hi_taskinst t on t.proc_inst_id_ = apps.SUBFLOW_PROCINST_ID
+            WHERE
+            ahi_123.IS_SERIES_APPROVE = '1'
+            <if test="loginName != null and loginName != '' ">
+                AND t.ASSIGNEE_ = #{loginName}
+            </if>
+            AND ahi_123.ITEMINST_ID = #{iteminstId}
+            <if test="_databaseId == 'mysql'">
+                LIMIT 1
+            </if>
+        )
     </select>
 
     <select id="queryViewId" resultType="java.lang.String">
@@ -4664,40 +4627,10 @@
         </if>
 
         <if test="entrust">
-            AND (
-            <foreach collection="currentUserOrgIdList" item="item" index="index" open=" " separator=" " close=" ">
-
-                <if test="index == 0">
-                    (
-                    ahi_123.APPROVE_ORG_ID = #{item}
-                    OR
-                    ahi_123.APPROVE_ORG_ID IN (
-                    select t.PARENT_ORG_ID AS ORG_ID from
-                    (select (select @id:=group_concat(PARENT_ORG_ID separator ',') from opu_om_org where
-                    find_in_set(ORG_ID,@id)) PARENT_ORG_ID
-                    from opu_om_org,(select @id:=#{item}) vars
-                    where @id is not null
-                    )t where t.PARENT_ORG_ID is not null
-                    )
-                    )
-                </if>
-                <if test="index != 0">
-                    OR (
-                    ahi_123.APPROVE_ORG_ID = #{item}
-                    OR
-                    ahi_123.APPROVE_ORG_ID IN (
-                    select t.PARENT_ORG_ID AS ORG_ID from
-                    (select (select @id:=group_concat(PARENT_ORG_ID separator ',') from opu_om_org where
-                    find_in_set(ORG_ID,@id)) PARENT_ORG_ID
-                    from opu_om_org,(select @id:=#{item}) vars
-                    where @id is not null
-                    )t where t.PARENT_ORG_ID is not null
-                    )
-                    )
-                </if>
-
+            AND ahi_123.APPROVE_ORG_ID IN
+            <foreach collection="selfAndParentOrgIdList" item="item" index="index" open=" ( " separator=", " close=" ) ">
+                #{item}
             </foreach>
-            )
         </if>
 
         ) temp_123
@@ -4857,6 +4790,139 @@
                 OR temp_123.gcbm LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 OR temp_123.itemName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 OR temp_123.stageName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                )
+            </if>
+        </where>
+    </select>
+
+
+    <select id="listStageConcludedApplyInfo" resultType="com.augurit.aplanmis.common.vo.conditional.ApplyInfo">
+        SELECT
+        *
+        FROM
+        (
+        SELECT
+        ahap_123.APPLYINST_ID AS applyinstId,
+        ahap_123.APPLYINST_CODE AS applyinstCode,
+        temp1.PROJ_NAME AS projName,
+        temp1.LOCAL_CODE AS localCode,
+        temp1.GCBM AS gcbm,
+        ahap_123.APPLYINST_SOURCE AS applySource,
+        CASE ahap_123.IS_SERIES_APPROVE
+        WHEN '1' THEN
+        '单项'
+        ELSE
+        '并联'
+        END AS applyType,
+        theme.THEME_NAME AS themeName,
+        ahap_123.CREATE_TIME AS applyTime,
+        ahap_123.END_TIME AS concludedTime
+        FROM
+        aea_hi_applyinst ahap_123
+        INNER JOIN (
+        SELECT
+        ap.APPLYINST_ID AS APPLYINST_ID,
+        <if test="_databaseId == 'oracle'">
+            listagg(to_char(p.PROJ_NAME),',')within group(order by p.PROJ_INFO_ID) AS PROJ_NAME,
+            listagg(to_char(p.LOCAL_CODE),',')within group(order by p.PROJ_INFO_ID) AS LOCAL_CODE,
+            listagg(to_char(p.GCBM),',')within group(order by p.PROJ_INFO_ID) AS GCBM
+        </if>
+
+        <if test="_databaseId == 'mysql'">
+            GROUP_CONCAT(p.PROJ_NAME SEPARATOR ',') AS PROJ_NAME,
+            GROUP_CONCAT(p.LOCAL_CODE SEPARATOR ',') AS LOCAL_CODE,
+            GROUP_CONCAT(p.GCBM SEPARATOR ',') AS GCBM
+        </if>
+        FROM
+        aea_applyinst_proj ap
+        LEFT JOIN aea_proj_info p ON ap.PROJ_INFO_ID = p.PROJ_INFO_ID
+        <where>
+            <if test="region != null and region != '' ">
+                AND p.REGIONALISM = #{region}
+            </if>
+            <if test="projType != null and projType != '' ">
+                AND p.PROJ_TYPE = #{projType}
+            </if>
+            <if test="investCategory != null and investCategory != '' ">
+                AND p.INVEST_TYPE = #{investCategory}
+            </if>
+            <if test="industries != null and industries.length > 0">
+                AND p.INDUSTRY IN
+                <foreach collection="industries" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="buildNature != null and buildNature != '' ">
+                AND p.PROJ_NATURE = #{buildNature}
+            </if>
+            <if test="projLevel != null and projLevel != '' ">
+                AND p.PROJ_LEVEL = #{projLevel}
+            </if>
+        </where>
+        GROUP BY ap.APPLYINST_ID
+        ) temp1 ON temp1.APPLYINST_ID = ahap_123.APPLYINST_ID
+        LEFT JOIN aea_hi_par_stageinst ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+        LEFT JOIN aea_par_stage aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
+        LEFT JOIN aea_par_theme_ver ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
+        LEFT JOIN aea_par_theme theme ON theme.THEME_ID = ver.THEME_ID
+        WHERE
+        ahap_123.IS_SERIES_APPROVE = '0'
+        AND ahap_123.IS_DELETED != '1'
+        AND aps_123.IS_NODE = '1'
+        AND ahap_123.APPLYINST_STATE = '6'
+
+        <if test="stageIndex != null ">
+            AND aps_123.SORT_NO = #{stageIndex}
+        </if>
+
+        <if test="theme != null and theme != '' ">
+            AND theme.THEME_ID = #{theme}
+        </if>
+
+        <if test="_databaseId == 'oracle'">
+            <if test="applyStartTime != null and applyStartTime != '' ">
+                <![CDATA[ AND to_char(ahap_123.CREATE_TIME , 'yyyy-mm-dd')>=  #{applyStartTime}   ]]>
+            </if>
+            <if test="applyEndTime != null and applyEndTime != '' ">
+                <![CDATA[ AND to_char(ahap_123.CREATE_TIME , 'yyyy-mm-dd')<=  #{applyEndTime}   ]]>
+            </if>
+            <if test="concludedStartTime != null and concludedStartTime != '' ">
+                <![CDATA[ AND to_char(ahap_123.END_TIME , 'yyyy-mm-dd')>=  #{concludedStartTime}   ]]>
+            </if>
+            <if test="concludedEndTime != null and concludedEndTime != '' ">
+                <![CDATA[ AND to_char(ahap_123.END_TIME , 'yyyy-mm-dd')<=  #{concludedEndTime}   ]]>
+            </if>
+        </if>
+        <if test="_databaseId == 'mysql'">
+            <if test="applyStartTime != null and applyStartTime != '' ">
+                <![CDATA[ AND DATE_FORMAT(ahap_123.CREATE_TIME , '%Y-%m-%d')>=  #{applyStartTime}   ]]>
+            </if>
+            <if test="applyEndTime != null and applyEndTime != '' ">
+                <![CDATA[ AND DATE_FORMAT(ahap_123.CREATE_TIME , '%Y-%m-%d')<=  #{applyEndTime}   ]]>
+            </if>
+            <if test="concludedStartTime != null and concludedStartTime != '' ">
+                <![CDATA[ AND DATE_FORMAT(ahap_123.END_TIME , '%Y-%m-%d')>=  #{concludedStartTime}   ]]>
+            </if>
+            <if test="concludedEndTime != null and concludedEndTime != '' ">
+                <![CDATA[ AND DATE_FORMAT(ahap_123.END_TIME , '%Y-%m-%d')<=  #{concludedEndTime}   ]]>
+            </if>
+        </if>
+
+        <if test="applySource != null and applySource != '' ">
+            AND ahap_123.APPLYINST_SOURCE = #{applySource}
+        </if>
+        <if test="applyType != null and applyType != '' ">
+            AND ahap_123.IS_SERIES_APPROVE = #{applyType}
+        </if>
+        ) temp_123
+        <where>
+            <if test="keyword != null and keyword != '' ">
+                AND (
+                temp_123.projName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                OR temp_123.applyinstCode LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                OR temp_123.localCode LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                OR temp_123.gcbm LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                OR temp_123.themeName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 )
             </if>
         </where>
