@@ -1,5 +1,7 @@
 package com.augurit.aplanmis.common.service.admin.item.impl;
 
+import com.augurit.agcloud.bpm.common.domain.ActStoForm;
+import com.augurit.agcloud.bpm.common.mapper.ActStoFormMapper;
 import com.augurit.agcloud.bsc.sc.rule.code.service.AutoCodeNumberService;
 import com.augurit.agcloud.bsc.util.CommonConstant;
 import com.augurit.agcloud.framework.constant.Status;
@@ -61,6 +63,8 @@ public class AeaItemStateAdminService {
     private AeaItemMatMapper aeaItemMatMapper;
 
     private AeaCertMapper aeaCertMapper;
+
+    private ActStoFormMapper actStoFormMapper;
 
     private AeaHiItemInoutinstMapper aeaHiItemInoutinstMapper;
 
@@ -345,6 +349,7 @@ public class AeaItemStateAdminService {
     }
 
     public List<AeaItemState> listAeaItemState(AeaItemState aeaItemState) {
+
         if(aeaItemState!=null)
             aeaItemState.setRootOrgId(SecurityContext.getCurrentOrgId());
         List<AeaItemState> list = aeaItemStateMapper.listAeaItemStateWithStateVer(aeaItemState);
@@ -383,29 +388,29 @@ public class AeaItemStateAdminService {
 
         // 构造子树节点，包括情形和材料
         List<MindBaseNode> childNodes = new ArrayList<>();
-        node(itemVerId, itemVerId, allStates, childNodes, aeaMindUi);
+        node(itemVerId, itemVerId, allStates, childNodes, aeaMindUi, rootOrgId);
 
         List<AeaItemInout> matIns;
         List<AeaItemInout> certIns;
-        List<AeaItemStateForm> commonForms;
+        List<AeaItemInout> commonForms;
 
         // 显示事项下的通用材料
         if(aeaMindUi!=null&&aeaMindUi.isShowMat()){
-            matIns = listAeaItemInoutNotUnderState(itemVerId, stateVerId, MindType.MATERIAL.getValue(), rootOrgId);
+            matIns = listAeaItemInoutNotUnderState(itemVerId, stateVerId, MindType.M.getValue(), rootOrgId);
             // 封装通用材料节点
-            getBaseNode(matIns, null, childNodes, itemVerId);
+            getBaseNode(matIns, childNodes, itemVerId);
         }
         // 显示事项下的通用证照
         if(aeaMindUi!=null&&aeaMindUi.isShowCert()){
-            certIns = listAeaItemInoutNotUnderState(itemVerId, stateVerId, MindType.CERTIFICATE.getValue(), rootOrgId);
+            certIns = listAeaItemInoutNotUnderState(itemVerId, stateVerId, MindType.C.getValue(), rootOrgId);
             // 封装通用证照节点
-            getBaseNode(certIns, null, childNodes, itemVerId);
+            getBaseNode(certIns, childNodes, itemVerId);
         }
         // 显示事项下的通用表单
         if(aeaMindUi!=null&&aeaMindUi.isShowForm()){
-            commonForms = listAeaItemStateFormNotUnderState(itemVerId, stateVerId, rootOrgId);
+            commonForms = listAeaItemInoutNotUnderState(itemVerId, stateVerId, MindType.F.getValue(), rootOrgId);
             // 封装通用证照节点
-            getBaseNode(null, commonForms, childNodes, itemVerId);
+            getBaseNode(commonForms, childNodes, itemVerId);
         }
         // 设置根节点的孩子们
         orgNode.setChilds(childNodes.toArray(new MindBaseNode[]{}));
@@ -454,7 +459,7 @@ public class AeaItemStateAdminService {
      * @param childNodes
      * @param aeaMindUi
      */
-    private void node(String itemVerId, String parentId, List<AeaItemState> allStates, List<MindBaseNode> childNodes, AeaMindUi aeaMindUi) {
+    private void node(String itemVerId, String parentId, List<AeaItemState> allStates, List<MindBaseNode> childNodes, AeaMindUi aeaMindUi, String rootOrgId) {
 
         List<AeaItemState> list = extractStatesByParentIdAndItemVerId(parentId, itemVerId, allStates);
         if (CollectionUtils.isEmpty(list)) {
@@ -466,34 +471,34 @@ public class AeaItemStateAdminService {
             List<MindBaseNode> stateChildren = new ArrayList<>();
 
             //递归处理子情形节点
-            node(itemVerId, state.getItemStateId(), allStates, stateChildren, aeaMindUi);
+            node(itemVerId, state.getItemStateId(), allStates, stateChildren, aeaMindUi, rootOrgId);
 
             List<AeaItemInout> matIns;
             List<AeaItemInout> certIns;
-            List<AeaItemStateForm> stateForms;
+            List<AeaItemInout> stateForms;
 
             // 显示事项下的情形材料
             if(aeaMindUi!=null&&aeaMindUi.isShowMat()){
 
-                matIns = listAeaItemInoutUnderState(itemVerId, state.getItemStateId(), MindType.MATERIAL.getValue());
+                matIns = listAeaItemInoutUnderState(itemVerId, state.getItemStateId(), MindType.M.getValue(), rootOrgId);
                 // 封装材料节点
-                getBaseNode(matIns, null, stateChildren, null);
+                getBaseNode(matIns, stateChildren, null);
             }
 
             // 显示事项下的情形证照
             if(aeaMindUi!=null&&aeaMindUi.isShowCert()){
 
-                certIns = listAeaItemInoutUnderState(itemVerId, state.getItemStateId(), MindType.CERTIFICATE.getValue());
+                certIns = listAeaItemInoutUnderState(itemVerId, state.getItemStateId(), MindType.C.getValue(), rootOrgId);
                 // 封装证照节点
-                getBaseNode(certIns, null, stateChildren, null);
+                getBaseNode(certIns, stateChildren, null);
             }
 
             // 显示事项下的情形表单
             if(aeaMindUi!=null&&aeaMindUi.isShowForm()){
 
-                stateForms = listAeaItemStateFormUnderState(itemVerId, state.getStateVerId(), state.getItemStateId());
+                stateForms = listAeaItemInoutUnderState(itemVerId, state.getItemStateId(), MindType.F.getValue(), rootOrgId);
                 // 封装证照节点
-                getBaseNode(null, stateForms, stateChildren, null);
+                getBaseNode(stateForms, stateChildren, null);
             }
             stateNode.setChilds(stateChildren.toArray(new MindBaseNode[]{}));
             childNodes.add(stateNode);
@@ -507,18 +512,17 @@ public class AeaItemStateAdminService {
      * @param itemStateId
      * @return
      */
-    private List<AeaItemInout> listAeaItemInoutUnderState(String itemVerId, String itemStateId, String fileType) {
+    private List<AeaItemInout> listAeaItemInoutUnderState(String itemVerId, String itemStateId, String fileType, String rootOrgId){
 
         AeaItemInout inout = new AeaItemInout();
+        inout.setRootOrgId(rootOrgId);
         inout.setItemVerId(itemVerId);
         inout.setIsStateIn(Status.ON);
         inout.setItemStateId(itemStateId);
-        if(StringUtils.isNotBlank(fileType)){
-            inout.setFileType(fileType);
-        }
+        inout.setMatProp(fileType);
         inout.setIsInput(Status.ON);
         inout.setIsDeleted(DeletedStatus.NOT_DELETED.getValue());
-        return aeaItemInoutMapper.listAeaItemInout(inout);
+        return aeaItemInoutMapper.listAeaItemInoutRelMat(inout);
     }
 
     /**
@@ -536,35 +540,32 @@ public class AeaItemStateAdminService {
         return aeaItemStateFormMapper.listItemStateFormRelInfo(form);
     }
 
-    private void getBaseNode(List<AeaItemInout> inouts, List<AeaItemStateForm> forms, List<MindBaseNode> mindBaseNodes, String parentId) {
+    private void getBaseNode(List<AeaItemInout> inouts, List<MindBaseNode> mindBaseNodes, String parentId) {
 
         if(inouts!=null&&inouts.size()>0){
             for (AeaItemInout in : inouts) {
                 if (StringUtils.isBlank(parentId)) {
                     parentId = in.getItemStateId();
                 }
-                if (MindType.MATERIAL.getValue().equals(in.getFileType())) {
-                    AeaItemMat mat = aeaItemMatMapper.selectOneById(in.getMatId());
-                    if (Objects.isNull(mat)) {
-                        return;
-                    }
-                    mindBaseNodes.add(buildNodeByMat(mat, parentId));
-                } else if (MindType.CERTIFICATE.getValue().equals(in.getFileType())) {
-                    AeaCert cert = aeaCertMapper.selectOneById(in.getCertId());
-                    if (Objects.isNull(cert)) {
-                        return;
-                    }
-                    mindBaseNodes.add(buildNodeByCert(cert, parentId));
-                }
-            }
-        }
-
-        if(forms!=null&&forms.size()>0){
-            for (AeaItemStateForm form : forms) {
-                if (StringUtils.isBlank(parentId)) {
-                    parentId = form.getItemStateId();
-                }
-                mindBaseNodes.add(buildNodeByForm(form, parentId));
+//                if (MindType.M.getValue().equals(in.getMatProp())) {
+//                    AeaItemMat mat = aeaItemMatMapper.selectOneById(in.getMatId());
+//                    if (Objects.isNull(mat)) {
+//                        return;
+//                    }
+//                    mindBaseNodes.add(buildNodeByMat(mat, parentId));
+//                } else if (MindType.C.getValue().equals(in.getMatProp())) {
+//                    AeaCert cert = aeaCertMapper.selectOneById(in.getCertId());
+//                    if (Objects.isNull(cert)) {
+//                        return;
+//                    }
+//                    mindBaseNodes.add(buildNodeByCert(cert, parentId));
+//                }else if(MindType.F.getValue().equals(in.getMatProp())){
+//                    ActStoForm form = aeaItemMatMapper.getActStoFormById(in.getFormId());
+//                    if (Objects.isNull(form)) {
+//                        return;
+//                    }
+                    mindBaseNodes.add(buildNodeByMatCertForm(in, parentId));
+//                }
             }
         }
     }
@@ -590,11 +591,9 @@ public class AeaItemStateAdminService {
         inout.setStateVerId(stateVerId);
         inout.setIsInput(Status.ON);
         inout.setIsStateIn(Status.OFF);
-        if(StringUtils.isNotBlank(fileType)){
-            inout.setFileType(fileType);
-        }
+        inout.setMatProp(fileType);
         inout.setIsDeleted(DeletedStatus.NOT_DELETED.getValue());
-        return aeaItemInoutMapper.listAeaItemInout(inout);
+        return aeaItemInoutMapper.listAeaItemInoutRelMat(inout);
     }
 
     private List<AeaItemStateForm> listAeaItemStateFormNotUnderState(String itemVerId, String stateVerId, String rootOrgId) {
@@ -663,6 +662,44 @@ public class AeaItemStateAdminService {
         return mindBaseNode;
     }
 
+    private MindBaseNode buildNodeByMatCertForm(AeaItemInout inout, String parentId) {
+
+        MindBaseNode mindBaseNode = new MindBaseNode();
+        mindBaseNode.setProgress("");
+        mindBaseNode.setPid(parentId);
+        mindBaseNode.setId(inout.getMatId());
+        mindBaseNode.setName(inout.getAeaMatCertName());
+        mindBaseNode.setOpen(MindConst.MIND_NODE_EXPAND_TRUE);
+        Map<String, String> map = new HashMap<>();
+        map.put("inoutId", inout.getInoutId());
+        if(MindType.M.getValue().equals(inout.getMatProp())){
+
+            mindBaseNode.setPriority(AeaMindConst.MIND_NODE_PRIORITY_MAPPING_MAT);
+            mindBaseNode.setNodeTypeCode(MindType.MATERIAL.getValue());
+            mindBaseNode.setNodeTypeName(MindType.MATERIAL.getName());
+            map.put("matId", inout.getMatId());
+
+        }else if(MindType.C.getValue().equals(inout.getMatProp())){
+
+            mindBaseNode.setPriority(AeaMindConst.MIND_NODE_PRIORITY_MAPPING_CERT);
+            mindBaseNode.setNodeTypeCode(MindType.CERTIFICATE.getValue());
+            mindBaseNode.setNodeTypeName(MindType.CERTIFICATE.getName());
+            map.put("certId", inout.getCertId());
+
+        }else if(MindType.F.getValue().equals(inout.getMatProp())){
+
+            mindBaseNode.setOpen(MindConst.MIND_NODE_EXPAND_FALSE);
+            mindBaseNode.setPriority(AeaMindConst.MIND_NODE_PRIORITY_MAPPING_FORM);
+            mindBaseNode.setNodeTypeCode(MindType.FORM.getValue());
+            mindBaseNode.setNodeTypeName(MindType.FORM.getName());
+            ActStoForm form = aeaItemMatMapper.getActStoFormById(inout.getFormId());
+            map.put("formId", inout.getFormId());
+            map.put(AeaMindConst.MIND_NODE_EXTRA_KEY_FORM_PROPERTY, form==null?null:form.getFormProperty());
+        }
+        mindBaseNode.setExtra(map);
+        return mindBaseNode;
+    }
+
     /**
      * 根据AeaItemMat构造一个树子节点
      *
@@ -719,6 +756,29 @@ public class AeaItemStateAdminService {
 
         MindBaseNode mindFormNode = new MindBaseNode();
         mindFormNode.setId(form.getItemStateFormId());
+        mindFormNode.setName(form.getFormName());
+        mindFormNode.setPid(parentId);
+        mindFormNode.setOpen(MindConst.MIND_NODE_EXPAND_FALSE);
+        mindFormNode.setNodeTypeCode(AeaMindConst.MIND_NODE_TYPE_CODE_FORM);
+        mindFormNode.setPriority(AeaMindConst.MIND_NODE_PRIORITY_MAPPING_FORM);
+        Map<String, String> map = new HashMap<>();
+        map.put("formId", form.getFormId());
+        map.put(AeaMindConst.MIND_NODE_EXTRA_KEY_FORM_PROPERTY, form.getFormProperty());
+        mindFormNode.setExtra(map);
+        return mindFormNode;
+    }
+
+    /**
+     * 构建表单节点
+     *
+     * @param form
+     * @param parentId
+     * @return
+     */
+    private MindBaseNode buildNodeByForm(ActStoForm form, String parentId) {
+
+        MindBaseNode mindFormNode = new MindBaseNode();
+        mindFormNode.setId(form.getFormId());
         mindFormNode.setName(form.getFormName());
         mindFormNode.setPid(parentId);
         mindFormNode.setOpen(MindConst.MIND_NODE_EXPAND_FALSE);
@@ -803,7 +863,6 @@ public class AeaItemStateAdminService {
             }
 
             Set<String> matIdsFromTree = new HashSet<>();
-            Set<String> certIdsFromTree = new HashSet<>();
             if (mindExportObj.getChildren() != null && mindExportObj.getChildren().length > 0) {
                 for (MindExportObj remain : mindExportObj.getChildren()) {
                     MindExportData remainData = remain.getData();
@@ -813,19 +872,19 @@ public class AeaItemStateAdminService {
                                 deleteNodeRecursion(remain, remainData.getId(), itemVerId, stateVerId, rootOrgId);
                             }
                         }
-                    } else if (MindType.CERTIFICATE.getValue().equals(remainData.getNodeTypeCode())) {
-                        certIdsFromTree.add(remainData.getId());
-                    } else if (MindType.MATERIAL.getValue().equals(remainData.getNodeTypeCode())) {
+                    } else if (MindType.MATERIAL.getValue().equals(remainData.getNodeTypeCode())
+                             ||MindType.CERTIFICATE.getValue().equals(remainData.getNodeTypeCode())
+                             ||MindType.FORM.getValue().equals(remainData.getNodeTypeCode())) {
+
                         matIdsFromTree.add(remainData.getId());
                     }
                 }
             }
-            handMatAndCertDeletion(matIdsFromTree, certIdsFromTree, parentId, itemVerId, stateVerId, rootOrgId);
+            handMatAndCertDeletion(matIdsFromTree, parentId, itemVerId, stateVerId, rootOrgId);
         }
     }
 
-    private void handMatAndCertDeletion(Set<String> matIdsFromTree, Set<String> certIdsFromTree,
-                                        String parentId, String itemVerId, String stateVerId, String rootOrgId) {
+    private void handMatAndCertDeletion(Set<String> matIdsFromTree, String parentId, String itemVerId, String stateVerId, String rootOrgId) {
 
         AeaItemInout param = new AeaItemInout();
         if (StringUtils.isBlank(parentId)) {
@@ -840,29 +899,18 @@ public class AeaItemStateAdminService {
         param.setStateVerId(stateVerId);
         param.setIsDeleted(DeletedStatus.NOT_DELETED.getValue());
         param.setIsInput(Status.ON);
-        List<AeaItemInout> inoutFromDb = aeaItemInoutMapper.listAeaItemInout(param);
+        List<AeaItemInout> inoutFromDb = aeaItemInoutMapper.listAeaItemInoutRelMat(param);
         Set<String> matIdsNeedDel = new HashSet<>();
-        Set<String> certIdsNeedDel = new HashSet<>();
         if (Objects.nonNull(inoutFromDb)) {
             inoutFromDb.forEach(inout -> {
-                if (MindType.MATERIAL.getValue().equals(inout.getFileType())) {
-                    if (!matIdsFromTree.contains(inout.getMatId())) {
-                        matIdsNeedDel.add(inout.getInoutId());
-                    }
-                } else if (MindType.CERTIFICATE.getValue().equals(inout.getFileType())) {
-                    if (!certIdsFromTree.contains(inout.getCertId())) {
-                        certIdsNeedDel.add(inout.getInoutId());
-                    }
+                if (!matIdsFromTree.contains(inout.getMatId())) {
+                    matIdsNeedDel.add(inout.getInoutId());
                 }
             });
-            if (CollectionUtils.isNotEmpty(matIdsNeedDel) || CollectionUtils.isNotEmpty(certIdsNeedDel)) {
+            if (CollectionUtils.isNotEmpty(matIdsNeedDel)) {
                 List<String> inoutIds = new ArrayList<>();
                 inoutIds.addAll(matIdsNeedDel);
-                inoutIds.addAll(certIdsNeedDel);
                 aeaItemInoutMapper.batchDeleteAeaItemInoutByIds(inoutIds);
-                if (CollectionUtils.isNotEmpty(matIdsNeedDel)) {
-                    aeaItemMatMapper.batchDeleteAeaItemMatByInoutIds(inoutIds);
-                }
             }
         }
     }
@@ -909,16 +957,21 @@ public class AeaItemStateAdminService {
                         //将【新增的情形id】赋予【当前新增的节点】，用作【后续新增子节点】的父id
                         c.getData().setId(aeaItemState.getItemStateId());
                         //材料新增
-                    } else if (MindType.MATERIAL.getValue().equals(c.getData().getNodeTypeCode())) {
+                    } else if (MindType.MATERIAL.getValue().equals(c.getData().getNodeTypeCode())
+                             ||MindType.CERTIFICATE.getValue().equals(c.getData().getNodeTypeCode())
+                             ||MindType.FORM.getValue().equals(c.getData().getNodeTypeCode())) {
 
                         //根据已有材料复制一份
                         AeaItemMat aeaItemMat = copyNewOne(c.getData().getId());
                         insertAeaItemInout(aeaItemMat.getMatId(), itemVerId, stateVerId, currentNodeParentId);
                         c.getData().setId(aeaItemMat.getMatId());
 
-                    } else if (MindType.CERTIFICATE.getValue().equals(c.getData().getNodeTypeCode())) {
+//                    } else if (MindType.CERTIFICATE.getValue().equals(c.getData().getNodeTypeCode())) {
+//
+////                        insertAeaCertInout(c, itemVerId, stateVerId, currentNodeParentId);
+//
+//                    }else if (MindType.FORM.getValue().equals(c.getData().getNodeTypeCode())) {
 
-                        insertAeaCertInout(c, itemVerId, stateVerId, currentNodeParentId);
                     }
                 } else {//todo 全量更新 暂时这样做
                     updateNodeByCheckEveryone(itemVerId, c.getData());
@@ -954,7 +1007,9 @@ public class AeaItemStateAdminService {
             this.updateAeaItemState(updateItemState);
 
         //材料更新
-        } else if (MindType.MATERIAL.getValue().equals(data.getNodeTypeCode())) {
+        } else if (MindType.MATERIAL.getValue().equals(data.getNodeTypeCode())
+                 ||MindType.CERTIFICATE.getValue().equals(data.getNodeTypeCode())
+                 ||MindType.FORM.getValue().equals(data.getNodeTypeCode())) {
 
             AeaItemMat mat = new AeaItemMat();
             mat.setMatId(data.getId());
@@ -962,14 +1017,14 @@ public class AeaItemStateAdminService {
             mat.setMatMemo(data.getNote());
             aeaItemMatMapper.updateAeaItemMat(mat);
 
-        //证照新增
-        } else if (MindType.CERTIFICATE.getValue().equals(data.getNodeTypeCode())) {
-
-            AeaCert cert = new AeaCert();
-            cert.setCertId(data.getId());
-            cert.setCertName(StringUtils.isNotBlank(data.getText()) ? data.getText() : data.getName());
-            cert.setCertMemo(data.getNote());
-            aeaCertMapper.updateOne(cert);
+//        //证照新增
+//        } else if (MindType.CERTIFICATE.getValue().equals(data.getNodeTypeCode())) {
+//
+//            AeaCert cert = new AeaCert();
+//            cert.setCertId(data.getId());
+//            cert.setCertName(StringUtils.isNotBlank(data.getText()) ? data.getText() : data.getName());
+//            cert.setCertMemo(data.getNote());
+//            aeaCertMapper.updateOne(cert);
         }
     }
 
@@ -1067,7 +1122,14 @@ public class AeaItemStateAdminService {
         return seq.toString() + itemStateId + CommonConstant.SEQ_SEPARATOR;
     }
 
-    //新增证照关联
+    /**
+     * 新增证照关联
+     *
+     * @param c
+     * @param itemVerId
+     * @param stateVerId
+     * @param parentId
+     */
     private void insertAeaCertInout(MindExportObj c, String itemVerId, String stateVerId, String parentId) {
 
         String itemId = aeaItemVerMapper.getAeaItemVerById(itemVerId).getItemId();
@@ -1245,30 +1307,31 @@ public class AeaItemStateAdminService {
                     aeaItemInoutMapper.insertAeaItemInout(newIn);
                 }
             }
+
             // 情形版本下全部情形表单
-            AeaItemStateForm stateForm = new AeaItemStateForm();
-            stateForm.setItemVerId(itemVerId);
-            stateForm.setItemStateVerId(stateVerId);
-            stateForm.setIsStateForm(NeedStateStatus.NEED_STATE.getValue());
-            List<AeaItemStateForm> formList = aeaItemStateFormMapper.listAeaItemStateForm(stateForm);
-            if (formList != null && formList.size() > 0) {
-                for (AeaItemStateForm form : formList) {
-                    AeaItemStateForm newForm = form.copyOne();
-                    // 替换情形版本字段
-                    if(StringUtils.isNotBlank(newItemVerId)){
-                        newForm.setItemVerId(newItemVerId);
-                    }
-                    newForm.setItemStateVerId(copiedVersion.getItemStateVerId());
-                    for (String key : map.keySet()) {
-                        if(StringUtils.isNotBlank(newForm.getItemStateId())&&newForm.getItemStateId().equals(key)) {
-                            // 替换情形id字段
-                            newForm.setItemStateId(map.get(key));
-                            break;
-                        }
-                    }
-                    aeaItemStateFormMapper.insertAeaItemStateForm(newForm);
-                }
-            }
+//            AeaItemStateForm stateForm = new AeaItemStateForm();
+//            stateForm.setItemVerId(itemVerId);
+//            stateForm.setItemStateVerId(stateVerId);
+//            stateForm.setIsStateForm(NeedStateStatus.NEED_STATE.getValue());
+//            List<AeaItemStateForm> formList = aeaItemStateFormMapper.listAeaItemStateForm(stateForm);
+//            if (formList != null && formList.size() > 0) {
+//                for (AeaItemStateForm form : formList) {
+//                    AeaItemStateForm newForm = form.copyOne();
+//                    // 替换情形版本字段
+//                    if(StringUtils.isNotBlank(newItemVerId)){
+//                        newForm.setItemVerId(newItemVerId);
+//                    }
+//                    newForm.setItemStateVerId(copiedVersion.getItemStateVerId());
+//                    for (String key : map.keySet()) {
+//                        if(StringUtils.isNotBlank(newForm.getItemStateId())&&newForm.getItemStateId().equals(key)) {
+//                            // 替换情形id字段
+//                            newForm.setItemStateId(map.get(key));
+//                            break;
+//                        }
+//                    }
+//                    aeaItemStateFormMapper.insertAeaItemStateForm(newForm);
+//                }
+//            }
         }
 
         // 情形版本下通用输入
@@ -1293,22 +1356,22 @@ public class AeaItemStateAdminService {
         }
 
         // 情形版本下通用表单
-        AeaItemStateForm stateForm = new AeaItemStateForm();
-        stateForm.setItemVerId(itemVerId);
-        stateForm.setItemStateVerId(stateVerId);
-        stateForm.setIsStateForm(NeedStateStatus.NOT_NEED_STATE.getValue());
-        List<AeaItemStateForm> formList = aeaItemStateFormMapper.listAeaItemStateForm(stateForm);
-        if (formList != null && formList.size() > 0) {
-            for (AeaItemStateForm form : formList) {
-                AeaItemStateForm newForm = form.copyOne();
-                // 替换情形版本字段
-                if(StringUtils.isNotBlank(newItemVerId)){
-                    newForm.setItemVerId(newItemVerId);
-                }
-                newForm.setItemStateVerId(copiedVersion.getItemStateVerId());
-                aeaItemStateFormMapper.insertAeaItemStateForm(newForm);
-            }
-        }
+//        AeaItemStateForm stateForm = new AeaItemStateForm();
+//        stateForm.setItemVerId(itemVerId);
+//        stateForm.setItemStateVerId(stateVerId);
+//        stateForm.setIsStateForm(NeedStateStatus.NOT_NEED_STATE.getValue());
+//        List<AeaItemStateForm> formList = aeaItemStateFormMapper.listAeaItemStateForm(stateForm);
+//        if (formList != null && formList.size() > 0) {
+//            for (AeaItemStateForm form : formList) {
+//                AeaItemStateForm newForm = form.copyOne();
+//                // 替换情形版本字段
+//                if(StringUtils.isNotBlank(newItemVerId)){
+//                    newForm.setItemVerId(newItemVerId);
+//                }
+//                newForm.setItemStateVerId(copiedVersion.getItemStateVerId());
+//                aeaItemStateFormMapper.insertAeaItemStateForm(newForm);
+//            }
+//        }
         return copiedVersion.getItemStateVerId();
     }
 

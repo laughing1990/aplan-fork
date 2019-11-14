@@ -12,9 +12,9 @@
                                 <button type="button" class="btn btn-info"
                                         onclick="addStageNoStateInGlobalMat();">导入库材料</button>
                                 <button type="button" class="btn btn-info"
-                                        onclick="addStageNoStateInCert();">导入电子证照</button>
-                                <button type="button" class="btn btn-info"
-                                        onclick="addStageNoStateInForm();">导入表单</button>
+                                        <%--onclick="addStageNoStateInCert();">导入电子证照</button>--%>
+                                <%--<button type="button" class="btn btn-info"--%>
+                                        <%--onclick="addStageNoStateInForm();">导入表单</button>--%>
                                 <button type="button" class="btn btn-info"
                                         onclick="addStageNoStateIn();">设置事项材料</button>
                                 <button type="button" class="btn btn-info"
@@ -68,8 +68,8 @@
                         <thead>
                             <tr>
                                 <th data-field="#" data-checkbox="true" data-align="center" data-width="10">ID</th>
-                                <th data-field="fileType" data-formatter="fileTypeFormatter"
-                                    data-align="left" data-width=60>类型</th>
+                                <th data-field="matProp" data-formatter="matPropormatter"
+                                    data-align="left" data-width=80>材料性质</th>
                                 <th data-field="aeaMatCertName" data-align="left" data-width="250">名称</th>
                                 <th data-field="aeaMatCertCode" data-align="left" data-width="250">编号</th>
                                 <th data-field="itemName" data-align="left"

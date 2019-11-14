@@ -51,7 +51,16 @@ function getNodeText(name,bindDisplayJson) {
 function getToolbarBtnState(acceptnodeTypeCodes) {
 
     var result = '';
-    result += ' ng-disabled="minder.queryCommandState(\'nodeSelectModCmd\').data.nodeTypeCode != \''+acceptnodeTypeCodes+'\'"';
-    result += ' ng-class="{ deactive: minder.queryCommandState(\'nodeSelectModCmd\').data.nodeTypeCode != \''+acceptnodeTypeCodes+'\' }"';
+    result += ' ng-disabled="minder.queryCommandState(\'nodeSelectModCmd\').data.nodeTypeCode != \''+ acceptnodeTypeCodes +'\'"';
+    result += ' ng-class="{ deactive: minder.queryCommandState(\'nodeSelectModCmd\').data.nodeTypeCode != \''+ acceptnodeTypeCodes +'\' }"';
     return result;
+}
+
+function checkIsOk(value, codes){
+
+    if(codes.indexOf(value)>-1){
+       return true;
+    }else{
+        return false;
+    }
 }

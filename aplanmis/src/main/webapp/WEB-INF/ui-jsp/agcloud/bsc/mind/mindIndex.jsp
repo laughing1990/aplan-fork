@@ -75,30 +75,36 @@
 
 <!-- 阶段下情形材料列表  -->
 <jsp:include page="../../../kitymind/stage/state/view_stage_state_mat_index.jsp"></jsp:include>
+
 <!-- 阶段下情形关联事项  -->
 <jsp:include page="stage_item_list.jsp"></jsp:include>
-<!-- 阶段下情形关联表单  -->
-<jsp:include page="stage_state_form_list.jsp"></jsp:include>
+
 <!-- 阶段下材料关联事项  -->
 <jsp:include page="state_mat_item_list.jsp"></jsp:include>
 
 <!--  事项情形与通用材料 -->
 <jsp:include page="include/itemMatAddModalNew.jsp"></jsp:include>
+
 <!--  事项材料库导入 -->
 <jsp:include page="include/itemGlobalMatModal.jsp"></jsp:include>
+
 <!--  事项新增/编辑材料 -->
 <jsp:include page="include/itemMatModal.jsp"></jsp:include>
-<!--  事项证照导入 -->
-<jsp:include page="include/itemCertModal.jsp"></jsp:include>
+
 <!-- 情形版本modal -->
 <jsp:include page="include/itemStateVerModal.jsp"></jsp:include>
-<!-- 事项关联表单  -->
-<jsp:include page="item_state_form_list.jsp"></jsp:include>
+
 <!-- 操作说明 -->
 <%@include file="item_state_ver_opera_index.jsp"%>
 
 <!-- 选择材料类别 -->
 <%@include file="../../../aplanmis/item/select_mat_type_ztree.jsp"%>
+
+<!-- 选择电子证照 -->
+<%@include file="../../../common/ztree/select_cert_no_right_ztree.jsp" %>
+
+<!-- 选择表单 -->
+<%@include file="../../../common/ztree/select_form_no_right_ztree.jsp" %>
 
 <!-- 进度弹窗 -->
 <div id="uploadProgress" class="modal fade" tabindex="-1" role="dialog"

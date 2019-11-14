@@ -14,6 +14,7 @@ public class InoutMatEditDto {
     private String inoutId;
     private String itemVerId;//事项版本id
     private String stateVerId;//情形版本id不能为空
+
     private String isOwner;
     private String isInput;//输入或者输出材料
     private String fileType;//文件类型 mat  cert
@@ -51,6 +52,10 @@ public class InoutMatEditDto {
     private String rootOrgId; // 根组织id
     private String isOfficialDoc; // (是否批复文件，0表示否，1表示是)
 
+    private String matProp;
+    private String certId;
+    private String stoFormId;
+
     public AeaItemMat merge(AeaItemMat aeaItemMat, String userId) {
 
         aeaItemMat.setMatName(this.matName);
@@ -79,6 +84,9 @@ public class InoutMatEditDto {
         aeaItemMat.setIsOfficialDoc(this.isOfficialDoc);
         aeaItemMat.setModifier(userId);
         aeaItemMat.setModifyTime(new Date());
+        aeaItemMat.setMatProp(this.matProp);
+        aeaItemMat.setCertId(this.certId);
+        aeaItemMat.setStoFormId(this.stoFormId);
         return aeaItemMat;
     }
 }

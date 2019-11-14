@@ -296,20 +296,20 @@ public class AeaItemInoutAdminController {
     public ResultForm updateItemInSortNos(String[] inoutIds, String[] fileTypes, Long[] sortNos) {
 
         if(inoutIds!=null&&inoutIds.length>0
-            &&fileTypes!=null&&fileTypes.length>0
+//            &&fileTypes!=null&&fileTypes.length>0
             &&sortNos!=null&&sortNos.length>0){
             for(int i=0; i<inoutIds.length; i++){
-                if(fileTypes[i].equals("form")){
-                    AeaItemStateForm stateForm = new AeaItemStateForm();
-                    stateForm.setItemStateFormId(inoutIds[i]);
-                    stateForm.setSortNo(sortNos[i]);
-                    aeaItemStateFormAdminService.updateAeaItemStateForm(stateForm);
-                }else{
+//                if(fileTypes[i].equals("form")){
+//                    AeaItemStateForm stateForm = new AeaItemStateForm();
+//                    stateForm.setItemStateFormId(inoutIds[i]);
+//                    stateForm.setSortNo(sortNos[i]);
+//                    aeaItemStateFormAdminService.updateAeaItemStateForm(stateForm);
+//                }else{
                     AeaItemInout inout = new AeaItemInout();
                     inout.setInoutId(inoutIds[i]);
                     inout.setSortNo(sortNos[i]);
                     aeaItemInoutAdminService.updateAeaItemInout(inout);
-                }
+//                }
             }
             return new ResultForm(true);
         }

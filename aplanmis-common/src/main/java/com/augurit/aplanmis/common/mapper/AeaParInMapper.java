@@ -40,6 +40,11 @@ public interface AeaParInMapper {
                                            @Param("keyword") String keyword,
                                            @Param("rootOrgId") String rootOrgId);
 
+    List<AeaParIn> listInStateMatNewByStageId(@Param("stageId") String stageId,
+                                              @Param("keyword") String keyword,
+                                              @Param("rootOrgId") String rootOrgId,
+                                              @Param("matProp")String matProp);
+
     /**
      * 获取阶段情形电子证照集合
      *
@@ -51,13 +56,20 @@ public interface AeaParInMapper {
                                             @Param("keyword") String keyword,
                                             @Param("rootOrgId") String rootOrgId);
 
-
     List<AeaParIn> listStageMat(@Param("stageId") String stageId,
                                 @Param("parStateId") String parStateId,
                                 @Param("isCommon") String isCommon,
                                 @Param("isStateIn") String isStateIn,
                                 @Param("keyword") String keyword,
                                 @Param("rootOrgId") String rootOrgId);
+
+    List<AeaParIn> listStageMatNew( @Param("stageId") String stageId,
+                                    @Param("parStateId") String parStateId,
+                                    @Param("isCommon") String isCommon,
+                                    @Param("isStateIn") String isStateIn,
+                                    @Param("keyword") String keyword,
+                                    @Param("rootOrgId") String rootOrgId,
+                                    @Param("matProp")String matProp);
 
     /**
      * 获取阶段材料证照
@@ -92,7 +104,11 @@ public interface AeaParInMapper {
                                                      @Param("keyword") String keyword,
                                                      @Param("rootOrgId") String rootOrgId);
 
-
+    List<AeaParIn> listInStateMatNewByStageIdAndStateId(@Param("stageId") String stageId,
+                                                        @Param("stateId") String stateId,
+                                                        @Param("keyword") String keyword,
+                                                        @Param("rootOrgId") String rootOrgId,
+                                                        @Param("matProp")String matProp);
     /**
      * 获取阶段某情形电子证照集合
      *

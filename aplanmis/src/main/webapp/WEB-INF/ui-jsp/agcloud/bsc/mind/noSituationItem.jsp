@@ -4,7 +4,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>事项不分情形材料配置</title>
+    <title>不分情形材料配置</title>
     <%@ include file="/ui-static/agcloud/framework/jsp/agcloud-meta.jsp"%>
     <%@ include file="/ui-static/agcloud/framework/jsp/agcloud-common.jsp"%>
     <%@ include file="/ui-static/agcloud/framework/theme-libs/metronic-v5/template-default.jsp"%>
@@ -144,7 +144,7 @@
     </div>
 
     <!-- 选择电子证照 -->
-    <%@include file="item_no_state_cert_list.jsp"%>
+    <%--<%@include file="item_no_state_cert_list.jsp"%>--%>
 
     <!-- 导入库材料 -->
     <%@include file="../../../aplanmis/item/select_item_inout_global_mat.jsp"%>
@@ -153,16 +153,22 @@
     <%@include file="../../../aplanmis/item/aedit_item_inout_mat_index.jsp"%>
 
     <!-- 查看证照 -->
-    <%@include file="../../../aplanmis/item/aedit_item_inout_cert_index.jsp"%>
+    <%--<%@include file="../../../aplanmis/item/aedit_item_inout_cert_index.jsp"%>--%>
 
     <!-- 选择材料类别 -->
     <%@include file="../../../aplanmis/item/select_mat_type_ztree.jsp"%>
 
+    <!-- 选择电子证照 -->
+    <%@include file="../../../common/ztree/select_cert_no_right_ztree.jsp" %>
+
+    <!-- 选择表单 -->
+    <%@include file="../../../common/ztree/select_form_no_right_ztree.jsp" %>
+
     <!-- 查看材料附件 -->
     <%@include file="../../../aplanmis/item/show_mat_att_modal.jsp"%>
 
-    <!-- 导入表单 -->
-    <%@include file="item_no_state_form_list.jsp"%>
+    <%--<!-- 导入表单 -->--%>
+    <%--<%@include file="item_no_state_form_list.jsp"%>--%>
 
     <!-- 材料、证照、表单排序 -->
     <%@include file="item_no_state_sort.jsp"%>

@@ -228,14 +228,7 @@ public class AeaCertAdminServiceImpl implements AeaCertAdminService {
         if (StringUtils.isBlank(rootOrgId)) {
             rootOrgId = SecurityContext.getCurrentOrgId();
         }
-        // 电子证照分类
-        AeaCertType scertType = new AeaCertType();
-        scertType.setRootOrgId(rootOrgId);
-        List<AeaCertType> certTypes = aeaCertTypeMapper.listAeaCertType(scertType);
-        // 电子证照数据
-        AeaCert scert = new AeaCert();
-        scert.setRootOrgId(rootOrgId);
-        List<AeaCert> certs = aeaCertMapper.listAeaCert(scert);
+        // 根节点
         List<ZtreeNode> allNodes = new ArrayList<>();
         ZtreeNode rootNode = new ZtreeNode();
         rootNode.setId("root");
@@ -245,7 +238,15 @@ public class AeaCertAdminServiceImpl implements AeaCertAdminService {
         rootNode.setOpen(true);
         rootNode.setNocheck(true);
         allNodes.add(rootNode);
+        // 电子证照分类
+        AeaCertType scertType = new AeaCertType();
+        scertType.setRootOrgId(rootOrgId);
+        List<AeaCertType> certTypes = aeaCertTypeMapper.listAeaCertType(scertType);
         if (certTypes != null && certTypes.size() > 0) {
+            // 电子证照数据
+            AeaCert scert = new AeaCert();
+            scert.setRootOrgId(rootOrgId);
+            List<AeaCert> certs = aeaCertMapper.listAeaCert(scert);
             for (AeaCertType certType : certTypes) {
                 ZtreeNode certTypeNode = new ZtreeNode();
                 certTypeNode.setId(certType.getCertTypeId());

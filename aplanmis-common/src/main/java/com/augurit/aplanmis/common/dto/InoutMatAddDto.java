@@ -15,6 +15,7 @@ public class InoutMatAddDto {
     // AeaItemInout 中的属性
     private String itemVerId;//事项版本id
     private String stateVerId;//情形版本id不能为空
+
     private String isOwner;
     private String isInput;//输入或者输出材料
     private String fileType;//文件类型 mat  cert
@@ -51,6 +52,16 @@ public class InoutMatAddDto {
     private String matMemo;//备注
     private String rootOrgId; // 根组织id
     private String isOfficialDoc; // (是否批复文件，0表示否，1表示是)
+    private String matProp;
+    private String certId;
+    private String stoFormId;
+
+//    private String receiveMode;
+//    private String matRequire;
+//    private String matBasis;
+//    private String attDirId;
+//    private String matHolder;
+
 
     /**
      * 根据mat 和 inout dto来新增inout
@@ -112,6 +123,14 @@ public class InoutMatAddDto {
         aeaItemMat.setRealPaperCount(this.duePaperCount);
         aeaItemMat.setRealCopyCount(this.duePaperCount);
         aeaItemMat.setIsOfficialDoc(this.isOfficialDoc);
+        aeaItemMat.setMatProp(this.matProp);
+        aeaItemMat.setCertId(this.certId);
+        aeaItemMat.setStoFormId(this.stoFormId);
+//        aeaItemMat.setReceiveMode(this.receiveMode);
+//        aeaItemMat.setMatRequire(this.matRequire);
+//        aeaItemMat.setMatBasis(this.matBasis);
+//        aeaItemMat.setAttDirId(this.attDirId);
+//        aeaItemMat.setMatHolder(this.matHolder);
         return aeaItemMat;
     }
 }

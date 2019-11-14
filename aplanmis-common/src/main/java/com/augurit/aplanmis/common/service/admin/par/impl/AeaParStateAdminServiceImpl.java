@@ -1,5 +1,6 @@
 package com.augurit.aplanmis.common.service.admin.par.impl;
 
+import com.augurit.agcloud.bpm.common.domain.ActStoForm;
 import com.augurit.agcloud.bsc.sc.rule.code.service.AutoCodeNumberService;
 import com.augurit.agcloud.bsc.util.CommonConstant;
 import com.augurit.agcloud.framework.constant.Status;
@@ -316,11 +317,9 @@ public class AeaParStateAdminServiceImpl implements AeaParStateAdminService {
                 List<AeaParIn> allCertList = null;
                 List<AeaParIn> allMatCommonList = null;
                 List<AeaParIn> allCertCommonList = null;
+                List<AeaParIn> stageStateFormList = null;
+                List<AeaParIn> allStageCommonFormList = null;
                 List<AeaParStateItem> stageStateItemList = null;
-                List<AeaParStateForm> stageStateFormList = null;
-                List<AeaParStateForm> allStageCommonFormList = null;
-                AeaParStateForm form = new AeaParStateForm();
-
                 if (USE_RECURSION) {
                     topStateList = aeaParStateMapper.listRootAeaParStateByStageId(stageId, rootOrgId);
                 } else {
@@ -328,15 +327,15 @@ public class AeaParStateAdminServiceImpl implements AeaParStateAdminService {
                     allStateList = aeaParStateMapper.listAeaParStateByStageId(stageId, rootOrgId);
                     if(aeaMindUi!=null&&aeaMindUi.isShowMat()){
                         // 获取阶段情形材料
-                        allMatList = aeaParInMapper.listInStateMatByStageId(stageId, null, rootOrgId);
+                        allMatList = aeaParInMapper.listInStateMatNewByStageId(stageId, null, rootOrgId, MindType.M.getValue());
                         // 获取阶段通用材料
-                        allMatCommonList = aeaParInMapper.listStageMat(stageId, "", Status.ON , "0", "", rootOrgId);
+                        allMatCommonList = aeaParInMapper.listStageMatNew(stageId, "", Status.ON , "0", "", rootOrgId, MindType.M.getValue());
                     }
                     if(aeaMindUi!=null&&aeaMindUi.isShowCert()){
                         // 获取阶段情形证照
-                        allCertList = aeaParInMapper.listInStateCertByStageId(stageId, null, rootOrgId);
+                        allCertList = aeaParInMapper.listInStateMatNewByStageId(stageId, null, rootOrgId, MindType.C.getValue());
                         // 获取阶段通用证照
-                        allCertCommonList =  aeaParInMapper.listNoStateInCertByStageId(stageId, null , rootOrgId);
+                        allCertCommonList = aeaParInMapper.listStageMatNew(stageId, "", Status.ON , "0", "", rootOrgId, MindType.C.getValue());
                     }
                     if(aeaMindUi!=null&&aeaMindUi.isShowSituationLinkItem()){
                         // 获取阶段情形事项
@@ -344,12 +343,9 @@ public class AeaParStateAdminServiceImpl implements AeaParStateAdminService {
                     }
                     if(aeaMindUi!=null&&aeaMindUi.isShowForm()){
                         // 获取阶段情形表单数据
-                        form.setParStageId(stageId);
-                        form.setIsStateForm(Status.ON);
-                        stageStateFormList = aeaParStateFormMapper.listStageStateFormWithActStoForm(form);
-
-                        form.setIsStateForm(Status.OFF);
-                        allStageCommonFormList = aeaParStateFormMapper.listStageStateFormWithActStoForm(form);
+                        stageStateFormList = aeaParInMapper.listInStateMatNewByStageId(stageId, null, rootOrgId, MindType.F.getValue());
+                        // 获取阶段通用表单数据
+                        allStageCommonFormList = aeaParInMapper.listStageMatNew(stageId, "", Status.ON , "0", "", rootOrgId, MindType.F.getValue());
                     }
                     // 获取阶段顶级情形数据
                     topStateList = getTopAeaParStateList(allStateList);
@@ -370,43 +366,55 @@ public class AeaParStateAdminServiceImpl implements AeaParStateAdminService {
                     mindBaseNode.setOpen(MindConst.MIND_NODE_EXPAND_FALSE);
                 }
                 // 转换通用材料为mind节点
-                mindBaseNode.setChilds(listToArray(getChildStageNodeOfCommonMatCert(stageId, topNodeList, allMatCommonList)));
+                mindBaseNode.setChilds(listToArray(getChildStageNodeOfCommonMatCertForm(stageId, topNodeList, allMatCommonList)));
                 // 转换通用证照为mind节点
-                mindBaseNode.setChilds(listToArray(getChildStageNodeOfCommonMatCert(stageId, topNodeList, allCertCommonList)));
+                mindBaseNode.setChilds(listToArray(getChildStageNodeOfCommonMatCertForm(stageId, topNodeList, allCertCommonList)));
                 // 转换通用表单为mind节点
-                mindBaseNode.setChilds(listToArray(getChildStageNodeOfCommonForm(stageId, topNodeList, allStageCommonFormList)));
+                mindBaseNode.setChilds(listToArray(getChildStageNodeOfCommonMatCertForm(stageId, topNodeList, allStageCommonFormList)));
                 return mindBaseNode;
             }
         }
         return null;
     }
 
-    private List<MindBaseNode> getChildStageNodeOfCommonMatCert(String stageId, List<MindBaseNode> topNodeList, List<AeaParIn> allMatCommonList){
+    private List<MindBaseNode> getChildStageNodeOfCommonMatCertForm(String stageId, List<MindBaseNode> topNodeList, List<AeaParIn> allMatCommonList){
 
         if(allMatCommonList!=null&&allMatCommonList.size()>0) {
             for (AeaParIn aeaParIn:allMatCommonList) {
-
                 MindBaseNode mindMatCertNode = new MindBaseNode();
-                if(StringUtils.isNotBlank(aeaParIn.getFileType())){
-                    if(aeaParIn.getFileType().equals(MindType.MATERIAL.getValue())){
-                        mindMatCertNode.setId(aeaParIn.getMatId());
-                    }else if(aeaParIn.getFileType().equals(MindType.CERTIFICATE.getValue())){
-                        mindMatCertNode.setId(aeaParIn.getCertId());
-                    }
-                }
-                mindMatCertNode.setName(aeaParIn.getAeaMatCertName());
-                //父节点id
+                mindMatCertNode.setProgress("");
                 mindMatCertNode.setPid(stageId);
-                mindMatCertNode.setOpen(MindConst.MIND_NODE_EXPAND_FALSE);
-                if(AeaMindConst.MIND_NODE_TYPE_CODE_MAT.equals(aeaParIn.getFileType())){
-                    mindMatCertNode.setNodeTypeCode(AeaMindConst.MIND_NODE_TYPE_CODE_MAT);
-                    //设置图标（3表示材料）
+                mindMatCertNode.setId(aeaParIn.getMatId());
+                mindMatCertNode.setName(aeaParIn.getAeaMatCertName());
+                mindMatCertNode.setOpen(MindConst.MIND_NODE_EXPAND_TRUE);
+                Map<String, String> map = new HashMap<>();
+                map.put("inId", aeaParIn.getInId());
+                if(MindType.M.getValue().equals(aeaParIn.getFileType())){
+
                     mindMatCertNode.setPriority(AeaMindConst.MIND_NODE_PRIORITY_MAPPING_MAT);
-                }else {
-                    mindMatCertNode.setNodeTypeCode(AeaMindConst.MIND_NODE_TYPE_CODE_CERT);
-                    //设置图标（3表示材料）
+                    mindMatCertNode.setNodeTypeCode(MindType.MATERIAL.getValue());
+                    mindMatCertNode.setNodeTypeName(MindType.MATERIAL.getName());
+                    map.put("matId", aeaParIn.getMatId());
+
+                }else if(MindType.C.getValue().equals(aeaParIn.getFileType())){
+
                     mindMatCertNode.setPriority(AeaMindConst.MIND_NODE_PRIORITY_MAPPING_CERT);
+                    mindMatCertNode.setNodeTypeCode(MindType.CERTIFICATE.getValue());
+                    mindMatCertNode.setNodeTypeName(MindType.CERTIFICATE.getName());
+                    map.put("certId", aeaParIn.getCertId());
+
+                }else if(MindType.F.getValue().equals(aeaParIn.getFileType())){
+
+                    mindMatCertNode.setOpen(MindConst.MIND_NODE_EXPAND_FALSE);
+                    mindMatCertNode.setPriority(AeaMindConst.MIND_NODE_PRIORITY_MAPPING_FORM);
+                    mindMatCertNode.setNodeTypeCode(MindType.FORM.getValue());
+                    mindMatCertNode.setNodeTypeName(MindType.FORM.getName());
+                    map.put("formId", aeaParIn.getFormId());
+                    ActStoForm form = aeaItemMatMapper.getActStoFormById(aeaParIn.getFormId());
+                    map.put(AeaMindConst.MIND_NODE_EXTRA_KEY_FORM_PROPERTY, form==null?null:form.getFormProperty());
                 }
+                mindMatCertNode.setExtra(map);
+                mindMatCertNode.setNote(aeaParIn.getAeaMatCertMemo());
                 topNodeList.add(mindMatCertNode);
             }
         }
@@ -459,7 +467,6 @@ public class AeaParStateAdminServiceImpl implements AeaParStateAdminService {
             Iterator<AeaParState> iterator = allStateList.iterator();
             while (iterator.hasNext()) {
                 AeaParState aeaParState = iterator.next();
-
                 if (parentStateId.equals(aeaParState.getParentStateId())) {
                     childAeaParStateList.add(aeaParState);
                     iterator.remove();
@@ -477,7 +484,6 @@ public class AeaParStateAdminServiceImpl implements AeaParStateAdminService {
             Iterator<AeaParIn> iterator = allParInList.iterator();
             while (iterator.hasNext()) {
                 AeaParIn aeaParIn = iterator.next();
-
                 if (parStateId.equals(aeaParIn.getParStateId())) {
                     childParInList.add(aeaParIn);
                     iterator.remove();
@@ -565,7 +571,7 @@ public class AeaParStateAdminServiceImpl implements AeaParStateAdminService {
 
     private void loadChildStateList(String stageId, MindBaseNode node, boolean useRecursion, AeaMindUi aeaMindUi,
                                     List<AeaParState> allStateList, List<AeaParIn> allMatList, List<AeaParIn> allCertList,
-                                    List<AeaParStateItem> allStateItemList, List<AeaParStateForm> allStateFormList, String rootOrgId) {
+                                    List<AeaParStateItem> allStateItemList, List<AeaParIn> allStateFormList, String rootOrgId) {
 
         //情形下所有子节点
         List<MindBaseNode> allChildList = new ArrayList<>();
@@ -593,7 +599,7 @@ public class AeaParStateAdminServiceImpl implements AeaParStateAdminService {
         if(aeaMindUi!=null&&aeaMindUi.isShowMat()){
             List<AeaParIn> matInList;
             if (useRecursion) {
-                matInList = aeaParInMapper.listInStateMatByStageIdAndStateId(stageId, node.getId(), null, rootOrgId);
+                matInList = aeaParInMapper.listInStateMatNewByStageIdAndStateId(stageId, node.getId(), null, rootOrgId, MindType.M.getValue());
             } else {
                 matInList = getChildAeaParInList(node.getId(), allMatList);
             }
@@ -608,7 +614,7 @@ public class AeaParStateAdminServiceImpl implements AeaParStateAdminService {
         if(aeaMindUi!=null&&aeaMindUi.isShowCert()){
             List<AeaParIn> certInList;
             if (useRecursion) {
-                certInList = aeaParInMapper.listInStateCertByStageIdAndStateId(stageId, node.getId(), null, rootOrgId);
+                certInList = aeaParInMapper.listInStateMatNewByStageIdAndStateId(stageId, node.getId(), null, rootOrgId, MindType.C.getValue());
             } else {
                 certInList = getChildAeaParInList(node.getId(), allCertList);
             }
@@ -636,19 +642,15 @@ public class AeaParStateAdminServiceImpl implements AeaParStateAdminService {
 
         //情形下显示表单节点
         if(aeaMindUi!=null&&aeaMindUi.isShowForm()){
-            List<AeaParStateForm> stateFormList;
+            List<AeaParIn> stateFormList;
             if (useRecursion) {
-                AeaParStateForm form = new AeaParStateForm();
-                form.setParStageId(stageId);
-                form.setParStateId(node.getId());
-                form.setIsStateForm("1");
-                stateFormList = aeaParStateFormMapper.listStageStateFormWithActStoForm(form);
+                stateFormList = aeaParInMapper.listInStateMatNewByStageIdAndStateId(stageId, node.getId(), null, rootOrgId, MindType.F.getValue());
             } else {
-                stateFormList = getChildAeaParStateFormList(node.getId(), allStateFormList);
+                stateFormList = getChildAeaParInList(node.getId(), allStateFormList);
             }
             if (stateFormList != null && !stateFormList.isEmpty()) {
-                for (AeaParStateForm child : stateFormList) {
-                    allChildList.add(convertChildStateFormNode(child));
+                for (AeaParIn child : stateFormList) {
+                    allChildList.add(getChildParInNode(child, false, useRecursion));
                 }
             }
         }
@@ -677,32 +679,46 @@ public class AeaParStateAdminServiceImpl implements AeaParStateAdminService {
 
     private MindBaseNode getChildParInNode(AeaParIn aeaParIn, boolean isMat, boolean getStageItemIn) {
 
-        MindBaseNode mindMatNode = new MindBaseNode();
-        mindMatNode.setPid(aeaParIn.getParStateId());
-        mindMatNode.setName(aeaParIn.getAeaMatCertName());
-        mindMatNode.setOpen(MindConst.MIND_NODE_EXPAND_FALSE);
+        MindBaseNode mindMatCertNode = new MindBaseNode();
+        mindMatCertNode.setProgress("");
+        mindMatCertNode.setPid(aeaParIn.getParStateId());
+        mindMatCertNode.setId(aeaParIn.getMatId());
+        mindMatCertNode.setName(aeaParIn.getAeaMatCertName());
+        mindMatCertNode.setOpen(MindConst.MIND_NODE_EXPAND_TRUE);
         Map<String, String> map = new HashMap<>();
         map.put("inId", aeaParIn.getInId());
-        mindMatNode.setExtra(map);
-
-        if (isMat) {
-            mindMatNode.setId(aeaParIn.getMatId());
-            mindMatNode.setNodeTypeCode(AeaMindConst.MIND_NODE_TYPE_CODE_MAT);
+        if(MindType.M.getValue().equals(aeaParIn.getFileType())){
 
             if (Status.ON.equals(aeaParIn.getIsGlobalShare())) {
-                mindMatNode.setIsGlobal(aeaParIn.getIsGlobalShare());
+                mindMatCertNode.setIsGlobal(aeaParIn.getIsGlobalShare());
             } else {
-                mindMatNode.setIsGlobal(Status.OFF);
+                mindMatCertNode.setIsGlobal(Status.OFF);
             }
-            mindMatNode.setPriority(AeaMindConst.MIND_NODE_PRIORITY_MAPPING_MAT);
-        } else {
-            mindMatNode.setId(aeaParIn.getCertId());
-            mindMatNode.setNodeTypeCode(AeaMindConst.MIND_NODE_TYPE_CODE_CERT);
-            mindMatNode.setPriority(AeaMindConst.MIND_NODE_PRIORITY_MAPPING_CERT);
+            mindMatCertNode.setPriority(AeaMindConst.MIND_NODE_PRIORITY_MAPPING_MAT);
+            mindMatCertNode.setNodeTypeCode(MindType.MATERIAL.getValue());
+            mindMatCertNode.setNodeTypeName(MindType.MATERIAL.getName());
+            map.put("matId", aeaParIn.getMatId());
 
+        }else if(MindType.C.getValue().equals(aeaParIn.getFileType())){
+
+            mindMatCertNode.setPriority(AeaMindConst.MIND_NODE_PRIORITY_MAPPING_CERT);
+            mindMatCertNode.setNodeTypeCode(MindType.CERTIFICATE.getValue());
+            mindMatCertNode.setNodeTypeName(MindType.CERTIFICATE.getName());
+            map.put("certId", aeaParIn.getCertId());
+
+        }else if(MindType.F.getValue().equals(aeaParIn.getFileType())){
+
+            mindMatCertNode.setOpen(MindConst.MIND_NODE_EXPAND_FALSE);
+            mindMatCertNode.setPriority(AeaMindConst.MIND_NODE_PRIORITY_MAPPING_FORM);
+            mindMatCertNode.setNodeTypeCode(MindType.FORM.getValue());
+            mindMatCertNode.setNodeTypeName(MindType.FORM.getName());
+            map.put("formId", aeaParIn.getFormId());
+            ActStoForm form = aeaItemMatMapper.getActStoFormById(aeaParIn.getFormId());
+            map.put(AeaMindConst.MIND_NODE_EXTRA_KEY_FORM_PROPERTY, form==null?null:form.getFormProperty());
         }
-        mindMatNode.setNote(aeaParIn.getAeaMatCertMemo());
-        return mindMatNode;
+        mindMatCertNode.setNote(aeaParIn.getAeaMatCertMemo());
+        mindMatCertNode.setExtra(map);
+        return mindMatCertNode;
     }
 
     /**
@@ -753,6 +769,23 @@ public class AeaParStateAdminServiceImpl implements AeaParStateAdminService {
         mindMatNode.setPriority(AeaMindConst.MIND_NODE_PRIORITY_MAPPING_FORM);
         Map<String, String> map = new HashMap<>();
         map.put("formId", stateForm.getFormId());
+        map.put(AeaMindConst.MIND_NODE_EXTRA_KEY_FORM_PROPERTY, stateForm.getFormProperty());
+        mindMatNode.setExtra(map);
+        return mindMatNode;
+    }
+
+    private MindBaseNode convertChildStateFormNode(AeaParIn stateForm) {
+
+        MindBaseNode mindMatNode = new MindBaseNode();
+        mindMatNode.setId(stateForm.getMatId());
+        mindMatNode.setName(stateForm.getAeaMatCertName());
+        mindMatNode.setPid(stateForm.getParStateId());
+        mindMatNode.setOpen(MindConst.MIND_NODE_EXPAND_FALSE);
+        mindMatNode.setNodeTypeCode(AeaMindConst.MIND_NODE_TYPE_CODE_FORM);
+        mindMatNode.setPriority(AeaMindConst.MIND_NODE_PRIORITY_MAPPING_FORM);
+        Map<String, String> map = new HashMap<>();
+        map.put("formId", stateForm.getFormId());
+        map.put("inId", stateForm.getInId());
         map.put(AeaMindConst.MIND_NODE_EXTRA_KEY_FORM_PROPERTY, stateForm.getFormProperty());
         mindMatNode.setExtra(map);
         return mindMatNode;
@@ -811,11 +844,7 @@ public class AeaParStateAdminServiceImpl implements AeaParStateAdminService {
             for (Object obj : allDeleteList) {
                 if (obj instanceof AeaParIn) {
                     AeaParIn parIn = (AeaParIn) obj;
-                    if (MindType.MATERIAL.getValue().equals(parIn.getFileType())) {
-                        deleteAeaParInMat(parIn);
-                    } else {
-                        deleteAeaParInCert(parIn);
-                    }
+                    deleteAeaParInMat(parIn);
                 } else if (obj instanceof AeaParState) {
                     AeaParState aeaParState = (AeaParState) obj;
                     aeaParState.setIsDeleted(DeletedStatus.DELETED.getValue());
@@ -857,45 +886,40 @@ public class AeaParStateAdminServiceImpl implements AeaParStateAdminService {
         } else {
             aeaParStateList = aeaParStateMapper.listAeaParStateByParentStateIdAndStageId(pAeaParState.getStageId(), pAeaParState.getParStateId(), rootOrgId);
         }
-
-        List<AeaParIn> aeaParInCertList = null;
         List<AeaParIn> aeaParInMatList = null;
         if (pAeaParState != null) {
-            aeaParInMatList = aeaParInMapper.listInStateMatByStageIdAndStateId(aeaParStage.getStageId(), pAeaParState.getParStateId(), null, rootOrgId);
-            aeaParInCertList = aeaParInMapper.listInStateCertByStageIdAndStateId(aeaParStage.getStageId(), pAeaParState.getParStateId(), null, rootOrgId);
+            aeaParInMatList = aeaParInMapper.listInStateMatNewByStageIdAndStateId(aeaParStage.getStageId(), pAeaParState.getParStateId(), null, rootOrgId, null);
         }
-
         if (child == null || child.length == 0) {
-            addDeleteChildList(aeaParStateList, aeaParInCertList, aeaParInMatList, allDeleteList, rootOrgId);
+            addDeleteChildList(aeaParStateList, aeaParInMatList, allDeleteList, rootOrgId);
         } else {
             for (MindExportObj mindExportObj : child) {
                 if (mindExportObj != null) {
-                    loadStageNode(aeaParStage, pAeaParState, mindExportObj, aeaParStateList, aeaParInCertList, aeaParInMatList, allDeleteList, rootOrgId);
+                    loadStageNode(aeaParStage, pAeaParState, mindExportObj, aeaParStateList, aeaParInMatList, allDeleteList, rootOrgId);
                 }
             }
-            addDeleteChildList(aeaParStateList, aeaParInCertList, aeaParInMatList, allDeleteList, rootOrgId);
+            addDeleteChildList(aeaParStateList, aeaParInMatList, allDeleteList, rootOrgId);
         }
-
     }
 
-    private void loadStageNode(AeaParStage aeaParStage, AeaParState pAeaParState, MindExportObj mindExportObj, List<AeaParState> aeaParStateList,
-                               List<AeaParIn> aeaParInCertList, List<AeaParIn> aeaParInMatList, List<Object> allDeleteList, String rootOrgId) throws Exception {
+    private void loadStageNode(AeaParStage aeaParStage, AeaParState pAeaParState,
+                               MindExportObj mindExportObj, List<AeaParState> aeaParStateList,
+                               List<AeaParIn> aeaParInMatList, List<Object> allDeleteList, String rootOrgId) throws Exception {
 
         if (mindExportObj != null) {
             MindExportData mindExportData = mindExportObj.getData();
-
             if (mindExportData != null) {
-
                 mindExportData.setName(mindExportData.getText());
-
                 if (AeaMindConst.MIND_NODE_TYPE_CODE_SITUATION.equals(mindExportData.getNodeTypeCode())) {
+
                     loadStageState(aeaParStage, pAeaParState, mindExportObj, aeaParStateList, allDeleteList, rootOrgId);
 
-                } else if (AeaMindConst.MIND_NODE_TYPE_CODE_MAT.equals(mindExportData.getNodeTypeCode())) {
-                    loadStateMat(aeaParStage, pAeaParState, mindExportObj, aeaParInMatList);
+                // 三种材料合成一种
+                } else if (AeaMindConst.MIND_NODE_TYPE_CODE_MAT.equals(mindExportData.getNodeTypeCode())
+                         ||AeaMindConst.MIND_NODE_TYPE_CODE_CERT.equals(mindExportData.getNodeTypeCode())
+                         ||AeaMindConst.MIND_NODE_TYPE_CODE_FORM.equals(mindExportData.getNodeTypeCode())) {
 
-                } else if (AeaMindConst.MIND_NODE_TYPE_CODE_CERT.equals(mindExportData.getNodeTypeCode())) {
-                    loadStateCert(aeaParStage, pAeaParState, mindExportObj, aeaParInCertList);
+                    loadStateMat(aeaParStage, pAeaParState, mindExportObj, aeaParInMatList);
                 }
             }
         }
@@ -906,21 +930,17 @@ public class AeaParStateAdminServiceImpl implements AeaParStateAdminService {
 
         if (mindExportObj != null) {
             MindExportData mindExportData = mindExportObj.getData();
-
             if (mindExportData != null) {
                 AeaParState aeaParState = aeaParStateMapper.getAeaParStateById(mindExportData.getId());
-
                 boolean newNode = MindConst.MIND_NODE_OPERATOR_TAG_NEW.equals(mindExportData.getOperatorTag());
                 if (aeaParState != null) {
                     if (newNode) {
                         List<AeaParStateItem> stateItemList = aeaParStateItemMapper.listStateItemByStateId(aeaParState.getParStateId(), rootOrgId);
                         aeaParState = getNewAeaParStateByOldState(aeaParStage.getStageId(), pAeaParState == null ? null : pAeaParState.getParStateId(), mindExportData, aeaParState);
                         saveAeaParState(aeaParState);
-
                         if (stateItemList != null && !stateItemList.isEmpty()) {
                             addStateItem(aeaParState, stateItemList);
                         }
-
                         loadStageNode(aeaParStage, aeaParState, mindExportObj.getChildren(), allDeleteList, rootOrgId);
                     } else {
                         updateState(aeaParState, mindExportData, pAeaParState == null ? null : pAeaParState.getParStateId());
@@ -931,7 +951,6 @@ public class AeaParStateAdminServiceImpl implements AeaParStateAdminService {
                     saveAeaParState(aeaParState);
                     loadStageNode(aeaParStage, aeaParState, mindExportObj.getChildren(), allDeleteList, rootOrgId);
                 }
-
                 if (aeaParState != null) {
                     removeAeaParState(aeaParStateList, aeaParState.getParStateId());
                 }
@@ -944,16 +963,11 @@ public class AeaParStateAdminServiceImpl implements AeaParStateAdminService {
 
         if (mindExportObj != null) {
             MindExportData mindExportData = mindExportObj.getData();
-
             if (mindExportData != null) {
                 AeaItemMat aeaItemMat = aeaItemMatMapper.selectOneById(mindExportData.getId());
-
                 if (aeaItemMat != null) {
-
                     boolean newNode = MindConst.MIND_NODE_OPERATOR_TAG_NEW.equals(mindExportData.getOperatorTag());
-
                     if (newNode) {
-
                         String inId = null;
                         Map<String, String> map = mindExportData.getExtra();
                         if (map != null && map.size() > 0) {
@@ -972,7 +986,6 @@ public class AeaParStateAdminServiceImpl implements AeaParStateAdminService {
                     } else {
                         updateParIn(aeaItemMat, mindExportData);
                     }
-
                     removeAeaParIn(aeaParInMatList, mindExportData.getId(), true);
                 }
             }
@@ -1007,8 +1020,7 @@ public class AeaParStateAdminServiceImpl implements AeaParStateAdminService {
 
     }
 
-    private void addDeleteChildList(List<AeaParState> aeaParStateList, List<AeaParIn> aeaParInCertList,
-                                    List<AeaParIn> aeaParInMatList, List<Object> allDeleteList, String rootOrgId) {
+    private void addDeleteChildList(List<AeaParState> aeaParStateList, List<AeaParIn> aeaParInMatList, List<Object> allDeleteList, String rootOrgId) {
 
         if (aeaParStateList != null && aeaParStateList.size() > 0) {
             for (AeaParState atate : aeaParStateList) {
@@ -1017,9 +1029,6 @@ public class AeaParStateAdminServiceImpl implements AeaParStateAdminService {
         }
         if (aeaParInMatList != null && aeaParInMatList.size() > 0) {
             allDeleteList.addAll(aeaParInMatList);
-        }
-        if (aeaParInCertList != null && aeaParInCertList.size() > 0) {
-            allDeleteList.addAll(aeaParInCertList);
         }
     }
 
@@ -1138,6 +1147,7 @@ public class AeaParStateAdminServiceImpl implements AeaParStateAdminService {
     }
 
     private void updateParIn(AeaItemMat aeaItemMat, MindExportData mindExportData) {
+
         String textName = mindExportData.getName();
         String note = mindExportData.getNote();
         boolean needUpdate = false;
@@ -1147,14 +1157,12 @@ public class AeaParStateAdminServiceImpl implements AeaParStateAdminService {
                 needUpdate = true;
             }
         }
-
         if (note != null && StringUtils.isNotBlank(note)) {
             if (!aeaItemMat.getMatMemo().equals(note)) {
                 aeaItemMat.setMatMemo(note);
                 needUpdate = true;
             }
         }
-
         if (needUpdate) {
             aeaItemMat.setModifier(SecurityContext.getCurrentUserId());
             aeaItemMat.setModifyTime(new Date());
@@ -1208,10 +1216,8 @@ public class AeaParStateAdminServiceImpl implements AeaParStateAdminService {
                     aeaItemMatMapper.updateAeaItemMat(aeaItemMat);
                 }
             }
-
             return aeaParIn;
         }
-
         return null;
     }
 
@@ -1263,16 +1269,11 @@ public class AeaParStateAdminServiceImpl implements AeaParStateAdminService {
 
     private void removeAeaParIn(List<AeaParIn> list, String id, boolean isMat) {
 
-        if (list != null && list.size() > 0) {
+        if (list != null && list.size() > 0 && StringUtils.isNotBlank(id)) {
             Iterator<AeaParIn> iterator = list.iterator();
             while (iterator.hasNext()) {
-                String inId;
-                if (isMat) {
-                    inId = iterator.next().getMatId();
-                } else {
-                    inId = iterator.next().getCertId();
-                }
-                if (inId.equals(id)) {
+                String bizId = iterator.next().getMatId();
+                if (id.equals(bizId)) {
                     iterator.remove();
                     return;
                 }

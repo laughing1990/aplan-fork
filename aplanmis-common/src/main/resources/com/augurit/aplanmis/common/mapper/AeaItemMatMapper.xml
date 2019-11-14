@@ -104,6 +104,7 @@
         mat.MAT_REQUIRE  matRequire,
         mat.MAT_BASIS  matBasis,
         mat.PAPER_IS_REQUIRE  paperIsRequire,
+        mat.SORT_NO  sortNo,
         mat.MAT_MEMO  matMemo,
         mat.IS_ACTIVE  isActive,
         mat.IS_DELETED  isDeleted,
@@ -112,14 +113,14 @@
         mat.MODIFIER  modifier,
         mat.MODIFY_TIME  modifyTime,
         mat.ATT_DIR_ID  attDirId,
-        mat.MAT_HOLDER matHolder,
-        mat.IS_OFFICIAL_DOC isOfficialDoc,
-        mat.ATT_IS_REQUIRE attIsRequire,
+        mat.MAT_HOLDER  matHolder,
+        mat.IS_OFFICIAL_DOC  isOfficialDoc,
+        mat.ATT_IS_REQUIRE  attIsRequire,
         mat.IS_COMMON  isCommon,
         mat.REVIEW_KEY_POINTS  reviewKeyPoints,
         mat.REVIEW_SAMPLE_DOC  reviewSampleDoc,
         mat.REVIEW_BASIS  reviewBasis,
-        mat.MAT_FROM_DEPT matFromDept,
+        mat.MAT_FROM_DEPT  matFromDept,
         mat.DUE_PAPER_TYPE  duePaperType,
         mat.DUE_COPY_TYPE  dueCopyType,
         mat.PAPER_MAT_TYPE  paperMatType,
@@ -141,12 +142,12 @@
 
     <select id="selectOneById" resultType="AeaItemMat">
         select
-        <include refid="mat_allColumns"/>,
-        mattype.TYPE_NAME matTypeName
+            <include refid="mat_allColumns"/>,
+            mattype.TYPE_NAME matTypeName
         from AEA_ITEM_MAT mat
-        LEFT JOIN AEA_ITEM_MAT_TYPE mattype ON mat.MAT_TYPE_ID = mattype.MAT_TYPE_ID
+        left join AEA_ITEM_MAT_TYPE mattype on mat.MAT_TYPE_ID = mattype.MAT_TYPE_ID
         where mat.MAT_ID = #{id}
-        AND mat.IS_DELETED = '0'
+          and mat.IS_DELETED = '0'
     </select>
 
     <select id="getMatListByItemStateIds" resultType="AeaItemMat">
@@ -1039,11 +1040,13 @@
 
     <select id="listAeaItemMat" resultType="AeaItemMat">
         select
-            <include refid="allColumns"/>
-        from AEA_ITEM_MAT matbak
+            <include refid="mat_allColumns"/>,
+            mattype.TYPE_NAME matTypeName
+        from AEA_ITEM_MAT mat
+        left join AEA_ITEM_MAT_TYPE matType on mat.MAT_TYPE_ID = matType.MAT_TYPE_ID
         <where>
             <if test="busiType =='item'">
-                and matbak.MAT_ID not in(
+                and mat.MAT_ID not in(
                     select
                        mat.MAT_ID
                     from AEA_ITEM_INOUT iout, AEA_ITEM_MAT mat
@@ -1073,7 +1076,7 @@
                 )
             </if>
             <if test="busiType =='stage'">
-                and matbak.MAT_ID not in(
+                and mat.MAT_ID not in(
                     select
                        mat.MAT_ID
                     from AEA_PAR_IN parIn, AEA_ITEM_MAT mat
@@ -1101,130 +1104,79 @@
             </if>
             <if test="keyword != null and keyword != ''">
                 and (
-                    MAT_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%') OR
-                    MAT_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                    mat.MAT_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%') OR
+                    mat.MAT_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 )
             </if>
-            <if test="matId != null">
-                and MAT_ID = #{matId}
-            </if>
             <if test="matCode != null">
-                and MAT_CODE = #{matCode}
+                and mat.MAT_CODE = #{matCode}
             </if>
             <if test="matName != null">
-                and MAT_NAME = #{matName}
+                and mat.MAT_NAME = #{matName}
             </if>
             <if test="isGlobalShare != null">
-                and IS_GLOBAL_SHARE = #{isGlobalShare}
-            </if>
-            <if test="matTypeId != null and matTypeId!='' ">
-                and MAT_TYPE_ID = #{matTypeId}
-            </if>
-            <if test="receiveMode != null">
-                and RECEIVE_MODE = #{receiveMode}
-            </if>
-            <if test="duePaperCount != null">
-                and DUE_PAPER_COUNT = #{duePaperCount}
-            </if>
-            <if test="dueCopyCount != null">
-                and DUE_COPY_COUNT = #{dueCopyCount}
+                and mat.IS_GLOBAL_SHARE = #{isGlobalShare}
             </if>
             <if test="matFrom != null">
-                and MAT_FROM = #{matFrom}
-            </if>
-            <if test="sampleDoc != null">
-                and SAMPLE_DOC = #{sampleDoc}
-            </if>
-            <if test="templateDoc != null">
-                and TEMPLATE_DOC = #{templateDoc}
+                and mat.MAT_FROM = #{matFrom}
             </if>
             <if test="matRequire != null">
-                and MAT_REQUIRE = #{matRequire}
+                and mat.MAT_REQUIRE = #{matRequire}
             </if>
             <if test="matBasis != null">
-                and MAT_BASIS = #{matBasis}
+                and mat.MAT_BASIS = #{matBasis}
             </if>
             <if test="paperIsRequire != null">
-                and PAPER_IS_REQUIRE = #{paperIsRequire}
-            </if>
-            <if test="sortNo != null">
-                and SORT_NO = #{sortNo}
+                and mat.PAPER_IS_REQUIRE = #{paperIsRequire}
             </if>
             <if test="matMemo != null">
-                and MAT_MEMO = #{matMemo}
+                and mat.MAT_MEMO = #{matMemo}
             </if>
             <if test="isActive != null">
-                and IS_ACTIVE = #{isActive, jdbcType=VARCHAR}
-            </if>
-            <if test="isDeleted != null">
-                and IS_DELETED = #{isDeleted, jdbcType=VARCHAR}
-            </if>
-            <if test="creater != null">
-                and CREATER = #{creater}
-            </if>
-            <if test="createTime != null">
-                and CREATE_TIME = #{createTime}
-            </if>
-            <if test="modifier != null">
-                and MODIFIER = #{modifier}
-            </if>
-            <if test="modifyTime != null">
-                and MODIFY_TIME = #{modifyTime}
-            </if>
-            <if test="attDirId != null">
-                and ATT_DIR_ID = #{attDirId}
+                and mat.IS_ACTIVE = #{isActive, jdbcType=VARCHAR}
             </if>
             <if test="matHolder != null and matHolder!='' ">
-                and MAT_HOLDER = #{matHolder}
+                and mat.MAT_HOLDER = #{matHolder}
             </if>
             <if test="isOfficialDoc != null">
-                and IS_OFFICIAL_DOC = #{isOfficialDoc}
+                and mat.IS_OFFICIAL_DOC = #{isOfficialDoc}
             </if>
             <if test="attIsRequire != null ">
-                and ATT_IS_REQUIRE = #{attIsRequire}
+                and mat.ATT_IS_REQUIRE = #{attIsRequire}
             </if>
             <if test="isCommon != null">
-                and IS_COMMON = #{isCommon}
+                and mat.IS_COMMON = #{isCommon}
             </if>
             <if test="reviewKeyPoints != null">
-                and REVIEW_KEY_POINTS = #{reviewKeyPoints}
+                and mat.REVIEW_KEY_POINTS = #{reviewKeyPoints}
             </if>
             <if test="reviewSampleDoc != null">
-                and REVIEW_SAMPLE_DOC = #{reviewSampleDoc}
+                and mat.REVIEW_SAMPLE_DOC = #{reviewSampleDoc}
             </if>
             <if test="reviewBasis != null">
-                and REVIEW_BASIS = #{reviewBasis}
+                and mat.REVIEW_BASIS = #{reviewBasis}
             </if>
             <if test="matFromDept != null">
-                and MAT_FROM_DEPT = #{matFromDept}
-            </if>
-            <if test="duePaperType != null">
-                and DUE_PAPER_TYPE = #{duePaperType}
-            </if>
-            <if test="dueCopyType != null">
-                and DUE_COPY_TYPE = #{dueCopyType}
-            </if>
-            <if test="paperMatType != null">
-                and PAPER_MAT_TYPE = #{paperMatType}
+                and mat.MAT_FROM_DEPT = #{matFromDept}
             </if>
             <if test="zcqy != null">
-                and ZCQY = #{zcqy}
+                and mat.ZCQY = #{zcqy}
             </if>
             <if test="rootOrgId != null">
-                and ROOT_ORG_ID = #{rootOrgId}
+                and mat.ROOT_ORG_ID = #{rootOrgId}
             </if>
             <if test="matProp != null">
-                and MAT_PROP  = #{matProp}
+                and mat.MAT_PROP  = #{matProp}
             </if>
             <if test="certId != null">
-                and CERT_ID = #{certId}
+                and mat.CERT_ID = #{certId}
             </if>
             <if test="stoFormId != null">
-                and STO_FORM_ID = #{stoFormId}
+                and mat.STO_FORM_ID = #{stoFormId}
             </if>
-            and IS_DELETED = '0'
+            and mat.IS_DELETED = '0'
         </where>
-        order by CREATE_TIME desc, SORT_NO desc
+        order by mat.CREATE_TIME desc, mat.SORT_NO desc
     </select>
 
     <select id="checkMatCode" resultType="java.lang.Integer">
@@ -1385,6 +1337,7 @@
                 </where>
             )
         </where>
+        order by mat.CREATE_TIME desc, mat.SORT_NO desc
     </select>
 
     <select id="listItemInOutNoSelectGlobalMat" resultType="AeaItemMat">
@@ -1392,13 +1345,13 @@
             <include refid="mat_allColumns"/>
         from AEA_ITEM_MAT mat
         <where>
-            and ROOT_ORG_ID = #{rootOrgId}
-            and MAT.IS_GLOBAL_SHARE = '1'
-            and MAT.IS_DELETED = '0'
-            and MAT.IS_COMMON = '1'
+            and mat.ROOT_ORG_ID = #{rootOrgId}
+            and mat.IS_GLOBAL_SHARE = '1'
+            and mat.IS_DELETED = '0'
+            and mat.IS_COMMON = '1'
             <if test="keyword != null and keyword != ''">
             and (
-                mat.MAT_NAME like CONCAT(CONCAT('%',#{keyword}),'%') OR
+                mat.MAT_NAME like CONCAT(CONCAT('%',#{keyword}),'%') or
                 mat.MAT_CODE like CONCAT(CONCAT('%',#{keyword}),'%')
             )
             </if>
@@ -1419,6 +1372,7 @@
                 </where>
             )
         </where>
+        order by mat.CREATE_TIME desc, mat.SORT_NO desc
     </select>
 
     <select id="listActStoForm" resultType="ActStoForm" >
@@ -1455,7 +1409,7 @@
             org.ORG_NAME orgName
         from ACT_STO_FORM asfrom
         left join opu_om_org org on asfrom.FORM_ORG_ID = org.ORG_ID
-        left join AGX_RS_TMN tmn on tmn.TMN_ID=asfrom.FORM_TMN_ID
+        left join AGX_RS_TMN tmn on tmn.TMN_ID = asfrom.FORM_TMN_ID
         <where>
             <if test="formId != null and formId != ''" >
                 AND    asfrom.FORM_ID = #{formId}
@@ -1530,6 +1484,43 @@
                 )
             </if>
             AND asfrom.IS_DELETED = '0'
+        </where>
+    </select>
+
+    <select id="getActStoFormById" resultType="ActStoForm" >
+        select
+            asfrom.FORM_ID  formId,
+            asfrom.FORM_ORG_ID  formOrgId,
+            asfrom.FORM_PROPERTY  formProperty,
+            asfrom.FORM_CODE  formCode,
+            asfrom.FORM_NAME  formName,
+            asfrom.META_DB_TABLE_ID  metaDbTableId,
+            asfrom.PARENT_FORM_ID  parentFormId,
+            asfrom.FORM_SEQ  formSeq,
+            asfrom.CREATER  creater,
+            asfrom.CREATE_TIME  createTime,
+            asfrom.MODIFIER  modifier,
+            asfrom.MODIFY_TIME  modifyTime,
+            asfrom.IS_DELETED  isDeleted,
+            asfrom.FORM_TMN_ID  formTmnId,
+            asfrom.CATEGORY_ID  categoryId,
+            asfrom.IS_AUTO_BUILD_FORM  isAutoBuildForm,
+            asfrom.BUILD_FORM_TIME  buildFormTime,
+            asfrom.BUILD_FORM_PATH  buildFormPath,
+            asfrom.FORM_LOAD_URL  formLoadUrl,
+            asfrom.DEFAULT_LAYOUT_ID  defaultLayoutId,
+            asfrom.IS_META_DB_TABLE  isMetaDbTable,
+            asfrom.IS_AUTO_BUILD_TABLE  isAutoBuildTable,
+            asfrom.FORM_VERSION  formVersion,
+            asfrom.BUILD_TABLE_TIME  buildTableTime,
+            asfrom.IS_INNER_FORM  isInnerForm,
+            asfrom.IS_LOCK  isLock,
+            asfrom.TECH_ID  techId,
+            asfrom.form_layout_html formLayoutHtml
+        from ACT_STO_FORM asfrom
+        <where>
+            and asfrom.FORM_ID = #{id}
+            and asfrom.IS_DELETED = '0'
         </where>
     </select>
 

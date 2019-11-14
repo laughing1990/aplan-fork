@@ -1,14 +1,15 @@
 package com.augurit.aplanmis.common.service.admin.item;
 
+import com.augurit.agcloud.framework.ui.ztree.ZtreeNode;
 import com.augurit.aplanmis.common.domain.AeaItemMat;
 import com.augurit.aplanmis.common.domain.AeaParIn;
 import com.augurit.aplanmis.common.vo.AeaItemMatKpVo;
-import com.augurit.aplanmis.common.vo.MatQueryVo;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 /**
  * @author ZhangXinhui
@@ -144,4 +145,6 @@ public interface AeaItemMatAdminService {
     void saveChooseStageMatAndParIn(String ids, String stageId, String isStateIn, String stateId);
 
     void saveChooseItemMatAndInout(String ids, String itemVerId, String isStateIn,String itemStateId, String stateVerId, String isCommon);
+
+    List<ZtreeNode> gtreeForm(String rootOrgId);
 }

@@ -14,6 +14,7 @@ import java.io.Serializable;
 public class AeaParIn implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
     private String inId; // (ID)
     private String stageId; // (阶段定义ID)
     private String isOwner; // (是否为当前事项直接所有，0表示其他事项所有，1表示当前事项所有)
@@ -29,7 +30,6 @@ public class AeaParIn implements Serializable {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private java.util.Date modifyTime; // (修改时间)
     private String isDeleted; // (是否删除 0不删除 1删除)
-    @Size(max = 10)
     private Long sortNo; // (材料排序字段)
     private String isCommon; // (1 通用材料，0非通用材料)
     private String rootOrgId;//根组织ID
@@ -43,5 +43,6 @@ public class AeaParIn implements Serializable {
     private boolean isCheck;//是否是以选中的材料
     private String isGlobalShare;//是否全局材料
     private String formId; // 表单id
-
+    private String formProperty;
+    private String matProp;
 }

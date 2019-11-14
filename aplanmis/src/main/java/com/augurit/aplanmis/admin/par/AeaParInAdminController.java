@@ -355,7 +355,18 @@ public class AeaParInAdminController {
     }
 
 
-    //查询列表
+    /**
+     * 查询列表
+     *
+     * @param stageId
+     * @param stateId
+     * @param isCommon
+     * @param isStateIn
+     * @param keyword
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
     @RequestMapping("/listStageMatByStageId.do")
     public EasyuiPageInfo<AeaParIn> listStageMatByStageId(String stageId, String stateId, Boolean isCommon, String isStateIn, String keyword, int pageNum, int pageSize) {
 
@@ -405,20 +416,20 @@ public class AeaParInAdminController {
     public ResultForm updateStageInSortNos(String[] inIds, String[] fileTypes, Long[] sortNos) {
 
         if(inIds!=null&&inIds.length>0
-            &&fileTypes!=null&&fileTypes.length>0
+//            &&fileTypes!=null&&fileTypes.length>0
             &&sortNos!=null&&sortNos.length>0){
             for(int i=0; i<inIds.length; i++){
-                if(fileTypes[i].equals("form")){
-                    AeaParStateForm stateForm = new AeaParStateForm();
-                    stateForm.setStateFormId(inIds[i]);
-                    stateForm.setSortNo(sortNos[i]);
-                    aeaParStateFormAdminService.updateAeaParStateForm(stateForm);
-                }else{
+//                if(fileTypes[i].equals("form")){
+//                    AeaParStateForm stateForm = new AeaParStateForm();
+//                    stateForm.setStateFormId(inIds[i]);
+//                    stateForm.setSortNo(sortNos[i]);
+//                    aeaParStateFormAdminService.updateAeaParStateForm(stateForm);
+//                }else{
                     AeaParIn in = new AeaParIn();
                     in.setInId(inIds[i]);
                     in.setSortNo(sortNos[i]);
                     aeaParInAdminService.updateAeaParIn(in);
-                }
+//                }
             }
             return new ResultForm(true);
         }

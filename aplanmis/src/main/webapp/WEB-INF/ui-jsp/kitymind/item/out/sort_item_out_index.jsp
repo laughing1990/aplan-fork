@@ -136,13 +136,6 @@
                         },
                         success: function (result) {
                             if (result.success) {
-                                // swal({
-                                //     type: 'success',
-                                //     title: '操作成功！',
-                                //     showConfirmButton: false,
-                                //     timer: 1000
-                                // });
-                                // 列表数据重新加载
                                 refreshItemOutMatCet();
                             } else {
                                 swal('错误信息', '操作成功', 'error');
@@ -171,9 +164,9 @@
                 for(var i=0;i<data.length;i++){
                     var id = data[i].inoutId;
                     var name = '【';
-                    if(data[i].fileType=='mat'){
+                    if(data[i].matProp=='m'){
                         name += '材料';
-                    }else if(data[i].fileType=='cert'){
+                    }else if(data[i].matProp=='c'){
                         name += '证照';
                     }
                     name += '】';
@@ -194,10 +187,4 @@
             }
         }, 'json');
     }
-
-    // //保存分类排序
-    // function saveSortItemOut(){
-    //
-    //
-    // }
 </script>

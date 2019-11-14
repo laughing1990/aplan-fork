@@ -14,7 +14,7 @@
     <%@ include file="/ui-static/agcloud/framework/jsp/lib-bootstrap-table.jsp"%>
     <script src="${pageContext.request.contextPath}/ui-static/dg_aplanmis/framework/js/jquery.nicescroll.js" type="text/javascript"></script>
     <link href="${pageContext.request.contextPath}/ui-static/aplanmis/item/css/register-list.css" rel="stylesheet" type="text/css" />
-    <link href="${pageContext.request.contextPath}/ui-static/mat/global/css/global_material_index.css" rel="stylesheet" type="text/css" />
+    <link href="${pageContext.request.contextPath}/ui-static/mat/css/global_mat_index.css" rel="stylesheet" type="text/css" />
     <style type="text/css">
         .m-portlet {
             border: 0px solid #e8e8e8;

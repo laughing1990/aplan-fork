@@ -12,10 +12,6 @@
                             <button type="button" class="btn btn-info"
                                     onclick="addItemInGlobalMat();">导入库材料</button>
                             <button type="button" class="btn btn-info"
-                                    onclick="addItemInCert();">导入电子证照</button>
-                            <button type="button" class="btn btn-info"
-                                    onclick="addItemInForm();">导入表单</button>
-                            <button type="button" class="btn btn-info"
                                     onclick="sortItemIn();">排序</button>
                             <button type="button" class="btn btn-secondary"
                                     onclick="batchDeleteItemInMatCert();">删除</button>
@@ -31,8 +27,8 @@
                                             <input type="text" class="form-control m-input" id="itemMatSearch"
                                                    placeholder="请输入关键字..." name="keyword" value=""/>
                                             <span class="m-input-icon__icon m-input-icon__icon--left">
-                                        <span><i class="la la-search"></i></span>
-                                    </span>
+                                                <span><i class="la la-search"></i></span>
+                                            </span>
                                         </div>
                                     </form>
                                 </div>
@@ -68,12 +64,11 @@
                             <tr>
                                 <th data-field="#" data-checkbox="true" data-align="center" data-width="10">ID</th>
                                 <th data-field="inoutId" data-visible="false"></th>
-                                <th data-field="fileType" data-formatter="fileTypeFormatter"
-                                    data-align="left" data-width=60>类型</th>
+                                <th data-field="matProp" data-formatter="matPropormatter"
+                                    data-align="left" data-width=80>材料性质</th>
                                 <th data-field="aeaMatCertName" data-align="left" data-width="250">名称</th>
                                 <th data-field="aeaMatCertCode" data-align="left" data-width="250">编号</th>
-                                <th data-field="sortNo" data-sortable="true" data-align="left"
-                                    data-width="10" <%--data-formatter="sortNoFormatter"--%>>排序</th>
+                                <th data-field="sortNo" data-sortable="true" data-align="left" data-width="10">排序</th>
                                 <th data-field="_operator" data-formatter="itemInMatCertFormatter"
                                     data-align="center" data-width="120">操作</th>
                             </tr>

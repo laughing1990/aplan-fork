@@ -368,13 +368,7 @@ public class AeaParStateItemAdminServiceImpl implements AeaParStateItemAdminServ
         AeaParIn aeaParIn = new AeaParIn();
         aeaParIn.setStageId(stageId);
         aeaParIn.setRootOrgId(rootOrgId);
-        if(MindType.CERTIFICATE.getValue().equals(fileType)) {
-            aeaParIn.setFileType(MindType.CERTIFICATE.getValue());
-            aeaParIn.setCertId(matCertId);
-        }else{
-            aeaParIn.setFileType(MindType.MATERIAL.getValue());
-            aeaParIn.setMatId(matCertId);
-        }
+        aeaParIn.setMatId(matCertId);
         if(StringUtils.isNotBlank(stateId)) {
             aeaParIn.setIsStateIn("1");
             aeaParIn.setParStateId(stateId);

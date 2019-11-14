@@ -20,12 +20,12 @@ angular.module('kityminderEditor').run(['$templateCache', function ($templateCac
                 "<exportfile-xmind minder=\"minder\"></exportfile-xmind>" +
                 '</ul>' +
                 "<note-btn minder=\"minder\"></note-btn>" +
-                "<link-item4situation minder=\"minder\"></link-item4situation>" +
-                "<link-form4situation minder=\"minder\"></link-form4situation>" +
-                "<link-item4mat minder=\"minder\"></link-item4mat>" +
+                // "<link-form4situation minder=\"minder\"></link-form4situation>" +
                 "<add-mat4situation minder=\"minder\"></add-mat4situation>" +
+                "<link-item4mat minder=\"minder\"></link-item4mat>" +
+                "<link-item4situation minder=\"minder\"></link-item4situation>" +
                 // "<import-mat minder=\"minder\"></import-mat>" +
-                "<import-cert minder=\"minder\"></import-cert>" +
+                // "<import-cert minder=\"minder\"></import-cert>" +
                 "<mind-filter minder=\"minder\"></mind-filter>" +
                 "</div>"
             );
@@ -47,10 +47,10 @@ angular.module('kityminderEditor').run(['$templateCache', function ($templateCac
                 "<exportfile-xmind minder=\"minder\"></exportfile-xmind>" +
                 '</ul>' +
                 "<note-btn minder=\"minder\"></note-btn>" +
-                "<link-form4situation minder=\"minder\"></link-form4situation>" +
+                // "<link-form4situation minder=\"minder\"></link-form4situation>" +
                 "<add-mat4situation minder=\"minder\"></add-mat4situation>" +
                 // "<import-mat minder=\"minder\"></import-mat>" +
-                "<import-cert minder=\"minder\"></import-cert>" +
+                // "<import-cert minder=\"minder\"></import-cert>" +
                 "<state-version minder=\"minder\"></state-version>" +
                 "<mind-filter minder=\"minder\"></mind-filter>" +
                 "</div>"
@@ -147,18 +147,6 @@ angular.module('kityminderEditor').run(['$templateCache', function ($templateCac
         html += '<div id="mindFilter" class="dropdown theme-panel ng-isolate-scope">';
         html += '<div class="checkbox">';
 
-        html += '	   <label class="m-checkbox m-checkbox--solid m-checkbox--brand" style="">';
-        html += '        <input bindShow="showMat" type="checkbox" class="original-file" checked="">';
-        html += '         显示材料';
-        html += '        <span></span>';
-        html += '      </label>';
-
-        html += '      <label class="m-checkbox m-checkbox--solid m-checkbox--brand" style="">';
-        html += '        <input bindShow="showCert" type="checkbox" class="original-file" checked="">';
-        html += '         显示证照';
-        html += '        <span></span>';
-        html += '      </label>';
-
         if (currentBusiScene == BUSI_SCENE_CONFIG_SITUATION) {
             if (currentBusiType == AeaMindConst_MIND_NODE_TYPE_CODE_STAGE) {
 
@@ -170,9 +158,21 @@ angular.module('kityminderEditor').run(['$templateCache', function ($templateCac
             }
         }
 
+        html += '	   <label class="m-checkbox m-checkbox--solid m-checkbox--brand" style="">';
+        html += '        <input bindShow="showMat" type="checkbox" class="original-file" checked="">';
+        html += '         显示普通材料';
+        html += '        <span></span>';
+        html += '      </label>';
+
+        html += '      <label class="m-checkbox m-checkbox--solid m-checkbox--brand" style="">';
+        html += '        <input bindShow="showCert" type="checkbox" class="original-file" checked="">';
+        html += '         显示证照材料';
+        html += '        <span></span>';
+        html += '      </label>';
+
         html += '      <label class="m-checkbox m-checkbox--solid m-checkbox--brand" style="">';
         html += '        <input bindShow="showForm" type="checkbox" class="original-file">';
-        html += '         显示表单';
+        html += '         显示在线表单材料';
         html += '        <span></span>';
         html += '      </label>';
         html += '</div>';
@@ -219,20 +219,20 @@ angular.module('kityminderEditor').run(['$templateCache', function ($templateCac
     );
 
     // 情形表单
-    $templateCache.put('ui/directive/linkForm4situation/linkForm4situation.html',
-        "<div class=\"btn-group-vertical note-btn-group\" dropdown" + getToolbarBtnState("situation") + ">" +
-        "<div class='d-flex flex-column align-items-center' style=\"width: 80px;cursor: pointer;\" class=\"btn btn-default \" title=\"关联情形对应事项\" ng-class=\"{'active': isopen}\" ng-click=\"addHyperlink()\" ng-disabled=\"minder.queryCommandState('HyperLink') === -1\"> " +
-        "<span class=\"caption\"><i class=\"fa fa-file-text-o\" style='color: #5cb8ff;font-size: 20px;'></i></span>" +
-        "<span style=';'>{{ 'linkForm4situation' | lang:'ui' }}</span>" +
-        "</div>" +
-        "</div>"
-    );
+    // $templateCache.put('ui/directive/linkForm4situation/linkForm4situation.html',
+    //     "<div class=\"btn-group-vertical note-btn-group\" dropdown" + getToolbarBtnState("situation") + ">" +
+    //     "<div class='d-flex flex-column align-items-center' style=\"width: 80px;cursor: pointer;\" class=\"btn btn-default \" title=\"关联情形对应事项\" ng-class=\"{'active': isopen}\" ng-click=\"addHyperlink()\" ng-disabled=\"minder.queryCommandState('HyperLink') === -1\"> " +
+    //     "<span class=\"caption\"><i class=\"fa fa-file-text-o\" style='color: #5cb8ff;font-size: 20px;'></i></span>" +
+    //     "<span style=';'>{{ 'linkForm4situation' | lang:'ui' }}</span>" +
+    //     "</div>" +
+    //     "</div>"
+    // );
 
     if(handWay=='1') {
 
         // 材料事项
         $templateCache.put('ui/directive/linkItem4mat/linkItem4mat.html',
-            "<div class=\"btn-group-vertical note-btn-group\" dropdown" + getToolbarBtnState("mat") + ">" +
+            "<div class=\"btn-group-vertical note-btn-group\" dropdown" + getToolbarBtnState("mat") +">" +
             "<div class='d-flex flex-column align-items-center'style=\"width: 80px;cursor: pointer;\"  title=\"关联材料对应事项\" ng-class=\"{'active': isopen}\" ng-click=\"addHyperlink()\" ng-disabled=\"minder.queryCommandState('HyperLink') === -1\"> " +
             "<span class=\"caption\"><i class=\"fa fa-file-archive-o\" style='font-size: 21px;'></i></span>" +
             "<span style=';'>{{ 'linkItem4mat' | lang:'ui' }}</span>" +
@@ -240,9 +240,9 @@ angular.module('kityminderEditor').run(['$templateCache', function ($templateCac
             "</div>"
         );
 
-        // 阶段材料
+        // 阶段材料  " + getToolbarBtnState("situation") + "
         $templateCache.put('ui/directive/addMat4stage/addMat4stage.html',
-            "<div class=\"btn-group-vertical note-btn-group\" dropdown" + getToolbarBtnState("situation") + ">" +
+            "<div class=\"btn-group-vertical note-btn-group\" dropdown>" +
             "<div style=\"width: 80px;\" type=\"button\" class=\"btn btn-default \" title=\"添加{{ 'addMat4stage' | lang:'ui' }}\" ng-class=\"{'active': isopen}\" ng-click=\"addHyperlink()\" ng-disabled=\"minder.queryCommandState('HyperLink') === -1\"> " +
             "<span class=\"caption\"><i class=\"la la-plus-square-o\" style='font-size: 27px;'></i></span>" +
             "<span>{{ 'addMat4stage' | lang:'ui' }}</span>" +
@@ -250,9 +250,9 @@ angular.module('kityminderEditor').run(['$templateCache', function ($templateCac
             "</div>"
         );
 
-        // 阶段情形材料
+        // 阶段情形材料  " + getToolbarBtnState("situation") + "
         $templateCache.put('ui/directive/addMat4situation/addMat4situation.html',
-            "<div class=\"btn-group-vertical note-btn-group\" dropdown" + getToolbarBtnState("situation") + ">" +
+            "<div class=\"btn-group-vertical note-btn-group\" dropdown>" +
             "<div  class='d-flex flex-column align-items-center' style=\"width: 80px;cursor: pointer;\"   title=\"添加{{ 'addMat4situation' | lang:'ui' }}\" ng-class=\"{'active': isopen}\" ng-click=\"addHyperlink()\" ng-disabled=\"minder.queryCommandState('HyperLink') === -1\"> " +
             "<span class=\"caption\"><i class=\"la la-plus-square-o\" style='font-size: 27px;'></i></span>" +
             "<span>{{ 'addMat4situation' | lang:'ui' }}</span>" +
@@ -269,14 +269,14 @@ angular.module('kityminderEditor').run(['$templateCache', function ($templateCac
             "</div>"
         );
 
-        $templateCache.put('ui/directive/importCert/importCert.html',
-            "<div class=\"btn-group-vertical note-btn-group\" dropdown" + getToolbarBtnState("situation") + ">" +
-            "<div class='d-flex flex-column align-items-center' style=\"width: 80px;border:none;cursor: pointer;\"   title=\"导入{{ 'importCert' | lang:'ui' }}\" ng-class=\"{'active': isopen}\" ng-click=\"addHyperlink()\" ng-disabled=\"minder.queryCommandState('HyperLink') === -1\"> " +
-            "<span class=\"caption\"><i class=\"fa fa-vcard-o\" style='font-size: 20px;'></i></span>" +
-            "<span  style='color:#595959;;'>{{ 'importCert' | lang:'ui' }}</span>" +
-            "</div>" +
-            "</div>"
-        );
+        // $templateCache.put('ui/directive/importCert/importCert.html',
+        //     "<div class=\"btn-group-vertical note-btn-group\" dropdown" + getToolbarBtnState("situation") + ">" +
+        //     "<div class='d-flex flex-column align-items-center' style=\"width: 80px;border:none;cursor: pointer;\"   title=\"导入{{ 'importCert' | lang:'ui' }}\" ng-class=\"{'active': isopen}\" ng-click=\"addHyperlink()\" ng-disabled=\"minder.queryCommandState('HyperLink') === -1\"> " +
+        //     "<span class=\"caption\"><i class=\"fa fa-vcard-o\" style='font-size: 20px;'></i></span>" +
+        //     "<span  style='color:#595959;;'>{{ 'importCert' | lang:'ui' }}</span>" +
+        //     "</div>" +
+        //     "</div>"
+        // );
     }
 
     $templateCache.put('ui/directive/stateVersion/historicVersions.html',
@@ -739,6 +739,11 @@ angular.module('kityminderEditor')
                             ]
                         };
                         if (curIsEditable) {
+
+                            $("#uploadProgress").modal("show");
+                            $('#saveItemBasic').hide();
+                            $('#uploadProgressMsg').html("保存数据中,请勿点击,耐心等候...");
+
                             param = json;
                             var url = currentUrlSaveData;
                             $.ajax({
@@ -750,26 +755,31 @@ angular.module('kityminderEditor')
                                 success: function (response) {
                                     if (response.code === 1) {
 
-                                        swal({
-                                            title: '提示信息',
-                                            text: "保存成功!",
-                                            type: 'info',
-                                            confirmButtonText: '确认!'
-                                        }).then(function (result) {
-                                            // location.reload();
-                                            refreshMind();
-                                        });
+                                        setTimeout(function(){
+                                            $("#uploadProgress").modal('hide');
+                                            swal({
+                                                title: '提示信息',
+                                                text: "保存成功!",
+                                                type: 'info',
+                                                confirmButtonText: '确认!'
+                                            }).then(function (result) {
+                                                refreshMind();
+                                            });
+                                        },500);
+
                                     } else {
 
-                                        swal({
-                                            title: '错误信息',
-                                            text: response.msg,
-                                            type: 'error',
-                                            confirmButtonText: '确认!'
-                                        }).then(function (result) {
-                                            // location.reload();
-                                            refreshMind();
-                                        });
+                                        setTimeout(function(){
+                                            $("#uploadProgress").modal('hide');
+                                            swal({
+                                                title: '错误信息',
+                                                text: response.msg,
+                                                type: 'error',
+                                                confirmButtonText: '确认!'
+                                            }).then(function (result) {
+                                                refreshMind();
+                                            });
+                                        },500);
                                     }
                                 }
                             });
@@ -1237,12 +1247,12 @@ angular.module('kityminderEditor')
                         'p0': '清除进度'
                     },
                     'linkItem4situation': '情形事项',
-                    'linkForm4situation': '绑定表单',
+                    // 'linkForm4situation': '绑定表单',
                     'linkItem4mat': '材料事项',
                     'addMat4stage': '阶段材料',
                     'addMat4situation': '绑定材料',
                     'importMat': '全局材料',
-                    'importCert': '电子证照',
+                    // 'importCert': '电子证照',
                     'stateVersion': '情形版本',
                     'link': '添加材料',
                     'image': '图片',

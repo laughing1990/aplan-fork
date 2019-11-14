@@ -14,7 +14,7 @@
             type="text/javascript"></script>
     <link href="${pageContext.request.contextPath}/ui-static/aplanmis/item/css/register-list.css" rel="stylesheet"
           type="text/css"/>
-    <link href="${pageContext.request.contextPath}/ui-static/mat/global/css/global_material_index.css" rel="stylesheet"
+    <link href="${pageContext.request.contextPath}/ui-static/mat/css/global_mat_index.css" rel="stylesheet"
           type="text/css"/>
     <%--<style type="text/css">--%>
         <%--.m-portlet {--%>

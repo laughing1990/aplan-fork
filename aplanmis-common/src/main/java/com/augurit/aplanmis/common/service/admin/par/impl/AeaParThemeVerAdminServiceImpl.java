@@ -307,14 +307,14 @@ public class AeaParThemeVerAdminServiceImpl implements AeaParThemeVerAdminServic
         Map<String, String> stageItemMap = copyPreThemeVerStageItem(oldStageId, newStageId, newThemeVer, rootOrgId);
         // 2、阶段情形
         Map<String, String> stageStateMap = copyPreThemeVerStageState(oldStageId, newStageId, rootOrgId);
-        // 3、阶段情形输入材料、证照
+        // 3、阶段情形输入材料、证照、表单
         Map<String, String> stageStateInMap = copyPreThemeVerStageStateIn(oldStageId, newStageId, stageStateMap, rootOrgId);
         // 4、阶段情形表单
-        copyPreThemeVerStageStateForm(oldStageId, newStageId, stageStateMap);
-        // 5、阶段非情形输入材料、证照
+//        copyPreThemeVerStageStateForm(oldStageId, newStageId, stageStateMap);
+        // 5、阶段情形输入材料、证照、表单
         Map<String, String> stageNoStateInMap = copyPreThemeVerStageNoStateIn(oldStageId, newStageId, rootOrgId);
         // 6、阶段非情形表单
-        copyPreThemeVerStageNoStateForm(oldStageId, newStageId);
+//        copyPreThemeVerStageNoStateForm(oldStageId, newStageId);
         // 7、阶段情形事项
         copyPreThemeVerStageStateItem(oldStageId, stageItemMap, stageStateMap, rootOrgId);
         // 8、阶段材料事项
@@ -564,7 +564,7 @@ public class AeaParThemeVerAdminServiceImpl implements AeaParThemeVerAdminServic
     }
 
     /**
-     * 复制主题版本某阶段情形输入材料、证照
+     * 复制主题版本某阶段情形输入材料、证照、表单
      *
      * @param oldStageId
      * @param newStageId

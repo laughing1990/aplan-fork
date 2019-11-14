@@ -63,8 +63,10 @@
                                         data-formatter="isCheckItemInMatCertFormatter" data-width="10">ID</th>
                                     <th data-field="aeaMatCertName" data-align="left" data-width="250">名称</th>
                                     <th data-field="aeaMatCertCode" data-align="left" data-width="150">编号</th>
-                                    <th data-field="fileType" data-formatter="fileTypeFormatter"
-                                        data-align="left" data-width=60>文件类型</th>
+                                    <th data-field="matProp" data-formatter="matPropormatter"
+                                        data-align="center" data-width=80>材料性质</th>
+                                    <th data-field="_operator" data-formatter="globalMatFormatter"
+                                        data-align="center" data-width="50">操作</th>
                                 </tr>
                             </thead>
                         </table>

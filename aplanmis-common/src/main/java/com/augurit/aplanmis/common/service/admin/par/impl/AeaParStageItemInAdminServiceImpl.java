@@ -121,27 +121,23 @@ public class AeaParStageItemInAdminServiceImpl implements AeaParStageItemInAdmin
 
     @Override
     public List<AeaParStageItemIn> listAeaParStageItemInByMatOrCertId(String matOrCertId, String stageId, String parStateId, String fileType, String isStateIn) {
+
         AeaParIn aeaParIn = new AeaParIn();
         aeaParIn.setStageId(stageId);
-
         if (StringUtils.isNotBlank(parStateId)) {
             aeaParIn.setParStateId(parStateId);
         }
-
         if (StringUtils.isNotBlank(isStateIn)) {
             aeaParIn.setIsStateIn(isStateIn);
         }
-
-        if (StringUtils.isNotBlank(fileType) && MindType.CERTIFICATE.getValue().equals(fileType)) {
-            aeaParIn.setFileType(MindType.CERTIFICATE.getValue());
-            aeaParIn.setCertId(matOrCertId);
-        } else {
-            aeaParIn.setFileType(MindType.MATERIAL.getValue());
+//        if (StringUtils.isNotBlank(fileType) && MindType.CERTIFICATE.getValue().equals(fileType)) {
+//            aeaParIn.setFileType(MindType.CERTIFICATE.getValue());
+//            aeaParIn.setCertId(matOrCertId);
+//        } else {
+//            aeaParIn.setFileType(MindType.MATERIAL.getValue());
             aeaParIn.setMatId(matOrCertId);
-        }
-
+//        }
         List<AeaParIn> parIns = aeaParInMapper.listAeaParIn(aeaParIn);
-
         if (parIns != null && parIns.size() > 0) {
             return aeaParStageItemInMapper.listAeaParStageItemInByInId(parIns.get(0).getInId());
         }

@@ -58,16 +58,92 @@ $(function () {
     initValidate();
 
     // 材料类别选择点击事件绑定
-    $('.open-mat-type, input[name="matTypeName"]').bind('click',openSelectMatTypeModal);
+    $('.open-mat-type, input[name="matTypeName"]').bind('click', openSelectMatTypeModal);
 
-    // 材料类别确定事件
-    $('#selectMatTypeBtn').bind('click',selectMatType);
+    // 电子证照选择点击事件绑定
+    $('.open-cert-type, input[name="certName"]').click(function(){
+
+        var value = $('#aedit_mat_form input[name="certId"]').val();
+        openSelectCertModal(value);
+    });
+
+    // 表单选择点击事件绑定
+    $('.open-form-type, input[name="formName"]').click(function(){
+
+        var value = $('#aedit_mat_form input[name="stoFormId"]').val();
+        openSelectFormModal(value);
+    });
 
     // 双击事件
     $('#customTable').on('dbl-click-row.bs.table', function (e, row, element) {
         loadGlobalMatData(row.matId)
     });
+
+    // 材料类型选择
+    $("#aedit_mat_form select[name='matProp']").change(function(){
+        var value = $(this).val();
+        handleSelectMatProNew(value);
+    });
+
+    // 材料类别确定事件
+    $('#selectMatTypeBtn').bind('click', selectMatType);
+
+    // 选择电子证照
+    $('#selectCertBtn').bind('click', selectCert);
+
+    // 选择表单
+    $('#selectFormBtn').bind('click', selectForm);
 });
+
+function handleSelectMatProNew(value){
+
+    if(value=='m'){
+
+        $('#selectCertDiv').hide();
+        $('#selectFormDiv').hide();
+
+        $('#aedit_mat_form input[name="certName"]').rules('remove');
+        $('#aedit_mat_form input[name="formName"]').rules('remove');
+
+    }else if(value=='c'){
+
+        $('#selectCertDiv').show();
+        $('#selectFormDiv').hide();
+        $('#aedit_mat_form input[name="certName"]').rules('add',{
+            required: true,
+            messages:{
+                required: '<font color="red">请选择电子证照！</font>'
+            }
+        });
+        $('#aedit_mat_form input[name="formName"]').rules('remove');
+
+    }else{
+
+        $('#selectCertDiv').hide();
+        $('#selectFormDiv').show();
+        $('#aedit_mat_form input[name="certName"]').rules('remove');
+        $('#aedit_mat_form input[name="formName"]').rules('add',{
+            required: true,
+            messages:{
+                required: '<font color="red">请选择表单！</font>'
+            }
+        });
+    }
+}
+
+function matPropormatter(value, row, index){
+
+    var matProp = row.matProp;
+    if(matProp){
+        if(matProp=='m'){
+            return '普通材料';
+        }else if(matProp=='c'){
+            return '证照材料';
+        }else{
+            return '在线表单材料';
+        }
+    }
+}
 
 function clearAllFile(){
 
@@ -154,20 +230,6 @@ function matStotResponseData(res) {
 
 function matAttTbParam(params){
 
-    // var pageNum = (params.offset / params.limit) + 1;
-    // var pagination = {
-    //     page: pageNum,
-    //     pages: pageNum,
-    //     perpage: params.limit
-    // };
-    // var sort = {
-    //     field: params.sort,
-    //     sort: params.order
-    // };
-    // var queryParam = {
-    //     pagination: pagination,
-    //     sort: sort
-    // };
     var pageNum = (params.offset / params.limit) + 1;
     var queryParam = {
         pageNum: pageNum,
@@ -373,7 +435,6 @@ function addGlobalMat() {
     clearAllFile();
     $("#aedit_mat_form input[name='matId']").val("");
     $("#aedit_mat_form input[name='isGlobalShare']").val("1");
-    // $("#aedit_mat_form input[name='isActive']").val("1");
     $("#aedit_mat_form input[name='duePaperCount']").val("1");
     $("#aedit_mat_form input[name='dueCopyCount']").val("1");
     $("#aedit_mat_form input[name='paperIsRequire'][value='0']").prop("checked", true);
@@ -381,14 +442,16 @@ function addGlobalMat() {
     $("#aedit_mat_form input[name='isCommon'][value='1']").prop("checked", true);
     $("#aedit_mat_form input[name='zcqy'][value='1']").prop("checked", true);
     $("#aedit_mat_form input[name='isOfficialDoc'][value='0']").prop("checked", true);
+    $("#aedit_mat_form input[name='certId']").val("");
+    $("#aedit_mat_form input[name='stoFormId']").val("");
+    $("#aedit_mat_form input[name='matProp'][value='m']").prop("checked", true);
+    handleSelectMatProNew('m');
 
     // 编号赋值
     $.ajax({
         url: ctx + '/bsc/rule/code/getOneOrgAutoCode.do',
         type: 'post',
         data: {'codeIc': "AEA-ITEM-MAT-CODE"},
-        // async: false,
-        // cache: false,
         success: function (data) {
             $("#aedit_mat_form input[name='matCode']").val(data);
         }
@@ -398,13 +461,54 @@ function addGlobalMat() {
 // 选择了一个材料类别
 function selectMatType() {
 
+    var selectMatTypeTree = $.fn.zTree.getZTreeObj("selectMatTypeTree");
     var matTypes = selectMatTypeTree.getSelectedNodes();
-    var matTypeId = matTypes[0].id;
-    var matTypeName = matTypes[0].name;
-    $('#aedit_mat_form input[name="matTypeId"]').val(matTypeId);
-    $('#aedit_mat_form input[name="matTypeName"]').val(matTypeName);
-    // 关闭窗口
-    closeSelectMatTypeZtree();
+    if(matTypes!=null&&matTypes.length>0){
+        var matTypeId = matTypes[0].id;
+        var matTypeName = matTypes[0].name;
+        $('#aedit_mat_form input[name="matTypeId"]').val(matTypeId);
+        $('#aedit_mat_form input[name="matTypeName"]').val(matTypeName);
+        // 关闭窗口
+        closeSelectMatTypeZtree();
+    }else{
+        swal('错误信息', "请选择材料类型！", 'error');
+    }
+}
+
+function selectCert(){
+
+    var selectCertTree = $.fn.zTree.getZTreeObj("selectCertTree");
+    var certs = selectCertTree.getCheckedNodes(true);
+    if(certs!=null&&certs.length>0){
+        var certId = certs[0].id;
+        var certName = certs[0].name;
+        $('#aedit_mat_form input[name="certId"]').val(certId);
+        $('#aedit_mat_form input[name="certName"]').val(certName);
+        // 关闭窗口
+        closeSelectCertModal();
+    }else{
+        swal('错误信息', "请选择电子证照！", 'error');
+    }
+}
+
+function selectForm(){
+
+    var selectFormTree = $.fn.zTree.getZTreeObj("selectFormTree");
+    var forms = selectFormTree.getCheckedNodes(true);
+    if(forms!=null&&forms.length>0){
+        var formId = forms[0].id;
+        var formName = forms[0].name;
+        var index = formName.lastIndexOf('】');
+        if(index>-1){
+            formName = formName.substring(index+1);
+        }
+        $('#aedit_mat_form input[name="stoFormId"]').val(formId);
+        $('#aedit_mat_form input[name="formName"]').val(formName);
+        // 关闭窗口
+        closeSelectFormModal();
+    }else{
+        swal('错误信息', "请选择表单！", 'error');
+    }
 }
 
 // 修改数据
@@ -416,6 +520,8 @@ function loadGlobalMatData(id) {
     $("#aedit_mat_form")[0].reset();
     $("#aedit_mat_form").resetForm();
     $("#aedit_mat_form input[name='matId']").val('');
+    $("#aedit_mat_form input[name='certId']").val('');
+    $("#aedit_mat_form input[name='stoFormId']").val('');
     clearAllFile();
 
     $.ajax({
@@ -476,6 +582,11 @@ function loadGlobalMatData(id) {
                         }
                     }
                 }
+
+                if (data.matProp){
+                    handleSelectMatProNew(data.matProp);
+                }
+
                 // 记载表单数据
                 loadFormData(true,'#aedit_mat_form',data);
             }

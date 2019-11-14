@@ -1,10 +1,13 @@
 package com.augurit.aplanmis.common.service.admin.item.impl;
 
+import com.augurit.agcloud.bpm.common.domain.ActStoForm;
+import com.augurit.agcloud.bpm.common.mapper.ActStoFormMapper;
 import com.augurit.agcloud.bsc.domain.BscAttForm;
 import com.augurit.agcloud.bsc.sc.rule.code.service.AutoCodeNumberService;
 import com.augurit.agcloud.framework.constant.Status;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.ui.pager.PageHelper;
+import com.augurit.agcloud.framework.ui.ztree.ZtreeNode;
 import com.augurit.agcloud.framework.util.JsonUtils;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.constants.CommonConstant;
@@ -34,10 +37,7 @@ import org.springframework.web.multipart.support.StandardMultipartHttpServletReq
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @author ZhangXinhui
@@ -68,7 +68,6 @@ public class AeaItemMatAdminServiceImpl implements AeaItemMatAdminService {
     @Autowired
     private AeaParInAdminService aeaParInAdminService;
 
-
     @Autowired
     private AutoCodeNumberService autoCodeNumberService;
 
@@ -78,14 +77,17 @@ public class AeaItemMatAdminServiceImpl implements AeaItemMatAdminService {
     @Autowired
     private AeaItemBasicMapper aeaItemBasicMapper;
 
-
     @Autowired
     private AeaParStateFormAdminService aeaParStateFormAdminService;
 
     @Autowired
     private AeaItemStateFormAdminService aeaItemStateFormAdminService;
+
     @Autowired
     private FileUtilsService fileUtilsService;
+
+    @Autowired
+    private ActStoFormMapper actStoFormMapper;
 
     @Override
     public void saveAeaItemMatAndParIn(HttpServletRequest request,
@@ -224,21 +226,21 @@ public class AeaItemMatAdminServiceImpl implements AeaItemMatAdminService {
         PageHelper.startPage(page);
         List<AeaItemMat> list = aeaItemMatMapper.listAeaItemMat(aeaItemMat);
         logger.debug("成功执行分页查询！！");
-        if (list != null && list.size() > 0) {
-            AeaItemMatType aeaItemMatType = new AeaItemMatType();
-            aeaItemMatType.setRootOrgId(rootOrgId);
-            List<AeaItemMatType> typeList = aeaItemMatTypeMapper.listAeaItemMatType(aeaItemMatType);
-            if (typeList != null && typeList.size() > 0) {
-                for (AeaItemMat matInfo : list) {
-                    for (AeaItemMatType matType : typeList) {
-                        if (matType.getMatTypeId().equals(matInfo.getMatTypeId())) {
-                            matInfo.setMatTypeName(matType.getTypeName());
-                            break;
-                        }
-                    }
-                }
-            }
-        }
+//        if (list != null && list.size() > 0) {
+//            AeaItemMatType aeaItemMatType = new AeaItemMatType();
+//            aeaItemMatType.setRootOrgId(rootOrgId);
+//            List<AeaItemMatType> typeList = aeaItemMatTypeMapper.listAeaItemMatType(aeaItemMatType);
+//            if (typeList != null && typeList.size() > 0) {
+//                for (AeaItemMat matInfo : list) {
+//                    for (AeaItemMatType matType : typeList) {
+//                        if (matType.getMatTypeId().equals(matInfo.getMatTypeId())) {
+//                            matInfo.setMatTypeName(matType.getTypeName());
+//                            break;
+//                        }
+//                    }
+//                }
+//            }
+//        }
         return new PageInfo<>(list);
     }
 
@@ -473,15 +475,62 @@ public class AeaItemMatAdminServiceImpl implements AeaItemMatAdminService {
                     inout.setCreateTime(new Date());
                     inout.setIsDeleted(DeletedStatus.NOT_DELETED.getValue());
                     Long inSortNo = aeaItemInoutAdminService.getMaxSortNo(inout.getItemVerId(), inout.getStateVerId(), inout.getIsInput(), rootOrgId);
-                    Long stateFormSortNo = 1L;
-                    // 为了排序方便
-                    if (StringUtils.isNotBlank(inout.getIsInput()) && inout.getIsInput().equals(Status.ON)) {
-                        stateFormSortNo = aeaItemStateFormAdminService.getMaxSortNo(inout.getItemVerId(), inout.getStateVerId());
-                    }
-                    inout.setSortNo(inSortNo >= stateFormSortNo ? inSortNo : stateFormSortNo);
+                    inout.setSortNo(inSortNo);
                     aeaItemInoutMapper.insertAeaItemInout(inout);
                 }
             }
         }
+    }
+
+    @Override
+    public List<ZtreeNode> gtreeForm(String rootOrgId){
+
+        List<ZtreeNode> allNodes = new ArrayList<>();
+        ZtreeNode rootNode = new ZtreeNode();
+        rootNode.setId("root");
+        rootNode.setName("表单库");
+        rootNode.setType("root");
+        rootNode.setIsParent(true);
+        rootNode.setOpen(true);
+        rootNode.setNocheck(true);
+        allNodes.add(rootNode);
+        ActStoForm sform = new ActStoForm();
+        sform.setFormOrgId(rootOrgId);
+        List<ActStoForm> forms = aeaItemMatMapper.listActStoForm(sform);
+        if(forms!=null&&forms.size()>0){
+            for(ActStoForm form : forms){
+                ZtreeNode node = new ZtreeNode();
+                String id = form.getFormId();
+                String name = form.getFormName();
+                String property = form.getFormProperty();
+                String formCode = form.getFormCode();
+                // meta-biz表示元数据普通表单，meta-flow表示元数据流程表单，smart-biz表示智能普通表单，smart-flow表示智能流程表单
+                if(StringUtils.isNotBlank(property)){
+                   if("meta-biz".equals(property)){
+                       property =  "【元数据普通表单】";
+                   }else if("meta-flow".equals(property)){
+                       property =  "【元数据流程表单】" ;
+                   }else if("smart-biz".equals(property)){
+                       property =  "【智能普通表单】";
+                   }else if("smart-flow".equals(property)){
+                       property =  "【智能流程表单】";
+                   }else{
+                       property = "";
+                   }
+                }
+                if(StringUtils.isNotBlank(formCode)){
+                    formCode = "【"+ formCode +"】";
+                }
+                node.setId(id);
+                node.setName(property + formCode + name);
+                node.setType("form");
+                node.setpId(StringUtils.isBlank(form.getParentFormId())?"root":form.getParentFormId());
+                node.setIsParent(StringUtils.isNotBlank(form.getParentFormId())?false:true);
+                node.setOpen(true);
+                node.setNocheck(false);
+                allNodes.add(node);
+            }
+        }
+        return allNodes;
     }
 }

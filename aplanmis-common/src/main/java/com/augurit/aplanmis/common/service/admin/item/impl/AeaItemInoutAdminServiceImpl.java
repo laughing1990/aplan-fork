@@ -177,16 +177,16 @@ public class AeaItemInoutAdminServiceImpl implements AeaItemInoutAdminService {
     public void batchSaveItemInoutMatCert(AeaItemInout inout, String[] matCertIds) {
 
         if (inout != null) {
-            inout.setRootOrgId(SecurityContext.getCurrentOrgId());
-            inout.setIsDeleted(DeletedStatus.NOT_DELETED.getValue());
-            if (MindType.CERTIFICATE.getValue().equals(inout.getFileType())) {
-                List<AeaItemInout> list = aeaItemInoutMapper.listAeaItemInout(inout);
-                if (list != null && list.size() > 0) {
-                    for (AeaItemInout inout1 : list) {
-                        aeaItemInoutMapper.deleteAeaItemInoutById(inout1.getInoutId());
-                    }
-                }
-            }
+//            inout.setRootOrgId(SecurityContext.getCurrentOrgId());
+//            inout.setIsDeleted(DeletedStatus.NOT_DELETED.getValue());
+//            if (MindType.CERTIFICATE.getValue().equals(inout.getFileType())) {
+//                List<AeaItemInout> list = aeaItemInoutMapper.listAeaItemInout(inout);
+//                if (list != null && list.size() > 0) {
+//                    for (AeaItemInout inout1 : list) {
+//                        aeaItemInoutMapper.deleteAeaItemInoutById(inout1.getInoutId());
+//                    }
+//                }
+//            }
             batchSaveItemInoutMatCertAndNotDelOld(inout, matCertIds);
         }
     }
@@ -200,7 +200,6 @@ public class AeaItemInoutAdminServiceImpl implements AeaItemInoutAdminService {
                 String rootOrgId = SecurityContext.getCurrentOrgId();
                 for (String matCertId : matCertIds) {
                     AeaItemInout vo = new AeaItemInout();
-                    vo.setRootOrgId(rootOrgId);
                     vo.setInoutId(UUID.randomUUID().toString());
                     vo.setItemVerId(inout.getItemVerId());
                     vo.setIsInput(inout.getIsInput());
@@ -210,19 +209,15 @@ public class AeaItemInoutAdminServiceImpl implements AeaItemInoutAdminService {
                     vo.setFileType(inout.getFileType());
                     vo.setIsDeleted(DeletedStatus.NOT_DELETED.getValue());
                     Long inSortNo = getMaxSortNo(inout.getItemVerId(), inout.getStateVerId(), inout.getIsInput(), rootOrgId);
-                    Long stateFormSortNo = 1L;
-                    // 为了排序方便
-                    if(StringUtils.isNotBlank(inout.getIsInput())&&inout.getIsInput().equals(Status.ON)){
-                        stateFormSortNo = aeaItemStateFormAdminService.getMaxSortNo(inout.getItemVerId(), inout.getStateVerId());
-                    }
-                    vo.setSortNo(inSortNo>=stateFormSortNo?inSortNo:stateFormSortNo);
-                    if (MindType.CERTIFICATE.getValue().equals(inout.getFileType())) {
-                        vo.setCertId(matCertId);
-                    } else {
+                    vo.setSortNo(inSortNo);
+//                    if (MindType.CERTIFICATE.getValue().equals(inout.getFileType())) {
+//                        vo.setCertId(matCertId);
+//                    } else {
                         vo.setMatId(matCertId);
-                    }
+//                    }
                     vo.setIsOwner(Status.ON);
                     vo.setCreater(userId);
+                    vo.setRootOrgId(rootOrgId);
                     vo.setCreateTime(new Date());
                     aeaItemInoutMapper.insertAeaItemInout(vo);
                 }
