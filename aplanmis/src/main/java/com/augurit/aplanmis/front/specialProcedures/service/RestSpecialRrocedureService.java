@@ -171,7 +171,7 @@ public class RestSpecialRrocedureService {
         specialVo.setSpecialEndMatId(specialId + "-end");
         AeaProjInfo projInfo = projInfoMapper.getAeaProjInfoByApplyinstId(specialVo.getApplyinstId());
         specialVo.setProjInfoId(projInfo.getProjInfoId());
-        String uid = SecurityContext.getCurrentUserName();
+        String uid = SecurityContext.getCurrentUser().getUserName();
         Date insertDate = new Date();
         specialVo.setCreater(uid);
         specialVo.setCreateTime(insertDate);
