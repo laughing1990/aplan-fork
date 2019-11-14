@@ -1528,6 +1528,7 @@ var vm = new Vue({
         'isApprover',
         'masterEntityKey',
         'projectCode',
+        'viewId',
       ];
       var oneFormIndex = -1;
       lTabsData.forEach(function (u, i) {
