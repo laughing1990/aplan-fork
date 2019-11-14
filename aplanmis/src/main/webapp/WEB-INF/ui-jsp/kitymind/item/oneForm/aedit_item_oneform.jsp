@@ -15,7 +15,7 @@
             <form id="aedit_item_oneform_form" method="post">
                 <div class="modal-body" style="padding: 10px;">
 
-                    <input type="hidden" name="itemVerId" value=""/>
+                    <input type="hidden" name="itemOneformId" value=""/>
 
                     <div class="form-group m-form__group row">
                         <label class="col-lg-3 col-form-label" style="text-align: right;"><font color="red">*</font>链接名称:</label>

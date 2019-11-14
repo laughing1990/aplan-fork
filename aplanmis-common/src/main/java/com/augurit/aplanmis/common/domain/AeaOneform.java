@@ -77,4 +77,6 @@ public class AeaOneform implements Serializable {
      * 扩展字段：阶段id
      */
     private String parStageId;
+
+    private String itemVerId;
 }

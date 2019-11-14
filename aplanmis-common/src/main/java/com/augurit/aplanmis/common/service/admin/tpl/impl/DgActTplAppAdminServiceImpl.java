@@ -461,7 +461,8 @@ public class DgActTplAppAdminServiceImpl implements DgActTplAppAdminService {
     private void fillNodeInfo(AppProcCaseDefTreeVo nodeVo, List<ActStoTimerule> actStoTimerules, List<ActStoTimegroupAct> actStoTimegroupActs) {
         for (int i = 0, len = actStoTimegroupActs.size(); i < len; i++) {
             ActStoTimegroupAct temp = actStoTimegroupActs.get(i);
-            if (temp.getAppFlowdefId().equals(nodeVo.getAppFlowdefId()) && temp.getActId().equals(nodeVo.getModelId())) {
+            if (temp.getAppFlowdefId().equals(nodeVo.getAppFlowdefId()) && temp.getActId().equals(nodeVo.getModelId())
+                    && StringUtils.isBlank(temp.getTimegroupId())) {
                 nodeVo.setTimeLimit(temp.getTimeLimit().intValue());
                 for (ActStoTimerule rule : actStoTimerules) {
                     if (rule.getTimeruleId().equals(temp.getTimeruleId())) {

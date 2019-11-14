@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by zhangwn    2019-11-13 11:07:35 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaItemPartformMapper">
+
+    <sql id="allColumns">
+    ITEM_PARTFORM_ID  itemPartformId,
+    PARTFORM_NAME  partformName,
+    ITEM_VER_ID  itemVerId,
+    IS_SMART_FORM  isSmartForm,
+    PARTFORM_ID  partformId,
+    FORM_URL  formUrl,
+    SORT_NO  sortNo,
+    USE_EL  useEl,
+    EL_CONTENT  elContent,
+    CREATER  creater,
+    CREATE_TIME  createTime
+    </sql>
+
+    <sql id="allColumns_alias">
+    ${alias}.ITEM_PARTFORM_ID  itemPartformId,
+    ${alias}.PARTFORM_NAME  partformName,
+    ${alias}.ITEM_VER_ID  itemVerId,
+    ${alias}.IS_SMART_FORM  isSmartForm,
+    ${alias}.PARTFORM_ID  partformId,
+    ${alias}.FORM_URL  formUrl,
+    ${alias}.SORT_NO  sortNo,
+    ${alias}.USE_EL  useEl,
+    ${alias}.EL_CONTENT  elContent,
+    ${alias}.CREATER  creater,
+    ${alias}.CREATE_TIME  createTime
+    </sql>
+
+    <select id="getAeaItemPartformById" resultType="AeaItemPartform">
+        select
+        <include refid="allColumns"/>
+        from AEA_ITEM_PARTFORM
+        where ITEM_PARTFORM_ID = #{id}
+    </select>
+
+    <select id="listAeaItemPartform" resultType="AeaItemPartform">
+        select
+        <include refid="allColumns"/>
+        from AEA_ITEM_PARTFORM
+        <where>
+            <if test="itemPartformId != null and itemPartformId!=''">
+                AND ITEM_PARTFORM_ID = #{itemPartformId}
+            </if>
+            <if test="partformName != null and partformName!=''">
+                AND PARTFORM_NAME = #{partformName}
+            </if>
+            <if test="itemVerId != null and itemVerId!=''">
+                AND ITEM_VER_ID = #{itemVerId}
+            </if>
+            <if test="isSmartForm != null and isSmartForm!=''">
+                AND IS_SMART_FORM = #{isSmartForm}
+            </if>
+            <if test="partformId != null and partformId!=''">
+                AND PARTFORM_ID = #{partformId}
+            </if>
+            <if test="formUrl != null and formUrl!=''" >
+                AND FORM_URL = #{formUrl}
+            </if>
+            <if test="sortNo != null and sortNo!=''">
+                AND SORT_NO = #{sortNo}
+            </if>
+            <if test="useEl != null and useEl!=''">
+                AND USE_EL = #{useEl}
+            </if>
+            <if test="elContent != null">
+                AND EL_CONTENT = #{elContent}
+            </if>
+            <if test="creater != null and creater!=''">
+                AND CREATER = #{creater}
+            </if>
+            <if test="createTime != null">
+                AND CREATE_TIME = #{createTime}
+            </if>
+            <if test="keyword!=null and keyword!=''">
+                AND  PARTFORM_NAME like concat('%', concat(#{keyword}, '%'))
+            </if>
+        </where>
+    </select>
+
+    <insert id="insertAeaItemPartform" parameterType="AeaItemPartform">
+    insert into AEA_ITEM_PARTFORM (
+    ITEM_PARTFORM_ID  ,PARTFORM_NAME  ,ITEM_VER_ID  ,IS_SMART_FORM  ,PARTFORM_ID  ,FORM_URL  ,SORT_NO  ,USE_EL  ,EL_CONTENT  ,CREATER  ,CREATE_TIME
+    )  values  (
+    #{itemPartformId},#{partformName},#{itemVerId},#{isSmartForm},#{partformId},#{formUrl},#{sortNo},#{useEl},#{elContent},#{creater},  #{createTime}
+    )
+    </insert>
+
+    <update id="updateAeaItemPartform" parameterType="AeaItemPartform">
+        update AEA_ITEM_PARTFORM
+        <set>
+            <if test="itemPartformId != null">
+                ITEM_PARTFORM_ID = #{itemPartformId},
+            </if>
+            <if test="partformName != null">
+                PARTFORM_NAME = #{partformName},
+            </if>
+            <if test="itemVerId != null">
+                ITEM_VER_ID = #{itemVerId},
+            </if>
+            <if test="isSmartForm != null">
+                IS_SMART_FORM = #{isSmartForm},
+            </if>
+            <if test="partformId != null">
+                PARTFORM_ID = #{partformId},
+            </if>
+            <if test="formUrl != null">
+                FORM_URL = #{formUrl},
+            </if>
+            <if test="sortNo != null">
+                SORT_NO = #{sortNo},
+            </if>
+            <if test="useEl != null">
+                USE_EL = #{useEl},
+            </if>
+            <if test="elContent != null">
+                EL_CONTENT = #{elContent},
+            </if>
+            <if test="creater != null">
+                CREATER = #{creater},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime},
+            </if>
+        </set>
+        where ITEM_PARTFORM_ID = #{itemPartformId}
+    </update>
+
+    <delete id="deleteAeaItemPartform">
+        delete from   AEA_ITEM_PARTFORM
+        where
+    ITEM_PARTFORM_ID = #{id}
+    </delete>
+
+
+    <select id="getMaxSortNo" resultType="java.lang.Long">
+        select
+            max(sort_no)
+        from AEA_ITEM_PARTFORM
+        where item_ver_id = #{itemVerId}
+    </select>
+
+    <delete id="batchDelItemPartformByIds">
+        delete from AEA_ITEM_PARTFORM where ITEM_PARTFORM_ID in
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="listAeaItemPartformWithFormInfo" resultType="AeaItemPartform">
+        select
+        <include refid="allColumns_alias"><property name="alias" value="aip"/></include>,
+        asf.FORM_NAME formName
+        from AEA_ITEM_PARTFORM aip
+        left join ACT_STO_FORM asf on (
+        aip.PARTFORM_ID = asf.FORM_ID
+        and asf.IS_DELETED = '0'
+        and asf.FORM_PROPERTY in ( 'smart-biz', 'smart-flow' )
+        and aip.PARTFORM_ID is not null
+        and aip.PARTFORM_ID !=''
+        and aip.IS_SMART_FORM = '1'
+        )
+        <where>
+            <if test="itemPartformId != null and itemPartformId!=''">
+                AND aip.ITEM_PARTFORM_ID = #{itemPartformId}
+            </if>
+            <if test="partformName != null and partformName!=''">
+                AND aip.PARTFORM_NAME = #{partformName}
+            </if>
+            <if test="itemVerId != null and itemVerId!=''">
+                AND aip.ITEM_VER_ID = #{itemVerId}
+            </if>
+            <if test="isSmartForm != null and isSmartForm!=''">
+                AND aip.IS_SMART_FORM = #{isSmartForm}
+            </if>
+            <if test="partformId != null and partformId!=''">
+                AND aip.PARTFORM_ID = #{partformId}
+            </if>
+            <if test="formUrl != null and formUrl!=''" >
+                AND aip.FORM_URL = #{formUrl}
+            </if>
+            <if test="sortNo != null and sortNo!=''">
+                AND aip.SORT_NO = #{sortNo}
+            </if>
+            <if test="useEl != null and useEl!=''">
+                AND aip.USE_EL = #{useEl}
+            </if>
+            <if test="elContent != null">
+                AND aip.EL_CONTENT = #{elContent}
+            </if>
+            <if test="creater != null and creater!=''">
+                AND aip.CREATER = #{creater}
+            </if>
+            <if test="createTime != null">
+                AND aip.CREATE_TIME = #{createTime}
+            </if>
+            <if test="keyword!=null and keyword!=''">
+                AND  aip.PARTFORM_NAME like concat('%', concat(#{keyword}, '%'))
+            </if>
+        </where>
+        order by aip.SORT_NO asc, aip.CREATE_TIME asc
+    </select>
+
+    <select id="listItemPartFormNoSelectForm" resultType="AeaItemPartform">
+        select
+        asfrom.FORM_ID as partformId,
+        asfrom.FORM_ORG_ID  formOrgId,
+        asfrom.FORM_PROPERTY  formProperty,
+        asfrom.FORM_CODE  formCode,
+        asfrom.FORM_NAME  formName,
+        asfrom.IS_INNER_FORM  isInnerForm,
+        tmn.TMN_NAME formTmnName,
+        org.ORG_NAME orgName
+        from ACT_STO_FORM asfrom
+        left join opu_om_org org on org.ORG_ID = asfrom.FORM_ORG_ID
+        left join AGX_RS_TMN tmn on tmn.TMN_ID = asfrom.FORM_TMN_ID
+        <where>
+            and asfrom.IS_DELETED = '0'
+            and asfrom.FORM_ORG_ID = #{formOrgId}
+            and asfrom.FORM_ID not in (
+            select
+            PARTFORM_ID
+            from AEA_ITEM_PARTFORM
+            where ITEM_VER_ID = #{itemVerId}
+            and ITEM_PARTFORM_ID = #{itemPartformId}
+            and PARTFORM_ID is not null
+            and PARTFORM_ID !=''
+            and IS_SMART_FORM = '1'
+            )
+            and  asfrom.FORM_PROPERTY in ( 'smart-biz', 'smart-flow' )
+            <if test="keyword != null and keyword !='' " >
+                and (
+                asfrom.FORM_CODE like CONCAT(CONCAT('%',#{keyword}),'%') or
+                asfrom.FORM_NAME like CONCAT(CONCAT('%',#{keyword}),'%')
+                )
+            </if>
+        </where>
+        order by asfrom.IS_INNER_FORM desc, asfrom.CREATE_TIME desc
+    </select>
+    <resultMap type="AeaItemPartform" id="AeaItemPartformMap">
+        <id property="itemPartformId" column="ITEM_PARTFORM_ID"/>
+        <result property="partformName" column="PARTFORM_NAME"/>
+        <result property="itemVerId" column="ITEM_VER_ID"/>
+        <result property="isSmartForm" column="IS_SMART_FORM"/>
+        <result property="partformId" column="PARTFORM_ID"/>
+        <result property="formUrl" column="FORM_URL"/>
+        <result property="sortNo" column="SORT_NO"/>
+        <result property="useEl" column="USE_EL"/>
+        <result property="elContent" column="EL_CONTENT"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+    </resultMap>
+</mapper>

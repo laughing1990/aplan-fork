@@ -258,4 +258,63 @@
         where ONEFORM_ID = #{id}
     </update>
 
+
+    <select id="listAeaOneformNotInItem" resultType="AeaOneform">
+        select
+        <include refid="apoColumns"/>
+        from AEA_ONEFORM apo
+        <where>
+            apo.ONEFORM_ID not in (
+            select aio.oneform_id
+            from AEA_ITEM_ONEFORM aio
+            where aio.item_ver_id = #{itemVerId}
+            )
+            <if test="oneformId != null and oneformId!='' ">
+                and apo.ONEFORM_ID = #{oneformId}
+            </if>
+            <if test="oneformName != null and oneformName!='' ">
+                and apo.ONEFORM_NAME = #{oneformName}
+            </if>
+            <if test="oneformDesc != null and oneformDesc!='' ">
+                and apo.ONEFORM_DESC = #{oneformDesc}
+            </if>
+            <if test="oneformUrl != null and oneformUrl!='' ">
+                and apo.ONEFORM_URL = #{oneformUrl}
+            </if>
+            <if test="sortNo != null and sortNo!='' ">
+                and apo.SORT_NO = #{sortNo}
+            </if>
+            <if test="isActive != null and isActive!='' ">
+                and apo.IS_ACTIVE = #{isActive}
+            </if>
+            <if test="creater != null and creater!='' ">
+                and apo.CREATER = #{creater}
+            </if>
+            <if test="createTime != null and createTime!='' ">
+                and apo.CREATE_TIME = #{createTime}
+            </if>
+            <if test="modifier != null and modifier!='' ">
+                and apo.MODIFIER = #{modifier}
+            </if>
+            <if test="modifyTime != null and modifyTime!='' ">
+                and apo.MODIFY_TIME = #{modifyTime}
+            </if>
+            <if test="rootOrgId!=null and rootOrgId!='' ">
+                and apo.ROOT_ORG_ID = #{rootOrgId}
+            </if>
+            <if test="keyword!=null and keyword!='' ">
+                and (
+                apo.ONEFORM_NAME like concat('%',concat(#{keyword},'%')) or
+                apo.ONEFORM_DESC like concat('%',concat(#{keyword},'%')) or
+                apo.ONEFORM_URL like concat('%',concat(#{keyword},'%'))
+                )
+            </if>
+        </where>
+        order by apo.SORT_NO desc, apo.CREATE_TIME desc
+    </select>
+
+
+
+
+
 </mapper>

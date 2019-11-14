@@ -56,7 +56,7 @@
                                 data-query-params="partformFormParam",
                                 data-pagination-show-page-go="true",
                                 data-content-type="application/x-www-form-urlencoded; charset=UTF-8",
-                                data-url="${pageContext.request.contextPath}/aea/par/stage/partform/listPartFormNoSelectFormByPage.do">
+                                data-url="${pageContext.request.contextPath}/aea/item/partform/listPartFormNoSelectFormByPage.do">
                             <thead>
                                 <tr>
                                     <th data-field="#" data-checkbox="true" data-align="center" data-width="10">ID</th>
@@ -100,10 +100,10 @@
             if(rows!=null&&rows.length>0) {
                 var formId = rows[0].partformId;
                 $.ajax({
-                    url: ctx + '/aea/par/stage/partform/savePartformFormsAndNotDelOld.do',
+                    url: ctx + '/aea/item/partform/savePartformFormsAndNotDelOld.do',
                     type: 'POST',
                     data:  {
-                        "stagePartformId": curPartFormId,
+                        "itemPartformId": curPartFormId,
                         "formId": formId
                     },
                     async: false,
@@ -117,7 +117,7 @@
                                 showConfirmButton: false
                             });
                             // 重新加载数据
-                            searchStagePartform();
+                            searchItemPartform();
                         } else {
                             swal('错误信息', result.message, 'error');
                         }
@@ -180,8 +180,8 @@
     function searchPartformForm(){
 
         commonQueryParams = [];
-        commonQueryParams.push({'name': 'stagePartformId','value': curPartFormId});
-        commonQueryParams.push({'name': 'stageId','value': currentBusiId});
+        commonQueryParams.push({'name': 'itemPartformId','value': curPartFormId});
+        commonQueryParams.push({'name': 'itemVerId','value': currentBusiId});
         commonQueryParams.push({'name': 'keyword','value': $('#partformFormKeyword').val()});
         //跳转到第一页，防止其他页查询第一次不显示数据的问题。
         $("#partfrom_form_tb").bootstrapTable('selectPage',1);

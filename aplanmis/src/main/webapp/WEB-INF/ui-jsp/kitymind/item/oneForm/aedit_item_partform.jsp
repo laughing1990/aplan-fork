@@ -16,8 +16,8 @@
                 <div class="modal-body" style="padding: 10px;">
                     <div id="aedit_part_form_scroll" style="height: 425px;verflow-x: hidden;overflow-y: auto;">
 
-                        <input type="hidden" name="stagePartformId" value=""/>
-                        <input type="hidden" name="stageId" value=""/>
+                        <input type="hidden" name="itemPartformId" value=""/>
+                        <input type="hidden" name="itemVerId" value=""/>
                         <input type="hidden" name="partformId" value=""/>
 
                         <div class="form-group m-form__group row" >
