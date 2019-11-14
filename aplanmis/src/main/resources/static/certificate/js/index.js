@@ -32,6 +32,7 @@ var vm = new Vue({
             }
         };
         return {
+            filePreviewCount:0,
             receiveModeShow: true,
             receiveMode_dig: '',
             isConsigner_dig: '',
@@ -1062,7 +1063,63 @@ var vm = new Vue({
             var _that = this;
             var detailId = data.fileId;
             var flashAttributes = '';
-            url = ctx + 'rest/certificate/consignerAtt/preview' + "?detailId=" + detailId + "&flashAttributes=" + flashAttributes;
+            /*console.log(data);
+            var regText = /doc|docx|ppt|pptx|xls|xlsx|txt$/;
+            var fileName = data.fileName;
+            var fileType = this.getFileType(fileName);
+            _that.filePreviewCount++;
+            if (fileType == 'pdf') {
+                var tempwindow = window.open(); // 先打开页面
+                setTimeout(function () {
+                    tempwindow.location = ctx + 'previewPdf/view?detailId=' + detailId;
+                }, 1000)
+            } else if (regText.test(fileType)) {
+                // previewPdf/pdfIsCoverted
+                _that.loading = true;
+                request('', {
+                    url: ctx + 'previewPdf/pdfIsCoverted?detailId=' + detailId,
+                    type: 'get',
+                }, function (result) {
+                    if (result.success) {
+                        _that.loading = false;
+                        var tempwindow = window.open(); // 先打开页面
+                        setTimeout(function () {
+                            tempwindow.location = ctx + 'previewPdf/view?detailId=' + detailId;
+                        }, 1000)
+                    } else {
+                        if (_that.filePreviewCount > 9) {
+                            confirmMsg('提示信息：', '文件预览请求中，是否继续等待？', function () {
+                                _that.filePreviewCount = 0;
+                                _that.filePreview(data);
+                            }, function () {
+                                _that.filePreviewCount = 0;
+                                _that.loading = false;
+                                return false;
+                            }, '确定', '取消', 'warning', true)
+
+                        } else {
+                            setTimeout(function () {
+                                _that.filePreview(data);
+                            }, 1000)
+                        }
+                    }
+                }, function (msg) {
+                    _that.loading = false;
+                    _that.$message({
+                        message: '文件预览失败',
+                        type: 'error'
+                    });
+                })
+            } else {
+                _that.loading = false;
+                var tempwindow = window.open(); // 先打开页面
+                setTimeout(function () {
+                    tempwindow.location = ctx + 'rest/mats/att/preview?detailId=' + detailId + '&flashAttributes=' + flashAttributes;
+                }, 1000)
+            }*/
+
+            // url = ctx + 'rest/certificate/consignerAtt/preview' + "?detailId=" + detailId + "&flashAttributes=" + flashAttributes;
+            url = ctx + 'rest/mats/att/preview?detailId='  + detailId + "&flashAttributes=" + flashAttributes;
             try {
                 window.open(url);
             } catch (e) {
@@ -1071,6 +1128,16 @@ var vm = new Vue({
                     type: 'error'
                 });
             }
+        },
+        // 获取文件后缀
+        getFileType: function (fileName) {
+            var index1 = fileName.lastIndexOf(".");
+            var index2 = fileName.length;
+            var suffix = fileName.substring(index1 + 1, index2).toLowerCase();//后缀名
+            if (suffix == 'docx') {
+                suffix = 'doc';
+            }
+            return suffix;
         },
         // 勾选电子件
         selectionFileChange: function (val) {

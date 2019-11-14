@@ -1054,7 +1054,9 @@ var vm = new Vue({
             var _that = this;
             var detailId = data.fileId;
             var flashAttributes = '';
-            url = ctx + 'rest/certificate/consignerAtt/preview' + "?detailId=" + detailId + "&flashAttributes=" + flashAttributes;
+            // url = ctx + 'rest/certificate/consignerAtt/preview' + "?detailId=" + detailId + "&flashAttributes=" + flashAttributes;
+            url = ctx + 'rest/mats/att/preview?detailId='  + detailId + "&flashAttributes=" + flashAttributes;
+
             try {
                 window.open(url);
             } catch (e) {
