@@ -30,7 +30,8 @@
     QUAL_LEVEL_ID  qualLevelId,
     ROOT_ORG_ID rootOrgId,
     MEMO memo,
-    MANAGEMENT_SCOPE managementScope
+    MANAGEMENT_SCOPE managementScope,
+    AUTH_CODE authCode
     </sql>
 
     <sql id="aliasColumns">
@@ -58,7 +59,8 @@
     ${alias}.LINKMAN_INFO_ID  linkmanInfoId,
     ${alias}.QUAL_LEVEL_ID  qualLevelId,
     ${alias}.MEMO memo,
-    ${alias}.MANAGEMENT_SCOPE managementScope
+    ${alias}.MANAGEMENT_SCOPE managementScope,
+    ${alias}.AUTH_CODE authCode
     </sql>
 
     <!--2 根据主键ID查询单个实体 -->
@@ -151,6 +153,9 @@
             <if test="rootOrgId != null">
                 AND ROOT_ORG_ID = #{rootOrgId}
             </if>
+            <if test="authCode != null">
+                AND AUTH_CODE = #{authCode}
+            </if>
         </where>
     </select>
     <!--4 根据条件查询实体list,返回分页对象 -->
@@ -160,18 +165,18 @@
         insert into AEA_HI_CERTINST (CERTINST_ID, CERT_ID, UNIT_INFO_ID, PROJ_INFO_ID, ATT_LINK_ID, CREATER,
                                      CREATE_TIME, MODIFIER, MODIFY_TIME, CERTINST_CODE, CERTINST_NAME, ISSUE_DATE,
                                      TERM_START, TERM_END, CA_INFO, CERT_OWNER, ISSUE_ORG_ID, TERM_NUM, TERM_UNIT, FLXL,
-                                     APPLYINST_ID, LINKMAN_INFO_ID, QUAL_LEVEL_ID,ROOT_ORG_ID,MEMO,MANAGEMENT_SCOPE)
+                                     APPLYINST_ID, LINKMAN_INFO_ID, QUAL_LEVEL_ID,ROOT_ORG_ID,MEMO,MANAGEMENT_SCOPE, AUTH_CODE)
         values (#{certinstId}, #{certId}, #{unitInfoId}, #{projInfoId}, #{attLinkId}, #{creater}, #{createTime},
                 #{modifier}, #{modifyTime}, #{certinstCode}, #{certinstName}, #{issueDate}, #{termStart}, #{termEnd},
                 #{caInfo}, #{certOwner}, #{issueOrgId}, #{termNum}, #{termUnit}, #{flxl}, #{applyinstId},
-                #{linkmanInfoId}, #{qualLevelId},#{rootOrgId},#{memo},#{managementScope})
+                #{linkmanInfoId}, #{qualLevelId},#{rootOrgId},#{memo},#{managementScope}, #{authCode} )
     </insert>
 
     <insert id="batchInsertAeaHiCertinst" parameterType="AeaHiCertinst">
         insert into AEA_HI_CERTINST (CERTINST_ID, CERT_ID, UNIT_INFO_ID, PROJ_INFO_ID, ATT_LINK_ID, CREATER,
         CREATE_TIME, MODIFIER, MODIFY_TIME, CERTINST_CODE, CERTINST_NAME, ISSUE_DATE,
         TERM_START, TERM_END, CA_INFO, CERT_OWNER, ISSUE_ORG_ID, TERM_NUM, TERM_UNIT, FLXL,
-        APPLYINST_ID, LINKMAN_INFO_ID, QUAL_LEVEL_ID,ROOT_ORG_ID,MEMO,MANAGEMENT_SCOPE)
+        APPLYINST_ID, LINKMAN_INFO_ID, QUAL_LEVEL_ID,ROOT_ORG_ID,MEMO,MANAGEMENT_SCOPE, AUTH_CODE)
         <if test="_databaseId == 'oracle'">
             <foreach collection="certinsts" item="item" index="index" separator="union all">
                 (
@@ -182,7 +187,8 @@
                 #{item.termStart}, #{item.termEnd},
                 #{item.caInfo}, #{item.certOwner}, #{item.issueOrgId}, #{item.termNum}, #{item.termUnit}, #{item.flxl},
                 #{item.applyinstId},
-                #{item.linkmanInfoId}, #{item.qualLevelId},#{item.rootOrgId},#{item.memo},#{item.managementScope}
+                #{item.linkmanInfoId}, #{item.qualLevelId},#{item.rootOrgId},#{item.memo},#{item.managementScope},
+                #{item.authCode}
                 FROM dual
                 )
             </foreach>
@@ -196,7 +202,8 @@
                 #{item.termStart}, #{item.termEnd},
                 #{item.caInfo}, #{item.certOwner}, #{item.issueOrgId}, #{item.termNum}, #{item.termUnit}, #{item.flxl},
                 #{item.applyinstId},
-                #{item.linkmanInfoId}, #{item.qualLevelId},#{item.rootOrgId},#{item.memo},#{item.managementScope})
+                #{item.linkmanInfoId}, #{item.qualLevelId},#{item.rootOrgId},#{item.memo},#{item.managementScope},
+                #{item.authCode})
             </foreach>
         </if>
     </insert>
@@ -282,6 +289,9 @@
             <if test="managementScope != null">
                 MANAGEMENT_SCOPE = #{managementScope},
             </if>
+            <if test="authCode != null">
+                AUTH_CODE = #{authCode},
+            </if>
         </set>
         where CERTINST_ID = #{certinstId}
     </update>
@@ -322,6 +332,7 @@
         <result property="linkmanInfoId" column="LINKMAN_INFO_ID"/>
         <result property="qualLevelId" column="QUAL_LEVEL_ID"/>
         <result property="rootOrgId" column="ROOT_ORG_ID"/>
+        <result property="authCode" column="AUTH_CODE"/>
     </resultMap>
     <select id="getAeaHiCertinstByIds" resultType="AeaHiCertinst">
         select aui.APPLICANT issueOrgName,

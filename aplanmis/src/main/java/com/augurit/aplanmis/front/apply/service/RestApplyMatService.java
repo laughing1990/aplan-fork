@@ -766,13 +766,14 @@ public class RestApplyMatService {
         aeaItemMatMapper.listAeaItemMatByIds(matCountMap.keySet().toArray(new String[0]))
                 .forEach(mat -> {
                     List<String> matinstIds = new ArrayList<>();
+                    SaveMatinstVo.MatCountVo matCountVo = matCountMap.get(mat.getMatId());
 
                     // 普通材料
                     // 这里将 null作为if条件主要是为了与旧数据兼容
                     if (StringUtils.isBlank(mat.getMatProp()) || "m".equals(mat.getMatProp())) {
                         // 纸质件不为0
-                        int paperCnt = matCountMap.get(mat.getMatId()).getPaperCnt();
-                        int copyCnt = matCountMap.get(mat.getMatId()).getCopyCnt();
+                        int paperCnt = matCountVo.getPaperCnt();
+                        int copyCnt = matCountVo.getCopyCnt();
 
                         if (paperCnt > 0) {
                             AeaHiItemMatinst aeaHiItemMatinst = mat2Matinst(mat, unitInfoId, projectInfoId, currentOrgId);
@@ -797,7 +798,7 @@ public class RestApplyMatService {
                         AeaHiItemMatinst aeaHiItemMatinst = mat2Matinst(mat, unitInfoId, projectInfoId, currentOrgId);
                         matinstIds.add(aeaHiItemMatinst.getMatinstId());
                         AeaCert aeaCert = aeaCertMapper.getAeaCertById(mat.getCertId(), currentOrgId);
-                        AeaHiCertinst aeaHiCertinst = cert2Certinst(aeaCert, unitInfoId, projectInfoId, currentOrgId);
+                        AeaHiCertinst aeaHiCertinst = cert2Certinst(aeaCert, matCountVo.getAuthCode(), unitInfoId, projectInfoId, currentOrgId);
                         aeaHiItemMatinst.setCertinstId(aeaHiCertinst.getCertinstId());
                         certinsts.add(aeaHiCertinst);
                         matinstIds.add(aeaHiItemMatinst.getMatinstId());
@@ -842,7 +843,7 @@ public class RestApplyMatService {
         return aeaHiItemMatinst;
     }
 
-    private AeaHiCertinst cert2Certinst(AeaCert aeaCert, String unitInfoId, String projInfoId, String rootOrgId) {
+    private AeaHiCertinst cert2Certinst(AeaCert aeaCert, String authCode, String unitInfoId, String projInfoId, String rootOrgId) {
         AeaHiCertinst aeaHiCertinst = new AeaHiCertinst();
         aeaHiCertinst.setCertinstId(UuidUtil.generateUuid());
         aeaHiCertinst.setCertId(aeaCert.getCertId());
@@ -855,6 +856,7 @@ public class RestApplyMatService {
         aeaHiCertinst.setCertinstName(aeaCert.getCertName());
         aeaHiCertinst.setRootOrgId(rootOrgId);
         aeaHiCertinst.setMemo(aeaCert.getCertMemo());
+        aeaHiCertinst.setAuthCode(authCode);
         return aeaHiCertinst;
     }
 
