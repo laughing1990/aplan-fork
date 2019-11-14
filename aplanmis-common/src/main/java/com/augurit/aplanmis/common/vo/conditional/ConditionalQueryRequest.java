@@ -153,5 +153,8 @@ public class ConditionalQueryRequest implements Serializable {
     @ApiModelProperty(value = "是否已办结,1为是")
     private String isConcluding;
 
+    @ApiModelProperty(value = "阶段排序号")
+    private Long stageIndex;
+
 
 }

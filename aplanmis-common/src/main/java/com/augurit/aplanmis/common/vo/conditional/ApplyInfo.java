@@ -1,11 +1,14 @@
 package com.augurit.aplanmis.common.vo.conditional;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * 申报数据
@@ -20,4 +23,9 @@ public class ApplyInfo extends BaseInfo implements Serializable {
 
     @ApiModelProperty(value = "申报状态")
     private String applyState;
+
+    @ApiModelProperty(value = "办结时间")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm", locale = "zh", timezone = "GMT+8")
+    private Date concludedTime;
 }
