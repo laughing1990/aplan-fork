@@ -2007,6 +2007,7 @@ var vm = new Vue({
       if (!data.attFormat) {
         data.attFormat = data.fileType;
       } // 文件类型
+      data.attFormat = (data.attFormat+'').toLowerCase();
       if (__STATIC.allowPreType[data.attFormat]) {
         return this.preFile(data, visibleKey);
       } // 预览pdf、doc等
