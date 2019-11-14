@@ -12,6 +12,8 @@ public interface LicenseApiService {
 
     PubResponseDTO logout(String accessToken) throws Exception;
 
+    String getLoginToken() throws Exception;
+
     LicenseAuthResDTO licenseAuth(String accessToken, LicenseAuthReqDTO data) throws Exception;
 
     LicenseTokenResDTO LicenseToken(String accessToken, String authCode) throws Exception;

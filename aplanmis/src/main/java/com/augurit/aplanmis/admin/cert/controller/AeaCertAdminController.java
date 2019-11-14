@@ -16,6 +16,7 @@ import com.augurit.aplanmis.common.domain.AeaItemInout;
 import com.augurit.aplanmis.common.domain.AeaParIn;
 import com.augurit.aplanmis.common.service.admin.cert.AeaCertAdminService;
 import com.augurit.aplanmis.common.service.admin.opus.AplanmisOpuOmOrgAdminService;
+import com.augurit.aplanmis.integration.license.dto.LicenseAuthResDTO;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
@@ -272,5 +273,24 @@ public class AeaCertAdminController {
     public List<BscDicCodeItem> listCertHolderType() throws Exception {
 
         return bscDicCodeService.getActiveItemsByTypeCode("CERT_HOLDER_TYPE", SecurityContext.getCurrentOrgId());
+    }
+
+    @ApiOperation(value = "通过查询条件获取电子证照库数据", notes = "通过查询条件获取电子证照库数据")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "itemVerIds", value = "事项版本IDs", required = true , dataType = "String" ,paramType = "query"),
+            @ApiImplicitParam(name = "identityNumber", value = "申办证件号码", required = true , dataType = "String" ,paramType = "query"),
+    })
+    @RequestMapping("/getLicenseAuthRes.do")
+    public LicenseAuthResDTO getLicenseAuthRes(String itemVerIds, String identityNumber) throws Exception {
+        return aeaCertAdminService.getLicenseAuthRes(itemVerIds, identityNumber);
+    }
+
+    @ApiOperation(value = "通过电子证照编码获取证照显示地址", notes = "通过电子证照编码获取证照显示地址")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "authCode", value = "证照编码", required = true , dataType = "String" ,paramType = "query"),
+    })
+    @RequestMapping("/getViewLicenseURL.do")
+    public String getViewLicenseURL(String authCode) throws Exception {
+        return aeaCertAdminService.getViewLicenseURL(authCode);
     }
 }

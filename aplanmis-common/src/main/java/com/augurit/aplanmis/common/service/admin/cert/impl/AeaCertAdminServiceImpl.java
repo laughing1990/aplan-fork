@@ -1,7 +1,9 @@
 package com.augurit.aplanmis.common.service.admin.cert.impl;
 
 import com.augurit.agcloud.bsc.domain.BscAttDir;
+import com.augurit.agcloud.bsc.domain.BscDicRegion;
 import com.augurit.agcloud.bsc.mapper.BscAttDirMapper;
+import com.augurit.agcloud.bsc.mapper.BscDicRegionMapper;
 import com.augurit.agcloud.framework.constant.Status;
 import com.augurit.agcloud.framework.exception.InvalidParameterException;
 import com.augurit.agcloud.framework.security.SecurityContext;
@@ -9,12 +11,20 @@ import com.augurit.agcloud.framework.ui.elementui.ElementUiRsTreeNode;
 import com.augurit.agcloud.framework.ui.pager.PageHelper;
 import com.augurit.agcloud.framework.ui.ztree.ZtreeNode;
 import com.augurit.agcloud.framework.util.CollectionUtils;
+import com.augurit.agcloud.opus.common.domain.OpuOmOrg;
+import com.augurit.agcloud.opus.common.domain.OpuOmUserInfo;
+import com.augurit.agcloud.opus.common.mapper.OpuOmUserInfoMapper;
 import com.augurit.aplanmis.common.constants.DeletedStatus;
 import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.mapper.AeaCertMapper;
 import com.augurit.aplanmis.common.mapper.AeaCertTypeMapper;
+import com.augurit.aplanmis.common.mapper.AeaItemBasicMapper;
 import com.augurit.aplanmis.common.service.admin.cert.AeaCertAdminService;
+import com.augurit.aplanmis.common.service.admin.opus.AplanmisOpuOmOrgAdminService;
 import com.augurit.aplanmis.common.service.instance.AeaHiIteminstService;
+import com.augurit.aplanmis.integration.license.config.LicenseConfig;
+import com.augurit.aplanmis.integration.license.dto.*;
+import com.augurit.aplanmis.integration.license.service.LicenseApiService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import org.apache.commons.lang3.StringUtils;
@@ -26,6 +36,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -50,6 +61,19 @@ public class AeaCertAdminServiceImpl implements AeaCertAdminService {
 
     @Autowired
     private AeaHiIteminstService aeaHiIteminstService;
+
+    @Autowired
+    private AplanmisOpuOmOrgAdminService opuOmOrgService;
+    @Autowired
+    private BscDicRegionMapper bscDicRegionMapper;
+    @Autowired
+    private LicenseApiService licenseApiService;
+    @Autowired
+    private OpuOmUserInfoMapper opuOmUserInfoMapper;
+    @Autowired
+    private AeaItemBasicMapper aeaItemBasicMapper;
+    @Autowired
+    private LicenseConfig licenseConfig;
 
     @Override
     public void deleteAeaCertById(String id) {
@@ -322,5 +346,76 @@ public class AeaCertAdminServiceImpl implements AeaCertAdminService {
         if (iteminst == null) return null;
 
         return aeaCertMapper.getOutputCertsByItemVerId(iteminst.getItemVerId(), SecurityContext.getCurrentOrgId());
+    }
+
+
+    @Override
+    public LicenseAuthResDTO getLicenseAuthRes(String itemVerIds, String identityNumber) throws Exception {
+        String accessToken = licenseApiService.getLoginToken();
+        if (StringUtils.isBlank(itemVerIds) || StringUtils.isBlank(identityNumber))
+            return new LicenseAuthResDTO();
+        List<String> itemverIds = new ArrayList<>();
+        Collections.addAll(itemverIds, itemVerIds.split(","));
+        List<AeaItemBasic> list = aeaItemBasicMapper.getAeaItemBasicListByItemVerIds(itemverIds);
+        return getLicenseAuthRes(list, accessToken, identityNumber);
+    }
+
+    private LicenseAuthResDTO getLicenseAuthRes(List<AeaItemBasic> list, String accessToken, String identityNumber) {
+        if (list.size() < 1)
+            return new LicenseAuthResDTO();
+        LicenseAuthResDTO result = new LicenseAuthResDTO();
+        ArrayList checkAuthCodes = new ArrayList();//针对多个事项时，进行重复过滤
+        ArrayList auth_codes = new ArrayList();
+        List<LicenseDTO> licenseDTO = new ArrayList<>();
+        OpuOmUserInfo userinfo = opuOmUserInfoMapper.getOpuOmUserInfoByUserId(SecurityContext.getCurrentUserId());
+        OpuOmOrg topOrg = opuOmOrgService.getTopOrgByCurOrgId(SecurityContext.getCurrentOrgId());
+        BscDicRegion proDataRegion = bscDicRegionMapper.getBscDicRegionById(topOrg.getRegionId());
+        LicenseUserInfoDTO operator = new LicenseUserInfoDTO();
+        operator.setIdentity_num(userinfo.getUserIdCardNo() == null ? "null" : userinfo.getUserIdCardNo());//身份证号
+        operator.setDivision(topOrg.getOrgName());
+        operator.setDivision_code(proDataRegion.getRegionNum());
+        operator.setService_org(proDataRegion.getRegionNum());
+        operator.setService_org_code(topOrg.getOrgCode());
+        for (AeaItemBasic aeaItemBasic : list) {
+            LicenseAuthResDTO data = null;
+            LicenseAuthReqDTO authReqDTO = new LicenseAuthReqDTO();
+            authReqDTO.setService_item_name(aeaItemBasic.getItemName());
+            authReqDTO.setService_item_code(aeaItemBasic.getItemCode());//事项编码
+            authReqDTO.setIdentity_number(identityNumber);//证件号码（企业的信用代码/-/法人的身份证号）
+            authReqDTO.setOperator(operator);
+            try {
+                data = licenseApiService.licenseAuth(accessToken, authReqDTO);
+            } catch (Exception e) {
+                logger.debug("事项：" + aeaItemBasic.getItemName() + "查询电子证照库失败！");
+            }
+            if (data != null) {
+                for (int i = 0; i < data.getTotal_count(); i++) {
+                    if (checkAuthCodes.contains(data.getData().get(i).getLicense_code()))
+                        continue;
+                    checkAuthCodes.add(data.getData().get(i).getLicense_code());
+                    auth_codes.add(data.getAuth_codes()[i]);
+                    licenseDTO.add(data.getData().get(i));
+                }
+            }
+        }
+        if (licenseDTO.size() > 0) {
+            result.setAuth_codes((String[]) auth_codes.toArray(new String[auth_codes.size()]));
+            result.setData(licenseDTO);
+            result.setTotal_count((long) licenseDTO.size());
+        }
+        return result;
+    }
+
+    @Override
+    public String getViewLicenseURL(String authCode) {
+        LicenseTokenResDTO LicenseTokenResDTO;
+        try {
+            String accessToken = licenseApiService.getLoginToken();
+            LicenseTokenResDTO = licenseApiService.LicenseToken(accessToken, authCode);
+            return licenseConfig.getWebRoot() + "/license/view_license?license_access_token=" + LicenseTokenResDTO.getData().getLicense_access_token();
+        } catch (Exception e) {
+            logger.debug("获取电子证照查看链接失败！");
+        }
+        return null;
     }
 }

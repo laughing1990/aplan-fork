@@ -5,6 +5,7 @@ import com.augurit.agcloud.framework.ui.ztree.ZtreeNode;
 import com.augurit.aplanmis.common.domain.AeaCert;
 import com.augurit.aplanmis.common.domain.AeaItemInout;
 import com.augurit.aplanmis.common.domain.AeaParIn;
+import com.augurit.aplanmis.integration.license.dto.LicenseAuthResDTO;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 
@@ -132,4 +133,23 @@ public interface AeaCertAdminService {
      * @throws Exception
      */
     List<AeaCert> getOutputCertsByIteminstId(String iteminstId) throws Exception;
+
+    /**
+     * 获取电子证照列表
+     *
+     * @param itemVerIds
+     * @param identityNumber
+     * @return
+     * @throws Exception
+     */
+    LicenseAuthResDTO getLicenseAuthRes(String itemVerIds, String identityNumber) throws Exception;
+
+    /**
+     * 获取电子证照
+     *
+     * @param authCode
+     * @return
+     * @throws Exception
+     */
+    String getViewLicenseURL(String authCode);
 }
