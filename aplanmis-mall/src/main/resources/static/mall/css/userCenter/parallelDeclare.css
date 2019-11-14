@@ -1093,6 +1093,9 @@
   display: inline-block;
   vertical-align: bottom;
 }
+.my-dir-table .dir-file-name .ag {
+  margin-right: 10px;
+}
 .my-dir-table .dir-file-name .ag-folder-open-fill {
   color: #ffb822;
   font-size: 20px;

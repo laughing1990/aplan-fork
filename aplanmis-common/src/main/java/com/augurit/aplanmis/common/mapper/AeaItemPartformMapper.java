@@ -11,9 +11,22 @@ import java.util.List;
 @Repository
 public interface AeaItemPartformMapper {
 
-     void insertAeaItemPartform(AeaItemPartform aeaItemPartform);
-     void updateAeaItemPartform(AeaItemPartform aeaItemPartform);
-     void deleteAeaItemPartform(@Param("id") String id);
-     List <AeaItemPartform> listAeaItemPartform(AeaItemPartform aeaItemPartform);
-     AeaItemPartform getAeaItemPartformById(@Param("id") String id);
+    void insertAeaItemPartform(AeaItemPartform aeaItemPartform);
+
+    void updateAeaItemPartform(AeaItemPartform aeaItemPartform);
+
+    void deleteAeaItemPartform(@Param("id") String id);
+
+    List<AeaItemPartform> listAeaItemPartform(AeaItemPartform aeaItemPartform);
+
+    List<AeaItemPartform> listAeaItemPartformWithFormInfo(AeaItemPartform aeaItemPartform);
+
+    AeaItemPartform getAeaItemPartformById(@Param("id") String id);
+
+    Long getMaxSortNo(@Param("itemVerId") String itemVerId);
+
+    void batchDelItemPartformByIds(@Param("ids") String[] ids);
+
+    List<AeaItemPartform> listItemPartFormNoSelectForm(AeaItemPartform itemPartform);
+
 }

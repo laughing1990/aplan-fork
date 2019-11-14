@@ -289,6 +289,7 @@ public class AgentItemApplyData {
         BeanUtils.copyProperties(this, projInfo);
         projInfo.setProjInfoId(UUID.randomUUID().toString());
         projInfo.setCreateTime(new Date());
+        projInfo.setGcbm(projInfo.getLocalCode());
         projInfo.setCreater(SecurityContext.getCurrentUserName());
         projInfo.setRootOrgId(SecurityContext.getCurrentOrgId());
         return projInfo;

@@ -11,9 +11,17 @@ import java.util.List;
 @Repository
 public interface AeaItemOneformMapper {
 
-     void insertAeaItemOneform(AeaItemOneform aeaItemOneform) ;
-     void updateAeaItemOneform(AeaItemOneform aeaItemOneform) ;
-     void deleteAeaItemOneform(@Param("id") String id) ;
-     List <AeaItemOneform> listAeaItemOneform(AeaItemOneform aeaItemOneform) ;
-     AeaItemOneform getAeaItemOneformById(@Param("id") String id) ;
+    void insertAeaItemOneform(AeaItemOneform aeaItemOneform);
+
+    void updateAeaItemOneform(AeaItemOneform aeaItemOneform);
+
+    void deleteAeaItemOneform(@Param("id") String id);
+
+    List<AeaItemOneform> listAeaItemOneform(AeaItemOneform aeaItemOneform);
+
+    AeaItemOneform getAeaItemOneformById(@Param("id") String id);
+
+
+    List<AeaItemOneform> listAeaItemOneFormByItemVerId(@Param("itemVerId") String itemVerId);
+
 }

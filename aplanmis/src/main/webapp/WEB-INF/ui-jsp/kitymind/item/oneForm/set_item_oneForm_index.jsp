@@ -62,7 +62,7 @@
                 <div class="m-portlet__body" style="padding: 0px 0px 5px 0px;">
                     <!-- 列表区域 -->
                     <div class="m-portlet__body iframe-content miniScrollbar" style="padding: 0px 5px;">
-                        <table id="selectParStageOneformTable"></table>
+                        <table id="selectParStageOneformTable" style="border:1px solid #ddd;"></table>
                     </div>
                     <!-- 列表区域end -->
                 </div>
@@ -111,8 +111,8 @@
                                         </form>
                                     </div>
                                     <div class="col-3"  style="text-align: left;">
-                                        <button type="button" class="btn btn-info" onclick="searchStagePartform();">查询</button>
-                                        <button type="button" class="btn btn-secondary" onclick="clearSearchStagePartform();">清空</button>
+                                        <button type="button" class="btn btn-info" onclick="searchItemPartform();">查询</button>
+                                        <button type="button" class="btn btn-secondary" onclick="clearSearchItemPartform();">清空</button>
                                     </div>
                                 </div>
                             </div>
@@ -134,7 +134,8 @@
                                 data-side-pagination="server"
                                 data-pagination-detail-h-align="left"
                                 data-query-params="stagePartformParam"
-                                data-url="${pageContext.request.contextPath}/aea/par/stage/partform/listStagePartformRelForm.do?stageId=${currentBusiId}">
+                                data-url="${pageContext.request.contextPath}/aea/item/partform/listAeaItemPartform.do?itemVerId=${currentBusiId}"
+                                style="border:1px solid #ddd;">
                             <thead>
                             <tr>
                                 <th data-field="#" data-checkbox="true" data-align="center" data-width="10">ID</th>

@@ -135,18 +135,27 @@ public class RestImApplyService {
 
     /**
      * 选取中介机构
+     * <p>
+     * purchaseId = null;// 采购需求ID
+     * opsLinkInfoId = null;//业主委托人
+     * unitInfoId 选取的中介竞标ID
      *
      * @throws Exception
      */
-    public void chooseImunit() throws Exception {
-
-        String applyinstId = null;// 申请实例ID
-
-        String purchaseId = null;// 采购需求ID
-
-        String opsLinkInfoId = null;//业主委托人
-
-        // TODO 业务操作
+    public void chooseImunit(String projPurchaseId, String unitBiddingId, String opsLinkInfoId) throws Exception {
+        AeaImProjPurchase purchase = aeaImProjPurchaseMapper.getAeaImProjPurchaseByProjPurchaseId(projPurchaseId);
+        if (null == purchase) throw new Exception("找不到采购项目信息");
+        String applyinstCode = purchase.getApplyinstCode();
+        AeaHiApplyinst applyinst = aeaHiApplyinstService.getAeaHiApplyinstByCode(applyinstCode);
+        if (null == applyinst) throw new Exception("找不到申报信息");
+        String applyinstId = applyinst.getApplyinstId();
+        String isWonBid = "1";
+        //更新中标状态
+        aeaImUnitBiddingMapper.updateWinBid(unitBiddingId, projPurchaseId, isWonBid);
+        //选中中标企业最高价
+        AeaImBiddingPrice biddingPrice = aeaImBiddingPriceMapper.getBiddingPrice(projPurchaseId, "2");//最高价格
+        biddingPrice.setIsChoice("1");
+        aeaImBiddingPriceMapper.updateAeaImBiddingPrice(biddingPrice);
 
         //获取申请实例历史记录列表
         AeaLogApplyStateHist applyStateHist = this.getLastAeaLogApplyStateHist(applyinstId);
@@ -158,7 +167,7 @@ public class RestImApplyService {
         aeaHiApplyinstService.updateAeaHiApplyinstStateAndInsertTriggerAeaLogItemStateHist(applyinstId, taskId, appinstId, ApplyState.IM_MILESTONE_CONFIRM_IMUNIT.getValue(), null);// 待中介机构确认
 
         //更新采购需求状态
-        aeaImProjPurchaseService.updateProjPurchaseStateAndInsertPurchaseinstState(purchaseId, AuditFlagStatus.CHOOSE_END, null, opsLinkInfoId, null, taskId);//已选取，待确认
+        aeaImProjPurchaseService.updateProjPurchaseStateAndInsertPurchaseinstState(projPurchaseId, AuditFlagStatus.CHOOSE_END, null, opsLinkInfoId, null, taskId);//已选取，待确认
 
     }
 

@@ -45,5 +45,25 @@ public class AeaItemPartform implements Serializable{
 
     @ApiModelProperty("创建时间")
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
-    private java.util.Date createTime; 
+    private java.util.Date createTime;
+
+    //======拓展字段======
+
+    private String formName;
+
+    private String formCode;
+
+    private String formProperty;
+
+    private String formOrgId;
+
+    private String orgName;
+
+    private String formTmnId;
+
+    private String formTmnName;
+
+    private String isInnerForm;
+
+    private String keyword;
 }

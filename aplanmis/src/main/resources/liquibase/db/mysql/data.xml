@@ -2348,4 +2348,13 @@ INSERT INTO `act_sto_widget_key` (`KEY_ID`, `WIDGET_ID`, `KEY_CODE`, `KEY_LABEL`
 
         </sql>
     </changeSet>
+
+    <changeSet id="201911140928" author="chenzh" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `act_sto_timerule_inst`
+            MODIFY COLUMN `INST_STATE` char(1) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT 1 COMMENT '实例状态：1
+            正常，2 预警，3 逾期' AFTER `MODIFY_TIME`;
+            UPDATE act_sto_timerule_inst SET INST_STATE = '1' WHERE INST_STATE IS NULL
+        </sql>
+    </changeSet>
 </databaseChangeLog>

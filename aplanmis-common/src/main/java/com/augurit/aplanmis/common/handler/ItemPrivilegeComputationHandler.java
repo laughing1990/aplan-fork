@@ -235,7 +235,7 @@ public final class ItemPrivilegeComputationHandler {
                     && "0".equals(item.getItemExchangeWay())
                     && projectAddressRegionIds.size() > 0) {
                 for (CarryOutItem co : item.getCarryOutItems()) {
-                    if (projectAddressRegionIds.contains(item.getRegionId())) {
+                    if (projectAddressRegionIds.contains(co.getRegionId())) {
                         item.setCurrentCarryOutItem(co);
                         break;
                     }

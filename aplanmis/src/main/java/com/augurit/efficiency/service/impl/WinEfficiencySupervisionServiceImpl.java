@@ -2588,30 +2588,42 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
                 List<ApplyLimitTimeVo> winList = entry.getValue();
 
                 List<String> dataList = new ArrayList<>();
-                String windowName = list.get(0).getWindowName();
+                String windowName = winList.get(0).getWindowName();
                 dataList.add(windowName);
-                int isParallelCount = 0;
-                double isParallelLimitTime = 0.0;
+                int isParallelCount = 0 ; double isParallelLimitTime =0.0;
+                //先算了isparallel=1的记录。
+                for(ApplyLimitTimeVo win :winList){
+                    if ( "1".equals(win.getIsParallel())) {
+                        isParallelCount ++;
+                        isParallelLimitTime += win.getUseLimitTime();
+                    }
+                }
+
+
                 for (int i = 0, len = dybzspjdxhList.size(); i < len; i++) {
-                    int count = 0;
-                    double limitTime = 0.0;
-                    for (int j = 0, len2 = list.size(); j < len2; j++) {
-                        if (list.get(j).getDybzspjdxh().indexOf(dybzspjdxhList.get(i)) != -1 && "0".equals(list.get(j).getIsParallel())) {
-                            count += 1;
-                            limitTime += list.get(j).getUseLimitTime();
+                    int count = 0;double limitTime =0.0;
+                    for (int j = 0, len2 = winList.size(); j < len2; j++) {
+                        if (winList.get(j).getDybzspjdxh().indexOf(dybzspjdxhList.get(i)) != -1 && "0".equals(winList.get(j).getIsParallel())) {
+                            count +=1;
+                            limitTime += winList.get(j).getUseLimitTime();
+
+                            if(i==4){
+                                isParallelCount ++;
+                                isParallelLimitTime += winList.get(j).getUseLimitTime();
+                            }
                         }
-                        if (list.get(j).getDybzspjdxh().indexOf(dybzspjdxhList.get(i)) != -1 && "1".equals(list.get(j).getIsParallel())) {
-                            isParallelCount++;
-                            isParallelLimitTime += list.get(j).getUseLimitTime();
-                        }
+                        /*if (winList.get(j).getDybzspjdxh().indexOf(dybzspjdxhList.get(i)) != -1 && "1".equals(winList.get(j).getIsParallel())) {
+                            isParallelCount ++;
+                            isParallelLimitTime += winList.get(j).getUseLimitTime();
+                        }*/
                     }
                     String avgTime = getAvgTime(limitTime, count);
                     dataList.add(avgTime);
                 }
                 //将并行推进的事项的申报页加到dybzspjdxh=5的中去
-                double _tmp = Double.valueOf(dataList.get(dybzspjdxhList.size() - 1)) + isParallelCount;
+//                double _tmp = Double.valueOf(dataList.get(dybzspjdxhList.size() - 1)) + isParallelCount;
                 dataList.remove(dybzspjdxhList.size() - 1);
-                dataList.add(getAvgTime(isParallelLimitTime, isParallelCount));
+                dataList.add(getAvgTime(isParallelLimitTime,isParallelCount));
                 winStageList.add(dataList);
             }
         }

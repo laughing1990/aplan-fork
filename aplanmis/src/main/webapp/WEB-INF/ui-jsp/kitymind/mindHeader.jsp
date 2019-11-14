@@ -404,11 +404,11 @@
                 </li>
             </c:if>
 
-            <%--<c:if test="${currentBusiType == 'item' && useOneForm=='1' }">--%>
-                <%--<li data-url="/aea/item/oneFormManage.do">--%>
-                    <%--<i class="flow-steps-num">6</i>一张表单--%>
-                <%--</li>--%>
-            <%--</c:if>--%>
+            <c:if test="${currentBusiType == 'item' && useOneForm=='1' }">
+                <li data-url="/aea/item/oneFormManage.do">
+                    <i class="flow-steps-num">6</i>一张表单
+                </li>
+            </c:if>
 
             <li class="flow_steps_btn">
                 <div class="line"></div>
@@ -544,15 +544,15 @@
                 '/rest/mind/item/processModeler.do?busiType=' + currentBusiType + '&busiId=' + currentBusiId + '&stateVerId=' + currentStateVerId,
                 '/aea/item/indexSetItemOut.do?busiType=' + currentBusiType + '&busiId=' + currentBusiId + '&stateVerId=' + currentStateVerId,
                 '/aea/item/editItemDirectory.do?busiType=' + currentBusiType + '&busiId=' + currentBusiId + '&stateVerId=' + currentStateVerId,
-                // '/aea/item/oneFormManage.do?busiType=' + currentBusiType + '&busiId=' + currentBusiId + '&stateVerId=' + currentStateVerId,
+                 '/aea/item/oneFormManage.do?busiType=' + currentBusiType + '&busiId=' + currentBusiId + '&stateVerId=' + currentStateVerId,
             ];
             $($(".flow_steps .stage li")[0]).html('<i class="flow-steps-num">1</i>前置检测');
             $($(".flow_steps .stage li")[2]).html('<i class="flow-steps-num">3</i>流程配置');
             $($(".flow_steps .stage li")[3]).html('<i class="flow-steps-num">4</i>输出材料');
             $($(".flow_steps .stage li")[4]).html('<i class="flow-steps-num">5</i>办事指南');
-            // if(useOneForm=='1') {
-            //     $($(".flow_steps .stage li")[5]).html('<i class="flow-steps-num">6</i>一张表单');
-            // }
+            if(useOneForm=='1') {
+                $($(".flow_steps .stage li")[5]).html('<i class="flow-steps-num">6</i>一张表单');
+            }
         }
     }
 
