@@ -161,7 +161,7 @@ BID_ID  ,PROJ_INFO_ID  ,PROVINCE_PROJ_CODE  ,WIN_BID_NOTICE_CODE  ,BID_SECTION_N
         a.PARENT_ID  parentId,
         a.UNIT_INFO_SEQ  unitInfoSeq,
         a.LOGIN_NAME  loginName,
-        a.UNIT_TYPE  unitType,
+        b.UNIT_TYPE  unitType,
         a.LOGIN_PWD  loginPwd,
         a.MANAGEMENT_SCOPE  managementScope,
         a.REGISTERED_CAPITAL  registeredCapital,
@@ -181,7 +181,7 @@ BID_ID  ,PROJ_INFO_ID  ,PROVINCE_PROJ_CODE  ,WIN_BID_NOTICE_CODE  ,BID_SECTION_N
     AND a.IS_DELETED = '0'
     AND b.IS_DELETED = '0'
     AND b.PROJ_INFO_ID = #{projInfoId}
-    AND a.UNIT_TYPE = #{unitType}
+    AND b.UNIT_TYPE = #{unitType}
     AND a.ROOT_ORG_ID=#{rootOrgId}
 </select>
 
@@ -190,7 +190,10 @@ BID_ID  ,PROJ_INFO_ID  ,PROVINCE_PROJ_CODE  ,WIN_BID_NOTICE_CODE  ,BID_SECTION_N
         update AEA_UNIT_PROJ
         set is_deleted='1'
         where PROJ_INFO_ID = #{projId}
-
+        AND  is_deleted = '0'
+        <if test="isOwner != null" >
+          AND  IS_OWNER = #{isOwner}
+        </if>
         AND UNIT_TYPE IN
         <foreach collection="unitTypes" item="unitType" open="(" separator="," close=")">
             #{unitType}

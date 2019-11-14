@@ -121,8 +121,8 @@ public class AeaExProjBidServiceImpl implements AeaExProjBidService {
      * @throws Exception
      */
     @Override
-    public void delUnitProjInfo(String projId,List<String> unitTypes) throws Exception{
-        aeaExProjBidMapper.batchDeleteUnitProjByType(projId,unitTypes);
+    public void delUnitProjInfo(String projId,List<String> unitTypes,String isOwner) throws Exception{
+        aeaExProjBidMapper.batchDeleteUnitProjByType(projId,unitTypes,isOwner);
     }
 
     @Override
@@ -130,18 +130,25 @@ public class AeaExProjBidServiceImpl implements AeaExProjBidService {
         if (aeaUnitInfos != null) {
             for (AeaUnitInfo aeaUnitInfo : aeaUnitInfos) {
                 if (aeaUnitInfo.getUnitInfoId() != null && !"".equals(aeaUnitInfo.getUnitInfoId())) {
+                    aeaUnitInfo.setUnitType(null);//单位表里面的类型不更改，以关联表的为准
                     aeaUnitInfoService.updateAeaUnitInfo(aeaUnitInfo);
+                    aeaUnitInfo.setUnitType(unitType);//做回显
                     //如果本身有关联表记录则更新，否则重新保存项目单位关联表信息
                     if(StringUtils.isNotBlank(aeaUnitInfo.getUnitProjId())) {
                         this.updateUnitProjInfo(aeaExProjBidVo.getProjInfoId(), aeaUnitInfo.getUnitInfoId(), aeaUnitInfo.getUnitProjId(), unitType);
                     }else{
-                        aeaUnitProjNewList.add(aeaExProjBidVo.toAeaUnitProj(aeaUnitInfo.getUnitInfoId(), unitType));
+                        AeaUnitProj aeaUnitProj=aeaExProjBidVo.toAeaUnitProj(aeaUnitInfo.getUnitInfoId(), unitType);
+                        aeaUnitInfo.setUnitProjId(aeaUnitProj.getUnitProjId());//做回显
+                        aeaUnitProjNewList.add(aeaUnitProj);
                     }
                 } else {
                     aeaUnitInfo.setUnitInfoId(UUID.randomUUID().toString());
-                    aeaUnitInfo.setUnitType(unitType);
+                    aeaUnitInfo.setUnitType(null);//单位表里面的类型不保存，以关联表的为准
                     aeaUnitInfoService.insertAeaUnitInfo(aeaUnitInfo);
-                    aeaUnitProjNewList.add(aeaExProjBidVo.toAeaUnitProj(aeaUnitInfo.getUnitInfoId(), unitType));
+                    aeaUnitInfo.setUnitType(unitType);
+                    AeaUnitProj aeaUnitProj=aeaExProjBidVo.toAeaUnitProj(aeaUnitInfo.getUnitInfoId(), unitType);
+                    aeaUnitInfo.setUnitProjId(aeaUnitProj.getUnitProjId());
+                    aeaUnitProjNewList.add(aeaUnitProj);
                 }
             }
         }

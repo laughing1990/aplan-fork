@@ -1,9 +1,13 @@
 package com.augurit.aplanmis.common.service.admin.item.impl;
 
+import com.augurit.agcloud.framework.constant.Status;
 import com.augurit.agcloud.framework.exception.InvalidParameterException;
+import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.ui.pager.PageHelper;
 import com.augurit.aplanmis.common.domain.AeaItemOneform;
+import com.augurit.aplanmis.common.domain.AeaOneform;
 import com.augurit.aplanmis.common.mapper.AeaItemOneformMapper;
+import com.augurit.aplanmis.common.mapper.AeaOneformMapper;
 import com.augurit.aplanmis.common.service.admin.item.AeaItemOneformAdminService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
@@ -13,42 +17,84 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 /**
-* 事项与总表单关联表-Service服务接口实现类
-*/
+ * 事项与总表单关联表-Service服务接口实现类
+ */
 @Service
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class AeaItemOneformAdminServiceImpl implements AeaItemOneformAdminService {
 
     private static Logger logger = LoggerFactory.getLogger(AeaItemOneformAdminServiceImpl.class);
 
     @Autowired
     private AeaItemOneformMapper aeaItemOneformMapper;
+    @Autowired
+    private AeaOneformMapper aeaOneformMapper;
+
+    @Override
+    public void addMultiplyItemOneform(String itemVerId, String[] oneformIds) {
+        AeaItemOneform aeaItemOneform;
+        try {
+            for (int i = 0; i < oneformIds.length; i++){
+                AeaOneform aeaParOneform = aeaOneformMapper.getParOneformById(oneformIds[i]);
+                aeaItemOneform = new AeaItemOneform();
+                aeaItemOneform.setItemOneformId(UUID.randomUUID().toString());
+                aeaItemOneform.setItemVerId(itemVerId);
+                aeaItemOneform.setSortNo(aeaParOneform.getSortNo());
+                aeaItemOneform.setOneformId(oneformIds[i]);
+                aeaItemOneform.setIsActive(Status.ON);
+                aeaItemOneform.setCreater(SecurityContext.getCurrentUserName());
+                aeaItemOneform.setCreateTime(new Date());
+                aeaItemOneformMapper.insertAeaItemOneform(aeaItemOneform);
+            }
+        } catch (Exception e) {
+            throw new InvalidParameterException("导入失败！");
+        }
+    }
+
+    @Override
+    public PageInfo<AeaItemOneform> listAeaItemOneFormByItemVerId(String itemVerId, Page page) {
+        PageHelper.startPage(page);
+        List<AeaItemOneform> data = aeaItemOneformMapper.listAeaItemOneFormByItemVerId(itemVerId);
+        return new PageInfo<>(data);
+    }
+
+    @Override
+    public PageInfo<AeaOneform> listAeaOneFormNotInItem(AeaOneform aeaOneform, Page page) {
+        PageHelper.startPage(page);
+        List<AeaOneform> data = aeaOneformMapper.listAeaOneformNotInItem(aeaOneform);
+        return new PageInfo<>(data);
+    }
 
     @Override
     public void saveAeaItemOneform(AeaItemOneform aeaItemOneform) {
-
+        aeaItemOneform.setCreater(SecurityContext.getCurrentUserId());
+        aeaItemOneform.setCreateTime(new Date());
         aeaItemOneformMapper.insertAeaItemOneform(aeaItemOneform);
     }
 
     @Override
     public void updateAeaItemOneform(AeaItemOneform aeaItemOneform) {
-
+        aeaItemOneform.setModifier(SecurityContext.getCurrentUserId());
+        aeaItemOneform.setModifyTime(new Date());
         aeaItemOneformMapper.updateAeaItemOneform(aeaItemOneform);
     }
 
     @Override
     public void deleteAeaItemOneformById(String id) {
 
-        if(id == null)
-        throw new InvalidParameterException(id);
+        if (id == null) {
+            throw new InvalidParameterException(id);
+        }
         aeaItemOneformMapper.deleteAeaItemOneform(id);
     }
 
     @Override
-    public PageInfo<AeaItemOneform> listAeaItemOneform(AeaItemOneform aeaItemOneform,Page page) {
+    public PageInfo<AeaItemOneform> listAeaItemOneform(AeaItemOneform aeaItemOneform, Page page) {
 
         PageHelper.startPage(page);
         List<AeaItemOneform> list = aeaItemOneformMapper.listAeaItemOneform(aeaItemOneform);
@@ -59,8 +105,9 @@ public class AeaItemOneformAdminServiceImpl implements AeaItemOneformAdminServic
     @Override
     public AeaItemOneform getAeaItemOneformById(String id) {
 
-        if(id == null)
-        throw new InvalidParameterException(id);
+        if (id == null) {
+            throw new InvalidParameterException(id);
+        }
         logger.debug("根据ID获取Form对象，ID为：{}", id);
         return aeaItemOneformMapper.getAeaItemOneformById(id);
     }

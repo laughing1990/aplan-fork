@@ -488,6 +488,7 @@ var vm = new Vue({
       bzSubmitData: [],
       bzCorrectData: [],
       bzApproveData: [],
+      isShowOneForm: '0',
     }
   },
   filters: {
@@ -1540,7 +1541,7 @@ var vm = new Vue({
         });
       });
       vm.lTabsData = lTabsData;
-      if (vm.isSeriesinst == '0') {
+      if (vm.isShowOneForm == '1') {
         request('', {
           url: oneFromSrc,
           type: 'get',
@@ -1567,7 +1568,7 @@ var vm = new Vue({
           $('#oneForm').html('未配置一张表单信息');
         });
       } else {
-        //20190919修改，判断如果是并联才显示一张表单tab页，单项则不显示，下面是删除一张表单的tab，注意依赖数组的脚标
+        //下面是删除一张表单的tab，注意依赖数组的脚标
         if (oneFormIndex != -1) {
           vm.lTabsData.splice(oneFormIndex, 1);
         }
@@ -1762,6 +1763,7 @@ var vm = new Vue({
           vm.projectCode = res.content.projCode;
           vm.hasSpecial = res.content.hasSpecial;
           vm.hasSupply = res.content.hasSupply;
+          vm.isShowOneForm = res.content.isShowOneForm;
           vm.initFormElementPriv();
         } else {
           vm.$message.error(res.message);

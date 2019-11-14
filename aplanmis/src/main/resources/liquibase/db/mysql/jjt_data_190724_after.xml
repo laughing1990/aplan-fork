@@ -293,4 +293,10 @@
         </sql>
     </changeSet>
 
+    <changeSet id="201911121152" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            update aea_item_mat set MAT_PROP ='m'  where IS_DELETED = '0';
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

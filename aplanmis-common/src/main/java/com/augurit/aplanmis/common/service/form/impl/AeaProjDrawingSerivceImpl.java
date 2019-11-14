@@ -12,6 +12,7 @@ import com.augurit.aplanmis.common.vo.AeaProjDrawing;
 import com.augurit.aplanmis.common.vo.AeaProjDrawingVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
+@Transactional
 public class AeaProjDrawingSerivceImpl implements AeaProjDrawingSerivce {
 
     @Autowired
@@ -228,8 +230,9 @@ public class AeaProjDrawingSerivceImpl implements AeaProjDrawingSerivce {
                 aeaUnitProjLinkmanMapper.deleteAllByUnitProjId(unitProjId1, SecurityContext.getCurrentUserName());
 
                 //再新增
-                for (AeaUnitProjLinkman vo : linkmen) {
-                    if (StringUtils.isNotBlank(vo.getLinkmanInfoId())) {
+                if(linkmen != null && linkmen.size()>0 ){
+                    for (AeaUnitProjLinkman vo : linkmen) {
+                        if (StringUtils.isNotBlank(vo.getLinkmanInfoId())) {
                         AeaUnitProjLinkman man = new AeaUnitProjLinkman(unitProjId, vo.getLinkmanInfoId(), vo.getLinkmanType());
                         man.setProfessionCertType(vo.getProfessionCertType());
                         man.setProfessionSealNum(vo.getProfessionSealNum());
@@ -250,6 +253,7 @@ public class AeaProjDrawingSerivceImpl implements AeaProjDrawingSerivce {
                         man.setLinkmanType(vo.getLinkmanType());
                         aeaUnitProjLinkmanMapper.insertAeaUnitProjLinkman(man);
                     }
+                }
                 }
             }
             AeaUnitProjLinkman man = new AeaUnitProjLinkman();

@@ -33,6 +33,8 @@ public class AeaLinkmanInfoVo {
     private java.lang.String loginName; // (用户登录名)
     @ApiModelProperty("主键")
     private java.lang.String linkmanInfoId; // (主键)
+    @ApiModelProperty("单位ID")
+    private String unitInfoId;//单位ID
 
 
     public static AeaLinkmanInfoVo build(AeaLinkmanInfo AeaLinkmanInfo) {

@@ -1104,7 +1104,7 @@
               <el-table-column label="文件名称">
                 <template slot-scope="scope">
                   <span v-if="scope.row.hasCheck==true" class="ellipsis dir-file-name" :title="scope.row.attName">
-                    <i :class="'file-icon file-icon-'+getFileType(scope.row.attName)"></i>{{scope.row.attName}}
+                    <i :class="'ag ag-filetype-'+getFileType(scope.row.attName)"></i>{{scope.row.attName}}
                   </span>
                   <span v-else class="ellipsis dir-file-name">
                     <i class="ag ag-folder-open-fill"></i>{{scope.row.dirName}}

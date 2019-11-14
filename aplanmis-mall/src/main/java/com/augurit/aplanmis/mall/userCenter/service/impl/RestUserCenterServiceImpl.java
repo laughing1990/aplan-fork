@@ -1,12 +1,14 @@
 package com.augurit.aplanmis.mall.userCenter.service.impl;
 
 import com.augurit.agcloud.framework.security.SecurityContext;
+import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.constants.DeletedStatus;
 import com.augurit.aplanmis.common.constants.UnitType;
 import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.mapper.AeaProjInfoMapper;
 import com.augurit.aplanmis.common.mapper.AeaProjLinkmanMapper;
+import com.augurit.aplanmis.common.mapper.AeaUnitLinkmanMapper;
 import com.augurit.aplanmis.common.mapper.AeaUnitProjMapper;
 import com.augurit.aplanmis.common.service.instance.AeaHiApplyinstService;
 import com.augurit.aplanmis.common.service.linkman.AeaLinkmanInfoService;
@@ -45,6 +47,8 @@ public class RestUserCenterServiceImpl implements RestUserCenterService {
     private AeaLinkmanInfoService aeaLinkmanInfoService;
     @Autowired
     private AeaUnitInfoService aeaUnitInfoService;
+    @Autowired
+    private AeaUnitLinkmanMapper aeaUnitLinkmanMapper;
 
 
     @Override
@@ -167,6 +171,23 @@ public class RestUserCenterServiceImpl implements RestUserCenterService {
     public List<AeaLinkmanInfoVo> findAllUnitLinkman(String unitInfoId) {
         List<AeaLinkmanInfo> linkmanInfoList=aeaLinkmanInfoService.findAllUnitLinkman(unitInfoId);
         return linkmanInfoList.stream().map(AeaLinkmanInfoVo::build).collect(Collectors.toList());
+    }
+
+    @Override
+    public Boolean isBelongUnit(String userId, HttpServletRequest request) throws Exception{
+        try {
+            LoginInfoVo user = SessionUtil.getLoginInfo(request);
+            AeaUnitLinkman query=new AeaUnitLinkman();
+            query.setUnitInfoId(user.getUnitId());
+            query.setLinkmanInfoId(userId);
+            List<AeaUnitLinkman> unitLinkmans = aeaUnitLinkmanMapper.listAeaUnitLinkman(query);
+            //加入权限校验，只能查询属于自己单位的联系人
+            if (unitLinkmans==null||unitLinkmans.size()==0)  return false;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new Exception(e);
+        }
+        return true;
     }
 
     public static void main(String[] args) {

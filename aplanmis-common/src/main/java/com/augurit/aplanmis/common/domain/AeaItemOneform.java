@@ -1,6 +1,7 @@
 package com.augurit.aplanmis.common.domain;
 
 import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -25,4 +26,7 @@ public class AeaItemOneform implements Serializable{
     private String modifier; // (修改人)
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private java.util.Date modifyTime; // (修改时间)
+
+    @ApiModelProperty(value = "扩展字段：总表名称")
+    private String oneformName;
 }

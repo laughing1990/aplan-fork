@@ -171,7 +171,7 @@ public class RestSpecialRrocedureService {
         specialVo.setSpecialEndMatId(specialId + "-end");
         AeaProjInfo projInfo = projInfoMapper.getAeaProjInfoByApplyinstId(specialVo.getApplyinstId());
         specialVo.setProjInfoId(projInfo.getProjInfoId());
-        String uid = SecurityContext.getCurrentUserName();
+        String uid = SecurityContext.getCurrentUser().getUserName();
         Date insertDate = new Date();
         specialVo.setCreater(uid);
         specialVo.setCreateTime(insertDate);
@@ -420,6 +420,7 @@ public class RestSpecialRrocedureService {
         List<SpecialDataVo> result = new ArrayList<>();
         String tableName = "AEA_HI_ITEM_SPECIAL";
         String orgId = SecurityContext.getCurrentOrgId();
+        String userName = SecurityContext.getCurrentUser().getUserName();
         for (AeaHiItemSpecial special : specialList) {
             SpecialDataVo temp = new SpecialDataVo();
             BeanUtils.copyProperties(special, temp);
@@ -429,6 +430,9 @@ public class RestSpecialRrocedureService {
             List<BscAttForm> file2 = bscAttService.findByTableNameAndRecordIdsAndDirId(tableName, recordIds2, orgId, null, null);
             temp.setSpecialStartMatList(file1);
             temp.setSpecialEndMatList(file2);
+            if(StringUtils.isBlank(temp.getOpsUserName())){
+                temp.setOpsUserName(userName);
+            }
             result.add(temp);
         }
         specialInfo.put("specialList", result);

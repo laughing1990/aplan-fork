@@ -437,33 +437,43 @@ var vm = new Vue({
             applyJianli.linkmanType = _that.C_PRJ_PERSON_POST.gongchengjianli;
             var a = [gongchengzong,shigongzong,shigongzhuanyefenbao,shigonglaowufenbao,applyJianli];
             _that.exSJAllUnit.aeaExProjBuildUnitInfo = JSON.stringify(a);
-            _that.$refs['unitInfoShowFrom','gongchengzongFrom','applyShigongzongFrom','applyShigongzhuanyefenbaoFrom','applyShigonglaowufenbaoFrom','applyJianliFrom'].validate(function (valid){
-                if(valid){
-                    _that.delPeronSetting();
-                    request('',{
-                        url: ctx + '/rest/from/exSJUnit/saveOrUpdateSJUnitInfo',
-                        data: _that.exSJAllUnit,
-                        type: 'post',
+            _that.$refs['unitInfoShowFrom'].validate(function (valid){
+                _that.$refs['gongchengzongFrom'].validate(function (valid) {
+                    _that.$refs['applyShigongzongFrom'].validate(function (valid) {
+                        _that.$refs['applyShigongzhuanyefenbaoFrom'].validate(function (valid) {
+                            _that.$refs['applyShigonglaowufenbaoFrom'].validate(function (valid) {
+                                _that.$refs['applyJianliFrom'].validate(function (valid) {
+                                    if(valid){
+                                        _that.delPeronSetting();
+                                        request('',{
+                                            url: ctx + '/rest/from/exSJUnit/saveOrUpdateSJUnitInfo',
+                                            data: _that.exSJAllUnit,
+                                            type: 'post',
 
-                    },function (data) {
-                        if(data.success){
-                            _that.$message({
-                                message: '保存成功',
-                                type: 'success'
-                            });
-                        }else {
-                            _that.$message({
-                                message: '保存失败',
-                                type: 'error'
-                            });
-                        }
+                                        },function (data) {
+                                            if(data.success){
+                                                _that.$message({
+                                                    message: '保存成功',
+                                                    type: 'success'
+                                                });
+                                            }else {
+                                                _that.$message({
+                                                    message: '保存失败',
+                                                    type: 'error'
+                                                });
+                                            }
+                                        })
+                                    }else {
+                                        _that.$message({
+                                            message: '请输入必填字段',
+                                            type: 'error'
+                                        });
+                                    }
+                                })
+                            })
+                        })
                     })
-                }else {
-                    _that.$message({
-                        message: '请输入必填字段',
-                        type: 'error'
-                    });
-                }
+                })
             })
         },
         delPeronSetting:function(){
