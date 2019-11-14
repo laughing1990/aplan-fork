@@ -1,11 +1,14 @@
 package com.augurit.aplanmis.common.service.admin.par.impl;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.augurit.agcloud.bpm.common.domain.ActTplApp;
 import com.augurit.agcloud.framework.constant.Status;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.ui.pager.EasyuiPageInfo;
 import com.augurit.agcloud.framework.ui.pager.PageHelper;
 import com.augurit.agcloud.framework.ui.ztree.ZtreeNode;
+import com.augurit.agcloud.framework.util.JsonUtils;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.constants.ActiveStatus;
 import com.augurit.aplanmis.common.constants.DeletedStatus;
@@ -114,24 +117,35 @@ public class AeaParStageAdminServiceImpl implements AeaParStageAdminService {
     public void deleteAeaParStageById(String id) {
 
         if (StringUtils.isNotBlank(id)) {
-            setThemeverDiaGramComnNull(id);
+            removeStageFromDiagram(id);
             aeaParStageMapper.deleteAeaParStage(id);
         }
     }
 
 
-    private void setThemeverDiaGramComnNull(String stageId){
-        List<String> list = new ArrayList(1);
-        list.add(stageId);
-        List<AeaParStage> stages = aeaParStageMapper.listAeaParStageByIds(list);
-        if(stages == null || stages.size() < 1 || stages.get(0).getThemeVerId() == null){
-            return;
+    private void removeStageFromDiagram(String stageId){
+        try{
+            AeaParStage queryStage = new AeaParStage();
+            queryStage.setStageId(stageId);
+            Map<String, Object> map = aeaParThemeVerAdminService.getAeaParThemeVerAndCells(queryStage);
+            JSONObject diagram  = null;
+            JSONArray cells = null;
+            AeaParThemeVer themeVer= null;
+            if(map != null && map.get("cells") != null){
+                diagram = (JSONObject) map.get("aeaParThemeVerDiagram");
+                themeVer = (AeaParThemeVer) map.get("aeaParThemeVer");
+                cells = (JSONArray) diagram.get("cells");
+            }
+            if(cells == null){
+                return;
+            }
+            aeaParThemeVerAdminService.removeStageFromDiagram(cells, stageId);
+            themeVer.setThemeVerDiagram(JsonUtils.toJson(diagram));
+            aeaParThemeVerAdminService.updateAeaParThemeVer(themeVer);
+        }catch (Exception e){
+            logger.error("DiagramException:",e);
         }
-        AeaParThemeVer themeVer = aeaParThemeVerMapper.getAeaParThemeVerById(stages.get(0).getThemeVerId());
-        if(themeVer == null){
-            return;
-        }
-        aeaParThemeVerMapper.setThemeVerDiagramNull(themeVer.getThemeVerId());
+
     }
 
     /**
@@ -142,11 +156,13 @@ public class AeaParStageAdminServiceImpl implements AeaParStageAdminService {
     public void deleteAeaParStageByIds(String[] stageIds) {
 
         Assert.notNull(stageIds, "stageIds is null.");
+        if(stageIds != null && stageIds.length>0){
+            for(String id: stageIds){
+                removeStageFromDiagram(id);
+            }
+        }
         aeaParStageMapper.deleteAeaParStageByIds(stageIds);
 
-        if(stageIds != null && stageIds.length>0){
-            setThemeverDiaGramComnNull(stageIds[0]);
-        }
     }
 
     @Override
