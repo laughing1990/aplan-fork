@@ -548,7 +548,7 @@
         <if test="instState != null and instState != '' ">
             AND tinst.INST_STATE = #{instState}
         </if>
-        <if test="approvalStage == null or approvalStage == '' ">
+        <if test="(approvalStage == null or approvalStage == '') and (theme == null or theme == '' ) ">
             UNION
             SELECT
             ahi_123.ITEMINST_ID AS iteminstId,
