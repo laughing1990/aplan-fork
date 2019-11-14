@@ -2,6 +2,7 @@ package com.augurit.efficiency.service.impl;
 
 import com.augurit.agcloud.bpm.common.domain.ActStoTimeruleInst;
 import com.augurit.agcloud.bsc.util.UuidUtil;
+import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.util.CollectionUtils;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.constants.ApplyState;
@@ -824,7 +825,7 @@ public class AeaAnaThemeStatisticsImpl {
         parLogHisList.addAll(serLogHisList);
         parLogHisList.addAll(serPstsllrlLogHisList);
 
-        result = packageThemeDayStastics(parLogHisList, statisticsRecord.getStatisticsRecordId(), statisticsRecord.getStatisticsStartDate(), rootOrgId);
+        result = packageThemeDayStastics(parLogHisList, statisticsRecord.getStatisticsRecordId(), statisticsRecord.getStatisticsStartDate(), rootOrgId,startTime,endTime);
 
 
         if (result.size() > 0) {
@@ -843,12 +844,21 @@ public class AeaAnaThemeStatisticsImpl {
      * @param statisticsRecordId
      * @param statisticsStartDate
      * @param rootOrgId
+     * @param startTime
+     * @param endTime
      * @return
      */
-    private List<AeaAnaThemeDayStatistics> packageThemeDayStastics(List<ThemeDayApplyRecord> logHisList, String statisticsRecordId, Date statisticsStartDate, String rootOrgId) {
+    private List<AeaAnaThemeDayStatistics> packageThemeDayStastics(List<ThemeDayApplyRecord> logHisList, String statisticsRecordId, Date statisticsStartDate, String rootOrgId, String startTime, String endTime) {
         List<AeaAnaThemeDayStatistics> result = new ArrayList<>();
         List<List<ThemeDayApplyRecord>> detailList = new ArrayList<>();
-        if (!logHisList.isEmpty()) {
+
+        //为空的时候存在，当天没申报但有逾期的情况等
+        if(CollectionUtils.isEmpty(logHisList)){
+            List<ThemeDayApplyRecord> overTimeHis = themeDayStatisticsMapper.getTodayOverHisRecord(SecurityContext.getCurrentOrgId(),startTime,endTime);
+            logHisList.addAll(overTimeHis);
+        }
+
+        if (!CollectionUtils.isEmpty(logHisList)) {
 
             //先按是否并行
             Map<String, List<ThemeDayApplyRecord>> collect = logHisList.stream().collect(Collectors.groupingBy(ThemeDayApplyRecord::getIsParallel));
@@ -944,8 +954,22 @@ public class AeaAnaThemeStatisticsImpl {
         String oneDayBeforeStart = oneDayBefore + " 00:00:00";
         String oneDayBeforeEnd = oneDayBefore + " 23:59:59";
         AeaAnaThemeDayStatistics onedayBeforStastics = themeDayStatisticsMapper.getAeaAnaThemeDayStatisticsBySatgeIdAndThemeId(tmp.getThemeId(), stageId, oneDayBeforeStart, oneDayBeforeEnd, rootOrgId, isParallel, applyinstSource);
+
+
+        //查询上一次的统计
+        PageHelper.startPage(1, 1);
+        List<AeaAnaThemeDayStatistics> aeaAnaThemeDayStatistics = themeDayStatisticsMapper.getAeaAnaThemeDayStatistics(applyRecord.getThemeId(), stageId, isParallel, applyRecord.getApplyinstSource(), rootOrgId, null, null);
+        if (CollectionUtils.isNotEmpty(aeaAnaThemeDayStatistics)) {
+            AeaAnaThemeDayStatistics dayStatistics = aeaAnaThemeDayStatistics.get(0);
+            onedayBeforStastics.setAllPreAcceptanceCount(dayStatistics.getAllPreAcceptanceCount());
+            onedayBeforStastics.setAllApplyCount(dayStatistics.getAllApplyCount());
+            onedayBeforStastics.setAllOutScopeCount(dayStatistics.getAllOutScopeCount());
+            onedayBeforStastics.setAllCompletedCount(dayStatistics.getAllCompletedCount());
+        }
         long allOverTimeCount = dayOverTimeCount + onedayBeforStastics.getAllOverTimeCount();
         dayApplyCount = unapprovalApply + approvedApply;
+
+
         double applyLrr = calculateGrowRate(onedayBeforStastics.getDayApplyCount(), dayApplyCount);
         double preAcceptanceLrr = calculateGrowRate(onedayBeforStastics.getDayPreAcceptanceCount(), hisPreAccept);
         double outScopeLrr = calculateGrowRate(onedayBeforStastics.getDayOutScopeCount(), hisOutScope);
