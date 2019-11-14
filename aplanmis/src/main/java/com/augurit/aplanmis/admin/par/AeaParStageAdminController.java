@@ -151,7 +151,7 @@ public class AeaParStageAdminController {
     public ModelAndView frontCheckManage(ModelMap modelMap, String busiType, String busiId) {
 
         handleThemeVerIsEditable(modelMap, busiType, busiId);
-        return new ModelAndView("ui-jsp/kitymind/stage/oneform/par_stage_front_check");
+        return new ModelAndView("ui-jsp/kitymind/stage/frontCheck/front_check_manage_index");
     }
 
     /**
