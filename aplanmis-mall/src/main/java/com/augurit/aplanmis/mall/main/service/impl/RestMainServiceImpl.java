@@ -14,9 +14,11 @@ import com.augurit.aplanmis.common.constants.ItemStatus;
 import com.augurit.aplanmis.common.domain.AeaItemBasic;
 import com.augurit.aplanmis.common.domain.AeaParStage;
 import com.augurit.aplanmis.common.domain.AeaParTheme;
+import com.augurit.aplanmis.common.domain.AeaUnitLinkman;
 import com.augurit.aplanmis.common.enumer.ThemeTypeEnum;
 import com.augurit.aplanmis.common.mapper.AeaItemBasicMapper;
 import com.augurit.aplanmis.common.mapper.AeaParThemeMapper;
+import com.augurit.aplanmis.common.mapper.AeaUnitLinkmanMapper;
 import com.augurit.aplanmis.common.service.dic.BscDicCodeItemService;
 import com.augurit.aplanmis.common.service.instance.AeaHiApplyinstService;
 import com.augurit.aplanmis.common.service.instance.AeaHiIteminstService;
@@ -65,6 +67,8 @@ public class RestMainServiceImpl implements RestMainService {
     private BscDicCodeService bscDicCodeService;
     @Autowired
     AeaItemBasicMapper aeaItemBasicMapper;
+    @Autowired
+    AeaUnitLinkmanMapper aeaUnitLinkmanMapper;
     @Override
     public List<ThemeTypeVo> getThemeTypeList(String rootOrgId) throws Exception{
         //主题类型
@@ -119,6 +123,12 @@ public class RestMainServiceImpl implements RestMainService {
                 applyInstStatusList = aeaParStageService.getApplyInstStatusByProjInfoIdAndStageId(aeaParStage.getStageId(),projInfoId,"",loginInfo.getUserId());
             }else if(com.augurit.agcloud.framework.util.StringUtils.isNotBlank(loginInfo.getUserId())){//委托人
                 if (StringUtils.isNotBlank(unitInfoId)){
+                    AeaUnitLinkman query=new AeaUnitLinkman();
+                    query.setUnitInfoId(unitInfoId);
+                    query.setLinkmanInfoId(loginInfo.getUserId());
+                    List<AeaUnitLinkman> unitLinkmans = aeaUnitLinkmanMapper.listAeaUnitLinkman(query);
+                    //加入权限校验，判断当前单位是否委托人所有
+                    if (unitLinkmans==null||unitLinkmans.size()==0) throw new Exception("不可查看其他单位信息");
                     applyInstStatusList = aeaParStageService.getApplyInstStatusByProjInfoIdAndStageId(aeaParStage.getStageId(),projInfoId,unitInfoId,"");
                 }else {
                     applyInstStatusList = aeaParStageService.getApplyInstStatusByProjInfoIdAndStageId(aeaParStage.getStageId(),projInfoId,"",loginInfo.getUserId());

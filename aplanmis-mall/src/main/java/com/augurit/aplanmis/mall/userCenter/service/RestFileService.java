@@ -18,4 +18,13 @@ public interface RestFileService {
 
     ModelAndView preview(String detailId, HttpServletRequest request, HttpServletResponse response, RedirectAttributes redirectAttributes) throws Exception;
 
+    /**
+     * 判断当前 matinstId是否属于request
+     * @param matinstId
+     * @param request
+     * @return
+     */
+    Boolean isMatBelong(String matinstId,HttpServletRequest request)throws Exception;
+
+    Boolean isFileBelong(String detailId,HttpServletRequest request)throws Exception;
 }

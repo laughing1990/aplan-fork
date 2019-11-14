@@ -142,7 +142,7 @@ public class AeaParStageService {
 //            }
 //        } else {}
 //            //直接发起申报
-            StageApplyInstantiateResult result = this.instantiateStageApply(stageApplyDataVo, false);
+        StageApplyInstantiateResult result = this.instantiateStageApply(stageApplyDataVo, false);
             for (String procinstId : result.getProcInstIds()) {
                 if(procinstId!=null)
                     tasks.addAll(taskService.createTaskQuery().processInstanceId(procinstId).list());

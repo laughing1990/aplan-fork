@@ -2,7 +2,9 @@ package com.augurit.aplanmis.mall.login;
 
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
+import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.service.CommonLoginService;
+import com.augurit.aplanmis.common.utils.SessionUtil;
 import com.augurit.aplanmis.common.vo.LoginInfoVo;
 import com.augurit.aplanmis.mall.login.jwx.AccessToken;
 import com.augurit.aplanmis.mall.login.jwx.JwtHelper;
@@ -24,6 +26,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
@@ -101,6 +104,21 @@ public class LoginController {
         }catch (Exception e){
             logger.error(e.getMessage(),e);
             return new ResultForm(false,"委托人切换单位接口出错");
+        }
+    }
+
+    @GetMapping("/checkVerifyCode")
+    @ApiOperation(value = "校验验证码")
+    public ResultForm checkVerifyCode(HttpServletRequest request,String verifyCode){
+        try{
+            HttpSession httpSession = request.getSession();
+            String sessionNum = (String)httpSession.getAttribute("opusSsoServerVerifyCode");
+            if (StringUtils.isBlank(verifyCode))  return new ResultForm(false,"验证码为空");
+            if (verifyCode.toLowerCase().equals(sessionNum.toLowerCase()))  return new ResultForm(true,"校验成功");
+            return new ResultForm(false,"验证码错误");
+        }catch (Exception e){
+            logger.error(e.getMessage(),e);
+            return new ResultForm(false,"校验验证码失败");
         }
     }
 }

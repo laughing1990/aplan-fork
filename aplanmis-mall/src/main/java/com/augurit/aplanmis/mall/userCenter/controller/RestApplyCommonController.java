@@ -68,6 +68,7 @@ public class RestApplyCommonController {
     })
     public ContentResultForm<AeaProjInfo> getProjInfoByProjInfoId(@PathVariable("projInfoId")String projInfoId,HttpServletRequest request){
         try {
+
             AeaProjInfo aeaProjInfo = aeaProjInfoService.getAeaProjInfoByProjInfoId(projInfoId);
             if(StringUtils.isNotBlank(aeaProjInfo.getThemeId())){
                 AeaParTheme theme = aeaParThemeService.getAeaParThemeByThemeId(aeaProjInfo.getThemeId());

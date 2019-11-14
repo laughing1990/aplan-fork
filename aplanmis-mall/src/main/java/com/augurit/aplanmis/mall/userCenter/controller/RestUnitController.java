@@ -1,12 +1,14 @@
 package com.augurit.aplanmis.mall.userCenter.controller;
 
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
+import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.domain.AeaLinkmanInfo;
 import com.augurit.aplanmis.common.domain.AeaUnitInfo;
 import com.augurit.aplanmis.common.service.linkman.AeaLinkmanInfoService;
 import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
 import com.augurit.aplanmis.mall.userCenter.service.RestUnitService;
+import com.augurit.aplanmis.mall.userCenter.service.RestUserCenterService;
 import com.augurit.aplanmis.mall.userCenter.vo.UnitAddVo;
 import com.augurit.aplanmis.mall.userCenter.vo.UnitEditVo;
 import io.swagger.annotations.Api;
@@ -15,6 +17,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @Slf4j
@@ -28,6 +32,8 @@ public class RestUnitController {
     private AeaLinkmanInfoService aeaLinkmanInfoService;
     @Autowired
     private RestUnitService restUnitService;
+    @Autowired
+    private RestUserCenterService restUserCenterService;
 
     @ApiOperation(value = "编辑企业单位")
     @PostMapping("/edit")
@@ -50,7 +56,8 @@ public class RestUnitController {
 
     @ApiOperation(value = "查看联系人")
     @GetMapping("/getLinkmanInfoById/{linkmanInfoId}")
-    public ContentResultForm<AeaLinkmanInfo> getLinkmanInfoById(@PathVariable("linkmanInfoId") String linkmanInfoId) throws Exception {
+    public ContentResultForm<AeaLinkmanInfo> getLinkmanInfoById(@PathVariable("linkmanInfoId") String linkmanInfoId, HttpServletRequest request) throws Exception {
+        if (!restUserCenterService.isBelongUnit(linkmanInfoId,request)) return new ContentResultForm(false,null,"查看联系人异常");
         AeaLinkmanInfo linkmanInfo = aeaLinkmanInfoService.getAeaLinkmanInfoByLinkmanInfoId(linkmanInfoId);
         return new ContentResultForm<>(true, linkmanInfo, "Save unit success");
     }

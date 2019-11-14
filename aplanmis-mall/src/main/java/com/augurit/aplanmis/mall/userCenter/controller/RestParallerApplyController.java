@@ -111,7 +111,7 @@ public class RestParallerApplyController {
             return new ContentResultForm<>(true, vo, "申报成功!");
         } catch (Exception e) {
             logger.error(e.getMessage(),e);
-            return new ContentResultForm(false,"",e.getMessage());
+            return new ContentResultForm(false,"","申报出错!");
         }
     }
     @PostMapping("net/process/form/start")
