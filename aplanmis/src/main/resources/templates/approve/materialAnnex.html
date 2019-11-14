@@ -81,8 +81,8 @@
       display: none;
     }
     
-    .file-list-tab{
-      padding-left:30px;
+    .file-list-tab {
+      padding-left: 30px;
     }
     
     .file-list-tab:hover .file-icon-btn {
@@ -173,7 +173,7 @@
                        :formatter="formaterCopyToZero"></el-table-column>
       <el-table-column prop="attCount" label="电子件" align="center" width="150px">
         <template slot-scope="scope">
-        <span v-if="scope.row.attCount !=null && scope.row.attCount > 0"
+          <span v-if="scope.row.attCount !=null && scope.row.attCount > 0"
               class="t-pre-upload ready">已上传（{{scope.row.attCount}}）</span>
           <span v-else class="t-pre-upload">未上传</span>
         </template>

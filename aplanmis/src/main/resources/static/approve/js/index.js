@@ -3787,8 +3787,9 @@ var vm = new Vue({
           }, function (res) {
             ts.sloading = false;
             if (res.success) {
-              // ts.$message.success('保存成功！');
+              ts.$message.success('材料补全开始');
               ts.isShowMatmend = false;
+              delayRefreshWindow();
             } else {
               ts.$message.error(res.message);
             }
