@@ -248,7 +248,7 @@
             AND tinst.INST_STATE = #{instState}
         </if>
 
-        <if test="approvalStage == null or approvalStage == '' ">
+        <if test="(approvalStage == null or approvalStage == '') and (theme == null or theme == '' ) ">
             UNION
             SELECT
             ahap_123.APPLYINST_ID AS applyinstId,
@@ -473,43 +473,11 @@
         <if test="isConcluding != null and isConcluding != ''">
             AND tinst.IS_CONCLUDING = #{isConcluding}
         </if>
-
-
         <if test="entrust">
-            AND (
-            <foreach collection="currentUserOrgIdList" item="item" index="index" open=" " separator=" " close=" ">
-
-                <if test="index == 0">
-                    (
-                    ahi_123.APPROVE_ORG_ID = #{item}
-                    OR
-                    ahi_123.APPROVE_ORG_ID IN (
-                    select t.PARENT_ORG_ID AS ORG_ID from
-                    (select (select @id:=group_concat(PARENT_ORG_ID separator ',') from opu_om_org where
-                    find_in_set(ORG_ID,@id)) PARENT_ORG_ID
-                    from opu_om_org,(select @id:=#{item}) vars
-                    where @id is not null
-                    )t where t.PARENT_ORG_ID is not null
-                    )
-                    )
-                </if>
-                <if test="index != 0">
-                    OR (
-                    ahi_123.APPROVE_ORG_ID = #{item}
-                    OR
-                    ahi_123.APPROVE_ORG_ID IN (
-                    select t.PARENT_ORG_ID AS ORG_ID from
-                    (select (select @id:=group_concat(PARENT_ORG_ID separator ',') from opu_om_org where
-                    find_in_set(ORG_ID,@id)) PARENT_ORG_ID
-                    from opu_om_org,(select @id:=#{item}) vars
-                    where @id is not null
-                    )t where t.PARENT_ORG_ID is not null
-                    )
-                    )
-                </if>
-
+            AND ahi_123.APPROVE_ORG_ID IN
+            <foreach collection="selfAndParentOrgIdList" item="item" index="index" open=" ( " separator=", " close=" ) ">
+                #{item}
             </foreach>
-            )
         </if>
 
         <if test="theme != null and theme != '' ">
@@ -621,40 +589,10 @@
             </if>
 
             <if test="entrust">
-                AND (
-                <foreach collection="currentUserOrgIdList" item="item" index="index" open=" " separator=" " close=" ">
-
-                    <if test="index == 0">
-                        (
-                        ahi_123.APPROVE_ORG_ID = #{item}
-                        OR
-                        ahi_123.APPROVE_ORG_ID IN (
-                        select t.PARENT_ORG_ID AS ORG_ID from
-                        (select (select @id:=group_concat(PARENT_ORG_ID separator ',') from opu_om_org where
-                        find_in_set(ORG_ID,@id)) PARENT_ORG_ID
-                        from opu_om_org,(select @id:=#{item}) vars
-                        where @id is not null
-                        )t where t.PARENT_ORG_ID is not null
-                        )
-                        )
-                    </if>
-                    <if test="index != 0">
-                        OR (
-                        ahi_123.APPROVE_ORG_ID = #{item}
-                        OR
-                        ahi_123.APPROVE_ORG_ID IN (
-                        select t.PARENT_ORG_ID AS ORG_ID from
-                        (select (select @id:=group_concat(PARENT_ORG_ID separator ',') from opu_om_org where
-                        find_in_set(ORG_ID,@id)) PARENT_ORG_ID
-                        from opu_om_org,(select @id:=#{item}) vars
-                        where @id is not null
-                        )t where t.PARENT_ORG_ID is not null
-                        )
-                        )
-                    </if>
-
+                AND ahi_123.APPROVE_ORG_ID IN
+                <foreach collection="selfAndParentOrgIdList" item="item" index="index" open=" ( " separator=", " close=" ) ">
+                    #{item}
                 </foreach>
-                )
             </if>
 
             <if test="_databaseId == 'oracle'">
@@ -4689,40 +4627,10 @@
         </if>
 
         <if test="entrust">
-            AND (
-            <foreach collection="currentUserOrgIdList" item="item" index="index" open=" " separator=" " close=" ">
-
-                <if test="index == 0">
-                    (
-                    ahi_123.APPROVE_ORG_ID = #{item}
-                    OR
-                    ahi_123.APPROVE_ORG_ID IN (
-                    select t.PARENT_ORG_ID AS ORG_ID from
-                    (select (select @id:=group_concat(PARENT_ORG_ID separator ',') from opu_om_org where
-                    find_in_set(ORG_ID,@id)) PARENT_ORG_ID
-                    from opu_om_org,(select @id:=#{item}) vars
-                    where @id is not null
-                    )t where t.PARENT_ORG_ID is not null
-                    )
-                    )
-                </if>
-                <if test="index != 0">
-                    OR (
-                    ahi_123.APPROVE_ORG_ID = #{item}
-                    OR
-                    ahi_123.APPROVE_ORG_ID IN (
-                    select t.PARENT_ORG_ID AS ORG_ID from
-                    (select (select @id:=group_concat(PARENT_ORG_ID separator ',') from opu_om_org where
-                    find_in_set(ORG_ID,@id)) PARENT_ORG_ID
-                    from opu_om_org,(select @id:=#{item}) vars
-                    where @id is not null
-                    )t where t.PARENT_ORG_ID is not null
-                    )
-                    )
-                </if>
-
+            AND ahi_123.APPROVE_ORG_ID IN
+            <foreach collection="selfAndParentOrgIdList" item="item" index="index" open=" ( " separator=", " close=" ) ">
+                #{item}
             </foreach>
-            )
         </if>
 
         ) temp_123

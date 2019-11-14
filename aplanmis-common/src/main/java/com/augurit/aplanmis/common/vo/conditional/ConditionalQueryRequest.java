@@ -144,7 +144,7 @@ public class ConditionalQueryRequest implements Serializable {
     @ApiModelProperty(value = "事项性质大分类")
     private String itemNature;
 
-    @ApiModelProperty(value = "当前用户所属组织ID列表")
+    @ApiModelProperty(value = "当前用户所属组织ID列表",hidden = true)
     private Set<String> currentUserOrgIdList;
 
     @ApiModelProperty(value = "对应国家标准辅线服务")
@@ -155,6 +155,9 @@ public class ConditionalQueryRequest implements Serializable {
 
     @ApiModelProperty(value = "阶段排序号")
     private Long stageIndex;
+
+    @ApiModelProperty(value = "当前用户所属组织ID和上级ID",hidden = true)
+    private Set<String> selfAndParentOrgIdList;
 
 
 }

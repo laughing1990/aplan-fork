@@ -35,7 +35,7 @@ public class ConditionalQueryAeaProjInfo implements Serializable {
     private String modifyStartTime;
     @ApiModelProperty("修改时间-结束")
     private String modifyEndTime;
-    @ApiModelProperty("根组织id")
+    @ApiModelProperty(value="根组织id",hidden = true)
     private String rootOrgId;
     @ApiModelProperty("true为只查询当前用户行政区划下的项目")
     private boolean onlyRegion;
@@ -43,12 +43,14 @@ public class ConditionalQueryAeaProjInfo implements Serializable {
     private boolean onlyOrg;
     @ApiModelProperty("true为只查询当前用户经办过的项目")
     private boolean handler;
-    @ApiModelProperty("当前行政区划id及其子类id")
+    @ApiModelProperty(value ="当前行政区划id及其子类id",hidden = true)
     private List<String> selfAndChildRegionIds;
-    @ApiModelProperty("当前用户登录名")
+    @ApiModelProperty(value ="当前用户登录名",hidden = true)
     private String loginName;
-    @ApiModelProperty("当前用户id")
+    @ApiModelProperty(value ="当前用户id",hidden = true)
     private String userId;
-    @ApiModelProperty(value = "当前用户所属组织ID列表")
+    @ApiModelProperty(value = "当前用户所属组织ID列表",hidden = true)
     private Set<String> currentUserOrgIdList;
+    @ApiModelProperty(value = "当前用户所属组织ID和上级ID",hidden = true)
+    private Set<String> selfAndParentOrgIdList;
 }

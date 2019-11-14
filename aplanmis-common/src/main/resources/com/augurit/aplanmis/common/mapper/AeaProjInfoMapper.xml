@@ -1701,31 +1701,12 @@
         from AEA_PROJ_INFO proj
         <if test="handler">
             inner join (
-            select distinct p.PROJ_INFO_ID
+            select distinct ap.PROJ_INFO_ID
             from aea_applyinst_proj ap
-            inner join aea_proj_info p on ap.PROJ_INFO_ID = p.PROJ_INFO_ID
-            inner join aea_hi_applyinst ahap on ahap.APPLYINST_ID = ap.APPLYINST_ID
-            inner join act_sto_appinst app ON app.MASTER_RECORD_ID = ahap.APPLYINST_ID
+            inner join act_sto_appinst app ON app.MASTER_RECORD_ID = ap.APPLYINST_ID
             left join act_sto_appinst_subflow apps ON apps.APPINST_ID = app.APPINST_ID
             inner join act_hi_taskinst t on t.proc_inst_id_ = apps.SUBFLOW_PROCINST_ID or t.proc_inst_id_ = app.PROCINST_ID
             where t.ASSIGNEE_ = #{loginName}
-            union
-            select distinct p.PROJ_INFO_ID
-            from aea_applyinst_proj ap
-            inner join aea_proj_info p on ap.PROJ_INFO_ID = p.PROJ_INFO_ID
-            inner join aea_hi_applyinst ahap on ahap.APPLYINST_ID = ap.APPLYINST_ID
-            inner join aea_log_apply_state_hist alog on alog.APPLYINST_ID = ahap.APPLYINST_ID
-            where alog.OPS_USER_ID = #{userId}
-            union
-            select distinct p.PROJ_INFO_ID
-            from aea_applyinst_proj ap
-            inner join aea_proj_info p on ap.PROJ_INFO_ID = p.PROJ_INFO_ID
-            inner join aea_hi_applyinst ahap on ahap.APPLYINST_ID = ap.APPLYINST_ID
-            left join aea_hi_par_stageinst ahps on ahps.APPLYINST_ID = ahap.APPLYINST_ID and ahap.IS_SERIES_APPROVE = '0'
-            left join aea_hi_seriesinst ahs on ahap.APPLYINST_ID = ahs.APPLYINST_ID and ahap.IS_SERIES_APPROVE = '1'
-            inner join aea_hi_iteminst ahi on ahi.STAGEINST_ID = ahps.STAGEINST_ID or ahi.SERIESINST_ID = ahs.SERIESINST_ID
-            inner join aea_log_item_state_hist ilog on ilog.ITEMINST_ID = ahi.ITEMINST_ID
-            where ilog.OPS_USER_ID = #{userId}
             ) handlertmp on handlertmp.PROJ_INFO_ID = proj.PROJ_INFO_ID
         </if>
         <if test="onlyOrg">
@@ -1738,68 +1719,11 @@
             left join AEA_HI_PAR_STAGEINST ahps on ahps.APPLYINST_ID = ahap.APPLYINST_ID
             inner join AEA_HI_ITEMINST ahi on ahps.STAGEINST_ID = ahi.STAGEINST_ID or ahi.SERIESINST_ID = ahs.SERIESINST_ID
             where
-                <foreach collection="currentUserOrgIdList" item="item" index="index" open=" " separator=" " close=" ">
-                    <if test="_databaseId == 'mysql'">
-                        <if test="index == 0">
-                            (
-                            ahi.APPROVE_ORG_ID = #{item}
-                            OR
-                            ahi.APPROVE_ORG_ID IN (
-                            select t.PARENT_ORG_ID AS ORG_ID from
-                            (select (select @id:=group_concat(PARENT_ORG_ID separator ',') from opu_om_org where
-                            find_in_set(ORG_ID,@id)) PARENT_ORG_ID
-                            from opu_om_org,(select @id:=#{item}) vars
-                            where @id is not null
-                            )t where t.PARENT_ORG_ID is not null
-                            )
-                            )
-                        </if>
-                        <if test="index != 0">
-                            OR (
-                            ahi.APPROVE_ORG_ID = #{item}
-                            OR
-                            ahi.APPROVE_ORG_ID IN (
-                            select t.PARENT_ORG_ID AS ORG_ID from
-                            (select (select @id:=group_concat(PARENT_ORG_ID separator ',') from opu_om_org where
-                            find_in_set(ORG_ID,@id)) PARENT_ORG_ID
-                            from opu_om_org,(select @id:=#{item}) vars
-                            where @id is not null
-                            )t where t.PARENT_ORG_ID is not null
-                            )
-                            )
-                        </if>
-                    </if>
+            ahi.APPROVE_ORG_ID IN
+            <foreach collection="selfAndParentOrgIdList" item="item" index="index" open=" ( " separator=", " close=" ) ">
+                #{item}
+            </foreach>
 
-
-                    <if test="_databaseId == 'oracle'">
-                        <if test="index == 0">
-                            (
-                            ahi.APPROVE_ORG_ID = #{item}
-                            OR
-                            ahi.APPROVE_ORG_ID IN (
-                            select tmp.PARENT_ORG_ID
-                            from opu_om_org tmp
-                            start with tmp.ORG_ID=#{item}
-                            connect by prior tmp.PARENT_ORG_ID=proj.ORG_ID
-                            )
-                            )
-                        </if>
-                        <if test="index != 0">
-                            OR (
-                            ahi.APPROVE_ORG_ID = #{item}
-                            OR
-                            ahi.APPROVE_ORG_ID IN (
-                            select tmp.PARENT_ORG_ID
-                            from opu_om_org tmp
-                            start with tmp.ORG_ID=#{item}
-                            connect by prior tmp.PARENT_ORG_ID=proj.ORG_ID
-                            )
-                            )
-                        </if>
-
-                    </if>
-
-                </foreach>
             ) onlyOrgTmp on onlyOrgTmp.PROJ_INFO_ID = proj.PROJ_INFO_ID
         </if>
         left join bsc_dic_region r on r.region_id = proj.regionalism
@@ -1808,12 +1732,6 @@
             select DISTINCT p.PARENT_PROJ_ID from aea_parent_proj p inner join aea_proj_info aapi on p.CHILD_PROJ_ID = aapi.PROJ_INFO_ID where aapi.IS_DELETED = '0'
         ) parProj on parProj.PARENT_PROJ_ID = proj.PROJ_INFO_ID
         where proj.IS_DELETED = '0'
---         and ( proj.PROJ_FLAG is null or proj.PROJ_FLAG != 'r')
---         and proj.PROJ_INFO_ID not in (
---             select ar.CHILD_PROJ_ID from aea_parent_proj ar inner join aea_proj_info aapi on ar.PARENT_PROJ_ID = aapi.PROJ_INFO_ID
---             where (aapi.PROJ_FLAG != 'r' or aapi.PROJ_FLAG is null)
---             and aapi.IS_DELETED = '0'
---         )
         and ( proj.PROJ_FLAG = 'p' or proj.PROJ_FLAG = '' or proj.PROJ_FLAG is null)
         <if test="onlyRegion">
             and proj.REGIONALISM in

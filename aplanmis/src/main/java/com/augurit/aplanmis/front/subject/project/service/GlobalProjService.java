@@ -407,10 +407,22 @@ public class GlobalProjService {
             List<OpuOmOrg> opuOmOrgList = opuOmOrgMapper.listBelongOrgByUserId(opusLoginUser.getUser().getUserId());
 
             Set<String> currentUserOrgIdList = new HashSet<>();
+            Set<String> selfAndParentOrgIdList = new HashSet<>();
             for(OpuOmOrg opuOmOrg: opuOmOrgList){
                 currentUserOrgIdList.add(opuOmOrg.getOrgId());
+                selfAndParentOrgIdList.add(opuOmOrg.getOrgId());
+                if(StringUtils.isNotBlank(opuOmOrg.getOrgSeq())){
+                    String[] orgIds = opuOmOrg.getOrgSeq().split(".");
+                    for(String id:orgIds){
+                        if(StringUtils.isNotBlank(id)){
+                            selfAndParentOrgIdList.add(id);
+                        }
+                    }
+                }
             }
             conditionalQueryAeaProjInfo.setCurrentUserOrgIdList(currentUserOrgIdList);
+            conditionalQueryAeaProjInfo.setSelfAndParentOrgIdList(selfAndParentOrgIdList);
+
         }
 
         PageHelper.startPage(page);

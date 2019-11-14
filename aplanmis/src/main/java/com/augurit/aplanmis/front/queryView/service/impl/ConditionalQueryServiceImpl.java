@@ -444,10 +444,21 @@ public class ConditionalQueryServiceImpl implements ConditionalQueryService {
             List<OpuOmOrg> opuOmOrgList = opuOmOrgMapper.listBelongOrgByUserId(opusLoginUser.getUser().getUserId());
 
             Set<String> currentUserOrgIdList = new HashSet<>();
+            Set<String> selfAndParentOrgIdList = new HashSet<>();
             for(OpuOmOrg opuOmOrg: opuOmOrgList){
                 currentUserOrgIdList.add(opuOmOrg.getOrgId());
+                selfAndParentOrgIdList.add(opuOmOrg.getOrgId());
+                if(StringUtils.isNotBlank(opuOmOrg.getOrgSeq())){
+                    String[] orgIds = opuOmOrg.getOrgSeq().split(".");
+                    for(String id:orgIds){
+                        if(StringUtils.isNotBlank(id)){
+                            selfAndParentOrgIdList.add(id);
+                        }
+                    }
+                }
             }
             conditionalQueryRequest.setCurrentUserOrgIdList(currentUserOrgIdList);
+            conditionalQueryRequest.setSelfAndParentOrgIdList(selfAndParentOrgIdList);
         }
 
         if (conditionalQueryRequest.isHandler()) {
