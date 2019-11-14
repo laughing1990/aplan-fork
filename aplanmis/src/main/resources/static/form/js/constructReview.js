@@ -10,6 +10,20 @@ var app = new Vue({
         callback();
       }
     };
+    // 输入为数字 大于等于0（浮点数）
+    var checkNumFloat = function(rule, value, callback) {
+      if (value) {
+        var flag = !/^[+]{0,1}(\d+)$|^[+]{0,1}(\d+\.\d+)$/.test(value);
+        if (flag) {
+          return callback(new Error('格式错误'));
+        } else {
+          callback();
+        }
+
+      } else {
+        callback();
+      }
+    };
     // 输入为整数数字 大于等于0
     var checkMissNum = function(rule, value, callback) {
       if (value) {
@@ -83,9 +97,11 @@ var app = new Vue({
           { required: true, message: '请输入施工图审查合格书编号' },
         ],
         'inverstmentMoeny': [
+          { validator: checkNumFloat, trigger: ['blur'] },
           { required: true, message: '请输入投资额', trigger: ['blur', 'change'] },
         ],
         'approveDrawingArea': [
+          { validator: checkNumFloat, trigger: ['blur'] },
           { required: true, message: '请输入图审面积' },
         ],
         'approveStartTime': [
@@ -210,7 +226,8 @@ var app = new Vue({
           linkmanName: '',
           linkmanCertNo: '',
           prjSpty: '1',
-          unitProjId: ''
+          unitProjId: '',
+          unitInfoId: ''
         }
         this.formDataSheJj.linkmen.push(dataType3);
 
@@ -221,7 +238,8 @@ var app = new Vue({
           linkmanName: '',
           linkmanCertNo: '',
           prjSpty: '1',
-          unitProjId: ''
+          unitProjId: '',
+          unitInfoId: ''
         }
         var dataType2 = {
           linkmanInfoId: '',
@@ -229,7 +247,8 @@ var app = new Vue({
           linkmanName: '',
           linkmanCertNo: '',
           prjSpty: '1',
-          unitProjId: ''
+          unitProjId: '',
+          unitInfoId: ''
         }
 
         this.formDataTuShen.linkmen.push(dataType);
@@ -249,14 +268,27 @@ var app = new Vue({
             projInfoId: this.projInfoId
           },
         }, function(res) {
-          vm.formDataTuShen = res.content.drawings[2] || {};
-          vm.formDataKanCha = res.content.drawings[0] || {};
-          vm.formDataSheJj = res.content.drawings[1] || {};
-          if (vm.formDataTuShen.linkmen == undefined) {
+          if (!res.success) {
+            vm.formDataTuShen = {};
+            vm.formDataKanCha = {};
+            vm.formDataSheJj = {};
+          } else {
+            for (var i = 0; i < res.content.drawings.length; i++) {
+              if (res.content.drawings[i].unitType == '13') {
+                vm.formDataTuShen = res.content.drawings[i] || {};
+              } else if (res.content.drawings[i].unitType == '3') {
+                vm.formDataSheJj = res.content.drawings[i] || {};
+              } else {
+                vm.formDataKanCha = res.content.drawings[i] || {};
+              }
+            }
+          }
+
+          if (vm.formDataTuShen.linkmen == undefined || vm.formDataTuShen.linkmen.length == 0) {
             vm.formDataTuShen.linkmen = [];
             vm.init('tushen');
           }
-          if (vm.formDataSheJj.linkmen == undefined) {
+          if (vm.formDataSheJj.linkmen == undefined || vm.formDataSheJj.linkmen.length == 0) {
             vm.formDataSheJj.linkmen = [];
             vm.init('sheji');
           }
@@ -265,6 +297,9 @@ var app = new Vue({
           vm.formDataTuShen.linkmanType = '502001';
           vm.formDataKanCha.linkmanType = '101001';
           vm.formDataSheJj.linkmanType = '102001';
+          vm.formDataTuShen.unitType = '13';
+          vm.formDataKanCha.unitType = '4';
+          vm.formDataSheJj.unitType = '3';
 
           if (!res.success) {
             vm.$message({
@@ -275,27 +310,10 @@ var app = new Vue({
             return;
           }
 
-          // vm.formData = res.content.aeaExProjDrawing;
-
           for (var key in res.content.aeaExProjDrawing) {
             vm.$set(vm.formData, key, res.content.aeaExProjDrawing[key])
           }
 
-          // vm.init();
-
-          // if (vm.formData.drawings == 0) {
-          //   vm.formData.drawings[0] = {};
-          //   vm.formData.drawings[1] = {};
-          //   vm.formData.drawings[2] = {};
-          //   vm.formData.drawings[0].linkmen = [];
-          //   vm.formData.drawings[1].linkmen = [];
-          //   vm.formData.drawings[2].linkmen = [];
-          //   vm.formData.drawings[0].linkmanType = '104002';
-          //   vm.formData.drawings[1].linkmanType = '104002';
-          //   vm.formData.drawings[2].linkmanType = '104002';
-          //   vm.init();
-          //   return;
-          // }
 
           vm.$nextTick(function() {
             vm.$refs['form'].clearValidate();
@@ -334,24 +352,7 @@ var app = new Vue({
         vm.$message.error('服务器错了哦!');
       })
     },
-    // 模糊查询人员
-    getLinkMan: function(row) {
-      var vm = this;
-      // vm.loading = true;
-      request('', {
-        type: 'get',
-        url: ctx + 'rest/form/drawing/list',
-        data: {
-          keyword: '',
-          unitInfoId: row.unitInfoId,
-          projInfoId: row.projInfoId
-        },
-      }, function(res) {
-        vm.landAreaUnitSite = res.content;
-      }, function(err) {
-        vm.$message.error('服务器错了哦!');
-      })
-    },
+
     // 模糊查询人员
     getPerson: function(val) {
       var vm = this;
@@ -498,6 +499,7 @@ var app = new Vue({
         linkmanName: '',
         linkmanCertNo: '',
         prjSpty: '1',
+        unitInfoId: data.unitInfoId,
         unitProjId: data.unitProjId
       }
       row.push(dataType);
@@ -518,9 +520,12 @@ var app = new Vue({
       this.$set(data, 'unifiedSocialCreditCode', val.unifiedSocialCreditCode);
       this.$set(data, 'applicant', val.applicant);
       this.$set(data, 'unitInfoId', val.unitInfoId);
-      for (var i = 0; i < data.linkmen.length; i++) {
-        data.linkmen[i].unitInfoId = val.unitInfoId;
+      if (data.linkmen.length != 0) {
+        for (var i = 0; i < data.linkmen.length; i++) {
+          data.linkmen[i].unitInfoId = val.unitInfoId;
+        }
       }
+
     },
     //单位名称模糊查询
     querySearchJiansheName: function(queryString, cb) {
@@ -593,10 +598,28 @@ var app = new Vue({
                   return false;
                 }
               }
+              for (var i = 0; i < formDataTuShen.linkmen.length; i++) {
+                if (formDataTuShen.linkmen[i].prjSpty == '') {
+                  _this.$message({
+                    message: '请选择审查专业！',
+                    type: 'error'
+                  });
+                  return false;
+                }
+              }
               for (var i = 0; i < formDataSheJj.linkmen.length; i++) {
                 if (formDataSheJj.linkmen[i].linkmanName == '') {
                   _this.$message({
                     message: '请设置人员！',
+                    type: 'error'
+                  });
+                  return false;
+                }
+              }
+              for (var i = 0; i < formDataSheJj.linkmen.length; i++) {
+                if (formDataSheJj.linkmen[i].prjSpty == '') {
+                  _this.$message({
+                    message: '请选择审查专业！',
                     type: 'error'
                   });
                   return false;

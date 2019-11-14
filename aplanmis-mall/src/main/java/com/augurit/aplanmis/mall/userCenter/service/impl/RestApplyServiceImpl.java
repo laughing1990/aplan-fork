@@ -21,7 +21,7 @@ import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
 import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
 import com.augurit.aplanmis.common.utils.CommonTools;
 import com.augurit.aplanmis.common.utils.SessionUtil;
-import com.augurit.aplanmis.common.vo.AeaUnitInfoVo;
+import com.augurit.aplanmis.mall.userCenter.vo.AeaUnitInfoVo;
 import com.augurit.aplanmis.common.vo.LinkmanTypeVo;
 import com.augurit.aplanmis.common.vo.LoginInfoVo;
 import com.augurit.aplanmis.mall.receive.service.ReceiveService;
@@ -29,6 +29,7 @@ import com.augurit.aplanmis.mall.userCenter.constant.LoginUserRoleEnum;
 import com.augurit.aplanmis.mall.userCenter.service.AeaParStageService;
 import com.augurit.aplanmis.mall.userCenter.service.AeaSeriesService;
 import com.augurit.aplanmis.mall.userCenter.service.RestApplyService;
+import com.augurit.aplanmis.mall.userCenter.service.RestUserCenterService;
 import com.augurit.aplanmis.mall.userCenter.vo.*;
 import io.jsonwebtoken.lang.Assert;
 import org.apache.commons.beanutils.BeanUtils;
@@ -93,6 +94,8 @@ public class RestApplyServiceImpl implements RestApplyService {
     AeaParStageService aeaParStageService;
     @Autowired
     ReceiveService receiveService;
+    @Autowired
+    RestUserCenterService restUserCenterService;
 
     @Override
     public UserInfoVo getApplyObject(HttpServletRequest request, String projInfoId) throws Exception {
@@ -101,33 +104,31 @@ public class RestApplyServiceImpl implements RestApplyService {
         LoginInfoVo user = SessionUtil.getLoginInfo(request);
         if(user!=null) {
             if ("1".equals(user.getIsPersonAccount())) {//个人
-                AeaLinkmanInfo aeaLinkmanInfo = aeaLinkmanInfoService.getAeaLinkmanInfoByLinkmanInfoId(user.getUserId());
-                vo.setAeaLinkmanInfo(aeaLinkmanInfo==null?new AeaLinkmanInfo():aeaLinkmanInfo);
+                AeaLinkmanInfoVo aeaLinkmanInfo=restUserCenterService.getAeaLinkmanInfoByLinkmanInfoId(user.getUserId());
+                vo.setAeaLinkmanInfo(aeaLinkmanInfo==null?new AeaLinkmanInfoVo():aeaLinkmanInfo);
                 vo.setRole(LoginUserRoleEnum.PERSONAL.getValue());
             } else if (StringUtils.isNotBlank(user.getUserId())) {//委托人
-                AeaLinkmanInfo aeaLinkmanInfo = aeaLinkmanInfoService.getAeaLinkmanInfoByLinkmanInfoId(user.getUserId());
-                vo.setAeaLinkmanInfo(aeaLinkmanInfo==null?new AeaLinkmanInfo():aeaLinkmanInfo);
-                List<AeaUnitInfo> aeaUnitList = aeaUnitInfoService.getUnitInfoByLinkmanInfoId(user.getUserId());
-                List<AeaUnitInfoVo> vos = aeaUnitList.stream().map(AeaUnitInfoVo::build).peek(aeaUnitInfoVo -> {
-
-                }).collect(Collectors.toList());
-                vo.setAeaUnitList(vos);
+                AeaLinkmanInfoVo aeaLinkmanInfo=restUserCenterService.getAeaLinkmanInfoByLinkmanInfoId(user.getUserId());
+                List<AeaUnitInfoVo> aeaUnitList=restUserCenterService.getUnitInfoListByLinkmanInfoId(user.getUserId());
+                vo.setAeaUnitList(aeaUnitList);
+                vo.setAeaLinkmanInfo(aeaLinkmanInfo);
                 vo.setRole(LoginUserRoleEnum.HANDLE.getValue());
             } else {//企业
-                AeaUnitInfo aeaUnitInfo = aeaUnitInfoService.getAeaUnitInfoByUnitInfoId(user.getUnitId());
-                AeaUnitInfoVo unitInfoVo = AeaUnitInfoVo.build(aeaUnitInfo);
+                AeaUnitInfoVo aeaUnitInfo = restUserCenterService.getAeaUnitInfoByUnitInfoId(user.getUnitId());
+
                 if (StringUtils.isNotBlank(projInfoId)) {
-                    List<LinkmanTypeVo> linkmanTypes = aeaLinkmanInfoService.findLinkmanTypes(projInfoId, aeaUnitInfo.getUnitInfoId());
-                    unitInfoVo.setLinkmanTypes(linkmanTypes.size() > 0 ? linkmanTypes : new ArrayList<>());
+                    List<LinkmanTypeVo> linkmanTypes = aeaLinkmanInfoService.findLinkmanTypes(projInfoId, user.getUnitId());
+                    aeaUnitInfo.setLinkmanTypes(linkmanTypes.size() > 0 ? linkmanTypes : new ArrayList<>());
                 } else {
-                    unitInfoVo.setLinkmanTypes(new ArrayList<>());
+                    aeaUnitInfo.setLinkmanTypes(new ArrayList<>());
                 }
-                vo.setAeaUnitInfo(aeaUnitInfo == null ? new AeaUnitInfoVo() : unitInfoVo);
-                vo.setLinkmanInfoList(aeaLinkmanInfoService.getAeaLinkmanInfoByUnitInfoIdAndIsBindAccount(user.getUnitId(),""));
+                vo.setAeaUnitInfo(aeaUnitInfo == null ? new AeaUnitInfoVo() : aeaUnitInfo);
+                List<AeaLinkmanInfoVo> linkmanInfoList=restUserCenterService.findAllUnitLinkman(user.getUnitId());
+                vo.setLinkmanInfoList(linkmanInfoList);
                 vo.setRole(LoginUserRoleEnum.UNIT.getValue());
             }
         }else {
-            vo.setAeaLinkmanInfo(new AeaLinkmanInfo());
+            vo.setAeaLinkmanInfo(new AeaLinkmanInfoVo());
             vo.setAeaUnitInfo(new AeaUnitInfoVo());
             vo.setLinkmanInfoList(new ArrayList<>());
             vo.setAeaUnitList(new ArrayList<>());
@@ -194,7 +195,7 @@ public class RestApplyServiceImpl implements RestApplyService {
     }
 
     @Override
-    public List<AeaUnitInfoVo> getAeaUnitInfosByProjInfoId(String projInfoId, HttpServletRequest request) throws Exception {
+    public List<com.augurit.aplanmis.common.vo.AeaUnitInfoVo> getAeaUnitInfosByProjInfoId(String projInfoId, HttpServletRequest request) throws Exception {
         List<AeaUnitInfo> unitInfos;
         //申报主体
         LoginInfoVo user = SessionUtil.getLoginInfo(request);
@@ -211,7 +212,7 @@ public class RestApplyServiceImpl implements RestApplyService {
                 if (!unitInfoIds.contains(user.getUnitId()))return new ArrayList<>();//所有建设单位不包含当前单位返回空
                 unitInfos = unitInfos.stream().filter(o -> !o.getUnitInfoId().equals(user.getUnitId())).collect(Collectors.toList());
             }
-        return unitInfos.stream().filter(CommonTools.distinctByKey(AeaUnitInfo::getUnitInfoId)).map(AeaUnitInfoVo::build).peek(unitVo -> {
+        return unitInfos.stream().filter(CommonTools.distinctByKey(AeaUnitInfo::getUnitInfoId)).map(com.augurit.aplanmis.common.vo.AeaUnitInfoVo::build).peek(unitVo -> {
             //单位查询联系人，人员设置等信息
             List<AeaLinkmanInfo> linkmans = aeaLinkmanInfoService.findAllUnitLinkman(unitVo.getUnitInfoId());
             unitVo.setAeaLinkmanInfoList(linkmans.size() > 0 ? linkmans : new ArrayList<>());

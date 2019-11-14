@@ -97,6 +97,9 @@ public class SeriesApplyHandleVo {
         // 备注说明
         @ApiModelProperty(value = "备注说明")
         private String stateMemo;
+
+        @ApiModelProperty(value = "流程情形")
+        private String isProcStartCond;
         // 材料
         private List<SeriesApplyHandleVo.MatVo> stateMats;
 

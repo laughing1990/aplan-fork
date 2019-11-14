@@ -93,13 +93,13 @@ public class ItemItemChecker extends AbstractChecker<AeaItemBasic> {
                     // 审批不通过
                     if (!entry.getValue()) {
                         AeaItemBasic frontItem = frontItems.get(entry.getKey());
-                        errroMessage.append(frontItem != null ? frontItem.getItemName() : "").append(",");
+                        errroMessage.append(frontItem != null ? frontItem.getItemName() + "事项" : "").append(",");
                     }
                 }
                 if (errroMessage.length() > 0) {
                     String error = "【" + errroMessage.substring(0, errroMessage.length() - 1) + "】";
 //                    throw new ItemItemCheckException("该事项下的" + error + "前置检查不通过.");
-                    return "请先办理以下事项：" + error;
+                    return error + "尚未审批通过，无法申报【" + aeaItemBasic.getItemName() + "事项】。";
                 }
 
                 log.info("事项: " + aeaItemBasic.getItemName() + " 前置事项检查通过.");

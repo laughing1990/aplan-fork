@@ -966,4 +966,25 @@
             update aea_hi_item_matinst set mat_prop='m';
         </sql>
     </changeSet>
+
+    <changeSet id="20191113141905" author="huangzl" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            CREATE TABLE `act_sto_forminst` (
+            `STO_FORMINST_ID` varchar(50) NOT NULL COMMENT '主键',
+            `FORM_ID` varchar(50) NOT NULL COMMENT '所属表单定义ID',
+            `FORM_PRIMARY_KEY` varchar(50) NOT NULL COMMENT '表单记录主键',
+            `INSERT_DATE` datetime DEFAULT NULL COMMENT '插入时间',
+            `INSERT_USER_ID` varchar(50) DEFAULT NULL COMMENT '插入用户ID',
+            `INSERT_USER_NAME` varchar(50) DEFAULT NULL COMMENT '插入用户名称',
+            `IS_UPDATE` varchar(1) NOT NULL COMMENT '是否更新过，0表示未更新过，1表示更新过',
+            `LATEST_UPDATE_DATE` datetime DEFAULT NULL COMMENT '最新更新日期',
+            `LATEST_UPDATE_USER_ID` varchar(50) DEFAULT NULL COMMENT '最新更新用户ID',
+            `LATEST_UPDATE_USER_NAME` varchar(50) DEFAULT NULL COMMENT '最新更新用户名称',
+            `IS_DELETE` varchar(1) NOT NULL,
+            `DELETE_DATE` datetime DEFAULT NULL,
+            `DELETE_USER_ID` varchar(50) DEFAULT NULL,
+            `DELETE_USER_NAME` varchar(50) DEFAULT NULL
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+        </sql>
+    </changeSet>
 </databaseChangeLog>

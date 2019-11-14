@@ -307,8 +307,7 @@
     <el-table-column
         sortable="custom"
         prop="instState,timeruleUnit,overdueTime,remainingTime"
-        min-width="100"
-        min-width="148"
+        min-width="105"
         label="剩余时限">
       <template slot-scope="scope">
         <span class="bg-status green-deadline" v-if="!scope.row.instState">{{'剩余'+scope.row.dueNumText}}</span>
@@ -316,17 +315,17 @@
         <span class="bg-status yellow-deadline" v-else-if="scope.row.instState=='2'">{{scope.row.remainingOrOverTimeText}}</span>
         <span class="bg-status red-deadline"
               v-else-if="scope.row.instState=='3'">{{scope.row.remainingOrOverTimeText}}</span>
-        <!--                    <el-tooltip  effect="light" placement="top" >-->
-        <!--                      <div slot="content">-->
-        <!--                        当前环节时限：剩余2天</br></br>-->
-        <!--                        当前办件时限：剩余5天</br></br>-->
-        <!--                        XXX组时限：逾期1天</br></br>-->
-        <!--                        AAA组时限：剩余0.5天-->
-        <!--                      </div>-->
-        <!--                      <span class="more-time">-->
-        <!--                        <i class="el-icon-more"></i>-->
-        <!--                      </span>-->
-        <!--                    </el-tooltip>-->
+<!--        <el-tooltip effect="light" placement="top">-->
+<!--          <div slot="content">-->
+<!--            当前环节时限：剩余2天</br></br>-->
+<!--            当前办件时限：剩余5天</br></br>-->
+<!--            XXX组时限：逾期1天</br></br>-->
+<!--            AAA组时限：剩余0.5天-->
+<!--          </div>-->
+<!--          <span class="more-time">-->
+<!--            <i class="el-icon-more"></i>-->
+<!--          </span>-->
+<!--        </el-tooltip>-->
       </template>
     </el-table-column>
     <el-table-column

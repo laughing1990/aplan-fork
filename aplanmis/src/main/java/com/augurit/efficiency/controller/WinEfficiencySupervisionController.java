@@ -685,7 +685,7 @@ public class WinEfficiencySupervisionController {
             @ApiImplicitParam(name = "type", value = "类型【周W月M日D灵活时间段A】", dataType = "string", paramType = "String"),
             @ApiImplicitParam(name = "themeId", value = "主题ID", dataType = "string", paramType = "String", required = true)
     })
-    public ResultForm getCompletedApplyUseTimeByThemeAndWindow(String themeId, String startTime, String endTime, String type) throws Exception {
+    public ResultForm getCompletedApplyUseTimeByThemeAndWindow(String themeId, String startTime, String endTime, String type) {
         try {
             if (StringUtils.isBlank(themeId)) {
                 return new ResultForm(false, "请求缺少参数!");

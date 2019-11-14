@@ -70,8 +70,10 @@ public abstract class AbstractReceiveService {
             return false;
         }
         for (String applysinstId : applyinstIds) {
+
             //先根据申请实例ID查询事项实例
             List<AeaHiIteminst> aeaHiIteminstList = aeaHiIteminstMapper.getAeaHiIteminstListByApplyinstId(applysinstId);
+
             //在查询联系人信息
             AeaHiSmsInfo aeaHiSmsInfo = aeaHiSmsInfoMapper.getAeaHiSmsInfoByApplyinstId(applysinstId);
             if (null == aeaHiSmsInfo) {
@@ -99,6 +101,65 @@ public abstract class AbstractReceiveService {
                 aeaHiReceive.setRootOrgId(SecurityContext.getCurrentOrgId());
                 aeaHiReceiveMapper.insertAeaHiReceive(aeaHiReceive);
             }
+        }
+        return true;
+    }
+
+    /**
+     * 保存中介事项回执
+     *
+     * @param applyinstId
+     * @param receiptTypes
+     * @param currentUser
+     * @param comments
+     * @return
+     * @throws Exception
+     */
+    public boolean saveAgentItemReceive(String applyinstId, String[] receiptTypes, String currentUser, String comments) throws Exception {
+        if (StringUtils.isEmpty(applyinstId)) {
+            logger.info("[applyinstIds]，参数不能为空");
+            return false;
+        }
+        if (null == receiptTypes || receiptTypes.length == 0) {
+            logger.info("[receiptTypes]，参数不能为空");
+            return false;
+        }
+        //先根据申请实例ID查询事项实例
+        List<AeaHiIteminst> aeaHiIteminstList = aeaHiIteminstMapper.getAeaHiIteminstListByApplyinstId(applyinstId);
+
+        if (aeaHiIteminstList.size() == 0) {
+            logger.info("[{}]参数异常，无法查询到申请实例", applyinstId);
+            return false;
+        }
+        AeaLinkmanInfo applyLinkman = aeaLinkmanInfoMapper.getApplyLinkman(applyinstId);
+        String userName = "";
+        String idcart = "";
+        String phone = "";
+        String address = "";
+        if (null != applyLinkman) {
+            userName = applyLinkman.getLinkmanName();
+            idcart = applyLinkman.getLinkmanCertNo();
+            phone = applyLinkman.getLinkmanMobilePhone();
+            address = applyLinkman.getLinkmanAddr();
+        }
+        AeaHiIteminst iteminst = aeaHiIteminstList.get(0);
+        String itemVerId = iteminst.getItemVerId();
+        for (String receiptType : receiptTypes) {
+            AeaHiReceive aeaHiReceive = new AeaHiReceive();
+            aeaHiReceive.setReceiveId(UUID.randomUUID().toString());
+            aeaHiReceive.setApplyinstId(applyinstId);
+            aeaHiReceive.setReceiptType(receiptType);
+            aeaHiReceive.setOutinstId(itemVerId);
+            aeaHiReceive.setReceiveMemo(comments);
+            aeaHiReceive.setReceiveUserName(userName);
+            aeaHiReceive.setReceiveCertNo(idcart);
+            aeaHiReceive.setReceiveUserMobile(phone);
+            aeaHiReceive.setServiceAddress(address);
+            aeaHiReceive.setCreater(currentUser);
+            aeaHiReceive.setCreateTime(new Date());
+            aeaHiReceive.setReceiveTime(new Date());
+            aeaHiReceive.setRootOrgId(SecurityContext.getCurrentOrgId());
+            aeaHiReceiveMapper.insertAeaHiReceive(aeaHiReceive);
         }
         return true;
     }

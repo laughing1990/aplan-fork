@@ -1,4 +1,4 @@
-<template id="syncCascader" th:fragment="syncCascader">
+<template id="syncCascader" th:fragment="syncCascader" style="display: none">
     <el-cascader v-model="selectedList" @change="tableDataSearch"
                  :props="cascaderProps"
                  :options="dataList"

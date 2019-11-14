@@ -56,4 +56,15 @@ public interface AeaImUnitBiddingMapper {
 
 
     List<AeaImUnitBidding> listUnitBiddingByProjPurchaseId(@Param("projPurchaseId") String projPurchaseId) throws Exception;
+
+    /**
+     * 更新中标状态
+     *
+     * @param unitBiddingId
+     * @param projPurchaseId
+     * @param isWonBid
+     * @return
+     */
+    int updateWinBid(@Param("unitBiddingId") String unitBiddingId, @Param("projPurchaseId") String projPurchaseId, @Param("isWonBid") String isWonBid);
+
 }
