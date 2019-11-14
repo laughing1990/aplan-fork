@@ -1021,4 +1021,15 @@
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
         </sql>
     </changeSet>
+
+    <changeSet id="20191114134706" author="xiong" failOnError="false">
+        <preConditions>
+            <not>
+                <columnExists tableName="aea_hi_certinst" columnName="auth_code"/>
+            </not>
+        </preConditions>
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            alter table aea_hi_certinst add column auth_code varchar(300) default null comment '用证码，证照库中会用到';;
+        </sql>
+    </changeSet>
 </databaseChangeLog>
