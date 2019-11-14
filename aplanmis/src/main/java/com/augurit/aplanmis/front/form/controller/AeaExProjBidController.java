@@ -123,7 +123,7 @@ public class AeaExProjBidController {
                         List<String> unitTypes = new ArrayList<String>();
                         unitTypes.add(AGENT_UNIT);
                         unitTypes.add(COST_UNIT);
-                        aeaExProjBidService.delUnitProjInfo(aeaExProjBidVo.getProjInfoId(), unitTypes);
+                        aeaExProjBidService.delUnitProjInfo(aeaExProjBidVo.getProjInfoId(), unitTypes,"0");
                     }
                     //招投标信息
                     if (aeaExProjBidVo.getBidId() != null && !"".equals(aeaExProjBidVo.getBidId())) {

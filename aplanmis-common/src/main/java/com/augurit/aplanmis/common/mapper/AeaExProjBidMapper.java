@@ -31,6 +31,6 @@ public List<AeaUnitInfo> findUnitProjByProjInfoIdAndType(@Param("projInfoId") St
 
 public List<AeaUnitProj> getAeaUnitProjById(@Param("projInfoId")String unitProjId);
 
-public int batchDeleteUnitProjByType(@Param("projId")String projId,@Param("unitTypes")List<String> unitTypes);
+public int batchDeleteUnitProjByType(@Param("projId")String projId,@Param("unitTypes")List<String> unitTypes,@Param("isOwner")String isOwner);
 
 }
