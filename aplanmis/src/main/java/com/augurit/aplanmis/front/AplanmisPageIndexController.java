@@ -1,5 +1,6 @@
 package com.augurit.aplanmis.front;
 
+import com.augurit.agcloud.framework.exception.InvalidParameterException;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
@@ -741,6 +742,22 @@ public class AplanmisPageIndexController {
     @ApiOperation("菜单-不予受理办件(窗口)")
     public ModelAndView queryWindowItemOutScopeIndex() {
         ModelAndView modelAndView = new ModelAndView("view/queryWindowItemOutScopeIndex");
+        return modelAndView;
+    }
+
+    /**
+     * 第三阶段已办结的工程项目
+     *
+     * @return
+     */
+    @GetMapping("/queryStageConcludedApplyInfo/{stageIndex}/index.html")
+    @ApiOperation("菜单-阶段已办结的工程项目")
+    public ModelAndView queryStageConcludedApplyInfo(@PathVariable("stageIndex") int stageIndex) {
+        if(stageIndex<=0 || stageIndex>4){
+            throw new InvalidParameterException("地址有误!");
+        }
+        ModelAndView modelAndView = new ModelAndView("view/queryStageConcludedApplyInfoIndex");
+        modelAndView.addObject("stageIndex", stageIndex);
         return modelAndView;
     }
 }

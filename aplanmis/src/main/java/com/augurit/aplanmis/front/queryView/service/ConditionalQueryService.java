@@ -367,5 +367,15 @@ public interface ConditionalQueryService {
     PageInfo listWindowItemOutScope(ConditionalQueryRequest conditionalQueryRequest, Page page) throws Exception;
 
 
+    /**
+     * 根据查询条件获取阶段已办结的申报
+     * @param conditionalQueryRequest
+     * @param page
+     * @return
+     * @throws Exception
+     */
+    PageInfo listStageConcludedApplyInfoByPage(ConditionalQueryRequest conditionalQueryRequest, Page page) throws Exception;
+
+
 }
 
