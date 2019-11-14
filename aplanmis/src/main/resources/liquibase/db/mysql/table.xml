@@ -967,6 +967,40 @@
         </sql>
     </changeSet>
 
+    <changeSet id="20191114085833" author="xiong" failOnError="false">
+        <preConditions>
+            <not>
+                <columnExists tableName="aea_item_mat" columnName="mat_prop"/>
+            </not>
+        </preConditions>
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            alter table aea_item_mat add column `MAT_PROP` char(1) DEFAULT NULL COMMENT '材料性质，m表示普通材料，c表示证照材料，f表示在线表单';
+            update aea_item_mat set mat_prop='m';
+        </sql>
+    </changeSet>
+
+    <changeSet id="20191114090042" author="xiong" failOnError="false">
+        <preConditions>
+            <not>
+                <columnExists tableName="aea_item_mat" columnName="CERT_ID"/>
+            </not>
+        </preConditions>
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            alter table aea_item_mat add column `CERT_ID` varchar(50) DEFAULT NULL COMMENT '证照定义ID';
+        </sql>
+    </changeSet>
+
+    <changeSet id="20191114090130" author="xiong" failOnError="false">
+        <preConditions>
+            <not>
+                <columnExists tableName="aea_item_mat" columnName="STO_FORM_ID"/>
+            </not>
+        </preConditions>
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            alter table aea_item_mat add column `STO_FORM_ID` varchar(50) DEFAULT NULL COMMENT '表单定义ID';
+        </sql>
+    </changeSet>
+
     <changeSet id="20191113141905" author="huangzl" failOnError="false">
         <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
             CREATE TABLE `act_sto_forminst` (
