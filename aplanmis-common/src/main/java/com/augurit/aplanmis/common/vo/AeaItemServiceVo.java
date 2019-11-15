@@ -11,82 +11,57 @@ import lombok.Data;
 @Data
 @ApiModel("中介服务事项信息和要求")
 public class AeaItemServiceVo {
-    /**
-     * 中介事项主键
-     */
+
     private String agentItemBasicId;
-    /**
-     * 中介事项版本ID
-     */
+
     @ApiModelProperty(value = "中介事项版本ID")
     private String agentItemVerId;
-    /**
-     * 中介事项ID
-     */
+
     @ApiModelProperty(value = "中介事项ID")
     private String agentItemId;
-    /**
-     * 中介事项编码
-     */
+
     @ApiModelProperty(value = "中介事项编码")
     private String agentItemCode;
-    /**
-     * 中介事项名称
-     */
+
     @ApiModelProperty(value = "中介事项名称")
     private String agentItemName;
-    /**
-     * 中介事项对应的部门ID
-     */
+
     @ApiModelProperty(value = "中介事项对应的部门ID")
     private String agentOrgId;
-    /**
-     * 部门名称
-     */
+
     @ApiModelProperty(value = "部门名称")
     private String agentOrgName;
     @ApiModelProperty(value = "办件类型")
     private String agentItemProperty;
 
     private String agentItemPropertyName;
-    /**
-     * 对应的行政事项名称
-     */
+
     @ApiModelProperty(value = "对应的行政事项名称")
     private String itemName;
 
     @ApiModelProperty(value = "服务类型")
     private String serviceName;
 
-    /**
-     * 服务内容
-     */
     @ApiModelProperty(value = "服务内容")
     private String serviceContent;
-    /**
-     * 服务结果
-     */
+
     @ApiModelProperty(value = "服务结果")
     private String serviceResult;
-    /**
-     * 时限说明
-     */
+
     @ApiModelProperty(value = "时限说明")
     private String timeLimitExplain;
-    /**
-     * 服务时限要求
-     */
+
     @ApiModelProperty(value = "服务时限要求")
     private String serviceTimeLimit;
 
     @ApiModelProperty(value = "是否需要资质要求",notes = "1 需要，0 不需要")
-    private String isQualRequire; // (是否需要资质要求：1 需要，0 不需要)
+    private String isQualRequire;
     @ApiModelProperty(value = "资质要求",notes = "1 多个资质子项符合其一即可，0 需同时符合所有选中资质子项")
     private String qualRequireType;
     @ApiModelProperty(value = "资质要求说明",notes = "当IS_QUAL_REQUIRE =1 时，必填")
     private String qualRequireExplain;
     @ApiModelProperty(value = "资质备案说明")
-    private String qualRecordRequire; // (资质备案说明)
+    private String qualRecordRequire;
     @ApiModelProperty(value = "是否仅承诺服务",notes = "1 是，0 否")
     private String promiseService;
     @ApiModelProperty(value = "其他要求说明")
