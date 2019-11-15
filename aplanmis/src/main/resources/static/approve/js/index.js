@@ -1961,7 +1961,7 @@ var vm = new Vue({
         if (result.success) {
           $('#parentPro').show();
           $('#parentPro').empty();
-          var btn = '<button class="btn btn-default" onclick="vm.getParentProcess(' + result.content.processInstanceId + ',' + result.content.isCheck + ')">返回上级流程</button>';
+          var btn = '<button class="btn btn-default" style="margin-top:16px;" onclick="vm.getParentProcess(' + result.content.processInstanceId + ',' + result.content.isCheck + ')">返回上级流程</button>';
           $('#parentPro').append(btn);
         } else {
           $('#parentPro').hide();
