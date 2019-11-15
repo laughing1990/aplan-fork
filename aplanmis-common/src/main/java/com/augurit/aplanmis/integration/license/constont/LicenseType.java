@@ -10,11 +10,11 @@ import lombok.Getter;
 @Getter
 public enum LicenseType {
 
-    CERTIFICATE("已签发","CERTIFICATE"),
-    PROOF("草案","PROOF"),
-    APPROVAL("已制证（未签发）","APPROVAL"),
-    REPORT("已废止","REPORT"),
-    RESULT("已制证（未签发）","RESULT");
+    CERTIFICATE("证件执照","CERTIFICATE"),
+    PROOF("证明文件","PROOF"),
+    APPROVAL("批文批复","APPROVAL"),
+    REPORT("鉴定报告","REPORT"),
+    RESULT("办事结果","RESULT");
 
     private String name;
     private String value;
