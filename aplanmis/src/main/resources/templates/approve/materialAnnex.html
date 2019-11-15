@@ -398,7 +398,27 @@
       // 处理上传文件
       handleUploadFile: function (file) {
         var vm = this;
-        console.log(file)
+        var _this = this;
+        console.log(file);
+        console.log(vm.currentUploadRow);
+        if(window) return null;
+        var formData = new FormData()
+        formData.append('files', file.file);
+        formData.append('matProp', '');
+        formData.append('certId', '');
+        formData.append('stoFormId', '');
+        vm.pageLoading = true;
+        axios.post(ctx + '/rest/mats/att/upload', formData).then(function (res) {
+          if (res.data && res.data.success) {
+            _this.$message.success('文件上传成功');
+          } else {
+            _this.$message.error(res.message||'文件上传失败');
+          }
+        }).catch(function (e) {
+          _this.$message.error('文件上传失败');
+        }).finally(function () {
+          vm.pageLoading = false;
+        })
       },
       // 点击上传文件按钮，记录点击的哪条数据
       clickUpload: function(row){

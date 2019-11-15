@@ -152,6 +152,29 @@ var __STATIC = {
     var tempwindow = window.open('_blank'); // 先打开页面
     tempwindow.location = ctx + 'rest/mats/att/preview?detailId=' + detailId + '&flashAttributes=' + flashAttributes;
   },
+  // 关闭当前页面
+  closeCurrentTab: function(){
+    var userAgent = navigator.userAgent;
+    if (userAgent.indexOf("Firefox") != -1 || userAgent.indexOf("Presto") != -1) {
+      window.location.replace("about:blank");
+    }
+    window.location.href = 'about:blank';
+    window.opener = null;
+    window.open("", "_self");
+    window.close();
+  },
+  // 默认延迟1000毫秒刷新页面
+  delayRefreshWindow: function(time) {
+    window.setTimeout(function () {
+      window.location.reload();
+    }, time || 1000);
+  },
+  // 默认延迟2000毫秒关闭页面
+  delayCloseWindow: function(time){
+    window.setTimeout(function () {
+      closeCurrentTab();
+    }, time || 2000);
+  },
   staticIconData: {
     "7Z": {text: "&#xe63c", color: "rgb(87, 193, 255)"},
     "AI": {text: "&#xe63d", color: "rgb(255, 132, 0)"},
@@ -457,4 +480,186 @@ var bzMockData = [{
   }],
   "regionalism": "185",
   "regionName": null
-}]
+}];
+//-------------------------------------------------------------------------
+var idLibResMock = {
+  "ack_code": "SUCCESS",
+  "errors": [],
+  "sign": null,
+  "sign_method": null,
+  "timestamp": null,
+  "correlation_id": "fc8a80d4-7729-411b-9773-134d4618696f",
+  "response_id": "d7e5f6fb-d9f6-43d1-8eb1-942fc8b8243f",
+  "data": [{
+    "name": "普通义工（志愿者）证",
+    "division": "",
+    "remark": null,
+    "creator": null,
+    "issuer": null,
+    "abolisher": null,
+    "algorithm": null,
+    "license_code": "44070020190000090V",
+    "license_type": null,
+    "id_code": "122230",
+    "doc_name": null,
+    "doc_summary": null,
+    "doc_keyword": null,
+    "holder_name": "测试",
+    "holder_identity_type": "10",
+    "holder_identity_num": "440782199411112150",
+    "issue_org_name": "江门政务服务数据管理局",
+    "issue_org_code": "593330629",
+    "division_code": "440700",
+    "issue_date": "2019-08-19 00:00:00",
+    "begin_date": null,
+    "expiry_date": null,
+    "data_fields": null,
+    "attachment_fields": null,
+    "trust_level": "A",
+    "extend_props": "",
+    "biz_num": null,
+    "license_item_code": "113002201",
+    "license_status": "ISSUED",
+    "creation_time": "2019-08-22 16:50:41",
+    "issue_time": null,
+    "abolish_time": null,
+    "abolish_reason": null,
+    "correlative_license": null,
+    "public_key": null,
+    "last_modificator": "*SYSADM*",
+    "last_modification_time": "2019-08-22 16:50:41",
+    "s_sign_cert": null,
+    "s_sign_data": null
+  },
+    {
+      "name": "普通义工（志愿者）证",
+      "division": "",
+      "remark": null,
+      "creator": null,
+      "issuer": null,
+      "abolisher": null,
+      "algorithm": null,
+      "license_code": "44070020190000090U",
+      "license_type": null,
+      "id_code": "12223",
+      "doc_name": null,
+      "doc_summary": null,
+      "doc_keyword": null,
+      "holder_name": "测试",
+      "holder_identity_type": "10",
+      "holder_identity_num": "440782199411112150",
+      "issue_org_name": "江门政务服务数据管理局",
+      "issue_org_code": "593330629",
+      "division_code": "440700",
+      "issue_date": "2019-08-19 00:00:00",
+      "begin_date": null,
+      "expiry_date": null,
+      "data_fields": null,
+      "attachment_fields": null,
+      "trust_level": "A",
+      "extend_props": "",
+      "biz_num": null,
+      "license_item_code": "113002201",
+      "license_status": "ISSUED",
+      "creation_time": "2019-08-22 16:49:07",
+      "issue_time": null,
+      "abolish_time": null,
+      "abolish_reason": null,
+      "correlative_license": null,
+      "public_key": null,
+      "last_modificator": "*SYSADM*",
+      "last_modification_time": "2019-08-22 16:49:07",
+      "s_sign_cert": null,
+      "s_sign_data": null
+    },
+    {
+      "name": "志愿服务记录证明",
+      "division": "",
+      "remark": null,
+      "creator": null,
+      "issuer": null,
+      "abolisher": null,
+      "algorithm": null,
+      "license_code": "44070020190000080W",
+      "license_type": null,
+      "id_code": "1122",
+      "doc_name": null,
+      "doc_summary": null,
+      "doc_keyword": null,
+      "holder_name": "黄大三",
+      "holder_identity_type": "10",
+      "holder_identity_num": "440782199411112150",
+      "issue_org_name": "江门市网络信息统筹局",
+      "issue_org_code": "MB2C44198",
+      "division_code": "440700",
+      "issue_date": "2019-07-26 00:00:00",
+      "begin_date": null,
+      "expiry_date": "2023-07-01 00:00:00",
+      "data_fields": null,
+      "attachment_fields": null,
+      "trust_level": "A",
+      "extend_props": "",
+      "biz_num": null,
+      "license_item_code": "213002401",
+      "license_status": "ISSUED",
+      "creation_time": "2019-07-26 18:02:17",
+      "issue_time": null,
+      "abolish_time": null,
+      "abolish_reason": null,
+      "correlative_license": null,
+      "public_key": null,
+      "last_modificator": "4f070706-c30c-481c-a837-9f39136c62de",
+      "last_modification_time": "2019-07-26 18:04:59",
+      "s_sign_cert": null,
+      "s_sign_data": null
+    },
+    {
+      "name": "普通义工（志愿者）证",
+      "division": "",
+      "remark": null,
+      "creator": null,
+      "issuer": null,
+      "abolisher": null,
+      "algorithm": null,
+      "license_code": "4407002019000008CS",
+      "license_type": null,
+      "id_code": "12333",
+      "doc_name": null,
+      "doc_summary": null,
+      "doc_keyword": null,
+      "holder_name": "测试",
+      "holder_identity_type": "10",
+      "holder_identity_num": "440782199411112150",
+      "issue_org_name": "江门市网络信息统筹局",
+      "issue_org_code": "MB2C44198",
+      "division_code": "440700",
+      "issue_date": "2019-01-04 00:00:00",
+      "begin_date": null,
+      "expiry_date": "2020-01-03 00:00:00",
+      "data_fields": null,
+      "attachment_fields": null,
+      "trust_level": "A",
+      "extend_props": "",
+      "biz_num": null,
+      "license_item_code": "113002201",
+      "license_status": "ISSUED",
+      "creation_time": "2019-07-26 14:40:38",
+      "issue_time": null,
+      "abolish_time": null,
+      "abolish_reason": null,
+      "correlative_license": null,
+      "public_key": null,
+      "last_modificator": "4f070706-c30c-481c-a837-9f39136c62de",
+      "last_modification_time": "2019-07-26 14:41:12",
+      "s_sign_cert": null,
+      "s_sign_data": null
+    }
+  ],
+  "total_count": 4,
+  "auth_codes": [
+    "20191115125902148NC011378732_44070020190000090V",
+    "20191115125902148NC011378732_44070020190000090U",
+    "20191115125902148NC011378732_44070020190000080W",
+    "20191115125902148NC011378732_4407002019000008CS"
+  ]
+};

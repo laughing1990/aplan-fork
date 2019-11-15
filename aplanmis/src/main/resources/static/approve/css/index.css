@@ -2294,6 +2294,24 @@ input[type="number"] {
 .id-lib-top-search{
     line-height:36px;
 }
+.mat-table-btn {
+    float: left;
+    color: #169AFF;
+    line-height: 25px;
+    height: 25px;
+    cursor: pointer;
+}
+.mat-table-btn:hover{
+    text-decoration: underline;
+}
+
+.mat-ope-line {
+    float: left;
+    width: 1px;
+    height: 12px;
+    background: #DCDFE6;
+    margin: 7px 7px 0 7px;
+}
 /*证照库材料库 end*/
 
 

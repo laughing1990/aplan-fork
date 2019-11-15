@@ -494,10 +494,11 @@ var vm = new Vue({
         type: '',
       },
       idLibLoading: false,
-      idLibVisible: true,
+      idLibVisible: false,
       matLibLoading: false,
       matLibVisible: false,
       idLibTableList: [],
+      matLibTableList:[],
     }
   },
   filters: {
@@ -536,10 +537,31 @@ var vm = new Vue({
   methods: {
     // 打开材料库弹窗
     openMatLibDialog: function(){
+      var vm = this;
+      vm.parentPageLoading = true;
+      window.setTimeout(function(){
+        vm.parentPageLoading = false;
+        vm.matLibVisible = true;
+        vm.matLibTableList = [
+          { name: 'test1.doc' },
+          { name: 'test2.doc' },
+        ];
+      }, 500);
     },
     // 打开证照库弹窗
     openIdLibDialog: function(){
+      var vm = this;
+      vm.parentPageLoading = true;
+      window.setTimeout(function(){
+        vm.parentPageLoading = false;
+        vm.idLibVisible = true;
+        vm.idLibTableList = idLibResMock.data;
+      }, 500);
     },
+    // 证照列表弹窗 查看证照
+    idTableListSee: function(row){},
+    // 证照列表弹窗 选择证照
+    idTabListChoose: function(row) {},
     // 获取材料补正详情数据
     loadSupplyDetail: function () {
       var vm = this;
@@ -3977,7 +3999,7 @@ var vm = new Vue({
           vm.parentPageLoading = false;
           if (res.success) {
             vm.$message.success('回退任务成功！2秒后关闭页面');
-            delayCloseWindow(2000);
+            delayCloseWindow();
             if (window.opener) {
               window.opener.location.reload();
             }
@@ -4540,26 +4562,15 @@ function getPrintList() {
 }
 
 function delayCloseWindow(time) {
-  window.setTimeout(function () {
-    closeCurrentTab();
-  }, time || 3000);
+  __STATIC.delayCloseWindow();
 }
 
 function delayRefreshWindow(time) {
-  window.setTimeout(function () {
-    window.location.reload();
-  }, time || 2000);
+  __STATIC.delayRefreshWindow(time);
 }
 
 function closeCurrentTab() {
-  var userAgent = navigator.userAgent;
-  if (userAgent.indexOf("Firefox") != -1 || userAgent.indexOf("Presto") != -1) {
-    window.location.replace("about:blank");
-  }
-  window.location.href = 'about:blank';
-  window.opener = null;
-  window.open("", "_self");
-  window.close();
+  __STATIC.closeCurrentTab();
 }
 
 function onlySuggestDialogShow() {
