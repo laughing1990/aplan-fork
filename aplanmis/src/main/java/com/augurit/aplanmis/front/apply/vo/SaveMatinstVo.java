@@ -50,7 +50,7 @@ public class SaveMatinstVo {
         private String authCode;
 
         @ApiModelProperty(value = "表单定义ID")
-        private String formId;
+        private String stoFormId;
 
         @ApiModelProperty(value = "表单名称")
         private String formName;
