@@ -189,10 +189,10 @@ public class AeaItemPartformAdminController {
             }
             return new ResultForm(true);
         }
-        return new ResultForm(false, "传递材料证照排序数据有问题,请检查!");
+        return new ResultForm(false, "传递扩展表排序数据有问题,请检查!");
     }
 
-    @RequestMapping("createAndUpdateDevForm")
+    @RequestMapping("/createAndUpdateDevForm.do")
     public ResultForm createAndUpdateDevForm(String formCode, String formName, String formLoadUrl, String formId, String itemPartformId) {
         try {
 

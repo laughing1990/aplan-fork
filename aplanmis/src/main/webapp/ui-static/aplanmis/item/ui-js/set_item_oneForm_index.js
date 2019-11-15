@@ -9,6 +9,7 @@ var parStageOneformCurrentPageSize = 10;   //记录页面大小
 var allOneformCurrentPageNumber = 1;
 var allOneformCurrentPageSize = 10;
 $(function() {
+
     $('#selectAllOneFormTbScroll').niceScroll({
 
         cursorcolor: "#e2e5ec",//#CC0071 光标颜色
@@ -20,6 +21,7 @@ $(function() {
         cursorborderradius: "2px",//以像素为光标边界半径
         autohidemode: true  //是否隐藏滚动条
     });
+
     $('#aedit_part_form_scroll').niceScroll({
 
         cursorcolor: "#e2e5ec",//#CC0071 光标颜色
@@ -31,6 +33,7 @@ $(function() {
         cursorborderradius: "2px",//以像素为光标边界半径
         autohidemode: true  //是否隐藏滚动条
     });
+
     $(".fixed-table-body").niceScroll({
 
         cursorcolor: "#e2e5ec",//#CC0071 光标颜色
@@ -42,6 +45,7 @@ $(function() {
         cursorborderradius: "2px",//以像素为光标边界半径
         autohidemode: true  //是否隐藏滚动条
     });
+
     // $('#aedit_part_form_form input[name="isSmartForm"]').change(function(){
     //     var value = $(this).val();
     //     if(value=='1'){
@@ -73,11 +77,11 @@ $(function() {
             $("#aedit_part_form_form textarea[name='elContent']").rules('remove');
         }
     });
+
     initParStageOneformTable();
     initAllOneformTable();
     initItemOneFormValidate();
     initItemPartformValidate();
-
 });
 
 
@@ -372,6 +376,7 @@ function searchAllOneformList(){
 }
 
 function importOneform(){
+
     $("#add_stage_oneform_modal").modal("show");
     oneformParams = [];
     oneformParams.push({name: "itemVerId", value: currentBusiId});
@@ -668,7 +673,7 @@ function useElFormatter(value, row, index){
 
 function stagePartformFormatter(value, row, index){
 
-    var sumformId = row.partformId;
+    var sumformId = row.stoFormId;
     var isSmartForm = row.isSmartForm;
     var iteItemId = row.itemPartformId;
     var strCallback = '';

@@ -27,6 +27,15 @@
             display: block;
             width: 100%;
         }
+
+        .fixed-table-container {
+            position: relative;
+            clear: both;
+            border: 0px solid #ddd;
+            border-radius: 4px;
+            -webkit-border-radius: 4px;
+            -moz-border-radius: 4px;
+        }
     </style>
     <script type="text/javascript">
         var currentBusiType = '${currentBusiType}';
@@ -41,31 +50,29 @@
     </script>
 </head>
 <body>
-    <jsp:include page="../../mindHeader.jsp"></jsp:include>
+<jsp:include page="../../mindHeader.jsp"></jsp:include>
     <div id="mainContentPanel" class="row" style="width: 100%;height: 99%;padding: 15px 0px 5px 0px;margin: 0px;">
         <div class="col-xl-12">
             <div class="m-portlet" style="margin-bottom: 5px; border: 0px solid #e8e8e8;">
                 <div class="m-portlet__head" style="border-bottom: 0px solid #e8e8e8">
                     <div class="m-portlet__head-caption">
                         <div class="m-portlet__head-title">
-                        <span class="m-portlet__head-icon m--hide">
-                            <i class="la la-gear"></i>
-                        </span>
+                            <span class="m-portlet__head-icon m--hide">
+                                <i class="la la-gear"></i>
+                            </span>
                             <h2 class="m-portlet__head-text">
                                 <span style="font-weight: bold;">总表管理</span>
                             </h2>
                         </div>
                     </div>
                     <div class="m-portlet__head-tools">
-                        <button type="button" class="btn btn-info" onclick="importOneform();" style="margin-bottom:5px;margin-right:60px;" >导入总表</button>
+                        <button type="button" class="btn btn-info" onclick="importOneform();" style="margin-bottom:5px;margin-right:60px;">导入总表</button>
                     </div>
                 </div>
                 <div class="m-portlet__body" style="padding: 0px 0px 5px 0px;">
-                    <!-- 列表区域 -->
                     <div class="m-portlet__body iframe-content miniScrollbar" style="padding: 0px 5px;">
                         <table id="selectParStageOneformTable" style="border:1px solid #ddd;"></table>
                     </div>
-                    <!-- 列表区域end -->
                 </div>
             </div>
         </div>
@@ -138,20 +145,20 @@
                                 data-url="${pageContext.request.contextPath}/aea/item/partform/listAeaItemPartform.do?itemVerId=${currentBusiId}"
                                 style="border:1px solid #ddd;">
                             <thead>
-                            <tr>
-                                <th data-field="#" data-checkbox="true" data-align="center" data-width="10">ID</th>
-                                <th data-field="partformName" data-align="left" data-width="250">扩展表名称</th>
-                                <th data-field="isSmartForm" data-formatter="isSmartFormFormatter"
-                                    data-align="center" data-width="60">是否智能表单</th>
-                                <th data-field="useEl" data-formatter="useElFormatter"
-                                    data-align="center" data-width="60">是否启用EL</th>
-                                <th data-field="elContent" data-align="left" data-width="250">启用EL条件</th>
-                                <th data-field="formName" data-formatter="formNameFormatter"
-                                    data-align="left" data-width="250">智能表单名称/开发表单地址</th>
-                                <th data-field="sortNo" data-align="left" data-width="60">排序</th>
-                                <th data-field="_operator" data-formatter="stagePartformFormatter"
-                                    data-align="center" data-width="150">操作</th>
-                            </tr>
+                                <tr>
+                                    <th data-field="#" data-checkbox="true" data-align="center" data-width="10">ID</th>
+                                    <th data-field="partformName" data-align="left" data-width="250">扩展表名称</th>
+                                    <th data-field="isSmartForm" data-formatter="isSmartFormFormatter"
+                                        data-align="center" data-width="60">是否智能表单</th>
+                                    <th data-field="useEl" data-formatter="useElFormatter"
+                                        data-align="center" data-width="60">是否启用EL</th>
+                                    <th data-field="elContent" data-align="left" data-width="250">启用EL条件</th>
+                                    <th data-field="formName" data-formatter="formNameFormatter"
+                                        data-align="left" data-width="250">智能表单名称/开发表单地址</th>
+                                    <th data-field="sortNo" data-align="left" data-width="60">排序</th>
+                                    <th data-field="_operator" data-formatter="stagePartformFormatter"
+                                        data-align="center" data-width="150">操作</th>
+                                </tr>
                             </thead>
                         </table>
                     </div>
@@ -191,5 +198,11 @@
             </div>
         </div>
     </div>
+
+    <!--bootstrap-treegrid-->
+    <%--<script src="${pageContext.request.contextPath}/ui-static/agcloud/framework/js-libs/bootstrap-table/bootstrap-table-treegrid.js" type="text/javascript"></script>--%>
+    <%--<script src="${pageContext.request.contextPath}/ui-static/agcloud/framework/js-libs/jquery1/jquery.treegrid.min.js" type="text/javascript"></script>--%>
+    <%--<link href="${pageContext.request.contextPath}/ui-static/agcloud/framework/js-libs/jquery1/jquery.treegrid.min.css" rel="stylesheet" type="text/css"/>--%>
+    <%--<link href="${pageContext.request.contextPath}/ui-static/agcloud/framework/ui-scheme/common/css/bootstrap/bootstrap-table.min.css" rel="stylesheet" type="text/css">--%>
 </body>
 </html>
