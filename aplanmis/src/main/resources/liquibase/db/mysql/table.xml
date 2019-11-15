@@ -1038,4 +1038,12 @@
             ALTER TABLE `aea_proj_info` ADD COLUMN `PROVINCE_PROJ_CODE` varchar(100) DEFAULT NULL COMMENT '省级项目编号，三库一平台返回';
         </sql>
     </changeSet>
+
+
+    <changeSet id="201911151141" author="linpx" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER  TABLE  `act_sto_timerule_inst`  ADD  INDEX `IDX_ACT_STO_TIMERULE_INST_PROCINSTID` (  `proc_inst_id`  );
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>
