@@ -47,7 +47,7 @@
         ,
         aip.PARTFORM_NAME partformName,
         aip.IS_SMART_FORM isSmartForm,
-        aip.PARTFORM_ID partformId
+        aip.STO_FORM_ID stoFormId
         from AEA_ITEM_FRONT_PARTFORM aifp
         left join aea_item_partform aip on aip.ITEM_PARTFORM_ID = aifp.ITEM_PARTFORM_ID
         <where>

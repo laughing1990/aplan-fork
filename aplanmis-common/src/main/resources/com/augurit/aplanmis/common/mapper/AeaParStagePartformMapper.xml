@@ -9,14 +9,13 @@
         ${alias}.STAGE_PARTFORM_ID  stagePartformId,
         ${alias}.PARTFORM_NAME  partformName,
         ${alias}.STAGE_ID  stageId,
-        ${alias}.PARTFORM_ID  partformId,
+        ${alias}.STO_FORM_ID stoFormId,
         ${alias}.SORT_NO  sortNo,
         ${alias}.USE_EL  useEl,
         ${alias}.EL_CONTENT  elContent,
         ${alias}.CREATER  creater,
         ${alias}.CREATE_TIME  createTime,
-        ${alias}.IS_SMART_FORM isSmartForm,
-        ${alias}.FORM_URL formUrl
+        ${alias}.IS_SMART_FORM isSmartForm
     </sql>
 
     <!--2 根据主键ID查询单个实体 -->
@@ -46,8 +45,8 @@
             <if test="stageId != null" >
                 AND partform.STAGE_ID = #{stageId}
             </if>
-            <if test="partformId != null" >
-                AND partform.PARTFORM_ID = #{partformId}
+            <if test="stoFormId != null">
+                AND partform.STO_FORM_ID = #{stoFormId}
             </if>
             <if test="sortNo != null" >
                 AND partform.SORT_NO = #{sortNo}
@@ -67,9 +66,6 @@
             <if test="isSmartForm != null and isSmartForm!='' " >
                 AND partform.IS_SMART_FORM = #{isSmartForm}
             </if>
-            <if test="formUrl != null and formUrl!='' " >
-                AND partform.FORM_URL = #{formUrl}
-            </if>
             <if test="keyword!=null and keyword!=''">
                AND  partform.PARTFORM_NAME like concat('%', concat(#{keyword}, '%'))
             </if>
@@ -82,15 +78,15 @@
             <include refid="allColumns">
                 <property name="alias" value="partform"/>
             </include>,
-            asf.FORM_NAME formName
+        asf.FORM_NAME formName,asf.FORM_LOAD_URL form_url
         from AEA_PAR_STAGE_PARTFORM partform
         left join ACT_STO_FORM asf on (
-                partform.PARTFORM_ID = asf.FORM_ID
+        partform.STO_FORM_ID = asf.FORM_ID
             and asf.IS_DELETED = '0'
-            and asf.FORM_PROPERTY in ( 'smart-biz', 'smart-flow' )
-            and partform.PARTFORM_ID is not null
-            and partform.PARTFORM_ID !=''
-            and partform.IS_SMART_FORM = '1'
+        and asf.FORM_PROPERTY in ( 'smart-biz', 'smart-flow','dev-biz' )
+        and partform.STO_FORM_ID is not null
+        and partform.STO_FORM_ID !=''
+        -- and partform.IS_SMART_FORM = '1'
         )
         <where>
             <if test="stagePartformId != null" >
@@ -102,8 +98,8 @@
             <if test="stageId != null" >
                 AND partform.STAGE_ID = #{stageId}
             </if>
-            <if test="partformId != null" >
-                AND partform.PARTFORM_ID = #{partformId}
+            <if test="stoFormId != null">
+                AND partform.STO_FORM_ID = #{stoFormId}
             </if>
             <if test="useEl != null" >
                 AND partform.USE_EL = #{useEl}
@@ -119,9 +115,6 @@
             </if>
             <if test="isSmartForm != null and isSmartForm!='' " >
                 AND partform.IS_SMART_FORM = #{isSmartForm}
-            </if>
-            <if test="formUrl != null and formUrl!='' " >
-                AND partform.FORM_URL = #{formUrl}
             </if>
             <if test="keyword!=null and keyword!=''">
                 AND (
@@ -139,26 +132,24 @@
             STAGE_PARTFORM_ID,
             PARTFORM_NAME,
             STAGE_ID,
-            PARTFORM_ID,
+        STO_FORM_ID,
             SORT_NO,
             USE_EL,
             EL_CONTENT,
             CREATER,
             CREATE_TIME,
-            IS_SMART_FORM,
-            FORM_URL
+        IS_SMART_FORM
         )  values  (
             #{stagePartformId},
             #{partformName},
             #{stageId},
-            #{partformId},
+        #{stoFormId},
             #{sortNo},
             #{useEl},
             #{elContent},
             #{creater},
             #{createTime},
-            #{isSmartForm},
-            #{formUrl}
+        #{isSmartForm}
         )
     </insert>
 
@@ -175,8 +166,8 @@
             <if test="stageId != null" >
             STAGE_ID = #{stageId},
             </if>
-            <if test="partformId != null" >
-            PARTFORM_ID = #{partformId},
+            <if test="stoFormId != null">
+                STO_FORM_ID = #{stoFormId},
             </if>
             <if test="sortNo != null" >
             SORT_NO = #{sortNo},
@@ -195,9 +186,6 @@
             </if>
             <if test="isSmartForm != null and isSmartForm!='' " >
             IS_SMART_FORM = #{isSmartForm},
-            </if>
-            <if test="formUrl != null and formUrl!='' " >
-            FORM_URL = #{formUrl},
             </if>
         </set>
         where STAGE_PARTFORM_ID = #{stagePartformId}
@@ -221,7 +209,7 @@
 
     <select id="listPartFormNoSelectForm" resultType="AeaParStagePartform">
         select
-            asfrom.FORM_ID as partformId,
+        asfrom.FORM_ID as stoFormId,
             asfrom.FORM_ORG_ID  formOrgId,
             asfrom.FORM_PROPERTY  formProperty,
             asfrom.FORM_CODE  formCode,
@@ -237,15 +225,23 @@
             and asfrom.FORM_ORG_ID = #{formOrgId}
             and asfrom.FORM_ID not in (
                 select
-                    PARTFORM_ID
+            STO_FORM_ID
                 from AEA_PAR_STAGE_PARTFORM
                 where STAGE_ID = #{stageId}
                   and STAGE_PARTFORM_ID = #{stagePartformId}
-                  and PARTFORM_ID is not null
-                  and PARTFORM_ID !=''
-                  and IS_SMART_FORM = '1'
+            and STO_FORM_ID is not null
+            and STO_FORM_ID !=''
+            and IS_SMART_FORM = #{isSmartForm}
             )
-            and  asfrom.FORM_PROPERTY in ( 'smart-biz', 'smart-flow' )
+            <if test="isSmartForm != null and isSmartForm ==1 ">
+                and asfrom.FORM_PROPERTY in ( 'smart-biz', 'smart-flow')
+            </if>
+            <if test="isSmartForm != null and isSmartForm ==0 ">
+                and asfrom.FORM_PROPERTY in ('dev-biz' )
+            </if>
+            <if test="isSmartForm == null ">
+                and asfrom.FORM_PROPERTY in ( 'smart-biz', 'smart-flow', 'dev-biz' )
+            </if>
             <if test="keyword != null and keyword !='' " >
             and (
                 asfrom.FORM_CODE like CONCAT(CONCAT('%',#{keyword}),'%') or
@@ -260,7 +256,7 @@
         <id property="stagePartformId" column="STAGE_PARTFORM_ID"/>
         <result property="partformName" column="PARTFORM_NAME"/>
         <result property="stageId" column="STAGE_ID"/>
-        <result property="partformId" column="PARTFORM_ID"/>
+        <result property="stoFormId" column="STO_FORM_ID"/>
         <result property="sortNo" column="SORT_NO"/>
         <result property="useEl" column="USE_EL"/>
         <result property="elContent" column="EL_CONTENT"/>

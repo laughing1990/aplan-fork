@@ -43,9 +43,7 @@ public class StagePartFormChecker extends AbstractChecker<AeaParStage> {
                 // TODO
                 aeaParFrontPartformVos.forEach(aeaParFrontPartformVo -> {
                     if ("1".equals(aeaParFrontPartformVo.getIsSmartForm())) {
-                        aeaParFrontPartformVo.getPartformId();//智能表单ID
-                    } else {
-                        aeaParFrontPartformVo.getDelformId();//开发表单ID
+                        aeaParFrontPartformVo.getStoFormId();//表单ID
                     }
                 });
 

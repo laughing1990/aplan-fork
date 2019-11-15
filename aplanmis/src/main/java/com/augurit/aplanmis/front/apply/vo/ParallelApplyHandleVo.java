@@ -210,7 +210,7 @@ public class ParallelApplyHandleVo {
         private String certName;
 
         @ApiModelProperty(value = "表单定义ID")
-        private String formId;
+        private String stoFormId;
 
         @ApiModelProperty(value = "扩展字段：表单名称")
         private String formName;

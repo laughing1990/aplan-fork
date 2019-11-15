@@ -2,8 +2,9 @@ package com.augurit.aplanmis.front.queryView.service.impl;
 
 import com.augurit.agcloud.bpm.common.domain.*;
 import com.augurit.agcloud.bpm.common.engine.BpmTaskService;
-import com.augurit.agcloud.bpm.common.mapper.ActStoRemindReceiverMapper;
+import com.augurit.agcloud.bpm.common.mapper.*;
 import com.augurit.agcloud.bpm.common.service.ActStoAppinstSubflowService;
+import com.augurit.agcloud.bpm.common.service.ActStoTimeruleService;
 import com.augurit.agcloud.bsc.domain.BscDicCodeItem;
 import com.augurit.agcloud.bsc.domain.BscDicCodeType;
 import com.augurit.agcloud.bsc.sc.dic.code.service.BscDicCodeService;
@@ -95,6 +96,28 @@ public class ConditionalQueryServiceImpl implements ConditionalQueryService {
 
     @Autowired
     OpuOmOrgMapper opuOmOrgMapper;
+
+
+    @Autowired
+    private ActStoTimegroupActMapper actStoTimegroupActMapper;
+
+    @Autowired
+    private ActStoTimeruleInstMapper actStoTimeruleInstMapper;
+
+    @Autowired
+    private ActStoTimegroupMapper actStoTimegroupMapper;
+
+    @Autowired
+    private ActStoAppinstMapper actStoAppinstMapper;
+
+    @Autowired
+    private ActStoAppinstSubflowMapper actStoAppinstSubflowMapper;
+
+    @Autowired
+    private ActTplAppTriggerMapper actTplAppTriggerMapper;
+
+    @Autowired
+    private ActStoTimeruleService actStoTimeruleService;
 
     @Override
     public ConditionalQueryDic applyConditionalQueryDic() {
@@ -740,6 +763,146 @@ public class ConditionalQueryServiceImpl implements ConditionalQueryService {
             timeText = (TimeruleInstState.OVERDUE.getValue().equals(info.getInstState()) ? "逾期" : "剩余") + timeText;
             info.setRemainingOrOverTimeText(timeText);
         }
+        if(info instanceof TaskInfo){
+            TaskInfo info1 = (TaskInfo) info;
+            loadTaskRemainingOrOverTimeText(info1);
+        }
+    }
+
+    /**
+     * 加载节点的时限列表
+     * @param info
+     */
+    private void loadTaskRemainingOrOverTimeText(TaskInfo info){
+        try {
+            List nodeTimelimitList = new ArrayList();
+            List hasInst = new ArrayList();
+            //获取节点时限实例信息
+            ActStoTimeruleInst query1 = new ActStoTimeruleInst();
+            query1.setProcInstId(info.getProcInstId());
+            query1.setTaskinstId(info.getTaskId());
+            List<ActStoTimeruleInst> actStoTimeruleInsts = actStoTimeruleInstMapper.listActStoTimeruleInst(query1);
+            if(actStoTimeruleInsts.size() > 0){
+                for(int i=0; i<actStoTimeruleInsts.size(); i++){
+                    ActStoTimeruleInst actStoTimeruleInst = actStoTimeruleInsts.get(i);
+                    String timeruleInstTimeText = getTimeruleInstTimeText(actStoTimeruleInst);
+                    if("2".equals(actStoTimeruleInst.getTimeruleInstType())){
+                        if(StringUtils.isNotBlank(timeruleInstTimeText)){
+                            nodeTimelimitList.add(createVo("当前环节时限",timeruleInstTimeText,actStoTimeruleInst.getInstState()));
+                        }
+                        hasInst.add(actStoTimeruleInst.getTimegroupActId());
+
+                    }else if("3".equals(actStoTimeruleInst.getTimeruleInstType())){
+                        if(StringUtils.isNotBlank(timeruleInstTimeText)){
+                            String name = "时限组时限";
+                            ActStoTimegroup actStoTimegroup = actStoTimegroupMapper.getActStoTimegroupById(actStoTimeruleInst.getTimegroupId());
+                            if(actStoTimegroup != null){
+                                name = actStoTimegroup.getTimegroupName() + "时限";
+                            }
+                            nodeTimelimitList.add(createVo(name,timeruleInstTimeText,actStoTimeruleInst.getInstState()));
+                        }
+                        hasInst.add(actStoTimeruleInst.getTimegroupId());
+                    }
+                }
+            }
+            //获取节点时限定义信息
+            String appFlowdefId = null;
+            //查询appFlowdefId 用于关联出节点时限配置
+            ActStoAppinst actStoAppinst = actStoAppinstMapper.getActStoAppinstByProcInstId(info.getProcInstId());
+            //查的到则是一级流程节点
+            if(actStoAppinst != null){
+                appFlowdefId = actStoAppinst.getAppFlowdefId();
+            }else{
+                //查询子流程
+                ActStoAppinstSubflow actStoAppinstSubflow = actStoAppinstSubflowMapper.getActStoAppinstSubflowBySubflowProcinstId(info.getProcInstId());
+                if(actStoAppinstSubflow != null){
+                    ActTplAppTrigger trigger = actTplAppTriggerMapper.getAllActTplAppTriggerById(actStoAppinstSubflow.getTriggerId());
+                    if(trigger != null){
+                        appFlowdefId = trigger.getTriggerAppFlowdefId();
+                    }
+                }
+            }
+            if(StringUtils.isNotBlank(appFlowdefId)) {
+                ActStoTimegroupAct query = new ActStoTimegroupAct();
+                query.setAppFlowdefId(appFlowdefId);
+                List<ActStoTimegroupAct> actStoTimegroupActs = actStoTimegroupActMapper.listActStoTimegroupAct(query);
+                if (actStoTimegroupActs.size() > 0) {
+                    List<ActStoTimerule> actStoTimerules = actStoTimeruleService.listActStoTimerule(new ActStoTimerule());
+                    if (actStoTimerules.size() == 0) return;
+                    for(int i=0,len=actStoTimegroupActs.size(); i<len; i++){
+                        ActStoTimegroupAct actStoTimegroupAct = actStoTimegroupActs.get(i);
+                        String unit = "WD";
+                        for(int j=0,lenj=actStoTimerules.size(); j<lenj; j++){
+                            if(actStoTimegroupAct.getTimeruleId().equals(actStoTimerules.get(j).getTimeruleId())){
+                                unit = actStoTimerules.get(j).getTimeruleUnit();
+                                break;
+                            }
+                        }
+                        String state = "1";
+                        if(actStoTimegroupAct.getTimeLimit() <= 2 ){
+                            state = "2";
+                        }
+                        if(StringUtils.isNotBlank(actStoTimegroupAct.getTimegroupId())){
+                            if(hasInst.contains(actStoTimegroupAct.getTimegroupId())) continue;
+                            hasInst.add(actStoTimegroupAct.getTimegroupId());
+                            String name = "时限组时限";
+                            ActStoTimegroup actStoTimegroup = actStoTimegroupMapper.getActStoTimegroupById(actStoTimegroupAct.getTimegroupId());
+                            if(actStoTimegroup != null){
+                                name = actStoTimegroup.getTimegroupName() + "时限";
+                            }
+                            String timeText = getTimeText(unit,actStoTimegroupAct.getTimeLimit().doubleValue());
+                            if(StringUtils.isNotBlank(timeText)){
+                                timeText = "剩余" + timeText;
+                            }
+                            nodeTimelimitList.add(createVo(name,timeText,state));
+
+                        }else if(StringUtils.isBlank(actStoTimegroupAct.getTimegroupId())){
+                            if(hasInst.contains(actStoTimegroupAct.getTimegroupActId())) continue;
+
+                            String timeText = getTimeText(unit,actStoTimegroupAct.getTimeLimit().doubleValue());
+                            if(StringUtils.isNotBlank(timeText)){
+                                timeText = "剩余" + timeText;
+                            }
+                            nodeTimelimitList.add(createVo("当前环节时限",timeText,state));
+                        }
+                    }
+                }
+            }
+            if(nodeTimelimitList.size() > 0){
+                nodeTimelimitList.add(createVo("当前办件时限",info.getRemainingOrOverTimeText(),info.getInstState()));
+                info.setNodeTimelimitList(nodeTimelimitList);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private Map createVo(String name,String text,String state){
+        Map nodeTimelimit = new HashMap();
+        nodeTimelimit.put("name",name);
+        nodeTimelimit.put("text",text);
+        nodeTimelimit.put("instState",state);
+        return nodeTimelimit;
+    }
+
+    /**
+     * 获取时限实例的时间值
+     * @param info
+     * @return
+     */
+    private String getTimeruleInstTimeText(ActStoTimeruleInst info){
+        if (StringUtils.isBlank(info.getTimeruleUnit())) {
+            return null;
+        }
+        Double time = info.getRemainingTime();
+        if (TimeruleInstState.OVERDUE.getValue().equals(info.getInstState())) {
+            time = info.getOverdueTime();
+        }
+        String timeText = getTimeText(info.getTimeruleUnit(),time);
+        if(StringUtils.isNotBlank(timeText)){
+            timeText = (TimeruleInstState.OVERDUE.getValue().equals(info.getInstState()) ? "逾期" : "剩余") + timeText;
+        }
+        return timeText;
     }
 
 

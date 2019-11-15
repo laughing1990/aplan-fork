@@ -100,6 +100,10 @@ public class AeaHiItemMatinst implements Serializable {
     @ApiModelProperty(value = "业主个人ID")
     private String linkmanInfoId;
 
+    private String certId;
+
+    private String stoFormId;
+
     @ApiModelProperty(value = "材料来源，u表示单位，l表示个人，默认是u")
     private String matinstSource;
     @ApiModelProperty(value = "文件ID")

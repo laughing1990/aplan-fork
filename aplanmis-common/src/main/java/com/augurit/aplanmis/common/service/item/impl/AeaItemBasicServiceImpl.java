@@ -5,6 +5,7 @@ import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.agcloud.opus.common.domain.OpuOmOrg;
 import com.augurit.agcloud.opus.common.mapper.OpuOmOrgMapper;
+import com.augurit.aplanmis.common.constants.AeaItemBasicContants;
 import com.augurit.aplanmis.common.domain.AeaHiIteminst;
 import com.augurit.aplanmis.common.domain.AeaItemBasic;
 import com.augurit.aplanmis.common.domain.AeaItemFrontItem;
@@ -99,6 +100,11 @@ public class AeaItemBasicServiceImpl implements AeaItemBasicService {
     }
 
     @Override
+    public List<AeaItemBasic> getAeaItemBasicListByOrgId(String orgId,String isCatalog) throws Exception {
+        return aeaItemBasicMapper.getAeaItemBasicListByOrgIdAndIsCatalog(orgId,isCatalog);
+    }
+
+    @Override
     public void saveAeaItemBasic(AeaItemBasic aeaItemBasic) throws Exception {
         if (StringUtils.isBlank(aeaItemBasic.getItemBasicId())) {//新增
             aeaItemBasic.setItemBasicId(UUID.randomUUID().toString());
@@ -137,7 +143,7 @@ public class AeaItemBasicServiceImpl implements AeaItemBasicService {
     public PageInfo<AeaItemBasic> listAeaItemBasic(AeaItemBasic aeaItemBasic, int pageNum, int pageSize, String rootOrgId) throws Exception {
 
         aeaItemBasic.setRootOrgId(rootOrgId);
-        aeaItemBasic.setIsCatalog("0");
+        aeaItemBasic.setIsCatalog(AeaItemBasicContants.IS_CATALOG_NO);
         PageHelper.startPage(pageNum, pageSize);
         List<AeaItemBasic> list = aeaItemBasicMapper.listAeaItemBasic(aeaItemBasic);
         return new PageInfo<>(list);
@@ -148,6 +154,14 @@ public class AeaItemBasicServiceImpl implements AeaItemBasicService {
 
         PageHelper.startPage(pageNum, pageSize);
         List<AeaItemBasic> list = aeaItemBasicMapper.getAeaItemBasicListByOrgId(orgId);
+        return new PageInfo<>(list);
+    }
+
+    @Override
+    public PageInfo<AeaItemBasic> getAeaItemBasicListByOrgId(String orgId,String isCatalog, int pageNum, int pageSize) throws Exception {
+
+        PageHelper.startPage(pageNum, pageSize);
+        List<AeaItemBasic> list = aeaItemBasicMapper.getAeaItemBasicListByOrgIdAndIsCatalog(orgId,isCatalog);
         return new PageInfo<>(list);
     }
 

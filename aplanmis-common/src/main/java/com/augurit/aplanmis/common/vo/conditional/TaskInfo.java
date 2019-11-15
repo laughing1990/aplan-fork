@@ -111,5 +111,8 @@ public class TaskInfo extends BaseInfo implements Serializable {
     @ApiModelProperty(value = "提醒信息列表")
     private List<ActStoRemindAndReceiver> remindList;
 
+    @ApiModelProperty(value = "节点时限列表")
+    private List nodeTimelimitList;
+
 
 }

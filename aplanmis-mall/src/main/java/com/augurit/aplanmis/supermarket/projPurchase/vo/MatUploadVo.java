@@ -1,4 +1,4 @@
-package com.augurit.aplanmis.front.apply.vo.attach;
+package com.augurit.aplanmis.supermarket.projPurchase.vo;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 @ApiModel("申报材料附件上传vo")
-public class ApplyMatUploadVo {
+public class MatUploadVo {
     @ApiModelProperty(value = "材料实例id")
     private String matinstId;
     @ApiModelProperty(value = "材料id", required = true)

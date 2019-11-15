@@ -42,21 +42,21 @@ $(function() {
         cursorborderradius: "2px",//以像素为光标边界半径
         autohidemode: true  //是否隐藏滚动条
     });
-    $('#aedit_part_form_form input[name="isSmartForm"]').change(function(){
-        var value = $(this).val();
-        if(value=='1'){
-            $('#formUrlDiv').hide();
-            $("#aedit_part_form_form textarea[name='formUrl']").rules('remove');
-        }else{
-            $('#formUrlDiv').show();
-            $("#aedit_part_form_form textarea[name='formUrl']").rules('add',{
-                required: true,
-                messages:{
-                    required: '<font color="red">此项必填！</font>'
-                }
-            });
-        }
-    });
+    // $('#aedit_part_form_form input[name="isSmartForm"]').change(function(){
+    //     var value = $(this).val();
+    //     if(value=='1'){
+    //         $('#formUrlDiv').hide();
+    //         $("#aedit_part_form_form textarea[name='formUrl']").rules('remove');
+    //     }else{
+    //         $('#formUrlDiv').show();
+    //         $("#aedit_part_form_form textarea[name='formUrl']").rules('add',{
+    //             required: true,
+    //             messages:{
+    //                 required: '<font color="red">此项必填！</font>'
+    //             }
+    //         });
+    //     }
+    // });
 
     $('#aedit_part_form_form input[name="useEl"]').change(function(){
         var value = $(this).val();
@@ -609,7 +609,7 @@ function addStagePartform(){
             $("#aedit_part_form_form").validate().resetForm();
         }
         $('#saveParPartform').show();
-        $('#formUrlDiv').hide();
+        // $('#formUrlDiv').hide();
         $('#aedit_part_form_form input[name="itemPartformId"]').val('');
         $('#aedit_part_form_form input[name="itemVerId"]').val(currentBusiId);
         $('#aedit_part_form_form input[name="partformId"]').val('');
@@ -772,11 +772,11 @@ function editStagePartFormById(itemPartformId){
                         $('#stageElDiv').hide();
                     }
 
-                    if(data.isSmartForm=='1'){
-                        $('#formUrlDiv').hide();
-                    }else{
-                        $('#formUrlDiv').show();
-                    }
+                    // if(data.isSmartForm=='1'){
+                    //     $('#formUrlDiv').hide();
+                    // }else{
+                    //     $('#formUrlDiv').show();
+                    // }
                     loadFormData(true, '#aedit_part_form_form', data);
                 }
             },
