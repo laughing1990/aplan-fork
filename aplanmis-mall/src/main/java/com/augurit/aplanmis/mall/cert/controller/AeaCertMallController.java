@@ -1,5 +1,7 @@
 package com.augurit.aplanmis.mall.cert.controller;
 
+import com.augurit.aplanmis.common.utils.SessionUtil;
+import com.augurit.aplanmis.common.vo.LoginInfoVo;
 import com.augurit.aplanmis.integration.license.dto.LicenseAuthResDTO;
 import com.augurit.aplanmis.mall.cert.service.AeaCertMallService;
 import io.swagger.annotations.Api;
@@ -12,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -251,8 +255,9 @@ public class AeaCertMallController {
             @ApiImplicitParam(name = "identityNumber", value = "申办证件号码", required = true , dataType = "String" ,paramType = "query"),
     })
     @GetMapping("/getLicenseAuthRes")
-    public LicenseAuthResDTO getLicenseAuthRes(String itemVerIds, String identityNumber) throws Exception {
-        return aeaCertService.getLicenseAuthRes(itemVerIds, identityNumber);
+    public LicenseAuthResDTO getLicenseAuthRes(String itemVerIds, String identityNumber,HttpServletRequest request) throws Exception {
+        LoginInfoVo loginVo = SessionUtil.getLoginInfo(request);
+        return aeaCertService.getLicenseAuthRes(itemVerIds, identityNumber,loginVo);
     }
 
     @ApiOperation(value = "通过电子证照编码获取证照显示地址", notes = "通过电子证照编码获取证照显示地址")

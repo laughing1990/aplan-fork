@@ -12,7 +12,6 @@ import com.augurit.agcloud.framework.ui.pager.PageHelper;
 import com.augurit.agcloud.framework.ui.ztree.ZtreeNode;
 import com.augurit.agcloud.framework.util.CollectionUtils;
 import com.augurit.agcloud.opus.common.domain.OpuOmOrg;
-import com.augurit.agcloud.opus.common.domain.OpuOmUserInfo;
 import com.augurit.agcloud.opus.common.mapper.OpuOmUserInfoMapper;
 import com.augurit.aplanmis.common.constants.DeletedStatus;
 import com.augurit.aplanmis.common.domain.*;
@@ -21,6 +20,7 @@ import com.augurit.aplanmis.common.mapper.AeaCertTypeMapper;
 import com.augurit.aplanmis.common.mapper.AeaItemBasicMapper;
 import com.augurit.aplanmis.common.service.admin.opus.AplanmisOpuOmOrgAdminService;
 import com.augurit.aplanmis.common.service.instance.AeaHiIteminstService;
+import com.augurit.aplanmis.common.vo.LoginInfoVo;
 import com.augurit.aplanmis.integration.license.config.LicenseConfig;
 import com.augurit.aplanmis.integration.license.dto.*;
 import com.augurit.aplanmis.integration.license.service.LicenseApiService;
@@ -350,28 +350,28 @@ public class AeaCertMallService {
 
 
     
-    public LicenseAuthResDTO getLicenseAuthRes(String itemVerIds, String identityNumber) throws Exception {
+    public LicenseAuthResDTO getLicenseAuthRes(String itemVerIds, String identityNumber,LoginInfoVo loginVo) throws Exception {
         String accessToken = licenseApiService.getLoginToken();
         if (StringUtils.isBlank(itemVerIds) || StringUtils.isBlank(identityNumber))
             return new LicenseAuthResDTO();
         List<String> itemverIds = new ArrayList<>();
         Collections.addAll(itemverIds, itemVerIds.split(","));
         List<AeaItemBasic> list = aeaItemBasicMapper.getAeaItemBasicListByItemVerIds(itemverIds);
-        return getLicenseAuthRes(list, accessToken, identityNumber);
+        return getLicenseAuthRes(list, accessToken, identityNumber,loginVo);
     }
 
-    private LicenseAuthResDTO getLicenseAuthRes(List<AeaItemBasic> list, String accessToken, String identityNumber) {
+    private LicenseAuthResDTO getLicenseAuthRes(List<AeaItemBasic> list, String accessToken, String identityNumber,LoginInfoVo loginVo) {
         if (list.size() < 1)
             return new LicenseAuthResDTO();
         LicenseAuthResDTO result = new LicenseAuthResDTO();
         ArrayList checkAuthCodes = new ArrayList();//针对多个事项时，进行重复过滤
         ArrayList auth_codes = new ArrayList();
         List<LicenseDTO> licenseDTO = new ArrayList<>();
-        OpuOmUserInfo userinfo = opuOmUserInfoMapper.getOpuOmUserInfoByUserId(SecurityContext.getCurrentUserId());
+        //OpuOmUserInfo userinfo = opuOmUserInfoMapper.getOpuOmUserInfoByUserId(SecurityContext.getCurrentUserId());
         OpuOmOrg topOrg = opuOmOrgService.getTopOrgByCurOrgId(SecurityContext.getCurrentOrgId());
         BscDicRegion proDataRegion = bscDicRegionMapper.getBscDicRegionById(topOrg.getRegionId());
         LicenseUserInfoDTO operator = new LicenseUserInfoDTO();
-        operator.setIdentity_num(userinfo.getUserIdCardNo() == null ? "null" : userinfo.getUserIdCardNo());//身份证号
+        operator.setIdentity_num(loginVo.getIdCard() == null ? loginVo.getUnifiedSocialCreditCode(): loginVo.getIdCard());//身份证号
         operator.setDivision(topOrg.getOrgName());
         operator.setDivision_code(proDataRegion.getRegionNum());
         operator.setService_org(proDataRegion.getRegionNum());
