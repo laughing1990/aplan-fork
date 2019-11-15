@@ -23,6 +23,8 @@ import com.augurit.aplanmis.common.service.admin.cert.AeaCertAdminService;
 import com.augurit.aplanmis.common.service.admin.opus.AplanmisOpuOmOrgAdminService;
 import com.augurit.aplanmis.common.service.instance.AeaHiIteminstService;
 import com.augurit.aplanmis.integration.license.config.LicenseConfig;
+import com.augurit.aplanmis.integration.license.constont.LicenseStatus;
+import com.augurit.aplanmis.integration.license.constont.LicenseType;
 import com.augurit.aplanmis.integration.license.dto.*;
 import com.augurit.aplanmis.integration.license.service.LicenseApiService;
 import com.github.pagehelper.Page;
@@ -395,8 +397,28 @@ public class AeaCertAdminServiceImpl implements AeaCertAdminService {
                         continue;
                     checkAuthCodes.add(data.getData().get(i).getLicense_code());
                     auth_codes.add(data.getAuth_codes()[i]);
-                    LicenseDTO licenseDTO=data.getData().get(i);
+                    LicenseDTO licenseDTO = data.getData().get(i);
                     licenseDTO.setAuth_code(data.getAuth_codes()[i]);
+                    if (LicenseStatus.ISSUED.getValue().equalsIgnoreCase(licenseDTO.getLicense_status()))
+                        licenseDTO.setLicense_status_name(LicenseStatus.ISSUED.getName());
+                    else if (LicenseStatus.DRAFT.getValue().equalsIgnoreCase(licenseDTO.getLicense_status()))
+                        licenseDTO.setLicense_status_name(LicenseStatus.DRAFT.getName());
+                    else if (LicenseStatus.REGISTERED.getValue().equalsIgnoreCase(licenseDTO.getLicense_status()))
+                        licenseDTO.setLicense_status_name(LicenseStatus.REGISTERED.getName());
+                    else if (LicenseStatus.ABOLISHED.getValue().equalsIgnoreCase(licenseDTO.getLicense_status()))
+                        licenseDTO.setLicense_status_name(LicenseStatus.ABOLISHED.getName());
+
+                    if (LicenseType.CERTIFICATE.getValue().equalsIgnoreCase(licenseDTO.getLicense_type()))
+                        licenseDTO.setLicense_type_name(LicenseType.CERTIFICATE.getName());
+                    else if (LicenseType.PROOF.getValue().equalsIgnoreCase(licenseDTO.getLicense_type()))
+                        licenseDTO.setLicense_type_name(LicenseType.PROOF.getName());
+                    else if (LicenseType.APPROVAL.getValue().equalsIgnoreCase(licenseDTO.getLicense_type()))
+                        licenseDTO.setLicense_type_name(LicenseType.APPROVAL.getName());
+                    else if (LicenseType.REPORT.getValue().equalsIgnoreCase(licenseDTO.getLicense_type()))
+                        licenseDTO.setLicense_type_name(LicenseType.REPORT.getName());
+                    else if (LicenseType.RESULT.getValue().equalsIgnoreCase(licenseDTO.getLicense_type()))
+                        licenseDTO.setLicense_type_name(LicenseType.RESULT.getName());
+
                     licenseDTOList.add(licenseDTO);
                 }
             }
