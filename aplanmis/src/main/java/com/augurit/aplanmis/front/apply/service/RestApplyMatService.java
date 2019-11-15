@@ -650,6 +650,7 @@ public class RestApplyMatService {
                         aeaHiItemMatinst.setCreater(SecurityContext.getCurrentUserId());
                         aeaHiItemMatinst.setCreateTime(new Date());
                         aeaHiItemMatinst.setRootOrgId(SecurityContext.getCurrentOrgId());
+                        aeaHiItemMatinst.setMatProp(aeaItemMat.getMatProp());
 
                         aeaHiItemMatinstMapper.insertAeaHiItemMatinst(aeaHiItemMatinst);
                         returnList.add(aeaHiItemMatinst);

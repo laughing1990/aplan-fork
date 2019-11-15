@@ -127,4 +127,7 @@ public class AeaHiCertinst implements Serializable {
     @ApiModelProperty(name = "applicant", value = "建设单位名称", hidden = true)
     private String applicant;
 
+    @ApiModelProperty(value = "材料定义id")
+    private String matId;
+
 }
