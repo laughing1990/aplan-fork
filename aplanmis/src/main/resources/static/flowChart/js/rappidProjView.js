@@ -8,6 +8,7 @@ var gWhile = '#F6FBFA';
 var aCells = '';
 // vue实例对象
 var app = "";
+var stageTip = '';
 $(function () {
   // $("#uploadProgress").modal("show");
   var proj = {};
@@ -172,20 +173,28 @@ $(function () {
         $('.toolSvg').on('click', function (a, b) {
           paper.showTools().openAsSVG();
         })
+        $('#paper-container g.joint-type-bpmn-hpool1, g.joint-type-bpmn-hpool2, g.joint-type-bpmn-hpool3, g.joint-type-bpmn-hpool4').on('mouseover', function (a, b) {
+          showStageDetail($(this));
+        });
+        $('#paper-container g.joint-type-bpmn-hpool1, g.joint-type-bpmn-hpool2, g.joint-type-bpmn-hpool3, g.joint-type-bpmn-hpool4').on('mouseleave', function (a, b) {
+          stageTip.stageTipShow = false;
+        });
         $('#paper-container g.joint-cell.joint-type-bpmn.joint-type-bpmn-activity').on('mouseover', function (a, b) {
           showItemDetail($(this));
         });
-        var inter = '';
         $('#paper-container g.joint-cell.joint-type-bpmn.joint-type-bpmn-activity').on('mouseleave', function () {
           // inter = setTimeout("$('.tips-table-cell').css('display', 'none');", 700);
           // setInterval("$('.tips-table-cell').css('display', 'none');", 2000);
-          $('.tips-table-cell').hide();
+          // $('.tips-table-cell').hide();
+          stageTip.itemTipShow=false;
         });
         $('.tips-table-cell').hover(function (ele, a) {
-          $('.tips-table-cell').show();
+          stageTip.itemTipShow=true;
+          // $('.tips-table-cell').show();
         });
         $('.tips-table-cell').on('mouseleave', function (ele, a) {
-          $(this).hide();
+          stageTip.itemTipShow=false;
+          // $(this).hide();
         });
         $('#paper-container g.joint-cell.joint-type-bpmn.joint-type-bpmn-activity').on('dblclick', function (a, b) {
           openItemDtailmodel($('#itemTableInfo').data('itemInfo'));
@@ -586,6 +595,28 @@ $(function () {
   });
   // var Ctor = Vue.extend(Main);
   // new Ctor().$mount('#app');
+  stageTip = new Vue({
+    el: '#stageAndItemTableCell',
+    mixins: [mixins],
+    data: function () {
+      return {
+        stage:'',
+        stageInfo:'',
+        item:'',
+        itemInfo:'',
+        itemTipShow:false,
+        stageTipShow:false,
+        stageTipCss:{
+          top:'100px',
+          left:'100px',
+          itemTop:'100px',
+          itemLeft:'100px',
+          arrowUpShow:false,
+          itemArrowUpShow:false
+        }
+      }
+    }
+  });
 })
 
 // 页面dailog显示
@@ -602,8 +633,12 @@ function showItemDetail($this) {
   var $itemTable = $('.tips-table-cell');
   var itemInfo = $this.data('itemInfo');
   if (!itemInfo) {
+    stageTip.itemTipShow = false;
     return;
   }
+  stageTip.itemTipShow = true;
+  stageTip.itemInfo = itemInfo;
+  stageTip.item= $this.data('item');
   var offset = $this.offset();
   var tableWidth = $itemTable.width();
   var tableHeight = $itemTable.height();
@@ -612,28 +647,32 @@ function showItemDetail($this) {
   var x, y, z;
   if (offset.top - tableHeight < 0) {
     y = offset.top + itemHeight - 18;
-    $('.detailArrowDown').hide();
-    $('.detailArrowUp').show();
+    stageTip.stageTipCss.itemArrowUpShow = false;
+    // $('.detailArrowDown').hide();
+    // $('.detailArrowUp').show();
   } else {
-    $('.detailArrowDown').show();
-    $('.detailArrowUp').hide();
+    // $('.detailArrowDown').show();
+    // $('.detailArrowUp').hide();
+    stageTip.stageTipCss.itemArrowUpShow = true;
     y = offset.top - tableHeight - 20;
   }
-  $itemTable.css('top', y);
-  $itemTable.css('left', offset.left - (tableWidth - itemWidth) / 2);
-  $itemTable.show();
-  
-  $ps = $('#itemTableInfo>div>');
-  $($ps[0]).find('span').text(itemInfo.orgName);
-  $($ps[0]).find('span').attr('title', itemInfo.orgName);
-  // $($ps[1]).find('span').text(itemInfo.orgName);
-  $($ps[1]).find('span').text($this.find('div.content span:eq(1)').text());
-  $($ps[2]).find('span').text(itemInfo.iteminstRunTime > 0 ? itemInfo.iteminstRunTime : '0');
-  $($ps[3]).find('span').text(itemInfo.iteminstStartTime ? new Date(itemInfo.iteminstStartTime).format('yyyy-MM-dd') : '-');
-  $($ps[4]).find('span').text(itemInfo.iteminstEndTime ? new Date(itemInfo.iteminstEndTime).format('yyyy-MM-dd') : '-');
-  $($ps[5]).find('span').text(itemInfo.statusName);
-  $($ps[5]).find('span').css('border-color', $this.find('div.content').css('border-color'));
-  $($ps[5]).find('span').css('color', $this.find('div.content').css('border-color'));
+  // $itemTable.css('top', y);
+  // $itemTable.css('left', offset.left - (tableWidth - itemWidth) / 2 + 183);
+  stageTip.stageTipCss.itemTop = y + 'px';
+  x = offset.left - (tableWidth - itemWidth) / 2+183;
+  stageTip.stageTipCss.itemLeft = x + 'px';
+
+  // $ps = $('#itemTableInfo>div>');
+  // $($ps[0]).find('span').text(itemInfo.orgName);
+  // $($ps[0]).find('span').attr('title', itemInfo.orgName);
+  // // $($ps[1]).find('span').text(itemInfo.orgName);
+  // $($ps[1]).find('span').text($this.find('div.content span:eq(1)').text());
+  // $($ps[2]).find('span').text(itemInfo.iteminstRunTime > 0 ? itemInfo.iteminstRunTime : '0');
+  // $($ps[3]).find('span').text(itemInfo.iteminstStartTime ? new Date(itemInfo.iteminstStartTime).format('yyyy-MM-dd') : '-');
+  // $($ps[4]).find('span').text(itemInfo.iteminstEndTime ? new Date(itemInfo.iteminstEndTime).format('yyyy-MM-dd') : '-');
+  // $($ps[5]).find('span').text(itemInfo.statusName);
+  // $($ps[5]).find('span').css('border-color', $this.find('div.content').css('border-color'));
+  $('#itemStatusName').css('color', $this.find('div.content').css('border-color'));
   $('#itemTableInfo').data('itemInfo', $this.data('itemInfo'));
 }
 
@@ -850,6 +889,9 @@ function setAttrToGModal(cells) {
   $.each(cells, function (ind, ele) {
     if (ele.type == 'bpmn.Activity') {
       $('#paper-container .joint-viewport').find('g[model-id=' + ele.id + ']').data('item', ele.attrs.item);
+    }
+    if (ele.type.indexOf('bpmn.HPool') >= 0) {
+      $('#paper-container .joint-viewport').find('g[model-id=' + ele.id + ']').data('stage', ele.attrs.stage);
     }
   })
 }
@@ -1186,11 +1228,12 @@ function changeViewItemProp(itemId, itemIds, fontColor, backColor, borderColor, 
   }
 }
 
-function changeViewStageProp(stageId, statusValue, workDay) {
+function changeViewStageProp(stageId, statusValue, workDay, ele) {
   //控制阶段的颜色和图标
   var color = '',
       src = '';
   var $pool = $('g[model-id=' + stageId + ']');
+  $pool.data('stageInfo', ele);
   if (statusValue == 'HANDING' || statusValue == 'UN_FINISHED') { //正在处理
     color = gBlue, src = ctx + '/rappid/apps/BPMNEditor/images/stage_handing.png';
   } else if (statusValue == 'FINISHED') { //完成
@@ -1480,7 +1523,7 @@ function setViewByProjResult(statusList, projId, cells) {
   
   if (statusList.length > 0) {
     $.each(statusList, function (ind, ele) {
-      changeViewStageProp(ele.stageId, ele.statusValue, ele.statusName);
+      changeViewStageProp(ele.stageId, ele.statusValue, ele.statusName, ele);
       if (ele.diagramItemList && ele.diagramItemList.length > 0) {
         $.each(ele.diagramItemList, function (ind1, ele1) {
           var color, fontcolor, backcolor, png;
@@ -1578,4 +1621,32 @@ function reqStatusListAndResetThemeverDiagram(node, nodes, proj, cells) {
       }
     });
   }
+}
+function showStageDetail($this) {
+  if(! $this.data('stageInfo')){
+    stageTip.stageTipShow = false;
+    return;
+  }
+  stageTip.stage = $this.data('stage');
+  stageTip.stage.stageName = $this.find('g.rotatable>text.label').text();
+  stageTip.stageInfo = $this.data('stageInfo');
+
+  stageTip.stageTipShow = true;
+  var $itemTable = $('.tips-Stage-cell');
+  var offset = $this.offset();
+  var tableWidth = $itemTable.width();
+  var tableHeight = $itemTable.height();
+  var itemWidth = $this.find('rect.header')[0].getClientRects()[0].width;
+  var itemHeight = $this.find('rect.header')[0].getClientRects()[0].height;
+  var x, y, z;
+  if (offset.top - tableHeight < 0) {
+    stageTip.stageTipCss.arrowUpShow = false;
+    y = offset.top + itemHeight - 18;
+  } else {
+    stageTip.stageTipCss.arrowUpShow = true;
+    y = offset.top - tableHeight - 20;
+  }
+  stageTip.stageTipCss.top = y + 'px';
+  x = offset.left - (tableWidth - itemWidth) / 2+183;
+  stageTip.stageTipCss.left = x + 'px';
 }
