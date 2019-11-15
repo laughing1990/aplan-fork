@@ -1696,16 +1696,17 @@
         <div class="id-lib-top-search c-f">
           <div class="l">建设单位</div>
           <div class="l" style="margin-left: 8px;margin-right: 38px;">
-            <el-select size="medium" v-model="idLibSearchOpt.unit"
+            <el-select size="medium" v-model="idLibSearchOpt.chooseUnit"
                        style="width:300px" placeholder="请选择建设单位">
-              <el-option label="a" value="a"></el-option>
-              <el-option label="b" value="b"></el-option>
+              <el-option v-for="item in applyUnitList"
+                         :label="item.applicant" :value="item.unitInfoId">
+              </el-option>
             </el-select>
           </div>
           <div class="l">
-            <el-radio-group v-model="idLibSearchOpt.type">
-              <el-radio :label="3">企业证照</el-radio>
-              <el-radio :label="6">法人证照</el-radio>
+            <el-radio-group v-model="idLibSearchOpt.chooseType">
+              <el-radio :label="1">企业证照</el-radio>
+              <el-radio :label="2">法人证照</el-radio>
             </el-radio-group>
           </div>
         </div>
@@ -1725,12 +1726,11 @@
             </template>
           </el-table-column>
         </el-table>
-        
       </div>
     </div>
   </el-dialog>
   <!-- 材料库弹窗 -->
-  <el-dialog title="材料列表" v-loading="matLibLoading" :visible.sync="matLibVisible" width="940px">
+  <el-dialog title="材料库文件列表" v-loading="matLibLoading" :visible.sync="matLibVisible" width="940px">
     <div class="bz-dialog-wrap">
       <div class="bz-dialog-box" style="padding: 20px;">
         <el-table max-height="500" style="width:100%;" border stripe :data="matLibTableList">

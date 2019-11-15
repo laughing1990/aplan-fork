@@ -489,9 +489,10 @@ var vm = new Vue({
       bzCorrectData: [],
       bzApproveData: [],
       isShowOneForm: '0',
+      // 电子证照
       idLibSearchOpt: {
-        unit: '',
-        type: '',
+        chooseUnit: '',
+        chooseType: '1',
       },
       idLibLoading: false,
       idLibVisible: false,
@@ -499,6 +500,8 @@ var vm = new Vue({
       matLibVisible: false,
       idLibTableList: [],
       matLibTableList:[],
+      applyMainType: '0',
+      applyUnitList: [],
     }
   },
   filters: {

@@ -96,6 +96,9 @@ var vm = new Vue({
               }
             });
           } else if (vm.applySubject == '1') {
+            parent.vm.applyMainType = '1';
+            parent.vm.applyUnitList = vm.unitInfoList.concat([]);
+            parent.vm.idLibSearchOpt.chooseUnit = vm.unitInfoList[0].unitInfoId;
             // 企业是否黑名单
             vm.unitInfoList.forEach(function (u) {
               if (u.creditType === false && isBlack == false) {

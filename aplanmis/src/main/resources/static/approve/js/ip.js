@@ -492,6 +492,7 @@ var idLibResMock = {
   "response_id": "d7e5f6fb-d9f6-43d1-8eb1-942fc8b8243f",
   "data": [{
     "name": "普通义工（志愿者）证",
+    "auth_codes":"20191115125902148NC011378732_44070020190000090V",
     "division": "",
     "remark": null,
     "creator": null,
@@ -533,6 +534,7 @@ var idLibResMock = {
   },
     {
       "name": "普通义工（志愿者）证",
+      "auth_codes":"20191115125902148NC011378732_44070020190000090U",
       "division": "",
       "remark": null,
       "creator": null,
@@ -574,6 +576,7 @@ var idLibResMock = {
     },
     {
       "name": "志愿服务记录证明",
+      "auth_codes":"20191115125902148NC011378732_44070020190000080W",
       "division": "",
       "remark": null,
       "creator": null,
@@ -615,6 +618,7 @@ var idLibResMock = {
     },
     {
       "name": "普通义工（志愿者）证",
+      "auth_codes":"20191115125902148NC011378732_4407002019000008CS",
       "division": "",
       "remark": null,
       "creator": null,
