@@ -14,4 +14,13 @@ public class TableNameConstant {
     public static String SPGL_XMSPSXBLXXB = "SPGL_XMSPSXBLXXB";
     public static String SPGL_XMSPSXBLXXXXB = "SPGL_XMSPSXBLXXXXB";
     public static String SPGL_XMSPSXPFWJXXB = "SPGL_XMSPSXPFWJXXB";
+    /*
+     * 多规
+     * @author qhg
+     * @Date 2019/11/04
+     *
+     */
+    public static String SPGL_DFGHKZXXXB = "SPGL_DFGHKZXXXB";
+    public static String SPGL_XMQQYJXXB = "SPGL_XMQQYJXXB";
+    public static String SPGL_XMYDHXJZXXB = "SPGL_XMYDHXJZXXB";
 }

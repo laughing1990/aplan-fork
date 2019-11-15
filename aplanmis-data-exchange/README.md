@@ -34,6 +34,14 @@ spring.datasource.analyse.username=duj
 spring.datasource.analyse.password=duj
 spring.datasource.analyse.driver-class-name=com.mysql.jdbc.Driver
 spring.datasource.analyse.type=com.zaxxer.hikari.HikariDataSource
+- 上传多规三张表
+(1)需要在多规的库创建三个视图（由多规部门提供）：spgl_xmydhxjzxxb_view,spgl_xmqqyjxxb_view,spgl_dfghkzxxxb_view
+(2)需要上传多规三张表的配置改成true
+aplanmis.data.exchange.upload-duogui=false
+(3)配置多规数据库连接
+spring.datasource.duogui.jdbc-url=jdbc:mysql://127.0.0.1:3306/aplanmis_prd?characterEncoding=utf-8&allowMultiQueries=true
+spring.datasource.duogui.username=duj
+spring.datasource.duogui.password=duj
 
 ###日常运维说明
 1. 每次更新代码后"审批系统视图-mysql_4.0.sql"有变动的需要手动执行
@@ -49,6 +57,9 @@ spring.datasource.analyse.type=com.zaxxer.hikari.HikariDataSource
 - 项目审批事项办理详细信息表：SPGL_XMSPSXBLXXXXB
 - 项目审批事项批复文件信息表：SPGL_XMSPSXPFWJXXB
 - 项目其他附件信息表：SPGL_XMQTFJXXB
+- 地方项目用地红线界址信息表：SPGL_XMYDHXJZXXB（需要开启）
+- 项目前期意见信息表：SPGL_XMQQYJXXB（需要开启）
+- 地方规划控制线信息表：SPGL_DFGHKZXXXB（需要开启）
 
 2. 支持单项申报数据的上传，支持辅线作为事项上传。
 

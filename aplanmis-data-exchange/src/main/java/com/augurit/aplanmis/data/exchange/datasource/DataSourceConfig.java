@@ -35,6 +35,9 @@ public class DataSourceConfig extends ApplicationObjectSupport {
     @Value("${aplanmis.data.exchange.analyse.open}")
     private Boolean uploadToAnalyse;
 
+    @Value("${aplanmis.data.exchange.upload-duogui}")
+    private Boolean uploadDuoGui;
+
     @Primary
     @Bean(name = "aplanmisDataSource")
     @ConfigurationProperties(prefix = "spring.datasource.aplanmis")
@@ -55,6 +58,13 @@ public class DataSourceConfig extends ApplicationObjectSupport {
         return DataSourceBuilder.create().build();
     }
 
+    @Bean(name = "duoGuiDataSource")
+    @ConditionalOnExpression("${aplanmis.data.exchange.upload-duogui}")
+    @ConfigurationProperties(prefix = "spring.datasource.duogui")
+    public DataSource getDateSource4() {
+        return DataSourceBuilder.create().build();
+    }
+
     @Bean(name = "dynamicDataSource")
     public DynamicDataSource dataSource(@Qualifier("aplanmisDataSource") DataSource aplanmisDataSource,
                                         @Qualifier("provinceDataSource") DataSource provinceDataSource) {
@@ -64,6 +74,10 @@ public class DataSourceConfig extends ApplicationObjectSupport {
         if(uploadToAnalyse){
             Object analyseDataSource = getApplicationContext().getBean("analyseDataSource");
             targetDataSource.put(DataSourceType.DataBaseType.ANALYSE, analyseDataSource);
+        }
+        if(uploadDuoGui){
+            Object analyseDataSource = getApplicationContext().getBean("duoGuiDataSource");
+            targetDataSource.put(DataSourceType.DataBaseType.DUOGUI, analyseDataSource);
         }
         DynamicDataSource dataSource = new DynamicDataSource();
         dataSource.setTargetDataSources(targetDataSource);
