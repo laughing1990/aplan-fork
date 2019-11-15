@@ -713,7 +713,7 @@
         and (item_state_id=#{itemStateId} or item_state_id is null)
     </select>
 
-    <select id="getAeaItemMatByItemIdAndMatIdAndStateId" resultType="AeaItemInout">
+    <select id="getAeaItemMatByItemVerIdAndMatIdAndStateId" resultType="AeaItemInout">
         select
         <include refid="allColumns"/>
         from AEA_ITEM_INOUT aii

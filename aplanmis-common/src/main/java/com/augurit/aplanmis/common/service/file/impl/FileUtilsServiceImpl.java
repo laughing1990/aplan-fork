@@ -109,18 +109,20 @@ public class FileUtilsServiceImpl extends FileAbstractService {
     }
 
     @Override
-    public void deleteAttachment(String detailId) throws Exception {
+    public boolean deleteAttachment(String detailId) throws Exception {
         if (StringUtils.isBlank(detailId)) throw new Exception("detailIds不能为空");
-        delete(detailId);
+        return delete(detailId);
     }
 
     @Override
-    public void deleteAttachments(String[] detailIds) throws Exception {
-        if (null == detailIds || detailIds.length < 1) return;
+    public boolean deleteAttachments(String[] detailIds) throws Exception {
+        if (null == detailIds || detailIds.length < 1) return false;
+        boolean flag = true;
         for (String detailId : detailIds) {
             if (StringUtils.isNotBlank(detailId))
-                delete(detailId);
+                flag = delete(detailId);
         }
+        return true;
     }
 
     @Override

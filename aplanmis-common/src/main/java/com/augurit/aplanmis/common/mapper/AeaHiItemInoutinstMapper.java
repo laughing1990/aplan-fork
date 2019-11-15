@@ -111,4 +111,12 @@ public interface AeaHiItemInoutinstMapper {
      */
     List<AeaMatinst> getMatinstListBy(@Param("iteminstIds") String[] iteminstIds, @Param("isOfficeDoc") String isOfficeDoc);
 
+    /**
+     * 根据事项实例ID和材料ID获取材料实例列表---单项申报
+     *
+     * @param iteminstId 事项实例ID
+     * @param matIds     材料ID
+     * @return
+     */
+    List<AeaMatinst> getMatinstListByiteminstIdAndMatId(@Param("iteminstId") String iteminstId, @Param("matIds") String[] matIds);
 }

@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Profile;
  * @date 2019/8/9
  */
 
-@Profile({"local","dev"})
+@Profile({"dev"})
 @Configuration
 @ConditionalOnWebApplication
 public class HttpTraceConfiguration {

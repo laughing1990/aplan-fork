@@ -144,6 +144,7 @@ public class AeaImProjPurchaseController {
 
     @ApiOperation(value = "新增采购需求", notes = "业主单位个人中心新增采购需求,批文文件上传officialRemarkFile，要求说明文件上传requireExplainFile")
     @PostMapping(value = "/postProjPurchase")
+    @Deprecated
     public RestResult postProjPurchase(@Valid SaveAeaImProjPurchaseVo saveAeaImProjPurchaseVo, HttpServletRequest request, BindingResult bindingResult) {
         String errorMsg = BusinessUtils.checkBindingResult(bindingResult);
 
@@ -826,4 +827,13 @@ public class AeaImProjPurchaseController {
             return new ContentResultForm<>(false, null, e.getMessage());
         }
     }
+
+    @PostMapping("/chooseWonBiddingUnit")
+    @ApiOperation("选取中标机构")
+    public ResultForm chooseWonBiddingUnit(String unitBiddingId, String projPurchaseId) {
+
+        return new ResultForm(true, "success");
+    }
+
+
 }
