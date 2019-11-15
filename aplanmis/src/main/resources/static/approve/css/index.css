@@ -2290,7 +2290,11 @@ input[type="number"] {
     margin-top: 22px;
 }
 /*材料补正 新 end*/
-
+/*证照库材料库 start*/
+.id-lib-top-search{
+    line-height:36px;
+}
+/*证照库材料库 end*/
 
 
 

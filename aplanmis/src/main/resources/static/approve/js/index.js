@@ -489,6 +489,15 @@ var vm = new Vue({
       bzCorrectData: [],
       bzApproveData: [],
       isShowOneForm: '0',
+      idLibSearchOpt: {
+        unit: '',
+        type: '',
+      },
+      idLibLoading: false,
+      idLibVisible: true,
+      matLibLoading: false,
+      matLibVisible: false,
+      idLibTableList: [],
     }
   },
   filters: {
@@ -525,6 +534,12 @@ var vm = new Vue({
     },
   },
   methods: {
+    // 打开材料库弹窗
+    openMatLibDialog: function(){
+    },
+    // 打开证照库弹窗
+    openIdLibDialog: function(){
+    },
     // 获取材料补正详情数据
     loadSupplyDetail: function () {
       var vm = this;
