@@ -1,10 +1,13 @@
 package com.augurit.aplanmis.integration.license.constont;
 
+import lombok.Getter;
+
 /**
  * @author ZhangXinhui
  * @date 2019/11/15 015 15:45
  * @desc
  **/
+@Getter
 public enum LicenseType {
 
     CERTIFICATE("已签发","CERTIFICATE"),
