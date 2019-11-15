@@ -779,12 +779,6 @@ public class RestApplyMatService {
 
                         if (paperCnt > 0) {
                             AeaHiItemMatinst aeaHiItemMatinst = mat2Matinst(mat, unitInfoId, projectInfoId, currentOrgId);
-                            if ("c".equals(mat.getMatProp())) {
-                                AeaCert aeaCert = aeaCertMapper.getAeaCertById(mat.getCertId(), currentOrgId);
-                                AeaHiCertinst aeaHiCertinst = cert2Certinst(aeaCert, matCountVo.getAuthCode(), unitInfoId, projectInfoId, currentOrgId);
-                                aeaHiItemMatinst.setCertinstId(aeaHiCertinst.getCertinstId());
-                                certinsts.add(aeaHiCertinst);
-                            }
                             aeaHiItemMatinst.setRealPaperCount((long) paperCnt);
                             matinsts.add(aeaHiItemMatinst);
                             // 返回关联关系
@@ -793,13 +787,6 @@ public class RestApplyMatService {
                         // 复印件不为0
                         if (copyCnt > 0) {
                             AeaHiItemMatinst aeaHiItemMatinst = mat2Matinst(mat, unitInfoId, projectInfoId, currentOrgId);
-                            ;
-                            if ("c".equals(mat.getMatProp())) {
-                                AeaCert aeaCert = aeaCertMapper.getAeaCertById(mat.getCertId(), currentOrgId);
-                                AeaHiCertinst aeaHiCertinst = cert2Certinst(aeaCert, matCountVo.getAuthCode(), unitInfoId, projectInfoId, currentOrgId);
-                                aeaHiItemMatinst.setCertinstId(aeaHiCertinst.getCertinstId());
-                                certinsts.add(aeaHiCertinst);
-                            }
                             aeaHiItemMatinst.setRealCopyCount((long) copyCnt);
                             matinsts.add(aeaHiItemMatinst);
                             matinstIds.add(aeaHiItemMatinst.getMatinstId());
