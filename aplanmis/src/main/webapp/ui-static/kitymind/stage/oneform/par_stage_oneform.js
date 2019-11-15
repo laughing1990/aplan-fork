@@ -69,6 +69,7 @@ $(function () {
     });
 
     // $('#aedit_part_form_form input[name="isSmartForm"]').change(function(){
+    //
     //     var value = $(this).val();
     //     if(value=='1'){
     //         $('#formUrlDiv').hide();
@@ -85,6 +86,7 @@ $(function () {
     // });
 
     $('#aedit_part_form_form input[name="useEl"]').change(function () {
+
         var value = $(this).val();
         if (value == '1') {
             $('#stageElDiv').show();
@@ -378,6 +380,8 @@ function initAllStoFormTable(itemVerId) {
         queryParams: stoFormParam,
         sidePagination: 'server',
         idField: 'oneformId',
+        clickToSelect: true,
+        singleSelect: true,
     });
 }
 
@@ -513,22 +517,29 @@ var getAllStoFormColumns = function () {
         {
             field: 'formName',
             title: '智能表单名称',
-            align: 'center',
-            width: 200
+            align: 'left',
+            width: 250
         },
         {
             field: 'formCode',
             title: '智能表单编号',
-            width: 200,
-            align: 'center'
+            align: 'left',
+            width: 250,
         },
         {
-            field: 'operate_',
-            align: 'center',
-            title: '操作',
-            width: 80,
-            formatter: addItemFormFormatter
-        }
+            field: 'formProperty',
+            title: '表单类型',
+            align: 'left',
+            width: 100,
+            formatter: formPropertyFormatter,
+        },
+        // {
+        //     field: 'operate_',
+        //     align: 'center',
+        //     title: '操作',
+        //     width: 80,
+        //     formatter: addItemFormFormatter
+        // }
     ];
     return columns;
 }
@@ -660,9 +671,9 @@ function addItemFormFormatter(value, row, index) {
 
     var stageItemId = $("#stageItemId").val();
     var addItemStoForm = '<a href="javascript:addItemStoForm(\'' + stageItemId + '\',\'' + row.formId + '\')" ' +
-        'class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill"' +
-        'title="导入"><i class="la la-plus"></i>' +
-        '</a>';
+                            'class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill"' +
+                            'title="导入"><i class="la la-plus"></i>' +
+                         '</a>';
     return addItemStoForm;
 }
 
@@ -885,7 +896,10 @@ function addItemStoForm(stageItemId, formId) {
         $.ajax({
             type: "POST",
             url: ctx + '/aea/par/stage/stageOneform/saveParStageItem.do',
-            data: {stageItemId: stageItemId, subFormId: formId},
+            data: {
+                'stageItemId': stageItemId,
+                'subFormId': formId
+            },
             success: function (result) {
                 if (result.success) {
 
@@ -1122,6 +1136,7 @@ function useElFormatter(value, row, index) {
 }
 
 function stagePartformFormatter(value, row, index) {
+
     var sumformId = row.stoFormId;
     var isSmartForm = row.isSmartForm;
     var stageItemId = row.stagePartformId;
@@ -1208,7 +1223,7 @@ function addStagePartform() {
             $("#aedit_part_form_form").validate().resetForm();
         }
         $('#saveParPartform').show();
-        // $('#formUrlDiv').hide();
+        $('#formUrlDiv').hide();
         $('#aedit_part_form_form input[name="stagePartformId"]').val('');
         $('#aedit_part_form_form input[name="stageId"]').val(currentBusiId);
         $('#aedit_part_form_form input[name="stoFormId"]').val('');
@@ -1264,11 +1279,11 @@ function editStagePartFormById(stagePartformId) {
                         $('#stageElDiv').hide();
                     }
 
-                    // if(data.isSmartForm=='1'){
-                    //     $('#formUrlDiv').hide();
-                    // }else{
-                    //     $('#formUrlDiv').show();
-                    // }
+                    if(data.isSmartForm=='1'){
+                        $('#formUrlDiv').hide();
+                    }else{
+                        $('#formUrlDiv').show();
+                    }
                     loadFormData(true, '#aedit_part_form_form', data);
                 }
             },
@@ -1429,7 +1444,6 @@ function deleteStagePartFormRel(stagePartformId) {
 
 // 导入表单
 var curPartFormId = null;
-
 function importFormForStagePart(stagePartformId, stageId, _isSmartForm) {
 
     isSmartForm = _isSmartForm;

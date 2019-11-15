@@ -207,17 +207,38 @@ var getOutItemMatColumns = function () {
         {
             field: 'aeaMatCertName',
             title: '材料名称',
-            align: 'center',
+            align: 'left',
             width: 300,
         },
         {
             field: 'aeaMatCertCode',
             title: '材料编号',
             width: 300,
-            align: 'center'
+            align: 'left'
+        },
+        {
+            field: 'matProp',
+            title: '材料性质',
+            width: 85,
+            align: 'center',
+            formatter: matPropormatter
         },
     ];
     return columns;
+}
+
+function matPropormatter(value, row, index){
+
+    var matProp = row.matProp;
+    if(matProp){
+        if(matProp=='m'){
+            return '普通材料';
+        }else if(matProp=='c'){
+            return '证照材料';
+        }else{
+            return '在线表单材料';
+        }
+    }
 }
 
 function outItemMatParam(params) {
@@ -268,14 +289,21 @@ var getInItemMatColumns = function () {
         {
             field: 'aeaMatCertName',
             title: '材料名称',
-            align: 'center',
+            align: 'left',
             width: 300,
         },
         {
             field: 'aeaMatCertCode',
             title: '材料编号',
             width: 300,
-            align: 'center'
+            align: 'left'
+        },
+        {
+            field: 'matProp',
+            title: '材料性质',
+            width: 85,
+            align: 'center',
+            formatter: matPropormatter
         },
     ];
     return columns;

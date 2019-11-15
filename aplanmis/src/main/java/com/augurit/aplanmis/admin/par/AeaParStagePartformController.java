@@ -150,10 +150,11 @@ public class AeaParStagePartformController {
         if (StringUtils.isBlank(id)) {
             throw new InvalidParameterException("参数id为空!");
         }
-        AeaParStagePartform stagePartform = new AeaParStagePartform();
-        stagePartform.setStagePartformId(id);
-        stagePartform.setStoFormId("");
-        aeaParStagePartformService.updateStagePartform(stagePartform);
+        AeaParStagePartform stagePartform = aeaParStagePartformService.getStagePartformById(id);
+        if(stagePartform!=null){
+            stagePartform.setStoFormId("");
+            aeaParStagePartformService.updateStagePartform(stagePartform);
+        }
         return new ResultForm(true);
     }
 

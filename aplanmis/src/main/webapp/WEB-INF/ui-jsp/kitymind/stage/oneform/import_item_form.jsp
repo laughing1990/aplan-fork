@@ -6,7 +6,7 @@
         <div class="modal-content">
             <!-- 标题 -->
             <div class="modal-header" style="padding: 15px;height: 45px;">
-                <h5 class="modal-title" id="add_ItemForm_modal_title">导入智能表单</h5>
+                <h5 class="modal-title" id="add_ItemForm_modal_title">导入表单</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -17,10 +17,8 @@
                         <div class="col-md-6"style="text-align: left;"></div>
                         <div class="col-md-6" style="padding: 0px;">
                             <form id="search_all_sto_form" method="post">
-
                                 <input type="hidden" id="stageItemId" value=""/>
                                 <input type="hidden" id="itemVerId" value=""/>
-
                                 <div class="row" style="margin: 0px;">
                                     <div class="col-7">
                                         <div class="m-input-icon m-input-icon--left">
@@ -47,6 +45,27 @@
                     </div>
                 </div>
             </div>
+            <div class="modal-footer" style="padding: 10px;height: 60px;">
+                <button id="save_itemForm_form_btn" type="button" class="btn btn-info">保存</button>
+                <button type="button" class="btn btn-secondary" onclick="$('#add_ItemForm_modal').modal('hide');">关闭</button>
+            </div>
         </div>
     </div>
 </div>
+<script type="text/javascript">
+
+    $(function () {
+
+        $('#save_itemForm_form_btn').click(function () {
+            var rows = $("#selectAllStoFormTable").bootstrapTable('getSelections');
+            if (rows != null && rows.length > 0) {
+                var formId = rows[0].formId;
+                var stageItemId = $("#stageItemId").val();
+                addItemStoForm(stageItemId, formId);
+            } else {
+                swal('提示信息', "请选择数据！", 'info');
+            }
+        });
+    });
+
+</script>
