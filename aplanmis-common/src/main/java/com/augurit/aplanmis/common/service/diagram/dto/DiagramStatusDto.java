@@ -103,6 +103,8 @@ public class DiagramStatusDto {
         private String orgName;
         @ApiModelProperty("事项名称")
         private String itemName;
+        @ApiModelProperty("事项编码")
+        private String itemCode;
 
         @ApiModelProperty(value = "是否并行事项", notes = "1: 并行， 0: 并联")
         private String isParallel;
@@ -159,6 +161,7 @@ public class DiagramStatusDto {
             diagramItemDto.setIteminstId(hiIteminst.getIteminstId());
             diagramItemDto.setOrgName(hiIteminst.getApproveOrgName());
             diagramItemDto.setItemName(diagramItem.getItemName());
+            diagramItemDto.setItemCode(diagramItem.getItemCode());
         }
 
         return diagramItemDto;

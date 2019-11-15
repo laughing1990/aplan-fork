@@ -4,4 +4,6 @@ public interface RestTimeruleinstService {
 
     void createTimeruleinstByProcinst(String appId, String procinstId, String procDefKey) throws Exception;
 
+    void createTimeruleinstByTaskinst(String taskId) throws Exception;
+
 }

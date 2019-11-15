@@ -42,12 +42,12 @@ public class ItemBasicServiceImpl implements ItemBasicService {
     @Override
     public SpglDfxmsplcjdxxb getAeaParThemeVerByItemCodeAndThemeCode(SpglDfxmsplcjdsxxxb spglDfxmsplcjdsxxxb) {
         SpglDfxmsplcjdxxb spglDfxmsplcjdxxb = itemBasicMapper.getAeaParThemeVerByItemCodeAndThemeCode(spglDfxmsplcjdsxxxb.getSpsxbm(), spglDfxmsplcjdsxxxb.getSplcbm());
-        if(spglDfxmsplcjdxxb==null){
+        if (spglDfxmsplcjdxxb == null) {
             //查询的标准事项的关联item.getSpsxbm(), item.getSplcbm()
             try {
                 AeaHiIteminst aeaHiIteminst = aeaHiIteminstService.getAeaHiIteminstById(spglDfxmsplcjdsxxxb.getDfsjzj());
                 AeaItemBasic parentItem = itemBasicMapper.findParentItemByItemVerId(aeaHiIteminst.getItemVerId());
-                spglDfxmsplcjdxxb = itemBasicMapper.getAeaParThemeVerByItemCodeAndThemeCode(spglDfxmsplcjdsxxxb.getSpsxbm(),parentItem.getItemCode());
+                spglDfxmsplcjdxxb = itemBasicMapper.getAeaParThemeVerByItemCodeAndThemeCode(parentItem.getItemCode(), spglDfxmsplcjdsxxxb.getSplcbm());
             } catch (Exception e) {
                 e.printStackTrace();
             }
