@@ -9,6 +9,7 @@ import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @date 2019/11/15  13:58
  * @desc
  **/
-@Api(description = "网厅申报-->电子证照",tags={"电子证照"})
+@Api(description = "电子证照",tags={"申报 --> 电子证照"})
 @RestController
 @RequestMapping("/aea/cert")
 public class AeaCertMallController {
@@ -249,7 +250,7 @@ public class AeaCertMallController {
             @ApiImplicitParam(name = "itemVerIds", value = "事项版本IDs", required = true , dataType = "String" ,paramType = "query"),
             @ApiImplicitParam(name = "identityNumber", value = "申办证件号码", required = true , dataType = "String" ,paramType = "query"),
     })
-    @RequestMapping("/getLicenseAuthRes")
+    @GetMapping("/getLicenseAuthRes")
     public LicenseAuthResDTO getLicenseAuthRes(String itemVerIds, String identityNumber) throws Exception {
         return aeaCertService.getLicenseAuthRes(itemVerIds, identityNumber);
     }
@@ -258,7 +259,7 @@ public class AeaCertMallController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "authCode", value = "证照编码", required = true , dataType = "String" ,paramType = "query"),
     })
-    @RequestMapping("/getViewLicenseURL")
+    @GetMapping("/getViewLicenseURL")
     public String getViewLicenseURL(String authCode) throws Exception {
         return aeaCertService.getViewLicenseURL(authCode);
     }
