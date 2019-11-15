@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>新疆自治区中介服务网上超市</title>
+  <link rel="shortcut icon" href="../../../static/zjcs/common/images/favicon.ico"
+    th:href="@{/zjcs/common/images/favicon.ico}">
+  <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.css"
+    th:href="@{/agcloud/framework/js-lib/element-2/element.css}" />
+  <link rel="stylesheet"
+    href="/framework-ui/src/main/resources/static/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css"
+    th:href="@{/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css}">
+  <link rel="stylesheet" href="../../../static/zjcs/common/css/reset.css" th:href="@{/zjcs/common/css/reset.css}">
+  <link rel="stylesheet" href="../../../static/zjcs/provincePage/css/pheader.css"
+    th:href="@{/zjcs/provincePage/css/pheader.css}">
+  <link rel="stylesheet" href="../../../static/zjcs/provincePage/css/index.css"
+    th:href="@{/zjcs/provincePage/css/index.css}">
+  <script>
+    var ctx = '[[@{/}]]';
+    // var ctx = "http://192.168.30.33:8084/aplanmis-mall/"
+  </script>
+</head>
+
+<body>
+  <div>
+    <div class="header">
+      <div id="headerFooter" v-cloak v-loading.fullscreen.lock="hloading">
+        <div class="logo-wrap">
+          <div class="fl">
+            <a class="logo" href="#">
+              <img src="../../../static/zjcs/common/images/market_logo-xj.png"
+                th:src="@{/zjcs/common/images/market_logo-xj.png}">
+            </a>
+
+            <!-- 切换并展示当前市 start-->
+            <el-popover placement="bottom" width="1200" trigger="click" @after-leave="isShowCityPickBox = false;">
+              <div class="city-box" slot="reference" @click="showCityPick">
+                <span>切换区域和部门</span>
+                <i class="el-icon-arrow-down" :class="[isShowCityPickBox? 'el-icon-arrow-up':'']"></i>
+              </div>
+              <div class="box-wrap">
+                 <div class="box box-top">
+                   <p class="title">新疆维吾尔自治区</p>
+                   <div class="content">
+                     <a :href="item.url" v-for="(item,index) in regionList" :key="index" target="_blank">{{item.name}}</a>
+                   </div>
+                 </div>
+
+              </div>
+            </el-popover>
+
+          </div>
+          <div class="fr quick-menu">
+            <ul class="breadcrumb" v-if="!isLoginFlag">
+              <li class="login" @click="login"><a href="javascript:;">登录</a></li>
+              <!--          <li class="register"><a href="#">注册</a></li>-->
+            </ul>
+            <p v-else>
+              <!-- <span v-if="curLoginInfo.isPersonAccount == 1">您好！{{curLoginInfo.personName}}</span> -->
+              <span>您好！{{curLoginShowName}}</span>&nbsp;
+              <span class="span-a" @click.stop="jumpToPeopleCenter">企业中心</span>&nbsp;
+              <a href="javascript:;" @click.stop="loginOut">退出</a>
+              <!-- 当前登陆为企业单位 -->
+              <a v-if="curLoginInfo.unitInfos && curLoginInfo.unitInfos.length" href="javascript:;"
+                @click.stop="switchUnitFetchList">| 切换单位</a>
+            </p>
+          </div>
+        </div>
+        <div class="ts-nav-bar clearfix">
+          <ul class="nav navbar-nav fl">
+            <li v-for="(item, index) in topTabData" :id="item.id" :class="index==activeName?'active':''"
+              :label="item.label" @click.prevent="openNewUrl(item.url)">{{item.label}}</li>
+          </ul>
+          <div class="fr">
+            <el-input placeholder="请输入内容" v-model="seachKey" class="input-with-select">
+              <el-select v-model="selectOption" slot="prepend" style="width:88px" class="select">
+                <el-option v-for="item in selectOptions" :key="item.value" :label="item.label" :value="item.value">
+                </el-option>
+              </el-select>
+              <el-button slot="append" icon="el-icon-search" @click="switchPage"></el-button>
+            </el-input>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="index" v-cloak>
+      <div class="banner-wrap">
+        <div class="banner">
+          <img src="../../../static/zjcs/index/images/banner-xj.png" th:src="@{/zjcs/index/images/banner-xj.png}"
+            alt="">
+        </div>
+      </div>
+      <div class="main-content clearfix">
+        <!-- 功能导航 -->
+        <ul class="nav-list bg-fff">
+          <li v-for="(item,index) in agentServer">
+            <a :href="item.goToUrl" class="clearfix">
+              <div class="icon-img fl">
+                <img :src="item.thImgUrl" v-if="!localFlag">
+                <img :src="item.imgUrl" v-else>
+              </div>
+              <p class="icon-name fr">{{item.navLabel}}</p>
+            </a>
+          </li>
+        </ul>
+        <!-- 中介服务 -->
+        <div class="main-wrap clearfix">
+          <div class="left-wrap fl bg-fff">
+            <h2 class="service-tit" style="margin-left: 25px;">中介服务</h2>
+            <ul class="funlist clearfix">
+              <div class="m-prev-btn" v-show="navListData.length>9" @click="prevNavListDataShow()"></div>
+              <div class="m-next-btn" v-show="navListData.length>9" @click="nextNavListDataShow()"></div>
+              <li v-for="(item,index) in navListDataShow" :class="index!=0?'after-border':''"
+                @click.stop="itemClick(item)">
+                <a href="javascript:;">
+                  <div class="icon-img">
+                    <template v-if="localFlag">
+                      <img
+                        :src="navListImgData[index].imgUrl?navListImgData[index].imgUrl:'/aplanmis-mall/zjcs/index/images/cllz_ico.png'">
+                    </template>
+                    <template v-else>
+                      <img :src="item.imgUrl?ctx+item.imgUrl:'/aplanmis-mall/zjcs/index/images/cllz_ico.png'">
+                    </template>
+                  </div>
+                  <p>{{item.serviceName}}</p>
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div class="right-wrap fr">
+            <div class="package-list bg-fff">
+              <a class="package01"
+                href="/aplanmis-mall/supermarket/main/ownerCenter.html#addNeedPaurse"><span>项目发布</span></a>
+              <a class="package02" href="#"><span>合同备案</span></a>
+            </div>
+            <div class="notice-box m-count bg-fff">
+              <h2 class="service-tit clearfix">通知公告
+                <i class="el-icon-more fr"></i>
+              </h2>
+              <ul class="contract-list" v-if="noticeList.length">
+                <li v-for="(item, index) in noticeList">
+                  <a class="" :href="item.url">
+                    <span v-if="index==0" class="red-new">NEW</span>
+                    <span class="ellipsis name-sp">{{item.contentTitle}}</span>
+                  </a>
+                  <span class="notice-time">{{item.publishTime | formatDate}}</span>
+                </li>
+              </ul>
+              <div class="contract-box contract-non-box" v-else></div>
+            </div>
+          </div>
+        </div>
+        <div class="bg-fff" style="padding: 20px 33px 20px 33px;">
+          <!--采购公告-->
+          <div class="notice-wrap">
+            <div class="service-tit">采购公告
+              <a href="javascript:;" class="more-link" @click.stop="lookMoreProcure">
+                <img src="../../static/zjcs/index/images/more.png" th:src="@{/zjcs/index/images/more.png}" alt="">
+              </a>
+            </div>
+            <div class="notice-card">
+              <div class="card-box" v-for="item in procurementList">
+                <div v-if="!item.nondata">
+                  <div class="card-img">
+                    <a href="javascript:;" @click="jumpToProcureDetail(item)">
+                      <img src="/aplanmis-mall/zjcs/index/images/pre-img-1.png">
+                      <div class="cut-down">
+                        截止报名{{item.deadline | formatDate}}
+                      </div>
+                      <h4 class="service-name" :class="[item.allData.serviceName.length>13? 'db-service-name': '']">
+                        {{item.allData.serviceName}}</h4>
+                    </a>
+                  </div>
+                  <div class="card-con">
+                    <a href="javascript:;" class="title ellipsisLn"
+                      @click="jumpToProcureDetail(item)">{{item.noticeTitle}}</a>
+                    <div class="price ellipsis" title="">{{item.allData | procurePriceFormat}}</div>
+                    <div class="company-name ellipsis">{{item.companyName}}</div>
+                    <div class="time">
+                      {{item.deadline | formatDate}}
+                    </div>
+                  </div>
+                </div>
+                <div class="card-img card-none-data" v-else></div>
+              </div>
+            </div>
+          </div>
+
+          <!--中选公告-->
+          <div class="notice-wrap" style="padding-top:5px;">
+            <div class="service-tit">中选公告
+              <a href="javascript:;" class="more-link" @click="lookMoreSelectionNotice">
+                <img src="/aplanmis-mall/zjcs/index/images/more.png" th:src="@{/zjcs/index/images/more.png}" alt="">
+              </a>
+            </div>
+            <div class="notice-card">
+              <div class="card-box" v-for="item in selectedList">
+                <div v-if="!item.nondata">
+                  <div class="card-img">
+                    <a href="javascript:;" @click="jumpToProcureDetail(item)">
+                      <img src="/aplanmis-mall/zjcs/index/images/pre-img-1.png">
+                      <!--                  <img :src="item.imgUrl" v-if="localFlag">-->
+                      <!--                  <img :src="item.thImgUrl" v-else>-->
+                      <h4 class="service-name" :class="[item.allData.serviceName.length>13? 'db-service-name': '']">
+                        {{item.allData.serviceName}}</h4>
+                    </a>
+                  </div>
+                  <div class="card-con">
+                    <a href="javascript:;" class="title ellipsisLn"
+                      @click="jumpToProcureDetail(item)">{{item.noticeTitle}}</a>
+                    <div class="price ellipsis" title="">{{item.allData | procurePriceFormat}}</div>
+                    <div class="company-name ellipsis">{{item.companyName}}</div>
+                    <div class="time">
+                      {{item.deadline | formatDate}}
+                    </div>
+                  </div>
+                </div>
+                <div class="card-img card-none-data" v-else></div>
+              </div>
+            </div>
+          </div>
+
+          <!--合同公示-->
+          <div class="notice-wrap" style="padding-top:5px;">
+            <div class="service-tit">合同公示
+              <a href="javascript:;" class="more-link" @click="lookMoreContractNotice">
+                <!--v-if="contractList.length>=5" -->
+                <img src="../../static/zjcs/index/images/more.png" th:src="@{/zjcs/index/images/more.png}" alt="">
+              </a>
+            </div>
+            <div class="contract-box" v-if="contractList.length">
+              <ul class="contract-list">
+                <li v-for="item in contractList">
+                  <a href="javascript:;" @click="jumpToContractNoticeDetail(item)">{{item.contractName}}</a>
+                  <span class="notice-time">{{item.signTime | formatDate}}</span>
+                </li>
+              </ul>
+            </div>
+            <div class="contract-box contract-non-box" v-else></div>
+          </div>
+        </div>
+
+        <!-- 信用排名与信用公示 -->
+        <div class="clearfix">
+          <div class="bg-fff fl creadit-card-box" style="padding:10px 30px;margin-top: 21px; width: 44%;">
+            <div class="clearfix service-tit">信用排名
+              <i class="el-icon-more fr"></i>
+            </div>
+            <div class="notice-wrap com-rank-wrap">
+              <div class="contract-box" style="padding-right:0px;">
+                <ul class="choplistp">
+                  <li v-for="item in creditList">
+                    <a :href="item.url" target="_blank" class="chop">
+                      <img :src="item.lcImgUrl" v-if="localFlag" />
+                      <img :src="item.imgUrl" v-else />
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="bg-fff fr" style="padding:10px 30px;margin-top: 21px; width: 54.6%;">
+            <div class="credit-list-box bg-fff">
+              <div class="service-tit clearfix">信用公示
+                <i class="el-icon-more fr"></i>
+                <div class="list-check fr">
+                  <span class="tab-sp">信用评价</span>
+                  <span class="tab-sp active">不良记录</span>
+                  <span class="tab-sp">黑名单</span>
+                </div>
+              </div>
+              <ul class="contract-list" v-if="creditPublicityList.length">
+                <li v-for="(item, index) in creditPublicityList">
+                  <a :href="item.url">{{item.name}}</a>
+                  <span class="notice-time">{{item.publishNumber}}次不良记录</span>
+                </li>
+              </ul>
+              <div class="contract-box contract-non-box" v-else></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 运行情况 -->
+        <div class="bg-fff fr" style="padding:10px 30px;margin-top: 21px; width: 100%;">
+          <div class="credit-list-box run-box bg-fff">
+            <div class="service-tit clearfix">运行情况
+              <div class="list-check fr">
+                <span class="tab-sp">今日</span>
+                <span class="tab-sp">本月</span>
+                <span class="tab-sp active">本年</span>
+                <span class="tab-sp">累计</span>
+              </div>
+            </div>
+            <div class="run-num-pandel">
+              <ul>
+                <li>
+                  <h3 class="title">429</h3>
+                  <p class="name">入驻机构</p>
+                </li>
+                <li>
+                  <h3 class="title">1829</h3>
+                  <p class="name">服务事项</p>
+                </li>
+                <li>
+                  <h3 class="title">4189</h3>
+                  <p class="name">采购需求</p>
+                </li>
+                <li>
+                  <h3 class="title">4129</h3>
+                  <p class="name">履约结束</p>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="footer">
+        <iframe src="../common/footer.html" th:src="@{footer.html}" frameborder="0"></iframe>
+      </div>
+    </div>
+  </div>
+  <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js"
+    th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>
+  <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js"
+    th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
+  <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js"
+    th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
+  <!--<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js" th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>-->
+  <script src="../../../static/common/js/common.js" th:src="@{/common/js/common.js}"></script>
+
+  <script src="../../../static/zjcs/provincePage/js/pheader.js" th:src="@{/zjcs/provincePage/js/pheader.js}"></script>
+  <script src="../../../static/zjcs/provincePage/js/data.js" th:src="@{/zjcs/provincePage/js/data.js}"></script>
+  <script src="../../../static/zjcs/provincePage/js/index.js" th:src="@{/zjcs/provincePage/js/index.js}"></script>
+</body>
+
+</html>
