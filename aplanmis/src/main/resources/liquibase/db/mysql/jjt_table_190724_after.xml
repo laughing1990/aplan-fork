@@ -901,5 +901,14 @@
             CHANGE COLUMN `FORM_ID` `STO_FORM_ID`  varchar(50) NULL DEFAULT NULL COMMENT '表单定义ID' AFTER `CERT_ID`;
         </sql>
     </changeSet>
+    
+    <changeSet id="201911151405" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_item_partform`
+            CHANGE COLUMN `PARTFORM_ID` `STO_FORM_ID`  varchar(50) NOT NULL COMMENT '表单定义ID';
+            ALTER TABLE `aea_par_stage_partform`
+            CHANGE COLUMN `PARTFORM_ID` `STO_FORM_ID`  varchar(50) NOT NULL COMMENT '表单定义ID';
+        </sql>
+    </changeSet>
 
 </databaseChangeLog>

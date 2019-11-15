@@ -21,11 +21,11 @@ import java.util.UUID;
 @Data
 @ApiModel("中介事项申报参数实体vo")
 public class purchaseApplyData {
-    @ApiModelProperty(value = "申请实例ID")
+    @ApiModelProperty(value = "申请实例ID", hidden = true)
     private String applyinstId;
-    @ApiModelProperty(value = "申报来源，网上申报：net、窗口申报：win", required = true, allowableValues = "net, win")
+    @ApiModelProperty(value = "申报来源，网上申报：net、窗口申报：win", required = true, allowableValues = "net, win", hidden = true)
     private String applySource;
-    @ApiModelProperty(value = "申报主体 0表示个人，1表示企业", required = true, allowableValues = "0, 1")
+    @ApiModelProperty(value = "申报主体 0表示个人，1表示企业", required = true, allowableValues = "0, 1", hidden = true)
     private String applySubject;
     @ApiModelProperty(value = "联系人ID", required = true)
     private String linkmanInfoId;
@@ -44,7 +44,7 @@ public class purchaseApplyData {
 //    private List<BuildProjUnitVo> buildProjUnitMap;
     @ApiModelProperty(value = "材料实例ID集合", required = true)
     private String[] matinstsIds;
-    @ApiModelProperty(value = "办理意见", required = true)
+    @ApiModelProperty(value = "办理意见", hidden = true)
     private String comments;
     @ApiModelProperty(value = "申请联系人ID,", notes = "当申报主体为个人时：必输")
     private String applyLinkmanId;

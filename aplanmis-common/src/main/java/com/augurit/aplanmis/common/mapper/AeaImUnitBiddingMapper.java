@@ -24,7 +24,6 @@ public interface AeaImUnitBiddingMapper {
     List<AeaImUnitBidding> listJoining();
 
 
-
     /**
      * 机构中选记录列表
      */
@@ -37,16 +36,16 @@ public interface AeaImUnitBiddingMapper {
 
     /**
      * 统计中介机构项目报名综合数据
+     *
      * @param unitInfoId
-     * @param type 0-已报名项目 1-已中选项目 2-已签约项目 3-服务中项目
+     * @param type       0-已报名项目 1-已中选项目 2-已签约项目 3-服务中项目
      * @return
      */
     Long countUnitBiddingInfo(@Param("unitInfoId") String unitInfoId, @Param("type") String type) throws Exception;
 
     /**
-     *
      * @param aeaImUnitBidding
-     * @param type 0-已报名项目 1-已中选项目 2-已签约项目 3-服务中项目
+     * @param type             0-已报名项目 1-已中选项目 2-已签约项目 3-服务中项目
      * @return
      * @throws Exception
      */
@@ -67,4 +66,38 @@ public interface AeaImUnitBiddingMapper {
      */
     int updateWinBid(@Param("unitBiddingId") String unitBiddingId, @Param("projPurchaseId") String projPurchaseId, @Param("isWonBid") String isWonBid);
 
+    /**
+     * 放弃中标
+     *
+     * @param unitBiddingId  竞价ID
+     * @param projPurchaseId 项目采购ID
+     * @return
+     */
+    int abortWinBid(@Param("unitBiddingId") String unitBiddingId, @Param("projPurchaseId") String projPurchaseId);
+
+    /**
+     * 更新 上传合同，服务结果，评价 状态
+     *
+     * @param unitBiddingId    竞价ID
+     * @param isUploadContract 合同是否已上传：1 是，0 否
+     * @return
+     */
+    int updateUploadContract(@Param("unitBiddingId") String unitBiddingId, @Param("isUploadContract") String isUploadContract);
+
+    /**
+     * 更新上传服务结果值
+     *
+     * @param projPurchaseId 项目采购ID
+     * @param isUploadResult 服务结果是否已上传：1 是，0 否
+     * @return
+     */
+    int updateUploadResult(@Param("projPurchaseId") String projPurchaseId, @Param("isUploadResult") String isUploadResult);
+
+    /**
+     * 获取中标单位竞价ID
+     *
+     * @param projPurchaseId
+     * @return
+     */
+    List<AeaImUnitBidding> getUnitBiddingByProjPurchase(@Param("projPurchaseId") String projPurchaseId);
 }

@@ -98,7 +98,7 @@
 
             var rows = $("#partfrom_form_tb").bootstrapTable('getSelections');
             if(rows!=null&&rows.length>0) {
-                var formId = rows[0].partformId;
+                var formId = rows[0].stoFormId;
                 $.ajax({
                     url: ctx + '/aea/item/partform/savePartformFormsAndNotDelOld.do',
                     type: 'POST',
@@ -144,6 +144,8 @@
                 return '智能普通表单';
             }else if(value=='smart-flow'){
                 return '智能流程表单';
+            } else if (value == 'dev-biz') {
+                return "开发普通表单";
             }
         }
     }
@@ -182,6 +184,7 @@
         commonQueryParams = [];
         commonQueryParams.push({'name': 'itemPartformId','value': curPartFormId});
         commonQueryParams.push({'name': 'itemVerId','value': currentBusiId});
+        commonQueryParams.push({'name': 'isSmartForm', 'value': isSmartForm});
         commonQueryParams.push({'name': 'keyword','value': $('#partformFormKeyword').val()});
         //跳转到第一页，防止其他页查询第一次不显示数据的问题。
         $("#partfrom_form_tb").bootstrapTable('selectPage',1);

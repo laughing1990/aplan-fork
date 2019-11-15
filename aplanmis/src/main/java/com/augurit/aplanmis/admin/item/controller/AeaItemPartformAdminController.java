@@ -18,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 import java.util.UUID;
@@ -114,7 +113,7 @@ public class AeaItemPartformAdminController {
         if (ActStoConstant.SMART_FORM_ENTITY_OPERATION_NEW.equals(operation)) {
             AeaItemPartform partform = new AeaItemPartform();
             partform.setItemPartformId(id);
-            partform.setPartformId(formId);
+            partform.setStoFormId(formId);
             aeaItemPartformService.updateAeaItemPartform(partform);
         }
         return new ResultForm(true);
@@ -152,12 +151,12 @@ public class AeaItemPartformAdminController {
         }
         AeaItemPartform partform = aeaItemPartformService.getAeaItemPartformById(itemPartformId);
         if (partform != null) {
-            partform.setPartformId(formId);
+            partform.setStoFormId(formId);
             aeaItemPartformService.updateAeaItemPartform(partform);
         } else {
             partform.setItemPartformId(itemPartformId);
             partform.setPartformName("未命名扩展表单");
-            partform.setPartformId(formId);
+            partform.setStoFormId(formId);
             partform.setUseEl(Status.OFF);
             partform.setIsSmartForm(Status.ON);
             aeaItemPartformService.saveAeaItemPartform(partform);
@@ -168,12 +167,12 @@ public class AeaItemPartformAdminController {
     @RequestMapping("/delItemPartformRelFormById.do")
     public ResultForm delItemPartformRelFormById(String id) {
 
-        if(StringUtils.isBlank(id)){
+        if (StringUtils.isBlank(id)) {
             throw new InvalidParameterException("参数id为空!");
         }
         AeaItemPartform partform = new AeaItemPartform();
         partform.setItemPartformId(id);
-        partform.setPartformId("");
+        partform.setStoFormId("");
         aeaItemPartformService.updateAeaItemPartform(partform);
         return new ResultForm(true);
     }
@@ -191,6 +190,20 @@ public class AeaItemPartformAdminController {
             return new ResultForm(true);
         }
         return new ResultForm(false, "传递材料证照排序数据有问题,请检查!");
+    }
+
+    @RequestMapping("createAndUpdateDevForm")
+    public ResultForm createAndUpdateDevForm(String formCode, String formName, String formLoadUrl, String formId, String itemPartformId) {
+        try {
+
+            if (StringUtils.isBlank(formCode) || StringUtils.isBlank(formName) || StringUtils.isBlank(formLoadUrl) || StringUtils.isBlank(itemPartformId))
+                return new ResultForm(false, "缺少参数！");
+            aeaItemPartformService.createAndUpdateDevForm(formCode, formName, formLoadUrl, formId, itemPartformId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResultForm(false, "新增开发表单失败");
+        }
+        return new ResultForm(false, "新增开发表单成功");
     }
 
 }

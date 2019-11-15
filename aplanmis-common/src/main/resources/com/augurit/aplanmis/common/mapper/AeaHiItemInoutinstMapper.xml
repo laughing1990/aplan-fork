@@ -439,5 +439,38 @@
         </if>
         ORDER BY aim.SORT_NO
     </select>
+    <select id="getMatinstListByiteminstIdAndMatId" resultType="com.augurit.aplanmis.common.domain.AeaMatinst">
+
+        select
+        ahim.MATINST_ID as matinstId,
+        ahim.MATINST_NAME as matinstName,
+        CASE WHEN ahim.ATT_COUNT IS NULL THEN 0 ELSE ahim.ATT_COUNT END as attCount,
+        CASE WHEN ahim.REAL_COPY_COUNT IS NULL THEN 0 ELSE ahim.REAL_COPY_COUNT END as realCopyCount,
+        CASE WHEN ahim.REAL_PAPER_COUNT IS NULL THEN 0 ELSE ahim.REAL_PAPER_COUNT END as realPaperCount,
+        aim.DUE_PAPER_COUNT as duePaperCount,
+        aim.DUE_COPY_COUNT as dueCopyCount,
+        ahim.OFFICIAL_DOC_DUE_DATE as officialDocDueDate,
+        ahim.OFFICIAL_DOC_NO as officialDocNo,
+        ahim.OFFICIAL_DOC_TITLE as officialDocTitle,
+        aim.IS_OFFICIAL_DOC as isOfficeDoc,
+        aim.ATT_IS_REQUIRE as attIsRequire,
+        aim.PAPER_IS_REQUIRE as paperIsRequire
+        from AEA_HI_ITEM_MATINST ahim
+        inner join AEA_ITEM_MAT aim on aim.MAT_ID=ahim.MAT_ID
+        inner join AEA_HI_ITEM_INOUTINST ahii on ahii.MATINST_ID=ahim.MATINST_ID
+        where ahii.ITEMINST_ID=#{iteminstId} and aim.IS_OFFICIAL_DOC!='1'
+        and ahim.MAT_ID IN
+        <if test="_databaseId == 'oracle'">
+            <foreach collection="matIds" item="item" open="(" separator="union all" close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="_databaseId == 'mysql'">
+            <foreach collection="matIds" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        ORDER BY aim.SORT_NO
+    </select>
 
 </mapper>

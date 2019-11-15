@@ -367,7 +367,7 @@ public class AeaCertAdminServiceImpl implements AeaCertAdminService {
         LicenseAuthResDTO result = new LicenseAuthResDTO();
         ArrayList checkAuthCodes = new ArrayList();//针对多个事项时，进行重复过滤
         ArrayList auth_codes = new ArrayList();
-        List<LicenseDTO> licenseDTO = new ArrayList<>();
+        List<LicenseDTO> licenseDTOList = new ArrayList<>();
         OpuOmUserInfo userinfo = opuOmUserInfoMapper.getOpuOmUserInfoByUserId(SecurityContext.getCurrentUserId());
         OpuOmOrg topOrg = opuOmOrgService.getTopOrgByCurOrgId(SecurityContext.getCurrentOrgId());
         BscDicRegion proDataRegion = bscDicRegionMapper.getBscDicRegionById(topOrg.getRegionId());
@@ -395,14 +395,16 @@ public class AeaCertAdminServiceImpl implements AeaCertAdminService {
                         continue;
                     checkAuthCodes.add(data.getData().get(i).getLicense_code());
                     auth_codes.add(data.getAuth_codes()[i]);
-                    licenseDTO.add(data.getData().get(i));
+                    LicenseDTO licenseDTO=data.getData().get(i);
+                    licenseDTO.setAuth_code(data.getAuth_codes()[i]);
+                    licenseDTOList.add(licenseDTO);
                 }
             }
         }
-        if (licenseDTO.size() > 0) {
+        if (licenseDTOList.size() > 0) {
             result.setAuth_codes((String[]) auth_codes.toArray(new String[auth_codes.size()]));
-            result.setData(licenseDTO);
-            result.setTotal_count((long) licenseDTO.size());
+            result.setData(licenseDTOList);
+            result.setTotal_count((long) licenseDTOList.size());
         }
         return result;
     }

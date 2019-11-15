@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 
 <style type="text/css">
-    .row{
+    .row {
         margin-left: 0px;
         margin-right: 0px;
     }
@@ -20,7 +20,7 @@
             <div class="modal-body" style="padding: 10px;">
                 <div class="m-form m-form--label-align-right m--margin-bottom-5" style="margin-top: 0%;">
                     <div class="row" style="margin: 0px;">
-                        <div class="col-md-6"style="text-align: left;"></div>
+                        <div class="col-md-6" style="text-align: left;"></div>
                         <div class="col-md-6" style="padding: 0px;">
                             <div class="row" style="margin: 0px;">
                                 <div class="col-7">
@@ -33,8 +33,11 @@
                                     </div>
                                 </div>
                                 <div class="col-5">
-                                    <button type="button" class="btn btn-info" onclick="searchPartformForm();">查询</button>
-                                    <button type="button" class="btn btn-secondary" onclick="clearSearchPartformForm();">清空</button>
+                                    <button type="button" class="btn btn-info" onclick="searchPartformForm();">查询
+                                    </button>
+                                    <button type="button" class="btn btn-secondary"
+                                            onclick="clearSearchPartformForm();">清空
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -44,26 +47,27 @@
                 <div id="partfrom_form_tb_scroll" style="height: 450px; overflow-y:auto;overflow-x:auto;">
                     <!-- 列表区域 -->
                     <div class="base" style="padding: 0px 5px;">
-                        <table  id="partfrom_form_tb"
-                                data-toggle="table",
-                                data-method="post",
-                                data-pagination=true
-                                data-page-size="10",
-                                data-page-list="[10]",
-                                data-click-to-select=true,
-                                data-single-select="true"
-                                data-side-pagination="server",
-                                data-query-params="partformFormParam",
-                                data-pagination-show-page-go="true",
-                                data-content-type="application/x-www-form-urlencoded; charset=UTF-8",
-                                data-url="${pageContext.request.contextPath}/aea/par/stage/partform/listPartFormNoSelectFormByPage.do">
+                        <table id="partfrom_form_tb"
+                               data-toggle="table" ,
+                               data-method="post" ,
+                               data-pagination=true
+                               data-page-size="10" ,
+                               data-page-list="[10]" ,
+                               data-click-to-select=true,
+                               data-single-select="true"
+                               data-side-pagination="server" ,
+                               data-query-params="partformFormParam" ,
+                               data-pagination-show-page-go="true" ,
+                               data-content-type="application/x-www-form-urlencoded; charset=UTF-8" ,
+                               data-url="${pageContext.request.contextPath}/aea/par/stage/partform/listPartFormNoSelectFormByPage.do">
                             <thead>
                                 <tr>
                                     <th data-field="#" data-checkbox="true" data-align="center" data-width="10">ID</th>
                                     <th data-field="formCode" data-align="left" data-width="250">表单编号</th>
                                     <th data-field="formName" data-align="left" data-width="250">表单名称</th>
                                     <th data-field="formProperty" data-align="left" data-width="100"
-                                        data-formatter="formPropertyFormatter">表单类型</th>
+                                        data-formatter="formPropertyFormatter">表单类型
+                                    </th>
                                 </tr>
                             </thead>
                         </table>
@@ -73,14 +77,16 @@
             <!-- 列表区域end -->
             <div class="modal-footer" style="padding: 10px;height: 60px;">
                 <button id="save_partform_form_btn" type="button" class="btn btn-info">保存</button>
-                <button type="button" class="btn btn-secondary" onclick="$('#import_partform_form_modal').modal('hide');">关闭</button>
+                <button type="button" class="btn btn-secondary"
+                        onclick="$('#import_partform_form_modal').modal('hide');">关闭
+                </button>
             </div>
         </div>
     </div>
 </div>
 <script type="text/javascript">
 
-    $(function(){
+    $(function () {
 
         $('#partfrom_form_tb_scroll').niceScroll({
 
@@ -94,15 +100,15 @@
             autohidemode: true  //是否隐藏滚动条
         });
 
-        $('#save_partform_form_btn').click(function(){
+        $('#save_partform_form_btn').click(function () {
 
             var rows = $("#partfrom_form_tb").bootstrapTable('getSelections');
-            if(rows!=null&&rows.length>0) {
-                var formId = rows[0].partformId;
+            if (rows != null && rows.length > 0) {
+                var formId = rows[0].stoFormId;
                 $.ajax({
                     url: ctx + '/aea/par/stage/partform/savePartformFormsAndNotDelOld.do',
                     type: 'POST',
-                    data:  {
+                    data: {
                         "stagePartformId": curPartFormId,
                         "formId": formId
                     },
@@ -126,7 +132,7 @@
                         swal('错误信息', XMLHttpRequest.responseText, 'error');
                     }
                 });
-            }else{
+            } else {
                 swal('提示信息', "请选择数据！", 'info');
             }
         });
@@ -134,16 +140,17 @@
 
     // 表单属性，meta-biz表示元数据普通表单，meta-flow表示元数据流程表单，smart-biz表示智能普通表单，smart-flow表示智能流程表单
     function formPropertyFormatter(value, row, index, field) {
-
-        if(value){
-            if(value=='meta-biz'){
+        if (value) {
+            if (value == 'meta-biz') {
                 return '元数据普通表单';
-            }else if(value=='meta-flow'){
+            } else if (value == 'meta-flow') {
                 return '元数据流程表单';
-            }else if(value=='smart-biz'){
+            } else if (value == 'smart-biz') {
                 return '智能普通表单';
-            }else if(value=='smart-flow'){
+            } else if (value == 'smart-flow') {
                 return '智能流程表单';
+            } else if (value == 'dev-biz') {
+                return "开发普通表单";
             }
         }
     }
@@ -177,19 +184,20 @@
     }
 
     // 查询
-    function searchPartformForm(){
+    function searchPartformForm() {
 
         commonQueryParams = [];
-        commonQueryParams.push({'name': 'stagePartformId','value': curPartFormId});
-        commonQueryParams.push({'name': 'stageId','value': currentBusiId});
-        commonQueryParams.push({'name': 'keyword','value': $('#partformFormKeyword').val()});
+        commonQueryParams.push({'name': 'stagePartformId', 'value': curPartFormId});
+        commonQueryParams.push({'name': 'stageId', 'value': currentBusiId});
+        commonQueryParams.push({'name': 'isSmartForm', 'value': isSmartForm});
+        commonQueryParams.push({'name': 'keyword', 'value': $('#partformFormKeyword').val()});
         //跳转到第一页，防止其他页查询第一次不显示数据的问题。
-        $("#partfrom_form_tb").bootstrapTable('selectPage',1);
+        $("#partfrom_form_tb").bootstrapTable('selectPage', 1);
         $("#partfrom_form_tb").bootstrapTable('refresh');       //无参数刷新
     }
 
     // 清空
-    function clearSearchPartformForm(){
+    function clearSearchPartformForm() {
 
         $('#partformFormKeyword').val('')
         searchPartformForm();

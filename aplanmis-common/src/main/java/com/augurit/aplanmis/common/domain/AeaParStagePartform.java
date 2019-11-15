@@ -10,10 +10,9 @@ import java.io.Serializable;
  *
  * @author jjt
  * @date 2019/8/29
- *
  */
 @Data
-public class AeaParStagePartform implements Serializable{
+public class AeaParStagePartform implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -38,19 +37,14 @@ public class AeaParStagePartform implements Serializable{
     private String isSmartForm;
 
     /**
-     * 开发表单链接地址
+     * 表单定义ID
      */
-    private String formUrl;
-
-    /**
-     * 智能表单定义ID
-     */
-    private String partformId;
+    private String stoFormId;
 
     /**
      * 排序字段
      */
-    private Long sortNo=99L;
+    private Long sortNo = 99L;
 
     /**
      * 是否启动EL表达式，0表示禁用，1表示启用
@@ -70,7 +64,7 @@ public class AeaParStagePartform implements Serializable{
     /**
      * 创建时间
      */
-    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private java.util.Date createTime;
 
     /**
@@ -127,4 +121,9 @@ public class AeaParStagePartform implements Serializable{
      * 扩展字段：关键字查询
      */
     private String keyword;
+
+    /**
+     * 扩展字段：开发表单链接地址
+     */
+    private String formUrl;
 }

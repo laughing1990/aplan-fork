@@ -29,4 +29,11 @@ public interface AeaImServiceResultMapper {
 
     List<ServiceProjInfoVo> getServiceProjInfoList(@Param("unitInfoId") String unitInfoId, @Param("auditFlag") String auditFlag, @Param("keyword") String keyword)throws Exception;
 
+    /**
+     * 查询当前采购项目下易服务结果列表
+     *
+     * @param projPurchaseId
+     * @return
+     */
+    List<AeaImServiceResult> listServiceResultByProjPurchaseId(@Param("projPurchaseId") String projPurchaseId);
 }

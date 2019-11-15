@@ -130,6 +130,9 @@ public class AeaParThemeVerAdminServiceImpl implements AeaParThemeVerAdminServic
     private AeaParStageOneformMapper oneformMapper;
 
     @Autowired
+    private AeaParStagePartformMapper partformMapper;
+
+    @Autowired
     ServletContext servletContext;
 
     @Autowired
@@ -328,18 +331,32 @@ public class AeaParThemeVerAdminServiceImpl implements AeaParThemeVerAdminServic
         copyPreThemeVerStageStateItemIn(oldStageId, stageItemMap, allInMap);
         // 9、阶段办事指南
         copyPreThemeVerStageGuide(oldStageId, newStageId, rootOrgId);
-        // 10、阶段总表关联复制
+        // 10、阶段一张表单复制
         copyPreThemeVerStageOneForm(oldStageId, newStageId);
+        // 11、阶段前置检测复制
+        copyPreThemeVerStageFrontCheck(oldStageId, newStageId, rootOrgId);
     }
 
     /**
-     * 阶段总表关联复制
+     * 阶段前置检测复制
+     *
+     * @param oldStageId
+     * @param newStageId
+     * @param rootOrgId
+     */
+    private void copyPreThemeVerStageFrontCheck(String oldStageId, String newStageId, String rootOrgId){
+
+    }
+
+    /**
+     * 阶段一张表单复制
      *
      * @param oldStageId
      * @param newStageId
      */
     private void copyPreThemeVerStageOneForm(String oldStageId, String newStageId) {
 
+        // 阶段总表
         AeaParStageOneform soneform = new AeaParStageOneform();
         soneform.setParStageId(oldStageId);
         List<AeaParStageOneform> oneFormList = oneformMapper.listAeaParStageOneformNoRel(soneform);
@@ -348,6 +365,18 @@ public class AeaParThemeVerAdminServiceImpl implements AeaParThemeVerAdminServic
                 oneForm.setStageOneformId(UUID.randomUUID().toString());
                 oneForm.setParStageId(newStageId);
                 oneformMapper.insertAeaParStageOneform(oneForm);
+            }
+        }
+
+        // 阶段扩展表
+        AeaParStagePartform spartform = new AeaParStagePartform();
+        spartform.setStageId(oldStageId);
+        List<AeaParStagePartform> partformList = partformMapper.listStagePartform(spartform);
+        if (partformList != null && partformList.size() > 0) {
+            for (AeaParStagePartform partform : partformList) {
+                partform.setStagePartformId(UUID.randomUUID().toString());
+                partform.setStageId(newStageId);
+                partformMapper.insertStagePartform(partform);
             }
         }
     }
@@ -1938,8 +1967,9 @@ public class AeaParThemeVerAdminServiceImpl implements AeaParThemeVerAdminServic
         return allNodes;
     }
 
-
+    @Override
     public ResultForm createBpmnDiagram2(String themeVerId) throws Exception {
+
         ResultForm form = new ResultForm(false);
         String initBpmnDiagram = getInitBpmnDiagram("rappidWithParallelTemplate.json");
         if (initBpmnDiagram == null) {
@@ -2670,7 +2700,9 @@ public class AeaParThemeVerAdminServiceImpl implements AeaParThemeVerAdminServic
         }
     }
 
+    @Override
     public Map<String, Object> getAeaParThemeVerAndCells(AeaParStage stage){
+
         Map<String, Object> map = new HashMap<>(2);
         if(stage.getThemeVerId() == null && stage.getThemeCode() == null && stage.getThemeName() == null){
             AeaParStage stageOld = aeaParStageAdminService.getAeaParStageById(stage.getStageId());
@@ -3609,7 +3641,9 @@ public class AeaParThemeVerAdminServiceImpl implements AeaParThemeVerAdminServic
         return parallelPool.get();
     }
 
+    @Override
     public void removeEleFromDiagram(JSONArray cells, AeaParStage stage, String stageItemId, String isOptionItem) {
+
         try{
             Map parentPool = getCellsEleById( stage.getStageId(), cells);
             if(isOptionItem.equals("1")){ //并行

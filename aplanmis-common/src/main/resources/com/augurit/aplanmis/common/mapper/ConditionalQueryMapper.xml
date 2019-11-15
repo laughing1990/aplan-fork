@@ -776,6 +776,7 @@
         (
         SELECT
         art_123.ID_ AS taskId,
+        ahp_123.ID_ AS procInstId,
         ahap_123.APPLYINST_ID AS applyinstId,
         ahap_123.APPLYINST_CODE AS applyinstCode,
         aps_123.STAGE_NAME AS stageName,
@@ -826,6 +827,7 @@
         (
         SELECT
         art_123.ID_ AS taskId,
+        ahp_123.ID_ AS procInstId,
         ahap_123.APPLYINST_ID AS applyinstId,
         ahap_123.APPLYINST_CODE AS applyinstCode,
         aps_123.STAGE_NAME AS stageName,
@@ -888,6 +890,7 @@
         (
         SELECT
         art_123.ID_ AS taskId,
+        ahp_123.ID_ AS procInstId,
         ahap_123.APPLYINST_ID AS applyinstId,
         ahap_123.APPLYINST_CODE AS applyinstCode,
         aps_123.STAGE_NAME AS stageName,
@@ -939,6 +942,7 @@
         (
         SELECT
         art_123.ID_ AS taskId,
+        ahp_123.ID_ AS procInstId,
         ahap_123.APPLYINST_ID AS applyinstId,
         ahap_123.APPLYINST_CODE AS applyinstCode,
         NULL AS stageName,
@@ -995,6 +999,7 @@
         (
         SELECT
         art_123.ID_ AS taskId,
+        ahp_123.ID_ AS procInstId,
         ahap_123.APPLYINST_ID AS applyinstId,
         ahap_123.APPLYINST_CODE AS applyinstCode,
         NULL AS stageName,

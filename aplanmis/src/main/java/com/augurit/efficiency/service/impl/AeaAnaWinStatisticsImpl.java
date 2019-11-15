@@ -44,10 +44,11 @@ public class AeaAnaWinStatisticsImpl {
     private static String WIN_REPORTNAME_YEAR = "窗口年申报统计表";
     private static String DEFAULT_CREATER_SYS = "sys_admin_job";
 
+    private static String APPLY_SOURCE_WIN = "win";
+    private static String APPLY_SOURCE_NET = "net";
+
     @Autowired
     private AeaAnaOrgStatisticsImpl aeaAnaOrgStatisticsImpl;
-    @Autowired
-    private AeaHiApplyinstMapper aeaHiApplyinstMapper;
     @Autowired
     private AeaServiceWindowMapper aeaServiceWindowMapper;
     @Autowired
@@ -158,7 +159,7 @@ public class AeaAnaWinStatisticsImpl {
         String statisticsPreDate = DateUtils.getPreDateByDate(statisticsDateStr);
 
         Map<String, List<WinStageApplyStatisticsVo>> applyCollect = null;
-        if ("win".equals(applySource)) {
+        if (APPLY_SOURCE_WIN.equals(applySource)) {
             List<WinStageApplyStatisticsVo> applyByWin = aeaAnaWinDayStatisticsMapper.getApplyByWin(window.getWindowId(), isParallel, applySource, new String[]{ApplyState.RECEIVE_APPROVED_APPLY.getValue()},
                     new String[]{ApplyState.RECEIVE_APPROVED_APPLY.getValue()}, rootOrgId, startTime, endTime);
             applyCollect = applyByWin.stream().collect(Collectors.groupingBy(WinStageApplyStatisticsVo::getStageId));
