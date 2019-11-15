@@ -100,4 +100,8 @@ public class LicenseDTO implements Serializable {
     private Date last_modification_time;
 
     private String auth_code;
+
+    private String license_status_name;
+
+    private String license_type_name;
 }
