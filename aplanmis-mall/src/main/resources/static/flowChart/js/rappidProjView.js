@@ -8,15 +8,16 @@ var gWhile = '#F6FBFA';
 var aCells = '';
 // vue实例对象
 var app = "";
+var stageTip = '';
 $(function () {
   // $("#uploadProgress").modal("show");
   var proj = {};
   var cells = ""; //渲染内容
-
+  
   app = new Vue({
     el: '#app',
     mixins: [mixins],
-    data: function() {
+    data: function () {
       return {
         ctx: ctx, //url前缀
         topTab: 0,
@@ -35,7 +36,7 @@ $(function () {
           max: 5,
           step: .1
         },
-
+        
         // 弹框显示状态
         dialogVisible: false,
         filePanelLoaded: false,
@@ -44,17 +45,17 @@ $(function () {
         pageLoading: false,
         itemDetailVisible: false,
         allDetailDiaTabs: [
-          { label: '概要信息', code: 'base' },
-          { label: '审批过程', code: 'process' },
-          // { label: '材料补正', code: 'supply' },
-          { label: '特殊程序', code: 'special' },
-          { label: '批文批复', code: 'doc' },
+          {label: '概要信息', code: 'base'},
+          {label: '审批过程', code: 'process'},
+          {label: '材料补正', code: 'supply'},
+          {label: '特殊程序', code: 'special'},
+          {label: '批文批复', code: 'doc'},
         ],
         detailDiaTabs: [],
         detailTabsActiveCode: 'base',
         fileViewType: 0,
-        chineseIndexArr: ['一','二','三','四','五','六','七','八','九','十',],
-        docTypeList: ['全部','申报材料','批文批复','电子证照','意见汇总表'],
+        chineseIndexArr: ['一', '二', '三', '四', '五', '六', '七', '八', '九', '十',],
+        docTypeList: ['全部', '申报材料', '批文批复', '电子证照', '意见汇总表'],
         nowDocType: 0,
         docSearchText: '',
         docFileList: [],
@@ -63,35 +64,35 @@ $(function () {
           // 0
           {},
           // 1、已接件
-          { label:'已接件', iconClass:'ag-Handle', colorClass: 's-blue' },
+          {label: '已接件', iconClass: 'ag-Handle', colorClass: 's-blue'},
           // 2、已撤件
-          { label:'已撤件', iconClass:'ag-takeaway', colorClass: 's-grey' },
+          {label: '已撤件', iconClass: 'ag-takeaway', colorClass: 's-grey'},
           // 3、窗口受理
-          { label:'窗口受理', iconClass:'ag-Finalize_', colorClass: 's-blue' },
+          {label: '窗口受理', iconClass: 'ag-Finalize_', colorClass: 's-blue'},
           // 4、不受理
-          { label:'不受理', iconClass:'ag-Prohibited', colorClass: 's-grey' },
+          {label: '不受理', iconClass: 'ag-Prohibited', colorClass: 's-grey'},
           // 5、不予受理
-          { label:'不予受理', iconClass:'ag-warn-circle', colorClass: 's-red' },
+          {label: '不予受理', iconClass: 'ag-warn-circle', colorClass: 's-red'},
           // 6、补正（开始）
-          { label:'补正开始', iconClass:'ag-Start', colorClass: 's-blue' },
+          {label: '补正开始', iconClass: 'ag-Start', colorClass: 's-blue'},
           // 7、补正（结束）
-          { label:'补正结束', iconClass:'ag-finish', colorClass: 's-green' },
+          {label: '补正结束', iconClass: 'ag-finish', colorClass: 's-green'},
           // 8、部门受理
-          { label:'部门受理', iconClass:'ag-Finalize_', colorClass: 's-blue' },
+          {label: '部门受理', iconClass: 'ag-Finalize_', colorClass: 's-blue'},
           // 9、特别程序（开始）
-          { label:'特别程序开始', iconClass:'ag-special', colorClass: 's-blue' },
+          {label: '特别程序开始', iconClass: 'ag-special', colorClass: 's-blue'},
           // 10、特别程序（结束）
-          { label:'特别程序结束', iconClass:'ag-special', colorClass: 's-green' },
+          {label: '特别程序结束', iconClass: 'ag-special', colorClass: 's-green'},
           // 11、办结（通过）
-          { label:'办结通过', iconClass:'ag-check-circle', colorClass: 's-green' },
+          {label: '办结通过', iconClass: 'ag-check-circle', colorClass: 's-green'},
           // 12、办结（容缺通过）
-          { label:'办结容缺通过', iconClass:'ag-check-circle', colorClass: 's-green' },
+          {label: '办结容缺通过', iconClass: 'ag-check-circle', colorClass: 's-green'},
           // 13、办结（不通过）
-          { label:'办结不通过', iconClass:'ag-close-circle', colorClass: 's-red' },
+          {label: '办结不通过', iconClass: 'ag-close-circle', colorClass: 's-red'},
           // 14、撤回
-          { label:'撤回', iconClass:'ag-retract', colorClass: 's-red' },
+          {label: '撤回', iconClass: 'ag-retract', colorClass: 's-red'},
           // 15、撤销
-          { label:'撤销', iconClass:'ag-Cancel', colorClass: 's-red' },
+          {label: '撤销', iconClass: 'ag-Cancel', colorClass: 's-red'},
         ],
         prePdfVisible: false,
         pdfSrc: '',
@@ -102,14 +103,15 @@ $(function () {
         officialDocumentList: [],
         specialList: [],
         specialTypeList: [],
+        supplyList: [],
       };
     },
     methods: {
-      handleNodeClick: function(data, checked, b) {
+      handleNodeClick: function (data, checked, b) {
         var nodes = this.$refs.tree.getCheckedNodes();
         reqStatusListAndResetThemeverDiagram(data, nodes, proj, cells);
       },
-
+      
       // 页面事件绑定
       domBindEvent: function () {
         // 头部项目名左侧下拉点击
@@ -123,7 +125,7 @@ $(function () {
             $picTip.hide();
           }
         })
-
+        
         // 图例点击
         // $('.proHeadPicTip').on('click', function () {
         //   var $picTip = $('.itemColorRark');
@@ -134,11 +136,11 @@ $(function () {
         //   }
         // })
         $('.proHeadPicTip').hover(function () {
-            $('.itemColorRark').show();
-        }, function (){
-            $('.itemColorRark').hide();
+          $('.itemColorRark').show();
+        }, function () {
+          $('.itemColorRark').hide();
         })
-
+        
         // 工具栏点击事件
         $('.toolMain, .toolFold').on('click', function (a, b) {
           var node = $('.toolPanel');
@@ -150,7 +152,7 @@ $(function () {
             node.css('width', '60px');
           }
         });
-
+        
         // 缩放
         var c = this.c;
         $('.beBig').on('click', function (a, b) {
@@ -171,82 +173,102 @@ $(function () {
         $('.toolSvg').on('click', function (a, b) {
           paper.showTools().openAsSVG();
         })
-        $('#paper-container g.joint-cell.joint-type-bpmn.joint-type-bpmn-activity').on('mouseover',function(a,b){
+        $('#paper-container g.joint-type-bpmn-hpool1, g.joint-type-bpmn-hpool2, g.joint-type-bpmn-hpool3, g.joint-type-bpmn-hpool4').on('mouseover', function (a, b) {
+          showStageDetail($(this));
+        });
+        $('#paper-container g.joint-type-bpmn-hpool1, g.joint-type-bpmn-hpool2, g.joint-type-bpmn-hpool3, g.joint-type-bpmn-hpool4').on('mouseleave', function (a, b) {
+          stageTip.stageTipShow = false;
+        });
+        $('#paper-container g.joint-cell.joint-type-bpmn.joint-type-bpmn-activity').on('mouseover', function (a, b) {
           showItemDetail($(this));
         });
-        var inter = '';
-        $('#paper-container g.joint-cell.joint-type-bpmn.joint-type-bpmn-activity').on('mouseleave', function(){
+        $('#paper-container g.joint-cell.joint-type-bpmn.joint-type-bpmn-activity').on('mouseleave', function () {
           // inter = setTimeout("$('.tips-table-cell').css('display', 'none');", 700);
           // setInterval("$('.tips-table-cell').css('display', 'none');", 2000);
-          $('.tips-table-cell').hide();
+          // $('.tips-table-cell').hide();
+          stageTip.itemTipShow=false;
         });
-        $('.tips-table-cell').hover(function(ele, a){
-          $('.tips-table-cell').show();
+        $('.tips-table-cell').hover(function (ele, a) {
+          stageTip.itemTipShow=true;
+          // $('.tips-table-cell').show();
         });
-        $('.tips-table-cell').on('mouseleave',function(ele, a){
-          $(this).hide();
+        $('.tips-table-cell').on('mouseleave', function (ele, a) {
+          stageTip.itemTipShow=false;
+          // $(this).hide();
         });
-        // $('#paper-container g.joint-cell.joint-type-bpmn.joint-type-bpmn-activity').on('dblclick',function(a,b){
-        //   openItemDtailmodel($('#itemTableInfo').data('itemInfo'));
-        // });
+        $('#paper-container g.joint-cell.joint-type-bpmn.joint-type-bpmn-activity').on('dblclick', function (a, b) {
+          openItemDtailmodel($('#itemTableInfo').data('itemInfo'));
+        });
       },
       allShow: function () {
-          for(var i=0;i<this.$refs.tree.store._getAllNodes().length;i++){
-              this.$refs.tree.store._getAllNodes()[i].expanded=true;
-          }
+        for (var i = 0; i < this.$refs.tree.store._getAllNodes().length; i++) {
+          this.$refs.tree.store._getAllNodes()[i].expanded = true;
+        }
       },
       allHide: function () {
-          for(var i=0;i<this.$refs.tree.store._getAllNodes().length;i++){
-              this.$refs.tree.store._getAllNodes()[i].expanded=false;
-          }
+        for (var i = 0; i < this.$refs.tree.store._getAllNodes().length; i++) {
+          this.$refs.tree.store._getAllNodes()[i].expanded = false;
+        }
       },
       // --------------- panda ------------------
-      closeItemDetDialog: function(){
+      closeItemDetDialog: function () {
         this.detailTabsActiveCode = 'base';
+      },
+      // 组装补正数据
+      packageBzData: function (arr, flag) {
+        return __STATIC.packageBzData(arr, flag);
+      },
+      formatDateStr: function (d, s) {
+        return __STATIC.formatDate(d, s)
       },
       // 打开详情弹窗
       openItemDetailDialog: function (data) {
         var vm = this;
         // console.log(data);
         var iteminstId = data.iteminstId;
-        // var iteminstId = 'ff8160f3-b31b-4c69-8df4-7820adf7968b';
-        // var iteminstId = '1db4ecfe-92a0-4199-8b56-0d92c182b8e9',
-        vm.getSpecialType(function(){
+        // var iteminstId = '988347fc-fde9-4067-8558-f45f1e3d9955';
+        vm.getSpecialType(function () {
           vm.pageLoading = true;
           request('', {
-            url:  '/aplanmis-front/rest/iteminst/detail/' + iteminstId,
+            url: ctx + 'rest/iteminst/detail/' + iteminstId,
             type: 'get',
-          }, function(res) {
+          }, function (res) {
             vm.pageLoading = false;
             if (res.success) {
-              vm.aeaHiIteminst = res.content.aeaHiIteminst;
-              vm.commentList = res.content.commentList;
-              vm.officialDocumentList = res.content.officialDocumentList;
-              vm.specialList = res.content.specialList;
+              vm.aeaHiIteminst = res.content.aeaHiIteminst || [];
+              vm.commentList = res.content.commentList || [];
+              vm.officialDocumentList = res.content.officialDocumentList || [];
+              vm.specialList = res.content.specialList || [];
               vm.detailDiaTabs = vm.allDetailDiaTabs.concat([]);
+              var tmp = res.content.supplyList.concat([]);
+              tmp.forEach(function (u) {
+                u.bzMatList = vm.packageBzData(u.matCorrectDtos, true);
+              });
+              vm.supplyList = tmp;
               // vm.checkDeleteTab('commentList', 'process');
-              // vm.checkDeleteTab('specialList', 'special');
+              vm.checkDeleteTab('specialList', 'special');
               // vm.checkDeleteTab('officialDocumentList', 'doc');
-              vm.$nextTick(function(){
+              vm.checkDeleteTab('supplyList', 'supply');
+              vm.$nextTick(function () {
                 vm.itemDetailVisible = true;
                 vm.pageLoading = false;
               });
             } else {
-              vm.$message.error(res.message || '获取事项详情失败' );
+              vm.$message.error(res.message || '获取事项详情失败');
             }
-          }, function(){
+          }, function () {
             vm.pageLoading = false;
             vm.$message.error('获取事项详情失败')
           });
         });
       },
-      checkDeleteTab: function(listKey, code){
+      checkDeleteTab: function (listKey, code) {
         var vm = this;
-        if (!(vm[listKey] && vm[listKey].length)){
+        if (!(vm[listKey] && vm[listKey].length)) {
           // 删除code对应的tab
           var _index = -1;
-          vm.detailDiaTabs.forEach(function(u, index) {
-            if (u.code == code){
+          vm.detailDiaTabs.forEach(function (u, index) {
+            if (u.code == code) {
               _index = index;
             }
           });
@@ -254,17 +276,17 @@ $(function () {
         }
       },
       // 根据selectedFileIds选中图标视图和表格视图
-      updateCheckView: function (){
+      updateCheckView: function () {
         var vm = this;
         var tmpArr = vm.selectedFileIds.concat([]);
         this.$refs.fileTable.clearSelection();
-        this.docFileList.forEach(function(u){
-          if (tmpArr.indexOf(u.id) != -1){
+        this.docFileList.forEach(function (u) {
+          if (tmpArr.indexOf(u.id) != -1) {
             vm.$refs.fileTable.toggleRowSelection(u);
           }
         });
         this.selectedFileIds = tmpArr;
-        this.allFileChecked = (this.docFileList.length==this.selectedFileIds.length)&&!!this.docFileList.length;
+        this.allFileChecked = (this.docFileList.length == this.selectedFileIds.length) && !!this.docFileList.length;
       },
       // 图标视图，点击某一个文件
       handleToggleCheckFile: function (item) {
@@ -277,27 +299,27 @@ $(function () {
         this.updateCheckView();
       },
       // 点击全选CheckBox
-      fileAllCheckedChange: function (flag){
+      fileAllCheckedChange: function (flag) {
         var vm = this;
         this.selectedFileIds = [];
         if (flag) {
-          this.docFileList.forEach(function(u){
+          this.docFileList.forEach(function (u) {
             vm.selectedFileIds.push(u.id);
           });
         }
         this.updateCheckView();
       },
       // 表格选中状态改变时触发
-      fileSelectChange: function(selection){
+      fileSelectChange: function (selection) {
         var vm = this;
         this.selectedFileIds = [];
-        selection.forEach(function(u){
+        selection.forEach(function (u) {
           vm.selectedFileIds.push(u.id);
         });
-        this.allFileChecked = (this.docFileList.length==this.selectedFileIds.length)&&!!this.docFileList.length;
+        this.allFileChecked = (this.docFileList.length == this.selectedFileIds.length) && !!this.docFileList.length;
       },
       // 刷新
-      refreshFiles: function (){
+      refreshFiles: function () {
         this.filePanelLoaded = false;
         this.loadFilePanel();
       },
@@ -318,41 +340,42 @@ $(function () {
         this.docFileList = [];
         this.selectedFileIds = [];
         this.allFileChecked = false;
-        window.setTimeout(function(){
+        window.setTimeout(function () {
           vm.docFileList = [
-            { id: 'a', fileName: '第三阶段收纳入流程图数字化表单及表制字段小型5.0.xlsx', checked: false },
-            { id: 'b', fileName: '第三阶段收纳入流程图数字化表单及表制字段小型5.0.xlsx', checked: false },
-            { id: 'c', fileName: '第三阶段收纳入流程图数字化表单及表制字段小型5.0.xlsx', checked: false },
-            { id: 'd', fileName: '第三阶段收纳入流程图数字化表单及表制字段小型5.0.xlsx', checked: false },
-            { id: 'e', fileName: '第三阶段收纳入流程图数字化表单及表制字段小型5.0.xlsx', checked: false },
-            { id: 'f', fileName: '第三阶段收纳入流程图数字化表单及表制字段小型5.0.xlsx', checked: false },
-            { id: 'g', fileName: '第三阶段收纳入流程图数字化表单及表制字段小型5.0.xlsx', checked: false },
-            { id: 'h', fileName: '第三阶段收纳入流程图数字化表单及表制字段小型5.0.xlsx', checked: false },
-            { id: 'j', fileName: '第三阶段收纳入流程图数字化表单及表制字段小型5.0.xlsx', checked: false },
-            { id: 'i', fileName: '第三阶段收纳入流程图数字化表单及表制字段小型5.0.xlsx', checked: false },
-            { id: 'k', fileName: '第三阶段收纳入流程图数字化表单及表制字段小型5.0.xlsx', checked: false },
-            { id: 'l', fileName: '第三阶段收纳入流程图数字化表单及表制字段小型5.0.xlsx', checked: false },
-            { id: 'm', fileName: '第三阶段收纳入流程图数字化表单及表制字段小型5.0.xlsx', checked: false },
-            { id: 'n', fileName: '第三阶段收纳入流程图数字化表单及表制字段小型5.0.xlsx', checked: false },
-            { id: 'o', fileName: '第三阶段收纳入流程图数字化表单及表制字段小型5.0.xlsx', checked: false },
+            {id: 'a', fileName: '第三阶段收纳入流程图数字化表单及表制字段小型5.0.xlsx', checked: false},
+            {id: 'b', fileName: '第三阶段收纳入流程图数字化表单及表制字段小型5.0.xlsx', checked: false},
+            {id: 'c', fileName: '第三阶段收纳入流程图数字化表单及表制字段小型5.0.xlsx', checked: false},
+            {id: 'd', fileName: '第三阶段收纳入流程图数字化表单及表制字段小型5.0.xlsx', checked: false},
+            {id: 'e', fileName: '第三阶段收纳入流程图数字化表单及表制字段小型5.0.xlsx', checked: false},
+            {id: 'f', fileName: '第三阶段收纳入流程图数字化表单及表制字段小型5.0.xlsx', checked: false},
+            {id: 'g', fileName: '第三阶段收纳入流程图数字化表单及表制字段小型5.0.xlsx', checked: false},
+            {id: 'h', fileName: '第三阶段收纳入流程图数字化表单及表制字段小型5.0.xlsx', checked: false},
+            {id: 'j', fileName: '第三阶段收纳入流程图数字化表单及表制字段小型5.0.xlsx', checked: false},
+            {id: 'i', fileName: '第三阶段收纳入流程图数字化表单及表制字段小型5.0.xlsx', checked: false},
+            {id: 'k', fileName: '第三阶段收纳入流程图数字化表单及表制字段小型5.0.xlsx', checked: false},
+            {id: 'l', fileName: '第三阶段收纳入流程图数字化表单及表制字段小型5.0.xlsx', checked: false},
+            {id: 'm', fileName: '第三阶段收纳入流程图数字化表单及表制字段小型5.0.xlsx', checked: false},
+            {id: 'n', fileName: '第三阶段收纳入流程图数字化表单及表制字段小型5.0.xlsx', checked: false},
+            {id: 'o', fileName: '第三阶段收纳入流程图数字化表单及表制字段小型5.0.xlsx', checked: false},
           ];
           vm.pageLoading = false;
           vm.filePanelLoaded = true;
         }, 1000)
       },
-      getChineseIndex: function(index){
-        return __STATIC.chineseIndexArr[index]||'10+';
+      // 中文序号
+      getChineseIndex: function (index, length) {
+        return __STATIC.getChineseIndex(index, length);
       },
-      specialTypeToText: function(type) {
+      specialTypeToText: function (type) {
         var result = '';
-        this.specialTypeList.forEach(function(u){
-          if (u.itemCode == type){
+        this.specialTypeList.forEach(function (u) {
+          if (u.itemCode == type) {
             result = u.itemName;
           }
         });
         return result;
       },
-      getSpecialType: function(callback){
+      getSpecialType: function (callback) {
         var vm = this;
         if (this.specialTypeList.length != 0) {
           typeof callback === "function" && callback();
@@ -372,7 +395,7 @@ $(function () {
                 str == '2' ? '不涉及' : '';
       },
       // 关闭预览文件弹窗
-      closePdfDialog: function(){
+      closePdfDialog: function () {
         this.pdfSrc = '';
       },
       // 预览电子件 必须要有detailId
@@ -408,13 +431,14 @@ $(function () {
           return vm.doPreFile(obj);
         }
         // 判断服务器端文件是否已经转换成功，转换成功才能预览
-        if (visibleKey){
+        if (visibleKey) {
           vm[visibleKey] = true;
         } else {
           vm.pageLoading = true;
         }
         var count = 0;
         doRequest();
+        
         function doRequest() {
           request('', {
             url: ctx + 'previewPdf/pdfIsCoverted?detailId=' + obj.detailId,
@@ -423,7 +447,9 @@ $(function () {
             if (res.success) {
               count = 0;
               vm.pageLoading = false;
-              if (visibleKey){ vm[visibleKey] = false; }
+              if (visibleKey) {
+                vm[visibleKey] = false;
+              }
               vm.doPreFile(obj);
             } else {
               if (++count > 9) {
@@ -433,7 +459,9 @@ $(function () {
                 }, function () {
                   count = 0;
                   vm.pageLoading = false;
-                  if (visibleKey){ vm[visibleKey] = false; }
+                  if (visibleKey) {
+                    vm[visibleKey] = false;
+                  }
                   return false;
                 }, '确定', '取消', 'warning', true)
               } else {
@@ -446,7 +474,9 @@ $(function () {
           }, function (res) {
             count = 0;
             vm.pageLoading = false;
-            if (visibleKey){ vm[visibleKey] = false; }
+            if (visibleKey) {
+              vm[visibleKey] = false;
+            }
             vm.$message.error('请求预览文件失败')
           });
         }
@@ -460,10 +490,13 @@ $(function () {
       },
       //下载单个附件
       downOneFile: function (data) {
+        if (!data.detailId) {
+          data.detailId = data.fileId;
+        } // 设置detailId
         window.open(ctx + 'rest/mats/att/download?detailIds=' + data.detailId, '_blank')
       },
       // 格式化时间
-      formatDate: function(time, formatStr){
+      formatDate: function (time, formatStr) {
         return __STATIC.formatDate(time, formatStr);
       },
       // 节点class
@@ -496,7 +529,7 @@ $(function () {
       },
     },
     watch: {
-      topTab: function(val){
+      topTab: function (val) {
         if (val == 1) this.loadFilePanel();
       }
     },
@@ -518,7 +551,7 @@ $(function () {
       $.ajax({
         url: ctx + 'rest/project/diagram/status/projInfoInter',
         method: 'get',
-        xhrFields: { withCredentials: true },
+        xhrFields: {withCredentials: true},
         crossDomain: true,
         data: {
           projInfoId: ts.getSerachParamsForUrl('projInfoId'),
@@ -526,12 +559,12 @@ $(function () {
         },
         success: function (res) {
           ts.pageLoading = false;
-          if(!res.success){
+          if (!res.success) {
             // swal('提示信息', res.message, 'info');
             app.apiMessage(res.message, 'info');
             return;
           }
-          if(res.success){
+          if (res.success) {
             ts.data = toTree(JSON.parse(res.content.projTree)); //下拉树赋值
             ts.defaultCheckKeys.push(res.content.projInfoId); //下拉树默认选中当前项目projInfoId
             themeVerDiagram = res.content.diagramStatusVo.diagramJson; //svg渲染json
@@ -541,14 +574,14 @@ $(function () {
             projInfoId = res.content.projInfoId;
             themeVerId = res.content.diagramStatusVo.themeVerId;
           }
-
+          
           if (projName) {
             $('.proHeadContent').text(projName);
             $('.proHeadContent').attr('title', projName);
           }
           initThemeFlowChart(cells);
           setContentCenter();
-          if(statusList){
+          if (statusList) {
             proj[projInfoId] = JSON.parse(statusList);
           }
           ts.domBindEvent();
@@ -562,54 +595,84 @@ $(function () {
   });
   // var Ctor = Vue.extend(Main);
   // new Ctor().$mount('#app');
+  stageTip = new Vue({
+    el: '#stageAndItemTableCell',
+    mixins: [mixins],
+    data: function () {
+      return {
+        stage:'',
+        stageInfo:'',
+        item:'',
+        itemInfo:'',
+        itemTipShow:false,
+        stageTipShow:false,
+        stageTipCss:{
+          top:'100px',
+          left:'100px',
+          itemTop:'100px',
+          itemLeft:'100px',
+          arrowUpShow:false,
+          itemArrowUpShow:false
+        }
+      }
+    }
+  });
 })
 
 // 页面dailog显示
-function showEleDialog(){
+function showEleDialog() {
   app.dialogVisible = true;
 }
 
-function openItemDtailmodel(itemInfo){
+function openItemDtailmodel(itemInfo) {
   app.openItemDetailDialog(itemInfo);
 }
 
 //获取详情申报事项详情
-function showItemDetail($this){
+function showItemDetail($this) {
   var $itemTable = $('.tips-table-cell');
   var itemInfo = $this.data('itemInfo');
-  if(!itemInfo){
+  if (!itemInfo) {
+    stageTip.itemTipShow = false;
     return;
   }
+  stageTip.itemTipShow = true;
+  stageTip.itemInfo = itemInfo;
+  stageTip.item= $this.data('item');
   var offset = $this.offset();
   var tableWidth = $itemTable.width();
   var tableHeight = $itemTable.height();
   var itemWidth = $this.find('div.content')[0].getClientRects()[0].width;
   var itemHeight = $this.find('div.content')[0].getClientRects()[0].height;
   var x, y, z;
-  if(offset.top - tableHeight < 0){
-    y = offset.top + itemHeight-18;
-    $('.detailArrowDown').hide();
-    $('.detailArrowUp').show();
-  }else{
-    $('.detailArrowDown').show();
-    $('.detailArrowUp').hide();
-    y = offset.top - tableHeight-20;
+  if (offset.top - tableHeight < 0) {
+    y = offset.top + itemHeight - 18;
+    stageTip.stageTipCss.itemArrowUpShow = false;
+    // $('.detailArrowDown').hide();
+    // $('.detailArrowUp').show();
+  } else {
+    // $('.detailArrowDown').show();
+    // $('.detailArrowUp').hide();
+    stageTip.stageTipCss.itemArrowUpShow = true;
+    y = offset.top - tableHeight - 20;
   }
-  $itemTable.css('top', y);
-  $itemTable.css('left', offset.left-(tableWidth-itemWidth)/2);
-  $itemTable.show();
+  // $itemTable.css('top', y);
+  // $itemTable.css('left', offset.left - (tableWidth - itemWidth) / 2 + 183);
+  stageTip.stageTipCss.itemTop = y + 'px';
+  x = offset.left - (tableWidth - itemWidth) / 2+183;
+  stageTip.stageTipCss.itemLeft = x + 'px';
 
-  $ps = $('#itemTableInfo>div>');
-  $($ps[0]).find('span').text(itemInfo.orgName);
-  $($ps[0]).find('span').attr('title', itemInfo.orgName);
-  // $($ps[1]).find('span').text(itemInfo.orgName);
-  $($ps[1]).find('span').text($this.find('div.content span:eq(1)').text());
-  $($ps[2]).find('span').text(itemInfo.iteminstRunTime>0?itemInfo.iteminstRunTime:'0');
-  $($ps[3]).find('span').text(itemInfo.iteminstStartTime?new Date(itemInfo.iteminstStartTime).format('yyyy-MM-dd'):'-');
-  $($ps[4]).find('span').text(itemInfo.iteminstEndTime?new Date(itemInfo.iteminstEndTime).format('yyyy-MM-dd'):'-');
-  $($ps[5]).find('span').text(itemInfo.statusName);
-  $($ps[5]).find('span').css('border-color', $this.find('div.content').css('border-color'));
-  $($ps[5]).find('span').css('color', $this.find('div.content').css('border-color'));
+  // $ps = $('#itemTableInfo>div>');
+  // $($ps[0]).find('span').text(itemInfo.orgName);
+  // $($ps[0]).find('span').attr('title', itemInfo.orgName);
+  // // $($ps[1]).find('span').text(itemInfo.orgName);
+  // $($ps[1]).find('span').text($this.find('div.content span:eq(1)').text());
+  // $($ps[2]).find('span').text(itemInfo.iteminstRunTime > 0 ? itemInfo.iteminstRunTime : '0');
+  // $($ps[3]).find('span').text(itemInfo.iteminstStartTime ? new Date(itemInfo.iteminstStartTime).format('yyyy-MM-dd') : '-');
+  // $($ps[4]).find('span').text(itemInfo.iteminstEndTime ? new Date(itemInfo.iteminstEndTime).format('yyyy-MM-dd') : '-');
+  // $($ps[5]).find('span').text(itemInfo.statusName);
+  // $($ps[5]).find('span').css('border-color', $this.find('div.content').css('border-color'));
+  $('#itemStatusName').css('color', $this.find('div.content').css('border-color'));
   $('#itemTableInfo').data('itemInfo', $this.data('itemInfo'));
 }
 
@@ -689,7 +752,7 @@ function changeEleColorIfPass(itemIds, type, json) {
       png = 'unknown.png', color = gWhile, fontcolor = gGray;
   }
   setEleJsonAttr(itemIds, json, color, fontcolor, '特别程序', type, png);
-
+  
 }
 
 function changeStageColorIfPass(eleId, json, status, color) {
@@ -708,8 +771,9 @@ function changeStageColorIfPass(eleId, json, status, color) {
       json.cells[i].attrs['.header']['fill'] = color;
     }
   }
-
+  
 }
+
 var ai = 0;
 
 function setEleJsonAttr(itemIds, json, color, fontColor, statusName, type, png) {
@@ -742,7 +806,7 @@ function setEleJsonAttr(itemIds, json, color, fontColor, statusName, type, png) 
           if (!json.cells[i].attrs['.body']) {
             json.cells[i].attrs['.body'] = {};
           }
-
+          
           if (type == 'NEED_NOT_HANDLE') { //无需办理
             json.cells[i].attrs['.content']['style']['color'] = fontColor;
             json.cells[i].attrs['.body']['fill'] = color;
@@ -776,9 +840,9 @@ function changeStatus(statusList, json) {
       }
     }
   }
-
+  
   handleParallelStage(json);
-
+  
   themeVerDiagram = JSON.stringify(json);
   themeVerDiagram = themeVerDiagram.replace(/<span>状态展示<\/span>/g, "");
   themeVerDiagram = themeVerDiagram.replace(/<span>无需办理<\/span>/g, "");
@@ -820,11 +884,14 @@ function initThemeFlowChart(cells) {
   }
 }
 
-function setAttrToGModal(cells){
+function setAttrToGModal(cells) {
   aCells = cells;
-  $.each(cells, function(ind, ele){
-    if(ele.type == 'bpmn.Activity'){
-      $('#paper-container .joint-viewport').find('g[model-id='+ele.id+']').data('item',ele.attrs.item);
+  $.each(cells, function (ind, ele) {
+    if (ele.type == 'bpmn.Activity') {
+      $('#paper-container .joint-viewport').find('g[model-id=' + ele.id + ']').data('item', ele.attrs.item);
+    }
+    if (ele.type.indexOf('bpmn.HPool') >= 0) {
+      $('#paper-container .joint-viewport').find('g[model-id=' + ele.id + ']').data('stage', ele.attrs.stage);
     }
   })
 }
@@ -843,10 +910,10 @@ function setStageStatusWord(statusList) {
             // }
         }
     }*/
-
+    
     //控制阶段的颜色和图标
     var color = '',
-      src = '';
+        src = '';
     var $pool = $('g[model-id=' + statusList[i].stageId + ']');
     if (statusList[i].statusValue == 'HANDING' || statusList[i].statusValue == 'UN_FINISHED') { //正在处理
       color = gBlue, src = ctx + '/rappid/apps/BPMNEditor/images/pen.png';
@@ -855,7 +922,7 @@ function setStageStatusWord(statusList) {
     } else { //未开始
       color = gGraySlow, src = null; //src = ctx+'/rappid/apps/BPMNEditor/images/unfinesh.png';
     }
-
+    
     if (color != '') {
       var $text = $pool.find('text:eq(1)');
       $text.find('tspan').attr('fill', '#fff');
@@ -872,7 +939,7 @@ function setStageStatusWord(statusList) {
         svgimg.setAttributeNS(null, 'y', '46');
         svgimg.setAttributeNS(null, 'visibility', 'visible');
         $pool.find('text:eq(1)').after(svgimg);
-
+        
         //箭头图标弃用
         /* var slast = document.createElementNS('http://www.w3.org/2000/svg','image');
          slast.setAttributeNS(null,'height','20');
@@ -884,14 +951,14 @@ function setStageStatusWord(statusList) {
          slast.setAttributeNS('http://www.w3.org/1999/xlink','href', ctx+'/rappid/apps/BPMNEditor/images/arrow.png');
          slast.setAttributeNS(null,'x',($pool.find('svg').attr('width'))-30);
          $pool.find('text:eq(1)').after(slast);*/
-
+        
         //阶段文字长度
-
-
+        
+        
       }
     }
     k++;
-
+    
   }
 }
 
@@ -916,6 +983,7 @@ function setEleIconAndPosition() {
     }
   });
 }
+
 //隐藏辅线事项，
 // 1.先隐藏并记录隐藏事项的高度和，
 // 2.记录辅线隐藏的最低高度,
@@ -1001,7 +1069,7 @@ function handleAssistStage() {
       }
     }
   });
-
+  
   //记录需要隐藏辅线的id //记录最高元素的y
   $.each(json.cells, function (ind, ele) {
     if (ele.type == 'bpmn.Activity' || ele.type.indexOf('bpmn.SPool') >= 0) {
@@ -1013,20 +1081,20 @@ function handleAssistStage() {
       }
     }
   });
-
-
+  
+  
   var resizeY = 0; //并行调整位置resizey, 主线调整高度resizey
   //计算stageInfo
   for (var p in eleStageInfo) {
     eleStageInfo[p].newMaxY = eleStageInfo[p].maxY - eleStageInfo[p].subHeight;
   }
-
+  
   //调整同一阶段多个辅线的位置、事项位置
   $.each(json.cells, function (ind, ele) {
     if (ele.type.indexOf('bpmn.SPool') >= 0 && eleStageInfo[ele.parent]) {
       if (eleStageInfo[ele.parent].newMaxY && eleStageInfo[ele.parent]) {
         json.cells[ind].position.y = json.cells[ind].position.y - eleStageInfo[ele.parent][ele.id]['ajustHieght'];
-
+        
       }
     }
     if (ele.type == 'bpmn.Activity') {
@@ -1040,7 +1108,7 @@ function handleAssistStage() {
       }
     }
   })
-
+  
   var tempH = 0;
   for (var p in eleStageInfo) {
     if (tempH == 0) {
@@ -1058,14 +1126,14 @@ function handleAssistStage() {
         }
         resizeY = eleStageInfo[p].newMaxY;
         allSubY = tempH;
-
+        
       }
     }
-
+    
     // if(eleStageInfo[p].newMaxY > resizeY && eleStageInfo[p].subHeight > 0){
     // }
   }
-
+  
   allSubY = allSubY - 5; //添加底部事项与阶段底部间隔
   //移动所有阶段和事项
   $.each(json.cells, function (ind, ele) {
@@ -1156,27 +1224,28 @@ function changeViewItemProp(itemId, itemIds, fontColor, backColor, borderColor, 
     $div.prop('proj', projId);
     setImageIconAndPosition($image, $model, icon);
     $model.parent().data('itemInfo', itemInfo);
-    $model.find('div.content span').html('【实际<span>'+itemInfo.iteminstRunTime+'</span>个工作日】')
+    $model.find('div.content span').html('【实际<span>' + itemInfo.iteminstRunTime + '</span>个工作日】')
   }
 }
 
-function  changeViewStageProp(stageId, statusValue, workDay) {
+function changeViewStageProp(stageId, statusValue, workDay, ele) {
   //控制阶段的颜色和图标
   var color = '',
-    src = '';
+      src = '';
   var $pool = $('g[model-id=' + stageId + ']');
+  $pool.data('stageInfo', ele);
   if (statusValue == 'HANDING' || statusValue == 'UN_FINISHED') { //正在处理
     color = gBlue, src = ctx + '/rappid/apps/BPMNEditor/images/stage_handing.png';
   } else if (statusValue == 'FINISHED') { //完成
     color = gGreen, src = ctx + '/rappid/apps/BPMNEditor/images/stage_done.png';
   } else { //未开始
-    color = gGraySlow, src = ctx+'/rappid/apps/BPMNEditor/images/stage_un_start.png';
+    color = gGraySlow, src = ctx + '/rappid/apps/BPMNEditor/images/stage_un_start.png';
   }
-  if(workDay){
+  if (workDay) {
     // $pool.find('text:eq(2)').text('（实际20个工作日）');  时间设置未做
     // $pool.find('text:eq(2)').attr('transform', 'matrix(1,0,0,1,'+($pool.find('rect:eq(1)').attr('width')-($pool.find('text:eq(2)')[0]).getClientRects()[0].width)/2+',43)');
   }
-
+  
   if (color != '') {
     var $text = $pool.find('text:eq(1)');
     $text.find('tspan').attr('fill', '#fff');
@@ -1207,51 +1276,51 @@ function clearStageAndItem() {
   var cells = JSON.parse(themeVerDiagram).cells;
   $.each(cells, function (ind, ele) {
     if (ele.type.indexOf('Pool') >= 0) {
-      var $pool = $('g[model-id='+ele.id+']');
+      var $pool = $('g[model-id=' + ele.id + ']');
       $pool.find('rect.header').attr('fill', gGraySlow);
       $pool.find('rect.header').attr('stroke', gGraySlow);
       $pool.find('rect.body').attr('stroke', gGraySlow);
-      $pool.find('image').attr('xlink:href','');
+      $pool.find('image').attr('xlink:href', '');
     }
-    if(ele.type.indexOf('HPool')>0){
-        var $pool = $('g[model-id='+ele.id+']');
-        var src = ctx+'/rappid/apps/BPMNEditor/images/stage_un_start.png';
-        if($pool.find('text').length<3){
-          var newText = document.createElementNS('http://www.w3.org/2000/svg',"text");
-          newText.setAttributeNS(null,"font-size","14");
-          // var textNode = document.createTextNode(workday);
-          // newText.appendChild(textNode);
-          $pool.find('text.label').after(newText);
-          $pool.find('text:eq(2)').attr('transform', 'matrix(1,0,0,1,'+($pool.find('rect:eq(1)').attr('width')-$pool.find('text:eq(2)').width())/2+',43)');
-        }else{
-          $pool.find('text:eq(2)').empty();
-        }
-
-        if ($pool.find('image').length > 0) {
-          $pool.find('image').attr('xlink:href', src);
-        } else {
-            // var len = $text.text().length * parseInt($text.find('tspan:eq(0)').css('font-size').replace('px', ''));
-            var svgimg = document.createElementNS('http://www.w3.org/2000/svg', 'image');
-            svgimg.setAttributeNS(null, 'height', '53');
-            svgimg.setAttributeNS(null, 'width', '55');
-            if (src) {
-              svgimg.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', src);
-            }
-            svgimg.setAttributeNS(null, 'x', parseInt($pool.find('svg').attr('width')) - 54);
-            svgimg.setAttributeNS(null, 'y', '13');
-            svgimg.setAttributeNS(null, 'visibility', 'visible');
-            $pool.find('text:eq(1)').after(svgimg);
-        }
+    if (ele.type.indexOf('HPool') > 0) {
+      var $pool = $('g[model-id=' + ele.id + ']');
+      var src = ctx + '/rappid/apps/BPMNEditor/images/stage_un_start.png';
+      if ($pool.find('text').length < 3) {
+        var newText = document.createElementNS('http://www.w3.org/2000/svg', "text");
+        newText.setAttributeNS(null, "font-size", "14");
+        // var textNode = document.createTextNode(workday);
+        // newText.appendChild(textNode);
+        $pool.find('text.label').after(newText);
+        $pool.find('text:eq(2)').attr('transform', 'matrix(1,0,0,1,' + ($pool.find('rect:eq(1)').attr('width') - $pool.find('text:eq(2)').width()) / 2 + ',43)');
+      } else {
+        $pool.find('text:eq(2)').empty();
       }
+      
+      if ($pool.find('image').length > 0) {
+        $pool.find('image').attr('xlink:href', src);
+      } else {
+        // var len = $text.text().length * parseInt($text.find('tspan:eq(0)').css('font-size').replace('px', ''));
+        var svgimg = document.createElementNS('http://www.w3.org/2000/svg', 'image');
+        svgimg.setAttributeNS(null, 'height', '53');
+        svgimg.setAttributeNS(null, 'width', '55');
+        if (src) {
+          svgimg.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', src);
+        }
+        svgimg.setAttributeNS(null, 'x', parseInt($pool.find('svg').attr('width')) - 54);
+        svgimg.setAttributeNS(null, 'y', '13');
+        svgimg.setAttributeNS(null, 'visibility', 'visible');
+        $pool.find('text:eq(1)').after(svgimg);
+      }
+    }
   });
   $('.fobj.actFobj div.content').css('border-color', gGraySlow);
   $('.fobj.actFobj div.content').parent().parent().parent().find('image').attr('xlink:href', '');
   var eles = $('#paper-container').find('g[data-type="bpmn.Activity"]');
-  $.each(eles, function(ind, ele){
+  $.each(eles, function (ind, ele) {
     $(ele).data('itemInfo', null);
     $(ele).find('div.content span:eq(0)').empty();
   })
-
+  
 }
 
 function setImageIconAndPosition($image, $model, png) {
@@ -1308,15 +1377,15 @@ function findViewEleBy(eleId, stageId) {
 
 function findActivityByItemIdsAndStageId(itemIds, stageId) {
   var $div = null;
-  $.each(aCells, function(ind, ele){
-      if(ele.type == 'bpmn.Activity'){
-        if(itemIds.indexOf(ele.attrs.item.itemVerId.split('*')[0])>=0){
-          if(ele.parent.indexOf(stageId)>=0 || (ele.realParent && ele.realParent.indexOf(stageId)>=0)){
-               $div = $('g[model-id=' + ele.id + '] div.content');
-            return;
-          }
+  $.each(aCells, function (ind, ele) {
+    if (ele.type == 'bpmn.Activity') {
+      if (itemIds.indexOf(ele.attrs.item.itemVerId.split('*')[0]) >= 0) {
+        if (ele.parent.indexOf(stageId) >= 0 || (ele.realParent && ele.realParent.indexOf(stageId) >= 0)) {
+          $div = $('g[model-id=' + ele.id + '] div.content');
+          return;
         }
       }
+    }
   });
   return $div;
 }
@@ -1450,11 +1519,11 @@ function setViewByProjResult(statusList, projId, cells) {
       "statusName": "未办"
     }
   };
-
-
+  
+  
   if (statusList.length > 0) {
     $.each(statusList, function (ind, ele) {
-      changeViewStageProp(ele.stageId, ele.statusValue, ele.statusName);
+      changeViewStageProp(ele.stageId, ele.statusValue, ele.statusName, ele);
       if (ele.diagramItemList && ele.diagramItemList.length > 0) {
         $.each(ele.diagramItemList, function (ind1, ele1) {
           var color, fontcolor, backcolor, png;
@@ -1499,8 +1568,8 @@ function setViewByProjResult(statusList, projId, cells) {
             default: //未知
               png = 'unknown.png', color = gWhile, fontcolor = gGray;
           }*/
-
-          if(ej[type]){
+          
+          if (ej[type]) {
             fontcolor = ej[type].fontColor, backcolor = ej[type].backColor, color = ej[type].borderColor, png = ej[type].icon;
             // setEleJsonAttr(itemIds, json, color,fontcolor, '特别程序', type, png);
             // console.log('itemIds:'+ele1.itemIds);
@@ -1552,4 +1621,32 @@ function reqStatusListAndResetThemeverDiagram(node, nodes, proj, cells) {
       }
     });
   }
+}
+function showStageDetail($this) {
+  if(! $this.data('stageInfo')){
+    stageTip.stageTipShow = false;
+    return;
+  }
+  stageTip.stage = $this.data('stage');
+  stageTip.stage.stageName = $this.find('g.rotatable>text.label').text();
+  stageTip.stageInfo = $this.data('stageInfo');
+
+  stageTip.stageTipShow = true;
+  var $itemTable = $('.tips-Stage-cell');
+  var offset = $this.offset();
+  var tableWidth = $itemTable.width();
+  var tableHeight = $itemTable.height();
+  var itemWidth = $this.find('rect.header')[0].getClientRects()[0].width;
+  var itemHeight = $this.find('rect.header')[0].getClientRects()[0].height;
+  var x, y, z;
+  if (offset.top - tableHeight < 0) {
+    stageTip.stageTipCss.arrowUpShow = false;
+    y = offset.top + itemHeight - 18;
+  } else {
+    stageTip.stageTipCss.arrowUpShow = true;
+    y = offset.top - tableHeight - 20;
+  }
+  stageTip.stageTipCss.top = y + 'px';
+  x = offset.left - (tableWidth - itemWidth) / 2+183;
+  stageTip.stageTipCss.left = x + 'px';
 }
