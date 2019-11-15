@@ -118,13 +118,13 @@ public class CloudServiceImpl implements CloudService {
         String[] recordId = new String[1];
         if("1".equals(loginInfo.getIsPersonAccount())){//个人
             recordId[0] = loginInfo.getUserId();
-            return bscAttMapper.listAttLinkAndDetailList("AEA_LINKMAN_INFO","LINKMAN_INFO_ID", recordId, "a", SecurityContext.getCurrentOrgId(),keyword);
+            return bscAttMapper.listAttLinkAndDetailList("AEA_LINKMAN_INFO","LINKMAN_INFO_ID", recordId, org.apache.commons.lang3.StringUtils.EMPTY, SecurityContext.getCurrentOrgId(),keyword);
         }else if(StringUtils.isNotBlank(loginInfo.getUserId())){//委托人
             recordId[0] = loginInfo.getUserId();
-            return bscAttMapper.listAttLinkAndDetailList("AEA_LINKMAN_INFO","LINKMAN_INFO_ID", recordId, "a", SecurityContext.getCurrentOrgId(),keyword);
+            return bscAttMapper.listAttLinkAndDetailList("AEA_LINKMAN_INFO","LINKMAN_INFO_ID", recordId, org.apache.commons.lang3.StringUtils.EMPTY, SecurityContext.getCurrentOrgId(),keyword);
         }else{//企业
             recordId[0] = loginInfo.getUnitId();
-            return bscAttMapper.listAttLinkAndDetailList("AEA_UNIT_INFO","UNIT_INFO_ID", recordId, "a", SecurityContext.getCurrentOrgId(),keyword);
+            return bscAttMapper.listAttLinkAndDetailList("AEA_UNIT_INFO","UNIT_INFO_ID", recordId, org.apache.commons.lang3.StringUtils.EMPTY, SecurityContext.getCurrentOrgId(),keyword);
         }
     }
 

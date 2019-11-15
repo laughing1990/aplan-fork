@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 public class DataSourceType {
 
     public enum DataBaseType {
-        APLANMIS, PROVINCE,ANALYSE
+        APLANMIS,DUOGUI, PROVINCE,ANALYSE
     }
 
     /**

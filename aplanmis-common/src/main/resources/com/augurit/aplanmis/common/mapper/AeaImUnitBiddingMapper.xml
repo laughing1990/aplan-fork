@@ -420,6 +420,7 @@
         </where>
     </select>
 
+    <!--选取中标机构-->
     <update id="updateWinBid">
         update aea_im_unit_bidding aiub set aiub.IS_WON_BID='1' ,aiub.BIDDING_TIME=now()
         where aiub.UNIT_BIDDING_ID=#{unitBiddingId}
@@ -427,4 +428,30 @@
             and aiub.PROJ_PURCHASE_ID=#{projPurchaseId}
         </if>
     </update>
+    <!--放弃中标-->
+    <update id="abortWinBid">
+        update aea_im_unit_bidding aiub set aiub.IS_WON_BID='0' ,aiub.BIDDING_TIME=NULL ,aiub.IS_CANCEL_SIGNUP='1',
+        where aiub.UNIT_BIDDING_ID=#{unitBiddingId}
+        <if test="projPurchaseId!=null and projPurchaseId!=''">
+            and aiub.PROJ_PURCHASE_ID=#{projPurchaseId}
+        </if>
+    </update>
+    <!--更新上传合同状态-->
+    <update id="updateUploadContract">
+        update aea_im_unit_bidding aiub set  aiub.IS_UPLOAD_CONTRACT=#{isUploadContract} where aiub.UNIT_BIDDING_ID=#{unitBiddingId}
+    </update>
+    <!--更新服务结果-->
+    <update id="updateUploadResult">
+        update aea_im_unit_bidding aiub set aiub.IS_UPLOAD_RESULT=#{isUploadResult}
+        where aiub.PROJ_PURCHASE_ID=#{projPurchaseId} and aiub.IS_WON_BID='1' and aiub.IS_DELETE!='1'
+    </update>
+    <!--获取中标单位竞价ID-->
+    <select id="getUnitBiddingByProjPurchase" resultType="com.augurit.aplanmis.common.domain.AeaImUnitBidding">
+        select
+        <include refid="allColumns"/>
+        from AEA_IM_UNIT_BIDDING
+        WHERE PROJ_PURCHASE_ID=#{projPurchaseId} and IS_WON_BID='1' and IS_CANCEL_SIGNUP!='1'
+    </select>
+
+
 </mapper>

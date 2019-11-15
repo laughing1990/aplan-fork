@@ -1063,7 +1063,7 @@ var vm = new Vue({
             var _that = this;
             var detailId = data.fileId;
             var flashAttributes = '';
-            /*console.log(data);
+            // console.log(data);
             var regText = /doc|docx|ppt|pptx|xls|xlsx|txt$/;
             var fileName = data.fileName;
             var fileType = this.getFileType(fileName);
@@ -1116,10 +1116,10 @@ var vm = new Vue({
                 setTimeout(function () {
                     tempwindow.location = ctx + 'rest/mats/att/preview?detailId=' + detailId + '&flashAttributes=' + flashAttributes;
                 }, 1000)
-            }*/
+            }
 
             // url = ctx + 'rest/certificate/consignerAtt/preview' + "?detailId=" + detailId + "&flashAttributes=" + flashAttributes;
-            url = ctx + 'rest/mats/att/preview?detailId='  + detailId + "&flashAttributes=" + flashAttributes;
+           /* url = ctx + 'rest/mats/att/preview?detailId='  + detailId + "&flashAttributes=" + flashAttributes;
             try {
                 window.open(url);
             } catch (e) {
@@ -1127,7 +1127,7 @@ var vm = new Vue({
                     message: '服务请求失败',
                     type: 'error'
                 });
-            }
+            }*/
         },
         // 获取文件后缀
         getFileType: function (fileName) {

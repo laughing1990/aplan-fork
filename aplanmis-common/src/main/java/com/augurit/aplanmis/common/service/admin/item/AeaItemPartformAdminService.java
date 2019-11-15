@@ -31,4 +31,5 @@ public interface AeaItemPartformAdminService {
 
     List<AeaItemPartform> listAeaItemPartform(AeaItemPartform aeaItemPartform);
 
+    void createAndUpdateDevForm(String formCode, String formName, String formLoadUrl, String formId, String itemPartformId) throws Exception;
 }

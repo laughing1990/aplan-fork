@@ -6,6 +6,7 @@ import com.augurit.agcloud.bsc.sc.att.service.IBscAttService;
 import com.augurit.agcloud.bsc.sc.att.service.impl.BscAttServiceImpl;
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
+import com.augurit.aplanmis.common.constants.AeaItemBasicContants;
 import com.augurit.aplanmis.common.domain.AeaItemBasic;
 import com.augurit.aplanmis.common.domain.AeaItemState;
 import com.augurit.aplanmis.common.domain.AeaParTheme;
@@ -91,7 +92,7 @@ public class RestGuideController {
             if (StringUtils.isEmpty(orgId)){
                 return new ContentResultForm<PageInfo<AeaItemBasic>>(true,aeaItemBasicService.listAeaItemBasic(aeaItemBasic,pageNum,pageSize,topOrgId));
             }else{
-                return new ContentResultForm<PageInfo<AeaItemBasic>>(true,aeaItemBasicService.getAeaItemBasicListByOrgId(orgId,pageNum,pageSize));
+                return new ContentResultForm<PageInfo<AeaItemBasic>>(true,aeaItemBasicService.getAeaItemBasicListByOrgId(orgId, AeaItemBasicContants.IS_CATALOG_NO,pageNum,pageSize));
             }
         } catch (Exception e) {
             logger.error(e.getMessage(),e);

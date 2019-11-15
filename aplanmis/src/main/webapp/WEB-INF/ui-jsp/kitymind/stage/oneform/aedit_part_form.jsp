@@ -18,7 +18,7 @@
 
                         <input type="hidden" name="stagePartformId" value=""/>
                         <input type="hidden" name="stageId" value=""/>
-                        <input type="hidden" name="partformId" value=""/>
+                        <input type="hidden" name="stoFormId" value=""/>
 
                         <div class="form-group m-form__group row" >
                             <label class="col-lg-2 col-form-label" style="text-align: right;"><font color="red">*</font>扩展表名称:</label>
@@ -55,12 +55,12 @@
                             </div>
                         </div>
 
-                        <div id="formUrlDiv" class="form-group m-form__group row" >
-                            <label class="col-lg-2 col-form-label" style="text-align: right;"><font color="red">*</font>开发表单地址:</label>
-                            <div class="col-lg-10">
-                                <textarea class="form-control" name="formUrl" rows="3"></textarea>
-                            </div>
-                        </div>
+                        <%--<div id="formUrlDiv" class="form-group m-form__group row" >--%>
+                        <%--<label class="col-lg-2 col-form-label" style="text-align: right;"><font color="red">*</font>开发表单地址:</label>--%>
+                        <%--<div class="col-lg-10">--%>
+                        <%--<textarea class="form-control" name="formUrl" rows="3"></textarea>--%>
+                        <%--</div>--%>
+                        <%--</div>--%>
 
                         <div id="stageElDiv" class="form-group m-form__group row" style="display: none;">
                             <label class="col-lg-2 col-form-label" style="text-align: right;">

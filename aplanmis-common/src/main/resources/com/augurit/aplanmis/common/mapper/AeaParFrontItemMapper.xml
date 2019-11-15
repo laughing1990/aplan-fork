@@ -3,19 +3,20 @@
 <!--created by Administrator    2019-11-01 10:47:49 -->
 <!--0 一些前置信息配置 -->
 <mapper namespace="com.augurit.aplanmis.common.mapper.AeaParFrontItemMapper">
+
     <!--1 返回所有字段的SQL字句 -->
     <sql id="allColumns">
-    FRONT_ITEM_ID  frontItemId,
-    STAGE_ID  stageId,
-    ITEM_VER_ID  itemVerId,
-    SORT_NO  sortNo,
-    IS_ACTIVE  isActive,
-    FRONT_ITEM_MEMO  frontItemMemo,
-    CREATER  creater,
-    CREATE_TIME  createTime,
-    MODIFIER  modifier,
-    MODIFY_TIME  modifyTime,
-    ROOT_ORG_ID  rootOrgId
+        FRONT_ITEM_ID  frontItemId,
+        STAGE_ID  stageId,
+        ITEM_VER_ID  itemVerId,
+        SORT_NO  sortNo,
+        IS_ACTIVE  isActive,
+        FRONT_ITEM_MEMO  frontItemMemo,
+        CREATER  creater,
+        CREATE_TIME  createTime,
+        MODIFIER  modifier,
+        MODIFY_TIME  modifyTime,
+        ROOT_ORG_ID  rootOrgId
     </sql>
 
     <sql id="allColumnsAlias">
@@ -35,7 +36,7 @@
     <!--2 根据主键ID查询单个实体 -->
     <select id="getAeaParFrontItemById" resultType="AeaParFrontItem">
         select
-        <include refid="allColumns"/>
+           <include refid="allColumns"/>
         from AEA_PAR_FRONT_ITEM
         where FRONT_ITEM_ID = #{id}
     </select>
@@ -43,7 +44,7 @@
     <!--3 根据条件查询实体list -->
     <select id="listAeaParFrontItem" resultType="AeaParFrontItem">
         select
-        <include refid="allColumns"/>
+           <include refid="allColumns"/>
         from AEA_PAR_FRONT_ITEM
         <where>
             <if test="frontItemId != null">
@@ -81,14 +82,15 @@
             </if>
         </where>
     </select>
-    <!--4 根据条件查询实体list,返回分页对象 -->
 
     <select id="listAeaParFrontItemByStageId" resultType="com.augurit.aplanmis.common.vo.AeaParFrontItemVo">
         select
-        <include refid="allColumnsAlias">
-            <property name="alias" value="apfi"></property>
-        </include>
-        ,aib.ITEM_NAME itemName,aib.IS_CATALOG isCatalog,aib.ITEM_ID itemId
+            <include refid="allColumnsAlias">
+                <property name="alias" value="apfi"></property>
+            </include>,
+            aib.ITEM_NAME itemName,
+            aib.IS_CATALOG isCatalog,
+            aib.ITEM_ID itemId
         from AEA_PAR_FRONT_ITEM apfi
         left join aea_item_basic aib on aib.ITEM_VER_ID = apfi.ITEM_VER_ID
         <where>
@@ -106,9 +108,9 @@
     <!--5 新增实体对象 -->
     <insert id="insertAeaParFrontItem" parameterType="AeaParFrontItem">
     insert into AEA_PAR_FRONT_ITEM (
-FRONT_ITEM_ID  ,STAGE_ID  ,ITEM_VER_ID  ,SORT_NO  ,IS_ACTIVE  ,FRONT_ITEM_MEMO  ,CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME  ,ROOT_ORG_ID
+        FRONT_ITEM_ID  ,STAGE_ID  ,ITEM_VER_ID  ,SORT_NO  ,IS_ACTIVE  ,FRONT_ITEM_MEMO  ,CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME  ,ROOT_ORG_ID
     )  values  (
-#{frontItemId},#{stageId},#{itemVerId},#{sortNo},#{isActive},#{frontItemMemo},#{creater},#{createTime},#{modifier},#{modifyTime},  #{rootOrgId}
+        #{frontItemId},#{stageId},#{itemVerId},#{sortNo},#{isActive},#{frontItemMemo},#{creater},#{createTime},#{modifier},#{modifyTime},  #{rootOrgId}
     )
 </insert>
     <!--6 修改实体对象 -->
@@ -151,13 +153,12 @@ FRONT_ITEM_ID  ,STAGE_ID  ,ITEM_VER_ID  ,SORT_NO  ,IS_ACTIVE  ,FRONT_ITEM_MEMO  
         </set>
         where FRONT_ITEM_ID = #{frontItemId}
     </update>
+
     <!--7 删除实体对象,根据主键ID -->
     <delete id="deleteAeaParFrontItem">
-        delete from   AEA_PAR_FRONT_ITEM
-        where
-    FRONT_ITEM_ID = #{id}
+        delete from   AEA_PAR_FRONT_ITEM where FRONT_ITEM_ID = #{id}
     </delete>
-    <!--8 删除实体对象列表,根据主键ID列表 -->
+
     <!--9 返回所有字段的对象map,用于级联 -->
     <resultMap type="AeaParFrontItem" id="AeaParFrontItemMap">
         <id property="frontItemId" column="FRONT_ITEM_ID"/>
@@ -175,10 +176,10 @@ FRONT_ITEM_ID  ,STAGE_ID  ,ITEM_VER_ID  ,SORT_NO  ,IS_ACTIVE  ,FRONT_ITEM_MEMO  
 
     <select id="listAeaParFrontItemVo" resultType="com.augurit.aplanmis.common.vo.AeaParFrontItemVo">
         select
-        <include refid="allColumnsAlias">
-            <property name="alias" value="apfi"></property>
-        </include>
-        ,aib.ITEM_NAME itemName
+            <include refid="allColumnsAlias">
+                <property name="alias" value="apfi"></property>
+            </include>,
+            aib.ITEM_NAME itemName
         from AEA_PAR_FRONT_ITEM apfi
         left join aea_item_basic aib on aib.ITEM_VER_ID = apfi.ITEM_VER_ID
         <where>
@@ -236,12 +237,13 @@ FRONT_ITEM_ID  ,STAGE_ID  ,ITEM_VER_ID  ,SORT_NO  ,IS_ACTIVE  ,FRONT_ITEM_MEMO  
 
     <select id="getAeaParFrontItemVoByFrontItemId" resultType="com.augurit.aplanmis.common.vo.AeaParFrontItemVo">
         select
-        <include refid="allColumnsAlias">
-            <property name="alias" value="apfi"></property>
-        </include>
-        ,aib.ITEM_NAME itemName
+            <include refid="allColumnsAlias">
+                <property name="alias" value="apfi"></property>
+            </include>,
+            aib.ITEM_NAME itemName
         from AEA_PAR_FRONT_ITEM apfi
         left join aea_item_basic aib on aib.ITEM_VER_ID = apfi.ITEM_VER_ID
         where apfi.FRONT_ITEM_ID = #{frontItemId}
     </select>
+
 </mapper>

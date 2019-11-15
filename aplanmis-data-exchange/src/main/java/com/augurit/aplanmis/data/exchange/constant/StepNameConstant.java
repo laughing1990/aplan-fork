@@ -14,4 +14,13 @@ public class StepNameConstant {
     public static String ITEM_OPINION_STEP = "项目审批事项办理详细信息表";
     public static String OFFICIAL_DOC_STEP = "项目审批事项批复文件信息表";
     public static String ITEM_OTHERS_MAT_STEP = "项目其他附件信息表";
+    /*
+     * 多规
+     * @author qhg
+     * @Date 2019/11/04
+     *
+     */
+    public static String PLAN_CONTROL_LINE_STEP = "地方规划控制线信息表";
+    public static String PRE_IDEA_STEP = "项目前期意见信息表";
+    public static String LAND_RED_LINE_STEP = "项目用地红线界址信息表";
 }

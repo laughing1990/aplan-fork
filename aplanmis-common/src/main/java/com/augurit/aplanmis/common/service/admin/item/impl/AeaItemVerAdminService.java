@@ -40,6 +40,9 @@ public class AeaItemVerAdminService {
     private static Logger logger = LoggerFactory.getLogger(AeaItemVerAdminService.class);
 
     @Autowired
+    private AeaItemMapper aeaItemMapper;
+
+    @Autowired
     private AeaItemVerMapper aeaItemVerMapper;
 
     @Autowired
@@ -60,17 +63,14 @@ public class AeaItemVerAdminService {
     @Autowired
     private AeaItemGuideMapper aeaItemGuideMapper;
 
-
     @Autowired
     private AeaItemGuideChargesMapper aeaItemGuideChargesMapper;
-
 
     @Autowired
     private AeaItemGuideDepartmentsMapper aeaItemGuideDepartmentsMapper;
 
     @Autowired
     private AeaItemGuideExtendMapper aeaItemGuideExtendMapper;
-
 
     @Autowired
     private AeaItemGuideQuestionsMapper aeaItemGuideQuestionsMapper;
@@ -109,10 +109,22 @@ public class AeaItemVerAdminService {
     private AeaServiceWindowItemMapper aeaServiceWindowItemMapper;
 
     @Autowired
-    private AeaItemMapper aeaItemMapper;
+    private AeaItemOneformMapper itemOneformMapper;
 
     @Autowired
-    private AeaItemFrontItemMapper aeaItemFrontMapper;
+    private AeaItemPartformMapper itemPartformMapper;
+
+    @Autowired
+    private AeaItemFrontItemMapper frontItemMapper;
+
+    @Autowired
+    private AeaItemFrontPartformMapper frontPartformMapper;
+
+    @Autowired
+    private AeaItemFrontProjMapper frontProjMapper;
+
+    @Autowired
+    private AeaParFrontItemMapper parFrontItemMapper;
 
     public AeaItemVer initAeaItemVer(String itemId, String isCatalog, String userId, String rootOrgId) {
 
@@ -271,7 +283,10 @@ public class AeaItemVerAdminService {
         // 6、复制事项版本下输出材料数据
         copyItemVerOuts(itemVerId, newItemVerId, rootOrgId);
 
-        // 7、复制事项前置检查事项数据
+        // 7、复制事项一张表单
+        copyItemVerOneform(itemVerId, newItemVerId, rootOrgId);
+
+        // 8、复制事项前置检查事项数据
         copyItemFrontCheck(itemVerId, newItemVerId, rootOrgId);
 
         return newItemVerId;
@@ -373,7 +388,10 @@ public class AeaItemVerAdminService {
         // 6、复制事项版本下输出材料数据
         copyItemVerOuts(itemVerId, newItemVerId, rootOrgId);
 
-        // 7、复制事项前置检查事项数据
+        // 7、复制事项一张表单
+        copyItemVerOneform(itemVerId, newItemVerId, rootOrgId);
+
+        // 8、复制事项前置检查事项数据
         copyItemFrontCheck(itemVerId, newItemVerId, rootOrgId);
     }
 
@@ -521,6 +539,40 @@ public class AeaItemVerAdminService {
     }
 
     /**
+     * 复制一张表单
+     *
+     * @param itemVerId
+     * @param newItemVerId
+     * @param rootOrgId
+     */
+    private void copyItemVerOneform(String itemVerId, String newItemVerId, String rootOrgId){
+
+        // 事项总表
+        AeaItemOneform sitemOneform = new AeaItemOneform();
+        sitemOneform.setItemVerId(itemVerId);
+        List<AeaItemOneform> itemOneformList = itemOneformMapper.listAeaItemOneform(sitemOneform);
+        if(itemOneformList!=null&&itemOneformList.size()>0){
+            for(AeaItemOneform itemOneform : itemOneformList){
+                itemOneform.setItemOneformId(UuidUtil.generateUuid());
+                itemOneform.setItemVerId(newItemVerId);
+                itemOneformMapper.insertAeaItemOneform(itemOneform);
+            }
+        }
+
+        // 事项扩展表
+        AeaItemPartform sitemPartform = new AeaItemPartform();
+        sitemPartform.setItemVerId(itemVerId);
+        List<AeaItemPartform> itemPartformList = itemPartformMapper.listAeaItemPartform(sitemPartform);
+        if(itemPartformList!=null&&itemPartformList.size()>0){
+            for(AeaItemPartform itemPartform : itemPartformList){
+                itemPartform.setItemPartformId(UuidUtil.generateUuid());
+                itemPartform.setItemVerId(newItemVerId);
+                itemPartformMapper.insertAeaItemPartform(itemPartform);
+            }
+        }
+    }
+
+    /**
      * 复制事项的前置检查事项
      *
      * @param itemVerId
@@ -529,15 +581,42 @@ public class AeaItemVerAdminService {
      */
     private void copyItemFrontCheck(String itemVerId, String newItemVerId, String rootOrgId){
 
-        AeaItemFrontItem front = new AeaItemFrontItem();
-        front.setRootOrgId(rootOrgId);
-        front.setItemVerId(itemVerId);
-        List<AeaItemFrontItem> fronts = aeaItemFrontMapper.listAeaItemFront(front);
-        if(fronts!=null&&fronts.size()>0){
-            for(AeaItemFrontItem vo:fronts){
+        // 前置事项
+        AeaItemFrontItem frontItem = new AeaItemFrontItem();
+        frontItem.setRootOrgId(rootOrgId);
+        frontItem.setItemVerId(itemVerId);
+        List<AeaItemFrontItem> frontItems = frontItemMapper.listAeaItemFront(frontItem);
+        if(frontItems!=null&&frontItems.size()>0){
+            for(AeaItemFrontItem vo : frontItems){
                 vo.setFrontItemId(UuidUtil.generateUuid());
                 vo.setItemVerId(newItemVerId);
-                aeaItemFrontMapper.insertAeaItemFront(vo);
+                frontItemMapper.insertAeaItemFront(vo);
+            }
+        }
+
+        // 前置扩展表
+        AeaItemFrontPartform frontPartform = new AeaItemFrontPartform();
+        frontPartform.setRootOrgId(rootOrgId);
+        frontPartform.setItemVerId(itemVerId);
+        List<AeaItemFrontPartform> frontPartForms = frontPartformMapper.listAeaItemFrontPartform(frontPartform);
+        if(frontPartForms!=null&&frontPartForms.size()>0){
+            for(AeaItemFrontPartform vo : frontPartForms){
+                vo.setFrontPartformId(UuidUtil.generateUuid());
+                vo.setItemVerId(newItemVerId);
+                frontPartformMapper.insertAeaItemFrontPartform(vo);
+            }
+        }
+
+        // 前置项目信息
+        AeaItemFrontProj frontProj = new AeaItemFrontProj();
+        frontProj.setRootOrgId(rootOrgId);
+        frontProj.setItemVerId(itemVerId);
+        List<AeaItemFrontProj> frontProjs = frontProjMapper.listAeaItemFrontProj(frontProj);
+        if(frontProjs!=null&&frontProjs.size()>0){
+            for(AeaItemFrontProj vo : frontProjs){
+                vo.setFrontProjId(UuidUtil.generateUuid());
+                vo.setItemVerId(newItemVerId);
+                frontProjMapper.insertAeaItemFrontProj(vo);
             }
         }
     }
@@ -731,14 +810,26 @@ public class AeaItemVerAdminService {
                 // 处理阶段事项关联数据
                 handleStageItemChaneRelVerData(itemId, oldItemVerId, itemVerId, rootOrgId, userId);
 
+                // 处理阶段前置检测事项 = 此处仅仅更新数据, 更新所有
+                AeaParFrontItem parFrontItem = new AeaParFrontItem();
+                parFrontItem.setRootOrgId(rootOrgId);
+                parFrontItem.setItemVerId(oldItemVerId);
+                List<AeaParFrontItem> parFrontItems = parFrontItemMapper.listAeaParFrontItem(parFrontItem);
+                if(parFrontItems!=null&&parFrontItems.size()>0){
+                    for(AeaParFrontItem vo:parFrontItems){
+                        vo.setItemVerId(itemVerId);
+                        parFrontItemMapper.updateAeaParFrontItem(vo);
+                    }
+                }
+
                 // 处理共享材料 == 不好处理,暂不处理
 
-                // 处理事项的前置检查事项 = 此处仅仅更新数据,事项版本过时不更新
-                List<AeaItemFrontItem> fronts = aeaItemFrontMapper.listNoDeprecatedItemFront(oldItemVerId, rootOrgId);
+                // 处理事项的前置检查事项 = 此处仅仅更新数据, 事项版本过时不更新
+                List<AeaItemFrontItem> fronts = frontItemMapper.listNoDeprecatedItemFront(oldItemVerId, rootOrgId);
                 if(fronts!=null&&fronts.size()>0){
                     for(AeaItemFrontItem itemFront:fronts){
                         itemFront.setFrontCkItemVerId(itemVerId);
-                        aeaItemFrontMapper.updateAeaItemFront(itemFront);
+                        frontItemMapper.updateAeaItemFront(itemFront);
                     }
                 }
 
@@ -793,12 +884,24 @@ public class AeaItemVerAdminService {
                 if(unpublishVer!=null&&usedVer==null){
                     aeaParStageItemMapper.batchUpdateStageItemByItemVerChange(unpublishVer.getThemeVerId(), itemId, oldItemVerId, itemVerId, rootOrgId);
                 }
-                // 2、主题版本存在未发布且存在可用版本，需要将未发布版本更新阶段事项数据版本状态改为试运行，已用版本改为过时
+                // 2、主题版本存在未发布且存在可用版本
                 if(unpublishVer!=null&&usedVer!=null){
                     // 将未发布版本更新阶段事项数据
-                    aeaParStageItemMapper.batchUpdateStageItemByItemVerChange(unpublishVer.getThemeVerId(),itemId, oldItemVerId, itemVerId, rootOrgId);
-                    // 处理主题版本数据
-                    handNewAndOldThemeVer(key, userId, rootOrgId, unpublishVer, usedVer);
+                    aeaParStageItemMapper.batchUpdateStageItemByItemVerChange(unpublishVer.getThemeVerId(), itemId, oldItemVerId, itemVerId, rootOrgId);
+                    // 试运行可用版本更新阶段事项数据
+                    if(PublishStatus.TEST_RUN.getValue().equals(usedVer.getIsPublish())){
+                        aeaParStageItemMapper.batchUpdateStageItemByItemVerChange(usedVer.getThemeVerId(), itemId, oldItemVerId, itemVerId, rootOrgId);
+                    // 已发布可用版本需要重新生成版本数据
+                    }else{
+                        // 未发布版本更新阶段事项数据版本状态改为试运行,已用版本改为过时
+                        handNewAndOldThemeVer(key, userId, rootOrgId, unpublishVer, usedVer);
+                        // 产生新的版本数据
+                        AeaParThemeVer newThemeVer = aeaParThemeVerAdminService.copyThemeVerRelData(key, usedVer.getThemeVerId());
+                        // 将未发布版本更新阶段事项数据
+                        aeaParStageItemMapper.batchUpdateStageItemByItemVerChange(newThemeVer.getThemeVerId(), itemId, oldItemVerId, itemVerId, rootOrgId);
+                        // 处理主题版本数据
+                        handNewAndOldThemeVer(key, userId, rootOrgId, newThemeVer, unpublishVer);
+                    }
                 }
                 // 3、主题版本仅仅只存在可用版本，需要产生新的版本数据，并将当前版本状态修改为过时，新版本改为试运行
                 if(unpublishVer==null&&usedVer!=null){

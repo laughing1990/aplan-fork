@@ -12,30 +12,16 @@ import com.augurit.aplanmis.data.exchange.domain.aplanmis.EtlJobLog;
 import com.augurit.aplanmis.data.exchange.domain.base.SpglEntity;
 import com.augurit.aplanmis.data.exchange.domain.base.SpglInstEntity;
 import com.augurit.aplanmis.data.exchange.domain.base.SpglItemInstEntity;
-import com.augurit.aplanmis.data.exchange.domain.spgl.SpglDfxmsplcjdsxxxb;
-import com.augurit.aplanmis.data.exchange.domain.spgl.SpglDfxmsplcjdxxb;
-import com.augurit.aplanmis.data.exchange.domain.spgl.SpglDfxmsplcxxb;
-import com.augurit.aplanmis.data.exchange.domain.spgl.SpglXmdwxxb;
-import com.augurit.aplanmis.data.exchange.domain.spgl.SpglXmjbxxb;
-import com.augurit.aplanmis.data.exchange.domain.spgl.SpglXmqtfjxxb;
-import com.augurit.aplanmis.data.exchange.domain.spgl.SpglXmspsxblxxb;
-import com.augurit.aplanmis.data.exchange.domain.spgl.SpglXmspsxblxxxxb;
-import com.augurit.aplanmis.data.exchange.domain.spgl.SpglXmspsxpfwjxxb;
+import com.augurit.aplanmis.data.exchange.domain.spgl.*;
 import com.augurit.aplanmis.data.exchange.dto.view.SpglDfxmsplcjdfxsxxxbVew;
 import com.augurit.aplanmis.data.exchange.dto.view.SpglXmspsxblxxbView;
 import com.augurit.aplanmis.data.exchange.dto.view.ViewSubTable;
 import com.augurit.aplanmis.data.exchange.exception.*;
 import com.augurit.aplanmis.data.exchange.service.aplanmis.*;
-import com.augurit.aplanmis.data.exchange.service.spgl.BaseSpglServer;
-import com.augurit.aplanmis.data.exchange.service.spgl.SpglDfxmsplcjdsxxxbService;
-import com.augurit.aplanmis.data.exchange.service.spgl.SpglDfxmsplcjdxxbService;
-import com.augurit.aplanmis.data.exchange.service.spgl.SpglDfxmsplcxxbService;
-import com.augurit.aplanmis.data.exchange.service.spgl.SpglXmdwxxbService;
-import com.augurit.aplanmis.data.exchange.service.spgl.SpglXmjbxxbService;
-import com.augurit.aplanmis.data.exchange.service.spgl.SpglXmqtfjxxbService;
-import com.augurit.aplanmis.data.exchange.service.spgl.SpglXmspsxblxxbService;
-import com.augurit.aplanmis.data.exchange.service.spgl.SpglXmspsxblxxxxbService;
-import com.augurit.aplanmis.data.exchange.service.spgl.SpglXmspsxpfwjxxbService;
+import com.augurit.aplanmis.data.exchange.service.duogui.LandRedLineService;
+import com.augurit.aplanmis.data.exchange.service.duogui.PlanControlLineService;
+import com.augurit.aplanmis.data.exchange.service.duogui.PreIdeaService;
+import com.augurit.aplanmis.data.exchange.service.spgl.*;
 import com.augurit.aplanmis.data.exchange.util.RedisUtil;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
@@ -64,6 +50,9 @@ public class ImportService {
 
     @Value("${aplanmis.data.exchange.analyse.open}")
     private Boolean uploadToAnalyse;
+
+    @Value("${aplanmis.data.exchange.upload-duogui}")
+    private Boolean uploadDuoGui;
 
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
@@ -101,6 +90,13 @@ public class ImportService {
     OfficialDocService officialDocService;
 
     @Autowired
+    LandRedLineService landRedLineService;
+    @Autowired
+    PreIdeaService preIdeaService;
+    @Autowired
+    PlanControlLineService planControlLineService;
+
+    @Autowired
     SpglDfxmsplcxxbService spglDfxmsplcxxbService;
     @Autowired
     SpglDfxmsplcjdxxbService spglDfxmsplcjdxxbService;
@@ -118,6 +114,13 @@ public class ImportService {
     SpglXmspsxpfwjxxbService spglXmspsxpfwjxxbService;
     @Autowired
     SpglXmqtfjxxbService spglXmqtfjxxbService;
+
+    @Autowired
+    SpglXmydhxjzxxbService spglXmydhxjzxxbService;
+    @Autowired
+    SpglXmqqyjxxbService spglXmqqyjxxbService;
+    @Autowired
+    SpglDfghkzxxxbService spglDfghkzxxxbService;
 
     @Autowired
     ItemBasicService itemBasicService;
@@ -226,7 +229,28 @@ public class ImportService {
         this.importOfficDoc(startTime, endTime);
         //9.项目其他附件信息表
         this.importItemMatinst(startTime, endTime);
-        log.info("所有表数据上传成功");
+
+        log.info("工改所有表数据上传成功");
+        /*
+         * 多规
+         * @author qhg
+         * @Date 2019/11/04
+         *
+         */
+        if(uploadDuoGui){
+            try {
+                //10.项目用地红线界址信息表
+                this.importLandRedLine(startTime, endTime);
+                //11.项目前期意见信息表
+                this.importPreIdea(startTime, endTime);
+                //12.地方规划控制线信息表
+                this.importPlanControlLine(startTime, endTime);
+                log.info("多规数据上传成功");
+            }catch (Exception e){
+                e.printStackTrace();
+                log.info("多规数据上传失败");
+            }
+        }
     }
 
     public void importThemeVer(Date startTime, Date endTime) {
@@ -300,6 +324,7 @@ public class ImportService {
                 } else {
                     SpglXmjbxxb spglXmjbxxb = (SpglXmjbxxb) redisUtil.hget(StorageCacheKeyConstants.PROJ_CACHE_KEY, item.getGcdm());
                     if (spglXmjbxxb != null) {
+                        item.setSplcbm(spglXmjbxxb.getSplcbm());
                         item.setSplcbbh(spglXmjbxxb.getSplcbbh());
                     } else {
                         item.setSplcbbh(1D);
@@ -379,6 +404,36 @@ public class ImportService {
         }.commonImport(startTime, endTime, TableNameConstant.SPGL_XMQTFJXXB);
     }
 
+    //项目用地红线界址信息表
+    private void importLandRedLine(Date startTime, Date endTime) {
+        new AbstractImporter<SpglXmydhxjzxxb>(landRedLineService, spglXmydhxjzxxbService) {
+            @Override
+            protected void prepareHandle(SpglXmydhxjzxxb item, Iterator<SpglXmydhxjzxxb> iterator) {
+
+            }
+        }.commonImport(startTime, endTime, TableNameConstant.SPGL_XMYDHXJZXXB);
+    }
+
+    //项目前期意见信息表
+    private void importPreIdea(Date startTime, Date endTime) {
+        new AbstractImporter<SpglXmqqyjxxb>(preIdeaService, spglXmqqyjxxbService) {
+            @Override
+            protected void prepareHandle(SpglXmqqyjxxb item, Iterator<SpglXmqqyjxxb> iterator) {
+
+            }
+        }.commonImport(startTime, endTime, TableNameConstant.SPGL_XMQQYJXXB);
+    }
+
+    //地方规划控制线信息表
+    private void importPlanControlLine(Date startTime, Date endTime) {
+        new AbstractImporter<SpglDfghkzxxxb>(planControlLineService, spglDfghkzxxxbService) {
+            @Override
+            protected void prepareHandle(SpglDfghkzxxxb item, Iterator<SpglDfghkzxxxb> iterator) {
+
+            }
+        }.commonImport(startTime, endTime, TableNameConstant.SPGL_DFGHKZXXXB);
+    }
+
     private void validateProj(SpglInstEntity item) {
         Object spglInstEntity = redisUtil.hget(StorageCacheKeyConstants.PROJ_CACHE_KEY, item.getGcdm());
         if (spglInstEntity == null) {
@@ -426,7 +481,7 @@ public class ImportService {
                     while (iterator.hasNext()) {
                         T next = iterator.next();
                         try {
-                            this.checkComplete(next, iterator);
+                            //this.checkComplete(next, iterator);
                             this.prepareHandle(next, iterator);
                         } catch (EtlTransException e) {
                             try {

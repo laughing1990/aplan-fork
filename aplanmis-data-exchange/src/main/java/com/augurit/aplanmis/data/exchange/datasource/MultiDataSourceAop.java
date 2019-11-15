@@ -29,6 +29,13 @@ public class MultiDataSourceAop {
         }
     }
 
+    @Before("execution(* com.augurit.aplanmis.data.exchange.service.duogui.*Service.*(..))")
+    public void setDataSource2DuoGui() {
+        if (DataSourceType.DataBaseType.DUOGUI != DataSourceType.getDataBaseType()) {
+            DataSourceType.setDataBaseType(DataSourceType.DataBaseType.DUOGUI);
+        }
+    }
+
     @Before("execution(* com.augurit.aplanmis.data.exchange.service.spgl.*Service.*(..))")
     public void setDataSource2Province() {
         DataSourceType.setDataBaseType(DataSourceType.getSmallType());
