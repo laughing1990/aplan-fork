@@ -169,6 +169,8 @@ public class AeaParStagePartformServiceImpl implements AeaParStagePartformServic
             actStoForm.setFormCode(formCode);
             actStoForm.setFormName(formName);
             actStoForm.setFormLoadUrl(formLoadUrl);
+            actStoForm.setModifier(SecurityContext.getCurrentUserId());
+            actStoForm.setModifyTime(new Date());
             actStoFormMapper.updateActStoForm(actStoForm);
         }
     }

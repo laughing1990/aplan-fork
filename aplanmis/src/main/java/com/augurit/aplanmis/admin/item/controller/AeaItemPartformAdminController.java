@@ -167,7 +167,7 @@ public class AeaItemPartformAdminController {
     @RequestMapping("/delItemPartformRelFormById.do")
     public ResultForm delItemPartformRelFormById(String id) {
 
-        if(StringUtils.isBlank(id)){
+        if (StringUtils.isBlank(id)) {
             throw new InvalidParameterException("参数id为空!");
         }
         AeaItemPartform partform = new AeaItemPartform();
@@ -190,6 +190,20 @@ public class AeaItemPartformAdminController {
             return new ResultForm(true);
         }
         return new ResultForm(false, "传递材料证照排序数据有问题,请检查!");
+    }
+
+    @RequestMapping("createAndUpdateDevForm")
+    public ResultForm createAndUpdateDevForm(String formCode, String formName, String formLoadUrl, String formId, String itemPartformId) {
+        try {
+
+            if (StringUtils.isBlank(formCode) || StringUtils.isBlank(formName) || StringUtils.isBlank(formLoadUrl) || StringUtils.isBlank(itemPartformId))
+                return new ResultForm(false, "缺少参数！");
+            aeaItemPartformService.createAndUpdateDevForm(formCode, formName, formLoadUrl, formId, itemPartformId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResultForm(false, "新增开发表单失败");
+        }
+        return new ResultForm(false, "新增开发表单成功");
     }
 
 }

@@ -1,5 +1,7 @@
 package com.augurit.aplanmis.common.service.admin.item.impl;
 
+import com.augurit.agcloud.bpm.common.domain.ActStoForm;
+import com.augurit.agcloud.bpm.common.mapper.ActStoFormMapper;
 import com.augurit.agcloud.framework.exception.InvalidParameterException;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.ui.pager.PageHelper;
@@ -17,10 +19,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 /**
-* 事项与扩展表单关联表-Service服务接口实现类
-*/
+ * 事项与扩展表单关联表-Service服务接口实现类
+ */
 @Service
 @Transactional
 public class AeaItemPartformAdminServiceImpl implements AeaItemPartformAdminService {
@@ -30,8 +33,11 @@ public class AeaItemPartformAdminServiceImpl implements AeaItemPartformAdminServ
     @Autowired
     private AeaItemPartformMapper aeaItemPartformMapper;
 
+    @Autowired
+    private ActStoFormMapper actStoFormMapper;
+
     @Override
-    public PageInfo<AeaItemPartform> listPartFormNoSelectFormByPage(AeaItemPartform partform, Page page){
+    public PageInfo<AeaItemPartform> listPartFormNoSelectFormByPage(AeaItemPartform partform, Page page) {
 
         partform.setFormOrgId(SecurityContext.getCurrentOrgId());
         PageHelper.startPage(page);
@@ -70,14 +76,14 @@ public class AeaItemPartformAdminServiceImpl implements AeaItemPartformAdminServ
 
     @Override
     public void deleteAeaItemPartformById(String id) {
-        if(id == null) {
+        if (id == null) {
             throw new InvalidParameterException(id);
         }
         aeaItemPartformMapper.deleteAeaItemPartform(id);
     }
 
     @Override
-    public PageInfo<AeaItemPartform> listAeaItemPartform(AeaItemPartform aeaItemPartform,Page page) {
+    public PageInfo<AeaItemPartform> listAeaItemPartform(AeaItemPartform aeaItemPartform, Page page) {
         PageHelper.startPage(page);
         List<AeaItemPartform> list = aeaItemPartformMapper.listAeaItemPartformWithFormInfo(aeaItemPartform);
         logger.debug("成功执行分页查询！！");
@@ -94,7 +100,7 @@ public class AeaItemPartformAdminServiceImpl implements AeaItemPartformAdminServ
 
     @Override
     public AeaItemPartform getAeaItemPartformById(String id) {
-        if(id == null) {
+        if (id == null) {
             throw new InvalidParameterException(id);
         }
         logger.debug("根据ID获取Form对象，ID为：{}", id);
@@ -106,6 +112,47 @@ public class AeaItemPartformAdminServiceImpl implements AeaItemPartformAdminServ
         List<AeaItemPartform> list = aeaItemPartformMapper.listAeaItemPartform(aeaItemPartform);
         logger.debug("成功执行查询list！！");
         return list;
+    }
+
+    @Override
+    public void createAndUpdateDevForm(String formCode, String formName, String formLoadUrl, String formId, String itemPartformId) throws Exception {
+        if (StringUtils.isBlank(formId)) {
+            ActStoForm actStoForm = new ActStoForm();
+            actStoForm.setFormOrgId(SecurityContext.getCurrentOrgId());
+            actStoForm.setFormCode(formCode);
+            actStoForm.setFormId(UUID.randomUUID().toString());
+            actStoForm.setFormName(formName);
+            actStoForm.setFormLoadUrl(formLoadUrl);
+            actStoForm.setFormProperty("dev-biz");
+            actStoForm.setIsDeleted("0");
+            actStoForm.setCreater(SecurityContext.getCurrentUserId());
+            actStoForm.setCreateTime(new Date());
+            actStoForm.setFormTmnId("1");
+            actStoForm.setIsAutoBuildForm("0");
+            actStoForm.setIsAutoBuildTable("0");
+            actStoForm.setIsMetaDbTable("0");
+            actStoForm.setFormVersion(1l);
+            actStoForm.setIsInnerForm("0");
+            actStoForm.setIsLock("0");
+            actStoFormMapper.insertActStoForm(actStoForm);
+
+            AeaItemPartform aeaItemPartform = aeaItemPartformMapper.getAeaItemPartformById(itemPartformId);
+            if (aeaItemPartform == null) throw new Exception("aeaItemPartform is null");
+            aeaItemPartform.setStoFormId(actStoForm.getFormId());
+            aeaItemPartformMapper.updateAeaItemPartform(aeaItemPartform);
+
+        } else {
+
+            ActStoForm actStoForm = actStoFormMapper.getActStoFormById(formId);
+            if (actStoForm == null) throw new Exception("actStoForm is null");
+            actStoForm.setFormCode(formCode);
+            actStoForm.setFormLoadUrl(formLoadUrl);
+            actStoForm.setFormName(formName);
+            actStoForm.setModifier(SecurityContext.getCurrentUserId());
+            actStoForm.setModifyTime(new Date());
+            actStoFormMapper.updateActStoForm(actStoForm);
+        }
+
     }
 }
 
