@@ -8,7 +8,6 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -75,7 +74,7 @@ public interface AeaItemInoutMapper {
 
      List<AeaItemInout> listInoutByItemId(AeaItemInout aeaItemInout);
 
-     List<AeaItemInout> getAeaItemMatByItemIdAndMatIdAndStateId(@Param("itemId") String itemId, @Param("matId") String matId, @Param("stateId") String stateId);
+    List<AeaItemInout> getAeaItemMatByItemVerIdAndMatIdAndStateId(@Param("itemVerId") String itemVerId, @Param("matId") String matId, @Param("stateId") String stateId);
 
      void deleteAeaItemInoutByStateId(@Param("itemStateId") String itemStateId,
                                       @Param("itemVerId") String itemVerId,

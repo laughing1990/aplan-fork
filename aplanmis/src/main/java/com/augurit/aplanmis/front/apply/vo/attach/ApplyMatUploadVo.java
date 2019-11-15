@@ -19,4 +19,10 @@ public class ApplyMatUploadVo {
     private String projInfoId;
     @ApiModelProperty(value = "企业id", required = true)
     private String unitInfoId;
+    @ApiModelProperty(value = "材料性质，m表示普通材料，c表示证照材料，f表示在线表单")
+    private String matProp;
+    @ApiModelProperty(value = "证照定义ID")
+    private String certId;
+    @ApiModelProperty(value = "表单定义ID")
+    private String stoFormId;
 }

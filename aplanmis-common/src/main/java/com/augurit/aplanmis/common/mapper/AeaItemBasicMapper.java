@@ -71,6 +71,9 @@ public interface AeaItemBasicMapper {
 
     List<AeaItemBasic> getAeaItemBasicListByOrgId(@Param("orgId") String orgId);
 
+    List<AeaItemBasic> getAeaItemBasicListByOrgIdAndIsCatalog(@Param("orgId") String orgId,@Param("isCatalog")String isCatalog);
+
+
     List<AnnounceDataDto> searchAnnounceDataList(@Param("keyword") String keyword, @Param("rootOrgId") String rootOrgId);
 
     /**

@@ -50,15 +50,15 @@ public interface FileUtilsService {
      * @param detailId
      * @throws Exception
      */
-    void deleteAttachment(String detailId) throws Exception;
+    boolean deleteAttachment(String detailId) throws Exception;
 
     /**
      * 根据多个detailId删除文件列表
      *
-     * @param detailIds
-     * @throws Exception
+     * @param detailIds 附件ID
+     * @throws Exception e
      */
-    void deleteAttachments(String[] detailIds) throws Exception;
+    boolean deleteAttachments(String[] detailIds) throws Exception;
 
     /**
      * 根据多个业务ID返回文件列表
