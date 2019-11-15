@@ -153,6 +153,9 @@ public class RestUserCenterController {
                 param.setCreateTime(new Date());
                 param.setIsAdministrators("0");//不是管理员
                 aeaUnitLinkmanMapper.insertAeaUnitLinkman(param);
+            }else {//更新绑定关系
+                param.setIsBindAccount(aeaLinkmanInfo.getIsBindAccount());
+                aeaUnitLinkmanMapper.updateAeaUnitLinkmanByUnitAndLinkman(param);
             }
         } catch (Exception e) {
             logger.error(e.getMessage(),e);
