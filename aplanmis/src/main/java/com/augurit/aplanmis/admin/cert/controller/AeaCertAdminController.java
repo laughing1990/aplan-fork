@@ -281,8 +281,13 @@ public class AeaCertAdminController {
             @ApiImplicitParam(name = "identityNumber", value = "申办证件号码", required = true , dataType = "String" ,paramType = "query"),
     })
     @RequestMapping("/getLicenseAuthRes.do")
-    public LicenseAuthResDTO getLicenseAuthRes(String itemVerIds, String identityNumber) throws Exception {
-        return aeaCertAdminService.getLicenseAuthRes(itemVerIds, identityNumber);
+    public ContentResultForm<LicenseAuthResDTO> getLicenseAuthRes(String itemVerIds, String identityNumber) throws Exception {
+        try {
+            return new ContentResultForm<>(true, aeaCertAdminService.getLicenseAuthRes(itemVerIds, identityNumber), "Query attachment success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ContentResultForm<>(false, new LicenseAuthResDTO(), "Query attachment failed");
+        }
     }
 
     @ApiOperation(value = "通过电子证照编码获取证照显示地址", notes = "通过电子证照编码获取证照显示地址")
@@ -290,7 +295,12 @@ public class AeaCertAdminController {
             @ApiImplicitParam(name = "authCode", value = "证照编码", required = true , dataType = "String" ,paramType = "query"),
     })
     @RequestMapping("/getViewLicenseURL.do")
-    public String getViewLicenseURL(String authCode) throws Exception {
-        return aeaCertAdminService.getViewLicenseURL(authCode);
+    public ContentResultForm<String> getViewLicenseURL(String authCode) throws Exception {
+        try {
+            return new ContentResultForm<>(true, aeaCertAdminService.getViewLicenseURL(authCode), "Query attachment success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ContentResultForm<>(false, "", "Query attachment failed");
+        }
     }
 }
