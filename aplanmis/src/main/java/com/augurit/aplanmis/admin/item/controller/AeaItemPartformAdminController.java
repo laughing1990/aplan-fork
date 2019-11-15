@@ -18,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 import java.util.UUID;
@@ -114,7 +113,7 @@ public class AeaItemPartformAdminController {
         if (ActStoConstant.SMART_FORM_ENTITY_OPERATION_NEW.equals(operation)) {
             AeaItemPartform partform = new AeaItemPartform();
             partform.setItemPartformId(id);
-            partform.setPartformId(formId);
+            partform.setStoFormId(formId);
             aeaItemPartformService.updateAeaItemPartform(partform);
         }
         return new ResultForm(true);
@@ -152,12 +151,12 @@ public class AeaItemPartformAdminController {
         }
         AeaItemPartform partform = aeaItemPartformService.getAeaItemPartformById(itemPartformId);
         if (partform != null) {
-            partform.setPartformId(formId);
+            partform.setStoFormId(formId);
             aeaItemPartformService.updateAeaItemPartform(partform);
         } else {
             partform.setItemPartformId(itemPartformId);
             partform.setPartformName("未命名扩展表单");
-            partform.setPartformId(formId);
+            partform.setStoFormId(formId);
             partform.setUseEl(Status.OFF);
             partform.setIsSmartForm(Status.ON);
             aeaItemPartformService.saveAeaItemPartform(partform);
@@ -173,7 +172,7 @@ public class AeaItemPartformAdminController {
         }
         AeaItemPartform partform = new AeaItemPartform();
         partform.setItemPartformId(id);
-        partform.setPartformId("");
+        partform.setStoFormId("");
         aeaItemPartformService.updateAeaItemPartform(partform);
         return new ResultForm(true);
     }

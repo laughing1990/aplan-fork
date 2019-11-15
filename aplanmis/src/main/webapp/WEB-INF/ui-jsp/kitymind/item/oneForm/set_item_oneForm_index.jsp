@@ -37,6 +37,7 @@
         var useOneForm = '${useOneForm}';
         var isNeedState = '${isNeedState}';
         var restWebApp = '${restWebApp}'; //智能表单回调url
+        var isSmartForm = '1'
     </script>
 </head>
 <body>

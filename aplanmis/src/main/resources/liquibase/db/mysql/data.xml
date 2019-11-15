@@ -2380,8 +2380,15 @@ INSERT INTO `act_sto_widget_key` (`KEY_ID`, `WIDGET_ID`, `KEY_CODE`, `KEY_LABEL`
             INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`, `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES ('a2e91397-66fb-44c2-96be-2b518f884066', 'd825f97d-566e-4582-82a9-e1a90c70969a', '1004', '仓储用地', '1', '4', '', NULL, '0', '0', NULL, NULL, '2019-11-15 09:48:52', NULL, '2019-11-15 09:48:52', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
             INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`, `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES ('a5e91418-1497-4019-8113-c63e300d43d0', 'd825f97d-566e-4582-82a9-e1a90c70969a', '1002', '行政办公用地', '1', '1', '', NULL, NULL, '0', NULL, NULL, '2019-11-15 09:47:46', NULL, '2019-11-15 09:48:21', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
             INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`, `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES ('d0f93108-4bfb-412f-937b-353484f46b56', 'd825f97d-566e-4582-82a9-e1a90c70969a', '1005', '对外交通用地', '1', '5', '', NULL, '0', '0', NULL, NULL, '2019-11-15 09:49:03', NULL, '2019-11-15 09:49:03', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
+        </sql>
+    </changeSet>
 
-
+    <changeSet id="201911151442" author="chenzh" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `act_sto_form`
+            MODIFY COLUMN `FORM_PROPERTY` varchar(12) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT
+            '表单属性，meta-biz表示元数据普通表单，meta-flow表示元数据流程表单，smart-biz表示智能普通表单，smart-flow表示智能流程表单，dev-biz表示普通开发表单' AFTER
+            `FORM_ORG_ID`;
         </sql>
     </changeSet>
 </databaseChangeLog>

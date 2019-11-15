@@ -44,10 +44,8 @@ public class ItemPartFormChecker extends AbstractChecker<AeaItemBasic> {
 
                     if ("1".equals(aeaItemFrontPartformVo.getIsSmartForm())) {
 
-                        aeaItemFrontPartformVo.getPartformId();//智能表单ID
-                    } else {
+                        aeaItemFrontPartformVo.getStoFormId();//表单ID
 
-                        aeaItemFrontPartformVo.getDelformId();//开发表单ID
                     }
                 });
             }
