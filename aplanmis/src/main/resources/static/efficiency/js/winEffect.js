@@ -450,6 +450,7 @@ var app = new Vue({
           select: false //是否选中状态
         }
       })
+        this.accepConnectionWinPage = 1
       // 截取前七个用来显示
       this.accepConnectionWinList = this.accepConnectionWinAllList.slice(0, 7)
       // 加载第一个窗口的统计数据
@@ -901,6 +902,7 @@ var app = new Vue({
           select: false //是否选中状态
         }
       })
+        this.themePage = 1
       // 截取前七个用来显示
       this.themeShowList = this.themeAllList.slice(0, 5)
       // 加载第一个主题下各窗口用时的统计数据

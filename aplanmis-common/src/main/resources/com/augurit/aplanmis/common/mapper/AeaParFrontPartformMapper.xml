@@ -48,7 +48,7 @@
         ,
         apsp.PARTFORM_NAME partformName,
         apsp.IS_SMART_FORM isSmartForm,
-        apsp.PARTFORM_ID partformId
+        apsp.STO_FORM_ID stoFormId
         from AEA_PAR_FRONT_PARTFORM apfp
         left join aea_par_stage_partform apsp on apsp.STAGE_PARTFORM_ID = apfp.STAGE_PARTFORM_ID
         <where>

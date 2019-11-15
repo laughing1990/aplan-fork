@@ -362,11 +362,7 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
         //返回结果
         List<WinApplyStatisticsVo> result = new ArrayList<>();
 
-        //存储已统计window, 方便查找新申报的窗口（实时统计)
-        Set<String> windowIds = new HashSet<>();
-
         for (String windowId : winApplyStatisticsMap.keySet()) {
-            windowIds.add(windowId);
 
             WinApplyStatisticsVo winApplyStatisticsVo = new WinApplyStatisticsVo();
             winApplyStatisticsVo.setWindowId(windowId);
@@ -1283,12 +1279,6 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
     private ApplyStatisticsVo queryWangshangdaiyushen(ConditionalQueryRequest conditionalQueryRequest) throws Exception {
         ApplyStatisticsVo vo = new ApplyStatisticsVo();
         vo.setName("网上待预审");
-        /*AeaHiApplyinst search = new AeaHiApplyinst();
-        search.setIsDeleted(DeletedStatus.NOT_DELETED.getValue());
-        search.setApplyinstState(ApplyState.RECEIVE_UNAPPROVAL_APPLY.getValue());
-        search.setApplyinstSource("net");
-        search.setRootOrgId(SecurityContext.getCurrentOrgId());
-        List<AeaHiApplyinst> list = aeaHiApplyinstMapper.listAeaHiApplyinst(search);*/
         List<TaskInfo> taskInfos = conditionalQueryMapper.listAllPreliminaryTasks(conditionalQueryRequest);
         vo.setCount(taskInfos.size());
         return vo;
@@ -1303,10 +1293,6 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
     private ApplyStatisticsVo queryShenbaodaibuquan(ConditionalQueryRequest conditionalQueryRequest) throws Exception {
         ApplyStatisticsVo vo = new ApplyStatisticsVo();
         vo.setName("申报待补全");
-        /*AeaHiApplyinst search = new AeaHiApplyinst();
-        search.setIsDeleted(DeletedStatus.NOT_DELETED.getValue());
-        search.setApplyinstState(ApplyState.IN_THE_SUPPLEMENT.getValue());
-        List<AeaHiApplyinst> list = aeaHiApplyinstMapper.listAeaHiApplyinst(search);*/
         List<TaskInfo> taskInfos = conditionalQueryMapper.listNeedCompletedApply(conditionalQueryRequest);
         vo.setCount(taskInfos.size());
         return vo;
@@ -1321,10 +1307,6 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
     private ApplyStatisticsVo queryShenbaoyibuquan(ConditionalQueryRequest conditionalQueryRequest) throws Exception {
         ApplyStatisticsVo vo = new ApplyStatisticsVo();
         vo.setName("申报已补全");
-        /*AeaHiApplyinst search = new AeaHiApplyinst();
-        search.setIsDeleted(DeletedStatus.NOT_DELETED.getValue());
-        search.setApplyinstState(ApplyState.SUPPLEMENTARY.getValue());
-        List<AeaHiApplyinst> list = aeaHiApplyinstMapper.listAeaHiApplyinst(search);*/
         List<TaskInfo> taskInfos = conditionalQueryMapper.listNeedConfirmCompletedApply(conditionalQueryRequest);
         vo.setCount(taskInfos.size());
         return vo;
@@ -1339,10 +1321,6 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
     private ApplyStatisticsVo queryBuyushouli(ConditionalQueryRequest conditionalQueryRequest) throws Exception {
         ApplyStatisticsVo vo = new ApplyStatisticsVo();
         vo.setName("不予受理");
-        /*AeaHiApplyinst search = new AeaHiApplyinst();
-        search.setIsDeleted(DeletedStatus.NOT_DELETED.getValue());
-        search.setApplyinstState(ApplyState.OUT_SCOPE.getValue());
-        List<AeaHiApplyinst> list = aeaHiApplyinstMapper.listAeaHiApplyinst(search);*/
         List<TaskInfo> taskInfos = conditionalQueryMapper.listDismissedApply(conditionalQueryRequest);
         vo.setCount(taskInfos.size());
         return vo;
@@ -1769,9 +1747,9 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
             for (AeaServiceWindow window : aeaServiceWindows) {
                 WinApplyStatisticsVo vo = new WinApplyStatisticsVo();
                 vo.setWindowName(window.getWindowName());
-                vo.setShouliCount(0l);
-                vo.setCaiLiaoBuquanCount(0l);
-                vo.setBuyushouliCount(0l);
+                vo.setShouliCount(0L);
+                vo.setCaiLiaoBuquanCount(0L);
+                vo.setBuyushouliCount(0L);
                 result.add(vo);
             }
         }

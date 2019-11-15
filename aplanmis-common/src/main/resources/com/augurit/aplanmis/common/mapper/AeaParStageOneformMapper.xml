@@ -164,16 +164,20 @@
     <select id="listActStoFromNotInStageItem" resultType="com.augurit.aplanmis.common.vo.ActStoFormVo">
         select
             asf.FORM_ID formId,
-            asf.FORM_NAME formName,
-            asf.FORM_CODE formCode
+            asf.FORM_ORG_ID  formOrgId,
+            asf.FORM_PROPERTY  formProperty,
+            asf.FORM_CODE  formCode,
+            asf.FORM_NAME  formName,
+            asf.IS_INNER_FORM  isInnerForm
         from ACT_STO_FORM asf
         <where>
             and asf.FORM_ORG_ID = #{formOrgId}
             and asf.FORM_ID not in (
-                select apsi.SUB_FORM_ID
+                select DISTINCT apsi.SUB_FORM_ID
                 from AEA_PAR_STAGE_ITEM apsi
                 where apsi.STAGE_ID = #{stageId}
                   and apsi.SUB_FORM_ID is not null
+                  and apsi.SUB_FORM_ID !=''
             )
             AND asf.IS_DELETED = '0'
             AND asf.FORM_PROPERTY IN ( 'smart-biz', 'smart-flow' )

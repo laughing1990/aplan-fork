@@ -713,7 +713,7 @@
         and (item_state_id=#{itemStateId} or item_state_id is null)
     </select>
 
-    <select id="getAeaItemMatByItemIdAndMatIdAndStateId" resultType="AeaItemInout">
+    <select id="getAeaItemMatByItemVerIdAndMatIdAndStateId" resultType="AeaItemInout">
         select
         <include refid="allColumns"/>
         from AEA_ITEM_INOUT aii
@@ -926,6 +926,7 @@
             </if>
         </where>
     </select>
+
     <select id="getPreItemInItemInout" resultType="AeaItemInout">
     select <include refid="aliasColumns"><property name="alias" value="aii2"></property></include> from aea_item_inout aii2  , (
         select distinct  apsm.out_inout_id
@@ -953,7 +954,6 @@
         from AEA_ITEM_INOUT inOut1, AEA_ITEM_MAT mat
         <where>
             and inOut1.MAT_ID = mat.MAT_ID
---             and inOut1.ROOT_ORG_ID = mat.ROOT_ORG_ID
             and inOut1.ROOT_ORG_ID = #{rootOrgId}
             and inOut1.IS_INPUT = #{isInput}
             and inOut1.FILE_TYPE = 'mat'
@@ -985,6 +985,7 @@
             )
             </if>
         </where>
+        order by inOut1.SORT_NO asc, inOut1.CREATE_TIME asc, inOut1.MODIFY_TIME asc
     </select>
 
     <select id="listInoutOfficeMatRelItemInfo" resultType="AeaItemInout">
@@ -1026,7 +1027,7 @@
             and mat.IS_DELETED = '0'
             and mat.IS_OFFICIAL_DOC = '1'
             and inOut1.IS_DELETED = '0'
-            and inOut1.FILE_TYPE = 'mat'
+--             and inOut1.FILE_TYPE = 'mat'
             and inOut1.IS_INPUT = #{isInput}
             <if test="isStateIn != null and isStateIn!= '' ">
             and inOut1.IS_STATE_IN = #{isStateIn}

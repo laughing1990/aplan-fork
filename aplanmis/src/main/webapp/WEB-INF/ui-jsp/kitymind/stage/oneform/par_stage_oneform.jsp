@@ -27,6 +27,15 @@
             display: block;
             width: 100%;
         }
+
+        .fixed-table-container {
+            position: relative;
+            clear: both;
+             border: 0px solid #ddd;
+            border-radius: 4px;
+            -webkit-border-radius: 4px;
+            -moz-border-radius: 4px;
+        }
     </style>
     <script type="text/javascript">
         var currentBusiType = '${currentBusiType}';
@@ -40,6 +49,7 @@
         var useOneForm = '${useOneForm}';
         var curIsEditable = ${curIsEditable};  // 版本下数据是否可以编辑
         var restWebApp = '${restWebApp}';//智能表单回调url
+        var isSmartForm = '1';//默认是查询智能表单
     </script>
 </head>
 <body>
@@ -204,6 +214,9 @@
 <!-- 新增编辑扩展表 -->
 <%@include file="aedit_part_form.jsp"%>
 
+<!-- 新增编辑开发表单 -->
+<%@include file="add_dev_form.jsp" %>
+
 <!-- 设置EL表达式 -->
 <%@include file="../../item/detail/select_meta_db_tbcol_ztree.jsp"%>
 
@@ -227,9 +240,9 @@
 </div>
 
 <!--bootstrap-treegrid-->
-<script src="${pageContext.request.contextPath}/ui-static/agcloud/framework/js-libs/bootstrap-table/bootstrap-table-treegrid.js" type="text/javascript"></script>
-<script src="${pageContext.request.contextPath}/ui-static/agcloud/framework/js-libs/jquery1/jquery.treegrid.min.js" type="text/javascript"></script>
-<link href="${pageContext.request.contextPath}/ui-static/agcloud/framework/js-libs/jquery1/jquery.treegrid.min.css" rel="stylesheet" type="text/css"/>
-<link href="${pageContext.request.contextPath}/ui-static/agcloud/framework/ui-scheme/common/css/bootstrap/bootstrap-table.min.css" rel="stylesheet" type="text/css">
+<%--<script src="${pageContext.request.contextPath}/ui-static/agcloud/framework/js-libs/bootstrap-table/bootstrap-table-treegrid.js" type="text/javascript"></script>--%>
+<%--<script src="${pageContext.request.contextPath}/ui-static/agcloud/framework/js-libs/jquery1/jquery.treegrid.min.js" type="text/javascript"></script>--%>
+<%--<link href="${pageContext.request.contextPath}/ui-static/agcloud/framework/js-libs/jquery1/jquery.treegrid.min.css" rel="stylesheet" type="text/css"/>--%>
+<%--<link href="${pageContext.request.contextPath}/ui-static/agcloud/framework/ui-scheme/common/css/bootstrap/bootstrap-table.min.css" rel="stylesheet" type="text/css">--%>
 </body>
 </html>

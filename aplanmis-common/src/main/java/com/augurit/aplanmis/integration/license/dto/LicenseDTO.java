@@ -98,4 +98,10 @@ public class LicenseDTO implements Serializable {
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date last_modification_time;
+
+    private String auth_code;
+
+    private String license_status_name;
+
+    private String license_type_name;
 }

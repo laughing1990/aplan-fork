@@ -163,8 +163,6 @@ SERVICE_RESULT_ID  ,UPLOAD_TIME  ,END_TIME  ,MEMO  ,PROJ_PURCHASE_ID  ,AUDIT_FLA
         <result property="rootOrgId" column="ROOT_ORG_ID"/>
     </resultMap>
 
-
-
     <select id="getServiceProjInfoList" resultType="com.augurit.aplanmis.common.vo.ServiceProjInfoVo" >
         select
         aipp.PROJ_PURCHASE_ID projPurchaseId,
@@ -198,5 +196,12 @@ SERVICE_RESULT_ID  ,UPLOAD_TIME  ,END_TIME  ,MEMO  ,PROJ_PURCHASE_ID  ,AUDIT_FLA
             </if>
         </where>
         order by aic.SIGN_TIME DESC
+    </select>
+    <!--查询采购项目下服务结果-->
+    <select id="listServiceResultByProjPurchaseId"
+            resultType="com.augurit.aplanmis.common.domain.AeaImServiceResult">
+        select
+        <include refid="allColumns"/>
+        from AEA_IM_SERVICE_RESULT aisr where aisr.PROJ_PURCHASE_ID=#{projPurchaseId}
     </select>
 </mapper>

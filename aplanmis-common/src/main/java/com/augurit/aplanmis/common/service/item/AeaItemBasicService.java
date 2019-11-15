@@ -112,6 +112,19 @@ public interface AeaItemBasicService {
      */
     PageInfo<AeaItemBasic> getAeaItemBasicListByOrgId(String orgId, int pageNum, int pageSize) throws Exception;
 
+
+    /**
+     * 12.分页根据orgid查询事项定义列表
+     *
+     * @param orgId
+     * @param isCatalog
+     * @param pageNum
+     * @param pageSize
+     * @return
+     * @throws Exception
+     */
+    PageInfo<AeaItemBasic> getAeaItemBasicListByOrgId(String orgId,String isCatalog, int pageNum, int pageSize) throws Exception;
+
     /**
      * xiaohutu----2019-07-19新增
      * 根据情形ID插叙绑定的事项列表
@@ -163,4 +176,13 @@ public interface AeaItemBasicService {
      * @return
      */
     List<AeaItemBasic> frontItemIsDone(String itemVerId, String projInfoId);
+
+    /**
+     * 根据部门ID查询标准或实施事项定义列表
+     *
+     * @param orgId 非必须 部门ID 为空时，查询所有事项
+     * @return
+     * @throws Exception
+     */
+    List<AeaItemBasic> getAeaItemBasicListByOrgId(String orgId,String isCatalog) throws Exception;
 }

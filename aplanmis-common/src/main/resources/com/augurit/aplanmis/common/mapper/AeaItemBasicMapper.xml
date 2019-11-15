@@ -1304,6 +1304,47 @@
         </if>
     </select>
 
+    <select id="getAeaItemBasicListByOrgIdAndIsCatalog" resultType="AeaItemBasic">
+        SELECT
+        <include refid="aib_allColumns"/>
+        , org.ORG_NAME orgName
+        FROM
+        AEA_ITEM_BASIC aib
+        JOIN (
+        SELECT
+        item_ver_id,
+        ver_num,
+        ITEM_VER_STATUS
+        FROM
+        aea_item_ver ver
+        JOIN (
+        SELECT
+        ITEM_ID,
+        max(VER_NUM) maxNum
+        FROM
+        aea_item_ver
+        WHERE
+        IS_DELETED = '0'
+        GROUP BY
+        ITEM_ID
+        ) maxVer ON ver.item_id = maxVer.item_id
+        AND ver.VER_NUM = maxVer.maxNum
+        ) itemVer ON aib.ITEM_VER_ID = itemVer.ITEM_VER_ID
+        LEFT JOIN OPU_OM_ORG org ON (
+        org.ORG_ID = aib.ORG_ID
+        AND org.ORG_DELETED = '0'
+        )
+        LEFT JOIN AEA_ITEM item ON item.item_id = aib.Item_Id
+        WHERE
+        aib.SXMLZT IN ('0', '1')
+        <if test="orgId!=null and orgId!=''">
+            AND org.org_id = #{orgId} or org.PARENT_ORG_ID=#{orgId}
+        </if>
+        <if test="isCatalog!=null and isCatalog!=''">
+            AND aib.IS_CATALOG=#{isCatalog}
+        </if>
+    </select>
+
     <select id="getAeaItemBasicListByItemVerIds" resultType="AeaItemBasic">
         SELECT
         <include refid="aib_allColumns"/>,ooo.ORG_NAME orgName
@@ -2518,7 +2559,9 @@
         itemBasic.ITEM_VER_ID agentItemVerId,
         itemBasic.ITEM_CODE agentItemCode,
         itemBasic.ITEM_NAME agentItemName,
+        itemBasic.ITEM_PROPERTY agentItemProperty,
         itemBasic.ORG_ID agentOrgId,t1.ORG_NAME agentOrgName,
+        itemBasic.ROOT_ORG_ID rootOrgId,
         <if test="_databaseId == 'oracle'">
             WM_CONCAT(temp2.ITEM_NAME) itemName,
         </if>

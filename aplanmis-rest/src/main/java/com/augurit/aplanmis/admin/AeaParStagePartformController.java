@@ -31,7 +31,7 @@ private static Logger logger = LoggerFactory.getLogger(AeaParStagePartformContro
         }
         AeaParStagePartform stagePartform = new AeaParStagePartform();
         stagePartform.setStagePartformId(stageItemId);
-        stagePartform.setPartformId(formId);
+        stagePartform.setStoFormId(formId);
         aeaParStagePartformService.updateStagePartform(stagePartform);
         return new ResultForm(true);
     }
