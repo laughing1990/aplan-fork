@@ -295,7 +295,8 @@ function initParStageOneformTable() {
         queryParams: stageOneformParam,
         sidePagination: 'server',
         idField: 'stageOneformId',
-        singleSelect: true
+        singleSelect: false,
+        clickToSelect: true
     });
 }
 
@@ -388,6 +389,9 @@ function initAllStoFormTable(itemVerId) {
 var getStageOneformColumns = function () {
 
     var columns = [
+        // {
+        //     checkbox:true
+        // },
         {
             field: 'oneformName',
             title: '总表名称',
@@ -1176,7 +1180,7 @@ function stagePartformFormatter(value, row, index) {
         if (isSmartForm && isSmartForm == '1') {
             return editPartForm + updateForm + delForm + delPartForm;
         } else {
-            return editPartForm + delPartForm + updateDevForm + delForm;
+            return editPartForm + updateDevForm + delForm + delPartForm;
         }
 
     } else {

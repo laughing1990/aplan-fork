@@ -86,6 +86,7 @@ ITEM_ONEFORM_ID  ,ITEM_VER_ID  ,ONEFORM_ID  ,LINK_NAME  ,SORT_NO  ,IS_ACTIVE  ,C
 #{itemOneformId},#{itemVerId},#{oneformId},#{linkName},#{sortNo},#{isActive},#{creater},#{createTime},#{modifier},  #{modifyTime}
     )
 </insert>
+
 <!--6 修改实体对象 -->
 <update id="updateAeaItemOneform" parameterType="AeaItemOneform" >
     update AEA_ITEM_ONEFORM
@@ -123,26 +124,33 @@ ITEM_ONEFORM_ID  ,ITEM_VER_ID  ,ONEFORM_ID  ,LINK_NAME  ,SORT_NO  ,IS_ACTIVE  ,C
     </set>
     where ITEM_ONEFORM_ID = #{itemOneformId}
 </update>
-<!--7 删除实体对象,根据主键ID -->
+
+    <!--7 删除实体对象,根据主键ID -->
     <delete id="deleteAeaItemOneform">
         delete from   AEA_ITEM_ONEFORM
         where
     ITEM_ONEFORM_ID = #{id}
     </delete>
 
-
     <select id="listAeaItemOneFormByItemVerId" resultType="AeaItemOneform" >
         select
-        <include refid="allColumns_alias"><property name="alias" value="aio"/></include>,
-        apo.ONEFORM_NAME oneformName
-        from    AEA_ITEM_ONEFORM aio
+            <include refid="allColumns_alias">
+                <property name="alias" value="aio"/>
+            </include>,
+            apo.ONEFORM_NAME oneformName
+        from AEA_ITEM_ONEFORM aio
         left join aea_oneform apo on aio.ONEFORM_ID = apo.ONEFORM_ID
-        where    aio.ITEM_VER_ID = #{itemVerId}
-        order by aio.SORT_NO asc
+        where aio.ITEM_VER_ID = #{itemVerId}
+        order by aio.SORT_NO asc, aio.CREATE_TIME asc, aio.MODIFY_TIME asc
     </select>
 
-<!--8 删除实体对象列表,根据主键ID列表 -->
-<!--9 返回所有字段的对象map,用于级联 -->
+    <select id="getMaxSortNo" resultType="java.lang.Double">
+        select
+             max(SORT_NO)
+        from AEA_ITEM_ONEFORM
+        where ITEM_VER_ID = #{itemVerId}
+    </select>
+
     <resultMap type="AeaItemOneform" id="AeaItemOneformMap">
         <id property="itemOneformId" column="ITEM_ONEFORM_ID"/>
         <result property="itemVerId" column="ITEM_VER_ID"/>
@@ -155,4 +163,5 @@ ITEM_ONEFORM_ID  ,ITEM_VER_ID  ,ONEFORM_ID  ,LINK_NAME  ,SORT_NO  ,IS_ACTIVE  ,C
         <result property="modifier" column="MODIFIER"/>
         <result property="modifyTime" column="MODIFY_TIME"/>
     </resultMap>
+
 </mapper>

@@ -27,15 +27,6 @@
             display: block;
             width: 100%;
         }
-
-        .fixed-table-container {
-            position: relative;
-            clear: both;
-             border: 0px solid #ddd;
-            border-radius: 4px;
-            -webkit-border-radius: 4px;
-            -moz-border-radius: 4px;
-        }
     </style>
     <script type="text/javascript">
         var currentBusiType = '${currentBusiType}';
@@ -69,7 +60,9 @@
                     </div>
                 </div>
                 <div class="m-portlet__head-tools">
-                    <button type="button" class="btn btn-info" onclick="addParOneform();" style="margin-bottom:5px;margin-right:60px;" >导入总表</button>
+                    <button type="button" class="btn btn-info" onclick="addParOneform();" style="margin-right: 50px;">导入总表</button>
+                    <%--<button type="button" class="btn btn-secondary" onclick="batchDelOneform();">批量删除</button>--%>
+                    <%--<button type="button" class="btn btn-secondary" onclick="initParStageOneformTable();" style="margin-right: 50px;">刷新</button>--%>
                 </div>
             </div>
             <div class="m-portlet__body" style="padding: 0px 0px 5px 0px;">
@@ -243,6 +236,6 @@
 <%--<script src="${pageContext.request.contextPath}/ui-static/agcloud/framework/js-libs/bootstrap-table/bootstrap-table-treegrid.js" type="text/javascript"></script>--%>
 <%--<script src="${pageContext.request.contextPath}/ui-static/agcloud/framework/js-libs/jquery1/jquery.treegrid.min.js" type="text/javascript"></script>--%>
 <%--<link href="${pageContext.request.contextPath}/ui-static/agcloud/framework/js-libs/jquery1/jquery.treegrid.min.css" rel="stylesheet" type="text/css"/>--%>
-<%--<link href="${pageContext.request.contextPath}/ui-static/agcloud/framework/ui-scheme/common/css/bootstrap/bootstrap-table.min.css" rel="stylesheet" type="text/css">--%>
+<link href="${pageContext.request.contextPath}/ui-static/agcloud/framework/ui-scheme/common/css/bootstrap/bootstrap-table.min.css" rel="stylesheet" type="text/css">
 </body>
 </html>

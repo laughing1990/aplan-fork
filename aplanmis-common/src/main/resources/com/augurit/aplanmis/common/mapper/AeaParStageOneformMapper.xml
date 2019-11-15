@@ -26,7 +26,7 @@
         from aea_par_stage_oneform apso
         left join aea_oneform apo on apso.ONEFORM_ID = apo.ONEFORM_ID
         where apso.PAR_STAGE_ID = #{parStageId}
-        order by apso.SORT_NO asc
+        order by apso.SORT_NO asc, apso.CREATE_TIME asc, apso.MODIFY_TIME asc
     </select>
 
     <select id="listAeaStageItem" resultType="AeaParStageItem">
@@ -153,7 +153,6 @@
         DELETE FROM AEA_PAR_STAGE_ONEFORM  where STAGE_ONEFORM_ID = #{id}
     </delete>
 
-
     <select id="getAeaParStageOneformById" resultType="AeaParStageOneform">
         select
         <include refid="allColumns"/>
@@ -227,6 +226,13 @@
                 AND    MODIFY_TIME = #{modifyTime}
             </if>
         </where>
+    </select>
+
+    <select id="getMaxSortNo" resultType="java.lang.Double">
+        select
+            max(SORT_NO)
+        from AEA_PAR_STAGE_ONEFORM
+        where PAR_STAGE_ID = #{parStageId}
     </select>
 
 </mapper>

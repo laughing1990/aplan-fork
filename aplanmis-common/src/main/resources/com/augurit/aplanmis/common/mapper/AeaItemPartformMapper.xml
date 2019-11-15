@@ -222,33 +222,30 @@
             asfrom.FORM_PROPERTY  formProperty,
             asfrom.FORM_CODE  formCode,
             asfrom.FORM_NAME  formName,
-            asfrom.IS_INNER_FORM  isInnerForm,
-            tmn.TMN_NAME formTmnName,
-            org.ORG_NAME orgName
+            asfrom.IS_INNER_FORM  isInnerForm
         from ACT_STO_FORM asfrom
-        left join opu_om_org org on org.ORG_ID = asfrom.FORM_ORG_ID
-        left join AGX_RS_TMN tmn on tmn.TMN_ID = asfrom.FORM_TMN_ID
         <where>
             and asfrom.IS_DELETED = '0'
             and asfrom.FORM_ORG_ID = #{formOrgId}
             and asfrom.FORM_ID not in (
-                select
+                select DISTINCT
                     STO_FORM_ID
                 from AEA_ITEM_PARTFORM
-                where ITEM_VER_ID = #{itemVerId}
+                where
+                    ITEM_VER_ID = #{itemVerId}
                 and ITEM_PARTFORM_ID = #{itemPartformId}
                 and STO_FORM_ID is not null
                 and STO_FORM_ID !=''
                 and IS_SMART_FORM = #{isSmartForm}
             )
             <if test="isSmartForm != null and isSmartForm ==1 ">
-                and asfrom.FORM_PROPERTY in ( 'smart-biz', 'smart-flow')
+            and asfrom.FORM_PROPERTY in ( 'smart-biz', 'smart-flow')
             </if>
             <if test="isSmartForm != null and isSmartForm ==0 ">
-                and asfrom.FORM_PROPERTY in ('dev-biz' )
+            and asfrom.FORM_PROPERTY in ('dev-biz' )
             </if>
             <if test="isSmartForm == null ">
-                and asfrom.FORM_PROPERTY in ( 'smart-biz', 'smart-flow', 'dev-biz' )
+            and asfrom.FORM_PROPERTY in ( 'smart-biz', 'smart-flow', 'dev-biz' )
             </if>
             <if test="keyword != null and keyword !='' " >
             and (

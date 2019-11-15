@@ -78,7 +78,7 @@ $(function() {
         }
     });
 
-    initParStageOneformTable();
+    initItemOneformTable();
     initAllOneformTable();
     initItemOneFormValidate();
     initItemPartformValidate();
@@ -435,7 +435,7 @@ function addMultiplyStageOneform(){
 
 
 
-function initParStageOneformTable() {
+function initItemOneformTable() {
 
     var url = ctx + '/aea/item/oneform/listAeaItemOneformByItemVerId.do?itemVerId='+currentBusiId;
     selectParStageOneformTable = $('#selectParStageOneformTable').bootstrapTable({
@@ -479,6 +479,9 @@ function itemOperatorFormatter(value, row, index) {
 var getStageOneformColumns = function () {
 
     var columns =  [
+        // {
+        //     checkbox:true
+        // },
         {
             field: 'oneformName',
             title: '总表名称',
@@ -622,9 +625,9 @@ function addStagePartform(){
         $("#aedit_part_form_form input[name='isSmartForm'][value='1']").prop("checked", true);
 
         $.ajax({
-            url: ctx + '/aea/par/stage/partform/getMaxSortNo.do',
+            url: ctx + '/aea/item/partform/getMaxSortNo.do',
             type: 'POST',
-            data: {'stageId': currentBusiId},
+            data: {'itemVerId': currentBusiId},
             async: false,
             success: function (data) {
                 if(data){
@@ -681,60 +684,74 @@ function stagePartformFormatter(value, row, index){
     strCallback += '&urlCallBackSaveActStoForm='+restWebApp+'aea/item/partform/updateAeaItemPartformWithFormId.do?id='+iteItemId;
     strCallback += '&requiredField=refEntityId';
 
-    var editPartForm = '<a href="javascript:editStagePartFormById(\'' + row.itemPartformId + '\')" title="编辑扩展表"'+
-        'class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill">' +
-        '<i class="la la-edit"></i>' +
-        '</a>';
+    var editPartForm = '<a href="javascript:editItemPartFormById(\'' + row.itemPartformId + '\')" title="编辑扩展表"'+
+                            'class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill">' +
+                            '<i class="la la-edit"></i>' +
+                       '</a>';
 
-    var delPartForm = '<a href="javascript:delStagePartFormById(\'' + row.itemPartformId + '\')" title="删除扩展表" '+
-        'class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill">' +
-        '<i class="la la-trash"></i>' +
-        '</a>';
+    var delPartForm = '<a href="javascript:delItemPartFormById(\'' + row.itemPartformId + '\')" title="删除扩展表" '+
+                          'class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill">' +
+                         '<i class="la la-trash"></i>' +
+                      '</a>';
 
     if(sumformId!=null && sumformId!='' && sumformId!=undefined){
 
         var updateForm = '<a target="_blank" href= "'+ctx+'/design?formId='+sumformId+'&'+strCallback+'"title="编辑智能表单"'+
-            'class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill">' +
-            '<i class="la la-pencil"></i>' +
-            '</a>';
+                            'class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill">' +
+                            '<i class="la la-pencil"></i>' +
+                         '</a>';
+
+        var updateDevForm = '<a target="_blank" href= "' + ctx + '/design?formId=' + sumformId + '&' + strCallback + '"title="编辑开发表单"' +
+                                'class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill">' +
+                                '<i class="la la-pencil"></i>' +
+                            '</a>';
 
         var delForm =    '<a href="javascript:deleteItemPartFormRel(\'' + row.itemPartformId + '\')" title="删除智能表单关联" '+
-            'class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill">' +
-            '<i class="la la-times"></i>' +
-            '</a>';
+                            'class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill">' +
+                            '<i class="la la-times"></i>' +
+                         '</a>';
 
 
-        if(isSmartForm&&isSmartForm=='1'){
-            return editPartForm +  updateForm +  delForm +  delPartForm;
-        }else{
-            return editPartForm +  delPartForm;
+        if (isSmartForm && isSmartForm == '1') {
+            return editPartForm + updateForm + delForm + delPartForm;
+        } else {
+            return editPartForm + updateDevForm + delForm + delPartForm;
         }
-
     }else{
 
         var newForm = '<a target="_blank" href= "'+ctx+'/design?'+strCallback+'" title="新增智能表单"'+
-            'class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill">' +
-            '<i class="la la-plus"></i>' +
-            '</a>';
+                          'class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill">' +
+                          '<i class="la la-plus"></i>' +
+                      '</a>';
 
-        var addForm = '<a href="javascript:importFormForStagePart(\'' + row.itemPartformId +  '\',\'' + row.itemVerId +'\')"title="导入智能表单"'+
-            'class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill">' +
-            '<i class="la la-cog"></i>' +
-            '</a>';
+        var newDevForm = '<a target="_blank" href= "' + ctx + '/design?' + strCallback + '" title="新增开发表单"' +
+                            'class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill">' +
+                            '<i class="la la-plus"></i>' +
+                         '</a>';
 
-        if(isSmartForm&&isSmartForm=='1'){
+        var addForm = '<a href="javascript:importFormForItemPart(\'' + row.itemPartformId +  '\',\'' + row.itemVerId +'\', \'1\')"title="导入智能表单"'+
+                         'class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill">' +
+                         '<i class="la la-cog"></i>' +
+                      '</a>';
+
+        var addDevForm = '<a href="javascript:importFormForItemPart(\'' + row.itemPartformId + '\',\'' + row.itemVerId + '\', \'0\')"title="导入开发表单"' +
+                            'class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill">' +
+                            '<i class="la la-cog"></i>' +
+                         '</a>';
+
+        if (isSmartForm && isSmartForm == '1') {
             return editPartForm + newForm + addForm + delPartForm;
-
-        }else{
-            return editPartForm + delPartForm;
+        } else {
+            return editPartForm + newDevForm + addDevForm + delPartForm;
         }
     }
 }
 
 // 导入表单
 var curPartFormId = null;
-function importFormForStagePart(itemPartformId, stageId){
+function importFormForItemPart(itemPartformId, stageId, _isSmartForm) {
 
+    isSmartForm = _isSmartForm;
     if(curIsEditable){
         curPartFormId = itemPartformId;
         $('#import_partform_form_modal').modal('show');
@@ -745,7 +762,7 @@ function importFormForStagePart(itemPartformId, stageId){
 }
 
 // 编辑扩展表
-function editStagePartFormById(itemPartformId){
+function editItemPartFormById(itemPartformId){
 
     if(itemPartformId){
 
@@ -795,7 +812,7 @@ function editStagePartFormById(itemPartformId){
 }
 
 // 删除扩展表
-function delStagePartFormById(itemPartformId){
+function delItemPartFormById(itemPartformId){
 
     if(curIsEditable){
         if(itemPartformId){

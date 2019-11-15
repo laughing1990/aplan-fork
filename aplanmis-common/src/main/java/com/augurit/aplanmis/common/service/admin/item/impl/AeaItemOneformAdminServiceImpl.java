@@ -4,6 +4,7 @@ import com.augurit.agcloud.framework.constant.Status;
 import com.augurit.agcloud.framework.exception.InvalidParameterException;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.ui.pager.PageHelper;
+import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.domain.AeaItemOneform;
 import com.augurit.aplanmis.common.domain.AeaOneform;
 import com.augurit.aplanmis.common.mapper.AeaItemOneformMapper;
@@ -32,32 +33,41 @@ public class AeaItemOneformAdminServiceImpl implements AeaItemOneformAdminServic
 
     @Autowired
     private AeaItemOneformMapper aeaItemOneformMapper;
+
     @Autowired
     private AeaOneformMapper aeaOneformMapper;
 
     @Override
-    public void addMultiplyItemOneform(String itemVerId, String[] oneformIds) {
-        AeaItemOneform aeaItemOneform;
-        try {
-            for (int i = 0; i < oneformIds.length; i++){
-                AeaOneform aeaParOneform = aeaOneformMapper.getParOneformById(oneformIds[i]);
-                aeaItemOneform = new AeaItemOneform();
-                aeaItemOneform.setItemOneformId(UUID.randomUUID().toString());
-                aeaItemOneform.setItemVerId(itemVerId);
-                aeaItemOneform.setSortNo(aeaParOneform.getSortNo());
-                aeaItemOneform.setOneformId(oneformIds[i]);
-                aeaItemOneform.setIsActive(Status.ON);
-                aeaItemOneform.setCreater(SecurityContext.getCurrentUserName());
-                aeaItemOneform.setCreateTime(new Date());
-                aeaItemOneformMapper.insertAeaItemOneform(aeaItemOneform);
-            }
-        } catch (Exception e) {
-            throw new InvalidParameterException("导入失败！");
-        }
+    public Double getMaxSortNo(String itemVerId){
+
+        Double sortNo = aeaItemOneformMapper.getMaxSortNo(itemVerId);
+        return sortNo==null?1:sortNo+1;
     }
 
     @Override
+    public void addMultiplyItemOneform(String itemVerId, String[] oneformIds) {
+
+        AeaItemOneform aeaItemOneform;
+        for (String id:oneformIds){
+            if(StringUtils.isNotBlank(id)){
+                aeaItemOneform = new AeaItemOneform();
+                aeaItemOneform.setItemOneformId(UUID.randomUUID().toString());
+                aeaItemOneform.setItemVerId(itemVerId);
+                aeaItemOneform.setSortNo(getMaxSortNo(itemVerId));
+                aeaItemOneform.setOneformId(id);
+                aeaItemOneform.setIsActive(Status.ON);
+                aeaItemOneform.setCreater(SecurityContext.getCurrentUserId());
+                aeaItemOneform.setCreateTime(new Date());
+                aeaItemOneformMapper.insertAeaItemOneform(aeaItemOneform);
+            }
+        }
+    }
+
+
+
+    @Override
     public PageInfo<AeaItemOneform> listAeaItemOneFormByItemVerId(String itemVerId, Page page) {
+
         PageHelper.startPage(page);
         List<AeaItemOneform> data = aeaItemOneformMapper.listAeaItemOneFormByItemVerId(itemVerId);
         return new PageInfo<>(data);
@@ -65,6 +75,7 @@ public class AeaItemOneformAdminServiceImpl implements AeaItemOneformAdminServic
 
     @Override
     public PageInfo<AeaOneform> listAeaOneFormNotInItem(AeaOneform aeaOneform, Page page) {
+
         PageHelper.startPage(page);
         List<AeaOneform> data = aeaOneformMapper.listAeaOneformNotInItem(aeaOneform);
         return new PageInfo<>(data);
