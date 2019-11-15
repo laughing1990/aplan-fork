@@ -233,7 +233,15 @@
             and STO_FORM_ID !=''
             and IS_SMART_FORM = #{isSmartForm}
             )
-            and asfrom.FORM_PROPERTY in ( 'smart-biz', 'smart-flow', 'dev-biz' )
+            <if test="isSmartForm != null and isSmartForm ==1 ">
+                and asfrom.FORM_PROPERTY in ( 'smart-biz', 'smart-flow')
+            </if>
+            <if test="isSmartForm != null and isSmartForm ==0 ">
+                and asfrom.FORM_PROPERTY in ('dev-biz' )
+            </if>
+            <if test="isSmartForm == null ">
+                and asfrom.FORM_PROPERTY in ( 'smart-biz', 'smart-flow', 'dev-biz' )
+            </if>
             <if test="keyword != null and keyword !='' " >
             and (
                 asfrom.FORM_CODE like CONCAT(CONCAT('%',#{keyword}),'%') or
