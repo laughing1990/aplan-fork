@@ -1,4 +1,4 @@
-package com.augurit.aplanmis.supermarket.projPurchase.vo;
+package com.augurit.aplanmis.supermarket.projPurchase.vo.purchase;
 
 import com.augurit.aplanmis.common.diyannotation.FiledNameIs;
 import com.augurit.aplanmis.common.domain.AeaImMajorQual;

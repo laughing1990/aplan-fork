@@ -1,4 +1,4 @@
-package com.augurit.aplanmis.supermarket.projPurchase.vo;
+package com.augurit.aplanmis.supermarket.projPurchase.vo.mat;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

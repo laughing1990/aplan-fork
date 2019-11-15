@@ -22,7 +22,7 @@ import com.augurit.aplanmis.supermarket.projPurchase.service.ProjPurchaseService
 import com.augurit.aplanmis.supermarket.projPurchase.vo.OwnerIndexData;
 import com.augurit.aplanmis.supermarket.projPurchase.vo.QueryUnpublishedProjInfo;
 import com.augurit.aplanmis.supermarket.projPurchase.vo.SelectedQualMajorRequire;
-import com.augurit.aplanmis.supermarket.projPurchase.vo.ShowProjPurchaseVo;
+import com.augurit.aplanmis.supermarket.projPurchase.vo.purchase.ShowProjPurchaseVo;
 import com.augurit.aplanmis.supermarket.utils.ContentRestResult;
 import com.augurit.aplanmis.supermarket.utils.RestResult;
 import com.augurit.aplanmis.thirdPlatform.service.ProjectCodeService;

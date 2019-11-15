@@ -10,8 +10,10 @@ import com.augurit.aplanmis.mall.userCenter.service.RestApplyMatService;
 import com.augurit.aplanmis.mall.userCenter.vo.AutoImportParamVo;
 import com.augurit.aplanmis.mall.userCenter.vo.UploadMatReturnVo;
 import com.augurit.aplanmis.supermarket.projPurchase.service.MatStateService;
-import com.augurit.aplanmis.supermarket.projPurchase.vo.ItemMatVo;
-import com.augurit.aplanmis.supermarket.projPurchase.vo.MatUploadVo;
+import com.augurit.aplanmis.supermarket.projPurchase.vo.mat.ItemMatVo;
+import com.augurit.aplanmis.supermarket.projPurchase.vo.mat.Mat2MatInstVo;
+import com.augurit.aplanmis.supermarket.projPurchase.vo.mat.MatUploadVo;
+import com.augurit.aplanmis.supermarket.projPurchase.vo.mat.SaveMatinstVo;
 import io.jsonwebtoken.lang.Assert;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -83,14 +85,14 @@ public class MatController {
     }
 
     @PostMapping("/att/upload/auto")
-    @ApiOperation(value = "申报页面--> 一键自动分拣")
+    @ApiOperation(value = "中介超市项目采购页面--> 一键自动分拣")
     public ContentResultForm<List<UploadMatReturnVo>> saveFilesAuto(@ModelAttribute AutoImportParamVo autoImportVo, HttpServletRequest request) throws Exception {
         List<UploadMatReturnVo> list = restApplyMatService.saveFilesAuto(autoImportVo, request);
         return new ContentResultForm<>(true, list, "success");
     }
 
     @PostMapping("/matinst/delete")
-    @ApiOperation(value = "申报页面--> 根据matinsId删除材料实例")
+    @ApiOperation(value = "中介超市项目采购页面--> 根据matinsId删除材料实例")
     @ApiImplicitParam(name = "matinstId", value = "材料实例id, 多个用逗号隔开", dataType = "string", required = true)
     public ContentResultForm deleteMatinst(@RequestParam String matinstId) {
         Assert.isTrue(StringUtils.isNotBlank(matinstId), "matinstId is null");
@@ -99,4 +101,10 @@ public class MatController {
         return new ContentResultForm<>(true, null, "Matinst is Deleted");
     }
 
+    @PostMapping("/matinst/batch/save")
+    @ApiOperation("中介超市项目采购页面---根据材料定义生成材料实例id")
+    public ContentResultForm<List<Mat2MatInstVo>> saveMatinsts(@RequestBody SaveMatinstVo saveMatinstVo) {
+        List<Mat2MatInstVo> mat2MatInstVos = matStateService.saveMatinsts(saveMatinstVo);
+        return new ContentResultForm<>(true, mat2MatInstVos, "Batch save matinst success");
+    }
 }

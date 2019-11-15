@@ -14,7 +14,6 @@ import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.constants.ActiveStatus;
-import com.augurit.aplanmis.common.constants.AuditFlagEnum;
 import com.augurit.aplanmis.common.constants.AuditFlagStatus;
 import com.augurit.aplanmis.common.constants.DeletedStatus;
 import com.augurit.aplanmis.common.domain.*;
@@ -27,7 +26,10 @@ import com.augurit.aplanmis.supermarket.apply.service.RestImApplyService;
 import com.augurit.aplanmis.supermarket.apply.vo.ApplyinstResult;
 import com.augurit.aplanmis.supermarket.apply.vo.ImItemApplyData;
 import com.augurit.aplanmis.supermarket.apply.vo.ImPurchaseData;
-import com.augurit.aplanmis.supermarket.projPurchase.vo.*;
+import com.augurit.aplanmis.supermarket.projPurchase.vo.OwnerIndexData;
+import com.augurit.aplanmis.supermarket.projPurchase.vo.SelectedQualMajorRequire;
+import com.augurit.aplanmis.supermarket.projPurchase.vo.SelectedQualVo;
+import com.augurit.aplanmis.supermarket.projPurchase.vo.purchase.ShowProjPurchaseVo;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.BeanUtils;
@@ -124,15 +126,6 @@ public class ProjPurchaseService {
 
     public AeaImProjPurchase getProjPurchaseById(String projPurchaseId) {
         return aeaImProjPurchaseMapper.listbid(projPurchaseId);
-    }
-
-
-    public ProjPurchaseStatisticsVo getStaticDataForProjPurchase() {
-        AeaImProjPurchase query = new AeaImProjPurchase();
-        ProjPurchaseStatisticsVo vo = new ProjPurchaseStatisticsVo();
-        query.setAuditFlag(AuditFlagEnum.PENDING_APPROVAL);
-        aeaImProjPurchaseMapper.countAeaImProjPurchaseForMyProj(query);
-        return vo;
     }
 
     public List<AeaImProjPurchase> getProjListByLocalCode(String keyword, Page page) {
