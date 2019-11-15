@@ -122,6 +122,8 @@ public class AeaParStagePartform implements Serializable {
      */
     private String keyword;
 
-    //扩展字段
-    private String formUrl;//开发表单链接地址
+    /**
+     * 扩展字段：开发表单链接地址
+     */
+    private String formUrl;
 }

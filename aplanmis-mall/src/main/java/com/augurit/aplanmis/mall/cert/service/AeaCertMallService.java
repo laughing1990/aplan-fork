@@ -45,9 +45,9 @@ import java.util.List;
  **/
 @Service
 @Transactional
-public class AeaCertService {
+public class AeaCertMallService {
 
-    private static Logger logger = LoggerFactory.getLogger(AeaCertService.class);
+    private static Logger logger = LoggerFactory.getLogger(AeaCertMallService.class);
 
     @Autowired
     private AeaCertTypeMapper aeaCertTypeMapper;

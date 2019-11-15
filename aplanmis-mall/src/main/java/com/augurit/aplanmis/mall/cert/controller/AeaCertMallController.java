@@ -1,7 +1,7 @@
 package com.augurit.aplanmis.mall.cert.controller;
 
 import com.augurit.aplanmis.integration.license.dto.LicenseAuthResDTO;
-import com.augurit.aplanmis.mall.cert.service.AeaCertService;
+import com.augurit.aplanmis.mall.cert.service.AeaCertMallService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -21,12 +21,12 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(description = "网厅申报-->电子证照",tags={"电子证照"})
 @RestController
 @RequestMapping("/aea/cert")
-public class AeaCertController {
+public class AeaCertMallController {
 
-    private static Logger logger = LoggerFactory.getLogger(AeaCertController.class);
+    private static Logger logger = LoggerFactory.getLogger(AeaCertMallController.class);
 
     @Autowired
-    private AeaCertService aeaCertService;
+    private AeaCertMallService aeaCertService;
 //    @RequestMapping("/index.do")
 //    public ModelAndView index(ModelMap modelMap) {
 //
@@ -249,7 +249,7 @@ public class AeaCertController {
             @ApiImplicitParam(name = "itemVerIds", value = "事项版本IDs", required = true , dataType = "String" ,paramType = "query"),
             @ApiImplicitParam(name = "identityNumber", value = "申办证件号码", required = true , dataType = "String" ,paramType = "query"),
     })
-    @RequestMapping("/getLicenseAuthRes.do")
+    @RequestMapping("/getLicenseAuthRes")
     public LicenseAuthResDTO getLicenseAuthRes(String itemVerIds, String identityNumber) throws Exception {
         return aeaCertService.getLicenseAuthRes(itemVerIds, identityNumber);
     }
@@ -258,7 +258,7 @@ public class AeaCertController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "authCode", value = "证照编码", required = true , dataType = "String" ,paramType = "query"),
     })
-    @RequestMapping("/getViewLicenseURL.do")
+    @RequestMapping("/getViewLicenseURL")
     public String getViewLicenseURL(String authCode) throws Exception {
         return aeaCertService.getViewLicenseURL(authCode);
     }

@@ -61,14 +61,14 @@
                                data-content-type="application/x-www-form-urlencoded; charset=UTF-8" ,
                                data-url="${pageContext.request.contextPath}/aea/par/stage/partform/listPartFormNoSelectFormByPage.do">
                             <thead>
-                            <tr>
-                                <th data-field="#" data-checkbox="true" data-align="center" data-width="10">ID</th>
-                                <th data-field="formCode" data-align="left" data-width="250">表单编号</th>
-                                <th data-field="formName" data-align="left" data-width="250">表单名称</th>
-                                <th data-field="formProperty" data-align="left" data-width="100"
-                                    data-formatter="formPropertyFormatter">表单类型
-                                </th>
-                            </tr>
+                                <tr>
+                                    <th data-field="#" data-checkbox="true" data-align="center" data-width="10">ID</th>
+                                    <th data-field="formCode" data-align="left" data-width="250">表单编号</th>
+                                    <th data-field="formName" data-align="left" data-width="250">表单名称</th>
+                                    <th data-field="formProperty" data-align="left" data-width="100"
+                                        data-formatter="formPropertyFormatter">表单类型
+                                    </th>
+                                </tr>
                             </thead>
                         </table>
                     </div>

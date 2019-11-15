@@ -5,41 +5,41 @@
 <mapper namespace="com.augurit.aplanmis.common.mapper.AeaItemPartformMapper">
 
     <sql id="allColumns">
-    ITEM_PARTFORM_ID  itemPartformId,
-    PARTFORM_NAME  partformName,
-    ITEM_VER_ID  itemVerId,
-    IS_SMART_FORM  isSmartForm,
+        ITEM_PARTFORM_ID  itemPartformId,
+        PARTFORM_NAME  partformName,
+        ITEM_VER_ID  itemVerId,
+        IS_SMART_FORM  isSmartForm,
         STO_FORM_ID stoFormId,
-    SORT_NO  sortNo,
-    USE_EL  useEl,
-    EL_CONTENT  elContent,
-    CREATER  creater,
-    CREATE_TIME  createTime
+        SORT_NO  sortNo,
+        USE_EL  useEl,
+        EL_CONTENT  elContent,
+        CREATER  creater,
+        CREATE_TIME  createTime
     </sql>
 
     <sql id="allColumns_alias">
-    ${alias}.ITEM_PARTFORM_ID  itemPartformId,
-    ${alias}.PARTFORM_NAME  partformName,
-    ${alias}.ITEM_VER_ID  itemVerId,
-    ${alias}.IS_SMART_FORM  isSmartForm,
+        ${alias}.ITEM_PARTFORM_ID  itemPartformId,
+        ${alias}.PARTFORM_NAME  partformName,
+        ${alias}.ITEM_VER_ID  itemVerId,
+        ${alias}.IS_SMART_FORM  isSmartForm,
         ${alias}.STO_FORM_ID stoFormId,
-    ${alias}.SORT_NO  sortNo,
-    ${alias}.USE_EL  useEl,
-    ${alias}.EL_CONTENT  elContent,
-    ${alias}.CREATER  creater,
-    ${alias}.CREATE_TIME  createTime
+        ${alias}.SORT_NO  sortNo,
+        ${alias}.USE_EL  useEl,
+        ${alias}.EL_CONTENT  elContent,
+        ${alias}.CREATER  creater,
+        ${alias}.CREATE_TIME  createTime
     </sql>
 
     <select id="getAeaItemPartformById" resultType="AeaItemPartform">
         select
-        <include refid="allColumns"/>
+            <include refid="allColumns"/>
         from AEA_ITEM_PARTFORM
         where ITEM_PARTFORM_ID = #{id}
     </select>
 
     <select id="listAeaItemPartform" resultType="AeaItemPartform">
         select
-        <include refid="allColumns"/>
+            <include refid="allColumns"/>
         from AEA_ITEM_PARTFORM
         <where>
             <if test="itemPartformId != null and itemPartformId!=''">
@@ -56,6 +56,9 @@
             </if>
             <if test="stoFormId != null and stoFormId!=''">
                 AND STO_FORM_ID = #{stoFormId}
+            </if>
+            <if test="formUrl != null and formUrl!=''" >
+                AND FORM_URL = #{formUrl}
             </if>
             <if test="sortNo != null and sortNo!=''">
                 AND SORT_NO = #{sortNo}
@@ -79,13 +82,29 @@
     </select>
 
     <insert id="insertAeaItemPartform" parameterType="AeaItemPartform">
-    insert into AEA_ITEM_PARTFORM (
-        ITEM_PARTFORM_ID ,PARTFORM_NAME ,ITEM_VER_ID ,IS_SMART_FORM ,STO_FORM_ID ,SORT_NO ,USE_EL ,EL_CONTENT ,CREATER
-        ,CREATE_TIME
-    )  values  (
-        #{itemPartformId},#{partformName},#{itemVerId},#{isSmartForm},#{stoFormId},#{sortNo},#{useEl},#{elContent},#{creater},
-        #{createTime}
-    )
+        insert into AEA_ITEM_PARTFORM (
+            ITEM_PARTFORM_ID,
+            PARTFORM_NAME,
+            ITEM_VER_ID,
+            IS_SMART_FORM,
+            STO_FORM_ID,
+            SORT_NO,
+            USE_EL,
+            EL_CONTENT,
+            CREATER,
+            CREATE_TIME
+        )  values  (
+            #{itemPartformId},
+            #{partformName},
+            #{itemVerId},
+            #{isSmartForm},
+            #{stoFormId},
+            #{sortNo},
+            #{useEl},
+            #{elContent},
+            #{creater},
+            #{createTime}
+        )
     </insert>
 
     <update id="updateAeaItemPartform" parameterType="AeaItemPartform">
@@ -126,11 +145,8 @@
     </update>
 
     <delete id="deleteAeaItemPartform">
-        delete from   AEA_ITEM_PARTFORM
-        where
-    ITEM_PARTFORM_ID = #{id}
+        delete from AEA_ITEM_PARTFORM where ITEM_PARTFORM_ID = #{id}
     </delete>
-
 
     <select id="getMaxSortNo" resultType="java.lang.Long">
         select
@@ -148,16 +164,18 @@
 
     <select id="listAeaItemPartformWithFormInfo" resultType="AeaItemPartform">
         select
-        <include refid="allColumns_alias"><property name="alias" value="aip"/></include>,
-        asf.FORM_NAME formName,asf.FORM_LOAD_URL formUrl
+            <include refid="allColumns_alias">
+                <property name="alias" value="aip"/>
+            </include>,
+            asf.FORM_NAME formName,
+            asf.FORM_LOAD_URL formUrl
         from AEA_ITEM_PARTFORM aip
         left join ACT_STO_FORM asf on (
-        aip.STO_FORM_ID = asf.FORM_ID
-        and asf.IS_DELETED = '0'
-        and asf.FORM_PROPERTY in ( 'smart-biz', 'smart-flow','dev-biz' )
-        and aip.STO_FORM_ID is not null
-        and aip.STO_FORM_ID !=''
-        -- and aip.IS_SMART_FORM = '1'
+                aip.STO_FORM_ID = asf.FORM_ID
+            and asf.IS_DELETED = '0'
+            and asf.FORM_PROPERTY in ( 'smart-biz', 'smart-flow','dev-biz' )
+            and aip.STO_FORM_ID is not null
+            and aip.STO_FORM_ID !=''
         )
         <where>
             <if test="itemPartformId != null and itemPartformId!=''">
@@ -199,14 +217,14 @@
 
     <select id="listItemPartFormNoSelectForm" resultType="AeaItemPartform">
         select
-        asfrom.FORM_ID as stoFormId,
-        asfrom.FORM_ORG_ID  formOrgId,
-        asfrom.FORM_PROPERTY  formProperty,
-        asfrom.FORM_CODE  formCode,
-        asfrom.FORM_NAME  formName,
-        asfrom.IS_INNER_FORM  isInnerForm,
-        tmn.TMN_NAME formTmnName,
-        org.ORG_NAME orgName
+            asfrom.FORM_ID as stoFormId,
+            asfrom.FORM_ORG_ID  formOrgId,
+            asfrom.FORM_PROPERTY  formProperty,
+            asfrom.FORM_CODE  formCode,
+            asfrom.FORM_NAME  formName,
+            asfrom.IS_INNER_FORM  isInnerForm,
+            tmn.TMN_NAME formTmnName,
+            org.ORG_NAME orgName
         from ACT_STO_FORM asfrom
         left join opu_om_org org on org.ORG_ID = asfrom.FORM_ORG_ID
         left join AGX_RS_TMN tmn on tmn.TMN_ID = asfrom.FORM_TMN_ID
@@ -214,14 +232,14 @@
             and asfrom.IS_DELETED = '0'
             and asfrom.FORM_ORG_ID = #{formOrgId}
             and asfrom.FORM_ID not in (
-            select
-            STO_FORM_ID
-            from AEA_ITEM_PARTFORM
-            where ITEM_VER_ID = #{itemVerId}
-            and ITEM_PARTFORM_ID = #{itemPartformId}
-            and STO_FORM_ID is not null
-            and STO_FORM_ID !=''
-            and IS_SMART_FORM = #{isSmartForm}
+                select
+                    STO_FORM_ID
+                from AEA_ITEM_PARTFORM
+                where ITEM_VER_ID = #{itemVerId}
+                and ITEM_PARTFORM_ID = #{itemPartformId}
+                and STO_FORM_ID is not null
+                and STO_FORM_ID !=''
+                and IS_SMART_FORM = #{isSmartForm}
             )
             <if test="isSmartForm != null and isSmartForm ==1 ">
                 and asfrom.FORM_PROPERTY in ( 'smart-biz', 'smart-flow')
@@ -233,14 +251,15 @@
                 and asfrom.FORM_PROPERTY in ( 'smart-biz', 'smart-flow', 'dev-biz' )
             </if>
             <if test="keyword != null and keyword !='' " >
-                and (
+            and (
                 asfrom.FORM_CODE like CONCAT(CONCAT('%',#{keyword}),'%') or
                 asfrom.FORM_NAME like CONCAT(CONCAT('%',#{keyword}),'%')
-                )
+            )
             </if>
         </where>
         order by asfrom.IS_INNER_FORM desc, asfrom.CREATE_TIME desc
     </select>
+
     <resultMap type="AeaItemPartform" id="AeaItemPartformMap">
         <id property="itemPartformId" column="ITEM_PARTFORM_ID"/>
         <result property="partformName" column="PARTFORM_NAME"/>
@@ -253,4 +272,5 @@
         <result property="creater" column="CREATER"/>
         <result property="createTime" column="CREATE_TIME"/>
     </resultMap>
+
 </mapper>
