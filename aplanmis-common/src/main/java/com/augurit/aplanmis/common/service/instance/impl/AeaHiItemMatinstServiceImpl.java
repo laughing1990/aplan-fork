@@ -2,15 +2,10 @@ package com.augurit.aplanmis.common.service.instance.impl;
 
 import com.augurit.agcloud.bsc.domain.BscAttLink;
 import com.augurit.agcloud.bsc.mapper.BscAttMapper;
-import com.augurit.agcloud.bsc.util.UuidUtil;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.util.StringUtils;
-import com.augurit.aplanmis.common.domain.AeaCert;
-import com.augurit.aplanmis.common.domain.AeaHiCertinst;
 import com.augurit.aplanmis.common.domain.AeaHiItemInoutinst;
 import com.augurit.aplanmis.common.domain.AeaHiItemMatinst;
-import com.augurit.aplanmis.common.mapper.AeaCertMapper;
-import com.augurit.aplanmis.common.mapper.AeaHiCertinstMapper;
 import com.augurit.aplanmis.common.mapper.AeaHiItemInoutinstMapper;
 import com.augurit.aplanmis.common.mapper.AeaHiItemMatinstMapper;
 import com.augurit.aplanmis.common.service.file.FileUtilsService;
@@ -43,10 +38,6 @@ public class AeaHiItemMatinstServiceImpl implements AeaHiItemMatinstService {
     private AeaHiItemInoutinstMapper aeaHiItemInoutinstMapper;
     @Autowired
     BscAttMapper bscAttMapper;
-    @Autowired
-    private AeaCertMapper aeaCertMapper;
-    @Autowired
-    private AeaHiCertinstMapper aeaHiCertinstMapper;
 
     //根据事项实例ID获取（输入或输出）材料实例列表
     public List<AeaHiItemMatinst> getMatinstListByIteminstIds(String[] iteminstIds, String isInput) throws Exception {
@@ -117,26 +108,6 @@ public class AeaHiItemMatinstServiceImpl implements AeaHiItemMatinstService {
             Assert.isTrue(StringUtils.isNotBlank(aeaHiItemMatinst.getMatId()), "matId is null");
             Assert.isTrue(StringUtils.isNotBlank(aeaHiItemMatinst.getMatinstCode()), "matinstCode is null");
             Assert.isTrue(StringUtils.isNotBlank(aeaHiItemMatinst.getMatinstName()), "matinstName is null");
-
-            if ("c".equals(aeaHiItemMatinst.getMatProp())) {
-                AeaCert aeaCert = aeaCertMapper.getAeaCertById(aeaHiItemMatinst.getCertId(), SecurityContext.getCurrentOrgId());
-                if (aeaCert == null) {
-                    log.error("无法找到对应的证照材料定义");
-                    return null;
-                }
-                AeaHiCertinst aeaHiCertinst = new AeaHiCertinst();
-                aeaHiCertinst.setCertinstId(UuidUtil.generateUuid());
-                aeaHiCertinst.setCreater(SecurityContext.getCurrentUserName());
-                aeaHiCertinst.setCreateTime(new Date());
-                aeaHiCertinst.setRootOrgId(SecurityContext.getCurrentOrgId());
-                aeaHiCertinst.setUnitInfoId(aeaHiItemMatinst.getUnitInfoId());
-                aeaHiCertinst.setProjInfoId(aeaHiItemMatinst.getProjInfoId());
-                aeaHiCertinst.setCertId(aeaHiItemMatinst.getCertId());
-                aeaHiCertinst.setCertinstCode(aeaCert.getCertCode());
-                aeaHiCertinst.setCertinstName(aeaCert.getCertName());
-                aeaHiCertinstMapper.insertAeaHiCertinst(aeaHiCertinst);
-                aeaHiItemMatinst.setCertinstId(aeaHiCertinst.getCertinstId());
-            }
 
             matinstId = UUID.randomUUID().toString();
             aeaHiItemMatinst.setMatinstId(matinstId);
