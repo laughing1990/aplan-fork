@@ -106,10 +106,10 @@ var app = new Vue({
         type: 'get',
         url: ctx + 'rest/dict/code/multi/items/list',
         data: {
-          dicCodeTypeCodes: 'Land_Area_Type,XM_FIELD_TYPE'
+          dicCodeTypeCodes: 'C_LAND_TYPE,XM_FIELD_TYPE'
         },
       }, function(res) {
-        vm.landAreaUnitSite = res.content.Land_Area_Type;
+        vm.landAreaUnitSite = res.content.C_LAND_TYPE;
         vm.fieldType = res.content.XM_FIELD_TYPE;
       }, function(err) {
         vm.$message.error('服务器错了哦!');
