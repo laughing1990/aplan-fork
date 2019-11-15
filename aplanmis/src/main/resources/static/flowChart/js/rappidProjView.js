@@ -237,9 +237,9 @@ $(function () {
               });
               vm.supplyList = tmp;
               // vm.checkDeleteTab('commentList', 'process');
-              // vm.checkDeleteTab('specialList', 'special');
+              vm.checkDeleteTab('specialList', 'special');
               // vm.checkDeleteTab('officialDocumentList', 'doc');
-              // vm.checkDeleteTab('supplyList', 'supply');
+              vm.checkDeleteTab('supplyList', 'supply');
               vm.$nextTick(function () {
                 vm.itemDetailVisible = true;
                 vm.pageLoading = false;
