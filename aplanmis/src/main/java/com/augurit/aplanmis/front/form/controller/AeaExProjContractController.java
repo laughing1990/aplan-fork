@@ -1,9 +1,5 @@
 package com.augurit.aplanmis.front.form.controller;
 
-import com.augurit.agcloud.bsc.domain.BscDicCodeItem;
-import com.augurit.agcloud.bsc.domain.BscDicCodeType;
-import com.augurit.agcloud.bsc.sc.dic.code.service.BscDicCodeService;
-import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.aplanmis.common.domain.AeaExProjContract;
@@ -33,8 +29,6 @@ private static Logger logger = LoggerFactory.getLogger(AeaExProjContractControll
     @Autowired
     private AeaExProjContractService aeaExProjContractService;
     @Autowired
-    private BscDicCodeService bscDicCodeService;
-    @Autowired
     private AeaProjInfoService aeaProjInfoService;
 
 
@@ -52,20 +46,7 @@ private static Logger logger = LoggerFactory.getLogger(AeaExProjContractControll
         return aeaExProjContractService.listAeaExProjContract(aeaExProjContract,page);
     }*/
 
-    @RequestMapping("/contractType")
-    public List<BscDicCodeItem> getLandAreaType(){
-      String landAreaType = "contract_type";
-      BscDicCodeType typeByTypeCode = bscDicCodeService.getTypeByTypeCode(landAreaType, SecurityContext.getCurrentOrgId());
-      if (typeByTypeCode==null){
 
-          return null;
-      }
-      else {
-          List<BscDicCodeItem> areaType = bscDicCodeService.getItemsByTypeCode(typeByTypeCode.getTypeCode());
-          return areaType;
-      }
-
-  }
 
     @RequestMapping("/getAeaExProjContract.do")
     public ResultForm getAeaExProjContract(String projInfoId) throws Exception {
