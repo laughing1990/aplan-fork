@@ -911,4 +911,11 @@
         </sql>
     </changeSet>
 
+    <changeSet id="201911151406" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_item_partform`
+            MODIFY COLUMN `STO_FORM_ID`  varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '表单定义ID' AFTER `IS_SMART_FORM`;
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>
