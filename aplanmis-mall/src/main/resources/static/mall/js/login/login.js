@@ -5,12 +5,13 @@ var login = (function () {
             loginBtnLoading:false,
             userName:'',
             password:'',
+            verifyCode:'',
             errorMsg:'',
             errorMsgFlag:false,
+            code:ctx + "rest/verifycode/getCode",
         },
         mounted:function() {
             var vm = this;
-
         },
         methods: {
             login:function(){
@@ -25,32 +26,53 @@ var login = (function () {
                     vm.$message.error(vm.errorMsg)
                     return false;
                 }
-                vm.loginBtnLoading = true;
-
+                if(vm.verifyCode == ""){
+                    vm.errorMsg = '请输入验证码'
+                    vm.$message.error(vm.errorMsg)
+                    return false;
+                }
                 request('', {
-                    url: ctx + 'rest/mall/login',
+                    url: ctx + 'rest/mall/checkVerifyCode',
                     type: 'get',
                     data:{
-                        userName:vm.userName,
-                        password:sm3(hex_md5(vm.password)),
+                        verifyCode:vm.verifyCode
                     }
                 }, function (res) {
-                    vm.loginBtnLoading = false;
-                   if(res.success){
-                       localStorage.setItem('loginInfo', JSON.stringify(res.content))
-                       location.href= ctx + "rest/main/toIndexPage?#MyHomeIndex";
-                       return false;
-                   }else{
-                       vm.$message.error(res.message)
-                   }
+                    if(res.success){
+                        vm.loginBtnLoading = true;
 
-                },function () {
-                    console.log(123456)
-                    vm.loginBtnLoading = false;
-                    vm.$message.error('请求服务器接口报错！')
+                        request('', {
+                            url: ctx + 'rest/mall/login',
+                            type: 'get',
+                            data:{
+                                userName:vm.userName,
+                                password:sm3(hex_md5(vm.password)),
+                            }
+                        }, function (res) {
+                            vm.loginBtnLoading = false;
+                            if(res.success){
+                                localStorage.setItem('loginInfo', JSON.stringify(res.content))
+                                location.href= ctx + "rest/main/toIndexPage?#MyHomeIndex";
+                                return false;
+                            }else{
+                                vm.$message.error(res.message)
+                            }
+
+                        },function () {
+                            console.log(123456)
+                            vm.loginBtnLoading = false;
+                            vm.$message.error('请求服务器接口报错！')
+                        });
+                    }else{
+                        vm.$message.error(res.message)
+                    }
                 });
-
             },
+            changeCode:function () {
+                var vm = this;
+                this.code = ctx + 'rest/verifycode/getCode?t='+new Date();
+                debugger;
+            }
         },
         watch:{
 

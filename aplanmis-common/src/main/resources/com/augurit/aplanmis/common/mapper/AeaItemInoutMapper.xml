@@ -113,6 +113,56 @@
             AND IS_DELETED = '0'
         </where>
     </select>
+    
+    <select id="listAeaItemInoutRelMat" resultType="AeaItemInout">
+        select
+            <include refid="aliasColumns">
+                <property name="alias" value="inout1"/>
+            </include>,
+            mat.MAT_NAME aeaMatCertName,
+            mat.MAT_CODE aeaMatCertCode,
+            mat.MAT_PROP matProp,
+            mat.CERT_ID certId,
+            mat.STO_FORM_ID formId
+        from AEA_ITEM_INOUT inout1, AEA_ITEM_MAT mat
+        <where>
+                and  inout1.MAT_ID = mat.MAT_ID
+--                 and  inout1.ROOT_ORG_ID = mat.ROOT_ORG_ID
+                and  inout1.ROOT_ORG_ID = #{rootOrgId}
+                and  inout1.IS_DELETED = '0'
+                and  mat.IS_DELETED = '0'
+            <if test="inoutId != null">
+                and  inout1.INOUT_ID = #{inoutId}
+            </if>
+            <if test="itemVerId != null">
+                and  inout1.ITEM_VER_ID = #{itemVerId}
+            </if>
+            <if test="stateVerId != null">
+                and  inout1.STATE_VER_ID = #{stateVerId}
+            </if>
+            <if test="isOwner != null">
+                and  inout1.IS_OWNER = #{isOwner}
+            </if>
+            <if test="isInput != null">
+                and  inout1.IS_INPUT = #{isInput}
+            </if>
+            <if test="matId != null">
+                and  inout1.MAT_ID = #{matId}
+            </if>
+            <if test="isStateIn != null">
+                and  inout1.IS_STATE_IN = #{isStateIn}
+            </if>
+            <if test="itemStateId != null">
+                and  inout1.ITEM_STATE_ID = #{itemStateId}
+            </if>
+            <if test="sortNo != null">
+                and  inout1.SORT_NO = #{sortNo}
+            </if>
+            <if test="matProp!=null and  matProp!='' ">
+                and  mat.MAT_PROP = #{matProp}
+            </if>
+        </where>
+    </select>
 
     <!--5 新增实体对象 -->
     <insert id="insertAeaItemInout" parameterType="AeaItemInout">
@@ -332,47 +382,51 @@
     </select>
 
     <select id="listAeaItemInoutAndMat" resultMap="inoutAndMatResultMap" parameterType="AeaItemInout">
-        select mat.MAT_ID,
-        mat.MAT_CODE,
-        mat.MAT_NAME,
-        mat.IS_GLOBAL_SHARE,
-        mat.MAT_TYPE_ID,
-        mat.RECEIVE_MODE,
-        mat.DUE_PAPER_COUNT,
-        mat.DUE_COPY_COUNT,
-        mat.MAT_FROM,
-        mat.SAMPLE_DOC,
-        mat.TEMPLATE_DOC,
-        mat.MAT_REQUIRE,
-        mat.MAT_BASIS,
-        mat.PAPER_IS_REQUIRE,
-        mat.SORT_NO,
-        mat.MAT_MEMO,
-        mat.IS_ACTIVE,
-        mat.IS_DELETED,
-        mat.CREATER,
-        mat.CREATE_TIME,
-        mat.MODIFIER,
-        mat.MODIFY_TIME,
-        mat.ATT_DIR_ID,
-        mat.MAT_HOLDER,
-        mat.IS_OFFICIAL_DOC,
-        mat.ATT_IS_REQUIRE,
-        mat.IS_COMMON,
-        mat.REVIEW_KEY_POINTS,
-        mat.REVIEW_SAMPLE_DOC,
-        mat.REVIEW_BASIS,
-        iout.INOUT_ID,
-        iout.ITEM_VER_ID,
-        iout.IS_OWNER,
-        iout.IS_INPUT,
-        iout.FILE_TYPE,
-        iout.MAT_ID MAT_ID1,
-        iout.CERT_ID,
-        iout.CREATER CREATER1,
-        iout.CREATE_TIME CREATE_TIME1,
-        iout.MODIFIER MODIFIER1,
-        iout.MODIFY_TIME MODIFY_TIME1
+        select
+            mat.MAT_ID,
+            mat.MAT_CODE,
+            mat.MAT_NAME,
+            mat.IS_GLOBAL_SHARE,
+            mat.MAT_TYPE_ID,
+            mat.RECEIVE_MODE,
+            mat.DUE_PAPER_COUNT,
+            mat.DUE_COPY_COUNT,
+            mat.MAT_FROM,
+            mat.SAMPLE_DOC,
+            mat.TEMPLATE_DOC,
+            mat.MAT_REQUIRE,
+            mat.MAT_BASIS,
+            mat.PAPER_IS_REQUIRE,
+            mat.SORT_NO,
+            mat.MAT_MEMO,
+            mat.IS_ACTIVE,
+            mat.IS_DELETED,
+            mat.CREATER,
+            mat.CREATE_TIME,
+            mat.MODIFIER,
+            mat.MODIFY_TIME,
+            mat.ATT_DIR_ID,
+            mat.MAT_HOLDER,
+            mat.IS_OFFICIAL_DOC,
+            mat.ATT_IS_REQUIRE,
+            mat.IS_COMMON,
+            mat.REVIEW_KEY_POINTS,
+            mat.REVIEW_SAMPLE_DOC,
+            mat.REVIEW_BASIS,
+            mat.MAT_PROP,
+            mat.CERT_ID,
+            mat.STO_FORM_ID,
+            iout.INOUT_ID,
+            iout.ITEM_VER_ID,
+            iout.IS_OWNER,
+            iout.IS_INPUT,
+            iout.FILE_TYPE,
+            iout.MAT_ID MAT_ID1,
+            iout.CERT_ID,
+            iout.CREATER CREATER1,
+            iout.CREATE_TIME CREATE_TIME1,
+            iout.MODIFIER MODIFIER1,
+            iout.MODIFY_TIME MODIFY_TIME1
         from AEA_ITEM_MAT mat LEFT JOIN AEA_ITEM_INOUT iout ON mat.MAT_ID = iout.MAT_ID
         <where>
             <if test="keyword != null and keyword != ''">
@@ -408,23 +462,25 @@
 
     <select id="listInStateMatByItemIdAndStateId" resultType="AeaItemInout">
         select
-        iout.INOUT_ID inoutId,
-        iout.item_VER_id itemVerId
-        iout.IS_OWNER isOwner,
-        iout.IS_INPUT isInput,
-        iout.FILE_TYPE fileType,
-        iout.MAT_ID matId,
-        iout.CERT_ID certId,
-        iout.CREATER creater,
-        iout.CREATE_TIME createTime,
-        iout.MODIFIER modifier,
-        iout.MODIFY_TIME modifyTime,
-        iout.IS_STATE_IN isStateIn,
-        iout.ITEM_STATE_ID itemStateId,
-
-        mat.MAT_NAME aeaMatCertName,
-        mat.MAT_CODE aeaMatCertCode,
-        mat.MAT_MEMO aeaMatCertMemo
+            iout.INOUT_ID inoutId,
+            iout.item_VER_id itemVerId
+            iout.IS_OWNER isOwner,
+            iout.IS_INPUT isInput,
+            iout.FILE_TYPE fileType,
+            iout.MAT_ID matId,
+            iout.CERT_ID certId,
+            iout.CREATER creater,
+            iout.CREATE_TIME createTime,
+            iout.MODIFIER modifier,
+            iout.MODIFY_TIME modifyTime,
+            iout.IS_STATE_IN isStateIn,
+            iout.ITEM_STATE_ID itemStateId,
+            mat.MAT_NAME aeaMatCertName,
+            mat.MAT_CODE aeaMatCertCode,
+            mat.MAT_MEMO aeaMatCertMemo,
+            mat.MAT_PROP matProp,
+            mat.CERT_ID certId,
+            mat.STO_FORM_ID formId
         from AEA_ITEM_INOUT iout
         join AEA_ITEM_MAT mat on mat.MAT_ID = iout.MAT_ID
         <where>
@@ -474,367 +530,158 @@
 
     <select id="listAeaItemInoutMatCert" resultType="AeaItemInout">
         select
-        a1.inoutId,
-        a1.itemVerId,
-        a1.isOwner,
-        a1.isInput,
-        a1.fileType,
-        a1.matId,
-        a1.certId,
-        a1.isCommon,
-        a1.aeaMatCertName,
-        a1.aeaMatCertCode,
-        a1.sortNo,
-        a1.createTime,
-        a1.modifyTime
-        from(
-        select
-        inOut1.INOUT_ID inoutId,
-        inOut1.ITEM_VER_ID itemVerId,
-        inOut1.IS_OWNER isOwner,
-        inOut1.IS_INPUT isInput,
-        inOut1.FILE_TYPE fileType,
-        inOut1.MAT_ID matId,
-        inOut1.CERT_ID certId,
-        inOut1.CREATER creater,
-        inOut1.CREATE_TIME createTime,
-        inOut1.MODIFIER modifier,
-        inOut1.MODIFY_TIME modifyTime,
-        inOut1.IS_STATE_IN isStateIn,
-        inOut1.ITEM_STATE_ID itemStateId,
-        inOut1.IS_DELETED isDeleted,
-        inOut1.SORT_NO sortNo,
-        mat.IS_COMMON isCommon,
-        mat.MAT_NAME as aeaMatCertName,
-        mat.MAT_CODE as aeaMatCertCode
-        from AEA_ITEM_INOUT inOut1
-        join AEA_ITEM_MAT mat on mat.MAT_ID = inOut1.MAT_ID and mat.ROOT_ORG_ID = inOut1.ROOT_ORG_ID
-        where 1 = 1
-        and inOut1.ROOT_ORG_ID = #{rootOrgId}
-        and inOut1.IS_INPUT = #{isInput}
-        and inOut1.FILE_TYPE = 'mat'
-        and inOut1.IS_DELETED = '0'
-        and inOut1.ITEM_VER_ID = #{itemVerId}
-        and mat.IS_DELETED = '0'
-        <if test="isStateIn != null and isStateIn!= '' ">
+            inOut1.INOUT_ID inoutId,
+            inOut1.ITEM_VER_ID itemVerId,
+            inOut1.IS_OWNER isOwner,
+            inOut1.IS_INPUT isInput,
+            inOut1.FILE_TYPE fileType,
+            inOut1.MAT_ID matId,
+            inOut1.IS_STATE_IN isStateIn,
+            inOut1.ITEM_STATE_ID itemStateId,
+            inOut1.IS_DELETED isDeleted,
+            inOut1.SORT_NO sortNo,
+            mat.IS_COMMON isCommon,
+            mat.MAT_NAME aeaMatCertName,
+            mat.MAT_CODE aeaMatCertCode,
+            mat.MAT_PROP matProp,
+            mat.CERT_ID certId,
+            mat.STO_FORM_ID formId
+        from AEA_ITEM_INOUT inOut1, AEA_ITEM_MAT mat
+        <where>
+            and inOut1.MAT_ID = mat.MAT_ID
+--             and inOut1.ROOT_ORG_ID = mat.ROOT_ORG_ID
+            and inOut1.ROOT_ORG_ID = #{rootOrgId}
+            and inOut1.IS_INPUT = #{isInput}
+            and inOut1.IS_DELETED = '0'
+            and inOut1.ITEM_VER_ID = #{itemVerId}
+            and mat.IS_DELETED = '0'
+            <if test="isStateIn != null and isStateIn!= '' ">
             and inOut1.IS_STATE_IN = #{isStateIn}
-        </if>
-        <if test="itemStateId != null and itemStateId!= '' ">
+            </if>
+            <if test="itemStateId != null and itemStateId!= '' ">
             and inOut1.ITEM_STATE_ID = #{itemStateId}
-        </if>
-        <if test="stateVerId != null">
+            </if>
+            <if test="stateVerId != null">
             and inOut1.STATE_VER_ID = #{stateVerId}
-        </if>
-        <if test="keyword != null and keyword != ''">
+            </if>
+            <if test="keyword != null and keyword != ''">
             and (
-            mat.MAT_NAME like CONCAT(CONCAT('%',#{keyword}),'%') OR
-            mat.MAT_CODE like CONCAT(CONCAT('%',#{keyword}),'%')
+                mat.MAT_NAME like CONCAT(CONCAT('%',#{keyword}),'%') or
+                mat.MAT_CODE like CONCAT(CONCAT('%',#{keyword}),'%')
             )
-        </if>
-        ) a1
-        union all
-        select
-        b1.inoutId,
-        b1.itemVerId,
-        b1.isOwner,
-        b1.isInput,
-        b1.fileType,
-        b1.matId,
-        b1.certId,
-        b1.isCommon,
-        b1.aeaMatCertName,
-        b1.aeaMatCertCode,
-        b1.sortNo,
-        b1.createTime,
-        b1.modifyTime
-        from(
-        select
-        inOut1.INOUT_ID inoutId,
-        inOut1.ITEM_VER_ID itemVerId,
-        inOut1.IS_OWNER isOwner,
-        inOut1.IS_INPUT isInput,
-        inOut1.FILE_TYPE fileType,
-        inOut1.MAT_ID matId,
-        inOut1.CERT_ID certId,
-        inOut1.CREATER creater,
-        inOut1.CREATE_TIME createTime,
-        inOut1.MODIFIER modifier,
-        inOut1.MODIFY_TIME modifyTime,
-        inOut1.IS_STATE_IN isStateIn,
-        inOut1.ITEM_STATE_ID itemStateId,
-        inOut1.IS_DELETED isDeleted,
-        inOut1.SORT_NO sortNo,
-        'cert' isCommon,
-        cert.cert_name as aeaMatCertName,
-        cert.cert_code as aeaMatCertCode
-        from AEA_ITEM_INOUT inOut1
-        join AEA_cert cert on cert.cert_ID = inOut1.CERT_ID and cert.ROOT_ORG_ID = inOut1.ROOT_ORG_ID
-        where 1=1
-        and inOut1.ROOT_ORG_ID = #{rootOrgId}
-        and inOut1.IS_INPUT = #{isInput}
-        and inOut1.FILE_TYPE = 'cert'
-        and inOut1.IS_DELETED = '0'
-        and inOut1.ITEM_VER_ID = #{itemVerId}
-        and cert.IS_DELETED = '0'
-        <if test="isStateIn != null and isStateIn!= '' ">
-            and inOut1.IS_STATE_IN = #{isStateIn}
-        </if>
-        <if test="itemStateId != null and itemStateId!= '' ">
-            and inOut1.ITEM_STATE_ID = #{itemStateId}
-        </if>
-        <if test="stateVerId != null">
-            and inOut1.STATE_VER_ID = #{stateVerId}
-        </if>
-        <if test="keyword != null and keyword != ''">
-            and (
-            cert.cert_name like CONCAT(CONCAT('%',#{keyword}),'%') or
-            cert.cert_code like CONCAT(CONCAT('%',#{keyword}),'%')
-            )
-        </if>
-        ) b1
-        order by sortNo asc, createTime asc, modifyTime asc
+            </if>
+        </where>
+        order by inOut1.SORT_NO asc, inOut1.CREATE_TIME asc, inOut1.MODIFY_TIME asc
     </select>
 
     <select id="listAeaItemMatCertForm" resultType="AeaItemInout">
         select
-        a1.inoutId,
-        a1.itemVerId,
-        a1.isInput,
-        a1.fileType,
-        a1.isOwner,
-        a1.isCommon,
-        a1.matId,
-        a1.certId,
-        '' as formId,
-        a1.aeaMatCertName,
-        a1.aeaMatCertCode,
-        a1.sortNo,
-        a1.createTime
-        from(
-        select
-        inOut1.INOUT_ID inoutId,
-        inOut1.ITEM_VER_ID itemVerId,
-        inOut1.IS_OWNER isOwner,
-        inOut1.IS_INPUT isInput,
-        inOut1.FILE_TYPE fileType,
-        inOut1.MAT_ID matId,
-        inOut1.CERT_ID certId,
-        inOut1.CREATER creater,
-        inOut1.CREATE_TIME createTime,
-        inOut1.MODIFIER modifier,
-        inOut1.MODIFY_TIME modifyTime,
-        inOut1.IS_STATE_IN isStateIn,
-        inOut1.ITEM_STATE_ID itemStateId,
-        inOut1.IS_DELETED isDeleted,
-        inOut1.SORT_NO sortNo,
-        mat.IS_COMMON isCommon,
-        mat.MAT_NAME as aeaMatCertName,
-        mat.MAT_CODE as aeaMatCertCode
-        from AEA_ITEM_INOUT inOut1
-        join AEA_ITEM_MAT mat on mat.MAT_ID = inOut1.MAT_ID and inOut1.ROOT_ORG_ID = mat.ROOT_ORG_ID
-        where 1 = 1
-        and inOut1.ROOT_ORG_ID = #{rootOrgId}
-        and inOut1.IS_INPUT = #{isInput}
-        and inOut1.FILE_TYPE = 'mat'
-        and inOut1.IS_DELETED = '0'
-        and inOut1.ITEM_VER_ID = #{itemVerId}
-        and mat.IS_DELETED = '0'
-        <if test="isStateIn != null and isStateIn!= '' ">
+            inOut1.INOUT_ID inoutId,
+            inOut1.ITEM_VER_ID itemVerId,
+            inOut1.IS_OWNER isOwner,
+            inOut1.IS_INPUT isInput,
+            inOut1.FILE_TYPE fileType,
+            inOut1.MAT_ID matId,
+            inOut1.IS_STATE_IN isStateIn,
+            inOut1.ITEM_STATE_ID itemStateId,
+            inOut1.IS_DELETED isDeleted,
+            inOut1.SORT_NO sortNo,
+            mat.IS_COMMON isCommon,
+            mat.MAT_NAME aeaMatCertName,
+            mat.MAT_CODE aeaMatCertCode,
+            mat.MAT_PROP matProp,
+            mat.CERT_ID certId,
+            mat.STO_FORM_ID formId
+        from AEA_ITEM_INOUT inOut1, AEA_ITEM_MAT mat
+        <where>
+            and inOut1.MAT_ID = mat.MAT_ID
+--             and inOut1.ROOT_ORG_ID = mat.ROOT_ORG_ID
+            and inOut1.ROOT_ORG_ID = #{rootOrgId}
+            and inOut1.IS_INPUT = #{isInput}
+            and mat.IS_DELETED = '0'
+            and inOut1.IS_DELETED = '0'
+            and inOut1.ITEM_VER_ID = #{itemVerId}
+            <if test="isStateIn != null and isStateIn!= '' ">
             and inOut1.IS_STATE_IN = #{isStateIn}
-        </if>
-        <if test="itemStateId != null and itemStateId!= '' ">
+            </if>
+            <if test="itemStateId != null and itemStateId!= '' ">
             and inOut1.ITEM_STATE_ID = #{itemStateId}
-        </if>
-        <if test="stateVerId != null">
+            </if>
+            <if test="stateVerId != null">
             and inOut1.STATE_VER_ID = #{stateVerId}
-        </if>
-        <if test="keyword != null and keyword != ''">
+            </if>
+            <if test="keyword != null and keyword != ''">
             and (
-            mat.MAT_NAME like CONCAT(CONCAT('%',#{keyword}),'%') or
-            mat.MAT_CODE like CONCAT(CONCAT('%',#{keyword}),'%')
+                mat.MAT_NAME like CONCAT(CONCAT('%',#{keyword}),'%') or
+                mat.MAT_CODE like CONCAT(CONCAT('%',#{keyword}),'%')
             )
-        </if>
-        ) a1
-        union all
-        select
-        b1.inoutId,
-        b1.itemVerId,
-        b1.isInput,
-        b1.fileType,
-        b1.isOwner,
-        b1.isCommon,
-        b1.matId,
-        b1.certId,
-        '' as formId,
-        b1.aeaMatCertName,
-        b1.aeaMatCertCode,
-        b1.sortNo,
-        b1.createTime
-        from(
-        select
-        inOut1.INOUT_ID inoutId,
-        inOut1.ITEM_VER_ID itemVerId,
-        inOut1.IS_OWNER isOwner,
-        inOut1.IS_INPUT isInput,
-        inOut1.FILE_TYPE fileType,
-        inOut1.MAT_ID matId,
-        inOut1.CERT_ID certId,
-        inOut1.CREATER creater,
-        inOut1.CREATE_TIME createTime,
-        inOut1.MODIFIER modifier,
-        inOut1.MODIFY_TIME modifyTime,
-        inOut1.IS_STATE_IN isStateIn,
-        inOut1.ITEM_STATE_ID itemStateId,
-        inOut1.IS_DELETED isDeleted,
-        inOut1.SORT_NO sortNo,
-        'cert' isCommon,
-        cert.cert_name as aeaMatCertName,
-        cert.cert_code as aeaMatCertCode
-        from AEA_ITEM_INOUT inOut1
-        join AEA_cert cert on cert.cert_ID = inOut1.CERT_ID and inOut1.ROOT_ORG_ID = cert.ROOT_ORG_ID
-        where 1=1
-        and inOut1.ROOT_ORG_ID = #{rootOrgId}
-        and inOut1.IS_INPUT = #{isInput}
-        and inOut1.FILE_TYPE = 'cert'
-        and inOut1.IS_DELETED = '0'
-        and inOut1.ITEM_VER_ID = #{itemVerId}
-        and cert.IS_DELETED = '0'
-        <if test="isStateIn != null and isStateIn!= '' ">
-            and inOut1.IS_STATE_IN = #{isStateIn}
-        </if>
-        <if test="itemStateId != null and itemStateId!= '' ">
-            and inOut1.ITEM_STATE_ID = #{itemStateId}
-        </if>
-        <if test="stateVerId != null">
-            and inOut1.STATE_VER_ID = #{stateVerId}
-        </if>
-        <if test="keyword != null and keyword != ''">
-            and (
-            cert.cert_name like CONCAT(CONCAT('%',#{keyword}),'%') or
-            cert.cert_code like CONCAT(CONCAT('%',#{keyword}),'%')
-            )
-        </if>
-        ) b1
-        <if test="isInput!=null and isInput=='1'.toString()">
-            union all
-            select
-            c1.itemStateFormId as inoutId,
-            c1.itemVerId,
-            '1' as isInput,
-            'form' as fileType,
-            '1' as isOwner,
-            'form' as isCommon,
-            '' as matId,
-            '' as certId,
-            c1.formId as formId,
-            c1.formName as aeaMatCertName,
-            c1.formCode as aeaMatCertCode,
-            c1.sortNo,
-            c1.createTime
-            from (
-            select
-            itemStateForm.ITEM_STATE_FORM_ID as itemStateFormId,
-            itemStateForm.ITEM_VER_ID as itemVerId,
-            itemStateForm.ITEM_STATE_VER_ID as itemStateVerId,
-            itemStateForm.IS_STATE_FORM as isStateForm,
-            itemStateForm.ITEM_STATE_ID as itemStateId,
-            itemStateForm.FORM_ID as formId,
-            itemStateForm.SORT_NO as sortNo,
-            itemStateForm.CREATER as creater,
-            itemStateForm.CREATE_TIME as createTime,
-            asfrom.FORM_ORG_ID as formOrgId,
-            asfrom.FORM_PROPERTY as formProperty,
-            asfrom.FORM_CODE as formCode,
-            asfrom.FORM_NAME as formName,
-            asfrom.IS_INNER_FORM as isInnerForm,
-            asfrom.FORM_LOAD_URL as formLoadUrl
-            from AEA_ITEM_STATE_FORM itemStateForm, ACT_STO_FORM asfrom
-            <where>
-                and itemStateForm.FORM_ID = asfrom.FORM_ID
-                and itemStateForm.ITEM_VER_ID = #{itemVerId}
-                <if test="isStateIn != null and isStateIn!= '' ">
-                    and itemStateForm.IS_STATE_FORM = #{isStateIn}
-                </if>
-                <if test="itemStateId != null and itemStateId!= '' ">
-                    and itemStateForm.ITEM_STATE_ID = #{itemStateId}
-                </if>
-                <if test="stateVerId != null and stateVerId!='' ">
-                    and itemStateForm.ITEM_STATE_VER_ID = #{stateVerId}
-                </if>
-                <if test="keyword != null and keyword != ''">
-                    and (
-                    asfrom.FORM_NAME like CONCAT(CONCAT('%',#{keyword}),'%') or
-                    asfrom.FORM_CODE like CONCAT(CONCAT('%',#{keyword}),'%')
-                    )
-                </if>
-            </where>
-            )c1
-            order by sortNo asc, createTime asc
-        </if>
+            </if>
+        </where>
+        order by inOut1.SORT_NO asc, inOut1.CREATE_TIME asc, inOut1.MODIFY_TIME asc
     </select>
 
-    <select id="listMatAndInoutList" resultMap="inoutAndMatResultMap"
-            parameterType="com.augurit.aplanmis.common.qo.item.ItemMatInoutQo">
+    <select id="listMatAndInoutList" resultMap="inoutAndMatResultMap" parameterType="com.augurit.aplanmis.common.qo.item.ItemMatInoutQo">
         select
-        mat.MAT_ID,
-        mat.MAT_CODE,
-        mat.MAT_NAME,
-        mat.IS_GLOBAL_SHARE,
-        mat.MAT_TYPE_ID,
-        mat.RECEIVE_MODE,
-        mat.DUE_PAPER_COUNT,
-        mat.DUE_COPY_COUNT,
-        mat.MAT_FROM,
-        mat.SAMPLE_DOC,
-        mat.TEMPLATE_DOC,
-        mat.MAT_REQUIRE,
-        mat.MAT_BASIS,
-        mat.PAPER_IS_REQUIRE,
-        mat.SORT_NO,
-        mat.MAT_MEMO,
-        mat.IS_ACTIVE,
-        mat.IS_DELETED,
-        mat.CREATER,
-        mat.CREATE_TIME,
-        mat.MODIFIER,
-        mat.MODIFY_TIME,
-        mat.ATT_DIR_ID,
-        mat.MAT_HOLDER,
-        mat.IS_OFFICIAL_DOC,
-        mat.ATT_IS_REQUIRE,
-        mat.IS_COMMON,
-        mat.REVIEW_KEY_POINTS,
-        mat.REVIEW_SAMPLE_DOC,
-        mat.REVIEW_BASIS,
-        iout.INOUT_ID,
-        iout.ITEM_VER_ID,
-        iout.IS_OWNER,
-        iout.IS_INPUT,
-        iout.IS_STATE_IN,
-        iout.FILE_TYPE,
-        iout.MAT_ID MAT_ID1,
-        iout.CERT_ID,
-        iout.ITEM_STATE_ID,
-        iout.STATE_VER_ID,
-        iout.CREATER CREATER1,
-        iout.CREATE_TIME CREATE_TIME1,
-        iout.MODIFIER MODIFIER1,
-        iout.MODIFY_TIME MODIFY_TIME1
-        from AEA_ITEM_MAT mat
-        left join AEA_ITEM_INOUT iout on mat.MAT_ID = iout.MAT_ID and mat.ROOT_ORG_ID = iout.ROOT_ORG_ID
+            mat.MAT_ID,
+            mat.MAT_CODE,
+            mat.MAT_NAME,
+            mat.IS_GLOBAL_SHARE,
+            mat.MAT_TYPE_ID,
+            mat.RECEIVE_MODE,
+            mat.DUE_PAPER_COUNT,
+            mat.DUE_COPY_COUNT,
+            mat.MAT_FROM,
+            mat.SAMPLE_DOC,
+            mat.TEMPLATE_DOC,
+            mat.MAT_REQUIRE,
+            mat.MAT_BASIS,
+            mat.PAPER_IS_REQUIRE,
+            mat.SORT_NO,
+            mat.MAT_MEMO,
+            mat.IS_ACTIVE,
+            mat.IS_DELETED,
+            mat.CREATER,
+            mat.CREATE_TIME,
+            mat.MODIFIER,
+            mat.MODIFY_TIME,
+            mat.ATT_DIR_ID,
+            mat.MAT_HOLDER,
+            mat.IS_OFFICIAL_DOC,
+            mat.ATT_IS_REQUIRE,
+            mat.IS_COMMON,
+            mat.REVIEW_KEY_POINTS,
+            mat.REVIEW_SAMPLE_DOC,
+            mat.REVIEW_BASIS,
+            mat.MAT_PROP,
+            mat.CERT_ID,
+            mat.STO_FORM_ID,
+            iout.INOUT_ID,
+            iout.ITEM_VER_ID,
+            iout.IS_OWNER,
+            iout.IS_INPUT,
+            iout.IS_STATE_IN,
+            iout.FILE_TYPE,
+            iout.ITEM_STATE_ID,
+            iout.STATE_VER_ID,
+            iout.CREATER CREATER1,
+            iout.CREATE_TIME CREATE_TIME1,
+            iout.MODIFIER MODIFIER1,
+            iout.MODIFY_TIME MODIFY_TIME1
+        from AEA_ITEM_MAT mat, AEA_ITEM_INOUT iout
         <where>
+            and iout.MAT_ID = mat.MAT_ID
+            and iout.ROOT_ORG_ID = mat.ROOT_ORG_ID
             and iout.ROOT_ORG_ID = #{rootOrgId}
             and iout.ITEM_VER_ID = #{itemVerId}
-            and iout.file_type='mat'
             <if test="keyword != null and keyword != ''">
-                and (
+            and (
                 mat.MAT_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%') OR
                 mat.MAT_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%')
-                )
+            )
             </if>
             <if test="isDeleted != null">
-                and iout.IS_DELETED=#{isDeleted, jdbcType=VARCHAR}
-                and mat.IS_DELETED=#{isDeleted, jdbcType=VARCHAR}
+                and iout.IS_DELETED = #{isDeleted, jdbcType=VARCHAR}
+                and mat.IS_DELETED = #{isDeleted, jdbcType=VARCHAR}
             </if>
             <if test="isInput != null">
                 and iout.IS_INPUT=#{isInput}
@@ -883,7 +730,6 @@
 
     </select>
 
-
     <delete id="thoroughDeleteAeaItemInoutByItemId">
         delete from aea_item_inout
         where ITEM_VER_ID = #{itemVerId} and  IS_INPUT ='1'
@@ -896,22 +742,25 @@
 
     <select id="listStoMatByCondition" resultType="AeaItemInout">
         select
-        iout.INOUT_ID inoutId,
-        iout.ITEM_VER_ID itemVerId,
-        iout.IS_OWNER isOwner,
-        iout.IS_INPUT isInput,
-        iout.FILE_TYPE fileType,
-        iout.MAT_ID matId,
-        iout.CERT_ID certId,
-        iout.CREATER creater,
-        iout.CREATE_TIME createTime,
-        iout.MODIFIER modifier,
-        iout.MODIFY_TIME modifyTime,
-        iout.IS_STATE_IN isStateIn,
-        iout.ITEM_STATE_ID itemStateId,
-        mat.MAT_NAME aeaMatCertName,
-        mat.MAT_CODE aeaMatCertCode,
-        mat.MAT_MEMO aeaMatCertMemo
+            iout.INOUT_ID inoutId,
+            iout.ITEM_VER_ID itemVerId,
+            iout.IS_OWNER isOwner,
+            iout.IS_INPUT isInput,
+            iout.FILE_TYPE fileType,
+            iout.MAT_ID matId,
+            iout.CERT_ID certId,
+            iout.CREATER creater,
+            iout.CREATE_TIME createTime,
+            iout.MODIFIER modifier,
+            iout.MODIFY_TIME modifyTime,
+            iout.IS_STATE_IN isStateIn,
+            iout.ITEM_STATE_ID itemStateId,
+            mat.MAT_NAME aeaMatCertName,
+            mat.MAT_CODE aeaMatCertCode,
+            mat.MAT_MEMO aeaMatCertMemo,
+            mat.MAT_PROP matProp,
+            mat.CERT_ID certId,
+            mat.STO_FORM_ID formId
         from AEA_ITEM_INOUT iout
         join AEA_ITEM_MAT mat on mat.MAT_ID = iout.MAT_ID
         <where>
@@ -940,55 +789,58 @@
     <select id="listInoutAndMatByCriteria" resultMap="aeaItemInoutMatDtoMap"
             parameterType="com.augurit.aplanmis.common.qo.state.AeaItemStateQo">
         SELECT
-        IOUT.INOUT_ID,
-        IOUT.ITEM_VER_ID,
-        IOUT.STATE_VER_ID,
-        IOUT.IS_OWNER,
-        IOUT.IS_INPUT,
-        IOUT.IS_STATE_IN,
-        IOUT.FILE_TYPE,
-        IOUT.MAT_ID,
-        IOUT.CERT_ID,
-        IOUT.CREATER IOUT_CREATER,
-        IOUT.CREATE_TIME IOUT_CREATE_TIME,
-        IOUT.MODIFIER IOUT_MODIFIER,
-        IOUT.IS_DELETED IOUT_IS_DELETED,
-        IOUT.ITEM_STATE_ID,
-        IOUT.SORT_NO IOUT_SORT_NO,
-        MAT.MAT_CODE,
-        MAT.MAT_NAME,
-        MAT.IS_GLOBAL_SHARE,
-        MAT.MAT_TYPE_ID,
-        MAT.RECEIVE_MODE,
-        MAT.DUE_PAPER_COUNT,
-        MAT.DUE_COPY_COUNT,
-        MAT.MAT_FROM,
-        MAT.SAMPLE_DOC,
-        MAT.TEMPLATE_DOC,
-        MAT.MAT_REQUIRE,
-        MAT.MAT_BASIS,
-        MAT.PAPER_IS_REQUIRE,
-        MAT.SORT_NO MAT_SORT_NO,
-        MAT.MAT_MEMO,
-        MAT.IS_ACTIVE,
-        MAT.IS_DELETED MAT_IS_DELETED,
-        MAT.CREATER MAT_CREATER,
-        MAT.CREATE_TIME MAT_CREATE_TIME,
-        MAT.MODIFIER MAT_MODIFIER,
-        MAT.MODIFY_TIME MAT_MODIFY_TIME,
-        MAT.ATT_DIR_ID,
-        MAT.MAT_HOLDER,
-        MAT.IS_OFFICIAL_DOC,
-        MAT.IS_COMMON,
-        MAT.REVIEW_KEY_POINTS,
-        MAT.REVIEW_SAMPLE_DOC,
-        MAT.REVIEW_BASIS,
-        MAT.MAT_FROM_DEPT,
-        MAT.DUE_PAPER_TYPE,
-        MAT.DUE_COPY_TYPE,
-        MAT.PAPER_MAT_TYPE,
-        MAT.ATT_IS_REQUIRE,
-        MAT.ZCQY
+            IOUT.INOUT_ID,
+            IOUT.ITEM_VER_ID,
+            IOUT.STATE_VER_ID,
+            IOUT.IS_OWNER,
+            IOUT.IS_INPUT,
+            IOUT.IS_STATE_IN,
+            IOUT.FILE_TYPE,
+            IOUT.MAT_ID,
+            IOUT.CERT_ID,
+            IOUT.CREATER IOUT_CREATER,
+            IOUT.CREATE_TIME IOUT_CREATE_TIME,
+            IOUT.MODIFIER IOUT_MODIFIER,
+            IOUT.IS_DELETED IOUT_IS_DELETED,
+            IOUT.ITEM_STATE_ID,
+            IOUT.SORT_NO IOUT_SORT_NO,
+            MAT.MAT_CODE,
+            MAT.MAT_NAME,
+            MAT.IS_GLOBAL_SHARE,
+            MAT.MAT_TYPE_ID,
+            MAT.RECEIVE_MODE,
+            MAT.DUE_PAPER_COUNT,
+            MAT.DUE_COPY_COUNT,
+            MAT.MAT_FROM,
+            MAT.SAMPLE_DOC,
+            MAT.TEMPLATE_DOC,
+            MAT.MAT_REQUIRE,
+            MAT.MAT_BASIS,
+            MAT.PAPER_IS_REQUIRE,
+            MAT.SORT_NO MAT_SORT_NO,
+            MAT.MAT_MEMO,
+            MAT.IS_ACTIVE,
+            MAT.IS_DELETED MAT_IS_DELETED,
+            MAT.CREATER MAT_CREATER,
+            MAT.CREATE_TIME MAT_CREATE_TIME,
+            MAT.MODIFIER MAT_MODIFIER,
+            MAT.MODIFY_TIME MAT_MODIFY_TIME,
+            MAT.ATT_DIR_ID,
+            MAT.MAT_HOLDER,
+            MAT.IS_OFFICIAL_DOC,
+            MAT.IS_COMMON,
+            MAT.REVIEW_KEY_POINTS,
+            MAT.REVIEW_SAMPLE_DOC,
+            MAT.REVIEW_BASIS,
+            MAT.MAT_FROM_DEPT,
+            MAT.DUE_PAPER_TYPE,
+            MAT.DUE_COPY_TYPE,
+            MAT.PAPER_MAT_TYPE,
+            MAT.ATT_IS_REQUIRE,
+            MAT.ZCQY,
+            MAT.MAT_PROP,
+            MAT.CERT_ID,
+            MAT.STO_FORM_ID
         FROM AEA_ITEM_INOUT IOUT
         JOIN AEA_ITEM_MAT MAT ON IOUT.MAT_ID=MAT.MAT_ID
         <where>
@@ -1094,11 +946,14 @@
             </include>,
             mat.IS_COMMON isCommon,
             mat.MAT_NAME as aeaMatCertName,
-            mat.MAT_CODE as aeaMatCertCode
+            mat.MAT_CODE as aeaMatCertCode,
+            mat.MAT_PROP matProp,
+            mat.CERT_ID certId,
+            mat.STO_FORM_ID formId
         from AEA_ITEM_INOUT inOut1, AEA_ITEM_MAT mat
         <where>
             and inOut1.MAT_ID = mat.MAT_ID
-            and inOut1.ROOT_ORG_ID = mat.ROOT_ORG_ID
+--             and inOut1.ROOT_ORG_ID = mat.ROOT_ORG_ID
             and inOut1.ROOT_ORG_ID = #{rootOrgId}
             and inOut1.IS_INPUT = #{isInput}
             and inOut1.FILE_TYPE = 'mat'
@@ -1140,6 +995,9 @@
             mat.IS_COMMON isCommon,
             mat.MAT_NAME as aeaMatCertName,
             mat.MAT_CODE as aeaMatCertCode,
+            mat.MAT_PROP matProp,
+            mat.CERT_ID certId,
+            mat.STO_FORM_ID formId,
             item.ITEM_ID as itemId,
             item.ITEM_VER_ID as itemVerId,
             item.ITEM_CODE as itemCode,
@@ -1206,6 +1064,9 @@
             mat.IS_COMMON isCommon,
             mat.MAT_NAME as aeaMatCertName,
             mat.MAT_CODE as aeaMatCertCode,
+            mat.MAT_PROP matProp,
+            mat.CERT_ID certId,
+            mat.STO_FORM_ID formId,
             item.ITEM_ID as itemId,
             item.ITEM_VER_ID as itemVerId,
             item.ITEM_CODE as itemCode,
@@ -1334,6 +1195,9 @@
         <result property="dueCopyType" column="DUE_COPY_TYPE"/>
         <result property="paperMatType" column="PAPER_MAT_TYPE"/>
         <result property="zcqy" column="ZCQY"/>
+        <result property="matProp" column="MAT_PROP"/>
+        <result property="certId" column="CERT_ID"/>
+        <result property="formId" column="STO_FORM_ID"/>
     </resultMap>
 
     <resultMap id="inoutAndMatResultMap" type="AeaItemInout">
@@ -1352,6 +1216,9 @@
         <result property="modifyTime" column="MODIFY_TIME1"/>
         <result property="isDeleted" column="IS_DELETED"/>
         <result property="itemStateId" column="ITEM_STATE_ID"/>
+        <result property="matProp" column="MAT_PROP"/>
+        <result property="certId" column="CERT_ID"/>
+        <result property="formId" column="STO_FORM_ID"/>
         <association property="aeaItemMat" javaType="AeaItemMat">
             <id property="matId" column="MAT_ID"/>
             <result property="matCode" column="MAT_CODE"/>
@@ -1383,6 +1250,9 @@
             <result property="reviewKeyPoints" column="REVIEW_KEY_POINTS"/>
             <result property="reviewSampleDoc" column="REVIEW_SAMPLE_DOC"/>
             <result property="reviewBasis" column="REVIEW_BASIS"/>
+            <result property="matProp" column="MAT_PROP"/>
+            <result property="certId" column="CERT_ID"/>
+            <result property="stoFormId" column="STO_FORM_ID"/>
         </association>
     </resultMap>
 

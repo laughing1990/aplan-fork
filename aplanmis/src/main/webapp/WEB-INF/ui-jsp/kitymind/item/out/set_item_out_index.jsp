@@ -82,8 +82,6 @@
                                 <button type="button" class="btn btn-info"
                                 onclick="addItemOutGlobalMat();">导入库材料</button>
                                 <button type="button" class="btn btn-info"
-                                onclick="addItemOutCert();">导入电子证照</button>
-                                <button type="button" class="btn btn-info"
                                         onclick="sortItemOut();">排序</button>
                                 <button type="button" class="btn btn-secondary"
                                 onclick="batchDeleteItemOutMatCert();">删除</button>
@@ -135,12 +133,12 @@
                             <thead>
                                 <tr>
                                     <th data-field="#" data-checkbox="true" data-align="center" data-width="10">ID</th>
-                                    <th data-field="fileType" data-formatter="fileTypeFormatter"
-                                        data-align="left" data-width=60>类型</th>
+                                    <th data-field="matProp" data-formatter="matPropormatter"
+                                        data-align="left" data-width=80>材料性质</th>
                                     <th data-field="aeaMatCertName" data-align="left" data-width="250">名称</th>
                                     <th data-field="aeaMatCertCode" data-align="left" data-width="250">编号</th>
-                                    <%--<th data-field="fileType" data-formatter="fileTypeFormatter"--%>
-                                        <%--data-align="left" data-width=60>文件类型</th>--%>
+                                    <%--<th data-field="matProp" data-formatter="matPropormatter"--%>
+                                        <%--data-align="center" data-colspan="1" data-width="80">材料性质</th>--%>
                                     <th data-field="_operator" data-formatter="itemOutMatCertFormatter"
                                         data-align="center" data-width="120">操作</th>
                                 </tr>
@@ -152,9 +150,6 @@
             </div>
         </div>
     </div>
-
-    <!-- 选择电子证照 -->
-    <%@include file="../../../aplanmis/cert/select_aea_cert_ztree.jsp"%>
 
     <!-- 导入库材料 -->
     <%@include file="../../../aplanmis/item/select_item_inout_global_mat.jsp"%>
@@ -170,6 +165,12 @@
 
     <!-- 选择材料类别 -->
     <%@include file="../../../aplanmis/item/select_mat_type_ztree.jsp"%>
+
+    <!-- 选择电子证照 -->
+    <%@include file="../../../common/ztree/select_cert_no_right_ztree.jsp" %>
+
+    <!-- 选择表单 -->
+    <%@include file="../../../common/ztree/select_form_no_right_ztree.jsp" %>
 
     <!-- 选择电子证照文件库 -->
     <%@include file="../../../aplanmis/cert/select_bsc_att_dir_ztree.jsp"%>

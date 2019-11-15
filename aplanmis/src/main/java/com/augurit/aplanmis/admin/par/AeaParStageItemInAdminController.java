@@ -114,8 +114,7 @@ public class AeaParStageItemInAdminController {
 
     @RequestMapping("/listAeaParStageItemInByMatOrCertId.do")
     public List<AeaParStageItemIn> listAeaParStageItemInByMatOrCertId(String matOrCertId, String stageId, String parStateId, String fileType, String isStateIn) {
+
         return aeaParStageItemInAdminService.listAeaParStageItemInByMatOrCertId(matOrCertId, stageId, parStateId, fileType, isStateIn);
-
     }
-
 }

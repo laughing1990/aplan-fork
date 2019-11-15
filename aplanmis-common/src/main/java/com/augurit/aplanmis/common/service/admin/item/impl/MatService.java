@@ -66,13 +66,13 @@ public class MatService {
         String userId = SecurityContext.getCurrentUserId();
         String rootOrgId = SecurityContext.getCurrentOrgId();
         Long inSortNo = aeaItemInoutAdminService.getMaxSortNo(inoutMatAddDto.getItemVerId(), inoutMatAddDto.getStateVerId(), inoutMatAddDto.getIsInput(), rootOrgId);
-        Long stateFormSortNo = 1L;
-        // 为了排序方便
-        if (StringUtils.isNotBlank(inoutMatAddDto.getIsInput()) && inoutMatAddDto.getIsInput().equals(Status.ON)) {
-            stateFormSortNo = aeaItemStateFormAdminService.getMaxSortNo(inoutMatAddDto.getItemVerId(), inoutMatAddDto.getStateVerId());
-        }
+//        Long stateFormSortNo = 1L;
+//        // 为了排序方便
+//        if (StringUtils.isNotBlank(inoutMatAddDto.getIsInput()) && inoutMatAddDto.getIsInput().equals(Status.ON)) {
+//            stateFormSortNo = aeaItemStateFormAdminService.getMaxSortNo(inoutMatAddDto.getItemVerId(), inoutMatAddDto.getStateVerId());
+//        }
         AeaItemInout aeaItemInout = inoutMatAddDto.toAeaItemInout(userId, rootOrgId);
-        aeaItemInout.setSortNo(inSortNo >= stateFormSortNo ? inSortNo : stateFormSortNo);
+        aeaItemInout.setSortNo(inSortNo);
         aeaItemInoutMapper.insertAeaItemInout(aeaItemInout);
     }
 

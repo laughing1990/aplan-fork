@@ -13,10 +13,7 @@ import com.augurit.aplanmis.common.constants.*;
 import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.dto.ApproveProjInfoDto;
 import com.augurit.aplanmis.common.dto.SupplementInfoDto;
-import com.augurit.aplanmis.common.mapper.AeaHiItemCorrectMapper;
-import com.augurit.aplanmis.common.mapper.AeaHiItemStateinstMapper;
-import com.augurit.aplanmis.common.mapper.AeaItemStateMapper;
-import com.augurit.aplanmis.common.mapper.AeaParStateItemMapper;
+import com.augurit.aplanmis.common.mapper.*;
 import com.augurit.aplanmis.common.service.file.FileUtilsService;
 import com.augurit.aplanmis.common.service.file.impl.FileAbstractService;
 import com.augurit.aplanmis.common.service.instance.*;
@@ -38,6 +35,7 @@ import com.augurit.aplanmis.mall.userCenter.service.RestMyMatService;
 import com.augurit.aplanmis.mall.userCenter.vo.*;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import org.apache.ibatis.annotations.Param;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -106,6 +104,10 @@ public class RestApproveServiceImpl implements RestApproveService {
     private RestApplyService restApplyService;
     @Autowired
     private FileUtilsService fileUtilsService;
+    @Autowired
+    private AeaProjLinkmanMapper aeaProjLinkmanMapper;
+    @Autowired
+    private AeaUnitInfoMapper aeaUnitInfoMapper;
 
     @Override
     public PageInfo<ApproveProjInfoDto> searchApproveProjInfoListByUnitOrLinkman(String unitInfoId, String userInfoId, String state, String keyword, int pageNum, int pageSize) throws Exception {
@@ -406,6 +408,29 @@ public class RestApproveServiceImpl implements RestApproveService {
         lifeCycleDiagramVo.setThemeType(aeaParTheme.getThemeType());
         setLifeCycleDiagramVoStageInfo(lifeCycleDiagramVo,unitInfoId,userInfoId);
         return lifeCycleDiagramVo;
+    }
+
+    @Override
+    public Boolean isApplyBelong(String applyInstId,String projinfoId, HttpServletRequest request)throws Exception {
+        AeaHiApplyinst aeaHiApplyinst = aeaHiApplyinstService.getAeaHiApplyinstById(applyInstId);
+        if (aeaHiApplyinst==null) throw new Exception("查询出错");
+        String applySubject = aeaHiApplyinst.getApplySubject();//(申办主体：1 单位，0 个人)
+        LoginInfoVo user = SessionUtil.getLoginInfo(request);
+        if ("0".equals(applySubject)){
+            AeaProjLinkman param = new AeaProjLinkman();
+            param.setApplyinstId(applyInstId);
+            param.setLinkmanInfoId(user.getUserId());
+            List<AeaProjLinkman> list = aeaProjLinkmanMapper.listAeaProjLinkman(param);
+            if (list.size()==0) return false;
+        }else {
+            List<AeaUnitInfo> unitInfos = aeaUnitInfoMapper.findApplyUnitProj(applyInstId,projinfoId,"1");
+            if (unitInfos.size()==0) return false;
+            List<String> unitInfoIds = unitInfos.stream()
+                    .map(AeaUnitInfo::getUnitInfoId).distinct()
+                    .collect(Collectors.toList());
+            if (!unitInfoIds.contains(user.getUnitId()))return false;
+        }
+        return true;
     }
 
     private void setLifeCycleDiagramVoStageInfo(LifeCycleDiagramVo lifeCycleDiagramVo, String unitInfoId, String userInfoId) throws Exception {

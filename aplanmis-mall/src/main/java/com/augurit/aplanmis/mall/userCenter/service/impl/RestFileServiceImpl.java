@@ -22,7 +22,12 @@ import com.augurit.aplanmis.common.mapper.AeaHiItemMatinstMapper;
 import com.augurit.aplanmis.common.service.file.FileUtilsService;
 import com.augurit.aplanmis.common.service.instance.AeaHiItemInoutinstService;
 import com.augurit.aplanmis.common.service.instance.AeaHiItemMatinstService;
+import com.augurit.aplanmis.common.utils.SessionUtil;
+import com.augurit.aplanmis.common.vo.LoginInfoVo;
+import com.augurit.aplanmis.mall.userCenter.constant.LoginUserRoleEnum;
 import com.augurit.aplanmis.mall.userCenter.service.RestFileService;
+import com.augurit.aplanmis.mall.userCenter.vo.AeaLinkmanInfoVo;
+import com.augurit.aplanmis.mall.userCenter.vo.AeaUnitInfoVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,7 +69,6 @@ public class RestFileServiceImpl implements RestFileService {
     private FileUtilsService fileUtilsService;
     @Autowired
     private UploaderFactory uploaderFactory;
-
 
     private static int BUFFER_SIZE = 2048;
 
@@ -265,4 +269,45 @@ public class RestFileServiceImpl implements RestFileService {
         }
         return modelAndView;
     }
+
+    @Override
+    public Boolean isMatBelong(String matinstId, HttpServletRequest request)throws Exception {
+        try {
+            AeaHiItemMatinst aeaHiItemMatinst = aeaHiItemMatinstMapper.getAeaHiItemMatinstById(matinstId);
+            if (aeaHiItemMatinst==null) throw new Exception("查询出错");
+            LoginInfoVo user = SessionUtil.getLoginInfo(request);
+            if ("1".equals(aeaHiItemMatinst.getMatinstSource())){//个人 委托人
+                if(("1".equals(user.getIsPersonAccount())||StringUtils.isNotBlank(user.getUserId()))&&(user.getUserId().equals(aeaHiItemMatinst.getLinkmanInfoId()))){//个人
+                    return true;
+                }else if (("1".equals(user.getIsPersonAccount())||StringUtils.isNotBlank(user.getUserId()))&&(!user.getUserId().equals(aeaHiItemMatinst.getLinkmanInfoId()))){//企业
+                    return false;
+                } else{//企业
+                    return false;
+                }
+            }else {
+                if("1".equals(user.getIsPersonAccount())||StringUtils.isNotBlank(user.getUserId())){//个人
+                    return false;
+                }else if (user.getUnitId().equals(aeaHiItemMatinst.getUnitInfoId())){//企业
+                    return true;
+                }else {
+                    return false;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    @Override
+    public Boolean isFileBelong(String detailId,HttpServletRequest request)throws Exception{
+        BscAttLink param = new BscAttLink();
+        param.setDetailId(detailId);
+        param.setPkName("MATINST_ID");
+        List<BscAttLink> links = bscAttMapper.listBscAttLink(param);
+        if (links.size()==0) return true;
+        String matInstId = links.get(0).getRecordId();
+        return  this.isMatBelong(matInstId,request);
+    }
+
 }

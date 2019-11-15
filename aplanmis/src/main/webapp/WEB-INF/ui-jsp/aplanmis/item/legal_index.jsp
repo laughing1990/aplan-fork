@@ -13,7 +13,7 @@
     <%@ include file="/ui-static/agcloud/framework/theme-libs/metronic-v5/template-default.jsp"%>
     <%@ include file="/ui-static/agcloud/framework/jsp/lib-bootstrap-table.jsp"%>
     <%@ include file="/ui-static/agcloud/framework/jsp/lib-agtree3.jsp"%>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/ui-static/mat/global/css/global_material_index.css" type="text/css"/>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/ui-static/mat/css/global_mat_index.css" type="text/css"/>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/ui-static/aplanmis/item/css/context-menu.css" type="text/css"/>
     <script src="${pageContext.request.contextPath}/ui-static/dg_aplanmis/framework/js/jquery.nicescroll.js" type="text/javascript"></script>
     <style type="text/css">

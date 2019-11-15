@@ -274,6 +274,7 @@ public class RestApplyProjController {
             @ApiImplicitParam(value = "1:单项 0:并联",name = "isSeriesApprove",required = true,dataType = "string")})
     public ContentResultForm<ApplyDetailVo> getApplyDetailByApplyinstIdAndProjInfoId(@PathVariable("projInfoId") String projInfoId, @PathVariable("applyinstId") String applyinstId, @PathVariable("isSeriesApprove")String isSeriesApprove, HttpServletRequest request){
         try {
+            if (!restApproveService.isApplyBelong(applyinstId,projInfoId,request)) return new ContentResultForm(false,"","查询出错");
             return new ContentResultForm<>(true,restApproveService.getApplyDetailByApplyinstIdAndProjInfoId(applyinstId,projInfoId,isSeriesApprove,null,request));
         } catch (Exception e) {
             logger.error(e.getMessage(),e);

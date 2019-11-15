@@ -99,6 +99,11 @@ public class AeaItemInout implements Serializable {
      */
     private String isCatalog;
 
+    /**
+     * 扩展字段: 材料库融合三种：材料、证照、表单
+     */
+    private String matProp;
+
     public AeaItemInout copyOne() {
 
         AeaItemInout copiedOne= new AeaItemInout();

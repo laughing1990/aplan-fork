@@ -15,6 +15,7 @@ import com.augurit.aplanmis.mall.userCenter.service.RestApplyCommonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -132,5 +133,11 @@ public class RestApplyCommonServiceImpl implements RestApplyCommonService {
                 }
             }
         }
+    }
+
+    @Override
+    public Boolean isProjBelong(String projInfoId, HttpServletRequest request) {
+
+        return null;
     }
 }

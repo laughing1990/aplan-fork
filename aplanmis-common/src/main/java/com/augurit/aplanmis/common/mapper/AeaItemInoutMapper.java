@@ -28,6 +28,15 @@ public interface AeaItemInoutMapper {
 
      List<AeaItemInout> listAeaItemInout(AeaItemInout aeaItemInout);
 
+     /**
+      * 融合三种材料：材料、证照、表单
+      *
+      * @param aeaItemInout
+      * @return
+      *
+      */
+     List<AeaItemInout> listAeaItemInoutRelMat(AeaItemInout aeaItemInout);
+
      List<AeaItemInout> listAeaItemInoutByItemVerId(AeaItemInout aeaItemInout);
 
      List<AeaItemInout> listAeaItemInoutAndMat(AeaItemInout aeaItemInout);

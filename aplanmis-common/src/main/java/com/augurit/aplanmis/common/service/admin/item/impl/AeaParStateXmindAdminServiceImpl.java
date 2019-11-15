@@ -359,13 +359,13 @@ public class AeaParStateXmindAdminServiceImpl {
             matCertFormTopic.setTitleText(in.getAeaMatCertName());
             if(StringUtils.isNotBlank(in.getFileType())){
                 // 材料
-                if(in.getFileType().equals(MindType.MATERIAL.getValue())){
+                if(in.getFileType().equals(MindType.M.getValue())){
                     matCertFormTopic.setTitleText("【材】" + in.getAeaMatCertName());
                     // 证照
-                }else if(in.getFileType().equals(MindType.CERTIFICATE.getValue())){
+                }else if(in.getFileType().equals(MindType.C.getValue())){
                     matCertFormTopic.setTitleText("【证】" + in.getAeaMatCertName());
                     // 表单
-                }else if(in.getFileType().equals("form")){
+                }else if(in.getFileType().equals(MindType.F.getValue())){
                     matCertFormTopic.setTitleText("【表】" + in.getAeaMatCertName());
                 }
             }

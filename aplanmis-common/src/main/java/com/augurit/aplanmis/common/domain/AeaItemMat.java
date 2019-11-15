@@ -140,7 +140,7 @@ public class AeaItemMat extends MindBaseNode {
     private String certId;
 
     @ApiModelProperty(value = "表单定义ID")
-    private String formId;
+    private String stoFormId;
 
     @ApiModelProperty(value = "扩展字段：证照名称")
     private String certName;
@@ -148,10 +148,20 @@ public class AeaItemMat extends MindBaseNode {
     @ApiModelProperty(value = "扩展字段：表单名称")
     private String formName;
 
-    //扩展字段
-    private List<AeaHiItemMatinst> attMatinstList;//电子材料
-    private List<AeaHiItemMatinst> pageMatinstList;//纸质原件材料
-    private List<AeaHiItemMatinst> copyMatinstList;//纸质复印件材料
+    /**
+     * 扩展字段: 电子材料
+     */
+    private List<AeaHiItemMatinst> attMatinstList;
+
+    /**
+     * 扩展字段: 纸质原件材料
+     */
+    private List<AeaHiItemMatinst> pageMatinstList;
+
+    /**
+     * 扩展字段: 纸质复印件材料
+     */
+    private List<AeaHiItemMatinst> copyMatinstList;
 
     /**
      * aea_par_in 主键
@@ -248,7 +258,7 @@ public class AeaItemMat extends MindBaseNode {
         newOne.setIsGlobal(this.getIsGlobal());
         newOne.setMatProp(this.getMatProp());
         newOne.setCertId(this.getCertId());
-        newOne.setMatFrom(this.getFormId());
+        newOne.setStoFormId(this.getStoFormId());
         return newOne;
     }
 }

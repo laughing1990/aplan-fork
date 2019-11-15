@@ -12,10 +12,12 @@ dependencies {
 //    compile group: 'org.apache.poi', name: 'poi', version: '4.0.1'
     compile('org.springframework.boot:spring-boot-starter-freemarker:2.0.1.RELEASE')
     compile('org.springframework.cloud:spring-cloud-starter-oauth2')
+//    compile('org.springframework.boot:spring-boot-starter-security')
     compile fileTree(include: ['*.jar'], dir: 'src\\main\\resources\\libs')
     compile('org.locationtech.jts:jts-core:1.16.0')
     //agcloud-framework
     compile "com.augurit.agcloud:agcloud-framework:${agcloudVersion}"
+//    compile "com.augurit.agcloud:agcloud-security-framework:${agcloudVersion}"
     compile "com.augurit.agcloud:agcloud-bpm-front:${agcloudVersion}"
     compile "com.augurit.agcloud:agcloud-bpm-front-ui:${agcloudVersion}"
 

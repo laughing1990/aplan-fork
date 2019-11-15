@@ -56,6 +56,8 @@
                     <th data-field="matId"  data-align="left" data-width="10">MATID</th>
                     <th data-field="aeaMatCertName" data-align="left" data-width="230">材料名称</th>
                     <th data-field="aeaMatCertCode" data-align="left" data-width="230">材料编号</th>
+                    <th data-field="matProp" data-formatter="matPropormatter"
+                        data-align="center" data-colspan="1" data-width="80">材料性质</th>
                     <th data-field="_operator" data-formatter="stageStateMatFormatter"
                         data-align="center" data-width="100">操作</th>
                 </tr>

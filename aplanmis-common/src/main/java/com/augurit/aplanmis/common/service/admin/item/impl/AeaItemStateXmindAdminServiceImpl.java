@@ -80,7 +80,7 @@ public class AeaItemStateXmindAdminServiceImpl {
             // 先删除某个事项版本下某情形版本情形数据
             aeaItemStateMapper.batchDelAeaItemStateVerState(itemVerId, stateVerId, rootOrgId);
 
-            // 删除通用材料、证照
+            // 删除通用材料、证照、表单
             AeaItemInout aeaItemInout = new AeaItemInout();
             aeaItemInout.setRootOrgId(rootOrgId);
             aeaItemInout.setItemVerId(itemVerId);
@@ -91,11 +91,11 @@ public class AeaItemStateXmindAdminServiceImpl {
             aeaItemInoutMapper.batchDeleteAeaItemInout(aeaItemInout);
 
             // 删除通用表单
-            AeaItemStateForm stateForm = new AeaItemStateForm();
-            stateForm.setItemVerId(itemVerId);
-            stateForm.setItemStateVerId(stateVerId);
-            stateForm.setIsStateForm(NeedStateStatus.NOT_NEED_STATE.getValue());
-            aeaItemStateFormMapper.deleteAeaItemStateFormByCond(stateForm);
+//            AeaItemStateForm stateForm = new AeaItemStateForm();
+//            stateForm.setItemVerId(itemVerId);
+//            stateForm.setItemStateVerId(stateVerId);
+//            stateForm.setIsStateForm(NeedStateStatus.NOT_NEED_STATE.getValue());
+//            aeaItemStateFormMapper.deleteAeaItemStateFormByCond(stateForm);
 
             if (CollectionUtils.isNotEmpty(rootTopic.getAllChildren())) {
                 AeaItemBasic oneBasic = aeaItemBasicMapper.getOneByItemVerId(itemVerId, rootOrgId);
@@ -276,18 +276,12 @@ public class AeaItemStateXmindAdminServiceImpl {
         aeaItemInout.setRootOrgId(rootOrgId);
         aeaItemInout.setItemVerId(itemVerId);
         aeaItemInout.setStateVerId(stateVerId);
-        aeaItemInout.setIsInput(InOutStatus.IN.getValue());
         aeaItemInout.setIsDeleted(Status.OFF);
+        aeaItemInout.setIsInput(InOutStatus.IN.getValue());
         aeaItemInout.setIsStateIn(NeedStateStatus.NOT_NEED_STATE.getValue());
 
-        // 处理公共表单
-        AeaItemStateForm aeaItemStateForm = new AeaItemStateForm();
-        aeaItemStateForm.setItemVerId(itemVerId);
-        aeaItemStateForm.setItemStateVerId(stateVerId);
-        aeaItemStateForm.setIsStateForm(NeedStateStatus.NOT_NEED_STATE.getValue());
-
         // 处理公共材料、证照、表单
-        handleMatAndCertFormTopic(rootTopic, workbook, aeaItemInout, aeaItemStateForm);
+        handleMatAndCertFormTopic(rootTopic, workbook, aeaItemInout);
     }
 
     private void fillItemStateTopic(AeaItemState rootState, ITopic topic, IWorkbook workbook) {
@@ -364,41 +358,34 @@ public class AeaItemStateXmindAdminServiceImpl {
         aeaItemInout.setItemStateId(itemState.getItemStateId());
         aeaItemInout.setIsDeleted(Status.OFF);
 
-        // 处理情形表单
-        AeaItemStateForm aeaItemStateForm = new AeaItemStateForm();
-        aeaItemStateForm.setItemVerId(itemState.getItemVerId());
-        aeaItemStateForm.setItemStateVerId(itemState.getStateVerId());
-        aeaItemStateForm.setIsStateForm(NeedStateStatus.NEED_STATE.getValue());
-        aeaItemStateForm.setItemStateId(itemState.getItemStateId());
-
         // 处理情形材料、证照、表单
-        handleMatAndCertFormTopic(topic, workbook, aeaItemInout, aeaItemStateForm);
+        handleMatAndCertFormTopic(topic, workbook, aeaItemInout);
     }
 
-    private void handleMatAndCertFormTopic(ITopic topic, IWorkbook workbook, AeaItemInout aeaItemInout, AeaItemStateForm stateForm) {
+    private void handleMatAndCertFormTopic(ITopic topic, IWorkbook workbook, AeaItemInout inout) {
 
-        if(aeaItemInout!=null){
-            List<AeaItemInout> itemInouts = aeaItemInoutAdminService.listAeaItemInout(aeaItemInout);
+        if(inout!=null){
+            List<AeaItemInout> itemInouts = aeaItemInoutMapper.listAeaItemInoutRelMat(inout);
             if (CollectionUtils.isNotEmpty(itemInouts)) {
                 itemInouts.stream().forEach(itemInout -> {
-                    if(StringUtils.isNotBlank(itemInout.getFileType())){
+                    ITopic matTopic = workbook.createTopic();
+                    matTopic.setFolded(false);
+                    matTopic.setTitleText(inout.getAeaMatCertName());
+                    if(StringUtils.isNotBlank(itemInout.getMatProp())){
                         // 材料
-                        if(itemInout.getFileType().equals(MindType.MATERIAL.getValue())){
-                            saveItemMatTopic(topic, workbook, itemInout.getMatId());
-                            // 证照
-                        }else{
-                            saveItemCertTopic(topic, workbook, itemInout.getCertId());
+                        if(itemInout.getMatProp().equals(MindType.M.getValue())){
+                            matTopic.setTitleText("【材】" + itemInout.getAeaMatCertName());
+
+                        // 证照
+                        }else if(itemInout.getMatProp().equals(MindType.C.getValue())){
+                            matTopic.setTitleText("【证】" + itemInout.getAeaMatCertName());
+
+                        // 表单
+                        }else if(itemInout.getMatProp().equals(MindType.F.getValue())){
+                            matTopic.setTitleText("【表】" + itemInout.getAeaMatCertName());
                         }
                     }
-                });
-            }
-        }
-
-        if(stateForm!=null){
-            List<AeaItemStateForm> itemFormList = aeaItemStateFormMapper.listItemStateFormRelInfo(stateForm);
-            if (CollectionUtils.isNotEmpty(itemFormList)) {
-                itemFormList.stream().forEach(itemForm -> {
-                    saveItemFormTopic(topic, workbook, itemForm.getFormId());
+                    topic.add(matTopic, ITopic.ATTACHED);
                 });
             }
         }

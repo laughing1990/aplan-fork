@@ -97,6 +97,9 @@
                         <input type="hidden" name="parStateId" value=""/>
                         <input type="hidden" name="itemStateId" value=""/>
 
+                        <input type="hidden" name="certId" value=""/>
+                        <input type="hidden" name="stoFormId" value=""/>
+
                         <div class="form-group m-form__group row">
                             <label class="col-2 col-form-label" style="text-align: right;">材料类别<span style="color:red">*</span>:</label>
                             <div class="col-10 input-group" style="padding-right: 8px;padding-left: 8px;">
@@ -128,8 +131,51 @@
                         </div>
 
                         <div class="form-group m-form__group row">
-                            <label class="col-2 col-form-label">是否通用材料<font color="red">*</font>:</label>
-                            <div class="col-2">
+                            <label class="col-2 col-form-label" style="padding-top: 8px;">材料性质<font color="red">*</font>:</label>
+                            <div class="col-4">
+                                <select name="matProp" class="form-control m-input">
+                                    <option value="m">普通材料</option>
+                                    <option value="c">证照材料</option>
+                                    <option value="f">在线表单</option>
+                                </select>
+                            </div>
+
+                            <label class="col-2 col-form-label" style="padding-top: 8px;">是否批文批复<font color="red">*</font>:</label>
+                            <div class="col-4">
+                                <select name="isOfficialDoc" class="form-control m-input">
+                                    <option value="0">否</option>
+                                    <option value="1">是</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div id="selectCertDiv" class="form-group m-form__group row" style="display: none;">
+                            <label class="col-2 col-form-label">电子证照<span style="color:red">*</span>:</label>
+                            <div class="col-10 input-group">
+                                <input type="text" class="form-control m-input" name="certName" readonly placeholder="请选择电子证照..." >
+                                <div class="input-group-append">
+                            <span class="input-group-text open-cert-type">
+                                <i class="la la-search"></i>
+                            </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="selectFormDiv" class="form-group m-form__group row" style="display: none;">
+                            <label class="col-2 col-form-label">在线表单<span style="color:red">*</span>:</label>
+                            <div class="col-10 input-group">
+                                <input type="text" class="form-control m-input" name="formName" readonly placeholder="请选择表单..." >
+                                <div class="input-group-append">
+                            <span class="input-group-text open-form-type">
+                                <i class="la la-search"></i>
+                            </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group m-form__group row">
+                            <label class="col-2 col-form-label" style="padding-top: 8px;">是否通用材料<font color="red">*</font>:</label>
+                            <div class="col-4">
                                 <div class="m-radio-inline">
                                     <label class="m-radio">
                                         <input type="radio" name="isCommon" value="1" onclick="return false;">是<span></span>
@@ -140,28 +186,98 @@
                                 </div>
                             </div>
 
-                            <label class="col-2 col-form-label">是否支持容缺<font color="red">*</font>:</label>
-                            <div class="col-2">
+                            <label class="col-2 col-form-label" style="text-align: right;padding-top: 8px;">
+                                是否支持容缺<font color="red">*</font>:
+                            </label>
+                            <div class="col-4">
                                 <div class="m-radio-inline">
                                     <label class="m-radio">
-                                        <input type="radio" name="zcqy" value="1">是<span></span>
+                                        <input type="radio" name="zcqy" value="1" checked>是<span></span>
                                     </label>
                                     <label class="m-radio">
                                         <input type="radio" name="zcqy" value="0">否<span></span>
                                     </label>
                                 </div>
                             </div>
+                        </div>
 
-                            <label class="col-2 col-form-label" style="padding-top: 8px;">是否批文批复<font color="red">*</font>:</label>
-                            <div class="col-2">
+                        <div class="form-group m-form__group row">
+                            <label class="col-2 col-form-label">纸质是否必需<font color="red">*</font>:</label>
+                            <div class="col-4">
                                 <div class="m-radio-inline">
                                     <label class="m-radio">
-                                        <input type="radio" name="isOfficialDoc" value="1">是<span></span>
+                                        <input type="radio" name="paperIsRequire" value="1">必须
+                                        <span for="inlineRadio1"></span>
                                     </label>
                                     <label class="m-radio">
-                                        <input type="radio" name="isOfficialDoc" value="0" checked>否<span></span>
+                                        <input type="radio" name="paperIsRequire" value="0">非必须
+                                        <span for="inlineRadio0"></span>
                                     </label>
                                 </div>
+                            </div>
+
+                            <label class="col-2 col-form-label">电子是否必需<font color="red">*</font>:</label>
+                            <div class="col-4">
+                                <div class="m-radio-inline">
+                                    <label class="m-radio">
+                                        <input type="radio" name="attIsRequire" value="1" >必须
+                                        <span for="inlineRadio2"></span>
+                                    </label>
+                                    <label class="m-radio">
+                                        <input type="radio" name="attIsRequire" value="0">非必须
+                                        <span for="inlineRadio3"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group m-form__group row">
+                            <label class="col-2 col-form-label" style="text-align: right;">纸质材料类型:</label>
+                            <div class="col-4">
+                                <select name="paperMatType" class="form-control m-input">
+                                    <option value="">请选择</option>
+                                    <option value="0">无</option>
+                                    <option value="1">A3</option>
+                                    <option value="2">A4</option>
+                                    <option value="3">A5</option>
+                                </select>
+                            </div>
+                            <div class="col-6"></div>
+                        </div>
+
+                        <div class="form-group m-form__group row">
+                            <label class="col-2 col-form-label" style="text-align: right;">原件验收:</label>
+                            <div class="col-4">
+                                <select name="duePaperType" class="form-control m-input">
+                                    <option value="">请选择</option>
+                                    <option value="0">无</option>
+                                    <option value="1">验</option>
+                                    <option value="2">收</option>
+                                </select>
+                            </div>
+
+                            <label class="col-2 col-form-label">原件数:</label>
+                            <div class="col-4">
+                                <input class="form-control m-input" type="number" value="1"
+                                       name="duePaperCount" placeholder="请输入原件数...">
+                            </div>
+                        </div>
+
+                        <div class="form-group m-form__group row">
+                            <label class="col-2 col-form-label" style="text-align: right;">复印件验收类型:</label>
+                            <div class="col-4">
+                                <select name="dueCopyType" class="form-control m-input">
+                                    <option value="">请选择</option>
+                                    <option value="0">无</option>
+                                    <option value="1">验</option>
+                                    <option value="2">收</option>
+                                </select>
+                            </div>
+
+                            <label class="col-2 col-form-label">复印件数:</label>
+                            <div class="col-4">
+                                <input class="form-control m-input" type="number" value="1"
+                                       name="dueCopyCount" placeholder="请输入复印件数...">
                             </div>
                         </div>
 
@@ -265,81 +381,6 @@
                         </div>
 
                         <div class="form-group m-form__group row">
-                            <label class="col-2 col-form-label" style="text-align: right;">纸质是否必需:</label>
-                            <div class="col-4">
-                                <div class="m-radio-inline">
-                                    <label class="m-radio">
-                                        <input type="radio" name="paperIsRequire" value="1">必须<span></span>
-                                    </label>
-                                    <label class="m-radio">
-                                        <input type="radio" name="paperIsRequire" value="0">非必须<span></span>
-                                    </label>
-                                </div>
-                            </div>
-
-                            <label class="col-2 col-form-label" style="text-align: right;">电子是否必需:</label>
-                            <div class="col-4">
-                                <div class="m-radio-inline">
-                                    <label class="m-radio">
-                                        <input type="radio" name="attIsRequire" value="1" >必须<span></span>
-                                    </label>
-                                    <label class="m-radio">
-                                        <input type="radio" name="attIsRequire" value="0">非必须<span></span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group m-form__group row">
-                            <label class="col-2 col-form-label" style="text-align: right;">纸质材料类型:</label>
-                            <div class="col-10">
-                                <select name="paperMatType" class="form-control m-input">
-                                    <option value="">请选择</option>
-                                    <option value="0">无</option>
-                                    <option value="1">A3</option>
-                                    <option value="2">A4</option>
-                                    <option value="3">A5</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="form-group m-form__group row">
-                            <label class="col-2 col-form-label" style="text-align: right;">原件验收:</label>
-                            <div class="col-4">
-                                <select name="duePaperType" class="form-control m-input">
-                                    <option value="">请选择</option>
-                                    <option value="0">无</option>
-                                    <option value="1">验</option>
-                                    <option value="2">收</option>
-                                </select>
-                            </div>
-
-                            <label class="col-2 col-form-label" style="text-align: right;">原件数:</label>
-                            <div class="col-4">
-                                <input class="form-control m-input" type="number" value="1"
-                                       name="duePaperCount" placeholder="请输入原件数...">
-                            </div>
-                        </div>
-
-                        <div class="form-group m-form__group row">
-                            <label class="col-2 col-form-label" style="text-align: right;">复印件验收类型:</label>
-                            <div class="col-4">
-                                <select name="dueCopyType" class="form-control m-input">
-                                    <option value="">请选择</option>
-                                    <option value="0">无</option>
-                                    <option value="1">验</option>
-                                    <option value="2">收</option>
-                                </select>
-                            </div>
-
-                            <label class="col-2 col-form-label" style="text-align: right;">复印件数:</label>
-                            <div class="col-4">
-                                <input class="form-control m-input" type="number" value="1"
-                                       name="dueCopyCount" placeholder="请输入复印件数...">
-                            </div>
-                        </div>
-
-                        <div class="form-group m-form__group row">
                             <label class="col-2 col-form-label" style="text-align: right;">备注:</label>
                             <div class="col-10">
                             <textarea name="matMemo" id="matMemo" rows="4"
@@ -381,12 +422,111 @@
             cursorborderradius: "2px",//以像素为光标边界半径
             autohidemode: true  //是否隐藏滚动条
         });
+
+        // 电子证照选择点击事件绑定
+        $('.open-cert-type, input[name="certName"]').click(function(){
+
+            var value = $('#item_mat_add_form input[name="certId"]').val();
+            openSelectCertModal(value);
+        });
+
+        // 表单选择点击事件绑定
+        $('.open-form-type, input[name="formName"]').click(function(){
+
+            var value = $('#item_mat_add_form input[name="stoFormId"]').val();
+            openSelectFormModal(value);
+        });
+
+        // 材料类型选择
+        $("#item_mat_add_form select[name='matProp']").change(function(){
+            var value = $(this).val();
+            handleSelectMatProNew(value);
+        });
+
+        // 选择电子证照
+        $('#selectCertBtn').bind('click', selectCert);
+
+        // 选择表单
+        $('#selectFormBtn').bind('click', selectForm);
     });
+
+    function handleSelectMatProNew(value){
+
+        if(value=='m'){
+
+            $('#selectCertDiv').hide();
+            $('#selectFormDiv').hide();
+
+            $('#item_mat_add_form input[name="certName"]').rules('remove');
+            $('#item_mat_add_form input[name="formName"]').rules('remove');
+
+        }else if(value=='c'){
+
+            $('#selectCertDiv').show();
+            $('#selectFormDiv').hide();
+            $('#item_mat_add_form input[name="certName"]').rules('add',{
+                required: true,
+                messages:{
+                    required: '<font color="red">请选择电子证照！</font>'
+                }
+            });
+            $('#item_mat_add_form input[name="formName"]').rules('remove');
+
+        }else{
+
+            $('#selectCertDiv').hide();
+            $('#selectFormDiv').show();
+            $('#item_mat_add_form input[name="certName"]').rules('remove');
+            $('#item_mat_add_form input[name="formName"]').rules('add',{
+                required: true,
+                messages:{
+                    required: '<font color="red">请选择表单！</font>'
+                }
+            });
+        }
+    }
+
+    function selectCert(){
+
+        var selectCertTree = $.fn.zTree.getZTreeObj("selectCertTree");
+        var certs = selectCertTree.getCheckedNodes(true);
+        if(certs!=null&&certs.length>0){
+            var certId = certs[0].id;
+            var certName = certs[0].name;
+            $('#item_mat_add_form input[name="certId"]').val(certId);
+            $('#item_mat_add_form input[name="certName"]').val(certName);
+            // 关闭窗口
+            closeSelectCertModal();
+        }else{
+            swal('错误信息', "请选择电子证照！", 'error');
+        }
+    }
+
+    function selectForm(){
+
+        var selectFormTree = $.fn.zTree.getZTreeObj("selectFormTree");
+        var forms = selectFormTree.getCheckedNodes(true);
+        if(forms!=null&&forms.length>0){
+            var formId = forms[0].id;
+            var formName = forms[0].name;
+            var index = formName.lastIndexOf('】');
+            if(index>-1){
+                formName = formName.substring(index+1);
+            }
+            $('#item_mat_add_form input[name="stoFormId"]').val(formId);
+            $('#item_mat_add_form input[name="formName"]').val(formName);
+            // 关闭窗口
+            closeSelectFormModal();
+        }else{
+            swal('错误信息', "请选择表单！", 'error');
+        }
+    }
 
     var MAT_URL_PREFIX = ctx + '/aea/item/mat/';
     var matAttQueryParams = [];
 
     function uploadFileChange(obj){
+
         $(obj).siblings('.custorm-style').find(".right-text").html("");
         var files = $(obj)[0].files;
         if(files!=null&&files.length>0){
@@ -471,23 +611,8 @@
         return res;
     }
 
-
     function matAttTbParam(params){
 
-        // var pageNum = (params.offset / params.limit) + 1;
-        // var pagination = {
-        //     page: pageNum,
-        //     pages: pageNum,
-        //     perpage: params.limit
-        // };
-        // var sort = {
-        //     field: params.sort,
-        //     sort: params.order
-        // };
-        // var queryParam = {
-        //     pagination: pagination,
-        //     sort: sort
-        // };
         var pageNum = (params.offset / params.limit) + 1;
         var queryParam = {
             pageNum: pageNum,
@@ -555,13 +680,12 @@
 
         if(row.attType!='KP'){
             var deleteBtn = '<a href="javascript:deleteMatAttrByDetailId(\'' + row.detailId + '\')" ' +
-                'class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" ' +
-                'title="删除"><i class="la la-trash"></i>' +
-                '</a>';
+                                'class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" ' +
+                                'title="删除"><i class="la la-trash"></i>' +
+                            '</a>';
             return deleteBtn;
         }
     }
-
 
     function viewAttNameFormatter(value, row, index){
 

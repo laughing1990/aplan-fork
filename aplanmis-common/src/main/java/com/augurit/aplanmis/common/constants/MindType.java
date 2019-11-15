@@ -6,8 +6,11 @@ public enum MindType {
     SITUATION("情形", "situation"),
     STAGE("阶段", "stage"),
     MATERIAL("材料", "mat"),
-    CERTIFICATE("证照", "cert")
-    ;
+    CERTIFICATE("证照", "cert"),
+    FORM("表单", "form"),
+    M("材料", "m"),
+    C("证照", "c"),
+    F("表单", "f");
 
     private String name;
     private String value;

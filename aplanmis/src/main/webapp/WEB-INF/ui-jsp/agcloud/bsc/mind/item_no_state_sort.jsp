@@ -78,7 +78,7 @@
     <div class="modal-dialog modal-dialog-centered  modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header" style="padding: 15px;height: 45px;">
-                <h5 class="modal-title" id="item_in_sort_modal_title">材料证照表单排序</h5>
+                <h5 class="modal-title" id="item_in_sort_modal_title">材料排序</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -134,7 +134,7 @@
                         dataType: 'json',
                         data: {
                             'inoutIds': inoutIds.toString(),
-                            'fileTypes': fileTypes.toString(),
+                            // 'fileTypes': fileTypes.toString(),
                             'sortNos': sortNos.toString()
                         },
                         success: function (result) {
@@ -167,13 +167,13 @@
 
                 for(var i=0;i<data.length;i++){
                     var id = data[i].inoutId;
-                    var type = data[i].fileType;
+                    var type = data[i].matProp;
                     var name = '【';
-                    if(data[i].fileType=='mat'){
+                    if(data[i].matProp=='m'){
                         name += '材料';
-                    }else if(data[i].fileType=='cert'){
+                    }else if(data[i].matProp=='c'){
                         name += '证照';
-                    }else if(data[i].fileType=='form'){
+                    }else if(data[i].matProp=='f'){
                         name += '表单';
                     }
                     name += '】';

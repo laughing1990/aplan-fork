@@ -26,6 +26,12 @@
                 <input id="password" type="password" placeholder="请输入密码" v-model.trim="password"  @keyup.enter="login" class="long-input password">
             </div>
         </li>
+<!--        <li>-->
+<!--            <div class="name">-->
+<!--                <input id="verifyCode" type="text" placeholder="请输入验证码" v-model.trim="verifyCode"  @keyup.enter="login" class="long-input" style="width: 60%;float: left;margin-bottom: 20px;">-->
+<!--                <img  title="点击刷新"style="height: 48px;cursor:pointer;" @click="changeCode()"  :src="code">-->
+<!--            </div>-->
+<!--        </li>-->
         <li class="enter">
             <el-button :loading="loginBtnLoading"  @click="login()" type="primary"  @keyup.enter.native="login"  class="loginBtn">登 录</el-button>
         </li>

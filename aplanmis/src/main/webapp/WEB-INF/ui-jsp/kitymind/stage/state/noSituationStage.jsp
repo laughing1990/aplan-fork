@@ -145,22 +145,13 @@
     </div>
 
     <!-- 选择电子证照 -->
-    <%@include file="stage_no_state_cert_list.jsp"%>
+    <%--<%@include file="stage_no_state_cert_list.jsp"%>--%>
 
     <!-- 导入库材料 -->
     <%@include file="../../../aplanmis/par/stage/select_stage_global_mat.jsp"%>
 
-    <!-- 阶段新增/编辑材料 -->
-    <%@include file="aedit_stage_mat_index.jsp"%>
-
-    <!-- 查看证照 -->
-    <%@include file="../../../aplanmis/item/aedit_item_inout_cert_index.jsp"%>
-
-    <!-- 选择材料类别 -->
-    <%@include file="../../../aplanmis/item/select_mat_type_ztree.jsp"%>
-
-    <!-- 查看材料附件 -->
-    <%@include file="../../../aplanmis/item/show_mat_att_modal.jsp"%>
+    <%--<!-- 查看证照 -->--%>
+    <%--<%@include file="../../../aplanmis/item/aedit_item_inout_cert_index.jsp"%>--%>
 
     <!-- 设置材料事项 -->
     <%@ include file="../../../agcloud/bsc/mind/include/aedit_par_stage_In_item.jsp"%>
@@ -168,8 +159,23 @@
     <!-- 材料事项编辑 -->
     <%@ include file="../../../agcloud/bsc/mind/include/aedit_stage_item_in.jsp"%>
 
+    <!-- 阶段新增/编辑材料 -->
+    <%@include file="aedit_stage_mat_index.jsp"%>
+
+    <!-- 选择材料类别 -->
+    <%@include file="../../../aplanmis/item/select_mat_type_ztree.jsp"%>
+
+    <!-- 选择电子证照 -->
+    <%@include file="../../../common/ztree/select_cert_no_right_ztree.jsp" %>
+
+    <!-- 选择表单 -->
+    <%@include file="../../../common/ztree/select_form_no_right_ztree.jsp" %>
+
+    <!-- 查看材料附件 -->
+    <%@include file="../../../aplanmis/item/show_mat_att_modal.jsp"%>
+
     <!-- 导入表单 -->
-    <%@ include file="stage_no_state_form_list.jsp"%>
+    <%--<%@ include file="stage_no_state_form_list.jsp"%>--%>
 
     <!-- 材料、证照、表单排序 -->
     <%@include file="stage_no_state_sort.jsp"%>

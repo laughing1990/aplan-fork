@@ -159,13 +159,13 @@
 
     <select id="listAeaParStageItemInByInId" resultType="AeaParStageItemIn">
         select
-        itemIn.ITEM_IN_ID  itemInId,
-        itemIn.STAGE_ITEM_ID  stageItemId,
-        itemIn.IN_ID  inId,
-        itemIn.CREATER  creater,
-        itemIn.CREATE_TIME  createTime,
-        itemIn.SORT_NO  sortNo,
-        item.ITEM_NAME itemName
+            itemIn.ITEM_IN_ID  itemInId,
+            itemIn.STAGE_ITEM_ID  stageItemId,
+            itemIn.IN_ID  inId,
+            itemIn.CREATER  creater,
+            itemIn.CREATE_TIME  createTime,
+            itemIn.SORT_NO  sortNo,
+            item.ITEM_NAME itemName
         from AEA_PAR_STAGE_ITEM_IN itemIn
         left join AEA_PAR_STAGE_ITEM stiem on stiem.STAGE_ITEM_ID = itemIn.STAGE_ITEM_ID
         left join AEA_ITEM_basic item on item.ITEM_ID = stiem.ITEM_ID

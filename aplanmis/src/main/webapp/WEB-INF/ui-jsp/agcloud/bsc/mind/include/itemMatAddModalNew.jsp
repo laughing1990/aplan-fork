@@ -264,6 +264,10 @@
             $("#item_mat_add_form input[name='attIsRequire'][value='0']").prop("checked", true);
             $("#item_mat_add_form input[name='zcqy'][value='1']").prop("checked", true);  // 默认支持容缺
             $("#item_mat_add_form input[name='isOfficialDoc'][value='0']").prop("checked", true);  // 是否为批文批复
+            $("#item_mat_add_form input[name='certId']").val("");
+            $("#item_mat_add_form input[name='stoFormId']").val("");
+            $("#item_mat_add_form input[name='matProp'][value='m']").prop("checked", true);
+            handleSelectMatProNew('m');
 
             getMatCodeByAjax();//获取材料编码
         });
@@ -466,6 +470,13 @@
                     width: 450,
                 },
                 {
+                    field: "aeaItemMat.matProp",
+                    title: "材料性质",
+                    align: "center",
+                    width: 110,
+                    formatter: matPropormatter
+                },
+                {
                     field: '_operate',
                     title: '操作',
                     sortable: false,
@@ -541,6 +552,13 @@
                     width: 450,
                 },
                 {
+                    field: "aeaItemMat.matProp",
+                    title: "材料性质",
+                    align: "center",
+                    width: 110,
+                    formatter: matPropormatter
+                },
+                {
                     field: '_operate',
                     title: '操作',
                     sortable: false,
@@ -585,6 +603,8 @@
 
         $("#item_mat_add_form input[name='matId']").val('');
         $("#item_mat_add_form input[name='fileType']").val('mat');
+        $("#item_mat_add_form input[name='certId']").val("");
+        $("#item_mat_add_form input[name='stoFormId']").val("");
 
         $("#templateDocFile").siblings('.custorm-style').find(".right-text").html("");
         $("#sampleDocFile").siblings('.custorm-style').find(".right-text").html("");
@@ -654,6 +674,10 @@
                                 ck5.checked = true;
                             }
                         }
+                    }
+
+                    if (data.matProp){
+                        handleSelectMatProNew(data.matProp);
                     }
                 }
             },

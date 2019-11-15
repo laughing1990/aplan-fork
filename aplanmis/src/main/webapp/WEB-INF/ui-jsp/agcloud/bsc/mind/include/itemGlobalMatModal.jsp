@@ -164,6 +164,13 @@
                     width: 450,
                 },
                 {
+                    field: "matProp",
+                    title: "材料性质",
+                    align: "center",
+                    width: 110,
+                    formatter: matPropormatter
+                },
+                {
                     field: '_operate',
                     title: '操作',
                     sortable: false,
@@ -202,6 +209,19 @@
         });
     }
 
+    function matPropormatter(value, row, index){
+
+        var matProp = row.matProp;
+        if(matProp){
+            if(matProp=='m'){
+                return '普通材料';
+            }else if(matProp=='c'){
+                return '证照材料';
+            }else{
+                return '在线表单材料';
+            }
+        }
+    }
 
     function globalMatSearch() {
 

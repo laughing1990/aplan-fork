@@ -100,4 +100,6 @@ public interface AeaItemMatMapper {
     List<AeaItemMat> getParInMatsByStageItemVerIds(@Param("stageId") String stageId, @Param("itemVerIds") String[] itemVerIds, @Param("rootOrgId") String rootOrgId);
 
     List<ActStoForm> listActStoForm(ActStoForm stoForm);
+
+    ActStoForm getActStoFormById(@Param("id") String id);
 }

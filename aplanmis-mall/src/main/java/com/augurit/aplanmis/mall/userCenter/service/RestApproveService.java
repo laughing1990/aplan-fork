@@ -110,4 +110,12 @@ public interface RestApproveService {
      * @throws Exception
      */
     LifeCycleDiagramVo getLiftCycleDiagramInfo(String projInfoId, String unitInfoId, String userInfoId)throws Exception;
+
+    /**
+     * 判断申请是实例是否属于当前用户
+     * @param applyInstId
+     * @param request
+     * @return
+     */
+    Boolean isApplyBelong(String applyInstId,String projinfoId,HttpServletRequest request)throws Exception;
     }

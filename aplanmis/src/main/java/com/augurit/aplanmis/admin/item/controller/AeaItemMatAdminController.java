@@ -1,6 +1,8 @@
 package com.augurit.aplanmis.admin.item.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.augurit.agcloud.bpm.common.domain.ActStoForm;
+import com.augurit.agcloud.bpm.common.mapper.ActStoFormMapper;
 import com.augurit.agcloud.bsc.domain.BscAttDetail;
 import com.augurit.agcloud.bsc.domain.BscAttForm;
 import com.augurit.agcloud.bsc.sc.att.service.IBscAttService;
@@ -10,17 +12,21 @@ import com.augurit.agcloud.bsc.upload.UploadFileStrategy;
 import com.augurit.agcloud.bsc.upload.factory.UploaderFactory;
 import com.augurit.agcloud.bsc.util.UuidUtil;
 import com.augurit.agcloud.framework.constant.Status;
-import com.augurit.agcloud.framework.exception.InvalidParameterException;
 import com.augurit.agcloud.framework.page.PageParam;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.ui.pager.EasyuiPageInfo;
 import com.augurit.agcloud.framework.ui.pager.PageHelper;
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
+import com.augurit.agcloud.framework.ui.ztree.ZtreeNode;
 import com.augurit.aplanmis.common.constants.ActiveStatus;
+import com.augurit.aplanmis.common.constants.MindType;
+import com.augurit.aplanmis.common.domain.AeaCert;
 import com.augurit.aplanmis.common.domain.AeaItemInout;
 import com.augurit.aplanmis.common.domain.AeaItemMat;
 import com.augurit.aplanmis.common.domain.AeaItemMatType;
+import com.augurit.aplanmis.common.mapper.AeaCertMapper;
+import com.augurit.aplanmis.common.mapper.AeaItemMatMapper;
 import com.augurit.aplanmis.common.service.admin.item.AeaItemInoutAdminService;
 import com.augurit.aplanmis.common.service.admin.item.AeaItemMatAdminService;
 import com.augurit.aplanmis.common.service.admin.item.AeaItemMatTypeAdminService;
@@ -78,6 +84,12 @@ public class AeaItemMatAdminController {
     @Autowired
     private AutoCodeNumberService autoCodeNumberService;
 
+    @Autowired
+    private AeaCertMapper certMapper;
+
+    @Autowired
+    private AeaItemMatMapper matMapper;
+
     private String getRootOrgId(){
         return SecurityContext.getCurrentOrgId();
     }
@@ -85,7 +97,7 @@ public class AeaItemMatAdminController {
     @RequestMapping("/globalMaterialIndex.do")
     public ModelAndView globalMaterialIndex() {
 
-        return new ModelAndView("ui-jsp/mat/global/global_material_index");
+        return new ModelAndView("ui-jsp/mat/global_mat_index");
     }
 
     @ApiOperation(value = "保存/更新材料", notes = "保存/更新材料")
@@ -135,8 +147,6 @@ public class AeaItemMatAdminController {
         return PageHelper.toEasyuiPageInfo(pageList);
     }
 
-
-
     @ApiOperation(value = "通过id获取材料数据", notes = "通过id获取材料数据")
     @ApiImplicitParams({
         @ApiImplicitParam(name = "id", value = "材料id" , required = true, dataType = "String" , paramType = "query"),
@@ -144,16 +154,28 @@ public class AeaItemMatAdminController {
     @RequestMapping(value = "/getAeaItemMat.do", method = {RequestMethod.GET, RequestMethod.POST})
     public AeaItemMat getAeaItemMat(String id) {
 
-        if (id != null) {
+        if (StringUtils.isNotBlank(id)) {
+            String orgId = SecurityContext.getCurrentOrgId();
             AeaItemMat itemMat = aeaItemMatAdminService.getAeaItemMatById(id);
             if (itemMat != null) {
-                if (StringUtils.isNotBlank(itemMat.getMatTypeId())) {
-                    AeaItemMatType type = aeaItemMatTypeAdminService.getAeaItemMatTypeById(itemMat.getMatTypeId());
-                    if (type != null) {
-                        itemMat.setMatTypeName(type.getTypeName());
+//                if (StringUtils.isNotBlank(itemMat.getMatTypeId())) {
+//                    AeaItemMatType type = aeaItemMatTypeAdminService.getAeaItemMatTypeById(itemMat.getMatTypeId());
+//                    if (type != null) {
+//                        itemMat.setMatTypeName(type.getTypeName());
+//                    }
+//                }
+                if (StringUtils.isNotBlank(itemMat.getMatProp())&& MindType.C.getValue().equals(itemMat.getMatProp())) {
+                    AeaCert cert = certMapper.getAeaCertById(itemMat.getCertId(), orgId);
+                    if (cert != null) {
+                        itemMat.setCertName(cert.getCertName());
                     }
                 }
-                String orgId = SecurityContext.getCurrentOrgId();
+                if (StringUtils.isNotBlank(itemMat.getMatProp())&&MindType.F.getValue().equals(itemMat.getMatProp())) {
+                    ActStoForm form = matMapper.getActStoFormById(itemMat.getStoFormId());
+                    if (form != null) {
+                        itemMat.setFormName(form.getFormName());
+                    }
+                }
                 List<BscAttForm> kbList = bscAttService.listAttLinkAndDetailNoPage("AEA_ITEM_MAT", "TEMPLATE_DOC", id, null, orgId, null);
                 List<BscAttForm> ybList = bscAttService.listAttLinkAndDetailNoPage("AEA_ITEM_MAT", "SAMPLE_DOC", id, null, orgId, null);
                 List<BscAttForm> sjList = bscAttService.listAttLinkAndDetailNoPage("AEA_ITEM_MAT", "REVIEW_SAMPLE_DOC", id, null, orgId, null);
@@ -287,8 +309,6 @@ public class AeaItemMatAdminController {
             UploadFileStrategy uploadFileStrategy = uploaderFactory.create(form.getStoreType());
             InputStream in = uploadFileStrategy.download(detailId);
             if(in!=null){
-//                base64Content = new BASE64Encoder().encode(AttUtils.inputStreamToBytesAndClose(in));
-
                 Base64.Encoder encoder = Base64.getEncoder();
                 base64Content = encoder.encodeToString(AttUtils.inputStreamToBytesAndClose(in));
                 isExistImg = true;
@@ -398,6 +418,13 @@ public class AeaItemMatAdminController {
         }
         aeaItemMatAdminService.saveChooseItemMatAndInout(ids, itemVerId, isStateIn, itemStateId, stateVerId, isCommon);
         return new ResultForm(true);
+    }
+
+    @RequestMapping("/gtreeForm.do")
+    public List<ZtreeNode> gtreeForm() {
+
+        String rootOrgId = SecurityContext.getCurrentOrgId();
+        return aeaItemMatAdminService.gtreeForm(rootOrgId);
     }
 
     // ===================== 前后端分离接口新写法 =======================
