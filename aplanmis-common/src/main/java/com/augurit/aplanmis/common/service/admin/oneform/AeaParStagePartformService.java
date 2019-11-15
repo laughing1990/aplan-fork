@@ -31,4 +31,6 @@ public interface AeaParStagePartformService {
      List<AeaParStagePartform> listPartFormNoSelectForm(AeaParStagePartform partform);
 
      PageInfo<AeaParStagePartform> listPartFormNoSelectFormByPage(AeaParStagePartform partform, Page page);
+
+    void createAndUpdateDevForm(String formCode, String formName, String formLoadUrl, String formId, String stagePartformId) throws Exception;
 }

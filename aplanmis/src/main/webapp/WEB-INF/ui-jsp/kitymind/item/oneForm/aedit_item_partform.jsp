@@ -55,12 +55,12 @@
                             </div>
                         </div>
 
-                        <div id="formUrlDiv" class="form-group m-form__group row" >
-                            <label class="col-lg-2 col-form-label" style="text-align: right;"><font color="red">*</font>开发表单地址:</label>
-                            <div class="col-lg-10">
-                                <textarea class="form-control" name="formUrl" rows="3"></textarea>
-                            </div>
-                        </div>
+                        <%--<div id="formUrlDiv" class="form-group m-form__group row" >--%>
+                        <%--<label class="col-lg-2 col-form-label" style="text-align: right;"><font color="red">*</font>开发表单地址:</label>--%>
+                        <%--<div class="col-lg-10">--%>
+                        <%--<textarea class="form-control" name="formUrl" rows="3"></textarea>--%>
+                        <%--</div>--%>
+                        <%--</div>--%>
 
                         <div id="stageElDiv" class="form-group m-form__group row" style="display: none;">
                             <label class="col-lg-2 col-form-label" style="text-align: right;">

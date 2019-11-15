@@ -1046,4 +1046,19 @@
         </sql>
     </changeSet>
 
+    <changeSet id="201911151409" author="chenzh" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_item_partform`
+            DROP COLUMN `FORM_URL`,
+            CHANGE COLUMN `PARTFORM_ID` `STO_FORM_ID` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL
+            COMMENT '智能表单定义ID' AFTER `IS_SMART_FORM`;
+
+            ALTER TABLE `aea_par_stage_partform`
+            DROP COLUMN `FORM_URL`,
+            CHANGE COLUMN `PARTFORM_ID` `STO_FORM_ID` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL
+            COMMENT '智能表单定义ID' AFTER `IS_SMART_FORM`;
+
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

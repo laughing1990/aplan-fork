@@ -9,8 +9,7 @@
     PARTFORM_NAME  partformName,
     ITEM_VER_ID  itemVerId,
     IS_SMART_FORM  isSmartForm,
-    PARTFORM_ID  partformId,
-    FORM_URL  formUrl,
+        STO_FORM_ID stoFormId,
     SORT_NO  sortNo,
     USE_EL  useEl,
     EL_CONTENT  elContent,
@@ -23,8 +22,7 @@
     ${alias}.PARTFORM_NAME  partformName,
     ${alias}.ITEM_VER_ID  itemVerId,
     ${alias}.IS_SMART_FORM  isSmartForm,
-    ${alias}.PARTFORM_ID  partformId,
-    ${alias}.FORM_URL  formUrl,
+        ${alias}.STO_FORM_ID stoFormId,
     ${alias}.SORT_NO  sortNo,
     ${alias}.USE_EL  useEl,
     ${alias}.EL_CONTENT  elContent,
@@ -56,11 +54,8 @@
             <if test="isSmartForm != null and isSmartForm!=''">
                 AND IS_SMART_FORM = #{isSmartForm}
             </if>
-            <if test="partformId != null and partformId!=''">
-                AND PARTFORM_ID = #{partformId}
-            </if>
-            <if test="formUrl != null and formUrl!=''" >
-                AND FORM_URL = #{formUrl}
+            <if test="stoFormId != null and stoFormId!=''">
+                AND STO_FORM_ID = #{stoFormId}
             </if>
             <if test="sortNo != null and sortNo!=''">
                 AND SORT_NO = #{sortNo}
@@ -85,9 +80,11 @@
 
     <insert id="insertAeaItemPartform" parameterType="AeaItemPartform">
     insert into AEA_ITEM_PARTFORM (
-    ITEM_PARTFORM_ID  ,PARTFORM_NAME  ,ITEM_VER_ID  ,IS_SMART_FORM  ,PARTFORM_ID  ,FORM_URL  ,SORT_NO  ,USE_EL  ,EL_CONTENT  ,CREATER  ,CREATE_TIME
+        ITEM_PARTFORM_ID ,PARTFORM_NAME ,ITEM_VER_ID ,IS_SMART_FORM ,STO_FORM_ID ,SORT_NO ,USE_EL ,EL_CONTENT ,CREATER
+        ,CREATE_TIME
     )  values  (
-    #{itemPartformId},#{partformName},#{itemVerId},#{isSmartForm},#{partformId},#{formUrl},#{sortNo},#{useEl},#{elContent},#{creater},  #{createTime}
+        #{itemPartformId},#{partformName},#{itemVerId},#{isSmartForm},#{stoFormId},#{sortNo},#{useEl},#{elContent},#{creater},
+        #{createTime}
     )
     </insert>
 
@@ -106,11 +103,8 @@
             <if test="isSmartForm != null">
                 IS_SMART_FORM = #{isSmartForm},
             </if>
-            <if test="partformId != null">
-                PARTFORM_ID = #{partformId},
-            </if>
-            <if test="formUrl != null">
-                FORM_URL = #{formUrl},
+            <if test="stoFormId != null">
+                STO_FORM_ID = #{stoFormId},
             </if>
             <if test="sortNo != null">
                 SORT_NO = #{sortNo},
@@ -155,15 +149,15 @@
     <select id="listAeaItemPartformWithFormInfo" resultType="AeaItemPartform">
         select
         <include refid="allColumns_alias"><property name="alias" value="aip"/></include>,
-        asf.FORM_NAME formName
+        asf.FORM_NAME formName,asf.FORM_LOAD_URL formUrl
         from AEA_ITEM_PARTFORM aip
         left join ACT_STO_FORM asf on (
-        aip.PARTFORM_ID = asf.FORM_ID
+        aip.STO_FORM_ID = asf.FORM_ID
         and asf.IS_DELETED = '0'
-        and asf.FORM_PROPERTY in ( 'smart-biz', 'smart-flow' )
-        and aip.PARTFORM_ID is not null
-        and aip.PARTFORM_ID !=''
-        and aip.IS_SMART_FORM = '1'
+        and asf.FORM_PROPERTY in ( 'smart-biz', 'smart-flow','dev-biz' )
+        and aip.STO_FORM_ID is not null
+        and aip.STO_FORM_ID !=''
+        -- and aip.IS_SMART_FORM = '1'
         )
         <where>
             <if test="itemPartformId != null and itemPartformId!=''">
@@ -178,11 +172,8 @@
             <if test="isSmartForm != null and isSmartForm!=''">
                 AND aip.IS_SMART_FORM = #{isSmartForm}
             </if>
-            <if test="partformId != null and partformId!=''">
-                AND aip.PARTFORM_ID = #{partformId}
-            </if>
-            <if test="formUrl != null and formUrl!=''" >
-                AND aip.FORM_URL = #{formUrl}
+            <if test="stoFormId != null and stoFormId!=''">
+                AND aip.STO_FORM_ID = #{stoFormId}
             </if>
             <if test="sortNo != null and sortNo!=''">
                 AND aip.SORT_NO = #{sortNo}
@@ -208,7 +199,7 @@
 
     <select id="listItemPartFormNoSelectForm" resultType="AeaItemPartform">
         select
-        asfrom.FORM_ID as partformId,
+        asfrom.FORM_ID as stoFormId,
         asfrom.FORM_ORG_ID  formOrgId,
         asfrom.FORM_PROPERTY  formProperty,
         asfrom.FORM_CODE  formCode,
@@ -224,15 +215,15 @@
             and asfrom.FORM_ORG_ID = #{formOrgId}
             and asfrom.FORM_ID not in (
             select
-            PARTFORM_ID
+            STO_FORM_ID
             from AEA_ITEM_PARTFORM
             where ITEM_VER_ID = #{itemVerId}
             and ITEM_PARTFORM_ID = #{itemPartformId}
-            and PARTFORM_ID is not null
-            and PARTFORM_ID !=''
-            and IS_SMART_FORM = '1'
+            and STO_FORM_ID is not null
+            and STO_FORM_ID !=''
+            and IS_SMART_FORM = #{isSmartForm}
             )
-            and  asfrom.FORM_PROPERTY in ( 'smart-biz', 'smart-flow' )
+            and asfrom.FORM_PROPERTY in ( 'smart-biz', 'smart-flow', 'dev-biz' )
             <if test="keyword != null and keyword !='' " >
                 and (
                 asfrom.FORM_CODE like CONCAT(CONCAT('%',#{keyword}),'%') or
@@ -247,8 +238,7 @@
         <result property="partformName" column="PARTFORM_NAME"/>
         <result property="itemVerId" column="ITEM_VER_ID"/>
         <result property="isSmartForm" column="IS_SMART_FORM"/>
-        <result property="partformId" column="PARTFORM_ID"/>
-        <result property="formUrl" column="FORM_URL"/>
+        <result property="stoFormId" column="STO_FORM_ID"/>
         <result property="sortNo" column="SORT_NO"/>
         <result property="useEl" column="USE_EL"/>
         <result property="elContent" column="EL_CONTENT"/>
