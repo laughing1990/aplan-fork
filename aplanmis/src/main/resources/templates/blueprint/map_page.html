@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>一张蓝图</title>
+    <style>
+        html, body {
+            width: 100%;
+            height: 100%;
+            padding: 0 0 0 0;
+            margin: 0 0 0 0;
+        }
+    </style>
+
+</head>
+<body >
+<iframe id="blueprintFrame"  style="width: 100%;height: 100%;" frameborder="no" border="0"></iframe>
+<script type="text/javascript" th:inline="javascript">
+    /*<![CDATA[*/
+    var iframe;
+    function iframeload() {
+        var msg = JSON.stringify({type: "1", value:{xmdm: [[${xmdm}]]}});
+        var childDomain = [[${domain}]];
+        iframe.contentWindow.postMessage(msg, childDomain);
+    }
+
+    iframe = document.getElementById("blueprintFrame");
+    iframe.onload = iframe.onreadystatechange = iframeload;
+    iframe.src = [[${url}]];
+    //iframe.src = "http://192.168.32.83:8886/agcom/2dMap/interfaceMap.html?userName=admin";
+    /*]]>*/
+</script>
+</body>
+</html>
