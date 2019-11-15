@@ -195,7 +195,7 @@ private static Logger logger = LoggerFactory.getLogger(AeaExProjCertLandControll
             aeaExProjSite.setSiteId(aeaCertiVo.getSiteId());
             aeaExProjSite.setProjInfoId(aeaCertiVo.getProjInfoId());
             aeaExProjSite.setSiteCode(aeaCertiVo.getSiteCode());
-            aeaExProjSite.setLandAreaValue(aeaCertiVo.getLandAreaValue());
+            aeaExProjSite.setLandAreaValue(aeaCertiVo.getLandAreaValueSite());
             aeaExProjSite.setLandAreaUnit(aeaCertiVo.getLandAreaUnit());
             aeaExProjSite.setConstructionSize(aeaCertiVo.getConstructionSize());
             aeaExProjSite.setGovOrgCode(aeaCertiVo.getGovOrgNameSite());
@@ -207,7 +207,7 @@ private static Logger logger = LoggerFactory.getLogger(AeaExProjCertLandControll
                 aeaExProjSite.setSiteId(UUID.randomUUID().toString());
                 aeaExProjSite.setProjInfoId(aeaCertiVo.getProjInfoId());
                 aeaExProjSite.setSiteCode(aeaCertiVo.getSiteCode());
-                aeaExProjSite.setLandAreaValue(aeaCertiVo.getLandAreaValue());
+                aeaExProjSite.setLandAreaValue(aeaCertiVo.getLandAreaValueSite());
                 aeaExProjSite.setLandAreaUnit(aeaCertiVo.getLandAreaUnit());
                 aeaExProjSite.setConstructionSize(aeaCertiVo.getConstructionSize());
                 aeaExProjSite.setGovOrgCode(aeaCertiVo.getGovOrgNameSite());
