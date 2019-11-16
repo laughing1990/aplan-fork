@@ -6,6 +6,7 @@ import com.augurit.aplanmis.common.domain.AeaExProjMoney;
 import com.augurit.aplanmis.common.domain.AeaProjInfo;
 import com.augurit.aplanmis.common.service.form.AeaExProjMoneyService;
 import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
+import com.augurit.aplanmis.front.form.service.AeaExProjCertBuildService;
 import com.augurit.aplanmis.front.form.service.RestExProjFormService;
 import com.augurit.aplanmis.front.form.vo.ExProjFormVo;
 import org.springframework.beans.BeanUtils;
@@ -13,9 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @Transactional
@@ -26,6 +25,8 @@ public class RestExProjFormServiceImpl implements RestExProjFormService {
 
     @Autowired
     private AeaProjInfoService aeaProjInfoService;
+    @Autowired
+    private AeaExProjCertBuildService aeaExProjCertBuildService;
 
     @Override
     public ExProjFormVo getExProjForm(String projInfoId) throws Exception {
@@ -88,6 +89,7 @@ public class RestExProjFormServiceImpl implements RestExProjFormService {
             aeaExProjMoney.setCreateTime(new Date());
             aeaExProjMoneyService.saveAeaExProjMoney(aeaExProjMoney);
         }
+        aeaExProjCertBuildService.SynchronizeDataByExProjForm(exProjFormVo);//同步信息
         return new ResultForm(true, "建设项目登记信息保存成功！");
     }
 }
