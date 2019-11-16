@@ -51,7 +51,7 @@ public class AeaParFrontItemformServiceImpl implements AeaParFrontItemformServic
 
     @Override
     public void updateAeaParFrontItemform(AeaParFrontItemform aeaParFrontItemform) throws Exception {
-        checkSame(aeaParFrontItemform);
+//        checkSame(aeaParFrontItemform);
 
         aeaParFrontItemform.setModifyTime(new Date());
         aeaParFrontItemform.setModifier(SecurityContext.getCurrentUserId());
