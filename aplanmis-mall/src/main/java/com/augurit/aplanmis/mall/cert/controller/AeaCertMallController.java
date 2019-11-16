@@ -263,9 +263,9 @@ public class AeaCertMallController {
             @ApiImplicitParam(name = "identityNumber", value = "申办证件号码", required = true , dataType = "String" ,paramType = "query"),
     })
     @GetMapping("/getLicenseAuthRes")
-    public LicenseAuthResDTO getLicenseAuthRes(String itemVerIds, String identityNumber,HttpServletRequest request) throws Exception {
+    public ContentResultForm getLicenseAuthRes(String itemVerIds, String identityNumber,HttpServletRequest request) throws Exception {
         LoginInfoVo loginVo = SessionUtil.getLoginInfo(request);
-        return aeaCertService.getLicenseAuthRes(itemVerIds, identityNumber,loginVo);
+        return new ContentResultForm(true,aeaCertService.getLicenseAuthRes(itemVerIds, identityNumber,loginVo),"success");
     }
 
     @ApiOperation(value = "通过电子证照编码获取证照显示地址", notes = "通过电子证照编码获取证照显示地址")
@@ -273,8 +273,8 @@ public class AeaCertMallController {
             @ApiImplicitParam(name = "authCode", value = "证照编码", required = true , dataType = "String" ,paramType = "query"),
     })
     @GetMapping("/getViewLicenseURL")
-    public String getViewLicenseURL(String authCode) throws Exception {
-        return aeaCertService.getViewLicenseURL(authCode);
+    public ContentResultForm getViewLicenseURL(String authCode) throws Exception {
+        return new ContentResultForm(true,aeaCertService.getViewLicenseURL(authCode),"success");
     }
 
 
