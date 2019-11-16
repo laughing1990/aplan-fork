@@ -52,10 +52,22 @@ public class AeaExProjBid implements Serializable{
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private java.util.Date createTime; // (创建时间)
     private String modifier; // (修改人)
+
+    public String getTenderNum() {
+        return tenderNum;
+    }
+
+    public void setTenderNum(String tenderNum) {
+        this.tenderNum = tenderNum;
+    }
+
     @DateTimeFormat(pattern="yyyy-MM-dd")
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private java.util.Date modifyTime; // (修改时间)
     private String rootOrgId; // (所属根组织ID)
+
+    private String  tenderNum;  //'省级施工图审查合格书编号(三库一平台返回)',
+
 // ----------------------------------------------------- Constructors
 // ----------------------------------------------------- Methods
     public String getBidId(){

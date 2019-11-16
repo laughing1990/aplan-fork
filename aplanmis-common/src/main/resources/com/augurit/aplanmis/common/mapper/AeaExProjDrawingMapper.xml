@@ -26,7 +26,8 @@
     CREATE_TIME  createTime,
     MODIFIER  modifier,
     MODIFY_TIME  modifyTime,
-    ROOT_ORG_ID  rootOrgId
+    ROOT_ORG_ID  rootOrgId,
+    REVIEW_NUM reviewNum
     </sql>
 
 <!--2 根据主键ID查询单个实体 -->
@@ -190,6 +191,9 @@ DRAWING_ID  ,PROJ_INFO_ID  ,PROVINCE_PROJ_CODE  ,DRAWING_QUABOOK_CODE  ,INVERSTM
         </if>
         <if test="rootOrgId != null" >
         ROOT_ORG_ID = #{rootOrgId},
+        </if>
+        <if test="reviewNum != null and reviewNum != ''" >
+            REVIEW_NUM = #{reviewNum},
         </if>
     </set>
     where DRAWING_ID = #{drawingId}

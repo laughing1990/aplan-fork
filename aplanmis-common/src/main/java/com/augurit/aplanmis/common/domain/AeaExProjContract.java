@@ -32,6 +32,16 @@ private static final long serialVersionUID = 1L;
     @DateTimeFormat(pattern="yyyy-MM-dd")
         private java.util.Date modifyTime; // (修改时间)
         private java.lang.String rootOrgId; // (所属根组织ID)
+
+    public String getContractNum() {
+        return contractNum;
+    }
+
+    public void setContractNum(String contractNum) {
+        this.contractNum = contractNum;
+    }
+
+    private String contractNum;//'省级合同编号(广东三库一平台返回)',
 // ----------------------------------------------------- Constructors
 // ----------------------------------------------------- Methods
     public java.lang.String getContractId(){
