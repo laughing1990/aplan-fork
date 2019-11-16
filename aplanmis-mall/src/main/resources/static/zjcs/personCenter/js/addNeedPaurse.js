@@ -27,6 +27,7 @@ var module1 = new Vue({
 			}
 		};
 		return {
+			agentItemForm: {},
 			loginUserInfo: {
 				isAdministrators: "",
 				isOwner: "",
@@ -684,12 +685,12 @@ var module1 = new Vue({
 
 			var vm = this;
 			vm.selectdRecord = [];
-			var value = vm.multipleSelection2
+			var value = vm.multipleSelection2;
 			if (!value.length > 0) {
 				vm.$message.error('请选择服务事项');
 				return false;
 			}
-			vm.serviceTabledialogTable = false
+			vm.serviceTabledialogTable = false;
 			console.log(value)
 			// vm.form = JSON.parse(JSON.stringify(value[0]))
 			console.log('form', vm.form)
@@ -714,7 +715,7 @@ var module1 = new Vue({
 			if (promiseService == '1') {
 				vm.promiseService = true
 			}
-
+			vm.agentItemForm = value[0];
 			vm.form.agentOrgName = value[0].agentOrgName;
 			vm.form.agentItemName = value[0].agentItemName;
 			vm.form.itemName = value[0].itemName;
