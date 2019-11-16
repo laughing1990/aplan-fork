@@ -353,7 +353,7 @@ public class AeaParStageService {
             if (bpmProcessInstance == null)
                 throw new RuntimeException("并联申报流程实例化失败！阶段ID为：" + stageId);
             //新增时限规则
-            restTimeruleinstService.createTimeruleinstByProcinst(appId,bpmProcessInstance.getProcessInstance().getId(),bpmProcessInstance.getProcessInstance().getProcessDefinitionKey());
+//            restTimeruleinstService.createTimeruleinstByProcinst(appId,bpmProcessInstance.getProcessInstance().getId(),bpmProcessInstance.getProcessInstance().getProcessDefinitionKey());
             //流程发起后，更新初始事项历史的taskId
             List<Task> tasks = taskService.createTaskQuery().processInstanceId(bpmProcessInstance.getProcessInstance().getId()).list();//查询出流程第一个节点
             aeaHiIteminsts.forEach(aeaHiIteminst -> {
@@ -459,7 +459,7 @@ public class AeaParStageService {
                 if (processInstance == null||processInstance.getProcessInstance()==null)
                     throw new RuntimeException("并行推进事项主流程实例化失败！事项版本ID为：" + itemVerId);
                 //新增时限规则
-                restTimeruleinstService.createTimeruleinstByProcinst(aeaItemBasic.getAppId(),processInstance.getProcessInstance().getId(),processInstance.getProcessInstance().getProcessDefinitionKey());
+//                restTimeruleinstService.createTimeruleinstByProcinst(aeaItemBasic.getAppId(),processInstance.getProcessInstance().getId(),processInstance.getProcessInstance().getProcessDefinitionKey());
                 //查询出流程第一个节点
                 List<Task> seriesTasks = taskService.createTaskQuery().processInstanceId(processInstance.getProcessInstance().getId()).list();
                 //流程发起后，更新初始事项历史的taskId
