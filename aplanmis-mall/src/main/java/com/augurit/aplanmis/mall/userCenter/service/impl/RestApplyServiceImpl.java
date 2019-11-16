@@ -154,10 +154,10 @@ public class RestApplyServiceImpl implements RestApplyService {
         ParallelApplyResultVo vo = aeaParStageService.stageApply(stageApplyDataVo);
         //updateAeaSmsInfo(stageApplyDataPageVo.getSmsInfoId(), applyinstIds);
         // 保存回执
-        //String[] receiptTypes = new String[]{"1", "2"};
-        //List<String> applyInstIds = vo.getApplyinstIds();
-        //if (applyInstIds==null||applyInstIds.size()==0) return vo;
-        //receiveService.saveReceive((String[]) applyInstIds.toArray(), receiptTypes, SecurityContext.getCurrentUserName(), "");
+        String[] receiptTypes = new String[]{"1", "2"};
+        List<String> applyInstIds = vo.getApplyinstIds();
+        if (applyInstIds==null||applyInstIds.size()==0) return vo;
+        receiveService.saveReceive((String[]) applyInstIds.toArray(), receiptTypes, SecurityContext.getCurrentUserName(), "");
         return vo;
     }
 
