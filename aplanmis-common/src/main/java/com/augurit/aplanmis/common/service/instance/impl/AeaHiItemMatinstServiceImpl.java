@@ -2,15 +2,21 @@ package com.augurit.aplanmis.common.service.instance.impl;
 
 import com.augurit.agcloud.bsc.domain.BscAttLink;
 import com.augurit.agcloud.bsc.mapper.BscAttMapper;
+import com.augurit.agcloud.bsc.util.UuidUtil;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.util.StringUtils;
+import com.augurit.aplanmis.common.domain.AeaHiCertinst;
 import com.augurit.aplanmis.common.domain.AeaHiItemInoutinst;
 import com.augurit.aplanmis.common.domain.AeaHiItemMatinst;
+import com.augurit.aplanmis.common.domain.AeaItemMat;
+import com.augurit.aplanmis.common.mapper.AeaHiCertinstMapper;
 import com.augurit.aplanmis.common.mapper.AeaHiItemInoutinstMapper;
 import com.augurit.aplanmis.common.mapper.AeaHiItemMatinstMapper;
+import com.augurit.aplanmis.common.mapper.AeaItemMatMapper;
 import com.augurit.aplanmis.common.service.file.FileUtilsService;
 import com.augurit.aplanmis.common.service.instance.AeaHiItemMatinstService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,6 +44,12 @@ public class AeaHiItemMatinstServiceImpl implements AeaHiItemMatinstService {
     private AeaHiItemInoutinstMapper aeaHiItemInoutinstMapper;
     @Autowired
     BscAttMapper bscAttMapper;
+
+    @Autowired
+    private AeaItemMatMapper aeaItemMatMapper;
+
+    @Autowired
+    private AeaHiCertinstMapper aeaHiCertinstMapper;
 
     //根据事项实例ID获取（输入或输出）材料实例列表
     public List<AeaHiItemMatinst> getMatinstListByIteminstIds(String[] iteminstIds, String isInput) throws Exception {
@@ -108,6 +120,11 @@ public class AeaHiItemMatinstServiceImpl implements AeaHiItemMatinstService {
             Assert.isTrue(StringUtils.isNotBlank(aeaHiItemMatinst.getMatId()), "matId is null");
             Assert.isTrue(StringUtils.isNotBlank(aeaHiItemMatinst.getMatinstCode()), "matinstCode is null");
             Assert.isTrue(StringUtils.isNotBlank(aeaHiItemMatinst.getMatinstName()), "matinstName is null");
+
+            // todo 根据 aeaItemMat 的matHolder 字段设置对应值
+            /*if (StringUtils.isNotBlank(aeaHiItemMatinst.getUnitInfoId())) {
+                aeaHiItemMatinst.setMat
+            }*/
 
             matinstId = UUID.randomUUID().toString();
             aeaHiItemMatinst.setMatinstId(matinstId);
@@ -243,5 +260,46 @@ public class AeaHiItemMatinstServiceImpl implements AeaHiItemMatinstService {
     public boolean matinstbeLong2MatId(String matinstId, String matId) throws Exception {
         Integer count = aeaHiItemMatinstMapper.matinstbeLong2MatId(matinstId, matId, SecurityContext.getCurrentOrgId());
         return (count != null && count > 0) ? true : false;
+    }
+
+    @Override
+    public AeaHiItemMatinst bindCertinst(AeaHiCertinst aeaHiCertinst) throws Exception {
+        Assert.hasText(aeaHiCertinst.getMatId(), "matId is null");
+        Assert.hasText(aeaHiCertinst.getAuthCode(), "authCode is null");
+
+        String currentOrgId = SecurityContext.getCurrentOrgId();
+        String currentUserName = SecurityContext.getCurrentUserName();
+
+        AeaItemMat aeaItemMat = aeaItemMatMapper.getAeaItemMatById(aeaHiCertinst.getMatId());
+        Assert.state("c".equals(aeaItemMat.getMatProp()), "matProp should 'c'");
+
+        aeaHiCertinst.setCertinstId(UuidUtil.generateUuid());
+        aeaHiCertinst.setRootOrgId(currentOrgId);
+        aeaHiCertinst.setCreater(currentUserName);
+
+        AeaHiItemMatinst aeaHiItemMatinst = new AeaHiItemMatinst();
+        BeanUtils.copyProperties(aeaItemMat, aeaHiItemMatinst);
+        aeaHiItemMatinst.setRootOrgId(currentOrgId);
+        aeaHiItemMatinst.setMatinstCode(aeaItemMat.getMatCode());
+        aeaHiItemMatinst.setCreateTime(new Date());
+        aeaHiItemMatinst.setCreater(currentUserName);
+        aeaHiItemMatinst.setCertinstId(aeaHiCertinst.getCertinstId());
+
+        aeaHiCertinstMapper.insertAeaHiCertinst(aeaHiCertinst);
+        aeaHiItemMatinstMapper.insertAeaHiItemMatinst(aeaHiItemMatinst);
+
+        return aeaHiItemMatinst;
+    }
+
+    @Override
+    public void unbindCertinst(String matinstId) throws Exception {
+        Assert.hasText(matinstId, "证照材料实例id不能为空");
+        AeaHiItemMatinst aeaHiItemMatinst = aeaHiItemMatinstMapper.getAeaHiItemMatinstById(matinstId);
+
+        // 删除电子证照
+        if (StringUtils.isNotBlank(aeaHiItemMatinst.getCertinstId())) {
+            aeaHiCertinstMapper.deleteAeaHiCertinst(aeaHiItemMatinst.getCertinstId());
+        }
+        aeaHiItemMatinstMapper.deleteAeaHiItemMatinst(matinstId);
     }
 }
