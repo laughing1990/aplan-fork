@@ -461,6 +461,12 @@ var app = new Vue({
       this.addEditManform.unitName = row.applicant;
       this.addEditManform.unitInfoId = row.unitInfoId;
     },
+    add: function(row) {
+      this.addEditManModalShow = true;
+      this.addEditManModalTitle = '新增联系人';
+      this.addEditManform.unitName = row.applicant;
+      this.addEditManform.unitInfoId = row.unitInfoId;
+    },
     edit: function(row, formData) {
       // this.addEditManform = row;
       this.addEditManModalShow = true;
@@ -632,7 +638,7 @@ var app = new Vue({
               var aeaExProjDrawing = {};
               _this.formData.approveStartTime = _this.formatTime(_this.formData.approveStartTime, 'Y-M-D') || '';
               _this.formData.approveEndTime = _this.formatTime(_this.formData.approveEndTime, 'Y-M-D') || '';
-              _this.formData.approveConfirmTime = _this.formatTime(_this.formData.approveConfirmTime, 'Y-M-D') || '';
+              // _this.formData.approveConfirmTime = _this.formatTime(_this.formData.approveConfirmTime, 'Y-M-D') || '';
               _this.formData.projInfoId = _this.projInfoId;
 
               aeaExProjDrawing = _this.formData;

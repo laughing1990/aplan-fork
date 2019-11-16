@@ -117,6 +117,9 @@ public class AeaHiCertinst implements Serializable {
     @ApiModelProperty(value = "用证码")
     private String authCode;
 
+    @ApiModelProperty(value = "证照来源", notes = "local: 本地部门出证; external: 第三方对接证照")
+    private String certinstSource;
+
     //额外字段
     @ApiModelProperty(name = "bscAttDetails", value = "附件列表", hidden = true)
     private List<BscAttDetail> bscAttDetails;

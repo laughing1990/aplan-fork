@@ -1107,4 +1107,17 @@
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='建设工程施工许可证';
         </sql>
     </changeSet>
+    <changeSet id="20191116110102" author="xiong" failOnError="false">
+        <preConditions>
+            <not>
+                <columnExists tableName="aea_hi_certinst" columnName="certinst_source"/>
+            </not>
+        </preConditions>
+        <sql splitStatements="true">
+            alter table aea_hi_certinst add column certinst_source varchar(16) default null comment '本地部门出证 local,
+            第三方对接证照 external';
+        </sql>
+    </changeSet>
+
+
 </databaseChangeLog>

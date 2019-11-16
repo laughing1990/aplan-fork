@@ -1743,3 +1743,32 @@ textarea {
   width: 100%;
   min-height: 300px;
 }
+.op-btn {
+  color: #169AFF;
+  cursor: pointer;
+  padding-right: 10px;
+  position: relative;
+}
+.op-btn:after {
+  content: '';
+  position: absolute;
+  width: 1px;
+  top: 3px;
+  bottom: 2px;
+  right: 3px;
+  background: #DCDFE6;
+}
+.op-btn:last-child {
+  padding-right: 0;
+}
+.op-btn:last-child:after {
+  content: none;
+}
+.cert-icon {
+  color: #4293F4;
+  font-size: 20px;
+  vertical-align: middle;
+}
+.children-count {
+  color: #AFB2C1;
+}

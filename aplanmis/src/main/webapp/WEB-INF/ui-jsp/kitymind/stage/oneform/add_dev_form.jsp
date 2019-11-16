@@ -17,7 +17,7 @@
                     <div id="add_dev_form_scroll" style="height: 425px;verflow-x: hidden;overflow-y: auto;">
 
                         <input type="hidden" name="stagePartformId" value=""/>
-                        <input type="hidden" name="stoFormId" value=""/>
+                        <input type="hidden" name="formId" value=""/>
 
                         <div class="form-group m-form__group row">
                             <label class="col-lg-2 col-form-label" style="text-align: right;"><font color="red">*</font>表单编号:</label>
@@ -42,6 +42,7 @@
 
                     </div>
                 </div>
+
                 <div class="modal-footer" style="padding: 10px;height: 60px;">
                     <button id="saveDevform" type="submit" class="btn btn-info">保存</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
