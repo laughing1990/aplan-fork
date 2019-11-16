@@ -13,18 +13,23 @@
 			项目代码：
 			<el-input class="w-200 mr20" v-model="projCode" placeholder="请输入项目代码"></el-input>
 			<el-button class="ml20" type="primary" size="medium" @click="getUnpublishedProjInfoList">查询</el-button>
-			<el-button class="" type="primary" size="medium" style="float:right" @click="addNeedStatus = 1;readonly=false;isAdd=true;getAutoProjCode();getProUnitLinkInfoWithoutId()">
+			<el-button class="" type="primary" size="medium" style="float:right"
+				@click="addNeedStatus = 1;readonly=false;isAdd=true;getAutoProjCode();getProUnitLinkInfoWithoutId()">
 				新增
 			</el-button>
 		</el-row>
 		<el-table :data="addNeedList" class="scrollable mt20" style="width: 100%;" v-loading="loading"
-		          :header-cell-style="{background:'#f7f8fa'}">
+			:header-cell-style="{background:'#f7f8fa'}">
 			<el-table-column label="项目代码" prop="localCode"></el-table-column>
 			<el-table-column label="项目名称" prop="projName"></el-table-column>
 			<el-table-column label="操作" width="200">
 				<template scope="scope">
-					<a class="a-color4879E4" v-if="loginUserInfo.isOwner == '1' && loginUserInfo.unitId && loginUserInfo.userId == null " href="javascript:;" @click="addNeedStatus = 2;getProUnitLinkInfo(scope.row.projInfoId);readonly=true;isAdd=false;proj=false;">查看项目</a>
-					<a class="a-color4879E4" v-else href="javascript:;" @click="addNeedStatus = 1;getProUnitLinkInfo(scope.row.projInfoId);readonly=true;isAdd=false;proj=false;getAutoProjCode()">项目发布</a>
+					<a class="a-color4879E4"
+						v-if="loginUserInfo.isOwner == '1' && loginUserInfo.unitId && loginUserInfo.userId == null "
+						href="javascript:;"
+						@click="addNeedStatus = 2;getProUnitLinkInfo(scope.row.projInfoId);readonly=true;isAdd=false;proj=false;">查看项目</a>
+					<a class="a-color4879E4" v-else href="javascript:;"
+						@click="addNeedStatus = 1;getProUnitLinkInfo(scope.row.projInfoId);readonly=true;isAdd=false;proj=false;getAutoProjCode()">项目发布</a>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -52,12 +57,43 @@
 						<el-form-item label="" prop="agentItemName" require>
 							<label><b class="red-cl">*</b>中介服务事项</label>
 							<div class="input-box">
-								<el-input placeholder="请选择中介服务事项" v-model="form.agentItemName" style="width: 804px;margin-left: 10px;">
-									<el-button slot="append" @click.native="serviceTabledialogTable=true;getAgentServiceItemList()">选择
+								<el-input placeholder="请选择中介服务事项" v-model="form.agentItemName"
+									style="width: 804px;margin-left: 10px;">
+									<el-button slot="append"
+										@click.native="serviceTabledialogTable=true;getAgentServiceItemList()">选择
 									</el-button>
 								</el-input>
 							</div>
 						</el-form-item>
+						<el-row :gutter="20">
+							<el-col :span="8">
+								<el-form-item label="事项名称：">暂替位置标注</el-form-item>
+							</el-col>
+							<el-col :span="8">
+								<el-form-item label="实施主体：">暂替位置标注
+								</el-form-item>
+							</el-col>
+							<el-col :span="8">
+								<el-form-item label="服务对象：">暂替位置标注
+								</el-form-item>
+							</el-col>
+						</el-row>
+						<el-row :gutter="20">
+							<el-col :span="8">
+								<el-form-item label="办件类型：">暂替位置标注
+								</el-form-item>
+							</el-col>
+							<el-col :span="8">
+								<el-form-item label="法定办结时限：">
+										暂替位置标注
+								</el-form-item>
+							</el-col>
+							<el-col :span="8">
+								<el-form-item label="承诺办结时限：">
+										暂替位置标注
+								</el-form-item>
+							</el-col>
+						</el-row>
 					</div>
 
 					<div class="row">
@@ -65,7 +101,8 @@
 							<el-form-item label="" prop="agentOrgName">
 								<label>事项对应部门</label>
 								<div class="input-box">
-									<el-input type="text" v-model="form.agentOrgName" class="form-control" disabled></el-input>
+									<el-input type="text" v-model="form.agentOrgName" class="form-control" disabled>
+									</el-input>
 								</div>
 							</el-form-item>
 						</div>
@@ -76,7 +113,8 @@
 							<el-form-item label="" prop="itemName">
 								<label>涉及的行政事项</label>
 								<div class="input-box">
-									<el-input type="text" class="form-control" v-model="form.itemName" disabled></el-input>
+									<el-input type="text" class="form-control" v-model="form.itemName" disabled>
+									</el-input>
 								</div>
 							</el-form-item>
 						</div>
@@ -89,18 +127,20 @@
 								<el-radio v-model="form.isApproveProj" label="1">是</el-radio>
 								<el-radio v-model="form.isApproveProj" label="0">否</el-radio>
 								<span class="note-txt"
-								      style="margin-left: 20px;">备注：若办理投资审批项目是需要采购中介服务的，请选择“是”并填写投资审批项目编码。</span>
+									style="margin-left: 20px;">备注：若办理投资审批项目是需要采购中介服务的，请选择“是”并填写投资审批项目编码。</span>
 							</div>
 						</div>
 					</el-form-item>
 
 					<div class="form-item" v-show="form.isApproveProj == 1">
 						<el-form-item label="项目/工程查询" id="projCodeInfo" :prop="approvalCodechange">
-							<el-select v-model="searchKeyword" filterable remote autofocus reserve-keyword ref="searchProjInfo" style="width: 804px;margin-left: 10px;"
-							           no-data-text="暂无匹配的项目/工程" placeholder="请输入项目（工程）的编码 / 名称" :remote-method="searchProjInfoByKeyword"
-							           :loading="loadingProjInfo">
-								<el-option v-for="item in projInfoList" :key="item.projInfoId" @click.native="projNameSel(item)"
-								           :label="item.projName+' （'+item.localCode+'）'" :value="item.projInfoId">
+							<el-select v-model="searchKeyword" filterable remote autofocus reserve-keyword
+								ref="searchProjInfo" style="width: 804px;margin-left: 10px;" no-data-text="暂无匹配的项目/工程"
+								placeholder="请输入项目（工程）的编码 / 名称" :remote-method="searchProjInfoByKeyword"
+								:loading="loadingProjInfo">
+								<el-option v-for="item in projInfoList" :key="item.projInfoId"
+									@click.native="projNameSel(item)" :label="item.projName+' （'+item.localCode+'）'"
+									:value="item.projInfoId">
 								</el-option>
 							</el-select>
 						</el-form-item>
@@ -129,7 +169,8 @@
 							<el-form-item label="" prop="applicant">
 								<label>项目业主</label>
 								<div class="input-box">
-									<el-input type="text" class="form-control" v-model="aeaUnitInfo.applicant"></el-input>
+									<el-input type="text" class="form-control" v-model="aeaUnitInfo.applicant">
+									</el-input>
 								</div>
 							</el-form-item>
 						</div>
@@ -140,7 +181,8 @@
 							<el-form-item label="" prop="contact" require>
 								<label><b class="red-cl">*</b>项目联系人</label>
 								<div class="input-box">
-									<el-input type="text" class="form-control" id="contact" v-model="form.contact"></el-input>
+									<el-input type="text" class="form-control" id="contact" v-model="form.contact">
+									</el-input>
 								</div>
 							</el-form-item>
 						</div>
@@ -149,7 +191,8 @@
 								<label><b class="red-cl">*</b>联系电话</label>
 								<div class="input-box">
 									<!-- <el-input type="number" class="form-control"   v-model="form.mobile"></el-input> -->
-									<el-input type="number" class="form-control" id="basicLinkPhone" v-model="basicLinkPhone"></el-input>
+									<el-input type="number" class="form-control" id="basicLinkPhone"
+										v-model="basicLinkPhone"></el-input>
 								</div>
 							</el-form-item>
 						</div>
@@ -159,7 +202,8 @@
 						<el-form-item label="" prop="projName" require>
 							<label><b class="red-cl">*</b>采购项目名称</label>
 							<div class="input-box">
-								<el-input type="text" style="width: 828px;" class="form-control" v-model="aeaProjInfo.projName"></el-input>
+								<el-input type="text" style="width: 828px;" class="form-control"
+									v-model="aeaProjInfo.projName"></el-input>
 							</div>
 						</el-form-item>
 					</div>
@@ -169,12 +213,10 @@
 							<el-form-item label="" prop="projScale" require>
 								<label><b class="red-cl">*</b>项目规模</label>
 								<div class="input-box">
-									<el-select placeholder="请选择" v-model="form.projScale" style="width: 326px;" :popper-append-to-body="false">
-										<el-option
-												v-for="item in projScaleOptions"
-												:key="item.value"
-												:label="item.label"
-												:value="item.value">
+									<el-select placeholder="请选择" v-model="form.projScale" style="width: 326px;"
+										:popper-append-to-body="false">
+										<el-option v-for="item in projScaleOptions" :key="item.value"
+											:label="item.label" :value="item.value">
 										</el-option>
 									</el-select>
 								</div>
@@ -183,7 +225,8 @@
 						<div class="col-md-6 form-item" id="projScale">
 							<el-form-item label="" prop="projScaleContent" require>
 								<div class="input-box">
-									<el-input type="text" class="form-control" style="width: 465px;" v-model="form.projScaleContent"></el-input>
+									<el-input type="text" class="form-control" style="width: 465px;"
+										v-model="form.projScaleContent"></el-input>
 								</div>
 							</el-form-item>
 						</div>
@@ -200,24 +243,32 @@
 					<div class="row" id="fina">
 						<div class="col-md-6 form-item">
 							<label><b class="red-cl">*</b>资金来源比例</label>
-							<el-form-item label="" :prop="financialFundProportionchange" require style="display:inline-block;">
+							<el-form-item label="" :prop="financialFundProportionchange" require
+								style="display:inline-block;">
 								<div class="input-box" v-show="isFinancialFund == 1">
 									<span>财政资金</span>
-									<el-input type="text" class="form-control inline-input" v-model="form.financialFundProportion" style="width:200px;display: inline-block;"></el-input>
+									<el-input type="text" class="form-control inline-input"
+										v-model="form.financialFundProportion"
+										style="width:200px;display: inline-block;"></el-input>
 									<span>%</span>
 								</div>
 								<div class="input-box" v-show="isFinancialFund != 1">
 									<span></span>
-									<el-input type="text" class="form-control inline-input" style="width:200px;display: inline-block;border:none;opacity: 0;" :disable="true"></el-input>
+									<el-input type="text" class="form-control inline-input"
+										style="width:200px;display: inline-block;border:none;opacity: 0;"
+										:disable="true"></el-input>
 
 								</div>
 							</el-form-item>
 						</div>
 						<div class="col-md-5 form-item">
-							<el-form-item label="" :prop="socialFundProportionchange" require v-show="isSocialFund == 1">
+							<el-form-item label="" :prop="socialFundProportionchange" require
+								v-show="isSocialFund == 1">
 								<div class="input-box">
 									<span>社会资金</span>
-									<el-input type="text" class="form-control inline-input" v-model="form.socialFundProportion" style="width:200px;    display: inline-block;"></el-input>
+									<el-input type="text" class="form-control inline-input"
+										v-model="form.socialFundProportion"
+										style="width:200px;    display: inline-block;"></el-input>
 									<span>%</span>
 								</div>
 							</el-form-item>
@@ -236,8 +287,11 @@
 							<el-form-item label="" prop="serviceName">
 								<label><b class="red-cl">*</b>所需服务</label>
 								<div class="input-box">
-									<el-select :popper-append-to-body="false" v-model="form.serviceName" placeholder="所需服务" style="width:820px;" value-key="serviceId" @change="needServiceListChange">
-										<el-option :label="item.serviceName" :value="item" :key="item.serviceId" v-for="(item, index) in needServiceList"></el-option>
+									<el-select :popper-append-to-body="false" v-model="form.serviceName"
+										placeholder="所需服务" style="width:820px;" value-key="serviceId"
+										@change="needServiceListChange">
+										<el-option :label="item.serviceName" :value="item" :key="item.serviceId"
+											v-for="(item, index) in needServiceList"></el-option>
 									</el-select>
 								</div>
 							</el-form-item>
@@ -247,7 +301,8 @@
 						<el-form-item label="" prop="timeLimitExplain">
 							<label style="width: 125px;padding-right: 0;"><b class="red-cl">*</b>服务时限说明</label>
 							<div class="input-box">
-								<el-input type="textarea" class="form-control" v-model="form.timeLimitExplain" style="width: 840px;"></el-input>
+								<el-input type="textarea" class="form-control" v-model="form.timeLimitExplain"
+									style="width: 840px;"></el-input>
 							</div>
 						</el-form-item>
 					</div>
@@ -255,11 +310,13 @@
 						<el-form-item label="" prop="serviceContent">
 							<label style="width: 125px;padding-right: 0;"><b class="red-cl">*</b>服务内容</label>
 							<div class="input-box">
-								<el-input type="textarea" class="form-control" v-model="form.serviceContent" style="width: 840px;">
+								<el-input type="textarea" class="form-control" v-model="form.serviceContent"
+									style="width: 840px;">
 									海岸线测绘
 								</el-input>
 								<p class="note-txt mt-1" style="padding-top: 29px;padding-left: 13px;">
-									备注：涉及工程项目的，应当包含工程项目地址、项目基本情况(包含建设规模、建设面积、资金投入等具体参数)。涉及土地、房产评估的、应当包含土地、房产面积、预算价格等内容。</p>
+									备注：涉及工程项目的，应当包含工程项目地址、项目基本情况(包含建设规模、建设面积、资金投入等具体参数)。涉及土地、房产评估的、应当包含土地、房产面积、预算价格等内容。
+								</p>
 							</div>
 						</el-form-item>
 					</div>
@@ -275,11 +332,15 @@
 						<el-form-item label="" prop="deparment">
 							<label><b class="red-cl">*</b>中介服务机构要求</label>
 							<div class="input-box el-input-checkbox">
-								<el-checkbox label="isQualRequire" v-model="isQualRequire" :disabled="needs">资质(资格)要求</el-checkbox>
-								<el-checkbox label="isRegisterRequire" v-model="isRegisterRequire" :disabled="needs">执业/职业人员要求
+								<el-checkbox label="isQualRequire" v-model="isQualRequire" :disabled="needs">资质(资格)要求
 								</el-checkbox>
-								<el-checkbox label="isRecordRequire" v-model="isRecordRequire" :disabled="needs">备案要求</el-checkbox>
-								<el-checkbox label="promiseService" v-model="promiseService" :disabled="unNeeds">仅承诺服务即可</el-checkbox>
+								<el-checkbox label="isRegisterRequire" v-model="isRegisterRequire" :disabled="needs">
+									执业/职业人员要求
+								</el-checkbox>
+								<el-checkbox label="isRecordRequire" v-model="isRecordRequire" :disabled="needs">备案要求
+								</el-checkbox>
+								<el-checkbox label="promiseService" v-model="promiseService" :disabled="unNeeds">仅承诺服务即可
+								</el-checkbox>
 
 							</div>
 						</el-form-item>
@@ -303,24 +364,22 @@
 												<i class="header-icon el-icon-caret-bottom"></i>展开资质树</p>
 										</div>
 										<div v-show="aptTreeaFlag" style="border:1px solid #ced4da;max-width: 821px;">
-											<el-tabs type="border-card" v-model="activeSN" @tab-click="handleClickAtiveQA">
-												<el-tab-pane :label="item.qualName" v-for="(item, index1) in qualArry" :key="item.qualId">
-													<el-tabs type="border-card" v-model="activeLE" @tab-click="handleClickAtiveLE">
-														<el-tab-pane :label="item.qualLevelName" v-for="(item, index2) in needServiceList2" :key="item.qualLevelId">
+											<el-tabs type="border-card" v-model="activeSN"
+												@tab-click="handleClickAtiveQA">
+												<el-tab-pane :label="item.qualName" v-for="(item, index1) in qualArry"
+													:key="item.qualId">
+													<el-tabs type="border-card" v-model="activeLE"
+														@tab-click="handleClickAtiveLE">
+														<el-tab-pane :label="item.qualLevelName"
+															v-for="(item, index2) in needServiceList2"
+															:key="item.qualLevelId">
 														</el-tab-pane>
 													</el-tabs>
 												</el-tab-pane>
 											</el-tabs>
-											<el-tree
-													:data="serviceTreeData"
-													show-checkbox
-													default-expand-all
-													node-key="id"
-													ref="treeService"
-													empty-text="请选择所需服务"
-													highlight-current
-													@check="handleServiceTreeData"
-													:props="defaultProps">
+											<el-tree :data="serviceTreeData" show-checkbox default-expand-all
+												node-key="id" ref="treeService" empty-text="请选择所需服务" highlight-current
+												@check="handleServiceTreeData" :props="defaultProps">
 											</el-tree>
 										</div>
 									</div>
@@ -331,7 +390,8 @@
 							<el-form-item label="" :prop="qualRequireExplainchange">
 								<label><b class="red-cl">*</b>资质要求说明</label>
 								<div class="input-box">
-									<el-input type="textarea" class="form-control" style="width: 825px;" v-model="form.qualRequireExplain">
+									<el-input type="textarea" class="form-control" style="width: 825px;"
+										v-model="form.qualRequireExplain">
 										中介机构需要国土资源部门核发的测绘资质证书
 									</el-input>
 									<p class="note-txt mt-1" style="padding-top: 24px;padding-left: 12px;">
@@ -343,9 +403,11 @@
 					<div v-show="isRegisterRequire">
 						<div class="form-item mt20">
 							<el-form-item label="" :prop="registerTotalchange" require>
-								<label style="width: 125px; padding-right: 0px;"><b class="red-cl">*</b>执业/职业人员总数</label>
+								<label style="width: 125px; padding-right: 0px;"><b
+										class="red-cl">*</b>执业/职业人员总数</label>
 								<div class="input-box">
-									<el-input type="text" v-model="form.registerTotal" style="width: 825px;" class="form-control"></el-input>
+									<el-input type="text" v-model="form.registerTotal" style="width: 825px;"
+										class="form-control"></el-input>
 									<p class="note-txt mt-1" style="padding-top: 24px;padding-left: 12px;">
 										备注：请填写为本项目提供服务的中介机构持证执业(职业)人员总数要求。</p>
 								</div>
@@ -353,10 +415,13 @@
 						</div>
 						<div class="form-item mt20">
 							<el-form-item label="" :prop="registerRequirechange" require>
-								<label style="width: 125px; padding-right: 0px;"><b class="red-cl">*</b>执业/职业人员要求</label>
+								<label style="width: 125px; padding-right: 0px;"><b
+										class="red-cl">*</b>执业/职业人员要求</label>
 								<div class="input-box">
-									<el-input type="textarea" class="form-control" style="width: 825px;" v-model="form.registerRequire"></el-input>
-									<p class="note-txt mt-1" style="padding-top: 24px;padding-left: 12px;">备注：该要求将公示于前台采购公告中。</p>
+									<el-input type="textarea" class="form-control" style="width: 825px;"
+										v-model="form.registerRequire"></el-input>
+									<p class="note-txt mt-1" style="padding-top: 24px;padding-left: 12px;">
+										备注：该要求将公示于前台采购公告中。</p>
 								</div>
 							</el-form-item>
 						</div>
@@ -366,8 +431,10 @@
 							<el-form-item label="" :prop="recordRequireExplainchange">
 								<label style="width: 125px; padding-right: 0px;"><b class="red-cl">*</b>备案要求说明</label>
 								<div class="input-box">
-									<el-input type="textarea" class="form-control" style="width: 825px;" v-model="form.recordRequireExplain"></el-input>
-									<p class="note-txt mt-1" style="padding-top: 24px;padding-left: 12px;">备注：该要求将公示于前台采购公告中。</p>
+									<el-input type="textarea" class="form-control" style="width: 825px;"
+										v-model="form.recordRequireExplain"></el-input>
+									<p class="note-txt mt-1" style="padding-top: 24px;padding-left: 12px;">
+										备注：该要求将公示于前台采购公告中。</p>
 								</div>
 							</el-form-item>
 						</div>
@@ -376,7 +443,8 @@
 						<el-form-item label="" prop="deparment">
 							<label>其他要求说明</label>
 							<div class="input-box">
-								<textarea class="form-control" style="width: 825px;    border: 1px solid #DCDFE6;" v-model="form.otherRequireExplain"></textarea>
+								<textarea class="form-control" style="width: 825px;    border: 1px solid #DCDFE6;"
+									v-model="form.otherRequireExplain"></textarea>
 								<p class="note-txt mt-1">备注：应当包含土地、房产面积、预算价格等内容。</p>
 							</div>
 						</el-form-item>
@@ -394,7 +462,8 @@
 							<el-form-item label="" prop="deparment">
 								<label><b class="red-cl">*</b>选取中介服务机构方式</label>
 								<div class="input-box">
-									<el-select v-model="biddingType" placeholder="请选择" stye="width:825px;" :popper-append-to-body="false" @change="biddingTypeChange">
+									<el-select v-model="biddingType" placeholder="请选择" stye="width:825px;"
+										:popper-append-to-body="false" @change="biddingTypeChange">
 										<el-option value="1" label="随机抽取"></el-option>
 										<el-option value="2" label="直接抽取"></el-option>
 										<el-option value="3" label="竞价选取"></el-option>
@@ -419,7 +488,8 @@
 								<el-form-item label="" :prop="basePricechange">
 									<label style="width: 125px;padding-right: 0;"><b class="red-cl">*</b>服务金额</label>
 									<div class="input-box">
-										<el-input type="number" class="form-control" v-model="form.basePrice" @input="basePriceinput"></el-input>
+										<el-input type="number" class="form-control" v-model="form.basePrice"
+											@input="basePriceinput"></el-input>
 									</div>
 									<span>元</span>
 								</el-form-item>
@@ -446,7 +516,8 @@
 							<el-form-item label="" prop="isDefineAmount">
 								<label><b class="red-cl">*</b>回避单位</label>
 								<el-button type="primary" @click="selectOrgan" size="mini">选择单位</el-button>
-								<el-table :data="avoidData" stripe border ref="multipleTable2" style="margin-top: 10px;margin-top: 10px;width: 800px;margin-left: 135px;">
+								<el-table :data="avoidData" stripe border ref="multipleTable2"
+									style="margin-top: 10px;margin-top: 10px;width: 800px;margin-left: 135px;">
 									<el-table-column prop="applicant" label="公司名称"></el-table-column>
 								</el-table>
 							</el-form-item>
@@ -455,7 +526,8 @@
 							<el-form-item label="" prop="avoidReason">
 								<label style="width: 125px;padding-right: 0;"><b class="red-cl">*</b>回避原因</label>
 								<div class="input-box">
-									<el-input type="textarea" class="form-control" style="width: 825px;" v-model="form.avoidReason"></el-input>
+									<el-input type="textarea" class="form-control" style="width: 825px;"
+										v-model="form.avoidReason"></el-input>
 								</div>
 							</el-form-item>
 						</div>
@@ -477,7 +549,8 @@
 								<el-form-item label="" :prop="basePricechange">
 									<label><b class="red-cl">*</b>服务金额</label>
 									<div class="input-box">
-										<el-input type="number" class="form-control" v-model="form.basePrice" @input="basePriceinput"></el-input>
+										<el-input type="number" class="form-control" v-model="form.basePrice"
+											@input="basePriceinput"></el-input>
 									</div>
 									<span>元</span>
 								</el-form-item>
@@ -502,7 +575,8 @@
 							</div>
 						</div>
 						<div class="form-item">
-							<el-form-item label="" :prop="agentUnitNamechange" v-show="biddingType == 2 && multipleSelection3.length>0">
+							<el-form-item label="" :prop="agentUnitNamechange"
+								v-show="biddingType == 2 && multipleSelection3.length>0">
 								<label><b class="red-cl">*</b>指定的中介机构</label>
 								<div class="input-box input-radio el-input-radio">
 									<p>{{multipleSelection3[0].agentUnitName}}</p>
@@ -528,7 +602,8 @@
 									<el-form-item label="" :prop="basePricechange" require>
 										<label><b class="red-cl">*</b>下浮率</label>
 										<div class="input-box">
-											<el-input type="text" class="form-control" v-model="form.basePrice" @input="basePriceblur"></el-input>
+											<el-input type="text" class="form-control" v-model="form.basePrice"
+												@input="basePriceblur"></el-input>
 										</div>
 										<span>&nbsp;%</span>
 									</el-form-item>
@@ -537,7 +612,8 @@
 									<el-form-item label="" :prop="highestPricechange" require>
 										<label>至<b class="red-cl">*</b></label>
 										<div class="input-box">
-											<el-input type="text" class="form-control" v-model="form.highestPrice" @input="highestPriceblur"></el-input>
+											<el-input type="text" class="form-control" v-model="form.highestPrice"
+												@input="highestPriceblur"></el-input>
 										</div>
 										<span>&nbsp;%</span>
 									</el-form-item>
@@ -550,7 +626,8 @@
 									<el-form-item label="" :prop="basePricechange" require>
 										<label><b class="red-cl">*</b>服务金额</label>
 										<div class="input-box">
-											<el-input type="text" class="form-control" v-model="form.basePrice" @input="basePriceblur"></el-input>
+											<el-input type="text" class="form-control" v-model="form.basePrice"
+												@input="basePriceblur"></el-input>
 										</div>
 										<span>&nbsp;元</span>
 									</el-form-item>
@@ -559,7 +636,8 @@
 									<el-form-item label="" :prop="highestPricechange" require>
 										<label>至<b class="red-cl">*</b></label>
 										<div class="input-box">
-											<el-input type="text" class="form-control" v-model="form.highestPrice" @input="highestPriceblur"></el-input>
+											<el-input type="text" class="form-control" v-model="form.highestPrice"
+												@input="highestPriceblur"></el-input>
 										</div>
 										<span>&nbsp;元</span>
 									</el-form-item>
@@ -579,7 +657,8 @@
 									<el-form-item label="" prop="">
 										<label>至<b class="red-cl">*</b></label>
 										<div class="input-box">
-											<el-input type="text" class="form-control" v-model="highestPriceDx"></el-input>
+											<el-input type="text" class="form-control" v-model="highestPriceDx">
+											</el-input>
 										</div>
 										<span>&nbsp;元</span>
 									</el-form-item>
@@ -599,7 +678,8 @@
 							<el-form-item label="" prop="isDefineAmount">
 								<label><b class="red-cl">*</b>回避单位</label>
 								<el-button type="primary" @click="selectOrgan" size="mini">选择单位</el-button>
-								<el-table :data="avoidData" stripe border ref="multipleTable2" style="margin-top: 10px;margin-top: 10px;width: 800px;margin-left: 135px;">
+								<el-table :data="avoidData" stripe border ref="multipleTable2"
+									style="margin-top: 10px;margin-top: 10px;width: 800px;margin-left: 135px;">
 									<el-table-column prop="applicant" label="公司名称"></el-table-column>
 								</el-table>
 							</el-form-item>
@@ -608,7 +688,8 @@
 							<el-form-item label="" prop="avoidReason">
 								<label style="width: 125px;padding-right: 0;"><b class="red-cl">*</b>回避原因</label>
 								<div class="input-box">
-									<el-input type="textarea" class="form-control" style="width: 825px;" v-model="form.avoidReason"></el-input>
+									<el-input type="textarea" class="form-control" style="width: 825px;"
+										v-model="form.avoidReason"></el-input>
 								</div>
 							</el-form-item>
 						</div>
@@ -618,13 +699,9 @@
 						<el-form-item label="" prop="expirationDate">
 							<label><b class="red-cl">*</b>报名截止时间</label>
 							<div class="input-box">
-								<el-date-picker stye="width:823px;"
-								                v-model="form.expirationDate"
-								                type="datetime"
-								                value-format="yyyy-MM-dd HH:mm:ss"
-								                placeholder="选择日期时间"
-								                :popper-append-to-body="false"
-								                default-time="00:00:00">
+								<el-date-picker stye="width:823px;" v-model="form.expirationDate" type="datetime"
+									value-format="yyyy-MM-dd HH:mm:ss" placeholder="选择日期时间"
+									:popper-append-to-body="false" default-time="00:00:00">
 								</el-date-picker>
 							</div>
 						</el-form-item>
@@ -633,13 +710,9 @@
 						<el-form-item label="" prop="choiceImunitTime">
 							<label><b class="red-cl">*</b>选取中介时间</label>
 							<div class="input-box">
-								<el-date-picker stye="width:823px;"
-								                v-model="form.choiceImunitTime"
-								                type="datetime"
-								                :popper-append-to-body="false"
-								                value-format="yyyy-MM-dd HH:mm:ss"
-								                placeholder="选择日期时间"
-								                default-time="00:00:00">
+								<el-date-picker stye="width:823px;" v-model="form.choiceImunitTime" type="datetime"
+									:popper-append-to-body="false" value-format="yyyy-MM-dd HH:mm:ss"
+									placeholder="选择日期时间" default-time="00:00:00">
 								</el-date-picker>
 							</div>
 						</el-form-item>
@@ -650,7 +723,8 @@
 						<el-form-item label="" prop="amountExplain">
 							<label style="width: 125px;padding-right: 0;"><b class="red-cl">*</b>金额说明</label>
 							<div class="input-box">
-								<el-input type="textarea" class="form-control" style="width: 825px;" v-model="form.amountExplain"></el-input>
+								<el-input type="textarea" class="form-control" style="width: 825px;"
+									v-model="form.amountExplain"></el-input>
 								<p class="note-txt mt-1" style="padding-top: 29px;padding-left: 13px;">
 									备注：说明服务金额的实际金额浮动百分比等。若金额不做测算，须填写服务价格的参考标准。若无补充，请填写“无”。</p>
 							</div>
@@ -692,7 +766,8 @@
 								<el-form-item label="" :prop="witnessName1change">
 									<label><b class="red-cl">*</b>见证人姓名</label>
 									<div class="input-box">
-										<el-input type="text" class="form-control" v-model="form.witnessName1"></el-input>
+										<el-input type="text" class="form-control" v-model="form.witnessName1">
+										</el-input>
 									</div>
 								</el-form-item>
 							</div>
@@ -700,7 +775,8 @@
 								<el-form-item label="" :prop="witnessPhone1change">
 									<label><b class="red-cl">*</b>联系电话</label>
 									<div class="input-box">
-										<el-input type="text" class="form-control" value="" v-model="form.witnessPhone1"></el-input>
+										<el-input type="text" class="form-control" value=""
+											v-model="form.witnessPhone1"></el-input>
 									</div>
 								</el-form-item>
 							</div>
@@ -718,7 +794,8 @@
 								<el-form-item label="" prop="witnessPhone2">
 									<label>联系电话</label>
 									<div class="input-box">
-										<el-input type="text" class="form-control" value="" v-model="witnessPhone2"></el-input>
+										<el-input type="text" class="form-control" value="" v-model="witnessPhone2">
+										</el-input>
 									</div>
 								</el-form-item>
 							</div>
@@ -749,8 +826,8 @@
 
 			<!-- 咨询与监督 -->
 			<div class="info-item edit-item">
-				<h2 class="item-title active" @click="expandProjectInfoItem"><i class="item-icon item-zixun-icon"></i>咨询与监督<i
-						class="arrow-icon"></i></h2>
+				<h2 class="item-title active" @click="expandProjectInfoItem"><i
+						class="item-icon item-zixun-icon"></i>咨询与监督<i class="arrow-icon"></i></h2>
 				<div class="item-detail edit-item-detail">
 					<div class="row">
 						<div class="col-md-6 form-item">
@@ -765,7 +842,8 @@
 							<el-form-item label="" prop="ownerComplaintPhone">
 								<label><b class="red-cl">*</b>投诉质疑</label>
 								<div class="input-box">
-									<el-input type="text" class="form-control" v-model="form.ownerComplaintPhone"></el-input>
+									<el-input type="text" class="form-control" v-model="form.ownerComplaintPhone">
+									</el-input>
 								</div>
 							</el-form-item>
 						</div>
@@ -775,31 +853,24 @@
 
 			<!-- 附件 -->
 			<div class="info-item edit-item">
-				<h2 class="item-title active" @click="expandProjectInfoItem"><i class="item-icon item-fujian-icon"></i>附件<i
-						class="arrow-icon"></i></h2>
+				<h2 class="item-title active" @click="expandProjectInfoItem"><i
+						class="item-icon item-fujian-icon"></i>附件<i class="arrow-icon"></i></h2>
 				<div class="item-detail edit-item-detail">
 					<div class="upload-card">
 						<div class="upload-btn">
-							<el-upload
-									class="matterUploadFile"
-									:show-file-list="false"
-									action="123"
-									:on-preview="handlePreview1"
-									:on-remove="handleRemove1"
-									:before-remove="beforeRemove1"
-									:before-upload="beforeAvatarUpload"
-									:on-change="onchange1"
-									multiple
-									:limit="3"
-									:auto-upload="false"
-									:on-exceed="handleExceed1">
+							<el-upload class="matterUploadFile" :show-file-list="false" action="123"
+								:on-preview="handlePreview1" :on-remove="handleRemove1" :before-remove="beforeRemove1"
+								:before-upload="beforeAvatarUpload" :on-change="onchange1" multiple :limit="3"
+								:auto-upload="false" :on-exceed="handleExceed1">
 								<el-button type="primary">上传文件</el-button>
 							</el-upload>
-							<span class="ml-3" slot="tip" style="position: absolute;left: 100px;top: 10px;">上传的附件不可超过10MB，禁止上传以下的附件类型：.exe,.sh,.bat,.com,.dll</span>
+							<span class="ml-3" slot="tip"
+								style="position: absolute;left: 100px;top: 10px;">上传的附件不可超过10MB，禁止上传以下的附件类型：.exe,.sh,.bat,.com,.dll</span>
 						</div>
 						<ul class="pjfile-list">
 							<li v-for="(item, index) in fileList1" :key="index">
-								{{item.name}}<a class="debtn" href="javascript:;" @click="deluploadImg1(item,index)">删除</a></li>
+								{{item.name}}<a class="debtn" href="javascript:;"
+									@click="deluploadImg1(item,index)">删除</a></li>
 							<!-- <li>资质证.jpg<a class="debtn" href="javascript:;">删除</a></li>
 							<li>资质证.jpg<a class="debtn" href="javascript:;">删除</a></li> -->
 						</ul>
@@ -808,31 +879,197 @@
 					<p class="note-txt mt-1">备注：您可上传购买中介服务的政府批文及财政资金安排批文的相关文件，便于项目审批，不供公示下载。</p>
 					<div class="upload-card mt20">
 						<div class="upload-btn">
-							<el-upload
-									class="matterUploadFile"
-									action="dakdsk"
-									:show-file-list="false"
-									:on-preview="handlePreview2"
-									:on-remove="handleRemove2"
-									:before-upload="beforeUpload2"
-									:before-remove="beforeRemove2"
-									multiple
-									:on-change="onchange2"
-									:limit="10"
-									:auto-upload="false"
-							>
+							<el-upload class="matterUploadFile" action="dakdsk" :show-file-list="false"
+								:on-preview="handlePreview2" :on-remove="handleRemove2" :before-upload="beforeUpload2"
+								:before-remove="beforeRemove2" multiple :on-change="onchange2" :limit="10"
+								:auto-upload="false">
 								<el-button type="primary">上传文件</el-button>
 							</el-upload>
-							<span class="ml-3" slot="tip" style="position: absolute;left: 100px;top: 10px;">上传的附件不可超过10MB，禁止上传以下的附件类型：.exe,.sh,.bat,.com,.dll</span>
+							<span class="ml-3" slot="tip"
+								style="position: absolute;left: 100px;top: 10px;">上传的附件不可超过10MB，禁止上传以下的附件类型：.exe,.sh,.bat,.com,.dll</span>
 						</div>
 						<ul class="pjfile-list">
 							<li v-for="(item, index) in fileList2" :key="index">
-								{{item.name}}<a class="debtn" href="javascript:;" @click="deluploadImg2(item,index)">删除</a></li>
+								{{item.name}}<a class="debtn" href="javascript:;"
+									@click="deluploadImg2(item,index)">删除</a></li>
 							<!-- <li>资质证.jpg<a class="debtn" href="javascript:;">删除</a></li>
 							<li>资质证.jpg<a class="debtn" href="javascript:;">删除</a></li> -->
 						</ul>
 					</div>
 					<p class="note-txt mt-1">备注：您可上传采购项目要求说明，可供中介机构查看下载。</p>
+				</div>
+			</div>
+
+			<!-- 材料一单清 -->
+			<div class="info-item edit-item">
+				<h2 class="item-title active" @click="expandProjectInfoItem"><i
+						class="item-icon item-fujian-icon"></i>材料一单清<i class="arrow-icon"></i></h2>
+				<div class="item-detail edit-item-detail">
+					<div class="fileDiv" v-loading="loadingFile" element-loading-text="文件上传中"
+						element-loading-spinner="el-icon-loading" element-loading-background="rgba(0, 0, 0, 0.3)"
+						:class="this.AllFileList.length>0?'is-sel-file':''">
+						<el-upload ref="uploadFile" class="upload-flie" :auto-upload="false" drag
+							:show-file-list="false" :file-list="fileList" :action="ctx+'rest/mats/att/upload/auto'"
+							multiple :http-request="myUploadFile" :on-change="fileChange">
+							<i slot="trigger" v-show="this.AllFileList.length>0" class="el-icon-plus"></i>
+							<el-button class="submit-file" v-show="this.AllFileList.length>0" size="small"
+								type="primary" @click="submitUpload">一键自动分拣
+							</el-button>
+							<div class="el-upload__text" v-show="this.AllFileList.length==0">或将文件直接拖入这里，支持上传后自动分拣
+							</div>
+							<el-button v-show="this.AllFileList.length==0" slot="trigger" size="small" type="primary">
+								选择文件
+							</el-button>
+						</el-upload>
+						<div class="flie-list-che file-list-ul" v-show="this.AllFileList.length>0">
+							<el-checkbox-group v-model="checkedSelFlie" class="check-item"
+								@change="handleCheckedCitiesChange">
+								<el-checkbox v-for="(item,index) in AllFileList" :label="item.name" :key="item.uid">
+									<span><i class="el-icon-document"></i>{{item.name}}</span>
+								</el-checkbox>
+							</el-checkbox-group>
+							<el-checkbox class="check-all fr" v-model="checkAll" @change="handleCheckAllChange">全选
+							</el-checkbox>
+						</div>
+					</div>
+					<el-form :rules="model.rules" :model="model" ref="formTest">
+						<el-table :data="model.matsTableData" row-key="matId" class="mats-table"
+							:expand-row-keys="showFileListKey" style="width: 100%">
+							<el-table-column align="center" label="序号" width="55">
+								<template slot-scope="scope">
+									<span>{{scope.$index+1}}</span>
+								</template>
+							</el-table-column>
+							<el-table-column type="expand" v-if="showMatTableExpand" width="20" align="right">
+								<template slot-scope="props">
+
+									<div class="mat-children" v-if="props.row.matChild.length>0">
+										<div v-for="item in props.row.matChild" class="file-list-tab"
+											:key="item.fileId">
+											<span class="file-name">
+												<span class="icon ag ag-filetype-doc"
+													:class="'ag-filetype-'+getFileType(item.fileName)"></span>
+												{{item.fileName}}
+											</span>
+											<span class="file-icon-btn">
+												<span title="预览" class="el-icon-search"
+													@click="filePreview(item)"></span>
+												<span title="下载" class="el-icon-download"
+													@click="downOneFile(item)"></span>
+												<span title="删除" class="el-icon-delete"
+													@click="delOneFile(item,props.row)"></span>
+											</span>
+										</div>
+									</div>
+									<div v-else>
+										<div class="mat-children">
+											<div class="file-list-tab no-file">暂无附件</div>
+										</div>
+									</div>
+								</template>
+							</el-table-column>
+							<el-table-column prop="matName" label="材料名称" min-width="220">
+							</el-table-column>
+							<el-table-column label="收件要点" min-width="50" align="center">
+								<template slot-scope="scope">
+									<el-tooltip class="item custor" effect="light" :content="scope.row.reviewKeyPoints"
+										placement="right">
+										<span class="el-icon el-icon-search"></span>
+									</el-tooltip>
+								</template>
+							</el-table-column>
+							<el-table-column align="center" label="要点示例" min-width="55">
+								<template slot-scope="scope">
+									<el-popover class="custor" placement="right" width="60" trigger="hover">
+										<p class="notice-pop" @click="showMatFiles(scope.row.matId,'TEMPLATE_DOC')">
+											空表</p>
+										<p class="notice-pop" @click="showMatFiles(scope.row.matId,'SAMPLE_DOC')">样表
+										</p>
+										<p class="notice-pop"
+											@click="showMatFiles(scope.row.matId,'REVIEW_SAMPLE_DOC')">收件样本</p>
+										<i slot="reference" class="el-icon el-icon-more"></i>
+									</el-popover>
+								</template>
+							</el-table-column>
+							<el-table-column align="center" label="是否容缺" min-width="55">
+								<template slot-scope="scope">
+									<span
+										:class="(scope.row.zcqy!='0')?'text-green':''">{{(scope.row.zcqy=='0')?'否':'是'}}</span>
+								</template>
+							</el-table-column>
+							<el-table-column label="纸质件" align="center">
+								<el-table-column label="原件" align="center">
+									<el-table-column prop="duePaperCount" align="center" label="份数" min-width="60">
+									</el-table-column>
+									<el-table-column prop="realPaperCount" align="center" label="收/验" min-width="70">
+										<template slot-scope="scope">
+											<el-form-item :prop="'matsTableData.' + scope.$index + '.realPaperCount'"
+												:rules='(scope.row.zcqy==0&&scope.row.paperIsRequire==1)?model.rules.realPaperCount:[]'>
+
+												<el-input size="mini" v-model="scope.row.realPaperCount"></el-input>
+											</el-form-item>
+										</template>
+									</el-table-column>
+									<el-table-column align="center" width="98">
+										<template slot-scope="scope" slot="header">
+											<el-checkbox v-model="getPaperAll"
+												@change="function(val) {checkAllMatChange(val,'paper')}">全选
+											</el-checkbox>
+										</template>
+										<template slot-scope="scope">
+											<el-form-item :prop="'matsTableData.' + scope.$index + '.getPaper'"
+												:rules='(scope.row.zcqy==0&&scope.row.paperIsRequire==1)?model.rules.getPaper:[]'>
+												<el-checkbox v-model="scope.row.getPaper" :key="scope.row.matinstId"
+													@change="function(value) {checkedMatChange(value,scope.$index,'paper')}">
+													已收/验
+												</el-checkbox>
+											</el-form-item>
+										</template>
+									</el-table-column>
+								</el-table-column>
+								<el-table-column label="复印件" align="center">
+									<el-table-column prop="dueCopyCount" align="center" label="份数" min-width="60">
+									</el-table-column>
+									<el-table-column prop="realCopyCount" align="center" label="收/验" min-width="70">
+										<template slot-scope="scope">
+											<el-form-item :prop="'matsTableData.' + scope.$index + '.realCopyCount'">
+												<el-input size="mini" v-model="scope.row.realCopyCount"></el-input>
+											</el-form-item>
+										</template>
+									</el-table-column>
+									<el-table-column align="center" width="98">
+										<template slot-scope="scope" slot="header">
+											<el-checkbox v-model="getCopyAll"
+												@change="function(val){ checkAllMatChange(val,'copy')}">全选
+											</el-checkbox>
+										</template>
+										<template slot-scope="scope">
+											<el-form-item :prop="'matsTableData.' + scope.$index + '.getCopy'">
+												<el-checkbox v-model="scope.row.getCopy" :key="scope.row.matinstId"
+													@change="function(value){ checkedMatChange(value,scope.$index,'copy')}">
+													已收/验
+												</el-checkbox>
+											</el-form-item>
+										</template>
+									</el-table-column>
+								</el-table-column>
+							</el-table-column>
+							<el-table-column label="电子件" align="center">
+								<el-table-column align="center" label="必须" min-width="70">
+									<template slot-scope="scope">
+										<span
+											:class="(scope.row.attIsRequire==1)?'text-green':''">{{(scope.row.attIsRequire==1)?'是':'否'}}</span>
+									</template>
+								</el-table-column>
+								<el-table-column label="附件" min-width="60" align="center">
+									<template slot-scope="scope">
+										<i class="upload-flie-icon el-icon-upload"
+											@click="showUploadWindow(scope.row)"></i>
+									</template>
+								</el-table-column>
+							</el-table-column>
+						</el-table>
+					</el-form>
 				</div>
 			</div>
 
@@ -936,7 +1173,8 @@
 
 							<label><b class="red-cl">*</b>联系电话</label>
 							<div class="input-box">
-								<span type="number" class="form-control">{{aeaLinkmanInfo.linkmanMobilePhone||'暂无'}}</span>
+								<span type="number"
+									class="form-control">{{aeaLinkmanInfo.linkmanMobilePhone||'暂无'}}</span>
 							</div>
 
 						</div>
@@ -980,21 +1218,14 @@
 				</el-input>
 			</div>
 		</div>
-		<el-table :data="avoidList" stripe border highlight-current-row ref="multipleTable3" @selection-change="handleSelectionChange4" style="margin-top: 10px;width: 100%;">
+		<el-table :data="avoidList" stripe border highlight-current-row ref="multipleTable3"
+			@selection-change="handleSelectionChange4" style="margin-top: 10px;width: 100%;">
 			<el-table-column type="selection" width="40"></el-table-column>
 			<el-table-column prop="applicant" label="单位名称" width=""></el-table-column>
 		</el-table>
-		<el-pagination
-				background
-				align="right"
-				:pager-count="5"
-				@size-change="handleSizeChange4"
-				@current-change="handleCurrentChange4"
-				:page-sizes="[10, 20, 30, 50]"
-				:page-size="pageSize4"
-				:current-page="pageNum4"
-				layout="total,sizes, prev, pager, next, jumper"
-				:total="total4">
+		<el-pagination background align="right" :pager-count="5" @size-change="handleSizeChange4"
+			@current-change="handleCurrentChange4" :page-sizes="[10, 20, 30, 50]" :page-size="pageSize4"
+			:current-page="pageNum4" layout="total,sizes, prev, pager, next, jumper" :total="total4">
 		</el-pagination>
 	</el-dialog>
 	<!-- 选择回避单位 end-->
@@ -1008,23 +1239,16 @@
 				</el-input>
 			</div>
 		</div>
-		<el-table height="400" :data="serviceItemList" stripe border highlight-current-row ref="multipleTable2" @selection-change="handleSelectionChange2" style="margin-top: 10px;width: 100%;">
+		<el-table height="400" :data="serviceItemList" stripe border highlight-current-row ref="multipleTable2"
+			@selection-change="handleSelectionChange2" style="margin-top: 10px;width: 100%;">
 			<el-table-column type="selection" width="40"></el-table-column>
 			<el-table-column prop="agentItemName" label="事项名称" width=""></el-table-column>
 			<el-table-column prop="serviceName" label="服务类型" width=""></el-table-column>
 			<el-table-column prop="agentOrgName" label="审批部门" width=""></el-table-column>
 		</el-table>
-		<el-pagination
-				background
-				align="right"
-				:pager-count="5"
-				@size-change="handleSizeChange2"
-				@current-change="handleCurrentChange2"
-				:page-sizes="[10, 20, 30, 50]"
-				:page-size="pageSize2"
-				:current-page="pageNum2"
-				layout="total,sizes, prev, pager, next, jumper"
-				:total="total2">
+		<el-pagination background align="right" :pager-count="5" @size-change="handleSizeChange2"
+			@current-change="handleCurrentChange2" :page-sizes="[10, 20, 30, 50]" :page-size="pageSize2"
+			:current-page="pageNum2" layout="total,sizes, prev, pager, next, jumper" :total="total2">
 		</el-pagination>
 	</el-dialog>
 	<!-- 选择元素部件 end-->
@@ -1034,17 +1258,14 @@
 		<div class="dialog-footer">
 			<el-button @click="chooseAgentTabledialogTable=false">选择</el-button>
 		</div>
-		<el-table height="400" :data="agentUnit" stripe border highlight-current-row ref="multipleTable3" @selection-change="handleSelectionChange3" style="margin-top: 10px;width: 100%;">
+		<el-table height="400" :data="agentUnit" stripe border highlight-current-row ref="multipleTable3"
+			@selection-change="handleSelectionChange3" style="margin-top: 10px;width: 100%;">
 			<el-table-column type="selection" width="40"></el-table-column>
 			<el-table-column prop="agentUnitName" label="中介机构名称" width=""></el-table-column>
 			<el-table-column prop="compEvaluation" label="中介机构服务评价" width="">
-				<template slot-scope="scope"><!--score-template="{scope.row.compEvaluation}"-->
-					<el-rate
-							v-model="scope.row.compEvaluation"
-							disabled
-							show-score
-							text-color="#ff9900"
-					>
+				<template slot-scope="scope">
+					<!--score-template="{scope.row.compEvaluation}"-->
+					<el-rate v-model="scope.row.compEvaluation" disabled show-score text-color="#ff9900">
 					</el-rate>
 				</template>
 
@@ -1067,7 +1288,10 @@
 
 </div>
 
-<script src="../../../../../static/zjcs/personCenter/js/addNeedPaurse.js" th:src="@{/zjcs/personCenter/js/addNeedPaurse.js}" type="text/javascript"></script>
+<script src="../../../../../static/zjcs/common/js/axios.min.js" th:src="@{/zjcs/common/js/axios.min.js}"
+	type="text/javascript"></script>
+<script src="../../../../../static/zjcs/personCenter/js/addNeedPaurse.js"
+	th:src="@{/zjcs/personCenter/js/addNeedPaurse.js}" type="text/javascript"></script>
 
 <style>
 	#matterForm .el-form-item {
@@ -1096,11 +1320,11 @@
 		color: #3184fa;
 	}
 
-	#matterForm .el-tabs--border-card > .el-tabs__header .el-tabs__item.is-active {
+	#matterForm .el-tabs--border-card>.el-tabs__header .el-tabs__item.is-active {
 		color: #3184fa;
 	}
 
-	#matterForm .el-tabs--border-card > .el-tabs__content {
+	#matterForm .el-tabs--border-card>.el-tabs__content {
 		padding: 0px;
 	}
 
@@ -1172,4 +1396,75 @@
 	#timeLimitExplain .el-form-item__error {
 		top: 179%;
 	}
+
+	/*  材料清单 start  */
+	.fileDiv {
+		border: 1px dashed #D2D2D2;
+		min-height: 170px;
+		margin-bottom: 10px;
+	}
+
+	.fileDiv.is-sel-file .upload-flie {
+		width: 130px;
+		float: right;
+		min-height: 170px;
+		height: 100%;
+		position: relative;
+	}
+
+	.fileDiv.is-sel-file .el-upload-dragger {
+		width: 110px;
+		height: 110px;
+		margin: 7px;
+		padding-top: 0;
+		border-radius: 0;
+	}
+
+	.fileDiv.is-sel-file .submit-file {
+		position: absolute;
+		bottom: 7px;
+		right: 7px;
+	}
+
+	.upload-flie .el-icon-plus {
+		background-color: rgba(242, 242, 242, 0.56);
+		box-sizing: border-box;
+		width: 110px;
+		height: 110px;
+		cursor: pointer;
+		line-height: 110px;
+		font-size: 40px;
+		color: #d7d7d7;
+		font-weight: bold;
+	}
+
+	.upload-flie {
+		height: 100%;
+		min-height: 120px;
+		width: 100%;
+		position: relative;
+	}
+
+	.imitate-upload-pic {
+		line-height: normal;
+	}
+
+	.file-list-ul {
+		margin-right: 130px;
+		padding: 10px;
+		border-right: 1px dashed #D2D2D2;
+		min-height: 170px;
+	}
+
+	.el-upload-dragger {
+		position: absolute;
+		width: 100%;
+		height: 100%;
+		top: 0;
+		left: 0;
+		border: none;
+		padding-top: 50px;
+	}
+
+	/*  材料清单 end  */
 </style>
