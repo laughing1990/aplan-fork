@@ -309,12 +309,12 @@ public class RestApplyMatAndAttachmentController {
     @PostMapping("/bind/cert")
     @ApiOperation(value = "关联电子证照材料")
     @ApiImplicitParam(value = "电子证照")
-    public ContentResultForm<AeaHiItemMatinst> bindCertinst(@RequestBody AeaHiCertinst aeaHiCertinst) {
+    public ContentResultForm<AeaHiCertinst> bindCertinst(@RequestBody AeaHiCertinst aeaHiCertinst) {
         try {
             if (StringUtils.isNotBlank(aeaHiCertinst.getMatId())) {
-                AeaHiItemMatinst aeaHiItemMatinst = aeaHiItemMatinstService.bindCertinst(aeaHiCertinst, SecurityContext.getCurrentUserName());
+                aeaHiCertinst = aeaHiItemMatinstService.bindCertinst(aeaHiCertinst, SecurityContext.getCurrentUserName());
                 Assert.hasText(aeaHiCertinst.getCertinstId(), "certinstId is null");
-                return new ContentResultForm<>(true, aeaHiItemMatinst, "Bind success");
+                return new ContentResultForm<>(true, aeaHiCertinst, "Bind success");
             }
         } catch (Exception e) {
             e.printStackTrace();
