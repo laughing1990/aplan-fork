@@ -21,7 +21,7 @@
             <tr>
               <th class="al" width="20%">申报流水号</th>
               <th class="al" width="18%">项目代码 | 项目名称</th>
-              <th class="al" width="18%">阶段/事项名称</th>
+              <th width="14%">阶段/事项名称</th>
               <th width="22%">申报状态</th>
               <th  width="20%">
                 <div style="width: 150px;">操作</div>
@@ -128,7 +128,7 @@
           <tbody>
             <template v-if="hadApplyItemData.length>0">
               <tr v-for="item in hadApplyItemData">
-                <td width="20%">{{item.endTime |timeFormat}}</td>
+                <td width="40%">{{item.endTime |timeFormat}}</td>
                 <td class="al" width="20%">
                   {{item.localCode}}
                   <span class="ellipsis pro-name" :title="item.projName">{{item.projName}}</span>
