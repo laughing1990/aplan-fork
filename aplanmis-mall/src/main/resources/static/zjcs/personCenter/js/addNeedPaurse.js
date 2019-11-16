@@ -87,27 +87,30 @@ var module1 = new Vue({
 				agentItemName: [
 					{ required: true, message: '请选择中介服务事项', trigger: 'change' }
 				],
-				// isApproveProj:[
-				//     { required: true, message: '请选择投资审批项目', trigger: 'blur' }
-				// ],
+				isApproveProj:[
+				    { required: true, message: '请选择投资审批项目', trigger: 'change' }
+				],
 				approvalCode: [
-					{ required: true, message: '投资审批项目编码', trigger: 'blur' }
+					{ required: true, message: '投资审批项目编码', trigger: 'change' }
 				],
 				contact: [
-					{ required: true, message: '请输入项目联系人', trigger: 'blur' }
+					{ required: true, message: '请输入项目联系人', trigger: 'change' }
+				],
+				basicLinkPhone: [
+					{ required: true, message: '请输入联系电话', trigger: 'change' }
 				],
 				mobile: [
 					//  { required: true, message: '请输入联系电话', trigger: 'blur' },
-					{ required: true, validator: checkPhone, trigger: 'blur' }
+					{ required: true, validator: checkPhone, trigger: 'change' }
 				],
-				// projName:[
-				//      { required: true, message: '请输入采购项目名称', trigger: 'blur' }
-				// ],
+				projName:[
+				     { required: true, message: '请输入采购项目名称', trigger: 'change' }
+				],
 				projScale: [
 					{ required: true, message: '请输入项目规模', trigger: 'change' }
 				],
 				projScaleContent: [
-					{ required: true, message: '请输入项目规模描述', trigger: 'blur' }
+					{ required: true, message: '请输入项目规模描述', trigger: 'change' }
 				],
 				chooseInsertype: [
 					{ type: 'array', required: true, message: '请至少选择一个资金来源', trigger: 'change' }
@@ -145,9 +148,9 @@ var module1 = new Vue({
 				// qualRequireExplain:[
 				//     { required: true, message: '请填写资质要求说明', trigger: 'blur' }
 				// ],
-				// isDefineAmount:[
-				//     { required: true, message: '请选择是否确认金额', trigger: 'blur' }
-				// ],
+				isDefineAmount:[
+				    { required: true, message: '请选择是否确认金额', trigger: 'change' }
+				],
 				isDiscloseIm: [
 					{ required: true, message: '请选择中选机构公示', trigger: 'change' }
 				],
@@ -164,7 +167,10 @@ var module1 = new Vue({
 					{ required: true, message: '请选择选取中介时间', trigger: 'blur' }
 				],
 				basePrice: [
-					{ required: true, message: '请填写服务金额', trigger: 'blur' }
+					{ required: true, message: '请填写服务金额', trigger: 'change' }
+				],
+				isAvoid: [
+					{ required: true, message: '请选择是否有回避情况', trigger: 'change' }
 				],
 				highestPrice: [
 					{ required: true, message: '请填写服务最高金额', trigger: 'blur' }
@@ -180,7 +186,10 @@ var module1 = new Vue({
 				],
 				ownerComplaintPhone: [
 					{ required: true, message: '请填写投诉质疑电话', trigger: 'blur' }
-				]
+				],
+				biddingType: [
+					{ required: true, message: '请选取中介服务机构方式', trigger: 'change' }
+				],
 			},
 			agentUnit: [],
 			qualRequireType: '0', // 资质要求
@@ -204,7 +213,13 @@ var module1 = new Vue({
 				children: 'children',
 				label: 'name'
 			},
-			form: { isApproveProj: 1, isDefineAmount: '1', chooseInsertype: ['1', '1'], isAvoid: "0" },
+			form: { 
+				isApproveProj: 1, 
+				isDefineAmount: '1', 
+				chooseInsertype: ['1', '1'], 
+				isAvoid: "0",
+				biddingType: '1'
+			},
 			isFinancialFund: true,
 			isSocialFund: true,
 			witnessName1: '',
@@ -368,7 +383,7 @@ var module1 = new Vue({
 						isFinancialFund: isFinancialFund, // 是否为财政资金（资金来源)
 						projScaleContent: vm.form.projScaleContent == undefined ? '' : vm.form.projScaleContent, // 项目规模内容
 						projScale: vm.form.projScale == undefined ? '' : vm.form.projScale, // 项目规模
-						projName: vm.aeaProjInfo.projName = vm.aeaProjInfo.projName == undefined ? '' : vm.aeaProjInfo.projName, //项目名称
+						projName: vm.form.projName = vm.form.projName == undefined ? '' : vm.form.projName, //项目名称
 						parentProjId: vm.projInfoId || '', //审批项目id
 						localCode: vm.form.localCode == undefined ? '' : vm.form.localCode,  //  采购项目编码
 						isPurchaseProj: '', // 是否为采购项目
@@ -406,7 +421,7 @@ var module1 = new Vue({
 						isDiscloseBidding: vm.form.isDiscloseBidding || '', // 是否公示中标公告：1 是， 0 否
 						isApproveProj: vm.form.isApproveProj || '', // 是否为投资审批项目：1 是，0 否
 						contacts: vm.form.contact || '',// 业主联系人
-						biddingType: vm.biddingType || '', // 竞价类型：1 随机中标，2 自主选择
+						biddingType: vm.form.biddingType || '', // 竞价类型：1 随机中标，2 自主选择
 						amountExplain: vm.form.amountExplain || '',// 金额说明
 						expirationDate: vm.form.expirationDate || '', // 报名截止时间
 						choiceImunitTime: vm.form.choiceImunitTime || '', // 选取中介时间
@@ -415,18 +430,18 @@ var module1 = new Vue({
 					}
 					// console.log('serviceId',vm.form.serviceId)
 					// console.log('serviceItemId',params.serviceItemId)
-					if (vm.biddingType == 1) {
+					if (vm.form.biddingType == 1) {
 						params.isDefineAmount = vm.form.isDefineAmount // 是否确认金额，1 是 0 否
 						params.basePrice = vm.form.basePrice || '' // 最低价格（万元）
 						params.isAvoid = vm.form.isAvoid;//是否有回避单位
 						params.avoidReason = vm.form.avoidReason == undefined ? '' : vm.form.avoidReason;
 						params.avoidUnitInfoIds = ids;
-					} else if (vm.biddingType == 2) {
+					} else if (vm.form.biddingType == 2) {
 						params.basePrice = vm.form.basePrice || ''
 						params.isDefineAmount = vm.form.isDefineAmount // 是否确认金额，1 是 0 否
 						params.agentUnitInfoId = vm.multipleSelection3[0].unitInfoId // 所选中介机构id
 
-					} else if (vm.biddingType == 3) {
+					} else if (vm.form.biddingType == 3) {
 						params.highestPrice = vm.form.highestPrice || '' // 最高价格（万元）
 						params.basePrice = vm.form.basePrice || '' // 最低价格（万元）
 						params.isAvoid = vm.form.isAvoid;//是否有回避单位
@@ -590,7 +605,7 @@ var module1 = new Vue({
 		 */
 		getProUnitLinkInfo: function (projInfoId) {
 			var vm = this;
-			vm.biddingTypeChange(vm.biddingType);
+			vm.biddingTypeChange(vm.form.biddingType);
 			console.log(projInfoId)
 			vm.projInfoId = projInfoId;
 			request('', {
@@ -630,7 +645,7 @@ var module1 = new Vue({
 		},
 		getProUnitLinkInfoWithoutId: function () {
 			var vm = this;
-			this.biddingTypeChange(this.biddingType)
+			this.biddingTypeChange(this.form.biddingType)
 			vm.form = new Object();
 			request('', {
 				url: ctx + 'supermarket/purchase/getProUnitLinkInfo', type: 'post',
@@ -1485,23 +1500,23 @@ var module1 = new Vue({
 			}
 		},
 		isDefineAmountchange: function () {
-			return this.biddingType != '3' ? 'isDefineAmount' : '';
+			return this.form.biddingType != '3' ? 'isDefineAmount' : '';
 		},
 		isDiscloseImchange: function () {
-			return this.biddingType == '1' ? 'isDiscloseIm' : '';
+			return this.form.biddingType == '1' ? 'isDiscloseIm' : '';
 		},
 		expirationDatechange: function () {
-			return this.biddingType == '2' ? 'expirationDate' : '';
+			return this.form.biddingType == '2' ? 'expirationDate' : '';
 		},
 		agentUnitNamechange: function () {
-			return this.biddingType == '2' ? 'agentUnitName' : '';
+			return this.form.biddingType == '2' ? 'agentUnitName' : '';
 		},
 		basePricechange: function () {
 			return this.form.isDefineAmount == '1' ? 'basePrice' : '';
 		},
 		highestPricechange: function () {
 			console.log(123)
-			return this.biddingType == '3' ? 'highestPrice' : '';
+			return this.form.biddingType == '3' ? 'highestPrice' : '';
 		},
 		qualRequireTypechange: function () {
 			return this.isQualRequire ? 'qualRequireType' : '';
