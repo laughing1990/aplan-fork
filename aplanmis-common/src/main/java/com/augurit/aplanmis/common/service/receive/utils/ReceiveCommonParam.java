@@ -1,4 +1,4 @@
-package com.augurit.aplanmis.front.receive.utils;
+package com.augurit.aplanmis.common.service.receive.utils;
 
 import lombok.Data;
 

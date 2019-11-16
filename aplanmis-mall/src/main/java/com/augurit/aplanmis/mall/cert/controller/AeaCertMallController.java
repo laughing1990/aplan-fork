@@ -1,9 +1,17 @@
 package com.augurit.aplanmis.mall.cert.controller;
 
+import com.augurit.agcloud.framework.security.SecurityContext;
+import com.augurit.agcloud.framework.ui.result.ContentResultForm;
+import com.augurit.agcloud.framework.ui.result.ResultForm;
+import com.augurit.agcloud.framework.util.StringUtils;
+import com.augurit.aplanmis.common.domain.AeaHiCertinst;
+import com.augurit.aplanmis.common.domain.AeaHiItemMatinst;
+import com.augurit.aplanmis.common.service.instance.AeaHiItemMatinstService;
 import com.augurit.aplanmis.common.utils.SessionUtil;
 import com.augurit.aplanmis.common.vo.LoginInfoVo;
 import com.augurit.aplanmis.integration.license.dto.LicenseAuthResDTO;
 import com.augurit.aplanmis.mall.cert.service.AeaCertMallService;
+import io.jsonwebtoken.lang.Assert;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -11,9 +19,7 @@ import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -32,6 +38,8 @@ public class AeaCertMallController {
 
     @Autowired
     private AeaCertMallService aeaCertService;
+    @Autowired
+    private AeaHiItemMatinstService aeaHiItemMatinstService;
 //    @RequestMapping("/index.do")
 //    public ModelAndView index(ModelMap modelMap) {
 //
@@ -267,5 +275,38 @@ public class AeaCertMallController {
     @GetMapping("/getViewLicenseURL")
     public String getViewLicenseURL(String authCode) throws Exception {
         return aeaCertService.getViewLicenseURL(authCode);
+    }
+
+
+    @PostMapping("/bind/cert")
+    @ApiOperation(value = "关联电子证照材料")
+    @ApiImplicitParam(value = "电子证照")
+    public ContentResultForm<AeaHiItemMatinst> bindCertinst(@RequestBody AeaHiCertinst aeaHiCertinst) {
+        try {
+            if (StringUtils.isNotBlank(aeaHiCertinst.getMatId())) {
+                AeaHiItemMatinst aeaHiItemMatinst = aeaHiItemMatinstService.bindCertinst(aeaHiCertinst, SecurityContext.getCurrentUserName());
+                Assert.hasText(aeaHiCertinst.getCertinstId(), "certinstId is null");
+                return new ContentResultForm<>(true, aeaHiItemMatinst, "Bind success");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ContentResultForm<>(false, null, "关联证照库材料失败: " + e.getMessage());
+        }
+        return null;
+    }
+
+    @PostMapping("/unbind/cert")
+    @ApiImplicitParam(value = "证照材料实例id", name = "matinstId")
+    @ApiOperation(value = "解除关联电子证照材料")
+    public ResultForm bindCertinst(String matinstId) {
+        Assert.hasText(matinstId, "证照材料实例id不能为空");
+
+        try {
+            aeaHiItemMatinstService.unbindCertinst(matinstId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResultForm(false, "解绑失败: " + e.getMessage());
+        }
+        return new ResultForm(true, "解绑成功");
     }
 }

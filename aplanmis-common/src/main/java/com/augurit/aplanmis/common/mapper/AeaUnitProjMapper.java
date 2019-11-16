@@ -64,4 +64,12 @@ public interface AeaUnitProjMapper {
      */
     List<AeaUnitProj> findUnitProjByProjIdAndUnitIdAndunitType(@Param("projInfoId") String projInfoId, @Param("unitInfoId") String unitInfoId, @Param("unitType") String unitType);
 
+    /**
+     * 根据项目id和单位类型查询单位信息
+     * @param projInfoId
+     * @param unitType
+     * @return
+     */
+    List<AeaUnitInfo> findUnitInfoByProjIdAndUnitType(@Param("projInfoId") String projInfoId, @Param("unitType") String unitType);
+
 }

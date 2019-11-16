@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaExProjCertBuildMapper">
+    <sql id="allColumns">
+        BUILD_ID buildId,
+        PROJ_INFO_ID projInfoId,
+        CERT_BUILD_CODE certBuildCode,
+        CERT_BUILD_QRCODE certBuildQrcode,
+        GOV_ORG_CODE govOrgCode,
+        GOV_ORG_NAME govOrgName,
+        PUBLISH_TIME publishTime,
+        CONSTRUCTION_UNIT constructionUnit,
+        PROJ_NAME projName,
+        CONSTRUCTION_ADDR constructionAddr,
+        CONSTRUCTIONS_SIZE constructionsSize,
+        CONTRACT_PRICE contractPrice,
+        KC_UNIT kcUnit,
+        SJ_UNIT sjUnit,
+        SG_UNIT sgUnit,
+        JL_UNIT jlUnit,
+        KC_UNIT_LEADER kcUnitLeader,
+        SJ_UNIT_LEADER sjUnitLeader,
+        SG_UNIT_LEADER sgUnitLeader,
+        JL_UNIT_LEADER jlUnitLeader,
+        CONTRACT_PERIOD contractPeriod,
+        CERT_BUILD_MEMO certBuildMemo,
+        CREATER creater,
+        CREATE_TIME createTime,
+        MODIFIER modifier,
+        MODIFY_TIME modifyTime,
+        ROOT_ORG_ID rootOrgId,
+        PRINT_USER_ID printUserId,
+        PRINT_USER_NAME printUserName,
+        PRINT_TIME printTime
+    </sql>
+    
+    <insert id="insertAeaExProjCertBuild" parameterType="AeaExProjCertBuild">
+        insert into aea_ex_proj_cert_build(
+        BUILD_ID, PROJ_INFO_ID, CERT_BUILD_CODE, CERT_BUILD_QRCODE, GOV_ORG_CODE, GOV_ORG_NAME, PUBLISH_TIME, CONSTRUCTION_UNIT, PROJ_NAME, CONSTRUCTION_ADDR, CONSTRUCTIONS_SIZE, CONTRACT_PRICE, KC_UNIT, SJ_UNIT, SG_UNIT, JL_UNIT, KC_UNIT_LEADER, SJ_UNIT_LEADER, SG_UNIT_LEADER, JL_UNIT_LEADER, CONTRACT_PERIOD, CERT_BUILD_MEMO, CREATER, CREATE_TIME, MODIFIER, MODIFY_TIME, ROOT_ORG_ID, PRINT_USER_ID, PRINT_USER_NAME, PRINT_TIME
+        ) values (
+        #{buildId}, #{projInfoId}, #{certBuildCode}, #{certBuildQrcode}, #{govOrgCode}, #{govOrgName}, #{publishTime}, #{constructionUnit}, #{projName}, #{constructionAddr}, #{constructionsSize}, #{contractPrice}, #{kcUnit}, #{sjUnit}, #{sgUnit}, #{jlUnit}, #{kcUnitLeader}, #{sjUnitLeader}, #{sgUnitLeader}, #{jlUnitLeader}, #{contractPeriod}, #{certBuildMemo}, #{creater}, #{createTime}, #{modifier}, #{modifyTime}, #{rootOrgId}, #{printUserId}, #{printUserName}, #{printTime}
+        )
+    </insert>
+
+    <delete id="delAeaExProjCertBuild">
+        delete from aea_ex_proj_cert_build
+        where
+        BUILD_ID = #{buildId}
+    </delete>
+
+    <select id="updateAeaExProjCertBuild" parameterType="AeaExProjCertBuild">
+        update aea_ex_proj_cert_build
+        <set>
+            <if test="projInfoId != null">
+                PROJ_INFO_ID = #{projInfoId},
+            </if>
+            <if test="certBuildCode != null">
+                CERT_BUILD_CODE = #{certBuildCode},
+            </if>
+            <if test="certBuildQrcode != null">
+                CERT_BUILD_QRCODE = #{certBuildQrcode},
+            </if>
+            <if test="govOrgCode != null">
+                GOV_ORG_CODE = #{govOrgCode},
+            </if>
+            <if test="govOrgName != null">
+                GOV_ORG_NAME = #{govOrgName},
+            </if>
+            <if test="publishTime != null">
+                PUBLISH_TIME = #{publishTime},
+            </if>
+            <if test="constructionUnit != null">
+                CONSTRUCTION_UNIT = #{constructionUnit},
+            </if>
+            <if test="projName != null">
+                PROJ_NAME = #{projName},
+            </if>
+            <if test="constructionAddr != null">
+                CONSTRUCTION_ADDR = #{constructionAddr},
+            </if>
+            <if test="constructionsSize != null">
+                CONSTRUCTIONS_SIZE = #{constructionsSize},
+            </if>
+            <if test="contractPrice != null">
+                CONTRACT_PRICE = #{contractPrice},
+            </if>
+            <if test="kcUnit != null">
+                KC_UNIT = #{kcUnit},
+            </if>
+            <if test="sjUnit != null">
+                SJ_UNIT = #{sjUnit},
+            </if>
+            <if test="sgUnit != null">
+                SG_UNIT = #{sgUnit},
+            </if>
+            <if test="jlUnit != null">
+                JL_UNIT = #{jlUnit},
+            </if>
+            <if test="kcUnitLeader != null">
+                KC_UNIT_LEADER = #{kcUnitLeader},
+            </if>
+            <if test="sjUnitLeader != null">
+                SJ_UNIT_LEADER = #{sjUnitLeader},
+            </if>
+            <if test="sgUnitLeader != null">
+                SG_UNIT_LEADER = #{sgUnitLeader},
+            </if>
+            <if test="jlUnitLeader != null">
+                JL_UNIT_LEADER = #{jlUnitLeader},
+            </if>
+            <if test="contractPeriod != null">
+                CONTRACT_PERIOD = #{contractPeriod},
+            </if>
+            <if test="certBuildMemo != null">
+                CERT_BUILD_MEMO = #{certBuildMemo},
+            </if>
+            <if test="modifier != null">
+                MODIFIER = #{modifier},
+            </if>
+            <if test="modifyTime != null">
+                MODIFY_TIME = #{modifyTime},
+            </if>
+            <if test="rootOrgId != null">
+                ROOT_ORG_ID = #{rootOrgId},
+            </if>
+            <if test="printUserId != null">
+                PRINT_USER_ID = #{printUserId},
+            </if>
+            <if test="printUserName != null">
+                PRINT_USER_NAME = #{printUserName},
+            </if>
+            <if test="printTime != null">
+                PRINT_TIME = #{printTime}
+            </if>
+        </set>
+        where BUILD_ID = #{buildId}
+    </select>
+
+    <select id="listAeaExProjCertBuild" resultType="AeaExProjCertBuild">
+        select
+        <include refid="allColumns"/>
+        from aea_ex_proj_cert_build
+        where 1=1
+        <if test="projInfoId != null">
+           and PROJ_INFO_ID = #{projInfoId}
+        </if>
+        <if test="certBuildCode != null">
+           and CERT_BUILD_CODE = #{certBuildCode}
+        </if>
+        <if test="certBuildQrcode != null">
+           and CERT_BUILD_QRCODE = #{certBuildQrcode}
+        </if>
+        <if test="govOrgCode != null">
+           and GOV_ORG_CODE = #{govOrgCode}
+        </if>
+        <if test="govOrgName != null">
+           and GOV_ORG_NAME = #{govOrgName}
+        </if>
+        <if test="publishTime != null">
+           and PUBLISH_TIME = #{publishTime}
+        </if>
+        <if test="constructionUnit != null">
+           and CONSTRUCTION_UNIT = #{constructionUnit}
+        </if>
+        <if test="projName != null">
+           and PROJ_NAME = #{projName}
+        </if>
+        <if test="constructionAddr != null">
+           and CONSTRUCTION_ADDR = #{constructionAddr}
+        </if>
+        <if test="constructionsSize != null">
+           and CONSTRUCTIONS_SIZE = #{constructionsSize}
+        </if>
+        <if test="contractPrice != null">
+           and CONTRACT_PRICE = #{contractPrice}
+        </if>
+        <if test="kcUnit != null">
+           and KC_UNIT = #{kcUnit}
+        </if>
+        <if test="sjUnit != null">
+           and SJ_UNIT = #{sjUnit}
+        </if>
+        <if test="sgUnit != null">
+           and SG_UNIT = #{sgUnit}
+        </if>
+        <if test="jlUnit != null">
+           and JL_UNIT = #{jlUnit}
+        </if>
+        <if test="kcUnitLeader != null">
+           and KC_UNIT_LEADER = #{kcUnitLeader}
+        </if>
+        <if test="sjUnitLeader != null">
+           and SJ_UNIT_LEADER = #{sjUnitLeader}
+        </if>
+        <if test="sgUnitLeader != null">
+           and SG_UNIT_LEADER = #{sgUnitLeader}
+        </if>
+        <if test="jlUnitLeader != null">
+           and JL_UNIT_LEADER = #{jlUnitLeader}
+        </if>
+        <if test="contractPeriod != null">
+           and CONTRACT_PERIOD = #{contractPeriod}
+        </if>
+        <if test="certBuildMemo != null">
+           and CERT_BUILD_MEMO = #{certBuildMemo}
+        </if>
+        <if test="modifier != null">
+           and MODIFIER = #{modifier}
+        </if>
+        <if test="modifyTime != null">
+           and MODIFY_TIME = #{modifyTime}
+        </if>
+        <if test="rootOrgId != null">
+           and ROOT_ORG_ID = #{rootOrgId}
+        </if>
+        <if test="printUserId != null">
+           and PRINT_USER_ID = #{printUserId}
+        </if>
+        <if test="printUserName != null">
+          and PRINT_USER_NAME = #{printUserName}
+        </if>
+        <if test="printTime != null">
+           and PRINT_TIME = #{printTime}
+        </if>
+    </select>
+
+    <select id="findAeaExProjCertBuildByProjId" resultType="AeaExProjCertBuild">
+        select
+        <include refid="allColumns"/>
+        from aea_ex_proj_cert_build where PROJ_INFO_ID = #{projInfoId};
+    </select>
+</mapper>

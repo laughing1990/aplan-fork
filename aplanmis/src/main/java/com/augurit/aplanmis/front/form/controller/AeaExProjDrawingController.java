@@ -14,6 +14,7 @@ import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
 import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
 import com.augurit.aplanmis.common.vo.AeaProjDrawing;
 import com.augurit.aplanmis.common.vo.AeaProjDrawingVo;
+import com.augurit.aplanmis.front.form.service.AeaExProjCertBuildService;
 import com.augurit.aplanmis.front.subject.linkman.serivce.RestLinkmanService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,6 +56,9 @@ public class AeaExProjDrawingController {
 
     @Autowired
     private AeaProjInfoService aeaProjInfoService;
+
+    @Autowired
+    private AeaExProjCertBuildService aeaExProjCertBuildService;
 
 
 
@@ -151,7 +155,7 @@ public class AeaExProjDrawingController {
 
         aeaProjDrawingSerivce.saveAeaProjDrawing(aeaProjDrawingVo);
 
-
+        aeaExProjCertBuildService.SynchronizeDataByAeaProjDrawingForm(aeaProjDrawingVo);//同步数据
         return  new ContentResultForm<AeaProjDrawingVo>(true,aeaProjDrawingVo);
 
         }catch(Exception e){

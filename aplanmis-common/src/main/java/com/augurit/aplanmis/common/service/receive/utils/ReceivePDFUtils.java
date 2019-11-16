@@ -1,8 +1,9 @@
-package com.augurit.aplanmis.front.receive.utils;
+package com.augurit.aplanmis.common.service.receive.utils;
 
-import com.augurit.aplanmis.front.constant.ReceiveConstant;
-import com.augurit.aplanmis.front.receive.vo.MatCorrectVo;
-import com.augurit.aplanmis.front.receive.vo.ReceiveBaseVo;
+
+import com.augurit.aplanmis.common.service.receive.constant.ReceiveConstant;
+import com.augurit.aplanmis.common.service.receive.vo.MatCorrectVo;
+import com.augurit.aplanmis.common.service.receive.vo.ReceiveBaseVo;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;

@@ -1,4 +1,4 @@
-package com.augurit.aplanmis.front.receive.vo;
+package com.augurit.aplanmis.common.service.receive.vo;
 
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.constants.UnitType;

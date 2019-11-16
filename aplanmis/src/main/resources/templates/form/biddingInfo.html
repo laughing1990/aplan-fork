@@ -225,25 +225,6 @@
                             <el-input name="localCode" v-model="biddingInfo.winBidMoney" placeholder="请输入实际中标金额">
                             </el-input>
                         </el-form-item>
-                        <el-form-item label="招投标确认时间" class="input-inline" prop="bidConfirmTime">
-                            <el-date-picker v-model="biddingInfo.bidConfirmTime" type="date" placeholder="请选择中标日期"
-                                format="yyyy-MM-dd" value-format="yyyy-MM-dd">
-                            </el-date-picker>
-                        </el-form-item>
-                        <el-form-item label="招投标确认的行政单位机构代码" class="input-inline doubleLine" prop="govOrgCode">
-                            <el-input name="localCode" v-model="biddingInfo.govOrgCode" placeholder="请输入行政单位机构代码">
-                            </el-input>
-                        </el-form-item>
-                        <el-form-item label="招投标确认的行政单位名称" class="input-inline doubleLine" prop="govOrgName">
-                            <el-input name="localCode" v-model="biddingInfo.govOrgName" placeholder="请输入行政单位名称">
-                            </el-input>
-                        </el-form-item>
-                        <el-form-item label="招投标确认的行政单位区域码" class="input-inline doubleLine" prop="govAreaCode">
-                            <el-select v-model="biddingInfo.govAreaCode" placeholder="请选择">
-                                <el-option v-for="(item, index) in govAreaCodeOptions" :key="index"
-                                    :label="item.regionName" :value="item.regionNum"></el-option>
-                            </el-select>
-                        </el-form-item>
                     </div>
 
                     <div class="second-title">中标单位</div>
