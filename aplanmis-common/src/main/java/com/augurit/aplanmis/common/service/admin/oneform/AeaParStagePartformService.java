@@ -9,31 +9,31 @@ import java.util.List;
 
 public interface AeaParStagePartformService {
 
-     void saveStagePartform(AeaParStagePartform aeaParStagePartform) ;
+    void saveStagePartform(AeaParStagePartform aeaParStagePartform);
 
-     void updateStagePartform(AeaParStagePartform aeaParStagePartform) ;
+    void updateStagePartform(AeaParStagePartform aeaParStagePartform);
 
-     void deleteStagePartformById(String id) ;
+    void deleteStagePartformById(String id);
 
-     void batchDelStagePartformByIds(String[] ids) ;
+    void batchDelStagePartformByIds(String[] ids);
 
-     AeaParStagePartform getStagePartformById(String id) ;
+    AeaParStagePartform getStagePartformById(String id);
 
-     List<AeaParStagePartform> listStagePartform(AeaParStagePartform aeaParStagePartform) ;
+    List<AeaParStagePartform> listStagePartform(AeaParStagePartform aeaParStagePartform);
 
-     PageInfo<AeaParStagePartform> listStagePartform(AeaParStagePartform aeaParStagePartform, Page page) ;
+    PageInfo<AeaParStagePartform> listStagePartform(AeaParStagePartform aeaParStagePartform, Page page);
 
-     List<AeaParStagePartform> listStagePartformRelForm(AeaParStagePartform aeaPartform) ;
+    List<AeaParStagePartform> listStagePartformRelForm(AeaParStagePartform aeaPartform);
 
-     PageInfo<AeaParStagePartform> listStagePartformRelForm(AeaParStagePartform aeaParStagePartform, Page page) ;
+    PageInfo<AeaParStagePartform> listStagePartformRelForm(AeaParStagePartform aeaParStagePartform, Page page);
 
-     Long getMaxSortNo(String stageId);
+    Long getMaxSortNo(String stageId);
 
-     List<AeaParStagePartform> listPartFormNoSelectForm(AeaParStagePartform partform);
+    List<AeaParStagePartform> listPartFormNoSelectForm(AeaParStagePartform partform);
 
-     PageInfo<AeaParStagePartform> listPartFormNoSelectFormByPage(AeaParStagePartform partform, Page page);
+    PageInfo<AeaParStagePartform> listPartFormNoSelectFormByPage(AeaParStagePartform partform, Page page);
 
     void createAndUpdateDevForm(String formCode, String formName, String formLoadUrl, String formId, String stagePartformId) throws Exception;
 
-     ActStoForm getStageDevformByFormId(String formId);
+    ActStoForm getStageDevformByFormId(String formId);
 }

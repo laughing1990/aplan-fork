@@ -1273,7 +1273,6 @@ function stagePartformFormatter(value, row, index) {
             '<i class="la la-times"></i>' +
             '</a>';
 
-
         if (isSmartForm && isSmartForm == '1') {
             return editPartForm + updateForm + delForm + delPartForm;
         } else {
