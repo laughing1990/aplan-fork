@@ -272,6 +272,7 @@ public class AeaHiItemMatinstServiceImpl implements AeaHiItemMatinstService {
         aeaHiCertinst.setRootOrgId(currentOrgId);
         aeaHiCertinst.setCreater(currentUserName);
         aeaHiCertinst.setCertinstSource(CertinstSource.EXTERNAL.getValue());
+        aeaHiCertinst.setCreateTime(new Date());
 
         AeaHiItemMatinst aeaHiItemMatinst = new AeaHiItemMatinst();
         BeanUtils.copyProperties(aeaItemMat, aeaHiItemMatinst);
