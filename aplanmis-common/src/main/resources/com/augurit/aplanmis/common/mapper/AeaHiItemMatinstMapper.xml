@@ -458,7 +458,7 @@
                 #{item.projInfoId},
                 #{item.officialDocNo}, #{item.officialDocTitle}, #{item.officialDocDueDate},
                 #{item.officialDocPublishDate},#{item.rootOrgId},#{item.memo},#{item.matinstSource},#{item.linkmanInfoId},
-                #{matProp} , #{certinstId} , #{stoForminstId}
+                #{item.matProp} , #{item.certinstId} , #{item.stoForminstId}
                 FROM dual
                 )
             </foreach>
@@ -472,8 +472,9 @@
                 #{item.projInfoId},
                 #{item.officialDocNo}, #{item.officialDocTitle}, #{item.officialDocDueDate},
                 #{item.officialDocPublishDate},
-                #{item.rootOrgId},#{item.memo},#{item.matinstSource},#{item.linkmanInfoId}, #{matProp} , #{certinstId} ,
-                #{stoForminstId} )
+                #{item.rootOrgId},#{item.memo},#{item.matinstSource},#{item.linkmanInfoId}, #{item.matProp},
+                #{item.certinstId} ,
+                #{item.stoForminstId} )
             </foreach>
         </if>
 
