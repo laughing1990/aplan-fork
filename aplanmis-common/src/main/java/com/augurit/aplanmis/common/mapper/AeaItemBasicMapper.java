@@ -266,4 +266,12 @@ public interface AeaItemBasicMapper {
     List<AeaItemBasic> listUnSelectedItemFrontItemBasicByItemVerId(@Param("itemVerId") String itemVerId, @Param("frontItemId") String frontItemId, @Param("rootOrgId") String rootOrgId);
 
     List<AeaItemBasic> getCompletedItemBasicByProjInfoId(@Param("projInfoId") String projInfoId, @Param("rootOrgId") String rootOrgId);
+
+    /**
+     * 查询中介服务事项数量
+     *
+     * @param startDate
+     * @return
+     */
+    int listAgentItemServiceNum(@Param("startDate") String startDate);
 }

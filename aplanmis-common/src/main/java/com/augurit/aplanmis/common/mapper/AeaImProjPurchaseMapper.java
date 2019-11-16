@@ -90,4 +90,20 @@ public interface AeaImProjPurchaseMapper {
     void updateIntermediaryWonBidStatus(String unitBiddingId);
 
     void updateProjPurchaseState(@Param("auditFlag") String auditFlag, @Param("modifier") String modifier, @Param("modifyTime") Date modifyTime, @Param("projPurchaseId") String projPurchaseId);
+
+    /**
+     * 已完成采购需求数量
+     *
+     * @param startDate 查询开始时间
+     * @return int
+     */
+    int listAeaImProjPurchaseNum(@Param("startDate") String startDate);
+
+    /**
+     * 已发布未完成的采购数量
+     *
+     * @param startDate
+     * @return
+     */
+    int listPublicProjPurchaseNum(@Param("startDate") String startDate);
 }
