@@ -126,9 +126,10 @@ public interface AeaHiItemMatinstService {
      * 关联电子证照库中的材料
      *
      * @param aeaHiCertinst 前端回传绑定的信息
+     * @param currentUserName
      * @return 证照材料
      */
-    AeaHiItemMatinst bindCertinst(AeaHiCertinst aeaHiCertinst) throws Exception;
+    AeaHiItemMatinst bindCertinst(AeaHiCertinst aeaHiCertinst, String currentUserName) throws Exception;
 
     void unbindCertinst(String matinstId) throws Exception;
 
