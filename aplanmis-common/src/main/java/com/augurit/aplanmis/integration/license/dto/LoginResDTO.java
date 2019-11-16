@@ -12,5 +12,5 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class LoginResDTO extends PubResponseDTO{
 
-    private String access_token;
+    private String access_token;//登录成功则返回安全会话访问令牌
 }

@@ -51,7 +51,7 @@ public class AeaParFrontStageServiceImpl implements AeaParFrontStageService {
 
     @Override
     public void updateAeaParFrontStage(AeaParFrontStage aeaParFrontStage) throws Exception {
-        checkSame(aeaParFrontStage);
+//        checkSame(aeaParFrontStage);
 
         aeaParFrontStage.setModifyTime(new Date());
         aeaParFrontStage.setModifier(SecurityContext.getCurrentUserId());

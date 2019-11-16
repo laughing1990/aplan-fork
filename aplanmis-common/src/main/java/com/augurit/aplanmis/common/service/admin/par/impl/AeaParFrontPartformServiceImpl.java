@@ -51,7 +51,7 @@ public class AeaParFrontPartformServiceImpl implements AeaParFrontPartformServic
 
     @Override
     public void updateAeaParFrontPartform(AeaParFrontPartform aeaParFrontPartform) throws Exception {
-        checkSame(aeaParFrontPartform);
+//        checkSame(aeaParFrontPartform);
 
         aeaParFrontPartform.setModifyTime(new Date());
         aeaParFrontPartform.setModifier(SecurityContext.getCurrentUserId());

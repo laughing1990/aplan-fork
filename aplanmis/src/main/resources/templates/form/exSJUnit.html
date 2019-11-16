@@ -53,6 +53,18 @@
                     <input type="hidden" name="unitInfoId" :value="gongchengzongFrom.unitInfoId">
                     <input type="hidden" name="projLinkmanId" :value="gongchengzongFrom.projLinkmanId">
                     <el-col :span="12">
+                        <el-form-item label="组织机构代码" prop="organizationalCode">
+                            <!--<el-autocomplete :trigger-on-focus="false" v-model="applyJianliFrom.organizationalCode" placeholder="请输入组织机构代码">-->
+                            <!--</el-autocomplete>-->
+                            <el-input v-model="gongchengzongFrom.organizationalCode" placeholder="请输入组织机构代码"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="12">
+                        <el-form-item label="统一社会信用代码" prop="unifiedSocialCreditCode">
+                            <el-input v-model="gongchengzongFrom.unifiedSocialCreditCode" placeholder="请输入统一社会信用代码"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="12">
                         <el-form-item label="单位名称" prop="applicant">
                             <el-autocomplete :trigger-on-focus="false" :fetch-suggestions="querySearchJiansheName"
                                              @select="function(value) {selUnitInfo(value,'gongchengzongFrom')}"
@@ -107,6 +119,18 @@
                     <input type="hidden" name="unitInfoId" :value="applyShigongzongFrom.unitInfoId">
                     <input type="hidden" name="unitProjId" :value="applyShigongzongFrom.unitProjId">
                     <input type="hidden" name="projLinkmanId" :value="applyShigongzongFrom.projLinkmanId">
+                    <el-col :span="12">
+                        <el-form-item label="组织机构代码" prop="organizationalCode">
+                            <!--<el-autocomplete :trigger-on-focus="false" v-model="applyJianliFrom.organizationalCode" placeholder="请输入组织机构代码">-->
+                            <!--</el-autocomplete>-->
+                            <el-input v-model="applyShigongzongFrom.organizationalCode" placeholder="请输入组织机构代码"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="12">
+                        <el-form-item label="统一社会信用代码" prop="unifiedSocialCreditCode">
+                            <el-input v-model="applyShigongzongFrom.unifiedSocialCreditCode" placeholder="请输入统一社会信用代码"></el-input>
+                        </el-form-item>
+                    </el-col>
                     <el-col :span="12">
                         <el-form-item label="单位名称" prop="applicant">
                             <!--<el-input v-model="applyShigongzongFrom.applicant" placeholder="请输入单位名称"></el-input>-->
@@ -239,6 +263,18 @@
                     <input type="hidden" name="unitInfoId" :value="applyShigongzhuanyefenbaoFrom.unitInfoId">
                     <input type="hidden" name="unitProjId" :value="applyShigongzhuanyefenbaoFrom.unitProjId">
                     <input type="hidden" name="projLinkmanId" :value="applyShigongzhuanyefenbaoFrom.projLinkmanId">
+                    <el-col :span="12">
+                        <el-form-item label="组织机构代码" prop="organizationalCode">
+                            <!--<el-autocomplete :trigger-on-focus="false" v-model="applyJianliFrom.organizationalCode" placeholder="请输入组织机构代码">-->
+                            <!--</el-autocomplete>-->
+                            <el-input v-model="applyShigongzhuanyefenbaoFrom.organizationalCode" placeholder="请输入组织机构代码"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="12">
+                        <el-form-item label="统一社会信用代码" prop="unifiedSocialCreditCode">
+                            <el-input v-model="applyShigongzhuanyefenbaoFrom.unifiedSocialCreditCode" placeholder="请输入统一社会信用代码"></el-input>
+                        </el-form-item>
+                    </el-col>
                     <el-col :span="12">
                         <el-form-item label="单位名称" prop="applicant">
                             <el-autocomplete :trigger-on-focus="false" :fetch-suggestions="querySearchJiansheName"
@@ -385,6 +421,18 @@
                     <input type="hidden" name="unitInfoId" :value="applyShigonglaowufenbaoFrom.unitInfoId">
                     <input type="hidden" name="unitProjId" :value="applyShigonglaowufenbaoFrom.unitProjId">
                     <input type="hidden" name="projLinkmanId" :value="applyShigonglaowufenbaoFrom.projLinkmanId">
+                    <el-col :span="12">
+                        <el-form-item label="组织机构代码" prop="organizationalCode">
+                            <!--<el-autocomplete :trigger-on-focus="false" v-model="applyJianliFrom.organizationalCode" placeholder="请输入组织机构代码">-->
+                            <!--</el-autocomplete>-->
+                            <el-input v-model="applyShigonglaowufenbaoFrom.organizationalCode" placeholder="请输入组织机构代码"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="12">
+                        <el-form-item label="统一社会信用代码" prop="unifiedSocialCreditCode">
+                            <el-input v-model="applyShigonglaowufenbaoFrom.unifiedSocialCreditCode" placeholder="请输入统一社会信用代码"></el-input>
+                        </el-form-item>
+                    </el-col>
                     <el-col :span="12">
                         <el-form-item label="单位名称" prop="applicant">
                             <el-autocomplete :trigger-on-focus="false" :fetch-suggestions="querySearchJiansheName"

@@ -2563,6 +2563,7 @@
         itemBasic.ORG_ID agentOrgId,t1.ORG_NAME agentOrgName,
         itemBasic.DUE_NUM agentItemDueNum,
         itemBasic.BJ_TYPE agentItemBjType,
+        itemBasic.XKDX agentItemFwdx,
         itemBasic.ROOT_ORG_ID rootOrgId,
         <if test="_databaseId == 'oracle'">
             WM_CONCAT(temp2.ITEM_NAME) itemName,

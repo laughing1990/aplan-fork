@@ -10,19 +10,19 @@
                         organizationalCode: '',
                         unifiedSocialCreditCode: '',
                         applicant: '',
-                        unitType: '17'
+                        unitType: '27'
                     }],
                     agencyUnits: [{
                         organizationalCode: '',
                         unifiedSocialCreditCode: '',
                         applicant: '',
-                        unitType: '2'
+                        unitType: '21'
                     }],
                     costUnits: [{
                         organizationalCode: '',
                         unifiedSocialCreditCode: '',
                         applicant: '',
-                        unitType: '14'
+                        unitType: '26'
                     }]
                 },
                 biddingInfoRules: {
@@ -122,7 +122,7 @@
                                 organizationalCode: '',
                                 unifiedSocialCreditCode: '',
                                 applicant: '',
-                                unitType: '17'
+                                unitType: '27'
                             });
                         }
                         // 招标代理机构
@@ -131,7 +131,7 @@
                                 organizationalCode: '',
                                 unifiedSocialCreditCode: '',
                                 applicant: '',
-                                unitType: '2'
+                                unitType: '21'
                             });
                         }
                         // 造价咨询单位
@@ -140,7 +140,7 @@
                                 organizationalCode: '',
                                 unifiedSocialCreditCode: '',
                                 applicant: '',
-                                unitType: '14'
+                                unitType: '26'
                             });
                         }
 

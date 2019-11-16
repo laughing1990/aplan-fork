@@ -134,6 +134,11 @@ public class AeaImProjPurchaseController {
                 if (null != item_property) {
                     vo.setAgentItemPropertyName(item_property.getItemName());
                 }
+
+                BscDicCodeItem dueUnitType = bscDicCodeMapper.getItemByTypeCodeAndItemCodeAndOrgId("DUE_UNIT_TYPE", vo.getAgentItemBjType(), "012aa547-7104-418d-87cc-824f24f1a278");
+                if (null != dueUnitType) {
+                    vo.setAgentItemDueUnitType(dueUnitType.getItemName());
+                }
                 String itemId = vo.getAgentItemId();
                 String rootOrgId = vo.getRootOrgId();
                 List<AeaItemBasic> parentItems = aeaItemBasicMapper.getAgentParentItem(itemId, rootOrgId);

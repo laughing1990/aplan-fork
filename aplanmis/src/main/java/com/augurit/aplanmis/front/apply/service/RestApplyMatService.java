@@ -819,14 +819,12 @@ public class RestApplyMatService {
         aeaHiItemMatinst.setCreateTime(new Date());
         aeaHiItemMatinst.setMatId(aeaItemMat.getMatId());
         // 企业
-        if ("c".equals(aeaItemMat.getMatHolder())) {
+        if (StringUtils.isBlank(aeaItemMat.getMatHolder()) || "c".equals(aeaItemMat.getMatHolder())) {
             aeaHiItemMatinst.setUnitInfoId(saveMatinstVo.getUnitInfoId());
-            aeaHiItemMatinst.setProjInfoId(saveMatinstVo.getProjInfoId());
         }
         // 个人
         else if ("u".equals(aeaItemMat.getMatHolder())) {
             aeaHiItemMatinst.setLinkmanInfoId(saveMatinstVo.getLinkmanInfoId());
-            aeaHiItemMatinst.setProjInfoId(saveMatinstVo.getProjInfoId());
         }
         aeaHiItemMatinst.setProjInfoId(saveMatinstVo.getProjInfoId());
         aeaHiItemMatinst.setMatinstCode(aeaItemMat.getMatCode());

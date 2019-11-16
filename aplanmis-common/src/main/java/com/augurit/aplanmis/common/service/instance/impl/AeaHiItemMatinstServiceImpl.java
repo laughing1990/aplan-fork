@@ -255,7 +255,7 @@ public class AeaHiItemMatinstServiceImpl implements AeaHiItemMatinstService {
     @Override
     public boolean matinstbeLong2MatId(String matinstId, String matId) throws Exception {
         Integer count = aeaHiItemMatinstMapper.matinstbeLong2MatId(matinstId, matId, SecurityContext.getCurrentOrgId());
-        return (count != null && count > 0) ? true : false;
+        return count != null && count > 0;
     }
 
     @Override
@@ -272,15 +272,27 @@ public class AeaHiItemMatinstServiceImpl implements AeaHiItemMatinstService {
         aeaHiCertinst.setRootOrgId(currentOrgId);
         aeaHiCertinst.setCreater(currentUserName);
         aeaHiCertinst.setCertinstSource(CertinstSource.EXTERNAL.getValue());
+        aeaHiCertinst.setCreateTime(new Date());
 
         AeaHiItemMatinst aeaHiItemMatinst = new AeaHiItemMatinst();
         BeanUtils.copyProperties(aeaItemMat, aeaHiItemMatinst);
         aeaHiItemMatinst.setMatinstId(UuidUtil.generateUuid());
         aeaHiItemMatinst.setRootOrgId(currentOrgId);
+        aeaHiItemMatinst.setMatinstName(aeaItemMat.getMatName());
         aeaHiItemMatinst.setMatinstCode(aeaItemMat.getMatCode());
         aeaHiItemMatinst.setCreateTime(new Date());
         aeaHiItemMatinst.setCreater(currentUserName);
         aeaHiItemMatinst.setCertinstId(aeaHiCertinst.getCertinstId());
+        aeaHiItemMatinst.setMatinstSource(aeaItemMat.getMatFrom());
+        // 企业
+        if (StringUtils.isBlank(aeaItemMat.getMatHolder()) || "c".equals(aeaItemMat.getMatHolder())) {
+            aeaHiItemMatinst.setUnitInfoId(aeaHiCertinst.getUnitInfoId());
+        }
+        // 个人
+        else if ("u".equals(aeaItemMat.getMatHolder())) {
+            aeaHiItemMatinst.setLinkmanInfoId(aeaHiCertinst.getLinkmanInfoId());
+        }
+        aeaHiItemMatinst.setProjInfoId(aeaHiCertinst.getProjInfoId());
 
         aeaHiCertinstMapper.insertAeaHiCertinst(aeaHiCertinst);
         aeaHiItemMatinstMapper.insertAeaHiItemMatinst(aeaHiItemMatinst);
