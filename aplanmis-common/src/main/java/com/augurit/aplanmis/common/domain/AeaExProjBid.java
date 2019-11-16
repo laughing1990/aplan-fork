@@ -66,7 +66,7 @@ public class AeaExProjBid implements Serializable{
     private java.util.Date modifyTime; // (修改时间)
     private String rootOrgId; // (所属根组织ID)
 
-    private String  tenderNum;  //'省级施工图审查合格书编号(三库一平台返回)',
+    private String  tenderNum;  //''省级中标通知书编号(广东三库一平台返回)',
 
 // ----------------------------------------------------- Constructors
 // ----------------------------------------------------- Methods

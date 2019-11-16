@@ -5,6 +5,7 @@ import com.augurit.agcloud.bsc.mapper.BscAttMapper;
 import com.augurit.agcloud.bsc.util.UuidUtil;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.util.StringUtils;
+import com.augurit.aplanmis.common.constants.CertinstSource;
 import com.augurit.aplanmis.common.domain.AeaHiCertinst;
 import com.augurit.aplanmis.common.domain.AeaHiItemInoutinst;
 import com.augurit.aplanmis.common.domain.AeaHiItemMatinst;
@@ -270,9 +271,11 @@ public class AeaHiItemMatinstServiceImpl implements AeaHiItemMatinstService {
         aeaHiCertinst.setCertinstId(UuidUtil.generateUuid());
         aeaHiCertinst.setRootOrgId(currentOrgId);
         aeaHiCertinst.setCreater(currentUserName);
+        aeaHiCertinst.setCertinstSource(CertinstSource.EXTERNAL.getValue());
 
         AeaHiItemMatinst aeaHiItemMatinst = new AeaHiItemMatinst();
         BeanUtils.copyProperties(aeaItemMat, aeaHiItemMatinst);
+        aeaHiItemMatinst.setMatinstId(UuidUtil.generateUuid());
         aeaHiItemMatinst.setRootOrgId(currentOrgId);
         aeaHiItemMatinst.setMatinstCode(aeaItemMat.getMatCode());
         aeaHiItemMatinst.setCreateTime(new Date());

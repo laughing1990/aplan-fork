@@ -172,10 +172,10 @@ var app = new Vue({
           contractType: _this.formData.contractType || '',
           contractMoeny: _this.formData.contractMoeny || '',
           contractSignTime: _this.formatTime(_this.formData.contractSignTime, 'Y-M-D') || '',
-          contractConfirmTime: _this.formatTime(_this.formData.contractConfirmTime, 'Y-M-D') || '',
-          govOrgCode: _this.formData.govOrgCode || '',
-          govOrgName: _this.formData.govOrgName || '',
-          govOrgAreaCode: _this.formData.govOrgAreaCode || ''
+          // contractConfirmTime: _this.formatTime(_this.formData.contractConfirmTime, 'Y-M-D') || '',
+          // govOrgCode: _this.formData.govOrgCode || '',
+          // govOrgName: _this.formData.govOrgName || '',
+          // govOrgAreaCode: _this.formData.govOrgAreaCode || ''
         }
         request('', {
           type: 'post',
