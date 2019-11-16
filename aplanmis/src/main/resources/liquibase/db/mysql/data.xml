@@ -2392,7 +2392,7 @@ INSERT INTO `act_sto_widget_key` (`KEY_ID`, `WIDGET_ID`, `KEY_CODE`, `KEY_LABEL`
         </sql>
     </changeSet>
 
-    <changeSet id="201911151725" author="fenggy" failOnError="false">
+    <changeSet id="201911161402" author="fenggy" failOnError="false">
         <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
             UPDATE `bsc_dic_code_type` SET `TYPE_ID`='d825f97d-566e-4582-82a9-e1a90c70969a', `TYPE_CODE`='C_LAND_TYPE', `TYPE_NAME`='用地性质(广东两证一书)', `IS_TREE`='0', `IS_ACTIVE`='1', `TYPE_MEMO`=NULL, `CREATER`=NULL, `CREATE_TIME`='2019-11-15 09:47:46', `MODIFIER`=NULL, `MODIFY_TIME`='2019-11-15 09:47:46', `ORG_ID`='0368948a-1cdf-4bf8-a828-71d796ba89f6' WHERE (`TYPE_ID`='d825f97d-566e-4582-82a9-e1a90c70969a');
 
