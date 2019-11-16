@@ -956,15 +956,15 @@
                 </el-table-column>
                 <el-table-column type="expand" v-if="showMatTableExpand" width="20" align="right">
                   <template slot-scope="props">
-                    <div class="mat-children" v-if="showMatTableExpand&&scope.row.certChild.length>0">
-                      <div v-for="(item,index) in scope.row.certChild" class="file-list-tab">
+                    <div class="mat-children" v-if="showMatTableExpand&&props.row.certChild.length>0">
+                      <div v-for="(item,index) in props.row.certChild" class="file-list-tab">
                         <span class="file-name">
                           <span class="cert-icon icon ag ag-id-card"></span>
                           {{item.certName}}
                         </span>
                         <span class="file-icon-btn">
                           <span title="查看" class="ag ag-preview" @click="cretPreview(item.authCode)"></span>
-                          <span title="解除关联" class="el-icon-delete" @click="unbindCert(item.matinstId,scope.row.certChild,index)"></span>
+                          <span title="解除关联" class="el-icon-delete" @click="unbindCert(item.matinstId,props.row.certChild,index)"></span>
                         </span>
                       </div>
                     </div>
@@ -982,7 +982,7 @@
                         </span>
                       </div>
                     </div>
-                    <div class="mat-children" v-if="scope.row.certChild.length==0&&scope.row.matChild.length==0">
+                    <div class="mat-children" v-if="props.row.certChild.length==0&&props.row.matChild.length==0">
                       <div class="file-list-tab no-file">暂无附件</div>
                     </div>
                   </template>
