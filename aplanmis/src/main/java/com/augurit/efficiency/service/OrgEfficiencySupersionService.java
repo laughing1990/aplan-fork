@@ -41,7 +41,53 @@ public interface OrgEfficiencySupersionService {
 
     Map<String, Object> getOrgItemStatistics(String startTime, String endTime, String type, boolean isCurrent,String orgId) throws Exception;
 
+    /**
+     * 查询时间段内部门所属事项的接件受理情况
+     *
+     * @param startTime
+     * @param endTime
+     * @param type
+     * @param isCurrent
+     * @return
+     * @throws Exception
+     */
     List<Map<String, Object>> getOrgItemAcceptStatistics(String startTime, String endTime, String type, boolean isCurrent) throws Exception;
 
+    /**
+     * 查询时间段内部门所属事项的日接件受理情况
+     *
+     * @param itemId
+     * @param startTime
+     * @param endTime
+     * @param type
+     * @param isCurrent
+     * @return
+     * @throws Exception
+     */
     List<Map<String, Object>> getOrgItemAcceptHistoryStatistics(String itemId, String startTime, String endTime, String type, boolean isCurrent) throws Exception;
+
+    /**
+     * 查询时间段内各地区/各部门的接件受理情况
+     *
+     * @param regionId
+     * @param startTime
+     * @param endTime
+     * @param type
+     * @return
+     * @throws Exception
+     */
+    List<Map<String, Object>> getRegionOrgAcceptStatistics(String regionId, String startTime, String endTime, String type) throws Exception;
+
+    /**
+     * 查询时间段内各地区/各部门的日接件受理情况
+     *
+     * @param regionId
+     * @param orgId
+     * @param startTime
+     * @param endTime
+     * @param type
+     * @return
+     * @throws Exception
+     */
+    List<Map<String, Object>> getRegionOrgAcceptHistoryStatistics(String regionId, String orgId, String startTime, String endTime, String type) throws Exception;
 }

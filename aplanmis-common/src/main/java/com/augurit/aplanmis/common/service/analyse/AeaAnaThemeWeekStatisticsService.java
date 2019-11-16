@@ -28,6 +28,4 @@ public interface AeaAnaThemeWeekStatisticsService {
     public AeaAnaThemeWeekStatistics getAeaAnaThemeWeekStatisticsById(String id) throws Exception;
 
     public List<AeaAnaThemeWeekStatistics> listAeaAnaThemeWeekStatistics(AeaAnaThemeWeekStatistics aeaAnaThemeWeekStatistics) throws Exception;
-
-    public void analyThemeWeekStatistics(String startTime, String endTime) throws Exception;
 }
