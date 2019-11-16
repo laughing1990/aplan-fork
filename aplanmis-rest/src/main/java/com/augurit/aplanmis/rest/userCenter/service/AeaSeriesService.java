@@ -9,22 +9,10 @@ import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.agcloud.opus.common.domain.OpuOmUser;
 import com.augurit.aplanmis.common.constants.ApplyState;
 import com.augurit.aplanmis.common.constants.ItemStatus;
-import com.augurit.aplanmis.common.domain.AeaApplyinstProj;
-import com.augurit.aplanmis.common.domain.AeaHiApplyinst;
-import com.augurit.aplanmis.common.domain.AeaHiIteminst;
-import com.augurit.aplanmis.common.domain.AeaHiSeriesinst;
-import com.augurit.aplanmis.common.domain.AeaItemBasic;
-import com.augurit.aplanmis.common.domain.AeaLogItemStateHist;
-import com.augurit.aplanmis.common.domain.AeaProjInfo;
+import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.mapper.AeaApplyinstProjMapper;
 import com.augurit.aplanmis.common.mapper.AeaItemBasicMapper;
-import com.augurit.aplanmis.common.service.instance.AeaHiApplyinstService;
-import com.augurit.aplanmis.common.service.instance.AeaHiItemInoutinstService;
-import com.augurit.aplanmis.common.service.instance.AeaHiItemStateinstService;
-import com.augurit.aplanmis.common.service.instance.AeaHiIteminstService;
-import com.augurit.aplanmis.common.service.instance.AeaHiSeriesinstService;
-import com.augurit.aplanmis.common.service.instance.AeaLogApplyStateHistService;
-import com.augurit.aplanmis.common.service.instance.RestTimeruleinstService;
+import com.augurit.aplanmis.common.service.instance.*;
 import com.augurit.aplanmis.common.service.item.AeaLogItemStateHistService;
 import com.augurit.aplanmis.common.service.linkman.AeaLinkmanInfoService;
 import com.augurit.aplanmis.common.service.process.AeaBpmProcessService;
@@ -42,12 +30,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.InvalidParameterException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * 单项申报service
@@ -279,7 +262,7 @@ public class AeaSeriesService {
         if (processInstance == null || processInstance.getProcessInstance() == null)
             throw new RuntimeException("流程启动失败！");
         //新增时限规则实例
-        restTimeruleinstService.createTimeruleinstByProcinst(appId, processInstance.getProcessInstance().getId(), processInstance.getProcessInstance().getProcessDefinitionKey());
+//        restTimeruleinstService.createTimeruleinstByProcinst(appId, processInstance.getProcessInstance().getId(), processInstance.getProcessInstance().getProcessDefinitionKey());
         //查询出流程第一个节点
         List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstance.getProcessInstance().getId()).list();
         //6.流程发起后，更新初始事项历史的taskId
