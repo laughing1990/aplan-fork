@@ -1,5 +1,6 @@
 package com.augurit.aplanmis.common.service.admin.oneform;
 
+import com.augurit.agcloud.bpm.common.domain.ActStoForm;
 import com.augurit.aplanmis.common.domain.AeaParStagePartform;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
@@ -33,4 +34,6 @@ public interface AeaParStagePartformService {
      PageInfo<AeaParStagePartform> listPartFormNoSelectFormByPage(AeaParStagePartform partform, Page page);
 
     void createAndUpdateDevForm(String formCode, String formName, String formLoadUrl, String formId, String stagePartformId) throws Exception;
+
+     ActStoForm getStageDevformByFormId(String formId);
 }

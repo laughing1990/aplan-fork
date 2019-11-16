@@ -174,5 +174,10 @@ public class AeaParStagePartformServiceImpl implements AeaParStagePartformServic
             actStoFormMapper.updateActStoForm(actStoForm);
         }
     }
+
+    @Override
+    public ActStoForm getStageDevformByFormId(String formId) {
+        return actStoFormMapper.getActStoFormById(formId);
+    }
 }
 
