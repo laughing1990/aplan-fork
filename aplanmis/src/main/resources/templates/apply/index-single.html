@@ -956,7 +956,18 @@
                 </el-table-column>
                 <el-table-column type="expand" v-if="showMatTableExpand" width="20" align="right">
                   <template slot-scope="props">
-
+                    <div class="mat-children" v-if="showMatTableExpand&&props.row.certChild.length>0">
+                      <div v-for="(item,index) in props.row.certChild" class="file-list-tab">
+                        <span class="file-name">
+                          <span class="cert-icon icon ag ag-id-card"></span>
+                          {{item.certName}}
+                        </span>
+                        <span class="file-icon-btn">
+                          <span title="查看" class="ag ag-preview" @click="cretPreview(item.authCode)"></span>
+                          <span title="解除关联" class="el-icon-delete" @click="unbindCert(item.matinstId,props.row.certChild,index)"></span>
+                        </span>
+                      </div>
+                    </div>
                     <div class="mat-children" v-if="props.row.matChild.length>0">
                       <div v-for="item in props.row.matChild" class="file-list-tab" :key="item.fileId">
                         <span class="file-name">
@@ -971,10 +982,8 @@
                         </span>
                       </div>
                     </div>
-                    <div v-else>
-                      <div class="mat-children">
-                        <div class="file-list-tab no-file">暂无附件</div>
-                      </div>
+                    <div class="mat-children" v-if="props.row.certChild.length==0&&props.row.matChild.length==0">
+                      <div class="file-list-tab no-file">暂无附件</div>
                     </div>
                   </template>
                 </el-table-column>
@@ -1310,10 +1319,13 @@
               {{$options.filters.formatLicenseStatus(scope.row.license_status)}}
             </template>
           </el-table-column>
-          <el-table-column label="操作" align="center" width="120">
+          <el-table-column label="操作" width="120">
             <template slot-scope="scope">
               <span class="op-btn" @click="cretPreview(scope.row.auth_code)">查看</span>
-              <span class="op-btn" @click="setCretLinked(scope.row)">关联</span>
+              <span class="op-btn" v-if="scope.row.bind==false" @click="setCretLinked(scope.row)">关联</span>
+              <span class="op-btn" v-else style="cursor: not-allowed">已关联</span>
+              <!--<span class="op-btn" v-else @click="unbindCert(scope.row.matinstId,selMatRowData.certChild,index)">解除关联</span>-->
+
             </template>
           </el-table-column>
         </el-table>

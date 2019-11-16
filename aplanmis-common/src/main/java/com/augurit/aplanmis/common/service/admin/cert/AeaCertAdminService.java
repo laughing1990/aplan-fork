@@ -6,6 +6,7 @@ import com.augurit.aplanmis.common.domain.AeaCert;
 import com.augurit.aplanmis.common.domain.AeaItemInout;
 import com.augurit.aplanmis.common.domain.AeaParIn;
 import com.augurit.aplanmis.integration.license.dto.LicenseAuthResDTO;
+import com.augurit.aplanmis.integration.license.dto.LicenseUserInfoDTO;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 
@@ -142,7 +143,7 @@ public interface AeaCertAdminService {
      * @return
      * @throws Exception
      */
-    LicenseAuthResDTO getLicenseAuthRes(String itemVerIds, String identityNumber) throws Exception;
+    LicenseAuthResDTO getLicenseAuthRes(String itemVerIds, String identityNumber, LicenseUserInfoDTO operator) throws Exception;
 
     /**
      * 获取电子证照

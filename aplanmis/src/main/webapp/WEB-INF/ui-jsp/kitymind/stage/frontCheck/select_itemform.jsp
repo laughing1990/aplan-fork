@@ -126,7 +126,7 @@
         $("#select_itemform_modal").modal("hide");
     }
 
-    function batchImprotFrontItemform(){
+    function batchImprotParFrontItemform(){
         $("#batch_save_front_itemform_btn").show();
         $("#select_itemform_modal").modal("show");
         if(select_itemform_tb){

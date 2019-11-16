@@ -1435,6 +1435,9 @@ function addParFrontPartform() {
                     setTimeout(function(){
                         $("#uploadProgress").modal('hide');
                         $('#saveParFrontPartformBtn').show();
+
+                        $('#select_par_front_partform_btn').show();
+
                         $("#edit_par_front_partform_modal").modal("show");
                         $('#edit_par_front_partform_title').html('新增阶段扩展表单前置检测');
                         $('#edit_par_front_partform_scroll').animate({scrollTop: 0}, 800);//滚动到顶部
@@ -1481,6 +1484,9 @@ function editParFrontPartform(frontPartformId) {
                     }else{
                         $('#saveParFrontPartformBtn').hide();
                     }
+
+                    $('#select_par_front_partform_btn').hide();
+
                     $("#edit_par_front_partform_modal").modal("show");
                     $('#edit_par_front_partform_title').html('编辑阶段扩展表单前置检测');
                     $('#edit_par_front_partform_scroll').animate({scrollTop: 0}, 800);//滚动到顶部

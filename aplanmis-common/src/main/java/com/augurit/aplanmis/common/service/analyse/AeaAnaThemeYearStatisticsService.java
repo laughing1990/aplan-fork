@@ -28,6 +28,4 @@ public interface AeaAnaThemeYearStatisticsService {
     public AeaAnaThemeYearStatistics getAeaAnaThemeYearStatisticsById(String id) throws Exception;
 
     public List<AeaAnaThemeYearStatistics> listAeaAnaThemeYearStatistics(AeaAnaThemeYearStatistics aeaAnaThemeYearStatistics) throws Exception;
-
-    List<AeaAnaThemeYearStatistics> getYearStatistics()throws Exception;
 }

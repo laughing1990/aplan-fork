@@ -594,6 +594,15 @@ var vm = new Vue({
       // 获取可共享材料列表
       getShareMatsList: function (matData) {
         var _that = this, _matCode = '';
+        var matChild = _that.selMatRowData.matChild?_that.selMatRowData.matChild:[];
+        var matChildIds = [];
+        if(matChild.length>0){
+          matChild.map(function(item){
+            if(matChildIds.indexOf(item.fileId)<0){
+              matChildIds.push(item.fileId);
+            }
+          })
+        }
         if(_that.matCodes.length>0){
           if(matData&&matData.matCode){
             _matCode = matData.matCode;
@@ -609,6 +618,9 @@ var vm = new Vue({
             if (result.success) {
               if(matData){
                 _that.uploadTableData = result.content[_matCode].FileList;
+                _that.uploadTableData.map(function(fileListItem){
+
+                });
               }else {
                 _that.model.matsTableData.map(function (matItem) {
                   if(result.content&&result.content[matItem.matCode]&&result.content[matItem.matCode].FileList){
@@ -1786,6 +1798,9 @@ var vm = new Vue({
                         if (item.matChild == 'undefined' || item.matChild == undefined) {
                             Vue.set(item, 'matChild', []);
                         }
+                      if(item.certChild=='undefined'||item.certChild==undefined){
+                        Vue.set(item,'certChild',[]);
+                      }
                         if (item.matinstId == 'undefined' || item.matinstId == undefined) {
                             Vue.set(item, 'matinstId', '');
                         }
@@ -2141,6 +2156,15 @@ var vm = new Vue({
       // 获取证照文件列表
       getCertFileListWin: function (matData,flag) { // flag==oneUnit 查询单个建设单位
         var _that = this, _identityNumber='';
+        var certChild = _that.selMatRowData.certChild;
+        var certChildIds = [];
+        if(certChild.length>0){
+          certChild.map(function(item){
+            if(certChildIds.indexOf(item.authCode)<0){
+              certChildIds.push(item.authCode);
+            }
+          })
+        }
         if(flag=='oneUnit'){
           if(matData.applySubjectType == 'applyLinkman'){
             _identityNumber = matData.applyLinkmanIdCard;
@@ -2353,6 +2377,18 @@ var vm = new Vue({
             };
             _that.certMatAllData = res.content;
             _that.certMatTableData = res.content.data?res.content.data:[];
+            res.content.data.map(function(certItem){
+              if(certItem.bind=='undefined'||certItem.bind==undefined){
+                Vue.set(certItem,'bind',false);
+              }else {
+                certItem.bind = false;
+              }
+              if(certChildIds.indexOf(certItem.auth_code)>-1){
+                certItem.bind = true
+              }else {
+                certItem.bind = false;
+              }
+            })
           }else {
             _that.$message({
               message: res.message?res.message:'加载证照库材料失败',
@@ -2395,6 +2431,21 @@ var vm = new Vue({
       // 关联证照
       setCretLinked: function(certRowData){
         var _that = this;
+        _that.rootUnitInfoId = '';
+        _that.rootLinkmanInfoId = '';
+        _that.rootApplyLinkmanId = '';
+        if(_that.jiansheFrom.length>0) {
+          _that.rootUnitInfoId = _that.jiansheFrom[0].unitInfoId;
+          _that.rootLinkmanInfoId = _that.jiansheFrom[0].linkmanId;
+        }
+        if(this.agentUnits.length>0){
+          _that.rootUnitInfoId = _that.agentUnits[0].unitInfoId;
+          _that.rootLinkmanInfoId = _that.agentUnits[0].linkmanId;
+        }
+        if(_that.applySubjectType == 0&&_that.applyPersonFrom.applyLinkmanId){
+          _that.rootApplyLinkmanId = _that.applyPersonFrom.applyLinkmanId;
+          _that.rootLinkmanInfoId = _that.applyPersonFrom.linkLinkmanId
+        };
         var param = {
           "authCode": certRowData.auth_code,
           "certId": _that.selMatRowData.certId,
@@ -2410,7 +2461,8 @@ var vm = new Vue({
           "projInfoId": _that.projInfoId,
           "termEnd": certRowData.expiry_date,
           "termStart": certRowData.begin_date,
-          "unitInfoId": _that.rootUnitInfoId
+          "unitInfoId": _that.rootUnitInfoId,
+          "linkmanInfoId": _that.rootLinkmanInfoId
         };
         request('', {
           url: ctx + 'rest/mats/bind/cert',
@@ -2419,7 +2471,20 @@ var vm = new Vue({
           data: JSON.stringify(param)
         }, function (res) {
           if(res.success){
-            console.log(res);
+            res.content.certName = certRowData.name;
+            if(_that.selMatRowData.certChild=='undefined'||_that.selMatRowData.certChild==undefined){
+              Vue.set(_that.selMatRowData,'certChild',[res.content]);
+            }else {
+              _that.selMatRowData.certChild.push(res.content);
+            }
+            if(_that.selMatRowData.certMatinstIds=='undefined'||_that.selMatRowData.certMatinstIds==undefined){
+              Vue.set(_that.selMatRowData,'certMatinstIds',[res.content.matinstId]);
+            }else {
+              if(_that.selMatRowData.certMatinstIds.indexOf(res.content.matinstId)<0){
+                _that.selMatRowData.certMatinstIds.push(res.content.matinstId);
+              }
+            }
+            certRowData.bind = true;
             _that.$message({
               message: res.message?res.message:'证照关联成功',
               type: 'success'
@@ -2428,6 +2493,24 @@ var vm = new Vue({
         }, function (msg) {
           _that.$message({
             message: msg.message?msg.message:'证照查看失败',
+            type: 'error'
+          });
+        });
+      },
+      // 解除关联
+      unbindCert: function(matinstId,matDataCertChild,index){
+        var _that = this;
+        request('', {
+          url: ctx + 'rest/mats/unbind/cert',
+          type: 'post',
+          data: {matinstId: matinstId}
+        }, function (data) {
+          if(data.success){
+            matDataCertChild.splice(index,1);
+          }
+        }, function (msg) {
+          _that.$message({
+            message: '服务请求失败',
             type: 'error'
           });
         });
@@ -3305,6 +3388,9 @@ var vm = new Vue({
                 if(item.matinstId){
                     selMatinstId.push(item.matinstId)
                 }
+              if(item.certMatinstIds&&item.certMatinstIds.length>0){
+                selMatinstId = selMatinstId.concat(item.certMatinstIds)
+              }
                 if (item.getCopy == true) {
                     copyCnt=item.realCopyCount;
                 }
@@ -3313,9 +3399,15 @@ var vm = new Vue({
                 }
                 if (item.getCopy == true || item.getPaper == true) {
                     matCountVos.push({
-                        copyCnt: copyCnt,
-                        paperCnt: paperCnt,
-                        matId: item.matId,
+                      "certId": item.certId,
+                      "certName": item.certName,
+                      "copyCnt": copyCnt,
+                      "formName": item.formName,
+                      "itemVerId": item.itemVerId,
+                      "matId": item.matId,
+                      "matProp": item.matProp,
+                      "paperCnt": paperCnt,
+                      "stoFormId": item.stoFormId
                     });
                 }
             });
