@@ -152,6 +152,11 @@ var vm = new Vue({
         {name: '东莞市水保环境工程咨询有限公司',publishNumber: '2'},
         {name: '广东正源会计师事务所有限公司',publishNumber: '1'},
       ],
+
+      // 运行情况的时间pick   D:天  M 月  Y年  A:所有
+      runStatusCheckData: {
+        queryType: 'Y'
+      },
     }
   },
   created: function () {
@@ -175,8 +180,9 @@ var vm = new Vue({
     getIndexData: function () {
       var vm = this
       request('', {
-        url: ctx + 'supermarket/main/getIndexData',
+        url: ctx + 'supermarket/main/province/getProvinceIndexData',
         type: 'get',
+        data: vm.runStatusCheckData
       }, function (res) {
         if (res.success) {
           var content = res.content;
@@ -395,7 +401,13 @@ var vm = new Vue({
 
       }
       window.location.href = url;
-    }
+    },
+
+    // 运行情况时间切换
+    runStatusChange: function(type){
+      this.runStatusCheckData.queryType = type;
+      this.getIndexData();
+    },
   },
   filters: {
     formatDate: function (time) {
