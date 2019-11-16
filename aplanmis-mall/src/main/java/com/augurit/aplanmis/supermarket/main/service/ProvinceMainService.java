@@ -6,10 +6,12 @@ import com.augurit.aplanmis.common.domain.AeaImService;
 import com.augurit.aplanmis.common.mapper.*;
 import com.augurit.aplanmis.common.vo.QueryProjPurchaseVo;
 import com.augurit.aplanmis.supermarket.main.vo.IndexDataVo;
+import com.augurit.aplanmis.supermarket.main.vo.province.ProvinceIndexData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.Calendar;
 import java.util.List;
@@ -96,6 +98,52 @@ public class ProvinceMainService {
         vo.changeToImService(aeaImServices);
 
 
+        return vo;
+    }
+
+    public ProvinceIndexData getProvinceIndexData1(String queryType) throws Exception {
+        if (StringUtils.isEmpty(queryType)) {
+            queryType = "A";
+        }
+        String startDate;
+        Calendar calendar = Calendar.getInstance();
+        String year = String.valueOf(calendar.get(Calendar.YEAR));
+        String month = String.valueOf(calendar.get(Calendar.MONTH) + 1);
+        if (month.length() == 1) {
+            month = "0" + month;
+        }
+        String day = String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));
+        String template = "%s%s%s";
+        switch (queryType) {
+            case "D":
+                startDate = String.format(template, year, month, day);
+                break;
+            case "M":
+                startDate = String.format(template, year, month, "01");
+                break;
+            case "Y":
+                startDate = String.format(template, year, "01", "01");
+                break;
+            default:
+                startDate = null;
+                break;
+        }
+        ProvinceIndexData vo = new ProvinceIndexData();
+        //入驻中介机构数量
+        int agentUnitServiceNum = agentUnitServiceMapper.listCheckinUnitNum(startDate);
+        vo.setAgentUnitCount(agentUnitServiceNum);
+
+        //已发布的中介服务事项--
+        int agentItemServiceNum = aeaItemBasicMapper.listAgentItemServiceNum(startDate);
+        vo.setItemServiceCount(agentItemServiceNum);
+
+        //已完成的采购需求---
+        int finishPurchaseNum = aeaImProjPurchaseMapper.listAeaImProjPurchaseNum(startDate);
+        vo.setFinishedPurchaseCount(finishPurchaseNum);
+
+        //项目采购---
+        int projPurchaseNum = aeaImProjPurchaseMapper.listPublicProjPurchaseNum(startDate);
+        vo.setPublishedPurchaseCount(projPurchaseNum);
         return vo;
     }
 }
