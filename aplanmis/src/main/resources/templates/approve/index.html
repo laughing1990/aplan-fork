@@ -1693,7 +1693,7 @@
   <el-dialog title="证照列表" v-loading="idLibLoading" :visible.sync="idLibVisible" width="940px">
     <div class="bz-dialog-wrap">
       <div class="bz-dialog-box" style="padding: 20px;">
-        <div class="id-lib-top-search c-f">
+        <div class="id-lib-top-search next-margin-top c-f" v-if="applyMainType==1">
           <div class="l">建设单位</div>
           <div class="l" style="margin-left: 8px;margin-right: 38px;">
             <el-select size="medium" v-model="idLibSearchOpt.chooseUnit"
@@ -1710,7 +1710,7 @@
             </el-radio-group>
           </div>
         </div>
-        <el-table max-height="400" style="width:100%;margin-top:20px;" border stripe :data="idLibTableList">
+        <el-table class="next-margin-top" max-height="400" style="width:100%;" border stripe :data="idLibTableList">
           <el-table-column label="证照名称" prop="name"></el-table-column>
           <el-table-column label="证照类型" prop="license_type" width="100"></el-table-column>
           <el-table-column label="有效截止日期" prop="expiry_date" width="160"></el-table-column>
@@ -1721,7 +1721,7 @@
               <div class="c-f">
                 <span class="mat-table-btn" @click="idTableListSee(scope.row)">查看</span>
                 <span class="mat-ope-line"></span>
-                <span class="mat-table-btn" @click="idTabListChoose(scope.row)">选择</span>
+                <span class="mat-table-btn" @click="idTabListChoose(scope.row)">关联</span>
               </div>
             </template>
           </el-table-column>
@@ -1740,7 +1740,7 @@
               <div class="c-f">
                 <span class="mat-table-btn" @click="idTableListSee(scope.row)">查看</span>
                 <span class="mat-ope-line"></span>
-                <span class="mat-table-btn" @click="idTabListChoose(scope.row)">选择</span>
+                <span class="mat-table-btn" @click="idTabListChoose(scope.row)">关联</span>
               </div>
             </template>
           </el-table-column>

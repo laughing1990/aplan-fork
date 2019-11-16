@@ -492,7 +492,7 @@ var vm = new Vue({
       // 电子证照
       idLibSearchOpt: {
         chooseUnit: '',
-        chooseType: '1',
+        chooseType: 1,
       },
       idLibLoading: false,
       idLibVisible: false,

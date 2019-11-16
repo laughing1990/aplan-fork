@@ -2312,6 +2312,9 @@ input[type="number"] {
     background: #DCDFE6;
     margin: 7px 7px 0 7px;
 }
+.next-margin-top+.next-margin-top{
+    margin-top: 20px;
+}
 /*证照库材料库 end*/
 
 
