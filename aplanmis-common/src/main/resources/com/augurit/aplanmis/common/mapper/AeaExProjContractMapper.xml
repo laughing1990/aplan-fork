@@ -21,7 +21,8 @@
     CREATE_TIME  createTime,
     MODIFIER  modifier,
     MODIFY_TIME  modifyTime,
-    ROOT_ORG_ID  rootOrgId
+    ROOT_ORG_ID  rootOrgId,
+    CONTRACT_NUM contractNum
     </sql>
 
 <!--2 根据主键ID查询单个实体 -->
@@ -156,6 +157,9 @@ CONTRACT_ID  ,PROJ_INFO_ID  ,PROVINCE_PROJ_CODE  ,CONTRACT_CODE  ,CONTRACT_TYPE 
         <if test="rootOrgId != null" >
         ROOT_ORG_ID = #{rootOrgId},
         </if>
+        <if test="contractNum != null and contractNum != ''" >
+            CONTRACT_NUM = #{contractNum},
+        </if>
     </set>
     where CONTRACT_ID = #{contractId}
 </update>
@@ -185,5 +189,6 @@ CONTRACT_ID  ,PROJ_INFO_ID  ,PROVINCE_PROJ_CODE  ,CONTRACT_CODE  ,CONTRACT_TYPE 
         <result property="modifier" column="MODIFIER"/>
         <result property="modifyTime" column="MODIFY_TIME"/>
         <result property="rootOrgId" column="ROOT_ORG_ID"/>
+        <result property="contractNum" column="CONTRACT_NUM"/>
     </resultMap>
 </mapper>

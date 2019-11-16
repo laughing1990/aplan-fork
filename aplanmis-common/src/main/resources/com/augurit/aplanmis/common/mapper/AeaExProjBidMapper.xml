@@ -29,7 +29,8 @@
     CREATE_TIME  createTime,
     MODIFIER  modifier,
     MODIFY_TIME  modifyTime,
-    ROOT_ORG_ID  rootOrgId
+    ROOT_ORG_ID  rootOrgId,
+    TENDER_NUM tenderNum
     </sql>
 
 <!--2 根据项目ID查询单个实体 -->
@@ -127,6 +128,9 @@ BID_ID  ,PROJ_INFO_ID  ,PROVINCE_PROJ_CODE  ,WIN_BID_NOTICE_CODE  ,BID_SECTION_N
         </if>
         <if test="rootOrgId != null" >
         ROOT_ORG_ID = #{rootOrgId},
+        </if>
+        <if test="tenderNum != null and tenderNum != ''" >
+            TENDER_NUM = #{tenderNum},
         </if>
     </set>
     where BID_ID = #{bidId}
@@ -228,5 +232,6 @@ BID_ID  ,PROJ_INFO_ID  ,PROVINCE_PROJ_CODE  ,WIN_BID_NOTICE_CODE  ,BID_SECTION_N
         <result property="modifier" column="MODIFIER"/>
         <result property="modifyTime" column="MODIFY_TIME"/>
         <result property="rootOrgId" column="ROOT_ORG_ID"/>
+        <result property="tenderNum" column="TENDER_NUM"/>
     </resultMap>
 </mapper>
