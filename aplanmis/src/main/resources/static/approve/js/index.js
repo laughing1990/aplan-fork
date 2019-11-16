@@ -539,7 +539,7 @@ var vm = new Vue({
   },
   methods: {
     // 打开材料库弹窗
-    openMatLibDialog: function(){
+    openMatLibDialog: function(row){
       var vm = this;
       vm.parentPageLoading = true;
       window.setTimeout(function(){
@@ -551,14 +551,43 @@ var vm = new Vue({
         ];
       }, 500);
     },
+    // 材料列表弹窗 查看材料
+    matTableListSee: function(row){},
+    // 材料列表弹窗 选择材料
+    matTabListChoose: function(row) {},
     // 打开证照库弹窗
-    openIdLibDialog: function(){
+    openIdLibDialog: function(row){
       var vm = this;
       vm.parentPageLoading = true;
-      window.setTimeout(function(){
-        vm.parentPageLoading = false;
+      vm.loadIdLibList(function(){
         vm.idLibVisible = true;
+        vm.parentPageLoading = false;
+      });
+    },
+    // 加载证照列表
+    loadIdLibList: function(callback){
+      var vm = this;
+      if (typeof callback != 'function'){
+        vm.idLibLoading = true;
+      }
+      var params = {};
+      if (vm.applyMainType == '1') {
+        vm.applyUnitList.forEach(function(u){
+          if (u.unitInfoId == vm.idLibSearchOpt.chooseUnit){
+            if (vm.idLibSearchOpt.chooseType==1){
+              // 企业信用代码
+              params.identityNumber = u.unifiedSocialCreditCode;
+            } else {
+              // 法人身份证
+              params.identityNumber = u.idno;
+            }
+          }
+        });
+      }
+      window.setTimeout(function(){
+        vm.idLibLoading = false;
         vm.idLibTableList = idLibResMock.data;
+        typeof callback == 'function' && callback();
       }, 500);
     },
     // 证照列表弹窗 查看证照

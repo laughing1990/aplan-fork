@@ -180,7 +180,7 @@
               </span>
               <span class="file-icon-btn">
                   <span title="预览" class="el-icon-search" @click="filePreview(item)"></span>
-                  <span title="查验" class="ag ag-Evaluation"></span>
+                  <span title="查验" v-if="props.row.matProp=='c'" class="ag ag-Evaluation" @click="checkId(item)"></span>
                   <span title="下载" class="el-icon-download" @click="downOneFile(item)"></span>
                   <span title="删除" class="el-icon-delete" @click="delOneFile(item,props.row)"></span>
               </span>
@@ -193,7 +193,7 @@
       </el-table-column>
       <el-table-column class-name="meterial-col" prop="matName" label="材料名称" align="left">
         <template slot-scope="scope">
-          {{scope.row.matName}}<i class="ag ag-id-card"></i>
+          {{scope.row.matName}}<i v-if="scope.row.matProp=='c'" class="ag ag-id-card"></i>
         </template>
       </el-table-column>
       <!--      <el-table-column prop="matFrom" label="文件来源" align="center" width="120px">-->
@@ -203,7 +203,7 @@
                        :formatter="formDueToZero"></el-table-column>
       <el-table-column prop="realCopyCount" label="复印件（应收/已收）" align="center" width="160px"
                        :formatter="formaterCopyToZero"></el-table-column>
-      <el-table-column prop="attCount" label="电子件" align="center" width="170px">
+      <el-table-column prop="attCount" label="电子件" width="170px">
         <template slot-scope="scope">
           <div class="c-f">
             <el-upload style="float: left;height:25px;"
@@ -213,9 +213,9 @@
               <span class="mat-table-btn" @click="clickUpload(scope.row)">上传</span>
             </el-upload>
             <span class="mat-ope-line"></span>
-            <span class="mat-table-btn" @click="openMatLibDialog">材料库</span>
+            <span class="mat-table-btn" @click="openMatLibDialog(scope.row)">材料库</span>
             <span class="mat-ope-line"></span>
-            <span class="mat-table-btn" @click="openIdLibDialog">证照库</span>
+            <span class="mat-table-btn" @click="openIdLibDialog(scope.row)">证照库</span>
           </div>
           <!--          <span v-if="scope.row.attCount !=null && scope.row.attCount > 0"-->
           <!--                class="t-pre-upload ready">已上传（{{scope.row.attCount}}）</span>-->
@@ -352,6 +352,10 @@
       downOneFile: function (data) {
         window.open(ctx + 'previewPdf/downLoadPdf?detailId=' + data.fileId, '_blank');
       },
+      // 查验电子证照
+      checkId: function(row){
+        console.log(row);
+      },
       //删除单个文件附件
       delOneFile: function (data, matData) {
         var _that = this;
@@ -389,12 +393,12 @@
         }
       },
       // 打开材料库弹窗
-      openMatLibDialog: function(){
-        parent.vm.openMatLibDialog();
+      openMatLibDialog: function(row){
+        parent.vm.openMatLibDialog(row);
       },
       // 打开证照库弹窗
-      openIdLibDialog: function(){
-        parent.vm.openIdLibDialog();
+      openIdLibDialog: function(row){
+        parent.vm.openIdLibDialog(row);
       },
       // 处理上传文件
       handleUploadFile: function (file) {
@@ -403,7 +407,7 @@
         console.log(file);
         console.log(vm.currentUploadRow);
         if(window) return null;
-        var formData = new FormData()
+        var formData = new FormData();
         formData.append('files', file.file);
         formData.append('matProp', '');
         formData.append('certId', '');
@@ -412,6 +416,7 @@
         axios.post(ctx + '/rest/mats/att/upload', formData).then(function (res) {
           if (res.data && res.data.success) {
             _this.$message.success('文件上传成功');
+            vm.getMatList();
           } else {
             _this.$message.error(res.message||'文件上传失败');
           }
