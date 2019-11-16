@@ -76,18 +76,6 @@ var vm = new Vue({
                 ],
                 otherInvestment: [
                     { required: true, validator: validateMoney, trigger: 'blur' }
-                ],
-                govOrgConfirmTime: [
-                    { required: true, message: '请选择建设行业主管部门确认时间', trigger: 'blur' }
-                ],
-                govOrgCode: [
-                    { required: true, message: '请填写建设行业主管部门确认的行政单位机构代码', trigger: 'blur' }
-                ],
-                govOrgName: [
-                    { required: true, message: '请填写建设行业主管部门确认的行政单位名称', trigger: 'blur' }
-                ],
-                govAreaCode: [
-                    { required: true, message: '请选择建设行业主管部门确认的行政单位区域码', trigger: 'change' }
                 ]
             }
         }
