@@ -171,20 +171,6 @@ public class SupermarketMainController {
     //==============================首页机构模块跳转  end ===================================
 
 
-    //==============================省首页跳转  start ===================================
-    @ApiOperation(value = "省中介超市首页", notes = "省中介超市首页")
-    @GetMapping("/province/index.html")
-    public ModelAndView provinceMainIndex() throws Exception {
-        return new ModelAndView("zjcs/provincePage/index.html");
-    }
-
-    @ApiOperation(value = "中介超市首页尾部页面", notes = "中介超市首页尾部页面")
-    @GetMapping("/province/footer.html")
-    public ModelAndView provinceFooterIndex() throws Exception {
-        return new ModelAndView("zjcs/common/footer");
-    }
-    //==============================首页机构模块跳转  end ===================================
-
 
     //==============================中介机构模块跳转  start ===================================
 
