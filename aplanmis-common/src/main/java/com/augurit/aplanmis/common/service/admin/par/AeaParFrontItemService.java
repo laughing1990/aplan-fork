@@ -38,4 +38,6 @@ public interface AeaParFrontItemService {
 
     List<AeaParFrontItemVo> listAeaParFrontItemByStageId(String stageId);
 
+    void batchSaveAeaParFrontItem(String stageId,String itemVerIds)throws Exception;
+
 }
