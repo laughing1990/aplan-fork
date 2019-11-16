@@ -257,7 +257,7 @@ FRONT_STAGE_ID  ,STAGE_ID  ,HIST_STAGE_ID  ,SORT_NO  ,IS_ACTIVE  ,FRONT_STAGE_ME
                 )
             </if>
             and aps.STAGE_ID not in (
-                select apfs.STAGE_ID from AEA_PAR_FRONT_STAGE apfs
+                select apfs.HIST_STAGE_ID from AEA_PAR_FRONT_STAGE apfs
                 <where>
                     <if test="stageId != null and stageId!=''">
                         AND apfs.STAGE_ID = #{stageId}

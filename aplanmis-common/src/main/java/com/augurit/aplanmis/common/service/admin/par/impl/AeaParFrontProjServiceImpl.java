@@ -49,7 +49,7 @@ public class AeaParFrontProjServiceImpl implements AeaParFrontProjService {
 
     @Override
     public void updateAeaParFrontProj(AeaParFrontProj aeaParFrontProj) throws Exception {
-        checkSame(aeaParFrontProj);
+//        checkSame(aeaParFrontProj);
 
         aeaParFrontProj.setModifyTime(new Date());
         aeaParFrontProj.setModifier(SecurityContext.getCurrentUserId());

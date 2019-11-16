@@ -110,7 +110,8 @@ public class OfficialDocumentService {
     private AeaUnitProjLinkmanMapper aeaUnitProjLinkmanMapper;
     @Autowired
     private AeaItemMatService aeaItemMatService;
-
+    @Autowired
+    private AeaExProjCertBuildMapper aeaExProjCertBuildMapper;
     /**
      * @param applyinstId 申报实例id
      * @param iteminstId  事项实例ID
@@ -534,6 +535,63 @@ public class OfficialDocumentService {
         }
     }
 
+    /**
+     * （新）获取建筑工程施工许可证打印信息 2019/11/16 11：13
+     * @param certinstId
+     * @return
+     * @throws Exception
+     */
+    public ConstructPermitVo getConstructPermitInfo(String certinstId)throws Exception{
+        ConstructPermitVo constructPermit = new ConstructPermitVo();
+        if (StringUtils.isBlank(certinstId) || "null".equals(certinstId) || "undefined".equals(certinstId))
+            return constructPermit;
+
+        List<AeaHiItemInoutinst> aeaHiItemInoutinsts = aeaHiItemInoutinstMapper.getAeaHiIteminstCertByCertinstId(certinstId);
+        if (aeaHiItemInoutinsts.isEmpty()) {
+            return constructPermit;
+        }
+
+        String iteminstId = aeaHiItemInoutinsts.get(0).getIteminstId();
+        String applyinstId = getApplyinstIdByIteminstId(iteminstId);
+
+        List<AeaProjInfo> aeaProjInfos = aeaProjInfoService.findApplyProj(applyinstId);
+        if (aeaProjInfos.isEmpty()) return null;AeaProjInfo projInfo = aeaProjInfos.get(0);
+
+        //获取施工核发许可证表的信息
+        AeaExProjCertBuild aeaExProjCertBuildByProjId = aeaExProjCertBuildMapper.findAeaExProjCertBuildByProjId(projInfo.getProjInfoId());
+        if (aeaExProjCertBuildByProjId !=null){
+            constructPermit.setConstructPermitCode(aeaExProjCertBuildByProjId.getCertBuildCode());//建设工程规划许可证编号
+            //aeaExProjCertBuildByProjId.getCertBuildQrcode();//建设工程规划许可证二维码
+            //aeaExProjCertBuildByProjId.getGovOrgCode();//核发机关组织机构代码
+            constructPermit.setIssueOrgName(aeaExProjCertBuildByProjId.getGovOrgName());//核发机关
+            Date publishTime = aeaExProjCertBuildByProjId.getPublishTime();//核发日期
+            if (publishTime != null) {
+                String s = DateUtils.convertDateToString(publishTime, "yyyy-MM-dd");
+                String[] split = s.split("-");
+                constructPermit.setIssueYear(split[0]);
+                constructPermit.setIssueMonth(split[1]);
+                constructPermit.setIssueDay(split[2]);
+            }
+            constructPermit.setBuildUnitName(aeaExProjCertBuildByProjId.getConstructionUnit());//建设单位
+            constructPermit.setProjectName(aeaExProjCertBuildByProjId.getProjName());//工程名称
+            constructPermit.setContructAddress(aeaExProjCertBuildByProjId.getConstructionAddr());//建设地址
+            constructPermit.setContructScale(aeaExProjCertBuildByProjId.getConstructionsSize());//建设规模
+            constructPermit.setContractPrice(Double.parseDouble(aeaExProjCertBuildByProjId.getContractPrice()));//合同价格，单位：万元
+            constructPermit.setExplorationUnitName(aeaExProjCertBuildByProjId.getKcUnit());//勘察单位
+            constructPermit.setDesignUnitName(aeaExProjCertBuildByProjId.getSjUnit());//设计单位
+            constructPermit.setConstructUnitName(aeaExProjCertBuildByProjId.getSgUnit());//施工单位
+            constructPermit.setSupervisionUnitName(aeaExProjCertBuildByProjId.getJlUnit());//监理单位
+            constructPermit.setExplorationUnitLeader(aeaExProjCertBuildByProjId.getKcUnitLeader());//勘察单位项目负责人
+            constructPermit.setDesignUnitLeader(aeaExProjCertBuildByProjId.getSjUnitLeader());//设计单位项目负责人
+            constructPermit.setConstructUnitLeader(aeaExProjCertBuildByProjId.getSgUnitLeader());//施工单位项目负责人
+            constructPermit.setChiefEngineer(aeaExProjCertBuildByProjId.getJlUnitLeader());//总监理工程师
+            constructPermit.setContractDuration(aeaExProjCertBuildByProjId.getContractPeriod());//合同工期
+            constructPermit.setRemarks(aeaExProjCertBuildByProjId.getCertBuildMemo());//备注
+        }
+        return constructPermit;
+
+
+    }
 
     /**
      * 获取建筑工程施工许可证打印信息
@@ -554,8 +612,8 @@ public class OfficialDocumentService {
         String applyinstId = getApplyinstIdByIteminstId(iteminstId);
 
         List<AeaProjInfo> aeaProjInfos = aeaProjInfoService.findApplyProj(applyinstId);
-        if (aeaProjInfos.isEmpty()) return null;
-        AeaProjInfo projInfo = aeaProjInfos.get(0);
+        if (aeaProjInfos.isEmpty()) return null;AeaProjInfo projInfo = aeaProjInfos.get(0);
+
 
         constructPermit.setProjectName(projInfo.getProjName());
         constructPermit.setContructAddress(projInfo.getProjAddr());

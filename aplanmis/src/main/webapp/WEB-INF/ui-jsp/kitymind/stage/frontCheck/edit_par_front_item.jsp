@@ -23,7 +23,7 @@
                         <div class="form-group m-form__group row">
                             <label class="col-lg-2 col-form-label" style="text-align: right;">
                                 <font color="red">*</font>前置事项:<br/>
-                                <button ${curIsEditable?'':'disabled'} type="button" class="btn btn-info" onclick="openSelectFrontItemZtree('frontItemVerId','frontItemName','frontItemId');" style="margin-top: 10px;">选择</button>
+                                <button ${curIsEditable?'':'disabled'} type="button" class="btn btn-info" onclick="openSelectFrontItemZtree('frontItemVerId','frontItemName','frontItemId');" style="margin-top: 10px;" id = "select_front_Item_btn">选择</button>
                             </label>
                             <div class="col-lg-9">
                                 <input id="frontItemName" class="form-control" name="itemName"  ${curIsEditable?'readonly':'disabled'} />

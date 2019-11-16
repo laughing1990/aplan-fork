@@ -1,4 +1,4 @@
-package com.augurit.aplanmis.integration.license.constont;
+package com.augurit.aplanmis.integration.license.constants;
 
 import lombok.Getter;
 

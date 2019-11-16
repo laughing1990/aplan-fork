@@ -133,4 +133,9 @@ public class AeaHiCertinst implements Serializable {
     @ApiModelProperty(value = "材料定义id")
     private String matId;
 
+    // 扩展字段
+
+    @ApiModelProperty(value = "证照材料实例id")
+    private String matinstId;
+
 }

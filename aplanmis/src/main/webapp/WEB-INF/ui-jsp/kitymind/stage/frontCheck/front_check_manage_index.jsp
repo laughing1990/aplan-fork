@@ -224,6 +224,8 @@
                         <div class="col-md-7"style="text-align: left;">
                             <button type="button" class="btn btn-info"
                                     onclick="addParFrontItem();">新增</button>
+                            <button type="button" class="btn btn-info"
+                                    onclick="batchImportParFrontItem();">批量导入</button>
                             <button type="button" class="btn btn-secondary"
                                     onclick="batchDelParFrontItem();">删除</button>
                         </div>

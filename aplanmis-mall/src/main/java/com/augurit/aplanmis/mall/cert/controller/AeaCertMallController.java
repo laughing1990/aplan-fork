@@ -5,11 +5,9 @@ import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.domain.AeaHiCertinst;
-import com.augurit.aplanmis.common.domain.AeaHiItemMatinst;
 import com.augurit.aplanmis.common.service.instance.AeaHiItemMatinstService;
 import com.augurit.aplanmis.common.utils.SessionUtil;
 import com.augurit.aplanmis.common.vo.LoginInfoVo;
-import com.augurit.aplanmis.integration.license.dto.LicenseAuthResDTO;
 import com.augurit.aplanmis.mall.cert.service.AeaCertMallService;
 import io.jsonwebtoken.lang.Assert;
 import io.swagger.annotations.Api;
@@ -19,7 +17,11 @@ import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -263,9 +265,9 @@ public class AeaCertMallController {
             @ApiImplicitParam(name = "identityNumber", value = "申办证件号码", required = true , dataType = "String" ,paramType = "query"),
     })
     @GetMapping("/getLicenseAuthRes")
-    public LicenseAuthResDTO getLicenseAuthRes(String itemVerIds, String identityNumber,HttpServletRequest request) throws Exception {
+    public ContentResultForm getLicenseAuthRes(String itemVerIds, String identityNumber,HttpServletRequest request) throws Exception {
         LoginInfoVo loginVo = SessionUtil.getLoginInfo(request);
-        return aeaCertService.getLicenseAuthRes(itemVerIds, identityNumber,loginVo);
+        return new ContentResultForm(true,aeaCertService.getLicenseAuthRes(itemVerIds, identityNumber,loginVo),"success");
     }
 
     @ApiOperation(value = "通过电子证照编码获取证照显示地址", notes = "通过电子证照编码获取证照显示地址")
@@ -273,20 +275,20 @@ public class AeaCertMallController {
             @ApiImplicitParam(name = "authCode", value = "证照编码", required = true , dataType = "String" ,paramType = "query"),
     })
     @GetMapping("/getViewLicenseURL")
-    public String getViewLicenseURL(String authCode) throws Exception {
-        return aeaCertService.getViewLicenseURL(authCode);
+    public ContentResultForm getViewLicenseURL(String authCode) throws Exception {
+        return new ContentResultForm(true,aeaCertService.getViewLicenseURL(authCode),"success");
     }
 
 
     @PostMapping("/bind/cert")
     @ApiOperation(value = "关联电子证照材料")
     @ApiImplicitParam(value = "电子证照")
-    public ContentResultForm<AeaHiItemMatinst> bindCertinst(@RequestBody AeaHiCertinst aeaHiCertinst) {
+    public ContentResultForm<AeaHiCertinst> bindCertinst(@RequestBody AeaHiCertinst aeaHiCertinst) {
         try {
             if (StringUtils.isNotBlank(aeaHiCertinst.getMatId())) {
-                AeaHiItemMatinst aeaHiItemMatinst = aeaHiItemMatinstService.bindCertinst(aeaHiCertinst, SecurityContext.getCurrentUserName());
+                aeaHiCertinst = aeaHiItemMatinstService.bindCertinst(aeaHiCertinst, SecurityContext.getCurrentUserName());
                 Assert.hasText(aeaHiCertinst.getCertinstId(), "certinstId is null");
-                return new ContentResultForm<>(true, aeaHiItemMatinst, "Bind success");
+                return new ContentResultForm<>(true, aeaHiCertinst, "Bind success");
             }
         } catch (Exception e) {
             e.printStackTrace();

@@ -43,7 +43,7 @@ public class AeaItemFrontProjAdminServiceImpl implements AeaItemFrontProjAdminSe
 
     @Override
     public void updateAeaItemFrontProj(AeaItemFrontProj aeaItemFrontProj) {
-        checkSame(aeaItemFrontProj);
+//        checkSame(aeaItemFrontProj);
 
         aeaItemFrontProj.setModifyTime(new Date());
         aeaItemFrontProj.setModifier(SecurityContext.getCurrentUserId());

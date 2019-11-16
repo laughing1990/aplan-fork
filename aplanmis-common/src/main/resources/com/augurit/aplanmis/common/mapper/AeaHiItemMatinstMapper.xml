@@ -458,7 +458,7 @@
                 #{item.projInfoId},
                 #{item.officialDocNo}, #{item.officialDocTitle}, #{item.officialDocDueDate},
                 #{item.officialDocPublishDate},#{item.rootOrgId},#{item.memo},#{item.matinstSource},#{item.linkmanInfoId},
-                #{matProp} , #{certinstId} , #{stoForminstId}
+                #{item.matProp} , #{item.certinstId} , #{item.stoForminstId}
                 FROM dual
                 )
             </foreach>
@@ -472,8 +472,9 @@
                 #{item.projInfoId},
                 #{item.officialDocNo}, #{item.officialDocTitle}, #{item.officialDocDueDate},
                 #{item.officialDocPublishDate},
-                #{item.rootOrgId},#{item.memo},#{item.matinstSource},#{item.linkmanInfoId}, #{matProp} , #{certinstId} ,
-                #{stoForminstId} )
+                #{item.rootOrgId},#{item.memo},#{item.matinstSource},#{item.linkmanInfoId}, #{item.matProp},
+                #{item.certinstId} ,
+                #{item.stoForminstId} )
             </foreach>
         </if>
 
@@ -545,13 +546,13 @@
                 MATINST_SOURCE = #{matinstSource},
             </if>
             <if test="linkmanInfoId != null">
-                LINKMAN_INFO_ID = #{linkmanInfoId}
+                LINKMAN_INFO_ID = #{linkmanInfoId},
             </if>
             <if test="matProp != null">
-                MAT_PROP = #{matProp}
+                MAT_PROP = #{matProp},
             </if>
             <if test="certinstId != null">
-                CERTINST_ID = #{certinstId}
+                CERTINST_ID = #{certinstId},
             </if>
             <if test="stoForminstId != null">
                 STO_FORMINST_ID = #{stoForminstId}
@@ -626,13 +627,13 @@
                         MATINST_SOURCE = #{item.matinstSource},
                     </if>
                     <if test="item.linkmanInfoId != null">
-                        LINKMAN_INFO_ID = #{item.linkmanInfoId}
+                        LINKMAN_INFO_ID = #{item.linkmanInfoId},
                     </if>
                     <if test="item.matProp != null">
-                        MAT_PROP = #{matProp}
+                        MAT_PROP = #{matProp},
                     </if>
                     <if test="item.certinstId != null">
-                        CERTINST_ID = #{certinstId}
+                        CERTINST_ID = #{certinstId},
                     </if>
                     <if test="item.stoForminstId != null">
                         STO_FORMINST_ID = #{stoForminstId}
@@ -706,13 +707,13 @@
                         MATINST_SOURCE = #{item.matinstSource},
                     </if>
                     <if test="item.linkmanInfoId != null">
-                        LINKMAN_INFO_ID = #{item.linkmanInfoId}
+                        LINKMAN_INFO_ID = #{item.linkmanInfoId},
                     </if>
                     <if test="item.matProp != null">
-                        MAT_PROP = #{matProp}
+                        MAT_PROP = #{matProp},
                     </if>
                     <if test="item.certinstId != null">
-                        CERTINST_ID = #{certinstId}
+                        CERTINST_ID = #{certinstId},
                     </if>
                     <if test="item.stoForminstId != null">
                         STO_FORMINST_ID = #{stoForminstId}
@@ -805,7 +806,7 @@
         aim.IS_OFFICIAL_DOC isOfficialDoc,
         OPU_OM_ORG.ORG_ID orgId,
         OPU_OM_ORG.ORG_NAME orgName,
-        OPU_OM_ORG.ORG_SHORT_NAME1 orgShortName,
+        OPU_OM_ORG.ORG_SHORT_NAME1 orgShortName
         FROM AEA_HI_ITEM_MATINST ahim
         JOIN AEA_HI_ITEM_INOUTINST ahii ON ahim.MATINST_ID=ahii.MATINST_ID
         JOIN AEA_HI_ITEMINST ahii_1 ON ahii_1.ITEMINST_ID=ahii.ITEMINST_ID
