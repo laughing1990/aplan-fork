@@ -1,4 +1,4 @@
-package com.augurit.aplanmis.front.receive.vo;
+package com.augurit.aplanmis.common.service.receive.vo;
 
 import com.augurit.agcloud.bsc.domain.BscAttForm;
 import io.swagger.annotations.ApiModel;

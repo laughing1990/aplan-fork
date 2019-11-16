@@ -363,32 +363,40 @@ var vm = new Vue({
                 },
                 type:'get',
             },function (data) {
-                if( data.content.unitInfoShowFrom){
-                    _that.unitInfoShowFrom.buildArea = data.content.unitInfoShowFrom.buildArea;
-                    _that.unitInfoShowFrom.buildId = data.content.unitInfoShowFrom.buildId;
-                    _that.unitInfoShowFrom.contractEndBuildTime = data.content.unitInfoShowFrom.contractEndBuildTime;
-                    _that.unitInfoShowFrom.contractStartBuildTime = data.content.unitInfoShowFrom.contractStartBuildTime;
-                    _that.unitInfoShowFrom.projInfoId = data.content.unitInfoShowFrom.projInfoId;
-                    _that.unitInfoShowFrom.provinceProjCode = data.content.unitInfoShowFrom.provinceProjCode;
-                    _that.unitInfoShowFrom.quaCheckNum = data.content.unitInfoShowFrom.quaCheckNum;
-                    _that.unitInfoShowFrom.structureSystem = data.content.unitInfoShowFrom.structureSystem;
-                }
-                if(data.content.gongchengzongFrom){
-                    _that.gongchengzongFrom = data.content.gongchengzongFrom;
-                }
-                if(data.content.applyShigongzongFrom){
-                    _that.applyShigongzongFrom = data.content.applyShigongzongFrom;
-                }
-                if(data.content.applyShigongzhuanyefenbaoFrom){
-                    _that.applyShigongzhuanyefenbaoFrom = data.content.applyShigongzhuanyefenbaoFrom;
+                if(data.success){
+                    if( data.content.unitInfoShowFrom){
+                        _that.unitInfoShowFrom.buildArea = data.content.unitInfoShowFrom.buildArea;
+                        _that.unitInfoShowFrom.buildId = data.content.unitInfoShowFrom.buildId;
+                        _that.unitInfoShowFrom.contractEndBuildTime = data.content.unitInfoShowFrom.contractEndBuildTime;
+                        _that.unitInfoShowFrom.contractStartBuildTime = data.content.unitInfoShowFrom.contractStartBuildTime;
+                        _that.unitInfoShowFrom.projInfoId = data.content.unitInfoShowFrom.projInfoId;
+                        _that.unitInfoShowFrom.provinceProjCode = data.content.unitInfoShowFrom.provinceProjCode;
+                        _that.unitInfoShowFrom.quaCheckNum = data.content.unitInfoShowFrom.quaCheckNum;
+                        _that.unitInfoShowFrom.structureSystem = data.content.unitInfoShowFrom.structureSystem;
+                    }
+                    if(data.content.gongchengzongFrom){
+                        _that.gongchengzongFrom = data.content.gongchengzongFrom;
+                    }
+                    if(data.content.applyShigongzongFrom){
+                        _that.applyShigongzongFrom = data.content.applyShigongzongFrom;
+                    }
+                    if(data.content.applyShigongzhuanyefenbaoFrom){
+                        _that.applyShigongzhuanyefenbaoFrom = data.content.applyShigongzhuanyefenbaoFrom;
 
+                    }
+                    if(data.content.applyShigonglaowufenbaoFrom){
+                        _that.applyShigonglaowufenbaoFrom = data.content.applyShigonglaowufenbaoFrom;
+                    }
+                    if(data.content.applyJianliFrom){
+                        _that.applyJianliFrom = data.content.applyJianliFrom;
+                    }
+                }else {
+                    _that.$message({
+                        message: '请求数据失败',
+                        type: 'error'
+                    });
                 }
-                if(data.content.applyShigonglaowufenbaoFrom){
-                    _that.applyShigonglaowufenbaoFrom = data.content.applyShigonglaowufenbaoFrom;
-                }
-                if(data.content.applyJianliFrom){
-                    _that.applyJianliFrom = data.content.applyJianliFrom;
-                }
+
             })
         },
 
@@ -643,7 +651,7 @@ var vm = new Vue({
         //选择项目负责人
         selLinkman: function(data,ind1,type){
             var _that = this;
-            if(type == 'shigongzongchenbao'){
+            if(type == 'applyShigongzongFrom'){
                 if(data){
                     _that.applyShigongzongFrom.linkmanName = data.addressName;
                     _that.applyShigongzongFrom.linkmanId = data.addressId;
@@ -691,7 +699,7 @@ var vm = new Vue({
                     _that.applyJianliFrom.personSafeLicenceNum = '';
                 }
             }
-            if(type = 'gongchengzongFrom'){
+            if(type == 'gongchengzongFrom'){
                 if(data){
                     _that.gongchengzongFrom.linkmanName = data.addressName;
                     _that.gongchengzongFrom.linkmanId = data.addressId;

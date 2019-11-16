@@ -31,7 +31,8 @@
     ROOT_ORG_ID rootOrgId,
     MEMO memo,
     MANAGEMENT_SCOPE managementScope,
-    AUTH_CODE authCode
+    AUTH_CODE authCode,
+    certinst_source certinstSource
     </sql>
 
     <sql id="aliasColumns">
@@ -60,7 +61,8 @@
     ${alias}.QUAL_LEVEL_ID  qualLevelId,
     ${alias}.MEMO memo,
     ${alias}.MANAGEMENT_SCOPE managementScope,
-    ${alias}.AUTH_CODE authCode
+    ${alias}.AUTH_CODE authCode,
+    ${alias}.certinst_source certinstSource
     </sql>
 
     <!--2 根据主键ID查询单个实体 -->
@@ -156,6 +158,9 @@
             <if test="authCode != null">
                 AND AUTH_CODE = #{authCode}
             </if>
+            <if test="certinstSource != null">
+                AND certinst_source = #{certinstSource}
+            </if>
         </where>
     </select>
     <!--4 根据条件查询实体list,返回分页对象 -->
@@ -165,18 +170,18 @@
         insert into AEA_HI_CERTINST (CERTINST_ID, CERT_ID, UNIT_INFO_ID, PROJ_INFO_ID, ATT_LINK_ID, CREATER,
                                      CREATE_TIME, MODIFIER, MODIFY_TIME, CERTINST_CODE, CERTINST_NAME, ISSUE_DATE,
                                      TERM_START, TERM_END, CA_INFO, CERT_OWNER, ISSUE_ORG_ID, TERM_NUM, TERM_UNIT, FLXL,
-                                     APPLYINST_ID, LINKMAN_INFO_ID, QUAL_LEVEL_ID,ROOT_ORG_ID,MEMO,MANAGEMENT_SCOPE, AUTH_CODE)
+                                     APPLYINST_ID, LINKMAN_INFO_ID, QUAL_LEVEL_ID,ROOT_ORG_ID,MEMO,MANAGEMENT_SCOPE, AUTH_CODE, certinst_source)
         values (#{certinstId}, #{certId}, #{unitInfoId}, #{projInfoId}, #{attLinkId}, #{creater}, #{createTime},
                 #{modifier}, #{modifyTime}, #{certinstCode}, #{certinstName}, #{issueDate}, #{termStart}, #{termEnd},
                 #{caInfo}, #{certOwner}, #{issueOrgId}, #{termNum}, #{termUnit}, #{flxl}, #{applyinstId},
-                #{linkmanInfoId}, #{qualLevelId},#{rootOrgId},#{memo},#{managementScope}, #{authCode} )
+                #{linkmanInfoId}, #{qualLevelId},#{rootOrgId},#{memo},#{managementScope}, #{authCode}, #{certinstSource})
     </insert>
 
     <insert id="batchInsertAeaHiCertinst" parameterType="AeaHiCertinst">
         insert into AEA_HI_CERTINST (CERTINST_ID, CERT_ID, UNIT_INFO_ID, PROJ_INFO_ID, ATT_LINK_ID, CREATER,
         CREATE_TIME, MODIFIER, MODIFY_TIME, CERTINST_CODE, CERTINST_NAME, ISSUE_DATE,
         TERM_START, TERM_END, CA_INFO, CERT_OWNER, ISSUE_ORG_ID, TERM_NUM, TERM_UNIT, FLXL,
-        APPLYINST_ID, LINKMAN_INFO_ID, QUAL_LEVEL_ID,ROOT_ORG_ID,MEMO,MANAGEMENT_SCOPE, AUTH_CODE)
+        APPLYINST_ID, LINKMAN_INFO_ID, QUAL_LEVEL_ID,ROOT_ORG_ID,MEMO,MANAGEMENT_SCOPE, AUTH_CODE, certinst_source)
         <if test="_databaseId == 'oracle'">
             <foreach collection="certinsts" item="item" index="index" separator="union all">
                 (
@@ -188,7 +193,7 @@
                 #{item.caInfo}, #{item.certOwner}, #{item.issueOrgId}, #{item.termNum}, #{item.termUnit}, #{item.flxl},
                 #{item.applyinstId},
                 #{item.linkmanInfoId}, #{item.qualLevelId},#{item.rootOrgId},#{item.memo},#{item.managementScope},
-                #{item.authCode}
+                #{item.authCode}, #{certinstSource}
                 FROM dual
                 )
             </foreach>
@@ -203,7 +208,7 @@
                 #{item.caInfo}, #{item.certOwner}, #{item.issueOrgId}, #{item.termNum}, #{item.termUnit}, #{item.flxl},
                 #{item.applyinstId},
                 #{item.linkmanInfoId}, #{item.qualLevelId},#{item.rootOrgId},#{item.memo},#{item.managementScope},
-                #{item.authCode})
+                #{item.authCode}, #{certinstSource})
             </foreach>
         </if>
     </insert>
@@ -292,6 +297,9 @@
             <if test="authCode != null">
                 AUTH_CODE = #{authCode},
             </if>
+            <if test="certinstSource != null">
+                certinst_source = #{certinstSource},
+            </if>
         </set>
         where CERTINST_ID = #{certinstId}
     </update>
@@ -333,6 +341,7 @@
         <result property="qualLevelId" column="QUAL_LEVEL_ID"/>
         <result property="rootOrgId" column="ROOT_ORG_ID"/>
         <result property="authCode" column="AUTH_CODE"/>
+        <result property="certinstSource" column="CERTINST_SOURCE"/>
     </resultMap>
     <select id="getAeaHiCertinstByIds" resultType="AeaHiCertinst">
         select aui.APPLICANT issueOrgName,
@@ -355,6 +364,7 @@
         ahc.TERM_END termEnd,
         ahc.MANAGEMENT_SCOPE managementScope,
         ahc.ISSUE_DATE issueDate,
+        ahc.certinst_source certinstSource,
         (SELECT o.ORG_NAME FROM OPU_OM_ORG o WHERE o.ORG_ID = ahc.ISSUE_ORG_ID) orgName
         FROM AEA_HI_CERTINST ahc
         WHERE ahc.CERTINST_ID IN (
@@ -409,7 +419,8 @@
     hicert.APPLYINST_ID applyinstId,
     hicert.FLXL  flxl,
     hicert.LINKMAN_INFO_ID  linkmanInfoId,
-    hicert.QUAL_LEVEL_ID  qualLevelId
+    hicert.QUAL_LEVEL_ID  qualLevelId,
+    hicert.certinst_source  certinstSource,
     </sql>
 
     <select id="getAeaImMajorLevelAndCertinstByServiceId" resultType="com.augurit.aplanmis.common.domain.AeaHiCertinst">

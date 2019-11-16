@@ -1,4 +1,4 @@
-package com.augurit.aplanmis.front.apply.vo;
+package com.augurit.aplanmis.common.service.receive.vo;
 
 import com.augurit.aplanmis.common.domain.AeaHiItemMatinst;
 import io.swagger.annotations.ApiModel;

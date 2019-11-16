@@ -1070,8 +1070,54 @@
         </sql>
     </changeSet>
 
-
-
+    <changeSet id="201911161050" author="liaojj" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            CREATE TABLE `aea_ex_proj_cert_build` (
+            `BUILD_ID` varchar(50) NOT NULL DEFAULT '' COMMENT '主键',
+            `PROJ_INFO_ID` varchar(50) NOT NULL COMMENT '项目ID',
+            `CERT_BUILD_CODE` varchar(50) NOT NULL COMMENT '建设工程规划许可证编号',
+            `CERT_BUILD_QRCODE` blob COMMENT '建设工程规划许可证二维码',
+            `GOV_ORG_CODE` varchar(50) DEFAULT NULL COMMENT '核发机关组织机构代码',
+            `GOV_ORG_NAME` varchar(200) DEFAULT NULL COMMENT '核发机关',
+            `PUBLISH_TIME` datetime DEFAULT NULL COMMENT '核发日期',
+            `CONSTRUCTION_UNIT` varchar(500) DEFAULT NULL COMMENT '建设单位',
+            `PROJ_NAME` varchar(500) DEFAULT NULL COMMENT '工程名称',
+            `CONSTRUCTION_ADDR` varchar(1000) DEFAULT NULL COMMENT '建设地址',
+            `CONSTRUCTIONS_SIZE` varchar(200) DEFAULT NULL COMMENT '建设规模',
+            `CONTRACT_PRICE` float DEFAULT NULL COMMENT '合同价格，单位：万元',
+            `KC_UNIT` varchar(200) DEFAULT NULL COMMENT '勘察单位',
+            `SJ_UNIT` varchar(200) DEFAULT NULL COMMENT '设计单位',
+            `SG_UNIT` varchar(200) DEFAULT NULL COMMENT '施工单位',
+            `JL_UNIT` varchar(200) DEFAULT NULL COMMENT '监理单位',
+            `KC_UNIT_LEADER` varchar(50) DEFAULT NULL COMMENT '勘察单位项目负责人',
+            `SJ_UNIT_LEADER` varchar(50) DEFAULT NULL COMMENT '设计单位项目负责人',
+            `SG_UNIT_LEADER` varchar(50) DEFAULT NULL COMMENT '施工单位项目负责人',
+            `JL_UNIT_LEADER` varchar(50) DEFAULT NULL COMMENT '总监理工程师',
+            `CONTRACT_PERIOD` varchar(500) DEFAULT NULL COMMENT '合同工期',
+            `CERT_BUILD_MEMO` varchar(1000) DEFAULT NULL COMMENT '备注',
+            `CREATER` varchar(50) DEFAULT NULL COMMENT '创建人',
+            `CREATE_TIME` datetime NOT NULL COMMENT '创建时间',
+            `MODIFIER` varchar(50) DEFAULT NULL COMMENT '修改人',
+            `MODIFY_TIME` datetime DEFAULT NULL COMMENT '修改时间',
+            `ROOT_ORG_ID` varchar(50) DEFAULT NULL COMMENT '所属根组织ID',
+            `PRINT_USER_ID` varchar(50) DEFAULT NULL COMMENT '打印人ID',
+            `PRINT_USER_NAME` varchar(50) DEFAULT NULL COMMENT '打印人姓名',
+            `PRINT_TIME` datetime DEFAULT NULL COMMENT '打印时间',
+            PRIMARY KEY (`BUILD_ID`) USING BTREE
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='建设工程施工许可证';
+        </sql>
+    </changeSet>
+    <changeSet id="20191116110102" author="xiong" failOnError="false">
+        <preConditions>
+            <not>
+                <columnExists tableName="aea_hi_certinst" columnName="certinst_source"/>
+            </not>
+        </preConditions>
+        <sql splitStatements="true">
+            alter table aea_hi_certinst add column certinst_source varchar(16) default null comment '本地部门出证 local,
+            第三方对接证照 external';
+        </sql>
+    </changeSet>
 
 
 </databaseChangeLog>

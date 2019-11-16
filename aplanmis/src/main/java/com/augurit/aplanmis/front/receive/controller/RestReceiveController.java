@@ -5,9 +5,10 @@ import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.aplanmis.common.domain.AeaHiReceive;
 import com.augurit.aplanmis.common.dto.AeaHiReceiveDto;
 import com.augurit.aplanmis.common.mapper.AeaHiReceiveMapper;
-import com.augurit.aplanmis.front.apply.vo.RefusedRecepitVo;
+import com.augurit.aplanmis.common.service.receive.ReceiveService;
+import com.augurit.aplanmis.common.service.receive.vo.RefusedRecepitVo;
 import com.augurit.aplanmis.front.constant.ReceiveConstant;
-import com.augurit.aplanmis.front.receive.service.ReceiveService;
+
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

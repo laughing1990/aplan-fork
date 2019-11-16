@@ -9,6 +9,7 @@ import com.augurit.aplanmis.common.mapper.AeaProjInfoMapper;
 import com.augurit.aplanmis.common.mapper.AeaUnitProjLinkmanMapper;
 import com.augurit.aplanmis.common.service.linkman.AeaLinkmanInfoService;
 import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
+import com.augurit.aplanmis.front.form.service.AeaExProjCertBuildService;
 import com.augurit.aplanmis.front.form.service.RestExSJUnitFormService;
 import com.augurit.aplanmis.front.subject.unit.vo.UnitVo;
 import lombok.extern.slf4j.Slf4j;
@@ -39,6 +40,8 @@ public class RestExSJUnitFormController {
     private RestExSJUnitFormService restExSJUnitFormService;
     @Autowired
     private AeaProjInfoMapper aeaProjInfoMapper;
+    @Autowired
+    private AeaExProjCertBuildService aeaExProjCertBuildService;
 
     @PostMapping("/saveOrUpdateSJUnitInfo")
     public ContentResultForm<String> saveOrUpdateSJUnitInfo(AeaExProjBuild aeaExProjBuild){
@@ -48,6 +51,7 @@ public class RestExSJUnitFormController {
             List<AeaProjInfo> aeaProjInfos = aeaProjInfoMapper.listAeaProjInfo(aeaProjInfo);
             if(aeaProjInfos !=null && aeaProjInfos.size()>0){
                 restExSJUnitFormService.saveOrUpdateSJUnitInfo(aeaExProjBuild);
+                aeaExProjCertBuildService.SynchronizeDataByAeaExProjBuild(aeaExProjBuild);
                 return new ContentResultForm<>(true,"保存成功", "Save success");
             }else {
                 return new ContentResultForm<>(false,"项目编码不存在", "error");
@@ -66,7 +70,7 @@ public class RestExSJUnitFormController {
             }
             return new ContentResultForm<>(true, map, "Query success");
         }catch (Exception e){
-            return new ContentResultForm(true, e.getMessage(), "error");
+            return new ContentResultForm(false, e.getMessage(), "error");
         }
     }
 

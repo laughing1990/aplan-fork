@@ -131,10 +131,11 @@ ul {
 }
 .header iframe, .footer iframe {
 	width: 100%;
+	height: 100%;
 }
 .footer {
 	/*height: 115px;*/
-	height: 170px;
+	height: 170px!important;
 }
 /*头部尾部引入样式 end*/
 .main-content {

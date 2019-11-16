@@ -127,7 +127,7 @@ var vm = new Vue({
             }, function (result) {
                 if (result.content) {
                     _that.buildTypeList = result.content.XM_JZLX;
-                    _that.projNatureList = result.content.PROJECT_PROPERTY;
+                    _that.projNatureList = result.content.XM_NATURE;
                     _that.projFunctionList = result.content.XM_FUNCTION;
                     _that.scaleTypeList = result.content.XM_SCALE_TYPE;
                     _that.projLevelList = result.content.XM_PROJECT_LEVEL;
