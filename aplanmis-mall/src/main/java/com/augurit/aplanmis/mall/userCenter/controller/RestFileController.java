@@ -121,7 +121,7 @@ public class RestFileController {
     public ResultForm getAttFiles(@PathVariable String matinstId,HttpServletRequest request) throws Exception {
         if ("null".equalsIgnoreCase(matinstId) || "undefined".equalsIgnoreCase(matinstId) || StringUtils.isBlank(matinstId))
             return new ContentResultForm<>(true, new ArrayList<>());
-        if (!restFileService.isMatBelong(matinstId,request)) return new ResultForm(false,"查询出错");
+        //if (!restFileService.isMatBelong(matinstId,request)) return new ResultForm(false,"查询出错");
         return new ContentResultForm<>(true, restFileService.getAttFiles(matinstId));
     }
 
@@ -137,7 +137,7 @@ public class RestFileController {
             if (StringUtils.isBlank(detailIds)) {
                 return new ResultForm(false, "删除失败：没有可删除文件!");
             }
-            if (!restFileService.isMatBelong(matinstId,request)) return new ResultForm(false,"删除出错");
+            //if (!restFileService.isMatBelong(matinstId,request)) return new ResultForm(false,"删除出错");
             String[] str = detailIds.split(",");
             return restFileService.delelteAttachment(str, matinstId);
         } catch (Exception e) {
