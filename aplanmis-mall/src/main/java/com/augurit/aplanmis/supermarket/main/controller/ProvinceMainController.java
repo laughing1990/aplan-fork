@@ -10,7 +10,6 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -36,14 +35,14 @@ public class ProvinceMainController {
     }
 
     //==============================省首页跳转  end ===================================
-    @ApiOperation(value = "获取首页展示数据", notes = "获取首页展示数据。")
+    @ApiOperation(value = "获取省首页展示数据", notes = "获取省首页展示数据。")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "queryType", value = "查询类型", required = true, dataType = "String")
+            @ApiImplicitParam(name = "queryType", value = "查询类型，D 天,M月,Y 年 A 所有", required = true, dataType = "String")
     })
-    @RequestMapping(value = "/getProvinceIndexData", method = RequestMethod.GET)
+    @GetMapping(value = "/getProvinceIndexData")
     public ResultForm getIndexData(String queryType) {
         try {
-            return new ContentResultForm(true, provinceMainService.getProvinceIndexData());
+            return new ContentResultForm(true, provinceMainService.getProvinceIndexData(queryType));
         } catch (Exception e) {
             e.printStackTrace();
             return new ResultForm(false);
