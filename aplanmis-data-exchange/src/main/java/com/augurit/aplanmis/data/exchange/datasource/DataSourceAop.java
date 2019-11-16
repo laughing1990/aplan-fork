@@ -27,6 +27,13 @@ public class DataSourceAop {
         }
     }
 
+    @Before("execution(*  com.augurit.aplanmis.common.service..*Service.*(..))")
+    public void setDataSource2Aplanmis3() {
+        if (DataSourceType.DataBaseType.APLANMIS != DataSourceType.getDataBaseType()) {
+            DataSourceType.setDataBaseType(DataSourceType.DataBaseType.APLANMIS);
+        }
+    }
+
     @Before("execution(* com.augurit.aplanmis.data.exchange.service.duogui.*Service.*(..))")
     public void setDataSource2DuoGui() {
         if (DataSourceType.DataBaseType.DUOGUI != DataSourceType.getDataBaseType()) {
