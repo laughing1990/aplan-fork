@@ -502,6 +502,7 @@ var vm = new Vue({
       matLibTableList:[],
       applyMainType: '0',
       applyUnitList: [],
+      itemVerids: '',
     }
   },
   filters: {
@@ -559,6 +560,7 @@ var vm = new Vue({
     openIdLibDialog: function(row){
       var vm = this;
       vm.parentPageLoading = true;
+      vm.itemVerids = row.itemVerids;
       vm.loadIdLibList(function(){
         vm.idLibVisible = true;
         vm.parentPageLoading = false;
@@ -584,14 +586,59 @@ var vm = new Vue({
           }
         });
       }
-      window.setTimeout(function(){
-        vm.idLibLoading = false;
-        vm.idLibTableList = idLibResMock.data;
-        typeof callback == 'function' && callback();
-      }, 500);
+      params.itemVerIds = vm.itemVerids;
+      if (isDevelop) {
+        window.setTimeout(function(){
+          vm.idLibLoading = false;
+          vm.idLibTableList = idLibResMock.content.data;
+          typeof callback == 'function' && callback();
+        }, 500);
+      } else {
+        request('', {
+          url: ctx + 'aea/cert/getLicenseAuthRes.do',
+          type: 'get',
+          data: params,
+        }, function (res){
+          vm.idLibLoading = false;
+          vm.parentPageLoading = false;
+          if (res.success){
+            if (res.content&&res.content.data&&res.content.data.length){
+              vm.idLibLoading = false;
+              vm.idLibTableList = res.content.data;
+              typeof callback == 'function' && callback();
+            } else {
+              vm.$message.error('未获取到证照信息');
+            }
+          } else {
+            vm.$message.error(res.message||'获取证照库列表数据失败');
+          }
+        }, function(){
+          vm.idLibLoading = false;
+          vm.parentPageLoading = false;
+          vm.$message.error('获取证照库列表数据失败');
+        })
+      }
     },
     // 证照列表弹窗 查看证照
-    idTableListSee: function(row){},
+    idTableListSee: function(row){
+      var vm = this;
+      vm.idLibLoading = true;
+      request('', {
+        url: ctx + 'aea/cert/getViewLicenseURL.do',
+        type: 'get',
+        data: { authCode: row.auth_code },
+      }, function(res) {
+        vm.idLibLoading = false;
+        if (res.success){
+          window.open(res.content);
+        } else {
+          vm.$message.error(res.message||'查看证照失败');
+        }
+      }, function(){
+        vm.idLibLoading = false;
+        vm.$message.error('查看证照失败');
+      });
+    },
     // 证照列表弹窗 选择证照
     idTabListChoose: function(row) {},
     // 获取材料补正详情数据

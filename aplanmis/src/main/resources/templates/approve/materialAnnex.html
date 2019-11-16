@@ -58,7 +58,6 @@
     }
     
     .file-name {
-      margin-right: 25px;
       cursor: pointer;
     }
     
@@ -178,10 +177,13 @@
                         :class="'ag-filetype-'+getFileType(item.fileName)"></span>
                   {{item.fileName}}
               </span>
-              <span class="file-icon-btn">
-                  <span title="预览" class="el-icon-search" @click="filePreview(item)"></span>
-                  <span title="查验" v-if="props.row.matProp=='c'" class="ag ag-Evaluation" @click="checkId(item)"></span>
-                  <span title="下载" class="el-icon-download" @click="downOneFile(item)"></span>
+              <span v-if="props.row.matProp=='c'" style="color:#AFB2C1;">
+                （{{item.creater}}于{{item.updateTime}}关联）
+              </span>
+              <span class="file-icon-btn" style="margin-left:20px;">
+                  <span title="预览" v-if="props.row.matProp=='m'" class="el-icon-search" @click="filePreview(item)"></span>
+                  <span title="查验" v-if="props.row.matProp=='c'" class="el-icon-search" @click="checkId(item)"></span>
+                  <span title="下载" v-if="props.row.matProp=='m'" class="el-icon-download" @click="downOneFile(item)"></span>
                   <span title="删除" class="el-icon-delete" @click="delOneFile(item,props.row)"></span>
               </span>
             </div>
@@ -233,6 +235,7 @@
         th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
 <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js"
         th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
+<script src="../../static/common/js/axios.min.js" th:src="@{/common/js/axios.min.js}"></script>
 <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js"
         th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>
 <script>
@@ -354,7 +357,23 @@
       },
       // 查验电子证照
       checkId: function(row){
-        console.log(row);
+        var vm = this;
+        vm.pageLoading = true;
+        request('', {
+          url: ctx + 'aea/cert/getViewLicenseURL.do',
+          type: 'get',
+          data: { authCode: row.auth_code },
+        }, function(res) {
+          vm.pageLoading = false;
+          if (res.success){
+            window.open(res.content);
+          } else {
+            vm.$message.error(res.message||'查看证照失败');
+          }
+        }, function(){
+          vm.pageLoading = false;
+          vm.$message.error('查看证照失败');
+        });
       },
       //删除单个文件附件
       delOneFile: function (data, matData) {
@@ -404,24 +423,24 @@
       handleUploadFile: function (file) {
         var vm = this;
         var _this = this;
-        console.log(file);
-        console.log(vm.currentUploadRow);
-        if(window) return null;
         var formData = new FormData();
         formData.append('files', file.file);
-        formData.append('matProp', '');
-        formData.append('certId', '');
-        formData.append('stoFormId', '');
+        if (vm.currentUploadRow.matinstId) {
+          formData.append('matinstId', vm.currentUploadRow.matinstId);
+        } else {
+          formData.append('applyinstId', vm.applyinstId);
+          formData.append('matId', vm.currentUploadRow.matId);
+        }
         vm.pageLoading = true;
-        axios.post(ctx + '/rest/mats/att/upload', formData).then(function (res) {
+        axios.post(ctx + 'rest/approve/matinst/uploadAtt', formData).then(function (res) {
           if (res.data && res.data.success) {
-            _this.$message.success('文件上传成功');
+            _this.$message.success('上传成功');
             vm.getMatList();
           } else {
-            _this.$message.error(res.message||'文件上传失败');
+            _this.$message.error(res.message||'上传失败');
           }
         }).catch(function (e) {
-          _this.$message.error('文件上传失败');
+          _this.$message.error('上传失败');
         }).finally(function () {
           vm.pageLoading = false;
         })
@@ -429,7 +448,6 @@
       // 点击上传文件按钮，记录点击的哪条数据
       clickUpload: function(row){
         var vm = this;
-        console.log(row);
         vm.currentUploadRow = row;
       },
       formDueToZero: function (row) {
@@ -474,6 +492,7 @@
     },
     created: function () {
       var vm = this;
+      axios.defaults.withCredentials = true;
       vm.getDicCodeItems(vm.getMatList); //获取通用字典数据
     },
     mounted: function () {
