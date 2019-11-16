@@ -1259,6 +1259,12 @@ function loadSelectParFrontStage(frontStageId,flag,obj) {
                 setTimeout(function(){
                     $("#uploadProgress").modal('hide');
 
+                    if("edit" == flag){
+                        $("#histStageId").attr("disabled",true);
+                    }else{
+                        $("#histStageId").attr("disabled",false);
+                    }
+
                     $("#edit_par_front_stage_modal").modal("show");
 
                     $('#histStageId').empty();
