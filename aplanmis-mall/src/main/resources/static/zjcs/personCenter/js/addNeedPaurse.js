@@ -72,7 +72,7 @@ var module1 = new Vue({
 			total4: 0,
 			multipleSelection4: [],
 			multipleSelection2: [],
-			multipleSelection3: [{ agentUnitName: '还没选择中介机构' }],
+			multipleSelection3: [{agentUnitName: '还没选择中介机构'}],
 			projInfoId: '', // 项目主键ID
 			projCode: '', // 项目代码
 			addNeedList: [{}],// 新增采购需求   // 新增采购需求查询结果列表
@@ -85,59 +85,59 @@ var module1 = new Vue({
 			avoidData: [],
 			rules: {
 				agentItemName: [
-					{ required: true, message: '请选择中介服务事项', trigger: 'change' }
+					{required: true, message: '请选择中介服务事项', trigger: 'change'}
 				],
 				// isApproveProj:[
 				//     { required: true, message: '请选择投资审批项目', trigger: 'blur' }
 				// ],
 				approvalCode: [
-					{ required: true, message: '投资审批项目编码', trigger: 'blur' }
+					{required: true, message: '投资审批项目编码', trigger: 'blur'}
 				],
 				contact: [
-					{ required: true, message: '请输入项目联系人', trigger: 'blur' }
+					{required: true, message: '请输入项目联系人', trigger: 'blur'}
 				],
 				mobile: [
 					//  { required: true, message: '请输入联系电话', trigger: 'blur' },
-					{ required: true, validator: checkPhone, trigger: 'blur' }
+					{required: true, validator: checkPhone, trigger: 'blur'}
 				],
 				// projName:[
 				//      { required: true, message: '请输入采购项目名称', trigger: 'blur' }
 				// ],
 				projScale: [
-					{ required: true, message: '请输入项目规模', trigger: 'change' }
+					{required: true, message: '请输入项目规模', trigger: 'change'}
 				],
 				projScaleContent: [
-					{ required: true, message: '请输入项目规模描述', trigger: 'blur' }
+					{required: true, message: '请输入项目规模描述', trigger: 'blur'}
 				],
 				chooseInsertype: [
-					{ type: 'array', required: true, message: '请至少选择一个资金来源', trigger: 'change' }
+					{type: 'array', required: true, message: '请至少选择一个资金来源', trigger: 'change'}
 				],
 				financialFundProportion: [
-					{ required: true, message: '请至少填写资金来源比例', trigger: 'change' }
+					{required: true, message: '请至少填写资金来源比例', trigger: 'change'}
 				],
 				socialFundProportion: [
-					{ required: true, message: '请填写资金来源比例', trigger: 'change' }
+					{required: true, message: '请填写资金来源比例', trigger: 'change'}
 				],
 				registerTotal: [
-					{ required: true, message: '请输入执业/职业人员总数', trigger: 'blur' }
+					{required: true, message: '请输入执业/职业人员总数', trigger: 'blur'}
 				],
 				registerRequire: [
-					{ required: true, message: '请输入执业/职业人员要求', trigger: 'blur' }
+					{required: true, message: '请输入执业/职业人员要求', trigger: 'blur'}
 				],
 				serviceName: [
-					{ required: true, message: '请选择所需服务', trigger: 'change' }
+					{required: true, message: '请选择所需服务', trigger: 'change'}
 				],
 				timeLimitExplain: [
-					{ required: true, message: '请填写服务时限说明', trigger: 'blur' }
+					{required: true, message: '请填写服务时限说明', trigger: 'blur'}
 				],
 				serviceContent: [
-					{ required: true, message: '请填写服务内容', trigger: 'blur' }
+					{required: true, message: '请填写服务内容', trigger: 'blur'}
 				],
 				amountExplain: [
-					{ required: true, message: '请填写金额说明', trigger: 'blur' }
+					{required: true, message: '请填写金额说明', trigger: 'blur'}
 				],
 				recordRequireExplain: [
-					{ required: true, message: '请填写备案要求说明', trigger: 'blur' }
+					{required: true, message: '请填写备案要求说明', trigger: 'blur'}
 				],
 				// qualRequireType:[
 				//     { required: true, message: '请选择资质要求', trigger: 'blur' }
@@ -149,37 +149,37 @@ var module1 = new Vue({
 				//     { required: true, message: '请选择是否确认金额', trigger: 'blur' }
 				// ],
 				isDiscloseIm: [
-					{ required: true, message: '请选择中选机构公示', trigger: 'change' }
+					{required: true, message: '请选择中选机构公示', trigger: 'change'}
 				],
 				isDiscloseBidding: [
-					{ required: true, message: '请选择中选公告公示', trigger: 'change' }
+					{required: true, message: '请选择中选公告公示', trigger: 'change'}
 				],
 				isLiveWitness: [
-					{ required: true, message: '请选择见证现场竞价选 取、摇珠', trigger: 'change' }
+					{required: true, message: '请选择见证现场竞价选 取、摇珠', trigger: 'change'}
 				],
 				expirationDate: [
-					{ required: true, message: '请选择截止时间', trigger: 'blur' }
+					{required: true, message: '请选择截止时间', trigger: 'blur'}
 				],
 				choiceImunitTime: [
-					{ required: true, message: '请选择选取中介时间', trigger: 'blur' }
+					{required: true, message: '请选择选取中介时间', trigger: 'blur'}
 				],
 				basePrice: [
-					{ required: true, message: '请填写服务金额', trigger: 'blur' }
+					{required: true, message: '请填写服务金额', trigger: 'blur'}
 				],
 				highestPrice: [
-					{ required: true, message: '请填写服务最高金额', trigger: 'blur' }
+					{required: true, message: '请填写服务最高金额', trigger: 'blur'}
 				],
 				agentUnitName: [
-					{ required: true, message: '请选择指定的中介机构', trigger: 'blur' }
+					{required: true, message: '请选择指定的中介机构', trigger: 'blur'}
 				],
 				witnessName1: [
-					{ required: true, message: '请填写见证人姓名', trigger: 'blur' }
+					{required: true, message: '请填写见证人姓名', trigger: 'blur'}
 				],
 				witnessPhone1: [
-					{ required: true, message: '请填写见证人联系电话', trigger: 'blur' }
+					{required: true, message: '请填写见证人联系电话', trigger: 'blur'}
 				],
 				ownerComplaintPhone: [
-					{ required: true, message: '请填写投诉质疑电话', trigger: 'blur' }
+					{required: true, message: '请填写投诉质疑电话', trigger: 'blur'}
 				]
 			},
 			agentUnit: [],
@@ -204,7 +204,7 @@ var module1 = new Vue({
 				children: 'children',
 				label: 'name'
 			},
-			form: { isApproveProj: 1, isDefineAmount: '1', chooseInsertype: ['1', '1'], isAvoid: "0" },
+			form: {isApproveProj: 1, isDefineAmount: '1', chooseInsertype: ['1', '1'], isAvoid: "0"},
 			isFinancialFund: true,
 			isSocialFund: true,
 			witnessName1: '',
@@ -239,10 +239,10 @@ var module1 = new Vue({
 			checkedSelFlie: [], // 智能分拣区已选文件
 			model: {
 				rules: {
-					getPaper: { required: true, message: "必选", trigger: ["change"] },
-					getCopy: { required: true, message: "必选", trigger: ["change"] },
-					realPaperCount: { validator: checkMissValue, required: true, message: "必填字段", trigger: ['blur'] },
-					realCopyCount: { validator: checkMissValue, required: true, message: "必填字段", trigger: ['blur'] },
+					getPaper: {required: true, message: "必选", trigger: ["change"]},
+					getCopy: {required: true, message: "必选", trigger: ["change"]},
+					realPaperCount: {validator: checkMissValue, required: true, message: "必填字段", trigger: ['blur']},
+					realCopyCount: {validator: checkMissValue, required: true, message: "必填字段", trigger: ['blur']},
 				},
 				matsTableData: []
 			},
@@ -272,7 +272,7 @@ var module1 = new Vue({
 					vm.$set(vm.form, 'mobile', vm.aeaLinkmanInfo.linkmanMobilePhone) //设置项目联系人电话
 				}
 			}, function (msg) {
-				vm.$message({ message: '加载失败', type: 'error' });
+				vm.$message({message: '加载失败', type: 'error'});
 			});
 		},
 
@@ -291,7 +291,7 @@ var module1 = new Vue({
 						if (item.data.length > 0) {
 							var qualLevelId = vm.qualArry[item.level1].aeaImQualLevels[item.leve2.toString().split('-')[1]].qualLevelId
 							for (var i = 0; i < item.data.length; i++) {
-								aeaImMajorQuals.push({ qualLevelId: qualLevelId, majorId: item.data[i][i] });
+								aeaImMajorQuals.push({qualLevelId: qualLevelId, majorId: item.data[i][i]});
 							}
 						}
 					})
@@ -513,15 +513,15 @@ var module1 = new Vue({
 				success: function (res) {  //请求成功后的回调函数
 					vm.loading = false;
 					if (res.success) {
-						vm.$message({ message: '保存成功', type: 'success' });
+						vm.$message({message: '保存成功', type: 'success'});
 						vm.projPurchaseId = res.content // 拿到项目需要提交的id
 					} else {
-						vm.$message({ message: res.message, type: 'error' });
+						vm.$message({message: res.message, type: 'error'});
 					}
 				},
 				error: function () {
 					vm.loading = false;
-					vm.$message({ message: '保存失败', type: 'error' });
+					vm.$message({message: '保存失败', type: 'error'});
 				}
 			});
 		},
@@ -539,14 +539,14 @@ var module1 = new Vue({
 			}, function (res) {
 				vm.loading = false;
 				if (res.success) {
-					vm.$message({ message: '提交成功', type: 'success' });
+					vm.$message({message: '提交成功', type: 'success'});
 					vm.addNeedStatus = 0
 				} else {
-					vm.$message({ message: res.message, type: 'error' });
+					vm.$message({message: res.message, type: 'error'});
 				}
 			}, function (msg) {
 				vm.loading = false;
-				vm.$message({ message: '加载失败', type: 'error' });
+				vm.$message({message: '加载失败', type: 'error'});
 			});
 		},
 		init: function () {
@@ -580,7 +580,7 @@ var module1 = new Vue({
 				}
 			}, function (msg) {
 				vm.loading = false;
-				vm.$message({ message: '加载失败', type: 'error' });
+				vm.$message({message: '加载失败', type: 'error'});
 			});
 		},
 		/**
@@ -625,7 +625,7 @@ var module1 = new Vue({
 					vm.$message.error(res.message);
 				}
 			}, function (msg) {
-				vm.$message({ message: '加载失败', type: 'error' });
+				vm.$message({message: '加载失败', type: 'error'});
 			});
 		},
 		getProUnitLinkInfoWithoutId: function () {
@@ -654,7 +654,7 @@ var module1 = new Vue({
 					vm.$message.error(res.message);
 				}
 			}, function (msg) {
-				vm.$message({ message: '加载失败', type: 'error' });
+				vm.$message({message: '加载失败', type: 'error'});
 			});
 		},
 		/**
@@ -677,7 +677,7 @@ var module1 = new Vue({
 					vm.serviceItemList = content.rows
 				}
 			}, function (msg) {
-				vm.$message({ message: '加载失败', type: 'error' });
+				vm.$message({message: '加载失败', type: 'error'});
 			});
 		},
 		serviceItemListChange: function () {
@@ -716,8 +716,12 @@ var module1 = new Vue({
 			}
 
 			vm.form.agentOrgName = value[0].agentOrgName;
-			vm.form.agentItemName = value[0].agentItemName
-			vm.form.itemName = value[0].itemName
+			vm.form.agentItemName = value[0].agentItemName;
+			vm.form.itemName = value[0].itemName;
+			vm.form.agentItemFwdx = value[0].agentItemFwdx;
+			vm.form.agentItemPropertyName = value[0].agentItemPropertyName;
+			vm.form.agentItemDueNum = value[0].agentItemDueNum;
+			vm.form.agentItemDueUnitType = value[0].agentItemDueUnitType;
 			vm.$set(vm.form, 'isApproveProj', '1')
 			// vm.getAutoProjCode();
 			vm.getItemServiceList(value[0].agentItemVerId)
@@ -732,7 +736,7 @@ var module1 = new Vue({
 			vm.form.serviceItemId = item.serviceItemId;
 			for (var i = 0; i < vm.qualArry.length; i++) {
 				for (var j = 0; j < vm.qualArry[i].aeaImQualLevels.length; j++) {
-					vm.selectdRecord.push({ level1: i, leve2: i + "-" + j, data: [] })
+					vm.selectdRecord.push({level1: i, leve2: i + "-" + j, data: []})
 				}
 			}
 			console.log(vm.selectdRecord)
@@ -826,7 +830,7 @@ var module1 = new Vue({
 					vm.needServiceList = content;
 				}
 			}, function (msg) {
-				vm.$message({ message: '加载失败', type: 'error' });
+				vm.$message({message: '加载失败', type: 'error'});
 			});
 		},
 		/**
@@ -856,7 +860,7 @@ var module1 = new Vue({
 				serviceId: vm.form.serviceId, // 服务ID
 			})
 			if (vm.majorQualRequiresArry.lenght !== 0) {
-				vm.qualsArry.push({ qualId: vm.qualId, majorQualRequires: vm.majorQualRequiresArry })
+				vm.qualsArry.push({qualId: vm.qualId, majorQualRequires: vm.majorQualRequiresArry})
 				params.quals = vm.qualsArry
 			}
 			console.log("请求的参数", params);
@@ -873,7 +877,7 @@ var module1 = new Vue({
 					vm.chooseAgentTabledialogTable = false;
 				}
 			}, function (msg) {
-				vm.$message({ message: '加载失败', type: 'error' });
+				vm.$message({message: '加载失败', type: 'error'});
 			});
 		},
 		/**
@@ -1141,7 +1145,7 @@ var module1 = new Vue({
 				request('', {
 					url: ctx + 'supermarket/purchase/info',
 					type: 'get',
-					data: { "keyword": queryString },
+					data: {"keyword": queryString},
 				}, function (result) {
 					if (result.content) {
 						_that.projInfoList = result.content;
@@ -1279,195 +1283,195 @@ var module1 = new Vue({
 			this.checkedSelFlie = val ? this.AllFileListId : [];
 		},
 		// 获取文件后缀
-        getFileType: function(fileName){
-            var index1=fileName.lastIndexOf(".");
-            var index2=fileName.length;
-            var suffix=fileName.substring(index1+1, index2).toLowerCase();//后缀名
-            if(suffix=='docx'){
-                suffix='doc';
-            }
-            return suffix;
+		getFileType: function (fileName) {
+			var index1 = fileName.lastIndexOf(".");
+			var index2 = fileName.length;
+			var suffix = fileName.substring(index1 + 1, index2).toLowerCase();//后缀名
+			if (suffix == 'docx') {
+				suffix = 'doc';
+			}
+			return suffix;
 		},
 		// 预览电子件
-        filePreview: function(data,flag){ // flag==pdf 查看施工图
-            var detailId = data.fileId;
-            var _that = this;
-            console.log(data);
-            var regText = /doc|docx|ppt|pptx|xls|xlsx|txt$/;
-            var fileName=data.fileName;
-            var fileType = this.getFileType(fileName);
-            var flashAttributes = '';
-            _that.filePreviewCount++;
-            if(flag=='pdf'){
-                var tempwindow=window.open(); // 先打开页面
-                setTimeout(function(){
-                    tempwindow.location=ctx+'cod/drawing/drawingCheck?detailId='+detailId;
-                },1000)
-            }else {
-                if(fileType=='pdf'){
-                    var tempwindow=window.open(); // 先打开页面
-                    setTimeout(function(){
-                        tempwindow.location=ctx+'previewPdf/view?detailId='+detailId;
-                    },1000)
-                }else if(regText.test(fileType)){
-                    // previewPdf/pdfIsCoverted
-                    _that.loading = true;
-                    request('', {
-                        url: ctx + 'previewPdf/pdfIsCoverted?detailId='+detailId,
-                        type: 'get',
-                    }, function (result) {
-                        if(result.success){
-                            _that.loading = false;
-                            var tempwindow=window.open(); // 先打开页面
-                            setTimeout(function(){
-                                tempwindow.location=ctx+'previewPdf/view?detailId='+detailId;
-                            },1000)
-                        }else {
-                            if(_that.filePreviewCount>9){
-                                confirmMsg('提示信息：', '文件预览请求中，是否继续等待？', function () {
-                                    _that.filePreviewCount=0;
-                                    _that.filePreview(data);
-                                }, function () {
-                                    _that.filePreviewCount=0;
-                                    _that.loading = false;
-                                    return false;
-                                }, '确定', '取消', 'warning', true)
+		filePreview: function (data, flag) { // flag==pdf 查看施工图
+			var detailId = data.fileId;
+			var _that = this;
+			console.log(data);
+			var regText = /doc|docx|ppt|pptx|xls|xlsx|txt$/;
+			var fileName = data.fileName;
+			var fileType = this.getFileType(fileName);
+			var flashAttributes = '';
+			_that.filePreviewCount++;
+			if (flag == 'pdf') {
+				var tempwindow = window.open(); // 先打开页面
+				setTimeout(function () {
+					tempwindow.location = ctx + 'cod/drawing/drawingCheck?detailId=' + detailId;
+				}, 1000)
+			} else {
+				if (fileType == 'pdf') {
+					var tempwindow = window.open(); // 先打开页面
+					setTimeout(function () {
+						tempwindow.location = ctx + 'previewPdf/view?detailId=' + detailId;
+					}, 1000)
+				} else if (regText.test(fileType)) {
+					// previewPdf/pdfIsCoverted
+					_that.loading = true;
+					request('', {
+						url: ctx + 'previewPdf/pdfIsCoverted?detailId=' + detailId,
+						type: 'get',
+					}, function (result) {
+						if (result.success) {
+							_that.loading = false;
+							var tempwindow = window.open(); // 先打开页面
+							setTimeout(function () {
+								tempwindow.location = ctx + 'previewPdf/view?detailId=' + detailId;
+							}, 1000)
+						} else {
+							if (_that.filePreviewCount > 9) {
+								confirmMsg('提示信息：', '文件预览请求中，是否继续等待？', function () {
+									_that.filePreviewCount = 0;
+									_that.filePreview(data);
+								}, function () {
+									_that.filePreviewCount = 0;
+									_that.loading = false;
+									return false;
+								}, '确定', '取消', 'warning', true)
 
-                            }else {
-                                setTimeout(function(){
-                                    _that.filePreview(data);
-                                },1000)
-                            }
-                        }
-                    }, function (msg) {
-                        _that.loading = false;
-                        _that.$message({
-                            message: '文件预览失败',
-                            type: 'error'
-                        });
-                    })
-                }else {
-                    _that.loading = false;
-                    var tempwindow=window.open(); // 先打开页面
-                    setTimeout(function(){
-                        tempwindow.location=ctx+'rest/mats/att/preview?detailId='+detailId+'&flashAttributes='+flashAttributes;
-                    },1000)
-                }
-            }
+							} else {
+								setTimeout(function () {
+									_that.filePreview(data);
+								}, 1000)
+							}
+						}
+					}, function (msg) {
+						_that.loading = false;
+						_that.$message({
+							message: '文件预览失败',
+							type: 'error'
+						});
+					})
+				} else {
+					_that.loading = false;
+					var tempwindow = window.open(); // 先打开页面
+					setTimeout(function () {
+						tempwindow.location = ctx + 'rest/mats/att/preview?detailId=' + detailId + '&flashAttributes=' + flashAttributes;
+					}, 1000)
+				}
+			}
 		},
 		//下载单个附件
-        downOneFile: function (data) {
-            window.open(ctx + 'rest/mats/att/download?detailIds=' + data.fileId, '_blank')
+		downOneFile: function (data) {
+			window.open(ctx + 'rest/mats/att/download?detailIds=' + data.fileId, '_blank')
 		},
 		//删除单个文件附件
-        delOneFile: function (data, matData) {
-            var _that = this;
-            console.log(data);
-            console.log(matData)
-            request('', {
-                url: ctx + 'rest/mats/att/delelte',
-                type: 'post',
-                data: {matinstId: matData.matinstId, detailIds: data.fileId}
-            }, function (res) {
-                if (res.success) {
-                    _that.getFileListWin(matData.matinstId, matData);
-                    _that.$message({
-                        message: '删除成功',
-                        type: 'success'
-                    });
-                } else {
-                    _that.$message({
-                        message: res.message ? res.message : '删除失败',
-                        type: 'error'
-                    });
-                }
-            }, function (msg) {
-                _that.$message({
-                    message: '服务请求失败',
-                    type: 'error'
-                });
-            });
+		delOneFile: function (data, matData) {
+			var _that = this;
+			console.log(data);
+			console.log(matData)
+			request('', {
+				url: ctx + 'rest/mats/att/delelte',
+				type: 'post',
+				data: {matinstId: matData.matinstId, detailIds: data.fileId}
+			}, function (res) {
+				if (res.success) {
+					_that.getFileListWin(matData.matinstId, matData);
+					_that.$message({
+						message: '删除成功',
+						type: 'success'
+					});
+				} else {
+					_that.$message({
+						message: res.message ? res.message : '删除失败',
+						type: 'error'
+					});
+				}
+			}, function (msg) {
+				_that.$message({
+					message: '服务请求失败',
+					type: 'error'
+				});
+			});
 		},
 		showMatFiles: function (matId, docType) {  // bsc/att/listAttLinkAndDetailNoPage.do
-            var _that = this;
-            // var tempwindow = window.open('_blank');
-            request('', {
-                url: ctx + 'bsc/att/listAttLinkAndDetailNoPage.do',
-                type: 'post',
-                data: {
-                    tableName: 'AEA_ITEM_MAT',
-                    pkName: docType,
-                    recordId: matId,
-                    attType: null,
-                },
-            }, function (result) {
-                if (result != null && result.length > 1) {
+			var _that = this;
+			// var tempwindow = window.open('_blank');
+			request('', {
+				url: ctx + 'bsc/att/listAttLinkAndDetailNoPage.do',
+				type: 'post',
+				data: {
+					tableName: 'AEA_ITEM_MAT',
+					pkName: docType,
+					recordId: matId,
+					attType: null,
+				},
+			}, function (result) {
+				if (result != null && result.length > 1) {
 
-                    var trHtml = '';
-                    _that.showMatFilesDialogShow = true;
-                    $.each(result, function (i, file) {
-                        trHtml += '<div class="td-cust clearfix" data-type="file" data-key="' + file.detailId + '"  data-format="' + file.attFormat + '">\n' +
-                            '                    <div class="file-image fl"><img src="' + _that.getFileIcon(file.attName) + '" /></div>\n' +
-                            '                    <div class="file-name fl">\n' +
-                            '                        <a href="' + _that.kpFileOpenEvent(file.detailId) + '" target="_blank" title="' + file.attName + '">' + _that.cutString(file.attName, 50) + '</a>\n' +
-                            '                    </div>\n' +
-                            '                </div>';
-                    });
-                    _that.dialogHtml = trHtml;
-                } else if (result.length == 1) {
-                    var url = ctx + 'file/showFile.do?detailId=' + result[0].detailId;
-                    window.open.location = ctx + 'file/ntkoOpenWin.do?jumpUrl=' + encodeURIComponent(url);
-                } else {
-                    _that.showMatFilesDialogShow = true;
-                    _that.dialogHtml = '无模板';
-                }
-            }, function (msg) {
-                _that.$message({
-                    message: '服务请求失败',
-                    type: 'error'
-                });
-            });
+					var trHtml = '';
+					_that.showMatFilesDialogShow = true;
+					$.each(result, function (i, file) {
+						trHtml += '<div class="td-cust clearfix" data-type="file" data-key="' + file.detailId + '"  data-format="' + file.attFormat + '">\n' +
+								'                    <div class="file-image fl"><img src="' + _that.getFileIcon(file.attName) + '" /></div>\n' +
+								'                    <div class="file-name fl">\n' +
+								'                        <a href="' + _that.kpFileOpenEvent(file.detailId) + '" target="_blank" title="' + file.attName + '">' + _that.cutString(file.attName, 50) + '</a>\n' +
+								'                    </div>\n' +
+								'                </div>';
+					});
+					_that.dialogHtml = trHtml;
+				} else if (result.length == 1) {
+					var url = ctx + 'file/showFile.do?detailId=' + result[0].detailId;
+					window.open.location = ctx + 'file/ntkoOpenWin.do?jumpUrl=' + encodeURIComponent(url);
+				} else {
+					_that.showMatFilesDialogShow = true;
+					_that.dialogHtml = '无模板';
+				}
+			}, function (msg) {
+				_that.$message({
+					message: '服务请求失败',
+					type: 'error'
+				});
+			});
 		},
 		// 材料全选
-        checkAllMatChange: function (val, flag) {
-            if (val == false) {
-                val = '';
-            }
-            var _that = this;
-            // this.checkedCities[[index]] = val ? this.id[[index]] : []
-            _that.model.matsTableData.map(function (item) {
-                if (flag == 'paper') {
-                    item.getPaper = val;
-                    _that.getPaperAll = val;
-                } else {
-                    item.getCopy = val;
-                    _that.getCopyAll = val;
-                }
-            });
-            // this.isIndeterminate[index] = false
+		checkAllMatChange: function (val, flag) {
+			if (val == false) {
+				val = '';
+			}
+			var _that = this;
+			// this.checkedCities[[index]] = val ? this.id[[index]] : []
+			_that.model.matsTableData.map(function (item) {
+				if (flag == 'paper') {
+					item.getPaper = val;
+					_that.getPaperAll = val;
+				} else {
+					item.getCopy = val;
+					_that.getCopyAll = val;
+				}
+			});
+			// this.isIndeterminate[index] = false
 		},
 		// 材料单选
-        checkedMatChange: function (val, index, flag) {
-            var _that = this;
-            if (val == false) {
-                val = '';
-            }
-            if (flag == 'paper') {
-                _that.model.matsTableData[index].getPaper = val;
-                _that.getPaperAll = val;
-            } else {
-                _that.model.matsTableData[index].getCopy = val;
-                _that.getCopyAll = val;
-            }
+		checkedMatChange: function (val, index, flag) {
+			var _that = this;
+			if (val == false) {
+				val = '';
+			}
+			if (flag == 'paper') {
+				_that.model.matsTableData[index].getPaper = val;
+				_that.getPaperAll = val;
+			} else {
+				_that.model.matsTableData[index].getCopy = val;
+				_that.getCopyAll = val;
+			}
 		},
 		showUploadWindow: function (data) { // 展示文件上传下载弹窗
-            var _that = this;
-            _that.showUploadWindowFlag = true;
-            _that.selMatRowData = data;
-            _that.selMatinstId = data.matinstId ? data.matinstId : '',
-                _that.showUploadWindowTitle = '材料附件 - ' + data.matName
-            _that.getFileListWin(data.matinstId, data);
-        },
+			var _that = this;
+			_that.showUploadWindowFlag = true;
+			_that.selMatRowData = data;
+			_that.selMatinstId = data.matinstId ? data.matinstId : '',
+					_that.showUploadWindowTitle = '材料附件 - ' + data.matName
+			_that.getFileListWin(data.matinstId, data);
+		},
 	},
 	mounted: function () {
 		this.loginUserInfo = JSON.parse(localStorage.getItem("loginInfo")) || {}

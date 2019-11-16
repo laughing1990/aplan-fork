@@ -67,36 +67,35 @@
 						</el-form-item>
 						<el-row :gutter="20">
 							<el-col :span="8">
-								<el-form-item label="事项名称：">暂替位置标注</el-form-item>
+								<el-form-item label="事项名称：">{{form.agentItemName}}</el-form-item>
 							</el-col>
 							<el-col :span="8">
-								<el-form-item label="实施主体：">暂替位置标注
+								<el-form-item label="实施主体：">{{form.agentOrgName}}
 								</el-form-item>
 							</el-col>
 							<el-col :span="8">
-								<el-form-item label="服务对象：">暂替位置标注
+								<el-form-item label="服务对象：">{{form.agentItemFwdx}}
 								</el-form-item>
 							</el-col>
 						</el-row>
 						<el-row :gutter="20">
 							<el-col :span="8">
-								<el-form-item label="办件类型：">暂替位置标注
+								<el-form-item label="办件类型：">{{form.agentItemPropertyName}}
 								</el-form-item>
 							</el-col>
 							<el-col :span="8">
-								<el-form-item label="法定办结时限：">
-										暂替位置标注
+								<el-form-item label="法定办结时限：">{{agentItemDueNum}}({{agentItemDueUnitType}})
 								</el-form-item>
 							</el-col>
 							<el-col :span="8">
 								<el-form-item label="承诺办结时限：">
-										暂替位置标注
+									{{agentItemDueNum}}({{agentItemDueUnitType}})
 								</el-form-item>
 							</el-col>
 						</el-row>
 					</div>
 
-					<div class="row">
+					<!--<div class="row">
 						<div class="col-md-12 form-item">
 							<el-form-item label="" prop="agentOrgName">
 								<label>事项对应部门</label>
@@ -106,7 +105,7 @@
 								</div>
 							</el-form-item>
 						</div>
-					</div>
+					</div>-->
 
 					<div class="row">
 						<div class="col-md-12 form-item">
