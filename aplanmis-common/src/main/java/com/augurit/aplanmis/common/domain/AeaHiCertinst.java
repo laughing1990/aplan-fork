@@ -100,7 +100,7 @@ public class AeaHiCertinst implements Serializable {
     @ApiModelProperty(name = "applyinstId", value = "申请ID", hidden = true)
     private String applyinstId;
 
-    @ApiModelProperty(name = "linkmanInfoId", value = "", hidden = true)
+    @ApiModelProperty(name = "linkmanInfoId", value = "联系人id", hidden = true)
     private String linkmanInfoId;
 
     @ApiModelProperty(name = "qualLevelId", value = "资质等级ID", hidden = true)

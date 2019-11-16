@@ -14,7 +14,7 @@ import java.util.Map;
 @Data
 public class PubParamDTO implements Serializable {
 
-    private String access_token;
+    private String access_token;//访问令牌
     private String request_id;
 
     public Map toMap() {

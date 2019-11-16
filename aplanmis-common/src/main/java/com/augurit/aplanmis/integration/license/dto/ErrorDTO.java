@@ -12,7 +12,7 @@ import java.io.Serializable;
 @Data
 public class ErrorDTO implements Serializable {
 
-    private String code;
-    private String message;
-    private String inner_code;
+    private String code;//错误代码
+    private String message;//错误信息描述
+    private String inner_code;//内部代码
 }
