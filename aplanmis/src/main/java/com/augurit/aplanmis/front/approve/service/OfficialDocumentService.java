@@ -29,7 +29,7 @@ import com.augurit.aplanmis.front.approve.vo.certinst.CertVo;
 import com.augurit.aplanmis.front.approve.vo.certinst.CertinstVo;
 import com.augurit.aplanmis.front.approve.vo.official.OfficialDocumentEditVo;
 import com.augurit.aplanmis.front.approve.vo.official.OfficialDocumentInfoVo;
-import com.augurit.aplanmis.front.receive.vo.ConstructPermitVo;
+import com.augurit.aplanmis.common.service.receive.vo.ConstructPermitVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;

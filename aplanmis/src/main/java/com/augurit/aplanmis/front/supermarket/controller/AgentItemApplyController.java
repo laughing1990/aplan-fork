@@ -5,7 +5,7 @@ import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.domain.AeaProjInfo;
 import com.augurit.aplanmis.common.mapper.AeaProjInfoMapper;
-import com.augurit.aplanmis.front.receive.service.ReceiveService;
+import com.augurit.aplanmis.common.service.receive.ReceiveService;
 import com.augurit.aplanmis.front.supermarket.service.AgentItemApplyService;
 import com.augurit.aplanmis.front.supermarket.vo.AgentItemApplyData;
 import com.augurit.aplanmis.supermarket.apply.service.RestImApplyService;
