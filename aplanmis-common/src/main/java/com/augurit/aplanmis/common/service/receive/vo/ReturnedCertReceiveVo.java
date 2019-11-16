@@ -1,4 +1,4 @@
-package com.augurit.aplanmis.front.receive.vo;
+package com.augurit.aplanmis.common.service.receive.vo;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;

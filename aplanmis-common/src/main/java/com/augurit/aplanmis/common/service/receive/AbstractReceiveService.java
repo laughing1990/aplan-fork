@@ -1,11 +1,12 @@
-package com.augurit.aplanmis.front.receive.service;
+package com.augurit.aplanmis.common.service.receive;
 
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.mapper.*;
 import com.augurit.aplanmis.common.service.dic.ApplyinstCodeService;
 import com.augurit.aplanmis.common.service.instance.AeaHiApplyinstService;
-import com.augurit.aplanmis.front.apply.vo.RefusedRecepitVo;
+
+import com.augurit.aplanmis.common.service.receive.vo.RefusedRecepitVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
