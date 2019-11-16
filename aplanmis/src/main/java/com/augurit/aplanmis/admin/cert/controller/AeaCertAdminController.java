@@ -1,6 +1,8 @@
 package com.augurit.aplanmis.admin.cert.controller;
 
 import com.augurit.agcloud.bsc.domain.BscDicCodeItem;
+import com.augurit.agcloud.bsc.domain.BscDicRegion;
+import com.augurit.agcloud.bsc.mapper.BscDicRegionMapper;
 import com.augurit.agcloud.bsc.sc.dic.code.service.BscDicCodeService;
 import com.augurit.agcloud.framework.page.PageParam;
 import com.augurit.agcloud.framework.security.SecurityContext;
@@ -11,12 +13,15 @@ import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.agcloud.framework.ui.ztree.ZtreeNode;
 import com.augurit.agcloud.opus.common.domain.OpuOmOrg;
+import com.augurit.agcloud.opus.common.domain.OpuOmUserInfo;
+import com.augurit.agcloud.opus.common.mapper.OpuOmUserInfoMapper;
 import com.augurit.aplanmis.common.domain.AeaCert;
 import com.augurit.aplanmis.common.domain.AeaItemInout;
 import com.augurit.aplanmis.common.domain.AeaParIn;
 import com.augurit.aplanmis.common.service.admin.cert.AeaCertAdminService;
 import com.augurit.aplanmis.common.service.admin.opus.AplanmisOpuOmOrgAdminService;
 import com.augurit.aplanmis.integration.license.dto.LicenseAuthResDTO;
+import com.augurit.aplanmis.integration.license.dto.LicenseUserInfoDTO;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
@@ -54,6 +59,12 @@ public class AeaCertAdminController {
 
     @Autowired
     private AplanmisOpuOmOrgAdminService opuOmOrgService;
+
+    @Autowired
+    private OpuOmUserInfoMapper opuOmUserInfoMapper;
+
+    @Autowired
+    private BscDicRegionMapper bscDicRegionMapper;
 
     @Autowired
     private BscDicCodeService bscDicCodeService;
@@ -283,7 +294,16 @@ public class AeaCertAdminController {
     @RequestMapping("/getLicenseAuthRes.do")
     public ContentResultForm<LicenseAuthResDTO> getLicenseAuthRes(String itemVerIds, String identityNumber) throws Exception {
         try {
-            return new ContentResultForm<>(true, aeaCertAdminService.getLicenseAuthRes(itemVerIds, identityNumber), "Query attachment success");
+            OpuOmUserInfo userinfo = opuOmUserInfoMapper.getOpuOmUserInfoByUserId(SecurityContext.getCurrentUserId());
+            OpuOmOrg topOrg = opuOmOrgService.getTopOrgByCurOrgId(SecurityContext.getCurrentOrgId());
+            BscDicRegion proDataRegion = bscDicRegionMapper.getBscDicRegionById(topOrg.getRegionId());
+            LicenseUserInfoDTO operator = new LicenseUserInfoDTO();
+            operator.setIdentity_num(userinfo.getUserIdCardNo() == null ? "null" : userinfo.getUserIdCardNo());//身份证号
+            operator.setDivision(topOrg.getOrgName());
+            operator.setDivision_code(proDataRegion.getRegionNum());
+            operator.setService_org(proDataRegion.getRegionNum());
+            operator.setService_org_code(topOrg.getOrgCode());
+            return new ContentResultForm<>(true, aeaCertAdminService.getLicenseAuthRes(itemVerIds, identityNumber, operator), "Query attachment success");
         } catch (Exception e) {
             e.printStackTrace();
             return new ContentResultForm<>(false, new LicenseAuthResDTO(), "Query attachment failed");
