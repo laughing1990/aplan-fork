@@ -20,10 +20,6 @@
     BID_SECTION_LENGTH  bidSectionLength,
     WIN_BID_TIME  winBidTime,
     WIN_BID_MONEY  winBidMoney,
-    BID_CONFIRM_TIME  bidConfirmTime,
-    GOV_ORG_CODE  govOrgCode,
-    GOV_ORG_NAME  govOrgName,
-    GOV_AREA_CODE  govAreaCode,
     BID_MEMO  bidMemo,
     CREATER  creater,
     CREATE_TIME  createTime,
@@ -45,9 +41,9 @@
 <!--5 新增实体对象 -->
 <insert id="insertAeaExProjBid" parameterType="AeaExProjBid" >
     insert into AEA_EX_PROJ_BID (
-BID_ID  ,PROJ_INFO_ID  ,PROVINCE_PROJ_CODE  ,WIN_BID_NOTICE_CODE  ,BID_SECTION_NAME  ,BID_SECTION_ADDR  ,UNIT_ADDR  ,BID_TYPE  ,BID_MODE  ,BID_SECTION_MONEY  ,BID_SECTION_AREA  ,BID_SECTION_SPAN  ,BID_SECTION_LENGTH  ,WIN_BID_TIME  ,WIN_BID_MONEY  ,BID_CONFIRM_TIME  ,GOV_ORG_CODE  ,GOV_ORG_NAME  ,GOV_AREA_CODE  ,BID_MEMO  ,CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME  ,ROOT_ORG_ID  
+BID_ID  ,PROJ_INFO_ID  ,PROVINCE_PROJ_CODE  ,WIN_BID_NOTICE_CODE  ,BID_SECTION_NAME  ,BID_SECTION_ADDR  ,UNIT_ADDR  ,BID_TYPE  ,BID_MODE  ,BID_SECTION_MONEY  ,BID_SECTION_AREA  ,BID_SECTION_SPAN  ,BID_SECTION_LENGTH  ,WIN_BID_TIME  ,WIN_BID_MONEY  ,BID_MEMO  ,CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME  ,ROOT_ORG_ID
     )  values  (
-#{bidId},#{projInfoId},#{provinceProjCode},#{winBidNoticeCode},#{bidSectionName},#{bidSectionAddr},#{unitAddr},#{bidType},#{bidMode},#{bidSectionMoney},#{bidSectionArea},#{bidSectionSpan},#{bidSectionLength},#{winBidTime},#{winBidMoney},#{bidConfirmTime},#{govOrgCode},#{govOrgName},#{govAreaCode},#{bidMemo},#{creater},#{createTime},#{modifier},#{modifyTime},  #{rootOrgId}
+#{bidId},#{projInfoId},#{provinceProjCode},#{winBidNoticeCode},#{bidSectionName},#{bidSectionAddr},#{unitAddr},#{bidType},#{bidMode},#{bidSectionMoney},#{bidSectionArea},#{bidSectionSpan},#{bidSectionLength},#{winBidTime},#{winBidMoney},#{bidMemo},#{creater},#{createTime},#{modifier},#{modifyTime},  #{rootOrgId}
     )
 </insert>
 <!--6 修改实体对象 -->
@@ -98,18 +94,6 @@ BID_ID  ,PROJ_INFO_ID  ,PROVINCE_PROJ_CODE  ,WIN_BID_NOTICE_CODE  ,BID_SECTION_N
         </if>
         <if test="winBidMoney != null" >
         WIN_BID_MONEY = #{winBidMoney},
-        </if>
-        <if test="bidConfirmTime != null" >
-        BID_CONFIRM_TIME = #{bidConfirmTime},
-        </if>
-        <if test="govOrgCode != null" >
-        GOV_ORG_CODE = #{govOrgCode},
-        </if>
-        <if test="govOrgName != null" >
-        GOV_ORG_NAME = #{govOrgName},
-        </if>
-        <if test="govAreaCode != null" >
-        GOV_AREA_CODE = #{govAreaCode},
         </if>
         <if test="bidMemo != null" >
         BID_MEMO = #{bidMemo},
@@ -222,10 +206,6 @@ BID_ID  ,PROJ_INFO_ID  ,PROVINCE_PROJ_CODE  ,WIN_BID_NOTICE_CODE  ,BID_SECTION_N
         <result property="bidSectionLength" column="BID_SECTION_LENGTH"/>
         <result property="winBidTime" column="WIN_BID_TIME"/>
         <result property="winBidMoney" column="WIN_BID_MONEY"/>
-        <result property="bidConfirmTime" column="BID_CONFIRM_TIME"/>
-        <result property="govOrgCode" column="GOV_ORG_CODE"/>
-        <result property="govOrgName" column="GOV_ORG_NAME"/>
-        <result property="govAreaCode" column="GOV_AREA_CODE"/>
         <result property="bidMemo" column="BID_MEMO"/>
         <result property="creater" column="CREATER"/>
         <result property="createTime" column="CREATE_TIME"/>
