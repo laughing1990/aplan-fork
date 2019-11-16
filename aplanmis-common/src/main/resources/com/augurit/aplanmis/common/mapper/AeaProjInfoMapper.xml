@@ -1547,8 +1547,9 @@
             and aup.is_deleted='0'
             and (api.IS_PURCHASE_PROJ != '1' or api.IS_PURCHASE_PROJ is null)
             and aup.UNIT_INFO_ID = #{unitInfoId}
-            and api.PROJ_INFO_ID not in (select PROJ_INFO_ID from AEA_IM_PROJ_PURCHASE where AUDIT_FLAG != '3' and
-            AUDIT_FLAG != '5' and AUDIT_FLAG != '10' and IS_DELETED != '1')
+            and api.PROJ_INFO_ID not in (select PROJ_INFO_ID from AEA_IM_PROJ_PURCHASE aipp where aipp.AUDIT_FLAG != '3'
+            and
+            aipp.AUDIT_FLAG != '5' and aipp.AUDIT_FLAG != '10' and aipp.IS_DELETE != '1')
             <if test="localCode != null and localCode != ''">
                 AND (api.local_code LIKE CONCAT(CONCAT('%',#{localCode}),'%'))
             </if>

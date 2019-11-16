@@ -394,7 +394,7 @@ public class AeaSeriesService {
         }*/
 
         //新增时限规则实例
-        restTimeruleinstService.createTimeruleinstByProcinst(itemBasicByItemVerId.getAppId(), processInstance.getProcessInstance().getId(), processInstance.getProcessInstance().getProcessDefinitionKey());
+//        restTimeruleinstService.createTimeruleinstByProcinst(itemBasicByItemVerId.getAppId(), processInstance.getProcessInstance().getId(), processInstance.getProcessInstance().getProcessDefinitionKey());
 
         //查询出流程第一个节点
         List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstance.getProcessInstance().getId()).list();

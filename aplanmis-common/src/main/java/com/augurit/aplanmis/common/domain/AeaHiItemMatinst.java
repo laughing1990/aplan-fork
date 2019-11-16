@@ -95,7 +95,7 @@ public class AeaHiItemMatinst implements Serializable {
     private String certinstId;
 
     @ApiModelProperty(value = "表单实例id")
-    private String forminstId;
+    private String stoForminstId;
 
     @ApiModelProperty(value = "业主个人ID")
     private String linkmanInfoId;

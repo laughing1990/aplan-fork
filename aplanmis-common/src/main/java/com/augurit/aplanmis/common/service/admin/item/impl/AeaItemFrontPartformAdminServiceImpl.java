@@ -45,7 +45,7 @@ public class AeaItemFrontPartformAdminServiceImpl implements AeaItemFrontPartfor
     @Override
     public void updateAeaItemFrontPartform(AeaItemFrontPartform aeaItemFrontPartform) {
 
-        checkSame(aeaItemFrontPartform);
+//        checkSame(aeaItemFrontPartform);
 
         aeaItemFrontPartform.setModifyTime(new Date());
         aeaItemFrontPartform.setModifier(SecurityContext.getCurrentUserId());

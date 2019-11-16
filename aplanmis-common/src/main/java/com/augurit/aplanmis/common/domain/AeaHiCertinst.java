@@ -100,7 +100,7 @@ public class AeaHiCertinst implements Serializable {
     @ApiModelProperty(name = "applyinstId", value = "申请ID", hidden = true)
     private String applyinstId;
 
-    @ApiModelProperty(name = "linkmanInfoId", value = "", hidden = true)
+    @ApiModelProperty(name = "linkmanInfoId", value = "联系人id", hidden = true)
     private String linkmanInfoId;
 
     @ApiModelProperty(name = "qualLevelId", value = "资质等级ID", hidden = true)
@@ -117,6 +117,9 @@ public class AeaHiCertinst implements Serializable {
     @ApiModelProperty(value = "用证码")
     private String authCode;
 
+    @ApiModelProperty(value = "证照来源", notes = "local: 本地部门出证; external: 第三方对接证照")
+    private String certinstSource;
+
     //额外字段
     @ApiModelProperty(name = "bscAttDetails", value = "附件列表", hidden = true)
     private List<BscAttDetail> bscAttDetails;
@@ -129,5 +132,10 @@ public class AeaHiCertinst implements Serializable {
 
     @ApiModelProperty(value = "材料定义id")
     private String matId;
+
+    // 扩展字段
+
+    @ApiModelProperty(value = "证照材料实例id")
+    private String matinstId;
 
 }

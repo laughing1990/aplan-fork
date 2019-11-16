@@ -276,7 +276,7 @@ public class AeaSeriesService {
         if(processInstance==null||processInstance.getProcessInstance()==null)
             throw new RuntimeException("流程启动失败！");
         //新增时限规则实例
-        restTimeruleinstService.createTimeruleinstByProcinst(appId,processInstance.getProcessInstance().getId(),processInstance.getProcessInstance().getProcessDefinitionKey());
+//        restTimeruleinstService.createTimeruleinstByProcinst(appId,processInstance.getProcessInstance().getId(),processInstance.getProcessInstance().getProcessDefinitionKey());
         //查询出流程第一个节点
         List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstance.getProcessInstance().getId()).list();
         //6.流程发起后，更新初始事项历史的taskId

@@ -1,0 +1,21 @@
+.data-chart{
+    width: 80%;
+    margin: 100px 0;
+}
+.data-base-box {
+    display: flex;
+    margin: 30px 0 20px 0;
+    text-align: center;
+}
+
+.data-base-box .data-base-one {
+    width: 25%;
+    font-size: 16px;
+    line-height: 22px;
+    font-weight: bold;
+    position: relative;
+    float: left;
+}
+.title-text{
+    cursor: pointer;
+}

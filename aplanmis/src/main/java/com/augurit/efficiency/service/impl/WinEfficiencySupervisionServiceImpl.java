@@ -18,6 +18,7 @@ import com.augurit.aplanmis.common.vo.analyse.*;
 import com.augurit.aplanmis.common.vo.conditional.ApplyInfo;
 import com.augurit.aplanmis.common.vo.conditional.ConditionalQueryRequest;
 import com.augurit.aplanmis.common.vo.conditional.TaskInfo;
+import com.augurit.efficiency.constant.DateType;
 import com.augurit.efficiency.service.WinEfficiencySupervisionService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
@@ -792,7 +793,7 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
      */
     @Override
     public List<Map<String, Object>> getAcceptDealStatisticsByWin(String type, String startTime, String endTime) throws Exception {
-        if ("D".equals(type)) {//昨日日统计
+        if (DateType.YESTERDAY.equals(type)) {//昨日日统计
             String rootOrgId = SecurityContext.getCurrentOrgId();
             Date preDate = DateUtils.getPreDateByDate(new Date());
             String preDateStr = DateUtils.convertDateToString(preDate, "yyyy-MM-dd");
@@ -833,7 +834,7 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
             }
 
             return windowDatas;
-        } else if ("W".equals(type)) {//本周统计
+        } else if (DateType.CUR_WEEK.equals(type)) {//本周统计
             String rootOrgId = SecurityContext.getCurrentOrgId();
             String thisYear = DateUtils.convertDateToString(new Date(), "yyyy");
             int thisWeekNum = DateUtils.getThisWeekNum(new Date());
@@ -871,7 +872,7 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
             }
 
             return windowDatas;
-        } else if ("M".equals(type)) {//本月统计
+        } else if (DateType.CUR_MONTH.equals(type)) {//本月统计
             String rootOrgId = SecurityContext.getCurrentOrgId();
             String thisMonth = DateUtils.convertDateToString(new Date(), "yyyy-MM");
             //查询所有的窗口
@@ -961,16 +962,16 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
      */
     @Override
     public List<Map<String, Object>> getAcceptStatisticsByDay(String winodwId, String type, String startTime, String endTime) throws Exception {
-        if ("D".equals(type)) {
+        if (DateType.YESTERDAY.equals(type)) {
             String rootOrgId = SecurityContext.getCurrentOrgId();
             Date preDay = DateUtils.getPreDateByDate(new Date());
             return getDayApplyDataByWin(winodwId, preDay, preDay, rootOrgId);
-        } else if ("W".equals(type)) {//本周统计
+        } else if (DateType.CUR_WEEK.equals(type)) {//本周统计
             String rootOrgId = SecurityContext.getCurrentOrgId();
             Date thisWeekMonday = DateUtils.getThisWeekMonday(new Date());
             Date thisWeekSunday = DateUtils.getThisWeekSunday(new Date());
             return getDayApplyDataByWin(winodwId, thisWeekMonday, thisWeekSunday, rootOrgId);
-        } else if ("M".equals(type)) {//本月统计
+        } else if (DateType.CUR_MONTH.equals(type)) {//本月统计
             String rootOrgId = SecurityContext.getCurrentOrgId();
             Date firstDay = DateUtils.firstDayOfMonth(new Date());
             Date lastDay = DateUtils.lastDayOfMonth(new Date());
@@ -1015,19 +1016,19 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
     @Override
     public List<Map<String, Object>> getCompletedApplyUseTimeByTheme(String type, String startTime, String endTime) throws Exception {
         String rootOrgId = SecurityContext.getCurrentOrgId();
-        if ("D".equals(type)) {
+        if (DateType.YESTERDAY.equals(type)) {
             Date preDate = DateUtils.getPreDateByDate(new Date());
             String preDateStr = DateUtils.convertDateToString(preDate, "yyyy-MM-dd");
             String preDateStart = preDateStr + " 00:00:00";
             String preDateEnd = preDateStr + " 23:59:59";
             return getCompletedApplyUseTimeByThemeAndTime(preDateStart, preDateEnd, rootOrgId);
-        } else if ("W".equals(type)) {
+        } else if (DateType.CUR_WEEK.equals(type)) {
             Date thisWeekMonday = DateUtils.getThisWeekMonday(new Date());
             Date thisWeekSunday = DateUtils.getThisWeekSunday(new Date());
             String monday = DateUtils.convertDateToString(thisWeekMonday, "yyyy-MM-dd") + " 00:00:00";
             String sunday = DateUtils.convertDateToString(thisWeekSunday, "yyyy-MM-dd") + " 23:59:59";
             return getCompletedApplyUseTimeByThemeAndTime(monday, sunday, rootOrgId);
-        } else if ("M".equals(type)) {
+        } else if (DateType.CUR_MONTH.equals(type)) {
             Date firstDay = DateUtils.firstDayOfMonth(new Date());
             Date lastDay = DateUtils.lastDayOfMonth(new Date());
             String firstDayStart = DateUtils.convertDateToString(firstDay, "yyyy-MM-dd") + " 00:00:00";
@@ -1083,19 +1084,19 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
     @Override
     public List<Map<String, Object>> getCompletedApplyUseTimeByThemeAndWindow(String themeId, String type, String startTime, String endTime) throws Exception {
         String rootOrgId = SecurityContext.getCurrentOrgId();
-        if ("D".equals(type)) {
+        if (DateType.YESTERDAY.equals(type)) {
             Date preDate = DateUtils.getPreDateByDate(new Date());
             String preDateStr = DateUtils.convertDateToString(preDate, "yyyy-MM-dd");
             String preDateStart = preDateStr + " 00:00:00";
             String preDateEnd = preDateStr + " 23:59:59";
             return getCompletedApplyUseTimeByWindowAndTime(themeId, preDateStart, preDateEnd, rootOrgId);
-        } else if ("W".equals(type)) {
+        } else if (DateType.CUR_WEEK.equals(type)) {
             Date thisWeekMonday = DateUtils.getThisWeekMonday(new Date());
             Date thisWeekSunday = DateUtils.getThisWeekSunday(new Date());
             String monday = DateUtils.convertDateToString(thisWeekMonday, "yyyy-MM-dd") + " 00:00:00";
             String sunday = DateUtils.convertDateToString(thisWeekSunday, "yyyy-MM-dd") + " 23:59:59";
             return getCompletedApplyUseTimeByWindowAndTime(themeId, monday, sunday, rootOrgId);
-        } else if ("M".equals(type)) {
+        } else if (DateType.CUR_MONTH.equals(type)) {
             Date firstDay = DateUtils.firstDayOfMonth(new Date());
             Date lastDay = DateUtils.lastDayOfMonth(new Date());
             String firstDayStart = DateUtils.convertDateToString(firstDay, "yyyy-MM-dd") + " 00:00:00";
@@ -1141,20 +1142,20 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
 
     @Override
     public Map<String, Object> getApplyStatisticsByTheme(String type, String startTime, String endTime) throws Exception {
-        if ("D".equals(type)) {
+        if (DateType.YESTERDAY.equals(type)) {
             String rootOrgId = SecurityContext.getCurrentOrgId();
             Date preDate = DateUtils.getPreDateByDate(new Date());
             String preDateStr = DateUtils.convertDateToString(preDate, "yyyy-MM-dd");
             List<ThemeApplyStatisticsVo> applyByTheme = aeaAnaThemeDayStatisticsMapper.getApplyByTheme(preDateStr, preDateStr, rootOrgId);
             return getThemeApplyStatistics(applyByTheme);
-        } else if ("W".equals(type)) {
+        } else if (DateType.CUR_WEEK.equals(type)) {
             String rootOrgId = SecurityContext.getCurrentOrgId();
             String yearStr = DateUtils.convertDateToString(new Date(), "yyyy");
             int year = Integer.parseInt(yearStr);
             int thisWeekNum = DateUtils.getThisWeekNum(new Date());
             List<ThemeApplyStatisticsVo> applyByTheme = aeaAnaThemeWeekStatisticsMapper.getApplyByTheme(year, thisWeekNum, rootOrgId);
             return getThemeApplyStatistics(applyByTheme);
-        } else if ("M".equals(type)) {
+        } else if (DateType.CUR_MONTH.equals(type)) {
             String rootOrgId = SecurityContext.getCurrentOrgId();
             String month = DateUtils.convertDateToString(new Date(), "yyyy-MM");
             List<ThemeApplyStatisticsVo> applyByTheme = aeaAnaThemeMonthStatisticsMapper.getApplyByTheme(month, rootOrgId);
@@ -1235,8 +1236,8 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
     }
 
     private List<Map<String, Object>> getDayApplyDataByWin(String windowId, Date startDate, Date endDate, String rootOrgId) throws Exception {
-        String startTime = DateUtils.convertDateToString(startDate, "yyyy-MM-dd") + " 00:00:00";
-        String endTime = DateUtils.convertDateToString(endDate, "yyyy-MM-dd") + " 23:59:59";
+        String startTime = DateUtils.convertDateToString(startDate, "yyyy-MM-dd");
+        String endTime = DateUtils.convertDateToString(endDate, "yyyy-MM-dd");
 
         long millisecond = endDate.getTime() - startDate.getTime();
         int day = (int) (millisecond / DateUtils.MILLIS_PER_DAY);
@@ -1720,11 +1721,11 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
         }
         List<WinApplyStatisticsVo> _tmp = new ArrayList<>();*/
         //统计最终结果
-        if ("D".equals(type)) { //统计昨日的
+        if (DateType.YESTERDAY.equals(type)) { //统计昨日的
             result = getYesterdayWinStatic(isCurrent);
-        } else if ("W".equals(type)) {
+        } else if (DateType.CUR_WEEK.equals(type)) {
             result = getWeekWinStatic(isCurrent);
-        } else if ("M".equals(type)) {
+        } else if (DateType.CUR_MONTH.equals(type)) {
             result = getMonthWinStatic(isCurrent);
         } else {
             if (!DateUtils.checkTimeParam(startTime, endTime, "yyyy-MM-dd")) {
@@ -2033,15 +2034,15 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
         List<AeaServiceWindow> aeaServiceWindows = getAllServiceWindow();
 
 
-        if ("D".equals(type)) {
+        if (DateType.YESTERDAY.equals(type)) {
             String yesterday = DateUtils.convertDateToString(DateUtils.getPreDateByDate(new Date()), "yyyy-MM-dd");
             startTime = yesterday + " 00:00:00";
             endTime = yesterday + " 23:59:59";
-        } else if ("W".equals(type)) {
+        } else if (DateType.CUR_WEEK.equals(type)) {
             startTime = DateUtils.convertDateToString(DateUtils.getThisWeekMonday(new Date()), "yyyy-MM-dd") + " 00:00:00";
             endTime = DateUtils.convertDateToString(DateUtils.getThisWeekSunday(new Date()), "yyyy-MM-dd") + " 23:59:59";
 
-        } else if ("M".equals(type)) {
+        } else if (DateType.CUR_MONTH.equals(type)) {
             startTime = DateUtils.convertDateToString(DateUtils.firstDayOfMonth(new Date()), "yyyy-MM-dd HH:mm:ss");
             endTime = DateUtils.convertDateToString(DateUtils.lastDayOfMonth(new Date()), "yyyy-MM-dd HH:mm:ss");
 
@@ -2113,18 +2114,18 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
         //根据时间类似判断开始和结束时间
         List<ThemeDayApplyRecord> list = new ArrayList<>();
         String rootOrgId = SecurityContext.getCurrentOrgId();
-        if ("D".equals(type)) {
+        if (DateType.YESTERDAY.equals(type)) {
             String yesterday = DateUtils.convertDateToString(DateUtils.getPreDateByDate(new Date()), "yyyy-MM-dd");
             startTime = yesterday;
             endTime = yesterday;
             list = aeaAnaWinDayStatisticsMapper.getThemeStageStatistics(startTime, endTime, rootOrgId);
 
-        } else if ("W".equals(type)) {
+        } else if (DateType.CUR_WEEK.equals(type)) {
             String thisYear = DateUtils.convertDateToString(new Date(), "yyyy");
             int thisWeekNum = DateUtils.getThisWeekNum(new Date());
             list = aeaAnaWinWeekStatisticsMapper.getThemeStageStatistics(thisYear, thisWeekNum, thisWeekNum, rootOrgId);
 
-        } else if ("M".equals(type)) {
+        } else if (DateType.CUR_MONTH.equals(type)) {
             String yearMonth = DateUtils.convertDateToString(new Date(), "yyyy-MM");
             list = aeaAnaWinMonthStatisticsMapper.getThemeStageStatistics(yearMonth, yearMonth, rootOrgId);
 
@@ -2206,16 +2207,16 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
 
         String rootOrgId = SecurityContext.getCurrentOrgId();
         List<ThemeDayApplyRecord> list = new ArrayList<>();
-        if ("D".equals(type)) {
+        if (DateType.YESTERDAY.equals(type)) {
             String yesterday = DateUtils.convertDateToString(DateUtils.getPreDateByDate(new Date()), "yyyy-MM-dd");
             startTime = yesterday;
             endTime = yesterday;
             list = aeaAnaWinDayStatisticsMapper.getStageGroupStatistics(startTime, endTime, rootOrgId);
-        } else if ("W".equals(type)) {
+        } else if (DateType.CUR_WEEK.equals(type)) {
             String thisYear = DateUtils.convertDateToString(new Date(), "yyyy");
             int thisWeekNum = DateUtils.getThisWeekNum(new Date());
             list = aeaAnaWinWeekStatisticsMapper.getStageGroupStatistics(thisYear, thisWeekNum, thisWeekNum, rootOrgId);
-        } else if ("M".equals(type)) {
+        } else if (DateType.CUR_MONTH.equals(type)) {
             String yearMonth = DateUtils.convertDateToString(new Date(), "yyyy-MM");
             list = aeaAnaWinMonthStatisticsMapper.getStageGroupStatistics(yearMonth, yearMonth, rootOrgId);
         } else {
@@ -2279,16 +2280,16 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
         List<AeaAnaWinDayStatistics> list = new ArrayList<>();
         String rootOrgId = SecurityContext.getCurrentOrgId();
         //不计算当天实时的
-        if ("D".equals(type)) {
+        if (DateType.YESTERDAY.equals(type)) {
             String yesterday = DateUtils.convertDateToString(DateUtils.getPreDateByDate(new Date()), "yyyy-MM-dd");
             startTime = yesterday;
             endTime = yesterday;
             list = aeaAnaWinDayStatisticsMapper.getWinStageGroupStatistics(startTime, endTime, rootOrgId, windowId);
-        } else if ("W".equals(type)) {
+        } else if (DateType.CUR_WEEK.equals(type)) {
             String thisYear = DateUtils.convertDateToString(new Date(), "yyyy");
             int thisWeekNum = DateUtils.getThisWeekNum(new Date());
             list = aeaAnaWinWeekStatisticsMapper.getWinStageGroupStatistics(thisYear, thisWeekNum, thisWeekNum, rootOrgId, windowId);
-        } else if ("M".equals(type)) {
+        } else if (DateType.CUR_MONTH.equals(type)) {
             String yearMonth = DateUtils.convertDateToString(new Date(), "yyyy-MM");
             list = aeaAnaWinMonthStatisticsMapper.getWinStageGroupStatistics(yearMonth, yearMonth, rootOrgId, windowId);
         } else {
@@ -2309,15 +2310,15 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
 
     private Map<String, Object> queryWinStageStatistics(List<AeaAnaWinDayStatistics> list, String type, String rootOrgId, String windowId, String startTime, String endTime) throws Exception {
 
-        if ("D".equals(type)) {
+        if (DateType.YESTERDAY.equals(type)) {
             String yesterday = DateUtils.convertDateToString(DateUtils.getPreDateByDate(new Date()), "yyyy-MM-dd");
             startTime = yesterday + " 00:00:00";
             endTime = yesterday + " 23:59:59";
-        } else if ("W".equals(type)) {
+        } else if (DateType.CUR_WEEK.equals(type)) {
             startTime = DateUtils.convertDateToString(DateUtils.getThisWeekMonday(new Date()), "yyyy-MM-dd") + " 00:00:00";
             endTime = DateUtils.convertDateToString(DateUtils.getThisWeekSunday(new Date()), "yyyy-MM-dd") + " 23:59:59";
 
-        } else if ("M".equals(type)) {
+        } else if (DateType.CUR_MONTH.equals(type)) {
             startTime = DateUtils.convertDateToString(DateUtils.firstDayOfMonth(new Date()), "yyyy-MM-dd HH:mm:ss");
             endTime = DateUtils.convertDateToString(DateUtils.lastDayOfMonth(new Date()), "yyyy-MM-dd HH:mm:ss");
 
@@ -2431,11 +2432,11 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
 
         List<WinApplyStatisticsVo> resultList = new ArrayList<>();
         //统计最终结果
-        if ("D".equals(type)) { //统计昨日的
+        if (DateType.YESTERDAY.equals(type)) { //统计昨日的
             resultList = getYesterdayWinStatic(isCurrent);
-        } else if ("W".equals(type)) {
+        } else if (DateType.CUR_WEEK.equals(type)) {
             resultList = getWeekWinStatic(isCurrent);
-        } else if ("M".equals(type)) {
+        } else if (DateType.CUR_MONTH.equals(type)) {
             resultList = getMonthWinStatic(isCurrent);
         } else {
             if (!DateUtils.checkTimeParam(startTime, endTime, "yyyy-MM-dd")) {
@@ -2479,15 +2480,15 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
 
     @Override
     public Map<String, Object> getWinStageLimitTimeStatistics(String startTime, String endTime, String type, boolean isCurrent, String windowId) throws Exception {
-        if ("D".equals(type)) {
+        if (DateType.YESTERDAY.equals(type)) {
             String yesterday = DateUtils.convertDateToString(DateUtils.getPreDateByDate(new Date()), "yyyy-MM-dd");
             startTime = yesterday + " 00:00:00";
             endTime = yesterday + " 23:59:59";
-        } else if ("W".equals(type)) {
+        } else if (DateType.CUR_WEEK.equals(type)) {
             startTime = DateUtils.convertDateToString(DateUtils.getThisWeekMonday(new Date()), "yyyy-MM-dd") + " 00:00:00";
             endTime = DateUtils.convertDateToString(DateUtils.getThisWeekSunday(new Date()), "yyyy-MM-dd") + " 23:59:59";
 
-        } else if ("M".equals(type)) {
+        } else if (DateType.CUR_MONTH.equals(type)) {
             startTime = DateUtils.convertDateToString(DateUtils.firstDayOfMonth(new Date()), "yyyy-MM-dd HH:mm:ss");
             endTime = DateUtils.convertDateToString(DateUtils.lastDayOfMonth(new Date()), "yyyy-MM-dd HH:mm:ss");
 
@@ -2532,15 +2533,15 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
 
     @Override
     public Map<String, Object> getWinStageAvgLimitTimeStatistics(String startTime, String endTime, String type, boolean isCurrent, String windowId) throws Exception {
-        if ("D".equals(type)) {
+        if (DateType.YESTERDAY.equals(type)) {
             String yesterday = DateUtils.convertDateToString(DateUtils.getPreDateByDate(new Date()), "yyyy-MM-dd");
             startTime = yesterday + " 00:00:00";
             endTime = yesterday + " 23:59:59";
-        } else if ("W".equals(type)) {
+        } else if (DateType.CUR_WEEK.equals(type)) {
             startTime = DateUtils.convertDateToString(DateUtils.getThisWeekMonday(new Date()), "yyyy-MM-dd") + " 00:00:00";
             endTime = DateUtils.convertDateToString(DateUtils.getThisWeekSunday(new Date()), "yyyy-MM-dd") + " 23:59:59";
 
-        } else if ("M".equals(type)) {
+        } else if (DateType.CUR_MONTH.equals(type)) {
             startTime = DateUtils.convertDateToString(DateUtils.firstDayOfMonth(new Date()), "yyyy-MM-dd HH:mm:ss");
             endTime = DateUtils.convertDateToString(DateUtils.lastDayOfMonth(new Date()), "yyyy-MM-dd HH:mm:ss");
 

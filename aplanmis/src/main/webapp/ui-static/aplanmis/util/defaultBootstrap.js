@@ -432,8 +432,6 @@ function defaultBootstrap(bstableId, columns, url) {
 /**
  * 示范代码
  * server端分页get请求
- * 例子见文件testServerDefaultBootstrap.jsp
- * url:/test/testServerDefaultBootstrap.do
  */
 // var BSTable = defaultBootstrap("bstableId",[{
 //         checkbox: true,
@@ -464,8 +462,6 @@ function defaultBootstrap(bstableId, columns, url) {
 /**
  * 示范代码
  * client端分页get请求
- * 例子见文件testClientDefaultBootstrap.jsp
- * url:/test/testClientDefaultBootstrap.do
  */
 // var BSTable = defaultBootstrap("bstableId",[{
 //         checkbox: true,
