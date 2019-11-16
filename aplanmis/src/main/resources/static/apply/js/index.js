@@ -695,7 +695,7 @@ var vm = new Vue({
     // 获取可共享材料列表
     getShareMatsList: function (matData) {
       var _that = this, _matCode = '';
-      var matChild = _that.selMatRowData.matChild;
+      var matChild = _that.selMatRowData.matChild?_that.selMatRowData.matChild:[];
       var matChildIds = [];
       if(matChild.length>0){
         matChild.map(function(item){
@@ -3866,7 +3866,7 @@ var vm = new Vue({
             selMatinstId.push(item.matinstId)
           }
           if(item.certMatinstIds&&item.certMatinstIds.length>0){
-            selMatinstId = selMatinstId.concat(item.matinstId)
+            selMatinstId = selMatinstId.concat(item.certMatinstIds)
           }
           if(item.getCopy==true){
             copyCnt=item.realCopyCount;
