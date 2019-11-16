@@ -1119,5 +1119,14 @@
         </sql>
     </changeSet>
 
+    <changeSet id="201911161628" author="fenggy" failOnError="false">
+        <sql splitStatements="true">
+            alter table aea_ex_proj_money DROP COLUMN GOV_ORG_CODE ;
+            alter table aea_ex_proj_money DROP COLUMN GOV_AREA_CODE ;
+            alter table aea_ex_proj_money DROP COLUMN GOV_ORG_NAME  ;
+            alter table aea_ex_proj_money DROP COLUMN GOV_ORG_CONFIRM_TIME ;
+
+        </sql>
+    </changeSet>
 
 </databaseChangeLog>
