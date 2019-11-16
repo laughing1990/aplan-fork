@@ -22,6 +22,9 @@ public class SaveMatinstVo {
     @ApiModelProperty(value = "项目id", dataType = "string", required = true)
     private String projInfoId;
 
+    @ApiModelProperty(value = "联系人id")
+    private String linkmanInfoId;
+
     public SaveMatinstVo() {
         matCountVos = new ArrayList<>();
     }

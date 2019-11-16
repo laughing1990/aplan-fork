@@ -121,11 +121,6 @@ public class AeaHiItemMatinstServiceImpl implements AeaHiItemMatinstService {
             Assert.isTrue(StringUtils.isNotBlank(aeaHiItemMatinst.getMatinstCode()), "matinstCode is null");
             Assert.isTrue(StringUtils.isNotBlank(aeaHiItemMatinst.getMatinstName()), "matinstName is null");
 
-            // todo 根据 aeaItemMat 的matHolder 字段设置对应值
-            /*if (StringUtils.isNotBlank(aeaHiItemMatinst.getUnitInfoId())) {
-                aeaHiItemMatinst.setMat
-            }*/
-
             matinstId = UUID.randomUUID().toString();
             aeaHiItemMatinst.setMatinstId(matinstId);
             aeaHiItemMatinst.setCreater(SecurityContext.getCurrentUserName());
