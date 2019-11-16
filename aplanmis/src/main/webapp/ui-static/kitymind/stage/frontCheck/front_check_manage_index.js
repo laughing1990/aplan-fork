@@ -920,6 +920,7 @@ function addParFrontItem() {
                     setTimeout(function(){
                         $("#uploadProgress").modal('hide');
                         $('#saveParFrontItemBtn').show();
+                        $("#select_front_Item_btn").show();
                         $("#edit_par_front_item_modal").modal("show");
                         $('#edit_par_front_item_title').html('新增事项信息前置检测');
                         $('#edit_par_front_item_scroll').animate({scrollTop: 0}, 800);//滚动到顶部
@@ -966,6 +967,8 @@ function editParFrontItem(frontItemId) {
                     }else{
                         $('#saveParFrontItemBtn').hide();
                     }
+
+                    $("#select_front_Item_btn").hide();
                     $("#edit_par_front_item_modal").modal("show");
                     $('#edit_par_front_item_title').html('编辑事项信息前置检测');
                     $('#edit_par_front_item_scroll').animate({scrollTop: 0}, 800);//滚动到顶部
@@ -1255,6 +1258,12 @@ function loadSelectParFrontStage(frontStageId,flag,obj) {
             if (result.success) {
                 setTimeout(function(){
                     $("#uploadProgress").modal('hide');
+
+                    if("edit" == flag){
+                        $("#histStageId").attr("disabled",true);
+                    }else{
+                        $("#histStageId").attr("disabled",false);
+                    }
 
                     $("#edit_par_front_stage_modal").modal("show");
 

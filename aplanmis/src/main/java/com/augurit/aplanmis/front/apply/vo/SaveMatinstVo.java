@@ -22,6 +22,9 @@ public class SaveMatinstVo {
     @ApiModelProperty(value = "项目id", dataType = "string", required = true)
     private String projInfoId;
 
+    @ApiModelProperty(value = "联系人id")
+    private String linkmanInfoId;
+
     public SaveMatinstVo() {
         matCountVos = new ArrayList<>();
     }
@@ -45,9 +48,6 @@ public class SaveMatinstVo {
 
         @ApiModelProperty(value = "证照名称")
         private String certName;
-
-        @ApiModelProperty(value = "用证码", notes = "与电子证照库关联")
-        private String authCode;
 
         @ApiModelProperty(value = "表单定义ID")
         private String stoFormId;

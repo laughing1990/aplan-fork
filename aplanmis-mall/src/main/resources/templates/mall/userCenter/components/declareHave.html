@@ -21,9 +21,11 @@
             <tr>
               <th class="al" width="20%">申报流水号</th>
               <th class="al" width="18%">项目代码 | 项目名称</th>
-              <th class="al" width="18%">阶段/事项名称</th>
+              <th width="14%">阶段/事项名称</th>
               <th width="22%">申报状态</th>
-              <th  width="20%">操作</th>
+              <th  width="20%">
+                <div style="width: 150px;">操作</div>
+              </th>
             </tr>
           </thead>
           <tbody id="inProgressProjBody">
@@ -54,10 +56,10 @@
                   </el-tooltip>
                 </td>
                 <td width="22%">
-                  <span class="applyinstState applyinstState1"
+                  <span class="applyinstState applyinstState1" style="line-height: 20px;"
                         v-if="item.applyinstState=='0'">已接件未审核</span>
                   <span class="applyinstState applyinstState2"
-                        v-else-if="item.applyinstState=='1'">已接件并审核</span>
+                        v-else-if="item.applyinstState=='1'" style="line-height: 20px;">已接件并审核</span>
                   <span class="applyinstState applyinstState3"
                         v-else-if="item.applyinstState=='2'">已受理</span>
                   <span class="applyinstState applyinstState4"
@@ -85,9 +87,10 @@
                 </td>
                 <!--<td width="20%"><i class="applyintState" :class="applyState(item.applyinstState)"></i> {{item.applyinstState}}</td>-->
                 <td width="20%" style="cursor: pointer">
-                  <a class="option-btn" style="float:left;display: inline-block;width: 50px;"  @click="lookProjDetail(item)">查看</a>
-                  <a v-if="item.applyinstState=='0'" class="option-btn" style="display: inline-block;width: 50px;"  @click="withDraw(item)">撤件</a>
-                  <a v-else="item.applyinstState!='0'" class="option-btn"  style="display: inline-block;width: 50px;"  title="只可撤回未正式受理申报">撤件</a>
+                  <a class="option-btn" style="display: inline-block;"  @click="lookProjDetail(item)">查看</a>
+                  <a v-if="item.applyinstState=='0'" class="option-btn" style="display: inline-block"  @click="withDraw(item)">撤件</a>
+                  <span v-else="item.applyinstState!='0'" style="display: inline-block;cursor: not-allowed;color: #ccc;paddingLeft: 10px;"  title="只可撤回未正式受理申报">撤件</span>
+                  <a class="option-btn" style="display: inline-block;"  @click="showReceive(item)">打印回执</a>
                 </td>
               </tr>
             </template>
@@ -117,13 +120,15 @@
               <th class="al">项目代码 | 项目名称</th>
               <th class="al">阶段/事项名称</th>
               <!-- <th>办结时长</th> -->
-              <th>操作</th>
+              <th>
+                <div style="width: 150px;">操作</div>
+              </th>
             </tr>
           </thead>
           <tbody>
             <template v-if="hadApplyItemData.length>0">
               <tr v-for="item in hadApplyItemData">
-                <td width="20%">{{item.endTime |timeFormat}}</td>
+                <td width="40%">{{item.endTime |timeFormat}}</td>
                 <td class="al" width="20%">
                   {{item.localCode}}
                   <span class="ellipsis pro-name" :title="item.projName">{{item.projName}}</span>
@@ -132,7 +137,8 @@
                     :title="item.stageIteminstName">{{item.stageIteminstName}}</span></td>
                 <!-- <td width="20%">{{item.businessState}}</td> -->
                 <td width="20%" style="cursor: pointer">
-                  <span class="option-btn" style="display: inline-block;width: 50px;" @click="lookProjDetail(item)">查看</span>
+                  <span class="option-btn" style="display: inline-block" @click="lookProjDetail(item)">查看</span>
+                  <span class="option-btn" style="display: inline-block"  @click="showReceive(item)">打印回执</span>
                 </td>
               </tr>
             </template>
@@ -502,7 +508,28 @@
       </el-table-column>
     </el-table>
   </el-dialog>
-
+  <!--回执列表弹窗 start-->
+  <el-dialog title="回执列表" :visible.sync="receiveModalShow" :close-on-click-modal="false" class="receive-modal" width="1200px">
+    <div class="fl" :style="{height: (curHeight-100)+'px'}">
+      <div class="receive-item" :class="receiveActive==ind?'active':''"  v-for="(item,ind) in receiveList" :key="item.receiveId">
+        <p class="receive-item-header">
+          <span :title="item.name" class="ellipsis">{{item.name}}</span>
+          <i class="fr icon" :class="item.show?'el-icon-arrow-down':'el-icon-arrow-right'" @click="toggleReceiveListShow(item)"></i>
+          <span class="fr" :class="item.isSeries==0?'receive-type-y':'receive-type'">{{item.isSeries==0?'并联':'并行'}}</span>
+        </p>
+        <ul class="receive-list" v-show="item.show">
+          <li :class="receiveItemActive==index?'active':''"
+              v-for="(itemBtn,index) in item.receiveList"
+              @click="printReceive1(itemBtn,index,ind)">
+            <span>{{$options.filters.changeReceiveType(itemBtn.receiptType)}}</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="pdf-view-win" :style="{height: (curHeight-100)+'px'}">
+      <iframe :src="pdfSrc" width="100%" height="100%"></iframe>
+    </div>
+  </el-dialog>
 </div>
 
 <script src="../../../static/mall/js/userCenter/components/declareHave.js"
@@ -577,5 +604,97 @@
   }
   .bg3{
     background: #B7C8DC;
+  }
+
+
+  .receive-modal .el-dialog__body {
+    background: rgba(242,243,248,1);
+    padding: 16px;
+  }
+  .receive-item-header {
+    border-bottom: 1px solid #EBEDF2;
+    height: 40px;
+    line-height: 40px;
+    padding: 0 10px;
+    font-size: 16px;
+  }
+  .receive-list {
+    padding: 10px 14px;
+    margin-left: 23px;
+    position: relative;
+  }
+  .receive-list:before {
+    content: '';
+    display: inline-block;
+    position: absolute;
+    width: 1px;
+    top: 0;
+    bottom: 30px;
+    background: #EBEDF2;
+    left: 0;
+  }
+  .receive-list li {
+    margin-bottom: 10px;
+    position: relative;
+  }
+  .receive-list li:before {
+    content: '';
+    display: inline-block;
+    position: absolute;
+    height: 1px;
+    width: 14px;
+    top: 10px;
+    background: #EBEDF2;
+    left: -14px;
+  }
+  .receive-item {
+    background: rgba(255,255,255,1);
+    box-shadow: 0px 0px 8px 0px rgba(50,50,50,0.05);
+    border-radius: 4px;
+    width: 230px;
+    margin-bottom: 16px;
+  }
+  .receive-list span {
+    padding: 4px 8px 5px 8px;;
+    cursor: pointer;
+  }
+
+  .receive-list span:hover, .receive-item.active li.active span {
+    color: #169AFF;
+    background: rgba(244,250,254,1);
+  }
+  .receive-type, .receive-type-y {
+    padding: 0 12px;
+    color: #07CDC6;
+    border-radius: 11px;
+    border: 1px solid #07CDC6;
+    font-size: 14px;
+    height: 22px;
+    line-height: 22px;
+    margin: 9px 0;
+    display: inline-block;
+  }
+  .receive-type-y {
+    color: #FFB822;
+    border: 1px solid #FFB822;
+  }
+
+  .receive-modal .el-dialog {
+    background: rgba(242,243,248,1);
+    margin-top: 50px !important;
+  }
+  .pdf-view-win {
+    width: 100%;
+    padding-left: 250px;
+    height: 100%;
+  }
+  .receive-item-header .icon {
+    line-height: 40px;
+    padding-left: 5px;
+    cursor: pointer;
+  }
+  .receive-item-header span.ellipsis {
+    display: inline-block;
+    width: 130px;
   }
 </style>

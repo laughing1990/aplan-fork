@@ -23,6 +23,8 @@ import com.augurit.aplanmis.common.service.admin.cert.AeaCertAdminService;
 import com.augurit.aplanmis.common.service.admin.opus.AplanmisOpuOmOrgAdminService;
 import com.augurit.aplanmis.common.service.instance.AeaHiIteminstService;
 import com.augurit.aplanmis.integration.license.config.LicenseConfig;
+import com.augurit.aplanmis.integration.license.constants.LicenseStatus;
+import com.augurit.aplanmis.integration.license.constants.LicenseType;
 import com.augurit.aplanmis.integration.license.dto.*;
 import com.augurit.aplanmis.integration.license.service.LicenseApiService;
 import com.github.pagehelper.Page;
@@ -361,13 +363,13 @@ public class AeaCertAdminServiceImpl implements AeaCertAdminService {
         return getLicenseAuthRes(list, accessToken, identityNumber);
     }
 
-    private LicenseAuthResDTO getLicenseAuthRes(List<AeaItemBasic> list, String accessToken, String identityNumber) {
+    private LicenseAuthResDTO getLicenseAuthRes(List<AeaItemBasic> list, String accessToken, String identityNumber) throws Exception {
         if (list.size() < 1)
             return new LicenseAuthResDTO();
         LicenseAuthResDTO result = new LicenseAuthResDTO();
         ArrayList checkAuthCodes = new ArrayList();//针对多个事项时，进行重复过滤
         ArrayList auth_codes = new ArrayList();
-        List<LicenseDTO> licenseDTOList = new ArrayList<>();
+        List<LicenseDTO> licenseDTOList = new ArrayList<>();//存入不重复的证照信息的列表
         OpuOmUserInfo userinfo = opuOmUserInfoMapper.getOpuOmUserInfoByUserId(SecurityContext.getCurrentUserId());
         OpuOmOrg topOrg = opuOmOrgService.getTopOrgByCurOrgId(SecurityContext.getCurrentOrgId());
         BscDicRegion proDataRegion = bscDicRegionMapper.getBscDicRegionById(topOrg.getRegionId());
@@ -377,26 +379,45 @@ public class AeaCertAdminServiceImpl implements AeaCertAdminService {
         operator.setDivision_code(proDataRegion.getRegionNum());
         operator.setService_org(proDataRegion.getRegionNum());
         operator.setService_org_code(topOrg.getOrgCode());
+        List<LicenseAuthReqDTO> licenseAuthReqDTOList = new ArrayList<>();//组装查询条件，统一进行列表的查询
         for (AeaItemBasic aeaItemBasic : list) {
-            LicenseAuthResDTO data = null;
             LicenseAuthReqDTO authReqDTO = new LicenseAuthReqDTO();
             authReqDTO.setService_item_name(aeaItemBasic.getItemName());
             authReqDTO.setService_item_code(aeaItemBasic.getItemCode());//事项编码
             authReqDTO.setIdentity_number(identityNumber);//证件号码（企业的信用代码/-/法人的身份证号）
             authReqDTO.setOperator(operator);
-            try {
-                data = licenseApiService.licenseAuth(accessToken, authReqDTO);
-            } catch (Exception e) {
-                logger.debug("事项：" + aeaItemBasic.getItemName() + "查询电子证照库失败！");
-            }
-            if (data != null) {
+            licenseAuthReqDTOList.add(authReqDTO);
+        }
+        List<LicenseAuthResDTO> dataList = licenseApiService.licenseAuthMulti(accessToken, licenseAuthReqDTOList);
+        if (dataList != null && dataList.size() > 0) {
+            for (LicenseAuthResDTO data : dataList) {
                 for (int i = 0; i < data.getTotal_count(); i++) {
                     if (checkAuthCodes.contains(data.getData().get(i).getLicense_code()))
                         continue;
                     checkAuthCodes.add(data.getData().get(i).getLicense_code());
                     auth_codes.add(data.getAuth_codes()[i]);
-                    LicenseDTO licenseDTO=data.getData().get(i);
+                    LicenseDTO licenseDTO = data.getData().get(i);
                     licenseDTO.setAuth_code(data.getAuth_codes()[i]);
+                    if (LicenseStatus.ISSUED.getValue().equalsIgnoreCase(licenseDTO.getLicense_status()))
+                        licenseDTO.setLicense_status_name(LicenseStatus.ISSUED.getName());
+                    else if (LicenseStatus.DRAFT.getValue().equalsIgnoreCase(licenseDTO.getLicense_status()))
+                        licenseDTO.setLicense_status_name(LicenseStatus.DRAFT.getName());
+                    else if (LicenseStatus.REGISTERED.getValue().equalsIgnoreCase(licenseDTO.getLicense_status()))
+                        licenseDTO.setLicense_status_name(LicenseStatus.REGISTERED.getName());
+                    else if (LicenseStatus.ABOLISHED.getValue().equalsIgnoreCase(licenseDTO.getLicense_status()))
+                        licenseDTO.setLicense_status_name(LicenseStatus.ABOLISHED.getName());
+
+                    if (LicenseType.CERTIFICATE.getValue().equalsIgnoreCase(licenseDTO.getLicense_type()))
+                        licenseDTO.setLicense_type_name(LicenseType.CERTIFICATE.getName());
+                    else if (LicenseType.PROOF.getValue().equalsIgnoreCase(licenseDTO.getLicense_type()))
+                        licenseDTO.setLicense_type_name(LicenseType.PROOF.getName());
+                    else if (LicenseType.APPROVAL.getValue().equalsIgnoreCase(licenseDTO.getLicense_type()))
+                        licenseDTO.setLicense_type_name(LicenseType.APPROVAL.getName());
+                    else if (LicenseType.REPORT.getValue().equalsIgnoreCase(licenseDTO.getLicense_type()))
+                        licenseDTO.setLicense_type_name(LicenseType.REPORT.getName());
+                    else if (LicenseType.RESULT.getValue().equalsIgnoreCase(licenseDTO.getLicense_type()))
+                        licenseDTO.setLicense_type_name(LicenseType.RESULT.getName());
+
                     licenseDTOList.add(licenseDTO);
                 }
             }

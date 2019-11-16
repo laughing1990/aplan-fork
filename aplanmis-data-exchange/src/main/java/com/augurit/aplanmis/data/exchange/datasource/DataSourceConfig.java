@@ -3,6 +3,8 @@ package com.augurit.aplanmis.data.exchange.datasource;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.io.VFS;
+import org.apache.ibatis.mapping.DatabaseIdProvider;
+import org.apache.ibatis.mapping.VendorDatabaseIdProvider;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.annotation.MapperScan;
@@ -111,6 +113,13 @@ public class DataSourceConfig extends ApplicationObjectSupport {
 
         bean.setMapperLocations(array);
         bean.setConfigLocation(new DefaultResourceLoader().getResource("classpath:mybatis.xml"));
+        //添加多数据库识别
+        DatabaseIdProvider databaseIdProvider = new VendorDatabaseIdProvider();
+        Properties properties = new Properties();
+        properties.setProperty("Oracle", "oracle");
+        properties.setProperty("MySQL", "mysql");
+        databaseIdProvider.setProperties(properties);
+        bean.setDatabaseIdProvider(databaseIdProvider);
         return bean.getObject();
     }
 }

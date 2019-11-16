@@ -1,22 +1,33 @@
-var checkPhone = function (rule, value, callback) {
-	// debugger
-	if (!value) {
-		return callback(new Error('手机号不能为空'));
-	} else {
-		var reg = /^1[3|4|5|7|8][0-9]\d{8}$/
-		console.log(reg.test(value));
-		if (reg.test(value)) {
-			callback();
-		} else {
-			return callback(new Error('请输入正确的手机号'));
-		}
-	}
-};
 var module1 = new Vue({
 	el: '#addNeedPaurse',
 	mixins: [mixins],
 	data: function () {
+		var checkMissValue = function (rule, value, callback) {
+			if (value === '' || value === undefined || value === null) {
+				callback(new Error('该输入项为必输项！'));
+			} else if (value.toString().trim() === '') {
+				callback(new Error('该输入项为必输项！'));
+			} else {
+				callback();
+			}
+		};
+
+		var checkPhone = function (rule, value, callback) {
+			// debugger
+			if (!value) {
+				return callback(new Error('手机号不能为空'));
+			} else {
+				var reg = /^1[3|4|5|7|8][0-9]\d{8}$/
+				console.log(reg.test(value));
+				if (reg.test(value)) {
+					callback();
+				} else {
+					return callback(new Error('请输入正确的手机号'));
+				}
+			}
+		};
 		return {
+			agentItemForm: {},
 			loginUserInfo: {
 				isAdministrators: "",
 				isOwner: "",
@@ -221,7 +232,25 @@ var module1 = new Vue({
 			loadingProjInfo: false, // 查询项目列表
 			searchKeyword: '',
 			//   基本信息联系人电话
-			basicLinkPhone: ''
+			basicLinkPhone: '',
+			loadingFile: false, // 文件上传loading
+			AllFileList: [], // 智能分拣区所选择文件
+			fileList: [],
+			checkAll: true, // 智能分拣区文件是否全选
+			checkedSelFlie: [], // 智能分拣区已选文件
+			model: {
+				rules: {
+					getPaper: {required: true, message: "必选", trigger: ["change"]},
+					getCopy: {required: true, message: "必选", trigger: ["change"]},
+					realPaperCount: {validator: checkMissValue, required: true, message: "必填字段", trigger: ['blur']},
+					realCopyCount: {validator: checkMissValue, required: true, message: "必填字段", trigger: ['blur']},
+				},
+				matsTableData: []
+			},
+			showFileListKey: [], // 展示材料下文件列表
+			showMatTableExpand: false, // 材料列表是否展示expand
+			getPaperAll: false,
+			getCopyAll: false,
 		}
 	},
 	methods: {
@@ -615,7 +644,7 @@ var module1 = new Vue({
 					vm.$set(vm.aeaProjInfo, 'projName', '');
 
 					if (content.aeaLinkmanInfo) {
-						debugger
+						// debugger
 						vm.$set(vm.form, 'contact', content.aeaLinkmanInfo.linkmanName + '[' + content.aeaLinkmanInfo.linkmanCertNo + ']');
 						//   vm.$set(vm.form,'mobile',content.aeaLinkmanInfo.linkmanMobilePhone)
 						vm.basicLinkPhone = content.aeaLinkmanInfo.linkmanMobilePhone; //基本信息联系电话信息
@@ -656,12 +685,12 @@ var module1 = new Vue({
 
 			var vm = this;
 			vm.selectdRecord = [];
-			var value = vm.multipleSelection2
+			var value = vm.multipleSelection2;
 			if (!value.length > 0) {
 				vm.$message.error('请选择服务事项');
 				return false;
 			}
-			vm.serviceTabledialogTable = false
+			vm.serviceTabledialogTable = false;
 			console.log(value)
 			// vm.form = JSON.parse(JSON.stringify(value[0]))
 			console.log('form', vm.form)
@@ -686,10 +715,14 @@ var module1 = new Vue({
 			if (promiseService == '1') {
 				vm.promiseService = true
 			}
-
+			vm.agentItemForm = value[0];
 			vm.form.agentOrgName = value[0].agentOrgName;
-			vm.form.agentItemName = value[0].agentItemName
-			vm.form.itemName = value[0].itemName
+			vm.form.agentItemName = value[0].agentItemName;
+			vm.form.itemName = value[0].itemName;
+			vm.form.agentItemFwdx = value[0].agentItemFwdx;
+			vm.form.agentItemPropertyName = value[0].agentItemPropertyName;
+			vm.form.agentItemDueNum = value[0].agentItemDueNum;
+			vm.form.agentItemDueUnitType = value[0].agentItemDueUnitType;
 			vm.$set(vm.form, 'isApproveProj', '1')
 			// vm.getAutoProjCode();
 			vm.getItemServiceList(value[0].agentItemVerId)
@@ -1133,6 +1166,312 @@ var module1 = new Vue({
 			this.projName = item.projName;
 			this.form.approvalCode = item.localCode;
 			this.form.parentProjId = item.projInfoId;
+
+			// 0：政府；1：企业；2：混合
+			if (item.financialSource === '0') {
+				this.isFinancialFund = true;
+				this.isSocialFund = false;
+			} else if (item.financialSource === '1') {
+				this.isFinancialFund = false;
+				this.isSocialFund = true;
+			} else {
+				this.isFinancialFund = true;
+				this.isSocialFund = true;
+			}
+		},
+
+
+		myUploadFile: function (file) {
+			var _that = this;
+			_that.checkedSelFlie.map(function (item) {
+				if (item == file.file.name) {
+					_that.fileData.append('file', file.file);
+				}
+			});
+		},
+		// 文件上传 change事件
+		fileChange: function (file, fileList) {
+			var _that = this;
+			_that.AllFileListId = [];
+			if (fileList.length > 0) {
+				this.AllFileList = this.unique(fileList, 'file');
+				this.AllFileList.map(function (item) {
+					_that.AllFileListId.push(item.name);
+				});
+				_that.checkedSelFlie = _that.AllFileListId;
+			}
+		},
+		// 材料 事项去重
+		unique: function (arr, flag) {
+			var result = {};
+			var finalResult = [];
+			var arr = arr.reverse();
+			for (var i = 0; i < arr.length; i++) {
+				if (flag == 'mats') {
+					result[arr[i].matId] = arr[i];
+				} else if (flag == 'stage') {
+					result[arr[i].itemVerId] = arr[i];
+				} else if (flag == 'file') {
+					result[arr[i].name] = arr[i];
+				}
+			}
+			// for (item in result) {
+			//     finalResult.push(result[item]);
+			// }
+			var keysItems = Object.keys(result);
+			keysItems.map(function (item) {
+				finalResult.push(result[item]);
+			})
+			return finalResult.reverse();
+		},
+		// 文件上传 submit事件
+		submitUpload: function () {
+			this.fileData = new FormData();
+			this.$refs.uploadFile.submit();
+			var _that = this;
+			this.fileData.append("projInfoId", _that.projInfoId);
+			this.fileData.append("matIds", _that.matIds);
+			this.fileData.append("matinstIds", _that.matinstIds);
+			this.fileData.append("unitInfoId", _that.rootUnitInfoId);
+			this.uploadLogo = "1";
+			if (_that.checkedSelFlie.length == 0) {
+				alertMsg('', '请选择需要自动分拣的文件', '关闭', 'warning', true);
+				return false;
+			} else {
+				_that.loadingFile = true;
+				axios.post(ctx + 'rest/mats/att/upload/auto', _that.fileData).then(function (res) {
+					_that.checkedSelFlie = [];
+					_that.AllFileList = [];
+					_that.loadingFile = false;
+					_that.$refs.uploadFile.clearFiles();
+					_that.checkAll = false;
+					var matinstIdsObj = [];
+					res.data.content.map(function (item) {
+						_that.showFileListKey.push(item.matId);
+						_that.model.matsTableData.map(function (matItem) {
+							if (item.matId == matItem.matId) {
+								matItem.matinstId = item.matinstId;
+								matItem.matChild = item.fileList;
+							}
+							if (matItem.matChild.length > 0) {
+								_that.showMatTableExpand = true;
+							}
+							if (matinstIdsObj.indexOf(matItem.matinstId) < 0 && matItem.matinstId != '') {
+								matinstIdsObj.push(matItem.matinstId);
+							}
+						});
+					});
+					_that.matinstIds = matinstIdsObj.join(',')
+				}).catch(function (error) {
+					if (error.response) {
+						// content.onError('配时文件上传失败(' + error.response.status + ')，' + error.response.data);
+					} else if (error.request) {
+						// content.onError('配时文件上传失败，服务器端无响应');
+					} else {
+						// content.onError('配时文件上传失败，请求封装失败');
+					}
+					_that.loadingFile = false;
+				});
+			}
+
+		},
+		handleCheckedCitiesChange: function (value) {
+			var checkedCount = value.length;
+			this.checkAll = checkedCount === this.AllFileListId.length;
+			this.checkedSelFlie = value;
+		},
+		handleCheckAllChange: function (val) {
+			this.checkedSelFlie = val ? this.AllFileListId : [];
+		},
+		// 获取文件后缀
+		getFileType: function (fileName) {
+			var index1 = fileName.lastIndexOf(".");
+			var index2 = fileName.length;
+			var suffix = fileName.substring(index1 + 1, index2).toLowerCase();//后缀名
+			if (suffix == 'docx') {
+				suffix = 'doc';
+			}
+			return suffix;
+		},
+		// 预览电子件
+		filePreview: function (data, flag) { // flag==pdf 查看施工图
+			var detailId = data.fileId;
+			var _that = this;
+			console.log(data);
+			var regText = /doc|docx|ppt|pptx|xls|xlsx|txt$/;
+			var fileName = data.fileName;
+			var fileType = this.getFileType(fileName);
+			var flashAttributes = '';
+			_that.filePreviewCount++;
+			if (flag == 'pdf') {
+				var tempwindow = window.open(); // 先打开页面
+				setTimeout(function () {
+					tempwindow.location = ctx + 'cod/drawing/drawingCheck?detailId=' + detailId;
+				}, 1000)
+			} else {
+				if (fileType == 'pdf') {
+					var tempwindow = window.open(); // 先打开页面
+					setTimeout(function () {
+						tempwindow.location = ctx + 'previewPdf/view?detailId=' + detailId;
+					}, 1000)
+				} else if (regText.test(fileType)) {
+					// previewPdf/pdfIsCoverted
+					_that.loading = true;
+					request('', {
+						url: ctx + 'previewPdf/pdfIsCoverted?detailId=' + detailId,
+						type: 'get',
+					}, function (result) {
+						if (result.success) {
+							_that.loading = false;
+							var tempwindow = window.open(); // 先打开页面
+							setTimeout(function () {
+								tempwindow.location = ctx + 'previewPdf/view?detailId=' + detailId;
+							}, 1000)
+						} else {
+							if (_that.filePreviewCount > 9) {
+								confirmMsg('提示信息：', '文件预览请求中，是否继续等待？', function () {
+									_that.filePreviewCount = 0;
+									_that.filePreview(data);
+								}, function () {
+									_that.filePreviewCount = 0;
+									_that.loading = false;
+									return false;
+								}, '确定', '取消', 'warning', true)
+
+							} else {
+								setTimeout(function () {
+									_that.filePreview(data);
+								}, 1000)
+							}
+						}
+					}, function (msg) {
+						_that.loading = false;
+						_that.$message({
+							message: '文件预览失败',
+							type: 'error'
+						});
+					})
+				} else {
+					_that.loading = false;
+					var tempwindow = window.open(); // 先打开页面
+					setTimeout(function () {
+						tempwindow.location = ctx + 'rest/mats/att/preview?detailId=' + detailId + '&flashAttributes=' + flashAttributes;
+					}, 1000)
+				}
+			}
+		},
+		//下载单个附件
+		downOneFile: function (data) {
+			window.open(ctx + 'rest/mats/att/download?detailIds=' + data.fileId, '_blank')
+		},
+		//删除单个文件附件
+		delOneFile: function (data, matData) {
+			var _that = this;
+			console.log(data);
+			console.log(matData)
+			request('', {
+				url: ctx + 'rest/mats/att/delelte',
+				type: 'post',
+				data: {matinstId: matData.matinstId, detailIds: data.fileId}
+			}, function (res) {
+				if (res.success) {
+					_that.getFileListWin(matData.matinstId, matData);
+					_that.$message({
+						message: '删除成功',
+						type: 'success'
+					});
+				} else {
+					_that.$message({
+						message: res.message ? res.message : '删除失败',
+						type: 'error'
+					});
+				}
+			}, function (msg) {
+				_that.$message({
+					message: '服务请求失败',
+					type: 'error'
+				});
+			});
+		},
+		showMatFiles: function (matId, docType) {  // bsc/att/listAttLinkAndDetailNoPage.do
+			var _that = this;
+			// var tempwindow = window.open('_blank');
+			request('', {
+				url: ctx + 'bsc/att/listAttLinkAndDetailNoPage.do',
+				type: 'post',
+				data: {
+					tableName: 'AEA_ITEM_MAT',
+					pkName: docType,
+					recordId: matId,
+					attType: null,
+				},
+			}, function (result) {
+				if (result != null && result.length > 1) {
+
+					var trHtml = '';
+					_that.showMatFilesDialogShow = true;
+					$.each(result, function (i, file) {
+						trHtml += '<div class="td-cust clearfix" data-type="file" data-key="' + file.detailId + '"  data-format="' + file.attFormat + '">\n' +
+								'                    <div class="file-image fl"><img src="' + _that.getFileIcon(file.attName) + '" /></div>\n' +
+								'                    <div class="file-name fl">\n' +
+								'                        <a href="' + _that.kpFileOpenEvent(file.detailId) + '" target="_blank" title="' + file.attName + '">' + _that.cutString(file.attName, 50) + '</a>\n' +
+								'                    </div>\n' +
+								'                </div>';
+					});
+					_that.dialogHtml = trHtml;
+				} else if (result.length == 1) {
+					var url = ctx + 'file/showFile.do?detailId=' + result[0].detailId;
+					window.open.location = ctx + 'file/ntkoOpenWin.do?jumpUrl=' + encodeURIComponent(url);
+				} else {
+					_that.showMatFilesDialogShow = true;
+					_that.dialogHtml = '无模板';
+				}
+			}, function (msg) {
+				_that.$message({
+					message: '服务请求失败',
+					type: 'error'
+				});
+			});
+		},
+		// 材料全选
+		checkAllMatChange: function (val, flag) {
+			if (val == false) {
+				val = '';
+			}
+			var _that = this;
+			// this.checkedCities[[index]] = val ? this.id[[index]] : []
+			_that.model.matsTableData.map(function (item) {
+				if (flag == 'paper') {
+					item.getPaper = val;
+					_that.getPaperAll = val;
+				} else {
+					item.getCopy = val;
+					_that.getCopyAll = val;
+				}
+			});
+			// this.isIndeterminate[index] = false
+		},
+		// 材料单选
+		checkedMatChange: function (val, index, flag) {
+			var _that = this;
+			if (val == false) {
+				val = '';
+			}
+			if (flag == 'paper') {
+				_that.model.matsTableData[index].getPaper = val;
+				_that.getPaperAll = val;
+			} else {
+				_that.model.matsTableData[index].getCopy = val;
+				_that.getCopyAll = val;
+			}
+		},
+		showUploadWindow: function (data) { // 展示文件上传下载弹窗
+			var _that = this;
+			_that.showUploadWindowFlag = true;
+			_that.selMatRowData = data;
+			_that.selMatinstId = data.matinstId ? data.matinstId : '',
+					_that.showUploadWindowTitle = '材料附件 - ' + data.matName
+			_that.getFileListWin(data.matinstId, data);
 		},
 	},
 	mounted: function () {

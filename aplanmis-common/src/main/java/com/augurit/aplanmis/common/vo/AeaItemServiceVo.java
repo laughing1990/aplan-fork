@@ -25,7 +25,8 @@ public class AeaItemServiceVo {
 
     @ApiModelProperty(value = "中介事项名称")
     private String agentItemName;
-
+    @ApiModelProperty(value = "服务对象")
+    private String agentItemFwdx;
     @ApiModelProperty(value = "中介事项对应的部门ID")
     private String agentOrgId;
 
@@ -36,6 +37,11 @@ public class AeaItemServiceVo {
 
     private String agentItemPropertyName;
 
+    @ApiModelProperty(value = "办理时限，以工作日为单位 ")
+    private String agentItemDueNum;
+    private String agentItemDueUnitType;
+    @ApiModelProperty(value = "承诺时限单位")
+    private String agentItemBjType;
     @ApiModelProperty(value = "对应的行政事项名称")
     private String itemName;
 

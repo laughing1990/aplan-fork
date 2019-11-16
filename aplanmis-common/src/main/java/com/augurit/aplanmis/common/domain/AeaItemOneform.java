@@ -17,7 +17,7 @@ public class AeaItemOneform implements Serializable{
     private String itemVerId; // (事项版本ID)
     private String oneformId; // (一张表单ID)
     private String linkName; // (链接名称)
-    private Long sortNo; // (排序字段)
+    private Double sortNo; // (排序字段)
     private String isActive; // (是否启用，0表示禁用，1表示启用)
 
     private String creater; // (创建人)

@@ -161,9 +161,7 @@ public class AeaParStagePartformServiceImpl implements AeaParStagePartformServic
             if (aeaParStagePartform == null) throw new Exception("aeaParStagePartform is null");
             aeaParStagePartform.setStoFormId(actStoForm.getFormId());
             aeaParStagePartformMapper.updateStagePartform(aeaParStagePartform);
-
         } else {
-
             ActStoForm actStoForm = actStoFormMapper.getActStoFormById(formId);
             if (actStoForm == null) throw new Exception("actStoForm is null");
             actStoForm.setFormCode(formCode);
@@ -173,6 +171,11 @@ public class AeaParStagePartformServiceImpl implements AeaParStagePartformServic
             actStoForm.setModifyTime(new Date());
             actStoFormMapper.updateActStoForm(actStoForm);
         }
+    }
+
+    @Override
+    public ActStoForm getStageDevformByFormId(String formId) {
+        return actStoFormMapper.getActStoFormById(formId);
     }
 }
 

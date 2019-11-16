@@ -2,6 +2,8 @@ package com.augurit.aplanmis.common.service.form.impl;
 
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.util.StringUtils;
+import com.augurit.aplanmis.common.constants.GDUnitType;
+import com.augurit.aplanmis.common.constants.UnitProjLinkmanType;
 import com.augurit.aplanmis.common.domain.AeaLinkmanInfo;
 import com.augurit.aplanmis.common.domain.AeaUnitInfo;
 import com.augurit.aplanmis.common.domain.AeaUnitProj;
@@ -54,7 +56,7 @@ public class AeaProjDrawingSerivceImpl implements AeaProjDrawingSerivce {
         //筛选出 施工图审查机构 勘察单位 设计单位 //遍历单位 封装联系人
         for ( AeaUnitProj id :aeaUnitInfos) {
             //info.getUnitType().equals("4")||info.getUnitType().equals("3")||info.getUnitType().equals("13") && info != null(info.getUnitType().equals("9")||info.getUnitType().equals("3")||info.getUnitType().equals("2")) &&
-            if(   id.getUnitType()!=null && (id.getUnitType().equals("13")||id.getUnitType().equals("4")||id.getUnitType().equals("3"))  ) {
+            if(   id.getUnitType()!=null && (id.getUnitType().equals(GDUnitType.CONSTRUCTION_DRAWING_REVIEW)||id.getUnitType().equals(GDUnitType.SURVEY_UNIT)||id.getUnitType().equals(GDUnitType.DESIGN_UNIT))  ) {
                 AeaProjDrawing aeaProjDrawing = new AeaProjDrawing();
                 AeaUnitInfo infoQ = new AeaUnitInfo();
                 infoQ.setUnitInfoId(id.getUnitInfoId());
@@ -81,10 +83,10 @@ public class AeaProjDrawingSerivceImpl implements AeaProjDrawingSerivce {
                     List<AeaUnitProjLinkman> linkmanList = aeaUnitProjLinkmanMapper.listfuzeren(aeaUnitProjLinkmanQ);
                     if (linkmanList.size()>0){
                         // AeaUnitProjLinkman fuzeren = linkmanList.get(0);
-                        // 101001 勘察项目负责人  502001施工图审查机构项目负责人  102001设计项目负责人
+                        // 1 负责人
                         //待优化 用stream筛选
                         for (AeaUnitProjLinkman fuzeren : linkmanList) {
-                            if (fuzeren.getLinkmanType().equals("101001")||fuzeren.getLinkmanType().equals("502001")||fuzeren.getLinkmanType().equals("102001") ) {
+                            if (fuzeren.getLinkmanType().equals(UnitProjLinkmanType.FZR) ) {
                                 aeaProjDrawing.setLinkmanType(fuzeren.getLinkmanType());
                                 aeaProjDrawing.setProfessionCertType(fuzeren.getProfessionCertType());
                                 aeaProjDrawing.setProfessionSealNum(fuzeren.getProfessionSealNum());
@@ -125,7 +127,7 @@ public class AeaProjDrawingSerivceImpl implements AeaProjDrawingSerivce {
                                 for (int i = 0; i < linkmanList.size(); i++) {
                                     AeaUnitProjLinkman linkman = linkmanList.get(i);
                                     //如果是负责人就不在人员设置里显示
-                                    if ("101001".equals(linkman.getLinkmanType()) || "502001".equals(linkman.getLinkmanType()) || "102001".equals(linkman.getLinkmanType())) {
+                                    if (UnitProjLinkmanType.FZR.equals(linkman.getLinkmanType()) ) {
                                         continue;
                                     }
                                     AeaUnitProjLinkman aeaUnitProjLinkman = new AeaUnitProjLinkman();

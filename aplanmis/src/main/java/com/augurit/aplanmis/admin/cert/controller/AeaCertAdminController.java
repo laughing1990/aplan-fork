@@ -297,10 +297,10 @@ public class AeaCertAdminController {
     @RequestMapping("/getViewLicenseURL.do")
     public ContentResultForm<String> getViewLicenseURL(String authCode) throws Exception {
         try {
-            return new ContentResultForm<>(true, aeaCertAdminService.getViewLicenseURL(authCode), "Query attachment success");
+            return new ContentResultForm<>(true, aeaCertAdminService.getViewLicenseURL(authCode), "获取证照地址连接成功");
         } catch (Exception e) {
             e.printStackTrace();
-            return new ContentResultForm<>(false, "", "Query attachment failed");
+            return new ContentResultForm<>(false, "", "获取证照地址连接失败！");
         }
     }
 }

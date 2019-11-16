@@ -16,10 +16,6 @@
     HK_INVESTMENT  hkInvestment,
     PRIVATE_INVESTMENT  privateInvestment,
     OTHER_INVESTMENT  otherInvestment,
-    GOV_ORG_CONFIRM_TIME  govOrgConfirmTime,
-    GOV_ORG_CODE  govOrgCode,
-    GOV_ORG_NAME  govOrgName,
-    GOV_AREA_CODE  govAreaCode,
     CREATER  creater,
     CREATE_TIME  createTime,
     MODIFIER  modifier,
@@ -74,18 +70,6 @@
         <if test="otherInvestment != null" >
         AND    OTHER_INVESTMENT = #{otherInvestment}
         </if>
-        <if test="govOrgConfirmTime != null" >
-        AND    GOV_ORG_CONFIRM_TIME = #{govOrgConfirmTime}
-        </if>
-        <if test="govOrgCode != null" >
-        AND    GOV_ORG_CODE = #{govOrgCode}
-        </if>
-        <if test="govOrgName != null" >
-        AND    GOV_ORG_NAME = #{govOrgName}
-        </if>
-        <if test="govAreaCode != null" >
-        AND    GOV_AREA_CODE = #{govAreaCode}
-        </if>
         <if test="creater != null" >
         AND    CREATER = #{creater}
         </if>
@@ -108,9 +92,9 @@
 <!--5 新增实体对象 -->
 <insert id="insertAeaExProjMoney" parameterType="AeaExProjMoney" >
     insert into AEA_EX_PROJ_MONEY (
-MONEY_ID  ,PROJ_INFO_ID  ,GOV_FINANCE  ,STATE_ENTERPRICE  ,STATE_INVESTMENT  ,INTERNATIONAL_INVESTMENT  ,COLLECTIVE_INVESTMENT  ,FOREIGN_INVESTMENT  ,HK_INVESTMENT  ,PRIVATE_INVESTMENT  ,OTHER_INVESTMENT  ,GOV_ORG_CONFIRM_TIME  ,GOV_ORG_CODE  ,GOV_ORG_NAME  ,GOV_AREA_CODE  ,CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME  ,ROOT_ORG_ID  
+MONEY_ID  ,PROJ_INFO_ID  ,GOV_FINANCE  ,STATE_ENTERPRICE  ,STATE_INVESTMENT  ,INTERNATIONAL_INVESTMENT  ,COLLECTIVE_INVESTMENT  ,FOREIGN_INVESTMENT  ,HK_INVESTMENT  ,PRIVATE_INVESTMENT  ,OTHER_INVESTMENT  ,CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME  ,ROOT_ORG_ID
     )  values  (
-#{moneyId},#{projInfoId},#{govFinance},#{stateEnterprice},#{stateInvestment},#{internationalInvestment},#{collectiveInvestment},#{foreignInvestment},#{hkInvestment},#{privateInvestment},#{otherInvestment},#{govOrgConfirmTime},#{govOrgCode},#{govOrgName},#{govAreaCode},#{creater},#{createTime},#{modifier},#{modifyTime},  #{rootOrgId}
+#{moneyId},#{projInfoId},#{govFinance},#{stateEnterprice},#{stateInvestment},#{internationalInvestment},#{collectiveInvestment},#{foreignInvestment},#{hkInvestment},#{privateInvestment},#{otherInvestment},#{creater},#{createTime},#{modifier},#{modifyTime},  #{rootOrgId}
     )
 </insert>
 <!--6 修改实体对象 -->
@@ -150,18 +134,6 @@ MONEY_ID  ,PROJ_INFO_ID  ,GOV_FINANCE  ,STATE_ENTERPRICE  ,STATE_INVESTMENT  ,IN
         <if test="otherInvestment != null" >
         OTHER_INVESTMENT = #{otherInvestment},
         </if>
-        <if test="govOrgConfirmTime != null" >
-        GOV_ORG_CONFIRM_TIME = #{govOrgConfirmTime},
-        </if>
-        <if test="govOrgCode != null" >
-        GOV_ORG_CODE = #{govOrgCode},
-        </if>
-        <if test="govOrgName != null" >
-        GOV_ORG_NAME = #{govOrgName},
-        </if>
-        <if test="govAreaCode != null" >
-        GOV_AREA_CODE = #{govAreaCode},
-        </if>
         <if test="creater != null" >
         CREATER = #{creater},
         </if>
@@ -200,10 +172,6 @@ MONEY_ID  ,PROJ_INFO_ID  ,GOV_FINANCE  ,STATE_ENTERPRICE  ,STATE_INVESTMENT  ,IN
         <result property="hkInvestment" column="HK_INVESTMENT"/>
         <result property="privateInvestment" column="PRIVATE_INVESTMENT"/>
         <result property="otherInvestment" column="OTHER_INVESTMENT"/>
-        <result property="govOrgConfirmTime" column="GOV_ORG_CONFIRM_TIME"/>
-        <result property="govOrgCode" column="GOV_ORG_CODE"/>
-        <result property="govOrgName" column="GOV_ORG_NAME"/>
-        <result property="govAreaCode" column="GOV_AREA_CODE"/>
         <result property="creater" column="CREATER"/>
         <result property="createTime" column="CREATE_TIME"/>
         <result property="modifier" column="MODIFIER"/>

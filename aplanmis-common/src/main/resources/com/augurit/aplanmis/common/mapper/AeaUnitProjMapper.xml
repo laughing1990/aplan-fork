@@ -303,4 +303,11 @@
         <result property="linkmanInfoId" column="LINKMAN_INFO_ID"/>
         <result property="isDeleted" column="is_deleted"/>
     </resultMap>
+    <!--and aup.UNIT_TYPE = #{unitType}-->
+    <select id="findUnitInfoByProjIdAndUnitType" resultType="AeaUnitInfo">
+        SELECT aup.UNIT_PROJ_ID unitProjId, aup.UNIT_INFO_ID unitInfoId, aup.PROJ_INFO_ID projInfoId, aui.APPLICANT applicant, aui.UNIT_TYPE unitType
+	      FROM aea_unit_proj aup
+		    LEFT JOIN aea_unit_info aui on aup.UNIT_INFO_ID  = aui.UNIT_INFO_ID
+			  WHERE aup.PROJ_INFO_ID = #{projInfoId} and aui.UNIT_TYPE = #{unitType}
+    </select>
 </mapper>

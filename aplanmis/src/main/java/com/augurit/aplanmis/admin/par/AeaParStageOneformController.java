@@ -16,6 +16,7 @@ import com.github.pagehelper.Page;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -119,13 +120,12 @@ public class AeaParStageOneformController {
     @RequestMapping("/addMultiplyStageOneform.do")
     public ResultForm addMultiplyStageOneform(String parStageId, String oneformIds) throws Exception {
 
-        if (parStageId != null && !"".equals(parStageId) && oneformIds != null && !"".equals(oneformIds)) {
+        if (StringUtils.isNotBlank(parStageId) && StringUtils.isNotBlank(oneformIds)) {
             String[] oneformIdstr = oneformIds.split(",");
-            for (int i = 0; i < oneformIdstr.length; i++) {
+            for (int i=0; i <oneformIdstr.length; i++) {
                 String oneformId = oneformIdstr[i];
                 aeaParStageOneformService.addParStageOneform(parStageId, oneformId);
             }
-
             return new ContentResultForm<>(true, oneformIds);
         } else {
             return new ContentResultForm<>(false, "", "参数有误！");
@@ -244,4 +244,9 @@ public class AeaParStageOneformController {
         return new ResultForm(true);
     }
 
+    @RequestMapping("/getMaxSortNo.do")
+    public Double getMaxSortNo(String stageId){
+
+        return aeaParStageOneformService.getMaxSortNo(stageId);
+    }
 }

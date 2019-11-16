@@ -9,7 +9,6 @@ import com.augurit.agcloud.bsc.util.UuidUtil;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.ui.pager.PageHelper;
 import com.augurit.agcloud.framework.util.StringUtils;
-import com.augurit.aplanmis.common.domain.AeaCert;
 import com.augurit.aplanmis.common.domain.AeaHiCertinst;
 import com.augurit.aplanmis.common.domain.AeaHiItemMatinst;
 import com.augurit.aplanmis.common.domain.AeaItemBasic;
@@ -650,6 +649,7 @@ public class RestApplyMatService {
                         aeaHiItemMatinst.setCreater(SecurityContext.getCurrentUserId());
                         aeaHiItemMatinst.setCreateTime(new Date());
                         aeaHiItemMatinst.setRootOrgId(SecurityContext.getCurrentOrgId());
+                        aeaHiItemMatinst.setMatProp(aeaItemMat.getMatProp());
 
                         aeaHiItemMatinstMapper.insertAeaHiItemMatinst(aeaHiItemMatinst);
                         returnList.add(aeaHiItemMatinst);
@@ -757,8 +757,6 @@ public class RestApplyMatService {
         // matId与材料份数的对应关系
         Map<String, SaveMatinstVo.MatCountVo> matCountMap = saveMatinstVo.buildMatCountMap();
 
-        String projectInfoId = saveMatinstVo.getProjInfoId();
-        String unitInfoId = saveMatinstVo.getUnitInfoId();
         List<AeaHiItemMatinst> matinsts = new ArrayList<>();
         List<AeaHiCertinst> certinsts = new ArrayList<>();
         List<Mat2MatInstVo> mat2MatInstVos = new ArrayList<>();
@@ -778,7 +776,7 @@ public class RestApplyMatService {
                         int copyCnt = matCountVo.getCopyCnt();
 
                         if (paperCnt > 0) {
-                            AeaHiItemMatinst aeaHiItemMatinst = mat2Matinst(mat, unitInfoId, projectInfoId, currentOrgId);
+                            AeaHiItemMatinst aeaHiItemMatinst = mat2Matinst(mat, saveMatinstVo, currentOrgId);
                             aeaHiItemMatinst.setRealPaperCount((long) paperCnt);
                             matinsts.add(aeaHiItemMatinst);
                             // 返回关联关系
@@ -786,7 +784,7 @@ public class RestApplyMatService {
                         }
                         // 复印件不为0
                         if (copyCnt > 0) {
-                            AeaHiItemMatinst aeaHiItemMatinst = mat2Matinst(mat, unitInfoId, projectInfoId, currentOrgId);
+                            AeaHiItemMatinst aeaHiItemMatinst = mat2Matinst(mat, saveMatinstVo, currentOrgId);
                             aeaHiItemMatinst.setRealCopyCount((long) copyCnt);
                             matinsts.add(aeaHiItemMatinst);
                             matinstIds.add(aeaHiItemMatinst.getMatinstId());
@@ -813,36 +811,26 @@ public class RestApplyMatService {
         return mat2MatInstVos;
     }
 
-    private AeaHiItemMatinst mat2Matinst(AeaItemMat aeaItemMat, String unitInfoId, String projInfoId, String rootOrgId) {
+    private AeaHiItemMatinst mat2Matinst(AeaItemMat aeaItemMat, SaveMatinstVo saveMatinstVo, String rootOrgId) {
         AeaHiItemMatinst aeaHiItemMatinst = new AeaHiItemMatinst();
         aeaHiItemMatinst.setMatinstId(UuidUtil.generateUuid());
         aeaHiItemMatinst.setMatinstName(aeaItemMat.getMatName());
         aeaHiItemMatinst.setCreater(SecurityContext.getCurrentUserId());
         aeaHiItemMatinst.setCreateTime(new Date());
         aeaHiItemMatinst.setMatId(aeaItemMat.getMatId());
-        aeaHiItemMatinst.setUnitInfoId(unitInfoId);
-        aeaHiItemMatinst.setProjInfoId(projInfoId);
+        // 企业
+        if (StringUtils.isBlank(aeaItemMat.getMatHolder()) || "c".equals(aeaItemMat.getMatHolder())) {
+            aeaHiItemMatinst.setUnitInfoId(saveMatinstVo.getUnitInfoId());
+        }
+        // 个人
+        else if ("u".equals(aeaItemMat.getMatHolder())) {
+            aeaHiItemMatinst.setLinkmanInfoId(saveMatinstVo.getLinkmanInfoId());
+        }
+        aeaHiItemMatinst.setProjInfoId(saveMatinstVo.getProjInfoId());
         aeaHiItemMatinst.setMatinstCode(aeaItemMat.getMatCode());
         aeaHiItemMatinst.setMatProp(aeaItemMat.getMatProp());
         aeaHiItemMatinst.setRootOrgId(rootOrgId);
         return aeaHiItemMatinst;
-    }
-
-    private AeaHiCertinst cert2Certinst(AeaCert aeaCert, String authCode, String unitInfoId, String projInfoId, String rootOrgId) {
-        AeaHiCertinst aeaHiCertinst = new AeaHiCertinst();
-        aeaHiCertinst.setCertinstId(UuidUtil.generateUuid());
-        aeaHiCertinst.setCertId(aeaCert.getCertId());
-        aeaHiCertinst.setUnitInfoId(aeaCert.getUnitInfoId());
-        aeaHiCertinst.setProjInfoId(projInfoId);
-        aeaHiCertinst.setAttLinkId(unitInfoId);
-        aeaHiCertinst.setCreater(SecurityContext.getCurrentUserId());
-        aeaHiCertinst.setCreateTime(new Date());
-        aeaHiCertinst.setCertinstCode(aeaCert.getCertCode());
-        aeaHiCertinst.setCertinstName(aeaCert.getCertName());
-        aeaHiCertinst.setRootOrgId(rootOrgId);
-        aeaHiCertinst.setMemo(aeaCert.getCertMemo());
-        aeaHiCertinst.setAuthCode(authCode);
-        return aeaHiCertinst;
     }
 
     public List<AeaItemMat> getOfficeMatsByStageItemVerIds(String stageId, String itemVerIds) throws Exception {

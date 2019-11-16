@@ -1,6 +1,7 @@
 package com.augurit.aplanmis.common.service.instance;
 
 
+import com.augurit.aplanmis.common.domain.AeaHiCertinst;
 import com.augurit.aplanmis.common.domain.AeaHiItemMatinst;
 
 import javax.servlet.http.HttpServletRequest;
@@ -120,4 +121,16 @@ public interface AeaHiItemMatinstService {
     void batchSaveAeaHiItemMatinst(List<AeaHiItemMatinst> aeaHiItemMatinst) throws Exception;
 
     boolean matinstbeLong2MatId(String matinstId, String matId) throws Exception;
+
+    /**
+     * 关联电子证照库中的材料
+     *
+     * @param aeaHiCertinst 前端回传绑定的信息
+     * @param currentUserName
+     * @return 证照材料
+     */
+    AeaHiCertinst bindCertinst(AeaHiCertinst aeaHiCertinst, String currentUserName) throws Exception;
+
+    void unbindCertinst(String matinstId) throws Exception;
+
 }

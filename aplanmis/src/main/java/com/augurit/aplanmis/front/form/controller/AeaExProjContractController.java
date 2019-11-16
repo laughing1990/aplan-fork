@@ -6,6 +6,7 @@ import com.augurit.aplanmis.common.domain.AeaExProjContract;
 import com.augurit.aplanmis.common.domain.AeaProjInfo;
 import com.augurit.aplanmis.common.service.form.AeaExProjContractService;
 import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
+import com.augurit.aplanmis.front.form.service.AeaExProjCertBuildService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,9 @@ private static Logger logger = LoggerFactory.getLogger(AeaExProjContractControll
     private AeaExProjContractService aeaExProjContractService;
     @Autowired
     private AeaProjInfoService aeaProjInfoService;
+
+    @Autowired
+    private AeaExProjCertBuildService aeaExProjCertBuildService;
 
 
 
@@ -110,7 +114,7 @@ private static Logger logger = LoggerFactory.getLogger(AeaExProjContractControll
             aeaExProjContract.setContractId(UUID.randomUUID().toString());
             aeaExProjContractService.saveAeaExProjContract(aeaExProjContract);
         }
-
+        aeaExProjCertBuildService.SynchronizeDataByAeaExProjContractForm(aeaExProjContract);
         return  new ContentResultForm<AeaExProjContract>(true,aeaExProjContract);
     }
 

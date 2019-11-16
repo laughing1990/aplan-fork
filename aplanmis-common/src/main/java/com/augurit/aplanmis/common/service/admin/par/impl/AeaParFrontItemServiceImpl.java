@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * 阶段事项前置检测表-Service服务接口实现类
@@ -51,7 +52,7 @@ public class AeaParFrontItemServiceImpl implements AeaParFrontItemService {
 
     @Override
     public void updateAeaParFrontItem(AeaParFrontItem aeaParFrontItem) throws Exception {
-        checkSame(aeaParFrontItem);
+//        checkSame(aeaParFrontItem);
 
         aeaParFrontItem.setModifyTime(new Date());
         aeaParFrontItem.setModifier(SecurityContext.getCurrentUserId());
@@ -141,5 +142,37 @@ public class AeaParFrontItemServiceImpl implements AeaParFrontItemService {
         }
 
     }
+
+    @Override
+    public void batchSaveAeaParFrontItem(String stageId,String itemVerIds)throws Exception{
+        if(StringUtils.isBlank(stageId)  || StringUtils.isBlank(itemVerIds)){
+            throw new InvalidParameterException(stageId,itemVerIds);
+        }
+
+        String[] itemVerIdArr = itemVerIds.split(",");
+        if(itemVerIdArr!=null && itemVerIdArr.length>0){
+            AeaParFrontItem query = new AeaParFrontItem();
+            query.setStageId(stageId);
+            Long maxSortNo = getMaxSortNo(query);
+            for(String itemVerId:itemVerIdArr){
+                AeaParFrontItem aeaParFrontItem = new AeaParFrontItem();
+                aeaParFrontItem.setStageId(stageId);
+                aeaParFrontItem.setItemVerId(itemVerId);
+                List<AeaParFrontItem> list = aeaParFrontItemMapper.listAeaParFrontItem(aeaParFrontItem);
+                if (list.size() > 0) {
+                    continue;
+                }
+                aeaParFrontItem.setFrontItemId(UUID.randomUUID().toString());
+                aeaParFrontItem.setCreateTime(new Date());
+                aeaParFrontItem.setCreater(SecurityContext.getCurrentUserId());
+                aeaParFrontItem.setRootOrgId(SecurityContext.getCurrentOrgId());
+                aeaParFrontItem.setSortNo(maxSortNo);
+                aeaParFrontItem.setIsActive("1");
+                aeaParFrontItemMapper.insertAeaParFrontItem(aeaParFrontItem);
+                maxSortNo++;
+            }
+        }
+    }
+
 }
 

@@ -14,7 +14,7 @@
             </div>
             <form id="aedit_part_form_form" method="post">
                 <div class="modal-body" style="padding: 10px;">
-                    <div id="aedit_part_form_scroll" style="height: 425px;verflow-x: hidden;overflow-y: auto;">
+                    <div id="aedit_part_form_scroll" style="height: 400px;verflow-x: hidden;overflow-y: auto;">
 
                         <input type="hidden" name="stagePartformId" value=""/>
                         <input type="hidden" name="stageId" value=""/>

@@ -13,7 +13,7 @@ import java.util.Date;
 @Data
 public class LicenseTokenResDataDTO {
 
-    private String license_access_token;
+    private String license_access_token;//电子证照访问令牌
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date expiry_date;
+    private Date expiry_date;//令牌有效期
 }

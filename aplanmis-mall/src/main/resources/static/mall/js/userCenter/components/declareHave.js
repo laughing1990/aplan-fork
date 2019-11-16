@@ -56,7 +56,13 @@ var vm = new Vue({
     isShowElectronDialog: false,
     // 所有电子件表格数据
     electronFileList: [],
-
+    receiveList: [],//回执列表
+    receiveModalShow: false,//回执弹窗控制
+    curWidth: (document.documentElement.clientWidth || document.body.clientWidth),//当前屏幕宽度
+    curHeight: (document.documentElement.clientHeight || document.body.clientHeight),//当前屏幕高度
+    receiveItemActive: '', // 回执列表li active状态
+    receiveActive: '', // 回执列表 div active状态
+    pdfSrc: '', // 回执预览地址
   },
   mounted: function () {
     this.getHadApplyItemList()
@@ -308,6 +314,49 @@ var vm = new Vue({
       if(val==14) return "bg14";
       if(val==15) return "bg15";
       return "bg1";
+    },
+    //查询回执列表
+    showReceive: function (row) {debugger
+      var _that = this;
+      request('', {
+        url: ctx + '/rest/user/receive/getStageOrSeriesReceiveByApplyinstIds',
+        type: 'get',
+        data: {'applyinstIds': row.applyinstId}
+      }, function (res) {
+        if (res.success) {
+          //显示列表弹框
+          if(res.content.length>0){
+            _that.receiveList = res.content;
+            _that.receiveList.map(function(item){
+              Vue.set(item,'show',true);
+            });
+            _that.printReceive1(_that.receiveList[0].receiveList[0],0,0);
+            _that.receiveModalShow = true;
+          }else {
+            _that.$message({
+              message: '暂无回执',
+              type: 'warning'
+            });
+          }
+        }else {
+          _that.$message({
+            message: res.message?res.message:'获取回执列表失败',
+            type: 'error'
+          });
+        }
+      }, function (msg) {
+        _that.$message({
+          message: '获取回执列表失败',
+          type: 'error'
+        });
+      });
+    },
+    //打印回执new
+    printReceive1: function (row,index,ind) {
+      this.receiveItemActive = index;
+      this.receiveActive = ind;
+      var fileUrl = ctx + '/rest/user/receive/toPDF/'+row.receiveId;
+      this.pdfSrc=ctx + 'preview/pdfjs/web/viewer.html?file='+encodeURIComponent(fileUrl)
     }
   },
   filters: {
@@ -345,6 +394,38 @@ var vm = new Vue({
       if(val==14) return "撤回";
       if(val==15) return "撤销";
       return "-";
+    },
+    changeReceiveType: function (value) {
+      var defaultValue='其他回执';
+      //{{(itemBtn.receiptType==2)?'收件回执':(itemBtn.receiptType==1)?'物料回执':(itemBtn.receiptType==3)?'不受理回执':'其他回执'}}
+      if(value){
+        switch(value) {
+          case '1':
+            defaultValue='物料回执';
+            break;
+          case '2':
+            defaultValue='受理回执';
+            break;
+          case '3':
+            defaultValue='不受理回执';
+            break;
+          case '4':
+            defaultValue='退件回执';
+            break;
+          case '5':
+            defaultValue='送达回证';
+            break;
+          case '6':
+            defaultValue='材料补正回执';
+            break;
+          case '7':
+            defaultValue='行政许可申请书';
+            break;
+          default:
+            defaultValue='其他回执';
+        }
+      }
+      return defaultValue;
     },
     computed:{
 

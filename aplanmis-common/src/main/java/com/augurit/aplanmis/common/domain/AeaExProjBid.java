@@ -40,22 +40,28 @@ public class AeaExProjBid implements Serializable{
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private java.util.Date winBidTime; // (中标日期)
     private String winBidMoney; // (实际中标金额，单位：万元)
-    @DateTimeFormat(pattern="yyyy-MM-dd")
-    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
-    private java.util.Date bidConfirmTime; // (招投标确认时间)
-    private String govOrgCode; // (招投标确认行政单位机构代码)
-    private String govOrgName; // (招投标确认行政单位名称)
-    private String govAreaCode; // (招投标确认行政单位区域码)
     private String bidMemo; // (备注)
     private String creater; // (创建人)
     @DateTimeFormat(pattern="yyyy-MM-dd")
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private java.util.Date createTime; // (创建时间)
     private String modifier; // (修改人)
+
+    public String getTenderNum() {
+        return tenderNum;
+    }
+
+    public void setTenderNum(String tenderNum) {
+        this.tenderNum = tenderNum;
+    }
+
     @DateTimeFormat(pattern="yyyy-MM-dd")
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private java.util.Date modifyTime; // (修改时间)
     private String rootOrgId; // (所属根组织ID)
+
+    private String  tenderNum;  //''省级中标通知书编号(广东三库一平台返回)',
+
 // ----------------------------------------------------- Constructors
 // ----------------------------------------------------- Methods
     public String getBidId(){
@@ -148,31 +154,6 @@ public class AeaExProjBid implements Serializable{
     }
     public void setWinBidMoney( String winBidMoney ) {
         this.winBidMoney = winBidMoney == null ? null : winBidMoney.trim();
-    }
-    public java.util.Date getBidConfirmTime() {
-        return bidConfirmTime;
-    }
-    public void setBidConfirmTime( java.util.Date bidConfirmTime ){
-        this.bidConfirmTime = bidConfirmTime;
-    }
-
-    public String getGovOrgCode(){
-        return govOrgCode;
-    }
-    public void setGovOrgCode( String govOrgCode ) {
-        this.govOrgCode = govOrgCode == null ? null : govOrgCode.trim();
-    }
-    public String getGovOrgName(){
-        return govOrgName;
-    }
-    public void setGovOrgName( String govOrgName ) {
-        this.govOrgName = govOrgName == null ? null : govOrgName.trim();
-    }
-    public String getGovAreaCode(){
-        return govAreaCode;
-    }
-    public void setGovAreaCode( String govAreaCode ) {
-        this.govAreaCode = govAreaCode == null ? null : govAreaCode.trim();
     }
     public String getBidMemo(){
         return bidMemo;

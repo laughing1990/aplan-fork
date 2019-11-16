@@ -41,6 +41,8 @@ public class NtkoController {
             String value = request.getParameter(name);
             modelAndView.addObject(name, value);
         }
+        String ctx = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
+        modelAndView.addObject("ctx",ctx);
         return modelAndView;
     }
 

@@ -66,7 +66,9 @@
                         </div>
                     </div>
                     <div class="m-portlet__head-tools">
-                        <button type="button" class="btn btn-info" onclick="importOneform();" style="margin-bottom:5px;margin-right:60px;">导入总表</button>
+                        <button type="button" class="btn btn-info" onclick="importOneform();" style="margin-right: 50px;">导入总表</button>
+                        <%--<button type="button" class="btn btn-secondary" onclick="batchDelOneform();">批量删除</button>--%>
+                        <%--<button type="button" class="btn btn-secondary" onclick="initItemOneformTable();" style="margin-right: 50px;">刷新</button>--%>
                     </div>
                 </div>
                 <div class="m-portlet__body" style="padding: 0px 0px 5px 0px;">

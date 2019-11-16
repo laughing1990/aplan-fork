@@ -13,5 +13,5 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class LicenseAuthResDTO extends PubResponseDTO<List<LicenseDTO>>{
-    private String[] auth_codes;
+    private String[] auth_codes;//用证码列表
 }

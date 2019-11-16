@@ -13,52 +13,20 @@ import com.augurit.agcloud.opus.common.mapper.OpuOmOrgMapper;
 import com.augurit.aplanmis.common.constants.ApplyState;
 import com.augurit.aplanmis.common.constants.ApplyType;
 import com.augurit.aplanmis.common.constants.ItemStatus;
-import com.augurit.aplanmis.common.domain.AeaApplyinstProj;
-import com.augurit.aplanmis.common.domain.AeaHiApplyinst;
-import com.augurit.aplanmis.common.domain.AeaHiItemInoutinst;
-import com.augurit.aplanmis.common.domain.AeaHiItemMatinst;
-import com.augurit.aplanmis.common.domain.AeaHiIteminst;
-import com.augurit.aplanmis.common.domain.AeaHiParStageinst;
-import com.augurit.aplanmis.common.domain.AeaHiSeriesinst;
-import com.augurit.aplanmis.common.domain.AeaItemBasic;
-import com.augurit.aplanmis.common.domain.AeaItemMat;
-import com.augurit.aplanmis.common.domain.AeaLogApplyStateHist;
-import com.augurit.aplanmis.common.domain.AeaLogItemStateHist;
-import com.augurit.aplanmis.common.domain.AeaParStage;
-import com.augurit.aplanmis.common.domain.AeaParTheme;
-import com.augurit.aplanmis.common.domain.AeaParThemeVer;
-import com.augurit.aplanmis.common.domain.AeaProjInfo;
+import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.event.AplanmisEventPublisher;
-import com.augurit.aplanmis.common.mapper.AeaApplyinstProjMapper;
-import com.augurit.aplanmis.common.mapper.AeaHiItemInoutinstMapper;
-import com.augurit.aplanmis.common.mapper.AeaParStageMapper;
-import com.augurit.aplanmis.common.mapper.AeaParThemeMapper;
-import com.augurit.aplanmis.common.mapper.AeaParThemeVerMapper;
-import com.augurit.aplanmis.common.mapper.AeaProjInfoMapper;
-import com.augurit.aplanmis.common.service.instance.AeaHiApplyinstService;
-import com.augurit.aplanmis.common.service.instance.AeaHiItemInoutinstService;
-import com.augurit.aplanmis.common.service.instance.AeaHiItemMatinstService;
-import com.augurit.aplanmis.common.service.instance.AeaHiItemStateinstService;
-import com.augurit.aplanmis.common.service.instance.AeaHiIteminstService;
-import com.augurit.aplanmis.common.service.instance.AeaHiParStageinstService;
-import com.augurit.aplanmis.common.service.instance.AeaHiParStateinstService;
-import com.augurit.aplanmis.common.service.instance.AeaHiSeriesinstService;
-import com.augurit.aplanmis.common.service.instance.AeaLogApplyStateHistService;
-import com.augurit.aplanmis.common.service.instance.RestTimeruleinstService;
+import com.augurit.aplanmis.common.mapper.*;
+import com.augurit.aplanmis.common.service.instance.*;
 import com.augurit.aplanmis.common.service.item.AeaItemBasicService;
 import com.augurit.aplanmis.common.service.item.AeaLogItemStateHistService;
 import com.augurit.aplanmis.common.service.linkman.AeaLinkmanInfoService;
 import com.augurit.aplanmis.common.service.mat.AeaItemMatService;
 import com.augurit.aplanmis.common.service.process.AeaBpmProcessService;
+import com.augurit.aplanmis.common.service.receive.ReceiveService;
 import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
 import com.augurit.aplanmis.common.service.window.AeaServiceWindowService;
 import com.augurit.aplanmis.common.utils.BusinessUtil;
-import com.augurit.aplanmis.front.apply.vo.ApplyInstantiateResult;
-import com.augurit.aplanmis.front.apply.vo.ApplyinstIdVo;
-import com.augurit.aplanmis.front.apply.vo.BuildProjUnitVo;
-import com.augurit.aplanmis.front.apply.vo.PropulsionItemStateVo;
-import com.augurit.aplanmis.front.apply.vo.StageApplyDataVo;
-import com.augurit.aplanmis.front.receive.service.ReceiveService;
+import com.augurit.aplanmis.front.apply.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
 import org.flowable.engine.TaskService;
@@ -68,12 +36,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.InvalidParameterException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * 并联申报service
@@ -453,7 +416,7 @@ public class AeaParStageService {
         }*/
 
         //新增时限规则实例
-        restTimeruleinstService.createTimeruleinstByProcinst(appId, bpmProcessInstance.getProcessInstance().getId(), bpmProcessInstance.getProcessInstance().getProcessDefinitionKey());
+//        restTimeruleinstService.createTimeruleinstByProcinst(appId, bpmProcessInstance.getProcessInstance().getId(), bpmProcessInstance.getProcessInstance().getProcessDefinitionKey());
 
         //流程发起后，更新初始事项历史的taskId
         List<Task> tasks = taskService.createTaskQuery().processInstanceId(bpmProcessInstance.getProcessInstance().getId()).list();//查询出流程第一个节点
@@ -553,7 +516,7 @@ public class AeaParStageService {
                 }*/
 
                 //新增时限规则实例
-                restTimeruleinstService.createTimeruleinstByProcinst(aeaItemBasic.getAppId(), processInstance.getProcessInstance().getId(), processInstance.getProcessInstance().getProcessDefinitionKey());
+//                restTimeruleinstService.createTimeruleinstByProcinst(aeaItemBasic.getAppId(), processInstance.getProcessInstance().getId(), processInstance.getProcessInstance().getProcessDefinitionKey());
 
                 //查询出流程第一个节点
                 List<Task> seriesTasks = taskService.createTaskQuery().processInstanceId(processInstance.getProcessInstance().getId()).list();

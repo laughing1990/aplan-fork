@@ -2,6 +2,7 @@ package com.augurit.aplanmis.front.form.controller;
 
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
+import com.augurit.aplanmis.common.constants.GDUnitType;
 import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
 import com.augurit.aplanmis.front.form.service.AeaExProjBidService;
@@ -40,10 +41,6 @@ public class AeaExProjBidController {
 
     private static Logger logger = LoggerFactory.getLogger(AeaExProjBidController.class);
 
-    public static final String WINBID_UNIT = "17";//中标单位
-    public static final String AGENT_UNIT = "2";//招标代理机构
-    public static final String COST_UNIT = "14";//造价咨询
-
     public static final String DIRECT_CONSIGN = "3";//直接委托
 
     @Autowired
@@ -76,9 +73,9 @@ public class AeaExProjBidController {
                     if (aeaExProjBid != null) {
                         aeaExProjBidVo = AeaExProjBidVo.from(aeaExProjBid);
                     }
-                    List<AeaUnitInfo> winBidUnitList = aeaExProjBidService.findUnitProjByProjInfoIdAndType(projId, WINBID_UNIT);//WINBID_UNIT
-                    List<AeaUnitInfo> agencyUnitList = aeaExProjBidService.findUnitProjByProjInfoIdAndType(projId, AGENT_UNIT);//AGENT_UNIT
-                    List<AeaUnitInfo> costUnitList = aeaExProjBidService.findUnitProjByProjInfoIdAndType(projId, COST_UNIT);//COST_UNIT
+                    List<AeaUnitInfo> winBidUnitList = aeaExProjBidService.findUnitProjByProjInfoIdAndType(projId, GDUnitType.CONTRACTING_UNIT.getValue());//中标（承包）单位
+                    List<AeaUnitInfo> agencyUnitList = aeaExProjBidService.findUnitProjByProjInfoIdAndType(projId, GDUnitType.BIDDING_AGENCY.getValue());//招商代理机构
+                    List<AeaUnitInfo> costUnitList = aeaExProjBidService.findUnitProjByProjInfoIdAndType(projId, GDUnitType.COST_CONSULTING.getValue());//造价咨询
                     aeaExProjBidVo.setWinBidUnits(winBidUnitList);
                     aeaExProjBidVo.setAgencyUnits(agencyUnitList);
                     aeaExProjBidVo.setCostUnits(costUnitList);
@@ -121,8 +118,8 @@ public class AeaExProjBidController {
                     //如果是直接委托，需要删除掉 招标代理、造价咨询 类型的关联表信息(暂时不保存)
                     if (DIRECT_CONSIGN.equals(aeaExProjBidVo.getBidMode())) {
                         List<String> unitTypes = new ArrayList<String>();
-                        unitTypes.add(AGENT_UNIT);
-                        unitTypes.add(COST_UNIT);
+                        unitTypes.add(GDUnitType.BIDDING_AGENCY.getValue());
+                        unitTypes.add(GDUnitType.COST_CONSULTING.getValue());
                         aeaExProjBidService.delUnitProjInfo(aeaExProjBidVo.getProjInfoId(), unitTypes,"0");
                     }
                     //招投标信息
@@ -138,15 +135,15 @@ public class AeaExProjBidController {
                     List<AeaUnitProj> aeaUnitProjNewList = new ArrayList<AeaUnitProj>();
                     //中标单位信息
                     List<AeaUnitInfo> winBidUnits = aeaExProjBidVo.getWinBidUnits();
-                    aeaExProjBidService.saveOrUpdateUnitInfo(aeaExProjBidVo, winBidUnits, WINBID_UNIT, aeaUnitProjNewList);
+                    aeaExProjBidService.saveOrUpdateUnitInfo(aeaExProjBidVo, winBidUnits, GDUnitType.CONTRACTING_UNIT.getValue(), aeaUnitProjNewList);
 
                     //招商代理机构信息
                     List<AeaUnitInfo> agencyUnits = aeaExProjBidVo.getAgencyUnits();
-                    aeaExProjBidService.saveOrUpdateUnitInfo(aeaExProjBidVo, agencyUnits, AGENT_UNIT, aeaUnitProjNewList);
+                    aeaExProjBidService.saveOrUpdateUnitInfo(aeaExProjBidVo, agencyUnits, GDUnitType.BIDDING_AGENCY.getValue(), aeaUnitProjNewList);
 
                     //造价咨询单位信息
                     List<AeaUnitInfo> costUnits = aeaExProjBidVo.getCostUnits();
-                    aeaExProjBidService.saveOrUpdateUnitInfo(aeaExProjBidVo, costUnits, COST_UNIT, aeaUnitProjNewList);
+                    aeaExProjBidService.saveOrUpdateUnitInfo(aeaExProjBidVo, costUnits, GDUnitType.COST_CONSULTING.getValue(), aeaUnitProjNewList);
 
                     //新增保存项目与单位关联表信息
                     if (!aeaUnitProjNewList.isEmpty()) {

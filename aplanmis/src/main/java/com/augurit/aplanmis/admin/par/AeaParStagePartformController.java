@@ -1,5 +1,6 @@
 package com.augurit.aplanmis.admin.par;
 
+import com.augurit.agcloud.bpm.common.domain.ActStoForm;
 import com.augurit.agcloud.framework.constant.Status;
 import com.augurit.agcloud.framework.exception.InvalidParameterException;
 import com.augurit.agcloud.framework.ui.pager.EasyuiPageInfo;
@@ -207,17 +208,27 @@ public class AeaParStagePartformController {
         return new ResultForm(true);
     }
 
-    @RequestMapping("createAndUpdateDevForm")
+    @RequestMapping("createAndUpdateDevForm.do")
     public ResultForm createAndUpdateDevForm(String formCode, String formName, String formLoadUrl, String formId, String stagePartformId) {
         try {
-
-            if (StringUtils.isBlank(formCode) || StringUtils.isBlank(formName) || StringUtils.isBlank(formLoadUrl) || StringUtils.isBlank(stagePartformId))
+            if (StringUtils.isBlank(formCode) || StringUtils.isBlank(formName) || StringUtils.isBlank(formLoadUrl) || StringUtils.isBlank(stagePartformId)) {
                 return new ResultForm(false, "缺少参数！");
+            }
             aeaParStagePartformService.createAndUpdateDevForm(formCode, formName, formLoadUrl, formId, stagePartformId);
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResultForm(false, "新增开发表单失败");
+            return new ResultForm(false, "新增/编辑开发表单失败");
         }
-        return new ResultForm(false, "新增开发表单成功");
+        return new ResultForm(true, "新增/编辑开发表单成功");
     }
+
+    @RequestMapping("/getStageDevform.do")
+    public ActStoForm getStageDevform(String formId) throws Exception {
+        if (StringUtils.isNotBlank(formId)) {
+            return aeaParStagePartformService.getStageDevformByFormId(formId);
+        } else {
+            return new ActStoForm();
+        }
+    }
+
 }

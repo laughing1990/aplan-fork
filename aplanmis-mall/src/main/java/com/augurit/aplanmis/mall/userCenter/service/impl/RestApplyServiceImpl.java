@@ -18,13 +18,13 @@ import com.augurit.aplanmis.common.service.item.AeaItemBasicService;
 import com.augurit.aplanmis.common.service.linkman.AeaLinkmanInfoService;
 import com.augurit.aplanmis.common.service.process.AeaBpmProcessService;
 import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
+import com.augurit.aplanmis.common.service.receive.ReceiveService;
 import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
 import com.augurit.aplanmis.common.utils.CommonTools;
 import com.augurit.aplanmis.common.utils.SessionUtil;
 import com.augurit.aplanmis.mall.userCenter.vo.AeaUnitInfoVo;
 import com.augurit.aplanmis.common.vo.LinkmanTypeVo;
 import com.augurit.aplanmis.common.vo.LoginInfoVo;
-import com.augurit.aplanmis.mall.receive.service.ReceiveService;
 import com.augurit.aplanmis.mall.userCenter.constant.LoginUserRoleEnum;
 import com.augurit.aplanmis.mall.userCenter.service.AeaParStageService;
 import com.augurit.aplanmis.mall.userCenter.service.AeaSeriesService;
@@ -154,10 +154,10 @@ public class RestApplyServiceImpl implements RestApplyService {
         ParallelApplyResultVo vo = aeaParStageService.stageApply(stageApplyDataVo);
         //updateAeaSmsInfo(stageApplyDataPageVo.getSmsInfoId(), applyinstIds);
         // 保存回执
-        //String[] receiptTypes = new String[]{"1", "2"};
-        //List<String> applyInstIds = vo.getApplyinstIds();
-        //if (applyInstIds==null||applyInstIds.size()==0) return vo;
-        //receiveService.saveReceive((String[]) applyInstIds.toArray(), receiptTypes, SecurityContext.getCurrentUserName(), "");
+        String[] receiptTypes = new String[]{"1", "2"};
+        List<String> applyInstIds = vo.getApplyinstIds();
+        if (applyInstIds==null||applyInstIds.size()==0) return vo;
+        receiveService.saveReceive((String[]) applyInstIds.toArray(), receiptTypes, SecurityContext.getCurrentUserName(), "");
         return vo;
     }
 
