@@ -263,12 +263,11 @@ public class AeaHiItemMatinstServiceImpl implements AeaHiItemMatinstService {
     }
 
     @Override
-    public AeaHiItemMatinst bindCertinst(AeaHiCertinst aeaHiCertinst) throws Exception {
+    public AeaHiItemMatinst bindCertinst(AeaHiCertinst aeaHiCertinst, String currentUserName) throws Exception {
         Assert.hasText(aeaHiCertinst.getMatId(), "matId is null");
         Assert.hasText(aeaHiCertinst.getAuthCode(), "authCode is null");
 
         String currentOrgId = SecurityContext.getCurrentOrgId();
-        String currentUserName = SecurityContext.getCurrentUserName();
 
         AeaItemMat aeaItemMat = aeaItemMatMapper.getAeaItemMatById(aeaHiCertinst.getMatId());
         Assert.state("c".equals(aeaItemMat.getMatProp()), "matProp should 'c'");
