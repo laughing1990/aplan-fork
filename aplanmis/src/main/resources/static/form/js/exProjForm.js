@@ -50,6 +50,9 @@ var vm = new Vue({
                 approvalTime: [
                     { required: true, message: '请选择立项批准时间', trigger: 'blur' }
                 ],
+                isEpc: [
+                    { required: true, message: '请选择是否工程总承包模式', trigger: 'change' }
+                ],
                 govFinance: [
                     { required: true, validator: validateMoney, trigger: 'blur' }
                 ],
