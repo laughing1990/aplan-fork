@@ -31,4 +31,6 @@ public interface AeaItemFrontItemAdminService {
 
      void batchSaveAeaItemFrontItem(String itemVerId,String frontCkItemVerIds)throws Exception;
 
+
+     void changIsActive(String id, String rootOrgId);
 }

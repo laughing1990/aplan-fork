@@ -16,7 +16,6 @@ public interface AeaItemFrontProjAdminService {
      PageInfo<AeaItemFrontProj> listAeaItemFrontProj(AeaItemFrontProj aeaItemFrontProj, Page page) ;
      AeaItemFrontProj getAeaItemFrontProjById(String id) ;
      List<AeaItemFrontProj> listAeaItemFrontProj(AeaItemFrontProj aeaItemFrontProj) ;
-
      Long getMaxSortNo(AeaItemFrontProj aeaItemFrontProj);
-
+     void changIsActive(String id, String rootOrgId);
 }

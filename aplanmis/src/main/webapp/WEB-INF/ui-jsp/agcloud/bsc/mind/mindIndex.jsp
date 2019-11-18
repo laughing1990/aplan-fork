@@ -120,6 +120,7 @@
 </div>
 
 <script type="text/javascript">
+
     $(document).ready(function(){
 
         if(handWay=='0'){
@@ -135,6 +136,7 @@
         }
 
         $('#mindFilter .checkbox input').each(function(){
+
             $(this).on('click',function(){
                 $('#mindFilter .checkbox input').each(function(){
                     var that = $(this);

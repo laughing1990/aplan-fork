@@ -229,10 +229,12 @@
 
     <select id="listAeaItemFrontItem" resultType="AeaItemFrontItem">
         select
-        <include refid="aliasAllColumns">
-            <property name="alias" value="aifi"></property>
-        </include>
-        ,aib.ITEM_NAME frontCkItemName
+            <include refid="aliasAllColumns">
+                <property name="alias" value="aifi"></property>
+            </include>,
+            aib.ITEM_NAME frontCkItemName,
+            aib.ITEM_CODE frontCkItemCode,
+            aib.IS_CATALOG frontCkIsCatalog
         from AEA_ITEM_FRONT_ITEM aifi
         left join aea_item_basic aib on aib.ITEM_VER_ID = aifi.FRONT_ITEM_VER_ID
         <where>
@@ -287,13 +289,27 @@
 
     <select id="getAeaItemFrontItemByFrontItemId" resultType="AeaItemFrontItem">
         select
-        <include refid="aliasAllColumns">
-            <property name="alias" value="aifi"></property>
-        </include>
-        ,aib.ITEM_NAME frontCkItemName
+            <include refid="aliasAllColumns">
+                <property name="alias" value="aifi"></property>
+            </include>,
+            aib.ITEM_NAME frontCkItemName,
+            aib.ITEM_CODE frontCkItemCode,
+            aib.IS_CATALOG frontCkIsCatalog
         from AEA_ITEM_FRONT_ITEM aifi
         left join aea_item_basic aib on aib.ITEM_VER_ID = aifi.FRONT_ITEM_VER_ID
         where aifi.FRONT_ITEM_ID = #{frontItemId}
     </select>
+    
+    <update id="changIsActive">
+        update AEA_ITEM_FRONT_ITEM
+        set IS_ACTIVE = case IS_ACTIVE
+        when '1' then '0'
+        when '0' then '1'
+        end
+        <where>
+            and FRONT_ITEM_ID = #{id}
+            and ROOT_ORG_ID = #{rootOrgId}
+        </where>
+    </update>
     
 </mapper>

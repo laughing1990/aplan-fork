@@ -30,106 +30,6 @@
             display: block;
             width: 100%;
         }
-
-        .selectedItemSortDiv {
-            color: #464637;
-            font-size: 14px;
-            font-family: 'Roboto', sans-serif;
-            font-weight: 300;
-        }
-
-        /**标题样式**/
-        .selectedItemSortDiv .block_list-title {
-            padding: 10px;
-            text-align: center;
-            background: #abcdf1;
-        }
-
-        .selectedItemSortDiv ul {
-            margin: 0;
-            padding: 0;
-            list-style: none;
-            display: block;
-        }
-
-        .selectedItemSortDiv li {
-            background-color: #fff;
-            padding: 6px 0px;
-            display: list-item;
-            text-align: -webkit-match-parent;
-
-            /**边框样式**/
-            border: 1px solid transparent;
-            border-bottom: 1px solid #ebebeb;
-        }
-
-        /**
-            * 移动到li样式
-        */
-        .block_ul_td li:hover {
-            background: #e7e8eb;
-            cursor: move;
-            cursor: -webkit-grabbing;
-        }
-
-        .selectedItemSortDiv .drag-handle_th {
-            text-align: center;
-            display: inline-block;
-            width: 8%;
-            font-weight: 600;
-        }
-
-        /**拖拽手把**/
-        .selectedItemSortDiv .drag-handle_td {
-            text-align: center;
-            font: bold 16px Sans-Serif;
-            color: #5F9EDF;
-            display: inline-block;
-            width: 8%;
-        }
-
-        .selectedItemSortDiv .ostage_name_td{
-            display: inline-block;
-            width: 45%;
-        }
-
-        #selectItemTree::-webkit-scrollbar{
-            width:4px;
-            height:4px;
-        }
-        #selectItemTree::-webkit-scrollbar-track{
-            background: #fff;
-            border-radius: 2px;
-        }
-        #selectItemTree::-webkit-scrollbar-thumb{
-            background: #e2e5ec;
-            border-radius:2px;
-        }
-        #selectItemTree::-webkit-scrollbar-thumb:hover{
-            background: #aaa;
-        }
-        #selectItemTree::-webkit-scrollbar-corner{
-            background: #fff;
-        }
-
-        #selectedItemSortDiv::-webkit-scrollbar{
-            width:4px;
-            height:4px;
-        }
-        #selectedItemSortDiv::-webkit-scrollbar-track{
-            background: #fff;
-            border-radius: 2px;
-        }
-        #selectedItemSortDiv::-webkit-scrollbar-thumb{
-            background: #e2e5ec;
-            border-radius:2px;
-        }
-        #selectedItemSortDiv::-webkit-scrollbar-thumb:hover{
-            background: #aaa;
-        }
-        #selectedItemSortDiv::-webkit-scrollbar-corner{
-            background: #fff;
-        }
     </style>
     <script type="text/javascript">
         var currentBusiType = '${currentBusiType}';
@@ -216,7 +116,7 @@
                         <span class="m-portlet__head-icon m--hide">
                             <i class="la la-gear"></i>
                         </span>
-                        <h2 class="m-portlet__head-text">
+                        <h2 class="m-portlet__head-text" >
                             <span style="font-weight: bold;">事项信息前置检测</span>
                         </h2>
                     </div>
@@ -232,6 +132,9 @@
                                     onclick="batchImportItemFrontItem();">批量导入</button>
                             <button type="button" class="btn btn-secondary"
                                     onclick="batchDelItemFrontItem();">删除</button>
+                            <%--<button type="button" class="btn btn-info" onclick="addItemFrontItem();">新增事项</button>--%>
+                            <button type="button" class="btn btn-info" onclick="importFrontItem();">导入事项</button>
+                            <button type="button" class="btn btn-secondary" onclick="batchDelItemFrontItem();">删除</button>
                         </div>
                         <div class="col-md-5" style="padding: 0px;">
                             <div class="row" style="margin: 0px;">
@@ -266,7 +169,6 @@
         </div>
     </div>
 
-
     <div class="col-xl-12" style=" margin-top: 0px;${"1".equals(isCheckPartform)?'':'display:none;'}" >
         <div class="m-portlet" style="margin-bottom: 5px;border: 0px solid #e8e8e8;">
             <div class="m-portlet__head" style="border-bottom: 0px solid #e8e8e8">
@@ -275,7 +177,7 @@
                         <span class="m-portlet__head-icon m--hide">
                             <i class="la la-gear"></i>
                         </span>
-                        <h2 class="m-portlet__head-text">
+                        <h2 class="m-portlet__head-text" >
                             <span style="font-weight: bold;">事项扩展表单前置检测</span>
                         </h2>
                     </div>
@@ -357,10 +259,6 @@
     </div>
 </div>
 
-<!--bootstrap-treegrid-->
-<script src="${pageContext.request.contextPath}/ui-static/agcloud/framework/js-libs/bootstrap-table/bootstrap-table-treegrid.js" type="text/javascript"></script>
-<script src="${pageContext.request.contextPath}/ui-static/agcloud/framework/js-libs/jquery1/jquery.treegrid.min.js" type="text/javascript"></script>
-<link href="${pageContext.request.contextPath}/ui-static/agcloud/framework/js-libs/jquery1/jquery.treegrid.min.css" rel="stylesheet" type="text/css"/>
 <link href="${pageContext.request.contextPath}/ui-static/agcloud/framework/ui-scheme/common/css/bootstrap/bootstrap-table.min.css" rel="stylesheet" type="text/css">
 </body>
 </html>

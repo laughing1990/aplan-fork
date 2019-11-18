@@ -1046,7 +1046,7 @@ public class AeaItemAdminServiceImpl implements AeaItemAdminService {
                 List<MetaDbTable> tableList = metaDbTableMapper.listMetaDbTableByConnId(metaDbConn.getConnId());
                 if (tableList != null && tableList.size() > 0) {
                     for (MetaDbTable table : tableList) {
-                        if (StringUtils.isNotBlank(table.getTableName()) && table.getTableName().toUpperCase().startsWith("AEA_")) {
+                        if (StringUtils.isNotBlank(table.getTableName()) && table.getTableName().toUpperCase().startsWith("AEA_PROJ_INFO")) {
                             // 添加表节点
                             ZtreeNode tableNode = new ZtreeNode();
                             tableNode.setId(table.getTableId());
