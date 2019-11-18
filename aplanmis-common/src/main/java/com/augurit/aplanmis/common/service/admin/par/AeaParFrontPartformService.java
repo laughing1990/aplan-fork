@@ -42,4 +42,6 @@ public interface AeaParFrontPartformService {
 
     void batchSaveAeaParFrontPartform(String stageId,String stagePartformIds)throws Exception;
 
+    List<AeaParFrontPartformVo> listAeaParFrontPartformVoByNoPage(AeaParFrontPartform aeaParFrontPartform) throws Exception;
+
 }

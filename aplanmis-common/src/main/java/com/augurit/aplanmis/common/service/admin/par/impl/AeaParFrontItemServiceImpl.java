@@ -174,5 +174,12 @@ public class AeaParFrontItemServiceImpl implements AeaParFrontItemService {
         }
     }
 
+    @Override
+    public List<AeaParFrontItemVo> listAeaParFrontItemVoByNoPage(AeaParFrontItem aeaParFrontItem) throws Exception{
+        List<AeaParFrontItemVo> list = aeaParFrontItemMapper.listAeaParFrontItemVo(aeaParFrontItem);
+        return list;
+    }
+
+
 }
 

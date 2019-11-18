@@ -179,5 +179,13 @@ public class AeaParFrontItemformServiceImpl implements AeaParFrontItemformServic
         }
     }
 
+    @Override
+    public List<AeaParFrontItemformVo> listAeaParFrontItemformVoByNoPage(AeaParFrontItemform aeaParFrontItemform) throws Exception{
+
+        List<AeaParFrontItemformVo> list = aeaParFrontItemformMapper.listAeaParFrontItemformVo(aeaParFrontItemform);
+        return list;
+    }
+
+
 }
 

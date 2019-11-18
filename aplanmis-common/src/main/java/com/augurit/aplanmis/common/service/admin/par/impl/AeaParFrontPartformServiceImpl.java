@@ -180,5 +180,12 @@ public class AeaParFrontPartformServiceImpl implements AeaParFrontPartformServic
         }
     }
 
+    @Override
+    public List<AeaParFrontPartformVo> listAeaParFrontPartformVoByNoPage(AeaParFrontPartform aeaParFrontPartform) throws Exception{
+        List<AeaParFrontPartformVo> list = aeaParFrontPartformMapper.listAeaParFrontPartformVo(aeaParFrontPartform);
+        return list;
+    }
+
+
 }
 

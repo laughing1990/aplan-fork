@@ -14,6 +14,7 @@
     <%@ include file="/ui-static/agcloud/framework/jsp/lib-sortable1.jsp" %>
     <%@ include file="/ui-static/agcloud/framework/jsp/lib-agtree3.jsp"%>
     <%@ include file="/ui-static/agcloud/framework/jsp/lib-bootstrap-table.jsp"%>
+    <link href="${pageContext.request.contextPath}/ui-static/agcloud/bsc/yunpan/css/orgTheme.css?<%=isDebugMode%>" type="text/css" rel="stylesheet"/>
     <script src="${pageContext.request.contextPath}/ui-static/kitymind/js/kitymind_constant.js" type="text/javascript"></script>
     <script src="${pageContext.request.contextPath}/ui-static/dg_aplanmis/framework/js/jquery.nicescroll.js" type="text/javascript"></script>
     <script src="${pageContext.request.contextPath}/ui-static/aplanmis/util/defaultBootstrap.js" type="text/javascript"></script>
@@ -173,6 +174,8 @@
                         <div class="col-md-7"style="text-align: left;">
                             <button type="button" class="btn btn-info"
                                     onclick="addParFrontProj();">新增</button>
+                            <button type="button" class="btn btn-info"
+                                    onclick="sortParFrontProj();">排序</button>
                             <button type="button" class="btn btn-secondary"
                                     onclick="batchDelParFrontProj();">删除</button>
                         </div>
@@ -231,6 +234,8 @@
                                     onclick="addParFrontItem();">新增</button>
                             <button type="button" class="btn btn-info"
                                     onclick="batchImportParFrontItem();">批量导入</button>
+                            <button type="button" class="btn btn-info"
+                                    onclick="sortParFrontItem();">排序</button>
                             <button type="button" class="btn btn-secondary"
                                     onclick="batchDelParFrontItem();">删除</button>
                         </div>
@@ -289,6 +294,8 @@
                                     onclick="addParFrontItemform();">新增</button>
                             <button type="button" class="btn btn-info"
                                     onclick="batchImprotParFrontItemform();">批量导入</button>
+                            <button type="button" class="btn btn-info"
+                                    onclick="sortParFrontItemform();">排序</button>
                             <button type="button" class="btn btn-secondary"
                                     onclick="batchDelParFrontItemform();">删除</button>
                         </div>
@@ -347,6 +354,8 @@
                                     onclick="addParFrontStage();">新增</button>
                             <button type="button" class="btn btn-info"
                                     onclick="batchImprotParFrontStage();">批量导入</button>
+                            <button type="button" class="btn btn-info"
+                                    onclick="sortParFrontStage();">排序</button>
                             <button type="button" class="btn btn-secondary"
                                     onclick="batchDelParFrontStage();">删除</button>
                         </div>
@@ -406,6 +415,8 @@
                                     onclick="addParFrontPartform();">新增</button>
                             <button type="button" class="btn btn-info"
                                     onclick="batchImprotParFrontPartform();">批量导入</button>
+                            <button type="button" class="btn btn-info"
+                                    onclick="sortParFrontPartform();">排序</button>
                             <button type="button" class="btn btn-secondary"
                                     onclick="batchDelParFrontPartform();">删除</button>
                         </div>
@@ -472,6 +483,19 @@
 
 <!-- 阶段扩展表单选择 -->
 <%@include file="select_partform.jsp"%>
+
+<%@include file="sort_par_front_proj.jsp"%>
+
+<%@include file="sort_par_front_item.jsp"%>
+
+<%@include file="sort_par_front_itemform.jsp"%>
+
+<%@include file="sort_par_front_stage.jsp"%>
+
+<%@include file="sort_par_front_partform.jsp"%>
+
+
+
 
 <!-- 进度弹窗 -->
 <div id="uploadProgress" class="modal fade" tabindex="-1" role="dialog"
