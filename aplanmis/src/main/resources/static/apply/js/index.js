@@ -1168,13 +1168,14 @@ var vm = new Vue({
       this.rootUnitInfoId = '';
       this.rootLinkmanInfoId = '';
       this.rootApplyLinkmanId = '';
-      if(this.jiansheFrom.length>0) {
-        this.rootUnitInfoId = this.jiansheFrom[0].unitInfoId;
-        this.rootLinkmanInfoId = this.jiansheFrom[0].linkmanId
-      }
+
       if(this.agentUnits.length>0){
         this.rootUnitInfoId = this.agentUnits[0].unitInfoId;
         this.rootLinkmanInfoId = this.agentUnits[0].linkmanId;
+      }
+      if(this.jiansheFrom.length>0) {
+        this.rootUnitInfoId = this.jiansheFrom[0].unitInfoId;
+        this.rootLinkmanInfoId = this.jiansheFrom[0].linkmanId
       }
       if(this.applySubjectType == 0&&this.applyPersonFrom.applyLinkmanId){
         this.rootApplyLinkmanId = this.applyPersonFrom.applyLinkmanId
@@ -2529,24 +2530,7 @@ var vm = new Vue({
         data.orgId = item.orgId;
         data.implementItemVerId = item.itemVerId;
         if(flag == 'core'){
-          request('', { // 判断并行实施事项是否可选
-            url: ctx + 'rest/apply/option/item/check',
-            type: 'get',
-            data: {
-              projInfoId: _that.projInfoId,
-              itemVerId: data.implementItemVerId
-            },
-          }, function (result) {
-            if (result.success) {
-              data.preItemCheckPassed = true;
-              _that.coreItemsSelItem(selCoreItemVer,data);
-            }else {
-              data.preItemCheckPassed = false;
-              _that.checkboxInit(data);
-              // _that.coreItemsSelItem(selCoreItemVer,data);
-            }
-          }, function (msg) {})
-
+          _that.coreItemsSelItem(selCoreItemVer,data);
         }else {
           if(_that.itemVerIdsString == (_itemVerIdS.join(','))){
             return false;
@@ -3236,13 +3220,13 @@ var vm = new Vue({
       _that.rootUnitInfoId = '';
       _that.rootLinkmanInfoId = '';
       _that.rootApplyLinkmanId = '';
-      if(_that.jiansheFrom.length>0) {
-        _that.rootUnitInfoId = _that.jiansheFrom[0].unitInfoId;
-        _that.rootLinkmanInfoId = _that.jiansheFrom[0].linkmanId;
-      }
       if(this.agentUnits.length>0){
         _that.rootUnitInfoId = _that.agentUnits[0].unitInfoId;
         _that.rootLinkmanInfoId = _that.agentUnits[0].linkmanId;
+      }
+      if(_that.jiansheFrom.length>0) {
+        _that.rootUnitInfoId = _that.jiansheFrom[0].unitInfoId;
+        _that.rootLinkmanInfoId = _that.jiansheFrom[0].linkmanId;
       }
       if(_that.applySubjectType == 0&&_that.applyPersonFrom.applyLinkmanId){
         _that.rootApplyLinkmanId = _that.applyPersonFrom.applyLinkmanId;
@@ -4081,18 +4065,24 @@ var vm = new Vue({
       _that.rootUnitInfoId = '';
       _that.rootLinkmanInfoId = '';
       _that.rootApplyLinkmanId = '';
-      if(_that.jiansheFrom.length>0) {
-        _that.rootUnitInfoId = _that.jiansheFrom[0].unitInfoId;
-        _that.rootLinkmanInfoId = _that.jiansheFrom[0].linkmanId;
-      }
+
       if(this.agentUnits.length>0){
         _that.rootUnitInfoId = _that.agentUnits[0].unitInfoId;
         _that.rootLinkmanInfoId = _that.agentUnits[0].linkmanId;
+      }
+      if(_that.jiansheFrom.length>0) {
+        _that.rootUnitInfoId = _that.jiansheFrom[0].unitInfoId;
+        _that.rootLinkmanInfoId = _that.jiansheFrom[0].linkmanId;
       }
       if(_that.applySubjectType == 0&&_that.applyPersonFrom.applyLinkmanId){
         _that.rootApplyLinkmanId = _that.applyPersonFrom.applyLinkmanId;
         _that.rootLinkmanInfoId = _that.applyPersonFrom.linkLinkmanId
       };
+      if(_that.submitCommentsType==4){
+        _that.IsJustApplyinst = 1;
+      }else {
+        _that.IsJustApplyinst = 2;
+      }
       var parmas={
         applyLinkmanId: _that.rootApplyLinkmanId,
         applySource: 'win',
@@ -4156,11 +4146,6 @@ var vm = new Vue({
           // applyinstIds 并行
           // parallelApplyinstId 并联
           //isJustApplyinst "1"  是否仅生成申报实例
-          if(_that.submitCommentsType==4){
-            _that.IsJustApplyinst = 1;
-          }else {
-            _that.IsJustApplyinst = 2;
-          }
           if(_that.submitCommentsType==4){
             if(_that.submitCommentsMatFlag == 'matForm'){
               _that.parallelApplyinstId=res.content;
@@ -4680,7 +4665,22 @@ var vm = new Vue({
       });
       if(flag){
         if(row.implementItemVerId){
-          _that.getStatusMatItemsByStatus(row,'coreItem');
+          request('', { // 判断并行实施事项是否可选
+            url: ctx + 'rest/check/itemFrontCheck',
+            type: 'post',
+            data: {
+              projInfoId: _that.projInfoId,
+              itemVerId: row.implementItemVerId
+            },
+          }, function (result) {
+            if (result.success) {
+              row.preItemCheckPassed = true;
+              _that.getStatusMatItemsByStatus(row,'coreItem');
+            }else {
+              row.preItemCheckPassed = false;
+              _that.checkboxInit(row);
+            }
+          }, function (msg) {})
         }
       }else {
         row.questionStates=[];
@@ -4864,7 +4864,22 @@ var vm = new Vue({
             flag = true;
           }
           if(flag&&row.implementItemVerId){
-            _that.getStatusMatItemsByStatus(row,'coreItem');
+            request('', { // 判断并行实施事项是否可选
+              url: ctx + 'rest/check/itemFrontCheck',
+              type: 'post',
+              data: {
+                projInfoId: _that.projInfoId,
+                itemVerId: row.implementItemVerId
+              },
+            }, function (result) {
+              if (result.success) {
+                row.preItemCheckPassed = true;
+                _that.getStatusMatItemsByStatus(row,'coreItem');
+              }else {
+                row.preItemCheckPassed = false;
+                _that.checkboxInit(row);
+              }
+            }, function (msg) {})
           }
         }
       });

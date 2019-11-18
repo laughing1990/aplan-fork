@@ -563,6 +563,7 @@ var vm = new Vue({
           allApplySubjectInfo: [], // 证照库条件查询
           selApplySubject: {}, // 选中的建设单位 申报主体
           matFormDialogVisible: false, // 是否展示材料一张表单
+          IsJustApplyinst: 0, //
         }
     },
     mounted: function () {
@@ -1079,18 +1080,17 @@ var vm = new Vue({
             this.rootUnitInfoId = '';
             this.rootLinkmanInfoId = '';
             this.rootApplyLinkmanId = '';
-            if (this.jiansheFrom.length > 0) {
-                this.rootUnitInfoId = this.jiansheFrom[0].unitInfoId;
-                this.rootLinkmanInfoId = this.jiansheFrom[0].linkmanId
-            }
             if (this.agentUnits.length > 0) {
                 this.rootUnitInfoId = this.agentUnits[0].unitInfoId;
                 this.rootLinkmanInfoId = this.agentUnits[0].linkmanId;
             }
+          if (this.jiansheFrom.length > 0) {
+            this.rootUnitInfoId = this.jiansheFrom[0].unitInfoId;
+            this.rootLinkmanInfoId = this.jiansheFrom[0].linkmanId
+          }
             if (this.applySubjectType == 0 && this.applyPersonFrom.applyLinkmanId) {
                 this.rootApplyLinkmanId = this.applyPersonFrom.applyLinkmanId
-            }
-            ;
+            };
         },
         // 切换申报主体类型
         changeApplySubjectSelect: function (val) { // 申办主题类型切换事件
@@ -2447,13 +2447,13 @@ var vm = new Vue({
         _that.rootUnitInfoId = '';
         _that.rootLinkmanInfoId = '';
         _that.rootApplyLinkmanId = '';
-        if(_that.jiansheFrom.length>0) {
-          _that.rootUnitInfoId = _that.jiansheFrom[0].unitInfoId;
-          _that.rootLinkmanInfoId = _that.jiansheFrom[0].linkmanId;
-        }
         if(this.agentUnits.length>0){
           _that.rootUnitInfoId = _that.agentUnits[0].unitInfoId;
           _that.rootLinkmanInfoId = _that.agentUnits[0].linkmanId;
+        }
+        if(_that.jiansheFrom.length>0) {
+          _that.rootUnitInfoId = _that.jiansheFrom[0].unitInfoId;
+          _that.rootLinkmanInfoId = _that.jiansheFrom[0].linkmanId;
         }
         if(_that.applySubjectType == 0&&_that.applyPersonFrom.applyLinkmanId){
           _that.rootApplyLinkmanId = _that.applyPersonFrom.applyLinkmanId;
@@ -3543,18 +3543,24 @@ var vm = new Vue({
             _that.rootUnitInfoId = '';
             _that.rootLinkmanInfoId = '';
             _that.rootApplyLinkmanId = '';
-            if(_that.jiansheFrom.length>0) {
-                _that.rootUnitInfoId = _that.jiansheFrom[0].unitInfoId;
-                _that.rootLinkmanInfoId = _that.jiansheFrom[0].linkmanId;
-            }
+
             if(this.agentUnits.length>0){
                 _that.rootUnitInfoId = _that.agentUnits[0].unitInfoId;
                 _that.rootLinkmanInfoId = _that.agentUnits[0].linkmanId;
             }
+          if(_that.jiansheFrom.length>0) {
+            _that.rootUnitInfoId = _that.jiansheFrom[0].unitInfoId;
+            _that.rootLinkmanInfoId = _that.jiansheFrom[0].linkmanId;
+          }
             if(_that.applySubjectType == 0&&_that.applyPersonFrom.applyLinkmanId){
                 _that.rootApplyLinkmanId = _that.applyPersonFrom.applyLinkmanId;
                 _that.rootLinkmanInfoId = _that.applyPersonFrom.linkLinkmanId;
             };
+          if(_that.buttonStyle==4){
+            _that.IsJustApplyinst = 1;
+          }else {
+            _that.IsJustApplyinst = 2;
+          }
             //选择的情形
             var parmas = {
                 applyLinkmanId: _that.rootApplyLinkmanId,
@@ -3572,7 +3578,8 @@ var vm = new Vue({
                 buildProjUnitMap: buildProjUnitMap,
                 stateIds: _that.stateIds,
                 stageId: _that.stageId,
-                isParallel: _that.isParallel
+                isParallel: _that.isParallel,
+              isJustApplyinst: _that.IsJustApplyinst,
             }
             _that.progressDialogVisible = true;
             _that.submitCommentsFlag = false;
@@ -3582,7 +3589,7 @@ var vm = new Vue({
             } else if (_that.buttonStyle == '3') {//不受理
                 url = 'rest/apply/series/inadmissible';
             }else if (_that.buttonStyle == '4') { // 仅实例化
-              url = 'rest/apply/parallel/onlyInstApply';
+              url = 'rest/apply/series/onlyInstApply';
             }
             _that.progressIntervalStop = false;
             _that.setUploadPercentage();
