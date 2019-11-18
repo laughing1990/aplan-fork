@@ -218,7 +218,8 @@ var module1 = new Vue({
 				isDefineAmount: '1', 
 				chooseInsertype: ['1', '1'], 
 				isAvoid: "0",
-				biddingType: '1'
+				biddingType: '1',
+				basePrice: ''
 			},
 			isFinancialFund: true,
 			isSocialFund: true,
@@ -265,6 +266,9 @@ var module1 = new Vue({
 			showMatTableExpand: false, // 材料列表是否展示expand
 			getPaperAll: false,
 			getCopyAll: false,
+			homePageSize: 10,
+			homepPage: 1,
+			homeTotal: 0
 		}
 	},
 	methods: {
@@ -614,14 +618,14 @@ var module1 = new Vue({
 				console.log("获取项目信息", res)
 				if (res.success) {
 					var content = res.content;
-					vm.aeaLinkmanInfo = content.aeaLinkmanInfo;
+					vm.aeaLinkmanInfo = !!content.aeaLinkmanInfo ? content.aeaLinkmanInfo : {};
 					vm.aeaProjInfo = content.aeaProjInfo;
 					vm.aeaUnitInfo = content.aeaUnitInfo;
 
 					vm.ProjName = content.aeaProjInfo.projName;
-					vm.$set(vm.form, 'contact', content.aeaLinkmanInfo.linkmanName + '[' + content.aeaLinkmanInfo.linkmanCertNo + ']')
+					if (!!content.aeaLinkmanInfo) vm.$set(vm.form, 'contact', content.aeaLinkmanInfo.linkmanName + '[' + content.aeaLinkmanInfo.linkmanCertNo + ']')
 					//   vm.$set(vm.form,'mobile',content.aeaLinkmanInfo.linkmanMobilePhone)
-					vm.basicLinkPhone = content.aeaLinkmanInfo.linkmanMobilePhone; //基本信息联系电话信息
+					if (!!content.aeaLinkmanInfo) vm.basicLinkPhone = content.aeaLinkmanInfo.linkmanMobilePhone; //基本信息联系电话信息
 					//   debugger
 					vm.$set(vm.form, 'ownerComplaintPhone', content.ownerComplaintPhone)
 					vm.form.localCode = content.aeaProjInfo.localCode;
@@ -1482,7 +1486,17 @@ var module1 = new Vue({
             _that.selMatinstId = data.matinstId ? data.matinstId : '',
                 _that.showUploadWindowTitle = '材料附件 - ' + data.matName
             _that.getFileListWin(data.matinstId, data);
-        },
+		},
+		// pageSize 改变时会触发
+		homeHandleSizeChange: function(val) {
+			this.pageSize = val;
+			this.getUnpublishedProjInfoList();
+		},
+		// currentPage 改变时会触发
+		homeHandleCurrentChange: function(val) {
+			this.pageNum = val;
+			this.getUnpublishedProjInfoList();
+		}
 	},
 	mounted: function () {
 		this.loginUserInfo = JSON.parse(localStorage.getItem("loginInfo")) || {}
