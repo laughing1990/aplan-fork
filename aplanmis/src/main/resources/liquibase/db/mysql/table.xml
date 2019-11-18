@@ -1135,4 +1135,10 @@
             ALTER TABLE `aea_proj_info` MODIFY COLUMN `PROJ_FUNCTION` char(2) NULL COMMENT '项目用途，来自于数据字典';
         </sql>
     </changeSet>
+
+    <changeSet id="20191118155016" author="xiong" failOnError="false">
+        <sql splitStatements="true">
+            alter table aea_hi_certinst add index ahc_ccroi(certinst_code, root_org_id);
+        </sql>
+    </changeSet>
 </databaseChangeLog>
