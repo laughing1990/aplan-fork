@@ -1,6 +1,8 @@
 package com.augurit.efficiency.service.impl;
 
 import com.augurit.agcloud.bpm.common.service.ActStoTimeruleInstService;
+import com.augurit.agcloud.bsc.domain.BscDicRegion;
+import com.augurit.agcloud.bsc.mapper.BscDicRegionMapper;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.agcloud.opus.common.domain.OpuOmOrg;
@@ -15,6 +17,7 @@ import com.augurit.aplanmis.common.utils.DateUtils;
 import com.augurit.aplanmis.common.vo.analyse.*;
 import com.augurit.aplanmis.common.vo.conditional.ConditionalQueryRequest;
 import com.augurit.aplanmis.common.vo.conditional.TaskInfo;
+import com.augurit.efficiency.constant.DateType;
 import com.augurit.efficiency.service.OrgEfficiencySupersionService;
 import com.augurit.efficiency.utils.CalculateUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -51,6 +54,8 @@ public class OrgEfficiencySupersionServiceImpl implements OrgEfficiencySupersion
     private ConditionalJumpMapper conditionalJumpMapper;
     @Autowired
     private OpuOmOrgMapper opuOmOrgMapper;
+    @Autowired
+    private BscDicRegionMapper bscDicRegionMapper;
 
 
     @Override
@@ -380,7 +385,7 @@ public class OrgEfficiencySupersionServiceImpl implements OrgEfficiencySupersion
             ItemDetailFormVo vo = new ItemDetailFormVo();
             vo.setOrgId(orgId);
             vo.setOrgName(orgName);
-            if ("W".equals(type)) {
+            if (DateType.CUR_WEEK.equals(type)) {
                 int weekNum = DateUtils.getThisWeekNum(new Date());
                 AeaAnaOrgWeekStatistics weekStatistics = aeaAnaOrgWeekStatisticsMapper.sumWeekStatistics(weekNum, rootOrgId, orgId);
                 if (weekStatistics != null) {
@@ -390,7 +395,7 @@ public class OrgEfficiencySupersionServiceImpl implements OrgEfficiencySupersion
                     vo.setCompletedCount(weekStatistics.getWeekCompletedCount());
                     vo.setOverdueCount(weekStatistics.getWeekOverTimeCount());
                 }
-            } else if ("M".equals(type)) {
+            } else if (DateType.CUR_MONTH.equals(type)) {
                 String yearMonth = DateUtils.getDateString("yyyy-MM");
                 AeaAnaOrgMonthStatistics monthStatistics = aeaAnaOrgMonthStatisticsMapper.sumMonthStatistics(yearMonth, rootOrgId, orgId);
                 if (monthStatistics != null) {
@@ -450,16 +455,16 @@ public class OrgEfficiencySupersionServiceImpl implements OrgEfficiencySupersion
 
         String rootOrgId = SecurityContext.getCurrentOrgId();
         List<ItemDetailFormVo> list = new ArrayList<>();
-        if("D".equals(type)){
+        if (DateType.YESTERDAY.equals(type)) {
             String yesterday = DateUtils.convertDateToString(DateUtils.getPreDateByDate(new Date()), "yyyy-MM-dd");
             startDate = yesterday;
             endDate = yesterday ;
             list = aeaAnaOrgDayStatisticsMapper.getOrgDayStatistics(startDate,endDate,orgId,rootOrgId);
-        }else if("W".equals(type)){
+        } else if (DateType.CUR_WEEK.equals(type)) {
             String thisYear = DateUtils.convertDateToString(new Date(), "yyyy");
             int thisWeekNum = DateUtils.getThisWeekNum(new Date());
             list = aeaAnaOrgWeekStatisticsMapper.getOrgWeekStatistics(thisYear,thisWeekNum,thisWeekNum,orgId,rootOrgId);
-        }else if("M".equals(type)){
+        } else if (DateType.CUR_MONTH.equals(type)) {
             String yearMonth = DateUtils.convertDateToString(new Date(), "yyyy-MM");
             list = aeaAnaOrgMonthStatisticsMapper.getOrgMonthStatistics(yearMonth,yearMonth,orgId,rootOrgId);
         }else{
@@ -531,7 +536,7 @@ public class OrgEfficiencySupersionServiceImpl implements OrgEfficiencySupersion
             }
         }
 
-        if ("D".equals(type)) {//昨日日统计
+        if (DateType.YESTERDAY.equals(type)) {//昨日日统计
             String rootOrgId = SecurityContext.getCurrentOrgId();
             Date preDate = DateUtils.getPreDateByDate(new Date());
             String preDateStr = DateUtils.convertDateToString(preDate, "yyyy-MM-dd");
@@ -546,7 +551,7 @@ public class OrgEfficiencySupersionServiceImpl implements OrgEfficiencySupersion
                 return data;
             }).collect(Collectors.toList());
             return collect;
-        } else if ("W".equals(type)) {//本周统计
+        } else if (DateType.CUR_WEEK.equals(type)) {//本周统计
             String rootOrgId = SecurityContext.getCurrentOrgId();
             String thisYear = DateUtils.convertDateToString(new Date(), "yyyy");
             int thisWeekNum = DateUtils.getThisWeekNum(new Date());
@@ -561,7 +566,7 @@ public class OrgEfficiencySupersionServiceImpl implements OrgEfficiencySupersion
                 return data;
             }).collect(Collectors.toList());
             return collect;
-        } else if ("M".equals(type)) {//本月统计
+        } else if (DateType.CUR_MONTH.equals(type)) {//本月统计
             String rootOrgId = SecurityContext.getCurrentOrgId();
             String thisMonth = DateUtils.convertDateToString(new Date(), "yyyy-MM");
 
@@ -603,38 +608,203 @@ public class OrgEfficiencySupersionServiceImpl implements OrgEfficiencySupersion
             }
         }
 
-        if ("D".equals(type)) {
+        if (DateType.YESTERDAY.equals(type)) {
             String rootOrgId = SecurityContext.getCurrentOrgId();
             Date preDay = DateUtils.getPreDateByDate(new Date());
-            return getDayApplyDataByOrgItem(orgId, itemId, preDay, preDay, rootOrgId);
-        } else if ("W".equals(type)) {//本周统计
+            return getDayApplyDataByRegionOrgItem(null, orgId, itemId, preDay, preDay, rootOrgId);
+        } else if (DateType.CUR_WEEK.equals(type)) {//本周统计
             String rootOrgId = SecurityContext.getCurrentOrgId();
             Date thisWeekMonday = DateUtils.getThisWeekMonday(new Date());
             Date thisWeekSunday = DateUtils.getThisWeekSunday(new Date());
-            return getDayApplyDataByOrgItem(orgId, itemId, thisWeekMonday, thisWeekSunday, rootOrgId);
-        } else if ("M".equals(type)) {//本月统计
+            return getDayApplyDataByRegionOrgItem(null, orgId, itemId, thisWeekMonday, thisWeekSunday, rootOrgId);
+        } else if (DateType.CUR_MONTH.equals(type)) {//本月统计
             String rootOrgId = SecurityContext.getCurrentOrgId();
             Date firstDay = DateUtils.firstDayOfMonth(new Date());
             Date lastDay = DateUtils.lastDayOfMonth(new Date());
-            return getDayApplyDataByOrgItem(orgId, itemId, firstDay, lastDay, rootOrgId);
+            return getDayApplyDataByRegionOrgItem(null, orgId, itemId, firstDay, lastDay, rootOrgId);
         } else if (StringUtils.isNotBlank(startTime) && StringUtils.isNotBlank(endTime)) {//按时段统计
             String rootOrgId = SecurityContext.getCurrentOrgId();
             Date startDate = DateUtils.convertStringToDate(startTime, "yyyy-MM-dd");
             Date endDate = DateUtils.convertStringToDate(endTime, "yyyy-MM-dd");
-            return getDayApplyDataByOrgItem(orgId, itemId, startDate, endDate, rootOrgId);
+            return getDayApplyDataByRegionOrgItem(null, orgId, itemId, startDate, endDate, rootOrgId);
         }
         return null;
     }
 
-    private List<Map<String, Object>> getDayApplyDataByOrgItem(String orgId, String itemId, Date startDate, Date endDate, String rootOrgId) throws Exception {
-        String startTime = DateUtils.convertDateToString(startDate, "yyyy-MM-dd") + " 00:00:00";
-        String endTime = DateUtils.convertDateToString(endDate, "yyyy-MM-dd") + " 23:59:59";
+    @Override
+    public List<Map<String, Object>> getRegionOrgAcceptStatistics(String regionId, String startTime, String endTime, String type) throws Exception {
+        if (StringUtils.isBlank(regionId)) {
+            if (DateType.YESTERDAY.equals(type)) {
+                String rootOrgId = SecurityContext.getCurrentOrgId();
+                Date preDate = DateUtils.getPreDateByDate(new Date());
+                String preDateStr = DateUtils.convertDateToString(preDate, "yyyy-MM-dd");
+
+                List<AeaAnaOrgDayStatistics> orgItemAcceptStatistics = aeaAnaOrgDayStatisticsMapper.getRegionAcceptStatistics(preDateStr, preDateStr, rootOrgId);
+                List<Map<String, Object>> collect = orgItemAcceptStatistics.stream().map(statistics -> {
+                    Map<String, Object> data = new HashMap<>();
+                    data.put("regionId", statistics.getRegionId());
+                    data.put("regionName", statistics.getRegionName());
+                    data.put("orgId", "");
+                    data.put("orgName", "");
+                    data.put("apply", statistics.getDayApplyCount());
+                    data.put("acceptDeal", statistics.getDayAcceptanceCount());
+                    return data;
+                }).collect(Collectors.toList());
+                return collect;
+            } else if (DateType.CUR_WEEK.equals(type)) {
+                String rootOrgId = SecurityContext.getCurrentOrgId();
+                String thisYear = DateUtils.convertDateToString(new Date(), "yyyy");
+                int thisWeekNum = DateUtils.getThisWeekNum(new Date());
+
+                List<AeaAnaOrgWeekStatistics> orgItemAcceptStatistics = aeaAnaOrgWeekStatisticsMapper.getRegionAcceptStatistics(thisYear, thisWeekNum, rootOrgId);
+                List<Map<String, Object>> collect = orgItemAcceptStatistics.stream().map(statistics -> {
+                    Map<String, Object> data = new HashMap<>();
+                    data.put("regionId", statistics.getRegionId());
+                    data.put("regionName", statistics.getRegionName());
+                    data.put("orgId", "");
+                    data.put("orgName", "");
+                    data.put("apply", statistics.getWeekApplyCount());
+                    data.put("acceptDeal", statistics.getWeekAcceptanceCount());
+                    return data;
+                }).collect(Collectors.toList());
+                return collect;
+            } else if (DateType.CUR_MONTH.equals(type)) {
+                String rootOrgId = SecurityContext.getCurrentOrgId();
+                String thisMonth = DateUtils.convertDateToString(new Date(), "yyyy-MM");
+
+                List<AeaAnaOrgMonthStatistics> orgItemAcceptStatistics = aeaAnaOrgMonthStatisticsMapper.getRegionAcceptStatistics(thisMonth, rootOrgId);
+                List<Map<String, Object>> collect = orgItemAcceptStatistics.stream().map(statistics -> {
+                    Map<String, Object> data = new HashMap<>();
+                    data.put("regionId", statistics.getRegionId());
+                    data.put("regionName", statistics.getRegionName());
+                    data.put("orgId", "");
+                    data.put("orgName", "");
+                    data.put("apply", statistics.getMonthApplyCount());
+                    data.put("acceptDeal", statistics.getMonthAcceptanceCount());
+                    return data;
+                }).collect(Collectors.toList());
+                return collect;
+            } else if (StringUtils.isNotBlank(startTime) && StringUtils.isNotBlank(endTime)) {
+                String rootOrgId = SecurityContext.getCurrentOrgId();
+
+                List<AeaAnaOrgDayStatistics> orgItemAcceptStatistics = aeaAnaOrgDayStatisticsMapper.getRegionAcceptStatistics(startTime, endTime, rootOrgId);
+                List<Map<String, Object>> collect = orgItemAcceptStatistics.stream().map(statistics -> {
+                    Map<String, Object> data = new HashMap<>();
+                    data.put("regionId", statistics.getRegionId());
+                    data.put("regionName", statistics.getRegionName());
+                    data.put("orgId", "");
+                    data.put("orgName", "");
+                    data.put("apply", statistics.getDayApplyCount());
+                    data.put("acceptDeal", statistics.getDayAcceptanceCount());
+                    return data;
+                }).collect(Collectors.toList());
+                return collect;
+            }
+        } else {
+            if (DateType.YESTERDAY.equals(type)) {
+                String rootOrgId = SecurityContext.getCurrentOrgId();
+                Date preDate = DateUtils.getPreDateByDate(new Date());
+                String preDateStr = DateUtils.convertDateToString(preDate, "yyyy-MM-dd");
+
+                List<AeaAnaOrgDayStatistics> orgItemAcceptStatistics = aeaAnaOrgDayStatisticsMapper.getOrgAcceptStatistics(regionId, preDateStr, preDateStr, rootOrgId);
+                List<Map<String, Object>> collect = orgItemAcceptStatistics.stream().map(statistics -> {
+                    Map<String, Object> data = new HashMap<>();
+                    data.put("orgId", statistics.getOrgId());
+                    data.put("orgName", statistics.getOrgName());
+                    data.put("regionId", "");
+                    data.put("regionName", "");
+                    data.put("apply", statistics.getDayApplyCount());
+                    data.put("acceptDeal", statistics.getDayAcceptanceCount());
+                    return data;
+                }).collect(Collectors.toList());
+                return collect;
+            } else if (DateType.CUR_WEEK.equals(type)) {
+                String rootOrgId = SecurityContext.getCurrentOrgId();
+                String thisYear = DateUtils.convertDateToString(new Date(), "yyyy");
+                int thisWeekNum = DateUtils.getThisWeekNum(new Date());
+
+                List<AeaAnaOrgWeekStatistics> orgItemAcceptStatistics = aeaAnaOrgWeekStatisticsMapper.getOrgAcceptStatistics(regionId, thisYear, thisWeekNum, rootOrgId);
+                List<Map<String, Object>> collect = orgItemAcceptStatistics.stream().map(statistics -> {
+                    Map<String, Object> data = new HashMap<>();
+                    data.put("orgId", statistics.getOrgId());
+                    data.put("orgName", statistics.getOrgName());
+                    data.put("regionId", "");
+                    data.put("regionName", "");
+                    data.put("apply", statistics.getWeekApplyCount());
+                    data.put("acceptDeal", statistics.getWeekAcceptanceCount());
+                    return data;
+                }).collect(Collectors.toList());
+                return collect;
+            } else if (DateType.CUR_MONTH.equals(type)) {
+                String rootOrgId = SecurityContext.getCurrentOrgId();
+                String thisMonth = DateUtils.convertDateToString(new Date(), "yyyy-MM");
+
+                List<AeaAnaOrgMonthStatistics> orgItemAcceptStatistics = aeaAnaOrgMonthStatisticsMapper.getOrgAcceptStatistics(regionId, thisMonth, rootOrgId);
+                List<Map<String, Object>> collect = orgItemAcceptStatistics.stream().map(statistics -> {
+                    Map<String, Object> data = new HashMap<>();
+                    data.put("orgId", statistics.getOrgId());
+                    data.put("orgName", statistics.getOrgName());
+                    data.put("regionId", "");
+                    data.put("regionName", "");
+                    data.put("apply", statistics.getMonthApplyCount());
+                    data.put("acceptDeal", statistics.getMonthAcceptanceCount());
+                    return data;
+                }).collect(Collectors.toList());
+                return collect;
+            } else if (StringUtils.isNotBlank(startTime) && StringUtils.isNotBlank(endTime)) {
+                String rootOrgId = SecurityContext.getCurrentOrgId();
+
+                List<AeaAnaOrgDayStatistics> orgItemAcceptStatistics = aeaAnaOrgDayStatisticsMapper.getOrgAcceptStatistics(regionId, startTime, endTime, rootOrgId);
+                List<Map<String, Object>> collect = orgItemAcceptStatistics.stream().map(statistics -> {
+                    Map<String, Object> data = new HashMap<>();
+                    data.put("orgId", statistics.getOrgId());
+                    data.put("orgName", statistics.getOrgName());
+                    data.put("regionId", "");
+                    data.put("regionName", "");
+                    data.put("apply", statistics.getDayApplyCount());
+                    data.put("acceptDeal", statistics.getDayAcceptanceCount());
+                    return data;
+                }).collect(Collectors.toList());
+                return collect;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public List<Map<String, Object>> getRegionOrgAcceptHistoryStatistics(String regionId, String orgId, String startTime, String endTime, String type) throws Exception {
+        if (DateType.YESTERDAY.equals(type)) {
+            String rootOrgId = SecurityContext.getCurrentOrgId();
+            Date preDay = DateUtils.getPreDateByDate(new Date());
+            return getDayApplyDataByRegionOrgItem(regionId, orgId, null, preDay, preDay, rootOrgId);
+        } else if (DateType.CUR_WEEK.equals(type)) {//本周统计
+            String rootOrgId = SecurityContext.getCurrentOrgId();
+            Date thisWeekMonday = DateUtils.getThisWeekMonday(new Date());
+            Date thisWeekSunday = DateUtils.getThisWeekSunday(new Date());
+            return getDayApplyDataByRegionOrgItem(regionId, orgId, null, thisWeekMonday, thisWeekSunday, rootOrgId);
+        } else if (DateType.CUR_MONTH.equals(type)) {//本月统计
+            String rootOrgId = SecurityContext.getCurrentOrgId();
+            Date firstDay = DateUtils.firstDayOfMonth(new Date());
+            Date lastDay = DateUtils.lastDayOfMonth(new Date());
+            return getDayApplyDataByRegionOrgItem(regionId, orgId, null, firstDay, lastDay, rootOrgId);
+        } else if (StringUtils.isNotBlank(startTime) && StringUtils.isNotBlank(endTime)) {//按时段统计
+            String rootOrgId = SecurityContext.getCurrentOrgId();
+            Date startDate = DateUtils.convertStringToDate(startTime, "yyyy-MM-dd");
+            Date endDate = DateUtils.convertStringToDate(endTime, "yyyy-MM-dd");
+            return getDayApplyDataByRegionOrgItem(regionId, orgId, null, startDate, endDate, rootOrgId);
+        }
+        return null;
+    }
+
+    private List<Map<String, Object>> getDayApplyDataByRegionOrgItem(String regionId, String orgId, String itemId, Date startDate, Date endDate, String rootOrgId) throws Exception {
+        String startTime = DateUtils.convertDateToString(startDate, "yyyy-MM-dd");
+        String endTime = DateUtils.convertDateToString(endDate, "yyyy-MM-dd");
 
         long millisecond = endDate.getTime() - startDate.getTime();
         int day = (int) (millisecond / DateUtils.MILLIS_PER_DAY);
 
         //日期统计
-        List<OrgItemStatisticsVo> winAcceptStatisticsByDay = aeaAnaOrgDayStatisticsMapper.getOrgItemAcceptStatisticsByDay(orgId, itemId, startTime, endTime, rootOrgId);
+        List<OrgItemStatisticsVo> winAcceptStatisticsByDay = aeaAnaOrgDayStatisticsMapper.getAcceptStatisticsByDay(regionId, orgId, itemId, startTime, endTime, rootOrgId);
         if (winAcceptStatisticsByDay == null) {
             winAcceptStatisticsByDay = new ArrayList<>();
         }
@@ -661,4 +831,249 @@ public class OrgEfficiencySupersionServiceImpl implements OrgEfficiencySupersion
         return dayDatas;
     }
 
+    @Override
+    public List<BscDicRegion> getCurrentRegionList() throws Exception{
+
+        List<BscDicRegion> childrenRegion = new ArrayList<>();
+        List<BscDicRegion> tmp = getChildRegion();
+        if(tmp.size()==0){
+            throw new Exception("region爲空");
+        }
+
+        //拼接 下拉列表返回数据
+        BscDicRegion top = tmp.get(0);
+        BscDicRegion cityOrg = new BscDicRegion();
+        String id =  top.getRegionId();
+        cityOrg.setRegionId(id);
+        cityOrg.setRegionName("市级部门");
+        top.setRegionId("");
+        childrenRegion.add(top);
+        childrenRegion.add(cityOrg);
+        tmp.remove(0);
+        childrenRegion.addAll(tmp);
+
+        return childrenRegion;
+    }
+
+    /**
+     * 获取当前城市及下级行政区划列表，市级和县级
+     * @return
+     * @throws Exception
+     */
+    private List<BscDicRegion> getChildRegion() throws Exception{
+        BscDicRegion region = efficiencySupervisionMapper.getCurrentRegionByUserId(SecurityContext.getCurrentUserId());
+        String regionSeq = region.getRegionSeq();
+        if(StringUtils.isBlank(regionSeq)){
+            throw new Exception("区域regionSeq查询异常“");
+        }
+
+        StringBuilder sb = new StringBuilder();
+        int idx = 0;
+        for(Character c : regionSeq.toCharArray()){
+            sb.append(c);
+            if(c=='.'){
+                idx++;
+            }
+            if(idx==5){break;}
+        }
+
+        regionSeq = regionSeq.substring(0,sb.length());
+
+
+        List<BscDicRegion> tmp = efficiencySupervisionMapper.getChildrenReggion(regionSeq, null);
+        return tmp;
+    }
+
+    @Override
+    public Map<String, Object> getOrgReceiveStatistics(String startDate, String endDate, String type, String regionId) throws Exception {
+        if(StringUtils.isBlank(regionId)){
+            regionId = null;
+        }
+
+        String rootOrgId = SecurityContext.getCurrentOrgId();
+        List<ItemDetailFormVo> list = new ArrayList<>();
+        if("D".equals(type)){
+            String yesterday = DateUtils.convertDateToString(DateUtils.getPreDateByDate(new Date()), "yyyy-MM-dd");
+            startDate = yesterday;
+            endDate = yesterday ;
+            list = aeaAnaOrgDayStatisticsMapper.getRegionDayStatistics(startDate,endDate,regionId,rootOrgId);
+        }else if("W".equals(type)){
+            String thisYear = DateUtils.convertDateToString(new Date(), "yyyy");
+            int thisWeekNum = DateUtils.getThisWeekNum(new Date());
+            list = aeaAnaOrgWeekStatisticsMapper.getRegionWeekStatistics(thisYear,thisWeekNum,thisWeekNum,regionId,rootOrgId);
+        }else if("M".equals(type)){
+            String yearMonth = DateUtils.convertDateToString(new Date(), "yyyy-MM");
+            list = aeaAnaOrgMonthStatisticsMapper.getRegionMonthStatistics(yearMonth,yearMonth,regionId,rootOrgId);
+        }else{
+            if (!DateUtils.checkTimeParam(startDate, endDate, "yyyy-MM-dd")) {
+                throw new Exception("传入的时间参数欧问题。。。");
+            }
+            LocalDate _endDate = LocalDate.parse(endDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            if (!LocalDate.now().isAfter(_endDate)) {//结束日期只能统计到昨天
+                String yesterday = DateUtils.getYesterdayByFormat("yyyy-MM-dd");
+                endDate = yesterday ;
+            }
+            list = aeaAnaOrgDayStatisticsMapper.getRegionDayStatistics(startDate,endDate,regionId,rootOrgId);
+        }
+
+        int total = 0;
+        List<Map<String,Object>> datalist= new ArrayList<>();
+
+        String name = "";
+        int value = 0;
+        boolean bol =StringUtils.isBlank(regionId);
+        if(list.size()>0){
+            for(ItemDetailFormVo vo :list){
+                Map<String,Object> obj = new HashMap<>();
+                if(bol){
+                    name = vo.getRegionName();
+                }else {
+                    name = vo.getOrgName();
+                }
+                value = vo.getReceiptCount();
+                total+=value;
+                obj.put("name",name);
+                obj.put("value",value);
+                datalist.add(obj);
+            }
+        }
+
+        //显示全部数据，
+        List<String> showData = getShowData(regionId);
+        List<Map<String,Object>>  showList = new ArrayList<>();
+        for(int i=0,len = showData.size();i<len;i++){
+            String _name = showData.get(i);
+            boolean had = false;
+            for(int j =0,len2 = datalist.size();j<len2;j++){
+                if(_name.equals(datalist.get(j).get("name"))){
+                    showList.add(datalist.get(j));
+                    had = true;
+                    break;
+                }
+            }
+            if(!had){
+                Map tmp = new HashMap(){{put("name",_name);put("value",0);}};
+                showList.add(tmp);
+            }
+
+        }
+
+        Map<String,Object> result = new HashMap<>();
+        result.put("total",total);
+        result.put("data",showList);
+        return result;
+
+
+    }
+
+    private List<String> getShowData(String regionId) throws Exception{
+        List<String> list = new ArrayList<>();
+        if(StringUtils.isBlank(regionId)){
+            List<BscDicRegion> childRegion = getChildRegion();
+            if(childRegion.size()==0) throw new Exception("查询区域出现异常");
+            list = childRegion.stream().map(BscDicRegion::getRegionName).collect(Collectors.toList());
+        }else{
+            OpuOmOrg search = new OpuOmOrg();
+            BscDicRegion currentRegion = bscDicRegionMapper.getBscDicRegionById(regionId);
+            if("4".equals(currentRegion.getRegionalLevel())){
+                search.setOrgLevel(2);//市级部门
+            }else if("5".equals(currentRegion.getRegionalLevel())){
+                search.setOrgLevel(3);
+            }
+            search.setOrgProperty("d");
+            search.setIsPublic("1");
+            search.setIsActive("1");
+            search.setIsLeaf("1");
+            search.setRegionId(regionId);
+            //原来的opuomOrgmapper里面缺失了regionid 字段所以写到这里
+            List<OpuOmOrg> orgList = efficiencySupervisionMapper.listOpuOmOrg(search);
+            if(orgList.size()==0) throw new Exception("查询部门出现异常");
+            list = orgList.stream().map(OpuOmOrg::getOrgName).collect(Collectors.toList());
+        }
+        return list;
+    }
+
+    @Override
+    public List<List<Object>> getOrgReceiveLimitTimeStatistics(String startTime, String endTime, String type, String regionId) throws Exception {
+
+       List<List<Object>> result = new ArrayList<>();
+        if ("D".equals(type)) {
+            String yesterday = DateUtils.convertDateToString(DateUtils.getPreDateByDate(new Date()), "yyyy-MM-dd");
+            startTime = yesterday + " 00:00:00";
+            endTime = yesterday + " 23:59:59";
+        } else if ("W".equals(type)) {
+            startTime = DateUtils.convertDateToString(DateUtils.getThisWeekMonday(new Date()), "yyyy-MM-dd") + " 00:00:00";
+            endTime = DateUtils.convertDateToString(DateUtils.getThisWeekSunday(new Date()), "yyyy-MM-dd") + " 23:59:59";
+
+        } else if ("M".equals(type)) {
+            startTime = DateUtils.convertDateToString(DateUtils.firstDayOfMonth(new Date()), "yyyy-MM-dd HH:mm:ss");
+            endTime = DateUtils.convertDateToString(DateUtils.lastDayOfMonth(new Date()), "yyyy-MM-dd HH:mm:ss");
+
+        } else {
+            if (!DateUtils.checkTimeParam(startTime, endTime, "yyyy-MM-dd")) {
+                throw new Exception("传入的时间参数有问题。。。");
+            }
+            LocalDate endDate = LocalDate.parse(endTime, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            if (!LocalDate.now().isAfter(endDate)) {//结束日期只能统计到昨天
+                String yesterday = DateUtils.getYesterdayByFormat("yyyy-MM-dd");
+                endTime = yesterday + " 23:59:59";
+            }
+        }
+
+        List<ItemDetailFormVo> list = efficiencySupervisionMapper.getOrgReceiveLimitTimeStatistics(startTime,endTime,regionId,SecurityContext.getCurrentOrgId());
+
+        boolean bol = StringUtils.isBlank(regionId);
+
+        if(list.size()>0){
+            Map<String, List<ItemDetailFormVo>> collect;
+            if(bol){
+                collect = list.stream().collect(Collectors.groupingBy(ItemDetailFormVo::getRegionId));
+            }else {
+                collect = list.stream().collect(Collectors.groupingBy(ItemDetailFormVo::getOrgId));
+            }
+            Set<Map.Entry<String, List<ItemDetailFormVo>>> entries = collect.entrySet();
+            for(Map.Entry<String, List<ItemDetailFormVo>> entry: entries){
+                List<ItemDetailFormVo> value = entry.getValue();
+                ItemDetailFormVo obj = value.get(0);
+                int normal=0,warn=0,overdue=0;
+                String name = "";
+                for(ItemDetailFormVo vo :value){
+                    if("1".equals(vo.getInstState())){
+                        normal += vo.getReceiptCount();
+                    }else if("2".equals(vo.getInstState())){
+                        warn += vo.getReceiptCount();
+                    }else if("3".equals(vo.getInstState())){
+                        overdue += vo.getReceiptCount();
+                    }
+                }
+                 if(bol){
+                     name = obj.getRegionName();
+                 }else {
+                     name = obj.getOrgName();
+                 }
+                List<Object> record = Arrays.asList(name,normal,warn,overdue);
+                 result.add(record);
+            }
+        }
+
+        //显示全部数据
+        List<List<Object>> showResult = new ArrayList<>();
+        List<String> showData = getShowData(regionId);
+        for(int i=0,len = showData.size();i < len; i++){
+            String _name = showData.get(i);
+            boolean had = false;
+            for(int j=0,len2 = result.size();j<len2; j++){
+                if(_name.equals(result.get(j).get(0))){
+                    had = true;
+                    showResult.add(result.get(j));
+                    break;
+                }
+            }
+            if(!had){
+                List<Object> tmp = Arrays.asList(_name,0,0,0);
+                showResult.add(tmp);
+            }
+        }
+        return showResult;
+    }
 }

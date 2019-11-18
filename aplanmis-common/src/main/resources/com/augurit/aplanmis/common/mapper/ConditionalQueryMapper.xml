@@ -776,6 +776,7 @@
         (
         SELECT
         art_123.ID_ AS taskId,
+        art_123.TASK_DEF_KEY_ AS taskDefKey,
         ahp_123.ID_ AS procInstId,
         ahap_123.APPLYINST_ID AS applyinstId,
         ahap_123.APPLYINST_CODE AS applyinstCode,
@@ -827,6 +828,7 @@
         (
         SELECT
         art_123.ID_ AS taskId,
+        art_123.TASK_DEF_KEY_ AS taskDefKey,
         ahp_123.ID_ AS procInstId,
         ahap_123.APPLYINST_ID AS applyinstId,
         ahap_123.APPLYINST_CODE AS applyinstCode,
@@ -890,6 +892,7 @@
         (
         SELECT
         art_123.ID_ AS taskId,
+        art_123.TASK_DEF_KEY_ AS taskDefKey,
         ahp_123.ID_ AS procInstId,
         ahap_123.APPLYINST_ID AS applyinstId,
         ahap_123.APPLYINST_CODE AS applyinstCode,
@@ -942,6 +945,7 @@
         (
         SELECT
         art_123.ID_ AS taskId,
+        art_123.TASK_DEF_KEY_ AS taskDefKey,
         ahp_123.ID_ AS procInstId,
         ahap_123.APPLYINST_ID AS applyinstId,
         ahap_123.APPLYINST_CODE AS applyinstCode,
@@ -999,6 +1003,7 @@
         (
         SELECT
         art_123.ID_ AS taskId,
+        art_123.TASK_DEF_KEY_ AS taskDefKey,
         ahp_123.ID_ AS procInstId,
         ahap_123.APPLYINST_ID AS applyinstId,
         ahap_123.APPLYINST_CODE AS applyinstCode,
@@ -1386,6 +1391,7 @@
         temp1.GCBM AS gcbm,
         ahp_123.ID_ AS procInstId,
         aht_123.ID_ AS taskId,
+        aht_123.TASK_DEF_KEY_ AS taskDefKey,
         ahap_123.END_TIME AS concludedTime,
         ahap_123.CREATE_TIME AS applyTime,
         ahap_123.ACCEPT_TIME AS acceptTime,
@@ -1433,6 +1439,7 @@
         temp1.GCBM AS gcbm,
         ahp_123.ID_ AS procInstId,
         aht_123.ID_ AS taskId,
+        aht_123.TASK_DEF_KEY_ AS taskDefKey,
         ahap_123.END_TIME AS concludedTime,
         ahap_123.CREATE_TIME AS applyTime,
         ahap_123.ACCEPT_TIME AS acceptTime,
@@ -1481,6 +1488,7 @@
         temp1.GCBM AS gcbm,
         ahp_123.ID_ AS procInstId,
         aht_123.ID_ AS taskId,
+        aht_123.TASK_DEF_KEY_ AS taskDefKey,
         ahap_123.END_TIME AS concludedTime,
         ahap_123.CREATE_TIME AS applyTime,
         ahap_123.ACCEPT_TIME AS acceptTime,
@@ -1527,6 +1535,7 @@
         temp1.GCBM AS gcbm,
         ahp_123.ID_ AS procInstId,
         aht_123.ID_ AS taskId,
+        aht_123.TASK_DEF_KEY_ AS taskDefKey,
         ahap_123.END_TIME AS concludedTime,
         ahap_123.CREATE_TIME AS applyTime,
         ahap_123.ACCEPT_TIME AS acceptTime,
@@ -1901,10 +1910,11 @@
         LEFT JOIN aea_par_theme_ver ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
         LEFT JOIN aea_par_theme theme ON theme.THEME_ID = ver.THEME_ID
         LEFT JOIN act_sto_appinst app ON app.MASTER_RECORD_ID = ahap_123.APPLYINST_ID
-        LEFT JOIN act_ru_task t ON t.PROC_INST_ID_ = app.PROCINST_ID
+        LEFT JOIN act_hi_taskinst t ON t.PROC_INST_ID_ = app.PROCINST_ID
         <where>
             ahap_123.IS_SERIES_APPROVE = '0'
-            AND (ahap_123.APPLYINST_STATE = '1' or ahap_123.APPLYINST_STATE = '5')
+            AND ahap_123.APPLYINST_STATE != '0'
+            AND ahap_123.APPLYINST_STATE != '4'
             AND APPLYINST_SOURCE = 'net'
 
             <if test="userList != null and userList.size() > 0">
@@ -1945,10 +1955,11 @@
         LEFT JOIN aea_par_theme theme ON theme.THEME_ID = ver.THEME_ID
         LEFT JOIN act_sto_appinst app ON app.MASTER_RECORD_ID = ahap_123.APPLYINST_ID
         LEFT JOIN act_sto_appinst_subflow apps ON apps.APPINST_ID = app.APPINST_ID
-        LEFT JOIN act_ru_task t ON t.PROC_INST_ID_ = apps.SUBFLOW_PROCINST_ID
+        LEFT JOIN act_hi_taskinst t ON t.PROC_INST_ID_ = apps.SUBFLOW_PROCINST_ID
         <where>
             ahap_123.IS_SERIES_APPROVE = '0'
-            AND (ahap_123.APPLYINST_STATE = '1' or ahap_123.APPLYINST_STATE = '5')
+            AND ahap_123.APPLYINST_STATE != '0'
+            AND ahap_123.APPLYINST_STATE != '4'
             AND APPLYINST_SOURCE = 'net'
             <if test="userList != null and userList.size() > 0">
                 AND t.ASSIGNEE_ IN
@@ -1983,10 +1994,11 @@
         LEFT JOIN aea_hi_seriesinst ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
         LEFT JOIN aea_hi_iteminst ahi_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
         LEFT JOIN act_sto_appinst app ON app.MASTER_RECORD_ID = ahap_123.APPLYINST_ID
-        LEFT JOIN act_ru_task t ON t.PROC_INST_ID_ = app.PROCINST_ID
+        LEFT JOIN act_hi_taskinst t ON t.PROC_INST_ID_ = app.PROCINST_ID
         <where>
             ahap_123.IS_SERIES_APPROVE = '1'
-            AND (ahap_123.APPLYINST_STATE = '1' or ahap_123.APPLYINST_STATE = '5')
+            AND ahap_123.APPLYINST_STATE != '0'
+            AND ahap_123.APPLYINST_STATE != '4'
             AND APPLYINST_SOURCE = 'net'
             <if test="userList != null and userList.size() > 0">
                 AND t.ASSIGNEE_ IN
@@ -2020,10 +2032,11 @@
         LEFT JOIN aea_hi_iteminst ahi_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
         LEFT JOIN act_sto_appinst app ON app.MASTER_RECORD_ID = ahap_123.APPLYINST_ID
         LEFT JOIN act_sto_appinst_subflow apps ON apps.APPINST_ID = app.APPINST_ID
-        LEFT JOIN act_ru_task t ON t.PROC_INST_ID_ = apps.SUBFLOW_PROCINST_ID
+        LEFT JOIN act_hi_taskinst t ON t.PROC_INST_ID_ = apps.SUBFLOW_PROCINST_ID
         <where>
             ahap_123.IS_SERIES_APPROVE = '1'
-            AND (ahap_123.APPLYINST_STATE = '1' or ahap_123.APPLYINST_STATE = '5')
+            AND ahap_123.APPLYINST_STATE != '0'
+            AND ahap_123.APPLYINST_STATE != '4'
             AND APPLYINST_SOURCE = 'net'
             <if test="userList != null and userList.size() > 0">
                 AND t.ASSIGNEE_ IN

@@ -521,7 +521,7 @@ ORG_DAY_STATISTICS_ID  ,STATISTICS_RECORD_ID  ,ORG_ID  ,ORG_NAME  ,REGION_ID  ,R
         order by dayApplyCount
     </select>
 
-    <select id="getOrgItemAcceptStatisticsByDay"
+    <select id="getAcceptStatisticsByDay"
             resultType="com.augurit.aplanmis.common.vo.analyse.OrgItemStatisticsVo">
         select
         <if test="_databaseId == 'oracle'">
@@ -534,6 +534,9 @@ ORG_DAY_STATISTICS_ID  ,STATISTICS_RECORD_ID  ,ORG_ID  ,ORG_NAME  ,REGION_ID  ,R
         from AEA_ANA_ORG_DAY_STATISTICS
         where
         ROOT_ORG_ID = #{rootOrgId}
+        <if test="regionId != null and regionId != ''">
+            and REGION_ID = #{regionId}
+        </if>
         <if test="orgId != null and orgId != ''">
             and ORG_ID = #{orgId}
         </if>
@@ -550,5 +553,77 @@ ORG_DAY_STATISTICS_ID  ,STATISTICS_RECORD_ID  ,ORG_ID  ,ORG_NAME  ,REGION_ID  ,R
             and DATE_FORMAT(STATISTICS_DATE,'%Y-%m-%d') <![CDATA[ <= ]]> #{endTime}
             group by STATISTICS_DATE
         </if>
+        order by STATISTICS_DATE
+    </select>
+
+    <select id="getRegionAcceptStatistics" resultType="AeaAnaOrgDayStatistics">
+        select a.* from (
+        select REGION_ID as regionId, REGION_NAME as regionName,
+        sum(DAY_APPLY_COUNT) as dayApplyCount, sum(DAY_ACCEPTANCE_COUNT) as dayAcceptanceCount
+        from AEA_ANA_ORG_DAY_STATISTICS
+        where
+        ROOT_ORG_ID = #{rootOrgId}
+        <if test="_databaseId == 'oracle'">
+            and to_char(STATISTICS_DATE,'yyyy-mm-dd') <![CDATA[ >= ]]> #{startTime}
+            and to_char(STATISTICS_DATE,'yyyy-mm-dd') <![CDATA[ <= ]]> #{endTime}
+        </if>
+        <if test="_databaseId == 'mysql'">
+            and DATE_FORMAT(STATISTICS_DATE,'%Y-%m-%d') <![CDATA[ >= ]]> #{startTime}
+            and DATE_FORMAT(STATISTICS_DATE,'%Y-%m-%d') <![CDATA[ <= ]]> #{endTime}
+        </if>
+        group by REGION_ID, REGION_NAME
+        ) a
+        left join BSC_DIC_REGION region on region.REGION_ID = a.regionId order by region.REGION_NUM
+    </select>
+
+    <select id="getOrgAcceptStatistics" resultType="AeaAnaOrgDayStatistics">
+        select a.* from (
+        select ORG_ID as orgId, ORG_NAME as orgName, sum(DAY_APPLY_COUNT) as dayApplyCount, sum(DAY_ACCEPTANCE_COUNT) as
+        dayAcceptanceCount
+        from AEA_ANA_ORG_DAY_STATISTICS
+        where
+        ROOT_ORG_ID = #{rootOrgId}
+        and REGION_ID = #{regionId}
+        <if test="_databaseId == 'oracle'">
+            and to_char(STATISTICS_DATE,'yyyy-mm-dd') <![CDATA[ >= ]]> #{startTime}
+            and to_char(STATISTICS_DATE,'yyyy-mm-dd') <![CDATA[ <= ]]> #{endTime}
+        </if>
+        <if test="_databaseId == 'mysql'">
+            and DATE_FORMAT(STATISTICS_DATE,'%Y-%m-%d') <![CDATA[ >= ]]> #{startTime}
+            and DATE_FORMAT(STATISTICS_DATE,'%Y-%m-%d') <![CDATA[ <= ]]> #{endTime}
+        </if>
+        group by ORG_ID , ORG_NAME
+        ) a
+        left join OPU_OM_ORG org on org.ORG_ID = a.orgId
+        order by org.ORG_SORT_NO
+    </select>
+
+    <select id="getRegionDayStatistics" resultType="com.augurit.aplanmis.common.vo.analyse.ItemDetailFormVo">
+        select
+        aaods.REGION_ID regionId,
+        aaods.REGION_NAME regionName,
+        <if test="regionId != null">
+            aaods.ORG_ID orgId,
+            aaods.ORG_NAME orgName,
+        </if>
+
+        sum(aaods.DAY_APPLY_COUNT) receiptCount,
+        sum(aaods.DAY_ACCEPTANCE_COUNT)acceptCount
+         from
+
+        aea_ana_org_day_statistics aaods
+
+        where aaods.REGION_ID is not null
+        and aaods.STATISTICS_DATE <![CDATA[ >= ]]> #{startDate}
+        and aaods.STATISTICS_DATE <![CDATA[ <= ]]> #{endDate}
+        and aaods.ROOT_ORG_ID = #{rootOrgId}
+        <if test="regionId != null">
+            and aaods.REGION_ID = #{regionId}
+        </if>
+        GROUP by REGION_ID
+        <if test="regionId != null">
+            ,aaods.ORG_ID
+        </if>
+
     </select>
 </mapper>

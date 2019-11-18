@@ -146,5 +146,36 @@ public class AeaItemFrontItemAdminServiceImpl implements AeaItemFrontItemAdminSe
         }
 
     }
+
+    @Override
+    public void batchSaveAeaItemFrontItem(String itemVerId,String frontCkItemVerIds)throws Exception{
+        if(StringUtils.isBlank(itemVerId)  || StringUtils.isBlank(frontCkItemVerIds)){
+            throw new InvalidParameterException(itemVerId,frontCkItemVerIds);
+        }
+
+        String[] frontCkItemVerIdArr = frontCkItemVerIds.split(",");
+        if(frontCkItemVerIdArr!=null && frontCkItemVerIdArr.length>0){
+            AeaItemFrontItem query = new AeaItemFrontItem();
+            query.setItemVerId(itemVerId);
+            Long maxSortNo = getMaxSortNo(query);
+            for(String frontCkItemVerId:frontCkItemVerIdArr){
+                AeaItemFrontItem aeaItemFrontItem = new AeaItemFrontItem();
+                aeaItemFrontItem.setItemVerId(itemVerId);
+                aeaItemFrontItem.setFrontCkItemVerId(frontCkItemVerId);
+                List<AeaItemFrontItem> list = aeaItemFrontItemMapper.listAeaItemFront(aeaItemFrontItem);
+                if (list.size() > 0) {
+                    continue;
+                }
+                aeaItemFrontItem.setFrontItemId(UUID.randomUUID().toString());
+                aeaItemFrontItem.setCreateTime(new Date());
+                aeaItemFrontItem.setCreater(SecurityContext.getCurrentUserId());
+                aeaItemFrontItem.setRootOrgId(SecurityContext.getCurrentOrgId());
+                aeaItemFrontItem.setSortNo(maxSortNo);
+                aeaItemFrontItem.setIsActive("1");
+                aeaItemFrontItemMapper.insertAeaItemFront(aeaItemFrontItem);
+                maxSortNo++;
+            }
+        }
+    }
 }
 

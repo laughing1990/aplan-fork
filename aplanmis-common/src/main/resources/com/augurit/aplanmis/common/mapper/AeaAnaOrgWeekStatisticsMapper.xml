@@ -2,9 +2,9 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <!--created by zhangwn    2019-09-04 17:02:08 -->
 <!--0 一些前置信息配置 -->
-<mapper namespace="com.augurit.aplanmis.common.mapper.AeaAnaOrgWeekStatisticsMapper" >
-<!--1 返回所有字段的SQL字句 -->
-<sql id="allColumns" >
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaAnaOrgWeekStatisticsMapper">
+    <!--1 返回所有字段的SQL字句 -->
+<sql id="allColumns">
     ORG_WEEK_STATISTICS_ID  orgWeekStatisticsId,
     STATISTICS_RECORD_ID  statisticsRecordId,
     ORG_ID  orgId,
@@ -405,6 +405,7 @@ ORG_WEEK_STATISTICS_ID  ,STATISTICS_RECORD_ID  ,ORG_ID  ,ORG_NAME  ,REGION_ID  ,
         and STATISTICS_END_DATE = #{endTime}
         and APPLYINST_SOURCE = #{applySource}
     </select>
+
     <select id="sumWeekStatistics" resultType="AeaAnaOrgWeekStatistics">
     select sum(WEEK_APPLY_COUNT) weekApplyCount
     ,SUM(WEEK_ACCEPTANCE_COUNT) weekAcceptanceCount
@@ -456,5 +457,64 @@ ORG_WEEK_STATISTICS_ID  ,STATISTICS_RECORD_ID  ,ORG_ID  ,ORG_NAME  ,REGION_ID  ,
         group by ORG_ID, ORG_NAME, ITEM_ID, ITEM_NAME
         ) a
         order by weekApplyCount
+    </select>
+    <select id="getRegionWeekStatistics" resultType="com.augurit.aplanmis.common.vo.analyse.ItemDetailFormVo">
+              select
+        aaows.REGION_ID regionId,
+        aaows.REGION_NAME regionName,
+        <if test="regionId != null">
+            aaows.ORG_ID orgId,
+            aaows.ORG_NAME orgName,
+        </if>
+
+        sum(aaows.WEEK_APPLY_COUNT) receiptCount,
+        sum(aaows.WEEK_ACCEPTANCE_COUNT)acceptCount
+         from
+
+        aea_ana_org_week_statistics  aaows
+
+        where aaows.REGION_ID is not null
+        and aaows.WEEK_NUM <![CDATA[ >= ]]> #{startWeekNum}
+        and aaows.WEEK_NUM <![CDATA[ <= ]]> #{endWeekNum}
+        and aaows.STATISTICS_YEAR = #{thisYear}
+        and aaows.ROOT_ORG_ID = #{rootOrgId}
+        <if test="regionId != null">
+            and aaows.REGION_ID = #{regionId}
+        </if>
+        GROUP by REGION_ID
+        <if test="regionId != null">
+            ,aaows.ORG_ID
+        </if>
+
+    </select>
+
+    <select id="getRegionAcceptStatistics" resultType="AeaAnaOrgWeekStatistics">
+        select a.* from (
+            select REGION_ID as regionId, REGION_NAME as regionName,
+                sum(WEEK_APPLY_COUNT) as weekApplyCount, sum(WEEK_ACCEPTANCE_COUNT) as weekAcceptanceCount
+            from AEA_ANA_ORG_WEEK_STATISTICS
+            where
+                ROOT_ORG_ID = #{rootOrgId}
+                and STATISTICS_YEAR = #{year}
+                and WEEK_NUM = #{weekNum}
+            group by REGION_ID, REGION_NAME
+        ) a
+        left join BSC_DIC_REGION region on region.REGION_ID = a.regionId order by region.REGION_NUM
+    </select>
+
+    <select id="getOrgAcceptStatistics" resultType="AeaAnaOrgWeekStatistics">
+        select a.* from (
+            select ORG_ID as orgId, ORG_NAME as orgName,
+                sum(WEEK_APPLY_COUNT) as weekApplyCount, sum(WEEK_ACCEPTANCE_COUNT) as weekAcceptanceCount
+            from AEA_ANA_ORG_WEEK_STATISTICS
+            where
+                ROOT_ORG_ID = #{rootOrgId}
+                and REGION_ID = #{regionId}
+                and STATISTICS_YEAR = #{year}
+                and WEEK_NUM = #{weekNum}
+            group by ORG_ID , ORG_NAME
+        ) a
+        left join OPU_OM_ORG org on org.ORG_ID = a.orgId
+        order by org.ORG_SORT_NO
     </select>
 </mapper>

@@ -43,6 +43,9 @@ public class ExProjFormVo {
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private Date approvalTime; // (立项批准时间)
 
+    @ApiModelProperty("是否工程总承包模式")
+    private String isEpc; // (是否工程总承包模式)
+
     @ApiModelProperty(value = "各级政府财政资金投资", required = true)
     private String govFinance; // (各级政府财政资金投资)
 

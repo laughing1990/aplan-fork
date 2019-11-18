@@ -53,6 +53,7 @@ public class ItemDetailFormVo implements Serializable {
     private int winApplyCount;
     @ApiModelProperty("网上申报数")
     private int netApplyCount;
-
+    @ApiModelProperty("时限状态")
+    private String instState;
 
 }

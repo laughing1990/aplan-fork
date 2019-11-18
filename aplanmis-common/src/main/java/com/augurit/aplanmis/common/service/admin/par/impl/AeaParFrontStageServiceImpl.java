@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * 阶段的前置阶段检测表-Service服务接口实现类
@@ -142,5 +143,46 @@ public class AeaParFrontStageServiceImpl implements AeaParFrontStageService {
         if (StringUtils.isBlank(stageId)) return aeaParFrontStageVos;
         return aeaParFrontStageMapper.getHistStageByStageId(stageId, SecurityContext.getCurrentOrgId());
     }
+
+    @Override
+    public PageInfo<AeaParFrontStageVo> listSelectParFrontStageByPage(AeaParFrontStage aeaParFrontStage,Page page) throws Exception{
+        PageHelper.startPage(page);
+        List<AeaParFrontStageVo> list = aeaParFrontStageMapper.listSelectParFrontStage(aeaParFrontStage);
+        logger.debug("成功执行分页查询！！");
+        return new PageInfo<>(list);
+    }
+
+    @Override
+    public void batchSaveAeaParFrontStage(String stageId,String histStageIds)throws Exception{
+        if(StringUtils.isBlank(stageId)  || StringUtils.isBlank(histStageIds)){
+            throw new InvalidParameterException(stageId,histStageIds);
+        }
+
+        String[] histStageIdArr = histStageIds.split(",");
+        if(histStageIdArr!=null && histStageIdArr.length>0){
+            AeaParFrontStage query = new AeaParFrontStage();
+            query.setStageId(stageId);
+            Long maxSortNo = getMaxSortNo(query);
+            for(String histStageId:histStageIdArr){
+                AeaParFrontStage aeaParFrontStage = new AeaParFrontStage();
+                aeaParFrontStage.setStageId(stageId);
+                aeaParFrontStage.setHistStageId(histStageId);
+                List<AeaParFrontStage> list = aeaParFrontStageMapper.listAeaParFrontStage(aeaParFrontStage);
+                if (list.size() > 0) {
+                    continue;
+                }
+                aeaParFrontStage.setFrontStageId(UUID.randomUUID().toString());
+                aeaParFrontStage.setCreateTime(new Date());
+                aeaParFrontStage.setCreater(SecurityContext.getCurrentUserId());
+                aeaParFrontStage.setRootOrgId(SecurityContext.getCurrentOrgId());
+                aeaParFrontStage.setSortNo(maxSortNo);
+                aeaParFrontStage.setIsActive("1");
+                aeaParFrontStageMapper.insertAeaParFrontStage(aeaParFrontStage);
+                maxSortNo++;
+            }
+        }
+    }
+
+
 }
 

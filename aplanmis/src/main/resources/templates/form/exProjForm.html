@@ -95,6 +95,15 @@
                         </el-form-item>
                     </div>
 
+                    <div class="clearfix">
+                        <el-form-item label="是否工程总承包模式" prop="isEpc">
+                            <el-radio-group v-model="exProjFrom.isEpc">
+                                <el-radio label="0" value="0" key="0">否</el-radio>
+                                <el-radio label="1" value="1" key="1">是</el-radio>
+                            </el-radio-group>
+                        </el-form-item>
+                    </div>
+
                     <p class="apply-info-title" style="padding-top: 30px;">
                         项目资金来源构成比例
                         <label class="notice" style="margin-left: 45px;">

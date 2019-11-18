@@ -15,17 +15,21 @@ import java.util.List;
 @Mapper
 @Repository
 public interface AeaAnaOrgWeekStatisticsMapper {
-    public void insertAeaAnaOrgWeekStatistics(AeaAnaOrgWeekStatistics aeaAnaOrgWeekStatistics);
-    public void updateAeaAnaOrgWeekStatistics(AeaAnaOrgWeekStatistics aeaAnaOrgWeekStatistics);
-    public void deleteAeaAnaOrgWeekStatistics(@Param("id") String id);
-    public List <AeaAnaOrgWeekStatistics> listAeaAnaOrgWeekStatistics(AeaAnaOrgWeekStatistics aeaAnaOrgWeekStatistics);
-    public AeaAnaOrgWeekStatistics getAeaAnaOrgWeekStatisticsById(@Param("id") String id);
+    void insertAeaAnaOrgWeekStatistics(AeaAnaOrgWeekStatistics aeaAnaOrgWeekStatistics);
 
-    public void deleteThisWeekStatisticsData(@Param("statisticsStartDate") String statisticsStartDate, @Param("statisticsEndDate") String statisticsEndDate, @Param("rootOrgId") String rootOrgId);
+    void updateAeaAnaOrgWeekStatistics(AeaAnaOrgWeekStatistics aeaAnaOrgWeekStatistics);
 
-    public void batchInserOrgWeekStatisticst(@Param("orgWeekStatisticsList") List<AeaAnaOrgWeekStatistics> orgWeekStatisticsList);
+    void deleteAeaAnaOrgWeekStatistics(@Param("id") String id);
 
-    public AeaAnaOrgWeekStatistics getAeaAnaOrgWeekStatistics(@Param("orgId") String orgId, @Param("itemId") String itemId, @Param("startTime") String startTime, @Param("endTime") String endTime,@Param("applySource") String applySource);
+    List<AeaAnaOrgWeekStatistics> listAeaAnaOrgWeekStatistics(AeaAnaOrgWeekStatistics aeaAnaOrgWeekStatistics);
+
+    AeaAnaOrgWeekStatistics getAeaAnaOrgWeekStatisticsById(@Param("id") String id);
+
+    void deleteThisWeekStatisticsData(@Param("statisticsStartDate") String statisticsStartDate, @Param("statisticsEndDate") String statisticsEndDate, @Param("rootOrgId") String rootOrgId);
+
+    void batchInserOrgWeekStatisticst(@Param("orgWeekStatisticsList") List<AeaAnaOrgWeekStatistics> orgWeekStatisticsList);
+
+    AeaAnaOrgWeekStatistics getAeaAnaOrgWeekStatistics(@Param("orgId") String orgId, @Param("itemId") String itemId, @Param("startTime") String startTime, @Param("endTime") String endTime, @Param("applySource") String applySource);
 
     /**
      * 计算指定周的 接件数、受理数、不予受理数、办件数、逾期数
@@ -57,4 +61,28 @@ public interface AeaAnaOrgWeekStatisticsMapper {
      * @return
      */
     List<AeaAnaOrgWeekStatistics> getOrgItemAcceptStatistics(@Param("orgId") String orgId, @Param("year") String year, @Param("weekNum") int weekNum, @Param("rootOrgId") String rootOrgId);
+
+    /**
+     * 查询周范围内的各地区事项接件受理情况统计
+     *
+     * @param year
+     * @param weekNum
+     * @param rootOrgId
+     * @return
+     */
+    List<AeaAnaOrgWeekStatistics> getRegionAcceptStatistics(@Param("year") String year, @Param("weekNum") int weekNum, @Param("rootOrgId") String rootOrgId);
+
+    /**
+     * 查询周范围内的各地区各部门接件受理情况统计
+     *
+     * @param regionId
+     * @param year
+     * @param weekNum
+     * @param rootOrgId
+     * @return
+     */
+    List<AeaAnaOrgWeekStatistics> getOrgAcceptStatistics(@Param("regionId") String regionId, @Param("year") String year, @Param("weekNum") int weekNum, @Param("rootOrgId") String rootOrgId);
+
+
+    List<ItemDetailFormVo> getRegionWeekStatistics(@Param("thisYear") String thisYear, @Param("startWeekNum") int startWeekNum, @Param("endWeekNum") int endWeekNum, @Param("regionId") String regionId, @Param("rootOrgId") String rootOrgId);
 }

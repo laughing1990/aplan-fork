@@ -5,11 +5,13 @@ import com.augurit.aplanmis.common.domain.AeaImProjPurchase;
 import com.augurit.aplanmis.common.domain.AeaImService;
 import com.augurit.aplanmis.common.mapper.*;
 import com.augurit.aplanmis.common.vo.QueryProjPurchaseVo;
-import com.augurit.aplanmis.supermarket.main.vo.IndexDataVo;
+import com.augurit.aplanmis.supermarket.main.vo.province.ProvinceIndexData;
+import com.augurit.aplanmis.supermarket.main.vo.province.ProvinceRunSituationData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.Calendar;
 import java.util.List;
@@ -36,7 +38,35 @@ public class ProvinceMainService {
     @Value("${dg.sso.access.platform.org.top-org-id}")
     private String topOrgId;
 
-    public IndexDataVo getProvinceIndexData(String queryType) throws Exception {
+    public ProvinceIndexData getProvinceIndexData() throws Exception {
+//        ProvinceIndexData vo = new ProvinceIndexData();
+
+        //项目采购---
+        List<AeaImProjPurchase> projPurchaseVos = aeaImProjPurchaseMapper.listPublicProjPurchaseByQueryProjPurchaseVo(new QueryProjPurchaseVo());
+//        vo.changeToProjPurchase(projPurchaseVos);
+
+        // 中选公告
+        List<AeaImProjPurchase> selectionNoticeList = aeaImProjPurchaseMapper.listSelectionNotice(new QueryProjPurchaseVo());
+//        vo.changeToPurchaseSelect(selectionNoticeList);
+
+        // 合同公告
+        List<AeaImContract> contracts = aeaImContractMapper.listAuditAeaImContract(new AeaImContract("1", "1", topOrgId));
+//        vo.changeToPurchaseContract(contracts);
+
+        //服务列表
+        List<AeaImService> aeaImServices = aeaImServiceMapper.listAeaImService(new AeaImService("1", topOrgId));
+//        vo.changeToImService(aeaImServices);
+
+
+//        return vo;
+        return new ProvinceIndexData(projPurchaseVos, selectionNoticeList, contracts, aeaImServices);
+    }
+
+    public ProvinceRunSituationData getProvinceRunSituationData(String queryType) throws Exception {
+        if (StringUtils.isEmpty(queryType)) {
+            queryType = "A";
+        }
+        queryType = queryType.toUpperCase();
         String startDate;
         Calendar calendar = Calendar.getInstance();
         String year = String.valueOf(calendar.get(Calendar.YEAR));
@@ -60,42 +90,14 @@ public class ProvinceMainService {
                 startDate = null;
                 break;
         }
-        IndexDataVo vo = new IndexDataVo();
-        //入驻中介机构的
-//        List<AgentUnitService> agentUnitServices = agentUnitServiceMapper.listCheckinUnit(new AgentUnitService());
+        //入驻中介机构数量
         int agentUnitServiceNum = agentUnitServiceMapper.listCheckinUnitNum(startDate);
-        vo.setAgentUnitCount(agentUnitServiceNum);
-
         //已发布的中介服务事项--
-//        List<AeaItemService> aeaItemBasics = aeaItemBasicMapper.listAgentItemService(new AeaItemService());
         int agentItemServiceNum = aeaItemBasicMapper.listAgentItemServiceNum(startDate);
-        vo.setItemServiceCount(agentItemServiceNum);
-
         //已完成的采购需求---
-//        List<AeaImProjPurchase> finishPurchases = aeaImProjPurchaseMapper.listAeaImProjPurchase(new AeaImProjPurchase("2", topOrgId));
         int finishPurchaseNum = aeaImProjPurchaseMapper.listAeaImProjPurchaseNum(startDate);
-        vo.setFinishedPurchaseCount(finishPurchaseNum);
-
         //项目采购---
-        List<AeaImProjPurchase> projPurchaseVos = aeaImProjPurchaseMapper.listPublicProjPurchaseByQueryProjPurchaseVo(new QueryProjPurchaseVo());
-        vo.changeToProjPurchase(projPurchaseVos);
         int projPurchaseNum = aeaImProjPurchaseMapper.listPublicProjPurchaseNum(startDate);
-        vo.setPublishedPurchaseCount(projPurchaseNum);
-
-        // 中选公告
-        List<AeaImProjPurchase> selectionNoticeList = aeaImProjPurchaseMapper.listSelectionNotice(new QueryProjPurchaseVo());
-        vo.changeToPurchaseSelect(selectionNoticeList);
-
-        // 合同公告
-        List<AeaImContract> contracts = aeaImContractMapper.listAuditAeaImContract(new AeaImContract("1", "1", topOrgId));
-
-        vo.changeToPurchaseContract(contracts);
-
-        //服务列表
-        List<AeaImService> aeaImServices = aeaImServiceMapper.listAeaImService(new AeaImService("1", topOrgId));
-        vo.changeToImService(aeaImServices);
-
-
-        return vo;
+        return new ProvinceRunSituationData(agentUnitServiceNum, agentItemServiceNum, finishPurchaseNum, projPurchaseNum);
     }
 }
