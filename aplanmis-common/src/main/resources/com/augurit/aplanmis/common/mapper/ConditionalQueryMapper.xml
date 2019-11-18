@@ -1904,7 +1904,8 @@
         LEFT JOIN act_ru_task t ON t.PROC_INST_ID_ = app.PROCINST_ID
         <where>
             ahap_123.IS_SERIES_APPROVE = '0'
-            AND (ahap_123.APPLYINST_STATE = '1' or ahap_123.APPLYINST_STATE = '5')
+            AND ahap_123.APPLYINST_STATE != '0'
+            AND ahap_123.APPLYINST_STATE != '4'
             AND APPLYINST_SOURCE = 'net'
 
             <if test="userList != null and userList.size() > 0">
@@ -1948,7 +1949,8 @@
         LEFT JOIN act_ru_task t ON t.PROC_INST_ID_ = apps.SUBFLOW_PROCINST_ID
         <where>
             ahap_123.IS_SERIES_APPROVE = '0'
-            AND (ahap_123.APPLYINST_STATE = '1' or ahap_123.APPLYINST_STATE = '5')
+            AND ahap_123.APPLYINST_STATE != '0'
+            AND ahap_123.APPLYINST_STATE != '4'
             AND APPLYINST_SOURCE = 'net'
             <if test="userList != null and userList.size() > 0">
                 AND t.ASSIGNEE_ IN
@@ -1986,7 +1988,8 @@
         LEFT JOIN act_ru_task t ON t.PROC_INST_ID_ = app.PROCINST_ID
         <where>
             ahap_123.IS_SERIES_APPROVE = '1'
-            AND (ahap_123.APPLYINST_STATE = '1' or ahap_123.APPLYINST_STATE = '5')
+            AND ahap_123.APPLYINST_STATE != '0'
+            AND ahap_123.APPLYINST_STATE != '4'
             AND APPLYINST_SOURCE = 'net'
             <if test="userList != null and userList.size() > 0">
                 AND t.ASSIGNEE_ IN
@@ -2023,7 +2026,8 @@
         LEFT JOIN act_ru_task t ON t.PROC_INST_ID_ = apps.SUBFLOW_PROCINST_ID
         <where>
             ahap_123.IS_SERIES_APPROVE = '1'
-            AND (ahap_123.APPLYINST_STATE = '1' or ahap_123.APPLYINST_STATE = '5')
+            AND ahap_123.APPLYINST_STATE != '0'
+            AND ahap_123.APPLYINST_STATE != '4'
             AND APPLYINST_SOURCE = 'net'
             <if test="userList != null and userList.size() > 0">
                 AND t.ASSIGNEE_ IN
