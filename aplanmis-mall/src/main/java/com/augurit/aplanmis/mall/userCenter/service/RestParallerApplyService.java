@@ -1,8 +1,14 @@
 package com.augurit.aplanmis.mall.userCenter.service;
 
+import com.augurit.aplanmis.common.constants.ApplyState;
+import com.augurit.aplanmis.common.domain.AeaHiApplyinst;
 import com.augurit.aplanmis.common.domain.AeaItemMat;
 import com.augurit.aplanmis.common.domain.AeaParFactor;
+import com.augurit.aplanmis.common.domain.AeaParStage;
 import com.augurit.aplanmis.mall.main.vo.ItemListVo;
+import com.augurit.aplanmis.mall.userCenter.vo.StageApplyDataPageVo;
+import com.augurit.aplanmis.mall.userCenter.vo.StageApplyDataVo;
+import io.jsonwebtoken.lang.Assert;
 
 import java.util.List;
 import java.util.Map;
@@ -42,4 +48,12 @@ public interface RestParallerApplyService {
 
 
     List<AeaItemMat> listMatByStateIdAndStageIdAndItemVerId(String stageId, String[] stateIds, String[] itemVerIds)throws Exception;
+
+    /**
+     * 仅实例化申请实例
+     * @param stageApplyDataPageVo
+     * @return
+     * @throws Exception
+     */
+    public String onlyInstApply(StageApplyDataPageVo stageApplyDataPageVo) throws Exception;
 }

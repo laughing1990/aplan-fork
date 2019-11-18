@@ -197,5 +197,11 @@ public class RestParallerApplyController {
         }
     }
 
+    @PostMapping("/parallel/onlyInstApply")
+    @ApiOperation(value = "并联申报 --> 仅保存申报实例", notes = "并联申报 --> 仅保存申报实例", httpMethod = "POST")
+    public ContentResultForm<String> onlyInstApply(@RequestBody StageApplyDataPageVo stageApplyDataPageVo) throws Exception {
+        String applyinstId = restParallerApplyService.onlyInstApply(stageApplyDataPageVo);
+        return new ContentResultForm<>(true, applyinstId, "Inst apply success.");
+    }
 
 }

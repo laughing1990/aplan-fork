@@ -5,8 +5,10 @@ import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.agcloud.opus.common.domain.OpuOmOrg;
 import com.augurit.agcloud.opus.common.mapper.OpuOmOrgMapper;
+import com.augurit.aplanmis.common.constants.ApplyState;
 import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.mapper.*;
+import com.augurit.aplanmis.common.service.instance.AeaHiApplyinstService;
 import com.augurit.aplanmis.common.service.item.AeaItemBasicService;
 import com.augurit.aplanmis.common.service.item.AeaItemPrivService;
 import com.augurit.aplanmis.common.service.mat.AeaItemMatService;
@@ -17,6 +19,9 @@ import com.augurit.aplanmis.common.utils.CommonTools;
 import com.augurit.aplanmis.mall.main.vo.ItemListVo;
 import com.augurit.aplanmis.mall.main.vo.ParallelApproveItemVo;
 import com.augurit.aplanmis.mall.userCenter.service.RestParallerApplyService;
+import com.augurit.aplanmis.mall.userCenter.vo.StageApplyDataPageVo;
+import com.augurit.aplanmis.mall.userCenter.vo.StageApplyDataVo;
+import io.jsonwebtoken.lang.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -53,6 +58,8 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
     private AeaParThemeService aeaParThemeService;
     @Autowired
     private BscDicRegionMapper bscDicRegionMapper;
+    @Autowired
+    private AeaHiApplyinstService aeaHiApplyinstService;
 
     @Override
     public ItemListVo listItemAndStateByStageId(String stageId, String projInfoId, String regionalism, String projectAddress) throws Exception {
@@ -307,5 +314,24 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
             }
         })
                 .collect(Collectors.toList());
+    }
+
+    public String onlyInstApply(StageApplyDataPageVo stageApplyDataPageVo) throws Exception {
+        List<String> itemVerIds = stageApplyDataPageVo.getItemVerIds();
+        if (null != itemVerIds && itemVerIds.size() > 0) {
+            AeaParStage aeaParStage = aeaParStageMapper.getAeaParStageById(stageApplyDataPageVo.getStageId());
+            Assert.notNull(aeaParStage, "aeaParStage is null");
+            String appId = aeaParStage.getAppId();
+            String themeVerId = aeaParStage.getThemeVerId();
+            StageApplyDataVo stageApplyDataVo = stageApplyDataPageVo.toStageApplyDataVo(appId, themeVerId);
+            String applySource = stageApplyDataVo.getApplySource();
+            String applySubject = stageApplyDataVo.getApplySubject();
+            String linkmanInfoId = stageApplyDataVo.getLinkmanInfoId();
+            String branchOrgMap = stageApplyDataVo.getBranchOrgMap();//是否分局承办，允许为空
+            AeaHiApplyinst applyinst = aeaHiApplyinstService.createAeaHiApplyinst(applySource, applySubject, linkmanInfoId, "0", branchOrgMap, ApplyState.RECEIVE_APPROVED_APPLY.getValue());
+            return applyinst == null ? null : applyinst.getApplyinstId();
+        } else {
+            throw new Exception("未选择并联事项");
+        }
     }
 }
