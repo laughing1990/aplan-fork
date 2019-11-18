@@ -563,6 +563,7 @@ var vm = new Vue({
           allApplySubjectInfo: [], // 证照库条件查询
           selApplySubject: {}, // 选中的建设单位 申报主体
           matFormDialogVisible: false, // 是否展示材料一张表单
+          matformNameTitle: '材料表单',
           IsJustApplyinst: 0, //
         }
     },
@@ -3558,8 +3559,6 @@ var vm = new Vue({
             };
           if(_that.buttonStyle==4){
             _that.IsJustApplyinst = 1;
-          }else {
-            _that.IsJustApplyinst = 2;
           }
             //选择的情形
             var parmas = {
@@ -3675,7 +3674,7 @@ var vm = new Vue({
       showOneFormDialog1: function(oneformMat){
         var _that = this;
         var _applyinstId = _that.applyinstId;
-        _that.oneformNameTitle = oneformMat.matName
+        _that.matformNameTitle = oneformMat.matName
         if(_applyinstId==''){
           _that.showCommentDialog('4','matForm',oneformMat.stoFormId)
         }else {

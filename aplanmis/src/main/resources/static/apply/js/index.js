@@ -4078,11 +4078,6 @@ var vm = new Vue({
         _that.rootApplyLinkmanId = _that.applyPersonFrom.applyLinkmanId;
         _that.rootLinkmanInfoId = _that.applyPersonFrom.linkLinkmanId
       };
-      if(_that.submitCommentsType==4){
-        _that.IsJustApplyinst = 1;
-      }else {
-        _that.IsJustApplyinst = 2;
-      }
       var parmas={
         applyLinkmanId: _that.rootApplyLinkmanId,
         applySource: 'win',
@@ -4146,6 +4141,11 @@ var vm = new Vue({
           // applyinstIds 并行
           // parallelApplyinstId 并联
           //isJustApplyinst "1"  是否仅生成申报实例
+          if(_that.submitCommentsType==4){
+            _that.IsJustApplyinst = 1;
+          }else {
+            _that.IsJustApplyinst = 2;
+          }
           if(_that.submitCommentsType==4){
             if(_that.submitCommentsMatFlag == 'matForm'){
               _that.parallelApplyinstId=res.content;

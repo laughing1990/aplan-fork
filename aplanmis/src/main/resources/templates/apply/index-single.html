@@ -1461,7 +1461,10 @@
     </el-dialog>
     <!--回执列表弹窗 end-->
     <!--分局承办部门组织树窗口 start-->
-    <el-dialog title="选择分局机构" :visible.sync="orgTreeInfoModal" class="org-tree-dialog" width="750px">
+    <el-dialog title="选择分局机构"
+               :visible.sync="orgTreeInfoModal"
+               class="org-tree-dialog"
+               width="750px">
       <div class="project-tree">
         <div class="search-proj">
           <el-input suffix-icon="el-icon-search" :inline="true" placeholder="输入关键字" v-model="searchOrgfilterText">
@@ -1695,7 +1698,7 @@
     </el-dialog>
     <!--选择主题 end-->
     <!--  材料一张表单  start-->
-    <el-dialog @closed="uploadPercentage=0;progressDialogVisible=false" class="show-one-form" :title="oneformNameTitle"
+    <el-dialog @closed="uploadPercentage=0;progressDialogVisible=false" class="show-one-form" :title="matformNameTitle"
                width="750px" :visible.sync="matFormDialogVisible">
       <div>
         <div id="matFormContent"></div>
