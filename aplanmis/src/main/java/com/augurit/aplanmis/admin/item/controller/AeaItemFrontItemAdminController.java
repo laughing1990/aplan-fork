@@ -96,4 +96,17 @@ public class AeaItemFrontItemAdminController {
         }
     }
 
+
+    @RequestMapping("/batchSaveAeaItemFrontItem.do")
+    public ResultForm batchSaveAeaItemFrontItem(String itemVerId,String frontCkItemVerIds) {
+        try {
+            aeaItemFrontItemAdminService.batchSaveAeaItemFrontItem(itemVerId,frontCkItemVerIds);
+            return new ResultForm(true);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return new ResultForm(false, e.getMessage());
+
+        }
+    }
+
 }

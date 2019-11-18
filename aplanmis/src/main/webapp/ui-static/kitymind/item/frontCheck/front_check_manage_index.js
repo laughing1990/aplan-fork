@@ -627,6 +627,7 @@ function addItemFrontItem() {
                     setTimeout(function(){
                         $("#uploadProgress").modal('hide');
                         $('#saveItemFrontItemBtn').show();
+                        $("#select_front_Item_btn").show();
                         $("#edit_item_front_item_modal").modal("show");
                         $('#edit_item_front_item_title').html('新增事项信息前置检测');
                         $('#edit_item_front_item_scroll').animate({scrollTop: 0}, 800);//滚动到顶部
@@ -673,6 +674,7 @@ function editItemFrontItem(frontItemId) {
                     }else{
                         $('#saveItemFrontItemBtn').hide();
                     }
+                    $("#select_front_Item_btn").hide();
                     $("#edit_item_front_item_modal").modal("show");
                     $('#edit_item_front_item_title').html('编辑事项信息前置检测');
                     $('#edit_item_front_item_scroll').animate({scrollTop: 0}, 800);//滚动到顶部

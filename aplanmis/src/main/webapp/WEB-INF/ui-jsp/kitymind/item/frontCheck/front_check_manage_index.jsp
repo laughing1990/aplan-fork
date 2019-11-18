@@ -223,6 +223,8 @@
                         <div class="col-md-7"style="text-align: left;">
                             <button type="button" class="btn btn-info"
                                     onclick="addItemFrontItem();">新增</button>
+                            <button type="button" class="btn btn-info"
+                                    onclick="batchImportItemFrontItem();">批量导入</button>
                             <button type="button" class="btn btn-secondary"
                                     onclick="batchDelItemFrontItem();">删除</button>
                         </div>
