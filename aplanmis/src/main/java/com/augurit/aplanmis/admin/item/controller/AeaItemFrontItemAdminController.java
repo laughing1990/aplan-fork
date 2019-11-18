@@ -6,6 +6,7 @@ package com.augurit.aplanmis.admin.item.controller;
  */
 
 import com.augurit.agcloud.framework.exception.InvalidParameterException;
+import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.ui.pager.EasyuiPageInfo;
 import com.augurit.agcloud.framework.ui.pager.PageHelper;
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
@@ -95,28 +96,6 @@ public class AeaItemFrontItemAdminController {
             logger.error(e.getMessage(), e);
             return new ResultForm(false, e.getMessage());
         }
-    }
-
-    @RequestMapping("/batchSaveAeaItemFrontItem.do")
-    public ResultForm batchSaveAeaItemFrontItem(String itemVerId,String frontCkItemVerIds) {
-        try {
-            aeaItemFrontItemAdminService.batchSaveAeaItemFrontItem(itemVerId,frontCkItemVerIds);
-            return new ResultForm(true);
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return new ResultForm(false, e.getMessage());
-
-        }
-    }
-
-    @RequestMapping("/changIsActive.do")
-    public ResultForm changIsActive(String id) {
-
-        if (StringUtils.isBlank(id)) {
-            throw new InvalidParameterException("参数id为空!");
-        }
-        aeaItemFrontItemAdminService.changIsActive(id, SecurityContext.getCurrentOrgId());
-        return new ResultForm(true);
     }
 
     @RequestMapping("/batchSaveAeaItemFrontItem.do")
