@@ -1236,7 +1236,7 @@ HIGHEST_RATE,QUOTE_TYPE,ROOT_ORG_ID
         LEFT JOIN aea_im_service_item aisi ON aipp.SERVICE_ITEM_ID = aisi.SERVICE_ITEM_ID
         LEFT JOIN aea_item_basic aib ON aisi.ITEM_VER_ID = aib.ITEM_VER_ID
         LEFT JOIN aea_proj_info api ON aipp.PROJ_INFO_ID = api.PROJ_INFO_ID
-        LEFT JOIN aea_im_unit_service aius  ON aipp.SERVICE_ID =aius.SERVICE_ID
+        LEFT JOIN aea_im_unit_service aius ON aipp.SERVICE_ID =aius.SERVICE_ID
         WHERE aipp.IS_DELETE = '0' AND aipp.AUDIT_FLAG = '6' AND aipp.IS_ACTIVE = '1'
         AND aius.IS_DELETE = '0' AND aius.AUDIT_FLAG = '1' AND aius.IS_ACTIVE = '1'
         AND aius.UNIT_INFO_ID = #{unitInfoId}
@@ -1449,6 +1449,23 @@ HIGHEST_RATE,QUOTE_TYPE,ROOT_ORG_ID
 				left join aea_unit_info c on a.UNIT_INFO_ID=c.UNIT_INFO_ID
 				left join aea_linkman_info d on a.LINKMAN_INFO_ID=d.LINKMAN_INFO_ID
 			    where a.PROJ_PURCHASE_ID=#{projPurchaseId}
+    </select>
+    <!--已完成采购数量-->
+    <select id="listAeaImProjPurchaseNum" resultType="java.lang.Integer">
+        select count(1) from aea_im_proj_purchase aipp WHERE aipp.AUDIT_FLAG='2' and aipp.IS_DELETE!='1' and
+        aipp.IS_ACTIVE='1'
+        <if test="startDate!=null and startDate!=''">
+            AND aipp.CREATE_TIME &gt;= #{startDate}
+        </if>
+
+    </select>
+    <!--已发布采购数量-->
+    <select id="listPublicProjPurchaseNum" resultType="java.lang.Integer">
+        select count(1) from aea_im_proj_purchase aipp WHERE aipp.IS_DELETE!='1' and aipp.IS_ACTIVE='1' and
+        aipp.AUDIT_FLAG in('6','7','8','9','11')
+        <if test="startDate!=null and startDate!=''">
+            AND aipp.CREATE_TIME &gt;= #{startDate}
+        </if>
     </select>
 
     <update id="updateIntermediaryWonBidStatus">

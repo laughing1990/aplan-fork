@@ -414,21 +414,29 @@
     </select>
 
     <select id="getWinAcceptStatisticsByDay" resultType="com.augurit.aplanmis.common.vo.analyse.WinApplyStatisticsVo">
-        select STATISTICS_DATE as day, SUM(DAY_APPLY_COUNT) as applyCount, SUM(DAY_PRE_ACCEPTANCE_COUNT) as shouliCount
+        select
+        <if test="_databaseId == 'oracle'">
+            to_char(STATISTICS_DATE,'yyyy-mm-dd') as day,
+        </if>
+        <if test="_databaseId == 'mysql'">
+            DATE_FORMAT(STATISTICS_DATE,'%Y-%m-%d') as day,
+        </if>
+        SUM(DAY_APPLY_COUNT) as applyCount, SUM(DAY_PRE_ACCEPTANCE_COUNT) as shouliCount
         from AEA_ANA_WIN_DAY_STATISTICS
         <where>
             and WINDOW_ID = #{windowId}
+            and ROOT_ORG_ID = #{rootOrgId}
             <if test="_databaseId == 'oracle'">
-                and to_char(STATISTICS_DATE, 'yyyy-mm-dd HH24:mi:ss') <![CDATA[ >= ]]> #{startTime}
-                and to_char(STATISTICS_DATE, 'yyyy-mm-dd HH24:mi:ss') <![CDATA[ <= ]]> #{endTime}
+                and to_char(STATISTICS_DATE, 'yyyy-mm-dd') <![CDATA[ >= ]]> #{startTime}
+                and to_char(STATISTICS_DATE, 'yyyy-mm-dd') <![CDATA[ <= ]]> #{endTime}
+                group by to_char(STATISTICS_DATE,'yyyy-mm-dd')
             </if>
             <if test="_databaseId == 'mysql'">
-                and STATISTICS_DATE <![CDATA[ >= ]]> #{startTime}
-                and STATISTICS_DATE <![CDATA[ <= ]]> #{endTime}
+                and DATE_FORMAT(STATISTICS_DATE,'%Y-%m-%d') <![CDATA[ >= ]]> #{startTime}
+                and DATE_FORMAT(STATISTICS_DATE,'%Y-%m-%d') <![CDATA[ <= ]]> #{endTime}
+                group by STATISTICS_DATE
             </if>
-            and ROOT_ORG_ID = #{rootOrgId}
         </where>
-        group by STATISTICS_DATE
         order by STATISTICS_DATE
     </select>
 

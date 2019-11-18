@@ -28,6 +28,7 @@
                                 <div class="col-3"  style="text-align: left;">
                                     <button type="button" class="btn btn-info" id = "select_itemform_search_btn">查询</button>
                                     <button type="button" class="btn btn-secondary" id = "select_itemform_clear_btn">清空</button>
+                                    <button type="button" class="btn btn-info" onclick="batchSaveFrontItemform();" id = "batch_save_front_itemform_btn">导入</button>
                                 </div>
                             </div>
                         </div>
@@ -56,6 +57,7 @@
         formItemName_id = formItemName;
         frontItemformId_id = frontItemformId;
 
+        $("#batch_save_front_itemform_btn").hide();
         $("#select_itemform_modal").modal("show");
         if(select_itemform_tb){
             select_itemform_tb.destroy();
@@ -99,7 +101,7 @@
             width: 100,
             textAlign: 'center',
             formatter: function (value, row, index) {
-                var btn =  '<a href="javascript:selectParFrontItemform(\'' + row.stageItemId + '\',\''+row.itemName+'\',\''+row.formName+'\')" class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill" title="选择"><i class="la la-gear"></i></a>';
+                var btn =  '<a href="javascript:selectParFrontItemform(\'' + row.stageItemId + '\',\''+row.itemName+'\',\''+row.formName+'\')" class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill" title="选择"><i class="la la-plus"></i></a>';
                 return btn;
             }
         }],ctx + '/aea/par/front/itemform/listSelectParFrontItemformByPage.do');
@@ -122,5 +124,96 @@
         }
 
         $("#select_itemform_modal").modal("hide");
+    }
+
+    function batchImprotParFrontItemform(){
+        $("#batch_save_front_itemform_btn").show();
+        $("#select_itemform_modal").modal("show");
+        if(select_itemform_tb){
+            select_itemform_tb.destroy();
+        }
+        initCheckItemformTable();
+    }
+
+
+    function initCheckItemformTable() {
+        select_itemform_tb = defaultBootstrap("select_itemform_tb",[{
+            width: "10%",
+            align: "center",
+            sortable: false,
+            textAlign: 'center',
+            checkbox: true
+        }, {
+            field: "stageItemId",
+            visible: false
+        }, {
+            field: "itemName",
+            title: "事项名称",
+            textAlign: 'center',
+            width: 500,
+            textAlign: 'left',
+            sortable: true
+        },{
+            field: "formName",
+            title: "表单名称",
+            textAlign: 'center',
+            width: 500,
+            textAlign: 'left',
+            sortable: true
+        }],ctx + '/aea/par/front/itemform/listSelectParFrontItemformByPage.do');
+        var select_itemform_tb_params = {stageId:currentBusiId};
+        select_itemform_tb.setPageSize(5).setPageList([5,10,20,50,100]).setQueryParams(select_itemform_tb_params).setRowId("stageItemId").setClearBtn("select_itemform_clear_btn").setSearchBtn("select_itemform_search_btn","select_itemform_keyword").init();
+    }
+    
+    function batchSaveFrontItemform() {
+        var itemforms = select_itemform_tb.getSelections();
+        if(itemforms.length==0){
+            swal('错误信息', '没有勾选事项表单!', 'error');
+        }else{
+            var stageItemIds = new Array();
+            for(var i=0;i<itemforms.length;i++){
+                stageItemIds.push(itemforms[i].stageItemId);
+            }
+
+            $("#uploadProgressMsg").html("批量导入事项表单，请稍后...");
+            $("#uploadProgress").modal("show");
+
+            $.ajax({
+                url: ctx+'/aea/par/front/itemform/batchSaveAeaParFrontItemform.do',
+                type:'post',
+                data:{stageId:currentBusiId,stageItemIds:stageItemIds.join(",")},
+                async: false,
+                dataType: 'json',
+                success: function(result){
+
+                    if (result.success) {
+                        setTimeout(function(){
+                            $("#uploadProgress").modal('hide');
+                            swal({
+                                type: 'success',
+                                title: '批量导入成功！',
+                                showConfirmButton: false,
+                                timer: 1000
+                            });
+                            $("#select_itemform_modal").modal("hide");
+                            par_front_itemform_tb.clear();
+
+                        },500);
+                    } else {
+                        setTimeout(function(){
+                            $("#uploadProgress").modal('hide');
+                            swal('错误信息', result.message, 'error');
+                        },500);
+                    }
+                },
+                error: function(){
+                    setTimeout(function(){
+                        $("#uploadProgress").modal('hide');
+                        swal('错误信息', '批量导入事项表单异常!', 'error');
+                    },500);
+                }
+            });
+        }
+        
     }
 </script>

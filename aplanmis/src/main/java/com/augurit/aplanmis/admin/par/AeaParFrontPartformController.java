@@ -107,4 +107,17 @@ public class AeaParFrontPartformController {
         return PageHelper.toEasyuiPageInfo(pageInfo);
     }
 
+    @RequestMapping("/batchSaveAeaParFrontPartform.do")
+    public ResultForm batchSaveAeaParFrontPartform(String stageId,String stagePartformIds){
+
+        try {
+            aeaParFrontPartformService.batchSaveAeaParFrontPartform(stageId, stagePartformIds);
+            return new ResultForm(true);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return new ResultForm(false, e.getMessage());
+
+        }
+    }
+
 }

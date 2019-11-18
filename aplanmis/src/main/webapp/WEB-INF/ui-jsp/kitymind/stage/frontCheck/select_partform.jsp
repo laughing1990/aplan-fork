@@ -28,6 +28,7 @@
                                 <div class="col-3"  style="text-align: left;">
                                     <button type="button" class="btn btn-info" id = "select_partform_search_btn">查询</button>
                                     <button type="button" class="btn btn-secondary" id = "select_partform_clear_btn">清空</button>
+                                    <button type="button" class="btn btn-info" onclick="batchSaveFrontPartform();" id = "batch_save_front_partform_btn">导入</button>
                                 </div>
                             </div>
                         </div>
@@ -106,7 +107,7 @@
             width: 100,
             textAlign: 'center',
             formatter: function (value, row, index) {
-                var btn =  '<a href="javascript:selectParFrontPartform(\'' + row.stagePartformId + '\',\''+row.partformName+'\',\''+row.isSmartForm+'\')" class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill" title="选择"><i class="la la-gear"></i></a>';
+                var btn =  '<a href="javascript:selectParFrontPartform(\'' + row.stagePartformId + '\',\''+row.partformName+'\',\''+row.isSmartForm+'\')" class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill" title="选择"><i class="la la-plus"></i></a>';
                 return btn;
             }
         }],ctx + '/aea/par/front/partform/listSelectParFrontPartformByPage.do');
@@ -129,5 +130,103 @@
         }
 
         $("#select_partform_modal").modal("hide");
+    }
+    
+    function batchImprotParFrontPartform() {
+        $("#batch_save_front_partform_btn").show();
+        $("#select_partform_modal").modal("show");
+        if(select_partform_tb){
+            select_partform_tb.destroy();
+        }
+        initCheckPartformTable();
+    }
+
+
+    function initCheckPartformTable() {
+        select_partform_tb = defaultBootstrap("select_partform_tb",[{
+
+            width: "10%",
+            align: "center",
+            sortable: false,
+            textAlign: 'center',
+            checkbox: true
+        }, {
+            field: "stagePartformId",
+            visible: false
+        }, {
+            field: "partformName",
+            title: "阶段扩展表单名称",
+            textAlign: 'center',
+            width: 500,
+            textAlign: 'left',
+            sortable: true
+        },{
+            field: "isSmartForm",
+            title: "是否智能表单",
+            textAlign: 'center',
+            width: 50,
+            textAlign: 'left',
+            sortable: true,
+            formatter: function (value, row, index) {
+                if(row.isSmartForm=='1'){
+                    return "是";
+                }else{
+                    return "否";
+                }
+            }
+        }],ctx + '/aea/par/front/partform/listSelectParFrontPartformByPage.do');
+        var select_partform_tb_params = {stageId:currentBusiId};
+        select_partform_tb.setPageSize(5).setPageList([5,10,20,50,100]).setQueryParams(select_partform_tb_params).setRowId("stagePartformId").setClearBtn("select_partform_clear_btn").setSearchBtn("select_partform_search_btn","select_partform_keyword").init();
+    }
+    
+    function batchSaveFrontPartform() {
+        var partforms = select_partform_tb.getSelections();
+        if(partforms.length==0){
+            swal('错误信息', '没有勾选阶段扩展表单!', 'error');
+        }else{
+            var stagePartformIds = new Array();
+            for(var i=0;i<partforms.length;i++){
+                stagePartformIds.push(partforms[i].stagePartformId);
+            }
+
+            $("#uploadProgressMsg").html("批量导入阶段扩展表单，请稍后...");
+            $("#uploadProgress").modal("show");
+
+            $.ajax({
+                url: ctx+'/aea/par/front/partform/batchSaveAeaParFrontPartform.do',
+                type:'post',
+                data:{stageId:currentBusiId,stagePartformIds:stagePartformIds.join(",")},
+                async: false,
+                dataType: 'json',
+                success: function(result){
+
+                    if (result.success) {
+                        setTimeout(function(){
+                            $("#uploadProgress").modal('hide');
+                            swal({
+                                type: 'success',
+                                title: '批量导入成功！',
+                                showConfirmButton: false,
+                                timer: 1000
+                            });
+                            $("#select_partform_modal").modal("hide");
+                            par_front_partform_tb.clear();
+
+                        },500);
+                    } else {
+                        setTimeout(function(){
+                            $("#uploadProgress").modal('hide');
+                            swal('错误信息', result.message, 'error');
+                        },500);
+                    }
+                },
+                error: function(){
+                    setTimeout(function(){
+                        $("#uploadProgress").modal('hide');
+                        swal('错误信息', '批量导入阶段扩展表单异常!', 'error');
+                    },500);
+                }
+            });
+        }
     }
 </script>

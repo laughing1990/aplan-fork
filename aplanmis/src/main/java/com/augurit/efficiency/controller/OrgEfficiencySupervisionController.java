@@ -3,6 +3,7 @@ package com.augurit.efficiency.controller;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
+import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.utils.DateUtils;
 import com.augurit.aplanmis.common.vo.analyse.*;
 import com.augurit.efficiency.service.OrgEfficiencySupersionService;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 import springfox.documentation.annotations.ApiIgnore;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -238,16 +240,20 @@ public class OrgEfficiencySupervisionController {
     @GetMapping("/getOrgItemAcceptStatistics")
     @ApiOperation(value = "委办局-时间区间内部门事项接件受理情况")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "startTime", value = "开始时间【yyyy-mm-dd】", readOnly = true, dataType = "string", paramType = "query", required = true),
-            @ApiImplicitParam(name = "endTime", value = "结束时间【yyyy-mm-dd】", readOnly = true, dataType = "string", paramType = "query", required = true),
-            @ApiImplicitParam(name = "type", value = "时间类型D昨天，W本周，M本月，为空是自定义时间段", readOnly = true, dataType = "string", paramType = "query", required = true),
+            @ApiImplicitParam(name = "startTime", value = "开始时间【yyyy-mm-dd】", readOnly = true, dataType = "string", paramType = "query"),
+            @ApiImplicitParam(name = "endTime", value = "结束时间【yyyy-mm-dd】", readOnly = true, dataType = "string", paramType = "query"),
+            @ApiImplicitParam(name = "type", value = "时间类型D昨天，W本周，M本月，为空是自定义时间段", readOnly = true, dataType = "string", paramType = "query"),
     })
-    public ContentResultForm getOrgItemAcceptStatistics(String startTime, String endTime, String type) {
+    public ResultForm getOrgItemAcceptStatistics(String startTime, String endTime, String type) {
         try {
+            if (StringUtils.isBlank(type)) {
+                ResultForm resultForm = checkTimeParam(startTime, endTime);
+                if (resultForm != null) return resultForm;
+            }
             List<Map<String, Object>> orgItemAcceptStatistics = orgEfficiencySupersionService.getOrgItemAcceptStatistics(startTime, endTime, type, true);
             return new ContentResultForm<>(true, orgItemAcceptStatistics, "查询成功！");
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("委办局-时间区间内部门事项接件受理统计异常", e);
             return new ContentResultForm<>(false, null, "查询失败：" + e.getMessage());
         }
     }
@@ -255,18 +261,121 @@ public class OrgEfficiencySupervisionController {
     @GetMapping("/getOrgItemAcceptHistoryStatistics")
     @ApiOperation(value = "委办局-时间区间内部门事项历史接件受理情况")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "startTime", value = "开始时间【yyyy-mm-dd】", readOnly = true, dataType = "string", paramType = "query", required = true),
-            @ApiImplicitParam(name = "endTime", value = "结束时间【yyyy-mm-dd】", readOnly = true, dataType = "string", paramType = "query", required = true),
-            @ApiImplicitParam(name = "type", value = "时间类型D昨天，W本周，M本月，为空是自定义时间段", readOnly = true, dataType = "string", paramType = "query", required = true),
+            @ApiImplicitParam(name = "startTime", value = "开始时间【yyyy-mm-dd】", readOnly = true, dataType = "string", paramType = "query"),
+            @ApiImplicitParam(name = "endTime", value = "结束时间【yyyy-mm-dd】", readOnly = true, dataType = "string", paramType = "query"),
+            @ApiImplicitParam(name = "type", value = "时间类型D昨天，W本周，M本月，为空是自定义时间段", readOnly = true, dataType = "string", paramType = "query"),
             @ApiImplicitParam(name = "itemId", value = "事项ID", readOnly = true, dataType = "string", paramType = "query", required = true),
     })
-    public ContentResultForm getOrgItemAcceptHistoryStatistics(String itemId, String startTime, String endTime, String type) {
+    public ResultForm getOrgItemAcceptHistoryStatistics(String itemId, String startTime, String endTime, String type) {
         try {
+            if (StringUtils.isBlank(type)) {
+                ResultForm resultForm = checkTimeParam(startTime, endTime);
+                if (resultForm != null) return resultForm;
+            }
+            if (StringUtils.isBlank(itemId)) {
+                return new ContentResultForm<>(false, null, "请求缺少参数！");
+            }
             List<Map<String, Object>> orgItemAcceptHistroyStatistics = orgEfficiencySupersionService.getOrgItemAcceptHistoryStatistics(itemId, startTime, endTime, type, true);
             return new ContentResultForm<>(true, orgItemAcceptHistroyStatistics, "查询成功！");
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("委办局-时间区间内部门事项历史接件受理统计异常", e);
             return new ContentResultForm<>(false, null, "查询失败：" + e.getMessage());
         }
+    }
+
+    @GetMapping("/getRegionOrgAcceptStatistics")
+    @ApiOperation(value = "委办局-时间区间内各地区/各地区部门接件受理情况")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "startTime", value = "开始时间【yyyy-mm-dd】", readOnly = true, dataType = "string", paramType = "query"),
+            @ApiImplicitParam(name = "endTime", value = "结束时间【yyyy-mm-dd】", readOnly = true, dataType = "string", paramType = "query"),
+            @ApiImplicitParam(name = "type", value = "时间类型D昨天，W本周，M本月，为空是自定义时间段", readOnly = true, dataType = "string", paramType = "query"),
+            @ApiImplicitParam(name = "regionId", value = "行政区ID", readOnly = true, dataType = "string", paramType = "query"),
+    })
+    public ResultForm getRegionOrgAcceptStatistics(String regionId, String startTime, String endTime, String type) {
+        try {
+            if (StringUtils.isBlank(type)) {
+                ResultForm resultForm = checkTimeParam(startTime, endTime);
+                if (resultForm != null) return resultForm;
+            }
+            List<Map<String, Object>> regionOrgAcceptStatistics = orgEfficiencySupersionService.getRegionOrgAcceptStatistics(regionId, startTime, endTime, type);
+            return new ContentResultForm<>(true, regionOrgAcceptStatistics, "查询成功！");
+        } catch (Exception e) {
+            log.error("委办局-时间区间内各地区/各地区部门接件受理情况统计异常", e);
+            return new ContentResultForm<>(false, null, "查询失败：" + e.getMessage());
+        }
+    }
+
+    @GetMapping("/getRegionOrgAcceptHistoryStatistics")
+    @ApiOperation(value = "委办局-时间区间内各地区/各地区部门历史接件受理情况")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "startTime", value = "开始时间【yyyy-mm-dd】", readOnly = true, dataType = "string", paramType = "query"),
+            @ApiImplicitParam(name = "endTime", value = "结束时间【yyyy-mm-dd】", readOnly = true, dataType = "string", paramType = "query"),
+            @ApiImplicitParam(name = "type", value = "时间类型D昨天，W本周，M本月，为空是自定义时间段", readOnly = true, dataType = "string", paramType = "query"),
+            @ApiImplicitParam(name = "regionId", value = "行政区ID", readOnly = true, dataType = "string", paramType = "query"),
+            @ApiImplicitParam(name = "orgId", value = "部门ID", readOnly = true, dataType = "string", paramType = "query"),
+    })
+    public ResultForm getRegionOrgAcceptHistoryStatistics(String regionId, String orgId, String startTime, String endTime, String type) {
+        try {
+            if (StringUtils.isBlank(type)) {
+                ResultForm resultForm = checkTimeParam(startTime, endTime);
+                if (resultForm != null) return resultForm;
+            }
+            if (StringUtils.isBlank(regionId) && StringUtils.isBlank(orgId)) {
+                return new ContentResultForm<>(false, null, "请求缺少参数！");
+            }
+            List<Map<String, Object>> regionOrgAcceptHistoryStatistics = orgEfficiencySupersionService.getRegionOrgAcceptHistoryStatistics(regionId, orgId, startTime, endTime, type);
+            return new ContentResultForm<>(true, regionOrgAcceptHistoryStatistics, "查询成功！");
+        } catch (Exception e) {
+            log.error("时间区间内各地区/各地区部门历史接件受理情况统计异常", e);
+            return new ContentResultForm<>(false, null, "查询失败：" + e.getMessage());
+        }
+    }
+
+    /**
+     * 检查时间参数
+     *
+     * @param startTime 开始时间
+     * @param endTime   结束时间
+     */
+    private ResultForm checkTimeParam(String startTime, String endTime) {
+        if (StringUtils.isBlank(startTime) || StringUtils.isBlank(endTime)) {
+            return new ContentResultForm<>(false, null, "请求缺少参数！");
+        }
+
+        if (startTime.compareTo(endTime) > 0) {
+            return new ContentResultForm<>(false, null, "开始日期大于结束日期！");
+        }
+        try {
+            Date _startTime = DateUtils.convertStringToDate(startTime, "yyyy-MM-dd");
+            Date _endTime = DateUtils.convertStringToDate(endTime, "yyyy-MM-dd");
+        } catch (ParseException e) {
+            return new ContentResultForm<>(false, null, "传入日期格式错误！");
+        }
+
+        return null;
+    }
+
+    /**
+     * 检查时间参数
+     *
+     * @param startTime 开始时间
+     * @param endTime   结束时间
+     */
+    private ResultForm checkTimeParam(String startTime, String endTime, String format) {
+        if (StringUtils.isBlank(startTime) || StringUtils.isBlank(endTime)) {
+            return new ContentResultForm<>(false, null, "请求缺少参数！");
+        }
+
+        if (startTime.compareTo(endTime) > 0) {
+            return new ContentResultForm<>(false, null, "开始日期大于结束日期！");
+        }
+        try {
+            Date _startTime = DateUtils.convertStringToDate(startTime, format);
+            Date _endTime = DateUtils.convertStringToDate(endTime, format);
+        } catch (ParseException e) {
+            return new ContentResultForm<>(false, null, "传入日期格式错误！");
+        }
+
+        return null;
     }
 }

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <!--引入公共css-->
+    <th:block th:include="common/common :: commonheader('数据传输')"/>
+    <link rel="stylesheet" href="../../static/route/css/index.css" th:href="@{/route/css/index.css}">
+</head>
+
+<body>
+<div id="data-route">
+    <div class="data-chart">
+        <div class="data-base-box clearfix">
+
+            <div class="data-base-one">
+                <p class="title-text ellipsis" @click="getApplyProjList()">已申报项目数：{{applyProjTrans.applyProjCount}}</p>
+                <p class="title-text ellipsis" @click="getNonAcceptApplyProjList()">未受理项目数：{{applyProjTrans.nonAcceptCount}}</p>
+                <img src="../../route/imgs/database.png"/>
+            </div>
+            <div class="data-base-one">
+                <p class="title-text ellipsis" @click="getHasBlxxxxApplyProjList()">有办理信息的项目数：{{applyProjTrans.hasBlxxxxCount}}</p>
+                <img src="../../route/imgs/database.png"/>
+            </div>
+            <div class="data-base-one">
+                <p class="title-text ellipsis" @click="getOnlyA2ApplyProjList()">只申报预先服务协同项目数：{{applyProjTrans.onlyA2Count}}</p>
+                <img src="../../route/imgs/database.png"/>
+            </div>
+            <div class="data-base-one">
+                <p class="ellipsis">
+                    应在省监管页面显示项目数：{{applyProjTrans.applyProjCount-applyProjTrans.nonAcceptCount-applyProjTrans.onlyA2Count}}</p>
+                <img src="../../route/imgs/browser.png"/>
+            </div>
+        </div>
+    </div>
+    <el-table class=""
+              :data="projList"
+              border stripe
+              style="width: 100%">
+        <el-table-column
+                prop="localCode"
+                label="项目代码"
+                min-width="100"
+                show-overflow-tooltip>
+        </el-table-column>
+        <el-table-column
+                prop="projName"
+                label="项目名称"
+                min-width="200"
+                show-overflow-tooltip>
+        </el-table-column>
+
+        </el-table-column>
+    </el-table>
+</div>
+</body>
+<th:block th:include="common/common :: commonfooter"/>
+<script src="../../static/route/js/index.js" th:src="@{/route/js/index.js}"></script>
+
+</html>

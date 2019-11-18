@@ -259,7 +259,7 @@ public class AeaHiItemMatinstServiceImpl implements AeaHiItemMatinstService {
     }
 
     @Override
-    public AeaHiItemMatinst bindCertinst(AeaHiCertinst aeaHiCertinst, String currentUserName) throws Exception {
+    public AeaHiCertinst bindCertinst(AeaHiCertinst aeaHiCertinst, String currentUserName) throws Exception {
         Assert.hasText(aeaHiCertinst.getMatId(), "matId is null");
         Assert.hasText(aeaHiCertinst.getAuthCode(), "authCode is null");
 
@@ -297,7 +297,8 @@ public class AeaHiItemMatinstServiceImpl implements AeaHiItemMatinstService {
         aeaHiCertinstMapper.insertAeaHiCertinst(aeaHiCertinst);
         aeaHiItemMatinstMapper.insertAeaHiItemMatinst(aeaHiItemMatinst);
 
-        return aeaHiItemMatinst;
+        aeaHiCertinst.setMatinstId(aeaHiItemMatinst.getMatinstId());
+        return aeaHiCertinst;
     }
 
     @Override

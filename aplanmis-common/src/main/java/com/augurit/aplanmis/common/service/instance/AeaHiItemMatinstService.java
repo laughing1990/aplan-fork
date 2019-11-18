@@ -129,7 +129,7 @@ public interface AeaHiItemMatinstService {
      * @param currentUserName
      * @return 证照材料
      */
-    AeaHiItemMatinst bindCertinst(AeaHiCertinst aeaHiCertinst, String currentUserName) throws Exception;
+    AeaHiCertinst bindCertinst(AeaHiCertinst aeaHiCertinst, String currentUserName) throws Exception;
 
     void unbindCertinst(String matinstId) throws Exception;
 

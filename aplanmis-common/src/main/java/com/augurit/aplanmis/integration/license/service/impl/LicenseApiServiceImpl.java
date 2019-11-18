@@ -2,7 +2,6 @@ package com.augurit.aplanmis.integration.license.service.impl;
 
 import com.augurit.aplanmis.integration.license.config.LicenseConfig;
 import com.augurit.aplanmis.integration.license.constants.LicenseConst;
-import com.augurit.aplanmis.integration.license.constants.LicenseStatus;
 import com.augurit.aplanmis.integration.license.dto.*;
 import com.augurit.aplanmis.integration.license.service.LicenseApiService;
 import com.augurit.aplanmis.integration.license.utils.ConnectionHelper;
@@ -29,6 +28,8 @@ public class LicenseApiServiceImpl implements LicenseApiService {
     private LicenseConfig licenseConfig;
     @Autowired
     private ServletContext servletContext;
+
+    final long poolWaitTime = 60 * 1000;
 
     @Override
     public LoginResDTO login() throws Exception {
@@ -75,7 +76,7 @@ public class LicenseApiServiceImpl implements LicenseApiService {
         for (LicenseAuthReqDTO data : list){
             Future<LicenseAuthResDTO> future = pool.submit(() -> {
                 try {
-                    log.info("=======调用licenseAuthMulti接口时间："+ System.currentTimeMillis());
+                    log.info("=======调用/license/auth接口时间："+ System.currentTimeMillis());
                     return send("/license/auth", "post", initPubParam(accessToken).toMap(), data, null, LicenseAuthResDTO.class);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -87,7 +88,14 @@ public class LicenseApiServiceImpl implements LicenseApiService {
             });
             futureList.add(future);
         }
-        pool.shutdown();
+        try {
+            pool.shutdown();
+            if(!pool.awaitTermination(poolWaitTime, TimeUnit.MILLISECONDS)){
+                pool.shutdownNow();
+            }
+        } catch (InterruptedException e) {
+            pool.shutdownNow();
+        }
         List<LicenseAuthResDTO> res = new ArrayList<>();
         for (Future<LicenseAuthResDTO> future : futureList) {
             res.add( future.get());

@@ -15,37 +15,38 @@
     <!--入住机构列表，入住公示列表 mysql-->
     <select id="listCheckinUnit" resultType="AgentUnitService" parameterType="AgentUnitService">
         SELECT
-            aui.UNIT_INFO_ID unitInfoId,
-            aui.APPLICANT applicant,
-            aui.UNIT_NATURE unitNature,
-            aui.unified_social_credit_code unifiedSocialCreditCode,
-            temp2.SERVICE_NAME serviceName,
-            temp1.EVALUATION compEvaluation,
-            temp1.biddingNum,
-            aui.IMG_URL imgUrl,
-            temp2.AUDIT_FLAG auditFlag
+        aui.UNIT_INFO_ID unitInfoId,
+        aui.APPLICANT applicant,
+        aui.UNIT_NATURE unitNature,
+        aui.unified_social_credit_code unifiedSocialCreditCode,
+        temp2.SERVICE_NAME serviceName,
+        temp1.EVALUATION compEvaluation,
+        temp1.biddingNum,
+        aui.IMG_URL imgUrl,
+        temp2.AUDIT_FLAG auditFlag
         FROM (
-            SELECT
-                aius.UNIT_INFO_ID,aius.AUDIT_FLAG,
+        SELECT
+        aius.UNIT_INFO_ID,aius.AUDIT_FLAG,
         <if test="_databaseId == 'oracle'">
-                    WM_CONCAT(ais.SERVICE_NAME) SERVICE_NAME
-                </if>
-                <if test="_databaseId == 'mysql'">
-                    GROUP_CONCAT(ais.SERVICE_NAME) SERVICE_NAME
-                </if>
-            FROM AEA_IM_UNIT_SERVICE aius
-            LEFT JOIN AEA_IM_SERVICE ais
-            ON aius.SERVICE_ID = ais.SERVICE_ID WHERE aius.IS_DELETE = '0' AND aius.IS_ACTIVE = '1'
-            AND aius.AUDIT_FLAG = '1' AND ais.IS_DELETE = '0' AND ais.IS_ACTIVE = '1'
-            GROUP BY aius.UNIT_INFO_ID
+            WM_CONCAT(ais.SERVICE_NAME) SERVICE_NAME
+        </if>
+        <if test="_databaseId == 'mysql'">
+            GROUP_CONCAT(ais.SERVICE_NAME) SERVICE_NAME
+        </if>
+        FROM AEA_IM_UNIT_SERVICE aius
+        LEFT JOIN AEA_IM_SERVICE ais
+        ON aius.SERVICE_ID = ais.SERVICE_ID WHERE aius.IS_DELETE = '0' AND aius.IS_ACTIVE = '1'
+        AND aius.AUDIT_FLAG = '1' AND ais.IS_DELETE = '0' AND ais.IS_ACTIVE = '1'
+        GROUP BY aius.UNIT_INFO_ID
         ) temp2
         LEFT JOIN aea_unit_info aui ON temp2.UNIT_INFO_ID = aui.UNIT_INFO_ID
         LEFT join (
-            SELECT aiub.UNIT_INFO_ID,avg(aise.COMP_EVALUATION) as EVALUATION, count(1) biddingNum FROM aea_im_unit_bidding aiub
-            LEFT JOIN aea_im_service_evaluation aise
-            ON aise.UNIT_BIDDING_ID = aiub.UNIT_BIDDING_ID AND aise.AUDIT_FLAG = '1' AND aise.IS_DELETE = '0'
-            WHERE aiub.IS_DELETE = '0'  AND aiub.IS_WON_BID = '1' AND aiub.IS_CANCEL_SIGNUP = '0'
-            GROUP BY aiub.UNIT_INFO_ID
+        SELECT aiub.UNIT_INFO_ID,avg(aise.COMP_EVALUATION) as EVALUATION, count(1) biddingNum FROM aea_im_unit_bidding
+        aiub
+        LEFT JOIN aea_im_service_evaluation aise
+        ON aise.UNIT_BIDDING_ID = aiub.UNIT_BIDDING_ID AND aise.AUDIT_FLAG = '1' AND aise.IS_DELETE = '0'
+        WHERE aiub.IS_DELETE = '0' AND aiub.IS_WON_BID = '1' AND aiub.IS_CANCEL_SIGNUP = '0'
+        GROUP BY aiub.UNIT_INFO_ID
         ) temp1 ON temp1.UNIT_INFO_ID = aui.UNIT_INFO_ID
         <where>
             aui.IS_DELETED = '0' AND aui.IS_IM_UNIT = '1'
@@ -110,23 +111,27 @@
     <!--入住服务列表-->
     <select id="listCheckinService" resultType="AgentUnitService">
         SELECT
-            <include refid="aliasColumns"> <property name="alias" value="aui"/> </include> ,
-            aius.UNIT_SERVICE_ID unitServiceId,
-            ais.SERVICE_ID serviceId,
-            ais.SERVICE_NAME serviceName,
-            ais.SERVICE_CODE serviceCode,
-            temp1.EVALUATION compEvaluation,
-            ais.IMG_URL imgUrl
+        <include refid="aliasColumns">
+            <property name="alias" value="aui"/>
+        </include>
+        ,
+        aius.UNIT_SERVICE_ID unitServiceId,
+        ais.SERVICE_ID serviceId,
+        ais.SERVICE_NAME serviceName,
+        ais.SERVICE_CODE serviceCode,
+        temp1.EVALUATION compEvaluation,
+        ais.IMG_URL imgUrl
         FROM aea_im_unit_service aius
         JOIN aea_im_service ais ON aius.SERVICE_ID = ais.SERVICE_ID
         JOIN aea_unit_info aui ON aius.UNIT_INFO_ID = aui.UNIT_INFO_ID
         LEFT JOIN (
-            SELECT aiub.UNIT_SERVICE_ID, AVG(aise.COMP_EVALUATION) AS EVALUATION, count(1) biddingNum FROM aea_im_unit_bidding aiub
-            LEFT JOIN aea_im_service_evaluation aise
-            ON aise.UNIT_BIDDING_ID = aiub.UNIT_BIDDING_ID
-            WHERE aiub.IS_DELETE = '0' AND aise.IS_DELETE = '0' AND aiub.IS_WON_BID = '1' AND aiub.IS_CANCEL_SIGNUP = '0'
-            AND aise.AUDIT_FLAG = '1'
-            GROUP BY aiub.UNIT_SERVICE_ID
+        SELECT aiub.UNIT_SERVICE_ID, AVG(aise.COMP_EVALUATION) AS EVALUATION, count(1) biddingNum FROM
+        aea_im_unit_bidding aiub
+        LEFT JOIN aea_im_service_evaluation aise
+        ON aise.UNIT_BIDDING_ID = aiub.UNIT_BIDDING_ID
+        WHERE aiub.IS_DELETE = '0' AND aise.IS_DELETE = '0' AND aiub.IS_WON_BID = '1' AND aiub.IS_CANCEL_SIGNUP = '0'
+        AND aise.AUDIT_FLAG = '1'
+        GROUP BY aiub.UNIT_SERVICE_ID
         ) temp1 ON temp1.UNIT_SERVICE_ID = aius.UNIT_SERVICE_ID
         <where>
             aius.AUDIT_FLAG = '1' AND aius.IS_DELETE = '0' AND aius.IS_ACTIVE = '1'
@@ -184,5 +189,14 @@
                 temp1.biddingNum
             </otherwise>
         </choose>
+    </select>
+
+    <select id="listCheckinUnitNum" resultType="java.lang.Integer">
+        select count(1) from AEA_IM_UNIT_SERVICE aius
+        where aius.IS_DELETE = '0' AND aius.IS_ACTIVE = '1'
+        AND aius.AUDIT_FLAG = '1'
+        <if test="startDate!=null and startDate!=''">
+            and aius.CREATE_TIME &gt;= #{startDate}
+        </if>
     </select>
 </mapper>

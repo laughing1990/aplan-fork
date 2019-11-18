@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--created by yinlf    2019-08-31 10:58:09 -->
+<!--0 一些前置信息配置 -->
+<mapper namespace="com.augurit.aplanmis.data.exchange.mapper.aplanmis.AplanmisDataMapper">
+    <sql id="item_state_log_c">
+        ${alias}.STATE_HIST_ID  stateHistId,
+        ${alias}.ITEMINST_ID  iteminstId,
+        ${alias}.IS_FLOW_TRIGGER  isFlowTrigger,
+        ${alias}.APPINST_ID  appinstId,
+        ${alias}.TASKINST_ID  taskinstId,
+        ${alias}.TRIGGER_TIME  triggerTime,
+        ${alias}.OLD_STATE  oldState,
+        ${alias}.NEW_STATE  newState,
+        ${alias}.OPS_ORG_ID opsOrgId,
+        ${alias}.OPS_USER_ID  opsUserId,
+        ${alias}.OPS_USER_NAME  opsUserName,
+        ${alias}.OPS_FILL_TIME  opsFillTime,
+        ${alias}.OPS_USER_OPINION  opsUserOpinion,
+        ${alias}.OPS_ACTION  opsAction,
+        ${alias}.OPS_MEMO  opsMemo,
+        ${alias}.BUS_TABLE_NAME  busTableName,
+        ${alias}.BUS_PK_NAME  busPkName,
+        ${alias}.BUS_RECORD_ID  busRecordId,
+        ${alias}.ROOT_ORG_ID rootOrgId,
+        ${alias}.PROCINST_ID procinstId,
+        ${alias}.GCBM gcbm
+    </sql>
+
+    <select id="getAplanmisProjCount" resultType="long">
+        SELECT count(distinct proj.LOCAL_CODE)
+        FROM AEA_APPLYINST_PROJ ahai123
+        INNER JOIN AEA_PROJ_INFO proj ON proj.PROJ_INFO_ID = ahai123.PROJ_INFO_ID
+    </select>
+
+    <select id="findAplanmisProjLocalCodeList" resultType="string">
+        SELECT distinct proj.LOCAL_CODE
+        FROM AEA_APPLYINST_PROJ ahai123
+        INNER JOIN AEA_PROJ_INFO proj ON proj.PROJ_INFO_ID = ahai123.PROJ_INFO_ID
+    </select>
+
+    <select id="getNonAcceptAplanmisProjCount" resultType="long">
+        SELECT  count(distinct proj.LOCAL_CODE)
+        FROM AEA_APPLYINST_PROJ ahai123
+        INNER JOIN AEA_PROJ_INFO proj ON proj.PROJ_INFO_ID = ahai123.PROJ_INFO_ID
+        INNER JOIN aea_hi_applyinst aha ON aha.APPLYINST_ID = ahai123.APPLYINST_ID
+        WHERE aha.ACCEPT_TIME IS NULL AND proj.LOCAL_CODE NOT IN (
+            SELECT distinct proj.LOCAL_CODE
+            FROM AEA_APPLYINST_PROJ ahai123
+            INNER JOIN AEA_PROJ_INFO proj ON proj.PROJ_INFO_ID = ahai123.PROJ_INFO_ID
+            INNER JOIN aea_hi_applyinst aha ON aha.APPLYINST_ID = ahai123.APPLYINST_ID
+            WHERE aha.ACCEPT_TIME IS NOT NULL
+        )
+    </select>
+
+    <select id="findNonAcceptAplanmisProjLocalCodeList" resultType="string">
+        SELECT distinct proj.LOCAL_CODE
+        FROM AEA_APPLYINST_PROJ ahai123
+        INNER JOIN AEA_PROJ_INFO proj ON proj.PROJ_INFO_ID = ahai123.PROJ_INFO_ID
+        INNER JOIN aea_hi_applyinst aha ON aha.APPLYINST_ID = ahai123.APPLYINST_ID
+        WHERE aha.ACCEPT_TIME IS NULL AND proj.LOCAL_CODE NOT IN (
+            SELECT distinct proj.LOCAL_CODE
+            FROM AEA_APPLYINST_PROJ ahai123
+            INNER JOIN AEA_PROJ_INFO proj ON proj.PROJ_INFO_ID = ahai123.PROJ_INFO_ID
+            INNER JOIN aea_hi_applyinst aha ON aha.APPLYINST_ID = ahai123.APPLYINST_ID
+            WHERE aha.ACCEPT_TIME IS NOT NULL
+        )
+    </select>
+
+    <select id="getAplanmisProjCountHasItemStateLog" resultType="long">
+        SELECT count(distinct proj.LOCAL_CODE)  FROM
+          (SELECT distinct gcdm FROM  spgl_xmspfxsxblxxxxb_view union SELECT distinct gcdm FROM  spgl_xmspsxblxxxxb_view )  upload_proj
+        INNER JOIN aea_proj_info proj ON replace(proj.GCBM, '#', '-') = upload_proj.gcdm;
+    </select>
+
+    <select id="findAplanmisProjLocalCodeListHasItemStateLog" resultType="string">
+        SELECT distinct proj.LOCAL_CODE  FROM
+          (SELECT distinct gcdm FROM  spgl_xmspfxsxblxxxxb_view union SELECT distinct gcdm FROM  spgl_xmspsxblxxxxb_view )  upload_proj
+        INNER JOIN aea_proj_info proj ON replace(proj.GCBM, '#', '-') = upload_proj.gcdm;
+    </select>
+
+    <select id="getOnlyA2ProjCount" resultType="long">
+        SELECT  count(distinct proj.LOCAL_CODE)
+                            FROM aea_hi_par_stageinst ahps_123
+                            INNER JOIN aea_hi_applyinst aha ON aha.APPLYINST_ID = ahps_123.APPLYINST_ID
+                            INNER JOIN AEA_PAR_STAGE stage ON stage.STAGE_ID = ahps_123.STAGE_ID
+                            INNER JOIN aea_applyinst_proj aap_123 ON aap_123.APPLYINST_ID = ahps_123.APPLYINST_ID
+                            INNER JOIN AEA_PROJ_INFO proj ON proj.PROJ_INFO_ID = aap_123.PROJ_INFO_ID
+                    WHERE aha.ACCEPT_TIME IS NOT NULL
+                    AND stage.IS_SHOW_ITEM = '0'
+        AND LOCAL_CODE NOT IN (
+            SELECT distinct proj.LOCAL_CODE
+                            FROM aea_hi_par_stageinst ahps_123
+                            INNER JOIN aea_hi_applyinst aha ON aha.APPLYINST_ID = ahps_123.APPLYINST_ID
+                            INNER JOIN AEA_PAR_STAGE stage ON stage.STAGE_ID = ahps_123.STAGE_ID
+                            INNER JOIN aea_applyinst_proj aap_123 ON aap_123.APPLYINST_ID = ahps_123.APPLYINST_ID
+                            INNER JOIN AEA_PROJ_INFO proj ON proj.PROJ_INFO_ID = aap_123.PROJ_INFO_ID
+                    WHERE aha.ACCEPT_TIME IS NOT NULL
+                    AND stage.IS_SHOW_ITEM = '1'
+            UNION ALL
+            SELECT distinct proj.LOCAL_CODE
+            FROM aea_hi_seriesinst ahs
+                INNER JOIN aea_hi_applyinst aha ON aha.APPLYINST_ID = ahs.APPLYINST_ID
+                INNER JOIN aea_applyinst_proj aap_123 ON aap_123.APPLYINST_ID = ahs.APPLYINST_ID
+                INNER JOIN AEA_PROJ_INFO proj ON proj.PROJ_INFO_ID = aap_123.PROJ_INFO_ID
+            WHERE aha.ACCEPT_TIME IS NOT NULL
+        )
+    </select>
+
+    <select id="getOnlyA2ProjLocalCodeList" resultType="string">
+        SELECT  distinct proj.LOCAL_CODE
+                            FROM aea_hi_par_stageinst ahps_123
+                            INNER JOIN aea_hi_applyinst aha ON aha.APPLYINST_ID = ahps_123.APPLYINST_ID
+                            INNER JOIN AEA_PAR_STAGE stage ON stage.STAGE_ID = ahps_123.STAGE_ID
+                            INNER JOIN aea_applyinst_proj aap_123 ON aap_123.APPLYINST_ID = ahps_123.APPLYINST_ID
+                            INNER JOIN AEA_PROJ_INFO proj ON proj.PROJ_INFO_ID = aap_123.PROJ_INFO_ID
+                    WHERE aha.ACCEPT_TIME IS NOT NULL
+                    AND stage.IS_SHOW_ITEM = '0'
+        AND LOCAL_CODE NOT IN (
+            SELECT distinct proj.LOCAL_CODE
+                            FROM aea_hi_par_stageinst ahps_123
+                            INNER JOIN aea_hi_applyinst aha ON aha.APPLYINST_ID = ahps_123.APPLYINST_ID
+                            INNER JOIN AEA_PAR_STAGE stage ON stage.STAGE_ID = ahps_123.STAGE_ID
+                            INNER JOIN aea_applyinst_proj aap_123 ON aap_123.APPLYINST_ID = ahps_123.APPLYINST_ID
+                            INNER JOIN AEA_PROJ_INFO proj ON proj.PROJ_INFO_ID = aap_123.PROJ_INFO_ID
+                    WHERE aha.ACCEPT_TIME IS NOT NULL
+                    AND stage.IS_SHOW_ITEM = '1'
+            UNION ALL
+            SELECT distinct proj.LOCAL_CODE
+            FROM aea_hi_seriesinst ahs
+                INNER JOIN aea_hi_applyinst aha ON aha.APPLYINST_ID = ahs.APPLYINST_ID
+                INNER JOIN aea_applyinst_proj aap_123 ON aap_123.APPLYINST_ID = ahs.APPLYINST_ID
+                INNER JOIN AEA_PROJ_INFO proj ON proj.PROJ_INFO_ID = aap_123.PROJ_INFO_ID
+            WHERE aha.ACCEPT_TIME IS NOT NULL
+        )
+    </select>
+
+    <select id="findItemStateLogByLocalCodes" resultType="ItemStateLog">
+        SELECT
+        <include refid="item_state_log_c">
+            <property name="alias" value="item_state_log"></property>
+        </include>
+        FROM (
+            SELECT LOCAL_CODE,replace(proj.GCBM, '#', '-') AS GCDM,iteminst.PROCINST_ID,lish_123.*
+            FROM aea_log_item_state_hist lish_123
+                INNER JOIN AEA_HI_ITEMINST iteminst ON lish_123.ITEMINST_ID = iteminst.ITEMINST_ID
+                INNER JOIN AEA_HI_PAR_STAGEINST hps ON hps.STAGEINST_ID = iteminst.STAGEINST_ID
+                INNER JOIN aea_par_stage stage ON stage.stage_id = hps.stage_id
+                INNER JOIN aea_applyinst_proj aap ON aap.APPLYINST_ID = hps.APPLYINST_ID
+                LEFT JOIN aea_proj_info proj ON proj.PROJ_INFO_ID = aap.PROJ_INFO_ID
+            UNION
+            SELECT LOCAL_CODE,replace(proj.GCBM, '#', '-') AS GCDM,iteminst.PROCINST_ID,lish_123.*
+            FROM aea_log_item_state_hist lish_123
+                INNER JOIN AEA_HI_ITEMINST iteminst ON lish_123.ITEMINST_ID = iteminst.ITEMINST_ID
+                INNER JOIN aea_hi_seriesinst ahs ON ahs.SERIESINST_ID = iteminst.SERIESINST_ID
+                INNER JOIN aea_applyinst_proj aap ON aap.APPLYINST_ID = ahs.APPLYINST_ID
+                LEFT JOIN aea_proj_info proj ON proj.PROJ_INFO_ID = aap.PROJ_INFO_ID
+        ) item_state_log
+        <where>
+            <if test="localCodes != null">
+                WHERE LOCAL_CODE IN
+                <foreach collection="localCodes" item="localCode" separator="," open="(" close=")">
+                  #{localCode}
+                </foreach>
+            </if>
+        </where>
+        ORDER BY LOCAL_CODE,ITEMINST_ID
+  </select>
+</mapper>

@@ -34,12 +34,6 @@
                     bidMode: { required: true, message: "招标方式不得为空！", trigger: ["change"] },
                     winBidTime: { required: true, message: "中标日期不得为空！", trigger: ["change"] },
                     realWinBiddingMoney: { required: true, message: "实际中标金额不得为空！", trigger: ["change"] },
-                    bidConfirmTime: { required: true, message: "招投标确认时间不得为空！", trigger: ["change"] },
-                    govOrgCode: { required: true, message: "招投标确认的行政单位机构代码不得为空！", trigger: ["change"] },
-                    govOrgName: { required: true, message: "招投标确认的行政单位名称不得为空！", trigger: ["change"] },
-                    govAreaCode: { required: true, message: "招投标确认的行政单位区域码不得为空！", trigger: ["change"] },
-                    organizationalCode: { required: true, message: "组织机构代码不得为空！", trigger: ["change"] },
-                    unitType: { required: true, message: "项目主体类型不得为空！", trigger: ["change"] },
                 },
                 bidTypeOptions: [], // 招标类型下拉选项arr
                 bidModeOptions: [], // 招标方式下拉选项arr

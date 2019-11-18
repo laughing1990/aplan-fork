@@ -107,5 +107,17 @@ public class AeaParFrontItemformController {
     }
 
 
+    @RequestMapping("/batchSaveAeaParFrontItemform.do")
+    public ResultForm batchSaveAeaParFrontItemform(String stageId,String stageItemIds){
+        try {
+            aeaParFrontItemformService.batchSaveAeaParFrontItemform(stageId,stageItemIds);
+            return new ResultForm(true);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return new ResultForm(false, e.getMessage());
+
+        }
+    }
+
 
 }
