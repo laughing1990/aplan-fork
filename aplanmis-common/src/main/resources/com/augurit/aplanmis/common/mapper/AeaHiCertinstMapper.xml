@@ -618,4 +618,14 @@
             <foreach collection="iteminstIds" item="iteminstId" separator="," open="(" close=")">#{iteminstId}</foreach>
         )
     </select>
+
+    <select id="listAeaHiCertinstByCertinstCode" resultType="com.augurit.aplanmis.common.domain.AeaHiCertinst">
+        select
+        <include refid="aliasColumns">
+            <property name="alias" value="ahc"/>
+        </include>
+        from aea_hi_certinst ahc
+        where ahc.CERTINST_CODE=#{certinstCode}
+        and ahc.ROOT_ORG_ID=#{currentOrgId}
+    </select>
 </mapper>
