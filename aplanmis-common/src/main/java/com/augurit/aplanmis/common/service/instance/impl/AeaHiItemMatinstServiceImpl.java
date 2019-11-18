@@ -4,6 +4,7 @@ import com.augurit.agcloud.bsc.domain.BscAttLink;
 import com.augurit.agcloud.bsc.mapper.BscAttMapper;
 import com.augurit.agcloud.bsc.util.UuidUtil;
 import com.augurit.agcloud.framework.security.SecurityContext;
+import com.augurit.agcloud.framework.util.CollectionUtils;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.constants.CertinstSource;
 import com.augurit.aplanmis.common.domain.AeaHiCertinst;
@@ -265,14 +266,26 @@ public class AeaHiItemMatinstServiceImpl implements AeaHiItemMatinstService {
 
         String currentOrgId = SecurityContext.getCurrentOrgId();
 
+        List<AeaHiCertinst> historyCertinsts = getHistoryCertinst(aeaHiCertinst.getCertinstCode(), currentOrgId);
+        if (CollectionUtils.isNotEmpty(historyCertinsts)) {
+            AeaHiCertinst historyCertinst = historyCertinsts.get(0);
+            aeaHiCertinst.setCertinstId(historyCertinst.getCertinstId());
+            aeaHiCertinst.setCertinstSource(historyCertinst.getCertinstSource());
+            aeaHiCertinst.setRootOrgId(currentOrgId);
+            aeaHiCertinst.setModifyTime(new Date());
+            aeaHiCertinst.setModifier(currentUserName);
+            aeaHiCertinstMapper.updateAeaHiCertinst(aeaHiCertinst);
+        } else {
+            aeaHiCertinst.setCertinstId(UuidUtil.generateUuid());
+            aeaHiCertinst.setRootOrgId(currentOrgId);
+            aeaHiCertinst.setCreater(currentUserName);
+            aeaHiCertinst.setCertinstSource(CertinstSource.EXTERNAL.getValue());
+            aeaHiCertinst.setCreateTime(new Date());
+            aeaHiCertinstMapper.insertAeaHiCertinst(aeaHiCertinst);
+        }
+
         AeaItemMat aeaItemMat = aeaItemMatMapper.getAeaItemMatById(aeaHiCertinst.getMatId());
         Assert.state("c".equals(aeaItemMat.getMatProp()), "matProp should 'c'");
-
-        aeaHiCertinst.setCertinstId(UuidUtil.generateUuid());
-        aeaHiCertinst.setRootOrgId(currentOrgId);
-        aeaHiCertinst.setCreater(currentUserName);
-        aeaHiCertinst.setCertinstSource(CertinstSource.EXTERNAL.getValue());
-        aeaHiCertinst.setCreateTime(new Date());
 
         AeaHiItemMatinst aeaHiItemMatinst = new AeaHiItemMatinst();
         BeanUtils.copyProperties(aeaItemMat, aeaHiItemMatinst);
@@ -284,6 +297,7 @@ public class AeaHiItemMatinstServiceImpl implements AeaHiItemMatinstService {
         aeaHiItemMatinst.setCreater(currentUserName);
         aeaHiItemMatinst.setCertinstId(aeaHiCertinst.getCertinstId());
         aeaHiItemMatinst.setMatinstSource(aeaItemMat.getMatFrom());
+        aeaHiItemMatinst.setAttCount(1L);
         // 企业
         if (StringUtils.isBlank(aeaItemMat.getMatHolder()) || "c".equals(aeaItemMat.getMatHolder())) {
             aeaHiItemMatinst.setUnitInfoId(aeaHiCertinst.getUnitInfoId());
@@ -294,7 +308,6 @@ public class AeaHiItemMatinstServiceImpl implements AeaHiItemMatinstService {
         }
         aeaHiItemMatinst.setProjInfoId(aeaHiCertinst.getProjInfoId());
 
-        aeaHiCertinstMapper.insertAeaHiCertinst(aeaHiCertinst);
         aeaHiItemMatinstMapper.insertAeaHiItemMatinst(aeaHiItemMatinst);
 
         aeaHiCertinst.setMatinstId(aeaHiItemMatinst.getMatinstId());
@@ -302,14 +315,20 @@ public class AeaHiItemMatinstServiceImpl implements AeaHiItemMatinstService {
     }
 
     @Override
+    public List<AeaHiCertinst> getHistoryCertinst(String certinstCode, String currentOrgId) {
+        return aeaHiCertinstMapper.listAeaHiCertinstByCertinstCode(certinstCode, currentOrgId);
+    }
+
+    @Override
     public void unbindCertinst(String matinstId) throws Exception {
         Assert.hasText(matinstId, "证照材料实例id不能为空");
         AeaHiItemMatinst aeaHiItemMatinst = aeaHiItemMatinstMapper.getAeaHiItemMatinstById(matinstId);
 
-        // 删除电子证照
+        /// 不删除电子证照实例，有可能一个电子证照被绑定多次
+        /*// 删除电子证照
         if (StringUtils.isNotBlank(aeaHiItemMatinst.getCertinstId())) {
             aeaHiCertinstMapper.deleteAeaHiCertinst(aeaHiItemMatinst.getCertinstId());
-        }
+        }*/
         aeaHiItemMatinstMapper.deleteAeaHiItemMatinst(matinstId);
     }
 }
