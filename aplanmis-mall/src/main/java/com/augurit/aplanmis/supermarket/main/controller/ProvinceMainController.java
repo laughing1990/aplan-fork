@@ -35,17 +35,29 @@ public class ProvinceMainController {
     }
 
     //==============================省首页跳转  end ===================================
-    @ApiOperation(value = "获取省首页展示数据", notes = "获取省首页展示数据。")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "queryType", value = "查询类型，D 天,M月,Y 年 A 所有", required = true, dataType = "String")
-    })
+    @ApiOperation(value = "获取省首页展示数据", notes = "获取省首页展示数据")
     @GetMapping(value = "/getProvinceIndexData")
-    public ResultForm getIndexData(String queryType) {
+    public ResultForm getIndexData() {
         try {
-            return new ContentResultForm(true, provinceMainService.getProvinceIndexData(queryType));
+            return new ContentResultForm(true, provinceMainService.getProvinceIndexData());
         } catch (Exception e) {
             e.printStackTrace();
             return new ResultForm(false);
         }
     }
+
+    @ApiOperation(value = "获取省首页运行数据", notes = "获取省首页运行数据")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "queryType", value = "查询类型，D 天,M月,Y 年 A 所有", required = true, dataType = "String")
+    })
+    @GetMapping(value = "/getProvinceRunSituationData")
+    public ResultForm getProvinceRunSituationIData(String queryType) {
+        try {
+            return new ContentResultForm(true, provinceMainService.getProvinceRunSituationData(queryType));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResultForm(false);
+        }
+    }
+
 }
