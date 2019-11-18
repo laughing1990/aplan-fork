@@ -73,20 +73,25 @@ public class RestFileController {
             BeanUtils.copyProperties(uploadVo, aeaHiItemMatinst);
             String matinstId = aeaHiItemMatinst.getMatinstId();
             aeaHiItemMatinst.setMatinstId(("null".equalsIgnoreCase(matinstId) || "undefined".equalsIgnoreCase(matinstId) || StringUtils.isBlank(matinstId)) ? null : matinstId);
-            LoginInfoVo loginInfoVo = SessionUtil.getLoginInfo(request);
-            if (loginInfoVo==null)  return new ResultForm(false, "上传失败");
-            if ("1".equals(loginInfoVo.getIsPersonAccount())||StringUtils.isNotBlank(loginInfoVo.getUserId())){//个人
-                aeaHiItemMatinst.setMatinstSource("1");
-                aeaHiItemMatinst.setLinkmanInfoId(loginInfoVo.getUserId());
-            }else {//企业
-                aeaHiItemMatinst.setMatinstSource("u");
-                aeaHiItemMatinst.setUnitInfoId(loginInfoVo.getUnitId());
-            }
+            if (setMatSource(request, aeaHiItemMatinst)) return new ResultForm(false, "上传失败");
             return new ContentResultForm(true, aeaHiItemMatinstService.saveAeaHiItemMatinst(aeaHiItemMatinst, request));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return new ResultForm(false);
         }
+    }
+
+    private boolean setMatSource(HttpServletRequest request, AeaHiItemMatinst aeaHiItemMatinst) {
+        LoginInfoVo loginInfoVo = SessionUtil.getLoginInfo(request);
+        if (loginInfoVo == null) return true;
+        if ("1".equals(loginInfoVo.getIsPersonAccount()) || StringUtils.isNotBlank(loginInfoVo.getUserId())) {//个人
+            aeaHiItemMatinst.setMatinstSource("1");
+            aeaHiItemMatinst.setLinkmanInfoId(loginInfoVo.getUserId());
+        } else {//企业
+            aeaHiItemMatinst.setMatinstSource("u");
+            aeaHiItemMatinst.setUnitInfoId(loginInfoVo.getUnitId());
+        }
+        return false;
     }
 
     @PostMapping("cloud/uploadFile")
@@ -108,6 +113,7 @@ public class RestFileController {
             aeaHiItemMatinst.setProjInfoId(projInfoId);
             aeaHiItemMatinst.setDetailIds(detailIds);
             aeaHiItemMatinst.setMatinstId(("null".equalsIgnoreCase(matinstId) || "undefined".equalsIgnoreCase(matinstId) || StringUtils.isBlank(matinstId)) ? null : matinstId);
+            if (setMatSource(request, aeaHiItemMatinst)) return new ResultForm(false, "上传失败");
             return new ContentResultForm(true, aeaHiItemMatinstService.saveAeaHiItemMatinstByCloud(aeaHiItemMatinst));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -121,7 +127,7 @@ public class RestFileController {
     public ResultForm getAttFiles(@PathVariable String matinstId,HttpServletRequest request) throws Exception {
         if ("null".equalsIgnoreCase(matinstId) || "undefined".equalsIgnoreCase(matinstId) || StringUtils.isBlank(matinstId))
             return new ContentResultForm<>(true, new ArrayList<>());
-        //if (!restFileService.isMatBelong(matinstId,request)) return new ResultForm(false,"查询出错");
+        if (!restFileService.isMatBelong(matinstId,request)) return new ResultForm(false,"查询出错");
         return new ContentResultForm<>(true, restFileService.getAttFiles(matinstId));
     }
 
@@ -137,7 +143,7 @@ public class RestFileController {
             if (StringUtils.isBlank(detailIds)) {
                 return new ResultForm(false, "删除失败：没有可删除文件!");
             }
-            //if (!restFileService.isMatBelong(matinstId,request)) return new ResultForm(false,"删除出错");
+            if (!restFileService.isMatBelong(matinstId,request)) return new ResultForm(false,"删除出错");
             String[] str = detailIds.split(",");
             return restFileService.delelteAttachment(str, matinstId);
         } catch (Exception e) {
