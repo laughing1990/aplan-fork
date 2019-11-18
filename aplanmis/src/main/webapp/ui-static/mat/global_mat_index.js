@@ -839,7 +839,7 @@ function editActStoFormFunc(){
 
     var formId = $('#aedit_mat_form input[name="stoFormId"]').val();
     if(formId){
-        openFullWindow(ctx + '/design?formId='+formId);
+        openFullWindow(ctx + '/design?formId='+formId+'&needCallBackSaveActStoForm=0&requiredField=refEntityId');
     }else{
         swal('提示信息','请选择表单!','info');
     }
