@@ -316,22 +316,5 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
                 .collect(Collectors.toList());
     }
 
-    public String onlyInstApply(StageApplyDataPageVo stageApplyDataPageVo) throws Exception {
-        List<String> itemVerIds = stageApplyDataPageVo.getItemVerIds();
-        if (null != itemVerIds && itemVerIds.size() > 0) {
-            AeaParStage aeaParStage = aeaParStageMapper.getAeaParStageById(stageApplyDataPageVo.getStageId());
-            Assert.notNull(aeaParStage, "aeaParStage is null");
-            String appId = aeaParStage.getAppId();
-            String themeVerId = aeaParStage.getThemeVerId();
-            StageApplyDataVo stageApplyDataVo = stageApplyDataPageVo.toStageApplyDataVo(appId, themeVerId);
-            String applySource = stageApplyDataVo.getApplySource();
-            String applySubject = stageApplyDataVo.getApplySubject();
-            String linkmanInfoId = stageApplyDataVo.getLinkmanInfoId();
-            String branchOrgMap = stageApplyDataVo.getBranchOrgMap();//是否分局承办，允许为空
-            AeaHiApplyinst applyinst = aeaHiApplyinstService.createAeaHiApplyinst(applySource, applySubject, linkmanInfoId, "0", branchOrgMap, ApplyState.RECEIVE_APPROVED_APPLY.getValue());
-            return applyinst == null ? null : applyinst.getApplyinstId();
-        } else {
-            throw new Exception("未选择并联事项");
-        }
-    }
+
 }

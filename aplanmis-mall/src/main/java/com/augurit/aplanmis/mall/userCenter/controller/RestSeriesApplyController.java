@@ -1,10 +1,14 @@
 package com.augurit.aplanmis.mall.userCenter.controller;
 
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
+import com.augurit.aplanmis.common.constants.AeaHiApplyinstConstants;
+import com.augurit.aplanmis.common.constants.ApplyState;
+import com.augurit.aplanmis.common.domain.AeaHiApplyinst;
 import com.augurit.aplanmis.common.domain.AeaItemBasic;
 import com.augurit.aplanmis.common.domain.AeaItemCond;
 import com.augurit.aplanmis.common.domain.AeaItemState;
 import com.augurit.aplanmis.common.service.file.FileUtilsService;
+import com.augurit.aplanmis.common.service.instance.AeaHiApplyinstService;
 import com.augurit.aplanmis.common.service.instance.AeaHiSmsInfoService;
 import com.augurit.aplanmis.common.service.item.AeaItemBasicService;
 import com.augurit.aplanmis.common.service.item.AeaItemCondService;
@@ -62,6 +66,8 @@ public class RestSeriesApplyController {
     AeaItemMatService aeaItemMatService;
     @Autowired
     RestSeriesApplyService restSeriesApplyService;
+    @Autowired
+    AeaHiApplyinstService aeaHiApplyinstService;
 
 
     @GetMapping("/toSingleApplyPage")
@@ -153,4 +159,16 @@ public class RestSeriesApplyController {
         return new ContentResultForm<>(true, vo, "Series start process success");
     }
 
+
+    @PostMapping("net/process/form/start")
+    @ApiOperation("阶段申报--> 一张表单提前实例化申请")
+    public ContentResultForm<String> startInstApply(String applySource,String applySubject,String  linkmanInfoId){
+        try {
+            AeaHiApplyinst aeaHiApplyinst = aeaHiApplyinstService.createAeaHiApplyinst(applySource, applySubject, linkmanInfoId, AeaHiApplyinstConstants.SERIESINST_APPLY, null, ApplyState.RECEIVE_UNAPPROVAL_APPLY.getValue());
+            return new ContentResultForm<>(true, aeaHiApplyinst.getApplyinstId(), "申报成功!");
+        } catch (Exception e) {
+            logger.error(e.getMessage(),e);
+            return new ContentResultForm(false,"",e.getMessage());
+        }
+    }
 }
