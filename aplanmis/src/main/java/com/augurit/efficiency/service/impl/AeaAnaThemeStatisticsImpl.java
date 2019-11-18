@@ -487,9 +487,7 @@ public class AeaAnaThemeStatisticsImpl {
         String endTime = dateStr + " 23:59:59";
 
         for (int i = 0, len = stageList.size(); i < len; i++) {
-
             String stageId = stageList.get(i).get("stageId").toString();
-
             String stageName = stageList.get(i).get("stageName").toString();
             try {
                 String dybzspjdxh = stageList.get(i).get("dybzspjdxh").toString();
@@ -541,7 +539,6 @@ public class AeaAnaThemeStatisticsImpl {
 
 
         } else {
-//            changeHis = logApplyStateHistMapper.getApplyChangeHisIsParallel(stageId, startDate, endDate,isParallel);
             //计算单项
             List<AeaLogApplyStateHist> serChangeHis = logApplyStateHistMapper.getApplyChangeHis(stageId, startTime, endTime, isParallel, "1");
             changeHis.addAll(serChangeHis);

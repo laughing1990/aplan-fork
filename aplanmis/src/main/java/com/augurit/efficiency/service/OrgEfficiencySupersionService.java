@@ -1,5 +1,6 @@
 package com.augurit.efficiency.service;
 
+import com.augurit.agcloud.bsc.domain.BscDicRegion;
 import com.augurit.aplanmis.common.vo.analyse.*;
 
 import java.util.List;
@@ -90,4 +91,10 @@ public interface OrgEfficiencySupersionService {
      * @throws Exception
      */
     List<Map<String, Object>> getRegionOrgAcceptHistoryStatistics(String regionId, String orgId, String startTime, String endTime, String type) throws Exception;
+
+    List<BscDicRegion> getCurrentRegionList() throws Exception;
+
+    Map<String, Object> getOrgReceiveStatistics(String startTime, String endTime, String type, String regionId) throws Exception;
+
+    List<List<Object>> getOrgReceiveLimitTimeStatistics(String startTime, String endTime, String type, String regionId) throws Exception;
 }

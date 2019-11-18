@@ -131,6 +131,15 @@ public interface AeaHiItemMatinstService {
      */
     AeaHiCertinst bindCertinst(AeaHiCertinst aeaHiCertinst, String currentUserName) throws Exception;
 
+    /**
+     * 根据 certinstCode 返回以前绑定过的电子证照材料实例
+     *
+     * @param authCode
+     * @param currentOrgId
+     * @return
+     */
+    List<AeaHiCertinst> getHistoryCertinst(String authCode, String currentOrgId);
+
     void unbindCertinst(String matinstId) throws Exception;
 
 }

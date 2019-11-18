@@ -393,6 +393,8 @@ var vm = new Vue({
             refusedRecepitModalShow: false,//不收件弹窗
             selectMat: '',//选择的材料
             buttonStyle: '',//点击的按钮 0 发起申报；1 打印回执 。。。。。
+          submitCommentsMatFlag: '',
+          stoFormId: '',
             showMatList: false,//收件意见弹框是否显示材料列表
             //selectedStates:[],//选择的情形，可能有单选，或者多选{stateId:'',parentStateId:''}
             receiveList: [],//回执列表
@@ -560,6 +562,7 @@ var vm = new Vue({
           }, // 证照库条件查询
           allApplySubjectInfo: [], // 证照库条件查询
           selApplySubject: {}, // 选中的建设单位 申报主体
+          matFormDialogVisible: false, // 是否展示材料一张表单
         }
     },
     mounted: function () {
@@ -650,7 +653,6 @@ var vm = new Vue({
       },
       // 选择并保存主题
       chooseTheme: function (data,index) {
-        this.parallelApplyinstId = '';
         var _that =this;
         _that.projBascInfoShow.projApplyType = data.themeName;
         _that.themeName = data.themeName;
@@ -2463,7 +2465,7 @@ var vm = new Vue({
           "certOwner": certRowData.holder_name,
           "certinstCode": certRowData.license_code,
           "certinstId": "",
-          "certinstName": certRowData.license_code,
+          "certinstName": certRowData.name,
           "issueDate": certRowData.issue_time,
           "issueOrgId": certRowData.issue_org_code,
           "managementScope": "",
@@ -2503,7 +2505,7 @@ var vm = new Vue({
           }
         }, function (msg) {
           _that.$message({
-            message: msg.message?msg.message:'证照查看失败',
+            message: msg.message?msg.message:'证照关联失败',
             type: 'error'
           });
         });
@@ -3007,16 +3009,18 @@ var vm = new Vue({
             }
         },
         // 意见窗口
-        showCommentDialog: function (val) {
+        showCommentDialog: function (val,flag,_stoFormId) {
             var _that = this;
             _that.buttonStyle = val;
+          _that.submitCommentsMatFlag = flag;
+          _that.stoFormId = _stoFormId;
             var stateSel = _that.stateList
             var stateSelLen = stateSel.length;
             _that.stateIds = [];
             for (var i = 0; i < stateSelLen; i++) {
 
                 if (stateSel[i].selectAnswerId == null || stateSel[i].selectAnswerId == '') {
-                  if (stateSel[i].mustAnswer == 1) {
+                  if (stateSel[i].mustAnswer == 1&&_that.buttonStyle!='4') {
                     _that.stateIds = [];
                     alertMsg('', '请选择情形：' + stateSel[i].stateName, '关闭', 'error', true);
                     return true;
@@ -3042,9 +3046,11 @@ var vm = new Vue({
                     if (valid) {
                         applicantPerFlag = true;
                     } else {
+                      if (_that.buttonStyle != '4') {
                         applicantPerFlag = false;
                         perUnitMsg = "请完善申办主体个人信息";
                         return false;
+                      }
                     }
                 });
             }
@@ -3052,11 +3058,11 @@ var vm = new Vue({
                 if(valid){
                     projBascInfoFlag=true;
                 }else{
-
-                    projBascInfoFlag=false;
+                  if(_that.buttonStyle!='4') {
+                    projBascInfoFlag = false;
                     perUnitMsg = "请完善项目/工程信息";
                     return false;
-
+                  }
                 }
             })
             // 判断建设单位必填是否已填
@@ -3073,15 +3079,19 @@ var vm = new Vue({
                         if (valid) {
                             jiansheUnitFlag = true;
                         } else {
+                          if(_that.buttonStyle!='4') {
                             jiansheUnitFlag = false;
                             perUnitMsg = "请完善申办主体建设单位信息"
                             return false;
+                          }
                         }
                     });
                 }
             } else if (jiansheUnitFormEleLen == 0 && _that.applySubjectType != 0) {
+              if(_that.buttonStyle!='4') {
                 jiansheUnitFlag = false;
                 perUnitMsg = "请添加申办主体建设单位信息"
+              }
             }
             // 判断经办单位必填是否已填deboun
             if (jinbanUnitFormEleLen > 0) {
@@ -3098,22 +3108,26 @@ var vm = new Vue({
                         if (valid) {
                             jinbanUnitFlag = true;
                         } else {
+                          if(_that.buttonStyle!='4') {
                             jinbanUnitFlag = false;
                             perUnitMsg = "请完善申办主体经办单位信息"
                             return false;
+                          }
                         }
                     });
                 }
             } else if (jinbanUnitFormEleLen == 0 && _that.applySubjectType != 0 && _that.agentChecked) {
+              if(_that.buttonStyle!='4') {
                 jinbanUnitFlag = false;
                 perUnitMsg = "请添加申办主体经办单位信息"
+              }
             }
             if (projBascInfoFlag&&applicantPerFlag && jiansheUnitFlag && jinbanUnitFlag) {
                 _that.$refs['formTest'].validate(function (valid) {
-                    if (valid || _that.buttonStyle==5) {
-                        if (_that.smsInfoId) {
+                    if (valid || _that.buttonStyle==5||_that.buttonStyle=='4') {
+                        if (_that.smsInfoId||_that.buttonStyle=='4') {
                             _that.getMatinstIds();
-                            if(!_that.attIsRequireFlag && _that.buttonStyle!=5){
+                            if(!_that.attIsRequireFlag && _that.buttonStyle!=5&&_that.buttonStyle!='4'){
                                 alertMsg('', '请上传所有必传的电子件', '关闭', 'warning', true);
                                 return false;
                             }
@@ -3428,7 +3442,7 @@ var vm = new Vue({
             }
             if (matCountVos.length == 0) {
                 _that.selMatinstIds = selMatinstId;
-                if(_that.buttonStyle==1||_that.buttonStyle==5){
+                if(_that.buttonStyle==1||_that.buttonStyle==5||_that.buttonStyle==4){
                     _that.startSingleApprove();
                 }
                 return false;
@@ -3498,7 +3512,7 @@ var vm = new Vue({
             var projInfoIds = [], handleUnitIds = []; // 项目ID集合 经办单位ID集合
             var branchOrgMap = [];// 分局承办
             var _that = this;
-            if (!_that.comments&&_that.buttonStyle!=1&&_that.buttonStyle!=5) {
+            if (!_that.comments&&_that.buttonStyle!=1&&_that.buttonStyle!=5&&_that.buttonStyle!=4) {
                 alertMsg('', '请填写收件意见', '关闭', 'error', true);
                 return false;
             }
@@ -3567,6 +3581,8 @@ var vm = new Vue({
                 url = 'rest/apply/series/inst';
             } else if (_that.buttonStyle == '3') {//不受理
                 url = 'rest/apply/series/inadmissible';
+            }else if (_that.buttonStyle == '4') { // 仅实例化
+              url = 'rest/apply/parallel/onlyInstApply';
             }
             _that.progressIntervalStop = false;
             _that.setUploadPercentage();
@@ -3587,6 +3603,12 @@ var vm = new Vue({
                         message: '操作成功',
                         type: 'success'
                     });
+                  if(_that.buttonStyle==4){
+                    if(_that.submitCommentsMatFlag == 'matForm'){
+                      _that.getOneFormrender3(_that.applyinstId,_that.stoFormId);
+                    }
+                    return false;
+                  }
                     setTimeout(function () {
                         _that.progressDialogVisible = false;
                         if(_that.buttonStyle==5){
@@ -3614,7 +3636,45 @@ var vm = new Vue({
                 });
             });
         },
-
+      // 获取材料一张表单render
+      getOneFormrender3: function(_applyinstId,_formId){
+        var _that = this;
+        // _formId = 'ecbebb64-a29c-41c6-abb7-e7b337a1a2cb';
+        var sFRenderConfig='&showBasicButton=true&includePlatformResource=false';
+        request('', {
+          url: ctx + 'bpm/common/sf/renderHtmlFormContainer?listRefEntityId='+_applyinstId+'&listFormId='+_formId+sFRenderConfig,
+          type: 'get',
+        }, function (result) {
+          if (result.success) {
+            _that.matFormDialogVisible = true;
+            $('#matFormContent').html(result.content)
+            _that.$nextTick(function(){
+              $('#matFormContent').html(result.content)
+            });
+          }else {
+            _that.$message({
+              message: result.content?result.content:'获取材料表单失败！',
+              type: 'error'
+            });
+          }
+        },function(res){
+          _that.$message({
+            message: '获取材料表单失败！',
+            type: 'error'
+          });
+        })
+      },
+      // 展示材料一张表单弹窗
+      showOneFormDialog1: function(oneformMat){
+        var _that = this;
+        var _applyinstId = _that.applyinstId;
+        _that.oneformNameTitle = oneformMat.matName
+        if(_applyinstId==''){
+          _that.showCommentDialog('4','matForm',oneformMat.stoFormId)
+        }else {
+          _that.getOneFormrender3(_applyinstId,oneformMat.stoFormId)
+        }
+      },
         //显示机构树
         showOrgTree: function (val, data) {
             console.log(data);

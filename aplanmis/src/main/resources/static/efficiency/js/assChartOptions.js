@@ -222,7 +222,7 @@ var assEchartOptions = {
       right: 6,
     },
     legend: {
-      data: ['正常', '预警', '逾期'],
+      data: ['已受理', '材料补正', '不予受理'],
       textStyle: {
 
       },
@@ -286,7 +286,7 @@ var assEchartOptions = {
     },
     series: [{
       data: [200, 200, 200, 200, 200, 200, 200],
-      name: '正常',
+      name: '已受理',
       type: 'bar',
       barMaxWidth: 20,
       itemStyle: {
@@ -294,16 +294,16 @@ var assEchartOptions = {
           barBorderRadius: 4,
           color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
             offset: 0,
-            color: '#05CCC5'
+            color: '#2EBCDA'
           }, {
             offset: 1,
-            color: '#2AC6E8'
+            color: '#4E84FD'
           }])
         }
       },
     }, {
       data: [100, 100, 140, 30, 50, 30, 110],
-      name: '预警',
+      name: '材料补正',
       type: 'bar',
       barMaxWidth: 20,
       barGap: '100%',
@@ -317,16 +317,16 @@ var assEchartOptions = {
           barBorderRadius: 4,
           color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
             offset: 0,
-            color: '#70A1FF'
+            color: '#FABF4B'
           }, {
             offset: 1,
-            color: '#40ABFF'
+            color: '#FF9622'
           }])
         }
       },
     }, {
       data: [120, 200, 150, 80, 70, 110, 130],
-      name: '逾期',
+      name: '不予受理',
       type: 'bar',
       barMaxWidth: 20,
       barGap: '100%',
@@ -340,10 +340,10 @@ var assEchartOptions = {
           barBorderRadius: 4,
           color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
             offset: 0,
-            color: '#FD8280'
+            color: '#FE7674'
           }, {
             offset: 1,
-            color: '#F26A68'
+            color: '#F15957'
           }])
         }
       },

@@ -368,6 +368,8 @@ var vm = new Vue({
       submitCommentsTitle: '收件意见对话框', // 意见框title
       showMatList: false,//收件意见弹框是否显示材料列表
       submitCommentsType: 0, // 0发起申报 1打印回执 3不受理
+      submitCommentsMatFlag: '',
+      stoFormId: '',
       receiveList: [],//回执列表
       // receiveList: [{"applyinstId":"307c74b6-2071-456b-bc58-8581c185b826","applyinstCode":"2019080618516841","name":"立项用地许可阶段","receiveList":[{"receiveId":"02085df1-54da-4fdc-8af5-5bed5de01018","applyinstId":"307c74b6-2071-456b-bc58-8581c185b826","outinstId":"13d9f3d3-9583-44a9-9514-60ab8bd60b4d,ecc86fea-399c-4b0d-b992-02621d44c000,99b3a9ae-161b-46f6-9f3d-b3ceeb0d5aa8,d32facb4-dc91-4193-baa2-42a4d92432da","receiveUserName":"李红英","receiveCertNo":null,"receiveTime":1565088701000,"approveDeptRegion":null,"subDeptRegion":null,"receiveMemo":"","creater":"ckry","createTime":1565088701000,"modifier":null,"modifyTime":null,"receiveUserMobile":"15931912705","serviceAddress":null,"documentNum":null,"receiptType":"2","fileUrl":null,"documentName":null,"rootOrgId":null},{"receiveId":"0caa1263-4f55-40a4-9459-88faac7954d6","applyinstId":"307c74b6-2071-456b-bc58-8581c185b826","outinstId":"13d9f3d3-9583-44a9-9514-60ab8bd60b4d,ecc86fea-399c-4b0d-b992-02621d44c000,99b3a9ae-161b-46f6-9f3d-b3ceeb0d5aa8,d32facb4-dc91-4193-baa2-42a4d92432da","receiveUserName":"李红英","receiveCertNo":null,"receiveTime":1565088701000,"approveDeptRegion":null,"subDeptRegion":null,"receiveMemo":"","creater":"ckry","createTime":1565088701000,"modifier":null,"modifyTime":null,"receiveUserMobile":"15931912705","serviceAddress":null,"documentNum":null,"receiptType":"1","fileUrl":null,"documentName":null,"rootOrgId":null}],"isSeries":"0"},{"applyinstId":"307c74b6-2071-456b-bc58-8581c185b826","applyinstCode":"2019080618516841","name":"立项用地许可阶段","receiveList":[{"receiveId":"02085df1-54da-4fdc-8af5-5bed5de01018","applyinstId":"307c74b6-2071-456b-bc58-8581c185b826","outinstId":"13d9f3d3-9583-44a9-9514-60ab8bd60b4d,ecc86fea-399c-4b0d-b992-02621d44c000,99b3a9ae-161b-46f6-9f3d-b3ceeb0d5aa8,d32facb4-dc91-4193-baa2-42a4d92432da","receiveUserName":"李红英","receiveCertNo":null,"receiveTime":1565088701000,"approveDeptRegion":null,"subDeptRegion":null,"receiveMemo":"","creater":"ckry","createTime":1565088701000,"modifier":null,"modifyTime":null,"receiveUserMobile":"15931912705","serviceAddress":null,"documentNum":null,"receiptType":"2","fileUrl":null,"documentName":null,"rootOrgId":null},{"receiveId":"0caa1263-4f55-40a4-9459-88faac7954d6","applyinstId":"307c74b6-2071-456b-bc58-8581c185b826","outinstId":"13d9f3d3-9583-44a9-9514-60ab8bd60b4d,ecc86fea-399c-4b0d-b992-02621d44c000,99b3a9ae-161b-46f6-9f3d-b3ceeb0d5aa8,d32facb4-dc91-4193-baa2-42a4d92432da","receiveUserName":"李红英","receiveCertNo":null,"receiveTime":1565088701000,"approveDeptRegion":null,"subDeptRegion":null,"receiveMemo":"","creater":"ckry","createTime":1565088701000,"modifier":null,"modifyTime":null,"receiveUserMobile":"15931912705","serviceAddress":null,"documentNum":null,"receiptType":"1","fileUrl":null,"documentName":null,"rootOrgId":null}],"isSeries":"0"}],
       receiveModalShow: false,//回执弹窗控制
@@ -489,6 +491,7 @@ var vm = new Vue({
       searchFileListfilter: '', // 导入材料附件列表搜索关键字
       oneFormData: [], // 一张表单列表
       oneFormDialogVisible: false, // 是否展示一张表单
+      matFormDialogVisible: false, // 是否展示材料一张表单
       firstGetneForm: 0,
       showMoreBaseInfo: false, // 是否展示更多项目基本信息
       removeParallelItemsMats: [],  // 移除的并联事项材料
@@ -3251,7 +3254,7 @@ var vm = new Vue({
         "certOwner": certRowData.holder_name,
         "certinstCode": certRowData.license_code,
         "certinstId": "",
-        "certinstName": certRowData.license_code,
+        "certinstName": certRowData.name,
         "issueDate": certRowData.issue_time,
         "issueOrgId": certRowData.issue_org_code,
         "managementScope": "",
@@ -3632,7 +3635,7 @@ var vm = new Vue({
       return notAllow;
     },
     // 意见窗口
-    showCommentDialog: function(val){
+    showCommentDialog: function(val,flag,_stoFormId){
       var _that = this;
       var stateSel = _that.stateList;
       var stateSelLen = stateSel.length;
@@ -3643,6 +3646,8 @@ var vm = new Vue({
       }
       _that.stateIds = [];
       _that.submitCommentsType = val;
+      _that.submitCommentsMatFlag = flag;
+      _that.stoFormId = _stoFormId;
       if(allowToApply&&_that.submitCommentsType!='4'){
         alertMsg('', '事项无匹配的行政区划及实施主体', '关闭', 'error', true);
         return true;
@@ -4157,9 +4162,15 @@ var vm = new Vue({
             _that.IsJustApplyinst = 2;
           }
           if(_that.submitCommentsType==4){
-            _that.parallelApplyinstId=res.content;
-            _that.formItemsIdStr = strVer;
-            _that.getOneFormrender2(strVer,_that.parallelApplyinstId,_that.stageId);
+            if(_that.submitCommentsMatFlag == 'matForm'){
+              _that.parallelApplyinstId=res.content;
+              _that.getOneFormrender3(_that.parallelApplyinstId,_that.stoFormId);
+            }else {
+              _that.parallelApplyinstId=res.content;
+              _that.formItemsIdStr = strVer;
+              _that.getOneFormrender2(strVer,_that.parallelApplyinstId,_that.stageId);
+            }
+
             return false;
           }else {
             applyinstIdsParallelApplyinstId=res.content.applyinstIds;
@@ -5562,6 +5573,34 @@ var vm = new Vue({
         });
       })
     },
+    // 获取材料一张表单render
+    getOneFormrender3: function(_applyinstId,_formId){
+      var _that = this;
+      // _formId = 'ecbebb64-a29c-41c6-abb7-e7b337a1a2cb';
+      var sFRenderConfig='&showBasicButton=true&includePlatformResource=false';
+      request('', {
+        url: ctx + 'bpm/common/sf/renderHtmlFormContainer?listRefEntityId='+_applyinstId+'&listFormId='+_formId+sFRenderConfig,
+        type: 'get',
+      }, function (result) {
+        if (result.success) {
+          _that.matFormDialogVisible = true;
+          $('#matFormContent').html(result.content)
+          _that.$nextTick(function(){
+            $('#matFormContent').html(result.content)
+          });
+        }else {
+          _that.$message({
+            message: result.content?result.content:'获取材料表单失败！',
+            type: 'error'
+          });
+        }
+      },function(res){
+        _that.$message({
+          message: '获取材料表单失败！',
+          type: 'error'
+        });
+      })
+    },
     // 展示一张表单弹窗
     showOneFormDialog: function(oneformName){
       var _that = this;
@@ -5588,6 +5627,17 @@ var vm = new Vue({
         _that.getOneFormrender2(str,_applyinstId,_that.stageId)
       }
 
+    },
+    // 展示材料一张表单弹窗
+    showOneFormDialog1: function(oneformMat){
+      var _that = this;
+      var _applyinstId = _that.parallelApplyinstId;
+      _that.oneformNameTitle = oneformMat.matName
+      if(_applyinstId==''){
+        _that.showCommentDialog('4','matForm',oneformMat.stoFormId)
+      }else {
+        _that.getOneFormrender3(_applyinstId,oneformMat.stoFormId)
+      }
     },
     //  打开全景流程图
     goToDiagramPage: function () {
