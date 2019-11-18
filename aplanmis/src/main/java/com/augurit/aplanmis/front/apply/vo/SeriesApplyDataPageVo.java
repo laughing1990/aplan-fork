@@ -43,6 +43,8 @@ public class SeriesApplyDataPageVo {
     private String isParallel;
     @ApiModelProperty(value = "阶段ID", dataType = "string")
     private String stageId;
+    @ApiModelProperty(value = "是否只实例化了申报实例", notes = "1: 是; 0: 否")
+    private String isJustApplyinst;
 
     public SeriesApplyDataVo toSeriesApplyDataVo(String appId) {
         SeriesApplyDataVo seriesApplyDataVo = new SeriesApplyDataVo();
@@ -62,6 +64,7 @@ public class SeriesApplyDataPageVo {
         seriesApplyDataVo.setStateIds(this.stateIds);
         seriesApplyDataVo.setStageId(this.stageId);
         seriesApplyDataVo.setIsParallel(this.isParallel);
+        seriesApplyDataVo.setIsJustApplyinst(this.isJustApplyinst);
         return seriesApplyDataVo;
     }
 

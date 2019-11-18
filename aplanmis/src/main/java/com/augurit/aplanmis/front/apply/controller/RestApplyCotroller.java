@@ -15,14 +15,24 @@ import com.augurit.aplanmis.common.vo.PreItemCheckResultVo;
 import com.augurit.aplanmis.front.apply.service.AeaParStageService;
 import com.augurit.aplanmis.front.apply.service.AeaSeriesService;
 import com.augurit.aplanmis.front.apply.service.RestApplyService;
-import com.augurit.aplanmis.front.apply.vo.*;
+import com.augurit.aplanmis.front.apply.vo.ApplyinstIdVo;
+import com.augurit.aplanmis.front.apply.vo.SeriesApplyCheckVo;
+import com.augurit.aplanmis.front.apply.vo.SeriesApplyDataPageVo;
+import com.augurit.aplanmis.front.apply.vo.SeriesApplyDataVo;
+import com.augurit.aplanmis.front.apply.vo.SmsInfoVo;
+import com.augurit.aplanmis.front.apply.vo.StageApplyDataPageVo;
+import com.augurit.aplanmis.front.apply.vo.StageApplyDataVo;
 import io.jsonwebtoken.lang.Assert;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -48,28 +58,35 @@ public class RestApplyCotroller {
     private AeaItemBasicService aeaItemBasicService;
 
     @PostMapping("/series/processflow/start")
-    @ApiOperation(value = "现场登记 --> 收件，发起申报", httpMethod = "POST")
+    @ApiOperation(value = "单项申报 --> 收件，发起申报", httpMethod = "POST")
     public ContentResultForm<String> startSeriesFlow(@RequestBody SeriesApplyDataPageVo seriesApplyDataPageVo) throws Exception {
         String applyinstId = restStartProcessService.startSeriesFlow(seriesApplyDataPageVo);
         return new ContentResultForm<>(true, applyinstId, "Series start process success");
     }
 
+    @PostMapping("/series/onlyInstApply")
+    @ApiOperation(value = "单项申报 --> 仅保存申报实例", notes = "并联申报 --> 仅保存申报实例", httpMethod = "POST")
+    public ContentResultForm<String> seriesOnlyInstApply(@RequestBody SeriesApplyDataPageVo seriesApplyDataPageVo) throws Exception {
+        String applyinstId = restStartProcessService.seriesOnlyInstApply(seriesApplyDataPageVo);
+        return new ContentResultForm<>(true, applyinstId, "Inst apply success.");
+    }
+
     @PostMapping("/series/inst")
-    @ApiOperation(value = "现场登记 --> 生成实例，打印回执", httpMethod = "POST")
+    @ApiOperation(value = "单项申报 --> 生成实例，打印回执", httpMethod = "POST")
     public ContentResultForm<String> instantiateSeriesFlow(@RequestBody SeriesApplyDataPageVo seriesApplyDataVo) throws Exception {
         String applyinstId = restStartProcessService.instantiateSeriesFlow(seriesApplyDataVo);
         return new ContentResultForm<>(true, applyinstId, "Series instantiate process success");
     }
 
     @PostMapping("/series/inadmissible")
-    @ApiOperation(value = "现场登记 --> 不予受理，生成实例，启动流程，打印不受理回执", httpMethod = "POST")
+    @ApiOperation(value = "单项申报 --> 不予受理，生成实例，启动流程，打印不受理回执", httpMethod = "POST")
     public ContentResultForm<String> inadmissible(@RequestBody SeriesApplyDataPageVo seriesApplyDataVo) throws Exception {
         String applyinstId = restStartProcessService.inadmissibleSeriesFlow(seriesApplyDataVo);
         return new ContentResultForm<>(true, applyinstId, "Series instantiate process success");
     }
 
     @GetMapping("/series/check")
-    @ApiOperation(value = "现场登记 --> 申报前置检查", notes = "申报的项目绑定的主题阶段下有对应的事项才可以进行申报")
+    @ApiOperation(value = "单项申报 --> 申报前置检查", notes = "申报的项目绑定的主题阶段下有对应的事项才可以进行申报")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "projInfoId", value = "申报的项目")
             , @ApiImplicitParam(name = "itemVerId", value = "实施事项")
@@ -86,7 +103,7 @@ public class RestApplyCotroller {
     }
 
     @GetMapping("/option/item/check")
-    @ApiOperation(value = "现场登记 --> 申报前置检查", notes = "并行事项或者单项的前置事项审批通过了才可以申报")
+    @ApiOperation(value = "单项申报 --> 申报前置检查", notes = "并行事项或者单项的前置事项审批通过了才可以申报")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "projInfoId", value = "申报的项目")
             , @ApiImplicitParam(name = "itemVerId", value = "实施事项")
