@@ -784,6 +784,7 @@ function addItemFrontPartform() {
                     setTimeout(function(){
                         $("#uploadProgress").modal('hide');
                         $('#saveItemFrontPartformBtn').show();
+                        $('#select_item_front_partform_btn').show();
                         $("#edit_item_front_partform_modal").modal("show");
                         $('#edit_item_front_partform_title').html('新增事项扩展表单前置检测');
                         $('#edit_item_front_partform_scroll').animate({scrollTop: 0}, 800);//滚动到顶部
@@ -830,6 +831,7 @@ function editItemFrontPartform(frontPartformId) {
                     }else{
                         $('#saveItemFrontPartformBtn').hide();
                     }
+                    $('#select_item_front_partform_btn').hide();
                     $("#edit_item_front_partform_modal").modal("show");
                     $('#edit_item_front_partform_title').html('编辑事项扩展表单前置检测');
                     $('#edit_item_front_partform_scroll').animate({scrollTop: 0}, 800);//滚动到顶部

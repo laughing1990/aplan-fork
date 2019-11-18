@@ -976,9 +976,9 @@
               </div>
             </div>
           </div>
-          <div v-else>
-            <span>无已上传关联材料</span>
-          </div>
+          <!--<div v-else>-->
+            <!--<span>无已上传关联材料</span>-->
+          <!--</div>-->
         </template>
       </el-table-column>
       <el-table-column width="55" align="center" type="index" label="序号"></el-table-column>
@@ -992,7 +992,7 @@
           <span v-show="scope.row.zcqy==0&&scope.row.attIsRequire==1" class="isTag isRequired">必</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作" width="120" align="center">
+      <el-table-column label="操作" width="200">
         <template slot-scope="scope">
           <span class="op-btn" @click="showUploadWindow(scope.row,scope.$index)">
             <i class="el-icon-upload2"></i>附件上传

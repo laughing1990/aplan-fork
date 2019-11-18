@@ -33,4 +33,7 @@ public interface AeaItemFrontPartformAdminService {
     AeaItemFrontPartformVo getAeaItemFrontPartformVoById(String frontPartformId);
 
     List<AeaItemFrontPartformVo> getAeaItemFrontPartformVoByItemVerId(String itemVerId);
+
+    void batchSaveAeaItemFrontPartform(String itemVerId,String itemPartformIds)throws Exception;
+
 }
