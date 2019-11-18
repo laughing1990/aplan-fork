@@ -204,6 +204,7 @@ public class RestFileController {
     @ApiOperation(value = "申报页面--> 预览电子件")
     @ApiImplicitParam(name = "detailId", value = "附件ID", dataType = "string", required = true)
     public ModelAndView preview(String detailId, HttpServletRequest request, HttpServletResponse response, RedirectAttributes redirectAttributes) throws Exception {
+        if (!restFileService.isFileBelong(detailId,request)) throw new Exception("预览出错");
         ModelAndView modelAndView = fileUtilsService.preview(detailId, request, response, redirectAttributes);
         return modelAndView;
     }
