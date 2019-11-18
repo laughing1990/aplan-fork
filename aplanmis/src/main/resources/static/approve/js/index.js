@@ -499,12 +499,13 @@ var vm = new Vue({
       matLibLoading: false,
       matLibVisible: false,
       idLibTableList: [],
-      matLibTableList:[],
+      matLibTableList: [],
       applyMainType: '0',
       applyUnitList: [],
       itemVerids: '',
       currentMatRow: '',
-      refreshMatIframe: function(){},
+      refreshMatIframe: function () {
+      },
     }
   },
   filters: {
@@ -542,29 +543,30 @@ var vm = new Vue({
   },
   methods: {
     // 打开材料库弹窗
-    openMatLibDialog: function(row, refreshMatIframe){
+    openMatLibDialog: function (row, refreshMatIframe) {
       var vm = this;
       vm.parentPageLoading = true;
       vm.currentMatRow = row;
       vm.refreshMatIframe = refreshMatIframe;
-      window.setTimeout(function(){
+      window.setTimeout(function () {
         vm.parentPageLoading = false;
         vm.matLibVisible = true;
         vm.matLibTableList = [
-          { name: 'test1.doc' },
-          { name: 'test2.doc' },
+          {name: 'test1.doc'},
+          {name: 'test2.doc'},
         ];
       }, 500);
     },
     // 材料列表弹窗 查看材料
-    matTableListSee: function(row){},
+    matTableListSee: function (row) {
+    },
     // 材料列表弹窗 选择材料
-    matTabListChoose: function(row) {
+    matTabListChoose: function (row) {
       var vm = this;
       var params = {
         fileIds: vm.currentMatRow.certinstId, // todo
       };
-      if (vm.currentMatRow.attMatinstId){
+      if (vm.currentMatRow.attMatinstId) {
         params.matinstId = vm.currentMatRow.attMatinstId;
       } else {
         params.applyinstId = vm.masterEntityKey;
@@ -575,43 +577,43 @@ var vm = new Vue({
         url: ctx + 'rest/approve/matinst/createMatinstAndFileLink',
         type: 'post',
         data: params,
-      }, function(res){
+      }, function (res) {
         vm.matLibLoading = false;
-        if (res.success){
+        if (res.success) {
           vm.$message.success('关联成功');
           vm.matLibVisible = false;
           typeof vm.refreshMatIframe == 'function' && vm.refreshMatIframe();
         } else {
-          vm.$message.error(res.message||'关联失败');
+          vm.$message.error(res.message || '关联失败');
         }
-      }, function(){
+      }, function () {
         vm.matLibLoading = false;
         vm.$message.error('关联失败');
       });
     },
     // 打开证照库弹窗
-    openIdLibDialog: function(row, refreshMatIframe){
+    openIdLibDialog: function (row, refreshMatIframe) {
       var vm = this;
       vm.parentPageLoading = true;
       vm.currentMatRow = row;
       vm.refreshMatIframe = refreshMatIframe;
       vm.itemVerids = row.itemVerids;
-      vm.loadIdLibList(function(){
+      vm.loadIdLibList(function () {
         vm.idLibVisible = true;
         vm.parentPageLoading = false;
       });
     },
     // 加载证照列表
-    loadIdLibList: function(callback){
+    loadIdLibList: function (callback) {
       var vm = this;
-      if (typeof callback != 'function'){
+      if (typeof callback != 'function') {
         vm.idLibLoading = true;
       }
       var params = {};
       if (vm.applyMainType == '1') {
-        vm.applyUnitList.forEach(function(u){
-          if (u.unitInfoId == vm.idLibSearchOpt.chooseUnit){
-            if (vm.idLibSearchOpt.chooseType==1){
+        vm.applyUnitList.forEach(function (u) {
+          if (u.unitInfoId == vm.idLibSearchOpt.chooseUnit) {
+            if (vm.idLibSearchOpt.chooseType == 1) {
               // 企业信用代码
               params.identityNumber = u.unifiedSocialCreditCode;
             } else {
@@ -623,7 +625,7 @@ var vm = new Vue({
       }
       params.itemVerIds = vm.itemVerids;
       if (isDevelop) {
-        window.setTimeout(function(){
+        window.setTimeout(function () {
           vm.idLibLoading = false;
           vm.idLibTableList = idLibResMock.content.data;
           typeof callback == 'function' && callback();
@@ -633,11 +635,11 @@ var vm = new Vue({
           url: ctx + 'aea/cert/getLicenseAuthRes.do',
           type: 'get',
           data: params,
-        }, function (res){
+        }, function (res) {
           vm.idLibLoading = false;
           vm.parentPageLoading = false;
-          if (res.success){
-            if (res.content&&res.content.data&&res.content.data.length){
+          if (res.success) {
+            if (res.content && res.content.data && res.content.data.length) {
               vm.idLibLoading = false;
               vm.idLibTableList = res.content.data;
               typeof callback == 'function' && callback();
@@ -645,9 +647,9 @@ var vm = new Vue({
               vm.$message.error('未获取到证照信息');
             }
           } else {
-            vm.$message.error(res.message||'获取证照库列表数据失败');
+            vm.$message.error(res.message || '获取证照库列表数据失败');
           }
-        }, function(){
+        }, function () {
           vm.idLibLoading = false;
           vm.parentPageLoading = false;
           vm.$message.error('获取证照库列表数据失败');
@@ -655,27 +657,27 @@ var vm = new Vue({
       }
     },
     // 证照列表弹窗 查看证照
-    idTableListSee: function(row){
+    idTableListSee: function (row) {
       var vm = this;
       vm.idLibLoading = true;
       request('', {
         url: ctx + 'aea/cert/getViewLicenseURL.do',
         type: 'get',
-        data: { authCode: row.auth_code },
-      }, function(res) {
+        data: {authCode: row.auth_code},
+      }, function (res) {
         vm.idLibLoading = false;
-        if (res.success){
+        if (res.success) {
           window.open(res.content);
         } else {
-          vm.$message.error(res.message||'查看证照失败');
+          vm.$message.error(res.message || '查看证照失败');
         }
-      }, function(){
+      }, function () {
         vm.idLibLoading = false;
         vm.$message.error('查看证照失败');
       });
     },
     // 证照列表弹窗 关联证照
-    idTabListChoose: function(row) {
+    idTabListChoose: function (row) {
       var vm = this;
       var param = {
         "authCode": row.auth_code,
@@ -692,28 +694,29 @@ var vm = new Vue({
         "termStart": row.begin_date,
       };
       param.applyinstId = vm.masterEntityKey;
-      if (vm.currentMatRow.certMatinstId){
+      if (vm.currentMatRow.certMatinstId) {
         param.matinstId = vm.currentMatRow.certMatinstId;
       }
-      if (vm.currentMatRow.certinstId){
-        param.certinstId = vm.currentMatRow.certinstId;
-      }
+      param.certinstId = vm.currentMatRow.certinstId;
+      // if (vm.currentMatRow.certinstId){
+      //   param.certinstId = vm.currentMatRow.certinstId;
+      // }
       vm.idLibLoading = true;
       request('', {
         url: ctx + 'rest/approve/CertTypeMatinst/update',
         type: 'post',
         ContentType: 'application/json',
         data: JSON.stringify(param),
-      }, function(res){
+      }, function (res) {
         vm.idLibLoading = false;
-        if (res.success){
+        if (res.success) {
           vm.$message.success('关联证照成功');
           vm.idLibVisible = false;
           typeof vm.refreshMatIframe == 'function' && vm.refreshMatIframe();
         } else {
-          vm.$message.error(res.message||'关联证照失败');
+          vm.$message.error(res.message || '关联证照失败');
         }
-      }, function(){
+      }, function () {
         vm.idLibLoading = false;
         vm.$message.error('关联证照失败');
       });
@@ -2200,7 +2203,7 @@ var vm = new Vue({
       if (!data.attFormat) {
         data.attFormat = data.fileType;
       } // 文件类型
-      data.attFormat = (data.attFormat+'').toLowerCase();
+      data.attFormat = (data.attFormat + '').toLowerCase();
       if (__STATIC.allowPreType[data.attFormat]) {
         return this.preFile(data, visibleKey);
       } // 预览pdf、doc等
@@ -2483,7 +2486,7 @@ var vm = new Vue({
       } else {
         var iIndex = -1;
         vm.mutiCheckedMan.forEach(function (u, ii) {
-          if (u.destActName == name){
+          if (u.destActName == name) {
             iIndex = ii;
           }
         });
@@ -2575,7 +2578,7 @@ var vm = new Vue({
           if (vm.isMultiFlow) {
             _nextTask = vm.mutiCheckedNames.join('、');
             var _tmpArr = [];
-            vm.mutiCheckedMan.forEach(function(u){
+            vm.mutiCheckedMan.forEach(function (u) {
               _tmpArr.push(u.defaultSendAssignees || '暂无审批人');
             });
             _nextTaskAssignee = _tmpArr.join('、');
@@ -2736,7 +2739,7 @@ var vm = new Vue({
             if (vm.isMultiFlow) {
               _nextTask = vm.mutiCheckedNames.join('、');
               var _tmpArr = [];
-              vm.mutiCheckedMan.forEach(function(u){
+              vm.mutiCheckedMan.forEach(function (u) {
                 _tmpArr.push(u.defaultSendAssignees || '暂无审批人');
               });
               _nextTaskAssignee = _tmpArr.join('、');
@@ -3278,7 +3281,7 @@ var vm = new Vue({
       if (vm.isMultiFlow) {
         _nextTask = vm.mutiCheckedNames.join('、');
         var _tmpArr = [];
-        vm.mutiCheckedMan.forEach(function(u){
+        vm.mutiCheckedMan.forEach(function (u) {
           _tmpArr.push(u.defaultSendAssignees || '暂无审批人');
         });
         _nextTaskAssignee = _tmpArr.join('、');
@@ -4424,7 +4427,7 @@ function testBtn() {
   if (vm.isMultiFlow) {
     _nextTask = vm.mutiCheckedNames.join('、');
     var _tmpArr = [];
-    vm.mutiCheckedMan.forEach(function(u){
+    vm.mutiCheckedMan.forEach(function (u) {
       _tmpArr.push(u.defaultSendAssignees || '暂无审批人');
     });
     _nextTaskAssignee = _tmpArr.join('、');

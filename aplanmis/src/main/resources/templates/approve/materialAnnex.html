@@ -143,7 +143,8 @@
       height: 25px;
       cursor: pointer;
     }
-    .mat-table-btn:hover{
+    
+    .mat-table-btn:hover {
       text-decoration: underline;
     }
     
@@ -211,7 +212,8 @@
       <el-table-column class-name="meterial-col" prop="matName" label="材料名称" align="left">
         <template slot-scope="scope">
           {{scope.row.matName}}
-          <i v-if="scope.row.matProp=='c'&&scope.row.certFileList&&scope.row.certFileList.length" class="ag ag-id-card"></i>
+          <i v-if="scope.row.matProp=='c'&&scope.row.certFileList&&scope.row.certFileList.length"
+             class="ag ag-id-card"></i>
         </template>
       </el-table-column>
       <!--      <el-table-column prop="matFrom" label="文件来源" align="center" width="120px">-->
@@ -230,8 +232,8 @@
                        :http-request="handleUploadFile">
               <span class="mat-table-btn" @click="clickUpload(scope.row)">上传</span>
             </el-upload>
-<!--            <span class="mat-ope-line"></span>-->
-<!--            <span class="mat-table-btn" @click="openMatLibDialog(scope.row)">材料库</span>-->
+            <!--            <span class="mat-ope-line"></span>-->
+            <!--            <span class="mat-table-btn" @click="openMatLibDialog(scope.row)">材料库</span>-->
             <span class="mat-ope-line"></span>
             <span class="mat-table-btn" @click="openIdLibDialog(scope.row)">证照库</span>
           </div>
@@ -369,21 +371,21 @@
         window.open(ctx + 'previewPdf/downLoadPdf?detailId=' + data.fileId, '_blank');
       },
       // 查验电子证照
-      checkId: function(row){
+      checkId: function (row) {
         var vm = this;
         vm.pageLoading = true;
         request('', {
           url: ctx + 'aea/cert/getViewLicenseURL.do',
           type: 'get',
-          data: { authCode: row.fileId },
-        }, function(res) {
+          data: {authCode: row.fileId},
+        }, function (res) {
           vm.pageLoading = false;
-          if (res.success){
+          if (res.success) {
             window.open(res.content);
           } else {
-            vm.$message.error(res.message||'查看证照失败');
+            vm.$message.error(res.message || '查看证照失败');
           }
-        }, function(){
+        }, function () {
           vm.pageLoading = false;
           vm.$message.error('查看证照失败');
         });
@@ -425,11 +427,11 @@
         }
       },
       // 打开材料库弹窗
-      openMatLibDialog: function(row){
+      openMatLibDialog: function (row) {
         parent.vm.openMatLibDialog(row, vm.getMatList);
       },
       // 打开证照库弹窗
-      openIdLibDialog: function(row){
+      openIdLibDialog: function (row) {
         parent.vm.openIdLibDialog(row, vm.getMatList);
       },
       // 格式化时间
@@ -454,7 +456,7 @@
             _this.$message.success('上传成功');
             vm.getMatList();
           } else {
-            _this.$message.error(res.message||'上传失败');
+            _this.$message.error(res.message || '上传失败');
           }
         }).catch(function (e) {
           _this.$message.error('上传失败');
@@ -463,7 +465,7 @@
         })
       },
       // 点击上传文件按钮，记录点击的哪条数据
-      clickUpload: function(row){
+      clickUpload: function (row) {
         var vm = this;
         vm.currentUploadRow = row;
       },

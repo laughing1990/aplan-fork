@@ -148,18 +148,18 @@ var vm = new Vue({
     },
     getStatusText: function (status) {
       var text = '未知';
-      this.itemStateList.forEach(function(u) {
-        if (u.itemCode == status){
+      this.itemStateList.forEach(function (u) {
+        if (u.itemCode == status) {
           text = u.itemName;
         }
       })
       return text;
     },
-    manTypeToText: function(type){
+    manTypeToText: function (type) {
       var vm = this;
       var text = '';
-      vm.linkManTypeList.forEach(function(u){
-        if (u.itemCode == type){
+      vm.linkManTypeList.forEach(function (u) {
+        if (u.itemCode == type) {
           text = u.itemName;
         }
       });
@@ -168,15 +168,15 @@ var vm = new Vue({
     // 单位类型转换
     changeUnitType: function (val) {
       var text = '-';
-      this.unitTypeList.forEach(function(u){
-        if (u.itemCode == val){
+      this.unitTypeList.forEach(function (u) {
+        if (u.itemCode == val) {
           text = u.itemName;
         }
       });
       return text
     },
     //
-    getLinkManLabel: function(unitType, linkManType){
+    getLinkManLabel: function (unitType, linkManType) {
       var vm = this;
       var str = vm.changeUnitType(unitType) + '项目' + vm.manTypeToText(linkManType);
       return str;
@@ -186,18 +186,18 @@ var vm = new Vue({
     // this.getDicCodeItems(); //获取通用字典数据
     var vm = this;
     var list = [
-      { code: 'IDTYPE', dataStr: 'dicCodeItems' },
-      { code: 'PROJ_UNIT_LINKMAN_TYPE', dataStr: 'linkManTypeList' },
-      { code: 'ITEMINST_STATE', dataStr: 'itemStateList' },
-      { code: 'XM_DWLX', dataStr: 'unitTypeList' },
+      {code: 'IDTYPE', dataStr: 'dicCodeItems'},
+      {code: 'PROJ_UNIT_LINKMAN_TYPE', dataStr: 'linkManTypeList'},
+      {code: 'ITEMINST_STATE', dataStr: 'itemStateList'},
+      {code: 'XM_DWLX', dataStr: 'unitTypeList'},
     ];
     var len = list.length;
-    list.forEach(function(u){
+    list.forEach(function (u) {
       __STATIC.getDicList({
         code: u.code,
         vm: vm,
         dataStr: u.dataStr,
-        callback: function(){
+        callback: function () {
           (--len == 0) && vm.getBaseApplyForm();
         }
       });

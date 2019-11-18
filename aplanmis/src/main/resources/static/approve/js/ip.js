@@ -8,7 +8,7 @@ if (isDevelop) {
   // ctx = 'http://192.168.30.24:6123/aplanmis-front/'; // 陈锭星
   // ctx = 'http://192.168.30.110:8083/aplanmis-front/'; // 邹永胜
   // ctx = 'http://192.168.14.2:8083/aplanmis-front/'; // 邓振强
-  ctx = 'http://192.168.17.15:8083/aplanmis-front/'; // 陈泽浩
+  // ctx = 'http://192.168.17.15:8083/aplanmis-front/'; // 陈泽浩
   // ctx = 'http://192.168.15.59:8083/aplanmis-front/'; // 王玲
   // ctx = 'http://192.168.15.179:8083/aplanmis-front/'; // 陈健锋
   // ctx = 'http://192.168.32.53:8083/aplanmis-front/'; // 陈杰文
@@ -153,7 +153,7 @@ var __STATIC = {
     tempwindow.location = ctx + 'rest/mats/att/preview?detailId=' + detailId + '&flashAttributes=' + flashAttributes;
   },
   // 关闭当前页面
-  closeCurrentTab: function(){
+  closeCurrentTab: function () {
     var userAgent = navigator.userAgent;
     if (userAgent.indexOf("Firefox") != -1 || userAgent.indexOf("Presto") != -1) {
       window.location.replace("about:blank");
@@ -164,13 +164,13 @@ var __STATIC = {
     window.close();
   },
   // 默认延迟1000毫秒刷新页面
-  delayRefreshWindow: function(time) {
+  delayRefreshWindow: function (time) {
     window.setTimeout(function () {
       window.location.reload();
     }, time || 1000);
   },
   // 默认延迟2000毫秒关闭页面
-  delayCloseWindow: function(time){
+  delayCloseWindow: function (time) {
     window.setTimeout(function () {
       closeCurrentTab();
     }, time || 2000);
