@@ -49,11 +49,4 @@ public interface RestParallerApplyService {
 
     List<AeaItemMat> listMatByStateIdAndStageIdAndItemVerId(String stageId, String[] stateIds, String[] itemVerIds)throws Exception;
 
-    /**
-     * 仅实例化申请实例
-     * @param stageApplyDataPageVo
-     * @return
-     * @throws Exception
-     */
-    public String onlyInstApply(StageApplyDataPageVo stageApplyDataPageVo) throws Exception;
 }
