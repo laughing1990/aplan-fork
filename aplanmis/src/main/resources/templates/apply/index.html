@@ -1301,7 +1301,7 @@
                         <span class="op-btn" @click="showUploadWindow(scope.row)">上传</span>
                         <span class="op-btn" @click="showUploadWindow(scope.row,'history')">材料库</span>
                         <span class="op-btn" v-if="scope.row.matProp=='c'" @click="showUploadWindow(scope.row,'certList')">证照库</span>
-                        <span class="op-btn" v-if="scope.row.matProp=='f'">填写</span>
+                        <span class="op-btn" v-if="scope.row.matProp=='f'" @click="showOneFormDialog1(scope.row)">填写</span>
                       </div>
                     </template>
                   </el-table-column>

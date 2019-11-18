@@ -157,7 +157,7 @@ public class RestApplyServiceImpl implements RestApplyService {
         String[] receiptTypes = new String[]{"1", "2"};
         List<String> applyInstIds = vo.getApplyinstIds();
         if (applyInstIds==null||applyInstIds.size()==0) return vo;
-        receiveService.saveReceive((String[]) applyInstIds.toArray(), receiptTypes, SecurityContext.getCurrentUserName(), "");
+        receiveService.saveReceive(applyInstIds.toArray(new String[applyInstIds.size()]), receiptTypes, SecurityContext.getCurrentUserName(), "");
         return vo;
     }
 

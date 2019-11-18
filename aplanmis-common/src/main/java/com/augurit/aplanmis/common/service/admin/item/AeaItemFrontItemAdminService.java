@@ -28,4 +28,7 @@ public interface AeaItemFrontItemAdminService {
      Long getMaxSortNo(AeaItemFrontItem aeaItemFrontItem);
 
      AeaItemFrontItem getAeaItemFrontItemByFrontItemId(String frontItemId);
+
+     void batchSaveAeaItemFrontItem(String itemVerId,String frontCkItemVerIds)throws Exception;
+
 }

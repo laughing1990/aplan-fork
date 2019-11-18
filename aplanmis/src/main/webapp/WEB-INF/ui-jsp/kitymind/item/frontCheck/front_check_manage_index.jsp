@@ -147,6 +147,11 @@
 <body>
 <jsp:include page="../../mindHeader.jsp"></jsp:include>
 <div id="mainContentPanel" class="row" style="width: 100%;height: 99%;padding: 15px 0px 5px 0px;margin: 0px;">
+    <div class="col-xl-12" style=" margin-top: 0px;${(!"1".equals(isCheckItem) && !"1".equals(isCheckPartform) && !"1".equals(isCheckProj))?'':'display:none;'}" >
+        <h2 class="m-portlet__head-text" style="text-align: center;">
+            <span style="font-weight: bold;">未开启相关的前置检测,请在事项编辑页面开启</span>
+        </h2>
+    </div>
     <div class="col-xl-12" style=" margin-top: 0px;${"1".equals(isCheckProj)?'':'display:none;'}" >
         <div class="m-portlet" style="margin-bottom: 5px;border: 0px solid #e8e8e8;">
             <div class="m-portlet__head" style="border-bottom: 0px solid #e8e8e8">
@@ -223,6 +228,8 @@
                         <div class="col-md-7"style="text-align: left;">
                             <button type="button" class="btn btn-info"
                                     onclick="addItemFrontItem();">新增</button>
+                            <button type="button" class="btn btn-info"
+                                    onclick="batchImportItemFrontItem();">批量导入</button>
                             <button type="button" class="btn btn-secondary"
                                     onclick="batchDelItemFrontItem();">删除</button>
                         </div>
@@ -280,6 +287,8 @@
                         <div class="col-md-7"style="text-align: left;">
                             <button type="button" class="btn btn-info"
                                     onclick="addItemFrontPartform();">新增</button>
+                            <button type="button" class="btn btn-info"
+                                    onclick="batchImprotFrontPartform();">批量导入</button>
                             <button type="button" class="btn btn-secondary"
                                     onclick="batchDelItemFrontPartform();">删除</button>
                         </div>
