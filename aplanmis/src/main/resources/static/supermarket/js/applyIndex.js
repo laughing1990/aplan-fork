@@ -576,7 +576,13 @@ var vm = new Vue({
 				],
 				'aeaImUnitRequire.registerRequire': [
 					{required: true, message: '请填写执业/职业人员要求', trigger: ['blur']},
-				]
+				],
+        choiceImunitTime: [
+          {required: true, message: '请选取中介时间', trigger: ['change']},
+        ],
+        expirationDate: [
+          {required: true, message: '请选取报名截止时间', trigger: ['change']},
+        ],
 			},
 			activeLE: '0',
 			qualLevelId: '',
@@ -623,7 +629,63 @@ var vm = new Vue({
 		},
 	},
 	methods: {
-		// 资金来源切换
+    // 获取事项情形和材料
+    getStatusStateMats: function () {
+      var _that = this;
+      request('opus-admin', {
+        url: ctx + 'rest/mats/states/mats/' + _that.itemVerId + '/ROOT',
+        type: 'get',
+      }, function (data) {
+        if (data.success) {
+          _that.matIds = [];
+          _that.model.matsTableData = data.content.stateMats;
+          _that.model.matsTableData.map(function (item) {
+            _that.model.matsTableData.map(function (item) {
+              if (item.matChild == 'undefined' || item.matChild == undefined) {
+                Vue.set(item, 'matChild', []);
+              }
+              if(item.certChild=='undefined'||item.certChild==undefined){
+                Vue.set(item,'certChild',[]);
+              }
+              if (item.matinstId == 'undefined' || item.matinstId == undefined) {
+                Vue.set(item, 'matinstId', '');
+              }
+              if (item.getPaper == 'undefined' || item.getPaper == undefined) {
+                Vue.set(item, 'getPaper', '');
+              }
+              if (item.getCopy == 'undefined' || item.getCopy == undefined) {
+                Vue.set(item, 'getCopy', '');
+              }
+              if (item.realPaperCount == 'undefined' || item.realPaperCount == undefined) {
+                Vue.set(item, 'realPaperCount', item.duePaperCount);
+              }
+              if (item.realCopyCount == 'undefined' || item.realCopyCount == undefined) {
+                Vue.set(item, 'realCopyCount', item.dueCopyCount);
+              }
+              if(_that.matCodes.indexOf(item.matCode)<0){
+                _that.matCodes.push(item.matCode);
+              }
+              _that.matIds.push(item.matId);
+
+            });
+          });
+          _that.getShareMatsList();
+          _that.ifMatsSelAll();
+        } else {
+          _that.$message({
+            message: '获取情形材料失败',
+            type: 'error'
+          });
+        }
+      }, function (msg) {
+        _that.$message({
+          message: '获取情形材料失败',
+          type: 'error'
+        });
+      });
+    },
+
+    // 资金来源切换
 		financialSourceChange: function (val) {
 			console.log(val);
 			if (val.indexOf('isFinancialFund') > -1) {
@@ -1209,6 +1271,7 @@ var vm = new Vue({
 							_that.projSelect = true;
 							_that.approveNumClazz = true; // 显示备案文号
 						}
+            _that.getStatusStateMats('','', 'ROOT', '', '', true); // 获取阶段
 					}
 					_that.loading = false;
 				} else {
