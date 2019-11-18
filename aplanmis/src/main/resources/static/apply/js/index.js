@@ -491,6 +491,7 @@ var vm = new Vue({
       searchFileListfilter: '', // 导入材料附件列表搜索关键字
       oneFormData: [], // 一张表单列表
       oneFormDialogVisible: false, // 是否展示一张表单
+      matFormDialogVisible: false, // 是否展示材料一张表单
       firstGetneForm: 0,
       showMoreBaseInfo: false, // 是否展示更多项目基本信息
       removeParallelItemsMats: [],  // 移除的并联事项材料
@@ -5575,16 +5576,17 @@ var vm = new Vue({
     // 获取材料一张表单render
     getOneFormrender3: function(_applyinstId,_formId){
       var _that = this;
+      // _formId = 'ecbebb64-a29c-41c6-abb7-e7b337a1a2cb';
       var sFRenderConfig='&showBasicButton=true&includePlatformResource=false';
       request('', {
         url: ctx + 'bpm/common/sf/renderHtmlFormContainer?listRefEntityId='+_applyinstId+'&listFormId='+_formId+sFRenderConfig,
         type: 'get',
       }, function (result) {
         if (result.success) {
-          _that.oneFormDialogVisible = true;
-          $('#oneFormContent').html(result.content)
+          _that.matFormDialogVisible = true;
+          $('#matFormContent').html(result.content)
           _that.$nextTick(function(){
-            $('#oneFormContent').html(result.content)
+            $('#matFormContent').html(result.content)
           });
         }else {
           _that.$message({

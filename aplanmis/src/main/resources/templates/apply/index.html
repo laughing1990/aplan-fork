@@ -1890,7 +1890,14 @@
         </div>
       </el-dialog>
       <!--  一张表单  end-->
-
+      <!--  材料一张表单  start-->
+      <el-dialog @closed="uploadPercentage=0;progressDialogVisible=false" class="show-mat-form" :title="oneformNameTitle"
+                 width="750px" :visible.sync="matFormDialogVisible">
+        <div>
+          <div id="matFormContent"></div>
+        </div>
+      </el-dialog>
+      <!--  材料一张表单  end-->
       <!-- 材料补全dialog -->
       <el-dialog @closed="isGetReceiveList()" title="材料补全" :visible.sync="isShowMatmend" class="dialog mertial-supplement-dialog" width="80%">
         <!-- 标签（正在补件的显示） -->
