@@ -111,7 +111,7 @@
 
     <!--6 修改实体对象 -->
     <update id="updateAeaItemFront" parameterType="AeaItemFrontItem" >
-        update AEA_ITEM_FRONT
+        update AEA_ITEM_FRONT_ITEM
         <set >
             <if test="frontItemId != null" >
             FRONT_ITEM_ID = #{frontItemId},
@@ -147,7 +147,7 @@
             ROOT_ORG_ID = #{rootOrgId},
             </if>
         </set>
-        where ITEM_FRONT_ID = #{itemFrontId}
+        where FRONT_ITEM_ID = #{frontItemId}
     </update>
 
     <!--7 删除实体对象,根据主键ID -->

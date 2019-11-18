@@ -45,7 +45,8 @@ public class AeaItemFrontItemAdminController {
     public ResultForm getAeaItemFrontItem(String frontItemId) {
         try {
             if (StringUtils.isNotBlank(frontItemId)) {
-                return new ContentResultForm<>(true, aeaItemFrontItemAdminService.getAeaItemFrontItemByFrontItemId(frontItemId));
+                AeaItemFrontItem frontItem = aeaItemFrontItemAdminService.getAeaItemFrontItemByFrontItemId(frontItemId);
+                return new ContentResultForm<>(true, frontItem);
             } else {
                 return new ResultForm(false, "frontItemId不能为空");
             }
@@ -58,14 +59,12 @@ public class AeaItemFrontItemAdminController {
     @RequestMapping("/saveOrUpdateAeaItemFrontItem.do")
     public ResultForm saveOrUpdateAeaItemFrontItem(AeaItemFrontItem aeaItemFrontItem) {
         try {
-            if (aeaItemFrontItem.getFrontItemId() != null && !"".equals(aeaItemFrontItem.getFrontItemId())) {
+            if (StringUtils.isNotBlank(aeaItemFrontItem.getFrontItemId())) {
                 aeaItemFrontItemAdminService.updateAeaItemFrontItem(aeaItemFrontItem);
             } else {
-                if (aeaItemFrontItem.getFrontItemId() == null || "".equals(aeaItemFrontItem.getFrontItemId()))
-                    aeaItemFrontItem.setFrontItemId(UUID.randomUUID().toString());
+                aeaItemFrontItem.setFrontItemId(UUID.randomUUID().toString());
                 aeaItemFrontItemAdminService.saveAeaItemFrontItem(aeaItemFrontItem);
             }
-
             return new ContentResultForm<>(true, aeaItemFrontItem);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);

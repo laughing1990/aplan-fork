@@ -100,6 +100,7 @@ public class AeaItemFrontItemAdminServiceImpl implements AeaItemFrontItemAdminSe
 
     @Override
     public void deleteAeaItemFrontItemById(String id){
+
         if (StringUtils.isBlank(id)) {
             throw new InvalidParameterException(id);
         }
@@ -125,7 +126,8 @@ public class AeaItemFrontItemAdminServiceImpl implements AeaItemFrontItemAdminSe
             throw new InvalidParameterException(frontItemId);
         }
         logger.debug("根据ID获取Form对象，ID为：{}", frontItemId);
-        return aeaItemFrontItemMapper.getAeaItemFrontItemByFrontItemId(frontItemId);
+        AeaItemFrontItem frontItem = aeaItemFrontItemMapper.getAeaItemFrontItemByFrontItemId(frontItemId);
+        return frontItem;
     }
 
     @Override

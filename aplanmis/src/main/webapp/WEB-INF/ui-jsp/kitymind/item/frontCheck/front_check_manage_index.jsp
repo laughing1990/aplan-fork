@@ -14,8 +14,9 @@
     <%@ include file="/ui-static/agcloud/framework/jsp/lib-sortable1.jsp" %>
     <%@ include file="/ui-static/agcloud/framework/jsp/lib-agtree3.jsp"%>
     <%@ include file="/ui-static/agcloud/framework/jsp/lib-bootstrap-table.jsp"%>
-    <script src="${pageContext.request.contextPath}/ui-static/kitymind/js/kitymind_constant.js" type="text/javascript"></script>
     <script src="${pageContext.request.contextPath}/ui-static/dg_aplanmis/framework/js/jquery.nicescroll.js" type="text/javascript"></script>
+    <link href="${pageContext.request.contextPath}/ui-static/agcloud/bsc/yunpan/css/orgTheme.css?<%=isDebugMode%>" type="text/css" rel="stylesheet"/>
+    <script src="${pageContext.request.contextPath}/ui-static/kitymind/js/kitymind_constant.js" type="text/javascript"></script>
     <script src="${pageContext.request.contextPath}/ui-static/aplanmis/util/defaultBootstrap.js" type="text/javascript"></script>
     <script src="${pageContext.request.contextPath}/ui-static/kitymind/item/frontCheck/front_check_manage_index.js?<%=isDebugMode%>" type="text/javascript"></script>
     <script src="${pageContext.request.contextPath}/ui-static/kitymind/item/frontCheck/select_front_item_ztree.js?<%=isDebugMode%>" type="text/javascript"></script>
@@ -126,13 +127,6 @@
                 <div class="m-form m-form--label-align-right m--margin-bottom-5">
                     <div class="row" style="margin: 0px;">
                         <div class="col-md-7"style="text-align: left;">
-                            <button type="button" class="btn btn-info"
-                                    onclick="addItemFrontItem();">新增</button>
-                            <button type="button" class="btn btn-info"
-                                    onclick="batchImportItemFrontItem();">批量导入</button>
-                            <button type="button" class="btn btn-secondary"
-                                    onclick="batchDelItemFrontItem();">删除</button>
-                            <%--<button type="button" class="btn btn-info" onclick="addItemFrontItem();">新增事项</button>--%>
                             <button type="button" class="btn btn-info" onclick="importFrontItem();">导入事项</button>
                             <button type="button" class="btn btn-secondary" onclick="batchDelItemFrontItem();">删除</button>
                         </div>

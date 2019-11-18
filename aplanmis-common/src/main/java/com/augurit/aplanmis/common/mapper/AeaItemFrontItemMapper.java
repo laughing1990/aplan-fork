@@ -39,7 +39,6 @@ public interface AeaItemFrontItemMapper {
      List<AeaItemFrontItem> listNoDeprecatedItemFront(@Param("frontCkItemVerId")String frontCkItemVerId,
                                                       @Param("rootOrgId")String rootOrgId);
 
-
      List<AeaItemFrontItem> listAeaItemFrontItem(AeaItemFrontItem aeaItemFrontItem);
 
      Long getMaxSortNo(AeaItemFrontItem aeaItemFrontItem);

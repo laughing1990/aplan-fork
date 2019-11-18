@@ -722,6 +722,10 @@ function editItemFrontItem(frontItemId) {
     }else{
         $('#saveItemFrontItemBtn').hide();
     }
+
+    $("#uploadProgressMsg").html("数据加载中，请稍后...");
+    $("#uploadProgress").modal("show");
+
     $("#edit_item_front_item_modal").modal("show");
     $('#edit_item_front_item_title').html('编辑事项信息前置检测');
     $('#edit_item_front_item_scroll').animate({scrollTop: 0}, 800);//滚动到顶部
@@ -741,20 +745,35 @@ function editItemFrontItem(frontItemId) {
         success: function (result) {
             if (result.success&&result.content) {
 
-                loadFormData(true, '#edit_item_front_item_form', result.content);
-                if(result.content.frontCkItemCode){
-                    $('#edit_item_front_item_form input[name="frontCkItemName"]').val(result.content.frontCkItemName +"【"+result.content.frontCkItemCode+"】");
-                }else{
-                    $('#edit_item_front_item_form input[name="frontCkItemName"]').val(result.content.frontCkItemName);
-                }
+                setTimeout(function(){
+
+                    $("#uploadProgress").modal('hide');
+                    $('#saveItemFrontProjBtn').show();
+
+                    loadFormData(true, '#edit_item_front_item_form', result.content);
+
+                    if(result.content.frontCkItemCode!=null&&result.content.frontCkItemCode!=''&&result.content.frontCkItemCode!=undefined){
+                        $('#edit_item_front_item_form textarea[name="frontCkItemName"]').val(result.content.frontCkItemName +"【"+result.content.frontCkItemCode+"】");
+                    }else{
+                        $('#edit_item_front_item_form textarea[name="frontCkItemName"]').val(result.content.frontCkItemName);
+                    }
+
+                },500);
+
             } else {
 
-                swal('错误信息', result.message, 'error');
+                setTimeout(function(){
+                    $("#uploadProgress").modal('hide');
+                    swal('错误信息', result.message, 'error');
+                },500);
             }
         },
         error: function(XMLHttpRequest, textStatus, errorThrown) {
 
-            swal('错误信息', XMLHttpRequest.responseText, 'error');
+            setTimeout(function(){
+                $("#uploadProgress").modal('hide');
+                swal('错误信息', XMLHttpRequest.responseText, 'error');
+            },500);
         }
     });
 }
@@ -979,4 +998,9 @@ function delItemFrontPartform(id) {
             });
         }
     });
+}
+
+function importFrontItem(){
+
+    initFrontCheckItem();
 }
