@@ -40,4 +40,8 @@ public interface AeaParFrontStageService {
 
     List<AeaParFrontStageVo> getHistStageByStageId(String stageId);
 
+    PageInfo<AeaParFrontStageVo> listSelectParFrontStageByPage(AeaParFrontStage aeaParFrontStage,Page page) throws Exception;
+
+    void batchSaveAeaParFrontStage(String stageId,String histStageIds)throws Exception;
+
 }

@@ -619,7 +619,18 @@ var vm = new Vue({
               if(matData){
                 _that.uploadTableData = result.content[_matCode].FileList;
                 _that.uploadTableData.map(function(fileListItem){
-
+                  if(matChildIds.indexOf(fileListItem.fileId)>-1){
+                    _that.$refs['uploadTableData'].toggleRowSelection(fileListItem,true);
+                  }else {
+                    _that.$refs['uploadTableData'].toggleRowSelection(fileListItem,false);
+                  }
+                  _that.$nextTick(function(){
+                    if(matChildIds.indexOf(fileListItem.fileId)>-1){
+                      _that.$refs['uploadTableData'].toggleRowSelection(fileListItem,true);
+                    }else {
+                      _that.$refs['uploadTableData'].toggleRowSelection(fileListItem,false);
+                    }
+                  })
                 });
               }else {
                 _that.model.matsTableData.map(function (matItem) {

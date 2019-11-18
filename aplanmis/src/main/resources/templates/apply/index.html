@@ -1503,7 +1503,10 @@
             <el-button type="primary" @click="openPhotoWindow(selMatRowData,'lt')">良田拍照</el-button>
             <el-button type="primary" @click="openPhotoWindow(selMatRowData,'fz')">方正拍照</el-button>
           </div>
-          <el-table :data="uploadTableData" ref="uploadTableData" border @selection-change="selectionFileChange">
+          <el-table :data="uploadTableData"
+                    ref="uploadTableData"
+                    row-key="fileId"
+                    border @selection-change="selectionFileChange">
             <el-table-column type="selection" align="center" width="55">
             </el-table-column>
             <el-table-column prop="fileName" label="文件名"></el-table-column>
