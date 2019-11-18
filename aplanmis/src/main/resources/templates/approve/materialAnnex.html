@@ -241,8 +241,8 @@
             </el-upload>
             <span class="mat-ope-line"></span>
             <span class="mat-table-btn" @click="openMatLibDialog(scope.row)">材料库</span>
-            <span class="mat-ope-line"></span>
-            <span class="mat-table-btn" @click="openIdLibDialog(scope.row)">证照库</span>
+            <span class="mat-ope-line" v-if="scope.row.matProp=='c'"></span>
+            <span class="mat-table-btn" v-if="scope.row.matProp=='c'" @click="openIdLibDialog(scope.row)">证照库</span>
           </div>
         </template>
       </el-table-column>
