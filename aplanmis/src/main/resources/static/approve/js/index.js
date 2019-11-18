@@ -552,7 +552,7 @@ var vm = new Vue({
         url: ctx + 'rest/mats/getHistoryAttMatList',
         type: 'post',
         data: {
-          projInfoId: row.projInfoId,
+          // projInfoId: row.projInfoId,
           matCode: row.matCode,
         }
       }, function(res){
