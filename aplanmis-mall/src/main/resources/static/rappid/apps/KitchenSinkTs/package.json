@@ -16,7 +16,7 @@
     "canvg-rappid": "1.0.0",
     "dagre": "0.8.2",
     "graphlib": "2.1.5",
-    "jquery": "3.3.1",
+    "jquery": "3.4.0",
     "lodash": "4.17.11",
     "ws": "6.1.0"
   },
