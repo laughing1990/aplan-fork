@@ -503,6 +503,8 @@ var vm = new Vue({
       applyMainType: '0',
       applyUnitList: [],
       itemVerids: '',
+      currentMatRow: '',
+      refreshMatIframe: function(){},
     }
   },
   filters: {
@@ -540,9 +542,11 @@ var vm = new Vue({
   },
   methods: {
     // 打开材料库弹窗
-    openMatLibDialog: function(row){
+    openMatLibDialog: function(row, refreshMatIframe){
       var vm = this;
       vm.parentPageLoading = true;
+      vm.currentMatRow = row;
+      vm.refreshMatIframe = refreshMatIframe;
       window.setTimeout(function(){
         vm.parentPageLoading = false;
         vm.matLibVisible = true;
@@ -555,11 +559,42 @@ var vm = new Vue({
     // 材料列表弹窗 查看材料
     matTableListSee: function(row){},
     // 材料列表弹窗 选择材料
-    matTabListChoose: function(row) {},
+    matTabListChoose: function(row) {
+      var vm = this;
+      var params = {
+        fileIds: vm.currentMatRow.certinstId, // todo
+      };
+      if (vm.currentMatRow.attMatinstId){
+        params.matinstId = vm.currentMatRow.attMatinstId;
+      } else {
+        params.applyinstId = vm.masterEntityKey;
+        params.matId = vm.currentMatRow.matId;
+      }
+      vm.matLibLoading = true;
+      request('', {
+        url: ctx + 'rest/approve/matinst/createMatinstAndFileLink',
+        type: 'post',
+        data: params,
+      }, function(res){
+        vm.matLibLoading = false;
+        if (res.success){
+          vm.$message.success('关联成功');
+          vm.matLibVisible = false;
+          typeof vm.refreshMatIframe == 'function' && vm.refreshMatIframe();
+        } else {
+          vm.$message.error(res.message||'关联失败');
+        }
+      }, function(){
+        vm.matLibLoading = false;
+        vm.$message.error('关联失败');
+      });
+    },
     // 打开证照库弹窗
-    openIdLibDialog: function(row){
+    openIdLibDialog: function(row, refreshMatIframe){
       var vm = this;
       vm.parentPageLoading = true;
+      vm.currentMatRow = row;
+      vm.refreshMatIframe = refreshMatIframe;
       vm.itemVerids = row.itemVerids;
       vm.loadIdLibList(function(){
         vm.idLibVisible = true;
@@ -639,8 +674,50 @@ var vm = new Vue({
         vm.$message.error('查看证照失败');
       });
     },
-    // 证照列表弹窗 选择证照
-    idTabListChoose: function(row) {},
+    // 证照列表弹窗 关联证照
+    idTabListChoose: function(row) {
+      var vm = this;
+      var param = {
+        "authCode": row.auth_code,
+        "certId": vm.currentMatRow.certId,
+        "certOwner": row.holder_name,
+        "certinstCode": row.license_code,
+        "certinstName": row.name,
+        "issueDate": row.issue_time,
+        "issueOrgId": row.issue_org_code,
+        "managementScope": "",
+        "matId": vm.currentMatRow.matId,
+        "memo": row.remark,
+        "termEnd": row.expiry_date,
+        "termStart": row.begin_date,
+      };
+      param.applyinstId = vm.masterEntityKey;
+      if (vm.currentMatRow.certMatinstId){
+        param.matinstId = vm.currentMatRow.certMatinstId;
+      }
+      if (vm.currentMatRow.certinstId){
+        param.certinstId = vm.currentMatRow.certinstId;
+      }
+      vm.idLibLoading = true;
+      request('', {
+        url: ctx + 'rest/approve/CertTypeMatinst/update',
+        type: 'post',
+        ContentType: 'application/json',
+        data: JSON.stringify(param),
+      }, function(res){
+        vm.idLibLoading = false;
+        if (res.success){
+          vm.$message.success('关联证照成功');
+          vm.idLibVisible = false;
+          typeof vm.refreshMatIframe == 'function' && vm.refreshMatIframe();
+        } else {
+          vm.$message.error(res.message||'关联证照失败');
+        }
+      }, function(){
+        vm.idLibLoading = false;
+        vm.$message.error('关联证照失败');
+      });
+    },
     // 获取材料补正详情数据
     loadSupplyDetail: function () {
       var vm = this;

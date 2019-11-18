@@ -169,7 +169,23 @@
       <el-table-column type="index" width="50px" align="center" label="序号"></el-table-column>
       <el-table-column type="expand" width="15px" align="right">
         <template slot-scope="props">
-          <div class="mat-children" v-if="props.row.fileList&&props.row.fileList.length>0">
+          <div class="mat-children" v-if="props.row.certFileList&&props.row.certFileList.length>0">
+            <div v-for="item in props.row.certFileList" class="file-list-tab"
+                 :key="item.fileId">
+              <span style="position:relative;top:-1px;left:-3px;"><i class="ag ag-id-card"></i></span>
+              <span class="file-name">
+                  {{item.fileName}}
+              </span>
+              <span v-if="props.row.matProp=='c'" style="color:#AFB2C1;">
+                （{{item.createrName}}于{{formatDate(item.updateTime)}}关联）
+              </span>
+              <span class="file-icon-btn" style="margin-left:20px;">
+                  <span title="查验" v-if="props.row.matProp=='c'" class="el-icon-search" @click="checkId(item)"></span>
+                  <span title="删除" class="el-icon-delete" @click="delOneFile(item,props.row)"></span>
+              </span>
+            </div>
+          </div>
+          <div class="mat-children" v-else-if="props.row.fileList&&props.row.fileList.length>0">
             <div v-for="item in props.row.fileList" class="file-list-tab"
                  :key="item.fileId">
               <span class="file-name">
@@ -177,13 +193,12 @@
                         :class="'ag-filetype-'+getFileType(item.fileName)"></span>
                   {{item.fileName}}
               </span>
-              <span v-if="props.row.matProp=='c'" style="color:#AFB2C1;">
-                （{{item.creater}}于{{item.updateTime}}关联）
+              <span style="color:#AFB2C1;">
+                （{{item.createrName}}于{{formatDate(item.updateTime)}}上传）
               </span>
               <span class="file-icon-btn" style="margin-left:20px;">
-                  <span title="预览" v-if="props.row.matProp=='m'" class="el-icon-search" @click="filePreview(item)"></span>
-                  <span title="查验" v-if="props.row.matProp=='c'" class="el-icon-search" @click="checkId(item)"></span>
-                  <span title="下载" v-if="props.row.matProp=='m'" class="el-icon-download" @click="downOneFile(item)"></span>
+                  <span title="预览" class="el-icon-search" @click="filePreview(item)"></span>
+                  <span title="下载" class="el-icon-download" @click="downOneFile(item)"></span>
                   <span title="删除" class="el-icon-delete" @click="delOneFile(item,props.row)"></span>
               </span>
             </div>
@@ -195,7 +210,8 @@
       </el-table-column>
       <el-table-column class-name="meterial-col" prop="matName" label="材料名称" align="left">
         <template slot-scope="scope">
-          {{scope.row.matName}}<i v-if="scope.row.matProp=='c'" class="ag ag-id-card"></i>
+          {{scope.row.matName}}
+          <i v-if="scope.row.matProp=='c'&&scope.row.certFileList&&scope.row.certFileList.length" class="ag ag-id-card"></i>
         </template>
       </el-table-column>
       <!--      <el-table-column prop="matFrom" label="文件来源" align="center" width="120px">-->
@@ -214,14 +230,11 @@
                        :http-request="handleUploadFile">
               <span class="mat-table-btn" @click="clickUpload(scope.row)">上传</span>
             </el-upload>
-            <span class="mat-ope-line"></span>
-            <span class="mat-table-btn" @click="openMatLibDialog(scope.row)">材料库</span>
+<!--            <span class="mat-ope-line"></span>-->
+<!--            <span class="mat-table-btn" @click="openMatLibDialog(scope.row)">材料库</span>-->
             <span class="mat-ope-line"></span>
             <span class="mat-table-btn" @click="openIdLibDialog(scope.row)">证照库</span>
           </div>
-          <!--          <span v-if="scope.row.attCount !=null && scope.row.attCount > 0"-->
-          <!--                class="t-pre-upload ready">已上传（{{scope.row.attCount}}）</span>-->
-          <!--          <span v-else class="t-pre-upload">未上传</span>-->
         </template>
       </el-table-column>
     </el-table>
@@ -362,7 +375,7 @@
         request('', {
           url: ctx + 'aea/cert/getViewLicenseURL.do',
           type: 'get',
-          data: { authCode: row.auth_code },
+          data: { authCode: row.fileId },
         }, function(res) {
           vm.pageLoading = false;
           if (res.success){
@@ -413,11 +426,15 @@
       },
       // 打开材料库弹窗
       openMatLibDialog: function(row){
-        parent.vm.openMatLibDialog(row);
+        parent.vm.openMatLibDialog(row, vm.getMatList);
       },
       // 打开证照库弹窗
       openIdLibDialog: function(row){
-        parent.vm.openIdLibDialog(row);
+        parent.vm.openIdLibDialog(row, vm.getMatList);
+      },
+      // 格式化时间
+      formatDate: function (time, formatStr) {
+        return __STATIC.formatDate(date, formatStr);
       },
       // 处理上传文件
       handleUploadFile: function (file) {
@@ -425,8 +442,8 @@
         var _this = this;
         var formData = new FormData();
         formData.append('files', file.file);
-        if (vm.currentUploadRow.matinstId) {
-          formData.append('matinstId', vm.currentUploadRow.matinstId);
+        if (vm.currentUploadRow.attMatinstId) {
+          formData.append('matinstId', vm.currentUploadRow.attMatinstId);
         } else {
           formData.append('applyinstId', vm.applyinstId);
           formData.append('matId', vm.currentUploadRow.matId);
