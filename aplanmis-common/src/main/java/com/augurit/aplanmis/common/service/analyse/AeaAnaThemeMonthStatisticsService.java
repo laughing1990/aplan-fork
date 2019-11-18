@@ -28,6 +28,4 @@ public interface AeaAnaThemeMonthStatisticsService {
     public AeaAnaThemeMonthStatistics getAeaAnaThemeMonthStatisticsById(String id) throws Exception;
 
     public List<AeaAnaThemeMonthStatistics> listAeaAnaThemeMonthStatistics(AeaAnaThemeMonthStatistics aeaAnaThemeMonthStatistics) throws Exception;
-
-    public void analyThemeMonthStatistics(String startTime, String endTime) throws Exception;
 }

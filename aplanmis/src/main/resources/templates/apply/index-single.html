@@ -956,7 +956,18 @@
                 </el-table-column>
                 <el-table-column type="expand" v-if="showMatTableExpand" width="20" align="right">
                   <template slot-scope="props">
-
+                    <div class="mat-children" v-if="showMatTableExpand&&props.row.certChild.length>0">
+                      <div v-for="(item,index) in props.row.certChild" class="file-list-tab">
+                        <span class="file-name">
+                          <span class="cert-icon icon ag ag-id-card"></span>
+                          {{item.certName}}
+                        </span>
+                        <span class="file-icon-btn">
+                          <span title="查看" class="ag ag-preview" @click="cretPreview(item.authCode)"></span>
+                          <span title="解除关联" class="el-icon-delete" @click="unbindCert(item.matinstId,props.row.certChild,index)"></span>
+                        </span>
+                      </div>
+                    </div>
                     <div class="mat-children" v-if="props.row.matChild.length>0">
                       <div v-for="item in props.row.matChild" class="file-list-tab" :key="item.fileId">
                         <span class="file-name">
@@ -971,14 +982,18 @@
                         </span>
                       </div>
                     </div>
-                    <div v-else>
-                      <div class="mat-children">
-                        <div class="file-list-tab no-file">暂无附件</div>
-                      </div>
+                    <div class="mat-children" v-if="props.row.certChild.length==0&&props.row.matChild.length==0">
+                      <div class="file-list-tab no-file">暂无附件</div>
                     </div>
                   </template>
                 </el-table-column>
                 <el-table-column prop="matName" label="材料名称" min-width="220">
+                  <template slot-scope="scope">
+                    <span>{{scope.row.matName}}
+                      <i class="cert-icon ag ag-id-card" v-if="scope.row.matProp=='c'"></i>
+                      <span class="children-count" v-if="scope.row.matChild.length>0">（{{scope.row.matChild.length}}）</span>
+                    </span>
+                  </template>
                 </el-table-column>
                 <el-table-column label="收件要点" min-width="50" align="center">
                   <template slot-scope="scope">
@@ -1006,14 +1021,6 @@
                   </template>
                 </el-table-column>
                 <el-table-column label="纸质件" align="center">
-                  <!--                                <el-table-column-->
-                  <!--                                        label="必须"-->
-                  <!--                                        align="center"-->
-                  <!--                                        min-width="55">-->
-                  <!--                                    <template slot-scope="scope">-->
-                  <!--                                        <span>{{(scope.row.paperIsRequire==1)?'是':'否'}}</span>-->
-                  <!--                                    </template>-->
-                  <!--                                </el-table-column>-->
                   <el-table-column label="原件" align="center">
                     <el-table-column prop="duePaperCount" align="center" label="份数" min-width="60">
                     </el-table-column>
@@ -1074,9 +1081,14 @@
                       <span :class="(scope.row.attIsRequire==1)?'text-green':''">{{(scope.row.attIsRequire==1)?'是':'否'}}</span>
                     </template>
                   </el-table-column>
-                  <el-table-column label="附件" min-width="60" align="center">
+                  <el-table-column label="附件" min-width="180" align="center">
                     <template slot-scope="scope">
-                      <i class="upload-flie-icon el-icon-upload" @click="showUploadWindow(scope.row)"></i>
+                      <div style="text-align: left !important;">
+                        <span class="op-btn" @click="showUploadWindow(scope.row)">上传</span>
+                        <span class="op-btn" @click="showUploadWindow(scope.row,'history')">材料库</span>
+                        <span class="op-btn" v-if="scope.row.matProp=='c'" @click="showUploadWindow(scope.row,'certList')">证照库</span>
+                        <span class="op-btn" v-if="scope.row.matProp=='f'">填写</span>
+                      </div>
                     </template>
                   </el-table-column>
                 </el-table-column>
@@ -1242,7 +1254,7 @@
                  class="upload-flie-dialog" :title="showUploadWindowTitle" :visible.sync="showUploadWindowFlag"
                  @closed="uploadTableData=[]" width="750px">
         <div class="upload-file-content">
-          <div class="file-opt-btn">
+          <div class="file-opt-btn" v-if="showUploadWindowBtn">
             <el-button type="primary" @click="downloadFile()">下载</el-button>
             <el-upload ref="uploadFileWin"
                        class="upload-s-file"
@@ -1257,7 +1269,9 @@
             <el-button type="primary" @click="openPhotoWindow(selMatRowData,'lt')">良田拍照</el-button>
             <el-button type="primary" @click="openPhotoWindow(selMatRowData,'fz')">方正拍照</el-button>
           </div>
-          <el-table :data="uploadTableData" border @selection-change="selectionFileChange">
+          <el-table :data="uploadTableData"
+                    row-key="fileId"
+                    ref="uploadTableData" border @selection-change="selectionFileChange">
             <el-table-column type="selection" align="center" width="55"></el-table-column>
             <el-table-column prop="fileName" label="文件名"></el-table-column>
             <el-table-column label="操作" align="center" width="310">
@@ -1274,6 +1288,52 @@
     <th:block th:include="common/lt_gaopaiyi :: ltGaoPaiYi" />
 
     <!--文件上传下载弹窗 end-->
+    <!--证照库弹窗 start-->
+    <el-dialog class="upload-flie-dialog" title="证照列表" :visible.sync="showCertWindowFlag"
+               @closed="certMatTableData=[]" width="900px">
+      <div class="upload-file-content">
+        <div class="file-opt-btn">
+          <el-form :inline="true" :model="searchInline">
+            <el-form-item label="申报主体">
+              <el-select v-model="searchInline.type" placeholder="选择申报主体">
+                <el-option v-for="(item,index) in allApplySubjectInfo" :key="index" @click.native="applySubjectChange(item)" :label="item.applySubjectName" :value="item.applySubjectName"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="" v-if="searchInline.showNumberType">
+              <el-radio-group v-model="searchInline.identityNumberType" @change="identityNumberTypeChange">
+                <el-radio label="0">企业证照</el-radio>
+                <el-radio label="1">法人证照</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-form>
+        </div>
+        <el-table :data="certMatTableData" ref="certMatTableData" border>
+          <el-table-column prop="name" label="证照名称"></el-table-column>
+          <el-table-column prop="license_type" label="证照类型"  width="100">
+            <template slot-scope="scope">
+              {{$options.filters.formatLicenseType(scope.row.license_type)}}
+            </template>
+          </el-table-column>
+          <el-table-column prop="expiry_date" label="有效截止日期"  width="180"></el-table-column>
+          <el-table-column prop="trust_level" label="可信等级"  width="80"></el-table-column>
+          <el-table-column label="证照状态"  width="140">
+            <template slot-scope="scope">
+              {{$options.filters.formatLicenseStatus(scope.row.license_status)}}
+            </template>
+          </el-table-column>
+          <el-table-column label="操作" width="120">
+            <template slot-scope="scope">
+              <span class="op-btn" @click="cretPreview(scope.row.auth_code)">查看</span>
+              <span class="op-btn" v-if="scope.row.bind==false" @click="setCretLinked(scope.row)">关联</span>
+              <span class="op-btn" v-else style="cursor: not-allowed">已关联</span>
+              <!--<span class="op-btn" v-else @click="unbindCert(scope.row.matinstId,selMatRowData.certChild,index)">解除关联</span>-->
+
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+    </el-dialog>
+    <!--证照库弹窗 end-->
     <!--申报意见弹窗 start-->
     <el-dialog class="submit-comments" :title="commentTitle" :visible.sync="submitCommentsFlag" width="750px">
       <div class="comments-content">

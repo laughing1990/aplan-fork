@@ -23,7 +23,7 @@
                         <div class="form-group m-form__group row">
                             <label class="col-lg-2 col-form-label" style="text-align: right;">
                                 <font color="red">*</font>表单名称:<br/>
-                                <button ${curIsEditable?'':'disabled'} type="button" class="btn btn-info" onclick="openSelectParFrontItemform('stageItemId','itemFormName','formItemName','frontItemformId');" style="margin-top: 10px;">选择</button>
+                                <button ${curIsEditable?'':'disabled'} type="button" class="btn btn-info" onclick="openSelectParFrontItemform('stageItemId','itemFormName','formItemName','frontItemformId');" style="margin-top: 10px;" id = "select_par_front_itemform_btn">选择</button>
                             </label>
                             <div class="col-lg-9">
                                 <input id="itemFormName" class="form-control" name="formName"  ${curIsEditable?'readonly':'disabled'} />

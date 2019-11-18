@@ -52,10 +52,6 @@ public class AeaExProjBidVo extends AeaExProjBid implements Serializable{
         vo.setBidSectionLength(aeaExProjBid.getBidSectionLength());
         vo.setWinBidTime(aeaExProjBid.getWinBidTime());
         vo.setWinBidMoney(aeaExProjBid.getWinBidMoney());
-        vo.setBidConfirmTime(aeaExProjBid.getBidConfirmTime());
-        vo.setGovOrgCode(aeaExProjBid.getGovOrgCode());
-        vo.setGovOrgName(aeaExProjBid.getGovOrgName());
-        vo.setGovAreaCode(aeaExProjBid.getGovAreaCode());
         vo.setBidMemo(aeaExProjBid.getBidMemo());
         vo.setCreater(aeaExProjBid.getCreater());
         vo.setCreateTime(aeaExProjBid.getCreateTime());

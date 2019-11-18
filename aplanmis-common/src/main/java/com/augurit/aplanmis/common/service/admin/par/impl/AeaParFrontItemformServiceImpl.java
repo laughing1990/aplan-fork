@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * 阶段事项表单前置检测表-Service服务接口实现类
@@ -51,7 +52,7 @@ public class AeaParFrontItemformServiceImpl implements AeaParFrontItemformServic
 
     @Override
     public void updateAeaParFrontItemform(AeaParFrontItemform aeaParFrontItemform) throws Exception {
-        checkSame(aeaParFrontItemform);
+//        checkSame(aeaParFrontItemform);
 
         aeaParFrontItemform.setModifyTime(new Date());
         aeaParFrontItemform.setModifier(SecurityContext.getCurrentUserId());
@@ -146,5 +147,37 @@ public class AeaParFrontItemformServiceImpl implements AeaParFrontItemformServic
         aeaParFrontItemformVos.addAll(aeaParFrontItemformMapper.getAeaParFrontItemformVoByStageId(stageId, SecurityContext.getCurrentOrgId()));
         return aeaParFrontItemformVos;
     }
+
+    @Override
+    public void batchSaveAeaParFrontItemform(String stageId,String stageItemIds)throws Exception{
+        if(StringUtils.isBlank(stageId)  || StringUtils.isBlank(stageItemIds)){
+            throw new InvalidParameterException(stageId,stageItemIds);
+        }
+
+        String[] stageItemIdArr = stageItemIds.split(",");
+        if(stageItemIdArr!=null && stageItemIdArr.length>0){
+            AeaParFrontItemform query = new AeaParFrontItemform();
+            query.setStageId(stageId);
+            Long maxSortNo = getMaxSortNo(query);
+            for(String stageItemId:stageItemIdArr){
+                AeaParFrontItemform aeaParFrontItemform = new AeaParFrontItemform();
+                aeaParFrontItemform.setStageId(stageId);
+                aeaParFrontItemform.setStageItemId(stageItemId);
+                List<AeaParFrontItemform> list = aeaParFrontItemformMapper.listAeaParFrontItemform(aeaParFrontItemform);
+                if (list.size() > 0) {
+                    continue;
+                }
+                aeaParFrontItemform.setFrontItemformId(UUID.randomUUID().toString());
+                aeaParFrontItemform.setCreateTime(new Date());
+                aeaParFrontItemform.setCreater(SecurityContext.getCurrentUserId());
+                aeaParFrontItemform.setRootOrgId(SecurityContext.getCurrentOrgId());
+                aeaParFrontItemform.setSortNo(maxSortNo);
+                aeaParFrontItemform.setIsActive("1");
+                aeaParFrontItemformMapper.insertAeaParFrontItemform(aeaParFrontItemform);
+                maxSortNo++;
+            }
+        }
+    }
+
 }
 

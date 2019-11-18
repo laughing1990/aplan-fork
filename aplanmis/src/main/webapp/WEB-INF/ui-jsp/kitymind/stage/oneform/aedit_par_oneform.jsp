@@ -3,7 +3,7 @@
 <!-- 添加/编辑 -->
 <div id="edit_stage_oneform_modal" class="modal fade" tabindex="-1" role="dialog"
      aria-labelledby="dialog_item_dept" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered  modal-lg" role="document" style="max-width: 650px;">
+    <div class="modal-dialog modal-dialog-centered  modal-lg" role="document" style="max-width: 700px;">
         <div class="modal-content">
             <!-- 标题 -->
             <div class="modal-header" style="padding: 15px;height: 45px;">

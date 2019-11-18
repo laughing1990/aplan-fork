@@ -179,7 +179,7 @@ public class BpmSubFlowTriggerUtil {
                                                 runtimeService.setVariable(processInstance.getProcessInstance().getProcessInstanceId(), "$BUS_CURRENT_ITEMINST_ID", iteminstId);
 
                                                 //新增时限规则实例
-                                                restTimeruleinstService.createTimeruleinstByProcinst(appId, processInstance.getProcessInstance().getId(), processInstance.getProcessInstance().getProcessDefinitionKey());
+//                                                restTimeruleinstService.createTimeruleinstByProcinst(appId, processInstance.getProcessInstance().getId(), processInstance.getProcessInstance().getProcessDefinitionKey());
                                             }
                                         }
 
@@ -199,7 +199,7 @@ public class BpmSubFlowTriggerUtil {
                                             runtimeService.setVariable(processInstance.getProcessInstance().getProcessInstanceId(), "$BUS_CURRENT_ITEMINST_ID", iteminstId);
                                         }
                                         //新增时限规则实例
-                                        restTimeruleinstService.createTimeruleinstByProcinst(appId, processInstance.getProcessInstance().getId(), processInstance.getProcessInstance().getProcessDefinitionKey());
+//                                        restTimeruleinstService.createTimeruleinstByProcinst(appId, processInstance.getProcessInstance().getId(), processInstance.getProcessInstance().getProcessDefinitionKey());
 */
                                     }
                                 }
@@ -341,7 +341,7 @@ public class BpmSubFlowTriggerUtil {
                                             aeaHiIteminstMapper.updateAeaHiIteminst(iteminst);
                                             runtimeService.setVariable(processInstance.getProcessInstance().getProcessInstanceId(), "$BUS_CURRENT_ITEMINST_ID", iteminstId);
                                             //新增时限规则实例
-                                            restTimeruleinstService.createTimeruleinstByProcinst(appId, processInstance.getProcessInstance().getId(), processInstance.getProcessInstance().getProcessDefinitionKey());
+//                                            restTimeruleinstService.createTimeruleinstByProcinst(appId, processInstance.getProcessInstance().getId(), processInstance.getProcessInstance().getProcessDefinitionKey());
 
                                         }
                                     }

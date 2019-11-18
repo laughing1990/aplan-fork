@@ -50,6 +50,9 @@ var vm = new Vue({
                 approvalTime: [
                     { required: true, message: '请选择立项批准时间', trigger: 'blur' }
                 ],
+                isEpc: [
+                    { required: true, message: '请选择是否工程总承包模式', trigger: 'change' }
+                ],
                 govFinance: [
                     { required: true, validator: validateMoney, trigger: 'blur' }
                 ],
@@ -76,18 +79,6 @@ var vm = new Vue({
                 ],
                 otherInvestment: [
                     { required: true, validator: validateMoney, trigger: 'blur' }
-                ],
-                govOrgConfirmTime: [
-                    { required: true, message: '请选择建设行业主管部门确认时间', trigger: 'blur' }
-                ],
-                govOrgCode: [
-                    { required: true, message: '请填写建设行业主管部门确认的行政单位机构代码', trigger: 'blur' }
-                ],
-                govOrgName: [
-                    { required: true, message: '请填写建设行业主管部门确认的行政单位名称', trigger: 'blur' }
-                ],
-                govAreaCode: [
-                    { required: true, message: '请选择建设行业主管部门确认的行政单位区域码', trigger: 'change' }
                 ]
             }
         }
@@ -127,7 +118,7 @@ var vm = new Vue({
             }, function (result) {
                 if (result.content) {
                     _that.buildTypeList = result.content.XM_JZLX;
-                    _that.projNatureList = result.content.PROJECT_PROPERTY;
+                    _that.projNatureList = result.content.XM_NATURE;
                     _that.projFunctionList = result.content.XM_FUNCTION;
                     _that.scaleTypeList = result.content.XM_SCALE_TYPE;
                     _that.projLevelList = result.content.XM_PROJECT_LEVEL;

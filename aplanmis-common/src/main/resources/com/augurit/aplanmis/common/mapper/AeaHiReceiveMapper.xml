@@ -234,7 +234,7 @@
         from aea_hi_applyinst applyinst
 
         LEFT JOIN aea_hi_receive receive on receive.APPLYINST_ID=applyinst.APPLYINST_ID
-        where applyinst.APPLYINST_ID =#{applyinstId}
+        where applyinst.APPLYINST_ID =#{applyinstId} and receive.RECEIVE_ID is not null
         order by receive.RECEIPT_TYPE
     </select>
 

@@ -182,6 +182,15 @@ allprojects {
         compile("com.google.code.gson:gson:2.6.1")
         compile 'com.ning:async-http-client:1.9.32'
 
+        // https://mvnrepository.com/artifact/com.itextpdf/itextpdf
+        compile group: 'com.itextpdf', name: 'itextpdf', version: '5.5.6'
+        // https://mvnrepository.com/artifact/com.itextpdf/itext-asian
+        compile group: 'com.itextpdf', name: 'itext-asian', version: '5.2.0'
+
+// https://mvnrepository.com/artifact/com.itextpdf.tool/xmlworker
+        compile group: 'com.itextpdf.tool', name: 'xmlworker', version: '5.5.6'
+//    compile "org.springframework.boot:spring-boot-devtools"
+
         testCompile('org.springframework.boot:spring-boot-starter-test')
         testCompile('org.junit.jupiter:junit-jupiter-engine:5.0.2')
         testCompile('org.junit.platform:junit-platform-runner:1.0.2')

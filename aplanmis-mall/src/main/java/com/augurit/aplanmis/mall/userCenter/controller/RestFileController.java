@@ -14,12 +14,14 @@ import com.augurit.aplanmis.mall.userCenter.service.RestApplyMatService;
 import com.augurit.aplanmis.mall.userCenter.service.RestApplyService;
 import com.augurit.aplanmis.mall.userCenter.service.RestApproveService;
 import com.augurit.aplanmis.mall.userCenter.service.RestFileService;
+import com.augurit.aplanmis.mall.userCenter.vo.MatUploadVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
@@ -60,23 +62,23 @@ public class RestFileController {
             @ApiImplicitParam(name = "matinstCode", value = "材料实例编码", required = true, type = "string"),
             @ApiImplicitParam(name = "matinstName", value = "材料实例名称", required = true, type = "string"),
             @ApiImplicitParam(name = "projInfoId", value = "项目ID", required = true, type = "string"),
-            @ApiImplicitParam(name = "matinstId", value = "材料实例ID", required = true, type = "string")})
-    public ResultForm uploadFile(String matId, String matinstCode, String matinstName, String projInfoId, String matinstId, HttpServletRequest request) {
+            @ApiImplicitParam(name = "matinstId", value = "材料实例ID", required = true, type = "string"),
+            @ApiImplicitParam(name = "matProp", value = "材料性质，m表示普通材料，c表示证照材料，f表示在线表单", required = true, type = "string"),
+            @ApiImplicitParam(name = "certId", value = "证照定义ID", required = false, type = "string"),
+            @ApiImplicitParam(name = "stoFormId", value = "表单定义ID", required = false, type = "string")})
+    public ResultForm uploadFile(MatUploadVo uploadVo, HttpServletRequest request) {
         try {
-            if (StringUtils.isBlank(matId) || StringUtils.isBlank(matinstCode) || StringUtils.isBlank(matinstName) || StringUtils.isBlank(projInfoId))
-                return new ResultForm(false, "缺少必须参数");
+
             AeaHiItemMatinst aeaHiItemMatinst = new AeaHiItemMatinst();
-            aeaHiItemMatinst.setMatId(matId);
-            aeaHiItemMatinst.setMatinstCode(matinstCode);
-            aeaHiItemMatinst.setMatinstName(matinstName);
-            aeaHiItemMatinst.setProjInfoId(projInfoId);
+            BeanUtils.copyProperties(uploadVo, aeaHiItemMatinst);
+            String matinstId = aeaHiItemMatinst.getMatinstId();
             aeaHiItemMatinst.setMatinstId(("null".equalsIgnoreCase(matinstId) || "undefined".equalsIgnoreCase(matinstId) || StringUtils.isBlank(matinstId)) ? null : matinstId);
             LoginInfoVo loginInfoVo = SessionUtil.getLoginInfo(request);
             if (loginInfoVo==null)  return new ResultForm(false, "上传失败");
-            if ("1".equals(loginInfoVo.getIsPersonAccount())||StringUtils.isNotBlank(loginInfoVo.getUserId())){
+            if ("1".equals(loginInfoVo.getIsPersonAccount())||StringUtils.isNotBlank(loginInfoVo.getUserId())){//个人
                 aeaHiItemMatinst.setMatinstSource("1");
                 aeaHiItemMatinst.setLinkmanInfoId(loginInfoVo.getUserId());
-            }else {
+            }else {//企业
                 aeaHiItemMatinst.setMatinstSource("u");
                 aeaHiItemMatinst.setUnitInfoId(loginInfoVo.getUnitId());
             }
@@ -119,7 +121,7 @@ public class RestFileController {
     public ResultForm getAttFiles(@PathVariable String matinstId,HttpServletRequest request) throws Exception {
         if ("null".equalsIgnoreCase(matinstId) || "undefined".equalsIgnoreCase(matinstId) || StringUtils.isBlank(matinstId))
             return new ContentResultForm<>(true, new ArrayList<>());
-        if (restFileService.isMatBelong(matinstId,request)) return new ResultForm(false,"查询出错");
+        //if (!restFileService.isMatBelong(matinstId,request)) return new ResultForm(false,"查询出错");
         return new ContentResultForm<>(true, restFileService.getAttFiles(matinstId));
     }
 
@@ -135,7 +137,7 @@ public class RestFileController {
             if (StringUtils.isBlank(detailIds)) {
                 return new ResultForm(false, "删除失败：没有可删除文件!");
             }
-            if (restFileService.isMatBelong(matinstId,request)) return new ResultForm(false,"删除出错");
+            //if (!restFileService.isMatBelong(matinstId,request)) return new ResultForm(false,"删除出错");
             String[] str = detailIds.split(",");
             return restFileService.delelteAttachment(str, matinstId);
         } catch (Exception e) {

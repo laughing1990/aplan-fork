@@ -5,6 +5,7 @@ import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.agcloud.framework.util.StringUtils;
+import com.augurit.aplanmis.common.domain.AeaHiCertinst;
 import com.augurit.aplanmis.common.domain.AeaHiItemMatinst;
 import com.augurit.aplanmis.common.domain.AeaItemBasic;
 import com.augurit.aplanmis.common.domain.AeaItemMat;
@@ -303,6 +304,38 @@ public class RestApplyMatAndAttachmentController {
             return new ContentResultForm<>(false, "Mat completion failed.");
         }
         return new ContentResultForm<>(true, "Mat completion success");
+    }
+
+    @PostMapping("/bind/cert")
+    @ApiOperation(value = "关联电子证照材料")
+    @ApiImplicitParam(value = "电子证照")
+    public ContentResultForm<AeaHiCertinst> bindCertinst(@RequestBody AeaHiCertinst aeaHiCertinst) {
+        try {
+            if (StringUtils.isNotBlank(aeaHiCertinst.getMatId())) {
+                aeaHiCertinst = aeaHiItemMatinstService.bindCertinst(aeaHiCertinst, SecurityContext.getCurrentUserName());
+                Assert.hasText(aeaHiCertinst.getCertinstId(), "certinstId is null");
+                return new ContentResultForm<>(true, aeaHiCertinst, "Bind success");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ContentResultForm<>(false, null, "关联证照库材料失败: " + e.getMessage());
+        }
+        return null;
+    }
+
+    @PostMapping("/unbind/cert")
+    @ApiImplicitParam(value = "证照材料实例id", name = "matinstId")
+    @ApiOperation(value = "解除关联电子证照材料")
+    public ResultForm bindCertinst(String matinstId) {
+        Assert.hasText(matinstId, "证照材料实例id不能为空");
+
+        try {
+            aeaHiItemMatinstService.unbindCertinst(matinstId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResultForm(false, "解绑失败: " + e.getMessage());
+        }
+        return new ResultForm(true, "解绑成功");
     }
 
     @PostMapping("/matinst/batch/save")

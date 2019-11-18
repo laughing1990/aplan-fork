@@ -8,6 +8,7 @@ var selectItemKey,
     itemName_id,
     currentFrontItemId_id,
     lastFrontItemId,
+    batchImport = false;
     selectItemTreeSetting = {
         edit: {
             showRemoveBtn: false,//设置是否显示删除按钮
@@ -301,12 +302,12 @@ function openSelectFrontItemZtree(valueId,textId,frontItemId) {
     if(frontItemId){
         var tmp = $("#"+frontItemId).val();
         if(lastFrontItemId){
-            if(lastFrontItemId == tmp && selectItemTree){
+            if(lastFrontItemId == tmp && selectItemTree && !batchImport){
                 showLastSelected();
                 return;
             }
         }else{
-            if(!tmp && selectItemTree){
+            if(!tmp && selectItemTree && !batchImport){
                 showLastSelected();
                 return;
             }
@@ -317,6 +318,14 @@ function openSelectFrontItemZtree(valueId,textId,frontItemId) {
     }else{
         lastFrontItemId = null;
     }
+
+    batchImport = false;
+
+    selectItemTreeSetting.check={
+        enable: true,
+        chkStyle: "radio",
+        radioType: "all"
+    };
 
     itemVerId_id = valueId;
     itemName_id = textId;
@@ -329,17 +338,31 @@ function openSelectFrontItemZtree(valueId,textId,frontItemId) {
 }
 
 function selectFrontItem() {
-    if(!selectItemNode){
-        swal('错误信息', '没有勾选事项!', 'error');
-    }else{
-        if(itemVerId_id){
-            $("#"+itemVerId_id).val(selectItemNode.itemVerId);
-        }
-        if(itemName_id){
-            $("#"+itemName_id).val(selectItemNode.itemName);
-        }
 
-        $("#select_front_item_modal").modal("hide");
+    if(batchImport){
+
+        var nodes = selectItemTree.getCheckedNodes();
+
+        if(!nodes || nodes.length==0){
+            swal('错误信息', '没有勾选事项!', 'error');
+        }else{
+            batchSaveParFrontItem(nodes);
+        }
+    }else {
+
+
+        if (!selectItemNode) {
+            swal('错误信息', '没有勾选事项!', 'error');
+        } else {
+            if (itemVerId_id) {
+                $("#" + itemVerId_id).val(selectItemNode.itemVerId);
+            }
+            if (itemName_id) {
+                $("#" + itemName_id).val(selectItemNode.itemName);
+            }
+
+            $("#select_front_item_modal").modal("hide");
+        }
     }
 }
 
@@ -354,4 +377,73 @@ function showLastSelected() {
         }
     }
     $("#select_front_item_modal").modal("show");
+}
+
+
+function batchImportParFrontItem(){
+    selectItemTreeSetting.check={
+        enable: true,
+        chkStyle: "checkbox",
+        chkboxType: { "Y": "", "N": "" }
+    };
+
+    batchImport = true;
+
+    selectItemNodeList = [];
+    selectItemLastValue = "";
+    selectItemNode = null;
+    $('#selectItemKeyWord').val('');
+    currentFrontItemId_id = null;
+    itemVerId_id = null;
+    initSelectItemZtree();
+}
+
+function batchSaveParFrontItem(nodes) {
+    var itemVerIds = new Array();
+    for(var i=0;i<nodes.length;i++){
+        var node = nodes[i];
+        itemVerIds.push(node.itemVerId);
+    }
+
+    $("#uploadProgressMsg").html("批量导入事项，请稍后...");
+    $("#uploadProgress").modal("show");
+
+    $.ajax({
+        url: ctx+'/aea/par/front/item/batchSaveAeaParFrontItem.do',
+        type:'post',
+        data:{stageId:currentBusiId,itemVerIds:itemVerIds.join(",")},
+        async: false,
+        dataType: 'json',
+        success: function(result){
+
+            if (result.success) {
+                setTimeout(function(){
+                    $("#uploadProgress").modal('hide');
+                    swal({
+                        type: 'success',
+                        title: '批量导入成功！',
+                        showConfirmButton: false,
+                        timer: 1000
+                    });
+                    $("#select_front_item_modal").modal("hide");
+                    par_front_item_tb.clear();
+
+                },500);
+            } else {
+                setTimeout(function(){
+                    $("#uploadProgress").modal('hide');
+                    swal('错误信息', result.message, 'error');
+                },500);
+            }
+        },
+        error: function(){
+            setTimeout(function(){
+                $("#uploadProgress").modal('hide');
+                swal('错误信息', '批量导入事项异常!', 'error');
+            },500);
+        }
+    });
+
+
+    
 }

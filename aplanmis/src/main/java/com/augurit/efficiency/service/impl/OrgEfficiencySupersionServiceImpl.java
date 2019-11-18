@@ -17,6 +17,7 @@ import com.augurit.aplanmis.common.utils.DateUtils;
 import com.augurit.aplanmis.common.vo.analyse.*;
 import com.augurit.aplanmis.common.vo.conditional.ConditionalQueryRequest;
 import com.augurit.aplanmis.common.vo.conditional.TaskInfo;
+import com.augurit.efficiency.constant.DateType;
 import com.augurit.efficiency.service.OrgEfficiencySupersionService;
 import com.augurit.efficiency.utils.CalculateUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -384,7 +385,7 @@ public class OrgEfficiencySupersionServiceImpl implements OrgEfficiencySupersion
             ItemDetailFormVo vo = new ItemDetailFormVo();
             vo.setOrgId(orgId);
             vo.setOrgName(orgName);
-            if ("W".equals(type)) {
+            if (DateType.CUR_WEEK.equals(type)) {
                 int weekNum = DateUtils.getThisWeekNum(new Date());
                 AeaAnaOrgWeekStatistics weekStatistics = aeaAnaOrgWeekStatisticsMapper.sumWeekStatistics(weekNum, rootOrgId, orgId);
                 if (weekStatistics != null) {
@@ -394,7 +395,7 @@ public class OrgEfficiencySupersionServiceImpl implements OrgEfficiencySupersion
                     vo.setCompletedCount(weekStatistics.getWeekCompletedCount());
                     vo.setOverdueCount(weekStatistics.getWeekOverTimeCount());
                 }
-            } else if ("M".equals(type)) {
+            } else if (DateType.CUR_MONTH.equals(type)) {
                 String yearMonth = DateUtils.getDateString("yyyy-MM");
                 AeaAnaOrgMonthStatistics monthStatistics = aeaAnaOrgMonthStatisticsMapper.sumMonthStatistics(yearMonth, rootOrgId, orgId);
                 if (monthStatistics != null) {
@@ -454,16 +455,16 @@ public class OrgEfficiencySupersionServiceImpl implements OrgEfficiencySupersion
 
         String rootOrgId = SecurityContext.getCurrentOrgId();
         List<ItemDetailFormVo> list = new ArrayList<>();
-        if("D".equals(type)){
+        if (DateType.YESTERDAY.equals(type)) {
             String yesterday = DateUtils.convertDateToString(DateUtils.getPreDateByDate(new Date()), "yyyy-MM-dd");
             startDate = yesterday;
             endDate = yesterday ;
             list = aeaAnaOrgDayStatisticsMapper.getOrgDayStatistics(startDate,endDate,orgId,rootOrgId);
-        }else if("W".equals(type)){
+        } else if (DateType.CUR_WEEK.equals(type)) {
             String thisYear = DateUtils.convertDateToString(new Date(), "yyyy");
             int thisWeekNum = DateUtils.getThisWeekNum(new Date());
             list = aeaAnaOrgWeekStatisticsMapper.getOrgWeekStatistics(thisYear,thisWeekNum,thisWeekNum,orgId,rootOrgId);
-        }else if("M".equals(type)){
+        } else if (DateType.CUR_MONTH.equals(type)) {
             String yearMonth = DateUtils.convertDateToString(new Date(), "yyyy-MM");
             list = aeaAnaOrgMonthStatisticsMapper.getOrgMonthStatistics(yearMonth,yearMonth,orgId,rootOrgId);
         }else{
@@ -535,7 +536,7 @@ public class OrgEfficiencySupersionServiceImpl implements OrgEfficiencySupersion
             }
         }
 
-        if ("D".equals(type)) {//昨日日统计
+        if (DateType.YESTERDAY.equals(type)) {//昨日日统计
             String rootOrgId = SecurityContext.getCurrentOrgId();
             Date preDate = DateUtils.getPreDateByDate(new Date());
             String preDateStr = DateUtils.convertDateToString(preDate, "yyyy-MM-dd");
@@ -550,7 +551,7 @@ public class OrgEfficiencySupersionServiceImpl implements OrgEfficiencySupersion
                 return data;
             }).collect(Collectors.toList());
             return collect;
-        } else if ("W".equals(type)) {//本周统计
+        } else if (DateType.CUR_WEEK.equals(type)) {//本周统计
             String rootOrgId = SecurityContext.getCurrentOrgId();
             String thisYear = DateUtils.convertDateToString(new Date(), "yyyy");
             int thisWeekNum = DateUtils.getThisWeekNum(new Date());
@@ -565,7 +566,7 @@ public class OrgEfficiencySupersionServiceImpl implements OrgEfficiencySupersion
                 return data;
             }).collect(Collectors.toList());
             return collect;
-        } else if ("M".equals(type)) {//本月统计
+        } else if (DateType.CUR_MONTH.equals(type)) {//本月统计
             String rootOrgId = SecurityContext.getCurrentOrgId();
             String thisMonth = DateUtils.convertDateToString(new Date(), "yyyy-MM");
 
@@ -607,38 +608,203 @@ public class OrgEfficiencySupersionServiceImpl implements OrgEfficiencySupersion
             }
         }
 
-        if ("D".equals(type)) {
+        if (DateType.YESTERDAY.equals(type)) {
             String rootOrgId = SecurityContext.getCurrentOrgId();
             Date preDay = DateUtils.getPreDateByDate(new Date());
-            return getDayApplyDataByOrgItem(orgId, itemId, preDay, preDay, rootOrgId);
-        } else if ("W".equals(type)) {//本周统计
+            return getDayApplyDataByRegionOrgItem(null, orgId, itemId, preDay, preDay, rootOrgId);
+        } else if (DateType.CUR_WEEK.equals(type)) {//本周统计
             String rootOrgId = SecurityContext.getCurrentOrgId();
             Date thisWeekMonday = DateUtils.getThisWeekMonday(new Date());
             Date thisWeekSunday = DateUtils.getThisWeekSunday(new Date());
-            return getDayApplyDataByOrgItem(orgId, itemId, thisWeekMonday, thisWeekSunday, rootOrgId);
-        } else if ("M".equals(type)) {//本月统计
+            return getDayApplyDataByRegionOrgItem(null, orgId, itemId, thisWeekMonday, thisWeekSunday, rootOrgId);
+        } else if (DateType.CUR_MONTH.equals(type)) {//本月统计
             String rootOrgId = SecurityContext.getCurrentOrgId();
             Date firstDay = DateUtils.firstDayOfMonth(new Date());
             Date lastDay = DateUtils.lastDayOfMonth(new Date());
-            return getDayApplyDataByOrgItem(orgId, itemId, firstDay, lastDay, rootOrgId);
+            return getDayApplyDataByRegionOrgItem(null, orgId, itemId, firstDay, lastDay, rootOrgId);
         } else if (StringUtils.isNotBlank(startTime) && StringUtils.isNotBlank(endTime)) {//按时段统计
             String rootOrgId = SecurityContext.getCurrentOrgId();
             Date startDate = DateUtils.convertStringToDate(startTime, "yyyy-MM-dd");
             Date endDate = DateUtils.convertStringToDate(endTime, "yyyy-MM-dd");
-            return getDayApplyDataByOrgItem(orgId, itemId, startDate, endDate, rootOrgId);
+            return getDayApplyDataByRegionOrgItem(null, orgId, itemId, startDate, endDate, rootOrgId);
         }
         return null;
     }
 
-    private List<Map<String, Object>> getDayApplyDataByOrgItem(String orgId, String itemId, Date startDate, Date endDate, String rootOrgId) throws Exception {
-        String startTime = DateUtils.convertDateToString(startDate, "yyyy-MM-dd") + " 00:00:00";
-        String endTime = DateUtils.convertDateToString(endDate, "yyyy-MM-dd") + " 23:59:59";
+    @Override
+    public List<Map<String, Object>> getRegionOrgAcceptStatistics(String regionId, String startTime, String endTime, String type) throws Exception {
+        if (StringUtils.isBlank(regionId)) {
+            if (DateType.YESTERDAY.equals(type)) {
+                String rootOrgId = SecurityContext.getCurrentOrgId();
+                Date preDate = DateUtils.getPreDateByDate(new Date());
+                String preDateStr = DateUtils.convertDateToString(preDate, "yyyy-MM-dd");
+
+                List<AeaAnaOrgDayStatistics> orgItemAcceptStatistics = aeaAnaOrgDayStatisticsMapper.getRegionAcceptStatistics(preDateStr, preDateStr, rootOrgId);
+                List<Map<String, Object>> collect = orgItemAcceptStatistics.stream().map(statistics -> {
+                    Map<String, Object> data = new HashMap<>();
+                    data.put("regionId", statistics.getRegionId());
+                    data.put("regionName", statistics.getRegionName());
+                    data.put("orgId", "");
+                    data.put("orgName", "");
+                    data.put("apply", statistics.getDayApplyCount());
+                    data.put("acceptDeal", statistics.getDayAcceptanceCount());
+                    return data;
+                }).collect(Collectors.toList());
+                return collect;
+            } else if (DateType.CUR_WEEK.equals(type)) {
+                String rootOrgId = SecurityContext.getCurrentOrgId();
+                String thisYear = DateUtils.convertDateToString(new Date(), "yyyy");
+                int thisWeekNum = DateUtils.getThisWeekNum(new Date());
+
+                List<AeaAnaOrgWeekStatistics> orgItemAcceptStatistics = aeaAnaOrgWeekStatisticsMapper.getRegionAcceptStatistics(thisYear, thisWeekNum, rootOrgId);
+                List<Map<String, Object>> collect = orgItemAcceptStatistics.stream().map(statistics -> {
+                    Map<String, Object> data = new HashMap<>();
+                    data.put("regionId", statistics.getRegionId());
+                    data.put("regionName", statistics.getRegionName());
+                    data.put("orgId", "");
+                    data.put("orgName", "");
+                    data.put("apply", statistics.getWeekApplyCount());
+                    data.put("acceptDeal", statistics.getWeekAcceptanceCount());
+                    return data;
+                }).collect(Collectors.toList());
+                return collect;
+            } else if (DateType.CUR_MONTH.equals(type)) {
+                String rootOrgId = SecurityContext.getCurrentOrgId();
+                String thisMonth = DateUtils.convertDateToString(new Date(), "yyyy-MM");
+
+                List<AeaAnaOrgMonthStatistics> orgItemAcceptStatistics = aeaAnaOrgMonthStatisticsMapper.getRegionAcceptStatistics(thisMonth, rootOrgId);
+                List<Map<String, Object>> collect = orgItemAcceptStatistics.stream().map(statistics -> {
+                    Map<String, Object> data = new HashMap<>();
+                    data.put("regionId", statistics.getRegionId());
+                    data.put("regionName", statistics.getRegionName());
+                    data.put("orgId", "");
+                    data.put("orgName", "");
+                    data.put("apply", statistics.getMonthApplyCount());
+                    data.put("acceptDeal", statistics.getMonthAcceptanceCount());
+                    return data;
+                }).collect(Collectors.toList());
+                return collect;
+            } else if (StringUtils.isNotBlank(startTime) && StringUtils.isNotBlank(endTime)) {
+                String rootOrgId = SecurityContext.getCurrentOrgId();
+
+                List<AeaAnaOrgDayStatistics> orgItemAcceptStatistics = aeaAnaOrgDayStatisticsMapper.getRegionAcceptStatistics(startTime, endTime, rootOrgId);
+                List<Map<String, Object>> collect = orgItemAcceptStatistics.stream().map(statistics -> {
+                    Map<String, Object> data = new HashMap<>();
+                    data.put("regionId", statistics.getRegionId());
+                    data.put("regionName", statistics.getRegionName());
+                    data.put("orgId", "");
+                    data.put("orgName", "");
+                    data.put("apply", statistics.getDayApplyCount());
+                    data.put("acceptDeal", statistics.getDayAcceptanceCount());
+                    return data;
+                }).collect(Collectors.toList());
+                return collect;
+            }
+        } else {
+            if (DateType.YESTERDAY.equals(type)) {
+                String rootOrgId = SecurityContext.getCurrentOrgId();
+                Date preDate = DateUtils.getPreDateByDate(new Date());
+                String preDateStr = DateUtils.convertDateToString(preDate, "yyyy-MM-dd");
+
+                List<AeaAnaOrgDayStatistics> orgItemAcceptStatistics = aeaAnaOrgDayStatisticsMapper.getOrgAcceptStatistics(regionId, preDateStr, preDateStr, rootOrgId);
+                List<Map<String, Object>> collect = orgItemAcceptStatistics.stream().map(statistics -> {
+                    Map<String, Object> data = new HashMap<>();
+                    data.put("orgId", statistics.getOrgId());
+                    data.put("orgName", statistics.getOrgName());
+                    data.put("regionId", "");
+                    data.put("regionName", "");
+                    data.put("apply", statistics.getDayApplyCount());
+                    data.put("acceptDeal", statistics.getDayAcceptanceCount());
+                    return data;
+                }).collect(Collectors.toList());
+                return collect;
+            } else if (DateType.CUR_WEEK.equals(type)) {
+                String rootOrgId = SecurityContext.getCurrentOrgId();
+                String thisYear = DateUtils.convertDateToString(new Date(), "yyyy");
+                int thisWeekNum = DateUtils.getThisWeekNum(new Date());
+
+                List<AeaAnaOrgWeekStatistics> orgItemAcceptStatistics = aeaAnaOrgWeekStatisticsMapper.getOrgAcceptStatistics(regionId, thisYear, thisWeekNum, rootOrgId);
+                List<Map<String, Object>> collect = orgItemAcceptStatistics.stream().map(statistics -> {
+                    Map<String, Object> data = new HashMap<>();
+                    data.put("orgId", statistics.getOrgId());
+                    data.put("orgName", statistics.getOrgName());
+                    data.put("regionId", "");
+                    data.put("regionName", "");
+                    data.put("apply", statistics.getWeekApplyCount());
+                    data.put("acceptDeal", statistics.getWeekAcceptanceCount());
+                    return data;
+                }).collect(Collectors.toList());
+                return collect;
+            } else if (DateType.CUR_MONTH.equals(type)) {
+                String rootOrgId = SecurityContext.getCurrentOrgId();
+                String thisMonth = DateUtils.convertDateToString(new Date(), "yyyy-MM");
+
+                List<AeaAnaOrgMonthStatistics> orgItemAcceptStatistics = aeaAnaOrgMonthStatisticsMapper.getOrgAcceptStatistics(regionId, thisMonth, rootOrgId);
+                List<Map<String, Object>> collect = orgItemAcceptStatistics.stream().map(statistics -> {
+                    Map<String, Object> data = new HashMap<>();
+                    data.put("orgId", statistics.getOrgId());
+                    data.put("orgName", statistics.getOrgName());
+                    data.put("regionId", "");
+                    data.put("regionName", "");
+                    data.put("apply", statistics.getMonthApplyCount());
+                    data.put("acceptDeal", statistics.getMonthAcceptanceCount());
+                    return data;
+                }).collect(Collectors.toList());
+                return collect;
+            } else if (StringUtils.isNotBlank(startTime) && StringUtils.isNotBlank(endTime)) {
+                String rootOrgId = SecurityContext.getCurrentOrgId();
+
+                List<AeaAnaOrgDayStatistics> orgItemAcceptStatistics = aeaAnaOrgDayStatisticsMapper.getOrgAcceptStatistics(regionId, startTime, endTime, rootOrgId);
+                List<Map<String, Object>> collect = orgItemAcceptStatistics.stream().map(statistics -> {
+                    Map<String, Object> data = new HashMap<>();
+                    data.put("orgId", statistics.getOrgId());
+                    data.put("orgName", statistics.getOrgName());
+                    data.put("regionId", "");
+                    data.put("regionName", "");
+                    data.put("apply", statistics.getDayApplyCount());
+                    data.put("acceptDeal", statistics.getDayAcceptanceCount());
+                    return data;
+                }).collect(Collectors.toList());
+                return collect;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public List<Map<String, Object>> getRegionOrgAcceptHistoryStatistics(String regionId, String orgId, String startTime, String endTime, String type) throws Exception {
+        if (DateType.YESTERDAY.equals(type)) {
+            String rootOrgId = SecurityContext.getCurrentOrgId();
+            Date preDay = DateUtils.getPreDateByDate(new Date());
+            return getDayApplyDataByRegionOrgItem(regionId, orgId, null, preDay, preDay, rootOrgId);
+        } else if (DateType.CUR_WEEK.equals(type)) {//本周统计
+            String rootOrgId = SecurityContext.getCurrentOrgId();
+            Date thisWeekMonday = DateUtils.getThisWeekMonday(new Date());
+            Date thisWeekSunday = DateUtils.getThisWeekSunday(new Date());
+            return getDayApplyDataByRegionOrgItem(regionId, orgId, null, thisWeekMonday, thisWeekSunday, rootOrgId);
+        } else if (DateType.CUR_MONTH.equals(type)) {//本月统计
+            String rootOrgId = SecurityContext.getCurrentOrgId();
+            Date firstDay = DateUtils.firstDayOfMonth(new Date());
+            Date lastDay = DateUtils.lastDayOfMonth(new Date());
+            return getDayApplyDataByRegionOrgItem(regionId, orgId, null, firstDay, lastDay, rootOrgId);
+        } else if (StringUtils.isNotBlank(startTime) && StringUtils.isNotBlank(endTime)) {//按时段统计
+            String rootOrgId = SecurityContext.getCurrentOrgId();
+            Date startDate = DateUtils.convertStringToDate(startTime, "yyyy-MM-dd");
+            Date endDate = DateUtils.convertStringToDate(endTime, "yyyy-MM-dd");
+            return getDayApplyDataByRegionOrgItem(regionId, orgId, null, startDate, endDate, rootOrgId);
+        }
+        return null;
+    }
+
+    private List<Map<String, Object>> getDayApplyDataByRegionOrgItem(String regionId, String orgId, String itemId, Date startDate, Date endDate, String rootOrgId) throws Exception {
+        String startTime = DateUtils.convertDateToString(startDate, "yyyy-MM-dd");
+        String endTime = DateUtils.convertDateToString(endDate, "yyyy-MM-dd");
 
         long millisecond = endDate.getTime() - startDate.getTime();
         int day = (int) (millisecond / DateUtils.MILLIS_PER_DAY);
 
         //日期统计
-        List<OrgItemStatisticsVo> winAcceptStatisticsByDay = aeaAnaOrgDayStatisticsMapper.getOrgItemAcceptStatisticsByDay(orgId, itemId, startTime, endTime, rootOrgId);
+        List<OrgItemStatisticsVo> winAcceptStatisticsByDay = aeaAnaOrgDayStatisticsMapper.getAcceptStatisticsByDay(regionId, orgId, itemId, startTime, endTime, rootOrgId);
         if (winAcceptStatisticsByDay == null) {
             winAcceptStatisticsByDay = new ArrayList<>();
         }

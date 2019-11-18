@@ -39,7 +39,18 @@ private static final long serialVersionUID = 1L;
     @DateTimeFormat(pattern="yyyy-MM-dd")
         private java.util.Date modifyTime; // (修改时间)
         private java.lang.String rootOrgId; // (所属根组织ID)
-// ----------------------------------------------------- Constructors
+
+        private String reviewNum;//省级施工图审查合格书编号(三库一平台返回)'
+
+    public String getReviewNum() {
+        return reviewNum;
+    }
+
+    public void setReviewNum(String reviewNum) {
+        this.reviewNum = reviewNum;
+    }
+
+    // ----------------------------------------------------- Constructors
 // ----------------------------------------------------- Methods
     public java.lang.String getDrawingId(){
         return drawingId;

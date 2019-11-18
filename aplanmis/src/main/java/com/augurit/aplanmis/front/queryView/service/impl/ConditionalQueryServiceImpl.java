@@ -825,6 +825,7 @@ public class ConditionalQueryServiceImpl implements ConditionalQueryService {
             if(StringUtils.isNotBlank(appFlowdefId)) {
                 ActStoTimegroupAct query = new ActStoTimegroupAct();
                 query.setAppFlowdefId(appFlowdefId);
+                query.setActId(info.getTaskDefKey());
                 List<ActStoTimegroupAct> actStoTimegroupActs = actStoTimegroupActMapper.listActStoTimegroupAct(query);
                 if (actStoTimegroupActs.size() > 0) {
                     List<ActStoTimerule> actStoTimerules = actStoTimeruleService.listActStoTimerule(new ActStoTimerule());

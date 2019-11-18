@@ -328,7 +328,7 @@
     <!--2 根据主键ID查询单个实体 -->
     <select id="getAeaItemBasicById" resultType="AeaItemBasic">
         select
-            <include refid="allColumns"/>
+        <include refid="allColumns"/>
         from AEA_ITEM_BASIC
         where ITEM_BASIC_ID = #{id}
     </select>
@@ -537,40 +537,40 @@
             <if test="rootOrgId != null">
                 AND aib.ROOT_ORG_ID = #{rootOrgId}
             </if>
-            <if test="isCatalog != null" >
+            <if test="isCatalog != null">
                 AND aib.IS_CATALOG = #{isCatalog}
             </if>
-            <if test="guideOrgName != null" >
+            <if test="guideOrgName != null">
                 AND aib.GUIDE_ORG_NAME = #{guideOrgName}
             </if>
-            <if test="regionId != null" >
+            <if test="regionId != null">
                 AND aib.REGION_ID = #{regionId}
             </if>
-            <if test="itemCategoryMark != null" >
+            <if test="itemCategoryMark != null">
                 AND aib.ITEM_CATEGORY_MARK = #{itemCategoryMark}
             </if>
-            <if test="itemExchangeWay != null" >
+            <if test="itemExchangeWay != null">
                 AND aib.ITEM_EXCHANGE_WAY = #{itemExchangeWay}
             </if>
-            <if test="isLink != null and isLink!='' " >
+            <if test="isLink != null and isLink!='' ">
                 AND aib.IS_LINK = #{isLink}
             </if>
-            <if test="useOneForm != null and useOneForm!='' " >
+            <if test="useOneForm != null and useOneForm!='' ">
                 AND aib.USE_ONE_FORM = #{useOneForm}
             </if>
-            <if test="isCheckItem != null and isCheckItem!='' " >
+            <if test="isCheckItem != null and isCheckItem!='' ">
                 AND aib.IS_CHECK_ITEM = #{isCheckItem}
             </if>
-            <if test="isCheckPartform != null and isCheckPartform!=''" >
+            <if test="isCheckPartform != null and isCheckPartform!=''">
                 AND aib.IS_CHECK_PARTFORM = #{isCheckPartform}
             </if>
-            <if test="isCheckProj != null and isCheckProj!='' " >
+            <if test="isCheckProj != null and isCheckProj!='' ">
                 AND aib.IS_CHECK_PROJ = #{isCheckProj}
             </if>
-            <if test="isShare != null and isShare!='' " >
+            <if test="isShare != null and isShare!='' ">
                 AND aib.IS_SHARE = #{isShare}
             </if>
-            <if test="keyword != null and keyword !='' " >
+            <if test="keyword != null and keyword !='' ">
                 AND aib.ITEM_NAME like CONCAT(CONCAT('%',#{keyword}),'%')
             </if>
         </where>
@@ -607,37 +607,38 @@
         aib.ITEM_BASIC_ID
     </select>
 
-    <select id="listOpuOmOrgByAllPropJoinItem" resultType="OpuOmOrg" >
+    <select id="listOpuOmOrgByAllPropJoinItem" resultType="OpuOmOrg">
         select
-            org.ORG_ID  as orgId,
-            org.ORG_CODE as orgCode,
-            org.ORG_NAME as orgName,
-            org.ORG_SHORT_NAME1 as orgShortName1,
-            org.ORG_SHORT_NAME2 as orgShortName2,
-            org.PARENT_ORG_ID as parentOrgId,
-            org.ORG_SEQ as orgSeq,
-            org.ORG_TYPE as orgType,
-            org.ORG_NATURE as orgNature,
-            org.ORG_DELETED as orgDeleted,
-            org.IS_TOP_ORG as isTopOrg
+        org.ORG_ID as orgId,
+        org.ORG_CODE as orgCode,
+        org.ORG_NAME as orgName,
+        org.ORG_SHORT_NAME1 as orgShortName1,
+        org.ORG_SHORT_NAME2 as orgShortName2,
+        org.PARENT_ORG_ID as parentOrgId,
+        org.ORG_SEQ as orgSeq,
+        org.ORG_TYPE as orgType,
+        org.ORG_NATURE as orgNature,
+        org.ORG_DELETED as orgDeleted,
+        org.IS_TOP_ORG as isTopOrg
         from OPU_OM_ORG org
         <where>
             <if test="rootOrgId!=null and rootOrgId!=''">
-                EXISTS (SELECT * FROM aea_item_basic aib WHERE org.org_id = aib.org_id  AND aib.root_org_id = #{rootOrgId})
+                EXISTS (SELECT * FROM aea_item_basic aib WHERE org.org_id = aib.org_id AND aib.root_org_id =
+                #{rootOrgId})
             </if>
 
-            <if test="opuOmOrg.parentOrgId != null and opuOmOrg.parentOrgId !=''" >
-                AND  org.PARENT_ORG_ID = #{opuOmOrg.parentOrgId}
+            <if test="opuOmOrg.parentOrgId != null and opuOmOrg.parentOrgId !=''">
+                AND org.PARENT_ORG_ID = #{opuOmOrg.parentOrgId}
             </if>
 
-            <if test="opuOmOrg.orgProperty != null and opuOmOrg.orgProperty !=''" >
-                AND  org.ORG_PROPERTY = #{opuOmOrg.orgProperty}
+            <if test="opuOmOrg.orgProperty != null and opuOmOrg.orgProperty !=''">
+                AND org.ORG_PROPERTY = #{opuOmOrg.orgProperty}
             </if>
-            <if test="opuOmOrg.isActive != null and opuOmOrg.isActive !=''" >
+            <if test="opuOmOrg.isActive != null and opuOmOrg.isActive !=''">
                 AND org.IS_ACTIVE = #{opuOmOrg.isActive}
             </if>
-            and  org.ORG_DELETED='0'
-            and  org.ORG_ID != '-1'
+            and org.ORG_DELETED='0'
+            and org.ORG_ID != '-1'
         </where>
         order by org.CREATE_TIME DESC ,org.MODIFY_TIME DESC
     </select>
@@ -1006,37 +1007,37 @@
             <if test="rootOrgId != null">
                 ROOT_ORG_ID = #{rootOrgId},
             </if>
-            <if test="isCatalog != null" >
+            <if test="isCatalog != null">
                 IS_CATALOG = #{isCatalog},
             </if>
-            <if test="guideOrgName != null" >
+            <if test="guideOrgName != null">
                 GUIDE_ORG_NAME = #{guideOrgName},
             </if>
-            <if test="regionId != null" >
+            <if test="regionId != null">
                 REGION_ID = #{regionId},
             </if>
-            <if test="itemCategoryMark != null" >
+            <if test="itemCategoryMark != null">
                 ITEM_CATEGORY_MARK = #{itemCategoryMark},
             </if>
-            <if test="itemExchangeWay != null" >
+            <if test="itemExchangeWay != null">
                 ITEM_EXCHANGE_WAY = #{itemExchangeWay},
             </if>
-            <if test="isLink != null and isLink!='' " >
+            <if test="isLink != null and isLink!='' ">
                 IS_LINK = #{isLink},
             </if>
-            <if test="useOneForm != null and useOneForm!='' " >
+            <if test="useOneForm != null and useOneForm!='' ">
                 USE_ONE_FORM = #{useOneForm},
             </if>
-            <if test="isCheckItem != null and isCheckItem!='' " >
+            <if test="isCheckItem != null and isCheckItem!='' ">
                 IS_CHECK_ITEM = #{isCheckItem},
             </if>
-            <if test="isCheckPartform != null and isCheckPartform!='' " >
+            <if test="isCheckPartform != null and isCheckPartform!='' ">
                 IS_CHECK_PARTFORM = #{isCheckPartform},
             </if>
-            <if test="isCheckProj != null and isCheckProj!='' " >
+            <if test="isCheckProj != null and isCheckProj!='' ">
                 IS_CHECK_PROJ = #{isCheckProj},
             </if>
-            <if test="isShare != null and isShare!='' " >
+            <if test="isShare != null and isShare!='' ">
                 IS_SHARE = #{isShare},
             </if>
         </set>
@@ -1165,10 +1166,10 @@
 
     <select id="getAeaItemBasicByItemVerId2" resultType="AeaItemBasic">
         select
-           <include refid="aib_allColumns"/>
+        <include refid="aib_allColumns"/>
         from aea_item_ver aiv
         left join aea_item_basic aib on (
-            aib.ITEM_ID = aiv.ITEM_ID
+        aib.ITEM_ID = aiv.ITEM_ID
         and aib.ITEM_VER_ID = aiv.ITEM_VER_ID
         and aib.ROOT_ORG_ID = aiv.ROOT_ORG_ID
         )
@@ -1476,10 +1477,10 @@
 
     <select id="listLatestOkAeaItemBasic" resultType="com.augurit.aplanmis.common.domain.AeaItemBasic">
         select
-            <include refid="aib_allColumns"/>,
-            itemVer.ver_num verNum,
-            itemVer.item_ver_status itemVerStatus,
-            org.ORG_NAME orgName,
+        <include refid="aib_allColumns"/>,
+        itemVer.ver_num verNum,
+        itemVer.item_ver_status itemVerStatus,
+        org.ORG_NAME orgName,
         item.PARENT_ITEM_ID parentItemId,
         bdr.region_name regionName
         from AEA_ITEM_BASIC aib
@@ -1729,72 +1730,73 @@
 
     <select id="listAeaItemBasicByOrgIds" resultType="com.augurit.aplanmis.common.domain.AeaItemBasic">
         select
-            itemBasic.ITEM_BASIC_ID  itemBasicId,
-            itemBasic.ITEM_ID  itemId,
-            itemBasic.ITEM_VER_ID  itemVerId,
-            itemBasic.ITEM_CODE  itemCode,
-            itemBasic.ITEM_NAME  itemName,
-            itemBasic.ORG_ID  orgId,
-            itemBasic.ITEM_TYPE  itemType,
-            itemBasic.BJ_TYPE  bjType,
-            itemBasic.STANDARD_ITEM_CODE  standardItemCode,
-            itemBasic.ITEM_PROPERTY  itemProperty,
-            itemBasic.BASECODE  basecode,
-            itemBasic.SSCODE  sscode,
-            itemBasic.SXMLZT  sxmlzt,
-            itemBasic.IS_NEED_STATE  isNeedState,
-            itemBasic.ITEM_ALIAS  itemAlias,
-            itemBasic.IS_NEED_FRONT_COND  isNeedFrontCond,
-            itemBasic.ITEM_NATURE  itemNature,
-            itemBasic.ROOT_ORG_ID rootOrgId,
-            itemBasic.IS_CATALOG isCatalog,
-            itemBasic.GUIDE_ORG_NAME guideOrgName,
-            itemBasic.REGION_ID regionId,
-            itemBasic.ITEM_CATEGORY_MARK itemCategoryMark,
-            itemBasic.IS_LINK isLink,
-            itemBasic.USE_ONE_FORM  useOneForm,
-            itemBasic.IS_CHECK_ITEM  isCheckItem,
-            itemBasic.IS_CHECK_PARTFORM  isCheckPartform,
-            itemBasic.IS_CHECK_PROJ  isCheckProj,
+        itemBasic.ITEM_BASIC_ID itemBasicId,
+        itemBasic.ITEM_ID itemId,
+        itemBasic.ITEM_VER_ID itemVerId,
+        itemBasic.ITEM_CODE itemCode,
+        itemBasic.ITEM_NAME itemName,
+        itemBasic.ORG_ID orgId,
+        itemBasic.ITEM_TYPE itemType,
+        itemBasic.BJ_TYPE bjType,
+        itemBasic.STANDARD_ITEM_CODE standardItemCode,
+        itemBasic.ITEM_PROPERTY itemProperty,
+        itemBasic.BASECODE basecode,
+        itemBasic.SSCODE sscode,
+        itemBasic.SXMLZT sxmlzt,
+        itemBasic.IS_NEED_STATE isNeedState,
+        itemBasic.ITEM_ALIAS itemAlias,
+        itemBasic.IS_NEED_FRONT_COND isNeedFrontCond,
+        itemBasic.ITEM_NATURE itemNature,
+        itemBasic.ROOT_ORG_ID rootOrgId,
+        itemBasic.IS_CATALOG isCatalog,
+        itemBasic.GUIDE_ORG_NAME guideOrgName,
+        itemBasic.REGION_ID regionId,
+        itemBasic.ITEM_CATEGORY_MARK itemCategoryMark,
+        itemBasic.IS_LINK isLink,
+        itemBasic.USE_ONE_FORM useOneForm,
+        itemBasic.IS_CHECK_ITEM isCheckItem,
+        itemBasic.IS_CHECK_PARTFORM isCheckPartform,
+        itemBasic.IS_CHECK_PROJ isCheckProj,
 
-            itemVer.ver_num verNum,
-            itemVer.item_ver_status itemVerStatus,
-            org.ORG_NAME orgName,
-            item.PARENT_ITEM_ID parentItemId
+        itemVer.ver_num verNum,
+        itemVer.item_ver_status itemVerStatus,
+        org.ORG_NAME orgName,
+        item.PARENT_ITEM_ID parentItemId
         from AEA_ITEM_BASIC itemBasic
         join (select item_ver_id, ver_num, ITEM_VER_STATUS from aea_item_ver ver
         join (select ITEM_ID, max(VER_NUM) maxNum from aea_item_ver where IS_DELETED='0' group by ITEM_ID ) maxVer
-        on ver.item_id = maxVer.item_id and ver.VER_NUM = maxVer.maxNum ) itemVer on itemBasic.ITEM_VER_ID = itemVer.ITEM_VER_ID
+        on ver.item_id = maxVer.item_id and ver.VER_NUM = maxVer.maxNum ) itemVer on itemBasic.ITEM_VER_ID =
+        itemVer.ITEM_VER_ID
         left join OPU_OM_ORG org on ( org.ORG_ID = itemBasic.ORG_ID and org.ORG_DELETED = '0' )
         left join AEA_ITEM item on item.item_id = itemBasic.Item_Id
         <where>
             and itemBasic.ROOT_ORG_ID = #{itemBasic.rootOrgId}
             <if test="itemBasic.itemType != null and itemBasic.itemType!='' ">
-            and itemBasic.ITEM_TYPE = #{itemBasic.itemType}
+                and itemBasic.ITEM_TYPE = #{itemBasic.itemType}
             </if>
             <if test="itemBasic.parentItemId != null and itemBasic.parentItemId!=''">
-            and item.PARENT_ITEM_ID = #{itemBasic.parentItemId}
+                and item.PARENT_ITEM_ID = #{itemBasic.parentItemId}
             </if>
             <if test="itemBasic.itemSeq != null and itemBasic.itemSeq!=''">
-            and (item.PARENT_ITEM_ID <![CDATA[ <> ]]> 'root'
-            and item.ITEM_SEQ like concat('%.',concat(#{itemBasic.itemSeq},'.%')))
+                and (item.PARENT_ITEM_ID <![CDATA[ <> ]]> 'root'
+                and item.ITEM_SEQ like concat('%.',concat(#{itemBasic.itemSeq},'.%')))
             </if>
             <if test="itemBasic.isCatalog != null and itemBasic.isCatalog != ''">
-            and itemBasic.IS_CATALOG = #{itemBasic.isCatalog}
+                and itemBasic.IS_CATALOG = #{itemBasic.isCatalog}
             </if>
             <if test="itemBasic.keyword!=null and itemBasic.keyword!='' ">
-            and (
+                and (
                 itemBasic.ITEM_CODE like concat('%',concat(#{itemBasic.keyword},'%')) or
                 itemBasic.ITEM_NAME like concat('%',concat(#{itemBasic.keyword},'%')) or
                 itemBasic.ITEM_ALIAS like concat('%',concat(#{itemBasic.keyword},'%')) or
                 itemBasic.ITEM_MEMO like concat('%',concat(#{itemBasic.keyword},'%'))
-            )
+                )
             </if>
             <if test="itemBasic.orgId!=null and itemBasic.orgId!='' ">
-            and itemBasic.ORG_ID = #{itemBasic.orgId}
+                and itemBasic.ORG_ID = #{itemBasic.orgId}
             </if>
             <if test="orgIds!=null and orgIds.size()>0">
-            and itemBasic.ORG_ID in
+                and itemBasic.ORG_ID in
                 <foreach collection="orgIds" item="orgId" open="(" close=")" separator=",">
                     #{orgId}
                 </foreach>
@@ -1805,17 +1807,19 @@
 
     <select id="listLatestAeaItemBasic" resultType="com.augurit.aplanmis.common.domain.AeaItemBasic">
         select
-            <include refid="allColumns2">
-                <property name="alias" value="aib"/>
-            </include>,
-            itemVer.ver_num verNum,
-            itemVer.item_ver_status itemVerStatus,
-            org.ORG_NAME orgName,
-            item.PARENT_ITEM_ID parentItemId
+        <include refid="allColumns2">
+            <property name="alias" value="aib"/>
+        </include>
+        ,
+        itemVer.ver_num verNum,
+        itemVer.item_ver_status itemVerStatus,
+        org.ORG_NAME orgName,
+        item.PARENT_ITEM_ID parentItemId
         from AEA_ITEM_BASIC aib
         join (select item_ver_id, ver_num, ITEM_VER_STATUS from aea_item_ver ver
         join (select ITEM_ID, max(VER_NUM) maxNum from aea_item_ver where IS_DELETED='0' group by ITEM_ID) maxVer
-        on ver.item_id = maxVer.item_id and ver.VER_NUM = maxVer.maxNum ) itemVer on aib.ITEM_VER_ID = itemVer.ITEM_VER_ID
+        on ver.item_id = maxVer.item_id and ver.VER_NUM = maxVer.maxNum ) itemVer on aib.ITEM_VER_ID =
+        itemVer.ITEM_VER_ID
         left join OPU_OM_ORG org on ( org.ORG_ID = aib.ORG_ID and org.ORG_DELETED = '0' )
         left join AEA_ITEM item on item.item_id = aib.item_id
         <where>
@@ -1879,24 +1883,24 @@
                 and aib.IS_CATALOG = #{isCatalog}
             </if>
             <if test="orgName != null and orgName != ''">
-            and (
+                and (
                 org.ORG_NAME like #{orgName} or aib.GUIDE_ORG_NAME like #{orgName}
-            )
+                )
             </if>
             <if test="keyword!=null and keyword!='' ">
-            and (
+                and (
                 aib.ITEM_CODE like concat('%',concat(#{keyword},'%')) or
                 aib.ITEM_NAME like concat('%',concat(#{keyword},'%')) or
                 aib.ITEM_MEMO like concat('%',concat(#{keyword},'%')) or
                 aib.GUIDE_ORG_NAME like concat('%',concat(#{keyword},'%')) or
                 org.ORG_NAME like concat('%',concat(#{keyword},'%'))
-            )
+                )
             </if>
             <if test="searchItemIds != null and searchItemIds.length > 0 ">
-            and aib.ITEM_ID IN
-            <foreach collection="searchItemIds" item="id" open="(" close=")" separator=",">
-                #{id}
-            </foreach>
+                and aib.ITEM_ID IN
+                <foreach collection="searchItemIds" item="id" open="(" close=")" separator=",">
+                    #{id}
+                </foreach>
             </if>
         </where>
         order by aib.CREATE_TIME desc, org.ORG_LEVEL asc, org.ORG_SORT_NO asc
@@ -1906,7 +1910,8 @@
         select
         <include refid="allColumns2">
             <property name="alias" value="aib"/>
-        </include>,
+        </include>
+        ,
         org.ORG_NAME orgName
         from AEA_ITEM_BASIC aib
         left join OPU_OM_ORG org on aib.org_id = org.org_id
@@ -1918,7 +1923,8 @@
         select
         <include refid="allColumns2">
             <property name="alias" value="aib"/>
-        </include>,
+        </include>
+        ,
         org.ORG_NAME orgName,
         itemVer.ITEM_VER_STATUS itemVerStatus
         from AEA_ITEM_BASIC aib
@@ -2117,9 +2123,9 @@
             </if>
             <if test="keyword!=null and keyword!='' ">
                 and (
-                    aib.ITEM_CODE like concat('%',concat(#{keyword},'%')) or
-                    aib.ITEM_NAME like concat('%',concat(#{keyword},'%')) or
-                    aib.ITEM_MEMO like concat('%',concat(#{keyword},'%'))
+                aib.ITEM_CODE like concat('%',concat(#{keyword},'%')) or
+                aib.ITEM_NAME like concat('%',concat(#{keyword},'%')) or
+                aib.ITEM_MEMO like concat('%',concat(#{keyword},'%'))
                 )
             </if>
             <if test="isDeleted != null">
@@ -2140,19 +2146,19 @@
             <if test="regionId != null and regionId != ''">
                 and aib.REGION_ID = #{regionId}
             </if>
-            <if test="isLink != null and isLink!='' " >
+            <if test="isLink != null and isLink!='' ">
                 and aib.IS_LINK = #{isLink}
             </if>
-            <if test="useOneForm != null and useOneForm!='' " >
+            <if test="useOneForm != null and useOneForm!='' ">
                 and aib.USE_ONE_FORM = #{useOneForm}
             </if>
-            <if test="isCheckItem != null and isCheckItem!='' " >
+            <if test="isCheckItem != null and isCheckItem!='' ">
                 and aib.IS_CHECK_ITEM = #{isCheckItem}
             </if>
-            <if test="isCheckPartform != null and isCheckPartform!='' " >
+            <if test="isCheckPartform != null and isCheckPartform!='' ">
                 and aib.IS_CHECK_PARTFORM = #{isCheckPartform}
             </if>
-            <if test="isCheckProj != null and isCheckProj!='' " >
+            <if test="isCheckProj != null and isCheckProj!='' ">
                 and aib.IS_CHECK_PROJ = #{isCheckProj}
             </if>
         </where>
@@ -2175,104 +2181,110 @@
 
     <select id="listExtItemByOrgIdsRelStandItem" resultType="AeaItemBasic">
         select
-            <include refid="allColumns3">
-                <property name="alias" value="item1"/>
-            </include>,
-            item1.verNum,
-            item1.itemVerStatus,
-            item1.parentItemId,
-            item1.orgName,
-            item1.orgLevel,
-            item1.orgSortNo
+        <include refid="allColumns3">
+            <property name="alias" value="item1"/>
+        </include>
+        ,
+        item1.verNum,
+        item1.itemVerStatus,
+        item1.parentItemId,
+        item1.orgName,
+        item1.orgLevel,
+        item1.orgSortNo
         from (
-            select
-                <include refid="allColumns2">
-                    <property name="alias" value="itemBasic"/>
-                </include>,
-                itemVer.ver_num as verNum,
-                itemVer.item_ver_status as itemVerStatus,
-                item.PARENT_ITEM_ID as parentItemId,
-                '' as orgName,
-                '' as orgLevel,
-                '' as orgSortNo
-            from AEA_ITEM_BASIC itemBasic
-            join (select item_ver_id, ver_num, ITEM_VER_STATUS from aea_item_ver ver
-            join (select ITEM_ID, max(VER_NUM) maxNum from aea_item_ver where IS_DELETED='0' group by ITEM_ID ) maxVer
-            on ver.item_id = maxVer.item_id and ver.VER_NUM = maxVer.maxNum ) itemVer on itemBasic.ITEM_VER_ID = itemVer.ITEM_VER_ID
-            left join AEA_ITEM item on item.item_id = itemBasic.Item_Id
-            <where>
-                and item.PARENT_ITEM_ID = 'root'
-                and itemBasic.IS_CATALOG = '1'
-                and itemBasic.ROOT_ORG_ID = #{itemBasic.rootOrgId}
-                <if test="itemBasic.itemType != null and itemBasic.itemType!='' ">
+        select
+        <include refid="allColumns2">
+            <property name="alias" value="itemBasic"/>
+        </include>
+        ,
+        itemVer.ver_num as verNum,
+        itemVer.item_ver_status as itemVerStatus,
+        item.PARENT_ITEM_ID as parentItemId,
+        '' as orgName,
+        '' as orgLevel,
+        '' as orgSortNo
+        from AEA_ITEM_BASIC itemBasic
+        join (select item_ver_id, ver_num, ITEM_VER_STATUS from aea_item_ver ver
+        join (select ITEM_ID, max(VER_NUM) maxNum from aea_item_ver where IS_DELETED='0' group by ITEM_ID ) maxVer
+        on ver.item_id = maxVer.item_id and ver.VER_NUM = maxVer.maxNum ) itemVer on itemBasic.ITEM_VER_ID =
+        itemVer.ITEM_VER_ID
+        left join AEA_ITEM item on item.item_id = itemBasic.Item_Id
+        <where>
+            and item.PARENT_ITEM_ID = 'root'
+            and itemBasic.IS_CATALOG = '1'
+            and itemBasic.ROOT_ORG_ID = #{itemBasic.rootOrgId}
+            <if test="itemBasic.itemType != null and itemBasic.itemType!='' ">
                 and itemBasic.ITEM_TYPE = #{itemBasic.itemType}
-                </if>
-                <if test="itemBasic.orgName != null and itemBasic.orgName != ''">
+            </if>
+            <if test="itemBasic.orgName != null and itemBasic.orgName != ''">
                 and itemBasic.GUIDE_ORG_NAME like #{itemBasic.orgName}
-                </if>
-                <if test="itemBasic.keyword!=null and itemBasic.keyword!='' ">
+            </if>
+            <if test="itemBasic.keyword!=null and itemBasic.keyword!='' ">
                 and (
-                    itemBasic.ITEM_CODE like concat('%',concat(#{itemBasic.keyword},'%')) or
-                    itemBasic.ITEM_NAME like concat('%',concat(#{itemBasic.keyword},'%')) or
-                    itemBasic.ITEM_MEMO like concat('%',concat(#{itemBasic.keyword},'%')) or
-                    itemBasic.GUIDE_ORG_NAME like concat('%',concat(#{itemBasic.keyword},'%'))
+                itemBasic.ITEM_CODE like concat('%',concat(#{itemBasic.keyword},'%')) or
+                itemBasic.ITEM_NAME like concat('%',concat(#{itemBasic.keyword},'%')) or
+                itemBasic.ITEM_MEMO like concat('%',concat(#{itemBasic.keyword},'%')) or
+                itemBasic.GUIDE_ORG_NAME like concat('%',concat(#{itemBasic.keyword},'%'))
                 )
-                </if>
-            </where>
+            </if>
+        </where>
         ) item1
         union
         select
-            <include refid="allColumns3">
-                <property name="alias" value="item2"/>
-            </include>,
-            item2.verNum,
-            item2.itemVerStatus,
-            item2.parentItemId,
-            item2.orgName,
-            item2.orgLevel,
-            item2.orgSortNo
+        <include refid="allColumns3">
+            <property name="alias" value="item2"/>
+        </include>
+        ,
+        item2.verNum,
+        item2.itemVerStatus,
+        item2.parentItemId,
+        item2.orgName,
+        item2.orgLevel,
+        item2.orgSortNo
         from (
-            select
-                <include refid="allColumns2">
-                    <property name="alias" value="itemBasic"/>
-                </include>,
-                itemVer.ver_num as verNum,
-                itemVer.item_ver_status as itemVerStatus,
-                item.PARENT_ITEM_ID as parentItemId,
-                org.ORG_NAME as orgName,
-                org.ORG_LEVEL as orgLevel,
-                org.ORG_SORT_NO as orgSortNo
-            from AEA_ITEM_BASIC itemBasic
-            join (select item_ver_id, ver_num, ITEM_VER_STATUS from aea_item_ver ver
-            join (select ITEM_ID, max(VER_NUM) maxNum from aea_item_ver where IS_DELETED='0' group by ITEM_ID ) maxVer
-            on ver.item_id = maxVer.item_id and ver.VER_NUM = maxVer.maxNum ) itemVer on itemBasic.ITEM_VER_ID = itemVer.ITEM_VER_ID
-            left join OPU_OM_ORG org on ( org.ORG_ID = itemBasic.ORG_ID and org.ORG_DELETED = '0' )
-            left join AEA_ITEM item on item.item_id = itemBasic.Item_Id
-            <where>
-                and item.PARENT_ITEM_ID <![CDATA[ <> ]]> 'root'
-                and itemBasic.IS_CATALOG = '0'
-                and itemBasic.ROOT_ORG_ID = #{itemBasic.rootOrgId}
-                <if test="itemBasic.itemType != null and itemBasic.itemType!='' ">
+        select
+        <include refid="allColumns2">
+            <property name="alias" value="itemBasic"/>
+        </include>
+        ,
+        itemVer.ver_num as verNum,
+        itemVer.item_ver_status as itemVerStatus,
+        item.PARENT_ITEM_ID as parentItemId,
+        org.ORG_NAME as orgName,
+        org.ORG_LEVEL as orgLevel,
+        org.ORG_SORT_NO as orgSortNo
+        from AEA_ITEM_BASIC itemBasic
+        join (select item_ver_id, ver_num, ITEM_VER_STATUS from aea_item_ver ver
+        join (select ITEM_ID, max(VER_NUM) maxNum from aea_item_ver where IS_DELETED='0' group by ITEM_ID ) maxVer
+        on ver.item_id = maxVer.item_id and ver.VER_NUM = maxVer.maxNum ) itemVer on itemBasic.ITEM_VER_ID =
+        itemVer.ITEM_VER_ID
+        left join OPU_OM_ORG org on ( org.ORG_ID = itemBasic.ORG_ID and org.ORG_DELETED = '0' )
+        left join AEA_ITEM item on item.item_id = itemBasic.Item_Id
+        <where>
+            and item.PARENT_ITEM_ID <![CDATA[ <> ]]> 'root'
+            and itemBasic.IS_CATALOG = '0'
+            and itemBasic.ROOT_ORG_ID = #{itemBasic.rootOrgId}
+            <if test="itemBasic.itemType != null and itemBasic.itemType!='' ">
                 and itemBasic.ITEM_TYPE = #{itemBasic.itemType}
-                </if>
-                <if test="itemBasic.orgName != null and itemBasic.orgName != ''">
+            </if>
+            <if test="itemBasic.orgName != null and itemBasic.orgName != ''">
                 and org.ORG_NAME like #{itemBasic.orgName}
-                </if>
-                <if test="itemBasic.keyword!=null and itemBasic.keyword!='' ">
+            </if>
+            <if test="itemBasic.keyword!=null and itemBasic.keyword!='' ">
                 and (
-                    itemBasic.ITEM_CODE like concat('%',concat(#{itemBasic.keyword},'%')) or
-                    itemBasic.ITEM_NAME like concat('%',concat(#{itemBasic.keyword},'%')) or
-                    itemBasic.ITEM_MEMO like concat('%',concat(#{itemBasic.keyword},'%')) or
-                    org.ORG_NAME like concat('%',concat(#{itemBasic.keyword},'%'))
+                itemBasic.ITEM_CODE like concat('%',concat(#{itemBasic.keyword},'%')) or
+                itemBasic.ITEM_NAME like concat('%',concat(#{itemBasic.keyword},'%')) or
+                itemBasic.ITEM_MEMO like concat('%',concat(#{itemBasic.keyword},'%')) or
+                org.ORG_NAME like concat('%',concat(#{itemBasic.keyword},'%'))
                 )
-                </if>
-                <if test="orgIds!=null and orgIds.size()>0">
-                    and itemBasic.ORG_ID in
-                    <foreach collection="orgIds" item="orgId" open="(" close=")" separator=",">
-                        #{orgId}
-                    </foreach>
-                </if>
-            </where>
+            </if>
+            <if test="orgIds!=null and orgIds.size()>0">
+                and itemBasic.ORG_ID in
+                <foreach collection="orgIds" item="orgId" open="(" close=")" separator=",">
+                    #{orgId}
+                </foreach>
+            </if>
+        </where>
         )item2
         order by createTime desc, orgLevel asc, orgSortNo asc
     </select>
@@ -2561,6 +2573,9 @@
         itemBasic.ITEM_NAME agentItemName,
         itemBasic.ITEM_PROPERTY agentItemProperty,
         itemBasic.ORG_ID agentOrgId,t1.ORG_NAME agentOrgName,
+        itemBasic.DUE_NUM agentItemDueNum,
+        itemBasic.BJ_TYPE agentItemBjType,
+        itemBasic.XKDX agentItemFwdx,
         itemBasic.ROOT_ORG_ID rootOrgId,
         <if test="_databaseId == 'oracle'">
             WM_CONCAT(temp2.ITEM_NAME) itemName,
@@ -2660,27 +2675,28 @@
 
     <select id="listAeaItemBasicByItemIds" resultType="AeaItemBasic">
         select
-            <include refid="allColumns2">
-                <property name="alias" value="itemBasic"/>
-            </include>,
-            org.ORG_NAME orgName,
-            org.ORG_CODE orgCode
+        <include refid="allColumns2">
+            <property name="alias" value="itemBasic"/>
+        </include>
+        ,
+        org.ORG_NAME orgName,
+        org.ORG_CODE orgCode
         from AEA_ITEM_BASIC itemBasic
         left join OPU_OM_ORG org on itemBasic.ORG_ID = org.ORG_ID and org.ORG_DELETED = '0'
         <where>
             and itemBasic.ROOT_ORG_ID = #{rootOrgId}
             and itemBasic.ITEM_VER_ID in (
-                select
-                    ITEM_VER_ID
-                from AEA_ITEM_VER
-                <where>
-                    and ROOT_ORG_ID = #{rootOrgId}
-                    and IS_DELETED = '0'
-                    and ITEM_ID in
-                    <foreach collection="itemIds" item="itemId" open="(" close=")" separator=",">
-                        #{itemId}
-                    </foreach>
-                </where>
+            select
+            ITEM_VER_ID
+            from AEA_ITEM_VER
+            <where>
+                and ROOT_ORG_ID = #{rootOrgId}
+                and IS_DELETED = '0'
+                and ITEM_ID in
+                <foreach collection="itemIds" item="itemId" open="(" close=")" separator=",">
+                    #{itemId}
+                </foreach>
+            </where>
             )
         </where>
     </select>
@@ -2801,27 +2817,27 @@
     <select id="syncItemRegion" parameterType="AeaItemBasic">
         update aea_item_basic item
         set item.REGION_ID = (
-              select
-                  org.REGION_ID
-              from
-                  opu_om_org org
-              where
-                  org.ORG_ID = item.ORG_ID
-              and org.ORG_DELETED = '0'
+        select
+        org.REGION_ID
+        from
+        opu_om_org org
+        where
+        org.ORG_ID = item.ORG_ID
+        and org.ORG_DELETED = '0'
         )
         <where>
             and item.ROOT_ORG_ID = #{rootOrgId}
             <if test="isCatalog != null and isCatalog != ''">
-            and item.IS_CATALOG = #{isCatalog}
+                and item.IS_CATALOG = #{isCatalog}
             </if>
         </where>
     </select>
 
     <select id="checkUniqueItemCategoryMark" resultType="AeaItemBasic">
         select
-            itemBasic.ITEM_ID as itemId,
-            itemBasic.ITEM_CATEGORY_MARK as itemCategoryMark,
-            itemBasic.IS_CATALOG as isCatalog
+        itemBasic.ITEM_ID as itemId,
+        itemBasic.ITEM_CATEGORY_MARK as itemCategoryMark,
+        itemBasic.IS_CATALOG as isCatalog
         from AEA_ITEM_BASIC itemBasic, AEA_ITEM_VER itemVer
         <where>
             and itemBasic.ITEM_ID = itemVer.ITEM_ID
@@ -2830,7 +2846,7 @@
             and itemVer.ROOT_ORG_ID = #{rootOrgId}
             and itemVer.IS_DELETED = '0'
             <if test="itemId!=null and itemId!='' ">
-            and itemBasic.ITEM_ID != #{itemId}
+                and itemBasic.ITEM_ID != #{itemId}
             </if>
             and itemBasic.IS_CATALOG = #{isCatalog}
             and itemBasic.ITEM_CATEGORY_MARK = #{itemCategoryMark}
@@ -2895,24 +2911,26 @@
 
     <select id="listSefAndChildLatestOkAeaItemBasic" resultType="com.augurit.aplanmis.common.domain.AeaItemBasic">
         select
-            <include refid="aib_allColumns"/>,
-            itemVer.ver_num verNum,
-            itemVer.item_ver_status itemVerStatus,
-            org.ORG_NAME orgName,
+        <include refid="aib_allColumns"/>,
+        itemVer.ver_num verNum,
+        itemVer.item_ver_status itemVerStatus,
+        org.ORG_NAME orgName,
         item.PARENT_ITEM_ID parentItemId
         from AEA_ITEM_BASIC aib
         join (select item_ver_id, ver_num, ITEM_VER_STATUS from aea_item_ver ver
-        join (select ITEM_ID, max(VER_NUM) maxNum from aea_item_ver where IS_DELETED='0' and ITEM_VER_STATUS in ('2','1') group by ITEM_ID ) maxVer
-        on ver.item_id = maxVer.item_id and ver.VER_NUM = maxVer.maxNum ) itemVer on aib.ITEM_VER_ID = itemVer.ITEM_VER_ID
+        join (select ITEM_ID, max(VER_NUM) maxNum from aea_item_ver where IS_DELETED='0' and ITEM_VER_STATUS in
+        ('2','1') group by ITEM_ID ) maxVer
+        on ver.item_id = maxVer.item_id and ver.VER_NUM = maxVer.maxNum ) itemVer on aib.ITEM_VER_ID =
+        itemVer.ITEM_VER_ID
         left join OPU_OM_ORG org on ( org.ORG_ID = aib.ORG_ID and org.ORG_DELETED = '0' )
         left join AEA_ITEM item on item.ITEM_ID = aib.ITEM_ID
         <where>
             and aib.ROOT_ORG_ID = #{rootOrgId}
             <if test="isCatalog != null and isCatalog != ''">
-            and aib.IS_CATALOG = #{isCatalog}
+                and aib.IS_CATALOG = #{isCatalog}
             </if>
             <if test="itemIds != null and itemIds.size()>0">
-            and (
+                and (
                 <foreach collection="itemIds" item="itemId" open="" separator="or" close="">
                     item.ITEM_SEQ like concat('%.',concat(#{itemId},'.%'))
                 </foreach>
@@ -2923,20 +2941,22 @@
 
     <select id="listSefAndChildLatestOkItemVerIds" resultType="java.lang.String">
         select distinct
-            aib.ITEM_VER_ID as itemVerId
+        aib.ITEM_VER_ID as itemVerId
         from AEA_ITEM_BASIC aib
         join (select item_ver_id, ver_num, ITEM_VER_STATUS from aea_item_ver ver
-        join (select ITEM_ID, max(VER_NUM) maxNum from aea_item_ver where IS_DELETED='0' and ITEM_VER_STATUS in ('2','1') group by ITEM_ID ) maxVer
-        on ver.item_id = maxVer.item_id and ver.VER_NUM = maxVer.maxNum ) itemVer on aib.ITEM_VER_ID = itemVer.ITEM_VER_ID
+        join (select ITEM_ID, max(VER_NUM) maxNum from aea_item_ver where IS_DELETED='0' and ITEM_VER_STATUS in
+        ('2','1') group by ITEM_ID ) maxVer
+        on ver.item_id = maxVer.item_id and ver.VER_NUM = maxVer.maxNum ) itemVer on aib.ITEM_VER_ID =
+        itemVer.ITEM_VER_ID
         left join OPU_OM_ORG org on ( org.ORG_ID = aib.ORG_ID and org.ORG_DELETED = '0' )
         left join AEA_ITEM item on item.ITEM_ID = aib.ITEM_ID
         <where>
             and aib.ROOT_ORG_ID = #{rootOrgId}
             <if test="isCatalog != null and isCatalog != ''">
-            and aib.IS_CATALOG = #{isCatalog}
+                and aib.IS_CATALOG = #{isCatalog}
             </if>
             <if test="itemIds != null and itemIds.size()>0">
-            and (
+                and (
                 <foreach collection="itemIds" item="itemId" open="" separator="or" close="">
                     item.ITEM_SEQ like concat('%.',concat(#{itemId},'.%'))
                 </foreach>
@@ -2957,15 +2977,15 @@
 
     <select id="listAeaItemBasicByItemVerIdsAndOrgId" resultType="AeaItemBasic">
         select
-            <include refid="aib_allColumns"/>,
-            org.ORG_NAME orgName
+        <include refid="aib_allColumns"/>,
+        org.ORG_NAME orgName
         from aea_item_basic aib
         left join OPU_OM_ORG org on ( org.ORG_ID = aib.ORG_ID and org.ORG_DELETED = '0' )
         <where>
             and aib.ROOT_ORG_ID = #{rootOrgId}
             <if test="itemVerIds != null and itemVerIds.size()>0 ">
-            and aib.ITEM_VER_ID in
-                <foreach collection="itemVerIds" item="itemVerId" open="("  separator="," close=")">
+                and aib.ITEM_VER_ID in
+                <foreach collection="itemVerIds" item="itemVerId" open="(" separator="," close=")">
                     #{itemVerId}
                 </foreach>
             </if>
@@ -2976,16 +2996,17 @@
     <!--网厅首页查询事项实体list -->
     <select id="listAeaItemBasicOfMain" resultType="AeaItemBasic">
         select
-        <include refid="aib_allColumns"/>,bdr.region_name regionName,ooo.org_name orgName,ooo.org_tel orgTel,aig.SERVE_TYPE_text serveTypeText
+        <include refid="aib_allColumns"/>,bdr.region_name regionName,ooo.org_name orgName,ooo.org_tel
+        orgTel,aig.SERVE_TYPE_text serveTypeText
         from AEA_ITEM_BASIC aib
         left join bsc_dic_region bdr on bdr.region_id=aib.region_id
         left join opu_om_org ooo on ooo.org_id = aib.org_id
         left join aea_item_guide aig on aib.item_ver_id = aig.item_Ver_id
         <where>
-            <if test="keyword != null and keyword !='' " >
+            <if test="keyword != null and keyword !='' ">
                 and aib.ITEM_NAME like CONCAT(CONCAT('%',#{keyword}),'%')
             </if>
-            <if test="isCatalog != null" >
+            <if test="isCatalog != null">
                 AND aib.IS_CATALOG = #{isCatalog}
             </if>
         </where>
@@ -3023,7 +3044,7 @@
             aib.ROOT_ORG_ID = #{rootOrgId}
             and aib.item_ver_id not in (
             select apfi.item_ver_id from aea_par_front_item apfi where apfi.STAGE_ID = #{stageId}
-            <if test="frontItemId != null and frontItemId !='' " >
+            <if test="frontItemId != null and frontItemId !='' ">
                 and apfi.FRONT_ITEM_ID != #{frontItemId}
             </if>
             )
@@ -3031,7 +3052,8 @@
         order by org.ORG_LEVEL asc, org.ORG_SORT_NO asc, aib.CREATE_TIME desc
     </select>
 
-    <select id="listUnSelectedItemFrontItemBasicByItemVerId" resultType="com.augurit.aplanmis.common.domain.AeaItemBasic">
+    <select id="listUnSelectedItemFrontItemBasicByItemVerId"
+            resultType="com.augurit.aplanmis.common.domain.AeaItemBasic">
         select
         <include refid="aib_allColumns"/>,
         itemVer.ver_num verNum,
@@ -3052,12 +3074,18 @@
             aib.ROOT_ORG_ID = #{rootOrgId}
             and aib.item_ver_id not in (
             select aifi.FRONT_ITEM_VER_ID from aea_item_front_item aifi where aifi.ITEM_VER_ID = #{itemVerId}
-            <if test="frontItemId != null and frontItemId !='' " >
+            <if test="frontItemId != null and frontItemId !='' ">
                 and aifi.FRONT_ITEM_ID != #{frontItemId}
             </if>
             )
         </where>
         order by org.ORG_LEVEL asc, org.ORG_SORT_NO asc, aib.CREATE_TIME desc
+    </select>
+    <select id="listAgentItemServiceNum" resultType="java.lang.Integer">
+        select count(1) from AEA_ITEM_BASIC aib where aib.ITEM_NATURE='8' and aib.IS_CATALOG='0' and aib.SXMLZT='1'
+        <if test="startDate!=null and startDate!=''">
+            AND aib.CREATE_TIME &gt;= #{startDate}
+        </if>
     </select>
 
 </mapper>

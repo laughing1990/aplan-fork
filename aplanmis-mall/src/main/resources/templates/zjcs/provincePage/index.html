@@ -21,6 +21,7 @@
   <script>
     var ctx = '[[@{/}]]';
     // var ctx = "http://192.168.30.33:8084/aplanmis-mall/"
+    // var ctx = "http://192.168.32.46:8084/aplanmis-mall/"
   </script>
 </head>
 
@@ -288,28 +289,28 @@
           <div class="credit-list-box run-box bg-fff">
             <div class="service-tit clearfix">运行情况
               <div class="list-check fr">
-                <span class="tab-sp">今日</span>
-                <span class="tab-sp">本月</span>
-                <span class="tab-sp active">本年</span>
-                <span class="tab-sp">累计</span>
+                <span class="tab-sp" :class="[runStatusCheckData.queryType == 'D' ? 'active': '']" @click="runStatusChange('D')">今日</span>
+                <span class="tab-sp" :class="[runStatusCheckData.queryType == 'M' ? 'active': '']" @click="runStatusChange('M')">本月</span>
+                <span class="tab-sp" :class="[runStatusCheckData.queryType == 'Y' ? 'active': '']" @click="runStatusChange('Y')">本年</span>
+                <span class="tab-sp" :class="[runStatusCheckData.queryType == 'A' ? 'active': '']" @click="runStatusChange('A')">累计</span>
               </div>
             </div>
             <div class="run-num-pandel">
               <ul>
                 <li>
-                  <h3 class="title">429</h3>
+                  <h3 class="title">{{navListCount.agentUnitCount?navListCount.agentUnitCount:0}}</h3>
                   <p class="name">入驻机构</p>
                 </li>
                 <li>
-                  <h3 class="title">1829</h3>
+                  <h3 class="title">{{(navListCount.itemServiceCount)?navListCount.itemServiceCount:0}}</h3>
                   <p class="name">服务事项</p>
                 </li>
                 <li>
-                  <h3 class="title">4189</h3>
+                  <h3 class="title">{{navListCount.publishedPurchaseCount?navListCount.publishedPurchaseCount:0}}</h3>
                   <p class="name">采购需求</p>
                 </li>
                 <li>
-                  <h3 class="title">4129</h3>
+                  <h3 class="title">{{navListCount.finishedPurchaseCount?navListCount.finishedPurchaseCount:0}}</h3>
                   <p class="name">履约结束</p>
                 </li>
               </ul>
@@ -319,7 +320,7 @@
 
       </div>
       <div class="footer">
-        <iframe src="../common/footer.html" th:src="@{footer.html}" frameborder="0"></iframe>
+        <iframe frameborder="0" src="../common/footer.html" th:src="@{/supermarket/main/province/footer.html}"></iframe>
       </div>
     </div>
   </div>

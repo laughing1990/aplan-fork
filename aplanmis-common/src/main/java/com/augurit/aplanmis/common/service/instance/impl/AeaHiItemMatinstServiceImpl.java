@@ -2,15 +2,22 @@ package com.augurit.aplanmis.common.service.instance.impl;
 
 import com.augurit.agcloud.bsc.domain.BscAttLink;
 import com.augurit.agcloud.bsc.mapper.BscAttMapper;
+import com.augurit.agcloud.bsc.util.UuidUtil;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.util.StringUtils;
+import com.augurit.aplanmis.common.constants.CertinstSource;
+import com.augurit.aplanmis.common.domain.AeaHiCertinst;
 import com.augurit.aplanmis.common.domain.AeaHiItemInoutinst;
 import com.augurit.aplanmis.common.domain.AeaHiItemMatinst;
+import com.augurit.aplanmis.common.domain.AeaItemMat;
+import com.augurit.aplanmis.common.mapper.AeaHiCertinstMapper;
 import com.augurit.aplanmis.common.mapper.AeaHiItemInoutinstMapper;
 import com.augurit.aplanmis.common.mapper.AeaHiItemMatinstMapper;
+import com.augurit.aplanmis.common.mapper.AeaItemMatMapper;
 import com.augurit.aplanmis.common.service.file.FileUtilsService;
 import com.augurit.aplanmis.common.service.instance.AeaHiItemMatinstService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,6 +45,12 @@ public class AeaHiItemMatinstServiceImpl implements AeaHiItemMatinstService {
     private AeaHiItemInoutinstMapper aeaHiItemInoutinstMapper;
     @Autowired
     BscAttMapper bscAttMapper;
+
+    @Autowired
+    private AeaItemMatMapper aeaItemMatMapper;
+
+    @Autowired
+    private AeaHiCertinstMapper aeaHiCertinstMapper;
 
     //根据事项实例ID获取（输入或输出）材料实例列表
     public List<AeaHiItemMatinst> getMatinstListByIteminstIds(String[] iteminstIds, String isInput) throws Exception {
@@ -242,6 +255,61 @@ public class AeaHiItemMatinstServiceImpl implements AeaHiItemMatinstService {
     @Override
     public boolean matinstbeLong2MatId(String matinstId, String matId) throws Exception {
         Integer count = aeaHiItemMatinstMapper.matinstbeLong2MatId(matinstId, matId, SecurityContext.getCurrentOrgId());
-        return (count != null && count > 0) ? true : false;
+        return count != null && count > 0;
+    }
+
+    @Override
+    public AeaHiCertinst bindCertinst(AeaHiCertinst aeaHiCertinst, String currentUserName) throws Exception {
+        Assert.hasText(aeaHiCertinst.getMatId(), "matId is null");
+        Assert.hasText(aeaHiCertinst.getAuthCode(), "authCode is null");
+
+        String currentOrgId = SecurityContext.getCurrentOrgId();
+
+        AeaItemMat aeaItemMat = aeaItemMatMapper.getAeaItemMatById(aeaHiCertinst.getMatId());
+        Assert.state("c".equals(aeaItemMat.getMatProp()), "matProp should 'c'");
+
+        aeaHiCertinst.setCertinstId(UuidUtil.generateUuid());
+        aeaHiCertinst.setRootOrgId(currentOrgId);
+        aeaHiCertinst.setCreater(currentUserName);
+        aeaHiCertinst.setCertinstSource(CertinstSource.EXTERNAL.getValue());
+        aeaHiCertinst.setCreateTime(new Date());
+
+        AeaHiItemMatinst aeaHiItemMatinst = new AeaHiItemMatinst();
+        BeanUtils.copyProperties(aeaItemMat, aeaHiItemMatinst);
+        aeaHiItemMatinst.setMatinstId(UuidUtil.generateUuid());
+        aeaHiItemMatinst.setRootOrgId(currentOrgId);
+        aeaHiItemMatinst.setMatinstName(aeaItemMat.getMatName());
+        aeaHiItemMatinst.setMatinstCode(aeaItemMat.getMatCode());
+        aeaHiItemMatinst.setCreateTime(new Date());
+        aeaHiItemMatinst.setCreater(currentUserName);
+        aeaHiItemMatinst.setCertinstId(aeaHiCertinst.getCertinstId());
+        aeaHiItemMatinst.setMatinstSource(aeaItemMat.getMatFrom());
+        // 企业
+        if (StringUtils.isBlank(aeaItemMat.getMatHolder()) || "c".equals(aeaItemMat.getMatHolder())) {
+            aeaHiItemMatinst.setUnitInfoId(aeaHiCertinst.getUnitInfoId());
+        }
+        // 个人
+        else if ("u".equals(aeaItemMat.getMatHolder())) {
+            aeaHiItemMatinst.setLinkmanInfoId(aeaHiCertinst.getLinkmanInfoId());
+        }
+        aeaHiItemMatinst.setProjInfoId(aeaHiCertinst.getProjInfoId());
+
+        aeaHiCertinstMapper.insertAeaHiCertinst(aeaHiCertinst);
+        aeaHiItemMatinstMapper.insertAeaHiItemMatinst(aeaHiItemMatinst);
+
+        aeaHiCertinst.setMatinstId(aeaHiItemMatinst.getMatinstId());
+        return aeaHiCertinst;
+    }
+
+    @Override
+    public void unbindCertinst(String matinstId) throws Exception {
+        Assert.hasText(matinstId, "证照材料实例id不能为空");
+        AeaHiItemMatinst aeaHiItemMatinst = aeaHiItemMatinstMapper.getAeaHiItemMatinstById(matinstId);
+
+        // 删除电子证照
+        if (StringUtils.isNotBlank(aeaHiItemMatinst.getCertinstId())) {
+            aeaHiCertinstMapper.deleteAeaHiCertinst(aeaHiItemMatinst.getCertinstId());
+        }
+        aeaHiItemMatinstMapper.deleteAeaHiItemMatinst(matinstId);
     }
 }

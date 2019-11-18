@@ -222,7 +222,7 @@ var app = new Vue({
       if (val == 'sheji') {
         var dataType3 = {
           linkmanInfoId: '',
-          linkmanType: '102003',
+          linkmanType: '6',
           linkmanName: '',
           linkmanCertNo: '',
           prjSpty: '1',
@@ -234,7 +234,7 @@ var app = new Vue({
       } else {
         var dataType = {
           linkmanInfoId: '',
-          linkmanType: '502003',
+          linkmanType: '7',
           linkmanName: '',
           linkmanCertNo: '',
           prjSpty: '1',
@@ -243,7 +243,7 @@ var app = new Vue({
         }
         var dataType2 = {
           linkmanInfoId: '',
-          linkmanType: '502002',
+          linkmanType: '8',
           linkmanName: '',
           linkmanCertNo: '',
           prjSpty: '1',
@@ -294,12 +294,12 @@ var app = new Vue({
           }
 
 
-          vm.formDataTuShen.linkmanType = '502001';
-          vm.formDataKanCha.linkmanType = '101001';
-          vm.formDataSheJj.linkmanType = '102001';
-          vm.formDataTuShen.unitType = '13';
-          vm.formDataKanCha.unitType = '4';
-          vm.formDataSheJj.unitType = '3';
+          vm.formDataTuShen.linkmanType = '1';
+          vm.formDataKanCha.linkmanType = '1';
+          vm.formDataSheJj.linkmanType = '1';
+          vm.formDataTuShen.unitType = '25';
+          vm.formDataKanCha.unitType = '3';
+          vm.formDataSheJj.unitType = '4';
 
           if (!res.success) {
             vm.$message({
@@ -344,7 +344,7 @@ var app = new Vue({
 
 
         for (var i = 0; i < vm.linkmanType2.length; i++) {
-          if (vm.linkmanType2[i].itemCode == '101001' || vm.linkmanType2[i].itemCode == '102001' || vm.linkmanType2[i].itemCode == '502001') {
+          if (vm.linkmanType2[i].itemCode == '1' || vm.linkmanType2[i].itemCode == '4' || vm.linkmanType2[i].itemCode == '5') {
             vm.linkmanType2[i].disabled = true;
           }
         }
@@ -461,6 +461,12 @@ var app = new Vue({
       this.addEditManform.unitName = row.applicant;
       this.addEditManform.unitInfoId = row.unitInfoId;
     },
+    add: function(row) {
+      this.addEditManModalShow = true;
+      this.addEditManModalTitle = '新增联系人';
+      this.addEditManform.unitName = row.applicant;
+      this.addEditManform.unitInfoId = row.unitInfoId;
+    },
     edit: function(row, formData) {
       // this.addEditManform = row;
       this.addEditManModalShow = true;
@@ -495,7 +501,7 @@ var app = new Vue({
     addLinkmanTypes: function(row, data) {
       var dataType = {
         linkmanInfoId: '',
-        linkmanType: data.unitType == '3' ? '102003' : '502003',
+        linkmanType: data.unitType == '3' ? '6' : '7',
         linkmanName: '',
         linkmanCertNo: '',
         prjSpty: '1',
@@ -632,7 +638,7 @@ var app = new Vue({
               var aeaExProjDrawing = {};
               _this.formData.approveStartTime = _this.formatTime(_this.formData.approveStartTime, 'Y-M-D') || '';
               _this.formData.approveEndTime = _this.formatTime(_this.formData.approveEndTime, 'Y-M-D') || '';
-              _this.formData.approveConfirmTime = _this.formatTime(_this.formData.approveConfirmTime, 'Y-M-D') || '';
+              // _this.formData.approveConfirmTime = _this.formatTime(_this.formData.approveConfirmTime, 'Y-M-D') || '';
               _this.formData.projInfoId = _this.projInfoId;
 
               aeaExProjDrawing = _this.formData;

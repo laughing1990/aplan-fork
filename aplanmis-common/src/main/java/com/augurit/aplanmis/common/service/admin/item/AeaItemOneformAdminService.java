@@ -31,4 +31,5 @@ public interface AeaItemOneformAdminService {
 
     List<AeaItemOneform> listAeaItemOneform(AeaItemOneform aeaItemOneform);
 
+    Double getMaxSortNo(String itemVerId);
 }

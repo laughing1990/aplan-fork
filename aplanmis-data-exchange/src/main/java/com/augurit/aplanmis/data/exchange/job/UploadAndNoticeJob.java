@@ -29,11 +29,13 @@ public class UploadAndNoticeJob extends JobTimer {
 
     public void uploadAndNotice() {
         try {
-            importService.incrementAllTable();
-            LOGGER.info("数据上传成功");
+            int uploadNum = importService.incrementAllTable();
             if (cityNoticeProperties.isOpen()) {
-                cityUploadSuccessNotice.notice();
-                LOGGER.info("所有通知接口调用成功");
+                if (uploadNum > 0) {
+                    cityUploadSuccessNotice.notice();
+                } else {
+                    LOGGER.info("本次上传数据量为0，取消通知接口调用");
+                }
             }
         } catch (Exception e) {
             LOGGER.error("上传数据或调用接口出错");

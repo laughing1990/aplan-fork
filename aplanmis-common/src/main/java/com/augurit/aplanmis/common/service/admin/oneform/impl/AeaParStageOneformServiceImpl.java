@@ -42,6 +42,13 @@ public class AeaParStageOneformServiceImpl implements AeaParStageOneformService 
     private AeaOneformMapper aeaParOneformMapper;
 
     @Override
+    public Double getMaxSortNo(String stageId){
+
+        Double sortNo = aeaParStageOneformMapper.getMaxSortNo(stageId);
+        return sortNo==null?1:sortNo+1;
+    }
+
+    @Override
     public void saveAeaParStageOneform(AeaParStageOneform aeaParStageOneform) {
         aeaParStageOneformMapper.insertAeaParStageOneform(aeaParStageOneform);
 
@@ -54,6 +61,7 @@ public class AeaParStageOneformServiceImpl implements AeaParStageOneformService 
 
     @Override
     public void deleteAeaParStageOneformById(String id) {
+
         if (id == null) {
             throw new InvalidParameterException(id);
         }
@@ -62,6 +70,7 @@ public class AeaParStageOneformServiceImpl implements AeaParStageOneformService 
 
     @Override
     public EasyuiPageInfo<AeaParStageOneform> getAeaParStageOneformList(String parStageId, Page page) {
+
         if (StringUtils.isBlank(parStageId)) {
             throw new InvalidParameterException("parStageId为空！");
         }
@@ -69,8 +78,6 @@ public class AeaParStageOneformServiceImpl implements AeaParStageOneformService 
         //获取总表导入列表
         List<AeaParStageOneform> list = aeaParStageOneformMapper.listAeaParStageOneform(parStageId);
         logger.debug("成功执行分页查询！！");
-
-
         EasyuiPageInfo<AeaParStageOneform> pageInfo = PageHelper.toEasyuiPageInfo(new PageInfo<>(list));
         return pageInfo;
     }
@@ -92,11 +99,8 @@ public class AeaParStageOneformServiceImpl implements AeaParStageOneformService 
             if (actStoForm != null) {
                 aeaParStageItem.setFormName(actStoForm.getFormName());
             }
-
         }
         logger.debug("成功执行分页查询！！");
-
-
         EasyuiPageInfo<AeaParStageItem> pageInfo = PageHelper.toEasyuiPageInfo(new PageInfo<>(list));
         return pageInfo;
     }
@@ -114,29 +118,23 @@ public class AeaParStageOneformServiceImpl implements AeaParStageOneformService 
 
     @Override
     public void addParStageOneform(String parStageId, String oneformId) {
+
         AeaParStageOneform aeaParStageOneform = new AeaParStageOneform();
-        try {
-            AeaOneform aeaParOneform = aeaParOneformMapper.getParOneformById(oneformId);
-            Double sortNo = aeaParOneform.getSortNo().doubleValue();
-            aeaParStageOneform.setStageOneformId(UUID.randomUUID().toString());
-            aeaParStageOneform.setParStageId(parStageId);
-            aeaParStageOneform.setOneformId(oneformId);
-            aeaParStageOneform.setSortNo(sortNo);
-            aeaParStageOneform.setIsActive(Status.ON);
-            aeaParStageOneform.setCreater(SecurityContext.getCurrentUserName());
-            aeaParStageOneform.setCreateTime(new Date());
-            aeaParStageOneformMapper.insertAeaParStageOneform(aeaParStageOneform);
-
-        } catch (Exception e) {
-
-            throw new InvalidParameterException("导入失败！");
-        }
+        aeaParStageOneform.setStageOneformId(UUID.randomUUID().toString());
+        aeaParStageOneform.setParStageId(parStageId);
+        aeaParStageOneform.setOneformId(oneformId);
+        aeaParStageOneform.setSortNo(getMaxSortNo(parStageId));
+        aeaParStageOneform.setIsActive(Status.ON);
+        aeaParStageOneform.setCreater(SecurityContext.getCurrentUserId());
+        aeaParStageOneform.setCreateTime(new Date());
+        aeaParStageOneformMapper.insertAeaParStageOneform(aeaParStageOneform);
     }
 
     @Override
     public AeaParStageOneform getAeaParStageOneformById(String id) {
-        if (id == null) {
-            throw new InvalidParameterException(id);
+
+        if (StringUtils.isBlank(id)) {
+            throw new InvalidParameterException("参数id为空!");
         }
         AeaParStageOneform aeaParStageOneform = aeaParStageOneformMapper.getAeaParStageOneformById(id);
         return aeaParStageOneform;

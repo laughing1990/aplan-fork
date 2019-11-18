@@ -23,7 +23,7 @@
                         <div class="form-group m-form__group row">
                             <label class="col-lg-2 col-form-label" style="text-align: right;">
                                 <font color="red">*</font>阶段扩展表单名称:<br/>
-                                <button ${curIsEditable?'':'disabled'} type="button" class="btn btn-info" onclick="openSelectParFrontPartform('stagePartformId','partformName','isSmartForm','frontPartformId');" style="margin-top: 10px;">选择</button>
+                                <button ${curIsEditable?'':'disabled'} type="button" class="btn btn-info" onclick="openSelectParFrontPartform('stagePartformId','partformName','isSmartForm','frontPartformId');" style="margin-top: 10px;" id="select_par_front_partform_btn">选择</button>
                             </label>
                             <div class="col-lg-9">
                                 <input id="partformName" class="form-control" name="partformName"  ${curIsEditable?'readonly':'disabled'} />

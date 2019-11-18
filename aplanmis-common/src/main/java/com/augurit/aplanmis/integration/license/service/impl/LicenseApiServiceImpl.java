@@ -1,18 +1,19 @@
 package com.augurit.aplanmis.integration.license.service.impl;
 
 import com.augurit.aplanmis.integration.license.config.LicenseConfig;
+import com.augurit.aplanmis.integration.license.constants.LicenseConst;
 import com.augurit.aplanmis.integration.license.dto.*;
 import com.augurit.aplanmis.integration.license.service.LicenseApiService;
 import com.augurit.aplanmis.integration.license.utils.ConnectionHelper;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.ServletContext;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.*;
 
 
 /**
@@ -27,6 +28,8 @@ public class LicenseApiServiceImpl implements LicenseApiService {
     private LicenseConfig licenseConfig;
     @Autowired
     private ServletContext servletContext;
+
+    final long poolWaitTime = 60 * 1000;
 
     @Override
     public LoginResDTO login() throws Exception {
@@ -67,6 +70,40 @@ public class LicenseApiServiceImpl implements LicenseApiService {
     }
 
     @Override
+    public List<LicenseAuthResDTO> licenseAuthMulti(String accessToken, List<LicenseAuthReqDTO> list) throws Exception {
+        ExecutorService pool = Executors.newFixedThreadPool(list.size());
+        List<Future<LicenseAuthResDTO>> futureList = new ArrayList<>();
+        for (LicenseAuthReqDTO data : list){
+            Future<LicenseAuthResDTO> future = pool.submit(() -> {
+                try {
+                    log.info("=======调用/license/auth接口时间："+ System.currentTimeMillis());
+                    return send("/license/auth", "post", initPubParam(accessToken).toMap(), data, null, LicenseAuthResDTO.class);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    log.error(e.getMessage());
+                    LicenseAuthResDTO res = new LicenseAuthResDTO();
+                    res.setAck_code(LicenseConst.ResponseStatus.FAILURE);
+                    return res;
+                }
+            });
+            futureList.add(future);
+        }
+        try {
+            pool.shutdown();
+            if(!pool.awaitTermination(poolWaitTime, TimeUnit.MILLISECONDS)){
+                pool.shutdownNow();
+            }
+        } catch (InterruptedException e) {
+            pool.shutdownNow();
+        }
+        List<LicenseAuthResDTO> res = new ArrayList<>();
+        for (Future<LicenseAuthResDTO> future : futureList) {
+            res.add( future.get());
+        }
+        return res;
+    }
+
+    @Override
     public LicenseTokenResDTO LicenseToken(String accessToken, String authCode) throws Exception {
         Map param = new HashMap<String, String>(1);
         param.put("auth_code", authCode);
@@ -93,7 +130,6 @@ public class LicenseApiServiceImpl implements LicenseApiService {
     }
 
 
-
     /**
      * 初始化公共参数
      *
@@ -118,11 +154,11 @@ public class LicenseApiServiceImpl implements LicenseApiService {
      */
     private <T> T send(String operate, String method, Map param, Object data, Map headMap, Class<T> resType) throws Exception {
         if (method.toLowerCase().equals("post")) {
-            return new ObjectMapper().readValue(
+            return new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false).readValue(
                     ConnectionHelper.doPost(licenseConfig.getApiRoot() + operate, param, data, headMap),
                     resType);
         } else {
-            return new ObjectMapper().readValue(
+            return new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false).readValue(
                     ConnectionHelper.doGet(licenseConfig.getApiRoot() + operate, param, null, headMap),
                     resType);
         }
@@ -146,4 +182,7 @@ public class LicenseApiServiceImpl implements LicenseApiService {
         }
         return param;
     }
+
+
+
 }

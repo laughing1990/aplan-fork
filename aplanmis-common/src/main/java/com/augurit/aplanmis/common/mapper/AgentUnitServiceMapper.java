@@ -2,6 +2,7 @@ package com.augurit.aplanmis.common.mapper;
 
 import com.augurit.aplanmis.common.domain.AgentUnitService;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -27,4 +28,12 @@ public interface AgentUnitServiceMapper {
      * @return
      */
     List<AgentUnitService> listCheckinService(AgentUnitService agentUnitService);
+
+    /**
+     * 根据日期查询入住单位数量
+     *
+     * @param startDate
+     * @return
+     */
+    int listCheckinUnitNum(@Param("startDate") String startDate);
 }

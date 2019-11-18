@@ -2,9 +2,9 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <!--created by zhangwn    2019-09-05 18:59:36 -->
 <!--0 一些前置信息配置 -->
-<mapper namespace="com.augurit.aplanmis.common.mapper.AeaAnaOrgMonthStatisticsMapper" >
-<!--1 返回所有字段的SQL字句 -->
-<sql id="allColumns" >
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaAnaOrgMonthStatisticsMapper">
+    <!--1 返回所有字段的SQL字句 -->
+    <sql id="allColumns">
     ORG_MONTH_STATISTICS_ID  orgMonthStatisticsId,
     STATISTICS_RECORD_ID  statisticsRecordId,
     ORG_ID  orgId,
@@ -588,6 +588,33 @@ ORG_MONTH_STATISTICS_ID  ,STATISTICS_RECORD_ID  ,ORG_ID  ,ORG_NAME  ,REGION_ID  
         order by monthApplyCount
     </select>
 
+    <select id="getRegionAcceptStatistics" resultType="AeaAnaOrgMonthStatistics">
+        select a.* from (
+            select REGION_ID as regionId, REGION_NAME as regionName,
+                sum(MONTH_APPLY_COUNT) as monthApplyCount, sum(MONTH_ACCEPTANCE_COUNT) as monthAcceptanceCount
+            from AEA_ANA_ORG_MONTH_STATISTICS
+            where
+                ROOT_ORG_ID = #{rootOrgId}
+                and STATISTICS_MONTH = #{month}
+            group by REGION_ID, REGION_NAME
+        ) a
+        left join BSC_DIC_REGION region on region.REGION_ID = a.regionId order by region.REGION_NUM
+    </select>
+
+    <select id="getOrgAcceptStatistics" resultType="AeaAnaOrgMonthStatistics">
+        select a.* from (
+            select ORG_ID as orgId, ORG_NAME as orgName,
+                sum(MONTH_APPLY_COUNT) as monthApplyCount, sum(MONTH_ACCEPTANCE_COUNT) as monthAcceptanceCount
+            from AEA_ANA_ORG_MONTH_STATISTICS
+            where
+                ROOT_ORG_ID = #{rootOrgId}
+                and REGION_ID = #{regionId}
+                and STATISTICS_MONTH = #{month}
+            group by ORG_ID , ORG_NAME
+        ) a
+        left join OPU_OM_ORG org on org.ORG_ID = a.orgId
+        order by org.ORG_SORT_NO
+    </select>
     <select id="getRegionMonthStatistics" resultType="com.augurit.aplanmis.common.vo.analyse.ItemDetailFormVo">
               select
         aaoms.REGION_ID regionId,

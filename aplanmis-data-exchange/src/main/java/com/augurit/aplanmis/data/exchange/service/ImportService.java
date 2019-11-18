@@ -140,8 +140,10 @@ public class ImportService {
 
     /**
      * 增量上传
+     *
+     * @return 上传数据量
      */
-    public void incrementAllTable() {
+    public int incrementAllTable() {
         this.initLogNum();
         EtlJob job = etlJobService.getEtlJobById("1");
         Date startTime = job.getStartTime();
@@ -164,6 +166,8 @@ public class ImportService {
         Date now = new Date();
         etlJobLog.setCreateTime(now);
         etlJobLogService.updateEtlJobLog(etlJobLog);
+        log.info("本次上传读取：{}，上传成功：{}，上传出错:{}",readNum,writtenNum,errorNum);
+        return writtenNum;
     }
 
     private void initLogNum() {

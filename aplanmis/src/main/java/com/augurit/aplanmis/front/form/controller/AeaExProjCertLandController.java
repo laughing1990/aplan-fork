@@ -13,6 +13,7 @@ import com.augurit.aplanmis.common.service.form.AeaExProjCertProjectService;
 import com.augurit.aplanmis.common.service.form.AeaExProjSiteService;
 import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
 import com.augurit.aplanmis.common.vo.AeaCertiVo;
+import com.augurit.aplanmis.front.form.service.AeaExProjCertBuildService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +47,9 @@ private static Logger logger = LoggerFactory.getLogger(AeaExProjCertLandControll
 
     @Autowired
     private AeaProjInfoService aeaProjInfoService;
+
+    @Autowired
+    private AeaExProjCertBuildService aeaExProjCertBuildService;
 
 
         @RequestMapping("/index.html")
@@ -215,6 +219,7 @@ private static Logger logger = LoggerFactory.getLogger(AeaExProjCertLandControll
                 aeaExProjSite.setPublishTime(aeaCertiVo.getPublishTimeSite());
             aeaExProjSiteService.saveAeaExProjSite(aeaExProjSite);
         }
+        aeaExProjCertBuildService.SynchronizeDataByAeaExProjCertLandForm(aeaCertiVo);//同步表单信息
 
         return  new ContentResultForm<AeaCertiVo>(true,aeaCertiVo);
     }

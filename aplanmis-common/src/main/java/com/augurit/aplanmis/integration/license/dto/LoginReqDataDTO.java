@@ -11,8 +11,8 @@ import java.io.Serializable;
  **/
 @Data
 public class LoginReqDataDTO implements Serializable {
-    private String account;
-    private String password;
-    private String app_key;
-    private String app_secret;
+    private String account;//用户账户名称
+    private String password;//用户账户密码
+    private String app_key;//分配给应用程序的app_key
+    private String app_secret;//分配给应用程序的app_secret
 }

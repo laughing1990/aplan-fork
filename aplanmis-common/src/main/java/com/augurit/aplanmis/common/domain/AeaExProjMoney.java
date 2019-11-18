@@ -31,11 +31,6 @@ private static final long serialVersionUID = 1L;
         private String hkInvestment; // (港澳台投资)
         private String privateInvestment; // (私（民）营投资)
         private String otherInvestment; // (其他资金来源)
-    @DateTimeFormat(pattern="yyyy-MM-dd")
-        private java.util.Date govOrgConfirmTime; // (建设行业主管部门确认时间)
-        private String govOrgCode; // (建设行业主管部门行政单位组织代码)
-        private String govOrgName; // (建设行业主管部门行政单位名称)
-        private String govAreaCode; // (建设行业主管部门行政单位区域码)
         private String creater; // (创建人)
     @DateTimeFormat(pattern="yyyy-MM-dd")
         private java.util.Date createTime; // (创建时间)
@@ -110,31 +105,6 @@ private static final long serialVersionUID = 1L;
     }
     public void setOtherInvestment( String otherInvestment ) {
         this.otherInvestment = otherInvestment == null ? null : otherInvestment.trim();
-    }
-    public java.util.Date getGovOrgConfirmTime() {
-        return govOrgConfirmTime;
-    }
-    public void setGovOrgConfirmTime( java.util.Date govOrgConfirmTime ){
-        this.govOrgConfirmTime = govOrgConfirmTime;
-    }
-
-    public String getGovOrgCode(){
-        return govOrgCode;
-    }
-    public void setGovOrgCode( String govOrgCode ) {
-        this.govOrgCode = govOrgCode == null ? null : govOrgCode.trim();
-    }
-    public String getGovOrgName(){
-        return govOrgName;
-    }
-    public void setGovOrgName( String govOrgName ) {
-        this.govOrgName = govOrgName == null ? null : govOrgName.trim();
-    }
-    public String getGovAreaCode(){
-        return govAreaCode;
-    }
-    public void setGovAreaCode( String govAreaCode ) {
-        this.govAreaCode = govAreaCode == null ? null : govAreaCode.trim();
     }
     public String getCreater(){
         return creater;

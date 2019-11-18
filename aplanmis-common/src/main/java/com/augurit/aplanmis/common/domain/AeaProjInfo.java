@@ -271,6 +271,8 @@ public class AeaProjInfo implements Serializable {
     private java.util.Date approvalTime; // (立项批准时间)
     @ApiModelProperty("省级项目编号，三库一平台返回")
     private String provinceProjCode; // (省级项目编号，三库一平台返回)
+    @ApiModelProperty("是否工程总承包（EPC）模式")
+    private String isEpc; // (是否工程总承包（EPC）模式)
 
     @ApiModelProperty("地上层数")
     private java.lang.Integer aboveFloor;//("地上层数")

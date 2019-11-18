@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * 阶段的扩展表单前置检测表-Service服务接口实现类
@@ -51,7 +52,7 @@ public class AeaParFrontPartformServiceImpl implements AeaParFrontPartformServic
 
     @Override
     public void updateAeaParFrontPartform(AeaParFrontPartform aeaParFrontPartform) throws Exception {
-        checkSame(aeaParFrontPartform);
+//        checkSame(aeaParFrontPartform);
 
         aeaParFrontPartform.setModifyTime(new Date());
         aeaParFrontPartform.setModifier(SecurityContext.getCurrentUserId());
@@ -147,5 +148,37 @@ public class AeaParFrontPartformServiceImpl implements AeaParFrontPartformServic
         aeaParFrontPartformVos.addAll(aeaParFrontPartformMapper.getAeaParFrontPartformVoByStageId(stageId, SecurityContext.getCurrentOrgId()));
         return aeaParFrontPartformVos;
     }
+
+    @Override
+    public void batchSaveAeaParFrontPartform(String stageId,String stagePartformIds)throws Exception{
+        if(StringUtils.isBlank(stageId)  || StringUtils.isBlank(stagePartformIds)){
+            throw new InvalidParameterException(stageId,stagePartformIds);
+        }
+
+        String[] stagePartformIdArr = stagePartformIds.split(",");
+        if(stagePartformIdArr!=null && stagePartformIdArr.length>0){
+            AeaParFrontPartform query = new AeaParFrontPartform();
+            query.setStageId(stageId);
+            Long maxSortNo = getMaxSortNo(query);
+            for(String stagePartformId:stagePartformIdArr){
+                AeaParFrontPartform aeaParFrontPartform = new AeaParFrontPartform();
+                aeaParFrontPartform.setStageId(stageId);
+                aeaParFrontPartform.setStagePartformId(stagePartformId);
+                List<AeaParFrontPartform> list = aeaParFrontPartformMapper.listAeaParFrontPartform(aeaParFrontPartform);
+                if (list.size() > 0) {
+                    continue;
+                }
+                aeaParFrontPartform.setFrontPartformId(UUID.randomUUID().toString());
+                aeaParFrontPartform.setCreateTime(new Date());
+                aeaParFrontPartform.setCreater(SecurityContext.getCurrentUserId());
+                aeaParFrontPartform.setRootOrgId(SecurityContext.getCurrentOrgId());
+                aeaParFrontPartform.setSortNo(maxSortNo);
+                aeaParFrontPartform.setIsActive("1");
+                aeaParFrontPartformMapper.insertAeaParFrontPartform(aeaParFrontPartform);
+                maxSortNo++;
+            }
+        }
+    }
+
 }
 

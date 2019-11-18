@@ -1,14 +1,13 @@
 package com.augurit.aplanmis.front.receive.controller;
 
 import com.augurit.agcloud.framework.util.StringUtils;
+import com.augurit.aplanmis.common.service.receive.ReceiveService;
 import com.augurit.aplanmis.front.approve.service.OfficialDocumentService;
-import com.augurit.aplanmis.front.receive.service.ReceiveService;
-import com.augurit.aplanmis.front.receive.utils.ReceivePDFTemplate;
-import com.augurit.aplanmis.front.receive.utils.ReceivePDFUtils;
-import com.augurit.aplanmis.front.receive.vo.ConstructPermitVo;
-import com.augurit.aplanmis.front.receive.vo.ReceiveBaseVo;
-import com.itextpdf.text.*;
-import com.itextpdf.text.pdf.*;
+
+import com.augurit.aplanmis.common.service.receive.utils.ReceivePDFTemplate;
+import com.augurit.aplanmis.common.service.receive.utils.ReceivePDFUtils;
+import com.augurit.aplanmis.common.service.receive.vo.ConstructPermitVo;
+import com.augurit.aplanmis.common.service.receive.vo.ReceiveBaseVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -20,10 +19,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
-import java.util.UUID;
 
 @RestController
 @Slf4j
