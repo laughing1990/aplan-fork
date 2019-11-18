@@ -457,4 +457,33 @@ ORG_WEEK_STATISTICS_ID  ,STATISTICS_RECORD_ID  ,ORG_ID  ,ORG_NAME  ,REGION_ID  ,
         ) a
         order by weekApplyCount
     </select>
+    <select id="getRegionWeekStatistics" resultType="com.augurit.aplanmis.common.vo.analyse.ItemDetailFormVo">
+              select
+        aaows.REGION_ID regionId,
+        aaows.REGION_NAME regionName,
+        <if test="regionId != null">
+            aaows.ORG_ID orgId,
+            aaows.ORG_NAME orgName,
+        </if>
+
+        sum(aaows.WEEK_APPLY_COUNT) receiptCount,
+        sum(aaows.WEEK_ACCEPTANCE_COUNT)acceptCount
+         from
+
+        aea_ana_org_week_statistics  aaows
+
+        where aaows.REGION_ID is not null
+        and aaows.WEEK_NUM <![CDATA[ >= ]]> #{startWeekNum}
+        and aaows.WEEK_NUM <![CDATA[ <= ]]> #{endWeekNum}
+        and aaows.STATISTICS_YEAR = #{thisYear}
+        and aaows.ROOT_ORG_ID = #{rootOrgId}
+        <if test="regionId != null">
+            and aaows.REGION_ID = #{regionId}
+        </if>
+        GROUP by REGION_ID
+        <if test="regionId != null">
+            ,aaows.ORG_ID
+        </if>
+
+    </select>
 </mapper>

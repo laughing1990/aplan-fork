@@ -95,4 +95,6 @@ public interface AeaAnaOrgDayStatisticsMapper {
      * @return
      */
     List<OrgItemStatisticsVo> getOrgItemAcceptStatisticsByDay(@Param("orgId") String orgId, @Param("itemId") String itemId, @Param("startTime") String startTime, @Param("endTime") String endTime, @Param("rootOrgId") String rootOrgId);
+
+    List<ItemDetailFormVo> getRegionDayStatistics(@Param("startDate") String startDate, @Param("endDate") String endDate, @Param("regionId") String regionId, @Param("rootOrgId") String rootOrgId);
 }

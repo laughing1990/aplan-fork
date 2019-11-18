@@ -488,5 +488,177 @@
         group by OPS_WINDOW_ID, WINDOW_NAME
     </select>
 
+    <select id="getChildrenReggion" resultType="BscDicRegion">
+        select <include refid="allColumns_alias"><property name="alias" value="bdr"></property></include> from bsc_dic_region bdr where
+        bdr.REGION_SEQ like concat(#{regionSeq},'%' )
+        <if test="level!=null">
+            and bdr.REGIONAL_LEVEL = #{level}
+        </if>
+        ORDER BY bdr.REGIONAL_LEVEL
+    </select>
 
+    <select id="getCurrentRegionByUserId" resultType="BscDicRegion">
+                select <include refid="allColumns_alias"><property name="alias" value="bdr"></property></include> from opu_om_user_org oou
+        LEFT JOIN opu_om_org org on org.org_id = oou.ORG_ID
+        LEFT JOIN bsc_dic_region bdr on bdr.REGION_ID = org.REGION_ID
+        where oou.USER_ID = #{currentUserId}
+    </select>
+
+    <select id="getOrgReceiveLimitTimeStatistics" resultType="com.augurit.aplanmis.common.vo.analyse.ItemDetailFormVo">
+              select
+        gg.regionId,
+        gg.regionName,
+        gg.instState,count(*) receiptCount
+        <if test="regionId !=null and regionId !='' ">
+            , gg.orgId
+            ,gg.orgName
+        </if>
+
+        from
+        (
+        select
+        ahi.APPROVE_ORG_ID orgId,
+        org.REGION_ID regionId,
+        org.ORG_NAME orgName,
+        bdr.REGION_NAME regionName
+        ,asti.INST_STATE instState
+         from aea_hi_iteminst ahi
+        LEFT JOIN opu_om_org org on org.org_id = ahi.APPROVE_ORG_ID
+        LEFT JOIN bsc_dic_region bdr on bdr.REGION_ID = org.REGION_ID
+        LEFT JOIN act_sto_timerule_inst asti on asti.PROC_INST_ID = ahi.PROCINST_ID
+
+        where ahi.ACCEPT_TIME <![CDATA[ >= ]]> #{startTime}
+        and ahi.ACCEPT_TIME <![CDATA[ <= ]]> #{endTime}
+        and  asti.INST_STATE is not null
+        )gg
+        <where>
+            <if test="regionId != null and regionId !='' ">
+                 gg.regionId = #{regionId}
+            </if>
+        </where>
+
+        GROUP BY gg.regionId ,gg.instState
+        <if test="regionId != null and regionId !='' ">
+            ,gg.orgId
+        </if>
+
+
+
+    </select>
+    <select id="listOpuOmOrg" resultType="OpuOmOrg">
+        select
+        <include refid="AllOrgColumns" />
+        from OPU_OM_ORG org
+        <where>
+            <if test="orgId != null and orgId !=''"  >
+                AND org.ORG_SEQ like CONCAT (CONCAT('%.',#{orgId}), '.%')
+            </if>
+            <if test="orgCode != null and orgCode !=''"  >
+                AND ORG_CODE like CONCAT (CONCAT('%',#{orgCode}), '%')
+            </if>
+            <if test="orgName != null and orgName !=''" >
+                AND  ORG_NAME like CONCAT (CONCAT('%',#{orgName}), '%')
+            </if>
+            <if test="orgProperty != null and orgProperty !=''" >
+                AND ORG_PROPERTY = #{orgProperty}
+            </if>
+            <if test="orgRank != null and orgRank !=''" >
+                AND ORG_RANK = #{orgRank}
+            </if>
+            <if test="isActive != null and isActive !=''" >
+                AND IS_ACTIVE = #{isActive}
+            </if>
+            <if test="isTopOrg != null and isTopOrg !=''" >
+                AND IS_TOP_ORG = #{isTopOrg}
+            </if>
+            <if test="parentOrgId != null and parentOrgId !=''" >
+                AND PARENT_ORG_ID = #{parentOrgId}
+            </if>
+
+            <if test="regionId != null and regionId !=''" >
+                AND region_id = #{regionId}
+            </if>
+            <if test="orgLevel != null and orgLevel !=''" >
+                AND ORG_LEVEL = #{orgLevel}
+            </if>
+            <if test="isPublic != null and isPublic !=''" >
+                AND IS_PUBLIC = #{isPublic}
+            </if>
+            <if test="keyword!=null and keyword!=''">
+                AND (
+                ORG_NAME LIKE CONCAT (CONCAT('%',#{keyword}), '%') OR
+                ORG_CODE LIKE CONCAT (CONCAT('%',#{keyword}), '%')
+                )
+            </if>
+            AND  ORG_DELETED='0'
+            AND  ORG_ID != '-1'
+        </where>
+        ORDER BY CREATE_TIME DESC ,MODIFY_TIME DESC
+    </select>
+
+    <!-- 组织所有字段 -->
+    <sql id="AllOrgColumns" >
+        org.ORG_ID  as orgId,
+        org.ORG_CODE as orgCode,
+        org.ORG_NAME as orgName,
+        org.ORG_SHORT_NAME1 as orgShortName1,
+        org.ORG_SHORT_NAME2 as orgShortName2,
+        org.PARENT_ORG_ID as parentOrgId,
+        org.ORG_LEVEL as orgLevel,
+        org.ORG_SEQ as orgSeq,
+        org.ORG_SORT_NO as orgSortNo,
+        org.IS_PUBLIC as isPublic,
+        org.ORG_PROPERTY as orgProperty,
+        org.IS_INNER_CATEGORY_EXPAND as isInnerCategoryExpand,
+        org.IS_ACTIVE as isActive,
+        org.IS_LEAF as isLeaf,
+        org.SUB_UNIT_COUNT as subUnitCount,
+        org.SUB_DEPT_COUNT as subDeptCount,
+        org.SUB_GROUP_COUNT as subGroupCount,
+        org.SUB_POS_COUNT as subPosCount,
+        org.SUB_USER_COUNT as subUserCount,
+        org.ORG_TYPE as orgType,
+        org.ORG_NATURE as orgNature,
+        org.ORG_RANK as orgRank,
+        org.UNIT_GB_TYPE as unitGbType,
+        org.UNIT_GB_CODE as unitGbCode,
+        org.UNIT_GB_SYS_CODE as unitGbSysCode,
+        org.ORG_FUNDS_FORM as orgFundsForm,
+        org.ORG_FOUND_TIME as orgFoundTime,
+        org.ORG_LINK_MAN as orgLinkMan,
+        org.ORG_LINK_TEL as orgLinkTel,
+        org.ORG_ZIP_CODE as orgZipCode,
+        org.ORG_EMAIL as orgEmail,
+        org.ORG_TEL as orgTel,
+        org.ORG_ADDRESS as orgAddress,
+        org.ORG_WEBSITE as orgWebsite,
+        org.ORG_WEIBO as orgWeibo,
+        org.ORG_APPROVAL_NUMBER as orgApprovalNumber,
+        org.ORG_FUNC as orgFunc,
+        org.ORG_DELETED as orgDeleted,
+        org.CREATER as creater,
+        org.CREATE_TIME as createTime,
+        org.MODIFIER as modifier,
+        org.MODIFY_TIME as modifyTime,
+        org.IS_TOP_ORG as isTopOrg,
+        org.region_id as regionId
+    </sql>
+    <sql id="allColumns_alias" >
+         ${alias}.REGION_ID  regionId,
+         ${alias}.PARENT_REGION_ID  parentRegionId,
+         ${alias}.REGION_NAME  regionName,
+         ${alias}.FIRST_LETTER  firstLetter,
+         ${alias}.REGION_FULL_NAME  regionFullName,
+         ${alias}.REGION_STATUS  regionStatus,
+         ${alias}.REGIONAL_LEVEL  regionalLevel,
+         ${alias}.REGION_SEQ  regionSeq,
+         ${alias}.REGION_NUM  regionNum,
+         ${alias}.REGION_OLD_NUM  regionOldNum,
+         ${alias}.CREATER  creater,
+         ${alias}.CREATE_TIME  createTime,
+         ${alias}.MODIFIER modifier,
+         ${alias}.MODIFY_TIME modifyTime,
+         ${alias}.REGION_TYPE as regionType,
+         ${alias}.REGION_PINYIN as regionPinyin
+    </sql>
 </mapper>

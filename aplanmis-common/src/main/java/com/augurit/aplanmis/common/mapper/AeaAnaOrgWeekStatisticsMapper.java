@@ -57,4 +57,6 @@ public interface AeaAnaOrgWeekStatisticsMapper {
      * @return
      */
     List<AeaAnaOrgWeekStatistics> getOrgItemAcceptStatistics(@Param("orgId") String orgId, @Param("year") String year, @Param("weekNum") int weekNum, @Param("rootOrgId") String rootOrgId);
+
+    List<ItemDetailFormVo> getRegionWeekStatistics(@Param("thisYear") String thisYear, @Param("startWeekNum") int startWeekNum, @Param("endWeekNum") int endWeekNum, @Param("regionId") String regionId, @Param("rootOrgId") String rootOrgId);
 }

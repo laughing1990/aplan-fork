@@ -551,4 +551,33 @@ ORG_DAY_STATISTICS_ID  ,STATISTICS_RECORD_ID  ,ORG_ID  ,ORG_NAME  ,REGION_ID  ,R
             group by STATISTICS_DATE
         </if>
     </select>
+
+    <select id="getRegionDayStatistics" resultType="com.augurit.aplanmis.common.vo.analyse.ItemDetailFormVo">
+        select
+        aaods.REGION_ID regionId,
+        aaods.REGION_NAME regionName,
+        <if test="regionId != null">
+            aaods.ORG_ID orgId,
+            aaods.ORG_NAME orgName,
+        </if>
+
+        sum(aaods.DAY_APPLY_COUNT) receiptCount,
+        sum(aaods.DAY_ACCEPTANCE_COUNT)acceptCount
+         from
+
+        aea_ana_org_day_statistics aaods
+
+        where aaods.REGION_ID is not null
+        and aaods.STATISTICS_DATE <![CDATA[ >= ]]> #{startDate}
+        and aaods.STATISTICS_DATE <![CDATA[ <= ]]> #{endDate}
+        and aaods.ROOT_ORG_ID = #{rootOrgId}
+        <if test="regionId != null">
+            and aaods.REGION_ID = #{regionId}
+        </if>
+        GROUP by REGION_ID
+        <if test="regionId != null">
+            ,aaods.ORG_ID
+        </if>
+
+    </select>
 </mapper>

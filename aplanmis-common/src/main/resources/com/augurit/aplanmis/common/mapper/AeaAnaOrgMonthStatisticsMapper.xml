@@ -588,4 +588,31 @@ ORG_MONTH_STATISTICS_ID  ,STATISTICS_RECORD_ID  ,ORG_ID  ,ORG_NAME  ,REGION_ID  
         order by monthApplyCount
     </select>
 
+    <select id="getRegionMonthStatistics" resultType="com.augurit.aplanmis.common.vo.analyse.ItemDetailFormVo">
+              select
+        aaoms.REGION_ID regionId,
+        aaoms.REGION_NAME regionName,
+        <if test="regionId != null">
+            aaoms.ORG_ID orgId,
+            aaoms.ORG_NAME orgName,
+        </if>
+
+        sum(aaoms.MONTH_APPLY_COUNT) receiptCount,
+        sum(aaoms.MONTH_ACCEPTANCE_COUNT)acceptCount
+         from
+        aea_ana_org_month_statistics  aaoms
+
+        where aaoms.REGION_ID is not null
+        and aaoms.STATISTICS_MONTH <![CDATA[ >= ]]> #{startYearMonth}
+        and aaoms.STATISTICS_MONTH <![CDATA[ <= ]]> #{endYearMonth}
+        and aaoms.ROOT_ORG_ID = #{rootOrgId}
+        <if test="regionId != null">
+            and aaoms.REGION_ID = #{regionId}
+        </if>
+        GROUP by REGION_ID
+        <if test="regionId != null">
+            ,aaoms.ORG_ID
+        </if>
+
+    </select>
 </mapper>

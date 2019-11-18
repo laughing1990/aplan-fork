@@ -1,5 +1,7 @@
 package com.augurit.aplanmis.common.mapper;
 
+import com.augurit.agcloud.bsc.domain.BscDicRegion;
+import com.augurit.agcloud.opus.common.domain.OpuOmOrg;
 import com.augurit.aplanmis.common.vo.analyse.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -57,4 +59,17 @@ public interface EfficiencySupervisionMapper {
     List<ApplyUseTimeStatisticsVo> getCompletedApplyUseTimeByTheme(@Param("startTime") String startTime, @Param("endTime") String endTime, @Param("rootOrgId") String rootOrgId) throws Exception;
 
     List<ApplyUseTimeStatisticsVo> getCompletedApplyUseTimeByThemeAndWindow(@Param("themeId") String themeId, @Param("startTime") String startTime, @Param("endTime") String endTime, @Param("rootOrgId") String rootOrgId) throws Exception;
+
+    BscDicRegion getCurrentRegionByUserId(@Param("currentUserId") String currentUserId);
+
+    List<BscDicRegion> getChildrenReggion(@Param("regionSeq") String regionSeq, @Param("level") String level);
+
+    List<ItemDetailFormVo> getOrgReceiveLimitTimeStatistics(@Param("startTime") String startTime, @Param("endTime") String endTime, @Param("regionId") String regionId, @Param("rootOrgId") String currentOrgId);
+
+    /**
+     * 查询行政区划下的部门
+     * @param search
+     * @return
+     */
+    List<OpuOmOrg> listOpuOmOrg(OpuOmOrg search);
 }

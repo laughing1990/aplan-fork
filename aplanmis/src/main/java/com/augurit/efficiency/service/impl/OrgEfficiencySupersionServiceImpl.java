@@ -1,6 +1,8 @@
 package com.augurit.efficiency.service.impl;
 
 import com.augurit.agcloud.bpm.common.service.ActStoTimeruleInstService;
+import com.augurit.agcloud.bsc.domain.BscDicRegion;
+import com.augurit.agcloud.bsc.mapper.BscDicRegionMapper;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.agcloud.opus.common.domain.OpuOmOrg;
@@ -51,6 +53,8 @@ public class OrgEfficiencySupersionServiceImpl implements OrgEfficiencySupersion
     private ConditionalJumpMapper conditionalJumpMapper;
     @Autowired
     private OpuOmOrgMapper opuOmOrgMapper;
+    @Autowired
+    private BscDicRegionMapper bscDicRegionMapper;
 
 
     @Override
@@ -661,4 +665,249 @@ public class OrgEfficiencySupersionServiceImpl implements OrgEfficiencySupersion
         return dayDatas;
     }
 
+    @Override
+    public List<BscDicRegion> getCurrentRegionList() throws Exception{
+
+        List<BscDicRegion> childrenRegion = new ArrayList<>();
+        List<BscDicRegion> tmp = getChildRegion();
+        if(tmp.size()==0){
+            throw new Exception("region爲空");
+        }
+
+        //拼接 下拉列表返回数据
+        BscDicRegion top = tmp.get(0);
+        BscDicRegion cityOrg = new BscDicRegion();
+        String id =  top.getRegionId();
+        cityOrg.setRegionId(id);
+        cityOrg.setRegionName("市级部门");
+        top.setRegionId("");
+        childrenRegion.add(top);
+        childrenRegion.add(cityOrg);
+        tmp.remove(0);
+        childrenRegion.addAll(tmp);
+
+        return childrenRegion;
+    }
+
+    /**
+     * 获取当前城市及下级行政区划列表，市级和县级
+     * @return
+     * @throws Exception
+     */
+    private List<BscDicRegion> getChildRegion() throws Exception{
+        BscDicRegion region = efficiencySupervisionMapper.getCurrentRegionByUserId(SecurityContext.getCurrentUserId());
+        String regionSeq = region.getRegionSeq();
+        if(StringUtils.isBlank(regionSeq)){
+            throw new Exception("区域regionSeq查询异常“");
+        }
+
+        StringBuilder sb = new StringBuilder();
+        int idx = 0;
+        for(Character c : regionSeq.toCharArray()){
+            sb.append(c);
+            if(c=='.'){
+                idx++;
+            }
+            if(idx==5){break;}
+        }
+
+        regionSeq = regionSeq.substring(0,sb.length());
+
+
+        List<BscDicRegion> tmp = efficiencySupervisionMapper.getChildrenReggion(regionSeq, null);
+        return tmp;
+    }
+
+    @Override
+    public Map<String, Object> getOrgReceiveStatistics(String startDate, String endDate, String type, String regionId) throws Exception {
+        if(StringUtils.isBlank(regionId)){
+            regionId = null;
+        }
+
+        String rootOrgId = SecurityContext.getCurrentOrgId();
+        List<ItemDetailFormVo> list = new ArrayList<>();
+        if("D".equals(type)){
+            String yesterday = DateUtils.convertDateToString(DateUtils.getPreDateByDate(new Date()), "yyyy-MM-dd");
+            startDate = yesterday;
+            endDate = yesterday ;
+            list = aeaAnaOrgDayStatisticsMapper.getRegionDayStatistics(startDate,endDate,regionId,rootOrgId);
+        }else if("W".equals(type)){
+            String thisYear = DateUtils.convertDateToString(new Date(), "yyyy");
+            int thisWeekNum = DateUtils.getThisWeekNum(new Date());
+            list = aeaAnaOrgWeekStatisticsMapper.getRegionWeekStatistics(thisYear,thisWeekNum,thisWeekNum,regionId,rootOrgId);
+        }else if("M".equals(type)){
+            String yearMonth = DateUtils.convertDateToString(new Date(), "yyyy-MM");
+            list = aeaAnaOrgMonthStatisticsMapper.getRegionMonthStatistics(yearMonth,yearMonth,regionId,rootOrgId);
+        }else{
+            if (!DateUtils.checkTimeParam(startDate, endDate, "yyyy-MM-dd")) {
+                throw new Exception("传入的时间参数欧问题。。。");
+            }
+            LocalDate _endDate = LocalDate.parse(endDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            if (!LocalDate.now().isAfter(_endDate)) {//结束日期只能统计到昨天
+                String yesterday = DateUtils.getYesterdayByFormat("yyyy-MM-dd");
+                endDate = yesterday ;
+            }
+            list = aeaAnaOrgDayStatisticsMapper.getRegionDayStatistics(startDate,endDate,regionId,rootOrgId);
+        }
+
+        int total = 0;
+        List<Map<String,Object>> datalist= new ArrayList<>();
+
+        String name = "";
+        int value = 0;
+        boolean bol =StringUtils.isBlank(regionId);
+        if(list.size()>0){
+            for(ItemDetailFormVo vo :list){
+                Map<String,Object> obj = new HashMap<>();
+                if(bol){
+                    name = vo.getRegionName();
+                }else {
+                    name = vo.getOrgName();
+                }
+                value = vo.getReceiptCount();
+                total+=value;
+                obj.put("name",name);
+                obj.put("value",value);
+                datalist.add(obj);
+            }
+        }
+
+        //显示全部数据，
+        List<String> showData = getShowData(regionId);
+        List<Map<String,Object>>  showList = new ArrayList<>();
+        for(int i=0,len = showData.size();i<len;i++){
+            String _name = showData.get(i);
+            boolean had = false;
+            for(int j =0,len2 = datalist.size();j<len2;j++){
+                if(_name.equals(datalist.get(j).get("name"))){
+                    showList.add(datalist.get(j));
+                    had = true;
+                    break;
+                }
+            }
+            if(!had){
+                Map tmp = new HashMap(){{put("name",_name);put("value",0);}};
+                showList.add(tmp);
+            }
+
+        }
+
+        Map<String,Object> result = new HashMap<>();
+        result.put("total",total);
+        result.put("data",showList);
+        return result;
+
+
+    }
+
+    private List<String> getShowData(String regionId) throws Exception{
+        List<String> list = new ArrayList<>();
+        if(StringUtils.isBlank(regionId)){
+            List<BscDicRegion> childRegion = getChildRegion();
+            if(childRegion.size()==0) throw new Exception("查询区域出现异常");
+            list = childRegion.stream().map(BscDicRegion::getRegionName).collect(Collectors.toList());
+        }else{
+            OpuOmOrg search = new OpuOmOrg();
+            BscDicRegion currentRegion = bscDicRegionMapper.getBscDicRegionById(regionId);
+            if("4".equals(currentRegion.getRegionalLevel())){
+                search.setOrgLevel(2);//市级部门
+            }else if("5".equals(currentRegion.getRegionalLevel())){
+                search.setOrgLevel(3);
+            }
+            search.setOrgProperty("d");
+            search.setIsPublic("1");
+            search.setIsActive("1");
+            search.setIsLeaf("1");
+            search.setRegionId(regionId);
+            //原来的opuomOrgmapper里面缺失了regionid 字段所以写到这里
+            List<OpuOmOrg> orgList = efficiencySupervisionMapper.listOpuOmOrg(search);
+            if(orgList.size()==0) throw new Exception("查询部门出现异常");
+            list = orgList.stream().map(OpuOmOrg::getOrgName).collect(Collectors.toList());
+        }
+        return list;
+    }
+
+    @Override
+    public List<List<Object>> getOrgReceiveLimitTimeStatistics(String startTime, String endTime, String type, String regionId) throws Exception {
+
+       List<List<Object>> result = new ArrayList<>();
+        if ("D".equals(type)) {
+            String yesterday = DateUtils.convertDateToString(DateUtils.getPreDateByDate(new Date()), "yyyy-MM-dd");
+            startTime = yesterday + " 00:00:00";
+            endTime = yesterday + " 23:59:59";
+        } else if ("W".equals(type)) {
+            startTime = DateUtils.convertDateToString(DateUtils.getThisWeekMonday(new Date()), "yyyy-MM-dd") + " 00:00:00";
+            endTime = DateUtils.convertDateToString(DateUtils.getThisWeekSunday(new Date()), "yyyy-MM-dd") + " 23:59:59";
+
+        } else if ("M".equals(type)) {
+            startTime = DateUtils.convertDateToString(DateUtils.firstDayOfMonth(new Date()), "yyyy-MM-dd HH:mm:ss");
+            endTime = DateUtils.convertDateToString(DateUtils.lastDayOfMonth(new Date()), "yyyy-MM-dd HH:mm:ss");
+
+        } else {
+            if (!DateUtils.checkTimeParam(startTime, endTime, "yyyy-MM-dd")) {
+                throw new Exception("传入的时间参数有问题。。。");
+            }
+            LocalDate endDate = LocalDate.parse(endTime, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            if (!LocalDate.now().isAfter(endDate)) {//结束日期只能统计到昨天
+                String yesterday = DateUtils.getYesterdayByFormat("yyyy-MM-dd");
+                endTime = yesterday + " 23:59:59";
+            }
+        }
+
+        List<ItemDetailFormVo> list = efficiencySupervisionMapper.getOrgReceiveLimitTimeStatistics(startTime,endTime,regionId,SecurityContext.getCurrentOrgId());
+
+        boolean bol = StringUtils.isBlank(regionId);
+
+        if(list.size()>0){
+            Map<String, List<ItemDetailFormVo>> collect;
+            if(bol){
+                collect = list.stream().collect(Collectors.groupingBy(ItemDetailFormVo::getRegionId));
+            }else {
+                collect = list.stream().collect(Collectors.groupingBy(ItemDetailFormVo::getOrgId));
+            }
+            Set<Map.Entry<String, List<ItemDetailFormVo>>> entries = collect.entrySet();
+            for(Map.Entry<String, List<ItemDetailFormVo>> entry: entries){
+                List<ItemDetailFormVo> value = entry.getValue();
+                ItemDetailFormVo obj = value.get(0);
+                int normal=0,warn=0,overdue=0;
+                String name = "";
+                for(ItemDetailFormVo vo :value){
+                    if("1".equals(vo.getInstState())){
+                        normal += vo.getReceiptCount();
+                    }else if("2".equals(vo.getInstState())){
+                        warn += vo.getReceiptCount();
+                    }else if("3".equals(vo.getInstState())){
+                        overdue += vo.getReceiptCount();
+                    }
+                }
+                 if(bol){
+                     name = obj.getRegionName();
+                 }else {
+                     name = obj.getOrgName();
+                 }
+                List<Object> record = Arrays.asList(name,normal,warn,overdue);
+                 result.add(record);
+            }
+        }
+
+        //显示全部数据
+        List<List<Object>> showResult = new ArrayList<>();
+        List<String> showData = getShowData(regionId);
+        for(int i=0,len = showData.size();i < len; i++){
+            String _name = showData.get(i);
+            boolean had = false;
+            for(int j=0,len2 = result.size();j<len2; j++){
+                if(_name.equals(result.get(j).get(0))){
+                    had = true;
+                    showResult.add(result.get(j));
+                    break;
+                }
+            }
+            if(!had){
+                List<Object> tmp = Arrays.asList(_name,0,0,0);
+                showResult.add(tmp);
+            }
+        }
+        return showResult;
+    }
 }

@@ -1,5 +1,6 @@
 package com.augurit.efficiency.controller;
 
+import com.augurit.agcloud.bsc.domain.BscDicRegion;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
@@ -267,6 +268,54 @@ public class OrgEfficiencySupervisionController {
         } catch (Exception e) {
             e.printStackTrace();
             return new ContentResultForm<>(false, null, "查询失败：" + e.getMessage());
+        }
+    }
+    @ApiOperation(value = "委办局-获取当前所在城市区划")
+    @GetMapping("/getCurrentCityRegions")
+    public ContentResultForm getCurrentRegionList(){
+        try {
+            List<BscDicRegion> result = orgEfficiencySupersionService.getCurrentRegionList();
+            return new ContentResultForm(true,result,"查询成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ContentResultForm(false,null,"查询城市区划失败1");
+        }
+    }
+    @GetMapping("/getOrgReceiveStatistics")
+    @ApiOperation(value = "部门接件总量", notes = "部门接件总量")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "startTime", value = "开始时间【yyyy-MM-dd】", dataType = "string", paramType = "String", required = true),
+            @ApiImplicitParam(name = "endTime", value = "结束时间【yyyy-MM-dd】", dataType = "string", paramType = "String", required = true),
+            @ApiImplicitParam(name = "type", value = "类型【周W月M日D灵活时间段A】", dataType = "string", paramType = "String", required = true),
+            @ApiImplicitParam(name = "regionId", value = "区划id", dataType = "string", paramType = "string", required = true),
+    })
+    public ResultForm getOrgReceiveStatistics(String startTime, String endTime, String type, String regionId) throws Exception {
+
+        try {
+            Map<String, Object> result = orgEfficiencySupersionService.getOrgReceiveStatistics(startTime, endTime, type,regionId);
+            return new ContentResultForm<>(true, result, "查询成功！");
+        } catch (Exception e) {
+            log.error("部门接件总量", e);
+            return new ContentResultForm<>(false, null, e.getMessage());
+        }
+    }
+
+    @GetMapping("/getOrgReceiveLimitTimeStatistics")
+    @ApiOperation(value = "部门接件受理情况（时限）", notes = "部门接件受理情况")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "startTime", value = "开始时间【yyyy-MM-dd】", dataType = "string", paramType = "String", required = true),
+            @ApiImplicitParam(name = "endTime", value = "结束时间【yyyy-MM-dd】", dataType = "string", paramType = "String", required = true),
+            @ApiImplicitParam(name = "type", value = "类型【周W月M日D灵活时间段A】", dataType = "string", paramType = "String", required = true),
+            @ApiImplicitParam(name = "regionId", value = "区划id", dataType = "string", paramType = "string", required = true),
+    })
+    public ResultForm getOrgReceiveLimitTimeStatistics(String startTime, String endTime, String type, String regionId) throws Exception {
+
+        try {
+            List<List<Object>>  result = orgEfficiencySupersionService.getOrgReceiveLimitTimeStatistics(startTime, endTime, type,regionId);
+            return new ContentResultForm<>(true, result, "查询成功！");
+        } catch (Exception e) {
+            log.error("部门接件受理情况", e);
+            return new ContentResultForm<>(false, null, e.getMessage());
         }
     }
 }
