@@ -1910,7 +1910,7 @@
         LEFT JOIN aea_par_theme_ver ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
         LEFT JOIN aea_par_theme theme ON theme.THEME_ID = ver.THEME_ID
         LEFT JOIN act_sto_appinst app ON app.MASTER_RECORD_ID = ahap_123.APPLYINST_ID
-        LEFT JOIN act_ru_task t ON t.PROC_INST_ID_ = app.PROCINST_ID
+        LEFT JOIN act_hi_taskinst t ON t.PROC_INST_ID_ = app.PROCINST_ID
         <where>
             ahap_123.IS_SERIES_APPROVE = '0'
             AND ahap_123.APPLYINST_STATE != '0'
@@ -1955,7 +1955,7 @@
         LEFT JOIN aea_par_theme theme ON theme.THEME_ID = ver.THEME_ID
         LEFT JOIN act_sto_appinst app ON app.MASTER_RECORD_ID = ahap_123.APPLYINST_ID
         LEFT JOIN act_sto_appinst_subflow apps ON apps.APPINST_ID = app.APPINST_ID
-        LEFT JOIN act_ru_task t ON t.PROC_INST_ID_ = apps.SUBFLOW_PROCINST_ID
+        LEFT JOIN act_hi_taskinst t ON t.PROC_INST_ID_ = apps.SUBFLOW_PROCINST_ID
         <where>
             ahap_123.IS_SERIES_APPROVE = '0'
             AND ahap_123.APPLYINST_STATE != '0'
@@ -1994,7 +1994,7 @@
         LEFT JOIN aea_hi_seriesinst ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
         LEFT JOIN aea_hi_iteminst ahi_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
         LEFT JOIN act_sto_appinst app ON app.MASTER_RECORD_ID = ahap_123.APPLYINST_ID
-        LEFT JOIN act_ru_task t ON t.PROC_INST_ID_ = app.PROCINST_ID
+        LEFT JOIN act_hi_taskinst t ON t.PROC_INST_ID_ = app.PROCINST_ID
         <where>
             ahap_123.IS_SERIES_APPROVE = '1'
             AND ahap_123.APPLYINST_STATE != '0'
@@ -2032,7 +2032,7 @@
         LEFT JOIN aea_hi_iteminst ahi_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
         LEFT JOIN act_sto_appinst app ON app.MASTER_RECORD_ID = ahap_123.APPLYINST_ID
         LEFT JOIN act_sto_appinst_subflow apps ON apps.APPINST_ID = app.APPINST_ID
-        LEFT JOIN act_ru_task t ON t.PROC_INST_ID_ = apps.SUBFLOW_PROCINST_ID
+        LEFT JOIN act_hi_taskinst t ON t.PROC_INST_ID_ = apps.SUBFLOW_PROCINST_ID
         <where>
             ahap_123.IS_SERIES_APPROVE = '1'
             AND ahap_123.APPLYINST_STATE != '0'
