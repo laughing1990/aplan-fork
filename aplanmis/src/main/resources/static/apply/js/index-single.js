@@ -565,6 +565,8 @@ var vm = new Vue({
           matFormDialogVisible: false, // 是否展示材料一张表单
           matformNameTitle: '材料表单',
           IsJustApplyinst: 0, //
+          preItemCheckPassed: true, // 前置检测是否通过
+          preItemCheckkMsg: '', // 前置检测失败提示
         }
     },
     mounted: function () {
@@ -1019,7 +1021,24 @@ var vm = new Vue({
             // _that.beforeCheckShowMore = true;
             _that.showUnitMore=[]; // 清空企业展示更多信息列表
             if (_that.projInfoId) {
-                _that.searchProjAllInfo();
+              _that.searchProjAllInfo();
+              if(_that.itemVerId){
+                request('', { // 判断并行实施事项是否可选
+                  url: ctx + 'rest/check/itemFrontCheck',
+                  type: 'post',
+                  data: {
+                    projInfoId: _that.projInfoId,
+                    itemVerId: _that.itemVerId
+                  },
+                }, function (result) {
+                  if (result.success) {
+                    _that.preItemCheckPassed = true;
+                  }else {
+                    _that.preItemCheckPassed = false;
+                    _that.preItemCheckkMsg = result.message?result.message:'事项前置检测失败'
+                  }
+                }, function (msg) {})
+              }
             } else {
                 if (!_that.searchKeyword) {
                     _that.$message({
@@ -1034,6 +1053,7 @@ var vm = new Vue({
                 }
             }
         },
+
         // 企业非企业申报主体列表信息
         setJiansheFrom: function () {
             var _that = this;
@@ -3513,6 +3533,10 @@ var vm = new Vue({
             var projInfoIds = [], handleUnitIds = []; // 项目ID集合 经办单位ID集合
             var branchOrgMap = [];// 分局承办
             var _that = this;
+          if(_that.preItemCheckPassed==false){
+            alertMsg('', _that.preItemCheckkMsg, '关闭', 'error', true);
+            return false;
+          }
             if (!_that.comments&&_that.buttonStyle!=1&&_that.buttonStyle!=5&&_that.buttonStyle!=4) {
                 alertMsg('', '请填写收件意见', '关闭', 'error', true);
                 return false;
