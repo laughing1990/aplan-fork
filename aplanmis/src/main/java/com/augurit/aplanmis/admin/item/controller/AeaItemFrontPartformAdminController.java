@@ -108,4 +108,16 @@ private static Logger logger = LoggerFactory.getLogger(AeaItemFrontPartformAdmin
         return PageHelper.toEasyuiPageInfo(pageInfo);
     }
 
+    @RequestMapping("/batchSaveAeaItemFrontPartform.do")
+    public ResultForm batchSaveAeaItemFrontPartform(String itemVerId,String itemPartformIds){
+        try {
+            aeaItemFrontPartformService.batchSaveAeaItemFrontPartform(itemVerId,itemPartformIds);
+            return new ResultForm(true);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return new ResultForm(false, e.getMessage());
+
+        }
+    }
+
 }
