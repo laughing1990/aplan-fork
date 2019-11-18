@@ -6,7 +6,6 @@ import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
-import java.lang.reflect.Modifier;
 
 /**
  * 事项前置检查-模型
@@ -63,6 +62,9 @@ public class AeaItemFrontItem implements Serializable{
 
     @ApiModelProperty("扩展字段：前置事项名称")
     private String frontCkItemName;
+
+    @ApiModelProperty("扩展字段：前置事项编号")
+    private String frontCkItemCode;
 
     @ApiModelProperty("扩展字段：前置事项是否标准事项  1标准事项 0 实施事项")
     private String frontCkIsCatalog;

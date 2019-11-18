@@ -94,6 +94,7 @@ private static Logger logger = LoggerFactory.getLogger(AeaItemFrontPartformAdmin
 
     @RequestMapping("/getMaxSortNo.do")
     public ResultForm getMaxSortNo(AeaItemFrontPartform aeaItemFrontPartform) {
+
         try {
             return new ContentResultForm<>(true, aeaItemFrontPartformService.getMaxSortNo(aeaItemFrontPartform));
         } catch (Exception e) {
@@ -104,6 +105,7 @@ private static Logger logger = LoggerFactory.getLogger(AeaItemFrontPartformAdmin
 
     @RequestMapping("/listSelectItemFrontPartformByPage.do")
     public EasyuiPageInfo<AeaItemFrontPartformVo> listSelectItemFrontPartformByPage(AeaItemFrontPartform aeaItemFrontPartform, Page page) {
+
         PageInfo<AeaItemFrontPartformVo> pageInfo = aeaItemFrontPartformService.listSelectItemFrontPartformByPage(aeaItemFrontPartform, page);
         return PageHelper.toEasyuiPageInfo(pageInfo);
     }
@@ -120,4 +122,13 @@ private static Logger logger = LoggerFactory.getLogger(AeaItemFrontPartformAdmin
         }
     }
 
+    @RequestMapping("/changIsActive.do")
+    public ResultForm changIsActive(String id) {
+
+        if (StringUtils.isBlank(id)) {
+            throw new InvalidParameterException("参数id为空!");
+        }
+        aeaItemFrontPartformService.changIsActive(id, SecurityContext.getCurrentOrgId());
+        return new ResultForm(true);
+    }
 }

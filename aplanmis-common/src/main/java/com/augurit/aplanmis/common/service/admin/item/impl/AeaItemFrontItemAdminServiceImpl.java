@@ -79,8 +79,11 @@ public class AeaItemFrontItemAdminServiceImpl implements AeaItemFrontItemAdminSe
 
     @Override
     public void saveAeaItemFrontItem(AeaItemFrontItem aeaItemFrontItem){
-        checkSame(aeaItemFrontItem);
 
+        // 先删除
+        aeaItemFrontItemMapper.batchDelItemByItemVerId(aeaItemFrontItem.getItemVerId());
+
+        // 后创建
         aeaItemFrontItem.setCreateTime(new Date());
         aeaItemFrontItem.setCreater(SecurityContext.getCurrentUserId());
         aeaItemFrontItem.setRootOrgId(SecurityContext.getCurrentOrgId());
@@ -89,7 +92,6 @@ public class AeaItemFrontItemAdminServiceImpl implements AeaItemFrontItemAdminSe
 
     @Override
     public void updateAeaItemFrontItem(AeaItemFrontItem aeaItemFrontItem){
-//        checkSame(aeaItemFrontItem);
 
         aeaItemFrontItem.setModifyTime(new Date());
         aeaItemFrontItem.setModifier(SecurityContext.getCurrentUserId());
@@ -109,6 +111,7 @@ public class AeaItemFrontItemAdminServiceImpl implements AeaItemFrontItemAdminSe
 
     @Override
     public PageInfo<AeaItemFrontItem> listAeaItemFrontItemByPage(AeaItemFrontItem aeaItemFrontItem, Page page){
+
         PageHelper.startPage(page);
         List<AeaItemFrontItem> list = aeaItemFrontItemMapper.listAeaItemFrontItem(aeaItemFrontItem);
         logger.debug("成功执行分页查询！！");
@@ -117,6 +120,7 @@ public class AeaItemFrontItemAdminServiceImpl implements AeaItemFrontItemAdminSe
 
     @Override
     public AeaItemFrontItem getAeaItemFrontItemByFrontItemId(String frontItemId){
+
         if (StringUtils.isBlank(frontItemId)) {
             throw new InvalidParameterException(frontItemId);
         }
@@ -126,25 +130,26 @@ public class AeaItemFrontItemAdminServiceImpl implements AeaItemFrontItemAdminSe
 
     @Override
     public Long getMaxSortNo(AeaItemFrontItem aeaItemFrontItem){
-        Long sortNo = aeaItemFrontItemMapper.getMaxSortNo(aeaItemFrontItem);
-        if(sortNo==null){
-            sortNo = 1l;
-        }else{
-            sortNo = sortNo + 1;
-        }
 
-        return sortNo;
+        Long sortNo = aeaItemFrontItemMapper.getMaxSortNo(aeaItemFrontItem);
+        return sortNo==null?1L:(sortNo+1L);
     }
 
     private void checkSame(AeaItemFrontItem aeaItemFrontItem){
+
         AeaItemFrontItem queryItemFrontItem = new AeaItemFrontItem();
         queryItemFrontItem.setFrontCkItemVerId(aeaItemFrontItem.getFrontCkItemVerId());
         queryItemFrontItem.setItemVerId(aeaItemFrontItem.getItemVerId());
         List<AeaItemFrontItem> list = aeaItemFrontItemMapper.listAeaItemFront(queryItemFrontItem);
-        if(list.size()>0){
+        if(list.size()>0) {
             throw new RuntimeException("已有配置相同的前置事项检测!");
         }
+    }
 
+    @Override
+    public void changIsActive(String id, String rootOrgId){
+
+        aeaItemFrontItemMapper.changIsActive(id, rootOrgId);
     }
 
     @Override

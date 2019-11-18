@@ -627,5 +627,6 @@
         from aea_hi_certinst ahc
         where ahc.CERTINST_CODE=#{certinstCode}
         and ahc.ROOT_ORG_ID=#{currentOrgId}
+        order by create_time desc
     </select>
 </mapper>

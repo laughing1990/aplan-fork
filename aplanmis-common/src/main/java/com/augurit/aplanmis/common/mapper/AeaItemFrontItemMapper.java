@@ -46,4 +46,5 @@ public interface AeaItemFrontItemMapper {
 
      AeaItemFrontItem getAeaItemFrontItemByFrontItemId(@Param("frontItemId") String frontItemId);
 
+     void changIsActive(@Param("id")String id, @Param("rootOrgId")String rootOrgId);
 }

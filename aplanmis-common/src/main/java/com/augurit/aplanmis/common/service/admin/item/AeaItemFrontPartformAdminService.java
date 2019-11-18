@@ -36,4 +36,6 @@ public interface AeaItemFrontPartformAdminService {
 
     void batchSaveAeaItemFrontPartform(String itemVerId,String itemPartformIds)throws Exception;
 
+
+    void changIsActive(String id, String rootOrgId);
 }

@@ -1174,31 +1174,30 @@ function parStageItemFormatter(value, row, index) {
     if (sumformId != null && sumformId != '') {
 
         var updateStoform = '<a target="_blank" href= "' + ctx + '/design?formId=' + sumformId + '&' + strCallback + '" title="编辑智能表单"' +
-            'class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill">' +
-            '<i class="la la-edit"></i>' +
-            '</a>';
+                                'class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill">' +
+                                '<i class="la la-edit"></i>' +
+                            '</a>';
 
         var deleteStoform = '<a href="javascript:deleteStoForm(\'' + row.stageItemId + '\')" title="删除智能表单关联" ' +
-            'class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill">' +
-            '<i class="la la-trash"></i>' +
-            '</a>';
+                                'class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill">' +
+                                '<i class="la la-trash"></i>' +
+                            '</a>';
 
         return updateStoform + deleteStoform;
 
     } else {
 
         var newParStageOneform = '<a target="_blank" href= "' + ctx + '/design?' + strCallback + '" title="新增智能表单"' +
-            'class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill">' +
-            '<i class="la la-plus"></i>' +
-            '</a>';
+                                    'class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill">' +
+                                    '<i class="la la-plus"></i>' +
+                                 '</a>';
 
         var addParStageOneform = '<a href="javascript:showStoForm(\'' + row.stageItemId + '\',\'' + row.itemVerId + '\')" title="导入智能表单"' +
-            'class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill">' +
-            '<i class="la la-cog"></i>' +
-            '</a>';
+                                    'class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill">' +
+                                    '<i class="la la-cog"></i>' +
+                                 '</a>';
 
         return newParStageOneform + addParStageOneform;
-
     }
 }
 

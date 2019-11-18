@@ -183,6 +183,13 @@ public class AeaParFrontStageServiceImpl implements AeaParFrontStageService {
         }
     }
 
+    @Override
+    public List<AeaParFrontStageVo> listAeaParFrontStageVoByNoPage(AeaParFrontStage aeaParFrontStage) throws Exception{
+        List<AeaParFrontStageVo> list = aeaParFrontStageMapper.listAeaParFrontStageVo(aeaParFrontStage);
+        return list;
+    }
+
+
 
 }
 

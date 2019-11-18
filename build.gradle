@@ -113,7 +113,7 @@ allprojects {
 //        compile('oracle:ojdbc:6')
         compile('mysql:mysql-connector-java')
         //compile "com.augurit.agcloud:agcloud-framework:${agcloudVersion}"
-        compile "com.augurit.agcloud:agcloud-framework-ui:${agcloudVersion}"
+        compile "com.augurit.agcloud:agcloud-security-framework-ui:${agcloudVersion}"
 
         compile "com.augurit.agcloud:agcloud-aoa:${agcloudVersion}"
         compile "com.augurit.agcloud:agcloud-aoa-ui:${agcloudVersion}"
