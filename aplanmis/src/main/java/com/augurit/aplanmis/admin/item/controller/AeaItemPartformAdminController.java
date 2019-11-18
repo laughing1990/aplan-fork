@@ -202,9 +202,9 @@ public class AeaItemPartformAdminController {
             aeaItemPartformService.createAndUpdateDevForm(formCode, formName, formLoadUrl, formId, itemPartformId);
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResultForm(false, "新增开发表单失败");
+            return new ResultForm(false, "新增/编辑开发表单失败");
         }
-        return new ResultForm(false, "新增开发表单成功");
+        return new ResultForm(true, "新增/编辑开发表单成功");
     }
 
 }
