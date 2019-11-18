@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -111,6 +112,27 @@ public class AeaParFrontItemController {
             return new ResultForm(false, e.getMessage());
 
         }
+    }
+
+    @RequestMapping("/updateAeaParFrontItemSortNos.do")
+    public ResultForm updateAeaParFrontItemSortNos(String[] ids, Long[] sortNos) throws Exception {
+
+        if (ids != null && ids.length > 0 && sortNos != null && sortNos.length > 0) {
+            for (int i = 0; i < ids.length; i++) {
+                AeaParFrontItem aeaParFrontItem = new AeaParFrontItem();
+                aeaParFrontItem.setFrontItemId(ids[i]);
+                aeaParFrontItem.setSortNo(sortNos[i]);
+                aeaParFrontItemService.updateAeaParFrontItem(aeaParFrontItem);
+            }
+            return new ResultForm(true);
+        }
+        return new ResultForm(false, "传递排序数据有问题,请检查!");
+    }
+
+    @RequestMapping("/listAeaParFrontItemByNoPage.do")
+    public List<AeaParFrontItemVo> listAeaParFrontItemByNoPage(AeaParFrontItem aeaParFrontItem) throws Exception {
+        List<AeaParFrontItemVo> list = aeaParFrontItemService.listAeaParFrontItemVoByNoPage(aeaParFrontItem);
+        return list;
     }
 
 }
