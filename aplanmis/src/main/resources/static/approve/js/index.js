@@ -548,12 +548,32 @@ var vm = new Vue({
       vm.parentPageLoading = true;
       vm.currentMatRow = row;
       vm.refreshMatIframe = refreshMatIframe;
+      request('',{
+        url: ctx + 'rest/mats/getHistoryAttMatList',
+        type: 'post',
+        data: {
+          projInfoId: row.projInfoId,
+          matCode: row.matCode,
+        }
+      }, function(res){
+        vm.parentPageLoading = false;
+        if (res.content && res.content.length) {
+          vm.matLibVisible = true;
+          vm.matLibTableList = res.content;
+        } else {
+          vm.$message.error('未获取到证照信息');
+        }
+      }, function(res) {
+        vm.parentPageLoading = false;
+        vm.$message.error('获取材料列表失败');
+      })
+      if (window) return null;
       window.setTimeout(function () {
         vm.parentPageLoading = false;
         vm.matLibVisible = true;
         vm.matLibTableList = [
-          {name: 'test1.doc'},
-          {name: 'test2.doc'},
+          {fileName: 'test1.doc', fileType:'doc' },
+          {fileName: 'test2.doc', fileType:'doc' },
         ];
       }, 500);
     },
@@ -564,7 +584,7 @@ var vm = new Vue({
     matTabListChoose: function (row) {
       var vm = this;
       var params = {
-        fileIds: vm.currentMatRow.certinstId, // todo
+        fileIds: row.fileId,
       };
       if (vm.currentMatRow.attMatinstId) {
         params.matinstId = vm.currentMatRow.attMatinstId;
