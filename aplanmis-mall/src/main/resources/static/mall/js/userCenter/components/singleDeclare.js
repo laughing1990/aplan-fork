@@ -198,6 +198,9 @@ var module1 = new Vue({
         projName: [
           { required: true, message: '请输入项目/工程名称', trigger: 'blur' },
         ],
+        themeId: [
+          { required: true, message: '请选择所属主题', trigger: 'change' },
+        ],
         localCode: [
           { required: true, message: '请输入项目代码', trigger: 'blur' },
         ],
@@ -221,9 +224,6 @@ var module1 = new Vue({
         ],
         projType: [
           { required: true, message: '请选择立项类型', trigger: 'change' },
-        ],
-        themeId: [
-          { required: true, message: '请选择项目类型', trigger: 'change' },
         ],
         projNature: [
           { required: true, message: '请选择建设性质', trigger: 'change' },

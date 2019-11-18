@@ -91,7 +91,7 @@
           <el-input class="w-775" disabled v-model="projInfoDetail.projName" ref="projName"
                     placeholder="请填写项目/工程名称"></el-input>
         </el-form-item>
-        <el-form-item class="wt448" label="所属主题">
+        <el-form-item class="wt448" label="所属主题" prop="themeId">
           <!--<el-select clearable filterable class="w-320" v-model="projInfoDetail.themeId" :disabled="isAble">-->
           <el-select clearable filterable class="w-320" v-model="projInfoDetail.themeId">
             <el-option v-for="item in themeList" :key="item.themeId" :label="item.themeName"
