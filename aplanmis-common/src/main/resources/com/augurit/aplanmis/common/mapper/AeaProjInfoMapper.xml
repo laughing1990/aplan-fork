@@ -130,7 +130,8 @@
         UNDER_DEPTH underDepth,
         LENGTH length,
         SPAN span,
-        PROVINCE_PROJ_CODE provinceProjCode
+        PROVINCE_PROJ_CODE provinceProjCode,
+        IS_EPC isEpc
     </sql>
 
     <sql id="allColumnsAlias">
@@ -253,7 +254,8 @@
         ${alias}.UNDER_DEPTH underDepth,
         ${alias}.LENGTH length,
         ${alias}.SPAN span,
-        ${alias}.PROVINCE_PROJ_CODE provinceProjCode
+        ${alias}.PROVINCE_PROJ_CODE provinceProjCode,
+        ${alias}.IS_EPC isEpc
     </sql>
     <!-- 20190720 add xiaohutu -->
     <sql id="aeaParentProjColumns">
@@ -855,7 +857,7 @@
                                    IS_FINANCIAL_FUND, FINANCIAL_FUND_PROPORTION, IS_SOCIAL_FUND, SOCIAL_FUND_PROPORTION,
                                    IS_INVALID_PROJ, IS_PURCHASE_PROJ, GCBM,ROOT_ORG_ID,EAST_SCOPE,SOUTH_SCOPE,
                                    WEST_SCOPE,NORTH_SCOPE,IS_DESIGN_SOLUTION,IS_AREA_ESTIMATE,GB_CODE_YEAR,
-                                   above_ground,under_ground,ABOVE_FLOOR,UNDER_FLOOR,ABOVE_HEIGHT,UNDER_DEPTH,LENGTH,SPAN,PROVINCE_PROJ_CODE)
+                                   above_ground,under_ground,ABOVE_FLOOR,UNDER_FLOOR,ABOVE_HEIGHT,UNDER_DEPTH,LENGTH,SPAN,PROVINCE_PROJ_CODE,IS_EPC)
         values (#{projInfoId}, #{localCode}, #{projName}, #{projType}, #{projLevel}, #{mainClass}, #{centralCode},
                 #{isJgxm}, #{projUrgency}, #{projAddr}, #{projCreateUserCode}, #{projCreateUser}, #{projCreateMobile},
                 #{buildAreaSum}, #{currentProgress}, #{projQuestion}, #{projNature}, #{nstartTime}, #{endTime},
@@ -877,7 +879,7 @@
                 #{financialFundProportion}, #{isSocialFund}, #{socialFundProportion}, #{isInvalidProj},
                 #{isPurchaseProj}, #{gcbm},#{rootOrgId},#{eastScope},#{southScope},#{westScope},#{northScope},
                 #{isDesignSolution},#{isAreaEstimate},#{gbCodeYear},
-                #{aboveGround},#{underGround},#{aboveFloor},#{underFloor},#{aboveHeight},#{underDepth},#{length},#{span},#{provinceProjCode})
+                #{aboveGround},#{underGround},#{aboveFloor},#{underFloor},#{aboveHeight},#{underDepth},#{length},#{span},#{provinceProjCode},#{isEpc})
     </insert>
     <!--6 修改实体对象 -->
     <update id="updateAeaProjInfo" parameterType="AeaProjInfo">
@@ -1279,6 +1281,9 @@
             </if>
             <if test="provinceProjCode != null">
                 PROVINCE_PROJ_CODE = #{provinceProjCode},
+            </if>
+            <if test="isEpc != null">
+                IS_EPC = #{isEpc},
             </if>
 
         </set>

@@ -303,7 +303,10 @@ public class AeaCertAdminController {
             operator.setDivision_code(proDataRegion.getRegionNum());
             operator.setService_org(proDataRegion.getRegionNum());
             operator.setService_org_code(topOrg.getOrgCode());
-            return new ContentResultForm<>(true, aeaCertAdminService.getLicenseAuthRes(itemVerIds, identityNumber, operator), "Query attachment success");
+            LicenseAuthResDTO result=aeaCertAdminService.getLicenseAuthRes(itemVerIds, identityNumber, operator);
+            if (result.getData() == null)
+                return new ContentResultForm<>(false, new LicenseAuthResDTO(), "Query attachment failed");
+            return new ContentResultForm<>(true, result, "Query attachment success");
         } catch (Exception e) {
             e.printStackTrace();
             return new ContentResultForm<>(false, new LicenseAuthResDTO(), "Query attachment failed");
@@ -317,7 +320,11 @@ public class AeaCertAdminController {
     @RequestMapping("/getViewLicenseURL.do")
     public ContentResultForm<String> getViewLicenseURL(String authCode) throws Exception {
         try {
-            return new ContentResultForm<>(true, aeaCertAdminService.getViewLicenseURL(authCode), "获取证照地址连接成功");
+            String url=aeaCertAdminService.getViewLicenseURL(authCode);
+            if (StringUtils.isNotBlank(url))
+                return new ContentResultForm<>(true, aeaCertAdminService.getViewLicenseURL(authCode), "获取证照地址连接成功");
+            else
+                return new ContentResultForm<>(false, "", "获取证照地址连接失败！");
         } catch (Exception e) {
             e.printStackTrace();
             return new ContentResultForm<>(false, "", "获取证照地址连接失败！");

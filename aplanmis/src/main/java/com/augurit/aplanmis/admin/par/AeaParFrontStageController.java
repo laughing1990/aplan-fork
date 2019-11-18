@@ -110,4 +110,23 @@ public class AeaParFrontStageController {
         }
     }
 
+    @RequestMapping("/listSelectParFrontStageByPage.do")
+    public EasyuiPageInfo<AeaParFrontStageVo> listSelectParFrontStageByPage(AeaParFrontStage aeaParFrontStage,Page page) throws Exception{
+        PageInfo<AeaParFrontStageVo> pageInfo = aeaParFrontStageService.listSelectParFrontStageByPage(aeaParFrontStage,page);
+        return PageHelper.toEasyuiPageInfo(pageInfo);
+    }
+
+
+    @RequestMapping("/batchSaveAeaParFrontStage.do")
+    public ResultForm batchSaveAeaParFrontStage(String stageId,String histStageIds){
+        try {
+            aeaParFrontStageService.batchSaveAeaParFrontStage(stageId,histStageIds);
+            return new ResultForm(true);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return new ResultForm(false, e.getMessage());
+
+        }
+    }
+
 }

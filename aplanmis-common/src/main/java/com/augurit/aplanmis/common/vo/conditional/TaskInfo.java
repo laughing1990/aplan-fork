@@ -25,6 +25,9 @@ public class TaskInfo extends BaseInfo implements Serializable {
     @ApiModelProperty(value = "任务实例id")
     private String taskId;
 
+    @ApiModelProperty(value = "任务节点定义id")
+    private String taskDefKey;
+
     @ApiModelProperty(value = "事项实例id")
     private String iteminstId;
 

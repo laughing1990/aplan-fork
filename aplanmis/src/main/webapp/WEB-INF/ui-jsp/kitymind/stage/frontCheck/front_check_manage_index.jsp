@@ -340,6 +340,8 @@
                         <div class="col-md-7"style="text-align: left;">
                             <button type="button" class="btn btn-info"
                                     onclick="addParFrontStage();">新增</button>
+                            <button type="button" class="btn btn-info"
+                                    onclick="batchImprotParFrontStage();">批量导入</button>
                             <button type="button" class="btn btn-secondary"
                                     onclick="batchDelParFrontStage();">删除</button>
                         </div>
@@ -459,6 +461,9 @@
 
 <!-- 事项表单选择 -->
 <%@include file="select_itemform.jsp"%>
+
+<!-- 阶段选择 -->
+<%@include file="select_stage.jsp"%>
 
 <!-- 阶段扩展表单选择 -->
 <%@include file="select_partform.jsp"%>

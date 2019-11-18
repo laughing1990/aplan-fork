@@ -267,6 +267,9 @@ FRONT_STAGE_ID  ,STAGE_ID  ,HIST_STAGE_ID  ,SORT_NO  ,IS_ACTIVE  ,FRONT_STAGE_ME
                     </if>
                 </where>
             )
+            <if test="keyword!=null and keyword!='' ">
+                AND aps.STAGE_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+            </if>
         </where>
 
     </select>
