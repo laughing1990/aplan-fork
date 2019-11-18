@@ -96,4 +96,6 @@ public interface AeaAnaOrgMonthStatisticsMapper {
      * @return
      */
     List<AeaAnaOrgMonthStatistics> getOrgAcceptStatistics(@Param("regionId") String regionId, @Param("month") String month, @Param("rootOrgId") String rootOrgId);
+
+    List<ItemDetailFormVo> getRegionMonthStatistics(@Param("startYearMonth") String startYearMonth, @Param("endYearMonth") String endYearMonth, @Param("regionId") String regionId, @Param("rootOrgId") String rootOrgId);
 }
