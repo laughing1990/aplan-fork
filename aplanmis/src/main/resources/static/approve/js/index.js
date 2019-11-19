@@ -162,7 +162,6 @@ var vm = new Vue({
         pkName: 'ID_',
         recordId: null,
       },//attLink用于附件关联多个业务ID
-      btnDisable: true,//附件管理的按钮是否可点击，如果还没启动流程，处于起草页面则不能点击
       //审批界面业务逻辑参数
       buttonData: [], // 动态按钮数据
       showMenuMore: false,
@@ -470,6 +469,7 @@ var vm = new Vue({
         specialResult: [{required: true, message: '结果不能为空', trigger: 'blur'}],
       },
       nowEndRow: {},
+      isDraftPage: 'false',
       // 材料补正 新
       bzLoading: false,
       bzDiaVisible: false,
@@ -1455,7 +1455,6 @@ var vm = new Vue({
         }
         typeof callback == 'function' && callback();
       }, function () {
-        vm.tableloading = false;
       });
       
     },
@@ -1481,18 +1480,14 @@ var vm = new Vue({
     },
     initPage: function () {
       var vm = this;
-      this.taskId = this.getUrlParam('taskId');
+      vm.taskId = vm.getUrlParam('taskId');
+      vm.isDraftPage = vm.getUrlParam('draft');
       vm.getIteminstIdByTaskId(callback);
-      
       function callback() {
         vm.busRecordId = this.getUrlParam('busRecordId');
-        if (vm.busRecordId != 'undefined' && vm.busRecordId != null && vm.busRecordId != 'null' && vm.busRecordId != '') {
-          // vm.isSeriesinst = 0;// 单项，阶段审批
+        if (vm.busRecordId != 'undefined' && vm.busRecordId != 'null' && vm.busRecordId != '') {
           vm.iteminstId = vm.busRecordId;
-        } else {
-          // vm.isSeriesinst = 1;// 系列，多项
         }
-        vm.btnDisable = false;
         vm.attLink.recordId = vm.taskId;
         vm.viewId = vm.getUrlParam("viewId");
         vm.initProcessTurningPage(vm.taskId);
@@ -1672,10 +1667,6 @@ var vm = new Vue({
           viewId: vm.getUrlParam("viewId"),
           actId: vm.currTaskDefId,
           appFlowdefId: vm.appFlowdefId,
-          // version: 201,
-          // viewId: '9aea00ed-ee86-4d7d-ba6b-ebbe89705b86',
-          // actId: 'fazheng',
-          // appFlowdefId: 'fc5d46df-dcd0-4336-ab60-ee86afa75490',
         }
         request('bpmFrontUrl', {
           url: ctx + 'rest/front/task/getAuthorizeElementPlus',
@@ -1870,7 +1861,7 @@ var vm = new Vue({
     initButtons: function () {
       var vm = this;
       var defaultBtn = [{
-        elementName: "全进流程图",
+        elementName: "全景流程图",
         elementCode: "wfBusSave",
         columnType: "button",
         isReadonly: '0',
@@ -1892,8 +1883,26 @@ var vm = new Vue({
         isHidden: '0',
         elementRender: '<button class="btn btn-outline-info" onclick="startSupplementForItem()">材料补正</button>'
       }];
+      var draftBtn = [{
+        elementName: "发起申报",
+        elementCode: "wfBusSave",
+        columnType: "button",
+        isReadonly: '0',
+        isHidden: '0',
+        elementRender: '<button class="btn btn-outline-info" onclick="handleForWin()">发起申报</button>'
+      }, {
+        elementName: "打印回执",
+        elementCode: "wfBusSave",
+        columnType: "button",
+        isReadonly: '0',
+        isHidden: '0',
+        elementRender: '<button class="btn btn-outline-info" onclick="getPrintList()">打印回执</button>'
+      }];
       if (vm.isApprover == 1) {
         defaultBtn = matBtn.concat(defaultBtn);
+      }
+      if (vm.isDraftPage == 'true'){
+        defaultBtn = draftBtn.concat(defaultBtn);
       }
       if (!vm.checkNull(vm.taskId)) {
         //如果不是起草界面则加上流程跟踪按钮
@@ -2010,12 +2019,12 @@ var vm = new Vue({
      *审批详情页 --> 获取申报方式和状态
      */
     getWayAType: function () {
-      var vm = this
+      var vm = this;
       request('bpmFrontUrl', {
         url: ctx + 'rest/approve/type/and/state',
         type: 'get',
         data: {
-          applyinstId: vm.masterEntityKey, // 申请实例Id
+          applyinstId: vm.masterEntityKey, //
           taskId: vm.taskId,
         },
       }, function (res) {
