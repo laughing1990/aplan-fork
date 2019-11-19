@@ -46,9 +46,10 @@ public class AgentItemController {
 
     @ApiOperation(value = "上传批文文件或者要求说明文件", notes = "上传批文文件或者要求说明文件")
     @PostMapping(value = "/uploadFiles")
-    public ContentResultForm<String> uploadFiles(HttpServletRequest request) {
+    @ApiImplicitParam(name = "detailId", value = "附件关联ID", dataType = "string")
+    public ContentResultForm<String> uploadFiles(HttpServletRequest request, String detailId) {
         try {
-            String recordId = aeaImProjPurchaseService.uploadFiles(request);
+            String recordId = aeaImProjPurchaseService.uploadFiles(request, detailId);
             return new ContentResultForm<String>(true, recordId);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);

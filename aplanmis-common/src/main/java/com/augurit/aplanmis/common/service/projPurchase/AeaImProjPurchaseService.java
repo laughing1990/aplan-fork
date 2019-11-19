@@ -64,9 +64,10 @@ public interface AeaImProjPurchaseService {
      * 批文文件上传officialRemarkFile，要求说明文件上传requireExplainFile
      *
      * @param request
+     * @param detailId 附件上传ID
      * @return
      */
-    String uploadFiles(HttpServletRequest request) throws Exception;
+    String uploadFiles(HttpServletRequest request, String detailId) throws Exception;
 
     /**
      * 查询可服务的中介单位
