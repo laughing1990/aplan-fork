@@ -1263,6 +1263,9 @@ textarea {
 .show-one-form .el-dialog__body {
   padding-top: 0;
 }
+.show-mat-form .el-dialog__body {
+  padding: 0 20px 20px 20px;
+}
 /*#oneFormContent table {*/
   /*width: 80%;*/
   /*margin: 20px auto;*/

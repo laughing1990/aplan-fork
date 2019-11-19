@@ -23,12 +23,12 @@ import java.util.stream.Collectors;
  * @author xiaohutu--20190715
  * 回执接口
  */
-@Service
+/*@Service
 public class ReceiveService {
     private static Logger logger = LoggerFactory.getLogger(ReceiveService.class);
-    /**
+    *//**
      * 回执类型（1：物料回执 2：受理回执 3：不收件回执 4：退件回执 5：领证回执）
-     */
+     *//*
     private static final String[] RECEIVE_TYPES = {"1", "2", "3", "4", "5"};
     @Autowired
     private AeaHiIteminstMapper aeaHiIteminstMapper;
@@ -39,7 +39,7 @@ public class ReceiveService {
     @Autowired
     private AeaHiApplyinstService aeaHiApplyinstService;
 
-    /**
+    *//**
      * 保存回执实例
      *
      * @param applyinstIds 申请实例ID
@@ -48,7 +48,7 @@ public class ReceiveService {
      * @param comments     意见，非必须
      * @return 插入的数量
      * @throws Exception e
-     */
+     *//*
     public ReceiveVo saveReceive(String[] applyinstIds, String[] receiptTypes, String currentUser, String comments) throws Exception {
         ReceiveVo vo = new ReceiveVo();
         if (null == applyinstIds || applyinstIds.length == 0) {
@@ -94,4 +94,4 @@ public class ReceiveService {
         }
         return vo;
     }
-}
+}*/

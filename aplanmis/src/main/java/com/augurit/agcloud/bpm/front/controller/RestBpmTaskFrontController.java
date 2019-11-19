@@ -564,6 +564,18 @@ public class RestBpmTaskFrontController {
         }
     }
 
+    @ApiOperation(value = "回退前获取当前节点的上一环节的集合",notes = "回退前获取当前节点的上一环节的集合。")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "taskId", value = "任务ID", required = true, dataType = "String")
+    })
+    @RequestMapping(value="/getReturnPrevTasksByTaskId",method = RequestMethod.GET)
+    public ResultForm getReturnPrevTasksByTaskId(String taskId) throws Exception{
+        if (StringUtils.isBlank(taskId))
+            return new ResultForm(false, "任务id参数不能为空!");
+
+        return bpmTaskService.getReturnPrevTasksByTaskId(taskId);
+    }
+
     /**
      * 回退任务到上一环节
      *
@@ -571,20 +583,23 @@ public class RestBpmTaskFrontController {
      * @return
      * @throws Exception
      */
-    @ApiOperation(value = "回退任务到上一环节", notes = "回退任务到上一环节。")
+    @ApiOperation(value = "回退任务到上一环节",notes = "回退任务到上一环节。")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "taskId", value = "任务实例id", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "returnToActId", value = "回退到的任务节点定义id", required = true, dataType = "String"),
             @ApiImplicitParam(name = "comment", value = "回退意见", required = true, dataType = "String")
     })
-    @RequestMapping(value = "/returnPrevTask/{taskId}", method = RequestMethod.GET)
-    public ResultForm returnPrevTask(@PathVariable(value = "taskId") String taskId, String comment) throws Exception {
-        if (StringUtils.isBlank(taskId) || "undefined".equals(taskId))
+    @RequestMapping(value="/returnPrevTask/{taskId}",method = RequestMethod.GET)
+    public ResultForm returnPrevTask(@PathVariable(value = "taskId") String taskId,String returnToActId,String comment) throws Exception {
+        if (StringUtils.isBlank(taskId)|| "undefined".equals(taskId))
             return new ResultForm(false, "参数任务实例id不能为空！");
+        if (StringUtils.isBlank(returnToActId))
+            return new ResultForm(false, "参数回退到的任务节点定义id不能为空！");
         try {
-            return bpmTaskService.returnPrevTask(taskId, comment);
+            return bpmTaskService.returnToTask(taskId,returnToActId,comment);
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResultForm(false, e.getMessage());
+            return new ResultForm(false,e.getMessage());
         }
     }
 

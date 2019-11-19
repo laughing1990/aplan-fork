@@ -15,26 +15,24 @@
         _overflow-y: visible;
     }
 
-    #selectMetaDbTbcolTree::-webkit-scrollbar{
-        width:4px;
-        height:4px;
-    }
-    #selectMetaDbTbcolTree::-webkit-scrollbar-track{
-        background: #fff;
-        border-radius: 2px;
-    }
-    #selectMetaDbTbcolTree::-webkit-scrollbar-thumb{
-        background: #e2e5ec;
-        border-radius:2px;
-    }
-    #selectMetaDbTbcolTree::-webkit-scrollbar-thumb:hover{
-        background: #aaa;
-    }
-    #selectMetaDbTbcolTree::-webkit-scrollbar-corner{
-        background: #fff;
-    }
-
-
+    /*#selectMetaDbTbcolTree::-webkit-scrollbar{*/
+        /*width:4px;*/
+        /*height:4px;*/
+    /*}*/
+    /*#selectMetaDbTbcolTree::-webkit-scrollbar-track{*/
+        /*background: #fff;*/
+        /*border-radius: 2px;*/
+    /*}*/
+    /*#selectMetaDbTbcolTree::-webkit-scrollbar-thumb{*/
+        /*background: #e2e5ec;*/
+        /*border-radius:2px;*/
+    /*}*/
+    /*#selectMetaDbTbcolTree::-webkit-scrollbar-thumb:hover{*/
+        /*background: #aaa;*/
+    /*}*/
+    /*#selectMetaDbTbcolTree::-webkit-scrollbar-corner{*/
+        /*background: #fff;*/
+    /*}*/
 </style>
 
 <!-- 选择元数据表字段-->
@@ -228,6 +226,18 @@ var selectMetaDbTbcolKey,
 
     // 初始化加载函数
     $(function(){
+
+        $('#selectMetaDbTbcolTree').niceScroll({
+
+            cursorcolor: "#e2e5ec",//#CC0071 光标颜色
+            cursoropacitymin: 0, // 当滚动条是隐藏状态时改变透明度, 值范围 1 到 0
+            cursoropacitymax: 1, // 当滚动条是显示状态时改变透明度, 值范围 1 到 0
+            touchbehavior: false, //使光标拖动滚动像在台式电脑触摸设备
+            cursorwidth: "4px", //像素光标的宽度
+            cursorborder: "0", //   游标边框css定义
+            cursorborderradius: "2px",//以像素为光标边界半径
+            autohidemode: true  //是否隐藏滚动条
+        });
 
         // 关键字搜索事项节点
         selectMetaDbTbcolKey = $("#selectMetaDbTbcolKeyWord");

@@ -53,12 +53,15 @@
     
     .mat-children {
       border-left: 1px solid #EBEEF5;
-      line-height: 36px;
-      padding: 5px 20px;
+      line-height: 26px;
+      padding: 10px 20px;
+    }
+    
+    .mat-children + .mat-children {
+      padding-top: 0px;
     }
     
     .file-name {
-      margin-right: 25px;
       cursor: pointer;
     }
     
@@ -128,6 +131,34 @@
       width: 100%;
       padding-left: 16px;
     }
+    
+    .ag-id-card {
+      position: relative;
+      top: 3px;
+      left: 3px;
+      font-size: 20px;
+      color: #4293F4;
+    }
+    
+    .mat-table-btn {
+      float: left;
+      color: #169AFF;
+      line-height: 25px;
+      height: 25px;
+      cursor: pointer;
+    }
+    
+    .mat-table-btn:hover {
+      text-decoration: underline;
+    }
+    
+    .mat-ope-line {
+      float: left;
+      width: 1px;
+      height: 12px;
+      background: #DCDFE6;
+      margin: 6px 7px 0 7px;
+    }
   </style>
 </head>
 
@@ -143,39 +174,76 @@
       <el-table-column type="index" width="50px" align="center" label="序号"></el-table-column>
       <el-table-column type="expand" width="15px" align="right">
         <template slot-scope="props">
-          <div class="mat-children" v-if="props.row.fileList&&props.row.fileList.length>0">
-            <div v-for="item in props.row.fileList" class="file-list-tab"
-                 :key="item.fileId">
+          <template
+              v-if="(props.row.certFileList&&props.row.certFileList.length)||(props.row.fileList&&props.row.fileList.length)">
+            <div class="mat-children" v-if="props.row.certFileList&&props.row.certFileList.length">
+              <div v-for="item in props.row.certFileList" class="file-list-tab"
+                   :key="item.fileId">
+                <span style="position:relative;top:-1px;left:-3px;"><i class="ag ag-id-card"></i></span>
+                <span class="file-name">
+                  {{item.fileName}}
+              </span>
+                <span v-if="props.row.matProp=='c'" style="color:#AFB2C1;">
+                （{{item.createrName}}于{{formatDate(item.updateTime)}}关联）
+              </span>
+                <span class="file-icon-btn" style="margin-left:20px;">
+                  <span title="查验" v-if="props.row.matProp=='c'" class="el-icon-search" @click="checkId(item)"></span>
+                  <span title="删除" class="el-icon-delete" @click="delOneFile(item,props.row)"></span>
+              </span>
+              </div>
+            </div>
+            <div class="mat-children" v-if="props.row.fileList&&props.row.fileList.length">
+              <div v-for="item in props.row.fileList" class="file-list-tab"
+                   :key="item.fileId">
               <span class="file-name">
                   <span class="icon ag" :style="{color:getIconColor(getFileType(item.fileName)), fontSize: '20px'}"
                         :class="'ag-filetype-'+getFileType(item.fileName)"></span>
                   {{item.fileName}}
               </span>
-              <span class="file-icon-btn">
+                <span style="color:#AFB2C1;">
+                （{{item.createrName}}于{{formatDate(item.updateTime)}}上传）
+              </span>
+                <span class="file-icon-btn" style="margin-left:20px;">
                   <span title="预览" class="el-icon-search" @click="filePreview(item)"></span>
                   <span title="下载" class="el-icon-download" @click="downOneFile(item)"></span>
-                <!--                  <span title="删除" class="el-icon-delete" @click="delOneFile(item,props.row)"></span>-->
+                  <span title="删除" class="el-icon-delete" @click="delOneFile(item,props.row)"></span>
               </span>
+              </div>
             </div>
-          </div>
+          </template>
           <div v-else>
             <div class="mat-children" style="text-indent: 2em; color:#AFB2C1">暂无附件</div>
           </div>
         </template>
       </el-table-column>
-      <el-table-column class-name="meterial-col" prop="matName" label="材料名称" align="left"></el-table-column>
-      <el-table-column prop="matFrom" label="文件来源" align="center" width="120px">
-        <template slot-scope="scope">{{$options.filters.dicCodeItem(scope.row.matFrom)}}</template>
+      <el-table-column class-name="meterial-col" prop="matName" label="材料名称" align="left">
+        <template slot-scope="scope">
+          {{scope.row.matName}}
+          <i v-if="scope.row.matProp=='c'&&scope.row.certFileList&&scope.row.certFileList.length"
+             class="ag ag-id-card"></i>
+        </template>
       </el-table-column>
+      <!--      <el-table-column prop="matFrom" label="文件来源" align="center" width="120px">-->
+      <!--        <template slot-scope="scope">{{$options.filters.dicCodeItem(scope.row.matFrom)}}</template>-->
+      <!--      </el-table-column>-->
       <el-table-column prop="realPaperCount" label="纸质原件（应收/已收）" align="center" width="180px"
                        :formatter="formDueToZero"></el-table-column>
       <el-table-column prop="realCopyCount" label="复印件（应收/已收）" align="center" width="160px"
                        :formatter="formaterCopyToZero"></el-table-column>
-      <el-table-column prop="attCount" label="电子件" align="center" width="150px">
+      <el-table-column prop="attCount" label="电子件" width="170px">
         <template slot-scope="scope">
-          <span v-if="scope.row.attCount !=null && scope.row.attCount > 0"
-              class="t-pre-upload ready">已上传（{{scope.row.attCount}}）</span>
-          <span v-else class="t-pre-upload">未上传</span>
+          <div class="c-f">
+            <el-upload style="float: left;height:25px;"
+                       action="/posts"
+                       :show-file-list="false"
+                       :http-request="handleUploadFile">
+              <span class="mat-table-btn" @click="clickUpload(scope.row)">上传</span>
+            </el-upload>
+            <span class="mat-ope-line"></span>
+            <span class="mat-table-btn" @click="openMatLibDialog(scope.row)">材料库</span>
+            <span class="mat-ope-line" v-if="scope.row.matProp=='c'"></span>
+            <span class="mat-table-btn" v-if="scope.row.matProp=='c'" @click="openIdLibDialog(scope.row)">证照库</span>
+          </div>
         </template>
       </el-table-column>
     </el-table>
@@ -189,10 +257,11 @@
         th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
 <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js"
         th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
+<script src="../../static/common/js/axios.min.js" th:src="@{/common/js/axios.min.js}"></script>
 <script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js"
         th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>
 <script>
-  var matVm = new Vue({
+  var vm = new Vue({
     el: '#pageBox',
     data: function () {
       return {
@@ -205,6 +274,7 @@
         iteminstId: getUrlParam('iteminstId'),
         applyinstId: getUrlParam('masterEntityKey'),
         taskId: getUrlParam('taskId'),
+        currentUploadRow: null,
       }
     },
     methods: {
@@ -220,18 +290,14 @@
             vm.iteminstId = res.content.iteminstId;
           }
           //vm.getmainTbaleList() // 获取批文批复列表
-          if (vm.isSeries == '1') {
-            vm.getSeriesMatinstList() // 获取串联材料列表
-          } else {
-            vm.getParallelMatinstList() // 获取并联材料列表
-          }
+          vm.getMatList();
         }, function () {
           vm.tableloading = false;
         });
         
       },
       // 通用接口  根据dicCodeTypeCode获取数据字典
-      getDicCodeItems: function () {
+      getDicCodeItems: function (callback) {
         var vm = this;
         request('', {
           url: ctx + 'rest/dict/code/items/list',
@@ -248,65 +314,45 @@
               item['itemName'] = result[i]['itemName'];
               vm.dicCodeItems.push(item);
             }
+            typeof callback == 'function' && callback();
           } else {
-            console.log(res.message);
+            vm.$message.error(res.message || '获取数据字典失败');
           }
         }, function () {
-          console.log("获取数据字典失败！");
+          vm.$message.error("获取数据字典失败！");
         })
       },
-      // 获取材料列表 （并联）
-      getParallelMatinstList: function () {
+      // 获取材料列表
+      getMatList: function () {
         var vm = this;
+        var params = {
+          applyinstId: vm.applyinstId,
+          iteminstId: vm.iteminstId || null,
+        };
+        if (vm.isSeries == '1') {
+          params.isSeries = 1;
+        }
         request('', {
-          // url: ctx + 'rest/approve/matinst/list',
           url: ctx + 'rest/approve/series/matinst/list',
           type: 'get',
-          data: {
-            applyinstId: vm.applyinstId,
-            iteminstId: vm.iteminstId == 'undefined' ? null : vm.iteminstId,
-          }
+          data: params,
         }, function (res) {
           vm.pageLoading = false;
           if (res.success) {
             vm.matinstList = res.content;
-            // console.log(vm.matinstList)
+            vm.$nextTick(function () {
+              vm.allExpand();
+            });
           } else {
-            console.log(res.message);
+            vm.$message.error(res.message || '获取材料列表失败');
           }
         }, function () {
           vm.pageLoading = false;
-          console.log("获取材料列表 （并联）失败");
-        })
-      },
-      // 获取材料列表 （串联）
-      getSeriesMatinstList: function () {
-        var vm = this;
-        request('', {
-          url: ctx + 'rest/approve/series/matinst/list',
-          type: 'get',
-          data: {
-            iteminstId: vm.iteminstId || null,
-            applyinstId: vm.applyinstId,
-            isSeries: 1
-          }
-        }, function (res) {
-          vm.pageLoading = false;
-          if (res.success) {
-            vm.matinstList = res.content;
-          } else {
-            console.log(res.message);
-          }
-          
-          
-        }, function () {
-          vm.pageLoading = false;
-          console.log("查询串联材料列表失败");
+          vm.$message.error('获取材料列表失败');
         })
       },
       //转化材料来源
       formatMatFrom: function (row, column, cellValue, index) {
-      
       },
       // 获取文件后缀
       getFileType: function (fileName) {
@@ -329,8 +375,27 @@
       },
       //下载单个附件
       downOneFile: function (data) {
-        window.open(ctx + 'previewPdf/downLoadPdf?detailId=' + data.fileId, '_blank')
-        // window.open(ctx + 'rest/mats/att/download?detailIds=' + data.fileId, '_blank')
+        window.open(ctx + 'previewPdf/downLoadPdf?detailId=' + data.fileId, '_blank');
+      },
+      // 查验电子证照
+      checkId: function (row) {
+        var vm = this;
+        vm.pageLoading = true;
+        request('', {
+          url: ctx + 'aea/cert/getViewLicenseURL.do',
+          type: 'get',
+          data: {authCode: row.fileId},
+        }, function (res) {
+          vm.pageLoading = false;
+          if (res.success) {
+            window.open(res.content);
+          } else {
+            vm.$message.error(res.message || '查看证照失败');
+          }
+        }, function () {
+          vm.pageLoading = false;
+          vm.$message.error('查看证照失败');
+        });
       },
       //删除单个文件附件
       delOneFile: function (data, matData) {
@@ -358,15 +423,58 @@
             vm.pageLoading = false;
             if (res.success) {
               vm.$message.success('删除成功');
-              vm.getIteminstIdByTaskId();
+              vm.getMatList();
             } else {
-              vm.$message.error(res.message || '服务请求失败')
+              vm.$message.error(res.message || '删除失败')
             }
           }, function (msg) {
             vm.pageLoading = false;
-            vm.$message.error('服务请求失败');
+            vm.$message.error('删除失败');
           });
         }
+      },
+      // 打开材料库弹窗
+      openMatLibDialog: function (row) {
+        parent.vm.openMatLibDialog(row, vm.getMatList);
+      },
+      // 打开证照库弹窗
+      openIdLibDialog: function (row) {
+        parent.vm.openIdLibDialog(row, vm.getMatList);
+      },
+      // 格式化时间
+      formatDate: function (time, formatStr) {
+        return __STATIC.formatDate(date, formatStr);
+      },
+      // 处理上传文件
+      handleUploadFile: function (file) {
+        var vm = this;
+        var _this = this;
+        var formData = new FormData();
+        formData.append('files', file.file);
+        if (vm.currentUploadRow.attMatinstId) {
+          formData.append('matinstId', vm.currentUploadRow.attMatinstId);
+        } else {
+          formData.append('applyinstId', vm.applyinstId);
+          formData.append('matId', vm.currentUploadRow.matId);
+        }
+        vm.pageLoading = true;
+        axios.post(ctx + 'rest/approve/matinst/uploadAtt', formData).then(function (res) {
+          if (res.data && res.data.success) {
+            _this.$message.success('上传成功');
+            vm.getMatList();
+          } else {
+            _this.$message.error(res.message || '上传失败');
+          }
+        }).catch(function (e) {
+          _this.$message.error('上传失败');
+        }).finally(function () {
+          vm.pageLoading = false;
+        })
+      },
+      // 点击上传文件按钮，记录点击的哪条数据
+      clickUpload: function (row) {
+        var vm = this;
+        vm.currentUploadRow = row;
       },
       formDueToZero: function (row) {
         var duePaperCount = row.duePaperCount;
@@ -410,16 +518,8 @@
     },
     created: function () {
       var vm = this;
-      this.getDicCodeItems(); //获取通用字典数据
-      if (vm.iteminstId == '' || vm.iteminstId == 'undefined') {
-        vm.getIteminstIdByTaskId();
-      } else {
-        if (vm.isSeries == '1') {
-          vm.getSeriesMatinstList() // 获取串联材料列表
-        } else {
-          vm.getParallelMatinstList() // 获取并联材料列表
-        }
-      }
+      axios.defaults.withCredentials = true;
+      vm.getDicCodeItems(vm.getMatList); //获取通用字典数据
     },
     mounted: function () {
     },
@@ -428,8 +528,8 @@
         if (value != null) {
           var arr = value.split(',');
           for (var j = 0; j < arr.length; j++) {
-            for (var i = 0; i < matVm.dicCodeItems.length; i++) {
-              var item = matVm.dicCodeItems[i];
+            for (var i = 0; i < vm.dicCodeItems.length; i++) {
+              var item = vm.dicCodeItems[i];
               if (item["itemCode"] == arr[j]) {
                 arr[j] = item["itemName"];
                 break;

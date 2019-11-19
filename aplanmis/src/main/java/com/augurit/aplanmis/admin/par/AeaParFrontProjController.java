@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -104,6 +105,28 @@ public class AeaParFrontProjController {
             return new ResultForm(false, e.getMessage());
 
         }
+    }
+
+    @RequestMapping("/updateAeaParFrontProjSortNos.do")
+    public ResultForm updateAeaParFrontProjSortNos(String[] ids, Long[] sortNos) throws Exception {
+
+        if (ids != null && ids.length > 0 && sortNos != null && sortNos.length > 0) {
+            for (int i = 0; i < ids.length; i++) {
+                AeaParFrontProj aeaParFrontProj = new AeaParFrontProj();
+                aeaParFrontProj.setFrontProjId(ids[i]);
+                aeaParFrontProj.setSortNo(sortNos[i]);
+                aeaParFrontProjService.updateAeaParFrontProj(aeaParFrontProj);
+            }
+            return new ResultForm(true);
+        }
+        return new ResultForm(false, "传递排序数据有问题,请检查!");
+    }
+
+
+    @RequestMapping("/listAeaParFrontProjByNoPage.do")
+    public List<AeaParFrontProj> listAeaParFrontProjByNoPage(AeaParFrontProj aeaParFrontProj) throws Exception {
+        List<AeaParFrontProj> list = aeaParFrontProjService.listAeaParFrontProj(aeaParFrontProj);
+        return list;
     }
 
 }

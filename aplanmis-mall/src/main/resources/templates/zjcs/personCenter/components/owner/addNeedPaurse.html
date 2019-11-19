@@ -2,8 +2,8 @@
 <div class="box normal-module-box" id="addNeedPaurse">
 	<h2 class="box-tit">新增采购需求</h2>
 	<!-- 采购列表 -->
-	<!-- <div class="list-wrap pandel" v-if="addNeedStatus == 0"> -->
-	<div class="list-wrap pandel" v-if="false">
+	<div class="list-wrap pandel" v-if="addNeedStatus == 0">
+		<!-- <div class="list-wrap pandel" v-if="false"> -->
 		<!-- <div class="hint-box">
 				温馨提示：投资项目申报前，请登录“<a href="#">河北投资项目在线审批监管平台</a>”进行项目登记赋码
 		</div> -->
@@ -34,10 +34,15 @@
 				</template>
 			</el-table-column>
 		</el-table>
+
+		<el-pagination v-show="total>10" background align="right" :pager-count="5" @size-change="homeHandleSizeChange"
+			@current-change="homeHandleCurrentChange" :page-sizes="[10, 20, 30, 50]" :page-size="pageSize"
+			:current-page="pageNum" layout="total,sizes, prev, pager, next, jumper" :total="total">
+		</el-pagination>
 	</div>
 	<!-- 当前发布项目的详情填写页 -->
-	<!-- <div class="module-edit-wrap pandel" v-if="addNeedStatus == 1"> -->
-	<div class="module-edit-wrap pandel" v-if="true">
+	<div class="module-edit-wrap pandel" v-if="addNeedStatus == 1">
+		<!-- <div class="module-edit-wrap pandel" v-if="true"> -->
 		<div class="info-header clearfix">
 			<div class="handel text-right fr">
 				<el-button @click="addNeedStatus = 0">返回列表</el-button>
@@ -62,39 +67,39 @@
 								</el-button>
 							</el-input>
 						</div>
-						<div>
+						<!-- <div v-show="!!serviceDetail">
 							<el-row :gutter="20">
 								<el-col :span="8">
-									<el-form-item label="事项名称：">暂替位置标注</el-form-item>
+									<el-form-item label="事项名称：">{{serviceDetail.agentItemName}}</el-form-item>
 								</el-col>
 								<el-col :span="8">
-									<el-form-item label="实施主体：">暂替位置标注
+									<el-form-item label="实施主体：">{{serviceDetail.agentOrgName}}
 									</el-form-item>
 								</el-col>
 								<el-col :span="8">
-									<el-form-item label="服务对象：">暂替位置标注
+									<el-form-item label="服务对象：">{{serviceDetail.agentItemFwdx}}
+									</el-form-item>
+								</el-col>
+								<el-col :span="8">
+									<el-form-item label="办件类型：">{{serviceDetail.agentItemPropertyName}}
 									</el-form-item>
 								</el-col>
 							</el-row>
-							<el-row :gutter="20">
-								<el-col :span="8">
-									<el-form-item label="办件类型：">暂替位置标注
-									</el-form-item>
-								</el-col>
+							<el-row :gutter="20">								
 								<el-col :span="8">
 									<el-form-item label="法定办结时限：">
-										暂替位置标注
+										{{serviceDetail.agentItemDueNum}}（{{serviceDetail.agentItemDueUnitType}}）
 									</el-form-item>
 								</el-col>
 								<el-col :span="8">
 									<el-form-item label="承诺办结时限：">
-										暂替位置标注
+										{{serviceDetail.agentItemDueNum}}（{{serviceDetail.agentItemDueUnitType}}）
 									</el-form-item>
 								</el-col>
 							</el-row>
-						</div>
+						</div> -->
 					</el-form-item>
-					<el-form-item label="事项对应部门" prop="agentOrgName">
+					<el-form-item label="实施主体" prop="agentOrgName">
 						<el-input type="text" v-model="form.agentOrgName" class="form-control" disabled>
 						</el-input>
 					</el-form-item>
@@ -102,6 +107,22 @@
 						<el-input type="text" class="form-control" v-model="form.itemName" disabled>
 						</el-input>
 					</el-form-item>
+
+					<div v-show="isShowServiceDetail" class="clearfix">
+						<el-form-item class="inline-block" label="服务对象：">
+							{{serviceDetail.agentItemFwdx}}
+						</el-form-item>
+						<el-form-item class="inline-block" label="办件类型：">
+							{{serviceDetail.agentItemPropertyName}}
+						</el-form-item>
+						<el-form-item class="inline-block" label="法定办结时限：">
+							{{serviceDetail.agentItemDueNum}}（{{serviceDetail.agentItemDueUnitType}}）
+						</el-form-item>
+						<el-form-item class="inline-block" label="承诺办结时限：">
+							{{serviceDetail.agentItemDueNum}}（{{serviceDetail.agentItemDueUnitType}}）
+						</el-form-item>
+					</div>
+
 					<el-form-item label="投资审批项目" prop="isApproveProj" require>
 						<div class="input-box input-radio el-input-radio">
 							<el-radio v-model="form.isApproveProj" label="1">是</el-radio>
@@ -110,9 +131,9 @@
 								style="margin-left: 20px;">备注：若办理投资审批项目是需要采购中介服务的，请选择“是”并填写投资审批项目编码。</span>
 						</div>
 					</el-form-item>
-					<el-form-item label="项目/工程查询" id="projCodeInfo" :prop="approvalCodechange"
+					<el-form-item label="项目/工程查询" id="projCodeInfo" prop="approvalCode"
 						v-show="form.isApproveProj == 1">
-						<el-select v-model="searchKeyword" filterable remote autofocus reserve-keyword
+						<el-select v-model="form.approvalCode" filterable remote autofocus reserve-keyword
 							ref="searchProjInfo" no-data-text="暂无匹配的项目/工程" placeholder="请输入项目（工程）的编码 / 名称"
 							:remote-method="searchProjInfoByKeyword" :loading="loadingProjInfo">
 							<el-option v-for="item in projInfoList" :key="item.projInfoId"
@@ -284,8 +305,7 @@
 											<i class="header-icon el-icon-caret-bottom"></i>展开资质树</p>
 									</div>
 									<div v-show="aptTreeaFlag" style="border:1px solid #ced4da;max-width: 821px;">
-										<el-tabs type="border-card" v-model="activeSN"
-											@tab-click="handleClickAtiveQA">
+										<el-tabs type="border-card" v-model="activeSN" @tab-click="handleClickAtiveQA">
 											<el-tab-pane :label="item.qualName" v-for="(item, index1) in qualArry"
 												:key="item.qualId">
 												<el-tabs type="border-card" v-model="activeLE"
@@ -297,8 +317,8 @@
 												</el-tabs>
 											</el-tab-pane>
 										</el-tabs>
-										<el-tree :data="serviceTreeData" show-checkbox default-expand-all
-											node-key="id" ref="treeService" empty-text="请选择所需服务" highlight-current
+										<el-tree :data="serviceTreeData" show-checkbox default-expand-all node-key="id"
+											ref="treeService" empty-text="请选择所需服务" highlight-current
 											@check="handleServiceTreeData" :props="defaultProps">
 										</el-tree>
 									</div>
@@ -372,7 +392,7 @@
 						</div>
 					</div>
 					<!--随机抽取 str-->
-					<div class="" v-show="form.biddingType == 1">
+					<div class="" v-if="form.biddingType == 1">
 						<el-form-item label="是否确认金额" prop="isDefineAmount" require>
 							<div class="input-box input-radio el-input-radio">
 								<el-radio label="1" v-model="form.isDefineAmount">确定服务金额</el-radio>
@@ -380,7 +400,7 @@
 							</div>
 						</el-form-item>
 						<div class="clearfix" v-show="form.isDefineAmount == 1">
-							<el-form-item class="inline-block" label="服务金额" :prop="basePrice" require>
+							<el-form-item class="inline-block" label="服务金额" prop="basePrice" require>
 								<el-input type="number" class="form-control" v-model="form.basePrice"
 									@input="basePriceinput" style="width:300px;display: inline-block;"></el-input>
 								<span>元</span>
@@ -397,8 +417,7 @@
 								<el-radio label="0" v-model="form.isAvoid">否</el-radio>
 							</div>
 						</el-form-item>
-
-						<template v-show="form.isAvoid==1">
+						<div v-show="form.isAvoid=='1'">
 							<el-form-item label="回避单位" prop="isDefineAmount" require>
 								<el-button type="primary" @click="selectOrgan" size="mini">选择单位</el-button>
 								<el-table :data="avoidData" stripe border ref="multipleTable2"
@@ -412,18 +431,17 @@
 										v-model="form.avoidReason"></el-input>
 								</div>
 							</el-form-item>
-						</template>
+						</div>
 					</div>
-					<!--随机抽取 str-->
 					<!--直接选取 str-->
-					<div class="" v-show="form.biddingType == 2">
-						<el-form-item class="twoLine" label="是否确定服务金额" :prop="isDefineAmount" require>
+					<div class="" v-if="form.biddingType == 2">
+						<el-form-item class="twoLine" label="是否确定服务金额" prop="isDefineAmount" require>
 							<div class="input-box input-radio el-input-radio">
 								<el-radio label="1" v-model="form.isDefineAmount">确定服务金额</el-radio>
 							</div>
 						</el-form-item>
 						<div class="clearfix" v-show="form.isDefineAmount == 1">
-							<el-form-item class="inline-block" label="服务金额" :prop="basePrice" require>
+							<el-form-item class="inline-block" label="服务金额" prop="basePrice" require>
 								<el-input type="number" class="form-control" v-model="form.basePrice"
 									@input="basePriceinput" style="width: 300px;"></el-input>
 								<span>元</span>
@@ -448,9 +466,8 @@
 							</div>
 						</el-form-item>
 					</div>
-					<!--直接选取 end-->
 					<!--竞价选取 str-->
-					<div class="" v-show="form.biddingType == 3">
+					<div class="" v-if="form.biddingType == 3">
 						<el-form-item label="报价方式" prop="quoteType" require>
 							<div class="input-box input-radio el-input-radio">
 								<el-radio label="0" v-model="form.quoteType">服务金额</el-radio>
@@ -459,31 +476,27 @@
 						</el-form-item>
 						<div v-show="form.quoteType == 1">
 							<div class="clearfix">
-								<el-form-item class="inline-block" label="下浮率" :prop="basePrice" require>
-									<div class="input-box">
-										<el-input type="text" class="form-control" v-model="form.basePrice"
-											@input="basePriceblur"></el-input>
-									</div>
+								<el-form-item class="inline-block" label="下浮率" prop="basePrice" require>
+									<el-input type="text" class="form-control" v-model="form.basePrice"
+										@input="basePriceblur" style="width: 300px;"></el-input>
 									<span>&nbsp;%</span>
 								</el-form-item>
-								<el-form-item class="inline-block" label="" :prop="highestPrice" require>
+								<el-form-item class="inline-block" label="" prop="highestPrice" require>
 									<span>至</span>
-									<div class="input-box">
-										<el-input type="text" class="form-control" v-model="form.highestPrice"
-											@input="highestPriceblur"></el-input>
-									</div>
+									<el-input type="text" class="form-control" v-model="form.highestPrice"
+										@input="highestPriceblur" style="width: 300px;"></el-input>
 									<span>&nbsp;%</span>
 								</el-form-item>
 							</div>
 						</div>
 						<div v-show="form.quoteType == 0">
 							<div class="clearfix">
-								<el-form-item class="inline-block" label="服务金额" :prop="basePricechange" require>
+								<el-form-item class="inline-block" label="服务金额" prop="basePrice" require>
 									<el-input type="text" class="form-control" v-model="form.basePrice"
 										@input="basePriceblur" style="width: 300px;"></el-input>
 									<span>&nbsp;元</span>
 								</el-form-item>
-								<el-form-item class="inline-block" label="" :prop="highestPricechange" require>
+								<el-form-item class="inline-block" label="" prop="highestPrice" require>
 									<span>至</span>
 									<el-input type="text" class="form-control" v-model="form.highestPrice"
 										@input="highestPriceblur" style="width: 300px;"></el-input>
@@ -512,7 +525,7 @@
 							</div>
 						</el-form-item>
 
-						<template v-show="form.isAvoid==1">
+						<div v-show="form.isAvoid=='1'">
 							<el-form-item label="回避单位" prop="isDefineAmount" require>
 								<el-button type="primary" @click="selectOrgan" size="mini">选择单位</el-button>
 								<el-table :data="avoidData" stripe border ref="multipleTable2"
@@ -526,7 +539,7 @@
 										v-model="form.avoidReason"></el-input>
 								</div>
 							</el-form-item>
-						</template>
+						</div>
 					</div>
 
 					<el-form-item label="报名截止时间" prop="expirationDate" require>
@@ -545,7 +558,7 @@
 							</el-date-picker>
 						</div>
 					</el-form-item>
-					<!-- 竞价选取 end-->
+
 					<el-form-item label="金额说明" prop="amountExplain" require>
 						<div class="input-box">
 							<el-input type="textarea" class="form-control" style="width: 825px;"
@@ -886,8 +899,8 @@
 
 			<!-- 保存，提交 -->
 			<div class="mt20 text-ceter">
-				<el-button type="primary" @click="saveForm('form')">保存</el-button>
-				<el-button type="primary" @click="submitProj('form')">提 交</el-button>
+				<el-button type="primary" @click="saveForm('form')">提 交</el-button>
+				<!-- <el-button type="primary" @click="submitProj('form')">提 交</el-button> -->
 				<el-button type="normal" @click="addNeedStatus = 0">取 消</el-button>
 			</div>
 
@@ -905,7 +918,7 @@
 		<div class="info-title" v-text="aeaProjInfo.projName">
 			【项目报名】东莞市天然气高压管网工程沙田高中压调压站项目
 		</div>
-		<el-form :model="form" :rules="rules" ref="form" class="form" id="matterForm">
+		<el-form :model="form" :rules="rules" label-width="150px" ref="form" class="form" id="matterForm">
 
 			<!-- 项目基本信息 -->
 			<div class="info-item edit-item">
@@ -932,63 +945,34 @@
 								 </el-form-item>
 						 </div>
 					 </div> -->
-
-					<div class="row" v-show="form.isApproveProj == 1">
-						<div class="col-md-12 form-item">
-							<el-form-item label="" :prop="approvalCodechange" require>
-								<label><b class="red-cl">*</b>投资审批项目编码</label>
-								<div class="input-box">
-									<span type="text" class="form-control">{{aeaProjInfo.localCode}}</span>
-								</div>
-							</el-form-item>
-						</div>
-					</div>
-					<!-- <div class="row">
-						<div class="col-md-12 form-item">
-								<el-form-item label="" prop="applyinstCode">
-							<label>审批业务流水号</label>
+					<div class="clearfix">
+						<el-form-item class="inline-block" label="投资审批项目编码：" require v-show="form.isApproveProj == 1">
 							<div class="input-box">
-								<span type="text" class="form-control"  placeholder="请输入流水号" v-model="form.applyinstCode"></span>
+								<span type="text" class="form-control">{{aeaProjInfo.localCode || '暂无'}}</span>
 							</div>
-							 </el-form-item>
-						</div>
-					</div> -->
-					<div class="row">
-						<div class="col-md-6 form-item">
-							<el-form-item label="" prop="localCode">
-								<label>采购项目名称</label>
-								<div class="input-box">
-									<span type="text" class="form-control">{{aeaProjInfo.projName}}</span>
-								</div>
-							</el-form-item>
-						</div>
-						<div class="col-md-6 form-item">
-							<el-form-item label="" prop="applicant">
-								<label>项目业主:</label>
-								<div class="input-box">
-									<span type="text" class="form-control">{{aeaUnitInfo.applicant || '暂无'}}</span>
-								</div>
-							</el-form-item>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-6 form-item">
+						</el-form-item>
 
-							<label><b class="red-cl">*</b>项目联系人</label>
+						<el-form-item class="inline-block" label="采购项目名称：">
 							<div class="input-box">
-								<span type="text" class="form-control">{{aeaLinkmanInfo.linkmanName||'暂无'}}</span>
+								<span type="text" class="form-control">{{aeaProjInfo.projName || '暂无'}}</span>
 							</div>
-
-						</div>
-						<div class="col-md-6 form-item">
-
-							<label><b class="red-cl">*</b>联系电话</label>
+						</el-form-item>
+						<el-form-item class="inline-block" label="项目业主：" prop="applicant">
 							<div class="input-box">
-								<span type="number"
-									class="form-control">{{aeaLinkmanInfo.linkmanMobilePhone||'暂无'}}</span>
+								<span type="text" class="form-control">{{aeaUnitInfo.applicant || '暂无'}}</span>
 							</div>
+						</el-form-item>
 
-						</div>
+						<el-form-item class="inline-block" label="项目联系人：" prop="applicant">
+							<div class="input-box">
+								<span type="text" class="form-control">{{aeaLinkmanInfo.linkmanName || '暂无'}}</span>
+							</div>
+						</el-form-item>
+						<el-form-item class="inline-block" label="联系电话：" prop="applicant">
+							<div class="input-box">
+								<span type="text" class="form-control">{{aeaLinkmanInfo.linkmanMobilePhone || '暂无'}}</span>
+							</div>
+						</el-form-item>
 					</div>
 					<!-- <div class="row">
 						<div class="col-md-6 form-item" style="margin-top: 17px;">

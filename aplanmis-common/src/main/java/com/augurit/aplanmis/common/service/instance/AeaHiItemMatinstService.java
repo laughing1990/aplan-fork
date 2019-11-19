@@ -28,6 +28,7 @@ public interface AeaHiItemMatinstService {
      * @throws Exception
      */
     List<AeaHiItemMatinst> getMatinstListByIteminstIds(String[] iteminstId, String isInput) throws Exception;
+
     /**
      * 根据事项实例ID以及搜索关键字获取（输入或输出）材料实例列表
      *
@@ -36,7 +37,7 @@ public interface AeaHiItemMatinstService {
      * @return
      * @throws Exception
      */
-    List<AeaHiItemMatinst> getMatinstListByIteminstIdsAndKeyword(String[] iteminstId, String isInput,String keyword) throws Exception;
+    List<AeaHiItemMatinst> getMatinstListByIteminstIdsAndKeyword(String[] iteminstId, String isInput, String keyword) throws Exception;
 
 
     /**
@@ -105,6 +106,7 @@ public interface AeaHiItemMatinstService {
 
     /**
      * 从云盘上传申请材料
+     *
      * @param aeaHiItemMatinst
      * @return
      * @throws Exception
@@ -126,11 +128,23 @@ public interface AeaHiItemMatinstService {
      * 关联电子证照库中的材料
      *
      * @param aeaHiCertinst 前端回传绑定的信息
-     * @param currentUserName
+     * @param currentUserId
      * @return 证照材料
      */
-    AeaHiCertinst bindCertinst(AeaHiCertinst aeaHiCertinst, String currentUserName) throws Exception;
+    AeaHiCertinst bindCertinst(AeaHiCertinst aeaHiCertinst, String currentUserId) throws Exception;
+
+    /**
+     * 根据 certinstCode 返回以前绑定过的电子证照材料实例
+     *
+     * @param authCode
+     * @param currentOrgId
+     * @return
+     */
+    List<AeaHiCertinst> getHistoryCertinst(String authCode, String currentOrgId);
 
     void unbindCertinst(String matinstId) throws Exception;
 
+    void setAttCount(AeaHiItemMatinst aeaHiItemMatinst, HttpServletRequest request) throws Exception;
+
+    AeaHiItemMatinst bindForminst(AeaHiItemMatinst aeaHiItemMatinst, String currentUserId) throws Exception;
 }

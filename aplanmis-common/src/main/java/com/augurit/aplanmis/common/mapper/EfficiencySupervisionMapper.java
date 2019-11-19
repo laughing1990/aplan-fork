@@ -72,4 +72,15 @@ public interface EfficiencySupervisionMapper {
      * @return
      */
     List<OpuOmOrg> listOpuOmOrg(OpuOmOrg search);
+
+    /**
+     * 从历史表统计某状态数据
+     * @param regionId
+     * @param
+     * @param startTime
+     * @param endTime
+     * @param rootOrgId
+     * @return
+     */
+    List<ItemDetailFormVo> getOrgReceiveStateStatistics(@Param("regionId") String regionId, @Param("newState") String newState, @Param("startTime") String startTime, @Param("endTime") String endTime, @Param("rootOrgId") String rootOrgId);
 }

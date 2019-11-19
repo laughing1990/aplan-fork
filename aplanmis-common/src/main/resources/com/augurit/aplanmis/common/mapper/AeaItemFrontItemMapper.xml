@@ -111,7 +111,7 @@
 
     <!--6 修改实体对象 -->
     <update id="updateAeaItemFront" parameterType="AeaItemFrontItem" >
-        update AEA_ITEM_FRONT
+        update AEA_ITEM_FRONT_ITEM
         <set >
             <if test="frontItemId != null" >
             FRONT_ITEM_ID = #{frontItemId},
@@ -147,7 +147,7 @@
             ROOT_ORG_ID = #{rootOrgId},
             </if>
         </set>
-        where ITEM_FRONT_ID = #{itemFrontId}
+        where FRONT_ITEM_ID = #{frontItemId}
     </update>
 
     <!--7 删除实体对象,根据主键ID -->
@@ -155,8 +155,19 @@
         delete from  AEA_ITEM_FRONT_ITEM where FRONT_ITEM_ID = #{id}
     </delete>
 
+    <delete id="batchDelAeaItemFront">
+         <if test="ids!=null and ids.size()>0">
+             delete from  AEA_ITEM_FRONT_ITEM where FRONT_ITEM_ID in 
+             <foreach collection="ids" item="id" open="(" close=")" separator=",">
+                 #{id}
+             </foreach>
+         </if>
+    </delete>
+
     <delete id="batchDelItemByItemVerId">
-         delete from  AEA_ITEM_FRONT_ITEM where ITEM_VER_ID = #{itemVerId}
+         delete from  AEA_ITEM_FRONT_ITEM
+          where ITEM_VER_ID = #{itemVerId}
+            and ROOT_ORG_ID = #{rootOrgId}
     </delete>
 
     <select id="listItemsByItemVerId" resultType="AeaItemFrontItem">
@@ -229,10 +240,12 @@
 
     <select id="listAeaItemFrontItem" resultType="AeaItemFrontItem">
         select
-        <include refid="aliasAllColumns">
-            <property name="alias" value="aifi"></property>
-        </include>
-        ,aib.ITEM_NAME frontCkItemName
+            <include refid="aliasAllColumns">
+                <property name="alias" value="aifi"></property>
+            </include>,
+            aib.ITEM_NAME frontCkItemName,
+            aib.ITEM_CODE frontCkItemCode,
+            aib.IS_CATALOG frontCkIsCatalog
         from AEA_ITEM_FRONT_ITEM aifi
         left join aea_item_basic aib on aib.ITEM_VER_ID = aifi.FRONT_ITEM_VER_ID
         <where>
@@ -287,13 +300,27 @@
 
     <select id="getAeaItemFrontItemByFrontItemId" resultType="AeaItemFrontItem">
         select
-        <include refid="aliasAllColumns">
-            <property name="alias" value="aifi"></property>
-        </include>
-        ,aib.ITEM_NAME frontCkItemName
+            <include refid="aliasAllColumns">
+                <property name="alias" value="aifi"></property>
+            </include>,
+            aib.ITEM_NAME frontCkItemName,
+            aib.ITEM_CODE frontCkItemCode,
+            aib.IS_CATALOG frontCkIsCatalog
         from AEA_ITEM_FRONT_ITEM aifi
         left join aea_item_basic aib on aib.ITEM_VER_ID = aifi.FRONT_ITEM_VER_ID
         where aifi.FRONT_ITEM_ID = #{frontItemId}
     </select>
+    
+    <update id="changIsActive">
+        update AEA_ITEM_FRONT_ITEM
+        set IS_ACTIVE = case IS_ACTIVE
+        when '1' then '0'
+        when '0' then '1'
+        end
+        <where>
+            and FRONT_ITEM_ID = #{id}
+            and ROOT_ORG_ID = #{rootOrgId}
+        </where>
+    </update>
     
 </mapper>

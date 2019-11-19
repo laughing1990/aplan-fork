@@ -91,6 +91,8 @@
                                 <i class="la la-search"></i>
                             </span>
                         </div>
+                        <button id="editActStoFormBtn" type="button" class="btn btn-info"
+                                onclick="editActStoFormFunc();" style="margin-left: 3px;">编辑</button>
                     </div>
                 </div>
 

@@ -1,5 +1,7 @@
 package com.augurit.aplanmis.admin.item.controller;
 
+import com.augurit.agcloud.framework.exception.InvalidParameterException;
+import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.ui.pager.EasyuiPageInfo;
 import com.augurit.agcloud.framework.ui.pager.PageHelper;
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
@@ -86,6 +88,7 @@ public class AeaItemFrontProjAdminController {
 
     @RequestMapping("/getMaxSortNo.do")
     public ResultForm getMaxSortNo(AeaItemFrontProj aeaItemFrontProj) {
+
         try {
             return new ContentResultForm<>(true, aeaItemFrontProjService.getMaxSortNo(aeaItemFrontProj));
         } catch (Exception e) {
@@ -95,4 +98,13 @@ public class AeaItemFrontProjAdminController {
         }
     }
 
+    @RequestMapping("/changIsActive.do")
+    public ResultForm changIsActive(String id) {
+
+        if (StringUtils.isBlank(id)) {
+            throw new InvalidParameterException("参数id为空!");
+        }
+        aeaItemFrontProjService.changIsActive(id, SecurityContext.getCurrentOrgId());
+        return new ResultForm(true);
+    }
 }

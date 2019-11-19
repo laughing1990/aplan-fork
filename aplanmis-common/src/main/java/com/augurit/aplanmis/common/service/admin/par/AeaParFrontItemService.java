@@ -40,4 +40,6 @@ public interface AeaParFrontItemService {
 
     void batchSaveAeaParFrontItem(String stageId,String itemVerIds)throws Exception;
 
+    List<AeaParFrontItemVo> listAeaParFrontItemVoByNoPage(AeaParFrontItem aeaParFrontItem) throws Exception;
+
 }

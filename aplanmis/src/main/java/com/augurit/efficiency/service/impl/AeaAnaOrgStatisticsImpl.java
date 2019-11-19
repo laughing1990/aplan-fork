@@ -89,7 +89,7 @@ public class AeaAnaOrgStatisticsImpl {
             String orgName = basic.getOrgName();
             //统计此部门的办件情况
             try {
-                List<AeaAnaOrgDayStatistics> oneOrgList = statisticsOneOrgDay(orgId, orgName,statisticsRecord.getStatisticsRecordId(),statisticsRecord.getStatisticsStartDate());
+                List<AeaAnaOrgDayStatistics> oneOrgList = statisticsOneOrgDay(orgId, orgName,statisticsRecord.getStatisticsRecordId(),statisticsRecord.getStatisticsStartDate(),rootOrgId);
                 list.addAll(oneOrgList);
             }catch (Exception e){
                 log.debug("统计部门日办件情况出错，部门ID：{}，部门名称：{}，错误信息：{}",orgId,orgName,e.getMessage());
@@ -135,7 +135,7 @@ public class AeaAnaOrgStatisticsImpl {
             String orgName = basic.getOrgName();
             //统计此部门的办件情况
             try {
-                List<AeaAnaOrgWeekStatistics> oneOrgList = statisticsOneOrgWeek(orgId, orgName,record.getStatisticsRecordId(),record.getStatisticsStartDate(),record.getStatisticsEndDate(),today);
+                List<AeaAnaOrgWeekStatistics> oneOrgList = statisticsOneOrgWeek(orgId, orgName,record.getStatisticsRecordId(),record.getStatisticsStartDate(),record.getStatisticsEndDate(),today,rootOrgId);
                 list.addAll(oneOrgList);
             }catch (Exception e){
                 log.debug("统计部门周办件情况出错，部门ID：{}，部门名称：{}，错误信息：{}",orgId,orgName,e.getMessage());
@@ -182,7 +182,7 @@ public class AeaAnaOrgStatisticsImpl {
             String orgName = basic.getOrgName();
             //统计此部门的办件情况
             try {
-                List<AeaAnaOrgMonthStatistics> oneOrgList = statisticsOneOrgMonth(orgId, orgName,record.getStatisticsRecordId(),record.getStatisticsStartDate(),record.getStatisticsEndDate(),today);
+                List<AeaAnaOrgMonthStatistics> oneOrgList = statisticsOneOrgMonth(orgId, orgName,record.getStatisticsRecordId(),record.getStatisticsStartDate(),record.getStatisticsEndDate(),today,rootOrgId);
                 list.addAll(oneOrgList);
             }catch (Exception e){
                 log.debug("统计部门月办件情况出错，部门ID：{}，部门名称：{}，错误信息：{}",orgId,orgName,e.getMessage());
@@ -229,7 +229,7 @@ public class AeaAnaOrgStatisticsImpl {
             String orgName = basic.getOrgName();
             //统计此部门的办件情况
             try {
-                List<AeaAnaOrgYearStatistics> oneOrgList = statisticsOneOrgYear(orgId, orgName,record.getStatisticsRecordId(),record.getStatisticsStartDate(),record.getStatisticsEndDate(),today);
+                List<AeaAnaOrgYearStatistics> oneOrgList = statisticsOneOrgYear(orgId, orgName,record.getStatisticsRecordId(),record.getStatisticsStartDate(),record.getStatisticsEndDate(),today,rootOrgId);
                 list.addAll(oneOrgList);
             }catch (Exception e){
                 log.debug("统计部门年办件情况出错，部门ID：{}，部门名称：{}，错误信息：{}",orgId,orgName,e.getMessage());
@@ -244,7 +244,7 @@ public class AeaAnaOrgStatisticsImpl {
         log.debug("年办件统计耗时：" + (System.currentTimeMillis()-beginTime));
     }
 
-    private List<AeaAnaOrgYearStatistics> statisticsOneOrgYear(String orgId,String orgName,String statisticsRecordId,Date firstDay,Date lastDay,Date today)throws ParseException{
+    private List<AeaAnaOrgYearStatistics> statisticsOneOrgYear(String orgId,String orgName,String statisticsRecordId,Date firstDay,Date lastDay,Date today,String rootOrgId)throws ParseException{
         List<AeaAnaOrgYearStatistics> list = new ArrayList<>();
         //查询部门下发布和试运行的全部实施事项
         List<AeaItemBasic> itemBasics = aeaItemBasicMapper.listAeaItemBasicByOrgId(orgId);
@@ -255,6 +255,7 @@ public class AeaAnaOrgStatisticsImpl {
             String thisMonth = DateUtils.convertDateToString(preDate, "yyyy-MM");
             List<String> monthlyList = DateUtils.calculateMonthly(DateUtils.convertDateToString(firstDay, "yyyy-MM"), thisMonth);
             String year = DateUtils.convertDateToString(preDate, "yyyy");
+            boolean isGuangDong = isWithinTheRegion("广东省",rootOrgId);
             for(int j=0,leng=applySourceArray.length;j<leng;j++) {
                 String applySource = applySourceArray[j];
                 for (int i = 0, len = itemBasics.size(); i < len; i++) {
@@ -373,7 +374,14 @@ public class AeaAnaOrgStatisticsImpl {
                     Double allOutScopeRate = allApplyCount == 0 ? 0 : CalculateUtil.formatDoubleValue((double) allOutScopeCount / allApplyCount);
                     one.setAllOutScopeRate(allOutScopeRate);
                     //逾期率
-                    Double allOverTimeRate = allAcceptanceCount == 0 ? 0 : CalculateUtil.formatDoubleValue((double) allOverTimeCount / allAcceptanceCount);
+                    int allCount = allAcceptanceCount;
+                    if(!isGuangDong){
+                        String[] itemStates = {ItemStatus.BACK_APPLY.getValue(), ItemStatus.REFUSE_DEAL.getValue(), ItemStatus.OUT_SCOPE.getValue(),
+                                ItemStatus.RECALL.getValue(),ItemStatus.REVOKE.getValue()};
+                        int excludeCount = aeaHiIteminstMapper.countCompletedIteminst(itemId, itemStates, orgId, null, null, applySource);
+                        allCount = allApplyCount - excludeCount;
+                    }
+                    Double allOverTimeRate = allAcceptanceCount == 0 ? 0 : CalculateUtil.formatDoubleValue((double) allOverTimeCount / allCount);
                     one.setAllOverTimeRate(allOverTimeRate);
                     //办结率
                     Double allCompletedRate = allAcceptanceCount == 0 ? 0 : CalculateUtil.formatDoubleValue((double) allCompletedCount / allAcceptanceCount);
@@ -385,7 +393,7 @@ public class AeaAnaOrgStatisticsImpl {
         return list;
     }
 
-    private List<AeaAnaOrgMonthStatistics> statisticsOneOrgMonth(String orgId,String orgName,String statisticsRecordId,Date firstDay,Date lastDay,Date today)throws ParseException{
+    private List<AeaAnaOrgMonthStatistics> statisticsOneOrgMonth(String orgId,String orgName,String statisticsRecordId,Date firstDay,Date lastDay,Date today,String rootOrgId)throws ParseException{
         List<AeaAnaOrgMonthStatistics> list = new ArrayList<>();
         //查询部门下发布和试运行的全部实施事项
         List<AeaItemBasic> itemBasics = aeaItemBasicMapper.listAeaItemBasicByOrgId(orgId);
@@ -396,6 +404,7 @@ public class AeaAnaOrgStatisticsImpl {
             Date preDate = DateUtils.getPreDateByDate(today);
             String statisticsMonth = DateUtils.convertDateToString(preDate, "yyyy-MM");
             List<String> dateList = DateUtils.calFirstDay2Date(preDate);
+            boolean isGuangDong = isWithinTheRegion("广东省",rootOrgId);
             for(int j=0,leng=applySourceArray.length;j<leng;j++) {
                 String applySource = applySourceArray[j];
                 for (int i = 0, len = itemBasics.size(); i < len; i++) {
@@ -536,7 +545,14 @@ public class AeaAnaOrgStatisticsImpl {
                     Double allOutScopeRate = allApplyCount == 0 ? 0 : CalculateUtil.formatDoubleValue((double) allOutScopeCount / allApplyCount);
                     one.setAllOutScopeRate(allOutScopeRate);
                     //逾期率
-                    Double allOverTimeRate = allAcceptanceCount == 0 ? 0 : CalculateUtil.formatDoubleValue((double) allOverTimeCount / allAcceptanceCount);
+                    int allCount = allAcceptanceCount;
+                    if(!isGuangDong){
+                        String[] itemStates = {ItemStatus.BACK_APPLY.getValue(), ItemStatus.REFUSE_DEAL.getValue(), ItemStatus.OUT_SCOPE.getValue(),
+                                ItemStatus.RECALL.getValue(),ItemStatus.REVOKE.getValue()};
+                        int excludeCount = aeaHiIteminstMapper.countCompletedIteminst(itemId, itemStates, orgId, null, null, applySource);
+                        allCount = allApplyCount - excludeCount;
+                    }
+                    Double allOverTimeRate = allAcceptanceCount == 0 ? 0 : CalculateUtil.formatDoubleValue((double) allOverTimeCount / allCount);
                     one.setAllOverTimeRate(allOverTimeRate);
                     //办结率
                     Double allCompletedRate = allAcceptanceCount == 0 ? 0 : CalculateUtil.formatDoubleValue((double) allCompletedCount / allAcceptanceCount);
@@ -548,7 +564,7 @@ public class AeaAnaOrgStatisticsImpl {
         return list;
     }
 
-    private List<AeaAnaOrgWeekStatistics> statisticsOneOrgWeek(String orgId,String orgName,String statisticsRecordId,Date monday,Date sunday,Date today){
+    private List<AeaAnaOrgWeekStatistics> statisticsOneOrgWeek(String orgId,String orgName,String statisticsRecordId,Date monday,Date sunday,Date today,String rootOrgId){
         List<AeaAnaOrgWeekStatistics> list = new ArrayList<>();
         //查询部门下发布和试运行的全部实施事项
         List<AeaItemBasic> itemBasics = aeaItemBasicMapper.listAeaItemBasicByOrgId(orgId);
@@ -564,6 +580,7 @@ public class AeaAnaOrgStatisticsImpl {
             Calendar ca = Calendar.getInstance();
             ca.setTime(preDate);
             int year = ca.get(Calendar.YEAR);
+            boolean isGuangDong = isWithinTheRegion("广东省",rootOrgId);
             for(int j=0,leng=applySourceArray.length;j<leng;j++){
                 String applySource = applySourceArray[j];
                 for(int i=0,len=itemBasics.size();i<len;i++){
@@ -682,7 +699,14 @@ public class AeaAnaOrgStatisticsImpl {
                     Double allOutScopeRate = allApplyCount==0?0:CalculateUtil.formatDoubleValue((double)allOutScopeCount/allApplyCount);
                     one.setAllOutScopeRate(allOutScopeRate);
                     //逾期率
-                    Double allOverTimeRate = allAcceptanceCount==0?0:CalculateUtil.formatDoubleValue((double)allOverTimeCount/allAcceptanceCount);
+                    int allCount = allAcceptanceCount;
+                    if(!isGuangDong){
+                        String[] itemStates = {ItemStatus.BACK_APPLY.getValue(), ItemStatus.REFUSE_DEAL.getValue(), ItemStatus.OUT_SCOPE.getValue(),
+                                ItemStatus.RECALL.getValue(),ItemStatus.REVOKE.getValue()};
+                        int excludeCount = aeaHiIteminstMapper.countCompletedIteminst(itemId, itemStates, orgId, null, null, applySource);
+                        allCount = allApplyCount - excludeCount;
+                    }
+                    Double allOverTimeRate = allAcceptanceCount==0?0:CalculateUtil.formatDoubleValue((double)allOverTimeCount/allCount);
                     one.setAllOverTimeRate(allOverTimeRate);
                     //办结率
                     Double allCompletedRate = allAcceptanceCount==0?0:CalculateUtil.formatDoubleValue((double)allCompletedCount/allAcceptanceCount);
@@ -700,9 +724,11 @@ public class AeaAnaOrgStatisticsImpl {
      * @param orgName
      * @param statisticsRecordId
      * @param statisticsDate
+     * @param rootOrgId
      * @return
+     * @throws Exception
      */
-    private List<AeaAnaOrgDayStatistics> statisticsOneOrgDay(String orgId, String orgName, String statisticsRecordId, Date statisticsDate)throws Exception{
+    private List<AeaAnaOrgDayStatistics> statisticsOneOrgDay(String orgId, String orgName, String statisticsRecordId, Date statisticsDate,String rootOrgId)throws Exception{
         List<AeaAnaOrgDayStatistics> list = new ArrayList<>();
         //查询部门下发布和试运行的全部实施事项
         List<AeaItemBasic> itemBasics = aeaItemBasicMapper.listAeaItemBasicByOrgId(orgId);
@@ -711,7 +737,9 @@ public class AeaAnaOrgStatisticsImpl {
             String dateFormat = sdf.format(statisticsDate);
             String startTime = dateFormat + " 00:00:00";
             String endTime = dateFormat + " 23:59:59";
-            String rootOrgId = null;
+            // 因为 广东省外的是申请实例已受理（申请实例状态为2）开始计时，省内是事项实例已受理（事项实例状态为8）开始计时，所以 广东省内和省外的逾期率的计算方式不一样。
+            //判断是否广东省内。
+            boolean isGuangDong = isWithinTheRegion("广东省",rootOrgId);
             //前一天
             String preDate = DateUtils.getPreDateByDate(dateFormat);
             //统计不同来源
@@ -720,9 +748,6 @@ public class AeaAnaOrgStatisticsImpl {
                 for (int i = 0, len = itemBasics.size(); i < len; i++) {
                     AeaAnaOrgDayStatistics one = new AeaAnaOrgDayStatistics();
                     AeaItemBasic itemBasic = itemBasics.get(i);
-                    if(StringUtils.isBlank(rootOrgId)){
-                        rootOrgId = itemBasic.getRootOrgId();
-                    }
                     String itemId = itemBasic.getItemId();
                     AeaAnaOrgDayStatistics preStatistics = aeaAnaOrgDayStatisticsMapper.getAeaAnaOrgDayStatistics(orgId, itemId, preDate, applySource);
                     one.setOrgDayStatisticsId(UUID.randomUUID().toString());
@@ -755,6 +780,7 @@ public class AeaAnaOrgStatisticsImpl {
                     //日受理数
                     int dayAcceptanceCount = aeaHiIteminstMapper.countApproveIteminst(itemId, ItemStatus.DEPARTMENT_DEAL_START.getValue(), orgId, applySource,  startTime, endTime);
                     one.setDayAcceptanceCount(dayAcceptanceCount);
+                    //总受理数，不限制时间查询：在事项状态历史表中有部门受理状态8 的办件。
                     int allAcceptanceCount = aeaHiIteminstMapper.countApproveIteminst(itemId, ItemStatus.DEPARTMENT_DEAL_START.getValue(), orgId, applySource,  null, null);
                     one.setAllAcceptanceCount(allAcceptanceCount);
                     Integer preDayAcceptanceCount = preStatistics == null ? 0 : preStatistics.getDayAcceptanceCount();
@@ -800,6 +826,7 @@ public class AeaAnaOrgStatisticsImpl {
                     search.clearQueryParam();
                     search.setQueryIteminstStates(CalculateUtil.getQueryFieldValue(states3));
                     List<AeaHiIteminst> overtimeList = aeaHiIteminstMapper.queryAeaHiIteminstList(search);
+                    //总逾期数，不限制时间查询该事项排除不受理、不予受理、已撤件、撤回、撤销状态后所有事项实例在时限计算实例表中状态为逾期状态3 的办件。
                     Integer allOverTimeCount = getStateCount(overtimeList, "3",null,rootOrgId);
                     Integer dayOverTimeCount = getStateCount(overtimeList, "3",statisticsDate,rootOrgId);
                     one.setDayOverTimeCount(dayOverTimeCount);
@@ -812,8 +839,16 @@ public class AeaAnaOrgStatisticsImpl {
                     //总不予受理率
                     Double allOutScopeRate = allApplyCount == 0 ? 0 : CalculateUtil.formatDoubleValue((double) allOutScopeCount / allApplyCount);
                     one.setAllOutScopeRate(allOutScopeRate);
-                    //总逾期率
-                    Double allOverTimeRate = allAcceptanceCount == 0 ? 0 : CalculateUtil.formatDoubleValue((double) allOverTimeCount / allAcceptanceCount);
+                    //总逾期率计算
+                    //广东省内是：总逾期数/总受理数     广东省外是：总逾期数/（总接件数-总已撤件数-总不受理数-总不予受理数-总撤回数-总撤销数）
+                    int allCount = allAcceptanceCount;
+                    if(!isGuangDong){
+                        String[] itemStates = {ItemStatus.BACK_APPLY.getValue(), ItemStatus.REFUSE_DEAL.getValue(), ItemStatus.OUT_SCOPE.getValue(),
+                                               ItemStatus.RECALL.getValue(),ItemStatus.REVOKE.getValue()};
+                        int excludeCount = aeaHiIteminstMapper.countCompletedIteminst(itemId, itemStates, orgId, null, null, applySource);
+                        allCount = allApplyCount - excludeCount;
+                    }
+                    Double allOverTimeRate = allAcceptanceCount == 0 ? 0 : CalculateUtil.formatDoubleValue((double) allOverTimeCount / allCount);
                     one.setAllOverTimeRate(allOverTimeRate);
                     //总办结率
                     Double allCompletedRate = allAcceptanceCount == 0 ? 0 : CalculateUtil.formatDoubleValue((double) allCompletedCount / allAcceptanceCount);
@@ -867,6 +902,21 @@ public class AeaAnaOrgStatisticsImpl {
             }
         }
         return dicRegion;
+    }
+
+    /**
+     * 判断是否广东省内，通过地区全名是否包含广东省判断
+     * @param name      广东省
+     * @param orgId     顶级组织ID
+     * @return  默认返回false
+     */
+    private boolean isWithinTheRegion(String name,String orgId){
+        boolean result = false;
+        if(StringUtils.isNotBlank(name) && StringUtils.isNotBlank(orgId)){
+            BscDicRegion dicRegion = bscDicRegionMapper.selectRegionByOrgId(orgId);
+            result = (dicRegion != null && StringUtils.isNotBlank(dicRegion.getRegionFullName()) && dicRegion.getRegionFullName().contains(name));
+        }
+        return result;
     }
 
     /**

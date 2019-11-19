@@ -1234,17 +1234,17 @@ function changeViewStageProp(stageId, statusValue, workDay, ele) {
       src = '';
   var $pool = $('g[model-id=' + stageId + ']');
   $pool.data('stageInfo', ele);
-  if (statusValue == 'HANDING' || statusValue == 'UN_FINISHED') { //正在处理
+  if (statusValue == 'HANDLING' || statusValue == 'UN_FINISHED') { //正在处理
     color = gBlue, src = ctx + '/rappid/apps/BPMNEditor/images/stage_handing.png';
   } else if (statusValue == 'FINISHED') { //完成
     color = gGreen, src = ctx + '/rappid/apps/BPMNEditor/images/stage_done.png';
   } else { //未开始
     color = gGraySlow, src = ctx + '/rappid/apps/BPMNEditor/images/stage_un_start.png';
   }
-  if (workDay) {
-    // $pool.find('text:eq(2)').text('（实际20个工作日）');  时间设置未做
-    // $pool.find('text:eq(2)').attr('transform', 'matrix(1,0,0,1,'+($pool.find('rect:eq(1)').attr('width')-($pool.find('text:eq(2)')[0]).getClientRects()[0].width)/2+',43)');
-  }
+  // if (ele.duringTime) {
+    $pool.find('text:eq(2)').text('（'+(ele.duringTime?ele.duringTime:'-')+'工作日）');  //时间设置未做
+    $pool.find('text:eq(2)').attr('transform', 'matrix(1,0,0,1,'+($pool.find('rect:eq(1)').attr('width')-($pool.find('text:eq(2)')[0]).getClientRects()[0].width)/2+',43)');
+  // }
   
   if (color != '') {
     var $text = $pool.find('text:eq(1)');
@@ -1521,7 +1521,7 @@ function setViewByProjResult(statusList, projId, cells) {
   };
   
   
-  if (statusList.length > 0) {
+  if (statusList && statusList.length > 0) {
     $.each(statusList, function (ind, ele) {
       changeViewStageProp(ele.stageId, ele.statusValue, ele.statusName, ele);
       if (ele.diagramItemList && ele.diagramItemList.length > 0) {

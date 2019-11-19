@@ -132,6 +132,7 @@ public class AeaItemFrontPartformAdminServiceImpl implements AeaItemFrontPartfor
 
     @Override
     public AeaItemFrontPartformVo getAeaItemFrontPartformVoById(String frontPartformId) {
+
         if (StringUtils.isBlank(frontPartformId)) {
             throw new InvalidParameterException(frontPartformId);
         }
@@ -176,6 +177,12 @@ public class AeaItemFrontPartformAdminServiceImpl implements AeaItemFrontPartfor
                 maxSortNo++;
             }
         }
+    }
+
+    @Override
+    public void changIsActive(String id, String rootOrgId){
+
+        aeaItemFrontPartformMapper.changIsActive(id, rootOrgId);
     }
 }
 
