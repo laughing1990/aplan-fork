@@ -248,7 +248,7 @@ var app = new Vue({
           default:
             ts.initEffectApi();
             ts.clearEffectChart();
-            ts.clearEffectChart();
+            ts.clearTimeLimitChart();
             ts.initTimeLimitApi();
         };
         ts.render();
@@ -349,7 +349,7 @@ var app = new Vue({
           num: '',
           percent: ''
         }
-        _acceptSumObj[opt]['percent'] = (Number(list[i].value / total) * 100).toFixed(0) + '%';
+        _acceptSumObj[opt]['percent'] =  list[i].value == 0 ? "0%" :((Number(list[i].value / total) * 100).toFixed(0) + '%');
         _acceptSumObj[opt]['num'] = list[i].value;
 
         assEchartOptions.acceptSumOpt.legend.data.push(opt);

@@ -73,6 +73,14 @@
       line-height: 18px;
     }
     
+    .zj-item-form input {
+      border: none !important;
+    }
+    
+    .zj-item-form .el-form-item__label {
+      padding: 0px;
+    }
+    
     /* 失信 end */
   </style>
   
@@ -86,546 +94,878 @@
 <div id="applyForm" v-cloak v-loading='pageLoading'>
   <div class="table-name">{{applyTableName}}申请表</div>
   
-  <div class="table-part-title"><i class="header-icon el-icon-document-copy"></i>项目/工程信息</div>
-  <div class="part-info-box c-f" v-for="item in projInfoList" :key="item.projInfoId">
+  <template v-if="isZJItem" data-title="中介事项">
     
-    <el-form :model="item" size="medium" label-width="0">
-      <el-row>
-        <el-col :span="12">
-          <el-form-item>
-            <div class="form-unit-box">
-              <div class="form-left-label c-f">
-                <div class="r">项目代码</div>
-                <div class="u-hint-box r">
-                  <el-tooltip placement="right">
-                    <div slot="content">
-                      填写全国统一项目代码(参考“投资项目基本信息共享规范”中的“投资项目统一代码规范”)。如果项目没有全国统一代码，填写地方项目编码。
-                    </div>
-                    <i class="ag ag-help"></i>
-                  </el-tooltip>
-                </div>
-              </div>
-              <el-input v-model="item.localCode" readonly></el-input>
-            </div>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item>
-            <div class="form-unit-box">
-              <div class="form-left-label c-f">
-                <div class="r">工程代码</div>
-                <div class="u-hint-box r">
-                  <el-tooltip placement="right">
-                    <div slot="content">
-                      项目拆分为多个单项工程申报时，单项工程的唯一编码，如果项目不拆分，应与项目代码相同。
-                    </div>
-                    <i class="ag ag-help"></i>
-                  </el-tooltip>
-                </div>
-              </div>
-              <el-input :value="item.gcbm | changeNullToWU" readonly></el-input>
-            </div>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-form-item label="项目/工程名称" :label-width="labelWidth">
-        <el-input v-model="item.projName" readonly></el-input>
-      </el-form-item>
-      <el-row>
-        <el-col :span="12">
-          <el-form-item label="所属主题" :label-width="labelWidth">
-            <el-input v-model="item.themeName" readonly></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="立项类型" :label-width="labelWidth">
-            <el-input v-model="item.projType" readonly></el-input>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="12">
-          <el-form-item>
-            <div class="form-unit-box">
-              <div class="form-left-label c-f">
-                <div class="r">审批行政区划</div>
-                <div class="u-hint-box r">
-                  <el-tooltip placement="right">
-                    <div slot="content">
-                      市级审批的项目/工程为市级行政区划，区县审批的为对应区县行政区划
-                    </div>
-                    <i class="ag ag-help"></i>
-                  </el-tooltip>
-                </div>
-              </div>
-              <el-input v-model="item.regionalism" readonly></el-input>
-            </div>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item>
-            <div class="form-unit-box">
-              <div class="form-left-label c-f">
-                <div class="r">建设地点</div>
-                <div class="u-hint-box r">
-                  <el-tooltip placement="right">
-                    <div slot="content">
-                      项目/工程所在地行政区划。如果是跨区，则有多个行政区划。
-                    </div>
-                    <i class="ag ag-help"></i>
-                  </el-tooltip>
-                </div>
-              </div>
-              <el-input :value="item.projectAddress" readonly></el-input>
-            </div>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="12">
-          <el-form-item label="资金来源" :label-width="labelWidth">
-            <el-input :value="item.financialSource" readonly></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="是否外资" :label-width="labelWidth">
-            <el-input v-model="item.isForeign" readonly></el-input>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="12">
-          <el-form-item label="投资类型" :label-width="labelWidth">
-            <el-input :value="item.investType" readonly></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="土地来源" :label-width="labelWidth">
-            <el-input v-model="item.landSource" readonly></el-input>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="12">
-          <el-form-item>
-            <div class="form-unit-box">
-              <div class="form-left-label c-f">
-                <div class="r">是否完成区域评估</div>
-                <div class="u-hint-box r">
-                  <el-tooltip placement="right">
-                    <div slot="content">
-                      建设范围是否实施区域评估
-                    </div>
-                    <i class="ag ag-help"></i>
-                  </el-tooltip>
-                </div>
-              </div>
-              <el-input v-model="item.isAreaEstimate" readonly></el-input>
-            </div>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item>
-            <div class="form-unit-box">
-              <div class="form-left-label c-f">
-                <div class="r">是否带设计方案</div>
-                <div class="u-hint-box r">
-                  <el-tooltip placement="right">
-                    <div slot="content">
-                      建设用地是否带设计方案
-                    </div>
-                    <i class="ag ag-help"></i>
-                  </el-tooltip>
-                </div>
-              </div>
-              <el-input :value="item.isDesignSolution" readonly></el-input>
-            </div>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="12">
-          <el-form-item label="建设性质" :label-width="labelWidth">
-            <el-input v-model="item.projNature" readonly></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="工程分类" :label-width="labelWidth">
-            <el-input v-model="item.projCategory" readonly></el-input>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="12">
-          <el-form-item label="拟开工时间" :label-width="labelWidth">
-            <el-input v-model="item.nstartTime" readonly></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="拟建成日期" :label-width="labelWidth">
-            <el-input v-model="item.endTime" readonly></el-input>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="12">
-          <el-form-item label="总投资（万元）" :label-width="labelWidth">
-            <el-input :value="item.investSum | changeNullToZero" readonly></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="建筑面积（㎡）" :label-width="labelWidth">
-            <el-input :value="item.buildAreaSum |changeNullToZero" readonly></el-input>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="12">
-          <el-form-item label="用地面积（㎡）" :label-width="labelWidth">
-            <el-input :value="item.xmYdmj" readonly></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="重点项目" :label-width="labelWidth">
-            <el-input :value="item.projLevel" readonly></el-input>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="12">
-          <el-form-item>
-            <div class="form-unit-box">
-              <div class="form-left-label c-f">
-                <div class="r">国标行业</div>
-                <div class="u-hint-box r">
-                  <el-tooltip placement="right">
-                    <div slot="content">
-                      国标行业以国家统计局发布的《国民经济行业分类》（GB/T 4754-2017）编码为基准。
-                    </div>
-                    <i class="ag ag-help"></i>
-                  </el-tooltip>
-                </div>
-              </div>
-              <el-input v-model="item.theIndustry" readonly></el-input>
-            </div>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="国标行业代码发布年代" :label-width="labelWidth">
-            <el-input :value="item.gbCodeYear" readonly></el-input>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-form-item>
-        <el-form-item>
-          <div class="form-unit-box">
-            <div class="form-left-label c-f">
-              <div class="r">建设规模及内容</div>
-              <div class="u-hint-box r">
-                <el-tooltip placement="right">
-                  <div slot="content">
-                    对项目建设规模以及建设内容的文字描述。
+    <div class="table-part-title"><i class="header-icon el-icon-document-copy"></i>中介事项信息</div>
+    <div class="part-info-box c-f">
+      <el-form :model="applyinst" size="medium" label-width="120px" class="zj-item-form">
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="事项名称：">
+              <el-input v-model="applyinst.abcd" readonly></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="实施主体：">
+              <el-input v-model="applyinst.abcd" readonly></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="服务对象：">
+              <el-input v-model="applyinst.abcd" readonly></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="办件类型：">
+              <el-input v-model="applyinst.abcd" readonly></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="法定办结时限：">
+              <el-input v-model="applyinst.abcd" readonly></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="承诺办结时限：">
+              <el-input v-model="applyinst.abcd" readonly></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24">
+            <el-form-item label="关联的行政事项：">
+              <el-input v-model="applyinst.abcd" readonly></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+    </div>
+    
+    <div class="table-part-title"><i class="header-icon el-icon-document-copy"></i>项目/工程信息</div>
+    <div class="part-info-box c-f" v-for="item in projInfoList" :key="item.projInfoId">
+      
+      <el-form :model="item" size="medium" label-width="0">
+        <el-row>
+          <el-col :span="12">
+            <el-form-item>
+              <div class="form-unit-box">
+                <div class="form-left-label c-f">
+                  <div class="r">项目代码</div>
+                  <div class="u-hint-box r">
+                    <el-tooltip placement="right">
+                      <div slot="content">
+                        填写全国统一项目代码(参考“投资项目基本信息共享规范”中的“投资项目统一代码规范”)。如果项目没有全国统一代码，填写地方项目编码。
+                      </div>
+                      <i class="ag ag-help"></i>
+                    </el-tooltip>
                   </div>
-                  <i class="ag ag-help"></i>
-                </el-tooltip>
+                </div>
+                <el-input v-model="item.localCode" readonly></el-input>
               </div>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item>
+              <div class="form-unit-box">
+                <div class="form-left-label c-f">
+                  <div class="r">工程代码</div>
+                  <div class="u-hint-box r">
+                    <el-tooltip placement="right">
+                      <div slot="content">
+                        项目拆分为多个单项工程申报时，单项工程的唯一编码，如果项目不拆分，应与项目代码相同。
+                      </div>
+                      <i class="ag ag-help"></i>
+                    </el-tooltip>
+                  </div>
+                </div>
+                <el-input :value="item.gcbm | changeNullToWU" readonly></el-input>
+              </div>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-form-item label="项目/工程名称" :label-width="labelWidth">
+          <el-input v-model="item.projName" readonly></el-input>
+        </el-form-item>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="所属主题" :label-width="labelWidth">
+              <el-input v-model="item.themeName" readonly></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="立项类型" :label-width="labelWidth">
+              <el-input v-model="item.projType" readonly></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item>
+              <div class="form-unit-box">
+                <div class="form-left-label c-f">
+                  <div class="r">审批行政区划</div>
+                  <div class="u-hint-box r">
+                    <el-tooltip placement="right">
+                      <div slot="content">
+                        市级审批的项目/工程为市级行政区划，区县审批的为对应区县行政区划
+                      </div>
+                      <i class="ag ag-help"></i>
+                    </el-tooltip>
+                  </div>
+                </div>
+                <el-input v-model="item.regionalism" readonly></el-input>
+              </div>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item>
+              <div class="form-unit-box">
+                <div class="form-left-label c-f">
+                  <div class="r">建设地点</div>
+                  <div class="u-hint-box r">
+                    <el-tooltip placement="right">
+                      <div slot="content">
+                        项目/工程所在地行政区划。如果是跨区，则有多个行政区划。
+                      </div>
+                      <i class="ag ag-help"></i>
+                    </el-tooltip>
+                  </div>
+                </div>
+                <el-input :value="item.projectAddress" readonly></el-input>
+              </div>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="资金来源" :label-width="labelWidth">
+              <el-input :value="item.financialSource" readonly></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="是否外资" :label-width="labelWidth">
+              <el-input v-model="item.isForeign" readonly></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="投资类型" :label-width="labelWidth">
+              <el-input :value="item.investType" readonly></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="土地来源" :label-width="labelWidth">
+              <el-input v-model="item.landSource" readonly></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item>
+              <div class="form-unit-box">
+                <div class="form-left-label c-f">
+                  <div class="r">是否完成区域评估</div>
+                  <div class="u-hint-box r">
+                    <el-tooltip placement="right">
+                      <div slot="content">
+                        建设范围是否实施区域评估
+                      </div>
+                      <i class="ag ag-help"></i>
+                    </el-tooltip>
+                  </div>
+                </div>
+                <el-input v-model="item.isAreaEstimate" readonly></el-input>
+              </div>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item>
+              <div class="form-unit-box">
+                <div class="form-left-label c-f">
+                  <div class="r">是否带设计方案</div>
+                  <div class="u-hint-box r">
+                    <el-tooltip placement="right">
+                      <div slot="content">
+                        建设用地是否带设计方案
+                      </div>
+                      <i class="ag ag-help"></i>
+                    </el-tooltip>
+                  </div>
+                </div>
+                <el-input :value="item.isDesignSolution" readonly></el-input>
+              </div>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="建设性质" :label-width="labelWidth">
+              <el-input v-model="item.projNature" readonly></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="工程分类" :label-width="labelWidth">
+              <el-input v-model="item.projCategory" readonly></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="拟开工时间" :label-width="labelWidth">
+              <el-input v-model="item.nstartTime" readonly></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="拟建成日期" :label-width="labelWidth">
+              <el-input v-model="item.endTime" readonly></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="总投资（万元）" :label-width="labelWidth">
+              <el-input :value="item.investSum | changeNullToZero" readonly></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="建筑面积（㎡）" :label-width="labelWidth">
+              <el-input :value="item.buildAreaSum |changeNullToZero" readonly></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="用地面积（㎡）" :label-width="labelWidth">
+              <el-input :value="item.xmYdmj" readonly></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="重点项目" :label-width="labelWidth">
+              <el-input :value="item.projLevel" readonly></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item>
+              <div class="form-unit-box">
+                <div class="form-left-label c-f">
+                  <div class="r">国标行业</div>
+                  <div class="u-hint-box r">
+                    <el-tooltip placement="right">
+                      <div slot="content">
+                        国标行业以国家统计局发布的《国民经济行业分类》（GB/T 4754-2017）编码为基准。
+                      </div>
+                      <i class="ag ag-help"></i>
+                    </el-tooltip>
+                  </div>
+                </div>
+                <el-input v-model="item.theIndustry" readonly></el-input>
+              </div>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="国标行业代码发布年代" :label-width="labelWidth">
+              <el-input :value="item.gbCodeYear" readonly></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-form-item>
+          <el-form-item>
+            <div class="form-unit-box">
+              <div class="form-left-label c-f">
+                <div class="r">建设规模及内容</div>
+                <div class="u-hint-box r">
+                  <el-tooltip placement="right">
+                    <div slot="content">
+                      对项目建设规模以及建设内容的文字描述。
+                    </div>
+                    <i class="ag ag-help"></i>
+                  </el-tooltip>
+                </div>
+              </div>
+              <el-input v-model="item.scaleContent" readonly></el-input>
             </div>
-            <el-input v-model="item.scaleContent" readonly></el-input>
-          </div>
+          </el-form-item>
         </el-form-item>
-      </el-form-item>
-      <!--显示更多-->
-      <div v-show="showMore">
-        <el-form-item label="项目地址" :label-width="labelWidth">
-          <el-input v-model="item.projAddr" readonly></el-input>
-        </el-form-item>
-        <el-form-item label="四至范围" :label-width="labelWidth">
-          <el-row>
-            <el-col :span="6" class="row-four-u">
-              <span>东至</span>
-              <el-input v-model="item.eastScope" readonly></el-input>
-            </el-col>
-            <el-col :span="6" class="row-four-u">
-              <span>西至</span>
-              <el-input v-model="item.westScope" readonly></el-input>
-            </el-col>
-            <el-col :span="6" class="row-four-u">
-              <span>南至</span>
-              <el-input v-model="item.southScope" readonly></el-input>
-            </el-col>
-            <el-col :span="6" class="row-four-u">
-              <span>北至</span>
-              <el-input v-model="item.northScope" readonly></el-input>
-            </el-col>
-          </el-row>
-        </el-form-item>
-      </div>
-      <div class="show-more-btn" @click="showMore=!showMore">{{showMore?"收起":"显示更多"}}</div>
-    </el-form>
-  </div>
-  
-  <div class="table-part-title"><i class="header-icon el-icon-document-copy"></i>申报主体</div>
-  <div class="part-info-box">
-    <!-- 个人，单条 -->
-    <div v-if="applySubject=='0'">
-      <el-form size="medium" :label-width="labelWidth">
-        <div class="part-info-title">申请人信息</div>
-        <div class="credit-box" v-show="false">
-          当前申请人为有失信记录，可点击右侧查看详细历史记录。
-          <div class="see-credit-btn r" @click="seeCredit(personalApplyInfo, 'l')">查看记录</div>
+        <!--显示更多-->
+        <div v-show="showMore">
+          <el-form-item label="项目地址" :label-width="labelWidth">
+            <el-input v-model="item.projAddr" readonly></el-input>
+          </el-form-item>
+          <el-form-item label="四至范围" :label-width="labelWidth">
+            <el-row>
+              <el-col :span="6" class="row-four-u">
+                <span>东至</span>
+                <el-input v-model="item.eastScope" readonly></el-input>
+              </el-col>
+              <el-col :span="6" class="row-four-u">
+                <span>西至</span>
+                <el-input v-model="item.westScope" readonly></el-input>
+              </el-col>
+              <el-col :span="6" class="row-four-u">
+                <span>南至</span>
+                <el-input v-model="item.southScope" readonly></el-input>
+              </el-col>
+              <el-col :span="6" class="row-four-u">
+                <span>北至</span>
+                <el-input v-model="item.northScope" readonly></el-input>
+              </el-col>
+            </el-row>
+          </el-form-item>
         </div>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="申请人">
-              <el-input :value="personalApplyInfo.linkmanName" readonly></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="申请人身份证号">
-              <el-input :value="personalApplyInfo.linkmanCertNo" readonly></el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="申请人电话">
-              <el-input :value="personalApplyInfo.linkmanMobilePhone" readonly></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="申请人邮箱">
-              <el-input :value="personalApplyInfo.linkmanMail" readonly></el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <div class="part-info-title">联系人信息</div>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="联系人">
-              <el-input :value="personalLinkInfo.linkmanName" readonly></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="联系人身份证号">
-              <el-input :value="personalLinkInfo.linkmanCertNo" readonly></el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="联系人电话">
-              <el-input :value="personalLinkInfo.linkmanMobilePhone" readonly></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="联系人邮箱">
-              <el-input :value="personalLinkInfo.linkmanMail" readonly></el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
+        <div class="show-more-btn" @click="showMore=!showMore">{{showMore?"收起":"显示更多"}}</div>
       </el-form>
     </div>
-    <!-- 企业，多条 -->
-    <div v-if="applySubject=='1'" v-for="item in unitInfoList" :key="item.unitInfoId">
-      <el-form :model="item" size="medium" :label-width="labelWidth" style="padding-top:18px;">
-        <div class="part-info-title">建设单位信息</div>
-        <div class="credit-box" v-show="item.isBlack=='1'||item.creditType==false">
-          当前企业为失信企业，可点击右侧查看详细历史记录。
-          <div class="see-credit-btn r" @click="seeCredit(item, 'u')">查看记录</div>
-        </div>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="单位类型">
-              <el-input :value="changeUnitType(item.unitType)" readonly></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="统一社会信用代码">
-              <el-input v-model="item.unifiedSocialCreditCode" readonly></el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="单位名称">
-              <el-input v-model="item.applicant" readonly></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="单位地址">
-              <el-input v-model="item.applicantDetailSite" readonly></el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="法定代表人">
-              <el-input v-model="item.idrepresentative" readonly></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="法定代表人证件号">
-              <el-input v-model="item.idno" readonly></el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="联系人名称">
-              <el-input v-model="item.linkmanName" readonly></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="联系人证件号">
-              <el-input v-model="item.linkmanCertNo" readonly></el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="联系人手机">
-              <el-input v-model="item.linkmanMobilePhone" readonly></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="联系人邮箱">
-              <el-input v-model="item.linkmanMail" readonly></el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <div v-show="item.showMore">
-          <el-row>
-            <el-col :span="12">
-              <el-form-item label="工商登记号">
-                <el-input v-model="item.induCommRegNum" readonly></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="12">
-              <el-form-item label="组织机构代码">
-                <el-input v-model="item.organizationalCode" readonly></el-input>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="12">
-              <el-form-item label="纳税人识别号">
-                <el-input v-model="item.taxpayerNum" readonly></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="12">
-              <el-form-item label="信用标记码">
-                <el-input v-model="item.creditFlagNum" readonly></el-input>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="12">
-              <el-form-item label="注册资本">
-                <el-input v-model="item.registeredCapital" readonly></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="12">
-              <el-form-item label="注册登记机关">
-                <el-input v-model="item.registerAuthority" readonly></el-input>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="12">
-              <el-form-item label="经营范围">
-                <el-input v-model="item.managementScope" readonly></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="12">
-              <el-form-item label="邮政编码">
-                <el-input v-model="item.postalCode" readonly></el-input>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="24">
-              <el-form-item label="行政区（园区）">
-                <el-input v-model="item.applicantDistrict" readonly></el-input>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row v-if="item.linkmanTypes&&item.linkmanTypes.length" v-for="uuu in item.linkmanTypes">
-            <el-col :span="24">
-              <el-form-item :label="getLinkManLabel(item.unitType, uuu.linkmanType)">
-                <el-input v-model="uuu.linkmanName" readonly></el-input>
-<!--                <div>{{manTypeToText(uuu.linkmanType) + '-' + uuu.linkmanName }}</div>-->
-              </el-form-item>
-            </el-col>
-          </el-row>
-        </div>
-        <div class="show-more-btn" @click="item.showMore=!item.showMore">{{item.showMore?"收起":"显示更多"}}</div>
-      </el-form>
-    </div>
-  </div>
   
-  <div class="table-part-title"><i class="header-icon el-icon-document-copy"></i>申报信息</div>
-  <div class="part-info-box c-f">
+  </template>
+  <template data-title="非中介事项" v-else>
     
-    <el-form :model="applyinst" size="medium">
-      <el-row>
-        <el-col :span="12">
-          <el-form-item label="申报流水号" :label-width="labelWidth">
-            <el-input v-model="applyinst.applyinstCode" readonly></el-input>
+    <div class="table-part-title"><i class="header-icon el-icon-document-copy"></i>项目/工程信息</div>
+    <div class="part-info-box c-f" v-for="item in projInfoList" :key="item.projInfoId">
+      
+      <el-form :model="item" size="medium" label-width="0">
+        <el-row>
+          <el-col :span="12">
+            <el-form-item>
+              <div class="form-unit-box">
+                <div class="form-left-label c-f">
+                  <div class="r">项目代码</div>
+                  <div class="u-hint-box r">
+                    <el-tooltip placement="right">
+                      <div slot="content">
+                        填写全国统一项目代码(参考“投资项目基本信息共享规范”中的“投资项目统一代码规范”)。如果项目没有全国统一代码，填写地方项目编码。
+                      </div>
+                      <i class="ag ag-help"></i>
+                    </el-tooltip>
+                  </div>
+                </div>
+                <el-input v-model="item.localCode" readonly></el-input>
+              </div>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item>
+              <div class="form-unit-box">
+                <div class="form-left-label c-f">
+                  <div class="r">工程代码</div>
+                  <div class="u-hint-box r">
+                    <el-tooltip placement="right">
+                      <div slot="content">
+                        项目拆分为多个单项工程申报时，单项工程的唯一编码，如果项目不拆分，应与项目代码相同。
+                      </div>
+                      <i class="ag ag-help"></i>
+                    </el-tooltip>
+                  </div>
+                </div>
+                <el-input :value="item.gcbm | changeNullToWU" readonly></el-input>
+              </div>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-form-item label="项目/工程名称" :label-width="labelWidth">
+          <el-input v-model="item.projName" readonly></el-input>
+        </el-form-item>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="所属主题" :label-width="labelWidth">
+              <el-input v-model="item.themeName" readonly></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="立项类型" :label-width="labelWidth">
+              <el-input v-model="item.projType" readonly></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item>
+              <div class="form-unit-box">
+                <div class="form-left-label c-f">
+                  <div class="r">审批行政区划</div>
+                  <div class="u-hint-box r">
+                    <el-tooltip placement="right">
+                      <div slot="content">
+                        市级审批的项目/工程为市级行政区划，区县审批的为对应区县行政区划
+                      </div>
+                      <i class="ag ag-help"></i>
+                    </el-tooltip>
+                  </div>
+                </div>
+                <el-input v-model="item.regionalism" readonly></el-input>
+              </div>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item>
+              <div class="form-unit-box">
+                <div class="form-left-label c-f">
+                  <div class="r">建设地点</div>
+                  <div class="u-hint-box r">
+                    <el-tooltip placement="right">
+                      <div slot="content">
+                        项目/工程所在地行政区划。如果是跨区，则有多个行政区划。
+                      </div>
+                      <i class="ag ag-help"></i>
+                    </el-tooltip>
+                  </div>
+                </div>
+                <el-input :value="item.projectAddress" readonly></el-input>
+              </div>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="资金来源" :label-width="labelWidth">
+              <el-input :value="item.financialSource" readonly></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="是否外资" :label-width="labelWidth">
+              <el-input v-model="item.isForeign" readonly></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="投资类型" :label-width="labelWidth">
+              <el-input :value="item.investType" readonly></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="土地来源" :label-width="labelWidth">
+              <el-input v-model="item.landSource" readonly></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item>
+              <div class="form-unit-box">
+                <div class="form-left-label c-f">
+                  <div class="r">是否完成区域评估</div>
+                  <div class="u-hint-box r">
+                    <el-tooltip placement="right">
+                      <div slot="content">
+                        建设范围是否实施区域评估
+                      </div>
+                      <i class="ag ag-help"></i>
+                    </el-tooltip>
+                  </div>
+                </div>
+                <el-input v-model="item.isAreaEstimate" readonly></el-input>
+              </div>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item>
+              <div class="form-unit-box">
+                <div class="form-left-label c-f">
+                  <div class="r">是否带设计方案</div>
+                  <div class="u-hint-box r">
+                    <el-tooltip placement="right">
+                      <div slot="content">
+                        建设用地是否带设计方案
+                      </div>
+                      <i class="ag ag-help"></i>
+                    </el-tooltip>
+                  </div>
+                </div>
+                <el-input :value="item.isDesignSolution" readonly></el-input>
+              </div>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="建设性质" :label-width="labelWidth">
+              <el-input v-model="item.projNature" readonly></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="工程分类" :label-width="labelWidth">
+              <el-input v-model="item.projCategory" readonly></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="拟开工时间" :label-width="labelWidth">
+              <el-input v-model="item.nstartTime" readonly></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="拟建成日期" :label-width="labelWidth">
+              <el-input v-model="item.endTime" readonly></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="总投资（万元）" :label-width="labelWidth">
+              <el-input :value="item.investSum | changeNullToZero" readonly></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="建筑面积（㎡）" :label-width="labelWidth">
+              <el-input :value="item.buildAreaSum |changeNullToZero" readonly></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="用地面积（㎡）" :label-width="labelWidth">
+              <el-input :value="item.xmYdmj" readonly></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="重点项目" :label-width="labelWidth">
+              <el-input :value="item.projLevel" readonly></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item>
+              <div class="form-unit-box">
+                <div class="form-left-label c-f">
+                  <div class="r">国标行业</div>
+                  <div class="u-hint-box r">
+                    <el-tooltip placement="right">
+                      <div slot="content">
+                        国标行业以国家统计局发布的《国民经济行业分类》（GB/T 4754-2017）编码为基准。
+                      </div>
+                      <i class="ag ag-help"></i>
+                    </el-tooltip>
+                  </div>
+                </div>
+                <el-input v-model="item.theIndustry" readonly></el-input>
+              </div>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="国标行业代码发布年代" :label-width="labelWidth">
+              <el-input :value="item.gbCodeYear" readonly></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-form-item>
+          <el-form-item>
+            <div class="form-unit-box">
+              <div class="form-left-label c-f">
+                <div class="r">建设规模及内容</div>
+                <div class="u-hint-box r">
+                  <el-tooltip placement="right">
+                    <div slot="content">
+                      对项目建设规模以及建设内容的文字描述。
+                    </div>
+                    <i class="ag ag-help"></i>
+                  </el-tooltip>
+                </div>
+              </div>
+              <el-input v-model="item.scaleContent" readonly></el-input>
+            </div>
           </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="申报时间" :label-width="labelWidth">
-            <el-date-picker
-                v-model="applyinst.createTime" format="yyyy-MM-dd HH:mm"
-                type="datetime"
-                placeholder="-" readonly>
-            </el-date-picker>
+        </el-form-item>
+        <!--显示更多-->
+        <div v-show="showMore">
+          <el-form-item label="项目地址" :label-width="labelWidth">
+            <el-input v-model="item.projAddr" readonly></el-input>
           </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="12">
-          <el-form-item label="所属主题" :label-width="labelWidth">
-            <el-input v-model="applyinst.themeName" readonly></el-input>
+          <el-form-item label="四至范围" :label-width="labelWidth">
+            <el-row>
+              <el-col :span="6" class="row-four-u">
+                <span>东至</span>
+                <el-input v-model="item.eastScope" readonly></el-input>
+              </el-col>
+              <el-col :span="6" class="row-four-u">
+                <span>西至</span>
+                <el-input v-model="item.westScope" readonly></el-input>
+              </el-col>
+              <el-col :span="6" class="row-four-u">
+                <span>南至</span>
+                <el-input v-model="item.southScope" readonly></el-input>
+              </el-col>
+              <el-col :span="6" class="row-four-u">
+                <span>北至</span>
+                <el-input v-model="item.northScope" readonly></el-input>
+              </el-col>
+            </el-row>
           </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="申报阶段/辅线" :label-width="labelWidth">
-            <el-input v-model="applyinst.stageName" readonly></el-input>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="12">
-          <el-form-item label="查看情形" :label-width="labelWidth">
-            <el-button size="medium" round @click.stop="showParState()" icon="el-icon-search" type="primary">查看情形
-            </el-button>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="申报事项数" :label-width="labelWidth">
-            {{iteminstList.length}}
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-table style="width: 100%; margin-top:10px;" border :data="iteminstList" stripe>
-        <el-table-column type="index" width="50" align="center" label="序号"></el-table-column>
-        <el-table-column prop="approveOrgName" label="实施主体"></el-table-column>
-        <el-table-column prop="itemProperty" label="办件类型"></el-table-column>
-        <el-table-column prop="dueNum" label="承诺工作日">
-          <template slot-scope="scope">
-            {{scope.row.dueNum+scope.row.dueNumUnit}}
-          </template>
-        </el-table-column>
-        <el-table-column prop="iteminstName" label="实施事项名称"></el-table-column>
-        <el-table-column prop="iteminstState" label="状态">
-          <template slot-scope="scope">
-            <span>{{getStatusText(scope.row.iteminstState)}}</span>
-          </template>
-        </el-table-column>
-      </el-table>
-    </el-form>
-  </div>
+        </div>
+        <div class="show-more-btn" @click="showMore=!showMore">{{showMore?"收起":"显示更多"}}</div>
+      </el-form>
+    </div>
+    
+    <div class="table-part-title"><i class="header-icon el-icon-document-copy"></i>申报主体</div>
+    <div class="part-info-box">
+      <!-- 个人，单条 -->
+      <div v-if="applySubject=='0'">
+        <el-form size="medium" :label-width="labelWidth">
+          <div class="part-info-title">申请人信息</div>
+          <div class="credit-box" v-show="false">
+            当前申请人为有失信记录，可点击右侧查看详细历史记录。
+            <div class="see-credit-btn r" @click="seeCredit(personalApplyInfo, 'l')">查看记录</div>
+          </div>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="申请人">
+                <el-input :value="personalApplyInfo.linkmanName" readonly></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="申请人身份证号">
+                <el-input :value="personalApplyInfo.linkmanCertNo" readonly></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="申请人电话">
+                <el-input :value="personalApplyInfo.linkmanMobilePhone" readonly></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="申请人邮箱">
+                <el-input :value="personalApplyInfo.linkmanMail" readonly></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <div class="part-info-title">联系人信息</div>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="联系人">
+                <el-input :value="personalLinkInfo.linkmanName" readonly></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="联系人身份证号">
+                <el-input :value="personalLinkInfo.linkmanCertNo" readonly></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="联系人电话">
+                <el-input :value="personalLinkInfo.linkmanMobilePhone" readonly></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="联系人邮箱">
+                <el-input :value="personalLinkInfo.linkmanMail" readonly></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </el-form>
+      </div>
+      <!-- 企业，多条 -->
+      <div v-if="applySubject=='1'" v-for="item in unitInfoList" :key="item.unitInfoId">
+        <el-form :model="item" size="medium" :label-width="labelWidth" style="padding-top:18px;">
+          <div class="part-info-title">建设单位信息</div>
+          <div class="credit-box" v-show="item.isBlack=='1'||item.creditType==false">
+            当前企业为失信企业，可点击右侧查看详细历史记录。
+            <div class="see-credit-btn r" @click="seeCredit(item, 'u')">查看记录</div>
+          </div>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="单位类型">
+                <el-input :value="changeUnitType(item.unitType)" readonly></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="统一社会信用代码">
+                <el-input v-model="item.unifiedSocialCreditCode" readonly></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="单位名称">
+                <el-input v-model="item.applicant" readonly></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="单位地址">
+                <el-input v-model="item.applicantDetailSite" readonly></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="法定代表人">
+                <el-input v-model="item.idrepresentative" readonly></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="法定代表人证件号">
+                <el-input v-model="item.idno" readonly></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="联系人名称">
+                <el-input v-model="item.linkmanName" readonly></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="联系人证件号">
+                <el-input v-model="item.linkmanCertNo" readonly></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="联系人手机">
+                <el-input v-model="item.linkmanMobilePhone" readonly></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="联系人邮箱">
+                <el-input v-model="item.linkmanMail" readonly></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <div v-show="item.showMore">
+            <el-row>
+              <el-col :span="12">
+                <el-form-item label="工商登记号">
+                  <el-input v-model="item.induCommRegNum" readonly></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="组织机构代码">
+                  <el-input v-model="item.organizationalCode" readonly></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="12">
+                <el-form-item label="纳税人识别号">
+                  <el-input v-model="item.taxpayerNum" readonly></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="信用标记码">
+                  <el-input v-model="item.creditFlagNum" readonly></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="12">
+                <el-form-item label="注册资本">
+                  <el-input v-model="item.registeredCapital" readonly></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="注册登记机关">
+                  <el-input v-model="item.registerAuthority" readonly></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="12">
+                <el-form-item label="经营范围">
+                  <el-input v-model="item.managementScope" readonly></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="邮政编码">
+                  <el-input v-model="item.postalCode" readonly></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="24">
+                <el-form-item label="行政区（园区）">
+                  <el-input v-model="item.applicantDistrict" readonly></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row v-if="item.linkmanTypes&&item.linkmanTypes.length" v-for="uuu in item.linkmanTypes">
+              <el-col :span="24">
+                <el-form-item :label="getLinkManLabel(item.unitType, uuu.linkmanType)">
+                  <el-input v-model="uuu.linkmanName" readonly></el-input>
+                  <!--                <div>{{manTypeToText(uuu.linkmanType) + '-' + uuu.linkmanName }}</div>-->
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </div>
+          <div class="show-more-btn" @click="item.showMore=!item.showMore">{{item.showMore?"收起":"显示更多"}}</div>
+        </el-form>
+      </div>
+    </div>
+    
+    <div class="table-part-title"><i class="header-icon el-icon-document-copy"></i>申报信息</div>
+    <div class="part-info-box c-f">
+      
+      <el-form :model="applyinst" size="medium">
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="申报流水号" :label-width="labelWidth">
+              <el-input v-model="applyinst.applyinstCode" readonly></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="申报时间" :label-width="labelWidth">
+              <el-date-picker
+                  v-model="applyinst.createTime" format="yyyy-MM-dd HH:mm"
+                  type="datetime"
+                  placeholder="-" readonly>
+              </el-date-picker>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="所属主题" :label-width="labelWidth">
+              <el-input v-model="applyinst.themeName" readonly></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="申报阶段/辅线" :label-width="labelWidth">
+              <el-input v-model="applyinst.stageName" readonly></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="查看情形" :label-width="labelWidth">
+              <el-button size="medium" round @click.stop="showParState()" icon="el-icon-search" type="primary">查看情形
+              </el-button>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="申报事项数" :label-width="labelWidth">
+              {{iteminstList.length}}
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-table style="width: 100%; margin-top:10px;" border :data="iteminstList" stripe>
+          <el-table-column type="index" width="50" align="center" label="序号"></el-table-column>
+          <el-table-column prop="approveOrgName" label="实施主体"></el-table-column>
+          <el-table-column prop="itemProperty" label="办件类型"></el-table-column>
+          <el-table-column prop="dueNum" label="承诺工作日">
+            <template slot-scope="scope">
+              {{scope.row.dueNum+scope.row.dueNumUnit}}
+            </template>
+          </el-table-column>
+          <el-table-column prop="iteminstName" label="实施事项名称"></el-table-column>
+          <el-table-column prop="iteminstState" label="状态">
+            <template slot-scope="scope">
+              <span>{{getStatusText(scope.row.iteminstState)}}</span>
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-form>
+    </div>
+  
+  </template>
 
 </div>
 </body>

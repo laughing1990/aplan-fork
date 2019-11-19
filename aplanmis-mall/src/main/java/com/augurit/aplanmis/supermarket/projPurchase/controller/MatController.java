@@ -21,12 +21,15 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.support.StandardMultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
+import java.util.UUID;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @Api(value = "项目需求采购管理接口-材料相关", tags = "中介超市---项目采购管理接口-材料相关")
@@ -106,5 +109,22 @@ public class MatController {
     public ContentResultForm<List<Mat2MatInstVo>> saveMatinsts(@RequestBody SaveMatinstVo saveMatinstVo) {
         List<Mat2MatInstVo> mat2MatInstVos = matStateService.saveMatinsts(saveMatinstVo);
         return new ContentResultForm<>(true, mat2MatInstVos, "Batch save matinst success");
+    }
+
+    @PostMapping("/uploadPurchaseAtt")
+    @ApiOperation(value = "项目采购页-采购要求文件上传", tags = "中介超市-项目采购页-采购要求文件上传")
+    public ResultForm saveProjPurchaseRequireAtt(HttpServletRequest request) throws Exception {
+        String detailId = UUID.randomUUID().toString();
+        StandardMultipartHttpServletRequest req = (StandardMultipartHttpServletRequest) request;
+        List<MultipartFile> officialRemarkFiles = req.getFiles("officialRemarkFile");
+
+        if (officialRemarkFiles != null && !officialRemarkFiles.isEmpty()) {
+            fileUtilsService.uploadAttachments("AEA_IM_PROJ_PURCHASE", "OFFICIAL_REMARK_FILE", detailId, officialRemarkFiles);
+        }
+        List<MultipartFile> requireExplainFiles = req.getFiles("requireExplainFile");
+        if (requireExplainFiles != null && !requireExplainFiles.isEmpty()) {
+            fileUtilsService.uploadAttachments("AEA_IM_PROJ_PURCHASE", "REQUIRE_EXPLAIN_FILE", detailId, requireExplainFiles);
+        }
+        return new ContentResultForm<>(true, detailId, "success");
     }
 }
