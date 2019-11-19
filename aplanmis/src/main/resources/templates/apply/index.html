@@ -1730,7 +1730,7 @@
         <div :style="{height:(curHeight-84)+'px',overflow: 'auto'}">
           <div id="oneFormContent"></div>
           <div class="form-iframe" v-if="devFormUrl.length>0" v-for="item in devFormUrl">
-            <iframe :src="item" frameborder="0"></iframe>
+            <iframe :src="ctx+item" frameborder="0"></iframe>
           </div>
         </div>
         <div class="right-bottom-btn" v-if="showMoreProjInfo">
