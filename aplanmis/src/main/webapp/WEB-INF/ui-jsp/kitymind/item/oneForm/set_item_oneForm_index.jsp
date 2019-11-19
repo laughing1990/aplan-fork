@@ -176,6 +176,9 @@
     <!-- 新增编辑扩展表 -->
     <%@include file="aedit_item_partform.jsp"%>
 
+    <!-- 新增编辑开发表单 -->
+    <%@include file="../../stage/oneform/add_dev_form.jsp" %>
+
     <!-- 导入总表 -->
     <%@include file="import_item_oneform.jsp"%>
 

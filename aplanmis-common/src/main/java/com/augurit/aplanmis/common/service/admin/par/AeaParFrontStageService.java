@@ -44,4 +44,6 @@ public interface AeaParFrontStageService {
 
     void batchSaveAeaParFrontStage(String stageId,String histStageIds)throws Exception;
 
+    List<AeaParFrontStageVo> listAeaParFrontStageVoByNoPage(AeaParFrontStage aeaParFrontStage) throws Exception;
+
 }

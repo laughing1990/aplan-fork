@@ -6,6 +6,7 @@ import com.augurit.agcloud.bpm.common.engine.BpmProcessService;
 import com.augurit.agcloud.bpm.common.engine.BpmTaskService;
 import com.augurit.agcloud.bpm.common.engine.form.BpmProcessInstance;
 import com.augurit.agcloud.bpm.common.service.ActStoAppinstService;
+import com.augurit.agcloud.framework.constant.Status;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.util.CollectionUtils;
 import com.augurit.agcloud.framework.util.StringUtils;
@@ -13,11 +14,23 @@ import com.augurit.agcloud.opus.common.domain.OpuOmOrg;
 import com.augurit.agcloud.opus.common.mapper.OpuOmOrgMapper;
 import com.augurit.aplanmis.common.constants.ApplyState;
 import com.augurit.aplanmis.common.constants.ItemStatus;
-import com.augurit.aplanmis.common.domain.*;
+import com.augurit.aplanmis.common.domain.AeaApplyinstProj;
+import com.augurit.aplanmis.common.domain.AeaHiApplyinst;
+import com.augurit.aplanmis.common.domain.AeaHiIteminst;
+import com.augurit.aplanmis.common.domain.AeaHiSeriesinst;
+import com.augurit.aplanmis.common.domain.AeaItemBasic;
+import com.augurit.aplanmis.common.domain.AeaLogApplyStateHist;
+import com.augurit.aplanmis.common.domain.AeaLogItemStateHist;
 import com.augurit.aplanmis.common.event.AplanmisEventPublisher;
 import com.augurit.aplanmis.common.mapper.AeaApplyinstProjMapper;
 import com.augurit.aplanmis.common.mapper.AeaItemBasicMapper;
-import com.augurit.aplanmis.common.service.instance.*;
+import com.augurit.aplanmis.common.service.instance.AeaHiApplyinstService;
+import com.augurit.aplanmis.common.service.instance.AeaHiItemInoutinstService;
+import com.augurit.aplanmis.common.service.instance.AeaHiItemStateinstService;
+import com.augurit.aplanmis.common.service.instance.AeaHiIteminstService;
+import com.augurit.aplanmis.common.service.instance.AeaHiSeriesinstService;
+import com.augurit.aplanmis.common.service.instance.AeaLogApplyStateHistService;
+import com.augurit.aplanmis.common.service.instance.RestTimeruleinstService;
 import com.augurit.aplanmis.common.service.item.AeaLogItemStateHistService;
 import com.augurit.aplanmis.common.service.linkman.AeaLinkmanInfoService;
 import com.augurit.aplanmis.common.service.process.AeaBpmProcessService;
@@ -33,7 +46,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.InvalidParameterException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * 单项申报service
@@ -115,7 +133,7 @@ public class AeaSeriesService {
         List<AeaHiIteminst> aeaHiIteminsts;
 
         //直接发起申报
-        if (StringUtils.isBlank(seriesApplyDataVo.getApplyinstId())) {
+        if (StringUtils.isBlank(seriesApplyDataVo.getApplyinstId()) || Status.ON.equals(seriesApplyDataVo.getIsJustApplyinst())) {
             ApplyInstantiateResult applyResult = this.instantiateSeriesApply(seriesApplyDataVo, true, new String[]{"1", "2"});
             seriesApplyDataVo.setApplyinstCode(applyResult.getApplyinstCode());
             tasks.addAll(taskService.createTaskQuery().processInstanceId(applyResult.getProcInstId()).list());
@@ -331,7 +349,19 @@ public class AeaSeriesService {
         String appinstId = UUID.randomUUID().toString();//预先生成流程模板实例ID
 
         String opuWinId = aeaServiceWindowService.getCurrentUserWindow() == null ? "" : aeaServiceWindowService.getCurrentUserWindow().getWindowId();
-        AeaHiApplyinst seriesApplyinst = aeaHiApplyinstService.createAeaHiApplyinstAndTriggerAeaLogApplyStateHist(applySource, applySubject, linkmanInfoId, "1", branchOrgMap, null, appinstId, ApplyState.RECEIVE_APPROVED_APPLY.getValue(), opuWinId);//实例化串联申请实例
+        AeaHiApplyinst seriesApplyinst;
+        // 一张表单仅仅实例化了申报实例的情况
+        if (Status.ON.equals(seriesApplyDataVo.getIsJustApplyinst())) {
+            seriesApplyinst = aeaHiApplyinstService.getAeaHiApplyinstById(seriesApplyDataVo.getApplyinstId());
+            if (seriesApplyinst == null) {
+                throw new Exception("找不到申报实例 applyinstId: " + seriesApplyDataVo.getApplyinstId());
+            }
+            if (StringUtils.isNotBlank(seriesApplyinst.getApplyinstState())) {
+                aeaLogApplyStateHistService.insertTriggerAeaLogApplyStateHist(seriesApplyinst.getApplyinstId(), null, appinstId, null, ApplyState.RECEIVE_APPROVED_APPLY.getValue(), opuWinId);
+            }
+        } else {
+            seriesApplyinst = aeaHiApplyinstService.createAeaHiApplyinstAndTriggerAeaLogApplyStateHist(applySource, applySubject, linkmanInfoId, "1", branchOrgMap, null, appinstId, ApplyState.RECEIVE_APPROVED_APPLY.getValue(), opuWinId);//实例化串联申请实例
+        }
 
         String seriesApplyinstId = seriesApplyinst.getApplyinstId();//申报实例ID
         seriesApplyinst.setProjInfoId(projInfoIds[0]);

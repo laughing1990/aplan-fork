@@ -41,4 +41,6 @@ public interface AeaParFrontItemformService {
     List<AeaParFrontItemformVo> getAeaParFrontItemformVoByStageId(String stageId);
 
     void batchSaveAeaParFrontItemform(String stageId,String stageItemIds)throws Exception;
+
+    List<AeaParFrontItemformVo> listAeaParFrontItemformVoByNoPage(AeaParFrontItemform aeaParFrontItemform) throws Exception;
 }

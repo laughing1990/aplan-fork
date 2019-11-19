@@ -536,6 +536,33 @@
 
     </select>
 
+    <select id="getCertinsts" resultType="AeaHiCertinst">
+        SELECT
+        <include refid="allColumns"/>
+        FROM aea_hi_certinst
+        <where>
+            <if test="certId != null">
+                AND CERT_ID = #{certId}
+            </if>
+            <if test="unitInfoIds != null">
+                AND (
+                <foreach collection="unitInfoIds" index="index" item="unitInfoId" open="" separator=" OR " close="">
+                    UNIT_INFO_ID LIKE CONCAT(CONCAT('%',#{unitInfoId}),'%')
+                </foreach>
+                )
+            </if>
+            <if test="projInfoId != null">
+                AND PROJ_INFO_ID = #{projInfoId}
+            </if>
+            <if test="linkmanInfoId != null">
+                AND LINKMAN_INFO_ID = #{linkmanInfoId}
+            </if>
+            <if test="rootOrgId != null">
+                AND ROOT_ORG_ID = #{rootOrgId}
+            </if>
+        </where>
+    </select>
+
     <select id="getAeaHiCertinstByBusCertinst" resultType="com.augurit.aplanmis.common.vo.AeaHiCertinstBVo">
         select
         <include refid="aliasColumns">
@@ -617,5 +644,16 @@
         select ahii.CERTINST_ID from aea_hi_item_inoutinst ahii where ahii.ITEMINST_ID in
             <foreach collection="iteminstIds" item="iteminstId" separator="," open="(" close=")">#{iteminstId}</foreach>
         )
+    </select>
+
+    <select id="listAeaHiCertinstByCertinstCode" resultType="com.augurit.aplanmis.common.domain.AeaHiCertinst">
+        select
+        <include refid="aliasColumns">
+            <property name="alias" value="ahc"/>
+        </include>
+        from aea_hi_certinst ahc
+        where ahc.CERTINST_CODE=#{certinstCode}
+        and ahc.ROOT_ORG_ID=#{currentOrgId}
+        order by create_time desc
     </select>
 </mapper>

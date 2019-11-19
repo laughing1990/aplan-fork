@@ -4,8 +4,11 @@ import com.augurit.agcloud.bsc.domain.BscAttLink;
 import com.augurit.agcloud.bsc.mapper.BscAttMapper;
 import com.augurit.agcloud.bsc.util.UuidUtil;
 import com.augurit.agcloud.framework.security.SecurityContext;
+import com.augurit.agcloud.framework.util.CollectionUtils;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.constants.CertinstSource;
+import com.augurit.aplanmis.common.constants.MatHolder;
+import com.augurit.aplanmis.common.constants.MatinstSource;
 import com.augurit.aplanmis.common.domain.AeaHiCertinst;
 import com.augurit.aplanmis.common.domain.AeaHiItemInoutinst;
 import com.augurit.aplanmis.common.domain.AeaHiItemMatinst;
@@ -124,7 +127,14 @@ public class AeaHiItemMatinstServiceImpl implements AeaHiItemMatinstService {
 
             matinstId = UUID.randomUUID().toString();
             aeaHiItemMatinst.setMatinstId(matinstId);
-            aeaHiItemMatinst.setCreater(SecurityContext.getCurrentUserName());
+            if (StringUtils.isNotBlank(aeaHiItemMatinst.getUnitInfoId())) {
+                aeaHiItemMatinst.setMatinstSource(MatinstSource.UNIT.getValue());
+            } else if (StringUtils.isNotBlank(aeaHiItemMatinst.getLinkmanInfoId())) {
+                aeaHiItemMatinst.setMatinstSource(MatinstSource.LINKMAN.getValue());
+            } else {
+                aeaHiItemMatinst.setMatinstSource(MatinstSource.UNIT.getValue());
+            }
+            aeaHiItemMatinst.setCreater(SecurityContext.getCurrentUserId());
             aeaHiItemMatinst.setCreateTime(new Date());
             aeaHiItemMatinst.setRootOrgId(SecurityContext.getCurrentOrgId());
             this.setAttCount(aeaHiItemMatinst, request);
@@ -140,13 +150,13 @@ public class AeaHiItemMatinstServiceImpl implements AeaHiItemMatinstService {
                 itemMatinst.setMatId(aeaHiItemMatinst.getMatId());
                 itemMatinst.setMatinstCode(aeaHiItemMatinst.getMatinstCode());
                 itemMatinst.setMatinstName(aeaHiItemMatinst.getMatinstName());
-                itemMatinst.setCreater(SecurityContext.getCurrentUserName());
+                itemMatinst.setCreater(SecurityContext.getCurrentUserId());
                 itemMatinst.setCreateTime(new Date());
                 itemMatinst.setRootOrgId(SecurityContext.getCurrentOrgId());
                 aeaHiItemMatinstMapper.insertAeaHiItemMatinst(itemMatinst);
             }
             this.setAttCount(aeaHiItemMatinst, request);
-            aeaHiItemMatinst.setModifier(SecurityContext.getCurrentUserName());
+            aeaHiItemMatinst.setModifier(SecurityContext.getCurrentUserId());
             aeaHiItemMatinst.setModifyTime(new Date());
             aeaHiItemMatinstMapper.updateAeaHiItemMatinst(aeaHiItemMatinst);
         }
@@ -170,7 +180,7 @@ public class AeaHiItemMatinstServiceImpl implements AeaHiItemMatinstService {
 
                     matinstId = UUID.randomUUID().toString();
                     aeaHiItemMatinst.setMatinstId(matinstId);
-                    aeaHiItemMatinst.setCreater(SecurityContext.getCurrentUserName());
+                    aeaHiItemMatinst.setCreater(SecurityContext.getCurrentUserId());
                     aeaHiItemMatinst.setCreateTime(new Date());
                     aeaHiItemMatinst.setRootOrgId(SecurityContext.getCurrentOrgId());
                     this.setAttCountByCloud(aeaHiItemMatinst);
@@ -186,13 +196,13 @@ public class AeaHiItemMatinstServiceImpl implements AeaHiItemMatinstService {
                         itemMatinst.setMatId(aeaHiItemMatinst.getMatId());
                         itemMatinst.setMatinstCode(aeaHiItemMatinst.getMatinstCode());
                         itemMatinst.setMatinstName(aeaHiItemMatinst.getMatinstName());
-                        itemMatinst.setCreater(SecurityContext.getCurrentUserName());
+                        itemMatinst.setCreater(SecurityContext.getCurrentUserId());
                         itemMatinst.setCreateTime(new Date());
                         itemMatinst.setRootOrgId(SecurityContext.getCurrentOrgId());
                         aeaHiItemMatinstMapper.insertAeaHiItemMatinst(itemMatinst);
                     }
                     this.setAttCountByCloud(aeaHiItemMatinst);
-                    aeaHiItemMatinst.setModifier(SecurityContext.getCurrentUserName());
+                    aeaHiItemMatinst.setModifier(SecurityContext.getCurrentUserId());
                     aeaHiItemMatinst.setModifyTime(new Date());
                     aeaHiItemMatinstMapper.updateAeaHiItemMatinst(aeaHiItemMatinst);
                 }
@@ -202,7 +212,8 @@ public class AeaHiItemMatinstServiceImpl implements AeaHiItemMatinstService {
         }
     }
 
-    private void setAttCount(AeaHiItemMatinst aeaHiItemMatinst, HttpServletRequest request) throws Exception {
+    @Override
+    public void setAttCount(AeaHiItemMatinst aeaHiItemMatinst, HttpServletRequest request) throws Exception {
         StandardMultipartHttpServletRequest req = (StandardMultipartHttpServletRequest) request;
         List<MultipartFile> files = req.getFiles("file");
         if (files.size() > 0) {
@@ -235,12 +246,12 @@ public class AeaHiItemMatinstServiceImpl implements AeaHiItemMatinstService {
         for (AeaHiItemMatinst matinst : aeaHiItemMatinst) {
             if (StringUtils.isBlank(matinst.getMatinstId())) {
                 matinst.setMatinstId(UUID.randomUUID().toString());
-                matinst.setCreater(SecurityContext.getCurrentUserName());
+                matinst.setCreater(SecurityContext.getCurrentUserId());
                 matinst.setCreateTime(new Date());
                 matinst.setRootOrgId(SecurityContext.getCurrentOrgId());
                 insertList.add(matinst);
             } else {
-                matinst.setModifier(SecurityContext.getCurrentUserName());
+                matinst.setModifier(SecurityContext.getCurrentUserId());
                 matinst.setModifyTime(new Date());
                 updateList.add(matinst);
             }
@@ -259,20 +270,32 @@ public class AeaHiItemMatinstServiceImpl implements AeaHiItemMatinstService {
     }
 
     @Override
-    public AeaHiCertinst bindCertinst(AeaHiCertinst aeaHiCertinst, String currentUserName) throws Exception {
+    public AeaHiCertinst bindCertinst(AeaHiCertinst aeaHiCertinst, String currentUserId) throws Exception {
         Assert.hasText(aeaHiCertinst.getMatId(), "matId is null");
         Assert.hasText(aeaHiCertinst.getAuthCode(), "authCode is null");
 
         String currentOrgId = SecurityContext.getCurrentOrgId();
 
+        List<AeaHiCertinst> historyCertinsts = getHistoryCertinst(aeaHiCertinst.getCertinstCode(), currentOrgId);
+        if (CollectionUtils.isNotEmpty(historyCertinsts)) {
+            AeaHiCertinst historyCertinst = historyCertinsts.get(0);
+            aeaHiCertinst.setCertinstId(historyCertinst.getCertinstId());
+            aeaHiCertinst.setCertinstSource(historyCertinst.getCertinstSource());
+            aeaHiCertinst.setRootOrgId(currentOrgId);
+            aeaHiCertinst.setModifyTime(new Date());
+            aeaHiCertinst.setModifier(currentUserId);
+            aeaHiCertinstMapper.updateAeaHiCertinst(aeaHiCertinst);
+        } else {
+            aeaHiCertinst.setCertinstId(UuidUtil.generateUuid());
+            aeaHiCertinst.setRootOrgId(currentOrgId);
+            aeaHiCertinst.setCreater(currentUserId);
+            aeaHiCertinst.setCertinstSource(CertinstSource.EXTERNAL.getValue());
+            aeaHiCertinst.setCreateTime(new Date());
+            aeaHiCertinstMapper.insertAeaHiCertinst(aeaHiCertinst);
+        }
+
         AeaItemMat aeaItemMat = aeaItemMatMapper.getAeaItemMatById(aeaHiCertinst.getMatId());
         Assert.state("c".equals(aeaItemMat.getMatProp()), "matProp should 'c'");
-
-        aeaHiCertinst.setCertinstId(UuidUtil.generateUuid());
-        aeaHiCertinst.setRootOrgId(currentOrgId);
-        aeaHiCertinst.setCreater(currentUserName);
-        aeaHiCertinst.setCertinstSource(CertinstSource.EXTERNAL.getValue());
-        aeaHiCertinst.setCreateTime(new Date());
 
         AeaHiItemMatinst aeaHiItemMatinst = new AeaHiItemMatinst();
         BeanUtils.copyProperties(aeaItemMat, aeaHiItemMatinst);
@@ -281,20 +304,23 @@ public class AeaHiItemMatinstServiceImpl implements AeaHiItemMatinstService {
         aeaHiItemMatinst.setMatinstName(aeaItemMat.getMatName());
         aeaHiItemMatinst.setMatinstCode(aeaItemMat.getMatCode());
         aeaHiItemMatinst.setCreateTime(new Date());
-        aeaHiItemMatinst.setCreater(currentUserName);
+        aeaHiItemMatinst.setCreater(currentUserId);
         aeaHiItemMatinst.setCertinstId(aeaHiCertinst.getCertinstId());
-        aeaHiItemMatinst.setMatinstSource(aeaItemMat.getMatFrom());
+        aeaHiItemMatinst.setAttCount(1L);
         // 企业
-        if (StringUtils.isBlank(aeaItemMat.getMatHolder()) || "c".equals(aeaItemMat.getMatHolder())) {
+        if (StringUtils.isBlank(aeaItemMat.getMatHolder()) || MatHolder.UNIT.getValue().equals(aeaItemMat.getMatHolder())) {
             aeaHiItemMatinst.setUnitInfoId(aeaHiCertinst.getUnitInfoId());
+            aeaHiItemMatinst.setMatinstSource(MatinstSource.UNIT.getValue());
         }
         // 个人
-        else if ("u".equals(aeaItemMat.getMatHolder())) {
+        else if (MatHolder.LINKMAN.getValue().equals(aeaItemMat.getMatHolder())) {
             aeaHiItemMatinst.setLinkmanInfoId(aeaHiCertinst.getLinkmanInfoId());
+            aeaHiItemMatinst.setMatinstSource(MatinstSource.LINKMAN.getValue());
+        } else {
+            aeaHiItemMatinst.setMatinstSource(MatinstSource.UNIT.getValue());
         }
         aeaHiItemMatinst.setProjInfoId(aeaHiCertinst.getProjInfoId());
 
-        aeaHiCertinstMapper.insertAeaHiCertinst(aeaHiCertinst);
         aeaHiItemMatinstMapper.insertAeaHiItemMatinst(aeaHiItemMatinst);
 
         aeaHiCertinst.setMatinstId(aeaHiItemMatinst.getMatinstId());
@@ -302,14 +328,50 @@ public class AeaHiItemMatinstServiceImpl implements AeaHiItemMatinstService {
     }
 
     @Override
+    public List<AeaHiCertinst> getHistoryCertinst(String certinstCode, String currentOrgId) {
+        return aeaHiCertinstMapper.listAeaHiCertinstByCertinstCode(certinstCode, currentOrgId);
+    }
+
+    @Override
     public void unbindCertinst(String matinstId) throws Exception {
         Assert.hasText(matinstId, "证照材料实例id不能为空");
+        /// 不删除电子证照实例，有可能一个电子证照被绑定多次
+        /*// 删除电子证照
         AeaHiItemMatinst aeaHiItemMatinst = aeaHiItemMatinstMapper.getAeaHiItemMatinstById(matinstId);
-
-        // 删除电子证照
         if (StringUtils.isNotBlank(aeaHiItemMatinst.getCertinstId())) {
             aeaHiCertinstMapper.deleteAeaHiCertinst(aeaHiItemMatinst.getCertinstId());
-        }
+        }*/
         aeaHiItemMatinstMapper.deleteAeaHiItemMatinst(matinstId);
+    }
+
+    @Override
+    public AeaHiItemMatinst bindForminst(AeaHiItemMatinst aeaHiItemMatinst, String currentUserId) throws Exception {
+        Assert.hasText(aeaHiItemMatinst.getMatId(), "matId must not null.");
+        Assert.hasText(aeaHiItemMatinst.getStoForminstId(), "forminstId must not null.");
+
+        AeaItemMat aeaItemMat = aeaItemMatMapper.getAeaItemMatById(aeaHiItemMatinst.getMatId());
+        if (aeaItemMat == null) throw new Exception("aeaItemMat为空, matId: " + aeaHiItemMatinst.getMatId());
+
+        String currentOrgId = SecurityContext.getCurrentOrgId();
+
+        aeaHiItemMatinst.setMatinstId(UuidUtil.generateUuid());
+        aeaHiItemMatinst.setRootOrgId(currentOrgId);
+        aeaHiItemMatinst.setMatinstName(aeaItemMat.getMatName());
+        aeaHiItemMatinst.setMatinstCode(aeaItemMat.getMatCode());
+        aeaHiItemMatinst.setCreateTime(new Date());
+        aeaHiItemMatinst.setCreater(currentUserId);
+        aeaHiItemMatinst.setAttCount(1L);
+        // 企业
+        if (StringUtils.isBlank(aeaItemMat.getMatHolder()) || MatHolder.UNIT.getValue().equals(aeaItemMat.getMatHolder())) {
+            aeaHiItemMatinst.setMatinstSource(MatinstSource.UNIT.getValue());
+        }
+        // 个人
+        else if (MatHolder.LINKMAN.getValue().equals(aeaItemMat.getMatHolder())) {
+            aeaHiItemMatinst.setMatinstSource(MatinstSource.LINKMAN.getValue());
+        } else {
+            aeaHiItemMatinst.setMatinstSource(MatinstSource.UNIT.getValue());
+        }
+        aeaHiItemMatinstMapper.insertAeaHiItemMatinst(aeaHiItemMatinst);
+        return aeaHiItemMatinst;
     }
 }

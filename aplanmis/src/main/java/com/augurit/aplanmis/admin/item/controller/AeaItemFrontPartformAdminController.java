@@ -1,6 +1,8 @@
 package com.augurit.aplanmis.admin.item.controller;
 
 
+import com.augurit.agcloud.framework.exception.InvalidParameterException;
+import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.ui.pager.EasyuiPageInfo;
 import com.augurit.agcloud.framework.ui.pager.PageHelper;
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
@@ -94,6 +96,7 @@ private static Logger logger = LoggerFactory.getLogger(AeaItemFrontPartformAdmin
 
     @RequestMapping("/getMaxSortNo.do")
     public ResultForm getMaxSortNo(AeaItemFrontPartform aeaItemFrontPartform) {
+
         try {
             return new ContentResultForm<>(true, aeaItemFrontPartformService.getMaxSortNo(aeaItemFrontPartform));
         } catch (Exception e) {
@@ -104,8 +107,30 @@ private static Logger logger = LoggerFactory.getLogger(AeaItemFrontPartformAdmin
 
     @RequestMapping("/listSelectItemFrontPartformByPage.do")
     public EasyuiPageInfo<AeaItemFrontPartformVo> listSelectItemFrontPartformByPage(AeaItemFrontPartform aeaItemFrontPartform, Page page) {
+
         PageInfo<AeaItemFrontPartformVo> pageInfo = aeaItemFrontPartformService.listSelectItemFrontPartformByPage(aeaItemFrontPartform, page);
         return PageHelper.toEasyuiPageInfo(pageInfo);
     }
 
+    @RequestMapping("/batchSaveAeaItemFrontPartform.do")
+    public ResultForm batchSaveAeaItemFrontPartform(String itemVerId,String itemPartformIds){
+        try {
+            aeaItemFrontPartformService.batchSaveAeaItemFrontPartform(itemVerId,itemPartformIds);
+            return new ResultForm(true);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return new ResultForm(false, e.getMessage());
+
+        }
+    }
+
+    @RequestMapping("/changIsActive.do")
+    public ResultForm changIsActive(String id) {
+
+        if (StringUtils.isBlank(id)) {
+            throw new InvalidParameterException("参数id为空!");
+        }
+        aeaItemFrontPartformService.changIsActive(id, SecurityContext.getCurrentOrgId());
+        return new ResultForm(true);
+    }
 }

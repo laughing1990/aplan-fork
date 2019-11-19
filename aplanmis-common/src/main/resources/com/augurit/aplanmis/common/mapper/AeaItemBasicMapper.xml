@@ -1908,12 +1908,11 @@
 
     <select id="getOneByItemVerId" resultType="AeaItemBasic">
         select
-        <include refid="allColumns2">
-            <property name="alias" value="aib"/>
-        </include>
-        ,
-        org.ORG_NAME orgName
-        from AEA_ITEM_BASIC aib
+            <include refid="allColumns2">
+                <property name="alias" value="aib"/>
+            </include>,
+            org.ORG_NAME orgName
+            from AEA_ITEM_BASIC aib
         left join OPU_OM_ORG org on aib.org_id = org.org_id
         where aib.ITEM_VER_ID = #{itemVerId}
         and aib.ROOT_ORG_ID = #{rootOrgId}
@@ -1921,12 +1920,11 @@
 
     <select id="listAeaItemBasicWithOrg" resultType="AeaItemBasic">
         select
-        <include refid="allColumns2">
-            <property name="alias" value="aib"/>
-        </include>
-        ,
-        org.ORG_NAME orgName,
-        itemVer.ITEM_VER_STATUS itemVerStatus
+            <include refid="allColumns2">
+                <property name="alias" value="aib"/>
+            </include>,
+            org.ORG_NAME orgName,
+            itemVer.ITEM_VER_STATUS itemVerStatus
         from AEA_ITEM_BASIC aib
         left join OPU_OM_ORG org on ( org.ORG_ID = aib.ORG_ID and org.ORG_DELETED = '0')
         left join AEA_ITEM_VER itemVer on aib.ITEM_VER_ID = itemVer.ITEM_VER_ID and aib.ITEM_ID = itemVer.ITEM_ID

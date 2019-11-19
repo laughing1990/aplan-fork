@@ -1225,6 +1225,18 @@
               class="mat-list mt20 mb20">
       <el-table-column type="expand" width="20" align="right">
         <template slot-scope="scope">
+          <div class="mat-children" v-if="scope.row.certChild&&scope.row.certChild.length>0">
+            <div v-for="(item,index) in scope.row.certChild" class="file-list-tab">
+              <span class="file-name">
+                <span class="cert-icon icon ag ag-id-card"></span>
+                {{item.certName}}
+              </span>
+              <span class="file-icon-btn">
+                <span title="查看" class="ag ag-preview" @click="cretPreview(item.authCode)"></span>
+                <span title="解除关联" class="el-icon-delete" @click="unbindCert(item.matinstId,scope.row.certChild,index)"></span>
+              </span>
+            </div>
+          </div>
           <div v-if="scope.row.childs&&scope.row.childs.length>0">
             <div v-for="(item,index) in scope.row.childs" class="file-list-tab" :key="index">
               <span class="file-name">{{item.fileName}}</span>
@@ -1235,7 +1247,7 @@
               </div>
             </div>
           </div>
-          <div v-else>
+          <div v-if="(scope.row.certChild&&scope.row.certChild.length==0)&&(scope.row.matChild&&scope.row.matChild.length==0)">
             <span>无已上传关联材料</span>
           </div>
         </template>
@@ -1245,16 +1257,19 @@
         <template slot-scope="scope">
           <span v-show="scope.row.zcqy==0&&scope.row.attIsRequire==1" class="required-color">* </span>
           {{scope.row.matName}}
+          <i class="cert-icon ag ag-id-card" v-if="scope.row.matProp=='c'"></i>
           <span v-show="scope.row.zcqy==1" class="isTag isDone">容缺</span>
           <span v-show="scope.row.isCommon==1" class="isTag isRecommend">共</span>
           <span v-show="scope.row.zcqy==0&&scope.row.attIsRequire==1" class="isTag isRequired">必</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作" width="120" align="center">
+      <el-table-column label="操作" width="200">
         <template slot-scope="scope">
-          <a href="javascript:;" class="color-3e97df" @click="showUploadWindow(scope.row,scope.$index)">
-            <i class="el-icon-upload2"></i>&nbsp;附件上传
-          </a>
+          <span class="op-btn" @click="showUploadWindow(scope.row,scope.$index)">
+            <i class="el-icon-upload2"></i>附件上传
+          </span>
+          <span class="op-btn" v-if="scope.row.matProp=='c'" @click="showUploadWindow(scope.row,scope.$index,'certList')">证照库</span>
+          <span class="op-btn" v-if="scope.row.matProp=='f'" @click="showOneFormDialog1(scope.row)">填写</span>
         </template>
       </el-table-column>
     </el-table>
@@ -1390,7 +1405,7 @@
               <el-button type="primary" icon="icon ag ag-search" @click="getMyMatsList()"> 搜索</el-button>
             </div>
             <el-table :data="myMatsList" class="mt20" :style="{height:(curHeight-555)+'px',overflow: 'auto'}">
-              <el-table-column prop="fileName" label="文件名称"></el-table-column>
+              <el-table-column prop="fileName" label="材料名称"></el-table-column>
               <el-table-column prop="fileName" label="日期" width="140">
                 <template slot-scope="scope">
                   <span>{{$options.filters.formatDate(scope.row.updateTime)}}</span>
@@ -1424,10 +1439,10 @@
                       :load="getMyDirsList"
                       :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
                       class="mt20 my-dir-table" :style="{height:(curHeight-515)+'px',overflow: 'auto'}">
-              <el-table-column label="文件名称">
+              <el-table-column label="材料名称">
                 <template slot-scope="scope">
                   <span v-if="scope.row.hasCheck==true" class="ellipsis dir-file-name" :title="scope.row.attName">
-                    <i :class="'ag ag-filetype-'+getFileType(scope.row.attName)"></i>{{scope.row.attName}}
+                    <i class="ag ag-fileType-doc" :class="'ag-filetype-'+getFileType(scope.row.attName)"></i>{{scope.row.attName}}
                   </span>
                   <span v-else class="ellipsis dir-file-name">
                     <i class="ag ag-folder-open-fill"></i>{{scope.row.dirName}}
@@ -1575,6 +1590,60 @@
     </div>
   </el-dialog>
   <!--新增编辑联系人 end-->
+  <!--证照库弹窗 start-->
+  <el-dialog class="upload-flie-dialog" title="证照列表" :visible.sync="showCertWindowFlag"
+             @closed="certMatTableData=[]" width="900px">
+    <div class="upload-file-content">
+      <div class="file-opt-btn">
+        <el-form :inline="true" :model="searchInline">
+          <el-form-item label="申报主体">
+            <el-select v-model="searchInline.type" placeholder="选择申报主体">
+              <el-option v-for="(item,index) in allApplySubjectInfo" :key="index" @click.native="applySubjectChange(item)" :label="item.applySubjectName" :value="item.applySubjectName"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="" v-if="searchInline.showNumberType">
+            <el-radio-group v-model="searchInline.identityNumberType" @change="identityNumberTypeChange">
+              <el-radio label="0">企业证照</el-radio>
+              <el-radio label="1">法人证照</el-radio>
+            </el-radio-group>
+          </el-form-item>
+        </el-form>
+      </div>
+      <el-table :data="certMatTableData" ref="certMatTableData" border>
+        <el-table-column prop="name" label="证照名称"></el-table-column>
+        <el-table-column prop="license_type" label="证照类型"  width="100">
+          <template slot-scope="scope">
+            {{$options.filters.formatLicenseType(scope.row.license_type)}}
+          </template>
+        </el-table-column>
+        <el-table-column prop="expiry_date" label="有效截止日期"  width="180"></el-table-column>
+        <el-table-column prop="trust_level" label="可信等级"  width="80"></el-table-column>
+        <el-table-column label="证照状态"  width="140">
+          <template slot-scope="scope">
+            {{$options.filters.formatLicenseStatus(scope.row.license_status)}}
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" width="120">
+          <template slot-scope="scope">
+            <span class="op-btn" @click="cretPreview(scope.row.auth_code)">查看</span>
+            <span class="op-btn" v-if="scope.row.bind==false" @click="setCretLinked(scope.row)">关联</span>
+            <span class="op-btn" v-else style="cursor: not-allowed">已关联</span>
+            <!--<span class="op-btn" v-else @click="unbindCert(scope.row.matinstId,selMatRowData.certChild,index)">解除关联</span>-->
+
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+  </el-dialog>
+  <!--证照库弹窗 end-->
+  <!--  材料一张表单  start-->
+  <el-dialog @closed="uploadPercentage=0;progressDialogVisible=false" class="show-one-form" :title="matformNameTitle"
+             width="750px" :visible.sync="matFormDialogVisible">
+    <div>
+      <div id="matFormContent"></div>
+    </div>
+  </el-dialog>
+  <!--  材料一张表单  end-->
 </div>
 <script>
 </script>

@@ -8,6 +8,8 @@ var parStageOneformCurrentPageNumber = 1;  //记录当前页面
 var parStageOneformCurrentPageSize = 10;   //记录页面大小
 var allOneformCurrentPageNumber = 1;
 var allOneformCurrentPageSize = 10;
+var addDevFormValidator;
+
 $(function() {
 
     $('#selectAllOneFormTbScroll').niceScroll({
@@ -23,6 +25,18 @@ $(function() {
     });
 
     $('#aedit_part_form_scroll').niceScroll({
+
+        cursorcolor: "#e2e5ec",//#CC0071 光标颜色
+        cursoropacitymin: 0, // 当滚动条是隐藏状态时改变透明度, 值范围 1 到 0
+        cursoropacitymax: 1, // 当滚动条是显示状态时改变透明度, 值范围 1 到 0
+        touchbehavior: false, //使光标拖动滚动像在台式电脑触摸设备
+        cursorwidth: "4px", //像素光标的宽度
+        cursorborder: "0", //   游标边框css定义
+        cursorborderradius: "2px",//以像素为光标边界半径
+        autohidemode: true  //是否隐藏滚动条
+    });
+
+    $('#add_dev_form_scroll').niceScroll({
 
         cursorcolor: "#e2e5ec",//#CC0071 光标颜色
         cursoropacitymin: 0, // 当滚动条是隐藏状态时改变透明度, 值范围 1 到 0
@@ -264,6 +278,94 @@ function initItemOneFormValidate() {
                         $("#uploadProgress").modal('hide');
                         swal('错误信息', XMLHttpRequest.responseText, 'error');
                     },500);
+                }
+            });
+        }
+    });
+
+    // 设置开发表单初始化校验
+    addDevFormValidator = $("#add_dev_form_form").validate({
+
+        // 定义校验规则
+        rules: {
+            formCode: {
+                required: true,
+                maxlength: 200
+            },
+            formName: {
+                required: true,
+                maxlength: 200
+            },
+            formLoadUrl: {
+                required: true,
+                maxlength: 500
+            }
+        },
+        messages: {
+            formCode: {
+                required: '<font color="red">此项必填！</font>',
+                maxlength: "长度不能超过200个字母!"
+            },
+            formName: {
+                required: '<font color="red">此项必填！</font>',
+                maxlength: "长度不能超过200个字母!"
+            },
+            formLoadUrl: {
+                required: '<font color="red">此项必填！</font>',
+                maxlength: "长度不能超过500个字母!"
+            }
+        },
+        // 提交表单
+        submitHandler: function (form) {
+
+            $("#uploadProgress").modal("show");
+            $('#saveDevform').hide();
+            $('#uploadProgressMsg').html("保存数据中,请勿点击,耐心等候...");
+
+            var form = new FormData(document.getElementById("add_dev_form_form"));
+            // 处理itemPartformId字段
+            var itemPartformId = $('#add_dev_form_form input[name="stagePartformId"]').val();
+            form.delete("stagePartformId");
+            form.set("itemPartformId",itemPartformId);
+            $.ajax({
+                type: "POST",
+                dataType: "json",
+                cache: false,
+                url: ctx + '/aea/item/partform/createAndUpdateDevForm.do',
+                data: form,
+                processData: false,
+                contentType: false,
+                success: function (result) {
+                    if (result.success) {
+                        setTimeout(function () {
+                            $("#uploadProgress").modal('hide');
+                            swal({
+                                type: 'success',
+                                title: '保存成功！',
+                                showConfirmButton: false,
+                                timer: 1000
+                            });
+                            // 隐藏模式框
+                            $('#saveDevform').show();
+                            $('#add_dev_form_modal').modal('hide');
+
+                            // 列表数据重新加载
+                            searchItemPartform();
+                        }, 500);
+                    } else {
+                        setTimeout(function () {
+                            $('#saveDevform').show();
+                            $("#uploadProgress").modal('hide');
+                            swal('错误信息', result.message, 'error');
+                        }, 500);
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    setTimeout(function () {
+                        $('#saveDevform').show();
+                        $("#uploadProgress").modal('hide');
+                        swal('错误信息', XMLHttpRequest.responseText, 'error');
+                    }, 500);
                 }
             });
         }
@@ -701,7 +803,7 @@ function stagePartformFormatter(value, row, index){
                             '<i class="la la-pencil"></i>' +
                          '</a>';
 
-        var updateDevForm = '<a target="_blank" href= "' + ctx + '/design?formId=' + sumformId + '&' + strCallback + '"title="编辑开发表单"' +
+        var updateDevForm = '<a href= "javascript:editStageDevFormById(\'' + sumformId + '\',\'' + row.itemPartformId + '\')" title="编辑开发表单"' +
                                 'class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill">' +
                                 '<i class="la la-pencil"></i>' +
                             '</a>';
@@ -724,7 +826,7 @@ function stagePartformFormatter(value, row, index){
                           '<i class="la la-plus"></i>' +
                       '</a>';
 
-        var newDevForm = '<a target="_blank" href= "' + ctx + '/design?' + strCallback + '" title="新增开发表单"' +
+        var newDevForm = '<a href= "javascript:addStageDevform(\'' + row.itemPartformId + '\')" title="新增开发表单"' +
                             'class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill">' +
                             '<i class="la la-plus"></i>' +
                          '</a>';
@@ -1011,5 +1113,68 @@ function deleteItemPartFormRel(itemPartformId){
         }
     }else{
         swal('提示信息', '当前版本下数据不可编辑!', 'info');
+    }
+}
+
+// 新增开发表单
+function addStageDevform(stagePartformId) {
+
+    if (curIsEditable && stagePartformId) {
+
+        $('#add_dev_form_modal').modal('show');
+        $('#add_dev_form_scroll').animate({scrollTop: 0}, 800);//滚动到顶部
+        $('#add_dev_form_form')[0].reset();
+        if (addDevFormValidator != null) {
+            $("#add_dev_form_form").validate().resetForm();
+        }
+
+        $('#saveDevform').show();
+        $('#add_dev_form_form input[name="stagePartformId"]').val(stagePartformId);
+        $('#add_dev_form_form input[name="formId"]').val('');
+        $('#add_dev_form_form input[name="formCode"]').val('');
+        $('#add_dev_form_form input[name="formName"]').val('');
+        $('#add_dev_form_form input[name="formLoadUrl"]').val('');
+    } else {
+        swal('提示信息', '当前版本下数据不可编辑!', 'info');
+    }
+}
+
+// 编辑开发表单
+function editStageDevFormById(formId,stagePartformId) {
+
+    if (formId) {
+
+        $('#add_dev_form_modal').modal('show');
+        $('#add_dev_form_modal_title').html('编辑开发表单');
+        $('#add_dev_form_scroll').animate({scrollTop: 0}, 800);//滚动到顶部
+        $('#add_dev_form_form')[0].reset();
+        $('#add_dev_form_form input[name="stagePartformId"]').val(stagePartformId);
+        if (addDevFormValidator != null) {
+            $("#add_dev_form_form").validate().resetForm();
+        }
+        if (curIsEditable) {
+            $('#saveDevform').show();
+        } else {
+            $('#saveDevform').hide();
+        }
+
+        $.ajax({
+            url: ctx + '/aea/par/stage/partform/getStageDevform.do',
+            type: 'POST',
+            data: {
+                'formId': formId,
+            },
+            async: false,
+            success: function (data) {
+                if (data) {
+                    loadFormData(true, '#add_dev_form_form', data);
+                }
+            },
+            error: function () {
+                swal('错误信息', "获取信息失败！", 'error');
+            }
+        });
+    } else {
+        swal('提示信息', "请选择操作记录！", 'info');
     }
 }

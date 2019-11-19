@@ -196,10 +196,12 @@
 
     <select id="getMatinstListByStageinstId" resultType="AeaHiItemMatinst">
         select
-        <include refid="allColumns_ahim"/>
+        <include refid="allColumns_ahim"/>,ahc.CERTINST_NAME certisntName,ahc.auth_code authCode,ahc.certinst_source
+        certinstSource
         FROM
         aea_hi_item_inoutinst ahii,
         aea_hi_item_matinst ahim
+        LEFT JOIN aea_hi_certinst ahc ON ahc.CERTINST_ID = ahim.CERTINST_ID
         WHERE
         ahii.MATINST_ID = ahim.MATINST_ID
         AND ahii.IS_COLLECTED = '1'
@@ -209,11 +211,13 @@
 
     <select id="getMatinstListByIteminstIds" resultType="AeaHiItemMatinst">
         SELECT
-        <include refid="allColumns"/>
+        <include refid="allColumns_ahim"/>,ahc.CERTINST_NAME certisntName,ahc.auth_code authCode,ahc.certinst_source
+        certinstSource
         FROM
-        aea_hi_item_matinst
+        aea_hi_item_matinst ahim
+        LEFT JOIN aea_hi_certinst ahc ON ahc.CERTINST_ID = ahim.CERTINST_ID
         WHERE
-        MATINST_ID IN (
+        ahim.MATINST_ID IN (
         SELECT
         ahii.MATINST_ID
         FROM
@@ -273,11 +277,13 @@
 
     <select id="getOutputMatinstListByStageinstId" resultType="AeaHiItemMatinst">
         SELECT
-        <include refid="allColumns"/>
+        <include refid="allColumns_ahim"/>,ahc.CERTINST_NAME certisntName,ahc.auth_code authCode,ahc.certinst_source
+        certinstSource
         FROM
-        aea_hi_item_matinst
+        aea_hi_item_matinst ahim
+        LEFT JOIN aea_hi_certinst ahc ON ahc.CERTINST_ID = ahim.CERTINST_ID
         WHERE
-        MATINST_ID IN (
+        ahim.MATINST_ID IN (
         SELECT
         ahii.MATINST_ID
         FROM

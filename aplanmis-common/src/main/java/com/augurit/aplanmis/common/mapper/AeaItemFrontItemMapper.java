@@ -39,11 +39,11 @@ public interface AeaItemFrontItemMapper {
      List<AeaItemFrontItem> listNoDeprecatedItemFront(@Param("frontCkItemVerId")String frontCkItemVerId,
                                                       @Param("rootOrgId")String rootOrgId);
 
-
      List<AeaItemFrontItem> listAeaItemFrontItem(AeaItemFrontItem aeaItemFrontItem);
 
      Long getMaxSortNo(AeaItemFrontItem aeaItemFrontItem);
 
      AeaItemFrontItem getAeaItemFrontItemByFrontItemId(@Param("frontItemId") String frontItemId);
 
+     void changIsActive(@Param("id")String id, @Param("rootOrgId")String rootOrgId);
 }

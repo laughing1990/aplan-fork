@@ -198,6 +198,9 @@ var module1 = new Vue({
         projName: [
           { required: true, message: '请输入项目/工程名称', trigger: 'blur' },
         ],
+        themeId: [
+          { required: true, message: '请选择所属主题', trigger: 'change' },
+        ],
         localCode: [
           { required: true, message: '请输入项目代码', trigger: 'blur' },
         ],
@@ -221,9 +224,6 @@ var module1 = new Vue({
         ],
         projType: [
           { required: true, message: '请选择立项类型', trigger: 'change' },
-        ],
-        themeId: [
-          { required: true, message: '请选择项目类型', trigger: 'change' },
         ],
         projNature: [
           { required: true, message: '请选择建设性质', trigger: 'change' },
@@ -337,6 +337,17 @@ var module1 = new Vue({
       selMatRowDataInd: 0, // 所选择的材料的index
       myDirMatsList: [], // 我的空间材料列表
       myDirMatsId: [], // 我的空间材料列表Id
+      showCertWindowFlag: false, // 是否展示证照库窗口
+      certMatTableData: [], // 证照库列表
+      searchInline: {
+        identityNumberType: '0',
+        showNumberType: true,
+      }, // 证照库条件查询
+      allApplySubjectInfo: [], // 证照库条件查询
+      selApplySubject: {}, // 选中的建设单位 申报主体
+      matformNameTitle: '材料表单',
+      matFormDialogVisible: false,
+      parallelApplyinstId: '', // 申报实例id
     }
   },
   created: function () {
@@ -1816,6 +1827,14 @@ var module1 = new Vue({
       }, function (result) {
         _that.declareStep = 4;
         _that.showFileListKey = [];
+        result.content.map(function (item) {
+          if (typeof item.childs == 'undefined' || item.childs == undefined) {
+            Vue.set(item, 'childs', []);
+          }
+          if(typeof item.certChild=='undefined'||item.certChild==undefined){
+            Vue.set(item,'certChild',[]);
+          }
+        });
         _that.allMatsTableData = result.content;
         _that.showMatsTableData = result.content.slice(0, 10);
         _that.loading = false;
@@ -1880,6 +1899,9 @@ var module1 = new Vue({
         if (item.childs == 'undefined' || item.childs == undefined) {
           Vue.set(item, 'childs', []);
         }
+        if(item.certChild=='undefined'||item.certChild==undefined){
+          Vue.set(item,'certChild',[]);
+        }
         if (item.matinstId == 'undefined' || item.matinstId == undefined) {
           Vue.set(item, 'matinstId', '');
         }
@@ -1891,7 +1913,12 @@ var module1 = new Vue({
         }
         _that.matIds.push(item.matId);
         if (typeof item.matinstId !== "undefined" && item.matinstId != '') {
-          _that.matinstIds.push(item.matinstId)
+          if(_that.matinstIds.indexOf(item.matinstId)<0){
+            _that.matinstIds.push(item.matinstId)
+          }
+        }
+        if(item.certMatinstIds&&item.certMatinstIds.length>0){
+          _that.matinstIds = _that.matinstIds.concat(item.certMatinstIds)
         }
       });
     },
@@ -2142,6 +2169,9 @@ var module1 = new Vue({
       this.fileWinData.append("matinstName", rowData.matName ? rowData.matName : '');
       this.fileWinData.append("projInfoId", _that.projInfoId);
       this.fileWinData.append("matinstId", rowData.matinstId ? rowData.matinstId : '');
+      this.fileWinData.append("matProp", rowData.matProp?rowData.matProp:'');
+      this.fileWinData.append("certId", rowData.certId?rowData.certId:'');
+      this.fileWinData.append("stoFormId", rowData.stoFormId?rowData.stoFormId:'');
       _that.loadingFileWin = true;
       axios.post(ctx + 'rest/file/uploadFile', _that.fileWinData).then(function (res) {
         if (res.data.success) {
@@ -2291,14 +2321,488 @@ var module1 = new Vue({
         alertMsg('', '服务请求失败', '关闭', 'error', true);
       });
     },
-    showUploadWindow: function (data, index) { // 展示文件上传下载弹窗
+    // 切换证照查询条件
+    applySubjectChange: function(val){
+      console.log(val);
+      this.selApplySubject = val;
+      if(val.applySubjectType == "applyLinkman"){
+        this.searchInline.showNumberType = false;
+      }else {
+        this.searchInline.showNumberType = true;
+      }
+      this.getCertFileListWin(val,'oneUnit');
+    },
+    // 切换证照查询条件
+    identityNumberTypeChange: function(val){
+      this.getCertFileListWin(this.selApplySubject,'oneUnit');
+    },
+    showUploadWindow: function (data, index,flag) { // 展示文件上传下载弹窗
       var _that = this;
-      _that.showUploadWindowFlag = true;
-      _that.getMyMatsList();
       _that.selMatRowData = data;
       _that.selMatRowDataInd = index;
       _that.selMatinstId = data.matinstId ? data.matinstId : null;
-      _that.getFileListWin(_that.selMatinstId, data);
+      _that.allApplySubjectInfo = [];
+      if(_that.applyObjectInfo.aeaUnitInfo){
+        _that.allApplySubjectInfo.push(_that.applyObjectInfo.aeaUnitInfo);
+      }
+      _that.jiansheFrom.map(function(unitItem){
+        if(unitItem.unifiedSocialCreditCode){
+          unitItem.applySubjectName = unitItem.applicant;
+          _that.allApplySubjectInfo.push(unitItem);
+        }
+      });
+      if(_that.applyObjectInfo.aeaLinkmanInfo.applyLinkmanIdCard){
+        _that.applyObjectInfo.aeaLinkmanInfo.applySubjectType = 'applyLinkman';
+        _that.applyObjectInfo.aeaLinkmanInfo.applySubjectName = _that.applyObjectInfo.aeaLinkmanInfo.applyLinkmanName;
+        _that.applyObjectInfo.aeaLinkmanInfo.linkmanCertNo = _that.applyObjectInfo.aeaLinkmanInfo.applyLinkmanIdCard;
+        _that.allApplySubjectInfo.push(_that.applyObjectInfo.aeaLinkmanInfo);
+      }
+      if(flag=='certList') {
+        _that.showCertWindowFlag = true;
+        _that.getCertFileListWin(data);
+      }else {
+        _that.showUploadWindowFlag = true;
+        _that.getMyMatsList();
+        _that.getFileListWin(_that.selMatinstId, data);
+      }
+    },
+    // 获取证照文件列表
+    getCertFileListWin: function (matData,flag) { // flag==oneUnit 查询单个建设单位
+      var _that = this, _identityNumber='';
+      var certChild = _that.selMatRowData.certChild;
+      var certChildIds = [];
+      if(certChild.length>0){
+        certChild.map(function(item){
+          if(certChildIds.indexOf(item.authCode)<0){
+            certChildIds.push(item.authCode);
+          }
+        })
+      }
+      if(flag=='oneUnit'){
+        if(matData.applySubjectType == 'applyLinkman'){
+          _identityNumber = matData.applyLinkmanIdCard;
+        }else {
+          if(_that.searchInline.identityNumberType=='0'){
+            _identityNumber = matData.unifiedSocialCreditCode;
+          }else {
+            _identityNumber = matData.idno;
+          }
+        }
+      }else {
+        if(_that.applySubjectType == 0){
+          _identityNumber = _that.applyPersonFrom.applyLinkmanIdCard;
+        }else {
+          var identityNumbers = [];
+          _that.jiansheFrom.map(function (unitItem) {
+            identityNumbers.push(unitItem.unifiedSocialCreditCode);
+          });
+          _identityNumber = identityNumbers.join(',');
+        }
+      }
+      request('', {
+        url: ctx + 'aea/cert/getLicenseAuthRes',
+        type: 'get',
+        data: {identityNumber: _identityNumber,itemVerIds: _that.selMatRowData.itemVerId}
+      }, function (res) {
+        if(res){
+          // if(res.content){
+          res.content = {
+            "ack_code": "SUCCESS",
+            "errors": [],
+            "sign": null,
+            "sign_method": null,
+            "timestamp": null,
+            "correlation_id": "386ae0f3-be3e-40e8-8b3d-b6d0fba55289",
+            "response_id": "671a4b04-0e1f-4ec0-bc82-3c6b1766a730",
+            "data": [
+              {
+                "name": "普通义工（志愿者）证",
+                "division": "",
+                "remark": null,
+                "creator": null,
+                "issuer": null,
+                "abolisher": null,
+                "algorithm": null,
+                "license_code": "44070020190000090V",
+                "license_type": null,
+                "id_code": "122230",
+                "doc_name": null,
+                "doc_summary": null,
+                "doc_keyword": null,
+                "holder_name": "测试",
+                "holder_identity_type": "10",
+                "holder_identity_num": "440782199411112150",
+                "issue_org_name": "江门政务服务数据管理局",
+                "issue_org_code": "593330629",
+                "division_code": "440700",
+                "issue_date": "2019-08-19 00:00:00",
+                "begin_date": null,
+                "expiry_date": null,
+                "data_fields": null,
+                "attachment_fields": null,
+                "trust_level": "A",
+                "extend_props": "",
+                "biz_num": null,
+                "license_item_code": "113002201",
+                "license_status": "ISSUED",
+                "creation_time": "2019-08-22 16:50:41",
+                "issue_time": null,
+                "abolish_time": null,
+                "abolish_reason": null,
+                "correlative_license": null,
+                "public_key": null,
+                "last_modificator": "*SYSADM*",
+                "last_modification_time": "2019-08-22 16:50:41",
+                "s_sign_cert": null,
+                "s_sign_data": null,
+                "auth_code": "20191115101022412NC011344709_44070020190000090V"
+              },
+              {
+                "name": "普通义工（志愿者）证",
+                "division": "",
+                "remark": null,
+                "creator": null,
+                "issuer": null,
+                "abolisher": null,
+                "algorithm": null,
+                "license_code": "44070020190000090U",
+                "license_type": null,
+                "id_code": "12223",
+                "doc_name": null,
+                "doc_summary": null,
+                "doc_keyword": null,
+                "holder_name": "测试",
+                "holder_identity_type": "10",
+                "holder_identity_num": "440782199411112150",
+                "issue_org_name": "江门政务服务数据管理局",
+                "issue_org_code": "593330629",
+                "division_code": "440700",
+                "issue_date": "2019-08-19 00:00:00",
+                "begin_date": null,
+                "expiry_date": null,
+                "data_fields": null,
+                "attachment_fields": null,
+                "trust_level": "A",
+                "extend_props": "",
+                "biz_num": null,
+                "license_item_code": "113002201",
+                "license_status": "ISSUED",
+                "creation_time": "2019-08-22 16:49:07",
+                "issue_time": null,
+                "abolish_time": null,
+                "abolish_reason": null,
+                "correlative_license": null,
+                "public_key": null,
+                "last_modificator": "*SYSADM*",
+                "last_modification_time": "2019-08-22 16:49:07",
+                "s_sign_cert": null,
+                "s_sign_data": null,
+                "auth_code": "20191115101022412NC011344709_44070020190000090U"
+              },
+              {
+                "name": "志愿服务记录证明",
+                "division": "",
+                "remark": null,
+                "creator": null,
+                "issuer": null,
+                "abolisher": null,
+                "algorithm": null,
+                "license_code": "44070020190000080W",
+                "license_type": null,
+                "id_code": "1122",
+                "doc_name": null,
+                "doc_summary": null,
+                "doc_keyword": null,
+                "holder_name": "黄大三",
+                "holder_identity_type": "10",
+                "holder_identity_num": "440782199411112150",
+                "issue_org_name": "江门市网络信息统筹局",
+                "issue_org_code": "MB2C44198",
+                "division_code": "440700",
+                "issue_date": "2019-07-26 00:00:00",
+                "begin_date": null,
+                "expiry_date": "2023-07-01 00:00:00",
+                "data_fields": null,
+                "attachment_fields": null,
+                "trust_level": "A",
+                "extend_props": "",
+                "biz_num": null,
+                "license_item_code": "213002401",
+                "license_status": "ISSUED",
+                "creation_time": "2019-07-26 18:02:17",
+                "issue_time": null,
+                "abolish_time": null,
+                "abolish_reason": null,
+                "correlative_license": null,
+                "public_key": null,
+                "last_modificator": "4f070706-c30c-481c-a837-9f39136c62de",
+                "last_modification_time": "2019-07-26 18:04:59",
+                "s_sign_cert": null,
+                "s_sign_data": null,
+                "auth_code": "20191115101022412NC011344709_44070020190000080W"
+              },
+              {
+                "name": "普通义工（志愿者）证",
+                "division": "",
+                "remark": null,
+                "creator": null,
+                "issuer": null,
+                "abolisher": null,
+                "algorithm": null,
+                "license_code": "4407002019000008CS",
+                "license_type": null,
+                "id_code": "12333",
+                "doc_name": null,
+                "doc_summary": null,
+                "doc_keyword": null,
+                "holder_name": "测试",
+                "holder_identity_type": "10",
+                "holder_identity_num": "440782199411112150",
+                "issue_org_name": "江门市网络信息统筹局",
+                "issue_org_code": "MB2C44198",
+                "division_code": "440700",
+                "issue_date": "2019-01-04 00:00:00",
+                "begin_date": null,
+                "expiry_date": "2020-01-03 00:00:00",
+                "data_fields": null,
+                "attachment_fields": null,
+                "trust_level": "A",
+                "extend_props": "",
+                "biz_num": null,
+                "license_item_code": "113002201",
+                "license_status": "ISSUED",
+                "creation_time": "2019-07-26 14:40:38",
+                "issue_time": null,
+                "abolish_time": null,
+                "abolish_reason": null,
+                "correlative_license": null,
+                "public_key": null,
+                "last_modificator": "4f070706-c30c-481c-a837-9f39136c62de",
+                "last_modification_time": "2019-07-26 14:41:12",
+                "s_sign_cert": null,
+                "s_sign_data": null,
+                "auth_code": "20191115101022412NC011344709_4407002019000008CS"
+              }
+            ],
+            "total_count": 4
+          };
+          _that.certMatTableData = res.content.data?res.content.data:[];
+          res.content.data.map(function(certItem){
+            if(certItem.bind=='undefined'||certItem.bind==undefined){
+              Vue.set(certItem,'bind',false);
+            }else {
+              certItem.bind = false;
+            }
+            if(certChildIds.indexOf(certItem.auth_code)>-1){
+              certItem.bind = true
+            }else {
+              certItem.bind = false;
+            }
+          })
+        }else {
+          _that.$message({
+            message: res.message?res.message:'加载证照库材料失败',
+            type: 'error'
+          });
+        }
+      }, function (msg) {
+        _that.$message({
+          message: '服务请求失败',
+          type: 'error'
+        });
+      });
+    },
+    // 展示材料一张表单弹窗
+    showOneFormDialog1: function(oneformMat){
+      var _that = this;
+      var _applyinstId = _that.parallelApplyinstId;
+      _that.matformNameTitle = oneformMat.matName
+      if(_applyinstId==''){
+        _that.getParallelApplyinstId('matForm',oneformMat.stoFormId)
+      }else {
+        _that.getOneFormrender3(_applyinstId,oneformMat.stoFormId)
+      }
+    },
+    // 获取材料一张表单render
+    getOneFormrender3: function(_applyinstId,_formId){
+      var _that = this;
+      // _formId = 'ecbebb64-a29c-41c6-abb7-e7b337a1a2cb';
+      var sFRenderConfig='&showBasicButton=true&includePlatformResource=false';
+      request('', {
+        url: ctx + 'bpm/common/sf/renderHtmlFormContainer?listRefEntityId='+_applyinstId+'&listFormId='+_formId+sFRenderConfig,
+        type: 'get',
+      }, function (result) {
+        if (result.success) {
+          _that.matFormDialogVisible = true;
+          $('#matFormContent').html(result.content)
+          _that.$nextTick(function(){
+            $('#matFormContent').html(result.content)
+          });
+        }else {
+          _that.$message({
+            message: result.content?result.content:'获取材料表单失败！',
+            type: 'error'
+          });
+        }
+      },function(res){
+        _that.$message({
+          message: '获取材料表单失败！',
+          type: 'error'
+        });
+      })
+    },
+    // 一张表单获取并联申报实例化id
+    getParallelApplyinstId: function (flag,_stoFormId) {
+      var _that = this;
+      var _applySubject = '';
+      if (_that.applyObjectInfo.role == 2) {
+        _applySubject = 1;
+      } else {
+        _applySubject = 0;
+      }
+      if (_applySubject == 0) {
+        _that.userInfoId = this.applyObjectInfo.aeaLinkmanInfo.linkmanInfoId;
+        _that.userLinkmanCertNo = _that.applyObjectInfo.aeaLinkmanInfo.linkmanCertNo;
+      }
+      var parmas = {
+        applySource: 'net',
+        applySubject: _applySubject,
+        linkmanInfoId: _that.userInfoId,
+      };
+      _that.loading = true;
+      request('', {
+        url: ctx + 'rest/userCenter/apply/series/net/process/form/start',
+        type: 'post',
+        data: parmas
+      }, function (res) {
+        if (res.success) {
+          _that.loading = false;
+          if (res.content) {
+            _that.parallelApplyinstId = res.content;
+            _that.getOneFormrender3(_that.parallelApplyinstId,_stoFormId);
+          }
+        } else {
+          _that.loading = false;
+          _that.$message({
+            message: '实例化失败',
+            type: 'error'
+          });
+        }
+      })
+    },
+    // 查看证照
+    cretPreview: function (authCode) {
+      var _that = this;
+      var tempwindow=window.open(); // 先打开页面
+      request('', {
+        url: ctx + 'aea/cert/getViewLicenseURL',
+        type: 'get',
+        data: {authCode: authCode}
+      }, function (res) {
+        if(res.success){
+          setTimeout(function(){
+            tempwindow.location=res.content;
+          },500)
+        }else {
+          tempwindow.close();
+          _that.$message({
+            message: res.message?res.message:'证照查看失败',
+            type: 'error'
+          });
+        }
+      }, function (msg) {
+        tempwindow.close();
+        _that.$message({
+          message: msg.message?msg.message:'证照查看失败',
+          type: 'error'
+        });
+      });
+    },
+    // 关联证照
+    setCretLinked: function(certRowData){
+      var _that = this;
+      _that.rootUnitInfoId = '';
+      _that.rootLinkmanInfoId = '';
+      _that.rootApplyLinkmanId = '';
+      if(_that.jiansheFrom.length>0) {
+        _that.rootUnitInfoId = _that.jiansheFrom[0].unitInfoId;
+        _that.rootLinkmanInfoId = _that.jiansheFrom[0].linkmanId;
+      }
+      if(_that.applySubjectType == 0&&_that.applyPersonFrom.applyLinkmanId){
+        _that.rootApplyLinkmanId = _that.applyPersonFrom.applyLinkmanId;
+        _that.rootLinkmanInfoId = _that.applyPersonFrom.linkLinkmanId
+      };
+      var param = {
+        "authCode": certRowData.auth_code,
+        "certId": _that.selMatRowData.certId,
+        "certOwner": certRowData.holder_name,
+        "certinstCode": certRowData.license_code,
+        "certinstId": "",
+        "certinstName": certRowData.license_code,
+        "issueDate": certRowData.issue_time,
+        "issueOrgId": certRowData.issue_org_code,
+        "managementScope": "",
+        "matId": _that.selMatRowData.matId,
+        "memo": certRowData.remark,
+        "projInfoId": _that.projInfoId,
+        "termEnd": certRowData.expiry_date,
+        "termStart": certRowData.begin_date,
+        "unitInfoId": _that.rootUnitInfoId,
+        "linkmanInfoId": _that.rootLinkmanInfoId
+      };
+      request('', {
+        url: ctx + 'aea/cert/bind/cert',
+        type: 'post',
+        ContentType: 'application/json',
+        data: JSON.stringify(param)
+      }, function (res) {
+        if(res.success){
+          res.content.certName = certRowData.name;
+          if(_that.selMatRowData.certChild=='undefined'||_that.selMatRowData.certChild==undefined){
+            Vue.set(_that.selMatRowData,'certChild',[res.content]);
+          }else {
+            _that.selMatRowData.certChild.push(res.content);
+          }
+          if(_that.selMatRowData.certMatinstIds=='undefined'||_that.selMatRowData.certMatinstIds==undefined){
+            Vue.set(_that.selMatRowData,'certMatinstIds',[res.content.matinstId]);
+          }else {
+            if(_that.selMatRowData.certMatinstIds.indexOf(res.content.matinstId)<0){
+              _that.selMatRowData.certMatinstIds.push(res.content.matinstId);
+            }
+          }
+          certRowData.bind = true;
+          _that.$message({
+            message: '证照关联成功',
+            type: 'success'
+          });
+          if(_that.showFileListKey.indexOf(_that.selMatRowData.matId)<0){
+            _that.showFileListKey.push(_that.selMatRowData.matId)
+          }
+        }
+      }, function (msg) {
+        _that.$message({
+          message: msg.message?msg.message:'证照关联失败',
+          type: 'error'
+        });
+      });
+    },
+    // 解除关联
+    unbindCert: function(matinstId,matDataCertChild,index){
+      var _that = this;
+      request('', {
+        url: ctx + 'aea/cert/unbind/cert',
+        type: 'post',
+        data: {matinstId: matinstId}
+      }, function (data) {
+        if(data.success){
+          matDataCertChild.splice(index,1);
+        }
+      }, function (msg) {
+        _that.$message({
+          message: '服务请求失败',
+          type: 'error'
+        });
+      });
     },
     // 切换选中的材料 flag==prev 上一个 next 下一个
     changeRowDataSel: function (flag) {
@@ -2502,7 +3006,50 @@ var module1 = new Vue({
           return '个自然日';
       }
       return '个工作日'
-    }
+    },
+    formatLicenseType: function (value) {
+      var defaultValue='';
+      if(value){
+        switch(value) {
+          case 'CERTIFICATE':
+            defaultValue='证件执照';
+            break;
+          case 'PROOF':
+            defaultValue='证明文件';
+            break;
+          case 'APPROVAL':
+            defaultValue='批文批复';
+            break;
+          case 'REPORT':
+            defaultValue='鉴定报告';
+            break;
+          case 'RESULT':
+            defaultValue='办事结果';
+            break;
+        }
+      }
+      return defaultValue;
+    },
+    formatLicenseStatus: function (value) {
+      var defaultValue='';
+      if(value){
+        switch(value) {
+          case 'DRAFT':
+            defaultValue='草案';
+            break;
+          case 'REGISTERED':
+            defaultValue='已制证（未签发）';
+            break;
+          case 'ISSUED':
+            defaultValue='已签发';
+            break;
+          case 'ABOLISHED':
+            defaultValue='已废止';
+            break;
+        }
+      }
+      return defaultValue;
+    },
   },
 });
 

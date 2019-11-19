@@ -7,7 +7,7 @@
         <div class="modal-content">
             <!-- 标题 -->
             <div class="modal-header" style="padding: 15px;height: 45px;">
-                <h5 class="modal-title" id="aedit_part_form_modal_title">新增开发表单</h5>
+                <h5 class="modal-title" id="add_dev_form_modal_title">新增开发表单</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>

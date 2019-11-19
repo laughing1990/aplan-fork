@@ -1095,6 +1095,7 @@
 }
 .my-dir-table .dir-file-name .ag {
   margin-right: 10px;
+  color: #457EFF;
 }
 .my-dir-table .dir-file-name .ag-folder-open-fill {
   color: #ffb822;
@@ -1117,4 +1118,36 @@
 }
 .my-dir-table:before {
   content: none;
+}
+.file-opt-btn .el-radio {
+  line-height: 40px;
+}
+.op-btn {
+  color: #3e97df;
+  cursor: pointer;
+  padding-right: 10px;
+  position: relative;
+}
+.op-btn:after {
+  content: '';
+  position: absolute;
+  width: 1px;
+  top: 3px;
+  bottom: 2px;
+  right: 3px;
+  background: #DCDFE6;
+}
+.op-btn:last-child {
+  padding-right: 0;
+}
+.op-btn:last-child:after {
+  content: none;
+}
+.cert-icon {
+  color: #4293F4;
+  font-size: 20px;
+  vertical-align: middle;
+}
+.show-mat-form .el-dialog__body {
+  padding: 0 20px 20px 20px;
 }

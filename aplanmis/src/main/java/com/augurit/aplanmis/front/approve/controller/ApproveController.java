@@ -1,10 +1,9 @@
 package com.augurit.aplanmis.front.approve.controller;
 
 import com.augurit.agcloud.bpm.front.service.BpmProcessFrontService;
-import com.augurit.agcloud.bsc.upload.factory.UploaderFactory;
-import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
+import com.augurit.aplanmis.common.domain.AeaHiCertinst;
 import com.augurit.aplanmis.common.domain.AeaHiIteminst;
 import com.augurit.aplanmis.common.domain.AeaItemState;
 import com.augurit.aplanmis.common.domain.AeaParState;
@@ -25,12 +24,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
@@ -39,8 +36,6 @@ import java.util.List;
 @Slf4j
 public class ApproveController {
 
-    @Autowired
-    private UploaderFactory uploaderFactory;
     @Autowired
     private BpmProcessFrontService bpmProcessFrontService;
     @Autowired
@@ -116,10 +111,7 @@ public class ApproveController {
     @ApiImplicitParam(name = "applyinstId", value = "申报实例id", required = true, dataType = "string", paramType = "query", readOnly = true)
     public ResultForm detail(@RequestParam String applyinstId) throws Exception {
 
-        //List<Map<String, Object>> parStateByApply = approveService.getParStateByApply(applyinstId);
-        //List<ParStateByApplyVo> parStateByApplyVos = ParStateByApplyVo.toParStateByApplyVo(parStateByApply);
         List<AeaParState> hiParStateinstByApplyinstId = approveService.getHiParStateinstByApplyinstId(applyinstId);
-
         List<AeaParStateVo> aeaParStateVos = AeaParStateVo.toListAeaParStateVo(hiParStateinstByApplyinstId);
         return new ContentResultForm<>(true, aeaParStateVos);
     }
@@ -189,4 +181,85 @@ public class ApproveController {
         List<MatinstVo> matinstVoList = approveService.getSeriesMatinstByIteminstId(iteminstId, applyinstId);
         return new ContentResultForm<>(true, matinstVoList, "success");
     }
+
+    @PostMapping("/CertTypeMatinst/update")
+    @ApiOperation(value = "新增或者修改cert类型的Matinst")
+    public ResultForm updateOrInsertMatCertinst(@RequestBody AeaHiCertinst aeaHiCertinst) {
+        try {
+            String message = approveService.updateOrInsertMatCertinst(aeaHiCertinst);
+            return message.length() > 0 ? new ResultForm(false, message) : new ResultForm(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new ResultForm(false, "证照实例修改失败！");
+    }
+
+    @PostMapping("/matinst/uploadAtt")
+    @ApiOperation(value = "上传材料实例的电子附件")
+    @ApiImplicitParams(value = {
+            @ApiImplicitParam(name = "matinstId", value = "材料实例ID", dataType = "string", required = false),
+            @ApiImplicitParam(name = "request", value = "文件流", dataType = "HttpServletRequest", required = true),
+            @ApiImplicitParam(name = "applyinstId", value = "申请实例ID", dataType = "string", required = false),
+            @ApiImplicitParam(name = "matId", value = "材料定义ID", dataType = "string", required = false),
+    })
+    public ResultForm uploadAtt(String matinstId, String applyinstId, String matId, HttpServletRequest request) {
+        try {
+            String message = approveService.uploadAtt(matinstId, applyinstId, matId, request);
+            return message.length() > 0 ? new ResultForm(false, message) : new ResultForm(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new ResultForm(false, "电子附件上传失败！");
+    }
+
+    @PostMapping("/matinst/createMatinstAndFileLink")
+    @ApiOperation(value = "材料实例关联电子附件")
+    @ApiImplicitParams(value = {
+            @ApiImplicitParam(name = "matinstId", value = "材料实例ID", dataType = "string", required = false),
+            @ApiImplicitParam(name = "fileIds", value = "多个电子附件ID", dataType = "string", required = true),
+            @ApiImplicitParam(name = "applyinstId", value = "申请实例ID", dataType = "string", required = false),
+            @ApiImplicitParam(name = "matId", value = "材料定义ID", dataType = "string", required = false),
+    })
+    public ResultForm createMatinstAndFileLink(String matinstId, String fileIds, String applyinstId, String matId) {
+        try {
+            String message = approveService.createMatinstAndFileLink(matinstId, fileIds, applyinstId, matId);
+            return message.length() > 0 ? new ResultForm(false, message) : new ResultForm(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new ResultForm(false, "电子附件关联失败！");
+    }
+
+
+    @PostMapping("/matinst/matinstFileLibrary")
+    @ApiOperation(value = "电子附件库")
+    @ApiImplicitParams(value = {
+            @ApiImplicitParam(name = "applyinstId", value = "申请实例ID", dataType = "string", required = true),
+            @ApiImplicitParam(name = "matId", value = "材料定义ID", dataType = "string", required = true),
+    })
+    public ResultForm matinstFileLibrary(String applyinstId, String matId) {
+        try {
+            return new ContentResultForm(true, approveService.matinstFileLibrary(matId, applyinstId));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new ResultForm(false, "获取电子附件失败！");
+    }
+
+    @PostMapping("/matinst/certinstLibrary")
+    @ApiOperation(value = "本地证照库（非对接证照库）")
+    @ApiImplicitParams(value = {
+            @ApiImplicitParam(name = "applyinstId", value = "申请实例ID", dataType = "string", required = true),
+            @ApiImplicitParam(name = "certId", value = "证照定义ID", dataType = "string", required = true),
+    })
+    public ResultForm certinstLibrary(String applyinstId, String certId) {
+        try {
+            return new ContentResultForm(true, approveService.certinstLibrary(certId, applyinstId));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new ResultForm(false, "获取证照库失败！");
+    }
+
+
 }

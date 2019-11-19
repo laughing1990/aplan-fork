@@ -1884,182 +1884,197 @@
     </select>
 
     <select id="listDoneliminaryTasks" resultType="com.augurit.aplanmis.common.vo.conditional.TaskInfo">
-
         SELECT
-        temp_123.*
+          temp_123.*
         FROM (
-        SELECT
-        ahap_123.APPLYINST_ID AS applyinstId,
-        ahap_123.APPLYINST_CODE AS applyinstCode,
-        temp1.PROJ_NAME AS projName,
-        temp1.LOCAL_CODE AS localCode,
-        temp1.GCBM AS gcbm,
-        ahap_123.APPLYINST_SOURCE AS applySource,
-        CASE ahap_123.IS_SERIES_APPROVE when '1' THEN '单项' else '并联' end AS applyType,
-        theme.THEME_NAME AS themeName,
-        aps_123.STAGE_NAME AS stageName,
-        NULL AS itemName,
-        ahap_123.CREATE_TIME AS applyTime,
-        t.ID_ AS taskId
-        FROM
-        aea_hi_applyinst ahap_123
-        <include refid="leftJoinApplyinstProj">
-        </include>
-        LEFT JOIN aea_hi_par_stageinst ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
-        LEFT JOIN aea_par_stage aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
-        LEFT JOIN aea_par_theme_ver ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
-        LEFT JOIN aea_par_theme theme ON theme.THEME_ID = ver.THEME_ID
-        LEFT JOIN act_sto_appinst app ON app.MASTER_RECORD_ID = ahap_123.APPLYINST_ID
-        LEFT JOIN act_ru_task t ON t.PROC_INST_ID_ = app.PROCINST_ID
-        <where>
-            ahap_123.IS_SERIES_APPROVE = '0'
-            AND ahap_123.APPLYINST_STATE != '0'
-            AND ahap_123.APPLYINST_STATE != '4'
-            AND APPLYINST_SOURCE = 'net'
-
-            <if test="userList != null and userList.size() > 0">
-                AND t.ASSIGNEE_ IN
-                <foreach collection="userList" item="item" open="(" separator="," close=")">
-                    #{item}
-                </foreach>
-            </if>
-
-            <if test="theme != null and theme != '' ">
-                AND theme.THEME_ID = #{theme}
-            </if>
-            <include refid="baseConditionalQuery">
+            SELECT
+                temp_task.applyinstId,
+                max(temp_task.taskId) as taskId,
+                temp_task.applyinstCode,
+                temp_task.projName,
+                temp_task.localCode,
+                temp_task.gcbm,
+                temp_task.applySource,
+                temp_task.applyType,
+                temp_task.themeName,
+                temp_task.stageName,
+                temp_task.itemName,
+                temp_task.applyTime
+            FROM (
+            SELECT
+            ahap_123.APPLYINST_ID AS applyinstId,
+            ahap_123.APPLYINST_CODE AS applyinstCode,
+            temp1.PROJ_NAME AS projName,
+            temp1.LOCAL_CODE AS localCode,
+            temp1.GCBM AS gcbm,
+            ahap_123.APPLYINST_SOURCE AS applySource,
+            CASE ahap_123.IS_SERIES_APPROVE when '1' THEN '单项' else '并联' end AS applyType,
+            theme.THEME_NAME AS themeName,
+            aps_123.STAGE_NAME AS stageName,
+            NULL AS itemName,
+            ahap_123.CREATE_TIME AS applyTime,
+            t.ID_ AS taskId
+            FROM
+            aea_hi_applyinst ahap_123
+            <include refid="leftJoinApplyinstProj">
             </include>
+            LEFT JOIN aea_hi_par_stageinst ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN aea_par_stage aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
+            LEFT JOIN aea_par_theme_ver ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
+            LEFT JOIN aea_par_theme theme ON theme.THEME_ID = ver.THEME_ID
+            LEFT JOIN act_sto_appinst app ON app.MASTER_RECORD_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN act_hi_taskinst t ON t.PROC_INST_ID_ = app.PROCINST_ID
+            <where>
+                ahap_123.IS_SERIES_APPROVE = '0'
+                AND ahap_123.APPLYINST_STATE != '0'
+                AND ahap_123.APPLYINST_STATE != '4'
+                AND APPLYINST_SOURCE = 'net'
 
-        </where>
-        UNION
-        SELECT
-        ahap_123.APPLYINST_ID AS applyinstId,
-        ahap_123.APPLYINST_CODE AS applyinstCode,
-        temp1.PROJ_NAME AS projName,
-        temp1.LOCAL_CODE AS localCode,
-        temp1.GCBM AS gcbm,
-        ahap_123.APPLYINST_SOURCE AS applySource,
-        CASE ahap_123.IS_SERIES_APPROVE when '1' THEN '单项' else '并联' end AS applyType,
-        theme.THEME_NAME AS themeName,
-        aps_123.STAGE_NAME AS stageName,
-        NULL AS itemName,
-        ahap_123.CREATE_TIME AS applyTime,
-        t.ID_ AS taskId
-        FROM
-        aea_hi_applyinst ahap_123
-        <include refid="leftJoinApplyinstProj">
-        </include>
-        LEFT JOIN aea_hi_par_stageinst ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
-        LEFT JOIN aea_par_stage aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
-        LEFT JOIN aea_par_theme_ver ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
-        LEFT JOIN aea_par_theme theme ON theme.THEME_ID = ver.THEME_ID
-        LEFT JOIN act_sto_appinst app ON app.MASTER_RECORD_ID = ahap_123.APPLYINST_ID
-        LEFT JOIN act_sto_appinst_subflow apps ON apps.APPINST_ID = app.APPINST_ID
-        LEFT JOIN act_ru_task t ON t.PROC_INST_ID_ = apps.SUBFLOW_PROCINST_ID
-        <where>
-            ahap_123.IS_SERIES_APPROVE = '0'
-            AND ahap_123.APPLYINST_STATE != '0'
-            AND ahap_123.APPLYINST_STATE != '4'
-            AND APPLYINST_SOURCE = 'net'
-            <if test="userList != null and userList.size() > 0">
-                AND t.ASSIGNEE_ IN
-                <foreach collection="userList" item="item" open="(" separator="," close=")">
-                    #{item}
-                </foreach>
-            </if>
-            <if test="theme != null and theme != '' ">
-                AND theme.THEME_ID = #{theme}
-            </if>
-            <include refid="baseConditionalQuery">
-            </include>
-        </where>
-        UNION
-        SELECT
-        ahap_123.APPLYINST_ID AS applyinstId,
-        ahap_123.APPLYINST_CODE AS applyinstCode,
-        temp1.PROJ_NAME AS projName,
-        temp1.LOCAL_CODE AS localCode,
-        temp1.GCBM AS gcbm,
-        ahap_123.APPLYINST_SOURCE AS applySource,
-        CASE ahap_123.IS_SERIES_APPROVE when '1' THEN '单项' else '并联' end AS applyType,
-        NULL AS themeName,
-        NULL AS stageName,
-        ahi_123.ITEMINST_NAME AS itemName,
-        ahap_123.CREATE_TIME AS applyTime,
-        t.ID_ AS taskId
-        FROM
-        aea_hi_applyinst ahap_123
-        <include refid="leftJoinApplyinstProj">
-        </include>
-        LEFT JOIN aea_hi_seriesinst ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
-        LEFT JOIN aea_hi_iteminst ahi_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
-        LEFT JOIN act_sto_appinst app ON app.MASTER_RECORD_ID = ahap_123.APPLYINST_ID
-        LEFT JOIN act_ru_task t ON t.PROC_INST_ID_ = app.PROCINST_ID
-        <where>
-            ahap_123.IS_SERIES_APPROVE = '1'
-            AND ahap_123.APPLYINST_STATE != '0'
-            AND ahap_123.APPLYINST_STATE != '4'
-            AND APPLYINST_SOURCE = 'net'
-            <if test="userList != null and userList.size() > 0">
-                AND t.ASSIGNEE_ IN
-                <foreach collection="userList" item="item" open="(" separator="," close=")">
-                    #{item}
-                </foreach>
-            </if>
+                <if test="userList != null and userList.size() > 0">
+                    AND t.ASSIGNEE_ IN
+                    <foreach collection="userList" item="item" open="(" separator="," close=")">
+                        #{item}
+                    </foreach>
+                </if>
 
-            <include refid="baseConditionalQuery">
+                <if test="theme != null and theme != '' ">
+                    AND theme.THEME_ID = #{theme}
+                </if>
+                <include refid="baseConditionalQuery">
+                </include>
+
+            </where>
+            UNION
+            SELECT
+            ahap_123.APPLYINST_ID AS applyinstId,
+            ahap_123.APPLYINST_CODE AS applyinstCode,
+            temp1.PROJ_NAME AS projName,
+            temp1.LOCAL_CODE AS localCode,
+            temp1.GCBM AS gcbm,
+            ahap_123.APPLYINST_SOURCE AS applySource,
+            CASE ahap_123.IS_SERIES_APPROVE when '1' THEN '单项' else '并联' end AS applyType,
+            theme.THEME_NAME AS themeName,
+            aps_123.STAGE_NAME AS stageName,
+            NULL AS itemName,
+            ahap_123.CREATE_TIME AS applyTime,
+            t.ID_ AS taskId
+            FROM
+            aea_hi_applyinst ahap_123
+            <include refid="leftJoinApplyinstProj">
             </include>
-        </where>
-        UNION
-        SELECT
-        ahap_123.APPLYINST_ID AS applyinstId,
-        ahap_123.APPLYINST_CODE AS applyinstCode,
-        temp1.PROJ_NAME AS projName,
-        temp1.LOCAL_CODE AS localCode,
-        temp1.GCBM AS gcbm,
-        ahap_123.APPLYINST_SOURCE AS applySource,
-        CASE ahap_123.IS_SERIES_APPROVE when '1' THEN '单项' else '并联' end AS applyType,
-        NULL AS THEME_NAME,
-        NULL AS stageName,
-        ahi_123.ITEMINST_NAME AS itemName,
-        ahap_123.CREATE_TIME AS applyTime,
-        t.ID_ AS taskId
-        FROM
-        aea_hi_applyinst ahap_123
-        <include refid="leftJoinApplyinstProj">
-        </include>
-        LEFT JOIN aea_hi_seriesinst ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
-        LEFT JOIN aea_hi_iteminst ahi_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
-        LEFT JOIN act_sto_appinst app ON app.MASTER_RECORD_ID = ahap_123.APPLYINST_ID
-        LEFT JOIN act_sto_appinst_subflow apps ON apps.APPINST_ID = app.APPINST_ID
-        LEFT JOIN act_ru_task t ON t.PROC_INST_ID_ = apps.SUBFLOW_PROCINST_ID
-        <where>
-            ahap_123.IS_SERIES_APPROVE = '1'
-            AND ahap_123.APPLYINST_STATE != '0'
-            AND ahap_123.APPLYINST_STATE != '4'
-            AND APPLYINST_SOURCE = 'net'
-            <if test="userList != null and userList.size() > 0">
-                AND t.ASSIGNEE_ IN
-                <foreach collection="userList" item="item" open="(" separator="," close=")">
-                    #{item}
-                </foreach>
-            </if>
-            <include refid="baseConditionalQuery">
+            LEFT JOIN aea_hi_par_stageinst ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN aea_par_stage aps_123 ON aps_123.STAGE_ID = ahs_123.STAGE_ID
+            LEFT JOIN aea_par_theme_ver ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
+            LEFT JOIN aea_par_theme theme ON theme.THEME_ID = ver.THEME_ID
+            LEFT JOIN act_sto_appinst app ON app.MASTER_RECORD_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN act_sto_appinst_subflow apps ON apps.APPINST_ID = app.APPINST_ID
+            LEFT JOIN act_hi_taskinst t ON t.PROC_INST_ID_ = apps.SUBFLOW_PROCINST_ID
+            <where>
+                ahap_123.IS_SERIES_APPROVE = '0'
+                AND ahap_123.APPLYINST_STATE != '0'
+                AND ahap_123.APPLYINST_STATE != '4'
+                AND APPLYINST_SOURCE = 'net'
+                <if test="userList != null and userList.size() > 0">
+                    AND t.ASSIGNEE_ IN
+                    <foreach collection="userList" item="item" open="(" separator="," close=")">
+                        #{item}
+                    </foreach>
+                </if>
+                <if test="theme != null and theme != '' ">
+                    AND theme.THEME_ID = #{theme}
+                </if>
+                <include refid="baseConditionalQuery">
+                </include>
+            </where>
+            UNION
+            SELECT
+            ahap_123.APPLYINST_ID AS applyinstId,
+            ahap_123.APPLYINST_CODE AS applyinstCode,
+            temp1.PROJ_NAME AS projName,
+            temp1.LOCAL_CODE AS localCode,
+            temp1.GCBM AS gcbm,
+            ahap_123.APPLYINST_SOURCE AS applySource,
+            CASE ahap_123.IS_SERIES_APPROVE when '1' THEN '单项' else '并联' end AS applyType,
+            NULL AS themeName,
+            NULL AS stageName,
+            ahi_123.ITEMINST_NAME AS itemName,
+            ahap_123.CREATE_TIME AS applyTime,
+            t.ID_ AS taskId
+            FROM
+            aea_hi_applyinst ahap_123
+            <include refid="leftJoinApplyinstProj">
             </include>
-        </where>
-        ) temp_123
-        <where>
-            <if test="keyword != null and keyword != '' ">
-                AND (
-                temp_123.projName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
-                OR temp_123.applyinstCode LIKE CONCAT(CONCAT('%',#{keyword}),'%')
-                OR temp_123.localCode LIKE CONCAT(CONCAT('%',#{keyword}),'%')
-                OR temp_123.gcbm LIKE CONCAT(CONCAT('%',#{keyword}),'%')
-                OR temp_123.itemName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
-                OR temp_123.stageName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
-                )
-            </if>
-        </where>
+            LEFT JOIN aea_hi_seriesinst ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN aea_hi_iteminst ahi_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
+            LEFT JOIN act_sto_appinst app ON app.MASTER_RECORD_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN act_hi_taskinst t ON t.PROC_INST_ID_ = app.PROCINST_ID
+            <where>
+                ahap_123.IS_SERIES_APPROVE = '1'
+                AND ahap_123.APPLYINST_STATE != '0'
+                AND ahap_123.APPLYINST_STATE != '4'
+                AND APPLYINST_SOURCE = 'net'
+                <if test="userList != null and userList.size() > 0">
+                    AND t.ASSIGNEE_ IN
+                    <foreach collection="userList" item="item" open="(" separator="," close=")">
+                        #{item}
+                    </foreach>
+                </if>
+
+                <include refid="baseConditionalQuery">
+                </include>
+            </where>
+            UNION
+            SELECT
+            ahap_123.APPLYINST_ID AS applyinstId,
+            ahap_123.APPLYINST_CODE AS applyinstCode,
+            temp1.PROJ_NAME AS projName,
+            temp1.LOCAL_CODE AS localCode,
+            temp1.GCBM AS gcbm,
+            ahap_123.APPLYINST_SOURCE AS applySource,
+            CASE ahap_123.IS_SERIES_APPROVE when '1' THEN '单项' else '并联' end AS applyType,
+            NULL AS themeName,
+            NULL AS stageName,
+            ahi_123.ITEMINST_NAME AS itemName,
+            ahap_123.CREATE_TIME AS applyTime,
+            t.ID_ AS taskId
+            FROM
+            aea_hi_applyinst ahap_123
+            <include refid="leftJoinApplyinstProj">
+            </include>
+            LEFT JOIN aea_hi_seriesinst ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN aea_hi_iteminst ahi_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
+            LEFT JOIN act_sto_appinst app ON app.MASTER_RECORD_ID = ahap_123.APPLYINST_ID
+            LEFT JOIN act_sto_appinst_subflow apps ON apps.APPINST_ID = app.APPINST_ID
+            LEFT JOIN act_hi_taskinst t ON t.PROC_INST_ID_ = apps.SUBFLOW_PROCINST_ID
+            <where>
+                ahap_123.IS_SERIES_APPROVE = '1'
+                AND ahap_123.APPLYINST_STATE != '0'
+                AND ahap_123.APPLYINST_STATE != '4'
+                AND APPLYINST_SOURCE = 'net'
+                <if test="userList != null and userList.size() > 0">
+                    AND t.ASSIGNEE_ IN
+                    <foreach collection="userList" item="item" open="(" separator="," close=")">
+                        #{item}
+                    </foreach>
+                </if>
+                <include refid="baseConditionalQuery">
+                </include>
+            </where>
+            ) temp_task
+            <where>
+                <if test="keyword != null and keyword != '' ">
+                    AND (
+                    temp_task.projName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                    OR temp_task.applyinstCode LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                    OR temp_task.localCode LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                    OR temp_task.gcbm LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                    OR temp_task.itemName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                    OR temp_task.stageName LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                    )
+                </if>
+            </where>
+            group by temp_task.applyinstId
+        )temp_123
     </select>
 
     <select id="listDismissedApply" resultType="com.augurit.aplanmis.common.vo.conditional.TaskInfo">

@@ -86,4 +86,8 @@ public interface AeaHiCertinstMapper {
     List<AeaHiCertinst> listAeaHiCertinstByIteminstIds(@Param("iteminstIds") String[] iteminstIds);
 
     void batchInsertAeaHiCertinst(@Param("certinsts") List<AeaHiCertinst> certinsts);
+
+    List<AeaHiCertinst> listAeaHiCertinstByCertinstCode(@Param("certinstCode") String certinstCode, @Param("currentOrgId") String currentOrgId);
+
+    List<AeaHiCertinst> getCertinsts(@Param("certId") String certId, @Param("linkmanInfoId") String linkmanInfoId, @Param("projInfoId") String projInfoId, @Param("unInfoIds") String[] unInfoIds, @Param("rootOrgId") String rootOrgId);
 }

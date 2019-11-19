@@ -388,7 +388,7 @@
 
             <c:if test="${currentBusiType == 'stage' && useOneForm=='1' }">
                 <li data-url="/aea/par/stage/oneFormManage.do">
-                    <i class="flow-steps-num">5</i>一张表单
+                    <i class="flow-steps-num">6</i>一张表单
                 </li>
             </c:if>
 
