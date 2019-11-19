@@ -72,10 +72,12 @@
       max-width: 280px;
       line-height: 18px;
     }
-    .zj-item-form input{
-      border: none!important;
+    
+    .zj-item-form input {
+      border: none !important;
     }
-    .zj-item-form .el-form-item__label{
+    
+    .zj-item-form .el-form-item__label {
       padding: 0px;
     }
     
@@ -140,10 +142,10 @@
         </el-row>
       </el-form>
     </div>
-  
+    
     <div class="table-part-title"><i class="header-icon el-icon-document-copy"></i>项目/工程信息</div>
     <div class="part-info-box c-f" v-for="item in projInfoList" :key="item.projInfoId">
-    
+      
       <el-form :model="item" size="medium" label-width="0">
         <el-row>
           <el-col :span="12">
@@ -418,13 +420,13 @@
         <div class="show-more-btn" @click="showMore=!showMore">{{showMore?"收起":"显示更多"}}</div>
       </el-form>
     </div>
-    
+  
   </template>
   <template data-title="非中介事项" v-else>
     
     <div class="table-part-title"><i class="header-icon el-icon-document-copy"></i>项目/工程信息</div>
     <div class="part-info-box c-f" v-for="item in projInfoList" :key="item.projInfoId">
-    
+      
       <el-form :model="item" size="medium" label-width="0">
         <el-row>
           <el-col :span="12">
@@ -699,7 +701,7 @@
         <div class="show-more-btn" @click="showMore=!showMore">{{showMore?"收起":"显示更多"}}</div>
       </el-form>
     </div>
-  
+    
     <div class="table-part-title"><i class="header-icon el-icon-document-copy"></i>申报主体</div>
     <div class="part-info-box">
       <!-- 个人，单条 -->
@@ -898,10 +900,10 @@
         </el-form>
       </div>
     </div>
-  
+    
     <div class="table-part-title"><i class="header-icon el-icon-document-copy"></i>申报信息</div>
     <div class="part-info-box c-f">
-    
+      
       <el-form :model="applyinst" size="medium">
         <el-row>
           <el-col :span="12">
@@ -962,9 +964,9 @@
         </el-table>
       </el-form>
     </div>
-    
-  </template>
   
+  </template>
+
 </div>
 </body>
 <!--引入公共js-->
