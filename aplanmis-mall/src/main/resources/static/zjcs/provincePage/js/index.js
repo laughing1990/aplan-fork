@@ -162,6 +162,7 @@ var vm = new Vue({
   created: function () {
     this.init();
     this.getIndexData();
+    this.getRunSituationData();
     this.getPageAoaNoticeContentCascade();
     if (document.location.protocol == "file:") {
       this.localFlag = true;
@@ -182,17 +183,35 @@ var vm = new Vue({
       request('', {
         url: ctx + 'supermarket/main/province/getProvinceIndexData',
         type: 'get',
-        data: vm.runStatusCheckData
       }, function (res) {
         if (res.success) {
           var content = res.content;
           vm.navListData = content.imServices;
-          vm.navListCount = content;
+          // vm.navListCount = content;
           // debugger
           vm.getIndexDataShow(vm.showLenIndex);
           vm.initPurchaseData(res.content); //处理采购公告接口
           vm.initSelectionData(res.content); //处理中选公告接口
           vm.contractList = res.content.purchaseContracts;
+        }
+      }, function (msg) {
+        vm.$message({
+          message: '加载失败',
+          type: 'error'
+        });
+      });
+    },
+    // 获取运行情况数据
+    getRunSituationData: function () {
+      var vm = this
+      request('', {
+        url: ctx + 'supermarket/main/province/getProvinceRunSituationData',
+        type: 'get',
+        data: vm.runStatusCheckData
+      }, function (res) {
+        if (res.success) {
+          var content = res.content;
+          vm.navListCount = content;  
         }
       }, function (msg) {
         vm.$message({
@@ -406,7 +425,7 @@ var vm = new Vue({
     // 运行情况时间切换
     runStatusChange: function(type){
       this.runStatusCheckData.queryType = type;
-      this.getIndexData();
+      this.getRunSituationData();
     },
   },
   filters: {

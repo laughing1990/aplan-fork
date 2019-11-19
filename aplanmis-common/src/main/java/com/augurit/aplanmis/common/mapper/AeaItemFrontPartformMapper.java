@@ -34,4 +34,6 @@ public interface AeaItemFrontPartformMapper {
     List<AeaItemFrontPartformVo> getAeaItemFrontPartformVoByItemVerId(@Param("itemVerId") String itemVerId, @Param("rootOrgId") String rootOrgId);
 
     AeaItemFrontPartformVo getAeaItemFrontPartformVoById(@Param("id") String id);
+
+    void changIsActive(@Param("id")String id, @Param("rootOrgId")String rootOrgId);
 }

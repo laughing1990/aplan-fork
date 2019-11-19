@@ -32,7 +32,7 @@ import com.augurit.aplanmis.common.service.linkman.AeaLinkmanInfoService;
 import com.augurit.aplanmis.common.service.process.AeaBpmProcessService;
 import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
 import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
-import com.augurit.aplanmis.rest.ReceiveService;
+import com.augurit.aplanmis.common.service.receive.ReceiveService;
 import com.augurit.aplanmis.rest.common.utils.SessionUtil;
 import com.augurit.aplanmis.rest.common.vo.LoginInfoVo;
 import com.augurit.aplanmis.rest.userCenter.constant.LoginUserRoleEnum;

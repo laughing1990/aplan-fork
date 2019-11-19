@@ -43,5 +43,7 @@ public class SeriesApplyDataVo {
     private String isParallel;
     //并行推进阶段ID
     private String stageId;
+    @ApiModelProperty(value = "是否只实例化了申报实例", notes = "1: 是; 0: 否")
+    private String isJustApplyinst;
 
 }

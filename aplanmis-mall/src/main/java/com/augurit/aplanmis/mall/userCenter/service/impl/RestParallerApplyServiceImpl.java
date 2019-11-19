@@ -5,8 +5,10 @@ import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.agcloud.opus.common.domain.OpuOmOrg;
 import com.augurit.agcloud.opus.common.mapper.OpuOmOrgMapper;
+import com.augurit.aplanmis.common.constants.ApplyState;
 import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.mapper.*;
+import com.augurit.aplanmis.common.service.instance.AeaHiApplyinstService;
 import com.augurit.aplanmis.common.service.item.AeaItemBasicService;
 import com.augurit.aplanmis.common.service.item.AeaItemPrivService;
 import com.augurit.aplanmis.common.service.mat.AeaItemMatService;
@@ -17,6 +19,9 @@ import com.augurit.aplanmis.common.utils.CommonTools;
 import com.augurit.aplanmis.mall.main.vo.ItemListVo;
 import com.augurit.aplanmis.mall.main.vo.ParallelApproveItemVo;
 import com.augurit.aplanmis.mall.userCenter.service.RestParallerApplyService;
+import com.augurit.aplanmis.mall.userCenter.vo.StageApplyDataPageVo;
+import com.augurit.aplanmis.mall.userCenter.vo.StageApplyDataVo;
+import io.jsonwebtoken.lang.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -53,6 +58,8 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
     private AeaParThemeService aeaParThemeService;
     @Autowired
     private BscDicRegionMapper bscDicRegionMapper;
+    @Autowired
+    private AeaHiApplyinstService aeaHiApplyinstService;
 
     @Override
     public ItemListVo listItemAndStateByStageId(String stageId, String projInfoId, String regionalism, String projectAddress) throws Exception {
@@ -308,4 +315,6 @@ public class RestParallerApplyServiceImpl implements RestParallerApplyService {
         })
                 .collect(Collectors.toList());
     }
+
+
 }

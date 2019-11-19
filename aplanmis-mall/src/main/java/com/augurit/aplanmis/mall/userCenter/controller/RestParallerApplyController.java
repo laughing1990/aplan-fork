@@ -2,6 +2,7 @@ package com.augurit.aplanmis.mall.userCenter.controller;
 
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
+import com.augurit.aplanmis.common.constants.AeaHiApplyinstConstants;
 import com.augurit.aplanmis.common.constants.ApplyState;
 import com.augurit.aplanmis.common.domain.AeaHiApplyinst;
 import com.augurit.aplanmis.common.domain.AeaItemBasic;
@@ -118,7 +119,7 @@ public class RestParallerApplyController {
     @ApiOperation("阶段申报--> 一张表单提前实例化申请")
     public ContentResultForm<String> startInstApply(String applySource,String applySubject,String  linkmanInfoId){
         try {
-            AeaHiApplyinst aeaHiApplyinst = aeaHiApplyinstService.createAeaHiApplyinst(applySource, applySubject, linkmanInfoId, "0", null,ApplyState.RECEIVE_UNAPPROVAL_APPLY.getValue());
+            AeaHiApplyinst aeaHiApplyinst = aeaHiApplyinstService.createAeaHiApplyinst(applySource, applySubject, linkmanInfoId, AeaHiApplyinstConstants.STAGEINST_APPLY, null,ApplyState.RECEIVE_UNAPPROVAL_APPLY.getValue());
             return new ContentResultForm<>(true, aeaHiApplyinst.getApplyinstId(), "申报成功!");
         } catch (Exception e) {
             logger.error(e.getMessage(),e);

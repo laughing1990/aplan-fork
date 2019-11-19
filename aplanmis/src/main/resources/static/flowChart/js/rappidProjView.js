@@ -1234,7 +1234,7 @@ function changeViewStageProp(stageId, statusValue, workDay, ele) {
       src = '';
   var $pool = $('g[model-id=' + stageId + ']');
   $pool.data('stageInfo', ele);
-  if (statusValue == 'HANDING' || statusValue == 'UN_FINISHED') { //正在处理
+  if (statusValue == 'HANDLING' || statusValue == 'UN_FINISHED') { //正在处理
     color = gBlue, src = ctx + '/rappid/apps/BPMNEditor/images/stage_handing.png';
   } else if (statusValue == 'FINISHED') { //完成
     color = gGreen, src = ctx + '/rappid/apps/BPMNEditor/images/stage_done.png';
@@ -1521,7 +1521,7 @@ function setViewByProjResult(statusList, projId, cells) {
   };
   
   
-  if (statusList.length > 0) {
+  if (statusList && statusList.length > 0) {
     $.each(statusList, function (ind, ele) {
       changeViewStageProp(ele.stageId, ele.statusValue, ele.statusName, ele);
       if (ele.diagramItemList && ele.diagramItemList.length > 0) {

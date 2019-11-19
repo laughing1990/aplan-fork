@@ -102,6 +102,7 @@ public class AeaItemFrontProjAdminServiceImpl implements AeaItemFrontProjAdminSe
     }
 
     private void checkSame(AeaItemFrontProj aeaItemFrontProj){
+
         AeaItemFrontProj queryItemFrontProj = new AeaItemFrontProj();
         queryItemFrontProj.setItemVerId(aeaItemFrontProj.getItemVerId());
         queryItemFrontProj.setRuleName(aeaItemFrontProj.getRuleName());
@@ -116,6 +117,12 @@ public class AeaItemFrontProjAdminServiceImpl implements AeaItemFrontProjAdminSe
         if(list.size()>0){
             throw new RuntimeException("已有相同规则的项目前置检测!");
         }
+    }
+
+    @Override
+    public void changIsActive(String id, String rootOrgId){
+
+        aeaItemFrontProjMapper.changIsActive(id, rootOrgId);
     }
 }
 

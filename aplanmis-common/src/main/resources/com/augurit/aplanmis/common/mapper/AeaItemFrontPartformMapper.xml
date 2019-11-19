@@ -3,48 +3,47 @@
 <!--created by Administrator    2019-11-11 17:31:08 -->
 <!--0 一些前置信息配置 -->
 <mapper namespace="com.augurit.aplanmis.common.mapper.AeaItemFrontPartformMapper" >
-<!--1 返回所有字段的SQL字句 -->
-<sql id="allColumns" >
-    FRONT_PARTFORM_ID  frontPartformId,
-    ITEM_VER_ID  itemVerId,
-    ITEM_PARTFORM_ID  itemPartformId,
-    SORT_NO  sortNo,
-    IS_ACTIVE  isActive,
-    CREATER  creater,
-    CREATE_TIME  createTime,
-    MODIFIER  modifier,
-    MODIFY_TIME  modifyTime,
-    ROOT_ORG_ID  rootOrgId
+
+    <sql id="allColumns" >
+        FRONT_PARTFORM_ID  frontPartformId,
+        ITEM_VER_ID  itemVerId,
+        ITEM_PARTFORM_ID  itemPartformId,
+        SORT_NO  sortNo,
+        IS_ACTIVE  isActive,
+        CREATER  creater,
+        CREATE_TIME  createTime,
+        MODIFIER  modifier,
+        MODIFY_TIME  modifyTime,
+        ROOT_ORG_ID  rootOrgId
     </sql>
 
     <sql id="allColumnsAlias">
-    ${alias}.FRONT_PARTFORM_ID  frontPartformId,
-    ${alias}.ITEM_VER_ID  itemVerId,
-    ${alias}.ITEM_PARTFORM_ID  itemPartformId,
-    ${alias}.SORT_NO  sortNo,
-    ${alias}.IS_ACTIVE  isActive,
-    ${alias}.CREATER  creater,
-    ${alias}.CREATE_TIME  createTime,
-    ${alias}.MODIFIER  modifier,
-    ${alias}.MODIFY_TIME  modifyTime,
-    ${alias}.ROOT_ORG_ID  rootOrgId
+        ${alias}.FRONT_PARTFORM_ID  frontPartformId,
+        ${alias}.ITEM_VER_ID  itemVerId,
+        ${alias}.ITEM_PARTFORM_ID  itemPartformId,
+        ${alias}.SORT_NO  sortNo,
+        ${alias}.IS_ACTIVE  isActive,
+        ${alias}.CREATER  creater,
+        ${alias}.CREATE_TIME  createTime,
+        ${alias}.MODIFIER  modifier,
+        ${alias}.MODIFY_TIME  modifyTime,
+        ${alias}.ROOT_ORG_ID  rootOrgId
     </sql>
 
-<!--2 根据主键ID查询单个实体 -->
-<select id="getAeaItemFrontPartformById" resultType="AeaItemFrontPartform" >
-    select
-    <include refid="allColumns"/>
-    from    AEA_ITEM_FRONT_PARTFORM
-    where    FRONT_PARTFORM_ID = #{id}
-</select>
+    <!--2 根据主键ID查询单个实体 -->
+    <select id="getAeaItemFrontPartformById" resultType="AeaItemFrontPartform" >
+        select
+        <include refid="allColumns"/>
+        from    AEA_ITEM_FRONT_PARTFORM
+        where    FRONT_PARTFORM_ID = #{id}
+    </select>
 
     <select id="getAeaItemFrontPartformVoByItemVerId"
             resultType="com.augurit.aplanmis.common.vo.AeaItemFrontPartformVo">
         select
         <include refid="allColumnsAlias">
             <property name="alias" value="aifp"></property>
-        </include>
-        ,
+        </include>,
         aip.PARTFORM_NAME partformName,
         aip.IS_SMART_FORM isSmartForm,
         aip.STO_FORM_ID stoFormId
@@ -66,94 +65,92 @@
         select
         <include refid="allColumns"/>
         from    AEA_ITEM_FRONT_PARTFORM
-    <where>
-        <if test="frontPartformId != null" >
-        AND    FRONT_PARTFORM_ID = #{frontPartformId}
-        </if>
-        <if test="itemVerId != null" >
-        AND    ITEM_VER_ID = #{itemVerId}
-        </if>
-        <if test="itemPartformId != null" >
-        AND    ITEM_PARTFORM_ID = #{itemPartformId}
-        </if>
-        <if test="sortNo != null" >
-        AND    SORT_NO = #{sortNo}
-        </if>
-        <if test="isActive != null" >
-        AND    IS_ACTIVE = #{isActive}
-        </if>
-        <if test="creater != null" >
-        AND    CREATER = #{creater}
-        </if>
-        <if test="createTime != null" >
-        AND    CREATE_TIME = #{createTime}
-        </if>
-        <if test="modifier != null" >
-        AND    MODIFIER = #{modifier}
-        </if>
-        <if test="modifyTime != null" >
-        AND    MODIFY_TIME = #{modifyTime}
-        </if>
-        <if test="rootOrgId != null" >
-        AND    ROOT_ORG_ID = #{rootOrgId}
-        </if>
-    </where>
+        <where>
+            <if test="frontPartformId != null" >
+            AND    FRONT_PARTFORM_ID = #{frontPartformId}
+            </if>
+            <if test="itemVerId != null" >
+            AND    ITEM_VER_ID = #{itemVerId}
+            </if>
+            <if test="itemPartformId != null" >
+            AND    ITEM_PARTFORM_ID = #{itemPartformId}
+            </if>
+            <if test="sortNo != null" >
+            AND    SORT_NO = #{sortNo}
+            </if>
+            <if test="isActive != null" >
+            AND    IS_ACTIVE = #{isActive}
+            </if>
+            <if test="creater != null" >
+            AND    CREATER = #{creater}
+            </if>
+            <if test="createTime != null" >
+            AND    CREATE_TIME = #{createTime}
+            </if>
+            <if test="modifier != null" >
+            AND    MODIFIER = #{modifier}
+            </if>
+            <if test="modifyTime != null" >
+            AND    MODIFY_TIME = #{modifyTime}
+            </if>
+            <if test="rootOrgId != null" >
+            AND    ROOT_ORG_ID = #{rootOrgId}
+            </if>
+        </where>
     </select>
-<!--4 根据条件查询实体list,返回分页对象 -->
 
-<!--5 新增实体对象 -->
-<insert id="insertAeaItemFrontPartform" parameterType="AeaItemFrontPartform" >
-    insert into AEA_ITEM_FRONT_PARTFORM (
-FRONT_PARTFORM_ID  ,ITEM_VER_ID  ,ITEM_PARTFORM_ID  ,SORT_NO  ,IS_ACTIVE  ,CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME  ,ROOT_ORG_ID  
-    )  values  (
-#{frontPartformId},#{itemVerId},#{itemPartformId},#{sortNo},#{isActive},#{creater},#{createTime},#{modifier},#{modifyTime},  #{rootOrgId}
-    )
-</insert>
-<!--6 修改实体对象 -->
-<update id="updateAeaItemFrontPartform" parameterType="AeaItemFrontPartform" >
-    update AEA_ITEM_FRONT_PARTFORM
-    <set >
-        <if test="frontPartformId != null" >
-        FRONT_PARTFORM_ID = #{frontPartformId},
-        </if>
-        <if test="itemVerId != null" >
-        ITEM_VER_ID = #{itemVerId},
-        </if>
-        <if test="itemPartformId != null" >
-        ITEM_PARTFORM_ID = #{itemPartformId},
-        </if>
-        <if test="sortNo != null" >
-        SORT_NO = #{sortNo},
-        </if>
-        <if test="isActive != null" >
-        IS_ACTIVE = #{isActive},
-        </if>
-        <if test="creater != null" >
-        CREATER = #{creater},
-        </if>
-        <if test="createTime != null" >
-        CREATE_TIME = #{createTime},
-        </if>
-        <if test="modifier != null" >
-        MODIFIER = #{modifier},
-        </if>
-        <if test="modifyTime != null" >
-        MODIFY_TIME = #{modifyTime},
-        </if>
-        <if test="rootOrgId != null" >
-        ROOT_ORG_ID = #{rootOrgId},
-        </if>
-    </set>
-    where FRONT_PARTFORM_ID = #{frontPartformId}
-</update>
-<!--7 删除实体对象,根据主键ID -->
+    <!--5 新增实体对象 -->
+    <insert id="insertAeaItemFrontPartform" parameterType="AeaItemFrontPartform" >
+        insert into AEA_ITEM_FRONT_PARTFORM (
+    FRONT_PARTFORM_ID  ,ITEM_VER_ID  ,ITEM_PARTFORM_ID  ,SORT_NO  ,IS_ACTIVE  ,CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME  ,ROOT_ORG_ID
+        )  values  (
+    #{frontPartformId},#{itemVerId},#{itemPartformId},#{sortNo},#{isActive},#{creater},#{createTime},#{modifier},#{modifyTime},  #{rootOrgId}
+        )
+    </insert>
+
+    <!--6 修改实体对象 -->
+    <update id="updateAeaItemFrontPartform" parameterType="AeaItemFrontPartform" >
+        update AEA_ITEM_FRONT_PARTFORM
+        <set >
+            <if test="frontPartformId != null" >
+            FRONT_PARTFORM_ID = #{frontPartformId},
+            </if>
+            <if test="itemVerId != null" >
+            ITEM_VER_ID = #{itemVerId},
+            </if>
+            <if test="itemPartformId != null" >
+            ITEM_PARTFORM_ID = #{itemPartformId},
+            </if>
+            <if test="sortNo != null" >
+            SORT_NO = #{sortNo},
+            </if>
+            <if test="isActive != null" >
+            IS_ACTIVE = #{isActive},
+            </if>
+            <if test="creater != null" >
+            CREATER = #{creater},
+            </if>
+            <if test="createTime != null" >
+            CREATE_TIME = #{createTime},
+            </if>
+            <if test="modifier != null" >
+            MODIFIER = #{modifier},
+            </if>
+            <if test="modifyTime != null" >
+            MODIFY_TIME = #{modifyTime},
+            </if>
+            <if test="rootOrgId != null" >
+            ROOT_ORG_ID = #{rootOrgId},
+            </if>
+        </set>
+        where FRONT_PARTFORM_ID = #{frontPartformId}
+    </update>
+
     <delete id="deleteAeaItemFrontPartform">
-        delete from   AEA_ITEM_FRONT_PARTFORM
-        where
-    FRONT_PARTFORM_ID = #{id}
+        delete from AEA_ITEM_FRONT_PARTFORM where FRONT_PARTFORM_ID = #{id}
     </delete>
-<!--8 删除实体对象列表,根据主键ID列表 -->
-<!--9 返回所有字段的对象map,用于级联 -->
+
+    <!--9 返回所有字段的对象map,用于级联 -->
     <resultMap type="AeaItemFrontPartform" id="AeaItemFrontPartformMap">
         <id property="frontPartformId" column="FRONT_PARTFORM_ID"/>
         <result property="itemVerId" column="ITEM_VER_ID"/>
@@ -266,4 +263,17 @@ FRONT_PARTFORM_ID  ,ITEM_VER_ID  ,ITEM_PARTFORM_ID  ,SORT_NO  ,IS_ACTIVE  ,CREAT
         left join aea_item_partform aip on aip.ITEM_PARTFORM_ID = aifp.ITEM_PARTFORM_ID
         where aifp.FRONT_PARTFORM_ID = #{id}
     </select>
+
+    <update id="changIsActive">
+        update AEA_ITEM_FRONT_PARTFORM
+        set IS_ACTIVE = case IS_ACTIVE
+        when '1' then '0'
+        when '0' then '1'
+        end
+        <where>
+            and FRONT_PARTFORM_ID = #{id}
+            and ROOT_ORG_ID = #{rootOrgId}
+        </where>
+    </update>
+
 </mapper>

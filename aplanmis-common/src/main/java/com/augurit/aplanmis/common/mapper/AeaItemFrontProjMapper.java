@@ -26,4 +26,5 @@ public interface AeaItemFrontProjMapper {
 
      Long getMaxSortNo(AeaItemFrontProj aeaItemFrontProj);
 
+     void changIsActive(@Param("id") String id, @Param("rootOrgId")String rootOrgId);
 }

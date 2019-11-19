@@ -75,7 +75,7 @@ public class StageApplyDataVo {
     @ApiModelProperty(value = "情形ID集合", required = true)
     private String[] stateIds;
 
-    @ApiModelProperty(value = "是否只实例化了申报实例（初始化0 一张表单暂存后1 申报/打印回执/不受理后2 ）", required = true)
+    @ApiModelProperty(value = "是否只实例化了申报实例", required = true, notes = "0: 初始化, 1: 一张表单暂存后仅仅生成了申报实例, 2: 申报/打印回执/不受理后")
     private String isJustApplyinst;
 
     @ApiModelProperty(value = "是否实例化过回执 1是 0否", required = true)

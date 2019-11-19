@@ -384,6 +384,8 @@ var module1 = new Vue({
       }, // 证照库条件查询
       allApplySubjectInfo: [], // 证照库条件查询
       selApplySubject: {}, // 选中的建设单位 申报主体
+      matformNameTitle: '材料表单',
+      matFormDialogVisible: false,
     }
   },
   mounted: function () {
@@ -2522,13 +2524,7 @@ var module1 = new Vue({
       }
       _that._itemStateIds = _itemStateIds;
       _that._stageStateIds = _stageStateIds;
-      //TODO
-      //todo 先写死
-      var fix_stageid = '1dc08dc1-7ba6-4ccf-96cb-a8f7255cddbb';
-      _that.demoStageId = fix_stageid;
       if (_that.useOneForm == 1) {
-        // _that.oneFormDataAllow = false;
-        // _that.declareStep = 6;
         if (selItemVer.length > 0) { // 已选择并联事项
           _that.getParallelApplyinstId();// 实例化并联申报  获取一张表单
         } else {
@@ -2971,7 +2967,7 @@ var module1 = new Vue({
       }
     },
     // 一张表单获取并联申报实例化id
-    getParallelApplyinstId: function () {
+    getParallelApplyinstId: function (flag,_stoFormId) {
       var _that = this;
       var _applySubject = '';
       if (_that.applyObjectInfo.role == 2) {
@@ -2979,33 +2975,38 @@ var module1 = new Vue({
       } else {
         _applySubject = 0;
       }
-      console.log(_that.userInfoId);
       if (_applySubject == 0) {
         _that.userInfoId = this.applyObjectInfo.aeaLinkmanInfo.linkmanInfoId;
         _that.userLinkmanCertNo = _that.applyObjectInfo.aeaLinkmanInfo.linkmanCertNo;
       }
-      console.log(_that.userInfoId);
       var parmas = {
         applySource: 'net',
         applySubject: _applySubject,
         linkmanInfoId: _that.userInfoId,
       };
+      _that.loading = true;
       request('', {
         url: ctx + 'rest/userCenter/apply/net/process/form/start',
         type: 'post',
         data: parmas
       }, function (res) {
         if (res.success) {
+          _that.loading = false;
           if (res.content) {
             _that.parallelApplyinstId = res.content;
-            _that.oneFormDataAllow = false;
-            _that.declareStep = 6;
-            _that.getOneFormList(_that.stageId); // 获取一张表单html
+            if(flag=='matForm'){
+              _that.getOneFormrender3(_that.parallelApplyinstId,_stoFormId);
+            }else {
+              _that.oneFormDataAllow = false;
+              _that.declareStep = 6;
+              _that.getOneFormList(_that.stageId); // 获取一张表单html
+            }
           } else {
             _that.declareStep = 7;
             _that.saveAndGetMats(); // 获取材料
           }
         } else {
+          _that.loading = false;
           _that.$message({
             message: '实例化失败',
             type: 'error'
@@ -3411,6 +3412,45 @@ var module1 = new Vue({
           type: 'error'
         });
       });
+    },
+    // 展示材料一张表单弹窗
+    showOneFormDialog1: function(oneformMat){
+      var _that = this;
+      var _applyinstId = _that.parallelApplyinstId;
+      _that.matformNameTitle = oneformMat.matName
+      if(_applyinstId==''){
+        _that.getParallelApplyinstId('matForm',oneformMat.stoFormId)
+      }else {
+        _that.getOneFormrender3(_applyinstId,oneformMat.stoFormId)
+      }
+    },
+    // 获取材料一张表单render
+    getOneFormrender3: function(_applyinstId,_formId){
+      var _that = this;
+      // _formId = 'ecbebb64-a29c-41c6-abb7-e7b337a1a2cb';
+      var sFRenderConfig='&showBasicButton=true&includePlatformResource=false';
+      request('', {
+        url: ctx + 'bpm/common/sf/renderHtmlFormContainer?listRefEntityId='+_applyinstId+'&listFormId='+_formId+sFRenderConfig,
+        type: 'get',
+      }, function (result) {
+        if (result.success) {
+          _that.matFormDialogVisible = true;
+          $('#matFormContent').html(result.content)
+          _that.$nextTick(function(){
+            $('#matFormContent').html(result.content)
+          });
+        }else {
+          _that.$message({
+            message: result.content?result.content:'获取材料表单失败！',
+            type: 'error'
+          });
+        }
+      },function(res){
+        _that.$message({
+          message: '获取材料表单失败！',
+          type: 'error'
+        });
+      })
     },
     // 查看证照
     cretPreview: function (authCode) {

@@ -32,7 +32,7 @@ var singleWinChartOptions = {
       type: 'pie',
       radius: '55%',
       center: ['50%', '50%'],
-      color: ['#FD634D', '#05CCC5', '#70A1FF', '#FEDA5F', '#E7BCF2'],
+      color: ['#32C4E8', '#40ABFF', '#FD634D', '#FEDA5F', '#E7BCF2'],
       itemStyle: {
         normal: {
           borderWidth: 2,

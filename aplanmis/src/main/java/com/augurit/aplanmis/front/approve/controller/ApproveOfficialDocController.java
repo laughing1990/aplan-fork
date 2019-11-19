@@ -5,11 +5,6 @@ import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.agcloud.framework.util.StringUtils;
-import com.augurit.agcloud.opus.common.domain.OpuOmOrg;
-import com.augurit.agcloud.opus.common.mapper.OpuOmOrgMapper;
-import com.augurit.aplanmis.common.domain.AeaCert;
-import com.augurit.aplanmis.common.domain.AeaHiCertinst;
-import com.augurit.aplanmis.common.domain.AeaHiIteminst;
 import com.augurit.aplanmis.common.domain.AeaItemMat;
 import com.augurit.aplanmis.common.mapper.AeaHiIteminstMapper;
 import com.augurit.aplanmis.common.service.admin.cert.AeaCertAdminService;
@@ -20,7 +15,10 @@ import com.augurit.aplanmis.front.approve.vo.UnitOfficialDocVo;
 import com.augurit.aplanmis.front.approve.vo.certinst.CertVo;
 import com.augurit.aplanmis.front.approve.vo.certinst.CertinstVo;
 import com.augurit.aplanmis.front.approve.vo.official.OfficialDocumentEditVo;
-import io.swagger.annotations.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,7 +31,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * 批文批复
@@ -170,9 +167,6 @@ public class ApproveOfficialDocController {
         List<BscAttFileAndDir> matAttDetailByMatinstId = fileUtilsService.getMatAttDetailByMatinstId(matinstId);
         return new ContentResultForm<>(true, matAttDetailByMatinstId);
     }
-
-    @Autowired
-    private OpuOmOrgMapper opuOmOrgMapper;
 
     @GetMapping("/getItemInOfficeMat")
     @ApiOperation(value = "获取当前事项实例下 批文批复定义 列表,如果事项实例id为空，申请实例id不为空，则查询申请实例下所有事项的批文批复")
