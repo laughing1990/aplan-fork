@@ -29,7 +29,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
-@Api(value = "项目需求采购管理接口-材料相关", description = "项目需求采购管理接口-材料相关")
+@Api(value = "项目需求采购管理接口-材料相关", tags = "项目采购管理接口-材料相关")
 @RequestMapping("/supermarket/purchase/mat")
 @RestController
 public class MatController {
@@ -43,14 +43,14 @@ public class MatController {
     @Autowired
     private RestApplyMatService restApplyMatService;
 
-    @ApiOperation("获取中介事项材料-不分情形")
+    @ApiOperation(value = "获取中介事项材料-不分情形", tags = "项目采购页---根据itemVerId获取所有材料列表")
     @GetMapping("/getItemMatList")
     public ResultForm getAeaItemInoutMatListByItemVerId(String itemVerId) throws Exception {
         List<ItemMatVo> applyMatList = matStateService.getApplyMatList(itemVerId);
         return new ContentResultForm<>(true, applyMatList, "success");
     }
 
-    @ApiOperation("上传事项材料附件-不分情形")
+    @ApiOperation(value = "上传事项材料附件-不分情形", tags = "项目采购页-单个matId下的附件上传")
     @GetMapping("/att/upload")
     public ResultForm uploadMat(MatUploadVo uploadVo, HttpServletRequest request) throws Exception {
         request.setCharacterEncoding("utf-8");//设置编码，防止附件名称乱码
@@ -85,7 +85,7 @@ public class MatController {
     }
 
     @PostMapping("/att/upload/auto")
-    @ApiOperation(value = "中介超市项目采购页面--> 一键自动分拣")
+    @ApiOperation(value = "中介超市项目采购页面--> 一键自动分拣", tags = "项目采购页-一键分拣材料")
     public ContentResultForm<List<UploadMatReturnVo>> saveFilesAuto(@ModelAttribute AutoImportParamVo autoImportVo, HttpServletRequest request) throws Exception {
         List<UploadMatReturnVo> list = restApplyMatService.saveFilesAuto(autoImportVo, request);
         return new ContentResultForm<>(true, list, "success");
@@ -102,7 +102,7 @@ public class MatController {
     }
 
     @PostMapping("/matinst/batch/save")
-    @ApiOperation("中介超市项目采购页面---根据材料定义生成材料实例id")
+    @ApiOperation(value = "中介超市项目采购页面---根据材料定义生成材料实例id", tags = "项目采购页-批量保存材料，当勾线全部时使用")
     public ContentResultForm<List<Mat2MatInstVo>> saveMatinsts(@RequestBody SaveMatinstVo saveMatinstVo) {
         List<Mat2MatInstVo> mat2MatInstVos = matStateService.saveMatinsts(saveMatinstVo);
         return new ContentResultForm<>(true, mat2MatInstVos, "Batch save matinst success");
