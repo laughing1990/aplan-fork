@@ -449,6 +449,7 @@
             *
             * */
             moveFiles:function(type,item){
+                var vm=this;
                 this.moveFilesDialogFlag = true;
                 if(type == 0 && item){
                     vm.FilesMultipleSelection.push(item);
@@ -487,6 +488,7 @@
                             dirName:vm.dirName,
                         }
                         vm.getFileList(item);
+                        vm.moveFilesDialogFlag = false;
                     }else{
                         vm.$message.error("移动失败")
                     }

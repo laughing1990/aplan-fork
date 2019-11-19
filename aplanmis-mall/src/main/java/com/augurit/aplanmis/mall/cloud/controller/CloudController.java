@@ -114,9 +114,9 @@ public class CloudController {
             @ApiImplicitParam(value = "当前页" , name = "pageNum" ,required = true ,dataType = "int"),
             @ApiImplicitParam(value = "每页记录数" , name = "pageSize" ,required = true ,dataType = "int"),
             @ApiImplicitParam(value = "搜索关键词" , name = "keyword" ,required = false ,dataType = "String")})
-    public PageInfo<BscAttForm> getAttsByDirId(String dirId, int pageNum, int pageSize, String keyword){
+    public PageInfo<BscAttForm> getAttsByDirId(String dirId, int pageNum, int pageSize, String keyword,HttpServletRequest request){
         try {
-            return cloudService.getAttsByDirId(dirId,pageNum,pageSize,keyword);
+            return cloudService.getAttsByDirId(dirId,pageNum,pageSize,keyword,SessionUtil.isPersonAccount(request));
         } catch (Exception e) {
             e.printStackTrace();
             return new PageInfo<>();

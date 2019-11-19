@@ -183,12 +183,14 @@ public class CloudServiceImpl implements CloudService {
     }
 
     @Override
-    public PageInfo<BscAttForm> getAttsByDirId(String dirID,int pageNum,int pageSize,String keyword) throws Exception{
+    public PageInfo<BscAttForm> getAttsByDirId(String dirID,int pageNum,int pageSize,String keyword,boolean bool) throws Exception{
         if(StringUtils.isBlank(dirID)) return new PageInfo<>(new ArrayList<>());
         List<BscAttForm> paramList = new ArrayList<>(1);
         BscAttForm param = new BscAttForm();
         param.setDirId(dirID);
         param.setOrgId(SecurityContext.getCurrentOrgId());
+        param.setTableName(bool?"AEA_LINKMAN_INFO":"AEA_UNIT_INFO");
+        param.setPkName(bool?"LINKMAN_INFO_ID":"UNIT_INFO_ID");
         paramList.add(param);
         PageHelper.startPage(pageNum, pageSize);
         List<BscAttForm> list = aeaHiItemMatinstMapper.listDetailCommonBatch(paramList,keyword);
