@@ -38,13 +38,20 @@ public class OrgEfficiencySupervisionController {
     @Autowired
     private OrgEfficiencySupersionService orgEfficiencySupersionService;
 
-    private static String ORG_EFFICIENCY_SUPERVISION_INDEX = "efficiency/assignPeopleEffect";
+    private static String ORG_EFFICIENCY_SUPERVISION_INDEX = "efficiency/assEffect";
+    private static String OLD_WIN_EFFICIENCY_SUPERVISION_INDEX = "efficiency/assignPeopleEffect";
     private static String SINGLE_ORG_EFFICIENCY_SUPERVISION_INDEX = "efficiency/singleAssEffect";
 
     @RequestMapping("/index")
     @ApiIgnore
     public ModelAndView index() {
         return new ModelAndView(ORG_EFFICIENCY_SUPERVISION_INDEX);
+    }
+
+    @RequestMapping("/oldIndex")
+    @ApiIgnore
+    public ModelAndView oldIndex() {
+        return new ModelAndView(OLD_WIN_EFFICIENCY_SUPERVISION_INDEX);
     }
 
     @RequestMapping("/orgIndex")
