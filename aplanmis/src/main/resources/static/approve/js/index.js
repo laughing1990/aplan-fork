@@ -1895,7 +1895,7 @@ var vm = new Vue({
         columnType: "button",
         isReadonly: '0',
         isHidden: '0',
-        elementRender: '<button class="btn btn-outline-info" onclick="handleForWin()">发起申报</button>'
+        elementRender: '<button class="btn btn-primary" onclick="handleForWin()">发起申报</button>'
       }, {
         elementName: "打印回执",
         elementCode: "wfBusSave",
