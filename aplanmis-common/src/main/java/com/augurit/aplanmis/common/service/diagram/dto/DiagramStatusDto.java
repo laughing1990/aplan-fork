@@ -162,6 +162,7 @@ public class DiagramStatusDto {
             diagramItemDto.setOrgName(hiIteminst.getApproveOrgName());
             diagramItemDto.setItemName(diagramItem.getItemName());
             diagramItemDto.setItemCode(diagramItem.getItemCode());
+            diagramItemDto.setDueNum(diagramItem.getDueNum());
         }
 
         return diagramItemDto;

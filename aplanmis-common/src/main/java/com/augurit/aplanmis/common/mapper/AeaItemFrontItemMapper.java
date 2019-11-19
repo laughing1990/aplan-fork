@@ -20,14 +20,15 @@ public interface AeaItemFrontItemMapper {
 
      void deleteAeaItemFront(@Param("id") String id);
 
+     void batchDelAeaItemFront(@Param("ids") List<String> ids);
+
      List<AeaItemFrontItem> listAeaItemFront(AeaItemFrontItem aeaItemFrontItem);
 
      AeaItemFrontItem getAeaItemFrontById(@Param("id") String id);
 
-     List<AeaItemFrontItem> listItemsByItemVerId(@Param("itemVerId")String itemVerId,
-                                                 @Param("rootOrgId")String rootOrgId);
+     List<AeaItemFrontItem> listItemsByItemVerId(@Param("itemVerId")String itemVerId, @Param("rootOrgId")String rootOrgId);
 
-     void batchDelItemByItemVerId(@Param("itemVerId")String itemVerId);
+     void batchDelItemByItemVerId(@Param("itemVerId")String itemVerId, @Param("rootOrgId")String rootOrgId);
 
      /**
       * 通过前置事项版本id获取未过时事项版本数据
@@ -36,8 +37,7 @@ public interface AeaItemFrontItemMapper {
       * @param rootOrgId
       * @return
       */
-     List<AeaItemFrontItem> listNoDeprecatedItemFront(@Param("frontCkItemVerId")String frontCkItemVerId,
-                                                      @Param("rootOrgId")String rootOrgId);
+     List<AeaItemFrontItem> listNoDeprecatedItemFront(@Param("frontCkItemVerId")String frontCkItemVerId, @Param("rootOrgId")String rootOrgId);
 
      List<AeaItemFrontItem> listAeaItemFrontItem(AeaItemFrontItem aeaItemFrontItem);
 

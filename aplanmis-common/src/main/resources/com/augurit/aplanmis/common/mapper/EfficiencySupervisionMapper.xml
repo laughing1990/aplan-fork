@@ -296,7 +296,8 @@
 
     </select>
 
-    <select id="getCompletedApplyUseTimeByTheme" resultType="com.augurit.aplanmis.common.vo.analyse.ApplyUseTimeStatisticsVo">
+    <select id="getCompletedApplyUseTimeByTheme"
+            resultType="com.augurit.aplanmis.common.vo.analyse.UseTimeStatisticsVo">
         select THEME_ID as themeId, THEME_NAME as themeName,
         max(USE_LIMIT_TIME) as maxUseTime, min(USE_LIMIT_TIME) as minUseTime, round(avg(USE_LIMIT_TIME), 2) as avgUseTime from (
         select
@@ -389,7 +390,8 @@
         group by THEME_ID, THEME_NAME
     </select>
 
-    <select id="getCompletedApplyUseTimeByThemeAndWindow" resultType="com.augurit.aplanmis.common.vo.analyse.ApplyUseTimeStatisticsVo">
+    <select id="getCompletedApplyUseTimeByThemeAndWindow"
+            resultType="com.augurit.aplanmis.common.vo.analyse.UseTimeStatisticsVo">
         select OPS_WINDOW_ID as windowId, WINDOW_NAME as windowName,
         max(USE_LIMIT_TIME) as maxUseTime, min(USE_LIMIT_TIME) as minUseTime, round(avg(USE_LIMIT_TIME), 2) as avgUseTime from (
         select
@@ -542,10 +544,8 @@
         <if test="regionId != null and regionId !='' ">
             ,gg.orgId
         </if>
-
-
-
     </select>
+
     <select id="listOpuOmOrg" resultType="OpuOmOrg">
         select
         <include refid="AllOrgColumns" />
@@ -595,6 +595,126 @@
             AND  ORG_ID != '-1'
         </where>
         ORDER BY CREATE_TIME DESC ,MODIFY_TIME DESC
+    </select>
+
+    <select id="getItemUseTimeByRegion" resultType="com.augurit.aplanmis.common.vo.analyse.UseTimeStatisticsVo">
+        select
+        region.region_id as regionId,
+        region.region_name as regionName,
+        <if test="_databaseId == 'oracle'">
+            nvl(max(asti.use_limit_time),0) as maxUseTime,
+            nvl(min(asti.use_limit_time),0) as minUseTime,
+            nvl(round(avg(asti.use_limit_time),2), 0) as avgUseTime
+        </if>
+        <if test="_databaseId == 'mysql'">
+            ifnull(max(asti.use_limit_time),0) as maxUseTime,
+            ifnull(min(asti.use_limit_time),0) as minUseTime,
+            ifnull(round(avg(asti.use_limit_time),2), 0) as avgUseTime
+        </if>
+        from aea_hi_iteminst ahi
+        left join opu_om_org org on org.org_id = ahi.APPROVE_ORG_ID
+        left join bsc_dic_region region on region.REGION_ID = org.REGION_ID
+        left join act_sto_timerule_inst asti on asti.PROC_INST_ID = ahi.PROCINST_ID
+        where
+        ahi.ROOT_ORG_ID = #{rootOrgId}
+        <if test="_databaseId == 'oracle'">
+            <if test="startTime != null and startTime != ''">
+                and to_char(ahi.ACCEPT_TIME, 'yyyy-mm-dd HH24:mi:ss') &gt;= #{startTime}
+            </if>
+            <if test="endTime != null and endTime != ''">
+                and to_char(ahi.ACCEPT_TIME, 'yyyy-mm-dd HH24:mi:ss') &lt;= #{endTime}
+            </if>
+        </if>
+        <if test="_databaseId == 'mysql'">
+            <if test="startTime != null and startTime != ''">
+                and ahi.ACCEPT_TIME &gt;= #{startTime}
+            </if>
+            <if test="endTime != null and endTime != ''">
+                and ahi.ACCEPT_TIME &lt;= #{endTime}
+            </if>
+        </if>
+        group by region.region_id, region.region_name
+    </select>
+
+    <select id="getItemUseTimeByOrg" resultType="com.augurit.aplanmis.common.vo.analyse.UseTimeStatisticsVo">
+        select
+        org.org_id as orgId,
+        org.org_name as orgName,
+        <if test="_databaseId == 'oracle'">
+            nvl(max(asti.use_limit_time),0) as maxUseTime,
+            nvl(min(asti.use_limit_time),0) as minUseTime,
+            nvl(round(avg(asti.use_limit_time),2), 0) as avgUseTime
+        </if>
+        <if test="_databaseId == 'mysql'">
+            ifnull(max(asti.use_limit_time),0) as maxUseTime,
+            ifnull(min(asti.use_limit_time),0) as minUseTime,
+            ifnull(round(avg(asti.use_limit_time),2), 0) as avgUseTime
+        </if>
+        from aea_hi_iteminst ahi
+        left join opu_om_org org on org.org_id = ahi.APPROVE_ORG_ID
+        left join bsc_dic_region region on region.REGION_ID = org.REGION_ID
+        left join act_sto_timerule_inst asti on asti.PROC_INST_ID = ahi.PROCINST_ID
+        where
+        ahi.ROOT_ORG_ID = #{rootOrgId}
+        and region.region_id = #{regionId}
+        <if test="_databaseId == 'oracle'">
+            <if test="startTime != null and startTime != ''">
+                and to_char(ahi.ACCEPT_TIME, 'yyyy-mm-dd HH24:mi:ss') &gt;= #{startTime}
+            </if>
+            <if test="endTime != null and endTime != ''">
+                and to_char(ahi.ACCEPT_TIME, 'yyyy-mm-dd HH24:mi:ss') &lt;= #{endTime}
+            </if>
+        </if>
+        <if test="_databaseId == 'mysql'">
+            <if test="startTime != null and startTime != ''">
+                and ahi.ACCEPT_TIME &gt;= #{startTime}
+            </if>
+            <if test="endTime != null and endTime != ''">
+                and ahi.ACCEPT_TIME &lt;= #{endTime}
+            </if>
+        </if>
+        group by org.org_id, org.org_name
+    </select>
+
+    <select id="getItemUseTimeByItem" resultType="com.augurit.aplanmis.common.vo.analyse.UseTimeStatisticsVo">
+        select
+        basic.item_id as itemId,
+        basic.item_name as itemName,
+        <if test="_databaseId == 'oracle'">
+            nvl(max(asti.use_limit_time),0) as maxUseTime,
+            nvl(min(asti.use_limit_time),0) as minUseTime,
+            nvl(round(avg(asti.use_limit_time),2), 0) as avgUseTime
+        </if>
+        <if test="_databaseId == 'mysql'">
+            ifnull(max(asti.use_limit_time),0) as maxUseTime,
+            ifnull(min(asti.use_limit_time),0) as minUseTime,
+            ifnull(round(avg(asti.use_limit_time),2), 0) as avgUseTime
+        </if>
+        from aea_hi_iteminst ahi
+        left join aea_item_basic basic on ahi.ITEM_ID = basic.ITEM_ID
+        left join opu_om_org org on org.org_id = ahi.APPROVE_ORG_ID
+        left join bsc_dic_region region on region.REGION_ID = org.REGION_ID
+        left join act_sto_timerule_inst asti on asti.PROC_INST_ID = ahi.PROCINST_ID
+        where
+        ahi.ROOT_ORG_ID = #{rootOrgId}
+        and org.org_id = #{orgId}
+        <if test="_databaseId == 'oracle'">
+            <if test="startTime != null and startTime != ''">
+                and to_char(ahi.ACCEPT_TIME, 'yyyy-mm-dd HH24:mi:ss') &gt;= #{startTime}
+            </if>
+            <if test="endTime != null and endTime != ''">
+                and to_char(ahi.ACCEPT_TIME, 'yyyy-mm-dd HH24:mi:ss') &lt;= #{endTime}
+            </if>
+        </if>
+        <if test="_databaseId == 'mysql'">
+            <if test="startTime != null and startTime != ''">
+                and ahi.ACCEPT_TIME &gt;= #{startTime}
+            </if>
+            <if test="endTime != null and endTime != ''">
+                and ahi.ACCEPT_TIME &lt;= #{endTime}
+            </if>
+        </if>
+        group by basic.item_id, basic.item_name
     </select>
 
     <select id="getOrgReceiveStateStatistics" resultType="com.augurit.aplanmis.common.vo.analyse.ItemDetailFormVo">

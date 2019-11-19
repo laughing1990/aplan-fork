@@ -56,9 +56,28 @@ public interface EfficiencySupervisionMapper {
 
     List<ApplyLimitTimeVo> getWinStageLimitTimeStatistics(@Param("startTime") String startTime, @Param("endTime") String endTime, @Param("windowId") String windowId, @Param("rootOrgId") String rootOrgId);
 
-    List<ApplyUseTimeStatisticsVo> getCompletedApplyUseTimeByTheme(@Param("startTime") String startTime, @Param("endTime") String endTime, @Param("rootOrgId") String rootOrgId) throws Exception;
+    /**
+     * 查询某时间段，按主题分组统计办结申请的用时情况
+     *
+     * @param startTime
+     * @param endTime
+     * @param rootOrgId
+     * @return
+     * @throws Exception
+     */
+    List<UseTimeStatisticsVo> getCompletedApplyUseTimeByTheme(@Param("startTime") String startTime, @Param("endTime") String endTime, @Param("rootOrgId") String rootOrgId);
 
-    List<ApplyUseTimeStatisticsVo> getCompletedApplyUseTimeByThemeAndWindow(@Param("themeId") String themeId, @Param("startTime") String startTime, @Param("endTime") String endTime, @Param("rootOrgId") String rootOrgId) throws Exception;
+    /**
+     * 查询某时间段，按主题下 按窗口分组统计办结申请的用时情况
+     *
+     * @param themeId
+     * @param startTime
+     * @param endTime
+     * @param rootOrgId
+     * @return
+     * @throws Exception
+     */
+    List<UseTimeStatisticsVo> getCompletedApplyUseTimeByThemeAndWindow(@Param("themeId") String themeId, @Param("startTime") String startTime, @Param("endTime") String endTime, @Param("rootOrgId") String rootOrgId);
 
     BscDicRegion getCurrentRegionByUserId(@Param("currentUserId") String currentUserId);
 
@@ -72,6 +91,38 @@ public interface EfficiencySupervisionMapper {
      * @return
      */
     List<OpuOmOrg> listOpuOmOrg(OpuOmOrg search);
+
+    /**
+     * 查询某时间段，按地区分组统计 事项实例的用时情况
+     *
+     * @param startTime
+     * @param endTime
+     * @param rootOrgId
+     * @return
+     */
+    List<UseTimeStatisticsVo> getItemUseTimeByRegion(@Param("startTime") String startTime, @Param("endTime") String endTime, @Param("rootOrgId") String rootOrgId);
+
+    /**
+     * 查询某时间段，按地区部门分组统计 事项实例的用时情况
+     *
+     * @param startTime
+     * @param endTime
+     * @param regionId
+     * @param rootOrgId
+     * @return
+     */
+    List<UseTimeStatisticsVo> getItemUseTimeByOrg(@Param("startTime") String startTime, @Param("endTime") String endTime, @Param("regionId") String regionId, @Param("rootOrgId") String rootOrgId);
+
+    /**
+     * 查询某时间段，某部门 按事项分组统计 事项实例的用时情况
+     *
+     * @param startTime
+     * @param endTime
+     * @param orgId
+     * @param rootOrgId
+     * @return
+     */
+    List<UseTimeStatisticsVo> getItemUseTimeByItem(@Param("startTime") String startTime, @Param("endTime") String endTime, @Param("orgId") String orgId, @Param("rootOrgId") String rootOrgId);
 
     /**
      * 从历史表统计某状态数据
