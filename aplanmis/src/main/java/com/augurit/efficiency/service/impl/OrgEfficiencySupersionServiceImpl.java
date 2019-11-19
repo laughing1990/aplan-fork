@@ -898,7 +898,7 @@ public class OrgEfficiencySupersionServiceImpl implements OrgEfficiencySupersion
             startDate = yesterday;
             endDate = yesterday ;
             startTime += yesterday+" 00:00:00";
-            endTime += yesterday+" 00:00:00";
+            endTime += yesterday+" 23:59:59";
             list = aeaAnaOrgDayStatisticsMapper.getRegionDayStatistics(startDate,endDate,regionId,rootOrgId);
         }else if("W".equals(type)){
             String thisYear = DateUtils.convertDateToString(new Date(), "yyyy");
@@ -1083,6 +1083,7 @@ public class OrgEfficiencySupersionServiceImpl implements OrgEfficiencySupersion
             }
             LocalDate endDate = LocalDate.parse(endTime, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
             if (!LocalDate.now().isAfter(endDate)) {//结束日期只能统计到昨天
+                startTime  = startTime + " 00:00:00";
                 String yesterday = DateUtils.getYesterdayByFormat("yyyy-MM-dd");
                 endTime = yesterday + " 23:59:59";
             }

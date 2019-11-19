@@ -530,6 +530,7 @@
         where ahi.ACCEPT_TIME <![CDATA[ >= ]]> #{startTime}
         and ahi.ACCEPT_TIME <![CDATA[ <= ]]> #{endTime}
         and  asti.INST_STATE is not null
+        and ahi.ROOT_ORG_ID= #{rootOrgId}
         )gg
         <where>
             <if test="regionId != null and regionId !='' ">
