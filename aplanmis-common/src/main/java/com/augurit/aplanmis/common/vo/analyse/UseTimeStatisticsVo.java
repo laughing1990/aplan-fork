@@ -7,7 +7,7 @@ import lombok.Data;
  * @date 2019/11/7 10:51
  */
 @Data
-public class ApplyUseTimeStatisticsVo {
+public class UseTimeStatisticsVo {
 
     private String themeId;
     private String themeName;
@@ -17,6 +17,15 @@ public class ApplyUseTimeStatisticsVo {
 
     private String applyRecordId;
     private String applyRecordName;
+
+    private String regionId;
+    private String regionName;
+
+    private String orgId;
+    private String orgName;
+
+    private String itemId;
+    private String itemName;
 
     private Double maxUseTime;
     private Double minUseTime;

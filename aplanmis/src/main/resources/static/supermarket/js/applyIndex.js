@@ -515,7 +515,7 @@ var vm = new Vue({
 				label: 'name'
 			},
 			avoidData: [],
-			multipleSelection3: [{agentUnitName: '还没选择中介机构'}],
+      avoidList: [],
 			needServiceList2: '',
 			purchaseProjRules: { // 采购中介服务信息校验
 				projName: [
@@ -586,13 +586,9 @@ var vm = new Vue({
 			},
 			activeLE: '0',
 			qualLevelId: '',
-			pageNum4: 1,
-			pageSize4: 10,
-			total4: 0,
 			organWord: '', // 回避单位关键字
 			avoidOrgan: false, // 是否展示回避单位弹窗
 			multipleSelection4: [],
-			avoidList: [], // 回避单位列表
 			onlyService: false, // 仅承诺服务即可
 			notOnlyService: false, // 不仅承诺服务即可
 			fileList1: [],
@@ -673,13 +669,13 @@ var vm = new Vue({
           _that.ifMatsSelAll();
         } else {
           _that.$message({
-            message: '获取情形材料失败',
+            message: '获取材料失败',
             type: 'error'
           });
         }
       }, function (msg) {
         _that.$message({
-          message: '获取情形材料失败',
+          message: '获取材料失败',
           type: 'error'
         });
       });
@@ -687,7 +683,6 @@ var vm = new Vue({
 
     // 资金来源切换
 		financialSourceChange: function (val) {
-			console.log(val);
 			if (val.indexOf('isFinancialFund') > -1) {
 				this.purchaseProj.isFinancialFund = '1';
 			} else {
@@ -721,37 +716,6 @@ var vm = new Vue({
 			})
 			this.purchaseProj.avoidUnitInfoIds = _avoidUnitInfoIds.join(',')
 		},
-		// 获取回避单位
-		selectOrgan: function () {
-			var _this = this;
-			_this.avoidOrgan = true;
-			request('', {
-				url: ctx + 'supermarket/agentservice/listCheckinUnit', type: 'get', data: {
-					pageNum: this.pageNum4,
-					pageSize: this.pageSize4,
-					applicant: this.organWord,
-				}
-			}, function (data) {
-				_this.avoidList = data.content.rows;
-				_this.total4 = data.content.total;
-			}, function (msg) {
-				_this.$message({
-					message: '加载失败',
-					type: 'error'
-				});
-				_this.loading = false;
-			});
-		},
-		// 获取回避单位
-		handleSizeChange4: function (val) {
-			this.pageSize4 = val;
-			this.selectOrgan()
-		},
-		// 获取回避单位
-		handleCurrentChange4: function (val) {
-			this.pageNum4 = val;
-			this.selectOrgan()
-		},
 		handleSelectionChange4: function (val) {
 			this.multipleSelection4 = val;
 		},
@@ -772,7 +736,6 @@ var vm = new Vue({
 		},
 		// 选中所需服务
 		selService: function (serviceItem) {
-			console.log(serviceItem);
 			this.purchaseProj.serviceId = serviceItem.serviceId;
 			this.purchaseProj.serviceItemId = serviceItem.serviceItemId;
 			if (serviceItem.aeaImQualVos && serviceItem.aeaImQualVos.length > 0) {
@@ -846,58 +809,48 @@ var vm = new Vue({
 		handleClickAtiveLE: function (tab) {
 			this.qualLevelId = this.needServiceList2[tab.index].qualLevelId
 		},
-		//
-		handleSelectionChange2: function (val) {
-			console.log(val);
-		},
-		handleSizeChange2: function (val) {
-			this.pageSize2 = val;
-			// this.getAgentServiceItemList()
-		},
-		handleCurrentChange2: function (val) {
-			this.pageNum2 = val;
-			// this.getAgentServiceItemList()
-		},
 		// 查询符合条件的中介机构
 		getAgentUnitInfoList: function (itemVerId) {
-			console.log(itemVerId);
 			var vm = this;
-			var isQualRequire = ''
-
-			if (!vm.form.serviceId) {
+			if (!vm.purchaseProj.serviceId) {
 				this.$message({
 					message: '请先选择服务',
 					type: 'error'
 				});
 				return;
 			}
-
-			if (vm.checkList.indexOf('isQualRequire') == "-1") {
-				isQualRequire = '0';
-			} else {
-				isQualRequire = '1';
-			}
+			var unitIds=[];
+			if(vm.avoidData&&vm.avoidData.length>0){
+        vm.avoidData.map(function(item){
+          unitIds.push(item.unitInfoId);
+        })
+      }
 			var params = JSON.stringify({
-				isQualRequire: isQualRequire, // 是否需要资质要求：1 需要，0 不需要
-				qualRequireType: vm.qualRequireType, // 资质要求：1 多个资质子项符合其一即可，0 需同时符合所有选中资质子项
-				serviceId: vm.form.serviceId, // 服务ID
+				isQualRequire: vm.purchaseProj.aeaImUnitRequire.isQualRequire, // 是否需要资质要求：1 需要，0 不需要
+				qualRequireType: vm.purchaseProj.aeaImUnitRequire.qualRequireType, // 资质要求：1 多个资质子项符合其一即可，0 需同时符合所有选中资质子项
+				serviceId: vm.purchaseProj.serviceId, // 服务ID
+        quals: this.purchaseProj.aeaImMajorQuals
 			})
-			if (vm.majorQualRequiresArry.lenght !== 0) {
-				vm.qualsArry.push({qualId: vm.qualId, majorQualRequires: vm.majorQualRequiresArry})
-				params.quals = vm.qualsArry
-			}
-			console.log("请求的参数", params);
 			request('', {
-				url: ctx + '/market/getAgentUnitInfoList', type: 'post', data: params,
+				url: ctx + 'market/getAgentUnitInfoList', type: 'post', data: params,
 				ContentType: "application/json",
 			}, function (res) {
-				console.log("查询符合条件的中介机构", res)
 				if (res.success) {
-					vm.agentUnit = res.content;
-					vm.chooseAgentTabledialogTable = true;
+					vm.avoidList = res.content;
+					vm.avoidOrgan = true;
+          res.content.map(function(unitItem){
+            vm.$nextTick(function(){
+              if(unitIds.indexOf(unitItem.unitInfoId)>-1){
+                vm.$refs['agentUnitTable'].toggleRowSelection(unitItem,true);
+              }else {
+                vm.$refs['agentUnitTable'].toggleRowSelection(unitItem,false);
+              }
+            })
+          });
+
 				} else {
-					vm.agentUnit = [];
-					vm.chooseAgentTabledialogTable = false;
+					vm.avoidList = [];
+					vm.avoidOrgan = false;
 				}
 			}, function (msg) {
 				vm.$message({message: '加载失败', type: 'error'});
@@ -1039,7 +992,6 @@ var vm = new Vue({
 			})
 		},
 		handleCheckChange: function (data, checked, indeterminate) {
-			// console.log(data, checked, indeterminate);
 			var arr = this.$refs.gbhy.getCheckedNodes(true);
 			var str = [];
 			var ids = [];
@@ -1125,7 +1077,6 @@ var vm = new Vue({
 						if (item.itemCode == 'bad' && item.summaries.length > 0) {
 							reqData.loseCreditCount = item.summaries.length;
 						}
-						console.log(reqData.loseCreditCount)
 						item.summaries.map(function (itemSum) {
 							if (typeof itemSum.isOpen == 'undefined') {
 								Vue.set(itemSum, 'isOpen', false);
@@ -1616,7 +1567,6 @@ var vm = new Vue({
 		// 新增编辑联系人信息
 		addLinkman: function (data, parData) {
 			var _that = this;
-			console.log(parData)
 			_that.addEditManModalShow = true;
 			_that.getUnitsListByProjInfoId();
 			_that.addEditManPerform = parData;
@@ -2162,7 +2112,6 @@ var vm = new Vue({
 		filePreview: function (data, flag) { // flag==pdf 查看施工图
 			var detailId = data.fileId;
 			var _that = this;
-			console.log(data);
 			var regText = /doc|docx|ppt|pptx|xls|xlsx|txt$/;
 			var fileName = data.fileName;
 			var fileType = this.getFileType(fileName);
@@ -2236,8 +2185,6 @@ var vm = new Vue({
 		//删除单个文件附件
 		delOneFile: function (data, matData) {
 			var _that = this;
-			console.log(data);
-			console.log(matData)
 			request('', {
 				url: ctx + 'rest/mats/att/delelte',
 				type: 'post',
@@ -2288,7 +2235,6 @@ var vm = new Vue({
 			window.clearTimeout(func.tId);
 			func.temArr = func.temArr || [];
 			func.temArr.push(file);
-			console.log(file);
 			func.tId = window.setTimeout(function () {
 				this.loadingFileWin = false;
 				func(func.temArr);
@@ -2428,7 +2374,6 @@ var vm = new Vue({
 				projName: _that.childProjName,
 				foreignRemark: _that.childProjText
 			}
-			console.log(parmas)
 			request('', {
 				url: ctx + 'rest/project/add/child',
 				type: 'post',
@@ -2874,7 +2819,6 @@ var vm = new Vue({
 				var copyCnt = 0;
 				var paperCnt = 0;
 				if (item.zcqy == 0 && item.attIsRequire == 1) {
-					console.log(item.matinstId);
 					if (!item.matinstId || item.matChild.length == 0) {
 						_that.attIsRequireFlag = false;
 					}
@@ -2964,7 +2908,6 @@ var vm = new Vue({
 		},
 		//打印回执
 		printReceive: function (row) {
-			console.log(row);
 			var url = ctx + 'rest/receive/toPrintPage/' + row.receiveId;
 			setTimeout(function () {
 				window.open(ctx + 'rest/ntko/ntkoOpenWin?jumpUrl=' + encodeURIComponent(url));
@@ -3366,7 +3309,6 @@ var vm = new Vue({
 						ts.$message.error('网络错误！');
 					});
 				} else {
-					console.log('error submit!!');
 					return false;
 				}
 			});
@@ -3543,7 +3485,6 @@ var vm = new Vue({
     },
     // 附件上传-success
     enclosureFileUploadSuccess: function(response, file, fileList){
-      // console.log(file)
       this.progressDialogVisible = false;
       this.uploadPercentage = 0;
       if(response.success ){
