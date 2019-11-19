@@ -998,7 +998,7 @@
             <i class="el-icon-upload2"></i>附件上传
           </span>
           <span class="op-btn" v-if="scope.row.matProp=='c'" @click="showUploadWindow(scope.row,scope.$index,'certList')">证照库</span>
-          <span class="op-btn" v-if="scope.row.matProp=='f'">填写</span>
+          <span class="op-btn" v-if="scope.row.matProp=='f'" @click="showOneFormDialog1(scope.row)">填写</span>
         </template>
       </el-table-column>
     </el-table>
@@ -1338,6 +1338,14 @@
     </div>
   </el-dialog>
   <!--证照库弹窗 end-->
+  <!--  材料一张表单  start-->
+  <el-dialog @closed="uploadPercentage=0;progressDialogVisible=false" class="show-one-form" :title="oneformNameTitle"
+             width="750px" :visible.sync="matFormDialogVisible">
+    <div>
+      <div id="matFormContent"></div>
+    </div>
+  </el-dialog>
+  <!--  材料一张表单  end-->
 </div>
 <script src="../../../static/mall/js/userCenter/components/singleDeclare.js"
         th:src="@{/mall/js/userCenter/components/singleDeclare.js}" type="text/javascript"></script>
