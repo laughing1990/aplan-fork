@@ -68,7 +68,7 @@ public class RestFileController {
             @ApiImplicitParam(name = "stoFormId", value = "表单定义ID", required = false, type = "string")})
     public ResultForm uploadFile(MatUploadVo uploadVo, HttpServletRequest request) {
         try {
-
+            if (!restFileService.isAllowFileType(request))return new ResultForm(false, "不允许上传的文件类型");
             AeaHiItemMatinst aeaHiItemMatinst = new AeaHiItemMatinst();
             BeanUtils.copyProperties(uploadVo, aeaHiItemMatinst);
             String matinstId = aeaHiItemMatinst.getMatinstId();
@@ -254,6 +254,7 @@ public class RestFileController {
     @PostMapping("/att/upload")
     public ResultForm uploadFile(String attRealIninstId, HttpServletRequest request) {
         try {
+            if (!restFileService.isAllowFileType(request))return new ResultForm(false, "不允许上传的文件类型");
             Assert.isTrue(StringUtils.isNotBlank(attRealIninstId), "attRealIninstId is null");
             restMatCorrectCommonService.uploadFile(attRealIninstId, request);
             return new ResultForm(false, "文件上传成功！");
