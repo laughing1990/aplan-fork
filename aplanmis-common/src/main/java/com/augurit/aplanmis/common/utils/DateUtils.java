@@ -4,6 +4,7 @@ import com.augurit.agcloud.framework.util.StringUtils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -431,6 +432,37 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils {
 
     public static void main(String[] args) throws ParseException {
         System.out.println(DateUtils.firstDayOfMonth(new Date()));
+    }
+
+    /**
+     * 获取本周一开始时间
+     * @return
+     */
+    public static String firstDayOfWeekStr(){
+        return LocalDate.now().with(DayOfWeek.MONDAY).toString() + " 00:00:00";
+    }
+
+    /**
+     * 获取本周最后一天时间
+     * @return
+     */
+    public static String lastDayOfWeekStr(){
+        return LocalDate.now().with(DayOfWeek.SUNDAY).toString() + " 23:59:59";
+    }
+    /**
+     * 获取上
+     * 本月月第一天  yyyy-MM-dd HH:mm:ss
+     * @return
+     */
+    public static String firstDayOfMonthStr() {
+        return  LocalDate.now().with(TemporalAdjusters.firstDayOfMonth()).toString()+" 00:00:00";
+    }
+    /**
+     * 获取上个月最后一天  yyyy-MM-dd HH:mm:ss
+     * @return
+     */
+    public static String lastDayOfMonthStr() {
+        return  LocalDate.now().with(TemporalAdjusters.lastDayOfMonth()).toString()+" 23:59:59";
     }
 
     /**

@@ -96,5 +96,5 @@ public interface OrgEfficiencySupersionService {
 
     Map<String, Object> getOrgReceiveStatistics(String startTime, String endTime, String type, String regionId) throws Exception;
 
-    List<List<Object>> getOrgReceiveLimitTimeStatistics(String startTime, String endTime, String type, String regionId) throws Exception;
+    Map<String,Object> getOrgReceiveLimitTimeStatistics(String startTime, String endTime, String type, String regionId) throws Exception;
 }
