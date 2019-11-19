@@ -762,7 +762,8 @@ public class ConditionalJumpServiceImpl implements ConditionalJumpService {
         PageHelper.startPage(page);
 
         if(conditionalQueryRequest.isEntrust()){
-            conditionalQueryRequest.setCurrentOrgId(getCurrentOrgId());
+            String currentOrgId = getCurrentOrgId();
+            conditionalQueryRequest.setCurrentOrgId(currentOrgId);
         }
 
         List<TaskInfo> taskList = conditionalJumpMapper.listNeedCorrectTasks(conditionalQueryRequest);
