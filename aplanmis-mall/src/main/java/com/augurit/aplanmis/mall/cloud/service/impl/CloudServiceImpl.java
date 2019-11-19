@@ -191,7 +191,7 @@ public class CloudServiceImpl implements CloudService {
         param.setOrgId(SecurityContext.getCurrentOrgId());
         paramList.add(param);
         PageHelper.startPage(pageNum, pageSize);
-        List<BscAttForm> list = bscAttMapper.listDetailAndLinkCommonBatch(paramList,keyword);
+        List<BscAttForm> list = aeaHiItemMatinstMapper.listDetailCommonBatch(paramList,keyword);
         return new PageInfo<>(list);
     }
 

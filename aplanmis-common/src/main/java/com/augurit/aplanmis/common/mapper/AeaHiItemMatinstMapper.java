@@ -117,4 +117,5 @@ public interface AeaHiItemMatinstMapper {
 
     List<AeaHiItemMatinst> getFormMatinstByProjInfoId(@Param("projInfoId") String projInfoId, @Param("rootOrgId") String rootOrgId);
 
+    List<BscAttForm> listDetailCommonBatch(@Param("list") List<BscAttForm> list, @Param("keyword") String keyword) throws Exception;
 }

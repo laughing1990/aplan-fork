@@ -196,7 +196,7 @@ public class CloudController {
             String recordId = StringUtils.isNotBlank(loginVo.getUserId()) ? loginVo.getUserId() : loginVo.getUnitId();
             String currentDirId = moveFilesParamVo.getCurrentDirId();
             String targetDirId = moveFilesParamVo.getTargetDirId();
-            String[] detailIds = moveFilesParamVo.getDetailIds();
+            String[] detailIds = moveFilesParamVo.getDetailIds().split(",");
             if (detailIds == null || detailIds.length == 0 || StringUtils.isBlank(targetDirId) || StringUtils.isBlank(currentDirId) || StringUtils.isBlank(recordId))
                 return new ResultForm(false, "缺少请求参数！");
             cloudService.moveFilesFromDir(currentDirId, targetDirId, detailIds, recordId);
