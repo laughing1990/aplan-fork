@@ -29,7 +29,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
-@Api(value = "项目需求采购管理接口-材料相关", tags = "项目采购管理接口-材料相关")
+@Api(value = "项目需求采购管理接口-材料相关", tags = "中介超市---项目采购管理接口-材料相关")
 @RequestMapping("/supermarket/purchase/mat")
 @RestController
 public class MatController {
