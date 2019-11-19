@@ -518,6 +518,8 @@ var vm = new Vue({
       backformRules:{
         comment: [{ required: true, message: '请填写回退意见', trigger: 'blur' }],
       },
+      // 中介事项审批
+      isZJItem: false, // 是否为中介事项
     }
   },
   filters: {
@@ -1482,6 +1484,8 @@ var vm = new Vue({
       var vm = this;
       vm.taskId = vm.getUrlParam('taskId');
       vm.isDraftPage = vm.getUrlParam('draft');
+      vm.isZJItem = (vm.getUrlParam('draft') == '8');
+      // vm.isZJItem = true;
       vm.getIteminstIdByTaskId(callback);
       function callback() {
         vm.busRecordId = this.getUrlParam('busRecordId');
@@ -1783,6 +1787,7 @@ var vm = new Vue({
         'processInstanceId',
         'busRecordId',
         'isApprover',
+        'isZJItem',
         'masterEntityKey',
         'projectCode',
         'viewId',
@@ -1799,7 +1804,7 @@ var vm = new Vue({
         });
       });
       vm.lTabsData = lTabsData;
-      if (vm.isShowOneForm == '1') {
+      if (vm.isShowOneForm == '1' && !vm.isZJItem) {
         request('', {
           url: oneFromSrc,
           type: 'get',

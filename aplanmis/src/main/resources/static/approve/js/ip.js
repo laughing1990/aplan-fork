@@ -1,4 +1,4 @@
-var isDevelop = 0;
+var isDevelop = 1;
 if (isDevelop) {
   // ctx = '[[@{/}]]';
   // ctx = 'http://localhost:8083/aplanmis-front/'; // localhost
