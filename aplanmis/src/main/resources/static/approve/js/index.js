@@ -489,7 +489,7 @@ var vm = new Vue({
       bzCorrectData: [],
       bzApproveData: [],
       isShowOneForm: '0',
-      // 电子证照
+      // 证照材料、材料库材料、表单材料
       idLibSearchOpt: {
         chooseUnit: '',
         chooseType: 1,
@@ -506,6 +506,7 @@ var vm = new Vue({
       currentMatRow: '',
       refreshMatIframe: function () {
       },
+      matFormVisible: false,
       // 回退
       backDiaLoading: false,
       backDiaVisible: false,
@@ -553,6 +554,44 @@ var vm = new Vue({
     },
   },
   methods: {
+    // 关闭填写材料表单弹窗
+    closeMatFormDia: function(){
+      this.$nextTick(function(){
+        $("#matFormBox").html('');
+      });
+      typeof this.refreshMatIframe == 'function' && this.refreshMatIframe();
+    },
+    // 打开填写材料表单弹窗
+    openMatFormDialog: function(row, refreshMatIframe){
+      var vm = this;
+      vm.parentPageLoading = true;
+      vm.currentMatRow = row;
+      vm.refreshMatIframe = refreshMatIframe;
+      request('', {
+        url: ctx + 'bpm/common/sf/renderHtmlFormContainer',
+        type: 'get',
+        data: {
+          listRefEntityId: vm.masterEntityKey,
+          listFormId: row.stoFormId,
+          showBasicButton: true,
+          includePlatformResource: false,
+          busiScence: 'mat',
+        },
+      }, function(res){
+        vm.parentPageLoading = false;
+        if (res.success) {
+          vm.matFormVisible = true;
+          vm.$nextTick(function(){
+            $("#matFormBox").html(res.content);
+          })
+        } else {
+          vm.$message.error(res.content || '获取材料表单数据失败');
+        }
+      }, function(){
+        vm.parentPageLoading = false;
+        vm.$message.error('获取材料表单数据失败');
+      })
+    },
     // 打开材料库弹窗
     openMatLibDialog: function (row, refreshMatIframe) {
       var vm = this;
@@ -4829,6 +4868,17 @@ function onlySuggestDialogShow() {
 
 function seeAllProcessPic() {
   vm.seeAllProcessPic();
+}
+
+/**
+ * @param result  是否成功
+ * @param sFRenderConfig 哪个业务场景
+ * @param formModelVal  表单值
+ * @param actStoForminst  表单实例
+ */
+function callbackAfterSaveSFForm(result,sFRenderConfig,formModelVal,actStoForminst) {
+  console.log(result);
+  // vm.matFormVisible = false;
 }
 
 // window.setTimeout(function(){
