@@ -596,6 +596,46 @@
         ORDER BY CREATE_TIME DESC ,MODIFY_TIME DESC
     </select>
 
+    <select id="getOrgReceiveStateStatistics" resultType="com.augurit.aplanmis.common.vo.analyse.ItemDetailFormVo">
+
+        select
+        gg.REGION_ID regionId,
+        gg.REGION_NAME regionName,
+        <if test="regionId != null and regionId != ''">
+            gg.APPROVE_ORG_ID orgId,
+            gg.ORG_NAME orgName,
+        </if>
+        count(*) correctMaterialCount,
+        0  receiptCount,
+        0 acceptCount,
+        0 notAcceptCount
+        from (
+        SELECT
+        ahi.APPROVE_ORG_ID,
+        org.ORG_NAME,
+        org.REGION_ID,
+        brd.REGION_NAME
+        from aea_log_item_state_hist alish
+        LEFT JOIN aea_hi_iteminst ahi on ahi.ITEMINST_ID = alish.ITEMINST_ID
+        LEFT JOIN opu_om_org org on org.ORG_ID = ahi.APPROVE_ORG_ID
+        LEFT JOIN bsc_dic_region brd on brd.REGION_ID = org.REGION_ID
+        where alish.TRIGGER_TIME <![CDATA[ >= ]]> #{startTime}
+        and alish.TRIGGER_TIME <![CDATA[ <= ]]> #{endTime}
+        and alish.NEW_STATE= #{newState}
+        and alish.ROOT_ORG_ID = #{rootOrgId}
+        and ahi.ROOT_ORG_ID= #{rootOrgId}
+        )gg
+        <where>
+            <if test="regionId !=null and regionId != ''">
+                gg.REGION_ID = #{regionId}
+            </if>
+        </where>
+        GROUP by gg.REGION_ID
+        <if test="regionId !=null and regionId != ''">
+            , gg.APPROVE_ORG_ID
+        </if>
+
+    </select>
     <!-- 组织所有字段 -->
     <sql id="AllOrgColumns" >
         org.ORG_ID  as orgId,

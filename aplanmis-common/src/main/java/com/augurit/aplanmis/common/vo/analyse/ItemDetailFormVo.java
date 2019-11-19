@@ -38,6 +38,8 @@ public class ItemDetailFormVo implements Serializable {
     private int notAcceptCount;
     @ApiModelProperty("结事项数量")
     private int completedCount;
+    @ApiModelProperty("材料补正数量")
+    private int correctMaterialCount;
     @ApiModelProperty("办结率")
     private Double completedRate;
     @ApiModelProperty("逾期事项数量")

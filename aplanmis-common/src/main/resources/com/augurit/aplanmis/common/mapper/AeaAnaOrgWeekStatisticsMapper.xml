@@ -468,7 +468,8 @@ ORG_WEEK_STATISTICS_ID  ,STATISTICS_RECORD_ID  ,ORG_ID  ,ORG_NAME  ,REGION_ID  ,
         </if>
 
         sum(aaows.WEEK_APPLY_COUNT) receiptCount,
-        sum(aaows.WEEK_ACCEPTANCE_COUNT)acceptCount
+        sum(aaows.WEEK_ACCEPTANCE_COUNT)acceptCount,
+        sum(aaows.WEEK_OUT_SCOPE_COUNT)notAcceptCount
          from
 
         aea_ana_org_week_statistics  aaows
