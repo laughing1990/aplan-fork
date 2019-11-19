@@ -185,7 +185,7 @@ public class FileUtilsServiceImpl extends FileAbstractService {
         String[] recordIds = matinstId.split(",");
         List<BscAttFileAndDir> bscAttFileAndDirs = new ArrayList<BscAttFileAndDir>();
         if (recordIds.length > 0) {
-            List<BscAttFileAndDir> attFileList = bscAttDetailMapper.searchFileAndDirsSimple(null, null, "AEA_HI_ITEM_MATINST", "MATINST_ID", recordIds);
+            List<BscAttFileAndDir> attFileList = bscAttDetailMapper.searchFileAndDirsSimple(null, SecurityContext.getCurrentOrgId(), "AEA_HI_ITEM_MATINST", "MATINST_ID", recordIds);
             bscAttFileAndDirs.addAll(attFileList == null ? new ArrayList<>() : attFileList);
         }
         return bscAttFileAndDirs;
