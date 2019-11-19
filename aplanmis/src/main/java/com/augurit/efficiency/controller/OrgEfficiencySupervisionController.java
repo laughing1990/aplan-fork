@@ -349,7 +349,7 @@ public class OrgEfficiencySupervisionController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "startTime", value = "开始时间【yyyy-MM-dd】", dataType = "string", paramType = "String", required = true),
             @ApiImplicitParam(name = "endTime", value = "结束时间【yyyy-MM-dd】", dataType = "string", paramType = "String", required = true),
-            @ApiImplicitParam(name = "type", value = "类型【周W月M日D灵活时间段A】", dataType = "string", paramType = "String", required = true),
+            @ApiImplicitParam(name = "type", value = "类型【周W月M日D灵活时间段为空】", dataType = "string", paramType = "String", required = true),
             @ApiImplicitParam(name = "regionId", value = "区划id", dataType = "string", paramType = "string", required = true),
     })
     public ResultForm getOrgReceiveStatistics(String startTime, String endTime, String type, String regionId) throws Exception {
@@ -368,7 +368,7 @@ public class OrgEfficiencySupervisionController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "startTime", value = "开始时间【yyyy-MM-dd】", dataType = "string", paramType = "String", required = true),
             @ApiImplicitParam(name = "endTime", value = "结束时间【yyyy-MM-dd】", dataType = "string", paramType = "String", required = true),
-            @ApiImplicitParam(name = "type", value = "类型【周W月M日D灵活时间段A】", dataType = "string", paramType = "String", required = true),
+            @ApiImplicitParam(name = "type", value = "类型【周W月M日D灵活时间段为空】", dataType = "string", paramType = "String", required = true),
             @ApiImplicitParam(name = "regionId", value = "区划id", dataType = "string", paramType = "string", required = true),
     })
     public ResultForm getOrgReceiveLimitTimeStatistics(String startTime, String endTime, String type, String regionId) throws Exception {
