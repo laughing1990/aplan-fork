@@ -155,8 +155,19 @@
         delete from  AEA_ITEM_FRONT_ITEM where FRONT_ITEM_ID = #{id}
     </delete>
 
+    <delete id="batchDelAeaItemFront">
+         <if test="ids!=null and ids.size()>0">
+             delete from  AEA_ITEM_FRONT_ITEM where FRONT_ITEM_ID in 
+             <foreach collection="ids" item="id" open="(" close=")" separator=",">
+                 #{id}
+             </foreach>
+         </if>
+    </delete>
+
     <delete id="batchDelItemByItemVerId">
-         delete from  AEA_ITEM_FRONT_ITEM where ITEM_VER_ID = #{itemVerId}
+         delete from  AEA_ITEM_FRONT_ITEM
+          where ITEM_VER_ID = #{itemVerId}
+            and ROOT_ORG_ID = #{rootOrgId}
     </delete>
 
     <select id="listItemsByItemVerId" resultType="AeaItemFrontItem">

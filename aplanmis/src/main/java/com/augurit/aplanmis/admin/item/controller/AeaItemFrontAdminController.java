@@ -1,5 +1,6 @@
 package com.augurit.aplanmis.admin.item.controller;
 
+import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.domain.AeaItemFrontItem;
@@ -42,7 +43,7 @@ private static Logger logger = LoggerFactory.getLogger(AeaItemFrontAdminControll
             }
             aeaItemFrontService.batchSaveFrontItem(itemVerId, frontItemVerIds, sortNos);
         } else {
-            aeaItemFrontService.batchDelItemByItemVerId(itemVerId);
+            aeaItemFrontService.batchDelItemByItemVerId(itemVerId, SecurityContext.getCurrentOrgId());
         }
         return new ResultForm(true);
     }
