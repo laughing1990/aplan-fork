@@ -14,6 +14,7 @@ import java.util.List;
 public class UploadResult {
     @ApiModelProperty(value = "附件ID")
     String detailId;
+    @ApiModelProperty(value = "附件列表")
     List<AttForm> attForms = new ArrayList<>();
 
     public UploadResult(String detailId, List<BscAttForm> bscAttForms) {
