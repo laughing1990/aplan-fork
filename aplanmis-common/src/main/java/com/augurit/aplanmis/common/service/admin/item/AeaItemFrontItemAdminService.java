@@ -15,7 +15,7 @@ public interface AeaItemFrontItemAdminService {
 
      void batchSaveFrontItem(String itemVerId, String[] frontItemVerIds, String[] sortNos);
 
-     void batchDelItemByItemVerId(String itemVerId);
+     void batchDelItemByItemVerId(String itemVerId, String rootOrgId);
 
      void saveAeaItemFrontItem(AeaItemFrontItem aeaItemFrontItem);
 

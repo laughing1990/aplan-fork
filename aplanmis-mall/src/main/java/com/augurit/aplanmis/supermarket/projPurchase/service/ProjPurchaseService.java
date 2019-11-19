@@ -99,6 +99,8 @@ public class ProjPurchaseService {
 
     @Autowired
     private AeaImPurchaseinstMapper aeaImPurchaseinstMapper;
+    @Autowired
+    private AeaImServiceLinkmanMapper aeaImServiceLinkmanMapper;
 
     @Value("${dg.sso.access.platform.org.top-org-id}")
     protected String topOrgId;
@@ -118,6 +120,8 @@ public class ProjPurchaseService {
     @Autowired
     AeaImAvoidUnitMapper aeaImAvoidUnitMapper;
 
+    @Autowired
+    private RestImApplyService restImApplyService;
 
     public List<AeaImProjPurchase> getProjPurchaseList(AeaImProjPurchase aeaImProjPurchase, Page page) {
         PageHelper.startPage(page);
@@ -1380,8 +1384,7 @@ public class ProjPurchaseService {
         aeaImProjPurchaseMapper.updateAeaImProjPurchase(aeaImProjPurchase);
     }
 
-    @Autowired
-    private RestImApplyService restImApplyService;
+
 
     /**
      * 发布项目采购需求并启动流程---唐山模式
@@ -1395,6 +1398,7 @@ public class ProjPurchaseService {
         this.validParams(purchaseVo);
         String isPersonAccount = loginInfoVo.getIsPersonAccount();
         purchaseVo.setRootOrgId(topOrgId);
+        purchaseVo.setCreater(SecurityContext.getCurrentUserName());
         if ("1".equals(isPersonAccount)) {//个人账号
             purchaseVo.setApplySubject("0");
             purchaseVo.setCreater(loginInfoVo.getPersonName());
@@ -1405,12 +1409,18 @@ public class ProjPurchaseService {
         //需要先保存 采购项目信息，发起事项流程时关联的是采购项目信息
         AeaProjInfo aeaProjInfo = purchaseVo.createAeaProjInfo();
         aeaProjInfoMapper.insertAeaProjInfo(aeaProjInfo);
-
+        String projInfoId = aeaProjInfo.getProjInfoId();//采购项目 项目ID
         ImItemApplyData applyData = purchaseVo.createItemApplyData();
-        applyData.setProjInfoId(aeaProjInfo.getProjInfoId());//回填采购的项目ID
+        applyData.setProjInfoId(projInfoId);//回填采购的项目ID
         if (StringUtils.isNotBlank(isPersonAccount) && "0".equals(isPersonAccount)) {
             //单位
+            String unitId = loginInfoVo.getUnitId();
             applyData.setConstructionUnitId(loginInfoVo.getUnitId());
+            List<AeaLinkmanInfo> aeaLinkmanInfos = aeaImServiceLinkmanMapper.listAeaImServiceLinkmanByUnitInfoId(unitId, null, null);
+            if (aeaLinkmanInfos.isEmpty()) throw new Exception("can not find linkman");
+            //查询单位联系人
+            AeaUnitInfo info = aeaUnitInfoMapper.getAeaUnitInfoById(unitId);
+            applyData.setLinkmanInfoId(aeaLinkmanInfos.get(0).getLinkmanInfoId());
         } else {
             applyData.setApplyLinkmanId(loginInfoVo.getUserId());
             applyData.setLinkmanInfoId(loginInfoVo.getUserId());
@@ -1421,8 +1431,10 @@ public class ProjPurchaseService {
         String applyinstCode = result.getApplyinstCode();
         //保存采购信息
         ImPurchaseData purchaseData = purchaseVo.createPurchaseData(applyinstId, applyinstCode);
-        purchaseData.setProjInfoId(aeaProjInfo.getProjInfoId());
+        purchaseData.setProjInfoId(projInfoId);
         restImApplyService.savePurchaseProjInfo(purchaseData);
+        //文件上传
+        
 //        //保存受理回执，物料回执
 //        if (StringUtils.isBlank(applyinstIdParam)) {
 //            receiveService.saveReceive(new String[]{applyinstId}, new String[]{"1", "2"}, SecurityContext.getCurrentUserName(), "");

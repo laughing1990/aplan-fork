@@ -1409,6 +1409,13 @@ public class ConditionalQueryServiceImpl implements ConditionalQueryService {
 
         loadApplyinfo(applyInfoList);
 
+        if (applyInfoList != null && applyInfoList.size() > 0) {
+            String viewId = queryViewId("草稿箱");
+            for (ApplyInfo applyInfo : applyInfoList) {
+                applyInfo.setViewId(viewId);
+            }
+        }
+
         return new PageInfo<>(applyInfoList);
     }
 

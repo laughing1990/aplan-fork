@@ -86,32 +86,32 @@
                                            <span class="m-portlet__head-icon m--hide">
                                                <i class="la la-gear"></i>
                                            </span>
-                                            <h3 class="m-portlet__head-text">工程建设审批事项库</h3>
+                                            <h3 class="m-portlet__head-text">
+                                                工程建设审批事项库
+                                            </h3>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="m-portlet__body" style="padding: 10px 0px;">
                                     <div class="row" style="margin: 0px;">
                                         <div class="col-xl-5">
-                                            <input id="selectItemKeyWord" type="text"
+                                            <input id="selectFrontItemKeyWord" type="text"
                                                    class="form-control m-input m-input--solid empty" placeholder="请输入关键字..."
                                                    style="background-color: #f0f0f075;border-color: #c4c5d6;">
                                         </div>
                                         <div class="col-xl-7">
                                             <button type="button" class="btn btn-info"
-                                                    onclick="searchSelectItemNode();">查询</button>
+                                                    onclick="searchSelectFrontItemNode();">查询</button>
                                             <button type="button" class="btn btn-secondary"
-                                                    onclick="clearSearchSelectItemNode();">清空</button>
+                                                    onclick="clearSearchSelectFrontItemNode();">清空</button>
                                             <button type="button" class="btn btn-secondary"
-                                                    onclick="expandSelectItemAllNode();">展开</button>
+                                                    onclick="expandSelectFrontItemAllNode();">展开</button>
                                             <button type="button" class="btn btn-secondary"
-                                                    onclick="collapseSelectItemAllNode();">折叠</button>
+                                                    onclick="collapseSelectFrontItemAllNode();">折叠</button>
                                         </div>
                                     </div>
                                     <div style="margin: 10px 0px;border-bottom: 1px solid #e8e8e8;"></div>
-                                    <%--<div id="selectItemTreeDiv" style="height: 380px; overflow: auto;">--%>
-                                    <div id="selectItemTree" class="ztree" style="height: 380px; overflow: auto;"></div>
-                                    <%--</div>--%>
+                                    <div id="selectFrontItemTree" class="ztree" style="height: 380px; overflow: auto;"></div>
                                 </div>
                             </div>
                         </div>
@@ -150,11 +150,11 @@
 <script type="text/javascript">
 
     // 选择事项树配置
-    var selectItemKey,
-        selectItemNodeList = [],
-        selectItemLastValue = "",
-        selectItemTree = null,
-        selectItemTreeSetting = {
+    var selectFrontItemKey,
+        selectFrontItemNodeList = [],
+        selectFrontItemLastValue = "",
+        selectFrontItemTree = null,
+        selectFrontItemTreeSetting = {
             edit: {
                 showRemoveBtn: false,//设置是否显示删除按钮
                 showRenameBtn: false//设置是否显示编辑名称按钮
@@ -181,14 +181,14 @@
             },
             //用于捕获节点被点击的事件回调函数
             callback: {
-                beforeCheck: beforeSelectItemCheck,
-                onCheck: onSelectItemCheck,
-                beforeClick: beforeSelectItemClick,
-                onClick: onClickSelectItemNode,
+                beforeCheck: beforeSelectFrontItemCheck,
+                onCheck: onSelectFrontItemCheck,
+                beforeClick: beforeSelectFrontItemClick,
+                onClick: onClickSelectFrontItemNode,
             }
         };
 
-    function beforeSelectItemCheck(treeId, treeNode) {
+    function beforeSelectFrontItemCheck(treeId, treeNode) {
 
         if(curIsEditable) {
             return true;
@@ -198,7 +198,7 @@
         }
     };
 
-    function beforeSelectItemClick(treeId, treeNode, clickFlag) {
+    function beforeSelectFrontItemClick(treeId, treeNode, clickFlag) {
 
         if(curIsEditable) {
             return true;
@@ -215,7 +215,7 @@
      * @param treeId
      * @param treeNode
      */
-    function onSelectItemCheck(event, treeId, treeNode){
+    function onSelectFrontItemCheck(event, treeId, treeNode){
 
         var treeObj = $.fn.zTree.getZTreeObj(treeId);
         if(treeNode&&treeNode.type=='item'){
@@ -253,7 +253,7 @@
         }
     }
 
-    function onClickSelectItemNode(event, treeId, treeNode) {
+    function onClickSelectFrontItemNode(event, treeId, treeNode) {
 
         var treeObj = $.fn.zTree.getZTreeObj(treeId);
         if (treeNode && treeNode.type == 'item') {
@@ -293,14 +293,14 @@
 
     function expandAll() {
 
-        var zTree = $.fn.zTree.getZTreeObj("selectItemTree");
+        var zTree = $.fn.zTree.getZTreeObj("selectFrontItemTree");
         expandNodes(zTree.getNodes());
     }
 
     function expandNodes(nodes) {
 
         if (!nodes) return;
-        var zTree = $.fn.zTree.getZTreeObj("selectItemTree");
+        var zTree = $.fn.zTree.getZTreeObj("selectFrontItemTree");
         for (var i=0, l=nodes.length; i<l; i++) {
             zTree.expandNode(nodes[i], true, false, false);
             if (nodes[i].isParent && nodes[i].zAsync) {
@@ -312,24 +312,7 @@
     // 初始化加载函数
     $(function(){
 
-        // 初始化高度
-        // $('#mainContentPanel').css('height',$(document.body).height()-85);
-        // $('#selectItemTree').css('height', $('#westPanel').height()-116);
-        // $('#selectedFrontCheckItemDiv').css('height', $('#westPanel').height()-125);
-
-        $('#selectItemTree').niceScroll({
-
-            cursorcolor: "#e2e5ec",//#CC0071 光标颜色
-            cursoropacitymin: 0, // 当滚动条是隐藏状态时改变透明度, 值范围 1 到 0
-            cursoropacitymax: 1, // 当滚动条是显示状态时改变透明度, 值范围 1 到 0
-            touchbehavior: false, //使光标拖动滚动像在台式电脑触摸设备
-            cursorwidth: "4px", //像素光标的宽度
-            cursorborder: "0", //   游标边框css定义
-            cursorborderradius: "2px",//以像素为光标边界半径
-            autohidemode: true  //是否隐藏滚动条
-        });
-
-        $('#selectItemTreeDiv').niceScroll({
+        $('#selectFrontItemTree').niceScroll({
 
             cursorcolor: "#e2e5ec",//#CC0071 光标颜色
             cursoropacitymin: 0, // 当滚动条是隐藏状态时改变透明度, 值范围 1 到 0
@@ -353,21 +336,16 @@
             autohidemode: true  //是否隐藏滚动条
         });
 
-        // initSelectItemZtree();
-
-        // 加载必选事项数据
-        // setItemRelFrontCheckItems();
-
         // 关键字搜索事项节点
-        selectItemKey = $("#selectItemKeyWord");
+        selectFrontItemKey = $("#selectFrontItemKeyWord");
 
-        selectItemKey.bind("focus", focusSelectItemKey)
-            .bind("blur", blurSelectItemKey)
-            .bind("change cut input propertychange",searchSelectItemNode);
+        selectFrontItemKey.bind("focus", focusSelectFrontItemKey)
+            .bind("blur", blurSelectFrontItemKey)
+            .bind("change cut input propertychange",searchSelectFrontItemNode);
 
-        selectItemKey.bind('keydown', function (e){
+        selectFrontItemKey.bind('keydown', function (e){
             if(e.which == 13){
-                searchSelectItemNode();
+                searchSelectFrontItemNode();
             }
         });
 
@@ -438,26 +416,26 @@
         $('#select_front_item_ztree_modal').modal('show');
 
         // 初始化树
-        initSelectItemZtree();
+        initSelectFrontItemZtree();
 
         // 加载可选事项数据
         setItemRelFrontCheckItems();
     }
 
 
-    function focusSelectItemKey(e) {
+    function focusSelectFrontItemKey(e) {
 
-        if (selectItemKey.hasClass("empty")) {
-            selectItemKey.removeClass("empty");
+        if (selectFrontItemKey.hasClass("empty")) {
+            selectFrontItemKey.removeClass("empty");
         }
     }
 
-    function blurSelectItemKey(e) {
+    function blurSelectFrontItemKey(e) {
 
-        if (selectItemKey.get(0).value === "") {
-            selectItemKey.addClass("empty");
+        if (selectFrontItemKey.get(0).value === "") {
+            selectFrontItemKey.addClass("empty");
         }
-        searchSelectItemNode(e);
+        searchSelectFrontItemNode(e);
     }
 
     // 删除前置检查事项选中节点
@@ -474,112 +452,112 @@
                 }
             });
             // 取消所有所选
-            selectItemTree.cancelSelectedNode();
-            var node = selectItemTree.getNodeByParam("id", itemId, null);
+            selectFrontItemTree.cancelSelectedNode();
+            var node = selectFrontItemTree.getNodeByParam("id", itemId, null);
             if (node) {
-                selectItemTree.checkNode(node, false, true, false);
+                selectFrontItemTree.checkNode(node, false, true, false);
             }
         }else{
             agcloud.ui.metronic.showSwal({type: 'info', message: '当前版本下数据不可编辑!'});
         }
     }
 
-    function onDblClickSelectItemNode(event, treeId, treeNode) {
+    function onDblClickSelectFrontItemNode(event, treeId, treeNode) {
 
-        $("#selectItemBtn").trigger("click");
+        $("#selectFrontItemBtn").trigger("click");
     }
 
     //全部展开
-    function expandSelectItemAllNode(){
+    function expandSelectFrontItemAllNode(){
 
         expandAll();
     }
 
     //全部折叠
-    function collapseSelectItemAllNode(){
+    function collapseSelectFrontItemAllNode(){
 
-        selectItemTree.expandAll(false);
+        selectFrontItemTree.expandAll(false);
     }
 
     // 搜索节点
-    function searchSelectItemNode(){
+    function searchSelectFrontItemNode(){
 
         // 取得输入的关键字的值
-        var value = $.trim($('#selectItemKeyWord').val());
+        var value = $.trim($('#selectFrontItemKeyWord').val());
 
         // 按名字查询
         var keyType = "name";
 
         // 如果和上次一次，就退出不查了。
-        if (selectItemLastValue === value) {
+        if (selectFrontItemLastValue === value) {
             return;
         }
 
         // 保存最后一次
-        selectItemLastValue = value;
+        selectFrontItemLastValue = value;
 
-        var nodes = selectItemTree.getNodes();
+        var nodes = selectFrontItemTree.getNodes();
         // 如果要查空字串，就退出不查了。
         if (value == "") {
-            showSelectItemAllNode(nodes);
+            showSelectFrontItemAllNode(nodes);
             return;
         }
-        hideSelectItemAllNode(nodes);
-        selectItemNodeList = selectItemTree.getNodesByParamFuzzy(keyType, value);
-        updateSelectItemNodes(selectItemNodeList);
+        hideSelectFrontItemAllNode(nodes);
+        selectFrontItemNodeList = selectFrontItemTree.getNodesByParamFuzzy(keyType, value);
+        updateSelectFrontItemNodes(selectFrontItemNodeList);
     }
 
     // 清空查询
-    function clearSearchSelectItemNode(){
+    function clearSearchSelectFrontItemNode(){
 
         // 清空查询内容
-        $('#selectItemKeyWord').val('');
-        showSelectItemAllNode(selectItemTree.getNodes());
+        $('#selectFrontItemKeyWord').val('');
+        showSelectFrontItemAllNode(selectFrontItemTree.getNodes());
     }
 
     //隐藏所有节点
-    function hideSelectItemAllNode(nodes){
+    function hideSelectFrontItemAllNode(nodes){
 
-        nodes = selectItemTree.transformToArray(nodes);
+        nodes = selectFrontItemTree.transformToArray(nodes);
         for(var i=nodes.length-1; i>=0; i--) {
-            selectItemTree.hideNode(nodes[i]);
+            selectFrontItemTree.hideNode(nodes[i]);
         }
     }
 
     //显示所有节点
-    function showSelectItemAllNode(nodes){
+    function showSelectFrontItemAllNode(nodes){
 
-        nodes = selectItemTree.transformToArray(nodes);
+        nodes = selectFrontItemTree.transformToArray(nodes);
         for(var i=nodes.length-1; i>=0; i--) {
             if(nodes[i].getParentNode()!=null){
-                selectItemTree.expandNode(nodes[i],false,false,false,false);
+                selectFrontItemTree.expandNode(nodes[i],false,false,false,false);
             }else{
-                selectItemTree.expandNode(nodes[i],true,true,false,false);
+                selectFrontItemTree.expandNode(nodes[i],true,true,false,false);
             }
-            selectItemTree.showNode(nodes[i]);
-            showSelectItemAllNode(nodes[i].children);
+            selectFrontItemTree.showNode(nodes[i]);
+            showSelectFrontItemAllNode(nodes[i].children);
         }
     }
 
     //更新节点状态
-    function updateSelectItemNodes(nodeList) {
+    function updateSelectFrontItemNodes(nodeList) {
 
         if(nodeList!=null&&nodeList.length>0) {
-            selectItemTree.showNodes(nodeList);
+            selectFrontItemTree.showNodes(nodeList);
             for(var i=0, l=nodeList.length; i<l; i++) {
 
                 //展开当前节点的父节点
-                selectItemTree.showNode(nodeList[i].getParentNode());
+                selectFrontItemTree.showNode(nodeList[i].getParentNode());
                 //显示展开符合条件节点的父节点
                 while(nodeList[i].getParentNode()!=null){
-                    selectItemTree.expandNode(nodeList[i].getParentNode(), true, false, false);
+                    selectFrontItemTree.expandNode(nodeList[i].getParentNode(), true, false, false);
                     nodeList[i] = nodeList[i].getParentNode();
-                    selectItemTree.showNode(nodeList[i].getParentNode());
+                    selectFrontItemTree.showNode(nodeList[i].getParentNode());
                 }
                 //显示根节点
-                selectItemTree.showNode(nodeList[i].getParentNode());
+                selectFrontItemTree.showNode(nodeList[i].getParentNode());
                 //展开根节点
-                selectItemTree.expandNode(nodeList[i].getParentNode(), true, false, false);
+                selectFrontItemTree.expandNode(nodeList[i].getParentNode(), true, false, false);
             }
         }
     }
@@ -591,7 +569,7 @@
     }
 
     // 加载选择事项数据
-    function initSelectItemZtree(){
+    function initSelectFrontItemZtree(){
 
         $.ajax({
             url: ctx+'/aea/item/gtreeTestRunOrPublishedItem.do',
@@ -601,8 +579,8 @@
             dataType: 'json',
             success: function(data){
                 if(data!=null&&data.length>0){
-                    if(selectItemTree)selectItemTree.destroy();
-                    selectItemTree = $.fn.zTree.init($("#selectItemTree"), selectItemTreeSetting,data);
+                    if(selectFrontItemTree)selectFrontItemTree.destroy();
+                    selectFrontItemTree = $.fn.zTree.init($("#selectFrontItemTree"), selectFrontItemTreeSetting,data);
                 }
             },
             error: function(){
@@ -615,16 +593,16 @@
     function setItemRelFrontCheckItems() {
 
         // 清空关键字据
-        $('#selectItemKeyWord').val('');
+        $('#selectFrontItemKeyWord').val('');
 
         // 清空右侧选中事项数据
         $("#selectedFrontCheckItemUl").html("");
 
         // 取消上次的选中节点
-        selectItemTree.checkAllNodes(false);
+        selectFrontItemTree.checkAllNodes(false);
 
         // 取消上次选中节点
-        selectItemTree.cancelSelectedNode();
+        selectFrontItemTree.cancelSelectedNode();
 
         if(currentBusiId&&currentBusiId!=''&&currentBusiId!=undefined&&currentBusiId!=null){
 
@@ -657,9 +635,9 @@
                     for(var i=0;i<data.length;i++) {
                         var itemName = data[i].frontCkItemName;
                         // 选择事项库树节点
-                        var node = selectItemTree.getNodeByParam("id", data[i].frontCkItemId, null);
+                        var node = selectFrontItemTree.getNodeByParam("id", data[i].frontCkItemId, null);
                         if (node) {
-                            selectItemTree.checkNode(node, true, true, false);
+                            selectFrontItemTree.checkNode(node, true, true, false);
                             itemName = node.name;
                         }else{
                             if(!isEmpty(data[i].frontCkIsCatalog)){

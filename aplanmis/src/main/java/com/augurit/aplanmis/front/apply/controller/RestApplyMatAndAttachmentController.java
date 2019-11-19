@@ -18,6 +18,7 @@ import com.augurit.aplanmis.common.service.item.AeaItemBasicService;
 import com.augurit.aplanmis.common.service.state.AeaItemStateService;
 import com.augurit.aplanmis.front.apply.service.AeaSeriesService;
 import com.augurit.aplanmis.front.apply.service.RestApplyMatService;
+import com.augurit.aplanmis.front.apply.vo.BindForminstVo;
 import com.augurit.aplanmis.front.apply.vo.Mat2MatInstVo;
 import com.augurit.aplanmis.front.apply.vo.ParallelApplyHandleVo;
 import com.augurit.aplanmis.front.apply.vo.SaveMatinstVo;
@@ -378,14 +379,29 @@ public class RestApplyMatAndAttachmentController {
     @ApiOperation("根据材料编码和单位ID、申办人ID获取历史电子附件")
     public ResultForm getHistoryAttMatList(String matCode, String projInfoId) {
         try {
-
-            if (StringUtils.isBlank(matCode) || StringUtils.isBlank(projInfoId)) return new ResultForm(false, "缺少参数!");
-            return new ContentResultForm(true, restApplyMatService.getHistoryAttMatList(matCode, projInfoId));
+            if (StringUtils.isBlank(matCode) || StringUtils.isBlank(projInfoId))
+                return new ResultForm(false, "缺少参数 matCode 或 projInfoId");
+            return new ContentResultForm<>(true, restApplyMatService.getHistoryAttMatList(matCode, projInfoId));
         } catch (Exception e) {
             e.printStackTrace();
             return new ResultForm(false, "获取电子附件列表失败！");
         }
     }
 
+    @PostMapping("/bind/form")
+    @ApiOperation(value = "关联表单材料")
+    public ContentResultForm<AeaHiItemMatinst> bindForminst(@RequestBody BindForminstVo bindForminstVo) {
+        Assert.hasText(bindForminstVo.getMatId(), "matId must not null.");
+        Assert.hasText(bindForminstVo.getStoForminstId(), "stoForminstId must not null.");
+
+        try {
+            AeaHiItemMatinst aeaHiItemMatinst = new AeaHiItemMatinst();
+            BeanUtils.copyProperties(bindForminstVo, aeaHiItemMatinst);
+            aeaHiItemMatinst = aeaHiItemMatinstService.bindForminst(aeaHiItemMatinst, SecurityContext.getCurrentUserId());
+            return new ContentResultForm<>(true, aeaHiItemMatinst, "bind forminst success");
+        } catch (Exception e) {
+            return new ContentResultForm<>(false, null, e.getMessage());
+        }
+    }
 
 }

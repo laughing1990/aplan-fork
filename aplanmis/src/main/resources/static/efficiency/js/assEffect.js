@@ -90,18 +90,24 @@ var app = new Vue({
         ]
       },
 
-      // 当前展示的是哪一个督查模块  1:全部   2:工作量及有效性专题   3: 并联专题   4: 时限分析
-      curEffectModule: 2,
+      // 当前展示的是哪一个督查模块  1:全部   2:工作量及有效性专题   3: 时限分析
+      curEffectModule: 3,
 
       // 整个页面的督查的查询数据
       pageSearchData: {
         startTime: '',
         endTime: '',
         type: 'M',
-        regionId: '',  //区划id
+        regionId: '', //区划id
       },
       // 当前部门所在省市下面的区域
-      regionList: [{regionId: '123', regionName: '天河区'},{regionId: '13', regionName: '番禺区'},],
+      regionList: [{
+        regionId: '123',
+        regionName: '天河区'
+      }, {
+        regionId: '13',
+        regionName: '番禺区'
+      }, ],
       // 时间范围
       pageDateRange: culatorCurMonthDateRange() || [],
 
@@ -123,6 +129,24 @@ var app = new Vue({
       // 接件受理率-切换窗口的数据-当前页数据(定好了 7 条数据)
       accepConnectionWinList: [],
 
+
+      // 时限分析专题
+      // 办件时限状态-饼图数据
+      approveTimelimitStatusPieChart: '',
+
+      // 部门办件时限状态
+      approveStageAverageTimeBarChart: '',
+
+      // 部门办件用时
+      // 部门办件用时-柱状图
+      themeApproveTimeBarChart: '',
+      // 部门办件用时-切换主题的数据-总的数据
+      themeAllList: [],
+      // 部门办件用时-切换主题的数据-当前第几页
+      themePage: 1,
+      // 部门办件用时-切换主题的数据-当前页数据(定好了 7 条数据)
+      themeShowList: [],
+
     }
   },
   methods: {
@@ -132,6 +156,11 @@ var app = new Vue({
       this.acceptSumPieChart && this.acceptSumPieChart.resize();
       this.accepConnectionBarChart && this.accepConnectionBarChart.resize();
       this.accepConnectionEffectLineChart && this.accepConnectionEffectLineChart.resize();
+
+      // 时限专题
+      this.approveTimelimitStatusPieChart &&  this.approveTimelimitStatusPieChart.resize();
+      this.approveStageAverageTimeBarChart && this.approveStageAverageTimeBarChart.resize();
+      this.themeApproveTimeBarChart && this.themeApproveTimeBarChart.resize();
     },
 
     // 获取头部卡片数据
@@ -182,11 +211,11 @@ var app = new Vue({
       }
     },
     // 获取各区划的下拉列表
-    fetchRegionList: function(){
+    fetchRegionList: function () {
       var ts = this;
       ts.loading = true;
       request('', {
-        url: ctx + 'org/efficiency/supervision/itemStateStatistics',
+        url: ctx + 'org/efficiency/supervision/getCurrentCityRegions',
         type: 'get',
       }, function (res) {
         ts.loading = false;
@@ -208,12 +237,19 @@ var app = new Vue({
       this.curEffectModule = mud;
       setTimeout(function () {
         switch (mud) {
-          case 2: 
+          case 2:
+            ts.clearTimeLimitChart();
             ts.initEffectApi();
             break;
-          default:  
+          case 3:
+            ts.clearEffectChart();
+            ts.initTimeLimitApi();
+            break;
+          default:
             ts.initEffectApi();
             ts.clearEffectChart();
+            ts.clearTimeLimitChart();
+            ts.initTimeLimitApi();
         };
         ts.render();
       }, 200)
@@ -239,9 +275,9 @@ var app = new Vue({
     },
 
     // 页面区域下拉选中，触发整个效能督查的查询条件修改
-    regionChange: function(val){
+    regionChange: function (val) {
       console.log(val)
-      // this.moduleSwitch(this.curEffectModule);
+      this.moduleSwitch(this.curEffectModule);
     },
 
 
@@ -249,7 +285,6 @@ var app = new Vue({
     // 页面效能督查页面接口(工作量及有效性模块)
     initEffectApi: function () {
       this.fetchAccepSumData();
-      this.fetchAccepConnectionData();
       this.fetchAccepConnectionEffectWinList();
     },
     // 清除掉当前专题下已渲染的echarts图
@@ -259,61 +294,74 @@ var app = new Vue({
       this.accepConnectionEffectLineChart && this.accepConnectionEffectLineChart.clear();
     },
 
-    // 接件总量
-    // 接件总量-获取后台数据
+    // 接件总量与接件受理情况
+    // 接件总量与接件受理情况-获取后台数据
     fetchAccepSumData: function () {
       var ts = this;
       ts.loading = true;
       ts.pageSearchData.startTime = formatDate(new Date(ts.pageDateRange[0]), 'yyyy-MM-dd') || '';
       ts.pageSearchData.endTime = formatDate(new Date(ts.pageDateRange[1]), 'yyyy-MM-dd') || '';
-      debugger
       request('', {
-        url: ctx + 'win/efficiency/supervision/getWinAcceptTotalStatistics',
+        url: ctx + 'org/efficiency/supervision/getOrgReceiveStatistics',
         type: 'get',
         data: ts.pageSearchData,
       }, function (res) {
         ts.loading = false;
         if (res.success) {
           if (res.content && res.content !== null) {
-            _acceptSum = res.content.total; //接件总数赋值
-            ts.handelAccepSumData(res.content.data)
+            _acceptSum = res.content.leftData.total; //接件总数赋值
+            ts.handelAccepSumData(res.content.leftData.data,res.content.leftData.total);
+            ts.handelAccepConnectionBarChartData(res.content.rightData);
           } else {
+            ts.acceptSumPieChart.clear();
             ts.acceptSumPieChart = '';
+            ts.accepConnectionBarChart.clear();
+            ts.accepConnectionBarChart = '';
           }
         } else {
           ts.apiMessage(res.message, 'error')
+          ts.acceptSumPieChart.clear();
           ts.acceptSumPieChart = '';
+          ts.accepConnectionBarChart.clear();
+          ts.accepConnectionBarChart = '';
         }
       }, function () {
         ts.loading = false;
         ts.apiMessage('网络错误！', 'error')
+        ts.acceptSumPieChart.clear();
         ts.acceptSumPieChart = '';
+        ts.accepConnectionBarChart.clear();
+        ts.accepConnectionBarChart = '';
       });
     },
     // 接件总量处理后端数据
-    handelAccepSumData: function (list) {
+    handelAccepSumData: function (list,total) {
       if (!list || !list.length) return;
       assEchartOptions.acceptSumOpt.legend.data = [];
       assEchartOptions.acceptSumOpt.series[0].data = [];
       for (var i = 0; i < list.length; i++) {
-        var opt = list[i].windowName;
+        // 随机颜色
+        var colorHash = new ColorHash();
+        var hex = colorHash.hex(list[i].name)
+
+        var opt = list[i].name;
         _acceptSumObj[opt] = {
           num: '',
           percent: ''
         }
-        _acceptSumObj[opt]['percent'] = (Number(list[i].winJieJianRate) * 100).toFixed(0) + '%';
-        _acceptSumObj[opt]['num'] = list[i].applyCount;
+        _acceptSumObj[opt]['percent'] =  list[i].value == 0 ? "0%" :((Number(list[i].value / total) * 100).toFixed(0) + '%');
+        _acceptSumObj[opt]['num'] = list[i].value;
 
         assEchartOptions.acceptSumOpt.legend.data.push(opt);
         assEchartOptions.acceptSumOpt.series[0].data.push({
-          name: list[i].windowName || '',
-          value: list[i].applyCount || '',
-          itemColor: list[i].echartsColor || '' //加上自定义的颜色
+          name: list[i].name || '',
+          value: list[i].value || '',
+          itemColor: hex || '' //加上自定义的颜色
         })
       }
       assEchartOptions.acceptSumOpt.series[0].data[0].label = _accepNumTwoLabel;
       if (list.length < 2) {
-        assEchartOptions.acceptSumOpt.series[0].itemStyle.borderWidth = 0;        
+        assEchartOptions.acceptSumOpt.series[0].itemStyle.borderWidth = 0;
       }
 
       this.renderAcceptSumPieChart();
@@ -324,48 +372,20 @@ var app = new Vue({
       this.acceptSumPieChart.setOption(assEchartOptions.acceptSumOpt);
     },
 
-
-    // 接件受理
-    // 接件受理-获取后台数据
-    fetchAccepConnectionData: function () {
-      var ts = this;
-      ts.loading = true;
-      ts.pageSearchData.startTime = formatDate(new Date(ts.pageDateRange[0]), 'yyyy-MM-dd') || '';
-      ts.pageSearchData.endTime = formatDate(new Date(ts.pageDateRange[1]), 'yyyy-MM-dd') || '';
-      request('', {
-        url: ctx + 'win/efficiency/supervision/getWinAcceptStatistics',
-        type: 'get',
-        data: ts.pageSearchData,
-      }, function (res) {
-        ts.loading = false;
-        if (res.success) {
-          if (res.content && res.content !== null) {
-            assEchartOptions.acceptConnectionOpt.xAxis.data = res.content.title;
-            assEchartOptions.acceptConnectionOpt.series[0].data = res.content.yiShouLi;
-            assEchartOptions.acceptConnectionOpt.series[1].data = res.content.caiLiaoBuQuan;
-            assEchartOptions.acceptConnectionOpt.series[2].data = res.content.buYuShouLi;
-            // 超过15条出现横向放大缩小工具
-            if (res.content.length && res.content.length > 15) {
-              assEchartOptions.acceptConnectionOpt.dataZoom = _acceptConnectionOpt_datazoom;
-            } else {
-              assEchartOptions.acceptConnectionOpt.dataZoom = [];
-              assEchartOptions.acceptConnectionOpt.grid.y2 = 20;
-            }
-            ts.renderAccepConnectionBarChart();
-          } else {
-            ts.accepConnectionBarChart = '';
-          }
-        } else {
-          ts.apiMessage(res.message, 'error')
-          ts.accepConnectionBarChart = '';
-        }
-      }, function () {
-        ts.loading = false;
-        ts.apiMessage('网络错误！', 'error')
-        ts.accepConnectionBarChart = '';
-      });
+    // 接件受理情况-处理后端数据
+    handelAccepConnectionBarChartData: function(list){
+      var _titleList = ['pro', '已受理', '材料补正', '不予受理'];
+      list.unshift(_titleList);
+      assEchartOptions.acceptConnectionOpt.dataset.source = list;
+      if (list.length && list.length > 15) {
+        assEchartOptions.acceptConnectionOpt.dataZoom = _acceptConnectionOpt_datazoom;
+      } else {
+        assEchartOptions.acceptConnectionOpt.dataZoom = [];
+        assEchartOptions.acceptConnectionOpt.grid.y2 = 20;
+      }
+      this.renderAccepConnectionBarChart();
     },
-    // 接件受理-渲染echart
+    // 接件受理情况-渲染echart
     renderAccepConnectionBarChart: function () {
       this.accepConnectionBarChart = echarts.init(document.getElementById('accepConnectionBarChart'));
       this.accepConnectionBarChart.setOption(assEchartOptions.acceptConnectionOpt);
@@ -380,7 +400,7 @@ var app = new Vue({
       ts.pageSearchData.startTime = formatDate(new Date(ts.pageDateRange[0]), 'yyyy-MM-dd') || '';
       ts.pageSearchData.endTime = formatDate(new Date(ts.pageDateRange[1]), 'yyyy-MM-dd') || '';
       request('', {
-        url: ctx + 'win/efficiency/supervision/getWinAcceptDealStatistics',
+        url: ctx + 'org/efficiency/supervision/getRegionOrgAcceptStatistics',
         type: 'get',
         data: ts.pageSearchData,
       }, function (res) {
@@ -399,14 +419,13 @@ var app = new Vue({
     },
     // 处理接件历史分析窗口数据
     handelAccepConnectionEffectWinList: function (list) {
+      var ts = this;
       this.accepConnectionWinAllList = list.map(function (item) {
         return {
-          winId: item.windowId,
-          winName: item.windowName,
+          winId: ts.pageSearchData.regionId ? item.orgId : item.regionId,
+          winName: ts.pageSearchData.regionId ? item.orgName : item.regionName,
           apply: item.apply, //接件数
           acceptDeal: item.acceptDeal, //受理数
-          percent: item.acceptDealRate, //受理率
-          percentNum: Number(item.acceptDealRate.replace('%', '')) || 0, //受理率（纯百分比）
           select: false //是否选中状态
         }
       })
@@ -434,9 +453,9 @@ var app = new Vue({
       _getData.startTime = ts.pageSearchData.startTime;
       _getData.endTime = ts.pageSearchData.endTime;
       _getData.type = ts.pageSearchData.type;
-      _getData.windowId = obj.winId;
+      ts.pageSearchData.regionId? (_getData.orgId = obj.winId) : (_getData.regionId = obj.winId);
       request('', {
-        url: ctx + 'win/efficiency/supervision/getWinAcceptStatisticsByDay',
+        url: ctx + 'org/efficiency/supervision/getRegionOrgAcceptHistoryStatistics',
         type: 'get',
         data: _getData,
       }, function (res) {
@@ -506,6 +525,257 @@ var app = new Vue({
       this.accepConnectionWinPage = _page;
     },
 
+
+
+    // 时限分析专题
+    // 初始化时限专题
+    initTimeLimitApi: function () {
+      this.fetchApproveTimelimitStatusPieChartData();
+      this.fetchAllThemeList();
+    },
+    // 清除掉已渲染当前专题下的echart图
+    clearTimeLimitChart: function () {
+      this.approveTimelimitStatusPieChart &&  this.approveTimelimitStatusPieChart.clear();
+      this.approveStageAverageTimeBarChart && this.approveStageAverageTimeBarChart.clear();
+      this.themeApproveTimeBarChart && this.themeApproveTimeBarChart.clear();
+    },
+
+    // 办件时限状态+部门办件时限状态
+    // 办件时限状态+部门办件时限状态-获取后端接口
+    fetchApproveTimelimitStatusPieChartData: function(){
+      var ts = this;
+      ts.loading = true;
+      ts.pageSearchData.startTime = formatDate(new Date(ts.pageDateRange[0]), 'yyyy-MM-dd') || '';
+      ts.pageSearchData.endTime = formatDate(new Date(ts.pageDateRange[1]), 'yyyy-MM-dd') || '';
+      request('', {
+        url: ctx + 'org/efficiency/supervision/getOrgReceiveLimitTimeStatistics',
+        type: 'get',
+        data: ts.pageSearchData,
+      }, function (res) {
+        ts.loading = false;
+        if (res.success) {
+          if (res.content && res.content !== null) {
+            _approveTimelimitAccSum =res.content.leftData.total;
+            ts.handelApproveTimelimitStatusPieChartData(res.content.leftData.total,res.content.leftData.data);
+            ts.handelApproveStageAverageTimeBarChartData(res.content.rightData);
+          } else {
+            ts.approveTimelimitStatusPieChart.clear();
+            ts.approveStageAverageTimeBarChart.clear();
+            ts.approveTimelimitStatusPieChart = '';
+            ts.approveStageAverageTimeBarChart = '';
+          }
+        } else {
+          ts.apiMessage(res.message, 'error')
+          ts.approveTimelimitStatusPieChart.clear();
+          ts.approveStageAverageTimeBarChart.clear();
+          ts.approveTimelimitStatusPieChart = '';
+          ts.approveStageAverageTimeBarChart = '';
+        }
+      }, function () {
+        ts.loading = false;
+        ts.apiMessage('网络错误！', 'error')
+        ts.approveTimelimitStatusPieChart.clear();
+        ts.approveStageAverageTimeBarChart.clear();
+        ts.approveTimelimitStatusPieChart = '';
+        ts.approveStageAverageTimeBarChart = '';
+      });
+    },
+    // 办件时限状态-处理后端接口数据
+    handelApproveTimelimitStatusPieChartData: function(total,list){
+      if (!list || !list.length) return;
+      assEchartOptions.approveTimelimitStatusPieChartOpt.legend.data = [];
+      assEchartOptions.approveTimelimitStatusPieChartOpt.series[0].data = [];
+      for (var i = 0; i < list.length; i++) {
+        var opt = list[i].name;
+        _approveTimelimitLendObj[opt] = {
+          num: '',
+          percent: ''
+        }
+        _approveTimelimitLendObj[opt]['percent'] = list[i].value == 0 ? "0%" :((Number(list[i].value / total) * 100).toFixed(0) + '%');
+        _approveTimelimitLendObj[opt]['num'] = list[i].value;
+
+        assEchartOptions.approveTimelimitStatusPieChartOpt.legend.data.push(opt);
+        assEchartOptions.approveTimelimitStatusPieChartOpt.series[0].data.push({
+          name: list[i].name || '',
+          value: list[i].value || 0,
+        })
+      }
+      assEchartOptions.approveTimelimitStatusPieChartOpt.series[0].data[0].label = _approveTimelimitAccSumLabel;
+      this.renderApproveTimelimitStatusPieChart();
+    },
+    // 办件时限状态-渲染echart
+    renderApproveTimelimitStatusPieChart: function(){
+      this.approveTimelimitStatusPieChart = echarts.init(document.getElementById('approveTimelimitStatusPieChart'));
+      this.approveTimelimitStatusPieChart.setOption(assEchartOptions.approveTimelimitStatusPieChartOpt);
+    },
+    // 部门办件时限状态-处理后端数据
+    handelApproveStageAverageTimeBarChartData: function(list){
+      var _stageList = ['product','正常','预警','逾期'];
+      list.unshift(_stageList)
+      assEchartOptions.approveStageAverageTimeBarChartOpt.dataset.source = list;
+      // 超过13条出现横向放大缩小工具
+      if (list && list < 13) {
+        assEchartOptions.approveStageAverageTimeBarChartOpt.dataZoom = [];
+        assEchartOptions.approveStageAverageTimeBarChartOpt.grid.y2 = 20;
+      } 
+      this.renderApproveStageAverageTimeBarChart();
+    },
+    // 部门办件时限状态-渲染echarts
+    renderApproveStageAverageTimeBarChart: function(){
+      this.approveStageAverageTimeBarChart = echarts.init(document.getElementById('approveStageAverageTimeBarChart'));
+      this.approveStageAverageTimeBarChart.setOption(assEchartOptions.approveStageAverageTimeBarChartOpt);
+    },
+
+    // 部门办件用时
+    // 获取的部门办件用时-头部主题数据
+    fetchAllThemeList: function () {
+      var ts = this;
+      ts.loading = true;
+      ts.pageSearchData.startTime = formatDate(new Date(ts.pageDateRange[0]), 'yyyy-MM-dd') || '';
+      ts.pageSearchData.endTime = formatDate(new Date(ts.pageDateRange[1]), 'yyyy-MM-dd') || '';
+      request('', {
+        url: ctx + 'org/efficiency/supervision/getRegionOrgItemUseTimeStatistics',
+        type: 'get',
+        data: ts.pageSearchData,
+      }, function (res) {
+        ts.loading = false;
+        if (res.success) {
+          if (res.content && res.content !== null) {
+            ts.handelAllThemeList(res.content)
+          }
+        } else {
+          ts.apiMessage(res.message, 'error')
+        }
+      }, function () {
+        ts.loading = false;
+        ts.apiMessage('网络错误！', 'error')
+      });
+    },
+    // 处理部门办件用时-头部主题数据
+    handelAllThemeList: function (list) {
+      var ts = this;
+      this.themeAllList = list.map(function (item) {
+        return {
+          winId: ts.pageSearchData.regionId? item.orgId: item.regionId,
+          winName:ts.pageSearchData.regionId? item.orgName: item.regionName,
+          lgTime: item.maxUseTime,  //最长用时
+          AveTime: item.avgUseTime, //平均用时
+          minTime: item.minUseTime, //最短用时
+          select: false //是否选中状态
+        }
+      })
+      this.themePage = 1
+      // 截取前七个用来显示
+      this.themeShowList = this.themeAllList.slice(0, 5)
+      // 加载第一个主题下各窗口用时的统计数据
+      this.fetchSelectedThemeWinData(this.themeAllList[0]);
+    },
+    // 高亮当前选中的主题
+    activeCurThemeItem: function (obj) {
+      this.themeAllList.forEach(function (item) {
+        item.select = false;
+      })
+      obj.select = true;
+    },
+    // 获取当前选中窗口的统计数据
+    fetchSelectedThemeWinData: function (obj) {
+      this.activeCurThemeItem(obj); //高亮当前主题
+      var ts = this,
+        _getData = {};
+      ts.loading = true;
+      ts.pageSearchData.startTime = formatDate(new Date(ts.pageDateRange[0]), 'yyyy-MM-dd') || '';
+      ts.pageSearchData.endTime = formatDate(new Date(ts.pageDateRange[1]), 'yyyy-MM-dd') || '';
+      _getData.startTime = ts.pageSearchData.startTime;
+      _getData.endTime = ts.pageSearchData.endTime;
+      _getData.type = ts.pageSearchData.type;
+      ts.pageSearchData.regionId? (_getData.orgId = obj.winId) : (_getData.regionId = obj.winId);
+      request('', {
+        url: ctx + 'org/efficiency/supervision/getRegionOrgItemUseTimeStatistics',
+        type: 'get',
+        data: _getData,
+      }, function (res) {
+        ts.loading = false;
+        if (res.success) {
+          if (res.content && res.content !== null) {
+            ts.handelSelectedThemeWinBarChartData(res.content);
+          } else {
+            ts.themeApproveTimeBarChart.clear();
+            ts.themeApproveTimeBarChart = "";
+          }
+        } else {
+          ts.apiMessage(res.message, 'error');
+          ts.themeApproveTimeBarChart.clear();
+          ts.themeApproveTimeBarChart = "";
+        }
+      }, function () {
+        ts.loading = false;
+        ts.apiMessage('网络错误！', 'error');
+        ts.themeApproveTimeBarChart.clear();
+        ts.themeApproveTimeBarChart = "";
+      });
+    },
+    // 部门办件用时-处理当前选中主题下各窗口的统计数据
+    handelSelectedThemeWinBarChartData: function (handData) {
+      var ts = this,
+        winList = [], //窗口数据list
+        _lgList = [], //最长用时list
+        _minList = [],  //最短用时list
+        _avgList = [], //平均用时list
+        _ln = handData.length;  //后端数据-窗口的总个数
+      for (var i = 0; i < _ln; i++) {
+        var xname = '';
+        handData[i].itemId?  (xname = handData[i].itemName):(xname = handData[i].orgName);
+        winList.push(xname);
+        _lgList.push(handData[i].maxUseTime);
+        _minList.push(handData[i].minUseTime);
+        _avgList.push(handData[i].avgUseTime);
+      }
+      assEchartOptions.themeApproveTimeBarChartOpt.xAxis.data = winList;
+      assEchartOptions.themeApproveTimeBarChartOpt.series[0].data = _lgList;
+      assEchartOptions.themeApproveTimeBarChartOpt.series[1].data = _avgList;
+      assEchartOptions.themeApproveTimeBarChartOpt.series[2].data = _minList;
+
+      if(_ln < 12){
+        assEchartOptions.themeApproveTimeBarChartOpt.dataZoom = [];
+        assEchartOptions.themeApproveTimeBarChartOpt.grid.y2 = 20;
+      }
+
+      this.renderThemeApproveTimeBarChart();
+    },
+    // 部门办件用时-渲染echart
+    renderThemeApproveTimeBarChart: function () {
+      this.themeApproveTimeBarChart = echarts.init(document.getElementById('themeApproveTimeBarChart'));
+      this.themeApproveTimeBarChart.setOption(assEchartOptions.themeApproveTimeBarChartOpt);
+    },
+    // 部门办件用时-头部主题栏左右控制
+    themeHandelToRight: function () {
+      var ts = this,
+        _all = this.themeAllList,
+        _list = this.themeShowList,
+        _page = this.themePage,
+        _maxPage = "";
+      _maxPage = Math.floor(_all.length / 5);
+      this.themeShowList = _all.slice((_page) * 5, (_page + 1) * 5);
+      if (_page > 0 && _page <= _maxPage) {
+        _page++;
+      }
+      this.themePage = _page;
+    },
+    themeHandelToLeft: function () {
+      var ts = this,
+        _all = this.themeAllList,
+        _list = this.themeShowList,
+        _page = this.themePage,
+        _maxPage = "";
+      _maxPage = Math.floor(_all.length / 5);
+      // debugger
+      this.themeShowList = _all.slice((_page - 2) * 5, (_page - 1) * 5);
+      if (_page >= 2) {
+        _page--;
+      }
+      this.themePage = _page;
+    },
+
   },
   computed: {
     isLeft: function () {
@@ -522,13 +792,30 @@ var app = new Vue({
       }
       return true;
     },
+
+    // 时限分析专题-部门办件用时
+    isTLeft: function () {
+      var _crP = this.themePage;
+      if (_crP < 2) {
+        return false;
+      }
+      return true;
+    },
+    isTRight: function () {
+      var _crP = this.themePage;
+      if (_crP * 5 >= this.themeAllList.length) {
+        return false;
+      }
+      return true;
+    },
   },
   created: function () {
     this.fetchApplyStatistics();
-    // this.fetchRegionList();
-    // (ts.curEffectModule == 2) && ts.initEffectApi();
+    this.fetchRegionList();
+    (this.curEffectModule == 2) && this.initEffectApi();
+    (this.curEffectModule == 3) && this.initTimeLimitApi();
     // test
-    // return
+    return
     for (var i = 0; i < 15; i++) {
       this.accepConnectionWinAllList.push({
         winName: '窗口' + i,
@@ -545,9 +832,13 @@ var app = new Vue({
     }, 100, 500, 100)
 
     // test
-    this.renderAcceptSumPieChart();
-    this.renderAccepConnectionBarChart();
-    this.renderAccepConnectionEffectLineChart();
+    // this.renderAcceptSumPieChart();
+    // this.renderAccepConnectionBarChart();
+    // this.renderAccepConnectionEffectLineChart();
+
+    // this.renderApproveTimelimitStatusPieChart();
+    // this.renderApproveStageAverageTimeBarChart();
+    // this.renderThemeApproveTimeBarChart();
   },
   filters: {},
 })

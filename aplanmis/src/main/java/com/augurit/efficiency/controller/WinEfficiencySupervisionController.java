@@ -7,6 +7,7 @@ import com.augurit.aplanmis.common.utils.DateUtils;
 import com.augurit.aplanmis.common.vo.analyse.*;
 import com.augurit.aplanmis.common.vo.conditional.ConditionalQueryRequest;
 import com.augurit.efficiency.service.WinEfficiencySupervisionService;
+import com.augurit.efficiency.utils.TimeParamUtil;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
@@ -22,8 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 import springfox.documentation.annotations.ApiIgnore;
 
-import java.text.ParseException;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -244,7 +243,7 @@ public class WinEfficiencySupervisionController {
             @ApiImplicitParam(name = "endTime", value = "结束时间【yyyy-MM-dd】", dataType = "string", paramType = "String", required = true)
     })
     public ResultForm getWinShouliStatistics(String startTime, String endTime) {
-        ResultForm checkForm = checkTimeParam(startTime, endTime);
+        ResultForm checkForm = TimeParamUtil.checkTimeParam(startTime, endTime);
         if (checkForm != null) {
             return checkForm;
         }
@@ -265,7 +264,7 @@ public class WinEfficiencySupervisionController {
             @ApiImplicitParam(name = "endTime", value = "结束时间【yyyy-MM】", dataType = "string", paramType = "String", required = true)
     })
     public ResultForm getWinShouliStatisticsByMonth(String startTime, String endTime) {
-        ResultForm checkForm = checkTimeParam(startTime, endTime, "yyyy-MM");
+        ResultForm checkForm = TimeParamUtil.checkTimeParam(startTime, endTime, "yyyy-MM");
         if (checkForm != null) {
             return checkForm;
         }
@@ -287,7 +286,7 @@ public class WinEfficiencySupervisionController {
             @ApiImplicitParam(name = "endTime", value = "结束时间【yyyy-MM-dd】", dataType = "string", paramType = "String", required = true)
     })
     public ResultForm getRegionShenbaoStatistics(String startTime, String endTime) {
-        ResultForm checkForm = checkTimeParam(startTime, endTime);
+        ResultForm checkForm = TimeParamUtil.checkTimeParam(startTime, endTime);
         if (checkForm != null) {
             return checkForm;
         }
@@ -307,7 +306,7 @@ public class WinEfficiencySupervisionController {
             @ApiImplicitParam(name = "endTime", value = "结束时间【yyyy-MM-dd】", dataType = "string", paramType = "String", required = true)
     })
     public ResultForm getThemeShenbaoStatistics(String startTime, String endTime) {
-        ResultForm checkForm = checkTimeParam(startTime, endTime);
+        ResultForm checkForm = TimeParamUtil.checkTimeParam(startTime, endTime);
         if (checkForm != null) {
             return checkForm;
         }
@@ -327,7 +326,7 @@ public class WinEfficiencySupervisionController {
             @ApiImplicitParam(name = "endTime", value = "结束时间【yyyy-MM-dd】", dataType = "string", paramType = "String", required = true)
     })
     public ResultForm getStageShenbaoStatistics(String startTime, String endTime) {
-        ResultForm checkForm = checkTimeParam(startTime, endTime);
+        ResultForm checkForm = TimeParamUtil.checkTimeParam(startTime, endTime);
         if (checkForm != null) {
             return checkForm;
         }
@@ -385,7 +384,7 @@ public class WinEfficiencySupervisionController {
     })
     public ResultForm getWinAcceptDealStatistics(String type, String startTime, String endTime) {
         if (StringUtils.isBlank(type)) {
-            ResultForm resultForm = checkTimeParam(startTime, endTime);
+            ResultForm resultForm = TimeParamUtil.checkTimeParam(startTime, endTime);
             if (resultForm != null) return resultForm;
         }
         try {
@@ -410,7 +409,7 @@ public class WinEfficiencySupervisionController {
             return new ResultForm(false, "请求缺少参数!");
         }
         if (StringUtils.isBlank(type)) {
-            ResultForm resultForm = checkTimeParam(startTime, endTime);
+            ResultForm resultForm = TimeParamUtil.checkTimeParam(startTime, endTime);
             if (resultForm != null) return resultForm;
         }
         try {
@@ -431,7 +430,7 @@ public class WinEfficiencySupervisionController {
     })
     public ResultForm getCurWinAcceptStatisticsByDay(String type, String startTime, String endTime) {
         if (StringUtils.isBlank(type)) {
-            ResultForm resultForm = checkTimeParam(startTime, endTime);
+            ResultForm resultForm = TimeParamUtil.checkTimeParam(startTime, endTime);
             if (resultForm != null) return resultForm;
         }
         try {
@@ -452,7 +451,7 @@ public class WinEfficiencySupervisionController {
     })
     public ResultForm getThemeApplyStatistics(String type, String startTime, String endTime) throws Exception {
         if (StringUtils.isBlank(type)) {
-            ResultForm resultForm = checkTimeParam(startTime, endTime);
+            ResultForm resultForm = TimeParamUtil.checkTimeParam(startTime, endTime);
             if (resultForm != null) return resultForm;
         }
         try {
@@ -463,54 +462,6 @@ public class WinEfficiencySupervisionController {
             log.error("主题申报的接件受理情况统计异常", e);
             return new ContentResultForm<>(false, null, "主题申报的接件受理情况统计异常，" + e.getMessage());
         }
-    }
-
-    /**
-     * 检查时间参数
-     *
-     * @param startTime 开始时间
-     * @param endTime   结束时间
-     */
-    private ResultForm checkTimeParam(String startTime, String endTime) {
-        if (StringUtils.isBlank(startTime) || StringUtils.isBlank(endTime)) {
-            return new ContentResultForm<>(false, null, "请求缺少参数！");
-        }
-
-        if (startTime.compareTo(endTime) > 0) {
-            return new ContentResultForm<>(false, null, "开始日期大于结束日期！");
-        }
-        try {
-            Date _startTime = DateUtils.convertStringToDate(startTime, "yyyy-MM-dd");
-            Date _endTime = DateUtils.convertStringToDate(endTime, "yyyy-MM-dd");
-        } catch (ParseException e) {
-            return new ContentResultForm<>(false, null, "传入日期格式错误！");
-        }
-
-        return null;
-    }
-
-    /**
-     * 检查时间参数
-     *
-     * @param startTime 开始时间
-     * @param endTime   结束时间
-     */
-    private ResultForm checkTimeParam(String startTime, String endTime, String format) {
-        if (StringUtils.isBlank(startTime) || StringUtils.isBlank(endTime)) {
-            return new ContentResultForm<>(false, null, "请求缺少参数！");
-        }
-
-        if (startTime.compareTo(endTime) > 0) {
-            return new ContentResultForm<>(false, null, "开始日期大于结束日期！");
-        }
-        try {
-            Date _startTime = DateUtils.convertStringToDate(startTime, format);
-            Date _endTime = DateUtils.convertStringToDate(endTime, format);
-        } catch (ParseException e) {
-            return new ContentResultForm<>(false, null, "传入日期格式错误！");
-        }
-
-        return null;
     }
 
     //新版2019-10-17
@@ -666,7 +617,7 @@ public class WinEfficiencySupervisionController {
     public ResultForm getCompletedApplyUseTimeByTheme(String startTime, String endTime, String type) {
         try {
             if (StringUtils.isBlank(type)) {
-                ResultForm resultForm = checkTimeParam(startTime, endTime);
+                ResultForm resultForm = TimeParamUtil.checkTimeParam(startTime, endTime);
                 if (resultForm != null) return resultForm;
             }
             List<Map<String, Object>> result = winEfficiencySupervisionService.getCompletedApplyUseTimeByTheme(type, startTime, endTime);
@@ -691,7 +642,7 @@ public class WinEfficiencySupervisionController {
                 return new ResultForm(false, "请求缺少参数!");
             }
             if (StringUtils.isBlank(type)) {
-                ResultForm resultForm = checkTimeParam(startTime, endTime);
+                ResultForm resultForm = TimeParamUtil.checkTimeParam(startTime, endTime);
                 if (resultForm != null) return resultForm;
             }
             List<Map<String, Object>> result = winEfficiencySupervisionService.getCompletedApplyUseTimeByThemeAndWindow(themeId, type, startTime, endTime);

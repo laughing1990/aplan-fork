@@ -14,6 +14,7 @@ import com.augurit.aplanmis.common.service.mat.RestMatCorrectCommonService;
 import com.augurit.aplanmis.common.utils.SessionUtil;
 import com.augurit.aplanmis.common.vo.LoginInfoVo;
 import com.augurit.aplanmis.mall.userCenter.service.RestApproveService;
+import com.augurit.aplanmis.mall.userCenter.service.RestFileService;
 import com.augurit.aplanmis.mall.userCenter.service.RestMatSupplyService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -43,6 +44,8 @@ public class RestMatSupplyController {
     private AeaHiIteminstService aeaHiIteminstService;
     @Autowired
     private RestMatSupplyService restMatSupplyService;
+    @Autowired
+    private RestFileService restFileService;
 
 
     @GetMapping("tomatSupplementListPage")
@@ -208,6 +211,7 @@ public class RestMatSupplyController {
     @PostMapping("/att/upload")
     public ResultForm uploadFile(String attRealIninstId, HttpServletRequest request) {
         try {
+            if (!restFileService.isAllowFileType(request))return new ResultForm(false, "不允许的文件类型");
             Assert.isTrue(StringUtils.isNotBlank(attRealIninstId), "attRealIninstId is null");
             restMatSupplyService.uploadFile(attRealIninstId, request);
             return new ResultForm(true, "文件上传成功！");

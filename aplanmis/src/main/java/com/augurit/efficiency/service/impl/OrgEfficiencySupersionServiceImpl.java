@@ -21,6 +21,7 @@ import com.augurit.efficiency.constant.DateType;
 import com.augurit.efficiency.service.OrgEfficiencySupersionService;
 import com.augurit.efficiency.utils.CalculateUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -640,65 +641,117 @@ public class OrgEfficiencySupersionServiceImpl implements OrgEfficiencySupersion
                 String preDateStr = DateUtils.convertDateToString(preDate, "yyyy-MM-dd");
 
                 List<AeaAnaOrgDayStatistics> orgItemAcceptStatistics = aeaAnaOrgDayStatisticsMapper.getRegionAcceptStatistics(preDateStr, preDateStr, rootOrgId);
-                List<Map<String, Object>> collect = orgItemAcceptStatistics.stream().map(statistics -> {
+                List<Map<String, Object>> allRegion = getRegionOrgData(null);
+
+                Map<String, List<AeaAnaOrgDayStatistics>> collect = null;
+                if (CollectionUtils.isNotEmpty(orgItemAcceptStatistics)) {
+                    collect = orgItemAcceptStatistics.stream().collect(Collectors.groupingBy(AeaAnaOrgDayStatistics::getRegionId));
+                }
+
+                List<Map<String, Object>> result = new ArrayList<>();
+                for (Map<String, Object> region : allRegion) {
                     Map<String, Object> data = new HashMap<>();
-                    data.put("regionId", statistics.getRegionId());
-                    data.put("regionName", statistics.getRegionName());
+                    data.put("regionId", region.get("regionId"));
+                    data.put("regionName", region.get("regionName"));
                     data.put("orgId", "");
                     data.put("orgName", "");
-                    data.put("apply", statistics.getDayApplyCount());
-                    data.put("acceptDeal", statistics.getDayAcceptanceCount());
-                    return data;
-                }).collect(Collectors.toList());
-                return collect;
+                    data.put("apply", 0);
+                    data.put("acceptDeal", 0);
+                    if (collect != null && collect.get(region.get("regionId")) != null) {
+                        List<AeaAnaOrgDayStatistics> statistics = collect.get(region.get("regionId"));
+                        data.put("apply", statistics.get(0).getDayApplyCount());
+                        data.put("acceptDeal", statistics.get(0).getDayAcceptanceCount());
+                    }
+                    result.add(data);
+                }
+                return result;
             } else if (DateType.CUR_WEEK.equals(type)) {
                 String rootOrgId = SecurityContext.getCurrentOrgId();
                 String thisYear = DateUtils.convertDateToString(new Date(), "yyyy");
                 int thisWeekNum = DateUtils.getThisWeekNum(new Date());
 
                 List<AeaAnaOrgWeekStatistics> orgItemAcceptStatistics = aeaAnaOrgWeekStatisticsMapper.getRegionAcceptStatistics(thisYear, thisWeekNum, rootOrgId);
-                List<Map<String, Object>> collect = orgItemAcceptStatistics.stream().map(statistics -> {
+                List<Map<String, Object>> allRegion = getRegionOrgData(null);
+
+                Map<String, List<AeaAnaOrgWeekStatistics>> collect = null;
+                if (CollectionUtils.isNotEmpty(orgItemAcceptStatistics)) {
+                    collect = orgItemAcceptStatistics.stream().collect(Collectors.groupingBy(AeaAnaOrgWeekStatistics::getRegionId));
+                }
+
+                List<Map<String, Object>> result = new ArrayList<>();
+                for (Map<String, Object> region : allRegion) {
                     Map<String, Object> data = new HashMap<>();
-                    data.put("regionId", statistics.getRegionId());
-                    data.put("regionName", statistics.getRegionName());
+                    data.put("regionId", region.get("regionId"));
+                    data.put("regionName", region.get("regionName"));
                     data.put("orgId", "");
                     data.put("orgName", "");
-                    data.put("apply", statistics.getWeekApplyCount());
-                    data.put("acceptDeal", statistics.getWeekAcceptanceCount());
-                    return data;
-                }).collect(Collectors.toList());
-                return collect;
+                    data.put("apply", 0);
+                    data.put("acceptDeal", 0);
+                    if (collect != null && collect.get(region.get("regionId")) != null) {
+                        List<AeaAnaOrgWeekStatistics> statistics = collect.get(region.get("regionId"));
+                        data.put("apply", statistics.get(0).getWeekApplyCount());
+                        data.put("acceptDeal", statistics.get(0).getWeekAcceptanceCount());
+                    }
+                    result.add(data);
+                }
+                return result;
             } else if (DateType.CUR_MONTH.equals(type)) {
                 String rootOrgId = SecurityContext.getCurrentOrgId();
                 String thisMonth = DateUtils.convertDateToString(new Date(), "yyyy-MM");
 
                 List<AeaAnaOrgMonthStatistics> orgItemAcceptStatistics = aeaAnaOrgMonthStatisticsMapper.getRegionAcceptStatistics(thisMonth, rootOrgId);
-                List<Map<String, Object>> collect = orgItemAcceptStatistics.stream().map(statistics -> {
+                List<Map<String, Object>> allRegion = getRegionOrgData(null);
+
+                Map<String, List<AeaAnaOrgMonthStatistics>> collect = null;
+                if (CollectionUtils.isNotEmpty(orgItemAcceptStatistics)) {
+                    collect = orgItemAcceptStatistics.stream().collect(Collectors.groupingBy(AeaAnaOrgMonthStatistics::getRegionId));
+                }
+
+                List<Map<String, Object>> result = new ArrayList<>();
+                for (Map<String, Object> region : allRegion) {
                     Map<String, Object> data = new HashMap<>();
-                    data.put("regionId", statistics.getRegionId());
-                    data.put("regionName", statistics.getRegionName());
+                    data.put("regionId", region.get("regionId"));
+                    data.put("regionName", region.get("regionName"));
                     data.put("orgId", "");
                     data.put("orgName", "");
-                    data.put("apply", statistics.getMonthApplyCount());
-                    data.put("acceptDeal", statistics.getMonthAcceptanceCount());
-                    return data;
-                }).collect(Collectors.toList());
-                return collect;
+                    data.put("apply", 0);
+                    data.put("acceptDeal", 0);
+                    if (collect != null && collect.get(region.get("regionId")) != null) {
+                        List<AeaAnaOrgMonthStatistics> statistics = collect.get(region.get("regionId"));
+                        data.put("apply", statistics.get(0).getMonthApplyCount());
+                        data.put("acceptDeal", statistics.get(0).getMonthAcceptanceCount());
+                    }
+                    result.add(data);
+                }
+                return result;
             } else if (StringUtils.isNotBlank(startTime) && StringUtils.isNotBlank(endTime)) {
                 String rootOrgId = SecurityContext.getCurrentOrgId();
 
                 List<AeaAnaOrgDayStatistics> orgItemAcceptStatistics = aeaAnaOrgDayStatisticsMapper.getRegionAcceptStatistics(startTime, endTime, rootOrgId);
-                List<Map<String, Object>> collect = orgItemAcceptStatistics.stream().map(statistics -> {
+                List<Map<String, Object>> allRegion = getRegionOrgData(null);
+
+                Map<String, List<AeaAnaOrgDayStatistics>> collect = null;
+                if (CollectionUtils.isNotEmpty(orgItemAcceptStatistics)) {
+                    collect = orgItemAcceptStatistics.stream().collect(Collectors.groupingBy(AeaAnaOrgDayStatistics::getRegionId));
+                }
+
+                List<Map<String, Object>> result = new ArrayList<>();
+                for (Map<String, Object> region : allRegion) {
                     Map<String, Object> data = new HashMap<>();
-                    data.put("regionId", statistics.getRegionId());
-                    data.put("regionName", statistics.getRegionName());
+                    data.put("regionId", region.get("regionId"));
+                    data.put("regionName", region.get("regionName"));
                     data.put("orgId", "");
                     data.put("orgName", "");
-                    data.put("apply", statistics.getDayApplyCount());
-                    data.put("acceptDeal", statistics.getDayAcceptanceCount());
-                    return data;
-                }).collect(Collectors.toList());
-                return collect;
+                    data.put("apply", 0);
+                    data.put("acceptDeal", 0);
+                    if (collect != null && collect.get(region.get("regionId")) != null) {
+                        List<AeaAnaOrgDayStatistics> statistics = collect.get(region.get("regionId"));
+                        data.put("apply", statistics.get(0).getDayApplyCount());
+                        data.put("acceptDeal", statistics.get(0).getDayAcceptanceCount());
+                    }
+                    result.add(data);
+                }
+                return result;
             }
         } else {
             if (DateType.YESTERDAY.equals(type)) {
@@ -891,18 +944,25 @@ public class OrgEfficiencySupersionServiceImpl implements OrgEfficiencySupersion
         }
 
         String rootOrgId = SecurityContext.getCurrentOrgId();
+        String startTime = null,endTime = null;
         List<ItemDetailFormVo> list = new ArrayList<>();
         if("D".equals(type)){
             String yesterday = DateUtils.convertDateToString(DateUtils.getPreDateByDate(new Date()), "yyyy-MM-dd");
             startDate = yesterday;
             endDate = yesterday ;
+            startTime += yesterday+" 00:00:00";
+            endTime += yesterday+" 23:59:59";
             list = aeaAnaOrgDayStatisticsMapper.getRegionDayStatistics(startDate,endDate,regionId,rootOrgId);
         }else if("W".equals(type)){
             String thisYear = DateUtils.convertDateToString(new Date(), "yyyy");
             int thisWeekNum = DateUtils.getThisWeekNum(new Date());
+            startTime = DateUtils.firstDayOfWeekStr();
+            endTime = DateUtils.lastDayOfWeekStr();
             list = aeaAnaOrgWeekStatisticsMapper.getRegionWeekStatistics(thisYear,thisWeekNum,thisWeekNum,regionId,rootOrgId);
         }else if("M".equals(type)){
             String yearMonth = DateUtils.convertDateToString(new Date(), "yyyy-MM");
+            startTime = DateUtils.firstDayOfMonthStr();
+            endTime = DateUtils.lastDayOfMonthStr();
             list = aeaAnaOrgMonthStatisticsMapper.getRegionMonthStatistics(yearMonth,yearMonth,regionId,rootOrgId);
         }else{
             if (!DateUtils.checkTimeParam(startDate, endDate, "yyyy-MM-dd")) {
@@ -913,57 +973,118 @@ public class OrgEfficiencySupersionServiceImpl implements OrgEfficiencySupersion
                 String yesterday = DateUtils.getYesterdayByFormat("yyyy-MM-dd");
                 endDate = yesterday ;
             }
+            startTime = startDate + " 00:00:00";
+            endTime = endDate +" 23:59:59";
             list = aeaAnaOrgDayStatisticsMapper.getRegionDayStatistics(startDate,endDate,regionId,rootOrgId);
         }
 
-        int total = 0;
-        List<Map<String,Object>> datalist= new ArrayList<>();
+        //另外查询材料补证的的
+        List<ItemDetailFormVo> cortMatlist = efficiencySupervisionMapper.getOrgReceiveStateStatistics(regionId,"6",startTime,endTime,rootOrgId);
 
-        String name = "";
-        int value = 0;
-        boolean bol =StringUtils.isBlank(regionId);
-        if(list.size()>0){
-            for(ItemDetailFormVo vo :list){
-                Map<String,Object> obj = new HashMap<>();
-                if(bol){
-                    name = vo.getRegionName();
-                }else {
-                    name = vo.getOrgName();
-                }
-                value = vo.getReceiptCount();
-                total+=value;
-                obj.put("name",name);
-                obj.put("value",value);
-                datalist.add(obj);
-            }
+
+        //封装已有的数据
+        Map<String,Object> result = new HashMap<>();
+        if(cortMatlist.size()>list.size()){
+            result= packageHadData(cortMatlist,list,regionId,true);
+        }else{
+            result=  packageHadData(list,cortMatlist,regionId,true);
         }
+        return result;
 
-        //显示全部数据，
-        List<String> showData = getShowData(regionId);
-        List<Map<String,Object>>  showList = new ArrayList<>();
-        for(int i=0,len = showData.size();i<len;i++){
-            String _name = showData.get(i);
+
+    }
+
+
+    /**
+     *
+     * @param list
+     * @param cortMatlist
+     * @param regionId
+     * @param showAll 是否显示所有记录
+     *
+     * @return
+     * @throws Exception
+     */
+    private Map<String,Object> packageHadData(List<ItemDetailFormVo> list, List<ItemDetailFormVo> cortMatlist, String regionId, boolean showAll) throws Exception{
+        Map<String,Object> result = new HashMap<>();
+        List<List<Object>> dataList= new ArrayList<>();
+        int total = 0;
+        List<Map<String,Object>> leftlist = new ArrayList<>();
+        boolean bol = StringUtils.isBlank(regionId);
+        //
+        List<ItemDetailFormVo> _tmp = new ArrayList<>();
+        _tmp.addAll(list);
+
+        for(int i=0,len = cortMatlist.size();i<len;i++){
+            ItemDetailFormVo out = cortMatlist.get(i);
+            String name1 = bol?out.getRegionName():out.getOrgName();
             boolean had = false;
-            for(int j =0,len2 = datalist.size();j<len2;j++){
-                if(_name.equals(datalist.get(j).get("name"))){
-                    showList.add(datalist.get(j));
+            for(int j=0,len2=list.size();j<len2;j++){
+                ItemDetailFormVo in = list.get(j);
+                String name2 = bol?in.getRegionName():in.getOrgName();
+                if(name1.equals(name2)){
                     had = true;
+                    ItemDetailFormVo tmpVo = _tmp.get(j);
+                    tmpVo.setCorrectMaterialCount(out.getCorrectMaterialCount());
                     break;
                 }
             }
             if(!had){
-                Map tmp = new HashMap(){{put("name",_name);put("value",0);}};
-                showList.add(tmp);
+                _tmp.add(out);
+            }
+        }
+        //
+            for(int k=0,len =_tmp.size();k<len;k++){
+                ItemDetailFormVo obj = _tmp.get(k);
+                String name1 = bol?obj.getRegionName():obj.getOrgName();
+                total+= obj.getReceiptCount();
+                dataList.add(Arrays.asList(name1,obj.getAcceptCount(),obj.getCorrectMaterialCount(),obj.getNotAcceptCount()));
+                Map<String,Object> tmp = new HashMap<>();
+                tmp.put("name",name1);tmp.put("value",obj.getReceiptCount());
+                leftlist.add(tmp);
+
             }
 
+        Map<String,Object> leftData = new HashMap<>();
+        if(showAll){
+            List<String> showData = getShowData(regionId);
+            List<Map<String,Object>> _leftList = new ArrayList<>();
+            List<List<Object>> _rightList = new ArrayList<>();
+            for(String name :showData){
+                boolean had = false;
+                boolean had2= false;
+                for(Map<String,Object> map :leftlist){
+                    if(name.equals(map.get("name"))){
+                        had = true;
+                        _leftList.add(map);
+                        break;
+                    }
+                }
+                if(!had){
+                    _leftList.add(new HashMap<String,Object>(){{put("name",name);put("value",0);}});
+                }
+                for(List<Object> lstr :dataList){
+                    if(name.equals(lstr.get(0))){
+                        had2 = true;
+                        _rightList.add(lstr);
+                        break;
+                    }
+                }
+                if(!had2){
+                    _rightList.add(Arrays.asList(name,0,0,0));
+                }
+            }
+            leftData.put("data",_leftList);
+            result.put("rightData",_rightList);
         }
+        else{
+            leftData.put("data",leftlist);
+            result.put("rightData",dataList);
+        }
+        leftData.put("total",total);
+        result.put("leftData",leftData);
 
-        Map<String,Object> result = new HashMap<>();
-        result.put("total",total);
-        result.put("data",showList);
         return result;
-
-
     }
 
     private List<String> getShowData(String regionId) throws Exception{
@@ -987,14 +1108,14 @@ public class OrgEfficiencySupersionServiceImpl implements OrgEfficiencySupersion
             search.setRegionId(regionId);
             //原来的opuomOrgmapper里面缺失了regionid 字段所以写到这里
             List<OpuOmOrg> orgList = efficiencySupervisionMapper.listOpuOmOrg(search);
-            if(orgList.size()==0) throw new Exception("查询部门出现异常");
+            if(orgList.size()==0) throw new Exception("该区域下没有配置所属部门。");
             list = orgList.stream().map(OpuOmOrg::getOrgName).collect(Collectors.toList());
         }
         return list;
     }
 
     @Override
-    public List<List<Object>> getOrgReceiveLimitTimeStatistics(String startTime, String endTime, String type, String regionId) throws Exception {
+    public Map<String,Object> getOrgReceiveLimitTimeStatistics(String startTime, String endTime, String type, String regionId) throws Exception {
 
        List<List<Object>> result = new ArrayList<>();
         if ("D".equals(type)) {
@@ -1015,6 +1136,7 @@ public class OrgEfficiencySupersionServiceImpl implements OrgEfficiencySupersion
             }
             LocalDate endDate = LocalDate.parse(endTime, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
             if (!LocalDate.now().isAfter(endDate)) {//结束日期只能统计到昨天
+                startTime  = startTime + " 00:00:00";
                 String yesterday = DateUtils.getYesterdayByFormat("yyyy-MM-dd");
                 endTime = yesterday + " 23:59:59";
             }
@@ -1022,8 +1144,9 @@ public class OrgEfficiencySupersionServiceImpl implements OrgEfficiencySupersion
 
         List<ItemDetailFormVo> list = efficiencySupervisionMapper.getOrgReceiveLimitTimeStatistics(startTime,endTime,regionId,SecurityContext.getCurrentOrgId());
 
-        boolean bol = StringUtils.isBlank(regionId);
+        boolean bol = StringUtils.isBlank(regionId);//不为空的事项显示部门的，否则显示区县的
 
+        int allNormal =0,allWarn =0,allOverdue =0,total=0;
         if(list.size()>0){
             Map<String, List<ItemDetailFormVo>> collect;
             if(bol){
@@ -1040,23 +1163,28 @@ public class OrgEfficiencySupersionServiceImpl implements OrgEfficiencySupersion
                 for(ItemDetailFormVo vo :value){
                     if("1".equals(vo.getInstState())){
                         normal += vo.getReceiptCount();
+                        allNormal += vo.getReceiptCount();
                     }else if("2".equals(vo.getInstState())){
                         warn += vo.getReceiptCount();
+                        allWarn += vo.getReceiptCount();
                     }else if("3".equals(vo.getInstState())){
                         overdue += vo.getReceiptCount();
+                        allOverdue += vo.getReceiptCount();
                     }
                 }
-                 if(bol){
+                 /*if(bol){
                      name = obj.getRegionName();
                  }else {
                      name = obj.getOrgName();
-                 }
+                 }*/
+                name = bol ? obj.getRegionName():obj.getOrgName();
+
                 List<Object> record = Arrays.asList(name,normal,warn,overdue);
                  result.add(record);
             }
         }
 
-        //显示全部数据
+        //显示全部部门或区县数据
         List<List<Object>> showResult = new ArrayList<>();
         List<String> showData = getShowData(regionId);
         for(int i=0,len = showData.size();i < len; i++){
@@ -1074,6 +1202,198 @@ public class OrgEfficiencySupersionServiceImpl implements OrgEfficiencySupersion
                 showResult.add(tmp);
             }
         }
-        return showResult;
+
+        //封装左右两个图的数据
+        Map<String,Object> rMap = new HashMap<>();
+        Map<String,Object> left = new HashMap<>();
+
+        List<Map<String,Object>> leftDataList = new ArrayList<>();
+        Map<String,Object> m1 = new HashMap<>();
+        m1.put("name","正常");m1.put("value",allNormal);
+        Map<String,Object> m2 = new HashMap<>();
+        m2.put("name","预警");m2.put("value",allWarn);
+        Map<String,Object> m3 = new HashMap<>();
+        m3.put("name","逾期");m3.put("value",allOverdue);
+        total = allNormal+allWarn+allOverdue;
+        left.put("total",total);
+        leftDataList.add(m1);
+        leftDataList.add(m2);
+        leftDataList.add(m3);
+        left.put("data",leftDataList);
+        rMap.put("leftData",left);
+        rMap.put("rightData",showResult);
+        return rMap;
+    }
+
+    private List<Map<String, Object>> getRegionOrgData(String regionId) throws Exception {
+        List<Map<String, Object>> list = null;
+        if (StringUtils.isBlank(regionId)) {
+            List<BscDicRegion> childRegion = getChildRegion();
+            if (childRegion.size() == 0) throw new Exception("查询区域出现异常");
+            list = childRegion.stream().map(data -> {
+                Map<String, Object> region = new HashMap<>();
+                region.put("regionId", data.getRegionId());
+                region.put("regionName", data.getRegionName());
+                return region;
+            }).collect(Collectors.toList());
+        } else {
+            OpuOmOrg search = new OpuOmOrg();
+            BscDicRegion currentRegion = bscDicRegionMapper.getBscDicRegionById(regionId);
+            if ("4".equals(currentRegion.getRegionalLevel())) {
+                //市级部门
+                search.setOrgLevel(2);
+            } else if ("5".equals(currentRegion.getRegionalLevel())) {
+                search.setOrgLevel(3);
+            }
+            search.setOrgProperty("d");
+            search.setIsPublic("1");
+            search.setIsActive("1");
+            search.setIsLeaf("1");
+            search.setRegionId(regionId);
+            //原来的opuomOrgmapper里面缺失了regionid 字段所以写到这里
+            List<OpuOmOrg> orgList = efficiencySupervisionMapper.listOpuOmOrg(search);
+            if (orgList.size() == 0) throw new Exception("查询部门出现异常");
+            list = orgList.stream().map(data -> {
+                Map<String, Object> org = new HashMap<>();
+                org.put("orgId", data.getOrgId());
+                org.put("orgName", data.getOrgName());
+                return org;
+            }).collect(Collectors.toList());
+        }
+        return list;
+    }
+
+    @Override
+    public List<Map<String, Object>> getItemUseTimeStatistics(String startTime, String endTime, String type, String regionId, String orgId) throws Exception {
+
+        if (DateType.YESTERDAY.equals(type)) {
+            Date preDate = DateUtils.getPreDateByDate(new Date());
+            String preDateStr = DateUtils.convertDateToString(preDate, "yyyy-MM-dd");
+            String preDateStart = preDateStr + " 00:00:00";
+            String preDateEnd = preDateStr + " 23:59:59";
+            return getItemUseTimeStatisticsByCondition(preDateStart, preDateEnd, regionId, orgId, SecurityContext.getCurrentOrgId());
+        } else if (DateType.CUR_WEEK.equals(type)) {
+            Date thisWeekMonday = DateUtils.getThisWeekMonday(new Date());
+            Date thisWeekSunday = DateUtils.getThisWeekSunday(new Date());
+            String monday = DateUtils.convertDateToString(thisWeekMonday, "yyyy-MM-dd") + " 00:00:00";
+            String sunday = DateUtils.convertDateToString(thisWeekSunday, "yyyy-MM-dd") + " 23:59:59";
+            return getItemUseTimeStatisticsByCondition(monday, sunday, regionId, orgId, SecurityContext.getCurrentOrgId());
+        } else if (DateType.CUR_MONTH.equals(type)) {
+            Date firstDay = DateUtils.firstDayOfMonth(new Date());
+            Date lastDay = DateUtils.lastDayOfMonth(new Date());
+            String firstDayStart = DateUtils.convertDateToString(firstDay, "yyyy-MM-dd") + " 00:00:00";
+            String lastDayEnd = DateUtils.convertDateToString(lastDay, "yyyy-MM-dd") + " 23:59:59";
+            return getItemUseTimeStatisticsByCondition(firstDayStart, lastDayEnd, regionId, orgId, SecurityContext.getCurrentOrgId());
+        } else if (StringUtils.isNotBlank(startTime) && StringUtils.isNotBlank(endTime)) {
+            startTime = startTime + " 00:00:00";
+            endTime = endTime + " 23:59:59";
+            return getItemUseTimeStatisticsByCondition(startTime, endTime, regionId, orgId, SecurityContext.getCurrentOrgId());
+        }
+
+        return null;
+    }
+
+    private List<Map<String, Object>> getItemUseTimeStatisticsByCondition(String startTime, String endTime, String regionId, String orgId, String rootOrgId) throws Exception {
+        if (StringUtils.isBlank(regionId) && StringUtils.isBlank(orgId)) {
+            //查询各地区用时
+            List<UseTimeStatisticsVo> useTimeData = efficiencySupervisionMapper.getItemUseTimeByRegion(startTime, endTime, rootOrgId);
+            List<Map<String, Object>> allRegion = getRegionOrgData(null);
+
+            Map<String, List<UseTimeStatisticsVo>> collect = null;
+            if (CollectionUtils.isNotEmpty(useTimeData)) {
+                collect = useTimeData.stream().collect(Collectors.groupingBy(UseTimeStatisticsVo::getRegionId));
+            }
+
+            List<Map<String, Object>> result = new ArrayList<>();
+            for (Map<String, Object> region : allRegion) {
+                Map<String, Object> data = new HashMap<>(12);
+                data.put("regionId", region.get("regionId"));
+                data.put("regionName", region.get("regionName"));
+                data.put("orgId", null);
+                data.put("orgName", null);
+                data.put("itemId", null);
+                data.put("itemName", null);
+                data.put("maxUseTime", 0.0);
+                data.put("minUseTime", 0.0);
+                data.put("avgUseTime", 0.0);
+                if (collect != null && collect.get(region.get("regionId")) != null) {
+                    List<UseTimeStatisticsVo> useTimeStatisticsVos = collect.get(region.get("regionId"));
+                    if (CollectionUtils.isNotEmpty(useTimeStatisticsVos)) {
+                        data.put("maxUseTime", useTimeStatisticsVos.get(0).getMaxUseTime());
+                        data.put("minUseTime", useTimeStatisticsVos.get(0).getMinUseTime());
+                        data.put("avgUseTime", useTimeStatisticsVos.get(0).getAvgUseTime());
+                    }
+                }
+                result.add(data);
+            }
+            return result;
+        } else if (StringUtils.isNotBlank(regionId)) {
+            //查询某部门各部门用时
+            List<UseTimeStatisticsVo> useTimeData = efficiencySupervisionMapper.getItemUseTimeByOrg(startTime, endTime, regionId, rootOrgId);
+            List<Map<String, Object>> allOrg = getRegionOrgData(regionId);
+
+            Map<String, List<UseTimeStatisticsVo>> collect = null;
+            if (CollectionUtils.isNotEmpty(useTimeData)) {
+                collect = useTimeData.stream().collect(Collectors.groupingBy(UseTimeStatisticsVo::getOrgId));
+            }
+
+            List<Map<String, Object>> result = new ArrayList<>();
+            for (Map<String, Object> org : allOrg) {
+                Map<String, Object> data = new HashMap<>(12);
+                data.put("regionId", null);
+                data.put("regionName", null);
+                data.put("orgId", org.get("orgId"));
+                data.put("orgName", org.get("orgName"));
+                data.put("itemId", null);
+                data.put("itemName", null);
+                data.put("maxUseTime", 0.0);
+                data.put("minUseTime", 0.0);
+                data.put("avgUseTime", 0.0);
+                if (collect != null && collect.get(org.get("orgId")) != null) {
+                    List<UseTimeStatisticsVo> useTimeStatisticsVos = collect.get(org.get("orgId"));
+                    if (CollectionUtils.isNotEmpty(useTimeStatisticsVos)) {
+                        data.put("maxUseTime", useTimeStatisticsVos.get(0).getMaxUseTime());
+                        data.put("minUseTime", useTimeStatisticsVos.get(0).getMinUseTime());
+                        data.put("avgUseTime", useTimeStatisticsVos.get(0).getAvgUseTime());
+                    }
+                }
+                result.add(data);
+            }
+            return result;
+        } else if (StringUtils.isNotBlank(orgId)) {
+            //查询某部门各事项用时
+            List<UseTimeStatisticsVo> useTimeData = efficiencySupervisionMapper.getItemUseTimeByItem(startTime, endTime, orgId, rootOrgId);
+            List<AeaItemBasic> items = aeaItemBasicMapper.listAeaItemBasicByOrgId(orgId);
+
+            Map<String, List<UseTimeStatisticsVo>> collect = null;
+            if (CollectionUtils.isNotEmpty(useTimeData)) {
+                collect = useTimeData.stream().collect(Collectors.groupingBy(UseTimeStatisticsVo::getItemId));
+            }
+
+            List<Map<String, Object>> result = new ArrayList<>();
+            for (AeaItemBasic item : items) {
+                Map<String, Object> data = new HashMap<>(12);
+                data.put("regionId", null);
+                data.put("regionName", null);
+                data.put("orgId", null);
+                data.put("orgName", null);
+                data.put("itemId", item.getItemId());
+                data.put("itemName", item.getItemName());
+                data.put("maxUseTime", 0.0);
+                data.put("minUseTime", 0.0);
+                data.put("avgUseTime", 0.0);
+                if (collect != null && collect.get(item.getItemId()) != null) {
+                    List<UseTimeStatisticsVo> useTimeStatisticsVos = collect.get(item.getItemId());
+                    if (CollectionUtils.isNotEmpty(useTimeStatisticsVos)) {
+                        data.put("maxUseTime", useTimeStatisticsVos.get(0).getMaxUseTime());
+                        data.put("minUseTime", useTimeStatisticsVos.get(0).getMinUseTime());
+                        data.put("avgUseTime", useTimeStatisticsVos.get(0).getAvgUseTime());
+                    }
+                }
+                result.add(data);
+            }
+            return result;
+        }
+        return null;
     }
 }

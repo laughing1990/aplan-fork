@@ -94,7 +94,12 @@ var vm = new Vue({
         },
         closeSendApplyDialog: function (){
             this.$refs.sendApplyRef.resetFields();
-        }
+        },
+        //新的发起申报接口，直接进入审批页，可以做材料补正上传等操作
+        viewDetail:function (row) {
+            var url = ctx+'apanmis/page/stageApproveIndex?taskId='+row.taskId + "&viewId=" + row.viewId +'&draft=true';
+            window.open(url,'_blank');
+        },
     },
     created: function () {
         this.conditionalQueryDic();

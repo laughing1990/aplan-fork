@@ -2,25 +2,11 @@ package com.augurit.aplanmis.common.service.mat.impl;
 
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.util.StringUtils;
-import com.augurit.aplanmis.common.domain.AeaHiApplyinst;
-import com.augurit.aplanmis.common.domain.AeaHiItemMatinst;
-import com.augurit.aplanmis.common.domain.AeaHiIteminst;
-import com.augurit.aplanmis.common.domain.AeaHiParStageinst;
-import com.augurit.aplanmis.common.domain.AeaHiParStateinst;
-import com.augurit.aplanmis.common.domain.AeaItemBasic;
-import com.augurit.aplanmis.common.domain.AeaItemMat;
-import com.augurit.aplanmis.common.domain.AeaItemState;
-import com.augurit.aplanmis.common.domain.AeaParStage;
-import com.augurit.aplanmis.common.domain.AeaParStageItem;
+import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.mapper.AeaItemMatMapper;
 import com.augurit.aplanmis.common.mapper.AeaParStageItemMapper;
 import com.augurit.aplanmis.common.mapper.AeaParStageMapper;
-import com.augurit.aplanmis.common.service.instance.AeaHiApplyinstService;
-import com.augurit.aplanmis.common.service.instance.AeaHiItemMatinstService;
-import com.augurit.aplanmis.common.service.instance.AeaHiItemStateinstService;
-import com.augurit.aplanmis.common.service.instance.AeaHiIteminstService;
-import com.augurit.aplanmis.common.service.instance.AeaHiParStageinstService;
-import com.augurit.aplanmis.common.service.instance.AeaHiParStateinstService;
+import com.augurit.aplanmis.common.service.instance.*;
 import com.augurit.aplanmis.common.service.item.AeaItemBasicService;
 import com.augurit.aplanmis.common.service.mat.AeaItemMatService;
 import com.augurit.aplanmis.common.service.stage.AeaParStageService;
@@ -267,18 +253,36 @@ public class AeaItemMatServiceImpl implements AeaItemMatService {
                 List<AeaHiItemMatinst> attInstList = new ArrayList<>();
                 List<AeaHiItemMatinst> pageInstList = new ArrayList<>();
                 List<AeaHiItemMatinst> copyInstList = new ArrayList<>();
+                List<AeaHiItemMatinst> forminstList = new ArrayList<>();
+                List<AeaHiItemMatinst> certinstList = new ArrayList<>();
+
                 for (AeaHiItemMatinst matinst : matinstList) {
                     if (mat.getMatCode().equals(matinst.getMatinstCode())) {
-                        if (matinst.getAttCount() != null && matinst.getAttCount() > 0) attInstList.add(matinst);
+
+                        if ("f".equals(matinst.getMatProp()) && StringUtils.isNotBlank(matinst.getStoFormId())) {
+                            forminstList.add(matinst);
+                            continue;
+                        }
+
+                        if ("c".equals(matinst.getMatProp()) && StringUtils.isNotBlank(matinst.getCertinstId())) {
+                            certinstList.add(matinst);
+                            continue;
+                        }
+
+                        if (matinst.getAttCount() != null && matinst.getAttCount() > 0)
+                            attInstList.add(matinst);
                         if (matinst.getRealPaperCount() != null && matinst.getRealPaperCount() > 0)
                             pageInstList.add(matinst);
                         if (matinst.getRealCopyCount() != null && matinst.getRealCopyCount() > 0)
                             copyInstList.add(matinst);
                     }
                 }
+
                 mat.setAttMatinstList(attInstList);
                 mat.setCopyMatinstList(copyInstList);
                 mat.setPageMatinstList(pageInstList);
+                mat.setForminstList(forminstList);
+                mat.setCertinstList(certinstList);
             }
         }
         return matList;
