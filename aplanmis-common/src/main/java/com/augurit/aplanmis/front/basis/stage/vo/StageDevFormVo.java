@@ -17,4 +17,6 @@ public class StageDevFormVo {
     @ApiModelProperty(value = "表单地址", dataType = "string")
     private String formUrl;
 
+    @ApiModelProperty(value = "表单序号", dataType = "string")
+    private int formSortNo;
 }
