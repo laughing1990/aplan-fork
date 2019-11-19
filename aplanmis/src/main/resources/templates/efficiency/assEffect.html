@@ -64,9 +64,9 @@
         <el-button-group>
           <el-button :type="curEffectModule == 1 ? 'primary':'normal'" size="small" @click="moduleSwitch('1')">全部
           </el-button>
-          <el-button :type="curEffectModule == 2 ? 'primary':'normal'" size="small" @click="moduleSwitch('2')">工作量及有效性专题
-          </el-button>
           <el-button :type="curEffectModule == 3 ? 'primary':'normal'" size="small" @click="moduleSwitch('3')">时限专题
+          </el-button>
+          <el-button :type="curEffectModule == 2 ? 'primary':'normal'" size="small" @click="moduleSwitch('2')">工作量及有效性专题
           </el-button>
         </el-button-group>
       </div>
@@ -74,82 +74,6 @@
 
     <!-- 督查模块展示区 -->
     <div class="module-wrap">
-      <!-- 工作量及有效性专题 -->
-      <div class="mb20 module-workload" v-if="curEffectModule == 1 || curEffectModule == 2">
-        <el-row :gutter="15" class="mt15 bottom-show-box">
-          <el-col :xs="24" :sm="24" :md="10" :lg="10" :xl="10">
-            <div class="mb10 theme-abnormal-box">
-              <el-card class="box-card pr">
-                <div slot="header" class="clearfix">
-                  <span class="card-title">接件总量</span>
-                </div>
-                <div class="accept-rander-box" id="acceptSumPieChart"></div>
-                <div class="mb10 non-data" v-show="!acceptSumPieChart"></div>
-              </el-card>
-            </div>
-          </el-col>
-          <el-col :xs="24" :sm="24" :md="14" :lg="14" :xl="14">
-            <div class="mb10 theme-abnormal-box">
-              <el-card class="box-card pr">
-                <div slot="header" class="clearfix">
-                  <span class="card-title">接件受理情况</span>
-                </div>
-                <div class="accept-rander-box" id="accepConnectionBarChart"></div>
-                <div class="mb10 non-data" v-show="!accepConnectionBarChart"></div>
-              </el-card>
-            </div>
-          </el-col>
-        </el-row>
-        <el-card class="box-card pr" style="margin-top: 6px;">
-          <div slot="header" class="clearfix">
-            <span class="card-title">接件历史分析</span>
-          </div>
-          <div>
-            <el-row>
-              <div class="win-precent-box clearfix" :class="[isSmallWin? 'mb45':'']">
-                <div class="win-item" v-for="item in accepConnectionWinList" :key="item.windId"
-                  :class="[item.select ? 'active':'']" @click="fetchSelectedWinAccepConnectionEffectData(item)">
-                  <p class="ellipsis win-title">{{item.winName}}</p>
-                  <div class="win-content clearfix">
-                    <div class="fl win-precent">
-                      <p class="tip">已接件</p>
-                      <p class="precent">{{item.apply || 0}}</p>
-                    </div>
-                    <div class="fr win-precent">
-                      <p class="tip">已受理</p>
-                      <p class="precent">{{item.acceptDeal || 0}}</p>
-                    </div>
-                    <div class="fr win-pie" style="display:none;">
-                      <el-tooltip placement="top" effect="light">
-                        <div slot="content">{{'受理率：' + item.percent}}</div>
-                        <el-progress type="circle" :width="40" :show-text="false" :percentage="item.percentNum">
-                        </el-progress>
-                      </el-tooltip>
-                    </div>
-                  </div>
-                </div>
-                <!-- 左右切换 -->
-                <div class="fl swipe-tabs-left swipe-btn" @click="winHandelToLeft" v-show="isLeft">
-                  <i class="el-icon-arrow-left"></i>
-                </div>
-                <div class="fr swipe-tabs-right swipe-btn" @click="winHandelToRight" v-show="isRight">
-                  <i class="el-icon-arrow-right"></i>
-                </div>
-              </div>
-            </el-row>
-            <el-row :gutter="40">
-              <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="pr">
-                <div class="mb10 accept-effectchart-box" id="accepConnectionEffectLineChart"></div>
-                <div class="mb10 non-data" v-show="!accepConnectionEffectLineChart"></div>
-              </el-col>
-            </el-row>
-          </div>
-          <div class="accept-box" v-show="!accepConnectionWinAllList.length">
-            <div class="non-data"></div>
-          </div>
-        </el-card>
-      </div>
-
       <!-- 时限专题 -->
       <div class="mb20 module-timeLimit" v-if="curEffectModule == 1 || curEffectModule == 3">
         <el-row :gutter="15" class="mt15 bottom-show-box">
@@ -228,8 +152,82 @@
             <div class="non-data"></div>
           </div>
         </el-card>
-    </div>
-
+      </div>
+      <!-- 工作量及有效性专题 -->
+      <div class="mb20 module-workload" v-if="curEffectModule == 1 || curEffectModule == 2">
+        <el-row :gutter="15" class="mt15 bottom-show-box">
+          <el-col :xs="24" :sm="24" :md="10" :lg="10" :xl="10">
+            <div class="mb10 theme-abnormal-box">
+              <el-card class="box-card pr">
+                <div slot="header" class="clearfix">
+                  <span class="card-title">接件总量</span>
+                </div>
+                <div class="accept-rander-box" id="acceptSumPieChart"></div>
+                <div class="mb10 non-data" v-show="!acceptSumPieChart"></div>
+              </el-card>
+            </div>
+          </el-col>
+          <el-col :xs="24" :sm="24" :md="14" :lg="14" :xl="14">
+            <div class="mb10 theme-abnormal-box">
+              <el-card class="box-card pr">
+                <div slot="header" class="clearfix">
+                  <span class="card-title">接件受理情况</span>
+                </div>
+                <div class="accept-rander-box" id="accepConnectionBarChart"></div>
+                <div class="mb10 non-data" v-show="!accepConnectionBarChart"></div>
+              </el-card>
+            </div>
+          </el-col>
+        </el-row>
+        <el-card class="box-card pr" style="margin-top: 6px;">
+          <div slot="header" class="clearfix">
+            <span class="card-title">接件历史分析</span>
+          </div>
+          <div>
+            <el-row>
+              <div class="win-precent-box clearfix" :class="[isSmallWin? 'mb45':'']">
+                <div class="win-item" v-for="item in accepConnectionWinList" :key="item.windId"
+                  :class="[item.select ? 'active':'']" @click="fetchSelectedWinAccepConnectionEffectData(item)">
+                  <p class="ellipsis win-title">{{item.winName}}</p>
+                  <div class="win-content clearfix">
+                    <div class="fl win-precent">
+                      <p class="tip">已接件</p>
+                      <p class="precent">{{item.apply || 0}}</p>
+                    </div>
+                    <div class="fr win-precent">
+                      <p class="tip">已受理</p>
+                      <p class="precent">{{item.acceptDeal || 0}}</p>
+                    </div>
+                    <div class="fr win-pie" style="display:none;">
+                      <el-tooltip placement="top" effect="light">
+                        <div slot="content">{{'受理率：' + item.percent}}</div>
+                        <el-progress type="circle" :width="40" :show-text="false" :percentage="item.percentNum">
+                        </el-progress>
+                      </el-tooltip>
+                    </div>
+                  </div>
+                </div>
+                <!-- 左右切换 -->
+                <div class="fl swipe-tabs-left swipe-btn" @click="winHandelToLeft" v-show="isLeft">
+                  <i class="el-icon-arrow-left"></i>
+                </div>
+                <div class="fr swipe-tabs-right swipe-btn" @click="winHandelToRight" v-show="isRight">
+                  <i class="el-icon-arrow-right"></i>
+                </div>
+              </div>
+            </el-row>
+            <el-row :gutter="40">
+              <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="pr">
+                <div class="mb10 accept-effectchart-box" id="accepConnectionEffectLineChart"></div>
+                <div class="mb10 non-data" v-show="!accepConnectionEffectLineChart"></div>
+              </el-col>
+            </el-row>
+          </div>
+          <div class="accept-box" v-show="!accepConnectionWinAllList.length">
+            <div class="non-data"></div>
+          </div>
+        </el-card>
+      </div>
     </div>
 
   </div>

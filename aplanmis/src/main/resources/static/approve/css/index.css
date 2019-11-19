@@ -37,12 +37,13 @@ input[type="number"] {
     color: #575962;
 }
 
-#approvePage .ltabs .el-tabs__item{
+#approvePage .ltabs .el-tabs__item {
     font-size: 16px;
     height: 44px;
     line-height: 44px;
 }
-#approvePage .ltabs .el-tabs__nav{
+
+#approvePage .ltabs .el-tabs__nav {
     height: 46px;
 }
 
@@ -2282,18 +2283,21 @@ input[type="number"] {
 .bz-table-out .el-input-number.is-without-controls .el-input__inner {
     padding: 0 5px;
 }
-.table-section-title{
+
+.table-section-title {
     height: 16px;
     line-height: 16px;
     border-left: 3px solid #169AFF;
     padding-left: 7px;
     margin-top: 22px;
 }
+
 /*材料补正 新 end*/
 /*证照库材料库 start*/
-.id-lib-top-search{
-    line-height:36px;
+.id-lib-top-search {
+    line-height: 36px;
 }
+
 .mat-table-btn {
     float: left;
     color: #169AFF;
@@ -2301,7 +2305,8 @@ input[type="number"] {
     height: 25px;
     cursor: pointer;
 }
-.mat-table-btn:hover{
+
+.mat-table-btn:hover {
     text-decoration: underline;
 }
 
@@ -2312,11 +2317,13 @@ input[type="number"] {
     background: #DCDFE6;
     margin: 7px 7px 0 7px;
 }
-.next-margin-top+.next-margin-top{
+
+.next-margin-top + .next-margin-top {
     margin-top: 20px;
 }
+
 /*证照库材料库 end*/
-.mat-form-dialog .el-dialog{
+.mat-form-dialog .el-dialog {
     width: 80%;
 }
 

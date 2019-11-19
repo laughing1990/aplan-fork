@@ -33,8 +33,9 @@ public class OneFormCommonService {
     @Autowired
     private ActStoFormMapper actStoFormMapper;
 
-    private List<SFFormParam> genListSFFormParam4OneForm(OneFormStageRequest oneFormStageRequest) {
+    public List<SFFormParam> genListSFFormParam4OneForm(OneFormStageRequest oneFormStageRequest,boolean isIncludeDevForm) {
         List<SFFormParam> result = null;
+
         //参数去重去空
         if (oneFormStageRequest.getItemids() != null && !oneFormStageRequest.getItemids().isEmpty()) {
             HashMap<String, String> map = new HashMap<String, String>();
@@ -64,7 +65,13 @@ public class OneFormCommonService {
             List<AeaParStagePartform> listAeaParStagePartform = null;
             AeaParStagePartform aeaParStagePartform = new AeaParStagePartform();
             aeaParStagePartform.setStageId(oneFormStageRequest.getStageId());
-            aeaParStagePartform.setIsSmartForm("1");// 过滤开发表单
+            if(isIncludeDevForm){
+
+            }
+            else{
+                // 过滤开发表单
+                aeaParStagePartform.setIsSmartForm("1");
+            }
             listAeaParStagePartform = aeaParStagePartformService.listStagePartform(aeaParStagePartform);
 
             //事项表单和扩展表单合并
@@ -95,7 +102,7 @@ public class OneFormCommonService {
             result.setMessage("申报实例ID不能为空!!");
         } else {
             Map<String, Object> resultMap = new HashMap();
-            List<SFFormParam> listSFFormParam = genListSFFormParam4OneForm(oneFormStageRequest);
+            List<SFFormParam> listSFFormParam = genListSFFormParam4OneForm(oneFormStageRequest,false);
             ContentResultForm<String> sfFormResult = sFFormMultipleRender.renderHtmlFormContainer(listSFFormParam, sFRenderConfig);
             resultMap.put("sfForm", sfFormResult.getContent());
 
@@ -182,7 +189,7 @@ public class OneFormCommonService {
         if (StringUtils.isBlank(oneFormStageRequest.getApplyinstId())) {
             logger.warn("申报实例ID不能为空!!");
         } else {
-            List<SFFormParam> listSFFormParam = genListSFFormParam4OneForm(oneFormStageRequest);
+            List<SFFormParam> listSFFormParam = genListSFFormParam4OneForm(oneFormStageRequest,false);
             sFFormMultipleRender.renderPage(listSFFormParam, sFRenderConfig);
         }
     }

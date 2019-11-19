@@ -27,6 +27,7 @@ var module1 = new Vue({
 			}
 		};
 		return {
+			itemVerId: '', // 服务事项id
 			loginUserInfo: {
 				isAdministrators: "",
 				isOwner: "",
@@ -87,8 +88,8 @@ var module1 = new Vue({
 				agentItemName: [
 					{ required: true, message: '请选择中介服务事项', trigger: 'change' }
 				],
-				isApproveProj:[
-				    { required: true, message: '请选择投资审批项目', trigger: 'change' }
+				isApproveProj: [
+					{ required: true, message: '请选择投资审批项目', trigger: 'change' }
 				],
 				approvalCode: [
 					{ required: true, message: '投资审批项目编码', trigger: 'change' }
@@ -103,8 +104,8 @@ var module1 = new Vue({
 					//  { required: true, message: '请输入联系电话', trigger: 'blur' },
 					{ required: true, validator: checkPhone, trigger: 'change' }
 				],
-				projName:[
-				     { required: true, message: '请输入采购项目名称', trigger: 'change' }
+				projName: [
+					{ required: true, message: '请输入采购项目名称', trigger: 'change' }
 				],
 				projScale: [
 					{ required: true, message: '请输入项目规模', trigger: 'change' }
@@ -148,8 +149,8 @@ var module1 = new Vue({
 				// qualRequireExplain:[
 				//     { required: true, message: '请填写资质要求说明', trigger: 'blur' }
 				// ],
-				isDefineAmount:[
-				    { required: true, message: '请选择是否确认金额', trigger: 'change' }
+				isDefineAmount: [
+					{ required: true, message: '请选择是否确认金额', trigger: 'change' }
 				],
 				isDiscloseIm: [
 					{ required: true, message: '请选择中选机构公示', trigger: 'change' }
@@ -213,10 +214,10 @@ var module1 = new Vue({
 				children: 'children',
 				label: 'name'
 			},
-			form: { 
-				isApproveProj: 1, 
-				isDefineAmount: '1', 
-				chooseInsertype: ['1', '1'], 
+			form: {
+				isApproveProj: 1,
+				isDefineAmount: '1',
+				chooseInsertype: ['1', '1'],
 				isAvoid: "0",
 				biddingType: '1',
 				basePrice: ''
@@ -253,6 +254,10 @@ var module1 = new Vue({
 			fileList: [],
 			checkAll: true, // 智能分拣区文件是否全选
 			checkedSelFlie: [], // 智能分拣区已选文件
+			AllFileListId: [], // 已选文件name集合
+			matIds: [], // 材料matIdS
+			selMatinstId: '', // 已选材料实例Id
+			matinstIds: [], // 材料实例Ids
 			model: {
 				rules: {
 					getPaper: { required: true, message: "必选", trigger: ["change"] },
@@ -270,7 +275,9 @@ var module1 = new Vue({
 			homepPage: 1,
 			homeTotal: 0,
 			isShowServiceDetail: false, // 是否显示中介服务对应详细信息
-			serviceDetail: {} // 中介服务对应详细信息
+			serviceDetail: {}, // 中介服务对应详细信息
+			stateList: [], // 情形选中列表
+			attachmentUrl: ctx + 'supermarket/purchase/mat/uploadPurchaseAtt', // 附加上传url
 		}
 	},
 	methods: {
@@ -302,7 +309,7 @@ var module1 = new Vue({
 			// console.log(vm.form.chooseInsertype)
 			this.$refs[formName].validate(function (valid, obj) {
 				if (true) {
-				// if (valid) {
+					// if (valid) {
 					// var aeaImMajorQuals = [{
 					//     majorId:'', // 专业ID
 					//  majorQualId:'', // 专业资质关联ID(不用传)
@@ -466,6 +473,8 @@ var module1 = new Vue({
 					if (isQualRequire) {
 						params.aeaImMajorQuals = aeaImMajorQuals
 					}
+
+					params.itemVerId = vm.itemVerId;
 					// debugger
 					// console.log(params)
 					// return
@@ -708,7 +717,8 @@ var module1 = new Vue({
 			vm.selectdRecord = [];
 			var value = vm.multipleSelection2
 
-			vm.serviceDetail = JSON.parse(JSON.stringify(vm.multipleSelection2[0]));
+			// vm.serviceDetail = JSON.parse(JSON.stringify(vm.multipleSelection2[0]));
+			vm.itemVerId = value[0].agentItemVerId;
 			vm.isShowServiceDetail = true;
 
 			if (!value.length > 0) {
@@ -746,7 +756,8 @@ var module1 = new Vue({
 			vm.form.itemName = value[0].itemName
 			vm.$set(vm.form, 'isApproveProj', '1')
 			// vm.getAutoProjCode();
-			vm.getItemServiceList(value[0].agentItemVerId)
+			vm.getItemServiceList(value[0].agentItemVerId);
+			vm.getStatusStateMats(value[0].agentItemVerId); // 获取阶段
 		},
 		needServiceListChange: function (item) {
 			var vm = this;
@@ -916,28 +927,30 @@ var module1 = new Vue({
 		},
 		beforeAvatarUpload: function (file) {
 			var testmsg = file.name.substring(file.name.lastIndexOf('.') + 1)
-			var extension = testmsg === 'exe'
-			var extension2 = testmsg === 'sh'
-			var extension3 = testmsg === 'bat'
-			var extension4 = testmsg === 'com'
-			var extension5 = testmsg === 'dll'
-			if (extension || extension2 || extension3 || extension4 || extension5) {
+			// var extension = testmsg === 'exe'
+			// var extension2 = testmsg === 'sh'
+			// var extension3 = testmsg === 'bat'
+			// var extension4 = testmsg === 'com'
+			// var extension5 = testmsg === 'dll'
+			if (['exe', 'sh', 'bat', 'com', 'dll'].indexOf(testmsg) > -1) {
 				this.$message({
 					message: '禁止上传以下的附件类型：.exe,.sh,.bat,.com,.dll!',
 					type: 'error'
 				});
+				return false;
 			}
 			if (file.size > 10485760) {
 				this.$message({
 					message: '上传文件大小不能超过 10MB!',
 					type: 'error'
 				});
-			}
-			if (extension && extension2 && extension3 && extension4 && extension5 && file.size > 10485760) {
 				return false;
-			} else {
-				return true;
 			}
+			// if (extension && extension2 && extension3 && extension4 && extension5 && file.size > 10485760) {
+			// 	return false;
+			// } else {
+			// 	return true;
+			// }
 		},
 		beforeRemove1: function (file, fileList) {
 			return this.$confirm('确定移除' + file.name + '?');
@@ -978,6 +991,7 @@ var module1 = new Vue({
 			var vm = this;
 			confirmMsg('确定移除' + item.name + '?', '', function () {
 				vm.fileList1.splice(index, 1);
+				vm.formData1.splice(index, 1);
 			})
 
 		},
@@ -1033,6 +1047,7 @@ var module1 = new Vue({
 			var vm = this;
 			confirmMsg('确定移除' + item.name + '?', '', function () {
 				vm.fileList2.splice(index, 1);
+				vm.formData2.splice(index, 1);
 			})
 
 		},
@@ -1202,13 +1217,25 @@ var module1 = new Vue({
 		},
 
 
+		// 删除数组里含有某值的对应项
+		removeArray: function(_arr, _obj) {
+			if (!_arr) return;
+			var length = _arr.length;
+			if (length.length == 0) return;
+			for (var i = 0; i < length; i++) {
+			  if (_arr[i] === _obj) {
+				_arr.splice(i, 1);
+				return _arr;
+			  }
+			}
+		  },
 		// pageSize 改变时会触发
-		homeHandleSizeChange: function(val) {
+		homeHandleSizeChange: function (val) {
 			this.pageSize = val;
 			this.getUnpublishedProjInfoList();
 		},
 		// currentPage 改变时会触发
-		homeHandleCurrentChange: function(val) {
+		homeHandleCurrentChange: function (val) {
 			this.pageNum = val;
 			this.getUnpublishedProjInfoList();
 		},
@@ -1270,7 +1297,7 @@ var module1 = new Vue({
 				return false;
 			} else {
 				_that.loadingFile = true;
-				axios.post(ctx + 'rest/mats/att/upload/auto', _that.fileData).then(function (res) {
+				axios.post(ctx + 'supermarket/purchase/mat/att/upload/auto', _that.fileData).then(function (res) {
 					_that.checkedSelFlie = [];
 					_that.AllFileList = [];
 					_that.loadingFile = false;
@@ -1315,396 +1342,340 @@ var module1 = new Vue({
 			this.checkedSelFlie = val ? this.AllFileListId : [];
 		},
 		// 获取文件后缀
-        getFileType: function(fileName){
-            var index1=fileName.lastIndexOf(".");
-            var index2=fileName.length;
-            var suffix=fileName.substring(index1+1, index2).toLowerCase();//后缀名
-            if(suffix=='docx'){
-                suffix='doc';
-            }
-            return suffix;
+		getFileType: function (fileName) {
+			var index1 = fileName.lastIndexOf(".");
+			var index2 = fileName.length;
+			var suffix = fileName.substring(index1 + 1, index2).toLowerCase();//后缀名
+			if (suffix == 'docx') {
+				suffix = 'doc';
+			}
+			return suffix;
 		},
+		// 获取已上传文件列表
+		getFileListWin: function(matinstId,rowData){
+			var _that = this;
+			request('', {
+			  url: ctx + 'rest/mats/att/list',
+			  type: 'get',
+			  data: {matinstId: matinstId}
+			}, function (res) {
+			  if(res.success){
+				// if(res.content){
+				  _that.uploadTableData = res.content?res.content:[];
+				  if(rowData){
+					rowData.matChild=res.content?res.content:[];
+				  }
+				  if(rowData.matChild.length>0){
+					_that.showMatTableExpand = true;
+				  }
+				// }
+			  }else {
+				_that.$message({
+				  message: res.message?res.message:'加载已上传材料列表失败',
+				  type: 'error'
+				});
+			  }
+			}, function (msg) {
+			  _that.$message({
+				message: '服务请求失败',
+				type: 'error'
+			  });
+			});
+		  },
 		// 预览电子件
-        filePreview: function(data,flag){ // flag==pdf 查看施工图
-            var detailId = data.fileId;
-            var _that = this;
-            console.log(data);
-            var regText = /doc|docx|ppt|pptx|xls|xlsx|txt$/;
-            var fileName=data.fileName;
-            var fileType = this.getFileType(fileName);
-            var flashAttributes = '';
-            _that.filePreviewCount++;
-            if(flag=='pdf'){
-                var tempwindow=window.open(); // 先打开页面
-                setTimeout(function(){
-                    tempwindow.location=ctx+'cod/drawing/drawingCheck?detailId='+detailId;
-                },1000)
-            }else {
-                if(fileType=='pdf'){
-                    var tempwindow=window.open(); // 先打开页面
-                    setTimeout(function(){
-                        tempwindow.location=ctx+'previewPdf/view?detailId='+detailId;
-                    },1000)
-                }else if(regText.test(fileType)){
-                    // previewPdf/pdfIsCoverted
-                    _that.loading = true;
-                    request('', {
-                        url: ctx + 'previewPdf/pdfIsCoverted?detailId='+detailId,
-                        type: 'get',
-                    }, function (result) {
-                        if(result.success){
-                            _that.loading = false;
-                            var tempwindow=window.open(); // 先打开页面
-                            setTimeout(function(){
-                                tempwindow.location=ctx+'previewPdf/view?detailId='+detailId;
-                            },1000)
-                        }else {
-                            if(_that.filePreviewCount>9){
-                                confirmMsg('提示信息：', '文件预览请求中，是否继续等待？', function () {
-                                    _that.filePreviewCount=0;
-                                    _that.filePreview(data);
-                                }, function () {
-                                    _that.filePreviewCount=0;
-                                    _that.loading = false;
-                                    return false;
-                                }, '确定', '取消', 'warning', true)
+		filePreview: function (data, flag) { // flag==pdf 查看施工图
+			var detailId = data.fileId;
+			var _that = this;
+			console.log(data);
+			var regText = /doc|docx|ppt|pptx|xls|xlsx|txt$/;
+			var fileName = data.fileName;
+			var fileType = this.getFileType(fileName);
+			var flashAttributes = '';
+			_that.filePreviewCount++;
+			if (flag == 'pdf') {
+				var tempwindow = window.open(); // 先打开页面
+				setTimeout(function () {
+					tempwindow.location = ctx + 'cod/drawing/drawingCheck?detailId=' + detailId;
+				}, 1000)
+			} else {
+				if (fileType == 'pdf') {
+					var tempwindow = window.open(); // 先打开页面
+					setTimeout(function () {
+						tempwindow.location = ctx + 'previewPdf/view?detailId=' + detailId;
+					}, 1000)
+				} else if (regText.test(fileType)) {
+					// previewPdf/pdfIsCoverted
+					_that.loading = true;
+					request('', {
+						url: ctx + 'previewPdf/pdfIsCoverted?detailId=' + detailId,
+						type: 'get',
+					}, function (result) {
+						if (result.success) {
+							_that.loading = false;
+							var tempwindow = window.open(); // 先打开页面
+							setTimeout(function () {
+								tempwindow.location = ctx + 'previewPdf/view?detailId=' + detailId;
+							}, 1000)
+						} else {
+							if (_that.filePreviewCount > 9) {
+								confirmMsg('提示信息：', '文件预览请求中，是否继续等待？', function () {
+									_that.filePreviewCount = 0;
+									_that.filePreview(data);
+								}, function () {
+									_that.filePreviewCount = 0;
+									_that.loading = false;
+									return false;
+								}, '确定', '取消', 'warning', true)
 
-                            }else {
-                                setTimeout(function(){
-                                    _that.filePreview(data);
-                                },1000)
-                            }
-                        }
-                    }, function (msg) {
-                        _that.loading = false;
-                        _that.$message({
-                            message: '文件预览失败',
-                            type: 'error'
-                        });
-                    })
-                }else {
-                    _that.loading = false;
-                    var tempwindow=window.open(); // 先打开页面
-                    setTimeout(function(){
-                        tempwindow.location=ctx+'rest/mats/att/preview?detailId='+detailId+'&flashAttributes='+flashAttributes;
-                    },1000)
-                }
-            }
+							} else {
+								setTimeout(function () {
+									_that.filePreview(data);
+								}, 1000)
+							}
+						}
+					}, function (msg) {
+						_that.loading = false;
+						_that.$message({
+							message: '文件预览失败',
+							type: 'error'
+						});
+					})
+				} else {
+					_that.loading = false;
+					var tempwindow = window.open(); // 先打开页面
+					setTimeout(function () {
+						tempwindow.location = ctx + 'rest/mats/att/preview?detailId=' + detailId + '&flashAttributes=' + flashAttributes;
+					}, 1000)
+				}
+			}
 		},
 		//下载单个附件
-        downOneFile: function (data) {
-            window.open(ctx + 'rest/mats/att/download?detailIds=' + data.fileId, '_blank')
+		downOneFile: function (data) {
+			window.open(ctx + 'rest/mats/att/download?detailIds=' + data.fileId, '_blank')
 		},
 		//删除单个文件附件
-        delOneFile: function (data, matData) {
-            var _that = this;
-            console.log(data);
-            console.log(matData)
-            request('', {
-                url: ctx + 'rest/mats/att/delelte',
-                type: 'post',
-                data: {matinstId: matData.matinstId, detailIds: data.fileId}
-            }, function (res) {
-                if (res.success) {
-                    _that.getFileListWin(matData.matinstId, matData);
-                    _that.$message({
-                        message: '删除成功',
-                        type: 'success'
-                    });
-                } else {
-                    _that.$message({
-                        message: res.message ? res.message : '删除失败',
-                        type: 'error'
-                    });
-                }
-            }, function (msg) {
-                _that.$message({
-                    message: '服务请求失败',
-                    type: 'error'
-                });
-            });
+		delOneFile: function (data, matData) {
+			var _that = this;
+			console.log(data);
+			console.log(matData)
+			request('', {
+				url: ctx + 'rest/mats/att/delelte',
+				type: 'post',
+				data: { matinstId: matData.matinstId, detailIds: data.fileId }
+			}, function (res) {
+				if (res.success) {
+					_that.getFileListWin(matData.matinstId, matData);
+					_that.$message({
+						message: '删除成功',
+						type: 'success'
+					});
+				} else {
+					_that.$message({
+						message: res.message ? res.message : '删除失败',
+						type: 'error'
+					});
+				}
+			}, function (msg) {
+				_that.$message({
+					message: '服务请求失败',
+					type: 'error'
+				});
+			});
 		},
 		showMatFiles: function (matId, docType) {  // bsc/att/listAttLinkAndDetailNoPage.do
-            var _that = this;
-            // var tempwindow = window.open('_blank');
-            request('', {
-                url: ctx + 'bsc/att/listAttLinkAndDetailNoPage.do',
-                type: 'post',
-                data: {
-                    tableName: 'AEA_ITEM_MAT',
-                    pkName: docType,
-                    recordId: matId,
-                    attType: null,
-                },
-            }, function (result) {
-                if (result != null && result.length > 1) {
+			var _that = this;
+			// var tempwindow = window.open('_blank');
+			request('', {
+				url: ctx + 'bsc/att/listAttLinkAndDetailNoPage.do',
+				type: 'post',
+				data: {
+					tableName: 'AEA_ITEM_MAT',
+					pkName: docType,
+					recordId: matId,
+					attType: null,
+				},
+			}, function (result) {
+				if (result != null && result.length > 1) {
 
-                    var trHtml = '';
-                    _that.showMatFilesDialogShow = true;
-                    $.each(result, function (i, file) {
-                        trHtml += '<div class="td-cust clearfix" data-type="file" data-key="' + file.detailId + '"  data-format="' + file.attFormat + '">\n' +
-                            '                    <div class="file-image fl"><img src="' + _that.getFileIcon(file.attName) + '" /></div>\n' +
-                            '                    <div class="file-name fl">\n' +
-                            '                        <a href="' + _that.kpFileOpenEvent(file.detailId) + '" target="_blank" title="' + file.attName + '">' + _that.cutString(file.attName, 50) + '</a>\n' +
-                            '                    </div>\n' +
-                            '                </div>';
-                    });
-                    _that.dialogHtml = trHtml;
-                } else if (result.length == 1) {
-                    var url = ctx + 'file/showFile.do?detailId=' + result[0].detailId;
-                    window.open.location = ctx + 'file/ntkoOpenWin.do?jumpUrl=' + encodeURIComponent(url);
-                } else {
-                    _that.showMatFilesDialogShow = true;
-                    _that.dialogHtml = '无模板';
-                }
-            }, function (msg) {
-                _that.$message({
-                    message: '服务请求失败',
-                    type: 'error'
-                });
-            });
+					var trHtml = '';
+					_that.showMatFilesDialogShow = true;
+					$.each(result, function (i, file) {
+						trHtml += '<div class="td-cust clearfix" data-type="file" data-key="' + file.detailId + '"  data-format="' + file.attFormat + '">\n' +
+							'                    <div class="file-image fl"><img src="' + _that.getFileIcon(file.attName) + '" /></div>\n' +
+							'                    <div class="file-name fl">\n' +
+							'                        <a href="' + _that.kpFileOpenEvent(file.detailId) + '" target="_blank" title="' + file.attName + '">' + _that.cutString(file.attName, 50) + '</a>\n' +
+							'                    </div>\n' +
+							'                </div>';
+					});
+					_that.dialogHtml = trHtml;
+				} else if (result.length == 1) {
+					var url = ctx + 'file/showFile.do?detailId=' + result[0].detailId;
+					window.open.location = ctx + 'file/ntkoOpenWin.do?jumpUrl=' + encodeURIComponent(url);
+				} else {
+					_that.showMatFilesDialogShow = true;
+					_that.dialogHtml = '无模板';
+				}
+			}, function (msg) {
+				_that.$message({
+					message: '服务请求失败',
+					type: 'error'
+				});
+			});
 		},
 		// 材料全选
-        checkAllMatChange: function (val, flag) {
-            if (val == false) {
-                val = '';
-            }
-            var _that = this;
-            // this.checkedCities[[index]] = val ? this.id[[index]] : []
-            _that.model.matsTableData.map(function (item) {
-                if (flag == 'paper') {
-                    item.getPaper = val;
-                    _that.getPaperAll = val;
-                } else {
-                    item.getCopy = val;
-                    _that.getCopyAll = val;
-                }
-            });
-            // this.isIndeterminate[index] = false
+		checkAllMatChange: function (val, flag) {
+			if (val == false) {
+				val = '';
+			}
+			var _that = this;
+			// this.checkedCities[[index]] = val ? this.id[[index]] : []
+			_that.model.matsTableData.map(function (item) {
+				if (flag == 'paper') {
+					item.getPaper = val;
+					_that.getPaperAll = val;
+				} else {
+					item.getCopy = val;
+					_that.getCopyAll = val;
+				}
+			});
+			// this.isIndeterminate[index] = false
 		},
 		// 材料单选
-        checkedMatChange: function (val, index, flag) {
-            var _that = this;
-            if (val == false) {
-                val = '';
-            }
-            if (flag == 'paper') {
-                _that.model.matsTableData[index].getPaper = val;
-                _that.getPaperAll = val;
-            } else {
-                _that.model.matsTableData[index].getCopy = val;
-                _that.getCopyAll = val;
-            }
+		checkedMatChange: function (val, index, flag) {
+			var _that = this;
+			if (val == false) {
+				val = '';
+			}
+			if (flag == 'paper') {
+				_that.model.matsTableData[index].getPaper = val;
+				_that.getPaperAll = val;
+			} else {
+				_that.model.matsTableData[index].getCopy = val;
+				_that.getCopyAll = val;
+			}
 		},
 		showUploadWindow: function (data) { // 展示文件上传下载弹窗
-            var _that = this;
-            _that.showUploadWindowFlag = true;
-            _that.selMatRowData = data;
-            _that.selMatinstId = data.matinstId ? data.matinstId : '',
-                _that.showUploadWindowTitle = '材料附件 - ' + data.matName
-            _that.getFileListWin(data.matinstId, data);
+			var _that = this;
+			_that.showUploadWindowFlag = true;
+			_that.selMatRowData = data;
+			_that.selMatinstId = data.matinstId ? data.matinstId : '',
+				_that.showUploadWindowTitle = '材料附件 - ' + data.matName
+			_that.getFileListWin(data.matinstId, data);
+		},
+		// 获取并行情形列表id
+		getCoreItemsStatusListId: function () {
+			var _that = this;
+			var stateListLen = _that.stateList.length;
+			var selStateIds = [];
+			for (var i = 0; i < stateListLen; i++) {  // 已选并联情形id集合
+				if (_that.stateList[i].selectAnswerId !== undefined || _that.stateList[i].selectAnswerId !== null) {
+					// selStateIds=[];
+					// return true;
+					if (typeof (_that.stateList[i].selectAnswerId) == 'object' && _that.stateList[i].selectAnswerId.length > 0) {
+						selStateIds = selStateIds.concat(_that.stateList[i].selectAnswerId);
+					} else if (_that.stateList[i].selectAnswerId !== '') {
+						selStateIds.push(_that.stateList[i].selectAnswerId);
+					}
+				}
+			}
+			selStateIds = selStateIds.filter(function (item, index) {
+				//当前元素，在原始数组中的第一个索引==当前索引值，否则返回当前元素
+				return selStateIds.indexOf(item, 0) === index
+			})
+			return selStateIds;
 		},
 		// 获取事项情形和材料
-        getStatusStateMats: function (pData,data, parentId, parentStateId, index, flag, checkFlag) {
-            var _that = this;
-            var _parentId = parentId ? parentId : 'ROOT';
-            var questionStateId = pData.parStateId?pData.parStateId:'';
-            var _itemVerId = data.itemVerId;
-            var selStateIds = [];
-            if (checkFlag == false) {
-                var stateListLen = _that.stateList.length;
-                selStateIds = _that.getCoreItemsStatusListId();
-                for (var i = 0; i < stateListLen; i++) { // 清空情形下所对应情形
-                    var obj = _that.stateList[i];
-                    if(obj&&(obj.parentStateId == _parentId)||(obj&&obj.parentStateId!=null&&(selStateIds.indexOf(obj.parentStateId)==-1))){
-                        if(typeof(obj.selectAnswerId)=='object'&&obj.selectAnswerId.length>0){
-                            obj.selectAnswerId.map(function(itemSel){
-                                selStateIds=selStateIds.filter(function(item, index) {
-                                    return item !== itemSel;
-                                })
-                            });
-                        }else if(obj.selectAnswerId !== '') {
-                            selStateIds=selStateIds.filter(function(item, index) {
-                                return item !== obj.selectAnswerId;
-                            })
-                        }
-                        _that.stateList.splice(i, 1);
-                        i--
-                    }
-                }
-                selStateIds = _that.getCoreItemsStatusListId();
-                // 清空对应情形下所有材料
-                for (var i = 0; i < _that.model.matsTableData.length; i++) { // 清空情形下所对应材料
-                    var obj = _that.model.matsTableData[i];
-                    if (obj && obj.itemStateId != null && (selStateIds.indexOf(obj.itemStateId) == -1)) {
-                        _that.model.matsTableData.splice(i, 1);
-                        i--
-                    }
-                }
-                return false
-            }
-            request('opus-admin', {
-                url: ctx + 'rest/mats/states/mats/' + _that.itemVerId + '/' + parentId,
-                type: 'get',
-            }, function (data) {
-                if (data.success) {
-                    var coreItemsMats = [];
-                    if (flag) {//root节点数据
-                        _that.matIds = [];
-                        _that.stateList = data.content.questionStates;
-                        _that.model.matsTableData = _that.unique(data.content.stateMats, 'mats');
-                        _that.popStateList = [];
-                        _that.stateList.map(function (item) {
-                            if (item.answerType != 's' && item.answerType != 'y') {
-                                Vue.set(item, 'selValue', []);
-                                item.selectAnswerId=item.selValue;
-                            }
-                        })
-                        _that.model.matsTableData.map(function (item, index) {
-                            _that.matIds.push(item.matId);
-                          if(_that.matCodes.indexOf(item.matCode)<0){
-                            _that.matCodes.push(item.matCode);
-                          }
-                        });
-                      _that.getShareMatsList();
-                    } else {
-                        if (checkFlag == true) {
-                            data.content.questionStates.map(function (item, ind) { // 情形下插入对应的情形
-                                if (item.answerType != 's' && item.answerType != 'y') {
-                                    Vue.set(item, 'selValue', []);
-                                    item.selectAnswerId=item.selValue;
-                                }
-                                _that.stateList.splice((index + 1 + ind), 0, item);
-                            });
-                            // 选择情形后返回的材料列表
-                            data.content.stateMats.map(function (item) {
-                                if (item._parStateId == 'undefined' || item._parStateId == undefined) {
-                                    Vue.set(item, '_parStateId', [parentStateId]);
-                                } else {
-                                    item._parStateId.push(parentStateId);
-                                }
-                                if (item._itemVerIds == 'undefined' || item._itemVerIds == undefined) {
-                                    Vue.set(item, '_itemVerIds', [_itemVerId]);
-                                } else {
-                                    item._itemVerId.push(_itemVerId);
-                                }
-                                item.itemStateId = _parentId;
-                                coreItemsMats.push(item)
-                            });
-                        } else {
-                            var stateListLen = _that.stateList.length;
-                            selStateIds = _that.getCoreItemsStatusListId();
-                            for (var i = 0; i < stateListLen; i++) { // 清空情形下所对应情形
-                                var obj = _that.stateList[i];
-                                if(obj&&(obj.parentQuestionStateId == questionStateId)||(obj&&obj.parentStateId!=null&&(selStateIds.indexOf(obj.parentStateId)==-1))){
-                                    if(typeof(obj.selectAnswerId)=='object'&&obj.selectAnswerId.length>0){
-                                        obj.selectAnswerId.map(function(itemSel){
-                                            selStateIds=selStateIds.filter(function(item, index) {
-                                                return item !== itemSel;
-                                            })
-                                        });
-                                    }else if(obj.selectAnswerId !== '') {
-                                        selStateIds=selStateIds.filter(function(item, index) {
-                                            return item !== obj.selectAnswerId;
-                                        })
-                                    }
-                                    // if(obj&&obj.stateSeq.indexOf(parentStateId)>-1&&(obj.parStateId!=parentStateId)){
-                                    _that.stateList.splice(i, 1);
-                                    i--
-                                }
-                            }
-                            data.content.questionStates.map(function (item, ind) { // 情形下插入对应的情形
-                                if (item.answerType != 's' && item.answerType != 'y') {
-                                    Vue.set(item, 'selValue', []);
-                                    item.selectAnswerId=item.selValue;
-                                }
-                                _that.stateList.splice((index + 1 + ind), 0, item);
-                            });
-                            // 选择情形后返回的材料列表
-                            data.content.stateMats.map(function (item) {
-                                if (item._parStateId == 'undefined' || item._parStateId == undefined) {
-                                    Vue.set(item, '_parStateId', [parentStateId]);
-                                } else {
-                                    item._parStateId.push(parentStateId);
-                                }
-                                if (item._itemVerIds == 'undefined' || item._itemVerIds == undefined) {
-                                    Vue.set(item, '_itemVerIds', [_itemVerId]);
-                                } else {
-                                    item._itemVerId.push(_itemVerId);
-                                }
-                                item.itemStateId = _parentId;
-                                coreItemsMats.push(item)
-                            });
-                            selStateIds = _that.getCoreItemsStatusListId();
-                            for (var i = 0; i < _that.model.matsTableData.length; i++) { // 清空情形下所对应材料
-                                var obj = _that.model.matsTableData[i];
-                                if (obj._parStateId == 'undefined' || obj._parStateId == undefined) {
-                                    Vue.set(obj, '_parStateId', []);
-                                } else {
-                                    // if (obj && (obj._parStateId.indexOf(parentStateId)>-1)&&(obj._parStateId.length==1)) {
-                                    if (obj && obj.itemStateId != null && (selStateIds.indexOf(obj.itemStateId) == -1) && (obj._parStateId.length == 1)) {
-                                        obj._parStateId = obj._parStateId.filter(function (item) {
-                                            return item != parentStateId;
-                                        });
-                                        _that.model.matsTableData.splice(i, 1);
-                                        i--
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    coreItemsMats = _that.unique(coreItemsMats, 'mats');
-                    _that.model.matsTableData = _that.model.matsTableData.concat(coreItemsMats);
-                    _that.matIds = [];
-                    var matinstIdsObj = [];
-                    _that.model.matsTableData.map(function (item) {
-                        if (item.matChild == 'undefined' || item.matChild == undefined) {
-                            Vue.set(item, 'matChild', []);
-                        }
-                      if(item.certChild=='undefined'||item.certChild==undefined){
-                        Vue.set(item,'certChild',[]);
-                      }
-                        if (item.matinstId == 'undefined' || item.matinstId == undefined) {
-                            Vue.set(item, 'matinstId', '');
-                        }
-                        if (item.getPaper == 'undefined' || item.getPaper == undefined) {
-                            Vue.set(item, 'getPaper', '');
-                        }
-                        if (item.getCopy == 'undefined' || item.getCopy == undefined) {
-                            Vue.set(item, 'getCopy', '');
-                        }
-                        if (item.realPaperCount == 'undefined' || item.realPaperCount == undefined) {
-                            Vue.set(item, 'realPaperCount', item.duePaperCount);
-                        }
-                        if (item.realCopyCount == 'undefined' || item.realCopyCount == undefined) {
-                            Vue.set(item, 'realCopyCount', item.dueCopyCount);
-                        }
-                        if(matinstIdsObj.indexOf(item.matinstId)&&item.matinstId!=''){
-                            matinstIdsObj.push(item.matinstId);
-                        }
-                      if(_that.matCodes.indexOf(item.matCode)<0){
-                        _that.matCodes.push(item.matCode);
-                      }
-                        _that.matIds.push(item.matId);
+		getStatusStateMats: function (agentItemVerId) {
+			var _that = this;
 
-                    });
-                  _that.getShareMatsList();
-                    _that.matinstIds = matinstIdsObj.join(',')
-                    _that.ifMatsSelAll();
-                } else {
-                    _that.$message({
-                        message: '获取情形材料失败',
-                        type: 'error'
-                    });
-                }
-            }, function (msg) {
-                _that.$message({
-                    message: '获取情形材料失败',
-                    type: 'error'
-                });
-            });
-        },
-		
+			request('opus-admin', {
+				url: ctx + 'supermarket/purchase/mat/getItemMatList',
+				type: 'get',
+				data: {
+					itemVerId: agentItemVerId
+				}
+			}, function (data) {
+				if (data.success) {
+					_that.matIds = [];
+					_that.model.matsTableData = _that.unique(data.content, 'mats');
+					// _that.model.matsTableData.map(function (item, index) {
+					// 	_that.matIds.push(item.matId);
+					// 	if (_that.matCodes.indexOf(item.matCode) < 0) {
+					// 		_that.matCodes.push(item.matCode);
+					// 	}
+					// });
+
+					var matinstIdsObj = [];
+					_that.model.matsTableData.map(function (item) {
+						if (item.matChild == 'undefined' || item.matChild == undefined) {
+							Vue.set(item, 'matChild', []);
+						}
+						if (item.certChild == 'undefined' || item.certChild == undefined) {
+							Vue.set(item, 'certChild', []);
+						}
+						if (item.matinstId == 'undefined' || item.matinstId == undefined) {
+							Vue.set(item, 'matinstId', '');
+						}
+						if (item.getPaper == 'undefined' || item.getPaper == undefined) {
+							Vue.set(item, 'getPaper', '');
+						}
+						if (item.getCopy == 'undefined' || item.getCopy == undefined) {
+							Vue.set(item, 'getCopy', '');
+						}
+						if (item.realPaperCount == 'undefined' || item.realPaperCount == undefined) {
+							Vue.set(item, 'realPaperCount', item.duePaperCount);
+						}
+						if (item.realCopyCount == 'undefined' || item.realCopyCount == undefined) {
+							Vue.set(item, 'realCopyCount', item.dueCopyCount);
+						}
+						if (matinstIdsObj.indexOf(item.matinstId) && item.matinstId != '') {
+							matinstIdsObj.push(item.matinstId);
+						}
+						// if (_that.matCodes.indexOf(item.matCode) < 0) {
+						// 	_that.matCodes.push(item.matCode);
+						// }
+						_that.matIds.push(item.matId);
+
+					});
+					_that.matinstIds = matinstIdsObj.join(',')
+					_that.ifMatsSelAll();
+				} else {
+					_that.$message({
+						message: '获取情形材料失败',
+						type: 'error'
+					});
+				}
+			}, function (msg) {
+				_that.$message({
+					message: '获取情形材料失败',
+					type: 'error'
+				});
+			});
+		},
+		// 判断是否材料全选
+		ifMatsSelAll: function () {
+			var getCopyCount = 0;
+			var _that = this;
+			var getPaperCount = 0;
+			_that.model.matsTableData.map(function (item) {
+				if (item.getCopy == true) {
+					getCopyCount++
+				}
+				if (item.getPaper == true) {
+					getPaperCount++
+				}
+			})
+			if (getCopyCount == _that.model.matsTableData.length) {
+				_that.getCopyAll = true;
+			} else {
+				_that.getCopyAll = '';
+			}
+			if (getPaperCount == _that.model.matsTableData.length) {
+				_that.getPaperAll = true;
+			} else {
+				_that.getPaperAll = '';
+			}
+		},
 	},
 	mounted: function () {
 		this.loginUserInfo = JSON.parse(localStorage.getItem("loginInfo")) || {}
