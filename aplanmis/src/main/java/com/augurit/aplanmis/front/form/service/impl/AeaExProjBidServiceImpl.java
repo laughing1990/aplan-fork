@@ -49,12 +49,12 @@ public class AeaExProjBidServiceImpl implements AeaExProjBidService {
     public void saveAeaExProjBid(AeaExProjBid aeaExProjBid) throws Exception{
         aeaExProjBid.setCreater(SecurityContext.getCurrentUserName());
         aeaExProjBid.setCreateTime(new Date());
-        aeaExProjBid.setRootOrgId(SecurityContext.getCurrentOrgId());
+        aeaExProjBid.setRootOrgId(SecurityContext.getCurrentUserId());
         aeaExProjBidMapper.insertAeaExProjBid(aeaExProjBid);
     }
 
     public void updateAeaExProjBid(AeaExProjBid aeaExProjBid) throws Exception{
-        aeaExProjBid.setModifier(SecurityContext.getCurrentUserName());
+        aeaExProjBid.setModifier(SecurityContext.getCurrentUserId());
         aeaExProjBid.setModifyTime(new Date());
         aeaExProjBidMapper.updateAeaExProjBid(aeaExProjBid);
     }

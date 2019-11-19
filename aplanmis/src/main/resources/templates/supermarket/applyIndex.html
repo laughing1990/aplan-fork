@@ -738,7 +738,7 @@
 							</el-form-item>
 
 							<el-form-item label="选取中介机构方式" prop="biddingType">
-								<el-radio-group v-model="purchaseProj.biddingType">
+								<el-radio-group v-model="purchaseProj.biddingType" @change="avoidData=[];">
 									<el-radio label="1">随机抽取</el-radio>
 									<el-radio label="2">直接抽取</el-radio>
 									<el-radio label="3">竞价选取</el-radio>
@@ -768,9 +768,9 @@
 								</el-form-item>
 								<div v-if="purchaseProj.isAvoid==1">
 									<el-form-item label="回避单位" prop="avoidUnitInfoIds" required>
-										<el-button type="primary" @click="selectOrgan" size="mini">选择单位</el-button>
+										<el-button type="primary" @click="getAgentUnitInfoList(itemVerId)" size="mini">选择单位</el-button>
 										<el-table :data="avoidData" stripe border ref="multipleTable2" style="margin-top: 10px;">
-											<el-table-column prop="applicant" label="公司名称"></el-table-column>
+											<el-table-column prop="agentUnitName" label="公司名称"></el-table-column>
 										</el-table>
 									</el-form-item>
 									<el-form-item label="回避原因" prop="avoidReason">
@@ -797,10 +797,10 @@
 										<el-input type="text" v-model="purchaseProj.basePriceDx"></el-input>
 									</el-form-item>
 									<el-form-item class="input-inline" label="查看符合条件的中介机构" prop="deparment">
-										<el-button type="primary" size="mini" @click="getAgentUnitInfoList">查看</el-button>
+										<el-button type="primary" size="mini" @click="getAgentUnitInfoList(itemVerId)">查看</el-button>
 									</el-form-item>
 									<el-form-item class="input-inline" label="指定的中介机构">
-										<p>{{multipleSelection3[0].agentUnitName}}</p>
+										<p>{{avoidData[0]?avoidData[0].agentUnitName:'还没选择中介机构'}}</p>
 									</el-form-item>
 								</div>
 							</div>
@@ -843,9 +843,9 @@
 								</el-form-item>
 								<div v-if="purchaseProj.isAvoid==1">
 									<el-form-item label="回避单位" prop="avoidUnitInfoIds" required>
-										<el-button type="primary" @click="selectOrgan" size="mini">选择单位</el-button>
+										<el-button type="primary" @click="getAgentUnitInfoList(itemVerId)" size="mini">选择单位</el-button>
 										<el-table :data="avoidData" stripe border ref="multipleTable2" style="margin-top: 10px;">
-											<el-table-column prop="applicant" label="公司名称"></el-table-column>
+											<el-table-column prop="agentUnitName" label="公司名称"></el-table-column>
 										</el-table>
 									</el-form-item>
 									<el-form-item label="回避原因" prop="avoidReason">
@@ -1499,7 +1499,8 @@
 		</el-dialog>
 		<!--选择主题 end-->
 		<!-- 选择回避单位 str -->
-		<el-dialog title="回避单位" :visible.sync="avoidOrgan" width="750px" class="ref-unit-list">
+		<el-dialog title="回避单位"
+							 :visible.sync="avoidOrgan" width="750px" class="ref-unit-list">
 			<div class="dialog-footer">
 				<el-button type="primary" @click="chooseOrgan">选择</el-button>
 				<div class="search-box fr">
@@ -1508,23 +1509,10 @@
 					</el-input>
 				</div>
 			</div>
-			<el-table :data="avoidList" stripe border highlight-current-row ref="multipleTable3" @selection-change="handleSelectionChange4" style="margin-top: 10px;width: 100%;">
+			<el-table :data="avoidList" stripe border highlight-current-row ref="agentUnitTable" @selection-change="handleSelectionChange4" style="margin-top: 10px;width: 100%;">
 				<el-table-column type="selection" width="40"></el-table-column>
-				<el-table-column prop="applicant" label="单位名称" width=""></el-table-column>
+				<el-table-column prop="agentUnitName" label="单位名称" width=""></el-table-column>
 			</el-table>
-			<el-pagination
-				v-show="total4>10"
-				background
-				align="right"
-				:pager-count="5"
-				@size-change="handleSizeChange4"
-				@current-change="handleCurrentChange4"
-				:page-sizes="[10, 20, 30, 50]"
-				:page-size="pageSize4"
-				:current-page="pageNum4"
-				layout="total,sizes, prev, pager, next, jumper"
-				:total="total4">
-			</el-pagination>
 		</el-dialog>
 		<!-- 选择回避单位 end-->
 		<!--项目树窗口 start-->

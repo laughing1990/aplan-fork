@@ -59,11 +59,11 @@ public class RestMyMatServiceImpl implements RestMyMatService {
             List<AeaHiItemMatinst> aeaHiItemMatinstList = aeaHiItemMatinstService.getMatinstListByIteminstIdsAndKeyword(iteminstIds.toArray(new String[iteminstIds.size()]), "1", null);
             if (aeaHiItemMatinstList.size() == 0) return new PageInfo<>(new ArrayList<>());
             List<String> matInstIds = aeaHiItemMatinstList.stream().map(AeaHiItemMatinst::getMatinstId).distinct().collect(Collectors.toList());
-            PageHelper.startPage(pageNum, pageSize);
-        String[] matinstArr = matInstIds.stream().toArray(String[]::new);
+            String[] matinstArr = matInstIds.stream().toArray(String[]::new);
             //4.根据材料实例ID查询所有文件
-        if (StringUtils.isBlank(keyword)) keyword = null;
-        List<BscAttFileAndDir> list = bscAttDetailMapper.searchFileAndDirsSimple(keyword, SecurityContext.getCurrentOrgId(), "AEA_HI_ITEM_MATINST", "MATINST_ID", matinstArr);
-            return new PageInfo<>(list);
+            if (StringUtils.isBlank(keyword)) keyword = null;
+            PageHelper.startPage(pageNum,pageSize);
+            List<BscAttFileAndDir> list = bscAttDetailMapper.searchFileAndDirsSimple(keyword, SecurityContext.getCurrentOrgId(), "AEA_HI_ITEM_MATINST", "MATINST_ID", matinstArr);
+                return new PageInfo<>(list);
         }
 }

@@ -96,5 +96,18 @@ public interface OrgEfficiencySupersionService {
 
     Map<String, Object> getOrgReceiveStatistics(String startTime, String endTime, String type, String regionId) throws Exception;
 
+    /**
+     * 查询时间段内 各地区/各部门/各事项 的事项实例用时情况
+     *
+     * @param startTime
+     * @param endTime
+     * @param type
+     * @param regionId
+     * @param orgId
+     * @return
+     * @throws Exception
+     */
+    List<Map<String, Object>> getItemUseTimeStatistics(String startTime, String endTime, String type, String regionId, String orgId) throws Exception;
+
     Map<String,Object> getOrgReceiveLimitTimeStatistics(String startTime, String endTime, String type, String regionId) throws Exception;
 }

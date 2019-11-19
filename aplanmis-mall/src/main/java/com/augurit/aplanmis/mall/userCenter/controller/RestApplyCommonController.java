@@ -14,6 +14,7 @@ import com.augurit.aplanmis.common.service.theme.AeaParThemeService;
 import com.augurit.aplanmis.mall.userCenter.service.RestApplyCommonService;
 import com.augurit.aplanmis.mall.userCenter.service.RestApplyMatService;
 import com.augurit.aplanmis.mall.userCenter.service.RestApplyService;
+import com.augurit.aplanmis.mall.userCenter.service.RestFileService;
 import com.augurit.aplanmis.mall.userCenter.vo.AutoImportParamVo;
 import com.augurit.aplanmis.mall.userCenter.vo.SmsInfoVo;
 import com.augurit.aplanmis.mall.userCenter.vo.UploadMatReturnVo;
@@ -58,6 +59,8 @@ public class RestApplyCommonController {
     private RestApplyCommonService restApplyCommonService;
     @Autowired
     private AeaItemBasicService aeaItemBasicService;
+    @Autowired
+    private RestFileService restFileService;
 
 
 
@@ -155,6 +158,7 @@ public class RestApplyCommonController {
     @PostMapping("/att/upload/auto")
     @ApiOperation(value = "并联申报/单项申报--> 一键自动分拣")
     public ResultForm saveFilesAuto(@ModelAttribute AutoImportParamVo autoImportVo, HttpServletRequest request) throws Exception {
+        if (!restFileService.isAllowFileType(request))return new ResultForm(false, "不允许的文件类型");
         //单位id为空时，将用户id赋值给单位id，保存至表
         if (StringUtils.isEmpty(autoImportVo.getUnitInfoId())) autoImportVo.setUnitInfoId(autoImportVo.getUserInfoId());
         List<UploadMatReturnVo> list = restApplyMatService.saveFilesAuto(autoImportVo, request);

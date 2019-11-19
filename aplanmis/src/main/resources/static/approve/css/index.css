@@ -2316,7 +2316,9 @@ input[type="number"] {
     margin-top: 20px;
 }
 /*证照库材料库 end*/
-
+.mat-form-dialog .el-dialog{
+    width: 80%;
+}
 
 
 

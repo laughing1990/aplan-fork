@@ -181,6 +181,7 @@ public class SaveAeaImProjPurchaseVo {
     public AeaProjInfo createAeaProjInfo() {
         AeaProjInfo aeaProjInfo = new AeaProjInfo();
         BeanUtils.copyProperties(this.saveAeaProjInfoVo, aeaProjInfo);
+        aeaProjInfo.setProjInfoId(UUID.randomUUID().toString());
         aeaProjInfo.setRootOrgId(this.rootOrgId);
         aeaProjInfo.setCreater(this.creater);
         return aeaProjInfo;

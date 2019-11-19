@@ -1049,8 +1049,8 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
         search.setRootOrgId(SecurityContext.getCurrentOrgId());
         List<AeaParTheme> themes = aeaParThemeMapper.listAeaParTheme(search);
 
-        List<ApplyUseTimeStatisticsVo> completedApplyUseTimeByTheme = efficiencySupervisionMapper.getCompletedApplyUseTimeByTheme(startTime, endTime, rootOrgId);
-        Map<String, List<ApplyUseTimeStatisticsVo>> collect = completedApplyUseTimeByTheme.stream().collect(Collectors.groupingBy(ApplyUseTimeStatisticsVo::getThemeId));
+        List<UseTimeStatisticsVo> completedApplyUseTimeByTheme = efficiencySupervisionMapper.getCompletedApplyUseTimeByTheme(startTime, endTime, rootOrgId);
+        Map<String, List<UseTimeStatisticsVo>> collect = completedApplyUseTimeByTheme.stream().collect(Collectors.groupingBy(UseTimeStatisticsVo::getThemeId));
 
         List<Map<String, Object>> result = new ArrayList<>();
         for (AeaParTheme theme : themes) {
@@ -1061,7 +1061,7 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
             data.put("minUseTime", 0.0);
             data.put("avgUseTime", 0.0);
             if (collect.get(theme.getThemeId()) != null) {
-                List<ApplyUseTimeStatisticsVo> applyUseTimeStatisticsVos = collect.get(theme.getThemeId());
+                List<UseTimeStatisticsVo> applyUseTimeStatisticsVos = collect.get(theme.getThemeId());
                 data.put("maxUseTime", applyUseTimeStatisticsVos.get(0).getMaxUseTime());
                 data.put("minUseTime", applyUseTimeStatisticsVos.get(0).getMinUseTime());
                 data.put("avgUseTime", applyUseTimeStatisticsVos.get(0).getAvgUseTime());
@@ -1118,8 +1118,8 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
         List<AeaServiceWindow> serviceWindows = aeaServiceWindowMapper.listAeaServiceWindow(windowSearch);
         serviceWindows = serviceWindows.stream().sorted(Comparator.comparing(AeaServiceWindow::getSortNo)).collect(Collectors.toList());
 
-        List<ApplyUseTimeStatisticsVo> completedApplyUseTimeByThemeAndWindow = efficiencySupervisionMapper.getCompletedApplyUseTimeByThemeAndWindow(themeId, startTime, endTime, rootOrgId);
-        Map<String, List<ApplyUseTimeStatisticsVo>> collect = completedApplyUseTimeByThemeAndWindow.stream().collect(Collectors.groupingBy(ApplyUseTimeStatisticsVo::getWindowId));
+        List<UseTimeStatisticsVo> completedApplyUseTimeByThemeAndWindow = efficiencySupervisionMapper.getCompletedApplyUseTimeByThemeAndWindow(themeId, startTime, endTime, rootOrgId);
+        Map<String, List<UseTimeStatisticsVo>> collect = completedApplyUseTimeByThemeAndWindow.stream().collect(Collectors.groupingBy(UseTimeStatisticsVo::getWindowId));
 
         List<Map<String, Object>> result = new ArrayList<>();
         for (AeaServiceWindow window : serviceWindows) {
@@ -1130,7 +1130,7 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
             data.put("minUseTime", 0.0);
             data.put("avgUseTime", 0.0);
             if (collect.get(window.getWindowId()) != null) {
-                List<ApplyUseTimeStatisticsVo> applyUseTimeStatisticsVos = collect.get(window.getWindowId());
+                List<UseTimeStatisticsVo> applyUseTimeStatisticsVos = collect.get(window.getWindowId());
                 data.put("maxUseTime", applyUseTimeStatisticsVos.get(0).getMaxUseTime());
                 data.put("minUseTime", applyUseTimeStatisticsVos.get(0).getMinUseTime());
                 data.put("avgUseTime", applyUseTimeStatisticsVos.get(0).getAvgUseTime());
