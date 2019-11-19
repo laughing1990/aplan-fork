@@ -1405,7 +1405,7 @@
               <el-button type="primary" icon="icon ag ag-search" @click="getMyMatsList()"> 搜索</el-button>
             </div>
             <el-table :data="myMatsList" class="mt20" :style="{height:(curHeight-555)+'px',overflow: 'auto'}">
-              <el-table-column prop="fileName" label="文件名称"></el-table-column>
+              <el-table-column prop="fileName" label="材料名称"></el-table-column>
               <el-table-column prop="fileName" label="日期" width="140">
                 <template slot-scope="scope">
                   <span>{{$options.filters.formatDate(scope.row.updateTime)}}</span>
@@ -1439,7 +1439,7 @@
                       :load="getMyDirsList"
                       :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
                       class="mt20 my-dir-table" :style="{height:(curHeight-515)+'px',overflow: 'auto'}">
-              <el-table-column label="文件名称">
+              <el-table-column label="材料名称">
                 <template slot-scope="scope">
                   <span v-if="scope.row.hasCheck==true" class="ellipsis dir-file-name" :title="scope.row.attName">
                     <i class="ag ag-fileType-doc" :class="'ag-filetype-'+getFileType(scope.row.attName)"></i>{{scope.row.attName}}
