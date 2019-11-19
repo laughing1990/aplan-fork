@@ -314,6 +314,21 @@
         AND ahii.ITEMINST_ID = #{iteminstId}
     </select>
 
+    <select id="getFormMatinstByProjInfoId" resultType="AeaHiItemMatinst">
+        SELECT
+        <include refid="allColumns_ahim"/>,asf.FORM_ID stoFormId
+        FROM
+        aea_hi_item_matinst ahim,act_sto_forminst asf
+        WHERE
+        ahim.MAT_PROP = 'f'
+        AND
+        ahim.PROJ_INFO_ID = #{projInfoId}
+        AND
+        ahim.ROOT_ORG_ID = #{rootOrgId}
+        AND
+        asf.STO_FORMINST_ID = ahim.STO_FORMINST_ID
+    </select>
+
     <select id="listAeaHiItemMatinstByIds" resultType="com.augurit.aplanmis.common.domain.AeaHiItemMatinst">
         select
         <include refid="allColumns"/>
