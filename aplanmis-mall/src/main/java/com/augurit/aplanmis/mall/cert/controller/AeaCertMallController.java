@@ -1,6 +1,5 @@
 package com.augurit.aplanmis.mall.cert.controller;
 
-import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.agcloud.framework.util.StringUtils;
@@ -72,7 +71,7 @@ public class AeaCertMallController {
         try {
             LoginInfoVo loginInfoVo = SessionUtil.getLoginInfo(request);
             if (StringUtils.isNotBlank(aeaHiCertinst.getMatId())) {
-                aeaHiCertinst = aeaHiItemMatinstService.bindCertinst(aeaHiCertinst, loginInfoVo.getLoginName());
+                aeaHiCertinst = aeaHiItemMatinstService.bindCertinst(aeaHiCertinst, loginInfoVo.getUserId());
                 Assert.hasText(aeaHiCertinst.getCertinstId(), "certinstId is null");
                 return new ContentResultForm<>(true, aeaHiCertinst, "Bind success");
             }

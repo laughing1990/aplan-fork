@@ -9,6 +9,8 @@ import com.augurit.agcloud.bsc.util.UuidUtil;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.ui.pager.PageHelper;
 import com.augurit.agcloud.framework.util.StringUtils;
+import com.augurit.aplanmis.common.constants.MatHolder;
+import com.augurit.aplanmis.common.constants.MatinstSource;
 import com.augurit.aplanmis.common.domain.AeaHiCertinst;
 import com.augurit.aplanmis.common.domain.AeaHiItemMatinst;
 import com.augurit.aplanmis.common.domain.AeaItemBasic;
@@ -520,7 +522,7 @@ public class RestApplyMatService {
                 aeaHiItemMatinst.setMatId(applyImportVo.getMatId());
                 aeaHiItemMatinst.setMatinstCode(aeaItemMat.getMatCode());
                 aeaHiItemMatinst.setMatinstName(aeaItemMat.getMatName());
-                aeaHiItemMatinst.setCreater(SecurityContext.getCurrentUserName());
+                aeaHiItemMatinst.setCreater(SecurityContext.getCurrentUserId());
                 aeaHiItemMatinst.setCreateTime(new Date());
                 aeaHiItemMatinst.setRootOrgId(SecurityContext.getCurrentOrgId());
 
@@ -819,12 +821,16 @@ public class RestApplyMatService {
         aeaHiItemMatinst.setCreateTime(new Date());
         aeaHiItemMatinst.setMatId(aeaItemMat.getMatId());
         // 企业
-        if (StringUtils.isBlank(aeaItemMat.getMatHolder()) || "c".equals(aeaItemMat.getMatHolder())) {
+        if (StringUtils.isBlank(aeaItemMat.getMatHolder()) || MatHolder.UNIT.getValue().equals(aeaItemMat.getMatHolder())) {
             aeaHiItemMatinst.setUnitInfoId(saveMatinstVo.getUnitInfoId());
+            aeaHiItemMatinst.setMatinstSource(MatinstSource.UNIT.getValue());
         }
         // 个人
-        else if ("u".equals(aeaItemMat.getMatHolder())) {
+        else if (MatHolder.LINKMAN.getValue().equals(aeaItemMat.getMatHolder())) {
             aeaHiItemMatinst.setLinkmanInfoId(saveMatinstVo.getLinkmanInfoId());
+            aeaHiItemMatinst.setMatinstSource(MatinstSource.LINKMAN.getValue());
+        } else {
+            aeaHiItemMatinst.setMatinstSource(MatinstSource.UNIT.getValue());
         }
         aeaHiItemMatinst.setProjInfoId(saveMatinstVo.getProjInfoId());
         aeaHiItemMatinst.setMatinstCode(aeaItemMat.getMatCode());

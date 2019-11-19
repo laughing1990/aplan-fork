@@ -13,23 +13,56 @@ import com.augurit.agcloud.opus.common.mapper.OpuOmOrgMapper;
 import com.augurit.agcloud.opus.common.mapper.OpuOmUserInfoMapper;
 import com.augurit.aplanmis.common.constants.ApplyState;
 import com.augurit.aplanmis.common.constants.UnitType;
-import com.augurit.aplanmis.common.domain.*;
-import com.augurit.aplanmis.common.mapper.*;
+import com.augurit.aplanmis.common.domain.AeaCert;
+import com.augurit.aplanmis.common.domain.AeaExProjCertBuild;
+import com.augurit.aplanmis.common.domain.AeaHiApplyinst;
+import com.augurit.aplanmis.common.domain.AeaHiCertinst;
+import com.augurit.aplanmis.common.domain.AeaHiItemInoutinst;
+import com.augurit.aplanmis.common.domain.AeaHiItemMatinst;
+import com.augurit.aplanmis.common.domain.AeaHiIteminst;
+import com.augurit.aplanmis.common.domain.AeaHiParStageinst;
+import com.augurit.aplanmis.common.domain.AeaHiSeriesinst;
+import com.augurit.aplanmis.common.domain.AeaItemBasic;
+import com.augurit.aplanmis.common.domain.AeaItemInout;
+import com.augurit.aplanmis.common.domain.AeaItemMat;
+import com.augurit.aplanmis.common.domain.AeaItemState;
+import com.augurit.aplanmis.common.domain.AeaLinkmanInfo;
+import com.augurit.aplanmis.common.domain.AeaParShareMat;
+import com.augurit.aplanmis.common.domain.AeaProjInfo;
+import com.augurit.aplanmis.common.domain.AeaUnitInfo;
+import com.augurit.aplanmis.common.domain.AeaUnitProjLinkman;
+import com.augurit.aplanmis.common.mapper.AeaCertMapper;
+import com.augurit.aplanmis.common.mapper.AeaExProjCertBuildMapper;
+import com.augurit.aplanmis.common.mapper.AeaHiApplyinstMapper;
+import com.augurit.aplanmis.common.mapper.AeaHiCertinstMapper;
+import com.augurit.aplanmis.common.mapper.AeaHiItemInoutinstMapper;
+import com.augurit.aplanmis.common.mapper.AeaHiItemMatinstMapper;
+import com.augurit.aplanmis.common.mapper.AeaHiIteminstMapper;
+import com.augurit.aplanmis.common.mapper.AeaHiSeriesinstMapper;
+import com.augurit.aplanmis.common.mapper.AeaItemInoutMapper;
+import com.augurit.aplanmis.common.mapper.AeaItemMatMapper;
+import com.augurit.aplanmis.common.mapper.AeaLinkmanInfoMapper;
+import com.augurit.aplanmis.common.mapper.AeaParStageMapper;
+import com.augurit.aplanmis.common.mapper.AeaUnitProjLinkmanMapper;
 import com.augurit.aplanmis.common.service.admin.cert.AeaCertAdminService;
 import com.augurit.aplanmis.common.service.admin.item.AeaItemInoutAdminService;
 import com.augurit.aplanmis.common.service.admin.par.AeaParShareMatAdminService;
 import com.augurit.aplanmis.common.service.file.FileUtilsService;
-import com.augurit.aplanmis.common.service.instance.*;
+import com.augurit.aplanmis.common.service.instance.AeaHiApplyinstService;
+import com.augurit.aplanmis.common.service.instance.AeaHiItemMatinstService;
+import com.augurit.aplanmis.common.service.instance.AeaHiItemStateinstService;
+import com.augurit.aplanmis.common.service.instance.AeaHiIteminstService;
+import com.augurit.aplanmis.common.service.instance.AeaHiParStageinstService;
 import com.augurit.aplanmis.common.service.item.AeaItemBasicService;
 import com.augurit.aplanmis.common.service.mat.AeaItemMatService;
 import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
+import com.augurit.aplanmis.common.service.receive.vo.ConstructPermitVo;
 import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
 import com.augurit.aplanmis.common.utils.DateUtils;
 import com.augurit.aplanmis.front.approve.vo.certinst.CertVo;
 import com.augurit.aplanmis.front.approve.vo.certinst.CertinstVo;
 import com.augurit.aplanmis.front.approve.vo.official.OfficialDocumentEditVo;
 import com.augurit.aplanmis.front.approve.vo.official.OfficialDocumentInfoVo;
-import com.augurit.aplanmis.common.service.receive.vo.ConstructPermitVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +72,13 @@ import org.springframework.util.Assert;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -418,9 +457,8 @@ public class OfficialDocumentService {
 
             aeaHiItemMatinst.setMatinstId(UUID.randomUUID().toString());
 
-//            aeaHiItemMatinst.setCreater(SecurityContext.getCurrentUserName());
             OpuOmUserInfo userinfo = opuOmUserInfoMapper.getOpuOmUserInfoByUserId(SecurityContext.getCurrentUserId());
-            aeaHiItemMatinst.setCreater(userinfo.getUserName());
+            aeaHiItemMatinst.setCreater(userinfo.getUserId());
             aeaHiItemMatinst.setCreateTime(new Date());
 
             aeaHiItemMatinst.setMatId(defaultOfficialMat.getMatId());
@@ -485,7 +523,7 @@ public class OfficialDocumentService {
             if (bscAttFileAndDirs != null) {
                 AeaHiItemMatinst aeaHiItemMatinst = aeaHiItemMatinstMapper.getAeaHiItemMatinstById(matinstId);
                 aeaHiItemMatinst.setAttCount((long) bscAttFileAndDirs.size());
-                aeaHiItemMatinst.setModifier(SecurityContext.getCurrentUserName());
+                aeaHiItemMatinst.setModifier(SecurityContext.getCurrentUserId());
                 aeaHiItemMatinst.setModifyTime(new Date());
                 aeaHiItemMatinstMapper.updateAeaHiItemMatinst(aeaHiItemMatinst);
             }
@@ -518,7 +556,7 @@ public class OfficialDocumentService {
         originalMatinst.setOfficialDocDueDate(editVo.strToDate(editVo.getOfficialDocDueDate()));
         originalMatinst.setOfficialDocPublishDate(editVo.strToDate(editVo.getOfficialDocPublishDate()));
         originalMatinst.setAttCount(editVo.getAttCount() == null ? 0L : editVo.getAttCount());
-        originalMatinst.setModifier(SecurityContext.getCurrentUserName());
+        originalMatinst.setModifier(SecurityContext.getCurrentUserId());
         originalMatinst.setModifyTime(new Date());
         originalMatinst.setMemo(editVo.getMemo());
         return originalMatinst;
