@@ -37,7 +37,7 @@ public class OneFormCommonController {
     }
 
     @RequestMapping(value = "/ListSFFormParam", method = {RequestMethod.GET, RequestMethod.POST})
-    @ApiOperation("根据参数获取一张表单的开发表单列表和多个form的html片段，该片段用于填充到dom容器")
+    @ApiOperation("根据阶段/事项，返回表单列表(包括智能表单，开发表单)")
     public ResultForm getListSFFormParam(OneFormStageRequest oneFormStageRequest, SFRenderConfig sFRenderConfig) {
         try {
             List<SFFormParam> listSFFormParam = oneFormCommonService.genListSFFormParam4OneForm(oneFormStageRequest,true);
