@@ -1371,10 +1371,10 @@
         </template>
       </el-collapse>
       <div class="right-bottom-btn" v-if="showMoreProjInfo">
-        <el-button type="danger" circle @click="showCommentDialog('3')">不予<br />受理</el-button>
-        <el-button circle @click="showCommentDialog('5')">材料<br />补全</el-button>
-        <el-button circle @click="showCommentDialog('1')">打印<br />回执</el-button>
-        <el-button type="primary" circle @click="showCommentDialog('0')">发起<br />申报</el-button>
+        <el-button type="danger" :disabled="!stageFrontCheckFlag" circle @click="showCommentDialog('3')">不予<br />受理</el-button>
+        <el-button circle :disabled="!stageFrontCheckFlag" @click="showCommentDialog('5')">材料<br />补全</el-button>
+        <el-button circle :disabled="!stageFrontCheckFlag" @click="showCommentDialog('1')">打印<br />回执</el-button>
+        <el-button type="primary" :disabled="!stageFrontCheckFlag" circle @click="showCommentDialog('0')">发起<br />申报</el-button>
       </div>
       <!--项目树窗口 start-->
       <el-dialog title="查看项目工程结构" :visible.sync="projectTreeInfoModal" class="proj-tree-dialog"
