@@ -1,5 +1,6 @@
 package com.augurit.aplanmis.supermarket.projPurchase.controller;
 
+import com.augurit.agcloud.bsc.domain.BscAttForm;
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.agcloud.framework.util.StringUtils;
@@ -10,10 +11,7 @@ import com.augurit.aplanmis.mall.userCenter.service.RestApplyMatService;
 import com.augurit.aplanmis.mall.userCenter.vo.AutoImportParamVo;
 import com.augurit.aplanmis.mall.userCenter.vo.UploadMatReturnVo;
 import com.augurit.aplanmis.supermarket.projPurchase.service.MatStateService;
-import com.augurit.aplanmis.supermarket.projPurchase.vo.mat.ItemMatVo;
-import com.augurit.aplanmis.supermarket.projPurchase.vo.mat.Mat2MatInstVo;
-import com.augurit.aplanmis.supermarket.projPurchase.vo.mat.MatUploadVo;
-import com.augurit.aplanmis.supermarket.projPurchase.vo.mat.SaveMatinstVo;
+import com.augurit.aplanmis.supermarket.projPurchase.vo.mat.*;
 import io.jsonwebtoken.lang.Assert;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -28,6 +26,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -113,18 +112,24 @@ public class MatController {
 
     @PostMapping("/uploadPurchaseAtt")
     @ApiOperation(value = "项目采购页-采购要求文件上传", tags = "中介超市-项目采购页-采购要求文件上传")
-    public ResultForm saveProjPurchaseRequireAtt(HttpServletRequest request) throws Exception {
-        String detailId = UUID.randomUUID().toString();
+    @ApiImplicitParam(name = "detailId", value = "附件ID")
+    public ResultForm saveProjPurchaseRequireAtt(HttpServletRequest request, String detailId) throws Exception {
+        if (StringUtils.isBlank(detailId)) {
+            detailId = UUID.randomUUID().toString();
+        }
         StandardMultipartHttpServletRequest req = (StandardMultipartHttpServletRequest) request;
         List<MultipartFile> officialRemarkFiles = req.getFiles("officialRemarkFile");
-
+        List<BscAttForm> bscAttForms = new ArrayList<>();
         if (officialRemarkFiles != null && !officialRemarkFiles.isEmpty()) {
             fileUtilsService.uploadAttachments("AEA_IM_PROJ_PURCHASE", "OFFICIAL_REMARK_FILE", detailId, officialRemarkFiles);
+            bscAttForms.addAll(fileUtilsService.getAttachmentsByRecordId(new String[]{detailId}, "AEA_IM_PROJ_PURCHASE", "OFFICIAL_REMARK_FILE"));
         }
         List<MultipartFile> requireExplainFiles = req.getFiles("requireExplainFile");
         if (requireExplainFiles != null && !requireExplainFiles.isEmpty()) {
             fileUtilsService.uploadAttachments("AEA_IM_PROJ_PURCHASE", "REQUIRE_EXPLAIN_FILE", detailId, requireExplainFiles);
+            bscAttForms.addAll(fileUtilsService.getAttachmentsByRecordId(new String[]{detailId}, "AEA_IM_PROJ_PURCHASE", "REQUIRE_EXPLAIN_FILE"));
         }
-        return new ContentResultForm<>(true, detailId, "success");
+        UploadResult result = new UploadResult(detailId, bscAttForms);
+        return new ContentResultForm<>(true, result, "success");
     }
 }
