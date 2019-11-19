@@ -211,7 +211,8 @@ public class AeaHiItemMatinstServiceImpl implements AeaHiItemMatinstService {
         }
     }
 
-    private void setAttCount(AeaHiItemMatinst aeaHiItemMatinst, HttpServletRequest request) throws Exception {
+    @Override
+    public void setAttCount(AeaHiItemMatinst aeaHiItemMatinst, HttpServletRequest request) throws Exception {
         StandardMultipartHttpServletRequest req = (StandardMultipartHttpServletRequest) request;
         List<MultipartFile> files = req.getFiles("file");
         if (files.size() > 0) {

@@ -536,6 +536,33 @@
 
     </select>
 
+    <select id="getCertinsts" resultType="AeaHiCertinst">
+        SELECT
+        <include refid="allColumns"/>
+        FROM aea_hi_certinst
+        <where>
+            <if test="certId != null">
+                AND CERT_ID = #{certId}
+            </if>
+            <if test="unitInfoIds != null">
+                AND (
+                <foreach collection="unitInfoIds" index="index" item="unitInfoId" open="" separator=" OR " close="">
+                    UNIT_INFO_ID LIKE CONCAT(CONCAT('%',#{unitInfoId}),'%')
+                </foreach>
+                )
+            </if>
+            <if test="projInfoId != null">
+                AND PROJ_INFO_ID = #{projInfoId}
+            </if>
+            <if test="linkmanInfoId != null">
+                AND LINKMAN_INFO_ID = #{linkmanInfoId}
+            </if>
+            <if test="rootOrgId != null">
+                AND ROOT_ORG_ID = #{rootOrgId}
+            </if>
+        </where>
+    </select>
+
     <select id="getAeaHiCertinstByBusCertinst" resultType="com.augurit.aplanmis.common.vo.AeaHiCertinstBVo">
         select
         <include refid="aliasColumns">
