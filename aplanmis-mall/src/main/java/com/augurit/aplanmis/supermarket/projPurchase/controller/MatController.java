@@ -112,7 +112,7 @@ public class MatController {
     }
 
     @PostMapping("/uploadPurchaseAtt")
-    @ApiOperation(value = "", tags = "")
+    @ApiOperation(value = "项目采购页-采购要求文件上传", tags = "中介超市-项目采购页-采购要求文件上传")
     public ResultForm saveProjPurchaseRequireAtt(HttpServletRequest request) throws Exception {
         String detailId = UUID.randomUUID().toString();
         StandardMultipartHttpServletRequest req = (StandardMultipartHttpServletRequest) request;
