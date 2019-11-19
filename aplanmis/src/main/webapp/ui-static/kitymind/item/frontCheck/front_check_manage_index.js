@@ -1002,5 +1002,13 @@ function delItemFrontPartform(id) {
 
 function importFrontItem(){
 
+    $("#uploadProgressMsg").html("数据加载中，请稍后...");
+    $("#uploadProgress").modal("show");
+
+    // 初始化事项树数据
     initFrontCheckItem();
+
+    setTimeout(function(){
+        $("#uploadProgress").modal('hide');
+    },500);
 }

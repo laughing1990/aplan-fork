@@ -391,7 +391,7 @@ public class OrgEfficiencySupervisionController {
         }
     }
     @GetMapping("/getOrgReceiveStatistics")
-    @ApiOperation(value = "部门接件总量", notes = "部门接件总量")
+    @ApiOperation(value = "部门接件总量及受理情况", notes = "部门接件总量及受理情况")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "startTime", value = "开始时间【yyyy-MM-dd】", dataType = "string", paramType = "String", required = true),
             @ApiImplicitParam(name = "endTime", value = "结束时间【yyyy-MM-dd】", dataType = "string", paramType = "String", required = true),
@@ -404,13 +404,13 @@ public class OrgEfficiencySupervisionController {
             Map<String, Object> result = orgEfficiencySupersionService.getOrgReceiveStatistics(startTime, endTime, type,regionId);
             return new ContentResultForm<>(true, result, "查询成功！");
         } catch (Exception e) {
-            log.error("部门接件总量", e);
+            log.error("部门接件总量及受理情况", e);
             return new ContentResultForm<>(false, null, e.getMessage());
         }
     }
 
     @GetMapping("/getOrgReceiveLimitTimeStatistics")
-    @ApiOperation(value = "部门接件受理情况（时限）", notes = "部门接件受理情况")
+    @ApiOperation(value = "部门接件时限状态", notes = "部门接件时限状态")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "startTime", value = "开始时间【yyyy-MM-dd】", dataType = "string", paramType = "String", required = true),
             @ApiImplicitParam(name = "endTime", value = "结束时间【yyyy-MM-dd】", dataType = "string", paramType = "String", required = true),
@@ -420,10 +420,10 @@ public class OrgEfficiencySupervisionController {
     public ResultForm getOrgReceiveLimitTimeStatistics(String startTime, String endTime, String type, String regionId) throws Exception {
 
         try {
-            List<List<Object>>  result = orgEfficiencySupersionService.getOrgReceiveLimitTimeStatistics(startTime, endTime, type,regionId);
+            Map<String,Object>  result = orgEfficiencySupersionService.getOrgReceiveLimitTimeStatistics(startTime, endTime, type,regionId);
             return new ContentResultForm<>(true, result, "查询成功！");
         } catch (Exception e) {
-            log.error("部门接件受理情况", e);
+            log.error("部门接件时限状态", e);
             return new ContentResultForm<>(false, null, e.getMessage());
         }
     }

@@ -625,7 +625,8 @@ ORG_MONTH_STATISTICS_ID  ,STATISTICS_RECORD_ID  ,ORG_ID  ,ORG_NAME  ,REGION_ID  
         </if>
 
         sum(aaoms.MONTH_APPLY_COUNT) receiptCount,
-        sum(aaoms.MONTH_ACCEPTANCE_COUNT)acceptCount
+        sum(aaoms.MONTH_ACCEPTANCE_COUNT)acceptCount,
+        sum(aaoms.MONTH_OUT_SCOPE_COUNT) notAcceptCount
          from
         aea_ana_org_month_statistics  aaoms
 

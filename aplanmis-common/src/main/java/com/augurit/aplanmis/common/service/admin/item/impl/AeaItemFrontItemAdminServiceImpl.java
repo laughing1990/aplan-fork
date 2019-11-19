@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -45,34 +46,79 @@ public class AeaItemFrontItemAdminServiceImpl implements AeaItemFrontItemAdminSe
     public void batchSaveFrontItem(String itemVerId, String[] frontItemVerIds, String[] sortNos){
 
         if (StringUtils.isNotBlank(itemVerId)) {
-            // 先删除
-            batchDelItemByItemVerId(itemVerId);
-
-            // 保存
+            String userId = SecurityContext.getCurrentUserId();
+            String rootOrgId = SecurityContext.getCurrentOrgId();
             if(frontItemVerIds!=null&&frontItemVerIds.length>0) {
-                String userId = SecurityContext.getCurrentUserId();
-                String rootOrgId = SecurityContext.getCurrentOrgId();
-                for (int i=0; i<frontItemVerIds.length;i++) {
-                    AeaItemFrontItem aeaItemFront = new AeaItemFrontItem();
-                    aeaItemFront.setFrontItemId(UUID.randomUUID().toString());
-                    aeaItemFront.setItemVerId(itemVerId);
-                    aeaItemFront.setFrontCkItemVerId(frontItemVerIds[i]);
-                    aeaItemFront.setSortNo(new Long(sortNos[i]));
-                    aeaItemFront.setIsActive(Status.ON);
-                    aeaItemFront.setCreater(userId);
-                    aeaItemFront.setCreateTime(new Date());
-                    aeaItemFront.setRootOrgId(rootOrgId);
-                    aeaItemFrontItemMapper.insertAeaItemFront(aeaItemFront);
+                // 查找需要删除的
+                List<String> needDelIdList = new ArrayList<String>();
+                List<AeaItemFrontItem> needDelList = new ArrayList<AeaItemFrontItem>();
+                AeaItemFrontItem sfrontItem = new AeaItemFrontItem();
+                sfrontItem.setItemVerId(itemVerId);
+                sfrontItem.setRootOrgId(rootOrgId);
+                List<AeaItemFrontItem> frontItemList = aeaItemFrontItemMapper.listAeaItemFront(sfrontItem);
+                if(frontItemList!=null&&frontItemList.size()>0){
+                    for(AeaItemFrontItem item : frontItemList){
+                        int count=0;
+                        for (String frontItemVerId : frontItemVerIds) {
+                            if(item.getFrontCkItemVerId().equals(frontItemVerId)){
+                                break;
+                            }else{
+                                count++;
+                            }
+                        }
+                        if(count==frontItemVerIds.length){
+                            needDelList.add(item);
+                            needDelIdList.add(item.getFrontItemId());
+                        }
+                    }
                 }
+                // 先删除
+                if(needDelList!=null&&needDelList.size()>0){
+
+                    frontItemList.removeAll(needDelList);
+                    aeaItemFrontItemMapper.batchDelAeaItemFront(needDelIdList);
+                }
+
+                // 保存
+                for (int i=0; i<frontItemVerIds.length;i++) {
+                    AeaItemFrontItem updateVo = null;
+                    if (frontItemList != null && frontItemList.size() > 0) {
+                        for (AeaItemFrontItem item : frontItemList) {
+                            if(item.getFrontCkItemVerId().equals(frontItemVerIds[i])){
+                                updateVo = item;
+                                break;
+                            }
+                        }
+                    }
+                    if(updateVo==null){
+                        AeaItemFrontItem aeaItemFront = new AeaItemFrontItem();
+                        aeaItemFront.setFrontItemId(UUID.randomUUID().toString());
+                        aeaItemFront.setItemVerId(itemVerId);
+                        aeaItemFront.setFrontCkItemVerId(frontItemVerIds[i]);
+                        aeaItemFront.setSortNo(new Long(sortNos[i]));
+                        aeaItemFront.setIsActive(Status.ON);
+                        aeaItemFront.setCreater(userId);
+                        aeaItemFront.setCreateTime(new Date());
+                        aeaItemFront.setRootOrgId(rootOrgId);
+                        aeaItemFrontItemMapper.insertAeaItemFront(aeaItemFront);
+                    }else{
+                        updateVo.setModifier(userId);
+                        updateVo.setModifyTime(new Date());
+                        updateVo.setSortNo(new Long(sortNos[i]));
+                        aeaItemFrontItemMapper.updateAeaItemFront(updateVo);
+                    }
+                }
+            }else{
+                aeaItemFrontItemMapper.batchDelItemByItemVerId(itemVerId, rootOrgId);
             }
         }
     }
 
     @Override
-    public void batchDelItemByItemVerId(String itemVerId){
+    public void batchDelItemByItemVerId(String itemVerId, String rootOrgId){
 
         if(StringUtils.isNotBlank(itemVerId)){
-            aeaItemFrontItemMapper.batchDelItemByItemVerId(itemVerId);
+            aeaItemFrontItemMapper.batchDelItemByItemVerId(itemVerId, rootOrgId);
         }
     }
 
@@ -80,13 +126,13 @@ public class AeaItemFrontItemAdminServiceImpl implements AeaItemFrontItemAdminSe
     @Override
     public void saveAeaItemFrontItem(AeaItemFrontItem aeaItemFrontItem){
 
+        String rootOrgId = SecurityContext.getCurrentOrgId();
         // 先删除
-        aeaItemFrontItemMapper.batchDelItemByItemVerId(aeaItemFrontItem.getItemVerId());
-
+        aeaItemFrontItemMapper.batchDelItemByItemVerId(aeaItemFrontItem.getItemVerId(), rootOrgId);
         // 后创建
         aeaItemFrontItem.setCreateTime(new Date());
         aeaItemFrontItem.setCreater(SecurityContext.getCurrentUserId());
-        aeaItemFrontItem.setRootOrgId(SecurityContext.getCurrentOrgId());
+        aeaItemFrontItem.setRootOrgId(rootOrgId);
         aeaItemFrontItemMapper.insertAeaItemFront(aeaItemFrontItem);
     }
 
