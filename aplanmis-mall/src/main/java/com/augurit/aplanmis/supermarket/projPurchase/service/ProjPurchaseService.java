@@ -1385,7 +1385,6 @@ public class ProjPurchaseService {
     }
 
 
-
     /**
      * 发布项目采购需求并启动流程---唐山模式
      *
@@ -1407,24 +1406,25 @@ public class ProjPurchaseService {
             purchaseVo.setApplySubject("1");
         }
         //需要先保存 采购项目信息，发起事项流程时关联的是采购项目信息
+
         AeaProjInfo aeaProjInfo = purchaseVo.createAeaProjInfo();
         aeaProjInfoMapper.insertAeaProjInfo(aeaProjInfo);
         String projInfoId = aeaProjInfo.getProjInfoId();//采购项目 项目ID
         ImItemApplyData applyData = purchaseVo.createItemApplyData();
         applyData.setProjInfoId(projInfoId);//回填采购的项目ID
+        String linkmanId = "";
         if (StringUtils.isNotBlank(isPersonAccount) && "0".equals(isPersonAccount)) {
             //单位
             String unitId = loginInfoVo.getUnitId();
             applyData.setConstructionUnitId(loginInfoVo.getUnitId());
             List<AeaLinkmanInfo> aeaLinkmanInfos = aeaImServiceLinkmanMapper.listAeaImServiceLinkmanByUnitInfoId(unitId, null, null);
             if (aeaLinkmanInfos.isEmpty()) throw new Exception("can not find linkman");
-            //查询单位联系人
-            AeaUnitInfo info = aeaUnitInfoMapper.getAeaUnitInfoById(unitId);
-            applyData.setLinkmanInfoId(aeaLinkmanInfos.get(0).getLinkmanInfoId());
+            linkmanId = aeaLinkmanInfos.get(0).getLinkmanInfoId();
         } else {
+            linkmanId = loginInfoVo.getUserId();
             applyData.setApplyLinkmanId(loginInfoVo.getUserId());
-            applyData.setLinkmanInfoId(loginInfoVo.getUserId());
         }
+        applyData.setLinkmanInfoId(linkmanId);
         //发起中介事项流程
         ApplyinstResult result = restImApplyService.purchaseStartProcess(applyData);
         String applyinstId = result.getApplyinstId();
@@ -1432,9 +1432,11 @@ public class ProjPurchaseService {
         //保存采购信息
         ImPurchaseData purchaseData = purchaseVo.createPurchaseData(applyinstId, applyinstCode);
         purchaseData.setProjInfoId(projInfoId);
+        purchaseData.setLinkmanInfoId(linkmanId);
+        //设置审批项目ID
+        purchaseData.setApproveProjInfoId(purchaseVo.getSaveAeaProjInfoVo().getParentProjId());
         restImApplyService.savePurchaseProjInfo(purchaseData);
-        //文件上传
-        
+
 //        //保存受理回执，物料回执
 //        if (StringUtils.isBlank(applyinstIdParam)) {
 //            receiveService.saveReceive(new String[]{applyinstId}, new String[]{"1", "2"}, SecurityContext.getCurrentUserName(), "");
@@ -1475,6 +1477,11 @@ public class ProjPurchaseService {
                 throw new RuntimeException("缺少回避单位");
             }
         }
-
+        AeaProjInfo aeaProjInfoCond = new AeaProjInfo();
+        aeaProjInfoCond.setProjName(purchaseVo.getSaveAeaProjInfoVo().getProjName());
+        List aeaProjInfoCondList = aeaProjInfoMapper.listAeaProjInfo(aeaProjInfoCond);
+        if (!aeaProjInfoCondList.isEmpty()) {
+            throw new RuntimeException("项目名称已存在");
+        }
     }
 }
