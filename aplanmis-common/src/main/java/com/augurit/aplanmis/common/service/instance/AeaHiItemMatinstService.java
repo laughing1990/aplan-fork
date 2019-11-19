@@ -142,4 +142,5 @@ public interface AeaHiItemMatinstService {
 
     void unbindCertinst(String matinstId) throws Exception;
 
+    AeaHiItemMatinst bindForminst(AeaHiItemMatinst aeaHiItemMatinst, String currentUserId) throws Exception;
 }

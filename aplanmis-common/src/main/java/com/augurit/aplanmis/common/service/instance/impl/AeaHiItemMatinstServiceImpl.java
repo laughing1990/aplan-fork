@@ -7,6 +7,7 @@ import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.util.CollectionUtils;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.constants.CertinstSource;
+import com.augurit.aplanmis.common.constants.MatHolder;
 import com.augurit.aplanmis.common.constants.MatinstSource;
 import com.augurit.aplanmis.common.domain.AeaHiCertinst;
 import com.augurit.aplanmis.common.domain.AeaHiItemInoutinst;
@@ -304,15 +305,18 @@ public class AeaHiItemMatinstServiceImpl implements AeaHiItemMatinstService {
         aeaHiItemMatinst.setCreateTime(new Date());
         aeaHiItemMatinst.setCreater(currentUserId);
         aeaHiItemMatinst.setCertinstId(aeaHiCertinst.getCertinstId());
-        aeaHiItemMatinst.setMatinstSource(aeaItemMat.getMatFrom());
         aeaHiItemMatinst.setAttCount(1L);
         // 企业
-        if (StringUtils.isBlank(aeaItemMat.getMatHolder()) || "c".equals(aeaItemMat.getMatHolder())) {
+        if (StringUtils.isBlank(aeaItemMat.getMatHolder()) || MatHolder.UNIT.getValue().equals(aeaItemMat.getMatHolder())) {
             aeaHiItemMatinst.setUnitInfoId(aeaHiCertinst.getUnitInfoId());
+            aeaHiItemMatinst.setMatinstSource(MatinstSource.UNIT.getValue());
         }
         // 个人
-        else if ("u".equals(aeaItemMat.getMatHolder())) {
+        else if (MatHolder.LINKMAN.getValue().equals(aeaItemMat.getMatHolder())) {
             aeaHiItemMatinst.setLinkmanInfoId(aeaHiCertinst.getLinkmanInfoId());
+            aeaHiItemMatinst.setMatinstSource(MatinstSource.LINKMAN.getValue());
+        } else {
+            aeaHiItemMatinst.setMatinstSource(MatinstSource.UNIT.getValue());
         }
         aeaHiItemMatinst.setProjInfoId(aeaHiCertinst.getProjInfoId());
 
@@ -330,13 +334,43 @@ public class AeaHiItemMatinstServiceImpl implements AeaHiItemMatinstService {
     @Override
     public void unbindCertinst(String matinstId) throws Exception {
         Assert.hasText(matinstId, "证照材料实例id不能为空");
-        AeaHiItemMatinst aeaHiItemMatinst = aeaHiItemMatinstMapper.getAeaHiItemMatinstById(matinstId);
-
         /// 不删除电子证照实例，有可能一个电子证照被绑定多次
         /*// 删除电子证照
+        AeaHiItemMatinst aeaHiItemMatinst = aeaHiItemMatinstMapper.getAeaHiItemMatinstById(matinstId);
         if (StringUtils.isNotBlank(aeaHiItemMatinst.getCertinstId())) {
             aeaHiCertinstMapper.deleteAeaHiCertinst(aeaHiItemMatinst.getCertinstId());
         }*/
         aeaHiItemMatinstMapper.deleteAeaHiItemMatinst(matinstId);
+    }
+
+    @Override
+    public AeaHiItemMatinst bindForminst(AeaHiItemMatinst aeaHiItemMatinst, String currentUserId) throws Exception {
+        Assert.hasText(aeaHiItemMatinst.getMatId(), "matId must not null.");
+        Assert.hasText(aeaHiItemMatinst.getStoForminstId(), "forminstId must not null.");
+
+        AeaItemMat aeaItemMat = aeaItemMatMapper.getAeaItemMatById(aeaHiItemMatinst.getMatId());
+        if (aeaItemMat == null) throw new Exception("aeaItemMat为空, matId: " + aeaHiItemMatinst.getMatId());
+
+        String currentOrgId = SecurityContext.getCurrentOrgId();
+
+        aeaHiItemMatinst.setMatinstId(UuidUtil.generateUuid());
+        aeaHiItemMatinst.setRootOrgId(currentOrgId);
+        aeaHiItemMatinst.setMatinstName(aeaItemMat.getMatName());
+        aeaHiItemMatinst.setMatinstCode(aeaItemMat.getMatCode());
+        aeaHiItemMatinst.setCreateTime(new Date());
+        aeaHiItemMatinst.setCreater(currentUserId);
+        aeaHiItemMatinst.setAttCount(1L);
+        // 企业
+        if (StringUtils.isBlank(aeaItemMat.getMatHolder()) || MatHolder.UNIT.getValue().equals(aeaItemMat.getMatHolder())) {
+            aeaHiItemMatinst.setMatinstSource(MatinstSource.UNIT.getValue());
+        }
+        // 个人
+        else if (MatHolder.LINKMAN.getValue().equals(aeaItemMat.getMatHolder())) {
+            aeaHiItemMatinst.setMatinstSource(MatinstSource.LINKMAN.getValue());
+        } else {
+            aeaHiItemMatinst.setMatinstSource(MatinstSource.UNIT.getValue());
+        }
+        aeaHiItemMatinstMapper.insertAeaHiItemMatinst(aeaHiItemMatinst);
+        return aeaHiItemMatinst;
     }
 }
