@@ -575,7 +575,7 @@ var vm = new Vue({
       unitLinkManOptions: [],
       matCodes: [], // 材料code集合
       oneformNameTitle: '一张表单', // 一张表单弹窗title
-      devFormUrl: '', // 一张表单url
+      devFormUrl: [], // 开发表单url
       stageFrontCheckFlag: true, // 阶段前置检测是否通过
       stageFrontCheckMsg: '', // 阶段前置检测失败提示
       showCertWindowFlag: false, // 是否展示证照库窗口
@@ -5573,11 +5573,16 @@ var vm = new Vue({
       }, function (result) {
         if (result.success) {
           _that.oneFormDialogVisible = true;
+          _that.devFormUrl = [];
           $('#oneFormContent').html(result.content.sfForm)
           _that.$nextTick(function(){
             $('#oneFormContent').html(result.content.sfForm)
           });
-          _that.devFormUrl = result.content.devForm;
+          if(result.content.devForm&&result.content.devForm.length>0){
+            result.content.devForm.map(function(item){
+              _that.devFormUrl.push(item.formUrl);
+            });
+          }
         }else {
           _that.$message({
             message: result.content?result.content:'获取表单失败！',
