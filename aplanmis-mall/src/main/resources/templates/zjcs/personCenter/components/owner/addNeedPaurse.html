@@ -733,8 +733,9 @@
 						element-loading-spinner="el-icon-loading" element-loading-background="rgba(0, 0, 0, 0.3)"
 						:class="this.AllFileList.length>0?'is-sel-file':''">
 						<el-upload ref="uploadFile" class="upload-flie" :auto-upload="false" drag
-							:show-file-list="false" :file-list="fileList" :action="ctx+'rest/mats/att/upload/auto'"
-							multiple :http-request="myUploadFile" :on-change="fileChange">
+							:show-file-list="false" :file-list="fileList"
+							:action="'[[@{/}]]'+'rest/mats/att/upload/auto'" multiple :http-request="myUploadFile"
+							:on-change="fileChange">
 							<i slot="trigger" v-show="this.AllFileList.length>0" class="el-icon-plus"></i>
 							<el-button class="submit-file" v-show="this.AllFileList.length>0" size="small"
 								type="primary" @click="submitUpload">一键自动分拣
@@ -970,7 +971,8 @@
 						</el-form-item>
 						<el-form-item class="inline-block" label="联系电话：" prop="applicant">
 							<div class="input-box">
-								<span type="text" class="form-control">{{aeaLinkmanInfo.linkmanMobilePhone || '暂无'}}</span>
+								<span type="text"
+									class="form-control">{{aeaLinkmanInfo.linkmanMobilePhone || '暂无'}}</span>
 							</div>
 						</el-form-item>
 					</div>
@@ -1274,5 +1276,16 @@
 
 	.twoLine label {
 		line-height: 20px;
+	}
+
+	.notice-pop {
+		height: 30px;
+		line-height: 30px;
+		color: #7C828D;
+		cursor: pointer;
+	}
+
+	.text-green {
+		color: #00c161;
 	}
 </style>
