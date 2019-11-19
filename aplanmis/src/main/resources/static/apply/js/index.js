@@ -5568,7 +5568,7 @@ var vm = new Vue({
       var _that = this;
       var sFRenderConfig='&showBasicButton=true&includePlatformResource=false';
       request('', {
-        url: ctx + 'rest/oneform/common/renderHtmlFormContainer?applyinstId='+_applyinstId+'&stageId='+_stageId+'&'+str+sFRenderConfig,
+        url: ctx + 'rest/oneform/common/renderHtmlFormContainer?applyinstId='+_applyinstId+'&stageId='+_stageId+'&projInfoId='+_that.projInfoId+'&'+str+sFRenderConfig,
         type: 'get',
       }, function (result) {
         if (result.success) {
