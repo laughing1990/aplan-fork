@@ -682,10 +682,10 @@
 				<div class="item-detail edit-item-detail">
 					<div class="upload-card">
 						<div class="upload-btn">
-							<el-upload class="matterUploadFile" :show-file-list="false" action="123"
+							<el-upload class="matterUploadFile" :show-file-list="false" :action="attachmentUrl"
 								:on-preview="handlePreview1" :on-remove="handleRemove1" :before-remove="beforeRemove1"
 								:before-upload="beforeAvatarUpload" :on-change="onchange1" multiple :limit="3"
-								:auto-upload="false" :on-exceed="handleExceed1">
+								:auto-upload="true" :on-exceed="handleExceed1">
 								<el-button type="primary">上传文件</el-button>
 							</el-upload>
 							<span class="ml-3" slot="tip"
@@ -703,7 +703,7 @@
 					<p class="note-txt mt-1">备注：您可上传购买中介服务的政府批文及财政资金安排批文的相关文件，便于项目审批，不供公示下载。</p>
 					<div class="upload-card mt20">
 						<div class="upload-btn">
-							<el-upload class="matterUploadFile" action="dakdsk" :show-file-list="false"
+							<el-upload class="matterUploadFile" :action="attachmentUrl" :show-file-list="false"
 								:on-preview="handlePreview2" :on-remove="handleRemove2" :before-upload="beforeUpload2"
 								:before-remove="beforeRemove2" multiple :on-change="onchange2" :limit="10"
 								:auto-upload="false">

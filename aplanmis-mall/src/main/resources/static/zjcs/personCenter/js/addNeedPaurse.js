@@ -27,6 +27,7 @@ var module1 = new Vue({
 			}
 		};
 		return {
+			itemVerId: '', // 服务事项id
 			loginUserInfo: {
 				isAdministrators: "",
 				isOwner: "",
@@ -276,6 +277,7 @@ var module1 = new Vue({
 			isShowServiceDetail: false, // 是否显示中介服务对应详细信息
 			serviceDetail: {}, // 中介服务对应详细信息
 			stateList: [], // 情形选中列表
+			attachmentUrl: ctx + 'supermarket/purchase/mat/uploadPurchaseAtt', // 附加上传url
 		}
 	},
 	methods: {
@@ -471,6 +473,8 @@ var module1 = new Vue({
 					if (isQualRequire) {
 						params.aeaImMajorQuals = aeaImMajorQuals
 					}
+
+					params.itemVerId = vm.itemVerId;
 					// debugger
 					// console.log(params)
 					// return
@@ -713,7 +717,8 @@ var module1 = new Vue({
 			vm.selectdRecord = [];
 			var value = vm.multipleSelection2
 
-			vm.serviceDetail = JSON.parse(JSON.stringify(vm.multipleSelection2[0]));
+			// vm.serviceDetail = JSON.parse(JSON.stringify(vm.multipleSelection2[0]));
+			vm.itemVerId = value[0].agentItemVerId;
 			vm.isShowServiceDetail = true;
 
 			if (!value.length > 0) {
@@ -932,18 +937,20 @@ var module1 = new Vue({
 					message: '禁止上传以下的附件类型：.exe,.sh,.bat,.com,.dll!',
 					type: 'error'
 				});
+				return false;
 			}
 			if (file.size > 10485760) {
 				this.$message({
 					message: '上传文件大小不能超过 10MB!',
 					type: 'error'
 				});
-			}
-			if (extension && extension2 && extension3 && extension4 && extension5 && file.size > 10485760) {
 				return false;
-			} else {
-				return true;
 			}
+			// if (extension && extension2 && extension3 && extension4 && extension5 && file.size > 10485760) {
+			// 	return false;
+			// } else {
+			// 	return true;
+			// }
 		},
 		beforeRemove1: function (file, fileList) {
 			return this.$confirm('确定移除' + file.name + '?');
@@ -984,6 +991,7 @@ var module1 = new Vue({
 			var vm = this;
 			confirmMsg('确定移除' + item.name + '?', '', function () {
 				vm.fileList1.splice(index, 1);
+				vm.formData1.splice(index, 1);
 			})
 
 		},
@@ -1039,6 +1047,7 @@ var module1 = new Vue({
 			var vm = this;
 			confirmMsg('确定移除' + item.name + '?', '', function () {
 				vm.fileList2.splice(index, 1);
+				vm.formData2.splice(index, 1);
 			})
 
 		},
@@ -1208,6 +1217,18 @@ var module1 = new Vue({
 		},
 
 
+		// 删除数组里含有某值的对应项
+		removeArray: function(_arr, _obj) {
+			if (!_arr) return;
+			var length = _arr.length;
+			if (length.length == 0) return;
+			for (var i = 0; i < length; i++) {
+			  if (_arr[i] === _obj) {
+				_arr.splice(i, 1);
+				return _arr;
+			  }
+			}
+		  },
 		// pageSize 改变时会触发
 		homeHandleSizeChange: function (val) {
 			this.pageSize = val;
