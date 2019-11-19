@@ -8,6 +8,7 @@ import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.utils.DateUtils;
 import com.augurit.aplanmis.common.vo.analyse.*;
 import com.augurit.efficiency.service.OrgEfficiencySupersionService;
+import com.augurit.efficiency.utils.TimeParamUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -21,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 import springfox.documentation.annotations.ApiIgnore;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -38,13 +38,20 @@ public class OrgEfficiencySupervisionController {
     @Autowired
     private OrgEfficiencySupersionService orgEfficiencySupersionService;
 
-    private static String ORG_EFFICIENCY_SUPERVISION_INDEX = "efficiency/assignPeopleEffect";
+    private static String ORG_EFFICIENCY_SUPERVISION_INDEX = "efficiency/assEffect";
+    private static String OLD_WIN_EFFICIENCY_SUPERVISION_INDEX = "efficiency/assignPeopleEffect";
     private static String SINGLE_ORG_EFFICIENCY_SUPERVISION_INDEX = "efficiency/singleAssEffect";
 
     @RequestMapping("/index")
     @ApiIgnore
     public ModelAndView index() {
         return new ModelAndView(ORG_EFFICIENCY_SUPERVISION_INDEX);
+    }
+
+    @RequestMapping("/oldIndex")
+    @ApiIgnore
+    public ModelAndView oldIndex() {
+        return new ModelAndView(OLD_WIN_EFFICIENCY_SUPERVISION_INDEX);
     }
 
     @RequestMapping("/orgIndex")
@@ -248,7 +255,7 @@ public class OrgEfficiencySupervisionController {
     public ResultForm getOrgItemAcceptStatistics(String startTime, String endTime, String type) {
         try {
             if (StringUtils.isBlank(type)) {
-                ResultForm resultForm = checkTimeParam(startTime, endTime);
+                ResultForm resultForm = TimeParamUtil.checkTimeParam(startTime, endTime);
                 if (resultForm != null) return resultForm;
             }
             List<Map<String, Object>> orgItemAcceptStatistics = orgEfficiencySupersionService.getOrgItemAcceptStatistics(startTime, endTime, type, true);
@@ -270,7 +277,7 @@ public class OrgEfficiencySupervisionController {
     public ResultForm getOrgItemAcceptHistoryStatistics(String itemId, String startTime, String endTime, String type) {
         try {
             if (StringUtils.isBlank(type)) {
-                ResultForm resultForm = checkTimeParam(startTime, endTime);
+                ResultForm resultForm = TimeParamUtil.checkTimeParam(startTime, endTime);
                 if (resultForm != null) return resultForm;
             }
             if (StringUtils.isBlank(itemId)) {
@@ -295,7 +302,7 @@ public class OrgEfficiencySupervisionController {
     public ResultForm getRegionOrgAcceptStatistics(String regionId, String startTime, String endTime, String type) {
         try {
             if (StringUtils.isBlank(type)) {
-                ResultForm resultForm = checkTimeParam(startTime, endTime);
+                ResultForm resultForm = TimeParamUtil.checkTimeParam(startTime, endTime);
                 if (resultForm != null) return resultForm;
             }
             List<Map<String, Object>> regionOrgAcceptStatistics = orgEfficiencySupersionService.getRegionOrgAcceptStatistics(regionId, startTime, endTime, type);
@@ -318,7 +325,7 @@ public class OrgEfficiencySupervisionController {
     public ResultForm getRegionOrgAcceptHistoryStatistics(String regionId, String orgId, String startTime, String endTime, String type) {
         try {
             if (StringUtils.isBlank(type)) {
-                ResultForm resultForm = checkTimeParam(startTime, endTime);
+                ResultForm resultForm = TimeParamUtil.checkTimeParam(startTime, endTime);
                 if (resultForm != null) return resultForm;
             }
             if (StringUtils.isBlank(regionId) && StringUtils.isBlank(orgId)) {
@@ -332,53 +339,6 @@ public class OrgEfficiencySupervisionController {
         }
     }
 
-    /**
-     * 检查时间参数
-     *
-     * @param startTime 开始时间
-     * @param endTime   结束时间
-     */
-    private ResultForm checkTimeParam(String startTime, String endTime) {
-        if (StringUtils.isBlank(startTime) || StringUtils.isBlank(endTime)) {
-            return new ContentResultForm<>(false, null, "请求缺少参数！");
-        }
-
-        if (startTime.compareTo(endTime) > 0) {
-            return new ContentResultForm<>(false, null, "开始日期大于结束日期！");
-        }
-        try {
-            Date _startTime = DateUtils.convertStringToDate(startTime, "yyyy-MM-dd");
-            Date _endTime = DateUtils.convertStringToDate(endTime, "yyyy-MM-dd");
-        } catch (ParseException e) {
-            return new ContentResultForm<>(false, null, "传入日期格式错误！");
-        }
-
-        return null;
-    }
-
-    /**
-     * 检查时间参数
-     *
-     * @param startTime 开始时间
-     * @param endTime   结束时间
-     */
-    private ResultForm checkTimeParam(String startTime, String endTime, String format) {
-        if (StringUtils.isBlank(startTime) || StringUtils.isBlank(endTime)) {
-            return new ContentResultForm<>(false, null, "请求缺少参数！");
-        }
-
-        if (startTime.compareTo(endTime) > 0) {
-            return new ContentResultForm<>(false, null, "开始日期大于结束日期！");
-        }
-        try {
-            Date _startTime = DateUtils.convertStringToDate(startTime, format);
-            Date _endTime = DateUtils.convertStringToDate(endTime, format);
-        } catch (ParseException e) {
-            return new ContentResultForm<>(false, null, "传入日期格式错误！");
-        }
-
-        return null;
-    }
     @ApiOperation(value = "委办局-获取当前所在城市区划")
     @GetMapping("/getCurrentCityRegions")
     public ContentResultForm getCurrentRegionList(){
@@ -390,6 +350,7 @@ public class OrgEfficiencySupervisionController {
             return new ContentResultForm(false,null,"查询城市区划失败1");
         }
     }
+
     @GetMapping("/getOrgReceiveStatistics")
     @ApiOperation(value = "部门接件总量及受理情况", notes = "部门接件总量及受理情况")
     @ApiImplicitParams({
@@ -424,6 +385,26 @@ public class OrgEfficiencySupervisionController {
             return new ContentResultForm<>(true, result, "查询成功！");
         } catch (Exception e) {
             log.error("部门接件时限状态", e);
+            return new ContentResultForm<>(false, null, e.getMessage());
+        }
+    }
+
+    @GetMapping("/getRegionOrgItemUseTimeStatistics")
+    @ApiOperation(value = "地区/部门/事项 事项实例用时情况统计", notes = "地区/部门/事项 事项实例用时情况统计")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "startTime", value = "开始时间【yyyy-MM-dd】", dataType = "string", paramType = "String"),
+            @ApiImplicitParam(name = "endTime", value = "结束时间【yyyy-MM-dd】", dataType = "string", paramType = "String"),
+            @ApiImplicitParam(name = "type", value = "类型【周W月M日D灵活时间段A】", dataType = "string", paramType = "String"),
+            @ApiImplicitParam(name = "regionId", value = "区划ID", dataType = "string", paramType = "string"),
+            @ApiImplicitParam(name = "orgId", value = "部门ID", dataType = "string", paramType = "string")
+    })
+    public ResultForm getRegionOrgItemUseTimeStatistics(String startTime, String endTime, String type, String regionId, String orgId) {
+
+        try {
+            List<Map<String, Object>> result = orgEfficiencySupersionService.getItemUseTimeStatistics(startTime, endTime, type, regionId, orgId);
+            return new ContentResultForm<>(true, result, "查询成功！");
+        } catch (Exception e) {
+            log.error("地区/部门/事项 事项实例用时情况统计异常", e);
             return new ContentResultForm<>(false, null, e.getMessage());
         }
     }

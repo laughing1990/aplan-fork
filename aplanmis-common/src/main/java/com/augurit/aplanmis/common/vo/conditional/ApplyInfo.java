@@ -28,4 +28,11 @@ public class ApplyInfo extends BaseInfo implements Serializable {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm", locale = "zh", timezone = "GMT+8")
     private Date concludedTime;
+
+    @ApiModelProperty(value = "任务实例id")
+    private String taskId;
+
+    @ApiModelProperty(value = "视图id")
+    private String viewId;
+
 }

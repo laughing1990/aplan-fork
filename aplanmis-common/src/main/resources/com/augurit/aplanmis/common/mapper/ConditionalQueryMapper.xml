@@ -4207,6 +4207,7 @@
         FROM (
 
         SELECT
+        art_123.ID_ AS taskId,
         ahap_123.APPLYINST_CODE AS applyinstCode,
         ahap_123.APPLYINST_ID AS applyinstId,
         temp1.PROJ_NAME AS projName,
@@ -4223,6 +4224,9 @@
         aea_hi_applyinst ahap_123
         <include refid="leftJoinApplyinstProj">
         </include>
+        LEFT JOIN ACT_STO_APPINST asa_123 ON asa_123.master_record_id = ahap_123.APPLYINST_ID
+        LEFT JOIN ACT_HI_PROCINST ahp_123 ON asa_123.procinst_id = AHP_123.PROC_INST_ID_
+        LEFT JOIN ACT_RU_TASK art_123 ON art_123.PROC_INST_ID_ = ahp_123.PROC_INST_ID_
         LEFT JOIN aea_hi_par_stageinst ahs_123 ON ahs_123.APPLYINST_ID = ahap_123.APPLYINST_ID
         LEFT JOIN aea_par_stage aps_123 ON ahs_123.STAGE_ID = aps_123.STAGE_ID
         LEFT JOIN aea_par_theme_ver ver ON aps_123.THEME_VER_ID = ver.THEME_VER_ID
@@ -4233,6 +4237,7 @@
             AND ahap_123.APPLYINST_STATE = '1'
             AND ahap_123.IS_SERIES_APPROVE = '0'
             AND ahap_123.CREATER = #{loginName}
+            AND art_123.ID_ is not null
             <if test="theme != null and theme != '' ">
                 AND theme.THEME_ID = #{theme}
             </if>
@@ -4241,6 +4246,7 @@
         </where>
         UNION ALL
         SELECT
+        art_123.ID_ AS taskId,
         ahap_123.APPLYINST_CODE AS applyinstCode,
         ahap_123.APPLYINST_ID AS applyinstId,
         temp1.PROJ_NAME AS projName,
@@ -4258,6 +4264,9 @@
         aea_hi_applyinst ahap_123
         <include refid="leftJoinApplyinstProj">
         </include>
+        LEFT JOIN ACT_STO_APPINST asa_123 ON asa_123.master_record_id = ahap_123.APPLYINST_ID
+        LEFT JOIN ACT_HI_PROCINST ahp_123 ON asa_123.procinst_id = AHP_123.PROC_INST_ID_
+        LEFT JOIN ACT_RU_TASK art_123 ON art_123.PROC_INST_ID_ = ahp_123.PROC_INST_ID_
         LEFT JOIN aea_hi_seriesinst ser ON ser.APPLYINST_ID = ahap_123.APPLYINST_ID
         LEFT JOIN aea_hi_iteminst iteminst ON iteminst.seriesinst_id = ser.seriesinst_id
         <where>
@@ -4266,6 +4275,7 @@
             AND ahap_123.APPLYINST_STATE = '1'
             AND ahap_123.IS_SERIES_APPROVE = '1'
             AND ahap_123.CREATER = #{loginName}
+            AND art_123.ID_ is not null
             <include refid="baseConditionalQuery">
             </include>
         </where>

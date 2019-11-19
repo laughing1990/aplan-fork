@@ -49,7 +49,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
-@Api(description = "项目需求采购管理接口")
+@Api(description = "项目需求采购管理接口", value = "", tags = "中介超市---项目需求采购接口")
 @RequestMapping("/supermarket/purchase")
 @RestController
 public class AeaImProjPurchaseController {

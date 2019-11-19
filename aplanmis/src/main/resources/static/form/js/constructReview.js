@@ -201,8 +201,7 @@ var app = new Vue({
     }
   },
   created: function() {
-    // this.projInfoId = '04f0c482-0393-491c-8136-8c6050d9a99f';
-    // this.projInfoId = '050de049-eb7e-459a-9340-9d4fb8120224';
+    // this.projInfoId = '0087be4f-acb6-4727-ab3a-e7f8440ff815';
     this.projInfoId = this.getUrlParam('projInfoId');
   },
   mounted: function() {
@@ -526,7 +525,7 @@ var app = new Vue({
       this.$set(data, 'unifiedSocialCreditCode', val.unifiedSocialCreditCode);
       this.$set(data, 'applicant', val.applicant);
       this.$set(data, 'unitInfoId', val.unitInfoId);
-      if (data.linkmen.length != 0) {
+      if (data.linkmen && data.linkmen.length != 0) {
         for (var i = 0; i < data.linkmen.length; i++) {
           data.linkmen[i].unitInfoId = val.unitInfoId;
         }

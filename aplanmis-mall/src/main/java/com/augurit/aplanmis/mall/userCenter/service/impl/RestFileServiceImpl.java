@@ -24,10 +24,7 @@ import com.augurit.aplanmis.common.service.instance.AeaHiItemInoutinstService;
 import com.augurit.aplanmis.common.service.instance.AeaHiItemMatinstService;
 import com.augurit.aplanmis.common.utils.SessionUtil;
 import com.augurit.aplanmis.common.vo.LoginInfoVo;
-import com.augurit.aplanmis.mall.userCenter.constant.LoginUserRoleEnum;
 import com.augurit.aplanmis.mall.userCenter.service.RestFileService;
-import com.augurit.aplanmis.mall.userCenter.vo.AeaLinkmanInfoVo;
-import com.augurit.aplanmis.mall.userCenter.vo.AeaUnitInfoVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +32,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.support.StandardMultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -43,8 +42,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
 
 @Service
@@ -308,6 +309,23 @@ public class RestFileServiceImpl implements RestFileService {
         if (links.size()==0) return true;
         String matInstId = links.get(0).getRecordId();
         return  this.isMatBelong(matInstId,request);
+    }
+
+    @Override
+    public Boolean isAllowFileType(HttpServletRequest request) {
+
+        StandardMultipartHttpServletRequest req = (StandardMultipartHttpServletRequest) request;
+        List<MultipartFile> files = req.getFiles("file");
+        AtomicReference<Boolean> isAllowFileType = new AtomicReference<>(true);
+        String[] fileTypes = {".jpg", ".png", ".rar", ".txt", ".zip", ".doc", ".ppt", ".xls", ".pdf", ".docx", ".xlsx"};
+
+        files.stream().forEach(file->{
+            String fileType = file.getOriginalFilename().substring(file.getOriginalFilename().indexOf(".")).toLowerCase();
+            if (!Arrays.asList(fileTypes).contains(fileType)) {
+                isAllowFileType.set(false);
+            }
+        });
+        return isAllowFileType.get();
     }
 
 }
