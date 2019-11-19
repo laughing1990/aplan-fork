@@ -20,7 +20,7 @@ public class AeaExProjCertBuild {
     @ApiModelProperty("建设工程规划许可证编号")
     private String certBuildCode;
     @ApiModelProperty("建设工程规划许可证二维码")
-    private String certBuildQrcode;
+    private byte[] certBuildQrcode;
     @ApiModelProperty("核发机关组织机构代码")
     private String govOrgCode;
     @ApiModelProperty("核发机关")
