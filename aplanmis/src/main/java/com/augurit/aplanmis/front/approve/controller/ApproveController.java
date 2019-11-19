@@ -247,7 +247,7 @@ public class ApproveController {
     }
 
     @PostMapping("/matinst/certinstLibrary")
-    @ApiOperation(value = "证照库")
+    @ApiOperation(value = "本地证照库（非对接证照库）")
     @ApiImplicitParams(value = {
             @ApiImplicitParam(name = "applyinstId", value = "申请实例ID", dataType = "string", required = true),
             @ApiImplicitParam(name = "certId", value = "证照定义ID", dataType = "string", required = true),
