@@ -67,39 +67,39 @@
 								</el-button>
 							</el-input>
 						</div>
-						<div>
+						<!-- <div v-show="!!serviceDetail">
 							<el-row :gutter="20">
 								<el-col :span="8">
-									<el-form-item label="事项名称：">{{form.agentItemName}}</el-form-item>
+									<el-form-item label="事项名称：">{{serviceDetail.agentItemName}}</el-form-item>
 								</el-col>
 								<el-col :span="8">
-									<el-form-item label="实施主体：">{{form.agentOrgName}}
+									<el-form-item label="实施主体：">{{serviceDetail.agentOrgName}}
 									</el-form-item>
 								</el-col>
 								<el-col :span="8">
-									<el-form-item label="服务对象：">{{form.agentItemFwdx}}
+									<el-form-item label="服务对象：">{{serviceDetail.agentItemFwdx}}
+									</el-form-item>
+								</el-col>
+								<el-col :span="8">
+									<el-form-item label="办件类型：">{{serviceDetail.agentItemPropertyName}}
 									</el-form-item>
 								</el-col>
 							</el-row>
-							<el-row :gutter="20">
-								<el-col :span="8">
-									<el-form-item label="办件类型：">{{form.agentItemPropertyName}}
-									</el-form-item>
-								</el-col>
+							<el-row :gutter="20">								
 								<el-col :span="8">
 									<el-form-item label="法定办结时限：">
-										{{form.agentItemDueNum}}（{{form.agentItemDueUnitType}}）
+										{{serviceDetail.agentItemDueNum}}（{{serviceDetail.agentItemDueUnitType}}）
 									</el-form-item>
 								</el-col>
 								<el-col :span="8">
 									<el-form-item label="承诺办结时限：">
-										{{form.agentItemDueNum}}（{{form.agentItemDueUnitType}}）
+										{{serviceDetail.agentItemDueNum}}（{{serviceDetail.agentItemDueUnitType}}）
 									</el-form-item>
 								</el-col>
 							</el-row>
-						</div>
+						</div> -->
 					</el-form-item>
-					<el-form-item label="事项对应部门" prop="agentOrgName">
+					<el-form-item label="实施主体" prop="agentOrgName">
 						<el-input type="text" v-model="form.agentOrgName" class="form-control" disabled>
 						</el-input>
 					</el-form-item>
@@ -107,6 +107,22 @@
 						<el-input type="text" class="form-control" v-model="form.itemName" disabled>
 						</el-input>
 					</el-form-item>
+
+					<div v-show="isShowServiceDetail" class="clearfix">
+						<el-form-item class="inline-block" label="服务对象：">
+							{{serviceDetail.agentItemFwdx}}
+						</el-form-item>
+						<el-form-item class="inline-block" label="办件类型：">
+							{{serviceDetail.agentItemPropertyName}}
+						</el-form-item>
+						<el-form-item class="inline-block" label="法定办结时限：">
+							{{serviceDetail.agentItemDueNum}}（{{serviceDetail.agentItemDueUnitType}}）
+						</el-form-item>
+						<el-form-item class="inline-block" label="承诺办结时限：">
+							{{serviceDetail.agentItemDueNum}}（{{serviceDetail.agentItemDueUnitType}}）
+						</el-form-item>
+					</div>
+
 					<el-form-item label="投资审批项目" prop="isApproveProj" require>
 						<div class="input-box input-radio el-input-radio">
 							<el-radio v-model="form.isApproveProj" label="1">是</el-radio>
@@ -883,8 +899,8 @@
 
 			<!-- 保存，提交 -->
 			<div class="mt20 text-ceter">
-				<el-button type="primary" @click="saveForm('form')">保存</el-button>
-				<el-button type="primary" @click="submitProj('form')">提 交</el-button>
+				<el-button type="primary" @click="saveForm('form')">提 交</el-button>
+				<!-- <el-button type="primary" @click="submitProj('form')">提 交</el-button> -->
 				<el-button type="normal" @click="addNeedStatus = 0">取 消</el-button>
 			</div>
 
