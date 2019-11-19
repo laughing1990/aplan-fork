@@ -19,17 +19,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
 * 事项的前置检查事项-Controller 页面控制转发类
-<ul>
-    <li>项目名：奥格erp3.0--第一期建设项目</li>
-    <li>版本信息：v1.0</li>
-    <li>版权所有(C)2016广州奥格智能科技有限公司-版权所有</li>
-    <li>创建人:Administrator</li>
-    <li>创建时间：2019-11-01 10:49:22</li>
-</ul>
 */
 @RestController
 @RequestMapping("/aea/item/front/partform")
@@ -42,12 +36,20 @@ private static Logger logger = LoggerFactory.getLogger(AeaItemFrontPartformAdmin
 
     @RequestMapping("/listAeaItemFrontPartformByPage.do")
     public EasyuiPageInfo<AeaItemFrontPartformVo> listAeaItemFrontPartformByPage(AeaItemFrontPartform aeaItemFrontPartform, Page page){
+
         PageInfo<AeaItemFrontPartformVo> pageInfo =  aeaItemFrontPartformService.listAeaItemFrontPartformVoByPage(aeaItemFrontPartform, page);
         return PageHelper.toEasyuiPageInfo(pageInfo);
     }
 
+    @RequestMapping("/listAeaItemFrontPartformByNoPage.do")
+    public List<AeaItemFrontPartformVo> listAeaItemFrontPartformByNoPage(AeaItemFrontPartform aeaItemFrontPartform){
+
+        return aeaItemFrontPartformService.listAeaItemFrontPartformVo(aeaItemFrontPartform);
+    }
+
     @RequestMapping("/getAeaItemFrontPartform.do")
     public ResultForm getAeaItemFrontPartform(String frontPartformId){
+
         try {
             if (StringUtils.isNotBlank(frontPartformId)) {
                 return new ContentResultForm<>(true, aeaItemFrontPartformService.getAeaItemFrontPartformVoById(frontPartformId));
@@ -64,28 +66,42 @@ private static Logger logger = LoggerFactory.getLogger(AeaItemFrontPartformAdmin
     public ResultForm saveOrUpdateAeaItemFrontPartform(AeaItemFrontPartform aeaItemFrontPartform){
 
         try {
-            if (aeaItemFrontPartform.getFrontPartformId() != null && !"".equals(aeaItemFrontPartform.getFrontPartformId())) {
+            if (StringUtils.isNotBlank(aeaItemFrontPartform.getFrontPartformId())) {
                 aeaItemFrontPartformService.updateAeaItemFrontPartform(aeaItemFrontPartform);
             } else {
-                if (aeaItemFrontPartform.getFrontPartformId() == null || "".equals(aeaItemFrontPartform.getFrontPartformId()))
-                    aeaItemFrontPartform.setFrontPartformId(UUID.randomUUID().toString());
+                aeaItemFrontPartform.setFrontPartformId(UUID.randomUUID().toString());
                 aeaItemFrontPartformService.saveAeaItemFrontPartform(aeaItemFrontPartform);
             }
-
             return new ContentResultForm<>(true, aeaItemFrontPartform);
         } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return new ResultForm(false, e.getMessage());
+        }
+    }
+
+    @RequestMapping("/deleteAeaItemFrontPartformById.do")
+    public ResultForm deleteAeaItemFrontPartformById(String id)  {
+
+        try {
+            logger.debug("删除事项的扩展表单前置检测表Form对象，对象id为：{}", id);
+            if (StringUtils.isNotBlank(id)) {
+                aeaItemFrontPartformService.deleteAeaItemFrontPartformById(id);
+            }
+            return new ResultForm(true);
+        }catch (Exception e) {
             logger.error(e.getMessage(), e);
             return new ResultForm(false, e.getMessage());
 
         }
     }
 
-    @RequestMapping("/deleteAeaItemFrontPartformById.do")
-    public ResultForm deleteAeaItemFrontPartformById(String id)  {
+    @RequestMapping("/batchDelItemFrontPartformByIds.do")
+    public ResultForm batchDelItemFrontPartformByIds(String[] ids)  {
+
         try {
-            logger.debug("删除事项的扩展表单前置检测表Form对象，对象id为：{}", id);
-            if (StringUtils.isNotBlank(id))
-                aeaItemFrontPartformService.deleteAeaItemFrontPartformById(id);
+            if (ids!=null&&ids.length>0) {
+                aeaItemFrontPartformService.deleteAeaItemFrontPartformByIds(ids);
+            }
             return new ResultForm(true);
         }catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -95,27 +111,34 @@ private static Logger logger = LoggerFactory.getLogger(AeaItemFrontPartformAdmin
     }
 
     @RequestMapping("/getMaxSortNo.do")
-    public ResultForm getMaxSortNo(AeaItemFrontPartform aeaItemFrontPartform) {
+    public ResultForm getMaxSortNo(String itemVerId) {
 
         try {
-            return new ContentResultForm<>(true, aeaItemFrontPartformService.getMaxSortNo(aeaItemFrontPartform));
+            return new ContentResultForm<>(true, aeaItemFrontPartformService.getMaxSortNo(itemVerId, SecurityContext.getCurrentOrgId()));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return new ResultForm(false, e.getMessage());
         }
     }
 
-    @RequestMapping("/listSelectItemFrontPartformByPage.do")
-    public EasyuiPageInfo<AeaItemFrontPartformVo> listSelectItemFrontPartformByPage(AeaItemFrontPartform aeaItemFrontPartform, Page page) {
+    @RequestMapping("/listItemNoSelectPartformByPage.do")
+    public EasyuiPageInfo<AeaItemFrontPartformVo> listItemNoSelectPartformByPage(AeaItemFrontPartform frontPartform, Page page) {
 
-        PageInfo<AeaItemFrontPartformVo> pageInfo = aeaItemFrontPartformService.listSelectItemFrontPartformByPage(aeaItemFrontPartform, page);
+        PageInfo<AeaItemFrontPartformVo> pageInfo = aeaItemFrontPartformService.listItemNoSelectPartform(frontPartform, page);
         return PageHelper.toEasyuiPageInfo(pageInfo);
     }
 
     @RequestMapping("/batchSaveAeaItemFrontPartform.do")
-    public ResultForm batchSaveAeaItemFrontPartform(String itemVerId,String itemPartformIds){
+    public ResultForm batchSaveAeaItemFrontPartform(String itemVerId, String[] itemPartformIds){
+
+        if(StringUtils.isBlank(itemVerId)){
+            throw new InvalidParameterException("参数itemVerId为空!");
+        }
+        if(itemPartformIds==null||(itemPartformIds!=null&&itemPartformIds.length==0)){
+            throw new InvalidParameterException("参数itemPartformIds为空!");
+        }
         try {
-            aeaItemFrontPartformService.batchSaveAeaItemFrontPartform(itemVerId,itemPartformIds);
+            aeaItemFrontPartformService.batchSaveAeaItemFrontPartform(itemVerId, itemPartformIds);
             return new ResultForm(true);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);

@@ -18,6 +18,8 @@ public interface AeaItemFrontPartformAdminService {
 
     void deleteAeaItemFrontPartformById(String id);
 
+    void deleteAeaItemFrontPartformByIds(String[] ids);
+
     PageInfo<AeaItemFrontPartform> listAeaItemFrontPartform(AeaItemFrontPartform aeaItemFrontPartform, Page page);
 
     AeaItemFrontPartform getAeaItemFrontPartformById(String id);
@@ -26,16 +28,17 @@ public interface AeaItemFrontPartformAdminService {
 
     PageInfo<AeaItemFrontPartformVo> listAeaItemFrontPartformVoByPage(AeaItemFrontPartform aeaItemFrontPartform, Page page);
 
-    Long getMaxSortNo(AeaItemFrontPartform aeaItemFrontPartform);
+    List<AeaItemFrontPartformVo> listAeaItemFrontPartformVo(AeaItemFrontPartform aeaItemFrontPartform);
 
-    PageInfo<AeaItemFrontPartformVo> listSelectItemFrontPartformByPage(AeaItemFrontPartform aeaItemFrontPartform, Page page);
+    Long getMaxSortNo(String itemVerId, String rootOrgId);
+
+    PageInfo<AeaItemFrontPartformVo> listItemNoSelectPartform(AeaItemFrontPartform aeaItemFrontPartform, Page page);
 
     AeaItemFrontPartformVo getAeaItemFrontPartformVoById(String frontPartformId);
 
     List<AeaItemFrontPartformVo> getAeaItemFrontPartformVoByItemVerId(String itemVerId);
 
-    void batchSaveAeaItemFrontPartform(String itemVerId,String itemPartformIds)throws Exception;
-
+    void batchSaveAeaItemFrontPartform(String itemVerId, String[] itemPartformIds)throws Exception;
 
     void changIsActive(String id, String rootOrgId);
 }

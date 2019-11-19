@@ -237,7 +237,6 @@
         <result property="rootOrgId" column="ROOT_ORG_ID"/>
     </resultMap>
 
-
     <select id="listAeaItemFrontItem" resultType="AeaItemFrontItem">
         select
             <include refid="aliasAllColumns">
@@ -285,8 +284,7 @@
                 OR aib.SSCODE LIKE CONCAT(CONCAT('%',#{keyword}),'%'))
             </if>
         </where>
-
-        order by aifi.SORT_NO
+        order by aifi.SORT_NO asc, aifi.CREATE_TIME asc, aifi.MODIFY_TIME asc
     </select>
 
     <select id="getMaxSortNo" resultType="java.lang.Long">

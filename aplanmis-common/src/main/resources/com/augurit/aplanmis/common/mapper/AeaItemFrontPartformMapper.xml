@@ -14,7 +14,8 @@
         CREATE_TIME  createTime,
         MODIFIER  modifier,
         MODIFY_TIME  modifyTime,
-        ROOT_ORG_ID  rootOrgId
+        ROOT_ORG_ID  rootOrgId,
+        ITEM_PARTFORM_MEMO itemPartformMemo
     </sql>
 
     <sql id="allColumnsAlias">
@@ -27,26 +28,26 @@
         ${alias}.CREATE_TIME  createTime,
         ${alias}.MODIFIER  modifier,
         ${alias}.MODIFY_TIME  modifyTime,
-        ${alias}.ROOT_ORG_ID  rootOrgId
+        ${alias}.ROOT_ORG_ID  rootOrgId,
+        ${alias}.ITEM_PARTFORM_MEMO itemPartformMemo
     </sql>
 
     <!--2 根据主键ID查询单个实体 -->
     <select id="getAeaItemFrontPartformById" resultType="AeaItemFrontPartform" >
         select
-        <include refid="allColumns"/>
+            <include refid="allColumns"/>
         from    AEA_ITEM_FRONT_PARTFORM
         where    FRONT_PARTFORM_ID = #{id}
     </select>
 
-    <select id="getAeaItemFrontPartformVoByItemVerId"
-            resultType="com.augurit.aplanmis.common.vo.AeaItemFrontPartformVo">
+    <select id="getAeaItemFrontPartformVoByItemVerId" resultType="com.augurit.aplanmis.common.vo.AeaItemFrontPartformVo">
         select
-        <include refid="allColumnsAlias">
-            <property name="alias" value="aifp"></property>
-        </include>,
-        aip.PARTFORM_NAME partformName,
-        aip.IS_SMART_FORM isSmartForm,
-        aip.STO_FORM_ID stoFormId
+            <include refid="allColumnsAlias">
+                <property name="alias" value="aifp"></property>
+            </include>,
+            aip.PARTFORM_NAME partformName,
+            aip.IS_SMART_FORM isSmartForm,
+            aip.STO_FORM_ID stoFormId
         from AEA_ITEM_FRONT_PARTFORM aifp
         left join aea_item_partform aip on aip.ITEM_PARTFORM_ID = aifp.ITEM_PARTFORM_ID
         <where>
@@ -63,7 +64,7 @@
     <!--3 根据条件查询实体list -->
     <select id="listAeaItemFrontPartform" resultType="AeaItemFrontPartform" >
         select
-        <include refid="allColumns"/>
+            <include refid="allColumns"/>
         from    AEA_ITEM_FRONT_PARTFORM
         <where>
             <if test="frontPartformId != null" >
@@ -96,15 +97,38 @@
             <if test="rootOrgId != null" >
             AND    ROOT_ORG_ID = #{rootOrgId}
             </if>
+            <if test="itemPartformMemo != null" >
+            AND    ITEM_PARTFORM_MEMO = #{itemPartformMemo}
+            </if>
         </where>
     </select>
 
     <!--5 新增实体对象 -->
     <insert id="insertAeaItemFrontPartform" parameterType="AeaItemFrontPartform" >
         insert into AEA_ITEM_FRONT_PARTFORM (
-    FRONT_PARTFORM_ID  ,ITEM_VER_ID  ,ITEM_PARTFORM_ID  ,SORT_NO  ,IS_ACTIVE  ,CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME  ,ROOT_ORG_ID
+            FRONT_PARTFORM_ID,
+            ITEM_VER_ID,
+            ITEM_PARTFORM_ID,
+            SORT_NO,
+            IS_ACTIVE,
+            CREATER,
+            CREATE_TIME,
+            MODIFIER,
+            MODIFY_TIME,
+            ROOT_ORG_ID,
+            ITEM_PARTFORM_MEMO
         )  values  (
-    #{frontPartformId},#{itemVerId},#{itemPartformId},#{sortNo},#{isActive},#{creater},#{createTime},#{modifier},#{modifyTime},  #{rootOrgId}
+            #{frontPartformId},
+            #{itemVerId},
+            #{itemPartformId},
+            #{sortNo},
+            #{isActive},
+            #{creater},
+            #{createTime},
+            #{modifier},
+            #{modifyTime},
+            #{rootOrgId},
+            #{itemPartformMemo}
         )
     </insert>
 
@@ -142,12 +166,24 @@
             <if test="rootOrgId != null" >
             ROOT_ORG_ID = #{rootOrgId},
             </if>
+            <if test="itemPartformMemo != null" >
+            ITEM_PARTFORM_MEMO = #{itemPartformMemo},
+            </if>
         </set>
         where FRONT_PARTFORM_ID = #{frontPartformId}
     </update>
 
     <delete id="deleteAeaItemFrontPartform">
         delete from AEA_ITEM_FRONT_PARTFORM where FRONT_PARTFORM_ID = #{id}
+    </delete>
+    
+    <delete id="deleteAeaItemFrontPartformByIds">
+        <if test="ids!=null and ids.length>0">
+            delete from AEA_ITEM_FRONT_PARTFORM where FRONT_PARTFORM_ID in 
+            <foreach collection="ids" item="id" open="(" close=")" separator=",">
+                #{id}
+            </foreach>
+        </if>
     </delete>
 
     <!--9 返回所有字段的对象map,用于级联 -->
@@ -162,16 +198,16 @@
         <result property="modifier" column="MODIFIER"/>
         <result property="modifyTime" column="MODIFY_TIME"/>
         <result property="rootOrgId" column="ROOT_ORG_ID"/>
+        <result property="itemPartformMemo" column="ITEM_PARTFORM_MEMO"/>
     </resultMap>
-
 
     <select id="listAeaItemFrontPartformVo" resultType="com.augurit.aplanmis.common.vo.AeaItemFrontPartformVo" >
         select
-        <include refid="allColumnsAlias">
-            <property name="alias" value="aifp"></property>
-        </include>,
-        aip.PARTFORM_NAME partformName,
-        aip.IS_SMART_FORM isSmartForm
+            <include refid="allColumnsAlias">
+                <property name="alias" value="aifp"></property>
+            </include>,
+            aip.PARTFORM_NAME partformName,
+            aip.IS_SMART_FORM isSmartForm
         from AEA_ITEM_FRONT_PARTFORM aifp
         left join aea_item_partform aip on aip.ITEM_PARTFORM_ID = aifp.ITEM_PARTFORM_ID
         <where>
@@ -205,60 +241,62 @@
             <if test="rootOrgId != null" >
                 AND    aifp.ROOT_ORG_ID = #{rootOrgId}
             </if>
-
+            <if test="itemPartformMemo != null" >
+                AND    aifp.ITEM_PARTFORM_MEMO = #{itemPartformMemo}
+            </if>
             <if test="keyword!=null and keyword!='' ">
                 AND(
-                aip.PARTFORM_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                    aip.PARTFORM_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 )
             </if>
         </where>
+        order by aifp.SORT_NO asc, aifp.CREATE_TIME asc, aifp.MODIFY_TIME asc
     </select>
 
     <select id="getMaxSortNo" resultType="java.lang.Long">
-        select max(SORT_NO) from AEA_ITEM_FRONT_PARTFORM
+        select
+            max(SORT_NO)
+        from AEA_ITEM_FRONT_PARTFORM
         <where>
-            <if test="itemVerId!=null and itemVerId!=''">
-                and ITEM_VER_ID = #{itemVerId}
-            </if>
+            and ITEM_VER_ID = #{itemVerId}
+            and ROOT_ORG_ID = #{rootOrgId}
         </where>
     </select>
 
-    <select id="listSelectItemFrontPartform" resultType="com.augurit.aplanmis.common.vo.AeaItemFrontPartformVo">
+    <select id="listItemNoSelectPartform" resultType="com.augurit.aplanmis.common.vo.AeaItemFrontPartformVo">
         select
-        aip.PARTFORM_NAME partformName,
-        aip.ITEM_PARTFORM_ID itemPartformId,
-        aip.IS_SMART_FORM isSmartForm
+            aip.ITEM_PARTFORM_ID itemPartformId,
+            aip.PARTFORM_NAME partformName,
+            aip.IS_SMART_FORM isSmartForm
         from aea_item_partform aip
         <where>
-            <if test="itemVerId != null and itemVerId!=''">
-                AND aip.ITEM_VER_ID = #{itemVerId}
-            </if>
-            <if test="keyword!=null and keyword!='' ">
-                AND(
-                aip.PARTFORM_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%')
-                )
-            </if>
+            and aip.ITEM_VER_ID = #{itemVerId}
             and aip.ITEM_PARTFORM_ID not in (
-            select aifp.ITEM_PARTFORM_ID from AEA_ITEM_FRONT_PARTFORM aifp
-            <where>
-                <if test="itemVerId != null and itemVerId!=''">
-                    AND aifp.ITEM_VER_ID = #{itemVerId}
-                </if>
-                <if test="frontPartformId != null and frontPartformId !='' " >
-                    and aifp.FRONT_PARTFORM_ID != #{frontPartformId}
-                </if>
-            </where>
+                select distinct
+                    ITEM_PARTFORM_ID
+                from AEA_ITEM_FRONT_PARTFORM
+                <where>
+                    and ITEM_VER_ID = #{itemVerId}
+                    and ROOT_ORG_ID = #{rootOrgId}
+                    and ITEM_PARTFORM_ID is not null
+                    and ITEM_PARTFORM_ID != ''
+                </where>
             )
+            <if test="keyword!=null and keyword!='' ">
+            and(
+                aip.PARTFORM_NAME like CONCAT(CONCAT('%',#{keyword}),'%')
+            )
+            </if>
         </where>
     </select>
 
     <select id="getAeaItemFrontPartformVoById" resultType="com.augurit.aplanmis.common.vo.AeaItemFrontPartformVo">
         select
-        <include refid="allColumnsAlias">
-            <property name="alias" value="aifp"></property>
-        </include>,
-        aip.PARTFORM_NAME partformName,
-        aip.IS_SMART_FORM isSmartForm
+            <include refid="allColumnsAlias">
+                <property name="alias" value="aifp"></property>
+            </include>,
+            aip.PARTFORM_NAME partformName,
+            aip.IS_SMART_FORM isSmartForm
         from AEA_ITEM_FRONT_PARTFORM aifp
         left join aea_item_partform aip on aip.ITEM_PARTFORM_ID = aifp.ITEM_PARTFORM_ID
         where aifp.FRONT_PARTFORM_ID = #{id}

@@ -24,7 +24,7 @@
                         <div class="form-group m-form__group row">
                             <label class="col-lg-2 col-form-label" style="text-align: right;"><font color="red">*</font>前置事项:<br/></label>
                             <div class="col-lg-10">
-                                <textarea id="frontCkItemName" type="text" class="form-control m-input" name="frontCkItemName" rows="3" readonly value=""></textarea>
+                                <textarea type="text" class="form-control m-input" name="frontCkItemName" rows="3" readonly value=""></textarea>
                             </div>
                         </div>
 
