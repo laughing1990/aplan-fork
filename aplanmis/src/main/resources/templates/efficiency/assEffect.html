@@ -17,10 +17,6 @@
   <link rel="stylesheet" href="../../static/efficiency/css/assEffect.css" th:href="@{/efficiency/css/assEffect.css}">
   <script>
     var ctx = "[[@{/}]]";
-    // var ctx = "http://192.168.30.33:8083/aplanmis-front/"
-    var ctx = "http://106.52.77.101:8083/aplanmis-front/"
-    // var ctx ="http://192.168.32.53:8083/aplanmis-front/"   //杰文
-    //  var ctx = "http://192.168.15.200:8083/aplanmis-front/"   //严浩
   </script>
 </head>
 
@@ -70,7 +66,7 @@
           </el-button>
           <el-button :type="curEffectModule == 2 ? 'primary':'normal'" size="small" @click="moduleSwitch('2')">工作量及有效性专题
           </el-button>
-          <el-button :type="curEffectModule == 3 ? 'primary':'normal'" size="small" @click="moduleSwitch('3')">来源对比
+          <el-button :type="curEffectModule == 3 ? 'primary':'normal'" size="small" @click="moduleSwitch('3')">时限专题
           </el-button>
         </el-button-group>
       </div>
@@ -153,6 +149,86 @@
           </div>
         </el-card>
       </div>
+
+      <!-- 时限专题 -->
+      <div class="mb20 module-timeLimit" v-if="curEffectModule == 1 || curEffectModule == 3">
+        <el-row :gutter="15" class="mt15 bottom-show-box">
+          <el-col :xs="24" :sm="24" :md="8" :lg="8" :xl="8">
+            <div class="mb10 theme-abnormal-box">
+              <el-card class="box-card pr">
+                <div slot="header" class="clearfix">
+                  <span class="card-title">办件时限状态</span>
+                </div>
+                <div class="accept-rander-box" id="approveTimelimitStatusPieChart"></div>
+                <div class="approve-pie-lgendtitle" v-show="approveTimelimitStatusPieChart">
+                  <span>办件状态</span>
+                  <span>办件数</span>
+                  <span>占比</span>
+                </div>
+                <div class="mb10 non-data" v-show="!approveTimelimitStatusPieChart"></div>
+              </el-card>
+            </div>
+          </el-col>
+          <el-col :xs="24" :sm="24" :md="16" :lg="16" :xl="16">
+            <div class="mb10 theme-abnormal-box">
+              <el-card class="box-card pr">
+                <div slot="header" class="clearfix">
+                  <span class="card-title">部门办件时限状态</span>
+                </div>
+                <div class="accept-rander-box" id="approveStageAverageTimeBarChart"></div>
+                <div class="mb10 non-data" v-show="!approveStageAverageTimeBarChart"></div>
+              </el-card>
+            </div>
+          </el-col>
+        </el-row>
+        <el-card class="box-card pr" style="margin-top: 6px;">
+          <div slot="header" class="clearfix">
+            <span class="card-title">部门办件用时</span>
+          </div>
+          <div>
+            <el-row>
+              <div class="win-precent-box clearfix">
+                <div class="win-item" v-for="item in themeShowList" :key="item.windId"
+                  :class="[item.select ? 'active':'']" @click="fetchSelectedThemeWinData(item)">
+                  <el-tooltip class="item" effect="dark" :content="item.winName" placement="top">
+                    <p class="ellipsis pdlr40 win-title">{{item.winName}}</p>
+                  </el-tooltip>
+                  <div class="win-content clearfix">
+                    <div class="fl win-precent">
+                      <p class="tip">最长用时</p>
+                      <p class="precent">{{item.lgTime || 0}}</p>
+                    </div>
+                    <div class="fr win-precent">
+                      <p class="tip">最短用时</p>
+                      <p class="precent">{{item.minTime || 0}}</p>
+                    </div>
+                    <div class="win-precent win-middle">
+                      <p class="tip">平均用时</p>
+                      <p class="precent">{{item.AveTime || 0}}</p>
+                    </div>
+                  </div>
+                </div>
+                <!-- 左右切换 -->
+                <div class="fl swipe-tabs-left swipe-btn" @click="themeHandelToLeft" v-show="isTLeft">
+                  <i class="el-icon-arrow-left"></i>
+                </div>
+                <div class="fr swipe-tabs-right swipe-btn" @click="themeHandelToRight" v-show="isTRight">
+                  <i class="el-icon-arrow-right"></i>
+                </div>
+              </div>
+            </el-row>
+            <el-row :gutter="40">
+              <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="pr">
+                <div class="mb10 accept-effectchart-box" id="themeApproveTimeBarChart"></div>
+                <div class="mb10 non-data" v-show="!themeApproveTimeBarChart"></div>
+              </el-col>
+            </el-row>
+          </div>
+          <div class="accept-box" style="top: 60px;" v-show="!themeAllList.length">
+            <div class="non-data"></div>
+          </div>
+        </el-card>
+    </div>
 
     </div>
 
