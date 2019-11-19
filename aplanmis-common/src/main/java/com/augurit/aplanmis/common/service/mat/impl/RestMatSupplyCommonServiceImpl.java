@@ -13,14 +13,45 @@ import com.augurit.agcloud.bsc.sc.day.service.WorkdayHolidayService;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.constants.ItemStatus;
-import com.augurit.aplanmis.common.domain.*;
+import com.augurit.aplanmis.common.domain.AeaHiApplyinst;
+import com.augurit.aplanmis.common.domain.AeaHiItemCorrect;
+import com.augurit.aplanmis.common.domain.AeaHiItemCorrectDueIninst;
+import com.augurit.aplanmis.common.domain.AeaHiItemCorrectRealIninst;
+import com.augurit.aplanmis.common.domain.AeaHiItemCorrectStateHist;
+import com.augurit.aplanmis.common.domain.AeaHiItemInoutinst;
+import com.augurit.aplanmis.common.domain.AeaHiItemMatinst;
+import com.augurit.aplanmis.common.domain.AeaHiItemStateinst;
+import com.augurit.aplanmis.common.domain.AeaHiIteminst;
+import com.augurit.aplanmis.common.domain.AeaHiParStageinst;
+import com.augurit.aplanmis.common.domain.AeaHiParStateinst;
+import com.augurit.aplanmis.common.domain.AeaItemBasic;
+import com.augurit.aplanmis.common.domain.AeaItemInout;
+import com.augurit.aplanmis.common.domain.AeaItemMat;
+import com.augurit.aplanmis.common.domain.AeaLinkmanInfo;
+import com.augurit.aplanmis.common.domain.AeaLogItemStateHist;
+import com.augurit.aplanmis.common.domain.AeaParIn;
+import com.augurit.aplanmis.common.domain.AeaProjInfo;
+import com.augurit.aplanmis.common.domain.AeaUnitInfo;
 import com.augurit.aplanmis.common.dto.CorrectinstDto;
 import com.augurit.aplanmis.common.dto.MatCorrectDto;
 import com.augurit.aplanmis.common.dto.MatCorrectInfoDto;
 import com.augurit.aplanmis.common.dto.MatCorrectinstDto;
-import com.augurit.aplanmis.common.mapper.*;
+import com.augurit.aplanmis.common.mapper.AeaHiItemInoutinstMapper;
+import com.augurit.aplanmis.common.mapper.AeaHiItemMatinstMapper;
+import com.augurit.aplanmis.common.mapper.AeaHiItemStateinstMapper;
+import com.augurit.aplanmis.common.mapper.AeaItemBasicMapper;
+import com.augurit.aplanmis.common.mapper.AeaItemInoutMapper;
+import com.augurit.aplanmis.common.mapper.AeaLinkmanInfoMapper;
+import com.augurit.aplanmis.common.mapper.AeaParInMapper;
 import com.augurit.aplanmis.common.service.file.FileUtilsService;
-import com.augurit.aplanmis.common.service.instance.*;
+import com.augurit.aplanmis.common.service.instance.AeaHiApplyinstService;
+import com.augurit.aplanmis.common.service.instance.AeaHiItemCorrectDueIninstService;
+import com.augurit.aplanmis.common.service.instance.AeaHiItemCorrectRealIninstService;
+import com.augurit.aplanmis.common.service.instance.AeaHiItemCorrectService;
+import com.augurit.aplanmis.common.service.instance.AeaHiItemCorrectStateHistService;
+import com.augurit.aplanmis.common.service.instance.AeaHiIteminstService;
+import com.augurit.aplanmis.common.service.instance.AeaHiParStageinstService;
+import com.augurit.aplanmis.common.service.instance.AeaHiParStateinstService;
 import com.augurit.aplanmis.common.service.item.AeaLogItemStateHistService;
 import com.augurit.aplanmis.common.service.linkman.AeaLinkmanInfoService;
 import com.augurit.aplanmis.common.service.mat.AeaItemMatService;
@@ -40,7 +71,14 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.support.StandardMultipartHttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 @Service
 @Transactional
@@ -562,7 +600,7 @@ public class RestMatSupplyCommonServiceImpl implements RestMatCorrectCommonServi
         aeaHiItemMatinst.setProjInfoId(projInfoId);
         aeaHiItemMatinst.setUnitInfoId(ownnerUnitInfoId);
         aeaHiItemMatinst.setCreateTime(new Date());
-        aeaHiItemMatinst.setCreater(SecurityContext.getCurrentUserName());
+        aeaHiItemMatinst.setCreater(SecurityContext.getCurrentUserId());
         aeaHiItemMatinst.setRootOrgId(SecurityContext.getCurrentOrgId());
         aeaHiItemMatinstMapper.insertAeaHiItemMatinst(aeaHiItemMatinst);
 
@@ -1108,7 +1146,7 @@ public class RestMatSupplyCommonServiceImpl implements RestMatCorrectCommonServi
 
                     AeaHiItemMatinst matinst = aeaHiItemMatinstMapper.getAeaHiItemMatinstById(matCorrectDto.getAttMatinstId());
                     matinst.setAttCount(matinst.getAttCount() == null ? matCorrectDto.getAttCount() : matinst.getAttCount() + matCorrectDto.getAttCount());
-                    matinst.setModifier(SecurityContext.getCurrentUserName());
+                    matinst.setModifier(SecurityContext.getCurrentUserId());
                     matinst.setModifyTime(new Date());
                     aeaHiItemMatinstMapper.updateAeaHiItemMatinst(matinst);
 
@@ -1136,7 +1174,7 @@ public class RestMatSupplyCommonServiceImpl implements RestMatCorrectCommonServi
 
                     AeaHiItemMatinst matinst = aeaHiItemMatinstMapper.getAeaHiItemMatinstById(matCorrectDto.getCopyMatinstId());
                     matinst.setRealCopyCount(matinst.getRealCopyCount() == null ? matCorrectDto.getRealCopyCount() : matinst.getRealCopyCount() + matCorrectDto.getRealCopyCount());
-                    matinst.setModifier(SecurityContext.getCurrentUserName());
+                    matinst.setModifier(SecurityContext.getCurrentUserId());
                     matinst.setModifyTime(new Date());
                     aeaHiItemMatinstMapper.updateAeaHiItemMatinst(matinst);
                 }
@@ -1154,7 +1192,7 @@ public class RestMatSupplyCommonServiceImpl implements RestMatCorrectCommonServi
 
                     AeaHiItemMatinst matinst = aeaHiItemMatinstMapper.getAeaHiItemMatinstById(matCorrectDto.getPaperMatinstId());
                     matinst.setRealPaperCount(matinst.getRealPaperCount() == null ? matCorrectDto.getRealPaperCount() : matinst.getRealPaperCount() + matCorrectDto.getRealPaperCount());
-                    matinst.setModifier(SecurityContext.getCurrentUserName());
+                    matinst.setModifier(SecurityContext.getCurrentUserId());
                     matinst.setModifyTime(new Date());
                     aeaHiItemMatinstMapper.updateAeaHiItemMatinst(matinst);
                 }

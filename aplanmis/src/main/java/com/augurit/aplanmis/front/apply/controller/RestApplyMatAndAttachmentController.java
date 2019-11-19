@@ -312,7 +312,7 @@ public class RestApplyMatAndAttachmentController {
     public ContentResultForm<AeaHiCertinst> bindCertinst(@RequestBody AeaHiCertinst aeaHiCertinst) {
         try {
             if (StringUtils.isNotBlank(aeaHiCertinst.getMatId())) {
-                aeaHiCertinst = aeaHiItemMatinstService.bindCertinst(aeaHiCertinst, SecurityContext.getCurrentUserName());
+                aeaHiCertinst = aeaHiItemMatinstService.bindCertinst(aeaHiCertinst, SecurityContext.getCurrentUserId());
                 Assert.hasText(aeaHiCertinst.getCertinstId(), "certinstId is null");
                 return new ContentResultForm<>(true, aeaHiCertinst, "Bind success");
             }

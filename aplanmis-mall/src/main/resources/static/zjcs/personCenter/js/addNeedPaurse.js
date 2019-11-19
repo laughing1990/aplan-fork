@@ -268,7 +268,9 @@ var module1 = new Vue({
 			getCopyAll: false,
 			homePageSize: 10,
 			homepPage: 1,
-			homeTotal: 0
+			homeTotal: 0,
+			isShowServiceDetail: false, // 是否显示中介服务对应详细信息
+			serviceDetail: {} // 中介服务对应详细信息
 		}
 	},
 	methods: {
@@ -299,7 +301,8 @@ var module1 = new Vue({
 			var vm = this;
 			// console.log(vm.form.chooseInsertype)
 			this.$refs[formName].validate(function (valid, obj) {
-				if (valid) {
+				if (true) {
+				// if (valid) {
 					// var aeaImMajorQuals = [{
 					//     majorId:'', // 专业ID
 					//  majorQualId:'', // 专业资质关联ID(不用传)
@@ -523,7 +526,7 @@ var module1 = new Vue({
 			}
 			$.ajax({
 				type: "POST",
-				url: ctx + 'supermarket/purchase/postProjPurchase',
+				url: ctx + 'supermarket/purchase/startProjPurchase',
 				data: formData,
 				// contentType: 'application-x-www-form-urlencoded',
 				//如果传递的是FormData数据类型，那么下来的三个参数是必须的，否则会报错
@@ -704,6 +707,10 @@ var module1 = new Vue({
 			var vm = this;
 			vm.selectdRecord = [];
 			var value = vm.multipleSelection2
+
+			vm.serviceDetail = JSON.parse(JSON.stringify(vm.multipleSelection2[0]));
+			vm.isShowServiceDetail = true;
+
 			if (!value.length > 0) {
 				vm.$message.error('请选择服务事项');
 				return false;
@@ -1195,6 +1202,16 @@ var module1 = new Vue({
 		},
 
 
+		// pageSize 改变时会触发
+		homeHandleSizeChange: function(val) {
+			this.pageSize = val;
+			this.getUnpublishedProjInfoList();
+		},
+		// currentPage 改变时会触发
+		homeHandleCurrentChange: function(val) {
+			this.pageNum = val;
+			this.getUnpublishedProjInfoList();
+		},
 		myUploadFile: function (file) {
 			var _that = this;
 			_that.checkedSelFlie.map(function (item) {
@@ -1487,16 +1504,207 @@ var module1 = new Vue({
                 _that.showUploadWindowTitle = '材料附件 - ' + data.matName
             _that.getFileListWin(data.matinstId, data);
 		},
-		// pageSize 改变时会触发
-		homeHandleSizeChange: function(val) {
-			this.pageSize = val;
-			this.getUnpublishedProjInfoList();
-		},
-		// currentPage 改变时会触发
-		homeHandleCurrentChange: function(val) {
-			this.pageNum = val;
-			this.getUnpublishedProjInfoList();
-		}
+		// 获取事项情形和材料
+        getStatusStateMats: function (pData,data, parentId, parentStateId, index, flag, checkFlag) {
+            var _that = this;
+            var _parentId = parentId ? parentId : 'ROOT';
+            var questionStateId = pData.parStateId?pData.parStateId:'';
+            var _itemVerId = data.itemVerId;
+            var selStateIds = [];
+            if (checkFlag == false) {
+                var stateListLen = _that.stateList.length;
+                selStateIds = _that.getCoreItemsStatusListId();
+                for (var i = 0; i < stateListLen; i++) { // 清空情形下所对应情形
+                    var obj = _that.stateList[i];
+                    if(obj&&(obj.parentStateId == _parentId)||(obj&&obj.parentStateId!=null&&(selStateIds.indexOf(obj.parentStateId)==-1))){
+                        if(typeof(obj.selectAnswerId)=='object'&&obj.selectAnswerId.length>0){
+                            obj.selectAnswerId.map(function(itemSel){
+                                selStateIds=selStateIds.filter(function(item, index) {
+                                    return item !== itemSel;
+                                })
+                            });
+                        }else if(obj.selectAnswerId !== '') {
+                            selStateIds=selStateIds.filter(function(item, index) {
+                                return item !== obj.selectAnswerId;
+                            })
+                        }
+                        _that.stateList.splice(i, 1);
+                        i--
+                    }
+                }
+                selStateIds = _that.getCoreItemsStatusListId();
+                // 清空对应情形下所有材料
+                for (var i = 0; i < _that.model.matsTableData.length; i++) { // 清空情形下所对应材料
+                    var obj = _that.model.matsTableData[i];
+                    if (obj && obj.itemStateId != null && (selStateIds.indexOf(obj.itemStateId) == -1)) {
+                        _that.model.matsTableData.splice(i, 1);
+                        i--
+                    }
+                }
+                return false
+            }
+            request('opus-admin', {
+                url: ctx + 'rest/mats/states/mats/' + _that.itemVerId + '/' + parentId,
+                type: 'get',
+            }, function (data) {
+                if (data.success) {
+                    var coreItemsMats = [];
+                    if (flag) {//root节点数据
+                        _that.matIds = [];
+                        _that.stateList = data.content.questionStates;
+                        _that.model.matsTableData = _that.unique(data.content.stateMats, 'mats');
+                        _that.popStateList = [];
+                        _that.stateList.map(function (item) {
+                            if (item.answerType != 's' && item.answerType != 'y') {
+                                Vue.set(item, 'selValue', []);
+                                item.selectAnswerId=item.selValue;
+                            }
+                        })
+                        _that.model.matsTableData.map(function (item, index) {
+                            _that.matIds.push(item.matId);
+                          if(_that.matCodes.indexOf(item.matCode)<0){
+                            _that.matCodes.push(item.matCode);
+                          }
+                        });
+                      _that.getShareMatsList();
+                    } else {
+                        if (checkFlag == true) {
+                            data.content.questionStates.map(function (item, ind) { // 情形下插入对应的情形
+                                if (item.answerType != 's' && item.answerType != 'y') {
+                                    Vue.set(item, 'selValue', []);
+                                    item.selectAnswerId=item.selValue;
+                                }
+                                _that.stateList.splice((index + 1 + ind), 0, item);
+                            });
+                            // 选择情形后返回的材料列表
+                            data.content.stateMats.map(function (item) {
+                                if (item._parStateId == 'undefined' || item._parStateId == undefined) {
+                                    Vue.set(item, '_parStateId', [parentStateId]);
+                                } else {
+                                    item._parStateId.push(parentStateId);
+                                }
+                                if (item._itemVerIds == 'undefined' || item._itemVerIds == undefined) {
+                                    Vue.set(item, '_itemVerIds', [_itemVerId]);
+                                } else {
+                                    item._itemVerId.push(_itemVerId);
+                                }
+                                item.itemStateId = _parentId;
+                                coreItemsMats.push(item)
+                            });
+                        } else {
+                            var stateListLen = _that.stateList.length;
+                            selStateIds = _that.getCoreItemsStatusListId();
+                            for (var i = 0; i < stateListLen; i++) { // 清空情形下所对应情形
+                                var obj = _that.stateList[i];
+                                if(obj&&(obj.parentQuestionStateId == questionStateId)||(obj&&obj.parentStateId!=null&&(selStateIds.indexOf(obj.parentStateId)==-1))){
+                                    if(typeof(obj.selectAnswerId)=='object'&&obj.selectAnswerId.length>0){
+                                        obj.selectAnswerId.map(function(itemSel){
+                                            selStateIds=selStateIds.filter(function(item, index) {
+                                                return item !== itemSel;
+                                            })
+                                        });
+                                    }else if(obj.selectAnswerId !== '') {
+                                        selStateIds=selStateIds.filter(function(item, index) {
+                                            return item !== obj.selectAnswerId;
+                                        })
+                                    }
+                                    // if(obj&&obj.stateSeq.indexOf(parentStateId)>-1&&(obj.parStateId!=parentStateId)){
+                                    _that.stateList.splice(i, 1);
+                                    i--
+                                }
+                            }
+                            data.content.questionStates.map(function (item, ind) { // 情形下插入对应的情形
+                                if (item.answerType != 's' && item.answerType != 'y') {
+                                    Vue.set(item, 'selValue', []);
+                                    item.selectAnswerId=item.selValue;
+                                }
+                                _that.stateList.splice((index + 1 + ind), 0, item);
+                            });
+                            // 选择情形后返回的材料列表
+                            data.content.stateMats.map(function (item) {
+                                if (item._parStateId == 'undefined' || item._parStateId == undefined) {
+                                    Vue.set(item, '_parStateId', [parentStateId]);
+                                } else {
+                                    item._parStateId.push(parentStateId);
+                                }
+                                if (item._itemVerIds == 'undefined' || item._itemVerIds == undefined) {
+                                    Vue.set(item, '_itemVerIds', [_itemVerId]);
+                                } else {
+                                    item._itemVerId.push(_itemVerId);
+                                }
+                                item.itemStateId = _parentId;
+                                coreItemsMats.push(item)
+                            });
+                            selStateIds = _that.getCoreItemsStatusListId();
+                            for (var i = 0; i < _that.model.matsTableData.length; i++) { // 清空情形下所对应材料
+                                var obj = _that.model.matsTableData[i];
+                                if (obj._parStateId == 'undefined' || obj._parStateId == undefined) {
+                                    Vue.set(obj, '_parStateId', []);
+                                } else {
+                                    // if (obj && (obj._parStateId.indexOf(parentStateId)>-1)&&(obj._parStateId.length==1)) {
+                                    if (obj && obj.itemStateId != null && (selStateIds.indexOf(obj.itemStateId) == -1) && (obj._parStateId.length == 1)) {
+                                        obj._parStateId = obj._parStateId.filter(function (item) {
+                                            return item != parentStateId;
+                                        });
+                                        _that.model.matsTableData.splice(i, 1);
+                                        i--
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    coreItemsMats = _that.unique(coreItemsMats, 'mats');
+                    _that.model.matsTableData = _that.model.matsTableData.concat(coreItemsMats);
+                    _that.matIds = [];
+                    var matinstIdsObj = [];
+                    _that.model.matsTableData.map(function (item) {
+                        if (item.matChild == 'undefined' || item.matChild == undefined) {
+                            Vue.set(item, 'matChild', []);
+                        }
+                      if(item.certChild=='undefined'||item.certChild==undefined){
+                        Vue.set(item,'certChild',[]);
+                      }
+                        if (item.matinstId == 'undefined' || item.matinstId == undefined) {
+                            Vue.set(item, 'matinstId', '');
+                        }
+                        if (item.getPaper == 'undefined' || item.getPaper == undefined) {
+                            Vue.set(item, 'getPaper', '');
+                        }
+                        if (item.getCopy == 'undefined' || item.getCopy == undefined) {
+                            Vue.set(item, 'getCopy', '');
+                        }
+                        if (item.realPaperCount == 'undefined' || item.realPaperCount == undefined) {
+                            Vue.set(item, 'realPaperCount', item.duePaperCount);
+                        }
+                        if (item.realCopyCount == 'undefined' || item.realCopyCount == undefined) {
+                            Vue.set(item, 'realCopyCount', item.dueCopyCount);
+                        }
+                        if(matinstIdsObj.indexOf(item.matinstId)&&item.matinstId!=''){
+                            matinstIdsObj.push(item.matinstId);
+                        }
+                      if(_that.matCodes.indexOf(item.matCode)<0){
+                        _that.matCodes.push(item.matCode);
+                      }
+                        _that.matIds.push(item.matId);
+
+                    });
+                  _that.getShareMatsList();
+                    _that.matinstIds = matinstIdsObj.join(',')
+                    _that.ifMatsSelAll();
+                } else {
+                    _that.$message({
+                        message: '获取情形材料失败',
+                        type: 'error'
+                    });
+                }
+            }, function (msg) {
+                _that.$message({
+                    message: '获取情形材料失败',
+                    type: 'error'
+                });
+            });
+        },
+		
 	},
 	mounted: function () {
 		this.loginUserInfo = JSON.parse(localStorage.getItem("loginInfo")) || {}

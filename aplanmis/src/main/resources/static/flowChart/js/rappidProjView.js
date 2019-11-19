@@ -1521,7 +1521,7 @@ function setViewByProjResult(statusList, projId, cells) {
   };
   
   
-  if (statusList.length > 0) {
+  if (statusList && statusList.length > 0) {
     $.each(statusList, function (ind, ele) {
       changeViewStageProp(ele.stageId, ele.statusValue, ele.statusName, ele);
       if (ele.diagramItemList && ele.diagramItemList.length > 0) {
