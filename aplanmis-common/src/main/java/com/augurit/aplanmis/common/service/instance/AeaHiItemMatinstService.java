@@ -28,6 +28,7 @@ public interface AeaHiItemMatinstService {
      * @throws Exception
      */
     List<AeaHiItemMatinst> getMatinstListByIteminstIds(String[] iteminstId, String isInput) throws Exception;
+
     /**
      * 根据事项实例ID以及搜索关键字获取（输入或输出）材料实例列表
      *
@@ -36,7 +37,7 @@ public interface AeaHiItemMatinstService {
      * @return
      * @throws Exception
      */
-    List<AeaHiItemMatinst> getMatinstListByIteminstIdsAndKeyword(String[] iteminstId, String isInput,String keyword) throws Exception;
+    List<AeaHiItemMatinst> getMatinstListByIteminstIdsAndKeyword(String[] iteminstId, String isInput, String keyword) throws Exception;
 
 
     /**
@@ -105,6 +106,7 @@ public interface AeaHiItemMatinstService {
 
     /**
      * 从云盘上传申请材料
+     *
      * @param aeaHiItemMatinst
      * @return
      * @throws Exception
@@ -142,4 +144,7 @@ public interface AeaHiItemMatinstService {
 
     void unbindCertinst(String matinstId) throws Exception;
 
+    void setAttCount(AeaHiItemMatinst aeaHiItemMatinst, HttpServletRequest request) throws Exception;
+
+    AeaHiItemMatinst bindForminst(AeaHiItemMatinst aeaHiItemMatinst, String currentUserId) throws Exception;
 }

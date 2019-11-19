@@ -3,37 +3,43 @@ package com.augurit.aplanmis.front.approve.service;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.augurit.agcloud.bsc.domain.BscAttFileAndDir;
+import com.augurit.agcloud.bsc.domain.BscAttLink;
 import com.augurit.agcloud.bsc.domain.BscDicCodeItem;
+import com.augurit.agcloud.bsc.mapper.BscAttDetailMapper;
+import com.augurit.agcloud.bsc.mapper.BscAttMapper;
 import com.augurit.agcloud.bsc.mapper.BscDicCodeMapper;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.opus.common.domain.OpuOmOrg;
+import com.augurit.agcloud.opus.common.domain.OpuOmUser;
 import com.augurit.agcloud.opus.common.mapper.OpuOmOrgMapper;
+import com.augurit.agcloud.opus.common.mapper.OpuOmUserMapper;
+import com.augurit.aplanmis.common.constants.CertinstSource;
+import com.augurit.aplanmis.common.constants.UnitType;
 import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.mapper.*;
 import com.augurit.aplanmis.common.service.file.FileUtilsService;
 import com.augurit.aplanmis.common.service.instance.AeaHiApplyinstService;
+import com.augurit.aplanmis.common.service.instance.AeaHiItemInoutinstService;
 import com.augurit.aplanmis.common.service.instance.AeaHiItemMatinstService;
 import com.augurit.aplanmis.common.service.instance.AeaHiIteminstService;
 import com.augurit.aplanmis.common.service.linkman.AeaLinkmanInfoService;
 import com.augurit.aplanmis.common.service.mat.AeaItemMatService;
 import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
 import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
-import com.augurit.aplanmis.common.utils.CommonTools;
 import com.augurit.aplanmis.front.approve.vo.AeaHiItemInfoVo;
 import com.augurit.aplanmis.front.approve.vo.ApplyFormVo;
 import com.augurit.aplanmis.front.approve.vo.BpmApproveStateVo;
 import com.augurit.aplanmis.front.approve.vo.MatinstVo;
 import org.apache.commons.lang.StringUtils;
 import org.flowable.engine.HistoryService;
-import org.flowable.engine.TaskService;
 import org.flowable.task.api.history.HistoricTaskInstance;
 import org.flowable.variable.api.history.HistoricVariableInstance;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Assert;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -51,8 +57,6 @@ public class ApproveService {
     private AeaHiIteminstMapper aeaHiIteminstMapper;
     @Autowired
     private AeaHiParStageinstMapper aeaHiParStageinstMapper;
-    @Autowired
-    private TaskService taskService;
     @Autowired
     private HistoryService historyService;
     @Autowired
@@ -72,14 +76,6 @@ public class ApproveService {
     @Autowired
     private AeaItemBasicMapper aeaItemBasicMapper;
     @Autowired
-    private AeaParInMapper aeaParInMapper;
-    @Autowired
-    private AeaHiItemInoutinstMapper aeaHiItemInoutinstMapper;
-    @Autowired
-    private AeaItemMatMapper aeaItemMatMapper;
-    @Autowired
-    private AeaHiItemMatinstService aeaHiItemMatinstService;
-    @Autowired
     private AeaApplyinstProjMapper aeaApplyinstProjMapper;
     @Autowired
     private AeaProjInfoMapper aeaProjInfoMapper;
@@ -89,14 +85,6 @@ public class ApproveService {
     private AeaUnitInfoService aeaUnitInfoService;
     @Autowired
     private AeaLinkmanInfoMapper aeaLinkmanInfoMapper;
-    @Autowired
-    private AeaItemInoutMapper aeaItemInoutMapper;
-    @Autowired
-    private AeaItemMapper aeaItemMapper;
-    @Autowired
-    private AeaItemVerMapper aeaItemVerMapper;
-    @Autowired
-    private AeaParStageItemMapper aeaParStageItemMapper;
     @Autowired
     private AeaItemMatService aeaItemMatService;
     @Autowired
@@ -113,6 +101,26 @@ public class ApproveService {
     private AeaHiItemSpecialMapper aeaHiItemSpecialMapper;
     @Autowired
     private AeaHiItemCorrectMapper aeaHiItemCorrectMapper;
+    @Autowired
+    private AeaHiItemMatinstMapper aeaHiItemMatinstMapper;
+    @Autowired
+    private AeaItemMatMapper aeaItemMatMapper;
+    @Autowired
+    private AeaUnitProjMapper aeaUnitProjMapper;
+    @Autowired
+    private AeaHiItemInoutinstService aeaHiItemInoutinstService;
+    @Autowired
+    private AeaHiItemMatinstService aeaHiItemMatinstService;
+    @Autowired
+    private BscAttMapper bscAttMapper;
+    @Autowired
+    private OpuOmUserMapper opuOmUserMapper;
+    @Autowired
+    private AeaHiCertinstMapper aeaHiCertinstMapper;
+    @Autowired
+    private AeaCertMapper aeaCertMapper;
+    @Autowired
+    private BscAttDetailMapper bscAttDetailMapper;
 
     public BpmApproveStateVo getApplyStylesAndState(String applyinstId, String taskId) throws Exception {
         BpmApproveStateVo bpmApproveStateVo = new BpmApproveStateVo();
@@ -300,27 +308,6 @@ public class ApproveService {
         }
     }
 
-    /**
-     * //判断登录用户部门是否属于某个事项部门
-     */
-    private boolean isPartOfOrg(String orgId) {
-        List<OpuOmOrg> opuOmOrgs = opuOmOrgMapper.listBelongOrgByUserId(SecurityContext.getCurrentUserId());
-        boolean bsign = false;
-        if (opuOmOrgs != null && opuOmOrgs.size() > 0) {
-            for (OpuOmOrg opuOmOrg : opuOmOrgs) {
-                String secOrgSeq = opuOmOrg.getOrgSeq();
-                if (secOrgSeq != null && orgId != null) {
-                    //判断登录用户部门是否属于某个事项部门
-                    if (secOrgSeq.indexOf(orgId) > 0) {
-                        bsign = true;
-                        break;
-                    }
-                }
-            }
-        }
-        return bsign;
-    }
-
     public String getIteminstIdByTaskId(String taskId) {
         AeaHiIteminst iteminst = getIteminstByTaskId(taskId);
         if (iteminst != null) {
@@ -353,37 +340,6 @@ public class ApproveService {
             e.printStackTrace();
         }
         return null;
-    }
-
-    /**
-     * 获取并联申报项目的已选择情形信息
-     *
-     * @param applyinstId 申报id
-     */
-    public List<Map<String, Object>> getParStateByApply(String applyinstId) {
-        Assert.notNull(applyinstId, "applyinstId is null.");
-        try {
-            List<Map<String, Object>> resultlist = new ArrayList<>();
-            AeaHiParStateinst paramStateines = new AeaHiParStateinst();
-            paramStateines.setApplyinstId(applyinstId);
-            paramStateines.setRootOrgId(SecurityContext.getCurrentOrgId());
-            List<AeaHiParStateinst> stateinstlist = aeaHiParStateinstMapper.listAeaHiParStateinst(paramStateines);
-            for (AeaHiParStateinst stateinsttemp : stateinstlist) {
-                AeaParState answerstate = aeaParStateMapper.getAeaParStateById(stateinsttemp.getExecStateId());
-                AeaParState questionstate = aeaParStateMapper.getAeaParStateById(stateinsttemp.getParentStateinstId());
-
-                if (answerstate != null && questionstate != null) {
-                    Map<String, Object> statemap = new HashMap<>();
-                    statemap.put("question", questionstate);
-                    statemap.put("answer", answerstate);
-                    resultlist.add(statemap);
-                }
-            }
-            return resultlist;
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException("查询并联申报项目已选择情形信息错误", e);
-        }
     }
 
     /**
@@ -504,172 +460,6 @@ public class ApproveService {
             }
         }
         return aeaHiIteminsts;
-    }
-
-    /**
-     * 获取并联申报材料列表
-     *
-     * @param applyinstId 申请实例ID
-     * @param iteminstId  材料实例ID
-     * @return
-     * @throws Exception
-     */
-    public List<MatinstVo> getParMatinstList(String applyinstId, String iteminstId) throws Exception {
-        List<MatinstVo> matinstVos = new ArrayList<>();
-        AeaHiParStageinst aeaHiParStageinst = new AeaHiParStageinst();
-        aeaHiParStageinst.setApplyinstId(applyinstId);
-        aeaHiParStageinst.setRootOrgId(SecurityContext.getCurrentOrgId());
-        List<AeaHiParStageinst> aeaHiParStageinstList = aeaHiParStageinstMapper.listAeaHiParStageinst(aeaHiParStageinst);
-        if (aeaHiParStageinstList.isEmpty()) return matinstVos;
-        AeaHiParStageinst stageinst = aeaHiParStageinstList.get(0);
-        String stageId = stageinst.getStageId();
-        AeaParIn aeaParIn = new AeaParIn();
-        aeaParIn.setStageId(stageId);
-        aeaParIn.setRootOrgId(SecurityContext.getCurrentOrgId());
-        //当前阶段的材料列表
-        List<AeaParIn> aeaParInList = aeaParInMapper.listAeaParIn(aeaParIn);
-
-        List<AeaHiIteminst> aeaHiIteminstList = aeaHiIteminstMapper.listAllAeaHiIteminstByApplyinstId(applyinstId, SecurityContext.getCurrentOrgId());
-        //增加事项过滤---审批人员只查看自己事项下的材料列表
-        if (StringUtils.isNotBlank(iteminstId) && !"undefined".equalsIgnoreCase(iteminstId)) {
-            AeaHiIteminst iteminst = aeaHiIteminstMapper.getAeaHiIteminstById(iteminstId);
-            String itemVerId = iteminst.getItemVerId();
-            //20190904改为，通过事项的基本事项版本id进行查询，因为阶段关联的是基本事项。
-            AeaItem aeaItem = aeaItemMapper.getAeaItemById(iteminst.getItemId());
-            AeaItemVer query = new AeaItemVer();
-            query.setItemId(aeaItem.getParentItemId());
-            List<AeaItemVer> aeaItemVers = aeaItemVerMapper.listAeaItemVer(query);
-            for (AeaItemVer aeaItemVer : aeaItemVers) {
-                AeaParStageItem query1 = new AeaParStageItem();
-                query1.setStageId(stageId);
-                query1.setItemVerId(aeaItemVer.getItemVerId());
-                List<AeaParStageItem> aeaParStageItems = aeaParStageItemMapper.listAeaParStageItem(query1);
-                if (aeaParStageItems.size() > 0) {
-                    itemVerId = aeaItemVer.getItemVerId();
-                    break;
-                }
-            }
-            aeaParInList = aeaParInMapper.listItemAeaParIn(stageId, itemVerId, SecurityContext.getCurrentOrgId());
-            //如果有事项实例，需要过滤，
-            if (!aeaHiIteminstList.isEmpty()) {
-
-                aeaHiIteminstList = aeaHiIteminstList.stream().filter(item -> item.getIteminstId().equals(iteminstId)).collect(Collectors.toList());
-            }
-
-        }
-        List<AeaHiItemInoutinst> aeaHiItemInoutinstList = new ArrayList<>();
-        for (AeaHiIteminst temp2 : aeaHiIteminstList) {
-            AeaHiItemInoutinst aeaHiItemInoutinst = new AeaHiItemInoutinst();
-            aeaHiItemInoutinst.setIsParIn("1");
-            aeaHiItemInoutinst.setIsCollected("1");
-            aeaHiItemInoutinst.setIteminstId(temp2.getIteminstId());
-            aeaHiItemInoutinst.setRootOrgId(SecurityContext.getCurrentOrgId());
-            //事项实例的材料列表
-            aeaHiItemInoutinstList.addAll(aeaHiItemInoutinstMapper.listAeaHiItemInoutinst(aeaHiItemInoutinst));
-        }
-
-
-        for (AeaParIn aeaParIn1 : aeaParInList) {
-            if ("mat".equals(aeaParIn1.getFileType())) {
-                MatinstVo matinstVo = new MatinstVo();
-                AeaItemMat aeaItemMat = aeaItemMatMapper.getAeaItemMatById(aeaParIn1.getMatId());
-                if (aeaItemMat == null) continue;
-                matinstVo.setMatFrom(aeaItemMat.getMatFrom());
-                matinstVo.setMatName(aeaItemMat.getMatName());
-                matinstVo.setFileType(aeaParIn1.getFileType());
-                matinstVo.setSortNo(aeaParIn1.getSortNo());
-                matinstVo.setDuePaperCount(aeaItemMat.getDuePaperCount());
-                matinstVo.setDueCopyCount(aeaItemMat.getDueCopyCount());
-
-                for (AeaHiItemInoutinst aeaHiItemInoutinst1 : aeaHiItemInoutinstList) {
-                    if (aeaParIn1.getInId().equals(aeaHiItemInoutinst1.getParInId())) {
-                        AeaHiItemMatinst aeaHiItemMatinst = aeaHiItemMatinstService.getAeaHiItemMatinstById(aeaHiItemInoutinst1.getMatinstId());
-                        if (aeaHiItemMatinst.getRealCopyCount() != null && aeaHiItemMatinst.getRealCopyCount() > 0) {
-                            matinstVo.setRealCopyCount(aeaHiItemMatinst.getRealCopyCount());
-                            matinstVo.setCopyMatinstId(aeaHiItemMatinst.getMatinstId());
-                        } else if (aeaHiItemMatinst.getRealPaperCount() != null && aeaHiItemMatinst.getRealPaperCount() > 0) {
-                            matinstVo.setRealPaperCount(aeaHiItemMatinst.getRealPaperCount());
-                            matinstVo.setPaperMatinstId(aeaHiItemMatinst.getMatinstId());
-                        } else if (aeaHiItemMatinst.getAttCount() != null && aeaHiItemMatinst.getAttCount() > 0) {
-                            matinstVo.setAttCount(aeaHiItemMatinst.getAttCount());
-                            matinstVo.setAttMatinstId(aeaHiItemMatinst.getMatinstId());
-                            List<BscAttFileAndDir> fileAndDirList = fileUtilsService.getMatAttDetailByMatinstId(aeaHiItemInoutinst1.getMatinstId());
-                            matinstVo.setFileList(fileAndDirList == null ? new ArrayList<BscAttFileAndDir>() : fileAndDirList);
-                        }
-
-                    }
-                }
-                if (matinstVo.getMatName() != null) {
-                    matinstVos.add(matinstVo);
-                }
-
-            }
-        }
-
-        //获取前置事项输出作为后置事项的材料
-        matinstVos.addAll(getPreOutSuffixInMat(aeaHiIteminstList));
-
-        //结果去重
-        if (matinstVos.size() > 0) {
-            return matinstVos.stream().filter(CommonTools.distinctByKey(MatinstVo::getMatName)).sorted(Comparator.comparing(MatinstVo::getSortNo)).collect(Collectors.toList());
-        } else {
-            return matinstVos;
-        }
-    }
-
-    /**
-     * 获取前置事项输出作为后置事项的材料
-     **/
-    private List<MatinstVo> getPreOutSuffixInMat(List<AeaHiIteminst> aeaHiIteminstList) throws Exception {
-        List<MatinstVo> result = new ArrayList<>();
-        for (AeaHiIteminst temp2 : aeaHiIteminstList) {
-
-            List<AeaItemInout> itemInouts = new ArrayList<>();
-            itemInouts.addAll(aeaItemInoutMapper.getPreItemInItemInout(temp2));//获取后置输入的inout
-
-            if (itemInouts.size() > 0) {
-                for (AeaItemInout itemInout : itemInouts) {
-                    MatinstVo matinstVo = new MatinstVo();
-                    AeaItemMat aeaItemMat = aeaItemMatMapper.getAeaItemMatById(itemInout.getMatId());
-                    if (aeaItemMat == null) continue;
-                    matinstVo.setMatFrom(com.augurit.agcloud.framework.util.StringUtils.isBlank(aeaItemMat.getMatFrom()) ? "1" : aeaItemMat.getMatFrom());
-                    matinstVo.setMatName(aeaItemMat.getMatName());
-                    matinstVo.setFileType(itemInout.getFileType());
-                    matinstVo.setSortNo(itemInout.getSortNo() == null ? 100L : itemInout.getSortNo());//如果没有排序号随便给一个么？
-
-                    //查询是否有item_inoutinst实例
-                    AeaHiItemInoutinst inst = new AeaHiItemInoutinst();
-                    inst.setIteminstId(inst.getIteminstId());
-                    inst.setItemInoutId(itemInout.getInoutId());
-                    List<AeaHiItemInoutinst> itemInoutinsts = aeaHiItemInoutinstMapper.listAeaHiItemInoutinst(inst);
-
-                    if (itemInoutinsts.size() > 0) {
-//                        for(AeaHiItemInoutinst itemInoutinst :itemInoutinsts){
-                        //添加材料（如果有一个item_inout有多个item_inoutinst如何处理）
-                        AeaHiItemMatinst aeaHiItemMatinst = aeaHiItemMatinstService.getAeaHiItemMatinstById(itemInoutinsts.get(0).getMatinstId());
-                        if (aeaHiItemMatinst.getRealCopyCount() != null && aeaHiItemMatinst.getRealCopyCount() > 0) {
-                            matinstVo.setRealCopyCount(aeaHiItemMatinst.getRealCopyCount());
-                            matinstVo.setCopyMatinstId(aeaHiItemMatinst.getMatinstId());
-                        } else if (aeaHiItemMatinst.getRealPaperCount() != null && aeaHiItemMatinst.getRealPaperCount() > 0) {
-                            matinstVo.setRealPaperCount(aeaHiItemMatinst.getRealPaperCount());
-                            matinstVo.setPaperMatinstId(aeaHiItemMatinst.getMatinstId());
-                        } else if (aeaHiItemMatinst.getAttCount() != null && aeaHiItemMatinst.getAttCount() > 0) {
-                            matinstVo.setAttCount(aeaHiItemMatinst.getAttCount());
-                            matinstVo.setAttMatinstId(aeaHiItemMatinst.getMatinstId());
-                        }
-//                        }
-
-                    } else {
-                        matinstVo.setRealCopyCount(0l);
-                        matinstVo.setRealPaperCount(0l);
-                        matinstVo.setAttCount(0l);
-                    }
-                    result.add(matinstVo);
-                }
-            }
-        }
-
-        return result;
     }
 
     public AeaHiItemInfoVo projectDeclareInfo(String applyinstId, String busRecordId, boolean isItemSeek, String taskId) throws Exception {
@@ -847,9 +637,22 @@ public class ApproveService {
     public List<MatinstVo> getSeriesMatinstByIteminstId(String iteminstId, String applyinstId) throws Exception {
         List<MatinstVo> matinstVos = new ArrayList();
         List<AeaItemMat> mats = aeaItemMatService.getMatListByApplyinstIdContainsMatinst(applyinstId, iteminstId);
+
+        String itemVerIds = null;
+
+        if (StringUtils.isNotBlank(iteminstId)) {
+            AeaHiIteminst iteminst = aeaHiIteminstService.getAeaHiIteminstById(iteminstId);
+            if (iteminst == null) throw new Exception("找不到事项实例！");
+            itemVerIds = iteminst.getItemVerId();
+        } else if (StringUtils.isNotBlank(applyinstId)) {
+            List<AeaHiIteminst> aeaHiIteminsts = aeaHiIteminstService.getAeaHiIteminstListByApplyinstId(applyinstId);
+            itemVerIds = aeaHiIteminsts.stream().map(AeaHiIteminst::getItemVerId).collect(Collectors.joining(","));
+        }
+
         for (AeaItemMat mat : mats) {
             MatinstVo matinstVo = new MatinstVo();
             BeanUtils.copyProperties(mat, matinstVo);
+
             if (mat.getPageMatinstList().size() > 0) {
                 AeaHiItemMatinst matinst = mat.getPageMatinstList().get(0);
                 matinstVo.setPaperMatinstId(matinst.getMatinstId());
@@ -864,9 +667,39 @@ public class ApproveService {
 
             if (mat.getAttMatinstList().size() > 0) {
                 AeaHiItemMatinst matinst = mat.getAttMatinstList().get(0);
-                matinstVo.setAttCount(matinst.getAttCount());
                 matinstVo.setAttMatinstId(matinst.getMatinstId());
+                matinstVo.setAttCount(matinst.getAttCount());
                 matinstVo.setFileList(fileUtilsService.getMatAttDetailByMatinstId(matinst.getMatinstId()));
+            }
+
+
+            if (mat.getCertinstList().size() > 0) {
+
+                AeaHiItemMatinst matinst = mat.getCertinstList().get(0);
+
+                //来自于本地系统的证照实例
+                if (CertinstSource.LOCAL.getValue().equals(matinst.getCertinstSource())) {
+                    matinstVo.setCertFileList(fileUtilsService.getMatAttDetailByMatinstId(matinst.getCertinstId()));
+                    matinstVo.setItemVerIds(itemVerIds);
+                } else if (CertinstSource.EXTERNAL.getValue().equals(matinst.getCertinstSource())) {//来自于外部系统的证照实例
+                    OpuOmUser user = opuOmUserMapper.getUserByUserId(matinst.getCreater());
+                    List<BscAttFileAndDir> bscAttFileAndDirs = new ArrayList();
+                    BscAttFileAndDir fileAndDir = new BscAttFileAndDir();
+                    fileAndDir.setFileId(matinst.getAuthCode());
+                    fileAndDir.setFileName(matinst.getCertisntName());
+                    fileAndDir.setCreaterName(user != null ? user.getUserName() : matinst.getCreater());
+                    fileAndDir.setUpdateTime(matinst.getCreateTime());
+                    bscAttFileAndDirs.add(fileAndDir);
+                    matinstVo.setCertFileList(bscAttFileAndDirs);
+                    matinstVo.setItemVerIds(itemVerIds);
+                }
+
+                matinstVo.setCertinstSource(matinst.getCertinstSource());
+                matinstVo.setCertMatinstId(matinst.getMatinstId());
+            }
+
+            if (mat.getForminstList().size() > 0) {
+                matinstVo.setForminstId(mat.getForminstList().get(0).getStoForminstId());
             }
 
             matinstVos.add(matinstVo);
@@ -947,5 +780,364 @@ public class ApproveService {
             vo.setLinkmanVoList(vo.changeProjLinkman2vo(projLinkmanList));
         }
         return vo;
+    }
+
+    /**
+     * 修改或新增Matinst实例和certinst的关联
+     *
+     * @throws Exception
+     */
+    public String updateOrInsertMatCertinst(AeaHiCertinst aeaHiCertinst) throws Exception {
+
+        StringBuffer message = new StringBuffer();
+        String certinstId = null;
+        String unitInfoId = null;
+
+        AeaHiApplyinst aeaHiApplyinst = aeaHiApplyinstService.getAeaHiApplyinstById(aeaHiCertinst.getApplyinstId());
+        if (aeaHiApplyinst == null) return message.append("找不到申报实例！").toString();
+
+        List<AeaApplyinstProj> aeaApplyinstProjs = aeaApplyinstProjMapper.getAeaApplyinstProjByApplyinstId(aeaHiCertinst.getApplyinstId());
+        if (aeaApplyinstProjs.size() < 1) return message.append("找不到项目信息！").toString();
+        String projInfoId = aeaApplyinstProjs.get(0).getProjInfoId();
+
+        if (StringUtils.isBlank(aeaHiCertinst.getCertinstId())) {
+
+            List<AeaHiCertinst> certinsts = aeaHiItemMatinstService.getHistoryCertinst(aeaHiCertinst.getCertinstCode(), SecurityContext.getCurrentOrgId());
+            if (certinsts.size() < 1) {
+
+                AeaCert aeaCert = aeaCertMapper.getAeaCertById(aeaHiCertinst.getCertId(), SecurityContext.getCurrentOrgId());
+                if (aeaCert == null) return message.append("证照定义不存在！").toString();
+
+                aeaHiCertinst.setCertinstId(certinstId);
+                aeaHiCertinst.setRootOrgId(SecurityContext.getCurrentOrgId());
+                aeaHiCertinst.setCreater(SecurityContext.getCurrentUserId());
+                aeaHiCertinst.setCertinstSource(CertinstSource.EXTERNAL.getValue());
+                aeaHiCertinst.setCreateTime(new Date());
+                aeaHiCertinst.setProjInfoId(projInfoId);
+
+                if ("u".equals(aeaCert.getCertHolder())) {
+                    aeaHiCertinst.setLinkmanInfoId(aeaHiApplyinst.getLinkmanInfoId());
+                } else {
+                    List<AeaUnitInfo> aeaUnitInfos = aeaUnitProjMapper.findUnitInfoByProjIdAndUnitType(projInfoId, UnitType.DEVELOPMENT_UNIT.getValue());
+                    if (aeaUnitInfos.size() > 0) {
+                        unitInfoId = aeaUnitInfos.get(0).getUnitInfoId();
+                        aeaHiCertinst.setUnitInfoId(unitInfoId);
+                    }
+                }
+                aeaHiCertinstMapper.insertAeaHiCertinst(aeaHiCertinst);
+            } else {
+                certinstId = certinsts.get(0).getCertinstId();
+            }
+        } else {
+            certinstId = aeaHiCertinst.getCertinstId();
+        }
+
+        if (StringUtils.isBlank(aeaHiCertinst.getMatinstId())) {
+            if (StringUtils.isBlank(aeaHiCertinst.getCertId()) || StringUtils.isBlank(aeaHiCertinst.getMatId()) || StringUtils.isBlank(aeaHiCertinst.getApplyinstId()))
+                return message.append("缺少参数！").toString();
+            AeaItemMat aeaItemMat = aeaItemMatMapper.getAeaItemMatById(aeaHiCertinst.getMatId());
+            if (aeaItemMat != null) {
+
+                if ("c".equals(aeaItemMat.getMatProp())) {
+                    AeaHiItemMatinst aeaHiItemMatinst = new AeaHiItemMatinst();
+                    aeaHiItemMatinst.setMatinstId(UUID.randomUUID().toString());
+                    aeaHiItemMatinst.setCertinstId(certinstId);
+                    aeaHiItemMatinst.setMatId(aeaHiCertinst.getMatId());
+                    aeaHiItemMatinst.setCreateTime(new Date());
+                    aeaHiItemMatinst.setCreater(SecurityContext.getCurrentUserId());
+                    aeaHiItemMatinst.setMatinstCode(aeaItemMat.getMatCode());
+                    aeaHiItemMatinst.setMatinstName(aeaItemMat.getMatName());
+                    aeaHiItemMatinst.setMatProp(aeaItemMat.getMatProp());
+                    aeaHiItemMatinst.setRootOrgId(SecurityContext.getCurrentOrgId());
+
+                    if ("1".equals(aeaHiApplyinst.getApplySubject())) {
+                        aeaHiItemMatinst.setMatinstSource("u");
+
+                        if (StringUtils.isBlank(unitInfoId)) {
+                            List<AeaUnitInfo> aeaUnitInfos = aeaUnitProjMapper.findUnitInfoByProjIdAndUnitType(projInfoId, UnitType.DEVELOPMENT_UNIT.getValue());
+                            if (aeaUnitInfos.size() < 1) return message.append("找不到建设单位！").toString();
+                            unitInfoId = aeaUnitInfos.get(0).getUnitInfoId();
+                        }
+                        aeaHiItemMatinst.setUnitInfoId(unitInfoId);
+                    } else {
+                        aeaHiItemMatinst.setMatinstSource("l");
+                        aeaHiItemMatinst.setLinkmanInfoId(aeaHiApplyinst.getLinkmanInfoId());
+                    }
+                    aeaHiItemMatinst.setProjInfoId(projInfoId);
+                    aeaHiItemMatinstMapper.insertAeaHiItemMatinst(aeaHiItemMatinst);
+
+                    //创建该申报实例下所有需要用到该材料实例的关联关系
+                    aeaHiItemInoutinstService.batchInsertAeaHiItemInoutinst(new String[]{aeaHiItemMatinst.getMatinstId()}, aeaHiCertinst.getApplyinstId(), SecurityContext.getCurrentUserId());
+
+                } else {
+                    message.append("该材料不是证照类型！");
+                }
+
+            } else {
+                message.append("找不到材料定义！");
+            }
+
+        } else {
+
+            AeaHiItemMatinst aeaHiItemMatinst = aeaHiItemMatinstMapper.getAeaHiItemMatinstById(aeaHiCertinst.getMatinstId());
+            if (aeaHiItemMatinst == null) return message.append("找不到材料实例！").toString();
+            aeaHiItemMatinst.setCertinstId(certinstId);
+            aeaHiItemMatinst.setModifyTime(new Date());
+            aeaHiItemMatinst.setModifier(SecurityContext.getCurrentUserId());
+            aeaHiItemMatinstMapper.updateAeaHiItemMatinst(aeaHiItemMatinst);
+        }
+
+
+        return message.toString();
+    }
+
+    /**
+     * 上传电子附件
+     *
+     * @throws Exception
+     */
+    public String uploadAtt(String matinstId, String applyinstId, String matId, HttpServletRequest request) throws Exception {
+
+        StringBuffer message = new StringBuffer();
+        request.setCharacterEncoding("utf-8");//设置编码，防止附件名称乱码
+
+        if (StringUtils.isNotBlank(matinstId)) {
+
+            AeaHiItemMatinst aeaHiItemMatinst = aeaHiItemMatinstService.getAeaHiItemMatinstById(matinstId);
+            if (aeaHiItemMatinst == null) return message.append("找不到材料实例！").toString();
+            aeaHiItemMatinstService.setAttCount(aeaHiItemMatinst, request);
+            aeaHiItemMatinst.setModifier(SecurityContext.getCurrentUserName());
+            aeaHiItemMatinst.setModifyTime(new Date());
+            aeaHiItemMatinstMapper.updateAeaHiItemMatinst(aeaHiItemMatinst);
+
+        } else {
+
+            if (StringUtils.isBlank(applyinstId) || StringUtils.isBlank(matId))
+                return message.append("缺少参数！").toString();
+
+            AeaItemMat aeaItemMat = aeaItemMatMapper.getAeaItemMatById(matId);
+
+            if (aeaItemMat != null) {
+
+                AeaHiApplyinst aeaHiApplyinst = aeaHiApplyinstService.getAeaHiApplyinstById(applyinstId);
+                if (aeaHiApplyinst == null) return message.append("找不到申报实例！").toString();
+
+                AeaHiItemMatinst aeaHiItemMatinst = new AeaHiItemMatinst();
+                aeaHiItemMatinst.setMatinstId(UUID.randomUUID().toString());
+                aeaHiItemMatinst.setMatId(matId);
+                aeaHiItemMatinst.setCreateTime(new Date());
+                aeaHiItemMatinst.setCreater(SecurityContext.getCurrentUserId());
+                aeaHiItemMatinst.setMatinstCode(aeaItemMat.getMatCode());
+                aeaHiItemMatinst.setMatinstName(aeaItemMat.getMatName());
+                aeaHiItemMatinst.setMatProp(aeaItemMat.getMatProp());
+                aeaHiItemMatinst.setRootOrgId(SecurityContext.getCurrentOrgId());
+
+                List<AeaApplyinstProj> aeaApplyinstProjs = aeaApplyinstProjMapper.getAeaApplyinstProjByApplyinstId(applyinstId);
+                if (aeaApplyinstProjs.size() < 1) return message.append("找不到项目信息！").toString();
+                String projInfoId = aeaApplyinstProjs.get(0).getProjInfoId();
+
+                if ("1".equals(aeaHiApplyinst.getApplySubject())) {
+                    aeaHiItemMatinst.setMatinstSource("u");
+                    List<AeaUnitInfo> aeaUnitInfos = aeaUnitProjMapper.findUnitInfoByProjIdAndUnitType(projInfoId, UnitType.DEVELOPMENT_UNIT.getValue());
+                    if (aeaUnitInfos.size() < 1) return message.append("找不到建设单位！").toString();
+                    aeaHiItemMatinst.setUnitInfoId(aeaUnitInfos.get(0).getUnitInfoId());
+                } else {
+                    aeaHiItemMatinst.setLinkmanInfoId(aeaHiApplyinst.getLinkmanInfoId());
+                    aeaHiItemMatinst.setMatinstSource("l");
+                }
+                aeaHiItemMatinstService.setAttCount(aeaHiItemMatinst, request);
+                aeaHiItemMatinst.setProjInfoId(projInfoId);
+                aeaHiItemMatinstMapper.insertAeaHiItemMatinst(aeaHiItemMatinst);
+
+                //创建该申报实例下所有需要用到该材料实例的关联关系
+                aeaHiItemInoutinstService.batchInsertAeaHiItemInoutinst(new String[]{aeaHiItemMatinst.getMatinstId()}, applyinstId, SecurityContext.getCurrentUserId());
+
+            } else {
+                message.append("找不到材料定义！");
+            }
+        }
+        return message.toString();
+    }
+
+    /**
+     * 新增材料实例和电子附件关联
+     *
+     * @throws Exception
+     */
+    public String createMatinstAndFileLink(String matinstId, String fileIds, String applyinstId, String matId) throws Exception {
+
+        StringBuffer message = new StringBuffer();
+
+        if (StringUtils.isBlank(fileIds)) return message.append("电子附件ID为空！").toString();
+        String[] detailIds = fileIds.split(",");
+        if (detailIds.length < 1) return message.append("电子附件ID为空！").toString();
+
+        if (StringUtils.isBlank(matinstId)) {
+            if (StringUtils.isBlank(applyinstId) || StringUtils.isBlank(matId))
+                return message.append("缺少参数！").toString();
+
+            AeaItemMat aeaItemMat = aeaItemMatMapper.getAeaItemMatById(matId);
+
+            if (aeaItemMat != null) {
+
+                AeaHiApplyinst aeaHiApplyinst = aeaHiApplyinstService.getAeaHiApplyinstById(applyinstId);
+                if (aeaHiApplyinst == null) return message.append("找不到申报实例！").toString();
+
+                matinstId = UUID.randomUUID().toString();
+
+                AeaHiItemMatinst aeaHiItemMatinst = new AeaHiItemMatinst();
+                aeaHiItemMatinst.setMatinstId(matinstId);
+                aeaHiItemMatinst.setMatId(matId);
+                aeaHiItemMatinst.setCreateTime(new Date());
+                aeaHiItemMatinst.setCreater(SecurityContext.getCurrentUserId());
+                aeaHiItemMatinst.setMatinstCode(aeaItemMat.getMatCode());
+                aeaHiItemMatinst.setMatinstName(aeaItemMat.getMatName());
+                aeaHiItemMatinst.setMatProp(aeaItemMat.getMatProp());
+                aeaHiItemMatinst.setRootOrgId(SecurityContext.getCurrentOrgId());
+
+                List<AeaApplyinstProj> aeaApplyinstProjs = aeaApplyinstProjMapper.getAeaApplyinstProjByApplyinstId(applyinstId);
+                if (aeaApplyinstProjs.size() < 1) return message.append("找不到项目信息！").toString();
+                String projInfoId = aeaApplyinstProjs.get(0).getProjInfoId();
+
+                if ("1".equals(aeaHiApplyinst.getApplySubject())) {
+                    List<AeaUnitInfo> aeaUnitInfos = aeaUnitProjMapper.findUnitInfoByProjIdAndUnitType(projInfoId, UnitType.DEVELOPMENT_UNIT.getValue());
+                    if (aeaUnitInfos.size() < 1) return message.append("找不到建设单位！").toString();
+                    aeaHiItemMatinst.setUnitInfoId(aeaUnitInfos.get(0).getUnitInfoId());
+                    aeaHiItemMatinst.setMatinstSource("u");
+                } else {
+                    aeaHiItemMatinst.setLinkmanInfoId(aeaHiApplyinst.getLinkmanInfoId());
+                    aeaHiItemMatinst.setMatinstSource("l");
+                }
+
+                for (String detailId : detailIds) {
+                    //复制电子件关联关系
+                    BscAttLink attLink = new BscAttLink();
+                    attLink.setLinkId(UUID.randomUUID().toString());
+                    attLink.setTableName("AEA_HI_ITEM_MATINST");
+                    attLink.setPkName("MATINST_ID");
+                    attLink.setDetailId(detailId);
+                    attLink.setRecordId(matinstId);
+                    bscAttMapper.insertLink(attLink);
+                }
+
+                aeaHiItemMatinst.setAttCount(Long.valueOf(fileUtilsService.getAttachmentsByRecordId(new String[]{matinstId}, "AEA_HI_ITEM_MATINST", "MATINST_ID").size()));
+                aeaHiItemMatinst.setProjInfoId(projInfoId);
+                aeaHiItemMatinstMapper.insertAeaHiItemMatinst(aeaHiItemMatinst);
+
+                //创建该申报实例下所有需要用到该材料实例的关联关系
+                aeaHiItemInoutinstService.batchInsertAeaHiItemInoutinst(new String[]{matinstId}, applyinstId, SecurityContext.getCurrentUserId());
+            } else {
+                message.append("找不到材料定义！");
+            }
+
+        } else {
+
+            AeaHiItemMatinst aeaHiItemMatinst = aeaHiItemMatinstService.getAeaHiItemMatinstById(matinstId);
+            if (aeaHiItemMatinst == null) return message.append("找不到材料实例！").toString();
+
+            for (String detailId : detailIds) {
+                //复制电子件关联关系
+                BscAttLink attLink = new BscAttLink();
+                attLink.setLinkId(UUID.randomUUID().toString());
+                attLink.setTableName("AEA_HI_ITEM_MATINST");
+                attLink.setPkName("MATINST_ID");
+                attLink.setRecordId(matinstId);
+                attLink.setDetailId(detailId);
+                bscAttMapper.insertLink(attLink);
+            }
+
+            aeaHiItemMatinst.setAttCount(Long.valueOf(fileUtilsService.getAttachmentsByRecordId(new String[]{aeaHiItemMatinst.getMatinstId()}, "AEA_HI_ITEM_MATINST", "MATINST_ID").size()));
+            aeaHiItemMatinst.setModifier(SecurityContext.getCurrentUserName());
+            aeaHiItemMatinst.setModifyTime(new Date());
+            aeaHiItemMatinstMapper.updateAeaHiItemMatinst(aeaHiItemMatinst);
+        }
+
+        return message.toString();
+    }
+
+    /**
+     * 获取电子附件材料库
+     *
+     * @return
+     * @throws Exception
+     */
+    public List<BscAttFileAndDir> matinstFileLibrary(String matId, String applyinstId) throws Exception {
+
+        List<BscAttFileAndDir> files = new ArrayList();
+        if (StringUtils.isNotBlank(matId) && StringUtils.isNotBlank(applyinstId)) {
+
+            AeaItemMat aeaItemMat = aeaItemMatMapper.getAeaItemMatById(matId);
+            if (aeaItemMat != null) {
+
+                List<AeaHiItemMatinst> matinsts = new ArrayList();
+
+                //个人材料
+                if ("l".equals(aeaItemMat.getMatHolder())) {
+                    AeaHiApplyinst aeaHiApplyinst = aeaHiApplyinstService.getAeaHiApplyinstById(applyinstId);
+                    if (aeaHiApplyinst != null) {
+                        matinsts.addAll(aeaHiItemMatinstMapper.listUnitAttMatinst(aeaItemMat.getMatCode(), null, aeaHiApplyinst.getLinkmanInfoId()));
+                    }
+                } else if ("p".equals(aeaItemMat.getMatHolder())) {
+
+                    //项目材料
+                    List<AeaApplyinstProj> aeaApplyinstProjs = aeaApplyinstProjMapper.getAeaApplyinstProjByApplyinstId(applyinstId);
+                    if (aeaApplyinstProjs.size() > 0) {
+                        String projInfoId = aeaApplyinstProjs.get(0).getProjInfoId();
+                        matinsts.addAll(aeaHiItemMatinstMapper.listProjAeaHiItemMatinst(new String[]{aeaItemMat.getMatCode()}, new String[]{projInfoId}, null));
+                    }
+                } else {
+
+                    //单位材料
+                    List<AeaUnitInfo> aeaUnitInfos = aeaUnitProjMapper.findUnitInfoByApplyinstIdAndUnitType(applyinstId, UnitType.DEVELOPMENT_UNIT.getValue());
+                    if (aeaUnitInfos.size() > 0) {
+                        String[] unitInIds = aeaUnitInfos.stream().map(AeaUnitInfo::getUnitInfoId).toArray(String[]::new);
+                        matinsts.addAll(aeaHiItemMatinstMapper.listProjAeaHiItemMatinst(new String[]{aeaItemMat.getMatCode()}, null, unitInIds));
+                    }
+                }
+
+                for (AeaHiItemMatinst matinst : matinsts) {
+                    files.addAll(fileUtilsService.getMatAttDetailByMatinstId(matinst.getMatinstId()));
+                }
+            }
+        }
+        return files;
+    }
+
+    public List<AeaHiCertinst> certinstLibrary(String certId, String applyinstId) throws Exception {
+
+        List<AeaHiCertinst> certinsts = new ArrayList();
+
+        if (StringUtils.isNotBlank(certId) && StringUtils.isNotBlank(applyinstId)) {
+            AeaCert cert = aeaCertMapper.getAeaCertById(certId, SecurityContext.getCurrentOrgId());
+            if (cert != null) {
+                //个人材料
+                if ("u".equals(cert.getCertHolder())) {
+                    AeaHiApplyinst aeaHiApplyinst = aeaHiApplyinstService.getAeaHiApplyinstById(applyinstId);
+                    if (aeaHiApplyinst != null) {
+                        certinsts.addAll(aeaHiCertinstMapper.getCertinsts(certId, aeaHiApplyinst.getLinkmanInfoId(), null, null, SecurityContext.getCurrentOrgId()));
+                    }
+                } else if ("p".equals(cert.getCertHolder())) {
+                    //项目材料
+                    List<AeaApplyinstProj> aeaApplyinstProjs = aeaApplyinstProjMapper.getAeaApplyinstProjByApplyinstId(applyinstId);
+                    if (aeaApplyinstProjs.size() > 0) {
+                        String projInfoId = aeaApplyinstProjs.get(0).getProjInfoId();
+                        certinsts.addAll(aeaHiCertinstMapper.getCertinsts(certId, null, projInfoId, null, SecurityContext.getCurrentOrgId()));
+                    }
+                } else {
+                    //单位材料
+                    List<AeaUnitInfo> aeaUnitInfos = aeaUnitProjMapper.findUnitInfoByApplyinstIdAndUnitType(applyinstId, UnitType.DEVELOPMENT_UNIT.getValue());
+                    if (aeaUnitInfos.size() > 0) {
+                        String[] unitInIds = aeaUnitInfos.stream().map(AeaUnitInfo::getUnitInfoId).toArray(String[]::new);
+                        certinsts.addAll(aeaHiCertinstMapper.getCertinsts(certId, null, null, unitInIds, SecurityContext.getCurrentOrgId()));
+                    }
+                }
+
+                for (AeaHiCertinst certinst : certinsts) {
+                    certinst.setBscAttDetails(aeaHiCertinstMapper.getFilesByRecordIds("AEA_HI_CERTINST", "CERTINST_ID", null, new String[]{certinst.getCertinstId()}));
+                }
+            }
+        }
+
+        return certinsts;
     }
 }

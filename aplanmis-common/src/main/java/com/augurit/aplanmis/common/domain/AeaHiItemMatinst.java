@@ -112,4 +112,11 @@ public class AeaHiItemMatinst implements Serializable {
     private String detailIds;
     @ApiModelProperty(value = "文件夹ID")
     private String dirId;
+
+    //扩展字段
+    private String certisntName;//证照实例名称
+    private String authCode;//广东证照系统用证编码
+    private String createrName;//创建人名称
+    private String certinstSource;//证照实例来源
+
 }

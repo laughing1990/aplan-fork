@@ -310,4 +310,16 @@
 		    LEFT JOIN aea_unit_info aui on aup.UNIT_INFO_ID  = aui.UNIT_INFO_ID
 			  WHERE aup.PROJ_INFO_ID = #{projInfoId} and aui.UNIT_TYPE = #{unitType}
     </select>
+
+    <select id="findUnitInfoByApplyinstIdAndUnitType" resultType="AeaUnitInfo">
+        SELECT
+        <include refid="alias_allColumns">
+            <property name="alias" value="aui"/>
+        </include>
+        FROM aea_unit_info aui
+        LEFT JOIN aea_unit_proj aup on aup.UNIT_INFO_ID = aui.UNIT_INFO_ID
+        LEFT JOIN aea_applyinst_unit_proj aaup ON aaup.UNIT_PROJ_ID = aup.UNIT_PROJ_ID
+        WHERE aaup.APPLYINST_ID = #{applyinstId}
+        AND aup.UNIT_TYPE = #{unitType}
+    </select>
 </mapper>

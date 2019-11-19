@@ -163,6 +163,11 @@ public class AeaItemMat extends MindBaseNode {
      */
     private List<AeaHiItemMatinst> copyMatinstList;
 
+    //扩展字段
+    private List<AeaHiItemMatinst> forminstList;
+
+    private List<AeaHiItemMatinst> certinstList;
+
     /**
      * aea_par_in 主键
      */
