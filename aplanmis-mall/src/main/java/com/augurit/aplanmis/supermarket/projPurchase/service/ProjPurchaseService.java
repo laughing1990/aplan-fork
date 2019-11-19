@@ -1406,12 +1406,7 @@ public class ProjPurchaseService {
             purchaseVo.setApplySubject("1");
         }
         //需要先保存 采购项目信息，发起事项流程时关联的是采购项目信息
-        AeaProjInfo aeaProjInfoCond = new AeaProjInfo();
-        aeaProjInfoCond.setProjName(purchaseVo.getSaveAeaProjInfoVo().getProjName());
-        List aeaProjInfoCondList = aeaProjInfoMapper.listAeaProjInfo(aeaProjInfoCond);
-        if (!aeaProjInfoCondList.isEmpty()) {
-            throw new RuntimeException("项目名称已存在");
-        }
+
         AeaProjInfo aeaProjInfo = purchaseVo.createAeaProjInfo();
         aeaProjInfoMapper.insertAeaProjInfo(aeaProjInfo);
         String projInfoId = aeaProjInfo.getProjInfoId();//采购项目 项目ID
@@ -1482,6 +1477,11 @@ public class ProjPurchaseService {
                 throw new RuntimeException("缺少回避单位");
             }
         }
-
+        AeaProjInfo aeaProjInfoCond = new AeaProjInfo();
+        aeaProjInfoCond.setProjName(purchaseVo.getSaveAeaProjInfoVo().getProjName());
+        List aeaProjInfoCondList = aeaProjInfoMapper.listAeaProjInfo(aeaProjInfoCond);
+        if (!aeaProjInfoCondList.isEmpty()) {
+            throw new RuntimeException("项目名称已存在");
+        }
     }
 }
