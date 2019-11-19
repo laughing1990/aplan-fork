@@ -1763,14 +1763,14 @@
       <!--      <iframe :src="pdfSrc" class='ltab-iframe'></iframe>-->
     </div>
   </el-dialog>
-  <!-- 回退弹窗 -->
-  <el-dialog title="回退" v-loading="backDiaLoading" @close="closeBackDialog"
+  <!-- 回退弹窗  发起申报弹窗 -->
+  <el-dialog :title="backDiaTitle" v-loading="backDiaLoading" @close="closeBackDialog"
              :visible.sync="backDiaVisible" width="940px">
     <div class="bz-dialog-wrap">
       <div class="bz-dialog-box" style="padding:15px 15px 15px 0px;">
         <el-form label-width="110px" :model="backFormData"
                  :rules="backformRules" ref="backFormRef" size="medium">
-          <el-form-item label="回退到：" prop="returnToActId">
+          <el-form-item label="回退到：" prop="returnToActId" v-if="isBackDialog">
             <el-radio-group v-model="backFormData.returnToActId">
               <el-radio v-for="u in backNodeList" :title="u.isCanSelect?'':'未审批节点，无法回退'"
                         :label="u.nodeId" :disabled="!u.isCanSelect">
@@ -1778,15 +1778,27 @@
               </el-radio>
             </el-radio-group>
           </el-form-item>
-          <el-form-item label="回退意见：" prop="comment">
-            <el-input type="textarea" :rows="5" placeholder="请输入回退意见" v-model="backFormData.comment"></el-input>
+          <el-form-item label="常用意见：">
+            <el-select v-model="backFormData.selectOpinion" filterable placeholder="请选择常用意见"
+                       style="margin-right:5px;width:295px;" @change="backOpChange"
+                       size="medium" class="sug-select">
+              <el-option v-for="item in opinionTableData" :label="item.opinionContent"
+                         :value="item.opinionContent" :key="item.opinionId"></el-option>
+            </el-select>
+            <el-tooltip class="item" effect="dark" content="设为常用意见" placement="top">
+              <el-button size="medium" type="info" style="position:relative;top:3px;" @click="setCommonOpinion('backFormData')"><i
+                  class="ag ag-save-common"></i></el-button>
+            </el-tooltip>
+          </el-form-item>
+          <el-form-item label="填写意见：" prop="comment">
+            <el-input type="textarea" :rows="5" placeholder="请填写意见" v-model="backFormData.comment"></el-input>
           </el-form-item>
         </el-form>
       </div>
     </div>
     <div slot="footer" class="dialog-footer">
       <el-button @click="backDiaVisible=false" size="medium">取 消</el-button>
-      <el-button type="primary" @click="ensureBack" size="medium">确认回退</el-button>
+      <el-button type="primary" @click="ensureBack" size="medium">确 认</el-button>
     </div>
   </el-dialog>
   <!-- 发起特殊程序弹窗 -->

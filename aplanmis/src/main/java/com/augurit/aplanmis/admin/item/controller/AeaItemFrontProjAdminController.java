@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -33,8 +34,15 @@ public class AeaItemFrontProjAdminController {
 
     @RequestMapping("/listAeaItemFrontProjByPage.do")
     public EasyuiPageInfo<AeaItemFrontProj> listAeaItemFrontProjByPage(AeaItemFrontProj aeaItemFrontProj, Page page) throws Exception {
+
         PageInfo<AeaItemFrontProj> pageInfo = aeaItemFrontProjService.listAeaItemFrontProj(aeaItemFrontProj, page);
         return PageHelper.toEasyuiPageInfo(pageInfo);
+    }
+
+    @RequestMapping("/listAeaItemFrontProjByNoPage.do")
+    public List<AeaItemFrontProj> listAeaItemFrontProjByNoPage(AeaItemFrontProj aeaItemFrontProj) throws Exception {
+
+        return aeaItemFrontProjService.listAeaItemFrontProj(aeaItemFrontProj);
     }
 
     @RequestMapping("/getAeaItemFrontProj.do")
@@ -105,6 +113,13 @@ public class AeaItemFrontProjAdminController {
             throw new InvalidParameterException("参数id为空!");
         }
         aeaItemFrontProjService.changIsActive(id, SecurityContext.getCurrentOrgId());
+        return new ResultForm(true);
+    }
+
+    @RequestMapping("/updateFrontCkSort.do")
+    public ResultForm updateFrontCkSort(String[] ids, Long[] sorts, String type) {
+
+        aeaItemFrontProjService.updateFrontCkSort(ids, sorts, type);
         return new ResultForm(true);
     }
 }

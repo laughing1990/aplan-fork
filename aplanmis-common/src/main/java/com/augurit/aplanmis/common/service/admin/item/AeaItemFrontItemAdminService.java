@@ -25,12 +25,13 @@ public interface AeaItemFrontItemAdminService {
 
      PageInfo<AeaItemFrontItem> listAeaItemFrontItemByPage(AeaItemFrontItem aeaItemFrontItem, Page page);
 
+     List<AeaItemFrontItem> listAeaItemFrontItem(AeaItemFrontItem aeaItemFrontItem);
+
      Long getMaxSortNo(AeaItemFrontItem aeaItemFrontItem);
 
      AeaItemFrontItem getAeaItemFrontItemByFrontItemId(String frontItemId);
 
      void batchSaveAeaItemFrontItem(String itemVerId,String frontCkItemVerIds)throws Exception;
-
 
      void changIsActive(String id, String rootOrgId);
 }

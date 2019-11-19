@@ -19,7 +19,6 @@
     <script src="${pageContext.request.contextPath}/ui-static/kitymind/js/kitymind_constant.js" type="text/javascript"></script>
     <script src="${pageContext.request.contextPath}/ui-static/aplanmis/util/defaultBootstrap.js" type="text/javascript"></script>
     <script src="${pageContext.request.contextPath}/ui-static/kitymind/item/frontCheck/front_check_manage_index.js?<%=isDebugMode%>" type="text/javascript"></script>
-    <script src="${pageContext.request.contextPath}/ui-static/kitymind/item/frontCheck/select_front_item_ztree.js?<%=isDebugMode%>" type="text/javascript"></script>
     <style type="text/css">
         .row{
             display: -ms-flexbox;
@@ -73,6 +72,8 @@
                         <div class="col-md-7"style="text-align: left;">
                             <button type="button" class="btn btn-info"
                                     onclick="addItemFrontProj();">新增</button>
+                            <button type="button" class="btn btn-info"
+                                    onclick="sortItemFrontCheck('proj');">排序</button>
                             <button type="button" class="btn btn-secondary"
                                     onclick="batchDelItemFrontProj();">删除</button>
                         </div>
@@ -128,6 +129,7 @@
                     <div class="row" style="margin: 0px;">
                         <div class="col-md-7"style="text-align: left;">
                             <button type="button" class="btn btn-info" onclick="importFrontItem();">导入事项</button>
+                            <button type="button" class="btn btn-info" onclick="sortItemFrontCheck('item');">排序</button>
                             <button type="button" class="btn btn-secondary" onclick="batchDelItemFrontItem();">删除</button>
                         </div>
                         <div class="col-md-5" style="padding: 0px;">
@@ -181,12 +183,9 @@
                 <div class="m-form m-form--label-align-right m--margin-bottom-5">
                     <div class="row" style="margin: 0px;">
                         <div class="col-md-7"style="text-align: left;">
-                            <button type="button" class="btn btn-info"
-                                    onclick="addItemFrontPartform();">新增</button>
-                            <button type="button" class="btn btn-info"
-                                    onclick="batchImprotFrontPartform();">批量导入</button>
-                            <button type="button" class="btn btn-secondary"
-                                    onclick="batchDelItemFrontPartform();">删除</button>
+                            <button type="button" class="btn btn-info" onclick="openSelectItemFrontPartform();">导入扩展表</button>
+                            <button type="button" class="btn btn-info" onclick="sortItemFrontCheck('partform');">排序</button>
+                            <button type="button" class="btn btn-secondary" onclick="batchDelItemFrontPartform();">删除</button>
                         </div>
                         <div class="col-md-5" style="padding: 0px;">
                             <div class="row" style="margin: 0px;">
@@ -213,8 +212,7 @@
                 <div style="margin: 10px 0px;border-bottom: 1px solid #e8e8e8;"></div>
                 <!-- 列表区域 -->
                 <div class="base" style="padding: 10px">
-                    <table id="item_front_partform_tb">
-                    </table>
+                    <table id="item_front_partform_tb"></table>
                 </div>
                 <!-- 列表区域end -->
             </div>
@@ -239,6 +237,9 @@
 
 <!-- 事项扩展表单选择 -->
 <%@include file="select_partform.jsp"%>
+
+<!-- 前置检测排序 -->
+<%@include file="item_front_check_sort.jsp"%>
 
 <!-- 进度弹窗 -->
 <div id="uploadProgress" class="modal fade" tabindex="-1" role="dialog"

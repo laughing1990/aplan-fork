@@ -749,12 +749,7 @@ public class RestImApplyService {
         if (aeaImUnitRequire == null) {
             throw new RuntimeException("缺少中介机构要求信息");
         }
-        AeaProjInfo aeaProjInfoCond = new AeaProjInfo();
-        aeaProjInfoCond.setProjName(data.getProjName());
-        List aeaProjInfoCondList = aeaProjInfoMapper.listAeaProjInfo(aeaProjInfoCond);
-        if (!aeaProjInfoCondList.isEmpty()) {
-            throw new RuntimeException("项目名称已存在");
-        }
+
     }
 
     /**

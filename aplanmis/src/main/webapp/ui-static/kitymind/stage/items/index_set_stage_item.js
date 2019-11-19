@@ -603,11 +603,11 @@ $(function(){
         $('#optionItemLi').hide();
     }
 
-    if(isFrontCheckItem=='1'){
-        $('#frontCheckItemLi').show();
-    }else{
+    // if(isFrontCheckItem=='1'){
+    //     $('#frontCheckItemLi').show();
+    // }else{
         $('#frontCheckItemLi').hide();
-    }
+    // }
 });
 
 function isOptionCheckItem(flag) {

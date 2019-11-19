@@ -1,6 +1,5 @@
 package com.augurit.aplanmis.common.service.projPurchase.impl;
 
-import com.augurit.agcloud.bsc.util.UuidUtil;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.constants.DeletedStatus;
@@ -169,29 +168,25 @@ public class AeaImProjPurchaseServiceImpl implements AeaImProjPurchaseService {
     }
 
     @Override
-    public String uploadFiles(HttpServletRequest request) throws Exception {
-
-//        Boolean uploadFlag = false;
-        String resultRecordId = "";
-        AeaImProjPurchase aeaImProjPurchase = new AeaImProjPurchase();
+    public String uploadFiles(HttpServletRequest request, String detailId) throws Exception {
+        if (StringUtils.isBlank(detailId)) {
+            detailId = UUID.randomUUID().toString();
+        }
         if (request instanceof StandardMultipartHttpServletRequest) {
             StandardMultipartHttpServletRequest req = (StandardMultipartHttpServletRequest) request;
-            String recordId = UuidUtil.generateUuid();
             /***要求说明文件***/
             List<MultipartFile> requireExplainFiles = req.getFiles("requireExplainFile");
             if (requireExplainFiles != null && !requireExplainFiles.isEmpty()) {
-                fileUtilsService.uploadAttachments("AEA_IM_PROJ_PURCHASE", "REQUIRE_EXPLAIN_FILE", recordId, requireExplainFiles);
+                fileUtilsService.uploadAttachments("AEA_IM_PROJ_PURCHASE", "REQUIRE_EXPLAIN_FILE", detailId, requireExplainFiles);
             }
             /***批文文件***/
             List<MultipartFile> officialRemarkFiles = req.getFiles("officialRemarkFile");
             if (officialRemarkFiles != null && !officialRemarkFiles.isEmpty()) {
-//                uploadFlag = FileUtils.uploadFile("AEA_IM_PROJ_PURCHASE", "OFFICIAL_REMARK_FILE", recordId, officialRemarkFiles);
-                fileUtilsService.uploadAttachments("AEA_IM_PROJ_PURCHASE", "OFFICIAL_REMARK_FILE", recordId, officialRemarkFiles);
+                fileUtilsService.uploadAttachments("AEA_IM_PROJ_PURCHASE", "OFFICIAL_REMARK_FILE", detailId, officialRemarkFiles);
             }
-            resultRecordId = recordId;
         }
 
-        return resultRecordId;
+        return detailId;
     }
 
     public List<AgentUnitInfoVo> getAgentUnitInfoList(QueryAgentUnitInfoVo queryAgentUnitInfo) throws Exception {

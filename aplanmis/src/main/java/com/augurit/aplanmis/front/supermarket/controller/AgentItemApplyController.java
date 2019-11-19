@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/market/apply")
 @Api(value = "中介事项启动流程接口", tags = "申报-发起中介事项申报")
@@ -41,6 +43,13 @@ public class AgentItemApplyController {
         String applyinstIdParam = agentItemApplyData.getApplyinstId();
 
         //需要先保存 采购项目信息，发起事项流程时关联的是采购项目信息
+        AeaProjInfo aeaProjInfoCond = new AeaProjInfo();
+        aeaProjInfoCond.setProjName(agentItemApplyData.getProjName());
+        List aeaProjInfoCondList = aeaProjInfoMapper.listAeaProjInfo(aeaProjInfoCond);
+        if (!aeaProjInfoCondList.isEmpty()) {
+            throw new RuntimeException("项目名称已存在");
+        }
+
         AeaProjInfo aeaProjInfo = agentItemApplyData.createAeaProjInfo();
         aeaProjInfoMapper.insertAeaProjInfo(aeaProjInfo);
 

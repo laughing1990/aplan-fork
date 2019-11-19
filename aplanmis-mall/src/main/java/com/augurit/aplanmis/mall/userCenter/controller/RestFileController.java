@@ -156,10 +156,10 @@ public class RestFileController {
     @ApiOperation("文件处理 --> 删除云盘列表中电子文件")
     @ApiImplicitParams({@ApiImplicitParam(name = "detailIds", value = "文件id(多文件删除英文逗号分隔)", required = true, type = "string"),
             @ApiImplicitParam(name = "recordId", value = "业务主键ID", required = true, type = "string")})
-    public ResultForm delelteAttachmentOfCloud(String detailIds, String recordId) {
+    public ResultForm delelteAttachmentOfCloud(String detailIds, String recordId,HttpServletRequest request) {
         try {
             if (StringUtils.isBlank(recordId)) {
-                return new ResultForm(false, "删除失败：recordId!");
+                recordId=StringUtils.isNotBlank(SessionUtil.getSessionUserId(request))?SessionUtil.getSessionUserId(request):SessionUtil.getSessionUnitId(request);
             }
             if (StringUtils.isBlank(detailIds)) {
                 return new ResultForm(false, "删除失败：没有可删除文件!");
