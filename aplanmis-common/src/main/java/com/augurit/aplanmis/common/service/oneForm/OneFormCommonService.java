@@ -33,7 +33,7 @@ public class OneFormCommonService {
     @Autowired
     private ActStoFormMapper actStoFormMapper;
 
-    private List<SFFormParam> genListSFFormParam4OneForm(OneFormStageRequest oneFormStageRequest,boolean isIncludeDevForm) {
+    public List<SFFormParam> genListSFFormParam4OneForm(OneFormStageRequest oneFormStageRequest,boolean isIncludeDevForm) {
         List<SFFormParam> result = null;
 
         //参数去重去空
