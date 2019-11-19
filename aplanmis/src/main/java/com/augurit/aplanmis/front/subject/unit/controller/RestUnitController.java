@@ -84,7 +84,7 @@ public class RestUnitController {
         if (StringUtils.isNotBlank(unitEditVo.getProjInfoId())
                 && StringUtils.isNotBlank(unitEditVo.getUnitInfoId())
                 && StringUtils.isNotBlank(unitEditVo.getLinkmanInfoId())) {
-            restUnitService.updateUnitProj(unitEditVo.getProjInfoId(), unitEditVo.getUnitInfoId(), unitEditVo.getLinkmanInfoId(), unitEditVo.getUnitType());
+            restUnitService.updateUnitProj(unitEditVo.getProjInfoId(), unitEditVo.getUnitInfoId(), unitEditVo.getLinkmanInfoId(), unitEditVo.getUnitType(), unitEditVo.getIsOwner());
         }
         if (unitEditVo.getLinkmanType() != null) {
             restUnitService.updateUnitProjLinkman(unitEditVo);

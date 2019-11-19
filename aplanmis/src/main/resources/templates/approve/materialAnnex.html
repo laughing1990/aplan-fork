@@ -243,6 +243,8 @@
             <span class="mat-table-btn" @click="openMatLibDialog(scope.row)">材料库</span>
             <span class="mat-ope-line" v-if="scope.row.matProp=='c'"></span>
             <span class="mat-table-btn" v-if="scope.row.matProp=='c'" @click="openIdLibDialog(scope.row)">证照库</span>
+            <span class="mat-ope-line" v-if="scope.row.matProp=='f'"></span>
+            <span class="mat-table-btn" v-if="scope.row.matProp=='f'" @click="openMatFormDialog(scope.row)">填写</span>
           </div>
         </template>
       </el-table-column>
@@ -440,6 +442,10 @@
       // 打开证照库弹窗
       openIdLibDialog: function (row) {
         parent.vm.openIdLibDialog(row, vm.getMatList);
+      },
+      // 打开填写表单弹窗
+      openMatFormDialog: function (row) {
+        parent.vm.openMatFormDialog(row, vm.getMatList);
       },
       // 格式化时间
       formatDate: function (time, formatStr) {

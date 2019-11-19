@@ -1,6 +1,8 @@
 package com.augurit.aplanmis.front.subject.unit.service;
 
 import com.alibaba.fastjson.JSON;
+import com.augurit.agcloud.bsc.util.UuidUtil;
+import com.augurit.agcloud.framework.constant.Status;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.util.CollectionUtils;
 import com.augurit.agcloud.framework.util.StringUtils;
@@ -93,7 +95,7 @@ public class RestUnitService {
         return aeaUnitInfo.getUnitInfoId();
     }
 
-    public void updateUnitProj(String projInfoId, String unitInfoId, String linkmanInfoId, String unitType) {
+    public void updateUnitProj(String projInfoId, String unitInfoId, String linkmanInfoId, String unitType, String isOwner) {
         Assert.isTrue(StringUtils.isNotBlank(projInfoId), "projInfoId is null");
         Assert.isTrue(StringUtils.isNotBlank(unitInfoId), "unitInfoId is null");
 
@@ -107,6 +109,15 @@ public class RestUnitService {
                 aeaUnitProj.setLinkmanInfoId(linkmanInfoId);
                 aeaUnitProj.setUnitType(unitType);
                 aeaUnitProjMapper.updateAeaUnitProj(aeaUnitProj);
+            } else {
+                aeaUnitProj.setUnitProjId(UuidUtil.generateUuid());
+                aeaUnitProj.setUnitType(unitType);
+                aeaUnitProj.setIsDeleted(Status.OFF);
+                aeaUnitProj.setIsOwner(StringUtils.isBlank(isOwner) ? Status.OFF : isOwner);
+                aeaUnitProj.setLinkmanInfoId(linkmanInfoId);
+                aeaUnitProj.setCreater(SecurityContext.getCurrentUserId());
+                aeaUnitProj.setCreateTime(new Date());
+                aeaUnitProjMapper.insertAeaUnitProj(aeaUnitProj);
             }
         } catch (Exception e) {
             e.printStackTrace();

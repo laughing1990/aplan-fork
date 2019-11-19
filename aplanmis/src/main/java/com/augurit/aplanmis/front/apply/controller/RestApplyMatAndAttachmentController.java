@@ -390,7 +390,6 @@ public class RestApplyMatAndAttachmentController {
 
     @PostMapping("/bind/form")
     @ApiOperation(value = "关联表单材料")
-    @ApiImplicitParam(value = "电子证照")
     public ContentResultForm<AeaHiItemMatinst> bindForminst(@RequestBody BindForminstVo bindForminstVo) {
         Assert.hasText(bindForminstVo.getMatId(), "matId must not null.");
         Assert.hasText(bindForminstVo.getStoForminstId(), "stoForminstId must not null.");

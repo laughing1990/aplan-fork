@@ -1755,6 +1755,14 @@
       </div>
     </div>
   </el-dialog>
+  <!--  材料附件填写表单弹窗-->
+  <el-dialog title="填写表单" @close="closeMatFormDia" top="10vh"
+             :visible.sync="matFormVisible" class="mat-form-dialog">
+    <div class="special-iframe-box" id="matFormBox"
+         style="padding: 0px 20px 20px 20px; max-height:500px;">
+      <!--      <iframe :src="pdfSrc" class='ltab-iframe'></iframe>-->
+    </div>
+  </el-dialog>
   <!-- 回退弹窗 -->
   <el-dialog title="回退" v-loading="backDiaLoading" @close="closeBackDialog"
              :visible.sync="backDiaVisible" width="940px">

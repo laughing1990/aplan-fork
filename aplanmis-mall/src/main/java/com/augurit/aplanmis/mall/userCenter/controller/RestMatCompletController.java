@@ -14,6 +14,7 @@ import com.augurit.aplanmis.common.service.instance.AeaHiApplyinstService;
 import com.augurit.aplanmis.common.utils.SessionUtil;
 import com.augurit.aplanmis.common.vo.LoginInfoVo;
 import com.augurit.aplanmis.mall.userCenter.service.RestApproveService;
+import com.augurit.aplanmis.mall.userCenter.service.RestFileService;
 import com.augurit.aplanmis.mall.userCenter.vo.ApplyDetailVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -42,6 +43,8 @@ public class RestMatCompletController {
     private AeaHiApplyinstCorrectService aeaHiApplyinstCorrectService;
     @Autowired
     private AeaHiApplyinstService aeaHiApplyinstService;
+    @Autowired
+    private RestFileService restFileService;
 
     @GetMapping("matCompletDetail/{applyinstId}/{projInfoId}/{isSeriesApprove}")
     @ApiOperation(value = "材料补全详情信息接口")
@@ -232,6 +235,7 @@ public class RestMatCompletController {
     @PostMapping("/comp/att/upload")
     public ResultForm uploadFile(String attRealIninstId, HttpServletRequest request) {
         try {
+            if (!restFileService.isAllowFileType(request))return new ResultForm(false, "不允许的文件类型");
             Assert.isTrue(StringUtils.isNotBlank(attRealIninstId), "attRealIninstId is null");
             aeaHiApplyinstCorrectService.uploadFile(attRealIninstId, request);
             return new ResultForm(true, "文件上传成功！");

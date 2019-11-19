@@ -162,7 +162,6 @@ var vm = new Vue({
         pkName: 'ID_',
         recordId: null,
       },//attLink用于附件关联多个业务ID
-      btnDisable: true,//附件管理的按钮是否可点击，如果还没启动流程，处于起草页面则不能点击
       //审批界面业务逻辑参数
       buttonData: [], // 动态按钮数据
       showMenuMore: false,
@@ -470,6 +469,7 @@ var vm = new Vue({
         specialResult: [{required: true, message: '结果不能为空', trigger: 'blur'}],
       },
       nowEndRow: {},
+      isDraftPage: 'false',
       // 材料补正 新
       bzLoading: false,
       bzDiaVisible: false,
@@ -489,7 +489,7 @@ var vm = new Vue({
       bzCorrectData: [],
       bzApproveData: [],
       isShowOneForm: '0',
-      // 电子证照
+      // 证照材料、材料库材料、表单材料
       idLibSearchOpt: {
         chooseUnit: '',
         chooseType: 1,
@@ -506,6 +506,7 @@ var vm = new Vue({
       currentMatRow: '',
       refreshMatIframe: function () {
       },
+      matFormVisible: false,
       // 回退
       backDiaLoading: false,
       backDiaVisible: false,
@@ -514,9 +515,11 @@ var vm = new Vue({
         returnToActId: '',
         comment: '',
       },
-      backformRules:{
-        comment: [{ required: true, message: '请填写回退意见', trigger: 'blur' }],
+      backformRules: {
+        comment: [{required: true, message: '请填写回退意见', trigger: 'blur'}],
       },
+      // 中介事项审批
+      isZJItem: false, // 是否为中介事项
     }
   },
   filters: {
@@ -553,20 +556,58 @@ var vm = new Vue({
     },
   },
   methods: {
+    // 关闭填写材料表单弹窗
+    closeMatFormDia: function () {
+      this.$nextTick(function () {
+        $("#matFormBox").html('');
+      });
+      typeof this.refreshMatIframe == 'function' && this.refreshMatIframe();
+    },
+    // 打开填写材料表单弹窗
+    openMatFormDialog: function (row, refreshMatIframe) {
+      var vm = this;
+      vm.parentPageLoading = true;
+      vm.currentMatRow = row;
+      vm.refreshMatIframe = refreshMatIframe;
+      request('', {
+        url: ctx + 'bpm/common/sf/renderHtmlFormContainer',
+        type: 'get',
+        data: {
+          listRefEntityId: vm.masterEntityKey,
+          listFormId: row.stoFormId,
+          showBasicButton: true,
+          includePlatformResource: false,
+          busiScence: 'mat',
+        },
+      }, function (res) {
+        vm.parentPageLoading = false;
+        if (res.success) {
+          vm.matFormVisible = true;
+          vm.$nextTick(function () {
+            $("#matFormBox").html(res.content);
+          })
+        } else {
+          vm.$message.error(res.content || '获取材料表单数据失败');
+        }
+      }, function () {
+        vm.parentPageLoading = false;
+        vm.$message.error('获取材料表单数据失败');
+      })
+    },
     // 打开材料库弹窗
     openMatLibDialog: function (row, refreshMatIframe) {
       var vm = this;
       vm.parentPageLoading = true;
       vm.currentMatRow = row;
       vm.refreshMatIframe = refreshMatIframe;
-      request('',{
+      request('', {
         url: ctx + 'rest/approve/matinst/matinstFileLibrary',
         type: 'post',
         data: {
           applyinstId: vm.masterEntityKey,
           matId: row.matId,
         }
-      }, function(res){
+      }, function (res) {
         vm.parentPageLoading = false;
         if (res.content && res.content.length) {
           vm.matLibVisible = true;
@@ -574,7 +615,7 @@ var vm = new Vue({
         } else {
           vm.$message.info('暂无材料数据');
         }
-      }, function(res) {
+      }, function (res) {
         vm.parentPageLoading = false;
         vm.$message.error('获取材料列表失败');
       })
@@ -583,8 +624,8 @@ var vm = new Vue({
         vm.parentPageLoading = false;
         vm.matLibVisible = true;
         vm.matLibTableList = [
-          {fileName: 'test1.doc', fileType:'doc' },
-          {fileName: 'test2.doc', fileType:'doc' },
+          {fileName: 'test1.doc', fileType: 'doc'},
+          {fileName: 'test2.doc', fileType: 'doc'},
         ];
       }, 500);
     },
@@ -1416,7 +1457,6 @@ var vm = new Vue({
         }
         typeof callback == 'function' && callback();
       }, function () {
-        vm.tableloading = false;
       });
       
     },
@@ -1442,18 +1482,17 @@ var vm = new Vue({
     },
     initPage: function () {
       var vm = this;
-      this.taskId = this.getUrlParam('taskId');
+      vm.taskId = vm.getUrlParam('taskId');
+      vm.isDraftPage = vm.getUrlParam('draft');
+      vm.isZJItem = (vm.getUrlParam('draft') == '8');
+      // vm.isZJItem = true;
       vm.getIteminstIdByTaskId(callback);
       
       function callback() {
         vm.busRecordId = this.getUrlParam('busRecordId');
-        if (vm.busRecordId != 'undefined' && vm.busRecordId != null && vm.busRecordId != 'null' && vm.busRecordId != '') {
-          // vm.isSeriesinst = 0;// 单项，阶段审批
+        if (vm.busRecordId != 'undefined' && vm.busRecordId != 'null' && vm.busRecordId != '') {
           vm.iteminstId = vm.busRecordId;
-        } else {
-          // vm.isSeriesinst = 1;// 系列，多项
         }
-        vm.btnDisable = false;
         vm.attLink.recordId = vm.taskId;
         vm.viewId = vm.getUrlParam("viewId");
         vm.initProcessTurningPage(vm.taskId);
@@ -1633,10 +1672,6 @@ var vm = new Vue({
           viewId: vm.getUrlParam("viewId"),
           actId: vm.currTaskDefId,
           appFlowdefId: vm.appFlowdefId,
-          // version: 201,
-          // viewId: '9aea00ed-ee86-4d7d-ba6b-ebbe89705b86',
-          // actId: 'fazheng',
-          // appFlowdefId: 'fc5d46df-dcd0-4336-ab60-ee86afa75490',
         }
         request('bpmFrontUrl', {
           url: ctx + 'rest/front/task/getAuthorizeElementPlus',
@@ -1753,6 +1788,7 @@ var vm = new Vue({
         'processInstanceId',
         'busRecordId',
         'isApprover',
+        'isZJItem',
         'masterEntityKey',
         'projectCode',
         'viewId',
@@ -1769,7 +1805,7 @@ var vm = new Vue({
         });
       });
       vm.lTabsData = lTabsData;
-      if (vm.isShowOneForm == '1') {
+      if (vm.isShowOneForm == '1' && !vm.isZJItem) {
         request('', {
           url: oneFromSrc,
           type: 'get',
@@ -1831,7 +1867,7 @@ var vm = new Vue({
     initButtons: function () {
       var vm = this;
       var defaultBtn = [{
-        elementName: "全进流程图",
+        elementName: "全景流程图",
         elementCode: "wfBusSave",
         columnType: "button",
         isReadonly: '0',
@@ -1853,8 +1889,26 @@ var vm = new Vue({
         isHidden: '0',
         elementRender: '<button class="btn btn-outline-info" onclick="startSupplementForItem()">材料补正</button>'
       }];
+      var draftBtn = [{
+        elementName: "发起申报",
+        elementCode: "wfBusSave",
+        columnType: "button",
+        isReadonly: '0',
+        isHidden: '0',
+        elementRender: '<button class="btn btn-outline-info" onclick="handleForWin()">发起申报</button>'
+      }, {
+        elementName: "打印回执",
+        elementCode: "wfBusSave",
+        columnType: "button",
+        isReadonly: '0',
+        isHidden: '0',
+        elementRender: '<button class="btn btn-outline-info" onclick="getPrintList()">打印回执</button>'
+      }];
       if (vm.isApprover == 1) {
         defaultBtn = matBtn.concat(defaultBtn);
+      }
+      if (vm.isDraftPage == 'true') {
+        defaultBtn = draftBtn.concat(defaultBtn);
       }
       if (!vm.checkNull(vm.taskId)) {
         //如果不是起草界面则加上流程跟踪按钮
@@ -1971,12 +2025,12 @@ var vm = new Vue({
      *审批详情页 --> 获取申报方式和状态
      */
     getWayAType: function () {
-      var vm = this
+      var vm = this;
       request('bpmFrontUrl', {
         url: ctx + 'rest/approve/type/and/state',
         type: 'get',
         data: {
-          applyinstId: vm.masterEntityKey, // 申请实例Id
+          applyinstId: vm.masterEntityKey, //
           taskId: vm.taskId,
         },
       }, function (res) {
@@ -4170,13 +4224,13 @@ var vm = new Vue({
       });
     },
     // 关闭回退弹窗
-    closeBackDialog: function(){
+    closeBackDialog: function () {
       this.$refs.backFormRef.resetFields();
     },
     // 确认回退
-    ensureBack: function(){
-      this.$refs.backFormRef.validate(function(f){
-        if (f){
+    ensureBack: function () {
+      this.$refs.backFormRef.validate(function (f) {
+        if (f) {
           vm.backDiaLoading = true;
           request('', {
             url: ctx + 'rest/front/task/returnPrevTask/' + vm.taskId,
@@ -4205,15 +4259,17 @@ var vm = new Vue({
       var vm = this;
       vm.parentPageLoading = true;
       request('', {
-        url: ctx + 'rest/front/task/getReturnPrevTasksByTaskId?taskId='+vm.taskId,
+        url: ctx + 'rest/front/task/getReturnPrevTasksByTaskId?taskId=' + vm.taskId,
         type: 'get',
-      }, function(res){
+      }, function (res) {
         vm.parentPageLoading = false;
-        if (res.success){
+        if (res.success) {
           // 默认选中最后一个可选的节点
           var _index = -1;
-          res.content.forEach(function(u, i){
-            if (u.isCanSelect){ _index = i }
+          res.content.forEach(function (u, i) {
+            if (u.isCanSelect) {
+              _index = i
+            }
           });
           if (_index == -1) {
             vm.$message.error('无可选的回退节点');
@@ -4226,11 +4282,11 @@ var vm = new Vue({
         } else {
           vm.$message.error(res.message || '获取回退数据失败');
         }
-      }, function(){
+      }, function () {
         vm.parentPageLoading = false;
         vm.$message.error('获取回退数据失败');
       });
-      if(window) return null;
+      if (window) return null;
       vm.$prompt('请输入回退意见', '任务回退', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -4829,6 +4885,17 @@ function onlySuggestDialogShow() {
 
 function seeAllProcessPic() {
   vm.seeAllProcessPic();
+}
+
+/**
+ * @param result  是否成功
+ * @param sFRenderConfig 哪个业务场景
+ * @param formModelVal  表单值
+ * @param actStoForminst  表单实例
+ */
+function callbackAfterSaveSFForm(result, sFRenderConfig, formModelVal, actStoForminst) {
+  console.log(result);
+  // vm.matFormVisible = false;
 }
 
 // window.setTimeout(function(){

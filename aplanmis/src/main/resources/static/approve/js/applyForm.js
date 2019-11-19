@@ -28,6 +28,7 @@ var vm = new Vue({
       personalApplyInfo: {},
       personalLinkInfo: {},
       unitTypeList: [],
+      isZJItem: getUrlParam('isZJItem'),
     }
   },
   methods: {
@@ -185,6 +186,7 @@ var vm = new Vue({
   created: function () {
     // this.getDicCodeItems(); //获取通用字典数据
     var vm = this;
+    vm.isZJItem = (vm.isZJItem == 'true');
     var list = [
       {code: 'IDTYPE', dataStr: 'dicCodeItems'},
       {code: 'PROJ_UNIT_LINKMAN_TYPE', dataStr: 'linkManTypeList'},

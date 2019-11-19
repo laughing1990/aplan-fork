@@ -1141,4 +1141,12 @@
             alter table aea_hi_certinst add index ahc_ccroi(certinst_code, root_org_id);
         </sql>
     </changeSet>
+    <changeSet id="201911191554" author="fenggy" failOnError="false">
+        <sql splitStatements="true">
+            ALTER TABLE `aea_ex_proj_bid` ADD COLUMN `TENDER_NUM` varchar(100) DEFAULT NULL COMMENT '省级中标通知书编号(广东三库一平台返回)';
+            ALTER TABLE `aea_ex_proj_contract` ADD COLUMN `CONTRACT_NUM` varchar(100) DEFAULT NULL COMMENT '省级合同编号(广东三库一平台返回)';
+            ALTER TABLE `aea_ex_proj_drawing` ADD COLUMN `REVIEW_NUM` varchar(100) DEFAULT NULL COMMENT '省级施工图审查合格书编号(三库一平台返回)';
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>
