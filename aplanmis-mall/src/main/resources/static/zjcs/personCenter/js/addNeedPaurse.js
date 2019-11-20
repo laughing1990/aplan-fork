@@ -507,64 +507,104 @@ var module1 = new Vue({
 		},
 		submitSubmit: function (params) {
 			var vm = this;
-			console.log(params)
-			console.log(JSON.stringify(params))
-			var formData = new FormData();
-			for (var i in params) {
-				if (typeof params[i] == "object") {
-					if (i == "saveAeaProjInfoVo") {
-						for (var j in params[i]) {
-							formData.append('saveAeaProjInfoVo.' + j, params[i][j])
+			this.$refs.formTest.validate(function (valid) {
+				if (valid) {
+					var formData = new FormData();
+					var matCountVos = [];
+					var selMatinstId = []; // 材料实例id集合
+					vm.model.matsTableData.map(function (item) {
+						if (item) {
+							var copyCnt = 0;
+							var paperCnt = 0;
+							
+							if (item.matinstId) {
+								selMatinstId.push(item.matinstId);
+							}
+							if (item.certMatinstIds && item.certMatinstIds.length > 0) {
+								selMatinstId = selMatinstId.concat(item.certMatinstIds);
+							}
+							if (item.getCopy == true) {
+								copyCnt = item.realCopyCount;
+							}
+							if (item.getPaper == true) {
+								paperCnt = item.realPaperCount;
+							}
+							if (item.getCopy == true || item.getPaper == true) {
+								matCountVos.push({
+									"certId": item.certId,
+									"certName": item.certName,
+									"copyCnt": copyCnt,
+									"formName": item.formName,
+									"itemVerId": item.itemVerId,
+									"matId": item.matId,
+									"matProp": item.matProp,
+									"paperCnt": paperCnt,
+									"stoFormId": item.stoFormId
+								})
+							}
 						}
-					}
-					if (i == "aeaImUnitRequire") {
-						for (var j in params[i]) {
-							formData.append('aeaImUnitRequire.' + j, params[i][j])
-						}
-					}
-					if (i == "aeaImMajorQuals") {
-						for (var j = 0; j < params[i].length; j++) {
-							formData.append('aeaImMajorQuals[' + j + '].qualLevelId', params[i][j].qualLevelId)
-							formData.append('aeaImMajorQuals[' + j + '].majorId', params[i][j].majorId)
-						}
-					}
+					});
 
-				} else {
-					formData.append(i, params[i])
-				}
-			}
-			if (vm.formData1.length > 0) {
-				// vm.formData1.forEach(function (el, index) {
-				// 	formData.append('officialRemarkFile', el);
-				// })
-				formData.append('officialRemarkFile', vm.recordId1);
-			}
-			if (vm.formData2.length > 0) {
-				// vm.formData2.forEach(function (el, index) {
-				// 	formData.append('requireExplainFile', el);
-				// })
-				formData.append('requireExplainFile', vm.recordId2);
-			}
-			$.ajax({
-				type: "POST",
-				url: ctx + 'supermarket/purchase/startProjPurchase',
-				data: formData,
-				// contentType: 'application-x-www-form-urlencoded',
-				//如果传递的是FormData数据类型，那么下来的三个参数是必须的，否则会报错
-				processData: false, //用于对data参数进行序列化处理，这里必须false；如果是true，就会将FormData转换为String类型
-				contentType: false,  //一些文件上传http协议的关系，自行百度，如果上传的有文件，那么只能设置为false
-				success: function (res) {  //请求成功后的回调函数
-					vm.loading = false;
-					if (res.success) {
-						vm.$message({ message: '保存成功', type: 'success' });
-						vm.projPurchaseId = res.content // 拿到项目需要提交的id
-					} else {
-						vm.$message({ message: res.message, type: 'error' });
+					formData.append('matCountVos', matCountVos);
+					formData.append('matinstsIds', selMatinstId);
+
+					for (var i in params) {
+						if (typeof params[i] == "object") {
+							if (i == "saveAeaProjInfoVo") {
+								for (var j in params[i]) {
+									formData.append('saveAeaProjInfoVo.' + j, params[i][j])
+								}
+							}
+							if (i == "aeaImUnitRequire") {
+								for (var j in params[i]) {
+									formData.append('aeaImUnitRequire.' + j, params[i][j])
+								}
+							}
+							if (i == "aeaImMajorQuals") {
+								for (var j = 0; j < params[i].length; j++) {
+									formData.append('aeaImMajorQuals[' + j + '].qualLevelId', params[i][j].qualLevelId)
+									formData.append('aeaImMajorQuals[' + j + '].majorId', params[i][j].majorId)
+								}
+							}
+
+						} else {
+							formData.append(i, params[i])
+						}
 					}
-				},
-				error: function () {
-					vm.loading = false;
-					vm.$message({ message: '保存失败', type: 'error' });
+					if (vm.formData1.length > 0) {
+						// vm.formData1.forEach(function (el, index) {
+						// 	formData.append('officialRemarkFile', el);
+						// })
+						formData.append('officialRemarkFile', vm.recordId1);
+					}
+					if (vm.formData2.length > 0) {
+						// vm.formData2.forEach(function (el, index) {
+						// 	formData.append('requireExplainFile', el);
+						// })
+						formData.append('requireExplainFile', vm.recordId2);
+					}
+					$.ajax({
+						type: "POST",
+						url: ctx + 'supermarket/purchase/startProjPurchase',
+						data: formData,
+						// contentType: 'application-x-www-form-urlencoded',
+						//如果传递的是FormData数据类型，那么下来的三个参数是必须的，否则会报错
+						processData: false, //用于对data参数进行序列化处理，这里必须false；如果是true，就会将FormData转换为String类型
+						contentType: false,  //一些文件上传http协议的关系，自行百度，如果上传的有文件，那么只能设置为false
+						success: function (res) {  //请求成功后的回调函数
+							vm.loading = false;
+							if (res.success) {
+								vm.$message({ message: '保存成功', type: 'success' });
+								vm.projPurchaseId = res.content // 拿到项目需要提交的id
+							} else {
+								vm.$message({ message: res.message, type: 'error' });
+							}
+						},
+						error: function () {
+							vm.loading = false;
+							vm.$message({ message: '保存失败', type: 'error' });
+						}
+					});
 				}
 			});
 		},
