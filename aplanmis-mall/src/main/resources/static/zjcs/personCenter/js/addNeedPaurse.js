@@ -252,6 +252,11 @@ var module1 = new Vue({
 			//   基本信息联系人电话
 			basicLinkPhone: '',
 			loadingFile: false, // 文件上传loading
+			loadingFileWin: false, // 窗口文件上传loading
+			showUploadWindowFlag: false, // 是否展示文件上传窗口
+			showUploadWindowBtn: true, // 是否展示文件上传窗口操作按钮
+			showUploadWindowTitle: '材料附件', // 文件上传窗口header
+			uploadTableData: [],
 			AllFileList: [], // 智能分拣区所选择文件
 			fileList: [],
 			checkAll: true, // 智能分拣区文件是否全选
@@ -282,6 +287,7 @@ var module1 = new Vue({
 			attachmentUrl: ctx + 'supermarket/purchase/mat/uploadPurchaseAtt', // 附加上传url
 			recordId1: '', // 附件1多文件上传所需id
 			recordId2: '', // 附件2多文件上传所需id
+			materialUploadUrl: ctx + 'supermarket/purchase/mat/att/upload', // 材料一单清电子件上传url
 		}
 	},
 	methods: {
@@ -997,9 +1003,30 @@ var module1 = new Vue({
 		},
 		deluploadImg1: function (item, index) {
 			var vm = this;
-			confirmMsg('确定移除' + item.name + '?', '', function () {
-				vm.fileList1.splice(index, 1);
-				vm.formData1.splice(index, 1);
+			confirmMsg('确定移除' + item.attName + '?', '', function () {
+				// vm.fileList1.splice(index, 1);
+				// vm.formData1.splice(index, 1);
+				request('', {
+					url: ctx + 'supermarket/purchase/mat/att/batch/delete',
+					type: 'get',
+					data: {
+						recordId: vm.recordId1,
+						detailIds: item.detailId
+					}
+				}, function (data) {
+					vm.formData1 = data.content.attForms;
+
+					_this.$message({
+						message: '删除成功',
+						type: 'success'
+					});
+				}, function (msg) {
+					_this.$message({
+						message: '删除失败',
+						type: 'error'
+					});
+					// _this.loading = false;
+				});
 			})
 
 		},
@@ -1161,8 +1188,29 @@ var module1 = new Vue({
 		deluploadImg2: function (item, index) {
 			var vm = this;
 			confirmMsg('确定移除' + item.name + '?', '', function () {
-				vm.fileList2.splice(index, 1);
-				vm.formData2.splice(index, 1);
+				// vm.fileList2.splice(index, 1);
+				// vm.formData2.splice(index, 1);
+				request('', {
+					url: ctx + 'supermarket/purchase/mat/att/batch/delete',
+					type: 'get',
+					data: {
+						recordId: vm.recordId2,
+						detailIds: item.detailId
+					}
+				}, function (data) {
+					vm.formData2 = data.content.attForms;
+
+					_this.$message({
+						message: '删除成功',
+						type: 'success'
+					});
+				}, function (msg) {
+					_this.$message({
+						message: '删除失败',
+						type: 'error'
+					});
+					// _this.loading = false;
+				});
 			})
 
 		},
@@ -1470,7 +1518,7 @@ var module1 = new Vue({
 		getFileListWin: function (matinstId, rowData) {
 			var _that = this;
 			request('', {
-				url: ctx + 'rest/mats/att/list',
+				url: ctx + 'supermarket/purchase/mat/att/list',
 				type: 'get',
 				data: { matinstId: matinstId }
 			}, function (res) {
@@ -1497,76 +1545,9 @@ var module1 = new Vue({
 				});
 			});
 		},
-		// 预览电子件
-		filePreview: function (data, flag) { // flag==pdf 查看施工图
-			var detailId = data.fileId;
-			var _that = this;
-			console.log(data);
-			var regText = /doc|docx|ppt|pptx|xls|xlsx|txt$/;
-			var fileName = data.fileName;
-			var fileType = this.getFileType(fileName);
-			var flashAttributes = '';
-			_that.filePreviewCount++;
-			if (flag == 'pdf') {
-				var tempwindow = window.open(); // 先打开页面
-				setTimeout(function () {
-					tempwindow.location = ctx + 'cod/drawing/drawingCheck?detailId=' + detailId;
-				}, 1000)
-			} else {
-				if (fileType == 'pdf') {
-					var tempwindow = window.open(); // 先打开页面
-					setTimeout(function () {
-						tempwindow.location = ctx + 'previewPdf/view?detailId=' + detailId;
-					}, 1000)
-				} else if (regText.test(fileType)) {
-					// previewPdf/pdfIsCoverted
-					_that.loading = true;
-					request('', {
-						url: ctx + 'previewPdf/pdfIsCoverted?detailId=' + detailId,
-						type: 'get',
-					}, function (result) {
-						if (result.success) {
-							_that.loading = false;
-							var tempwindow = window.open(); // 先打开页面
-							setTimeout(function () {
-								tempwindow.location = ctx + 'previewPdf/view?detailId=' + detailId;
-							}, 1000)
-						} else {
-							if (_that.filePreviewCount > 9) {
-								confirmMsg('提示信息：', '文件预览请求中，是否继续等待？', function () {
-									_that.filePreviewCount = 0;
-									_that.filePreview(data);
-								}, function () {
-									_that.filePreviewCount = 0;
-									_that.loading = false;
-									return false;
-								}, '确定', '取消', 'warning', true)
-
-							} else {
-								setTimeout(function () {
-									_that.filePreview(data);
-								}, 1000)
-							}
-						}
-					}, function (msg) {
-						_that.loading = false;
-						_that.$message({
-							message: '文件预览失败',
-							type: 'error'
-						});
-					})
-				} else {
-					_that.loading = false;
-					var tempwindow = window.open(); // 先打开页面
-					setTimeout(function () {
-						tempwindow.location = ctx + 'rest/mats/att/preview?detailId=' + detailId + '&flashAttributes=' + flashAttributes;
-					}, 1000)
-				}
-			}
-		},
 		//下载单个附件
 		downOneFile: function (data) {
-			window.open(ctx + 'rest/mats/att/download?detailIds=' + data.fileId, '_blank')
+			window.open(ctx + 'supermarket/purchase/mat/att/download?detailIds=' + data.fileId, '_blank')
 		},
 		//删除单个文件附件
 		delOneFile: function (data, matData) {
@@ -1574,8 +1555,8 @@ var module1 = new Vue({
 			console.log(data);
 			console.log(matData)
 			request('', {
-				url: ctx + 'rest/mats/att/delelte',
-				type: 'post',
+				url: ctx + 'supermarket/purchase/mat/att/batch/delete',
+				type: 'get',
 				data: { matinstId: matData.matinstId, detailIds: data.fileId }
 			}, function (res) {
 				if (res.success) {
@@ -1790,6 +1771,225 @@ var module1 = new Vue({
 			} else {
 				_that.getPaperAll = '';
 			}
+		},
+		// 文件上传弹窗页面-下载电子件
+		downloadFile: function () {
+			var _that = this;
+			var detailIds = [];
+			if (_that.fileSelectionList.length == 0) {
+				_that.$message({
+					message: '请勾选数据后操作！',
+					type: 'error'
+				});
+				return false;
+			}
+			_that.fileSelectionList.map(function (item, index) {
+				detailIds.push(item.fileId);
+			});
+			detailIds = detailIds.join(',');
+			window.open(ctx + 'supermarket/purchase/mat/att/download?detailIds=' + detailIds, '_blank')
+		},
+		// 文件上传弹窗页面-删除电子件
+		delSelectFileCom: function () {
+			var _that = this;
+			var detailIds = [];
+			if (_that.fileSelectionList.length == 0) {
+				_that.$message({
+					message: '请勾选数据后操作！',
+					type: 'error'
+				});
+				return false;
+			}
+			_that.fileSelectionList.map(function (item, index) {
+				detailIds.push(item.fileId);
+			});
+			detailIds = detailIds.join(',');
+			var url = ctx + 'supermarket/purchase/mat/att/batch/delete';
+			request('', {
+				url: url,
+				type: 'get',
+				data: { matinstId: _that.selMatinstId, detailIds: detailIds }
+			}, function (res) {
+				if (res.success) {
+					_that.getFileListWin(res.content, _that.selMatRowData);
+					_that.$message({
+						message: '删除成功',
+						type: 'success'
+					});
+				} else {
+					_that.$message({
+						message: res.message ? res.message : '删除失败',
+						type: 'error'
+					});
+				}
+			}, function (msg) {
+				_that.$message({
+					message: '服务请求失败',
+					type: 'error'
+				});
+			});
+		},
+		debounceHandler: function (file) {
+			this.loadingFileWin = true;
+			this.debounce(this.uploadFileCom, file);
+		},
+		debounce: function (func, file) {
+			var vm = this;
+			window.clearTimeout(func.tId);
+			func.temArr = func.temArr || [];
+			func.temArr.push(file);
+			console.log(file);
+			func.tId = window.setTimeout(function () {
+				this.loadingFileWin = false;
+				func(func.temArr);
+				func.temArr = [];
+			}, 1000);
+		},
+		// 文件上传弹窗页面-上传电子件
+		uploadFileCom: function (file) {
+			var _that = this;
+			var rowData = _that.selMatRowData;
+			this.fileWinData = new FormData();
+			file.forEach(function (u) {
+				Vue.set(u.file, 'fileName', u.file.name);
+				_that.fileWinData.append('file', u.file);
+			})
+			// Vue.set(file.file,'fileName',file.file.name);
+			// this.fileWinData.append('file', file.file);
+			this.fileWinData.append("matId", rowData.matId);
+			this.fileWinData.append("matinstCode", rowData.matCode);
+			this.fileWinData.append("matinstName", rowData.matName ? rowData.matName : '');
+			this.fileWinData.append("projInfoId", _that.projInfoId);
+			this.fileWinData.append("unitInfoId", _that.rootUnitInfoId);
+			this.fileWinData.append("matinstId", rowData.matinstId ? rowData.matinstId : '');
+			this.fileWinData.append("matProp", rowData.matProp ? rowData.matProp : '');
+			this.fileWinData.append("certId", rowData.certId ? rowData.certId : '');
+			this.fileWinData.append("stoFormId", rowData.stoFormId ? rowData.stoFormId : '');
+			_that.loadingFileWin = true;
+			axios.post(ctx + 'supermarket/purchase/mat/att/upload', _that.fileWinData).then(function (res) {
+				file.forEach(function (u) {
+					Vue.set(u.file, 'matinstId', res.data.content);
+				})
+				// Vue.set(file.file,'matinstId',res.data.content)
+				_that.selMatinstId = res.data.content;
+				_that.getFileListWin(res.data.content, rowData);
+				var matinstIdsObj = [];
+				_that.model.matsTableData.map(function (item) {
+					if (item) {
+						if (item.matId == rowData.matId) {
+							item.matinstId = res.data.content;
+							_that.showFileListKey.push(item.matId)
+						}
+						if (matinstIdsObj.indexOf(item.matinstId) < 0 && item.matinstId != '') {
+							matinstIdsObj.push(item.matinstId);
+						};
+					}
+				});
+				_that.matinstIds = matinstIdsObj.join(',');
+				_that.loadingFileWin = false;
+				_that.$message({
+					message: '上传成功',
+					type: 'success'
+				});
+
+			}).catch(function (error) {
+				_that.loadingFileWin = false;
+				if (error.response) {
+					_that.$message({
+						message: '文件上传失败(' + error.response.status + ')，' + error.response.data,
+						type: 'error'
+					});
+				} else if (error.request) {
+					_that.$message({
+						message: '文件上传失败，服务器端无响应',
+						type: 'error'
+					});
+				} else {
+					_that.$message({
+						message: '文件上传失败，请求封装失败',
+						type: 'error'
+					});
+				}
+
+			});
+		},
+		// 预览电子件
+		filePreview: function (data, flag) { // flag==pdf 查看施工图
+			var detailId = data.fileId;
+			var _that = this;
+			var regText = /doc|docx|pdf|ppt|pptx|xls|xlsx|txt$/;
+			var fileName = data.fileName;
+			var fileType = this.getFileType(fileName);
+			var flashAttributes = '';
+			_that.filePreviewCount++
+			if (flag == 'pdf') {
+				var tempwindow = window.open(); // 先打开页面
+				setTimeout(function () {
+					tempwindow.location = ctx + 'cod/drawing/drawingCheck?detailId=' + detailId;
+				}, 1000)
+			} else {
+				if (fileType == 'pdf') {
+					var tempwindow = window.open(); // 先打开页面
+					setTimeout(function () {
+						tempwindow.location = ctx + 'previewPdf/view?detailId=' + detailId;
+					}, 1000)
+				} else if (regText.test(fileType)) {
+					// previewPdf/pdfIsCoverted
+					_that.loading = true;
+					request('', {
+						url: ctx + 'previewPdf/pdfIsCoverted?detailId=' + detailId,
+						type: 'get',
+					}, function (result) {
+						if (result.success) {
+							_that.loading = false;
+							var tempwindow = window.open(); // 先打开页面
+							setTimeout(function () {
+								tempwindow.location = ctx + 'previewPdf/view?detailId=' + detailId;
+							}, 1000)
+						} else {
+							if (_that.filePreviewCount > 9) {
+								confirmMsg('提示信息：', '文件预览请求中，是否继续等待？', function () {
+									_that.filePreviewCount = 0;
+									_that.filePreview(data);
+								}, function () {
+									_that.filePreviewCount = 0;
+									_that.loading = false;
+									return false;
+								}, '确定', '取消', 'warning', true)
+							} else {
+								setTimeout(function () {
+									_that.filePreview(data);
+								}, 1000)
+							}
+						}
+					}, function (msg) {
+						_that.loading = false;
+						_that.$message({
+							message: '文件预览失败',
+							type: 'error'
+						});
+					})
+				} else {
+					_that.loading = false;
+					var tempwindow = window.open(); // 先打开页面
+					setTimeout(function () {
+						tempwindow.location = ctx + 'supermarket/purchase/mat/att/preview?detailId=' + detailId + '&flashAttributes=' + flashAttributes;
+					}, 1000)
+				}
+			}
+		},
+		// 预览源文件
+		filePreview1: function (data) {
+			var detailId = data.fileId;
+			var flashAttributes = '';
+			var tempwindow = window.open(); // 先打开页面
+			setTimeout(function () {
+				tempwindow.location = ctx + 'supermarket/purchase/mat/att/preview?detailId=' + detailId + '&flashAttributes=' + flashAttributes;
+			}, 1000)
+		},
+		// 勾选电子件
+		selectionFileChange: function (val) {
+			this.fileSelectionList = val;
 		},
 	},
 	mounted: function () {
