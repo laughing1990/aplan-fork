@@ -124,7 +124,7 @@ public class MatController {
     }
 
     @GetMapping("/att/batch/delete")
-    @ApiOperation(value = "单个或批量删除 采购需求说明文件")
+    @ApiOperation(value = "单个或批量删除 批文文件或者要求说明文件")
     @ApiImplicitParams({@ApiImplicitParam(name = "recordId", value = "附件关联ID", required = true)
             , @ApiImplicitParam(name = "recordIds", value = "附件ID，多个用英文,拼接", required = true)}
     )
