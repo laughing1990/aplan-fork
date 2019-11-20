@@ -5677,7 +5677,7 @@ var vm = new Vue({
         _that.getOneFormrender3(_applyinstId,oneformMat.stoFormId)
       }
     },
-    //  打开全景流程图
+    //  打开全景图
     goToDiagramPage: function () {
       var _that = this;
       request('', {

@@ -2934,7 +2934,7 @@ public class AeaParThemeVerAdminServiceImpl implements AeaParThemeVerAdminServic
 
     /**
      * 新增阶段
-     * 原来有全景流程图则新增阶段，否则不新增
+     * 原来有全景图则新增阶段，否则不新增
      * 思路step1：克隆最后一个阶段，0 设置stageid, 1.清除embeds, 2.更新stageInfo、stageName,  3.清楚辅线 4.处理位置
      * step2:装饰性元素位移
      * @param aeaParStage

@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/rest/diagram")
-@Api(value = "全景流程图")
+@Api(value = "全景图")
 public class DiagramController {
 
     @Autowired

@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ include file="/ui-static/agcloud/framework/theme-libs/metronic-v5/template-default.jsp"%>
-        <title>全景流程图设计</title>
+        <title>全景图设计</title>
         <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/rappid/build/rappid.min.css" />
         <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/rappid/apps/BPMNEditor/css/bpmn.css" />
 
