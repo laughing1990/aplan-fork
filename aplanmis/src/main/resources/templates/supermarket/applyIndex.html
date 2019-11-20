@@ -948,9 +948,11 @@
 								</el-upload>
 								<span class="ml-3" slot="tip" style="position: absolute;left: 110px;top: 5px;">上传的附件不可超过10MB，禁止上传以下的附件类型：.exe,.sh,.bat,.com,.dll</span>
 							</div>
-							<ul class="pjfile-list">
+							<ul class="pjfile-list enclosure-file-box">
 								<li class="ellipsis" v-for="(item, index) in fileList1" :key="index">
-									{{item.attName}}</li>
+                  {{item.attName}}
+                  <a href="javascript:;" @click="enclosureFileDel(item)">删除</a>
+                </li>
 							</ul>
 						</div>
 						<p class="note-txt">备注：您可上传购买中介服务的政府批文及财政资金安排批文的相关文件，便于项目审批，不供公示下载。</p>
@@ -971,9 +973,11 @@
 								</el-upload>
 								<span class="ml-3" slot="tip" style="position: absolute;left: 110px;top: 5px;">上传的附件不可超过10MB，禁止上传以下的附件类型：.exe,.sh,.bat,.com,.dll</span>
 							</div>
-							<ul class="pjfile-list">
+							<ul class="pjfile-list enclosure-file-box">
 								<li class="ellipsis" v-for="(item, index) in fileList2" :key="index">
-									{{item.attName}}</li>
+                  {{item.attName}}
+                  <a href="javascript:;" @click="enclosureFileDel(item)">删除</a>
+                </li>
 							</ul>
 						</div>
 						<p class="note-txt mt-1">备注：您可上传采购项目要求说明，可供中介机构查看下载。</p>
