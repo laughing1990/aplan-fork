@@ -1,4 +1,4 @@
-package com.augurit.aplanmis.supermarket.projPurchase.vo.mat;
+package com.augurit.aplanmis.common.vo;
 
 import com.augurit.agcloud.bsc.domain.BscAttForm;
 import io.swagger.annotations.ApiModel;
@@ -12,13 +12,13 @@ import java.util.List;
 @Data
 @ApiModel(value = "附件上传结果", description = "附件上传结果")
 public class UploadResult {
-    @ApiModelProperty(value = "附件ID")
-    String detailId;
+    @ApiModelProperty(value = "附件关联ID")
+    String recordId;
     @ApiModelProperty(value = "附件列表")
     List<AttForm> attForms = new ArrayList<>();
 
-    public UploadResult(String detailId, List<BscAttForm> bscAttForms) {
-        this.detailId = detailId;
+    public UploadResult(String recordId, List<BscAttForm> bscAttForms) {
+        this.recordId = recordId;
         for (BscAttForm form : bscAttForms) {
             AttForm attForm = new AttForm();
             BeanUtils.copyProperties(form, attForm);

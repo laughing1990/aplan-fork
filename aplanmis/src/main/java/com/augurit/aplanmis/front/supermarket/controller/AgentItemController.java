@@ -6,6 +6,7 @@ import com.augurit.aplanmis.common.service.projPurchase.AeaImProjPurchaseService
 import com.augurit.aplanmis.common.utils.BusinessUtils;
 import com.augurit.aplanmis.common.vo.AeaImServiceVo;
 import com.augurit.aplanmis.common.vo.QueryAgentUnitInfoVo;
+import com.augurit.aplanmis.common.vo.UploadResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -46,17 +47,26 @@ public class AgentItemController {
 
     @ApiOperation(value = "上传批文文件或者要求说明文件", notes = "上传批文文件或者要求说明文件")
     @PostMapping(value = "/uploadFiles")
-    @ApiImplicitParam(name = "detailId", value = "附件关联ID", dataType = "string")
-    public ContentResultForm<String> uploadFiles(HttpServletRequest request, String detailId) {
+    @ApiImplicitParam(name = "recordId", value = "附件关联字段ID", dataType = "string")
+    public ContentResultForm<UploadResult> uploadFiles(HttpServletRequest request, String recordId) {
         try {
-            String recordId = aeaImProjPurchaseService.uploadFiles(request, detailId);
-            return new ContentResultForm<String>(true, recordId);
+            UploadResult uploadResult = aeaImProjPurchaseService.uploadFiles(request, recordId);
+            return new ContentResultForm<UploadResult>(true, uploadResult, "success");
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return new ContentResultForm(false, null, e.getMessage());
         }
     }
 
+    @GetMapping("/att/batch/delete")
+    @ApiOperation(value = "单个或批量删除 批文文件或者要求说明文件")
+    @ApiImplicitParams({@ApiImplicitParam(name = "recordId", value = "附件关联ID", required = true)
+            , @ApiImplicitParam(name = "recordIds", value = "附件ID，多个用英文,拼接", required = true)}
+    )
+    public ResultForm attBatchDelte(String recordId, String detailIds) throws Exception {
+        UploadResult result = aeaImProjPurchaseService.batchDelete(recordId, detailIds);
+        return new ContentResultForm<>(true, result);
+    }
 
     @ApiOperation(value = "获取自动生成的项目编码", notes = "获取自动生成的项目编码")
     @PostMapping(value = "/getAutoProjCode")

@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 
 @Getter
 @Setter
-@ApiModel("全景流程图")
+@ApiModel("全景图")
 public class DiagramStatusDto {
 
     @ApiModelProperty(value = "主题版本id", dataType = "string")

@@ -887,13 +887,10 @@ textarea {
   font-size: 14px;
 }
 .file-list-tab {
-  padding: 15px 0 0 60px;
+  padding-left: 60px;
 }
 .file-list-tab.no-file {
   color: #afb2c1
-}
-.file-list-tab:last-child {
-  padding-bottom: 15px;
 }
 .file-name {
   cursor: default;
@@ -1261,7 +1258,7 @@ textarea {
   padding: 0 20px;
 }
 .show-one-form .el-dialog__body {
-  padding-top: 0;
+  padding: 0;
 }
 .show-mat-form .el-dialog__body {
   padding: 0 20px 20px 20px;

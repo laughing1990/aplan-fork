@@ -36,9 +36,9 @@ public class OneFormCommonController {
         oneFormCommonService.renderPage(oneFormStageRequest,sFRenderConfig);
     }
 
-    @RequestMapping(value = "/ListSFFormParam", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/getListForm4StageOneForm", method = {RequestMethod.GET, RequestMethod.POST})
     @ApiOperation("根据阶段/事项，返回表单列表(包括智能表单，开发表单)")
-    public ResultForm getListSFFormParam(OneFormStageRequest oneFormStageRequest, SFRenderConfig sFRenderConfig) {
+    public ResultForm getListForm4StageOneForm(OneFormStageRequest oneFormStageRequest, SFRenderConfig sFRenderConfig) {
         try {
             List<FormFrofileVo> result = oneFormCommonService.getListForm4StageOneForm(oneFormStageRequest);
             return new ContentResultForm(true, result);

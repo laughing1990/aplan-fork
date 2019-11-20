@@ -280,8 +280,8 @@ var module1 = new Vue({
 			serviceDetail: {}, // 中介服务对应详细信息
 			stateList: [], // 情形选中列表
 			attachmentUrl: ctx + 'supermarket/purchase/mat/uploadPurchaseAtt', // 附加上传url
-			detailedID1: '', // 附件1多文件上传所需id
-			detailedID2: '', // 附件2多文件上传所需id
+			recordId1: '', // 附件1多文件上传所需id
+			recordId2: '', // 附件2多文件上传所需id
 		}
 	},
 	methods: {
@@ -1024,11 +1024,11 @@ var module1 = new Vue({
 			var formData = new FormData();
 
 			file.forEach(function (u) {
-				Vue.set(u.file, 'officialRemarkFile', u.file.name);
-				formData.append('file', u.file);
+				// Vue.set(u.file, 'officialRemarkFile', u.file.name);
+				formData.append('officialRemarkFile', u.file);
 			})
 			// formData.append('officialRemarkFile', file.file);
-			formData.append('detailedID', vm.detailedID1);
+			formData.append('recordId', vm.recordId1);
 
 			$.ajax({
 				type: "POST",
@@ -1041,7 +1041,7 @@ var module1 = new Vue({
 				success: function (res) {  //请求成功后的回调函数
 					vm.loading = false;
 					if (res.success) {
-						vm.detailedID1 = res.content.detailId;
+						vm.recordId1 = res.content.recordId;
 						vm.formData1 = res.content.attForms;
 						vm.$message({ message: '上传成功', type: 'success' });
 					} else {
@@ -1057,7 +1057,7 @@ var module1 = new Vue({
 		debounceHandler2: function (file) {
 			var _that = this;
 
-			this.debounce1(this.uploadFile1, file);
+			this.debounce2(this.uploadFile2, file);
 		},
 		debounce2: function (func, file) {
 			var vm = this;
@@ -1077,11 +1077,11 @@ var module1 = new Vue({
 			var formData = new FormData();
 
 			file.forEach(function (u) {
-				Vue.set(u.file, 'officialRemarkFile', u.file.name);
-				formData.append('file', u.file);
+				// Vue.set(u.file, 'officialRemarkFile', u.file.name);
+				formData.append('requireExplainFile', u.file);
 			})
 			// formData.append('officialRemarkFile', file.file);
-			formData.append('detailedID', vm.detailedID2);
+			formData.append('recordId', vm.recordId2);
 
 			$.ajax({
 				type: "POST",
@@ -1094,10 +1094,9 @@ var module1 = new Vue({
 				success: function (res) {  //请求成功后的回调函数
 					vm.loading = false;
 					if (res.success) {
-						vm.detailedID2 = res.content.detailId;
+						vm.recordId2 = res.content.recordId;
 						vm.formData2 = res.content.attForms;
 						vm.$message({ message: '上传成功', type: 'success' });
-						console.log('id', vm.detailedID);
 					} else {
 						vm.$message({ message: res.message, type: 'error' });
 					}
@@ -1152,10 +1151,10 @@ var module1 = new Vue({
 			} else {
 				this.fileList2 = fileList
 			}
-			this.formData2 = []
-			for (var i = 0; i < this.fileList2.length; i++) {
-				this.formData2.push(this.fileList2[i].raw);
-			}
+			// this.formData2 = []
+			// for (var i = 0; i < this.fileList2.length; i++) {
+			// 	this.formData2.push(this.fileList2[i].raw);
+			// }
 		},
 		deluploadImg2: function (item, index) {
 			var vm = this;

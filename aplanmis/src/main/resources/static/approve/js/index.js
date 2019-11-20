@@ -1871,7 +1871,7 @@ var vm = new Vue({
     initButtons: function () {
       var vm = this;
       var defaultBtn = [{
-        elementName: "全景流程图",
+        elementName: "全景图",
         elementCode: "wfBusSave",
         columnType: "button",
         isReadonly: '0',
