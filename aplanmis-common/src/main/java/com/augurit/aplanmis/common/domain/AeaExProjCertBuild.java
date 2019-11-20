@@ -1,8 +1,10 @@
 package com.augurit.aplanmis.common.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.sql.Blob;
 import java.util.Date;
@@ -26,6 +28,8 @@ public class AeaExProjCertBuild {
     @ApiModelProperty("核发机关")
     private String govOrgName;
     @ApiModelProperty("核发日期")
+    @JsonFormat(pattern = "yyyy-MM-dds")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date publishTime;
     @ApiModelProperty("建设单位")
     private String constructionUnit;
@@ -37,6 +41,8 @@ public class AeaExProjCertBuild {
     private String constructionsSize;
     @ApiModelProperty("合同价格，单位：万元")
     private String contractPrice;
+    @ApiModelProperty("工程总承包单位")
+    private String gczcbUnit;
     @ApiModelProperty("勘察单位")
     private String kcUnit;
     @ApiModelProperty("设计单位")
@@ -45,6 +51,8 @@ public class AeaExProjCertBuild {
     private String sgUnit;
     @ApiModelProperty("监理单位")
     private String jlUnit;
+    @ApiModelProperty("工程总承包单位负责人")
+    private String gczcbUnitLeader;
     @ApiModelProperty("勘察单位项目负责人")
     private String kcUnitLeader;
     @ApiModelProperty("设计单位项目负责人")
@@ -60,10 +68,12 @@ public class AeaExProjCertBuild {
     @ApiModelProperty("创建人")
     private String creater;
     @ApiModelProperty("创建时间")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date createTime;
     @ApiModelProperty("修改人")
     private String modifier;
     @ApiModelProperty("修改时间")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date modifyTime;
     @ApiModelProperty("所属根组织ID")
     private String rootOrgId;
@@ -72,5 +82,6 @@ public class AeaExProjCertBuild {
     @ApiModelProperty("打印人姓名")
     private String printUserName;
     @ApiModelProperty("打印时间")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date printTime;
 }

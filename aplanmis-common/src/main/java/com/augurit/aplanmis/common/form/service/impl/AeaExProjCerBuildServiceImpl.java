@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.augurit.agcloud.bsc.util.*;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -294,6 +295,10 @@ public class AeaExProjCerBuildServiceImpl implements AeaExProjCertBuildService {
     @Override
     public void saveForm(AeaExProjCertBuild aeaExProjCertBuild) throws Exception {
         if(StringUtils.isBlank(aeaExProjCertBuild.getBuildId())){
+            aeaExProjCertBuild.setBuildId(UuidUtil.generateUuid());
+            aeaExProjCertBuild.setCreateTime(new Date());
+            aeaExProjCertBuild.setCreater(SecurityContext.getCurrentUserName());
+            aeaExProjCertBuild.setRootOrgId(SecurityContext.getCurrentOrgCode());
             aeaExProjCertBuildMapper.insertAeaExProjCertBuild(aeaExProjCertBuild);
         }else {
             aeaExProjCertBuildMapper.updateAeaExProjCertBuild(aeaExProjCertBuild);
