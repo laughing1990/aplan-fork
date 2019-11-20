@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.util.StringUtils;
+import com.augurit.aplanmis.common.constants.GDUnitType;
 import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.mapper.AeaExProjCertBuildMapper;
 import com.augurit.aplanmis.common.mapper.AeaProjInfoMapper;
@@ -230,6 +231,8 @@ public class AeaExProjCerBuildServiceImpl implements AeaExProjCertBuildService {
             String sgUnitLeader = null;
             String jlUnit = null;
             String jlUnitLeader = null;
+            String gczcbUnit = null;
+            String gczcbUnitLeader = null;
             //查询工程名称
             AeaProjInfo aeaProjInfoById = aeaProjInfoMapper.getAeaProjInfoById(vo.getProjInfoId());
             aeaExProjCertBuild.setProjInfoId(vo.getProjInfoId());//项目ID
@@ -238,17 +241,21 @@ public class AeaExProjCerBuildServiceImpl implements AeaExProjCertBuildService {
             stringTime.append(vo.getContractStartBuildTime());
             stringTime.append("~");
             stringTime.append(vo.getContractEndBuildTime());
-            //获取施工和监理单位信息
+            //获取施工、监理单位信息、工程总承包
             List<AeaExProjBuildUnitInfo> list = JSON.parseArray(vo.getAeaExProjBuildUnitInfo(), AeaExProjBuildUnitInfo.class);
             if(list!=null && list.size()>0){
                 for (AeaExProjBuildUnitInfo aeaExProjBuildUnitInfo : list) {
-                    if(aeaExProjBuildUnitInfo.getUnitType().equals("6")){
+                    if(aeaExProjBuildUnitInfo.getUnitType().equals(GDUnitType.CONSTRUCTION_CONTRACTOR.getValue())){
                         sgUnit = aeaExProjBuildUnitInfo.getApplicant();
                         sgUnitLeader = aeaExProjBuildUnitInfo.getLinkmanName();
                     }
-                    if(aeaExProjBuildUnitInfo.getUnitType().equals("11")){
+                    if(aeaExProjBuildUnitInfo.getUnitType().equals(GDUnitType.SUPERVISION_UNIT.getValue())){
                         jlUnit = aeaExProjBuildUnitInfo.getApplicant();
                         jlUnitLeader = aeaExProjBuildUnitInfo.getLinkmanName();
+                    }
+                    if(aeaExProjBuildUnitInfo.getUnitType().equals(GDUnitType.GENERAL_CONTRACTING_UNIT.getValue())){
+                        gczcbUnit = aeaExProjBuildUnitInfo.getApplicant();
+                        gczcbUnitLeader = aeaExProjBuildUnitInfo.getLinkmanName();
                     }
                 }
             }
@@ -260,6 +267,8 @@ public class AeaExProjCerBuildServiceImpl implements AeaExProjCertBuildService {
                 aeaExProjCertBuild.setSgUnitLeader(sgUnitLeader);//施工单位负责人
                 aeaExProjCertBuild.setJlUnit(jlUnit);//监理单位
                 aeaExProjCertBuild.setJlUnitLeader(jlUnitLeader);//总监理工程施
+                aeaExProjCertBuild.setGczcbUnit(gczcbUnit);//工程总承包
+                aeaExProjCertBuild.setGczcbUnitLeader(gczcbUnitLeader);//工程总承包项目经理
                 aeaExProjCertBuild.setContractPeriod(stringTime.toString());//合同工期
                 aeaExProjCertBuildMapper.updateAeaExProjCertBuild(aeaExProjCertBuild);
                 return new ContentResultForm<>(true,"同步信息成功","success");
@@ -277,6 +286,8 @@ public class AeaExProjCerBuildServiceImpl implements AeaExProjCertBuildService {
                     aeaExProjCertBuild.setSgUnitLeader(sgUnitLeader);//施工单位负责人
                     aeaExProjCertBuild.setJlUnit(jlUnit);//监理单位
                     aeaExProjCertBuild.setJlUnitLeader(jlUnitLeader);//总监理工程施
+                    aeaExProjCertBuild.setGczcbUnit(gczcbUnit);//工程总承包
+                    aeaExProjCertBuild.setGczcbUnitLeader(gczcbUnitLeader);//工程总承包项目经理
                     aeaExProjCertBuild.setContractPeriod(stringTime.toString());//合同工期
                     aeaExProjCertBuild.setCreater(SecurityContext.getCurrentUserName());
                     aeaExProjCertBuild.setCreateTime(new Date());

@@ -40,16 +40,21 @@ public class RestExSJUnitFormController {
     @PostMapping("/saveOrUpdateSJUnitInfo")
     public ContentResultForm<String> saveOrUpdateSJUnitInfo(AeaExProjBuild aeaExProjBuild){
         try {
-            AeaProjInfo aeaProjInfo = new AeaProjInfo();
-            aeaProjInfo.setProjInfoId(aeaExProjBuild.getProjInfoId());
-            List<AeaProjInfo> aeaProjInfos = aeaProjInfoMapper.listAeaProjInfo(aeaProjInfo);
-            if(aeaProjInfos !=null && aeaProjInfos.size()>0){
-                restExSJUnitFormService.saveOrUpdateSJUnitInfo(aeaExProjBuild);
-                aeaExProjCertBuildService.SynchronizeDataByAeaExProjBuild(aeaExProjBuild);
-                return new ContentResultForm<>(true,"保存成功", "Save success");
+            ContentResultForm<String> stringContentResultForm = aeaExProjCertBuildService.SynchronizeDataByAeaExProjBuild(aeaExProjBuild);
+            if(stringContentResultForm.isSuccess()){
+                AeaProjInfo aeaProjInfo = new AeaProjInfo();
+                aeaProjInfo.setProjInfoId(aeaExProjBuild.getProjInfoId());
+                List<AeaProjInfo> aeaProjInfos = aeaProjInfoMapper.listAeaProjInfo(aeaProjInfo);
+                if(aeaProjInfos !=null && aeaProjInfos.size()>0){
+                    restExSJUnitFormService.saveOrUpdateSJUnitInfo(aeaExProjBuild);
+                    return new ContentResultForm<>(true,"保存成功", "Save success");
+                }else {
+                    return new ContentResultForm<>(false,"项目编码不存在", "error");
+                }
             }else {
-                return new ContentResultForm<>(false,"项目编码不存在", "error");
+                return stringContentResultForm;
             }
+
         }catch (Exception e){
             return new ContentResultForm<>(false,e.getMessage(), "error");
         }

@@ -710,7 +710,7 @@ public class ReceivePDFTemplate {
             //获取文件路径，jar情况下 ResourceUtils.getFile 获取不到的
             //File pdfTemplateFile = ResourceUtils.getFile("classpath:static/receive/default/建筑工程施工许可证-无底图.pdf");
             //jar包也可以获取
-            ClassPathResource classPathResource = new ClassPathResource("static/receive/default/建筑工程施工许可证-无底图.pdf");
+            ClassPathResource classPathResource = new ClassPathResource("static/receive/default/施工许可证新版(总承包).pdf");
             InputStream inputStream = classPathResource.getInputStream();
 //            PdfReader reader = new PdfReader(pdfTemplate);
 //            PdfReader reader = new PdfReader(new FileInputStream(pdfTemplateFile));
@@ -725,18 +725,24 @@ public class ReceivePDFTemplate {
                 //URL url = jgpFile.toURI().toURL();
 
                 //jar包也可以获取
-                ClassPathResource imgPathResource = new ClassPathResource("static/receive/default/建筑工程施工许可证-背景.jpg");
+                /*ClassPathResource imgPathResource = new ClassPathResource("static/receive/default/建筑工程施工许可证-背景.jpg");
                 System.out.println(imgPathResource.getURL());
                 URL imgUrl = imgPathResource.getURL();
 
 
                 Image img = Image.getInstance(imgUrl);
                 img.setAbsolutePosition(40, 0);
-                img.scaleToFit(reader.getPageSize(1));
+                img.scaleToFit(reader.getPageSize(1));//大小*/
+                PdfContentByte under = stamper.getOverContent(1);
+                /*under.addImage(img, img.getScaledWidth(), 0, 0, img.getScaledHeight(), 0, 0);
+                under.addImage(img);*/
 
-                PdfContentByte under = stamper.getUnderContent(1);
-                under.addImage(img, img.getScaledWidth(), 0, 0, img.getScaledHeight(), 0, 0);
-                under.addImage(img);
+                //二维码
+                Image ercode = Image.getInstance(vo.getCertBuildQrcode());
+                ercode.setAbsolutePosition(100,90);
+                ercode.scaleToFit(130,130);
+                //under.addImage(ercode, ercode.getScaledWidth(), 0, 0, ercode.getScaledHeight(), 0, 0);
+                under.addImage(ercode);
             }
 
             //使用中文字体

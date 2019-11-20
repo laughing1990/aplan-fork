@@ -603,6 +603,7 @@ public class OfficialDocumentService {
         if (aeaExProjCertBuildByProjId !=null){
             String certBuildCode = aeaExProjCertBuildByProjId.getCertBuildCode();//建设工程规划许可证编号
             byte[] certBuildQrcode = aeaExProjCertBuildByProjId.getCertBuildQrcode();//建设工程规划许可证二维码
+            //广东分支将此段放开
             /*if (StringUtils.isBlank(certBuildCode) && certBuildQrcode.length == 0 && certBuildQrcode == null){
                 //获取施工许可证编码和二维码
                 ResponseConsPermitInfo consPermitInfo = webservice.getConsPermitInfo(projInfo.getProjInfoId(), iteminstId);
@@ -657,6 +658,8 @@ public class OfficialDocumentService {
             constructPermit.setProjectName(aeaExProjCertBuildByProjId.getProjName());//工程名称
             constructPermit.setContructAddress(aeaExProjCertBuildByProjId.getConstructionAddr());//建设地址
             constructPermit.setContractPrice(Double.parseDouble(aeaExProjCertBuildByProjId.getContractPrice()));//合同价格，单位：万元
+            constructPermit.setGczcbUnitName(aeaExProjCertBuildByProjId.getGczcbUnit());//工程总承包单位
+            constructPermit.setGczcbUnitLeader(aeaExProjCertBuildByProjId.getGczcbUnitLeader());//工程总承包单位负责人
             constructPermit.setExplorationUnitName(aeaExProjCertBuildByProjId.getKcUnit());//勘察单位
             constructPermit.setDesignUnitName(aeaExProjCertBuildByProjId.getSjUnit());//设计单位
             constructPermit.setConstructUnitName(aeaExProjCertBuildByProjId.getSgUnit());//施工单位
