@@ -6,9 +6,9 @@ import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.agcloud.opus.common.domain.OpuOmOrg;
 import com.augurit.agcloud.opus.common.service.om.OpuOmOrgService;
+import com.augurit.agcloud.opus.common.service.om.OpuOmUserService;
 import com.augurit.aplanmis.common.domain.AeaMatinst;
 import com.augurit.aplanmis.common.service.file.FileUtilsService;
-import com.augurit.aplanmis.common.utils.Md5Utils;
 import com.augurit.aplanmis.province.auth.AesUtil;
 import com.augurit.aplanmis.province.auth.AuthConfig;
 import com.augurit.aplanmis.province.service.ApproveCommonService;
@@ -79,6 +79,9 @@ public class ApproveItemController {
     private OpuOmOrgService opuOmOrgService;
     @Autowired
     private FileUtilsService fileUtilsService;
+
+    @Autowired
+    private OpuOmUserService opuOmUserService;
 
 
     /**
@@ -154,7 +157,8 @@ public class ApproveItemController {
 
     private JSONObject getSsoToken(String username, String password) {
         String orgId = "0368948a-1cdf-4bf8-a828-71d796ba89f6";
-        List<com.augurit.agcloud.opus.common.domain.OpuOmOrg> orgs = opuOmOrgService.listOpuOmUserOrgForLogin(username, password);
+        List<OpuOmOrg> orgs = opuOmOrgService.getOpuOmUserOrg(username);
+//        List<OpuOmOrg> orgs = opuOmOrgService.listOpuOmUserOrgForLogin(username, password);
         if (orgs != null && orgs.size() > 0) {
             List<String> orgIds = handleTopOrgId(orgs);
             if (orgIds.size() > 0) {
@@ -167,7 +171,7 @@ public class ApproveItemController {
         headers.set("Authorization", authConfig.getAuthorization());
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
         map.add("username", username);
-        map.add("password", Md5Utils.encrypt32(password));
+        map.add("password", password);
         map.add("orgId", orgId);
         map.add("deviceType", "normal");
         map.add("isApp", "true");
