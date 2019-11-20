@@ -1,5 +1,7 @@
 package com.augurit.aplanmis.admin.par;
 
+import com.augurit.agcloud.framework.exception.InvalidParameterException;
+import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.ui.pager.EasyuiPageInfo;
 import com.augurit.agcloud.framework.ui.pager.PageHelper;
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
@@ -21,13 +23,6 @@ import java.util.UUID;
 
 /**
  * 阶段的项目信息前置检测-Controller 页面控制转发类
- * <ul>
- * <li>项目名：奥格erp3.0--第一期建设项目</li>
- * <li>版本信息：v1.0</li>
- * <li>版权所有(C)2016广州奥格智能科技有限公司-版权所有</li>
- * <li>创建人:Administrator</li>
- * <li>创建时间：2019-11-01 10:48:33</li>
- * </ul>
  */
 @RestController
 @RequestMapping("/aea/par/front/proj")
@@ -125,8 +120,18 @@ public class AeaParFrontProjController {
 
     @RequestMapping("/listAeaParFrontProjByNoPage.do")
     public List<AeaParFrontProj> listAeaParFrontProjByNoPage(AeaParFrontProj aeaParFrontProj) throws Exception {
+
         List<AeaParFrontProj> list = aeaParFrontProjService.listAeaParFrontProj(aeaParFrontProj);
         return list;
     }
 
+    @RequestMapping("/changIsActive.do")
+    public ResultForm changIsActive(String id) {
+
+        if (StringUtils.isBlank(id)) {
+            throw new InvalidParameterException("参数id为空!");
+        }
+        aeaParFrontProjService.changIsActive(id, SecurityContext.getCurrentOrgId());
+        return new ResultForm(true);
+    }
 }

@@ -5,17 +5,17 @@
 <mapper namespace="com.augurit.aplanmis.common.mapper.AeaParFrontItemformMapper">
     <!--1 返回所有字段的SQL字句 -->
     <sql id="allColumns">
-    FRONT_ITEMFORM_ID  frontItemformId,
-    STAGE_ID  stageId,
-    STAGE_ITEM_ID  stageItemId,
-    SORT_NO  sortNo,
-    IS_ACTIVE  isActive,
-    FRONT_ITEMFORM_MEMO  frontItemformMemo,
-    CREATER  creater,
-    CREATE_TIME  createTime,
-    MODIFIER  modifier,
-    MODIFY_TIME  modifyTime,
-    ROOT_ORG_ID  rootOrgId
+        FRONT_ITEMFORM_ID  frontItemformId,
+        STAGE_ID  stageId,
+        STAGE_ITEM_ID  stageItemId,
+        SORT_NO  sortNo,
+        IS_ACTIVE  isActive,
+        FRONT_ITEMFORM_MEMO  frontItemformMemo,
+        CREATER  creater,
+        CREATE_TIME  createTime,
+        MODIFIER  modifier,
+        MODIFY_TIME  modifyTime,
+        ROOT_ORG_ID  rootOrgId
     </sql>
 
     <sql id="allColumnsAlias">
@@ -156,12 +156,14 @@ FRONT_ITEMFORM_ID  ,STAGE_ID  ,STAGE_ITEM_ID  ,SORT_NO  ,IS_ACTIVE  ,FRONT_ITEMF
         </set>
         where FRONT_ITEMFORM_ID = #{frontItemformId}
     </update>
+
     <!--7 删除实体对象,根据主键ID -->
     <delete id="deleteAeaParFrontItemform">
         delete from   AEA_PAR_FRONT_ITEMFORM
         where
     FRONT_ITEMFORM_ID = #{id}
     </delete>
+
     <!--8 删除实体对象列表,根据主键ID列表 -->
     <!--9 返回所有字段的对象map,用于级联 -->
     <resultMap type="AeaParFrontItemform" id="AeaParFrontItemformMap">
@@ -295,4 +297,17 @@ FRONT_ITEMFORM_ID  ,STAGE_ID  ,STAGE_ITEM_ID  ,SORT_NO  ,IS_ACTIVE  ,FRONT_ITEMF
         left join act_sto_form asf on asf.FORM_ID = apsi.SUB_FORM_ID
         where FRONT_ITEMFORM_ID = #{id}
     </select>
+
+    <update id="changIsActive">
+        update AEA_PAR_FRONT_ITEMFORM
+        set IS_ACTIVE = case IS_ACTIVE
+        when '1' then '0'
+        when '0' then '1'
+        end
+        <where>
+            and FRONT_ITEMFORM_ID = #{id}
+            and ROOT_ORG_ID = #{rootOrgId}
+        </where>
+    </update>
+
 </mapper>

@@ -43,6 +43,8 @@ public class AeaItemFrontProjAdminServiceImpl implements AeaItemFrontProjAdminSe
     @Override
     public void saveAeaItemFrontProj(AeaItemFrontProj aeaItemFrontProj) {
 
+//        checkSame(aeaItemFrontProj);
+
         aeaItemFrontProj.setCreateTime(new Date());
         aeaItemFrontProj.setCreater(SecurityContext.getCurrentUserId());
         aeaItemFrontProj.setRootOrgId(SecurityContext.getCurrentOrgId());

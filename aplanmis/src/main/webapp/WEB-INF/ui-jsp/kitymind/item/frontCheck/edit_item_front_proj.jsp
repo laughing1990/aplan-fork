@@ -21,7 +21,6 @@
                         <input type="hidden" name="isActive" value=""/>
 
                         <div class="form-group m-form__group row">
-
                             <label class="col-lg-2 col-form-label" style="text-align: right;"><font color="red">*</font>规则名称:</label>
                             <div class="col-lg-10">
                                 <input type="text" class="form-control m-input" name="ruleName" value="" ${curIsEditable?'':'disabled'} />
@@ -57,7 +56,7 @@
                     </div>
                 </div>
                 <div class="modal-footer" style="padding: 10px;height: 60px;">
-                    <button type="submit" class="btn btn-info" id="saveItemFrontProjBtn">保存</button>
+                    <button type="submit" class="btn btn-info" id="saveItemFrontProjBtn" style="display: ${curIsEditable?'':'none'}">保存</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
                 </div>
             </form>
