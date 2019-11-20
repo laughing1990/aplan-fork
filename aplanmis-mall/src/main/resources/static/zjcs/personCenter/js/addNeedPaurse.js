@@ -335,7 +335,7 @@ var module1 = new Vue({
 			var vm = this;
 			// console.log(vm.form.chooseInsertype)
 			this.$refs[formName].validate(function (valid, obj) {
-				if (true) {
+				if (valid) {
 					// if (valid) {
 					// var aeaImMajorQuals = [{
 					//     majorId:'', // 专业ID
@@ -525,7 +525,7 @@ var module1 = new Vue({
 		submitSubmit: function (params) {
 			var vm = this;
 			this.$refs.formTest.validate(function (valid) {
-				if (true) {
+				if (valid) {
 					var formData = new FormData();
 					var matCountVos = [];
 					var selMatinstId = []; // 材料实例id集合
