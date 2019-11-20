@@ -1,9 +1,9 @@
 package com.augurit.aplanmis.common.service.oneForm;
-import com.augurit.agcloud.bpm.common.domain.vo.SFFormParam;
 import com.augurit.agcloud.bpm.common.sfengine.config.SFRenderConfig;
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.aplanmis.front.basis.stage.vo.OneFormStageRequest;
+import com.augurit.aplanmis.front.basis.stage.vo.FormFrofileVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,8 +40,8 @@ public class OneFormCommonController {
     @ApiOperation("根据阶段/事项，返回表单列表(包括智能表单，开发表单)")
     public ResultForm getListSFFormParam(OneFormStageRequest oneFormStageRequest, SFRenderConfig sFRenderConfig) {
         try {
-            List<SFFormParam> listSFFormParam = oneFormCommonService.genListSFFormParam4OneForm(oneFormStageRequest,true);
-            return new ContentResultForm(true, listSFFormParam);
+            List<FormFrofileVo> result = oneFormCommonService.getListForm4StageOneForm(oneFormStageRequest);
+            return new ContentResultForm(true, result);
         } catch (Exception e) {
             e.printStackTrace();
             return new ContentResultForm(false, e.getMessage());

@@ -11,8 +11,8 @@ import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.domain.AeaParStagePartform;
 import com.augurit.aplanmis.common.service.admin.oneform.AeaParStagePartformService;
 import com.augurit.aplanmis.front.basis.stage.service.RestStageService;
+import com.augurit.aplanmis.front.basis.stage.vo.FormFrofileVo;
 import com.augurit.aplanmis.front.basis.stage.vo.OneFormStageRequest;
-import com.augurit.aplanmis.front.basis.stage.vo.StageDevFormVo;
 import com.augurit.aplanmis.front.basis.stage.vo.StageItemFormVo;
 import org.apache.commons.beanutils.BeanComparator;
 import org.slf4j.Logger;
@@ -37,9 +37,9 @@ public class OneFormCommonService {
     /*
     * 获取并联申报的一张表单--表单列表
     * */
-    private List<StageDevFormVo> getListForm4StageOneForm(OneFormStageRequest oneFormStageRequest){
+    public List<FormFrofileVo> getListForm4StageOneForm(OneFormStageRequest oneFormStageRequest){
         // 查询开发表单
-        List<StageDevFormVo> result = new ArrayList<>();
+        List<FormFrofileVo> result = new ArrayList<>();
         int formSortNo=0;
 
         AeaParStagePartform aeaParStagePartform = new AeaParStagePartform();
@@ -52,7 +52,7 @@ public class OneFormCommonService {
             for (AeaParStagePartform parStagePartform : aeaParStagePartformList) {
                 if (StringUtils.isNotBlank(parStagePartform.getStoFormId())) {
                     ActStoForm actStoForm = actStoFormMapper.getActStoFormById(parStagePartform.getStoFormId());
-                    StageDevFormVo stageDevFormVo = new StageDevFormVo();
+                    FormFrofileVo stageDevFormVo = new FormFrofileVo();
                     stageDevFormVo.setFormId(parStagePartform.getStoFormId());
                     stageDevFormVo.setFormName(parStagePartform.getPartformName());
                     if(isSmartForm(actStoForm)){
@@ -77,7 +77,7 @@ public class OneFormCommonService {
         for(SFFormParam item:listSFFormParam4Item){
             if (StringUtils.isNotBlank(item.getFormId())) {
                 ActStoForm actStoForm = actStoFormMapper.getActStoFormById(item.getFormId());
-                StageDevFormVo stageDevFormVo = new StageDevFormVo();
+                FormFrofileVo stageDevFormVo = new FormFrofileVo();
                 stageDevFormVo.setFormId(item.getFormId());
                 stageDevFormVo.setFormName(actStoForm.getFormName());
                 if(isSmartForm(actStoForm)){
@@ -187,7 +187,7 @@ public class OneFormCommonService {
             resultMap.put("sfForm", sfFormResult.getContent());
 
 //            // 查询开发表单
-//            List<StageDevFormVo> stageDevFormList = new ArrayList<>();
+//            List<FormFrofileVo> stageDevFormList = new ArrayList<>();
 //            AeaParStagePartform aeaParStagePartform = new AeaParStagePartform();
 //            aeaParStagePartform.setStageId(oneFormStageRequest.getStageId());
 //            //aeaParStagePartform.setIsSmartForm("0");
@@ -200,7 +200,7 @@ public class OneFormCommonService {
 //                for (AeaParStagePartform parStagePartform : aeaParStagePartformList) {
 //                    if (StringUtils.isNotBlank(parStagePartform.getStoFormId())) {
 //                        ActStoForm actStoForm = actStoFormMapper.getActStoFormById(parStagePartform.getStoFormId());
-//                        StageDevFormVo stageDevFormVo = new StageDevFormVo();
+//                        FormFrofileVo stageDevFormVo = new FormFrofileVo();
 //                        stageDevFormVo.setFormId(parStagePartform.getStoFormId());
 //                        stageDevFormVo.setFormName(parStagePartform.getPartformName());
 //                        stageDevFormVo.setFormUrl(actStoForm.getFormLoadUrl().replace("{projInfoId}", "projInfoId=" + projInfoId));
