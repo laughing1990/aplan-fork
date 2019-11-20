@@ -280,8 +280,8 @@ var module1 = new Vue({
 			serviceDetail: {}, // 中介服务对应详细信息
 			stateList: [], // 情形选中列表
 			attachmentUrl: ctx + 'supermarket/purchase/mat/uploadPurchaseAtt', // 附加上传url
-			detailedID1: '', // 附件1多文件上传所需id
-			detailedID2: '', // 附件2多文件上传所需id
+			recordId1: '', // 附件1多文件上传所需id
+			recordId2: '', // 附件2多文件上传所需id
 		}
 	},
 	methods: {
@@ -1028,7 +1028,7 @@ var module1 = new Vue({
 				formData.append('officialRemarkFile', u.file);
 			})
 			// formData.append('officialRemarkFile', file.file);
-			formData.append('detailedID', vm.detailedID1);
+			formData.append('recordId', vm.recordId1);
 
 			$.ajax({
 				type: "POST",
@@ -1041,7 +1041,7 @@ var module1 = new Vue({
 				success: function (res) {  //请求成功后的回调函数
 					vm.loading = false;
 					if (res.success) {
-						vm.detailedID1 = res.content.detailId;
+						vm.recordId1 = res.content.recordId;
 						vm.formData1 = res.content.attForms;
 						vm.$message({ message: '上传成功', type: 'success' });
 					} else {
@@ -1081,7 +1081,7 @@ var module1 = new Vue({
 				formData.append('requireExplainFile', u.file);
 			})
 			// formData.append('officialRemarkFile', file.file);
-			formData.append('detailedID', vm.detailedID2);
+			formData.append('recordId', vm.recordId2);
 
 			$.ajax({
 				type: "POST",
@@ -1094,10 +1094,9 @@ var module1 = new Vue({
 				success: function (res) {  //请求成功后的回调函数
 					vm.loading = false;
 					if (res.success) {
-						vm.detailedID2 = res.content.detailId;
+						vm.recordId2 = res.content.recordId;
 						vm.formData2 = res.content.attForms;
 						vm.$message({ message: '上传成功', type: 'success' });
-						console.log('id', vm.detailedID);
 					} else {
 						vm.$message({ message: res.message, type: 'error' });
 					}

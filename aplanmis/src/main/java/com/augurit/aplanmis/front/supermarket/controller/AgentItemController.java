@@ -58,6 +58,15 @@ public class AgentItemController {
         }
     }
 
+    @GetMapping("/att/batch/delete")
+    @ApiOperation(value = "单个或批量删除 批文文件或者要求说明文件")
+    @ApiImplicitParams({@ApiImplicitParam(name = "recordId", value = "附件关联ID", required = true)
+            , @ApiImplicitParam(name = "recordIds", value = "附件ID，多个用英文,拼接", required = true)}
+    )
+    public ResultForm attBatchDelte(String recordId, String detailIds) throws Exception {
+        UploadResult result = aeaImProjPurchaseService.batchDelete(recordId, detailIds);
+        return new ContentResultForm<>(true, result);
+    }
 
     @ApiOperation(value = "获取自动生成的项目编码", notes = "获取自动生成的项目编码")
     @PostMapping(value = "/getAutoProjCode")
