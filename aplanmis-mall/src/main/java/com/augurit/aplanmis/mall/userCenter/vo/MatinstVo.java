@@ -59,5 +59,27 @@ public class MatinstVo implements Serializable {
     @ApiModelProperty(value = "应收复印件数")
     private Long dueCopyCount;
 
+    @ApiModelProperty(value = "材料性质，m表示普通材料，c表示证照材料，f表示在线表单")
+    private String matProp;
 
+    @ApiModelProperty(value = "证照实例id")
+    private String certinstId;
+
+    @ApiModelProperty(value = "表单实例id")
+    private String forminstId;
+
+    @ApiModelProperty(value = "业主个人ID")
+    private String linkmanInfoId;
+
+    private List<BscAttFileAndDir> certFileList;//证照电子附件
+
+    private String certinstSource;//证照来源：local 表示当前系统创建的证照实例,external 表示外部系统对接的证照实例
+
+    private String itemVerIds;
+
+    private String certMatinstId;
+
+    private String certId;
+
+    private String matCode;
 }
