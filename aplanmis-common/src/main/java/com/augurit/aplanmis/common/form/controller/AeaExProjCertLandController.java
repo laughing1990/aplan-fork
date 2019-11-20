@@ -1,4 +1,4 @@
-package com.augurit.aplanmis.front.form.controller;
+package com.augurit.aplanmis.common.form.controller;
 
 
 import com.augurit.agcloud.bsc.sc.dic.code.service.BscDicCodeService;
@@ -13,7 +13,7 @@ import com.augurit.aplanmis.common.service.form.AeaExProjCertProjectService;
 import com.augurit.aplanmis.common.service.form.AeaExProjSiteService;
 import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
 import com.augurit.aplanmis.common.vo.AeaCertiVo;
-import com.augurit.aplanmis.front.form.service.AeaExProjCertBuildService;
+import com.augurit.aplanmis.common.form.service.AeaExProjCertBuildService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

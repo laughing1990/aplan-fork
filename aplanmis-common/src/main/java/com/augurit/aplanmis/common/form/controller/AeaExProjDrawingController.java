@@ -1,4 +1,4 @@
-package com.augurit.aplanmis.front.form.controller;
+package com.augurit.aplanmis.common.form.controller;
 
 
 import com.alibaba.fastjson.JSONObject;
@@ -14,8 +14,9 @@ import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
 import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
 import com.augurit.aplanmis.common.vo.AeaProjDrawing;
 import com.augurit.aplanmis.common.vo.AeaProjDrawingVo;
-import com.augurit.aplanmis.front.form.service.AeaExProjCertBuildService;
-import com.augurit.aplanmis.front.subject.linkman.serivce.RestLinkmanService;
+import com.augurit.aplanmis.common.form.service.AeaExProjCertBuildService;
+
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,8 +52,6 @@ public class AeaExProjDrawingController {
     @Autowired
     private AeaProjDrawingSerivce aeaProjDrawingSerivce;
 
-    @Autowired
-    private RestLinkmanService restLinkmanService;
 
     @Autowired
     private AeaProjInfoService aeaProjInfoService;

@@ -1,4 +1,4 @@
-package com.augurit.aplanmis.front.form.service;
+package com.augurit.aplanmis.common.form.service;
 
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.aplanmis.common.domain.AeaExProjBuild;
@@ -6,10 +6,7 @@ import com.augurit.aplanmis.common.domain.AeaExProjCertBuild;
 import com.augurit.aplanmis.common.domain.AeaExProjContract;
 import com.augurit.aplanmis.common.vo.AeaCertiVo;
 import com.augurit.aplanmis.common.vo.AeaProjDrawingVo;
-import com.augurit.aplanmis.front.form.vo.ExProjFormVo;
-import org.springframework.stereotype.Service;
-
-import java.util.Map;
+import com.augurit.aplanmis.common.form.vo.ExProjFormVo;
 
 public interface AeaExProjCertBuildService {
     //同步建设项目登记表数据到aea_ex_proj_cert_build表上

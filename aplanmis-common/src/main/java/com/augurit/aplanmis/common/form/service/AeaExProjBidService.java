@@ -1,7 +1,7 @@
-package com.augurit.aplanmis.front.form.service;
+package com.augurit.aplanmis.common.form.service;
 
 import com.augurit.aplanmis.common.domain.*;
-import com.augurit.aplanmis.front.form.vo.AeaExProjBidVo;
+import com.augurit.aplanmis.common.form.vo.AeaExProjBidVo;
 
 import java.util.List;
 

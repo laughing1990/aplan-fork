@@ -1,7 +1,7 @@
-package com.augurit.aplanmis.front.form.service;
+package com.augurit.aplanmis.common.form.service;
 
 import com.augurit.agcloud.framework.ui.result.ResultForm;
-import com.augurit.aplanmis.front.form.vo.ExProjFormVo;
+import com.augurit.aplanmis.common.form.vo.ExProjFormVo;
 
 public interface RestExProjFormService {
 

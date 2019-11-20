@@ -1,4 +1,4 @@
-package com.augurit.aplanmis.front.form.vo;
+package com.augurit.aplanmis.common.form.vo;
 
 import com.augurit.agcloud.bsc.util.UuidUtil;
 import com.augurit.agcloud.framework.security.SecurityContext;

@@ -1,12 +1,12 @@
-package com.augurit.aplanmis.front.form.controller;
+package com.augurit.aplanmis.common.form.controller;
 
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.aplanmis.common.constants.GDUnitType;
 import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
-import com.augurit.aplanmis.front.form.service.AeaExProjBidService;
-import com.augurit.aplanmis.front.form.vo.AeaExProjBidVo;
+import com.augurit.aplanmis.common.form.service.AeaExProjBidService;
+import com.augurit.aplanmis.common.form.vo.AeaExProjBidVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;

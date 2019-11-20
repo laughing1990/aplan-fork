@@ -1,25 +1,19 @@
-package com.augurit.aplanmis.front.form.controller;
+package com.augurit.aplanmis.common.form.controller;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
-import com.augurit.aplanmis.admin.market.qual.service.AeaImQualLevelService;
+//import com.augurit.aplanmis.admin.market.qual.service.AeaImQualLevelService;
 import com.augurit.aplanmis.common.domain.*;
+import com.augurit.aplanmis.common.mapper.AeaImQualLevelMapper;
 import com.augurit.aplanmis.common.mapper.AeaProjInfoMapper;
 import com.augurit.aplanmis.common.mapper.AeaUnitProjLinkmanMapper;
 import com.augurit.aplanmis.common.service.linkman.AeaLinkmanInfoService;
 import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
-import com.augurit.aplanmis.front.form.service.AeaExProjCertBuildService;
-import com.augurit.aplanmis.front.form.service.RestExSJUnitFormService;
-import com.augurit.aplanmis.front.subject.unit.vo.UnitVo;
+import com.augurit.aplanmis.common.form.service.AeaExProjCertBuildService;
+import com.augurit.aplanmis.common.form.service.RestExSJUnitFormService;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.validator.internal.util.privilegedactions.GetDeclaredConstructors;
-import org.hibernate.validator.internal.util.privilegedactions.NewInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -35,7 +29,7 @@ public class RestExSJUnitFormController {
     @Autowired
     private AeaUnitProjLinkmanMapper aeaUnitProjLinkmanMapper;
     @Autowired
-    private AeaImQualLevelService aeaImQualLevelService;
+    private AeaImQualLevelMapper aeaImQualLevelMapper;
     @Autowired
     private RestExSJUnitFormService restExSJUnitFormService;
     @Autowired
@@ -102,12 +96,12 @@ public class RestExSJUnitFormController {
     public ContentResultForm<Set<AeaImQualLevel>> listQualLevel(String parentQualLevelId) throws Exception {
         AeaImQualLevel aeaImQualLevel = new AeaImQualLevel();
         aeaImQualLevel.setParentQualLevelId(parentQualLevelId);
-        List<AeaImQualLevel> aeaImQualLevels = aeaImQualLevelService.listAeaImQualLevel(aeaImQualLevel);
+        List<AeaImQualLevel> aeaImQualLevels = aeaImQualLevelMapper.listAeaImQualLevel(aeaImQualLevel);
         Set<AeaImQualLevel> collect = null;
         if(aeaImQualLevels.size() > 0 || aeaImQualLevels != null){
             AeaImQualLevel query = new AeaImQualLevel();
             query.setQualLevelId(aeaImQualLevels.get(0).getQualLevelId());
-            collect = aeaImQualLevelService.listAeaImQualLevel(query).stream().collect(Collectors.toSet());
+            collect = aeaImQualLevelMapper.listAeaImQualLevel(query).stream().collect(Collectors.toSet());
         }
         return new ContentResultForm<>(true, collect, "Query success");
     }

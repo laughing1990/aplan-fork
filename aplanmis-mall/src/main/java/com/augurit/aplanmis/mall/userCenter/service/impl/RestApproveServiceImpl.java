@@ -375,7 +375,7 @@ public class RestApproveServiceImpl implements RestApproveService {
             draftNum=this.searchApproveProjInfoListByUnitOrLinkman("",loginInfo.getUserId(),"2",null,1,1).getTotal();
             supplyNum=this.searchSupplyInfoList("",loginInfo.getUserId(),1,1,"").getTotal();
             applyNum=aeaHiIteminstService.countApproveProjInfoListByUnitOrLinkman("",loginInfo.getUserId());
-            myMatNum=restMyMatService.getMyMatListByUser("",loginInfo.getUserId(),null,1,1).getTotal();
+            //myMatNum=restMyMatService.getMyMatListByUser("",loginInfo.getUserId(),null,1,1).getTotal();
             withdrawNum = this.searchWithdrawApplyListByUnitOrLinkman("",loginInfo.getUserId(),null,1,1).getTotal();
         }else if(StringUtils.isNotBlank(loginInfo.getUserId())){//委托人
             matCompletionNum =this.searchMatComplet(loginInfo.getUnitId(),loginInfo.getUserId(),"",1,1).getTotal();
@@ -383,7 +383,7 @@ public class RestApproveServiceImpl implements RestApproveService {
             draftNum=this.searchApproveProjInfoListByUnitOrLinkman(loginInfo.getUnitId(),loginInfo.getUserId(),"2",null,1,1).getTotal();
             supplyNum=this.searchSupplyInfoList(loginInfo.getUnitId(),loginInfo.getUserId(),1,1,"").getTotal();
             applyNum=aeaHiIteminstService.countApproveProjInfoListByUnitOrLinkman(loginInfo.getUnitId(),loginInfo.getUserId());
-            myMatNum=restMyMatService.getMyMatListByUser(loginInfo.getUnitId(),loginInfo.getUserId(),null,1,1).getTotal();
+            //myMatNum=restMyMatService.getMyMatListByUser(loginInfo.getUnitId(),loginInfo.getUserId(),null,1,1).getTotal();
             withdrawNum = this.searchWithdrawApplyListByUnitOrLinkman("",loginInfo.getUserId(),null,1,1).getTotal();
         }else{//企业
             matCompletionNum =this.searchMatComplet(loginInfo.getUnitId(),"","",1,1).getTotal();
@@ -391,7 +391,7 @@ public class RestApproveServiceImpl implements RestApproveService {
             draftNum=this.searchApproveProjInfoListByUnitOrLinkman(loginInfo.getUnitId(),"","2",null,1,1).getTotal();
             supplyNum=this.searchSupplyInfoList(loginInfo.getUnitId(),"",1,1,"").getTotal();
             applyNum=aeaHiIteminstService.countApproveProjInfoListByUnitOrLinkman(loginInfo.getUnitId(),"");
-            myMatNum=restMyMatService.getMyMatListByUser(loginInfo.getUnitId(),"",null,1,1).getTotal();
+            //myMatNum=restMyMatService.getMyMatListByUser(loginInfo.getUnitId(),"",null,1,1).getTotal();
             withdrawNum = this.searchWithdrawApplyListByUnitOrLinkman(loginInfo.getUnitId(),"",null,1,1).getTotal();
         }
         retVo.setApplyNum(applyNum);

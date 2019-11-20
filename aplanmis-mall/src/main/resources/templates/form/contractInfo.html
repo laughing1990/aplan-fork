@@ -1,0 +1,96 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>合同信息</title>
+  <link rel="stylesheet" href="../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.css" th:href="@{/agcloud/framework/js-lib/element-2/element.css}" />
+  <link rel="stylesheet" href="../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css" th:href="@{/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css}">
+  <link rel="stylesheet" href="../../static/form/css/contractInfo.css" th:href="@{/form/css/contractInfo.css}">
+  <script>
+    var ctx = '[[@{/}]]';
+    var projInfoId= '[[${projInfoId}]]'; 
+  // var ctx = 'http://192.168.32.48:8083/aplanmis-front/';
+  // var ctx = 'http://192.168.15.26:8083/aplanmis-front/';
+  </script>
+</head>
+
+<body>
+  <div class='loading' v-if="pageLoading">
+    <div class="tips">
+      <i class="el-icon-loading"></i>
+      <p>请稍后</p>
+    </div>
+  </div>
+  <div id="app" v-cloak>
+    <el-collapse v-model="activeNames">
+      <!--  基本信息  start  -->
+      <el-collapse-item class="clearfix" name="1" id="baseInfo">
+        <template slot="title">
+          <i class="header-icon icon ag ag-project-info"></i>合同信息
+        </template>
+        <el-form label-width="210px" :model="formData" ref="form" :rules="rules">
+          <el-form-item prop="" v-show='false'>
+            <el-input v-model="formData.contractId"></el-input>
+          </el-form-item>
+          <div class="clearfix">
+            <el-form-item class="input-inline" prop="provinceProjCode" label="省级项目编号">
+              <el-input v-model="formData.provinceProjCode" placeholder="请输入省级项目编号"></el-input>
+            </el-form-item>
+            <el-form-item class="input-inline" prop="contractCode" label='合同编号'>
+              <el-input v-model="formData.contractCode" placeholder="请输入合同编号"></el-input>
+            </el-form-item>
+          </div>
+          <div class="clearfix">
+            <el-form-item class="input-inline" label="合同类别" prop="contractType">
+              <el-select v-model="formData.contractType" placeholder="请选择合同类别" @change="forceUpdate">
+                <el-option :label="item.itemName" :value="item.itemCode" v-for="item in fieldType"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item class="input-inline" label="合同金额" prop="contractMoeny">
+              <el-input v-model="formData.contractMoeny" placeholder="请输入合同金额" class="input-with-select">
+                <el-select slot="append" placeholder="请选择" v-model='moneyType'>
+                  <el-option label="万元" value="万元"></el-option>
+                </el-select>
+              </el-input>
+            </el-form-item>
+          </div>
+          <div class="clearfix">
+            <el-form-item class="input-inline" label="合同签订日期" prop="contractSignTime">
+              <el-date-picker v-model="formData.contractSignTime" type="date" placeholder="请选择合同签订日期">
+            </el-form-item>
+            <!-- <el-form-item class="input-inline" label="合同确认时间" prop="contractConfirmTime">
+              <el-date-picker v-model="formData.contractConfirmTime" type="date" placeholder="请选择合同确认时间">
+            </el-form-item> -->
+          </div>
+          <!-- <div class="clearfix">
+  <el-form-item class="input-inline" label="合同确认的行政单位机构代码" prop="govOrgCode">
+    <el-input v-model="formData.govOrgCode" placeholder="请输入合同确认的行政单位机构代码"></el-input>
+  </el-form-item>
+  <el-form-item class="input-inline" label="合同确认的行政单位名称" prop="govOrgName">
+    <el-input v-model="formData.govOrgName" placeholder="请输入合同确认的行政单位名称"></el-input>
+  </el-form-item>
+</div>
+<div class="clearfix">
+  <el-form-item class="input-inline" label="合同确认的行政单位区域码" prop="govOrgAreaCode">
+    <el-select v-model="formData.govOrgAreaCode" placeholder="请选择合同确认的行政单位区域码" @change="forceUpdate">
+      <el-option :label="item.regionName" :value="item.regionNum" :key='item.regionId' v-for="item in region"></el-option>
+    </el-select>
+  </el-form-item>
+</div> -->
+        </el-form>
+        <div class="right-bottom-btn">
+          <el-button type="primary" class="save-jinbanUnit-info" icon="el-icon-wallet" @click="save">保存</el-button>
+        </div>
+      </el-collapse-item>
+    </el-collapse>
+  </div>
+  <script src="../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js" th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>
+  <script src="../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js" th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>
+  <script src="../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js" th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>
+  <script src="../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js" th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>
+  <script type="text/javascript" src="../../static/form/js/contractInfo.js" th:src="@{/form/js/contractInfo.js}"></script>
+</body>
+
+</html>

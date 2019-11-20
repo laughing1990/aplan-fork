@@ -1,4 +1,4 @@
-package com.augurit.aplanmis.front.form.service;
+package com.augurit.aplanmis.common.form.service;
 
 import com.alibaba.fastjson.JSON;
 import com.augurit.agcloud.bsc.util.UuidUtil;

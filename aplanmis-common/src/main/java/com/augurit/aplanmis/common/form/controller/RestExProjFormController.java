@@ -1,10 +1,10 @@
-package com.augurit.aplanmis.front.form.controller;
+package com.augurit.aplanmis.common.form.controller;
 
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.agcloud.framework.util.StringUtils;
-import com.augurit.aplanmis.front.form.service.RestExProjFormService;
-import com.augurit.aplanmis.front.form.vo.ExProjFormVo;
+import com.augurit.aplanmis.common.form.service.RestExProjFormService;
+import com.augurit.aplanmis.common.form.vo.ExProjFormVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;

@@ -1,4 +1,4 @@
-package com.augurit.aplanmis.front.form.vo;
+package com.augurit.aplanmis.common.form.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;

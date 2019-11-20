@@ -1,10 +1,9 @@
-package com.augurit.aplanmis.front.form.controller;
+package com.augurit.aplanmis.common.form.controller;
 
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.aplanmis.common.domain.AeaExProjCertBuild;
-import com.augurit.aplanmis.common.mapper.AeaExProjCertBuildMapper;
-import com.augurit.aplanmis.front.form.service.AeaExProjCertBuildService;
+import com.augurit.aplanmis.common.form.service.AeaExProjCertBuildService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
