@@ -33,4 +33,19 @@ public class AeaParFrontItemform implements Serializable {
     //查询关键字
     private String keyword;
 
+    //表单事项名称
+    private String itemName;
+
+    //表单事项名称
+    private String itemCode;
+
+    //事项名称性质
+    private String isCatalog;
+
+    //表单名称
+    private String formName;
+
+    //表单ID
+    private String subFormId;
+
 }

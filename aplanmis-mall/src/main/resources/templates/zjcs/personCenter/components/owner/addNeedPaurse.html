@@ -805,7 +805,7 @@
 									</el-tooltip>
 								</template>
 							</el-table-column>
-							<el-table-column align="center" label="要点示例" min-width="55">
+							<!-- <el-table-column align="center" label="要点示例" min-width="55">
 								<template slot-scope="scope">
 									<el-popover class="custor" placement="right" width="60" trigger="hover">
 										<p class="notice-pop" @click="showMatFiles(scope.row.matId,'TEMPLATE_DOC')">
@@ -817,7 +817,7 @@
 										<i slot="reference" class="el-icon el-icon-more"></i>
 									</el-popover>
 								</template>
-							</el-table-column>
+							</el-table-column> -->
 							<el-table-column align="center" label="是否容缺" min-width="55">
 								<template slot-scope="scope">
 									<span
@@ -1085,6 +1085,41 @@
 	</el-dialog>
 	<!-- 可指定的中介机构 end-->
 
+	<!--文件上传下载弹窗 start-->
+	<el-dialog v-loading="loadingFileWin" element-loading-text="文件上传中" element-loading-spinner="el-icon-loading"
+		element-loading-background="rgba(0, 0, 0, 0.3)" class="upload-flie-dialog" :title="showUploadWindowTitle"
+		:visible.sync="showUploadWindowFlag" @closed="uploadTableData=[]" width="750px">
+		<div class="upload-file-content">
+			<div class="file-opt-btn" v-if="showUploadWindowBtn">
+				<el-button type="primary" @click="downloadFile()">下载</el-button>
+				<el-upload ref="uploadFileWin" class="upload-s-file" :action="materialUploadUrl" :show-file-list="false"
+					:http-request="debounceHandler" multiple :file-list="fileList">
+					<el-button slot="trigger" size="small" type="primary">上传</el-button>
+				</el-upload>
+				<el-button type="primary" @click="delSelectFileCom()">删除</el-button>
+				<!-- <el-button type="primary" @click="openPhotoWindow(selMatRowData,'lt')">良田拍照</el-button>
+				<el-button type="primary" @click="openPhotoWindow(selMatRowData,'fz')">方正拍照</el-button> -->
+			</div>
+			<el-table :data="uploadTableData" ref="uploadTableData" row-key="fileId" border
+				@selection-change="selectionFileChange">
+				<el-table-column type="selection" align="center" width="55">
+				</el-table-column>
+				<el-table-column prop="fileName" label="文件名"></el-table-column>
+				<el-table-column label="操作" align="center" width="310">
+					<template slot-scope="scope">
+						<el-button type="primary" :loading="loading" size="mini" @click="filePreview(scope.row)">预览
+						</el-button>
+						<el-button type="primary" size="mini" @click="filePreview1(scope.row)">查看源文件</el-button>
+
+						<el-button type="primary" size="mini" :disabled="getFileType(scope.row.fileName)!=='pdf'"
+							@click="filePreview(scope.row,'pdf')">查看施工图</el-button>
+					</template>
+				</el-table-column>
+			</el-table>
+		</div>
+	</el-dialog>
+	<!-- <th:block th:include="common/fz_gaopaiyi :: fzGaoPaiYi" />
+	<th:block th:include="common/lt_gaopaiyi :: ltGaoPaiYi" /> -->
 </div>
 
 <script src="../../../../../static/zjcs/common/js/axios.min.js" th:src="@{/zjcs/common/js/axios.min.js}"
@@ -1289,5 +1324,74 @@
 
 	.text-green {
 		color: #00c161;
+	}
+
+	.el-dialog__header {
+		border: none;
+		height: 44px;
+		line-height: 44px;
+		color: #fff;
+		background: #1C9AFD;
+		padding: 0 15px;
+	}
+
+	.el-dialog__header .el-dialog__title,
+	.el-dialog__headerbtn .el-dialog__close {
+		color: #fff;
+		font-size: 16px;
+	}
+
+	.upload-flie-dialog .file-opt-btn {
+		padding: 0 10px 10px 10px;
+		border-bottom: 1px solid #E0E3E9;
+		margin-bottom: 10px;
+	}
+
+	.upload-flie-dialog .el-button {
+		padding: 9px 20px;
+	}
+
+	.upload-flie-dialog .upload-s-file {
+		display: inline-block;
+		height: 34px;
+		line-height: 34px;
+		margin: 0 10px;
+	}
+
+	.upload-flie-dialog .upload-s-file .el-button {
+		font-size: 14px;
+	}
+
+	/* .mat-children {
+		border-left: 1px solid #dcdfe6;
+	} */
+
+	.file-list-tab {
+		padding: 15px 0 0 60px;
+	}
+
+	.file-list-tab:last-child {
+		padding-bottom: 15px;
+	}
+
+	.file-name .icon {
+		font-size: 24px;
+		vertical-align: middle;
+		color: #FF8800;
+	}
+
+	.file-list-tab:hover .file-name {
+		color: #169AFF;
+	}
+
+	.file-icon-btn span {
+		cursor: pointer;
+		font-size: 18px;
+		padding: 0 3px;
+		color: #169AFF;
+	}
+
+	.file-icon-btn span.el-icon-delete {
+		color: #FF4B47;
 	}
 </style>

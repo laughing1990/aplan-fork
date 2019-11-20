@@ -25,13 +25,11 @@ public interface AeaParFrontItemService {
 
     PageInfo<AeaParFrontItem> listAeaParFrontItemVoByPage(AeaParFrontItem aeaParFrontItem, Page page) throws Exception;
 
-    Long getMaxSortNo(AeaParFrontItem aeaParFrontItem) throws Exception;
+    Long getMaxSortNo(String stageId, String rootOrgId) throws Exception;
 
     AeaParFrontItem getAeaParFrontItemVoByFrontItemId(String frontItemId) throws Exception;
 
     List<AeaParFrontItem> listAeaParFrontItemByStageId(String stageId);
-
-    void batchSaveAeaParFrontItem(String stageId,String itemVerIds)throws Exception;
 
     List<AeaParFrontItem> listAeaParFrontItemVoByNoPage(AeaParFrontItem aeaParFrontItem) throws Exception;
 
@@ -40,5 +38,4 @@ public interface AeaParFrontItemService {
     void batchDelItemByStageId(String stageId, String rootOrgId);
 
     void changIsActive(String id, String rootOrgId);
-
 }

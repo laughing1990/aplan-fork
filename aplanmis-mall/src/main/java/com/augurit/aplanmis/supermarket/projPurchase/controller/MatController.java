@@ -60,7 +60,7 @@ public class MatController {
     }
 
     @ApiOperation(value = "上传事项材料附件-不分情形", tags = "项目采购页-单个matId下的附件上传")
-    @GetMapping("/att/upload")
+    @PostMapping("/att/upload")
     public ResultForm uploadMat(MatUploadVo uploadVo, HttpServletRequest request) throws Exception {
         request.setCharacterEncoding("utf-8");//设置编码，防止附件名称乱码
         AeaHiItemMatinst itemMatinst = new AeaHiItemMatinst();

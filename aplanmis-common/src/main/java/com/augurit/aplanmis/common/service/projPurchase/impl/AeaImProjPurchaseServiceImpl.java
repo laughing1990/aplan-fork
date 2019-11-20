@@ -268,6 +268,7 @@ public class AeaImProjPurchaseServiceImpl implements AeaImProjPurchaseService {
             String[] split = detailIds.split(",");
             fileUtilsService.deleteAttachments(split);
         }
+        if (StringUtils.isBlank(recordId)) return new UploadResult(recordId, new ArrayList<>());
         BscAttLink link = new BscAttLink();
         link.setRecordId(recordId);
 

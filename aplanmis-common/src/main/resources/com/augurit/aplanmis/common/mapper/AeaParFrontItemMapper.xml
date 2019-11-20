@@ -210,6 +210,7 @@
             <include refid="allColumnsAlias">
                 <property name="alias" value="apfi"></property>
             </include>,
+            aib.ITEM_ID itemId,
             aib.ITEM_NAME itemName,
             aib.ITEM_CODE itemCode,
             aib.IS_CATALOG isCatalog
@@ -250,21 +251,21 @@
                 AND apfi.ROOT_ORG_ID = #{rootOrgId}
             </if>
             <if test="keyword!=null and keyword!='' ">
-                AND(aib.ITEM_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%')
-                OR aib.ITEM_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%')
-                OR aib.SSCODE LIKE CONCAT(CONCAT('%',#{keyword}),'%'))
+                AND(
+                      aib.ITEM_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                    OR aib.ITEM_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                    OR aib.SSCODE LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                )
             </if>
         </where>
-
-        order by apfi.SORT_NO
+        order by apfi.SORT_NO asc, apfi.CREATE_TIME asc, apfi.MODIFY_TIME asc
     </select>
 
     <select id="getMaxSortNo" resultType="java.lang.Long">
         select max(SORT_NO) from AEA_PAR_FRONT_ITEM
         <where>
-            <if test="stageId!=null and stageId!=''">
-                and STAGE_ID = #{stageId}
-            </if>
+            and STAGE_ID = #{stageId}
+            and ROOT_ORG_ID = #{rootOrgId}
         </where>
     </select>
 
@@ -288,7 +289,7 @@
     </delete>
 
     <update id="changIsActive">
-        update AEA_ITEM_FRONT_ITEM
+        update AEA_PAR_FRONT_ITEM
         set IS_ACTIVE = case IS_ACTIVE
         when '1' then '0'
         when '0' then '1'
