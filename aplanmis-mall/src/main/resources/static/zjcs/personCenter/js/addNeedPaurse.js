@@ -421,12 +421,12 @@ var module1 = new Vue({
 					});
 					ids = ids.join(",");
 					var params = {
-						witnessName1: vm.form.witnessName1 || '',
-						witnessName2: vm.witnessName2 || '',
-						witnessName3: vm.witnessName3 || '',
-						witnessPhone1: vm.form.witnessPhone1 || '',
-						witnessPhone2: vm.witnessPhone2 || '',
-						witnessPhone3: vm.witnessPhone3 || '',
+						// witnessName1: vm.form.witnessName1 || '',
+						// witnessName2: vm.witnessName2 || '',
+						// witnessName3: vm.witnessName3 || '',
+						// witnessPhone1: vm.form.witnessPhone1 || '',
+						// witnessPhone2: vm.witnessPhone2 || '',
+						// witnessPhone3: vm.witnessPhone3 || '',
 						serviceTimeExplain: vm.form.timeLimitExplain || '',  // 服务时间说明
 						serviceId: vm.form.serviceId || '', // 事项ID
 						serviceItemId: vm.form.serviceItemId || '',// 服务类型和中介服务事项关联ID，多个用,隔开
@@ -528,14 +528,16 @@ var module1 = new Vue({
 				}
 			}
 			if (vm.formData1.length > 0) {
-				vm.formData1.forEach(function (el, index) {
-					formData.append('officialRemarkFile', el);
-				})
+				// vm.formData1.forEach(function (el, index) {
+				// 	formData.append('officialRemarkFile', el);
+				// })
+				formData.append('officialRemarkFile', vm.recordId1);
 			}
 			if (vm.formData2.length > 0) {
-				vm.formData2.forEach(function (el, index) {
-					formData.append('requireExplainFile', el);
-				})
+				// vm.formData2.forEach(function (el, index) {
+				// 	formData.append('requireExplainFile', el);
+				// })
+				formData.append('requireExplainFile', vm.recordId2);
 			}
 			$.ajax({
 				type: "POST",

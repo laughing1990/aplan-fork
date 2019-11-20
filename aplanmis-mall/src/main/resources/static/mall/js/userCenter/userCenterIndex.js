@@ -53,6 +53,11 @@ var userCenter = (function () {
                             name: '申报列表',
                             value: 'declareHave',
                             select: false,
+                        },
+                        {
+                            name: '撤回申报列表',
+                            value: 'withdrawApplyList',
+                            select: false,
                         }/*,
                         {
                             name: '待申报',
@@ -115,6 +120,7 @@ var userCenter = (function () {
                 selectNav:'',
                 approvalNum: 0,
                 matCompletionNum: 0,
+                withdrawNum: 0,
 				draftNum:0,
                 applyNum:0,
                 supplyNum:0,
@@ -174,6 +180,7 @@ var userCenter = (function () {
                     if (res.success) {
                         vm.approvalNum = res.content.approvalNum;
                         vm.matCompletionNum = res.content.matCompletionNum;
+                        vm.withdrawNum = res.content.withdrawNum;
 						vm.draftNum = res.content.draftNum;
                         vm.applyNum = res.content.applyNum;
 						vm.supplyNum = res.content.supplyNum;

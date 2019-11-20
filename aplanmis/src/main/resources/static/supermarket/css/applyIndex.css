@@ -1625,3 +1625,14 @@ textarea {
 .edit-item-detail .upload-card .pjfile-list {
     width: 30%;
 }
+.enclosure-file-box li{
+  position: relative;
+  padding-right: 42px;
+}
+.enclosure-file-box li a{
+  position: absolute;
+  top: 0;
+  right: 0;
+  color: #169AFF;
+  width: 40px;
+}

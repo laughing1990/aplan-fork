@@ -3520,6 +3520,44 @@ var vm = new Vue({
       this.progressDialogVisible = true;
       this.uploadPercentage = +file.percentage.toFixed(0);
     },
+    // 附件-已有列表删除(单个删除)
+    enclosureFileDel: function (file) {
+      var ts = this;
+      confirmMsg('提示信息：', '您确定要删除该文件吗？', function () {
+          var _type = '',
+          _delObj = {};
+        _type = (ts.enclosureFileUploadType === 'officialRemark');
+        _delObj.recordId = _type ? ts.officialRemarkFile : ts.requireExplainFile;
+        _delObj.detailIds = file.detailId;
+        request('', {
+          url: ctx + 'market/att/batch/delete',
+          type: 'get',
+          data: _delObj
+        }, function (res) {
+          if (res.success) {
+            if (_type) {
+              ts.fileList1 = res.content.attForms;
+            } else {
+              ts.fileList2 = res.content.attForms;
+            }
+            ts.$message({
+              message: '删除成功！',
+              type: 'success'
+            })
+          } else {
+            ts.$message({
+              message: res.message,
+              type: 'error'
+            })
+          }
+        }, function (err) {
+          ts.$message({
+            message: '网络错误，删除失败！',
+            type: 'error'
+          })
+        });
+      });
+    },
 	},
 	filters: {
 		changeReceiveType: function (value) {

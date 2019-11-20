@@ -28,6 +28,18 @@ public interface RestApproveService {
     PageInfo<ApproveProjInfoDto> searchApproveProjInfoListByUnitOrLinkman(String unitInfoId, String userInfoId, String state, String keyword, int pageNum, int pageSize) throws Exception;
 
     /**
+     * 根据登录信息查询撤件列表
+     * @param unitInfoId
+     * @param userInfoId
+     * @param keyword
+     * @param pageNum
+     * @param pageSize
+     * @return
+     * @throws Exception
+     */
+    PageInfo<ApproveProjInfoDto> searchWithdrawApplyListByUnitOrLinkman(String unitInfoId, String userInfoId, String keyword, int pageNum, int pageSize) throws Exception;
+
+    /**
      * 根据登录信息查询审批进度数据
      * @param unitInfoId 登录后的单位ID
      * @param userInfoId 登录后的用户ID
