@@ -291,6 +291,23 @@ var module1 = new Vue({
 		}
 	},
 	methods: {
+		// 清空表单填写过的数据
+		resetForm: function() {			
+			this.form = new Object();
+			this.form.isDiscloseIm = '1';
+			this.form.isDiscloseBidding = '1';
+
+			this.isQualRequire = false;
+			this.isRegisterRequire = false;
+			this.isRecordRequire = false;
+			this.promiseService = false;
+
+			this.formData1 = [];
+			this.formData2 = [];
+
+			this.AllFileList = [];
+			this.model.matsTableData = [];
+		},
 		// 获取自动生成的项目编码
 		getAutoProjCode: function () {
 			var vm = this;
@@ -714,9 +731,7 @@ var module1 = new Vue({
 		getProUnitLinkInfoWithoutId: function () {
 			var vm = this;
 			this.biddingTypeChange(this.form.biddingType)
-			vm.form = new Object();
-			vm.form.isDiscloseIm = '1';
-			vm.form.isDiscloseBidding = '1';
+			this.resetForm();
 			request('', {
 				url: ctx + 'supermarket/purchase/getProUnitLinkInfo', type: 'post',
 			}, function (res) {
