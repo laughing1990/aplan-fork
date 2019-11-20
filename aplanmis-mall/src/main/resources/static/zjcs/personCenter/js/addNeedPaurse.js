@@ -529,12 +529,12 @@ var module1 = new Vue({
 			}
 			if (vm.formData1.length > 0) {
 				vm.formData1.forEach(function (el, index) {
-					formData.append('officialRemarkFile', el);
+					formData.append('officialRemarkFile', el.detailId);
 				})
 			}
 			if (vm.formData2.length > 0) {
 				vm.formData2.forEach(function (el, index) {
-					formData.append('requireExplainFile', el);
+					formData.append('requireExplainFile', el.detailId);
 				})
 			}
 			$.ajax({
