@@ -6,7 +6,7 @@
     <div class="modal-dialog modal-dialog-centered  modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header" style="padding: 15px;height: 45px;">
-                <h5 class="modal-title" id="sort_par_front_itemform_modal_title">事项表单信息前置检测排序</h5>
+                <h5 class="modal-title" id="sort_par_front_itemform_modal_title">前置检测事项表单排序</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -19,8 +19,7 @@
                 </div>
             </div>
             <div class="modal-footer" style="padding: 10px;height: 60px;">
-                <button type="button" class="btn btn-secondary"
-                        onclick="$('#sort_par_front_itemform_modal').modal('hide');">关闭</button>
+                <button type="button" class="btn btn-secondary" onclick="$('#sort_par_front_itemform_modal').modal('hide');">关闭</button>
             </div>
         </div>
     </div>

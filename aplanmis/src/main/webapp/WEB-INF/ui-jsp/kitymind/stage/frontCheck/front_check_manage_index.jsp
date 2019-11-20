@@ -284,14 +284,9 @@
                 <div class="m-form m-form--label-align-right m--margin-bottom-5">
                     <div class="row" style="margin: 0px;">
                         <div class="col-md-7"style="text-align: left;">
-                            <button type="button" class="btn btn-info"
-                                    onclick="addParFrontItemform();">新增</button>
-                            <button type="button" class="btn btn-info"
-                                    onclick="batchImprotParFrontItemform();">批量导入</button>
-                            <button type="button" class="btn btn-info"
-                                    onclick="sortParFrontItemform();">排序</button>
-                            <button type="button" class="btn btn-secondary"
-                                    onclick="batchDelParFrontItemform();">删除</button>
+                            <button type="button" class="btn btn-info" onclick="openSelectParFrontItemform();">导入事项表单</button>
+                            <button type="button" class="btn btn-info" onclick="sortParFrontItemform();">排序</button>
+                            <button type="button" class="btn btn-secondary" onclick="batchDelParFrontItemform();">删除</button>
                         </div>
                         <div class="col-md-5" style="padding: 0px;">
                             <div class="row" style="margin: 0px;">
@@ -300,7 +295,7 @@
                                     <form id="search_par_front_itemform" method="post">
                                         <div class="m-input-icon m-input-icon--left">
                                             <input type="text" class="form-control m-input"
-                                                   placeholder="请输入关键字..."  value="" id = "par_front_itemform_keyword"/>
+                                                   placeholder="请输入关键字..."  value="" id="par_front_itemform_keyword"/>
                                             <span class="m-input-icon__icon m-input-icon__icon--left">
                                                 <span><i class="la la-search"></i></span>
                                             </span>
@@ -308,8 +303,8 @@
                                     </form>
                                 </div>
                                 <div class="col-3"  style="text-align: left;">
-                                    <button type="button" class="btn btn-info" id = "par_front_itemform_search_btn">查询</button>
-                                    <button type="button" class="btn btn-secondary" id = "par_front_itemform_clear_btn">清空</button>
+                                    <button type="button" class="btn btn-info" id="par_front_itemform_search_btn">查询</button>
+                                    <button type="button" class="btn btn-secondary" id="par_front_itemform_clear_btn">清空</button>
                                 </div>
                             </div>
                         </div>
@@ -344,7 +339,7 @@
                 <div class="m-form m-form--label-align-right m--margin-bottom-5">
                     <div class="row" style="margin: 0px;">
                         <div class="col-md-7"style="text-align: left;">
-                            <button type="button" class="btn btn-info" onclick="openSelectFrontPartform();">导入扩展表</button>
+                            <button type="button" class="btn btn-info" onclick="openSelectFrontPartform();">导入扩展表单</button>
                             <button type="button" class="btn btn-info" onclick="sortParFrontPartform();">排序</button>
                             <button type="button" class="btn btn-secondary" onclick="batchDelParFrontPartform();">删除</button>
                         </div>

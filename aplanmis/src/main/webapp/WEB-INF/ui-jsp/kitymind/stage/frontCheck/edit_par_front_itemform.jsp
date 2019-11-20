@@ -14,62 +14,42 @@
             </div>
             <form id="edit_par_front_itemform_form" method="post">
                 <div class="modal-body" style="padding: 10px;">
-                    <div id="edit_par_front_itemform_scroll" style="height: 400px;overflow-x: hidden;overflow-y: auto;">
 
-                        <input type="hidden" name="frontItemformId" id="frontItemformId" value=""/>
-                        <input type="hidden" name="stageId" value=""/>
-                        <input type="hidden" name="stageItemId" id="stageItemId" value=""/>
+                    <input type="hidden" name="frontItemformId" value=""/>
+                    <input type="hidden" name="stageId" value=""/>
+                    <input type="hidden" name="stageItemId" value=""/>
+                    <input type="hidden" name="isActive" value=""/>
 
-                        <div class="form-group m-form__group row">
-                            <label class="col-lg-2 col-form-label" style="text-align: right;">
-                                <font color="red">*</font>表单名称:<br/>
-                                <button ${curIsEditable?'':'disabled'} type="button" class="btn btn-info" onclick="openSelectParFrontItemform('stageItemId','itemFormName','formItemName','frontItemformId');" style="margin-top: 10px;" id = "select_par_front_itemform_btn">选择</button>
-                            </label>
-                            <div class="col-lg-9">
-                                <input id="itemFormName" class="form-control" name="formName"  ${curIsEditable?'readonly':'disabled'} />
-                            </div>
+                    <div class="form-group m-form__group row">
+                        <label class="col-lg-2 col-form-label" style="text-align: right;"><font color="red">*</font>事项名称:</label>
+                        <div class="col-lg-10">
+                            <textarea type="text" class="form-control m-input" name="itemName" rows="2" readonly value=""></textarea>
                         </div>
+                    </div>
 
-                        <div class="form-group m-form__group row">
-                            <label class="col-lg-2 col-form-label" style="text-align: right;">
-                                表单所属事项:<br/>
-                            </label>
-                            <div class="col-lg-9">
-                                <input id="formItemName" class="form-control" name="itemName"  ${curIsEditable?'readonly':'disabled'} />
-                            </div>
+                    <div class="form-group m-form__group row">
+                        <label class="col-lg-2 col-form-label" style="text-align: right;"><font color="red">*</font>表单名称:</label>
+                        <div class="col-lg-10">
+                            <textarea type="text" class="form-control m-input" name="formName" rows="2" readonly value=""></textarea>
                         </div>
+                    </div>
 
-                        <div class="form-group m-form__group row">
-
-                            <label class="col-lg-2 col-form-label" style="text-align: right;"><font color="red">*</font>排序:</label>
-                            <div class="col-lg-9">
-                                <input type="text" class="form-control m-input" name="sortNo" value="" ${curIsEditable?'':'disabled'}/>
-                            </div>
+                    <div class="form-group m-form__group row">
+                        <label class="col-lg-2 col-form-label" style="text-align: right;"><font color="red">*</font>排序:</label>
+                        <div class="col-lg-10">
+                            <input type="text" class="form-control m-input" name="sortNo" value="" ${curIsEditable?'':'disabled'}/>
                         </div>
+                    </div>
 
-                        <div class="form-group m-form__group row">
-
-                            <label class="col-lg-2 col-form-label" style="text-align: right;">备注:</label>
-                            <div class="col-lg-9">
-                                <textarea type="text" class="form-control m-input" name="frontItemformMemo" value="" ${curIsEditable?'':'disabled'} ></textarea>
-                            </div>
+                    <div class="form-group m-form__group row">
+                        <label class="col-lg-2 col-form-label" style="text-align: right;">备注:</label>
+                        <div class="col-lg-10">
+                            <textarea type="text" class="form-control m-input" name="frontItemformMemo" rows="4" value="" ${curIsEditable?'':'disabled'} ></textarea>
                         </div>
-
-                        <div class="form-group m-form__group row" >
-
-                            <label class="col-lg-2 col-form-label" style="text-align: right;"><font color="red">*</font>是否启用:</label>
-                            <div class="col-lg-9">
-                                <select type="text" class="form-control" name="isActive" value="" ${curIsEditable?'':'disabled'}>
-                                    <option value="1">是</option>
-                                    <option value="0">否</option>
-                                </select>
-                            </div>
-                        </div>
-
                     </div>
                 </div>
                 <div class="modal-footer" style="padding: 10px;height: 60px;">
-                    <button type="submit" class="btn btn-info" id="saveParFrontItemformBtn">保存</button>
+                    <button type="submit" class="btn btn-info" id="saveParFrontItemformBtn" style="display: ${curIsEditable?'':'none'}">保存</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
                 </div>
             </form>
