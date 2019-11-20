@@ -19,6 +19,8 @@ public class StatisticsNumVo {
     private long supplyNum;//材料补正
     @ApiModelProperty(value = "已审批数目")
     private long approvalNum;//已审批
+    @ApiModelProperty(value = "撤回申报列表数目")
+    private long withdrawNum;//已审批
     @ApiModelProperty(value = "我的材料库")
     private long myMatNum;//我的材料库
 }
