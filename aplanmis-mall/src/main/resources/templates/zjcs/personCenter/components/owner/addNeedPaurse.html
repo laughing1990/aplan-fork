@@ -687,15 +687,15 @@
 							<el-upload class="matterUploadFile" :show-file-list="false" :action="attachmentUrl"
 								:on-preview="handlePreview1" :on-remove="handleRemove1" :before-remove="beforeRemove1"
 								:before-upload="beforeAvatarUpload" :on-change="onchange1" multiple :limit="3"
-								:auto-upload="true" :on-exceed="handleExceed1">
+								:auto-upload="true" :on-exceed="handleExceed1" :http-request="debounceHandler1">
 								<el-button type="primary">上传文件</el-button>
 							</el-upload>
 							<span class="ml-3" slot="tip"
 								style="position: absolute;left: 100px;top: 10px;">上传的附件不可超过10MB，禁止上传以下的附件类型：.exe,.sh,.bat,.com,.dll</span>
 						</div>
 						<ul class="pjfile-list">
-							<li v-for="(item, index) in fileList1" :key="index">
-								{{item.name}}<a class="debtn" href="javascript:;"
+							<li v-for="(item, index) in formData1" :key="index">
+								{{item.attName}}<a class="debtn" href="javascript:;"
 									@click="deluploadImg1(item,index)">删除</a></li>
 							<!-- <li>资质证.jpg<a class="debtn" href="javascript:;">删除</a></li>
 							<li>资质证.jpg<a class="debtn" href="javascript:;">删除</a></li> -->
@@ -708,15 +708,15 @@
 							<el-upload class="matterUploadFile" :action="attachmentUrl" :show-file-list="false"
 								:on-preview="handlePreview2" :on-remove="handleRemove2" :before-upload="beforeUpload2"
 								:before-remove="beforeRemove2" multiple :on-change="onchange2" :limit="10"
-								:auto-upload="false">
+								:auto-upload="true" :http-request="debounceHandler2">
 								<el-button type="primary">上传文件</el-button>
 							</el-upload>
 							<span class="ml-3" slot="tip"
 								style="position: absolute;left: 100px;top: 10px;">上传的附件不可超过10MB，禁止上传以下的附件类型：.exe,.sh,.bat,.com,.dll</span>
 						</div>
 						<ul class="pjfile-list">
-							<li v-for="(item, index) in fileList2" :key="index">
-								{{item.name}}<a class="debtn" href="javascript:;"
+							<li v-for="(item, index) in formData2" :key="index">
+								{{item.attName}}<a class="debtn" href="javascript:;"
 									@click="deluploadImg2(item,index)">删除</a></li>
 							<!-- <li>资质证.jpg<a class="debtn" href="javascript:;">删除</a></li>
 							<li>资质证.jpg<a class="debtn" href="javascript:;">删除</a></li> -->

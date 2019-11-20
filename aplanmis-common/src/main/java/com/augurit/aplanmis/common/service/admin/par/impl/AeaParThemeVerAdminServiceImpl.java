@@ -141,6 +141,21 @@ public class AeaParThemeVerAdminServiceImpl implements AeaParThemeVerAdminServic
     @Autowired
     private BscDicCodeService bscDicCodeService;
 
+    @Autowired
+    private AeaParFrontProjMapper frontProjMapper;
+
+    @Autowired
+    private AeaParFrontItemMapper frontItemMapper;
+
+    @Autowired
+    private AeaParFrontStageMapper frontStageMapper;
+
+    @Autowired
+    private AeaParFrontItemformMapper frontItemformMapper;
+
+    @Autowired
+    private AeaParFrontPartformMapper frontPartformMapper;
+
     @Override
     public void saveAeaParThemeVer(AeaParThemeVer aeaParThemeVer) throws Exception {
 
@@ -346,6 +361,70 @@ public class AeaParThemeVerAdminServiceImpl implements AeaParThemeVerAdminServic
      */
     private void copyPreThemeVerStageFrontCheck(String oldStageId, String newStageId, String rootOrgId){
 
+        // 复制阶段前置项目信息检测
+        AeaParFrontProj sfrontProj = new AeaParFrontProj();
+        sfrontProj.setRootOrgId(rootOrgId);
+        sfrontProj.setStageId(oldStageId);
+        List<AeaParFrontProj> frontProjs = frontProjMapper.listAeaParFrontProj(sfrontProj);
+        if(frontProjs!=null&&frontProjs.size()>0){
+            for(AeaParFrontProj item:frontProjs){
+                item.setFrontProjId(UuidUtil.generateUuid());
+                item.setStageId(newStageId);
+                frontProjMapper.insertAeaParFrontProj(item);
+            }
+        }
+
+        // 复制阶段前置事项信息检测
+        AeaParFrontItem sfrontItem = new AeaParFrontItem();
+        sfrontItem.setRootOrgId(rootOrgId);
+        sfrontItem.setStageId(oldStageId);
+        List<AeaParFrontItem> frontItems = frontItemMapper.listAeaParFrontItem(sfrontItem);
+        if(frontItems!=null&&frontItems.size()>0){
+            for(AeaParFrontItem item:frontItems){
+                item.setFrontItemId(UuidUtil.generateUuid());
+                item.setStageId(newStageId);
+                frontItemMapper.insertAeaParFrontItem(item);
+            }
+        }
+
+        // 复制阶段前置阶段信息检测
+        AeaParFrontStage sfrontStage = new AeaParFrontStage();
+        sfrontStage.setRootOrgId(rootOrgId);
+        sfrontStage.setStageId(oldStageId);
+        List<AeaParFrontStage> frontStages = frontStageMapper.listAeaParFrontStage(sfrontStage);
+        if(frontStages!=null&&frontStages.size()>0){
+            for(AeaParFrontStage item:frontStages){
+                item.setFrontStageId(UuidUtil.generateUuid());
+                item.setStageId(newStageId);
+                frontStageMapper.insertAeaParFrontStage(item);
+            }
+        }
+
+        // 复制阶段前置事项表单信息检测
+        AeaParFrontItemform sfrontItemform = new AeaParFrontItemform();
+        sfrontItemform.setRootOrgId(rootOrgId);
+        sfrontItemform.setStageId(oldStageId);
+        List<AeaParFrontItemform> frontItemforms = frontItemformMapper.listAeaParFrontItemform(sfrontItemform);
+        if(frontItemforms!=null&&frontItemforms.size()>0){
+            for(AeaParFrontItemform item:frontItemforms){
+                item.setFrontItemformId(UuidUtil.generateUuid());
+                item.setStageId(newStageId);
+                frontItemformMapper.insertAeaParFrontItemform(item);
+            }
+        }
+
+        // 复制阶段前置扩展表单信息检测
+        AeaParFrontPartform sfrontPartform = new AeaParFrontPartform();
+        sfrontPartform.setRootOrgId(rootOrgId);
+        sfrontPartform.setStageId(oldStageId);
+        List<AeaParFrontPartform> frontPartforms = frontPartformMapper.listAeaParFrontPartform(sfrontPartform);
+        if(frontPartforms!=null&&frontPartforms.size()>0){
+            for(AeaParFrontPartform item:frontPartforms){
+                item.setFrontPartformId(UuidUtil.generateUuid());
+                item.setStageId(newStageId);
+                frontPartformMapper.insertAeaParFrontPartform(item);
+            }
+        }
     }
 
     /**
@@ -2784,6 +2863,7 @@ public class AeaParThemeVerAdminServiceImpl implements AeaParThemeVerAdminServic
 
 
     private Map getMaxPositionEleByParent(JSONArray cells, String parent, String xy){
+
         Iterator<Object> iterator = cells.iterator();
         int maxPosition = 0;
         Map maxPositionEle = null;
@@ -2792,17 +2872,25 @@ public class AeaParThemeVerAdminServiceImpl implements AeaParThemeVerAdminServic
             Object parentType = next.get("parent");
             if(parentType != null && parentType.equals(parent)){
                 Map position = (Map) next.get("position");
-                if(xy.equals("x")){
-                    int oldX = new BigDecimal(position.get("x").toString()).intValue();
-                    if(oldX > maxPosition){
-                        maxPosition = oldX;
-                        maxPositionEle = next;
-                    }
-                }else{
-                    int oldY = new BigDecimal(position.get("y").toString()).intValue();
-                    if(oldY > maxPosition){
-                        maxPosition = oldY;
-                        maxPositionEle = next;
+                if(position!=null){
+                    if(xy.equals("x")){
+                        Object x = position.get("x");
+                        if(x!=null){
+                            int oldX = new BigDecimal(x.toString()).intValue();
+                            if(oldX > maxPosition){
+                                maxPosition = oldX;
+                                maxPositionEle = next;
+                            }
+                        }
+                    }else{
+                        Object y = position.get("y");
+                        if(y!=null){
+                            int oldY = new BigDecimal(y.toString()).intValue();
+                            if(oldY > maxPosition){
+                                maxPosition = oldY;
+                                maxPositionEle = next;
+                            }
+                        }
                     }
                 }
             }
@@ -2810,7 +2898,9 @@ public class AeaParThemeVerAdminServiceImpl implements AeaParThemeVerAdminServic
         return maxPositionEle;
     }
 
+    @Override
     public void updateThemeVerDiagramStage(AeaParStage aeaParStage){
+
         Map<String, Object> map = getAeaParThemeVerAndCells(aeaParStage);
         Object object = null;
         object = map.get("cells");
@@ -2934,7 +3024,7 @@ public class AeaParThemeVerAdminServiceImpl implements AeaParThemeVerAdminServic
 
     /**
      * 新增阶段
-     * 原来有全景流程图则新增阶段，否则不新增
+     * 原来有全景图则新增阶段，否则不新增
      * 思路step1：克隆最后一个阶段，0 设置stageid, 1.清除embeds, 2.更新stageInfo、stageName,  3.清楚辅线 4.处理位置
      * step2:装饰性元素位移
      * @param aeaParStage
@@ -3201,11 +3291,39 @@ public class AeaParThemeVerAdminServiceImpl implements AeaParThemeVerAdminServic
     private Map getPosiOrSize(Map ele, String type){
         return (Map) ele.get(type);
     }
+
     private int getPosi(Map ele, String xy){
-        return (int) ((Map) ele.get("position")).get(xy);
+
+        Object position = ele.get("position");
+        if(position!=null){
+            Object xyObj = ((Map)position).get(xy);
+            if(xyObj!=null){
+                if(xyObj instanceof BigDecimal){
+                    return ((BigDecimal)xyObj).intValue();
+                }else if(xyObj instanceof Integer){
+                    return ((Integer)xyObj).intValue();
+                }
+            }
+        }
+        return -1;
+//        return ((BigDecimal) ((Map) ele.get("position")).get(xy)).intValue();
     }
+
     private int getSize(Map ele, String xy){
-        return (int) ((Map) ele.get("size")).get(xy.equals("x")?"width":"height");
+
+        Object size = ele.get("size");
+        if(size!=null){
+            Object xyObj = ((Map)size).get(xy.equals("x")?"width":"height");
+            if(xyObj!=null){
+                if(xyObj instanceof BigDecimal){
+                    return ((BigDecimal)xyObj).intValue();
+                }else if(xyObj instanceof Integer){
+                    return ((Integer)xyObj).intValue();
+                }
+            }
+        }
+        return -1;
+//        return ((BigDecimal) ((Map) ele.get("size")).get(xy.equals("x")?"width":"height")).intValue();
     }
 
     /**
@@ -3411,7 +3529,8 @@ public class AeaParThemeVerAdminServiceImpl implements AeaParThemeVerAdminServic
                 }
 
             }else if(stage.getIsNode().equals("1")){
-                if(isOptionItem.equals("0")){ //并联
+                //并联
+                if(isOptionItem.equals("0")){
                     oldMaxPool = parentPool;
                     startY = getEleYPlusHeight(oldMaxPool);
                     ajustEles = needAjustPosiEles(cells, parentPool);
@@ -3419,7 +3538,8 @@ public class AeaParThemeVerAdminServiceImpl implements AeaParThemeVerAdminServic
                     if(activity != null){
                         modalActi.putAll(activity);
                     }
-                }else if(isOptionItem.equals("1")){ //并行
+                //并行
+                }else if(isOptionItem.equals("1")){
 
                     Map parallelPool = getParallelPoolByStageId(cells, stage.getStageId());
                     if(parallelPool != null){

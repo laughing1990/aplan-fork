@@ -207,7 +207,7 @@ public class RestProjectController {
             }else{
                 errorMsg = "未查找到相关的项目或未绑定主题！";
                 modelAndView.addObject("errorMsg", errorMsg);
-                log.warn("根据申报实例展示全景流程图失败, projInfoId: {}", projInfoId);
+                log.warn("根据申报实例展示全景图失败, projInfoId: {}", projInfoId);
                 return modelAndView;
             }
         }catch (Exception e){
@@ -249,7 +249,7 @@ public class RestProjectController {
     }
 
     @GetMapping("/diagram/status/projInfo")
-    @ApiOperation("页面-全景流程图")
+    @ApiOperation("页面-全景图")
     public ModelAndView stageApplyIndex() {
         return new ModelAndView("flowChart/rappidProjView");
     }
@@ -264,7 +264,7 @@ public class RestProjectController {
             DiagramStatusDto globalDiagramStatus = diagramService.getGlobalDiagramStatus(projInfoId, aeaProjInfo.getThemeId());
             statusList = globalDiagramStatus.getDiagramStageStatusList();
         }
-        log.warn("根据申报实例展示全景流程图失败, projInfoId: {}", projInfoId);
+        log.warn("根据申报实例展示全景图失败, projInfoId: {}", projInfoId);
         return new ContentResultForm<>(true, statusList, "项目全景图阶段状态数据");
     }
 

@@ -1,6 +1,8 @@
 package com.augurit.aplanmis.common.service.projPurchase.impl;
 
-import com.augurit.agcloud.bsc.util.UuidUtil;
+import com.augurit.agcloud.bsc.domain.BscAttForm;
+import com.augurit.agcloud.bsc.domain.BscAttLink;
+import com.augurit.agcloud.bsc.mapper.BscAttMapper;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.constants.DeletedStatus;
@@ -9,10 +11,7 @@ import com.augurit.aplanmis.common.mapper.*;
 import com.augurit.aplanmis.common.service.file.FileUtilsService;
 import com.augurit.aplanmis.common.service.projPurchase.AeaImProjPurchaseService;
 import com.augurit.aplanmis.common.utils.BusinessUtils;
-import com.augurit.aplanmis.common.vo.AeaImQualVo;
-import com.augurit.aplanmis.common.vo.AeaImServiceVo;
-import com.augurit.aplanmis.common.vo.AgentUnitInfoVo;
-import com.augurit.aplanmis.common.vo.QueryAgentUnitInfoVo;
+import com.augurit.aplanmis.common.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -54,7 +53,8 @@ public class AeaImProjPurchaseServiceImpl implements AeaImProjPurchaseService {
     private AeaImServiceMajorMapper aeaImServiceMajorMapper;
     @Autowired
     private FileUtilsService fileUtilsService;
-
+    @Autowired
+    private BscAttMapper bscAttMapper;
     @Value("${dg.sso.access.platform.org.top-org-id}")
     protected String topOrgId;
 
@@ -169,29 +169,42 @@ public class AeaImProjPurchaseServiceImpl implements AeaImProjPurchaseService {
     }
 
     @Override
-    public String uploadFiles(HttpServletRequest request) throws Exception {
+    public UploadResult uploadFiles(HttpServletRequest request, String detailId) throws Exception {
+        if (StringUtils.isBlank(detailId)) {
+            detailId = UUID.randomUUID().toString();
+        }
 
-//        Boolean uploadFlag = false;
-        String resultRecordId = "";
-        AeaImProjPurchase aeaImProjPurchase = new AeaImProjPurchase();
+        /*StandardMultipartHttpServletRequest req = (StandardMultipartHttpServletRequest) request;
+        List<MultipartFile> officialRemarkFiles = req.getFiles("officialRemarkFile");
+        List<BscAttForm> bscAttForms = new ArrayList<>();
+        if (officialRemarkFiles != null && !officialRemarkFiles.isEmpty()) {
+            fileUtilsService.uploadAttachments("AEA_IM_PROJ_PURCHASE", "OFFICIAL_REMARK_FILE", detailId, officialRemarkFiles);
+            bscAttForms.addAll(fileUtilsService.getAttachmentsByRecordId(new String[]{detailId}, "AEA_IM_PROJ_PURCHASE", "OFFICIAL_REMARK_FILE"));
+        }
+        List<MultipartFile> requireExplainFiles = req.getFiles("requireExplainFile");
+        if (requireExplainFiles != null && !requireExplainFiles.isEmpty()) {
+            fileUtilsService.uploadAttachments("AEA_IM_PROJ_PURCHASE", "REQUIRE_EXPLAIN_FILE", detailId, requireExplainFiles);
+            bscAttForms.addAll(fileUtilsService.getAttachmentsByRecordId(new String[]{detailId}, "AEA_IM_PROJ_PURCHASE", "REQUIRE_EXPLAIN_FILE"));
+        }*/
+
+        List<BscAttForm> bscAttForms = new ArrayList<>();
         if (request instanceof StandardMultipartHttpServletRequest) {
             StandardMultipartHttpServletRequest req = (StandardMultipartHttpServletRequest) request;
-            String recordId = UuidUtil.generateUuid();
             /***要求说明文件***/
             List<MultipartFile> requireExplainFiles = req.getFiles("requireExplainFile");
             if (requireExplainFiles != null && !requireExplainFiles.isEmpty()) {
-                fileUtilsService.uploadAttachments("AEA_IM_PROJ_PURCHASE", "REQUIRE_EXPLAIN_FILE", recordId, requireExplainFiles);
+                fileUtilsService.uploadAttachments("AEA_IM_PROJ_PURCHASE", "REQUIRE_EXPLAIN_FILE", detailId, requireExplainFiles);
+                bscAttForms.addAll(fileUtilsService.getAttachmentsByRecordId(new String[]{detailId}, "AEA_IM_PROJ_PURCHASE", "REQUIRE_EXPLAIN_FILE"));
             }
             /***批文文件***/
             List<MultipartFile> officialRemarkFiles = req.getFiles("officialRemarkFile");
             if (officialRemarkFiles != null && !officialRemarkFiles.isEmpty()) {
-//                uploadFlag = FileUtils.uploadFile("AEA_IM_PROJ_PURCHASE", "OFFICIAL_REMARK_FILE", recordId, officialRemarkFiles);
-                fileUtilsService.uploadAttachments("AEA_IM_PROJ_PURCHASE", "OFFICIAL_REMARK_FILE", recordId, officialRemarkFiles);
+                fileUtilsService.uploadAttachments("AEA_IM_PROJ_PURCHASE", "OFFICIAL_REMARK_FILE", detailId, officialRemarkFiles);
+                bscAttForms.addAll(fileUtilsService.getAttachmentsByRecordId(new String[]{detailId}, "AEA_IM_PROJ_PURCHASE", "OFFICIAL_REMARK_FILE"));
             }
-            resultRecordId = recordId;
         }
-
-        return resultRecordId;
+        UploadResult result = new UploadResult(detailId, bscAttForms);
+        return result;
     }
 
     public List<AgentUnitInfoVo> getAgentUnitInfoList(QueryAgentUnitInfoVo queryAgentUnitInfo) throws Exception {
@@ -240,6 +253,32 @@ public class AeaImProjPurchaseServiceImpl implements AeaImProjPurchaseService {
         computeServiceEvaluation(agentUnitInfoVos, serviceId);
 
         return agentUnitInfoVos;
+    }
+
+    /**
+     * 单个或批量删除
+     *
+     * @param recordId  关联id
+     * @param detailIds 附件ID
+     */
+    @Override
+    public UploadResult batchDelete(String recordId, String detailIds) throws Exception {
+
+        if (StringUtils.isNotBlank(detailIds)) {
+            String[] split = detailIds.split(",");
+            fileUtilsService.deleteAttachments(split);
+        }
+        BscAttLink link = new BscAttLink();
+        link.setRecordId(recordId);
+
+        List<BscAttLink> bscAttLinks = bscAttMapper.listBscAttLink(link);
+        if (!bscAttLinks.isEmpty()) {
+            BscAttLink attLink = bscAttLinks.get(0);
+            List<BscAttForm> attachments = fileUtilsService.getAttachmentsByRecordId(recordId.split(","), attLink.getPkName(), attLink.getTableName());
+            return new UploadResult(recordId, attachments);
+        }
+
+        return new UploadResult(recordId, new ArrayList<>());
     }
 
     /**

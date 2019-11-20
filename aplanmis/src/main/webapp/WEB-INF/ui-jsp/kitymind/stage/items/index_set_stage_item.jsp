@@ -210,7 +210,7 @@
                                 并行推进事项
                             </a>
                         </li>
-                        <li id="frontCheckItemLi" class="nav-item">
+                        <li id="frontCheckItemLi" class="nav-item" style="display: none">
                             <a id="checkListTab" class="nav-link" data-toggle="tab" href="#m_tabs_4_3" onclick="isOptionCheckItem('2');">
                                 <i class="la la-gear"></i>
                                 前置检查事项
@@ -252,7 +252,7 @@
                         </div>
 
                         <!-- 前置检查事项 -->
-                        <div id="m_tabs_4_3" class="tab-pane" role="tabpanel">
+                        <div id="m_tabs_4_3" class="tab-pane" role="tabpanel" style="display: none">
                             <div class="m-portlet" style="margin-bottom: 0px;width: 100%;height: 100%;border:0px;">
                                 <div class="m-portlet__body" style="padding: 0px;">
                                     <div id="selectedFrontCheckItemDiv" class="selectedItemSortDiv" style="overflow: auto;">

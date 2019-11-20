@@ -106,7 +106,7 @@ public class AeaItemFrontItemAdminController {
     }
 
     @RequestMapping("/batchSaveAeaItemFrontItem.do")
-    public ResultForm batchSaveAeaItemFrontItem(String itemVerId,String frontCkItemVerIds) {
+    public ResultForm batchSaveAeaItemFrontItem(String itemVerId, String frontCkItemVerIds) {
         try {
             aeaItemFrontItemAdminService.batchSaveAeaItemFrontItem(itemVerId,frontCkItemVerIds);
             return new ResultForm(true);

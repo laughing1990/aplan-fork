@@ -212,6 +212,7 @@ public class AeaItemFrontItemAdminServiceImpl implements AeaItemFrontItemAdminSe
 
     @Override
     public void batchSaveAeaItemFrontItem(String itemVerId,String frontCkItemVerIds)throws Exception{
+
         if(StringUtils.isBlank(itemVerId)  || StringUtils.isBlank(frontCkItemVerIds)){
             throw new InvalidParameterException(itemVerId,frontCkItemVerIds);
         }

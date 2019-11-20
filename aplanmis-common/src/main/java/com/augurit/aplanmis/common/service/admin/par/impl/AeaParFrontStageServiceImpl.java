@@ -1,5 +1,6 @@
 package com.augurit.aplanmis.common.service.admin.par.impl;
 
+import com.augurit.agcloud.framework.constant.Status;
 import com.augurit.agcloud.framework.exception.InvalidParameterException;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.ui.pager.PageHelper;
@@ -7,9 +8,9 @@ import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.domain.AeaParFrontStage;
 import com.augurit.aplanmis.common.mapper.AeaParFrontStageMapper;
 import com.augurit.aplanmis.common.service.admin.par.AeaParFrontStageService;
-import com.augurit.aplanmis.common.vo.AeaParFrontStageVo;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
+import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,13 +24,6 @@ import java.util.UUID;
 
 /**
  * 阶段的前置阶段检测表-Service服务接口实现类
- * <ul>
- * <li>项目名：奥格erp3.0--第一期建设项目</li>
- * <li>版本信息：v1.0</li>
- * <li>版权所有(C)2016广州奥格智能科技有限公司-版权所有</li>
- * <li>创建人:Administrator</li>
- * <li>创建时间：2019-11-01 10:48:41</li>
- * </ul>
  */
 @Service
 @Transactional
@@ -42,7 +36,7 @@ public class AeaParFrontStageServiceImpl implements AeaParFrontStageService {
 
     @Override
     public void saveAeaParFrontStage(AeaParFrontStage aeaParFrontStage) throws Exception {
-        checkSame(aeaParFrontStage);
+//        checkSame(aeaParFrontStage);
 
         aeaParFrontStage.setCreateTime(new Date());
         aeaParFrontStage.setCreater(SecurityContext.getCurrentUserId());
@@ -61,6 +55,7 @@ public class AeaParFrontStageServiceImpl implements AeaParFrontStageService {
 
     @Override
     public void deleteAeaParFrontStageById(String id) throws Exception {
+
         if (StringUtils.isBlank(id)) {
             throw new InvalidParameterException(id);
         }
@@ -72,6 +67,8 @@ public class AeaParFrontStageServiceImpl implements AeaParFrontStageService {
 
     @Override
     public PageInfo<AeaParFrontStage> listAeaParFrontStage(AeaParFrontStage aeaParFrontStage, Page page) throws Exception {
+
+        aeaParFrontStage.setRootOrgId(SecurityContext.getCurrentOrgId());
         PageHelper.startPage(page);
         List<AeaParFrontStage> list = aeaParFrontStageMapper.listAeaParFrontStage(aeaParFrontStage);
         logger.debug("成功执行分页查询！！");
@@ -80,20 +77,25 @@ public class AeaParFrontStageServiceImpl implements AeaParFrontStageService {
 
     @Override
     public AeaParFrontStage getAeaParFrontStageById(String id) throws Exception {
-        if (id == null)
+
+        if (StringUtils.isBlank(id)) {
             throw new InvalidParameterException(id);
+        }
         logger.debug("根据ID获取Form对象，ID为：{}", id);
         return aeaParFrontStageMapper.getAeaParFrontStageById(id);
     }
 
     @Override
     public List<AeaParFrontStage> listAeaParFrontStage(AeaParFrontStage aeaParFrontStage) throws Exception {
+
+        aeaParFrontStage.setRootOrgId(SecurityContext.getCurrentOrgId());
         List<AeaParFrontStage> list = aeaParFrontStageMapper.listAeaParFrontStage(aeaParFrontStage);
         logger.debug("成功执行查询list！！");
         return list;
     }
 
     private void checkSame(AeaParFrontStage aeaParFrontStage) throws Exception {
+
         AeaParFrontStage queryParFrontStage = new AeaParFrontStage();
         queryParFrontStage.setStageId(aeaParFrontStage.getStageId());
         queryParFrontStage.setHistStageId(aeaParFrontStage.getHistStageId());
@@ -101,31 +103,28 @@ public class AeaParFrontStageServiceImpl implements AeaParFrontStageService {
         if (list.size() > 0) {
             throw new RuntimeException("已有配置相同的前置阶段检测!");
         }
-
     }
 
     @Override
-    public PageInfo<AeaParFrontStageVo> listAeaParFrontStageVoByPage(AeaParFrontStage aeaParFrontStage, Page page) throws Exception {
+    public PageInfo<AeaParFrontStage> listAeaParFrontStageVoByPage(AeaParFrontStage aeaParFrontStage, Page page) throws Exception {
+
+        aeaParFrontStage.setRootOrgId(SecurityContext.getCurrentOrgId());
         PageHelper.startPage(page);
-        List<AeaParFrontStageVo> list = aeaParFrontStageMapper.listAeaParFrontStageVo(aeaParFrontStage);
+        List<AeaParFrontStage> list = aeaParFrontStageMapper.listAeaParFrontStageVo(aeaParFrontStage);
         logger.debug("成功执行分页查询！！");
         return new PageInfo<>(list);
     }
 
     @Override
-    public Long getMaxSortNo(AeaParFrontStage aeaParFrontStage) throws Exception {
-        Long sortNo = aeaParFrontStageMapper.getMaxSortNo(aeaParFrontStage);
-        if (sortNo == null) {
-            sortNo = 1l;
-        } else {
-            sortNo = sortNo + 1;
-        }
+    public Long getMaxSortNo(String stageId, String rootOrgId) throws Exception {
 
-        return sortNo;
+        Long sortNo = aeaParFrontStageMapper.getMaxSortNo(stageId, rootOrgId);
+        return sortNo==null?1L:(sortNo+1L);
     }
 
     @Override
-    public AeaParFrontStageVo getAeaParFrontStageVoById(String frontStageId) throws Exception {
+    public AeaParFrontStage getAeaParFrontStageVoById(String frontStageId) throws Exception {
+
         if (StringUtils.isBlank(frontStageId)) {
             throw new InvalidParameterException(frontStageId);
         }
@@ -133,63 +132,71 @@ public class AeaParFrontStageServiceImpl implements AeaParFrontStageService {
     }
 
     @Override
-    public List<AeaParFrontStageVo> listSelectParFrontStage(AeaParFrontStage aeaParFrontStage) throws Exception {
+    public List<AeaParFrontStage> listSelectParFrontStage(AeaParFrontStage aeaParFrontStage) throws Exception {
+
+        aeaParFrontStage.setRootOrgId(SecurityContext.getCurrentOrgId());
         return aeaParFrontStageMapper.listSelectParFrontStage(aeaParFrontStage);
     }
 
     @Override
-    public List<AeaParFrontStageVo> getHistStageByStageId(String stageId) {
-        List<AeaParFrontStageVo> aeaParFrontStageVos = new ArrayList();
-        if (StringUtils.isBlank(stageId)) return aeaParFrontStageVos;
+    public List<AeaParFrontStage> getHistStageByStageId(String stageId) {
+
+        List<AeaParFrontStage> aeaParFrontStageVos = new ArrayList();
+        if(StringUtils.isBlank(stageId)){
+            return aeaParFrontStageVos;
+        }
         return aeaParFrontStageMapper.getHistStageByStageId(stageId, SecurityContext.getCurrentOrgId());
     }
 
     @Override
-    public PageInfo<AeaParFrontStageVo> listSelectParFrontStageByPage(AeaParFrontStage aeaParFrontStage,Page page) throws Exception{
+    public PageInfo<AeaParFrontStage> listSelectParFrontStageByPage(AeaParFrontStage aeaParFrontStage,Page page) throws Exception{
+
+        aeaParFrontStage.setRootOrgId(SecurityContext.getCurrentOrgId());
         PageHelper.startPage(page);
-        List<AeaParFrontStageVo> list = aeaParFrontStageMapper.listSelectParFrontStage(aeaParFrontStage);
+        List<AeaParFrontStage> list = aeaParFrontStageMapper.listSelectParFrontStage(aeaParFrontStage);
         logger.debug("成功执行分页查询！！");
         return new PageInfo<>(list);
     }
 
     @Override
-    public void batchSaveAeaParFrontStage(String stageId,String histStageIds)throws Exception{
-        if(StringUtils.isBlank(stageId)  || StringUtils.isBlank(histStageIds)){
-            throw new InvalidParameterException(stageId,histStageIds);
-        }
+    public void batchSaveAeaParFrontStage(String stageId, String[] histStageIds)throws Exception{
 
-        String[] histStageIdArr = histStageIds.split(",");
-        if(histStageIdArr!=null && histStageIdArr.length>0){
-            AeaParFrontStage query = new AeaParFrontStage();
-            query.setStageId(stageId);
-            Long maxSortNo = getMaxSortNo(query);
-            for(String histStageId:histStageIdArr){
-                AeaParFrontStage aeaParFrontStage = new AeaParFrontStage();
-                aeaParFrontStage.setStageId(stageId);
-                aeaParFrontStage.setHistStageId(histStageId);
-                List<AeaParFrontStage> list = aeaParFrontStageMapper.listAeaParFrontStage(aeaParFrontStage);
-                if (list.size() > 0) {
-                    continue;
-                }
-                aeaParFrontStage.setFrontStageId(UUID.randomUUID().toString());
-                aeaParFrontStage.setCreateTime(new Date());
-                aeaParFrontStage.setCreater(SecurityContext.getCurrentUserId());
-                aeaParFrontStage.setRootOrgId(SecurityContext.getCurrentOrgId());
-                aeaParFrontStage.setSortNo(maxSortNo);
-                aeaParFrontStage.setIsActive("1");
-                aeaParFrontStageMapper.insertAeaParFrontStage(aeaParFrontStage);
-                maxSortNo++;
+        if(StringUtils.isBlank(stageId)){
+            throw new InvalidParameterException("参数stageId为空!");
+        }
+        if(histStageIds==null||(histStageIds!=null&&histStageIds.length==0)){
+            throw new InvalidParameterException("参数histStageIds为空!");
+        }
+        if(histStageIds!=null && histStageIds.length>0){
+            String userId = SecurityContext.getCurrentUserId();
+            String rootOrgId = SecurityContext.getCurrentOrgId();
+            for(String histStageId : histStageIds){
+                AeaParFrontStage frontStage = new AeaParFrontStage();
+                frontStage.setFrontStageId(UUID.randomUUID().toString());
+                frontStage.setStageId(stageId);
+                frontStage.setHistStageId(histStageId);
+                frontStage.setSortNo(getMaxSortNo(stageId, rootOrgId));
+                frontStage.setIsActive(Status.ON);
+                frontStage.setCreater(userId);
+                frontStage.setCreateTime(new Date());
+                frontStage.setRootOrgId(rootOrgId);
+                aeaParFrontStageMapper.insertAeaParFrontStage(frontStage);
             }
         }
     }
 
     @Override
-    public List<AeaParFrontStageVo> listAeaParFrontStageVoByNoPage(AeaParFrontStage aeaParFrontStage) throws Exception{
-        List<AeaParFrontStageVo> list = aeaParFrontStageMapper.listAeaParFrontStageVo(aeaParFrontStage);
+    public List<AeaParFrontStage> listAeaParFrontStageVoByNoPage(AeaParFrontStage aeaParFrontStage) throws Exception{
+
+        aeaParFrontStage.setRootOrgId(SecurityContext.getCurrentOrgId());
+        List<AeaParFrontStage> list = aeaParFrontStageMapper.listAeaParFrontStageVo(aeaParFrontStage);
         return list;
     }
 
+    @Override
+    public void changIsActive(String id, String rootOrgId){
 
-
+        aeaParFrontStageMapper.changIsActive(id, rootOrgId);
+    }
 }
 

@@ -41,7 +41,7 @@ public interface CloudService {
      * @param dirID
      * @return
      */
-    PageInfo<BscAttForm> getAttsByDirId(String dirID, int pageNum, int pageSize,String keyword)throws Exception;
+    PageInfo<BscAttForm> getAttsByDirId(String dirID, int pageNum, int pageSize,String keyword,boolean bool)throws Exception;
 
 
     void deleteDirAndFiles(String dirId, String recordId) throws Exception;

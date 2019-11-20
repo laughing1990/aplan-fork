@@ -14,12 +14,11 @@
     <%@ include file="/ui-static/agcloud/framework/jsp/lib-sortable1.jsp" %>
     <%@ include file="/ui-static/agcloud/framework/jsp/lib-agtree3.jsp"%>
     <%@ include file="/ui-static/agcloud/framework/jsp/lib-bootstrap-table.jsp"%>
+    <script src="${pageContext.request.contextPath}/ui-static/dg_aplanmis/framework/js/jquery.nicescroll.js" type="text/javascript"></script>
     <link href="${pageContext.request.contextPath}/ui-static/agcloud/bsc/yunpan/css/orgTheme.css?<%=isDebugMode%>" type="text/css" rel="stylesheet"/>
     <script src="${pageContext.request.contextPath}/ui-static/kitymind/js/kitymind_constant.js" type="text/javascript"></script>
-    <script src="${pageContext.request.contextPath}/ui-static/dg_aplanmis/framework/js/jquery.nicescroll.js" type="text/javascript"></script>
     <script src="${pageContext.request.contextPath}/ui-static/aplanmis/util/defaultBootstrap.js" type="text/javascript"></script>
     <script src="${pageContext.request.contextPath}/ui-static/kitymind/stage/frontCheck/front_check_manage_index.js?<%=isDebugMode%>" type="text/javascript"></script>
-    <script src="${pageContext.request.contextPath}/ui-static/kitymind/stage/frontCheck/select_front_item_ztree.js?<%=isDebugMode%>" type="text/javascript"></script>
     <style type="text/css">
         .row{
             display: -ms-flexbox;
@@ -230,14 +229,9 @@
                 <div class="m-form m-form--label-align-right m--margin-bottom-5">
                     <div class="row" style="margin: 0px;">
                         <div class="col-md-7"style="text-align: left;">
-                            <button type="button" class="btn btn-info"
-                                    onclick="addParFrontItem();">新增</button>
-                            <button type="button" class="btn btn-info"
-                                    onclick="batchImportParFrontItem();">批量导入</button>
-                            <button type="button" class="btn btn-info"
-                                    onclick="sortParFrontItem();">排序</button>
-                            <button type="button" class="btn btn-secondary"
-                                    onclick="batchDelParFrontItem();">删除</button>
+                            <button type="button" class="btn btn-info" onclick="importFrontItem();">导入事项</button>
+                            <button type="button" class="btn btn-info" onclick="sortParFrontItem();">排序</button>
+                            <button type="button" class="btn btn-secondary" onclick="batchDelParFrontItem();">删除</button>
                         </div>
                         <div class="col-md-5" style="padding: 0px;">
                             <div class="row" style="margin: 0px;">
@@ -332,67 +326,6 @@
         </div>
     </div>
 
-    <div class="col-xl-12" style=" margin-top: 0px;${"1".equals(isCheckStage)?'':'display:none;'}" >
-        <div class="m-portlet" style="margin-bottom: 5px;border: 0px solid #e8e8e8;">
-            <div class="m-portlet__head" style="border-bottom: 0px solid #e8e8e8">
-                <div class="m-portlet__head-caption">
-                    <div class="m-portlet__head-title">
-                        <span class="m-portlet__head-icon m--hide">
-                            <i class="la la-gear"></i>
-                        </span>
-                        <h2 class="m-portlet__head-text">
-                            <span style="font-weight: bold;">阶段信息前置检测</span>
-                        </h2>
-                    </div>
-                </div>
-            </div>
-            <div class="m-portlet__body" style="padding: 0px 0px 5px 0px;">
-                <div class="m-form m-form--label-align-right m--margin-bottom-5">
-                    <div class="row" style="margin: 0px;">
-                        <div class="col-md-7"style="text-align: left;">
-                            <button type="button" class="btn btn-info"
-                                    onclick="addParFrontStage();">新增</button>
-                            <button type="button" class="btn btn-info"
-                                    onclick="batchImprotParFrontStage();">批量导入</button>
-                            <button type="button" class="btn btn-info"
-                                    onclick="sortParFrontStage();">排序</button>
-                            <button type="button" class="btn btn-secondary"
-                                    onclick="batchDelParFrontStage();">删除</button>
-                        </div>
-                        <div class="col-md-5" style="padding: 0px;">
-                            <div class="row" style="margin: 0px;">
-                                <div class="col-4"></div>
-                                <div class="col-5" style="text-align: right;">
-                                    <form id="search_par_front_stage" method="post">
-                                        <div class="m-input-icon m-input-icon--left">
-                                            <input type="text" class="form-control m-input"
-                                                   placeholder="请输入关键字..."  value="" id = "par_front_stage_keyword"/>
-                                            <span class="m-input-icon__icon m-input-icon__icon--left">
-                                                <span><i class="la la-search"></i></span>
-                                            </span>
-                                        </div>
-                                    </form>
-                                </div>
-                                <div class="col-3"  style="text-align: left;">
-                                    <button type="button" class="btn btn-info" id = "par_front_stage_search_btn">查询</button>
-                                    <button type="button" class="btn btn-secondary" id = "par_front_stage_clear_btn">清空</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div style="margin: 10px 0px;border-bottom: 1px solid #e8e8e8;"></div>
-                <!-- 列表区域 -->
-                <div class="base" style="padding: 10px">
-                    <table id="par_front_stage_tb">
-                    </table>
-                </div>
-                <!-- 列表区域end -->
-            </div>
-        </div>
-    </div>
-
-
     <div class="col-xl-12" style=" margin-top: 0px;${"1".equals(isCheckPartform)?'':'display:none;'}" >
         <div class="m-portlet" style="margin-bottom: 5px;border: 0px solid #e8e8e8;">
             <div class="m-portlet__head" style="border-bottom: 0px solid #e8e8e8">
@@ -402,7 +335,7 @@
                             <i class="la la-gear"></i>
                         </span>
                         <h2 class="m-portlet__head-text">
-                            <span style="font-weight: bold;">阶段扩展表单前置检测</span>
+                            <span style="font-weight: bold;">扩展表单前置检测</span>
                         </h2>
                     </div>
                 </div>
@@ -411,8 +344,8 @@
                 <div class="m-form m-form--label-align-right m--margin-bottom-5">
                     <div class="row" style="margin: 0px;">
                         <div class="col-md-7"style="text-align: left;">
-                            <button type="button" class="btn btn-info"
-                                    onclick="addParFrontPartform();">新增</button>
+                            <%--<button type="button" class="btn btn-info"--%>
+                                    <%--onclick="addParFrontPartform();">新增</button>--%>
                             <button type="button" class="btn btn-info"
                                     onclick="batchImprotParFrontPartform();">批量导入</button>
                             <button type="button" class="btn btn-info"
@@ -447,6 +380,60 @@
                 <div class="base" style="padding: 10px">
                     <table id="par_front_partform_tb">
                     </table>
+                </div>
+                <!-- 列表区域end -->
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-12" style=" margin-top: 0px;${"1".equals(isCheckStage)?'':'display:none;'}" >
+        <div class="m-portlet" style="margin-bottom: 5px;border: 0px solid #e8e8e8;">
+            <div class="m-portlet__head" style="border-bottom: 0px solid #e8e8e8">
+                <div class="m-portlet__head-caption">
+                    <div class="m-portlet__head-title">
+                        <span class="m-portlet__head-icon m--hide">
+                            <i class="la la-gear"></i>
+                        </span>
+                        <h2 class="m-portlet__head-text">
+                            <span style="font-weight: bold;">主线/辅线信息前置检测</span>
+                        </h2>
+                    </div>
+                </div>
+            </div>
+            <div class="m-portlet__body" style="padding: 0px 0px 5px 0px;">
+                <div class="m-form m-form--label-align-right m--margin-bottom-5">
+                    <div class="row" style="margin: 0px;">
+                        <div class="col-md-7"style="text-align: left;">
+                            <button type="button" class="btn btn-info" onclick="batchImprotParFrontStage();">批量导入</button>
+                            <button type="button" class="btn btn-info" onclick="sortParFrontStage();">排序</button>
+                            <button type="button" class="btn btn-secondary" onclick="batchDelParFrontStage();">删除</button>
+                        </div>
+                        <div class="col-md-5" style="padding: 0px;">
+                            <div class="row" style="margin: 0px;">
+                                <div class="col-4"></div>
+                                <div class="col-5" style="text-align: right;">
+                                    <form id="search_par_front_stage" method="post">
+                                        <div class="m-input-icon m-input-icon--left">
+                                            <input type="text" class="form-control m-input"
+                                                   placeholder="请输入关键字..."  value="" id = "par_front_stage_keyword"/>
+                                            <span class="m-input-icon__icon m-input-icon__icon--left">
+                                                <span><i class="la la-search"></i></span>
+                                            </span>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="col-3"  style="text-align: left;">
+                                    <button type="button" class="btn btn-info" id = "par_front_stage_search_btn">查询</button>
+                                    <button type="button" class="btn btn-secondary" id = "par_front_stage_clear_btn">清空</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div style="margin: 10px 0px;border-bottom: 1px solid #e8e8e8;"></div>
+                <!-- 列表区域 -->
+                <div class="base" style="padding: 10px">
+                    <table id="par_front_stage_tb"></table>
                 </div>
                 <!-- 列表区域end -->
             </div>
@@ -488,14 +475,11 @@
 
 <%@include file="sort_par_front_item.jsp"%>
 
-<%@include file="sort_par_front_itemform.jsp"%>
-
 <%@include file="sort_par_front_stage.jsp"%>
 
+<%@include file="sort_par_front_itemform.jsp"%>
+
 <%@include file="sort_par_front_partform.jsp"%>
-
-
-
 
 <!-- 进度弹窗 -->
 <div id="uploadProgress" class="modal fade" tabindex="-1" role="dialog"
@@ -511,9 +495,6 @@
 </div>
 
 <!--bootstrap-treegrid-->
-<script src="${pageContext.request.contextPath}/ui-static/agcloud/framework/js-libs/bootstrap-table/bootstrap-table-treegrid.js" type="text/javascript"></script>
-<script src="${pageContext.request.contextPath}/ui-static/agcloud/framework/js-libs/jquery1/jquery.treegrid.min.js" type="text/javascript"></script>
-<link href="${pageContext.request.contextPath}/ui-static/agcloud/framework/js-libs/jquery1/jquery.treegrid.min.css" rel="stylesheet" type="text/css"/>
 <link href="${pageContext.request.contextPath}/ui-static/agcloud/framework/ui-scheme/common/css/bootstrap/bootstrap-table.min.css" rel="stylesheet" type="text/css">
 </body>
 </html>

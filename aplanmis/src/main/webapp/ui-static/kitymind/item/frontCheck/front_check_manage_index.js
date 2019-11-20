@@ -673,7 +673,6 @@ function editItemFrontProj(frontProjId) {
     });
 }
 
-
 function addItemFrontItem() {
 
     if(curIsEditable) {
@@ -746,7 +745,11 @@ function editItemFrontItem(frontItemId) {
                 setTimeout(function(){
 
                     $("#uploadProgress").modal('hide');
-                    $('#saveItemFrontProjBtn').show();
+                    if(curIsEditable){
+                        $('#saveItemFrontItemBtn').show();
+                    }else{
+                        $('#saveItemFrontItemBtn').hide();
+                    }
 
                     loadFormData(true, '#edit_item_front_item_form', result.content);
 

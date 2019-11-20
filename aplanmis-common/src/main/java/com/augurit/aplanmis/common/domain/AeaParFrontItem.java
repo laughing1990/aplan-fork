@@ -1,5 +1,7 @@
 package com.augurit.aplanmis.common.domain;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -7,37 +9,73 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 
 /**
- * 阶段事项前置检测表-模型
- * <ul>
- * <li>项目名：奥格erp3.0--第一期建设项目</li>
- * <li>版本信息：v1.0</li>
- * <li>日期：2019-11-01 10:47:49</li>
- * <li>版权所有(C)2016广州奥格智能科技有限公司-版权所有</li>
- * <li>创建人:Administrator</li>
- * <li>创建时间：2019-11-01 10:47:49</li>
- * <li>修改人1：</li>
- * <li>修改时间1：</li>
- * <li>修改内容1：</li>
- * </ul>
+ * 阶段前置检查-模型
+ *
+ * @author jjt
+ * @date 2019/10/15
+ *
  */
+@ApiModel(description = "阶段前置检查")
 @Data
 public class AeaParFrontItem implements Serializable {
-    private static final long serialVersionUID = 1L;
-    private String frontItemId; // (ID)
-    private String stageId; // (阶段ID)
-    private String itemVerId; // (事项版本ID)
-    @Size(max = 10)
-    private Long sortNo; // (排序字段)
-    private String isActive; // (是否启用，0表示禁用，1表示启用)
-    private String frontItemMemo; // (备注说明)
-    private String creater; // (创建人)
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private java.util.Date createTime; // (创建时间)
-    private String modifier; // (修改人)
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private java.util.Date modifyTime; // (修改时间)
-    private String rootOrgId; // (根组织id)
 
-    //非表字段
-    private String keyword;//查询关键字
+    private static final long serialVersionUID = 1L;
+
+    @ApiModelProperty("主键id")
+    private String frontItemId;
+
+    @ApiModelProperty("阶段id")
+    private String stageId;
+
+    @ApiModelProperty("前置事项版本id")
+    private String itemVerId;
+
+    @ApiModelProperty("排序字段")
+    private Long sortNo;
+
+    @ApiModelProperty("是否启用")
+    private String isActive;
+
+    @ApiModelProperty("创建人")
+    private String creater;
+
+    @ApiModelProperty("创建时间")
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    private java.util.Date createTime;
+
+    @ApiModelProperty("'修改人")
+    private String modifier;
+
+    @ApiModelProperty("'修改时间")
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    private java.util.Date modifyTime;
+
+    @ApiModelProperty("根组织id")
+    private String rootOrgId;
+
+    @ApiModelProperty("备注")
+    private String frontItemMemo;
+
+    // ========== 扩展字段 ===========
+
+    @ApiModelProperty("扩展字段：前置事项id")
+    private String itemId;
+
+    @ApiModelProperty("扩展字段：前置事项名称")
+    private String itemName;
+
+    @ApiModelProperty("扩展字段：前置事项编号")
+    private String itemCode;
+
+    @ApiModelProperty("扩展字段：前置事项是否标准事项  1标准事项 0 实施事项")
+    private String isCatalog;
+
+    @ApiModelProperty("扩展字段：前置事项所属组织")
+    private String orgName;
+
+    @ApiModelProperty("扩展字段：前置事项标准事项指导部门")
+    private String guideOrgName;
+
+    @ApiModelProperty("扩展字段：查询关键字")
+    private String keyword;
 }

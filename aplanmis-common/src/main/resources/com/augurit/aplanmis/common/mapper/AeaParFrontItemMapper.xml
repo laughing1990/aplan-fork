@@ -83,12 +83,13 @@
         </where>
     </select>
 
-    <select id="listAeaParFrontItemByStageId" resultType="com.augurit.aplanmis.common.vo.AeaParFrontItemVo">
+    <select id="listAeaParFrontItemByStageId" resultType="AeaParFrontItem">
         select
             <include refid="allColumnsAlias">
                 <property name="alias" value="apfi"></property>
             </include>,
             aib.ITEM_NAME itemName,
+            aib.ITEM_CODE itemCode,
             aib.IS_CATALOG isCatalog,
             aib.ITEM_ID itemId
         from AEA_PAR_FRONT_ITEM apfi
@@ -107,12 +108,33 @@
 
     <!--5 新增实体对象 -->
     <insert id="insertAeaParFrontItem" parameterType="AeaParFrontItem">
-    insert into AEA_PAR_FRONT_ITEM (
-        FRONT_ITEM_ID  ,STAGE_ID  ,ITEM_VER_ID  ,SORT_NO  ,IS_ACTIVE  ,FRONT_ITEM_MEMO  ,CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME  ,ROOT_ORG_ID
-    )  values  (
-        #{frontItemId},#{stageId},#{itemVerId},#{sortNo},#{isActive},#{frontItemMemo},#{creater},#{createTime},#{modifier},#{modifyTime},  #{rootOrgId}
-    )
-</insert>
+        insert into AEA_PAR_FRONT_ITEM (
+            FRONT_ITEM_ID,
+            STAGE_ID,
+            ITEM_VER_ID,
+            SORT_NO,
+            IS_ACTIVE,
+            FRONT_ITEM_MEMO,
+            CREATER,
+            CREATE_TIME,
+            MODIFIER,
+            MODIFY_TIME,
+            ROOT_ORG_ID
+        )  values  (
+            #{frontItemId},
+            #{stageId},
+            #{itemVerId},
+            #{sortNo},
+            #{isActive},
+            #{frontItemMemo},
+            #{creater},
+            #{createTime},
+            #{modifier},
+            #{modifyTime},
+            #{rootOrgId}
+        )
+    </insert>
+
     <!--6 修改实体对象 -->
     <update id="updateAeaParFrontItem" parameterType="AeaParFrontItem">
         update AEA_PAR_FRONT_ITEM
@@ -156,7 +178,16 @@
 
     <!--7 删除实体对象,根据主键ID -->
     <delete id="deleteAeaParFrontItem">
-        delete from   AEA_PAR_FRONT_ITEM where FRONT_ITEM_ID = #{id}
+        delete from  AEA_PAR_FRONT_ITEM where FRONT_ITEM_ID = #{id}
+    </delete>
+
+    <delete id="batchDelAeaItemFrontByIds">
+        <if test="ids!=null and ids.size()>0">
+            delete from  AEA_PAR_FRONT_ITEM where FRONT_ITEM_ID in
+            <foreach collection="ids" item="id" open="(" close=")" separator=",">
+                #{id}
+            </foreach>
+        </if>
     </delete>
 
     <!--9 返回所有字段的对象map,用于级联 -->
@@ -174,12 +205,14 @@
         <result property="rootOrgId" column="ROOT_ORG_ID"/>
     </resultMap>
 
-    <select id="listAeaParFrontItemVo" resultType="com.augurit.aplanmis.common.vo.AeaParFrontItemVo">
+    <select id="listAeaParFrontItemVo" resultType="AeaParFrontItem">
         select
             <include refid="allColumnsAlias">
                 <property name="alias" value="apfi"></property>
             </include>,
-            aib.ITEM_NAME itemName
+            aib.ITEM_NAME itemName,
+            aib.ITEM_CODE itemCode,
+            aib.IS_CATALOG isCatalog
         from AEA_PAR_FRONT_ITEM apfi
         left join aea_item_basic aib on aib.ITEM_VER_ID = apfi.ITEM_VER_ID
         <where>
@@ -235,15 +268,35 @@
         </where>
     </select>
 
-    <select id="getAeaParFrontItemVoByFrontItemId" resultType="com.augurit.aplanmis.common.vo.AeaParFrontItemVo">
+    <select id="getAeaParFrontItemVoByFrontItemId" resultType="AeaParFrontItem">
         select
             <include refid="allColumnsAlias">
                 <property name="alias" value="apfi"></property>
             </include>,
-            aib.ITEM_NAME itemName
+            aib.ITEM_NAME itemName,
+            aib.ITEM_CODE itemCode,
+            aib.IS_CATALOG isCatalog
         from AEA_PAR_FRONT_ITEM apfi
         left join aea_item_basic aib on aib.ITEM_VER_ID = apfi.ITEM_VER_ID
         where apfi.FRONT_ITEM_ID = #{frontItemId}
     </select>
+
+    <delete id="batchDelItemByStageId">
+        delete from AEA_PAR_FRONT_ITEM
+        where STAGE_ID = #{stageId}
+          and ROOT_ORG_ID = #{rootOrgId}
+    </delete>
+
+    <update id="changIsActive">
+        update AEA_ITEM_FRONT_ITEM
+        set IS_ACTIVE = case IS_ACTIVE
+        when '1' then '0'
+        when '0' then '1'
+        end
+        <where>
+            and FRONT_ITEM_ID = #{id}
+            and ROOT_ORG_ID = #{rootOrgId}
+        </where>
+    </update>
 
 </mapper>

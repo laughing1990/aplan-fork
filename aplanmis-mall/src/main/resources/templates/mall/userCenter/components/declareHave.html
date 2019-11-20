@@ -412,13 +412,25 @@
             </template>
           </el-table-column>
           <el-table-column label="电子件信息">
-            <template scope="scope">
+            <template scope="scope" >
+              <template v-if="scope.row.matProp=='f'">
               <el-button size="small" type="default" disabled
                          v-if="(!scope.row.attCount||scope.row.attCount==0)">未上传
               </el-button>
               <el-button size="small" type="default" @click="showElectronDialog(scope.row)" v-else>
                 已上传（{{scope.row.attCount}}）
               </el-button>
+              </template>
+            </template>
+            <template scope="scope">
+              <template v-if="scope.row.matProp=='c'">
+              <el-button size="small" type="default" disabled
+                         v-if="(!scope.row.certFileList||scope.row.certFileList.length==0||scope.row.certFileList==null)">未上传
+              </el-button>
+              <el-button size="small" type="default" @click="showLicenseDialog(scope.row)" v-else>
+                已上传（{{scope.row.certFileList.length}}）
+              </el-button>
+              </template>
             </template>
           </el-table-column>
         </el-table>
@@ -508,6 +520,28 @@
       </el-table-column>
     </el-table>
   </el-dialog>
+
+  <!-- 项目详情-证照列表-文件dialog -->
+  <el-dialog class="normal-dialog" title="电子件" :visible.sync="isShowLicenseDialog" width="600">
+    <el-table :data="licenseFileList" class="scrollable mt20" style="width: 100%;"
+              :header-cell-style="{background:'#f7f8fa'}">
+      <el-table-column label="序号" width="55">
+        <template scope="scope">
+          {{scope.$index+1}}
+        </template>
+      </el-table-column>
+      <el-table-column prop="fileName" label="文件名称">
+      </el-table-column>
+      <el-table-column label="操作" width="100">
+        <template scope="scope">
+          <i title="预览" class="el-icon-search" @click="licensePreview(scope.row)" style="cursor: pointer;"></i>
+          &nbsp;&nbsp;
+        </template>
+      </el-table-column>
+    </el-table>
+  </el-dialog>
+
+
   <!--回执列表弹窗 start-->
   <el-dialog title="回执列表" :visible.sync="receiveModalShow" :close-on-click-modal="false" class="receive-modal" width="1200px">
     <div class="fl" :style="{height: (curHeight-100)+'px'}">

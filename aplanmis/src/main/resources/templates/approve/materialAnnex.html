@@ -334,6 +334,7 @@
         if (vm.isSeries == '1') {
           params.isSeries = 1;
         }
+        vm.pageLoading = true;
         request('', {
           url: ctx + 'rest/approve/series/matinst/list',
           type: 'get',
@@ -456,7 +457,7 @@
         var vm = this;
         var _this = this;
         var formData = new FormData();
-        formData.append('files', file.file);
+        formData.append('file', file.file);
         if (vm.currentUploadRow.attMatinstId) {
           formData.append('matinstId', vm.currentUploadRow.attMatinstId);
         } else {
@@ -469,12 +470,13 @@
             _this.$message.success('上传成功');
             vm.getMatList();
           } else {
+            vm.pageLoading = false;
             _this.$message.error(res.message || '上传失败');
           }
         }).catch(function (e) {
+          vm.pageLoading = false;
           _this.$message.error('上传失败');
         }).finally(function () {
-          vm.pageLoading = false;
         })
       },
       // 点击上传文件按钮，记录点击的哪条数据

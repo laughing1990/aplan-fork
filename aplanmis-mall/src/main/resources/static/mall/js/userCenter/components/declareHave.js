@@ -54,6 +54,10 @@ var vm = new Vue({
     isMaterialShowAll: false,
     // 是否展示电子件dialog
     isShowElectronDialog: false,
+    // 是否展示证照dialog
+    isShowLicenseDialog: false,
+    //证照附件
+    licenseFileListL:[],
     // 所有电子件表格数据
     electronFileList: [],
     receiveList: [],//回执列表
@@ -177,7 +181,7 @@ var vm = new Vue({
     //撤件
     withDraw:function(item){
         var _this=this;
-        confirmMsg('','此操作将撤回办件,确定要撤回吗？',function(){
+        confirmMsg('','此操作将撤回申报,确定要撤回吗？',function(){
           request('',{
             type:'post',
             url:ctx+'/rest/user/withDraw/'+item.applyinstId,
@@ -218,6 +222,10 @@ var vm = new Vue({
     showElectronDialog: function (row) {
       this.isShowElectronDialog = true;
       this.electronFileList = row.fileList; //附件列表赋值
+    },
+    showLicenseDialog: function (row) {
+      this.isShowLicenseDialog = true;
+      this.licenseFileList = row.certFileList; //附件列表赋值
     },
     getFileType: function (fileName) {
       var index1 = fileName.lastIndexOf(".");
@@ -290,6 +298,29 @@ var vm = new Vue({
           }, 1000)
         }
       }
+    },
+    // 预览证照
+    licensePreview: function (row) {
+      request('', {
+        url: ctx + '/aea/cert/getViewLicenseURL?authCode=' + row.fileId,
+        type: 'get',
+      }, function (result) {
+        if (result.success) {
+          window.open(result.content);
+        } else {
+          _that.loading = false;
+          _that.$message({
+            message: '文件预览失败',
+            type: 'error'
+          });
+        }
+      }, function (msg) {
+        _that.loading = false;
+        _that.$message({
+          message: '文件预览失败',
+          type: 'error'
+        });
+      })
     },
     // 下载电子件
     downloadFile: function (row) {

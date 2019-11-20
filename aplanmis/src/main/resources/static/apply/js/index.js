@@ -66,7 +66,7 @@ var vm = new Vue({
       if (value === '' || value === undefined || value.trim() === '') {
         callback(new Error('请输入统一社会信用代码！'));
       } else if (value) {
-        var flag = !/^[1-9A-GY]{1}[1239]{1}[1-5]{1}[0-9]{5}[0-9A-Z]{10}$/.test(value);
+        var flag = !/[0-9A-HJ-NPQRTUWXY]{2}\d{6}[0-9A-HJ-NPQRTUWXY]{10}/.test(value);
         if (flag) {
           return callback(new Error('请输入正确的统一社会信用代码！'));
         } else {
@@ -575,7 +575,7 @@ var vm = new Vue({
       unitLinkManOptions: [],
       matCodes: [], // 材料code集合
       oneformNameTitle: '一张表单', // 一张表单弹窗title
-      devFormUrl: [], // 开发表单url
+      formUrlList: [], // 表单url
       stageFrontCheckFlag: true, // 阶段前置检测是否通过
       stageFrontCheckMsg: '', // 阶段前置检测失败提示
       showCertWindowFlag: false, // 是否展示证照库窗口
@@ -2999,187 +2999,6 @@ var vm = new Vue({
         data: {identityNumber: _identityNumber,itemVerIds: _that.selMatRowData.itemVerId}
       }, function (res) {
         if(res){
-          // if(res.content){
-          res.content = {
-            "ack_code": "SUCCESS",
-            "errors": [],
-            "sign": null,
-            "sign_method": null,
-            "timestamp": null,
-            "correlation_id": "386ae0f3-be3e-40e8-8b3d-b6d0fba55289",
-            "response_id": "671a4b04-0e1f-4ec0-bc82-3c6b1766a730",
-            "data": [
-              {
-                "name": "普通义工（志愿者）证",
-                "division": "",
-                "remark": null,
-                "creator": null,
-                "issuer": null,
-                "abolisher": null,
-                "algorithm": null,
-                "license_code": "44070020190000090V",
-                "license_type": null,
-                "id_code": "122230",
-                "doc_name": null,
-                "doc_summary": null,
-                "doc_keyword": null,
-                "holder_name": "测试",
-                "holder_identity_type": "10",
-                "holder_identity_num": "440782199411112150",
-                "issue_org_name": "江门政务服务数据管理局",
-                "issue_org_code": "593330629",
-                "division_code": "440700",
-                "issue_date": "2019-08-19 00:00:00",
-                "begin_date": null,
-                "expiry_date": null,
-                "data_fields": null,
-                "attachment_fields": null,
-                "trust_level": "A",
-                "extend_props": "",
-                "biz_num": null,
-                "license_item_code": "113002201",
-                "license_status": "ISSUED",
-                "creation_time": "2019-08-22 16:50:41",
-                "issue_time": null,
-                "abolish_time": null,
-                "abolish_reason": null,
-                "correlative_license": null,
-                "public_key": null,
-                "last_modificator": "*SYSADM*",
-                "last_modification_time": "2019-08-22 16:50:41",
-                "s_sign_cert": null,
-                "s_sign_data": null,
-                "auth_code": "20191115101022412NC011344709_44070020190000090V"
-              },
-              {
-                "name": "普通义工（志愿者）证",
-                "division": "",
-                "remark": null,
-                "creator": null,
-                "issuer": null,
-                "abolisher": null,
-                "algorithm": null,
-                "license_code": "44070020190000090U",
-                "license_type": null,
-                "id_code": "12223",
-                "doc_name": null,
-                "doc_summary": null,
-                "doc_keyword": null,
-                "holder_name": "测试",
-                "holder_identity_type": "10",
-                "holder_identity_num": "440782199411112150",
-                "issue_org_name": "江门政务服务数据管理局",
-                "issue_org_code": "593330629",
-                "division_code": "440700",
-                "issue_date": "2019-08-19 00:00:00",
-                "begin_date": null,
-                "expiry_date": null,
-                "data_fields": null,
-                "attachment_fields": null,
-                "trust_level": "A",
-                "extend_props": "",
-                "biz_num": null,
-                "license_item_code": "113002201",
-                "license_status": "ISSUED",
-                "creation_time": "2019-08-22 16:49:07",
-                "issue_time": null,
-                "abolish_time": null,
-                "abolish_reason": null,
-                "correlative_license": null,
-                "public_key": null,
-                "last_modificator": "*SYSADM*",
-                "last_modification_time": "2019-08-22 16:49:07",
-                "s_sign_cert": null,
-                "s_sign_data": null,
-                "auth_code": "20191115101022412NC011344709_44070020190000090U"
-              },
-              {
-                "name": "志愿服务记录证明",
-                "division": "",
-                "remark": null,
-                "creator": null,
-                "issuer": null,
-                "abolisher": null,
-                "algorithm": null,
-                "license_code": "44070020190000080W",
-                "license_type": null,
-                "id_code": "1122",
-                "doc_name": null,
-                "doc_summary": null,
-                "doc_keyword": null,
-                "holder_name": "黄大三",
-                "holder_identity_type": "10",
-                "holder_identity_num": "440782199411112150",
-                "issue_org_name": "江门市网络信息统筹局",
-                "issue_org_code": "MB2C44198",
-                "division_code": "440700",
-                "issue_date": "2019-07-26 00:00:00",
-                "begin_date": null,
-                "expiry_date": "2023-07-01 00:00:00",
-                "data_fields": null,
-                "attachment_fields": null,
-                "trust_level": "A",
-                "extend_props": "",
-                "biz_num": null,
-                "license_item_code": "213002401",
-                "license_status": "ISSUED",
-                "creation_time": "2019-07-26 18:02:17",
-                "issue_time": null,
-                "abolish_time": null,
-                "abolish_reason": null,
-                "correlative_license": null,
-                "public_key": null,
-                "last_modificator": "4f070706-c30c-481c-a837-9f39136c62de",
-                "last_modification_time": "2019-07-26 18:04:59",
-                "s_sign_cert": null,
-                "s_sign_data": null,
-                "auth_code": "20191115101022412NC011344709_44070020190000080W"
-              },
-              {
-                "name": "普通义工（志愿者）证",
-                "division": "",
-                "remark": null,
-                "creator": null,
-                "issuer": null,
-                "abolisher": null,
-                "algorithm": null,
-                "license_code": "4407002019000008CS",
-                "license_type": null,
-                "id_code": "12333",
-                "doc_name": null,
-                "doc_summary": null,
-                "doc_keyword": null,
-                "holder_name": "测试",
-                "holder_identity_type": "10",
-                "holder_identity_num": "440782199411112150",
-                "issue_org_name": "江门市网络信息统筹局",
-                "issue_org_code": "MB2C44198",
-                "division_code": "440700",
-                "issue_date": "2019-01-04 00:00:00",
-                "begin_date": null,
-                "expiry_date": "2020-01-03 00:00:00",
-                "data_fields": null,
-                "attachment_fields": null,
-                "trust_level": "A",
-                "extend_props": "",
-                "biz_num": null,
-                "license_item_code": "113002201",
-                "license_status": "ISSUED",
-                "creation_time": "2019-07-26 14:40:38",
-                "issue_time": null,
-                "abolish_time": null,
-                "abolish_reason": null,
-                "correlative_license": null,
-                "public_key": null,
-                "last_modificator": "4f070706-c30c-481c-a837-9f39136c62de",
-                "last_modification_time": "2019-07-26 14:41:12",
-                "s_sign_cert": null,
-                "s_sign_data": null,
-                "auth_code": "20191115101022412NC011344709_4407002019000008CS"
-              }
-            ],
-            "total_count": 4
-          };
           _that.certMatTableData = res.content.data?res.content.data:[];
           res.content.data.map(function(certItem){
             if(certItem.bind=='undefined'||certItem.bind==undefined){
@@ -3863,6 +3682,9 @@ var vm = new Vue({
       }else {
         alertMsg('', perUnitMsg, '关闭', 'error', true);
       }
+    },
+    test: function(item,ev){
+      console.log(item,ev)
     },
     // 根据材料定义id获取材料实例id
     getMatinstIds: function () {
@@ -5583,21 +5405,27 @@ var vm = new Vue({
       var _that = this;
       var sFRenderConfig='&showBasicButton=true&includePlatformResource=false';
       request('', {
-        url: ctx + 'rest/oneform/common/renderHtmlFormContainer?applyinstId='+_applyinstId+'&stageId='+_stageId+'&projInfoId='+_that.projInfoId+'&'+str+sFRenderConfig,
+        url: ctx + 'rest/oneform/common/getListForm4StageOneForm?applyinstId='+_applyinstId+'&stageId='+_stageId+'&projInfoId='+_that.projInfoId+'&'+str+sFRenderConfig,
         type: 'get',
       }, function (result) {
         if (result.success) {
           _that.oneFormDialogVisible = true;
-          _that.devFormUrl = [];
-          $('#oneFormContent').html(result.content.sfForm)
-          _that.$nextTick(function(){
-            $('#oneFormContent').html(result.content.sfForm)
+          // _that.devFormUrl = [];
+          // $('#oneFormContent').html(result.content.sfForm)
+          // _that.$nextTick(function(){
+          //   $('#oneFormContent').html(result.content.sfForm)
+          // });
+          // if(result.content.devForm&&result.content.devForm.length>0){
+          //   result.content.devForm.map(function(item){
+          //     _that.devFormUrl.push(item.formUrl);
+          //   });
+          // }
+          result.content.map(function(item,index){
+            if(item.smartForm){
+              _that.getHtml(item,index)
+            }
           });
-          if(result.content.devForm&&result.content.devForm.length>0){
-            result.content.devForm.map(function(item){
-              _that.devFormUrl.push(item.formUrl);
-            });
-          }
+          _that.formUrlList = result.content;
         }else {
           _that.$message({
             message: result.content?result.content:'获取表单失败！',
@@ -5607,6 +5435,28 @@ var vm = new Vue({
       },function(res){
         _that.$message({
           message: '获取表单失败！',
+          type: 'error'
+        });
+      })
+    },
+    // 获取一张表单HTML
+    getHtml: function(formItem,index){
+      var _that = this;
+      request('', {
+        url: ctx + formItem.formUrl,
+        type: 'get',
+      }, function (result) {
+        if (result.success) {
+          $('#formHtml_'+index).html(result.content)
+        }else {
+          _that.$message({
+            message: result.content?result.content:'获取智能表单失败！',
+            type: 'error'
+          });
+        }
+      },function(res){
+        _that.$message({
+          message: '获取智能表单失败！',
           type: 'error'
         });
       })

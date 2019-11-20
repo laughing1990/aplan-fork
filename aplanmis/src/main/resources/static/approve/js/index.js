@@ -514,9 +514,12 @@ var vm = new Vue({
       backFormData: {
         returnToActId: '',
         comment: '',
+        selectOpinion: '',
       },
+      isBackDialog: true,
+      backDiaTitle: '回退',
       backformRules: {
-        comment: [{required: true, message: '请填写回退意见', trigger: 'blur'}],
+        comment: [{required: true, message: '请填写意见', trigger: 'blur'}],
       },
       // 中介事项审批
       isZJItem: false, // 是否为中介事项
@@ -1486,6 +1489,7 @@ var vm = new Vue({
       vm.isDraftPage = vm.getUrlParam('draft');
       vm.isZJItem = (vm.getUrlParam('draft') == '8');
       // vm.isZJItem = true;
+      // vm.isDraftPage = 'true';
       vm.getIteminstIdByTaskId(callback);
       
       function callback() {
@@ -1867,7 +1871,7 @@ var vm = new Vue({
     initButtons: function () {
       var vm = this;
       var defaultBtn = [{
-        elementName: "全景流程图",
+        elementName: "全景图",
         elementCode: "wfBusSave",
         columnType: "button",
         isReadonly: '0',
@@ -1895,7 +1899,7 @@ var vm = new Vue({
         columnType: "button",
         isReadonly: '0',
         isHidden: '0',
-        elementRender: '<button class="btn btn-primary" onclick="handleForWin()">发起申报</button>'
+        elementRender: '<button class="btn btn-primary" onclick="startDeclare()">发起申报</button>'
       }, {
         elementName: "打印回执",
         elementCode: "wfBusSave",
@@ -2376,9 +2380,16 @@ var vm = new Vue({
     opinionSelectChange: function (value) {
       vm.$set(vm.opinionForm, 'opinionText', value);
     },
+    backOpChange: function (value){
+      vm.backFormData.comment = value;
+    },
     //设为常用办理意见
-    setCommonOpinion: function () {
-      if (vm.checkNull(vm.opinionForm.opinionText)) {
+    setCommonOpinion: function (key) {
+      var text = vm.opinionForm.opinionText;
+      if (key == 'backFormData') {
+        text = vm.backFormData.comment;
+      }
+      if (vm.checkNull(text)) {
         vm.$message.info('办理意见不能为空，请填写！');
         return;
       }
@@ -2386,7 +2397,7 @@ var vm = new Vue({
       request('bpmFrontUrl', {
         url: ctx + 'rest/comment/saveUserOpinion',
         type: 'post',
-        data: {message: vm.opinionForm.opinionText}
+        data: {message: text}
       }, function (result) {
         vm.sendDialogLoading = false;
         if (result.success) {
@@ -4226,37 +4237,74 @@ var vm = new Vue({
     // 关闭回退弹窗
     closeBackDialog: function () {
       this.$refs.backFormRef.resetFields();
+      this.backFormData.selectOpinion = '';
     },
     // 确认回退
     ensureBack: function () {
       this.$refs.backFormRef.validate(function (f) {
         if (f) {
-          vm.backDiaLoading = true;
-          request('', {
-            url: ctx + 'rest/front/task/returnPrevTask/' + vm.taskId,
-            type: 'get',
-            data: vm.backFormData,
-          }, function (res) {
-            vm.backDiaLoading = false;
-            if (res.success) {
-              vm.$message.success('回退任务成功！2秒后关闭页面');
-              delayCloseWindow();
-              if (window.opener) {
-                window.opener.location.reload();
+          if (vm.isBackDialog) {
+            vm.backDiaLoading = true;
+            request('', {
+              url: ctx + 'rest/front/task/returnPrevTask/' + vm.taskId,
+              type: 'get',
+              data: vm.backFormData,
+            }, function (res) {
+              vm.backDiaLoading = false;
+              if (res.success) {
+                vm.$message.success('回退任务成功！2秒后关闭页面');
+                delayCloseWindow();
+                if (window.opener) {
+                  window.opener.location.reload();
+                }
+              } else {
+                vm.$message.error(res.message);
               }
-            } else {
-              vm.$message.error(res.message);
-            }
-          }, function (res) {
-            vm.backDiaLoading = false;
-            vm.$message.error('回退任务失败！')
-          })
+            }, function (res) {
+              vm.backDiaLoading = false;
+              vm.$message.error('回退任务失败！')
+            });
+          } else {
+            vm.backDiaLoading = true;
+            request('', {
+              url: ctx + 'rest/apply/common/processflow/start',
+              type: 'post',
+              data: {
+                applyinstId: vm.masterEntityKey,
+                comment: vm.backFormData.comment,
+              }
+            }, function (res) {
+              vm.backDiaLoading = false;
+              if (res.success) {
+                vm.$message.success('发起申报成功！2秒后关闭页面');
+                delayCloseWindow();
+                if (window.opener) {
+                  window.opener.location.reload();
+                }
+              } else {
+                vm.$message.error(res.message || '发起申报失败');
+              }
+            }, function (res) {
+              vm.backDiaLoading = false;
+              vm.$message.error('发起申报失败！')
+            })
+          }
         }
       });
     },
     // 点击回退按钮
     returnPrevTask: function () {
       var vm = this;
+      if (vm.opinionTableData.length == 0) {
+        vm.getOpinionList();
+      }
+      if (vm.isBackDialog) {
+        vm.backDiaTitle = '回退';
+      } else {
+        vm.backDiaTitle = '发起申报';
+        vm.backDiaVisible = true;
+        return null;
+      }
       vm.parentPageLoading = true;
       request('', {
         url: ctx + 'rest/front/task/getReturnPrevTasksByTaskId?taskId=' + vm.taskId,
@@ -4315,6 +4363,47 @@ var vm = new Vue({
         }, function (res) {
           vm.parentPageLoading = false;
           vm.$message.error('回退任务失败！')
+        })
+      }).catch(function () {
+      });
+    },
+    // 发起申报
+    startDeclare: function(){
+      var vm = this;
+      vm.returnPrevTask();
+      if (vm) return null;
+      vm.$prompt('请输入申报意见', '发起申报', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        inputType: 'textarea',
+        customClass: 'prompt-dia',
+        inputValidator: function (val) {
+          return !!val
+        },
+        inputErrorMessage: '请填写申报意见',
+      }).then(function (obj) {
+        vm.parentPageLoading = true;
+        request('', {
+          url: ctx + 'rest/apply/common/processflow/start',
+          type: 'post',
+          data: {
+            applyinstId: vm.masterEntityKey,
+            comment: obj.value
+          }
+        }, function (res) {
+          vm.parentPageLoading = false;
+          if (res.success) {
+            vm.$message.success('发起申报成功！2秒后关闭页面');
+            delayCloseWindow();
+            if (window.opener) {
+              window.opener.location.reload();
+            }
+          } else {
+            vm.$message.error(res.message || '发起申报失败');
+          }
+        }, function (res) {
+          vm.parentPageLoading = false;
+          vm.$message.error('发起申报失败！')
         })
       }).catch(function () {
       });
@@ -4814,6 +4903,7 @@ function exitSpecialProcessForItem() {
 
 //任务回退
 function returnPrevTask() {
+  vm.isBackDialog = true;
   vm.returnPrevTask();
 }
 
@@ -4885,6 +4975,11 @@ function onlySuggestDialogShow() {
 
 function seeAllProcessPic() {
   vm.seeAllProcessPic();
+}
+
+function startDeclare(){
+  vm.isBackDialog = false;
+  vm.startDeclare();
 }
 
 /**
