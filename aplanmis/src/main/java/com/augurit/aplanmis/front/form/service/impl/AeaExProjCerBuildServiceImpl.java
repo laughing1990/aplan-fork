@@ -3,6 +3,7 @@ package com.augurit.aplanmis.front.form.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
+import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.mapper.AeaExProjCertBuildMapper;
 import com.augurit.aplanmis.common.mapper.AeaProjInfoMapper;
@@ -289,6 +290,20 @@ public class AeaExProjCerBuildServiceImpl implements AeaExProjCertBuildService {
             }catch (Exception e){
             return new ContentResultForm<>(false,"同步信息失败，请在申报页面添加建设单位信息 " + e.getMessage(),"error");
         }
+    }
+
+    @Override
+    public void saveForm(AeaExProjCertBuild aeaExProjCertBuild) throws Exception {
+        if(StringUtils.isBlank(aeaExProjCertBuild.getBuildId())){
+            aeaExProjCertBuildMapper.insertAeaExProjCertBuild(aeaExProjCertBuild);
+        }else {
+            aeaExProjCertBuildMapper.updateAeaExProjCertBuild(aeaExProjCertBuild);
+        }
+    }
+
+    @Override
+    public AeaExProjCertBuild findByProjId(String projId) throws Exception {
+        return aeaExProjCertBuildMapper.findAeaExProjCertBuildByProjId(projId);
     }
 
     public StringBuilder spliceUnit(List<AeaUnitInfo> unitInfo){

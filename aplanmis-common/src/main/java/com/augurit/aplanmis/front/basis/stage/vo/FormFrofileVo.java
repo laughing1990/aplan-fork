@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 @ApiModel("开发表单vo")
-public class StageDevFormVo {
+public class FormFrofileVo {
 
     @ApiModelProperty(value = "表单id", dataType = "string")
     private String formId;

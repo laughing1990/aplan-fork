@@ -330,7 +330,7 @@ var vm = new Vue({
     mounted:function(){
         var _that = this;
         _that.initPage();
-        _that.getInfoByDataDictionary('C_TITLE,C_STRUCT_TYPE,C_PRJ_PERSON_POST,C_REG_LCN_TYPE,C_PRJ_ENT_TYPE');
+        _that.getInfoByDataDictionary('C_TITLE,C_STRUCT_TYPE,C_PRJ_PERSON_POST,C_REG_LCN_TYPE,C_PRJ_ENT_TYPE,XM_DWLX,PROJ_UNIT_LINKMAN_TYPE');
         //_that.getQualLevel('danweizilidengji');
         _that.initExSJUnitFromPage();
     },
@@ -516,25 +516,25 @@ var vm = new Vue({
             },function (data) {
                 if(data.content){
                     _that.structureSystem = data.content.C_STRUCT_TYPE;
-                    _that.projUnitLinkmanType = data.content.C_PRJ_PERSON_POST;
+                    _that.projUnitLinkmanType = data.content.PROJ_UNIT_LINKMAN_TYPE;
                     _that.projUnitLinkmanType.map(function (value,index) {
-                        if(value.itemCode != "104001"){
+                        if(value.itemCode != "1"){
                             _that.chengbaoProjUnitLinkmanType.push(value);
                         }
                     });
                     _that.projUnitLinkmanType.map(function (value,index) {
-                        if(value.itemCode != "104002"){
+                        if(value.itemCode != "4"){
                             _that.fenbaoProjUnitLinkmanType.push(value);
                         }
                     });
                     _that.projUnitLinkmanType.map(function (value,index) {
-                        if( value.itemCode != "105001"){
+                        if( value.itemCode != "3"){
                             _that.jiangliLinkmanType.push(value);
                         }
                     });
                     _that.professionCertType = data.content.C_REG_LCN_TYPE;
                     _that.titleCertNum = data.content.C_TITLE;
-                    _that.prjEntType = data.content.C_PRJ_ENT_TYPE;
+                    _that.prjEntType = data.content.XM_DWLX;
                 }else {
                     _that.$message({
                         message: '服务请求失败',
