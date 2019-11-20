@@ -116,9 +116,9 @@ public class MatController {
 
     @PostMapping("/uploadPurchaseAtt")
     @ApiOperation(value = "项目采购页-采购要求文件上传", tags = "中介超市-项目采购页-采购要求文件上传")
-    @ApiImplicitParam(name = "detailId", value = "附件ID")
-    public ResultForm saveProjPurchaseRequireAtt(HttpServletRequest request, String detailId) throws Exception {
-        UploadResult uploadResult = aeaImProjPurchaseService.uploadFiles(request, detailId);
+    @ApiImplicitParam(name = "recordId", value = "附件关联字段ID")
+    public ResultForm saveProjPurchaseRequireAtt(HttpServletRequest request, String recordId) throws Exception {
+        UploadResult uploadResult = aeaImProjPurchaseService.uploadFiles(request, recordId);
         return new ContentResultForm<>(true, uploadResult, "success");
     }
 }
