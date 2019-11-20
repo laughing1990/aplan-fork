@@ -23,8 +23,8 @@ public enum GDUnitType implements BaseEnum<GDUnitType, String> {
     LABOR_SUBCONTRACT("劳务分包", "24"),
     CONSTRUCTION_DRAWING_REVIEW("施工图审查", "25"),
     COST_CONSULTING("造价咨询", "26"),
-    CONTRACTING_UNIT("承包单位", "27");
-
+    CONTRACTING_UNIT("承包单位", "27"),
+    GENERAL_CONTRACTING_UNIT("工程总承包","28");
 
     private String name;
     private String value;

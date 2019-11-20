@@ -9,6 +9,8 @@ import com.augurit.agcloud.bsc.sc.dic.code.service.BscDicCodeService;
 import com.augurit.agcloud.bsc.sc.dic.region.service.BscDicRegionService;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.util.StringUtils;
+import com.augurit.agcloud.opus.common.domain.OpuOmUser;
+import com.augurit.agcloud.opus.common.mapper.OpuOmUserMapper;
 import com.augurit.aplanmis.common.constants.*;
 import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.dto.ApproveProjInfoDto;
@@ -108,6 +110,8 @@ public class RestApproveServiceImpl implements RestApproveService {
     private AeaProjLinkmanMapper aeaProjLinkmanMapper;
     @Autowired
     private AeaUnitInfoMapper aeaUnitInfoMapper;
+    @Autowired
+    private OpuOmUserMapper opuOmUserMapper;
 
     @Override
     public PageInfo<ApproveProjInfoDto> searchApproveProjInfoListByUnitOrLinkman(String unitInfoId, String userInfoId, String state, String keyword, int pageNum, int pageSize) throws Exception {
@@ -838,26 +842,69 @@ public class RestApproveServiceImpl implements RestApproveService {
     public List<MatinstVo> getSeriesMatinstByIteminstId(String iteminstId, String applyinstId) throws Exception {
         List<MatinstVo> matinstVos = new ArrayList();
         List<AeaItemMat> mats = aeaItemMatService.getMatListByApplyinstIdContainsMatinst(applyinstId, iteminstId);
+
+        String itemVerIds = null;
+
+        if (org.apache.commons.lang.StringUtils.isNotBlank(iteminstId)) {
+            AeaHiIteminst iteminst = aeaHiIteminstService.getAeaHiIteminstById(iteminstId);
+            if (iteminst == null) throw new Exception("找不到事项实例！");
+            itemVerIds = iteminst.getItemVerId();
+        } else if (org.apache.commons.lang.StringUtils.isNotBlank(applyinstId)) {
+            List<AeaHiIteminst> aeaHiIteminsts = aeaHiIteminstService.getAeaHiIteminstListByApplyinstId(applyinstId);
+            itemVerIds = aeaHiIteminsts.stream().map(AeaHiIteminst::getItemVerId).collect(Collectors.joining(","));
+        }
+
         for (AeaItemMat mat : mats) {
             MatinstVo matinstVo = new MatinstVo();
             BeanUtils.copyProperties(mat, matinstVo);
+
             if (mat.getPageMatinstList().size() > 0) {
                 AeaHiItemMatinst matinst = mat.getPageMatinstList().get(0);
                 matinstVo.setPaperMatinstId(matinst.getMatinstId());
-                matinstVo.setRealPaperCount(matinst.getRealPaperCount()==null?0L:matinst.getRealPaperCount());
+                matinstVo.setRealPaperCount(matinst.getRealPaperCount());
             }
 
             if (mat.getCopyMatinstList().size() > 0) {
                 AeaHiItemMatinst matinst = mat.getCopyMatinstList().get(0);
                 matinstVo.setCopyMatinstId(matinst.getMatinstId());
-                matinstVo.setRealCopyCount(matinst.getRealCopyCount()==null?0L:matinst.getRealCopyCount());
+                matinstVo.setRealCopyCount(matinst.getRealCopyCount());
             }
 
             if (mat.getAttMatinstList().size() > 0) {
                 AeaHiItemMatinst matinst = mat.getAttMatinstList().get(0);
-                matinstVo.setAttCount(matinst.getAttCount());
                 matinstVo.setAttMatinstId(matinst.getMatinstId());
+                matinstVo.setAttCount(matinst.getAttCount());
                 matinstVo.setFileList(fileUtilsService.getMatAttDetailByMatinstId(matinst.getMatinstId()));
+            }
+
+
+            if (mat.getCertinstList().size() > 0) {
+
+                AeaHiItemMatinst matinst = mat.getCertinstList().get(0);
+
+                //来自于本地系统的证照实例
+                if (CertinstSource.LOCAL.getValue().equals(matinst.getCertinstSource())) {
+                    matinstVo.setCertFileList(fileUtilsService.getMatAttDetailByMatinstId(matinst.getCertinstId()));
+                    matinstVo.setItemVerIds(itemVerIds);
+                } else if (CertinstSource.EXTERNAL.getValue().equals(matinst.getCertinstSource())) {//来自于外部系统的证照实例
+                    OpuOmUser user = opuOmUserMapper.getUserByUserId(matinst.getCreater());
+                    List<BscAttFileAndDir> bscAttFileAndDirs = new ArrayList();
+                    BscAttFileAndDir fileAndDir = new BscAttFileAndDir();
+                    fileAndDir.setFileId(matinst.getAuthCode());
+                    fileAndDir.setFileName(matinst.getCertisntName());
+                    fileAndDir.setCreaterName(user != null ? user.getUserName() : matinst.getCreater());
+                    fileAndDir.setUpdateTime(matinst.getCreateTime());
+                    bscAttFileAndDirs.add(fileAndDir);
+                    matinstVo.setCertFileList(bscAttFileAndDirs);
+                    matinstVo.setItemVerIds(itemVerIds);
+                }
+
+                matinstVo.setCertinstSource(matinst.getCertinstSource());
+                matinstVo.setCertMatinstId(matinst.getMatinstId());
+            }
+
+            if (mat.getForminstList().size() > 0) {
+                matinstVo.setForminstId(mat.getForminstList().get(0).getStoForminstId());
             }
 
             matinstVos.add(matinstVo);

@@ -1,4 +1,4 @@
-package com.augurit.aplanmis.supermarket.projPurchase.vo.mat;
+package com.augurit.aplanmis.common.vo;
 
 import com.augurit.agcloud.bsc.domain.BscAttForm;
 import io.swagger.annotations.ApiModel;

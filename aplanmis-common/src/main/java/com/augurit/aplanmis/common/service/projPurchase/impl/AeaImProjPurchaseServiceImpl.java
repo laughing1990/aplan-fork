@@ -1,5 +1,6 @@
 package com.augurit.aplanmis.common.service.projPurchase.impl;
 
+import com.augurit.agcloud.bsc.domain.BscAttForm;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.constants.DeletedStatus;
@@ -8,10 +9,7 @@ import com.augurit.aplanmis.common.mapper.*;
 import com.augurit.aplanmis.common.service.file.FileUtilsService;
 import com.augurit.aplanmis.common.service.projPurchase.AeaImProjPurchaseService;
 import com.augurit.aplanmis.common.utils.BusinessUtils;
-import com.augurit.aplanmis.common.vo.AeaImQualVo;
-import com.augurit.aplanmis.common.vo.AeaImServiceVo;
-import com.augurit.aplanmis.common.vo.AgentUnitInfoVo;
-import com.augurit.aplanmis.common.vo.QueryAgentUnitInfoVo;
+import com.augurit.aplanmis.common.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -168,25 +166,42 @@ public class AeaImProjPurchaseServiceImpl implements AeaImProjPurchaseService {
     }
 
     @Override
-    public String uploadFiles(HttpServletRequest request, String detailId) throws Exception {
+    public UploadResult uploadFiles(HttpServletRequest request, String detailId) throws Exception {
         if (StringUtils.isBlank(detailId)) {
             detailId = UUID.randomUUID().toString();
         }
+
+        /*StandardMultipartHttpServletRequest req = (StandardMultipartHttpServletRequest) request;
+        List<MultipartFile> officialRemarkFiles = req.getFiles("officialRemarkFile");
+        List<BscAttForm> bscAttForms = new ArrayList<>();
+        if (officialRemarkFiles != null && !officialRemarkFiles.isEmpty()) {
+            fileUtilsService.uploadAttachments("AEA_IM_PROJ_PURCHASE", "OFFICIAL_REMARK_FILE", detailId, officialRemarkFiles);
+            bscAttForms.addAll(fileUtilsService.getAttachmentsByRecordId(new String[]{detailId}, "AEA_IM_PROJ_PURCHASE", "OFFICIAL_REMARK_FILE"));
+        }
+        List<MultipartFile> requireExplainFiles = req.getFiles("requireExplainFile");
+        if (requireExplainFiles != null && !requireExplainFiles.isEmpty()) {
+            fileUtilsService.uploadAttachments("AEA_IM_PROJ_PURCHASE", "REQUIRE_EXPLAIN_FILE", detailId, requireExplainFiles);
+            bscAttForms.addAll(fileUtilsService.getAttachmentsByRecordId(new String[]{detailId}, "AEA_IM_PROJ_PURCHASE", "REQUIRE_EXPLAIN_FILE"));
+        }*/
+
+        List<BscAttForm> bscAttForms = new ArrayList<>();
         if (request instanceof StandardMultipartHttpServletRequest) {
             StandardMultipartHttpServletRequest req = (StandardMultipartHttpServletRequest) request;
             /***要求说明文件***/
             List<MultipartFile> requireExplainFiles = req.getFiles("requireExplainFile");
             if (requireExplainFiles != null && !requireExplainFiles.isEmpty()) {
                 fileUtilsService.uploadAttachments("AEA_IM_PROJ_PURCHASE", "REQUIRE_EXPLAIN_FILE", detailId, requireExplainFiles);
+                bscAttForms.addAll(fileUtilsService.getAttachmentsByRecordId(new String[]{detailId}, "AEA_IM_PROJ_PURCHASE", "REQUIRE_EXPLAIN_FILE"));
             }
             /***批文文件***/
             List<MultipartFile> officialRemarkFiles = req.getFiles("officialRemarkFile");
             if (officialRemarkFiles != null && !officialRemarkFiles.isEmpty()) {
                 fileUtilsService.uploadAttachments("AEA_IM_PROJ_PURCHASE", "OFFICIAL_REMARK_FILE", detailId, officialRemarkFiles);
+                bscAttForms.addAll(fileUtilsService.getAttachmentsByRecordId(new String[]{detailId}, "AEA_IM_PROJ_PURCHASE", "OFFICIAL_REMARK_FILE"));
             }
         }
-
-        return detailId;
+        UploadResult result = new UploadResult(detailId, bscAttForms);
+        return result;
     }
 
     public List<AgentUnitInfoVo> getAgentUnitInfoList(QueryAgentUnitInfoVo queryAgentUnitInfo) throws Exception {

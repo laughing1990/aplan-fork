@@ -4,6 +4,7 @@ import com.augurit.aplanmis.common.domain.AeaImProjPurchase;
 import com.augurit.aplanmis.common.vo.AeaImServiceVo;
 import com.augurit.aplanmis.common.vo.AgentUnitInfoVo;
 import com.augurit.aplanmis.common.vo.QueryAgentUnitInfoVo;
+import com.augurit.aplanmis.common.vo.UploadResult;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -67,7 +68,7 @@ public interface AeaImProjPurchaseService {
      * @param detailId 附件上传ID
      * @return
      */
-    String uploadFiles(HttpServletRequest request, String detailId) throws Exception;
+    UploadResult uploadFiles(HttpServletRequest request, String detailId) throws Exception;
 
     /**
      * 查询可服务的中介单位

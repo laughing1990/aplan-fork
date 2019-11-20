@@ -3,6 +3,8 @@ package com.augurit.aplanmis.front.form.service;
 import com.alibaba.fastjson.JSON;
 import com.augurit.agcloud.bsc.util.UuidUtil;
 import com.augurit.agcloud.framework.security.SecurityContext;
+import com.augurit.aplanmis.common.constants.GDUnitType;
+import com.augurit.aplanmis.common.constants.UnitProjLinkmanType;
 import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.mapper.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,18 +30,6 @@ public class RestExSJUnitFormService {
     private AeaHiCertinstMapper aeaHiCertinstMapper;
     @Autowired
     private AeaImQualLevelMapper aeaImQualLevelMapper;
-
-    public static final String gongchengzongchengbao = "9";//工程总承包单位
-    public static final String shigongzongbao = "6";//施工总包
-    public static final String shigongfenbao = "7";//施工分包
-    public static final String laowufenbao = "8";//劳务分包
-    public static final String gongchengjianli = "11";//工程监理
-
-    public static final String gongchengzongchengbaoLinkType = "104001";//工程总承包单位负责人类型
-    public static final String shigongzongbaoLinkType = "104001";//施工总包负责人类型
-    public static final String shigongfenbaoLinkType = "104002";//施工分包负责人类型
-    public static final String laowufenbaoLinkType = "104002";//劳务分包负责人类型
-    public static final String gongchengjianliLinkType = "105001";//工程监理负责人类型
 
     public void saveOrUpdateSJUnitInfo(AeaExProjBuild aeaExProjBuild) throws Exception {
         if (aeaExProjBuild != null){
@@ -209,12 +199,12 @@ public class RestExSJUnitFormService {
                 managerInfo.setUnitProjId(next.getUnitProjId());
                 managerInfo.setLinkmanInfoId(next.getLinkmanInfoId());
                 if(next.getUnitType()!=null){
-                    if(next.getUnitType().equals(this.gongchengzongchengbao) || next.getUnitType().equals(this.shigongzongbao)){
-                        managerInfo.setLinkmanType(this.gongchengzongchengbaoLinkType);
-                    }else if(next.getUnitType().equals(this.shigongfenbao) || next.getUnitType().equals(this.laowufenbao)){
-                        managerInfo.setLinkmanType(this.laowufenbaoLinkType);
-                    }else if(next.getUnitType().equals(this.gongchengjianli)){
-                        managerInfo.setLinkmanType(this.gongchengjianliLinkType);
+                    if(next.getUnitType().equals(GDUnitType.GENERAL_CONTRACTING_UNIT.getValue()) || next.getUnitType().equals(GDUnitType.CONSTRUCTION_CONTRACTOR.getValue())){
+                        managerInfo.setLinkmanType(UnitProjLinkmanType.FZR.getValue());
+                    }else if(next.getUnitType().equals(GDUnitType.CONSTRUCTION_SUBCONTRACT.getValue()) || next.getUnitType().equals(GDUnitType.LABOR_SUBCONTRACT.getValue())){
+                        managerInfo.setLinkmanType(UnitProjLinkmanType.JSFZR.getValue());
+                    }else if(next.getUnitType().equals(GDUnitType.SUPERVISION_UNIT.getValue())){
+                        managerInfo.setLinkmanType(UnitProjLinkmanType.JLGCS.getValue());
                     }
                 }
                 List<AeaUnitProjLinkman> managerInfos = aeaUnitProjLinkmanMapper.listAeaUnitProjLinkman(managerInfo);
@@ -274,24 +264,24 @@ public class RestExSJUnitFormService {
                         String unitType = aeaExProjBuildUnitInfo.getUnitType();
                         //personsetting start
                         PersonSetting person = null;
-                        if (unitType.equals(this.shigongzongbao)){
-                            if(unitProjLinkman!=null && !unitProjLinkman.getLinkmanType().equals(this.shigongzongbaoLinkType)){
+                        if (unitType.equals(GDUnitType.CONSTRUCTION_CONTRACTOR.getValue())){
+                            if(unitProjLinkman!=null && !unitProjLinkman.getLinkmanType().equals(UnitProjLinkmanType.FZR.getValue())){
                                 person = this.zhuzhuangPersonSetting(unitProjLinkman);
                                 person.setUnitProjId(next.getUnitProjId());
 
                             }
-                        }else if(unitType.equals(this.shigongfenbao)){
-                            if(unitProjLinkman!=null && !unitProjLinkman.getLinkmanType().equals(this.shigongfenbaoLinkType)){
+                        }else if(unitType.equals(GDUnitType.CONSTRUCTION_SUBCONTRACT.getValue())){
+                            if(unitProjLinkman!=null && !unitProjLinkman.getLinkmanType().equals(UnitProjLinkmanType.JSFZR.getValue())){
                                 person = this.zhuzhuangPersonSetting(unitProjLinkman);
                                 person.setUnitProjId(next.getUnitProjId());
                             }
-                        }else if (unitType.equals(this.laowufenbao)){
-                            if(unitProjLinkman!=null && !unitProjLinkman.getLinkmanType().equals(this.laowufenbaoLinkType)){
+                        }else if (unitType.equals(GDUnitType.LABOR_SUBCONTRACT.getValue())){
+                            if(unitProjLinkman!=null && !unitProjLinkman.getLinkmanType().equals(UnitProjLinkmanType.JSFZR.getValue())){
                                 person = this.zhuzhuangPersonSetting(unitProjLinkman);
                                 person.setUnitProjId(next.getUnitProjId());
                             }
-                        }else if(unitType.equals(this.gongchengjianli)){
-                            if(unitProjLinkman!=null && !unitProjLinkman.getLinkmanType().equals(this.gongchengjianliLinkType)){
+                        }else if(unitType.equals(GDUnitType.SUPERVISION_UNIT.getValue())){
+                            if(unitProjLinkman!=null && !unitProjLinkman.getLinkmanType().equals(UnitProjLinkmanType.XMZJ.getValue())){
                                 person = this.zhuzhuangPersonSetting(unitProjLinkman);
                                 person.setUnitProjId(next.getUnitProjId());
                             }
@@ -309,15 +299,15 @@ public class RestExSJUnitFormService {
                 }
                 String unitType = aeaExProjBuildUnitInfo.getUnitType();
                 if(unitType !=null){
-                    if (unitType.equals(this.gongchengzongchengbao)) {
+                    if (unitType.equals(GDUnitType.GENERAL_CONTRACTING_UNIT.getValue())) {
                         map.put("gongchengzongFrom", aeaExProjBuildUnitInfo);
-                    } else if (unitType.equals(this.shigongzongbao)) {
+                    } else if (unitType.equals(GDUnitType.CONSTRUCTION_CONTRACTOR.getValue())) {
                         map.put("applyShigongzongFrom", aeaExProjBuildUnitInfo);
-                    } else if (unitType.equals(this.shigongfenbao)) {
+                    } else if (unitType.equals(GDUnitType.CONSTRUCTION_SUBCONTRACT.getValue())) {
                         map.put("applyShigongzhuanyefenbaoFrom", aeaExProjBuildUnitInfo);
-                    } else if (unitType.equals(this.laowufenbao)) {
+                    } else if (unitType.equals(GDUnitType.LABOR_SUBCONTRACT.getValue())) {
                         map.put("applyShigonglaowufenbaoFrom", aeaExProjBuildUnitInfo);
-                    } else if (unitType.equals(this.gongchengjianli)) {
+                    } else if (unitType.equals(GDUnitType.SUPERVISION_UNIT.getValue())) {
                         map.put("applyJianliFrom", aeaExProjBuildUnitInfo);
                     }
                 }
