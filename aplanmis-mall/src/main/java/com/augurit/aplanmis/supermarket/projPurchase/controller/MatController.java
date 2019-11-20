@@ -19,6 +19,7 @@ import com.augurit.aplanmis.supermarket.projPurchase.vo.mat.SaveMatinstVo;
 import io.jsonwebtoken.lang.Assert;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -117,8 +118,20 @@ public class MatController {
     @PostMapping("/uploadPurchaseAtt")
     @ApiOperation(value = "项目采购页-采购要求文件上传", tags = "中介超市-项目采购页-采购要求文件上传")
     @ApiImplicitParam(name = "recordId", value = "附件关联字段ID")
-    public ResultForm saveProjPurchaseRequireAtt(HttpServletRequest request, String recordId) throws Exception {
+    public ContentResultForm<UploadResult> saveProjPurchaseRequireAtt(HttpServletRequest request, String recordId) throws Exception {
         UploadResult uploadResult = aeaImProjPurchaseService.uploadFiles(request, recordId);
         return new ContentResultForm<>(true, uploadResult, "success");
+    }
+
+    @GetMapping("/att/batch/delete")
+    @ApiOperation(value = "单个或批量删除 采购需求说明文件")
+    @ApiImplicitParams({@ApiImplicitParam(name = "recordId", value = "附件关联ID", required = true)
+            , @ApiImplicitParam(name = "recordIds", value = "附件ID，多个用英文,拼接", required = true)}
+    )
+    public ResultForm attBatchDelte(String recordId, String detailIds) throws Exception {
+
+        UploadResult result = aeaImProjPurchaseService.batchDelete(recordId, detailIds);
+
+        return new ContentResultForm<>(true, result);
     }
 }
