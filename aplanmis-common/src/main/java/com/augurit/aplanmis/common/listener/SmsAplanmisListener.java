@@ -199,6 +199,70 @@ public class SmsAplanmisListener {
         }
     }
 
+    //Todo 材料补全短信发送：发送业主材料补全通知
+    @EventListener
+    public void applyMaterialCompletionStartAplanmisEvent(ApplyMaterialCompletionStartAplanmisEvent applyMaterialCompletionStartAplanmisEvent){
+        log.info("材料补全短信发送：发送业主材料补全通知及事项审批通知监听");
+
+        if(!smsConfigProperties.isEnable())
+            return;
+
+        String applyinstId = applyMaterialCompletionStartAplanmisEvent.getApplyinstId();
+
+        if(StringUtils.isBlank(applyinstId))
+            return ;
+
+        try {
+            AeaHiApplyinst aeaHiApplyinst = aeaHiApplyinstService.getAeaHiApplyinstById(applyinstId);
+            if(aeaHiApplyinst==null)
+                throw new RuntimeException("申报实例获取为空！");
+
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            String applyDate = simpleDateFormat.format(aeaHiApplyinst.getAcceptTime());
+            String applyinstCode = aeaHiApplyinst.getApplyinstCode();
+            String linkmanInfoId = aeaHiApplyinst.getLinkmanInfoId();
+
+            List<AeaApplyinstProj> applyinstProjList = aeaApplyinstProjMapper.getAeaApplyinstProjCascadeProjByApplyinstId(applyinstId);
+            if(applyinstProjList==null||applyinstProjList.size()==0)
+                throw new RuntimeException("无法获取到申报项目信息！");
+
+            String projName = applyinstProjList.get(0).getProjName();
+
+            ActStoAppinst appinst = new ActStoAppinst();
+            appinst.setMasterRecordId(applyinstId);
+            List<ActStoAppinst> appinstList = actStoAppinstService.listActStoAppinst(appinst);
+            if(appinstList==null||appinstList.size()==0)
+                throw new RuntimeException("无法获取申报主流程信息！");
+
+            ActStoAppinst masterAppinst = appinstList.get(0);
+            String procinstId = masterAppinst.getProcinstId();
+
+            String taskName = "";
+
+            List<Task> list = taskService.createTaskQuery().processInstanceId(procinstId).list();
+            if(list != null && list.size() > 0){
+                taskName = list.get(0).getName();
+            }
+
+            String phoneNum = "";
+            if(StringUtils.isNotBlank(linkmanInfoId)) {
+                //获取联系人电话
+                AeaLinkmanInfo aeaLinkmanInfo = aeaLinkmanInfoMapper.getAeaLinkmanInfoById(linkmanInfoId);
+
+                if(aeaLinkmanInfo!=null)
+                    phoneNum = aeaLinkmanInfo.getLinkmanMobilePhone();
+            }
+
+            //窗口材料补全提醒（提醒业主）
+            String buquanRemindContent = sendSmsTemplateJsonConverter.getBuQuanJobRemindContent(applyDate,projName,applyinstCode,taskName,phoneNum);
+            if (buquanRemindContent != null)
+                this.createSendSmsJobRemind(phoneNum,buquanRemindContent,applyinstId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new SmsException(e.getMessage());
+        }
+    }
+
     //Todo 申报受理短信提醒：提醒审批人员
     @EventListener
     public void applyAcceptBacklogAplanmisEvent(ApplyAcceptAplanmisEvent applyAcceptAplanmisEvent){

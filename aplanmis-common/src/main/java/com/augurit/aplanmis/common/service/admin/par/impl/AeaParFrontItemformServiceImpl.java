@@ -186,6 +186,10 @@ public class AeaParFrontItemformServiceImpl implements AeaParFrontItemformServic
         return list;
     }
 
+    @Override
+    public void changIsActive(String id, String rootOrgId){
 
+        aeaParFrontItemformMapper.changIsActive(id, rootOrgId);
+    }
 }
 

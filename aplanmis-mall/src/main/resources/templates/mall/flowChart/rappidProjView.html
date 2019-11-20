@@ -212,30 +212,30 @@
           </table>
         </div>
         <!-- 审批过程 -->
-        <div class="det-content-u" v-show="detailTabsActiveCode=='process'">
-          <el-table style="width:100%" border :data="commentList">
-            <el-table-column label="环节" property="nodeName" width="80"></el-table-column>
-            <el-table-column label="人员" property="taskAssignee" width="80"></el-table-column>
-            <el-table-column label="办理意见" property="commentMessage"></el-table-column>
-            <el-table-column label="办理结果" property="approveResult" width="120">
-              <template slot-scope="resScope">
-                {{formatResultStatus(resScope.row.approveResult)}}
-              </template>
-            </el-table-column>
-            <el-table-column label="办理时间" property="endDate" width="140">
-              <template slot-scope="timeScope">
-                {{formatDate(timeScope.row.sigeInDate)}}
-              </template>
-            </el-table-column>
-            <el-table-column label="状态" property="taskState" width="100">
-              <template slot-scope="statusScope" v-if="typeof statusScope.row.taskState == 'number'">
-                    <span class="status-span" :class="[getStatusClass(statusScope.row.taskState)]">
-                      {{formatTaskState(statusScope.row.taskState)}}
-                    </span>
-              </template>
-            </el-table-column>
-          </el-table>
-        </div>
+<!--        <div class="det-content-u" v-show="detailTabsActiveCode=='process'">-->
+<!--          <el-table style="width:100%" border :data="commentList">-->
+<!--            <el-table-column label="环节" property="nodeName" width="80"></el-table-column>-->
+<!--            <el-table-column label="人员" property="taskAssignee" width="80"></el-table-column>-->
+<!--            <el-table-column label="办理意见" property="commentMessage"></el-table-column>-->
+<!--            <el-table-column label="办理结果" property="approveResult" width="120">-->
+<!--              <template slot-scope="resScope">-->
+<!--                {{formatResultStatus(resScope.row.approveResult)}}-->
+<!--              </template>-->
+<!--            </el-table-column>-->
+<!--            <el-table-column label="办理时间" property="endDate" width="140">-->
+<!--              <template slot-scope="timeScope">-->
+<!--                {{formatDate(timeScope.row.sigeInDate)}}-->
+<!--              </template>-->
+<!--            </el-table-column>-->
+<!--            <el-table-column label="状态" property="taskState" width="100">-->
+<!--              <template slot-scope="statusScope" v-if="typeof statusScope.row.taskState == 'number'">-->
+<!--                    <span class="status-span" :class="[getStatusClass(statusScope.row.taskState)]">-->
+<!--                      {{formatTaskState(statusScope.row.taskState)}}-->
+<!--                    </span>-->
+<!--              </template>-->
+<!--            </el-table-column>-->
+<!--          </el-table>-->
+<!--        </div>-->
         <!-- 材料补正 -->
         <div class="det-content-u" v-show="detailTabsActiveCode=='supply'">
           <div class="spe-app-u" v-if="supplyList&&supplyList.length"

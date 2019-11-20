@@ -5,31 +5,31 @@
 <mapper namespace="com.augurit.aplanmis.common.mapper.AeaParFrontPartformMapper">
     <!--1 返回所有字段的SQL字句 -->
     <sql id="allColumns">
-    FRONT_PARTFORM_ID  frontPartformId,
-    STAGE_ID  stageId,
-    STAGE_PARTFORM_ID  stagePartformId,
-    SORT_NO  sortNo,
-    IS_ACTIVE  isActive,
-    FRONT_PARTFORM_MEMO  frontPartformMemo,
-    CREATER  creater,
-    CREATE_TIME  createTime,
-    MODIFIER  modifier,
-    MODIFY_TIME  modifyTime,
-    ROOT_ORG_ID  rootOrgId
+        FRONT_PARTFORM_ID  frontPartformId,
+        STAGE_ID  stageId,
+        STAGE_PARTFORM_ID  stagePartformId,
+        SORT_NO  sortNo,
+        IS_ACTIVE  isActive,
+        FRONT_PARTFORM_MEMO  frontPartformMemo,
+        CREATER  creater,
+        CREATE_TIME  createTime,
+        MODIFIER  modifier,
+        MODIFY_TIME  modifyTime,
+        ROOT_ORG_ID  rootOrgId
     </sql>
 
     <sql id="allColumnsAlias">
-    ${alias}.FRONT_PARTFORM_ID  frontPartformId,
-    ${alias}.STAGE_ID  stageId,
-    ${alias}.STAGE_PARTFORM_ID  stagePartformId,
-    ${alias}.SORT_NO  sortNo,
-    ${alias}.IS_ACTIVE  isActive,
-    ${alias}.FRONT_PARTFORM_MEMO  frontPartformMemo,
-    ${alias}.CREATER  creater,
-    ${alias}.CREATE_TIME  createTime,
-    ${alias}.MODIFIER  modifier,
-    ${alias}.MODIFY_TIME  modifyTime,
-    ${alias}.ROOT_ORG_ID  rootOrgId
+        ${alias}.FRONT_PARTFORM_ID  frontPartformId,
+        ${alias}.STAGE_ID  stageId,
+        ${alias}.STAGE_PARTFORM_ID  stagePartformId,
+        ${alias}.SORT_NO  sortNo,
+        ${alias}.IS_ACTIVE  isActive,
+        ${alias}.FRONT_PARTFORM_MEMO  frontPartformMemo,
+        ${alias}.CREATER  creater,
+        ${alias}.CREATE_TIME  createTime,
+        ${alias}.MODIFIER  modifier,
+        ${alias}.MODIFY_TIME  modifyTime,
+        ${alias}.ROOT_ORG_ID  rootOrgId
     </sql>
 
     <!--2 根据主键ID查询单个实体 -->
@@ -280,4 +280,17 @@ FRONT_PARTFORM_ID  ,STAGE_ID  ,STAGE_PARTFORM_ID  ,SORT_NO  ,IS_ACTIVE  ,FRONT_P
         left join aea_par_stage_partform apsp on apsp.STAGE_PARTFORM_ID = apfp.STAGE_PARTFORM_ID
         where apfp.FRONT_PARTFORM_ID = #{id}
     </select>
+
+    <update id="changIsActive">
+        update AEA_PAR_FRONT_PARTFORM
+        set IS_ACTIVE = case IS_ACTIVE
+        when '1' then '0'
+        when '0' then '1'
+        end
+        <where>
+            and FRONT_PARTFORM_ID = #{id}
+            and ROOT_ORG_ID = #{rootOrgId}
+        </where>
+    </update>
+
 </mapper>

@@ -1,5 +1,7 @@
 package com.augurit.aplanmis.admin.par;
 
+import com.augurit.agcloud.framework.exception.InvalidParameterException;
+import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.ui.pager.EasyuiPageInfo;
 import com.augurit.agcloud.framework.ui.pager.PageHelper;
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
@@ -21,13 +23,6 @@ import java.util.UUID;
 
 /**
  * 阶段事项表单前置检测表-Controller 页面控制转发类
- * <ul>
- * <li>项目名：奥格erp3.0--第一期建设项目</li>
- * <li>版本信息：v1.0</li>
- * <li>版权所有(C)2016广州奥格智能科技有限公司-版权所有</li>
- * <li>创建人:Administrator</li>
- * <li>创建时间：2019-11-01 10:48:12</li>
- * </ul>
  */
 @RestController
 @RequestMapping("/aea/par/front/itemform")
@@ -60,6 +55,7 @@ public class AeaParFrontItemformController {
 
     @RequestMapping("/saveOrUpdateAeaParFrontItemform.do")
     public ResultForm saveOrUpdateAeaParFrontItemform(AeaParFrontItemform aeaParFrontItemform){
+
         try {
             if (aeaParFrontItemform.getFrontItemformId() != null && !"".equals(aeaParFrontItemform.getFrontItemformId())) {
                 aeaParFrontItemformService.updateAeaParFrontItemform(aeaParFrontItemform);
@@ -79,6 +75,7 @@ public class AeaParFrontItemformController {
 
     @RequestMapping("/deleteAeaParFrontItemformById.do")
     public ResultForm deleteAeaParFrontItemformById(String id) {
+
         try {
             logger.debug("删除阶段事项表单前置检测表Form对象，对象id为：{}", id);
             if (StringUtils.isNotBlank(id))
@@ -93,6 +90,7 @@ public class AeaParFrontItemformController {
 
     @RequestMapping("/getMaxSortNo.do")
     public ResultForm getMaxSortNo(AeaParFrontItemform aeaParFrontItemform) {
+
         try {
             return new ContentResultForm<>(true, aeaParFrontItemformService.getMaxSortNo(aeaParFrontItemform));
         } catch (Exception e) {
@@ -103,6 +101,7 @@ public class AeaParFrontItemformController {
 
     @RequestMapping("/listSelectParFrontItemformByPage.do")
     public EasyuiPageInfo<AeaParFrontItemformVo> listSelectParFrontItemformByPage(AeaParFrontItemform aeaParFrontItemform, Page page) throws Exception {
+
         PageInfo<AeaParFrontItemformVo> pageInfo = aeaParFrontItemformService.listSelectParFrontItemformByPage(aeaParFrontItemform, page);
         return PageHelper.toEasyuiPageInfo(pageInfo);
     }
@@ -110,6 +109,7 @@ public class AeaParFrontItemformController {
 
     @RequestMapping("/batchSaveAeaParFrontItemform.do")
     public ResultForm batchSaveAeaParFrontItemform(String stageId,String stageItemIds){
+
         try {
             aeaParFrontItemformService.batchSaveAeaParFrontItemform(stageId,stageItemIds);
             return new ResultForm(true);
@@ -137,9 +137,18 @@ public class AeaParFrontItemformController {
 
     @RequestMapping("/listAeaParFrontItemformByNoPage.do")
     public List<AeaParFrontItemformVo> listAeaParFrontItemformByNoPage(AeaParFrontItemform aeaParFrontItemform) throws Exception {
+
         List<AeaParFrontItemformVo> list = aeaParFrontItemformService.listAeaParFrontItemformVoByNoPage(aeaParFrontItemform);
         return list;
     }
 
+    @RequestMapping("/changIsActive.do")
+    public ResultForm changIsActive(String id) {
 
+        if (StringUtils.isBlank(id)) {
+            throw new InvalidParameterException("参数id为空!");
+        }
+        aeaParFrontItemformService.changIsActive(id, SecurityContext.getCurrentOrgId());
+        return new ResultForm(true);
+    }
 }

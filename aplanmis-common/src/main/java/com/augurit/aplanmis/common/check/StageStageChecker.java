@@ -2,10 +2,10 @@ package com.augurit.aplanmis.common.check;
 
 import com.augurit.agcloud.framework.constant.Status;
 import com.augurit.aplanmis.common.check.exception.StageStageCheckException;
+import com.augurit.aplanmis.common.domain.AeaParFrontStage;
 import com.augurit.aplanmis.common.domain.AeaParStage;
 import com.augurit.aplanmis.common.service.admin.par.AeaParFrontStageService;
 import com.augurit.aplanmis.common.service.stage.AeaParStageService;
-import com.augurit.aplanmis.common.vo.AeaParFrontStageVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
@@ -42,7 +42,7 @@ public class StageStageChecker extends AbstractChecker<AeaParStage> {
             Assert.hasText(projInfoId, "projInfoId must not null.");
 
             //获取所有的前置阶段信息
-            List<AeaParFrontStageVo> aeaParFrontStageVoList = aeaParFrontStageService.getHistStageByStageId(aeaParStage.getStageId());
+            List<AeaParFrontStage> aeaParFrontStageVoList = aeaParFrontStageService.getHistStageByStageId(aeaParStage.getStageId());
 
             //通过项目ID获取所有已经办结或办结容缺通过的阶段信息
             List<AeaParStage> parStages = aeaParStageService.getCompletedStageByProjInfoId(projInfoId);

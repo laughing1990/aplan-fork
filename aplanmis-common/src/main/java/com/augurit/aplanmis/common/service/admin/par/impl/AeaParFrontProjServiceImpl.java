@@ -20,13 +20,6 @@ import java.util.List;
 
 /**
  * 阶段的项目信息前置检测-Service服务接口实现类
- * <ul>
- * <li>项目名：奥格erp3.0--第一期建设项目</li>
- * <li>版本信息：v1.0</li>
- * <li>版权所有(C)2016广州奥格智能科技有限公司-版权所有</li>
- * <li>创建人:Administrator</li>
- * <li>创建时间：2019-11-01 10:48:33</li>
- * </ul>
  */
 @Service
 @Transactional
@@ -39,7 +32,8 @@ public class AeaParFrontProjServiceImpl implements AeaParFrontProjService {
 
     @Override
     public void saveAeaParFrontProj(AeaParFrontProj aeaParFrontProj) throws Exception {
-        checkSame(aeaParFrontProj);
+
+//        checkSame(aeaParFrontProj);
 
         aeaParFrontProj.setCreateTime(new Date());
         aeaParFrontProj.setCreater(SecurityContext.getCurrentUserId());
@@ -49,7 +43,6 @@ public class AeaParFrontProjServiceImpl implements AeaParFrontProjService {
 
     @Override
     public void updateAeaParFrontProj(AeaParFrontProj aeaParFrontProj) throws Exception {
-//        checkSame(aeaParFrontProj);
 
         aeaParFrontProj.setModifyTime(new Date());
         aeaParFrontProj.setModifier(SecurityContext.getCurrentUserId());
@@ -69,6 +62,7 @@ public class AeaParFrontProjServiceImpl implements AeaParFrontProjService {
 
     @Override
     public PageInfo<AeaParFrontProj> listAeaParFrontProj(AeaParFrontProj aeaParFrontProj, Page page) throws Exception {
+
         PageHelper.startPage(page);
         List<AeaParFrontProj> list = aeaParFrontProjMapper.listAeaParFrontProj(aeaParFrontProj);
         logger.debug("成功执行分页查询！！");
@@ -93,17 +87,13 @@ public class AeaParFrontProjServiceImpl implements AeaParFrontProjService {
 
     @Override
     public Long getMaxSortNo(AeaParFrontProj aeaParFrontProj)throws Exception{
-        Long sortNo = aeaParFrontProjMapper.getMaxSortNo(aeaParFrontProj);
-        if(sortNo==null){
-            sortNo = 1l;
-        }else{
-            sortNo = sortNo + 1;
-        }
 
-        return sortNo;
+        Long sortNo = aeaParFrontProjMapper.getMaxSortNo(aeaParFrontProj);
+        return sortNo==null?1L:(sortNo+1L);
     }
 
     private void checkSame(AeaParFrontProj aeaParFrontProj) throws Exception{
+
         AeaParFrontProj queryParFrontProj = new AeaParFrontProj();
         queryParFrontProj.setStageId(aeaParFrontProj.getStageId());
         queryParFrontProj.setRuleName(aeaParFrontProj.getRuleName());
@@ -118,6 +108,12 @@ public class AeaParFrontProjServiceImpl implements AeaParFrontProjService {
         if(list.size()>0){
             throw new RuntimeException("已有相同规则的项目前置检测!");
         }
+    }
+
+    @Override
+    public void changIsActive(String id, String rootOrgId){
+
+        aeaParFrontProjMapper.changIsActive(id, rootOrgId);
     }
 }
 

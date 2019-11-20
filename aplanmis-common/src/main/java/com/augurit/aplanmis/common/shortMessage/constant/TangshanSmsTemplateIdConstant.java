@@ -49,4 +49,9 @@ public class TangshanSmsTemplateIdConstant {
      * 根据唐山工程建设项目政策文件，您的待办事项，项目名称为{ProjName},申请编号为{applyinstCode}，已超期，系统已默认同意通过，请知悉。
      */
     public static String TACITLY_EXPRESS ="91555727";
+
+    /**
+     * 材料补全提醒
+     */
+    public static String MAT_COMPLETION ="";
 }

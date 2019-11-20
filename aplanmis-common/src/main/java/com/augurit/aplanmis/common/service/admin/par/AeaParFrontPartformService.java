@@ -44,4 +44,5 @@ public interface AeaParFrontPartformService {
 
     List<AeaParFrontPartformVo> listAeaParFrontPartformVoByNoPage(AeaParFrontPartform aeaParFrontPartform) throws Exception;
 
+    void changIsActive(String id, String rootOrgId);
 }

@@ -13,7 +13,7 @@ $(function () {
   // $("#uploadProgress").modal("show");
   var proj = {};
   var cells = ""; //渲染内容
-  
+
   app = new Vue({
     el: '#app',
     mixins: [mixins],
@@ -36,7 +36,7 @@ $(function () {
           max: 5,
           step: .1
         },
-        
+
         // 弹框显示状态
         dialogVisible: false,
         filePanelLoaded: false,
@@ -46,7 +46,7 @@ $(function () {
         itemDetailVisible: false,
         allDetailDiaTabs: [
           {label: '概要信息', code: 'base'},
-          {label: '审批过程', code: 'process'},
+          //{label: '审批过程', code: 'process'},
           {label: '材料补正', code: 'supply'},
           {label: '特殊程序', code: 'special'},
           {label: '批文批复', code: 'doc'},
@@ -111,7 +111,7 @@ $(function () {
         var nodes = this.$refs.tree.getCheckedNodes();
         reqStatusListAndResetThemeverDiagram(data, nodes, proj, cells);
       },
-      
+
       // 页面事件绑定
       domBindEvent: function () {
         // 头部项目名左侧下拉点击
@@ -125,7 +125,7 @@ $(function () {
             $picTip.hide();
           }
         })
-        
+
         // 图例点击
         // $('.proHeadPicTip').on('click', function () {
         //   var $picTip = $('.itemColorRark');
@@ -140,7 +140,7 @@ $(function () {
         }, function () {
           $('.itemColorRark').hide();
         })
-        
+
         // 工具栏点击事件
         $('.toolMain, .toolFold').on('click', function (a, b) {
           var node = $('.toolPanel');
@@ -152,7 +152,7 @@ $(function () {
             node.css('width', '60px');
           }
         });
-        
+
         // 缩放
         var c = this.c;
         $('.beBig').on('click', function (a, b) {
@@ -438,7 +438,7 @@ $(function () {
         }
         var count = 0;
         doRequest();
-        
+
         function doRequest() {
           request('', {
             url: ctx + 'previewPdf/pdfIsCoverted?detailId=' + obj.detailId,
@@ -574,7 +574,7 @@ $(function () {
             projInfoId = res.content.projInfoId;
             themeVerId = res.content.diagramStatusVo.themeVerId;
           }
-          
+
           if (projName) {
             $('.proHeadContent').text(projName);
             $('.proHeadContent').attr('title', projName);
@@ -752,7 +752,7 @@ function changeEleColorIfPass(itemIds, type, json) {
       png = 'unknown.png', color = gWhile, fontcolor = gGray;
   }
   setEleJsonAttr(itemIds, json, color, fontcolor, '特别程序', type, png);
-  
+
 }
 
 function changeStageColorIfPass(eleId, json, status, color) {
@@ -771,7 +771,7 @@ function changeStageColorIfPass(eleId, json, status, color) {
       json.cells[i].attrs['.header']['fill'] = color;
     }
   }
-  
+
 }
 
 var ai = 0;
@@ -806,7 +806,7 @@ function setEleJsonAttr(itemIds, json, color, fontColor, statusName, type, png) 
           if (!json.cells[i].attrs['.body']) {
             json.cells[i].attrs['.body'] = {};
           }
-          
+
           if (type == 'NEED_NOT_HANDLE') { //无需办理
             json.cells[i].attrs['.content']['style']['color'] = fontColor;
             json.cells[i].attrs['.body']['fill'] = color;
@@ -840,9 +840,9 @@ function changeStatus(statusList, json) {
       }
     }
   }
-  
+
   handleParallelStage(json);
-  
+
   themeVerDiagram = JSON.stringify(json);
   themeVerDiagram = themeVerDiagram.replace(/<span>状态展示<\/span>/g, "");
   themeVerDiagram = themeVerDiagram.replace(/<span>无需办理<\/span>/g, "");
@@ -910,7 +910,7 @@ function setStageStatusWord(statusList) {
             // }
         }
     }*/
-    
+
     //控制阶段的颜色和图标
     var color = '',
         src = '';
@@ -922,7 +922,7 @@ function setStageStatusWord(statusList) {
     } else { //未开始
       color = gGraySlow, src = null; //src = ctx+'/rappid/apps/BPMNEditor/images/unfinesh.png';
     }
-    
+
     if (color != '') {
       var $text = $pool.find('text:eq(1)');
       $text.find('tspan').attr('fill', '#fff');
@@ -939,7 +939,7 @@ function setStageStatusWord(statusList) {
         svgimg.setAttributeNS(null, 'y', '46');
         svgimg.setAttributeNS(null, 'visibility', 'visible');
         $pool.find('text:eq(1)').after(svgimg);
-        
+
         //箭头图标弃用
         /* var slast = document.createElementNS('http://www.w3.org/2000/svg','image');
          slast.setAttributeNS(null,'height','20');
@@ -951,14 +951,14 @@ function setStageStatusWord(statusList) {
          slast.setAttributeNS('http://www.w3.org/1999/xlink','href', ctx+'/rappid/apps/BPMNEditor/images/arrow.png');
          slast.setAttributeNS(null,'x',($pool.find('svg').attr('width'))-30);
          $pool.find('text:eq(1)').after(slast);*/
-        
+
         //阶段文字长度
-        
-        
+
+
       }
     }
     k++;
-    
+
   }
 }
 
@@ -1069,7 +1069,7 @@ function handleAssistStage() {
       }
     }
   });
-  
+
   //记录需要隐藏辅线的id //记录最高元素的y
   $.each(json.cells, function (ind, ele) {
     if (ele.type == 'bpmn.Activity' || ele.type.indexOf('bpmn.SPool') >= 0) {
@@ -1081,20 +1081,20 @@ function handleAssistStage() {
       }
     }
   });
-  
-  
+
+
   var resizeY = 0; //并行调整位置resizey, 主线调整高度resizey
   //计算stageInfo
   for (var p in eleStageInfo) {
     eleStageInfo[p].newMaxY = eleStageInfo[p].maxY - eleStageInfo[p].subHeight;
   }
-  
+
   //调整同一阶段多个辅线的位置、事项位置
   $.each(json.cells, function (ind, ele) {
     if (ele.type.indexOf('bpmn.SPool') >= 0 && eleStageInfo[ele.parent]) {
       if (eleStageInfo[ele.parent].newMaxY && eleStageInfo[ele.parent]) {
         json.cells[ind].position.y = json.cells[ind].position.y - eleStageInfo[ele.parent][ele.id]['ajustHieght'];
-        
+
       }
     }
     if (ele.type == 'bpmn.Activity') {
@@ -1108,7 +1108,7 @@ function handleAssistStage() {
       }
     }
   })
-  
+
   var tempH = 0;
   for (var p in eleStageInfo) {
     if (tempH == 0) {
@@ -1126,14 +1126,14 @@ function handleAssistStage() {
         }
         resizeY = eleStageInfo[p].newMaxY;
         allSubY = tempH;
-        
+
       }
     }
-    
+
     // if(eleStageInfo[p].newMaxY > resizeY && eleStageInfo[p].subHeight > 0){
     // }
   }
-  
+
   allSubY = allSubY - 5; //添加底部事项与阶段底部间隔
   //移动所有阶段和事项
   $.each(json.cells, function (ind, ele) {
@@ -1242,10 +1242,10 @@ function changeViewStageProp(stageId, statusValue, workDay, ele) {
     color = gGraySlow, src = ctx + '/rappid/apps/BPMNEditor/images/stage_un_start.png';
   }
   // if (ele.duringTime) {
-    $pool.find('text:eq(2)').text('（'+(ele.duringTime?ele.duringTime:'-')+'工作日）');  //时间设置未做
-    $pool.find('text:eq(2)').attr('transform', 'matrix(1,0,0,1,'+($pool.find('rect:eq(1)').attr('width')-($pool.find('text:eq(2)')[0]).getClientRects()[0].width)/2+',43)');
+  //   $pool.find('text:eq(2)').text('（'+(ele.duringTime?ele.duringTime:'-')+'工作日）');  //时间设置未做
+  //   $pool.find('text:eq(2)').attr('transform', 'matrix(1,0,0,1,'+($pool.find('rect:eq(1)').attr('width')-($pool.find('text:eq(2)')[0]).getClientRects()[0].width)/2+',43)');
   // }
-  
+
   if (color != '') {
     var $text = $pool.find('text:eq(1)');
     $text.find('tspan').attr('fill', '#fff');
@@ -1295,7 +1295,7 @@ function clearStageAndItem() {
       } else {
         $pool.find('text:eq(2)').empty();
       }
-      
+
       if ($pool.find('image').length > 0) {
         $pool.find('image').attr('xlink:href', src);
       } else {
@@ -1320,7 +1320,7 @@ function clearStageAndItem() {
     $(ele).data('itemInfo', null);
     $(ele).find('div.content span:eq(0)').empty();
   })
-  
+
 }
 
 function setImageIconAndPosition($image, $model, png) {
@@ -1519,8 +1519,8 @@ function setViewByProjResult(statusList, projId, cells) {
       "statusName": "未办"
     }
   };
-  
-  
+
+
   if (statusList && statusList.length > 0) {
     $.each(statusList, function (ind, ele) {
       changeViewStageProp(ele.stageId, ele.statusValue, ele.statusName, ele);
@@ -1568,7 +1568,7 @@ function setViewByProjResult(statusList, projId, cells) {
             default: //未知
               png = 'unknown.png', color = gWhile, fontcolor = gGray;
           }*/
-          
+
           if (ej[type]) {
             fontcolor = ej[type].fontColor, backcolor = ej[type].backColor, color = ej[type].borderColor, png = ej[type].icon;
             // setEleJsonAttr(itemIds, json, color,fontcolor, '特别程序', type, png);

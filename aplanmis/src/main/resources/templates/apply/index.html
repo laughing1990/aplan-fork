@@ -1729,7 +1729,7 @@
         <!--<el-button type="primary" style="margin-left: 20px"><a target="_blank" :href="ctx+'rest/oneform/common/renderPage?applyinstId='+parallelApplyinstId+'&stageId='+stageId+'&'+formItemsIdStr+'&showBasicButton=false&includePlatformResource=true'">打印表单</a></el-button>-->
         <div :style="{height:(curHeight-64)+'px',overflow: 'auto'}">
           <el-tabs tab-position="left">
-            <el-tab-pane v-for="(item,index) in formUrlList" :label="item.formName" @click.native="test(1,2)">
+            <el-tab-pane v-for="(item,index) in formUrlList" :key="index" :label="item.formName" @click.native="test(1,2)">
               <iframe :style="{height:(curHeight-68)+'px',overflow: 'auto',width:'100%'}"
                       v-if="item.smartForm==false"
                       :src="ctx+item.formUrl" frameborder="0"></iframe>
@@ -1747,15 +1747,7 @@
               </div>
             </el-tab-pane>
           </el-tabs>
-          <!--<div id="oneFormContent"></div>-->
-          <!--<div class="form-iframe" v-if="devFormUrl.length>0" v-for="item in devFormUrl">-->
-            <!--<iframe :src="ctx+item" frameborder="0"></iframe>-->
-          <!--</div>-->
         </div>
-        <!--<div class="right-bottom-btn" v-if="showMoreProjInfo">-->
-          <!--<el-button type="primary" circle><a target="_blank" :href="ctx+'rest/oneform/common/renderPage?applyinstId='+parallelApplyinstId+'&stageId='+stageId+'&'+formItemsIdStr+'&showBasicButton=false&includePlatformResource=true'">打印<br/>表单</a></el-button>-->
-          <!--<el-button circle @click="oneFormDialogVisible=false">关闭<br/>窗口</el-button>-->
-        <!--</div>-->
       </el-dialog>
       <!--  一张表单  end-->
       <!--  材料一张表单  start-->

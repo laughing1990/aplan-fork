@@ -57,6 +57,30 @@ public class TangshanSendSmsRemindContentConverterImpl implements SendSmsRemindC
     }
 
     /**
+     * 材料补全提醒（提醒业主）
+     * @param applyDate
+     * @param projName
+     * @param applyinstCode
+     * @param taskName
+     * @param phoneNum
+     * @return
+     */
+    @Override
+    public String getBuQuanJobRemindContent(String applyDate, String projName, String applyinstCode, String taskName, String phoneNum) {
+        //您{applyDate}的申报申请需要补全材料，项目名称为{ProjName},申请编号为{applyinstCode}。请凭申请编号到窗口提交材料，提交材料前，项目审批将暂停。
+
+        /*Map<String,String> map = new HashMap<>();
+        map.put("applyDate",applyDate);
+        map.put("ProjName",projName);
+        map.put("applyinstCode",applyinstCode);
+        String templateParamJson = SendSmsUtil.getTemplateParam(map);
+        String result = SendSmsUtil.getSmsJobRemindContent(phoneNum,TangshanSmsTemplateIdConstant.MAT_COMPLETION,templateParamJson);
+        return result;*/
+        //根据实际情况去实现
+        return null;
+    }
+
+    /**
      * 办结快递邮寄查收提醒（提醒业主）
      * @return
      */

@@ -1,5 +1,6 @@
 package com.augurit.aplanmis.common.service.admin.par.impl;
 
+import com.augurit.agcloud.framework.constant.Status;
 import com.augurit.agcloud.framework.exception.InvalidParameterException;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.ui.pager.PageHelper;
@@ -7,7 +8,6 @@ import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.domain.AeaParFrontItem;
 import com.augurit.aplanmis.common.mapper.AeaParFrontItemMapper;
 import com.augurit.aplanmis.common.service.admin.par.AeaParFrontItemService;
-import com.augurit.aplanmis.common.vo.AeaParFrontItemVo;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import org.slf4j.Logger;
@@ -23,13 +23,6 @@ import java.util.UUID;
 
 /**
  * 阶段事项前置检测表-Service服务接口实现类
- * <ul>
- * <li>项目名：奥格erp3.0--第一期建设项目</li>
- * <li>版本信息：v1.0</li>
- * <li>版权所有(C)2016广州奥格智能科技有限公司-版权所有</li>
- * <li>创建人:Administrator</li>
- * <li>创建时间：2019-11-01 10:47:49</li>
- * </ul>
  */
 @Service
 @Transactional
@@ -42,7 +35,6 @@ public class AeaParFrontItemServiceImpl implements AeaParFrontItemService {
 
     @Override
     public void saveAeaParFrontItem(AeaParFrontItem aeaParFrontItem) throws Exception {
-        checkSame(aeaParFrontItem);
 
         aeaParFrontItem.setCreateTime(new Date());
         aeaParFrontItem.setCreater(SecurityContext.getCurrentUserId());
@@ -52,7 +44,6 @@ public class AeaParFrontItemServiceImpl implements AeaParFrontItemService {
 
     @Override
     public void updateAeaParFrontItem(AeaParFrontItem aeaParFrontItem) throws Exception {
-//        checkSame(aeaParFrontItem);
 
         aeaParFrontItem.setModifyTime(new Date());
         aeaParFrontItem.setModifier(SecurityContext.getCurrentUserId());
@@ -72,6 +63,7 @@ public class AeaParFrontItemServiceImpl implements AeaParFrontItemService {
 
     @Override
     public PageInfo<AeaParFrontItem> listAeaParFrontItem(AeaParFrontItem aeaParFrontItem, Page page) throws Exception {
+
         PageHelper.startPage(page);
         List<AeaParFrontItem> list = aeaParFrontItemMapper.listAeaParFrontItem(aeaParFrontItem);
         logger.debug("成功执行分页查询！！");
@@ -80,6 +72,7 @@ public class AeaParFrontItemServiceImpl implements AeaParFrontItemService {
 
     @Override
     public AeaParFrontItem getAeaParFrontItemById(String id) throws Exception {
+
         if (StringUtils.isBlank(id)) {
             throw new InvalidParameterException(id);
         }
@@ -89,33 +82,31 @@ public class AeaParFrontItemServiceImpl implements AeaParFrontItemService {
 
     @Override
     public List<AeaParFrontItem> listAeaParFrontItem(AeaParFrontItem aeaParFrontItem) throws Exception {
+
         List<AeaParFrontItem> list = aeaParFrontItemMapper.listAeaParFrontItem(aeaParFrontItem);
         logger.debug("成功执行查询list！！");
         return list;
     }
 
     @Override
-    public PageInfo<AeaParFrontItemVo> listAeaParFrontItemVoByPage(AeaParFrontItem aeaParFrontItem, Page page) throws Exception {
+    public PageInfo<AeaParFrontItem> listAeaParFrontItemVoByPage(AeaParFrontItem aeaParFrontItem, Page page) throws Exception {
+
         PageHelper.startPage(page);
-        List<AeaParFrontItemVo> list = aeaParFrontItemMapper.listAeaParFrontItemVo(aeaParFrontItem);
+        List<AeaParFrontItem> list = aeaParFrontItemMapper.listAeaParFrontItemVo(aeaParFrontItem);
         logger.debug("成功执行分页查询！！");
-        return new PageInfo<>(list);
+        return new PageInfo<AeaParFrontItem>(list);
     }
 
     @Override
     public Long getMaxSortNo(AeaParFrontItem aeaParFrontItem) throws Exception {
-        Long sortNo = aeaParFrontItemMapper.getMaxSortNo(aeaParFrontItem);
-        if (sortNo == null) {
-            sortNo = 1l;
-        } else {
-            sortNo = sortNo + 1;
-        }
 
-        return sortNo;
+        Long sortNo = aeaParFrontItemMapper.getMaxSortNo(aeaParFrontItem);
+        return sortNo==null?1L:(sortNo+1L);
     }
 
     @Override
-    public AeaParFrontItemVo getAeaParFrontItemVoByFrontItemId(String frontItemId) throws Exception {
+    public AeaParFrontItem getAeaParFrontItemVoByFrontItemId(String frontItemId) throws Exception {
+
         if (StringUtils.isBlank(frontItemId)) {
             throw new InvalidParameterException(frontItemId);
         }
@@ -123,8 +114,9 @@ public class AeaParFrontItemServiceImpl implements AeaParFrontItemService {
     }
 
     @Override
-    public List<AeaParFrontItemVo> listAeaParFrontItemByStageId(String stageId) {
-        List<AeaParFrontItemVo> aeaParFrontItemVos = new ArrayList();
+    public List<AeaParFrontItem> listAeaParFrontItemByStageId(String stageId) {
+
+        List<AeaParFrontItem> aeaParFrontItemVos = new ArrayList();
         if (StringUtils.isBlank(stageId)) {
             return aeaParFrontItemVos;
         }
@@ -133,6 +125,7 @@ public class AeaParFrontItemServiceImpl implements AeaParFrontItemService {
     }
 
     private void checkSame(AeaParFrontItem aeaParFrontItem) throws Exception {
+
         AeaParFrontItem queryParFrontItem = new AeaParFrontItem();
         queryParFrontItem.setStageId(aeaParFrontItem.getStageId());
         queryParFrontItem.setItemVerId(aeaParFrontItem.getItemVerId());
@@ -145,6 +138,7 @@ public class AeaParFrontItemServiceImpl implements AeaParFrontItemService {
 
     @Override
     public void batchSaveAeaParFrontItem(String stageId,String itemVerIds)throws Exception{
+
         if(StringUtils.isBlank(stageId)  || StringUtils.isBlank(itemVerIds)){
             throw new InvalidParameterException(stageId,itemVerIds);
         }
@@ -175,11 +169,96 @@ public class AeaParFrontItemServiceImpl implements AeaParFrontItemService {
     }
 
     @Override
-    public List<AeaParFrontItemVo> listAeaParFrontItemVoByNoPage(AeaParFrontItem aeaParFrontItem) throws Exception{
-        List<AeaParFrontItemVo> list = aeaParFrontItemMapper.listAeaParFrontItemVo(aeaParFrontItem);
+    public List<AeaParFrontItem> listAeaParFrontItemVoByNoPage(AeaParFrontItem aeaParFrontItem) throws Exception{
+
+        List<AeaParFrontItem> list = aeaParFrontItemMapper.listAeaParFrontItemVo(aeaParFrontItem);
         return list;
     }
 
+    @Override
+    public void batchSaveFrontItem(String stageId, String[] itemVerIds, Long[] sortNos){
 
+        if (StringUtils.isNotBlank(stageId)) {
+            String userId = SecurityContext.getCurrentUserId();
+            String rootOrgId = SecurityContext.getCurrentOrgId();
+            if(itemVerIds!=null&&itemVerIds.length>0) {
+                // 查找需要删除的
+                List<String> needDelIdList = new ArrayList<String>();
+                List<AeaParFrontItem> needDelList = new ArrayList<AeaParFrontItem>();
+                AeaParFrontItem sfrontItem = new AeaParFrontItem();
+                sfrontItem.setStageId(stageId);
+                sfrontItem.setRootOrgId(rootOrgId);
+                List<AeaParFrontItem> frontItemList = aeaParFrontItemMapper.listAeaParFrontItem(sfrontItem);
+                if(frontItemList!=null&&frontItemList.size()>0){
+                    for(AeaParFrontItem item : frontItemList){
+                        int count=0;
+                        for (String itemVerId : itemVerIds) {
+                            if(item.getItemVerId().equals(itemVerId)){
+                                break;
+                            }else{
+                                count++;
+                            }
+                        }
+                        if(count==itemVerIds.length){
+                            needDelList.add(item);
+                            needDelIdList.add(item.getFrontItemId());
+                        }
+                    }
+                }
+                // 先删除
+                if(needDelList!=null&&needDelList.size()>0){
+
+                    frontItemList.removeAll(needDelList);
+                    aeaParFrontItemMapper.batchDelAeaItemFrontByIds(needDelIdList);
+                }
+
+                // 保存
+                for (int i=0; i<itemVerIds.length;i++) {
+                    AeaParFrontItem updateVo = null;
+                    if (frontItemList != null && frontItemList.size() > 0) {
+                        for (AeaParFrontItem item : frontItemList) {
+                            if(item.getItemVerId().equals(itemVerIds[i])){
+                                updateVo = item;
+                                break;
+                            }
+                        }
+                    }
+                    if(updateVo==null){
+                        AeaParFrontItem itemFront = new AeaParFrontItem();
+                        itemFront.setFrontItemId(UUID.randomUUID().toString());
+                        itemFront.setStageId(stageId);
+                        itemFront.setItemVerId(itemVerIds[i]);
+                        itemFront.setSortNo(new Long(sortNos[i]));
+                        itemFront.setIsActive(Status.ON);
+                        itemFront.setCreater(userId);
+                        itemFront.setCreateTime(new Date());
+                        itemFront.setRootOrgId(rootOrgId);
+                        aeaParFrontItemMapper.insertAeaParFrontItem(itemFront);
+                    }else{
+                        updateVo.setModifier(userId);
+                        updateVo.setModifyTime(new Date());
+                        updateVo.setSortNo(new Long(sortNos[i]));
+                        aeaParFrontItemMapper.updateAeaParFrontItem(updateVo);
+                    }
+                }
+            }else{
+                aeaParFrontItemMapper.batchDelItemByStageId(stageId, rootOrgId);
+            }
+        }
+    }
+
+    @Override
+    public void batchDelItemByStageId(String stageId, String rootOrgId){
+
+        if(StringUtils.isNotBlank(stageId)){
+            aeaParFrontItemMapper.batchDelItemByStageId(stageId, rootOrgId);
+        }
+    }
+
+    @Override
+    public void changIsActive(String id, String rootOrgId){
+
+        aeaParFrontItemMapper.changIsActive(id, rootOrgId);
+    }
 }
 
