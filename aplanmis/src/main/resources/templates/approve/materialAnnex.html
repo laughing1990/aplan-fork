@@ -334,6 +334,7 @@
         if (vm.isSeries == '1') {
           params.isSeries = 1;
         }
+        vm.pageLoading = true;
         request('', {
           url: ctx + 'rest/approve/series/matinst/list',
           type: 'get',
