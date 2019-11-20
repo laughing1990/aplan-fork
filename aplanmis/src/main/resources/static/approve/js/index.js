@@ -3558,7 +3558,7 @@ var vm = new Vue({
             vm.bzLoading = false;
             if (res.success) {
               vm.$message.success('发起材料补正成功');
-              delayRefreshWindow();
+              delayCloseWindow();
             } else {
               vm.$message.error(res.message || '材料补正发起失败');
             }
@@ -4081,7 +4081,7 @@ var vm = new Vue({
             if (res.success) {
               ts.$message.success('材料补全开始');
               ts.isShowMatmend = false;
-              delayRefreshWindow();
+              delayCloseWindow();
             } else {
               ts.$message.error(res.message);
             }
