@@ -65,7 +65,7 @@ var vm = new Vue({
 			if (value === '' || value === undefined || value.trim() === '') {
 				callback(new Error('请输入统一社会信用代码！'));
 			} else if (value) {
-				var flag = !/^[1-9A-GY]{1}[1239]{1}[1-5]{1}[0-9]{5}[0-9A-Z]{10}$/.test(value);
+				var flag = !/[0-9A-HJ-NPQRTUWXY]{2}\d{6}[0-9A-HJ-NPQRTUWXY]{10}/.test(value);
 				if (flag) {
 					return callback(new Error('请输入正确的统一社会信用代码！'));
 				} else {
