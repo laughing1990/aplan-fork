@@ -1,7 +1,6 @@
 package com.augurit.aplanmis.common.service.admin.par;
 
 import com.augurit.aplanmis.common.domain.AeaParFrontItemform;
-import com.augurit.aplanmis.common.vo.AeaParFrontItemformVo;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 
@@ -24,19 +23,19 @@ public interface AeaParFrontItemformService {
 
     List<AeaParFrontItemform> listAeaParFrontItemform(AeaParFrontItemform aeaParFrontItemform) throws Exception;
 
-    PageInfo<AeaParFrontItemformVo> listAeaParFrontItemformVoByPage(AeaParFrontItemform aeaParFrontItemform, Page page) throws Exception;
+    PageInfo<AeaParFrontItemform> listAeaParFrontItemformVoByPage(AeaParFrontItemform aeaParFrontItemform, Page page) throws Exception;
 
-    Long getMaxSortNo(AeaParFrontItemform aeaParFrontItemform) throws Exception;
+    Long getMaxSortNo(String stageId, String rootOrgId) throws Exception;
 
-    PageInfo<AeaParFrontItemformVo> listSelectParFrontItemformByPage(AeaParFrontItemform aeaParFrontItemform, Page page) throws Exception;
+    PageInfo<AeaParFrontItemform> listSelectParFrontItemformByPage(AeaParFrontItemform aeaParFrontItemform, Page page) throws Exception;
 
-    AeaParFrontItemformVo getAeaParFrontItemformVoById(String frontItemformId) throws Exception;
+    AeaParFrontItemform getAeaParFrontItemformVoById(String frontItemformId) throws Exception;
 
-    List<AeaParFrontItemformVo> getAeaParFrontItemformVoByStageId(String stageId);
+    List<AeaParFrontItemform> getAeaParFrontItemformVoByStageId(String stageId);
 
-    void batchSaveAeaParFrontItemform(String stageId,String stageItemIds)throws Exception;
+    void batchSaveAeaParFrontItemform(String stageId, String[] stageItemIds)throws Exception;
 
-    List<AeaParFrontItemformVo> listAeaParFrontItemformVoByNoPage(AeaParFrontItemform aeaParFrontItemform) throws Exception;
+    List<AeaParFrontItemform> listAeaParFrontItemformVoByNoPage(AeaParFrontItemform aeaParFrontItemform) throws Exception;
 
     void changIsActive(String id, String rootOrgId);
 }

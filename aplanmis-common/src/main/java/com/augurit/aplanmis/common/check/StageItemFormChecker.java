@@ -4,10 +4,10 @@ import com.augurit.agcloud.framework.constant.Status;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.aplanmis.common.check.exception.StageItemFormCheckException;
 import com.augurit.aplanmis.common.domain.AeaHiItemMatinst;
+import com.augurit.aplanmis.common.domain.AeaParFrontItemform;
 import com.augurit.aplanmis.common.domain.AeaParStage;
 import com.augurit.aplanmis.common.mapper.AeaHiItemMatinstMapper;
 import com.augurit.aplanmis.common.service.admin.par.AeaParFrontItemformService;
-import com.augurit.aplanmis.common.vo.AeaParFrontItemformVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -41,7 +41,7 @@ public class StageItemFormChecker extends AbstractChecker<AeaParStage> {
             Assert.hasText(projInfoId, "projInfoId must not null.");
 
             //获取阶段下事项的前置智能表单
-            List<AeaParFrontItemformVo> aeaParFrontItemformVoList = aeaParFrontItemformService.getAeaParFrontItemformVoByStageId(aeaParStage.getStageId());
+            List<AeaParFrontItemform> aeaParFrontItemformVoList = aeaParFrontItemformService.getAeaParFrontItemformVoByStageId(aeaParStage.getStageId());
 
             if (aeaParFrontItemformVoList.size() > 0) {
 

@@ -9,7 +9,6 @@ import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.domain.AeaParFrontItemform;
 import com.augurit.aplanmis.common.service.admin.par.AeaParFrontItemformService;
-import com.augurit.aplanmis.common.vo.AeaParFrontItemformVo;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import org.slf4j.Logger;
@@ -34,13 +33,15 @@ public class AeaParFrontItemformController {
     private AeaParFrontItemformService aeaParFrontItemformService;
 
     @RequestMapping("/listAeaParFrontItemformByPage.do")
-    public EasyuiPageInfo<AeaParFrontItemformVo> listAeaParFrontItemformByPage(AeaParFrontItemform aeaParFrontItemform, Page page) throws Exception {
-        PageInfo<AeaParFrontItemformVo> pageInfo = aeaParFrontItemformService.listAeaParFrontItemformVoByPage(aeaParFrontItemform, page);
+    public EasyuiPageInfo<AeaParFrontItemform> listAeaParFrontItemformByPage(AeaParFrontItemform aeaParFrontItemform, Page page) throws Exception {
+
+        PageInfo<AeaParFrontItemform> pageInfo = aeaParFrontItemformService.listAeaParFrontItemformVoByPage(aeaParFrontItemform, page);
         return PageHelper.toEasyuiPageInfo(pageInfo);
     }
 
     @RequestMapping("/getAeaParFrontItemform.do")
     public ResultForm getAeaParFrontItemform(String frontItemformId){
+
         try {
             if (StringUtils.isNotBlank(frontItemformId)) {
                 return new ContentResultForm<>(true, aeaParFrontItemformService.getAeaParFrontItemformVoById(frontItemformId));
@@ -57,14 +58,12 @@ public class AeaParFrontItemformController {
     public ResultForm saveOrUpdateAeaParFrontItemform(AeaParFrontItemform aeaParFrontItemform){
 
         try {
-            if (aeaParFrontItemform.getFrontItemformId() != null && !"".equals(aeaParFrontItemform.getFrontItemformId())) {
+            if (StringUtils.isNotBlank(aeaParFrontItemform.getFrontItemformId())) {
                 aeaParFrontItemformService.updateAeaParFrontItemform(aeaParFrontItemform);
             } else {
-                if (aeaParFrontItemform.getFrontItemformId() == null || "".equals(aeaParFrontItemform.getFrontItemformId()))
-                    aeaParFrontItemform.setFrontItemformId(UUID.randomUUID().toString());
+                aeaParFrontItemform.setFrontItemformId(UUID.randomUUID().toString());
                 aeaParFrontItemformService.saveAeaParFrontItemform(aeaParFrontItemform);
             }
-
             return new ContentResultForm<>(true, aeaParFrontItemform);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -78,8 +77,9 @@ public class AeaParFrontItemformController {
 
         try {
             logger.debug("删除阶段事项表单前置检测表Form对象，对象id为：{}", id);
-            if (StringUtils.isNotBlank(id))
+            if (StringUtils.isNotBlank(id)) {
                 aeaParFrontItemformService.deleteAeaParFrontItemformById(id);
+            }
             return new ResultForm(true);
         }catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -89,10 +89,10 @@ public class AeaParFrontItemformController {
     }
 
     @RequestMapping("/getMaxSortNo.do")
-    public ResultForm getMaxSortNo(AeaParFrontItemform aeaParFrontItemform) {
+    public ResultForm getMaxSortNo(String stageId) {
 
         try {
-            return new ContentResultForm<>(true, aeaParFrontItemformService.getMaxSortNo(aeaParFrontItemform));
+            return new ContentResultForm<>(true, aeaParFrontItemformService.getMaxSortNo(stageId, SecurityContext.getCurrentOrgId()));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return new ResultForm(false, e.getMessage());
@@ -100,18 +100,18 @@ public class AeaParFrontItemformController {
     }
 
     @RequestMapping("/listSelectParFrontItemformByPage.do")
-    public EasyuiPageInfo<AeaParFrontItemformVo> listSelectParFrontItemformByPage(AeaParFrontItemform aeaParFrontItemform, Page page) throws Exception {
+    public EasyuiPageInfo<AeaParFrontItemform> listSelectParFrontItemformByPage(AeaParFrontItemform aeaParFrontItemform, Page page) throws Exception {
 
-        PageInfo<AeaParFrontItemformVo> pageInfo = aeaParFrontItemformService.listSelectParFrontItemformByPage(aeaParFrontItemform, page);
+        PageInfo<AeaParFrontItemform> pageInfo = aeaParFrontItemformService.listSelectParFrontItemformByPage(aeaParFrontItemform, page);
         return PageHelper.toEasyuiPageInfo(pageInfo);
     }
 
 
     @RequestMapping("/batchSaveAeaParFrontItemform.do")
-    public ResultForm batchSaveAeaParFrontItemform(String stageId,String stageItemIds){
+    public ResultForm batchSaveAeaParFrontItemform(String stageId, String[] stageItemIds){
 
         try {
-            aeaParFrontItemformService.batchSaveAeaParFrontItemform(stageId,stageItemIds);
+            aeaParFrontItemformService.batchSaveAeaParFrontItemform(stageId, stageItemIds);
             return new ResultForm(true);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -136,9 +136,9 @@ public class AeaParFrontItemformController {
     }
 
     @RequestMapping("/listAeaParFrontItemformByNoPage.do")
-    public List<AeaParFrontItemformVo> listAeaParFrontItemformByNoPage(AeaParFrontItemform aeaParFrontItemform) throws Exception {
+    public List<AeaParFrontItemform> listAeaParFrontItemformByNoPage(AeaParFrontItemform aeaParFrontItemform) throws Exception {
 
-        List<AeaParFrontItemformVo> list = aeaParFrontItemformService.listAeaParFrontItemformVoByNoPage(aeaParFrontItemform);
+        List<AeaParFrontItemform> list = aeaParFrontItemformService.listAeaParFrontItemformVoByNoPage(aeaParFrontItemform);
         return list;
     }
 

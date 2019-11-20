@@ -1,9 +1,9 @@
 package com.augurit.aplanmis.common.mapper;
 
 import com.augurit.aplanmis.common.domain.AeaParFrontItemform;
-import com.augurit.aplanmis.common.vo.AeaParFrontItemformVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
@@ -11,6 +11,7 @@ import java.util.List;
  * 阶段事项表单前置检测表-Mapper数据与持久化接口类
  */
 @Mapper
+@Repository
 public interface AeaParFrontItemformMapper {
 
     void insertAeaParFrontItemform(AeaParFrontItemform aeaParFrontItemform) ;
@@ -23,16 +24,15 @@ public interface AeaParFrontItemformMapper {
 
     AeaParFrontItemform getAeaParFrontItemformById(@Param("id") String id) ;
 
-    List<AeaParFrontItemformVo> listAeaParFrontItemformVo(AeaParFrontItemform aeaParFrontItemform) ;
+    List<AeaParFrontItemform> listAeaParFrontItemformVo(AeaParFrontItemform aeaParFrontItemform) ;
 
-    Long getMaxSortNo(AeaParFrontItemform aeaParFrontItemform) ;
+    Long getMaxSortNo(@Param("stageId") String stageId, @Param("rootOrgId") String rootOrgId);
 
-    List<AeaParFrontItemformVo> listSelectParFrontItemform(AeaParFrontItemform aeaParFrontItemform) ;
+    List<AeaParFrontItemform> listSelectParFrontItemform(AeaParFrontItemform aeaParFrontItemform) ;
 
-    AeaParFrontItemformVo getAeaParFrontItemformVoById(@Param("id") String id) ;
+    AeaParFrontItemform getAeaParFrontItemformVoById(@Param("id") String id) ;
 
-    List<AeaParFrontItemformVo> getAeaParFrontItemformVoByStageId(@Param("stageId") String stageId,
-                                                                  @Param("rootOrgId") String rootOrgId);
+    List<AeaParFrontItemform> getAeaParFrontItemformVoByStageId(@Param("stageId") String stageId, @Param("rootOrgId") String rootOrgId);
 
     void changIsActive(@Param("id") String id, @Param("rootOrgId") String rootOrgId);
 }
