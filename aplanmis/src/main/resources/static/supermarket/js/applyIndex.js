@@ -3496,13 +3496,13 @@ var vm = new Vue({
         return;
       }
       if( this.enclosureFileUploadType === 'officialRemark' ){
-        this.officialRemarkFile = response.content;
+        this.officialRemarkFile = response.content.recordId;
         this.fileList1 = [];
-        this.fileList1.push(file);
+        this.fileList1 = response.content.attForms;
       }else{
-        this.requireExplainFile = response.content;
+        this.requireExplainFile = response.content.recordId;
         this.fileList2 = [];
-        this.fileList2.push(file);;
+        this.fileList2 = response.content.attForms;
       }
       
     },

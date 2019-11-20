@@ -28,7 +28,7 @@ public class RestIteminstController {
     private RestIteminstService restIteminstService;
 
     @GetMapping("/detail/{iteminstId}")
-    @ApiOperation(value = "审批页全景流程图 --> 事项审批详情信息接口", httpMethod = "GET")
+    @ApiOperation(value = "审批页全景图 --> 事项审批详情信息接口", httpMethod = "GET")
     @ApiImplicitParam(name = "iteminstId", value = "事项实例id", required = true, dataType = "string", paramType = "path", readOnly = true)
     public ResultForm getIteminstDetailInfo(@PathVariable String iteminstId) throws Exception {
         if (StringUtils.isBlank(iteminstId) || "undefined".equals(iteminstId)) {

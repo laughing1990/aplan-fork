@@ -85,7 +85,7 @@ public interface AeaParThemeVerAdminService {
     void updateThemeVerDiagramStage(AeaParStage aeaParStage);
 
     /**
-     * 插入阶段到全景流程图
+     * 插入阶段到全景图
      * @param aeaParStage
      */
     void insertThemeVerDiagramStage(AeaParStage aeaParStage);
@@ -149,7 +149,7 @@ public interface AeaParThemeVerAdminService {
     void removeStageFromDiagram(JSONArray cells, String stageId);
 
     /**
-     * 更新全景流程图中的事项名称
+     * 更新全景图中的事项名称
      * @param aeaItemBasic
      */
     void updateDiagramActivityName(AeaItemBasic aeaItemBasic);

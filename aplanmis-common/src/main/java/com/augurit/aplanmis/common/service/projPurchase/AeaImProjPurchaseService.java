@@ -78,4 +78,12 @@ public interface AeaImProjPurchaseService {
      * @throws Exception
      */
     List<AgentUnitInfoVo> getAgentUnitInfoList(QueryAgentUnitInfoVo queryAgentUnitInfo) throws Exception;
+
+    /**
+     * 单个或批量删除
+     *
+     * @param recordId  关联id
+     * @param detailIds 附件ID
+     */
+    UploadResult batchDelete(String recordId, String detailIds) throws Exception;
 }

@@ -1,6 +1,8 @@
 package com.augurit.aplanmis.common.service.projPurchase.impl;
 
 import com.augurit.agcloud.bsc.domain.BscAttForm;
+import com.augurit.agcloud.bsc.domain.BscAttLink;
+import com.augurit.agcloud.bsc.mapper.BscAttMapper;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.constants.DeletedStatus;
@@ -51,7 +53,8 @@ public class AeaImProjPurchaseServiceImpl implements AeaImProjPurchaseService {
     private AeaImServiceMajorMapper aeaImServiceMajorMapper;
     @Autowired
     private FileUtilsService fileUtilsService;
-
+    @Autowired
+    private BscAttMapper bscAttMapper;
     @Value("${dg.sso.access.platform.org.top-org-id}")
     protected String topOrgId;
 
@@ -250,6 +253,32 @@ public class AeaImProjPurchaseServiceImpl implements AeaImProjPurchaseService {
         computeServiceEvaluation(agentUnitInfoVos, serviceId);
 
         return agentUnitInfoVos;
+    }
+
+    /**
+     * 单个或批量删除
+     *
+     * @param recordId  关联id
+     * @param detailIds 附件ID
+     */
+    @Override
+    public UploadResult batchDelete(String recordId, String detailIds) throws Exception {
+
+        if (StringUtils.isNotBlank(detailIds)) {
+            String[] split = detailIds.split(",");
+            fileUtilsService.deleteAttachments(split);
+        }
+        BscAttLink link = new BscAttLink();
+        link.setRecordId(recordId);
+
+        List<BscAttLink> bscAttLinks = bscAttMapper.listBscAttLink(link);
+        if (!bscAttLinks.isEmpty()) {
+            BscAttLink attLink = bscAttLinks.get(0);
+            List<BscAttForm> attachments = fileUtilsService.getAttachmentsByRecordId(recordId.split(","), attLink.getPkName(), attLink.getTableName());
+            return new UploadResult(recordId, attachments);
+        }
+
+        return new UploadResult(recordId, new ArrayList<>());
     }
 
     /**
