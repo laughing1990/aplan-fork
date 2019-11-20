@@ -1024,8 +1024,8 @@ var module1 = new Vue({
 			var formData = new FormData();
 
 			file.forEach(function (u) {
-				Vue.set(u.file, 'officialRemarkFile', u.file.name);
-				formData.append('file', u.file);
+				// Vue.set(u.file, 'officialRemarkFile', u.file.name);
+				formData.append('officialRemarkFile', u.file);
 			})
 			// formData.append('officialRemarkFile', file.file);
 			formData.append('detailedID', vm.detailedID1);
@@ -1057,7 +1057,7 @@ var module1 = new Vue({
 		debounceHandler2: function (file) {
 			var _that = this;
 
-			this.debounce1(this.uploadFile1, file);
+			this.debounce2(this.uploadFile2, file);
 		},
 		debounce2: function (func, file) {
 			var vm = this;
@@ -1077,8 +1077,8 @@ var module1 = new Vue({
 			var formData = new FormData();
 
 			file.forEach(function (u) {
-				Vue.set(u.file, 'officialRemarkFile', u.file.name);
-				formData.append('file', u.file);
+				// Vue.set(u.file, 'officialRemarkFile', u.file.name);
+				formData.append('requireExplainFile', u.file);
 			})
 			// formData.append('officialRemarkFile', file.file);
 			formData.append('detailedID', vm.detailedID2);
@@ -1152,10 +1152,10 @@ var module1 = new Vue({
 			} else {
 				this.fileList2 = fileList
 			}
-			this.formData2 = []
-			for (var i = 0; i < this.fileList2.length; i++) {
-				this.formData2.push(this.fileList2[i].raw);
-			}
+			// this.formData2 = []
+			// for (var i = 0; i < this.fileList2.length; i++) {
+			// 	this.formData2.push(this.fileList2[i].raw);
+			// }
 		},
 		deluploadImg2: function (item, index) {
 			var vm = this;
