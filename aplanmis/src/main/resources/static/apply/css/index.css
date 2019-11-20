@@ -1772,3 +1772,6 @@ textarea {
 .children-count {
   color: #AFB2C1;
 }
+.show-one-form .el-tabs--left .el-tabs__header.is-left {
+  margin-top: 50px;
+}
