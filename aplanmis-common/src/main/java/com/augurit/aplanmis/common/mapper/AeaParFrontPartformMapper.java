@@ -1,9 +1,9 @@
 package com.augurit.aplanmis.common.mapper;
 
 import com.augurit.aplanmis.common.domain.AeaParFrontPartform;
-import com.augurit.aplanmis.common.vo.AeaParFrontPartformVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
@@ -11,6 +11,7 @@ import java.util.List;
  * 阶段的扩展表单前置检测表-Mapper数据与持久化接口类
  */
 @Mapper
+@Repository
 public interface AeaParFrontPartformMapper {
 
     void insertAeaParFrontPartform(AeaParFrontPartform aeaParFrontPartform) ;
@@ -23,16 +24,15 @@ public interface AeaParFrontPartformMapper {
 
     AeaParFrontPartform getAeaParFrontPartformById(@Param("id") String id) ;
 
-    List<AeaParFrontPartformVo> listAeaParFrontPartformVo(AeaParFrontPartform aeaParFrontPartform) ;
+    List<AeaParFrontPartform> listAeaParFrontPartformVo(AeaParFrontPartform aeaParFrontPartform) ;
 
-    Long getMaxSortNo(AeaParFrontPartform aeaParFrontPartform) ;
+    Long getMaxSortNo(@Param("stageId") String stageId, @Param("rootOrgId") String rootOrgId);
 
-    List<AeaParFrontPartformVo> listSelectParFrontPartform(AeaParFrontPartform aeaParFrontPartform) ;
+    List<AeaParFrontPartform> listSelectParFrontPartform(AeaParFrontPartform aeaParFrontPartform) ;
 
-    AeaParFrontPartformVo getAeaParFrontPartformVoById(@Param("id") String id) ;
+    AeaParFrontPartform getAeaParFrontPartformVoById(@Param("id") String id) ;
 
-    List<AeaParFrontPartformVo> getAeaParFrontPartformVoByStageId(@Param("stageId") String stageId,
-                                                                  @Param("rootOrgId") String rootOrgId);
+    List<AeaParFrontPartform> getAeaParFrontPartformVoByStageId(@Param("stageId") String stageId, @Param("rootOrgId") String rootOrgId);
 
     void changIsActive(@Param("id") String id, @Param("rootOrgId") String rootOrgId);
 }

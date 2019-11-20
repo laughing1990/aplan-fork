@@ -1,0 +1,280 @@
+body {
+  padding: 16px;
+  margin: 0;
+  background: #f2f3f8;
+}
+
+/*element 样式重置 start*/
+.el-table--border,
+.el-table--group {
+  border-color: #dcdfe6;
+}
+
+.el-table td,
+.el-table th,
+.el-table th.is-leaf {
+  border-color: #dcdfe6;
+}
+
+.el-table--border::after,
+.el-table--group::after,
+.el-table::before {
+  background: #dcdfe6;
+}
+
+.el-table,
+.el-table thead {
+  color: #575962;
+}
+
+.el-collapse {
+  border: none;
+}
+
+.el-collapse-item__header {
+  height: 50px;
+  line-height: 50px;
+  padding-left: 16px;
+  box-sizing: border-box;
+  font-size: 16px;
+  position: relative;
+  width: 100%;
+  color: #575962;
+  font-weight: 700;
+  border-bottom: 2px solid #E0E3E9;
+}
+
+.el-collapse-item__header.is-active {
+  border-bottom: 2px solid #36A3F7;
+  color: #169aff;
+}
+
+.el-collapse-item__content {
+  color: #575962;
+  padding-bottom: 0;
+  display: grid;
+}
+
+.el-collapse-item__arrow {
+  margin: 0 18px 0 auto;
+  font-size: 20px;
+  float: right;
+  line-height: 42px;
+}
+
+.el-collapse-item__header.is-active .el-collapse-item__arrow,
+.el-collapse-item__header.is-active .header-icon {
+  color: #169aff;
+}
+
+.el-collapse-item__header .header-icon {
+  font-size: 22px;
+  margin-right: 5px;
+  color: #aaa;
+  font-weight: normal;
+}
+
+.el-collapse-item {
+  margin-bottom: 15px;
+}
+
+.el-input-group__append {
+  color: #fff;
+  border-color: #169aff;
+  background: #169aff;
+}
+
+#applyPerson .el-input-group__append {
+  color: #575962;
+  border-color: #DCDFE6;
+  background: #fff;
+  padding: 0 10px;
+}
+
+.el-button--primary {
+  border-color: #169aff;
+  background: #169aff;
+}
+
+.el-input__inner {
+  border-color: #DCDFE6;
+  height: 34px;
+  line-height: 34px;
+  color: #575962;
+  padding: 0 10px;
+}
+
+.el-input.is-disabled .el-input__inner {
+  color: #575962;
+}
+
+.el-form-item.is-success .el-input__inner,
+.el-form-item.is-success .el-input__inner:focus,
+.el-form-item.is-success .el-textarea__inner,
+.el-form-item.is-success .el-textarea__inner:focus {
+  border-color: #DCDFE6;
+}
+
+.el-form-item__content,
+.el-form-item__label {
+  line-height: 34px;
+  color: #575962;
+}
+
+.el-autocomplete {
+  line-height: 34px;
+  height: 34px;
+}
+
+.el-form-item {
+  margin-bottom: 14px;
+}
+
+.el-input-group__append button.el-button i[class^=el-icon-] {
+  font-size: 16px;
+}
+
+.el-button {
+  padding: 9px 20px;
+}
+
+.el-collapse-item__wrap {
+  overflow: visible;
+  position: relative;
+  border: none;
+  padding: 15px 30px;
+}
+
+.el-button--mini,
+.el-button--mini.is-round {
+  padding: 7px 15px;
+}
+
+.el-upload__text {
+  color: #7C828D;
+  margin-top: 65px;
+  position: relative;
+  text-align: center;
+}
+
+/*.el-table thead.is-group th {*/
+/*  background: #fbfbfb;*/
+/*}*/
+.el-dialog__header {
+  border: none;
+  height: 44px;
+  line-height: 44px;
+  color: #fff;
+  background: #1C9AFD;
+  padding: 0 15px;
+}
+
+.el-dialog__headerbtn:focus .el-dialog__close,
+.el-dialog__headerbtn:hover .el-dialog__close {
+  color: #fff;
+}
+
+.el-dialog__headerbtn {
+  top: 13px;
+}
+
+.el-dialog__body .el-form {
+  padding: 10px 40px 0 0;
+}
+
+.el-dialog__body {
+  padding: 20px 0;
+}
+
+.el-dialog__footer {
+  padding: 0px 20px 20px;
+}
+
+.dg-modal-add-linkmain-info .el-select {
+  width: 100%;
+}
+
+.el-form-item__error {
+  padding-top: 0;
+}
+
+.el-input-group__prepend div.el-select .el-input__inner {
+  color: #575962;
+  padding-right: 20px;
+}
+
+.el-input__icon {
+  line-height: 34px;
+}
+
+.el-input__suffix {
+  right: 2px;
+}
+
+.el-form-item {
+  margin-bottom: 14px;
+}
+
+.clearfix {
+  zoom: 1;
+}
+
+#app {
+  /*padding: 20px 120px 80px 120px;*/
+  padding: 20px 16px 80px;
+  background: #fff;
+}
+
+.header {
+  color: rgb(79, 171, 191);
+  font-size: 15px;
+  line-height: 37px;
+  border-bottom: 1px solid #e6e6e6;
+}
+
+.input-inline {
+  width: 45%;
+  float: left;
+}
+
+.el-form-item__content {
+  width: 61%;
+}
+
+.el-form-item__content .el-date-editor {
+  width: 100%;
+}
+
+.el-form-item__content .el-select {
+  width: 100%;
+}
+
+.input-inline:nth-child(even) {
+  float: right;
+}
+
+.input-with-select .el-input-group__append .el-select {
+  width: 85px;
+}
+
+.input-with-select .el-input-group__append {
+  background: #fff;
+  color: #575962;
+  border-color: #DCDFE6;
+}
+
+.right-bottom-btn {
+  /* position: fixed;
+  right: 65px;
+  bottom: 140px;
+  z-index: 1000;*/
+  float: right;
+  /*margin-right: 91px;*/
+  margin-left: 90%;
+
+}
+
+.el-button.is-circle {
+  border-radius: 50%;
+  padding: 20px 12px;
+}

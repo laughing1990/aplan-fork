@@ -9,7 +9,6 @@ import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.domain.AeaParFrontPartform;
 import com.augurit.aplanmis.common.service.admin.par.AeaParFrontPartformService;
-import com.augurit.aplanmis.common.vo.AeaParFrontPartformVo;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import org.slf4j.Logger;
@@ -34,8 +33,9 @@ public class AeaParFrontPartformController {
     private AeaParFrontPartformService aeaParFrontPartformService;
 
     @RequestMapping("/listAeaParFrontPartformByPage.do")
-    public EasyuiPageInfo<AeaParFrontPartformVo> listAeaParFrontPartformByPage(AeaParFrontPartform aeaParFrontPartform, Page page) throws Exception {
-        PageInfo<AeaParFrontPartformVo> pageInfo =  aeaParFrontPartformService.listAeaParFrontPartformVoByPage(aeaParFrontPartform, page);
+    public EasyuiPageInfo<AeaParFrontPartform> listAeaParFrontPartformByPage(AeaParFrontPartform aeaParFrontPartform, Page page) throws Exception {
+
+        PageInfo<AeaParFrontPartform> pageInfo =  aeaParFrontPartformService.listAeaParFrontPartformVoByPage(aeaParFrontPartform, page);
         return PageHelper.toEasyuiPageInfo(pageInfo);
     }
 
@@ -75,6 +75,7 @@ public class AeaParFrontPartformController {
 
     @RequestMapping("/deleteAeaParFrontPartformById.do")
     public ResultForm deleteAeaParFrontPartformById(String id)  {
+
         try {
             logger.debug("删除阶段的扩展表单前置检测表Form对象，对象id为：{}", id);
             if (StringUtils.isNotBlank(id))
@@ -88,9 +89,10 @@ public class AeaParFrontPartformController {
     }
 
     @RequestMapping("/getMaxSortNo.do")
-    public ResultForm getMaxSortNo(AeaParFrontPartform aeaParFrontPartform) {
+    public ResultForm getMaxSortNo(String stageId) {
+
         try {
-            return new ContentResultForm<>(true, aeaParFrontPartformService.getMaxSortNo(aeaParFrontPartform));
+            return new ContentResultForm<>(true, aeaParFrontPartformService.getMaxSortNo(stageId, SecurityContext.getCurrentOrgId()));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return new ResultForm(false, e.getMessage());
@@ -98,13 +100,14 @@ public class AeaParFrontPartformController {
     }
 
     @RequestMapping("/listSelectParFrontPartformByPage.do")
-    public EasyuiPageInfo<AeaParFrontPartformVo> listSelectParFrontPartformByPage(AeaParFrontPartform aeaParFrontPartform, Page page) throws Exception {
-        PageInfo<AeaParFrontPartformVo> pageInfo = aeaParFrontPartformService.listSelectParFrontPartformByPage(aeaParFrontPartform, page);
+    public EasyuiPageInfo<AeaParFrontPartform> listSelectParFrontPartformByPage(AeaParFrontPartform aeaParFrontPartform, Page page) throws Exception {
+
+        PageInfo<AeaParFrontPartform> pageInfo = aeaParFrontPartformService.listSelectParFrontPartformByPage(aeaParFrontPartform, page);
         return PageHelper.toEasyuiPageInfo(pageInfo);
     }
 
     @RequestMapping("/batchSaveAeaParFrontPartform.do")
-    public ResultForm batchSaveAeaParFrontPartform(String stageId,String stagePartformIds){
+    public ResultForm batchSaveAeaParFrontPartform(String stageId, String[] stagePartformIds){
 
         try {
             aeaParFrontPartformService.batchSaveAeaParFrontPartform(stageId, stagePartformIds);
@@ -132,9 +135,9 @@ public class AeaParFrontPartformController {
     }
 
     @RequestMapping("/listAeaParFrontPartformByNoPage.do")
-    public List<AeaParFrontPartformVo> listAeaParFrontItemformByNoPage(AeaParFrontPartform aeaParFrontPartform) throws Exception {
+    public List<AeaParFrontPartform> listAeaParFrontItemformByNoPage(AeaParFrontPartform aeaParFrontPartform) throws Exception {
 
-        List<AeaParFrontPartformVo> list = aeaParFrontPartformService.listAeaParFrontPartformVoByNoPage(aeaParFrontPartform);
+        List<AeaParFrontPartform> list = aeaParFrontPartformService.listAeaParFrontPartformVoByNoPage(aeaParFrontPartform);
         return list;
     }
 

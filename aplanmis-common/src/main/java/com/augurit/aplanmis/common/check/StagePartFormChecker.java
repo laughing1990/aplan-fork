@@ -4,10 +4,10 @@ import com.augurit.agcloud.framework.constant.Status;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.aplanmis.common.check.exception.StagePartFormCheckException;
 import com.augurit.aplanmis.common.domain.AeaHiItemMatinst;
+import com.augurit.aplanmis.common.domain.AeaParFrontPartform;
 import com.augurit.aplanmis.common.domain.AeaParStage;
 import com.augurit.aplanmis.common.mapper.AeaHiItemMatinstMapper;
 import com.augurit.aplanmis.common.service.admin.par.AeaParFrontPartformService;
-import com.augurit.aplanmis.common.vo.AeaParFrontPartformVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -41,7 +41,7 @@ public class StagePartFormChecker extends AbstractChecker<AeaParStage> {
             Assert.hasText(projInfoId, "projInfoId must not null.");
 
             //获取所有的前置阶段扩展表单信息
-            List<AeaParFrontPartformVo> aeaParFrontPartformVos = aeaParFrontPartformService.getAeaParFrontPartformVoByStageId(aeaParStage.getStageId());
+            List<AeaParFrontPartform> aeaParFrontPartformVos = aeaParFrontPartformService.getAeaParFrontPartformVoByStageId(aeaParStage.getStageId());
 
             if (aeaParFrontPartformVos.size() > 0) {
 

@@ -1,5 +1,6 @@
 package com.augurit.aplanmis.common.service.admin.par.impl;
 
+import com.augurit.agcloud.framework.constant.Status;
 import com.augurit.agcloud.framework.exception.InvalidParameterException;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.ui.pager.PageHelper;
@@ -7,7 +8,6 @@ import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.domain.AeaParFrontPartform;
 import com.augurit.aplanmis.common.mapper.AeaParFrontPartformMapper;
 import com.augurit.aplanmis.common.service.admin.par.AeaParFrontPartformService;
-import com.augurit.aplanmis.common.vo.AeaParFrontPartformVo;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import org.slf4j.Logger;
@@ -23,13 +23,6 @@ import java.util.UUID;
 
 /**
  * 阶段的扩展表单前置检测表-Service服务接口实现类
- * <ul>
- * <li>项目名：奥格erp3.0--第一期建设项目</li>
- * <li>版本信息：v1.0</li>
- * <li>版权所有(C)2016广州奥格智能科技有限公司-版权所有</li>
- * <li>创建人:Administrator</li>
- * <li>创建时间：2019-11-01 10:48:23</li>
- * </ul>
  */
 @Service
 @Transactional
@@ -42,7 +35,8 @@ public class AeaParFrontPartformServiceImpl implements AeaParFrontPartformServic
 
     @Override
     public void saveAeaParFrontPartform(AeaParFrontPartform aeaParFrontPartform) throws Exception {
-        checkSame(aeaParFrontPartform);
+
+//        checkSame(aeaParFrontPartform);
 
         aeaParFrontPartform.setCreateTime(new Date());
         aeaParFrontPartform.setCreater(SecurityContext.getCurrentUserId());
@@ -52,7 +46,8 @@ public class AeaParFrontPartformServiceImpl implements AeaParFrontPartformServic
 
     @Override
     public void updateAeaParFrontPartform(AeaParFrontPartform aeaParFrontPartform) throws Exception {
-//        checkSame(aeaParFrontPartform);
+
+//      checkSame(aeaParFrontPartform);
 
         aeaParFrontPartform.setModifyTime(new Date());
         aeaParFrontPartform.setModifier(SecurityContext.getCurrentUserId());
@@ -61,6 +56,7 @@ public class AeaParFrontPartformServiceImpl implements AeaParFrontPartformServic
 
     @Override
     public void deleteAeaParFrontPartformById(String id) throws Exception {
+
         if (StringUtils.isBlank(id)) {
             throw new InvalidParameterException(id);
         }
@@ -72,6 +68,8 @@ public class AeaParFrontPartformServiceImpl implements AeaParFrontPartformServic
 
     @Override
     public PageInfo<AeaParFrontPartform> listAeaParFrontPartform(AeaParFrontPartform aeaParFrontPartform, Page page) throws Exception {
+
+        aeaParFrontPartform.setRootOrgId(SecurityContext.getCurrentOrgId());
         PageHelper.startPage(page);
         List<AeaParFrontPartform> list = aeaParFrontPartformMapper.listAeaParFrontPartform(aeaParFrontPartform);
         logger.debug("成功执行分页查询！！");
@@ -80,20 +78,25 @@ public class AeaParFrontPartformServiceImpl implements AeaParFrontPartformServic
 
     @Override
     public AeaParFrontPartform getAeaParFrontPartformById(String id) throws Exception {
-        if (id == null)
+
+        if (id == null) {
             throw new InvalidParameterException(id);
+        }
         logger.debug("根据ID获取Form对象，ID为：{}", id);
         return aeaParFrontPartformMapper.getAeaParFrontPartformById(id);
     }
 
     @Override
     public List<AeaParFrontPartform> listAeaParFrontPartform(AeaParFrontPartform aeaParFrontPartform) throws Exception {
+
+        aeaParFrontPartform.setRootOrgId(SecurityContext.getCurrentOrgId());
         List<AeaParFrontPartform> list = aeaParFrontPartformMapper.listAeaParFrontPartform(aeaParFrontPartform);
         logger.debug("成功执行查询list！！");
         return list;
     }
 
     private void checkSame(AeaParFrontPartform aeaParFrontPartform) throws Exception {
+
         AeaParFrontPartform queryParFrontPartform = new AeaParFrontPartform();
         queryParFrontPartform.setStageId(aeaParFrontPartform.getStageId());
         queryParFrontPartform.setStagePartformId(aeaParFrontPartform.getStagePartformId());
@@ -105,35 +108,35 @@ public class AeaParFrontPartformServiceImpl implements AeaParFrontPartformServic
     }
 
     @Override
-    public PageInfo<AeaParFrontPartformVo> listAeaParFrontPartformVoByPage(AeaParFrontPartform aeaParFrontPartform, Page page) throws Exception {
+    public PageInfo<AeaParFrontPartform> listAeaParFrontPartformVoByPage(AeaParFrontPartform aeaParFrontPartform, Page page) throws Exception {
+
+        aeaParFrontPartform.setRootOrgId(SecurityContext.getCurrentOrgId());
         PageHelper.startPage(page);
-        List<AeaParFrontPartformVo> list = aeaParFrontPartformMapper.listAeaParFrontPartformVo(aeaParFrontPartform);
+        List<AeaParFrontPartform> list = aeaParFrontPartformMapper.listAeaParFrontPartformVo(aeaParFrontPartform);
         logger.debug("成功执行分页查询！！");
         return new PageInfo<>(list);
     }
 
     @Override
-    public Long getMaxSortNo(AeaParFrontPartform aeaParFrontPartform) throws Exception {
-        Long sortNo = aeaParFrontPartformMapper.getMaxSortNo(aeaParFrontPartform);
-        if (sortNo == null) {
-            sortNo = 1l;
-        } else {
-            sortNo = sortNo + 1;
-        }
+    public Long getMaxSortNo(String stageId, String rootOrgId) throws Exception {
 
-        return sortNo;
+        Long sortNo = aeaParFrontPartformMapper.getMaxSortNo(stageId, rootOrgId);
+        return sortNo==null?1L:(sortNo+1L);
     }
 
     @Override
-    public PageInfo<AeaParFrontPartformVo> listSelectParFrontPartformByPage(AeaParFrontPartform aeaParFrontPartform, Page page) throws Exception {
+    public PageInfo<AeaParFrontPartform> listSelectParFrontPartformByPage(AeaParFrontPartform aeaParFrontPartform, Page page) throws Exception {
+
+        aeaParFrontPartform.setRootOrgId(SecurityContext.getCurrentOrgId());
         PageHelper.startPage(page);
-        List<AeaParFrontPartformVo> list = aeaParFrontPartformMapper.listSelectParFrontPartform(aeaParFrontPartform);
+        List<AeaParFrontPartform> list = aeaParFrontPartformMapper.listSelectParFrontPartform(aeaParFrontPartform);
         logger.debug("成功执行分页查询！！");
         return new PageInfo<>(list);
     }
 
     @Override
-    public AeaParFrontPartformVo getAeaParFrontPartformVoById(String frontPartformId) throws Exception {
+    public AeaParFrontPartform getAeaParFrontPartformVoById(String frontPartformId) throws Exception {
+
         if (StringUtils.isBlank(frontPartformId)) {
             throw new InvalidParameterException(frontPartformId);
         }
@@ -141,49 +144,48 @@ public class AeaParFrontPartformServiceImpl implements AeaParFrontPartformServic
     }
 
     @Override
-    public List<AeaParFrontPartformVo> getAeaParFrontPartformVoByStageId(String stageId) {
+    public List<AeaParFrontPartform> getAeaParFrontPartformVoByStageId(String stageId) {
 
-        List<AeaParFrontPartformVo> aeaParFrontPartformVos = new ArrayList();
-        if (StringUtils.isBlank(stageId)) return aeaParFrontPartformVos;
+        List<AeaParFrontPartform> aeaParFrontPartformVos = new ArrayList();
+        if (StringUtils.isBlank(stageId)){
+            return aeaParFrontPartformVos;
+        }
         aeaParFrontPartformVos.addAll(aeaParFrontPartformMapper.getAeaParFrontPartformVoByStageId(stageId, SecurityContext.getCurrentOrgId()));
         return aeaParFrontPartformVos;
     }
 
     @Override
-    public void batchSaveAeaParFrontPartform(String stageId,String stagePartformIds)throws Exception{
-        if(StringUtils.isBlank(stageId)  || StringUtils.isBlank(stagePartformIds)){
-            throw new InvalidParameterException(stageId,stagePartformIds);
-        }
+    public void batchSaveAeaParFrontPartform(String stageId, String[] stagePartformIds)throws Exception{
 
-        String[] stagePartformIdArr = stagePartformIds.split(",");
-        if(stagePartformIdArr!=null && stagePartformIdArr.length>0){
-            AeaParFrontPartform query = new AeaParFrontPartform();
-            query.setStageId(stageId);
-            Long maxSortNo = getMaxSortNo(query);
-            for(String stagePartformId:stagePartformIdArr){
+        if(StringUtils.isBlank(stageId)){
+            throw new InvalidParameterException("参数stageId为空!");
+        }
+        if(stagePartformIds==null||(stagePartformIds!=null&&stagePartformIds.length==0)){
+            throw new InvalidParameterException("参数stagePartformIds为空!");
+        }
+        if(stagePartformIds!=null && stagePartformIds.length>0){
+            String userId = SecurityContext.getCurrentUserId();
+            String rootOrgId = SecurityContext.getCurrentOrgId();
+            for(String stagePartformId:stagePartformIds){
+
                 AeaParFrontPartform aeaParFrontPartform = new AeaParFrontPartform();
+                aeaParFrontPartform.setFrontPartformId(UUID.randomUUID().toString());
                 aeaParFrontPartform.setStageId(stageId);
                 aeaParFrontPartform.setStagePartformId(stagePartformId);
-                List<AeaParFrontPartform> list = aeaParFrontPartformMapper.listAeaParFrontPartform(aeaParFrontPartform);
-                if (list.size() > 0) {
-                    continue;
-                }
-                aeaParFrontPartform.setFrontPartformId(UUID.randomUUID().toString());
+                aeaParFrontPartform.setCreater(userId);
                 aeaParFrontPartform.setCreateTime(new Date());
-                aeaParFrontPartform.setCreater(SecurityContext.getCurrentUserId());
-                aeaParFrontPartform.setRootOrgId(SecurityContext.getCurrentOrgId());
-                aeaParFrontPartform.setSortNo(maxSortNo);
-                aeaParFrontPartform.setIsActive("1");
+                aeaParFrontPartform.setRootOrgId(rootOrgId);
+                aeaParFrontPartform.setIsActive(Status.ON);
+                aeaParFrontPartform.setSortNo(getMaxSortNo(stageId, rootOrgId));
                 aeaParFrontPartformMapper.insertAeaParFrontPartform(aeaParFrontPartform);
-                maxSortNo++;
             }
         }
     }
 
     @Override
-    public List<AeaParFrontPartformVo> listAeaParFrontPartformVoByNoPage(AeaParFrontPartform aeaParFrontPartform) throws Exception{
+    public List<AeaParFrontPartform> listAeaParFrontPartformVoByNoPage(AeaParFrontPartform aeaParFrontPartform) throws Exception{
 
-        List<AeaParFrontPartformVo> list = aeaParFrontPartformMapper.listAeaParFrontPartformVo(aeaParFrontPartform);
+        List<AeaParFrontPartform> list = aeaParFrontPartformMapper.listAeaParFrontPartformVo(aeaParFrontPartform);
         return list;
     }
 

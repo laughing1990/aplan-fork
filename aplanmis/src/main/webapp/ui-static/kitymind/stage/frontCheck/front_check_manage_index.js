@@ -75,7 +75,7 @@ function changeIsActive(obj, id, isActive, type){
                     url = ctx + '/aea/par/front/item/changIsActive.do';
                 }else if(type=='itemform'){
                     url = ctx + '/aea/par/front/itemform/changIsActive.do';
-                }else if(type=='itemform'){
+                }else if(type=='partform'){
                     url = ctx + '/aea/par/front/partform/changIsActive.do';
                 }else if(type=='stage'){
                     url = ctx + '/aea/par/front/stage/changIsActive.do';
@@ -667,9 +667,9 @@ $(function(){
                 sortNo:{
                     required: true
                 },
-                isActive:{
-                    required: true
-                }
+                // isActive:{
+                //     required: true
+                // }
             },
             messages: {
                 histStageId: {
@@ -678,9 +678,9 @@ $(function(){
                 sortNo:{
                     required: '<font color="red">此项必填！</font>'
                 },
-                isActive:{
-                    required: '<font color="red">是否启用必选！</font>'
-                }
+                // isActive:{
+                //     required: '<font color="red">是否启用必选！</font>'
+                // }
             },
             // 提交表单
             submitHandler: function (form) {
@@ -732,84 +732,73 @@ $(function(){
 
 
     if(isCheckPartform=='1'){
-        par_front_partform_tb = defaultBootstrap("par_front_partform_tb",[{
-            checkbox: true,
-            field: '#',
-            align: "center",
-            title: '#',
-            sortable: false,
-            width: 10,
-            textAlign: 'center',
-            selector: {class: 'm-checkbox--solid m-checkbox--brand'}
-        }, {
-            field: "#",
-            title: "#",
-            width: "10%",
-            align: "center",
-            sortable: false,
-            textAlign: 'center',
-            formatter: function (value, row, index) {
-                return index + 1;
-            }
-        }, {
-            field: "frontPartformId",
-            visible: false
-        }, {
-            field: "partformName",
-            title: "阶段扩展表单名称",
-            textAlign: 'center',
-            width: 500,
-            textAlign: 'left',
-            sortable: true
-        }, {
-            field: "isSmartForm",
-            title: "是否智能表单",
-            textAlign: 'center',
-            width: 50,
-            textAlign: 'left',
-            sortable: true,
-            formatter: function (value, row, index) {
-                if(row.isSmartForm=='1'){
-                    return "是";
-                }else{
-                    return "否";
+        par_front_partform_tb = defaultBootstrap("par_front_partform_tb",[
+            {
+                checkbox: true,
+            },
+            {
+                field: "isSmartForm",
+                title: "是否智能表单",
+                align: 'center',
+                width: 80,
+                formatter: function (value, row, index) {
+
+                    if(row.isSmartForm=='1'){
+                        return "智能表单";
+                    }else{
+                        return "开发表单";
+                    }
+                }
+            },
+            {
+                field: "partformName",
+                title: "扩展表单名称",
+                width: 400,
+                align: 'left',
+            },
+            {
+                field: "frontPartformMemo",
+                title: "备注",
+                width: 200,
+                align: 'left',
+                formatter: function (value, row, index) {
+                    if(value){
+                        if(value.length>200){
+                            return value.substr(0, 200) + "...";
+                        }else{
+                            return value;
+                        }
+                    }
+                }
+            },
+            {
+                field: "isActive",
+                title: "是否启用",
+                align: 'center',
+                width: 60,
+                formatter: partformIsActiveFormatter
+            },
+            {
+                field: "sortNo",
+                title: "排序",
+                align: 'center',
+                width: 60,
+                sortable: true
+            },
+            {
+                field: '_operate',
+                title: '操作',
+                width: 120,
+                align: 'center',
+                formatter: function (value, row, index) {
+                    var btn =  '<a href="javascript:editParFrontPartform(\'' + row.frontPartformId + '\')" class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill" title="编辑"><i class="la la-edit"></i></a>';
+                    if(curIsEditable){
+                        btn = btn + '<a href="javascript:delParFrontPartform(\'' + row.frontPartformId + '\')" class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill" title="删除"><i class="la la-trash"></i></a>'
+                    }
+                    return btn;
                 }
             }
-        }, {
-            field: "sortNo",
-            title: "排序",
-            textAlign: 'center',
-            width: 50,
-            textAlign: 'left',
-            sortable: true
-        },{
-            field: "isActive",
-            title: "是否启用",
-            textAlign: 'center',
-            width: 50,
-            textAlign: 'left',
-            sortable: true,
-            formatter: function (value, row, index) {
-                if(row.isActive=='1'){
-                    return "是";
-                }else{
-                    return "否";
-                }
-            }
-        }, {
-            field: '_operate',
-            title: '操作',
-            sortable: false,
-            width: 100,
-            textAlign: 'center',
-            formatter: function (value, row, index) {
-                var btn =  '<a href="javascript:editParFrontPartform(\'' + row.frontPartformId + '\')" class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill" title="编辑"><i class="la la-edit"></i></a>';
-                if(curIsEditable){
-                    btn = btn + '<a href="javascript:delParFrontPartform(\'' + row.frontPartformId + '\')" class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill" title="删除"><i class="la la-trash"></i></a>'
-                }
-                return btn;
-            }
-        }],ctx + '/aea/par/front/partform/listAeaParFrontPartformByPage.do');
+        ],ctx + '/aea/par/front/partform/listAeaParFrontPartformByPage.do');
         var par_front_partform_tb_params = {stageId:currentBusiId};
         par_front_partform_tb.setPageSize(5).setPageList([5,10,20,50,100]).setQueryParams(par_front_partform_tb_params).setRowId("frontPartformId").setClearBtn("par_front_partform_clear_btn").setSearchBtn("par_front_partform_search_btn","par_front_partform_keyword").init();
 
@@ -1403,82 +1392,6 @@ function addParFrontStage() {
     }
 }
 
-function loadSelectParFrontStage(frontStageId,flag,obj) {
-
-    $.ajax({
-        url: ctx + '/aea/par/front/stage/listSelectParFrontStage.do',
-        type: 'POST',
-        data: {stageId:currentBusiId,frontStageId:frontStageId},
-        async: false,
-        success: function (result) {
-            if (result.success) {
-                setTimeout(function(){
-                    $("#uploadProgress").modal('hide');
-
-                    if("edit" == flag){
-                        $("#histStageId").attr("disabled",true);
-                    }else{
-                        $("#histStageId").attr("disabled",false);
-                    }
-
-                    $("#edit_par_front_stage_modal").modal("show");
-
-                    $('#histStageId').empty();
-
-                    if(result && result.content){
-                        for(var i=0;i<result.content.length;i++){
-                            var frontStage = result.content[i];
-                            var selected = ''
-                            if("edit" == flag){
-                                if(frontStage.histStageId==obj.histStageId){
-                                    selected = ' selected ';
-                                }
-                            }
-                            var opt=$('<option value="'+frontStage.histStageId+'"'+selected+'>'+frontStage.histStageName+'</option>');
-
-                            $('#histStageId').append(opt);
-                        }
-                    }
-
-                    if("add" == flag) {
-                        $('#saveParFrontStageBtn').show();
-                        $('#edit_par_front_stage_title').html('新增阶段信息前置检测');
-                        $('#edit_par_front_stage_scroll').animate({scrollTop: 0}, 800);//滚动到顶部
-                        $('#edit_par_front_stage_form')[0].reset();
-                        $('#edit_par_front_stage_form input[name="frontStageId"]').val('');
-                        $('#edit_par_front_stage_form input[name="stageId"]').val(currentBusiId);
-                        $('#edit_par_front_stage_form input[name="sortNo"]').val(obj);
-                    }else{
-                        if(curIsEditable){
-                            $('#saveParFrontStageBtn').show();
-                        }else{
-                            $('#saveParFrontStageBtn').hide();
-                        }
-                        $('#edit_par_front_stage_title').html('编辑阶段信息前置检测');
-                        $('#edit_par_front_stage_scroll').animate({scrollTop: 0}, 800);//滚动到顶部
-                        $('#edit_par_front_stage_form')[0].reset();
-                        loadFormData(true, '#edit_par_front_stage_form', obj);
-                        $('#edit_par_front_stage_form input[name="frontStageId"]').val(obj.frontStageId);
-                        $('#edit_par_front_stage_form input[name="stageId"]').val(currentBusiId);
-                    }
-
-                },500);
-            } else {
-                setTimeout(function(){
-                    $("#uploadProgress").modal('hide');
-                    swal('错误信息', result.message, 'error');
-                },500);
-            }
-        },
-        error: function(XMLHttpRequest, textStatus, errorThrown) {
-            setTimeout(function(){
-                $("#uploadProgress").modal('hide');
-                swal('错误信息', XMLHttpRequest.responseText, 'error');
-            },500);
-        }
-    });
-}
-
 function editParFrontStage(frontStageId) {
 
     if(curIsEditable){
@@ -1510,7 +1423,6 @@ function editParFrontStage(frontStageId) {
             if (result.success) {
 
                 setTimeout(function(){
-
                     $("#uploadProgress").modal('hide');
                     loadFormData(true, '#edit_par_front_stage_form', result.content);
                 },500);
@@ -1652,13 +1564,21 @@ function addParFrontPartform() {
 function editParFrontPartform(frontPartformId) {
 
     if(curIsEditable){
-        $('#saveParFrontStageBtn').show();
+        $('#saveParFrontPartformBtn').show();
     }else{
-        $('#saveParFrontStageBtn').hide();
+        $('#saveParFrontPartformBtn').hide();
     }
 
-    $("#uploadProgressMsg").html("数据加载中，请稍后...");
-    $("#uploadProgress").modal("show");
+    $("#edit_par_front_partform_modal").modal("show");
+    $('#edit_item_front_partform_title').html('编辑前置检测扩展表单');
+    // $('#edit_par_front_partform_scroll').animate({scrollTop: 0}, 800);//滚动到顶部
+    $('#edit_par_front_partform_form')[0].reset();
+    if(edit_par_front_partform_form_validator){
+        edit_par_front_partform_form_validator.resetForm();
+    }
+    $('#edit_par_front_partform_form input[name="frontPartformId"]').val('');
+    $('#edit_par_front_partform_form input[name="stageId"]').val(currentBusiId);
+    $('#edit_par_front_partform_form input[name="stagePartformId"]').val('');
 
     $.ajax({
         url: ctx + '/aea/par/front/partform/getAeaParFrontPartform.do',
@@ -1669,38 +1589,13 @@ function editParFrontPartform(frontPartformId) {
         success: function (result) {
             if (result.success) {
 
-                setTimeout(function(){
-                    $("#uploadProgress").modal('hide');
-
-                    $("#edit_par_front_partform_modal").modal("show");
-                    $('#edit_par_front_partform_title').html('编辑阶段扩展表单前置检测');
-                    $('#edit_par_front_partform_scroll').animate({scrollTop: 0}, 800);//滚动到顶部
-                    $('#edit_par_front_partform_form')[0].reset();
-
-                    loadFormData(true, '#edit_par_front_partform_form', result.content);
-                    $('#edit_par_front_partform_form input[name="frontPartformId"]').val(result.content.frontPartformId);
-                    $('#edit_par_front_partform_form input[name="stageId"]').val(currentBusiId);
-                    $('#edit_par_front_partform_form input[name="stagePartformId"]').val(result.content.stagePartformId);
-                    $('#edit_par_front_partform_form input[name="partformName"]').val(result.content.partformName);
-
-                    if("1"==result.content.isSmartForm){
-                        $('#edit_par_front_partform_form input[name="isSmartForm"][value="1"]').attr("checked",true);
-                    }else{
-                        $('#edit_par_front_partform_form input[name="isSmartForm"][value="0"]').attr("checked",true);
-                    }
-                },500);
+                loadFormData(true, '#edit_par_front_partform_form', result.content);
             } else {
-                setTimeout(function(){
-                    $("#uploadProgress").modal('hide');
-                    swal('错误信息', result.message, 'error');
-                },500);
+                swal('错误信息', result.message, 'error');
             }
         },
         error: function(XMLHttpRequest, textStatus, errorThrown) {
-            setTimeout(function(){
-                $("#uploadProgress").modal('hide');
-                swal('错误信息', XMLHttpRequest.responseText, 'error');
-            },500);
+            swal('错误信息', XMLHttpRequest.responseText, 'error');
         }
     });
 }

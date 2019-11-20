@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <!--公共css,js-->
+    <th:block th:include="common/common :: commonheader('建设项目登记信息')" />
+    <link rel="stylesheet" href="../../static/apply/css/index.css" th:href="@{/apply/css/index.css}">
+
+    <script>
+        // var ctx = '[[@{/}]]';
+        /*var ctx = 'http://192.168.30.33:8083/aplanmis-front/';*/
+        var projInfoId = '[[${projInfoId}]]';
+    </script>
+</head>
+
+<body class="gray-body">
+<div id="approve" v-cloak v-loading="loading" style="padding: 20px 16px 80px 16px;">
+
+    <div class="content">
+
+        <el-collapse v-model="activeNames">
+            <!--  基本信息  start  -->
+            <el-collapse-item class="clearfix" name="1" id="baseInfo">
+                <template slot="title">
+                    <i class="header-icon icon ag ag-project-info"></i>建设项目登记信息
+                </template>
+                <el-form label-width="176px" ref="exProjFrom" :rules="exProjFromRules"
+                         :model="exProjFrom">
+                    <div class="clearfix">
+                        <el-form-item class="input-inline" label="项目分类" prop="buildType">
+                            <el-select v-model="exProjFrom.buildType" placeholder="请选择项目分类">
+                                <el-option v-for="(item,index) in buildTypeList"
+                                           :key="item.itemCode"
+                                           :label="item.itemName"
+                                           :value="item.itemCode">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item class="input-inline" label="项目性质" prop="projNature">
+                            <el-select v-model="exProjFrom.projNature" placeholder="请选择项目性质">
+                                <el-option v-for="(item,index) in projNatureList"
+                                           :key="item.itemCode"
+                                           :label="item.itemName"
+                                           :value="item.itemCode">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                    </div>
+
+                    <div class="clearfix">
+                        <el-form-item class="input-inline" label="项目用途" prop="projFunction">
+                            <el-select v-model="exProjFrom.projFunction" placeholder="请选择项目用途">
+                                <el-option v-for="(item,index) in projFunctionList"
+                                           :key="item.itemCode"
+                                           :label="item.itemName"
+                                           :value="item.itemCode">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item class="input-inline" label="建设规模类型" prop="scaleType">
+                            <el-select v-model="exProjFrom.scaleType" placeholder="请选择建设规模类型">
+                                <el-option v-for="(item,index) in scaleTypeList"
+                                           :key="item.itemCode"
+                                           :label="item.itemName"
+                                           :value="item.itemCode">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                    </div>
+
+                    <el-form-item label="建设规模" prop="scaleContent">
+                        <el-input v-model="exProjFrom.scaleContent" type="textarea" placeholder="请填写建设规模"></el-input>
+                    </el-form-item>
+
+                    <div class="clearfix">
+                        <el-form-item class="input-inline" label="立项文号" prop="projNum">
+                            <el-input v-model="exProjFrom.projNum" placeholder="请填写立项文号"></el-input>
+                        </el-form-item>
+                        <el-form-item class="input-inline" label="立项级别" prop="projLevel">
+                            <el-select v-model="exProjFrom.projLevel" placeholder="请选择立项级别">
+                                <el-option v-for="(item,index) in projLevelList"
+                                           :key="item.itemCode"
+                                           :label="item.itemName"
+                                           :value="item.itemCode">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item class="input-inline" label="立项批准机关" prop="approvalDept">
+                            <el-input v-model="exProjFrom.approvalDept" placeholder="请填写立项批准机关"></el-input>
+                        </el-form-item>
+                        <el-form-item class="input-inline" label="立项批准时间" prop="approvalTime">
+                            <el-date-picker v-model="exProjFrom.approvalTime" type="date" placeholder="请选择立项批准时间" format="yyyy 年 MM 月 dd 日" value-format="yyyy-MM-dd">
+                            </el-date-picker>
+                            <input v-model="exProjFrom.approvalTime" type="hidden">
+                        </el-form-item>
+                    </div>
+
+                    <div class="clearfix">
+                        <el-form-item label="是否工程总承包模式" prop="isEpc">
+                            <el-radio-group v-model="exProjFrom.isEpc">
+                                <el-radio label="0" value="0" key="0">否</el-radio>
+                                <el-radio label="1" value="1" key="1">是</el-radio>
+                            </el-radio-group>
+                        </el-form-item>
+                    </div>
+
+                    <p class="apply-info-title" style="padding-top: 30px;">
+                        项目资金来源构成比例
+                        <label class="notice" style="margin-left: 45px;">
+                            <i class="ag ag-warn-circle"></i>
+                            <span>资金来源比例最多保留两位小数，合计100%</span>
+                        </label>
+                        <label class="color-999 fr">
+                            <span>当前合计</span>
+                            <span class="text-blue">{{total}}%</span>
+                        </label>
+                    </p>
+
+                    <div class="clearfix">
+                        <el-form-item class="input-inline" label="各级政府财政资金投资" prop="govFinance">
+                            <el-input v-model="exProjFrom.govFinance" placeholder="请输入各级政府财政资金投资比例">
+                                <template slot="suffix">%&nbsp;&nbsp;&nbsp;</template>
+                            </el-input>
+                        </el-form-item>
+                        <el-form-item class="input-inline" label="国有企业资金投资" prop="stateEnterprice">
+                            <el-input v-model="exProjFrom.stateEnterprice" placeholder="请输入国有企业资金投资比例">
+                                <template slot="suffix">%&nbsp;&nbsp;&nbsp;</template>
+                            </el-input>
+                        </el-form-item>
+                        <el-form-item class="input-inline" label="国家融资" prop="stateInvestment">
+                            <el-input v-model="exProjFrom.stateInvestment" placeholder="请输入国家融资比例">
+                                <template slot="suffix">%&nbsp;&nbsp;&nbsp;</template>
+                            </el-input>
+                        </el-form-item>
+                        <el-form-item class="input-inline" label="使用国际组织或者外国政府资金" prop="internationalInvestment">
+                            <el-input v-model="exProjFrom.internationalInvestment" placeholder="请输入使用国际组织或者外国政府资金比例">
+                                <template slot="suffix">%&nbsp;&nbsp;&nbsp;</template>
+                            </el-input>
+                        </el-form-item>
+                        <el-form-item class="input-inline" label="集体经济组织投资" prop="collectiveInvestment">
+                            <el-input v-model="exProjFrom.collectiveInvestment" placeholder="请输入集体经济组织投资比例">
+                                <template slot="suffix">%&nbsp;&nbsp;&nbsp;</template>
+                            </el-input>
+                        </el-form-item>
+                        <el-form-item class="input-inline" label="外商（国）投资" prop="foreignInvestment">
+                            <el-input v-model="exProjFrom.foreignInvestment" placeholder="请输入外商（国）投资比例">
+                                <template slot="suffix">%&nbsp;&nbsp;&nbsp;</template>
+                            </el-input>
+                        </el-form-item>
+                        <el-form-item class="input-inline" label="港、澳、台投资" prop="hkInvestment">
+                            <el-input v-model="exProjFrom.hkInvestment" placeholder="请输入港、澳、台投资比例">
+                                <template slot="suffix">%&nbsp;&nbsp;&nbsp;</template>
+                            </el-input>
+                        </el-form-item>
+                        <el-form-item class="input-inline" label="私（民）营投资" prop="privateInvestment">
+                            <el-input v-model="exProjFrom.privateInvestment" placeholder="请输入私（民）营投资比例">
+                                <template slot="suffix">%&nbsp;&nbsp;&nbsp;</template>
+                            </el-input>
+                        </el-form-item>
+                        <el-form-item class="input-inline" label="其他资金来源" prop="otherInvestment">
+                            <el-input v-model="exProjFrom.otherInvestment" placeholder="请输入其他资金来源比例">
+                                <template slot="suffix">%&nbsp;&nbsp;&nbsp;</template>
+                            </el-input>
+                        </el-form-item>
+                    </div>
+
+                </el-form>
+                <el-button type="primary" icon="el-icon-wallet" class="fr" @click="saveExProjForm()">
+                    保存</el-button>
+            </el-collapse-item>
+            <!--  基本信息  end  -->
+
+        </el-collapse>
+
+    </div>
+</div>
+</body>
+
+<th:block th:include="common/common :: commonfooter" />
+<script src="../../static/form/js/exProjForm.js" th:src="@{/form/js/exProjForm.js}"></script>
+
+</html>

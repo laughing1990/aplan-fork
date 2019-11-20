@@ -3,6 +3,7 @@
 <!--created by Administrator    2019-11-01 10:48:23 -->
 <!--0 一些前置信息配置 -->
 <mapper namespace="com.augurit.aplanmis.common.mapper.AeaParFrontPartformMapper">
+
     <!--1 返回所有字段的SQL字句 -->
     <sql id="allColumns">
         FRONT_PARTFORM_ID  frontPartformId,
@@ -40,27 +41,26 @@
         where FRONT_PARTFORM_ID = #{id}
     </select>
 
-    <select id="getAeaParFrontPartformVoByStageId" resultType="com.augurit.aplanmis.common.vo.AeaParFrontPartformVo">
+    <select id="getAeaParFrontPartformVoByStageId" resultType="AeaParFrontPartform">
         select
-        <include refid="allColumnsAlias">
-            <property name="alias" value="apfp"></property>
-        </include>
-        ,
-        apsp.PARTFORM_NAME partformName,
-        apsp.IS_SMART_FORM isSmartForm,
-        apsp.STO_FORM_ID stoFormId
+            <include refid="allColumnsAlias">
+                <property name="alias" value="apfp"></property>
+            </include>,
+            apsp.PARTFORM_NAME partformName,
+            apsp.IS_SMART_FORM isSmartForm,
+            apsp.STO_FORM_ID stoFormId
         from AEA_PAR_FRONT_PARTFORM apfp
         left join aea_par_stage_partform apsp on apsp.STAGE_PARTFORM_ID = apfp.STAGE_PARTFORM_ID
         <where>
-            apfp.IS_ACTIVE = '1'
+            and apfp.IS_ACTIVE = '1'
             <if test="stageId != null">
-                AND apfp.STAGE_ID = #{stageId}
+            and apfp.STAGE_ID = #{stageId}
             </if>
             <if test="rootOrgId != null">
-                AND apfp.ROOT_ORG_ID = #{rootOrgId}
+            and apfp.ROOT_ORG_ID = #{rootOrgId}
             </if>
         </where>
-        order by apfp.SORT_NO
+        order by apfp.SORT_NO asc, apfp.CREATE_TIME asc, apfp.MODIFY_TIME asc
     </select>
 
     <!--3 根据条件查询实体list -->
@@ -103,17 +103,18 @@
                 AND ROOT_ORG_ID = #{rootOrgId}
             </if>
         </where>
+        order by SORT_NO asc, CREATE_TIME asc, MODIFY_TIME asc
     </select>
-    <!--4 根据条件查询实体list,返回分页对象 -->
 
     <!--5 新增实体对象 -->
     <insert id="insertAeaParFrontPartform" parameterType="AeaParFrontPartform">
-    insert into AEA_PAR_FRONT_PARTFORM (
-FRONT_PARTFORM_ID  ,STAGE_ID  ,STAGE_PARTFORM_ID  ,SORT_NO  ,IS_ACTIVE  ,FRONT_PARTFORM_MEMO  ,CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME  ,ROOT_ORG_ID  
-    )  values  (
-#{frontPartformId},#{stageId},#{stagePartformId},#{sortNo},#{isActive},#{frontPartformMemo},#{creater},#{createTime},#{modifier},#{modifyTime},  #{rootOrgId}
-    )
-</insert>
+        insert into AEA_PAR_FRONT_PARTFORM (
+            FRONT_PARTFORM_ID  ,STAGE_ID  ,STAGE_PARTFORM_ID  ,SORT_NO  ,IS_ACTIVE  ,FRONT_PARTFORM_MEMO  ,CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME  ,ROOT_ORG_ID
+        )  values  (
+            #{frontPartformId},#{stageId},#{stagePartformId},#{sortNo},#{isActive},#{frontPartformMemo},#{creater},#{createTime},#{modifier},#{modifyTime},  #{rootOrgId}
+        )
+    </insert>
+
     <!--6 修改实体对象 -->
     <update id="updateAeaParFrontPartform" parameterType="AeaParFrontPartform">
         update AEA_PAR_FRONT_PARTFORM
@@ -154,13 +155,12 @@ FRONT_PARTFORM_ID  ,STAGE_ID  ,STAGE_PARTFORM_ID  ,SORT_NO  ,IS_ACTIVE  ,FRONT_P
         </set>
         where FRONT_PARTFORM_ID = #{frontPartformId}
     </update>
+
     <!--7 删除实体对象,根据主键ID -->
     <delete id="deleteAeaParFrontPartform">
-        delete from   AEA_PAR_FRONT_PARTFORM
-        where
-    FRONT_PARTFORM_ID = #{id}
+        delete from AEA_PAR_FRONT_PARTFORM where FRONT_PARTFORM_ID = #{id}
     </delete>
-    <!--8 删除实体对象列表,根据主键ID列表 -->
+
     <!--9 返回所有字段的对象map,用于级联 -->
     <resultMap type="AeaParFrontPartform" id="AeaParFrontPartformMap">
         <id property="frontPartformId" column="FRONT_PARTFORM_ID"/>
@@ -176,14 +176,13 @@ FRONT_PARTFORM_ID  ,STAGE_ID  ,STAGE_PARTFORM_ID  ,SORT_NO  ,IS_ACTIVE  ,FRONT_P
         <result property="rootOrgId" column="ROOT_ORG_ID"/>
     </resultMap>
 
-
-    <select id="listAeaParFrontPartformVo" resultType="com.augurit.aplanmis.common.vo.AeaParFrontPartformVo">
+    <select id="listAeaParFrontPartformVo" resultType="AeaParFrontPartform">
         select
-        <include refid="allColumnsAlias">
-            <property name="alias" value="apfp"></property>
-        </include>,
-        apsp.PARTFORM_NAME partformName,
-        apsp.IS_SMART_FORM isSmartForm
+            <include refid="allColumnsAlias">
+                <property name="alias" value="apfp"></property>
+            </include>,
+            apsp.PARTFORM_NAME partformName,
+            apsp.IS_SMART_FORM isSmartForm
         from AEA_PAR_FRONT_PARTFORM apfp
         left join aea_par_stage_partform apsp on apsp.STAGE_PARTFORM_ID = apfp.STAGE_PARTFORM_ID
         <where>
@@ -234,48 +233,44 @@ FRONT_PARTFORM_ID  ,STAGE_ID  ,STAGE_PARTFORM_ID  ,SORT_NO  ,IS_ACTIVE  ,FRONT_P
     <select id="getMaxSortNo" resultType="java.lang.Long">
         select max(SORT_NO) from AEA_PAR_FRONT_PARTFORM
         <where>
-            <if test="stageId!=null and stageId!=''">
-                and STAGE_ID = #{stageId}
-            </if>
+            and STAGE_ID = #{stageId}
+            and ROOT_ORG_ID = #{rootOrgId}
         </where>
     </select>
 
-    <select id="listSelectParFrontPartform" resultType="com.augurit.aplanmis.common.vo.AeaParFrontPartformVo">
+    <select id="listSelectParFrontPartform" resultType="AeaParFrontPartform">
         select
-        apsp.PARTFORM_NAME partformName,
-        apsp.STAGE_PARTFORM_ID stagePartformId,
-        apsp.IS_SMART_FORM isSmartForm
+            apsp.STAGE_PARTFORM_ID stagePartformId,
+            apsp.PARTFORM_NAME partformName,
+            apsp.IS_SMART_FORM isSmartForm
         from aea_par_stage_partform apsp
         <where>
-            <if test="stageId != null and stageId!=''">
-                AND apsp.STAGE_ID = #{stageId}
-            </if>
-            <if test="keyword!=null and keyword!='' ">
-                AND(
-                apsp.PARTFORM_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%')
-                )
-            </if>
+            AND apsp.STAGE_ID = #{stageId}
             and apsp.STAGE_PARTFORM_ID not in (
-            select apfp.STAGE_PARTFORM_ID from AEA_PAR_FRONT_PARTFORM apfp
-            <where>
-                <if test="stageId != null and stageId!=''">
-                    AND apfp.STAGE_ID = #{stageId}
-                </if>
-                <if test="frontPartformId != null and frontPartformId !='' " >
-                    and apfp.FRONT_PARTFORM_ID != #{frontPartformId}
-                </if>
-            </where>
+                select distinct
+                     apfp.STAGE_PARTFORM_ID
+                from AEA_PAR_FRONT_PARTFORM apfp
+                <where>
+                    and apfp.STAGE_ID = #{stageId}
+                    and apfp.ROOT_ORG_ID = #{rootOrgId}
+                    and apfp.STAGE_PARTFORM_ID is not null
+                    and apfp.STAGE_PARTFORM_ID !=''
+                </where>
             )
+            <if test="keyword!=null and keyword!='' ">
+            and  apsp.PARTFORM_NAME like CONCAT(CONCAT('%',#{keyword}),'%')
+            </if>
         </where>
+        order by apsp.SORT_NO asc
     </select>
 
-    <select id="getAeaParFrontPartformVoById" resultType="com.augurit.aplanmis.common.vo.AeaParFrontPartformVo">
+    <select id="getAeaParFrontPartformVoById" resultType="AeaParFrontPartform">
         select
-        <include refid="allColumnsAlias">
-            <property name="alias" value="apfp"></property>
-        </include>,
-        apsp.PARTFORM_NAME partformName,
-        apsp.IS_SMART_FORM isSmartForm
+            <include refid="allColumnsAlias">
+                <property name="alias" value="apfp"></property>
+            </include>,
+            apsp.PARTFORM_NAME partformName,
+            apsp.IS_SMART_FORM isSmartForm
         from AEA_PAR_FRONT_PARTFORM apfp
         left join aea_par_stage_partform apsp on apsp.STAGE_PARTFORM_ID = apfp.STAGE_PARTFORM_ID
         where apfp.FRONT_PARTFORM_ID = #{id}
