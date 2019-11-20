@@ -11,6 +11,6 @@ public class MoveFilesParamVo {
     private String currentDirId;
     @ApiModelProperty("目标目录ID")
     private String targetDirId;
-    @ApiModelProperty("文件ID数组")
-    private String[] detailIds;
+    @ApiModelProperty("文件ID数组,用逗号拼接")
+    private String detailIds;
 }

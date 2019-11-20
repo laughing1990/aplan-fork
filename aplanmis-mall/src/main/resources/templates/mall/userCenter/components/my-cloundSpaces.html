@@ -104,7 +104,7 @@
             <section class="my-materials-table-box" v-loading="mloading">
                 <!--列表模式 str-->
                 <div class="my-declareing-table" v-show="mode == '列表'">
-                    <el-table :data="fileListData" ref="fileListTable"  stripe  style="width:100%" class="matFileListTable" v-loading="tableLoading" @selection-change="handleSelectionChange" @row-click="tableRowClick">
+                    <el-table :data="fileListData" ref="fileListTable"  stripe  style="width:100%" class="matFileListTable" v-loading="tableLoading" @selection-change="handleSelectionChange">
                         <el-table-column
                                 type="selection"
                                 width="30">
@@ -120,7 +120,7 @@
                                         {{scope.row.attName}}
                                     </div>
                                     <div class="download fr">
-                                        <i class="el-icon-more" @contextmenu.prevent="rigthClickTable($event,scope.row)" ></i>
+                                        <i class="el-icon-more" @click.prevent="rigthClickTable($event,scope.row)" ></i>
                                     </div>
                                 </div>
                             </template>

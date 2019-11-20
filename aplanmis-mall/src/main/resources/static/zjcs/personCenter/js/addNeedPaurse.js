@@ -27,7 +27,7 @@ var module1 = new Vue({
 			}
 		};
 		return {
-			itemVerId: '', // 服务事项id
+			itemVerId: '', // 事项版本id
 			loginUserInfo: {
 				isAdministrators: "",
 				isOwner: "",
@@ -220,7 +220,9 @@ var module1 = new Vue({
 				chooseInsertype: ['1', '1'],
 				isAvoid: "0",
 				biddingType: '1',
-				basePrice: ''
+				basePrice: '',
+				isDiscloseIm: '1',
+				isDiscloseBidding: '1'
 			},
 			isFinancialFund: true,
 			isSocialFund: true,
@@ -278,6 +280,8 @@ var module1 = new Vue({
 			serviceDetail: {}, // 中介服务对应详细信息
 			stateList: [], // 情形选中列表
 			attachmentUrl: ctx + 'supermarket/purchase/mat/uploadPurchaseAtt', // 附加上传url
+			detailedID1: '', // 附件1多文件上传所需id
+			detailedID2: '', // 附件2多文件上传所需id
 		}
 	},
 	methods: {
@@ -663,6 +667,8 @@ var module1 = new Vue({
 			var vm = this;
 			this.biddingTypeChange(this.form.biddingType)
 			vm.form = new Object();
+			vm.form.isDiscloseIm = '1';
+			vm.form.isDiscloseBidding = '1';
 			request('', {
 				url: ctx + 'supermarket/purchase/getProUnitLinkInfo', type: 'post',
 			}, function (res) {
@@ -717,7 +723,7 @@ var module1 = new Vue({
 			vm.selectdRecord = [];
 			var value = vm.multipleSelection2
 
-			// vm.serviceDetail = JSON.parse(JSON.stringify(vm.multipleSelection2[0]));
+			vm.serviceDetail = JSON.parse(JSON.stringify(vm.multipleSelection2[0]));
 			vm.itemVerId = value[0].agentItemVerId;
 			vm.isShowServiceDetail = true;
 
@@ -981,10 +987,10 @@ var module1 = new Vue({
 			} else {
 				this.fileList1 = fileList
 			}
-			this.formData1 = [];
-			for (var i = 0; i < this.fileList1.length; i++) {
-				this.formData1.push(this.fileList1[i].raw);
-			}
+			// this.formData1 = [];
+			// for (var i = 0; i < this.fileList1.length; i++) {
+			// 	this.formData1.push(this.fileList1[i].raw);
+			// }
 			console.log(this.fileList1)
 		},
 		deluploadImg1: function (item, index) {
@@ -995,6 +1001,114 @@ var module1 = new Vue({
 			})
 
 		},
+		debounceHandler1: function (file) {
+			var _that = this;
+
+			this.debounce1(this.uploadFile1, file);
+		},
+		debounce1: function (func, file) {
+			var vm = this;
+			window.clearTimeout(func.tId);
+			func.temArr = func.temArr || [];
+			func.temArr.push(file);
+			console.log(file);
+			func.tId = window.setTimeout(function () {
+				this.loadingFileWin = false;
+				func(func.temArr);
+				func.temArr = [];
+			}, 1000);
+		},
+		uploadFile1: function (file) {
+			var vm = this;
+			vm.loading = true;
+			var formData = new FormData();
+
+			file.forEach(function (u) {
+				Vue.set(u.file, 'officialRemarkFile', u.file.name);
+				formData.append('file', u.file);
+			})
+			// formData.append('officialRemarkFile', file.file);
+			formData.append('detailedID', vm.detailedID1);
+
+			$.ajax({
+				type: "POST",
+				url: ctx + 'supermarket/purchase/mat/uploadPurchaseAtt',
+				data: formData,
+				// contentType: 'application-x-www-form-urlencoded',
+				//如果传递的是FormData数据类型，那么下来的三个参数是必须的，否则会报错
+				processData: false, //用于对data参数进行序列化处理，这里必须false；如果是true，就会将FormData转换为String类型
+				contentType: false,  //一些文件上传http协议的关系，自行百度，如果上传的有文件，那么只能设置为false
+				success: function (res) {  //请求成功后的回调函数
+					vm.loading = false;
+					if (res.success) {
+						vm.detailedID1 = res.content.detailId;
+						vm.formData1 = res.content.attForms;
+						vm.$message({ message: '上传成功', type: 'success' });
+					} else {
+						vm.$message({ message: res.message, type: 'error' });
+					}
+				},
+				error: function () {
+					vm.loading = false;
+					vm.$message({ message: '上传失败', type: 'error' });
+				}
+			});
+		},
+		debounceHandler2: function (file) {
+			var _that = this;
+
+			this.debounce1(this.uploadFile1, file);
+		},
+		debounce2: function (func, file) {
+			var vm = this;
+			window.clearTimeout(func.tId);
+			func.temArr = func.temArr || [];
+			func.temArr.push(file);
+			console.log(file);
+			func.tId = window.setTimeout(function () {
+				this.loadingFileWin = false;
+				func(func.temArr);
+				func.temArr = [];
+			}, 1000);
+		},
+		uploadFile2: function (file) {
+			var vm = this;
+			vm.loading = true;
+			var formData = new FormData();
+
+			file.forEach(function (u) {
+				Vue.set(u.file, 'officialRemarkFile', u.file.name);
+				formData.append('file', u.file);
+			})
+			// formData.append('officialRemarkFile', file.file);
+			formData.append('detailedID', vm.detailedID2);
+
+			$.ajax({
+				type: "POST",
+				url: ctx + 'supermarket/purchase/mat/uploadPurchaseAtt',
+				data: formData,
+				// contentType: 'application-x-www-form-urlencoded',
+				//如果传递的是FormData数据类型，那么下来的三个参数是必须的，否则会报错
+				processData: false, //用于对data参数进行序列化处理，这里必须false；如果是true，就会将FormData转换为String类型
+				contentType: false,  //一些文件上传http协议的关系，自行百度，如果上传的有文件，那么只能设置为false
+				success: function (res) {  //请求成功后的回调函数
+					vm.loading = false;
+					if (res.success) {
+						vm.detailedID2 = res.content.detailId;
+						vm.formData2 = res.content.attForms;
+						vm.$message({ message: '上传成功', type: 'success' });
+						console.log('id', vm.detailedID);
+					} else {
+						vm.$message({ message: res.message, type: 'error' });
+					}
+				},
+				error: function () {
+					vm.loading = false;
+					vm.$message({ message: '上传失败', type: 'error' });
+				}
+			});
+		},
+
 
 
 		handleRemove2: function (file, fileList) {
@@ -1218,17 +1332,17 @@ var module1 = new Vue({
 
 
 		// 删除数组里含有某值的对应项
-		removeArray: function(_arr, _obj) {
+		removeArray: function (_arr, _obj) {
 			if (!_arr) return;
 			var length = _arr.length;
 			if (length.length == 0) return;
 			for (var i = 0; i < length; i++) {
-			  if (_arr[i] === _obj) {
-				_arr.splice(i, 1);
-				return _arr;
-			  }
+				if (_arr[i] === _obj) {
+					_arr.splice(i, 1);
+					return _arr;
+				}
 			}
-		  },
+		},
 		// pageSize 改变时会触发
 		homeHandleSizeChange: function (val) {
 			this.pageSize = val;
@@ -1352,36 +1466,36 @@ var module1 = new Vue({
 			return suffix;
 		},
 		// 获取已上传文件列表
-		getFileListWin: function(matinstId,rowData){
+		getFileListWin: function (matinstId, rowData) {
 			var _that = this;
 			request('', {
-			  url: ctx + 'rest/mats/att/list',
-			  type: 'get',
-			  data: {matinstId: matinstId}
+				url: ctx + 'rest/mats/att/list',
+				type: 'get',
+				data: { matinstId: matinstId }
 			}, function (res) {
-			  if(res.success){
-				// if(res.content){
-				  _that.uploadTableData = res.content?res.content:[];
-				  if(rowData){
-					rowData.matChild=res.content?res.content:[];
-				  }
-				  if(rowData.matChild.length>0){
-					_that.showMatTableExpand = true;
-				  }
-				// }
-			  }else {
-				_that.$message({
-				  message: res.message?res.message:'加载已上传材料列表失败',
-				  type: 'error'
-				});
-			  }
+				if (res.success) {
+					// if(res.content){
+					_that.uploadTableData = res.content ? res.content : [];
+					if (rowData) {
+						rowData.matChild = res.content ? res.content : [];
+					}
+					if (rowData.matChild.length > 0) {
+						_that.showMatTableExpand = true;
+					}
+					// }
+				} else {
+					_that.$message({
+						message: res.message ? res.message : '加载已上传材料列表失败',
+						type: 'error'
+					});
+				}
 			}, function (msg) {
-			  _that.$message({
-				message: '服务请求失败',
-				type: 'error'
-			  });
+				_that.$message({
+					message: '服务请求失败',
+					type: 'error'
+				});
 			});
-		  },
+		},
 		// 预览电子件
 		filePreview: function (data, flag) { // flag==pdf 查看施工图
 			var detailId = data.fileId;

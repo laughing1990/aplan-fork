@@ -449,6 +449,7 @@
             *
             * */
             moveFiles:function(type,item){
+                var vm=this;
                 this.moveFilesDialogFlag = true;
                 if(type == 0 && item){
                     vm.FilesMultipleSelection.push(item);
@@ -470,7 +471,7 @@
                 });
                 debugger;
                 var params = {
-                    detailIds:JSON.stringify(detailIdsArry),              // 文件ID数组
+                    detailIds:detailIdsArry.join(","),              // 文件ID数组
                     currentDirId:vm.dirId.toString(),       // 当前目录ID
                     targetDirId:vm.targetDirId.toString(),  // 目标目录ID
                 }
@@ -487,6 +488,7 @@
                             dirName:vm.dirName,
                         }
                         vm.getFileList(item);
+                        vm.moveFilesDialogFlag = false;
                     }else{
                         vm.$message.error("移动失败")
                     }

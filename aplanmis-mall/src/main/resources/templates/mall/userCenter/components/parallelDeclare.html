@@ -1259,7 +1259,7 @@
           {{scope.row.matName}}
           <i class="cert-icon ag ag-id-card" v-if="scope.row.matProp=='c'"></i>
           <span v-show="scope.row.zcqy==1" class="isTag isDone">容缺</span>
-          <span v-show="scope.row.isCommon==1" class="isTag isRecommend">共</span>
+          <!--<span v-show="scope.row.isCommon==1" class="isTag isRecommend">共</span>-->
           <span v-show="scope.row.zcqy==0&&scope.row.attIsRequire==1" class="isTag isRequired">必</span>
         </template>
       </el-table-column>
