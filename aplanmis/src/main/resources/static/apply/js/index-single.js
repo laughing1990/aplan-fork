@@ -2231,7 +2231,7 @@ var vm = new Vue({
           if(res){
             _that.certMatAllData = res.content;
             _that.certMatTableData = res.content.data?res.content.data:[];
-            res.content.data.map(function(certItem){
+            _that.certMatTableData.map(function(certItem){
               if(certItem.bind=='undefined'||certItem.bind==undefined){
                 Vue.set(certItem,'bind',false);
               }else {
