@@ -20,6 +20,12 @@ public interface SendSmsRemindContentConverter {
     public String getWinAcceptJobRemindContent(String applyDate,String projName,String applyinstCode,String taskName,String phoneNum);
 
     /**
+     * 材料补全提醒（提醒业主）
+     * @return
+     */
+    public String getBuQuanJobRemindContent(String applyDate,String projName,String applyinstCode,String taskName,String phoneNum);
+
+    /**
      * 办结快递邮寄查收提醒（提醒业主）
      * @return
      */

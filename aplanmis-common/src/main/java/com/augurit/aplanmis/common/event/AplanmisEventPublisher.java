@@ -92,6 +92,13 @@ public class AplanmisEventPublisher {
                         publisher.publishEvent(new ApplyCompletedAplanmisEvent(this, applyEventVo.getApplyinstId()));
                     }
                 }
+                // 材料待补全
+                else if (ApplyState.IN_THE_SUPPLEMENT.getValue().equals(applyinstState)) {
+                    if (eventEnabled(AplanmisEventType.APPLY_MATERIAL_COMPLETION_START)) {
+                        eventEnabled = true;
+                        publisher.publishEvent(new ApplyMaterialCompletionStartAplanmisEvent(this, applyEventVo.getApplyinstId()));
+                    }
+                }
             } else {
                 if (applyEventVo.isShowException()) {
                     throw new SmsException("参数有误");
