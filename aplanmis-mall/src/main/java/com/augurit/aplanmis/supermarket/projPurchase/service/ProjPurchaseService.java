@@ -1413,15 +1413,19 @@ public class ProjPurchaseService {
         ImItemApplyData applyData = purchaseVo.createItemApplyData();
         applyData.setProjInfoId(projInfoId);//回填采购的项目ID
         String linkmanId = "";
+        String publishUnitInfoId = null;
+        String publishLinkmanInfoId = null;
         if (StringUtils.isNotBlank(isPersonAccount) && "0".equals(isPersonAccount)) {
             //单位
             String unitId = loginInfoVo.getUnitId();
+            publishUnitInfoId = unitId;
             applyData.setConstructionUnitId(loginInfoVo.getUnitId());
             List<AeaLinkmanInfo> aeaLinkmanInfos = aeaImServiceLinkmanMapper.listAeaImServiceLinkmanByUnitInfoId(unitId, null, null);
             if (aeaLinkmanInfos.isEmpty()) throw new Exception("can not find linkman");
             linkmanId = aeaLinkmanInfos.get(0).getLinkmanInfoId();
         } else {
             linkmanId = loginInfoVo.getUserId();
+            publishLinkmanInfoId = linkmanId;
             applyData.setApplyLinkmanId(loginInfoVo.getUserId());
         }
         applyData.setLinkmanInfoId(linkmanId);
@@ -1433,6 +1437,8 @@ public class ProjPurchaseService {
         ImPurchaseData purchaseData = purchaseVo.createPurchaseData(applyinstId, applyinstCode);
         purchaseData.setProjInfoId(projInfoId);
         purchaseData.setLinkmanInfoId(linkmanId);
+        purchaseData.setPublishLinkmanInfoId(publishLinkmanInfoId);
+        purchaseData.setPublishUnitInfoId(publishUnitInfoId);
         //设置审批项目ID
         purchaseData.setApproveProjInfoId(purchaseVo.getSaveAeaProjInfoVo().getParentProjId());
         restImApplyService.savePurchaseProjInfo(purchaseData);
@@ -1481,7 +1487,7 @@ public class ProjPurchaseService {
         aeaProjInfoCond.setProjName(purchaseVo.getSaveAeaProjInfoVo().getProjName());
         List aeaProjInfoCondList = aeaProjInfoMapper.listAeaProjInfo(aeaProjInfoCond);
         if (!aeaProjInfoCondList.isEmpty()) {
-            throw new RuntimeException("项目名称已存在");
+            throw new RuntimeException("项目名称已存在:" + purchaseVo.getSaveAeaProjInfoVo().getProjName());
         }
     }
 }
