@@ -52,6 +52,7 @@ public class AeaParFrontItemServiceImpl implements AeaParFrontItemService {
 
     @Override
     public void deleteAeaParFrontItemById(String id) throws Exception {
+
         if (StringUtils.isBlank(id)) {
             throw new InvalidParameterException(id);
         }
@@ -64,6 +65,7 @@ public class AeaParFrontItemServiceImpl implements AeaParFrontItemService {
     @Override
     public PageInfo<AeaParFrontItem> listAeaParFrontItem(AeaParFrontItem aeaParFrontItem, Page page) throws Exception {
 
+        aeaParFrontItem.setRootOrgId(SecurityContext.getCurrentOrgId());
         PageHelper.startPage(page);
         List<AeaParFrontItem> list = aeaParFrontItemMapper.listAeaParFrontItem(aeaParFrontItem);
         logger.debug("成功执行分页查询！！");
@@ -83,6 +85,7 @@ public class AeaParFrontItemServiceImpl implements AeaParFrontItemService {
     @Override
     public List<AeaParFrontItem> listAeaParFrontItem(AeaParFrontItem aeaParFrontItem) throws Exception {
 
+        aeaParFrontItem.setRootOrgId(SecurityContext.getCurrentOrgId());
         List<AeaParFrontItem> list = aeaParFrontItemMapper.listAeaParFrontItem(aeaParFrontItem);
         logger.debug("成功执行查询list！！");
         return list;
@@ -91,6 +94,7 @@ public class AeaParFrontItemServiceImpl implements AeaParFrontItemService {
     @Override
     public PageInfo<AeaParFrontItem> listAeaParFrontItemVoByPage(AeaParFrontItem aeaParFrontItem, Page page) throws Exception {
 
+        aeaParFrontItem.setRootOrgId(SecurityContext.getCurrentOrgId());
         PageHelper.startPage(page);
         List<AeaParFrontItem> list = aeaParFrontItemMapper.listAeaParFrontItemVo(aeaParFrontItem);
         logger.debug("成功执行分页查询！！");
@@ -98,9 +102,9 @@ public class AeaParFrontItemServiceImpl implements AeaParFrontItemService {
     }
 
     @Override
-    public Long getMaxSortNo(AeaParFrontItem aeaParFrontItem) throws Exception {
+    public Long getMaxSortNo(String stageId, String rootOrgId) throws Exception {
 
-        Long sortNo = aeaParFrontItemMapper.getMaxSortNo(aeaParFrontItem);
+        Long sortNo = aeaParFrontItemMapper.getMaxSortNo(stageId, rootOrgId);
         return sortNo==null?1L:(sortNo+1L);
     }
 
@@ -137,40 +141,9 @@ public class AeaParFrontItemServiceImpl implements AeaParFrontItemService {
     }
 
     @Override
-    public void batchSaveAeaParFrontItem(String stageId,String itemVerIds)throws Exception{
-
-        if(StringUtils.isBlank(stageId)  || StringUtils.isBlank(itemVerIds)){
-            throw new InvalidParameterException(stageId,itemVerIds);
-        }
-
-        String[] itemVerIdArr = itemVerIds.split(",");
-        if(itemVerIdArr!=null && itemVerIdArr.length>0){
-            AeaParFrontItem query = new AeaParFrontItem();
-            query.setStageId(stageId);
-            Long maxSortNo = getMaxSortNo(query);
-            for(String itemVerId:itemVerIdArr){
-                AeaParFrontItem aeaParFrontItem = new AeaParFrontItem();
-                aeaParFrontItem.setStageId(stageId);
-                aeaParFrontItem.setItemVerId(itemVerId);
-                List<AeaParFrontItem> list = aeaParFrontItemMapper.listAeaParFrontItem(aeaParFrontItem);
-                if (list.size() > 0) {
-                    continue;
-                }
-                aeaParFrontItem.setFrontItemId(UUID.randomUUID().toString());
-                aeaParFrontItem.setCreateTime(new Date());
-                aeaParFrontItem.setCreater(SecurityContext.getCurrentUserId());
-                aeaParFrontItem.setRootOrgId(SecurityContext.getCurrentOrgId());
-                aeaParFrontItem.setSortNo(maxSortNo);
-                aeaParFrontItem.setIsActive("1");
-                aeaParFrontItemMapper.insertAeaParFrontItem(aeaParFrontItem);
-                maxSortNo++;
-            }
-        }
-    }
-
-    @Override
     public List<AeaParFrontItem> listAeaParFrontItemVoByNoPage(AeaParFrontItem aeaParFrontItem) throws Exception{
 
+        aeaParFrontItem.setRootOrgId(SecurityContext.getCurrentOrgId());
         List<AeaParFrontItem> list = aeaParFrontItemMapper.listAeaParFrontItemVo(aeaParFrontItem);
         return list;
     }
