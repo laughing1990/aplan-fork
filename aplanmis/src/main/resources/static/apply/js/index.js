@@ -2310,6 +2310,9 @@ var vm = new Vue({
               if(item.matChild=='undefined'||item.matChild==undefined){
                 Vue.set(item,'matChild',[]);
               }
+              if(item.certChild=='undefined'||item.certChild==undefined){
+                Vue.set(item,'certChild',[]);
+              }
               if(item.matinstId=='undefined'||item.matinstId==undefined){
                 Vue.set(item,'matinstId','');
               }
@@ -4837,6 +4840,9 @@ var vm = new Vue({
             if(item){
               Vue.set(item,'_itemType',flagType);
               Vue.set(item,'matChild',[]);
+              if(item.certChild=='undefined'||item.certChild==undefined){
+                Vue.set(item,'certChild',[]);
+              }
               if(item.matinstId=='undefined'||item.matinstId==undefined) {
                 Vue.set(item, 'matinstId', '');
               }
@@ -5151,6 +5157,9 @@ var vm = new Vue({
             if(item){
               if(item.matChild=='undefined'||item.matChild==undefined){
                 Vue.set(item,'matChild',[]);
+              }
+              if(item.certChild=='undefined'||item.certChild==undefined){
+                Vue.set(item,'certChild',[]);
               }
               if(item.matinstId=='undefined'||item.matinstId==undefined){
                 Vue.set(item,'matinstId','');
