@@ -4302,6 +4302,8 @@ var vm = new Vue({
         vm.backDiaTitle = '回退';
       } else {
         vm.backDiaTitle = '发起申报';
+        vm.backDiaVisible = true;
+        return null;
       }
       vm.parentPageLoading = true;
       request('', {
