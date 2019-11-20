@@ -177,9 +177,6 @@ $(function(){
                 ruleEl:{
                     required: true
                 },
-                isActive:{
-                    required: true
-                }
             },
             messages: {
                 ruleName: {
@@ -191,9 +188,6 @@ $(function(){
                 ruleEl:{
                     required: '<font color="red">此项必填！</font>'
                 },
-                isActive:{
-                    required: '<font color="red">是否启用必选！</font>'
-                }
             },
             // 提交表单
             submitHandler: function (form) {
@@ -333,9 +327,6 @@ $(function(){
                 sortNo:{
                     required: true
                 },
-                isActive:{
-                    required: true
-                }
             },
             messages: {
                 frontCkItemName: {
@@ -344,9 +335,6 @@ $(function(){
                 sortNo:{
                     required: '<font color="red">此项必填！</font>'
                 },
-                isActive:{
-                    required: '<font color="red">是否启用必选！</font>'
-                }
             },
             // 提交表单
             submitHandler: function (form) {
@@ -403,17 +391,12 @@ $(function(){
                 checkbox: true,
             },
             {
-                field: "partformName",
-                title: "扩展表单名称",
-                width: 350,
-                textAlign: 'left',
-            },
-            {
                 field: "isSmartForm",
                 title: "是否智能表单",
-                textAlign: 'center',
+                align: 'center',
                 width: 80,
                 formatter: function (value, row, index) {
+
                     if(row.isSmartForm=='1'){
                         return "智能表单";
                     }else{
@@ -422,11 +405,25 @@ $(function(){
                 }
             },
             {
-                field: "sortNo",
-                title: "排序",
-                align: 'center',
-                width: 60,
-                sortable: true
+                field: "partformName",
+                title: "扩展表单名称",
+                width: 400,
+                align: 'left',
+            },
+            {
+                field: "itemPartformMemo",
+                title: "备注",
+                width: 200,
+                align: 'left',
+                formatter: function (value, row, index) {
+                    if(value){
+                        if(value.length>200){
+                            return value.substr(0, 200) + "...";
+                        }else{
+                            return value;
+                        }
+                    }
+                }
             },
             {
                 field: "isActive",
@@ -434,6 +431,13 @@ $(function(){
                 align: 'center',
                 width: 60,
                 formatter: partformIsActiveFormatter
+            },
+            {
+                field: "sortNo",
+                title: "排序",
+                align: 'center',
+                width: 60,
+                sortable: true
             },
             {
                 field: '_operate',
@@ -471,9 +475,6 @@ $(function(){
                 sortNo:{
                     required: true
                 },
-                isActive:{
-                    required: true
-                }
             },
             messages: {
                 partformName: {
@@ -482,9 +483,6 @@ $(function(){
                 sortNo:{
                     required: '<font color="red">此项必填！</font>'
                 },
-                isActive:{
-                    required: '<font color="red">是否启用必选！</font>'
-                }
             },
             // 提交表单
             submitHandler: function (form) {
@@ -577,7 +575,7 @@ function delItemFrontProj(id) {
 
     swal({
         title: '',
-        text: '确定要删除选定的前置检测吗',
+        text: '确定要删除选定的前置检测吗?',
         type: 'warning',
         showCancelButton: true,
         confirmButtonText: '确定',
@@ -626,7 +624,7 @@ function batchDelItemFrontProj() {
     if(curIsEditable) {
         var checkList = item_front_proj_tb.getSelections();
         if(checkList.length==0){
-            swal('提示信息', '请勾选要删除的前置检测', 'info');
+            swal('提示信息', '请勾选要删除的前置检测!', 'info');
         }else{
             var ids = [];
             for(var i=0;i<checkList.length;i++){
@@ -785,7 +783,7 @@ function batchDelItemFrontItem() {
 
         var checkList = item_front_item_tb.getSelections();
         if(checkList.length==0){
-            swal('提示信息', '请勾选要删除的前置检测', 'info');
+            swal('提示信息', '请勾选要删除的前置检测!', 'info');
         }else{
             var ids = new Array();
             for(var i=0;i<checkList.length;i++){
@@ -803,7 +801,7 @@ function delItemFrontItem(id) {
 
     swal({
         title: '',
-        text: '确定要删除选定的前置检测吗',
+        text: '确定要删除选定的前置检测吗?',
         type: 'warning',
         showCancelButton: true,
         confirmButtonText: '确定',
@@ -861,7 +859,7 @@ function addItemFrontPartform() {
         $('#edit_item_front_partform_form input[name="frontPartformId"]').val('');
         $('#edit_item_front_partform_form input[name="itemPartformId"]').val('');
         $('#edit_item_front_partform_form input[name="itemVerId"]').val(currentBusiId);
-        $('#edit_item_front_partform_form input[name="isSmartForm"]').attr("checked",false);
+        $('#edit_item_front_partform_form input[name="isActive"]').val('1');
 
         $.ajax({
             url: ctx + '/aea/item/front/partform/getMaxSortNo.do',
@@ -915,11 +913,7 @@ function editItemFrontPartform(frontPartformId) {
             if (result.success) {
 
                 loadFormData(true, '#edit_item_front_partform_form', result.content);
-                if("1"==result.content.isSmartForm){
-                    $('#edit_item_front_partform_form input[name="isSmartForm"][value="1"]').attr("checked",true);
-                }else{
-                    $('#edit_item_front_partform_form input[name="isSmartForm"][value="0"]').attr("checked",true);
-                }
+
             } else {
 
                 swal('错误信息', result.message, 'error');
@@ -936,16 +930,57 @@ function editItemFrontPartform(frontPartformId) {
 function batchDelItemFrontPartform() {
 
     if(curIsEditable) {
-        var checkList = item_front_partform_tb.getSelections();
-        if(checkList.length==0){
-            swal('提示信息', '请勾选要删除的前置检测', 'info');
-        }else{
-            var ids = new Array();
-            for(var i=0;i<checkList.length;i++){
-                ids.push(checkList[i].frontPartformId);
+        var rows = item_front_partform_tb.getSelections();
+        if(rows!=null&&rows.length>0){
+            var ids = [];
+            for(var i=0;i<rows.length;i++){
+                ids.push(rows[i].frontPartformId);
             }
-            var id = ids.join(",")
-            delItemFrontPartform(id);
+            swal({
+                text: '确定要删除选定的前置检测吗?',
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonText: '确定',
+                cancelButtonText: '取消'
+            }).then(function (result) {
+                if (result.value) {
+                    $("#uploadProgressMsg").html("删除中，请稍后...");
+                    $("#uploadProgress").modal("show");
+                    $.ajax({
+                        url: ctx + '/aea/item/front/partform/batchDelItemFrontPartformByIds.do',
+                        type: 'POST',
+                        data: {'ids': ids.toString()},
+                        async: false,
+                        success: function (result) {
+                            if (result.success) {
+                                setTimeout(function(){
+                                    $("#uploadProgress").modal('hide');
+                                    swal({
+                                        type: 'success',
+                                        title: '删除成功！',
+                                        showConfirmButton: false,
+                                        timer: 1000
+                                    });
+                                    item_front_partform_tb.clear();
+                                },500);
+                            } else {
+                                setTimeout(function(){
+                                    $("#uploadProgress").modal('hide');
+                                    swal('错误信息', result.message, 'error');
+                                },500);
+                            }
+                        },
+                        error: function(XMLHttpRequest, textStatus, errorThrown) {
+                            setTimeout(function(){
+                                $("#uploadProgress").modal('hide');
+                                swal('错误信息', XMLHttpRequest.responseText, 'error');
+                            },500);
+                        }
+                    });
+                }
+            });
+        }else{
+            swal('提示信息', '请勾选要删除的前置检测!', 'info');
         }
     }else{
         swal('提示信息', '当前版本下数据不可编辑!', 'info');
@@ -956,7 +991,7 @@ function delItemFrontPartform(id) {
 
     swal({
         title: '',
-        text: '确定要删除选定的前置检测吗',
+        text: '确定要删除选定的前置检测吗?',
         type: 'warning',
         showCancelButton: true,
         confirmButtonText: '确定',
@@ -968,7 +1003,7 @@ function delItemFrontPartform(id) {
             $.ajax({
                 url: ctx + '/aea/item/front/partform/deleteAeaItemFrontPartformById.do',
                 type: 'POST',
-                data: {id:id},
+                data: {'id': id},
                 async: false,
                 success: function (result) {
                     if (result.success) {

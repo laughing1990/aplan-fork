@@ -1,7 +1,9 @@
 package com.augurit.aplanmis.common.service.oneForm;
 import com.augurit.agcloud.bpm.common.sfengine.config.SFRenderConfig;
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
+import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.aplanmis.front.basis.stage.vo.OneFormStageRequest;
+import com.augurit.aplanmis.front.basis.stage.vo.FormFrofileVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Map;
 
 @RequestMapping("/rest/oneform/common")
@@ -31,5 +34,17 @@ public class OneFormCommonController {
     @ApiOperation("根据参数渲染一张表单整个页面")
     public void renderPage(OneFormStageRequest oneFormStageRequest,SFRenderConfig sFRenderConfig) {
         oneFormCommonService.renderPage(oneFormStageRequest,sFRenderConfig);
+    }
+
+    @RequestMapping(value = "/getListForm4StageOneForm", method = {RequestMethod.GET, RequestMethod.POST})
+    @ApiOperation("根据阶段/事项，返回表单列表(包括智能表单，开发表单)")
+    public ResultForm getListForm4StageOneForm(OneFormStageRequest oneFormStageRequest, SFRenderConfig sFRenderConfig) {
+        try {
+            List<FormFrofileVo> result = oneFormCommonService.getListForm4StageOneForm(oneFormStageRequest);
+            return new ContentResultForm(true, result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ContentResultForm(false, e.getMessage());
+        }
     }
 }

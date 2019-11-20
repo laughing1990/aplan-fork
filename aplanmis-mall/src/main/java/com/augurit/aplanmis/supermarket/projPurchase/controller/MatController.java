@@ -6,6 +6,8 @@ import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.domain.AeaHiItemMatinst;
 import com.augurit.aplanmis.common.service.file.FileUtilsService;
 import com.augurit.aplanmis.common.service.instance.AeaHiItemMatinstService;
+import com.augurit.aplanmis.common.service.projPurchase.AeaImProjPurchaseService;
+import com.augurit.aplanmis.common.vo.UploadResult;
 import com.augurit.aplanmis.mall.userCenter.service.RestApplyMatService;
 import com.augurit.aplanmis.mall.userCenter.vo.AutoImportParamVo;
 import com.augurit.aplanmis.mall.userCenter.vo.UploadMatReturnVo;
@@ -21,15 +23,12 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.support.StandardMultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
-import java.util.UUID;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @Api(value = "项目需求采购管理接口-材料相关", tags = "中介超市---项目采购管理接口-材料相关")
@@ -45,6 +44,10 @@ public class MatController {
     private FileUtilsService fileUtilsService;
     @Autowired
     private RestApplyMatService restApplyMatService;
+
+    @Autowired
+    private AeaImProjPurchaseService aeaImProjPurchaseService;
+
 
     @ApiOperation(value = "获取中介事项材料-不分情形", tags = "项目采购页---根据itemVerId获取所有材料列表")
     @GetMapping("/getItemMatList")
@@ -113,18 +116,9 @@ public class MatController {
 
     @PostMapping("/uploadPurchaseAtt")
     @ApiOperation(value = "项目采购页-采购要求文件上传", tags = "中介超市-项目采购页-采购要求文件上传")
-    public ResultForm saveProjPurchaseRequireAtt(HttpServletRequest request) throws Exception {
-        String detailId = UUID.randomUUID().toString();
-        StandardMultipartHttpServletRequest req = (StandardMultipartHttpServletRequest) request;
-        List<MultipartFile> officialRemarkFiles = req.getFiles("officialRemarkFile");
-
-        if (officialRemarkFiles != null && !officialRemarkFiles.isEmpty()) {
-            fileUtilsService.uploadAttachments("AEA_IM_PROJ_PURCHASE", "OFFICIAL_REMARK_FILE", detailId, officialRemarkFiles);
-        }
-        List<MultipartFile> requireExplainFiles = req.getFiles("requireExplainFile");
-        if (requireExplainFiles != null && !requireExplainFiles.isEmpty()) {
-            fileUtilsService.uploadAttachments("AEA_IM_PROJ_PURCHASE", "REQUIRE_EXPLAIN_FILE", detailId, requireExplainFiles);
-        }
-        return new ContentResultForm<>(true, detailId, "success");
+    @ApiImplicitParam(name = "recordId", value = "附件关联字段ID")
+    public ResultForm saveProjPurchaseRequireAtt(HttpServletRequest request, String recordId) throws Exception {
+        UploadResult uploadResult = aeaImProjPurchaseService.uploadFiles(request, recordId);
+        return new ContentResultForm<>(true, uploadResult, "success");
     }
 }

@@ -68,7 +68,7 @@ public interface AeaHiItemMatinstMapper {
     /**
      * 查询项目所有的材料实例
      *
-     * @param matCodes      材料IDS
+     * @param matCodes    材料IDS
      * @param projInfoIds 项目ID
      * @param unitInfoIds 项目单位信息
      * @return
@@ -111,7 +111,11 @@ public interface AeaHiItemMatinstMapper {
      */
     List<BscAttForm> listBscRootAttByUser(@Param("tableName") String tableName, @Param("pkName") String pkName, @Param("recordId") String recordId, @Param("orgId") String orgId);
 
-    List<BscAttLink> getBscAttLinkByDetailId(@Param("detailId")String detailId);
+    List<BscAttLink> getBscAttLinkByDetailId(@Param("detailId") String detailId);
 
     List<AeaHiItemMatinst> listAttachmentsByIteminstId(@Param("iteminstId") String iteminstId, @Param("matType") String matType, @Param("rootOrgId") String rootOrgId);
+
+    List<AeaHiItemMatinst> getFormMatinstByProjInfoId(@Param("projInfoId") String projInfoId, @Param("rootOrgId") String rootOrgId);
+
+    List<BscAttForm> listDetailCommonBatch(@Param("list") List<BscAttForm> list, @Param("keyword") String keyword) throws Exception;
 }

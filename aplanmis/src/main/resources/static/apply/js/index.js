@@ -66,7 +66,7 @@ var vm = new Vue({
       if (value === '' || value === undefined || value.trim() === '') {
         callback(new Error('请输入统一社会信用代码！'));
       } else if (value) {
-        var flag = !/^[1-9A-GY]{1}[1239]{1}[1-5]{1}[0-9]{5}[0-9A-Z]{10}$/.test(value);
+        var flag = !/[0-9A-HJ-NPQRTUWXY]{2}\d{6}[0-9A-HJ-NPQRTUWXY]{10}/.test(value);
         if (flag) {
           return callback(new Error('请输入正确的统一社会信用代码！'));
         } else {
@@ -1961,6 +1961,7 @@ var vm = new Vue({
             _that.stateList = [];
             _that.coreItems = [];
             _that.parallelItems = [];
+            _that.model.matsTableData=[];
           }
         }else {
           _that.$message({
@@ -2397,15 +2398,29 @@ var vm = new Vue({
         if (result.success) {
           _that.getStatusStateMats('','',stageId,'',true);  // 获取材料情形列表
           if(data.useOneForm==1){
-            _that.getOneFormList(stageId);//写死之前屏蔽
+            _that.getOneFormList(stageId);
           }else {
-            _that.oneFormData=[]; //写死之前屏蔽
+            _that.oneFormData=[];
           }
           _that.stageFrontCheckFlag = true;
         }else {
           _that.stageFrontCheckFlag = false;
           _that.stageFrontCheckMsg = result.message?result.message:'阶段前置检测失败';
-          alertMsg('', result.message?result.message:'阶段前置检测失败', '关闭', 'error', true);
+          confirmMsg('阶段前置检测不通过', result.message, function(){
+            _that.stageFrontCheckFlag = true;
+            _that.getStatusStateMats('','',stageId,'',true);  // 获取材料情形列表
+            if(data.useOneForm==1){
+              _that.getOneFormList(stageId);
+            }else {
+              _that.oneFormData=[];
+            }
+          },function(){
+            _that.stageFrontCheckFlag = false;
+            _that.stateList = [];
+            _that.parallelItems=[];
+            _that.coreItems=[];
+            _that.model.matsTableData=[];
+          },'继续申报','放弃申报', 'error', true);
         }
       }, function (msg) {})
 

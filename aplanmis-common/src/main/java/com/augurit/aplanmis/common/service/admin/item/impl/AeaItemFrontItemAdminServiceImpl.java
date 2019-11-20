@@ -159,10 +159,20 @@ public class AeaItemFrontItemAdminServiceImpl implements AeaItemFrontItemAdminSe
     @Override
     public PageInfo<AeaItemFrontItem> listAeaItemFrontItemByPage(AeaItemFrontItem aeaItemFrontItem, Page page){
 
+        aeaItemFrontItem.setRootOrgId(SecurityContext.getCurrentOrgId());
         PageHelper.startPage(page);
         List<AeaItemFrontItem> list = aeaItemFrontItemMapper.listAeaItemFrontItem(aeaItemFrontItem);
         logger.debug("成功执行分页查询！！");
         return new PageInfo<>(list);
+    }
+
+    @Override
+    public List<AeaItemFrontItem> listAeaItemFrontItem(AeaItemFrontItem aeaItemFrontItem){
+
+        aeaItemFrontItem.setRootOrgId(SecurityContext.getCurrentOrgId());
+        List<AeaItemFrontItem> list = aeaItemFrontItemMapper.listAeaItemFrontItem(aeaItemFrontItem);
+        logger.debug("成功执行分页查询！！");
+        return list;
     }
 
     @Override

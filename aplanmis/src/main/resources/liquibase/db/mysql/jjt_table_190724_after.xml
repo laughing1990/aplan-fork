@@ -918,4 +918,11 @@
         </sql>
     </changeSet>
 
+    <changeSet id="201911191333" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_item_front_partform`
+            ADD COLUMN `ITEM_PARTFORM_MEMO`  varchar(500) NULL COMMENT '备注';
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

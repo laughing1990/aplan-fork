@@ -314,6 +314,21 @@
         AND ahii.ITEMINST_ID = #{iteminstId}
     </select>
 
+    <select id="getFormMatinstByProjInfoId" resultType="AeaHiItemMatinst">
+        SELECT
+        <include refid="allColumns_ahim"/>,asf.FORM_ID stoFormId
+        FROM
+        aea_hi_item_matinst ahim,act_sto_forminst asf
+        WHERE
+        ahim.MAT_PROP = 'f'
+        AND
+        ahim.PROJ_INFO_ID = #{projInfoId}
+        AND
+        ahim.ROOT_ORG_ID = #{rootOrgId}
+        AND
+        asf.STO_FORMINST_ID = ahim.STO_FORMINST_ID
+    </select>
+
     <select id="listAeaHiItemMatinstByIds" resultType="com.augurit.aplanmis.common.domain.AeaHiItemMatinst">
         select
         <include refid="allColumns"/>
@@ -911,6 +926,142 @@
             and aim.IS_OFFICIAL_DOC='1'
         </if>
         and ahim.att_count>0
+    </select>
+
+    <select id="listDetailCommonBatch"  resultType="BscAttForm" >
+        select
+        distinct
+        <include refid="BSC_ATT_DETAIL_COLUMN_PREFIX"/>,
+        temp.USER_NAME createrName,
+        temp.ORG_SHORT_NAME1 orgName
+        from
+        BSC_ATT_DETAIL detail INNER  JOIN  BSC_ATT_LINK link on detail.DETAIL_ID = link.DETAIL_ID
+        LEFT  JOIN (
+        SELECT temp_1.USER_ID, temp_1.USER_NAME, temp_1.ORG_SHORT_NAME1
+        FROM (
+        SELECT ouser.USER_ID, ouser.USER_NAME, org.CREATE_TIME, org.ORG_SHORT_NAME1
+        FROM OPU_OM_USER_ORG usrorg
+        INNER JOIN OPU_OM_USER ouser ON usrorg.USER_ID = ouser.USER_ID
+        LEFT JOIN OPU_OM_ORG org ON org.ORG_ID = usrorg.ORG_ID
+        ) temp_1
+        WHERE CREATE_TIME = (
+        SELECT MIN(org.CREATE_TIME) AS mintime
+        FROM OPU_OM_USER_ORG usrorg
+        INNER JOIN OPU_OM_USER ouser ON usrorg.USER_ID = ouser.USER_ID
+        LEFT JOIN OPU_OM_ORG org ON org.ORG_ID = usrorg.ORG_ID
+        WHERE ouser.USER_ID = temp_1.USER_ID
+        )
+        ) temp ON detail.CREATER = temp.USER_ID
+        <where>
+            <foreach collection="list" item="item" open=" ((" separator=") OR (" close="))">
+                1=1
+                <if test="item.detailId != null and item.detailId != ''" >
+                    and detail.DETAIL_ID = #{item.detailId}
+                </if>
+                <if test="item.attCode != null and item.attCode != ''" >
+                    and detail.ATT_CODE = #{item.attCode}
+                </if>
+                <if test="item.attName != null and item.attName != ''" >
+                    and detail.ATT_NAME = #{item.attName}
+                </if>
+                <if test="item.attSize != null and item.attSize != ''" >
+                    and detail.ATT_SIZE = #{item.attSize}
+                </if>
+                <if test="item.attType != null and item.attType != ''" >
+                    and detail.ATT_TYPE = #{item.attType}
+                </if>
+                <if test="item.attFormat != null and item.attFormat != ''" >
+                    and detail.ATT_FORMAT = #{item.attFormat}
+                </if>
+                <if test="item.sortNo != null and item.sortNo != ''" >
+                    and detail.SORT_NO = #{item.sortNo}
+                </if>
+                <if test="item.storeType != null and item.storeType != ''" >
+                    and detail.STORE_TYPE = #{item.storeType}
+                </if>
+                <if test="item.attPath != null and item.attPath != ''" >
+                    and detail.ATT_PATH = #{item.attPath}
+                </if>
+                <if test="item.isEncrypt != null and item.isEncrypt != ''" >
+                    and detail.IS_ENCRYPT = #{item.isEncrypt}
+                </if>
+                <if test="item.messageDigest != null and item.messageDigest != ''" >
+                    and detail.MESSAGE_DIGEST = #{item.messageDigest}
+                </if>
+                <if test="item.memo1 != null and item.memo1 != ''" >
+                    and detail.MEMO1 = #{item.memo1}
+                </if>
+                <if test="item.memo2 != null and item.memo2 != ''" >
+                    and detail.MEMO2 = #{item.memo2}
+                </if>
+                <if test="item.memo3 != null and item.memo3 != ''" >
+                    and detail.MEMO3 = #{item.memo3}
+                </if>
+                <if test="item.memo4 != null and item.memo4 != ''" >
+                    and detail.MEMO4 = #{item.memo4}
+                </if>
+                <if test="item.memo5 != null and item.memo5 != ''" >
+                    and detail.MEMO5 = #{item.memo5}
+                </if>
+                <if test="item.memo6 != null and item.memo6 != ''" >
+                    and detail.MEMO6 = #{item.memo6}
+                </if>
+                <if test="item.creater != null and item.creater != ''" >
+                    and detail.CREATER = #{item.creater}
+                </if>
+                <if test="item.createTime != null and item.createTime != ''" >
+                    and detail.CREATE_TIME = #{item.createTime}
+                </if>
+                <if test="item.modifier != null and item.modifier != ''" >
+                    and detail.MODIFIER = #{item.modifier}
+                </if>
+                <if test="item.modifyTime != null and item.modifyTime != ''" >
+                    and detail.MODIFY_TIME = #{item.modifyTime}
+                </if>
+                <if test="item.attDiskName != null and item.attDiskName != ''" >
+                    and detail.ATT_DISK_NAME = #{item.attDiskName}
+                </if>
+                <if test="item.encryptClass != null and item.encryptClass != ''" >
+                    and detail.ENCRYPT_CLASS = #{item.encryptClass}
+                </if>
+                <if test="item.isRelativePath != null and item.isRelativePath != ''" >
+                    and detail.IS_RELATIVE_PATH = #{item.isRelativePath}
+                </if>
+                <choose>
+                    <when test="item.dirId == null or item.dirId == ''">
+                        and detail.DIR_ID is null
+                    </when>
+                    <otherwise>
+                        and detail.DIR_ID = #{item.dirId}
+                    </otherwise>
+                </choose>
+                <if test="item.orgId != null and item.orgId != ''" >
+                    and detail.ORG_ID = #{item.orgId}
+                </if>
+                <if test="item.linkId != null and item.linkId != ''" >
+                    AND link.LINK_ID = #{item.linkId}
+                </if>
+                <if test="item.tableName != null and item.tableName != ''" >
+                    AND link.TABLE_NAME = #{item.tableName}
+                </if>
+                <if test="item.pkName != null and item.pkName != ''" >
+                    AND link.PK_NAME = #{item.pkName}
+                </if>
+                <if test="item.recordId != null and item.recordId != ''" >
+                    AND link.RECORD_ID = #{item.recordId}
+                </if>
+                <if test="item.detailId != null and item.detailId != ''" >
+                    AND link.DETAIL_ID = #{item.detailId}
+                </if>
+                <if test="keyword != null and keyword!=''">
+                    AND (
+                    detail.ATT_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%') OR
+                    detail.ATT_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%') OR
+                    link.TABLE_NAME like CONCAT(CONCAT('%',#{keyword}),'%')
+                    )
+                </if>
+            </foreach>
+        </where>
     </select>
 
 </mapper>

@@ -18,4 +18,5 @@ public interface AeaItemFrontProjAdminService {
      List<AeaItemFrontProj> listAeaItemFrontProj(AeaItemFrontProj aeaItemFrontProj) ;
      Long getMaxSortNo(AeaItemFrontProj aeaItemFrontProj);
      void changIsActive(String id, String rootOrgId);
+     void updateFrontCkSort(String[] ids, Long[] sorts, String type);
 }

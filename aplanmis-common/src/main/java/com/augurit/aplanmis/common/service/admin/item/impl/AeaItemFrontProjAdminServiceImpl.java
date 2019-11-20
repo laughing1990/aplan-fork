@@ -4,8 +4,11 @@ import com.augurit.agcloud.framework.exception.InvalidParameterException;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.ui.pager.PageHelper;
 import com.augurit.agcloud.framework.util.StringUtils;
+import com.augurit.aplanmis.common.domain.AeaItemFrontItem;
+import com.augurit.aplanmis.common.domain.AeaItemFrontPartform;
 import com.augurit.aplanmis.common.domain.AeaItemFrontProj;
-import com.augurit.aplanmis.common.domain.AeaParFrontProj;
+import com.augurit.aplanmis.common.mapper.AeaItemFrontItemMapper;
+import com.augurit.aplanmis.common.mapper.AeaItemFrontPartformMapper;
 import com.augurit.aplanmis.common.mapper.AeaItemFrontProjMapper;
 import com.augurit.aplanmis.common.service.admin.item.AeaItemFrontProjAdminService;
 import com.github.pagehelper.Page;
@@ -31,9 +34,14 @@ public class AeaItemFrontProjAdminServiceImpl implements AeaItemFrontProjAdminSe
     @Autowired
     private AeaItemFrontProjMapper aeaItemFrontProjMapper;
 
+    @Autowired
+    private AeaItemFrontItemMapper frontItemMapper;
+
+    @Autowired
+    private AeaItemFrontPartformMapper frontPartformMapper;
+
     @Override
     public void saveAeaItemFrontProj(AeaItemFrontProj aeaItemFrontProj) {
-        checkSame(aeaItemFrontProj);
 
         aeaItemFrontProj.setCreateTime(new Date());
         aeaItemFrontProj.setCreater(SecurityContext.getCurrentUserId());
@@ -43,7 +51,6 @@ public class AeaItemFrontProjAdminServiceImpl implements AeaItemFrontProjAdminSe
 
     @Override
     public void updateAeaItemFrontProj(AeaItemFrontProj aeaItemFrontProj) {
-//        checkSame(aeaItemFrontProj);
 
         aeaItemFrontProj.setModifyTime(new Date());
         aeaItemFrontProj.setModifier(SecurityContext.getCurrentUserId());
@@ -65,6 +72,7 @@ public class AeaItemFrontProjAdminServiceImpl implements AeaItemFrontProjAdminSe
     @Override
     public PageInfo<AeaItemFrontProj> listAeaItemFrontProj(AeaItemFrontProj aeaItemFrontProj,Page page) {
 
+        aeaItemFrontProj.setRootOrgId(SecurityContext.getCurrentOrgId());
         PageHelper.startPage(page);
         List<AeaItemFrontProj> list = aeaItemFrontProjMapper.listAeaItemFrontProj(aeaItemFrontProj);
         logger.debug("成功执行分页查询！！");
@@ -84,6 +92,7 @@ public class AeaItemFrontProjAdminServiceImpl implements AeaItemFrontProjAdminSe
     @Override
     public List<AeaItemFrontProj> listAeaItemFrontProj(AeaItemFrontProj aeaItemFrontProj) {
 
+        aeaItemFrontProj.setRootOrgId(SecurityContext.getCurrentOrgId());
         List<AeaItemFrontProj> list = aeaItemFrontProjMapper.listAeaItemFrontProj(aeaItemFrontProj);
         logger.debug("成功执行查询list！！");
         return list;
@@ -91,14 +100,9 @@ public class AeaItemFrontProjAdminServiceImpl implements AeaItemFrontProjAdminSe
 
     @Override
     public Long getMaxSortNo(AeaItemFrontProj aeaItemFrontProj){
-        Long sortNo = aeaItemFrontProjMapper.getMaxSortNo(aeaItemFrontProj);
-        if(sortNo==null){
-            sortNo = 1l;
-        }else{
-            sortNo = sortNo + 1;
-        }
 
-        return sortNo;
+        Long sortNo = aeaItemFrontProjMapper.getMaxSortNo(aeaItemFrontProj);
+        return sortNo==null?1L:(sortNo+1L);
     }
 
     private void checkSame(AeaItemFrontProj aeaItemFrontProj){
@@ -123,6 +127,35 @@ public class AeaItemFrontProjAdminServiceImpl implements AeaItemFrontProjAdminSe
     public void changIsActive(String id, String rootOrgId){
 
         aeaItemFrontProjMapper.changIsActive(id, rootOrgId);
+    }
+
+    @Override
+    public void updateFrontCkSort(String[] ids, Long[] sorts, String type){
+
+        for(int i=0;i<ids.length;i++) {
+
+            if("proj".equals(type)){
+
+                AeaItemFrontProj proj = new AeaItemFrontProj();
+                proj.setFrontProjId(ids[i]);
+                proj.setSortNo(sorts[i]);
+                aeaItemFrontProjMapper.updateAeaItemFrontProj(proj);
+
+            }else if("item".equals(type)){
+
+                AeaItemFrontItem item = new AeaItemFrontItem();
+                item.setFrontItemId(ids[i]);
+                item.setSortNo(sorts[i]);
+                frontItemMapper.updateAeaItemFront(item);
+
+            }else if("partform".equals(type)){
+
+                AeaItemFrontPartform partform = new AeaItemFrontPartform();
+                partform.setFrontPartformId(ids[i]);
+                partform.setSortNo(sorts[i]);
+                frontPartformMapper.updateAeaItemFrontPartform(partform);
+            }
+        }
     }
 }
 

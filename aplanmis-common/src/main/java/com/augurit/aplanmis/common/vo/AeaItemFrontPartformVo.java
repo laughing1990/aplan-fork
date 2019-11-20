@@ -1,34 +1,27 @@
 package com.augurit.aplanmis.common.vo;
 
+import com.augurit.aplanmis.common.domain.AeaItemFrontPartform;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import org.springframework.format.annotation.DateTimeFormat;
-
-import java.io.Serializable;
+import lombok.EqualsAndHashCode;
 
 /**
  * @author tiantian
  * @date 2019/11/11
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
-public class AeaItemFrontPartformVo implements Serializable {
-    private static final long serialVersionUID = 1L;
+@ApiModel(description = "事项前置扩展表检测Vo类")
+public class AeaItemFrontPartformVo extends AeaItemFrontPartform {
 
-    private String frontPartformId; // (ID)
-    private String itemVerId; // (事项版本ID)
-    private String itemPartformId; // (前置事项版本ID)
-    private Long sortNo; // (排序字段)
-    private String isActive; // ()
+    @ApiModelProperty("扩展属性：是否智能表单")
+    private String isSmartForm;
 
-    private String creater; // (创建人)
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private java.util.Date createTime; // (创建时间)
-    private String modifier; // ()
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private java.util.Date modifyTime; // ()
-    private String rootOrgId; // (根组织id)
+    @ApiModelProperty("扩展属性：阶段扩展表单名称")
+    private String partformName;
 
-    private String isSmartForm;//是否智能表单
-    private String partformName;//阶段扩展表单名称
-    private String stoFormId;//表单ID
+    @ApiModelProperty("扩展属性：表单ID")
+    private String stoFormId;
 
 }

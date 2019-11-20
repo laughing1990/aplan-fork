@@ -82,4 +82,6 @@ public class MatinstVo implements Serializable {
     private String certId;
 
     private String matCode;
+
+    private String stoFormId;
 }

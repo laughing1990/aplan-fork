@@ -21,15 +21,17 @@ public interface AeaItemFrontPartformMapper {
 
     void deleteAeaItemFrontPartform(@Param("id") String id);
 
+    void deleteAeaItemFrontPartformByIds(@Param("ids") String[] ids);
+
     List<AeaItemFrontPartform> listAeaItemFrontPartform(AeaItemFrontPartform aeaItemFrontPartform);
 
     AeaItemFrontPartform getAeaItemFrontPartformById(@Param("id") String id);
 
     List<AeaItemFrontPartformVo> listAeaItemFrontPartformVo(AeaItemFrontPartform aeaItemFrontPartform);
 
-    Long getMaxSortNo(AeaItemFrontPartform aeaItemFrontPartform);
+    Long getMaxSortNo(@Param("itemVerId") String itemVerId, @Param("rootOrgId") String rootOrgId);
 
-    List<AeaItemFrontPartformVo> listSelectItemFrontPartform(AeaItemFrontPartform aeaItemFrontPartform);
+    List<AeaItemFrontPartformVo> listItemNoSelectPartform(AeaItemFrontPartform aeaItemFrontPartform);
 
     List<AeaItemFrontPartformVo> getAeaItemFrontPartformVoByItemVerId(@Param("itemVerId") String itemVerId, @Param("rootOrgId") String rootOrgId);
 

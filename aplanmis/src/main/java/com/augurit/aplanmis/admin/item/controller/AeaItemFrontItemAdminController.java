@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -37,8 +38,15 @@ public class AeaItemFrontItemAdminController {
 
     @RequestMapping("/listAeaItemFrontItemByPage.do")
     public EasyuiPageInfo<AeaItemFrontItem> listAeaItemFrontItemByPage(AeaItemFrontItem aeaItemFrontItem, Page page){
+
         PageInfo<AeaItemFrontItem> pageInfo = aeaItemFrontItemAdminService.listAeaItemFrontItemByPage(aeaItemFrontItem, page);
         return PageHelper.toEasyuiPageInfo(pageInfo);
+    }
+
+    @RequestMapping("/listAeaItemFrontItemByNoPage.do")
+    public List<AeaItemFrontItem> listAeaItemFrontItemByNoPage(AeaItemFrontItem aeaItemFrontItem){
+
+        return aeaItemFrontItemAdminService.listAeaItemFrontItem(aeaItemFrontItem);
     }
 
     @RequestMapping("/getAeaItemFrontItem.do")
