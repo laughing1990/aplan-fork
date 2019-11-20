@@ -1175,6 +1175,9 @@ HIGHEST_RATE,QUOTE_TYPE,ROOT_ORG_ID
         <if test="publishUnitInfoId != null and publishUnitInfoId != ''">
             AND aipp.PUBLISH_UNIT_INFO_ID = #{publishUnitInfoId}
         </if>
+        <if test="publishLinkmanInfoId != null and publishLinkmanInfoId != ''">
+            AND aipp.PUBLISH_LINKMAN_INFO_ID = #{publishLinkmanInfoId}
+        </if>
         <if test="linkmanInfoId != null and linkmanInfoId != ''">
             AND aipp.LINKMAN_INFO_ID = #{linkmanInfoId}
         </if>
