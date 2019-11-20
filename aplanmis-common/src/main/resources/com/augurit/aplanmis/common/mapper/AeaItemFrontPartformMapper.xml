@@ -288,6 +288,7 @@
             )
             </if>
         </where>
+        order by aip.SORT_NO asc
     </select>
 
     <select id="getAeaItemFrontPartformVoById" resultType="com.augurit.aplanmis.common.vo.AeaItemFrontPartformVo">

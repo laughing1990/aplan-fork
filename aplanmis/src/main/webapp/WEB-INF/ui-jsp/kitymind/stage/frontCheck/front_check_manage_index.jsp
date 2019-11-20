@@ -344,14 +344,9 @@
                 <div class="m-form m-form--label-align-right m--margin-bottom-5">
                     <div class="row" style="margin: 0px;">
                         <div class="col-md-7"style="text-align: left;">
-                            <%--<button type="button" class="btn btn-info"--%>
-                                    <%--onclick="addParFrontPartform();">新增</button>--%>
-                            <button type="button" class="btn btn-info"
-                                    onclick="batchImprotParFrontPartform();">批量导入</button>
-                            <button type="button" class="btn btn-info"
-                                    onclick="sortParFrontPartform();">排序</button>
-                            <button type="button" class="btn btn-secondary"
-                                    onclick="batchDelParFrontPartform();">删除</button>
+                            <button type="button" class="btn btn-info" onclick="openSelectFrontPartform();">导入扩展表</button>
+                            <button type="button" class="btn btn-info" onclick="sortParFrontPartform();">排序</button>
+                            <button type="button" class="btn btn-secondary" onclick="batchDelParFrontPartform();">删除</button>
                         </div>
                         <div class="col-md-5" style="padding: 0px;">
                             <div class="row" style="margin: 0px;">

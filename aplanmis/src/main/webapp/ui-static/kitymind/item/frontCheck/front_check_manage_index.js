@@ -911,7 +911,7 @@ function editItemFrontPartform(frontPartformId) {
         data: {
             'frontPartformId': frontPartformId
         },
-        async: false,
+        // async: false,
         success: function (result) {
             if (result.success) {
 
