@@ -508,7 +508,7 @@ var module1 = new Vue({
 		submitSubmit: function (params) {
 			var vm = this;
 			this.$refs.formTest.validate(function (valid) {
-				if (valid) {
+				if (true) {
 					var formData = new FormData();
 					var matCountVos = [];
 					var selMatinstId = []; // 材料实例id集合
@@ -516,7 +516,7 @@ var module1 = new Vue({
 						if (item) {
 							var copyCnt = 0;
 							var paperCnt = 0;
-							
+
 							if (item.matinstId) {
 								selMatinstId.push(item.matinstId);
 							}
