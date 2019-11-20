@@ -181,7 +181,7 @@ var vm = new Vue({
     //撤件
     withDraw:function(item){
         var _this=this;
-        confirmMsg('','此操作将撤回办件,确定要撤回吗？',function(){
+        confirmMsg('','此操作将撤回申报,确定要撤回吗？',function(){
           request('',{
             type:'post',
             url:ctx+'/rest/user/withDraw/'+item.applyinstId,

@@ -112,10 +112,19 @@ public class RestApproveServiceImpl implements RestApproveService {
     private AeaUnitInfoMapper aeaUnitInfoMapper;
     @Autowired
     private OpuOmUserMapper opuOmUserMapper;
+    @Autowired
+    private AeaHiIteminstMapper aeaHiIteminstMapper;
 
     @Override
     public PageInfo<ApproveProjInfoDto> searchApproveProjInfoListByUnitOrLinkman(String unitInfoId, String userInfoId, String state, String keyword, int pageNum, int pageSize) throws Exception {
         return approveDataService.searchApproveProjInfoListByUnitOrLinkman(unitInfoId,userInfoId,state,keyword,pageNum,pageSize);
+    }
+
+    @Override
+    public PageInfo<ApproveProjInfoDto> searchWithdrawApplyListByUnitOrLinkman(String unitInfoId, String userInfoId, String keyword, int pageNum, int pageSize) throws Exception {
+        PageHelper.startPage(pageNum,pageSize);
+        List<ApproveProjInfoDto> list = aeaHiIteminstMapper.getWithdrawApplyListByUnitOrLinkman(unitInfoId,userInfoId,keyword);
+        return new PageInfo<>(list);
     }
 
     @Override
@@ -358,6 +367,7 @@ public class RestApproveServiceImpl implements RestApproveService {
         long applyNum = 0;//已申报
         long withdrawalNum = 0;//已撤件
         long myMatNum=0;//我的材料库
+        long withdrawNum=0;//撤回申报列表数目
         if (loginInfo==null) return retVo;
         if("1".equals(loginInfo.getIsPersonAccount())){//个人
             matCompletionNum =this.searchMatComplet("",loginInfo.getUserId(),"",1,1).getTotal();
@@ -366,6 +376,7 @@ public class RestApproveServiceImpl implements RestApproveService {
             supplyNum=this.searchSupplyInfoList("",loginInfo.getUserId(),1,1,"").getTotal();
             applyNum=aeaHiIteminstService.countApproveProjInfoListByUnitOrLinkman("",loginInfo.getUserId());
             myMatNum=restMyMatService.getMyMatListByUser("",loginInfo.getUserId(),null,1,1).getTotal();
+            withdrawNum = this.searchWithdrawApplyListByUnitOrLinkman("",loginInfo.getUserId(),null,1,1).getTotal();
         }else if(StringUtils.isNotBlank(loginInfo.getUserId())){//委托人
             matCompletionNum =this.searchMatComplet(loginInfo.getUnitId(),loginInfo.getUserId(),"",1,1).getTotal();
             approvalNum = this.searchIteminstApproveInfoListByUnitIdAndUserId("",loginInfo.getUnitId(),loginInfo.getUserId(),1,1).getTotal();
@@ -373,6 +384,7 @@ public class RestApproveServiceImpl implements RestApproveService {
             supplyNum=this.searchSupplyInfoList(loginInfo.getUnitId(),loginInfo.getUserId(),1,1,"").getTotal();
             applyNum=aeaHiIteminstService.countApproveProjInfoListByUnitOrLinkman(loginInfo.getUnitId(),loginInfo.getUserId());
             myMatNum=restMyMatService.getMyMatListByUser(loginInfo.getUnitId(),loginInfo.getUserId(),null,1,1).getTotal();
+            withdrawNum = this.searchWithdrawApplyListByUnitOrLinkman("",loginInfo.getUserId(),null,1,1).getTotal();
         }else{//企业
             matCompletionNum =this.searchMatComplet(loginInfo.getUnitId(),"","",1,1).getTotal();
             approvalNum = this.searchIteminstApproveInfoListByUnitIdAndUserId("",loginInfo.getUnitId(),"",1,1).getTotal();
@@ -380,6 +392,7 @@ public class RestApproveServiceImpl implements RestApproveService {
             supplyNum=this.searchSupplyInfoList(loginInfo.getUnitId(),"",1,1,"").getTotal();
             applyNum=aeaHiIteminstService.countApproveProjInfoListByUnitOrLinkman(loginInfo.getUnitId(),"");
             myMatNum=restMyMatService.getMyMatListByUser(loginInfo.getUnitId(),"",null,1,1).getTotal();
+            withdrawNum = this.searchWithdrawApplyListByUnitOrLinkman(loginInfo.getUnitId(),"",null,1,1).getTotal();
         }
         retVo.setApplyNum(applyNum);
         retVo.setApprovalNum(approvalNum);
@@ -388,6 +401,7 @@ public class RestApproveServiceImpl implements RestApproveService {
         retVo.setSupplyNum(supplyNum);
         retVo.setWithdrawalNum(withdrawalNum);
         retVo.setMyMatNum(myMatNum);
+        retVo.setWithdrawNum(withdrawNum);
         return retVo;
     }
 
