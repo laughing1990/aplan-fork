@@ -1242,8 +1242,8 @@ function changeViewStageProp(stageId, statusValue, workDay, ele) {
     color = gGraySlow, src = ctx + '/rappid/apps/BPMNEditor/images/stage_un_start.png';
   }
   // if (ele.duringTime) {
-    $pool.find('text:eq(2)').text('（'+(ele.duringTime?ele.duringTime:'-')+'工作日）');  //时间设置未做
-    $pool.find('text:eq(2)').attr('transform', 'matrix(1,0,0,1,'+($pool.find('rect:eq(1)').attr('width')-($pool.find('text:eq(2)')[0]).getClientRects()[0].width)/2+',43)');
+  //   $pool.find('text:eq(2)').text('（'+(ele.duringTime?ele.duringTime:'-')+'工作日）');  //时间设置未做
+  //   $pool.find('text:eq(2)').attr('transform', 'matrix(1,0,0,1,'+($pool.find('rect:eq(1)').attr('width')-($pool.find('text:eq(2)')[0]).getClientRects()[0].width)/2+',43)');
   // }
   
   if (color != '') {
