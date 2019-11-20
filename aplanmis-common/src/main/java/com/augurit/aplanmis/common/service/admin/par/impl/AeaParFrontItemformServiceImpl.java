@@ -1,5 +1,6 @@
 package com.augurit.aplanmis.common.service.admin.par.impl;
 
+import com.augurit.agcloud.framework.constant.Status;
 import com.augurit.agcloud.framework.exception.InvalidParameterException;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.ui.pager.PageHelper;
@@ -7,7 +8,6 @@ import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.domain.AeaParFrontItemform;
 import com.augurit.aplanmis.common.mapper.AeaParFrontItemformMapper;
 import com.augurit.aplanmis.common.service.admin.par.AeaParFrontItemformService;
-import com.augurit.aplanmis.common.vo.AeaParFrontItemformVo;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import org.slf4j.Logger;
@@ -23,13 +23,6 @@ import java.util.UUID;
 
 /**
  * 阶段事项表单前置检测表-Service服务接口实现类
- * <ul>
- * <li>项目名：奥格erp3.0--第一期建设项目</li>
- * <li>版本信息：v1.0</li>
- * <li>版权所有(C)2016广州奥格智能科技有限公司-版权所有</li>
- * <li>创建人:Administrator</li>
- * <li>创建时间：2019-11-01 10:48:12</li>
- * </ul>
  */
 @Service
 @Transactional
@@ -42,7 +35,6 @@ public class AeaParFrontItemformServiceImpl implements AeaParFrontItemformServic
 
     @Override
     public void saveAeaParFrontItemform(AeaParFrontItemform aeaParFrontItemform) throws Exception {
-        checkSame(aeaParFrontItemform);
 
         aeaParFrontItemform.setCreateTime(new Date());
         aeaParFrontItemform.setCreater(SecurityContext.getCurrentUserId());
@@ -52,7 +44,6 @@ public class AeaParFrontItemformServiceImpl implements AeaParFrontItemformServic
 
     @Override
     public void updateAeaParFrontItemform(AeaParFrontItemform aeaParFrontItemform) throws Exception {
-//        checkSame(aeaParFrontItemform);
 
         aeaParFrontItemform.setModifyTime(new Date());
         aeaParFrontItemform.setModifier(SecurityContext.getCurrentUserId());
@@ -61,6 +52,7 @@ public class AeaParFrontItemformServiceImpl implements AeaParFrontItemformServic
 
     @Override
     public void deleteAeaParFrontItemformById(String id) throws Exception {
+
         if (StringUtils.isBlank(id)) {
             throw new InvalidParameterException(id);
         }
@@ -72,6 +64,8 @@ public class AeaParFrontItemformServiceImpl implements AeaParFrontItemformServic
 
     @Override
     public PageInfo<AeaParFrontItemform> listAeaParFrontItemform(AeaParFrontItemform aeaParFrontItemform, Page page) throws Exception {
+
+        aeaParFrontItemform.setRootOrgId(SecurityContext.getCurrentOrgId());
         PageHelper.startPage(page);
         List<AeaParFrontItemform> list = aeaParFrontItemformMapper.listAeaParFrontItemform(aeaParFrontItemform);
         logger.debug("成功执行分页查询！！");
@@ -80,49 +74,53 @@ public class AeaParFrontItemformServiceImpl implements AeaParFrontItemformServic
 
     @Override
     public AeaParFrontItemform getAeaParFrontItemformById(String id) throws Exception {
-        if (id == null)
+
+        if (StringUtils.isBlank(id)) {
             throw new InvalidParameterException(id);
+        }
         logger.debug("根据ID获取Form对象，ID为：{}", id);
         return aeaParFrontItemformMapper.getAeaParFrontItemformById(id);
     }
 
     @Override
     public List<AeaParFrontItemform> listAeaParFrontItemform(AeaParFrontItemform aeaParFrontItemform) throws Exception {
+
+        aeaParFrontItemform.setRootOrgId(SecurityContext.getCurrentOrgId());
         List<AeaParFrontItemform> list = aeaParFrontItemformMapper.listAeaParFrontItemform(aeaParFrontItemform);
         logger.debug("成功执行查询list！！");
         return list;
     }
 
     @Override
-    public PageInfo<AeaParFrontItemformVo> listAeaParFrontItemformVoByPage(AeaParFrontItemform aeaParFrontItemform, Page page) throws Exception {
+    public PageInfo<AeaParFrontItemform> listAeaParFrontItemformVoByPage(AeaParFrontItemform aeaParFrontItemform, Page page) throws Exception {
+
+        aeaParFrontItemform.setRootOrgId(SecurityContext.getCurrentOrgId());
         PageHelper.startPage(page);
-        List<AeaParFrontItemformVo> list = aeaParFrontItemformMapper.listAeaParFrontItemformVo(aeaParFrontItemform);
+        List<AeaParFrontItemform> list = aeaParFrontItemformMapper.listAeaParFrontItemformVo(aeaParFrontItemform);
         logger.debug("成功执行分页查询！！");
         return new PageInfo<>(list);
     }
 
     @Override
-    public Long getMaxSortNo(AeaParFrontItemform aeaParFrontItemform) throws Exception {
-        Long sortNo = aeaParFrontItemformMapper.getMaxSortNo(aeaParFrontItemform);
-        if (sortNo == null) {
-            sortNo = 1l;
-        } else {
-            sortNo = sortNo + 1;
-        }
+    public Long getMaxSortNo(String stageId, String rootOrgId) throws Exception {
 
-        return sortNo;
+        Long sortNo = aeaParFrontItemformMapper.getMaxSortNo(stageId, rootOrgId);
+        return sortNo==null?1L:(sortNo+1L);
     }
 
     @Override
-    public PageInfo<AeaParFrontItemformVo> listSelectParFrontItemformByPage(AeaParFrontItemform aeaParFrontItemform, Page page) throws Exception {
+    public PageInfo<AeaParFrontItemform> listSelectParFrontItemformByPage(AeaParFrontItemform aeaParFrontItemform, Page page) throws Exception {
+
+        aeaParFrontItemform.setRootOrgId(SecurityContext.getCurrentOrgId());
         PageHelper.startPage(page);
-        List<AeaParFrontItemformVo> list = aeaParFrontItemformMapper.listSelectParFrontItemform(aeaParFrontItemform);
+        List<AeaParFrontItemform> list = aeaParFrontItemformMapper.listSelectParFrontItemform(aeaParFrontItemform);
         logger.debug("成功执行分页查询！！");
         return new PageInfo<>(list);
     }
 
     @Override
-    public AeaParFrontItemformVo getAeaParFrontItemformVoById(String frontItemformId) throws Exception {
+    public AeaParFrontItemform getAeaParFrontItemformVoById(String frontItemformId) throws Exception {
+
         if (StringUtils.isBlank(frontItemformId)) {
             throw new InvalidParameterException(frontItemformId);
         }
@@ -130,6 +128,7 @@ public class AeaParFrontItemformServiceImpl implements AeaParFrontItemformServic
     }
 
     private void checkSame(AeaParFrontItemform aeaParFrontItemform) throws Exception {
+
         AeaParFrontItemform queryParFrontItemform = new AeaParFrontItemform();
         queryParFrontItemform.setStageId(aeaParFrontItemform.getStageId());
         queryParFrontItemform.setStageItemId(aeaParFrontItemform.getStageItemId());
@@ -141,48 +140,48 @@ public class AeaParFrontItemformServiceImpl implements AeaParFrontItemformServic
     }
 
     @Override
-    public List<AeaParFrontItemformVo> getAeaParFrontItemformVoByStageId(String stageId) {
-        List<AeaParFrontItemformVo> aeaParFrontItemformVos = new ArrayList();
-        if (StringUtils.isBlank(stageId)) return aeaParFrontItemformVos;
+    public List<AeaParFrontItemform> getAeaParFrontItemformVoByStageId(String stageId) {
+
+        List<AeaParFrontItemform> aeaParFrontItemformVos = new ArrayList();
+        if (StringUtils.isBlank(stageId)){
+            return aeaParFrontItemformVos;
+        }
         aeaParFrontItemformVos.addAll(aeaParFrontItemformMapper.getAeaParFrontItemformVoByStageId(stageId, SecurityContext.getCurrentOrgId()));
         return aeaParFrontItemformVos;
     }
 
     @Override
-    public void batchSaveAeaParFrontItemform(String stageId,String stageItemIds)throws Exception{
-        if(StringUtils.isBlank(stageId)  || StringUtils.isBlank(stageItemIds)){
-            throw new InvalidParameterException(stageId,stageItemIds);
-        }
+    public void batchSaveAeaParFrontItemform(String stageId, String[] stageItemIds)throws Exception{
 
-        String[] stageItemIdArr = stageItemIds.split(",");
-        if(stageItemIdArr!=null && stageItemIdArr.length>0){
-            AeaParFrontItemform query = new AeaParFrontItemform();
-            query.setStageId(stageId);
-            Long maxSortNo = getMaxSortNo(query);
-            for(String stageItemId:stageItemIdArr){
+        if(StringUtils.isBlank(stageId)){
+            throw new InvalidParameterException("参数stageId为空!");
+        }
+        if(stageItemIds==null||(stageItemIds!=null&&stageItemIds.length==0)){
+            throw new InvalidParameterException("参数stageItemIds为空!");
+        }
+        if(stageItemIds!=null && stageItemIds.length>0){
+            String userId = SecurityContext.getCurrentUserId();
+            String rootOrgId = SecurityContext.getCurrentOrgId();
+            for(String stageItemId:stageItemIds){
                 AeaParFrontItemform aeaParFrontItemform = new AeaParFrontItemform();
+                aeaParFrontItemform.setFrontItemformId(UUID.randomUUID().toString());
                 aeaParFrontItemform.setStageId(stageId);
                 aeaParFrontItemform.setStageItemId(stageItemId);
-                List<AeaParFrontItemform> list = aeaParFrontItemformMapper.listAeaParFrontItemform(aeaParFrontItemform);
-                if (list.size() > 0) {
-                    continue;
-                }
-                aeaParFrontItemform.setFrontItemformId(UUID.randomUUID().toString());
+                aeaParFrontItemform.setCreater(userId);
                 aeaParFrontItemform.setCreateTime(new Date());
-                aeaParFrontItemform.setCreater(SecurityContext.getCurrentUserId());
-                aeaParFrontItemform.setRootOrgId(SecurityContext.getCurrentOrgId());
-                aeaParFrontItemform.setSortNo(maxSortNo);
-                aeaParFrontItemform.setIsActive("1");
+                aeaParFrontItemform.setRootOrgId(rootOrgId);
+                aeaParFrontItemform.setSortNo(getMaxSortNo(stageId, rootOrgId));
+                aeaParFrontItemform.setIsActive(Status.ON);
                 aeaParFrontItemformMapper.insertAeaParFrontItemform(aeaParFrontItemform);
-                maxSortNo++;
             }
         }
     }
 
     @Override
-    public List<AeaParFrontItemformVo> listAeaParFrontItemformVoByNoPage(AeaParFrontItemform aeaParFrontItemform) throws Exception{
+    public List<AeaParFrontItemform> listAeaParFrontItemformVoByNoPage(AeaParFrontItemform aeaParFrontItemform) throws Exception{
 
-        List<AeaParFrontItemformVo> list = aeaParFrontItemformMapper.listAeaParFrontItemformVo(aeaParFrontItemform);
+        aeaParFrontItemform.setRootOrgId(SecurityContext.getCurrentOrgId());
+        List<AeaParFrontItemform> list = aeaParFrontItemformMapper.listAeaParFrontItemformVo(aeaParFrontItemform);
         return list;
     }
 

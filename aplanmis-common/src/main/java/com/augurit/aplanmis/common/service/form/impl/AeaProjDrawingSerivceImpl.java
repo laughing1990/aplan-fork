@@ -56,7 +56,7 @@ public class AeaProjDrawingSerivceImpl implements AeaProjDrawingSerivce {
         //筛选出 施工图审查机构 勘察单位 设计单位 //遍历单位 封装联系人
         for ( AeaUnitProj id :aeaUnitInfos) {
             //info.getUnitType().equals("4")||info.getUnitType().equals("3")||info.getUnitType().equals("13") && info != null(info.getUnitType().equals("9")||info.getUnitType().equals("3")||info.getUnitType().equals("2")) &&
-            if(   id.getUnitType()!=null && (id.getUnitType().equals(GDUnitType.CONSTRUCTION_DRAWING_REVIEW)||id.getUnitType().equals(GDUnitType.SURVEY_UNIT)||id.getUnitType().equals(GDUnitType.DESIGN_UNIT))  ) {
+            if(   id.getUnitType()!=null && (id.getUnitType().equals(GDUnitType.CONSTRUCTION_DRAWING_REVIEW.getValue())||id.getUnitType().equals(GDUnitType.SURVEY_UNIT.getValue())||id.getUnitType().equals(GDUnitType.DESIGN_UNIT.getValue()))  ) {
                 AeaProjDrawing aeaProjDrawing = new AeaProjDrawing();
                 AeaUnitInfo infoQ = new AeaUnitInfo();
                 infoQ.setUnitInfoId(id.getUnitInfoId());
@@ -127,7 +127,7 @@ public class AeaProjDrawingSerivceImpl implements AeaProjDrawingSerivce {
                                 for (int i = 0; i < linkmanList.size(); i++) {
                                     AeaUnitProjLinkman linkman = linkmanList.get(i);
                                     //如果是负责人就不在人员设置里显示
-                                    if (UnitProjLinkmanType.FZR.equals(linkman.getLinkmanType()) ) {
+                                    if (UnitProjLinkmanType.FZR.getValue().equals(linkman.getLinkmanType()) ) {
                                         continue;
                                     }
                                     AeaUnitProjLinkman aeaUnitProjLinkman = new AeaUnitProjLinkman();
@@ -170,7 +170,7 @@ public class AeaProjDrawingSerivceImpl implements AeaProjDrawingSerivce {
             aeaUnitProj.setUnitInfoId(aeaProjDrawing.getUnitInfoId());
             aeaUnitProj.setLinkmanInfoId(aeaProjDrawing.getLinkmanInfoId());
             aeaUnitProj.setProjInfoId(aeaProjDrawingVo.getProjInfoId());
-            aeaUnitProj.setIsOwner("1");
+            aeaUnitProj.setIsOwner("0");
             aeaUnitProj.setUnitType(aeaProjDrawing.getUnitType());
             aeaUnitProj.setLinkmanInfoId(aeaProjDrawing.getLinkmanInfoId());
             aeaUnitProj.setCreater(SecurityContext.getCurrentUser().getUserName());

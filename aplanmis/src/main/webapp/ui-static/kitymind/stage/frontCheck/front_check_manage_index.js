@@ -9,6 +9,24 @@ var edit_par_front_stage_form_validator;
 var par_front_partform_tb;
 var edit_par_front_partform_form_validator;
 
+function isCatalogFormatter(value, row, index, field) {
+
+    if(row.isCatalog=='1'){
+        return '标准事项';
+    }else{
+        return '实施事项';
+    }
+}
+
+function itemNameFormatter(value, row, index, field) {
+
+    if(row.itemCode){
+        return row.itemName+"【"+ row.itemCode +"】";
+    }else{
+        return row.itemName;
+    }
+}
+
 function projIsActiveFormatter(value, row, index, field) {
 
     return handleIsActiveHtml(row.isActive, row.frontProjId, 'proj');
@@ -279,13 +297,7 @@ $(function(){
                 title: "是否实施事项",
                 width: 80,
                 align: 'center',
-                formatter: function (value, row, index) {
-                    if(row.isCatalog=='1'){
-                        return '标准事项';
-                    }else{
-                        return '实施事项';
-                    }
-                }
+                formatter: isCatalogFormatter
             },
             {
                 field: "itemName",
@@ -421,79 +433,75 @@ $(function(){
         });
     }
 
-
     if(isCheckItemForm=='1'){
-        par_front_itemform_tb = defaultBootstrap("par_front_itemform_tb",[{
-            checkbox: true,
-            field: '#',
-            align: "center",
-            title: '#',
-            sortable: false,
-            width: 10,
-            textAlign: 'center',
-            selector: {class: 'm-checkbox--solid m-checkbox--brand'}
-        }, {
-            field: "#",
-            title: "#",
-            width: "10%",
-            align: "center",
-            sortable: false,
-            textAlign: 'center',
-            formatter: function (value, row, index) {
-                return index + 1;
-            }
-        }, {
-            field: "frontItemformId",
-            visible: false
-        }, {
-            field: "itemName",
-            title: "事项名称",
-            textAlign: 'center',
-            width: 500,
-            textAlign: 'left',
-            sortable: true
-        }, {
-            field: "formName",
-            title: "表单名称",
-            textAlign: 'center',
-            width: 500,
-            textAlign: 'left',
-            sortable: true
-        }, {
-            field: "sortNo",
-            title: "排序",
-            textAlign: 'center',
-            width: 50,
-            textAlign: 'left',
-            sortable: true
-        },{
-            field: "isActive",
-            title: "是否启用",
-            textAlign: 'center',
-            width: 50,
-            textAlign: 'left',
-            sortable: true,
-            formatter: function (value, row, index) {
-                if(row.isActive=='1'){
-                    return "是";
-                }else{
-                    return "否";
+        par_front_itemform_tb = defaultBootstrap("par_front_itemform_tb",[
+            {
+                checkbox: true,
+            },
+            {
+                field: "isCatalog",
+                title: "是否实施事项",
+                width: 80,
+                align: 'center',
+                formatter: isCatalogFormatter
+            },
+            {
+                field: "itemName",
+                title: "配置事项",
+                width: 350,
+                align: 'left',
+                formatter: itemNameFormatter
+            },
+            {
+                field: "formName",
+                title: "关联智能表单",
+                width: 350,
+                align: 'left',
+            },
+            {
+                field: "frontItemformMemo",
+                title: "备注",
+                width: 200,
+                align: 'left',
+                formatter: function (value, row, index) {
+                    if(value){
+                        if(value.length>200){
+                            return value.substr(0, 200) + "...";
+                        }else{
+                            return value;
+                        }
+                    }
+                }
+            },
+            {
+                field: "isActive",
+                title: "是否启用",
+                align: 'center',
+                width: 60,
+                formatter: itemformIsActiveFormatter
+            },
+            {
+                field: "sortNo",
+                title: "排序",
+                align: 'center',
+                width: 60,
+                sortable: true
+            },
+            {
+                field: '_operate',
+                title: '操作',
+                width: 120,
+                align: 'center',
+                formatter: function (value, row, index) {
+
+                    var btn =  '<a href="javascript:editParFrontItemform(\'' + row.frontItemformId + '\')" class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill" title="编辑"><i class="la la-edit"></i></a>';
+                    if(curIsEditable){
+                        btn = btn + '<a href="javascript:delParFrontItemform(\'' + row.frontItemformId + '\')" class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill" title="删除"><i class="la la-trash"></i></a>'
+                    }
+                    return btn;
                 }
             }
-        }, {
-            field: '_operate',
-            title: '操作',
-            sortable: false,
-            width: 100,
-            textAlign: 'center',
-            formatter: function (value, row, index) {
-                var btn =  '<a href="javascript:editParFrontItemform(\'' + row.frontItemformId + '\')" class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill" title="编辑"><i class="la la-edit"></i></a>';
-                if(curIsEditable){
-                    btn = btn + '<a href="javascript:delParFrontItemform(\'' + row.frontItemformId + '\')" class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill" title="删除"><i class="la la-trash"></i></a>'
-                }
-                return btn;
-            }
-        }],ctx + '/aea/par/front/itemform/listAeaParFrontItemformByPage.do');
+        ],ctx + '/aea/par/front/itemform/listAeaParFrontItemformByPage.do');
         var par_front_itemform_tb_params = {stageId:currentBusiId};
         par_front_itemform_tb.setPageSize(5).setPageList([5,10,20,50,100]).setQueryParams(par_front_itemform_tb_params).setRowId("frontItemformId").setClearBtn("par_front_itemform_clear_btn").setSearchBtn("par_front_itemform_search_btn","par_front_itemform_keyword").init();
 
@@ -508,9 +516,9 @@ $(function(){
                 sortNo:{
                     required: true
                 },
-                isActive:{
-                    required: true
-                }
+                // isActive:{
+                //     required: true
+                // }
             },
             messages: {
                 formName: {
@@ -519,9 +527,9 @@ $(function(){
                 sortNo:{
                     required: '<font color="red">此项必填！</font>'
                 },
-                isActive:{
-                    required: '<font color="red">是否启用必选！</font>'
-                }
+                // isActive:{
+                //     required: '<font color="red">是否启用必选！</font>'
+                // }
             },
             // 提交表单
             submitHandler: function (form) {
@@ -813,9 +821,9 @@ $(function(){
                 sortNo:{
                     required: true
                 },
-                isActive:{
-                    required: true
-                }
+                // isActive:{
+                //     required: true
+                // }
             },
             messages: {
                 partformName: {
@@ -824,9 +832,9 @@ $(function(){
                 sortNo:{
                     required: '<font color="red">此项必填！</font>'
                 },
-                isActive:{
-                    required: '<font color="red">是否启用必选！</font>'
-                }
+                // isActive:{
+                //     required: '<font color="red">是否启用必选！</font>'
+                // }
             },
             // 提交表单
             submitHandler: function (form) {
@@ -1246,37 +1254,43 @@ function addParFrontItemform() {
 
 function editParFrontItemform(frontItemformId) {
 
+    if(curIsEditable){
+        $('#saveParFrontItemformBtn').show();
+    }else{
+        $('#saveParFrontItemformBtn').hide();
+    }
+
+    $("#edit_par_front_itemform_modal").modal("show");
+    $('#edit_par_front_itemform_title').html('编辑事项表单信息前置检测');
+    $('#edit_par_front_itemform_form')[0].reset();
+    if(edit_par_front_itemform_form_validator){
+        edit_par_front_itemform_form_validator.resetForm();
+    }
+    $('#edit_par_front_itemform_form input[name="frontItemformId"]').val('');
+    $('#edit_par_front_itemform_form input[name="stageId"]').val(currentBusiId);
+    $('#edit_par_front_itemform_form input[name="stageItemId"]').val('');
+
     $("#uploadProgressMsg").html("数据加载中，请稍后...");
     $("#uploadProgress").modal("show");
 
     $.ajax({
         url: ctx + '/aea/par/front/itemform/getAeaParFrontItemform.do',
         type: 'POST',
-        data: {frontItemformId:frontItemformId},
-        async: false,
+        data: {'frontItemformId': frontItemformId},
+        // async: false,
         success: function (result) {
             if (result.success) {
-                setTimeout(function(){
-                    $("#uploadProgress").modal('hide');
-                    if(curIsEditable){
-                        $('#saveParFrontItemformBtn').show();
-                    }else{
-                        $('#saveParFrontItemformBtn').hide();
-                    }
 
-                    $('#select_par_front_itemform_btn').hide();
-                    $("#edit_par_front_itemform_modal").modal("show");
-                    $('#edit_par_front_itemform_title').html('编辑事项表单信息前置检测');
-                    $('#edit_par_front_itemform_scroll').animate({scrollTop: 0}, 800);//滚动到顶部
-                    $('#edit_par_front_itemform_form')[0].reset();
+                setTimeout(function(){
+
+                    $("#uploadProgress").modal('hide');
                     loadFormData(true, '#edit_par_front_itemform_form', result.content);
-                    $('#edit_par_front_itemform_form input[name="frontItemformId"]').val(result.content.frontItemformId);
-                    $('#edit_par_front_itemform_form input[name="stageId"]').val(currentBusiId);
-                    $('#edit_par_front_itemform_form input[name="stageItemId"]').val(result.content.stageItemId);
-                    $('#edit_par_front_itemform_form input[name="itemName"]').val(result.content.itemName);
-                    $('#edit_par_front_itemform_form input[name="formName"]').val(result.content.formName);
+                    $('#edit_par_front_itemform_form textarea[name="itemName"]').val(result.content.itemName+"【"+ result.content.itemCode +"】");
+
                 },500);
+
             } else {
+
                 setTimeout(function(){
                     $("#uploadProgress").modal('hide');
                     swal('错误信息', result.message, 'error');
@@ -1284,6 +1298,7 @@ function editParFrontItemform(frontItemformId) {
             }
         },
         error: function(XMLHttpRequest, textStatus, errorThrown) {
+
             setTimeout(function(){
                 $("#uploadProgress").modal('hide');
                 swal('错误信息', XMLHttpRequest.responseText, 'error');
@@ -1291,7 +1306,6 @@ function editParFrontItemform(frontItemformId) {
         }
     });
 }
-
 
 function batchDelParFrontItemform() {
 
@@ -1670,13 +1684,6 @@ function delParFrontPartform(id) {
 
 function importFrontItem(){
 
-    $("#uploadProgressMsg").html("数据加载中，请稍后...");
-    $("#uploadProgress").modal("show");
-
     // 初始化事项树数据
     initFrontCheckItem();
-
-    setTimeout(function(){
-        $("#uploadProgress").modal('hide');
-    },500);
 }

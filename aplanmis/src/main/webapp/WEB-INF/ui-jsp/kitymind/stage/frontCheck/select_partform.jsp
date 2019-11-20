@@ -12,7 +12,6 @@
                 </button>
             </div>
             <div class="m-portlet__body" style="padding: 10px 0px 5px 0px;">
-
                 <div class="m-form m-form--label-align-right m--margin-bottom-5">
                     <div class="row" style="margin: 0px;">
                         <div class="col-md-4" style="text-align: left;">

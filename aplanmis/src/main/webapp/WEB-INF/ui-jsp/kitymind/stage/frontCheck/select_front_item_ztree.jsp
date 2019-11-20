@@ -382,9 +382,9 @@
                             url: ctx + '/aea/par/front/item/batchSaveFrontItem.do',
                             type: 'POST',
                             data: {
+                                'stageId': currentBusiId,
                                 'itemVerIds': itemVerIds.toString(),
                                 'sortNos': sortNos.toString(),
-                                'stage': currentBusiId
                             },
                             async: false,
                             success: function (result) {
@@ -422,7 +422,7 @@
         initSelectFrontItemZtree();
 
         // 加载可选事项数据
-        setItemRelFrontCheckItems();
+        setStageRelFrontCheckItems();
     }
 
 
@@ -587,13 +587,14 @@
                 }
             },
             error: function(){
+
                 swal('错误信息', '初始化事项数据异常!', 'error');
             }
         });
     }
 
     //刷新前置检查事项
-    function setItemRelFrontCheckItems() {
+    function setStageRelFrontCheckItems() {
 
         // 清空关键字据
         $('#selectFrontItemKeyWord').val('');
@@ -629,7 +630,7 @@
     function loadFrontCheckSelectedItemData(){
 
         $.ajax({
-            url: ctx + '/aea/par/stage/item/listAeaStageItemByStageId.do',
+            url: ctx + '/aea/par/front/item/listAeaParFrontItemByNoPage.do',
             type: 'post',
             data: {'stageId': currentBusiId},
             async: false,

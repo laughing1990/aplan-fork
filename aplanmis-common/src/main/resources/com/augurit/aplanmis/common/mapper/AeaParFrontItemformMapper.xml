@@ -3,6 +3,7 @@
 <!--created by Administrator    2019-11-01 10:48:12 -->
 <!--0 一些前置信息配置 -->
 <mapper namespace="com.augurit.aplanmis.common.mapper.AeaParFrontItemformMapper">
+
     <!--1 返回所有字段的SQL字句 -->
     <sql id="allColumns">
         FRONT_ITEMFORM_ID  frontItemformId,
@@ -35,20 +36,21 @@
     <!--2 根据主键ID查询单个实体 -->
     <select id="getAeaParFrontItemformById" resultType="AeaParFrontItemform">
         select
-        <include refid="allColumns"/>
+           <include refid="allColumns"/>
         from AEA_PAR_FRONT_ITEMFORM
         where FRONT_ITEMFORM_ID = #{id}
     </select>
 
-    <select id="getAeaParFrontItemformVoByStageId" resultType="com.augurit.aplanmis.common.vo.AeaParFrontItemformVo">
+    <select id="getAeaParFrontItemformVoByStageId" resultType="AeaParFrontItemform">
         select
-        <include refid="allColumnsAlias">
-            <property name="alias" value="apfi"></property>
-        </include>
-        ,
-        aib.ITEM_NAME itemName,
-        asf.FORM_NAME formName,
-        apsi.SUB_FORM_ID subFormId
+            <include refid="allColumnsAlias">
+                <property name="alias" value="apfi"></property>
+            </include>,
+            aib.ITEM_NAME itemName,
+            aib.ITEM_CODE itemCode,
+            aib.IS_CATALOG isCatalog,
+            asf.FORM_NAME formName,
+            apsi.SUB_FORM_ID subFormId
         from AEA_PAR_FRONT_ITEMFORM apfi
         left join aea_par_stage_item apsi on apfi.STAGE_ITEM_ID = apsi.STAGE_ITEM_ID
         left join aea_item_basic aib on aib.ITEM_VER_ID = apsi.ITEM_VER_ID
@@ -62,13 +64,13 @@
                 AND apfi.ROOT_ORG_ID = #{rootOrgId}
             </if>
         </where>
-        order by apfi.SORT_NO
+        order by apfi.SORT_NO asc
     </select>
 
     <!--3 根据条件查询实体list -->
     <select id="listAeaParFrontItemform" resultType="AeaParFrontItemform">
         select
-        <include refid="allColumns"/>
+            <include refid="allColumns"/>
         from AEA_PAR_FRONT_ITEMFORM
         <where>
             <if test="frontItemformId != null">
@@ -110,12 +112,13 @@
 
     <!--5 新增实体对象 -->
     <insert id="insertAeaParFrontItemform" parameterType="AeaParFrontItemform">
-    insert into AEA_PAR_FRONT_ITEMFORM (
-FRONT_ITEMFORM_ID  ,STAGE_ID  ,STAGE_ITEM_ID  ,SORT_NO  ,IS_ACTIVE  ,FRONT_ITEMFORM_MEMO  ,CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME  ,ROOT_ORG_ID
-    )  values  (
-#{frontItemformId},#{stageId},#{stageItemId},#{sortNo},#{isActive},#{frontItemformMemo},#{creater},#{createTime},#{modifier},#{modifyTime},  #{rootOrgId}
-    )
-</insert>
+        insert into AEA_PAR_FRONT_ITEMFORM (
+            FRONT_ITEMFORM_ID  ,STAGE_ID  ,STAGE_ITEM_ID  ,SORT_NO  ,IS_ACTIVE  ,FRONT_ITEMFORM_MEMO  ,CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME  ,ROOT_ORG_ID
+        )  values  (
+            #{frontItemformId},#{stageId},#{stageItemId},#{sortNo},#{isActive},#{frontItemformMemo},#{creater},#{createTime},#{modifier},#{modifyTime},  #{rootOrgId}
+        )
+    </insert>
+
     <!--6 修改实体对象 -->
     <update id="updateAeaParFrontItemform" parameterType="AeaParFrontItemform">
         update AEA_PAR_FRONT_ITEMFORM
@@ -159,9 +162,7 @@ FRONT_ITEMFORM_ID  ,STAGE_ID  ,STAGE_ITEM_ID  ,SORT_NO  ,IS_ACTIVE  ,FRONT_ITEMF
 
     <!--7 删除实体对象,根据主键ID -->
     <delete id="deleteAeaParFrontItemform">
-        delete from   AEA_PAR_FRONT_ITEMFORM
-        where
-    FRONT_ITEMFORM_ID = #{id}
+        delete from AEA_PAR_FRONT_ITEMFORM where FRONT_ITEMFORM_ID = #{id}
     </delete>
 
     <!--8 删除实体对象列表,根据主键ID列表 -->
@@ -181,14 +182,17 @@ FRONT_ITEMFORM_ID  ,STAGE_ID  ,STAGE_ITEM_ID  ,SORT_NO  ,IS_ACTIVE  ,FRONT_ITEMF
     </resultMap>
 
 
-    <select id="listAeaParFrontItemformVo" resultType="com.augurit.aplanmis.common.vo.AeaParFrontItemformVo">
+    <select id="listAeaParFrontItemformVo" resultType="AeaParFrontItemform">
         select
-        <include refid="allColumnsAlias">
-            <property name="alias" value="apfi"></property>
-        </include>,
-        aib.ITEM_NAME itemName,
-        asf.FORM_NAME formName
-        from AEA_PAR_FRONT_ITEMFORM apfi left join aea_par_stage_item apsi on apfi.STAGE_ITEM_ID = apsi.STAGE_ITEM_ID
+            <include refid="allColumnsAlias">
+                <property name="alias" value="apfi"></property>
+            </include>,
+            aib.ITEM_NAME itemName,
+            aib.ITEM_CODE itemCode,
+            aib.IS_CATALOG isCatalog,
+            asf.FORM_NAME formName
+        from AEA_PAR_FRONT_ITEMFORM apfi
+        left join aea_par_stage_item apsi on apfi.STAGE_ITEM_ID = apsi.STAGE_ITEM_ID
         left join aea_item_basic aib on aib.ITEM_VER_ID = apsi.ITEM_VER_ID
         left join act_sto_form asf on asf.FORM_ID = apsi.SUB_FORM_ID
         <where>
@@ -227,72 +231,68 @@ FRONT_ITEMFORM_ID  ,STAGE_ID  ,STAGE_ITEM_ID  ,SORT_NO  ,IS_ACTIVE  ,FRONT_ITEMF
             </if>
             <if test="keyword!=null and keyword!='' ">
                 AND(
-                aib.ITEM_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+                   aib.ITEM_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 OR aib.ITEM_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%')
-                OR aib.SSCODE LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 OR asf.FORM_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%')
-                OR asf.FORM_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%')
                 )
             </if>
         </where>
-
-        order by apfi.SORT_NO
+        order by apfi.SORT_NO asc, apfi.CREATE_TIME asc, apfi.MODIFY_TIME asc
     </select>
 
     <select id="getMaxSortNo" resultType="java.lang.Long">
         select max(SORT_NO) from AEA_PAR_FRONT_ITEMFORM
         <where>
-            <if test="stageId!=null and stageId!=''">
-                and STAGE_ID = #{stageId}
-            </if>
+            and STAGE_ID = #{stageId}
+            and ROOT_ORG_ID = #{rootOrgId}
         </where>
     </select>
 
-
-    <select id="listSelectParFrontItemform" resultType="com.augurit.aplanmis.common.vo.AeaParFrontItemformVo">
+    <select id="listSelectParFrontItemform" resultType="AeaParFrontItemform">
         select
-        apsi.STAGE_ITEM_ID stageItemId,
-        aib.ITEM_NAME itemName,
-        asf.FORM_NAME formName
-        from
-        aea_par_stage_item apsi
+            apsi.STAGE_ITEM_ID stageItemId,
+            aib.ITEM_NAME itemName,
+            aib.ITEM_CODE itemCode,
+            aib.IS_CATALOG isCatalog,
+            asf.FORM_NAME formName
+        from aea_par_stage_item apsi
         inner join aea_item_basic aib on aib.ITEM_VER_ID = apsi.ITEM_VER_ID
         inner join act_sto_form asf on asf.FORM_ID = apsi.SUB_FORM_ID
         <where>
-            <if test="stageId != null and stageId!=''">
-                AND apsi.STAGE_ID = #{stageId}
-            </if>
-            <if test="keyword!=null and keyword!='' ">
-                AND(
-                aib.ITEM_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%')
-                OR aib.ITEM_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%')
-                OR aib.SSCODE LIKE CONCAT(CONCAT('%',#{keyword}),'%')
-                OR asf.FORM_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%')
-                OR asf.FORM_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%')
-                )
-            </if>
+            and apsi.STAGE_ID = #{stageId}
             and apsi.STAGE_ITEM_ID not in (
-            select apfi.STAGE_ITEM_ID from AEA_PAR_FRONT_ITEMFORM apfi
-            <where>
-                <if test="stageId != null and stageId!=''">
-                    AND apfi.STAGE_ID = #{stageId}
-                </if>
-                <if test="frontItemformId != null and frontItemformId !='' " >
-                    and apfi.FRONT_ITEMFORM_ID != #{frontItemformId}
-                </if>
-            </where>
+                select distinct apfi.STAGE_ITEM_ID
+                  from AEA_PAR_FRONT_ITEMFORM apfi
+                <where>
+                    and apfi.STAGE_ID = #{stageId}
+                    and apfi.ROOT_ORG_ID = #{rootOrgId}
+                    and apfi.STAGE_ITEM_ID is not null
+                    and apfi.STAGE_ITEM_ID != ''
+                </where>
             )
+            <if test="keyword!=null and keyword!='' ">
+            and(
+                   aib.ITEM_NAME like CONCAT(CONCAT('%',#{keyword}),'%')
+                or aib.ITEM_CODE like CONCAT(CONCAT('%',#{keyword}),'%')
+                or aib.SSCODE like CONCAT(CONCAT('%',#{keyword}),'%')
+                or asf.FORM_NAME like CONCAT(CONCAT('%',#{keyword}),'%')
+                or asf.FORM_CODE like CONCAT(CONCAT('%',#{keyword}),'%')
+            )
+            </if>
         </where>
     </select>
 
-    <select id="getAeaParFrontItemformVoById" resultType="com.augurit.aplanmis.common.vo.AeaParFrontItemformVo">
+    <select id="getAeaParFrontItemformVoById" resultType="AeaParFrontItemform">
         select
-        <include refid="allColumnsAlias">
-            <property name="alias" value="apfi"></property>
-        </include>,
-        aib.ITEM_NAME itemName,
-        asf.FORM_NAME formName
-        from AEA_PAR_FRONT_ITEMFORM apfi left join aea_par_stage_item apsi on apfi.STAGE_ITEM_ID = apsi.STAGE_ITEM_ID
+            <include refid="allColumnsAlias">
+                <property name="alias" value="apfi"></property>
+            </include>,
+            aib.ITEM_NAME itemName,
+            aib.ITEM_CODE itemCode,
+            aib.IS_CATALOG isCatalog,
+            asf.FORM_NAME formName
+        from AEA_PAR_FRONT_ITEMFORM apfi
+        left join aea_par_stage_item apsi on apfi.STAGE_ITEM_ID = apsi.STAGE_ITEM_ID
         left join aea_item_basic aib on aib.ITEM_VER_ID = apsi.ITEM_VER_ID
         left join act_sto_form asf on asf.FORM_ID = apsi.SUB_FORM_ID
         where FRONT_ITEMFORM_ID = #{id}
