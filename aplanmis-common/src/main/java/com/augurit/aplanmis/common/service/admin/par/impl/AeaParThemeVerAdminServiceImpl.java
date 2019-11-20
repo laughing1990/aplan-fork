@@ -3201,11 +3201,39 @@ public class AeaParThemeVerAdminServiceImpl implements AeaParThemeVerAdminServic
     private Map getPosiOrSize(Map ele, String type){
         return (Map) ele.get(type);
     }
+
     private int getPosi(Map ele, String xy){
-        return (int) ((Map) ele.get("position")).get(xy);
+
+        Object position = ele.get("position");
+        if(position!=null){
+            Object xyObj = ((Map)position).get(xy);
+            if(xyObj!=null){
+                if(xyObj instanceof BigDecimal){
+                    return ((BigDecimal)xyObj).intValue();
+                }else if(xyObj instanceof Integer){
+                    return ((Integer)xyObj).intValue();
+                }
+            }
+        }
+        return -1;
+//        return ((BigDecimal) ((Map) ele.get("position")).get(xy)).intValue();
     }
+
     private int getSize(Map ele, String xy){
-        return (int) ((Map) ele.get("size")).get(xy.equals("x")?"width":"height");
+
+        Object size = ele.get("size");
+        if(size!=null){
+            Object xyObj = ((Map)size).get(xy.equals("x")?"width":"height");
+            if(xyObj!=null){
+                if(xyObj instanceof BigDecimal){
+                    return ((BigDecimal)xyObj).intValue();
+                }else if(xyObj instanceof Integer){
+                    return ((Integer)xyObj).intValue();
+                }
+            }
+        }
+        return -1;
+//        return ((BigDecimal) ((Map) ele.get("size")).get(xy.equals("x")?"width":"height")).intValue();
     }
 
     /**
@@ -3411,7 +3439,8 @@ public class AeaParThemeVerAdminServiceImpl implements AeaParThemeVerAdminServic
                 }
 
             }else if(stage.getIsNode().equals("1")){
-                if(isOptionItem.equals("0")){ //并联
+                //并联
+                if(isOptionItem.equals("0")){
                     oldMaxPool = parentPool;
                     startY = getEleYPlusHeight(oldMaxPool);
                     ajustEles = needAjustPosiEles(cells, parentPool);
@@ -3419,7 +3448,8 @@ public class AeaParThemeVerAdminServiceImpl implements AeaParThemeVerAdminServic
                     if(activity != null){
                         modalActi.putAll(activity);
                     }
-                }else if(isOptionItem.equals("1")){ //并行
+                //并行
+                }else if(isOptionItem.equals("1")){
 
                     Map parallelPool = getParallelPoolByStageId(cells, stage.getStageId());
                     if(parallelPool != null){
