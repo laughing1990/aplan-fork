@@ -274,7 +274,7 @@ public class AeaImProjPurchaseServiceImpl implements AeaImProjPurchaseService {
         List<BscAttLink> bscAttLinks = bscAttMapper.listBscAttLink(link);
         if (!bscAttLinks.isEmpty()) {
             BscAttLink attLink = bscAttLinks.get(0);
-            List<BscAttForm> attachments = fileUtilsService.getAttachmentsByRecordId(recordId.split(","), attLink.getPkName(), attLink.getTableName());
+            List<BscAttForm> attachments = fileUtilsService.getAttachmentsByRecordId(recordId.split(","), attLink.getTableName(), attLink.getPkName());
             return new UploadResult(recordId, attachments);
         }
 

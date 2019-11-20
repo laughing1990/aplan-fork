@@ -25,7 +25,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/market/apply")
-@Api(value = "中介事项启动流程接口", tags = "申报-发起中介事项申报")
+@Api(value = "中介事项启动流程接口", tags = "中介事项申报-发起中介事项申报")
 public class AgentItemApplyController {
     @Autowired
     private AgentItemApplyService agentItemApplyService;

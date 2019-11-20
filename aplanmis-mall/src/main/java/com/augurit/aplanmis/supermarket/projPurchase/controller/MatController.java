@@ -1,5 +1,6 @@
 package com.augurit.aplanmis.supermarket.projPurchase.controller;
 
+import com.augurit.agcloud.bsc.domain.BscAttFileAndDir;
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.agcloud.framework.util.StringUtils;
@@ -29,6 +30,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.List;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -133,5 +135,21 @@ public class MatController {
         UploadResult result = aeaImProjPurchaseService.batchDelete(recordId, detailIds);
 
         return new ContentResultForm<>(true, result);
+    }
+
+    @GetMapping("/att/list")
+    @ApiOperation("中介超市项目采购页面--> 查询已上传附件列表")
+    @ApiImplicitParam(name = "matinstId", value = "材料实例id")
+    public ContentResultForm<List<BscAttFileAndDir>> attFileList(@RequestParam(required = false) String matinstId) {
+        if (StringUtils.isBlank(matinstId)) {
+            return new ContentResultForm<>(true, new ArrayList<>(), "empty list");
+        }
+        try {
+            List<BscAttFileAndDir> fileAndDirs = fileUtilsService.getMatAttDetailByMatinstId(matinstId);
+            return new ContentResultForm<>(true, fileAndDirs, "Query attachment list success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ContentResultForm<>(false, new ArrayList<>(), "Query attachment list failed");
+        }
     }
 }

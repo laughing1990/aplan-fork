@@ -1435,6 +1435,7 @@ public class ProjPurchaseService {
         String applyinstCode = result.getApplyinstCode();
         //保存采购信息
         ImPurchaseData purchaseData = purchaseVo.createPurchaseData(applyinstId, applyinstCode);
+        //采购项目 项目ID
         purchaseData.setProjInfoId(projInfoId);
         purchaseData.setLinkmanInfoId(linkmanId);
         purchaseData.setPublishLinkmanInfoId(publishLinkmanInfoId);
