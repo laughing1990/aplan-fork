@@ -52,21 +52,24 @@ public class OneFormCommonService {
             for (AeaParStagePartform parStagePartform : aeaParStagePartformList) {
                 if (StringUtils.isNotBlank(parStagePartform.getStoFormId())) {
                     ActStoForm actStoForm = actStoFormMapper.getActStoFormById(parStagePartform.getStoFormId());
-                    FormFrofileVo stageDevFormVo = new FormFrofileVo();
-                    stageDevFormVo.setFormId(parStagePartform.getStoFormId());
-                    stageDevFormVo.setFormName(parStagePartform.getPartformName());
+                    FormFrofileVo formFrofileVo = new FormFrofileVo();
+                    formFrofileVo.setFormId(parStagePartform.getStoFormId());
+                    formFrofileVo.setFormName(parStagePartform.getPartformName());
                     if(isSmartForm(actStoForm)){
+                        formFrofileVo.setSmartForm(true);
                         SFFormParam item=new SFFormParam();
                         item.setRefEntityId(oneFormStageRequest.getApplyinstId());
-                        item.setFormId(stageDevFormVo.getFormId());
-                        stageDevFormVo.setFormUrl(genUrl4SamrtForm(item));
+                        item.setFormId(formFrofileVo.getFormId());
+                        formFrofileVo.setFormUrl(genUrl4SamrtForm(item));
+
                     }
                     else{
-                        stageDevFormVo.setFormUrl(actStoForm.getFormLoadUrl().replace("{projInfoId}", "projInfoId=" + projInfoId));
+                        formFrofileVo.setSmartForm(false);
+                        formFrofileVo.setFormUrl(actStoForm.getFormLoadUrl().replace("{projInfoId}", "projInfoId=" + projInfoId));
                     }
                     formSortNo++;
-                    stageDevFormVo.setFormSortNo(formSortNo);
-                    result.add(stageDevFormVo);
+                    formFrofileVo.setFormSortNo(formSortNo);
+                    result.add(formFrofileVo);
                 }
             }
         }
@@ -77,18 +80,20 @@ public class OneFormCommonService {
         for(SFFormParam item:listSFFormParam4Item){
             if (StringUtils.isNotBlank(item.getFormId())) {
                 ActStoForm actStoForm = actStoFormMapper.getActStoFormById(item.getFormId());
-                FormFrofileVo stageDevFormVo = new FormFrofileVo();
-                stageDevFormVo.setFormId(item.getFormId());
-                stageDevFormVo.setFormName(actStoForm.getFormName());
+                FormFrofileVo formFrofileVo = new FormFrofileVo();
+                formFrofileVo.setFormId(item.getFormId());
+                formFrofileVo.setFormName(actStoForm.getFormName());
                 if(isSmartForm(actStoForm)){
-                    stageDevFormVo.setFormUrl(genUrl4SamrtForm(item));
+                    formFrofileVo.setSmartForm(true);
+                    formFrofileVo.setFormUrl(genUrl4SamrtForm(item));
                 }
                 else{
-                    stageDevFormVo.setFormUrl(actStoForm.getFormLoadUrl().replace("{projInfoId}", "projInfoId=" + projInfoId));
+                    formFrofileVo.setSmartForm(false);
+                    formFrofileVo.setFormUrl(actStoForm.getFormLoadUrl().replace("{projInfoId}", "projInfoId=" + projInfoId));
                 }
                 formSortNo++;
-                stageDevFormVo.setFormSortNo(formSortNo);
-                result.add(stageDevFormVo);
+                formFrofileVo.setFormSortNo(formSortNo);
+                result.add(formFrofileVo);
             }
         }
         return result;
@@ -106,10 +111,11 @@ public class OneFormCommonService {
     }
     private String genUrl4SamrtForm(SFFormParam item){
         String result="";
-        StringBuilder StrBuilder=new StringBuilder();
-        StrBuilder.append("?listRefEntityId="+item.getRefEntityId());
-        StrBuilder.append("&listFormId="+item.getFormId());
-        StrBuilder.append("&showBasicButton=true&includePlatformResource=false&busiScence=oneform");
+        StringBuilder strBuilder=new StringBuilder();
+        strBuilder.append("?listRefEntityId="+item.getRefEntityId());
+        strBuilder.append("&listFormId="+item.getFormId());
+        strBuilder.append("&showBasicButton=true&includePlatformResource=false&busiScence=oneform");
+        result=strBuilder.toString();
         return result;
     }
 
