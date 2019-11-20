@@ -3,10 +3,10 @@ package com.augurit.aplanmis.common.check;
 import com.augurit.agcloud.framework.constant.Status;
 import com.augurit.aplanmis.common.check.exception.StageItemCheckException;
 import com.augurit.aplanmis.common.domain.AeaItemBasic;
+import com.augurit.aplanmis.common.domain.AeaParFrontItem;
 import com.augurit.aplanmis.common.domain.AeaParStage;
 import com.augurit.aplanmis.common.service.admin.item.AeaItemBasicAdminService;
 import com.augurit.aplanmis.common.service.admin.par.AeaParFrontItemService;
-import com.augurit.aplanmis.common.vo.AeaParFrontItemVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -41,7 +41,7 @@ public class StageItemChecker extends AbstractChecker<AeaParStage> {
             Assert.hasText(projInfoId, "projInfoId must not null.");
 
             //获取阶段下的前置事项
-            List<AeaParFrontItemVo> parFrontItemList = aeaParFrontItemService.listAeaParFrontItemByStageId(stage.getStageId());
+            List<AeaParFrontItem> parFrontItemList = aeaParFrontItemService.listAeaParFrontItemByStageId(stage.getStageId());
 
             if (parFrontItemList.size() > 0) {
 

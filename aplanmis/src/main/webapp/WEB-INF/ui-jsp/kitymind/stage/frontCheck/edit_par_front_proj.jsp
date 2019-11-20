@@ -3,7 +3,7 @@
 <!-- 添加/编辑 -->
 <div id="edit_par_front_proj_modal" class="modal fade" tabindex="-1" role="dialog"
      aria-labelledby="dialog_item_dept" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered  modal-lg" role="document" style="max-width: 650px;">
+    <div class="modal-dialog modal-dialog-centered  modal-lg" role="document">
         <div class="modal-content">
             <!-- 标题 -->
             <div class="modal-header" style="padding: 15px;height: 45px;">
@@ -18,20 +18,13 @@
 
                         <input type="hidden" name="frontProjId" id="frontProjId" value=""/>
                         <input type="hidden" name="stageId" value=""/>
+                        <input type="hidden" name="isActive" value=""/>
 
                         <div class="form-group m-form__group row">
 
                             <label class="col-lg-2 col-form-label" style="text-align: right;"><font color="red">*</font>规则名称:</label>
-                            <div class="col-lg-9">
+                            <div class="col-lg-10">
                                 <input type="text" class="form-control m-input" name="ruleName" value="" ${curIsEditable?'':'disabled'} />
-                            </div>
-                        </div>
-
-                        <div class="form-group m-form__group row">
-
-                            <label class="col-lg-2 col-form-label" style="text-align: right;"><font color="red">*</font>排序:</label>
-                            <div class="col-lg-9">
-                                <input type="text" class="form-control m-input" name="sortNo" value="" ${curIsEditable?'':'disabled'}/>
                             </div>
                         </div>
 
@@ -40,34 +33,28 @@
                                 <font color="red">*</font>规则表达式:<br/>
                                 <button ${curIsEditable?'':'disabled'} type="button" class="btn btn-info" onclick="openSelectMetaDbTbcolModal('ruleEl');" style="margin-top: 10px;">选择</button>
                             </label>
-                            <div class="col-lg-9">
+                            <div class="col-lg-10">
                                 <textarea id="ruleEl" class="form-control" name="ruleEl" rows="6" ${curIsEditable?'':'disabled'}></textarea>
                             </div>
                         </div>
 
                         <div class="form-group m-form__group row">
+                            <label class="col-lg-2 col-form-label" style="text-align: right;"><font color="red">*</font>排序:</label>
+                            <div class="col-lg-10">
+                                <input type="text" class="form-control m-input" name="sortNo" value="" ${curIsEditable?'':'disabled'}/>
+                            </div>
+                        </div>
 
+                        <div class="form-group m-form__group row">
                             <label class="col-lg-2 col-form-label" style="text-align: right;">备注:</label>
-                            <div class="col-lg-9">
-                                <textarea type="text" class="form-control m-input" name="frontProjMemo" value="" ${curIsEditable?'':'disabled'} ></textarea>
+                            <div class="col-lg-10">
+                                <textarea type="text" class="form-control m-input" name="frontProjMemo" rows="4" value="" ${curIsEditable?'':'disabled'} ></textarea>
                             </div>
                         </div>
-
-                        <div class="form-group m-form__group row" >
-
-                            <label class="col-lg-2 col-form-label" style="text-align: right;"><font color="red">*</font>是否启用:</label>
-                            <div class="col-lg-9">
-                                <select type="text" class="form-control" name="isActive" value="" ${curIsEditable?'':'disabled'}>
-                                    <option value="1">是</option>
-                                    <option value="0">否</option>
-                                </select>
-                            </div>
-                        </div>
-
                     </div>
                 </div>
                 <div class="modal-footer" style="padding: 10px;height: 60px;">
-                    <button type="submit" class="btn btn-info" id="saveParFrontProjBtn">保存</button>
+                    <button type="submit" class="btn btn-info" id="saveParFrontProjBtn" style="display: ${curIsEditable?'':'none'}">保存</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
                 </div>
             </form>

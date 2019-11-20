@@ -1,28 +1,29 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<!--created by Administrator    2019-11-01 10:48:33 -->
+
 <!--0 一些前置信息配置 -->
 <mapper namespace="com.augurit.aplanmis.common.mapper.AeaParFrontProjMapper">
+
     <!--1 返回所有字段的SQL字句 -->
     <sql id="allColumns">
-    FRONT_PROJ_ID  frontProjId,
-    STAGE_ID  stageId,
-    RULE_NAME  ruleName,
-    RULE_EL  ruleEl,
-    SORT_NO  sortNo,
-    IS_ACTIVE  isActive,
-    FRONT_PROJ_MEMO  frontProjMemo,
-    CREATER  creater,
-    CREATE_TIME  createTime,
-    MODIFIER  modifier,
-    MODIFY_TIME  modifyTime,
-    ROOT_ORG_ID  rootOrgId
+        FRONT_PROJ_ID  frontProjId,
+        STAGE_ID  stageId,
+        RULE_NAME  ruleName,
+        RULE_EL  ruleEl,
+        SORT_NO  sortNo,
+        IS_ACTIVE  isActive,
+        FRONT_PROJ_MEMO  frontProjMemo,
+        CREATER  creater,
+        CREATE_TIME  createTime,
+        MODIFIER  modifier,
+        MODIFY_TIME  modifyTime,
+        ROOT_ORG_ID  rootOrgId
     </sql>
 
     <!--2 根据主键ID查询单个实体 -->
     <select id="getAeaParFrontProjById" resultType="AeaParFrontProj">
         select
-        <include refid="allColumns"/>
+           <include refid="allColumns"/>
         from AEA_PAR_FRONT_PROJ
         where FRONT_PROJ_ID = #{id}
     </select>
@@ -73,19 +74,18 @@
                 AND RULE_NAME like concat('%',concat(#{keyword},'%'))
             </if>
         </where>
-
-        order by SORT_NO
+        order by SORT_NO asc, CREATE_TIME asc, MODIFY_TIME asc
     </select>
-    <!--4 根据条件查询实体list,返回分页对象 -->
 
     <!--5 新增实体对象 -->
     <insert id="insertAeaParFrontProj" parameterType="AeaParFrontProj">
-    insert into AEA_PAR_FRONT_PROJ (
-FRONT_PROJ_ID  ,STAGE_ID  ,RULE_NAME  ,RULE_EL  ,SORT_NO  ,IS_ACTIVE  ,FRONT_PROJ_MEMO  ,CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME  ,ROOT_ORG_ID  
-    )  values  (
-#{frontProjId},#{stageId},#{ruleName},#{ruleEl},#{sortNo},#{isActive},#{frontProjMemo},#{creater},#{createTime},#{modifier},#{modifyTime},  #{rootOrgId}
-    )
-</insert>
+        insert into AEA_PAR_FRONT_PROJ (
+            FRONT_PROJ_ID  ,STAGE_ID  ,RULE_NAME  ,RULE_EL  ,SORT_NO  ,IS_ACTIVE  ,FRONT_PROJ_MEMO  ,CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME  ,ROOT_ORG_ID
+        )  values  (
+            #{frontProjId},#{stageId},#{ruleName},#{ruleEl},#{sortNo},#{isActive},#{frontProjMemo},#{creater},#{createTime},#{modifier},#{modifyTime},  #{rootOrgId}
+        )
+    </insert>
+
     <!--6 修改实体对象 -->
     <update id="updateAeaParFrontProj" parameterType="AeaParFrontProj">
         update AEA_PAR_FRONT_PROJ
@@ -129,13 +129,11 @@ FRONT_PROJ_ID  ,STAGE_ID  ,RULE_NAME  ,RULE_EL  ,SORT_NO  ,IS_ACTIVE  ,FRONT_PRO
         </set>
         where FRONT_PROJ_ID = #{frontProjId}
     </update>
-    <!--7 删除实体对象,根据主键ID -->
+
     <delete id="deleteAeaParFrontProj">
-        delete from   AEA_PAR_FRONT_PROJ
-        where
-    FRONT_PROJ_ID = #{id}
+        delete from AEA_PAR_FRONT_PROJ where FRONT_PROJ_ID = #{id}
     </delete>
-    <!--8 删除实体对象列表,根据主键ID列表 -->
+
     <!--9 返回所有字段的对象map,用于级联 -->
     <resultMap type="AeaParFrontProj" id="AeaParFrontProjMap">
         <id property="frontProjId" column="FRONT_PROJ_ID"/>
@@ -152,7 +150,6 @@ FRONT_PROJ_ID  ,STAGE_ID  ,RULE_NAME  ,RULE_EL  ,SORT_NO  ,IS_ACTIVE  ,FRONT_PRO
         <result property="rootOrgId" column="ROOT_ORG_ID"/>
     </resultMap>
 
-
     <select id="getMaxSortNo" resultType="java.lang.Long">
         select max(SORT_NO) from AEA_PAR_FRONT_PROJ
         <where>
@@ -161,4 +158,17 @@ FRONT_PROJ_ID  ,STAGE_ID  ,RULE_NAME  ,RULE_EL  ,SORT_NO  ,IS_ACTIVE  ,FRONT_PRO
             </if>
         </where>
     </select>
+
+    <update id="changIsActive">
+        update AEA_PAR_FRONT_PROJ
+        set IS_ACTIVE = case IS_ACTIVE
+        when '1' then '0'
+        when '0' then '1'
+        end
+        <where>
+            and FRONT_PROJ_ID = #{id}
+            and ROOT_ORG_ID = #{rootOrgId}
+        </where>
+    </update>
+
 </mapper>

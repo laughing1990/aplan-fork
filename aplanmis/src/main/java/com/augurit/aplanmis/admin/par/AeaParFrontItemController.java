@@ -1,5 +1,7 @@
 package com.augurit.aplanmis.admin.par;
 
+import com.augurit.agcloud.framework.exception.InvalidParameterException;
+import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.ui.pager.EasyuiPageInfo;
 import com.augurit.agcloud.framework.ui.pager.PageHelper;
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
@@ -7,7 +9,6 @@ import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.domain.AeaParFrontItem;
 import com.augurit.aplanmis.common.service.admin.par.AeaParFrontItemService;
-import com.augurit.aplanmis.common.vo.AeaParFrontItemVo;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import org.slf4j.Logger;
@@ -21,13 +22,6 @@ import java.util.UUID;
 
 /**
  * 阶段事项前置检测表-Controller 页面控制转发类
- * <ul>
- * <li>项目名：奥格erp3.0--第一期建设项目</li>
- * <li>版本信息：v1.0</li>
- * <li>版权所有(C)2016广州奥格智能科技有限公司-版权所有</li>
- * <li>创建人:Administrator</li>
- * <li>创建时间：2019-11-01 10:47:49</li>
- * </ul>
  */
 @RestController
 @RequestMapping("/aea/par/front/item")
@@ -39,13 +33,15 @@ public class AeaParFrontItemController {
     private AeaParFrontItemService aeaParFrontItemService;
 
     @RequestMapping("/listAeaParFrontItemByPage.do")
-    public EasyuiPageInfo<AeaParFrontItemVo> listAeaParFrontItemByPage(AeaParFrontItem aeaParFrontItem, Page page) throws Exception {
-        PageInfo<AeaParFrontItemVo> pageInfo = aeaParFrontItemService.listAeaParFrontItemVoByPage(aeaParFrontItem, page);
+    public EasyuiPageInfo<AeaParFrontItem> listAeaParFrontItemByPage(AeaParFrontItem aeaParFrontItem, Page page) throws Exception {
+
+        PageInfo<AeaParFrontItem> pageInfo = aeaParFrontItemService.listAeaParFrontItemVoByPage(aeaParFrontItem, page);
         return PageHelper.toEasyuiPageInfo(pageInfo);
     }
 
     @RequestMapping("/getAeaParFrontItem.do")
     public ResultForm getAeaParFrontItem(String frontItemId) {
+
         try {
             if (StringUtils.isNotBlank(frontItemId)) {
                 return new ContentResultForm<>(true, aeaParFrontItemService.getAeaParFrontItemVoByFrontItemId(frontItemId));
@@ -60,15 +56,14 @@ public class AeaParFrontItemController {
 
     @RequestMapping("/saveOrUpdateAeaParFrontItem.do")
     public ResultForm saveOrUpdateAeaParFrontItem(AeaParFrontItem aeaParFrontItem) {
+
         try {
-            if (aeaParFrontItem.getFrontItemId() != null && !"".equals(aeaParFrontItem.getFrontItemId())) {
+            if (StringUtils.isNotBlank(aeaParFrontItem.getFrontItemId())) {
                 aeaParFrontItemService.updateAeaParFrontItem(aeaParFrontItem);
             } else {
-                if (aeaParFrontItem.getFrontItemId() == null || "".equals(aeaParFrontItem.getFrontItemId()))
-                    aeaParFrontItem.setFrontItemId(UUID.randomUUID().toString());
+                aeaParFrontItem.setFrontItemId(UUID.randomUUID().toString());
                 aeaParFrontItemService.saveAeaParFrontItem(aeaParFrontItem);
             }
-
             return new ContentResultForm<>(true, aeaParFrontItem);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -79,6 +74,7 @@ public class AeaParFrontItemController {
 
     @RequestMapping("/deleteAeaParFrontItemById.do")
     public ResultForm deleteAeaParFrontItemById(String id) {
+
         try {
             logger.debug("删除阶段事项前置检测表Form对象，对象id为：{}", id);
             if (StringUtils.isNotBlank(id)) {
@@ -94,6 +90,7 @@ public class AeaParFrontItemController {
 
     @RequestMapping("/getMaxSortNo.do")
     public ResultForm getMaxSortNo(AeaParFrontItem aeaParFrontItem) {
+
         try {
             return new ContentResultForm<>(true, aeaParFrontItemService.getMaxSortNo(aeaParFrontItem));
         } catch (Exception e) {
@@ -104,6 +101,7 @@ public class AeaParFrontItemController {
 
     @RequestMapping("/batchSaveAeaParFrontItem.do")
     public ResultForm batchSaveAeaParFrontItem(String stageId,String itemVerIds) {
+
         try {
             aeaParFrontItemService.batchSaveAeaParFrontItem(stageId,itemVerIds);
             return new ResultForm(true);
@@ -112,6 +110,27 @@ public class AeaParFrontItemController {
             return new ResultForm(false, e.getMessage());
 
         }
+    }
+
+    /**
+     * 前置检测事项真正使用
+     *
+     * @param stageId
+     * @param itemVerIds
+     * @return
+     */
+    @RequestMapping("/batchSaveFrontItem.do")
+    public ResultForm batchSaveFrontItem(String stageId, String[] itemVerIds, Long[] sortNos) {
+
+        if (itemVerIds != null && itemVerIds.length > 0) {
+            if (StringUtils.isBlank(stageId)) {
+                return new ResultForm(false, "参数stageId为空!");
+            }
+            aeaParFrontItemService.batchSaveFrontItem(stageId, itemVerIds, sortNos);
+        } else {
+            aeaParFrontItemService.batchDelItemByStageId(stageId, SecurityContext.getCurrentOrgId());
+        }
+        return new ResultForm(true);
     }
 
     @RequestMapping("/updateAeaParFrontItemSortNos.do")
@@ -130,9 +149,19 @@ public class AeaParFrontItemController {
     }
 
     @RequestMapping("/listAeaParFrontItemByNoPage.do")
-    public List<AeaParFrontItemVo> listAeaParFrontItemByNoPage(AeaParFrontItem aeaParFrontItem) throws Exception {
-        List<AeaParFrontItemVo> list = aeaParFrontItemService.listAeaParFrontItemVoByNoPage(aeaParFrontItem);
+    public List<AeaParFrontItem> listAeaParFrontItemByNoPage(AeaParFrontItem aeaParFrontItem) throws Exception {
+
+        List<AeaParFrontItem> list = aeaParFrontItemService.listAeaParFrontItemVoByNoPage(aeaParFrontItem);
         return list;
     }
 
+    @RequestMapping("/changIsActive.do")
+    public ResultForm changIsActive(String id) {
+
+        if (StringUtils.isBlank(id)) {
+            throw new InvalidParameterException("参数id为空!");
+        }
+        aeaParFrontItemService.changIsActive(id, SecurityContext.getCurrentOrgId());
+        return new ResultForm(true);
+    }
 }

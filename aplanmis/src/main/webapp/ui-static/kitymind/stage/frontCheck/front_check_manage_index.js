@@ -8,79 +8,184 @@ var par_front_stage_tb;
 var edit_par_front_stage_form_validator;
 var par_front_partform_tb;
 var edit_par_front_partform_form_validator;
+
+function projIsActiveFormatter(value, row, index, field) {
+
+    return handleIsActiveHtml(row.isActive, row.frontProjId, 'proj');
+}
+
+function itemIsActiveFormatter(value, row, index, field) {
+
+    return handleIsActiveHtml(row.isActive, row.frontItemId, 'item');
+}
+
+function itemformIsActiveFormatter(value, row, index, field) {
+
+    return handleIsActiveHtml(row.isActive, row.frontItemformId, 'itemform');
+}
+
+function partformIsActiveFormatter(value, row, index, field) {
+
+    return handleIsActiveHtml(row.isActive, row.frontPartformId, 'partform');
+}
+
+function stageIsActiveFormatter(value, row, index, field) {
+
+    return handleIsActiveHtml(row.isActive, row.frontStageId, 'stage');
+}
+
+function handleIsActiveHtml(isActive, id, type){
+
+    if(isActive=='1'){
+
+        return  '<span class="m-switch m-switch--success">' +
+                '  <label>' +
+                '     <input type="checkbox" checked="checked" name="isActive" onclick="changeIsActive(this, \''+ id +'\', \''+ isActive +'\', \''+ type +'\');">' +
+                '     <span></span>' +
+                '   </label>' +
+                '</span>'
+    }else{
+
+        return  '<span class="m-switch m-switch--success">' +
+                '  <label>' +
+                '     <input type="checkbox" name="isActive" onclick="changeIsActive(this, \''+ id +'\', \''+ isActive +'\', \''+ type +'\');">' +
+                '     <span></span>' +
+                '   </label>' +
+                '</span>'
+    }
+}
+
+function changeIsActive(obj, id, isActive, type){
+
+    if(id){
+        var action = isActive=='1'? "禁用" : "启用" ;
+        swal({
+            title: '提示信息',
+            text: "确定要" + action + "选中的记录吗?",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+        }).then(function(result) {
+            if (result.value){
+                var url;
+                if(type=='proj'){
+                    url = ctx + '/aea/par/front/proj/changIsActive.do';
+                }else if(type=='item'){
+                    url = ctx + '/aea/par/front/item/changIsActive.do';
+                }else if(type=='itemform'){
+                    url = ctx + '/aea/par/front/itemform/changIsActive.do';
+                }else if(type=='itemform'){
+                    url = ctx + '/aea/par/front/partform/changIsActive.do';
+                }else if(type=='stage'){
+                    url = ctx + '/aea/par/front/stage/changIsActive.do';
+                }
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: {"id": id},
+                    success: function (result) {
+                        if(result.success){
+                            if(type=='proj'){
+                                if(par_front_proj_tb){
+                                    par_front_proj_tb.clear();
+                                }
+                            }else if(type=='item'){
+                                if(par_front_item_tb){
+                                    par_front_item_tb.clear();
+                                }
+                            }else if(type=='itemform'){
+                                if(par_front_itemform_tb){
+                                    par_front_itemform_tb.clear();
+                                }
+                            }else if(type=='partform'){
+                                if(par_front_partform_tb){
+                                    par_front_partform_tb.clear();
+                                }
+                            }else if(type=='stage'){
+                                if(par_front_stage_tb){
+                                    par_front_stage_tb.clear();
+                                }
+                            }
+                        }else{
+                            swal('错误信息', result.message, 'error');
+                        }
+                    },
+                    error: function () {
+                        swal('错误信息', '服务器异常！', 'error');
+                    }
+                });
+            }else{
+                isActive=='1'?$(obj).prop("checked",true):$(obj).prop("checked",false);
+            }
+        });
+    }else{
+        swal('错误信息', '操作对象！', 'error');
+    }
+}
+
 $(function(){
+
     if(isCheckProj=='1'){
-        par_front_proj_tb = defaultBootstrap("par_front_proj_tb",[{
-            checkbox: true,
-            field: '#',
-            align: "center",
-            title: '#',
-            sortable: false,
-            width: 10,
-            textAlign: 'center', 
-            selector: {class: 'm-checkbox--solid m-checkbox--brand'}
-        }, {
-            field: "#",
-            title: "#",
-            width: "10%",
-            align: "center",
-            sortable: false,
-            textAlign: 'center',
-            formatter: function (value, row, index) {
-                return index + 1;
-            }
-        }, {
-            field: "frontProjId",
-            visible: false
-        }, {
-            field: "ruleName",
-            title: "规则名称",
-            textAlign: 'center',
-            width: 500,
-            textAlign: 'left',
-            sortable: true
-        },{
-            field: "ruleEl",
-            title: "规则表达式",
-            textAlign: 'center',
-            width: 500,
-            textAlign: 'left',
-            sortable: true
-        }, {
-            field: "sortNo",
-            title: "排序",
-            textAlign: 'center',
-            width: 50,
-            textAlign: 'left',
-            sortable: true
-        },{
-            field: "isActive",
-            title: "是否启用",
-            textAlign: 'center',
-            width: 50,
-            textAlign: 'left',
-            sortable: true,
-            formatter: function (value, row, index) {
-                if(row.isActive=='1'){
-                    return "是";
-                }else{
-                    return "否";
+        par_front_proj_tb = defaultBootstrap("par_front_proj_tb",[
+            {
+                checkbox: true,
+            },
+            {
+                field: "ruleName",
+                title: "规则名称",
+                width: 300,
+                align: 'left',
+            },
+            {
+                field: "ruleEl",
+                title: "规则表达式",
+                width: 300,
+                align: 'left',
+            },
+            {
+                field: "frontProjMemo",
+                title: "备注",
+                width: 200,
+                align: 'left',
+                formatter: function (value, row, index) {
+                    if(value){
+                        if(value.length>200){
+                            return value.substr(0, 200) + "...";
+                        }else{
+                            return value;
+                        }
+                    }
+                }
+            },
+            {
+                field: "isActive",
+                title: "是否启用",
+                align: 'center',
+                width: 60,
+                formatter: projIsActiveFormatter
+            },
+            {
+                field: 'sortNo',
+                title: '排序',
+                align: 'center',
+                sortable: true,
+                width: 60
+            },
+            {
+                field: '_operate',
+                title: '操作',
+                width: 100,
+                align: 'center',
+                formatter: function (value, row, index) {
+                    var btn =  '<a href="javascript:editParFrontProj(\'' + row.frontProjId + '\')" class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill" title="编辑"><i class="la la-edit"></i></a>';
+                    if(curIsEditable){
+                        btn = btn + '<a href="javascript:delParFrontProj(\'' + row.frontProjId + '\')" class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill" title="删除"><i class="la la-trash"></i></a>'
+                    }
+                    return btn;
                 }
             }
-        }, {
-            field: '_operate',
-            title: '操作',
-            sortable: false,
-            width: 100,
-            textAlign: 'center',
-            formatter: function (value, row, index) {
-                var btn =  '<a href="javascript:editParFrontProj(\'' + row.frontProjId + '\')" class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill" title="编辑"><i class="la la-edit"></i></a>';
-                if(curIsEditable){
-                    btn = btn + '<a href="javascript:delParFrontProj(\'' + row.frontProjId + '\')" class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill" title="删除"><i class="la la-trash"></i></a>'
-                }
-                return btn;
-            }
-        }],ctx + '/aea/par/front/proj/listAeaParFrontProjByPage.do');
+        ],ctx + '/aea/par/front/proj/listAeaParFrontProjByPage.do');
         var par_front_proj_tb_params = {stageId:currentBusiId};
         par_front_proj_tb.setPageSize(5).setPageList([5,10,20,50,100]).setQueryParams(par_front_proj_tb_params).setRowId("frontProjId").setClearBtn("par_front_proj_clear_btn").setSearchBtn("par_front_proj_search_btn","par_front_proj_keyword").init();
 
@@ -98,9 +203,9 @@ $(function(){
                 ruleEl:{
                     required: true
                 },
-                isActive:{
-                    required: true
-                }
+                // isActive:{
+                //     required: true
+                // }
             },
             messages: {
                 ruleName: {
@@ -112,9 +217,9 @@ $(function(){
                 ruleEl:{
                     required: '<font color="red">此项必填！</font>'
                 },
-                isActive:{
-                    required: '<font color="red">是否启用必选！</font>'
-                }
+                // isActive:{
+                //     required: '<font color="red">是否启用必选！</font>'
+                // }
             },
             // 提交表单
             submitHandler: function (form) {
@@ -165,70 +270,80 @@ $(function(){
     }
 
     if(isCheckItem=='1'){
-        par_front_item_tb = defaultBootstrap("par_front_item_tb",[{
-            checkbox: true,
-            field: '#',
-            align: "center",
-            title: '#',
-            sortable: false,
-            width: 10,
-            textAlign: 'center',
-            selector: {class: 'm-checkbox--solid m-checkbox--brand'}
-        }, {
-            field: "#",
-            title: "#",
-            width: "10%",
-            align: "center",
-            sortable: false,
-            textAlign: 'center',
-            formatter: function (value, row, index) {
-                return index + 1;
-            }
-        }, {
-            field: "frontItemId",
-            visible: false
-        }, {
-            field: "itemName",
-            title: "前置事项名称",
-            textAlign: 'center',
-            width: 500,
-            textAlign: 'left',
-            sortable: true
-        }, {
-            field: "sortNo",
-            title: "排序",
-            textAlign: 'center',
-            width: 50,
-            textAlign: 'left',
-            sortable: true
-        },{
-            field: "isActive",
-            title: "是否启用",
-            textAlign: 'center',
-            width: 50,
-            textAlign: 'left',
-            sortable: true,
-            formatter: function (value, row, index) {
-                if(row.isActive=='1'){
-                    return "是";
-                }else{
-                    return "否";
+        par_front_item_tb = defaultBootstrap("par_front_item_tb",[
+            {
+                checkbox: true,
+            },
+            {
+                field: "isCatalog",
+                title: "是否实施事项",
+                width: 80,
+                align: 'center',
+                formatter: function (value, row, index) {
+                    if(row.isCatalog=='1'){
+                        return '标准事项';
+                    }else{
+                        return '实施事项';
+                    }
+                }
+            },
+            {
+                field: "itemName",
+                title: "前置检测事项",
+                width: 400,
+                align: 'left',
+                formatter: function (value, row, index) {
+
+                    if(row.itemCode){
+                        return row.itemName+"【"+ row.itemCode +"】";
+                    }else{
+                        return row.itemName;
+                    }
+                }
+            },
+            {
+                field: "frontItemMemo",
+                title: "备注",
+                width: 200,
+                align: 'left',
+                formatter: function (value, row, index) {
+                    if(value){
+                        if(value.length>200){
+                            return value.substr(0, 200) + "...";
+                        }else{
+                            return value;
+                        }
+                    }
+                }
+            },
+            {
+                field: "isActive",
+                title: "是否启用",
+                align: 'center',
+                width: 60,
+                formatter: itemIsActiveFormatter
+            },
+            {
+                field: "sortNo",
+                title: "排序",
+                align: 'center',
+                width: 60,
+                sortable: true
+            },
+            {
+                field: '_operate',
+                title: '操作',
+                width: 120,
+                align: 'center',
+                formatter: function (value, row, index) {
+                    var btn =  '<a href="javascript:editParFrontItem(\'' + row.frontItemId + '\')" class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill" title="编辑"><i class="la la-edit"></i></a>';
+                    if(curIsEditable){
+                        btn = btn + '<a href="javascript:delParFrontItem(\'' + row.frontItemId + '\')" class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill" title="删除"><i class="la la-trash"></i></a>'
+                    }
+                    return btn;
                 }
             }
-        }, {
-            field: '_operate',
-            title: '操作',
-            sortable: false,
-            width: 100,
-            textAlign: 'center',
-            formatter: function (value, row, index) {
-                var btn =  '<a href="javascript:editParFrontItem(\'' + row.frontItemId + '\')" class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill" title="编辑"><i class="la la-edit"></i></a>';
-                if(curIsEditable){
-                    btn = btn + '<a href="javascript:delParFrontItem(\'' + row.frontItemId + '\')" class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill" title="删除"><i class="la la-trash"></i></a>'
-                }
-                return btn;
-            }
-        }],ctx + '/aea/par/front/item/listAeaParFrontItemByPage.do');
+        ],ctx + '/aea/par/front/item/listAeaParFrontItemByPage.do');
         var par_front_item_tb_params = {stageId:currentBusiId};
         par_front_item_tb.setPageSize(5).setPageList([5,10,20,50,100]).setQueryParams(par_front_item_tb_params).setRowId("frontItemId").setClearBtn("par_front_item_clear_btn").setSearchBtn("par_front_item_search_btn","par_front_item_keyword").init();
 
@@ -243,9 +358,9 @@ $(function(){
                 sortNo:{
                     required: true
                 },
-                isActive:{
-                    required: true
-                }
+                // isActive:{
+                //     required: true
+                // }
             },
             messages: {
                 itemName: {
@@ -254,9 +369,9 @@ $(function(){
                 sortNo:{
                     required: '<font color="red">此项必填！</font>'
                 },
-                isActive:{
-                    required: '<font color="red">是否启用必选！</font>'
-                }
+                // isActive:{
+                //     required: '<font color="red">是否启用必选！</font>'
+                // }
             },
             // 提交表单
             submitHandler: function (form) {
@@ -458,70 +573,86 @@ $(function(){
 
 
     if(isCheckStage=='1'){
-        par_front_stage_tb = defaultBootstrap("par_front_stage_tb",[{
-            checkbox: true,
-            field: '#',
-            align: "center",
-            title: '#',
-            sortable: false,
-            width: 10,
-            textAlign: 'center',
-            selector: {class: 'm-checkbox--solid m-checkbox--brand'}
-        }, {
-            field: "#",
-            title: "#",
-            width: "10%",
-            align: "center",
-            sortable: false,
-            textAlign: 'center',
-            formatter: function (value, row, index) {
-                return index + 1;
-            }
-        }, {
-            field: "frontStageId",
-            visible: false
-        }, {
-            field: "histStageName",
-            title: "前置阶段名称",
-            textAlign: 'center',
-            width: 500,
-            textAlign: 'left',
-            sortable: true
-        }, {
-            field: "sortNo",
-            title: "排序",
-            textAlign: 'center',
-            width: 50,
-            textAlign: 'left',
-            sortable: true
-        },{
-            field: "isActive",
-            title: "是否启用",
-            textAlign: 'center',
-            width: 50,
-            textAlign: 'left',
-            sortable: true,
-            formatter: function (value, row, index) {
-                if(row.isActive=='1'){
-                    return "是";
-                }else{
-                    return "否";
+        par_front_stage_tb = defaultBootstrap("par_front_stage_tb",[
+            {
+                checkbox: true,
+            },
+            {
+                field: "histIsNode",
+                title: "是否主线",
+                width: 80,
+                align: 'center',
+                formatter: function (value, row, index) {
+
+                    if(value){
+                        if(value=='1'){
+
+                            return '主线';
+                        }else if(value=='2'){
+
+                            return '辅线';
+                        }else if(value=='3'){
+
+                            return '技术审查线';
+                        }
+                    }
+                }
+            },
+            {
+                field: "histStageName",
+                title: "前置阶段名称",
+                width: 350,
+                align: 'left',
+            },
+            {
+                field: "histStageCode",
+                title: "前置阶段编号",
+                width: 350,
+                align: 'left',
+            },
+            {
+                field: "frontStageMemo",
+                title: "备注",
+                width: 200,
+                align: 'left',
+                formatter: function (value, row, index) {
+                    if(value){
+                        if(value.length>200){
+                            return value.substr(0, 200) + "...";
+                        }else{
+                            return value;
+                        }
+                    }
+                }
+            },
+            {
+                field: "isActive",
+                title: "是否启用",
+                align: 'center',
+                width: 60,
+                formatter: stageIsActiveFormatter
+            },
+            {
+                field: 'sortNo',
+                title: '排序',
+                align: 'center',
+                sortable: true,
+                width: 60
+            },
+            {
+                field: '_operate',
+                title: '操作',
+                width: 100,
+                align: 'center',
+                formatter: function (value, row, index) {
+                    var btn =  '<a href="javascript:editParFrontStage(\'' + row.frontStageId + '\')" class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill" title="编辑"><i class="la la-edit"></i></a>';
+                    if(curIsEditable){
+                        btn = btn + '<a href="javascript:delParFrontStage(\'' + row.frontStageId + '\')" class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill" title="删除"><i class="la la-trash"></i></a>'
+                    }
+                    return btn;
                 }
             }
-        }, {
-            field: '_operate',
-            title: '操作',
-            sortable: false,
-            width: 100,
-            textAlign: 'center',
-            formatter: function (value, row, index) {
-                var btn =  '<a href="javascript:editParFrontStage(\'' + row.frontStageId + '\')" class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill" title="编辑"><i class="la la-edit"></i></a>';
-                if(curIsEditable){
-                    btn = btn + '<a href="javascript:delParFrontStage(\'' + row.frontStageId + '\')" class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill" title="删除"><i class="la la-trash"></i></a>'
-                }
-                return btn;
-            }
-        }],ctx + '/aea/par/front/stage/listAeaParFrontStageByPage.do');
+        ],ctx + '/aea/par/front/stage/listAeaParFrontStageByPage.do');
         var par_front_stage_tb_params = {stageId:currentBusiId};
         par_front_stage_tb.setPageSize(5).setPageList([5,10,20,50,100]).setQueryParams(par_front_stage_tb_params).setRowId("frontStageId").setClearBtn("par_front_stage_clear_btn").setSearchBtn("par_front_stage_search_btn","par_front_stage_keyword").init();
 
@@ -758,40 +889,37 @@ $(function(){
 });
 
 function addParFrontProj() {
+
     if(curIsEditable) {
-        $("#uploadProgressMsg").html("数据加载中，请稍后...");
-        $("#uploadProgress").modal("show");
+
+        $("#edit_par_front_proj_modal").modal("show");
+        $('#edit_par_front_proj_title').html('新增项目信息前置检测');
+        $('#edit_par_front_proj_scroll').animate({scrollTop: 0}, 800);//滚动到顶部
+        $('#edit_par_front_proj_form')[0].reset();
+        if(edit_par_front_proj_form_validator){
+            edit_par_front_proj_form_validator.resetForm();
+        }
+        $('#edit_par_front_proj_form input[name="frontProjId"]').val('');
+        $('#edit_par_front_proj_form input[name="stageId"]').val(currentBusiId);
+        $('#edit_par_front_proj_form input[name="isActive"]').val('1');
+
         $.ajax({
             url: ctx + '/aea/par/front/proj/getMaxSortNo.do',
             type: 'POST',
-            data: {stageId:currentBusiId},
+            data: {
+                'stageId': currentBusiId
+            },
             async: false,
             success: function (result) {
                 if (result.success) {
-                    setTimeout(function(){
-                        $("#uploadProgress").modal('hide');
-                        $('#saveParFrontProjBtn').show();
-                        $("#edit_par_front_proj_modal").modal("show");
-                        $('#edit_par_front_proj_title').html('新增项目信息前置检测');
-                        $('#edit_par_front_proj_scroll').animate({scrollTop: 0}, 800);//滚动到顶部
-                        $('#edit_par_front_proj_form')[0].reset();
-                        $('#edit_par_front_proj_form input[name="frontProjId"]').val('');
-                        $('#edit_par_front_proj_form input[name="stageId"]').val(currentBusiId);
-                        $('#edit_par_front_proj_form input[name="sortNo"]').val(result.content);
-
-                    },500);
+                    $('#edit_par_front_proj_form input[name="sortNo"]').val(result.content);
                 } else {
-                    setTimeout(function(){
-                        $("#uploadProgress").modal('hide');
-                        swal('错误信息', result.message, 'error');
-                    },500);
+                    swal('错误信息', result.message, 'error');
                 }
             },
             error: function(XMLHttpRequest, textStatus, errorThrown) {
-                setTimeout(function(){
-                    $("#uploadProgress").modal('hide');
-                    swal('错误信息', XMLHttpRequest.responseText, 'error');
-                },500);
+
+                swal('错误信息', XMLHttpRequest.responseText, 'error');
             }
         });
     }else{
@@ -848,6 +976,7 @@ function delParFrontProj(id) {
 }
 
 function batchDelParFrontProj() {
+
     if(curIsEditable) {
         var checkList = par_front_proj_tb.getSelections();
         if(checkList.length==0){
@@ -866,83 +995,74 @@ function batchDelParFrontProj() {
 }
 
 function editParFrontProj(frontProjId) {
-    $("#uploadProgressMsg").html("数据加载中，请稍后...");
-    $("#uploadProgress").modal("show");
+
+    if(curIsEditable){
+        $('#saveParFrontProjBtn').show();
+    }else{
+        $('#saveParFrontProjBtn').hide();
+    }
+    $("#edit_par_front_proj_modal").modal("show");
+    $('#edit_par_front_proj_title').html('编辑项目信息前置检测');
+    $('#edit_par_front_proj_scroll').animate({scrollTop: 0}, 800);//滚动到顶部
+    $('#edit_par_front_proj_form')[0].reset();
+    if(edit_par_front_proj_form_validator){
+        edit_par_front_proj_form_validator.resetForm();
+    }
+    $('#edit_par_front_proj_form input[name="frontProjId"]').val('');
+    $('#edit_par_front_proj_form input[name="stageId"]').val(currentBusiId);
+
     $.ajax({
         url: ctx + '/aea/par/front/proj/getAeaParFrontProj.do',
         type: 'POST',
-        data: {id:frontProjId},
+        data: {
+            'id': frontProjId
+        },
         async: false,
         success: function (result) {
             if (result.success) {
-                setTimeout(function(){
-                    $("#uploadProgress").modal('hide');
-                    if(curIsEditable){
-                        $('#saveParFrontProjBtn').show();
-                    }else{
-                        $('#saveParFrontProjBtn').hide();
-                    }
-                    $("#edit_par_front_proj_modal").modal("show");
-                    $('#edit_par_front_proj_title').html('编辑项目信息前置检测');
-                    $('#edit_par_front_proj_scroll').animate({scrollTop: 0}, 800);//滚动到顶部
-                    $('#edit_par_front_proj_form')[0].reset();
-                    loadFormData(true, '#edit_par_front_proj_form', result.content);
-                    $('#edit_par_front_proj_form input[name="frontProjId"]').val(result.content.frontProjId);
-                    $('#edit_par_front_proj_form input[name="stageId"]').val(currentBusiId);
-                },500);
+                loadFormData(true, '#edit_par_front_proj_form', result.content);
             } else {
-                setTimeout(function(){
-                    $("#uploadProgress").modal('hide');
-                    swal('错误信息', result.message, 'error');
-                },500);
+                swal('错误信息', result.message, 'error');
             }
         },
         error: function(XMLHttpRequest, textStatus, errorThrown) {
-            setTimeout(function(){
-                $("#uploadProgress").modal('hide');
-                swal('错误信息', XMLHttpRequest.responseText, 'error');
-            },500);
+
+            swal('错误信息', XMLHttpRequest.responseText, 'error');
         }
     });
 }
 
 function addParFrontItem() {
+
     if(curIsEditable) {
-        $("#uploadProgressMsg").html("数据加载中，请稍后...");
-        $("#uploadProgress").modal("show");
+
+        $("#edit_par_front_item_modal").modal("show");
+        $('#edit_par_front_item_title').html('新增事项信息前置检测');
+        $('#edit_par_front_item_scroll').animate({scrollTop: 0}, 800);//滚动到顶部
+        $('#edit_par_front_item_form')[0].reset();
+        if(edit_par_front_item_form_validator){
+            edit_par_front_item_form_validator.resetForm();
+        }
+        $('#edit_par_front_item_form input[name="frontItemId"]').val('');
+        $('#edit_par_front_item_form input[name="itemVerId"]').val('');
+        $('#edit_par_front_item_form input[name="stageId"]').val(currentBusiId);
+        $('#edit_par_front_item_form input[name="isActive"]').val('1');
+
         $.ajax({
             url: ctx + '/aea/par/front/item/getMaxSortNo.do',
             type: 'POST',
-            data: {stageId:currentBusiId},
+            data: {'stageId': currentBusiId},
             async: false,
             success: function (result) {
                 if (result.success) {
-                    setTimeout(function(){
-                        $("#uploadProgress").modal('hide');
-                        $('#saveParFrontItemBtn').show();
-                        $("#select_front_Item_btn").show();
-                        $("#edit_par_front_item_modal").modal("show");
-                        $('#edit_par_front_item_title').html('新增事项信息前置检测');
-                        $('#edit_par_front_item_scroll').animate({scrollTop: 0}, 800);//滚动到顶部
-                        $('#edit_par_front_item_form')[0].reset();
-                        $('#edit_par_front_item_form input[name="frontItemId"]').val('');
-                        $('#edit_par_front_item_form input[name="itemVerId"]').val('');
-                        $('#edit_par_front_item_form input[name="stageId"]').val(currentBusiId);
-                        $('#edit_par_front_item_form input[name="sortNo"]').val(result.content);
-
-                    },500);
+                    $('#edit_par_front_item_form input[name="sortNo"]').val(result.content);
                 } else {
-                    setTimeout(function(){
-                        $("#uploadProgress").modal('hide');
-                        swal('错误信息', result.message, 'error');
-                    },500);
+                    swal('错误信息', result.message, 'error');
                 }
             },
             error: function(XMLHttpRequest, textStatus, errorThrown) {
-                setTimeout(function(){
-                    $("#uploadProgress").modal('hide');
-                    swal('错误信息', XMLHttpRequest.responseText, 'error');
-                },500);
+
+                swal('错误信息', XMLHttpRequest.responseText, 'error');
             }
         });
     }else{
@@ -951,34 +1071,56 @@ function addParFrontItem() {
 }
 
 function editParFrontItem(frontItemId) {
+
+    if(curIsEditable){
+        $('#saveParFrontItemBtn').show();
+    }else{
+        $('#saveParFrontItemBtn').hide();
+    }
+
     $("#uploadProgressMsg").html("数据加载中，请稍后...");
     $("#uploadProgress").modal("show");
+
+    $("#edit_par_front_item_modal").modal("show");
+    $('#edit_par_front_item_title').html('编辑事项信息前置检测');
+    $('#edit_par_front_item_scroll').animate({scrollTop: 0}, 800);//滚动到顶部
+    $('#edit_par_front_item_form')[0].reset();
+    if(edit_par_front_item_form_validator){
+        edit_par_front_item_form_validator.resetForm();
+    }
+    $('#edit_par_front_item_form input[name="frontItemId"]').val('');
+    $('#edit_par_front_item_form input[name="itemVerId"]').val('');
+    $('#edit_par_front_item_form input[name="stageId"]').val(currentBusiId);
+
     $.ajax({
         url: ctx + '/aea/par/front/item/getAeaParFrontItem.do',
         type: 'POST',
-        data: {frontItemId:frontItemId},
+        data: {
+            'frontItemId': frontItemId
+        },
         async: false,
         success: function (result) {
             if (result.success) {
+
                 setTimeout(function(){
+
                     $("#uploadProgress").modal('hide');
+
                     if(curIsEditable){
                         $('#saveParFrontItemBtn').show();
                     }else{
                         $('#saveParFrontItemBtn').hide();
                     }
 
-                    $("#select_front_Item_btn").hide();
-                    $("#edit_par_front_item_modal").modal("show");
-                    $('#edit_par_front_item_title').html('编辑事项信息前置检测');
-                    $('#edit_par_front_item_scroll').animate({scrollTop: 0}, 800);//滚动到顶部
-                    $('#edit_par_front_item_form')[0].reset();
                     loadFormData(true, '#edit_par_front_item_form', result.content);
-                    $('#edit_par_front_item_form input[name="frontItemId"]').val(result.content.frontItemId);
-                    $('#edit_par_front_item_form input[name="stageId"]').val(currentBusiId);
-                    $('#edit_par_front_item_form input[name="itemVerId"]').val(result.content.itemVerId);
-                    $('#edit_par_front_item_form input[name="itemName"]').val(result.content.itemName);
+
+                    if(result.content.itemCode!=null&&result.content.itemCode!=''&&result.content.itemCode!=undefined){
+                        $('#edit_par_front_item_form textarea[name="itemName"]').val(result.content.itemName +"【"+result.content.itemCode+"】");
+                    }else{
+                        $('#edit_par_front_item_form textarea[name="itemName"]').val(result.content.itemName);
+                    }
                 },500);
+
             } else {
                 setTimeout(function(){
                     $("#uploadProgress").modal('hide');
@@ -987,6 +1129,7 @@ function editParFrontItem(frontItemId) {
             }
         },
         error: function(XMLHttpRequest, textStatus, errorThrown) {
+
             setTimeout(function(){
                 $("#uploadProgress").modal('hide');
                 swal('错误信息', XMLHttpRequest.responseText, 'error');
@@ -997,12 +1140,13 @@ function editParFrontItem(frontItemId) {
 
 
 function batchDelParFrontItem() {
+
     if(curIsEditable) {
         var checkList = par_front_item_tb.getSelections();
         if(checkList.length==0){
             swal('提示信息', '请勾选要删除的前置检测', 'info');
         }else{
-            var ids = new Array();
+            var ids = [];
             for(var i=0;i<checkList.length;i++){
                 ids.push(checkList[i].frontItemId);
             }
@@ -1064,9 +1208,12 @@ function delParFrontItem(id) {
 
 
 function addParFrontItemform() {
+
     if(curIsEditable) {
+
         $("#uploadProgressMsg").html("数据加载中，请稍后...");
         $("#uploadProgress").modal("show");
+
         $.ajax({
             url: ctx + '/aea/par/front/itemform/getMaxSortNo.do',
             type: 'POST',
@@ -1109,8 +1256,10 @@ function addParFrontItemform() {
 }
 
 function editParFrontItemform(frontItemformId) {
+
     $("#uploadProgressMsg").html("数据加载中，请稍后...");
     $("#uploadProgress").modal("show");
+
     $.ajax({
         url: ctx + '/aea/par/front/itemform/getAeaParFrontItemform.do',
         type: 'POST',
@@ -1156,6 +1305,7 @@ function editParFrontItemform(frontItemformId) {
 
 
 function batchDelParFrontItemform() {
+
     if(curIsEditable) {
         var checkList = par_front_itemform_tb.getSelections();
         if(checkList.length==0){
@@ -1222,6 +1372,7 @@ function delParFrontItemform(id) {
 }
 
 function addParFrontStage() {
+
     if(curIsEditable) {
         $("#uploadProgressMsg").html("数据加载中，请稍后...");
         $("#uploadProgress").modal("show");
@@ -1253,6 +1404,7 @@ function addParFrontStage() {
 }
 
 function loadSelectParFrontStage(frontStageId,flag,obj) {
+
     $.ajax({
         url: ctx + '/aea/par/front/stage/listSelectParFrontStage.do',
         type: 'POST',
@@ -1328,17 +1480,42 @@ function loadSelectParFrontStage(frontStageId,flag,obj) {
 }
 
 function editParFrontStage(frontStageId) {
+
+    if(curIsEditable){
+        $('#saveParFrontStageBtn').show();
+    }else{
+        $('#saveParFrontStageBtn').hide();
+    }
+
     $("#uploadProgressMsg").html("数据加载中，请稍后...");
     $("#uploadProgress").modal("show");
+
+    $("#edit_par_front_stage_modal").modal("show");
+    $('#edit_par_front_stage_form')[0].reset();
+    if(edit_par_front_stage_form_validator){
+        edit_par_front_stage_form_validator.resetForm();
+    }
+    $('#edit_par_front_stage_form input[name="frontStageId"]').val('');
+    $('#edit_par_front_stage_form input[name="stageId"]').val(currentBusiId);
+    $('#edit_par_front_stage_form input[name="histStageId"]').val('');
+
     $.ajax({
         url: ctx + '/aea/par/front/stage/getAeaParFrontStage.do',
         type: 'POST',
-        data: {frontStageId:frontStageId},
+        data: {
+            'frontStageId': frontStageId
+        },
         async: false,
         success: function (result) {
             if (result.success) {
-                loadSelectParFrontStage(result.content.frontStageId,'edit',result.content);
+
+                setTimeout(function(){
+
+                    $("#uploadProgress").modal('hide');
+                    loadFormData(true, '#edit_par_front_stage_form', result.content);
+                },500);
             } else {
+
                 setTimeout(function(){
                     $("#uploadProgress").modal('hide');
                     swal('错误信息', result.message, 'error');
@@ -1346,6 +1523,7 @@ function editParFrontStage(frontStageId) {
             }
         },
         error: function(XMLHttpRequest, textStatus, errorThrown) {
+
             setTimeout(function(){
                 $("#uploadProgress").modal('hide');
                 swal('错误信息', XMLHttpRequest.responseText, 'error');
@@ -1356,7 +1534,9 @@ function editParFrontStage(frontStageId) {
 
 
 function batchDelParFrontStage() {
+
     if(curIsEditable) {
+
         var checkList = par_front_stage_tb.getSelections();
         if(checkList.length==0){
             swal('提示信息', '请勾选要删除的前置检测', 'info');
@@ -1422,7 +1602,9 @@ function delParFrontStage(id) {
 }
 
 function addParFrontPartform() {
+
     if(curIsEditable) {
+
         $("#uploadProgressMsg").html("数据加载中，请稍后...");
         $("#uploadProgress").modal("show");
         $.ajax({
@@ -1468,29 +1650,33 @@ function addParFrontPartform() {
 }
 
 function editParFrontPartform(frontPartformId) {
+
+    if(curIsEditable){
+        $('#saveParFrontStageBtn').show();
+    }else{
+        $('#saveParFrontStageBtn').hide();
+    }
+
     $("#uploadProgressMsg").html("数据加载中，请稍后...");
     $("#uploadProgress").modal("show");
+
     $.ajax({
         url: ctx + '/aea/par/front/partform/getAeaParFrontPartform.do',
         type: 'POST',
-        data: {frontPartformId:frontPartformId},
-        async: false,
+        data: {
+            'frontPartformId': frontPartformId
+        },
         success: function (result) {
             if (result.success) {
+
                 setTimeout(function(){
                     $("#uploadProgress").modal('hide');
-                    if(curIsEditable){
-                        $('#saveParFrontPartformBtn').show();
-                    }else{
-                        $('#saveParFrontPartformBtn').hide();
-                    }
-
-                    $('#select_par_front_partform_btn').hide();
 
                     $("#edit_par_front_partform_modal").modal("show");
                     $('#edit_par_front_partform_title').html('编辑阶段扩展表单前置检测');
                     $('#edit_par_front_partform_scroll').animate({scrollTop: 0}, 800);//滚动到顶部
                     $('#edit_par_front_partform_form')[0].reset();
+
                     loadFormData(true, '#edit_par_front_partform_form', result.content);
                     $('#edit_par_front_partform_form input[name="frontPartformId"]').val(result.content.frontPartformId);
                     $('#edit_par_front_partform_form input[name="stageId"]').val(currentBusiId);
@@ -1521,6 +1707,7 @@ function editParFrontPartform(frontPartformId) {
 
 
 function batchDelParFrontPartform() {
+
     if(curIsEditable) {
         var checkList = par_front_partform_tb.getSelections();
         if(checkList.length==0){
@@ -1584,4 +1771,17 @@ function delParFrontPartform(id) {
             });
         }
     });
+}
+
+function importFrontItem(){
+
+    $("#uploadProgressMsg").html("数据加载中，请稍后...");
+    $("#uploadProgress").modal("show");
+
+    // 初始化事项树数据
+    initFrontCheckItem();
+
+    setTimeout(function(){
+        $("#uploadProgress").modal('hide');
+    },500);
 }

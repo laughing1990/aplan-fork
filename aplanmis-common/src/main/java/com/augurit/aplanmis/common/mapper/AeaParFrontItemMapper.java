@@ -1,7 +1,6 @@
 package com.augurit.aplanmis.common.mapper;
 
 import com.augurit.aplanmis.common.domain.AeaParFrontItem;
-import com.augurit.aplanmis.common.vo.AeaParFrontItemVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -15,21 +14,27 @@ import java.util.List;
 @Repository
 public interface AeaParFrontItemMapper {
 
-    void insertAeaParFrontItem(AeaParFrontItem aeaParFrontItem) throws Exception;
+    void insertAeaParFrontItem(AeaParFrontItem aeaParFrontItem);
 
-    void updateAeaParFrontItem(AeaParFrontItem aeaParFrontItem) throws Exception;
+    void updateAeaParFrontItem(AeaParFrontItem aeaParFrontItem);
 
-    void deleteAeaParFrontItem(@Param("id") String id) throws Exception;
+    void deleteAeaParFrontItem(@Param("id") String id);
 
-    List<AeaParFrontItem> listAeaParFrontItem(AeaParFrontItem aeaParFrontItem) throws Exception;
+    void batchDelAeaItemFrontByIds(@Param("ids") List<String> ids);
 
-    AeaParFrontItem getAeaParFrontItemById(@Param("id") String id) throws Exception;
+    List<AeaParFrontItem> listAeaParFrontItem(AeaParFrontItem aeaParFrontItem);
 
-    List<AeaParFrontItemVo> listAeaParFrontItemVo(AeaParFrontItem aeaParFrontItem) throws Exception;
+    AeaParFrontItem getAeaParFrontItemById(@Param("id") String id);
 
-    Long getMaxSortNo(AeaParFrontItem aeaParFrontItem) throws Exception;
+    List<AeaParFrontItem> listAeaParFrontItemVo(AeaParFrontItem aeaParFrontItem);
 
-    AeaParFrontItemVo getAeaParFrontItemVoByFrontItemId(@Param("frontItemId") String frontItemId) throws Exception;
+    Long getMaxSortNo(AeaParFrontItem aeaParFrontItem);
 
-    List<AeaParFrontItemVo> listAeaParFrontItemByStageId(@Param("stageId") String stageId, @Param("rootOrgId") String rootOrgId);
+    AeaParFrontItem getAeaParFrontItemVoByFrontItemId(@Param("frontItemId") String frontItemId);
+
+    List<AeaParFrontItem> listAeaParFrontItemByStageId(@Param("stageId") String stageId, @Param("rootOrgId") String rootOrgId);
+
+    void batchDelItemByStageId(@Param("stageId") String stageId, @Param("rootOrgId") String rootOrgId);
+
+    void changIsActive(@Param("id") String id, @Param("rootOrgId") String rootOrgId);
 }

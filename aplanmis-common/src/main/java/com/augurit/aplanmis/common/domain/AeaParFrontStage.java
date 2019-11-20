@@ -8,38 +8,46 @@ import java.io.Serializable;
 
 /**
  * 阶段的前置阶段检测表-模型
- * <ul>
- * <li>项目名：奥格erp3.0--第一期建设项目</li>
- * <li>版本信息：v1.0</li>
- * <li>日期：2019-11-01 10:48:41</li>
- * <li>版权所有(C)2016广州奥格智能科技有限公司-版权所有</li>
- * <li>创建人:Administrator</li>
- * <li>创建时间：2019-11-01 10:48:41</li>
- * <li>修改人1：</li>
- * <li>修改时间1：</li>
- * <li>修改内容1：</li>
- * </ul>
  */
 @Data
 public class AeaParFrontStage implements Serializable {
+
     private static final long serialVersionUID = 1L;
+
     private String frontStageId; // (ID)
     private String stageId; // (阶段ID)
     private String histStageId; // (前置阶段ID)
-    @Size(max = 10)
     private Long sortNo; // (排序字段)
     private String isActive; // (是否启用，0表示禁用，1表示启用)
     private String frontStageMemo; // ()
+
     private String creater; // (创建人)
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private java.util.Date createTime; // (创建时间)
     private String modifier; // (修改人)
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private java.util.Date modifyTime; // (修改时间)
+
     private String rootOrgId; // (根组织id)
 
-    //非表字段
-    //查询关键字
+    /**
+     * 扩展字段: 查询关键字
+     */
     private String keyword;
+
+    /**
+     * 扩展字段: 阶段名称
+     */
+    private String histStageName;
+
+    /**
+     * 扩展字段: 阶段编号
+     */
+    private String histStageCode;
+
+    /**
+     * 扩展字段: 是否主线
+     */
+    private String histIsNode;
 
 }

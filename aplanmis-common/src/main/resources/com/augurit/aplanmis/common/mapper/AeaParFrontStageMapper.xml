@@ -3,49 +3,52 @@
 <!--created by Administrator    2019-11-01 10:48:41 -->
 <!--0 一些前置信息配置 -->
 <mapper namespace="com.augurit.aplanmis.common.mapper.AeaParFrontStageMapper">
+
     <!--1 返回所有字段的SQL字句 -->
     <sql id="allColumns">
-    FRONT_STAGE_ID  frontStageId,
-    STAGE_ID  stageId,
-    HIST_STAGE_ID  histStageId,
-    SORT_NO  sortNo,
-    IS_ACTIVE  isActive,
-    FRONT_STAGE_MEMO  frontStageMemo,
-    CREATER  creater,
-    CREATE_TIME  createTime,
-    MODIFIER  modifier,
-    MODIFY_TIME  modifyTime,
-    ROOT_ORG_ID  rootOrgId
+        FRONT_STAGE_ID  frontStageId,
+        STAGE_ID  stageId,
+        HIST_STAGE_ID  histStageId,
+        SORT_NO  sortNo,
+        IS_ACTIVE  isActive,
+        FRONT_STAGE_MEMO  frontStageMemo,
+        CREATER  creater,
+        CREATE_TIME  createTime,
+        MODIFIER  modifier,
+        MODIFY_TIME  modifyTime,
+        ROOT_ORG_ID  rootOrgId
     </sql>
 
     <sql id="allColumnsAlias">
-    ${alias}.FRONT_STAGE_ID  frontStageId,
-    ${alias}.STAGE_ID  stageId,
-    ${alias}.HIST_STAGE_ID  histStageId,
-    ${alias}.SORT_NO  sortNo,
-    ${alias}.IS_ACTIVE  isActive,
-    ${alias}.FRONT_STAGE_MEMO  frontStageMemo,
-    ${alias}.CREATER  creater,
-    ${alias}.CREATE_TIME  createTime,
-    ${alias}.MODIFIER  modifier,
-    ${alias}.MODIFY_TIME  modifyTime,
-    ${alias}.ROOT_ORG_ID  rootOrgId
+        ${alias}.FRONT_STAGE_ID  frontStageId,
+        ${alias}.STAGE_ID  stageId,
+        ${alias}.HIST_STAGE_ID  histStageId,
+        ${alias}.SORT_NO  sortNo,
+        ${alias}.IS_ACTIVE  isActive,
+        ${alias}.FRONT_STAGE_MEMO  frontStageMemo,
+        ${alias}.CREATER  creater,
+        ${alias}.CREATE_TIME  createTime,
+        ${alias}.MODIFIER  modifier,
+        ${alias}.MODIFY_TIME  modifyTime,
+        ${alias}.ROOT_ORG_ID  rootOrgId
     </sql>
 
     <!--2 根据主键ID查询单个实体 -->
     <select id="getAeaParFrontStageById" resultType="AeaParFrontStage">
         select
-        <include refid="allColumns"/>
+            <include refid="allColumns"/>
         from AEA_PAR_FRONT_STAGE
         where FRONT_STAGE_ID = #{id}
     </select>
 
-    <select id="getHistStageByStageId" resultType="com.augurit.aplanmis.common.vo.AeaParFrontStageVo">
+    <select id="getHistStageByStageId" resultType="AeaParFrontStage">
         select
-        <include refid="allColumnsAlias">
-            <property name="alias" value="apfs"></property>
-        </include>
-        ,aps.STAGE_NAME histStageName
+            <include refid="allColumnsAlias">
+                <property name="alias" value="apfs"></property>
+            </include>,
+            aps.STAGE_NAME histStageName,
+            aps.STAGE_CODE histStageCode,
+            aps.IS_NODE histIsNode
         from AEA_PAR_FRONT_STAGE apfs
         left join aea_par_stage aps on aps.STAGE_ID = apfs.HIST_STAGE_ID
         <where>
@@ -57,13 +60,13 @@
                 AND apfs.ROOT_ORG_ID = #{rootOrgId}
             </if>
         </where>
-        order by apfs.SORT_NO
+        order by apfs.SORT_NO asc, apfs.CREATE_TIME asc, apfs.MODIFY_TIME asc
     </select>
 
     <!--3 根据条件查询实体list -->
     <select id="listAeaParFrontStage" resultType="AeaParFrontStage">
         select
-        <include refid="allColumns"/>
+            <include refid="allColumns"/>
         from AEA_PAR_FRONT_STAGE
         <where>
             <if test="frontStageId != null">
@@ -100,15 +103,16 @@
                 AND ROOT_ORG_ID = #{rootOrgId}
             </if>
         </where>
+        order by SORT_NO asc, CREATE_TIME asc, MODIFY_TIME asc
     </select>
     <!--4 根据条件查询实体list,返回分页对象 -->
 
     <!--5 新增实体对象 -->
     <insert id="insertAeaParFrontStage" parameterType="AeaParFrontStage">
     insert into AEA_PAR_FRONT_STAGE (
-FRONT_STAGE_ID  ,STAGE_ID  ,HIST_STAGE_ID  ,SORT_NO  ,IS_ACTIVE  ,FRONT_STAGE_MEMO  ,CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME  ,ROOT_ORG_ID  
+        FRONT_STAGE_ID  ,STAGE_ID  ,HIST_STAGE_ID  ,SORT_NO  ,IS_ACTIVE  ,FRONT_STAGE_MEMO  ,CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME  ,ROOT_ORG_ID
     )  values  (
-#{frontStageId},#{stageId},#{histStageId},#{sortNo},#{isActive},#{frontStageMemo},#{creater},#{createTime},#{modifier},#{modifyTime},  #{rootOrgId}
+        #{frontStageId},#{stageId},#{histStageId},#{sortNo},#{isActive},#{frontStageMemo},#{creater},#{createTime},#{modifier},#{modifyTime},  #{rootOrgId}
     )
 </insert>
     <!--6 修改实体对象 -->
@@ -151,12 +155,12 @@ FRONT_STAGE_ID  ,STAGE_ID  ,HIST_STAGE_ID  ,SORT_NO  ,IS_ACTIVE  ,FRONT_STAGE_ME
         </set>
         where FRONT_STAGE_ID = #{frontStageId}
     </update>
+
     <!--7 删除实体对象,根据主键ID -->
     <delete id="deleteAeaParFrontStage">
-        delete from   AEA_PAR_FRONT_STAGE
-        where
-    FRONT_STAGE_ID = #{id}
+        delete from AEA_PAR_FRONT_STAGE where FRONT_STAGE_ID = #{id}
     </delete>
+
     <!--8 删除实体对象列表,根据主键ID列表 -->
     <!--9 返回所有字段的对象map,用于级联 -->
     <resultMap type="AeaParFrontStage" id="AeaParFrontStageMap">
@@ -173,11 +177,14 @@ FRONT_STAGE_ID  ,STAGE_ID  ,HIST_STAGE_ID  ,SORT_NO  ,IS_ACTIVE  ,FRONT_STAGE_ME
         <result property="rootOrgId" column="ROOT_ORG_ID"/>
     </resultMap>
 
-    <select id="listAeaParFrontStageVo" resultType="com.augurit.aplanmis.common.vo.AeaParFrontStageVo">
+    <select id="listAeaParFrontStageVo" resultType="AeaParFrontStage">
         select
-        <include refid="allColumnsAlias">
-            <property name="alias" value="apfs"></property>
-        </include>,aps.STAGE_NAME histStageName
+            <include refid="allColumnsAlias">
+                <property name="alias" value="apfs"></property>
+            </include>,
+            aps.STAGE_NAME histStageName,
+            aps.STAGE_CODE histStageCode,
+            aps.IS_NODE histIsNode
         from AEA_PAR_FRONT_STAGE apfs
         left join aea_par_stage aps on aps.STAGE_ID = apfs.HIST_STAGE_ID
         <where>
@@ -215,62 +222,90 @@ FRONT_STAGE_ID  ,STAGE_ID  ,HIST_STAGE_ID  ,SORT_NO  ,IS_ACTIVE  ,FRONT_STAGE_ME
                 AND apfs.ROOT_ORG_ID = #{rootOrgId}
             </if>
             <if test="keyword!=null and keyword!='' ">
-                AND aps.STAGE_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%')
-
+                AND (
+                    aps.STAGE_NAME like CONCAT(CONCAT('%',#{keyword}),'%') OR
+                    aps.STAGE_CODE like CONCAT(CONCAT('%',#{keyword}),'%') OR
+                    apfs.FRONT_STAGE_MEMO like CONCAT(CONCAT('%',#{keyword}),'%')
+                )
             </if>
         </where>
-
-        order by apfs.SORT_NO
+        order by apfs.SORT_NO asc, apfs.CREATE_TIME asc, apfs.MODIFY_TIME asc
     </select>
 
     <select id="getMaxSortNo" resultType="java.lang.Long">
-        select max(SORT_NO) from AEA_PAR_FRONT_STAGE
+        select
+            max(SORT_NO)
+        from AEA_PAR_FRONT_STAGE
         <where>
-            <if test="stageId!=null and stageId!=''">
-                and STAGE_ID = #{stageId}
-            </if>
+            and STAGE_ID = #{stageId}
+            and ROOT_ORG_ID = #{rootOrgId}
         </where>
     </select>
 
-    <select id="getAeaParFrontStageVoById" resultType="com.augurit.aplanmis.common.vo.AeaParFrontStageVo">
+    <select id="getAeaParFrontStageVoById" resultType="AeaParFrontStage">
         select
-        <include refid="allColumnsAlias">
-            <property name="alias" value="apfs"></property>
-        </include>,aps.STAGE_NAME histStageName
+            <include refid="allColumnsAlias">
+                <property name="alias" value="apfs"></property>
+            </include>,
+            aps.STAGE_NAME histStageName,
+            aps.STAGE_CODE histStageCode,
+            aps.IS_NODE histIsNode
         from AEA_PAR_FRONT_STAGE apfs
         left join aea_par_stage aps on aps.STAGE_ID = apfs.HIST_STAGE_ID
         where apfs.FRONT_STAGE_ID = #{id}
     </select>
 
-    <select id="listSelectParFrontStage" resultType="com.augurit.aplanmis.common.vo.AeaParFrontStageVo">
+    <select id="listSelectParFrontStage" resultType="AeaParFrontStage">
         select
+            aps.STAGE_ID histStageId,
             aps.STAGE_NAME histStageName,
-            aps.STAGE_ID histStageId
+            aps.STAGE_CODE histStageCode,
+            aps.IS_NODE histIsNode
         from aea_par_stage aps
         <where>
-            aps.IS_DELETED = '0'
-            <if test="stageId != null and stageId!=''">
-                AND aps.STAGE_ID != #{stageId}
-                AND aps.THEME_VER_ID in (
-                select stage.THEME_VER_ID from aea_par_stage stage
+            and aps.ROOT_ORG_ID = #{rootOrgId}
+            and aps.IS_DELETED = '0'
+            and aps.STAGE_ID != #{stageId}
+            and aps.THEME_VER_ID in (
+                select distinct
+                    stage.THEME_VER_ID
+                 from aea_par_stage stage
                 where stage.STAGE_ID = #{stageId}
-                )
-            </if>
+                  and stage.ROOT_ORG_ID = #{rootOrgId}
+                  and stage.THEME_VER_ID is not null
+                  and stage.THEME_VER_ID !=''
+            )
             and aps.STAGE_ID not in (
-                select apfs.HIST_STAGE_ID from AEA_PAR_FRONT_STAGE apfs
+                select distinct
+                    apfs.HIST_STAGE_ID
+                from AEA_PAR_FRONT_STAGE apfs
                 <where>
-                    <if test="stageId != null and stageId!=''">
-                        AND apfs.STAGE_ID = #{stageId}
-                    </if>
-                    <if test="frontStageId != null and frontStageId !='' " >
-                        and apfs.FRONT_STAGE_ID != #{frontStageId}
-                    </if>
+                    and apfs.STAGE_ID = #{stageId}
+                    and apfs.ROOT_ORG_ID = #{rootOrgId}
+                    and apfs.HIST_STAGE_ID is not null
+                    and apfs.HIST_STAGE_ID !=''
                 </where>
             )
             <if test="keyword!=null and keyword!='' ">
-                AND aps.STAGE_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%')
+            and (
+                aps.STAGE_NAME like CONCAT(CONCAT('%',#{keyword}),'%') or
+                aps.STAGE_CODE like CONCAT(CONCAT('%',#{keyword}),'%')
+            )
             </if>
         </where>
-
+        order by aps.IS_NODE asc, aps.SORT_NO asc
     </select>
+
+    <update id="changIsActive">
+        update AEA_PAR_FRONT_STAGE
+        set IS_ACTIVE = case IS_ACTIVE
+        when '1' then '0'
+        when '0' then '1'
+        end
+        <where>
+            and FRONT_STAGE_ID = #{id}
+            and ROOT_ORG_ID = #{rootOrgId}
+        </where>
+    </update>
+
 </mapper>
