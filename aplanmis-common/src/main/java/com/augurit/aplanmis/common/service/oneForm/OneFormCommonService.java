@@ -112,6 +112,7 @@ public class OneFormCommonService {
     private String genUrl4SamrtForm(SFFormParam item){
         String result="";
         StringBuilder strBuilder=new StringBuilder();
+        strBuilder.append("/bpm/common/sf/renderHtmlFormContainer");
         strBuilder.append("?listRefEntityId="+item.getRefEntityId());
         strBuilder.append("&listFormId="+item.getFormId());
         strBuilder.append("&showBasicButton=true&includePlatformResource=false&busiScence=oneform");
