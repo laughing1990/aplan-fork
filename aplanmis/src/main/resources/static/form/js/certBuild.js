@@ -337,27 +337,32 @@ var vm = new Vue({
             var _that = this;
             if(type == 'gczcbUnit'){
                 if(data){
-                    _that.certBuildFrom.gczcbUnitLeader = data.addressName
+                    _that.certBuildFrom.gczcbUnitLeader = data.addressName;
+                    _that.certBuildFrom.gczcbUnitLeaderId = data.addressId;
                 }
             }
             if(type == 'kcUnit'){
                 if(data){
-                    _that.certBuildFrom.kcUnitLeader = data.addressName
+                    _that.certBuildFrom.kcUnitLeader = data.addressName;
+                    _that.certBuildFrom.kcUnitLeaderId = data.addressId;
                 }
             }
             if(type == 'sgUnit'){
                 if(data){
-                    _that.certBuildFrom.sgUnitLeader = data.addressName
+                    _that.certBuildFrom.sgUnitLeader = data.addressName;
+                    _that.certBuildFrom.sgUnitLeaderId = data.addressId;
                 }
             }
             if(type == 'jlUnit'){
                 if(data){
-                    _that.certBuildFrom.jlUnitLeader = data.addressName
+                    _that.certBuildFrom.jlUnitLeader = data.addressName;
+                    _that.certBuildFrom.jlUnitLeaderId = data.addressId;
                 }
             }
             if(type == 'sjUnit'){
                 if(data){
-                    _that.certBuildFrom.sjUnitLeader = data.addressName
+                    _that.certBuildFrom.sjUnitLeader = data.addressName;
+                    _that.certBuildFrom.sjUnitLeaderId = data.addressId;
                 }
             }
         },
@@ -395,31 +400,31 @@ var vm = new Vue({
             }
         },
         // 新增编辑联系人信息
-        addLinkman: function(data,parData){
+        addLinkman: function(linkmanid,id,name){
             var _that = this;
             _that.addEditManModalShow = true;
-            _that.getUnitsListByProjInfoId();
-            _that.addEditManPerform = parData
-            if(!_that.projInfoId){
-                if(data){
+            //_that.getUnitsListByProjInfoId();
+            //_that.addEditManPerform = parData
+            if(_that.certBuildFrom.projInfoId){
+                if(linkmanid){
                     _that.addEditManModalTitle = '编辑联系人';
                     _that.addEditManModalFlag = 'edit';
-                    if(!data.linkmanInfoId){
+                    if(!linkmanid){
                         alertMsg('提示信息', '请选择联系人！', '关闭', 'error', true);
                         return;
                     }else{
-                        _that.backDLinkmanInfo(data,parData);
+                        _that.backDLinkmanInfo(linkmanid,id,name);
                     }
                 }else {
                     _that.addEditManModalTitle = '新增联系人';
                     _that.addEditManform = {};
                     _that.addEditManModalFlag = 'add';
-                    if(parData.unitInfoId){
-                        _that.addEditManform.unitInfoId = parData.unitInfoId;
-                        _that.addEditManform.unitName = parData.applicant;
+                    if(id){
+                        _that.addEditManform.unitInfoId = id;
+                        _that.addEditManform.unitName = name;
                     }else {
                         _that.addEditManform.unitInfoId = '';
-                        _that.addEditManform.unitName = parData.applicant
+                        _that.addEditManform.unitName = name;
                     }
                 }
             }else {
@@ -450,17 +455,17 @@ var vm = new Vue({
             });
         },
         // 反显联系人信息
-        backDLinkmanInfo: function(data,parData){
+        backDLinkmanInfo: function(linkmanid,id,name){
             var _that = this;
-            if(data.linkmanInfoId){
+            if(linkmanid){
                 request('', {
-                    url: ctx + 'rest/linkman/one/'+data.linkmanInfoId,
+                    url: ctx + 'rest/linkman/one/'+linkmanid,
                     type: 'get'
                 }, function (result) {
                     if(result.success){
                         _that.addEditManform = result.content;
-                        _that.addEditManform.unitInfoId = parData.unitInfoId;
-                        _that.addEditManform.unitName = parData.applicant;
+                        _that.addEditManform.unitInfoId = id;
+                        _that.addEditManform.unitName = name;
                     }
                 }, function (msg) {
                     alertMsg('', '服务请求失败', '关闭', 'error', true);
