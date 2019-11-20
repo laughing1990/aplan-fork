@@ -1648,8 +1648,8 @@
         apt.THEME_NAME AS themeName,
         ahi_123.ITEMINST_NAME AS itemStageName,
         ahap_123.CREATE_TIME AS applyTime,
-        ahac_123.APPLYINST_CORRECT_ID,
         ahac_123.CORRECT_MEMO,
+        ahac_123.APPLYINST_CORRECT_ID,
         ahac_123.CORRECT_DUE_TIME AS correctDueTime,
         ahac_123.WINDOW_USER_NAME AS assignee
         FROM
@@ -1689,8 +1689,8 @@
         apt.THEME_NAME AS themeName,
         ahi_123.ITEMINST_NAME AS itemStageName,
         ahap_123.CREATE_TIME AS applyTime,
-        ahac_123.APPLYINST_CORRECT_ID,
         ahac_123.CORRECT_MEMO,
+        ahac_123.APPLYINST_CORRECT_ID,
         ahac_123.CORRECT_DUE_TIME AS correctDueTime,
         ahac_123.WINDOW_USER_NAME AS assignee
         FROM
