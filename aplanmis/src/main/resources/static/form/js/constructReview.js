@@ -209,7 +209,6 @@ var app = new Vue({
     this.getAllType();
     this.showData();
     // this.getUnit();
-    $(".loading").hide();
   },
   methods: {
     // 获取页面的URL参数
