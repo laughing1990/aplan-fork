@@ -84,9 +84,8 @@ public class AeaProjDrawingSerivceImpl implements AeaProjDrawingSerivce {
                     if (linkmanList.size()>0){
                         // AeaUnitProjLinkman fuzeren = linkmanList.get(0);
                         // 1 负责人
-                        //待优化 用stream筛选
                         for (AeaUnitProjLinkman fuzeren : linkmanList) {
-                            if (fuzeren.getLinkmanType().equals(UnitProjLinkmanType.FZR) ) {
+                            if (fuzeren.getLinkmanType().equals(UnitProjLinkmanType.FZR.getValue()) ) {
                                 aeaProjDrawing.setLinkmanType(fuzeren.getLinkmanType());
                                 aeaProjDrawing.setProfessionCertType(fuzeren.getProfessionCertType());
                                 aeaProjDrawing.setProfessionSealNum(fuzeren.getProfessionSealNum());
@@ -109,8 +108,41 @@ public class AeaProjDrawingSerivceImpl implements AeaProjDrawingSerivce {
                     aeaProjDrawing.setApplicant(info.getApplicant());
                     aeaProjDrawing.setUnitInfoId(info.getUnitInfoId());
                     ArrayList<AeaUnitProjLinkman> linkmen = new ArrayList<>();
-                    //查找企业所有人员
-                    List<String> ids = aeaUnitLinkmanMapper.getLinkManIdByUnitInfoId(info.getUnitInfoId());
+                    //查找企业项目所有人员 is delete = 0
+
+                    AeaUnitProjLinkman aeaUnitProjLinkman1 = new AeaUnitProjLinkman();
+                    aeaUnitProjLinkman1.setUnitProjId(id.getUnitProjId());
+                    aeaUnitProjLinkman1.setIsDeleted("0");
+                    List<AeaUnitProjLinkman> aeaUnitProjLinkmen = aeaUnitProjLinkmanMapper.listfuzeren(aeaUnitProjLinkman1);
+                    for (AeaUnitProjLinkman linkman : aeaUnitProjLinkmen) {
+
+                        AeaLinkmanInfo linkmanInfo = aeaLinkmanInfoMapper.getAeaLinkmanInfoById(linkman.getLinkmanInfoId());
+                            //如果是负责人就不在人员设置里显示
+                            if (UnitProjLinkmanType.FZR.getValue().equals(linkman.getLinkmanType()) ) {
+                                continue;
+                            }
+                            AeaUnitProjLinkman aeaUnitProjLinkman = new AeaUnitProjLinkman();
+                            aeaUnitProjLinkman.setLinkmanInfoId(linkmanInfo.getLinkmanInfoId());
+                            aeaUnitProjLinkman.setLinkmanName(linkmanInfo.getLinkmanName());
+                            aeaUnitProjLinkman.setUnitProjId(info.getUnitProjId());
+                            aeaUnitProjLinkman.setLinkmanCertNo(linkmanInfo.getLinkmanCertNo());
+                            aeaUnitProjLinkman.setUnitProjId(id.getUnitProjId());
+                            aeaUnitProjLinkman.setPrjSpty(linkman.getPrjSpty());
+                            aeaUnitProjLinkman.setTitleCertNum(linkman.getTitleCertNum());
+                            aeaUnitProjLinkman.setProjLinkmanId(linkman.getProjLinkmanId());
+                            aeaUnitProjLinkman.setLinkmanType(linkman.getLinkmanType());
+                            aeaUnitProjLinkman.setProfessionCertType(linkman.getProfessionCertType());
+                            aeaUnitProjLinkman.setProfessionSealNum(linkman.getProfessionSealNum());
+                            aeaUnitProjLinkman.setRegisterNum(linkman.getRegisterNum());
+                            aeaUnitProjLinkman.setTitleGrade(linkman.getTitleGrade());
+
+                            linkmen.add(aeaUnitProjLinkman);
+
+                    }
+                    aeaProjDrawing.setLinkmen(linkmen);
+
+//
+                 /*   List<String> ids = aeaUnitLinkmanMapper.getLinkManIdByUnitInfoId(info.getUnitInfoId());
                     for (String ide :ids) {
                         AeaLinkmanInfo linkmanInfo = aeaLinkmanInfoMapper.getAeaLinkmanInfoById(ide);
 
@@ -151,6 +183,8 @@ public class AeaProjDrawingSerivceImpl implements AeaProjDrawingSerivce {
                         }
                         aeaProjDrawing.setLinkmen(linkmen);
                     }
+*/
+                    //
                     drawings.add(aeaProjDrawing);
                 }
             }
