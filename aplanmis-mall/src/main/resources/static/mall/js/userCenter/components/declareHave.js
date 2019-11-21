@@ -57,7 +57,7 @@ var vm = new Vue({
     // 是否展示证照dialog
     isShowLicenseDialog: false,
     //证照附件
-    licenseFileListL:[],
+    licenseFileList:[],
     // 所有电子件表格数据
     electronFileList: [],
     receiveList: [],//回执列表
