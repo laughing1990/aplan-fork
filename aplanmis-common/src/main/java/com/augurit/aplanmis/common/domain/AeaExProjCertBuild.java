@@ -69,6 +69,7 @@ public class AeaExProjCertBuild {
     private String creater;
     @ApiModelProperty("创建时间")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date createTime;
     @ApiModelProperty("修改人")
     private String modifier;

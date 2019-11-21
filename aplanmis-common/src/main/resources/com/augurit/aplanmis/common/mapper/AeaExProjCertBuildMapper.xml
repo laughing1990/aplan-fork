@@ -135,10 +135,10 @@
                 PRINT_TIME = #{printTime},
             </if>
             <if test="gczcbUnit != null">
-                PRINT_TIME = #{gczcbUnit},
+                GCZCB_UNIT = #{gczcbUnit},
             </if>
             <if test="gczcbUnitLeader != null">
-                PRINT_TIME = #{gczcbUnitLeader}
+                GCZCB_UNIT_LEADER = #{gczcbUnitLeader}
             </if>
         </set>
         where BUILD_ID = #{buildId}
