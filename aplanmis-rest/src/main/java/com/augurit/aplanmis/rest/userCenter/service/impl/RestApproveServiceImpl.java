@@ -13,7 +13,19 @@ import com.augurit.aplanmis.common.constants.ApplyState;
 import com.augurit.aplanmis.common.constants.ApplyType;
 import com.augurit.aplanmis.common.constants.DicConstants;
 import com.augurit.aplanmis.common.constants.ItemStatus;
-import com.augurit.aplanmis.common.domain.*;
+import com.augurit.aplanmis.common.domain.AeaHiApplyinst;
+import com.augurit.aplanmis.common.domain.AeaHiItemStateinst;
+import com.augurit.aplanmis.common.domain.AeaHiIteminst;
+import com.augurit.aplanmis.common.domain.AeaHiParStageinst;
+import com.augurit.aplanmis.common.domain.AeaHiSmsInfo;
+import com.augurit.aplanmis.common.domain.AeaItemBasic;
+import com.augurit.aplanmis.common.domain.AeaItemMat;
+import com.augurit.aplanmis.common.domain.AeaItemState;
+import com.augurit.aplanmis.common.domain.AeaLinkmanInfo;
+import com.augurit.aplanmis.common.domain.AeaParStage;
+import com.augurit.aplanmis.common.domain.AeaParTheme;
+import com.augurit.aplanmis.common.domain.AeaProjInfo;
+import com.augurit.aplanmis.common.domain.AeaUnitInfo;
 import com.augurit.aplanmis.common.dto.ApproveProjInfoDto;
 import com.augurit.aplanmis.common.dto.SupplementInfoDto;
 import com.augurit.aplanmis.common.mapper.AeaHiItemCorrectMapper;
@@ -21,7 +33,12 @@ import com.augurit.aplanmis.common.mapper.AeaHiItemStateinstMapper;
 import com.augurit.aplanmis.common.mapper.AeaItemStateMapper;
 import com.augurit.aplanmis.common.mapper.AeaParStateItemMapper;
 import com.augurit.aplanmis.common.service.file.impl.FileAbstractService;
-import com.augurit.aplanmis.common.service.instance.*;
+import com.augurit.aplanmis.common.service.instance.AeaHiApplyinstService;
+import com.augurit.aplanmis.common.service.instance.AeaHiItemStateinstService;
+import com.augurit.aplanmis.common.service.instance.AeaHiIteminstService;
+import com.augurit.aplanmis.common.service.instance.AeaHiParStageinstService;
+import com.augurit.aplanmis.common.service.instance.AeaHiParStateinstService;
+import com.augurit.aplanmis.common.service.instance.AeaHiSmsInfoService;
 import com.augurit.aplanmis.common.service.item.AeaItemBasicService;
 import com.augurit.aplanmis.common.service.linkman.AeaLinkmanInfoService;
 import com.augurit.aplanmis.common.service.mat.AeaItemMatService;
@@ -31,11 +48,15 @@ import com.augurit.aplanmis.common.service.stage.AeaParStageService;
 import com.augurit.aplanmis.common.service.theme.AeaParThemeService;
 import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
 import com.augurit.aplanmis.common.vo.MatCorrectConfirmVo;
-import com.augurit.aplanmis.rest.common.utils.SessionUtil;
-import com.augurit.aplanmis.rest.common.vo.LoginInfoVo;
+import com.augurit.aplanmis.rest.auth.AuthContext;
+import com.augurit.aplanmis.rest.auth.AuthUser;
 import com.augurit.aplanmis.rest.userCenter.constant.LoginUserRoleEnum;
 import com.augurit.aplanmis.rest.userCenter.service.RestApproveService;
-import com.augurit.aplanmis.rest.userCenter.vo.*;
+import com.augurit.aplanmis.rest.userCenter.vo.AeaItemBasicVo;
+import com.augurit.aplanmis.rest.userCenter.vo.AeaParStageVo;
+import com.augurit.aplanmis.rest.userCenter.vo.ApplyDetailVo;
+import com.augurit.aplanmis.rest.userCenter.vo.LifeCycleDiagramVo;
+import com.augurit.aplanmis.rest.userCenter.vo.StatisticsNumVo;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.slf4j.Logger;
@@ -46,7 +67,13 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 import java.security.InvalidParameterException;
 import java.text.NumberFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
@@ -135,9 +162,9 @@ public class RestApproveServiceImpl implements RestApproveService {
      * 对补正、补全列表，不同意见的相同数据，进行合并
      * */
     public PageInfo<SupplementInfoDto> MergeopinionList(PageInfo<SupplementInfoDto> pageInfo) {
-        List<SupplementInfoDto> list = pageInfo.getList();
+        List<SupplementInfoDto> list = Optional.ofNullable(pageInfo).orElse(new PageInfo<>()).getList();
         if (list == null)
-            return pageInfo;
+            return new PageInfo<>();
         HashMap<String, SupplementInfoDto> map = new HashMap<>();
         for (SupplementInfoDto entity : list) {
             String key = entity.getIsSeriesApprove() + "," + entity.getApplyinstId() + "," + entity.getProjInfoId() + "," + entity.getIteminstId();//将进入详情页所用的传参作为键值标识，进行意见的合并
@@ -310,9 +337,9 @@ public class RestApproveServiceImpl implements RestApproveService {
     }
 
     @Override
-    public StatisticsNumVo getApprovalAndMatCompletionNum(HttpServletRequest request) throws Exception {
+    public StatisticsNumVo getApprovalAndMatCompletionNum() throws Exception {
         StatisticsNumVo retVo = new StatisticsNumVo();
-        LoginInfoVo loginInfo = SessionUtil.getLoginInfo(request);
+        AuthUser loginInfo = AuthContext.getCurrentUser();
         // 已申报，已撤件，草稿箱，材料补全，材料补正
         long matCompletionNum = 0;//材料补全
         long approvalNum = 0;//已审批
@@ -321,24 +348,24 @@ public class RestApproveServiceImpl implements RestApproveService {
         long applyNum = 0;//已申报
         long withdrawalNum = 0;//已撤件
         if (loginInfo == null) return retVo;
-        if ("1".equals(loginInfo.getIsPersonAccount())) {//个人
-            matCompletionNum = this.searchMatComplet("", loginInfo.getUserId(), 1, 1).getTotal();
-            approvalNum = this.searchIteminstApproveInfoListByUnitIdAndUserId("", "", loginInfo.getUserId(), 1, 1).getTotal();
-            draftNum = this.searchApproveProjInfoListByUnitOrLinkman("", loginInfo.getUserId(), "2", null, 1, 1).getTotal();
-            supplyNum = this.searchSupplyInfoList("", loginInfo.getUserId(), 1, 1).getTotal();
-            applyNum = aeaHiIteminstService.countApproveProjInfoListByUnitOrLinkman("", loginInfo.getUserId());
-        } else if (StringUtils.isNotBlank(loginInfo.getUserId())) {//委托人
-            matCompletionNum = this.searchMatComplet(loginInfo.getUnitId(), loginInfo.getUserId(), 1, 1).getTotal();
-            approvalNum = this.searchIteminstApproveInfoListByUnitIdAndUserId("", loginInfo.getUnitId(), loginInfo.getUserId(), 1, 1).getTotal();
-            draftNum = this.searchApproveProjInfoListByUnitOrLinkman(loginInfo.getUnitId(), loginInfo.getUserId(), "2", null, 1, 1).getTotal();
-            supplyNum = this.searchSupplyInfoList(loginInfo.getUnitId(), loginInfo.getUserId(), 1, 1).getTotal();
-            applyNum = aeaHiIteminstService.countApproveProjInfoListByUnitOrLinkman(loginInfo.getUnitId(), loginInfo.getUserId());
+        if (loginInfo.isPersonalAccount()) {//个人
+            matCompletionNum = this.searchMatComplet("", loginInfo.getLinkmanInfoId(), 1, 1).getTotal();
+            approvalNum = this.searchIteminstApproveInfoListByUnitIdAndUserId("", "", loginInfo.getLinkmanInfoId(), 1, 1).getTotal();
+            draftNum = this.searchApproveProjInfoListByUnitOrLinkman("", loginInfo.getLinkmanInfoId(), "2", null, 1, 1).getTotal();
+            supplyNum = this.searchSupplyInfoList("", loginInfo.getLinkmanInfoId(), 1, 1).getTotal();
+            applyNum = aeaHiIteminstService.countApproveProjInfoListByUnitOrLinkman("", loginInfo.getLinkmanInfoId());
+        } else if (StringUtils.isNotBlank(loginInfo.getLinkmanInfoId())) {//委托人
+            matCompletionNum = this.searchMatComplet(loginInfo.getUnitInfoId(), loginInfo.getLinkmanInfoId(), 1, 1).getTotal();
+            approvalNum = this.searchIteminstApproveInfoListByUnitIdAndUserId("", loginInfo.getUnitInfoId(), loginInfo.getLinkmanInfoId(), 1, 1).getTotal();
+            draftNum = this.searchApproveProjInfoListByUnitOrLinkman(loginInfo.getUnitInfoId(), loginInfo.getLinkmanInfoId(), "2", null, 1, 1).getTotal();
+            supplyNum = this.searchSupplyInfoList(loginInfo.getUnitInfoId(), loginInfo.getLinkmanInfoId(), 1, 1).getTotal();
+            applyNum = aeaHiIteminstService.countApproveProjInfoListByUnitOrLinkman(loginInfo.getUnitInfoId(), loginInfo.getLinkmanInfoId());
         } else {//企业
-            matCompletionNum = this.searchMatComplet(loginInfo.getUnitId(), "", 1, 1).getTotal();
-            approvalNum = this.searchIteminstApproveInfoListByUnitIdAndUserId("", loginInfo.getUnitId(), "", 1, 1).getTotal();
-            draftNum = this.searchApproveProjInfoListByUnitOrLinkman(loginInfo.getUnitId(), "", "2", null, 1, 1).getTotal();
-            supplyNum = this.searchSupplyInfoList(loginInfo.getUnitId(), "", 1, 1).getTotal();
-            applyNum = aeaHiIteminstService.countApproveProjInfoListByUnitOrLinkman(loginInfo.getUnitId(), "");
+            matCompletionNum = this.searchMatComplet(loginInfo.getUnitInfoId(), "", 1, 1).getTotal();
+            approvalNum = this.searchIteminstApproveInfoListByUnitIdAndUserId("", loginInfo.getUnitInfoId(), "", 1, 1).getTotal();
+            draftNum = this.searchApproveProjInfoListByUnitOrLinkman(loginInfo.getUnitInfoId(), "", "2", null, 1, 1).getTotal();
+            supplyNum = this.searchSupplyInfoList(loginInfo.getUnitInfoId(), "", 1, 1).getTotal();
+            applyNum = aeaHiIteminstService.countApproveProjInfoListByUnitOrLinkman(loginInfo.getUnitInfoId(), "");
         }
         retVo.setApplyNum(applyNum);
         retVo.setApprovalNum(approvalNum);

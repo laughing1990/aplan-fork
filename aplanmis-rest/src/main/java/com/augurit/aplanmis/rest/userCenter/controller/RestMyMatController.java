@@ -33,8 +33,8 @@ public class RestMyMatController {
     @ApiOperation(value = "获取我的材料列表")
     public ContentResultForm<List<AeaHiItemMatinst>> getMyMatList() {
         try {
-//            if ("1".equals(loginInfo.getIsPersonAccount())) {//个人
-//                return new ContentResultForm<>(true, restMyMatService.getMyMatListByUser("", loginInfo.getUserId()));
+//            if (loginInfo.isPersonalAccount()) {//个人
+//                return new ContentResultForm<>(true, restMyMatService.getMyMatListByUser("", loginInfo.getLinkmanInfoId()));
 //            } else
             if (StringUtils.isNotBlank(AuthContext.getCurrentLinkmanInfoId())) {//委托人
                 return new ContentResultForm<>(true, restMyMatService.getMyMatListByUser(AuthContext.getCurrentUnitInfoId(), AuthContext.getCurrentLinkmanInfoId()));
