@@ -2309,6 +2309,13 @@ input[type="number"] {
 .mat-table-btn:hover {
     text-decoration: underline;
 }
+.mat-table-btn.ope-disabled{
+    color: #8c939d;
+    cursor: text;
+}
+.mat-table-btn.ope-disabled:hover{
+    text-decoration: none;
+}
 
 .mat-ope-line {
     float: left;
