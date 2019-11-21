@@ -48,6 +48,13 @@
                     <span v-if="scope.row.auditFlag==8">选取开始</span>
                     <span v-if="scope.row.auditFlag==9">已选取</span>
                     <span v-if="scope.row.auditFlag==10">无效</span>
+                    <span v-if="scope.row.auditFlag==11">待选取</span>
+                    <span v-if="scope.row.auditFlag==12">已过时</span>
+                    <span v-if="scope.row.auditFlag==13">部门审批中</span>
+                    <span v-if="scope.row.auditFlag==14">办结通过</span>
+                    <span v-if="scope.row.auditFlag==15">办结不通过</span>
+                    <span v-if="scope.row.auditFlag==16">待上传合同</span>
+                    <span v-if="scope.row.auditFlag==17">待确认合同</span>
                 </template>
             </el-table-column>
             <el-table-column label="合同状态">
@@ -60,7 +67,7 @@
                 <template scope="scope">
                     <div class="operatePath">
                         <a class="a-color4879E4" href="javascript:;" @click="addAgreement(scope.row)"
-                            v-if="scope.row.auditFlag==1">上传合同</a>
+                            v-if="scope.row.auditFlag==16">上传合同</a>
                         <a class="a-color4879E4" href="javascript:;" @click="confirmWinBidResult(scope.row)"
                             v-if="scope.row.auditFlag==9">确认中标结果</a>
                         <p style="margin: 0;" v-else>
