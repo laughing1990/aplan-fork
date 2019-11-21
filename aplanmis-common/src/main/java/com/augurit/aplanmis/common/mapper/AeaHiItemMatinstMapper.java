@@ -4,6 +4,7 @@ import com.augurit.agcloud.bsc.domain.BscAttDetail;
 import com.augurit.agcloud.bsc.domain.BscAttForm;
 import com.augurit.agcloud.bsc.domain.BscAttLink;
 import com.augurit.aplanmis.common.domain.AeaHiItemMatinst;
+import com.augurit.aplanmis.common.vo.MyMatFilesVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -44,7 +45,7 @@ public interface AeaHiItemMatinstMapper {
 
     List<AeaHiItemMatinst> getMatinstListByIteminstIds(@Param("iteminstIds") String[] iteminstIds, @Param("isInput") String isInput) throws Exception;
 
-    List<AeaHiItemMatinst> getMatinstListByIteminstIdsAndKeyword(@Param("iteminstIds") String[] iteminstIds, @Param("isInput") String isInput, @Param("keyword") String keyword) throws Exception;
+    List<MyMatFilesVo> getMatinstListByIteminstIdsAndKeyword(@Param("iteminstIds") String[] iteminstIds, @Param("isInput") String isInput, @Param("keyword") String keyword,@Param("isAtt")String isAtt) throws Exception;
 
 
     List<AeaHiItemMatinst> getMatinstListByProjInfoIdAndMatIds(@Param("projInfoid") String projInfoid, @Param("matIds") String[] matIds) throws Exception;

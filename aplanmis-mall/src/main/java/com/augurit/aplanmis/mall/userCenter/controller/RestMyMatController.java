@@ -6,6 +6,7 @@ import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.utils.SessionUtil;
 import com.augurit.aplanmis.common.vo.LoginInfoVo;
 import com.augurit.aplanmis.mall.userCenter.service.RestMyMatService;
+import com.augurit.aplanmis.common.vo.MyMatFilesVo;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -33,7 +34,7 @@ public class RestMyMatController {
     }
 
     @GetMapping("list")
-    @ApiOperation("获取我的材料列表")
+    @ApiOperation("获取我的材料(仅含文件)列表")
     @ApiImplicitParams({@ApiImplicitParam(value = "页面数量",name = "pageNum",required = true,dataType = "int"),
             @ApiImplicitParam(value = "页面页数",name = "pageSize",required = true,dataType = "int"),
             @ApiImplicitParam(value = "搜索关键字",name = "keyword",required = false,dataType = "string")})
@@ -46,6 +47,27 @@ public class RestMyMatController {
                 return restMyMatService.getMyMatListByUser(loginInfo.getUnitId(),loginInfo.getUserId(),keyword,pageNum,pageSize);
             }else{//企业
                 return restMyMatService.getMyMatListByUser(loginInfo.getUnitId(),"",keyword,pageNum,pageSize);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @GetMapping("getMyMatListContainsFiles")
+    @ApiOperation("获取我的材料列表(包含材料和文件)")
+    @ApiImplicitParams({@ApiImplicitParam(value = "页面数量",name = "pageNum",required = true,dataType = "int"),
+            @ApiImplicitParam(value = "页面页数",name = "pageSize",required = true,dataType = "int"),
+            @ApiImplicitParam(value = "搜索关键字",name = "keyword",required = false,dataType = "string")})
+    public PageInfo<MyMatFilesVo> getMyMatListContainsFiles(HttpServletRequest request, String keyword, int pageNum, int pageSize){
+        try {
+            LoginInfoVo loginInfo = SessionUtil.getLoginInfo(request);
+            if("1".equals(loginInfo.getIsPersonAccount())){//个人
+                return restMyMatService.getMyMatListByUser1("",loginInfo.getUserId(),keyword,pageNum,pageSize);
+            }else if(StringUtils.isNotBlank(loginInfo.getUserId())){//委托人
+                return restMyMatService.getMyMatListByUser1(loginInfo.getUnitId(),loginInfo.getUserId(),keyword,pageNum,pageSize);
+            }else{//企业
+                return restMyMatService.getMyMatListByUser1(loginInfo.getUnitId(),"",keyword,pageNum,pageSize);
             }
         } catch (Exception e) {
             e.printStackTrace();

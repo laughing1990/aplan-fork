@@ -21,7 +21,7 @@ var myMaterials = (function () {
                 var ts = this;
                 ts.tableLoading = true;
                 request('', {
-                    url: ctx + 'rest/user/mat/list',
+                    url: ctx + 'rest/user/mat/getMyMatListContainsFiles',
                     type: 'get',
                     data:{
                         pageNum:ts.pageNum,
