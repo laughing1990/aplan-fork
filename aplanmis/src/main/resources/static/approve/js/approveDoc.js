@@ -269,11 +269,11 @@ var vm = new Vue({
       if (vm.isLoadedType) {
         return vm.filterType();
       }
-      var params = {};
+      var params = {
+        applyinstId: vm.applyinstId,
+      };
       if (vm.isApprover == '1') {
         params.iteminstId = vm.iteminstId;
-      } else {
-        params.applyinstId = vm.applyinstId;
       }
       request('', {
         url: ctx + 'rest/approve/getItemOutputCert',
