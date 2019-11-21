@@ -5,6 +5,9 @@ var edit_item_front_item_form_validator;
 var item_front_partform_tb;
 var edit_item_front_partform_form_validator;
 
+var title = '查看';
+var ico = 'la la-search';
+
 function projIsActiveFormatter(value, row, index, field) {
 
     return handleIsActiveHtml(row.isActive, row.frontProjId, 'proj');
@@ -43,58 +46,64 @@ function handleIsActiveHtml(isActive, id, type){
 
 function changeIsActive(obj, id, isActive, type){
 
-    if(id){
-        var action = isActive=='1'? "禁用" : "启用" ;
-        swal({
-            title: '提示信息',
-            text: "确定要" + action + "选中的记录吗?",
-            type: 'warning',
-            showCancelButton: true,
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-        }).then(function(result) {
-            if (result.value){
-                var url;
-                if(type=='proj'){
-                    url = ctx + '/aea/item/front/proj/changIsActive.do';
-                }else if(type=='item'){
-                    url = ctx + '/aea/item/front/item/changIsActive.do';
-                }else{
-                    url = ctx + '/aea/item/front/partform/changIsActive.do';
-                }
-                $.ajax({
-                    url: url,
-                    type: 'POST',
-                    data: {"id": id},
-                    success: function (result) {
-                        if(result.success){
-                            if(type=='proj'){
-                                if(item_front_proj_tb){
-                                    item_front_proj_tb.clear();
-                                }
-                            }else if(type=='item'){
-                               if(item_front_item_tb){
-                                   item_front_item_tb.clear();
-                               }
-                            }else{
-                                if(item_front_partform_tb){
-                                    item_front_partform_tb.clear();
-                                }
-                            }
-                        }else{
-                            swal('错误信息', result.message, 'error');
-                        }
-                    },
-                    error: function () {
-                        swal('错误信息', '服务器异常！', 'error');
+    if(curIsEditable){
+        if(id){
+            var action = isActive=='1'? "禁用" : "启用" ;
+            swal({
+                title: '提示信息',
+                text: "确定要" + action + "选中的记录吗?",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+            }).then(function(result) {
+                if (result.value){
+                    var url;
+                    if(type=='proj'){
+                        url = ctx + '/aea/item/front/proj/changIsActive.do';
+                    }else if(type=='item'){
+                        url = ctx + '/aea/item/front/item/changIsActive.do';
+                    }else{
+                        url = ctx + '/aea/item/front/partform/changIsActive.do';
                     }
-                });
-            }else{
-                isActive=='1'?$(obj).prop("checked",true):$(obj).prop("checked",false);
-            }
-        });
+                    $.ajax({
+                        url: url,
+                        type: 'POST',
+                        data: {"id": id},
+                        success: function (result) {
+                            if(result.success){
+                                if(type=='proj'){
+                                    if(item_front_proj_tb){
+                                        item_front_proj_tb.clear();
+                                    }
+                                }else if(type=='item'){
+                                    if(item_front_item_tb){
+                                        item_front_item_tb.clear();
+                                    }
+                                }else{
+                                    if(item_front_partform_tb){
+                                        item_front_partform_tb.clear();
+                                    }
+                                }
+                            }else{
+                                swal('错误信息', result.message, 'error');
+                            }
+                        },
+                        error: function () {
+                            swal('错误信息', '服务器异常！', 'error');
+                        }
+                    });
+                }else{
+                    isActive=='1'?$(obj).prop("checked",true):$(obj).prop("checked",false);
+                }
+            });
+        }else{
+            swal('错误信息', '操作对象！', 'error');
+        }
     }else{
-        swal('错误信息', '操作对象！', 'error');
+
+        isActive=='1'?$(obj).prop("checked",true):$(obj).prop("checked",false);
+        swal('提示信息', '当前版本下数据不可编辑!', 'info');
     }
 }
 
@@ -153,7 +162,11 @@ $(function(){
             align: 'center',
             formatter: function (value, row, index) {
 
-                var btn =  '<a href="javascript:editItemFrontProj(\'' + row.frontProjId + '\')" class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill" title="编辑"><i class="la la-edit"></i></a>';
+                if(curIsEditable){
+                    title = '编辑';
+                    ico = 'la la-edit';
+                }
+                var btn =  '<a href="javascript:editItemFrontProj(\'' + row.frontProjId + '\')" class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill" title="'+ title +'"><i class="'+ ico +'"></i></a>';
                 if(curIsEditable){
                     btn = btn + '<a href="javascript:delItemFrontProj(\'' + row.frontProjId + '\')" class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill" title="删除"><i class="la la-trash"></i></a>'
                 }
@@ -306,7 +319,11 @@ $(function(){
             align: 'center',
             formatter: function (value, row, index) {
 
-                var btn =  '<a href="javascript:editItemFrontItem(\'' + row.frontItemId + '\')" class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill" title="编辑"><i class="la la-edit"></i></a>';
+                if(curIsEditable){
+                    title = '编辑';
+                    ico = 'la la-edit';
+                }
+                var btn =  '<a href="javascript:editItemFrontItem(\'' + row.frontItemId + '\')" class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill" title="'+ title +'"><i class="'+ ico +'"></i></a>';
                 if(curIsEditable){
                     btn = btn + '<a href="javascript:delItemFrontItem(\'' + row.frontItemId + '\')" class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill" title="删除"><i class="la la-trash"></i></a>'
                 }
@@ -446,7 +463,12 @@ $(function(){
                 align: 'center',
                 formatter: function (value, row, index) {
 
-                    var btn =  '<a href="javascript:editItemFrontPartform(\'' + row.frontPartformId + '\')" class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill" title="编辑"><i class="la la-edit"></i></a>';
+                    if(curIsEditable){
+                        title = '编辑';
+                        ico = 'la la-edit';
+                    }
+
+                    var btn =  '<a href="javascript:editItemFrontPartform(\'' + row.frontPartformId + '\')" class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill" title="'+ title +'"><i class="'+ ico +'"></i></a>';
                     if(curIsEditable){
                         btn = btn + '<a href="javascript:delItemFrontPartform(\'' + row.frontPartformId + '\')" class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill" title="删除"><i class="la la-trash"></i></a>'
                     }
@@ -642,11 +664,13 @@ function editItemFrontProj(frontProjId) {
 
     if(curIsEditable){
         $('#saveItemFrontProjBtn').show();
+        $('#selectRuleElBtn').show();
     }else{
         $('#saveItemFrontProjBtn').hide();
+        $('#selectRuleElBtn').hide();
     }
     $("#edit_item_front_proj_modal").modal("show");
-    $('#edit_item_front_proj_title').html('编辑项目信息前置检测');
+    $('#edit_item_front_proj_title').html((curIsEditable?'编辑':'查看')+'项目信息前置检测');
     $('#edit_item_front_proj_scroll').animate({scrollTop: 0}, 800);//滚动到顶部
     $('#edit_item_front_proj_form')[0].reset();
     if(edit_item_front_proj_form_validator){
@@ -724,7 +748,7 @@ function editItemFrontItem(frontItemId) {
     $("#uploadProgress").modal("show");
 
     $("#edit_item_front_item_modal").modal("show");
-    $('#edit_item_front_item_title').html('编辑事项信息前置检测');
+    $('#edit_item_front_item_title').html((curIsEditable?'编辑':'查看')+'事项信息前置检测');
     $('#edit_item_front_item_scroll').animate({scrollTop: 0}, 800);//滚动到顶部
     $('#edit_item_front_item_form')[0].reset();
     if(edit_item_front_item_form_validator){
@@ -745,6 +769,7 @@ function editItemFrontItem(frontItemId) {
                 setTimeout(function(){
 
                     $("#uploadProgress").modal('hide');
+
                     if(curIsEditable){
                         $('#saveItemFrontItemBtn').show();
                     }else{
@@ -895,7 +920,7 @@ function editItemFrontPartform(frontPartformId) {
         $('#saveItemFrontPartformBtn').hide();
     }
     $("#edit_item_front_partform_modal").modal("show");
-    $('#edit_item_front_partform_title').html('编辑事项扩展表单前置检测');
+    $('#edit_item_front_partform_title').html((curIsEditable?'编辑':'查看')+'事项扩展表单前置检测');
     $('#edit_item_front_partform_scroll').animate({scrollTop: 0}, 800);//滚动到顶部
     $('#edit_item_front_partform_form')[0].reset();
     if(edit_item_front_partform_form_validator){
@@ -1040,13 +1065,17 @@ function delItemFrontPartform(id) {
 
 function importFrontItem(){
 
-    $("#uploadProgressMsg").html("数据加载中，请稍后...");
-    $("#uploadProgress").modal("show");
+    if(curIsEditable){
+        $("#uploadProgressMsg").html("数据加载中，请稍后...");
+        $("#uploadProgress").modal("show");
 
-    // 初始化事项树数据
-    initFrontCheckItem();
+        // 初始化事项树数据
+        initFrontCheckItem();
 
-    setTimeout(function(){
-        $("#uploadProgress").modal('hide');
-    },500);
+        setTimeout(function(){
+            $("#uploadProgress").modal('hide');
+        },500);
+    }else{
+        swal('提示信息', '当前版本下数据不可编辑!', 'info');
+    }
 }

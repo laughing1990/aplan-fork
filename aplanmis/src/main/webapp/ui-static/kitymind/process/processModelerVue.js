@@ -62,6 +62,10 @@ var vm = new Vue({
     tableData: [],
     total:null,
     keyword2:null,
+    flowData:[],//流程数据或监听器数据
+    triggerAppFlowdefId:null,//所选流程模板关联id或监听器类名
+    nodeData:[],//流程节点数据
+    triggerNodeId:null,//触发节点id
   },
   created: function () {
     this.getProcessDefTree();
@@ -850,7 +854,8 @@ var vm = new Vue({
             $('input[name="checkName"][value=\"'+result.triggerEvent+'\"]').attr("checked",true);
             $('input[name="isOuterFlow"][value=\"'+result.isOuterFlow+'\"]').prop("checked",true);
             isOuterFlow();
-            $('#triggerAppFlowdefId').find('option[value=\"'+result.triggerAppFlowdefId+'\"]').attr("selected","selected");
+            // $('#triggerAppFlowdefId').find('option[value=\"'+result.triggerAppFlowdefId+'\"]').attr("selected","selected");
+            vm.triggerAppFlowdefId = result.triggerAppFlowdefId;
           }
         });
       }, 50);
