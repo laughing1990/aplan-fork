@@ -2960,6 +2960,7 @@ var vm = new Vue({
         _that.getCertFileListWin(data);
       }else {
         _that.showUploadWindowFlag = true;
+        _that.showUploadWindowBtn = true;
         _that.showUploadWindowTitle = '本地上传 - '+ data.matName;
         _that.getFileListWin(data.matinstId,data);
       }
