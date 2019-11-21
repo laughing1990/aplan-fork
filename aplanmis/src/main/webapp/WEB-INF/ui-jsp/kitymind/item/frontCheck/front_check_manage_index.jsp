@@ -183,7 +183,7 @@
                 <div class="m-form m-form--label-align-right m--margin-bottom-5">
                     <div class="row" style="margin: 0px;">
                         <div class="col-md-7"style="text-align: left;">
-                            <button type="button" class="btn btn-info" onclick="openSelectItemFrontPartform();">导入扩展表</button>
+                            <button type="button" class="btn btn-info" onclick="openSelectItemFrontPartform();">导入扩展表单</button>
                             <button type="button" class="btn btn-info" onclick="sortItemFrontCheck('partform');">排序</button>
                             <button type="button" class="btn btn-secondary" onclick="batchDelItemFrontPartform();">删除</button>
                         </div>

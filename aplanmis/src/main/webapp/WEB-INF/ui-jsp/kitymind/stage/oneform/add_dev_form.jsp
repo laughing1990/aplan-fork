@@ -7,7 +7,7 @@
         <div class="modal-content">
             <!-- 标题 -->
             <div class="modal-header" style="padding: 15px;height: 45px;">
-                <h5 class="modal-title" id="add_dev_form_modal_title">新增开发表单</h5>
+                <h5 class="modal-title" id="add_dev_form_modal_title">${curIsEditable?'编辑':'查看'}开发表单</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -44,7 +44,7 @@
                 </div>
 
                 <div class="modal-footer" style="padding: 10px;height: 60px;">
-                    <button id="saveDevform" type="submit" class="btn btn-info">保存</button>
+                    <button id="saveDevform" type="submit" class="btn btn-info" style="display: ${curIsEditable?'':'none'}">保存</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
                 </div>
             </form>
