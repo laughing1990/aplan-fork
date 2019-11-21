@@ -3,7 +3,6 @@ package com.augurit.aplanmis.rest.guide.service;
 import com.augurit.agcloud.bsc.domain.BscDicCodeItem;
 import com.augurit.agcloud.bsc.sc.dic.code.service.BscDicCodeService;
 import com.augurit.agcloud.framework.constant.Status;
-import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.util.CollectionUtils;
 import com.augurit.aplanmis.common.constants.ActiveStatus;
 import com.augurit.aplanmis.common.constants.DeletedStatus;
@@ -281,7 +280,7 @@ public class ItemGuideService {
 
         // 父情形
         AeaItemState aeaItemStateById = aeaItemStateMapper.getAeaItemStateById(parentId);
-        List<AeaItemState> aeaItemStates = aeaItemStateService.listAeaItemStateByParentId(itemVerId, null, parentId, SecurityContext.getCurrentOrgId());
+        List<AeaItemState> aeaItemStates = aeaItemStateService.listAeaItemStateByParentId(itemVerId, null, parentId, topOrgId);
 
         //先获取parentId材料
         if ("root".equalsIgnoreCase(parentId)) {
@@ -438,7 +437,7 @@ public class ItemGuideService {
             aeaParTheme.setIsAuxiline(("1"));
             aeaParThemes = aeaParThemeService.listAeaParTheme(aeaParTheme);
         }
-        String currentOrgId = SecurityContext.getCurrentOrgId();
+        String currentOrgId = topOrgId;
         if (aeaParThemes.size() > 0) {
             Set<String> themeTypes = aeaParThemes.stream().map(AeaParTheme::getThemeType).collect(Collectors.toSet());
             for (String themeType : themeTypes) {

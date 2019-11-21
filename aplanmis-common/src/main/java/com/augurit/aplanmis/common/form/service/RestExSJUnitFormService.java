@@ -204,7 +204,7 @@ public class RestExSJUnitFormService {
                     }else if(next.getUnitType().equals(GDUnitType.CONSTRUCTION_SUBCONTRACT.getValue()) || next.getUnitType().equals(GDUnitType.LABOR_SUBCONTRACT.getValue())){
                         managerInfo.setLinkmanType(UnitProjLinkmanType.JSFZR.getValue());
                     }else if(next.getUnitType().equals(GDUnitType.SUPERVISION_UNIT.getValue())){
-                        managerInfo.setLinkmanType(UnitProjLinkmanType.JLGCS.getValue());
+                        managerInfo.setLinkmanType(UnitProjLinkmanType.XMZJ.getValue());
                     }
                 }
                 List<AeaUnitProjLinkman> managerInfos = aeaUnitProjLinkmanMapper.listAeaUnitProjLinkman(managerInfo);

@@ -9,6 +9,7 @@ import com.augurit.aplanmis.common.vo.LoginInfoVo;
 import com.augurit.aplanmis.mall.userCenter.service.RestApproveService;
 import com.augurit.aplanmis.mall.userCenter.vo.AeaProjInfoResultVo;
 import com.augurit.aplanmis.mall.userCenter.vo.LifeCycleDiagramVo;
+import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -16,6 +17,7 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -70,7 +72,11 @@ public class RestScheduleController {
             }else{//企业
                 list = approveDataService.getScheduleProjListByUnitInfoIdOrLinkman(loginInfo.getUnitId(), "", keyword, pageNum, pageSize);
             }
-            return new ContentResultForm<PageInfo<AeaProjInfoResultVo>>(true, new PageInfo<>(list.size() > 0 ? list.stream().map(AeaProjInfoResultVo::build).collect(Collectors.toList()) : new ArrayList<>()));
+            PageInfo origPageInfo = new PageInfo<>(list);
+            List<AeaProjInfoResultVo> projsByBuild = list.size() > 0 ? list.stream().map(AeaProjInfoResultVo::build).collect(Collectors.toList()) : new ArrayList<>();
+            PageInfo<AeaProjInfoResultVo> pageInfo = new PageInfo<>(projsByBuild);
+            BeanUtils.copyProperties(origPageInfo,pageInfo,"list");
+            return new ContentResultForm<>(true,pageInfo);
         } catch (Exception e) {
             e.printStackTrace();
             return new ContentResultForm(false,"","查询项目进度列表查询接口异常");

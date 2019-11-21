@@ -7,6 +7,7 @@ import com.augurit.agcloud.opus.common.domain.OpuOmOrg;
 import com.augurit.agcloud.opus.common.mapper.OpuOmOrgMapper;
 import com.augurit.aplanmis.common.domain.AeaParStage;
 import com.augurit.aplanmis.common.domain.AeaParTheme;
+import com.augurit.aplanmis.common.mapper.AeaParThemeMapper;
 import com.augurit.aplanmis.common.service.theme.AeaParThemeService;
 import com.augurit.aplanmis.rest.guide.service.ItemGuideService;
 import com.augurit.aplanmis.rest.guide.vo.OrgVo;
@@ -18,6 +19,7 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -45,6 +47,10 @@ public class ItemGuideRestController {
     private ItemGuideService itemGuideService;
     @Autowired
     private OpuOmOrgMapper opuOmOrgMapper;
+    @Autowired
+    private AeaParThemeMapper aeaParThemeMapper;
+    @Value("${dg.sso.access.platform.org.top-org-id:0368948a-1cdf-4bf8-a828-71d796ba89f6}")
+    private String topOrgId;
 
     /*@GetMapping("/item/list")
     @Transactional(readOnly = true)
@@ -102,7 +108,8 @@ public class ItemGuideRestController {
     @ApiImplicitParam(name = "立项类型", required = true, dataType = "string", paramType = "query")
     public ContentResultForm<List<ThemeVo>> getProjApplyType(String themeType) throws Exception {
         if (StringUtils.isNotBlank(themeType)) {
-            List<AeaParTheme> aeaParThemeList = aeaParThemeService.getAeaParThemeListByThemeType(themeType);
+            List<AeaParTheme> aeaParThemeList = aeaParThemeMapper.getAeaParThemeListByThemeType(themeType, topOrgId);
+            ;
             List<ThemeVo> themeVos = Optional.ofNullable(aeaParThemeList).orElse(new ArrayList<>()).stream().map(ThemeVo::buildTheme).collect(Collectors.toList());
             return new ContentResultForm<>(true, themeVos, "Query success.");
         }
@@ -123,7 +130,6 @@ public class ItemGuideRestController {
     @ApiImplicitParam(name = "itemVerId", value = "事项版本id", required = true, dataType = "String")
     public ResultForm details(String itemVerId) {
         Assert.notNull(itemVerId, "itemVerId is null.");
-
         return new ContentResultForm<>(true, itemGuideService.guideDetails(itemVerId));
     }
 
@@ -151,7 +157,7 @@ public class ItemGuideRestController {
     @ApiOperation(value = "办事指南 --> 材料列表", notes = "根据所选的情形id查询所有材料", httpMethod = "GET")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "itemVerId", value = "事项版本Id", required = true, dataType = "String"),
-            @ApiImplicitParam(name = "itemStateIds", value = "所选情形id", dataType = "collection")})
+            @ApiImplicitParam(name = "itemStateIds", value = "所选情形id")})
     public ResultForm findAllMats(String itemVerId, @RequestParam List<String> itemStateIds) {
         Assert.notNull(itemVerId, "itemVerId不能为空");
 

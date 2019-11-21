@@ -865,7 +865,7 @@ public class AeaImProjPurchaseController {
 
     @PostMapping("/confirmImunit")
     @ApiOperation("中选机构确认")
-    public ResultForm confirmImunit(String projPurchaseId, String unitBiddingId, String opsLinkInfoId, String confirmFlag) throws Exception {
+    public ResultForm confirmImunit(String projPurchaseId, String unitBiddingId, String confirmFlag) throws Exception {
         restImApplyService.confirmImunit(projPurchaseId, unitBiddingId, confirmFlag);
         return new ResultForm(true, "success");
     }

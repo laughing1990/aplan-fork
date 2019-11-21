@@ -414,22 +414,28 @@
           <el-table-column label="电子件信息">
             <template scope="scope" >
               <template v-if="scope.row.matProp=='f'">
-              <el-button size="small" type="default" disabled
-                         v-if="(!scope.row.attCount||scope.row.attCount==0)">未上传
-              </el-button>
-              <el-button size="small" type="default" @click="showElectronDialog(scope.row)" v-else>
-                已上传（{{scope.row.attCount}}）
-              </el-button>
+                <el-button size="small" type="default" disabled
+                           v-if="(!scope.row.attCount||scope.row.attCount==0)">未上传
+                </el-button>
+                <el-button size="small" type="default" @click="showElectronDialog(scope.row)" v-else>
+                  已上传（{{scope.row.attCount}}）
+                </el-button>
               </template>
-            </template>
-            <template scope="scope">
-              <template v-if="scope.row.matProp=='c'">
-              <el-button size="small" type="default" disabled
-                         v-if="(!scope.row.certFileList||scope.row.certFileList.length==0||scope.row.certFileList==null)">未上传
-              </el-button>
-              <el-button size="small" type="default" @click="showLicenseDialog(scope.row)" v-else>
+              <template v-else-if="scope.row.matProp=='c'">
+                <el-button size="small" type="default" disabled
+                v-if="(!scope.row.certFileList||scope.row.certFileList.length==0||scope.row.certFileList==null)">未上传
+                </el-button>
+                <el-button size="small" type="default" @click="showLicenseDialog(scope.row)" v-else>
                 已上传（{{scope.row.certFileList.length}}）
-              </el-button>
+                </el-button>
+              </template>
+              <template v-else>
+                <el-button size="small" type="default" disabled
+                           v-if="(!scope.row.attCount||scope.row.attCount==0)">未上传
+                </el-button>
+                <el-button size="small" type="default" @click="showElectronDialog(scope.row)" v-else>
+                  已上传（{{scope.row.attCount}}）
+                </el-button>
               </template>
             </template>
           </el-table-column>
