@@ -134,6 +134,9 @@ public class RestWebMvcConfig implements WebMvcConfigurer {
     @Value("${spring.servlet.multipart.max-request-size:1024Mb}")
     private String maxRequestSize;
 
+    @Value("${docs.location:file:G:/software/workspace/aplanmis/aplanmis-rest/build/libs/}")
+    private String staticFileLocation;
+
     @Bean
     public MultipartConfigElement multipartConfigElement() {
         MultipartConfigFactory factory = new MultipartConfigFactory();
@@ -151,6 +154,8 @@ public class RestWebMvcConfig implements WebMvcConfigurer {
                 .addResourceHandler("/ui-static/**")
                 .addResourceLocations("/ui-static/")
                 .setCachePeriod(31556926);
+
+        registry.addResourceHandler("/docs/policy/**").addResourceLocations(staticFileLocation);
     }
 
     @Bean
