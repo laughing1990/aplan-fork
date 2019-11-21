@@ -29,6 +29,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -36,7 +37,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("rest/guide")
+@RequestMapping("/rest/guide")
 @Api(value = "办事指南", tags = "办事指南 --> 相关接口")
 public class RestGuideController {
     Logger logger = LoggerFactory.getLogger(RestGuideController.class);
@@ -78,13 +79,20 @@ public class RestGuideController {
 
     @GetMapping("/item/list")
     @ApiOperation(value = "办事指南 --> 获取按部门申报时所有事项列表")
-    @ApiImplicitParams({@ApiImplicitParam(value = "部门ID", name = "orgId", dataType = "string"),
+    @ApiImplicitParams({
+            @ApiImplicitParam(value = "部门ID", name = "orgId", dataType = "string"),
+            @ApiImplicitParam(value = "事项名称", name = "itemName", dataType = "string"),
             @ApiImplicitParam(value = "页数", name = "pageNum"),
             @ApiImplicitParam(value = "页面大小", name = "pageSize")})
-    public ResultForm getAllItemList(String orgId, int pageNum, int pageSize) {
+    public ResultForm getAllItemList(String orgId, @RequestParam(required = false) String itemName, @RequestParam(required = false) Integer pageNum, @RequestParam(required = false) Integer pageSize) {
+        pageNum = pageNum == null ? 1 : pageNum;
+        pageSize = pageSize == null ? 1000 : pageSize;
         try {
             AeaItemBasic aeaItemBasic = new AeaItemBasic();
             if (StringUtils.isEmpty(orgId)) {
+                if (StringUtils.isNotBlank(itemName)) {
+                    aeaItemBasic.setKeyword(itemName);
+                }
                 return new ContentResultForm<>(true, aeaItemBasicService.listAeaItemBasic(aeaItemBasic, pageNum, pageSize, topOrgId));
             } else {
                 return new ContentResultForm<>(true, aeaItemBasicService.getAeaItemBasicListByOrgId(orgId, pageNum, pageSize));

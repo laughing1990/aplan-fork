@@ -573,7 +573,9 @@ ORG_DAY_STATISTICS_ID  ,STATISTICS_RECORD_ID  ,ORG_ID  ,ORG_NAME  ,REGION_ID  ,R
         </if>
         group by REGION_ID, REGION_NAME
         ) a
-        left join BSC_DIC_REGION region on region.REGION_ID = a.regionId order by region.REGION_NUM
+        left join BSC_DIC_REGION region on region.REGION_ID = a.regionId
+        where a.regionId is not null
+        order by region.REGION_NUM
     </select>
 
     <select id="getOrgAcceptStatistics" resultType="AeaAnaOrgDayStatistics">

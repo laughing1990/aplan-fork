@@ -6,332 +6,343 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-	<title>项目审批详情</title>
-	<link rel="stylesheet" href="../../static/css/approveDetails/approveDetails.css"
-	      th:href="@{/css/approveDetails/approveDetails.css}">
-	<script>
-		var ctx = '[[@{/}]]';
-		var project_code = '[[${project_code}]]';
-		var item_instance_code = '[[${item_instance_code}]]';
-		var access_token = '[[${access_token}]]';
-		//var ctx = 'http://192.168.32.46:7050/cp-rest';
-	</script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>项目审批详情</title>
+    <link rel="stylesheet" href="../../static/css/approveDetails/approveDetails.css"
+          th:href="@{/css/approveDetails/approveDetails.css}">
+    <script>
+        var ctx = '[[@{/}]]';
+        var project_code = '[[${project_code}]]';
+        var item_instance_code = '[[${item_instance_code}]]';
+        var access_token = '[[${access_token}]]';
+        //var ctx = 'http://192.168.32.46:7050/cp-rest';
+    </script>
 </head>
 
 <body>
 <div id="approveDetails" v-cloak>
-	<p class="approve-title">[[${proj_name}]]</p>
-	<div class="content">
-		<ul class="nav-tab clearfix">
-			<li class="nav-tab-item"
-			    :class="tabActive==index?'active':''"
-			    :target="item.name"
-			    v-for="(item,index) in tabData"
-			    @click="changeTab(item.name,index)">
-				{{item.label}}
-			</li>
-		</ul>
-		<div class="tab-content-item active" id="baseInfo">
-			<p class="table-header">申报事项信息</p>
-			<table class="table-zebra border-dotted">
-				<tr style="line-height:18px;">
-					<td class="tdOne">项目名称</td>
-					<td class="tdTwo fontColor">{{projInfo.projName}}</td>
-					<td class="tdOne">项目代码</td>
-					<td class="tdTwo">
-						<span>{{projInfo.localCode}}</span>
-					</td>
-				</tr>
-				<tr>
-					<td class="tdOne">项目（法人）单位</td>
-					<td class="tdTwo fontColor">{{projInfo.applicant}}</td>
-					<td class="tdOne">单位证照号码</td>
-					<td class="tdTwo fontColor">{{projInfo.idCard}}</td>
-				</tr>
-				<tr>
-					<td class="tdOne">办件类型</td>
-					<td class="tdTwo">{{iteminstInfo.itemProperty}}</td>
-					<td class="tdOne">受理单位</td>
-					<td class="tdTwo">{{iteminstInfo.approveOrgName}}</td>
-				</tr>
-				<tr>
-					<td class="tdOne">事项名称</td>
-					<td class="tdTwo fontColor">{{iteminstInfo.iteminstName}}</td>
-					<td class="tdOne">事项编号</td>
-					<td class="tdTwo">{{iteminstInfo.iteminstCode}}</td>
-				</tr>
-			</table>
-			<p class="table-header">办理信息</p>
-			<table class="table-zebra border-dotted">
-				<tr>
-					<td class="tdOne">办件单号</td>
-					<td class="tdTwo">{{applyData.applyinstCode}}</td>
-					<td class="tdOne">办件状态</td>
-					<td class="tdTwo">{{applyData.applyinstState}}</td>
-				</tr>
-				<tr>
-					<td class="tdOne">是否计时</td>
-					<td class="tdTwo">{{iteminstInfo.isTiming}}</td>
-					<td class="tdOne">承诺办结时限</td>
-					<td class="tdTwo">{{iteminstInfo.dueNum}}个{{iteminstInfo.bjType}}</td>
-				</tr>
-				<tr>
-					<td>承诺办结时间</td>
-					<td class="tranDate tdTwo">{{iteminstInfo.dueDate | formatDate}}</td>
-				</tr>
-				<tr>
-					<td class="tdOne">最新业务操作</td>
-					<td class="tdTwo">{{iteminstInfo.iteminstState}}</td>
-					<td class="tdOne">最后操作时间</td>
-					<td class="tranDate tdTwo">{{iteminstInfo.modifyTime | formatDate}}</td>
-				</tr>
-				<tr>
-					<td class="tdOne">申请时间</td>
-					<td class="tdTwo tranDate">{{iteminstInfo.startTime | formatDate}}</td>
-					<td class="tdOne">登记时间</td>
-					<td class="tdTwo tranDate">{{iteminstInfo.registerTime | formatDate}}</td>
-				</tr>
-				<tr>
-					<td class="tdOne">受理时间</td>
-					<td class="tranDate tdTwo">{{iteminstInfo.acceptTime | formatDate}}</td>
-					<td class="tdOne">受理核准备注</td>
-					<td class="tdTwo">{{iteminstInfo.signTime | formatDate}}</td>
-				</tr>
-				<tr>
-					<td class="tdOne">办结时间</td>
-					<td class="tranDate tdTwo">{{iteminstInfo.endTime | formatDate}}</td>
-					<td class="tdOne">办结结果</td>
-					<td class="tdTwo">{{iteminstInfo.iteminstState}}</td>
-				</tr>
-				<tr>
-					<td>出文文件</td>
-					<td colspan="3"></td>
-				</tr>
-			</table>
-			<p class="table-header">申请信息</p>
-			<table class="table-zebra border-dotted">
-				<tr>
-					<td class="tdOne">申请来源</td>
-					<td>{{applyData.applyinstSource}}</td>
-				</tr>
-				<tr>
-					<td class="tdOne">申请备注</td>
-					<td>{{applyData.applyinstMemo}}</td>
-				</tr>
-				<tr>
-					<td class="tdOne">申请附加文件</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td class="tdOne">登记备注</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td class="tdOne">登记附加文件</td>
-					<td></td>
-				</tr>
-			</table>
-			<p class="table-header">联系人信息</p>
-			<table class="table-zebra border-dotted">
-				<tr>
-					<td class="tdOne">联系人</td>
-					<td class="tdTwo">{{linkman.linkmanName}}</td>
-					<td class="tdOne">联系人证件号</td>
-					<td class="tdTwo">{{linkman.linkmanCertNo}}</td>
-				</tr>
-				<tr>
-					<td class="tdOne">联系人手机</td>
-					<td class="tdTwo">{{linkman.linkmanMobilePhone}}</td>
-					<td class="tdOne">联系人电话</td>
-					<td class="tdTwo">{{linkman.linkmanOfficePhon}}</td>
-				</tr>
-			</table>
-		</div>
-		<!--材料列表 start-->
-		<div class="tab-content-item" id="materialList">
-			<div class="stageName">{{stageName}}_办件申请材料提交清单
-				<button @click="downAllFile()" class="downFontColor ml20">一键下载</button>
-			</div>
-			<table class="table-zebra border-dotted">
-				<thead class="table-header">
-				<td style="width:5%">序号</td>
-				<td>材料名称</td>
-				<td style="width:5%">应交纸质数量</td>
-				<td style="width:5%">应交电子数量</td>
-				<td style="width:5%">实交纸质数量</td>
-				<td style="width:5%">实交电子数量</td>
-				<td style="width: 20%">递交附件</td>
-				</thead>
+    <p class="approve-title">[[${proj_name}]]</p>
+    <div class="content">
+        <ul class="nav-tab clearfix">
+            <li class="nav-tab-item"
+                :class="tabActive==index?'active':''"
+                :target="item.name"
+                v-for="(item,index) in tabData"
+                @click="changeTab(item.name,index)">
+                {{item.label}}
+            </li>
+        </ul>
+        <div class="tab-content-item active" id="baseInfo">
+            <p class="table-header">申报事项信息</p>
+            <table class="table-zebra border-dotted">
+                <tr style="line-height:18px;">
+                    <td class="tdOne">项目名称</td>
+                    <td class="tdTwo fontColor">{{aeaItemBasic.projName}}</td>
+                    <td class="tdOne">项目代码</td>
+                    <td class="tdTwo">
+                        <span>{{aeaItemBasic.projCode}}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tdOne">项目（法人）单位</td>
+                    <td class="tdTwo fontColor">{{aeaItemBasic.applicant}}</td>
+                    <td class="tdOne">单位证照号码</td>
+                    <td class="tdTwo fontColor">{{aeaItemBasic.idCard}}</td>
+                </tr>
+                <tr>
+                    <td class="tdOne">办件类型</td>
+                    <td class="tdTwo">{{aeaItemBasic.itemProperty}}</td>
+                    <td class="tdOne">受理单位</td>
+                    <td class="tdTwo">{{aeaItemBasic.approveOrgId}}</td>
+                </tr>
+                <tr>
+                    <td class="tdOne">事项名称</td>
+                    <td class="tdTwo fontColor">{{aeaItemBasic.itemName}}</td>
+                    <td class="tdOne">事项编号</td>
+                    <td class="tdTwo">{{aeaItemBasic.itemCode}}</td>
+                </tr>
+            </table>
+            <p class="table-header">办理信息</p>
+            <table class="table-zebra border-dotted">
+                <tr>
+                    <td class="tdOne">办件单号</td>
+                    <td class="tdTwo">{{aeaHiApplyinst.applyinstCode}}</td>
+                    <td class="tdOne">办件状态</td>
+                    <td class="tdTwo">{{aeaHiIteminst.businessState}}</td>
+                </tr>
+                <tr>
+                    <td class="tdOne">是否计时</td>
+                    <td class="tdTwo">{{aeaHiIteminst.isTiming}}</td>
+                    <td class="tdOne">承诺时限</td>
+                    <td class="tdTwo">{{aeaHiIteminst.dueNum}}个{{aeaHiIteminst.bjType}}</td>
+                </tr>
+                <tr>
+                    <td>承诺办结时间</td>
+                    <td class="tranDate tdTwo">{{aeaHiIteminst.dueDate | formatDate}}</td>
+                </tr>
+                <tr>
+                    <td class="tdOne">最新业务操作</td>
+                    <td class="tdTwo">{{aeaHiIteminst.businessState}}</td>
+                    <td class="tdOne">最后操作时间</td>
+                    <td class="tranDate tdTwo">{{aeaHiIteminst.modifyTime | formatDate}}</td>
+                </tr>
+                <tr>
+                    <td>申请时间</td>
+                    <td class="tranDate">{{aeaHiIteminst.startTime | formatDate}}</td>
+                </tr>
+                <tr>
+                    <td>登记时间</td>
+                    <td colspan="3" class="tranDate">{{aeaHiIteminst.registerTime | formatDate}}</td>
+                </tr>
+                <tr>
+                    <td class="tdOne">受理时间</td>
+                    <td class="tranDate tdTwo">{{aeaHiIteminst.signTime | formatDate}}</td>
+                    <td class="tdOne">受理核准备注</td>
+                    <td class="tdTwo">{{aeaHiIteminst.signTime | formatDate}}</td>
+                </tr>
+                <tr>
+                    <td class="tdOne">办结时间</td>
+                    <td class="tranDate tdTwo">{{aeaHiIteminst.endTime | formatDate}}</td>
+                    <td class="tdOne">办结结果</td>
+                    <td class="tdTwo">{{aeaHiIteminst.businessState}}</td>
+                </tr>
+                <tr>
+                    <td>出文文件</td>
+                    <td colspan="3"></td>
+                </tr>
+            </table>
+            <p class="table-header">申请信息</p>
+            <table class="table-zebra border-dotted">
+                <tr>
+                    <td class="tdOne">申请来源</td>
+                    <td>{{aeaHiApplyinst.applyinstSource}}</td>
+                </tr>
+                <tr>
+                    <td class="tdOne">申请备注</td>
+                    <td>{{aeaHiApplyinst.applyinstMemo}}</td>
+                </tr>
+                <tr>
+                    <td class="tdOne">申请附加文件</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="tdOne">登记备注</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="tdOne">登记附加文件</td>
+                    <td></td>
+                </tr>
+            </table>
+            <p class="table-header">联系人信息</p>
+            <table class="table-zebra border-dotted">
+                <tr>
+                    <td class="tdOne">联系人</td>
+                    <td class="tdTwo">{{aeaLinkmanInfo.linkmanName}}</td>
+                    <td class="tdOne">联系人证件号</td>
+                    <td class="tdTwo">{{aeaLinkmanInfo.linkmanCertNo}}</td>
+                </tr>
+                <tr>
+                    <td class="tdOne">联系人手机</td>
+                    <td class="tdTwo">{{aeaLinkmanInfo.linkmanMobilePhone}}</td>
+                    <td class="tdOne">联系人电话</td>
+                    <td class="tdTwo">{{aeaLinkmanInfo.linkmanOfficePhon}}</td>
+                </tr>
+            </table>
+        </div>
+        <!--材料列表 start-->
+        <div class="tab-content-item" id="materialList">
+            <div class="stageName">{{stageName}}_办件申请材料提交清单
+                <button @click="downAllFile()" class="downFontColor ml20">一键下载</button>
+            </div>
+            <table class="table-zebra border-dotted">
+                <thead class="table-header">
+                <td style="width:5%">序号</td>
+                <td>材料名称</td>
+                <td style="width:5%">应交纸质数量</td>
+                <td style="width:5%">应交电子数量</td>
+                <td style="width:5%">实交纸质数量</td>
+                <td style="width:5%">实交电子数量</td>
+                <td style="width: 20%">递交附件</td>
+                </thead>
 
-				<tbody>
-				<tr>
-					<td colspan="7">{{stageName}}共性材料</td>
-				</tr>
-				<tr v-if="commonMatList.length==0">
-					<td colspan="7">无</td>
-				</tr>
-				<tr v-else v-for="(item,itemIndex) in commonMatList" :key="itemIndex">
-					<td>{{itemIndex+1}}</td>
-					<td>{{item.matinstName}}</td>
-					<td>{{item.duePaperCount}}</td>
-					<td>{{item.dueCopyCount}}</td>
-					<td>{{item.realPaperCount=='' || item.realPaperCount==null ? '0' : item.realPaperCount}}</td>
-					<td>{{item.attCount==''||item.attCount==null ? '0': item.attCount }}</td>
-					<td v-if="item.attFileList.length>0" :key="item.matinstId">
-						<a v-if="item.attFileList.length==1">
-							<p v-for="(att,attIndex) in item.attFileList" @click="downOneFile(att.fileId)" class="downFontColor" :key="att.fileId">
-								{{itemIndex+1}}&nbsp;&nbsp;{{att.fileName}}
-							</p>
-						</a>
-						<a v-else>
-							<p v-for="(att,attIndex) in item.attFileList" :key="att.fileId" class="downFontColor" @click="downOneFile(att.fileId)">
-								{{itemIndex+1}}.{{attIndex+1}}&nbsp;&nbsp;{{att.fileName}}
-							</p>
-						</a>
+                <tbody>
+                <tr>
+                    <td colspan="7">{{stageName}}共性材料</td>
+                </tr>
+                <tr v-if="commonMatList.length==0">
+                    <td colspan="7">无</td>
+                </tr>
+                <tr v-else v-for="(item,itemIndex) in commonMatList" :key="itemIndex">
+                    <td>{{itemIndex+1}}</td>
+                    <td>{{item.matinstName}}</td>
+                    <td>{{item.duePaperCount}}</td>
+                    <td>{{item.dueCopyCount}}</td>
+                    <td>{{item.realPaperCount=='' || item.realPaperCount==null ? '0' : item.realPaperCount}}</td>
+                    <td>{{item.attCount==''||item.attCount==null ? '0': item.attCount }}</td>
+                    <td v-if="item.attFileList.length>0" :key="item.matinstId">
+                        <a v-if="item.attFileList.length==1">
+                            <p v-for="(att,attIndex) in item.attFileList" @click="downOneFile(att.fileId)"
+                               class="downFontColor" :key="att.fileId">
+                                {{itemIndex+1}}&nbsp;&nbsp;{{att.fileName}}
+                            </p>
+                        </a>
+                        <a v-else>
+                            <p v-for="(att,attIndex) in item.attFileList" :key="att.fileId" class="downFontColor"
+                               @click="downOneFile(att.fileId)">
+                                {{itemIndex+1}}.{{attIndex+1}}&nbsp;&nbsp;{{att.fileName}}
+                            </p>
+                        </a>
 
-						<p>共{{item.attFileList.length}}个附件<a @click="downFile(item.matinstId)" class="cursorStyle ml20">全部下载</a></p>
-					</td>
-					<td v-else :key="item.matinstId">无</td>
-				</tr>
-				</tbody>
-				<tbody v-for="(item,key,index) in iteminstMat">
-				<tr>
-					<td colspan="7">{{key}}</td>
-				</tr>
-				<tr v-if="item.length==0">
-					<td colspan="7">无</td>
-				</tr>
-				<tr v-else v-for="(mat,matIndex) in item" :key="matIndex">
-					<td>{{matIndex+1}}</td>
-					<td>{{mat.matinstName}}</td>
-					<td>{{mat.duePaperCount}}</td>
-					<td>{{mat.dueCopyCount}}</td>
-					<td>{{mat.realPaperCount=='' || mat.realPaperCount==null ? '0' : mat.realPaperCount}}</td>
-					<td>{{mat.attCount==''||mat.attCount==null ? '0': mat.attCount }}</td>
-					<td v-if="mat.attFileList.length>0" :key="mat.matinstId">
-						<a v-if="mat.attFileList.length==1">
-							<p v-for="(att,attIndex) in mat.attFileList" @click="downOneFile(att.fileId)" class="downFontColor" :key="att.fileId">
-								{{matIndex+1}}&nbsp;&nbsp;{{att.fileName}}
-							</p>
-						</a>
-						<a v-else>
-							<p v-for="(att,attIndex) in mat.attFileList" :key="att.fileId" class="downFontColor" @click="downOneFile(att.fileId)">
-								{{matIndex+1}}.{{attIndex+1}}&nbsp;&nbsp;{{att.fileName}}
-							</p>
-						</a>
-						<p>共{{mat.attFileList.length}}个附件<a @click="downFile(mat.matinstId)" class="cursorStyle ml20">全部下载</a></p>
-					</td>
-					<td v-else :key="mat.matinstId">无</td>
-				</tr>
-				</tbody>
-				<tbody>
-				<tr>
-					<td colspan="7">审批部门内部借阅条件</td>
-				</tr>
-				<tr v-if="officeMatList.length==0">
-					<td colspan="7">无</td>
-				</tr>
-				<tr v-else v-for="(item,itemIndex) in officeMatList" :key="itemIndex">
-					<td>{{itemIndex+1}}</td>
-					<td>{{item.matinstName}}</td>
-					<td>{{item.duePaperCount}}</td>
-					<td>{{item.dueCopyCount}}</td>
-					<td>{{item.realPaperCount=='' || item.realPaperCount==null ? '0' : item.realPaperCount}}</td>
-					<td>{{item.attCount==''||item.attCount==null ? '0': item.attCount }}</td>
-					<td v-if="item.attFileList.length>0" :key="item.matinstId">
-						<a v-if="item.attFileList.length==1">
-							<p v-for="(att,attIndex) in item.attFileList" @click="downOneFile(att.fileId)" class="downFontColor" :key="att.fileId">
-								{{itemIndex+1}}&nbsp;&nbsp;{{att.fileName}}
-							</p>
-						</a>
-						<a v-else>
-							<p v-for="(att,attIndex) in item.attFileList" :key="att.fileId" class="downFontColor" @click="downOneFile(att.fileId)">
-								{{itemIndex+1}}.{{attIndex+1}}&nbsp;&nbsp;{{att.fileName}}
-							</p>
-						</a>
-						<p>共{{item.attFileList.length}}个附件<a @click="downFile(item.matinstId)" class="cursorStyle ml20">全部下载</a></p>
-					</td>
-					<td v-else :key="item.matinstId">无</td>
-				</tr>
-				</tbody>
-			</table>
-		</div>
-		<!--<div class="tab-content-item" id="checkOption">核查意见</div>-->
-		<div class="tab-content-item" id="checkProcess">
-			<table class="table-zebra border-dotted">
-				<thead class="table-header">
-				<td>序号</td>
-				<td>环节名称</td>
-				<td>办理人</td>
-				<td>时间</td>
-				<td>操作</td>
-				<td>备注/意见/原由</td>
-				<td>相关文件</td>
-				<td>回执单</td>
-				<td>短信发送情况</td>
-				</thead>
-				<tbody>
-				<tr v-if="historyApproveProcessData.length==0">
-					<td colspan="9">暂无数据</td>
-				</tr>
-				<tr v-for="(item,itemIndex) in historyApproveProcessData" :key="itemIndex">
-					<td>{{itemIndex+1}}</td>
-					<td>{{item.nodeName}}</td>
-					<td>{{item.taskAssignee}}</td>
-					<td>{{item.sigeInDate|formatDate}}</td>
-					<td>{{item.nodeName}}</td>
-					<td>{{item.commentMessage}}</td>
-					<td v-if="item.fileList>0">
-						<a v-for="(att,attIndex) in item.fileList" class="downFontColor">{{att.newAttName}}</a>
-					</td>
-					<td v-else>无</td>
-					<td v-if="item.receiveList>0">
-						<a v-for="(receive,receiveIndex) in item.receiveList">
-							【{{receive.receiveTime|formatDate}} {{receive.receiveName}}】
-						</a>
-					</td>
-					<td v-else>无</td>
-					<td v-if="item.smsDateList>0">
-						<a v-for="(sms,smsIndex) in item.smsDateList" class="downFontColor">{{sms}}</a>
-					</td>
-					<td v-else>无</td>
-				</tr>
-				</tbody>
-			</table>
-		</div>
+                        <p>共{{item.attFileList.length}}个附件<a @click="downFile(item.matinstId)" class="cursorStyle ml20">全部下载</a>
+                        </p>
+                    </td>
+                    <td v-else :key="item.matinstId">无</td>
+                </tr>
+                </tbody>
+                <tbody v-for="(item,key,index) in iteminstMat">
+                <tr>
+                    <td colspan="7">{{key}}</td>
+                </tr>
+                <tr v-if="item.length==0">
+                    <td colspan="7">无</td>
+                </tr>
+                <tr v-else v-for="(mat,matIndex) in item" :key="matIndex">
+                    <td>{{matIndex+1}}</td>
+                    <td>{{mat.matinstName}}</td>
+                    <td>{{mat.duePaperCount}}</td>
+                    <td>{{mat.dueCopyCount}}</td>
+                    <td>{{mat.realPaperCount=='' || mat.realPaperCount==null ? '0' : mat.realPaperCount}}</td>
+                    <td>{{mat.attCount==''||mat.attCount==null ? '0': mat.attCount }}</td>
+                    <td v-if="mat.attFileList.length>0" :key="mat.matinstId">
+                        <a v-if="mat.attFileList.length==1">
+                            <p v-for="(att,attIndex) in mat.attFileList" @click="downOneFile(att.fileId)"
+                               class="downFontColor" :key="att.fileId">
+                                {{matIndex+1}}&nbsp;&nbsp;{{att.fileName}}
+                            </p>
+                        </a>
+                        <a v-else>
+                            <p v-for="(att,attIndex) in mat.attFileList" :key="att.fileId" class="downFontColor"
+                               @click="downOneFile(att.fileId)">
+                                {{matIndex+1}}.{{attIndex+1}}&nbsp;&nbsp;{{att.fileName}}
+                            </p>
+                        </a>
+                        <p>共{{mat.attFileList.length}}个附件<a @click="downFile(mat.matinstId)" class="cursorStyle ml20">全部下载</a>
+                        </p>
+                    </td>
+                    <td v-else :key="mat.matinstId">无</td>
+                </tr>
+                </tbody>
+                <tbody>
+                <tr>
+                    <td colspan="7">审批部门内部借阅条件</td>
+                </tr>
+                <tr v-if="officeMatList.length==0">
+                    <td colspan="7">无</td>
+                </tr>
+                <tr v-else v-for="(item,itemIndex) in officeMatList" :key="itemIndex">
+                    <td>{{itemIndex+1}}</td>
+                    <td>{{item.matinstName}}</td>
+                    <td>{{item.duePaperCount}}</td>
+                    <td>{{item.dueCopyCount}}</td>
+                    <td>{{item.realPaperCount=='' || item.realPaperCount==null ? '0' : item.realPaperCount}}</td>
+                    <td>{{item.attCount==''||item.attCount==null ? '0': item.attCount }}</td>
+                    <td v-if="item.attFileList.length>0" :key="item.matinstId">
+                        <a v-if="item.attFileList.length==1">
+                            <p v-for="(att,attIndex) in item.attFileList" @click="downOneFile(att.fileId)"
+                               class="downFontColor" :key="att.fileId">
+                                {{itemIndex+1}}&nbsp;&nbsp;{{att.fileName}}
+                            </p>
+                        </a>
+                        <a v-else>
+                            <p v-for="(att,attIndex) in item.attFileList" :key="att.fileId" class="downFontColor"
+                               @click="downOneFile(att.fileId)">
+                                {{itemIndex+1}}.{{attIndex+1}}&nbsp;&nbsp;{{att.fileName}}
+                            </p>
+                        </a>
+                        <p>共{{item.attFileList.length}}个附件<a @click="downFile(item.matinstId)" class="cursorStyle ml20">全部下载</a>
+                        </p>
+                    </td>
+                    <td v-else :key="item.matinstId">无</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <!--<div class="tab-content-item" id="checkOption">核查意见</div>-->
+        <div class="tab-content-item" id="checkProcess">
+            <table class="table-zebra border-dotted">
+                <thead class="table-header">
+                <td>序号</td>
+                <td>环节名称</td>
+                <td>办理人</td>
+                <td>时间</td>
+                <td>操作</td>
+                <td>备注/意见/原由</td>
+                <td>相关文件</td>
+                <td>回执单</td>
+                <td>短信发送情况</td>
+                </thead>
+                <tbody>
+                <tr v-if="historyApproveProcessData.length==0">
+                    <td colspan="9">暂无数据</td>
+                </tr>
+                <tr v-for="(item,itemIndex) in historyApproveProcessData" :key="itemIndex">
+                    <td>{{itemIndex+1}}</td>
+                    <td>{{item.nodeName}}</td>
+                    <td>{{item.taskAssignee}}</td>
+                    <td>{{item.sigeInDate|formatDate}}</td>
+                    <td>{{item.nodeName}}</td>
+                    <td>{{item.commentMessage}}</td>
+                    <td v-if="item.fileList>0">
+                        <a v-for="(att,attIndex) in item.fileList" class="downFontColor">{{att.newAttName}}</a>
+                    </td>
+                    <td v-else>无</td>
+                    <td v-if="item.receiveList>0">
+                        <a v-for="(receive,receiveIndex) in item.receiveList">
+                            【{{receive.receiveTime|formatDate}} {{receive.receiveTypeName}}】
+                        </a>
+                    </td>
+                    <td v-else>无</td>
+                    <td v-if="item.smsDateList>0">
+                        <a v-for="(sms,smsIndex) in item.smsDateList" class="downFontColor">{{sms}}</a>
+                    </td>
+                    <td v-else>无</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
 
-		<div class="tab-content-item" id="parallelApprove">
-			<table class="table-zebra border-dotted">
-				<thead class="table-header">
-				<td>事项名称</td>
-				<td>审批部门</td>
-				<td>当前状态</td>
-				<td>相关文件</td>
-				<td>查阅办理过程</td>
-				</thead>
-				<tbody>
-				<tr v-if="parallelApproveData.length==0">
-					<td colspan="9">暂无数据</td>
-				</tr>
-				<tr v-for="(item,itemIndex) in parallelApproveData" :key="itemIndex">
-					<td>{{item.itemName}}</td>
-					<td>{{item.approveOrgName}}</td>
-					<td>{{item.currentState}}</td>
-					<td v-if="item.fileList>0">
-						<a v-for="(att,attIndex) in item.fileList" @click="downOneFile(att.fileId)" class="downFontColor">{{att.fileName}}</a>
-					</td>
-					<td v-else>无</td>
-					<td>
-						<a @click="listHistoryApproveProcessOther(item.projCode,item.iteminstId)" style="color: #5A98C9;cursor: pointer;">查阅办理过程</a>
-					</td>
-				</tr>
-				</tbody>
-			</table>
-		</div>
-	</div>
+        <div class="tab-content-item" id="parallelApprove">
+            <table class="table-zebra border-dotted">
+                <thead class="table-header">
+                <td>事项名称</td>
+                <td>审批部门</td>
+                <td>当前状态</td>
+                <td>相关文件</td>
+                <td>查阅办理过程</td>
+                </thead>
+                <tbody>
+                <tr v-if="parallelApproveData.length==0">
+                    <td colspan="9">暂无数据</td>
+                </tr>
+                <tr v-for="(item,itemIndex) in parallelApproveData" :key="itemIndex">
+                    <td>{{item.itemName}}</td>
+                    <td>{{item.approveOrgName}}</td>
+                    <td>{{item.currentState}}</td>
+                    <td v-if="item.fileList>0">
+                        <a v-for="(att,attIndex) in item.fileList" @click="downOneFile(att.fileId)"
+                           class="downFontColor">{{att.fileName}}</a>
+                    </td>
+                    <td v-else>无</td>
+                    <td><a @click="listHistoryApproveProcessOther(item.projCode,item.iteminstId)"
+                           style="color: #5A98C9;cursor: pointer;">查阅办理过程</a></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 
 </div>

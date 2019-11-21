@@ -401,7 +401,7 @@ public class OrgEfficiencySupervisionController {
     public ResultForm getRegionOrgItemUseTimeStatistics(String startTime, String endTime, String type, String regionId, String orgId) {
 
         try {
-            List<Map<String, Object>> result = orgEfficiencySupersionService.getItemUseTimeStatistics(startTime, endTime, type, regionId, orgId);
+            List<UseTimeStatisticsVo> result = orgEfficiencySupersionService.getItemUseTimeStatistics(startTime, endTime, type, regionId, orgId);
             return new ContentResultForm<>(true, result, "查询成功！");
         } catch (Exception e) {
             log.error("地区/部门/事项 事项实例用时情况统计异常", e);

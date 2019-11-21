@@ -80,7 +80,7 @@ public class IndexController {
     @GetMapping("/approve/details")
     @Transactional(readOnly = true)
     @ApiOperation(value = "首页 --> 审批情况", notes = "首页中查询所有事项的审批情况", httpMethod = "GET")
-    public ContentResultForm<List<AnnounceDataDto>> listApproveDetails(int pageNum, int pageSize) {
+    public ContentResultForm<List<AnnounceDataDto>> listApproveDetails() {
         try {
             return new ContentResultForm<>(true, approveDataService.searchAnnounceDataList(StringUtils.EMPTY, topOrgId));
         } catch (Exception e) {
@@ -244,22 +244,22 @@ public class IndexController {
         Map<String, Map<String, String>> docGuides = new HashMap<>();
         Map<String, String> guides = new LinkedHashMap<>();
 
-        guides.put("/docs/handingGuides/政府投资工程建设项目（一般房屋建筑类）办事指南.docx", "政府投资工程建设项目（一般房屋建筑类）办事指南");
-        guides.put("/docs/handingGuides/政府投资工程建设项目（不新增用地不改变市政管线、管径、走向的既有城市道路、园林绿化、市政管线翻修改造项目）办事指南.docx", "政府投资工程建设项目（不新增用地不改变市政管线、管径、走向的既有城市道路、园林绿化、市政管线翻修改造项目）办事指南");
-        guides.put("/docs/handingGuides/政府投资工程建设项目（房屋内部装饰装修不改变建筑功能或性质）办事指南.docx", "政府投资工程建设项目（房屋内部装饰装修不改变建筑功能或性质）办事指南");
-        guides.put("/docs/handingGuides/政府投资工程建设项目（现状改建项目老旧小区改造等）办事指南.docx", "政府投资工程建设项目（现状改建项目老旧小区改造等）办事指南");
-        guides.put("/docs/handingGuides/政府投资工程建设项目（线性工程类--不新增用地改变市政管线、管径、走向的既有城市道路、园林绿化、市政管线翻修改造项目）办事指南.docx", "政府投资工程建设项目（线性工程类--不新增用地改变市政管线、管径、走向的既有城市道路、园林绿化、市政管线翻修改造项目）办事指南");
-        guides.put("/docs/handingGuides/政府投资工程建设项目（线性工程类--新建城市道路、园林绿化、市政管线工程）办事指南.docx", "政府投资工程建设项目（线性工程类--新建城市道路、园林绿化、市政管线工程）办事指南");
-        guides.put("/docs/handingGuides/社会投资工程建设项目（一般房屋建筑类）办事指南.docx", "社会投资工程建设项目（一般房屋建筑类）办事指南");
-        guides.put("/docs/handingGuides/社会投资工程建设项目（不新增用地不改变市政管线、管径、走向的既有城市道路、园林绿化、市政管线翻修改造项目）办事指南.docx", "社会投资工程建设项目（不新增用地不改变市政管线、管径、走向的既有城市道路、园林绿化、市政管线翻修改造项目）办事指南");
-        guides.put("/docs/handingGuides/社会投资工程建设项目（房屋内部装饰装修不改变建筑功能或性质）办事指南.docx", "社会投资工程建设项目（房屋内部装饰装修不改变建筑功能或性质）办事指南");
-        guides.put("/docs/handingGuides/社会投资工程建设项目（现状改建项目老旧小区改造等）办事指南.docx", "社会投资工程建设项目（现状改建项目老旧小区改造等）办事指南");
-        guides.put("/docs/handingGuides/社会投资工程建设项目（线性工程类--不新增用地改变市政管线、管径、走向的既有城市道路、园林绿化、市政管线翻修改造项目）办事指南.docx", "社会投资工程建设项目（线性工程类--不新增用地改变市政管线、管径、走向的既有城市道路、园林绿化、市政管线翻修改造项目）办事指南");
-        guides.put("/docs/handingGuides/社会投资工程建设项目（线性工程类--新建城市道路、园林绿化、市政管线工程）办事指南.docx", "社会投资工程建设项目（线性工程类--新建城市道路、园林绿化、市政管线工程）办事指南");
-        guides.put("/docs/handingGuides/小型社会投资项目（符合区域环评、不涉及环境敏感区的建筑面积20000平方米以下的仓储、厂房、研发楼项目）办事指南.docx", "小型社会投资项目（符合区域环评、不涉及环境敏感区的建筑面积20000平方米以下的仓储、厂房、研发楼项目）办事指南");
-        guides.put("/docs/handingGuides/建设工程设计方案联合审查办事指南.docx", "建设工程设计方案联合审查办事指南");
-        guides.put("/docs/handingGuides/施工图联合审查办事指南.docx", "施工图联合审查办事指南");
-        guides.put("/docs/handingGuides/竣工联合验收办事指南.docx", "竣工联合验收办事指南");
+        guides.put("/docs/policy/handingGuides/政府投资工程建设项目（一般房屋建筑类）办事指南.docx", "政府投资工程建设项目（一般房屋建筑类）办事指南");
+        guides.put("/docs/policy/handingGuides/政府投资工程建设项目（不新增用地不改变市政管线、管径、走向的既有城市道路、园林绿化、市政管线翻修改造项目）办事指南.docx", "政府投资工程建设项目（不新增用地不改变市政管线、管径、走向的既有城市道路、园林绿化、市政管线翻修改造项目）办事指南");
+        guides.put("/docs/policy/handingGuides/政府投资工程建设项目（房屋内部装饰装修不改变建筑功能或性质）办事指南.docx", "政府投资工程建设项目（房屋内部装饰装修不改变建筑功能或性质）办事指南");
+        guides.put("/docs/policy/handingGuides/政府投资工程建设项目（现状改建项目老旧小区改造等）办事指南.docx", "政府投资工程建设项目（现状改建项目老旧小区改造等）办事指南");
+        guides.put("/docs/policy/handingGuides/政府投资工程建设项目（线性工程类--不新增用地改变市政管线、管径、走向的既有城市道路、园林绿化、市政管线翻修改造项目）办事指南.docx", "政府投资工程建设项目（线性工程类--不新增用地改变市政管线、管径、走向的既有城市道路、园林绿化、市政管线翻修改造项目）办事指南");
+        guides.put("/docs/policy/handingGuides/政府投资工程建设项目（线性工程类--新建城市道路、园林绿化、市政管线工程）办事指南.docx", "政府投资工程建设项目（线性工程类--新建城市道路、园林绿化、市政管线工程）办事指南");
+        guides.put("/docs/policy/handingGuides/社会投资工程建设项目（一般房屋建筑类）办事指南.docx", "社会投资工程建设项目（一般房屋建筑类）办事指南");
+        guides.put("/docs/policy/handingGuides/社会投资工程建设项目（不新增用地不改变市政管线、管径、走向的既有城市道路、园林绿化、市政管线翻修改造项目）办事指南.docx", "社会投资工程建设项目（不新增用地不改变市政管线、管径、走向的既有城市道路、园林绿化、市政管线翻修改造项目）办事指南");
+        guides.put("/docs/policy/handingGuides/社会投资工程建设项目（房屋内部装饰装修不改变建筑功能或性质）办事指南.docx", "社会投资工程建设项目（房屋内部装饰装修不改变建筑功能或性质）办事指南");
+        guides.put("/docs/policy/handingGuides/社会投资工程建设项目（现状改建项目老旧小区改造等）办事指南.docx", "社会投资工程建设项目（现状改建项目老旧小区改造等）办事指南");
+        guides.put("/docs/policy/handingGuides/社会投资工程建设项目（线性工程类--不新增用地改变市政管线、管径、走向的既有城市道路、园林绿化、市政管线翻修改造项目）办事指南.docx", "社会投资工程建设项目（线性工程类--不新增用地改变市政管线、管径、走向的既有城市道路、园林绿化、市政管线翻修改造项目）办事指南");
+        guides.put("/docs/policy/handingGuides/社会投资工程建设项目（线性工程类--新建城市道路、园林绿化、市政管线工程）办事指南.docx", "社会投资工程建设项目（线性工程类--新建城市道路、园林绿化、市政管线工程）办事指南");
+        guides.put("/docs/policy/handingGuides/小型社会投资项目（符合区域环评、不涉及环境敏感区的建筑面积20000平方米以下的仓储、厂房、研发楼项目）办事指南.docx", "小型社会投资项目（符合区域环评、不涉及环境敏感区的建筑面积20000平方米以下的仓储、厂房、研发楼项目）办事指南");
+        guides.put("/docs/policy/handingGuides/建设工程设计方案联合审查办事指南.docx", "建设工程设计方案联合审查办事指南");
+        guides.put("/docs/policy/handingGuides/施工图联合审查办事指南.docx", "施工图联合审查办事指南");
+        guides.put("/docs/policy/handingGuides/竣工联合验收办事指南.docx", "竣工联合验收办事指南");
         docGuides.put("bszn", guides);
 
         return new ContentResultForm<>(true, docGuides);

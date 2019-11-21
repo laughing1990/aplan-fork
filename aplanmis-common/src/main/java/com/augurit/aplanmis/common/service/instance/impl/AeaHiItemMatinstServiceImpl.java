@@ -19,6 +19,7 @@ import com.augurit.aplanmis.common.mapper.AeaHiItemMatinstMapper;
 import com.augurit.aplanmis.common.mapper.AeaItemMatMapper;
 import com.augurit.aplanmis.common.service.file.FileUtilsService;
 import com.augurit.aplanmis.common.service.instance.AeaHiItemMatinstService;
+import com.augurit.aplanmis.common.vo.MyMatFilesVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,10 +63,10 @@ public class AeaHiItemMatinstServiceImpl implements AeaHiItemMatinstService {
         return aeaHiItemMatinstMapper.getMatinstListByIteminstIds(iteminstIds, isInput);
     }
 
-    public List<AeaHiItemMatinst> getMatinstListByIteminstIdsAndKeyword(String[] iteminstIds, String isInput,String keyword) throws Exception {
+    public List<MyMatFilesVo> getMatinstListByIteminstIdsAndKeyword(String[] iteminstIds, String isInput, String keyword,String isAtt) throws Exception {
         if (iteminstIds.length < 1) throw new Exception("事项实例ID数组长度为0");
         if (StringUtils.isBlank(isInput)) throw new Exception("isInput不能为空");
-        return aeaHiItemMatinstMapper.getMatinstListByIteminstIdsAndKeyword(iteminstIds, isInput,keyword);
+        return aeaHiItemMatinstMapper.getMatinstListByIteminstIdsAndKeyword(iteminstIds, isInput,keyword,isAtt);
     }
 
 

@@ -1,0 +1,129 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>办事指南</title>
+    <meta content="text/html;charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+    <link rel="stylesheet" href="../../static/css/common/bootstrap.css"
+          th:href="@{/webjars/bootstrap/4.3.1/css/bootstrap.css}"/>
+    <link rel="stylesheet" href="../../static/css/common/reset.css" th:href="@{/css/common/reset.css}">
+    <link rel="stylesheet" href="../../static/css/common/common.css" th:href="@{/css/common/common.css}">
+    <link rel="stylesheet" href="../../static/css/guild/list.css" th:href="@{/css/guild/list.css}">
+    <script>
+        var ctx = '[[@{/}]]';
+    </script>
+</head>
+<body>
+<!-- 办事指南list -->
+<div id="app" class="wrapper" v-cloak>
+    <!-- 头部 -->
+    <div class="header-handel clearfix">
+        <div class="search-box fl">
+            <div class="search">
+                <input type="search" class="search-inp" placeholder="请输入事项关键词"
+                       v-model="matterKeyWord" @keyup="seatchFormKeyboard($event)"/>
+                <span class="search-btn" :class="[matterKeyWord.length ? 'active':'']" @click="searchMatter"></span>
+            </div>
+        </div>
+        <div class="filter-box fr" @click="filterSliderStateChange('show')">
+            <div class="filter"></div>
+        </div>
+    </div>
+
+    <!-- content -->
+    <div class="content">
+        <div class="title-box">
+            <p class="title-tip">&nbsp;&nbsp;事项列表</p>
+        </div>
+        <!-- 列表 -->
+        <div class="list-box" @click="jumpToDetail">
+            <div class="list-item" :data-id="item.itemVerId" v-for="item in matterList">
+                <div class="item-tag">
+                    <span></span>
+                </div>
+                <div class="item-tip" :data-id="item.itemVerId">{{item.itemName}}</div>
+                <div class="item-right">
+                    <span></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 侧滑筛选栏与侧滑遮罩 -->
+    <div class="filter-slider" :class="[filterMaskFlag ? 'filter-slider-active':'']">
+        <div class="slider-content">
+            <!-- 主题分类 -->
+            <div class="filter-box">
+                <div class="filter-group">主题分类</div>
+                <div class="filter-content clearfix">
+                    <div class="filter-item" :class="[item.select ? 'filter-item-active':'']"
+                         v-for="item in filterData.themeList" @click="themeSelect(item)">
+                        <span>{{item.themeName}}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 阶段分类 -->
+            <div class="filter-box" v-if="filterData.stageList && filterData.stageList.length">
+                <div class="filter-group">阶段分类</div>
+                <div class="filter-content clearfix">
+                    <div class="filter-item" :class="[item.select ? 'filter-item-active':'']"
+                         v-for="item in filterData.stageList" @click="stageSelect(item)">
+                        <span>{{item.stageName}}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 部门分类 -->
+            <div class="filter-box">
+                <div class="filter-group">部门分类</div>
+                <div class="filter-content clearfix">
+                    <div class="filter-item" :class="[item.select ? 'filter-item-active':'']"
+                         v-for="item in filterData.departList" @click="departSelect(item)">
+                        <span>{{item.orgName}}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 重置，确定区 -->
+        <div class="filter-handel">
+            <div class="handel handel-left" :class="[isSelect ? 'active':'']"
+                 @click="resetFilter">重置
+            </div>
+            <div class="handel handel-right" @click="fetchMatterFromFilter">确定</div>
+        </div>
+    </div>
+    <div class="filter-mask" v-if="filterMaskFlag" @click="filterSliderStateChange('hide')"></div>
+
+
+    <!-- loading -->
+    <div class="loading" v-if="loading">
+        <div class="loading-content">
+            <span class="loading-icon"></span>
+            <p class="loading-tip">Loading</p>
+        </div>
+    </div>
+    <!-- alert -->
+    <div class="alert-wrapper" v-if="alertData.alertStatus">
+        <div class="alert-content">
+            <div class="alert-msg">{{alertData.alertMsg}}</div>
+            <div class="alert-handel" @click="_alertState(false, '')">确定</div>
+        </div>
+    </div>
+    <!-- toast -->
+    <div class="toast-wrapper" v-if="toastData.toastStatus">
+        <div class="toast-content">{{toastData.toastMsg}}</div>
+    </div>
+</div>
+</body>
+<script src="../../static/js/common/lib/jquery.js" th:src="@{/webjars/jquery/3.4.0/jquery.js}"></script>
+<script scr="../../static/js/common/lib/bootstrap.js" th:src="@{/webjars/bootstrap/4.3.1/js/bootstrap.js}"></script>
+<script src="../../static/js/common/lib/vue.js" th:src="@{/js/common/lib/vue.js}"></script>
+<script src="../../static/js/common/rem.js" th:src="@{/js/common/rem.js}"></script>
+<script src="../../static/js/common/common.js" th:src="@{/js/common/common.js}"></script>
+<script src="../../static/js/common/mixin.js" th:src="@{/js/common/mixin.js}"></script>
+<script src="../../static/js/guild/list.js" th:src="@{/js/guild/list.js}"></script>
+
+</html>

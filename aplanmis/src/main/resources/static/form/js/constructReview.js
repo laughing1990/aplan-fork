@@ -272,7 +272,7 @@ var app = new Vue({
             vm.formDataSheJj = {};
           } else {
             for (var i = 0; i < res.content.drawings.length; i++) {
-              if (res.content.drawings[i].unitType == '13') {
+              if (res.content.drawings[i].unitType == '25') {
                 vm.formDataTuShen = res.content.drawings[i] || {};
               } else if (res.content.drawings[i].unitType == '3') {
                 vm.formDataSheJj = res.content.drawings[i] || {};

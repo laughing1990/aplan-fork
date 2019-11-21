@@ -19,6 +19,8 @@ import java.util.List;
 public class ConstructPermitVo extends AeaHiCertinst {
     @ApiModelProperty("建筑施工许可证编号")
     private String constructPermitCode;
+    @ApiModelProperty("二维码")
+    private byte[] certBuildQrcode;
     @ApiModelProperty("发证机关名称")
     private String issueOrgName;
     @ApiModelProperty("发证日期-年")
@@ -47,12 +49,14 @@ public class ConstructPermitVo extends AeaHiCertinst {
     @ApiModelProperty("勘察单位项目负责人")
     private String explorationUnitLeader;
 
-
+    @ApiModelProperty("工程总承包单位")
+    private String gczcbUnitName;
     @ApiModelProperty("设计单位名称")
     private String designUnitName;
     @ApiModelProperty("设计单位项目负责人")
     private String designUnitLeader;
-
+    @ApiModelProperty("工程总承包单位项目负责人")
+    private String gczcbUnitLeader;
     @ApiModelProperty("施工单位")
     private String constructUnitName;
     @ApiModelProperty("施工单位项目负责人")

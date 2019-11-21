@@ -76,6 +76,16 @@
         });
     });
 
+    //判断字符是否为空的方法
+    function isEmpty(obj){
+
+        if(typeof obj == "undefined" || obj == null || obj == ""){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
     //分类排序
     function sortParFrontItem(){
 
@@ -90,11 +100,30 @@
 
                 for(var i=0;i<data.length;i++){
                     var id = data[i].frontItemId;
-                    var name = data[i].itemName;
+                    var itemName = data[i].itemName;
+                    if(!isEmpty(data[i].isCatalog)){
+                        if(data[i].isCatalog=='1'){
+                            itemName = '【标准事项】'+ itemName;
+                            if(!isEmpty(data[i].itemCode)){
+                                itemName = itemName +'【'+ data[i].itemCode+'】';
+                            }
+                            if(!isEmpty(data[i].guideOrgName)){
+                                itemName = itemName +'【'+ data[i].guideOrgName+'】';
+                            }
+                        }else{
+                            itemName = '【实施事项】'+ itemName;
+                            if(!isEmpty(data[i].itemCode)){
+                                itemName = itemName +'【'+ data[i].itemCode+'】';
+                            }
+                            if(!isEmpty(data[i].orgName)) {
+                                itemName = itemName + '【' + data[i].orgName + '】';
+                            }
+                        }
+                    }
                     var liHtml = '<li name="sortParFrontItemLi" category-id="'+ id +'">' +
-                        '<span class="drag-handle_td">&#9776;</span>' +
-                        '<span class="org_name_td" style="width: 90%;">'+ name +'</span>' +
-                        '</li>';
+                                    '<span class="drag-handle_td">&#9776;</span>' +
+                                    '<span class="org_name_td" style="width: 90%;">'+ itemName +'</span>' +
+                                '</li>';
                     $('#sortParFrontItemUl').append(liHtml);
                 }
             }else{

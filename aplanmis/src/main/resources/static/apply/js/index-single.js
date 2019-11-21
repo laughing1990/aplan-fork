@@ -2153,6 +2153,7 @@ var vm = new Vue({
           _that.getCertFileListWin(data);
         }else {
           _that.showUploadWindowFlag = true;
+          _that.showUploadWindowBtn = true;
           _that.showUploadWindowTitle = '本地上传 - '+ data.matName;
           _that.getFileListWin(data.matinstId,data);
         }
@@ -2195,8 +2196,8 @@ var vm = new Vue({
         var certChildIds = [];
         if(certChild.length>0){
           certChild.map(function(item){
-            if(certChildIds.indexOf(item.authCode)<0){
-              certChildIds.push(item.authCode);
+            if(certChildIds.indexOf(item.licenseCode)<0){
+              certChildIds.push(item.licenseCode);
             }
           })
         }
@@ -2231,13 +2232,13 @@ var vm = new Vue({
           if(res){
             _that.certMatAllData = res.content;
             _that.certMatTableData = res.content.data?res.content.data:[];
-            res.content.data.map(function(certItem){
+            _that.certMatTableData.map(function(certItem){
               if(certItem.bind=='undefined'||certItem.bind==undefined){
                 Vue.set(certItem,'bind',false);
               }else {
                 certItem.bind = false;
               }
-              if(certChildIds.indexOf(certItem.auth_code)>-1){
+              if(certChildIds.indexOf(certItem.license_code)>-1){
                 certItem.bind = true
               }else {
                 certItem.bind = false;
@@ -2326,6 +2327,7 @@ var vm = new Vue({
         }, function (res) {
           if(res.success){
             res.content.certName = certRowData.name;
+            res.content.licenseCode = certRowData.license_code;
             if(_that.selMatRowData.certChild=='undefined'||_that.selMatRowData.certChild==undefined){
               Vue.set(_that.selMatRowData,'certChild',[res.content]);
             }else {
@@ -2339,6 +2341,10 @@ var vm = new Vue({
               }
             }
             certRowData.bind = true;
+            _that.showMatTableExpand = true;
+            if(_that.showFileListKey.indexOf(_that.selMatRowData.matId)<0){
+              _that.showFileListKey.push(_that.selMatRowData.matId)
+            }
             _that.$message({
               message: res.message?res.message:'证照关联成功',
               type: 'success'

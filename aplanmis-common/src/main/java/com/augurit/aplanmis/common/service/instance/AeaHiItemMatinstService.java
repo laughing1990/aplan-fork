@@ -3,6 +3,7 @@ package com.augurit.aplanmis.common.service.instance;
 
 import com.augurit.aplanmis.common.domain.AeaHiCertinst;
 import com.augurit.aplanmis.common.domain.AeaHiItemMatinst;
+import com.augurit.aplanmis.common.vo.MyMatFilesVo;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -37,7 +38,7 @@ public interface AeaHiItemMatinstService {
      * @return
      * @throws Exception
      */
-    List<AeaHiItemMatinst> getMatinstListByIteminstIdsAndKeyword(String[] iteminstId, String isInput, String keyword) throws Exception;
+    List<MyMatFilesVo> getMatinstListByIteminstIdsAndKeyword(String[] iteminstId, String isInput, String keyword,String isAtt) throws Exception;
 
 
     /**

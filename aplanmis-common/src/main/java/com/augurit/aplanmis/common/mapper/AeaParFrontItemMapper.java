@@ -28,7 +28,7 @@ public interface AeaParFrontItemMapper {
 
     List<AeaParFrontItem> listAeaParFrontItemVo(AeaParFrontItem aeaParFrontItem);
 
-    Long getMaxSortNo(AeaParFrontItem aeaParFrontItem);
+    Long getMaxSortNo(@Param("stageId") String stageId, @Param("rootOrgId") String rootOrgId);
 
     AeaParFrontItem getAeaParFrontItemVoByFrontItemId(@Param("frontItemId") String frontItemId);
 

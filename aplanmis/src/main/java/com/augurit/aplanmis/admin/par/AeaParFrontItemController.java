@@ -89,26 +89,13 @@ public class AeaParFrontItemController {
     }
 
     @RequestMapping("/getMaxSortNo.do")
-    public ResultForm getMaxSortNo(AeaParFrontItem aeaParFrontItem) {
+    public ResultForm getMaxSortNo(String stageId) {
 
         try {
-            return new ContentResultForm<>(true, aeaParFrontItemService.getMaxSortNo(aeaParFrontItem));
+            return new ContentResultForm<>(true, aeaParFrontItemService.getMaxSortNo(stageId, SecurityContext.getCurrentOrgId()));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return new ResultForm(false, e.getMessage());
-        }
-    }
-
-    @RequestMapping("/batchSaveAeaParFrontItem.do")
-    public ResultForm batchSaveAeaParFrontItem(String stageId,String itemVerIds) {
-
-        try {
-            aeaParFrontItemService.batchSaveAeaParFrontItem(stageId,itemVerIds);
-            return new ResultForm(true);
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return new ResultForm(false, e.getMessage());
-
         }
     }
 

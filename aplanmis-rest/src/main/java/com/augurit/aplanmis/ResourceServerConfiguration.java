@@ -30,6 +30,7 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
                                                 , "/rest/user/**"
                                                 , "/rest/index/**"
                                                 , "/rest/guide/**"
+                                                , "/rest/html5/**"
                                                 , "/rest/send/short/message/**"
                                                 , "/province/**"
                                                 , "/rest/mall/mobile/login"
