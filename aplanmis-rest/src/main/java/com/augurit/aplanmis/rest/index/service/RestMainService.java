@@ -6,7 +6,6 @@ import com.augurit.aplanmis.rest.index.service.vo.AeaRegionVo;
 import com.augurit.aplanmis.rest.index.service.vo.StaticticsVo;
 import com.augurit.aplanmis.rest.index.service.vo.ThemeTypeVo;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 public interface RestMainService {
@@ -26,7 +25,7 @@ public interface RestMainService {
      * @return
      * @throws Exception
      */
-    List<AeaParStage> getStageByThemeId(String themeId, String projInfoId, String rootOrgId, String unitInfoId, HttpServletRequest request) throws Exception;
+    List<AeaParStage> getStageByThemeId(String themeId, String projInfoId, String rootOrgId, String unitInfoId) throws Exception;
 
     /**
      * 申报件统计
