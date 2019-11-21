@@ -182,7 +182,10 @@ var vm = new Vue({
         request('', {
           url: ctx + 'rest/approve/certinst/batch/delete',
           type: 'post',
-          data: {certinstIds: row.certinstId,},
+          // data: {certinstIds: row.certinstId,},
+          data: {
+            matinstIds: row.matinstId,
+          },
         }, function (res) {
           vm.pageLoading = false;
           if (res.success) {
