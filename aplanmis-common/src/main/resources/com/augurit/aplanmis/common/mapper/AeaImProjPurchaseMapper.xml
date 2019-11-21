@@ -1196,7 +1196,7 @@ HIGHEST_RATE,QUOTE_TYPE,ROOT_ORG_ID
                 #{flag}
             </foreach>
         </if>
-        ORDER BY aipp.PUBLISH_TIME DESC
+        ORDER BY aipp.CREATE_TIME DESC
     </select>
 
     <resultMap type="com.augurit.aplanmis.common.vo.AeaImProjPurchaseDetailVo" id="projPurchaseMajorRequireMap">
