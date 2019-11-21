@@ -5,7 +5,6 @@ import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.aplanmis.rest.auth.AuthUser;
 import com.augurit.aplanmis.rest.auth.JwtToken;
 import com.augurit.aplanmis.rest.common.service.CommonLoginService;
-import com.augurit.aplanmis.rest.login.jwx.JwtHelper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -18,10 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -53,31 +49,16 @@ public class LoginController {
     }
 
 
-    @GetMapping("/loginIndex")
-    @ApiOperation(value = "登录页面")
-    public ModelAndView toIndexPage() {
-        return new ModelAndView("mall/login/login");
-    }
-
-    @GetMapping("/logout")
-    @ApiOperation(value = "退出登录")
-    public ResultForm logout(HttpServletRequest request, HttpServletResponse response) {
-        try {
-            JwtHelper.reMoveToken(response);
-            return commonLoginService.logout(request);
-
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return new ResultForm(false, e.getMessage());
-        }
-    }
-
-
     @GetMapping("/user/changeApplicant/{unitInfoId}")
     @ApiOperation(value = "委托人切换单位接口")
-    public ResultForm changeApplicant(HttpServletRequest request, @PathVariable String unitInfoId) {
+    @ApiImplicitParam(value = "企业单位id", name = "unitInfoId")
+    public ResultForm changeApplicant(@PathVariable String unitInfoId) {
         try {
-            return commonLoginService.changeApplicant(request, unitInfoId);
+            AuthUser authUser = commonLoginService.changeApplicant(unitInfoId);
+            Map<String, Object> userInfo = new HashMap<>();
+            userInfo.put(JwtToken.USER_INFO, authUser);
+            String accessToken = JwtToken.createToken(userInfo);
+            return new ContentResultForm<>(true, accessToken, "login success");
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return new ResultForm(false, e.getMessage());

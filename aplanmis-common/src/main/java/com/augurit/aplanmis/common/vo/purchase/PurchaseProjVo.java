@@ -66,18 +66,15 @@ public class PurchaseProjVo {
     @ApiModelProperty(value = "资质备案说明")
     private String qualRecordRequire;
     @ApiModelProperty(value = "是否为投资审批项目：1 是，0 否")
-    @FiledNameIs(filedValue = "是否为投资审批项目：1 是，0 否")
     private String isApproveProj;
     @ApiModelProperty(value = "关联的审批流水号")
-    @FiledNameIs(filedValue = "关联的审批流水号")
     private String applyinstCode;
     @ApiModelProperty(value = "是否公示中选机构： 1 是， 0 否")
-    @FiledNameIs(filedValue = "是否公示中选机构： 1 是， 0 否")
     private String isDiscloseIm;
     @ApiModelProperty(value = "是否公示中标公告：1 是， 0 否")
-    @FiledNameIs(filedValue = "是否公示中标公告：1 是， 0 否")
     private String isDiscloseBidding;
-
+    @ApiModelProperty(value = "业主单位委托人")
+    private String linkmanInfoId;
     //单位要求字段
     @ApiModelProperty(value = "中介机构要求信息ID")
     private String unitRequireId;

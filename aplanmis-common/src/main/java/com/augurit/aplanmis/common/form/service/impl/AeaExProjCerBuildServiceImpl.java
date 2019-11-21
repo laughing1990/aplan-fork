@@ -72,7 +72,7 @@ public class AeaExProjCerBuildServiceImpl implements AeaExProjCertBuildService {
                 }
             }
         }catch (Exception e){
-            return new ContentResultForm<>(false,"同步信息失败，请在申报页面添加建设单位信息 " + e.getMessage(),"error");
+            return new ContentResultForm<>(false,"同步信息失败 " + e.getMessage(),"error");
         }
     }
 
@@ -116,7 +116,7 @@ public class AeaExProjCerBuildServiceImpl implements AeaExProjCertBuildService {
                 }
             }
         }catch (Exception e){
-            return new ContentResultForm<>(false,"同步信息失败，请在申报页面添加建设单位信息 " + e.getMessage(),"error");
+            return new ContentResultForm<>(false,"同步信息失败 " + e.getMessage(),"error");
         }
     }
 
@@ -155,7 +155,7 @@ public class AeaExProjCerBuildServiceImpl implements AeaExProjCertBuildService {
                 }
             }
         }catch (Exception e){
-            return new ContentResultForm<>(false,"同步信息失败，请在申报页面添加建设单位信息 " + e.getMessage(),"error");
+            return new ContentResultForm<>(false,"同步信息失败 " + e.getMessage(),"error");
         }
     }
 
@@ -219,7 +219,7 @@ public class AeaExProjCerBuildServiceImpl implements AeaExProjCertBuildService {
                 }
             }
         }catch (Exception e){
-            return new ContentResultForm<>(false,"同步信息失败，请在申报页面添加建设单位信息 " + e.getMessage(),"error");
+            return new ContentResultForm<>(false,"同步信息失败 " + e.getMessage(),"error");
         }
     }
 
@@ -299,7 +299,7 @@ public class AeaExProjCerBuildServiceImpl implements AeaExProjCertBuildService {
                 }
             }
             }catch (Exception e){
-            return new ContentResultForm<>(false,"同步信息失败，请在申报页面添加建设单位信息 " + e.getMessage(),"error");
+            return new ContentResultForm<>(false,"同步信息失败 " + e.getMessage(),"error");
         }
     }
 

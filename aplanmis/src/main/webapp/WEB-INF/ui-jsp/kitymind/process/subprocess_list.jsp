@@ -155,8 +155,11 @@
                             关联事项：
                         </label>
                         <div class="col-9">
-                            <input type="text" class="form-control m-input" data-toggle="dropdown" id="busRecordName" name="busRecordName" value="" placeholder="请选择关联的事项"/>
+                            <input type="text" class="form-control m-input" readonly data-toggle="dropdown" id="busRecordName" name="busRecordName" value="" placeholder="请选择关联的事项"/>
                             <ul id="selectItemTreePanel" class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
+                                <div style="padding: 0px 12px;" >
+                                    <input type="text" id="itemSearchId" class="form-control m-input" placeholder="请输入事项名称查询"/>
+                                </div>
                                 <div id="selectItemTree" class="ztree" style="height: 300px;overflow: auto;"></div>
                             </ul>
                             <input type="hidden" name="busRecordId" id="busRecordId"/>
@@ -174,6 +177,7 @@
 <script>
     var selectItemTree = null;
     var itemTreeData = [];
+    var itemTreeDataCache = [];
     var lastSelectNode = null;
     var lastClickNode = null;
     var selectItemTreeSetting = {
@@ -292,6 +296,43 @@
         }
       }
     }
+    /**
+     * 事项树模糊查询
+     */
+    function itemTreeDataSearch(node){
+      var keyword = $(node).val();
+      var temp = [];
+      if(keyword && itemTreeDataCache.length > 0) {
+        for (var i = 0, len = itemTreeDataCache.length; i < len; i++) {
+          if (itemTreeDataCache[i].name.indexOf(keyword) != -1) {
+            temp.push(itemTreeDataCache[i]);
+          }
+        }
+      }else{
+        temp = itemTreeDataCache;
+      }
+      if (selectItemTree) {
+        selectItemTree.destroy();
+      }
+      selectItemTree = $.fn.zTree.init($("#selectItemTree"), selectItemTreeSetting,temp);
+      for (var i = 0; i < temp.length; i++) {
+        if (temp[i].id == $('#busRecordId').val()) {
+          //回显表单的事项名称
+          $('#busRecordName').val(temp[i].name);
+          if(selectItemTree){
+            //回显到事项树中
+            var node = selectItemTree.getNodeByParam("id", temp[i].id, null);
+            if (node) {
+              selectItemTree.checkNode(node, true, true, false);
+            }
+          }
+        }
+      }
+    }
+    //绑定模糊查询事项
+    $("#itemSearchId").keyup(function(){
+      itemTreeDataSearch(this);
+    });
 
     /**
      * 控制面板显隐，临时
@@ -313,8 +354,8 @@
     //
     var outerFlowList=[];
     var innerFlowList=[];
-    function addSubProcess(type) {
-      vm.addSubProcess(type);
+    function addSubProcess(type,id) {
+      vm.addSubProcess(type,id);
       // $('#busRecordId').val('');
       // $('#busRecordName').val('');
       // $('#subprocess_modal').modal("show");
@@ -332,7 +373,35 @@
       // }else{
       //     $('#form_bus').attr("hidden",true);
       // }
-
+      // $.ajax({
+      //   url: ctx + '/rest/mind/getSubTriggerById.do',
+      //   type: 'POST',
+      //   data: {id:id},
+      //   async:false,
+      //   success: function (result) {
+      //     $('#node').find('option[value=\"'+result.triggerElementId+'\"]').attr("selected","selected");
+      //     // $('#busRecordId').find('option[value=\"'+result.busRecordId+'\"]').attr("selected","selected");
+      //     $('#busRecordId').val(result.busRecordId);
+      //     for (var i = 0; i < itemTreeData.length; i++) {
+      //       if (itemTreeData[i].id == $('#busRecordId').val()) {
+      //         //回显表单的事项名称
+      //         $('#busRecordName').val(itemTreeData[i].name);
+      //         if(selectItemTree){
+      //           //回显到事项树中
+      //           var node = selectItemTree.getNodeByParam("id", itemTreeData[i].id, null);
+      //           if (node) {
+      //             selectItemTree.checkNode(node, true, true, false);
+      //           }
+      //         }
+      //       }
+      //     }
+      //     $('#triggerId').html(result.triggerId);
+      //     $('input[name="checkName"][value=\"'+result.triggerEvent+'\"]').attr("checked",true);
+      //     $('input[name="isOuterFlow"][value=\"'+result.isOuterFlow+'\"]').prop("checked",true);
+      //     isOuterFlow();
+      //     $('#triggerAppFlowdefId').find('option[value=\"'+result.triggerAppFlowdefId+'\"]').attr("selected","selected");
+      //   }
+      // });
     }
 
     function onloadBus() {
@@ -359,6 +428,7 @@
      * 加载事项树
      */
     function onloadItemTree() {
+      itemTreeDataCache = [];
       itemTreeData = [];
       $.ajax({
         url: ctx + '/aea/par/stage/item/getStageItemTreeByStageId.do',
@@ -389,6 +459,7 @@
           item.name = "【实施事项】" + item.name;
         }
       }
+      itemTreeDataCache = data;
     }
 
     function selTriggerAppFlowdefId(flowType) {
@@ -672,36 +743,7 @@
             .val('')  //将input元素的value设为空值
             .removeAttr('checked')
             .removeAttr('selected');
-        addSubProcess(1);
-        $.ajax({
-            url: ctx + '/rest/mind/getSubTriggerById.do',
-            type: 'POST',
-            data: {id:id},
-            async:false,
-            success: function (result) {
-                $('#node').find('option[value=\"'+result.triggerElementId+'\"]').attr("selected","selected");
-                // $('#busRecordId').find('option[value=\"'+result.busRecordId+'\"]').attr("selected","selected");
-                $('#busRecordId').val(result.busRecordId);
-                for (var i = 0; i < itemTreeData.length; i++) {
-                  if (itemTreeData[i].id == $('#busRecordId').val()) {
-                    //回显表单的事项名称
-                    $('#busRecordName').val(itemTreeData[i].name);
-                    if(selectItemTree){
-                      //回显到事项树中
-                      var node = selectItemTree.getNodeByParam("id", itemTreeData[i].id, null);
-                      if (node) {
-                        selectItemTree.checkNode(node, true, true, false);
-                      }
-                    }
-                  }
-                }
-                $('#triggerId').html(result.triggerId);
-                $('input[name="checkName"][value=\"'+result.triggerEvent+'\"]').attr("checked",true);
-                $('input[name="isOuterFlow"][value=\"'+result.isOuterFlow+'\"]').prop("checked",true);
-                isOuterFlow();
-                $('#triggerAppFlowdefId').find('option[value=\"'+result.triggerAppFlowdefId+'\"]').attr("selected","selected");
-            }
-        });
+        addSubProcess(1,id);
     }
 
     /**

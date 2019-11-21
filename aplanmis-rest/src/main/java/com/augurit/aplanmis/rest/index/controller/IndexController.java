@@ -80,9 +80,9 @@ public class IndexController {
     @GetMapping("/approve/details")
     @Transactional(readOnly = true)
     @ApiOperation(value = "首页 --> 审批情况", notes = "首页中查询所有事项的审批情况", httpMethod = "GET")
-    public ContentResultForm<List<AnnounceDataDto>> listApproveDetails() {
+    public ContentResultForm<PageInfo<AnnounceDataDto>> listApproveDetails(@RequestParam(required = false) int pageNum, @RequestParam(required = false) int pageSize) {
         try {
-            return new ContentResultForm<>(true, approveDataService.searchAnnounceDataList(StringUtils.EMPTY, topOrgId));
+            return new ContentResultForm<>(true, approveDataService.searchAnnounceDataList(StringUtils.EMPTY, pageNum, pageSize, topOrgId));
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             return new ContentResultForm<>(false, null, "首页-->获取审批情况列表数据异常");

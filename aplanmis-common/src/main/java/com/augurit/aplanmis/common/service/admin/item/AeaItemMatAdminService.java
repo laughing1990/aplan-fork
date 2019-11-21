@@ -82,6 +82,17 @@ public interface AeaItemMatAdminService {
     boolean checkMatCode(String matId, String matCode, String rootOrgId);
 
     /**
+     * 验证材料名称是否已经存在
+     *
+     * @param matId
+     * @param matName
+     * @param isCommon
+     * @param rootOrgId
+     * @return
+     */
+    boolean checkMatName(String matId, String matName, String isCommon, String rootOrgId);
+
+    /**
      * 材料清单分页查询
      * @param aeaItemMat
      * @param page

@@ -441,7 +441,8 @@ and ahic_123.creater = #{currentUserId}
         	ahi_123.ITEMINST_NAME iteminstName,
         	ahap_123.CREATE_TIME createTime,
 		    ahap_123.APPLY_SUBJECT applySubject,
-        	ahic_123.CORRECT_ID correctId
+        	ahic_123.CORRECT_ID correctId,
+        ahic_123.CORRECT_MEMO correctMemo
         FROM
         	AEA_HI_ITEMINST ahi_123
         LEFT JOIN AEA_HI_PAR_STAGEINST ahs_123 ON ahi_123.STAGEINST_ID = ahs_123.STAGEINST_ID
@@ -518,7 +519,8 @@ and ahic_123.creater = #{currentUserId}
         	ahi_123.ITEMINST_NAME iteminstName,
         	ahap_123.CREATE_TIME createTime,
 		    ahap_123.APPLY_SUBJECT applySubject,
-        	ahic_123.CORRECT_ID correctId
+        	ahic_123.CORRECT_ID correctId,
+        	ahic_123.CORRECT_MEMO correctMemo
 	    FROM
 	    	AEA_HI_ITEMINST ahi_123
 	    LEFT JOIN AEA_HI_SERIESINST ahs_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
