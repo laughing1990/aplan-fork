@@ -96,6 +96,10 @@ public class AeaCert implements Serializable {
 
     @ApiModelProperty(value = "配置证书使用")
     private String configCertRecordId;
+
     private Boolean isConfig = false;
+
     private String[] checkedCertIds;
+
+    private String matId;
 }

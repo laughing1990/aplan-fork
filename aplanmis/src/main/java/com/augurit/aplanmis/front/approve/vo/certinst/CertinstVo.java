@@ -1,7 +1,6 @@
 package com.augurit.aplanmis.front.approve.vo.certinst;
 
 import com.augurit.agcloud.framework.util.DateUtils;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -24,8 +23,8 @@ public class CertinstVo {
     @ApiModelProperty(name = "certinstName", value = "证照名称")
     private String certinstName;
 
-//    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
-    @ApiModelProperty(name = "issueDate", value = " (发证日期)",required = true)
+    //    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+    @ApiModelProperty(name = "issueDate", value = " (发证日期)", required = true)
     private String issueDate;
     //private Date issueDate;
 
@@ -39,6 +38,7 @@ public class CertinstVo {
             throw new RuntimeException("新建批文批复操作中解析日期失败, dateStr: " + dateStr, e);
         }
     }
+
     @ApiModelProperty(name = "issueOrgId", value = "颁发单位ID")
     private String issueOrgId;
 
@@ -48,8 +48,8 @@ public class CertinstVo {
     @ApiModelProperty(name = "applyinstId", value = "申请实例ID", required = true)
     private String applyinstId;
 
-    @ApiModelProperty(name = "projScale", value = "项目规模", required = true)
-    private String projScale;
+    @ApiModelProperty(name = "projScale", value = "建设规模", required = true)
+    private Double projScale;
 
     @ApiModelProperty(name = "memo", value = "备注说明")
     private String memo;
@@ -61,5 +61,8 @@ public class CertinstVo {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date createTime;
 
+    private String matId;
+
+    private String matinstId;
 
 }

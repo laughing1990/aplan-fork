@@ -199,7 +199,7 @@ public class RestApplyProjController {
             String currentUnitInfoName = AuthContext.getCurrentUnitInfoName();
             PageInfo<AeaProjInfo> pageInfo = restApproveService.findAeaProjInfoByKeyword(keyWord, pageNum, pageSize);
             if (pageInfo.getList().size() == 0 && !keyWord.contains("#") && !keyWord.contains("ZBM") && CommonTools.isComplianceWithRules(keyWord)) {
-                List<AeaProjInfo> list = projectCodeService.getProjInfoFromThirdPlatform(keyWord, currentUnitInfoName);
+                List<AeaProjInfo> list = projectCodeService.getProjInfoFromThirdPlatform(keyWord, currentUnitInfoName, null);
                 pageInfo.setList(list);
             }
             return new ContentResultForm<>(true, pageInfo);
@@ -218,7 +218,7 @@ public class RestApplyProjController {
             List<AeaProjInfo> list = aeaProjInfoService.findAeaProjInfoByKeyword(keyWord);
             if (list.size() == 0 && !keyWord.contains("#") && !keyWord.contains("ZBM") && CommonTools.isComplianceWithRules(keyWord)) {
                 //list.addAll(projectCodeService.getProjInfoFromThirdPlatform(keyWord,loginInfo.getUnitName())); //正式上线时用
-                list.addAll(projectCodeService.getProjInfoFromThirdPlatform(keyWord, ""));
+                list.addAll(projectCodeService.getProjInfoFromThirdPlatform(keyWord, "", null));
             }
             return new ContentResultForm<List<AeaProjInfo>>(true, list);
         } catch (Exception e) {

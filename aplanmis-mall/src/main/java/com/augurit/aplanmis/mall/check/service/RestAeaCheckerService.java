@@ -33,7 +33,7 @@ public class RestAeaCheckerService {
         AeaItemBasic aeaItemBasic = aeaItemBasicMapper.getAeaItemBasicByItemVerId(itemVerId, SecurityContext.getCurrentOrgId());
         CheckerInfo checkerInfo = new CheckerInfo();
         checkerInfo.setProjInfoId(projInfoId);
-        String message = checkerManager.itemCheck(aeaItemBasic, new CheckerContext(checkerInfo));
+        String message=checkerManager.itemCheck(aeaItemBasic, new CheckerContext(checkerInfo));
         return StringUtils.isBlank(message) ? new ResultForm(true, "前置条件检查通过！") : new ResultForm(false, message);
     }
 

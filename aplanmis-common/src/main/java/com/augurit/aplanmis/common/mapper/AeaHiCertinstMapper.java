@@ -75,6 +75,8 @@ public interface AeaHiCertinstMapper {
     //批量删除证照实例
     int batchDeleteAeaHiCertinst(@Param("certinstIds") String[] certinstIds);
 
+    int batchDeleteAeaHiCertinstByMatinstIds(@Param("matinstIds") String[] matinstIds);
+
     List<AeaHiCertinstBVo> getAeaHiCertinstByUnitServiceId(@Param("unitServiceId") String unitServiceId);
 
     /**

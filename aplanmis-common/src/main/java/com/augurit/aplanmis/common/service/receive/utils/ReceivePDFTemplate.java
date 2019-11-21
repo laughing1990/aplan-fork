@@ -15,7 +15,6 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.lang.reflect.Field;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -738,11 +737,14 @@ public class ReceivePDFTemplate {
                 under.addImage(img);*/
 
                 //二维码
-                Image ercode = Image.getInstance(vo.getCertBuildQrcode());
-                ercode.setAbsolutePosition(100,90);
-                ercode.scaleToFit(130,130);
-                //under.addImage(ercode, ercode.getScaledWidth(), 0, 0, ercode.getScaledHeight(), 0, 0);
-                under.addImage(ercode);
+                if (vo.getCertBuildQrcode() != null) {
+                    Image ercode = Image.getInstance(vo.getCertBuildQrcode());
+                    ercode.setAbsolutePosition(100, 90);
+                    ercode.scaleToFit(130, 130);
+                    //under.addImage(ercode, ercode.getScaledWidth(), 0, 0, ercode.getScaledHeight(), 0, 0);
+                    under.addImage(ercode);
+                }
+
             }
 
             //使用中文字体

@@ -236,6 +236,7 @@ var vm = new Vue({
             }
         },
         // 根据单位id获取关联联系人
+        //projInfoId: _that.certBuildFrom.projInfoId,
         getUnitLinkManList: function(row,type) {
             var _that = this;
             if(row){
@@ -246,9 +247,7 @@ var vm = new Vue({
                     type: 'get',
                     data: {
                         keyword: '',
-                        unitInfoId: row ? row: '',
-                        projInfoId: _that.certBuildFrom.projInfoId,
-
+                        unitInfoId: row ? row: ''
                     }
                 }, function (data) {
                     _that.loadingUnitLinkMan = false;

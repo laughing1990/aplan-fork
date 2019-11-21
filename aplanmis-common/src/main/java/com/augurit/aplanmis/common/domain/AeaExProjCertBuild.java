@@ -28,7 +28,7 @@ public class AeaExProjCertBuild {
     @ApiModelProperty("核发机关")
     private String govOrgName;
     @ApiModelProperty("核发日期")
-    @JsonFormat(pattern = "yyyy-MM-dds")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date publishTime;
     @ApiModelProperty("建设单位")
@@ -69,6 +69,7 @@ public class AeaExProjCertBuild {
     private String creater;
     @ApiModelProperty("创建时间")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date createTime;
     @ApiModelProperty("修改人")
     private String modifier;
