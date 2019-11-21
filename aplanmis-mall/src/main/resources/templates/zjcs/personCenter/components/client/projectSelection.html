@@ -58,20 +58,21 @@
             </el-table-column>
             <el-table-column label="操作">
                 <template scope="scope">
-                    <a class="a-color4879E4" href="javascript:;" @click="addAgreement(scope.row)"
-                        v-if="scope.row.auditFlag==1">上传合同</a>
-                    <a class="a-color4879E4" href="javascript:;" @click="confirmWinBidResult(scope.row)"
-                        v-if="scope.row.auditFlag==9">确认中标结果</a>
-                    <p style="margin: 0;" v-else>
-                        <a class="a-color4879E4" href="javascript:;"
-                            v-if="scope.row.contractFlag == 0 && scope.row.isOwnerUpload == 0"
-                            @click="editAgreement(scope.row)">编辑合同</a>
-                        <a class="a-color4879E4" href="javascript:;" @click="lookAgreement(scope.row)">查看合同</a>
-                        <a class="a-color4879E4" href="javascript:;"
-                            v-if="scope.row.contractFlag == 0 && scope.row.isOwnerUpload == 1"
-                            @click="sureAgreement(scope.row)">确认合同</a>
-                    </p>
-
+                    <div class="operatePath">
+                        <a class="a-color4879E4" href="javascript:;" @click="addAgreement(scope.row)"
+                            v-if="scope.row.auditFlag==1">上传合同</a>
+                        <a class="a-color4879E4" href="javascript:;" @click="confirmWinBidResult(scope.row)"
+                            v-if="scope.row.auditFlag==9">确认中标结果</a>
+                        <p style="margin: 0;" v-else>
+                            <a class="a-color4879E4" href="javascript:;"
+                                v-if="scope.row.contractFlag == 0 && scope.row.isOwnerUpload == 0"
+                                @click="editAgreement(scope.row)">编辑合同</a>
+                            <a class="a-color4879E4" href="javascript:;" @click="lookAgreement(scope.row)">查看合同</a>
+                            <a class="a-color4879E4" href="javascript:;"
+                                v-if="scope.row.contractFlag == 0 && scope.row.isOwnerUpload == 1"
+                                @click="sureAgreement(scope.row)">确认合同</a>
+                        </p>
+                    </div>
                 </template>
             </el-table-column>
         </el-table>
@@ -390,7 +391,7 @@
             /**
              * 确认中标结果             
             */
-            confirmWinBidResult: function(row) {
+            confirmWinBidResult: function (row) {
                 var ts = this;
                 var params = {
                     projPurchaseId: row.projPurchaseId,
@@ -398,7 +399,7 @@
                     confirmFlag: '1'
                 }
                 request('', {
-                    url: 'supermarket/purchase/confirmImunit',
+                    url: ctx + 'supermarket/purchase/confirmImunit',
                     type: 'post',
                     data: params
                 }, function (res) {
@@ -824,5 +825,9 @@
         border: none;
         color: #999;
         cursor: text;
+    }
+
+    .operatePath .a-color4879E4 {
+        margin: 0 10px 10px 0;
     }
 </style>
