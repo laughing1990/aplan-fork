@@ -1,5 +1,7 @@
 package com.augurit.aplanmis.common.service.search.impl;
 
+import com.augurit.agcloud.bpm.common.domain.BpmHistoryCommentForm;
+import com.augurit.agcloud.bpm.common.engine.BpmTaskService;
 import com.augurit.agcloud.bpm.front.service.BpmProcessFrontService;
 import com.augurit.agcloud.bpm.front.vo.ExtendBpmHistoryCommentForm;
 import com.augurit.agcloud.bsc.domain.BscDicCodeItem;
@@ -13,6 +15,7 @@ import com.augurit.aplanmis.common.dto.*;
 import com.augurit.aplanmis.common.mapper.AeaHiApplyinstMapper;
 import com.augurit.aplanmis.common.mapper.AeaHiIteminstMapper;
 import com.augurit.aplanmis.common.mapper.AeaItemBasicMapper;
+import com.augurit.aplanmis.common.service.applyinst.AeaHiApplyinstCorrectService;
 import com.augurit.aplanmis.common.service.instance.AeaHiParStageinstService;
 import com.augurit.aplanmis.common.service.instance.AeaLogApplyStateHistService;
 import com.augurit.aplanmis.common.service.item.AeaItemBasicService;
@@ -24,6 +27,8 @@ import com.augurit.aplanmis.common.utils.DateUtils;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import org.flowable.task.api.Task;
+import org.flowable.task.api.history.HistoricTaskInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -62,7 +67,10 @@ public class ApproveDataServiceImpl implements ApproveDataService {
     private AeaLogItemStateHistService aeaLogItemStateHistService;
     @Autowired
     private BpmProcessFrontService bpmProcessFrontService;
-
+    @Autowired
+    private AeaHiApplyinstCorrectService aeaHiApplyinstCorrectService;
+    @Autowired
+    private BpmTaskService bpmTaskService;
 
     @Override
     public List<AnnounceDataDto> searchAnnounceDataList(String keyword,String rootOrgId) {
@@ -107,8 +115,7 @@ public class ApproveDataServiceImpl implements ApproveDataService {
 
     private void convertCommentByState(List<ApproveProjInfoDto> list) throws Exception {
         for (ApproveProjInfoDto dto : list) {
-            if (ApplyState.OUT_SCOPE.getValue().equals(dto.getApplyinstState())
-                    || ApplyState.IN_THE_SUPPLEMENT.getValue().equals(dto.getApplyinstState())) {
+            if (ApplyState.OUT_SCOPE.getValue().equals(dto.getApplyinstState())) {
                 AeaLogApplyStateHist query = new AeaLogApplyStateHist();
                 query.setRootOrgId(SecurityContext.getCurrentOrgId());
                 query.setApplyinstId(dto.getApplyinstId());
@@ -120,13 +127,21 @@ public class ApproveDataServiceImpl implements ApproveDataService {
                     } else {//日志表没有意见，则根据taskId去意见表查询
                         String taskId = applyLogList.get(0).getTaskinstId();
                         if (StringUtils.isNotBlank(taskId)) {
-                            List<ExtendBpmHistoryCommentForm> comments = bpmProcessFrontService.listHistoryCommentByTaskId(taskId, true);
-                            dto.setApproveComments(comments.size() > 0 ? comments.get(0).getCommentMessage() : "");
-                        }
+                            HistoricTaskInstance task = bpmTaskService.getHistoryTaskByTaskId(taskId);
+                            if(task==null) {
+                                dto.setApproveComments("");
+                            }else{
+                                List<BpmHistoryCommentForm> comments = bpmTaskService.getHistoryCommentsByTaskId(task.getProcessInstanceId(), taskId);
+                                dto.setApproveComments(comments.size() > 0 ? comments.get(0).getCommentMessage() : "");
+                            }
                         }
                     }
                 }
+            }else if(ApplyState.IN_THE_SUPPLEMENT.getValue().equals(dto.getApplyinstState())){
+                AeaHiApplyinstCorrect correct = aeaHiApplyinstCorrectService.getCurrentCorrectinst(dto.getApplyinstId());
+                dto.setApproveComments(correct!=null ? correct.getCorrectMemo(): "");
             }
+        }
     }
 
     @Override

@@ -553,6 +553,8 @@ public class OfficialDocumentService {
         if (aeaHiItemInoutinsts.isEmpty()) {
             return constructPermit;
         }
+        //查询电子证照实例表
+        AeaHiCertinst aeaHiCertinstById = aeaHiCertinstMapper.getAeaHiCertinstById(certinstId);
 
         String iteminstId = aeaHiItemInoutinsts.get(0).getIteminstId();
         String applyinstId = getApplyinstIdByIteminstId(iteminstId);
@@ -635,7 +637,11 @@ public class OfficialDocumentService {
             constructPermit.setConstructUnitLeader(aeaExProjCertBuildByProjId.getSgUnitLeader());//施工单位项目负责人
             constructPermit.setChiefEngineer(aeaExProjCertBuildByProjId.getJlUnitLeader());//总监理工程师
             constructPermit.setContractDuration(aeaExProjCertBuildByProjId.getContractPeriod());//合同工期
-            constructPermit.setRemarks(aeaExProjCertBuildByProjId.getCertBuildMemo());//备注
+            if(StringUtils.isBlank(aeaHiCertinstById.getMemo())){
+                constructPermit.setRemarks(aeaHiCertinstById.getMemo());//备注
+            }else {
+                constructPermit.setRemarks(aeaExProjCertBuildByProjId.getCertBuildMemo());//备注
+            }
         }
         return constructPermit;
     }

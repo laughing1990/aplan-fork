@@ -60,4 +60,5 @@ public interface ItemBasicService {
 
     ActStoTimeruleInst getProcessinstTimeruleInstByIteminstId(String iteminstId, String rootOrgId) throws Exception;
 
+    List<SpglDfxmsplcjdsxxxb> findItemByGcdm(String gcdm);
 }
