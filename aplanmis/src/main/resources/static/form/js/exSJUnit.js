@@ -99,6 +99,9 @@ var vm = new Vue({
                 buildArea: [
                     { validator: checkNumFloat, trigger: ['blur'] },
                     { required: true, message: '请填写施工面积！', trigger: ['change'] }
+                ],
+                quaCheckNum:[
+                    { required: true, message: '请输入质量监督注册号！', trigger: ['change', 'blur'] },
                 ]
             },
             gongchengzongFromRules: { //工程总承包单位信息校验
@@ -387,14 +390,7 @@ var vm = new Vue({
                 type: 'get',
             }, function(data) {
                 if (data.content.unitInfoShowFrom) {
-                    _that.unitInfoShowFrom.buildArea = data.content.unitInfoShowFrom.buildArea;
-                    _that.unitInfoShowFrom.buildId = data.content.unitInfoShowFrom.buildId;
-                    _that.unitInfoShowFrom.contractEndBuildTime = data.content.unitInfoShowFrom.contractEndBuildTime;
-                    _that.unitInfoShowFrom.contractStartBuildTime = data.content.unitInfoShowFrom.contractStartBuildTime;
-                    _that.unitInfoShowFrom.projInfoId = data.content.unitInfoShowFrom.projInfoId;
-                    _that.unitInfoShowFrom.provinceProjCode = data.content.unitInfoShowFrom.provinceProjCode;
-                    _that.unitInfoShowFrom.quaCheckNum = data.content.unitInfoShowFrom.quaCheckNum;
-                    _that.unitInfoShowFrom.structureSystem = data.content.unitInfoShowFrom.structureSystem;
+                    _that.unitInfoShowFrom = data.content.unitInfoShowFrom;
                 }
                 if (data.content.gongchengzongFrom) {
                     _that.gongchengzongFrom = data.content.gongchengzongFrom;

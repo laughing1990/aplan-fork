@@ -140,7 +140,7 @@ textarea {
   padding: 0 15px;
 }
 .el-dialog__headerbtn:focus .el-dialog__close, .el-dialog__headerbtn:hover .el-dialog__close {
-    color: #fff;
+  color: #fff;
 }
 .el-dialog__headerbtn {
   top: 13px;
@@ -171,7 +171,7 @@ textarea {
   right: 2px;
 }
 /*.el-loading-mask {*/
-  /*position: fixed;*/
+/*position: fixed;*/
 /*}*/
 .el-table__expanded-cell[class*=cell] {
   padding: 10px 40px;
@@ -293,7 +293,7 @@ textarea {
   float: left;
 }
 .input-inline .el-select {
- width: 100%;
+  width: 100%;
 }
 .input-ex .el-select {
   width: 100%;
@@ -679,8 +679,8 @@ textarea {
   background-color: #4EB2FD;
 }
 .isTag .ag {
-    padding-right: 3px;
-    vertical-align: text-top;
+  padding-right: 3px;
+  vertical-align: text-top;
 }
 #showNonCoreItemDiv > div {
   margin-top: 15px;
@@ -1170,11 +1170,11 @@ textarea {
   padding: 16px;
 }
 .receive-item-header {
-    border-bottom: 1px solid #EBEDF2;
-    height: 40px;
-    line-height: 40px;
-    padding: 0 10px;
-    font-size: 16px;
+  border-bottom: 1px solid #EBEDF2;
+  height: 40px;
+  line-height: 40px;
+  padding: 0 10px;
+  font-size: 16px;
 }
 .receive-list {
   padding: 10px 14px;
@@ -1218,23 +1218,23 @@ textarea {
 }
 
 .receive-list span:hover, .receive-item.active li.active span {
-    color: #169AFF;
-    background: rgba(244,250,254,1);
+  color: #169AFF;
+  background: rgba(244,250,254,1);
 }
 .receive-type, .receive-type-y {
-    padding: 0 12px;
-    color: #07CDC6;
-    border-radius: 11px;
-    border: 1px solid #07CDC6;
-    font-size: 14px;
-    height: 22px;
-    line-height: 22px;
-    margin: 9px 0;
-    display: inline-block;
+  padding: 0 12px;
+  color: #07CDC6;
+  border-radius: 11px;
+  border: 1px solid #07CDC6;
+  font-size: 14px;
+  height: 22px;
+  line-height: 22px;
+  margin: 9px 0;
+  display: inline-block;
 }
 .receive-type-y {
-    color: #FFB822;
-    border: 1px solid #FFB822;
+  color: #FFB822;
+  border: 1px solid #FFB822;
 }
 .one-form-name {
   height: 50px;
@@ -1267,25 +1267,25 @@ textarea {
   padding: 10px 20px;
 }
 /*#oneFormContent table {*/
-  /*width: 80%;*/
-  /*margin: 20px auto;*/
-  /*color: #575962;*/
-  /*border: none;*/
-  /*border-left: 1px solid #DCDFE6;*/
-  /*border-top: 1px solid #dcdfe6;*/
+/*width: 80%;*/
+/*margin: 20px auto;*/
+/*color: #575962;*/
+/*border: none;*/
+/*border-left: 1px solid #DCDFE6;*/
+/*border-top: 1px solid #dcdfe6;*/
 /*}*/
 /*#oneFormContent table td {*/
-  /*padding:5px;*/
-  /*border: none;*/
-  /*border-bottom: 1px solid #ebeef5;*/
-  /*border-right: 1px solid #ebeef5;*/
+/*padding:5px;*/
+/*border: none;*/
+/*border-bottom: 1px solid #ebeef5;*/
+/*border-right: 1px solid #ebeef5;*/
 /*}*/
 /*#oneFormContent .dialog-footer {*/
-  /*text-align: right;*/
-  /*margin-right: 10%;*/
+/*text-align: right;*/
+/*margin-right: 10%;*/
 /*}*/
 /*#oneFormContent .el-dialog__body .el-form {*/
-  /*padding: 0;*/
+/*padding: 0;*/
 /*}*/
 .more-base-info {
   height: 40px;
@@ -1483,7 +1483,7 @@ textarea {
 }
 .mertial-supplement-dialog .supplement-form .fill-item .el-form-item__content .el-input,
 .mertial-supplement-dialog .supplement-form .fill-item .el-form-item__content .el-textarea{
-   width: 100%;
+  width: 100%;
 }
 .material-table-header{
   border: 1px solid #e5e5e5;
@@ -1777,4 +1777,7 @@ textarea {
 .person-idcard-col{
   float: none;
   width: 28%;
+}
+.allWidth{
+  width: 90%;
 }

@@ -30,41 +30,41 @@
     <update id="updateAeaExProjBuild" parameterType="AeaExProjBuild">
         update aea_ex_proj_build
         <set >
-            <if test="projInfoId != null" >
+            <if test="projInfoId != null and projInfoId !=''" >
                 PROJ_INFO_ID = #{projInfoId},
             </if>
-            <if test="provinceProjCode != null" >
+            <if test="provinceProjCode != null and provinceProjCode !=''" >
                 PROVINCE_PROJ_CODE = #{provinceProjCode},
             </if>
-            <if test="contractStartBuildTime != null" >
+            <if test="contractStartBuildTime != null and contractStartBuildTime !=''" >
                 CONTRACT_START_BUILD_TIME = #{contractStartBuildTime},
             </if>
-            <if test="contractEndBuildTime != null" >
+            <if test="contractEndBuildTime != null and contractEndBuildTime !=''" >
                 CONTRACT_END_BUILD_TIME = #{contractEndBuildTime},
             </if>
-            <if test="buildArea != null" >
+            <if test="buildArea != null and buildArea !=''" >
                 BUILD_AREA = #{buildArea},
             </if>
-            <if test="structureSystem != null" >
+            <if test="structureSystem != null and structureSystem !=''" >
                 STRUCTURE_SYSTEM = #{structureSystem},
             </if>
-            <if test="quaCheckNum != null" >
+            <if test="quaCheckNum != null and quaCheckNum !=''" >
                 QUA_CHECK_NUM = #{quaCheckNum},
             </if>
-            <if test="buildMemo != null" >
+            <if test="buildMemo != null and buildMemo !=''" >
                 BUILD_MEMO = #{buildMemo},
             </if>
-            <if test="creater != null" >
+            <if test="creater != null and creater !=''" >
                 CREATER = #{creater},
             </if>
-            <if test="modifier != null" >
+            <if test="modifier != null and modifier !=''" >
                 MODIFIER = #{modifier},
             </if>
-            <if test="modifyTime != null" >
+            <if test="modifyTime != null and modifyTime !=''" >
                 MODIFY_TIME = #{modifyTime},
             </if>
-            <if test="rootOrgId != null" >
-                MODIFY_TIME = #{rootOrgId},
+            <if test="rootOrgId != null and rootOrgId !=''" >
+                ROOT_ORG_ID = #{rootOrgId},
             </if>
         </set>
         where BUILD_ID = #{buildId}

@@ -139,23 +139,25 @@ public class AeaExProjDrawingController {
         }
         try {
         AeaExProjDrawing aeaExProjDrawing = new AeaExProjDrawing();
+        ContentResultForm<String> stringContentResultForm = aeaExProjCertBuildService.SynchronizeDataByAeaProjDrawingForm(aeaProjDrawingVo);//同步数据
+            if(stringContentResultForm.isSuccess()){
+                voToPojo(aeaProjDrawingVo,aeaExProjDrawing);
 
-        voToPojo(aeaProjDrawingVo,aeaExProjDrawing);
+                if(aeaExProjDrawing.getDrawingId()!=null&&!"".equals(aeaExProjDrawing.getDrawingId())){
+                    aeaExProjDrawingService.updateAeaExProjDrawing(aeaExProjDrawing);
+                }else{
+                    if(aeaExProjDrawing.getDrawingId()==null||"".equals(aeaExProjDrawing.getDrawingId()))
+                        aeaExProjDrawing.setDrawingId(UUID.randomUUID().toString());
+                    aeaExProjDrawingService.saveAeaExProjDrawing(aeaExProjDrawing);
+                }
 
-        if(aeaExProjDrawing.getDrawingId()!=null&&!"".equals(aeaExProjDrawing.getDrawingId())){
-            aeaExProjDrawingService.updateAeaExProjDrawing(aeaExProjDrawing);
-        }else{
-            if(aeaExProjDrawing.getDrawingId()==null||"".equals(aeaExProjDrawing.getDrawingId()))
-                aeaExProjDrawing.setDrawingId(UUID.randomUUID().toString());
-            aeaExProjDrawingService.saveAeaExProjDrawing(aeaExProjDrawing);
-        }
+                List<AeaProjDrawing> aeaProjDrawing = aeaProjDrawingVo.getAeaProjDrawing();
 
-        List<AeaProjDrawing> aeaProjDrawing = aeaProjDrawingVo.getAeaProjDrawing();
-
-        aeaProjDrawingSerivce.saveAeaProjDrawing(aeaProjDrawingVo);
-
-        aeaExProjCertBuildService.SynchronizeDataByAeaProjDrawingForm(aeaProjDrawingVo);//同步数据
-        return  new ContentResultForm<AeaProjDrawingVo>(true,aeaProjDrawingVo);
+                aeaProjDrawingSerivce.saveAeaProjDrawing(aeaProjDrawingVo);
+                return  new ContentResultForm<AeaProjDrawingVo>(true,aeaProjDrawingVo);
+            }else {
+                return stringContentResultForm;
+            }
 
         }catch(Exception e){
             return new ContentResultForm<JSONObject>(false, new JSONObject(),"施工图审查信息！原因："+e.getMessage());
