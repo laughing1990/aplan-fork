@@ -2339,6 +2339,10 @@ var vm = new Vue({
               }
             }
             certRowData.bind = true;
+            _that.showMatTableExpand = true;
+            if(_that.showFileListKey.indexOf(_that.selMatRowData.matId)<0){
+              _that.showFileListKey.push(_that.selMatRowData.matId)
+            }
             _that.$message({
               message: res.message?res.message:'证照关联成功',
               type: 'success'

@@ -730,6 +730,7 @@ var vm = new Vue({
                 }else {
                   _that.$refs['uploadTableData'].toggleRowSelection(fileListItem,false);
                 }
+
                 _that.$nextTick(function(){
                   if(matChildIds.indexOf(fileListItem.fileId)>-1){
                     _that.$refs['uploadTableData'].toggleRowSelection(fileListItem,true);
@@ -3111,6 +3112,10 @@ var vm = new Vue({
             }
           }
           certRowData.bind = true;
+          _that.showMatTableExpand = true;
+          if(_that.showFileListKey.indexOf(_that.selMatRowData.matId)<0){
+            _that.showFileListKey.push(_that.selMatRowData.matId)
+          }
           _that.$message({
             message: '证照关联成功',
             type: 'success'
