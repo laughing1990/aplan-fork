@@ -219,6 +219,37 @@
             stroke: #409eff;
             stroke-linecap: round;
         }
+
+        .customSelect{
+            width:100%!important;
+            margin-top: 10px!important;
+        }
+
+        .el-select-dropdown__item.hover, .el-select-dropdown__item:hover {
+            color: #169aff!important;
+        }
+        .el-select-dropdown__item.hover, .el-select-dropdown__item:hover {
+            background-color: #F5F7FA;
+        }
+        .el-select-dropdown__item {
+            font-size: 14px;
+            padding: 0 20px;
+            position: relative;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: #606266;
+            height: 34px;
+            line-height: 34px;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+            cursor: pointer;
+        }
+        .el-select-dropdown__item {
+            height: auto;
+            line-height: normal;
+            padding: 10px 20px;
+        }
     </style>
     <script type="text/javascript">
         var currentBusiType = '${currentBusiType}';
@@ -804,12 +835,12 @@
                     <div class="top-btn clearfix">
                         <p class="float-left">选择公共页面元素</p>
                         <div class="float-right">
-                            <button type="button" class="btn btn-secondary" @click="isshowChooseFlowList4 = false;isShowMask = false;">关闭</button>
-                            <button type="button" class="btn btn-primary" @click="isshowChooseFlowList4 = false;isShowMask = false;savePublicElement('addViewTypeForm')">保存</button>
+                            <button type="button" class="btn btn-secondary" @click="isshowChooseFlowList4 = false;">关闭</button>
+                            <button type="button" class="btn btn-primary" @click="isshowChooseFlowList4 = false;savePublicElement('addViewTypeForm')">保存</button>
                         </div>
                     </div>
                     <div class="chooseFlowListSelect">
-                        <el-select  v-model="multipleSelection" value-key="elementName" filterable clearable  multiple  placeholder="直接选择或搜索选择" @visible-change = "toggleFlowListSelect" >
+                        <el-select  class="customSelect" v-model="multipleSelection" value-key="elementName" filterable clearable  multiple  placeholder="直接选择或搜索选择" @visible-change = "toggleFlowListSelect" >
                             <el-option
                                     v-for="item in choosePBElementTableData"
                                     :key="item.elementCode"
@@ -820,7 +851,7 @@
                             </el-option>
                         </el-select>
                     </div>
-                    <button class="btn btn-secondary" :disabled="showTip"  @click="isshowChooseFlowList4 = !isshowChooseFlowList4;isShowMask = true;importElement()"   slot="reference">导入元素</button>
+                    <button class="btn btn-secondary" :disabled="showTip"  @click="isshowChooseFlowList4 = !isshowChooseFlowList4;importElement()"   slot="reference">导入元素</button>
                 </el-popover>
                 <button class="btn btn-secondary" :disabled="showTip" @click="start_drag()">
                     元素排序
@@ -889,13 +920,13 @@
                     <div class="top-btn clearfix">
                         <p class="float-left">选择业务表单</p>
                         <div class="float-right">
-                            <button type="button" class="btn btn-secondary" @click="isshowChooseFlowList1 = false;isShowMask = false;">关闭</button>
-                            <button type="button" class="btn btn-primary" @click="isshowChooseFlowList1 = false;isShowMask = false;savePublicForm()">保存</button>
+                            <button type="button" class="btn btn-secondary" @click="isshowChooseFlowList1 = false;">关闭</button>
+                            <button type="button" class="btn btn-primary" @click="isshowChooseFlowList1 = false;savePublicForm()">保存</button>
                         </div>
                     </div>
 
                     <div class="chooseFlowListSelect">
-                        <el-select  v-model="multipleSelection3" value-key="formCode" filterable clearable  multiple  placeholder="直接选择或搜索选择" @visible-change = "toggleFlowListSelect" >
+                        <el-select  class="customSelect" v-model="multipleSelection3" value-key="formCode" filterable clearable  multiple  placeholder="直接选择或搜索选择" @visible-change = "toggleFlowListSelect" >
                             <el-option
                                     v-for="(item,index) in choosePBFormTableData"
                                     :key="item.index"
@@ -906,7 +937,7 @@
                             </el-option>
                         </el-select>
                     </div>
-                    <button class="btn btn-secondary"  @click="isshowChooseFlowList1 = !isshowChooseFlowList1;isShowMask = true;addPBForm()"   slot="reference">添加表单</button>
+                    <button class="btn btn-secondary"  @click="isshowChooseFlowList1 = !isshowChooseFlowList1;addPBForm()"   slot="reference">添加表单</button>
                 </el-popover>
                 <!-- <button class="btn btn-secondary" @click="addPBForm">
                     添加表单
@@ -1064,13 +1095,13 @@
                     <div class="top-btn clearfix">
                         <p class="float-left">选择业务视图</p>
                         <div class="float-right">
-                            <button type="button" class="btn btn-secondary" @click="isshowChooseFlowList3 = false;isShowMask = false;">关闭</button>
-                            <button type="button" class="btn btn-primary" @click="isshowChooseFlowList3 = false; isShowMask = false;savePublicView()">保存</button>
+                            <button type="button" class="btn btn-secondary" @click="isshowChooseFlowList3 = false;">关闭</button>
+                            <button type="button" class="btn btn-primary" @click="isshowChooseFlowList3 = false; savePublicView()">保存</button>
                         </div>
                     </div>
 
                     <div class="chooseFlowListSelect">
-                        <el-select  v-model="multipleSelection5" value-key="viewComment" filterable clearable  multiple  placeholder="直接选择或搜索选择" @visible-change = "toggleFlowListSelect" >
+                        <el-select class="customSelect" v-model="multipleSelection5" value-key="viewComment" filterable clearable  multiple  placeholder="直接选择或搜索选择" @visible-change = "toggleFlowListSelect" >
                             <el-option
                                     v-for="item in chooseViewListTableData"
                                     :key="item.viewCode"
@@ -1081,7 +1112,7 @@
                             </el-option>
                         </el-select>
                     </div>
-                    <button class="btn btn-secondary"  @click="isshowChooseFlowList3 = !isshowChooseFlowList3;isShowMask = true;addPBView()"   slot="reference">添加视图</button>
+                    <button class="btn btn-secondary"  @click="isshowChooseFlowList3 = !isshowChooseFlowList3;addPBView()"   slot="reference">添加视图</button>
                 </el-popover>
                 <!-- <button class="btn btn-secondary" @click="addPBView">
                     添加视图
