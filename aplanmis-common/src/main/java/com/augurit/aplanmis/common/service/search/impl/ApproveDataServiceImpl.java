@@ -16,6 +16,7 @@ import com.augurit.aplanmis.common.mapper.AeaHiApplyinstMapper;
 import com.augurit.aplanmis.common.mapper.AeaHiIteminstMapper;
 import com.augurit.aplanmis.common.mapper.AeaItemBasicMapper;
 import com.augurit.aplanmis.common.service.applyinst.AeaHiApplyinstCorrectService;
+import com.augurit.aplanmis.common.service.instance.AeaHiItemCorrectService;
 import com.augurit.aplanmis.common.service.instance.AeaHiParStageinstService;
 import com.augurit.aplanmis.common.service.instance.AeaLogApplyStateHistService;
 import com.augurit.aplanmis.common.service.item.AeaItemBasicService;
@@ -69,6 +70,8 @@ public class ApproveDataServiceImpl implements ApproveDataService {
     private BpmProcessFrontService bpmProcessFrontService;
     @Autowired
     private AeaHiApplyinstCorrectService aeaHiApplyinstCorrectService;
+    @Autowired
+    private AeaHiItemCorrectService aeaHiItemCorrectService;
     @Autowired
     private BpmTaskService bpmTaskService;
 
@@ -175,7 +178,6 @@ public class ApproveDataServiceImpl implements ApproveDataService {
 
             if (ItemStatus.DISAGREE.getValue().equals(dto.getIteminstState())
                     || ItemStatus.OUT_SCOPE.getValue().equals(dto.getIteminstState())
-                    || ItemStatus.CORRECT_MATERIAL_START.getValue().equals(dto.getIteminstState())
                     || ItemStatus.REFUSE_DEAL.getValue().equals(dto.getIteminstState())
                     || ItemStatus.SPECIFIC_PROC_START.getValue().equals(dto.getIteminstState())) {
                 AeaLogItemStateHist query = new AeaLogItemStateHist();
@@ -189,11 +191,19 @@ public class ApproveDataServiceImpl implements ApproveDataService {
                     } else {//日志表没有意见，则根据taskId去意见表查询
                         String taskId = itemLogList.get(0).getTaskinstId();
                         if (StringUtils.isNotBlank(taskId)) {
-                            List<ExtendBpmHistoryCommentForm> comments = bpmProcessFrontService.listHistoryCommentByTaskId(taskId, true);
-                            dto.setApproveComments(comments.size() > 0 ? comments.get(0).getCommentMessage() : "");
+                            HistoricTaskInstance task = bpmTaskService.getHistoryTaskByTaskId(taskId);
+                            if(task==null) {
+                                dto.setApproveComments("");
+                            }else{
+                                List<BpmHistoryCommentForm> comments = bpmTaskService.getHistoryCommentsByTaskId(task.getProcessInstanceId(), taskId);
+                                dto.setApproveComments(comments.size() > 0 ? comments.get(0).getCommentMessage() : "");
+                            }
                         }
                     }
                 }
+            }else if(ItemStatus.CORRECT_MATERIAL_START.getValue().equals(dto.getIteminstState())){//补正
+                AeaHiItemCorrect correct = aeaHiItemCorrectService.getCurrentCorrectinst(dto.getIteminstId());
+                dto.setApproveComments(correct!=null ? correct.getCorrectMemo(): "");
             }
         }
         return new PageInfo<>(list);
