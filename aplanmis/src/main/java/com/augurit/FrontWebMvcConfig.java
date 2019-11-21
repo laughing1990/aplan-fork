@@ -235,11 +235,12 @@ public class FrontWebMvcConfig implements WebMvcConfigurer, ApplicationListener<
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
 
-        MongoDbAchieve uploadFileStrategy = (MongoDbAchieve) SpringUtil.getBean(UploaderFactory.class).create(UploadType.MONGODB.getValue());
+        //该地方仅用于本地测试使用，请勿提交到代码库，谢谢
+        /*MongoDbAchieve uploadFileStrategy = (MongoDbAchieve) SpringUtil.getBean(UploaderFactory.class).create(UploadType.MONGODB.getValue());
         uploadFileStrategy.setMongodbUri("mongodb://jjt1:jjt1@192.168.30.120:27017/jjt");
         try {
             uploadFileStrategy.queryFile("333");
         }catch (Exception e){
-        }
+        }*/
     }
 }
