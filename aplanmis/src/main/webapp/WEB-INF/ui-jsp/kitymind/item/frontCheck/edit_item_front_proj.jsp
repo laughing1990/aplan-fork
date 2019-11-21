@@ -23,17 +23,17 @@
                         <div class="form-group m-form__group row">
                             <label class="col-lg-2 col-form-label" style="text-align: right;"><font color="red">*</font>规则名称:</label>
                             <div class="col-lg-10">
-                                <input type="text" class="form-control m-input" name="ruleName" value="" ${curIsEditable?'':'disabled'} />
+                                <input type="text" class="form-control m-input" name="ruleName" value=""  />
                             </div>
                         </div>
 
                         <div id="edit_par_front_pro_el_div" class="form-group m-form__group row">
                             <label class="col-lg-2 col-form-label" style="text-align: right;">
                                 <font color="red">*</font>规则表达式:<br/>
-                                <button ${curIsEditable?'':'disabled'} type="button" class="btn btn-info" onclick="openSelectMetaDbTbcolModal('ruleEl');" style="margin-top: 10px;">选择</button>
+                                <button id="selectRuleElBtn" type="button" class="btn btn-info" onclick="openSelectMetaDbTbcolModal('ruleEl');" style="margin-top: 10px;">选择</button>
                             </label>
                             <div class="col-lg-10">
-                                <textarea id="ruleEl" class="form-control" name="ruleEl" rows="6" ${curIsEditable?'':'disabled'}></textarea>
+                                <textarea id="ruleEl" class="form-control" name="ruleEl" rows="6"></textarea>
                             </div>
                         </div>
 
@@ -41,7 +41,7 @@
 
                             <label class="col-lg-2 col-form-label" style="text-align: right;"><font color="red">*</font>排序:</label>
                             <div class="col-lg-10">
-                                <input type="text" class="form-control m-input" name="sortNo" value="" ${curIsEditable?'':'disabled'}/>
+                                <input type="text" class="form-control m-input" name="sortNo" value="" />
                             </div>
                         </div>
 
@@ -49,7 +49,7 @@
 
                             <label class="col-lg-2 col-form-label" style="text-align: right;">备注:</label>
                             <div class="col-lg-10">
-                                <textarea type="text" class="form-control m-input" name="frontProjMemo" rows="4" value="" ${curIsEditable?'':'disabled'} ></textarea>
+                                <textarea type="text" class="form-control m-input" name="frontProjMemo" rows="4" value=""></textarea>
                             </div>
                         </div>
 
