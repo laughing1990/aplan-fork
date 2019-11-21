@@ -388,13 +388,19 @@
                 this.fetchUploadContractInitData(row);
             },
             /**
-             *              
+             * 确认中标结果             
             */
-            confirmWinBidResult: function() {
+            confirmWinBidResult: function(row) {
                 var ts = this;
+                var params = {
+                    projPurchaseId: row.projPurchaseId,
+                    unitBiddingId: row.unitBiddingId,
+                    confirmFlag: '1'
+                }
                 request('', {
                     url: 'supermarket/purchase/confirmImunit',
                     type: 'post',
+                    data: params
                 }, function (res) {
                     ts.mloading = false;
                     if (res.success) {
