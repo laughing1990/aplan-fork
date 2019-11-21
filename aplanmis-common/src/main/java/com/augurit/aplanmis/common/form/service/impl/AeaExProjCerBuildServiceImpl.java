@@ -306,6 +306,9 @@ public class AeaExProjCerBuildServiceImpl implements AeaExProjCertBuildService {
     @Override
     public void saveForm(AeaExProjCertBuild aeaExProjCertBuild) throws Exception {
         if(StringUtils.isBlank(aeaExProjCertBuild.getBuildId())){
+            //查询项目名称
+            AeaProjInfo aeaProjInfoById = aeaProjInfoMapper.getAeaProjInfoById(aeaExProjCertBuild.getProjInfoId());
+            aeaExProjCertBuild.setProjName(aeaProjInfoById.getProjName());
             aeaExProjCertBuild.setBuildId(UuidUtil.generateUuid());
             aeaExProjCertBuild.setCreateTime(new Date());
             aeaExProjCertBuild.setCreater(SecurityContext.getCurrentUserName());
