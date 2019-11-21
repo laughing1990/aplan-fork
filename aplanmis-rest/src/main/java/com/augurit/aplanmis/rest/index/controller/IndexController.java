@@ -26,9 +26,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -67,10 +67,10 @@ public class IndexController {
     @ApiImplicitParams({@ApiImplicitParam(name = "themeId", value = "主题id", dataType = "String", required = true),
             @ApiImplicitParam(name = "projInfoId", value = "项目id", dataType = "String"),
             @ApiImplicitParam(name = "unitInfoId", value = "委托人申报时选择的单位id", dataType = "String")})
-    public ContentResultForm<List<AeaParStage>> getStageByThemeId(@PathVariable("themeId") String themeId, String projInfoId, String unitInfoId, HttpServletRequest request) {
+    public ContentResultForm<List<AeaParStage>> getStageByThemeId(@PathVariable("themeId") String themeId, String projInfoId, String unitInfoId) {
         try {
             if (StringUtils.isEmpty(themeId)) return new ContentResultForm<>(false, null, "主题id为必填项!");
-            return new ContentResultForm<>(true, restMainService.getStageByThemeId(themeId, projInfoId, topOrgId, unitInfoId, request));
+            return new ContentResultForm<>(true, restMainService.getStageByThemeId(themeId, projInfoId, topOrgId, unitInfoId));
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             return new ContentResultForm<>(false, null, "根据主题获取阶段接口异常");
@@ -107,7 +107,7 @@ public class IndexController {
             return new ContentResultForm<>(true, restMainService.getApplyStatistics(topOrgId));
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            return new ContentResultForm(false, "获取申报件统计数据接口异常");
+            return new ContentResultForm<>(false, null, "获取申报件统计数据接口异常");
         }
     }
 
@@ -116,7 +116,7 @@ public class IndexController {
     @ApiImplicitParams({@ApiImplicitParam(value = "搜索关键字", name = "keyword", required = false, dataType = "string"),
             @ApiImplicitParam(value = "页数", name = "pageNum", dataType = "Integer"),
             @ApiImplicitParam(value = "页面大小", name = "pageSize", dataType = "Integer")})
-    public PageInfo<AnnounceDataDto> getApplyInstList(String keyword, int pageNum, int pageSize) {
+    public PageInfo<AnnounceDataDto> getApplyInstList(String keyword, @RequestParam(required = false) int pageNum, @RequestParam(required = false) int pageSize) {
         try {
             return approveDataService.searchAnnounceDataList(keyword, pageNum, pageSize, topOrgId);
         } catch (Exception e) {
@@ -127,6 +127,7 @@ public class IndexController {
 
     @GetMapping("/org/list")
     @ApiOperation(value = "首页-->按部门申报-->获取所有部门列表")
+    @ApiImplicitParam(name = "orgId", value = "父组织id")
     public ContentResultForm<List<OpuOmOrg>> getOrgList(String orgId) {
         try {
             log.info("获取所有部门列表/org/list---start---");
@@ -136,7 +137,7 @@ public class IndexController {
             return new ContentResultForm<>(true, orgList);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            return new ContentResultForm(false, "获取所有部门列表异常");
+            return new ContentResultForm<>(false, null, "获取所有部门列表异常");
         }
     }
 
@@ -158,7 +159,7 @@ public class IndexController {
             @ApiImplicitParam(value = "审批状态(0:受理情况,1:拟审批意见,2:审批决定)", name = "applyState", dataType = "string"),
             @ApiImplicitParam(value = "页数", name = "pageNum", dataType = "Integer"),
             @ApiImplicitParam(value = "页面大小", name = "pageSize", dataType = "Integer")})
-    public PageInfo<ApproveDataDto> searchApproveDataList(String applyinstCode, String projInfoName, int pageNum, int pageSize, String applyState) {
+    public PageInfo<ApproveDataDto> searchApproveDataList(String applyinstCode, String projInfoName, @RequestParam(defaultValue = "1") int pageNum, @RequestParam(defaultValue = "10") int pageSize, String applyState) {
         try {//0,1,2,5 受理情况  3,4,6审批情况 7办结
             List<String> applyStates = new ArrayList<>();
             if ("0".equals(applyState)) {//受理情况

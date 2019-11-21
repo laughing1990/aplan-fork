@@ -75,6 +75,11 @@ var vm = new Vue({
     licenseFormData: {
       projScale: '',
       memo: '',
+      certId: '',
+      certinstCode: '',
+      issueDate: '',
+      certinstName: '',
+      issueOrgId: '',
     },
     licenseTypeList: [],
     cacheTypeList: [],
@@ -177,7 +182,10 @@ var vm = new Vue({
         request('', {
           url: ctx + 'rest/approve/certinst/batch/delete',
           type: 'post',
-          data: {certinstIds: row.certinstId,},
+          // data: {certinstIds: row.certinstId,},
+          data: {
+            matinstIds: row.matinstId,
+          },
         }, function (res) {
           vm.pageLoading = false;
           if (res.success) {
@@ -206,6 +214,15 @@ var vm = new Vue({
       function save() {
         vm.licenseFormData.applyinstId = vm.applyinstId;
         vm.licenseFormData.iteminstId = vm.iteminstId;
+        if (vm.isAddLicense) {
+          vm.licenseTypeList.forEach(function(u){
+            if (u.certId == vm.licenseFormData.certId){
+              vm.licenseFormData.matId = u.matId;
+            }
+          });
+        }
+        // console.log(vm.licenseFormData);
+        // if (window) return null;
         vm.licenseDiaLoading = true;
         request('', {
           url: ctx + 'rest/approve/saveAeaCertinst',
@@ -214,7 +231,6 @@ var vm = new Vue({
         }, function (res) {
           vm.licenseDiaLoading = false;
           if (res.success) {
-            //
             vm.licenseDiaVisible = false;
             vm.$message.success('保存成功');
             vm.getLicenseData(); // 刷新表格数据
@@ -253,13 +269,16 @@ var vm = new Vue({
       if (vm.isLoadedType) {
         return vm.filterType();
       }
+      var params = {
+        applyinstId: vm.applyinstId,
+      };
+      if (vm.isApprover == '1') {
+        params.iteminstId = vm.iteminstId;
+      }
       request('', {
         url: ctx + 'rest/approve/getItemOutputCert',
         type: 'get',
-        data: {
-          iteminstId: vm.iteminstId,
-          applyinstId: vm.applyinstId,
-        },
+        data: params,
       }, function (res) {
         if (res.success) {
           //
@@ -379,24 +398,21 @@ var vm = new Vue({
     getmainTbaleList: function () {
       var vm = this;
       var statesUrl;
-      var params;
-      if (vm.isSeries == '1') {
-        // statesUrl = ctx + 'rest/approve/docs/single'; // 串联
-        statesUrl = ctx + 'rest/approve/docs/list'; // 串联
-        params = {
-          iteminstId: vm.iteminstId
-        }
+      var params = {};
+      // if (vm.isSeries == '1') {
+      //   params.iteminstId = vm.iteminstId;
+      // } else {
+      //   params.applyinstId = vm.applyinstId;
+      //   params.isApprover = vm.isApprover;
+      // }
+      if (vm.isApprover == '1') {
+        params.iteminstId = vm.iteminstId;
       } else {
-        // statesUrl = ctx + 'rest/approve/docs/parallel';// 并联
-        statesUrl = ctx + 'rest/approve/docs/list';// 并联
-        params = {
-          applyinstId: vm.applyinstId,
-          isApprover: vm.isApprover
-        }
+        params.applyinstId = vm.applyinstId;
       }
       this.pageLoading = true;
       request('', {
-        url: statesUrl,
+        url: ctx + 'rest/approve/docs/list',
         type: 'get',
         data: params,
       }, function (res) {

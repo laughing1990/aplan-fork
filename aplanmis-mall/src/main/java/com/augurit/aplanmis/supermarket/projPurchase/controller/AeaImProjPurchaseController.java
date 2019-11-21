@@ -17,6 +17,7 @@ import com.augurit.aplanmis.common.utils.BusinessUtils;
 import com.augurit.aplanmis.common.utils.CommonTools;
 import com.augurit.aplanmis.common.utils.FileUtils;
 import com.augurit.aplanmis.common.vo.*;
+import com.augurit.aplanmis.supermarket.apply.service.RestImApplyService;
 import com.augurit.aplanmis.supermarket.contract.service.AeaImContractService;
 import com.augurit.aplanmis.supermarket.projPurchase.service.ProjPurchaseService;
 import com.augurit.aplanmis.supermarket.projPurchase.vo.OwnerIndexData;
@@ -185,22 +186,6 @@ public class AeaImProjPurchaseController {
             return new ContentRestResult<>(false, null, e.getMessage());
         }
     }
-
-    @ApiOperation(value = "新增采购需求并发起流程", notes = "业主单位个人中心新增采购需求,批文文件上传officialRemarkFile，要求说明文件上传requireExplainFile")
-    @PostMapping(value = "/startProjPurchase")
-    public RestResult startProjPurchase(@Valid SaveAeaImProjPurchaseVo saveAeaImProjPurchaseVo, HttpServletRequest request) {
-
-        try {
-            //AeaImProjPurchase aeaImProjPurchase =
-            projPurchaseService.startProjPurchaseAndProcess(saveAeaImProjPurchaseVo, request);
-//            return new ContentRestResult<>(true, aeaImProjPurchase.getProjPurchaseId());
-            return new RestResult(true, "success");
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return new ContentRestResult<>(false, null, e.getMessage());
-        }
-    }
-
 
     @ApiOperation(value = "查询符合条件的中介机构", notes = "查询符合条件的中介机构")
     @PostMapping(value = "/getAgentUnitInfoList", produces = "application/json;charset=UTF-8")
@@ -844,7 +829,7 @@ public class AeaImProjPurchaseController {
         try {
             List<AeaProjInfo> aeaProjInfos = aeaProjInfoService.findAeaProjInfoByKeyword(keyword);
             if (aeaProjInfos.size() == 0 && !keyword.contains("#") && !keyword.contains("ZBM") && CommonTools.isComplianceWithRules(keyword)) {
-                aeaProjInfos.addAll(projectCodeService.getProjInfoFromThirdPlatform(keyword, null));
+                aeaProjInfos.addAll(projectCodeService.getProjInfoFromThirdPlatform(keyword, null,""));
             }
             return new ContentResultForm<>(true, aeaProjInfos, "Query success");
         } catch (Exception e) {
@@ -853,11 +838,35 @@ public class AeaImProjPurchaseController {
         }
     }
 
+    //20191120---新增接口---------------------------------------
+
+    @Autowired
+    private RestImApplyService restImApplyService;
+
+    @ApiOperation(value = "新增采购需求并发起流程", notes = "业主单位个人中心新增采购需求,批文文件上传officialRemarkFile，要求说明文件上传requireExplainFile")
+    @PostMapping(value = "/startProjPurchase")
+    public RestResult startProjPurchase(@Valid SaveAeaImProjPurchaseVo saveAeaImProjPurchaseVo, HttpServletRequest request) {
+
+        try {
+            projPurchaseService.startProjPurchaseAndProcess(saveAeaImProjPurchaseVo, request);
+            return new RestResult(true, "success");
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return new ContentRestResult<>(false, null, e.getMessage());
+        }
+    }
+
     @PostMapping("/chooseWonBiddingUnit")
     @ApiOperation("选取中标机构")
-    public ResultForm chooseWonBiddingUnit(String unitBiddingId, String projPurchaseId) {
-        //TODO  20191115
+    public ResultForm chooseWonBiddingUnit(String unitBiddingId, String projPurchaseId) throws Exception {
+        restImApplyService.chooseImunit(projPurchaseId, unitBiddingId);
         return new ResultForm(true, "success");
     }
 
+    @PostMapping("/confirmImunit")
+    @ApiOperation("中选机构确认")
+    public ResultForm confirmImunit(String projPurchaseId, String unitBiddingId, String opsLinkInfoId, String confirmFlag) throws Exception {
+        restImApplyService.confirmImunit(projPurchaseId, unitBiddingId, confirmFlag);
+        return new ResultForm(true, "success");
+    }
 }

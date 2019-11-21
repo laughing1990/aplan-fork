@@ -261,6 +261,11 @@
         delete from AEA_HI_ITEM_INOUTINST where CERTINST_ID in
         <foreach collection="certinstIds" close=")" open="(" separator="," item="certinstId">#{certinstId}</foreach>
     </delete>
+
+    <delete id="deleteAeaHiItemInoutinstByMatinstIds">
+        delete from AEA_HI_ITEM_INOUTINST where MATINST_ID in
+        <foreach collection="matinstIds" close=")" open="(" separator="," item="certinstId">#{certinstId}</foreach>
+    </delete>
     <!--批量插入-->
     <insert id="batchInsertAeaHiItemInoutinst" parameterType="java.util.List">
         insert into AEA_HI_ITEM_INOUTINST (

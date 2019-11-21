@@ -85,6 +85,8 @@ public interface AeaHiItemInoutinstMapper {
     //根据证照实例ID删除输入输出实例
     int deleteAeaHiItemInoutinstByCertinstIds(@Param("certinstIds") String[] certinstIds);
 
+    int deleteAeaHiItemInoutinstByMatinstIds(@Param("matinstIds") String[] matinstIds);
+
     //根据证照实例ID获取单个输入输出实例
     List<AeaHiItemInoutinst> getAeaHiIteminstCertByCertinstId(@Param("certinstId") String certinstId);
 

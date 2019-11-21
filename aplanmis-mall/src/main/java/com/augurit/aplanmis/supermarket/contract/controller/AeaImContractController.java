@@ -31,7 +31,7 @@ import java.util.List;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@Api(description = "服务合同相关接口")
+@Api(description = "服务合同相关接口", value = "服务合同相关接口", tags = "中介超市-服务合同接口")
 @RequestMapping("/supermarket/contract")
 public class AeaImContractController {
 

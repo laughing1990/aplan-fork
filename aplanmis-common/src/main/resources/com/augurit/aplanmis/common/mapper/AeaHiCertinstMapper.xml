@@ -313,6 +313,13 @@
         delete from aea_hi_certinst WHERE CERTINST_ID IN
         <foreach collection="certinstIds" item="id" separator="," open="(" close=")">#{id}</foreach>
     </delete>
+
+    <delete id="batchDeleteAeaHiCertinstByMatinstIds">
+        delete from aea_hi_certinst WHERE CERTINST_ID IN(
+        SELECT CERTINST_ID FROM aea_hi_item_matinst WHERE matinst_id IN
+        <foreach collection="matinstIds" item="id" separator="," open="(" close=")">#{id}</foreach>
+        )
+    </delete>
     <!--8 删除实体对象列表,根据主键ID列表 -->
     <!--9 返回所有字段的对象map,用于级联 -->
     <resultMap type="AeaHiCertinst" id="AeaHiCertinstMap">
@@ -599,17 +606,34 @@
     </select>
 
     <select id="getAeaHiCertinstByIteminstId" resultType="com.augurit.aplanmis.common.domain.AeaHiCertinst">
-        select
+        SELECT
         <include refid="aliasColumns">
             <property name="alias" value="ahc"/>
         </include>
-        ,aui.APPLICANT applicant,ooo.ORG_NAME issueOrgName
-        from aea_hi_certinst ahc
-        left join aea_unit_info aui on aui.UNIT_INFO_ID=ahc.UNIT_INFO_ID
-        left join opu_om_org ooo on ooo.ORG_ID=ahc.ISSUE_ORG_ID
-        where ahc.CERTINST_ID in (
-        select ahii.CERTINST_ID from aea_hi_item_inoutinst ahii where ahii.ITEMINST_ID=#{iteminstId}
-        )
+        ,
+        aui.APPLICANT applicant,
+        ooo.ORG_NAME issueOrgName,
+        temp.MATINST_ID matinstId
+        FROM
+        aea_hi_certinst ahc
+        LEFT JOIN aea_unit_info aui ON aui.UNIT_INFO_ID = ahc.UNIT_INFO_ID
+        LEFT JOIN opu_om_org ooo ON ooo.ORG_ID = ahc.ISSUE_ORG_ID
+        INNER JOIN (
+        SELECT
+        ahim.CERTINST_ID,
+        ahii.MATINST_ID
+        FROM
+        aea_hi_item_inoutinst ahii,
+        aea_hi_item_matinst ahim,
+        aea_item_inout aii
+        WHERE
+        ahii.ITEMINST_ID = #{iteminstId}
+        AND aii.INOUT_ID = ahii.ITEM_INOUT_ID
+        AND aii.IS_INPUT = '0'
+        AND aii.IS_DELETED = '0'
+        AND ahii.MATINST_ID = ahim.MATINST_ID
+        AND ahim.MAT_PROP = 'c'
+        ) temp ON ahc.CERTINST_ID = temp.CERTINST_ID
     </select>
 
     <select id="getAeaHiCertinstByUnitServiceId" resultType="com.augurit.aplanmis.common.vo.AeaHiCertinstBVo">
@@ -636,14 +660,27 @@
         <include refid="aliasColumns">
             <property name="alias" value="ahc"/>
         </include>
-        ,aui.APPLICANT applicant,ooo.ORG_NAME issueOrgName
+        ,aui.APPLICANT applicant,ooo.ORG_NAME issueOrgName,temp.MATINST_ID matinstId
         from aea_hi_certinst ahc
         left join aea_unit_info aui on aui.UNIT_INFO_ID=ahc.UNIT_INFO_ID
         left join opu_om_org ooo on ooo.ORG_ID=ahc.ISSUE_ORG_ID
-        where ahc.CERTINST_ID in (
-        select ahii.CERTINST_ID from aea_hi_item_inoutinst ahii where ahii.ITEMINST_ID in
-            <foreach collection="iteminstIds" item="iteminstId" separator="," open="(" close=")">#{iteminstId}</foreach>
-        )
+        INNER JOIN (
+        SELECT
+        ahim.CERTINST_ID,
+        ahii.MATINST_ID
+        FROM
+        aea_hi_item_inoutinst ahii,
+        aea_hi_item_matinst ahim,
+        aea_item_inout aii
+        WHERE
+        ahii.ITEMINST_ID in
+        <foreach collection="iteminstIds" item="iteminstId" separator="," open="(" close=")">#{iteminstId}</foreach>
+        AND aii.INOUT_ID = ahii.ITEM_INOUT_ID
+        AND aii.IS_INPUT = '0'
+        AND aii.IS_DELETED = '0'
+        AND ahii.MATINST_ID = ahim.MATINST_ID
+        AND ahim.MAT_PROP = 'c'
+        ) temp ON ahc.CERTINST_ID = temp.CERTINST_ID
     </select>
 
     <select id="listAeaHiCertinstByCertinstCode" resultType="com.augurit.aplanmis.common.domain.AeaHiCertinst">
