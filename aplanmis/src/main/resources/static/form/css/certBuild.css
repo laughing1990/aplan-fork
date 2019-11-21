@@ -282,7 +282,7 @@ textarea {
   display: block;
 }
 .input-inline {
-  width: 45%;
+  width: 50%;
   float: left;
 }
 .input-ex{
@@ -290,7 +290,7 @@ textarea {
   float: left;
 }
 .input-inline:nth-child(even) {
-  width: 45%;
+  width: 50%;
   float: left;
 }
 .input-inline .el-select {
@@ -1781,5 +1781,5 @@ textarea {
 }
 
 .allWidth{
-  width: 90%;
+  width: 100%;
 }
