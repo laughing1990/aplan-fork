@@ -20,8 +20,8 @@ import com.augurit.aplanmis.common.service.instance.AeaHiIteminstService;
 import com.augurit.aplanmis.common.service.item.AeaItemBasicService;
 import com.augurit.aplanmis.common.service.stage.AeaParStageService;
 import com.augurit.aplanmis.common.service.theme.AeaParThemeService;
-import com.augurit.aplanmis.rest.common.utils.SessionUtil;
-import com.augurit.aplanmis.rest.common.vo.LoginInfoVo;
+import com.augurit.aplanmis.rest.auth.AuthContext;
+import com.augurit.aplanmis.rest.auth.AuthUser;
 import com.augurit.aplanmis.rest.index.service.RestMainService;
 import com.augurit.aplanmis.rest.index.service.vo.AeaBasicOrgVo;
 import com.augurit.aplanmis.rest.index.service.vo.AeaOrgVo;
@@ -32,7 +32,6 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -88,7 +87,7 @@ public class RestMainServiceImpl implements RestMainService {
     }
 
     @Override
-    public List<AeaParStage> getStageByThemeId(String themeId, String projInfoId, String rootOrgId, String unitInfoId, HttpServletRequest request) throws Exception {
+    public List<AeaParStage> getStageByThemeId(String themeId, String projInfoId, String rootOrgId, String unitInfoId) throws Exception {
 
         List<AeaParStage> results = new ArrayList<>();
         AeaParTheme theme = aeaParThemeService.getAeaParThemeByThemeId(themeId);
@@ -108,18 +107,18 @@ public class RestMainServiceImpl implements RestMainService {
                 continue;
             }
             //阶段是否已办及申请实例状态
-            List<String> applyInstStatusList = new ArrayList<>();
-            LoginInfoVo loginInfo = SessionUtil.getLoginInfo(request);
-            if ("1".equals(loginInfo.getIsPersonAccount())) {//个人
-                applyInstStatusList = aeaParStageService.getApplyInstStatusByProjInfoIdAndStageId(aeaParStage.getStageId(), projInfoId, "", loginInfo.getUserId());
-            } else if (com.augurit.agcloud.framework.util.StringUtils.isNotBlank(loginInfo.getUserId())) {//委托人
+            List<String> applyInstStatusList;
+            AuthUser currentUser = AuthContext.getCurrentUser();
+            if (currentUser.isPersonalAccount()) {//个人
+                applyInstStatusList = aeaParStageService.getApplyInstStatusByProjInfoIdAndStageId(aeaParStage.getStageId(), projInfoId, "", currentUser.getLinkmanInfoId());
+            } else if (com.augurit.agcloud.framework.util.StringUtils.isNotBlank(AuthContext.getCurrentLinkmanInfoId())) {//委托人
                 if (StringUtils.isNotBlank(unitInfoId)) {
                     applyInstStatusList = aeaParStageService.getApplyInstStatusByProjInfoIdAndStageId(aeaParStage.getStageId(), projInfoId, unitInfoId, "");
                 } else {
-                    applyInstStatusList = aeaParStageService.getApplyInstStatusByProjInfoIdAndStageId(aeaParStage.getStageId(), projInfoId, "", loginInfo.getUserId());
+                    applyInstStatusList = aeaParStageService.getApplyInstStatusByProjInfoIdAndStageId(aeaParStage.getStageId(), projInfoId, "", currentUser.getLinkmanInfoId());
                 }
             } else {//企业
-                applyInstStatusList = aeaParStageService.getApplyInstStatusByProjInfoIdAndStageId(aeaParStage.getStageId(), projInfoId, loginInfo.getUnitId(), "");
+                applyInstStatusList = aeaParStageService.getApplyInstStatusByProjInfoIdAndStageId(aeaParStage.getStageId(), projInfoId, currentUser.getUnitInfoId(), "");
 
             }
             if (applyInstStatusList != null && applyInstStatusList.size() > 0) {

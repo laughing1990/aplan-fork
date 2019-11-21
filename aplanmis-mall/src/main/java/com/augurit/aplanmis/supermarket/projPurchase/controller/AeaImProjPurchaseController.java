@@ -844,7 +844,7 @@ public class AeaImProjPurchaseController {
         try {
             List<AeaProjInfo> aeaProjInfos = aeaProjInfoService.findAeaProjInfoByKeyword(keyword);
             if (aeaProjInfos.size() == 0 && !keyword.contains("#") && !keyword.contains("ZBM") && CommonTools.isComplianceWithRules(keyword)) {
-                aeaProjInfos.addAll(projectCodeService.getProjInfoFromThirdPlatform(keyword, null));
+                aeaProjInfos.addAll(projectCodeService.getProjInfoFromThirdPlatform(keyword, null,""));
             }
             return new ContentResultForm<>(true, aeaProjInfos, "Query success");
         } catch (Exception e) {
