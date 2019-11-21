@@ -121,4 +121,8 @@ public class ItemBasicServiceImpl implements ItemBasicService {
         return processinstTimeruleInstByIteminstId;
     }
 
+    @Override
+    public List<SpglDfxmsplcjdsxxxb> findItemByGcdm(String gcdm) {
+        return itemBasicMapper.findItemByGcdm(gcdm);
+    }
 }
