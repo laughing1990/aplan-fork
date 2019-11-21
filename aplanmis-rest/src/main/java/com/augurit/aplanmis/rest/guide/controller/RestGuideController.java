@@ -25,13 +25,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.ModelAndView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,7 +59,7 @@ public class RestGuideController {
     protected String topOrgId;
 
 
-    @GetMapping("/toGuideIndexPage")
+   /* @GetMapping("/toGuideIndexPage")
     @ApiOperation(value = "首页-->跳转办事指南页面接口")
     @ApiImplicitParams({@ApiImplicitParam(value = "部门ID", name = "chooseOrgId", dataType = "string"),
             @ApiImplicitParam(value = "主题ID", name = "themeId", dataType = "string"),
@@ -75,7 +73,7 @@ public class RestGuideController {
         modelMap.put("chooseOrgId", chooseOrgId);
         modelMap.put("projInfoId", projInfoId);
         return new ModelAndView("mall/guide/guideIndex");
-    }
+    }*/
 
     @GetMapping("/item/list")
     @ApiOperation(value = "办事指南 --> 获取按部门申报时所有事项列表")

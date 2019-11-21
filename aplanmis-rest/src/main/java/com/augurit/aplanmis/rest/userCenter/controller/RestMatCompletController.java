@@ -11,8 +11,8 @@ import com.augurit.aplanmis.common.dto.MatCorrectInfoDto;
 import com.augurit.aplanmis.common.dto.MatCorrectinstDto;
 import com.augurit.aplanmis.common.service.applyinst.AeaHiApplyinstCorrectService;
 import com.augurit.aplanmis.common.service.instance.AeaHiApplyinstService;
-import com.augurit.aplanmis.rest.common.utils.SessionUtil;
-import com.augurit.aplanmis.rest.common.vo.LoginInfoVo;
+import com.augurit.aplanmis.rest.auth.AuthContext;
+import com.augurit.aplanmis.rest.auth.AuthUser;
 import com.augurit.aplanmis.rest.userCenter.service.RestApproveService;
 import com.augurit.aplanmis.rest.userCenter.vo.ApplyDetailVo;
 import io.swagger.annotations.Api;
@@ -23,7 +23,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -67,15 +72,15 @@ public class RestMatCompletController {
     @ApiOperation(value = "材料补全 --> 材料补全列表查询接口")
     @ApiImplicitParams({@ApiImplicitParam(value = "页面数量", name = "pageNum", required = true, dataType = "string"),
             @ApiImplicitParam(value = "页面页数", name = "pageSize", required = true, dataType = "string")})
-    public ResultForm searchMatComplet(int pageNum, int pageSize, HttpServletRequest request) {
+    public ResultForm searchMatComplet(@RequestParam(defaultValue = "1") int pageNum, @RequestParam(defaultValue = "10") int pageSize) {
         try {
-            LoginInfoVo loginInfo = SessionUtil.getLoginInfo(request);
-            if ("1".equals(loginInfo.getIsPersonAccount())) {//个人
-                return new ContentResultForm<>(true, restApproveService.searchMatComplet("", loginInfo.getUserId(), pageNum, pageSize));
-            } else if (StringUtils.isNotBlank(loginInfo.getUserId())) {//委托人
-                return new ContentResultForm<>(true, restApproveService.searchMatComplet(loginInfo.getUnitId(), loginInfo.getUserId(), pageNum, pageSize));
+            AuthUser loginInfo = AuthContext.getCurrentUser();
+            if (loginInfo.isPersonalAccount()) {//个人
+                return new ContentResultForm<>(true, restApproveService.searchMatComplet("", loginInfo.getLinkmanInfoId(), pageNum, pageSize));
+            } else if (StringUtils.isNotBlank(loginInfo.getLinkmanInfoId())) {//委托人
+                return new ContentResultForm<>(true, restApproveService.searchMatComplet(loginInfo.getUnitInfoId(), loginInfo.getLinkmanInfoId(), pageNum, pageSize));
             } else {//企业
-                return new ContentResultForm<>(true, restApproveService.searchMatComplet(loginInfo.getUnitId(), "", pageNum, pageSize));
+                return new ContentResultForm<>(true, restApproveService.searchMatComplet(loginInfo.getUnitInfoId(), "", pageNum, pageSize));
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);

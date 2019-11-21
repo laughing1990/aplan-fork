@@ -19,8 +19,7 @@ import com.augurit.aplanmis.common.service.admin.par.AeaParThemeAdminService;
 import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
 import com.augurit.aplanmis.common.utils.CommonTools;
 import com.augurit.aplanmis.rest.auth.AuthContext;
-import com.augurit.aplanmis.rest.common.utils.SessionUtil;
-import com.augurit.aplanmis.rest.common.vo.LoginInfoVo;
+import com.augurit.aplanmis.rest.auth.AuthUser;
 import com.augurit.aplanmis.rest.userCenter.service.RestApproveService;
 import com.augurit.aplanmis.rest.userCenter.service.RestUserCenterService;
 import com.augurit.aplanmis.rest.userCenter.vo.ApplyDetailVo;
@@ -39,6 +38,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -110,7 +110,7 @@ public class RestApplyProjController {
     @ApiOperation(value = "我要申报 --> 查询用户项目列表")
     @ApiImplicitParams({@ApiImplicitParam(value = "页面数量", name = "pageNum", required = true, dataType = "string"),
             @ApiImplicitParam(value = "页面页数", name = "pageSize", required = true, dataType = "string")})
-    public ResultForm getMyProjList(int pageNum, int pageSize) {
+    public ResultForm getMyProjList(@RequestParam(defaultValue = "1") int pageNum, @RequestParam(defaultValue = "10") int pageSize) {
         try {
             List<AeaProjInfo> list;
             PageHelper.startPage(pageNum, pageSize);
@@ -194,7 +194,7 @@ public class RestApplyProjController {
     @ApiImplicitParams({@ApiImplicitParam(value = "搜索关键字", name = "keyWord", required = false, dataType = "string"),
             @ApiImplicitParam(value = "页面数量", name = "pageNum", required = true, dataType = "string"),
             @ApiImplicitParam(value = "页面页数", name = "pageSize", required = true, dataType = "string")})
-    public ResultForm searchProjList(String keyWord, int pageNum, int pageSize, HttpServletRequest request) {
+    public ResultForm searchProjList(String keyWord, @RequestParam(defaultValue = "1") int pageNum, @RequestParam(defaultValue = "10") int pageSize, HttpServletRequest request) {
         try {
             String currentUnitInfoName = AuthContext.getCurrentUnitInfoName();
             PageInfo<AeaProjInfo> pageInfo = restApproveService.findAeaProjInfoByKeyword(keyWord, pageNum, pageSize);
@@ -214,7 +214,7 @@ public class RestApplyProjController {
     @ApiImplicitParams({@ApiImplicitParam(value = "搜索关键字", name = "keyWord", required = false, dataType = "string")})
     public ContentResultForm<List<AeaProjInfo>> searchProjList(HttpServletRequest request, @PathVariable("keyWord") String keyWord) {
         try {
-            LoginInfoVo loginInfo = SessionUtil.getLoginInfo(request);
+            AuthUser loginInfo = AuthContext.getCurrentUser();
             List<AeaProjInfo> list = aeaProjInfoService.findAeaProjInfoByKeyword(keyWord);
             if (list.size() == 0 && !keyWord.contains("#") && !keyWord.contains("ZBM") && CommonTools.isComplianceWithRules(keyWord)) {
                 //list.addAll(projectCodeService.getProjInfoFromThirdPlatform(keyWord,loginInfo.getUnitName())); //正式上线时用
@@ -234,15 +234,15 @@ public class RestApplyProjController {
             @ApiImplicitParam(value = "关键词", name = "keyword", required = false, dataType = "string"),
             @ApiImplicitParam(value = "页面数量", name = "pageNum", required = true, dataType = "string"),
             @ApiImplicitParam(value = "页面页数", name = "pageSize", required = true, dataType = "string")})
-    public ResultForm getHadApplyItemlist(String state, String keyword, int pageNum, int pageSize, HttpServletRequest request) {
+    public ResultForm getHadApplyItemlist(String state, String keyword, @RequestParam(defaultValue = "1") int pageNum, @RequestParam(defaultValue = "10") int pageSize, HttpServletRequest request) {
         try {
-            LoginInfoVo loginInfo = SessionUtil.getLoginInfo(request);
-            if ("1".equals(loginInfo.getIsPersonAccount())) {//个人
-                return new ContentResultForm<PageInfo<ApproveProjInfoDto>>(true, restApproveService.searchApproveProjInfoListByUnitOrLinkman("", loginInfo.getUserId(), state, keyword, pageNum, pageSize));
-            } else if (StringUtils.isNotBlank(loginInfo.getUserId())) {//委托人
-                return new ContentResultForm<PageInfo<ApproveProjInfoDto>>(true, restApproveService.searchApproveProjInfoListByUnitOrLinkman(loginInfo.getUnitId(), loginInfo.getUserId(), state, keyword, pageNum, pageSize));
+            AuthUser loginInfo = AuthContext.getCurrentUser();
+            if (loginInfo.isPersonalAccount()) {//个人
+                return new ContentResultForm<PageInfo<ApproveProjInfoDto>>(true, restApproveService.searchApproveProjInfoListByUnitOrLinkman("", loginInfo.getLinkmanInfoId(), state, keyword, pageNum, pageSize));
+            } else if (StringUtils.isNotBlank(loginInfo.getLinkmanInfoId())) {//委托人
+                return new ContentResultForm<PageInfo<ApproveProjInfoDto>>(true, restApproveService.searchApproveProjInfoListByUnitOrLinkman(loginInfo.getUnitInfoId(), loginInfo.getLinkmanInfoId(), state, keyword, pageNum, pageSize));
             } else {//企业
-                return new ContentResultForm<PageInfo<ApproveProjInfoDto>>(true, restApproveService.searchApproveProjInfoListByUnitOrLinkman(loginInfo.getUnitId(), "", state, keyword, pageNum, pageSize));
+                return new ContentResultForm<PageInfo<ApproveProjInfoDto>>(true, restApproveService.searchApproveProjInfoListByUnitOrLinkman(loginInfo.getUnitInfoId(), "", state, keyword, pageNum, pageSize));
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);

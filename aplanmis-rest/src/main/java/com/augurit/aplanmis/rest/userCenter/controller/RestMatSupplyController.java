@@ -11,8 +11,8 @@ import com.augurit.aplanmis.common.dto.MatCorrectInfoDto;
 import com.augurit.aplanmis.common.dto.MatCorrectinstDto;
 import com.augurit.aplanmis.common.service.instance.AeaHiIteminstService;
 import com.augurit.aplanmis.common.service.mat.RestMatCorrectCommonService;
-import com.augurit.aplanmis.rest.common.utils.SessionUtil;
-import com.augurit.aplanmis.rest.common.vo.LoginInfoVo;
+import com.augurit.aplanmis.rest.auth.AuthContext;
+import com.augurit.aplanmis.rest.auth.AuthUser;
 import com.augurit.aplanmis.rest.userCenter.service.RestApproveService;
 import com.augurit.aplanmis.rest.userCenter.service.RestMatSupplyService;
 import io.swagger.annotations.Api;
@@ -23,7 +23,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -56,10 +60,10 @@ public class RestMatSupplyController {
     @ApiOperation(value = "材料补正 --> 材料补正列表查询接口")
     @ApiImplicitParams({@ApiImplicitParam(value = "页面数量", name = "pageNum", required = true, dataType = "string"),
             @ApiImplicitParam(value = "页面页数", name = "pageSize", required = true, dataType = "string")})
-    public ResultForm searchSupplementInfo(int pageNum, int pageSize, HttpServletRequest request) {
+    public ResultForm searchSupplementInfo(@RequestParam(defaultValue = "1") int pageNum, @RequestParam(defaultValue = "10") int pageSize) {
         try {
-            LoginInfoVo loginInfo = SessionUtil.getLoginInfo(request);
-            return new ContentResultForm<>(true, restApproveService.searchSupplyInfoList(loginInfo.getUnitId(), loginInfo.getUserId(), pageNum, pageSize));
+            AuthUser loginInfo = AuthContext.getCurrentUser();
+            return new ContentResultForm<>(true, restApproveService.searchSupplyInfoList(loginInfo.getUnitInfoId(), loginInfo.getLinkmanInfoId(), pageNum, pageSize));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return new ResultForm(false, "查材料补正列表查询接口异常");
