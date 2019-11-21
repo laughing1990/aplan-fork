@@ -213,9 +213,9 @@ public class AeaImProjPurchase implements Serializable {
     @ApiModelProperty(value = "投资审批项目编码")
     private String parentLocalCode;// 投资审批项目编码
     @ApiModelProperty(value = "是否为财政资金（资金来源）：1 是，0 不是")
-    private String isFinancialFund; // (是否为财政资金（资金来源）：1 是，0 不是)
+    private String isFinancialFund;
     @ApiModelProperty(value = "财政资金比例")
-    private String financialFundProportion; // (财政资金比例：当 IS_FINANCIAL_FUND = 1，必填)
+    private String financialFundProportion;
     @ApiModelProperty(value = "是否为社会资金（资金来源）：1 是，0 不是")
     private String isSocialFund; // (是否为社会资金（资金来源）：1 是，0 不是)
     @ApiModelProperty(value = "社会资金比例")
@@ -226,6 +226,7 @@ public class AeaImProjPurchase implements Serializable {
     private String selectedUnitInfoId;//中选机构id
     private String selectedAppAddr;//中选机构地址
     private String projScale;//项目规模
+    private String projScaleContent;
     private String financialSource;//资金来源
     private List<AeaImUnitBidding> unitBiddingList;//中介机构列表
     private String isUploadContract;//是否上传合同：1 是，0 否
@@ -242,6 +243,34 @@ public class AeaImProjPurchase implements Serializable {
     private String rootOrgId;//根组织ID
 //    private String realPrice;//服务金额
 //    private String serviceItemName;//中介服务事项名称
+
+    //单位要求字段
+    @ApiModelProperty(value = "是否需要资质要求：1 需要，0 不需要")
+    private String isQualRequire;
+
+    @ApiModelProperty(value = "资质要求：1 多个资质子项符合其一即可，0 需同时符合所有选中资质子项")
+    private String qualRequireType;
+    private String qualRequire;
+    @ApiModelProperty(value = "资质要求说明（当IS_QUAL_REQUIRE =1 时，必填）")
+    private String qualRequireExplain;
+
+    @ApiModelProperty(value = "是否仅承诺服务：1 是，0 否")
+    private String promiseService;
+    @ApiModelProperty(value = "其他要求说明")
+    private String otherRequireExplain;
+
+    @ApiModelProperty(value = "是否需要执业/职业人员要求：1 需要，0 不需要")
+    private String isRegisterRequire;
+    @ApiModelProperty(value = "执业/职业人员总数（当IS_REGISTER_REQUIRE =1 时，必填）")
+    private String registerTotal;
+    @ApiModelProperty(value = "执业/职业人员要求（当IS_REGISTER_REQUIRE =1 时，必填）")
+    private String registerRequire;
+
+    @ApiModelProperty(value = "是否需要备案要求：1 需要，0 不需要")
+    private String isRecordRequire;
+    @ApiModelProperty(value = "备案要求说明（当IS_RECORD_REQUIRE =1 时，必填）")
+    private String recordRequireExplain;
+
 
     /*查询状态数组*/
     private String[] auditFlags;

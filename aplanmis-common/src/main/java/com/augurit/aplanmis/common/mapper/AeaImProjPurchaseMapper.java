@@ -5,6 +5,7 @@ import com.augurit.aplanmis.common.domain.AeaImService;
 import com.augurit.aplanmis.common.vo.AeaImProjPurchaseDetailVo;
 import com.augurit.aplanmis.common.vo.AgentUnitInfoVo;
 import com.augurit.aplanmis.common.vo.QueryProjPurchaseVo;
+import com.augurit.aplanmis.common.vo.purchase.PurchaseProjVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -106,4 +107,12 @@ public interface AeaImProjPurchaseMapper {
      * @return
      */
     int listPublicProjPurchaseNum(@Param("startDate") String startDate);
+
+    /**
+     * 根据applyinstCode 获取采购项目信息
+     *
+     * @param applyinstCode 申报流水号
+     * @return PurchaseProjVo
+     */
+    PurchaseProjVo getProjPurchaseInfoByApplyinstCode(@Param("applyinstCode") String applyinstCode);
 }

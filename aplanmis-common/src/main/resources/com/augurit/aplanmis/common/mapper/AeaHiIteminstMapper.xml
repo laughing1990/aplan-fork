@@ -370,11 +370,11 @@
         <include refid="aliasColumns">
             <property name="alias" value="ahi"/>
         </include>
-        ,ahi.org_name approveOrgName,ahi.due_num dueNum
+        ,ahi.org_name approveOrgName,ahi.due_num dueNum,ahi.BJ_TYPE dueNumUnit,ahi.ITEM_PROPERTY itemProperty
         FROM
         (
         SELECT
-        ahi.*,ooo.org_name,aib.due_num
+        ahi.*,ooo.org_name,aib.due_num,aib.BJ_TYPE,aib.ITEM_PROPERTY
         FROM
         aea_hi_applyinst aha
         LEFT JOIN aea_hi_par_stageinst ahps ON aha.APPLYINST_ID = ahps.APPLYINST_ID
@@ -386,7 +386,7 @@
         aha.APPLYINST_ID = #{applyinstId}
         UNION ALL
         SELECT
-        ahi.*,ooo.org_name,aib.due_num
+        ahi.*,ooo.org_name,aib.due_num,aib.BJ_TYPE,aib.ITEM_PROPERTY
         FROM
         aea_hi_applyinst aha
         LEFT JOIN aea_hi_seriesinst ahs ON aha.APPLYINST_ID = ahs.APPLYINST_ID
