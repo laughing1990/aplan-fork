@@ -197,8 +197,9 @@ public class AeaItemPartformAdminController {
     public ResultForm createAndUpdateDevForm(String formCode, String formName, String formLoadUrl, String formId, String itemPartformId) {
         try {
 
-            if (StringUtils.isBlank(formCode) || StringUtils.isBlank(formName) || StringUtils.isBlank(formLoadUrl) || StringUtils.isBlank(itemPartformId))
+            if (StringUtils.isBlank(formCode) || StringUtils.isBlank(formName) || StringUtils.isBlank(formLoadUrl) || StringUtils.isBlank(itemPartformId)) {
                 return new ResultForm(false, "缺少参数！");
+            }
             aeaItemPartformService.createAndUpdateDevForm(formCode, formName, formLoadUrl, formId, itemPartformId);
         } catch (Exception e) {
             e.printStackTrace();

@@ -55,10 +55,6 @@ public class AplanmisPageIndexController {
         return new ModelAndView("apply/index");
     }
 
-    @GetMapping("/exSJUnit")
-    @ApiOperation("施工和监理单位信息")
-    public ModelAndView exSJUnit(){return new ModelAndView("form/exSJUnit");}
-
     /**
      * 单项申报首页
      *

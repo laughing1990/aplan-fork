@@ -205,7 +205,7 @@
 
                             var isCatalog = data[i].frontCkIsCatalog=='1'?'【标准事项】':'【实施事项】';
 
-                            var liHtml = '<li name="itemFrontCkLi" front-ck-id"'+data[i].frontItemId+'">' +
+                            var liHtml = '<li name="itemFrontCkLi" front-ck-id="'+data[i].frontItemId+'">' +
                                             '<span class="drag-handle_td">&#9776;</span>' +
                                             '<span class="stage_name_td">'+ isCatalog + data[i].frontCkItemName+'【'+ data[i].frontCkItemCode +'】'+'</span>' +
                                         '</li>';

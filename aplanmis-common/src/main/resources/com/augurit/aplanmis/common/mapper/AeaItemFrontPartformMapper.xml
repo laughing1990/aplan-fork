@@ -282,6 +282,8 @@
                     and ITEM_PARTFORM_ID != ''
                 </where>
             )
+            and aip.STO_FORM_ID is not NULL
+            and aip.STO_FORM_ID != ''
             <if test="keyword!=null and keyword!='' ">
             and(
                 aip.PARTFORM_NAME like CONCAT(CONCAT('%',#{keyword}),'%')

@@ -6,7 +6,7 @@
     <div class="modal-dialog modal-dialog-centered  modal-lg" role="document" style="max-width: 700px;">
         <div class="modal-content">
             <div class="modal-header" style="padding: 15px;height: 45px;">
-                <h5 class="modal-title" id="aedit_item_oneform_modal_title">编辑事项总表</h5>
+                <h5 class="modal-title" id="aedit_item_oneform_modal_title">${curIsEditable?'编辑':'查看'}事项总表</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -43,7 +43,7 @@
                     </div>
                 </div>
                 <div class="modal-footer" style="padding: 10px;">
-                    <button type="submit" class="btn btn-info" id="saveItemOneform">保存</button>
+                    <button type="submit" class="btn btn-info" id="saveItemOneform" style="display: ${curIsEditable?'':'none'}">保存</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
                 </div>
             </form>

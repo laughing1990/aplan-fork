@@ -241,9 +241,15 @@
         </if>
         )
     </select>
-    <select id="getMatinstListByIteminstIdsAndKeyword" resultType="AeaHiItemMatinst">
+    <select id="getMatinstListByIteminstIdsAndKeyword" resultType="com.augurit.aplanmis.common.vo.MyMatFilesVo">
         SELECT
-        <include refid="allColumns"/>
+        MATINST_NAME matinstName,
+        MATINST_ID matinstId,
+        MAT_ID matId,
+        MATINST_CODE matinstCode,
+        ATT_COUNT attCount,
+        CREATER creater,
+        CREATE_TIME createTime
         FROM
         aea_hi_item_matinst
         WHERE
@@ -273,6 +279,10 @@
         <if test="keyword != null and keyword !=''">
             AND MATINST_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%')
         </if>
+        <if test="isAtt=='1'||isAtt==1">
+            AND ATT_COUNT IS NOT NULL AND ATT_COUNT>0
+        </if>
+        ORDER BY CREATE_TIME DESC
     </select>
 
     <select id="getOutputMatinstListByStageinstId" resultType="AeaHiItemMatinst">

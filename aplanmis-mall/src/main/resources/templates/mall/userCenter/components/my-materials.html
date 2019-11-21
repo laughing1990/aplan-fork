@@ -106,14 +106,31 @@
             color: #F6E400;
         }
         .matFileListTable .download{
-            display: none;
             vertical-align: middle;
             cursor: pointer;
+            padding-left: 14px;
         }
         .matFileListTable .el-table__body tr.hover-row .download{
             display: block;
         }
-
+        .demo-table-expand {
+            font-size: 0;
+        }
+        .demo-table-expand label {
+            width: 90px;
+            color: #99a9bf;
+        }
+        .demo-table-expand .el-form-item {
+            margin-right: 0;
+            margin-bottom: 0;
+        }
+        .file-div .fileName{
+            margin-left: 10px;
+            cursor: pointer;
+        }
+        .file-div .fileName:hover{
+            color:#457EFF;
+        }
     </style>
 </head>
 <body>
@@ -137,39 +154,43 @@
     <section class="my-materials-table-box" v-loading="mloading">
         <div class="my-declareing-table">
             <el-table :data="matFileList"   style="width:100%" class="matFileListTable" v-loading="tableLoading">
-                <el-table-column
-                        fixed
-                        prop="fileName"
-                        label="文件名称"
-                        >
+                <el-table-column type="expand">
                     <template slot-scope="scope">
-                        <div class="clearfix">
-                            <div class="fileName fl"><i class="ag" :class="getFileTypeIcon(scope.row.fileType)"></i> {{scope.row.fileName}}</div>
-                            <div class="download fr" >
-                                <i class="ag ag-download" @click="downloadFile(scope.row.fileId)"></i>
-                                <i class="el-icon-view" @click="previewFile(scope.row)"></i>
-                            </div>
-                        </div>
+                        <el-form label-position="left" inline class="demo-table-expand" v-if="scope.row.bscAttFileAndDir && scope.row.bscAttFileAndDir.length>0">
+                            <el-form-item  v-for="(item,index) in scope.row.bscAttFileAndDir"
+                                           :key="index">
+                                <div class="file-div">
+                                    <div class="fl"><i class="ag" :class="getFileTypeIcon(item.fileType)"></i><span class="fileName" @click="previewFile(item)">{{item.fileName}}</span><span class="fontSize">（{{item.fileSize|getFileSize}}）</span></div>
+                                    <div class="download fr" >
+                                        <i class="ag ag-download" @click="downloadFile(item.fileId)"></i>
+                                        <i class="el-icon-view" @click="previewFile(item)"></i>
+                                    </div>
+                                </div>
+                            </el-form-item>
+                        </el-form>
+                        <el-form v-else label-position="left" inline class="demo-table-expand">
+                            <el-form-item >暂无电子文件</el-form-item>
+                        </el-form>
                     </template>
                 </el-table-column>
                 <el-table-column
-                        prop="updateTime"
-                        label="日期"
-                        width="120">
+                        prop="matinstName"
+                        label="材料名称"
+                >
                     <template slot-scope="scope">
-                        <div class="fontSize">{{scope.row.updateTime|formatDate}}</div>
+                        <div class="fontSize">{{scope.row.matinstName}}</div>
                     </template>
                 </el-table-column>
                 <el-table-column
-                        prop="fileSize"
-                        label="大小"
-                        align="center"
-                        width="100">
+                        width="100"
+                        prop="createTime"
+                        label="上传时间"
+                >
                     <template slot-scope="scope">
-                        <div v-if="scope.row.fileSize" class="fontSize">{{scope.row.fileSize|getFileSize}}</div>
-                        <div v-else class="fontSize">未知</div>
+                        <div class="fontSize">{{scope.row.createTime|formatDate}}</div>
                     </template>
                 </el-table-column>
+
             </el-table>
             <el-pagination class="mt20 mb20 mr20" background align="right" @size-change="handleSizeChange"
                            @current-change="handleCurrentChange" :page-sizes="[10, 20, 30, 50]" :page-size="pageSize"
