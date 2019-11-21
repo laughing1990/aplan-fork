@@ -24,7 +24,46 @@ var vm = new Vue({
     defaultExpand: 2,//默认展开
     currentExpand: 0,//当前展开
     indent: 40,//缩进
-    pageLoading: false,//
+    pageLoading: false,//遮罩
+    isShowFormConfig:false,//是否显示表单配置页面
+    isshowChooseFlowList1:false,//是否显示选择表单下拉框
+    isShowMask:false,//遮罩
+    multipleSelection3:[],//选择数据
+    multipleSelection6:[],//选择数据
+    tplAppFormTableData:[],//模板表单关联数据
+    choosePBFormTableData:[],//模板表单未关联数据
+    keyword1:null,//查询关键字
+    isShowEditForm:false,//是否显示表单编辑页
+    formRuleOptions:[],//表单规则属性
+    EditFormRuleData:{
+      ruleTitle:'',
+        ruleDesc:'',
+        ruleOthers:''
+    },//表单规则数据
+    EditFormRules:{
+      ruleTitle: [
+        { required: true, message: '请输入概要标题表达式', trigger: 'blur' }
+      ],
+        ruleDesc: [
+        { required: true, message: '请输入概要描述表达式', trigger: 'blur' }
+      ],
+        ruleOthers: [
+        { required: true, message: '请输入其他内容表达式', trigger: 'blur' }
+      ],
+    },//校验规则
+    visibleFormRuleTitle:false,
+    visibleFormRuleDesc:false,
+    visibleFormRuleOthers:false,
+    isShowViewConfig:false,//是否显示视图配置页面
+    isshowChooseFlowList3:false,//是否显示视图查询下拉框
+    isShowChooseViewList:false,
+    multipleSelection5:[],//视图选择
+    multipleSelection7:[],//视图选择
+    tplAppViewTableData:[],//模板视图关联数据
+    chooseViewListTableData:[],//模板视图未关联数据
+    tableData: [],
+    total:null,
+    keyword2:null,
   },
   created: function () {
     this.getProcessDefTree();
@@ -254,6 +293,374 @@ var vm = new Vue({
       }, function () {
         vm.$message.error('服务器失败');
       });
+    },
+
+    // 根据业务流程模板id，获取业务流程模板关联的业务表单列表。   /rest/act/tpl/app/getTplAppFormList/{appId}
+    getTplAppFormList:function (appId) {
+      var vm = this;
+      request('bpmAdminUrl',{
+        type:'get',
+        url:ctx+ '/rest/act/tpl/app/getTplAppFormList',
+        data: {
+          appId:appId,
+          keyword:vm.keyword1
+        },
+      }, function (res) {
+        if(res.success){
+          vm.tplAppFormTableData = res.content.rows;
+        }else{
+          vm.$message.error(res.message)
+        }
+      }, function () {
+        vm.$message.error('服务器失败');
+      });
+    },
+    // 搜索表单
+    searchFormData:function () {
+      this.getTplAppFormList(this.appId);
+    },
+    // 批量移除表单
+    deleteActTPlAppformBatch: function () {
+      var vm = this;
+      var multipleSelection6 = this.multipleSelection6
+      if(multipleSelection6.length === 0){
+        alertMsg('','你还没选中');
+
+      }else{
+
+        confirmMsg('提示','删除关联表单会删除表单元素权限配置信息，如果表单存在实例数据，会删除失败，确定要删除选中的表单吗？',function () {
+          var appFormIdsArry = new Array();
+
+          multipleSelection6.forEach(function(item,index){
+            appFormIdsArry.push(item.appFormId);
+          })
+          var appFormIds =  appFormIdsArry.join(',')
+
+          request('bpmAdminUrl',{
+            type:'delete',
+            url: ctx+'/rest/act/tpl/app/deleteActTplAppFormBatch?appFormIds=' + appFormIds,
+          }, function (res) {
+            if(res.success){
+              vm.$message.success(res.message);
+
+              vm.getTplAppFormList(vm.appId)
+            }else{
+              vm.$message.error(res.message)
+            }
+          }, function () {
+            vm.$message.error('服务器失败');
+          });
+
+        })
+      }
+
+    },
+    // 移除表单
+    deleteForm:function (row) {
+      var vm = this;
+      confirmMsg('提示','删除关联表单会删除表单元素权限配置信息，如果表单存在实例数据，会删除失败，确定要删除选中的表单吗？',function () {
+
+        request('bpmAdminUrl',{
+          type:'delete',
+          url:ctx+ '/rest/act/tpl/app/deleteActTplAppForm/'+ row.appFormId, // 删除业务流程模板关联的业务表单
+        }, function (res) {
+          if(res.success){
+            vm.$message.success(res.message);
+            vm.getTplAppFormList(vm.appId)
+          }else{
+            vm.$message.error(res.message)
+          }
+        }, function () {
+          vm.$message.error('服务器失败');
+        });
+      })
+
+    },
+    // 添加表单
+    addPBForm:function () {
+      //this.isShowChoosePublicForm = true
+      this.multipleSelection3 = []
+      this.getUnBindActStoFormList(this.appId)
+    },
+    // 获取流程模板未添加的表单列表  /rest/act/tpl/app/getUnBindActStoFormList/{appId}
+    getUnBindActStoFormList:function (appId) {
+      var vm = this;
+      request('bpmAdminUrl',{
+        type:'get',
+        url:ctx+ '/rest/act/tpl/app/getUnBindActStoFormList/'+ appId ,
+
+      }, function (res) {
+        if(res.success){
+          vm.choosePBFormTableData = res.content;
+        }else{
+          vm.$message.error(res.message)
+        }
+      }, function () {
+        vm.$message.error('服务器失败');
+      });
+    },
+    // 保存业务流程模板和 表单 关联信息
+    savePublicForm:function () {
+      var vm = this;
+      var multipleSelection3 = vm.multipleSelection3;
+      if(multipleSelection3.length === 0){
+        alertMsg('','你还没选中');
+      }else{
+        var params = new Array();
+        for (var i = 0;i < multipleSelection3.length;i++){   // [{formId:"ab36d490-04d2-4f80-b922-8923f6a73725",isMasterForm:"0",priorityOrder:4}]
+          var appFormJsonDataItem = {formId:multipleSelection3[i].formId,isMasterForm:multipleSelection3[i].isMasterForm,priorityOrder:multipleSelection3[i].priorityOrder}
+          params.push(appFormJsonDataItem);
+        }
+        request('bpmAdminUrl',{
+          type:'post',
+          url:ctx+ '/rest/act/tpl/app/bindActTplAppForm',     /*  '业务流程模板绑定业务表单' */
+          data:{
+            formsJsonData:JSON.stringify(params),
+            appId:vm.appId
+          },
+        }, function (res) {
+          if(res.success){
+            vm.$message.success("操作成功")
+            vm.isShowChoosePublicForm = false
+            vm.getTplAppFormList(vm.appId)
+          }else{
+            vm.$message.error(res.message)
+          }
+        }, function () {
+          vm.$message.error('服务器失败');
+        });
+      }
+    },
+    // 编辑表单规则
+    editFormRule:function (row) {
+      this.isShowEditForm = true;
+      this.getFormRule(row.appFormId);
+    },
+    // 获取业务流程模板关联的表单配置的规则表达式
+    getFormRule:function (appFormId) {
+      var vm = this;
+      request('bpmAdminUrl',{
+        type:'get',
+        url:ctx+ '/rest/act/tpl/app/getFormRule',
+        data:{
+          appFormId:appFormId
+        },
+      }, function (res) {
+        if(res.success){
+
+          vm.formRuleOptions = res.content.metaDbColumns;
+          vm.EditFormRuleData = res.content.actStoRule;
+
+        }else{
+          vm.$message.error(res.message)
+        }
+      }, function () {
+        vm.$message.error('服务器失败');
+      });
+    },
+    // 选择表单规则
+    handleSectFormTitle:function () {
+      this.visibleFormRuleTitle = false
+    },
+    handleSectFormDesc:function () {
+      this.visibleFormRuleDesc = false
+    },
+    handleSectFormRuleOthers:function () {
+      this.visibleFormRuleOthers = false
+    },
+    // 保存表单规则
+    saveFormRules:function (refName) {
+      var vm = this;
+      this.$refs[refName].validate( function(valid)  {
+        if (valid) {
+          var params = {
+            ruleId: vm.EditFormRuleData.ruleId,
+            formId: vm.EditFormRuleData.formId,
+            ruleTitle: vm.EditFormRuleData.ruleTitle,
+            ruleDesc:vm.EditFormRuleData.ruleDesc,
+            ruleOthers: vm.EditFormRuleData.ruleOthers,
+          }
+          request('bpmAdminUrl',{
+            type:'post',
+            url:ctx+ '/rest/act/tpl/app/saveFormRule',
+            data:params,
+          }, function (res) {
+            if(res.success){
+              vm.$message.success('保存成功')
+              vm.isShowEditForm = false
+
+            }else{
+              vm.$message.error(res.message)
+            }
+          }, function () {
+            vm.$message.error('服务器失败');
+          });
+        } else {
+          return false;
+        }
+      });
+
+    },
+    // 重置表单规则
+    reSetEditFormRuleData:function (refName) {
+      this.$refs[refName].resetFields();
+    },
+    changeFun6:function (val){
+      this.multipleSelection6 = val
+    },
+    //表单配置入口
+    formConfig:function () {
+      this.isShowFormConfig = true;
+      this.getTplAppFormList(this.appId);
+    },
+
+    //视图配置入口
+    viewConfig:function () {
+      this.isShowViewConfig = true;
+      this.getActTplAppViewList(this.appId)
+    },
+    changeFun7:function (val){
+      this.multipleSelection7 = val
+    },
+    getActTplAppViewList:function (appId) {
+      var vm = this;
+      request('bpmAdminUrl',{
+        type:'get',
+        url:ctx+ '/rest/act/tpl/app/getActTplAppViewList',
+        data: {
+          appId:appId,
+          keyword:vm.keyword2
+        },
+      }, function (res) {
+        if(res.success){
+          vm.tplAppViewTableData = res.content.rows;
+        }else{
+          vm.$message.error(res.message)
+        }
+      }, function () {
+        vm.$message.error('服务器失败');
+      });
+    },
+    // 批量移除视图
+    deleteActTPlAppViewBatch: function () {
+      var vm = this;
+      var multipleSelection7 = this.multipleSelection7
+      if(multipleSelection7.length === 0){
+        alertMsg('','你还没选中');
+
+      }else{
+
+        confirmMsg('提示','删除关联视图会删除视图相关元素权限配置信息，确定要删除选中的视图吗？',function () {
+          var appViewIdsArry = new Array();
+
+          multipleSelection7.forEach(function(item,index){
+            appViewIdsArry.push(item.appViewId);
+          })
+          var appViewIds =  appViewIdsArry.join(',')
+
+          request('bpmAdminUrl',{
+            type:'delete',
+            url: ctx+'/rest/act/tpl/app/deleteActTplAppViewBatch?appViewIds=' + appViewIds,
+          }, function (res) {
+            if(res.success){
+              vm.$message.success(res.message);
+
+              vm.getActTplAppViewList(vm.appId)
+            }else{
+              vm.$message.error(res.message)
+            }
+          }, function () {
+            vm.$message.error('服务器失败');
+          });
+
+        })
+      }
+
+    },
+    // 移除视图
+    deleteViewItem:function (row) {
+      var vm = this;
+      confirmMsg('提示','删除关联视图会删除视图相关元素权限配置信息，确定要删除选中的视图吗？',function () {
+
+        request('bpmAdminUrl',{
+          type:'delete',
+          url:ctx+ '/rest/act/tpl/app/deleteActTplAppView/'+ row.appViewId, //   删除业务流程模板关联的业务视图
+        }, function (res) {
+          if(res.success){
+            vm.$message.success(res.message);
+            vm.getActTplAppViewList(vm.appId)
+          }else{
+            vm.$message.error(res.message)
+          }
+        }, function () {
+          vm.$message.error('服务器失败');
+        });
+      })
+    },
+    // 添加视图
+    addPBView:function () {
+      //this.isShowChooseViewList = true
+      this.multipleSelection5 = []
+      this.getUnBindActStoViewList(this.appId)
+    },
+    // 模糊查询数据
+    searchViewData2: function () {
+      this.getActTplAppViewList(this.appId);
+    },
+    // 获取流程模板未添加的视图列表
+    getUnBindActStoViewList:function (appId) {
+      var vm = this;
+      request('bpmAdminUrl',{
+        type:'get',
+        url:ctx+ '/rest/act/tpl/app/getUnBindActStoViewList/'+ appId ,
+
+      }, function (res) {
+        if(res.success){
+          vm.chooseViewListTableData = res.content;
+        }else{
+          vm.$message.error(res.message)
+        }
+      }, function () {
+        vm.$message.error('服务器失败');
+      });
+    },
+    // 保存业务流程模板和 视图 关联信息
+    savePublicView:function () {
+      var vm = this;
+      var multipleSelection5 = vm.multipleSelection5;
+      if(multipleSelection5.length === 0){
+        alertMsg('','你还没选中');
+      }else{
+        var params = new Array();
+        for (var i = 0;i < multipleSelection5.length;i++){
+          var appViewJsonDataItem = {viewId:multipleSelection5[i].viewId}
+          params.push(appViewJsonDataItem);
+        }
+        request('bpmAdminUrl',{
+          type:'post',
+          url: ctx+'/rest/act/tpl/app/bindActTplAppView',     /*  '业务流程模板绑定  视图' */  //业务流程模板绑定业务视图
+          data:{
+            viewsJsonData :JSON.stringify(params),
+            appId:vm.appId
+          },
+        }, function (res) {
+          if(res.success){
+            vm.$message.success("操作成功")
+            vm.isShowChooseViewList = false
+            vm.getActTplAppViewList(vm.appId)
+          }else{
+            vm.$message.error(res.message)
+          }
+        }, function () {
+          vm.$message.error('服务器失败');
+        });
+      }
+    },
+    toggleFlowListSelect:function (flag){
+      var vm = this
+      setTimeout(function(){
+        vm.isHideMask = flag
+      },200)
     },
 
     //使用element-ui渲染流程树

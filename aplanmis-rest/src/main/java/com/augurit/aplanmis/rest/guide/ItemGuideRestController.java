@@ -5,11 +5,11 @@ import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.agcloud.opus.common.domain.OpuOmOrg;
 import com.augurit.agcloud.opus.common.mapper.OpuOmOrgMapper;
+import com.augurit.aplanmis.common.domain.AeaParStage;
 import com.augurit.aplanmis.common.domain.AeaParTheme;
 import com.augurit.aplanmis.common.service.theme.AeaParThemeService;
 import com.augurit.aplanmis.rest.guide.service.ItemGuideService;
 import com.augurit.aplanmis.rest.guide.vo.OrgVo;
-import com.augurit.aplanmis.rest.guide.vo.StageVo;
 import com.augurit.aplanmis.rest.guide.vo.ThemeVo;
 import com.augurit.aplanmis.rest.index.service.vo.ThemeTypeVo;
 import io.swagger.annotations.Api;
@@ -113,8 +113,8 @@ public class ItemGuideRestController {
     @Transactional(readOnly = true)
     @ApiOperation(value = "查询主题下的阶段", notes = "办事指南 --> 阶段列表")
     public ResultForm listAllStages(String themeId) {
-        List<StageVo> stages = itemGuideService.listAllStages(themeId).stream().map(s -> new StageVo(s.getStageId(), s.getStageName())).collect(Collectors.toList());
-        return new ContentResultForm<>(true, stages);
+        List<AeaParStage> aeaParStages = itemGuideService.listAllStages(themeId);
+        return new ContentResultForm<>(true, aeaParStages);
     }
 
     @GetMapping("/details")
