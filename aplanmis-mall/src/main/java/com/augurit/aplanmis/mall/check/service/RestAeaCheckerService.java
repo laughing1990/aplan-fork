@@ -29,11 +29,16 @@ public class RestAeaCheckerService {
     @Autowired
     private AeaParStageMapper aeaParStageMapper;
 
-    public ResultForm itemFrontCheck(String itemVerId, String projInfoId) throws Exception {
-        AeaItemBasic aeaItemBasic = aeaItemBasicMapper.getAeaItemBasicByItemVerId(itemVerId, SecurityContext.getCurrentOrgId());
-        CheckerInfo checkerInfo = new CheckerInfo();
-        checkerInfo.setProjInfoId(projInfoId);
-        String message = checkerManager.itemCheck(aeaItemBasic, new CheckerContext(checkerInfo));
+    public ResultForm itemFrontCheck(String itemVerIds, String projInfoId) throws Exception {
+        String[] itemVerIdArr=itemVerIds.split(",");
+        String message="";
+        for (int i=0;i<itemVerIdArr.length;i++){
+            AeaItemBasic aeaItemBasic = aeaItemBasicMapper.getAeaItemBasicByItemVerId(itemVerIdArr[i], SecurityContext.getCurrentOrgId());
+            CheckerInfo checkerInfo = new CheckerInfo();
+            checkerInfo.setProjInfoId(projInfoId);
+            String res=checkerManager.itemCheck(aeaItemBasic, new CheckerContext(checkerInfo));
+            if(StringUtils.isNotBlank(res)) message+= res+";";
+        }
         return StringUtils.isBlank(message) ? new ResultForm(true, "前置条件检查通过！") : new ResultForm(false, message);
     }
 

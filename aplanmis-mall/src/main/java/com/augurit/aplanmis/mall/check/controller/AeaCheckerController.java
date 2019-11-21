@@ -20,12 +20,12 @@ public class AeaCheckerController {
 
     @PostMapping("/itemFrontCheck")
     @ApiOperation(value = "单项前置条件检测", httpMethod = "POST")
-    public ResultForm itemFrontCheck(String itemVerId, String projInfoId) {
+    public ResultForm itemFrontCheck(String itemVerIds, String projInfoId) {
         try {
 
-            if (StringUtils.isBlank(itemVerId)) return new ResultForm(false, "缺少参数：itemVerId");
+            if (StringUtils.isBlank(itemVerIds)) return new ResultForm(false, "缺少参数：itemVerIds");
             if (StringUtils.isBlank(projInfoId)) return new ResultForm(false, "缺少参数：projInfoId！");
-            return restAeaCheckerService.itemFrontCheck(itemVerId, projInfoId);
+            return restAeaCheckerService.itemFrontCheck(itemVerIds, projInfoId);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResultForm(false, "系统内部发生异常！");
