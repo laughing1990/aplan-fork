@@ -400,6 +400,12 @@
             </template>
           </el-table-column>
           <el-table-column prop="matName" label="材料名称" min-width="300">
+            <template scope="scope">
+              <span v-if="scope.row.matProp=='c'">
+                {{scope.row.matName}}<i class="cert-icon ag ag-id-card"></i>
+              </span>
+              <span v-else>{{scope.row.matName}}</span>
+            </template>
           </el-table-column>
           <el-table-column label="原件是否已验" min-width="100">
             <template scope="scope">
@@ -736,5 +742,10 @@
   .receive-item-header span.ellipsis {
     display: inline-block;
     width: 130px;
+  }
+  .cert-icon {
+    color: #4293F4;
+    font-size: 20px;
+    vertical-align: middle;
   }
 </style>

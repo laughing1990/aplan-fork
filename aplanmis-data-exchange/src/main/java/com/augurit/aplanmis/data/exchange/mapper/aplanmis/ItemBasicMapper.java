@@ -4,6 +4,7 @@ import com.augurit.aplanmis.common.domain.AeaItem;
 import com.augurit.aplanmis.common.domain.AeaItemBasic;
 import com.augurit.aplanmis.common.domain.AeaParStageItem;
 import com.augurit.aplanmis.common.domain.AeaParThemeVer;
+import com.augurit.aplanmis.data.exchange.domain.spgl.SpglDfxmsplcjdsxxxb;
 import com.augurit.aplanmis.data.exchange.domain.spgl.SpglDfxmsplcjdxxb;
 import com.augurit.aplanmis.data.exchange.domain.spgl.SpglDfxmsplcxxb;
 import org.apache.ibatis.annotations.Mapper;
@@ -47,4 +48,6 @@ public interface ItemBasicMapper {
     SpglDfxmsplcjdxxb getAeaParThemeVerByItemCodeAndThemeCode(@Param("itemCode") String itemCode, @Param("themeCode") String themeCode);
 
     AeaItemBasic findParentItemByItemVerId(@Param("itemVerId") String itemVerId);
+
+    List<SpglDfxmsplcjdsxxxb> findItemByGcdm(@Param("gcdm") String gcdm);
 }

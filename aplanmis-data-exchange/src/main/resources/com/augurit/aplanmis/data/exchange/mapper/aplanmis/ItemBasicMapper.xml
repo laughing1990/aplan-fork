@@ -165,4 +165,13 @@
         GROUP BY apsi.item_id,stage.STAGE_ID
     </select>
 
+    <select id="findItemByGcdm" resultType="SpglDfxmsplcjdsxxxb">
+        SELECT iteminst.iteminst_id AS dfsjzj,aib_123.ITEM_CODE AS spsxbm
+        FROM AEA_HI_ITEMINST iteminst
+            INNER JOIN AEA_HI_SERIESINST ahs ON ahs.SERIESINST_ID = iteminst.SERIESINST_ID
+            INNER JOIN AEA_ITEM_BASIC aib_123 ON aib_123.ITEM_VER_ID = iteminst.ITEM_VER_ID
+            INNER JOIN AEA_APPLYINST_PROJ aap ON aap.APPLYINST_ID = ahs.APPLYINST_ID
+            INNER JOIN AEA_PROJ_INFO proj ON proj.PROJ_INFO_ID = aap.PROJ_INFO_ID
+        WHERE replace(proj.GCBM, '#', '-') = #{gcdm}
+    </select>
 </mapper>

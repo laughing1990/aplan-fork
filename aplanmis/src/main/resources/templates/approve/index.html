@@ -1717,12 +1717,13 @@
           <el-table-column label="有效截止日期" prop="expiry_date" width="160"></el-table-column>
           <el-table-column label="可信等级" prop="trust_level" width="100"></el-table-column>
           <el-table-column label="证照状态" prop="license_status_name" width="100"></el-table-column>
-          <el-table-column label="操作" width="100">
+          <el-table-column label="操作" width="110">
             <template slot-scope="scope">
               <div class="c-f">
                 <span class="mat-table-btn" @click="idTableListSee(scope.row)">查看</span>
                 <span class="mat-ope-line"></span>
-                <span class="mat-table-btn" @click="idTabListChoose(scope.row)">关联</span>
+                <span v-show="!scope.row.isRelated" class="mat-table-btn" @click="idTabListChoose(scope.row)">关联</span>
+                <span v-show="scope.row.isRelated" class="mat-table-btn ope-disabled">已关联</span>
               </div>
             </template>
           </el-table-column>
