@@ -211,6 +211,35 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- 确认合同需要提交的字段 -->
+                <div v-if="isSureHandelRow">
+                    <div class="form-item">
+                        <label><b class="red-cl">*</b>确认结果</label>
+                        <div class="input-box">
+                            <el-radio-group v-model="contractDetailObj.confirmFlag" :disabled="isLookHandelRow || isSureHandelRow">
+                                <el-radio label="1">有效</el-radio>
+                                <el-radio label="0">无效</el-radio>
+                            </el-radio-group>
+                        </div>
+                    </div>
+                    <div class="form-item">
+                        <label><b class="red-cl">*</b>确认意见</label>
+                        <div class="input-box">
+                            <textarea class="form-control" v-model="contractDetailObj.auditOpinion"
+                                :disabled="isLookHandelRow || isSureHandelRow"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-item">
+                        <label><b class="red-cl">*</b>延期日期</label>
+                        <div class="input-box date">
+                            <el-date-picker style="width:330px;" type="date" value-format="yyyy-MM-dd"
+                                :disabled="isLookHandelRow || isSureHandelRow" placeholder="选择日期"
+                                v-model="contractDetailObj.postponeServiceEndTime">
+                            </el-date-picker>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <!-- 保存，取消-->
@@ -548,7 +577,12 @@
                 request('', {
                     url: _sureUrl,
                     type: 'post',
-                    data: { projPurchaseId: ts.contractDetailObj.projPurchaseId }
+                    data: { 
+                        projPurchaseId: ts.contractDetailObj.projPurchaseId,
+                        confirmFlag: ts.contractDetailObj.confirmFlag,
+                        auditOpinion: ts.contractDetailObj.auditOpinion,
+                        postponeServiceEndTime: ts.contractDetailObj.postponeServiceEndTime
+                    }
                 }, function (res) {
                     ts.mloading = false;
                     if (res.success) {
@@ -689,43 +723,51 @@
                 var ts = this;
                 if (!data.signTime) {
                     return ts.$message({
+                        type: 'warn',
                         message: '请选择签订时间'
                     })
                 }
                 if (!data.contractCode) {
                     return ts.$message({
+                        type: 'warn',
                         message: '请填写合同编码'
                     })
                 }
                 if (!data.contractName) {
                     return ts.$message({
+                        type: 'warn',
                         message: '请填写合同名称'
                     })
                 }
                 if (!data.price) {
                     return ts.$message({
+                        type: 'warn',
                         message: '请填写合同金额'
                     })
                 }
                 if (!data.serviceStartTime || !data.serviceEndTime) {
                     return ts.$message({
+                        type: 'warn',
                         message: '请选择合同服务期限'
                     })
                 } else {
                     if (data.serviceStartTime > data.serviceEndTime) {
                         return ts.$message({
+                            type: 'warn',
                             message: '合同服务期限起始时间不能大于结束时间'
                         })
                     }
                 }
                 if (!data.serviceContent) {
                     return ts.$message({
+                        type: 'warn',
                         message: '请填写服务内容'
                     })
                 }
                 // 当前为上传合同并且没有选择文件时
                 if (!ts.projectSelectDetailEditFlag && !ts.enclosureFileListArr.length) {
                     return ts.$message({
+                        type: 'warn',
                         message: '请上传附件'
                     })
                 }
@@ -753,7 +795,7 @@
                     _sendData.append(i, _cloneContractData[i]);
                 }
                 for (var j = 0; j < ts.enclosureFileListArr.length; j++) {
-                    _sendData.append('file', ts.enclosureFileListArr[j]);
+                    _sendData.append('files', ts.enclosureFileListArr[j]);
                 }
                 // 代表为中介机构上传
                 _sendData.append('isOwnerUpload', 0)
@@ -801,8 +843,8 @@
         filters: {
             // 合同状态
             contractFormat: function (val) {
-                if (!val) return '待确定';
-                return val == 0 ? '待确定' : (val == 1 ? '已确定' : (val == 2 ? '审核失败' : '审核中'))
+                if (!val) return '待上传合同';
+                return val == 0 ? '待上传合同' : (val == 1 ? '已确定' : (val == 2 ? '审核失败' : '审核中'))
             },
             // 金额/下浮率
             realPriceFormat: function (val) {
