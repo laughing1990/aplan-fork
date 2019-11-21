@@ -404,7 +404,8 @@
                 }, function (res) {
                     ts.mloading = false;
                     if (res.success) {
-
+                        // 刷新表格数据
+                        ts.fetchSelectionProjectList();
                     } else {
                         ts.$message({
                             message: res.message,
