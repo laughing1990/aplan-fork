@@ -363,6 +363,48 @@
   font-size: 18px;
   font-weight: bold;
 }
+.one-form-tab .el-tabs__item {
+  font-size: 12px;
+  padding: 0 8px 0 0;
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  word-wrap: normal;
+}
+.one-form-tab.closed .el-tabs__item {
+  max-width: 50px;
+}
+.one-form-tab .el-tabs__nav {
+  margin-top: 40px
+}
+.one-form-tab .el-tabs__nav:after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 2px;
+  height: 100%;
+  background-color: #E6EAF4;
+}
+.one-form-tab .el-tabs__nav-wrap::after {
+  content: none;
+}
+.icon-fold {
+  position: absolute;
+  left: 30px;
+  font-size: 28px;
+  color: #999;
+  z-index: 100;
+  cursor: pointer;
+}
+.file-name .icon {
+  padding-right: 5px;
+}
+.icon-fold.el-icon-s-fold {
+  left: 94px;
+}
 .el-tabs__item.is-active, .el-tabs__item:hover {
   color: #457EFF;
 }
