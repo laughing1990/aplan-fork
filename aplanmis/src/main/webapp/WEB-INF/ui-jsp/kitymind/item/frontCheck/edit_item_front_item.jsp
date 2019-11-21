@@ -31,14 +31,14 @@
                         <div class="form-group m-form__group row">
                             <label class="col-lg-2 col-form-label" style="text-align: right;"><font color="red">*</font>排序:</label>
                             <div class="col-lg-10">
-                                <input type="text" class="form-control m-input" name="sortNo" value="" ${curIsEditable?'':'disabled'}/>
+                                <input type="text" class="form-control m-input" name="sortNo" value="" />
                             </div>
                         </div>
 
                         <div class="form-group m-form__group row">
                             <label class="col-lg-2 col-form-label" style="text-align: right;">备注:</label>
                             <div class="col-lg-10">
-                                <textarea type="text" class="form-control m-input" name="frontItemMemo" rows="4" value="" ${curIsEditable?'':'disabled'} ></textarea>
+                                <textarea type="text" class="form-control m-input" name="frontItemMemo" rows="4" value=""  ></textarea>
                             </div>
                         </div>
                     </div>

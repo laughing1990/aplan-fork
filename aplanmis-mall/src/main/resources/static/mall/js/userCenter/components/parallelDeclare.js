@@ -390,6 +390,7 @@ var module1 = new Vue({
       formItemsIdStr: '',
       stageFrontCheckFlag: true, // 阶段前置检测是否通过
       stageFrontCheckMsg: '', // 阶段前置检测失败提示
+      leftTabClosed: true, //
     }
   },
   mounted: function () {

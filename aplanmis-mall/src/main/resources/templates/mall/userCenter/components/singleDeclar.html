@@ -968,7 +968,7 @@
           </div>
           <div v-if="scope.row.childs&&scope.row.childs.length>0">
             <div v-for="(item,index) in scope.row.childs" :key="index" class="file-list-tab">
-              <span class="file-name"><span class="cert-icon icon ag" :class="'ag-filetype-'+getFileType(scope.row.attName)"></span>{{item.fileName}}</span>
+              <span class="file-name"><span class="icon ag" :class="'ag-filetype-'+getFileType(item.fileName)"></span>{{item.fileName}}</span>
               <div class="file-icon-btn">
                 <a :href="ctx+'rest/file/applydetail/mat/download/'+item.fileId"><span title="下载" class="el-icon-download"></span></a>
                 <span title="删除" class="el-icon-delete" @click="delSelectFileCom(scope.row,item,index)"></span>
