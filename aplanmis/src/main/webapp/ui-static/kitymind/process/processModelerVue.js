@@ -11,7 +11,6 @@ var vm = new Vue({
     chooseEleTotal:0, // 未绑定公共元素列表total
     //导入元素
     isshowChooseFlowList4:false,
-    isShowMask:false,
     multipleSelection:[],
     multipleSelection2:[],
     choosePBElementTableData:[], // 未绑定公共元素列表数据
@@ -27,7 +26,6 @@ var vm = new Vue({
     pageLoading: false,//遮罩
     isShowFormConfig:false,//是否显示表单配置页面
     isshowChooseFlowList1:false,//是否显示选择表单下拉框
-    isShowMask:false,//遮罩
     multipleSelection3:[],//选择数据
     multipleSelection6:[],//选择数据
     tplAppFormTableData:[],//模板表单关联数据
@@ -67,8 +65,23 @@ var vm = new Vue({
   },
   created: function () {
     this.getProcessDefTree();
+    this.circleDo();
   },
   methods: {
+    circleDo:function () {
+      var _this = this;
+      setInterval(function () {
+        if(!_this.isShowFormConfig){
+          _this.isshowChooseFlowList1 = false;
+        }
+        if(!_this.isShowViewConfig){
+          _this.isshowChooseFlowList3 = false;
+        }
+        if(!_this.isShowElementConfig){
+          _this.isshowChooseFlowList4 = false;
+        }
+      },100);
+    },
     elementConfig:function () {
       this.isShowElementConfig = true;
       this.getPublicElementList(vm.appId);
@@ -130,10 +143,6 @@ var vm = new Vue({
     },
     //导入流程 下拉框出现/隐藏时触发
     toggleFlowListSelect:function (flag){
-      var vm = this
-      setTimeout(function(){
-        vm.isHideMask = flag
-      },200)
     },
     // 导入元素
     importElement:function () {
@@ -519,7 +528,7 @@ var vm = new Vue({
       this.isShowViewConfig = true;
       this.getActTplAppViewList(this.appId)
     },
-    changeFun7:function (val){
+    changeFun7:function (val) {
       this.multipleSelection7 = val
     },
     getActTplAppViewList:function (appId) {
@@ -656,13 +665,6 @@ var vm = new Vue({
         });
       }
     },
-    toggleFlowListSelect:function (flag){
-      var vm = this
-      setTimeout(function(){
-        vm.isHideMask = flag
-      },200)
-    },
-
     //使用element-ui渲染流程树
     getProcessDefTree: function () {
       var vm = this;

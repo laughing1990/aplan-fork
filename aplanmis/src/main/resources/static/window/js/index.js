@@ -150,6 +150,8 @@ var app = new Vue({
             allItem:[{name:'工程建设审批事项库'}],
             storeAllItem:[],
             itemChecked:[],
+            isSelectAll: false, // 新增模块里，全选/反选标识
+            isIndeterminate: false, // 新增模块里，全选/反选标识的不确定状态（显示‘-’）
             itemShrink:true,
             itemKeyWord:'',
             allStage:[{stageName:'主题阶段'}],
@@ -210,6 +212,21 @@ var app = new Vue({
           // $(".loading").hide();
       },
       methods:{
+          /**
+           * 新增xx模块弹窗的“全选/反选”监听
+           */
+          checkChooseAll: function(val) {
+            this.itemChecked = val ? this.allItem : [];
+            this.isIndeterminate = false;
+          },
+          /**
+           * 新增xx模块弹窗的多选模块的选择事件
+           */
+          checkItemChoose: function(val) {
+            var checkedCount = val.length;
+            this.isSelectAll = checkedCount === this.allItem.length;
+            this.isIndeterminate = checkedCount > 0 && checkedCount < this.allItem.length;
+          },
           // 新增编辑窗口关闭回调
           closeWinCallback: function() {
             this.fileList = []
@@ -223,6 +240,14 @@ var app = new Vue({
             } else if (this.activeName === 'third') {
               this.itemChecked = this.itemCheckedData
               this.dialogWinTitie = '新增事项'
+
+              // 事项回显选中的值对应全选相关交互处理
+              if (this.itemChecked.length > 0 && this.itemChecked.length === this.allItem.length) {
+                this.isSelectAll = true;
+              } else if (this.itemChecked.length > 0 && this.itemChecked.length < this.allItem.length) {
+                this.isSelectAll = false;
+                this.isIndeterminate = true;
+              }
             } else if (this.activeName === 'fourth') {
               this.tableStageChecked = this.tableStageCheckedData
               this.dialogWinTitie = '新增阶段'
@@ -249,6 +274,9 @@ var app = new Vue({
               this.layerItemKeyWord='';
               this.layerStageKeyWord='';
               this.itemNatureOption='';
+
+              this.isSelectAll = false;
+              this.isIndeterminate = false;
 
               this.selectSerachItem();
           },
@@ -897,6 +925,10 @@ var app = new Vue({
                 type:'post',
                 url:ctx+'aea/item/priv/getTreeByAeaItemBasicList.do?isCatalog=0',
             },function (res) {
+                if (res.length) {
+                  res.splice(0, 1);
+                }
+
                 _this.allItem = res;
                 _this.storeAllItem = res;
             },function (err) {

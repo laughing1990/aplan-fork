@@ -142,24 +142,26 @@ public class AeaExProjBidServiceImpl implements AeaExProjBidService {
                         aeaUnitInfo.setUnitProjId(aeaUnitProj.getUnitProjId());//做回显
                         aeaUnitProjNewList.add(aeaUnitProj);
                     }
-                    //负责人
-                    if(StringUtils.isNotBlank(aeaUnitInfo.getProjLinkmanId())) {
-                        AeaUnitProjLinkman man = new AeaUnitProjLinkman();
-                        man.setProjLinkmanId(aeaUnitInfo.getProjLinkmanId());
-                        man.setLinkmanInfoId(aeaUnitInfo.getProjectLeaderId());
-                        man.setUnitProjId(aeaUnitInfo.getUnitProjId());
-                        man.setLinkmanType(UnitProjLinkmanType.FZR.getValue());
-                        aeaUnitProjLinkmanMapper.updateAeaUnitProjLinkman(man);
-                    }else{
-                        AeaUnitProjLinkman man = new AeaUnitProjLinkman();
-                        man.setProjLinkmanId(UUID.randomUUID().toString());
-                        man.setLinkmanInfoId(aeaUnitInfo.getProjectLeaderId());
-                        man.setUnitProjId(aeaUnitInfo.getUnitProjId());
-                        man.setLinkmanType(UnitProjLinkmanType.FZR.getValue());
-                        man.setCreater(SecurityContext.getCurrentUserId());
-                        man.setCreateTime(new Date());
-                        man.setIsDeleted("0");
-                        aeaUnitProjLinkmanMapper.insertAeaUnitProjLinkman(man);
+                    if(StringUtils.isNotBlank(aeaUnitInfo.getProjectLeaderId())) {
+                        //负责人
+                        if (StringUtils.isNotBlank(aeaUnitInfo.getProjLinkmanId())) {
+                            AeaUnitProjLinkman man = new AeaUnitProjLinkman();
+                            man.setProjLinkmanId(aeaUnitInfo.getProjLinkmanId());
+                            man.setLinkmanInfoId(aeaUnitInfo.getProjectLeaderId());
+                            man.setUnitProjId(aeaUnitInfo.getUnitProjId());
+                            man.setLinkmanType(UnitProjLinkmanType.FZR.getValue());
+                            aeaUnitProjLinkmanMapper.updateAeaUnitProjLinkman(man);
+                        } else {
+                            AeaUnitProjLinkman man = new AeaUnitProjLinkman();
+                            man.setProjLinkmanId(UUID.randomUUID().toString());
+                            man.setLinkmanInfoId(aeaUnitInfo.getProjectLeaderId());
+                            man.setUnitProjId(aeaUnitInfo.getUnitProjId());
+                            man.setLinkmanType(UnitProjLinkmanType.FZR.getValue());
+                            man.setCreater(SecurityContext.getCurrentUserId());
+                            man.setCreateTime(new Date());
+                            man.setIsDeleted("0");
+                            aeaUnitProjLinkmanMapper.insertAeaUnitProjLinkman(man);
+                        }
                     }
                 } else {
                     aeaUnitInfo.setUnitInfoId(UUID.randomUUID().toString());
@@ -171,15 +173,17 @@ public class AeaExProjBidServiceImpl implements AeaExProjBidService {
                     aeaUnitProjNewList.add(aeaUnitProj);
 
                     // 负责人信息
-                    AeaUnitProjLinkman man = new AeaUnitProjLinkman();
-                    man.setProjLinkmanId(UUID.randomUUID().toString());
-                    man.setLinkmanInfoId(aeaUnitInfo.getProjectLeaderId());
-                    man.setUnitProjId(aeaUnitInfo.getUnitProjId());
-                    man.setLinkmanType(UnitProjLinkmanType.FZR.getValue());
-                    man.setCreater(SecurityContext.getCurrentUserId());
-                    man.setCreateTime(new Date());
-                    man.setIsDeleted("0");
-                    aeaUnitProjLinkmanMapper.insertAeaUnitProjLinkman(man);
+                    if(StringUtils.isNotBlank(aeaUnitInfo.getProjectLeaderId())) {
+                        AeaUnitProjLinkman man = new AeaUnitProjLinkman();
+                        man.setProjLinkmanId(UUID.randomUUID().toString());
+                        man.setLinkmanInfoId(aeaUnitInfo.getProjectLeaderId());
+                        man.setUnitProjId(aeaUnitInfo.getUnitProjId());
+                        man.setLinkmanType(UnitProjLinkmanType.FZR.getValue());
+                        man.setCreater(SecurityContext.getCurrentUserId());
+                        man.setCreateTime(new Date());
+                        man.setIsDeleted("0");
+                        aeaUnitProjLinkmanMapper.insertAeaUnitProjLinkman(man);
+                    }
                 }
             }
         }

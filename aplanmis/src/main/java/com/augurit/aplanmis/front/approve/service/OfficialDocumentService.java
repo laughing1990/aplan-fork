@@ -13,46 +13,13 @@ import com.augurit.agcloud.opus.common.mapper.OpuOmOrgMapper;
 import com.augurit.agcloud.opus.common.mapper.OpuOmUserInfoMapper;
 import com.augurit.aplanmis.common.constants.ApplyState;
 import com.augurit.aplanmis.common.constants.UnitType;
-import com.augurit.aplanmis.common.domain.AeaCert;
-import com.augurit.aplanmis.common.domain.AeaExProjCertBuild;
-import com.augurit.aplanmis.common.domain.AeaHiApplyinst;
-import com.augurit.aplanmis.common.domain.AeaHiCertinst;
-import com.augurit.aplanmis.common.domain.AeaHiItemInoutinst;
-import com.augurit.aplanmis.common.domain.AeaHiItemMatinst;
-import com.augurit.aplanmis.common.domain.AeaHiIteminst;
-import com.augurit.aplanmis.common.domain.AeaHiParStageinst;
-import com.augurit.aplanmis.common.domain.AeaHiSeriesinst;
-import com.augurit.aplanmis.common.domain.AeaItemBasic;
-import com.augurit.aplanmis.common.domain.AeaItemInout;
-import com.augurit.aplanmis.common.domain.AeaItemMat;
-import com.augurit.aplanmis.common.domain.AeaItemState;
-import com.augurit.aplanmis.common.domain.AeaLinkmanInfo;
-import com.augurit.aplanmis.common.domain.AeaParShareMat;
-import com.augurit.aplanmis.common.domain.AeaProjInfo;
-import com.augurit.aplanmis.common.domain.AeaUnitInfo;
-import com.augurit.aplanmis.common.domain.AeaUnitProjLinkman;
-import com.augurit.aplanmis.common.mapper.AeaCertMapper;
-import com.augurit.aplanmis.common.mapper.AeaExProjCertBuildMapper;
-import com.augurit.aplanmis.common.mapper.AeaHiApplyinstMapper;
-import com.augurit.aplanmis.common.mapper.AeaHiCertinstMapper;
-import com.augurit.aplanmis.common.mapper.AeaHiItemInoutinstMapper;
-import com.augurit.aplanmis.common.mapper.AeaHiItemMatinstMapper;
-import com.augurit.aplanmis.common.mapper.AeaHiIteminstMapper;
-import com.augurit.aplanmis.common.mapper.AeaHiSeriesinstMapper;
-import com.augurit.aplanmis.common.mapper.AeaItemInoutMapper;
-import com.augurit.aplanmis.common.mapper.AeaItemMatMapper;
-import com.augurit.aplanmis.common.mapper.AeaLinkmanInfoMapper;
-import com.augurit.aplanmis.common.mapper.AeaParStageMapper;
-import com.augurit.aplanmis.common.mapper.AeaUnitProjLinkmanMapper;
+import com.augurit.aplanmis.common.domain.*;
+import com.augurit.aplanmis.common.mapper.*;
 import com.augurit.aplanmis.common.service.admin.cert.AeaCertAdminService;
 import com.augurit.aplanmis.common.service.admin.item.AeaItemInoutAdminService;
 import com.augurit.aplanmis.common.service.admin.par.AeaParShareMatAdminService;
 import com.augurit.aplanmis.common.service.file.FileUtilsService;
-import com.augurit.aplanmis.common.service.instance.AeaHiApplyinstService;
-import com.augurit.aplanmis.common.service.instance.AeaHiItemMatinstService;
-import com.augurit.aplanmis.common.service.instance.AeaHiItemStateinstService;
-import com.augurit.aplanmis.common.service.instance.AeaHiIteminstService;
-import com.augurit.aplanmis.common.service.instance.AeaHiParStageinstService;
+import com.augurit.aplanmis.common.service.instance.*;
 import com.augurit.aplanmis.common.service.item.AeaItemBasicService;
 import com.augurit.aplanmis.common.service.mat.AeaItemMatService;
 import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
@@ -72,13 +39,7 @@ import org.springframework.util.Assert;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -151,6 +112,9 @@ public class OfficialDocumentService {
     private AeaItemMatService aeaItemMatService;
     @Autowired
     private AeaExProjCertBuildMapper aeaExProjCertBuildMapper;
+    @Autowired
+    private AeaUnitProjMapper aeaUnitProjMapper;
+
     /**
      * @param applyinstId 申报实例id
      * @param iteminstId  事项实例ID
@@ -575,11 +539,12 @@ public class OfficialDocumentService {
 
     /**
      * （新）获取建筑工程施工许可证打印信息 2019/11/16 11：13
+     *
      * @param certinstId
      * @return
      * @throws Exception
      */
-    public ConstructPermitVo getConstructPermitInfo(String certinstId)throws Exception{
+    public ConstructPermitVo getConstructPermitInfo(String certinstId) throws Exception {
         ConstructPermitVo constructPermit = new ConstructPermitVo();
         if (StringUtils.isBlank(certinstId) || "null".equals(certinstId) || "undefined".equals(certinstId))
             return constructPermit;
@@ -593,14 +558,15 @@ public class OfficialDocumentService {
         String applyinstId = getApplyinstIdByIteminstId(iteminstId);
 
         List<AeaProjInfo> aeaProjInfos = aeaProjInfoService.findApplyProj(applyinstId);
-        if (aeaProjInfos.isEmpty()) return null;AeaProjInfo projInfo = aeaProjInfos.get(0);
+        if (aeaProjInfos.isEmpty()) return null;
+        AeaProjInfo projInfo = aeaProjInfos.get(0);
 
         //获取机构信息
         AeaHiCertinst certinst = aeaHiCertinstMapper.getAeaHiCertinstById(certinstId);
 
         //获取施工核发许可证表的信息
         AeaExProjCertBuild aeaExProjCertBuildByProjId = aeaExProjCertBuildMapper.findAeaExProjCertBuildByProjId(projInfo.getProjInfoId());
-        if (aeaExProjCertBuildByProjId !=null){
+        if (aeaExProjCertBuildByProjId != null) {
             String certBuildCode = aeaExProjCertBuildByProjId.getCertBuildCode();//建设工程规划许可证编号
             byte[] certBuildQrcode = aeaExProjCertBuildByProjId.getCertBuildQrcode();//建设工程规划许可证二维码
             //广东分支将此段放开
@@ -621,16 +587,16 @@ public class OfficialDocumentService {
                 constructPermit.setConstructPermitCode(certBuildCode);
             }*/
 
-            if(StringUtils.isBlank(aeaExProjCertBuildByProjId.getConstructionsSize())){
+            if (StringUtils.isBlank(aeaExProjCertBuildByProjId.getConstructionsSize())) {
                 constructPermit.setContructScale(projInfo.getProjScale());
-            }else {
+            } else {
                 constructPermit.setContructScale(aeaExProjCertBuildByProjId.getConstructionsSize());//建设规模
             }
             //获取核发机关相关信息
             String govOrgName = aeaExProjCertBuildByProjId.getGovOrgName();
 //            String govOrgCode = aeaExProjCertBuildByProjId.getGovOrgCode();
             Date publishTime = aeaExProjCertBuildByProjId.getPublishTime();
-            if(StringUtils.isBlank(govOrgName) && publishTime ==null){
+            if (StringUtils.isBlank(govOrgName) && publishTime == null) {
                 constructPermit.setIssueOrgName(certinst.getIssueOrgName());//核发机关
                 Date issueDate = certinst.getIssueDate();
                 if (null != issueDate) {
@@ -643,7 +609,7 @@ public class OfficialDocumentService {
                 aeaExProjCertBuildByProjId.setGovOrgName(certinst.getIssueOrgName());
                 aeaExProjCertBuildByProjId.setPublishTime(issueDate);
                 aeaExProjCertBuildMapper.updateAeaExProjCertBuild(aeaExProjCertBuildByProjId);
-            }else {
+            } else {
                 constructPermit.setIssueOrgName(govOrgName);
                 if (publishTime != null) {
                     String s = DateUtils.convertDateToString(publishTime, "yyyy-MM-dd");
@@ -693,7 +659,8 @@ public class OfficialDocumentService {
         String applyinstId = getApplyinstIdByIteminstId(iteminstId);
 
         List<AeaProjInfo> aeaProjInfos = aeaProjInfoService.findApplyProj(applyinstId);
-        if (aeaProjInfos.isEmpty()) return null;AeaProjInfo projInfo = aeaProjInfos.get(0);
+        if (aeaProjInfos.isEmpty()) return null;
+        AeaProjInfo projInfo = aeaProjInfos.get(0);
 
 
         constructPermit.setProjectName(projInfo.getProjName());
@@ -769,7 +736,7 @@ public class OfficialDocumentService {
     public List<CertinstVo> getCertinstListByApplyinstIdAndIteminstId(String applyinstId, String iteminstId) throws Exception {
         //不要返回 null，
         List<AeaHiCertinst> list = new ArrayList<>();
-        if (StringUtils.isNotBlank(iteminstId) && "undefined".equalsIgnoreCase(iteminstId)) {
+        if (StringUtils.isNotBlank(iteminstId) && !"undefined".equalsIgnoreCase(iteminstId)) {
             //只查询当前事项的证照实例
             list = aeaHiCertinstMapper.getAeaHiCertinstByIteminstId(iteminstId);
         } else {
@@ -803,7 +770,7 @@ public class OfficialDocumentService {
                 List<AeaProjInfo> applyProj = aeaProjInfoService.findApplyProj(applyinstId);
                 if (applyProj.size() > 0) {
                     AeaProjInfo aeaProjInfo = applyProj.get(0);
-                    vo.setProjScale(aeaProjInfo.getProjScale());
+                    vo.setProjScale(aeaProjInfo.getBuildAreaSum());
                 }
                 voList.add(vo);
             }
@@ -829,6 +796,7 @@ public class OfficialDocumentService {
         String applyinstId = certinstVo.getApplyinstId();
         String certId = certinstVo.getCertId();
         String issueDate = certinstVo.getIssueDate();
+        String matId = certinstVo.getMatId();
 
         BeanUtils.copyProperties(certinstVo, certinst);
         certinst.setIssueDate(certinstVo.strToDate(issueDate));
@@ -854,36 +822,66 @@ public class OfficialDocumentService {
             aeaHiCertinstMapper.insertAeaHiCertinst(certinst);
             AeaHiIteminst iteminst = aeaHiIteminstMapper.getAeaHiIteminstById(iteminstId);
             String inoutId = "";
-            if (null != iteminst) {
-                String itemVerId = iteminst.getItemVerId();
-                AeaItemInout inout = new AeaItemInout();
-                inout.setItemVerId(itemVerId);
-                List<AeaItemInout> itemInouts = aeaItemInoutMapper.listAeaItemInoutByItemVerId(inout);
-                if (itemInouts.size() > 0) {
-                    for (AeaItemInout inout1 : itemInouts) {
-                        String certId1 = inout1.getCertId();
-                        String fileType = inout1.getFileType();
-                        if (certId.equalsIgnoreCase(certId1) && "cert".equalsIgnoreCase(fileType)) {
-                            inoutId = inout1.getInoutId();
-                            break;
-                        }
-
+            if (null == iteminst) throw new Exception("找不到事项实例！");
+            String itemVerId = iteminst.getItemVerId();
+            AeaItemInout inout = new AeaItemInout();
+            inout.setItemVerId(itemVerId);
+            inout.setIsDeleted("0");
+            inout.setIsInput("0");
+            inout.setRootOrgId(SecurityContext.getCurrentOrgId());
+            List<AeaItemInout> itemInouts = aeaItemInoutMapper.listAeaItemInoutByItemVerId(inout);
+            if (itemInouts.size() > 0) {
+                for (AeaItemInout inout1 : itemInouts) {
+                    String matId1 = inout1.getMatId();
+                    if (matId.equalsIgnoreCase(matId1)) {
+                        inoutId = inout1.getInoutId();
+                        break;
                     }
+
                 }
             }
+
+            AeaItemMat mat = aeaItemMatMapper.getAeaItemMatById(matId);
+            if (mat == null) throw new Exception("找不到材料定义！");
+
+            AeaHiItemMatinst matinst = new AeaHiItemMatinst();
+            matinst.setMatId(matId);
+            matinst.setMatinstName(certinst.getCertinstName());
+            matinst.setMatinstCode(mat.getMatCode());
+            matinst.setRootOrgId(SecurityContext.getCurrentOrgId());
+            matinst.setMemo(certinst.getMemo());
+            matinst.setMatProp("c");
+            if ("c".equals(mat.getMatHolder())) {
+                List<AeaUnitInfo> aeaUnitInfos = aeaUnitProjMapper.findUnitInfoByApplyinstIdAndUnitType(applyinstId, UnitType.DEVELOPMENT_UNIT.getValue());
+                if (aeaUnitInfos.size() > 0) {
+                    matinst.setUnitInfoId(aeaUnitInfos.get(0).getUnitInfoId());
+                }
+                matinst.setMatinstSource("u");
+            } else {
+                AeaHiApplyinst aeaHiApplyinst = aeaHiApplyinstService.getAeaHiApplyinstById(applyinstId);
+                if (aeaHiApplyinst != null) {
+                    matinst.setLinkmanInfoId(aeaHiApplyinst.getLinkmanInfoId());
+                }
+                matinst.setMatinstSource("l");
+            }
+            matinst.setMatinstId(UUID.randomUUID().toString());
+            matinst.setCertinstId(certinst.getCertinstId());
+            matinst.setCreater(SecurityContext.getCurrentUserId());
+            matinst.setCreateTime(new Date());
+            aeaHiItemMatinstMapper.insertAeaHiItemMatinst(matinst);
+
             //保存到 aea_hi_iteminout_inst表
             AeaHiItemInoutinst inoutinst = new AeaHiItemInoutinst();
             inoutinst.setInoutinstId(UUID.randomUUID().toString());
-            inoutinst.setCertinstId(certinst.getCertinstId());
             inoutinst.setIteminstId(iteminstId);
             inoutinst.setItemInoutId(inoutId);
+            inoutinst.setMatinstId(matinst.getMatinstId());
             inoutinst.setCreater(SecurityContext.getCurrentUserName());
             inoutinst.setRootOrgId(SecurityContext.getCurrentOrgId());
             inoutinst.setCreateTime(new Date());
             inoutinst.setIsParIn("0");
             aeaHiItemInoutinstMapper.insertAeaHiItemInoutinst(inoutinst);
         }
-
 
         //保存修改的项目信息
         List<AeaProjInfo> aeaProjInfos = aeaProjInfoService.findApplyProj(applyinstId);
@@ -892,23 +890,26 @@ public class OfficialDocumentService {
             if (StringUtils.isBlank(aeaProjInfo.getProjScale())) {
                 AeaProjInfo temp = new AeaProjInfo();
                 temp.setProjInfoId(aeaProjInfo.getProjInfoId());
-                temp.setProjScale(certinstVo.getProjScale());
+                temp.setBuildAreaSum(certinstVo.getProjScale());
                 aeaProjInfoService.updateAeaProjInfo(temp);
             }
         }
-
 
     }
 
     /**
      * 批量删除证照实例---建筑工程施工许可证-先不管附件
      *
-     * @param certinstIds 证照实例IDS
+     * @param matinstIds 证照实例IDS
      */
-    public void batchDeleteCertinst(String[] certinstIds) {
+    public void batchDeleteCertinst(String[] matinstIds) throws Exception {
+
         //存在外键-注意删除顺序
-        aeaHiCertinstMapper.batchDeleteAeaHiCertinst(certinstIds);
-        aeaHiItemInoutinstMapper.deleteAeaHiItemInoutinstByCertinstIds(certinstIds);
+        aeaHiItemInoutinstMapper.deleteAeaHiItemInoutinstByMatinstIds(matinstIds);
+
+        aeaHiItemMatinstService.deleteAeaHiItemMatinstByIds(matinstIds);
+
+        aeaHiCertinstMapper.batchDeleteAeaHiCertinstByMatinstIds(matinstIds);
     }
 
     /**
@@ -934,6 +935,7 @@ public class OfficialDocumentService {
         List<AeaProjInfo> applyProj = aeaProjInfoService.findApplyProj(applyinstId);
         for (AeaHiIteminst iteminst : aeaHiIteminstList) {
 
+
             List<AeaCert> certs = aeaCertAdminService.getOutputCertsByIteminstId(iteminstId);
             if (certs == null) {
                 continue;
@@ -953,8 +955,7 @@ public class OfficialDocumentService {
                 vo.changeToOrgVo(omOrgs);
             }
             if (applyProj.size() > 0) {
-                String projScale = applyProj.get(0).getProjScale();
-                vo.setProjScale(projScale);
+                vo.setProjScale(applyProj.get(0).getBuildAreaSum());
             }
         }
         return vo;
@@ -984,7 +985,7 @@ public class OfficialDocumentService {
             }
             List<AeaItemMat> matListByItemVerIds = aeaItemMatService.getMatListByItemVerIds(itemVerIds, "0", null);
             if (matListByItemVerIds.size() > 0) {
-                result = matListByItemVerIds.stream().filter(mat -> StringUtils.isNotBlank(mat.getIsOfficialDoc()) && "1".equalsIgnoreCase(mat.getIsOfficialDoc())).collect(Collectors.toList());
+                result = matListByItemVerIds.stream().filter(mat -> StringUtils.isNotBlank(mat.getIsOfficialDoc()) && "1".equalsIgnoreCase(mat.getIsOfficialDoc()) && "m".equals(mat.getMatProp())).collect(Collectors.toList());
             }
         }
         return result;

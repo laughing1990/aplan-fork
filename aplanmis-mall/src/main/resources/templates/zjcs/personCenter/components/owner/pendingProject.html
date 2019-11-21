@@ -29,7 +29,7 @@
 						<a @click="showProjectDetail2(scope.row)" class="a-color4879E4" href="javascript:;">{{scope.row.projName}}</a>
 					</template>
 				</el-table-column>
-				<el-table-column label="服务类型" prop="serviceContent"></el-table-column>
+				<el-table-column label="服务类型" prop="serviceName"></el-table-column>
 				<el-table-column label="状态" prop="auditFlag">
 					<template scope="scope">
 						<span v-if="scope.row.auditFlag==0">未提交</span>
@@ -417,6 +417,7 @@
 				this.selectIntermediaryList(this.projPurchaseId);
 			},
 			isWonBid: function (obj) {
+				debugger
 				var _this = this;
 				if (obj.price = undefined || obj.price == null || obj.price == "") {
 					_this.$message({
@@ -425,30 +426,36 @@
 					});
 					return false;
 				}
-
-				confirmMsg('', '确定选取【' + obj.applicant + '】为中标单位吗?', function () {
-					request('', {
-						url: ctx + 'supermarket/purchase/updateIntermediaryWonBidStatus', type: 'get',
+				_this.$confirm('确定选取【' + obj.applicant + '】为中标单位吗?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					$.ajax({
+						type: "post",
+						url: ctx + 'supermarket/purchase/chooseWonBiddingUnit',
 						data: {
 							projPurchaseId: _this.projPurchaseId,
 							unitBiddingId: obj.unitBiddingId
+						},
+						success: function (res) {  //请求成功后的回调函数
+							vm.loading = false;
+							if (res.success) {
+								_this.isSignupProjectInfo = 0;
+								_this.listPendingProjPurchase();
+							} else {
+								vm.$message({message: res.message, type: 'error'});
+							}
+						},
+						error: function () {
+							vm.loading = false;
+							vm.$message({message: '保存失败', type: 'error'});
 						}
-					}, function (data) {
-						if (data.success) {
-							_this.isSignupProjectInfo = 0;
-							_this.listPendingProjPurchase();
-						} else {
-							_this.$message({
-								message: '更新失败',
-								type: 'error'
-							});
-						}
-					}, function (msg) {
-						_this.$message({
-							message: '加载失败',
-							type: 'error'
-						});
-						_this.loading = false;
+					});
+				}).catch(() => {
+					this.$message({
+						type: 'info',
+						message: '已取消删除'
 					});
 				});
 			},

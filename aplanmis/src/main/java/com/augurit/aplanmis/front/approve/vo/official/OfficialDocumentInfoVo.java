@@ -67,7 +67,7 @@ public class OfficialDocumentInfoVo {
             vo.setOfficialDocDueDate(DateUtils.parseToDefaultDateString(aeaHiItemMatinst.getOfficialDocDueDate()));
             vo.setOfficialDocPublishDate(DateUtils.parseToDefaultDateString(aeaHiItemMatinst.getOfficialDocPublishDate()));
             vo.setCreateDate(DateUtils.parseToFormatDateString(aeaHiItemMatinst.getCreateTime(), CREATE_DATE_PATTEN));
-            vo.setCreator(aeaHiItemMatinst.getCreater());
+            vo.setCreator(aeaHiItemMatinst.getCreaterName());
             vo.setDocTypeName(DOC_TYPE_ELEC);
             vo.setDocCount(aeaHiItemMatinst.getAttCount() == null ? 0 : aeaHiItemMatinst.getAttCount().intValue());
             vo.setMemo(aeaHiItemMatinst.getMemo());
