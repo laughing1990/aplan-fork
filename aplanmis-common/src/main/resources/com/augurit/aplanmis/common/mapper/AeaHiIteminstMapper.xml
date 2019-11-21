@@ -485,10 +485,10 @@
             aha.IS_SERIES_APPROVE='1'
             <choose>
                 <when test="state == '0'.toString()">
-                    AND aha.APPLYINST_STATE in ('5','6')
+                    AND aha.APPLYINST_STATE in ('6')
                 </when>
                 <when test="state == '1'.toString()">
-                    AND aha.APPLYINST_STATE in ('0','1','2','3','4') AND aha.APPLYINST_STATE IS NOT NULL
+                    AND aha.APPLYINST_STATE in ('0','1','2','3','4','5') AND aha.APPLYINST_STATE IS NOT NULL
                 </when>
                 <otherwise>
                     AND aha.APPLYINST_STATE IS NULL
@@ -539,10 +539,10 @@
             apl.TYPE='apply' AND aha.IS_SERIES_APPROVE='0'
             <choose>
                 <when test="state == '0'.toString()">
-                    AND aha.APPLYINST_STATE in ('5','6')
+                    AND aha.APPLYINST_STATE in ('6')
                 </when>
                 <when test="state == '1'.toString()">
-                    AND aha.APPLYINST_STATE in ('0','1','2','3','4') AND aha.APPLYINST_STATE IS NOT NULL
+                    AND aha.APPLYINST_STATE in ('0','1','2','3','5','4') AND aha.APPLYINST_STATE IS NOT NULL
                 </when>
                 <otherwise>
                     AND aha.APPLYINST_STATE IS NULL
@@ -589,13 +589,13 @@
             <if test="unitInfoId ==null || unitInfoId==''">
                 aui.UNIT_INFO_ID is null
             </if>
-            AND aha.IS_DELETED !=1 AND api.IS_DELETED !=1 AND aui.IS_DELETED !=1 AND aha.IS_SERIES_APPROVE='1'
+            AND aha.IS_DELETED !=1 AND api.IS_DELETED !=1 AND aui.IS_DELETED !=1 AND aup.IS_DELETED !=1 AND aha.IS_SERIES_APPROVE='1'
             <choose>
                 <when test="state == '0'.toString()">
-                    AND aha.APPLYINST_STATE in ('5','6')
+                    AND aha.APPLYINST_STATE in ('6')
                 </when>
                 <when test="state == '1'.toString()">
-                    AND aha.APPLYINST_STATE in ('0','1','2','3','4') AND aha.APPLYINST_STATE IS NOT NULL
+                    AND aha.APPLYINST_STATE in ('0','1','2','3','5','4') AND aha.APPLYINST_STATE IS NOT NULL
                 </when>
                 <otherwise>
                     AND aha.APPLYINST_STATE IS NULL
@@ -643,14 +643,14 @@
             <if test="unitInfoId ==null || unitInfoId==''">
                 aui.UNIT_INFO_ID is null
             </if>
-            AND aha.IS_DELETED !=1 AND api.IS_DELETED !=1 AND aui.IS_DELETED !=1 AND
+            AND aha.IS_DELETED !=1 AND api.IS_DELETED !=1 AND aui.IS_DELETED !=1 AND aup.IS_DELETED !=1 AND
             aha.IS_SERIES_APPROVE='0'
             <choose>
                 <when test="state == '0'.toString()">
-                    AND aha.APPLYINST_STATE in ('5','6')
+                    AND aha.APPLYINST_STATE in ('6')
                 </when>
                 <when test="state == '1'.toString()">
-                    AND aha.APPLYINST_STATE in ('0','1','2','3','4') AND aha.APPLYINST_STATE IS NOT NULL
+                    AND aha.APPLYINST_STATE in ('0','1','2','3','5','4') AND aha.APPLYINST_STATE IS NOT NULL
                 </when>
                 <otherwise>
                     AND aha.APPLYINST_STATE IS NULL
@@ -757,7 +757,7 @@
                 aui.UNIT_INFO_ID is null
             </if>
             AND aha.IS_DELETED !=1 AND api.IS_DELETED !=1 AND aui.IS_DELETED !=1 AND aha.IS_SERIES_APPROVE='1'
-            and  aha.APPLYINST_STATE in ('0','1','2','3','4','5','6') AND aha.APPLYINST_STATE IS NOT NULL
+            and  aha.APPLYINST_STATE in ('0','1','2','3','4','5','6') AND aha.APPLYINST_STATE IS NOT NULL  AND aup.IS_DELETED !=1
         </where>
         UNION
         SELECT DISTINCT
@@ -788,7 +788,7 @@
             </if>
             AND aha.IS_DELETED !=1 AND api.IS_DELETED !=1 AND aui.IS_DELETED !=1 AND
             aha.IS_SERIES_APPROVE='0'
-            and  aha.APPLYINST_STATE in ('0','1','2','3','4','5','6') AND aha.APPLYINST_STATE IS NOT NULL
+            and  aha.APPLYINST_STATE in ('0','1','2','3','4','5','6') AND aha.APPLYINST_STATE IS NOT NULL  AND aup.IS_DELETED !=1
         </where>
         ) aea_123
     </select>
@@ -821,7 +821,7 @@
         inner join aea_unit_proj aup ON aup.UNIT_PROJ_ID=aaup.unit_proj_id
         WHERE
         aup.UNIT_INFO_ID = #{unitInfoId}
-        AND aaup.APPLYINST_ID IS NOT NULL
+        AND aaup.APPLYINST_ID IS NOT NULL and aup.IS_DELETED != 1
         ) temp ON temp.APPLYINST_ID = ahs.APPLYINST_ID
         INNER JOIN aea_proj_info api ON api.PROJ_INFO_ID = temp.PROJ_INFO_ID
         <where>
@@ -859,7 +859,7 @@
         inner join aea_unit_proj aup ON aup.UNIT_PROJ_ID=aaup.unit_proj_id
         WHERE
         aup.UNIT_INFO_ID = #{unitInfoId}
-        AND aaup.APPLYINST_ID IS NOT NULL
+        AND aaup.APPLYINST_ID IS NOT NULL and aup.IS_DELETED != 1
         ) temp ON temp.APPLYINST_ID = ahps.APPLYINST_ID
         INNER JOIN aea_proj_info api ON api.PROJ_INFO_ID = temp.PROJ_INFO_ID
         <where>
@@ -966,7 +966,7 @@
         <if test="unitInfoId ==null || unitInfoId==''">
             aui.unit_info_id  is null
         </if>
-         AND api.IS_DELETED!=1
+         AND api.IS_DELETED!=1 and aup.IS_DELETED != 1
         <if test="keyword != null and keyword != ''">
             AND (
             api.LOCAL_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%') or
@@ -1039,7 +1039,7 @@
             aup.UNIT_INFO_ID is null
         </if>
         AND aaup.APPLYINST_ID IS NOT NULL
-        AND aha.IS_DELETED !=1
+        AND aha.IS_DELETED !=1 and aup.IS_DELETED != 1
         ) temp ON temp.APPLYINST_ID = ahs.APPLYINST_ID
         INNER JOIN aea_proj_info api ON api.PROJ_INFO_ID = temp.PROJ_INFO_ID
         INNER JOIN aea_item_basic aib ON ahi.ITEM_VER_ID = aib.ITEM_VER_ID
@@ -1094,7 +1094,7 @@
             aup.UNIT_INFO_ID is null
         </if>
         AND aaup.APPLYINST_ID IS NOT NULL
-        AND aha.IS_DELETED !=1
+        AND aha.IS_DELETED !=1 and aup.IS_DELETED != 1
         ) temp ON temp.APPLYINST_ID = ahps.APPLYINST_ID
         INNER JOIN aea_proj_info api ON api.PROJ_INFO_ID = temp.PROJ_INFO_ID
         INNER JOIN aea_item_basic aib ON ahi.ITEM_VER_ID = aib.ITEM_VER_ID
@@ -1293,7 +1293,7 @@
         LEFT JOIN AEA_UNIT_PROJ aup ON proj.PROJ_INFO_ID = aup.PROJ_INFO_ID
         WHERE
         aup.UNIT_INFO_ID = #{unitInfoId}
-        AND proj.IS_DELETED = '0'
+        AND proj.IS_DELETED = '0' and aup.IS_DELETED != 1
         )
         UNION ALL
         SELECT
@@ -1344,7 +1344,7 @@
         LEFT JOIN AEA_UNIT_PROJ aup ON proj.PROJ_INFO_ID = aup.PROJ_INFO_ID
         WHERE
         aup.UNIT_INFO_ID = #{unitInfoId}
-        AND proj.IS_DELETED = '0'
+        AND proj.IS_DELETED = '0' and aup.IS_DELETED != 1
         )
         ) aea_123
         ORDER BY
@@ -1413,7 +1413,7 @@
         <if test="unitInfoId ==null || unitInfoId==''">
             aup.UNIT_INFO_ID is null
         </if>
-        AND proj.IS_DELETED = '0'
+        AND proj.IS_DELETED = '0' and aup.IS_DELETED != 1
         )
         UNION ALL
         SELECT
@@ -1472,7 +1472,7 @@
         <if test="unitInfoId ==null || unitInfoId==''">
             aup.UNIT_INFO_ID is null
         </if>
-        AND proj.IS_DELETED = '0'
+        AND proj.IS_DELETED = '0' and aup.IS_DELETED != 1
         )
         ) aea_123
         ORDER BY
@@ -1579,7 +1579,7 @@
         INNER JOIN aea_proj_info API ON API.PROJ_INFO_ID = AUP.PROJ_INFO_ID
         where
         ahap_123.IS_SERIES_APPROVE = '0'
-        AND ahap_123.APPLYINST_STATE = '3'
+        AND ahap_123.APPLYINST_STATE = '3' and aup.IS_DELETED != 1
         <if test="keyword !=null and keyword!=''">
             and (ahap_123.APPLYINST_CODE like CONCAT(CONCAT('%',#{keyword}),'%') or
             API.PROJ_NAME like CONCAT(CONCAT('%',#{keyword}),'%') )
@@ -1664,7 +1664,7 @@
         LEFT JOIN aea_par_theme apt ON apt.theme_id = API.theme_id
         where
         ahap_123.IS_SERIES_APPROVE = '1'
-        AND ahap_123.APPLYINST_STATE = '3'
+        AND ahap_123.APPLYINST_STATE = '3' and aup.IS_DELETED != 1
         <if test="keyword !=null and keyword!=''">
             and (ahap_123.APPLYINST_CODE like CONCAT(CONCAT('%',#{keyword}),'%') or
             API.PROJ_NAME like CONCAT(CONCAT('%',#{keyword}),'%') )
@@ -2428,7 +2428,7 @@
                 aui.UNIT_INFO_ID is null
             </if>
             AND aha.IS_DELETED =1 AND api.IS_DELETED !=1 AND aui.IS_DELETED !=1 AND
-            aha.IS_SERIES_APPROVE='0'
+            aha.IS_SERIES_APPROVE='0' and aup.IS_DELETED != 1
             <if test="keyword != null and keyword != ''">
                 AND (
                 api.LOCAL_CODE LIKE CONCAT(CONCAT('%',#{keyword}),'%') or
