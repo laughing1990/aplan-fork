@@ -20,7 +20,7 @@ public class AeaExProjCertBuildController {
     @RequestMapping("/index.html")
     public ModelAndView index(){
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("");
+        modelAndView.setViewName("form/certBuild");
         return modelAndView;
     }
 
@@ -30,7 +30,7 @@ public class AeaExProjCertBuildController {
             aeaExProjCertBuildService.saveForm(aeaExProjCertBuild);
             return new ContentResultForm<>(true,"保存成功", "Save success");
         }catch (Exception e){
-            return new ContentResultForm<>(false,"保存失败", "save fail");
+            return new ContentResultForm<>(false,e.getMessage(), "save fail");
         }
     }
 
@@ -40,7 +40,7 @@ public class AeaExProjCertBuildController {
             if(projInfoId == null){
                 return new ContentResultForm<AeaExProjCertBuild>(false,null, "项目ID不可以为空");
             }else {
-                return new ContentResultForm<AeaExProjCertBuild>(true, aeaExProjCertBuildService.findByProjId(projInfoId), "保存成功");
+                return new ContentResultForm<AeaExProjCertBuild>(true, aeaExProjCertBuildService.findByProjId(projInfoId), "查询成功");
             }
         }catch (Exception e){
                 return new ContentResultForm<AeaExProjCertBuild>(false,null,e.getMessage());

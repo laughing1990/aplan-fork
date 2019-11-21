@@ -76,9 +76,9 @@ var vm = new Vue({
 				success: function (res) {
 					vm.loading = false;
 					if (res.success) {
-						vm.matterList = [].concat(res.content);
+						vm.matterList = [].concat(res.content.list);
 						// vm._alertState(true, '获取成功')
-						if (!res.content || !res.content.length) {
+						if (!res.content || !res.content.list.length) {
 							vm._alertState(true, '暂无数据！');
 							$('.content').find('.list-box').html('暂无数据').css('textAlign', 'center')
 						}

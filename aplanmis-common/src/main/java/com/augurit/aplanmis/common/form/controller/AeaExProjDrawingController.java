@@ -90,7 +90,7 @@ public class AeaExProjDrawingController {
         List<AeaProjDrawing> aeaProjDrawing = aeaProjDrawingSerivce.getAeaProjDrawing(projInfoId);
         if (aeaProjDrawing != null&&aeaProjDrawing.size()>0){
             logger.debug("根据ID获取AeaExProjDrawing对象，ID为：{}", projInfoId);
-            object.put(  "drawings",aeaProjDrawingSerivce.getAeaProjDrawing(projInfoId));
+            object.put(  "drawings",aeaProjDrawing);
         }
         else {
             logger.debug("构建新的AeaExProjDrawing对象");

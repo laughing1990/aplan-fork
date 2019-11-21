@@ -31,14 +31,16 @@
         ROOT_ORG_ID rootOrgId,
         PRINT_USER_ID printUserId,
         PRINT_USER_NAME printUserName,
-        PRINT_TIME printTime
+        PRINT_TIME printTime,
+        GCZCB_UNIT gczcbUnit,
+        GCZCB_UNIT_LEADER gczcbUnitLeader
     </sql>
     
     <insert id="insertAeaExProjCertBuild" parameterType="AeaExProjCertBuild">
         insert into aea_ex_proj_cert_build(
-        BUILD_ID, PROJ_INFO_ID, CERT_BUILD_CODE, CERT_BUILD_QRCODE, GOV_ORG_CODE, GOV_ORG_NAME, PUBLISH_TIME, CONSTRUCTION_UNIT, PROJ_NAME, CONSTRUCTION_ADDR, CONSTRUCTIONS_SIZE, CONTRACT_PRICE, KC_UNIT, SJ_UNIT, SG_UNIT, JL_UNIT, KC_UNIT_LEADER, SJ_UNIT_LEADER, SG_UNIT_LEADER, JL_UNIT_LEADER, CONTRACT_PERIOD, CERT_BUILD_MEMO, CREATER, CREATE_TIME, MODIFIER, MODIFY_TIME, ROOT_ORG_ID, PRINT_USER_ID, PRINT_USER_NAME, PRINT_TIME
+        BUILD_ID, PROJ_INFO_ID, CERT_BUILD_CODE, CERT_BUILD_QRCODE, GOV_ORG_CODE, GOV_ORG_NAME, PUBLISH_TIME, CONSTRUCTION_UNIT, PROJ_NAME, CONSTRUCTION_ADDR, CONSTRUCTIONS_SIZE, CONTRACT_PRICE, KC_UNIT, SJ_UNIT, SG_UNIT, JL_UNIT, KC_UNIT_LEADER, SJ_UNIT_LEADER, SG_UNIT_LEADER, JL_UNIT_LEADER, CONTRACT_PERIOD, CERT_BUILD_MEMO, CREATER, CREATE_TIME, MODIFIER, MODIFY_TIME, ROOT_ORG_ID, PRINT_USER_ID, PRINT_USER_NAME, PRINT_TIME, GCZCB_UNIT, GCZCB_UNIT_LEADER
         ) values (
-        #{buildId}, #{projInfoId}, #{certBuildCode}, #{certBuildQrcode}, #{govOrgCode}, #{govOrgName}, #{publishTime}, #{constructionUnit}, #{projName}, #{constructionAddr}, #{constructionsSize}, #{contractPrice}, #{kcUnit}, #{sjUnit}, #{sgUnit}, #{jlUnit}, #{kcUnitLeader}, #{sjUnitLeader}, #{sgUnitLeader}, #{jlUnitLeader}, #{contractPeriod}, #{certBuildMemo}, #{creater}, #{createTime}, #{modifier}, #{modifyTime}, #{rootOrgId}, #{printUserId}, #{printUserName}, #{printTime}
+        #{buildId}, #{projInfoId}, #{certBuildCode}, #{certBuildQrcode}, #{govOrgCode}, #{govOrgName}, #{publishTime}, #{constructionUnit}, #{projName}, #{constructionAddr}, #{constructionsSize}, #{contractPrice}, #{kcUnit}, #{sjUnit}, #{sgUnit}, #{jlUnit}, #{kcUnitLeader}, #{sjUnitLeader}, #{sgUnitLeader}, #{jlUnitLeader}, #{contractPeriod}, #{certBuildMemo}, #{creater}, #{createTime}, #{modifier}, #{modifyTime}, #{rootOrgId}, #{printUserId}, #{printUserName}, #{printTime},#{gczcbUnit},#{gczcbUnitLeader}
         )
     </insert>
 
@@ -130,7 +132,13 @@
                 PRINT_USER_NAME = #{printUserName},
             </if>
             <if test="printTime != null">
-                PRINT_TIME = #{printTime}
+                PRINT_TIME = #{printTime},
+            </if>
+            <if test="gczcbUnit != null">
+                GCZCB_UNIT = #{gczcbUnit},
+            </if>
+            <if test="gczcbUnitLeader != null">
+                GCZCB_UNIT_LEADER = #{gczcbUnitLeader}
             </if>
         </set>
         where BUILD_ID = #{buildId}

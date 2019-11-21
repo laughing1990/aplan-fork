@@ -69,7 +69,7 @@ public class PdfReceiveController {
             , @ApiImplicitParam(value = "true 打印模板：false 预览模板", name = "print", required = true)
     })
     public void PreviewConstructPermitPdf(Boolean print, String certinstId, HttpServletResponse response) throws Exception {
-        ConstructPermitVo vo = documentService.getConstructPermitInfoVo(certinstId);
+        ConstructPermitVo vo = documentService.getConstructPermitInfo(certinstId);
         try {
             ReceivePDFTemplate.createConstructPermitPdf(print, vo, response);
         } catch (Exception e) {

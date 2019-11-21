@@ -672,7 +672,7 @@ var vm = new Vue({
       vm.parentPageLoading = true;
       vm.currentMatRow = row;
       vm.refreshMatIframe = refreshMatIframe;
-      vm.itemVerids = row.itemVerids;
+      vm.itemVerids = row.itemVerIds;
       vm.loadIdLibList(function () {
         vm.idLibVisible = true;
         vm.parentPageLoading = false;

@@ -1014,7 +1014,7 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
      * @throws Exception
      */
     @Override
-    public List<Map<String, Object>> getCompletedApplyUseTimeByTheme(String type, String startTime, String endTime) throws Exception {
+    public List<UseTimeStatisticsVo> getCompletedApplyUseTimeByTheme(String type, String startTime, String endTime) throws Exception {
         String rootOrgId = SecurityContext.getCurrentOrgId();
         if (DateType.YESTERDAY.equals(type)) {
             Date preDate = DateUtils.getPreDateByDate(new Date());
@@ -1042,7 +1042,7 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
         return null;
     }
 
-    private List<Map<String, Object>> getCompletedApplyUseTimeByThemeAndTime(String startTime, String endTime, String rootOrgId) throws Exception {
+    private List<UseTimeStatisticsVo> getCompletedApplyUseTimeByThemeAndTime(String startTime, String endTime, String rootOrgId) throws Exception {
         //找到全部主题
         AeaParTheme search = new AeaParTheme();
         search.setIsActive("1");
@@ -1052,21 +1052,21 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
         List<UseTimeStatisticsVo> completedApplyUseTimeByTheme = efficiencySupervisionMapper.getCompletedApplyUseTimeByTheme(startTime, endTime, rootOrgId);
         Map<String, List<UseTimeStatisticsVo>> collect = completedApplyUseTimeByTheme.stream().collect(Collectors.groupingBy(UseTimeStatisticsVo::getThemeId));
 
-        List<Map<String, Object>> result = new ArrayList<>();
+        List<UseTimeStatisticsVo> result = new ArrayList<>();
         for (AeaParTheme theme : themes) {
-            Map<String, Object> data = new HashMap<>();
-            data.put("themeId", theme.getThemeId());
-            data.put("themeName", theme.getThemeName());
-            data.put("maxUseTime", 0.0);
-            data.put("minUseTime", 0.0);
-            data.put("avgUseTime", 0.0);
+            UseTimeStatisticsVo vo = new UseTimeStatisticsVo();
+            vo.setThemeId(theme.getThemeId());
+            vo.setThemeName(theme.getThemeName());
+            vo.setMaxUseTime(0.0);
+            vo.setMinUseTime(0.0);
+            vo.setAvgUseTime(0.0);
             if (collect.get(theme.getThemeId()) != null) {
                 List<UseTimeStatisticsVo> applyUseTimeStatisticsVos = collect.get(theme.getThemeId());
-                data.put("maxUseTime", applyUseTimeStatisticsVos.get(0).getMaxUseTime());
-                data.put("minUseTime", applyUseTimeStatisticsVos.get(0).getMinUseTime());
-                data.put("avgUseTime", applyUseTimeStatisticsVos.get(0).getAvgUseTime());
+                vo.setMaxUseTime(applyUseTimeStatisticsVos.get(0).getMaxUseTime());
+                vo.setMinUseTime(applyUseTimeStatisticsVos.get(0).getMinUseTime());
+                vo.setAvgUseTime(applyUseTimeStatisticsVos.get(0).getAvgUseTime());
             }
-            result.add(data);
+            result.add(vo);
         }
         return result;
     }
@@ -1082,7 +1082,7 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
      * @throws Exception
      */
     @Override
-    public List<Map<String, Object>> getCompletedApplyUseTimeByThemeAndWindow(String themeId, String type, String startTime, String endTime) throws Exception {
+    public List<UseTimeStatisticsVo> getCompletedApplyUseTimeByThemeAndWindow(String themeId, String type, String startTime, String endTime) throws Exception {
         String rootOrgId = SecurityContext.getCurrentOrgId();
         if (DateType.YESTERDAY.equals(type)) {
             Date preDate = DateUtils.getPreDateByDate(new Date());
@@ -1110,7 +1110,7 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
         return null;
     }
 
-    private List<Map<String, Object>> getCompletedApplyUseTimeByWindowAndTime(String themeId, String startTime, String endTime, String rootOrgId) throws Exception {
+    private List<UseTimeStatisticsVo> getCompletedApplyUseTimeByWindowAndTime(String themeId, String startTime, String endTime, String rootOrgId) throws Exception {
         //查询所有的窗口
         AeaServiceWindow windowSearch = new AeaServiceWindow();
         windowSearch.setIsActive("1");
@@ -1121,21 +1121,21 @@ public class WinEfficiencySupervisionServiceImpl implements WinEfficiencySupervi
         List<UseTimeStatisticsVo> completedApplyUseTimeByThemeAndWindow = efficiencySupervisionMapper.getCompletedApplyUseTimeByThemeAndWindow(themeId, startTime, endTime, rootOrgId);
         Map<String, List<UseTimeStatisticsVo>> collect = completedApplyUseTimeByThemeAndWindow.stream().collect(Collectors.groupingBy(UseTimeStatisticsVo::getWindowId));
 
-        List<Map<String, Object>> result = new ArrayList<>();
+        List<UseTimeStatisticsVo> result = new ArrayList<>();
         for (AeaServiceWindow window : serviceWindows) {
-            Map<String, Object> data = new HashMap<>();
-            data.put("windowId", window.getWindowId());
-            data.put("windowName", window.getWindowName());
-            data.put("maxUseTime", 0.0);
-            data.put("minUseTime", 0.0);
-            data.put("avgUseTime", 0.0);
+            UseTimeStatisticsVo vo = new UseTimeStatisticsVo();
+            vo.setWindowId(window.getWindowId());
+            vo.setWindowName(window.getWindowName());
+            vo.setMaxUseTime(0.0);
+            vo.setMinUseTime(0.0);
+            vo.setAvgUseTime(0.0);
             if (collect.get(window.getWindowId()) != null) {
                 List<UseTimeStatisticsVo> applyUseTimeStatisticsVos = collect.get(window.getWindowId());
-                data.put("maxUseTime", applyUseTimeStatisticsVos.get(0).getMaxUseTime());
-                data.put("minUseTime", applyUseTimeStatisticsVos.get(0).getMinUseTime());
-                data.put("avgUseTime", applyUseTimeStatisticsVos.get(0).getAvgUseTime());
+                vo.setMaxUseTime(applyUseTimeStatisticsVos.get(0).getMaxUseTime());
+                vo.setMinUseTime(applyUseTimeStatisticsVos.get(0).getMinUseTime());
+                vo.setAvgUseTime(applyUseTimeStatisticsVos.get(0).getAvgUseTime());
             }
-            result.add(data);
+            result.add(vo);
         }
         return result;
     }

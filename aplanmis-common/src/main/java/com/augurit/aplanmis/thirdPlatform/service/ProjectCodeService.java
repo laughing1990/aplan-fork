@@ -16,7 +16,7 @@ public interface ProjectCodeService {
      * @return
      * @throws Exception
      */
-    List<AeaProjInfo> getProjInfoFromThirdPlatform(String projCode, String unitName) throws Exception;
+    List<AeaProjInfo> getProjInfoFromThirdPlatform(String projCode, String unitName,String unifiedSocialCreditCode) throws Exception;
 
     void saveProjUnitLinkmanInfo(ProUnitLinkVo proUnitLinkVo) throws Exception;
 

@@ -103,6 +103,11 @@ public class AeaUnitInfo implements Serializable {
     private String redblackId;//红黑名单主键
     private List<AeaLinkmanInfo> aeaLinkmanInfoList;
 
+    private String projLinkmanId ;//项目单位负责表主键
+    private String projectLeader ;//项目负责人姓名
+    private String projectLeaderId;//项目负责人ID
+    private String projectLeaderCertNum;//项目负责人 ID Card
+
     public AeaUnitInfo() {
 
     }

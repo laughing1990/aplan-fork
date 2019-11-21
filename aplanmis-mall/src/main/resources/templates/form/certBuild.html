@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="common/common :: commonheader('建设工程施工许可证')" />
+    <link rel="stylesheet" href="../../static/apply/css/index.css" th:href="@{/form/css/exSJUnit.css}">
+</head>
+<body class="gray-body">
+<div id="approve" v-cloak v-loading="loading">
+    <div class="content">
+        <el-collapse v-model="activeNames">
+            <!--  基本信息  start  -->
+            <el-collapse-item class="clearfix" name="1" id="baseInfo">
+                <template slot="title">
+                    <i class="header-icon icon ag ag-project-info"></i>建设工程施工许可证
+                </template>
+                <el-form label-width="210px" ref="certBuildFrom" :rules="certBuildFromRules" :model="certBuildFrom">
+                    <input type="hidden" name="projInfoId" :value="certBuildFrom.projInfoId">
+                    <input type="hidden" name="buildId" :value="certBuildFrom.buildId">
+                    <div class="clearfix">
+                        <el-form-item class="input-inline" prop="certBuildCode">
+                            <template slot="label">
+                                建设工程规划许可证编号
+                            </template>
+                            <el-input name="certBuildCode" :disabled="linkQuerySucc" v-model="certBuildFrom.certBuildCode" placeholder="建设工程规划许可证编号"></el-input>
+                        </el-form-item>
+                        <el-form-item class="input-inline" label="合同开工日期" prop="contractStartBuildTime">
+                            <el-date-picker v-model="certBuildFrom.contractStartBuildTime" type="date" placeholder="请选择合同开工日期" format="yyyy 年 MM 月 dd 日" value-format="yyyy-MM-dd">
+                                <input v-model="certBuildFrom.contractStartBuildTime" type="hidden">
+                            </el-date-picker>
+                        </el-form-item>
+                        <el-form-item class="input-inline" label="合同竣工日期" prop="contractEndBuildTime">
+                            <el-date-picker v-model="certBuildFrom.contractEndBuildTime" type="date" placeholder="请选择合同竣工日期" format="yyyy 年 MM 月 dd 日" value-format="yyyy-MM-dd">
+                                <input v-model="certBuildFrom.contractEndBuildTime" type="hidden">
+                            </el-date-picker>
+                        </el-form-item>
+                        <el-form-item class="input-inline" label="核发机关" prop="govOrgName">
+                            <el-input v-model="certBuildFrom.govOrgName" placeholder="核发机关"></el-input>
+                        </el-form-item>
+                        <el-form-item class="input-inline" label="核发日期" prop="contractStartBuildTime">
+                            <el-date-picker v-model="certBuildFrom.publishTime" type="date" placeholder="核发日期" format="yyyy 年 MM 月 dd 日" value-format="yyyy-MM-dd">
+                                <input v-model="certBuildFrom.publishTime" type="hidden">
+                            </el-date-picker>
+                        </el-form-item>
+                    </div>
+                    <div class="clearfix">
+                        <el-form-item class="input-inline" label="建设单位" prop="constructionUnit">
+                            <el-autocomplete :trigger-on-focus="false" :fetch-suggestions="querySearchJiansheName"
+                                             @select="function(value) {selUnitInfo(value,'constructionUnit')}"
+                                             v-model="certBuildFrom.constructionUnit" placeholder="建设单位">
+                            </el-autocomplete>
+                        </el-form-item>
+                        <el-form-item class="input-inline" label="建设地址" prop="constructionAddr">
+                            <el-input v-model="certBuildFrom.constructionAddr" placeholder="建设地址"></el-input>
+                        </el-form-item>
+                        <el-form-item class="input-inline" label="建设规模" prop="constructionsSize">
+                            <el-input v-model="certBuildFrom.constructionsSize" placeholder="建设规模"></el-input>
+                        </el-form-item>
+                        <el-form-item class="input-inline" label="合同价格（万元）" prop="contractPrice">
+                            <el-input v-model="certBuildFrom.contractPrice" placeholder="合同价格"></el-input>
+                        </el-form-item>
+                    </div>
+                    <div class="clearfix">
+                        <input type="hidden" name="gczcbUnitId" :value="certBuildFrom.gczcbUnitId">
+                        <el-form-item class="input-inline" label="工程总承包单位" prop="gczcbUnit">
+                            <el-autocomplete :trigger-on-focus="false" :fetch-suggestions="querySearchJiansheName"
+                                             @select="function(value) {selUnitInfo(value,'gczcbUnit')}"
+                                             v-model="certBuildFrom.gczcbUnit" placeholder="工程总承包单位">
+                            </el-autocomplete>
+                        </el-form-item>
+                        <el-form-item label="工程总承包单位负责人" no-data-text="暂无数据" prop="gczcbUnitLeader" class="sel-btn input-inline">
+                            <input type="hidden" name="gczcbUnitLeaderId" :value="certBuildFrom.gczcbUnitLeaderId">
+                            <el-select v-model="certBuildFrom.gczcbUnitLeader" :loading="loadingUnitLinkMan"
+                                       @click.native="getUnitLinkManList(certBuildFrom.gczcbUnitId,'gc')" required placeholder="--请选择--">
+                                <el-option class="select-option-ul"
+                                           v-for="(item2, index2) in gcunitLinkManOptions"
+                                           :key="index2"
+                                           :label="item2.addressName"
+                                           @click.native="selLinkman(item2,index2,'gczcbUnit')"
+                                           :value="item2.addressId">
+                                    <span class="fl">{{ item2.addressName }}</span>
+                                    <span class="fr el-icon-delete" @click.stop="delLinkman(item2,certBuildFrom,index)"></span>
+                                </el-option>
+                            </el-select>
+                            <el-button type="primary" class="add-link-man" icon="el-icon-circle-plus-outline"
+                                       @click="addLinkman('',certBuildFrom.gczcbUnitId,certBuildFrom.gczcbUnit)" title="新增"></el-button>
+                            <el-button icon="el-icon-edit-outline" type="primary" class="item-right-btn"
+                                       @click="addLinkman(certBuildFrom.gczcbUnitLeaderId,certBuildFrom.gczcbUnitId,certBuildFrom.gczcbUnit)" title="编辑"></el-button>
+                        </el-form-item>
+                    </div>
+                    <div class="clearfix">
+                        <input type="hidden" name="kcUnitId" :value="certBuildFrom.kcUnitId">
+                        <el-form-item class="input-inline" label="勘察单位" prop="kcUnit">
+                            <el-autocomplete :trigger-on-focus="false" :fetch-suggestions="querySearchJiansheName"
+                                             @select="function(value) {selUnitInfo(value,'kcUnit')}"
+                                             v-model="certBuildFrom.kcUnit" placeholder="勘察单位">
+                            </el-autocomplete>
+                        </el-form-item>
+                        <el-form-item label="勘察单位负责人" no-data-text="暂无数据" prop="kcUnitLeader" class="sel-btn input-inline">
+                            <input type="hidden" name="kcUnitLeaderId" :value="certBuildFrom.kcUnitLeaderId">
+                            <el-select v-model="certBuildFrom.kcUnitLeader" :loading="loadingUnitLinkMan"
+                                       @click.native="getUnitLinkManList(certBuildFrom.kcUnitId,'kc')" required placeholder="--请选择--">
+                                <el-option class="select-option-ul"
+                                           v-for="(item2, index2) in kcunitLinkManOptions"
+                                           :key="index2"
+                                           :label="item2.addressName"
+                                           @click.native="selLinkman(item2,index2,'kcUnit')"
+                                           :value="item2.addressId">
+                                    <span class="fl">{{ item2.addressName }}</span>
+                                    <span class="fr el-icon-delete" @click.stop="delLinkman(item2,certBuildFrom,index)"></span>
+                                </el-option>
+                            </el-select>
+                            <el-button type="primary" class="add-link-man" icon="el-icon-circle-plus-outline"
+                                       @click="addLinkman('',certBuildFrom.kcUnitId,certBuildFrom.kcUnit)" title="新增"></el-button>
+                            <el-button icon="el-icon-edit-outline" type="primary" class="item-right-btn"
+                                       @click="addLinkman(certBuildFrom.kcUnitLeaderId,certBuildFrom.kcUnitId,certBuildFrom.kcUnit)" title="编辑"></el-button>
+                        </el-form-item>
+                    </div>
+                    <div class="clearfix">
+                        <input type="hidden" name="sjUnitId" :value="certBuildFrom.sjUnitId">
+                        <el-form-item class="input-inline" label="设计单位" prop="sjUnit">
+                            <el-autocomplete :trigger-on-focus="false" :fetch-suggestions="querySearchJiansheName"
+                                             @select="function(value) {selUnitInfo(value,'sjUnit')}"
+                                             v-model="certBuildFrom.sjUnit" placeholder="设计单位">
+                            </el-autocomplete>
+                        </el-form-item>
+                        <el-form-item label="设计单位负责人" no-data-text="暂无数据" prop="sjUnitLeader" class="sel-btn input-inline">
+                            <input type="hidden" name="sjUnitLeaderId" :value="certBuildFrom.sjUnitLeaderId">
+                            <el-select v-model="certBuildFrom.sjUnitLeader" :loading="loadingUnitLinkMan"
+                                       @click.native="getUnitLinkManList(certBuildFrom.sjUnitId,'sj')" required placeholder="--请选择--">
+                                <el-option class="select-option-ul"
+                                           v-for="(item2, index2) in sjunitLinkManOptions"
+                                           :key="index2"
+                                           :label="item2.addressName"
+                                           @click.native="selLinkman(item2,index2,'sjUnit')"
+                                           :value="item2.addressId">
+                                    <span class="fl">{{ item2.addressName }}</span>
+                                    <span class="fr el-icon-delete" @click.stop="delLinkman(item2,certBuildFrom,index)"></span>
+                                </el-option>
+                            </el-select>
+                            <el-button type="primary" class="add-link-man" icon="el-icon-circle-plus-outline"
+                                       @click="addLinkman('',certBuildFrom.sjUnitId,certBuildFrom.sjUnit)" title="新增"></el-button>
+                            <el-button icon="el-icon-edit-outline" type="primary" class="item-right-btn"
+                                       @click="addLinkman(certBuildFrom.sjUnitLeaderId,certBuildFrom.sjUnitId,certBuildFrom.sjUnit)" title="编辑"></el-button>
+                        </el-form-item>
+                    </div>
+                    <div class="clearfix">
+                        <input type="hidden" name="sgUnitId" :value="certBuildFrom.sgUnitId">
+                        <el-form-item class="input-inline" label="施工单位" prop="sgUnit">
+                            <el-autocomplete :trigger-on-focus="false" :fetch-suggestions="querySearchJiansheName"
+                                             @select="function(value) {selUnitInfo(value,'sgUnit')}"
+                                             v-model="certBuildFrom.sgUnit" placeholder="施工单位">
+                            </el-autocomplete>
+                        </el-form-item>
+                        <el-form-item label="施工单位负责人" no-data-text="暂无数据" prop="sgUnitLeader" class="sel-btn input-inline">
+                            <input type="hidden" name="sgUnitLeaderId" :value="certBuildFrom.sgUnitLeaderId">
+                            <el-select v-model="certBuildFrom.sgUnitLeader" :loading="loadingUnitLinkMan"
+                                       @click.native="getUnitLinkManList(certBuildFrom.sgUnitId,'sg')" required placeholder="--请选择--">
+                                <el-option class="select-option-ul"
+                                           v-for="(item2, index2) in sgunitLinkManOptions"
+                                           :key="index2"
+                                           :label="item2.addressName"
+                                           @click.native="selLinkman(item2,index2,'sgUnit')"
+                                           :value="item2.addressId">
+                                    <span class="fl">{{ item2.addressName }}</span>
+                                    <span class="fr el-icon-delete" @click.stop="delLinkman(item2,certBuildFrom,index)"></span>
+                                </el-option>
+                            </el-select>
+                            <el-button type="primary" class="add-link-man" icon="el-icon-circle-plus-outline"
+                                       @click="addLinkman('',certBuildFrom.sgUnitId,certBuildFrom.sgUnit)" title="新增"></el-button>
+                            <el-button icon="el-icon-edit-outline" type="primary" class="item-right-btn"
+                                       @click="addLinkman(certBuildFrom.sgUnitLeaderId,certBuildFrom.sgUnitId,certBuildFrom.sgUnit)" title="编辑"></el-button>
+                        </el-form-item>
+                    </div>
+                    <div class="clearfix">
+                        <input type="hidden" name="jlUnitId" :value="certBuildFrom.jlUnitId">
+                        <el-form-item class="input-inline" label="监理单位" prop="jlUnit">
+                            <el-autocomplete :trigger-on-focus="false" :fetch-suggestions="querySearchJiansheName"
+                                             @select="function(value) {selUnitInfo(value,'jlUnit')}"
+                                             v-model="certBuildFrom.jlUnit" placeholder="监理单位">
+                            </el-autocomplete>
+                        </el-form-item>
+                        <el-form-item label="总监理工程师" no-data-text="暂无数据" prop="jlUnitLeader" class="sel-btn input-inline">
+                            <input type="hidden" name="jlUnitLeaderId" :value="certBuildFrom.jlUnitLeaderId">
+                            <el-select v-model="certBuildFrom.jlUnitLeader" :loading="loadingUnitLinkMan"
+                                       @click.native="getUnitLinkManList(certBuildFrom.jlUnitId,'jl')" required placeholder="--请选择--">
+                                <el-option class="select-option-ul"
+                                           v-for="(item2, index2) in jlunitLinkManOptions"
+                                           :key="index2"
+                                           :label="item2.addressName"
+                                           @click.native="selLinkman(item2,index2,'jlUnit')"
+                                           :value="item2.addressId">
+                                    <span class="fl">{{ item2.addressName }}</span>
+                                    <span class="fr el-icon-delete" @click.stop="delLinkman(item2,certBuildFrom,index)"></span>
+                                </el-option>
+                            </el-select>
+                            <el-button type="primary" class="add-link-man" icon="el-icon-circle-plus-outline"
+                                       @click="addLinkman('',certBuildFrom.jlUnitId,certBuildFrom.jlUnit)" title="新增"></el-button>
+                            <el-button icon="el-icon-edit-outline" type="primary" class="item-right-btn"
+                                       @click="addLinkman(certBuildFrom.jlUnitLeaderId,certBuildFrom.jlUnitId,certBuildFrom.jlUnit)" title="编辑"></el-button>
+                        </el-form-item>
+                    </div>
+                    <div class="clearfix">
+                        <el-form-item class="input-inline allWidth" label="备注" prop="certBuildMemo">
+                            <el-input v-model="certBuildFrom.certBuildMemo" type="textarea" rows="5" placeholder="请输入备注"></el-input>
+                        </el-form-item>
+                    </div>
+                </el-form>
+            </el-collapse-item>
+            <el-button type="primary" icon="el-icon-wallet" class="fr" @click="saveOrUpdateCertBuildFrom()">保存</el-button>
+            <!---基本信息end-->
+        </el-collapse>
+        <!--新增编辑联系人 start-->
+        <el-dialog :title="addEditManModalTitle" :visible.sync="addEditManModalShow" width="750px"
+                   class="dg-modal-add-linkmain-info" @close="resetForm('addEditManform')">
+            <el-form :model="addEditManform" ref="addEditManform" label-width="180px" :rules="addLinkManRules">
+                <el-form-item label="所在单位：" required>
+                    <el-select v-model="addEditManform.unitName" placeholder="请选择单位">
+                        <!--<el-option v-for="(item,index) in unitInfoIdList" :key="index" :label="item.applicant"-->
+                        <!--:value="item.unitInfoId"></el-option>-->
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="联系人姓名：" prop="linkmanName">
+                    <el-input v-model="addEditManform.linkmanName" placeholder="请输入联系人姓名"></el-input>
+                </el-form-item>
+                <el-form-item label="证件号：" prop="linkmanCertNo">
+                    <el-input v-model="addEditManform.linkmanCertNo" placeholder="请输入联系人证件号"></el-input>
+                </el-form-item>
+                <el-form-item label="手机号码：" prop="linkmanMobilePhone">
+                    <el-input v-model="addEditManform.linkmanMobilePhone" placeholder="请输入联系人手机号码"></el-input>
+                </el-form-item>
+                <el-form-item label="办公电话：">
+                    <el-input v-model="addEditManform.linkmanOfficePhon"></el-input>
+                </el-form-item>
+                <el-form-item label="传真：">
+                    <el-input v-model="addEditManform.linkmanFax"></el-input>
+                </el-form-item>
+                <el-form-item label="电子邮件：">
+                    <el-input v-model="addEditManform.linkmanMail"></el-input>
+                </el-form-item>
+                <el-form-item label="联系人住址：">
+                    <el-input v-model="addEditManform.linkmanAddr"></el-input>
+                </el-form-item>
+                <el-form-item label="备注：">
+                    <el-input v-model="addEditManform.linkmanMemo"></el-input>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="addEditManModalShow = false">取 消</el-button>
+                <el-button type="primary" @click="saveAeaLinkmanInfo('u')">确 定</el-button>
+            </div>
+        </el-dialog>
+        <!--新增编辑联系人 end-->
+    </div>
+</div>
+</body>
+<th:block th:include="common/common :: commonfooter" />
+<script src="../../static/form/js/certBuild.js" th:src="@{/form/js/certBuild.js}"></script>
+</html>

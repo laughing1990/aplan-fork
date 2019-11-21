@@ -241,9 +241,15 @@
         </if>
         )
     </select>
-    <select id="getMatinstListByIteminstIdsAndKeyword" resultType="AeaHiItemMatinst">
+    <select id="getMatinstListByIteminstIdsAndKeyword" resultType="com.augurit.aplanmis.common.vo.MyMatFilesVo">
         SELECT
-        <include refid="allColumns"/>
+        MATINST_NAME matinstName,
+        MATINST_ID matinstId,
+        MAT_ID matId,
+        MATINST_CODE matinstCode,
+        ATT_COUNT attCount,
+        CREATER creater,
+        CREATE_TIME createTime
         FROM
         aea_hi_item_matinst
         WHERE
@@ -273,6 +279,10 @@
         <if test="keyword != null and keyword !=''">
             AND MATINST_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%')
         </if>
+        <if test="isAtt=='1'||isAtt==1">
+            AND ATT_COUNT IS NOT NULL AND ATT_COUNT>0
+        </if>
+        ORDER BY CREATE_TIME DESC
     </select>
 
     <select id="getOutputMatinstListByStageinstId" resultType="AeaHiItemMatinst">
@@ -871,11 +881,13 @@
 
     <select id="listOfficialDocsByIteminstId" resultMap="AeaHiItemMatinstMap" parameterType="string">
         SELECT
-        matinst.*
+        matinst.*,ouser.USER_NAME createrName
         FROM
         AEA_HI_ITEM_MATINST matinst
+        INNER JOIN OPU_OM_USER ouser ON ouser.USER_ID = matinst.CREATER
         JOIN AEA_HI_ITEM_INOUTINST inoutinst ON inoutinst.MATINST_ID = matinst.MATINST_ID
-        JOIN AEA_ITEM_MAT mat ON ( mat.MAT_ID = matinst.MAT_ID AND mat.IS_DELETED = '0' AND mat.IS_OFFICIAL_DOC = '1')
+        JOIN AEA_ITEM_MAT mat ON ( mat.MAT_ID = matinst.MAT_ID AND mat.IS_DELETED = '0' AND mat.IS_OFFICIAL_DOC = '1'
+        AND mat.MAT_PROP = 'm')
         JOIN aea_item_inout aii ON ( aii.MAT_ID = matinst.MAT_ID AND aii.IS_INPUT = '0' AND aii.IS_DELETED = '0')
         JOIN aea_hi_iteminst ahi ON ( ahi.ITEMINST_ID = inoutinst.ITEMINST_ID AND ahi.ITEM_VER_ID = aii.ITEM_VER_ID )
         WHERE

@@ -2,8 +2,10 @@ package com.augurit.aplanmis.common.form.controller;
 
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
+import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.constants.GDUnitType;
 import com.augurit.aplanmis.common.domain.*;
+import com.augurit.aplanmis.common.mapper.AeaLinkmanInfoMapper;
 import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
 import com.augurit.aplanmis.common.form.service.AeaExProjBidService;
 import com.augurit.aplanmis.common.form.vo.AeaExProjBidVo;
@@ -49,6 +51,9 @@ public class AeaExProjBidController {
     @Autowired
     private AeaUnitInfoService aeaUnitInfoService;
 
+    @Autowired
+    private AeaLinkmanInfoMapper aeaLinkmanInfoMapper;
+
     @RequestMapping("/index.html")
     public ModelAndView projectBidIndex(){
         ModelAndView modelAndView = new ModelAndView();
@@ -77,6 +82,15 @@ public class AeaExProjBidController {
                     List<AeaUnitInfo> agencyUnitList = aeaExProjBidService.findUnitProjByProjInfoIdAndType(projId, GDUnitType.BIDDING_AGENCY.getValue());//招商代理机构
                     List<AeaUnitInfo> costUnitList = aeaExProjBidService.findUnitProjByProjInfoIdAndType(projId, GDUnitType.COST_CONSULTING.getValue());//造价咨询
                     aeaExProjBidVo.setWinBidUnits(winBidUnitList);
+                    if(winBidUnitList!=null) {
+                        for (AeaUnitInfo unit : winBidUnitList) {
+                            if(StringUtils.isNotBlank(unit.getProjLinkmanId())) {
+                                AeaLinkmanInfo manInfo = aeaLinkmanInfoMapper.getAeaLinkmanInfoById(unit.getProjectLeaderId());
+                                unit.setProjectLeader(manInfo.getLinkmanName());
+                                unit.setProjectLeaderCertNum(manInfo.getLinkmanCertNo());
+                            }
+                        }
+                    }
                     aeaExProjBidVo.setAgencyUnits(agencyUnitList);
                     aeaExProjBidVo.setCostUnits(costUnitList);
                     return new ContentResultForm<AeaExProjBidVo>(true, aeaExProjBidVo);

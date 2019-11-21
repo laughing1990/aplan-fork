@@ -221,8 +221,8 @@ public class RestApplyProjController {
             LoginInfoVo loginInfo = SessionUtil.getLoginInfo(request);
             PageInfo<AeaProjInfo> pageInfo = restApproveService.findAeaProjInfoByKeyword(keyWord, pageNum, pageSize);
             if (pageInfo.getList().size() == 0 && !keyWord.contains("#") && !keyWord.contains("ZBM") && CommonTools.isComplianceWithRules(keyWord)) {
-                //List<AeaProjInfo> list = projectCodeService.getProjInfoFromThirdPlatform(keyWord,loginInfo.getUnitName());  //正式上线时用
-                List<AeaProjInfo> list = projectCodeService.getProjInfoFromThirdPlatform(keyWord, "");
+                //List<AeaProjInfo> list = projectCodeService.getProjInfoFromThirdPlatform(keyWord,loginInfo.getUnitName(),loginInfo.getUnifiedSocialCreditCode());  //正式上线时用
+                List<AeaProjInfo> list = projectCodeService.getProjInfoFromThirdPlatform(keyWord, "","");
                 pageInfo.setList(list);
             }
             return new ContentResultForm<PageInfo<AeaProjInfo>>(true, pageInfo);
@@ -240,8 +240,8 @@ public class RestApplyProjController {
             LoginInfoVo loginInfo = SessionUtil.getLoginInfo(request);
             List<AeaProjInfo> list = aeaProjInfoService.findAeaProjInfoByKeyword(keyWord);
             if (list.size() == 0 && !keyWord.contains("#") && !keyWord.contains("ZBM") && CommonTools.isComplianceWithRules(keyWord)) {
-                //list.addAll(projectCodeService.getProjInfoFromThirdPlatform(keyWord,loginInfo.getUnitName())); //正式上线时用
-                list.addAll(projectCodeService.getProjInfoFromThirdPlatform(keyWord, ""));
+                //list.addAll(projectCodeService.getProjInfoFromThirdPlatform(keyWord,loginInfo.getUnitName(),loginInfo.getUnifiedSocialCreditCode())); //正式上线时用
+                list.addAll(projectCodeService.getProjInfoFromThirdPlatform(keyWord, "",""));
             }
             return new ContentResultForm<List<AeaProjInfoResultVo>>(true, list.size() > 0 ? list.stream().map(AeaProjInfoResultVo::build).collect(Collectors.toList()) : new ArrayList<>());
         } catch (Exception e) {

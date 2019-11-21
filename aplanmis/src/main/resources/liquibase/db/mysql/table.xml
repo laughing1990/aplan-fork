@@ -1148,5 +1148,25 @@
             ALTER TABLE `aea_ex_proj_drawing` ADD COLUMN `REVIEW_NUM` varchar(100) DEFAULT NULL COMMENT '省级施工图审查合格书编号(三库一平台返回)';
         </sql>
     </changeSet>
-
+    <changeSet id="201911202133" author="liaojj" failOnError="false">
+        <sql splitStatements="true">
+            ALTER TABLE `aea_ex_proj_bid`
+                ADD COLUMN  `GCZCB_UNIT` varchar(200) DEFAULT NULL COMMENT '工程总承包单位',
+                ADD COLUMN  `GCZCB_UNIT_LEADER` varchar(50) DEFAULT NULL COMMENT '工程总承包单位负责人';
+        </sql>
+    </changeSet>
+    <changeSet id="201911211142" author="liaojj" failOnError="false">
+        <sql splitStatements="true">
+            ALTER TABLE `aea_ex_proj_cert_build`
+            ADD COLUMN  `GCZCB_UNIT` varchar(200) DEFAULT NULL COMMENT '工程总承包单位',
+            ADD COLUMN  `GCZCB_UNIT_LEADER` varchar(50) DEFAULT NULL COMMENT '工程总承包单位负责人';
+        </sql>
+    </changeSet>
+    <changeSet id="201911211143" author="liaojj" failOnError="false">
+        <sql splitStatements="true">
+            ALTER TABLE `aea_ex_proj_bid`
+                DROP COLUMN `GCZCB_UNIT`,
+                DROP COLUMN `GCZCB_UNIT_LEADER`;
+        </sql>
+    </changeSet>
 </databaseChangeLog>

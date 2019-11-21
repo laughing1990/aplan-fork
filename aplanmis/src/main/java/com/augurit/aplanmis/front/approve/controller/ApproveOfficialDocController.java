@@ -84,8 +84,8 @@ public class ApproveOfficialDocController {
             , @ApiImplicitParam(name = "iteminstId", value = "事项实例ID", dataType = "string", required = true)})
     @GetMapping("/docs/list")
     public ContentResultForm<List<UnitOfficialDocVo>> getOfficialDocsByApplyinstId(String applyinstId, String iteminstId) {
-        if (StringUtils.isBlank(applyinstId)) {
-            return new ContentResultForm<>(false, null, "并联申报实例ID为空");
+        if (StringUtils.isBlank(applyinstId) && StringUtils.isBlank(iteminstId)) {
+            return new ContentResultForm<>(false, null, "缺少参数！");
         }
         try {
             List<Map<String, Object>> unitOfficialDocs = officialDocumentService.getUnitOfficialDocs(applyinstId, iteminstId);
@@ -221,7 +221,7 @@ public class ApproveOfficialDocController {
     }
 
     @PostMapping("/saveAeaCertinst")
-    @ApiOperation(value = "保存或更新证照实例")
+    @ApiOperation(value = "保存或更新输出的证照实例")
     public ResultForm saveOrUpdateAeaCertinst(CertinstVo certinstVo) throws Exception {
         officialDocumentService.saveOrUpdateAeaCertinst(certinstVo);
 
@@ -232,9 +232,9 @@ public class ApproveOfficialDocController {
     @PostMapping("/certinst/batch/delete")
     @ApiOperation(value = "单个/批量 删除证照")
     @Transactional
-    public ResultForm batchDeleteCertinst(String certinstIds) throws Exception {
-        if (StringUtils.isNotBlank(certinstIds)) {
-            String[] split = certinstIds.split(",");
+    public ResultForm batchDeleteCertinst(String matinstIds) throws Exception {
+        if (StringUtils.isNotBlank(matinstIds)) {
+            String[] split = matinstIds.split(",");
             officialDocumentService.batchDeleteCertinst(split);
         }
 

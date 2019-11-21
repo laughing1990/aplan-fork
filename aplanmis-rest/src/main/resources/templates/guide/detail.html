@@ -1,0 +1,467 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>办事指南详情</title>
+    <meta content="text/html;charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+    <link rel="stylesheet" href="../../static//css/common/bootstrap.css"
+          th:href="@{/webjars/bootstrap/4.3.1/css/bootstrap.css}"/>
+    <link rel="stylesheet" href="../../static/css/common/reset.css" th:href="@{/css/common/reset.css}">
+    <link rel="stylesheet" href="../../static/css/common/common.css" th:href="@{/css/common/common.css}">
+    <link rel="stylesheet" href="../../static/css/guild/detail.css" th:href="@{/css/guild/detail.css}">
+    <script>
+        var ctx = '[[@{/}]]';
+    </script>
+</head>
+<body>
+<!-- 办事指南detail -->
+<div id="app" class="wrapper" v-cloak>
+    <!-- 头部 -->
+    <div class="header" style="height: 1.6rem;">
+        <h3>{{detailData.itemBasicInfo.itemName || '——'}}</h3>
+        <div class="header-content clearfix" style="display:none;">
+            <div class="content-left fl">
+                <p class="user-p item-p">
+                    <span class="user-icon icon"></span>
+                    <span class="user-info info">唐山市房产管理局</span>
+                </p>
+                <p class="class-p item-p">
+                    <span class="class-icon icon"></span>
+                    <span class="class-info info">政府投融资房屋建筑类</span>
+                </p>
+                <p class="grade-p item-p">
+                    <span class="grade-icon icon" :class="[true ? 'grade-full':'grade-empty']" v-for="i in 5"></span>
+                    <span class="info">4.0</span>
+                </p>
+            </div>
+            <div class="content-right fr">
+                <div class="right-handel">立即办理</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 详情 -->
+    <div class="content clearfix">
+        <!-- 侧边item导航 -->
+        <div class="detail-nav fl">
+            <ul>
+                <li class="active" data-link="bassic" @click="changeDetailView('bassic')"><p>基本信息</p></li>
+                <li data-link="rangandfilter" @click="changeDetailView('rangandfilter')"><p>范围与条件</p></li>
+                <li data-link="handelflow" @click="changeDetailView('handelflow')"><p>办理流程</p></li>
+                <li data-link="handelsituation" @click="changeDetailView('handelsituation')"><p>办事情形</p></li>
+                <li class="need-material" data-link="needmaterial" @click="changeDetailView('needmaterial')"><p>所需材料</p>
+                </li>
+                <li data-link="consultsupervise" @click="changeDetailView('consultsupervise')"><p>咨询监督</p></li>
+                <li data-link="windowhandel" @click="changeDetailView('windowhandel')"><p>窗口办理</p></li>
+                <li data-link="surecharge" @click="changeDetailView('surecharge')"><p>许可收费</p></li>
+                <li data-link="mediumservice" @click="changeDetailView('mediumservice')" style="display:none;"><p>
+                    中介服务</p></li>
+                <li data-link="setupbasis" @click="changeDetailView('setupbasis')" style="display:none;"><p>设定依据</p>
+                </li>
+                <li data-link="rightduty" @click="changeDetailView('rightduty')"><p>权利与义务</p></li>
+                <li data-link="lawrelief" @click="changeDetailView('lawrelief')"><p>法律救济</p></li>
+            </ul>
+        </div>
+        <!-- 右边主体内容 -->
+        <div class="detail-box fr">
+            <!-- 基本信息 -->
+            <div class="detail-bassic" data-link="bassic">
+                <div class="bassic-item">
+                    <p class="item-title">事项名称</p>
+                    <p class="item-content">{{detailData.itemBasicInfo.itemName || '-'}}</p>
+                </div>
+                <div class="bassic-item">
+                    <p class="item-title">事项类型</p>
+                    <p class="item-content">{{detailData.itemBasicInfo.itemTypeName || '-'}}</p>
+                </div>
+                <div class="bassic-item">
+                    <p class="item-title">基本编码</p>
+                    <p class="item-content">{{detailData.itemBasicInfo.baseCode || '-'}}</p>
+                </div>
+                <div class="bassic-item">
+                    <p class="item-title">实施编码</p>
+                    <p class="item-content">{{detailData.itemBasicInfo.carryOutCode || '-'}}</p>
+                </div>
+                <div class="bassic-item">
+                    <p class="item-title">行政层级</p>
+                    <p class="item-content">{{detailData.itemBasicInfo.executeLevel || '-'}}</p>
+                </div>
+                <div class="bassic-item">
+                    <p class="item-title">数量限制</p>
+                    <p class="item-content">无</p>
+                </div>
+                <div class="bassic-item">
+                    <p class="item-title">实施主体</p>
+                    <p class="item-content">{{detailData.itemBasicInfo.carryOutSubject || '-'}}</p>
+                </div>
+                <div class="bassic-item">
+                    <p class="item-title">实施主体性质</p>
+                    <p class="item-content">{{detailData.itemBasicInfo.carryOutPropery || '-'}}</p>
+                </div>
+                <div class="bassic-item">
+                    <p class="item-title">法定办结时限</p>
+                    <p class="item-content">无</p>
+                </div>
+                <div class="bassic-item" style="display:none;">
+                    <p class="item-title">承诺办时限</p>
+                    <p class="item-content">无</p>
+                </div>
+                <div class="bassic-item">
+                    <p class="item-title">结果名称</p>
+                    <p class="item-content">无</p>
+                </div>
+                <div class="bassic-item">
+                    <p class="item-title">结果样本</p>
+                    <p class="item-content">无</p>
+                </div>
+                <div class="bassic-item">
+                    <p class="item-title">办件结果类型</p>
+                    <p class="item-content">{{detailData.itemBasicInfo.handingTypeName || '-'}}</p>
+                </div>
+                <div class="bassic-item" style="display:none;">
+                    <p class="item-title">审批服务形式</p>
+                    <p class="item-content">{{detailData.itemBasicInfo.itemTypeValue || '-'}}</p>
+                </div>
+                <div class="bassic-item">
+                    <p class="item-title" style="display:none;">办理形式</p>
+                    <p class="item-content">{{detailData.itemBasicInfo.itemTypeValue || '-'}}</p>
+                </div>
+                <div class="bassic-item">
+                    <p class="item-title">业务系统</p>
+                    <p class="item-content">无</p>
+                </div>
+                <div class="bassic-item" style="display:none;">
+                    <p class="item-title">支持预约办理</p>
+                    <p class="item-content">{{detailData.itemBasicInfo.itemTypeValue || '-'}}</p>
+                </div>
+                <div class="bassic-item" style="display:none;">
+                    <p class="item-title">支持物流快递</p>
+                    <p class="item-content">{{detailData.itemBasicInfo.itemTypeValue || '-'}}</p>
+                </div>
+                <div class="bassic-item">
+                    <p class="item-title">权利来源</p>
+                    <p class="item-content">{{detailData.itemBasicInfo.authrotyFrom || '-'}}</p>
+                </div>
+                <div class="bassic-item">
+                    <p class="item-title">联办机构</p>
+                    <p class="item-content">无</p>
+                </div>
+                <div class="bassic-item" style="display:none;">
+                    <p class="item-title">形式内容</p>
+                    <p class="item-content">{{detailData.itemBasicInfo.itemTypeValue || '-'}}</p>
+                </div>
+                <div class="bassic-item">
+                    <p class="item-title">处罚的行为、种类、幅度</p>
+                    <p class="item-content">{{detailData.itemBasicInfo.punishAction || '-'}}</p>
+                </div>
+            </div>
+
+            <!-- 范围与条件 -->
+            <div class="detail-rangeandfilter" data-link="rangandfilter" v-show="false">
+                <h3>受理范围</h3>
+                <div class="rang-item">
+                    <p class="item-title">主题分类</p>
+                    <p class="item-content">无</p>
+                </div>
+                <div class="rang-item">
+                    <p class="item-title">服务对象</p>
+                    <p class="item-content">企业法人,自然人,行政机关,事业法人及其他社团组织</p>
+                </div>
+                <div class="rang-item">
+                    <p class="item-title">申请内容</p>
+                    <p class="item-content">无</p>
+                </div>
+                <h3>受理条件</h3>
+                <div class="rang-item">
+                    <p class="item-content">依法取得国有建设用地使用权，可以单独申请国有建设用地使用权首次登记。主要包括以下情形：</p>
+                    <p class="item-content">
+                        1.以出让方式依法取得国有建设用地使用权；
+                    </p>
+                    <p class="item-content">
+                        2.以国家租赁方式依法取得国有建设用地使用权；
+                    </p>
+                    <p class="item-content">
+                        3.以国家作价出资（入股）方式依法取得国有建设用地使用权；
+                    </p>
+                    <p class="item-content">
+                        4.以国家授权经营方式依法取得国有建设用地使用权。
+                    </p>
+                </div>
+            </div>
+
+            <!-- 办理流程 -->
+            <div class="detail-handel-flow" data-link="handelflow" v-show="false">
+                <h3>网上办理流程</h3>
+                <div class="flow-item">
+                    <p class="item-content">
+                        无
+                    </p>
+                </div>
+                <h3>窗口办理流程</h3>
+                <div class="flow-item">
+                    <p class="item-title">1.权籍调查</p>
+                    <p class="item-content">
+                        申请人到房屋所在地的不动产登记部门申请权籍调查（不动产权籍调查表、界址点坐标成果表、宗地图等）。申请人取得权籍调查报告书后方可申请办理国有建设用地使用权首次登记。
+                    </p>
+                </div>
+                <div class="flow-item">
+                    <p class="item-title">2.申请</p>
+                    <p class="item-content">
+                        申请人到房屋所在地的不动产登记窗口递交申请材料。
+                    </p>
+                </div>
+                <div class="flow-item">
+                    <p class="item-title">3.受理</p>
+                    <p class="item-content">
+                        受理人员核验申请材料，当场作出受理决定。申请人符合申请资格，并材料齐全、格式规范、符合法定形式的，予以受理，出具《受理回执》；申请人不符合申请资格或材料不齐全、不符合法定形式的，接件受理人员不予受理，出具《不予受理通知书》。申请人材料不符合要求但可以当场更正的，退回当场更正后予以受理。
+                    </p>
+                </div>
+                <div class="flow-item">
+                    <p class="item-title">4.审查</p>
+                    <p class="item-content">
+                        受理后，属地不动产登记部门审查人员对材料进行初审，初审后报市不动产登记中心审核，市不动产登记中心作出审查决定。符合审批条件的，市不动产登记中心核准并将登记事项记载于登记簿，并完成缮证。不予通过的进行退件处理。
+                    </p>
+                </div>
+                <div class="flow-item">
+                    <p class="item-title">5.领取结果</p>
+                    <p class="item-content">
+                        缮证后，业务系统自动发送短信通知申请人于5个工作日内领取结果。申请人到不动产所在地的不动产登记窗口领取《不动产权证书》。
+                    </p>
+                </div>
+            </div>
+
+            <!-- 办理情形 -->
+            <div class="detail-handel-situation detail-item-info-none" data-link="handelsituation" v-show="false">
+                <div class="situation-wrap" v-if="materialData.stateQuestions.length">
+                    <div class="situation-pandel">
+                        <div class="situation-box" v-for="item in materialData.stateQuestions">
+                            <p>
+                                <span class="need-span" v-if="item.question.mustAnswer !=='0'">*</span>
+                                <span class="question-title">{{item.question.stateName}}</span>
+                            </p>
+                            <!-- 单选 -->
+                            <div class="answer-box" v-if="item.question.answerType =='s'">
+                                <div class="answer-item" v-for="n in item.answers">
+                                    <label :for="n.itemStateId">
+                                        <input :id="n.itemStateId" type="radio" :name="item.question.itemStateId"
+                                               :data-itemstateid="n.itemStateId"
+                                               :data-isneed="item.question.mustAnswer"
+                                               @change="radioAnswerChange(n,item)">
+                                        &nbsp; {{n.stateName}}
+                                    </label>
+                                </div>
+                            </div>
+                            <!-- 多选 -->
+                            <div class="answer-box" v-else>
+                                <div class="answer-item" v-for="n in item.answers">
+                                    <label :for="n.itemStateId">
+                                        <input :id="n.itemStateId" type="checkbox" :name="item.question.itemStateId"
+                                               :data-itemstateid="n.itemStateId"
+                                               :data-isneed="item.question.mustAnswer"
+                                               @change="checkboxAnswerChange(n,item)">
+                                        &nbsp; {{n.stateName}}
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="jump-block" @click="lookMaterial">查看材料</div>
+                </div>
+                <div v-else>暂无数据</div>
+            </div>
+
+            <!-- 所需材料 -->
+            <div class="detail-need-material" data-link="needmaterial" v-show="false">
+                <div class="material-box" v-if="allMaterials.length">
+                    <div class="material-wrap">
+                        <div class="material-item" v-for="item in allMaterials">
+                            <p class="item-title">
+                                {{item.matName}}
+                            </p>
+                        </div>
+
+                    </div>
+                    <div class="material-handel" @click="changeDetailView('handelsituation')">
+                        返回情形
+                    </div>
+                </div>
+                <div v-else>暂无数据</div>
+            </div>
+
+            <!-- 咨询监督 -->
+            <div class="detail-consult-supervise detail-item-info" data-link="consultsupervise" v-show="false">
+                <h3>网上办理流程</h3>
+                <div class="info-item">
+                    <p class="item-title">咨询电话</p>
+                    <p class="item-content">
+                        0769-22207283、0769-22671789
+                    </p>
+                </div>
+                <div class="info-item">
+                    <p class="item-title">咨询地址</p>
+                    <p class="item-content">
+                        申请人登录规划局网上报建系统提出申请，上传电子材料。
+                    </p>
+                </div>
+            </div>
+
+            <!-- 窗口办理 -->
+            <div class="detail-window-handel detail-item-info" data-link="windowhandel" v-show="false">
+                <h3>唐山市城乡规划局办事窗口</h3>
+                <div class="info-item">
+                    <p class="item-title">办理地点</p>
+                    <p class="item-content">
+                        唐山市东城区旗峰路315号规划局二楼办事窗口
+                    </p>
+                </div>
+                <div class="info-item">
+                    <p class="item-title">办公电话</p>
+                    <p class="item-content">
+                        13565656536
+                    </p>
+                </div>
+                <div class="info-item">
+                    <p class="item-title">办公时间</p>
+                    <p class="item-content">
+                        唐山市东城区旗峰路315号规划局二楼办事窗口
+                    </p>
+                </div>
+                <div class="info-item">
+                    <p class="item-title">位置指引</p>
+                    <p class="item-content">
+                        13565656536
+                    </p>
+                </div>
+            </div>
+
+            <!-- 许可收费 -->
+            <div class="detail-sure-charge detail-item-info" data-link="surecharge" v-show="false">
+                <div class="info-item">
+                    <p class="item-title">是否许可收费</p>
+                    <p class="item-content">
+                        否
+                    </p>
+                </div>
+            </div>
+
+            <!-- 中介服务 -->
+            <div class="detail-medium-service detail-item-info" data-link="mediumservice" v-show="false">
+                <div class="info-item">
+                    <p class="item-title">中介服务</p>
+                    <p class="item-content">
+                        否
+                    </p>
+                </div>
+            </div>
+
+            <!-- 设定依据 -->
+            <div class="detail-setup-basis detail-item-info" data-link="setupbasis" v-show="false">
+                <div class="info-item">
+                    <p class="item-title"></p>
+                    <p class="item-content">
+                        暂无数据
+                    </p>
+                </div>
+            </div>
+
+            <!-- 权利与义务 -->
+            <div class="detail-right-duty" data-link="rightduty" v-show="false">
+                <h3>申请人依法享有以下权利</h3>
+                <p class="item-content">
+                    无
+                </p>
+                <h3>申请人依法履行以下义务</h3>
+                <p class="item-content">
+                    无
+                </p>
+            </div>
+
+            <!-- 法律救济 -->
+            <div class="detail-lawre-lief detail-item-info" data-link="lawrelief" v-show="false">
+                <h3>行政复议</h3>
+                <div class="info-item">
+                    <p class="item-title">部门</p>
+                    <p class="item-content">
+                        唐山市东城区旗峰路315号规划局二楼办事窗口
+                    </p>
+                </div>
+                <div class="info-item">
+                    <p class="item-title">地址</p>
+                    <p class="item-content">
+                        13565656536
+                    </p>
+                </div>
+                <div class="info-item">
+                    <p class="item-title">电话</p>
+                    <p class="item-content">
+                        唐山市东城区旗峰路315号规划局二楼办事窗口
+                    </p>
+                </div>
+                <div class="info-item">
+                    <p class="item-title">网址</p>
+                    <p class="item-content">
+                        13565656536
+                    </p>
+                </div>
+                <h3>行政诉讼</h3>
+                <div class="info-item">
+                    <p class="item-title">部门</p>
+                    <p class="item-content">
+                        唐山市东城区旗峰路315号规划局二楼办事窗口
+                    </p>
+                </div>
+                <div class="info-item">
+                    <p class="item-title">地址</p>
+                    <p class="item-content">
+                        13565656536
+                    </p>
+                </div>
+                <div class="info-item">
+                    <p class="item-title">电话</p>
+                    <p class="item-content">
+                        唐山市东城区旗峰路315号规划局二楼办事窗口
+                    </p>
+                </div>
+                <div class="info-item">
+                    <p class="item-title">网址</p>
+                    <p class="item-content">
+                        13565656536
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- loading -->
+    <div class="loading" v-if="loading">
+        <div class="loading-content">
+            <span class="loading-icon"></span>
+            <p class="loading-tip">Loading</p>
+        </div>
+    </div>
+    <!-- alert -->
+    <div class="alert-wrapper" v-if="alertData.alertStatus">
+        <div class="alert-content">
+            <div class="alert-msg">{{alertData.alertMsg}}</div>
+            <div class="alert-handel" @click="_alertState(false, '')">确定</div>
+        </div>
+    </div>
+    <!-- toast -->
+    <div class="toast-wrapper" v-if="toastData.toastStatus">
+        <div class="toast-content">{{toastData.toastMsg}}</div>
+    </div>
+</div>
+</body>
+<script src="../../static/js/common/lib/jquery.js" th:src="@{/webjars/jquery/3.4.0/jquery.js}"></script>
+<script scr="../../static/js/common/lib/bootstrap.js" th:src="@{/webjars/bootstrap/4.3.1/js/bootstrap.js}"></script>
+<script src="../../static/js/common/lib/vue.js" th:src="@{/js/common/lib/vue.js}"></script>
+<script src="../../static/js/common/rem.js" th:src="@{/js/common/rem.js}"></script>
+<script src="../../static/js/common/common.js" th:src="@{/js/common/common.js}"></script>
+<script src="../../static/js/common/mixin.js" th:src="@{/js/common/mixin.js}"></script>
+<script src="../../static/js/guild/detail.js" th:src="@{/js/guild/detail.js}"></script>
+
+</html>

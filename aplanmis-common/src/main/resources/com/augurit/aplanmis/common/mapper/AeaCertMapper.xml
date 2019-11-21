@@ -41,16 +41,20 @@
 
     <select id="getOutputCertsByItemVerId" resultType="AeaCert">
         SELECT
-        <include refid="allColumns"/>
-        FROM AEA_CERT cert, AEA_ITEM_INOUT aii
+        <include refid="allColumns"/>,aim.MAT_ID matId
+        FROM AEA_CERT cert, AEA_ITEM_INOUT aii,aea_item_mat aim
         WHERE
-        cert.CERT_ID = aii.CERT_ID
+        aim.MAT_ID = aii.MAT_ID
+        AND
+        aim.MAT_PROP = 'c'
+        AND
+        aim.IS_DELETED = '0'
+        AND
+        cert.CERT_ID = aim.CERT_ID
         AND
         aii.ITEM_VER_ID = #{itemVerId}
         AND
         aii.IS_INPUT = '0'
-        AND
-        aii.FILE_TYPE = 'cert'
         AND
         aii.ROOT_ORG_ID = #{rootOrgId}
         AND
