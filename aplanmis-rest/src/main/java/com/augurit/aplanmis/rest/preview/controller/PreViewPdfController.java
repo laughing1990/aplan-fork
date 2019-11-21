@@ -10,15 +10,11 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
@@ -30,7 +26,6 @@ import javax.servlet.http.HttpServletResponse;
 @Api(value = "预览pdf文件", tags = "文件管理 --> 预览pdf文件")
 @RequestMapping("/previewPdf")
 public class PreViewPdfController {
-    private static Logger logger = LoggerFactory.getLogger(PreViewPdfController.class);
 
     @Autowired
     private PreviewPdfService previewPdfService;
@@ -38,7 +33,7 @@ public class PreViewPdfController {
     private IBscAttService bscAttService;
 
 
-    @GetMapping("/view")
+    /*@GetMapping("/view")
     @ApiOperation("在线预览pdf文件")
     @ApiImplicitParams(
             @ApiImplicitParam(name = "detailId", value = "文件detailId", required = true, dataType = "String")
@@ -47,16 +42,15 @@ public class PreViewPdfController {
         ModelAndView mav = new ModelAndView("preview/viewPdf");
         mav.addObject("detailId", detailId);
         return mav;
-    }
+    }*/
 
-    @RequestMapping("/pdfIsCoverted")
+    @GetMapping("/pdfIsCoverted")
     @ApiOperation("查询文件转换pdf是否完成")
     @ApiImplicitParams(
             @ApiImplicitParam(name = "detailId", value = "文件detailId", required = true, dataType = "String")
     )
     public ResultForm pdfIsCoverted(String detailId) throws Exception {
-        ResultForm resultForm = previewPdfService.checkIsCoverted(detailId);
-        return resultForm;
+        return previewPdfService.checkIsCoverted(detailId);
     }
 
     @GetMapping("/loadPdf")
@@ -64,7 +58,7 @@ public class PreViewPdfController {
     @ApiImplicitParams(
             @ApiImplicitParam(name = "detailId", value = "文件detailId", required = true, dataType = "String")
     )
-    public ResultForm loadPdf(String detailId, HttpServletResponse response, HttpServletRequest request) throws Exception {
+    public ResultForm loadPdf(String detailId, HttpServletResponse response) throws Exception {
         ResultForm resultForm = new ResultForm(false);
         BscAttDetail form = bscAttService.getAttDetailByDetailId(detailId);
         boolean boo = previewPdfService.downLoadPdf(detailId, !FileType.pdf.equals(form.getAttFormat()), response);
@@ -77,7 +71,7 @@ public class PreViewPdfController {
     @ApiImplicitParams(
             @ApiImplicitParam(name = "detailId", value = "文件detailId", required = true, dataType = "String")
     )
-    public ResultForm downLoadCovertPdf(String detailId, HttpServletResponse response, HttpServletRequest request) throws Exception {
+    public ResultForm downLoadCovertPdf(String detailId, HttpServletResponse response) throws Exception {
         ResultForm resultForm = new ResultForm(false);
         boolean boo = previewPdfService.downLoadPdf(detailId, true, response);
         resultForm.setSuccess(boo);
@@ -89,7 +83,7 @@ public class PreViewPdfController {
     @ApiImplicitParams(
             @ApiImplicitParam(name = "detailId", value = "文件detailId", required = true, dataType = "String")
     )
-    public ResultForm downLoadPdf(String detailId, HttpServletResponse response, HttpServletRequest request) throws Exception {
+    public ResultForm downLoadPdf(String detailId, HttpServletResponse response) throws Exception {
         ResultForm resultForm = new ResultForm(false);
         boolean boo = previewPdfService.downLoadPdf(detailId, false, response);
         resultForm.setSuccess(boo);

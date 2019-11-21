@@ -22,7 +22,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * @author yinlf
@@ -252,7 +257,9 @@ public class AeaUnitInfoServiceImpl implements AeaUnitInfoService {
         for (String projInfoId : projInfoIds) {
             this.createApplyinstUnitProjAndUnitProj(applyinstId, isOwner, aeaUnitProjListMutiProj, applyinstUnitProjListMutiProj, projInfoId, Arrays.asList(unitInfoId), aeaUnitProjList);
         }
-        aeaUnitProjMapper.batchInsertAeaUnitProj(aeaUnitProjListMutiProj);
+        if (aeaUnitProjListMutiProj.size() > 0) {
+            aeaUnitProjMapper.batchInsertAeaUnitProj(aeaUnitProjListMutiProj);
+        }
         aeaApplyinstUnitProjMapper.batchInsertAeaApplyinstUnitProjMapper(applyinstUnitProjListMutiProj);
     }
 
