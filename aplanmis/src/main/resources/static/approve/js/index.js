@@ -1506,7 +1506,7 @@ var vm = new Vue({
       var vm = this;
       vm.taskId = vm.getUrlParam('taskId');
       vm.isDraftPage = vm.getUrlParam('draft');
-      vm.isZJItem = (vm.getUrlParam('draft') == '8');
+      vm.isZJItem = (vm.getUrlParam('itemNature') == '8');
       // vm.isZJItem = true;
       // vm.isDraftPage = 'true';
       vm.getIteminstIdByTaskId(callback);
