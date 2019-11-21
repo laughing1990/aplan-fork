@@ -21,16 +21,16 @@ public class CertVo {
     List<OpuOrg> opuOmOrgList;
 
     @ApiModelProperty(value = "项目规模")
-    private String projScale;
+    private Double projScale;
 
     public CertVo() {
         this.certList = new ArrayList<>();
         this.opuOmOrgList = new ArrayList<>();
-        this.projScale = "";
+        this.projScale = null;
     }
 
     public void changeToCertVo(List<AeaCert> certs) {
-        if (null == certList || certs == null ||certs.isEmpty()) return;
+        if (null == certList || certs == null || certs.isEmpty()) return;
         for (AeaCert cert : certs) {
             Cert vo = new Cert();
             BeanUtils.copyProperties(cert, vo);
@@ -69,5 +69,7 @@ public class CertVo {
 
         @ApiModelProperty(value = "证照证件名称")
         private String certName;
+
+        private String matId;
     }
 }
