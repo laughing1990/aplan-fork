@@ -19,6 +19,19 @@
     <%--<link rel="stylesheet" href="${pageContext.request.contextPath}/agcloud/framework/js-lib/agcloud-lib/css/reset.css">--%>
     <!-- 注意：这个css引入要在下面的style标签之前-->
     <link href="${pageContext.request.contextPath}/ui-static/agcloud/framework/js-libs/jquery1/jquery.treegrid.min.css" rel="stylesheet" type="text/css"/>
+    <link href="${pageContext.request.contextPath}/ui-static/agcloud/bsc/yunpan/css/orgTheme.css" type="text/css" rel="stylesheet"/>
+    <style type="text/css">
+        .row{
+            margin-left: 0px;
+            margin-right: 0px;
+        }
+
+        /*bootstrap下拉多级联动*/
+        .dropdown-menu {
+            width: 733px;
+        !important;
+        }
+    </style>
     <style type="text/css">
         .row{
             margin-left: 0px;
@@ -1158,6 +1171,7 @@
         </div>
     </el-dialog>
     <!--视图配置结束-->
+    <jsp:include page="subprocess_list.jsp"></jsp:include>
 </div>
 <!--bootstrap-treegrid-->
 <script src="${pageContext.request.contextPath}/ui-static/agcloud/framework/js-libs/bootstrap-table/bootstrap-table-treegrid.js" type="text/javascript"></script>
