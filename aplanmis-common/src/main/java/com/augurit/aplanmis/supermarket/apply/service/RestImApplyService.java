@@ -40,9 +40,6 @@ import java.util.*;
 public class RestImApplyService {
 
     @Autowired
-    private RestTimeruleinstService restTimeruleinstService;
-
-    @Autowired
     private AeaItemBasicMapper aeaItemBasicMapper;
 
     @Autowired
@@ -121,9 +118,6 @@ public class RestImApplyService {
     private AeaLinkmanInfoMapper aeaLinkmanInfoMapper;
 
     @Autowired
-    private AeaProjInfoMapper aeaProjInfoMapper;
-
-    @Autowired
     private AeaImUnitRequireMapper aeaImUnitRequireMapper;
 
     @Autowired
@@ -184,13 +178,13 @@ public class RestImApplyService {
      *
      * @param projPurchaseId 项目采购ID
      * @param unitBiddingId  单位竞价ID
-     * @param opsLinkInfoId  业主委托人
      * @param confirmFlag    1：已确认中标，0：已放弃中标
      * @throws Exception
      */
-    public void confirmImunit(String projPurchaseId, String unitBiddingId, String opsLinkInfoId, String confirmFlag) throws Exception {
+    public void confirmImunit(String projPurchaseId, String unitBiddingId, String confirmFlag) throws Exception {
 
         AeaImProjPurchase purchase = this.getApplyinstIdByProPurchaseId(projPurchaseId);
+        String opsLinkInfoId = purchase.getLinkmanInfoId();//业主委托人
         String applyinstId = purchase.getApplyinstId();
         //获取申请实例历史记录列表
         AeaLogApplyStateHist applyStateHist = this.getLastAeaLogApplyStateHist(applyinstId);

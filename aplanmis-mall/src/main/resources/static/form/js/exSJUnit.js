@@ -51,7 +51,7 @@ var vm = new Vue({
                 shigongzongbao: '1', //施工总包
                 shigongfenbao: '4', //施工分包
                 laowufenbao: '4', //劳务分包
-                gongchengjianli: '3' //工程监理
+                gongchengjianli: '3' //项目总监
             },
             projInfoId: '',
             prjEntType: '', //项目主体类型
@@ -253,9 +253,6 @@ var vm = new Vue({
                 applicant: [
                     { required: true, message: '请输入单位名称!', trigger: ['change'] },
                 ],
-                unitType: [
-                    { required: true, message: '请输入项目主体类型!', trigger: ['change'] },
-                ],
                 isGd: [
                     { required: true, message: '请选择是否省内企业!', trigger: ['change'] },
                 ],
@@ -376,6 +373,8 @@ var vm = new Vue({
         initPage: function() {
             var _that = this;
             _that.unitInfoShowFrom.projInfoId = _that.getUrlParam('projInfoId');
+            this.applyJianliFrom.unitType = _that.C_PRJ_ENT_TYPE.gongchengjianli;
+            this.applyJianliFrom.linkmanType = _that.C_PRJ_PERSON_POST.gongchengjianli;
         },
         initExSJUnitFromPage: function() { //初始化表单页面
             var _that = this;
@@ -493,8 +492,6 @@ var vm = new Vue({
             shigonglaowufenbao.unitType = _that.C_PRJ_ENT_TYPE.laowufenbao;
             shigonglaowufenbao.linkmanType = _that.C_PRJ_PERSON_POST.laowufenbao;
             var applyJianli = JSON.parse(JSON.stringify(_that.applyJianliFrom));
-            applyJianli.unitType = _that.C_PRJ_ENT_TYPE.gongchengjianli;
-            applyJianli.linkmanType = _that.C_PRJ_PERSON_POST.gongchengjianli;
             var a = [gongchengzong, shigongzong, shigongzhuanyefenbao, shigonglaowufenbao, applyJianli];
             _that.exSJAllUnit.aeaExProjBuildUnitInfo = JSON.stringify(a);
             _that.$refs['unitInfoShowFrom'].validate(function(valid) {
@@ -570,17 +567,17 @@ var vm = new Vue({
                     _that.structureSystem = data.content.C_STRUCT_TYPE;
                     _that.projUnitLinkmanType = data.content.PROJ_UNIT_LINKMAN_TYPE;
                     _that.projUnitLinkmanType.map(function(value, index) {
-                        if (value.itemCode != "1") {
+                        if (value.itemCode != _that. C_PRJ_PERSON_POST.gongchengzongchengbao) {
                             _that.chengbaoProjUnitLinkmanType.push(value);
                         }
                     });
                     _that.projUnitLinkmanType.map(function(value, index) {
-                        if (value.itemCode != "4") {
+                        if (value.itemCode != _that. C_PRJ_PERSON_POST.laowufenbao) {
                             _that.fenbaoProjUnitLinkmanType.push(value);
                         }
                     });
                     _that.projUnitLinkmanType.map(function(value, index) {
-                        if (value.itemCode != "3") {
+                        if (value.itemCode != _that. C_PRJ_PERSON_POST.gongchengjianli) {
                             _that.jiangliLinkmanType.push(value);
                         }
                     });
@@ -690,7 +687,6 @@ var vm = new Vue({
                 val.personSetting = JSON.parse(JSON.stringify(val.personSetting));
                 this.applyJianliFrom = val;
                 this.applyJianliFrom.unitType = '5';
-                this.applyJianliFrom.linkmanType = '2';
             }
         },
         // 人员设置选择人员
@@ -702,7 +698,7 @@ var vm = new Vue({
         //选择项目负责人
         selLinkman: function(data, ind1, type) {
             var _that = this;
-            if (type == 'shigongzongchenbao') {
+            if (type == 'applyShigongzongFrom') {
                 if (data) {
                     _that.applyShigongzongFrom.linkmanName = data.addressName;
                     _that.applyShigongzongFrom.linkmanId = data.addressId;

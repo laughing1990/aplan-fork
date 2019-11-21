@@ -308,7 +308,7 @@
         SELECT aup.UNIT_PROJ_ID unitProjId, aup.UNIT_INFO_ID unitInfoId, aup.PROJ_INFO_ID projInfoId, aui.APPLICANT applicant, aui.UNIT_TYPE unitType
 	      FROM aea_unit_proj aup
 		    LEFT JOIN aea_unit_info aui on aup.UNIT_INFO_ID  = aui.UNIT_INFO_ID
-			  WHERE aup.PROJ_INFO_ID = #{projInfoId} and aui.UNIT_TYPE = #{unitType}
+			  WHERE aup.PROJ_INFO_ID = #{projInfoId} and aup.UNIT_TYPE = #{unitType}
     </select>
 
     <select id="findUnitInfoByApplyinstIdAndUnitType" resultType="AeaUnitInfo">

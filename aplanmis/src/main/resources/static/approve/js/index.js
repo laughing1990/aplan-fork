@@ -3576,6 +3576,16 @@ var vm = new Vue({
           if (matIds.indexOf(u.matId) == -1) {
             matIds.push(u.matId);
           }
+          if (u.rowType == 1) {
+            u.copyCount = 0;
+            u.isNeedAtt = '0';
+          } else if (u.rowType == 2) {
+            u.paperCount = 0;
+            u.isNeedAtt = '0';
+          } else if (u.rowType == 3) {
+            u.paperCount = 0;
+            u.copyCount = 0;
+          }
         });
         matIds.forEach(function (u) {
           var tmp = {};
