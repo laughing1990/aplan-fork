@@ -2444,7 +2444,7 @@ INSERT INTO `act_sto_widget_key` (`KEY_ID`, `WIDGET_ID`, `KEY_CODE`, `KEY_LABEL`
             COMMENT '申报状态：0已接件未审核（适用于网厅）、1 已接件并审核、2窗口受理、3待补全、4补全待确认、5不予受理、6已办结' AFTER `APPLYINST_MEMO`;
         </sql>
     </changeSet>
-    <changeSet id="201911211935" author="fenggy">
+    <changeSet id="201911211935" author="fenggy" failOnError="false">
         <comment>值也注册证类型 数据字典补充</comment>
         <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
             INSERT INTO `bsc_dic_code_item` (`ITEM_ID`, `TYPE_ID`, `ITEM_CODE`, `ITEM_NAME`, `IS_ACTIVE`, `SORT_NO`, `PARENT_ID`, `ITEM_SEQ`, `ITEM_LEVEL`, `SUB_COUNT`, `ITEM_MEMO`, `CREATER`, `CREATE_TIME`, `MODIFIER`, `MODIFY_TIME`, `ORG_ID`) VALUES ('e4f8bea6-624f-4ac5-847e-04ad1028972e', '841ce714-8f35-4601-b12e-554a0f763ebd', '999', '小型项目负责人', '1', '999', '', NULL, '0', '0', NULL, NULL, '2019-11-21 19:30:42', NULL, '2019-11-21 19:30:42', '0368948a-1cdf-4bf8-a828-71d796ba89f6');
