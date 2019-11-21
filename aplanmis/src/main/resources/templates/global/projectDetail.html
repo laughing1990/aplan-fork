@@ -15,6 +15,7 @@
   <link rel="stylesheet" href="../../static/global/css/projectview.css" th:href="@{/global/css/projectview.css}">
   <script>
     var ctx = "[[@{/}]]";
+    // ctx = 'http://106.52.77.101:8083/aplanmis-front/'; // 101
     // var ctx = "http://192.168.30.138:8083/aplanmis-front/"
   </script>
 </head>
@@ -70,7 +71,7 @@
               <el-cascader v-model="baseForm.regionalism" :props="SetDistrictDept" :options="allDicItemListData.XM_XZFQ"
                            :show-all-levels="false"></el-cascader>
             </el-form-item>
-            <el-form-item label="重点项目" prop="projLevel">
+            <el-form-item label="重点项目">
               <el-radio-group v-model="baseForm.projLevel">
                 <el-radio :label="item.itemCode" v-for="item in allDicItemListData.XM_PROJECT_LEVEL" :key="item.id">
                   {{item.itemName}}
