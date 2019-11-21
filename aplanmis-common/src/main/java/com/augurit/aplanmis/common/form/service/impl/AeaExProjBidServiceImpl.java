@@ -3,12 +3,11 @@ package com.augurit.aplanmis.common.form.service.impl;
 import com.augurit.agcloud.framework.exception.InvalidParameterException;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.util.StringUtils;
-import com.augurit.aplanmis.common.domain.AeaExProjBid;
-import com.augurit.aplanmis.common.domain.AeaProjInfo;
-import com.augurit.aplanmis.common.domain.AeaUnitInfo;
-import com.augurit.aplanmis.common.domain.AeaUnitProj;
+import com.augurit.aplanmis.common.constants.UnitProjLinkmanType;
+import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.mapper.AeaExProjBidMapper;
 import com.augurit.aplanmis.common.mapper.AeaProjInfoMapper;
+import com.augurit.aplanmis.common.mapper.AeaUnitProjLinkmanMapper;
 import com.augurit.aplanmis.common.mapper.AeaUnitProjMapper;
 import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
 import com.augurit.aplanmis.common.form.service.AeaExProjBidService;
@@ -45,6 +44,8 @@ public class AeaExProjBidServiceImpl implements AeaExProjBidService {
     private AeaProjInfoMapper aeaProjInfoMapper;
     @Autowired
     private AeaUnitProjMapper aeaUnitProjMapper;
+    @Autowired
+    private AeaUnitProjLinkmanMapper aeaUnitProjLinkmanMapper;
 
     public void saveAeaExProjBid(AeaExProjBid aeaExProjBid) throws Exception{
         aeaExProjBid.setCreater(SecurityContext.getCurrentUserName());
@@ -141,6 +142,25 @@ public class AeaExProjBidServiceImpl implements AeaExProjBidService {
                         aeaUnitInfo.setUnitProjId(aeaUnitProj.getUnitProjId());//做回显
                         aeaUnitProjNewList.add(aeaUnitProj);
                     }
+                    //负责人
+                    if(StringUtils.isNotBlank(aeaUnitInfo.getProjLinkmanId())) {
+                        AeaUnitProjLinkman man = new AeaUnitProjLinkman();
+                        man.setProjLinkmanId(aeaUnitInfo.getProjLinkmanId());
+                        man.setLinkmanInfoId(aeaUnitInfo.getProjectLeaderId());
+                        man.setUnitProjId(aeaUnitInfo.getUnitProjId());
+                        man.setLinkmanType(UnitProjLinkmanType.FZR.getValue());
+                        aeaUnitProjLinkmanMapper.updateAeaUnitProjLinkman(man);
+                    }else{
+                        AeaUnitProjLinkman man = new AeaUnitProjLinkman();
+                        man.setProjLinkmanId(UUID.randomUUID().toString());
+                        man.setLinkmanInfoId(aeaUnitInfo.getProjectLeaderId());
+                        man.setUnitProjId(aeaUnitInfo.getUnitProjId());
+                        man.setLinkmanType(UnitProjLinkmanType.FZR.getValue());
+                        man.setCreater(SecurityContext.getCurrentUserId());
+                        man.setCreateTime(new Date());
+                        man.setIsDeleted("0");
+                        aeaUnitProjLinkmanMapper.insertAeaUnitProjLinkman(man);
+                    }
                 } else {
                     aeaUnitInfo.setUnitInfoId(UUID.randomUUID().toString());
                     aeaUnitInfo.setUnitType(null);//单位表里面的类型不保存，以关联表的为准
@@ -149,6 +169,17 @@ public class AeaExProjBidServiceImpl implements AeaExProjBidService {
                     AeaUnitProj aeaUnitProj=aeaExProjBidVo.toAeaUnitProj(aeaUnitInfo.getUnitInfoId(), unitType);
                     aeaUnitInfo.setUnitProjId(aeaUnitProj.getUnitProjId());
                     aeaUnitProjNewList.add(aeaUnitProj);
+
+                    // 负责人信息
+                    AeaUnitProjLinkman man = new AeaUnitProjLinkman();
+                    man.setProjLinkmanId(UUID.randomUUID().toString());
+                    man.setLinkmanInfoId(aeaUnitInfo.getProjectLeaderId());
+                    man.setUnitProjId(aeaUnitInfo.getUnitProjId());
+                    man.setLinkmanType(UnitProjLinkmanType.FZR.getValue());
+                    man.setCreater(SecurityContext.getCurrentUserId());
+                    man.setCreateTime(new Date());
+                    man.setIsDeleted("0");
+                    aeaUnitProjLinkmanMapper.insertAeaUnitProjLinkman(man);
                 }
             }
         }
