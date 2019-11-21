@@ -144,30 +144,32 @@
     </div>
   
     <div class="table-part-title"><i class="header-icon el-icon-document-copy"></i>采购中介服务信息</div>
-    <div class="part-info-box c-f" v-for="item in projInfoList" :key="item.projInfoId">
+    <div class="part-info-box c-f" v-for="item in zjItemInfo" :key="item.projInfoId">
     
       <el-form :model="item" size="medium" label-width="0">
         <el-row>
           <el-col :span="12">
             <el-form-item label="采购项目编码" :label-width="labelWidth">
-              <el-input v-model="item.themeName" readonly></el-input>
+              <el-input v-model="item.localCode" readonly></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="采购项目名称" :label-width="labelWidth">
-              <el-input v-model="item.projType" readonly></el-input>
+              <el-input v-model="item.projName" readonly></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
             <el-form-item label="投资审批项目" :label-width="labelWidth">
-              <el-input v-model="item.themeName" readonly></el-input>
+              <el-input v-model="item.isApproveProj" readonly></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="项目规模" :label-width="labelWidth">
-              <el-input v-model="item.projType" readonly></el-input>
+              <el-input v-model="item.projScaleContent" readonly>
+                <template slot="append">{{item.projScale}}</template>
+              </el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -186,14 +188,14 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="所属服务" :label-width="labelWidth">
-              <el-input v-model="item.themeName" readonly></el-input>
+              <el-input v-model="item.serviceId" readonly></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="24">
             <el-form-item label="服务时限说明" :label-width="labelWidth">
-              <el-input v-model="item.themeName" readonly></el-input>
+              <el-input v-model="item.serviceTimeExplain" readonly></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -213,7 +215,7 @@
                     </el-tooltip>
                   </div>
                 </div>
-                <el-input v-model="item.localCode" readonly></el-input>
+                <el-input v-model="item.serviceContent" readonly></el-input>
               </div>
             </el-form-item>
           </el-col>
@@ -241,7 +243,7 @@
                     </el-tooltip>
                   </div>
                 </div>
-                <el-input v-model="item.localCode" readonly></el-input>
+                <el-input v-model="item.qualRequireType" readonly></el-input>
               </div>
             </el-form-item>
           </el-col>
@@ -261,7 +263,7 @@
                     </el-tooltip>
                   </div>
                 </div>
-                <el-input v-model="item.localCode" readonly></el-input>
+                <el-input v-model="item.aeaImUnitRequire.qualRequireExplain" readonly></el-input>
               </div>
             </el-form-item>
           </el-col>
@@ -281,7 +283,7 @@
                     </el-tooltip>
                   </div>
                 </div>
-                <el-input v-model="item.localCode" readonly></el-input>
+                <el-input v-model="item.aeaImUnitRequire.registerTotal" readonly></el-input>
               </div>
             </el-form-item>
           </el-col>
@@ -301,7 +303,7 @@
                     </el-tooltip>
                   </div>
                 </div>
-                <el-input v-model="item.localCode" readonly></el-input>
+                <el-input v-model="item.aeaImUnitRequire.registerRequire" readonly></el-input>
               </div>
             </el-form-item>
           </el-col>
@@ -321,7 +323,7 @@
                     </el-tooltip>
                   </div>
                 </div>
-                <el-input v-model="item.localCode" readonly></el-input>
+                <el-input v-model="item.aeaImUnitRequire.otherRequireExplain" readonly></el-input>
               </div>
             </el-form-item>
           </el-col>
@@ -329,78 +331,78 @@
         <el-row>
           <el-col :span="24">
             <el-form-item label="选取中介机构方式" :label-width="labelWidth">
-              <el-input v-model="item.themeName" readonly></el-input>
+              <el-input v-model="item.biddingType" readonly></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="24">
             <el-form-item label="是否确认金额" :label-width="labelWidth">
-              <el-input v-model="item.themeName" readonly></el-input>
+              <el-input v-model="item.isDefineAmount" readonly></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
             <el-form-item label="服务金额" :label-width="labelWidth">
-              <el-input v-model="item.themeName" readonly>
+              <el-input v-model="item.basePrice" readonly>
                 <template slot="append">万元</template>
               </el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="金额大写" :label-width="labelWidth">
-              <el-input v-model="item.projType" readonly></el-input>
+              <el-input v-model="item.basePriceDx" readonly></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="24">
             <el-form-item label="是否有回避情况" :label-width="labelWidth">
-              <el-input v-model="item.themeName" readonly></el-input>
+              <el-input v-model="item.isAvoid" readonly></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
             <el-form-item label="报名截止时间" :label-width="labelWidth">
-              <el-input v-model="item.themeName" readonly></el-input>
+              <el-input v-model="item.expirationDate" readonly></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="选取中介时间" :label-width="labelWidth">
-              <el-input v-model="item.projType" readonly></el-input>
+              <el-input v-model="item.choiceImunitTime" readonly></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="24">
             <el-form-item label="金额说明" :label-width="labelWidth">
-              <el-input v-model="item.themeName" readonly></el-input>
+              <el-input v-model="item.amountExplain" readonly></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
             <el-form-item label="中选机构公示" :label-width="labelWidth">
-              <el-input v-model="item.themeName" readonly></el-input>
+              <el-input v-model="item.isDiscloseIm" readonly></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="中选公告公示" :label-width="labelWidth">
-              <el-input v-model="item.projType" readonly></el-input>
+              <el-input v-model="item.isDiscloseBidding" readonly></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
             <el-form-item label="项目业主业务咨询电话" :label-width="labelWidth">
-              <el-input v-model="item.themeName" readonly></el-input>
+              <el-input v-model="item.moblie" readonly></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="业主投诉电话" :label-width="labelWidth">
-              <el-input v-model="item.projType" readonly></el-input>
+              <el-input v-model="item.ownerComplaintPhone" readonly></el-input>
             </el-form-item>
           </el-col>
         </el-row>

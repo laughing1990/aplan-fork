@@ -29,6 +29,11 @@ var vm = new Vue({
       personalLinkInfo: {},
       unitTypeList: [],
       isZJItem: getUrlParam('isZJItem'),
+      zjItemInfo: [
+        {
+          aeaImUnitRequire: {},
+        }
+      ],
     }
   },
   methods: {
