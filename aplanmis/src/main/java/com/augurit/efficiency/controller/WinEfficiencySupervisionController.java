@@ -620,7 +620,7 @@ public class WinEfficiencySupervisionController {
                 ResultForm resultForm = TimeParamUtil.checkTimeParam(startTime, endTime);
                 if (resultForm != null) return resultForm;
             }
-            List<Map<String, Object>> result = winEfficiencySupervisionService.getCompletedApplyUseTimeByTheme(type, startTime, endTime);
+            List<UseTimeStatisticsVo> result = winEfficiencySupervisionService.getCompletedApplyUseTimeByTheme(type, startTime, endTime);
             return new ContentResultForm<>(true, result, "查询成功！");
         } catch (Exception e) {
             log.error("按主题统计办结申报的用时情况统计异常", e);
@@ -645,7 +645,7 @@ public class WinEfficiencySupervisionController {
                 ResultForm resultForm = TimeParamUtil.checkTimeParam(startTime, endTime);
                 if (resultForm != null) return resultForm;
             }
-            List<Map<String, Object>> result = winEfficiencySupervisionService.getCompletedApplyUseTimeByThemeAndWindow(themeId, type, startTime, endTime);
+            List<UseTimeStatisticsVo> result = winEfficiencySupervisionService.getCompletedApplyUseTimeByThemeAndWindow(themeId, type, startTime, endTime);
             return new ContentResultForm<>(true, result, "查询成功！");
         } catch (Exception e) {
             log.error("按主题窗口统计办结申报的用时情况统计异常", e);

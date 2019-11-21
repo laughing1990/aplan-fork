@@ -70,7 +70,7 @@ public interface WinEfficiencySupervisionService {
 
     Map<String, Object> getWinStageLimitTimeStatistics(String startTime, String endTime, String type, boolean isCurrent, String windowId) throws Exception;
 
-    List<Map<String, Object>> getCompletedApplyUseTimeByTheme(String type, String startTime, String endTime) throws Exception;
+    List<UseTimeStatisticsVo> getCompletedApplyUseTimeByTheme(String type, String startTime, String endTime) throws Exception;
 
-    List<Map<String, Object>> getCompletedApplyUseTimeByThemeAndWindow(String themeId, String type, String startTime, String endTime) throws Exception;
+    List<UseTimeStatisticsVo> getCompletedApplyUseTimeByThemeAndWindow(String themeId, String type, String startTime, String endTime) throws Exception;
 }

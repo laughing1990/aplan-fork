@@ -1096,9 +1096,9 @@ public class OrgEfficiencySupersionServiceImpl implements OrgEfficiencySupersion
         }else{
             OpuOmOrg search = new OpuOmOrg();
             BscDicRegion currentRegion = bscDicRegionMapper.getBscDicRegionById(regionId);
-            if("4".equals(currentRegion.getRegionalLevel())){
+            if (currentRegion.getRegionalLevel() == 4) {
                 search.setOrgLevel(2);//市级部门
-            }else if("5".equals(currentRegion.getRegionalLevel())){
+            } else if (currentRegion.getRegionalLevel() == 5) {
                 search.setOrgLevel(3);
             }
             search.setOrgProperty("d");
@@ -1239,10 +1239,10 @@ public class OrgEfficiencySupersionServiceImpl implements OrgEfficiencySupersion
         } else {
             OpuOmOrg search = new OpuOmOrg();
             BscDicRegion currentRegion = bscDicRegionMapper.getBscDicRegionById(regionId);
-            if ("4".equals(currentRegion.getRegionalLevel())) {
+            if (currentRegion.getRegionalLevel() == 4) {
                 //市级部门
                 search.setOrgLevel(2);
-            } else if ("5".equals(currentRegion.getRegionalLevel())) {
+            } else if (currentRegion.getRegionalLevel() == 5) {
                 search.setOrgLevel(3);
             }
             search.setOrgProperty("d");
@@ -1252,7 +1252,7 @@ public class OrgEfficiencySupersionServiceImpl implements OrgEfficiencySupersion
             search.setRegionId(regionId);
             //原来的opuomOrgmapper里面缺失了regionid 字段所以写到这里
             List<OpuOmOrg> orgList = efficiencySupervisionMapper.listOpuOmOrg(search);
-            if (orgList.size() == 0) throw new Exception("查询部门出现异常");
+            if (orgList.size() == 0) throw new Exception("该区域下没有配置所属部门");
             list = orgList.stream().map(data -> {
                 Map<String, Object> org = new HashMap<>();
                 org.put("orgId", data.getOrgId());
@@ -1264,7 +1264,7 @@ public class OrgEfficiencySupersionServiceImpl implements OrgEfficiencySupersion
     }
 
     @Override
-    public List<Map<String, Object>> getItemUseTimeStatistics(String startTime, String endTime, String type, String regionId, String orgId) throws Exception {
+    public List<UseTimeStatisticsVo> getItemUseTimeStatistics(String startTime, String endTime, String type, String regionId, String orgId) throws Exception {
 
         if (DateType.YESTERDAY.equals(type)) {
             Date preDate = DateUtils.getPreDateByDate(new Date());
@@ -1293,7 +1293,7 @@ public class OrgEfficiencySupersionServiceImpl implements OrgEfficiencySupersion
         return null;
     }
 
-    private List<Map<String, Object>> getItemUseTimeStatisticsByCondition(String startTime, String endTime, String regionId, String orgId, String rootOrgId) throws Exception {
+    private List<UseTimeStatisticsVo> getItemUseTimeStatisticsByCondition(String startTime, String endTime, String regionId, String orgId, String rootOrgId) throws Exception {
         if (StringUtils.isBlank(regionId) && StringUtils.isBlank(orgId)) {
             //查询各地区用时
             List<UseTimeStatisticsVo> useTimeData = efficiencySupervisionMapper.getItemUseTimeByRegion(startTime, endTime, rootOrgId);
@@ -1304,27 +1304,23 @@ public class OrgEfficiencySupersionServiceImpl implements OrgEfficiencySupersion
                 collect = useTimeData.stream().collect(Collectors.groupingBy(UseTimeStatisticsVo::getRegionId));
             }
 
-            List<Map<String, Object>> result = new ArrayList<>();
+            List<UseTimeStatisticsVo> result = new ArrayList<>();
             for (Map<String, Object> region : allRegion) {
-                Map<String, Object> data = new HashMap<>(12);
-                data.put("regionId", region.get("regionId"));
-                data.put("regionName", region.get("regionName"));
-                data.put("orgId", null);
-                data.put("orgName", null);
-                data.put("itemId", null);
-                data.put("itemName", null);
-                data.put("maxUseTime", 0.0);
-                data.put("minUseTime", 0.0);
-                data.put("avgUseTime", 0.0);
+                UseTimeStatisticsVo vo = new UseTimeStatisticsVo();
+                vo.setRegionId(region.get("regionId").toString());
+                vo.setRegionName(region.get("regionName").toString());
+                vo.setMaxUseTime(0.0);
+                vo.setMinUseTime(0.0);
+                vo.setAvgUseTime(0.0);
                 if (collect != null && collect.get(region.get("regionId")) != null) {
                     List<UseTimeStatisticsVo> useTimeStatisticsVos = collect.get(region.get("regionId"));
                     if (CollectionUtils.isNotEmpty(useTimeStatisticsVos)) {
-                        data.put("maxUseTime", useTimeStatisticsVos.get(0).getMaxUseTime());
-                        data.put("minUseTime", useTimeStatisticsVos.get(0).getMinUseTime());
-                        data.put("avgUseTime", useTimeStatisticsVos.get(0).getAvgUseTime());
+                        vo.setMaxUseTime(useTimeStatisticsVos.get(0).getMaxUseTime());
+                        vo.setMinUseTime(useTimeStatisticsVos.get(0).getMinUseTime());
+                        vo.setAvgUseTime(useTimeStatisticsVos.get(0).getAvgUseTime());
                     }
                 }
-                result.add(data);
+                result.add(vo);
             }
             return result;
         } else if (StringUtils.isNotBlank(regionId)) {
@@ -1337,27 +1333,23 @@ public class OrgEfficiencySupersionServiceImpl implements OrgEfficiencySupersion
                 collect = useTimeData.stream().collect(Collectors.groupingBy(UseTimeStatisticsVo::getOrgId));
             }
 
-            List<Map<String, Object>> result = new ArrayList<>();
+            List<UseTimeStatisticsVo> result = new ArrayList<>();
             for (Map<String, Object> org : allOrg) {
-                Map<String, Object> data = new HashMap<>(12);
-                data.put("regionId", null);
-                data.put("regionName", null);
-                data.put("orgId", org.get("orgId"));
-                data.put("orgName", org.get("orgName"));
-                data.put("itemId", null);
-                data.put("itemName", null);
-                data.put("maxUseTime", 0.0);
-                data.put("minUseTime", 0.0);
-                data.put("avgUseTime", 0.0);
+                UseTimeStatisticsVo vo = new UseTimeStatisticsVo();
+                vo.setOrgId(org.get("orgId").toString());
+                vo.setOrgName(org.get("orgName").toString());
+                vo.setMaxUseTime(0.0);
+                vo.setMinUseTime(0.0);
+                vo.setAvgUseTime(0.0);
                 if (collect != null && collect.get(org.get("orgId")) != null) {
                     List<UseTimeStatisticsVo> useTimeStatisticsVos = collect.get(org.get("orgId"));
                     if (CollectionUtils.isNotEmpty(useTimeStatisticsVos)) {
-                        data.put("maxUseTime", useTimeStatisticsVos.get(0).getMaxUseTime());
-                        data.put("minUseTime", useTimeStatisticsVos.get(0).getMinUseTime());
-                        data.put("avgUseTime", useTimeStatisticsVos.get(0).getAvgUseTime());
+                        vo.setMaxUseTime(useTimeStatisticsVos.get(0).getMaxUseTime());
+                        vo.setMinUseTime(useTimeStatisticsVos.get(0).getMinUseTime());
+                        vo.setAvgUseTime(useTimeStatisticsVos.get(0).getAvgUseTime());
                     }
                 }
-                result.add(data);
+                result.add(vo);
             }
             return result;
         } else if (StringUtils.isNotBlank(orgId)) {
@@ -1370,27 +1362,24 @@ public class OrgEfficiencySupersionServiceImpl implements OrgEfficiencySupersion
                 collect = useTimeData.stream().collect(Collectors.groupingBy(UseTimeStatisticsVo::getItemId));
             }
 
-            List<Map<String, Object>> result = new ArrayList<>();
+
+            List<UseTimeStatisticsVo> result = new ArrayList<>();
             for (AeaItemBasic item : items) {
-                Map<String, Object> data = new HashMap<>(12);
-                data.put("regionId", null);
-                data.put("regionName", null);
-                data.put("orgId", null);
-                data.put("orgName", null);
-                data.put("itemId", item.getItemId());
-                data.put("itemName", item.getItemName());
-                data.put("maxUseTime", 0.0);
-                data.put("minUseTime", 0.0);
-                data.put("avgUseTime", 0.0);
+                UseTimeStatisticsVo vo = new UseTimeStatisticsVo();
+                vo.setItemId(item.getItemId());
+                vo.setItemName(item.getItemName());
+                vo.setMaxUseTime(0.0);
+                vo.setMinUseTime(0.0);
+                vo.setAvgUseTime(0.0);
                 if (collect != null && collect.get(item.getItemId()) != null) {
                     List<UseTimeStatisticsVo> useTimeStatisticsVos = collect.get(item.getItemId());
                     if (CollectionUtils.isNotEmpty(useTimeStatisticsVos)) {
-                        data.put("maxUseTime", useTimeStatisticsVos.get(0).getMaxUseTime());
-                        data.put("minUseTime", useTimeStatisticsVos.get(0).getMinUseTime());
-                        data.put("avgUseTime", useTimeStatisticsVos.get(0).getAvgUseTime());
+                        vo.setMaxUseTime(useTimeStatisticsVos.get(0).getMaxUseTime());
+                        vo.setMinUseTime(useTimeStatisticsVos.get(0).getMinUseTime());
+                        vo.setAvgUseTime(useTimeStatisticsVos.get(0).getAvgUseTime());
                     }
                 }
-                result.add(data);
+                result.add(vo);
             }
             return result;
         }
