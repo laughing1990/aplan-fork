@@ -486,7 +486,7 @@ and ahic_123.creater = #{currentUserId}
         				aea_applyinst_unit_proj aaup
         			LEFT JOIN aea_unit_proj aup ON aaup.UNIT_PROJ_ID = aup.UNIT_PROJ_ID
         			WHERE
-        				aaup.IS_DELETED != 1 and aup.is_Owner = 1
+        				aaup.IS_DELETED != 1 and aup.is_Owner = 1 and aup.IS_DELETED != 1
                         <if test="unitInfoId !=null and unitInfoId!=''">
                              and aup.UNIT_INFO_ID = #{unitInfoId}
                         </if>
@@ -558,7 +558,7 @@ and ahic_123.creater = #{currentUserId}
 	    				aea_applyinst_unit_proj aaup
 	    			LEFT JOIN aea_unit_proj aup ON aaup.UNIT_PROJ_ID = aup.UNIT_PROJ_ID
 	    			WHERE
-	    				aaup.IS_DELETED != 1 and aup.is_Owner = 1
+	    				aaup.IS_DELETED != 1 and aup.is_Owner = 1 and aup.IS_DELETED != 1
                         <if test="unitInfoId !=null and unitInfoId!=''">
                             and aup.UNIT_INFO_ID = #{unitInfoId}
                         </if>
