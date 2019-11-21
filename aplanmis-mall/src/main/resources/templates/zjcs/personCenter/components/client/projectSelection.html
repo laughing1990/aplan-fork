@@ -36,6 +36,19 @@
                 </template>
             </el-table-column>
             <el-table-column prop="auditFlag" label="项目状态">
+                <template scope="scope">
+                    <span v-if="scope.row.auditFlag==0">未提交</span>
+                    <span v-if="scope.row.auditFlag==1">服务中</span>
+                    <span v-if="scope.row.auditFlag==2">服务完成</span>
+                    <span v-if="scope.row.auditFlag==3">服务中止</span>
+                    <span v-if="scope.row.auditFlag==4">审核中</span>
+                    <span v-if="scope.row.auditFlag==5">退回</span>
+                    <span v-if="scope.row.auditFlag==6">报名中</span>
+                    <span v-if="scope.row.auditFlag==7">选取中</span>
+                    <span v-if="scope.row.auditFlag==8">选取开始</span>
+                    <span v-if="scope.row.auditFlag==9">已选取</span>
+                    <span v-if="scope.row.auditFlag==10">无效</span>
+                </template>
             </el-table-column>
             <el-table-column label="合同状态">
                 <template scope="scope">
@@ -46,7 +59,9 @@
             <el-table-column label="操作">
                 <template scope="scope">
                     <a class="a-color4879E4" href="javascript:;" @click="addAgreement(scope.row)"
-                        v-if="scope.row.isUploadContract == 0">上传合同</a>
+                        v-if="scope.row.auditFlag==1">上传合同</a>
+                    <a class="a-color4879E4" href="javascript:;" @click="confirmWinBidResult(scope.row)"
+                        v-if="scope.row.auditFlag==9">确认中标结果</a>
                     <p style="margin: 0;" v-else>
                         <a class="a-color4879E4" href="javascript:;"
                             v-if="scope.row.contractFlag == 0 && scope.row.isOwnerUpload == 0"
@@ -250,7 +265,7 @@
                     pageSize: 10,
                     pageNum: 1,
                     projName: '', //项目名称
-                    auditFlag: 2, //项目状态
+                    auditFlag: '', //项目状态
                     isWonBid: '1',//是否中标：1 已中标，0 未中标
                     type: 1, //0-报名项目 1-中选项目 2-已签约项目 3-服务中项目
                     isUploadContract: '', //是否已上传合同（0-否 ，1-是），已上传合同代表的是中选项目下的已签约项目
@@ -366,6 +381,32 @@
                 // 上传合同需要先获取合同的初始化数据
                 this.fetchUploadContractInitData(row);
             },
+            /**
+             *              
+            */
+            confirmWinBidResult: function() {
+                var ts = this;
+                request('', {
+                    url: 'supermarket/purchase/confirmImunit',
+                    type: 'post',
+                }, function (res) {
+                    ts.mloading = false;
+                    if (res.success) {
+
+                    } else {
+                        ts.$message({
+                            message: res.message,
+                            type: 'error'
+                        });
+                    }
+                }, function (msg) {
+                    ts.mloading = false;
+                    ts.$message({
+                        message: '加载失败',
+                        type: 'error'
+                    });
+                });
+            },
             // 先获取合同的初始化数据
             fetchUploadContractInitData: function (row) {
                 var ts = this,
@@ -479,14 +520,14 @@
                 this.fetchEditOrLookContractData(row);
             },
             // 用户确认合同
-            userSureContract: function(){
+            userSureContract: function () {
                 var ts = this;
-                _sureUrl = ctx + 'supermarket/contract/confirmContractByContractId/' + ts.curHandelRow.contractId ;
+                _sureUrl = ctx + 'supermarket/contract/confirmContractByContractId/' + ts.curHandelRow.contractId;
                 ts.mloading = true;
                 request('', {
-                    url:_sureUrl,
+                    url: _sureUrl,
                     type: 'post',
-                    data: {projPurchaseId:ts.contractDetailObj.projPurchaseId}
+                    data: { projPurchaseId: ts.contractDetailObj.projPurchaseId }
                 }, function (res) {
                     ts.mloading = false;
                     if (res.success) {
@@ -619,7 +660,7 @@
                 }
             },
             // 附件下载
-            downloadContractEnclosure: function(obj){
+            downloadContractEnclosure: function (obj) {
                 window.open(ctx + 'supermarket/purchase/downloadAttachment/' + obj.detailId);
             },
             // 保存-校验必填

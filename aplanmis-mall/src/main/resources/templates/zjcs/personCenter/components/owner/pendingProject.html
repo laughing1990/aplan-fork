@@ -182,12 +182,16 @@
 				<!-- <p class="note-txt mt-1">更新时间：2018年08月14日 21:58:20</p> -->
 			</div>
 		</div>
-		<button @click="saveAndUpdateAgree" class="btn btn-primary" type="button" v-if="!isSureHandelRow&&isConfirm=='0'">
+		<!-- <button @click="saveAndUpdateAgree" class="btn btn-primary" type="button" v-if="!isSureHandelRow&&isConfirm=='0'">
 			保存并上传合同
 		</button>
 		<button @click="userSureContract" class="btn btn-primary" type="button" v-if="isSureHandelRow&&isConfirm=='0'">
 			确认合同
-		</button>
+		</button> -->
+		<div style="marginTop: 15px; textAlign: center;">
+			<el-button type="primary" @click="userSureContract" v-if="!isSureHandelRow&&isConfirm=='0'">保存并上传合同</el-button>
+			<el-button type="primary" @click="userSureContract" v-if="isSureHandelRow&&isConfirm=='0'">确认合同</el-button>
+		</div>
 	</div>
 
 
@@ -357,6 +361,7 @@
 					}
 				}, function (data) {
 					_this.pendingProjectList = data.content.rows;
+					_this.pendingProjectTotal = data.content.total;
 				}, function (msg) {
 					_this.$message({
 						message: '加载失败',
@@ -466,6 +471,7 @@
 				}, function (data) {
 					if (data.success) {
 						_this.intermediaryList = data.content.rows;
+						_this.pendingProjectTotal = data.content.total;
 					} else {
 						_this.$message({
 							message: '查询失败',
@@ -482,7 +488,7 @@
 			},
 
 			saveContract: function (row) {
-				debugger;
+				// debugger;
 				this.isSignupProjectInfo = 2;
 				this.contractId = row.contractId;
 				var isOwnerUpload = row.isOwnerUpload;
