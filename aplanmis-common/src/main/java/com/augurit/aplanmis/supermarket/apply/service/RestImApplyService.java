@@ -222,9 +222,12 @@ public class RestImApplyService {
 
         //保存或合同信息
         if (StringUtils.isNotBlank(aeaImContract.getContractId())) {
+            aeaImContract.setModifyTime(new Date());
+            aeaImContract.setModifier(SecurityContext.getCurrentUserName());
             aeaImContractMapper.updateAeaImContract(aeaImContract);
         } else {
             aeaImContract.setContractId(UUID.randomUUID().toString());
+            aeaImContract.setCreateTime(new Date());
             aeaImContractMapper.insertAeaImContract(aeaImContract);
             //跟新报价表为已上传合同
             aeaImUnitBiddingMapper.updateUploadContract(aeaImContract.getUnitBiddingId(), "1");

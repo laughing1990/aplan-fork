@@ -702,6 +702,15 @@ var vm = new Vue({
       if (isDevelop) {
         window.setTimeout(function () {
           vm.idLibLoading = false;
+          idLibResMock.content.data.forEach(function(u) {
+            var flag = false;
+            vm.currentMatRow.certFileList && vm.currentMatRow.certFileList.forEach(function(uu){
+              if(uu.fileId.split(u.license_code).length > 1){
+                flag = true;
+              }
+            });
+            u.isRelated = flag;
+          });
           vm.idLibTableList = idLibResMock.content.data;
           typeof callback == 'function' && callback();
         }, 500);
@@ -716,6 +725,15 @@ var vm = new Vue({
           if (res.success) {
             if (res.content && res.content.data && res.content.data.length) {
               vm.idLibLoading = false;
+              res.content.data.forEach(function(u) {
+                var flag = false;
+                vm.currentMatRow.certFileList && vm.currentMatRow.certFileList.forEach(function(uu){
+                  if(uu.fileId.split(u.license_code).length > 1){
+                    flag = true;
+                  }
+                });
+                u.isRelated = flag;
+              });
               vm.idLibTableList = res.content.data;
               typeof callback == 'function' && callback();
             } else {
@@ -786,7 +804,8 @@ var vm = new Vue({
         vm.idLibLoading = false;
         if (res.success) {
           vm.$message.success('关联证照成功');
-          vm.idLibVisible = false;
+          // vm.idLibVisible = false;
+          row.isRelated = true;
           typeof vm.refreshMatIframe == 'function' && vm.refreshMatIframe();
         } else {
           vm.$message.error(res.message || '关联证照失败');
@@ -1487,7 +1506,7 @@ var vm = new Vue({
       var vm = this;
       vm.taskId = vm.getUrlParam('taskId');
       vm.isDraftPage = vm.getUrlParam('draft');
-      vm.isZJItem = (vm.getUrlParam('draft') == '8');
+      vm.isZJItem = (vm.getUrlParam('itemNature') == '8');
       // vm.isZJItem = true;
       // vm.isDraftPage = 'true';
       vm.getIteminstIdByTaskId(callback);

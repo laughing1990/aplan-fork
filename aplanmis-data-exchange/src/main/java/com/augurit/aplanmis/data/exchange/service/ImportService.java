@@ -148,12 +148,15 @@ public class ImportService {
         EtlJob job = etlJobService.getEtlJobById("1");
         Date startTime = job.getStartTime();
         Date endTime = new Date();
-        this.importAllTable(startTime, endTime);
-        Date nextTime = new Date();
         EtlJob updateJob = new EtlJob();
         updateJob.setJobId(job.getJobId());
+        updateJob.setRunStatus("1");
+        etlJobService.updateEtlJob(updateJob);
+        this.importAllTable(startTime, endTime);
+        Date nextTime = new Date();
         updateJob.setStartTime(endTime);
         updateJob.setEndTime(nextTime);
+        updateJob.setRunStatus("0");
         etlJobService.updateEtlJob(updateJob);
         EtlJobLog etlJobLog = new EtlJobLog();
         etlJobLog.setJobLogId(jobLogId);
@@ -331,7 +334,21 @@ public class ImportService {
                         item.setSplcbm(spglXmjbxxb.getSplcbm());
                         item.setSplcbbh(spglXmjbxxb.getSplcbbh());
                     } else {
-                        item.setSplcbbh(1D);
+                        //从单项申报中获取申报的主题版本
+                        boolean flag = true;
+                        List<SpglDfxmsplcjdsxxxb> itemInstlist = itemBasicService.findItemByGcdm(item.getGcdm());
+                        for(SpglDfxmsplcjdsxxxb spglDfxmsplcjdsxxxb: itemInstlist){
+                            spglDfxmsplcjdsxxxb.setSplcbm(item.getSplcbm());
+                            SpglDfxmsplcjdxxb spglDfxmsplcjdxxb = itemBasicService.getAeaParThemeVerByItemCodeAndThemeCode(spglDfxmsplcjdsxxxb);
+                            if (spglDfxmsplcjdxxb != null) {
+                                item.setSplcbbh(spglDfxmsplcjdxxb.getSplcbbh());
+                                flag = false;
+                                break;
+                            }
+                        }
+                        if(flag){
+                            item.setSplcbbh(1D);
+                        }
                         redisUtil.hset(StorageCacheKeyConstants.PROJ_CACHE_KEY, item.getGcdm(), item);
                     }
                 }

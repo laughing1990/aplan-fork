@@ -10,16 +10,17 @@
         </ul>
         <div class="ts-tab-content">
           <div class="ts-tab-item active" style="width:50%;"
-               v-show="!(loginUserInfo.isPersonAccount == 0 && loginUserInfo.userId==null)">
+            v-show="!(loginUserInfo.isPersonAccount == 0 && loginUserInfo.userId==null)">
             <el-form label-width="156px" :model="personInfo" id="personInfo">
               <el-form-item label="头像">
                 <div class="photo-change">
-                  <img v-if="showNormalPhoto" src="../../../../../main/resources/static/zjcs/personCenter/img/portrait.png"
-                       th:src="@{/zjcs/personCenter/img/portrait.png}">
+                  <img v-if="showNormalPhoto"
+                    src="../../../../../main/resources/static/zjcs/personCenter/img/portrait.png"
+                    th:src="@{/zjcs/personCenter/img/portrait.png}">
                   <img v-else :src="prtraitSrc" @error="errorLoadPhoto">
                   <span class="head_btn" :class="[!showNormalPhoto? 'head_btn_hasimg':'head_btn_noimg']">
                     <i v-show="showNormalPhoto">修改头像</i>
-                    <input type="file" class="upload_pic" id="upload" ref="filePrtrait" @change.stop="uploadoPrtrait"/>
+                    <input type="file" class="upload_pic" id="upload" ref="filePrtrait" @change.stop="uploadoPrtrait" />
                   </span>
                 </div>
               </el-form-item>
@@ -35,65 +36,71 @@
               <el-form-item label="邮箱">
                 <el-input v-model="personInfo.linkmanMail"></el-input>
               </el-form-item>
-              <el-form-item>
-                <div class="info-group-btn mt-3">
+              <!-- <el-form-item>
+                <div class="info-group-btn mt-3" style="textAlign: center;">
                   <a class="btn gray-btn" href="javascript:;" role="button">取消</a>
                   <div class="btn blue-btn" @click="savePersonInfo">保存</div>
                 </div>
-              </el-form-item>
+              </el-form-item> -->
             </el-form>
+            <div class="info-group-btn mt-3" style="textAlign: center;">
+              <el-button type="primary" @click="savePersonInfo">保存</el-button>
+            </div>
           </div>
           <div class="ts-tab-item" :class="{'active':loginUserInfo.isPersonAccount == 0 && loginUserInfo.userId==null}"
-               v-show="loginUserInfo.isPersonAccount != 1">
+            v-show="loginUserInfo.isPersonAccount != 1">
             <el-form label-width="150px" :inline="true" :model="unitInfo" id="unitInfoForm">
               <input type="hidden" v-model="unitInfo.unitInfoId"></input>
               <el-form-item label="企业名称	">
                 <el-input v-model="unitInfo.applicant"
-                          :disabled="!(loginUserInfo.isPersonAccount == 0 && loginUserInfo.userId==null)"></el-input>
+                  :disabled="!(loginUserInfo.isPersonAccount == 0 && loginUserInfo.userId==null)"></el-input>
               </el-form-item>
               <el-form-item label="统一社会信用代码	">
                 <el-input v-model="unitInfo.unifiedSocialCreditCode"
-                          :disabled="!(loginUserInfo.isPersonAccount == 0 && loginUserInfo.userId==null)"></el-input>
+                  :disabled="!(loginUserInfo.isPersonAccount == 0 && loginUserInfo.userId==null)"></el-input>
               </el-form-item>
               <el-form-item label="单位性质" prop="unitNature">
                 <el-select v-model="unitInfo.unitNature || '1'" clearable placeholder="请选择"
-                           :disabled="!(loginUserInfo.isPersonAccount == 0 && loginUserInfo.userId==null)">
+                  :disabled="!(loginUserInfo.isPersonAccount == 0 && loginUserInfo.userId==null)">
                   <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
                   </el-option>
                 </el-select>
               </el-form-item>
               <el-form-item label="邮政编码">
                 <el-input v-model="unitInfo.postalCode"
-                          :disabled="!(loginUserInfo.isPersonAccount == 0 && loginUserInfo.userId==null)"></el-input>
+                  :disabled="!(loginUserInfo.isPersonAccount == 0 && loginUserInfo.userId==null)"></el-input>
               </el-form-item>
               <el-form-item label="企业法人">
                 <el-input v-model="unitInfo.idrepresentative"
-                          :disabled="!(loginUserInfo.isPersonAccount == 0 && loginUserInfo.userId==null)"></el-input>
+                  :disabled="!(loginUserInfo.isPersonAccount == 0 && loginUserInfo.userId==null)"></el-input>
               </el-form-item>
               <el-form-item label="法人身份证号">
                 <el-input v-model="unitInfo.idno"
-                          :disabled="!(loginUserInfo.isPersonAccount == 0 && loginUserInfo.userId==null)"></el-input>
+                  :disabled="!(loginUserInfo.isPersonAccount == 0 && loginUserInfo.userId==null)"></el-input>
               </el-form-item>
               <el-form-item label="注册资本">
                 <el-input v-model="unitInfo.registeredCapital"
-                          :disabled="!(loginUserInfo.isPersonAccount == 0 && loginUserInfo.userId==null)"></el-input>
+                  :disabled="!(loginUserInfo.isPersonAccount == 0 && loginUserInfo.userId==null)"></el-input>
               </el-form-item>
               <el-form-item label="注册登记机关">
                 <el-input v-model="unitInfo.registerAuthority"
-                          :disabled="!(loginUserInfo.isPersonAccount == 0 && loginUserInfo.userId==null)"></el-input>
+                  :disabled="!(loginUserInfo.isPersonAccount == 0 && loginUserInfo.userId==null)"></el-input>
               </el-form-item>
               <el-form-item label="经营范围">
                 <el-input v-model="unitInfo.managementScope"
-                          :disabled="!(loginUserInfo.isPersonAccount == 0 && loginUserInfo.userId==null)"
-                          :autosize="{minRows:4,maxRows:8}" type="textarea" style="width:786px;"></el-input>
+                  :disabled="!(loginUserInfo.isPersonAccount == 0 && loginUserInfo.userId==null)"
+                  :autosize="{minRows:4,maxRows:8}" type="textarea" style="width:786px;"></el-input>
               </el-form-item>
-              <el-form-item v-if="loginUserInfo.isPersonAccount == 0 && loginUserInfo.userId==null">
-                <div class="info-group-btn mt-3" style="margin-left: 454px;">
+              <!-- <el-form-item v-if="loginUserInfo.isPersonAccount == 0 && loginUserInfo.userId==null">
+                <div class="info-group-btn mt-3" style="textAlign: center;">
                   <a class="btn gray-btn" href="javascript:;" role="button">取消</a>
                   <div class="btn blue-btn" @click="saveUnitInfo">保存</div>
                 </div>
-              </el-form-item>
+              </el-form-item> -->
             </el-form>
+            <div class="info-group-btn mt-3" style="textAlign: center;" v-if="loginUserInfo.isPersonAccount == 0 && loginUserInfo.userId==null">
+              <el-button type="primary" @click="saveUnitInfo">保存</el-button>
+            </div>
           </div>
         </div>
       </div>
@@ -250,7 +257,7 @@
       // 校验文件类型
       uploadCheckFile: function (file) {
         var ts = this,
-            file = file;
+          file = file;
         // 文件类型
         // 检查文件类型
         var imgReg = /(.*)\.(gif|jpg|jpeg|png|gif|jpg|png)$/;
@@ -322,7 +329,7 @@
         var selfIndex = $(this).index()
         $(this).addClass('active').siblings().removeClass('active')
         $(this).parent().siblings().children('div:eq(' + selfIndex + ')').addClass('active').siblings()
-            .removeClass('active')
+          .removeClass('active')
       });
 
       //二级tab栏
@@ -330,7 +337,7 @@
         var selfIndex = $(this).index()
         $(this).addClass('active').siblings().removeClass('active')
         $(this).parent().siblings().children('div:eq(' + selfIndex + ')').addClass('active').siblings()
-            .removeClass('active')
+          .removeClass('active')
 
       });
     },
@@ -397,7 +404,7 @@
     width: 50%;
   }
 
-  .basic-info-tb > tbody > tr > td:first-child {
+  .basic-info-tb>tbody>tr>td:first-child {
     width: 32.5%;
   }
 
@@ -477,7 +484,7 @@
     margin-top: 50px;
   }
 
-  .article-file > span {
+  .article-file>span {
     display: block;
     float: left;
     width: 50px;
@@ -487,13 +494,13 @@
     margin-left: 50px;
   }
 
-  .article-file .file-list > a {
+  .article-file .file-list>a {
     display: block;
     margin-bottom: 10px;
     color: #4879e4;
   }
 
-  .article-file .file-list > a:hover {
+  .article-file .file-list>a:hover {
     text-decoration: underline;
   }
 
@@ -536,11 +543,12 @@
   }
 
   /* disabled样式调整 */
-  #unitInfoForm .el-input.is-disabled .el-input__inner + span {
+  #unitInfoForm .el-input.is-disabled .el-input__inner+span {
     display: none;
   }
 
-  #unitInfoForm .el-input.is-disabled .el-input__inner, #unitInfoForm .el-textarea.is-disabled .el-textarea__inner {
+  #unitInfoForm .el-input.is-disabled .el-input__inner,
+  #unitInfoForm .el-textarea.is-disabled .el-textarea__inner {
     background-color: transparent;
     border: none;
     color: #999;
