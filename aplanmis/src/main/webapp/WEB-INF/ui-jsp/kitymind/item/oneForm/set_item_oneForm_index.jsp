@@ -61,7 +61,7 @@
                                 <i class="la la-gear"></i>
                             </span>
                             <h2 class="m-portlet__head-text">
-                                <span style="font-weight: bold;">总表管理</span>
+                                <span style="font-weight: bold;">总表单管理</span>
                             </h2>
                         </div>
                     </div>
@@ -88,7 +88,7 @@
                             <i class="la la-gear"></i>
                         </span>
                             <h2 class="m-portlet__head-text">
-                                <span style="font-weight: bold;">扩展表管理</span>
+                                <span style="font-weight: bold;">扩展表单管理</span>
                             </h2>
                         </div>
                     </div>
