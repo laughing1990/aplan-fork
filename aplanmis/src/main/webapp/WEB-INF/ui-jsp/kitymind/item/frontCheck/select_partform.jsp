@@ -5,7 +5,7 @@
     <div class="modal-dialog modal-dialog-centered  modal-lg" role="document" style="max-width: 950px;">
         <div class="modal-content">
             <div class="modal-header" style="padding: 15px;height: 45px;">
-                <h5 class="modal-title" id="select_partform_modal_title">选择事项扩展表</h5>
+                <h5 class="modal-title" id="select_partform_modal_title">选择事项扩展表单&nbsp;&nbsp;(&nbsp;<font color="red">*</font>&nbsp;只展示已关联表单数据,若无数据请前往事项一张表单设置！)</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>

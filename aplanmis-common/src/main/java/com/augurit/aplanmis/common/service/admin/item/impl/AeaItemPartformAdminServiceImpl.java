@@ -116,7 +116,9 @@ public class AeaItemPartformAdminServiceImpl implements AeaItemPartformAdminServ
 
     @Override
     public void createAndUpdateDevForm(String formCode, String formName, String formLoadUrl, String formId, String itemPartformId) throws Exception {
+
         if (StringUtils.isBlank(formId)) {
+
             ActStoForm actStoForm = new ActStoForm();
             actStoForm.setFormOrgId(SecurityContext.getCurrentOrgId());
             actStoForm.setFormCode(formCode);
@@ -131,20 +133,24 @@ public class AeaItemPartformAdminServiceImpl implements AeaItemPartformAdminServ
             actStoForm.setIsAutoBuildForm("0");
             actStoForm.setIsAutoBuildTable("0");
             actStoForm.setIsMetaDbTable("0");
-            actStoForm.setFormVersion(1l);
+            actStoForm.setFormVersion(1L);
             actStoForm.setIsInnerForm("0");
             actStoForm.setIsLock("0");
             actStoFormMapper.insertActStoForm(actStoForm);
 
             AeaItemPartform aeaItemPartform = aeaItemPartformMapper.getAeaItemPartformById(itemPartformId);
-            if (aeaItemPartform == null) throw new Exception("aeaItemPartform is null");
+            if (aeaItemPartform == null) {
+                throw new Exception("aeaItemPartform is null");
+            }
             aeaItemPartform.setStoFormId(actStoForm.getFormId());
             aeaItemPartformMapper.updateAeaItemPartform(aeaItemPartform);
 
         } else {
 
             ActStoForm actStoForm = actStoFormMapper.getActStoFormById(formId);
-            if (actStoForm == null) throw new Exception("actStoForm is null");
+            if (actStoForm == null) {
+                throw new Exception("actStoForm is null");
+            }
             actStoForm.setFormCode(formCode);
             actStoForm.setFormLoadUrl(formLoadUrl);
             actStoForm.setFormName(formName);
@@ -152,7 +158,6 @@ public class AeaItemPartformAdminServiceImpl implements AeaItemPartformAdminServ
             actStoForm.setModifyTime(new Date());
             actStoFormMapper.updateActStoForm(actStoForm);
         }
-
     }
 }
 
