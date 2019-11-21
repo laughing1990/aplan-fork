@@ -34,7 +34,8 @@ public interface AeaItemMatMapper {
     List<AeaItemMat> getMatListByStageId(@Param("stageId") String stageId,
                                          @Param("isNeedStateMat") String isNeedStateMat);
 
-    List<AeaItemMat> listMatListByStageId(@Param("stageId") String stageId, @Param("itemVerIds") List<String> itemVerIds);
+    List<AeaItemMat> listMatListByStageId(@Param("stageId") String stageId,
+                                          @Param("itemVerIds") List<String> itemVerIds);
 
     List<AeaItemMat> getMatListByItemVerIds(@Param("itemVerIds") String[] itemVerIds,
                                             @Param("isInput") String isInput,
@@ -58,6 +59,9 @@ public interface AeaItemMatMapper {
     List<AeaItemMat> listAeaItemMatByIds(@Param("matIds") String[] matIds);
 
     Integer checkMatCode(@Param("matId") String matId, @Param("matCode") String matCode, @Param("rootOrgId") String rootOrgId);
+
+    Integer checkMatName(@Param("matId") String matId, @Param("matName") String matName,
+                         @Param("isCommon") String isCommon, @Param("rootOrgId") String rootOrgId);
 
     Long getMaxSortNo(@Param("rootOrgId") String rootOrgId);
 

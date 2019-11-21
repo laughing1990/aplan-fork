@@ -802,7 +802,7 @@ var vm = new Vue({
     openTimeGroupDialog: function(row){
       openTimeGroupDialog(row, this);
     },
-    addSubProcess: function (type) {
+    addSubProcess: function (type,id) {
       vm.pageLoading = true;
       //由于缓冲加载效果的原因要把方法放到setTimeout中
       setTimeout(function () {
@@ -824,6 +824,35 @@ var vm = new Vue({
           $('#form_bus').attr("hidden", true);
         }
         vm.pageLoading = false;
+        $.ajax({
+          url: ctx + '/rest/mind/getSubTriggerById.do',
+          type: 'POST',
+          data: {id:id},
+          async:false,
+          success: function (result) {
+            $('#node').find('option[value=\"'+result.triggerElementId+'\"]').attr("selected","selected");
+            // $('#busRecordId').find('option[value=\"'+result.busRecordId+'\"]').attr("selected","selected");
+            $('#busRecordId').val(result.busRecordId);
+            for (var i = 0; i < itemTreeData.length; i++) {
+              if (itemTreeData[i].id == $('#busRecordId').val()) {
+                //回显表单的事项名称
+                $('#busRecordName').val(itemTreeData[i].name);
+                if(selectItemTree){
+                  //回显到事项树中
+                  var node = selectItemTree.getNodeByParam("id", itemTreeData[i].id, null);
+                  if (node) {
+                    selectItemTree.checkNode(node, true, true, false);
+                  }
+                }
+              }
+            }
+            $('#triggerId').html(result.triggerId);
+            $('input[name="checkName"][value=\"'+result.triggerEvent+'\"]').attr("checked",true);
+            $('input[name="isOuterFlow"][value=\"'+result.isOuterFlow+'\"]').prop("checked",true);
+            isOuterFlow();
+            $('#triggerAppFlowdefId').find('option[value=\"'+result.triggerAppFlowdefId+'\"]').attr("selected","selected");
+          }
+        });
       }, 50);
 
     },

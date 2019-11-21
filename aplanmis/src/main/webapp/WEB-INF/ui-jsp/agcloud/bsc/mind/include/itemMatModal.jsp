@@ -108,7 +108,7 @@
                                        name="matTypeName" readonly placeholder="请选择材料类别..." >
                                 <div class="input-group-append">
                                     <span class="input-group-text open-mat-type">
-                                        <i class="la la-tag"></i>
+                                        <i class="la la-search"></i>
                                     </span>
                                 </div>
                             </div>

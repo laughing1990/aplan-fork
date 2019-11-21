@@ -134,6 +134,25 @@ public class AeaItemMatAdminController {
         return aeaItemMatAdminService.checkMatCode(matId, matCode, rootOrgId) + "";
     }
 
+    @ApiOperation(value = "检查材料名称是否唯一", notes = "检查材料名称是否唯一")
+    @ApiImplicitParams({
+        @ApiImplicitParam(name = "matId", value = "材料Id" , dataType = "String" , paramType = "query"),
+        @ApiImplicitParam(name = "matName", value = "材料名称" , required = true, dataType = "String" , paramType = "query"),
+        @ApiImplicitParam(name = "isCommon", value = "材料是否通用" , required = true, dataType = "String" , paramType = "query"),
+    })
+    @RequestMapping("/checkMatName.do")
+    public String checkMatName(String matId, String matName, String isCommon) {
+
+        if (StringUtils.isBlank(matName)) {
+            return "false";
+        }
+        if (StringUtils.isBlank(isCommon)) {
+            return "false";
+        }
+        String rootOrgId = SecurityContext.getCurrentOrgId();
+        return aeaItemMatAdminService.checkMatName(matId, matName, isCommon, rootOrgId) + "";
+    }
+
     @ApiOperation(value = "获取材料清单列表, 带分页", notes = "获取材料清单列表, 带分页")
     @ApiImplicitParams({
         @ApiImplicitParam(name = "aeaItemMat", value = "必填" , dataType = "AeaItemMat" ,paramType = "body"),

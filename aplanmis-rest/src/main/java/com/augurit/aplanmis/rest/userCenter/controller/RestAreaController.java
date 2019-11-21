@@ -13,6 +13,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,13 +22,15 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("rest")
+@RequestMapping("/rest/area")
 @Api(value = "地区", tags = "区域 --> 相关类接口")
 public class RestAreaController {
     @Autowired
     private SyncAreaCodeJob syncAreaCodeJob;
     @Autowired
     private RegionService regionService;
+    @Value("${dg.sso.access.platform.org.top-org-id:0368948a-1cdf-4bf8-a828-71d796ba89f6}")
+    private String topOrgId;
 
     @GetMapping("/provinces")
     @ApiOperation(("查询所有省"))
@@ -55,7 +58,7 @@ public class RestAreaController {
     @GetMapping("/org/region/list")
     @ApiOperation(("根据顶级组织ID查询区划列表"))
     public ContentResultForm<List<BscDicRegion>> getBscDicRegionList() {
-        List<BscDicRegion> regions = regionService.getBscDicRegionList(SecurityContext.getCurrentOrgId());
+        List<BscDicRegion> regions = regionService.getBscDicRegionList(topOrgId);
         return new ContentResultForm<>(true, regions);
     }
 

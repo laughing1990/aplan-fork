@@ -22,4 +22,5 @@ public class MatCorrectConfirmVo {
     private String iteminstCode;//办件编号
     private String localCode;
     private String gcbm;
+    private String correctMemo;
 }

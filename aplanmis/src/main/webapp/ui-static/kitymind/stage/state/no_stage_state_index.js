@@ -122,6 +122,7 @@ function fileTypeFormatter(value, row, index){
 }
 
 function sortNoFormatter(value, row, index) {
+
     return '<div class="c-sort-no"><i class="fa fa-pencil" aria-hidden="true" ></i><input style="float:left" class="form-control col-sm-2" data-inId="' + row.inId + '" data-oldValue="' + value + '" readonly="readonly" type="text" value="' + value + '"/></div>'
 }
 
@@ -328,7 +329,23 @@ $(function(){
             },
             matName: {
                 required: true,
-                maxlength: 500
+                maxlength: 500,
+                remote: {
+                    url: ctx + '/aea/item/mat/checkMatName.do', //后台处理程序
+                    type: "post",               //数据发送方式
+                    dataType: "json",           //接受数据格式
+                    data: {   //要传递的数据
+                        matId: function () {
+                            return $("#aedit_stage_mat_form input[name='matId']").val();
+                        },
+                        matName: function () {
+                            return $("#aedit_stage_mat_form input[name='matName']").val();
+                        },
+                        isCommon: function () {
+                            return $("#aedit_stage_mat_form input[name='isCommon']").val();
+                        },
+                    }
+                }
             },
             matCode: {
                 required: true,
@@ -359,13 +376,14 @@ $(function(){
                 required: '<font color="red">此项必填！</font>',
             },
             matName: {
-                required: '<font color="red">此项必填！</font>',
-                maxlength: "长度不能超过500个字符!"
+                required: '<font color="red">材料名称必填！</font>',
+                maxlength: "最大长度不能超过500字符!",
+                remote: '材料名称已存在!'
             },
-            matCode: {
-                required: '<font color="red">此项必填！</font>',
-                maxlength: "长度不能超过200个字符!",
-                remote: "编号已存在！",
+            matCode:{
+                required: '<font color="red">材料编号必填！</font>',
+                maxlength: '最大长度不能超过200字符',
+                remote: '材料编号已存在!'
             },
             reviewKeyPoints:{
                 required: '<font color="red">此项必填！</font>',

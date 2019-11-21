@@ -54,18 +54,6 @@ public class AeaImContractController {
             return new ContentRestResult(false, null, errorMsg);
         }
         AeaImContract aeaImContract = aeaImContractService.saveOrUpdateContract(contractVo, request);
-        /*try {
-            if (StringUtils.isNotBlank(aeaImContract.getContractId())){
-                aeaImContractService.updateAeaImContract(aeaImContract,files,request);
-            } else {
-                restImApplyService.uploadContract(aeaImContract,null,request);
-            }
-
-            return new ContentRestResult(true,null,aeaImContract.getContractId());
-        } catch (Exception e) {
-            logger.error(e.getMessage(),e);
-            return new ContentRestResult(false,null,e.getMessage());
-        }*/
         return new ContentRestResult(true, aeaImContract.getContractId(), "success");
 
     }

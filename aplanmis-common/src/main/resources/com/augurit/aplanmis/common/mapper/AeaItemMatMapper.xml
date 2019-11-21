@@ -1180,12 +1180,28 @@
     </select>
 
     <select id="checkMatCode" resultType="java.lang.Integer">
-        select count(*) from AEA_ITEM_MAT
+        select
+            count(*)
+        from AEA_ITEM_MAT
         <where>
             and ROOT_ORG_ID = #{rootOrgId}
             and MAT_CODE = #{matCode}
             <if test="matId != null and matId!='' ">
-                and MAT_ID != #{matId}
+            and MAT_ID != #{matId}
+            </if>
+        </where>
+    </select>
+
+    <select id="checkMatName" resultType="java.lang.Integer">
+        select
+            count(*)
+        from AEA_ITEM_MAT
+        <where>
+            and ROOT_ORG_ID = #{rootOrgId}
+            and MAT_NAME = #{matName}
+            and IS_COMMON = #{isCommon}
+            <if test="matId != null and matId!='' ">
+            and MAT_ID != #{matId}
             </if>
         </where>
     </select>

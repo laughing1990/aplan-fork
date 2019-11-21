@@ -219,6 +219,13 @@ public class AeaItemMatAdminServiceImpl implements AeaItemMatAdminService {
     }
 
     @Override
+    public boolean checkMatName(String matId, String matName, String isCommon, String rootOrgId){
+
+        Integer count = aeaItemMatMapper.checkMatName(matId, matName,isCommon, rootOrgId);
+        return count == null || count <= 0;
+    }
+
+    @Override
     public PageInfo<AeaItemMat> listAeaItemMat(AeaItemMat aeaItemMat, Page page) throws Exception {
 
         String rootOrgId = SecurityContext.getCurrentOrgId();
