@@ -2434,6 +2434,15 @@ INSERT INTO `act_sto_widget_key` (`KEY_ID`, `WIDGET_ID`, `KEY_CODE`, `KEY_LABEL`
         </sql>
     </changeSet>
 
-
+    <changeSet id="20191121-002" author="小糊涂">
+        <comment>修改表字段</comment>
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_im_proj_purchase`
+            MODIFY COLUMN `EXPIRATION_DATE` datetime(0) NULL DEFAULT NULL COMMENT '截止日期' AFTER `IS_DEFINE_AMOUNT`;
+            ALTER TABLE `aea_hi_applyinst`
+            MODIFY COLUMN `APPLYINST_STATE` varchar(2) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL
+            COMMENT '申报状态：0已接件未审核（适用于网厅）、1 已接件并审核、2窗口受理、3待补全、4补全待确认、5不予受理、6已办结' AFTER `APPLYINST_MEMO`;
+        </sql>
+    </changeSet>
 
 </databaseChangeLog>
