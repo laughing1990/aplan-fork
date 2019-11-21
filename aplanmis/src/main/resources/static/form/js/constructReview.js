@@ -274,7 +274,7 @@ var app = new Vue({
             for (var i = 0; i < res.content.drawings.length; i++) {
               if (res.content.drawings[i].unitType == '25') {
                 vm.formDataTuShen = res.content.drawings[i] || {};
-              } else if (res.content.drawings[i].unitType == '3') {
+              } else if (res.content.drawings[i].unitType == '4') {
                 vm.formDataSheJj = res.content.drawings[i] || {};
               } else {
                 vm.formDataKanCha = res.content.drawings[i] || {};
