@@ -2366,12 +2366,12 @@ var module1 = new Vue({
                 item.preItemCheckPassed = false;
                 selArr.splice(index,1);
                 _that.checkboxInit(item);
-                if (item.preItemCheckPassed == false) {
-                  _that.$message({
-                    message: '该事项前置事项检测失败！',
-                    type: 'error'
-                  });
-                }
+                // if (item.preItemCheckPassed == false) {
+                //   _that.$message({
+                //     message: '该事项前置事项检测失败！',
+                //     type: 'error'
+                //   });
+                // }
               }
             }, function (msg) {})
           }
