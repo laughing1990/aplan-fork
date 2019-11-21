@@ -69,7 +69,7 @@
                         <a class="a-color4879E4" href="javascript:;" @click="addAgreement(scope.row)"
                             v-if="scope.row.auditFlag==16">上传合同</a>
                         <a class="a-color4879E4" href="javascript:;" @click="confirmWinBidResult(scope.row)"
-                            v-if="scope.row.auditFlag==9">确认中标结果</a>
+                            v-else-if="scope.row.auditFlag==9">确认中标结果</a>
                         <p style="margin: 0;" v-else>
                             <a class="a-color4879E4" href="javascript:;"
                                 v-if="scope.row.contractFlag == 0 && scope.row.isOwnerUpload == 0"
