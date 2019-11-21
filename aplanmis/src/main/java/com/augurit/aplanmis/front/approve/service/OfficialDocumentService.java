@@ -549,10 +549,19 @@ public class OfficialDocumentService {
         if (StringUtils.isBlank(certinstId) || "null".equals(certinstId) || "undefined".equals(certinstId))
             return constructPermit;
 
-        List<AeaHiItemInoutinst> aeaHiItemInoutinsts = aeaHiItemInoutinstMapper.getAeaHiIteminstCertByCertinstId(certinstId);
-        if (aeaHiItemInoutinsts.isEmpty()) {
+        AeaHiItemMatinst aeaHiItemMatinst = new AeaHiItemMatinst();
+        aeaHiItemMatinst.setCertinstId(certinstId);
+        List<AeaHiItemMatinst> aeaHiItemMatinsts = aeaHiItemMatinstMapper.listAeaHiItemMatinst(aeaHiItemMatinst);
+        List<AeaHiItemInoutinst> aeaHiItemInoutinsts = null;
+        if(aeaHiItemMatinsts!=null && aeaHiItemMatinsts.size() >0){
+            aeaHiItemInoutinsts = aeaHiItemInoutinstMapper.getAeaHiItemInoutinstByMatinstId(aeaHiItemMatinsts.get(0).getMatinstId());
+            if (aeaHiItemInoutinsts.isEmpty()) {
+                return constructPermit;
+            }
+        }else {
             return constructPermit;
         }
+
         //查询电子证照实例表
         AeaHiCertinst aeaHiCertinstById = aeaHiCertinstMapper.getAeaHiCertinstById(certinstId);
 
@@ -571,6 +580,9 @@ public class OfficialDocumentService {
         if (aeaExProjCertBuildByProjId != null) {
             String certBuildCode = aeaExProjCertBuildByProjId.getCertBuildCode();//建设工程规划许可证编号
             byte[] certBuildQrcode = aeaExProjCertBuildByProjId.getCertBuildQrcode();//建设工程规划许可证二维码
+            if(certBuildQrcode != null){
+                constructPermit.setCertBuildQrcode(certBuildQrcode);
+            }
             //广东分支将此段放开
             /*if (StringUtils.isBlank(certBuildCode) && certBuildQrcode.length == 0 && certBuildQrcode == null){
                 //获取施工许可证编码和二维码
@@ -598,7 +610,7 @@ public class OfficialDocumentService {
             String govOrgName = aeaExProjCertBuildByProjId.getGovOrgName();
 //            String govOrgCode = aeaExProjCertBuildByProjId.getGovOrgCode();
             Date publishTime = aeaExProjCertBuildByProjId.getPublishTime();
-            if (StringUtils.isBlank(govOrgName) && publishTime == null) {
+            if (StringUtils.isBlank(govOrgName)) {
                 constructPermit.setIssueOrgName(certinst.getIssueOrgName());//核发机关
                 Date issueDate = certinst.getIssueDate();
                 if (null != issueDate) {

@@ -737,13 +737,13 @@ public class ReceivePDFTemplate {
                 under.addImage(img);*/
 
                 //二维码
-                if (vo.getCertBuildQrcode() != null) {
-                    Image ercode = Image.getInstance(vo.getCertBuildQrcode());
-                    ercode.setAbsolutePosition(100, 90);
-                    ercode.scaleToFit(130, 130);
-                    //under.addImage(ercode, ercode.getScaledWidth(), 0, 0, ercode.getScaledHeight(), 0, 0);
-                    under.addImage(ercode);
-                }
+//                if (vo.getCertBuildQrcode() != null) {
+//                    Image ercode = Image.getInstance(vo.getCertBuildQrcode());
+//                    ercode.setAbsolutePosition(100, 90);
+//                    ercode.scaleToFit(130, 130);
+//                    //under.addImage(ercode, ercode.getScaledWidth(), 0, 0, ercode.getScaledHeight(), 0, 0);
+//                    under.addImage(ercode);
+//                }
 
             }
 
