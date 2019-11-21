@@ -33,6 +33,7 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
@@ -132,11 +133,19 @@ public class RestApplyProjController {
                 list=aeaProjInfoService.findAeaProjInfoByUnitInfoId(loginInfo.getUnitId());
             }
             String[] localCodes = list.size() > 0 ? list.stream().map(AeaProjInfo::getLocalCode).toArray(String[]::new) : new String[0];
+            //使用lamada，分页数据会丢失，在lambda之前，先搞一个pageinfo, lambda之后，把分页信息copy进去
             PageHelper.startPage(pageNum, pageSize);
-            List<AeaProjInfo> projs = localCodes.length > 0 ? aeaProjInfoService.getProjListAndChildProjsByParent(localCodes) : list;
-            return new ContentResultForm<PageInfo<AeaProjInfoResultVo>>(true,
-                    new PageInfo<AeaProjInfoResultVo>(projs.size() > 0 ? projs.stream().map(AeaProjInfoResultVo::build).collect(Collectors.toList()) : new ArrayList<>()));
-        } catch (Exception e) {
+            List<AeaProjInfo> projs = aeaProjInfoService.getProjListAndChildProjsByParent(localCodes) ;
+            PageInfo origPageInfo = new PageInfo<>(projs);
+            List<AeaProjInfoResultVo> projsByBuild = projs.stream().map(AeaProjInfoResultVo::build).collect(Collectors.toList());
+
+            PageInfo<AeaProjInfoResultVo> pageInfo = new PageInfo<>(projsByBuild);
+            BeanUtils.copyProperties(origPageInfo,pageInfo,"list");
+
+            return new ContentResultForm<>(true,pageInfo);
+//            return new ContentResultForm<PageInfo<AeaProjInfoResultVo>>(true,
+//                    new PageInfo<AeaProjInfoResultVo>(projs.size() > 0 ? projs.stream().map(AeaProjInfoResultVo::build).collect(Collectors.toList()) : new ArrayList<>()));
+           } catch (Exception e) {
             logger.error(e.getMessage(),e);
             return new ResultForm(false,"查询用户项目列表异常");
         }
