@@ -846,4 +846,20 @@ public class RestBpmTaskFrontController {
             return new ResultForm(false, "流程激活失败！");
         }
     }
+
+    /**
+     * 触发子流程（仅用于子流程触发失败的场景）
+     * @param taskId 触发节点任务ID
+     * @param eventName 触发事件名称
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping("/triggerSubFlow")
+    public ResultForm triggerSubFlow(String taskId,String eventName) throws Exception{
+        if(StringUtils.isBlank(taskId)||StringUtils.isBlank(eventName))
+            return new ResultForm(false,"任务ID及触发事件名称参数不能为空！");
+
+        bpmTaskFrontService.triggerSubFlow(taskId,eventName);
+        return new ResultForm(true,"子流程触发成功！");
+    }
 }

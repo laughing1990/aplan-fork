@@ -802,7 +802,7 @@ var vm = new Vue({
             }
         },
         // 新增编辑联系人信息
-        addLinkman: function(data, parData) {
+        addLinkman: function(data, parData) {debugger
             var _that = this;
             _that.addEditManModalShow = true;
             _that.getUnitsListByProjInfoId();

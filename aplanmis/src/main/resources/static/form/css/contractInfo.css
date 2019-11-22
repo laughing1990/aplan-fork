@@ -232,14 +232,27 @@ body {
   border-bottom: 1px solid #e6e6e6;
 }
 
-.input-inline {
-  width: 45%;
-  float: left;
+@media (min-width:500px) {
+  .input-inline {
+    width: 100%;
+    float: left;
+  }
+
+  .el-form-item__content {
+    width: 60%;
+  }
 }
 
-.el-form-item__content {
-  width: 61%;
+@media (min-width:1000px) {
+  .input-inline {
+    width: 45%;
+    float: left;
+  }
 }
+
+/*.el-form-item__content {
+  width: 61%;
+}*/
 
 .el-form-item__content .el-date-editor {
   width: 100%;
@@ -248,7 +261,6 @@ body {
 .el-form-item__content .el-select {
   width: 100%;
 }
-
 .input-inline:nth-child(even) {
   float: right;
 }

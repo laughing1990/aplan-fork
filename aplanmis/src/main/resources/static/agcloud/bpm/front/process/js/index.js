@@ -1738,6 +1738,24 @@ var app = new Vue({
             $('#bpmnModel').html('');//先清空流程图容器div
             _showChildrenProcessDiagram(childProcInstId, isCheck);
         },
+        //触发子流程
+        triggerSubFlow:function (taskId,eventName) {
+            var request = jQuery.ajax({
+                type: 'get',
+                url: ctx + 'rest/front/task/triggerSubFlow' + '?flag=' + new Date().getTime(),
+                data:{taskId:taskId,eventName:eventName},
+                success: function (data, textStatus, jqXHR) {
+                    if(data.success){
+                        alert(data.message);
+                    }else{
+                        alert(data.message);
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    alert("error");
+                }
+            });
+        },
 //==========================================================工程建设 相关审批按钮 start ========
 
 
@@ -2607,6 +2625,15 @@ function showChildrenDiagramDialog(node) {
     var procInstId = $(node).attr("data-procInstId");
     var isCheck = $(node).attr("data-isCheck");
     vm.showChildrenDiagramDialog(procInstId, isCheck);
+}
+
+
+//触发子流程
+function triggerSubFlow(node) {
+    //这个 是在 后台生成流程图节点信息的接口约定的
+    var taskId = $(node).attr("data-taskId");
+    var eventName = $(node).attr("data-eventName");
+    vm.triggerSubFlow(taskId,eventName);
 }
 
 function closeCurrentTab() {

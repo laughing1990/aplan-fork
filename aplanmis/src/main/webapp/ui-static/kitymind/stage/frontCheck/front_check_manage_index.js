@@ -9,6 +9,9 @@ var edit_par_front_stage_form_validator;
 var par_front_partform_tb;
 var edit_par_front_partform_form_validator;
 
+var title = '查看';
+var ico = 'la la-search';
+
 function isCatalogFormatter(value, row, index, field) {
 
     if(row.isCatalog=='1'){
@@ -75,74 +78,87 @@ function handleIsActiveHtml(isActive, id, type){
 
 function changeIsActive(obj, id, isActive, type){
 
-    if(id){
-        var action = isActive=='1'? "禁用" : "启用" ;
-        swal({
-            title: '提示信息',
-            text: "确定要" + action + "选中的记录吗?",
-            type: 'warning',
-            showCancelButton: true,
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-        }).then(function(result) {
-            if (result.value){
-                var url;
-                if(type=='proj'){
-                    url = ctx + '/aea/par/front/proj/changIsActive.do';
-                }else if(type=='item'){
-                    url = ctx + '/aea/par/front/item/changIsActive.do';
-                }else if(type=='itemform'){
-                    url = ctx + '/aea/par/front/itemform/changIsActive.do';
-                }else if(type=='partform'){
-                    url = ctx + '/aea/par/front/partform/changIsActive.do';
-                }else if(type=='stage'){
-                    url = ctx + '/aea/par/front/stage/changIsActive.do';
-                }
-                $.ajax({
-                    url: url,
-                    type: 'POST',
-                    data: {"id": id},
-                    success: function (result) {
-                        if(result.success){
-                            if(type=='proj'){
-                                if(par_front_proj_tb){
-                                    par_front_proj_tb.clear();
-                                }
-                            }else if(type=='item'){
-                                if(par_front_item_tb){
-                                    par_front_item_tb.clear();
-                                }
-                            }else if(type=='itemform'){
-                                if(par_front_itemform_tb){
-                                    par_front_itemform_tb.clear();
-                                }
-                            }else if(type=='partform'){
-                                if(par_front_partform_tb){
-                                    par_front_partform_tb.clear();
-                                }
-                            }else if(type=='stage'){
-                                if(par_front_stage_tb){
-                                    par_front_stage_tb.clear();
-                                }
-                            }
-                        }else{
-                            swal('错误信息', result.message, 'error');
-                        }
-                    },
-                    error: function () {
-                        swal('错误信息', '服务器异常！', 'error');
+    if(curIsEditable){
+
+        if(id){
+            var action = isActive=='1'? "禁用" : "启用" ;
+            swal({
+                title: '提示信息',
+                text: "确定要" + action + "选中的记录吗?",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+            }).then(function(result) {
+                if (result.value){
+                    var url;
+                    if(type=='proj'){
+                        url = ctx + '/aea/par/front/proj/changIsActive.do';
+                    }else if(type=='item'){
+                        url = ctx + '/aea/par/front/item/changIsActive.do';
+                    }else if(type=='itemform'){
+                        url = ctx + '/aea/par/front/itemform/changIsActive.do';
+                    }else if(type=='partform'){
+                        url = ctx + '/aea/par/front/partform/changIsActive.do';
+                    }else if(type=='stage'){
+                        url = ctx + '/aea/par/front/stage/changIsActive.do';
                     }
-                });
-            }else{
-                isActive=='1'?$(obj).prop("checked",true):$(obj).prop("checked",false);
-            }
-        });
-    }else{
-        swal('错误信息', '操作对象！', 'error');
+                    $.ajax({
+                        url: url,
+                        type: 'POST',
+                        data: {"id": id},
+                        success: function (result) {
+                            if(result.success){
+                                if(type=='proj'){
+                                    if(par_front_proj_tb){
+                                        par_front_proj_tb.clear();
+                                    }
+                                }else if(type=='item'){
+                                    if(par_front_item_tb){
+                                        par_front_item_tb.clear();
+                                    }
+                                }else if(type=='itemform'){
+                                    if(par_front_itemform_tb){
+                                        par_front_itemform_tb.clear();
+                                    }
+                                }else if(type=='partform'){
+                                    if(par_front_partform_tb){
+                                        par_front_partform_tb.clear();
+                                    }
+                                }else if(type=='stage'){
+                                    if(par_front_stage_tb){
+                                        par_front_stage_tb.clear();
+                                    }
+                                }
+                            }else{
+                                swal('错误信息', result.message, 'error');
+                            }
+                        },
+                        error: function () {
+                            swal('错误信息', '服务器异常！', 'error');
+                        }
+                    });
+                }else{
+                    isActive=='1'?$(obj).prop("checked",true):$(obj).prop("checked",false);
+                }
+            });
+        }else{
+            swal('错误信息', '操作对象！', 'error');
+        }
+    }else {
+
+        isActive == '1' ? $(obj).prop("checked", true) : $(obj).prop("checked", false);
+        swal('提示信息', '当前版本下数据不可编辑!', 'info');
     }
 }
 
 $(function(){
+
+    if(curIsEditable){
+
+        title = '编辑';
+        ico = 'la la-edit';
+    }
 
     if(isCheckProj=='1'){
         par_front_proj_tb = defaultBootstrap("par_front_proj_tb",[
@@ -196,7 +212,8 @@ $(function(){
                 width: 100,
                 align: 'center',
                 formatter: function (value, row, index) {
-                    var btn =  '<a href="javascript:editParFrontProj(\'' + row.frontProjId + '\')" class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill" title="编辑"><i class="la la-edit"></i></a>';
+
+                    var btn =  '<a href="javascript:editParFrontProj(\'' + row.frontProjId + '\')" class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill" title="'+ title +'"><i class="'+ ico +'"></i></a>';
                     if(curIsEditable){
                         btn = btn + '<a href="javascript:delParFrontProj(\'' + row.frontProjId + '\')" class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill" title="删除"><i class="la la-trash"></i></a>'
                     }
@@ -348,7 +365,8 @@ $(function(){
                 width: 120,
                 align: 'center',
                 formatter: function (value, row, index) {
-                    var btn =  '<a href="javascript:editParFrontItem(\'' + row.frontItemId + '\')" class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill" title="编辑"><i class="la la-edit"></i></a>';
+
+                    var btn =  '<a href="javascript:editParFrontItem(\'' + row.frontItemId + '\')" class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill" title="'+ title +'"><i class="'+ ico +'"></i></a>';
                     if(curIsEditable){
                         btn = btn + '<a href="javascript:delParFrontItem(\'' + row.frontItemId + '\')" class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill" title="删除"><i class="la la-trash"></i></a>'
                     }
@@ -494,7 +512,7 @@ $(function(){
                 align: 'center',
                 formatter: function (value, row, index) {
 
-                    var btn =  '<a href="javascript:editParFrontItemform(\'' + row.frontItemformId + '\')" class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill" title="编辑"><i class="la la-edit"></i></a>';
+                    var btn =  '<a href="javascript:editParFrontItemform(\'' + row.frontItemformId + '\')" class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill" title="'+ title +'"><i class="'+ ico +'"></i></a>';
                     if(curIsEditable){
                         btn = btn + '<a href="javascript:delParFrontItemform(\'' + row.frontItemformId + '\')" class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill" title="删除"><i class="la la-trash"></i></a>'
                     }
@@ -653,7 +671,8 @@ $(function(){
                 width: 100,
                 align: 'center',
                 formatter: function (value, row, index) {
-                    var btn =  '<a href="javascript:editParFrontStage(\'' + row.frontStageId + '\')" class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill" title="编辑"><i class="la la-edit"></i></a>';
+
+                    var btn =  '<a href="javascript:editParFrontStage(\'' + row.frontStageId + '\')" class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill" title="'+ title +'"><i class="'+ ico +'"></i></a>';
                     if(curIsEditable){
                         btn = btn + '<a href="javascript:delParFrontStage(\'' + row.frontStageId + '\')" class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill" title="删除"><i class="la la-trash"></i></a>'
                     }
@@ -799,7 +818,8 @@ $(function(){
                 width: 120,
                 align: 'center',
                 formatter: function (value, row, index) {
-                    var btn =  '<a href="javascript:editParFrontPartform(\'' + row.frontPartformId + '\')" class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill" title="编辑"><i class="la la-edit"></i></a>';
+
+                    var btn =  '<a href="javascript:editParFrontPartform(\'' + row.frontPartformId + '\')" class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill" title="'+ title +'"><i class="'+ ico +'"></i></a>';
                     if(curIsEditable){
                         btn = btn + '<a href="javascript:delParFrontPartform(\'' + row.frontPartformId + '\')" class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill" title="删除"><i class="la la-trash"></i></a>'
                     }
@@ -890,7 +910,7 @@ function addParFrontProj() {
     if(curIsEditable) {
 
         $("#edit_par_front_proj_modal").modal("show");
-        $('#edit_par_front_proj_title').html('新增项目信息前置检测');
+        $('#edit_par_front_proj_title').html('新增项目信息');
         $('#edit_par_front_proj_scroll').animate({scrollTop: 0}, 800);//滚动到顶部
         $('#edit_par_front_proj_form')[0].reset();
         if(edit_par_front_proj_form_validator){
@@ -928,7 +948,7 @@ function delParFrontProj(id) {
 
     swal({
         title: '',
-        text: '确定要删除选定的前置检测吗',
+        text: '确定要删除选定的前置检测吗？',
         type: 'warning',
         showCancelButton: true,
         confirmButtonText: '确定',
@@ -977,7 +997,7 @@ function batchDelParFrontProj() {
     if(curIsEditable) {
         var checkList = par_front_proj_tb.getSelections();
         if(checkList.length==0){
-            swal('提示信息', '请勾选要删除的前置检测', 'info');
+            swal('提示信息', '请勾选要删除的前置检测！', 'info');
         }else{
             var ids = new Array();
             for(var i=0;i<checkList.length;i++){
@@ -994,12 +1014,14 @@ function batchDelParFrontProj() {
 function editParFrontProj(frontProjId) {
 
     if(curIsEditable){
+        $('#selectRuleElBtn').show();
         $('#saveParFrontProjBtn').show();
     }else{
+        $('#selectRuleElBtn').hide();
         $('#saveParFrontProjBtn').hide();
     }
     $("#edit_par_front_proj_modal").modal("show");
-    $('#edit_par_front_proj_title').html('编辑项目信息前置检测');
+    $('#edit_par_front_proj_title').html((curIsEditable?'编辑':'查看')+'项目信息');
     $('#edit_par_front_proj_scroll').animate({scrollTop: 0}, 800);//滚动到顶部
     $('#edit_par_front_proj_form')[0].reset();
     if(edit_par_front_proj_form_validator){
@@ -1034,7 +1056,7 @@ function addParFrontItem() {
     if(curIsEditable) {
 
         $("#edit_par_front_item_modal").modal("show");
-        $('#edit_par_front_item_title').html('新增事项信息前置检测');
+        $('#edit_par_front_item_title').html('新增事项信息');
         $('#edit_par_front_item_scroll').animate({scrollTop: 0}, 800);//滚动到顶部
         $('#edit_par_front_item_form')[0].reset();
         if(edit_par_front_item_form_validator){
@@ -1079,7 +1101,7 @@ function editParFrontItem(frontItemId) {
     $("#uploadProgress").modal("show");
 
     $("#edit_par_front_item_modal").modal("show");
-    $('#edit_par_front_item_title').html('编辑事项信息前置检测');
+    $('#edit_par_front_item_title').html((curIsEditable?'编辑':'查看')+'事项信息');
     $('#edit_par_front_item_scroll').animate({scrollTop: 0}, 800);//滚动到顶部
     $('#edit_par_front_item_form')[0].reset();
     if(edit_par_front_item_form_validator){
@@ -1141,7 +1163,7 @@ function batchDelParFrontItem() {
     if(curIsEditable) {
         var checkList = par_front_item_tb.getSelections();
         if(checkList.length==0){
-            swal('提示信息', '请勾选要删除的前置检测', 'info');
+            swal('提示信息', '请勾选要删除的前置检测！', 'info');
         }else{
             var ids = [];
             for(var i=0;i<checkList.length;i++){
@@ -1159,7 +1181,7 @@ function delParFrontItem(id) {
 
     swal({
         title: '',
-        text: '确定要删除选定的前置检测吗',
+        text: '确定要删除选定的前置检测吗？',
         type: 'warning',
         showCancelButton: true,
         confirmButtonText: '确定',
@@ -1224,7 +1246,7 @@ function addParFrontItemform() {
 
                         $('#select_par_front_itemform_btn').show();
                         $("#edit_par_front_itemform_modal").modal("show");
-                        $('#edit_par_front_itemform_title').html('新增事项表单信息前置检测');
+                        $('#edit_par_front_itemform_title').html('新增事项表单信息');
                         $('#edit_par_front_itemform_scroll').animate({scrollTop: 0}, 800);//滚动到顶部
                         $('#edit_par_front_itemform_form')[0].reset();
                         $('#edit_par_front_itemform_form input[name="frontItemformId"]').val('');
@@ -1261,7 +1283,7 @@ function editParFrontItemform(frontItemformId) {
     }
 
     $("#edit_par_front_itemform_modal").modal("show");
-    $('#edit_par_front_itemform_title').html('编辑事项表单信息前置检测');
+    $('#edit_par_front_itemform_title').html((curIsEditable?'编辑':'查看')+'事项表单信息');
     $('#edit_par_front_itemform_form')[0].reset();
     if(edit_par_front_itemform_form_validator){
         edit_par_front_itemform_form_validator.resetForm();
@@ -1312,7 +1334,7 @@ function batchDelParFrontItemform() {
     if(curIsEditable) {
         var checkList = par_front_itemform_tb.getSelections();
         if(checkList.length==0){
-            swal('提示信息', '请勾选要删除的前置检测', 'info');
+            swal('提示信息', '请勾选要删除的前置检测！', 'info');
         }else{
             var ids = new Array();
             for(var i=0;i<checkList.length;i++){
@@ -1330,7 +1352,7 @@ function delParFrontItemform(id) {
 
     swal({
         title: '',
-        text: '确定要删除选定的前置检测吗',
+        text: '确定要删除选定的前置检测吗？',
         type: 'warning',
         showCancelButton: true,
         confirmButtonText: '确定',
@@ -1386,7 +1408,7 @@ function addParFrontStage() {
             async: false,
             success: function (result) {
                 if (result.success) {
-                    loadSelectParFrontStage(null,'add',result.content);
+                    // loadSelectParFrontStage(null,'add',result.content);
                 } else {
                     setTimeout(function(){
                         $("#uploadProgress").modal('hide');
@@ -1418,6 +1440,7 @@ function editParFrontStage(frontStageId) {
     $("#uploadProgress").modal("show");
 
     $("#edit_par_front_stage_modal").modal("show");
+    $("#edit_par_front_stage_title").html((curIsEditable?'编辑':'查看')+'主/辅线信息');
     $('#edit_par_front_stage_form')[0].reset();
     if(edit_par_front_stage_form_validator){
         edit_par_front_stage_form_validator.resetForm();
@@ -1465,7 +1488,7 @@ function batchDelParFrontStage() {
 
         var checkList = par_front_stage_tb.getSelections();
         if(checkList.length==0){
-            swal('提示信息', '请勾选要删除的前置检测', 'info');
+            swal('提示信息', '请勾选要删除的前置检测！', 'info');
         }else{
             var ids = new Array();
             for(var i=0;i<checkList.length;i++){
@@ -1483,7 +1506,7 @@ function delParFrontStage(id) {
 
     swal({
         title: '',
-        text: '确定要删除选定的前置检测吗',
+        text: '确定要删除选定的前置检测吗？',
         type: 'warning',
         showCancelButton: true,
         confirmButtonText: '确定',
@@ -1547,7 +1570,7 @@ function addParFrontPartform() {
                         $('#select_par_front_partform_btn').show();
 
                         $("#edit_par_front_partform_modal").modal("show");
-                        $('#edit_par_front_partform_title').html('新增阶段扩展表单前置检测');
+                        $('#edit_par_front_partform_title').html('新增扩展表单信息');
                         $('#edit_par_front_partform_scroll').animate({scrollTop: 0}, 800);//滚动到顶部
                         $('#edit_par_front_partform_form')[0].reset();
                         $('#edit_par_front_partform_form input[name="frontPartformId"]').val('');
@@ -1584,7 +1607,7 @@ function editParFrontPartform(frontPartformId) {
     }
 
     $("#edit_par_front_partform_modal").modal("show");
-    $('#edit_item_front_partform_title').html('编辑前置检测扩展表单');
+    $('#edit_par_front_partform_title').html((curIsEditable?'编辑':'查看')+'扩展表单信息');
     // $('#edit_par_front_partform_scroll').animate({scrollTop: 0}, 800);//滚动到顶部
     $('#edit_par_front_partform_form')[0].reset();
     if(edit_par_front_partform_form_validator){
@@ -1620,7 +1643,7 @@ function batchDelParFrontPartform() {
     if(curIsEditable) {
         var checkList = par_front_partform_tb.getSelections();
         if(checkList.length==0){
-            swal('提示信息', '请勾选要删除的前置检测', 'info');
+            swal('提示信息', '请勾选要删除的前置检测！', 'info');
         }else{
             var ids = new Array();
             for(var i=0;i<checkList.length;i++){
@@ -1638,7 +1661,7 @@ function delParFrontPartform(id) {
 
     swal({
         title: '',
-        text: '确定要删除选定的前置检测吗',
+        text: '确定要删除选定的前置检测吗？',
         type: 'warning',
         showCancelButton: true,
         confirmButtonText: '确定',
@@ -1684,6 +1707,10 @@ function delParFrontPartform(id) {
 
 function importFrontItem(){
 
-    // 初始化事项树数据
-    initFrontCheckItem();
+    if(curIsEditable) {
+        // 初始化事项树数据
+        initFrontCheckItem();
+    }else{
+        swal('提示信息', '当前版本下数据不可编辑!', 'info');
+    }
 }

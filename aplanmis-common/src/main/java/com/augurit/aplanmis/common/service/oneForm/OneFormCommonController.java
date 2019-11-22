@@ -2,6 +2,7 @@ package com.augurit.aplanmis.common.service.oneForm;
 import com.augurit.agcloud.bpm.common.sfengine.config.SFRenderConfig;
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
+import com.augurit.aplanmis.front.basis.stage.vo.OneFormItemRequest;
 import com.augurit.aplanmis.front.basis.stage.vo.OneFormStageRequest;
 import com.augurit.aplanmis.front.basis.stage.vo.FormFrofileVo;
 import io.swagger.annotations.Api;
@@ -53,6 +54,17 @@ public class OneFormCommonController {
     /********************并联申报接口 end ********************************/
 
     /********************单事项申报接口 begin ********************************/
+    @RequestMapping(value = "/getListForm4ItemOneForm", method = {RequestMethod.GET, RequestMethod.POST})
+    @ApiOperation("根据事项，返回表单列表(包括智能表单，开发表单)")
+    public ResultForm getListForm4ItemOneForm(OneFormItemRequest oneFormItemRequest, SFRenderConfig sFRenderConfig) {
+        try {
+            List<FormFrofileVo> result = oneFormCommonService.getListForm4ItemOneForm(oneFormItemRequest);
+            return new ContentResultForm(true, result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ContentResultForm(false, e.getMessage());
+        }
+    }
 
     /********************单事项申报接口 end ********************************/
 

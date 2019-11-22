@@ -3,7 +3,7 @@
 <!-- 添加/编辑 -->
 <div id="edit_par_front_itemform_modal" class="modal fade" tabindex="-1" role="dialog"
      aria-labelledby="dialog_item_dept" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered  modal-lg" role="document" style="max-width: 650px;">
+    <div class="modal-dialog modal-dialog-centered  modal-lg" role="document">
         <div class="modal-content">
             <!-- 标题 -->
             <div class="modal-header" style="padding: 15px;height: 45px;">
@@ -37,14 +37,14 @@
                     <div class="form-group m-form__group row">
                         <label class="col-lg-2 col-form-label" style="text-align: right;"><font color="red">*</font>排序:</label>
                         <div class="col-lg-10">
-                            <input type="text" class="form-control m-input" name="sortNo" value="" ${curIsEditable?'':'disabled'}/>
+                            <input type="text" class="form-control m-input" name="sortNo" value="" />
                         </div>
                     </div>
 
                     <div class="form-group m-form__group row">
                         <label class="col-lg-2 col-form-label" style="text-align: right;">备注:</label>
                         <div class="col-lg-10">
-                            <textarea type="text" class="form-control m-input" name="frontItemformMemo" rows="4" value="" ${curIsEditable?'':'disabled'} ></textarea>
+                            <textarea type="text" class="form-control m-input" name="frontItemformMemo" rows="4" value=""  ></textarea>
                         </div>
                     </div>
                 </div>

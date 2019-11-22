@@ -7,6 +7,7 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 @Data
 @ApiModel("并联||单项 申报材料列表")
@@ -84,4 +85,6 @@ public class MatinstVo implements Serializable {
     private String matCode;
 
     private String stoFormId;
+
+    private List<Map> certinstList;
 }

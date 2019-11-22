@@ -261,5 +261,20 @@ public class ApproveController {
         return new ResultForm(false, "获取证照库失败！");
     }
 
+    @PostMapping("/matinst/unbindCertinst")
+    @ApiOperation(value = "证照解除绑定")
+    @ApiImplicitParams(value = {
+            @ApiImplicitParam(name = "matinstId", value = "材料实例ID", dataType = "string", required = true),
+    })
+    public ResultForm unbindCertinst(String matinstId) {
+        try {
+            approveService.unbindCertinst(matinstId);
+            return new ResultForm(true, "解除绑定成功！");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new ResultForm(false, "解除绑定失败！");
+    }
+
 
 }

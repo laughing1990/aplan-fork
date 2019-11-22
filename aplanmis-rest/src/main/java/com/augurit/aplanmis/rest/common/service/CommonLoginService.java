@@ -80,6 +80,7 @@ public class CommonLoginService {
                     authUser.setUnitInfoId(owner.getUnitInfoId());
                     authUser.setUnitInfoName(owner.getApplicant());
                     authUser.setCurrentOrgId(owner.getRootOrgId());
+                    authUser.setUnifiedSocialCreditCode(owner.getUnifiedSocialCreditCode());
                     break;
                 }
             }
@@ -99,6 +100,7 @@ public class CommonLoginService {
             authUser.setUnitInfoId(aeaUnitInfo.getUnitInfoId());
             authUser.setUnitInfoName(aeaUnitInfo.getApplicant());
             authUser.setCurrentOrgId(aeaUnitInfo.getRootOrgId());
+            authUser.setUnifiedSocialCreditCode(aeaUnitInfo.getUnifiedSocialCreditCode());
             authUser.setPersonalAccount(true);
         } else if (StringUtils.isBlank(authUser.getLinkmanInfoId()) && StringUtils.isNotBlank(authUser.getUnitInfoId())) {
             List<AeaLinkmanInfo> aeaLinkmanInfos = aeaLinkmanInfoMapper.getAeaLinkmanInfoByUnitInfoId(authUser.getUnitInfoId(), 1);

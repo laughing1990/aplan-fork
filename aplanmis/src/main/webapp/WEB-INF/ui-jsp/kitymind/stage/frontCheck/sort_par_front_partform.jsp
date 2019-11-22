@@ -79,33 +79,37 @@
     //分类排序
     function sortParFrontPartform(){
 
-        $.post(ctx+'/aea/par/front/partform/listAeaParFrontPartformByNoPage.do',{
-            'stageId': currentBusiId,
-        }, function(data){
-            if(data!=null&&data.length>0){
+        if(curIsEditable) {
+            $.post(ctx+'/aea/par/front/partform/listAeaParFrontPartformByNoPage.do',{
+                'stageId': currentBusiId,
+            }, function(data){
+                if(data!=null&&data.length>0){
 
-                $('#sort_par_front_partform_modal').modal('show');
-                $('#sortParFrontPartformDiv').animate({scrollTop: 0}, 800);//滚动到顶部
-                $("#sortParFrontPartformUl").html("");
+                    $('#sort_par_front_partform_modal').modal('show');
+                    $('#sortParFrontPartformDiv').animate({scrollTop: 0}, 800);//滚动到顶部
+                    $("#sortParFrontPartformUl").html("");
 
-                for(var i=0;i<data.length;i++){
-                    var id = data[i].frontPartformId;
-                    var name = data[i].partformName;
-                    var liHtml = '<li name="sortParFrontPartformLi" category-id="'+ id +'">' +
-                        '<span class="drag-handle_td">&#9776;</span>' +
-                        '<span class="org_name_td" style="width: 90%;">'+ name +'</span>' +
-                        '</li>';
-                    $('#sortParFrontPartformUl').append(liHtml);
+                    for(var i=0;i<data.length;i++){
+                        var id = data[i].frontPartformId;
+                        var name = data[i].partformName;
+                        var liHtml = '<li name="sortParFrontPartformLi" category-id="'+ id +'">' +
+                                        '<span class="drag-handle_td">&#9776;</span>' +
+                                        '<span class="org_name_td" style="width: 90%;">'+ name +'</span>' +
+                                    '</li>';
+                        $('#sortParFrontPartformUl').append(liHtml);
+                    }
+                }else{
+                    swal({
+                        type: 'info',
+                        title: '暂无阶段扩展表单信息前置检测数据！',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
                 }
-            }else{
-                swal({
-                    type: 'info',
-                    title: '暂无阶段扩展表单信息前置检测数据！',
-                    showConfirmButton: false,
-                    timer: 1500
-                });
-            }
-        }, 'json');
+            }, 'json');
+        }else{
+            swal('提示信息', '当前版本下数据不可编辑!', 'info');
+        }
     }
 
 </script>
