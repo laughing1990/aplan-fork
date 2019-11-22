@@ -56,7 +56,9 @@ var vm = new Vue({
       }, function(res){
         vm.pageLoading = false;
         if (res.success) {
-          //
+          vm.projInfoList = [res.content.aeaProjInfo];
+          vm.applyinst = res.content.iteminst;
+          // vm.zjItemInfo = [res.content.purchaseProj];
         } else {
           vm.$message.error(res.message || '获取申请表数据失败');
         }
