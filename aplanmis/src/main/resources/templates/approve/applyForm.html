@@ -582,12 +582,12 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="拟开工时间" :label-width="labelWidth">
-              <el-input v-model="item.nstartTime" readonly></el-input>
+              <el-input :value="item.nstartTime | substrings" readonly></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="拟建成日期" :label-width="labelWidth">
-              <el-input v-model="item.endTime" readonly></el-input>
+              <el-input :value="item.endTime | substrings" readonly></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -863,12 +863,12 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="拟开工时间" :label-width="labelWidth">
-              <el-input v-model="item.nstartTime" readonly></el-input>
+              <el-input :value="item.nstartTime | substrings" readonly></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="拟建成日期" :label-width="labelWidth">
-              <el-input v-model="item.endTime" readonly></el-input>
+              <el-input :value="item.endTime | substrings" readonly></el-input>
             </el-form-item>
           </el-col>
         </el-row>
