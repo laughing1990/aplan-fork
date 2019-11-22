@@ -35,19 +35,16 @@
             <el-input v-model="formData.contractId"></el-input>
           </el-form-item>
           <div class="clearfix">
-            <el-form-item class="input-inline" prop="provinceProjCode" label="省级项目编号">
-              <el-input v-model="formData.provinceProjCode" placeholder="请输入省级项目编号"></el-input>
-            </el-form-item>
             <el-form-item class="input-inline" prop="contractCode" label='合同编号'>
               <el-input v-model="formData.contractCode" placeholder="请输入合同编号"></el-input>
             </el-form-item>
-          </div>
-          <div class="clearfix">
             <el-form-item class="input-inline" label="合同类别" prop="contractType">
               <el-select v-model="formData.contractType" placeholder="请选择合同类别" @change="forceUpdate">
                 <el-option :label="item.itemName" :value="item.itemCode" v-for="item in fieldType"></el-option>
               </el-select>
             </el-form-item>
+          </div>
+          <div class="clearfix">
             <el-form-item class="input-inline" label="合同金额" prop="contractMoeny">
               <el-input v-model="formData.contractMoeny" placeholder="请输入合同金额" class="input-with-select">
                 <el-select slot="append" placeholder="请选择" v-model='moneyType'>
@@ -55,14 +52,9 @@
                 </el-select>
               </el-input>
             </el-form-item>
-          </div>
-          <div class="clearfix">
             <el-form-item class="input-inline" label="合同签订日期" prop="contractSignTime">
               <el-date-picker v-model="formData.contractSignTime" type="date" placeholder="请选择合同签订日期">
             </el-form-item>
-            <!-- <el-form-item class="input-inline" label="合同确认时间" prop="contractConfirmTime">
-              <el-date-picker v-model="formData.contractConfirmTime" type="date" placeholder="请选择合同确认时间">
-            </el-form-item> -->
           </div>
           <!-- <div class="clearfix">
   <el-form-item class="input-inline" label="合同确认的行政单位机构代码" prop="govOrgCode">

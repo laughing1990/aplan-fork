@@ -243,6 +243,9 @@ var vm = new Vue({
   mounted: function () {
   },
   filters: {
+    substrings: function(value) {
+      return value.substring(0, 10);
+    },
     dicCodeItem: function (value) {
       if (value != null) {
         var arr = value.split(',');

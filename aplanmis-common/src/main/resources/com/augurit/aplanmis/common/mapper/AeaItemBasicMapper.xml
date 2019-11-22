@@ -82,7 +82,9 @@
         IS_CHECK_ITEM  isCheckItem,
         IS_CHECK_PARTFORM  isCheckPartform,
         IS_CHECK_PROJ  isCheckProj,
-        IS_SHARE isShare
+        IS_SHARE isShare,
+        ANTICIPATE_DAY  anticipateDay,
+        ANTICIPATE_TYPE  anticipateType
     </sql>
 
     <sql id="aib_allColumns">
@@ -162,7 +164,9 @@
         aib.IS_CHECK_ITEM  isCheckItem,
         aib.IS_CHECK_PARTFORM  isCheckPartform,
         aib.IS_CHECK_PROJ  isCheckProj,
-        aib.IS_SHARE isShare
+        aib.IS_SHARE isShare,
+        aib.ANTICIPATE_DAY  anticipateDay,
+        aib.ANTICIPATE_TYPE  anticipateType
     </sql>
 
     <sql id="allColumns2">
@@ -242,7 +246,9 @@
         ${alias}.IS_CHECK_ITEM  isCheckItem,
         ${alias}.IS_CHECK_PARTFORM  isCheckPartform,
         ${alias}.IS_CHECK_PROJ  isCheckProj,
-        ${alias}.IS_SHARE isShare
+        ${alias}.IS_SHARE isShare,
+        ${alias}.ANTICIPATE_DAY  anticipateDay,
+        ${alias}.ANTICIPATE_TYPE  anticipateType
     </sql>
 
     <sql id="allColumns3">
@@ -322,13 +328,15 @@
         ${alias}.isCheckItem,
         ${alias}.isCheckPartform,
         ${alias}.isCheckProj,
-        ${alias}.isShare
+        ${alias}.isShare,
+        ${alias}.anticipateDay,
+        ${alias}.anticipateType
     </sql>
 
     <!--2 根据主键ID查询单个实体 -->
     <select id="getAeaItemBasicById" resultType="AeaItemBasic">
         select
-        <include refid="allColumns"/>
+           <include refid="allColumns"/>
         from AEA_ITEM_BASIC
         where ITEM_BASIC_ID = #{id}
     </select>
@@ -336,7 +344,7 @@
     <!--3 根据条件查询实体list -->
     <select id="listAeaItemBasic" resultType="AeaItemBasic">
         select
-        <include refid="aib_allColumns"/>
+           <include refid="aib_allColumns"/>
         from AEA_ITEM_BASIC aib
         <where>
             <if test="itemBasicId != null">
@@ -570,6 +578,12 @@
             <if test="isShare != null and isShare!='' ">
                 AND aib.IS_SHARE = #{isShare}
             </if>
+            <if test="anticipateDay != null" >
+                AND    ANTICIPATE_DAY = #{anticipateDay}
+            </if>
+            <if test="anticipateType != null" >
+                AND    ANTICIPATE_TYPE = #{anticipateType}
+            </if>
             <if test="keyword != null and keyword !='' ">
                 AND aib.ITEM_NAME like CONCAT(CONCAT('%',#{keyword}),'%')
             </if>
@@ -609,17 +623,17 @@
 
     <select id="listOpuOmOrgByAllPropJoinItem" resultType="OpuOmOrg">
         select
-        org.ORG_ID as orgId,
-        org.ORG_CODE as orgCode,
-        org.ORG_NAME as orgName,
-        org.ORG_SHORT_NAME1 as orgShortName1,
-        org.ORG_SHORT_NAME2 as orgShortName2,
-        org.PARENT_ORG_ID as parentOrgId,
-        org.ORG_SEQ as orgSeq,
-        org.ORG_TYPE as orgType,
-        org.ORG_NATURE as orgNature,
-        org.ORG_DELETED as orgDeleted,
-        org.IS_TOP_ORG as isTopOrg
+            org.ORG_ID as orgId,
+            org.ORG_CODE as orgCode,
+            org.ORG_NAME as orgName,
+            org.ORG_SHORT_NAME1 as orgShortName1,
+            org.ORG_SHORT_NAME2 as orgShortName2,
+            org.PARENT_ORG_ID as parentOrgId,
+            org.ORG_SEQ as orgSeq,
+            org.ORG_TYPE as orgType,
+            org.ORG_NATURE as orgNature,
+            org.ORG_DELETED as orgDeleted,
+            org.IS_TOP_ORG as isTopOrg
         from OPU_OM_ORG org
         <where>
             <if test="rootOrgId!=null and rootOrgId!=''">
@@ -720,9 +734,11 @@
             IS_LINK,
             USE_ONE_FORM  ,
             IS_CHECK_ITEM  ,
-            IS_CHECK_PARTFORM  ,
+            IS_CHECK_PARTFORM,
             IS_CHECK_PROJ,
-            IS_SHARE
+            IS_SHARE,
+            ANTICIPATE_DAY,
+            ANTICIPATE_TYPE
         )
         values(
             #{itemBasicId},
@@ -801,7 +817,9 @@
             #{isCheckItem},
             #{isCheckPartform},
             #{isCheckProj},
-            #{isShare}
+            #{isShare},
+            #{anticipateDay},
+            #{anticipateType}
         )
     </insert>
 
@@ -1040,6 +1058,12 @@
             <if test="isShare != null and isShare!='' ">
                 IS_SHARE = #{isShare},
             </if>
+            <if test="anticipateDay != null" >
+                ANTICIPATE_DAY = #{anticipateDay},
+            </if>
+            <if test="anticipateType != null" >
+                ANTICIPATE_TYPE = #{anticipateType},
+            </if>
         </set>
         where ITEM_BASIC_ID = #{itemBasicId}
     </update>
@@ -1128,6 +1152,8 @@
         <result property="isCheckPartform" column="IS_CHECK_PARTFORM"/>
         <result property="isCheckProj" column="IS_CHECK_PROJ"/>
         <result property="isShare" column="IS_SHARE"/>
+        <result property="anticipateDay" column="ANTICIPATE_DAY"/>
+        <result property="anticipateType" column="ANTICIPATE_TYPE"/>
     </resultMap>
 
     <!--10.根据阶段ID查询事项定义列表-->

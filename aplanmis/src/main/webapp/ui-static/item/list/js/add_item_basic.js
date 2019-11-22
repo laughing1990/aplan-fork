@@ -349,6 +349,7 @@ function addItemInfo(isRoot, isCatalog){
     $("#aedit_item_form select[name='isCheckItem'] option:eq(0)").prop("selected", 'selected');
     $("#aedit_item_form select[name='isCheckPartform'] option:eq(0)").prop("selected", 'selected');
     $("#aedit_item_form select[name='isCheckProj'] option:eq(0)").prop("selected", 'selected');
+    $("#aedit_item_form select[name='anticipateType'] option:eq(1)").prop("selected", 'selected');
 
     if(isCatalog){
 
