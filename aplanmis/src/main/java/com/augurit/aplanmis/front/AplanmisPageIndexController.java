@@ -143,9 +143,9 @@ public class AplanmisPageIndexController {
     @GetMapping("/oneForm.html")
     @ApiOperation("iframe一张表单")
     public ResultForm oneForm(String masterEntityKey, HttpServletRequest request, HttpServletResponse response) {
-        String realUrl = request.getContextPath() + "/rest/oneform/common/renderHtmlFormContainer?";
+//        String realUrl = request.getContextPath() + "/rest/oneform/common/renderHtmlFormContainer?";
+        String realUrl = request.getContextPath() + "/rest/oneform/common/getListForm4StageOneForm?";
         String params = "";
-        //http://192.168.30.50:8083/aplanmis-front/rest/oneform/forms/render2?stageId=be2e337e-1164-42a6-bb3b-af8d1df6d898&itemids=149dbe2a-c3ce-4f59-a37e-ff6c5b29ece2&itemids=b772c58c-0c44-4861-a9bb-093041ad520f
         try {
             AeaHiApplyinst aeaHiApplyinst = aeaHiApplyinstService.getAeaHiApplyinstById(masterEntityKey);
             if (aeaHiApplyinst != null) {

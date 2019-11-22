@@ -183,45 +183,21 @@ public class OneFormCommonService {
         return result;
     }
 
-    public ContentResultForm<Map> renderHtmlFormContainer(OneFormStageRequest oneFormStageRequest, SFRenderConfig sFRenderConfig) throws Exception {
-        ContentResultForm<Map> result = new ContentResultForm(false, "", "");
-        if (StringUtils.isBlank(oneFormStageRequest.getApplyinstId())) {
-            result.setMessage("申报实例ID不能为空!!");
-        } else {
-            Map<String, Object> resultMap = new HashMap();
-            List<SFFormParam> listSFFormParam = genListSFFormParam4OneForm(oneFormStageRequest,false);
-            ContentResultForm<String> sfFormResult = sFFormMultipleRender.renderHtmlFormContainer(listSFFormParam, sFRenderConfig);
-            resultMap.put("sfForm", sfFormResult.getContent());
-
-//            // 查询开发表单
-//            List<FormFrofileVo> stageDevFormList = new ArrayList<>();
-//            AeaParStagePartform aeaParStagePartform = new AeaParStagePartform();
-//            aeaParStagePartform.setStageId(oneFormStageRequest.getStageId());
-//            //aeaParStagePartform.setIsSmartForm("0");
-//            aeaParStagePartform.setSortNo(null);
-//            List<AeaParStagePartform> aeaParStagePartformList = aeaParStagePartformService.listStagePartform(aeaParStagePartform);
+//    public ContentResultForm<Map> renderHtmlFormContainer(OneFormStageRequest oneFormStageRequest, SFRenderConfig sFRenderConfig) throws Exception {
+//        ContentResultForm<Map> result = new ContentResultForm(false, "", "");
+//        if (StringUtils.isBlank(oneFormStageRequest.getApplyinstId())) {
+//            result.setMessage("申报实例ID不能为空!!");
+//        } else {
+//            Map<String, Object> resultMap = new HashMap();
+//            List<SFFormParam> listSFFormParam = genListSFFormParam4OneForm(oneFormStageRequest,false);
+//            ContentResultForm<String> sfFormResult = sFFormMultipleRender.renderHtmlFormContainer(listSFFormParam, sFRenderConfig);
+//            resultMap.put("sfForm", sfFormResult.getContent());
 //
-//            if (aeaParStagePartformList != null && aeaParStagePartformList.size() > 0) {
-//                String projInfoId = oneFormStageRequest.getProjInfoId();
-//
-//                for (AeaParStagePartform parStagePartform : aeaParStagePartformList) {
-//                    if (StringUtils.isNotBlank(parStagePartform.getStoFormId())) {
-//                        ActStoForm actStoForm = actStoFormMapper.getActStoFormById(parStagePartform.getStoFormId());
-//                        FormFrofileVo stageDevFormVo = new FormFrofileVo();
-//                        stageDevFormVo.setFormId(parStagePartform.getStoFormId());
-//                        stageDevFormVo.setFormName(parStagePartform.getPartformName());
-//                        stageDevFormVo.setFormUrl(actStoForm.getFormLoadUrl().replace("{projInfoId}", "projInfoId=" + projInfoId));
-//                        stageDevFormList.add(stageDevFormVo);
-//                    }
-//                }
-//            }
-//
-//            resultMap.put("devForm", stageDevFormList);
-            result.setSuccess(true);
-            result.setContent(resultMap);
-        }
-        return result;
-    }
+//            result.setSuccess(true);
+//            result.setContent(resultMap);
+//        }
+//        return result;
+//    }
 
     /**
      * 合并两个表单列表--partform，事项form
