@@ -770,14 +770,21 @@ function isSmartFormFormatter(value, row, index){
 
 function formNameFormatter(value, row, index){
 
-    var isSmartForm = row.isSmartForm;
-    if(isSmartForm){
-        if(isSmartForm=='1'){
-            return row.formName;
-        }else{
-            return row.formUrl;
-        }
+    // var isSmartForm = row.isSmartForm;
+    // if(isSmartForm){
+    //     if(isSmartForm=='1'){
+    //         return row.formName;
+    //     }else{
+    //         return row.formUrl;
+    //     }
+    // }
+
+    var formName = row.formName;
+    var url = row.formUrl;
+    if(url!=null&&url!=''&&url!=undefined){
+        formName += url;
     }
+    return formName;
 }
 
 function useElFormatter(value, row, index){
@@ -833,7 +840,7 @@ function stagePartformFormatter(value, row, index){
                                 '<i class="'+ ico2 +'"></i>' +
                             '</a>';
 
-        var delForm =    '<a href="javascript:deleteItemPartFormRel(\'' + row.itemPartformId + '\')" title="删除智能表单关联" '+
+        var delForm =    '<a href="javascript:deleteItemPartFormRel(\'' + row.itemPartformId + '\')" title="删除表单关联" '+
                             'class="m-portlet__nav-link btn m-btn m-btn--hover-info m-btn--icon m-btn--icon-only m-btn--pill">' +
                             '<i class="la la-times"></i>' +
                          '</a>';

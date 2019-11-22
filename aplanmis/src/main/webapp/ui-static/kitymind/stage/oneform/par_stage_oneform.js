@@ -1244,14 +1244,21 @@ function isSmartFormFormatter(value, row, index) {
 
 function formNameFormatter(value, row, index) {
 
-    var isSmartForm = row.isSmartForm;
-    if (isSmartForm) {
-        if (isSmartForm == '1') {
-            return row.formName;
-        } else {
-            return row.formUrl;
-        }
+    // var isSmartForm = row.isSmartForm;
+    // if(isSmartForm){
+    //     if(isSmartForm=='1'){
+    //         return row.formName;
+    //     }else{
+    //         return row.formUrl;
+    //     }
+    // }
+
+    var formName = row.formName;
+    var url = row.formUrl;
+    if(url!=null&&url!=''&&url!=undefined){
+        formName += url;
     }
+    return formName;
 }
 
 function useElFormatter(value, row, index) {
