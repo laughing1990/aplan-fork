@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 //草稿箱
 @RestController
-@RequestMapping("rest/user")
+@RequestMapping("/rest/user")
 @Api(tags = "法人空间 --> 草稿箱相关接口")
 public class RestDraftController {
     Logger logger = LoggerFactory.getLogger(RestDraftController.class);
@@ -35,7 +35,7 @@ public class RestDraftController {
         return new ModelAndView("mall/userCenter/components/drafts");
     }*/
 
-    @GetMapping("draftApplyItem/list")
+    @GetMapping("/draftApplyItem/list")
     @ApiOperation(value = "我的草稿 --> 我的草稿项目列表查询接口")
     @ApiImplicitParams({@ApiImplicitParam(value = "项目状态(0:办结1:办理中2:草稿)", name = "state", dataType = "string"),
             @ApiImplicitParam(value = "关键词", name = "keyword", dataType = "string"),

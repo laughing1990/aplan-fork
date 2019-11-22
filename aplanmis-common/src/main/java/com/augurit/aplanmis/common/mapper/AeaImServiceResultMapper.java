@@ -36,4 +36,12 @@ public interface AeaImServiceResultMapper {
      * @return
      */
     List<AeaImServiceResult> listServiceResultByProjPurchaseId(@Param("projPurchaseId") String projPurchaseId);
+
+    /**
+     * 根据采购项目ID获取服务结果
+     *
+     * @param projPurchaseId 采购项目ID
+     * @return AeaImServiceResult
+     */
+    AeaImServiceResult getServiceResultByProjPurchaseId(String projPurchaseId);
 }

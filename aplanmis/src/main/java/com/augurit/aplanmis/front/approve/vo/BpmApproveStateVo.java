@@ -28,6 +28,8 @@ public class BpmApproveStateVo {
     private String isApprover;
     @ApiModelProperty(value = "项目ID", required = true, dataType="string" )
     private String projId;
+    @ApiModelProperty(value = "阶段定义id", required = true, dataType="string" )
+    private String stageId;
 
     @ApiModelProperty(value = "服务协同状态", required = true, dataType="string" )
     private String coordinationState;

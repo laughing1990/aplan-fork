@@ -74,7 +74,18 @@
     <!-- 申请表、材料附件、审批意见、意见汇总表 -->
     <el-tabs class="ltabs">
       <el-tab-pane v-for="u in lTabsData" :label="u.label" :key="u.label">
-        <div v-if="u.labelId=='oneFrom'" id="oneForm"></div>
+        <div v-if="u.labelId=='oneFrom'" id="oneForm">
+          <el-tabs tab-position="left" class="form-el-tabs">
+            <el-tab-pane v-for="(item,index) in smartFormInfo" :key="index" :label="item.formName">
+              <iframe :style="{height:'100%',overflow: 'auto',width:'100%'}"
+                      v-if="item.smartForm==false"
+                      :src="ctx+item.formUrl" frameborder="0"></iframe>
+              <div v-else :style="{height:'100%',overflow: 'auto',width:'100%','padding-right':'10px'}">
+                <div :id="'smartFormBox_'+index"></div>
+              </div>
+            </el-tab-pane>
+          </el-tabs>
+        </div>
         <!--特殊程序-->
         <div v-else-if="u.labelId==5" style="height:100%;overflow:auto;">
           <div class="spe-pane-wrap">
@@ -801,7 +812,7 @@
     </div>
   </aside>
   <!-- 查看流程图弹窗 start -->
-  <el-dialog title="流程跟踪" width="80%" top="5vh" :visible.sync="processDialogVisible">
+  <el-dialog title="流程跟踪" width="80%" top="5vh" :visible.sync="processDialogVisible" v-loading="processDialogLoading">
     <div class="row" id="parentPro"></div>
     <el-scrollbar>
       <div id="bpmnModel"></div>
