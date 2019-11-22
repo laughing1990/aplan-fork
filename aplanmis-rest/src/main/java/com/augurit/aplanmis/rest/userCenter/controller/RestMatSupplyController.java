@@ -23,12 +23,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -49,14 +49,14 @@ public class RestMatSupplyController {
     private RestMatSupplyService restMatSupplyService;
 
 
-    @GetMapping("tomatSupplementListPage")
+    /*@GetMapping("tomatSupplementListPage")
     @ApiOperation(value = "跳转材料补正页面")
     public ModelAndView tomatSupplementListPage() {
         return new ModelAndView("mall/userCenter/components/matSupplementList");
-    }
+    }*/
 
 
-    @GetMapping("matSupply/list")
+    @GetMapping("/matSupply/list")
     @ApiOperation(value = "材料补正 --> 材料补正列表查询接口")
     @ApiImplicitParams({@ApiImplicitParam(value = "页面数量", name = "pageNum", required = true, dataType = "string"),
             @ApiImplicitParam(value = "页面页数", name = "pageSize", required = true, dataType = "string")})
@@ -190,8 +190,8 @@ public class RestMatSupplyController {
         }
     }
 
-    @PostMapping("/att/delelte")
-    @ApiOperation(value = "材料补全页面--> 删除电子件")
+    @DeleteMapping("/att/delelte")
+    @ApiOperation(value = "材料补正页面--> 删除电子件")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "detailIds", value = "附件ID", dataType = "string", paramType = "query", required = true)
     })
@@ -208,7 +208,7 @@ public class RestMatSupplyController {
         }
     }
 
-    @ApiOperation(value = "材料补全--> 上传电子件")
+    @ApiOperation(value = "材料补正--> 上传电子件")
     @PostMapping("/att/upload")
     public ResultForm uploadFile(String attRealIninstId, HttpServletRequest request) {
         try {
