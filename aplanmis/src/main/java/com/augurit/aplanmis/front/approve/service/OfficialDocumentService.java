@@ -579,6 +579,8 @@ public class OfficialDocumentService {
             if(certBuildCode.equals("0")){
                 String certinstCode = certinst.getCertinstCode();
                 constructPermit.setConstructPermitCode(certinstCode);
+                aeaExProjCertBuildByProjId.setCertBuildCode(certinstCode);
+                aeaExProjCertBuildMapper.updateAeaExProjCertBuild(aeaExProjCertBuildByProjId);
             }else {
                 constructPermit.setConstructPermitCode(certBuildCode);
             }
@@ -636,6 +638,8 @@ public class OfficialDocumentService {
             constructPermit.setContractDuration(aeaExProjCertBuildByProjId.getContractPeriod());//合同工期
             if (StringUtils.isBlank(aeaExProjCertBuildByProjId.getCertBuildMemo())) {
                 constructPermit.setRemarks(certinst.getMemo());//备注
+                aeaExProjCertBuildByProjId.setCertBuildMemo(certinst.getMemo());
+                aeaExProjCertBuildMapper.updateAeaExProjCertBuild(aeaExProjCertBuildByProjId);
             } else {
                 constructPermit.setRemarks(aeaExProjCertBuildByProjId.getCertBuildMemo());//备注
             }
@@ -897,7 +901,6 @@ public class OfficialDocumentService {
                 aeaProjInfoService.updateAeaProjInfo(temp);
             }
         }
-
     }
 
     /**
