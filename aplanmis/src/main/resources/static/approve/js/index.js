@@ -2429,12 +2429,15 @@ var vm = new Vue({
           if (data.success) {
             vm.processDialogLoading = false; // 关闭遮罩
             vm.$message.success(data.message);
+            setTimeout("location.reload()", 1500 );
           } else {
             vm.$message.error(data.message);
+              vm.processDialogLoading = false; // 关闭遮罩
           }
         },
         error: function (jqXHR, textStatus, errorThrown) {
           vm.$message.error("请求出错了！");
+          vm.processDialogLoading = false; // 关闭遮罩
         }
       });
     },

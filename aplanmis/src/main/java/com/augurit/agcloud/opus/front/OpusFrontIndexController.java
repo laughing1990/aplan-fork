@@ -57,6 +57,24 @@ public class OpusFrontIndexController {
      * @param modelMap
      * @return
      */
+    @RequestMapping("/third")
+    public ModelAndView index_third(ModelMap modelMap){
+
+        if(opusFontIndexConfig.getLogoUrl()!=null) {
+            modelMap.put("logoUrl", opusFontIndexConfig.getLogoUrl());
+        }
+        if(opusFontIndexConfig.getTitle()!=null) {
+            modelMap.put("title", opusFontIndexConfig.getTitle());
+        }
+        return new ModelAndView("agcloud/framework/ui-schemes/third-level-protal/index",modelMap);
+    }
+
+    /**
+     * 用户端首页
+     *
+     * @param modelMap
+     * @return
+     */
     @RequestMapping("opus/front/blue/index.html")
     public ModelAndView index_blue(ModelMap modelMap){
 
