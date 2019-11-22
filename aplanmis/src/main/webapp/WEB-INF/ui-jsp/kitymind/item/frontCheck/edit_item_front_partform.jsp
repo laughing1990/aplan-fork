@@ -14,7 +14,7 @@
             </div>
             <form id="edit_item_front_partform_form" method="post">
                 <div class="modal-body" style="padding: 10px;">
-                    <div id="edit_par_front_partform_scroll" style="height: 400px;overflow-x: hidden;overflow-y: auto;">
+                    <div id="edit_par_front_partform_scroll" style="height: 250px;overflow-x: hidden;overflow-y: auto;">
 
                         <input type="hidden" name="frontPartformId" value=""/>
                         <input type="hidden" name="itemVerId" value=""/>

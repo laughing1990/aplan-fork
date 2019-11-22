@@ -79,33 +79,39 @@
     //分类排序
     function sortStagePartform(){
 
-        $.post(ctx+'/aea/par/stage/partform/listStagePartformRelFormByNoPage.do',{
-            'stageId': currentBusiId,
-        }, function(data){
-            if(data!=null&&data.length>0){
+        if(curIsEditable){
 
-                $('#stage_partform_sort_modal').modal('show');
-                $('#opusOmSortDiv1').animate({scrollTop: 0}, 800);//滚动到顶部
-                $("#sortStagePartformUl").html("");
+            $.post(ctx+'/aea/par/stage/partform/listStagePartformRelFormByNoPage.do',{
+                'stageId': currentBusiId,
+            }, function(data){
+                if(data!=null&&data.length>0){
 
-                for(var i=0;i<data.length;i++){
-                    var id = data[i].stagePartformId;
-                    var name = data[i].partformName;
-                    var liHtml = '<li name="sortStagePartformLi" category-id="'+ id +'">' +
-                                     '<span class="drag-handle_td">&#9776;</span>' +
-                                     '<span class="org_name_td" style="width: 90%;">'+ name +'</span>' +
-                                 '</li>';
-                    $('#sortStagePartformUl').append(liHtml);
+                    $('#stage_partform_sort_modal').modal('show');
+                    $('#opusOmSortDiv1').animate({scrollTop: 0}, 800);//滚动到顶部
+                    $("#sortStagePartformUl").html("");
+
+                    for(var i=0;i<data.length;i++){
+                        var id = data[i].stagePartformId;
+                        var name = data[i].partformName;
+                        var liHtml = '<li name="sortStagePartformLi" category-id="'+ id +'">' +
+                                         '<span class="drag-handle_td">&#9776;</span>' +
+                                         '<span class="org_name_td" style="width: 90%;">'+ name +'</span>' +
+                                     '</li>';
+                        $('#sortStagePartformUl').append(liHtml);
+                    }
+                }else{
+                    swal({
+                        type: 'info',
+                        title: '暂无扩展表数据！',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
                 }
-            }else{
-                swal({
-                    type: 'info',
-                    title: '暂无扩展表数据！',
-                    showConfirmButton: false,
-                    timer: 1500
-                });
-            }
-        }, 'json');
+            }, 'json');
+
+        } else {
+            swal('提示信息', '当前版本下数据不可编辑!', 'info');
+        }
     }
 
 </script>

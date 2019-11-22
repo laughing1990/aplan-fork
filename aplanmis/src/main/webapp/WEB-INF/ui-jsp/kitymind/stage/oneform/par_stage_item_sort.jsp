@@ -149,49 +149,55 @@
     //分类排序
     function sortStageItem(){
 
-        $.post(ctx + '/aea/par/stage/stageOneform/getAeaParStageItemListNoPage.do',{
-            'stageId': currentBusiId
-        }, function(data){
-            if(data!=null&&data.length>0){
+        if(curIsEditable){
 
-                $('#stage_item_sort_modal').modal('show');
-                $('#opusOmSortDiv1').animate({scrollTop: 0}, 800);//滚动到顶部
-                $("#sortItemInUl").html("");
-                for(var i=0;i<data.length;i++){
+            $.post(ctx + '/aea/par/stage/stageOneform/getAeaParStageItemListNoPage.do',{
+                'stageId': currentBusiId
+            }, function(data){
+                if(data!=null&&data.length>0){
 
-                    var id = data[i].stageItemId;
-                    var type = data[i].fileType;
-                    var itemName = data[i].itemName;
-                    if(!isEmpty(data[i].isCatalog)){
-                        if(data[i].isCatalog=='1'){
-                            itemName = '【标准事项】'+ itemName;
-                            if(!isEmpty(data[i].guideOrgName)){
-                                itemName = itemName +'【'+ data[i].guideOrgName+'】';
-                            }
-                        }else{
-                            itemName = '【实施事项】'+ itemName;
-                            if(!isEmpty(data[i].orgName)) {
-                                itemName = itemName + '【' + data[i].orgName + '】';
+                    $('#stage_item_sort_modal').modal('show');
+                    $('#opusOmSortDiv1').animate({scrollTop: 0}, 800);//滚动到顶部
+                    $("#sortItemInUl").html("");
+                    for(var i=0;i<data.length;i++){
+
+                        var id = data[i].stageItemId;
+                        var type = data[i].fileType;
+                        var itemName = data[i].itemName;
+                        if(!isEmpty(data[i].isCatalog)){
+                            if(data[i].isCatalog=='1'){
+                                itemName = '【标准事项】'+ itemName;
+                                if(!isEmpty(data[i].guideOrgName)){
+                                    itemName = itemName +'【'+ data[i].guideOrgName+'】';
+                                }
+                            }else{
+                                itemName = '【实施事项】'+ itemName;
+                                if(!isEmpty(data[i].orgName)) {
+                                    itemName = itemName + '【' + data[i].orgName + '】';
+                                }
                             }
                         }
+                        if(data[i].formName!=null){
+                            itemName = itemName + "—【表单】" + data[i].formName ;
+                        }
+                        var liHtml = '<li name="sortItemInLi" category-id="'+ id +'" category-type="'+ type +'">' +
+                                        '<span class="drag-handle_td">&#9776;</span>' +
+                                        '<span class="org_name_td" style="width: 90%;">'+ itemName +'</span>' +
+                                     '</li>';
+                        $('#sortItemInUl').append(liHtml);
                     }
-                    if(data[i].formName!=null){
-                        itemName = itemName + "—【表单】" + data[i].formName ;
-                    }
-                    var liHtml = '<li name="sortItemInLi" category-id="'+ id +'" category-type="'+ type +'">' +
-                                     '<span class="drag-handle_td">&#9776;</span>' +
-                                     '<span class="org_name_td" style="width: 90%;">'+ itemName +'</span>' +
-                                 '</li>';
-                    $('#sortItemInUl').append(liHtml);
+                }else{
+                    swal({
+                        type: 'info',
+                        title: '暂无事项字表数据！',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
                 }
-            }else{
-                swal({
-                    type: 'info',
-                    title: '暂无事项字表数据！',
-                    showConfirmButton: false,
-                    timer: 1500
-                });
-            }
-        }, 'json');
+            }, 'json');
+
+        } else {
+            swal('提示信息', '当前版本下数据不可编辑!', 'info');
+        }
     }
 </script>
