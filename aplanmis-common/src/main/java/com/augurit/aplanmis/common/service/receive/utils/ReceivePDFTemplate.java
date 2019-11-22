@@ -15,6 +15,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.lang.reflect.Field;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -708,42 +709,74 @@ public class ReceivePDFTemplate {
         try {
             //获取文件路径，jar情况下 ResourceUtils.getFile 获取不到的
             //File pdfTemplateFile = ResourceUtils.getFile("classpath:static/receive/default/建筑工程施工许可证-无底图.pdf");
-            //jar包也可以获取
-            ClassPathResource classPathResource = new ClassPathResource("static/receive/default/施工许可证新版(总承包).pdf");
-            InputStream inputStream = classPathResource.getInputStream();
-//            PdfReader reader = new PdfReader(pdfTemplate);
+            //            PdfReader reader = new PdfReader(pdfTemplate);
 //            PdfReader reader = new PdfReader(new FileInputStream(pdfTemplateFile));
+
+            //jar包也可以获取
+//            ClassPathResource classPathResource = new ClassPathResource("static/receive/default/施工许可证新版(总承包).pdf");
+            ClassPathResource classPathResource = new ClassPathResource("static/receive/default/施工许可证新版(总承包) - 无底图.pdf");
+            InputStream inputStream = classPathResource.getInputStream();
+
             PdfReader reader = new PdfReader(inputStream);
 
             PdfStamper stamper = new PdfStamper(reader, ba);
+            //二维码
+            //if (vo.getCertBuildQrcode() != null) {
+            /*ClassPathResource imgPathResource = new ClassPathResource("static/receive/default/qrcode.jpg");
+                System.out.println(imgPathResource.getURL());
+                URL imgUrl = imgPathResource.getURL();
+                Image img = Image.getInstance(imgUrl);*/
+            Image img = Image.getInstance(vo.getCertBuildQrcode());
+            img.setAbsolutePosition(40, 0);
+            img.scaleToFit(reader.getPageSize(1));//大小*/
+            PdfContentByte under = stamper.getOverContent(1);
+            //设置图片大小
+            under.addImage(img, 40, 0, 0, 40, 0, 0);
+//                under.addImage(img);
+//                Image ercode = Image.getInstance(vo.getCertBuildQrcode());
+//
+//                PdfContentByte under = stamper.getOverContent(1);
+//
+//                ercode.setAbsolutePosition(100, 90);
+//                ercode.scaleToFit(130, 130);
+//                //under.addImage(ercode, ercode.getScaledWidth(), 0, 0, ercode.getScaledHeight(), 0, 0);
+//                under.addImage(ercode);
+            //}
 
             if (null == print || !print) {
 //                Image img = Image.getInstance(imgPath);
                 //获取文件路径，jar情况下 ResourceUtils.getFile 获取不到的
                 //File jgpFile = ResourceUtils.getFile("classpath:static/receive/default/建筑工程施工许可证-背景.jpg");
                 //URL url = jgpFile.toURI().toURL();
+                ClassPathResource imgPathResource = new ClassPathResource("static/receive/default/施工许可证新版(总承包).pdf");
+                URL imgUrl = imgPathResource.getURL();
+
+                Image img1 = Image.getInstance(imgUrl);
+                img1.setAbsolutePosition(40, 0);
+                img.scaleToFit(reader.getPageSize(1));
+                PdfContentByte under1 = stamper.getOverContent(1);
+                under1.addImage(img, img.getScaledWidth(), 0, 0, img.getScaledHeight(), 0, 0);
+                under1.addImage(img);
 
                 //jar包也可以获取
                 /*ClassPathResource imgPathResource = new ClassPathResource("static/receive/default/建筑工程施工许可证-背景.jpg");
                 System.out.println(imgPathResource.getURL());
                 URL imgUrl = imgPathResource.getURL();
 
+Image img = Image.getInstance(vo.getCertBuildQrcode());
+            img.setAbsolutePosition(40, 0);
+            img.scaleToFit(reader.getPageSize(1));//大小*/
 
-                Image img = Image.getInstance(imgUrl);
-                img.setAbsolutePosition(40, 0);
-                img.scaleToFit(reader.getPageSize(1));//大小*/
-                PdfContentByte under = stamper.getOverContent(1);
+//                PdfContentByte under1 = stamper.getOverContent(1);
+                //设置图片大小
+//                under1.addImage(img, 40, 0, 0, 40, 0, 0);
+//                Image img1 = Image.getInstance(vo.getCertBuildQrcode());
+//                img1.setAbsolutePosition(40, 0);
+//                img1.scaleToFit(reader.getPageSize(1));//大小*/
+//                PdfContentByte under = stamper.getOverContent(1);
                 /*under.addImage(img, img.getScaledWidth(), 0, 0, img.getScaledHeight(), 0, 0);
                 under.addImage(img);*/
 
-                //二维码
-//                if (vo.getCertBuildQrcode() != null) {
-//                    Image ercode = Image.getInstance(vo.getCertBuildQrcode());
-//                    ercode.setAbsolutePosition(100, 90);
-//                    ercode.scaleToFit(130, 130);
-//                    //under.addImage(ercode, ercode.getScaledWidth(), 0, 0, ercode.getScaledHeight(), 0, 0);
-//                    under.addImage(ercode);
-//                }
 
             }
 

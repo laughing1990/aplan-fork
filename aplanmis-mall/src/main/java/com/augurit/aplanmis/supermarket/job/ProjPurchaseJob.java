@@ -24,7 +24,7 @@ public class ProjPurchaseJob {
     @Autowired
     private BidProjectService bidProjectService;
 
-    //@Scheduled(fixedDelay = 30000)
+    @Scheduled(fixedDelay = 30000)
     public void projPurchaseJob() {
         String jobName = "采购需求项目状态变换";
         long startTime = System.currentTimeMillis();

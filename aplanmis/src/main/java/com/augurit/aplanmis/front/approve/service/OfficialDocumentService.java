@@ -584,23 +584,23 @@ public class OfficialDocumentService {
                 constructPermit.setCertBuildQrcode(certBuildQrcode);
             }
             //广东分支将此段放开
-            /*if (StringUtils.isBlank(certBuildCode) && certBuildQrcode.length == 0 && certBuildQrcode == null){
+            if (StringUtils.isBlank(certBuildCode) && certBuildQrcode.length == 0 && certBuildQrcode == null) {
                 //获取施工许可证编码和二维码
-                ResponseConsPermitInfo consPermitInfo = webservice.getConsPermitInfo(projInfo.getProjInfoId(), iteminstId);
-                if (consPermitInfo.getSuccess()){
-                    constructPermit.setCertBuildQrcode(consPermitInfo.getqRCodeArray());//二维码
-                    constructPermit.setConstructPermitCode(consPermitInfo.getPermitNum());//省级施工许可证编号
-                    aeaExProjCertBuildByProjId.setCertBuildCode(consPermitInfo.getPermitNum());
-                    aeaExProjCertBuildByProjId.setCertBuildQrcode(consPermitInfo.getqRCodeArray());
-                    aeaExProjCertBuildMapper.updateAeaExProjCertBuild(aeaExProjCertBuildByProjId);
-                }else {
-                    String errorMsg = consPermitInfo.getErrorMsg();
-                }
+//                ResponseConsPermitInfo consPermitInfo = webservice.getConsPermitInfo(projInfo.getProjInfoId(), iteminstId);
+//                if (consPermitInfo.getSuccess()){
+//                    constructPermit.setCertBuildQrcode(consPermitInfo.getqRCodeArray());//二维码
+//                    constructPermit.setConstructPermitCode(consPermitInfo.getPermitNum());//省级施工许可证编号
+//                    aeaExProjCertBuildByProjId.setCertBuildCode(consPermitInfo.getPermitNum());
+//                    aeaExProjCertBuildByProjId.setCertBuildQrcode(consPermitInfo.getqRCodeArray());
+//                    aeaExProjCertBuildMapper.updateAeaExProjCertBuild(aeaExProjCertBuildByProjId);
+//                }else {
+//                    String errorMsg = consPermitInfo.getErrorMsg();
+//                }
             }else {
                 constructPermit.setCertBuildQrcode(certBuildQrcode);
                 constructPermit.setConstructPermitCode(certBuildCode);
-            }*/
-
+            }
+            constructPermit.setCertBuildQrcode(certBuildQrcode);
             if (StringUtils.isBlank(aeaExProjCertBuildByProjId.getConstructionsSize())) {
                 constructPermit.setContructScale(projInfo.getProjScale());
             } else {
