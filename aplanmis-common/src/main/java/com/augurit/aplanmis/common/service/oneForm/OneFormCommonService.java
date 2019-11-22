@@ -193,30 +193,6 @@ public class OneFormCommonService {
             ContentResultForm<String> sfFormResult = sFFormMultipleRender.renderHtmlFormContainer(listSFFormParam, sFRenderConfig);
             resultMap.put("sfForm", sfFormResult.getContent());
 
-//            // 查询开发表单
-//            List<FormFrofileVo> stageDevFormList = new ArrayList<>();
-//            AeaParStagePartform aeaParStagePartform = new AeaParStagePartform();
-//            aeaParStagePartform.setStageId(oneFormStageRequest.getStageId());
-//            //aeaParStagePartform.setIsSmartForm("0");
-//            aeaParStagePartform.setSortNo(null);
-//            List<AeaParStagePartform> aeaParStagePartformList = aeaParStagePartformService.listStagePartform(aeaParStagePartform);
-//
-//            if (aeaParStagePartformList != null && aeaParStagePartformList.size() > 0) {
-//                String projInfoId = oneFormStageRequest.getProjInfoId();
-//
-//                for (AeaParStagePartform parStagePartform : aeaParStagePartformList) {
-//                    if (StringUtils.isNotBlank(parStagePartform.getStoFormId())) {
-//                        ActStoForm actStoForm = actStoFormMapper.getActStoFormById(parStagePartform.getStoFormId());
-//                        FormFrofileVo stageDevFormVo = new FormFrofileVo();
-//                        stageDevFormVo.setFormId(parStagePartform.getStoFormId());
-//                        stageDevFormVo.setFormName(parStagePartform.getPartformName());
-//                        stageDevFormVo.setFormUrl(actStoForm.getFormLoadUrl().replace("{projInfoId}", "projInfoId=" + projInfoId));
-//                        stageDevFormList.add(stageDevFormVo);
-//                    }
-//                }
-//            }
-//
-//            resultMap.put("devForm", stageDevFormList);
             result.setSuccess(true);
             result.setContent(resultMap);
         }

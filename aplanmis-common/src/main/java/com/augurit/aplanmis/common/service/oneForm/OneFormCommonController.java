@@ -20,6 +20,9 @@ import java.util.Map;
 public class OneFormCommonController {
     @Autowired
     private OneFormCommonService oneFormCommonService;
+
+
+
     @RequestMapping(value = "/renderHtmlFormContainer", method = {RequestMethod.GET, RequestMethod.POST})
     @ApiOperation("根据参数获取一张表单的开发表单列表和多个form的html片段，该片段用于填充到dom容器")
     public ContentResultForm<Map> renderFormsHtmlPost(OneFormStageRequest oneFormStageRequest, SFRenderConfig sFRenderConfig) {
