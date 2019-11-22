@@ -1,10 +1,7 @@
 package com.augurit.aplanmis.common.service.projPurchase;
 
 import com.augurit.aplanmis.common.domain.AeaImProjPurchase;
-import com.augurit.aplanmis.common.vo.AeaImServiceVo;
-import com.augurit.aplanmis.common.vo.AgentUnitInfoVo;
-import com.augurit.aplanmis.common.vo.QueryAgentUnitInfoVo;
-import com.augurit.aplanmis.common.vo.UploadResult;
+import com.augurit.aplanmis.common.vo.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -86,4 +83,14 @@ public interface AeaImProjPurchaseService {
      * @param detailIds 附件ID
      */
     UploadResult batchDelete(String recordId, String detailIds) throws Exception;
+
+    /**
+     * 获取采购项目材料及附件列表
+     *
+     * @param iteminstId  事项实例ID
+     * @param applyinstId 申请实例ID
+     * @return List<MatinstVo>
+     * @throws Exception E
+     */
+    List<MatinstVo> listPurchaseMatinst(String iteminstId, String applyinstId) throws Exception;
 }

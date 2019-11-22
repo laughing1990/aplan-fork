@@ -370,6 +370,7 @@ public class BidProjectService {
         aeaImPurchaseinst.setProjPurchaseId(aeaImProjPurchase.getProjPurchaseId());
         aeaImPurchaseinst.setCreater(aeaImProjPurchase.getModifier());
         aeaImPurchaseinst.setCreateTime(aeaImProjPurchase.getModifyTime());
+        aeaImPurchaseinst.setOldPurchaseFlag(aeaImProjPurchase.getAuditFlags()[0]);
         aeaImPurchaseinst.setNewPurchaseFlag(aeaImProjPurchase.getAuditFlags()[1]);
         if ("9".equals(aeaImProjPurchase.getAuditFlags()[1])) {
             aeaImPurchaseinst.setOperateAction("8");

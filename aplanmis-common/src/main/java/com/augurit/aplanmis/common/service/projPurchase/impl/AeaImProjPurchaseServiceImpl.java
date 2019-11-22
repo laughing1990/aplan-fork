@@ -1,17 +1,26 @@
 package com.augurit.aplanmis.common.service.projPurchase.impl;
 
+import com.augurit.agcloud.bsc.domain.BscAttFileAndDir;
 import com.augurit.agcloud.bsc.domain.BscAttForm;
 import com.augurit.agcloud.bsc.domain.BscAttLink;
 import com.augurit.agcloud.bsc.mapper.BscAttMapper;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.util.StringUtils;
+import com.augurit.agcloud.opus.common.domain.OpuOmUser;
+import com.augurit.agcloud.opus.common.mapper.OpuOmUserMapper;
+import com.augurit.aplanmis.common.constants.CertinstSource;
 import com.augurit.aplanmis.common.constants.DeletedStatus;
 import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.mapper.*;
 import com.augurit.aplanmis.common.service.file.FileUtilsService;
+import com.augurit.aplanmis.common.service.instance.AeaHiApplyinstService;
+import com.augurit.aplanmis.common.service.instance.AeaHiItemMatinstService;
+import com.augurit.aplanmis.common.service.instance.AeaHiIteminstService;
+import com.augurit.aplanmis.common.service.mat.AeaItemMatService;
 import com.augurit.aplanmis.common.service.projPurchase.AeaImProjPurchaseService;
 import com.augurit.aplanmis.common.utils.BusinessUtils;
 import com.augurit.aplanmis.common.vo.*;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -55,6 +64,18 @@ public class AeaImProjPurchaseServiceImpl implements AeaImProjPurchaseService {
     private FileUtilsService fileUtilsService;
     @Autowired
     private BscAttMapper bscAttMapper;
+
+    @Autowired
+    private AeaHiApplyinstService aeaHiApplyinstService;
+    @Autowired
+    private AeaHiIteminstService aeaHiIteminstService;
+    @Autowired
+    private AeaHiItemMatinstService aeaHiItemMatinstService;
+    @Autowired
+    private AeaItemMatService aeaItemMatService;
+    @Autowired
+    private OpuOmUserMapper opuOmUserMapper;
+
     @Value("${dg.sso.access.platform.org.top-org-id}")
     protected String topOrgId;
 
@@ -280,6 +301,124 @@ public class AeaImProjPurchaseServiceImpl implements AeaImProjPurchaseService {
         }
 
         return new UploadResult(recordId, new ArrayList<>());
+    }
+
+
+    /**
+     * 获取采购项目材料及附件列表
+     *
+     * @param iteminstId  事项实例ID
+     * @param applyinstId 申请实例ID
+     * @return List<MatinstVo>
+     * @throws Exception E
+     *                   todo 待优化
+     */
+    @Override
+    public List<MatinstVo> listPurchaseMatinst(String iteminstId, String applyinstId) throws Exception {
+        List<MatinstVo> matinstVos = new ArrayList();
+
+        String itemVerIds = "";
+        AeaHiApplyinst applyinst = aeaHiApplyinstService.getAeaHiApplyinstById(applyinstId);
+        if (null == applyinst) throw new Exception("can not find applyinst");
+        if ("0".equals(applyinst.getIsSeriesApprove())) throw new Exception("not support stageinst");
+
+        if (StringUtils.isBlank(iteminstId)) {
+            List<AeaHiIteminst> iteminsts = aeaHiIteminstService.getAeaHiIteminstListByApplyinstId(applyinstId);
+            if (iteminsts.size() == 0) return matinstVos;
+            iteminstId = iteminsts.get(0).getIteminstId();
+        }
+        List<AeaHiItemMatinst> matinstList = aeaHiItemMatinstService.getMatinstListByIteminstIds(new String[]{iteminstId}, "1");
+
+        List<AeaItemMat> matList = aeaItemMatService.getMatListByApplyinstId(applyinstId, iteminstId);
+        for (AeaItemMat mat : matList) {
+            List<AeaHiItemMatinst> attInstList = new ArrayList<>();
+            List<AeaHiItemMatinst> pageInstList = new ArrayList<>();
+            List<AeaHiItemMatinst> copyInstList = new ArrayList<>();
+            List<AeaHiItemMatinst> forminstList = new ArrayList<>();
+            List<AeaHiItemMatinst> certinstList = new ArrayList<>();
+
+            for (AeaHiItemMatinst matinst : matinstList) {
+                if (mat.getMatCode().equals(matinst.getMatinstCode())) {
+
+                    if ("f".equals(matinst.getMatProp()) && StringUtils.isNotBlank(matinst.getStoFormId())) {
+                        forminstList.add(matinst);
+                        continue;
+                    }
+
+                    if ("c".equals(matinst.getMatProp()) && StringUtils.isNotBlank(matinst.getCertinstId())) {
+                        certinstList.add(matinst);
+                        continue;
+                    }
+
+                    if (matinst.getAttCount() != null && matinst.getAttCount() > 0)
+                        attInstList.add(matinst);
+                    if (matinst.getRealPaperCount() != null && matinst.getRealPaperCount() > 0)
+                        pageInstList.add(matinst);
+                    if (matinst.getRealCopyCount() != null && matinst.getRealCopyCount() > 0)
+                        copyInstList.add(matinst);
+                }
+            }
+            mat.setAttMatinstList(attInstList);
+            mat.setCopyMatinstList(copyInstList);
+            mat.setPageMatinstList(pageInstList);
+            mat.setForminstList(forminstList);
+            mat.setCertinstList(certinstList);
+
+            MatinstVo matinstVo = new MatinstVo();
+            BeanUtils.copyProperties(mat, matinstVo);
+            if (mat.getPageMatinstList().size() > 0) {
+                AeaHiItemMatinst matinst = mat.getPageMatinstList().get(0);
+                matinstVo.setPaperMatinstId(matinst.getMatinstId());
+                matinstVo.setRealPaperCount(matinst.getRealPaperCount());
+            }
+
+            if (mat.getCopyMatinstList().size() > 0) {
+                AeaHiItemMatinst matinst = mat.getCopyMatinstList().get(0);
+                matinstVo.setCopyMatinstId(matinst.getMatinstId());
+                matinstVo.setRealCopyCount(matinst.getRealCopyCount());
+            }
+
+            if (mat.getAttMatinstList().size() > 0) {
+                AeaHiItemMatinst matinst = mat.getAttMatinstList().get(0);
+                matinstVo.setAttMatinstId(matinst.getMatinstId());
+                matinstVo.setAttCount(matinst.getAttCount());
+                matinstVo.setFileList(fileUtilsService.getMatAttDetailByMatinstId(matinst.getMatinstId()));
+            }
+
+            if (mat.getCertinstList().size() > 0) {
+                List<Map> certinstList1 = new ArrayList();
+                Map obj = null;
+                for (AeaHiItemMatinst certMatinst : mat.getCertinstList()) {
+                    obj = new HashMap();
+                    //来自于本地系统的证照实例
+                    if (CertinstSource.LOCAL.getValue().equals(certMatinst.getCertinstSource())) {
+                        obj.put("certFileList", fileUtilsService.getMatAttDetailByMatinstId(certMatinst.getCertinstId()));
+                    } else if (CertinstSource.EXTERNAL.getValue().equals(certMatinst.getCertinstSource())) {//来自于外部系统的证照实例
+                        OpuOmUser user = opuOmUserMapper.getUserByUserId(certMatinst.getCreater());
+                        List<BscAttFileAndDir> bscAttFileAndDirs = new ArrayList();
+                        BscAttFileAndDir fileAndDir = new BscAttFileAndDir();
+                        fileAndDir.setFileId(certMatinst.getAuthCode());
+                        fileAndDir.setFileName(certMatinst.getCertisntName());
+                        fileAndDir.setCreaterName(user != null ? user.getUserName() : certMatinst.getCreater());
+                        fileAndDir.setUpdateTime(certMatinst.getCreateTime());
+                        bscAttFileAndDirs.add(fileAndDir);
+                        obj.put("certFileList", bscAttFileAndDirs);
+                    }
+
+                    obj.put("certMatinstId", certMatinst.getMatinstId());
+                    obj.put("certinstSource", certMatinst.getCertinstSource());
+                    certinstList1.add(obj);
+                }
+                matinstVo.setCertinstList(certinstList1);
+            }
+            matinstVo.setItemVerIds(itemVerIds);
+            if (mat.getForminstList().size() > 0) {
+                matinstVo.setForminstId(mat.getForminstList().get(0).getStoForminstId());
+            }
+
+            matinstVos.add(matinstVo);
+        }
+        return matinstVos;
     }
 
     /**
