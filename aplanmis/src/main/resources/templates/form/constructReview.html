@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.css" th:href="@{/agcloud/framework/js-lib/element-2/element.css}" />
   <link rel="stylesheet" href="../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css" th:href="@{/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css}">
   <link rel="stylesheet" href="../../static/form/css/constructReview.css" th:href="@{/form/css/constructReview.css}">
+  <link rel="stylesheet" href="../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/css/reset.css" th:href="@{/agcloud/framework/js-lib/agcloud-lib/css/reset.css}">
   <script>
     var ctx = '[[@{/}]]';
     var projInfoId= '[[${projInfoId}]]'; 
@@ -31,9 +32,6 @@
             <el-input v-model="formData.drawingId"></el-input>
           </el-form-item>
           <div class="clearfix">
-            <el-form-item class="input-inline" prop="provinceProjCode" label="省级项目编号">
-              <el-input v-model="formData.provinceProjCode" placeholder="请输入省级项目编号"></el-input>
-            </el-form-item>
             <el-form-item class="input-inline" prop="drawingQuabookCode" label='施工图审查合格书编号'>
               <el-input v-model="formData.drawingQuabookCode" placeholder="请输入施工图审查合格书编号"></el-input>
             </el-form-item>
@@ -58,12 +56,10 @@
             <el-form-item class="input-inline" label="一次审查时违反强条数" prop="oncePassAgainstCount">
               <el-input v-model="formData.oncePassAgainstCount" placeholder="请输入一次审查时违反强条数"></el-input>
             </el-form-item>
+            <el-form-item class="input-inline" label="一次审查时违反的强条条目" prop="oncePassAgainstItem">
+              <el-input v-model="formData.oncePassAgainstItem" placeholder="请输入一次审查时违反的强条条目"></el-input>
+            </el-form-item>
           </div>
-          <!-- <div class="clearfix"> -->
-          <el-form-item class="proj-code-info" label="一次审查时违反的强条条目" prop="oncePassAgainstItem">
-            <el-input v-model="formData.oncePassAgainstItem" placeholder="请输入一次审查时违反的强条条目"></el-input>
-          </el-form-item>
-          <!-- </div> -->
           <el-form-item class="proj-code-info" label="施工图审查意见（终审）" prop="approveOpinion">
             <el-input v-model="formData.approveOpinion" type="textarea" rows="5" placeholder="请输入施工图审查意见"></el-input>
           </el-form-item>
