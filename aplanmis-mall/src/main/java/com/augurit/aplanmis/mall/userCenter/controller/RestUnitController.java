@@ -11,7 +11,9 @@ import com.augurit.aplanmis.mall.userCenter.service.RestUnitService;
 import com.augurit.aplanmis.mall.userCenter.service.RestUserCenterService;
 import com.augurit.aplanmis.mall.userCenter.vo.UnitAddVo;
 import com.augurit.aplanmis.mall.userCenter.vo.UnitEditVo;
+import com.augurit.aplanmis.mall.userCenter.vo.UnitVo;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,8 @@ import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @Slf4j
@@ -76,6 +80,17 @@ public class RestUnitController {
         Assert.isTrue(StringUtils.isNotBlank(projInfoId), "projInfoId is null");
         aeaUnitInfoService.deleteUnitProj(projInfoId, null, unitInfoId);
         return new ContentResultForm<>(true, unitInfoId, "Delete unit success");
+    }
+
+    @GetMapping("/list/by/{projectInfoId}")
+    @ApiOperation(value = "根据项目ID查找关联的单位列表")
+    @ApiImplicitParam(name = "projectInfoId", value = "项目id", required = true, dataType = "String")
+    public ContentResultForm<List<UnitVo>> listByProjectInfoId(@PathVariable String projectInfoId) {
+        Assert.isTrue(StringUtils.isNotBlank(projectInfoId) , "projectInfoId is null");
+
+        List<UnitVo> unitVos = aeaUnitInfoService.findAllProjUnit(projectInfoId).stream()
+                .map(u -> UnitVo.from(u, null)).collect(Collectors.toList());
+        return new ContentResultForm<>(true, unitVos, "Query success");
     }
 
 }
