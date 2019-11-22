@@ -1215,15 +1215,15 @@
         </el-row>
         <el-table style="width: 100%; margin-top:10px;" border :data="iteminstList" stripe>
           <el-table-column type="index" width="50" align="center" label="序号"></el-table-column>
-          <el-table-column prop="approveOrgName" label="实施主体"></el-table-column>
-          <el-table-column prop="itemProperty" label="办件类型"></el-table-column>
-          <el-table-column prop="dueNum" label="承诺工作日">
+          <el-table-column prop="approveOrgName" label="实施主体" width="120"></el-table-column>
+          <el-table-column prop="iteminstName" label="实施事项名称"></el-table-column>
+          <el-table-column prop="itemProperty" label="办件类型" width="120"></el-table-column>
+          <el-table-column prop="dueNum" label="承诺工作日" width="120">
             <template slot-scope="scope">
               {{scope.row.dueNum+scope.row.dueNumUnit}}
             </template>
           </el-table-column>
-          <el-table-column prop="iteminstName" label="实施事项名称"></el-table-column>
-          <el-table-column prop="iteminstState" label="状态">
+          <el-table-column prop="iteminstState" label="状态" width="120">
             <template slot-scope="scope">
               <span>{{getStatusText(scope.row.iteminstState)}}</span>
             </template>

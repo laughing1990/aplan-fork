@@ -136,8 +136,10 @@ public class ApproveService {
         if (aeaProjInfos.size() > 0) {
             String projName = aeaProjInfos.stream().map(AeaProjInfo::getProjName).collect(Collectors.joining("、"));
             String projCode = aeaProjInfos.stream().map(AeaProjInfo::getLocalCode).collect(Collectors.joining("、"));
+            String projId = aeaProjInfos.stream().map(AeaProjInfo::getProjInfoId).collect(Collectors.joining("、"));
             bpmApproveStateVo.setProjName(projName);
             bpmApproveStateVo.setProjCode(projCode);
+            bpmApproveStateVo.setProjId(projId);
         }
         String isApprove = applyInst.getIsSeriesApprove();
         //2、审批状态
@@ -178,6 +180,7 @@ public class ApproveService {
                     }
                     bpmApproveStateVo.setStageOrItemName(stageName);
                     bpmApproveStateVo.setIsShowOneForm(aeaParStage.getUseOneForm());
+                    bpmApproveStateVo.setStageId(aeaParStage.getStageId());
                     String code = "";
                     if (StringUtils.isNotBlank(taskId)) {
                         String iteminstId = this.getIteminstIdByTaskId(taskId);

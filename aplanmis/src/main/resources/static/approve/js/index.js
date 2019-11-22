@@ -525,6 +525,8 @@ var vm = new Vue({
       isZJItem: false, // 是否为中介事项
       smartFormInfo: [],
       processDialogLoading: false,
+      stageId: '',
+      projInfoId: '',
     }
   },
   filters: {
@@ -1916,75 +1918,75 @@ var vm = new Vue({
       });
       vm.lTabsData = lTabsData;
       if (vm.isShowOneForm == '1' && !vm.isZJItem) {
-        // request('', {
-        //   url: ctx + 'rest/oneform/common/getListForm4StageOneForm',
-        //   type: 'get',
-        //   data: {
-        //     // applyinstId: vm.masterEntityKey,
-        //     // stageId: vm.masterEntityKey,
-        //     // projInfoId: vm.masterEntityKey,
-        //     applyinstId: 'fcf9d937-f670-4871-a430-34b01cafde9b',
-        //     stageId: 'f39985ed-9119-444f-b744-4167762a3872',
-        //     projInfoId: '347db5f9-f55f-44eb-9d1a-983ca263e8c4',
-        //     showBasicButton: false,
-        //     includePlatformResource: false,
-        //   },
-        // }, function(res){
-        //   if (res.success){
-        //     res.content.forEach(function(u, index){
-        //       if (u.smartForm){
-        //         u.formUrl = u.formUrl.replace('showBasicButton=true', 'showBasicButton=false')
-        //         getHtml(u, index);
-        //       } else {
-        //         u.formUrl += '&showBasicButton=false';
-        //       }
-        //     });
-        //     vm.smartFormInfo = res.content;
-        //   } else {
-        //     vm.$message.error(res.content || '获取一张表单信息失败');
-        //   }
-        //   function getHtml(data, index){
-        //     request('', {
-        //       url: ctx + data.formUrl,
-        //       type: 'get',
-        //     }, function(res) {
-        //       if (res.success) {
-        //         $('#smartFormBox_'+index).html(res.content);
-        //       } else {
-        //         vm.$message.error('获取只能表单数据失败');
-        //       }
-        //     }, function(){
-        //       vm.$message.error('获取只能表单数据失败');
-        //     })
-        //   }
-        // }, function (){
-        //   vm.$message.error('获取一张表单信息失败');
-        // });
         request('', {
-          url: oneFromSrc,
+          url: ctx + 'rest/oneform/common/getListForm4StageOneForm',
           type: 'get',
-        }, function (res) {
-          if (res.success) {
-            var reder2Url = res.content;
-            request('', {
-              url: reder2Url,
-              type: 'get',
-            }, function (res2) {
-              if (res2.success) {
-                $('#oneForm').html(res2.content);
-                vm.$nextTick(function () {
-                  $('#oneForm').html(res2.content)
-                });
+          data: {
+            applyinstId: vm.masterEntityKey,
+            stageId: vm.stageId,
+            projInfoId: vm.projInfoId,
+            // applyinstId: 'fcf9d937-f670-4871-a430-34b01cafde9b',
+            // stageId: 'f39985ed-9119-444f-b744-4167762a3872',
+            // projInfoId: '347db5f9-f55f-44eb-9d1a-983ca263e8c4',
+            showBasicButton: false,
+            includePlatformResource: false,
+          },
+        }, function(res){
+          if (res.success){
+            res.content.forEach(function(u, index){
+              if (u.smartForm){
+                u.formUrl = u.formUrl.replace('showBasicButton=true', 'showBasicButton=false')
+                getHtml(u, index);
+              } else {
+                u.formUrl += '&showBasicButton=false';
               }
-            }, function (res) {
-              vm.$message.error(res.message);
-              $('#oneForm').html(res.message);
-              
             });
+            vm.smartFormInfo = res.content;
+          } else {
+            vm.$message.error(res.content || '获取一张表单信息失败');
           }
-        }, function () {
-          $('#oneForm').html('未配置一张表单信息');
+          function getHtml(data, index){
+            request('', {
+              url: ctx + data.formUrl,
+              type: 'get',
+            }, function(res) {
+              if (res.success) {
+                $('#smartFormBox_'+index).html(res.content);
+              } else {
+                // vm.$message.error('获取智能表单数据失败');
+              }
+            }, function(){
+              // vm.$message.error('获取智能表单数据失败');
+            })
+          }
+        }, function (){
+          vm.$message.error('获取一张表单信息失败');
         });
+        // request('', {
+        //   url: oneFromSrc,
+        //   type: 'get',
+        // }, function (res) {
+        //   if (res.success) {
+        //     var reder2Url = res.content;
+        //     request('', {
+        //       url: reder2Url,
+        //       type: 'get',
+        //     }, function (res2) {
+        //       if (res2.success) {
+        //         $('#oneForm').html(res2.content);
+        //         vm.$nextTick(function () {
+        //           $('#oneForm').html(res2.content)
+        //         });
+        //       }
+        //     }, function (res) {
+        //       vm.$message.error(res.message);
+        //       $('#oneForm').html(res.message);
+        //
+        //     });
+        //   }
+        // }, function () {
+        //   $('#oneForm').html('未配置一张表单信息');
+        // });
       } else {
         //下面是删除一张表单的tab，注意依赖数组的脚标
         if (oneFormIndex != -1) {
@@ -2200,6 +2202,8 @@ var vm = new Vue({
           vm.hasSpecial = res.content.hasSpecial;
           vm.hasSupply = res.content.hasSupply;
           vm.isShowOneForm = res.content.isShowOneForm;
+          vm.stageId = res.content.stageId;
+          vm.projInfoId = res.content.projId;
           vm.initFormElementPriv();
         } else {
           vm.$message.error(res.message);
@@ -2425,12 +2429,15 @@ var vm = new Vue({
           if (data.success) {
             vm.processDialogLoading = false; // 关闭遮罩
             vm.$message.success(data.message);
+            setTimeout("location.reload()", 1500 );
           } else {
             vm.$message.error(data.message);
+              vm.processDialogLoading = false; // 关闭遮罩
           }
         },
         error: function (jqXHR, textStatus, errorThrown) {
           vm.$message.error("请求出错了！");
+          vm.processDialogLoading = false; // 关闭遮罩
         }
       });
     },
