@@ -6,13 +6,12 @@ import com.augurit.aplanmis.common.constants.DeletedStatus;
 import com.augurit.aplanmis.common.domain.AeaParentProj;
 import com.augurit.aplanmis.common.domain.AeaProjInfo;
 import com.augurit.aplanmis.common.mapper.AeaProjInfoMapper;
-import com.augurit.aplanmis.rest.common.utils.SessionUtil;
-import com.augurit.aplanmis.rest.common.vo.LoginInfoVo;
+import com.augurit.aplanmis.rest.auth.AuthContext;
+import com.augurit.aplanmis.rest.auth.AuthUser;
 import com.augurit.aplanmis.rest.userCenter.service.RestUserCenterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.UUID;
 
@@ -23,16 +22,10 @@ public class RestUserCenterServiceImpl implements RestUserCenterService {
     private AeaProjInfoMapper aeaProjInfoMapper;
 
     @Override
-    public String saveChildProject(HttpServletRequest request, AeaProjInfo aeaProjInfo) throws Exception {
+    public String saveChildProject(AeaProjInfo aeaProjInfo) throws Exception {
         //判定登录类型
-        LoginInfoVo loginInfoVo = SessionUtil.getLoginInfo(request);
-        String userId = loginInfoVo.getUserId();
-        String modify = "";
-        if (StringUtils.isNotBlank(userId)) {//用户id为空
-            modify = loginInfoVo.getPersonName();
-        } else {
-            modify = loginInfoVo.getUnitName();
-        }
+        AuthUser loginInfoVo = AuthContext.getCurrentUser();
+        String modify = StringUtils.isNotBlank(loginInfoVo.getLinkmanInfoId()) ? loginInfoVo.getLinkmanInfoId() : loginInfoVo.getUnitInfoId();
         AeaProjInfo oldAeaProjInfo;
         //判定是编辑主项目还是保存分离子项目
         if (StringUtils.isNotBlank(aeaProjInfo.getProjInfoId())) {//如果aeaProjInfo的id不为空，则为编辑主项目,需创建新的aeaProjInfoLog

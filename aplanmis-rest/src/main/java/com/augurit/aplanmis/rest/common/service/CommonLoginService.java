@@ -1,7 +1,5 @@
 package com.augurit.aplanmis.rest.common.service;
 
-import com.augurit.agcloud.framework.security.SecurityContext;
-import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.agcloud.opus.common.domain.OpuOmOrg;
 import com.augurit.agcloud.opus.common.mapper.OpuOmOrgMapper;
 import com.augurit.aplanmis.common.domain.AeaLinkmanInfo;
@@ -11,13 +9,11 @@ import com.augurit.aplanmis.common.mapper.AeaUnitInfoMapper;
 import com.augurit.aplanmis.common.utils.SM3;
 import com.augurit.aplanmis.rest.auth.AuthContext;
 import com.augurit.aplanmis.rest.auth.AuthUser;
-import com.augurit.aplanmis.rest.common.utils.SessionUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -33,14 +29,6 @@ public class CommonLoginService {
 
     @Value("${dg.sso.access.platform.org.top-org-id:0368948a-1cdf-4bf8-a828-71d796ba89f6}")
     protected String topOrgId;
-
-    public ResultForm logout(HttpServletRequest request) {
-        SessionUtil.clearSession(request);
-        SecurityContext.logout();
-
-        SecurityContext.setCurrentLoginUser(null, null);
-        return new ResultForm(true);
-    }
 
     public AuthUser changeApplicant(String unitInfoId) {
         AeaUnitInfo unitInfo = aeaUnitInfoMapper.getAeaUnitInfoById(unitInfoId);
