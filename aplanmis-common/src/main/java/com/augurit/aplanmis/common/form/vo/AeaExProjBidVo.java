@@ -38,7 +38,6 @@ public class AeaExProjBidVo extends AeaExProjBid implements Serializable{
     public static AeaExProjBidVo from(AeaExProjBid aeaExProjBid) {
         AeaExProjBidVo vo = new AeaExProjBidVo();
         vo.setBidId(aeaExProjBid.getBidId());
-        vo.setProvinceProjCode(aeaExProjBid.getProvinceProjCode());
         vo.setProjInfoId(aeaExProjBid.getProjInfoId());
         vo.setWinBidNoticeCode(aeaExProjBid.getWinBidNoticeCode());
         vo.setBidSectionName(aeaExProjBid.getBidSectionName());

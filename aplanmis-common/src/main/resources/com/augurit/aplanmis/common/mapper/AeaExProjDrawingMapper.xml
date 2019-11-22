@@ -7,7 +7,6 @@
 <sql id="allColumns" >
     DRAWING_ID  drawingId,
     PROJ_INFO_ID  projInfoId,
-    PROVINCE_PROJ_CODE  provinceProjCode,
     DRAWING_QUABOOK_CODE  drawingQuabookCode,
     INVERSTMENT_MOENY  inverstmentMoeny,
     APPROVE_DRAWING_AREA  approveDrawingArea,
@@ -49,9 +48,6 @@
         </if>
         <if test="projInfoId != null" >
         AND    PROJ_INFO_ID = #{projInfoId}
-        </if>
-        <if test="provinceProjCode != null" >
-        AND    PROVINCE_PROJ_CODE = #{provinceProjCode}
         </if>
         <if test="drawingQuabookCode != null" >
         AND    DRAWING_QUABOOK_CODE = #{drawingQuabookCode}
@@ -117,9 +113,9 @@
 <!--5 新增实体对象 -->
 <insert id="insertAeaExProjDrawing" parameterType="com.augurit.aplanmis.common.domain.AeaExProjDrawing" >
     insert into AEA_EX_PROJ_DRAWING (
-DRAWING_ID  ,PROJ_INFO_ID  ,PROVINCE_PROJ_CODE  ,DRAWING_QUABOOK_CODE  ,INVERSTMENT_MOENY  ,APPROVE_DRAWING_AREA  ,APPROVE_START_TIME  ,APPROVE_END_TIME  ,IS_ONCE_PASS  ,ONCE_PASS_AGAINST_COUNT  ,ONCE_PASS_AGAINST_ITEM  ,APPROVE_OPINION  ,APPROVE_CONFIRM_TIME  ,GOV_ORG_CODE  ,GOV_ORG_NAME  ,GOV_ORG_AREA_CODE  ,DRAWING_MEMO  ,CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME  ,ROOT_ORG_ID  
+DRAWING_ID  ,PROJ_INFO_ID  ,DRAWING_QUABOOK_CODE  ,INVERSTMENT_MOENY  ,APPROVE_DRAWING_AREA  ,APPROVE_START_TIME  ,APPROVE_END_TIME  ,IS_ONCE_PASS  ,ONCE_PASS_AGAINST_COUNT  ,ONCE_PASS_AGAINST_ITEM  ,APPROVE_OPINION  ,APPROVE_CONFIRM_TIME  ,GOV_ORG_CODE  ,GOV_ORG_NAME  ,GOV_ORG_AREA_CODE  ,DRAWING_MEMO  ,CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME  ,ROOT_ORG_ID
     )  values  (
-#{drawingId},#{projInfoId},#{provinceProjCode},#{drawingQuabookCode},#{inverstmentMoeny},#{approveDrawingArea},#{approveStartTime},#{approveEndTime},#{isOncePass},#{oncePassAgainstCount},#{oncePassAgainstItem},#{approveOpinion},#{approveConfirmTime},#{govOrgCode},#{govOrgName},#{govOrgAreaCode},#{drawingMemo},#{creater},#{createTime},#{modifier},#{modifyTime},  #{rootOrgId}
+#{drawingId},#{projInfoId},#{drawingQuabookCode},#{inverstmentMoeny},#{approveDrawingArea},#{approveStartTime},#{approveEndTime},#{isOncePass},#{oncePassAgainstCount},#{oncePassAgainstItem},#{approveOpinion},#{approveConfirmTime},#{govOrgCode},#{govOrgName},#{govOrgAreaCode},#{drawingMemo},#{creater},#{createTime},#{modifier},#{modifyTime},  #{rootOrgId}
     )
 </insert>
 <!--6 修改实体对象 -->
@@ -131,9 +127,6 @@ DRAWING_ID  ,PROJ_INFO_ID  ,PROVINCE_PROJ_CODE  ,DRAWING_QUABOOK_CODE  ,INVERSTM
         </if>
         <if test="projInfoId != null" >
         PROJ_INFO_ID = #{projInfoId},
-        </if>
-        <if test="provinceProjCode != null" >
-        PROVINCE_PROJ_CODE = #{provinceProjCode},
         </if>
         <if test="drawingQuabookCode != null" >
         DRAWING_QUABOOK_CODE = #{drawingQuabookCode},
@@ -209,7 +202,6 @@ DRAWING_ID  ,PROJ_INFO_ID  ,PROVINCE_PROJ_CODE  ,DRAWING_QUABOOK_CODE  ,INVERSTM
     <resultMap type="com.augurit.aplanmis.common.domain.AeaExProjDrawing" id="AeaExProjDrawingMap">
         <id property="drawingId" column="DRAWING_ID"/>
         <result property="projInfoId" column="PROJ_INFO_ID"/>
-        <result property="provinceProjCode" column="PROVINCE_PROJ_CODE"/>
         <result property="drawingQuabookCode" column="DRAWING_QUABOOK_CODE"/>
         <result property="inverstmentMoeny" column="INVERSTMENT_MOENY"/>
         <result property="approveDrawingArea" column="APPROVE_DRAWING_AREA"/>
