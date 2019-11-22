@@ -5,7 +5,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.augurit.agcloud.bsc.domain.BscAttFileAndDir;
 import com.augurit.agcloud.bsc.domain.BscAttLink;
 import com.augurit.agcloud.bsc.domain.BscDicCodeItem;
-import com.augurit.agcloud.bsc.mapper.BscAttDetailMapper;
 import com.augurit.agcloud.bsc.mapper.BscAttMapper;
 import com.augurit.agcloud.bsc.mapper.BscDicCodeMapper;
 import com.augurit.agcloud.framework.security.SecurityContext;
@@ -120,7 +119,7 @@ public class ApproveService {
     @Autowired
     private AeaCertMapper aeaCertMapper;
     @Autowired
-    private BscAttDetailMapper bscAttDetailMapper;
+    private AeaHiItemInoutinstMapper aeaHiItemInoutinstMapper;
 
     public BpmApproveStateVo getApplyStylesAndState(String applyinstId, String taskId) throws Exception {
         BpmApproveStateVo bpmApproveStateVo = new BpmApproveStateVo();
@@ -675,29 +674,33 @@ public class ApproveService {
 
             if (mat.getCertinstList().size() > 0) {
 
-                AeaHiItemMatinst matinst = mat.getCertinstList().get(0);
+//                AeaHiItemMatinst matinst = mat.getCertinstList().get(0);
+                List<Map> certinstList = new ArrayList();
+                Map obj = null;
+                for (AeaHiItemMatinst certMatinst : mat.getCertinstList()) {
+                    obj = new HashMap();
+                    //来自于本地系统的证照实例
+                    if (CertinstSource.LOCAL.getValue().equals(certMatinst.getCertinstSource())) {
+                        obj.put("certFileList", fileUtilsService.getMatAttDetailByMatinstId(certMatinst.getCertinstId()));
+                    } else if (CertinstSource.EXTERNAL.getValue().equals(certMatinst.getCertinstSource())) {//来自于外部系统的证照实例
+                        OpuOmUser user = opuOmUserMapper.getUserByUserId(certMatinst.getCreater());
+                        List<BscAttFileAndDir> bscAttFileAndDirs = new ArrayList();
+                        BscAttFileAndDir fileAndDir = new BscAttFileAndDir();
+                        fileAndDir.setFileId(certMatinst.getAuthCode());
+                        fileAndDir.setFileName(certMatinst.getCertisntName());
+                        fileAndDir.setCreaterName(user != null ? user.getUserName() : certMatinst.getCreater());
+                        fileAndDir.setUpdateTime(certMatinst.getCreateTime());
+                        bscAttFileAndDirs.add(fileAndDir);
+                        obj.put("certFileList", bscAttFileAndDirs);
+                    }
 
-                //来自于本地系统的证照实例
-                if (CertinstSource.LOCAL.getValue().equals(matinst.getCertinstSource())) {
-                    matinstVo.setCertFileList(fileUtilsService.getMatAttDetailByMatinstId(matinst.getCertinstId()));
-                    matinstVo.setItemVerIds(itemVerIds);
-                } else if (CertinstSource.EXTERNAL.getValue().equals(matinst.getCertinstSource())) {//来自于外部系统的证照实例
-                    OpuOmUser user = opuOmUserMapper.getUserByUserId(matinst.getCreater());
-                    List<BscAttFileAndDir> bscAttFileAndDirs = new ArrayList();
-                    BscAttFileAndDir fileAndDir = new BscAttFileAndDir();
-                    fileAndDir.setFileId(matinst.getAuthCode());
-                    fileAndDir.setFileName(matinst.getCertisntName());
-                    fileAndDir.setCreaterName(user != null ? user.getUserName() : matinst.getCreater());
-                    fileAndDir.setUpdateTime(matinst.getCreateTime());
-                    bscAttFileAndDirs.add(fileAndDir);
-                    matinstVo.setCertFileList(bscAttFileAndDirs);
-                    matinstVo.setItemVerIds(itemVerIds);
+                    obj.put("certMatinstId", certMatinst.getMatinstId());
+                    obj.put("certinstSource", certMatinst.getCertinstSource());
+                    certinstList.add(obj);
                 }
-
-                matinstVo.setCertinstSource(matinst.getCertinstSource());
-                matinstVo.setCertMatinstId(matinst.getMatinstId());
+                matinstVo.setCertinstList(certinstList);
             }
-
+            matinstVo.setItemVerIds(itemVerIds);
             if (mat.getForminstList().size() > 0) {
                 matinstVo.setForminstId(mat.getForminstList().get(0).getStoForminstId());
             }
@@ -1139,5 +1142,12 @@ public class ApproveService {
         }
 
         return certinsts;
+    }
+
+    public void unbindCertinst(String matinstId) throws Exception {
+        if (StringUtils.isNotBlank(matinstId)) {
+            aeaHiItemInoutinstMapper.getAeaHiItemInoutinstByMatinstId(matinstId);
+            aeaHiItemMatinstMapper.deleteAeaHiItemMatinst(matinstId);
+        }
     }
 }
