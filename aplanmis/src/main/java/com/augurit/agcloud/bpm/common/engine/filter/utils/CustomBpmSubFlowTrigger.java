@@ -39,8 +39,10 @@ public class CustomBpmSubFlowTrigger implements BpmSubFlowTrigger {
      */
     @Override
     public boolean doBeforeTaskTrigger(Object masterForm, DelegateTask delegateTask,Map<String,Object> params, String appinstId, ActTplAppTrigger appTrigger) {
-        RuntimeService runtimeService = CommandContextUtil.getProcessEngineConfiguration().getRuntimeService();
-        TaskService taskService = CommandContextUtil.getProcessEngineConfiguration().getTaskService();
+//        RuntimeService runtimeService = CommandContextUtil.getProcessEngineConfiguration().getRuntimeService();
+//        TaskService taskService = CommandContextUtil.getProcessEngineConfiguration().getTaskService();
+        TaskService taskService = SpringContextHolder.getBean(TaskService.class);
+        RuntimeService runtimeService = SpringContextHolder.getBean(RuntimeService.class);
         AeaItemBasicMapper aeaItemBasicMapper = SpringContextHolder.getBean(AeaItemBasicMapper.class);
 
         setJointReviewTaskId(runtimeService, delegateTask.getId(), delegateTask.getProcessInstanceId(), delegateTask.getTaskDefinitionKey());
@@ -80,7 +82,8 @@ public class CustomBpmSubFlowTrigger implements BpmSubFlowTrigger {
     @Override
     public void doAfterTaskTrigger(Object masterForm, DelegateTask delegateTask, String appinstId,ActTplAppTrigger appTrigger, BpmProcessInstance processInstance) {
         try {
-            RuntimeService runtimeService = CommandContextUtil.getProcessEngineConfiguration().getRuntimeService();
+//            RuntimeService runtimeService = CommandContextUtil.getProcessEngineConfiguration().getRuntimeService();
+            RuntimeService runtimeService = SpringContextHolder.getBean(RuntimeService.class);
             AeaHiIteminstMapper aeaHiIteminstMapper = SpringContextHolder.getBean(AeaHiIteminstMapper.class);
             String iteminstId = getIteminstId(appTrigger, delegateTask.getProcessInstanceId(), appinstId);
             if (processInstance != null && StringUtils.isNotBlank(iteminstId)) {
@@ -125,7 +128,8 @@ public class CustomBpmSubFlowTrigger implements BpmSubFlowTrigger {
     private String getIteminstId(ActTplAppTrigger appTrigger, String procInstId, String appinstId) throws Exception {
         AeaHiIteminstMapper aeaHiIteminstMapper = SpringContextHolder.getBean(AeaHiIteminstMapper.class);
         ActTplAppTriggerMapper actTplAppTriggerMapper = SpringContextHolder.getBean(ActTplAppTriggerMapper.class);
-        RuntimeService runtimeService = CommandContextUtil.getProcessEngineConfiguration().getRuntimeService();
+//        RuntimeService runtimeService = CommandContextUtil.getProcessEngineConfiguration().getRuntimeService();
+        RuntimeService runtimeService = SpringContextHolder.getBean(RuntimeService.class);
         AeaItemBasicMapper aeaItemBasicMapper = SpringContextHolder.getBean(AeaItemBasicMapper.class);
 
         String triggerId = appTrigger.getTriggerId();
