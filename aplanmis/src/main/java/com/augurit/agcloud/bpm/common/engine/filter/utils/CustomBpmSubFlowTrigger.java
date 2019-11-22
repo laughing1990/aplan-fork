@@ -14,7 +14,6 @@ import com.augurit.aplanmis.common.mapper.AeaItemBasicMapper;
 import org.flowable.engine.RuntimeService;
 import org.flowable.engine.TaskService;
 import org.flowable.engine.delegate.DelegateExecution;
-import org.flowable.engine.impl.util.CommandContextUtil;
 import org.flowable.task.service.delegate.DelegateTask;
 import org.springframework.stereotype.Component;
 
@@ -63,12 +62,18 @@ public class CustomBpmSubFlowTrigger implements BpmSubFlowTrigger {
         //----------------处理并联申报时，部分事项已单项办理时，系统自动跳过事项节点相关逻辑 end---------------------
         try {
             String iteminstId = getIteminstId(appTrigger, delegateTask.getProcessInstanceId(), appinstId);
-            params.put("$BRANCH_ORG_ITEMINST_ID", iteminstId);
+            //同一节点配置多个事项子流程的判断，不能动
+            if((StringUtils.isNotBlank(appTrigger.getBusRecordId())&&iteminstId!=null)
+                    ||StringUtils.isBlank(appTrigger.getBusRecordId())){
+                params.put("$BRANCH_ORG_ITEMINST_ID", iteminstId);
+                return true;
+            }else{
+                return false;
+            }
         } catch (Exception e) {
             e.printStackTrace();
-
+            return false;
         }
-        return true;
     }
 
     /**
