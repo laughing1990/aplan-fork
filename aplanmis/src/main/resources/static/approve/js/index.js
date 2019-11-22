@@ -523,6 +523,8 @@ var vm = new Vue({
       },
       // 中介事项审批
       isZJItem: false, // 是否为中介事项
+      smartFormInfo: [],
+      processDialogLoading: false,
     }
   },
   filters: {
@@ -702,10 +704,10 @@ var vm = new Vue({
       if (isDevelop) {
         window.setTimeout(function () {
           vm.idLibLoading = false;
-          idLibResMock.content.data.forEach(function(u) {
+          idLibResMock.content.data.forEach(function (u) {
             var flag = false;
-            vm.currentMatRow.certinstList && vm.currentMatRow.certinstList.forEach(function(uu){
-              if(uu.certFileList[0].fileId.split(u.license_code).length > 1){
+            vm.currentMatRow.certinstList && vm.currentMatRow.certinstList.forEach(function (uu) {
+              if (uu.certFileList[0].fileId.split(u.license_code).length > 1) {
                 flag = true;
               }
             });
@@ -725,10 +727,10 @@ var vm = new Vue({
           if (res.success) {
             if (res.content && res.content.data && res.content.data.length) {
               vm.idLibLoading = false;
-              res.content.data.forEach(function(u) {
+              res.content.data.forEach(function (u) {
                 var flag = false;
-                vm.currentMatRow.certinstList && vm.currentMatRow.certinstList.forEach(function(uu){
-                  if(uu.certFileList[0].fileId.split(u.license_code).length > 1){
+                vm.currentMatRow.certinstList && vm.currentMatRow.certinstList.forEach(function (uu) {
+                  if (uu.certFileList[0].fileId.split(u.license_code).length > 1) {
                     flag = true;
                   }
                 });
@@ -769,22 +771,23 @@ var vm = new Vue({
         vm.$message.error('查看证照失败');
       });
     },
-    // 证照列表弹窗 解除关联证照
+    // 证照列表 解除关联
     idIisassociation: function (row) {
       var vm = this;
-      this.$confirm('此操作将解除关联该证照, 是否继续?', '解除关联', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      this.$confirm('姝ゆ搷浣滃皢瑙ｉ櫎鍏宠仈璇ヨ瘉鐓§, 鏄¯鍚︾户缁­?', '瑙ｉ櫎鍏宠仈', {
+        confirmButtonText: '纭®瀹',
+        cancelButtonText: '鍙栨秷',
         type: 'warning',
       }).then(function (obj) {
         ensureDelete();
       }).catch(function () {
       });
+      
       function ensureDelete() {
         vm.idLibLoading = true;
         var matinstId = '';
-        vm.currentMatRow.certinstList.forEach(function(u){
-          if (u.certFileList[0].fileId.split(row.license_code).length > 1){
+        vm.currentMatRow.certinstList.forEach(function (u) {
+          if (u.certFileList[0].fileId.split(row.license_code).length > 1) {
             matinstId = u.certMatinstId;
           }
         });
@@ -797,17 +800,18 @@ var vm = new Vue({
         }, function (res) {
           vm.idLibLoading = false;
           if (res.success) {
-            vm.$message.success('已解除关联');
+            vm.$message.success('宸茶В闄ゅ叧鑱');
             row.isRelated = false;
             typeof vm.refreshMatIframe == 'function' && vm.refreshMatIframe();
           } else {
-            vm.$message.error(res.message || '解除关联失败')
+            vm.$message.error(res.message || '瑙ｉ櫎鍏宠仈澶辫触')
           }
         }, function () {
           vm.idLibLoading = false;
-          vm.$message.error('解除关联失败');
+          vm.$message.error('瑙ｉ櫎鍏宠仈澶辫触');
         });
       }
+      
       if (window) return null;
       var param = {
         "authCode": row.auth_code,
@@ -840,16 +844,16 @@ var vm = new Vue({
       }, function (res) {
         vm.idLibLoading = false;
         if (res.success) {
-          vm.$message.success('关联证照成功');
+          vm.$message.success('鍏宠仈璇佺収鎴愬姛');
           // vm.idLibVisible = false;
           row.isRelated = true;
           typeof vm.refreshMatIframe == 'function' && vm.refreshMatIframe();
         } else {
-          vm.$message.error(res.message || '关联证照失败');
+          vm.$message.error(res.message || '鍏宠仈璇佺収澶辫触');
         }
       }, function () {
         vm.idLibLoading = false;
-        vm.$message.error('关联证照失败');
+        vm.$message.error('鍏宠仈璇佺収澶辫触');
       });
     },
     // 证照列表弹窗 关联证照
@@ -1912,6 +1916,50 @@ var vm = new Vue({
       });
       vm.lTabsData = lTabsData;
       if (vm.isShowOneForm == '1' && !vm.isZJItem) {
+        // request('', {
+        //   url: ctx + 'rest/oneform/common/getListForm4StageOneForm',
+        //   type: 'get',
+        //   data: {
+        //     // applyinstId: vm.masterEntityKey,
+        //     // stageId: vm.masterEntityKey,
+        //     // projInfoId: vm.masterEntityKey,
+        //     applyinstId: 'fcf9d937-f670-4871-a430-34b01cafde9b',
+        //     stageId: 'f39985ed-9119-444f-b744-4167762a3872',
+        //     projInfoId: '347db5f9-f55f-44eb-9d1a-983ca263e8c4',
+        //     showBasicButton: false,
+        //     includePlatformResource: false,
+        //   },
+        // }, function(res){
+        //   if (res.success){
+        //     res.content.forEach(function(u, index){
+        //       if (u.smartForm){
+        //         u.formUrl = u.formUrl.replace('showBasicButton=true', 'showBasicButton=false')
+        //         getHtml(u, index);
+        //       } else {
+        //         u.formUrl += '&showBasicButton=false';
+        //       }
+        //     });
+        //     vm.smartFormInfo = res.content;
+        //   } else {
+        //     vm.$message.error(res.content || '获取一张表单信息失败');
+        //   }
+        //   function getHtml(data, index){
+        //     request('', {
+        //       url: ctx + data.formUrl,
+        //       type: 'get',
+        //     }, function(res) {
+        //       if (res.success) {
+        //         $('#smartFormBox_'+index).html(res.content);
+        //       } else {
+        //         vm.$message.error('获取只能表单数据失败');
+        //       }
+        //     }, function(){
+        //       vm.$message.error('获取只能表单数据失败');
+        //     })
+        //   }
+        // }, function (){
+        //   vm.$message.error('获取一张表单信息失败');
+        // });
         request('', {
           url: oneFromSrc,
           type: 'get',
@@ -2366,6 +2414,26 @@ var vm = new Vue({
       $('#bpmnModel').html('');//先清空流程图容器div
       _showChildrenProcessDiagram(childProcInstId, isCheck);
     },
+    //触发子流程
+    triggerSubFlow: function (taskId, eventName) {
+      vm.processDialogLoading = true;  // 打开遮罩
+      var request = jQuery.ajax({
+        type: 'get',
+        url: ctx + 'rest/front/task/triggerSubFlow' + '?flag=' + new Date().getTime(),
+        data: {taskId: taskId, eventName: eventName},
+        success: function (data, textStatus, jqXHR) {
+          if (data.success) {
+            vm.processDialogLoading = false; // 关闭遮罩
+            vm.$message.success(data.message);
+          } else {
+            vm.$message.error(data.message);
+          }
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+          vm.$message.error("请求出错了！");
+        }
+      });
+    },
     // 点击节点
     clickNodeTitle: function (e, node, friNodeId) {
       if (!node.isLeaf) {
@@ -2482,7 +2550,7 @@ var vm = new Vue({
     opinionSelectChange: function (value) {
       vm.$set(vm.opinionForm, 'opinionText', value);
     },
-    backOpChange: function (value){
+    backOpChange: function (value) {
       vm.backFormData.comment = value;
     },
     //设为常用办理意见
@@ -4480,7 +4548,7 @@ var vm = new Vue({
       });
     },
     // 发起申报
-    startDeclare: function(){
+    startDeclare: function () {
       var vm = this;
       vm.returnPrevTask();
       if (vm) return null;
@@ -4733,6 +4801,14 @@ function showChildrenDiagramDialog(node) {
   var procInstId = $(node).attr("data-procInstId");
   var isCheck = $(node).attr("data-isCheck");
   vm.showChildrenDiagramDialog(procInstId, isCheck);
+}
+
+//触发子流程
+function triggerSubFlow(node) {
+  //这个 是在 后台生成流程图节点信息的接口约定的
+  var taskId = $(node).attr("data-taskId");
+  var eventName = $(node).attr("data-eventName");
+  vm.triggerSubFlow(taskId, eventName);
 }
 
 function getUrlParam(s) {
@@ -5089,7 +5165,7 @@ function seeAllProcessPic() {
   vm.seeAllProcessPic();
 }
 
-function startDeclare(){
+function startDeclare() {
   vm.isBackDialog = false;
   vm.startDeclare();
 }
