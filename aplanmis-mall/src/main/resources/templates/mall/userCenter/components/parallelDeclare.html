@@ -1171,8 +1171,8 @@
   <!--  一张表单-->
   <div class="mt20 proj-module pd-info-pandel" v-show="declareStep == 6">
     <h4 class="mt60">一张表单 </h4>
-    <span class="icon-fold" :class="leftTabClosed?'el-icon-s-unfold':'el-icon-s-fold'" @click="leftTabClosed=!leftTabClosed"></span>
-    <el-tabs class="one-form-tab" :class="leftTabClosed?'closed':''" tab-position="left" :style="{height:(curHeight-220)+'px'}">
+    <span class="icon-fold" v-if="formUrlList.length>0" :class="leftTabClosed?'el-icon-s-unfold':'el-icon-s-fold'" @click="leftTabClosed=!leftTabClosed"></span>
+    <el-tabs  v-if="formUrlList.length>0" class="one-form-tab" :class="leftTabClosed?'closed':''" tab-position="left" :style="{height:(curHeight-220)+'px'}">
       <el-tab-pane v-for="(item,index) in formUrlList" :key="index">
         <span slot="label" :title="item.formName">{{item.formName}}</span>
         <iframe :style="{height:(curHeight-220)+'px',overflow: 'auto',width:'100%'}"
