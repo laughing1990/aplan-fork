@@ -339,6 +339,7 @@ function addOrgItem(isRoot, isCatalog){
     $("#add_item_under_dept select[name='isCheckItem'] option:eq(0)").prop("selected", 'selected');
     $("#add_item_under_dept select[name='isCheckPartform'] option:eq(0)").prop("selected", 'selected');
     $("#add_item_under_dept select[name='isCheckProj'] option:eq(0)").prop("selected", 'selected');
+    $("#add_item_under_dept select[name='anticipateType'] option:eq(1)").prop("selected", 'selected');
 
     if(isRoot){
         $("#add_item_under_dept input[name='itemCategoryMark']").removeAttr("readonly");

@@ -153,6 +153,12 @@ public class AeaParStage implements Serializable {
     @ApiModelProperty(value = "是否前置检测阶段信息  0 禁止  1允许'")
     private java.lang.String isCheckStage;
 
+    @ApiModelProperty(value = "法定办结时限")
+    private Double anticipateDay;
+
+    @ApiModelProperty(value = "法定办结时限单位")
+    private String anticipateType;
+
 
     /**
      * 扩展字段: 关键字查询
