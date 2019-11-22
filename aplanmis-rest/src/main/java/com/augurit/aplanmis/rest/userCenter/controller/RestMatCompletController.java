@@ -23,19 +23,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
-@RequestMapping("rest/user/matComplete")
+@RequestMapping("/rest/user/matComplete")
 @Api(tags = "法人空间 --> 材料补全相关接口")
 public class RestMatCompletController {
     Logger logger = LoggerFactory.getLogger(RestMatCompletController.class);
@@ -48,7 +48,7 @@ public class RestMatCompletController {
     @Autowired
     private AeaHiApplyinstService aeaHiApplyinstService;
 
-    @GetMapping("matCompletDetail/{applyinstId}/{projInfoId}/{isSeriesApprove}")
+    @GetMapping("/matCompletDetail/{applyinstId}/{projInfoId}/{isSeriesApprove}")
     @ApiOperation(value = "材料补全详情信息接口")
     @ApiImplicitParams({@ApiImplicitParam(value = "申请实例Id", name = "applyinstId", required = true, dataType = "string"),
             @ApiImplicitParam(value = "项目ID", name = "projInfoId", required = true, dataType = "string"),
@@ -62,13 +62,13 @@ public class RestMatCompletController {
         }
     }
 
-    @GetMapping("tomatCompletionListPage")
+    /*@GetMapping("tomatCompletionListPage")
     @ApiOperation(value = "跳转材料补全页面")
     public ModelAndView toMatCompletPage() {
         return new ModelAndView("mall/userCenter/components/matCompletionList");
-    }
+    }*/
 
-    @GetMapping("matComplet/list")
+    @GetMapping("/matComplet/list")
     @ApiOperation(value = "材料补全 --> 材料补全列表查询接口")
     @ApiImplicitParams({@ApiImplicitParam(value = "页面数量", name = "pageNum", required = true, dataType = "string"),
             @ApiImplicitParam(value = "页面页数", name = "pageSize", required = true, dataType = "string")})
@@ -88,7 +88,7 @@ public class RestMatCompletController {
         }
     }
 
-    @RequestMapping("/getLackMats")
+    @GetMapping("/getLackMats")
     @ApiOperation("材料补全 --> 查询少交和已交的材料清单")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "applyinstId", value = "申请实例id,存在多个用逗号分隔", required = true, dataType = "string", paramType = "query", readOnly = true)
@@ -113,7 +113,7 @@ public class RestMatCompletController {
     }
 
 
-    @RequestMapping("/createMatCorrectinst")
+    @PostMapping("/createMatCorrectinst")
     @ApiOperation(value = "材料补全 --> 创建材料补全实例", httpMethod = "POST")
     public ResultForm createMatCorrectinst(ApplyinstCorrectinstDto correctinstDto) {
 
@@ -137,12 +137,11 @@ public class RestMatCompletController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "applyinstCorrectId", value = "材料补全实例id", required = true, dataType = "string", paramType = "query", readOnly = true)
     })
-    public ContentResultForm getMatCorrectInfo(@RequestParam String applyinstCorrectId) {
+    public ResultForm getMatCorrectInfo(@RequestParam String applyinstCorrectId) {
 
         Assert.notNull(applyinstCorrectId, "材料补全实例ID为空！");
         try {
-            AeaHiApplyinstCorrect aeaHiItemCorrect = null;//aeaHiApplyinstCorrectService.getMatCorrectInfo(applyinstCorrectId);
-            return new ContentResultForm<>(true, aeaHiItemCorrect, "Query success");
+            return aeaHiApplyinstCorrectService.getMatCorrectInfo(applyinstCorrectId);
         } catch (Exception e) {
             e.printStackTrace();
             return new ContentResultForm<>(false, null, "获取材料补全实例信息失败！");
@@ -150,7 +149,7 @@ public class RestMatCompletController {
     }
 
 
-    @RequestMapping("/saveMatCorrectInfo")
+    @PostMapping("/saveMatCorrectInfo")
     @ApiOperation(value = "材料补全 --> 保存材料补全实例", httpMethod = "POST")
     public ResultForm saveMatCorrectInfo(MatCorrectinstDto matCorrectinstDto) {
 
@@ -183,6 +182,12 @@ public class RestMatCompletController {
 
     @PostMapping("/matCorrectConfirm")
     @ApiOperation(value = "材料补全 --> 确认补全材料列表", httpMethod = "POST")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "correctId", value = "材料补全实例ID")
+            , @ApiImplicitParam(name = "correctState", value = "材料补全实例状态")
+            , @ApiImplicitParam(name = "correctMemo", value = "备注")
+            , @ApiImplicitParam(name = "matCorrectDtosJson", value = "材料补全列表")
+    })
     public ResultForm matCorrectConfirm(String correctId, String correctState, String correctMemo, String matCorrectDtosJson) {
         Assert.notNull(correctId, "材料补全实例ID为空！");
         Assert.notNull(correctState, "材料补全实例状态为空！");
@@ -196,7 +201,7 @@ public class RestMatCompletController {
         }
     }
 
-    @PostMapping("/att/delelte")
+    @DeleteMapping("/att/delelte")
     @ApiOperation(value = "材料补全页面--> 删除电子件")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "detailIds", value = "附件ID", dataType = "string", paramType = "query", required = true)
@@ -230,7 +235,7 @@ public class RestMatCompletController {
     @GetMapping("/att/list")
     @ApiOperation("申报页面--> 查询已上传附件列表")
     @ApiImplicitParam(name = "attRealIninstId", value = "材料实例id")
-    public ContentResultForm<List<BscAttFileAndDir>> attFileList(@RequestParam(required = false) String attRealIninstId) {
+    public ContentResultForm<List<BscAttFileAndDir>> attFileList(@RequestParam String attRealIninstId) {
         try {
             if (StringUtils.isBlank(attRealIninstId)) throw new Exception("attRealIninstId为空！");
             return new ContentResultForm<>(true, aeaHiApplyinstCorrectService.getAttFiles(attRealIninstId), "Query attachment list success");
