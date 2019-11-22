@@ -9,6 +9,7 @@ import com.github.pagehelper.PageInfo;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 /**
@@ -60,4 +61,6 @@ public interface AeaImServiceResultService {
      * @return List<MatinstVo>
      */
     List<MatinstVo> getProjPurchaseMatinstList(String projPurchaseId) throws Exception;
+
+    String uploadServiceResultAtt(String matId, String matinstId, String projPurchaseId, HttpServletRequest request) throws UnsupportedEncodingException, Exception;
 }
