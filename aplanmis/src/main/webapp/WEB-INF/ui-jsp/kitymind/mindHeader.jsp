@@ -353,60 +353,81 @@
 <div class="container-tab">
     <div class="flow_steps">
         <ul class="stage">
-            <li data-url="/aea/par/stage/indexSetStageItem.do,/aea/item/frontCheckManage.do<%--/aea/item/frontCheckItem.do--%>" class="overlay">
-                <i class="flow-steps-num">1</i>${currentBusiType == 'item'?'前置检测':'事项范围配置'}
-            </li>
-            <li data-url="/rest/mind/mindIndex.do, /rest/mind/noSituation.do" data-item="">
-                <i class="flow-steps-num">2</i>${handWay=='1'?'情形材料配置':'情形事项配置'}
-                <div class="down">
-                    <div class="down_title">
-                        <span class="down_val">分情形</span>
-                        <i class="sanjiao_down"></i>
-                    </div>
-                    <div class="down_menu">
-                        <p id="situationMenu">分情形</p>
-                        <p id="noSituationMenu">不分情形</p>
-                    </div>
-                </div>
-            </li>
-
-            <li data-url="/rest/mind/stage/processModeler.do, /rest/mind/item/processModeler.do">
-                <i class="flow-steps-num">3</i>流程配置
-            </li>
-
             <c:if test="${currentBusiType == 'stage'}">
-                <li data-url="/aea/par/stage/indexStageGuide.do">
-                    <i class="flow-steps-num">4</i>办事指南
+
+                <li data-url="/aea/par/stage/indexSetStageItem.do">
+                    <i class="flow-steps-num">1</i>事项范围配置
                 </li>
-            </c:if>
 
-            <c:if test="${currentBusiType == 'stage'}">
+                <li data-url="/rest/mind/mindIndex.do, /rest/mind/noSituation.do" class="overlay">
+                    <i class="flow-steps-num">2</i>${handWay=='1'?'情形材料配置':'情形事项配置'}
+                    <div class="down">
+                        <div class="down_title">
+                            <span class="down_val">分情形</span>
+                            <i class="sanjiao_down"></i>
+                        </div>
+                        <div class="down_menu">
+                            <p class="situationMenu">分情形</p>
+                            <p class="noSituationMenu">不分情形</p>
+                        </div>
+                    </div>
+                </li>
+
+                <li data-url="/rest/mind/stage/processModeler.do">
+                    <i class="flow-steps-num">3</i>流程配置
+                </li>
+
+                <c:if test="${useOneForm == '1'}">
+                    <li data-url="/aea/par/stage/oneFormManage.do">
+                        <i class="flow-steps-num">4</i>一张表单
+                    </li>
+                </c:if>
+
                 <li data-url="/aea/par/stage/frontCheckManage.do">
-                    <i class="flow-steps-num">5</i>前置检测
+                    <i class="flow-steps-num">${useOneForm == '1'?5:4}</i>前置检测
                 </li>
-            </c:if>
 
-            <c:if test="${currentBusiType == 'stage' && useOneForm=='1' }">
-                <li data-url="/aea/par/stage/oneFormManage.do">
-                    <i class="flow-steps-num">6</i>一张表单
+                <li data-url="/aea/par/stage/indexStageGuide.do">
+                    <i class="flow-steps-num">${useOneForm == '1'?6:5}</i>办事指南
                 </li>
             </c:if>
 
             <c:if test="${currentBusiType == 'item'}">
+
+                <li data-url="/rest/mind/mindIndex.do, /rest/mind/noSituation.do" class="overlay">
+                    <i class="flow-steps-num">1</i>情形材料配置
+                    <div class="down">
+                        <div class="down_title">
+                            <span class="down_val">分情形</span>
+                            <i class="sanjiao_down"></i>
+                        </div>
+                        <div class="down_menu">
+                            <p class="situationMenu">分情形</p>
+                            <p class="noSituationMenu">不分情形</p>
+                        </div>
+                    </div>
+                </li>
+
+                <li data-url="/rest/mind/item/processModeler.do">
+                    <i class="flow-steps-num">2</i>流程配置
+                </li>
+
                 <li data-url="/aea/item/indexSetItemOut.do">
-                    <i class="flow-steps-num">4</i>输出材料
+                    <i class="flow-steps-num">3</i>输出材料
                 </li>
-            </c:if>
 
-            <c:if test="${currentBusiType == 'item'}">
+                <c:if test="${useOneForm=='1'}">
+                    <li data-url="/aea/item/oneFormManage.do">
+                        <i class="flow-steps-num">4</i>一张表单
+                    </li>
+                </c:if>
+
+                <li data-url="/aea/item/frontCheckManage.do">
+                    <i class="flow-steps-num">${useOneForm == '1'?5:4}</i>前置检测
+                </li>
+
                 <li data-url="/aea/item/editItemDirectory.do">
-                    <i class="flow-steps-num">5</i>办事指南
-                </li>
-            </c:if>
-
-            <c:if test="${currentBusiType == 'item' && useOneForm=='1' }">
-                <li data-url="/aea/item/oneFormManage.do">
-                    <i class="flow-steps-num">6</i>一张表单
+                    <i class="flow-steps-num">${useOneForm == '1'?6:5}</i>办事指南
                 </li>
             </c:if>
 
@@ -505,53 +526,68 @@
     function handleUrlDispatch() {
 
         if (currentBusiType == AeaMindConst_MIND_NODE_TYPE_CODE_STAGE) {
-            $($(".flow_steps .stage li")[0]).html('<i class="flow-steps-num">1</i>事项范围配置');
             if(handWay){
                 // 不分情形下的沿用事项情形
                 if(handWay=='0'&&isNeedState=='0'){
-                    urlArr = [
-                        '/aea/par/stage/indexSetStageItem.do?busiType=' + currentBusiType + '&busiId=' + currentBusiId,
-                        '/aea/par/stage/showStageItems.do?busiType=' + currentBusiType + '&busiId=' + currentBusiId,
-                        '/rest/mind/stage/processModeler.do?busiType=' + currentBusiType + '&busiId=' + currentBusiId,
-                        '/aea/par/stage/indexStageGuide.do?busiType=' + currentBusiType + '&busiId=' + currentBusiId,
-                        '/aea/par/stage/frontCheckManage.do?busiType=' + currentBusiType + '&busiId=' + currentBusiId,
-                        '/aea/par/stage/oneFormManage.do?busiType=' + currentBusiType + '&busiId=' + currentBusiId,
-                    ];
+                    if(useOneForm=='1'){
+                        urlArr = [
+                            '/aea/par/stage/indexSetStageItem.do?busiType=' + currentBusiType + '&busiId=' + currentBusiId,
+                            '/aea/par/stage/showStageItems.do?busiType=' + currentBusiType + '&busiId=' + currentBusiId,
+                            '/rest/mind/stage/processModeler.do?busiType=' + currentBusiType + '&busiId=' + currentBusiId,
+                            '/aea/par/stage/oneFormManage.do?busiType=' + currentBusiType + '&busiId=' + currentBusiId,
+                            '/aea/par/stage/frontCheckManage.do?busiType=' + currentBusiType + '&busiId=' + currentBusiId,
+                            '/aea/par/stage/indexStageGuide.do?busiType=' + currentBusiType + '&busiId=' + currentBusiId,
+                        ];
+                    }else{
+                        urlArr = [
+                            '/aea/par/stage/indexSetStageItem.do?busiType=' + currentBusiType + '&busiId=' + currentBusiId,
+                            '/aea/par/stage/showStageItems.do?busiType=' + currentBusiType + '&busiId=' + currentBusiId,
+                            '/rest/mind/stage/processModeler.do?busiType=' + currentBusiType + '&busiId=' + currentBusiId,
+                            '/aea/par/stage/frontCheckManage.do?busiType=' + currentBusiType + '&busiId=' + currentBusiId,
+                            '/aea/par/stage/indexStageGuide.do?busiType=' + currentBusiType + '&busiId=' + currentBusiId,
+                        ];
+                    }
                 // 其他情况
                 }else{
-                    urlArr = [
-                        '/aea/par/stage/indexSetStageItem.do?busiType=' + currentBusiType + '&busiId=' + currentBusiId,
-                        '/rest/mind/mindIndex.do?busiType=' + currentBusiType + '&busiId=' + currentBusiId,
-                        '/rest/mind/stage/processModeler.do?busiType=' + currentBusiType + '&busiId=' + currentBusiId,
-                        '/aea/par/stage/indexStageGuide.do?busiType=' + currentBusiType + '&busiId=' + currentBusiId,
-                        '/aea/par/stage/frontCheckManage.do?busiType=' + currentBusiType + '&busiId=' + currentBusiId,
-                        '/aea/par/stage/oneFormManage.do?busiType=' + currentBusiType + '&busiId=' + currentBusiId,
-                    ];
-                }
-                $($(".flow_steps .stage li")[2]).html('<i class="flow-steps-num">3</i>流程配置');
-                $($(".flow_steps .stage li")[3]).html('<i class="flow-steps-num">4</i>办事指南');
-                $($(".flow_steps .stage li")[4]).html('<i class="flow-steps-num">5</i>前置检测');
-                if(useOneForm=='1'){
-                    $($(".flow_steps .stage li")[5]).html('<i class="flow-steps-num">6</i>一张表单');
-                    // $($(".flow_steps .stage li")[4]).html('<i class="flow-steps-num">5</i>一张表单');
+                    if(useOneForm=='1'){
+                        urlArr = [
+                            '/aea/par/stage/indexSetStageItem.do?busiType=' + currentBusiType + '&busiId=' + currentBusiId,
+                            '/rest/mind/mindIndex.do?busiType=' + currentBusiType + '&busiId=' + currentBusiId,
+                            '/rest/mind/stage/processModeler.do?busiType=' + currentBusiType + '&busiId=' + currentBusiId,
+                            '/aea/par/stage/oneFormManage.do?busiType=' + currentBusiType + '&busiId=' + currentBusiId,
+                            '/aea/par/stage/frontCheckManage.do?busiType=' + currentBusiType + '&busiId=' + currentBusiId,
+                            '/aea/par/stage/indexStageGuide.do?busiType=' + currentBusiType + '&busiId=' + currentBusiId,
+                        ];
+                    }else{
+                        urlArr = [
+                            '/aea/par/stage/indexSetStageItem.do?busiType=' + currentBusiType + '&busiId=' + currentBusiId,
+                            '/rest/mind/mindIndex.do?busiType=' + currentBusiType + '&busiId=' + currentBusiId,
+                            '/rest/mind/stage/processModeler.do?busiType=' + currentBusiType + '&busiId=' + currentBusiId,
+                            '/aea/par/stage/frontCheckManage.do?busiType=' + currentBusiType + '&busiId=' + currentBusiId,
+                            '/aea/par/stage/indexStageGuide.do?busiType=' + currentBusiType + '&busiId=' + currentBusiId,
+                        ];
+                    }
                 }
             }
         } else if (currentBusiType == AeaMindConst_MIND_NODE_TYPE_CODE_ITEM) {
-            urlArr = [
-                // '/aea/item/frontCheckItem.do?busiType=' + currentBusiType + '&busiId=' + currentBusiId + '&stateVerId=' + currentStateVerId,
-                '/aea/item/frontCheckManage.do?busiType=' + currentBusiType + '&busiId=' + currentBusiId + '&stateVerId=' + currentStateVerId,
-                '/rest/mind/mindIndex.do?busiType=' + currentBusiType + '&busiId=' + currentBusiId + '&stateVerId=' + currentStateVerId,
-                '/rest/mind/item/processModeler.do?busiType=' + currentBusiType + '&busiId=' + currentBusiId + '&stateVerId=' + currentStateVerId,
-                '/aea/item/indexSetItemOut.do?busiType=' + currentBusiType + '&busiId=' + currentBusiId + '&stateVerId=' + currentStateVerId,
-                '/aea/item/editItemDirectory.do?busiType=' + currentBusiType + '&busiId=' + currentBusiId + '&stateVerId=' + currentStateVerId,
-                 '/aea/item/oneFormManage.do?busiType=' + currentBusiType + '&busiId=' + currentBusiId + '&stateVerId=' + currentStateVerId,
-            ];
-            $($(".flow_steps .stage li")[0]).html('<i class="flow-steps-num">1</i>前置检测');
-            $($(".flow_steps .stage li")[2]).html('<i class="flow-steps-num">3</i>流程配置');
-            $($(".flow_steps .stage li")[3]).html('<i class="flow-steps-num">4</i>输出材料');
-            $($(".flow_steps .stage li")[4]).html('<i class="flow-steps-num">5</i>办事指南');
-            if(useOneForm=='1') {
-                $($(".flow_steps .stage li")[5]).html('<i class="flow-steps-num">6</i>一张表单');
+
+            if(useOneForm=='1'){
+                urlArr = [
+                    '/rest/mind/mindIndex.do?busiType=' + currentBusiType + '&busiId=' + currentBusiId + '&stateVerId=' + currentStateVerId,
+                    '/rest/mind/item/processModeler.do?busiType=' + currentBusiType + '&busiId=' + currentBusiId + '&stateVerId=' + currentStateVerId,
+                    '/aea/item/indexSetItemOut.do?busiType=' + currentBusiType + '&busiId=' + currentBusiId + '&stateVerId=' + currentStateVerId,
+                    '/aea/item/oneFormManage.do?busiType=' + currentBusiType + '&busiId=' + currentBusiId + '&stateVerId=' + currentStateVerId,
+                    '/aea/item/frontCheckManage.do?busiType=' + currentBusiType + '&busiId=' + currentBusiId + '&stateVerId=' + currentStateVerId,
+                    '/aea/item/editItemDirectory.do?busiType=' + currentBusiType + '&busiId=' + currentBusiId + '&stateVerId=' + currentStateVerId,
+                ];
+            }else{
+                urlArr = [
+                    '/rest/mind/mindIndex.do?busiType=' + currentBusiType + '&busiId=' + currentBusiId + '&stateVerId=' + currentStateVerId,
+                    '/rest/mind/item/processModeler.do?busiType=' + currentBusiType + '&busiId=' + currentBusiId + '&stateVerId=' + currentStateVerId,
+                    '/aea/item/indexSetItemOut.do?busiType=' + currentBusiType + '&busiId=' + currentBusiId + '&stateVerId=' + currentStateVerId,
+                    '/aea/item/frontCheckManage.do?busiType=' + currentBusiType + '&busiId=' + currentBusiId + '&stateVerId=' + currentStateVerId,
+                    '/aea/item/editItemDirectory.do?busiType=' + currentBusiType + '&busiId=' + currentBusiId + '&stateVerId=' + currentStateVerId,
+                ];
             }
         }
     }
@@ -615,7 +651,8 @@
                 for (var i = 0; i < matchUrl.split(',').length; i++) {
                     if (location.href.indexOf(matchUrl.split(',')[i].trim()) > 0) {
                         $(this).addClass('current').siblings().removeClass('current');
-                        $(this).prev().addClass('overlay').next().removeClass('overlay')
+                        $(this).siblings().removeClass('overlay');
+                        // $(this).prev().addClass('overlay').next().removeClass('overlay')
                         break;
                     }
                 }
@@ -628,14 +665,14 @@
         if (isNeedState == '1') {
 
             $('.down_val').text(MIND_HEADER_NAV_SITUATION_SET_DESC_CLASSIFY_SITUATION);
-            $('#situationMenu').addClass('hide');
-            $('#noSituationMenu').addClass('show');
+            $('.situationMenu').addClass('hide');
+            $('.noSituationMenu').addClass('show');
 
         } else {
 
             $('.down_val').text(MIND_HEADER_NAV_SITUATION_SET_DESC_NO_CLASSIFY_SITUATION);
-            $('#situationMenu').addClass('show');
-            $('#noSituationMenu').addClass('hide');
+            $('.situationMenu').addClass('show');
+            $('.noSituationMenu').addClass('hide');
         }
     }
     function CloseWebPage(){
