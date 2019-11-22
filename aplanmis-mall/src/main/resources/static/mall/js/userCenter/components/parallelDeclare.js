@@ -1733,31 +1733,34 @@ var module1 = new Vue({
       }
       var param = {stageId: this.stageId,projInfoId:this.projInfoId};
       var _that = this;
-      // 阶段前置检测
-      request('', {
-        url: ctx + 'rest/check/stageFrontCheck',
-        type: 'post',
-        data: param,
-      }, function (result) {
-        if (result.success) {
-          _that.getStatusStateMats(_that.stageId);  // 获取事项情形列表
-          _that.stageFrontCheckFlag = true;
-        }else {
-          _that.stageFrontCheckFlag = false;
-          _that.stageFrontCheckMsg = result.message?result.message:'阶段前置检测失败';
-          confirmMsg('阶段前置检测不通过', result.message, function(){
-            _that.stageFrontCheckFlag = true;
+      if(data.isCheckStage=='0'){
+        _that.getStatusStateMats(_that.stageId);  // 获取事项情形列表
+        _that.stageFrontCheckFlag = true;
+      }else {
+        // 阶段前置检测
+        request('', {
+          url: ctx + 'rest/check/stageFrontCheck',
+          type: 'post',
+          data: param,
+        }, function (result) {
+          if (result.success) {
             _that.getStatusStateMats(_that.stageId);  // 获取事项情形列表
-          },function(){
+            _that.stageFrontCheckFlag = true;
+          }else {
             _that.stageFrontCheckFlag = false;
-            _that.stateList = [];
-            _that.parallelItems=[];
-            _that.coreItems=[];
-          },'继续申报','放弃申报', 'error', true);
-        }
-      }, function (msg) {})
-
-      // this.getStageItems(stageId); // 获取事项列表
+            _that.stageFrontCheckMsg = result.message?result.message:'阶段前置检测失败';
+            confirmMsg('阶段前置检测不通过', result.message, function(){
+              _that.stageFrontCheckFlag = true;
+              _that.getStatusStateMats(_that.stageId);  // 获取事项情形列表
+            },function(){
+              _that.stageFrontCheckFlag = false;
+              _that.stateList = [];
+              _that.parallelItems=[];
+              _that.coreItems=[];
+            },'继续申报','放弃申报', 'error', true);
+          }
+        }, function (msg) {})
+      }
     },
     // 判断事项checkbox是否可勾选
     checkboxInit: function (row) {

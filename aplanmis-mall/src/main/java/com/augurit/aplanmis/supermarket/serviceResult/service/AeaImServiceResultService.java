@@ -1,7 +1,9 @@
 package com.augurit.aplanmis.supermarket.serviceResult.service;
 
 import com.augurit.aplanmis.common.domain.AeaImServiceResult;
+import com.augurit.aplanmis.common.vo.MatinstVo;
 import com.augurit.aplanmis.common.vo.ServiceProjInfoVo;
+import com.augurit.aplanmis.supermarket.serviceResult.vo.ServiceResultVo;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import org.springframework.web.multipart.MultipartFile;
@@ -43,4 +45,19 @@ public interface AeaImServiceResultService {
 
     boolean deleteServiceResultFile(String detailId)throws Exception;
 
+    /**
+     * 保存或修改服务结果---20191122
+     *
+     * @param matinstIds
+     * @param serviceResultVo
+     */
+    void saveOrUpdateSerivceResult(String[] matinstIds, ServiceResultVo serviceResultVo) throws Exception;
+
+    /**
+     * 查询采购项目材料及实例列表
+     *
+     * @param projPurchaseId 采购项目需求ID
+     * @return List<MatinstVo>
+     */
+    List<MatinstVo> getProjPurchaseMatinstList(String projPurchaseId) throws Exception;
 }
