@@ -183,21 +183,21 @@ public class OneFormCommonService {
         return result;
     }
 
-    public ContentResultForm<Map> renderHtmlFormContainer(OneFormStageRequest oneFormStageRequest, SFRenderConfig sFRenderConfig) throws Exception {
-        ContentResultForm<Map> result = new ContentResultForm(false, "", "");
-        if (StringUtils.isBlank(oneFormStageRequest.getApplyinstId())) {
-            result.setMessage("申报实例ID不能为空!!");
-        } else {
-            Map<String, Object> resultMap = new HashMap();
-            List<SFFormParam> listSFFormParam = genListSFFormParam4OneForm(oneFormStageRequest,false);
-            ContentResultForm<String> sfFormResult = sFFormMultipleRender.renderHtmlFormContainer(listSFFormParam, sFRenderConfig);
-            resultMap.put("sfForm", sfFormResult.getContent());
-
-            result.setSuccess(true);
-            result.setContent(resultMap);
-        }
-        return result;
-    }
+//    public ContentResultForm<Map> renderHtmlFormContainer(OneFormStageRequest oneFormStageRequest, SFRenderConfig sFRenderConfig) throws Exception {
+//        ContentResultForm<Map> result = new ContentResultForm(false, "", "");
+//        if (StringUtils.isBlank(oneFormStageRequest.getApplyinstId())) {
+//            result.setMessage("申报实例ID不能为空!!");
+//        } else {
+//            Map<String, Object> resultMap = new HashMap();
+//            List<SFFormParam> listSFFormParam = genListSFFormParam4OneForm(oneFormStageRequest,false);
+//            ContentResultForm<String> sfFormResult = sFFormMultipleRender.renderHtmlFormContainer(listSFFormParam, sFRenderConfig);
+//            resultMap.put("sfForm", sfFormResult.getContent());
+//
+//            result.setSuccess(true);
+//            result.setContent(resultMap);
+//        }
+//        return result;
+//    }
 
     /**
      * 合并两个表单列表--partform，事项form
