@@ -127,7 +127,7 @@ public class AeaExProjBidServiceImpl implements AeaExProjBidService {
     }
 
     @Override
-    public void saveOrUpdateUnitInfo(AeaExProjBidVo aeaExProjBidVo, List<AeaUnitInfo> aeaUnitInfos, String unitType, List<AeaUnitProj> aeaUnitProjNewList) throws Exception{
+    public void saveOrUpdateUnitInfo(AeaExProjBidVo aeaExProjBidVo, List<AeaUnitInfo> aeaUnitInfos, String unitType) throws Exception{
         if (aeaUnitInfos != null) {
             for (AeaUnitInfo aeaUnitInfo : aeaUnitInfos) {
                 if (aeaUnitInfo.getUnitInfoId() != null && !"".equals(aeaUnitInfo.getUnitInfoId())) {
@@ -135,31 +135,21 @@ public class AeaExProjBidServiceImpl implements AeaExProjBidService {
                     aeaUnitInfoService.updateAeaUnitInfo(aeaUnitInfo);
                     aeaUnitInfo.setUnitType(unitType);//做回显
                     //如果本身有关联表记录则更新，否则重新保存项目单位关联表信息
-                    if(StringUtils.isNotBlank(aeaUnitInfo.getUnitProjId())) {
+                    AeaUnitProj aeaUnitProj = new AeaUnitProj();
+                    if (StringUtils.isNotBlank(aeaUnitInfo.getUnitProjId())) {
                         this.updateUnitProjInfo(aeaExProjBidVo.getProjInfoId(), aeaUnitInfo.getUnitInfoId(), aeaUnitInfo.getUnitProjId(), unitType);
-                    }else{
-                        AeaUnitProj aeaUnitProj=aeaExProjBidVo.toAeaUnitProj(aeaUnitInfo.getUnitInfoId(), unitType);
+                    } else {
+                        aeaUnitProj = aeaExProjBidVo.toAeaUnitProj(aeaUnitInfo.getUnitInfoId(), unitType);
                         aeaUnitInfo.setUnitProjId(aeaUnitProj.getUnitProjId());//做回显
-                        aeaUnitProjNewList.add(aeaUnitProj);
+                        aeaUnitInfoService.insertAeaUnitProj(aeaUnitProj);
                     }
-                    if(StringUtils.isNotBlank(aeaUnitInfo.getProjectLeaderId())) {
+                    if (StringUtils.isNotBlank(aeaUnitInfo.getProjectLeaderId())) {
                         //负责人
                         if (StringUtils.isNotBlank(aeaUnitInfo.getProjLinkmanId())) {
-                            AeaUnitProjLinkman man = new AeaUnitProjLinkman();
-                            man.setProjLinkmanId(aeaUnitInfo.getProjLinkmanId());
-                            man.setLinkmanInfoId(aeaUnitInfo.getProjectLeaderId());
-                            man.setUnitProjId(aeaUnitInfo.getUnitProjId());
-                            man.setLinkmanType(UnitProjLinkmanType.FZR.getValue());
+                            AeaUnitProjLinkman man = this.getUnitProjLinkman(aeaUnitInfo, aeaUnitInfo.getProjLinkmanId(), "u");
                             aeaUnitProjLinkmanMapper.updateAeaUnitProjLinkman(man);
                         } else {
-                            AeaUnitProjLinkman man = new AeaUnitProjLinkman();
-                            man.setProjLinkmanId(UUID.randomUUID().toString());
-                            man.setLinkmanInfoId(aeaUnitInfo.getProjectLeaderId());
-                            man.setUnitProjId(aeaUnitInfo.getUnitProjId());
-                            man.setLinkmanType(UnitProjLinkmanType.FZR.getValue());
-                            man.setCreater(SecurityContext.getCurrentUserId());
-                            man.setCreateTime(new Date());
-                            man.setIsDeleted("0");
+                            AeaUnitProjLinkman man = this.getUnitProjLinkman(aeaUnitInfo, UUID.randomUUID().toString(), "c");
                             aeaUnitProjLinkmanMapper.insertAeaUnitProjLinkman(man);
                         }
                     }
@@ -168,25 +158,43 @@ public class AeaExProjBidServiceImpl implements AeaExProjBidService {
                     aeaUnitInfo.setUnitType(null);//单位表里面的类型不保存，以关联表的为准
                     aeaUnitInfoService.insertAeaUnitInfo(aeaUnitInfo);
                     aeaUnitInfo.setUnitType(unitType);
-                    AeaUnitProj aeaUnitProj=aeaExProjBidVo.toAeaUnitProj(aeaUnitInfo.getUnitInfoId(), unitType);
+                    AeaUnitProj aeaUnitProj = aeaExProjBidVo.toAeaUnitProj(aeaUnitInfo.getUnitInfoId(), unitType);
                     aeaUnitInfo.setUnitProjId(aeaUnitProj.getUnitProjId());
-                    aeaUnitProjNewList.add(aeaUnitProj);
+                    aeaUnitInfoService.insertAeaUnitProj(aeaUnitProj);
 
                     // 负责人信息
-                    if(StringUtils.isNotBlank(aeaUnitInfo.getProjectLeaderId())) {
-                        AeaUnitProjLinkman man = new AeaUnitProjLinkman();
-                        man.setProjLinkmanId(UUID.randomUUID().toString());
-                        man.setLinkmanInfoId(aeaUnitInfo.getProjectLeaderId());
-                        man.setUnitProjId(aeaUnitInfo.getUnitProjId());
-                        man.setLinkmanType(UnitProjLinkmanType.FZR.getValue());
-                        man.setCreater(SecurityContext.getCurrentUserId());
-                        man.setCreateTime(new Date());
-                        man.setIsDeleted("0");
+                    if (StringUtils.isNotBlank(aeaUnitInfo.getProjectLeaderId())) {
+                        AeaUnitProjLinkman man = this.getUnitProjLinkman(aeaUnitInfo, UUID.randomUUID().toString(), "c");
                         aeaUnitProjLinkmanMapper.insertAeaUnitProjLinkman(man);
                     }
+
                 }
             }
         }
+    }
+
+    /**
+     *
+     * @param aeaUnitInfo 单位信息
+     * @param projLinkmanId 主键取值
+     * @param type  c创建，u更新
+     * @return
+     */
+    private AeaUnitProjLinkman getUnitProjLinkman(AeaUnitInfo aeaUnitInfo,String projLinkmanId,String type){
+        AeaUnitProjLinkman man = new AeaUnitProjLinkman();
+        man.setProjLinkmanId(projLinkmanId);
+        man.setLinkmanInfoId(aeaUnitInfo.getProjectLeaderId());
+        man.setUnitProjId(aeaUnitInfo.getUnitProjId());
+        man.setLinkmanType(UnitProjLinkmanType.FZR.getValue());
+        if("c".equals(type)) {
+            man.setCreater(SecurityContext.getCurrentUserId());
+            man.setCreateTime(new Date());
+        }else{
+            man.setModifier(SecurityContext.getCurrentUserId());
+            man.setModifyTime(new Date());
+        }
+        man.setIsDeleted("0");
+        return  man;
     }
 
 }
