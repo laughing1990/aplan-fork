@@ -704,8 +704,8 @@ var vm = new Vue({
           vm.idLibLoading = false;
           idLibResMock.content.data.forEach(function(u) {
             var flag = false;
-            vm.currentMatRow.certFileList && vm.currentMatRow.certFileList.forEach(function(uu){
-              if(uu.fileId.split(u.license_code).length > 1){
+            vm.currentMatRow.certinstList && vm.currentMatRow.certinstList.forEach(function(uu){
+              if(uu.certFileList[0].fileId.split(u.license_code).length > 1){
                 flag = true;
               }
             });
@@ -727,8 +727,8 @@ var vm = new Vue({
               vm.idLibLoading = false;
               res.content.data.forEach(function(u) {
                 var flag = false;
-                vm.currentMatRow.certFileList && vm.currentMatRow.certFileList.forEach(function(uu){
-                  if(uu.fileId.split(u.license_code).length > 1){
+                vm.currentMatRow.certinstList && vm.currentMatRow.certinstList.forEach(function(uu){
+                  if(uu.certFileList[0].fileId.split(u.license_code).length > 1){
                     flag = true;
                   }
                 });
@@ -769,6 +769,89 @@ var vm = new Vue({
         vm.$message.error('查看证照失败');
       });
     },
+    // 证照列表弹窗 解除关联证照
+    idIisassociation: function (row) {
+      var vm = this;
+      this.$confirm('此操作将解除关联该证照, 是否继续?', '解除关联', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      }).then(function (obj) {
+        ensureDelete();
+      }).catch(function () {
+      });
+      function ensureDelete() {
+        vm.idLibLoading = true;
+        var matinstId = '';
+        vm.currentMatRow.certinstList.forEach(function(u){
+          if (u.certFileList[0].fileId.split(row.license_code).length > 1){
+            matinstId = u.certMatinstId;
+          }
+        });
+        request('', {
+          url: ctx + 'rest/approve/matinst/unbindCertinst',
+          type: 'post',
+          data: {
+            matinstId: matinstId,
+          },
+        }, function (res) {
+          vm.idLibLoading = false;
+          if (res.success) {
+            vm.$message.success('已解除关联');
+            row.isRelated = false;
+            typeof vm.refreshMatIframe == 'function' && vm.refreshMatIframe();
+          } else {
+            vm.$message.error(res.message || '解除关联失败')
+          }
+        }, function () {
+          vm.idLibLoading = false;
+          vm.$message.error('解除关联失败');
+        });
+      }
+      if (window) return null;
+      var param = {
+        "authCode": row.auth_code,
+        "certId": vm.currentMatRow.certId,
+        "certOwner": row.holder_name,
+        "certinstCode": row.license_code,
+        "certinstName": row.name,
+        "issueDate": row.issue_time,
+        "issueOrgId": row.issue_org_code,
+        "managementScope": "",
+        "matId": vm.currentMatRow.matId,
+        "memo": row.remark,
+        "termEnd": row.expiry_date,
+        "termStart": row.begin_date,
+      };
+      param.applyinstId = vm.masterEntityKey;
+      // if (vm.currentMatRow.certMatinstId) {
+      //   param.matinstId = vm.currentMatRow.certMatinstId;
+      // }
+      param.certinstId = vm.currentMatRow.certinstId;
+      // if (vm.currentMatRow.certinstId){
+      //   param.certinstId = vm.currentMatRow.certinstId;
+      // }
+      vm.idLibLoading = true;
+      request('', {
+        url: ctx + 'rest/approve/CertTypeMatinst/update',
+        type: 'post',
+        ContentType: 'application/json',
+        data: JSON.stringify(param),
+      }, function (res) {
+        vm.idLibLoading = false;
+        if (res.success) {
+          vm.$message.success('关联证照成功');
+          // vm.idLibVisible = false;
+          row.isRelated = true;
+          typeof vm.refreshMatIframe == 'function' && vm.refreshMatIframe();
+        } else {
+          vm.$message.error(res.message || '关联证照失败');
+        }
+      }, function () {
+        vm.idLibLoading = false;
+        vm.$message.error('关联证照失败');
+      });
+    },
     // 证照列表弹窗 关联证照
     idTabListChoose: function (row) {
       var vm = this;
@@ -787,9 +870,9 @@ var vm = new Vue({
         "termStart": row.begin_date,
       };
       param.applyinstId = vm.masterEntityKey;
-      if (vm.currentMatRow.certMatinstId) {
-        param.matinstId = vm.currentMatRow.certMatinstId;
-      }
+      // if (vm.currentMatRow.certMatinstId) {
+      //   param.matinstId = vm.currentMatRow.certMatinstId;
+      // }
       param.certinstId = vm.currentMatRow.certinstId;
       // if (vm.currentMatRow.certinstId){
       //   param.certinstId = vm.currentMatRow.certinstId;
