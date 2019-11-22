@@ -3,7 +3,7 @@
 <!-- 添加/编辑 -->
 <div id="edit_item_front_item_modal" class="modal fade" tabindex="-1" role="dialog"
      aria-labelledby="dialog_item_dept" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered  modal-lg" role="document" style="max-width: 650px;">
+    <div class="modal-dialog modal-dialog-centered  modal-lg" role="document">
         <div class="modal-content">
             <!-- 标题 -->
             <div class="modal-header" style="padding: 15px;height: 45px;">
@@ -14,7 +14,7 @@
             </div>
             <form id="edit_item_front_item_form" method="post">
                 <div class="modal-body" style="padding: 10px;">
-                    <div id="edit_item_front_item_scroll" style="height: 300px;overflow-x: hidden;overflow-y: auto;">
+                    <div id="edit_item_front_item_scroll" style="height: 250px;overflow-x: hidden;overflow-y: auto;">
 
                         <input type="hidden" name="frontItemId" value=""/>
                         <input type="hidden" name="itemVerId" value=""/>
