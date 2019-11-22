@@ -2196,8 +2196,8 @@ var vm = new Vue({
         var certChildIds = [];
         if(certChild.length>0){
           certChild.map(function(item){
-            if(certChildIds.indexOf(item.authCode)<0){
-              certChildIds.push(item.authCode);
+            if(certChildIds.indexOf(item.licenseCode)<0){
+              certChildIds.push(item.licenseCode);
             }
           })
         }
@@ -2238,7 +2238,7 @@ var vm = new Vue({
               }else {
                 certItem.bind = false;
               }
-              if(certChildIds.indexOf(certItem.auth_code)>-1){
+              if(certChildIds.indexOf(certItem.license_code)>-1){
                 certItem.bind = true
               }else {
                 certItem.bind = false;
@@ -2327,6 +2327,7 @@ var vm = new Vue({
         }, function (res) {
           if(res.success){
             res.content.certName = certRowData.name;
+            res.content.licenseCode = certRowData.license_code;
             if(_that.selMatRowData.certChild=='undefined'||_that.selMatRowData.certChild==undefined){
               Vue.set(_that.selMatRowData,'certChild',[res.content]);
             }else {

@@ -2972,8 +2972,8 @@ var vm = new Vue({
       var certChildIds = [];
       if(certChild.length>0){
         certChild.map(function(item){
-          if(certChildIds.indexOf(item.authCode)<0){
-            certChildIds.push(item.authCode);
+          if(certChildIds.indexOf(item.licenseCode)<0){
+            certChildIds.push(item.licenseCode);
           }
         })
       }
@@ -3011,7 +3011,7 @@ var vm = new Vue({
             }else {
               certItem.bind = false;
             }
-            if(certChildIds.indexOf(certItem.auth_code)>-1){
+            if(certChildIds.indexOf(certItem.license_code)>-1){
               certItem.bind = true
             }else {
               certItem.bind = false;
@@ -3100,6 +3100,7 @@ var vm = new Vue({
       }, function (res) {
         if(res.success){
           res.content.certName = certRowData.name;
+          res.content.licenseCode = certRowData.license_code;
           if(_that.selMatRowData.certChild=='undefined'||_that.selMatRowData.certChild==undefined){
             Vue.set(_that.selMatRowData,'certChild',[res.content]);
           }else {
@@ -4482,7 +4483,7 @@ var vm = new Vue({
       },
     // 并行事项单选事件
     coreItemsSelItem: function(selArr,row) {
-      var flag = false;
+      var flag = false, spliceIndex=0;
       var _that = this;
       if(selArr.length==0){
         flag=false;
@@ -4505,10 +4506,11 @@ var vm = new Vue({
         }
         return false;
       }
-      selArr.forEach(function (item) {
+      selArr.forEach(function (item,index) {
         if(item){
           if(item.itemVerId==row.itemVerId){
             flag=true;
+            spliceIndex = index;
           }
         }
       });
@@ -4527,6 +4529,7 @@ var vm = new Vue({
               _that.getStatusMatItemsByStatus(row,'coreItem');
             }else {
               row.preItemCheckPassed = false;
+              selArr.splice(spliceIndex,1);
               _that.checkboxInit(row);
             }
           }, function (msg) {})
@@ -4703,7 +4706,7 @@ var vm = new Vue({
         }
         return false;
       }
-      selArr.map(function(row){
+      selArr.map(function(row,index){
         if(row){
           _that.showCoreItemsKey.push(row.itemBasicId);
           // if(row.isDone == 'FINISHED' || row.isDone == 'HANDLING' || row.notRegionData){
@@ -4726,6 +4729,7 @@ var vm = new Vue({
                 _that.getStatusMatItemsByStatus(row,'coreItem');
               }else {
                 row.preItemCheckPassed = false;
+                selArr.splice(index,1);
                 _that.checkboxInit(row);
               }
             }, function (msg) {})

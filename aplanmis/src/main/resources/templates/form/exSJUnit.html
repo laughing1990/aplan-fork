@@ -44,6 +44,15 @@
                             <el-input v-model="unitInfoShowFrom.quaCheckNum" placeholder="请输入质量监督注册号"></el-input>
                         </el-form-item>
                     </div>
+                    <div class="clearfix">
+                        <el-form-item class="input-inline allWidth" label="备注" prop="unitInfoShowFrom">
+                            <el-input v-model="unitInfoShowFrom.buildMemo" type="textarea" rows="5" placeholder=""></el-input>
+                            <label class="notice" style="margin-left: 45px;">
+                                <i class="ag ag-warn-circle"></i>
+                                <span>备注，最大长度500个字符，必填质量监督注册号, 安全监督注册号，格式如下：质量监督注册号:*****001;安全监督注册号:*****002</span>
+                            </label>
+                        </el-form-item>
+                    </div>
                 </el-form>
                 <!--工程总承包单位-->
                 <el-form label-width="210px" class="clearfix" :model="gongchengzongFrom" :rules="gongchengzongFromRules" ref="gongchengzongFrom">
@@ -199,12 +208,41 @@
                                        @click="addLinkman(applyShigongzongFrom,applyShigongzongFrom)" title="编辑"></el-button>
                         </el-form-item>
                     </el-col>
+                    <!--<el-col :span="12">-->
+                        <!--<el-form-item label="注册编号" prop="registerNum">-->
+                            <!--<el-input v-model="applyShigongzongFrom.registerNum" placeholder="请输入注册编号">-->
+                            <!--</el-input>-->
+                        <!--</el-form-item>-->
+                    <!--</el-col>-->
                     <el-col :span="12">
-                        <el-form-item label="注册编号" prop="registerNum">
-                            <el-input v-model="applyShigongzongFrom.registerNum" placeholder="请输入注册编号">
+                        <el-form-item label="执业注册证类型"  class="input-ex" prop="professionCertType">
+                            <el-select v-model="applyShigongzongFrom.professionCertType" placeholder="请选择执业注册证类型">
+                                <el-option v-for="(i,index) in professionCertType" :key="i.itemId" :label="i.itemName" :value="i.itemCode">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="12">
+                        <el-form-item label="执业印章号" prop="professionSealNum">
+                            <el-input v-model="applyShigongzongFrom.professionSealNum" placeholder="请输入执业印章号">
                             </el-input>
                         </el-form-item>
                     </el-col>
+                    <el-col :span="12">
+                        <el-form-item label="职称等级" class="input-ex" prop="titleGrade">
+                            <el-select v-model="applyShigongzongFrom.titleGrade" placeholder="请选择职称等级">
+                                <el-option v-for="(i,index) in titleCertNum" :key="i.itemId" :label="i.itemName" :value="i.itemCode">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="12">
+                        <el-form-item label="职称证号" prop="titleCertNum">
+                            <el-input v-model="applyShigongzongFrom.titleCertNum" placeholder="请输入职称证号">
+                            </el-input>
+                        </el-form-item>
+                    </el-col>
+
                     <el-col :span="12">
                         <el-form-item label="安全生产考核合格证号" prop="personSafeLicenceNum">
                             <el-input v-model="applyShigongzongFrom.personSafeLicenceNum" placeholder="请输入安全生产考核合格证号">
@@ -343,8 +381,30 @@
                         </el-form-item>
                     </el-col>
                     <el-col :span="12">
-                        <el-form-item label="注册编号" prop="registerNum">
-                            <el-input v-model="applyShigongzhuanyefenbaoFrom.registerNum" placeholder="请输入注册编号">
+                        <el-form-item label="执业注册证类型"  class="input-ex" prop="professionCertType">
+                            <el-select v-model="applyShigongzhuanyefenbaoFrom.professionCertType" placeholder="请选择执业注册证类型">
+                                <el-option v-for="(i,index) in professionCertType" :key="i.itemId" :label="i.itemName" :value="i.itemCode">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="12">
+                        <el-form-item label="执业印章号" prop="professionSealNum">
+                            <el-input v-model="applyShigongzhuanyefenbaoFrom.professionSealNum" placeholder="请输入执业印章号">
+                            </el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="12">
+                        <el-form-item label="职称等级" class="input-ex" prop="titleGrade">
+                            <el-select v-model="applyShigongzhuanyefenbaoFrom.titleGrade" placeholder="请选择职称等级">
+                                <el-option v-for="(i,index) in titleCertNum" :key="i.itemId" :label="i.itemName" :value="i.itemCode">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="12">
+                        <el-form-item label="职称证号" prop="titleCertNum">
+                            <el-input v-model="applyShigongzhuanyefenbaoFrom.titleCertNum" placeholder="请输入职称证号">
                             </el-input>
                         </el-form-item>
                     </el-col>
@@ -500,9 +560,37 @@
                                        @click="addLinkman(applyShigonglaowufenbaoFrom,applyShigonglaowufenbaoFrom)" title="编辑"></el-button>
                         </el-form-item>
                     </el-col>
+                    <!--<el-col :span="12">-->
+                        <!--<el-form-item label="注册编号" prop="registerNum">-->
+                            <!--<el-input v-model="applyShigonglaowufenbaoFrom.registerNum" placeholder="请输入注册编号">-->
+                            <!--</el-input>-->
+                        <!--</el-form-item>-->
+                    <!--</el-col>-->
                     <el-col :span="12">
-                        <el-form-item label="注册编号" prop="registerNum">
-                            <el-input v-model="applyShigonglaowufenbaoFrom.registerNum" placeholder="请输入注册编号">
+                        <el-form-item label="执业注册证类型"  class="input-ex" prop="professionCertType">
+                            <el-select v-model="applyShigonglaowufenbaoFrom.professionCertType" placeholder="请选择执业注册证类型">
+                                <el-option v-for="(i,index) in professionCertType" :key="i.itemId" :label="i.itemName" :value="i.itemCode">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="12">
+                        <el-form-item label="执业印章号" prop="professionSealNum">
+                            <el-input v-model="applyShigonglaowufenbaoFrom.professionSealNum" placeholder="请输入执业印章号">
+                            </el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="12">
+                        <el-form-item label="职称等级" class="input-ex" prop="titleGrade">
+                            <el-select v-model="applyShigonglaowufenbaoFrom.titleGrade" placeholder="请选择职称等级">
+                                <el-option v-for="(i,index) in titleCertNum" :key="i.itemId" :label="i.itemName" :value="i.itemCode">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="12">
+                        <el-form-item label="职称证号" prop="titleCertNum">
+                            <el-input v-model="applyShigonglaowufenbaoFrom.titleCertNum" placeholder="请输入职称证号">
                             </el-input>
                         </el-form-item>
                     </el-col>

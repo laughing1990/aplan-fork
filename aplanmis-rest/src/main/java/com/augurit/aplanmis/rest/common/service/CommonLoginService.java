@@ -1,7 +1,6 @@
 package com.augurit.aplanmis.rest.common.service;
 
 import com.augurit.agcloud.framework.security.SecurityContext;
-import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.agcloud.opus.common.domain.OpuOmOrg;
 import com.augurit.agcloud.opus.common.mapper.OpuOmOrgMapper;
@@ -10,9 +9,9 @@ import com.augurit.aplanmis.common.domain.AeaUnitInfo;
 import com.augurit.aplanmis.common.mapper.AeaLinkmanInfoMapper;
 import com.augurit.aplanmis.common.mapper.AeaUnitInfoMapper;
 import com.augurit.aplanmis.common.utils.SM3;
+import com.augurit.aplanmis.rest.auth.AuthContext;
 import com.augurit.aplanmis.rest.auth.AuthUser;
 import com.augurit.aplanmis.rest.common.utils.SessionUtil;
-import com.augurit.aplanmis.rest.common.vo.LoginInfoVo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -43,13 +42,12 @@ public class CommonLoginService {
         return new ResultForm(true);
     }
 
-    public ResultForm changeApplicant(HttpServletRequest request, String unitInfoId) {
+    public AuthUser changeApplicant(String unitInfoId) {
         AeaUnitInfo unitInfo = aeaUnitInfoMapper.getAeaUnitInfoById(unitInfoId);
-        LoginInfoVo loginInfoVo = SessionUtil.getLoginInfo(request);
-        loginInfoVo.setUnitId(unitInfoId);
-        loginInfoVo.setUnitName(unitInfo == null ? "" : unitInfo.getApplicant());
-        SessionUtil.saveLoginInfoVo(request, loginInfoVo);
-        return new ContentResultForm<>(true, loginInfoVo);
+        AuthUser currentUser = AuthContext.getCurrentUser();
+        currentUser.setUnitInfoId(unitInfoId);
+        currentUser.setUnitInfoName(unitInfo == null ? "" : unitInfo.getApplicant());
+        return currentUser;
     }
 
     public AuthUser mobileLogin(String userName, String password) throws Exception {
@@ -82,6 +80,7 @@ public class CommonLoginService {
                     authUser.setUnitInfoId(owner.getUnitInfoId());
                     authUser.setUnitInfoName(owner.getApplicant());
                     authUser.setCurrentOrgId(owner.getRootOrgId());
+                    authUser.setUnifiedSocialCreditCode(owner.getUnifiedSocialCreditCode());
                     break;
                 }
             }
@@ -101,6 +100,7 @@ public class CommonLoginService {
             authUser.setUnitInfoId(aeaUnitInfo.getUnitInfoId());
             authUser.setUnitInfoName(aeaUnitInfo.getApplicant());
             authUser.setCurrentOrgId(aeaUnitInfo.getRootOrgId());
+            authUser.setUnifiedSocialCreditCode(aeaUnitInfo.getUnifiedSocialCreditCode());
             authUser.setPersonalAccount(true);
         } else if (StringUtils.isBlank(authUser.getLinkmanInfoId()) && StringUtils.isNotBlank(authUser.getUnitInfoId())) {
             List<AeaLinkmanInfo> aeaLinkmanInfos = aeaLinkmanInfoMapper.getAeaLinkmanInfoByUnitInfoId(authUser.getUnitInfoId(), 1);

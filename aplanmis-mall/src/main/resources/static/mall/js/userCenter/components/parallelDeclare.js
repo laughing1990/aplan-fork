@@ -388,6 +388,9 @@ var module1 = new Vue({
       matFormDialogVisible: false,
       formUrlList: [], // 一张表单list
       formItemsIdStr: '',
+      stageFrontCheckFlag: true, // 阶段前置检测是否通过
+      stageFrontCheckMsg: '', // 阶段前置检测失败提示
+      leftTabClosed: true, //
     }
   },
   mounted: function () {
@@ -1728,7 +1731,32 @@ var module1 = new Vue({
       } else {
         this.parallelItemsQuestionFlag = false;
       }
-      this.getStatusStateMats(this.stageId);  // 获取事项情形列表
+      var param = {stageId: this.stageId,projInfoId:this.projInfoId};
+      var _that = this;
+      // 阶段前置检测
+      request('', {
+        url: ctx + 'rest/check/stageFrontCheck',
+        type: 'post',
+        data: param,
+      }, function (result) {
+        if (result.success) {
+          _that.getStatusStateMats(_that.stageId);  // 获取事项情形列表
+          _that.stageFrontCheckFlag = true;
+        }else {
+          _that.stageFrontCheckFlag = false;
+          _that.stageFrontCheckMsg = result.message?result.message:'阶段前置检测失败';
+          confirmMsg('阶段前置检测不通过', result.message, function(){
+            _that.stageFrontCheckFlag = true;
+            _that.getStatusStateMats(_that.stageId);  // 获取事项情形列表
+          },function(){
+            _that.stageFrontCheckFlag = false;
+            _that.stateList = [];
+            _that.parallelItems=[];
+            _that.coreItems=[];
+          },'继续申报','放弃申报', 'error', true);
+        }
+      }, function (msg) {})
+
       // this.getStageItems(stageId); // 获取事项列表
     },
     // 判断事项checkbox是否可勾选
@@ -2262,44 +2290,47 @@ var module1 = new Vue({
       if (selArr.length == 0) {
         _that.selCoreItemsKey = [];
       }
-      request('', { // 判断并行实施事项是否可选
-        url: ctx + 'rest/apply/common/item/frontItemIsDone/' + row.itemVerId + '/' + _that.projInfoId,
-        type: 'POST',
-        data: {
-          projInfoId: _that.projInfoId,
-          itemVerId: row.itemVerId
-        },
-      }, function (result) {
-        if (result.content && result.content.length > 0) {
-          row.preItemCheckPassed = false;
-          _that.checkboxInit(row);
+      selArr.map(function (item, index) {
+        if (item.preItemCheckPassed == false) {
+          selArr.splice(index, 1);
         } else {
-          row.preItemCheckPassed = true;
-        }
-        if (row.preItemCheckPassed == false) {
-          _that.$message({
-            message: '该事项有前置事项未办！',
-            type: 'error'
-          });
-        }
-        selArr.map(function (item, index) {
-          if (item.preItemCheckPassed == false) {
-            selArr.splice(index, 1);
-          } else {
-            if (item.itemVerId == row.itemVerId && row.preItemCheckPassed == true) {
-              _that.selCoreItemsKey.push(row.itemId);
-            } else {
-              for (var i = 0; i < _that.selCoreItemsKey.length; i++) {
-                if (_that.selCoreItemsKey[i] == row.itemId) {
-                  _that.selCoreItemsKey.splice(i, 1);
-                  return true;
+          if (item.itemVerId == row.itemVerId && row.preItemCheckPassed == true) {
+            request('', { // 判断并行实施事项是否可选
+              url: ctx + 'rest/check/itemFrontCheck',
+              type: 'POST',
+              data: {
+                projInfoId: _that.projInfoId,
+                itemVerId: row.itemVerId
+              },
+            }, function (result) {
+              if (result.success) {
+                row.preItemCheckPassed = true;
+                if(_that.selCoreItemsKey.indexOf(row.itemId)<0){
+                  _that.selCoreItemsKey.push(row.itemId);
                 }
+              }else {
+                row.preItemCheckPassed = false;
+                selArr.splice(index,1);
+                _that.checkboxInit(row);
+                if (row.preItemCheckPassed == false) {
+                  _that.$message({
+                    message: '该事项前置事项检测失败！',
+                    type: 'error'
+                  });
+                }
+              }
+            }, function (msg) { })
+          } else {
+            for (var i = 0; i < _that.selCoreItemsKey.length; i++) {
+              if (_that.selCoreItemsKey[i] == row.itemId) {
+                _that.selCoreItemsKey.splice(i, 1);
+                return true;
               }
             }
           }
-        });
-        _that.selCoreItemsKey = _that.distinct(_that.selCoreItemsKey, [])
-      }, function (msg) { })
+        }
+      });
+
     },
     // 单项事项全选事件
     coreItemsSelAll: function (selArr) {
@@ -2310,13 +2341,40 @@ var module1 = new Vue({
         _that.selCoreItemsKey = [];
         return false;
       } else {
-        selArr.map(function (item) {
+        selArr.map(function (item,index) {
           if (item.orgName === null || !item.preItemCheckPassed || item.notRegionData) {
             // if(item.isDone=='HANDLING'||item.isDone=='FINISHED'||item.orgName===null){
             flag = false;
+          }else {
+            flag = true;
           }
-          if (flag) {
+          if(flag){
             _that.selCoreItemsKey.push(item.itemId);
+            request('', { // 判断并行实施事项是否可选
+              url: ctx + 'rest/check/itemFrontCheck',
+              type: 'post',
+              data: {
+                projInfoId: _that.projInfoId,
+                itemVerId: item.itemVerId
+              },
+            }, function (result) {
+              if (result.success) {
+                item.preItemCheckPassed = true;
+                if(_that.selCoreItemsKey.indexOf(item.itemId)<0){
+                  _that.selCoreItemsKey.push(item.itemId);
+                }
+              }else {
+                item.preItemCheckPassed = false;
+                selArr.splice(index,1);
+                _that.checkboxInit(item);
+                // if (item.preItemCheckPassed == false) {
+                //   _that.$message({
+                //     message: '该事项前置事项检测失败！',
+                //     type: 'error'
+                //   });
+                // }
+              }
+            }, function (msg) {})
           }
         });
         _that.selCoreItemsKey = _that.distinct(_that.selCoreItemsKey, [])
@@ -2392,6 +2450,18 @@ var module1 = new Vue({
     // 保存并下一步  获取一张表单列表
     saveAndGetOneForm: function () {
       var _that = this;
+      if(_that.stageFrontCheckFlag==false){
+        confirmMsg('阶段前置检测不通过', _that.stageFrontCheckMsg, function(){
+          _that.stageFrontCheckFlag = true;
+          _that.getStatusStateMats(_that.stageId);  // 获取事项情形列表
+        },function(){
+          _that.stageFrontCheckFlag = false;
+          _that.stateList = [];
+          _that.parallelItems=[];
+          _that.coreItems=[];
+        },'继续申报','放弃申报', 'error', true);
+        return false;
+      }
       var _itemStateIds = [], _stageStateIds = [];
       var selItemVer = []; // 所有选择的并联审批事项
       var selCoreItems = []; // 所有选择的并行审批事项
@@ -3176,8 +3246,8 @@ var module1 = new Vue({
       var certChildIds = [];
       if(certChild.length>0){
         certChild.map(function(item){
-          if(certChildIds.indexOf(item.authCode)<0){
-            certChildIds.push(item.authCode);
+          if(certChildIds.indexOf(item.licenseCode)<0){
+            certChildIds.push(item.licenseCode);
           }
         })
       }
@@ -3215,7 +3285,7 @@ var module1 = new Vue({
             }else {
               certItem.bind = false;
             }
-            if(certChildIds.indexOf(certItem.auth_code)>-1){
+            if(certChildIds.indexOf(certItem.license_code)>-1){
               certItem.bind = true
             }else {
               certItem.bind = false;
@@ -3321,7 +3391,7 @@ var module1 = new Vue({
         "certOwner": certRowData.holder_name,
         "certinstCode": certRowData.license_code,
         "certinstId": "",
-        "certinstName": certRowData.license_code,
+        "certinstName": certRowData.name,
         "issueDate": certRowData.issue_time,
         "issueOrgId": certRowData.issue_org_code,
         "managementScope": "",
@@ -3341,6 +3411,7 @@ var module1 = new Vue({
       }, function (res) {
         if(res.success){
           res.content.certName = certRowData.name;
+          res.content.licenseCode = certRowData.license_code;
           if(_that.selMatRowData.certChild=='undefined'||_that.selMatRowData.certChild==undefined){
             Vue.set(_that.selMatRowData,'certChild',[res.content]);
           }else {

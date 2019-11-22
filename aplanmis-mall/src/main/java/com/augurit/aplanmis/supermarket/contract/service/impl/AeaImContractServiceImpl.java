@@ -340,18 +340,22 @@ public class AeaImContractServiceImpl implements AeaImContractService {
         String projPurchaseId = contractVo.getProjPurchaseId();
         AeaImProjPurchase purchase = aeaImProjPurchaseMapper.getAeaImProjPurchaseByProjPurchaseId(projPurchaseId);
         if (null == purchase) throw new Exception("can not find proj purchase");
-
+        //发布人只能是单位或个人之一，互斥
         String ownerUnitInfoId = purchase.getPublishUnitInfoId();
-        //String rootOrgId = purchase.getRootOrgId();
-        String serviceUnitInfoId = "";
-        String unitBiddingId = "";
+        String publishLinkmanInfoId = purchase.getPublishLinkmanInfoId();
+        String publishOwnerId = "";
+        if (StringUtils.isNotBlank(ownerUnitInfoId)) {
+            publishOwnerId = ownerUnitInfoId;
+        } else if (StringUtils.isNotBlank(publishLinkmanInfoId)) {
+            publishOwnerId = publishLinkmanInfoId;
+        }
 
         AeaImContract aeaImContract = new AeaImContract();
-        LoginInfoVo loginInfoVo = SessionUtil.getLoginInfo(request);
-        //String creater = LoginUtil.getCreater(loginInfoVo);
 
         if (StringUtils.isBlank(contractVo.getContractId())) {
             //查询需要的信息
+            String serviceUnitInfoId = "";
+            String unitBiddingId = "";
             List<AeaImUnitBidding> bidding = aeaImUnitBiddingMapper.getUnitBiddingByProjPurchase(projPurchaseId);
             if (!bidding.isEmpty()) {
                 AeaImUnitBidding unitBidding = bidding.get(0);
@@ -359,8 +363,11 @@ public class AeaImContractServiceImpl implements AeaImContractService {
                 serviceUnitInfoId = unitBidding.getUnitInfoId();
             }
 
-            aeaImContract = contractVo.createAeaImContract(serviceUnitInfoId, ownerUnitInfoId, unitBiddingId);
-            boolean ownerUnit = LoginUtil.isOwnerUnit(loginInfoVo);
+            aeaImContract = contractVo.createAeaImContract(serviceUnitInfoId, publishOwnerId, unitBiddingId);
+
+            String currentUserId = SecurityContext.getCurrentUserId();
+
+            boolean ownerUnit = publishOwnerId.equals(currentUserId);
             if (ownerUnit) {
                 aeaImContract.setIsOwnerUpload("1");//业主上传
             } else {
@@ -388,11 +395,29 @@ public class AeaImContractServiceImpl implements AeaImContractService {
         LoginUtil.validLoginStatus(loginInfoVo);
         AeaImContract contract = aeaImContractMapper.getAeaImContractById(contractId);
         if (null == contract) throw new Exception("can not find contract");
-
-        if (loginInfoVo.getIsOwner().equals(contract.getIsOwnerUpload())) {
-            throw new Exception("只能由" + ("1".equals(loginInfoVo.getIsOwner()) ? "中介" : "业主") + "确认");
+        String currentUserId = SecurityContext.getCurrentUserId();//当前登录用户
+        String isOwnerUpload = contract.getIsOwnerUpload();//是否业主上传： 1 是， 0 否（中介机构上传）
+        String ownerUnitInfoId = contract.getOwnerUnitInfoId();
+        String serviceUnitInfoId = contract.getServiceUnitInfoId();
+        if (StringUtils.isBlank(currentUserId) || StringUtils.isBlank(ownerUnitInfoId) || StringUtils.isBlank(serviceUnitInfoId)) {
+            throw new Exception("获取用户信息失败！");
         }
-        //String creater = LoginUtil.getCreater(loginInfoVo);
+        //当前用户既不是业主，也不是中标单位
+        if (!currentUserId.equals(ownerUnitInfoId) && !currentUserId.equals(serviceUnitInfoId)) {
+            throw new Exception("当前用户无操作权限！");
+        }
+        if (StringUtils.isNotBlank(isOwnerUpload) && "1".equals(isOwnerUpload)) {//业主上传
+            //判断当前登录用户是否发布单位
+
+            if (!serviceUnitInfoId.equals(currentUserId)) {
+                throw new Exception("只能由中介确认");
+            }
+        } else {
+            //中介上传
+            if (!ownerUnitInfoId.equals(currentUserId)) {
+                throw new Exception("只能由业主确认");
+            }
+        }
         contract.setModifier(SecurityContext.getCurrentUserName());
         restImApplyService.confirmContract(contract, auditFlag, auditOpinion, postponeServiceEndTime);
         return true;

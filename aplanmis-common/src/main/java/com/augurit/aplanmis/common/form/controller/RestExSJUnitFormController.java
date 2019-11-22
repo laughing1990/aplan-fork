@@ -10,9 +10,11 @@ import com.augurit.aplanmis.common.service.linkman.AeaLinkmanInfoService;
 import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
 import com.augurit.aplanmis.common.form.service.AeaExProjCertBuildService;
 import com.augurit.aplanmis.common.form.service.RestExSJUnitFormService;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -121,4 +123,8 @@ public class RestExSJUnitFormController {
             return new ContentResultForm<>(false,e.getMessage(),"error");
         }
     }
+
+    @GetMapping("/index.html")
+    @ApiOperation("施工和监理单位信息")
+    public ModelAndView exSJUnit(){return new ModelAndView("form/exSJUnit");}
 }

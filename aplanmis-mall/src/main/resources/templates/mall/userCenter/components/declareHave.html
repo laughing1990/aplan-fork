@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css" th:href="@{/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css}">
 <link rel="stylesheet" href="../../../static/mall/css/userCenter/declarehave.css"
   th:href="@{/mall/css/userCenter/declarehave.css}">
 <div class="wt-tab" id="declareHaveVue" v-cloak v-loading.fullscreen.lock="mloading" style="position: relative;">
@@ -400,6 +401,13 @@
             </template>
           </el-table-column>
           <el-table-column prop="matName" label="材料名称" min-width="300">
+            <template scope="scope">
+              <span class="file-name" v-if="scope.row.matProp=='c'">
+                <span class="cert-icon icon ag ag-id-card"></span>
+                {{scope.row.matName}}
+              </span>
+              <span v-else>{{scope.row.matName}}</span>
+            </template>
           </el-table-column>
           <el-table-column label="原件是否已验" min-width="100">
             <template scope="scope">
@@ -414,22 +422,33 @@
           <el-table-column label="电子件信息">
             <template scope="scope" >
               <template v-if="scope.row.matProp=='f'">
-              <el-button size="small" type="default" disabled
-                         v-if="(!scope.row.attCount||scope.row.attCount==0)">未上传
-              </el-button>
-              <el-button size="small" type="default" @click="showElectronDialog(scope.row)" v-else>
-                已上传（{{scope.row.attCount}}）
-              </el-button>
+                <el-button size="small" type="default" disabled
+                           v-if="(!scope.row.attCount||scope.row.attCount==0)">未上传
+                </el-button>
+                <el-button size="small" type="default" @click="showElectronDialog(scope.row)" v-else>
+                  已上传（{{scope.row.attCount}}）
+                </el-button>
               </template>
-            </template>
-            <template scope="scope">
-              <template v-if="scope.row.matProp=='c'">
-              <el-button size="small" type="default" disabled
-                         v-if="(!scope.row.certFileList||scope.row.certFileList.length==0||scope.row.certFileList==null)">未上传
-              </el-button>
-              <el-button size="small" type="default" @click="showLicenseDialog(scope.row)" v-else>
-                已上传（{{scope.row.certFileList.length}}）
-              </el-button>
+              <template v-else-if="scope.row.matProp=='c'">
+                <el-button size="small" type="default" disabled
+                v-if="(!scope.row.certFileList||scope.row.certFileList.length==0||scope.row.certFileList==null)&&(!scope.row.attCount||scope.row.attCount==0)">未上传
+                </el-button>
+                <template v-else>
+                  <el-button size="small" type="default" @click="showLicenseDialog(scope.row)" v-if="scope.row.certFileList && scope.row.certFileList.length>0">
+                    电子证照（{{scope.row.certFileList.length}}）
+                  </el-button>
+                  <el-button size="small" type="default" @click="showElectronDialog(scope.row)" v-if="scope.row.attCount && scope.row.attCount>0">
+                    已上传（{{scope.row.attCount}}）
+                  </el-button>
+                </template>
+              </template>
+              <template v-else>
+                <el-button size="small" type="default" disabled
+                           v-if="(!scope.row.attCount||scope.row.attCount==0)">未上传
+                </el-button>
+                <el-button size="small" type="default" @click="showElectronDialog(scope.row)" v-else>
+                  已上传（{{scope.row.attCount}}）
+                </el-button>
               </template>
             </template>
           </el-table-column>
@@ -730,5 +749,10 @@
   .receive-item-header span.ellipsis {
     display: inline-block;
     width: 130px;
+  }
+  .cert-icon {
+    color: #4293F4;
+    font-size: 20px;
+    vertical-align: middle;
   }
 </style>

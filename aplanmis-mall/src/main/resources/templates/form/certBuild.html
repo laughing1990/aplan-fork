@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <th:block th:include="common/common :: commonheader('建设工程施工许可证')" />
-    <link rel="stylesheet" href="../../static/apply/css/index.css" th:href="@{/form/css/exSJUnit.css}">
+    <link rel="stylesheet" href="../../static/apply/css/index.css" th:href="@{/form/css/certBuild.css}">
 </head>
 <body class="gray-body">
 <div id="approve" v-cloak v-loading="loading">
@@ -13,7 +13,7 @@
                 <template slot="title">
                     <i class="header-icon icon ag ag-project-info"></i>建设工程施工许可证
                 </template>
-                <el-form label-width="210px" ref="certBuildFrom" :rules="certBuildFromRules" :model="certBuildFrom">
+                <el-form label-width="166px" ref="certBuildFrom" :rules="certBuildFromRules" :model="certBuildFrom">
                     <input type="hidden" name="projInfoId" :value="certBuildFrom.projInfoId">
                     <input type="hidden" name="buildId" :value="certBuildFrom.buildId">
                     <div class="clearfix">
@@ -201,7 +201,7 @@
                     </div>
                     <div class="clearfix">
                         <el-form-item class="input-inline allWidth" label="备注" prop="certBuildMemo">
-                            <el-input v-model="certBuildFrom.certBuildMemo" type="textarea" rows="5" placeholder="请输入备注"></el-input>
+                            <el-input v-model="certBuildFrom.buildMemo" type="textarea" rows="5" placeholder="请输入备注"></el-input>
                         </el-form-item>
                     </div>
                 </el-form>

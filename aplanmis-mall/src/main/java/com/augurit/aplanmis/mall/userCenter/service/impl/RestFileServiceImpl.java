@@ -74,7 +74,7 @@ public class RestFileServiceImpl implements RestFileService {
     private static int BUFFER_SIZE = 2048;
 
     @Override
-    public List getAttFiles(String matinstId) throws Exception {
+    public List<BscAttFileAndDir> getAttFiles(String matinstId) throws Exception {
         String[] recordIds = {matinstId};
         List<BscAttFileAndDir> bscAttFileAndDirs = new ArrayList<BscAttFileAndDir>();
         if (recordIds.length > 0) {
@@ -275,7 +275,7 @@ public class RestFileServiceImpl implements RestFileService {
     public Boolean isMatBelong(String matinstId, HttpServletRequest request)throws Exception {
         try {
             AeaHiItemMatinst aeaHiItemMatinst = aeaHiItemMatinstMapper.getAeaHiItemMatinstById(matinstId);
-            if (aeaHiItemMatinst==null) throw new Exception("查询出错");
+            if (aeaHiItemMatinst==null) return false;
             LoginInfoVo user = SessionUtil.getLoginInfo(request);
             if ("1".equals(aeaHiItemMatinst.getMatinstSource())){//个人 委托人
                 if(("1".equals(user.getIsPersonAccount())||StringUtils.isNotBlank(user.getUserId()))&&(user.getUserId().equals(aeaHiItemMatinst.getLinkmanInfoId()))){//个人

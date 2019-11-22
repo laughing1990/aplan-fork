@@ -29,6 +29,11 @@ var vm = new Vue({
       personalLinkInfo: {},
       unitTypeList: [],
       isZJItem: getUrlParam('isZJItem'),
+      zjItemInfo: [
+        {
+          aeaImUnitRequire: {},
+        }
+      ],
     }
   },
   methods: {
@@ -37,6 +42,30 @@ var vm = new Vue({
       reqData.bizId = type == 'u' ? row.unitInfoId : row.linkmanInfoId;
       reqData.isBlackDia = isBlackDia || false;
       parent.vm.openCreditDialog(reqData);
+    },
+    getZJItemInfo: function(){
+      var vm = this;
+      request('', {
+        url: ctx + 'market/approve/basic/apply/info',
+        type: 'get',
+        data: {
+          taskId: vm.taskId,
+          applyinstId: vm.applyinstId,
+          isItemSeek: false,
+        },
+      }, function(res){
+        vm.pageLoading = false;
+        if (res.success) {
+          vm.projInfoList = [res.content.aeaProjInfo];
+          vm.applyinst = res.content.iteminst;
+          // vm.zjItemInfo = [res.content.purchaseProj];
+        } else {
+          vm.$message.error(res.message || '获取申请表数据失败');
+        }
+      }, function(){
+        vm.pageLoading = false;
+        vm.$message.error('获取申请表数据失败');
+      })
     },
     getBaseApplyForm: function () {
       var vm = this;
@@ -200,7 +229,13 @@ var vm = new Vue({
         vm: vm,
         dataStr: u.dataStr,
         callback: function () {
-          (--len == 0) && vm.getBaseApplyForm();
+          if (--len == 0) {
+            if (vm.isZJItem) {
+              vm.getZJItemInfo();
+            } else {
+              vm.getBaseApplyForm();
+            }
+          }
         }
       });
     });

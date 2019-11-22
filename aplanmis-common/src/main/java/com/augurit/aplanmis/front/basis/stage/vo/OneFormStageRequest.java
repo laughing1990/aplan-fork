@@ -7,7 +7,7 @@ import lombok.Data;
 import java.util.ArrayList;
 import java.util.List;
 
-@ApiModel("阶段与一张表单显示与渲染的参数对象")
+@ApiModel("并联申报一张表单 请求参数")
 @Data
 public class OneFormStageRequest {
 

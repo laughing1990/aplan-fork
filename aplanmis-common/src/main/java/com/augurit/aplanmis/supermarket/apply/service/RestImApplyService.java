@@ -40,9 +40,6 @@ import java.util.*;
 public class RestImApplyService {
 
     @Autowired
-    private RestTimeruleinstService restTimeruleinstService;
-
-    @Autowired
     private AeaItemBasicMapper aeaItemBasicMapper;
 
     @Autowired
@@ -121,9 +118,6 @@ public class RestImApplyService {
     private AeaLinkmanInfoMapper aeaLinkmanInfoMapper;
 
     @Autowired
-    private AeaProjInfoMapper aeaProjInfoMapper;
-
-    @Autowired
     private AeaImUnitRequireMapper aeaImUnitRequireMapper;
 
     @Autowired
@@ -184,13 +178,13 @@ public class RestImApplyService {
      *
      * @param projPurchaseId 项目采购ID
      * @param unitBiddingId  单位竞价ID
-     * @param opsLinkInfoId  业主委托人
      * @param confirmFlag    1：已确认中标，0：已放弃中标
      * @throws Exception
      */
-    public void confirmImunit(String projPurchaseId, String unitBiddingId, String opsLinkInfoId, String confirmFlag) throws Exception {
+    public void confirmImunit(String projPurchaseId, String unitBiddingId, String confirmFlag) throws Exception {
 
         AeaImProjPurchase purchase = this.getApplyinstIdByProPurchaseId(projPurchaseId);
+        String opsLinkInfoId = purchase.getLinkmanInfoId();//业主委托人
         String applyinstId = purchase.getApplyinstId();
         //获取申请实例历史记录列表
         AeaLogApplyStateHist applyStateHist = this.getLastAeaLogApplyStateHist(applyinstId);
@@ -222,15 +216,19 @@ public class RestImApplyService {
      */
     public void uploadContract(AeaImContract aeaImContract, String opsLinkInfoId, HttpServletRequest request) throws Exception {
         String projPurchaseId = aeaImContract.getProjPurchaseId();
-        //先判断是否已经存在合同信息
-        AeaImContract contract = aeaImContractMapper.getAeaImContractByProjPurchaseId(projPurchaseId);
-        if (null != contract) throw new Exception("合同已存在");
 
         //保存或合同信息
         if (StringUtils.isNotBlank(aeaImContract.getContractId())) {
+            aeaImContract.setModifyTime(new Date());
+            aeaImContract.setModifier(SecurityContext.getCurrentUserName());
             aeaImContractMapper.updateAeaImContract(aeaImContract);
         } else {
+            //先判断是否已经存在合同信息
+            AeaImContract contract = aeaImContractMapper.getAeaImContractByProjPurchaseId(projPurchaseId);
+            if (null != contract) throw new Exception("合同已存在");
+
             aeaImContract.setContractId(UUID.randomUUID().toString());
+            aeaImContract.setCreateTime(new Date());
             aeaImContractMapper.insertAeaImContract(aeaImContract);
             //跟新报价表为已上传合同
             aeaImUnitBiddingMapper.updateUploadContract(aeaImContract.getUnitBiddingId(), "1");
@@ -277,15 +275,15 @@ public class RestImApplyService {
         String appinstId = applyStateHist.getAppinstId();// 模板实例ID
         //更新合同信息
         this.updateContract(contract, confirmFlag, auditOpinion, postponeServiceEndTime);
-        if ("1".equals(confirmFlag)) {
+        if (StringUtils.isBlank(confirmFlag) || "1".equals(confirmFlag)) {
             //更新申请实例历史状态
             aeaHiApplyinstService.updateAeaHiApplyinstStateAndInsertTriggerAeaLogItemStateHist(applyinstId, taskId, appinstId, ApplyState.IM_MILESTONE_UPLOAD_SERVICE_RESULT.getValue(), null);// 待上传服务结果
             //更新采购需求状态
             aeaImProjPurchaseService.updateProjPurchaseStateAndInsertPurchaseinstState(projPurchaseId, AuditFlagStatus.SERVICE_PROGRESS, null, opsLinkInfoId, null, taskId);//服务中
         } else {//合同无效
             //更新申请实例历史状态
-            aeaHiApplyinstService.updateAeaHiApplyinstStateAndInsertTriggerAeaLogItemStateHist(applyinstId, taskId, appinstId, ApplyState.IM_MILESTONE_UPLOAD_CONTRACT.getValue(), null);// 重新上传合同
-            aeaImProjPurchaseService.updateProjPurchaseStateAndInsertPurchaseinstState(projPurchaseId, AuditFlagStatus.UPLOAD_CONTRACT, null, opsLinkInfoId, null, taskId);//待上传合同
+            aeaHiApplyinstService.updateAeaHiApplyinstStateAndInsertTriggerAeaLogItemStateHist(applyinstId, taskId, appinstId, ApplyState.IM_MILESTONE_CONFIRM_CONTRACT.getValue(), null);// 重新上传合同
+            aeaImProjPurchaseService.updateProjPurchaseStateAndInsertPurchaseinstState(projPurchaseId, AuditFlagStatus.CONFIRM_CONTRACT, null, opsLinkInfoId, null, taskId);//待上传合同
         }
 
     }

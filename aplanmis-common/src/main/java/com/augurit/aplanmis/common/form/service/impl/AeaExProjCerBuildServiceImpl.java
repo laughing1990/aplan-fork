@@ -72,7 +72,7 @@ public class AeaExProjCerBuildServiceImpl implements AeaExProjCertBuildService {
                 }
             }
         }catch (Exception e){
-            return new ContentResultForm<>(false,"同步信息失败，请在申报页面添加建设单位信息 " + e.getMessage(),"error");
+            return new ContentResultForm<>(false,"同步信息失败 " + e.getMessage(),"error");
         }
     }
 
@@ -116,7 +116,7 @@ public class AeaExProjCerBuildServiceImpl implements AeaExProjCertBuildService {
                 }
             }
         }catch (Exception e){
-            return new ContentResultForm<>(false,"同步信息失败，请在申报页面添加建设单位信息 " + e.getMessage(),"error");
+            return new ContentResultForm<>(false,"同步信息失败 " + e.getMessage(),"error");
         }
     }
 
@@ -155,7 +155,7 @@ public class AeaExProjCerBuildServiceImpl implements AeaExProjCertBuildService {
                 }
             }
         }catch (Exception e){
-            return new ContentResultForm<>(false,"同步信息失败，请在申报页面添加建设单位信息 " + e.getMessage(),"error");
+            return new ContentResultForm<>(false,"同步信息失败 " + e.getMessage(),"error");
         }
     }
 
@@ -219,7 +219,7 @@ public class AeaExProjCerBuildServiceImpl implements AeaExProjCertBuildService {
                 }
             }
         }catch (Exception e){
-            return new ContentResultForm<>(false,"同步信息失败，请在申报页面添加建设单位信息 " + e.getMessage(),"error");
+            return new ContentResultForm<>(false,"同步信息失败 " + e.getMessage(),"error");
         }
     }
 
@@ -299,13 +299,16 @@ public class AeaExProjCerBuildServiceImpl implements AeaExProjCertBuildService {
                 }
             }
             }catch (Exception e){
-            return new ContentResultForm<>(false,"同步信息失败，请在申报页面添加建设单位信息 " + e.getMessage(),"error");
+            return new ContentResultForm<>(false,"同步信息失败 " + e.getMessage(),"error");
         }
     }
 
     @Override
     public void saveForm(AeaExProjCertBuild aeaExProjCertBuild) throws Exception {
         if(StringUtils.isBlank(aeaExProjCertBuild.getBuildId())){
+            //查询项目名称
+            AeaProjInfo aeaProjInfoById = aeaProjInfoMapper.getAeaProjInfoById(aeaExProjCertBuild.getProjInfoId());
+            aeaExProjCertBuild.setProjName(aeaProjInfoById.getProjName());
             aeaExProjCertBuild.setBuildId(UuidUtil.generateUuid());
             aeaExProjCertBuild.setCreateTime(new Date());
             aeaExProjCertBuild.setCreater(SecurityContext.getCurrentUserName());

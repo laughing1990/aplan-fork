@@ -1,5 +1,6 @@
 package com.augurit.aplanmis.mall.userCenter.service;
 
+import com.augurit.agcloud.bsc.domain.BscAttFileAndDir;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.support.StandardMultipartHttpServletRequest;
@@ -12,7 +13,7 @@ import java.util.List;
 
 public interface RestFileService {
 
-    List getAttFiles(String matinstId) throws Exception;
+    List<BscAttFileAndDir> getAttFiles(String matinstId) throws Exception;
 
     ResultForm delelteAttachment(String[] detailIds, String matinstId) throws Exception;
 

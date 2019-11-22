@@ -31,7 +31,7 @@ import java.util.List;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@Api(description = "服务合同相关接口")
+@Api(description = "服务合同相关接口", value = "服务合同相关接口", tags = "中介超市-服务合同接口")
 @RequestMapping("/supermarket/contract")
 public class AeaImContractController {
 
@@ -54,18 +54,6 @@ public class AeaImContractController {
             return new ContentRestResult(false, null, errorMsg);
         }
         AeaImContract aeaImContract = aeaImContractService.saveOrUpdateContract(contractVo, request);
-        /*try {
-            if (StringUtils.isNotBlank(aeaImContract.getContractId())){
-                aeaImContractService.updateAeaImContract(aeaImContract,files,request);
-            } else {
-                restImApplyService.uploadContract(aeaImContract,null,request);
-            }
-
-            return new ContentRestResult(true,null,aeaImContract.getContractId());
-        } catch (Exception e) {
-            logger.error(e.getMessage(),e);
-            return new ContentRestResult(false,null,e.getMessage());
-        }*/
         return new ContentRestResult(true, aeaImContract.getContractId(), "success");
 
     }

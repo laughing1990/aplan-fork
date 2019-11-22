@@ -5,6 +5,7 @@ import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.domain.AeaHiItemMatinst;
 import com.augurit.aplanmis.rest.auth.AuthContext;
+import com.augurit.aplanmis.rest.auth.AuthUser;
 import com.augurit.aplanmis.rest.userCenter.service.RestMyMatService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -23,19 +24,20 @@ public class RestMyMatController {
     @Autowired
     RestMyMatService restMyMatService;
 
-    @GetMapping("toMyMatListPage")
+    /*@GetMapping("toMyMatListPage")
     @ApiOperation(value = "跳转法人空间我的材料列表相关页面")
     public String toMyMatListPage() {
         return "";
-    }
+    }*/
 
     @GetMapping("/list")
     @ApiOperation(value = "获取我的材料列表")
     public ContentResultForm<List<AeaHiItemMatinst>> getMyMatList() {
         try {
-//            if ("1".equals(loginInfo.getIsPersonAccount())) {//个人
-//                return new ContentResultForm<>(true, restMyMatService.getMyMatListByUser("", loginInfo.getUserId()));
-//            } else
+            AuthUser loginInfo = AuthContext.getCurrentUser();
+            if (loginInfo.isPersonalAccount()) {//个人
+                return new ContentResultForm<>(true, restMyMatService.getMyMatListByUser("", loginInfo.getLinkmanInfoId()));
+            } else
             if (StringUtils.isNotBlank(AuthContext.getCurrentLinkmanInfoId())) {//委托人
                 return new ContentResultForm<>(true, restMyMatService.getMyMatListByUser(AuthContext.getCurrentUnitInfoId(), AuthContext.getCurrentLinkmanInfoId()));
             } else {//企业

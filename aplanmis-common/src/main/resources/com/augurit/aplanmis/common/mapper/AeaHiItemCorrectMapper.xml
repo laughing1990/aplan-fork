@@ -441,7 +441,8 @@ and ahic_123.creater = #{currentUserId}
         	ahi_123.ITEMINST_NAME iteminstName,
         	ahap_123.CREATE_TIME createTime,
 		    ahap_123.APPLY_SUBJECT applySubject,
-        	ahic_123.CORRECT_ID correctId
+        	ahic_123.CORRECT_ID correctId,
+        ahic_123.CORRECT_MEMO correctMemo
         FROM
         	AEA_HI_ITEMINST ahi_123
         LEFT JOIN AEA_HI_PAR_STAGEINST ahs_123 ON ahi_123.STAGEINST_ID = ahs_123.STAGEINST_ID
@@ -486,7 +487,7 @@ and ahic_123.creater = #{currentUserId}
         				aea_applyinst_unit_proj aaup
         			LEFT JOIN aea_unit_proj aup ON aaup.UNIT_PROJ_ID = aup.UNIT_PROJ_ID
         			WHERE
-        				aaup.IS_DELETED != 1 and aup.is_Owner = 1
+        				aaup.IS_DELETED != 1 and aup.is_Owner = 1 and aup.IS_DELETED != 1
                         <if test="unitInfoId !=null and unitInfoId!=''">
                              and aup.UNIT_INFO_ID = #{unitInfoId}
                         </if>
@@ -518,7 +519,8 @@ and ahic_123.creater = #{currentUserId}
         	ahi_123.ITEMINST_NAME iteminstName,
         	ahap_123.CREATE_TIME createTime,
 		    ahap_123.APPLY_SUBJECT applySubject,
-        	ahic_123.CORRECT_ID correctId
+        	ahic_123.CORRECT_ID correctId,
+        	ahic_123.CORRECT_MEMO correctMemo
 	    FROM
 	    	AEA_HI_ITEMINST ahi_123
 	    LEFT JOIN AEA_HI_SERIESINST ahs_123 ON ahi_123.SERIESINST_ID = ahs_123.SERIESINST_ID
@@ -558,7 +560,7 @@ and ahic_123.creater = #{currentUserId}
 	    				aea_applyinst_unit_proj aaup
 	    			LEFT JOIN aea_unit_proj aup ON aaup.UNIT_PROJ_ID = aup.UNIT_PROJ_ID
 	    			WHERE
-	    				aaup.IS_DELETED != 1 and aup.is_Owner = 1
+	    				aaup.IS_DELETED != 1 and aup.is_Owner = 1 and aup.IS_DELETED != 1
                         <if test="unitInfoId !=null and unitInfoId!=''">
                             and aup.UNIT_INFO_ID = #{unitInfoId}
                         </if>

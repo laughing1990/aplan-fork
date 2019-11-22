@@ -8,10 +8,12 @@ import com.augurit.agcloud.bpm.common.sfengine.config.SFRenderConfig;
 import com.augurit.agcloud.bpm.common.sfengine.render.SFFormMultipleRender;
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.util.StringUtils;
+import com.augurit.aplanmis.common.domain.AeaItemPartform;
 import com.augurit.aplanmis.common.domain.AeaParStagePartform;
 import com.augurit.aplanmis.common.service.admin.oneform.AeaParStagePartformService;
 import com.augurit.aplanmis.front.basis.stage.service.RestStageService;
 import com.augurit.aplanmis.front.basis.stage.vo.FormFrofileVo;
+import com.augurit.aplanmis.front.basis.stage.vo.OneFormItemRequest;
 import com.augurit.aplanmis.front.basis.stage.vo.OneFormStageRequest;
 import com.augurit.aplanmis.front.basis.stage.vo.StageItemFormVo;
 import org.apache.commons.beanutils.BeanComparator;
@@ -33,7 +35,8 @@ public class OneFormCommonService {
     private AeaParStagePartformService aeaParStagePartformService;
     @Autowired
     private ActStoFormMapper actStoFormMapper;
-
+//    @Autowired
+//    private AeaItemPartformService aeaItemPartformService;
     /*
     * 获取并联申报的一张表单--表单列表
     * */
@@ -183,45 +186,21 @@ public class OneFormCommonService {
         return result;
     }
 
-    public ContentResultForm<Map> renderHtmlFormContainer(OneFormStageRequest oneFormStageRequest, SFRenderConfig sFRenderConfig) throws Exception {
-        ContentResultForm<Map> result = new ContentResultForm(false, "", "");
-        if (StringUtils.isBlank(oneFormStageRequest.getApplyinstId())) {
-            result.setMessage("申报实例ID不能为空!!");
-        } else {
-            Map<String, Object> resultMap = new HashMap();
-            List<SFFormParam> listSFFormParam = genListSFFormParam4OneForm(oneFormStageRequest,false);
-            ContentResultForm<String> sfFormResult = sFFormMultipleRender.renderHtmlFormContainer(listSFFormParam, sFRenderConfig);
-            resultMap.put("sfForm", sfFormResult.getContent());
-
-//            // 查询开发表单
-//            List<FormFrofileVo> stageDevFormList = new ArrayList<>();
-//            AeaParStagePartform aeaParStagePartform = new AeaParStagePartform();
-//            aeaParStagePartform.setStageId(oneFormStageRequest.getStageId());
-//            //aeaParStagePartform.setIsSmartForm("0");
-//            aeaParStagePartform.setSortNo(null);
-//            List<AeaParStagePartform> aeaParStagePartformList = aeaParStagePartformService.listStagePartform(aeaParStagePartform);
+//    public ContentResultForm<Map> renderHtmlFormContainer(OneFormStageRequest oneFormStageRequest, SFRenderConfig sFRenderConfig) throws Exception {
+//        ContentResultForm<Map> result = new ContentResultForm(false, "", "");
+//        if (StringUtils.isBlank(oneFormStageRequest.getApplyinstId())) {
+//            result.setMessage("申报实例ID不能为空!!");
+//        } else {
+//            Map<String, Object> resultMap = new HashMap();
+//            List<SFFormParam> listSFFormParam = genListSFFormParam4OneForm(oneFormStageRequest,false);
+//            ContentResultForm<String> sfFormResult = sFFormMultipleRender.renderHtmlFormContainer(listSFFormParam, sFRenderConfig);
+//            resultMap.put("sfForm", sfFormResult.getContent());
 //
-//            if (aeaParStagePartformList != null && aeaParStagePartformList.size() > 0) {
-//                String projInfoId = oneFormStageRequest.getProjInfoId();
-//
-//                for (AeaParStagePartform parStagePartform : aeaParStagePartformList) {
-//                    if (StringUtils.isNotBlank(parStagePartform.getStoFormId())) {
-//                        ActStoForm actStoForm = actStoFormMapper.getActStoFormById(parStagePartform.getStoFormId());
-//                        FormFrofileVo stageDevFormVo = new FormFrofileVo();
-//                        stageDevFormVo.setFormId(parStagePartform.getStoFormId());
-//                        stageDevFormVo.setFormName(parStagePartform.getPartformName());
-//                        stageDevFormVo.setFormUrl(actStoForm.getFormLoadUrl().replace("{projInfoId}", "projInfoId=" + projInfoId));
-//                        stageDevFormList.add(stageDevFormVo);
-//                    }
-//                }
-//            }
-//
-//            resultMap.put("devForm", stageDevFormList);
-            result.setSuccess(true);
-            result.setContent(resultMap);
-        }
-        return result;
-    }
+//            result.setSuccess(true);
+//            result.setContent(resultMap);
+//        }
+//        return result;
+//    }
 
     /**
      * 合并两个表单列表--partform，事项form
@@ -279,5 +258,45 @@ public class OneFormCommonService {
             List<SFFormParam> listSFFormParam = genListSFFormParam4OneForm(oneFormStageRequest,false);
             sFFormMultipleRender.renderPage(listSFFormParam, sFRenderConfig);
         }
+    }
+
+    public List<FormFrofileVo> getListForm4ItemOneForm(OneFormItemRequest oneFormItemRequest) {
+        List<FormFrofileVo> result = new ArrayList<>();
+        int formSortNo=0;
+        String itemVerId=oneFormItemRequest.getItemids().get(0);
+        AeaItemPartform aeaItemPartform = new AeaItemPartform();
+        aeaItemPartform.setItemVerId(itemVerId);
+//aeaItemPartform.setIsSmartForm("0");
+        aeaItemPartform.setSortNo(null);
+        List<AeaItemPartform> aeaItemPartformList = null;
+//        aeaItemPartformList=aeaItemPartformService.listStagePartform(aeaItemPartform);
+        String projInfoId = oneFormItemRequest.getProjInfoId();
+        if (aeaItemPartformList != null && aeaItemPartformList.size() > 0) {
+            for (AeaItemPartform ItemPartform : aeaItemPartformList) {
+                if (StringUtils.isNotBlank(ItemPartform.getStoFormId())) {
+                    ActStoForm actStoForm = actStoFormMapper.getActStoFormById(ItemPartform.getStoFormId());
+                    FormFrofileVo formFrofileVo = new FormFrofileVo();
+                    formFrofileVo.setFormId(ItemPartform.getStoFormId());
+                    formFrofileVo.setFormName(ItemPartform.getPartformName());
+                    if(isSmartForm(actStoForm)){
+                        formFrofileVo.setSmartForm(true);
+                        SFFormParam item=new SFFormParam();
+                        item.setRefEntityId(oneFormItemRequest.getApplyinstId());
+                        item.setFormId(formFrofileVo.getFormId());
+                        formFrofileVo.setFormUrl(genUrl4SamrtForm(item));
+
+                    }
+                    else{
+                        formFrofileVo.setSmartForm(false);
+                        formFrofileVo.setFormUrl(actStoForm.getFormLoadUrl().replace("{projInfoId}", "projInfoId=" + projInfoId));
+                    }
+                    formSortNo++;
+                    formFrofileVo.setFormSortNo(formSortNo);
+                    result.add(formFrofileVo);
+                }
+            }
+        }
+
+        return result;
     }
 }

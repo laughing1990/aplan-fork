@@ -348,6 +348,8 @@ var module1 = new Vue({
       matformNameTitle: '材料表单',
       matFormDialogVisible: false,
       parallelApplyinstId: '', // 申报实例id
+      preItemCheckPassed: true, // 前置检测是否通过
+      preItemCheckkMsg: '', // 前置检测失败提示
     }
   },
   created: function () {
@@ -601,7 +603,7 @@ var module1 = new Vue({
       var _that = this;
       if (_that.projInfoId) {
         request('', {
-          url: ctx + 'rest/apply/common/item/frontItemIsDone/' + _that.itemVerId + '/' + _that.projInfoId,
+          url: ctx + 'rest/check/itemFrontCheck',
           type: 'POST',
           data: {
             projInfoId: _that.projInfoId,
@@ -609,13 +611,12 @@ var module1 = new Vue({
           },
         }, function (result) {
           if (result.success) {
-            if (result.content.length > 0) {
-              _that.coreItems = result.content;
-              _that.showItemsDia = true;
-            }
+            _that.preItemCheckPassed = true;
           } else {
+            _that.preItemCheckPassed = false;
+            _that.preItemCheckkMsg = result.message?result.message:'事项前置检测失败';
             _that.$message({
-              message: '获取前置事项失败！',
+              message: result.message?result.message:'事项前置检测失败',
               type: 'error'
             });
           }
@@ -1358,8 +1359,8 @@ var module1 = new Vue({
     },
     // 保存保存领件人、项目信息 补全信息保存并下一步
     saveProOrSmsinfo: function () {
-      if (this.coreItems.length > 0) {
-        this.showItemsDia = true;
+      if(this.preItemCheckPassed==false){
+        alertMsg('', this.preItemCheckkMsg, '关闭', 'error', true);
         return false;
       }
       var msg = '';
@@ -2373,8 +2374,8 @@ var module1 = new Vue({
       var certChildIds = [];
       if(certChild.length>0){
         certChild.map(function(item){
-          if(certChildIds.indexOf(item.authCode)<0){
-            certChildIds.push(item.authCode);
+          if(certChildIds.indexOf(item.licenseCode)<0){
+            certChildIds.push(item.licenseCode);
           }
         })
       }
@@ -2412,7 +2413,7 @@ var module1 = new Vue({
             }else {
               certItem.bind = false;
             }
-            if(certChildIds.indexOf(certItem.auth_code)>-1){
+            if(certChildIds.indexOf(certItem.license_code)>-1){
               certItem.bind = true
             }else {
               certItem.bind = false;
@@ -2557,7 +2558,7 @@ var module1 = new Vue({
         "certOwner": certRowData.holder_name,
         "certinstCode": certRowData.license_code,
         "certinstId": "",
-        "certinstName": certRowData.license_code,
+        "certinstName": certRowData.name,
         "issueDate": certRowData.issue_time,
         "issueOrgId": certRowData.issue_org_code,
         "managementScope": "",
@@ -2577,6 +2578,7 @@ var module1 = new Vue({
       }, function (res) {
         if(res.success){
           res.content.certName = certRowData.name;
+          res.content.licenseCode = certRowData.license_code;
           if(_that.selMatRowData.certChild=='undefined'||_that.selMatRowData.certChild==undefined){
             Vue.set(_that.selMatRowData,'certChild',[res.content]);
           }else {

@@ -378,17 +378,17 @@
         mat.MAT_ID = aii.MAT_ID
         AND aii.ITEM_VER_ID = aib.ITEM_VER_ID
         AND aisv.ITEM_VER_ID = aib.ITEM_VER_ID
-        AND (
-        ( aib.IS_NEED_STATE = '1' AND ( aisv.VER_STATUS = '1' OR aisv.VER_STATUS = '2' ) )
-        OR (
-        aib.IS_NEED_STATE = '0'
-        AND ( aii.STATE_VER_ID IS NULL OR ( aii.STATE_VER_ID IS NOT NULL AND aisv.VER_STATUS != '3' ) )
-        )
-        )
         AND aisv.IS_DELETED = '0'
         AND aii.IS_DELETED = '0'
         AND mat.IS_DELETED = '0'
         <if test="isInput !=null and isInput == 1">
+            AND (
+            ( aib.IS_NEED_STATE = '1' AND ( aisv.VER_STATUS = '1' OR aisv.VER_STATUS = '2' ) )
+            OR (
+            aib.IS_NEED_STATE = '0'
+            AND ( aii.STATE_VER_ID IS NULL OR ( aii.STATE_VER_ID IS NOT NULL AND aisv.VER_STATUS != '3' ) )
+            )
+            )
             AND aii.STATE_VER_ID = aisv.ITEM_STATE_VER_ID
         </if>
         AND aii.IS_INPUT = #{isInput}
@@ -575,17 +575,17 @@
         mat.MAT_ID = aii.MAT_ID
         AND aii.ITEM_VER_ID = aib.ITEM_VER_ID
         AND aisv.ITEM_VER_ID = aib.ITEM_VER_ID
-        AND (
-        ( aib.IS_NEED_STATE = '1' AND ( aisv.VER_STATUS = '1' OR aisv.VER_STATUS = '2' ) )
-        OR (
-        aib.IS_NEED_STATE = '0'
-        AND ( aii.STATE_VER_ID IS NULL OR ( aii.STATE_VER_ID IS NOT NULL AND aisv.VER_STATUS != '3' ) )
-        )
-        )
         AND aisv.IS_DELETED = '0'
         AND aii.IS_DELETED = '0'
         AND mat.IS_DELETED = '0'
         <if test="isInput !=null and isInput == 1">
+            AND (
+            ( aib.IS_NEED_STATE = '1' AND ( aisv.VER_STATUS = '1' OR aisv.VER_STATUS = '2' ) )
+            OR (
+            aib.IS_NEED_STATE = '0'
+            AND ( aii.STATE_VER_ID IS NULL OR ( aii.STATE_VER_ID IS NOT NULL AND aisv.VER_STATUS != '3' ) )
+            )
+            )
             AND aii.STATE_VER_ID = aisv.ITEM_STATE_VER_ID
         </if>
         AND aii.IS_INPUT = #{isInput}
@@ -1180,12 +1180,28 @@
     </select>
 
     <select id="checkMatCode" resultType="java.lang.Integer">
-        select count(*) from AEA_ITEM_MAT
+        select
+            count(*)
+        from AEA_ITEM_MAT
         <where>
             and ROOT_ORG_ID = #{rootOrgId}
             and MAT_CODE = #{matCode}
             <if test="matId != null and matId!='' ">
-                and MAT_ID != #{matId}
+            and MAT_ID != #{matId}
+            </if>
+        </where>
+    </select>
+
+    <select id="checkMatName" resultType="java.lang.Integer">
+        select
+            count(*)
+        from AEA_ITEM_MAT
+        <where>
+            and ROOT_ORG_ID = #{rootOrgId}
+            and MAT_NAME = #{matName}
+            and IS_COMMON = #{isCommon}
+            <if test="matId != null and matId!='' ">
+            and MAT_ID != #{matId}
             </if>
         </where>
     </select>

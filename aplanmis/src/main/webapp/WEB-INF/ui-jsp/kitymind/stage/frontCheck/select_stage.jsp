@@ -5,7 +5,7 @@
     <div class="modal-dialog modal-dialog-centered  modal-lg" role="document" style="max-width: 950px;">
         <div class="modal-content">
             <div class="modal-header" style="padding: 15px;height: 45px;">
-                <h5 class="modal-title" id="select_stage_modal_title">选择前置检测阶段</h5>
+                <h5 class="modal-title" id="select_stage_modal_title">选择主/辅线</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>

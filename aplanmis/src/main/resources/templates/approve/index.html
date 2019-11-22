@@ -74,7 +74,18 @@
     <!-- 申请表、材料附件、审批意见、意见汇总表 -->
     <el-tabs class="ltabs">
       <el-tab-pane v-for="u in lTabsData" :label="u.label" :key="u.label">
-        <div v-if="u.labelId=='oneFrom'" id="oneForm"></div>
+        <div v-if="u.labelId=='oneFrom'" id="oneForm">
+          <el-tabs tab-position="left" class="form-el-tabs">
+            <el-tab-pane v-for="(item,index) in smartFormInfo" :key="index" :label="item.formName">
+              <iframe :style="{height:'100%',overflow: 'auto',width:'100%'}"
+                      v-if="item.smartForm==false"
+                      :src="ctx+item.formUrl" frameborder="0"></iframe>
+              <div v-else :style="{height:'100%',overflow: 'auto',width:'100%','padding-right':'10px'}">
+                <div :id="'smartFormBox_'+index"></div>
+              </div>
+            </el-tab-pane>
+          </el-tabs>
+        </div>
         <!--特殊程序-->
         <div v-else-if="u.labelId==5" style="height:100%;overflow:auto;">
           <div class="spe-pane-wrap">
@@ -801,7 +812,7 @@
     </div>
   </aside>
   <!-- 查看流程图弹窗 start -->
-  <el-dialog title="流程跟踪" width="80%" top="5vh" :visible.sync="processDialogVisible">
+  <el-dialog title="流程跟踪" width="80%" top="5vh" :visible.sync="processDialogVisible" v-loading="processDialogLoading">
     <div class="row" id="parentPro"></div>
     <el-scrollbar>
       <div id="bpmnModel"></div>
@@ -1717,12 +1728,14 @@
           <el-table-column label="有效截止日期" prop="expiry_date" width="160"></el-table-column>
           <el-table-column label="可信等级" prop="trust_level" width="100"></el-table-column>
           <el-table-column label="证照状态" prop="license_status_name" width="100"></el-table-column>
-          <el-table-column label="操作" width="100">
+          <el-table-column label="操作" width="120">
             <template slot-scope="scope">
               <div class="c-f">
                 <span class="mat-table-btn" @click="idTableListSee(scope.row)">查看</span>
                 <span class="mat-ope-line"></span>
-                <span class="mat-table-btn" @click="idTabListChoose(scope.row)">关联</span>
+                <span v-show="!scope.row.isRelated" class="mat-table-btn" @click="idTabListChoose(scope.row)">关联</span>
+<!--                <span v-show="scope.row.isRelated" class="mat-table-btn ope-disabled">已关联</span>-->
+                <span v-show="scope.row.isRelated" class="mat-table-btn" @click="idIisassociation(scope.row)">解除关联</span>
               </div>
             </template>
           </el-table-column>

@@ -269,8 +269,10 @@
               </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="项目规模" require prop="projScale">
-                <el-input placeholder="请输入项目规模" v-model="licenseFormData.projScale"></el-input>
+              <el-form-item label="建设规模" require prop="projScale">
+                <el-input placeholder="请输入建设规模" v-model="licenseFormData.projScale">
+                  <template slot="append">平方米</template>
+                </el-input>
               </el-form-item>
             </el-col>
           </el-row>

@@ -79,33 +79,38 @@
     //分类排序
     function sortParFrontProj(){
 
-        $.post(ctx+'/aea/par/front/proj/listAeaParFrontProjByNoPage.do',{
-            'stageId': currentBusiId,
-        }, function(data){
-            if(data!=null&&data.length>0){
+        if(curIsEditable) {
 
-                $('#sort_par_front_proj_modal').modal('show');
-                $('#sortParFrontProjDiv').animate({scrollTop: 0}, 800);//滚动到顶部
-                $("#sortParFrontProjUl").html("");
+            $.post(ctx + '/aea/par/front/proj/listAeaParFrontProjByNoPage.do', {
+                'stageId': currentBusiId,
+            }, function (data) {
+                if (data != null && data.length > 0) {
 
-                for(var i=0;i<data.length;i++){
-                    var id = data[i].frontProjId;
-                    var name = data[i].ruleName;
-                    var liHtml = '<li name="sortParFrontProjLi" category-id="'+ id +'">' +
-                        '<span class="drag-handle_td">&#9776;</span>' +
-                        '<span class="org_name_td" style="width: 90%;">'+ name +'</span>' +
-                        '</li>';
-                    $('#sortParFrontProjUl').append(liHtml);
+                    $('#sort_par_front_proj_modal').modal('show');
+                    $('#sortParFrontProjDiv').animate({scrollTop: 0}, 800);//滚动到顶部
+                    $("#sortParFrontProjUl").html("");
+
+                    for (var i = 0; i < data.length; i++) {
+                        var id = data[i].frontProjId;
+                        var name = data[i].ruleName;
+                        var liHtml = '<li name="sortParFrontProjLi" category-id="' + id + '">' +
+                            '<span class="drag-handle_td">&#9776;</span>' +
+                            '<span class="org_name_td" style="width: 90%;">' + name + '</span>' +
+                            '</li>';
+                        $('#sortParFrontProjUl').append(liHtml);
+                    }
+                } else {
+                    swal({
+                        type: 'info',
+                        title: '暂无项目信息前置检测数据！',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
                 }
-            }else{
-                swal({
-                    type: 'info',
-                    title: '暂无项目信息前置检测数据！',
-                    showConfirmButton: false,
-                    timer: 1500
-                });
-            }
-        }, 'json');
+            }, 'json');
+        }else{
+            swal('提示信息', '当前版本下数据不可编辑!', 'info');
+        }
     }
 
 </script>

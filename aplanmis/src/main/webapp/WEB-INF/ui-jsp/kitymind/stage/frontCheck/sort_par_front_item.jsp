@@ -89,52 +89,57 @@
     //分类排序
     function sortParFrontItem(){
 
-        $.post(ctx+'/aea/par/front/item/listAeaParFrontItemByNoPage.do',{
-            'stageId': currentBusiId,
-        }, function(data){
-            if(data!=null&&data.length>0){
+        if(curIsEditable) {
 
-                $('#sort_par_front_item_modal').modal('show');
-                $('#sortParFrontItemDiv').animate({scrollTop: 0}, 800);//滚动到顶部
-                $("#sortParFrontItemUl").html("");
+            $.post(ctx+'/aea/par/front/item/listAeaParFrontItemByNoPage.do',{
+                'stageId': currentBusiId,
+            }, function(data){
+                if(data!=null&&data.length>0){
 
-                for(var i=0;i<data.length;i++){
-                    var id = data[i].frontItemId;
-                    var itemName = data[i].itemName;
-                    if(!isEmpty(data[i].isCatalog)){
-                        if(data[i].isCatalog=='1'){
-                            itemName = '【标准事项】'+ itemName;
-                            if(!isEmpty(data[i].itemCode)){
-                                itemName = itemName +'【'+ data[i].itemCode+'】';
-                            }
-                            if(!isEmpty(data[i].guideOrgName)){
-                                itemName = itemName +'【'+ data[i].guideOrgName+'】';
-                            }
-                        }else{
-                            itemName = '【实施事项】'+ itemName;
-                            if(!isEmpty(data[i].itemCode)){
-                                itemName = itemName +'【'+ data[i].itemCode+'】';
-                            }
-                            if(!isEmpty(data[i].orgName)) {
-                                itemName = itemName + '【' + data[i].orgName + '】';
+                    $('#sort_par_front_item_modal').modal('show');
+                    $('#sortParFrontItemDiv').animate({scrollTop: 0}, 800);//滚动到顶部
+                    $("#sortParFrontItemUl").html("");
+
+                    for(var i=0;i<data.length;i++){
+                        var id = data[i].frontItemId;
+                        var itemName = data[i].itemName;
+                        if(!isEmpty(data[i].isCatalog)){
+                            if(data[i].isCatalog=='1'){
+                                itemName = '【标准事项】'+ itemName;
+                                if(!isEmpty(data[i].itemCode)){
+                                    itemName = itemName +'【'+ data[i].itemCode+'】';
+                                }
+                                if(!isEmpty(data[i].guideOrgName)){
+                                    itemName = itemName +'【'+ data[i].guideOrgName+'】';
+                                }
+                            }else{
+                                itemName = '【实施事项】'+ itemName;
+                                if(!isEmpty(data[i].itemCode)){
+                                    itemName = itemName +'【'+ data[i].itemCode+'】';
+                                }
+                                if(!isEmpty(data[i].orgName)) {
+                                    itemName = itemName + '【' + data[i].orgName + '】';
+                                }
                             }
                         }
+                        var liHtml = '<li name="sortParFrontItemLi" category-id="'+ id +'">' +
+                                        '<span class="drag-handle_td">&#9776;</span>' +
+                                        '<span class="org_name_td" style="width: 90%;">'+ itemName +'</span>' +
+                                    '</li>';
+                        $('#sortParFrontItemUl').append(liHtml);
                     }
-                    var liHtml = '<li name="sortParFrontItemLi" category-id="'+ id +'">' +
-                                    '<span class="drag-handle_td">&#9776;</span>' +
-                                    '<span class="org_name_td" style="width: 90%;">'+ itemName +'</span>' +
-                                '</li>';
-                    $('#sortParFrontItemUl').append(liHtml);
+                }else{
+                    swal({
+                        type: 'info',
+                        title: '暂无事项信息前置检测数据！',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
                 }
-            }else{
-                swal({
-                    type: 'info',
-                    title: '暂无事项信息前置检测数据！',
-                    showConfirmButton: false,
-                    timer: 1500
-                });
-            }
-        }, 'json');
+            }, 'json');
+        }else{
+            swal('提示信息', '当前版本下数据不可编辑!', 'info');
+        }
     }
 
 </script>

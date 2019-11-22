@@ -160,13 +160,16 @@ BID_ID  ,PROJ_INFO_ID  ,PROVINCE_PROJ_CODE  ,WIN_BID_NOTICE_CODE  ,BID_SECTION_N
         a.IMG_URL  imgUrl,
         a.IS_OWNER_UNIT  isOwnerUnit,
         a.ROOT_ORG_ID rootOrgId,
-        b.UNIT_PROJ_ID unitProjId
+        b.UNIT_PROJ_ID unitProjId,
+        c.PROJ_LINKMAN_ID projLinkmanId,
+        c.LINKMAN_INFO_ID projectLeaderId
     FROM
-    AEA_UNIT_INFO a,
-    AEA_UNIT_PROJ b
+    AEA_UNIT_INFO a
+    inner  join AEA_UNIT_PROJ b on a.UNIT_INFO_ID = b.UNIT_INFO_ID
+    left join aea_unit_proj_linkman c on c.UNIT_PROJ_ID=b.UNIT_PROJ_ID
     WHERE
-    a.UNIT_INFO_ID = b.UNIT_INFO_ID
-    AND a.IS_DELETED = '0'
+
+    a.IS_DELETED = '0'
     AND b.IS_DELETED = '0'
     AND b.PROJ_INFO_ID = #{projInfoId}
     AND b.UNIT_TYPE = #{unitType}

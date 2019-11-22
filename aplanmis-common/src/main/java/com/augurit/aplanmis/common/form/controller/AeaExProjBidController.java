@@ -2,8 +2,10 @@ package com.augurit.aplanmis.common.form.controller;
 
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
+import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.constants.GDUnitType;
 import com.augurit.aplanmis.common.domain.*;
+import com.augurit.aplanmis.common.mapper.AeaLinkmanInfoMapper;
 import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
 import com.augurit.aplanmis.common.form.service.AeaExProjBidService;
 import com.augurit.aplanmis.common.form.vo.AeaExProjBidVo;
@@ -49,6 +51,9 @@ public class AeaExProjBidController {
     @Autowired
     private AeaUnitInfoService aeaUnitInfoService;
 
+    @Autowired
+    private AeaLinkmanInfoMapper aeaLinkmanInfoMapper;
+
     @RequestMapping("/index.html")
     public ModelAndView projectBidIndex(){
         ModelAndView modelAndView = new ModelAndView();
@@ -77,6 +82,15 @@ public class AeaExProjBidController {
                     List<AeaUnitInfo> agencyUnitList = aeaExProjBidService.findUnitProjByProjInfoIdAndType(projId, GDUnitType.BIDDING_AGENCY.getValue());//招商代理机构
                     List<AeaUnitInfo> costUnitList = aeaExProjBidService.findUnitProjByProjInfoIdAndType(projId, GDUnitType.COST_CONSULTING.getValue());//造价咨询
                     aeaExProjBidVo.setWinBidUnits(winBidUnitList);
+                    if(winBidUnitList!=null) {
+                        for (AeaUnitInfo unit : winBidUnitList) {
+                            if(StringUtils.isNotBlank(unit.getProjLinkmanId())) {
+                                AeaLinkmanInfo manInfo = aeaLinkmanInfoMapper.getAeaLinkmanInfoById(unit.getProjectLeaderId());
+                                unit.setProjectLeader(manInfo.getLinkmanName());
+                                unit.setProjectLeaderCertNum(manInfo.getLinkmanCertNo());
+                            }
+                        }
+                    }
                     aeaExProjBidVo.setAgencyUnits(agencyUnitList);
                     aeaExProjBidVo.setCostUnits(costUnitList);
                     return new ContentResultForm<AeaExProjBidVo>(true, aeaExProjBidVo);
@@ -135,20 +149,16 @@ public class AeaExProjBidController {
                     List<AeaUnitProj> aeaUnitProjNewList = new ArrayList<AeaUnitProj>();
                     //中标单位信息
                     List<AeaUnitInfo> winBidUnits = aeaExProjBidVo.getWinBidUnits();
-                    aeaExProjBidService.saveOrUpdateUnitInfo(aeaExProjBidVo, winBidUnits, GDUnitType.CONTRACTING_UNIT.getValue(), aeaUnitProjNewList);
+                    aeaExProjBidService.saveOrUpdateUnitInfo(aeaExProjBidVo, winBidUnits, GDUnitType.CONTRACTING_UNIT.getValue());
 
                     //招商代理机构信息
                     List<AeaUnitInfo> agencyUnits = aeaExProjBidVo.getAgencyUnits();
-                    aeaExProjBidService.saveOrUpdateUnitInfo(aeaExProjBidVo, agencyUnits, GDUnitType.BIDDING_AGENCY.getValue(), aeaUnitProjNewList);
+                    aeaExProjBidService.saveOrUpdateUnitInfo(aeaExProjBidVo, agencyUnits, GDUnitType.BIDDING_AGENCY.getValue());
 
                     //造价咨询单位信息
                     List<AeaUnitInfo> costUnits = aeaExProjBidVo.getCostUnits();
-                    aeaExProjBidService.saveOrUpdateUnitInfo(aeaExProjBidVo, costUnits, GDUnitType.COST_CONSULTING.getValue(), aeaUnitProjNewList);
+                    aeaExProjBidService.saveOrUpdateUnitInfo(aeaExProjBidVo, costUnits, GDUnitType.COST_CONSULTING.getValue());
 
-                    //新增保存项目与单位关联表信息
-                    if (!aeaUnitProjNewList.isEmpty()) {
-                        aeaUnitInfoService.batchInserAeaUnitProj(aeaUnitProjNewList);
-                    }
 
                     resultForm.setSuccess(true);
                     resultForm.setMessage("保存成功！");

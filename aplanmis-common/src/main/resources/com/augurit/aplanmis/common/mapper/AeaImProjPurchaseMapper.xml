@@ -1196,7 +1196,7 @@ HIGHEST_RATE,QUOTE_TYPE,ROOT_ORG_ID
                 #{flag}
             </foreach>
         </if>
-        ORDER BY aipp.PUBLISH_TIME DESC
+        ORDER BY aipp.CREATE_TIME DESC
     </select>
 
     <resultMap type="com.augurit.aplanmis.common.vo.AeaImProjPurchaseDetailVo" id="projPurchaseMajorRequireMap">
@@ -1474,4 +1474,61 @@ HIGHEST_RATE,QUOTE_TYPE,ROOT_ORG_ID
     <update id="updateIntermediaryWonBidStatus">
         update aea_im_unit_bidding set IS_WON_BID='1' where UNIT_BIDDING_ID=#{unitBiddingId}
     </update>
+    <sql id="UnitRequireColumnsAlias">
+        ${alias}.IS_QUAL_REQUIRE  isQualRequire,
+        ${alias}.QUAL_REQUIRE_TYPE  qualRequireType,
+        ${alias}.QUAL_REQUIRE  qualRequire,
+        ${alias}.QUAL_REQUIRE_EXPLAIN  qualRequireExplain,
+        ${alias}.QUAL_RECORD_REQUIRE  qualRecordRequire,
+        ${alias}.PROMISE_SERVICE  promiseService,
+        ${alias}.OTHER_REQUIRE_EXPLAIN  otherRequireExplain,
+        ${alias}.IS_REGISTER_REQUIRE  isRegisterRequire,
+        ${alias}.REGISTER_TOTAL  registerTotal,
+        ${alias}.REGISTER_REQUIRE  registerRequire,
+        ${alias}.IS_RECORD_REQUIRE  isRecordRequire,
+        ${alias}.RECORD_REQUIRE_EXPLAIN  recordRequireExplain
+    </sql>
+    <sql id="projColumnsAlias">
+        ${alias}.PROJ_NAME AS projName,
+        ${alias}.LOCAL_CODE localCode,
+        ${alias}.PROJ_SCALE projScale,
+        ${alias}.PROJ_SCALE_CONTENT projScaleContent,
+        <if test="_databaseId == 'oracle'">
+            nvl(${alias}.IS_FINANCIAL_FUND, '0') isFinancialFund,
+        </if>
+        <if test="_databaseId == 'mysql'">
+            ifnull(${alias}.IS_FINANCIAL_FUND,'0') isFinancialFund,
+        </if>
+        <if test="_databaseId == 'oracle'">
+            nvl(${alias}.IS_SOCIAL_FUND, '0') isSocialFund,
+        </if>
+        <if test="_databaseId == 'mysql'">
+            ifnull(${alias}.IS_SOCIAL_FUND,'0') isSocialFund,
+        </if>
+        ${alias}.FINANCIAL_FUND_PROPORTION financialFundProportion,
+        ${alias}.SOCIAL_FUND_PROPORTION socialFundProportion
+    </sql>
+    <!--查询审批页采购项目详情-->
+    <select id="getProjPurchaseInfoByApplyinstCode" resultType="com.augurit.aplanmis.common.vo.purchase.PurchaseProjVo">
+        select
+        <include refid="allColumnsAlias">
+            <property name="alias" value="aipp"/>
+        </include>
+        ,
+        <include refid="projColumnsAlias">
+            <property name="alias" value="api"/>
+        </include>
+        ,
+        <include refid="UnitRequireColumnsAlias">
+            <property name="alias" value="aiur"/>
+        </include>
+        ,
+        ais.service_name serviceName
+        from aea_im_proj_purchase aipp
+        left join aea_proj_info api on api.PROJ_INFO_ID=aipp.PROJ_INFO_ID
+        left join aea_im_unit_require aiur on aiur.UNIT_REQUIRE_ID=aipp.UNIT_REQUIRE_ID
+        left join aea_im_service ais on ais.service_id=aipp.service_id
+        where aipp.APPLYINST_CODE=#{applyinstCode}
+    </select>
+
 </mapper>

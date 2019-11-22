@@ -106,16 +106,19 @@ private static Logger logger = LoggerFactory.getLogger(AeaExProjContractControll
             return new ResultForm(false, "获取项目信息失败，项目id "+aeaExProjContract.getProjInfoId());
         }
 
-
-        if(aeaExProjContract.getContractId()!=null&&!"".equals(aeaExProjContract.getContractId())){
-            aeaExProjContractService.updateAeaExProjContract(aeaExProjContract);
-        }else{
-        if(aeaExProjContract.getContractId()==null||"".equals(aeaExProjContract.getContractId()))
-            aeaExProjContract.setContractId(UUID.randomUUID().toString());
-            aeaExProjContractService.saveAeaExProjContract(aeaExProjContract);
+        ContentResultForm<String> stringContentResultForm = aeaExProjCertBuildService.SynchronizeDataByAeaExProjContractForm(aeaExProjContract);
+        if(stringContentResultForm.isSuccess()){
+            if(aeaExProjContract.getContractId()!=null&&!"".equals(aeaExProjContract.getContractId())){
+                aeaExProjContractService.updateAeaExProjContract(aeaExProjContract);
+            }else{
+                if(aeaExProjContract.getContractId()==null||"".equals(aeaExProjContract.getContractId()))
+                    aeaExProjContract.setContractId(UUID.randomUUID().toString());
+                aeaExProjContractService.saveAeaExProjContract(aeaExProjContract);
+            }
+            return  new ContentResultForm<AeaExProjContract>(true,aeaExProjContract);
+        }else {
+            return stringContentResultForm;
         }
-        aeaExProjCertBuildService.SynchronizeDataByAeaExProjContractForm(aeaExProjContract);
-        return  new ContentResultForm<AeaExProjContract>(true,aeaExProjContract);
     }
 
     @RequestMapping("/deleteAeaExProjContractById.do")

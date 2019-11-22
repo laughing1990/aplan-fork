@@ -18,6 +18,19 @@
     <link href="${pageContext.request.contextPath}/agcloud/framework/js-lib/element-2/element.css" rel="stylesheet" type="text/css"/>
     <!-- 注意：这个css引入要在下面的style标签之前-->
     <link href="${pageContext.request.contextPath}/ui-static/agcloud/framework/js-libs/jquery1/jquery.treegrid.min.css" rel="stylesheet" type="text/css"/>
+    <link href="${pageContext.request.contextPath}/ui-static/agcloud/bsc/yunpan/css/orgTheme.css" type="text/css" rel="stylesheet"/>
+    <style type="text/css">
+        .row{
+            margin-left: 0px;
+            margin-right: 0px;
+        }
+
+        /*bootstrap下拉多级联动*/
+        .dropdown-menu {
+            width: 733px;
+        !important;
+        }
+    </style>
     <style type="text/css">
         .row{
             margin-left: 0px;
@@ -218,6 +231,37 @@
             stroke: #409eff;
             stroke-linecap: round;
         }
+
+        .customSelect{
+            width:100%!important;
+            margin-top: 10px!important;
+        }
+
+        .el-select-dropdown__item.hover, .el-select-dropdown__item:hover {
+            color: #169aff!important;
+        }
+        .el-select-dropdown__item.hover, .el-select-dropdown__item:hover {
+            background-color: #F5F7FA;
+        }
+        .el-select-dropdown__item {
+            font-size: 14px;
+            padding: 0 20px;
+            position: relative;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: #606266;
+            height: 34px;
+            line-height: 34px;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+            cursor: pointer;
+        }
+        .el-select-dropdown__item {
+            height: auto;
+            line-height: normal;
+            padding: 10px 20px;
+        }
     </style>
     <script type="text/javascript">
         var currentBusiType = '${currentBusiType}';
@@ -253,8 +297,8 @@
                             <button type="button" class="btn btn-info" onclick="showCreateProcess();">新建流程</button>
                             <button type="button" class="btn btn-info" onclick="addChooseProc();">导入流程</button>
                             <button type="button" class="btn btn-info" @click="elementConfig">元素配置</button>
-                            <%--<button type="button" class="btn btn-secondary" onclick="treegridExpandAll();">展开</button>--%>
-                            <%--<button type="button" class="btn btn-secondary" onclick="treegridCollapseAll();">折叠</button>--%>
+                            <button type="button" class="btn btn-info" @click="formConfig">表单配置</button>
+                            <button type="button" class="btn btn-info" @click="viewConfig">视图配置</button>
                             <button type="button" class="btn btn-secondary" @click="allExpand">展开</button>
                             <button type="button" class="btn btn-secondary" @click="allNotExpand">折叠</button>
                         </div>
@@ -804,12 +848,12 @@
                         <div class="top-btn clearfix">
                             <p class="float-left">选择公共页面元素</p>
                             <div class="float-right">
-                                <button type="button" class="btn btn-secondary" @click="isshowChooseFlowList4 = false;isShowMask = false;">关闭</button>
-                                <button type="button" class="btn btn-primary" @click="isshowChooseFlowList4 = false;isShowMask = false;savePublicElement('addViewTypeForm')">保存</button>
+                                <button type="button" class="btn btn-secondary" @click="isshowChooseFlowList4 = false;">关闭</button>
+                                <button type="button" class="btn btn-primary" @click="isshowChooseFlowList4 = false;savePublicElement('addViewTypeForm')">保存</button>
                             </div>
                         </div>
                         <div class="chooseFlowListSelect">
-                            <el-select  v-model="multipleSelection" value-key="elementName" filterable clearable  multiple  placeholder="直接选择或搜索选择" @visible-change = "toggleFlowListSelect" >
+                            <el-select class="customSelect" v-model="multipleSelection" value-key="elementName" filterable clearable  multiple  placeholder="直接选择或搜索选择" @visible-change = "toggleFlowListSelect" >
                                 <el-option
                                         v-for="item in choosePBElementTableData"
                                         :key="item.elementCode"
@@ -820,7 +864,7 @@
                                 </el-option>
                             </el-select>
                         </div>
-                        <button class="btn btn-secondary" :disabled="showTip"  @click="isshowChooseFlowList4 = !isshowChooseFlowList4;isShowMask = true;importElement()"   slot="reference">导入元素</button>
+                        <button class="btn btn-secondary" :disabled="showTip"  @click="isshowChooseFlowList4 = !isshowChooseFlowList4;importElement()"   slot="reference">导入元素</button>
                     </el-popover>
                     <button class="btn btn-secondary" :disabled="showTip" @click="start_drag()">
                         元素排序
@@ -881,6 +925,255 @@
         </div>
     </el-dialog>
 <!-- 选择公共页面元素 弹出框 end -->
+    <!--表单配置-->
+    <el-dialog title="表单配置" :visible.sync="isShowFormConfig"  class="dialog" id="formConfig" width="700px">
+        <div class="nav">
+            <div class="nav-left">
+                <el-popover trigger="manual"  v-model="isshowChooseFlowList1" placement="bottom" width="450">
+                    <div class="top-btn clearfix">
+                        <p class="float-left">选择业务表单</p>
+                        <div class="float-right">
+                            <button type="button" class="btn btn-secondary" @click="isshowChooseFlowList1 = false;">关闭</button>
+                            <button type="button" class="btn btn-primary" @click="isshowChooseFlowList1 = false;savePublicForm()">保存</button>
+                        </div>
+                    </div>
+
+                    <div class="chooseFlowListSelect">
+                        <el-select  class="customSelect" v-model="multipleSelection3" value-key="formCode" filterable clearable  multiple  placeholder="直接选择或搜索选择" @visible-change = "toggleFlowListSelect" >
+                            <el-option
+                                    v-for="(item,index) in choosePBFormTableData"
+                                    :key="item.index"
+                                    :label="item.formName"
+                                    :value="item">
+                                <div>{{ item.formName }}</div>
+                                <div style="color: #8492a6; font-size: 13px;margin-top:5px;">{{ item.formCode }}</div>
+                            </el-option>
+                        </el-select>
+                    </div>
+                    <button class="btn btn-secondary"  @click="isshowChooseFlowList1 = !isshowChooseFlowList1;addPBForm()"   slot="reference">添加表单</button>
+                </el-popover>
+                <!-- <button class="btn btn-secondary" @click="addPBForm">
+                    添加表单
+                </button> -->
+                <button class="btn btn-outline-danger" @click="deleteActTPlAppformBatch()">
+                    批量移除
+                </button>
+            </div>
+            <div class="nav-right " style="margin-left: 260px;">
+                <el-input placeholder="输入名称或编码" v-model="keyword1"  class="input-with-select">
+                    <i slot="suffix" class="el-input__icon el-icon-search" @click="searchFormData()"></i>
+                </el-input>
+            </div>
+        </div>
+        <div class="right-aside-table-con">
+            <el-table
+                    :data="tplAppFormTableData" height="500"
+                    style="width: 100%"
+                    @selection-change="changeFun6">
+                <el-table-column
+                        type="selection"
+                >
+                </el-table-column>
+                <el-table-column
+                        prop="formName"
+                        label="表单名称"
+                >
+                    <template slot-scope="scope">
+                        <!-- <span class="thmnIconBox">
+                            <img src="../../../../../static/agcloud/bpm/admin/template/images/pc-icon.png" th:src="@{/agcloud/bpm/admin/template/images/pc-icon.png}" class="thmnIcon" v-show="scope.row.tmnId == 1">
+                            <img src="../../../../../static/agcloud/bpm/admin/template/images/android-icon.png" th:src="@{/agcloud/bpm/admin/template/images/android-icon.png}" class="thmnIcon" v-show="scope.row.tmnId == 2">
+                            <img src="../../../../../static/agcloud/bpm/admin/template/images/weixin-icon.png" th:src="@{/agcloud/bpm/admin/template/images/weixin-icon.png}" class="thmnIcon" v-show="scope.row.tmnId == 3">
+                            <img src="../../../../../static/agcloud/bpm/admin/template/images/android-icon.png" th:src="@{/agcloud/bpm/admin/template/images/android-icon.png}" class="thmnIcon" v-show="scope.row.tmnId == 4" >
+                        </span> -->
+                        <span>{{scope.row.formName}}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                        prop="formProperty"
+                        label="属性"
+                        width="80px">
+                    <template slot-scope="scope">
+                        <div>
+                            <span v-if="scope.row.formProperty.match(/^meta/ig)">开发</span>
+                            <span v-else>智能</span>
+                        </div>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                        label="操作" width="180px">
+                    <template slot-scope="scope">
+                        <el-button type="text" class="btn-table" @click="editFormRule(scope.row)">
+                            编辑表单规则
+                        </el-button>
+                        <el-button type="text" class="btn-table" @click="deleteForm(scope.row)">
+                            移除
+                        </el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+        </div>
+    </el-dialog>
+    <!-- 编辑表单规则 弹出框 start -->
+    <el-dialog title="编辑表单规则" :visible.sync="isShowEditForm"   class="dialog" width="600px">
+        <div>
+            <el-form ref="EditFormRule" id="EditFormRule"  :model="EditFormRuleData" :rules="EditFormRules" label-width="150px">
+                <el-form-item label="概要标题表达式"  require   prop="ruleTitle">
+                    <el-input v-model="EditFormRuleData.ruleTitle">
+                        <template slot="append">
+                            <el-popover trigger="click"
+                                        placement="bottom"
+                                        width="280" v-model="visibleFormRuleTitle">
+                                <p>导入表达式</p>
+                                <div class="chooseFomeRule">
+                                    <el-select v-model="EditFormRuleData.ruleTitle" filterable clearable  placeholder="请选择" @change="handleSectFormTitle" >
+                                        <el-option
+                                                v-for="item in formRuleOptions"
+                                                :key="item.columnName"
+                                                :label="item.columnName"
+                                                :value="item.columnName">
+                                            <span style="float: left">{{ item.columnName }}</span>
+                                            <span style="float: right; color: #8492a6; font-size: 13px">{{ item.columnComment }}</span>
+                                        </el-option>
+                                    </el-select>
+                                </div>
+                                <div class="btn btn-primary"  slot="reference">查看规则</div>
+                            </el-popover>
+                        </template>
+                    </el-input>
+                </el-form-item>
+                <el-form-item label="概要描述表达式" require  prop="ruleDesc">
+                    <el-input v-model="EditFormRuleData.ruleDesc">
+                        <template slot="append">
+                            <el-popover trigger="click"
+                                        placement="bottom"
+                                        width="280"
+                                        v-model="visibleFormRuleDesc">
+                                <p>导入表达式</p>
+                                <div class="chooseFomeRule">
+                                    <el-select v-model="EditFormRuleData.ruleDesc" filterable clearable  placeholder="请选择" @change="handleSectFormDesc" >
+                                        <el-option
+                                                v-for="item in formRuleOptions"
+                                                :key="item.columnName"
+                                                :label="item.columnName"
+                                                :value="item.columnName">
+                                            <span style="float: left">{{ item.columnName }}</span>
+                                            <span style="float: right; color: #8492a6; font-size: 13px">{{ item.columnComment }}</span>
+                                        </el-option>
+                                    </el-select>
+                                </div>
+                                <div class="btn btn-primary"  slot="reference">查看规则</div>
+                            </el-popover>
+                        </template>
+                    </el-input>
+                </el-form-item>
+                <el-form-item label="其他内容表达式" require prop="ruleOthers">
+                    <el-input v-model="EditFormRuleData.ruleOthers">
+                        <template slot="append">
+                            <el-popover trigger="click"
+                                        placement="bottom"
+                                        width="280"
+                                        v-model="visibleFormRuleOthers">
+                                <p>导入表达式</p>
+                                <div class="chooseFomeRule">
+                                    <el-select v-model="EditFormRuleData.ruleOthers" filterable clearable  placeholder="请选择" @change="handleSectFormRuleOthers">
+                                        <el-option
+                                                v-for="item in formRuleOptions"
+                                                :key="item.columnName"
+                                                :label="item.columnName"
+                                                :value="item.columnName">
+                                            <span style="float: left">{{ item.columnName }}</span>
+                                            <span style="float: right; color: #8492a6; font-size: 13px">{{ item.columnComment }}</span>
+                                        </el-option>
+                                    </el-select>
+                                </div>
+                                <div class="btn btn-primary"  slot="reference">查看规则</div>
+                            </el-popover>
+                        </template>
+                    </el-input>
+                </el-form-item>
+            </el-form>
+        </div>
+        <div slot="footer" class="dialog-footer">
+            <button type="button" class="btn btn-secondary" @click="isShowEditForm = false;reSetEditFormRuleData('EditFormRule')">关闭</button>
+            <button type="button" class="btn btn-primary" @click="saveFormRules('EditFormRule')">保存</button>
+        </div>
+    </el-dialog>
+    <!-- 编辑表单规则 弹出框  end -->
+    <!--表单配置结束-->
+    <!--视图配置-->
+    <el-dialog title="视图配置" :visible.sync="isShowViewConfig"  class="dialog" id="viewConfig" width="700px">
+        <div class="nav">
+            <div class="nav-left">
+                <el-popover trigger="manual"  v-model="isshowChooseFlowList3" placement="bottom" width="450">
+                    <div class="top-btn clearfix">
+                        <p class="float-left">选择业务视图</p>
+                        <div class="float-right">
+                            <button type="button" class="btn btn-secondary" @click="isshowChooseFlowList3 = false;">关闭</button>
+                            <button type="button" class="btn btn-primary" @click="isshowChooseFlowList3 = false; savePublicView()">保存</button>
+                        </div>
+                    </div>
+
+                    <div class="chooseFlowListSelect">
+                        <el-select  class="customSelect" v-model="multipleSelection5" value-key="viewComment" filterable clearable  multiple  placeholder="直接选择或搜索选择" @visible-change = "toggleFlowListSelect" >
+                            <el-option
+                                    v-for="item in chooseViewListTableData"
+                                    :key="item.viewCode"
+                                    :label="item.viewComment"
+                                    :value="item">
+                                <div>{{ item.viewComment }}</div>
+                                <div style="color: #8492a6; font-size: 13px;margin-top:5px;">{{ item.viewCode }}</div>
+                            </el-option>
+                        </el-select>
+                    </div>
+                    <button class="btn btn-secondary"  @click="isshowChooseFlowList3 = !isshowChooseFlowList3;addPBView()"   slot="reference">添加视图</button>
+                </el-popover>
+                <!-- <button class="btn btn-secondary" @click="addPBView">
+                    添加视图
+                </button> -->
+                <button class="btn btn-outline-danger" @click="deleteActTPlAppViewBatch">
+                    批量移除
+                </button>
+            </div>
+            <div class="nav-right " style="margin-left: 260px;">
+                <el-input placeholder="输入名称或编码" v-model="keyword2"  class="input-with-select">
+                    <i slot="suffix" class="el-input__icon el-icon-search" @click="searchViewData2()"></i>
+                </el-input>
+            </div>
+        </div>
+        <div class="right-aside-table-con">
+            <el-table
+                    :data="tplAppViewTableData" height="500"
+                    style="width:100%"
+                    @selection-change="changeFun7">
+                <el-table-column
+                        type="selection"
+                >
+                </el-table-column>
+                <el-table-column
+                        prop="viewName"
+                        label="视图名称"
+                >
+                </el-table-column>
+                <el-table-column
+                        prop="viewCode"
+                        label="视图编号"
+                >
+                </el-table-column>
+                <el-table-column
+                        label="操作" width="80px">
+                    <template slot-scope="scope">
+                        <el-button type="text" class="btn-table" @click="deleteViewItem(scope.row)">
+                            移除
+                        </el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+        </div>
+    </el-dialog>
+    <!--视图配置结束-->
+
+    <jsp:include page="subprocess_list.jsp"></jsp:include>
+
 </div>
 <!--bootstrap-treegrid-->
 <script src="${pageContext.request.contextPath}/ui-static/agcloud/framework/js-libs/bootstrap-table/bootstrap-table-treegrid.js" type="text/javascript"></script>
@@ -898,6 +1191,5 @@
 <script src="${pageContext.request.contextPath}/ui-static/kitymind/process/getPingyin.js" type="text/javascript"></script>
 <script src="${pageContext.request.contextPath}/ui-static/common/ztree/opus_om_org_ztree.js" type="text/javascript"></script>
 <script src="${pageContext.request.contextPath}/ui-static/common/ztree/bsc_dic_region_ztree.js" type="text/javascript"></script>
-<jsp:include page="subprocess_list.jsp"></jsp:include>
 </body>
 </html>

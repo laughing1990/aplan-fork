@@ -82,7 +82,7 @@
                     </div>
                 </div>
                 <div class="modal-footer" style="padding: 10px;height: 60px;">
-                    <button id="saveParPartform" type="submit" class="btn btn-info">保存</button>
+                    <button id="saveParPartform" type="submit" class="btn btn-info" style="display: ${curIsEditable?'':'none'}">保存</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
                 </div>
             </form>
