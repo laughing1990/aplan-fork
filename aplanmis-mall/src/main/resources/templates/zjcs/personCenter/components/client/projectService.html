@@ -114,7 +114,7 @@
                             :disabled="isLookServiceReault"></textarea>
                     </div>
                 </div>
-                <div class="form-item mt-2">
+                <!-- <div class="form-item mt-2">
                     <label><b class="red-cl">*</b>服务结果附件</label>
                     <div class="input-box">
                         <div class="upload-card contract-upload-card">
@@ -136,6 +136,98 @@
                             </ul>
                         </div>
                     </div>
+                </div> -->
+                <div class="form-item mt-2">
+                    <label><b class="red-cl">*</b>材料附件</label>
+                    <div class="input-box">
+                        <el-table class="" :data="matinstList" border tooltip-effect="dark" style="width: 100%;" stripe>
+                            <el-table-column type="index" width="50px" align="center" label="序号"></el-table-column>
+                            <el-table-column type="expand" width="15px" align="right">
+                                <template slot-scope="props">
+                                    <template
+                                        v-if="(props.row.certinstList&&props.row.certinstList.length)||(props.row.fileList&&props.row.fileList.length)">
+                                        <div class="mat-children"
+                                            v-if="props.row.certinstList&&props.row.certinstList.length">
+                                            <div v-for="item in props.row.certinstList" class="file-list-tab"
+                                                :key="item.fileId">
+                                                <span style="position:relative;top:-1px;left:-3px;"><i
+                                                        class="ag ag-id-card"></i></span>
+                                                <span class="file-name">
+                                                    {{item.certFileList[0].fileName}}
+                                                </span>
+                                                <span v-if="props.row.matProp=='c'" style="color:#AFB2C1;">
+                                                    （{{item.certFileList[0].createrName}}于{{formatDate(item.certFileList[0].updateTime)}}关联）
+                                                </span>
+                                                <span class="file-icon-btn" style="margin-left:20px;">
+                                                    <span title="查验" v-if="props.row.matProp=='c'"
+                                                        class="el-icon-search"
+                                                        @click="checkId(item.certFileList[0])"></span>
+                                                    <span title="解除关联" class="el-icon-delete"
+                                                        @click="disassociation(item.certFileList[0],item)"></span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="mat-children" v-if="props.row.fileList&&props.row.fileList.length">
+                                            <div v-for="item in props.row.fileList" class="file-list-tab"
+                                                :key="item.fileId">
+                                                <span class="file-name">
+                                                    <span class="icon ag"
+                                                        :style="{color:getIconColor(getFileType(item.fileName)), fontSize: '20px'}"
+                                                        :class="'ag-filetype-'+getFileType(item.fileName)"></span>
+                                                    {{item.fileName}}
+                                                </span>
+                                                <span style="color:#AFB2C1;">
+                                                    （{{item.createrName}}于{{formatDate(item.updateTime)}}上传）
+                                                </span>
+                                                <span class="file-icon-btn" style="margin-left:20px;">
+                                                    <span title="预览" class="el-icon-search"
+                                                        @click="filePreview(item)"></span>
+                                                    <span title="下载" class="el-icon-download"
+                                                        @click="downOneFile(item)"></span>
+                                                    <!-- <span title="删除" class="el-icon-delete" @click="delOneFile(item,props.row)"></span> -->
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <div v-else>
+                                        <div class="mat-children" style="text-indent: 2em; color:#AFB2C1">暂无附件</div>
+                                    </div>
+                                </template>
+                            </el-table-column>
+                            <el-table-column class-name="meterial-col" prop="matName" label="材料名称" align="left">
+                                <template slot-scope="scope">
+                                    {{scope.row.matName}}
+                                    <i v-if="scope.row.matProp=='c'&&scope.row.certFileList&&scope.row.certFileList.length"
+                                        class="ag ag-id-card"></i>
+                                </template>
+                            </el-table-column>
+                            <!--      <el-table-column prop="matFrom" label="文件来源" align="center" width="120px">-->
+                            <!--        <template slot-scope="scope">{{$options.filters.dicCodeItem(scope.row.matFrom)}}</template>-->
+                            <!--      </el-table-column>-->
+                            <el-table-column prop="realPaperCount" label="纸质原件（应收/已收）" align="center" width="180px"
+                                :formatter="formDueToZero"></el-table-column>
+                            <el-table-column prop="realCopyCount" label="复印件（应收/已收）" align="center" width="160px"
+                                :formatter="formaterCopyToZero"></el-table-column>
+                            <el-table-column prop="attCount" label="电子件" width="170px">
+                                <template slot-scope="scope">
+                                    <div class="c-f">
+                                        <el-upload style="float: left;height:25px;" action="/posts"
+                                            :show-file-list="false" :http-request="handleUploadFile">
+                                            <span class="mat-table-btn" @click="clickUpload(scope.row)">上传</span>
+                                        </el-upload>
+                                        <span class="mat-ope-line"></span>
+                                        <!-- <span class="mat-table-btn" @click="openMatLibDialog(scope.row)">材料库</span>
+                                    <span class="mat-ope-line" v-if="scope.row.matProp=='c'"></span>
+                                    <span class="mat-table-btn" v-if="scope.row.matProp=='c'"
+                                        @click="openIdLibDialog(scope.row)">证照库</span>
+                                    <span class="mat-ope-line" v-if="scope.row.matProp=='f'"></span>
+                                    <span class="mat-table-btn" v-if="scope.row.matProp=='f'"
+                                        @click="openMatFormDialog(scope.row)">填写</span> -->
+                                    </div>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -145,6 +237,8 @@
         </div>
     </div>
 </div>
+<script src="../../../static/zjcs/personCenter/js/ip.js" th:src="@{/zjcs/personCenter/js/ip.js}"
+    type="text/javascript"></script>
 <script>
     function add0(m) {
         return m < 10 ? '0' + m : m
@@ -216,6 +310,8 @@
                 bscAttForms: [],
                 // 是否是查看服务结果
                 isLookServiceReault: false,
+
+                matinstList: [],
             }
         },
         methods: {
@@ -287,6 +383,8 @@
                     memo: '', //备注                
                 };
                 ts.uploadTime = (new Date()).getTime();
+
+                this.getProjectDetail(row);
             },
 
             // 编辑服务结果
@@ -295,7 +393,9 @@
                 ts.isProjectServiceDetail = true;
                 ts.projectServiceDetailEditFlag = true; //当前为编辑合服务结果
                 ts.curHandelRow = JSON.parse(JSON.stringify(row));
-                ts.fetchServiceResultEditData(row);
+                // ts.fetchServiceResultEditData(row);
+
+                this.getProjectDetail(row);
             },
             // 编辑时，获取上次的服务结果
             fetchServiceResultEditData: function (row) {
@@ -331,8 +431,10 @@
             lookServiceresult: function (row) {
                 this.isProjectServiceDetail = true;
                 this.curHandelRow = JSON.parse(JSON.stringify(row));
-                this.fetchServiceResultEditData(row);
+                // this.fetchServiceResultEditData(row);
                 this.isLookServiceReault = true;
+
+                this.getProjectDetail(row);
             },
 
             // 校验必填字段
@@ -413,7 +515,89 @@
                 })
             },
 
+            // 编辑或上传服务结果时获取详情数据
+            getProjectDetail: function (row) {
+                var ts = this;
+                var params = {
+                    projPurchaseId: row.projPurchaseId,
+                    unitBiddingId: row.unitBiddingId
+                };
+                request('', {
+                    url: ctx + 'supermarket/result/getProjPurchaseMatinstList',
+                    type: 'get',
+                    data: params
+                }, function (res) {                    
+                    if (res.success) {
+                        
+                    } else {
+                        ts.$message({
+                            message: '加载失败',
+                            type: 'error'
+                        });
+                    }
+                }, function (msg) {
+                    ts.$message({
+                        message: '加载失败',
+                        type: 'error'
+                    });
+                });
+            },
 
+            // 查验电子证照
+            checkId: function (row) {
+                var vm = this;
+                vm.pageLoading = true;
+                request('', {
+                    url: ctx + 'aea/cert/getViewLicenseURL.do',
+                    type: 'get',
+                    data: { authCode: row.fileId },
+                }, function (res) {
+                    vm.pageLoading = false;
+                    if (res.success) {
+                        window.open(res.content);
+                    } else {
+                        vm.$message.error(res.message || '查看证照失败');
+                    }
+                }, function () {
+                    vm.pageLoading = false;
+                    vm.$message.error('查看证照失败');
+                });
+            },
+            // 解除关联
+            disassociation: function (data, matData) {
+                var _that = this;
+                var vm = this;
+                this.$confirm('此操作将解除关联该证照, 是否继续?', '解除关联', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning',
+                }).then(function (obj) {
+                    ensureDelete();
+                }).catch(function () {
+                });
+
+                function ensureDelete() {
+                    vm.pageLoading = true;
+                    request('', {
+                        url: ctx + 'rest/approve/matinst/unbindCertinst',
+                        type: 'post',
+                        data: {
+                            matinstId: matData.certMatinstId,
+                        },
+                    }, function (res) {
+                        vm.pageLoading = false;
+                        if (res.success) {
+                            vm.$message.success('已解除关联');
+                            vm.getMatList();
+                        } else {
+                            vm.$message.error(res.message || '解除关联失败')
+                        }
+                    }, function (msg) {
+                        vm.pageLoading = false;
+                        vm.$message.error('解除关联失败');
+                    });
+                }
+            },
             // 附件相关
             // 附件上传--before
             enclosureBeforeUpload: function (file) {
@@ -515,6 +699,99 @@
             // 附件下载
             downloadContractEnclosure: function (obj) {
                 window.open(ctx + 'supermarket/purchase/downloadAttachment/' + obj.detailId);
+            },
+
+            // icon 字体文件颜色
+            getIconColor: function (type) {
+                return __STATIC.getIconColor(type || "DEFAULT");
+            },
+            // 获取文件后缀
+            getFileType: function (fileName) {
+                var index1 = fileName.lastIndexOf(".");
+                var index2 = fileName.length;
+                var suffix = fileName.substring(index1 + 1, index2);//后缀名
+                if (suffix == 'docx') {
+                    suffix = 'doc';
+                }
+                return suffix;
+            },
+            // 预览电子件 必须要有detailId
+            filePreview: function (data, visibleKey) {
+                if (!data.detailId) {
+                    data.detailId = data.fileId;
+                } // 设置detailId
+                if (!data.attFormat) {
+                    data.attFormat = data.fileType;
+                } // 文件类型
+                data.attFormat = (data.attFormat + '').toLowerCase();
+                if (__STATIC.allowPreType[data.attFormat]) {
+                    return this.preFile(data, visibleKey);
+                } // 预览pdf、doc等
+                // 预览图片等
+                var detailId = data.detailId;
+                var flashAttributes = '';
+                var tempwindow = window.open('_blank'); // 先打开页面
+                tempwindow.location = ctx + 'rest/mats/att/preview?detailId=' + detailId + '&flashAttributes=' + flashAttributes;
+            },
+            //下载单个附件
+            downOneFile: function (data) {
+                window.open(ctx + 'previewPdf/downLoadPdf?detailId=' + data.fileId, '_blank');
+            },
+            formDueToZero: function (row) {
+                var duePaperCount = row.duePaperCount;
+                var realPaperCount = row.realPaperCount;
+                if (!duePaperCount) {
+                    duePaperCount = 0;
+
+                }
+                if (!realPaperCount) {
+                    realPaperCount = 0
+                }
+                return duePaperCount + '/' + realPaperCount;
+            },
+            formaterCopyToZero: function (row) {
+                var dueCopyCount = row.dueCopyCount;
+                var realCopyCount = row.realCopyCount;
+                if (!dueCopyCount) {
+                    dueCopyCount = 0;
+
+                }
+                if (!realCopyCount) {
+                    realCopyCount = 0
+                }
+                return dueCopyCount + '/' + realCopyCount;
+            },
+            // 处理上传文件
+            handleUploadFile: function (file) {
+                var vm = this;
+                var _this = this;
+                var formData = new FormData();
+                formData.append('file', file.file);
+                if (vm.currentUploadRow.attMatinstId) {
+                    formData.append('matinstId', vm.currentUploadRow.attMatinstId);
+                } else {
+                    formData.append('applyinstId', vm.applyinstId);
+                    formData.append('matId', vm.currentUploadRow.matId);
+                }
+                vm.pageLoading = true;
+                axios.post(ctx + 'rest/approve/matinst/uploadAtt', formData).then(function (res) {
+                    if (res.data && res.data.success) {
+                        _this.$message.success('上传成功');
+                        vm.getMatList();
+                    } else {
+                        vm.pageLoading = false;
+                        _this.$message.error(res.message || '上传失败');
+                    }
+                }).catch(function (e) {
+                    vm.pageLoading = false;
+                    _this.$message.error('上传失败');
+                }).finally(function () {
+                })
+            },
+            // 点击上传文件按钮，记录点击的哪条数据
+            clickUpload: function (row) {
+                var vm = this;
+                vm.currentUploadRow = row;
             },
         },
         mounted: function () {
