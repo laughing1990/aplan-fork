@@ -1,5 +1,6 @@
 package com.augurit.aplanmis.mall.userCenter.controller;
 
+import com.augurit.agcloud.bsc.domain.BscAttFileAndDir;
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.agcloud.framework.util.StringUtils;
@@ -127,7 +128,7 @@ public class RestFileController {
     public ResultForm getAttFiles(@PathVariable String matinstId,HttpServletRequest request) throws Exception {
         if ("null".equalsIgnoreCase(matinstId) || "undefined".equalsIgnoreCase(matinstId) || StringUtils.isBlank(matinstId))
             return new ContentResultForm<>(true, new ArrayList<>());
-        if (!restFileService.isMatBelong(matinstId,request)) return new ResultForm(false,"查询出错");
+        if (!restFileService.isMatBelong(matinstId,request)) return new ContentResultForm<>(true,new ArrayList<BscAttFileAndDir>());
         return new ContentResultForm<>(true, restFileService.getAttFiles(matinstId));
     }
 
