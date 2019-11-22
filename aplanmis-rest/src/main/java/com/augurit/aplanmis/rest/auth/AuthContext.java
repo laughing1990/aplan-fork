@@ -26,6 +26,10 @@ public final class AuthContext {
         return getCurrentUser().getUnitInfoName();
     }
 
+    public static String getUnifiedSocialCreditCode() {
+        return getCurrentUser().getUnifiedSocialCreditCode();
+    }
+
     public static String getCurrentUnitInfoId() {
         return getCurrentUser().getUnitInfoId();
     }

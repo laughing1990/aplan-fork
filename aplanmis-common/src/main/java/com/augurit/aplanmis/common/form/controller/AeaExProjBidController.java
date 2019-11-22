@@ -149,20 +149,16 @@ public class AeaExProjBidController {
                     List<AeaUnitProj> aeaUnitProjNewList = new ArrayList<AeaUnitProj>();
                     //中标单位信息
                     List<AeaUnitInfo> winBidUnits = aeaExProjBidVo.getWinBidUnits();
-                    aeaExProjBidService.saveOrUpdateUnitInfo(aeaExProjBidVo, winBidUnits, GDUnitType.CONTRACTING_UNIT.getValue(), aeaUnitProjNewList);
+                    aeaExProjBidService.saveOrUpdateUnitInfo(aeaExProjBidVo, winBidUnits, GDUnitType.CONTRACTING_UNIT.getValue());
 
                     //招商代理机构信息
                     List<AeaUnitInfo> agencyUnits = aeaExProjBidVo.getAgencyUnits();
-                    aeaExProjBidService.saveOrUpdateUnitInfo(aeaExProjBidVo, agencyUnits, GDUnitType.BIDDING_AGENCY.getValue(), aeaUnitProjNewList);
+                    aeaExProjBidService.saveOrUpdateUnitInfo(aeaExProjBidVo, agencyUnits, GDUnitType.BIDDING_AGENCY.getValue());
 
                     //造价咨询单位信息
                     List<AeaUnitInfo> costUnits = aeaExProjBidVo.getCostUnits();
-                    aeaExProjBidService.saveOrUpdateUnitInfo(aeaExProjBidVo, costUnits, GDUnitType.COST_CONSULTING.getValue(), aeaUnitProjNewList);
+                    aeaExProjBidService.saveOrUpdateUnitInfo(aeaExProjBidVo, costUnits, GDUnitType.COST_CONSULTING.getValue());
 
-                    //新增保存项目与单位关联表信息
-                    if (!aeaUnitProjNewList.isEmpty()) {
-                        aeaUnitInfoService.batchInserAeaUnitProj(aeaUnitProjNewList);
-                    }
 
                     resultForm.setSuccess(true);
                     resultForm.setMessage("保存成功！");

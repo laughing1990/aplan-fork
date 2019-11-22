@@ -13,6 +13,8 @@ public class AuthUser {
 
     private String unitInfoId;
 
+    private String unifiedSocialCreditCode;
+
     private String unitInfoName;
 
     private String rootOrgId;

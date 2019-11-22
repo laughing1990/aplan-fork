@@ -34,5 +34,5 @@ public interface AeaExProjBidService {
     public void delUnitProjInfo(String projId,List<String> unitTypes,String isOwner) throws Exception;
 
 
-    public void saveOrUpdateUnitInfo(AeaExProjBidVo aeaExProjBidVo, List<AeaUnitInfo> aeaUnitInfos, String unitType, List<AeaUnitProj> aeaUnitProjNewList) throws Exception;
+    public void saveOrUpdateUnitInfo(AeaExProjBidVo aeaExProjBidVo, List<AeaUnitInfo> aeaUnitInfos, String unitType) throws Exception;
 }
