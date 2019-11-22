@@ -975,11 +975,12 @@ public class OfficialDocumentService {
     public List<AeaItemMat> getItemInOfficeMat(String applyinstId, String iteminstId) throws Exception {
         List<AeaItemMat> result = new ArrayList<>();
         List<AeaHiIteminst> aeaHiIteminstList = new ArrayList<>();
-        if (StringUtils.isBlank(iteminstId)) {
+        if (StringUtils.isBlank(iteminstId) && "null".equals(iteminstId)) {
             aeaHiIteminstList = aeaHiIteminstMapper.getAeaHiIteminstListByApplyinstId(applyinstId);
         } else {
             AeaHiIteminst iteminst = aeaHiIteminstMapper.getAeaHiIteminstById(iteminstId);
-            aeaHiIteminstList.add(iteminst);
+            if (iteminst != null)
+                aeaHiIteminstList.add(iteminst);
         }
         if (aeaHiIteminstList.size() > 0) {
             String[] itemVerIds = new String[aeaHiIteminstList.size()];
