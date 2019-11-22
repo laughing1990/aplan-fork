@@ -330,7 +330,7 @@
                             <i class="la la-gear"></i>
                         </span>
                         <h2 class="m-portlet__head-text">
-                            <span style="font-weight: bold;">扩展表单前置检测</span>
+                            <span style="font-weight: bold;">扩展表单信息前置检测</span>
                         </h2>
                     </div>
                 </div>
@@ -394,7 +394,7 @@
                 <div class="m-form m-form--label-align-right m--margin-bottom-5">
                     <div class="row" style="margin: 0px;">
                         <div class="col-md-7"style="text-align: left;">
-                            <button type="button" class="btn btn-info" onclick="batchImprotParFrontStage();">批量导入</button>
+                            <button type="button" class="btn btn-info" onclick="batchImprotParFrontStage();">导入主/辅线</button>
                             <button type="button" class="btn btn-info" onclick="sortParFrontStage();">排序</button>
                             <button type="button" class="btn btn-secondary" onclick="batchDelParFrontStage();">删除</button>
                         </div>
