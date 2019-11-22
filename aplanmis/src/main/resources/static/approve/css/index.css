@@ -2350,7 +2350,16 @@ input[type="number"] {
 .process-dia-btn-u:hover{
     opacity: 0.7;
 }
-
+.form-el-tabs .el-tabs__nav-scroll{
+    padding: 0px;
+}
+.form-el-tabs .el-tabs__item{
+    max-width: 150px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    word-wrap: normal;
+}
 
 
 

@@ -294,6 +294,7 @@ public class AeaImServiceResultServiceImpl implements AeaImServiceResultService 
             result.setServiceResultId(UUID.randomUUID().toString());
             result.setCreater(SecurityContext.getCurrentUserName());
             result.setCreateTime(new Date());
+            result.setUploadTime(new Date());
             aeaImServiceResultMapper.insertAeaImServiceResult(result);
         } else {
             //更新

@@ -859,7 +859,6 @@ public class RestBpmTaskFrontController {
         if(StringUtils.isBlank(taskId)||StringUtils.isBlank(eventName))
             return new ResultForm(false,"任务ID及触发事件名称参数不能为空！");
 
-        bpmTaskFrontService.triggerSubFlow(taskId,eventName);
-        return new ResultForm(true,"子流程触发成功！");
+        return bpmTaskFrontService.triggerSubFlow(taskId,eventName);
     }
 }
