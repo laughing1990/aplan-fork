@@ -178,6 +178,9 @@ public class RestSpecialRrocedureService {
         specialVo.setModifier(uid);
         specialVo.setModifyTime(insertDate);
         specialVo.setRootOrgId(SecurityContext.getCurrentOrgId());
+        Date specialDueTime = specialVo.getSpecialDueTime();
+        long l = specialDueTime.getTime() + (24 * 60 * 60 - 1) * 1000;
+        specialVo.setSpecialDueTime(new Date(l));
         if(isApproved){
             specialVo.setSpecialState(ItemStatus.SPECIFIC_PROC_START.getValue());
         }else {
@@ -254,7 +257,7 @@ public class RestSpecialRrocedureService {
             special.setMoney(specialVo.getMoney());
             special.setSpecialResult(specialVo.getSpecialResult());
             special.setOpsUserName(specialVo.getOpsUserName());
-            special.setOpsTime(specialVo.getOpsTime());
+            special.setOpsTime(new Date());
             itemSpecialMapper.updateAeaHiItemSpecial(special);
 
             //找到最新的那条特殊程序开始记录

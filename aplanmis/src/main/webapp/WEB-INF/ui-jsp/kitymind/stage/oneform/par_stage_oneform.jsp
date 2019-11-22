@@ -195,6 +195,12 @@
 <!-- 编辑总表 -->
 <%@include file="aedit_par_oneform.jsp"%>
 
+<!-- 新增编辑扩展表 -->
+<%@include file="aedit_part_form.jsp"%>
+
+<!-- 新增编辑开发表单 -->
+<%@include file="add_dev_form.jsp" %>
+
 <!-- 导入总表 -->
 <%@include file="par_import_oneform.jsp"%>
 
@@ -203,12 +209,6 @@
 
 <!-- 事项字表排序 -->
 <%@include file="par_stage_item_sort.jsp"%>
-
-<!-- 新增编辑扩展表 -->
-<%@include file="aedit_part_form.jsp"%>
-
-<!-- 新增编辑开发表单 -->
-<%@include file="add_dev_form.jsp" %>
 
 <!-- 设置EL表达式 -->
 <%@include file="../../item/detail/select_meta_db_tbcol_ztree.jsp"%>
