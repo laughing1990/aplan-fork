@@ -523,6 +523,8 @@ var vm = new Vue({
       },
       // 中介事项审批
       isZJItem: false, // 是否为中介事项
+      smartFormInfo: [],
+      processDialogLoading: false,
     }
   },
   filters: {
@@ -1912,6 +1914,50 @@ var vm = new Vue({
       });
       vm.lTabsData = lTabsData;
       if (vm.isShowOneForm == '1' && !vm.isZJItem) {
+        // request('', {
+        //   url: ctx + 'rest/oneform/common/getListForm4StageOneForm',
+        //   type: 'get',
+        //   data: {
+        //     // applyinstId: vm.masterEntityKey,
+        //     // stageId: vm.masterEntityKey,
+        //     // projInfoId: vm.masterEntityKey,
+        //     applyinstId: 'fcf9d937-f670-4871-a430-34b01cafde9b',
+        //     stageId: 'f39985ed-9119-444f-b744-4167762a3872',
+        //     projInfoId: '347db5f9-f55f-44eb-9d1a-983ca263e8c4',
+        //     showBasicButton: false,
+        //     includePlatformResource: false,
+        //   },
+        // }, function(res){
+        //   if (res.success){
+        //     res.content.forEach(function(u, index){
+        //       if (u.smartForm){
+        //         u.formUrl = u.formUrl.replace('showBasicButton=true', 'showBasicButton=false')
+        //         getHtml(u, index);
+        //       } else {
+        //         u.formUrl += '&showBasicButton=false';
+        //       }
+        //     });
+        //     vm.smartFormInfo = res.content;
+        //   } else {
+        //     vm.$message.error(res.content || '获取一张表单信息失败');
+        //   }
+        //   function getHtml(data, index){
+        //     request('', {
+        //       url: ctx + data.formUrl,
+        //       type: 'get',
+        //     }, function(res) {
+        //       if (res.success) {
+        //         $('#smartFormBox_'+index).html(res.content);
+        //       } else {
+        //         vm.$message.error('获取只能表单数据失败');
+        //       }
+        //     }, function(){
+        //       vm.$message.error('获取只能表单数据失败');
+        //     })
+        //   }
+        // }, function (){
+        //   vm.$message.error('获取一张表单信息失败');
+        // });
         request('', {
           url: oneFromSrc,
           type: 'get',
@@ -1931,7 +1977,7 @@ var vm = new Vue({
             }, function (res) {
               vm.$message.error(res.message);
               $('#oneForm').html(res.message);
-              
+
             });
           }
         }, function () {
