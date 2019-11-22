@@ -639,7 +639,7 @@ public class ApproveService {
 
         String itemVerIds = null;
 
-        if (StringUtils.isNotBlank(iteminstId)) {
+        if (StringUtils.isNotBlank(iteminstId) && !"null".equals(iteminstId)) {
             AeaHiIteminst iteminst = aeaHiIteminstService.getAeaHiIteminstById(iteminstId);
             if (iteminst == null) throw new Exception("找不到事项实例！");
             itemVerIds = iteminst.getItemVerId();
