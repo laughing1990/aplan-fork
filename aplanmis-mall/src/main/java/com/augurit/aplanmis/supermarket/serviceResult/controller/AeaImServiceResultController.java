@@ -191,7 +191,9 @@ public class AeaImServiceResultController {
         //查询已经存在的服务结果，用来反显
         AeaImServiceResult serviceResult = aeaImServiceResultMapper.getServiceResultByProjPurchaseId(projPurchaseId);
         ServiceResultVo vo = new ServiceResultVo();
-        BeanUtils.copyProperties(serviceResult, vo);
+        if (null != serviceResult) {
+            BeanUtils.copyProperties(serviceResult, vo);
+        }
         List<MatinstVo> vos = aeaImServiceResultService.getProjPurchaseMatinstList(projPurchaseId);
         Map<String, Object> map = new HashMap<>();
         map.put("serviceResult", vo);
