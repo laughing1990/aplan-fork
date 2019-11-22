@@ -1600,7 +1600,7 @@ var vm = new Vue({
       
       function callback() {
         vm.busRecordId = this.getUrlParam('busRecordId');
-        if (vm.busRecordId != 'undefined' && vm.busRecordId != 'null' && vm.busRecordId != '') {
+        if (vm.busRecordId != 'undefined' && vm.busRecordId != 'null' && vm.busRecordId != null && vm.busRecordId != '') {
           vm.iteminstId = vm.busRecordId;
         }
         vm.attLink.recordId = vm.taskId;
