@@ -50,6 +50,10 @@ public class SpotRegistrationItemVo {
     private String itemProperty;
     @ApiModelProperty(name = "procedureName", value = "行政事项名称")
     private String procedureName;
+    @ApiModelProperty(value = "法定办结时限")
+    private Double anticipateDay;
+    @ApiModelProperty(value = "法定办结时限单位")
+    private String anticipateType;
 
     public static SpotRegistrationItemVo fromAeaItemBasic(AeaItemBasic aeaItemBasic, String serviceObject) {
         SpotRegistrationItemVo vo = new SpotRegistrationItemVo();
@@ -65,6 +69,8 @@ public class SpotRegistrationItemVo {
         vo.setRegionName(aeaItemBasic.getRegionName());
         vo.setIsCatalog(aeaItemBasic.getIsCatalog());
         vo.setItemNature(aeaItemBasic.getItemNature());
+        vo.setAnticipateDay(aeaItemBasic.getAnticipateDay());
+        vo.setAnticipateType(aeaItemBasic.getAnticipateType());
         //增加办理时限
         vo.setBjType(aeaItemBasic.getBjType());
         vo.setDueNum(aeaItemBasic.getDueNum());
