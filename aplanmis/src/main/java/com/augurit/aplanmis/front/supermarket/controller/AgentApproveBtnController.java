@@ -202,7 +202,7 @@ public class AgentApproveBtnController {
         AeaHiApplyinst applyinst = aeaHiApplyinstMapper.getAeaHiApplyinstById(applyinstId);
         if (null == applyinst) throw new Exception("can not find applyinst info");
         String applyinstCode = applyinst.getApplyinstCode();
-        PurchaseProjVo purchaseProj = aeaImProjPurchaseMapper.getProjPurchaseInfoByApplyinstCode(applyinstCode);
+        PurchaseProjVo purchaseProj = aeaImProjPurchaseMapper.getProjPurchaseInfoByApplyinstCode(applyinstCode, null);
         if (null == purchaseProj) throw new Exception("can not find purchase info");
         return purchaseProj;
     }

@@ -3,7 +3,9 @@ package com.augurit.aplanmis.supermarket.projPurchase.service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.augurit.agcloud.bsc.domain.BscAttForm;
+import com.augurit.agcloud.bsc.domain.BscDicCodeItem;
 import com.augurit.agcloud.bsc.mapper.BscAttMapper;
+import com.augurit.agcloud.bsc.mapper.BscDicCodeMapper;
 import com.augurit.agcloud.bsc.util.UuidUtil;
 import com.augurit.agcloud.framework.constant.Status;
 import com.augurit.agcloud.framework.exception.InvalidParameterException;
@@ -22,6 +24,7 @@ import com.augurit.aplanmis.common.utils.BusinessUtils;
 import com.augurit.aplanmis.common.utils.FileUtils;
 import com.augurit.aplanmis.common.utils.SessionUtil;
 import com.augurit.aplanmis.common.vo.*;
+import com.augurit.aplanmis.common.vo.purchase.PurchaseProjVo;
 import com.augurit.aplanmis.supermarket.apply.service.RestImApplyService;
 import com.augurit.aplanmis.supermarket.apply.vo.ApplyinstResult;
 import com.augurit.aplanmis.supermarket.apply.vo.ImItemApplyData;
@@ -29,6 +32,7 @@ import com.augurit.aplanmis.supermarket.apply.vo.ImPurchaseData;
 import com.augurit.aplanmis.supermarket.projPurchase.vo.OwnerIndexData;
 import com.augurit.aplanmis.supermarket.projPurchase.vo.SelectedQualMajorRequire;
 import com.augurit.aplanmis.supermarket.projPurchase.vo.SelectedQualVo;
+import com.augurit.aplanmis.supermarket.projPurchase.vo.purchase.PurchaseDetailVo;
 import com.augurit.aplanmis.supermarket.projPurchase.vo.purchase.ShowProjPurchaseVo;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
@@ -42,6 +46,7 @@ import org.springframework.web.multipart.support.StandardMultipartHttpServletReq
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -86,9 +91,6 @@ public class ProjPurchaseService {
     private AeaImUnitBiddingMapper aeaImUnitBiddingMapper;
 
     @Autowired
-    private AeaImServiceEvaluationMapper aeaImServiceEvaluationMapper;
-
-    @Autowired
     private AeaLinkmanInfoMapper aeaLinkmanInfoMapper;
 
     @Autowired
@@ -101,7 +103,8 @@ public class ProjPurchaseService {
     private AeaImPurchaseinstMapper aeaImPurchaseinstMapper;
     @Autowired
     private AeaImServiceLinkmanMapper aeaImServiceLinkmanMapper;
-
+    @Autowired
+    private BscDicCodeMapper bscDicCodeMapper;
     @Value("${dg.sso.access.platform.org.top-org-id}")
     protected String topOrgId;
 
@@ -1384,7 +1387,8 @@ public class ProjPurchaseService {
         aeaImProjPurchaseMapper.updateAeaImProjPurchase(aeaImProjPurchase);
     }
 
-
+    @Autowired
+    private AeaHiIteminstMapper aeaHiIteminstMapper;
     /**
      * 发布项目采购需求并启动流程---唐山模式
      *
@@ -1490,5 +1494,58 @@ public class ProjPurchaseService {
         if (!aeaProjInfoCondList.isEmpty()) {
             throw new RuntimeException("项目名称已存在:" + purchaseVo.getSaveAeaProjInfoVo().getProjName());
         }
+    }
+
+    @Autowired
+    private AeaHiApplyinstMapper aeaHiApplyinstMapper;
+
+    public PurchaseDetailVo getPurchaseDetail(String projPurchaseId) throws Exception {
+        PurchaseDetailVo form = new PurchaseDetailVo();
+//查询采购项目,中介服务，机构要求等 信息
+        PurchaseProjVo purchaseProj = aeaImProjPurchaseMapper.getProjPurchaseInfoByApplyinstCode(null, projPurchaseId);
+        String isApproveProj = purchaseProj.getIsApproveProj();
+        if (StringUtils.isNotBlank(isApproveProj) && "1".equals(isApproveProj)) {
+            //查询关联的投资审批项目信息
+            AeaProjInfo parentProj = aeaProjInfoMapper.findParentProj(purchaseProj.getProjInfoId());
+            form.setAeaProjInfo(parentProj);
+        }
+        //查询资质信息
+        String unitRequireId = purchaseProj.getUnitRequireId();
+        String isQualRequire = purchaseProj.getIsQualRequire();
+        if (StringUtils.isNotBlank(unitRequireId) && StringUtils.isNotBlank(isQualRequire) && "1".equals(isQualRequire)) {
+            List<AeaImMajorQualVo> aeaImMajorQualVos = aeaImMajorQualMapper.listAeaImMajorQualByUnitRequireId(unitRequireId);
+            String collect = aeaImMajorQualVos.stream().map((major -> {
+                String majorName = major.getMajorName();
+                String qualName = major.getQualName();
+                String qualLevelName = major.getQualLevelName();
+                return qualName + "（" + qualLevelName + "）";
+            })).collect(Collectors.joining(","));
+            purchaseProj.setQualRequire(collect);
+        } else {
+            purchaseProj.setQualRequire("无");
+        }
+        form.setPurchaseProj(purchaseProj);
+        AeaHiApplyinst applyinst = aeaHiApplyinstMapper.getAeaHiApplyinstByCode(purchaseProj.getApplyinstCode());
+        if (null == applyinst) throw new Exception("can not find applyisnt");
+        List<AeaHiIteminst> itemisntList = aeaHiIteminstMapper.getAeaHiIteminstListByApplyinstId(applyinst.getApplyinstId());
+        //中介事项信息
+        if (itemisntList.isEmpty()) throw new Exception("can not find iteminst info ");
+        AeaHiIteminst iteminst = itemisntList.get(0);
+        String itemProperty = iteminst.getItemProperty();//办件类型
+        String dueNumUnit = iteminst.getDueNumUnit();//办理时限单位
+        //设置事项办件类型
+        BscDicCodeItem item_property = bscDicCodeMapper.getItemByTypeCodeAndItemCodeAndOrgId("ITEM_PROPERTY", itemProperty, "012aa547-7104-418d-87cc-824f24f1a278");
+        if (null != item_property) {
+            iteminst.setItemProperty(item_property.getItemName());
+        }
+        //办理时限单位
+        BscDicCodeItem dunNumUnit = bscDicCodeMapper.getItemByTypeCodeAndItemCodeAndOrgId("ITEM_PROPERTY", dueNumUnit, "012aa547-7104-418d-87cc-824f24f1a278");
+        if (null != item_property) {
+            iteminst.setDueNumUnit(item_property.getItemName());
+        }
+        //服务对象
+
+        form.changeToIteminst(iteminst);
+        return form;
     }
 }
