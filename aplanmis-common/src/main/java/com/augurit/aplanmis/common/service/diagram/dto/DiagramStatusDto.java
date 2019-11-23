@@ -1,6 +1,7 @@
 package com.augurit.aplanmis.common.service.diagram.dto;
 
 import com.augurit.aplanmis.common.domain.AeaHiIteminst;
+import com.augurit.aplanmis.common.domain.AeaParStage;
 import com.augurit.aplanmis.common.service.diagram.component.DiagramItem;
 import com.augurit.aplanmis.common.service.diagram.component.DiagrameStage;
 import com.augurit.aplanmis.common.service.diagram.constant.HandleStatus;
@@ -61,6 +62,12 @@ public class DiagramStatusDto {
         @ApiModelProperty(value = "1 立项用地规划许可 2 立项用地规划许可 3 施工许可 4 竣工验收 5 并行推进")
         private String dybzspjdxh;
 
+        @ApiModelProperty(value = "法定办结时限")
+        private Double anticipateDay;
+
+        @ApiModelProperty(value = "法定办结时限单位")
+        private String anticipateType;
+
         @ApiModelProperty(value = "标准并联事项状态信息", notes = "标准并联事项状态信息， 列表")
         private Set<DiagramItemDto> diagramItemList;
 
@@ -86,6 +93,12 @@ public class DiagramStatusDto {
 
         @ApiModelProperty(value = "申报状态中文名称", dataType = "string", notes = "申报状态中文名称")
         private String statusName;
+
+        @ApiModelProperty(value = "法定办结时限")
+        private Double anticipateDay;
+
+        @ApiModelProperty(value = "法定办结时限单位")
+        private String anticipateType;
 
         @ApiModelProperty(value = "事项id", dataType = "string[]", notes = "事项id")
         private String itemIds;
@@ -131,7 +144,10 @@ public class DiagramStatusDto {
 
     public static DiagramStageDto build(DiagrameStage diagrameStage) {
         DiagramStageDto diagramStageDto = new DiagramStageDto();
-        diagramStageDto.setStageId(diagrameStage.getCurrentStage().getStageId());
+        AeaParStage currentStage = diagrameStage.getCurrentStage();
+        diagramStageDto.setStageId(currentStage.getStageId());
+        diagramStageDto.setAnticipateDay(currentStage.getAnticipateDay());
+        diagramStageDto.setAnticipateType(currentStage.getAnticipateType());
         diagramStageDto.setDybzspjdxh(diagrameStage.getCurrentStage().getDybzspjdxh());
 
         Set<DiagramItemDto> requiredItemDtos = diagrameStage.getParallelStageDiagramItem().getRequiredStageDiagramItems()
@@ -153,6 +169,8 @@ public class DiagramStatusDto {
         diagramItemDto.setItemId(diagramItem.getItemId());
         diagramItemDto.setStatusValue(diagramItem.getFinished().getValue());
         diagramItemDto.setStatusName(diagramItem.getFinished().getName());
+        diagramItemDto.setAnticipateDay(diagramItem.getAnticipateDay());
+        diagramItemDto.setAnticipateType(diagramItem.getAnticipateType());
         AeaHiIteminst hiIteminst = diagramItem.getAeaHiIteminst();
         diagramItemDto.setIsParallel(isParallel);
         if(hiIteminst != null){

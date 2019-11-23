@@ -69,13 +69,13 @@ public class AplanmisPageIndexController {
         return modelAndView;
     }
 
-    @GetMapping("/singleApplyIndex1/{itemVerId}")
+    /*@GetMapping("/singleApplyIndex1/{itemVerId}")
     @ApiOperation("菜单-单项申报页")
     public ModelAndView singleApplyIndex1(@PathVariable String itemVerId) {
         ModelAndView modelAndView = new ModelAndView("apply/singleIndex");
         modelAndView.addObject("itemVerId", itemVerId);
         return modelAndView;
-    }
+    }*/
 
     /**
      * 并联申报首页
