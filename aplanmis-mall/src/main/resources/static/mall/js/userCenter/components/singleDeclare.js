@@ -1800,6 +1800,14 @@ var module1 = new Vue({
         } else {
           this.declareStep = 2;
         }
+      }else if(!this.needOneForm && page == 4){
+        if (this.isNeedState != 1) {
+          this.declareStep = 2;
+        } else if (this.isNeedFrontCond != 1) {
+          this.declareStep = 1;
+        }else {
+          this.declareStep = 3;
+        }
       } else {
         this.declareStep = page;
       }
@@ -1807,7 +1815,7 @@ var module1 = new Vue({
     // 保存并根据阶段ID、情形ID集合、事项版本ID集合获取材料一单清列表数据
     saveAndGetMats: function () {
       var _that = this;
-      if(_that.needOneForm){
+      if(_that.needOneForm&&_that.declareStep<4){
         _that.declareStep = 4;
         return false;
       }
