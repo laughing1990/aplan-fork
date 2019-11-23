@@ -94,4 +94,19 @@
         delete from ETL_JOB_DETAIL_LOG
         where detail_log_id = #{id}
     </delete>
+
+    <select id="findEtlJobDetailLogByJobLogId" resultType="EtlJobDetailLog">
+        select
+        <include refid="allColumns"/>
+        from    ETL_JOB_DETAIL_LOG
+        where    job_log_id = #{jobLogId}
+    </select>
+
+    <delete id="batchDeleteEtlDetailJobLogByJobLogIds" parameterType="string">
+        delete from ETL_JOB_DETAIL_LOG
+        where job_log_id IN
+        <foreach collection="jobLogIds" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
 </mapper>

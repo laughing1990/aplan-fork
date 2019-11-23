@@ -1905,6 +1905,7 @@ var vm = new Vue({
         'masterEntityKey',
         'projectCode',
         'viewId',
+          'projInfoId',
       ];
       var oneFormIndex = -1;
       lTabsData.forEach(function (u, i) {

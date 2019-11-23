@@ -27,4 +27,6 @@ public interface EtlJobLogMapper {
     EtlJobLog getEtlJobLogById(@Param("id") String id);
 
     Long getAutoIncrement(@Param("dbName") String dbName);
+
+    void batchDeleteEtlJobLogByJobLogIds(@Param("jobLogIds") String[] jobLogIds);
 }

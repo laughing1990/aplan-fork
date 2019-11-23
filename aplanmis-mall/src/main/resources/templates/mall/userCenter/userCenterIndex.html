@@ -27,7 +27,7 @@
         </div>
         <section>
             <div class="my-pro-content clearfix">
-                <div class="my-pro-left">
+                <div class="my-pro-left" v-show="myProLeftShow">
                     <div class="user-company" id="leftMyInfo">
                         <p class="company-name">
                             <img th:src="@{/mall/images/userCenter/room-icon.png}" align="middle">
@@ -58,7 +58,7 @@
                     </div>
                 </div>
                 <transition name="el-fade-in-linear">
-                    <div class="my-pro-right floor" id="my-pro-right_m" style="min-height: 700px;padding-bottom: 30px;">
+                    <div class="my-pro-right floor" :class="myProLeftShow?'':'my-pro-right-full'" id="my-pro-right_m" style="min-height: 700px;padding-bottom: 30px;">
 
                     </div>
                 </transition>

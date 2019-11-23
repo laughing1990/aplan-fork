@@ -3,6 +3,7 @@ package com.augurit.aplanmis.data.exchange.service.aplanmis;
 import com.augurit.aplanmis.data.exchange.domain.aplanmis.EtlJobDetailLog;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -24,4 +25,6 @@ public interface EtlJobDetailLogService {
     EtlJobDetailLog getEtlJobDetailLogById(String id);
 
     List<EtlJobDetailLog> listEtlJobDetailLog(EtlJobDetailLog etlJobDetailLog);
+
+    List<EtlJobDetailLog> findEtlJobDetailLogByJobLogId(String jobLogId);
 }

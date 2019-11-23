@@ -36,33 +36,22 @@
             <if test="jobLogCode != null">
                 AND job_log_code = #{jobLogCode}
             </if>
-            <if test="readNum != null">
-                AND read_num = #{readNum}
-            </if>
-            <if test="writtenNum != null">
-                AND written_num = #{writtenNum}
-            </if>
-            <if test="errorNum != null">
-                AND error_num = #{errorNum}
-            </if>
-            <if test="solveNum != null">
-                AND solve_num = #{solveNum}
-            </if>
             <if test="startTime != null">
-                AND start_time = #{startTime}
+                AND end_time &gt;= #{startTime}
             </if>
             <if test="endTime != null">
-                AND end_time = #{endTime}
+                AND end_time &lt; #{endTime}
             </if>
-            <if test="createTime != null">
-                AND create_time = #{createTime}
+            <if test="isFilterEmpty != null and isFilterEmpty">
+                AND read_num IS NOT NULL AND read_num &gt; 0
             </if>
         </where>
+        order by end_time desc
     </select>
     <!--4 根据条件查询实体list,返回分页对象 -->
 
     <!--5 新增实体对象 -->
-    <insert id="insertEtlJobLog"  useGeneratedKeys="true" keyProperty="jobLogId" parameterType="EtlJobLog">
+    <insert id="insertEtlJobLog" useGeneratedKeys="true" keyProperty="jobLogId" parameterType="EtlJobLog">
         insert into ETL_JOB_LOG (
         job_log_code  ,read_num  ,written_num  ,error_num  ,solve_num ,start_time  ,end_time  ,create_time
             )  values  (
@@ -112,4 +101,12 @@
     <select id="getAutoIncrement" resultType="long">
         select auto_increment from information_schema.tables where table_schema=#{dbName} and table_name="ETL_JOB_LOG";
     </select>
+
+    <delete id="batchDeleteEtlJobLogByJobLogIds" parameterType="string">
+        delete from ETL_JOB_LOG
+        where job_log_id IN
+        <foreach collection="jobLogIds" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
 </mapper>

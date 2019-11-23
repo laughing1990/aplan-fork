@@ -1,5 +1,6 @@
 package com.augurit.aplanmis.data.exchange.domain.aplanmis;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -32,10 +33,12 @@ public class EtlJob implements Serializable {
      * 运行开始时间
      */
     @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     private java.util.Date startTime;
     /**
      * 运行结束时间
      */
     @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     private java.util.Date endTime;
 }

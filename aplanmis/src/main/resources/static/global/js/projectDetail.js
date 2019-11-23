@@ -91,7 +91,9 @@ var vm = new Vue({
         projQuestion: '', //存在问题
         projCreateUser: '', //创建人姓名
         projCreateMobile: '', //创建人电话
-        gcbm: '' //工程编码
+        gcbm: '', //工程编码
+        isAreaEstimate:'',//是否完成区域评估
+        isDesignSolution:'',//土地是否带设计方案
       },
       // 项目信息校验
       baseRules: {
@@ -366,6 +368,7 @@ var vm = new Vue({
       allDicItemListData: {
         XM_XZFQ: [],
       },
+      districtList: [],//行政区划
 
       // 行政分区级联-prop
       SetDistrictDept: {
@@ -463,6 +466,7 @@ var vm = new Vue({
         }
         _saveData.baseForm = JSON.parse(JSON.stringify(ts.baseForm));
         _saveData.baseForm.regionalism = _regionalism;
+        _saveData.baseForm.projectAddress = _saveData.baseForm.projectAddress?_saveData.baseForm.projectAddress.join(','):'';
         _saveData.baseForm = JSON.stringify(_saveData.baseForm);
         // console.log(_saveData)
         // return
@@ -535,6 +539,7 @@ var vm = new Vue({
         // this.agencyUnitList.push(JSON.parse(JSON.stringify(ts.agencyUnitForm)))
         this.curProjDetailIsEdit = false;
         this.fetchAllDicContent();
+        this.getDistrictList();
       } else {
         // 编辑的时候要先获取项目信息
         this.curProjDetailIsEdit = true;
@@ -557,6 +562,7 @@ var vm = new Vue({
         if (res.success) {
           ts.initProjDetailData(res.content);
           ts.fetchAllDicContent();
+          ts.getDistrictList();
         } else {
           ts.apiMessage(res.message, 'error')
         }
@@ -618,6 +624,8 @@ var vm = new Vue({
       }
       // console.log(this.buildUnitList)
 
+      //处理建设地点
+      if (!!ts.baseForm.projectAddress) ts.baseForm.projectAddress = ts.baseForm.projectAddress.split(',');
     },
 
     // 建设单位相关
@@ -779,7 +787,25 @@ var vm = new Vue({
 
       });
     },
-
+    // 根据顶级组织ID查询区划列表  rest/org/region/list
+    getDistrictList: function () {
+        var _that = this;
+        request('', {
+            url: ctx + 'rest/org/region/list',
+            type: 'get',
+        }, function (result) {
+            if(result.content){
+                _that.districtList = result.content;
+            }else {
+                _that.$message({
+                    message: '获取行政区划列表失败',
+                    type: 'error'
+                });
+            }
+        }, function (msg) {
+            alertMsg('', '网络加载失败！', '关闭', 'error', true);
+        })
+    },
 
     // 获取页面中所有select与radio待选项数据
     fetchAllDicContent: function () {

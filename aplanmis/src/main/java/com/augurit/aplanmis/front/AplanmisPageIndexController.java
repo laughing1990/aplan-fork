@@ -14,6 +14,7 @@ import com.augurit.aplanmis.common.service.instance.AeaHiIteminstService;
 import com.augurit.aplanmis.common.service.instance.AeaHiParStageinstService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -141,7 +142,7 @@ public class AplanmisPageIndexController {
          * itemId 指定事项的id
          * */
         @GetMapping("/urlStageOneForm.html")
-        public ResultForm urlStageOneForm(String masterEntityKey,boolean enableParamItem,String itemId, HttpServletRequest request, HttpServletResponse response) {
+        public ResultForm urlStageOneForm(String masterEntityKey,boolean enableParamItem,String itemId,String projInfoId, HttpServletRequest request, HttpServletResponse response) {
 //        String realUrl = request.getContextPath() + "/rest/oneform/common/renderHtmlFormContainer?";
         String realUrl = request.getContextPath() + "/rest/oneform/common/getListForm4StageOneForm?";
         String params = "";
@@ -165,10 +166,12 @@ public class AplanmisPageIndexController {
                     }
                 }
             }
+            if(StringUtils.isNotBlank(projInfoId)){
+                params+="&projInfoId="+projInfoId;
+            }
+            params+="&showBasicButton=false";
+            params+="&includePlatformResource=false";
             realUrl += params;
-            realUrl+="&showBasicButton=false";
-            realUrl+="&includePlatformResource=false";
-//            response.sendRedirect(realUrl);
             return new ContentResultForm(true, realUrl);
         } catch (Exception e) {
             e.printStackTrace();
