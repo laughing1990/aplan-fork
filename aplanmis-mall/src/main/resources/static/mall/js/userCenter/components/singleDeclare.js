@@ -73,8 +73,9 @@ var module1 = new Vue({
         { num: '1', name: '补全信息' },
         { num: '2', name: '前置条件' },
         { num: '3', name: '情形选择' },
-        { num: '4', name: '材料一单清' },
-        { num: '5', name: '完成申报' },
+        { num: '4', name: '一张表单' },
+        { num: '5', name: '材料一单清' },
+        { num: '6', name: '完成申报' },
       ],
       declareStepWidth: '', // 步骤类名
       isShowAll: false,  // 是否展示更多事项材料一单清
@@ -84,7 +85,7 @@ var module1 = new Vue({
       isNeedFrontCond: '1', // 是否需要前置条件 1是 0否
       isNeedState: '1', // 是否需要情形 1是 0否
       noNext: 0, // 前置条件是否可下一步
-
+      needOneForm: true, // 是否有一张表单
       projInfoDetail: {
         isAreaEstimate: '0',
         isDesignSolution: '0',
@@ -350,6 +351,7 @@ var module1 = new Vue({
       parallelApplyinstId: '', // 申报实例id
       preItemCheckPassed: true, // 前置检测是否通过
       preItemCheckkMsg: '', // 前置检测失败提示
+      formUrlList: [],
     }
   },
   created: function () {
@@ -1253,6 +1255,7 @@ var module1 = new Vue({
             _that.querySelentUnit(_that.aeaUnitList[0]);
           }
           _that.getPersonOrUnitBlackByBizId();
+          _that.getParallelApplyinstId(); // 获取一张表单
         } else {
           _that.$message({
             message: result.message ? result.message : '获取申报主体信息失败',
@@ -1465,7 +1468,9 @@ var module1 = new Vue({
                       // _that.declareStep = 3;
                       _that.getRootStateList();
                     } else {
+                      debugger
                       _that.saveAndGetMats();
+                      // _that.getParallelApplyinstId();
                     }
 
                     _that.smsInfoId = data.content.smsId;
@@ -1564,6 +1569,7 @@ var module1 = new Vue({
         this.getRootStateList();
       } else {
         this.saveAndGetMats();
+        // this.getParallelApplyinstId();
       }
     },
     // 根据事项id获取情形
@@ -1827,7 +1833,7 @@ var module1 = new Vue({
         ContentType: 'application/json',
         data: JSON.stringify(parmas)
       }, function (result) {
-        _that.declareStep = 4;
+        _that.declareStep = 5;
         _that.showFileListKey = [];
         result.content.map(function (item) {
           if (typeof item.childs == 'undefined' || item.childs == undefined) {
@@ -2289,7 +2295,7 @@ var module1 = new Vue({
           _that.progressIntervalStop = true;
           _that.progressStus = 'success';
           _that.progressDialogVisible = false;
-          _that.declareStep = 5;
+          _that.declareStep = 6;
           _that.applySuccessProjInfo = res.content;
           var nowDate = new Date();
           var yearstr = nowDate.getFullYear();
@@ -2500,7 +2506,11 @@ var module1 = new Vue({
           _that.loading = false;
           if (res.content) {
             _that.parallelApplyinstId = res.content;
-            _that.getOneFormrender3(_that.parallelApplyinstId,_stoFormId);
+            if(flag=='matForm'){
+              _that.getOneFormrender3(_that.parallelApplyinstId,_stoFormId);
+            }else {
+              _that.getOneFormList(); // 获取一张表单html
+            }
           }
         } else {
           _that.loading = false;
@@ -2509,6 +2519,57 @@ var module1 = new Vue({
             type: 'error'
           });
         }
+      })
+    },
+    // 根据阶段id查询关联的表单
+    getOneFormList: function () {
+      var _that = this;
+      var sFRenderConfig = '&showBasicButton=true&includePlatformResource=false';
+      request('', {
+        url: ctx + 'rest/oneform/common/getListForm4ItemOneForm?&projInfoId='+_that.projInfoId + '&itemId=' +_that.itemVerId+ '&'+ sFRenderConfig,
+        type: 'post',
+        data: {applyinstId: _that.parallelApplyinstId }
+      }, function (result) {
+        if (result.success) {
+          if(result.content==null || result.content.length==0){
+            _that.needOneForm = false;
+          }else {
+            _that.needOneForm = true;
+          }
+          result.content.map(function(item,index){
+            if(item.smartForm){
+              _that.getHtml(item,index)
+            }
+          });
+          _that.formUrlList = result.content;
+        }
+      }, function (res) {
+        // _that.$message({
+        //   message: '获取表单失败！',
+        //   type: 'error'
+        // });
+      })
+    },
+    // 获取一张表单HTML
+    getHtml: function(formItem,index){
+      var _that = this;
+      request('', {
+        url: ctx + formItem.formUrl,
+        type: 'get',
+      }, function (result) {
+        if (result.success) {
+          $('#formHtml_'+index).html(result.content)
+        }else {
+          _that.$message({
+            message: result.content?result.content:'获取智能表单失败！',
+            type: 'error'
+          });
+        }
+      },function(res){
+        _that.$message({
+          message: '获取智能表单失败！',
+          type: 'error'
+        });
       })
     },
     // 查看证照
