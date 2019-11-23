@@ -717,9 +717,12 @@ public class ReceivePDFTemplate {
             //二维码
             if (vo.getCertBuildQrcode() != null) {
                 Image img = Image.getInstance(vo.getCertBuildQrcode());
-                img.setAbsolutePosition(40, 0);
+                img.setAbsolutePosition(100, 90);
+                img.scaleToFit(130, 130);
                 img.scaleToFit(reader.getPageSize(1));//大小*/
-                under.addImage(img, 40, 0, 0, 40, 0, 0); //设置图片大小
+//                under.addImage(img, 40, 0, 0, 40, 0, 0); //设置图片大小
+                under.addImage(img);
+
             }
 
             if (null == print || !print) {
