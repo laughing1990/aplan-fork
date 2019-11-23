@@ -121,7 +121,7 @@ var vm = new Vue({
                 id: '',
             }, // 结果领取方式
             parallelThemeList: [], // 并联主题列表
-            activeNames: ['1', '2', '3', '4', '5', '6','7'], // el-collapse 默认展开列表
+            activeNames: ['1', '2', '3', '4', '5', '6','7', '8', '9', '10'], // el-collapse 默认展开列表
             ctx: ctx,
             verticalTabData: [ // 左侧纵向导航数据
                 {
@@ -137,7 +137,11 @@ var vm = new Vue({
                 }, {
                     label: '事项情形',
                     target: 'applyStage'
-                }, {
+                },
+              {
+                label: '一张表单',
+                target: 'oneForm'
+              }, {
                     label: '材料一单清',
                     target: 'matsList'
                 }, {
@@ -567,7 +571,9 @@ var vm = new Vue({
           IsJustApplyinst: 0, //
           preItemCheckPassed: true, // 前置检测是否通过
           preItemCheckkMsg: '', // 前置检测失败提示
+          // 一张表单
           oneFormInfo: [],
+          oneFormDialogVisible: false,
         }
     },
     mounted: function () {
@@ -599,15 +605,18 @@ var vm = new Vue({
         }
     },
     methods: {
-      // 打开一张表单弹窗
       openOneFormDialog: function(){
+        vm.oneFormDialogVisible = true;
+        vm.getOneFormData();
+      },
+      // 得到一张表单信息
+      getOneFormData: function(){
         var vm = this;
-        vm.loading = true;
         request('', {
           url: ctx + 'rest/oneform/common/getListForm4ItemOneForm',
           type: 'get',
           data: {
-            applyinstId: '',
+            applyinstId: vm.applyinstId,
             projInfoId: vm.projInfoId,
             itemId: vm.itemVerId,
             showBasicButton: true,
@@ -749,6 +758,7 @@ var vm = new Vue({
                     _that.beforeCheckShowMore = false;
                     _that.selThemeShow = true;
                 }
+                
               }else {
                 alertMsg('', '申报的项目没有绑定主题或者阶段下没有配置对应的并行事项', '关闭', 'error', true);
               }
@@ -1042,6 +1052,9 @@ var vm = new Vue({
                         }
                         _that.getStatusStateMats('','', 'ROOT', '', '', true); // 获取阶段
                     }
+                    _that.$nextTick(function(){
+                      _that.showOneFormDialog1()
+                    });
                     _that.loading = false;
                 } else {
                     _that.showMoreProjInfo = false;
@@ -2933,7 +2946,7 @@ var vm = new Vue({
             var perUnitMsg = "";
             // 判断个人申报主体必填是否已填
             if (_that.applySubjectType == 0) {
-                _that.$refs['applicantPer'].validate(function (valid) {
+              flag && _that.$refs['applicantPer'].validate(function (valid) {
                     if (valid) {
                         applicantPerFlag = true;
                     } else {
@@ -2945,7 +2958,7 @@ var vm = new Vue({
                     }
                 });
             }
-            _that.$refs['projBascInfoShowFrom'].validate(function (valid) {
+            flag && _that.$refs['projBascInfoShowFrom'].validate(function (valid) {
                 if(valid){
                     projBascInfoFlag=true;
                 }else{
@@ -3506,6 +3519,8 @@ var vm = new Vue({
                   if(_that.buttonStyle==4){
                     if(_that.submitCommentsMatFlag == 'matForm'){
                       _that.getOneFormrender3(_that.applyinstId,_that.stoFormId);
+                    }else {
+                      _that.getOneFormData();
                     }
                     return false;
                   }
@@ -3568,9 +3583,13 @@ var vm = new Vue({
       showOneFormDialog1: function(oneformMat){
         var _that = this;
         var _applyinstId = _that.applyinstId;
-        _that.matformNameTitle = oneformMat.matName
+        _that.matformNameTitle = oneformMat ? oneformMat.matName : '';
         if(_applyinstId==''){
-          _that.showCommentDialog('4','matForm',oneformMat.stoFormId)
+          if(oneformMat){
+            _that.showCommentDialog('4','matForm',oneformMat.stoFormId)
+          }else {
+            _that.showCommentDialog('4')
+          }
         }else {
           _that.getOneFormrender3(_applyinstId,oneformMat.stoFormId)
         }
