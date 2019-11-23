@@ -41,6 +41,7 @@ var vm = new Vue({
         return{
             loading: false, // 页面加载遮罩
             projInfoId:'',
+            showBasicButton:'true',
             addEditManModalTitle: '新增联系人',
             addEditManModalFlag: 'edit',
             addEditManModalShow: false, // 是否显示新增编辑联系人窗口
@@ -145,7 +146,7 @@ var vm = new Vue({
     },
     methods:{
         getUrlParam: function (name) {
-            var _that = this;
+            /*var _that = this;
             var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
             var r = window.location.search.substr(1).match(reg);
             if (r != null) {
@@ -156,11 +157,20 @@ var vm = new Vue({
                     type: 'error'
                 });
             }
+            return null;*/
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+            var r = window.location.search.substr(1).match(reg);
+            if (r != null) {
+                return unescape(r[2]);
+            }
             return null;
         },
         initPage:function(){
             var _that = this;
             _that.certBuildFrom.projInfoId = _that.getUrlParam('projInfoId');
+            if (_that.getUrlParam('showBasicButton') == 'false') {
+                _that.showBasicButton = 'false'
+            }
         },
         initFromPage :function(){//初始化表单页面
             var _that = this;
