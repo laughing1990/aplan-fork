@@ -82,7 +82,7 @@
                         <label>上传时间</label>
                         <div class="input-box">
                             <el-date-picker style="width: 330px;" type="date" value-format="timestamp"
-                                placeholder="选择日期" v-model="uploadTime" :disabled="true">
+                                placeholder="选择日期" v-model="serviceResultData.uploadTime" :disabled="true">
                             </el-date-picker>
                         </div>
                     </div>
@@ -177,7 +177,7 @@
                                                     {{item.fileName}}
                                                 </span>
                                                 <span style="color:#AFB2C1;">
-                                                    （{{item.createrName}}于{{formatDate(item.updateTime)}}上传）
+                                                    （{{item.createrName}}于{{(item.updateTime)}}上传）
                                                 </span>
                                                 <span class="file-icon-btn" style="margin-left:20px;">
                                                     <span title="预览" class="el-icon-search"
@@ -378,11 +378,11 @@
                 ts.projectServiceDetailEditFlag = false; //当前为上传服务结果
                 ts.curHandelRow = JSON.parse(JSON.stringify(row));
                 // 重置上传时发送的数据
-                ts.serviceResultData = {
-                    endTime: '', //结束时间
-                    memo: '', //备注                
-                };
-                ts.uploadTime = (new Date()).getTime();
+                // ts.serviceResultData = {
+                //     endTime: '', //结束时间
+                //     memo: '', //备注                
+                // };
+                // ts.uploadTime = (new Date()).getTime();
 
                 this.getProjectDetail(row);
             },
@@ -526,9 +526,13 @@
                     url: ctx + 'supermarket/result/getProjPurchaseMatinstList',
                     type: 'get',
                     data: params
-                }, function (res) {                    
+                }, function (res) {
                     if (res.success) {
-                        
+                        var rowData = res.content.serviceResult;
+                        ts.matinstList = res.content.matList;
+                        ts.curHandelRow.uploadTime = rowData.uploadTime;
+                        ts.curHandelRow.endTime = rowData.endTime;
+                        ts.curHandelRow.memo = rowData.memo;
                     } else {
                         ts.$message({
                             message: '加载失败',
@@ -770,19 +774,21 @@
                 if (vm.currentUploadRow.attMatinstId) {
                     formData.append('matinstId', vm.currentUploadRow.attMatinstId);
                 } else {
-                    formData.append('applyinstId', vm.applyinstId);
+                    formData.append('projPurchaseId', vm.curHandelRow.projPurchaseId);
                     formData.append('matId', vm.currentUploadRow.matId);
                 }
                 vm.pageLoading = true;
-                axios.post(ctx + 'rest/approve/matinst/uploadAtt', formData).then(function (res) {
+                axios.post(ctx + 'supermarket/result/uploadServiceResultAtt', formData).then(function (res) {
                     if (res.data && res.data.success) {
                         _this.$message.success('上传成功');
-                        vm.getMatList();
+                        vm.getProjectDetail(vm.curHandelRow);
                     } else {
+                        console.log('qwqweqe')
                         vm.pageLoading = false;
                         _this.$message.error(res.message || '上传失败');
                     }
                 }).catch(function (e) {
+                    console.log('e', e)
                     vm.pageLoading = false;
                     _this.$message.error('上传失败');
                 }).finally(function () {
@@ -831,5 +837,44 @@
         border: none;
         color: #999;
         cursor: text;
+    }
+
+    .mat-table-btn {
+        float: left;
+        color: #169AFF;
+        line-height: 25px;
+        height: 25px;
+        cursor: pointer;
+    }
+
+    th:nth-child(2),
+    td:nth-child(2) {
+        border-right: none;
+    }
+
+    .el-table--border,
+    .el-table--group,
+    .el-table td,
+    .el-table th.is-leaf {
+        border-color: #DCDFE6;
+    }
+
+    .file-list-tab {
+        padding-left: 30px;
+    }
+
+    .file-list-tab:hover .file-name {
+        color: #169AFF;
+    }
+
+    .file-list-tab:hover .file-icon-btn {
+        display: inline-block;
+    }
+
+    .file-icon-btn span {
+        cursor: pointer;
+        color: #169AFF;
+        font-size: 18px;
+        margin: 0 5px;
     }
 </style>
