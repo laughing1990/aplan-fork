@@ -321,7 +321,7 @@ public class RestImApplyService {
         String itemVerId = iteminst.getItemVerId();
         //查询所有材料定义
         List<AeaItemMat> matList = aeaItemMatService.getSeriesNoStateMatList(itemVerId);
-        String[] matIds = matList.stream().filter(aeaItemMat -> {
+        /*String[] matIds = matList.stream().filter(aeaItemMat -> {
             String paperIsRequire = aeaItemMat.getPaperIsRequire();
             String attIsRequire = aeaItemMat.getAttIsRequire();
             String zcqy = aeaItemMat.getZcqy();
@@ -329,7 +329,10 @@ public class RestImApplyService {
             boolean papaerRequire = StringUtils.isNotBlank(paperIsRequire) && "1".equals(paperIsRequire);//纸质件必须
             boolean attRequire = StringUtils.isNotBlank(attIsRequire) && "1".equals(attIsRequire);//电子件必须
             return !isRq && (papaerRequire || attRequire);
-        }).map(AeaItemMat::getMatId).toArray(String[]::new);
+        }).map(AeaItemMat::getMatId).toArray(String[]::new);*/
+        //
+
+        String[] matIds = matList.stream().map(AeaItemMat::getMatId).toArray(String[]::new);
         //是否有必须电子件
         //查看当前事项下所有的材料实例
         List<AeaMatinst> matinsts = aeaHiItemInoutinstMapper.getMatinstListByiteminstIdAndMatId(iteminstId, matIds);
