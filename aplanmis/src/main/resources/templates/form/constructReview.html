@@ -164,7 +164,7 @@
                   <el-button icon="el-icon-circle-plus-outline" type="primary" class="item-left-btn" @click="add(formDataTuShen);addEditManModalFlag='add'" title="新增" style="margin-left:10px;height:33px;"></el-button>
                   <el-button icon="el-icon-edit-outline" type="primary" class="item-left-btn" @click="edit(type,formDataTuShen);addEditManModalFlag='edit'" title="编辑" style="margin-left:12px;height:33px;"></el-button>
                 </el-col>
-                <el-col :span="10">
+                <el-col :span="8">
                   <span><i>*</i>身份证号</span>
                   <el-input v-model="type.linkmanCertNo" placeholder="请输入身份证号" disabled></el-input>
                 </el-col>
@@ -184,7 +184,7 @@
           <el-form label-width="220px" :model="formDataKanCha" ref="form3" :rules="rules3" v-if="formDataKanCha">
             <div class="clearfix">
               <el-form-item class="input-inline" prop="organizationalCode" label="组织机构代码">
-                <el-input v-model="formDataKanCha.organizationalCode" placeholder="请输入组织机构代码"></el-input>
+                <el-input v-model="formDataKanCha.organizationalCode" placeholder="格式：XXXXXXXXX"></el-input>
               </el-form-item>
               <el-form-item class="input-inline" prop="unifiedSocialCreditCode" label='统一社会信用代码'>
                 <el-input v-model="formDataKanCha.unifiedSocialCreditCode" placeholder="请输入统一社会信用代码"></el-input>
@@ -258,7 +258,7 @@
           <el-form label-width="220px" :model="formDataSheJj" ref="form4" :rules="rules4" v-if="formDataSheJj">
             <div class="clearfix">
               <el-form-item class="input-inline" prop="organizationalCode" label="组织机构代码">
-                <el-input v-model="formDataSheJj.organizationalCode" placeholder="请输入组织机构代码"></el-input>
+                <el-input v-model="formDataSheJj.organizationalCode" placeholder="格式：XXXXXXXXX"></el-input>
               </el-form-item>
               <el-form-item class="input-inline" prop="unifiedSocialCreditCode" label='统一社会信用代码'>
                 <el-input v-model="formDataSheJj.unifiedSocialCreditCode" placeholder="请输入统一社会信用代码"></el-input>
@@ -326,7 +326,7 @@
               </el-form-item>
             </div>
             <div class="clearfix">
-              <el-form-item class="input-inline allWidth" label="人员设置" prop="induCommRegNum">
+              <el-form-item class="proj-code-info" label="人员设置" prop="induCommRegNum">
                 <el-row class="linkman-set-item" v-for="(type,index) in formDataSheJj.linkmen" :key="index">
                   <el-col :span="1">
                     <el-button v-if="index==0" icon="el-icon-circle-plus-outline" type="primary" class="item-left-btn" @click="addLinkmanTypes(formDataSheJj.linkmen,formDataSheJj)" title="新增"></el-button>
@@ -347,7 +347,7 @@
                     <el-button icon="el-icon-circle-plus-outline" type="primary" class="item-left-btn" @click="add(formDataSheJj);addEditManModalFlag='add'" title="新增" style="margin-left:10px;height:33px;"></el-button>
                     <el-button icon="el-icon-edit-outline" type="primary" class="item-left-btn" @click="edit(type,formDataSheJj);addEditManModalFlag='edit'" title="编辑" style="margin-left:12px;height:33px;"></el-button>
                   </el-col>
-                  <el-col :span="10">
+                  <el-col :span="8">
                     <span><i>*</i>身份证号</span>
                     <el-input v-model="type.linkmanCertNo" placeholder="请输入身份证号" disabled></el-input>
                   </el-col>

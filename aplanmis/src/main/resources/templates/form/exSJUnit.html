@@ -65,9 +65,9 @@
             <input type="hidden" name="projLinkmanId" :value="gongchengzongFrom.projLinkmanId">
             <el-col :span="12">
               <el-form-item label="组织机构代码" prop="organizationalCode">
-                <!--<el-autocomplete :trigger-on-focus="false" v-model="applyJianliFrom.organizationalCode" placeholder="请输入组织机构代码">-->
+                <!--<el-autocomplete :trigger-on-focus="false" v-model="applyJianliFrom.organizationalCode" placeholder="格式：XXXXXXXXX">-->
                 <!--</el-autocomplete>-->
-                <el-input v-model="gongchengzongFrom.organizationalCode" placeholder="请输入组织机构代码"></el-input>
+                <el-input v-model="gongchengzongFrom.organizationalCode" placeholder="格式：XXXXXXXXX"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="12">
@@ -122,9 +122,9 @@
             <input type="hidden" name="projLinkmanId" :value="applyShigongzongFrom.projLinkmanId">
             <el-col :span="12">
               <el-form-item label="组织机构代码" prop="organizationalCode">
-                <!--<el-autocomplete :trigger-on-focus="false" v-model="applyJianliFrom.organizationalCode" placeholder="请输入组织机构代码">-->
+                <!--<el-autocomplete :trigger-on-focus="false" v-model="applyJianliFrom.organizationalCode" placeholder="格式：XXXXXXXXX">-->
                 <!--</el-autocomplete>-->
-                <el-input v-model="applyShigongzongFrom.organizationalCode" placeholder="请输入组织机构代码"></el-input>
+                <el-input v-model="applyShigongzongFrom.organizationalCode" placeholder="格式：XXXXXXXXX"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="12">
@@ -278,9 +278,9 @@
             <input type="hidden" name="projLinkmanId" :value="applyShigongzhuanyefenbaoFrom.projLinkmanId">
             <el-col :span="12">
               <el-form-item label="组织机构代码" prop="organizationalCode">
-                <!--<el-autocomplete :trigger-on-focus="false" v-model="applyJianliFrom.organizationalCode" placeholder="请输入组织机构代码">-->
+                <!--<el-autocomplete :trigger-on-focus="false" v-model="applyJianliFrom.organizationalCode" placeholder="格式：XXXXXXXXX">-->
                 <!--</el-autocomplete>-->
-                <el-input v-model="applyShigongzhuanyefenbaoFrom.organizationalCode" placeholder="请输入组织机构代码"></el-input>
+                <el-input v-model="applyShigongzhuanyefenbaoFrom.organizationalCode" placeholder="格式：XXXXXXXXX"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="12">
@@ -430,9 +430,9 @@
             <input type="hidden" name="projLinkmanId" :value="applyShigonglaowufenbaoFrom.projLinkmanId">
             <el-col :span="12">
               <el-form-item label="组织机构代码" prop="organizationalCode">
-                <!--<el-autocomplete :trigger-on-focus="false" v-model="applyJianliFrom.organizationalCode" placeholder="请输入组织机构代码">-->
+                <!--<el-autocomplete :trigger-on-focus="false" v-model="applyJianliFrom.organizationalCode" placeholder="格式：XXXXXXXXX">-->
                 <!--</el-autocomplete>-->
-                <el-input v-model="applyShigonglaowufenbaoFrom.organizationalCode" placeholder="请输入组织机构代码"></el-input>
+                <el-input v-model="applyShigonglaowufenbaoFrom.organizationalCode" placeholder="格式：XXXXXXXXX"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="12">
@@ -588,9 +588,9 @@
             <input type="hidden" name="projLinkmanId" :value="applyJianliFrom.projLinkmanId">
             <el-col :span="12">
               <el-form-item label="组织机构代码" prop="organizationalCode">
-                <!--<el-autocomplete :trigger-on-focus="false" v-model="applyJianliFrom.organizationalCode" placeholder="请输入组织机构代码">-->
+                <!--<el-autocomplete :trigger-on-focus="false" v-model="applyJianliFrom.organizationalCode" placeholder="格式：XXXXXXXXX">-->
                 <!--</el-autocomplete>-->
-                <el-input v-model="applyJianliFrom.organizationalCode" placeholder="请输入组织机构代码"></el-input>
+                <el-input v-model="applyJianliFrom.organizationalCode" placeholder="格式：XXXXXXXXX"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="12">
@@ -693,7 +693,7 @@
             <el-col :span="12" class="fl linkman-set">
               <el-form-item label="人员设置" prop="induCommRegNum">
                 <el-row class="linkman-set-item" v-for="(type,index) in applyJianliFrom.personSetting" :key="index">
-                  <el-col :span="2" style="width:4.5% !important;">
+                  <el-col :span="2" style="width:4.5% !important;margin-bottom:10px;">
                     <el-button v-if="index==0" icon="el-icon-circle-plus-outline" type="primary" class="item-left-btn" @click="addLinkmanTypes(applyJianliFrom.personSetting)" title="新增"></el-button>
                     <el-button v-else icon="el-icon-remove-outline" type="primary" @click="delLinkmanTypes(applyJianliFrom.personSetting,index)" class="item-left-btn" title="删除"></el-button>
                   </el-col>

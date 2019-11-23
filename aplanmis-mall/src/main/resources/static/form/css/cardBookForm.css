@@ -238,9 +238,9 @@ body {
     float: left;
   }
 
-  .el-form-item__content {
+  /*.el-form-item__content {
     width: 60%;
-  }
+  }*/
 }
 
 @media (min-width:1000px) {
