@@ -2546,7 +2546,7 @@ var module1 = new Vue({
       var _that = this;
       var sFRenderConfig = '&showBasicButton=true&includePlatformResource=false';
       request('', {
-        url: ctx + 'rest/oneform/common/getListForm4ItemOneForm?&projInfoId='+_that.projInfoId + '&itemId=' +_that.itemVerId+ '&'+ sFRenderConfig,
+        url: ctx + 'rest/oneform/common/getListForm4ItemOneForm?itemId=' +_that.itemVerId+ '&'+ sFRenderConfig,
         type: 'post',
         data: {
           applyinstId: _that.parallelApplyinstId,
