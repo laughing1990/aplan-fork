@@ -358,8 +358,9 @@ public class RestImApplyService {
         String opuWinId = aeaServiceWindowService.getCurrentUserWindow() == null ? "" : aeaServiceWindowService.getCurrentUserWindow().getWindowId();
         //更新竞价表，已上传服务结果 =1
         aeaImUnitBiddingMapper.updateUploadResult(projPurchaseId, "1");
-        //aea_im_service_result 插入数据或修改数据
-        if (requiredPaper) {
+        //aea_im_service_result 插入数据或修改数据 todo 先默认上传电子件就发起流程，
+//        if (requiredPaper) {
+        if (false) {
             //需要纸质件
             //保持当前流程为挂起状态，等待窗口收齐纸质件在发起流程
 
