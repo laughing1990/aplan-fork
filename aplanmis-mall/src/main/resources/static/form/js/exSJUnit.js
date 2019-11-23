@@ -99,9 +99,6 @@ var vm = new Vue({
                 buildArea: [
                     { validator: checkNumFloat, trigger: ['blur'] },
                     { required: true, message: '请填写施工面积！', trigger: ['change'] }
-                ],
-                quaCheckNum:[
-                    { required: true, message: '请输入质量监督注册号！', trigger: ['change', 'blur'] },
                 ]
             },
             gongchengzongFromRules: { //工程总承包单位信息校验
@@ -807,7 +804,7 @@ var vm = new Vue({
             var _that = this;
             _that.addEditManModalShow = true;
             _that.getUnitsListByProjInfoId();
-            _that.addEditManPerform = parData;
+            _that.addEditManPerform = parData
             if (!_that.projInfoId) {
                 if (data) {
                     _that.addEditManModalTitle = '编辑联系人';
@@ -835,17 +832,16 @@ var vm = new Vue({
             }
         },
         // 根据项目ID查找关联的单位列表
-        getUnitsListByProjInfoId: function() {debugger
+        getUnitsListByProjInfoId: function() {
             var _that = this;
             _that.loading = true;
             if (_that.applyShigongzongFrom.unitInfoId) {
                 var unitInfoId = _that.applyShigongzongFrom.unitInfoId;
             }
-            if(!unitInfoId||unitInfoId=='undefined') {_that.loading = false;return;}
             request('', {
                 url: ctx + 'rest/unit/list/by/' + unitInfoId,
                 type: 'get',
-            }, function(result) {debugger
+            }, function(result) {
                 if (result.success) {
                     _that.unitInfoIdList = result.content;
                     _that.loading = false;

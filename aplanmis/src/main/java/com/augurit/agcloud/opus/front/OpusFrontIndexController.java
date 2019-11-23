@@ -57,7 +57,7 @@ public class OpusFrontIndexController {
      * @param modelMap
      * @return
      */
-    @RequestMapping("/third")
+    @RequestMapping("theme/bluethird")
     public ModelAndView index_third(ModelMap modelMap){
 
         if(opusFontIndexConfig.getLogoUrl()!=null) {

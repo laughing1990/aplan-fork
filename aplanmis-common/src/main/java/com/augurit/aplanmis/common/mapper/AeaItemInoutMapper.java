@@ -2,6 +2,7 @@ package com.augurit.aplanmis.common.mapper;
 
 import com.augurit.aplanmis.common.domain.AeaHiIteminst;
 import com.augurit.aplanmis.common.domain.AeaItemInout;
+import com.augurit.aplanmis.common.domain.AeaItemMat;
 import com.augurit.aplanmis.common.dto.AeaItemInoutMatDto;
 import com.augurit.aplanmis.common.qo.item.ItemMatInoutQo;
 import org.apache.ibatis.annotations.Mapper;
@@ -141,4 +142,12 @@ public interface AeaItemInoutMapper {
       * @return
       */
      List<AeaItemInout> listInOfficeMatRelItemInfo(AeaItemInout aeaItemInout);
+
+    /**
+     * 查询单项不分情形下材料定义列表-中介超市用
+     *
+     * @param itemVerId 事项版本ID
+     * @return List<AeaItemMat>
+     */
+    List<AeaItemMat> getSeriesNoStateMatList(String itemVerId);
 }

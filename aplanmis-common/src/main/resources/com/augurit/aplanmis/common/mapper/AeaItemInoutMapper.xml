@@ -44,6 +44,46 @@
         ${alias}.SORT_NO  sortNo,
         ${alias}.ROOT_ORG_ID rootOrgId
     </sql>
+    <sql id="allColumns_aim">
+         ${alias}.MAT_CODE  matCode,
+         ${alias}.MAT_NAME  matName,
+         ${alias}.IS_GLOBAL_SHARE  isGlobalShare,
+         ${alias}.MAT_TYPE_ID  matTypeId,
+         ${alias}.RECEIVE_MODE  receiveMode,
+         ${alias}.DUE_PAPER_COUNT  duePaperCount,
+         ${alias}.DUE_COPY_COUNT  dueCopyCount,
+         ${alias}.MAT_FROM  matFrom,
+         ${alias}.SAMPLE_DOC  sampleDoc,
+         ${alias}.TEMPLATE_DOC  templateDoc,
+         ${alias}.MAT_REQUIRE  matRequire,
+         ${alias}.MAT_BASIS  matBasis,
+         ${alias}.PAPER_IS_REQUIRE  paperIsRequire,
+         ${alias}.SORT_NO  sortNo,
+         ${alias}.MAT_MEMO  matMemo,
+         ${alias}.IS_ACTIVE  isActive,
+         ${alias}.IS_DELETED  isDeleted,
+         ${alias}.CREATER  creater,
+         ${alias}.CREATE_TIME  createTime,
+         ${alias}.MODIFIER  modifier,
+         ${alias}.MODIFY_TIME  modifyTime,
+         ${alias}.ATT_DIR_ID  attDirId,
+         ${alias}.MAT_HOLDER  matHolder,
+         ${alias}.IS_OFFICIAL_DOC  isOfficialDoc,
+         ${alias}.ATT_IS_REQUIRE  attIsRequire,
+         ${alias}.IS_COMMON  isCommon,
+         ${alias}.REVIEW_KEY_POINTS  reviewKeyPoints,
+         ${alias}.REVIEW_SAMPLE_DOC  reviewSampleDoc,
+         ${alias}.REVIEW_BASIS  reviewBasis,
+         ${alias}.MAT_FROM_DEPT  matFromDept,
+         ${alias}.DUE_PAPER_TYPE  duePaperType,
+         ${alias}.DUE_COPY_TYPE  dueCopyType,
+         ${alias}.PAPER_MAT_TYPE  paperMatType,
+         ${alias}.ZCQY  zcqy,
+         ${alias}.ROOT_ORG_ID rootOrgId,
+         ${alias}.MAT_PROP matProp,
+         ${alias}.CERT_ID certId,
+         ${alias}.STO_FORM_ID stoFormId
+    </sql>
     <!--2 根据主键ID查询单个实体 -->
     <select id="getAeaItemInoutById" resultType="AeaItemInout">
         select
@@ -1142,6 +1182,20 @@
             </if>
         </where>
         group by item.ITEM_ID
+    </select>
+    <!--询单项不分情形下材料定义列表-中介超市用-->
+    <select id="getSeriesNoStateMatList" resultType="com.augurit.aplanmis.common.domain.AeaItemMat">
+        select
+        <include refid="aliasColumns">
+            <property name="alias" value="aii"/>
+        </include>
+        ,
+        <include refid="allColumns_aim">
+            <property name="alias" value="aim"/>
+        </include>
+        from aea_item_inout aii
+        LEFT JOIN AEA_ITEM_MAT aim on aim.MAT_ID=aii.MAT_ID
+        where aii.item_ver_id=#{itemVerId} and aii.IS_OWNER='1' and aii.IS_INPUT='1' and aii.IS_STATE_IN='0'
     </select>
 
     <resultMap id="aeaItemInoutMatDtoMap" type="com.augurit.aplanmis.common.dto.AeaItemInoutMatDto">

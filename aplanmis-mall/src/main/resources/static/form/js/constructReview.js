@@ -209,7 +209,6 @@ var app = new Vue({
     this.getAllType();
     this.showData();
     // this.getUnit();
-    $(".loading").hide();
   },
   methods: {
     // 获取页面的URL参数
@@ -273,9 +272,9 @@ var app = new Vue({
             vm.formDataSheJj = {};
           } else {
             for (var i = 0; i < res.content.drawings.length; i++) {
-              if (res.content.drawings[i].unitType == '13') {
+              if (res.content.drawings[i].unitType == '25') {
                 vm.formDataTuShen = res.content.drawings[i] || {};
-              } else if (res.content.drawings[i].unitType == '3') {
+              } else if (res.content.drawings[i].unitType == '4') {
                 vm.formDataSheJj = res.content.drawings[i] || {};
               } else {
                 vm.formDataKanCha = res.content.drawings[i] || {};
@@ -331,15 +330,15 @@ var app = new Vue({
         type: 'get',
         url: ctx + 'rest/dict/code/multi/items/list',
         data: {
-          dicCodeTypeCodes: 'XM_DWLX,JOB_TITLE,C_PRJ_SPTY,PROJ_UNIT_LINKMAN_TYPE,REGIST_CERTIFI_TYPE'
+          dicCodeTypeCodes: 'XM_DWLX,C_TITLE,C_PRJ_SPTY,PROJ_UNIT_LINKMAN_TYPE,C_REG_LCN_TYPE'
         },
       }, function(res) {
         vm.proType = res.content.XM_DWLX; //请求项目主体类型
-        vm.jobTitle = res.content.JOB_TITLE; //请求职称等级
+        vm.jobTitle = res.content.C_TITLE; //请求职称等级
         vm.prjType = res.content.C_PRJ_SPTY; //请求审查人员专业
         vm.linkmanType = res.content.PROJ_UNIT_LINKMAN_TYPE; //请求项目单位联系人类型
         vm.linkmanType2 = res.content.PROJ_UNIT_LINKMAN_TYPE; //请求项目单位联系人类型
-        vm.CertifiType = res.content.REGIST_CERTIFI_TYPE; //请求执业注册证类型
+        vm.CertifiType = res.content.C_REG_LCN_TYPE; //请求执业注册证类型
 
 
         for (var i = 0; i < vm.linkmanType2.length; i++) {
