@@ -6,18 +6,22 @@ import com.augurit.agcloud.bpm.common.domain.vo.SFFormParam;
 import com.augurit.agcloud.bpm.common.mapper.ActStoFormMapper;
 import com.augurit.agcloud.bpm.common.sfengine.config.SFRenderConfig;
 import com.augurit.agcloud.bpm.common.sfengine.render.SFFormMultipleRender;
+import com.augurit.agcloud.framework.constant.Status;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.domain.AeaApplyinstProj;
+import com.augurit.aplanmis.common.domain.AeaItemBasic;
 import com.augurit.aplanmis.common.domain.AeaItemPartform;
 import com.augurit.aplanmis.common.domain.AeaParStagePartform;
 import com.augurit.aplanmis.common.mapper.AeaApplyinstProjMapper;
 import com.augurit.aplanmis.common.service.admin.item.AeaItemPartformAdminService;
 import com.augurit.aplanmis.common.service.admin.oneform.AeaParStagePartformService;
+import com.augurit.aplanmis.common.service.item.AeaItemBasicService;
 import com.augurit.aplanmis.front.basis.stage.service.RestStageService;
 import com.augurit.aplanmis.front.basis.stage.vo.FormFrofileVo;
 import com.augurit.aplanmis.front.basis.stage.vo.OneFormItemRequest;
 import com.augurit.aplanmis.front.basis.stage.vo.OneFormStageRequest;
 import com.augurit.aplanmis.front.basis.stage.vo.StageItemFormVo;
+import com.sun.org.apache.bcel.internal.generic.RETURN;
 import org.apache.commons.beanutils.BeanComparator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,6 +45,8 @@ public class OneFormCommonService {
     private AeaItemPartformAdminService aeaItemPartformService;
     @Autowired
     private AeaApplyinstProjMapper aeaApplyinstProjMapper;
+    @Autowired
+    private AeaItemBasicService aeaItemBasicService;
 
     /*
      * 获取并联申报的一张表单--表单列表
@@ -267,8 +273,16 @@ public class OneFormCommonService {
         }
     }
 
-    public List<FormFrofileVo> getListForm4ItemOneForm(OneFormItemRequest oneFormItemRequest) {
+    public List<FormFrofileVo> getListForm4ItemOneForm(OneFormItemRequest oneFormItemRequest) throws Exception {
         List<FormFrofileVo> result = new ArrayList<>();
+        AeaItemBasic aeaItemBasic = aeaItemBasicService.getAeaItemBasicByItemVerId(oneFormItemRequest.getItemId());
+        //没有启用，返回空数组
+        if(aeaItemBasic!=null&&StringUtils.isNotBlank(aeaItemBasic.getUseOneForm())){
+            if(aeaItemBasic.getUseOneForm().equalsIgnoreCase(Status.OFF)){
+                return result;
+            }
+        }
+
         int formSortNo = 0;
         String itemVerId = oneFormItemRequest.getItemId();
         AeaItemPartform aeaItemPartform = new AeaItemPartform();
@@ -276,6 +290,7 @@ public class OneFormCommonService {
 //aeaItemPartform.setIsSmartForm("0");
         aeaItemPartform.setSortNo(null);
         List<AeaItemPartform> aeaItemPartformList = null;
+
         aeaItemPartformList = aeaItemPartformService.listAeaItemPartformNoPage(aeaItemPartform);
         String projInfoId = oneFormItemRequest.getProjInfoId();
         if (aeaItemPartformList != null && aeaItemPartformList.size() > 0) {
