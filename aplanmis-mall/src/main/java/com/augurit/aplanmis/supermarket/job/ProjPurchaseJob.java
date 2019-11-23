@@ -82,7 +82,7 @@ public class ProjPurchaseJob {
                         Date beginTime = item.getChoiceImunitTime();
                         if (beginTime != null && !beginTime.after(new Date())) {
                             logger.info("采购需求项目【{}】竞价开始", item.getProjPurchaseId());
-                            updateAuditFlag(item.getProjPurchaseId(), "11", "7", "采购需求项目竞价开始");
+                            updateAuditFlag(item.getProjPurchaseId(), "11", "8", "采购需求项目竞价开始");
                         }
 
 
