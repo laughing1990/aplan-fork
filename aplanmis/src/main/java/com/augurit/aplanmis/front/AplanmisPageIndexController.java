@@ -23,6 +23,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -134,15 +135,13 @@ public class AplanmisPageIndexController {
         return new ModelAndView("approve/opinionForm");
     }
 
-    /**
-     * 一张表单
-     * 在表单管理配置的是当前这个接口，然后通过接口转发到真正的一张表单接口
-     *
-     * @return
-     */
-    @GetMapping("/oneForm.html")
-    @ApiOperation("iframe一张表单")
-    public ResultForm oneForm(String masterEntityKey, HttpServletRequest request, HttpServletResponse response) {
+        /**
+         * 并联申报 一张表单url构造
+         * enableParamItem 是否启用参数 itemId，用于只查看指定事项的情况
+         * itemId 指定事项的id
+         * */
+        @GetMapping("/urlStageOneForm.html")
+        public ResultForm urlStageOneForm(String masterEntityKey,boolean enableParamItem,String itemId, HttpServletRequest request, HttpServletResponse response) {
 //        String realUrl = request.getContextPath() + "/rest/oneform/common/renderHtmlFormContainer?";
         String realUrl = request.getContextPath() + "/rest/oneform/common/getListForm4StageOneForm?";
         String params = "";
@@ -154,12 +153,16 @@ public class AplanmisPageIndexController {
                 if (aeaHiParStageinst != null) {
                     params += "&stageId=" + aeaHiParStageinst.getStageId();
                 }
-                List<AeaHiIteminst> aeaHiIteminstList = aeaHiIteminstService.getAeaHiIteminstListByApplyinstId(aeaHiApplyinst.getApplyinstId());
 
-
-                for (AeaHiIteminst aeaHiIteminst : aeaHiIteminstList) {
-                    params += "&itemids=" + aeaHiIteminst.getItemId();
-//                    params += "&itemids=" + aeaHiIteminst.getItemVerId();
+                if(enableParamItem){
+                    params += "&itemids=" + itemId;
+                }
+                else{
+                    List<AeaHiIteminst> aeaHiIteminstList = null;
+                    aeaHiIteminstList=aeaHiIteminstService.getAeaHiIteminstListByApplyinstId(aeaHiApplyinst.getApplyinstId());
+                    for (AeaHiIteminst aeaHiIteminst : aeaHiIteminstList) {
+                        params += "&itemids=" + aeaHiIteminst.getItemId();
+                    }
                 }
             }
             realUrl += params;
