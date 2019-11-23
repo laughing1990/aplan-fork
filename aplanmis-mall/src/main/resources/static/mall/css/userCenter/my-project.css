@@ -18,6 +18,9 @@
   width: 930px;
   float: left;
 }
+.my-pro-right-full {
+  width: 1200px;
+}
 .my-pro-right .add-info-content h1 {
   font-size: 23px;
 }
@@ -59,21 +62,17 @@
 }
 .company-name {
   min-height: 46px;
-  font-size: 18px;
-  font-weight: bold;
-  padding: 35px 0px 4px;
+  padding: 35px 0 4px;
   position: relative;
   line-height: 24px;
-  text-align: left;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
   overflow: hidden;
-  display: -webkit-inline-box;
-    font-size:18px;
-    font-family:Microsoft YaHei;
-    font-weight:bold;
-    color:rgba(255,255,255,1);
-   text-align: center;
+  display: -webkit-box;
+  font-size:18px;
+  font-weight:bold;
+  color:rgba(255,255,255,1);
+  text-align: center;
 }
 .company-name span span span{
 	display: inline-block;

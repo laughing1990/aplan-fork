@@ -358,6 +358,7 @@ var module1 = new Vue({
     this.getGbhy();
     this.getItemBaseInfo();
     //this.querySelecTheme() // 获取主题列表
+    userCenter.vm.myProLeftShow = false;
   },
   mounted: function () {
     var _that = this;

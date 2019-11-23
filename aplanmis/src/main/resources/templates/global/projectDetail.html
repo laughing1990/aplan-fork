@@ -108,6 +108,21 @@
                 </el-option>
               </el-select>
             </el-form-item>
+            <el-form-item class="input-inline" prop="projectAddress">
+              <template slot="label">
+                <el-tooltip class="item" effect="dark" content="选择项目/工程所在地行政区划。如果是跨区，则选择多个行政区划。" placement="right-start">
+                  <i class="ag ag-help"></i>
+                </el-tooltip>
+                建设地点
+              </template>
+              <el-select multiple v-model="baseForm.projectAddress" placeholder="请选择建设地点">
+                <el-option v-for="item in districtList" :key="item.regionId" :label="item.regionName" :value="item.regionId">
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item class="input-inline" label="国标行业代码年代" prop="gbCodeYear">
+              <el-input disabled v-model="baseForm.gbCodeYear" placeholder="请输入国标行业代码发布年代"></el-input>
+            </el-form-item>
             <el-form-item label="资金来源">
               <el-select placeholder="请选择" v-model="baseForm.financialSource">
                 <el-option :label="item.itemName" :value="item.itemCode" v-for="item in allDicItemListData.XM_ZJLY"
@@ -130,6 +145,30 @@
                            :key="item.id">
                 </el-option>
               </el-select>
+            </el-form-item>
+            <el-form-item class="input-inline" prop="isAreaEstimate">
+              <template slot="label">
+                <el-tooltip class="item" effect="dark" content="建设范围未实施区域评估选“否”，建设范围已实施区域评估选“是”。" placement="right-start">
+                  <i class="ag ag-help"></i>
+                </el-tooltip>
+                是否完成区域评估
+              </template>
+              <el-radio-group v-model="baseForm.isAreaEstimate">
+                <el-radio label="1" value="1" key="1">是</el-radio>
+                <el-radio label="0" value="0" key="0">否</el-radio>
+              </el-radio-group>
+            </el-form-item>
+            <el-form-item class="input-inline" prop="isDesignSolution">
+              <template slot="label">
+                <el-tooltip class="item" effect="dark" content="建设用地不带设计方案选“否”，建设用地带设计方案选“是”。" placement="right-start">
+                  <i class="ag ag-help"></i>
+                </el-tooltip>
+                土地是否带设计方案
+              </template>
+              <el-radio-group v-model="baseForm.isDesignSolution">
+                <el-radio label="1" value="1" key="1">是</el-radio>
+                <el-radio label="0" value="0" key="0">否</el-radio>
+              </el-radio-group>
             </el-form-item>
             <el-form-item label="用地面积(公顷)" prop="xmYdmj">
               <el-input placeholder="请输入用地面积" v-model="baseForm.xmYdmj"></el-input>

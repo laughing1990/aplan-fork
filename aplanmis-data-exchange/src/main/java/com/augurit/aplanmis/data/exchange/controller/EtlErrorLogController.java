@@ -28,7 +28,7 @@ public class EtlErrorLogController {
     @Autowired
     EtlErrorLogService etlErrorLogService;
 
-    @GetMapping("/page")
+    @GetMapping("/list")
     @ApiOperation(value = "分页查询错误日志", tags = "错误日志列表")
     public ContentResultForm<PageInfo<EtlErrorLog>> findEltErrorlog(EtlErrorLog etlErrorLog, Page page) {
         PageInfo<EtlErrorLog> etlErrorLogPageInfo = etlErrorLogService.listEtlErrorLog(etlErrorLog, page);
