@@ -5,18 +5,19 @@
 		<el-row class="inlineblock-midd">
 			项目名称：
 			<el-input class="w-200 mr20" placeholder="请输入要查询的项目名称" v-model="signupPeojectCheckData.projName"
-			          @keyup.enter.native="checkSignupProjectList">
+				@keyup.enter.native="checkSignupProjectList">
 			</el-input>
 			选取方式：
-			<el-select placeholder="请选择选取方式" v-model="signupPeojectCheckData.biddingType" :popper-append-to-body="false">
+			<el-select placeholder="请选择选取方式" v-model="signupPeojectCheckData.biddingType"
+				:popper-append-to-body="false">
 				<el-option v-for="item in selectionMethodOptions" :key="item.value" :label="item.label"
-				           :value="item.value">
+					:value="item.value">
 				</el-option>
 			</el-select>
 			<el-button class="ml20" type="primary" size="medium" @click="checkSignupProjectList">查询</el-button>
 		</el-row>
 		<el-table :data="signupProjectList" class="scrollable mt20" style="width: 100%;"
-		          :header-cell-style="{background:'#f7f8fa'}">
+			:header-cell-style="{background:'#f7f8fa'}">
 			<el-table-column prop="projName" label="项目名称" width="200"></el-table-column>
 			<el-table-column prop="basePrice" label="竞价金额（元）"></el-table-column>
 			<el-table-column label="选取方式">
@@ -34,7 +35,7 @@
 			<el-table-column label="操作" width="240">
 				<template scope="scope">
 					<el-button class="line-disabled-btn a-color4879E4" type="text" @click="wantPrice(scope.row)"
-					           :disabled="isShowWantPriceBtn(scope.row)">我要竞价
+						:disabled="isShowWantPriceBtn(scope.row)">我要竞价
 					</el-button>
 					<a class="a-color4879E4" href="javascript:;" @click="seeSignupInfo(scope.row)">查看报名</a>
 					<a class="a-color4879E4" href="javascript:;" @click="revokeSignup(scope.row)">撤销报名</a>
@@ -42,9 +43,9 @@
 			</el-table-column>
 		</el-table>
 		<el-pagination background align="right" @size-change="signupProjectListSizeChange"
-		               @current-change="signupProjectListPageChange" :page-sizes="[10, 20, 30, 50]"
-		               :page-size="signupPeojectCheckData.pageSize" :current-page="signupPeojectCheckData.pageNum"
-		               layout="total,sizes, prev, pager, next, jumper" :total="signupProjectTotal" v-show="signupProjectTotal>10">
+			@current-change="signupProjectListPageChange" :page-sizes="[10, 20, 30, 50]"
+			:page-size="signupPeojectCheckData.pageSize" :current-page="signupPeojectCheckData.pageNum"
+			layout="total,sizes, prev, pager, next, jumper" :total="signupProjectTotal" v-show="signupProjectTotal>10">
 		</el-pagination>
 	</div>
 	<!-- 当前报名的项目的操作进去的pandel -->
@@ -135,12 +136,12 @@
 					</div>
 					<div class="my-price-box">
 						<p class="bidding-rule"><a href="javascript:;" @click="showBiddingPriceRules">竞价规则<i
-								class="help-ico"></i></a></p>
+									class="help-ico"></i></a></p>
 						<div class="form-group input-money">
 							<label>请输入您本次出价金额</label>
-							<input type="number" class="form-control my-price-inp" v-model="youBiddingPrice"/>
+							<input type="number" class="form-control my-price-inp" v-model="youBiddingPrice" />
 							<el-button v-if="curHandelRow.biddingType == 1" type="primary ml20" @click="offerAPrice"
-							           :disabled="alreadyPushYouPriceOnce || biddingProcessInfo.unitPrice">
+								:disabled="alreadyPushYouPriceOnce || biddingProcessInfo.unitPrice">
 								确定出价
 							</el-button>
 							<el-button v-else type="primary ml20" @click="offerAPrice">确定出价</el-button>
@@ -284,7 +285,7 @@
 	</div>
 	<!-- 所有中介事项的dialog -->
 	<el-dialog class="bidding-price-dialog" title="竞价规则" :visible.sync="biddingPriceRulesDialogState" width="400px"
-	           center>
+		center>
 		<p>1、报价仅能低于当前报价。若当前报价是最低价，其他机构也可竞最低价，
 			并且一同进入随机抽取环节进行选取。</p>
 		<p>2、出价成功，且当前价格不是最低价，进行 5 分钟倒计时，5 分钟之内，无
@@ -413,7 +414,7 @@
 			fetchSignUpProjectList: function () {
 				var ts = this;
 				ts.signupPeojectCheckData.unitInfoId = JSON.parse(localStorage.getItem('loginInfo'))
-						.unitId;
+					.unitId;
 				ts.mloading = true;
 				request('', {
 					url: ctx + 'aea/supermarket/bidProjectManage/listUnitBiddingProjPurchase',
@@ -456,7 +457,7 @@
 			//  撤销报名
 			revokeSignup: function (row) {
 				var ts = this,
-						_sendData = {};
+					_sendData = {};
 				_sendData.unitBiddingId = row.unitBiddingId;
 				confirmMsg('', '您确定撤销当前报名吗？', function () {
 					ts.mloading = true;
@@ -501,7 +502,7 @@
 			// 获取项目基本信息
 			fetchCurSignUpProjectDetail: function (row) {
 				var ts = this,
-						_getData = {};
+					_getData = {};
 				_getData.projPurchaseId = row.projPurchaseId;
 				ts.mloading = true;
 				request('', {
@@ -531,7 +532,7 @@
 			// 项目详情初始化基本信息
 			initProjectDetailBasicInfo: function (info) {
 				var ts = this,
-						_basicInfoObj = ts.curSignUpProjectDetail;
+					_basicInfoObj = ts.curSignUpProjectDetail;
 				for (var k in _basicInfoObj) {
 					if (info[k] && info[k] !== null) {
 						_basicInfoObj[k] = info[k];
@@ -551,7 +552,7 @@
 			//  轮询获取竞价过程中的最低、最高价格
 			pollingFetchHandLPrice: function (row) {
 				var ts = this,
-						_getData = {};
+					_getData = {};
 				_getData.projPurchaseId = row.projPurchaseId;
 				_getData.unitBiddingId = row.unitBiddingId;
 				request('', {
@@ -577,7 +578,7 @@
 			//  确定出价
 			offerAPrice: function () {
 				var ts = this,
-						_sendData = {};
+					_sendData = {};
 				_sendData.unitBiddingId = ts.curHandelRow.unitBiddingId;
 				_sendData.price = ts.youBiddingPrice;
 				ts.mloading = true;
@@ -615,8 +616,11 @@
 			},
 			//  是否可以竞价
 			isShowWantPriceBtn: function (row) {
-				if (new Date().getTime() > row.choiceImunitTime) {
-					if (row.purchaseAuditFlag == 7 || row.purchaseAuditFlag == 11) {
+				console.log('time', new Date().getTime() < row.expirationDate)
+				console.log('flag',['6', '7', '11'].indexOf(row.purchaseAuditFlag))
+				if (new Date().getTime() < row.expirationDate) {
+					// if (row.purchaseAuditFlag == 7 || row.purchaseAuditFlag == 11) {
+					if (['6', '7', '11'].indexOf(row.purchaseAuditFlag) > -1) {
 						return false;
 					} else {
 						return true;
@@ -635,7 +639,7 @@
 			// 获取当前项目的的查看报名相关信息
 			fetchCurProjectSignupInfo: function (row) {
 				var ts = this,
-						_getData = {};
+					_getData = {};
 				_getData.projPurchaseId = row.projPurchaseId;
 				_getData.unitInfoId = JSON.parse(localStorage.getItem('loginInfo')).unitId;
 				_getData.unitBiddingId = row.unitBiddingId;
@@ -667,11 +671,11 @@
 			//  数据赋值-报名信息
 			initSignupProjectInfo: function (info) {
 				var baseInfo = info.projPurchase, //基本信息
-						_unitInfo = info.unitInfo, //接口的企业信息
-						_unitBidding = info.unitBidding, //接口的报名信息
-						_basicSignupInfo = this.signupProjectData.projectBaseInfo, //data定义的基本信息
-						_unitSignInfo = this.signupProjectData.unitInfo, //data定义的企业信息
-						_unitBiddingSignInfo = this.signupProjectData.unitBidding; //data定义的企业信息
+					_unitInfo = info.unitInfo, //接口的企业信息
+					_unitBidding = info.unitBidding, //接口的报名信息
+					_basicSignupInfo = this.signupProjectData.projectBaseInfo, //data定义的基本信息
+					_unitSignInfo = this.signupProjectData.unitInfo, //data定义的企业信息
+					_unitBiddingSignInfo = this.signupProjectData.unitBidding; //data定义的企业信息
 				for (var k in _basicSignupInfo) {
 					if (baseInfo[k] && baseInfo[k] !== null) {
 						_basicSignupInfo[k] = baseInfo[k];
@@ -755,5 +759,10 @@
 
 	.line-disabled-btn:hover {
 		text-decoration: underline;
+	}
+
+	#projectSignup .el-dialog__header {
+		height: auto;
+		line-height: normal;
 	}
 </style>
