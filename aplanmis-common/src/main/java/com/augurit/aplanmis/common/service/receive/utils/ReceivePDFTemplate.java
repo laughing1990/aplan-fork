@@ -714,17 +714,6 @@ public class ReceivePDFTemplate {
             PdfStamper stamper = new PdfStamper(reader, ba);
             PdfContentByte under = stamper.getOverContent(1);
 
-            //二维码
-            if (vo.getCertBuildQrcode() != null) {
-                Image img = Image.getInstance(vo.getCertBuildQrcode());
-                img.setAbsolutePosition(100, 90);
-                img.scaleToFit(130, 130);
-                img.scaleToFit(reader.getPageSize(1));//大小*/
-//                under.addImage(img, 40, 0, 0, 40, 0, 0); //设置图片大小
-                under.addImage(img);
-
-            }
-
             if (null == print || !print) {
                 ClassPathResource imgPathResource = new ClassPathResource("static/receive/default/施工许可证新版(总承包).png");
                 URL imgUrl = imgPathResource.getURL();
@@ -732,7 +721,20 @@ public class ReceivePDFTemplate {
                 img1.setAbsolutePosition(40, 0);
                 img1.scaleToFit(reader.getPageSize(1));
                 under.addImage(img1, img1.getScaledWidth(), 0, 0, img1.getScaledHeight(), 0, 0);
+
             }
+
+            //二维码
+            if (vo.getCertBuildQrcode() != null) {
+                Image img = Image.getInstance(vo.getCertBuildQrcode());
+                img.setAbsolutePosition(100, 90);
+                img.scaleToFit(130, 130);
+//                img.scaleToFit(reader.getPageSize(1));//大小*/
+//                under.addImage(img, 13, 0, 0, 40, 0, 0); //设置图片大小
+                under.addImage(img);
+
+            }
+
 
             //使用中文字体
             BaseFont bf = BaseFont.createFont("STSongStd-Light", "UniGB-UCS2-H", BaseFont.NOT_EMBEDDED);
