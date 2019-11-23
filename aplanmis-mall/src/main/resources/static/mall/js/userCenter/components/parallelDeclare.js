@@ -403,6 +403,7 @@ var module1 = new Vue({
     this.GetRequest();
     this.getDicContent(); // 数据字典
     this.getGbhy();
+    userCenter.vm.myProLeftShow = false;
   },
   methods: {
     // 文件上传获取我的材料列表
@@ -2322,7 +2323,9 @@ var module1 = new Vue({
                   });
                 }
               }
-            }, function (msg) { })
+            }, function (msg) {
+
+            })
           } else {
             for (var i = 0; i < _that.selCoreItemsKey.length; i++) {
               if (_that.selCoreItemsKey[i] == row.itemId) {
@@ -2370,12 +2373,6 @@ var module1 = new Vue({
                 item.preItemCheckPassed = false;
                 selArr.splice(index,1);
                 _that.checkboxInit(item);
-                // if (item.preItemCheckPassed == false) {
-                //   _that.$message({
-                //     message: '该事项前置事项检测失败！',
-                //     type: 'error'
-                //   });
-                // }
               }
             }, function (msg) {})
           }

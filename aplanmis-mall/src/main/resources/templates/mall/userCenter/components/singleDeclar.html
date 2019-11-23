@@ -30,14 +30,14 @@
               href="http://www.gdtz.gov.cn/tybm/apply3!search.action"
               target="_blank">“投资项目在线审批监管平台”</a></b>进行项目登记赋码</p>
       <el-form-item label="项目/工程查询">
-        <el-select style="width:60%" v-model="searchKeyword" filterable remote autofocus reserve-keyword ref="searchProjInfo"
+        <el-select style="width:65%" v-model="searchKeyword" filterable remote autofocus reserve-keyword ref="searchProjInfo"
                    no-data-text="暂无匹配的项目/工程" placeholder="请输入项目（工程）的编码/名称" :remote-method="searchProjInfoByKeyword"
                    :loading="loadingProjInfo">
           <el-option v-for="item in projInfoList" :key="item.projInfoId" @click.native="projNameSel(item)"
                      :label="item.projName+' （'+item.localCode+'）'" :value="item.projInfoId">
           </el-option>
         </el-select>
-        <el-button type="primary" icon="icon ag ag-search" @click="linkQuery()">联网查询</el-button>
+        <el-button style="padding: 11px 20px; margin-left: 5px;" type="primary" icon="icon ag ag-search" @click="linkQuery()">联网查询</el-button>
       </el-form-item>
     </el-form>
     <!--事项基本信息 start-->
@@ -65,7 +65,7 @@
     <el-collapse-transition>
       <el-form :inline="true" :model="projInfoDetail" v-show="baseInfoShow" :rules="rules" ref="projInfoForm">
 
-        <el-form-item class="wt448" prop="localCode">
+        <el-form-item class="wt588" prop="localCode">
           <template slot="label">
             <el-tooltip class="item" effect="dark"
                         content="填写全国统一项目代码(参考“投资项目基本信息共享规范”中的“投资项目统一代码规范”)。如果项目没有全国统一代码，填写地方项目编码。"
@@ -74,10 +74,10 @@
             </el-tooltip>
             项目代码
           </template>
-          <el-input class="w-320" disabled v-model="projInfoDetail.localCode" ref="localCode"
+          <el-input class="w-410" disabled v-model="projInfoDetail.localCode" ref="localCode"
                     placeholder="请填写项目代码"></el-input>
         </el-form-item>
-        <el-form-item class="wt448" prop="gcbm">
+        <el-form-item class="wt588" prop="gcbm">
           <template slot="label">
             <el-tooltip class="item" effect="dark" content="项目拆分为多个单项工程申报时，单项工程的唯一编码，如果项目不拆分，应与项目代码相同。"
                         placement="right-start">
@@ -85,29 +85,29 @@
             </el-tooltip>
             工程代码
           </template>
-          <el-input class="w-320" disabled v-model="projInfoDetail.gcbm" placeholder="请填写工程代码"></el-input>
+          <el-input class="w-410" disabled v-model="projInfoDetail.gcbm" placeholder="请填写工程代码"></el-input>
         </el-form-item>
         <el-form-item label="项目/工程名称" prop="projName">
-          <el-input class="w-775" disabled v-model="projInfoDetail.projName" ref="projName"
+          <el-input class="w-1010" disabled v-model="projInfoDetail.projName" ref="projName"
                     placeholder="请填写项目/工程名称"></el-input>
         </el-form-item>
-        <el-form-item class="wt448" label="所属主题" prop="themeId">
-          <!--<el-select clearable filterable class="w-320" v-model="projInfoDetail.themeId" :disabled="isAble">-->
-          <el-select clearable filterable class="w-320" v-model="projInfoDetail.themeId">
+        <el-form-item class="wt588" label="所属主题" prop="themeId">
+          <!--<el-select clearable filterable class="w-410" v-model="projInfoDetail.themeId" :disabled="isAble">-->
+          <el-select clearable filterable class="w-410" v-model="projInfoDetail.themeId">
             <el-option v-for="item in themeList" :key="item.themeId" :label="item.themeName"
                        :value="item.themeId">
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="立项类型" class="wt448" prop="projType">
-          <!--<el-select class="w-320" v-model="projInfoDetail.projType" :disabled="isAble" @change="projTypeChange">-->
-          <el-select class="w-320" v-model="projInfoDetail.projType">
+        <el-form-item label="立项类型" class="wt588" prop="projType">
+          <!--<el-select class="w-410" v-model="projInfoDetail.projType" :disabled="isAble" @change="projTypeChange">-->
+          <el-select class="w-410" v-model="projInfoDetail.projType">
             <el-option v-for="item in projTypeList" :key="item.id" :label="item.itemName"
                        :value="item.itemCode">
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item class="wt448" prop="regionalism">
+        <el-form-item class="wt588" prop="regionalism">
           <template slot="label">
             <el-tooltip class="item" effect="dark" content="市级审批的项目/工程请选择市级行政区划，区县审批的请选择对应的区县行政区划。"
                         placement="right-start">
@@ -115,53 +115,53 @@
             </el-tooltip>
             审批行政区划
           </template>
-          <el-select  clearable filterable  class="w-320" v-model="projInfoDetail.regionalism" ref="regionalism">
+          <el-select  clearable filterable  class="w-410" v-model="projInfoDetail.regionalism" ref="regionalism">
             <el-option v-for="item in districtList" :key="item.id" :label="item.regionName"
                        :value="item.regionId">
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item class="wt448" prop="projectAddress">
+        <el-form-item class="wt588" prop="projectAddress">
           <template slot="label">
             <el-tooltip class="item" effect="dark" content="选择项目/工程所在地行政区划。如果是跨区，则选择多个行政区划。" placement="right-start">
               <i class="el-icon-question"></i>
             </el-tooltip>
             建设地点
           </template>
-          <el-select multiple clearable filterable class="w-320" v-model="projInfoDetail.projectAddress" placeholder="请选择建设地点">
+          <el-select multiple clearable filterable class="w-410" v-model="projInfoDetail.projectAddress" placeholder="请选择建设地点">
             <el-option v-for="item in districtList" :key="item.regionId" :label="item.regionName"
                        :value="item.regionId">
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="资金来源" class="wt448" prop="financialSource">
-          <el-select class="w-320" v-model="projInfoDetail.financialSource">
+        <el-form-item label="资金来源" class="wt588" prop="financialSource">
+          <el-select class="w-410" v-model="projInfoDetail.financialSource">
             <el-option v-for="item in zjlyList" :key="item.id" :label="item.itemName"
                        :value="item.itemCode">
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item class="wt448" label="是否外资">
+        <el-form-item class="wt588" label="是否外资">
           <el-radio-group v-model="projInfoDetail.isForeign">
             <el-radio label="0" value="0" key="0">否</el-radio>
             <el-radio label="1" value="1" key="1">是</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="投资类型" class="wt448" prop="investType">
-          <el-select class="w-320" v-model="projInfoDetail.investType">
+        <el-form-item label="投资类型" class="wt588" prop="investType">
+          <el-select class="w-410" v-model="projInfoDetail.investType">
             <el-option v-for="item in tzlxList" :key="item.id" :label="item.itemName"
                        :value="item.itemCode">
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="土地来源" class="wt448" prop="landSource">
-          <el-select class="w-320" v-model="projInfoDetail.landSource">
+        <el-form-item label="土地来源" class="wt588" prop="landSource">
+          <el-select class="w-410" v-model="projInfoDetail.landSource">
             <el-option v-for="item in tdlyList" :key="item.id" :label="item.itemName"
                        :value="item.itemCode">
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item class="wt448">
+        <el-form-item class="wt588">
           <template slot="label">
             <el-tooltip class="item" effect="dark" content="建设范围未实施区域评估选“否”，建设范围已实施区域评估选“是”。" placement="right-start">
               <i class="el-icon-question"></i>
@@ -173,7 +173,7 @@
             <el-radio label="1" value="1" key="1">是</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item class="wt448" prop="isDesignSolution">
+        <el-form-item class="wt588" prop="isDesignSolution">
           <template slot="label">
             <el-tooltip class="item" effect="dark" content="建设用地不带设计方案选“否”，建设用地带设计方案选“是”。" placement="right-start">
               <i class="el-icon-question"></i>
@@ -185,49 +185,49 @@
             <el-radio label="1" value="1" key="1">是</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item class="wt448" label="建设性质" prop="projNature">
-          <el-select class="w-320" v-model="projInfoDetail.projNature">
+        <el-form-item class="wt588" label="建设性质" prop="projNature">
+          <el-select class="w-410" v-model="projInfoDetail.projNature">
             <el-option v-for="item in jsxzList" :key="item.id" :label="item.itemName"
                        :value="item.itemCode">
             </el-option>
           </el-select>
         </el-form-item>
 
-        <el-form-item label="工程分类" class="wt448">
-          <el-select  clearable filterable class="w-320" v-model="projInfoDetail.projCategory">
+        <el-form-item label="工程分类" class="wt588">
+          <el-select  clearable filterable class="w-410" v-model="projInfoDetail.projCategory">
             <el-option v-for="item in gcflList" :key="item.id" :label="item.itemName"
                        :value="item.itemCode">
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item class="wt448" label="拟开工时间" prop="nstartTime">
+        <el-form-item class="wt588" label="拟开工时间" prop="nstartTime">
           <el-date-picker type="date" placeholder="拟开工时间" value-format="yyyy-MM-dd"
                           v-model="projInfoDetail.nstartTime">
           </el-date-picker>
         </el-form-item>
-        <el-form-item class="wt448" label="拟建成时间" prop="endTime">
+        <el-form-item class="wt588" label="拟建成时间" prop="endTime">
           <el-date-picker type="date" placeholder="拟建成时间" value-format="yyyy-MM-dd"
                           v-model="projInfoDetail.endTime">
           </el-date-picker>
         </el-form-item>
-        <el-form-item class="wt448" label="总投资（万元）" prop="investSum">
-          <el-input class="w-320" v-model="projInfoDetail.investSum" placeholder="请填写总投资金额"></el-input>
+        <el-form-item class="wt588" label="总投资（万元）" prop="investSum">
+          <el-input class="w-410" v-model="projInfoDetail.investSum" placeholder="请填写总投资金额"></el-input>
         </el-form-item>
-        <el-form-item class="wt448" label="总建筑面积（m&sup2;）" prop="foreignBuildingArea">
-          <el-input class="w-320" v-model="projInfoDetail.foreignBuildingArea" placeholder="请填写建筑面积"></el-input>
+        <el-form-item class="wt588" label="总建筑面积（m&sup2;）" prop="foreignBuildingArea">
+          <el-input class="w-410" v-model="projInfoDetail.foreignBuildingArea" placeholder="请填写建筑面积"></el-input>
         </el-form-item>
-        <el-form-item class="wt448" label="用地面积（m&sup2;）" prop="xmYdmj">
-          <el-input class="w-320" v-model="projInfoDetail.xmYdmj" placeholder="请填写用地面积"></el-input>
+        <el-form-item class="wt588" label="用地面积（m&sup2;）" prop="xmYdmj">
+          <el-input class="w-410" v-model="projInfoDetail.xmYdmj" placeholder="请填写用地面积"></el-input>
         </el-form-item>
-        <el-form-item class="wt448" label="重点项目">
-          <el-select class="w-320" v-model="projInfoDetail.projLevel">
+        <el-form-item class="wt588" label="重点项目">
+          <el-select class="w-410" v-model="projInfoDetail.projLevel">
             <el-option v-for="item in projLevelList" :key="item.id" :label="item.itemName"
                        :value="item.itemCode">
             </el-option>
           </el-select>
         </el-form-item>
 
-        <el-form-item class="wt448" prop="theIndustry">
+        <el-form-item class="wt588" prop="theIndustry">
           <template slot="label">
             <el-tooltip class="item" effect="dark" content="国标行业以国家统计局发布的《国民经济行业分类》（GB/T 4754-2017）编码为基准。"
                         placement="right-start">
@@ -235,7 +235,7 @@
             </el-tooltip>
             国标行业
           </template>
-          <el-input v-model="gbhyShowMsg" readonly placeholder="请选择国标行业" @click.native="isShowGbhy = true"></el-input>
+          <el-input class="w-410" v-model="gbhyShowMsg" readonly placeholder="请选择国标行业" @click.native="isShowGbhy = true"></el-input>
           <div style="position: relative;" v-show="isShowGbhy">
             <div class="gbhyTreeBox">
               <div class="closeTree">
@@ -255,8 +255,8 @@
           </div>
           <input v-model="projInfoDetail.theIndustry" type="hidden">
         </el-form-item>
-        <el-form-item class="wt448" label="国标行业代码发布年代" prop="gbCodeYear">
-          <el-input disabled class="w-320" v-model="projInfoDetail.gbCodeYear" placeholder="请填写国标行业代码发布年代"></el-input>
+        <el-form-item class="wt588" label="国标行业代码发布年代" prop="gbCodeYear">
+          <el-input disabled class="w-410" v-model="projInfoDetail.gbCodeYear" placeholder="请填写国标行业代码发布年代"></el-input>
         </el-form-item>
         <el-form-item class="wt100" prop="scaleContent">
           <template slot="label">
@@ -266,11 +266,11 @@
             </el-tooltip>
             建设规模及内容
           </template>
-          <el-input class="w-775" v-model="projInfoDetail.scaleContent" type="textarea"
+          <el-input class="w-1010" v-model="projInfoDetail.scaleContent" type="textarea"
                     placeholder="请填写建设内容"></el-input>
         </el-form-item>
         <el-form-item label="项目地址">
-          <el-input class="w-775"  v-model="projInfoDetail.projAddr" placeholder="请填写项目地址"></el-input>
+          <el-input class="w-1010"  v-model="projInfoDetail.projAddr" placeholder="请填写项目地址"></el-input>
         </el-form-item>
         <el-row class="proj-addr-scope">
           <el-col :span="24">
@@ -308,28 +308,28 @@
           </el-radio-group>
         </el-form-item>
         <template v-if="applyObjectInfo.role==0">
-          <el-form-item class="wt448" label="申请人">
-            <el-input disabled v-model="applyObjectInfo.aeaLinkmanInfo.linkmanName" class="w-320" placeholder="请填写申请人">
+          <el-form-item class="wt588" label="申请人">
+            <el-input disabled v-model="applyObjectInfo.aeaLinkmanInfo.linkmanName" class="w-410" placeholder="请填写申请人">
             </el-input>
           </el-form-item>
-          <el-form-item class="wt448" label="身份证">
-            <el-input disabled v-model="applyObjectInfo.aeaLinkmanInfo.linkmanCertNo" class="w-320" placeholder="请填写身份证">
+          <el-form-item class="wt588" label="身份证">
+            <el-input disabled v-model="applyObjectInfo.aeaLinkmanInfo.linkmanCertNo" class="w-410" placeholder="请填写身份证">
             </el-input>
           </el-form-item>
-          <el-form-item label="联系电话" class="wt448">
-            <el-input disabled class="w-320" v-model="applyObjectInfo.aeaLinkmanInfo.linkmanMobilePhone"
+          <el-form-item label="联系电话" class="wt588">
+            <el-input disabled class="w-410" v-model="applyObjectInfo.aeaLinkmanInfo.linkmanMobilePhone"
                       placeholder="请填写联系电话"></el-input>
           </el-form-item>
-          <el-form-item label="联系邮箱" class="wt448">
-            <el-input disabled class="w-320" v-model="applyObjectInfo.aeaLinkmanInfo.linkmanMail" placeholder="请填写联系邮箱">
+          <el-form-item label="联系邮箱" class="wt588">
+            <el-input disabled class="w-410" v-model="applyObjectInfo.aeaLinkmanInfo.linkmanMail" placeholder="请填写联系邮箱">
             </el-input>
           </el-form-item>
         </template>
         <template v-if="applyObjectInfo.role==2">
           <div class="clearfix" v-if="showObjectRole">
             <p class="apply-info-title"><span class="unit-index">1</span>单位信息</p>
-            <el-form-item class="wt448" label="企业名称" required>
-              <el-select class="w-320" v-model="applyObjectInfo.aeaUnitInfo.applicant"
+            <el-form-item class="wt588" label="企业名称" required>
+              <el-select class="w-410" v-model="applyObjectInfo.aeaUnitInfo.applicant"
                          filterable placeholder="请选企业单位">
                 <el-option
                   v-for="item in aeaUnitList"
@@ -340,17 +340,17 @@
                 </el-option>
               </el-select>
             </el-form-item>
-            <el-form-item class="wt448" label="统一社会信用代码" required>
-              <el-input disabled class="w-320" v-model="applyObjectInfo.aeaUnitInfo.unifiedSocialCreditCode" placeholder="统一社会信用代码">
+            <el-form-item class="wt588" label="统一社会信用代码" required>
+              <el-input disabled class="w-410" v-model="applyObjectInfo.aeaUnitInfo.unifiedSocialCreditCode" placeholder="统一社会信用代码">
               </el-input>
             </el-form-item>
-            <el-form-item class="wt448" label="法定代表人" requireds>
-              <el-input disabled class="w-320" v-model="applyObjectInfo.aeaUnitInfo.idrepresentative" placeholder="企业法定代表人"></el-input>
+            <el-form-item class="wt588" label="法定代表人" requireds>
+              <el-input disabled class="w-410" v-model="applyObjectInfo.aeaUnitInfo.idrepresentative" placeholder="企业法定代表人"></el-input>
             </el-form-item>
-            <el-form-item class="wt448" label="法定代表人证件号">
-              <el-input disabled class="w-320" v-model="applyObjectInfo.aeaUnitInfo.idno" placeholder="法定代表人证件号"></el-input>
+            <el-form-item class="wt588" label="法定代表人证件号">
+              <el-input disabled class="w-410" v-model="applyObjectInfo.aeaUnitInfo.idno" placeholder="法定代表人证件号"></el-input>
             </el-form-item>
-            <el-form-item class="wt448 linkman-name" label="联系人姓名" prop="linkmanName" required>
+            <el-form-item class="wt588 linkman-name" label="联系人姓名" prop="linkmanName" required>
               <el-select v-model="applyObjectInfo.aeaLinkmanInfo.linkmanName" remote
                          @click.native="getLinkManListByUnitId(applyObjectInfo,applyObjectInfo.aeaUnitInfo.unitInfoId,'applyObjectInfo')"
                          required placeholder="--请选择--">
@@ -369,57 +369,57 @@
               <el-button icon="el-icon-edit-outline" type="primary" class="item-right-btn"
                          @click="addLinkman(applyObjectInfo.aeaLinkmanInfo,applyObjectInfo.aeaLinkmanInfo);" title="编辑"></el-button>
 
-              <!--<el-input disabled class="w-320" v-model="applyObjectInfo.aeaLinkmanInfo.linkmanName" placeholder="联系人姓名"></el-input>-->
+              <!--<el-input disabled class="w-410" v-model="applyObjectInfo.aeaLinkmanInfo.linkmanName" placeholder="联系人姓名"></el-input>-->
             </el-form-item>
-            <el-form-item class="wt448" label="联系方式" prop="linkmanMobilePhone" required>
-              <el-input class="w-320" disabled v-model="applyObjectInfo.aeaLinkmanInfo.linkmanMobilePhone" placeholder="联系人联系方式"></el-input>
+            <el-form-item class="wt588" label="联系方式" prop="linkmanMobilePhone" required>
+              <el-input class="w-410" disabled v-model="applyObjectInfo.aeaLinkmanInfo.linkmanMobilePhone" placeholder="联系人联系方式"></el-input>
             </el-form-item>
-            <el-form-item class="wt448" label="联系人身份证" prop="linkmanCertNo" required>
-              <el-input class="w-320" disabled v-model="applyObjectInfo.aeaLinkmanInfo.linkmanCertNo" placeholder="联系人身份证"></el-input>
+            <el-form-item class="wt588" label="联系人身份证" prop="linkmanCertNo" required>
+              <el-input class="w-410" disabled v-model="applyObjectInfo.aeaLinkmanInfo.linkmanCertNo" placeholder="联系人身份证"></el-input>
             </el-form-item>
-            <el-form-item class="wt448" label="联系人邮箱" prop="linkmanMail">
-              <el-input class="w-320" disabled v-model="applyObjectInfo.aeaLinkmanInfo.linkmanMail" placeholder="联系人邮箱"></el-input>
+            <el-form-item class="wt588" label="联系人邮箱" prop="linkmanMail">
+              <el-input class="w-410" disabled v-model="applyObjectInfo.aeaLinkmanInfo.linkmanMail" placeholder="联系人邮箱"></el-input>
             </el-form-item>
             <template v-if="showUnitMore">
-              <el-form-item class="wt448" label="工商登记号">
-                <el-input disabled class="w-320" v-model="applyObjectInfo.aeaUnitInfo.induCommRegNum"
+              <el-form-item class="wt588" label="工商登记号">
+                <el-input disabled class="w-410" v-model="applyObjectInfo.aeaUnitInfo.induCommRegNum"
                           placeholder="工商登记号">
                 </el-input>
               </el-form-item>
-              <el-form-item class="wt448" label="组织机构代码">
-                <el-input disabled class="w-320" v-model="applyObjectInfo.aeaUnitInfo.organizationalCode"
+              <el-form-item class="wt588" label="组织机构代码">
+                <el-input disabled class="w-410" v-model="applyObjectInfo.aeaUnitInfo.organizationalCode"
                           placeholder="组织机构代码">
                 </el-input>
               </el-form-item>
-              <!--<el-form-item  class="wt448" label="行政区（园区）" prop="applicantDistrict">-->
-                <!--<el-input class="w-320" disabled v-model="applyObjectInfo.aeaUnitInfo.applicantDistrict"-->
+              <!--<el-form-item  class="wt588" label="行政区（园区）" prop="applicantDistrict">-->
+                <!--<el-input class="w-410" disabled v-model="applyObjectInfo.aeaUnitInfo.applicantDistrict"-->
                           <!--placeholder="行政区（园区）"></el-input>-->
               <!--</el-form-item>-->
-              <el-form-item  class="wt448" label="经营范围" prop="managementScope">
-                <el-input class="w-320" disabled v-model="applyObjectInfo.aeaUnitInfo.managementScope"
+              <el-form-item  class="wt588" label="经营范围" prop="managementScope">
+                <el-input class="w-410" disabled v-model="applyObjectInfo.aeaUnitInfo.managementScope"
                           placeholder="经营范围"></el-input>
               </el-form-item>
-              <el-form-item  class="wt448" label="注册资本（万元）" prop="registerCapital">
-                <el-input class="w-320" disabled v-model="applyObjectInfo.aeaUnitInfo.registerCapital"
+              <el-form-item  class="wt588" label="注册资本（万元）" prop="registerCapital">
+                <el-input class="w-410" disabled v-model="applyObjectInfo.aeaUnitInfo.registerCapital"
                           placeholder="注册资本"></el-input>
               </el-form-item>
-              <el-form-item  class="wt448" label="注册登记机关" prop="registerAuthority">
-                <el-input class="w-320" disabled v-model="applyObjectInfo.aeaUnitInfo.registerAuthority"
+              <el-form-item  class="wt588" label="注册登记机关" prop="registerAuthority">
+                <el-input class="w-410" disabled v-model="applyObjectInfo.aeaUnitInfo.registerAuthority"
                           placeholder="注册登记机关"></el-input>
               </el-form-item>
-              <el-form-item  class="wt448" label="邮政编码" prop="postalCode">
-                <el-input class="w-320" disabled v-model="applyObjectInfo.aeaUnitInfo.postalCode"
+              <el-form-item  class="wt588" label="邮政编码" prop="postalCode">
+                <el-input class="w-410" disabled v-model="applyObjectInfo.aeaUnitInfo.postalCode"
                           placeholder="邮政编码"></el-input>
               </el-form-item>
-              <el-form-item  class="wt448" label="纳税人识别号" prop="taxpayerNum">
-                <el-input class="w-320" disabled v-model="applyObjectInfo.aeaUnitInfo.taxpayerNum"
+              <el-form-item  class="wt588" label="纳税人识别号" prop="taxpayerNum">
+                <el-input class="w-410" disabled v-model="applyObjectInfo.aeaUnitInfo.taxpayerNum"
                           placeholder="纳税人识别号"></el-input>
               </el-form-item>
-              <el-form-item  class="wt448" label="信用标记码" prop="creditFlagNum">
-                <el-input class="w-320" disabled v-model="applyObjectInfo.aeaUnitInfo.creditFlagNum"
+              <el-form-item  class="wt588" label="信用标记码" prop="creditFlagNum">
+                <el-input class="w-410" disabled v-model="applyObjectInfo.aeaUnitInfo.creditFlagNum"
                           placeholder="信用标记码"></el-input>
               </el-form-item>
-              <el-form-item class="wt100 linkman-set" label="人员设置">
+              <el-form-item class="linkman-set" label="人员设置">
                 <el-row class="linkman-set-item" v-for="(type,index) in applyObjectInfo.aeaUnitInfo.linkmanTypes" :key="index">
                   <el-col :span="2">
                     <el-button v-if="index==0"
@@ -471,21 +471,21 @@
           <div class="clearfix" v-else>
             <p class="apply-info-title"><span class="unit-index">1</span>单位信息</p>
 
-            <el-form-item class="wt448" label="企业名称" required>
-              <el-input disabled class="w-320" v-model="applyObjectInfo.aeaUnitInfo.applicant" placeholder="企业名称"></el-input>
+            <el-form-item class="wt588" label="企业名称" required>
+              <el-input disabled class="w-410" v-model="applyObjectInfo.aeaUnitInfo.applicant" placeholder="企业名称"></el-input>
             </el-form-item>
-            <el-form-item class="wt448" label="统一社会信用代码" required>
-              <el-input disabled class="w-320" v-model="applyObjectInfo.aeaUnitInfo.unifiedSocialCreditCode" placeholder="统一社会信用代码">
+            <el-form-item class="wt588" label="统一社会信用代码" required>
+              <el-input disabled class="w-410" v-model="applyObjectInfo.aeaUnitInfo.unifiedSocialCreditCode" placeholder="统一社会信用代码">
               </el-input>
             </el-form-item>
 
-            <el-form-item class="wt448" label="法定代表人" required>
-              <el-input disabled class="w-320" v-model="applyObjectInfo.aeaUnitInfo.idrepresentative" placeholder="企业法定代表人"></el-input>
+            <el-form-item class="wt588" label="法定代表人" required>
+              <el-input disabled class="w-410" v-model="applyObjectInfo.aeaUnitInfo.idrepresentative" placeholder="企业法定代表人"></el-input>
             </el-form-item>
-            <el-form-item class="wt448" label="法定代表人证件号">
-              <el-input disabled class="w-320" v-model="applyObjectInfo.aeaUnitInfo.idno" placeholder="法定代表人证件号"></el-input>
+            <el-form-item class="wt588" label="法定代表人证件号">
+              <el-input disabled class="w-410" v-model="applyObjectInfo.aeaUnitInfo.idno" placeholder="法定代表人证件号"></el-input>
             </el-form-item>
-            <el-form-item class="wt448 linkman-name" label="联系人姓名" required>
+            <el-form-item class="wt588 linkman-name" label="联系人姓名" required>
               <el-select v-model="applyObjectInfo.aeaUnitInfo.linkmanName" remote
                          @click.native="getLinkManListByUnitId(applyObjectInfo,applyObjectInfo.aeaUnitInfo.unitInfoId,'applyObjectInfo')"
                          required placeholder="--请选择--">
@@ -505,52 +505,52 @@
                          @click="addLinkman(applyObjectInfo.aeaUnitInfo,applyObjectInfo.aeaUnitInfo)" title="编辑"></el-button>
 
             </el-form-item>
-            <el-form-item class="wt448" label="联系方式" required>
-              <el-input class="w-320" disabled v-model="applyObjectInfo.aeaLinkmanInfo.linkmanMobilePhone" placeholder="联系人联系方式"></el-input>
+            <el-form-item class="wt588" label="联系方式" required>
+              <el-input class="w-410" disabled v-model="applyObjectInfo.aeaLinkmanInfo.linkmanMobilePhone" placeholder="联系人联系方式"></el-input>
             </el-form-item>
-            <el-form-item class="wt448" label="联系人身份证" required>
-              <el-input class="w-320" disabled v-model="applyObjectInfo.aeaLinkmanInfo.linkmanCertNo" placeholder="请输入联系人身份证"></el-input>
+            <el-form-item class="wt588" label="联系人身份证" required>
+              <el-input class="w-410" disabled v-model="applyObjectInfo.aeaLinkmanInfo.linkmanCertNo" placeholder="请输入联系人身份证"></el-input>
             </el-form-item>
-            <el-form-item class="wt448" label="联系人邮箱">
-              <el-input class="w-320" disabled v-model="applyObjectInfo.aeaLinkmanInfo.linkmanMail" placeholder="联系人邮箱"></el-input>
+            <el-form-item class="wt588" label="联系人邮箱">
+              <el-input class="w-410" disabled v-model="applyObjectInfo.aeaLinkmanInfo.linkmanMail" placeholder="联系人邮箱"></el-input>
             </el-form-item>
             <template v-if="showUnitMore">
-              <el-form-item class="wt448" label="工商登记号">
-                <el-input disabled class="w-320" v-model="applyObjectInfo.aeaUnitInfo.induCommRegNum"
+              <el-form-item class="wt588" label="工商登记号">
+                <el-input disabled class="w-410" v-model="applyObjectInfo.aeaUnitInfo.induCommRegNum"
                           placeholder="工商登记号">
                 </el-input>
               </el-form-item>
-              <el-form-item class="wt448" label="组织机构代码">
-                <el-input disabled class="w-320" v-model="applyObjectInfo.aeaUnitInfo.organizationalCode"
+              <el-form-item class="wt588" label="组织机构代码">
+                <el-input disabled class="w-410" v-model="applyObjectInfo.aeaUnitInfo.organizationalCode"
                           placeholder="组织机构代码">
                 </el-input>
               </el-form-item>
-              <!--<el-form-item  class="wt448" label="行政区（园区）" prop="applicantDistrict">-->
-                <!--<el-input class="w-320" disabled v-model="applyObjectInfo.aeaUnitInfo.applicantDistrict"-->
+              <!--<el-form-item  class="wt588" label="行政区（园区）" prop="applicantDistrict">-->
+                <!--<el-input class="w-410" disabled v-model="applyObjectInfo.aeaUnitInfo.applicantDistrict"-->
                           <!--placeholder="行政区（园区）"></el-input>-->
               <!--</el-form-item>-->
-              <el-form-item  class="wt448" label="经营范围" prop="managementScope">
-                <el-input class="w-320" disabled v-model="applyObjectInfo.aeaUnitInfo.managementScope"
+              <el-form-item  class="wt588" label="经营范围" prop="managementScope">
+                <el-input class="w-410" disabled v-model="applyObjectInfo.aeaUnitInfo.managementScope"
                           placeholder="经营范围"></el-input>
               </el-form-item>
-              <el-form-item  class="wt448" label="注册资本（万元）" prop="registerCapital">
-                <el-input class="w-320" disabled v-model="applyObjectInfo.aeaUnitInfo.registerCapital"
+              <el-form-item  class="wt588" label="注册资本（万元）" prop="registerCapital">
+                <el-input class="w-410" disabled v-model="applyObjectInfo.aeaUnitInfo.registerCapital"
                           placeholder="注册资本"></el-input>
               </el-form-item>
-              <el-form-item  class="wt448" label="注册登记机关" prop="registerAuthority">
-                <el-input class="w-320" disabled v-model="applyObjectInfo.aeaUnitInfo.registerAuthority"
+              <el-form-item  class="wt588" label="注册登记机关" prop="registerAuthority">
+                <el-input class="w-410" disabled v-model="applyObjectInfo.aeaUnitInfo.registerAuthority"
                           placeholder="注册登记机关"></el-input>
               </el-form-item>
-              <el-form-item  class="wt448" label="邮政编码" prop="postalCode">
-                <el-input class="w-320" disabled v-model="applyObjectInfo.aeaUnitInfo.postalCode"
+              <el-form-item  class="wt588" label="邮政编码" prop="postalCode">
+                <el-input class="w-410" disabled v-model="applyObjectInfo.aeaUnitInfo.postalCode"
                           placeholder="邮政编码"></el-input>
               </el-form-item>
-              <el-form-item  class="wt448" label="纳税人识别号" prop="taxpayerNum">
-                <el-input class="w-320" disabled v-model="applyObjectInfo.aeaUnitInfo.taxpayerNum"
+              <el-form-item  class="wt588" label="纳税人识别号" prop="taxpayerNum">
+                <el-input class="w-410" disabled v-model="applyObjectInfo.aeaUnitInfo.taxpayerNum"
                           placeholder="纳税人识别号"></el-input>
               </el-form-item>
-              <el-form-item  class="wt448" label="信用标记码" prop="creditFlagNum">
-                <el-input class="w-320" disabled v-model="applyObjectInfo.aeaUnitInfo.creditFlagNum"
+              <el-form-item  class="wt588" label="信用标记码" prop="creditFlagNum">
+                <el-input class="w-410" disabled v-model="applyObjectInfo.aeaUnitInfo.creditFlagNum"
                           placeholder="信用标记码"></el-input>
               </el-form-item>
               <el-form-item class="wt100 linkman-set" label="人员设置">
@@ -620,34 +620,34 @@
             <input type="hidden" name="applyinstId" :value="jiansheFromItem.applyinstId">
             <input type="hidden" name="unitInfoId" :value="jiansheFromItem.unitInfoId">
             <input type="hidden" name="linkmanInfoId" :value="jiansheFromItem.linkmanInfoId">
-            <el-form-item class="wt448" label="单位类型" prop="unitType">
-              <el-select class="w-320" v-model="jiansheFromItem.unitType" placeholder="请选择">
+            <el-form-item class="wt588" label="单位类型" prop="unitType">
+              <el-select class="w-410" v-model="jiansheFromItem.unitType" placeholder="请选择">
                 <el-option v-for="(item,indexOp) in xmdwlxList"
                            :key="indexOp"
                            :label="item.itemName"
                            :value="item.itemCode"></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item class="wt448" label="统一社会信用代码" prop="unifiedSocialCreditCode">
-              <el-input class="w-320" v-model="jiansheFromItem.unifiedSocialCreditCode" placeholder="请输入统一社会信用代码"></el-input>
+            <el-form-item class="wt588" label="统一社会信用代码" prop="unifiedSocialCreditCode">
+              <el-input class="w-410" v-model="jiansheFromItem.unifiedSocialCreditCode" placeholder="请输入统一社会信用代码"></el-input>
             </el-form-item>
-            <el-form-item class="wt448" label="单位名称" prop="applicant">
-              <el-autocomplete class="w-320" :trigger-on-focus="false" :fetch-suggestions="querySearchJiansheName"
+            <el-form-item class="wt588" label="单位名称" prop="applicant">
+              <el-autocomplete class="w-410" :trigger-on-focus="false" :fetch-suggestions="querySearchJiansheName"
                                @select="function(value) {selUnitInfo(value,index)}"
                                v-model="jiansheFromItem.applicant" placeholder="请输入单位名称">
               </el-autocomplete>
             </el-form-item>
-            <el-form-item class="wt448" label="单位地址" prop="applicantDetailSite">
-              <el-input class="w-320" v-model="jiansheFromItem.applicantDetailSite" placeholder="请输入单位地址"></el-input>
+            <el-form-item class="wt588" label="单位地址" prop="applicantDetailSite">
+              <el-input class="w-410" v-model="jiansheFromItem.applicantDetailSite" placeholder="请输入单位地址"></el-input>
             </el-form-item>
-            <el-form-item class="wt448" label="法定代表人" prop="idrepresentative">
-              <el-input class="w-320" v-model="jiansheFromItem.idrepresentative" placeholder="请输入法定代表人"></el-input>
+            <el-form-item class="wt588" label="法定代表人" prop="idrepresentative">
+              <el-input class="w-410" v-model="jiansheFromItem.idrepresentative" placeholder="请输入法定代表人"></el-input>
             </el-form-item>
-            <el-form-item class="wt448" label="法定代表人证件号">
-              <el-input class="w-320" v-model="jiansheFromItem.idno" placeholder="请输入法定代表人证件号">
+            <el-form-item class="wt588" label="法定代表人证件号">
+              <el-input class="w-410" v-model="jiansheFromItem.idno" placeholder="请输入法定代表人证件号">
               </el-input>
             </el-form-item>
-            <el-form-item label="联系人姓名" prop="linkmanName" class="wt448 linkman-name">
+            <el-form-item label="联系人姓名" prop="linkmanName" class="wt588 linkman-name">
               <el-select v-model="jiansheFromItem.linkmanName" remote
                          @click.native="getLinkManListByUnitId(jiansheFromItem,jiansheFromItem.unitInfoId)"
                          required placeholder="--请选择--">
@@ -666,45 +666,45 @@
               <el-button icon="el-icon-edit-outline" type="primary" class="item-right-btn"
                          @click="addLinkman(jiansheFromItem,jiansheFromItem);" title="编辑"></el-button>
             </el-form-item>
-            <el-form-item class="wt448" label="联系人证件号" prop="linkmanCertNo">
-              <el-input class="w-320" v-model="jiansheFromItem.linkmanCertNo" disabled placeholder="请输入联系人证件号">
+            <el-form-item class="wt588" label="联系人证件号" prop="linkmanCertNo">
+              <el-input class="w-410" v-model="jiansheFromItem.linkmanCertNo" disabled placeholder="请输入联系人证件号">
               </el-input>
             </el-form-item>
-            <el-form-item class="wt448" label="联系人手机" prop="linkmanMobilePhone">
-              <el-input class="w-320" v-model="jiansheFromItem.linkmanMobilePhone" disabled placeholder="请输入联系人手机号"></el-input>
+            <el-form-item class="wt588" label="联系人手机" prop="linkmanMobilePhone">
+              <el-input class="w-410" v-model="jiansheFromItem.linkmanMobilePhone" disabled placeholder="请输入联系人手机号"></el-input>
             </el-form-item>
-            <el-form-item class="wt448" label="联系人邮箱">
-              <el-input class="w-320" :id="'linkmanMail_'+index" v-model="jiansheFromItem.linkmanMail" disabled
+            <el-form-item class="wt588" label="联系人邮箱">
+              <el-input class="w-410" :id="'linkmanMail_'+index" v-model="jiansheFromItem.linkmanMail" disabled
                         placeholder="请输入联系人邮箱"></el-input>
             </el-form-item>
             <template v-if="showUnitListMore.indexOf(index)>-1">
-              <el-form-item class="wt448" label="工商登记号" prop="induCommRegNum">
-                <el-input class="w-320" v-model="jiansheFromItem.induCommRegNum" placeholder="请输入工商登记号"></el-input>
+              <el-form-item class="wt588" label="工商登记号" prop="induCommRegNum">
+                <el-input class="w-410" v-model="jiansheFromItem.induCommRegNum" placeholder="请输入工商登记号"></el-input>
               </el-form-item>
-              <el-form-item class="wt448"label="组织机构代码" prop="organizationalCode">
+              <el-form-item class="wt588"label="组织机构代码" prop="organizationalCode">
                 <el-input v-model="jiansheFromItem.organizationalCode" placeholder="请输入组织机构代码"></el-input>
               </el-form-item>
-              <el-form-item class="wt448" label="纳税人识别号" prop="taxpayerNum">
-                <el-input class="w-320" v-model="jiansheFromItem.taxpayerNum" placeholder="请输入纳税人识别号"></el-input>
+              <el-form-item class="wt588" label="纳税人识别号" prop="taxpayerNum">
+                <el-input class="w-410" v-model="jiansheFromItem.taxpayerNum" placeholder="请输入纳税人识别号"></el-input>
               </el-form-item>
-              <el-form-item class="wt448" label="信用标记码" prop="creditFlagNum">
-                <el-input class="w-320" v-model="jiansheFromItem.creditFlagNum" placeholder="请输入信用标记码"></el-input>
+              <el-form-item class="wt588" label="信用标记码" prop="creditFlagNum">
+                <el-input class="w-410" v-model="jiansheFromItem.creditFlagNum" placeholder="请输入信用标记码"></el-input>
               </el-form-item>
-              <el-form-item class="wt448" label="注册资本（万元）" prop="registerCapital">
-                <el-input class="w-320" v-model="jiansheFromItem.registerCapital" placeholder="请输入注册资本"></el-input>
+              <el-form-item class="wt588" label="注册资本（万元）" prop="registerCapital">
+                <el-input class="w-410" v-model="jiansheFromItem.registerCapital" placeholder="请输入注册资本"></el-input>
               </el-form-item>
-              <el-form-item class="wt448" label="注册登记机关" prop="registerAuthority">
-                <el-input class="w-320" v-model="jiansheFromItem.registerAuthority" placeholder="请输入注册登记机关"></el-input>
+              <el-form-item class="wt588" label="注册登记机关" prop="registerAuthority">
+                <el-input class="w-410" v-model="jiansheFromItem.registerAuthority" placeholder="请输入注册登记机关"></el-input>
               </el-form-item>
-              <el-form-item class="wt448" label="经营范围" prop="managementScope">
-                <el-input class="w-320" v-model="jiansheFromItem.managementScope" placeholder="请输入经营范围"></el-input>
+              <el-form-item class="wt588" label="经营范围" prop="managementScope">
+                <el-input class="w-410" v-model="jiansheFromItem.managementScope" placeholder="请输入经营范围"></el-input>
               </el-form-item>
 
               <el-form-item label="邮政编码" prop="postalCode">
-                <el-input class="w-320" v-model="jiansheFromItem.postalCode" placeholder="请输入邮政编码"></el-input>
+                <el-input class="w-410" v-model="jiansheFromItem.postalCode" placeholder="请输入邮政编码"></el-input>
               </el-form-item>
-              <el-form-item class="wt448" label="行政区（园区）" prop="applicantDistrict">
-                <el-input class="w-320" v-model="jiansheFromItem.applicantDistrict" placeholder="请输入行政区（园区）"></el-input>
+              <el-form-item class="wt588" label="行政区（园区）" prop="applicantDistrict">
+                <el-input class="w-410" v-model="jiansheFromItem.applicantDistrict" placeholder="请输入行政区（园区）"></el-input>
               </el-form-item>
               <el-form-item class="wt100 linkman-set" label="人员设置">
                 <el-row class="linkman-set-item" v-for="(janseType,index) in jiansheFromItem.linkmanTypes" :key="'jianse_'+index">
@@ -776,20 +776,20 @@
             <el-radio :label="1">窗口取证</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item class="wt448" label="收件人名字" prop="addresseeName">
+        <el-form-item class="wt588" label="收件人名字" prop="addresseeName">
           <el-autocomplete
-            class="inline-input w-320"
+            class="inline-input w-410"
             v-model="getResultForm.addresseeName"
             :fetch-suggestions="querySuggesResultMan"
             placeholder="请输入内容"
             @select="queryGetResultMan"
           ></el-autocomplete>
         </el-form-item>
-        <el-form-item class="wt448" label="收件人联系方式" prop="addresseePhone">
-          <el-input class="w-320" v-model="getResultForm.addresseePhone" placeholder="请输入收件人联系方式"></el-input>
+        <el-form-item class="wt588" label="收件人联系方式" prop="addresseePhone">
+          <el-input class="w-410" v-model="getResultForm.addresseePhone" placeholder="请输入收件人联系方式"></el-input>
         </el-form-item>
         <el-form-item class="wt100" label="收件人身份证" prop="addresseeIdcard">
-          <el-input class="w-775" v-model="getResultForm.addresseeIdcard" placeholder="请输入收件人身份证"></el-input>
+          <el-input class="w-1010" v-model="getResultForm.addresseeIdcard" placeholder="请输入收件人身份证"></el-input>
         </el-form-item>
         <el-form-item class="wt100 addressee-sel" label="收件人所在区域" required v-if="getResultForm.receiveMode==0">
           <el-select filterable allow-create   v-model="getResultForm.addresseeProvince" prop="addresseeProvince" placeholder="--请选择省--">
@@ -809,7 +809,7 @@
           </el-select>
         </el-form-item>
         <el-form-item class="wt100" label="收件人详细地址" prop="addresseeAddr" v-if="getResultForm.receiveMode==0">
-          <el-input class="w-775" type="textarea" v-model="getResultForm.addresseeAddr" placeholder="请输入收件人详细地址">
+          <el-input class="w-1010" type="textarea" v-model="getResultForm.addresseeAddr" placeholder="请输入收件人详细地址">
           </el-input>
         </el-form-item>
       </el-form>
