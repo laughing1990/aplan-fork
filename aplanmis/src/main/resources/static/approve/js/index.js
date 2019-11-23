@@ -1871,7 +1871,7 @@ var vm = new Vue({
       var oneFromSrc = '';
       var lTabsData = [
         {label: '申请表', labelId: "1", src: './applyForm.html'},
-        {label: '一张表单', labelId: "oneFrom", src: 'oneForm.html',},
+        {label: '一张表单', labelId: "oneFrom", src: 'urlStageOneForm.html',},
         {label: '材料附件', labelId: "2", src: './materialAnnex.html'},
         {label: '审批过程', labelId: "3", src: './opinionForm.html'},
         {label: '材料补正', labelId: "4", src: './opinionForm.html'},
@@ -1917,51 +1917,90 @@ var vm = new Vue({
         });
       });
       vm.lTabsData = lTabsData;
-      if (vm.isShowOneForm == '1' && !vm.isZJItem) {
-        request('', {
-          url: ctx + 'rest/oneform/common/getListForm4StageOneForm',
-          type: 'get',
-          data: {
-            applyinstId: vm.masterEntityKey,
-            stageId: vm.stageId,
-            projInfoId: vm.projInfoId,
-            // applyinstId: 'fcf9d937-f670-4871-a430-34b01cafde9b',
-            // stageId: 'f39985ed-9119-444f-b744-4167762a3872',
-            // projInfoId: '347db5f9-f55f-44eb-9d1a-983ca263e8c4',
-            showBasicButton: false,
-            includePlatformResource: false,
-          },
-        }, function(res){
-          if (res.success){
-            res.content.forEach(function(u, index){
-              if (u.smartForm){
-                u.formUrl = u.formUrl.replace('showBasicButton=true', 'showBasicButton=false')
-                getHtml(u, index);
-              } else {
-                u.formUrl += '&showBasicButton=false';
-              }
-            });
-            vm.smartFormInfo = res.content;
+      if (vm.isShowOneForm == '1' && !vm.isZJItem) { // 中介事项也不显示一张表单
+        if (vm.isSeriesinst == '0'){ // 多事项
+          var targetUrl = oneFromSrc;
+          if (vm.isApprover == '1') {
+            targetUrl += '&enableParamItem=true&itemId='+ ''; // todo
           } else {
-            vm.$message.error(res.content || '获取一张表单信息失败');
+            targetUrl += '&enableParamItem=false';
           }
-          function getHtml(data, index){
-            request('', {
-              url: ctx + data.formUrl,
-              type: 'get',
-            }, function(res) {
-              if (res.success) {
-                $('#smartFormBox_'+index).html(res.content);
-              } else {
-                // vm.$message.error('获取智能表单数据失败');
-              }
-            }, function(){
+          request('', {
+            url: targetUrl,
+            type: 'get',
+          }, function (res) {
+            if (res.success) {
+              var reder2Url = res.content;
+              request('', {
+                url: reder2Url,
+                type: 'get',
+              }, function (res2) {
+                if (res2.success) {
+                  res2.content.forEach(function(u, index){
+                    if (u.smartForm){
+                      u.formUrl = u.formUrl.replace('showBasicButton=true', 'showBasicButton=false')
+                      getHtml(u, index);
+                    } else {
+                      u.formUrl += '&showBasicButton=false';
+                    }
+                  });
+                  vm.smartFormInfo = res2.content;
+                }
+              }, function (res2) {
+                vm.$message.error(res2.message);
+                $('#oneForm').html(res2.message);
+              });
+            }
+          }, function () {
+            $('#oneForm').html('未配置一张表单信息');
+          });
+        } else { // 单事项
+          request('', {
+            url: ctx + 'rest/oneform/common/getListForm4ItemOneForm',
+            type: 'get',
+            data: {
+              applyinstId: vm.masterEntityKey,
+              // stageId: vm.stageId,
+              projInfoId: vm.projInfoId,
+              itemId: '', // todo
+              // applyinstId: 'fcf9d937-f670-4871-a430-34b01cafde9b',
+              // stageId: 'f39985ed-9119-444f-b744-4167762a3872',
+              // projInfoId: '347db5f9-f55f-44eb-9d1a-983ca263e8c4',
+              showBasicButton: false,
+              includePlatformResource: false,
+            },
+          }, function(res){
+            if (res.success){
+              res.content.forEach(function(u, index){
+                if (u.smartForm){
+                  u.formUrl = u.formUrl.replace('showBasicButton=true', 'showBasicButton=false')
+                  getHtml(u, index);
+                } else {
+                  u.formUrl += '&showBasicButton=false';
+                }
+              });
+              vm.smartFormInfo = res.content;
+            } else {
+              vm.$message.error(res.content || '获取一张表单信息失败');
+            }
+          }, function (){
+            vm.$message.error('获取一张表单信息失败');
+          });
+        }
+        function getHtml(data, index){
+          request('', {
+            url: ctx + data.formUrl,
+            type: 'get',
+          }, function(res) {
+            if (res.success) {
+              $('#smartFormBox_'+index).html(res.content);
+            } else {
               // vm.$message.error('获取智能表单数据失败');
-            })
-          }
-        }, function (){
-          vm.$message.error('获取一张表单信息失败');
-        });
+            }
+          }, function(){
+            // vm.$message.error('获取智能表单数据失败');
+          })
+        }
         // request('', {
         //   url: oneFromSrc,
         //   type: 'get',
