@@ -884,7 +884,7 @@
         matinst.*,ouser.USER_NAME createrName
         FROM
         AEA_HI_ITEM_MATINST matinst
-        INNER JOIN OPU_OM_USER ouser ON ouser.USER_ID = matinst.CREATER
+        LEFT JOIN OPU_OM_USER ouser ON ouser.USER_ID = matinst.CREATER
         JOIN AEA_HI_ITEM_INOUTINST inoutinst ON inoutinst.MATINST_ID = matinst.MATINST_ID
         JOIN AEA_ITEM_MAT mat ON ( mat.MAT_ID = matinst.MAT_ID AND mat.IS_DELETED = '0' AND mat.IS_OFFICIAL_DOC = '1'
         AND mat.MAT_PROP = 'm')
