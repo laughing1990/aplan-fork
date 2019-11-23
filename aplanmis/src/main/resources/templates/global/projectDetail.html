@@ -121,7 +121,7 @@
               </el-select>
             </el-form-item>
             <el-form-item class="input-inline" label="国标行业代码年代" prop="gbCodeYear">
-              <el-input disabled v-model="baseForm.gbCodeYear" placeholder="请输入国标行业代码发布年代"></el-input>
+              <el-input v-model="baseForm.gbCodeYear" placeholder="请输入国标行业代码发布年代"></el-input>
             </el-form-item>
             <el-form-item label="资金来源">
               <el-select placeholder="请选择" v-model="baseForm.financialSource">
@@ -199,15 +199,15 @@
               <el-input placeholder="请输入建筑面积" v-model="baseForm.buildAreaSum"></el-input>
             </el-form-item>
 
-            <el-form-item label="拟开工时间">
-              <el-date-picker type="date" placeholder="选择日期" value-format="yyyy-MM-dd" format="yyyy-MM-dd"
-                              v-model="baseForm.nstartTime">
+            <el-form-item class="input-inline" label="拟开工时间" prop="nstartTime">
+              <el-date-picker v-model="baseForm.nstartTime" type="date" placeholder="请选择拟开工时间" format="yyyy 年 MM 月 dd 日" value-format="yyyy-MM-dd">
               </el-date-picker>
+              <input v-model="baseForm.nstartTime" type="hidden">
             </el-form-item>
-            <el-form-item label="拟建成时间">
-              <el-date-picker type="date" placeholder="选择日期" value-format="yyyy-MM-dd" format="yyyy-MM-dd"
-                              v-model="baseForm.endTime">
+            <el-form-item class="input-inline" label="拟建成时间" prop="endTime">
+              <el-date-picker type="date" placeholder="请选择拟建成时间" format="yyyy 年 MM 月 dd 日" value-format="yyyy-MM-dd" v-model="baseForm.endTime">
               </el-date-picker>
+              <input v-model="baseForm.endTime" type="hidden">
             </el-form-item>
             <el-form-item label="项目资本(万元)" prop="xmzbj">
               <el-input placeholder="请输入项目资本" v-model="baseForm.xmzbj"></el-input>
