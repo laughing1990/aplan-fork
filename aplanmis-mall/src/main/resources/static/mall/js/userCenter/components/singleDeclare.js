@@ -1795,19 +1795,20 @@ var module1 = new Vue({
       if (this.isNeedFrontCond != 1 && page == 2) {
         this.declareStep = 1;
       } else if (this.isNeedState != 1 && page == 3) {
-        if (this.isNeedFrontCond != 1) {
-          this.declareStep = 1;
-        } else {
+        if (this.isNeedFrontCond == 1) {
           this.declareStep = 2;
+        } else {
+          this.declareStep = 1;
+
         }
       }else if(!this.needOneForm && page == 4){
         if (this.isNeedState == 1) {
           this.declareStep = 3;
         } else{
-          if (this.isNeedState == 1) {
+          if (this.isNeedFrontCond == 1) {
             this.declareStep = 2;
           }else {
-            this.declareStep = 3;
+            this.declareStep = 1;
           }
         }
       } else {
@@ -2550,6 +2551,7 @@ var module1 = new Vue({
         data: {
           applyinstId: _that.parallelApplyinstId,
           projInfoId: _that.projInfoId,
+          itemId: _that.itemVerId
         }
       }, function (result) {
         if (result.success) {
