@@ -81,7 +81,7 @@
                     <div class="col-md-6 form-item">
                         <label>上传时间</label>
                         <div class="input-box">
-                            <el-date-picker style="width: 330px;" type="date" value-format="yyyy-MM-dd"
+                            <el-date-picker style="width: 330px;" type="date" value-format="yyyy-MM-dd" format="yyyy-MM-dd"
                                 placeholder="选择日期" v-model="serviceResultData.uploadTime" :disabled="true">
                             </el-date-picker>
                         </div>
@@ -91,7 +91,7 @@
                     <div class="col-md-6 form-item">
                         <label><b class="red-cl">*</b>结束时间</label>
                         <div class="input-box date">
-                            <el-date-picker style="width: 330px;" type="date" value-format="yyyy-MM-dd"
+                            <el-date-picker style="width: 330px;" type="date" value-format="yyyy-MM-dd HH:mm" format="yyyy-MM-dd"
                                 placeholder="选择日期" v-model="serviceResultData.endTime" :disabled="isLookServiceReault">
                             </el-date-picker>
                         </div>
@@ -382,7 +382,7 @@
                 //     endTime: '', //结束时间
                 //     memo: '', //备注                
                 // };
-                ts.serviceResultData.uploadTime = (new Date()).getTime();
+                // ts.serviceResultData.uploadTime = Date.now();
 
                 this.getProjectDetail(row);
             },
@@ -408,7 +408,7 @@
                 }, function (res) {
                     ts.mloading = false;
                     if (res.success) {
-                        ts.serviceResultData.endTime = tempFormatDate(res.content.endTime);
+                        ts.serviceResultData.endTime = res.content.endTime;
                         ts.serviceResultData.memo = res.content.memo;
                         ts.serviceResultData.uploadTime = res.content.uploadTime; //上传时间
                         ts.bscAttForms = res.content.bscAttForms || [] //已上传附件
@@ -532,7 +532,7 @@
                         var rowData = res.content.serviceResult;
                         ts.matinstList = res.content.matList;
                         ts.serviceResultData.uploadTime = rowData.uploadTime;
-                        ts.curHandelRow.endTime = rowData.endTime;
+                        ts.serviceResultData.endTime = rowData.endTime;
                         ts.curHandelRow.memo = rowData.memo;
                     } else {
                         ts.$message({
