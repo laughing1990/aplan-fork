@@ -2537,7 +2537,10 @@ var module1 = new Vue({
       request('', {
         url: ctx + 'rest/oneform/common/getListForm4ItemOneForm?&projInfoId='+_that.projInfoId + '&itemId=' +_that.itemVerId+ '&'+ sFRenderConfig,
         type: 'post',
-        data: {applyinstId: _that.parallelApplyinstId }
+        data: {
+          applyinstId: _that.parallelApplyinstId,
+          projInfoId: _that.projInfoId,
+        }
       }, function (result) {
         if (result.success) {
           if(result.content==null || result.content.length==0){
