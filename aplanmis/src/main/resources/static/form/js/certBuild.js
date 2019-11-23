@@ -232,7 +232,7 @@ var vm = new Vue({
                             });
                         }else {
                             _that.$message({
-                                message: '保存失败',
+                                message: '保存失败' + res.content,
                                 type: 'error'
                             });
                         }

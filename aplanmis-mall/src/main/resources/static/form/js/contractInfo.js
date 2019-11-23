@@ -190,7 +190,7 @@ var app = new Vue({
             _this.showData();
           } else {
             _this.$message({
-              message: '保存失败',
+              message: '保存失败' +res.content,
               type: 'error'
             });
           }

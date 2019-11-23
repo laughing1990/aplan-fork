@@ -509,7 +509,7 @@ var vm = new Vue({
                                                 window.location.reload();
                                             } else {
                                                 _that.$message({
-                                                    message: '保存失败',
+                                                    message: '保存失败'+ data.content,
                                                     type: 'error'
                                                 });
                                             }
