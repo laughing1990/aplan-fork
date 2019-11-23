@@ -173,7 +173,7 @@ public class ImportService {
         return writtenNum;
     }
 
-    private void initLogNum() {
+    public void initLogNum() {
         //Long autoIncrement = etlJobLogService.getAutoIncrement();
         EtlJobLog etlJobLog = new EtlJobLog();
         String code = this.generateIncreaseJobLogCode();

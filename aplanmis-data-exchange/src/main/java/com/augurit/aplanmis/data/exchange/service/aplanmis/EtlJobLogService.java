@@ -25,4 +25,6 @@ public interface EtlJobLogService {
     List<EtlJobLog> listEtlJobLog(EtlJobLog etlJobLog);
 
     Long getAutoIncrement();
+
+    void batchDeleteEtlJobLogByJobLogIds(String[] jobLogIds);
 }
