@@ -94,14 +94,14 @@
                            v-for="item in allDicItemListData.XM_THEME_TYPE" :key="item.id"></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="投资类型">
+            <el-form-item label="投资类型" prop="investType">
               <el-select placeholder="请选择" v-model="baseForm.investType">
                 <el-option :label="item.itemName" :value="item.itemCode" v-for="item in allDicItemListData.XM_TZLX"
                            :key="item.id">
                 </el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="行业类别">
+            <el-form-item label="行业类别" prop="theIndustry">
               <el-select placeholder="请选择" v-model="baseForm.theIndustry">
                 <el-option :label="item.itemName" :value="item.itemCode" v-for="item in allDicItemListData.XM_GBHY"
                            :key="item.id">
@@ -123,7 +123,7 @@
             <el-form-item class="input-inline" label="国标行业代码年代" prop="gbCodeYear">
               <el-input v-model="baseForm.gbCodeYear" placeholder="请输入国标行业代码发布年代"></el-input>
             </el-form-item>
-            <el-form-item label="资金来源">
+            <el-form-item label="资金来源" prop="financialSource">
               <el-select placeholder="请选择" v-model="baseForm.financialSource">
                 <el-option :label="item.itemName" :value="item.itemCode" v-for="item in allDicItemListData.XM_ZJLY"
                            :key="item.id">
@@ -139,7 +139,7 @@
                 <el-radio label="0">否</el-radio>
               </el-radio-group>
             </el-form-item>
-            <el-form-item label="土地来源">
+            <el-form-item label="土地来源" prop="landSource">
               <el-select placeholder="请选择" v-model="baseForm.landSource">
                 <el-option :label="item.itemName" :value="item.itemCode" v-for="item in allDicItemListData.XM_TDLY"
                            :key="item.id">
@@ -235,7 +235,7 @@
                 </el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="建设规模及内容" class="fill-item">
+            <el-form-item label="建设规模及内容" class="fill-item" prop="scaleContent">
               <el-input placeholder="请输入建设规模及内容" type="textarea" v-model="baseForm.scaleContent"></el-input>
             </el-form-item>
             <el-form-item label="目前进展情况" class="fill-item">

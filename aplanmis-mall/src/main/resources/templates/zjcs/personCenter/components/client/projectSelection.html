@@ -726,51 +726,51 @@
                 var ts = this;
                 if (!data.signTime) {
                     return ts.$message({
-                        type: 'warn',
+                        type: 'error',
                         message: '请选择签订时间'
                     })
                 }
                 if (!data.contractCode) {
                     return ts.$message({
-                        type: 'warn',
+                        type: 'error',
                         message: '请填写合同编码'
                     })
                 }
                 if (!data.contractName) {
                     return ts.$message({
-                        type: 'warn',
+                        type: 'error',
                         message: '请填写合同名称'
                     })
                 }
                 if (!data.price) {
                     return ts.$message({
-                        type: 'warn',
+                        type: 'error',
                         message: '请填写合同金额'
                     })
                 }
                 if (!data.serviceStartTime || !data.serviceEndTime) {
                     return ts.$message({
-                        type: 'warn',
+                        type: 'error',
                         message: '请选择合同服务期限'
                     })
                 } else {
                     if (data.serviceStartTime > data.serviceEndTime) {
                         return ts.$message({
-                            type: 'warn',
+                            type: 'error',
                             message: '合同服务期限起始时间不能大于结束时间'
                         })
                     }
                 }
                 if (!data.serviceContent) {
                     return ts.$message({
-                        type: 'warn',
+                        type: 'error',
                         message: '请填写服务内容'
                     })
                 }
                 // 当前为上传合同并且没有选择文件时
                 if (!ts.projectSelectDetailEditFlag && !ts.enclosureFileListArr.length) {
                     return ts.$message({
-                        type: 'warn',
+                        type: 'error',
                         message: '请上传附件'
                     })
                 }

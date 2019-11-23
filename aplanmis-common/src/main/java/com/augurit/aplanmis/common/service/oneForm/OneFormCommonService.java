@@ -38,7 +38,7 @@ public class OneFormCommonService {
     private AeaParStagePartformService aeaParStagePartformService;
     @Autowired
     private ActStoFormMapper actStoFormMapper;
-    //    @Autowired
+    @Autowired
     private AeaItemPartformAdminService aeaItemPartformService;
     @Autowired
     private AeaItemBasicService aeaItemBasicService;

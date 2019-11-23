@@ -575,51 +575,29 @@ public class OfficialDocumentService {
         //获取施工核发许可证表的信息
         AeaExProjCertBuild aeaExProjCertBuildByProjId = aeaExProjCertBuildMapper.findAeaExProjCertBuildByProjId(projInfo.getProjInfoId());
         if (aeaExProjCertBuildByProjId != null) {
-            String certBuildCode = aeaExProjCertBuildByProjId.getCertBuildCode();//建设工程规划许可证编号
-            if (certBuildCode.equals("0")) {
-                String certinstCode = certinst.getCertinstCode();
-                constructPermit.setConstructPermitCode(certinstCode);
-                aeaExProjCertBuildByProjId.setCertBuildCode(certinstCode);
-                aeaExProjCertBuildMapper.updateAeaExProjCertBuild(aeaExProjCertBuildByProjId);
-            } else {
-                constructPermit.setConstructPermitCode(certBuildCode);
-            }
+            String certinstCode = certinst.getCertinstCode();
+            constructPermit.setConstructPermitCode(certinstCode);
+            aeaExProjCertBuildByProjId.setCertBuildCode(certinstCode);
+
             byte[] certBuildQrcode = aeaExProjCertBuildByProjId.getCertBuildQrcode();//建设工程规划许可证二维码
             if (certBuildQrcode != null) {
                 constructPermit.setCertBuildQrcode(certBuildQrcode);
             }
-            if (StringUtils.isBlank(aeaExProjCertBuildByProjId.getConstructionsSize())) {
-                constructPermit.setContructScale(projInfo.getBuildAreaSum() + "平方米");
-            } else {
-                constructPermit.setContructScale(aeaExProjCertBuildByProjId.getConstructionsSize() + "平方米");//建设规模
-            }
+
+            constructPermit.setContructScale(projInfo.getBuildAreaSum() + "平方米");
+            aeaExProjCertBuildByProjId.setConstructionsSize(String.valueOf(projInfo.getBuildAreaSum()));
             //获取核发机关相关信息
-            String govOrgName = aeaExProjCertBuildByProjId.getGovOrgName();
-//            String govOrgCode = aeaExProjCertBuildByProjId.getGovOrgCode();
-            Date publishTime = aeaExProjCertBuildByProjId.getPublishTime();
-            if (StringUtils.isBlank(govOrgName)) {
-                constructPermit.setIssueOrgName(certinst.getIssueOrgName());//核发机关
-                Date issueDate = certinst.getIssueDate();
-                if (null != issueDate) {
-                    String s = DateUtils.convertDateToString(issueDate, "yyyy-MM-dd");
-                    String[] split = s.split("-");
-                    constructPermit.setIssueYear(split[0]);
-                    constructPermit.setIssueMonth(split[1]);
-                    constructPermit.setIssueDay(split[2]);
-                }
-                aeaExProjCertBuildByProjId.setGovOrgName(certinst.getIssueOrgName());
-                aeaExProjCertBuildByProjId.setPublishTime(issueDate);
-                aeaExProjCertBuildMapper.updateAeaExProjCertBuild(aeaExProjCertBuildByProjId);
-            } else {
-                constructPermit.setIssueOrgName(govOrgName);
-                if (publishTime != null) {
-                    String s = DateUtils.convertDateToString(publishTime, "yyyy-MM-dd");
-                    String[] split = s.split("-");
-                    constructPermit.setIssueYear(split[0]);
-                    constructPermit.setIssueMonth(split[1]);
-                    constructPermit.setIssueDay(split[2]);
-                }
+            constructPermit.setIssueOrgName(certinst.getIssueOrgName());//核发机关
+            Date issueDate = certinst.getIssueDate();
+            if (null != issueDate) {
+                String s = DateUtils.convertDateToString(issueDate, "yyyy-MM-dd");
+                String[] split = s.split("-");
+                constructPermit.setIssueYear(split[0]);
+                constructPermit.setIssueMonth(split[1]);
+                constructPermit.setIssueDay(split[2]);
             }
+            aeaExProjCertBuildByProjId.setGovOrgName(certinst.getIssueOrgName());
+            aeaExProjCertBuildByProjId.setPublishTime(issueDate);
 
             constructPermit.setBuildUnitName(aeaExProjCertBuildByProjId.getConstructionUnit());//建设单位
             constructPermit.setProjectName(aeaExProjCertBuildByProjId.getProjName());//工程名称
@@ -636,13 +614,10 @@ public class OfficialDocumentService {
             constructPermit.setConstructUnitLeader(aeaExProjCertBuildByProjId.getSgUnitLeader());//施工单位项目负责人
             constructPermit.setChiefEngineer(aeaExProjCertBuildByProjId.getJlUnitLeader());//总监理工程师
             constructPermit.setContractDuration(aeaExProjCertBuildByProjId.getContractPeriod());//合同工期
-            if (StringUtils.isBlank(aeaExProjCertBuildByProjId.getCertBuildMemo())) {
-                constructPermit.setRemarks(certinst.getMemo());//备注
-                aeaExProjCertBuildByProjId.setCertBuildMemo(certinst.getMemo());
-                aeaExProjCertBuildMapper.updateAeaExProjCertBuild(aeaExProjCertBuildByProjId);
-            } else {
-                constructPermit.setRemarks(aeaExProjCertBuildByProjId.getCertBuildMemo());//备注
-            }
+            constructPermit.setRemarks(certinst.getMemo());//备注
+            aeaExProjCertBuildByProjId.setCertBuildMemo(certinst.getMemo());
+            aeaExProjCertBuildMapper.updateAeaExProjCertBuild(aeaExProjCertBuildByProjId);
+
         }
         return constructPermit;
     }
