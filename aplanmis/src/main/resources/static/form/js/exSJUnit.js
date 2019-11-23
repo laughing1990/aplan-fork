@@ -99,9 +99,6 @@ var vm = new Vue({
                 buildArea: [
                     { validator: checkNumFloat, trigger: ['blur'] },
                     { required: true, message: '请填写施工面积！', trigger: ['change'] }
-                ],
-                quaCheckNum:[
-                    { required: true, message: '请输入质量监督注册号！', trigger: ['change', 'blur'] },
                 ]
             },
             gongchengzongFromRules: { //工程总承包单位信息校验
