@@ -81,7 +81,7 @@
                     <div class="col-md-6 form-item">
                         <label>上传时间</label>
                         <div class="input-box">
-                            <el-date-picker style="width: 330px;" type="date" value-format="timestamp"
+                            <el-date-picker style="width: 330px;" type="date" value-format="yyyy-MM-dd"
                                 placeholder="选择日期" v-model="serviceResultData.uploadTime" :disabled="true">
                             </el-date-picker>
                         </div>
@@ -382,7 +382,7 @@
                 //     endTime: '', //结束时间
                 //     memo: '', //备注                
                 // };
-                // ts.uploadTime = (new Date()).getTime();
+                ts.serviceResultData.uploadTime = (new Date()).getTime();
 
                 this.getProjectDetail(row);
             },
@@ -410,7 +410,7 @@
                     if (res.success) {
                         ts.serviceResultData.endTime = tempFormatDate(res.content.endTime);
                         ts.serviceResultData.memo = res.content.memo;
-                        ts.uploadTime = res.content.uploadTime; //上传时间
+                        ts.serviceResultData.uploadTime = res.content.uploadTime; //上传时间
                         ts.bscAttForms = res.content.bscAttForms || [] //已上传附件
                     } else {
                         ts.$message({
@@ -530,7 +530,7 @@
                     if (res.success) {
                         var rowData = res.content.serviceResult;
                         ts.matinstList = res.content.matList;
-                        ts.curHandelRow.uploadTime = rowData.uploadTime;
+                        ts.serviceResultData.uploadTime = rowData.uploadTime;
                         ts.curHandelRow.endTime = rowData.endTime;
                         ts.curHandelRow.memo = rowData.memo;
                     } else {
@@ -735,7 +735,7 @@
                 var detailId = data.detailId;
                 var flashAttributes = '';
                 var tempwindow = window.open('_blank'); // 先打开页面
-                tempwindow.location = ctx + 'rest/mats/att/preview?detailId=' + detailId + '&flashAttributes=' + flashAttributes;
+                tempwindow.location = ctx + 'supermarket/purchase/mat/att/preview?detailId=' + detailId + '&flashAttributes=' + flashAttributes;
             },
             //下载单个附件
             downOneFile: function (data) {
