@@ -352,6 +352,7 @@ var module1 = new Vue({
       preItemCheckPassed: true, // 前置检测是否通过
       preItemCheckkMsg: '', // 前置检测失败提示
       formUrlList: [],
+      leftTabClosed: true, //
     }
   },
   created: function () {
