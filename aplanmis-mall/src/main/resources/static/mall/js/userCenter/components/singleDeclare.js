@@ -2551,7 +2551,7 @@ var module1 = new Vue({
         data: {
           applyinstId: _that.parallelApplyinstId,
           projInfoId: _that.projInfoId,
-          itemId: _that.itemVerId
+          // itemId: _that.itemVerId
         }
       }, function (result) {
         if (result.success) {
