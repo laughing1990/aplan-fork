@@ -201,12 +201,12 @@ public class AeaImServiceResultController {
         return new ContentResultForm(true, map, "success");
     }
 
-    @ApiOperation(value = "上传服务结果电子件", notes = "上传服务结果电子件")
+    @ApiOperation(value = "中介超市上传服务结果电子件", notes = "中介超市上传服务结果电子件")
     @ApiImplicitParam(name = "projPurchaseId", value = "项目采购ID", required = true)
     @PostMapping("/uploadServiceResultAtt")
     public ResultForm uploadServiceResultAtt(String matId, String matinstId, String projPurchaseId, HttpServletRequest request) throws Exception {
-        aeaImServiceResultService.uploadServiceResultAtt(matId, matinstId, projPurchaseId, request);
-        return new ResultForm(true, "success");
+        matinstId = aeaImServiceResultService.uploadServiceResultAtt(matId, matinstId, projPurchaseId, request);
+        return new ContentResultForm(true, matinstId, "success");
     }
 
 }

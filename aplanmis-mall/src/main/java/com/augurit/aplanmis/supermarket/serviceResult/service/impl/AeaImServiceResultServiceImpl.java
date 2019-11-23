@@ -314,8 +314,6 @@ public class AeaImServiceResultServiceImpl implements AeaImServiceResultService 
             result.setModifier(SecurityContext.getCurrentUserName());
             aeaImServiceResultMapper.updateAeaImServiceResult(result);
         }
-        //判断当前matinstId是否已存在 todo
-
         restImApplyService.uploadServiceResult(projPurchaseId, serviceResultVo.getMemo(), matinstIds);
     }
 
@@ -336,7 +334,7 @@ public class AeaImServiceResultServiceImpl implements AeaImServiceResultService 
     }
 
 
-    //上传服务结果电子件 -todo copy 待优化
+    //上传服务结果电子件 -发起申报后上传
     @Override
     public String uploadServiceResultAtt(String matId, String matinstId, String projPurchaseId, HttpServletRequest request) throws Exception {
         StringBuffer message = new StringBuffer();
@@ -345,7 +343,7 @@ public class AeaImServiceResultServiceImpl implements AeaImServiceResultService 
         if (org.apache.commons.lang.StringUtils.isNotBlank(matinstId)) {
 
             AeaHiItemMatinst aeaHiItemMatinst = aeaHiItemMatinstService.getAeaHiItemMatinstById(matinstId);
-            if (aeaHiItemMatinst == null) return message.append("找不到材料实例！").toString();
+            if (aeaHiItemMatinst == null) throw new Exception("找不到材料实例");
             aeaHiItemMatinstService.setAttCount(aeaHiItemMatinst, request);
             aeaHiItemMatinst.setModifier(SecurityContext.getCurrentUserName());
             aeaHiItemMatinst.setModifyTime(new Date());
@@ -354,7 +352,8 @@ public class AeaImServiceResultServiceImpl implements AeaImServiceResultService 
         } else {
 
             if (org.apache.commons.lang.StringUtils.isBlank(projPurchaseId) || org.apache.commons.lang.StringUtils.isBlank(matId))
-                return message.append("缺少参数！").toString();
+
+                throw new Exception("找不到材料实例");
 
             AeaItemMat aeaItemMat = aeaItemMatMapper.getAeaItemMatById(matId);
 
@@ -366,7 +365,8 @@ public class AeaImServiceResultServiceImpl implements AeaImServiceResultService 
                 if (aeaHiApplyinst == null) return message.append("找不到申报实例！").toString();
                 String applyinstId = aeaHiApplyinst.getApplyinstId();
                 AeaHiItemMatinst aeaHiItemMatinst = new AeaHiItemMatinst();
-                aeaHiItemMatinst.setMatinstId(UUID.randomUUID().toString());
+                matinstId = UUID.randomUUID().toString();
+                aeaHiItemMatinst.setMatinstId(matinstId);
                 aeaHiItemMatinst.setMatId(matId);
                 aeaHiItemMatinst.setCreateTime(new Date());
                 aeaHiItemMatinst.setCreater(SecurityContext.getCurrentUserId());
@@ -401,7 +401,7 @@ public class AeaImServiceResultServiceImpl implements AeaImServiceResultService 
         }
 
 
-        return message.toString();
+        return matinstId;
     }
 
 
