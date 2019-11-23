@@ -567,6 +567,7 @@ var vm = new Vue({
           IsJustApplyinst: 0, //
           preItemCheckPassed: true, // 前置检测是否通过
           preItemCheckkMsg: '', // 前置检测失败提示
+          oneFormInfo: [],
         }
     },
     mounted: function () {
@@ -598,6 +599,49 @@ var vm = new Vue({
         }
     },
     methods: {
+      // 打开一张表单弹窗
+      openOneFormDialog: function(){
+        var vm = this;
+        vm.loading = true;
+        request('', {
+          url: ctx + 'rest/oneform/common/getListForm4ItemOneForm',
+          type: 'get',
+          data: {
+            applyinstId: '',
+            projInfoId: vm.projInfoId,
+            itemId: vm.itemVerId,
+            showBasicButton: true,
+            includePlatformResource: false,
+          },
+        }, function(res){
+          if (res.success) {
+            res.content.forEach(function(u, index){
+              if (u.smartForm){
+                getHtml(u, index);
+              }
+            });
+            vm.oneFormInfo = res.content;
+          } else {
+            vm.$message.error(res.content || '获取一张表单信息失败');
+          }
+        }, function (){
+          vm.$message.error('获取一张表单信息失败');
+        });
+        function getHtml(data, index){
+          request('', {
+            url: ctx + data.formUrl,
+            type: 'get',
+          }, function(res) {
+            if (res.success) {
+              $('#smartFormBox_'+index).html(res.content);
+            } else {
+              // vm.$message.error('获取智能表单数据失败');
+            }
+          }, function(){
+            // vm.$message.error('获取智能表单数据失败');
+          })
+        }
+      },
       // 获取可共享材料列表
       getShareMatsList: function (matData) {
         var _that = this, _matCode = '';
