@@ -442,6 +442,7 @@
                 var ts = this;
                 if (!data.endTime) {
                     return ts.$message({
+                        type: 'error',
                         message: '请选择结束时间'
                     })
                 }
