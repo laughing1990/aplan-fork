@@ -67,7 +67,7 @@
               <el-form-item label="组织机构代码" prop="organizationalCode">
                 <!--<el-autocomplete :trigger-on-focus="false" v-model="applyJianliFrom.organizationalCode" placeholder="请输入组织机构代码">-->
                 <!--</el-autocomplete>-->
-                <el-input v-model="gongchengzongFrom.organizationalCode" placeholder="格式：XXXXXXXXX"></el-input>
+                <el-input v-model="gongchengzongFrom.organizationalCode" placeholder="请输入组织机构代码"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="12">
@@ -77,7 +77,7 @@
             </el-col>
             <el-col :span="12">
               <el-form-item label="单位名称" prop="applicant">
-                <el-autocomplete :trigger-on-focus="false" :fetch-suggestions="querySearchJiansheName" @select="function(value) {selUnitInfo(value,'gongchengzongFrom')}" v-model="gongchengzongFrom.applicant" placeholder="请输入单位名称">
+                <el-autocomplete :trigger-on-focus="false" :fetch-suggestions="querySearchJiansheName" @select="function(value) {selUnitInfo(value,'gongchengzongFrom',gongchengzongFrom.unitProjId,gongchengzongFrom.projLinkmanId)}" v-model="gongchengzongFrom.applicant" placeholder="请输入单位名称">
                 </el-autocomplete>
               </el-form-item>
             </el-col>
@@ -135,7 +135,7 @@
             <el-col :span="12">
               <el-form-item label="单位名称" prop="applicant">
                 <!--<el-input v-model="applyShigongzongFrom.applicant" placeholder="请输入单位名称"></el-input>-->
-                <el-autocomplete :trigger-on-focus="false" :fetch-suggestions="querySearchJiansheName" @select="function(value) {selUnitInfo(value,'shigongzongchengbao')}" v-model="applyShigongzongFrom.applicant" placeholder="请输入单位名称">
+                <el-autocomplete :trigger-on-focus="false" :fetch-suggestions="querySearchJiansheName" @select="function(value) {selUnitInfo(value,'shigongzongchengbao',applyShigongzongFrom.unitProjId,applyShigongzongFrom.projLinkmanId,applyShigongzongFrom.personSetting)}" v-model="applyShigongzongFrom.applicant" placeholder="请输入单位名称">
                 </el-autocomplete>
               </el-form-item>
             </el-col>
@@ -290,7 +290,7 @@
             </el-col>
             <el-col :span="12">
               <el-form-item label="单位名称" prop="applicant">
-                <el-autocomplete :trigger-on-focus="false" :fetch-suggestions="querySearchJiansheName" @select="function(value) {selUnitInfo(value,'applyShigongzhuanyefenbaoFrom')}" v-model="applyShigongzhuanyefenbaoFrom.applicant" placeholder="请输入单位名称">
+                <el-autocomplete :trigger-on-focus="false" :fetch-suggestions="querySearchJiansheName" @select="function(value) {selUnitInfo(value,'applyShigongzhuanyefenbaoFrom',applyShigongzhuanyefenbaoFrom.unitProjId,applyShigongzhuanyefenbaoFrom.projLinkmanId,applyShigongzhuanyefenbaoFrom.personSetting)}" v-model="applyShigongzhuanyefenbaoFrom.applicant" placeholder="请输入单位名称">
                 </el-autocomplete>
               </el-form-item>
             </el-col>
@@ -442,7 +442,7 @@
             </el-col>
             <el-col :span="12">
               <el-form-item label="单位名称" prop="applicant">
-                <el-autocomplete :trigger-on-focus="false" :fetch-suggestions="querySearchJiansheName" @select="function(value) {selUnitInfo(value,'applyShigonglaowufenbaoFrom')}" v-model="applyShigonglaowufenbaoFrom.applicant" placeholder="请输入单位名称">
+                <el-autocomplete :trigger-on-focus="false" :fetch-suggestions="querySearchJiansheName" @select="function(value) {selUnitInfo(value,'applyShigonglaowufenbaoFrom',applyShigonglaowufenbaoFrom.unitProjId,applyShigonglaowufenbaoFrom.projLinkmanId,applyShigonglaowufenbaoFrom.personSetting)}" v-model="applyShigonglaowufenbaoFrom.applicant" placeholder="请输入单位名称">
                 </el-autocomplete>
               </el-form-item>
             </el-col>
@@ -600,7 +600,7 @@
             </el-col>
             <el-col :span="12">
               <el-form-item label="单位名称" prop="applicant">
-                <el-autocomplete :trigger-on-focus="false" :fetch-suggestions="querySearchJiansheName" @select="function(value) {selUnitInfo(value,'applyJianliFrom')}" v-model="applyJianliFrom.applicant" placeholder="请输入单位名称">
+                <el-autocomplete :trigger-on-focus="false" :fetch-suggestions="querySearchJiansheName" @select="function(value) {selUnitInfo(value,'applyJianliFrom',applyJianliFrom.unitProjId,applyJianliFrom.projLinkmanId,applyJianliFrom.personSetting)}" v-model="applyJianliFrom.applicant" placeholder="请输入单位名称">
                 </el-autocomplete>
               </el-form-item>
             </el-col>
