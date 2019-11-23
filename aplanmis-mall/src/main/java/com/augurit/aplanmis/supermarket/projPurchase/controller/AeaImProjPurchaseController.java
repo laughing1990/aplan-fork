@@ -490,7 +490,7 @@ public class AeaImProjPurchaseController {
     })
     @GetMapping(value = "/listPendingProjPurchase")
     public ResultForm listPendingProjPurchase(AeaImProjPurchase aeaImProjPurchase, int pageSize, int pageNum) {
-        String[] auditFlags = {AuditFlagStatus.CHOOSE_START, AuditFlagStatus.CHOOSE_END,
+        String[] auditFlags = {AuditFlagStatus.CHOOSE_START, AuditFlagStatus.CHOOSE_END, AuditFlagStatus.UPLOAD_CONTRACT, AuditFlagStatus.CONFIRM_CONTRACT,
                 AuditFlagStatus.SERVICE_PROGRESS, AuditFlagStatus.SERVICE_FINISH, AuditFlagStatus.REGISTRATION_PROGRESS};
         return this.queryProjPurchase(aeaImProjPurchase, pageSize, pageNum, auditFlags);
     }

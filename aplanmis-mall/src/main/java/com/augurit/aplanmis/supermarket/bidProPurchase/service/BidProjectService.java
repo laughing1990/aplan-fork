@@ -278,7 +278,7 @@ public class BidProjectService {
         String purchaseAuditFlag = aeaImUnitBidding.getPurchaseAuditFlag();
         String[] purchaseAuditFlags = new String[]{"7", "8", "11"};
         if (Arrays.binarySearch(purchaseAuditFlags, purchaseAuditFlag) < 0) {
-            return new ResultForm(false, "项目无效");
+            // return new ResultForm(false, "项目无效");
         }
         String highestPrice = aeaImUnitBidding.getHighestPrice();
         String basePrice = aeaImUnitBidding.getBasePrice();
