@@ -25,7 +25,6 @@ public class AeaExProjBid implements Serializable{
     private static final long serialVersionUID = 1L;
     private String bidId; // (主键)
     private String projInfoId; // (项目ID)
-    private String provinceProjCode; // (省级项目编号)
     private String winBidNoticeCode; // (中标通知书编号)
     private String bidSectionName; // (标段名称)
     private String bidSectionAddr; // (标段地址)
@@ -75,12 +74,6 @@ public class AeaExProjBid implements Serializable{
     }
     public void setProjInfoId( String projInfoId ) {
         this.projInfoId = projInfoId == null ? null : projInfoId.trim();
-    }
-    public String getProvinceProjCode(){
-        return provinceProjCode;
-    }
-    public void setProvinceProjCode( String provinceProjCode ) {
-        this.provinceProjCode = provinceProjCode == null ? null : provinceProjCode.trim();
     }
     public String getWinBidNoticeCode(){
         return winBidNoticeCode;

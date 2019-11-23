@@ -14,7 +14,6 @@ public class AeaExProjDrawing implements Serializable{
 private static final long serialVersionUID = 1L;
         private java.lang.String drawingId; // (主键)
         private java.lang.String projInfoId; // (项目ID)
-        private java.lang.String provinceProjCode; // (省级项目编号)
         private java.lang.String drawingQuabookCode; // (施工图审查合格书编号)
         private java.lang.String inverstmentMoeny; // (投资额，单位：万元)
         private java.lang.String approveDrawingArea; // (图审面积，单位：平方米)
@@ -63,12 +62,6 @@ private static final long serialVersionUID = 1L;
     }
     public void setProjInfoId( java.lang.String projInfoId ) {
         this.projInfoId = projInfoId == null ? null : projInfoId.trim();
-    }
-    public java.lang.String getProvinceProjCode(){
-        return provinceProjCode;
-    }
-    public void setProvinceProjCode( java.lang.String provinceProjCode ) {
-        this.provinceProjCode = provinceProjCode == null ? null : provinceProjCode.trim();
     }
     public java.lang.String getDrawingQuabookCode(){
         return drawingQuabookCode;

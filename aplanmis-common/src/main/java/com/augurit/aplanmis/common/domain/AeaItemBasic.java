@@ -97,6 +97,12 @@ public class AeaItemBasic implements Serializable {
     private String isCatalog;//是否标准事项  1标准事项 0 实施事项
     private String guideOrgName;
 
+    @ApiModelProperty(value = "法定办结时限")
+    private Double anticipateDay;
+
+    @ApiModelProperty(value = "法定办结时限单位")
+    private String anticipateType;
+
     /**
      * 行政区域
      */

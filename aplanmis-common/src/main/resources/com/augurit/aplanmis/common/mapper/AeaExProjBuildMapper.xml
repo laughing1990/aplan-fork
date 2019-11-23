@@ -6,7 +6,6 @@
     <sql id="allColumns">
         BUILD_ID buildId,
         PROJ_INFO_ID projInfoId,
-        PROVINCE_PROJ_CODE provinceProjCode,
         CONTRACT_START_BUILD_TIME contractStartBuildTime,
         CONTRACT_END_BUILD_TIME contractEndBuildTime,
         BUILD_AREA buildArea,
@@ -22,9 +21,9 @@
 
     <insert id="insertAeaExProjBuild" parameterType="AeaExProjBuild">
       insert into aea_ex_proj_build
-        (BUILD_ID,PROJ_INFO_ID,PROVINCE_PROJ_CODE,CONTRACT_START_BUILD_TIME,CONTRACT_END_BUILD_TIME,BUILD_AREA,STRUCTURE_SYSTEM,QUA_CHECK_NUM,BUILD_MEMO,CREATER,CREATE_TIME,MODIFIER,MODIFY_TIME,ROOT_ORG_ID)
+        (BUILD_ID,PROJ_INFO_ID,CONTRACT_START_BUILD_TIME,CONTRACT_END_BUILD_TIME,BUILD_AREA,STRUCTURE_SYSTEM,QUA_CHECK_NUM,BUILD_MEMO,CREATER,CREATE_TIME,MODIFIER,MODIFY_TIME,ROOT_ORG_ID)
         values
-        (#{buildId},#{projInfoId},#{provinceProjCode},#{contractStartBuildTime},#{contractEndBuildTime},#{buildArea},#{structureSystem},#{quaCheckNum},#{buildMemo},#{creater},#{createTime},#{modifier},#{modifyTime},#{rootOrgId})
+        (#{buildId},#{projInfoId},#{contractStartBuildTime},#{contractEndBuildTime},#{buildArea},#{structureSystem},#{quaCheckNum},#{buildMemo},#{creater},#{createTime},#{modifier},#{modifyTime},#{rootOrgId})
     </insert>
 
     <update id="updateAeaExProjBuild" parameterType="AeaExProjBuild">
@@ -32,9 +31,6 @@
         <set >
             <if test="projInfoId != null and projInfoId !=''" >
                 PROJ_INFO_ID = #{projInfoId},
-            </if>
-            <if test="provinceProjCode != null and provinceProjCode !=''" >
-                PROVINCE_PROJ_CODE = #{provinceProjCode},
             </if>
             <if test="contractStartBuildTime != null and contractStartBuildTime !=''" >
                 CONTRACT_START_BUILD_TIME = #{contractStartBuildTime},

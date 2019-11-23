@@ -428,6 +428,7 @@ function addParStage(isNode) {
             $("#add_stage_form select[name='dueUnit'] option:eq(1)").prop("selected", 'selected');
             $("#add_stage_form select[name='isImgIcon'] option:eq(1)").prop("selected", 'selected');
             $("#add_stage_form input[name='bigImgPath']").val('/admin/theme/index/imgs/32/施工许可02.png');
+            $("#add_stage_form select[name='anticipateType'] option:eq(1)").prop("selected", 'selected');
 
             $.ajax({
                 url: ctx + '/aea/par/stage/getMaxSortNo.do',

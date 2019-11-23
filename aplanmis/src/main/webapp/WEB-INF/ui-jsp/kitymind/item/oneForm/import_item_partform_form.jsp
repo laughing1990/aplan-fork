@@ -135,17 +135,15 @@
     // 表单属性，meta-biz表示元数据普通表单，meta-flow表示元数据流程表单，smart-biz表示智能普通表单，smart-flow表示智能流程表单
     function formPropertyFormatter(value, row, index, field) {
 
-        if(value){
-            if(value=='meta-biz'){
-                return '元数据普通表单';
-            }else if(value=='meta-flow'){
-                return '元数据流程表单';
-            }else if(value=='smart-biz'){
-                return '智能普通表单';
-            }else if(value=='smart-flow'){
-                return '智能流程表单';
-            } else if (value == 'dev-biz') {
-                return "开发普通表单";
+        if (value) {
+            if (value == 'meta-biz'||value =='dev-biz') {
+                return '普通开发表单';
+            } else if (value == 'meta-flow') {
+                return '流程开发表单';
+            } else if (value == 'smart-biz') {
+                return '普通智能表单';
+            } else if (value == 'smart-flow') {
+                return '流程智能表单';
             }
         }
     }

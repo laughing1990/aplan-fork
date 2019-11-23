@@ -99,9 +99,6 @@ var vm = new Vue({
                 buildArea: [
                     { validator: checkNumFloat, trigger: ['blur'] },
                     { required: true, message: '请填写施工面积！', trigger: ['change'] }
-                ],
-                quaCheckNum:[
-                    { required: true, message: '请输入质量监督注册号！', trigger: ['change', 'blur'] },
                 ]
             },
             gongchengzongFromRules: { //工程总承包单位信息校验
@@ -509,6 +506,7 @@ var vm = new Vue({
                                                     message: '保存成功',
                                                     type: 'success'
                                                 });
+                                                window.location.reload();
                                             } else {
                                                 _that.$message({
                                                     message: '保存失败',
@@ -666,23 +664,54 @@ var vm = new Vue({
             };
         },
         //选择单位
-        selUnitInfo: function(val, flag, index) {
+        selUnitInfo: function(val, flag, unitProj,projLinkman,personSetting) {
+            var _that = this;
             if (flag == 'shigongzongchengbao') {
                 val.personSetting = JSON.parse(JSON.stringify(val.personSetting));
-                this.applyShigongzongFrom = val;
+                _that.applyShigongzongFrom = val;
+                _that.applyShigongzongFrom.unitProjId = unitProj;
+                _that.applyShigongzongFrom.projLinkmanId = projLinkman;
+                personSetting.map(function (value, index) {
+                    if(value.projLinkmanId){
+                        _that.personIdList.push(value.projLinkmanId);
+                    }
+                })
             } else if (flag == 'gongchengzongFrom') {
                 val.personSetting = JSON.parse(JSON.stringify(val.personSetting));
-                this.gongchengzongFrom = val;
+                _that.gongchengzongFrom = val;
+                _that.gongchengzongFrom.unitProjId = unitProj;
+                _that.gongchengzongFrom.projLinkmanId = projLinkman;
             } else if (flag == 'applyShigongzhuanyefenbaoFrom') {
                 val.personSetting = JSON.parse(JSON.stringify(val.personSetting));
-                this.applyShigongzhuanyefenbaoFrom = val;
+                _that.applyShigongzhuanyefenbaoFrom = val;
+                _that.applyShigongzhuanyefenbaoFrom.unitProjId = unitProj;
+                _that.applyShigongzhuanyefenbaoFrom.projLinkmanId = projLinkman;
+                personSetting.map(function (value, index) {
+                    if(value.projLinkmanId){
+                        _that.personIdList.push(value.projLinkmanId);
+                    }
+                })
             } else if (flag == 'applyShigonglaowufenbaoFrom') {
                 val.personSetting = JSON.parse(JSON.stringify(val.personSetting));
-                this.applyShigonglaowufenbaoFrom = val;
+                _that.applyShigonglaowufenbaoFrom = val;
+                _that.applyShigonglaowufenbaoFrom.unitProjId = unitProj;
+                _that.applyShigonglaowufenbaoFrom.projLinkmanId = projLinkman;
+                personSetting.map(function (value, index) {
+                    if(value.projLinkmanId){
+                        _that.personIdList.push(value.projLinkmanId);
+                    }
+                })
             } else if (flag == 'applyJianliFrom') {
                 val.personSetting = JSON.parse(JSON.stringify(val.personSetting));
-                this.applyJianliFrom = val;
-                this.applyJianliFrom.unitType = '5';
+                _that.applyJianliFrom = val;
+                _that.applyJianliFrom.unitProjId = unitProj;
+                _that.applyJianliFrom.projLinkmanId = projLinkman;
+                _that.applyJianliFrom.unitType = '5';
+                personSetting.map(function (value, index) {
+                    if(value.projLinkmanId){
+                        _that.personIdList.push(value.projLinkmanId);
+                    }
+                })
             }
         },
         // 人员设置选择人员

@@ -576,10 +576,12 @@ public class OfficialDocumentService {
         AeaExProjCertBuild aeaExProjCertBuildByProjId = aeaExProjCertBuildMapper.findAeaExProjCertBuildByProjId(projInfo.getProjInfoId());
         if (aeaExProjCertBuildByProjId != null) {
             String certBuildCode = aeaExProjCertBuildByProjId.getCertBuildCode();//建设工程规划许可证编号
-            if(certBuildCode.equals("0")){
+            if (certBuildCode.equals("0")) {
                 String certinstCode = certinst.getCertinstCode();
                 constructPermit.setConstructPermitCode(certinstCode);
-            }else {
+                aeaExProjCertBuildByProjId.setCertBuildCode(certinstCode);
+                aeaExProjCertBuildMapper.updateAeaExProjCertBuild(aeaExProjCertBuildByProjId);
+            } else {
                 constructPermit.setConstructPermitCode(certBuildCode);
             }
             byte[] certBuildQrcode = aeaExProjCertBuildByProjId.getCertBuildQrcode();//建设工程规划许可证二维码
@@ -636,6 +638,8 @@ public class OfficialDocumentService {
             constructPermit.setContractDuration(aeaExProjCertBuildByProjId.getContractPeriod());//合同工期
             if (StringUtils.isBlank(aeaExProjCertBuildByProjId.getCertBuildMemo())) {
                 constructPermit.setRemarks(certinst.getMemo());//备注
+                aeaExProjCertBuildByProjId.setCertBuildMemo(certinst.getMemo());
+                aeaExProjCertBuildMapper.updateAeaExProjCertBuild(aeaExProjCertBuildByProjId);
             } else {
                 constructPermit.setRemarks(aeaExProjCertBuildByProjId.getCertBuildMemo());//备注
             }
@@ -831,18 +835,11 @@ public class OfficialDocumentService {
             inout.setItemVerId(itemVerId);
             inout.setIsDeleted("0");
             inout.setIsInput("0");
+            inout.setMatId(matId);
             inout.setRootOrgId(SecurityContext.getCurrentOrgId());
-            List<AeaItemInout> itemInouts = aeaItemInoutMapper.listAeaItemInoutByItemVerId(inout);
-            if (itemInouts.size() > 0) {
-                for (AeaItemInout inout1 : itemInouts) {
-                    String matId1 = inout1.getMatId();
-                    if (matId.equalsIgnoreCase(matId1)) {
-                        inoutId = inout1.getInoutId();
-                        break;
-                    }
-
-                }
-            }
+            List<AeaItemInout> itemInouts = aeaItemInoutMapper.listAeaItemInout(inout);
+            if (itemInouts.size() < 1) throw new Exception("找不到输出定义！");
+            inoutId = itemInouts.get(0).getInoutId();
 
             AeaItemMat mat = aeaItemMatMapper.getAeaItemMatById(matId);
             if (mat == null) throw new Exception("找不到材料定义！");
@@ -897,7 +894,6 @@ public class OfficialDocumentService {
                 aeaProjInfoService.updateAeaProjInfo(temp);
             }
         }
-
     }
 
     /**

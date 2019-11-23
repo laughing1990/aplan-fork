@@ -7,7 +7,6 @@
 <sql id="allColumns" >
     CONTRACT_ID  contractId,
     PROJ_INFO_ID  projInfoId,
-    PROVINCE_PROJ_CODE  provinceProjCode,
     CONTRACT_CODE  contractCode,
     CONTRACT_TYPE  contractType,
     CONTRACT_MOENY  contractMoeny,
@@ -44,9 +43,6 @@
         </if>
         <if test="projInfoId != null" >
         AND    PROJ_INFO_ID = #{projInfoId}
-        </if>
-        <if test="provinceProjCode != null" >
-        AND    PROVINCE_PROJ_CODE = #{provinceProjCode}
         </if>
         <if test="contractCode != null" >
         AND    CONTRACT_CODE = #{contractCode}
@@ -97,9 +93,9 @@
 <!--5 新增实体对象 -->
 <insert id="insertAeaExProjContract" parameterType="com.augurit.aplanmis.common.domain.AeaExProjContract" >
     insert into AEA_EX_PROJ_CONTRACT (
-CONTRACT_ID  ,PROJ_INFO_ID  ,PROVINCE_PROJ_CODE  ,CONTRACT_CODE  ,CONTRACT_TYPE  ,CONTRACT_MOENY  ,CONTRACT_SIGN_TIME  ,CONTRACT_CONFIRM_TIME  ,GOV_ORG_CODE  ,GOV_ORG_NAME  ,GOV_ORG_AREA_CODE  ,CONTRACT_MEMO  ,CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME  ,ROOT_ORG_ID  
+CONTRACT_ID  ,PROJ_INFO_ID  ,CONTRACT_CODE  ,CONTRACT_TYPE  ,CONTRACT_MOENY  ,CONTRACT_SIGN_TIME  ,CONTRACT_CONFIRM_TIME  ,GOV_ORG_CODE  ,GOV_ORG_NAME  ,GOV_ORG_AREA_CODE  ,CONTRACT_MEMO  ,CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME  ,ROOT_ORG_ID
     )  values  (
-#{contractId},#{projInfoId},#{provinceProjCode},#{contractCode},#{contractType},#{contractMoeny},#{contractSignTime},#{contractConfirmTime},#{govOrgCode},#{govOrgName},#{govOrgAreaCode},#{contractMemo},#{creater},#{createTime},#{modifier},#{modifyTime},  #{rootOrgId}
+#{contractId},#{projInfoId},#{contractCode},#{contractType},#{contractMoeny},#{contractSignTime},#{contractConfirmTime},#{govOrgCode},#{govOrgName},#{govOrgAreaCode},#{contractMemo},#{creater},#{createTime},#{modifier},#{modifyTime},  #{rootOrgId}
     )
 </insert>
 <!--6 修改实体对象 -->
@@ -111,9 +107,6 @@ CONTRACT_ID  ,PROJ_INFO_ID  ,PROVINCE_PROJ_CODE  ,CONTRACT_CODE  ,CONTRACT_TYPE 
         </if>
         <if test="projInfoId != null" >
         PROJ_INFO_ID = #{projInfoId},
-        </if>
-        <if test="provinceProjCode != null" >
-        PROVINCE_PROJ_CODE = #{provinceProjCode},
         </if>
         <if test="contractCode != null" >
         CONTRACT_CODE = #{contractCode},
@@ -174,7 +167,6 @@ CONTRACT_ID  ,PROJ_INFO_ID  ,PROVINCE_PROJ_CODE  ,CONTRACT_CODE  ,CONTRACT_TYPE 
     <resultMap type="com.augurit.aplanmis.common.domain.AeaExProjContract" id="AeaExProjContractMap">
         <id property="contractId" column="CONTRACT_ID"/>
         <result property="projInfoId" column="PROJ_INFO_ID"/>
-        <result property="provinceProjCode" column="PROVINCE_PROJ_CODE"/>
         <result property="contractCode" column="CONTRACT_CODE"/>
         <result property="contractType" column="CONTRACT_TYPE"/>
         <result property="contractMoeny" column="CONTRACT_MOENY"/>

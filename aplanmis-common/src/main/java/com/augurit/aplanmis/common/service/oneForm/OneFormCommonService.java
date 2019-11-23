@@ -10,6 +10,7 @@ import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.domain.AeaItemPartform;
 import com.augurit.aplanmis.common.domain.AeaParStagePartform;
+import com.augurit.aplanmis.common.service.admin.item.AeaItemPartformAdminService;
 import com.augurit.aplanmis.common.service.admin.oneform.AeaParStagePartformService;
 import com.augurit.aplanmis.front.basis.stage.service.RestStageService;
 import com.augurit.aplanmis.front.basis.stage.vo.FormFrofileVo;
@@ -36,7 +37,8 @@ public class OneFormCommonService {
     @Autowired
     private ActStoFormMapper actStoFormMapper;
 //    @Autowired
-//    private AeaItemPartformService aeaItemPartformService;
+    private AeaItemPartformAdminService aeaItemPartformService;
+
     /*
     * 获取并联申报的一张表单--表单列表
     * */
@@ -263,13 +265,13 @@ public class OneFormCommonService {
     public List<FormFrofileVo> getListForm4ItemOneForm(OneFormItemRequest oneFormItemRequest) {
         List<FormFrofileVo> result = new ArrayList<>();
         int formSortNo=0;
-        String itemVerId=oneFormItemRequest.getItemids().get(0);
+        String itemVerId=oneFormItemRequest.getItemId();
         AeaItemPartform aeaItemPartform = new AeaItemPartform();
         aeaItemPartform.setItemVerId(itemVerId);
 //aeaItemPartform.setIsSmartForm("0");
         aeaItemPartform.setSortNo(null);
         List<AeaItemPartform> aeaItemPartformList = null;
-//        aeaItemPartformList=aeaItemPartformService.listStagePartform(aeaItemPartform);
+        aeaItemPartformList=aeaItemPartformService.listAeaItemPartformNoPage(aeaItemPartform);
         String projInfoId = oneFormItemRequest.getProjInfoId();
         if (aeaItemPartformList != null && aeaItemPartformList.size() > 0) {
             for (AeaItemPartform ItemPartform : aeaItemPartformList) {

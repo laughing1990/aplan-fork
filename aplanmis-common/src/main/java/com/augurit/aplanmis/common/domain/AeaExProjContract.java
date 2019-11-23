@@ -13,7 +13,6 @@ public class AeaExProjContract implements Serializable{
 private static final long serialVersionUID = 1L;
         private java.lang.String contractId; // (主键)
         private java.lang.String projInfoId; // (项目ID)
-        private java.lang.String provinceProjCode; // (省级项目编号)
         private java.lang.String contractCode; // (合同编号)
         private java.lang.String contractType; // (合同类型)
             private java.lang.String contractMoeny; // (合同金额，单位：万元)
@@ -55,12 +54,6 @@ private static final long serialVersionUID = 1L;
     }
     public void setProjInfoId( java.lang.String projInfoId ) {
         this.projInfoId = projInfoId == null ? null : projInfoId.trim();
-    }
-    public java.lang.String getProvinceProjCode(){
-        return provinceProjCode;
-    }
-    public void setProvinceProjCode( java.lang.String provinceProjCode ) {
-        this.provinceProjCode = provinceProjCode == null ? null : provinceProjCode.trim();
     }
     public java.lang.String getContractCode(){
         return contractCode;

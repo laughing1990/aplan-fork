@@ -41,7 +41,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("rest/apply/common")
+@RequestMapping("/rest/user/apply/common")
 @Api(value = "申报通用接口", tags = "申报 --> 申报通用接口")
 public class RestApplyCommonController {
     Logger logger = LoggerFactory.getLogger(RestApplyCommonController.class);
@@ -62,7 +62,7 @@ public class RestApplyCommonController {
     private AeaParThemeService aeaParThemeService;
 
 
-    @GetMapping("projInfo/{projInfoId}")
+    @GetMapping("/projInfo/{projInfoId}")
     @ApiOperation(value = "阶段申报 --> 查询项目基础信息接口")
     public ContentResultForm<AeaProjInfo> getProjInfoByProjInfoId(@PathVariable("projInfoId") String projInfoId) {
         try {
@@ -78,11 +78,11 @@ public class RestApplyCommonController {
         }
     }
 
-    @GetMapping("applyObject")
+    @GetMapping("/applyObject")
     @ApiOperation(value = "阶段申报/单项申报 --> 查询申报主体接口")
-    public ContentResultForm<UserInfoVo> getApplyObject(HttpServletRequest request) {
+    public ContentResultForm<UserInfoVo> getApplyObject() {
         try {
-            return new ContentResultForm<>(true, restApplyService.getApplyObject(request));
+            return new ContentResultForm<>(true, restApplyService.getApplyObject());
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return new ContentResultForm<>(false, null, "查询申报主体接口发生异常");
@@ -114,7 +114,7 @@ public class RestApplyCommonController {
         return new ContentResultForm<>(true, resultMap, "保存成功!");
     }
 
-    @GetMapping("itemState/findByParentItemStateId/{itemStateId}/{itemVerId}")
+    @GetMapping("/itemState/findByParentItemStateId/{itemStateId}/{itemVerId}")
     @ApiOperation("并联申报/单项申报 --> 根据父情形ID查找(事项)子情形列表")
     @ApiImplicitParams({
             @ApiImplicitParam(value = "事项版本ID", name = "itemVerId", required = true, dataType = "string"),

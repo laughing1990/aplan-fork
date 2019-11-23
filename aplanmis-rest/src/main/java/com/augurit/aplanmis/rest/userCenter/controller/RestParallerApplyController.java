@@ -30,8 +30,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
 import java.util.List;
@@ -39,7 +44,7 @@ import java.util.Map;
 
 //并联申报
 @RestController
-@RequestMapping("rest/userCenter/apply")
+@RequestMapping("/rest/user/apply")
 @Api(value = "申办", tags = "申报 --> 并联申报接口")
 public class RestParallerApplyController {
     Logger logger = LoggerFactory.getLogger(RestParallerApplyController.class);
@@ -69,13 +74,13 @@ public class RestParallerApplyController {
     @Value("${dg.sso.access.platform.org.top-org-id:0368948a-1cdf-4bf8-a828-71d796ba89f6}")
     protected String topOrgId;
 
-    @GetMapping("/toParaApplyPage")
+    /*@GetMapping("/toParaApplyPage")
     @ApiOperation(value = "阶段申报-->跳转阶段申报页面接口")
     public ModelAndView toParaApplyPage() {
         return new ModelAndView("mall/userCenter/components/parallelDeclare");
-    }
+    }*/
 
-    @GetMapping("itemAndState/list/{stageId}/{projInfoId}/{regionalism}")
+    @GetMapping("/itemAndState/list/{stageId}/{projInfoId}/{regionalism}")
     @ApiOperation(value = "阶段申报 --> 根据阶段ID、项目ID获取事项一单清列表数据")
     @ApiImplicitParams({@ApiImplicitParam(value = "阶段ID", name = "stageId", required = true, dataType = "string"),
             @ApiImplicitParam(value = "项目ID", name = "projInfoId", dataType = "string"),
@@ -93,9 +98,9 @@ public class RestParallerApplyController {
         }
     }
 
-    @PostMapping("mat/list")
+    @GetMapping("/mat/list")
     @ApiOperation(value = "阶段申报 --> 根据阶段ID、阶段情形ID集合、事项情形ID集合、事项版本ID集合获取材料一单清列表数据")
-    public ContentResultForm<List<AeaItemMat>> listItemAndStateeByStageId(@RequestBody MatListParamVo matListParamVo) {
+    public ContentResultForm<List<AeaItemMat>> listItemAndStateeByStageId(@ModelAttribute MatListParamVo matListParamVo) {
         try {
             return new ContentResultForm<>(true, aeaItemMatService.getMatListByStateListAndItemListAndStageId(matListParamVo.getItemStateIds(), matListParamVo.getStageStateIds(),
                     matListParamVo.getCoreItemVerIds(), matListParamVo.getParallelItemVerIds(), matListParamVo.getCoreParentItemVerIds(), matListParamVo.getParaParentllelItemVerIds(), matListParamVo.getStageId()), "success");
@@ -105,7 +110,7 @@ public class RestParallerApplyController {
         }
     }
 
-    @PostMapping("net/process/start")
+    @PostMapping("/net/process/start")
     @ApiOperation(value = "阶段申报--> 提交申请")
     public ContentResultForm<ParallelApplyResultVo> startNetStageProcess(@RequestBody StageApplyDataPageVo stageApplyDataPageVo) {
         try {
@@ -117,7 +122,7 @@ public class RestParallerApplyController {
         }
     }
 
-    @PostMapping("net/process/form/start")
+    @PostMapping("/net/process/form/start")
     @ApiOperation(value = "阶段申报--> 一张表单提前实例化申请")
     public ContentResultForm<String> startInstApply(String applySource, String applySubject, String linkmanInfoId) {
         try {
@@ -129,7 +134,7 @@ public class RestParallerApplyController {
         }
     }
 
-    @GetMapping("itemByState/list/{stateId}/{stageId}/{regionalism}")
+    @GetMapping("/itemByState/list/{stateId}/{stageId}/{regionalism}")
     @ApiOperation(value = "阶段申报 --> 根据情形ID和阶段ID获取绑定事项及(阶段)子情形列表")
     @ApiImplicitParams({
             @ApiImplicitParam(value = "情形ID", name = "stateId", required = true, dataType = "string"),
@@ -154,7 +159,7 @@ public class RestParallerApplyController {
         }
     }
 
-    @GetMapping("factor/list")
+    @GetMapping("/factor/list")
     @ApiOperation(value = "阶段申报 --> 获取根因子列表")
     public ContentResultForm<List<AeaParFactor>> listFactorByRootOrgId() {
         try {
@@ -166,7 +171,7 @@ public class RestParallerApplyController {
         }
     }
 
-    @GetMapping("factor/child/list/{factorId}")
+    @GetMapping("/factor/child/list/{factorId}")
     @ApiOperation(value = "阶段申报 --> 根据父因子获取子因子列表")
     @ApiImplicitParam(value = "父因子ID", name = "factorId", dataType = "string")
     public ContentResultForm<List<AeaParFactor>> listChildFactorByParentFactorId(@PathVariable("factorId") String factorId) {
@@ -178,7 +183,7 @@ public class RestParallerApplyController {
         }
     }
 
-    @GetMapping("intelligent/theme/list/{factorIds}")
+    @GetMapping("/intelligent/theme/list/{factorIds}")
     @ApiOperation(value = "阶段申报 --> 根据选择的因子智能推荐主题")
     @ApiImplicitParam(value = "父因子ID集合", name = "factorIds")
     public ContentResultForm<Map<String, Object>> getThemeByFactorIds(@PathVariable("factorIds") String[] factorIds) {

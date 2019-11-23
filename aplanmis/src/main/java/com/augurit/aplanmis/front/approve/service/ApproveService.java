@@ -163,6 +163,8 @@ public class ApproveService {
                         currentState = dic.getItemName();
                     }
                 }
+
+                bpmApproveStateVo.setItemVerId(iteminst.getItemVerId());
             }
 
         } else {//并联

@@ -32,13 +32,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 
 //单项申报
 @RestController
-@RequestMapping("rest/userCenter/apply/series")
+@RequestMapping("rest/user/apply/series")
 @Api(value = "申办", tags = "申报 --> 单项申报接口")
 public class RestSeriesApplyController {
     Logger logger = LoggerFactory.getLogger(RestSeriesApplyController.class);
@@ -67,13 +66,13 @@ public class RestSeriesApplyController {
     RestSeriesApplyService restSeriesApplyService;
 
 
-    @GetMapping("/toSingleApplyPage")
+   /* @GetMapping("/toSingleApplyPage")
     @ApiOperation(value = "单项申报-->跳转单项申报页面接口")
     public ModelAndView toSingleApplyPage() {
         return new ModelAndView("mall/userCenter/components/singleDeclar");
-    }
+    }*/
 
-    @GetMapping("itemState/list/{itemVerId}")
+    @GetMapping("/itemState/list/{itemVerId}")
     @ApiOperation("单项申报 --> 根据事项版本号获取根情形列表")
     @ApiImplicitParam(value = "事项版本ID", name = "itemVerId", required = true, dataType = "string")
     public ContentResultForm<List<AeaItemState>> listTreeAeaItemStateByItemVerId(@PathVariable("itemVerId") String itemVerId) {
@@ -85,7 +84,7 @@ public class RestSeriesApplyController {
         }
     }
 
-    @GetMapping("baseInfo/{projInfoId}/{itemVerId}")
+    @GetMapping("/baseInfo/{projInfoId}/{itemVerId}")
     @ApiOperation(value = "单项申报 --> 根据事项版本ID、项目ID获取基础信息数据")
     @ApiImplicitParams({@ApiImplicitParam(value = "事项版本ID", name = "itemVerId", required = true, dataType = "string"),
             @ApiImplicitParam(value = "项目ID", name = "projInfoId", dataType = "string")})
@@ -98,7 +97,7 @@ public class RestSeriesApplyController {
         }
     }
 
-    @PostMapping("mat/list")
+    @PostMapping("/mat/list")
     @ApiOperation(value = "单项申报 --> 根据情形ID集合、事项版本ID获取材料一单清列表数据")
     public ContentResultForm<List<AeaItemMat>> listMatForItem(@RequestBody SeriesMatParamVo vo) {
         try {
@@ -110,7 +109,7 @@ public class RestSeriesApplyController {
         }
     }
 
-    @GetMapping("itemState/getTreeCondByItemVerId/{itemVerId}")
+    @GetMapping("/itemState/getTreeCondByItemVerId/{itemVerId}")
     @ApiOperation("单项申报 --> 根据事项版本号获取root前置条件列表(包含子条件)")
     @ApiImplicitParam(value = "事项版本ID", name = "itemVerId", required = true, dataType = "string")
     public ContentResultForm<List<AeaItemCond>> getTreeCondByItemVerId(@PathVariable("itemVerId") String itemVerId) {
@@ -122,7 +121,7 @@ public class RestSeriesApplyController {
         }
     }
 
-    @GetMapping("itemState/getChildAeaItemCondListByCondId/{condId}")
+    @GetMapping("/itemState/getChildAeaItemCondListByCondId/{condId}")
     @ApiOperation("单项申报 --> 根据父条件ID查询子前置条件列表")
     @ApiImplicitParam(value = "前置条件ID", name = "condId", required = true, dataType = "string")
     public ContentResultForm<List<AeaItemCond>> getChildAeaItemCondListByCondId(@PathVariable String condId) {
