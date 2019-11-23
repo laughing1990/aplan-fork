@@ -235,7 +235,7 @@
           <div class="clearfix">
             <el-form-item label="组织机构代码" class="input-inline" prop="winBidUnits[0].organizationalCode" :rules="[
                         { required: true, message: '组织机构代码不得为空！', trigger: 'change' }]">
-              <el-input name="localCode" v-model="biddingInfo.winBidUnits[0].organizationalCode" placeholder="请输入组织机构代码">
+              <el-input name="localCode" v-model="biddingInfo.winBidUnits[0].organizationalCode" placeholder="格式：XXXXXXXXX">
               </el-input>
             </el-form-item>
             <el-form-item label="统一社会信用代码" class="input-inline" prop="winBidUnits[0].unifiedSocialCreditCode">
