@@ -18,6 +18,12 @@
           <span class="mstage-count not-allow-sel">!</span>
         </el-tooltip>
       </span>
+      <span v-else-if="index==3&&!needOneForm">
+        <el-tooltip effect="light" placement="top">
+          <div slot="content"><i class="el-icon-warning-outline"></i>该事项无需填写一张表单</div>
+          <span class="mstage-count not-allow-sel">!</span>
+        </el-tooltip>
+      </span>
       <span class="mstage-count el-icon-check" v-else-if="(index+1)<declareStep"></span>
       <span class="mstage-count" v-else>{{item.num}}</span>
       <p class="mstage-name">{{item.name}}</p>
@@ -906,8 +912,29 @@
     </div>
   </div>
   <!-- 事项一单清 end-->
-  <!-- 选项材料一单清 -->
+  <!--  一张表单-->
   <div class="mt20 proj-module pd-info-pandel" v-show="declareStep == 4">
+    <h4 class="mt60">一张表单 </h4>
+    <span class="icon-fold" v-if="formUrlList.length>0" :class="leftTabClosed?'el-icon-s-unfold':'el-icon-s-fold'" @click="leftTabClosed=!leftTabClosed"></span>
+    <el-tabs  v-if="formUrlList.length>0" class="one-form-tab" :class="leftTabClosed?'closed':''" tab-position="left" :style="{height:(curHeight-220)+'px'}">
+      <el-tab-pane v-for="(item,index) in formUrlList" :key="index">
+        <span slot="label" :title="item.formName">{{item.formName}}</span>
+        <iframe :style="{height:(curHeight-220)+'px',overflow: 'auto',width:'100%'}"
+                v-if="item.smartForm==false"
+                :src="ctx+item.formUrl" frameborder="0"></iframe>
+        <div v-else :style="{height:(curHeight-220)+'px',overflow: 'auto',width:'100%','padding':'10px'}">
+          <div :id="'formHtml_'+index"></div>
+        </div>
+      </el-tab-pane>
+    </el-tabs>
+    <div class="footer-stage-btn">
+      <el-button class="mt60" @click="prevPage(5)">上一步</el-button>
+      <el-button class="mt60" type="primary" @click="saveAndGetMats">下一步</el-button>
+    </div>
+  </div>
+  <!--  一张表单 end-->
+  <!-- 选项材料一单清 -->
+  <div class="mt20 proj-module pd-info-pandel" v-show="declareStep == 5">
     <h4 class="mt60 mt20">事项材料一单清 </h4>
     <div class="fileDiv"
          v-loading="loadingFile"
@@ -1011,7 +1038,7 @@
     </div>
   </div>
   <!-- 完成申报 -->
-  <div class="mt20 proj-module pd-info-pandel" v-if="declareStep == 5">
+  <div class="mt20 proj-module pd-info-pandel" v-if="declareStep == 6">
     <p class="ye-notice" style="font-size: 18px;margin-top: 50px;"><i class="el-icon-warning-outline"></i>{{applySuccessProjInfo.printstr}}</p>
     <h4 class="mt20" @click="applySuccessProjInfo1 = !applySuccessProjInfo1">项目/工程信息 <i class="fr" :class="applySuccessProjInfo1?'el-icon-arrow-down':'el-icon-arrow-right'"></i></h4>
     <el-collapse-transition>

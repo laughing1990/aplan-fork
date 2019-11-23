@@ -81,7 +81,7 @@
   max-width: 558px;
 }
 .declare-content .pd-tab-nav.tab_5 li.tab-li {
-  margin-right: 140px;
+  margin-right: 112px;
 }
 .declare-content .pd-tab-nav li.tab-li:last-child {
   margin-right: 0;
@@ -130,7 +130,7 @@
   border-radius: 1px;
 }
 .declare-content .pd-tab-nav.tab_5 li.tab-li:before {
-  width: 218px;
+  width: 190px;
 }
 .declare-content .pd-tab-nav li.tab-li:last-child:before{
   content: none;
