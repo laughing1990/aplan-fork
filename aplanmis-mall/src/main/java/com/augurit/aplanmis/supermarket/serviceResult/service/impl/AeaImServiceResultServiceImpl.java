@@ -301,6 +301,8 @@ public class AeaImServiceResultServiceImpl implements AeaImServiceResultService 
         AeaImServiceResult result = new AeaImServiceResult();
         BeanUtils.copyProperties(serviceResultVo, result);
         if (StringUtils.isBlank(serviceResultId)) {
+            AeaImServiceResult selectResult = aeaImServiceResultMapper.getServiceResultByProjPurchaseId(projPurchaseId);
+            if (null != selectResult) throw new Exception("service result has exist");
             //保存
             result.setAuditFlag("1");//已确定
             result.setServiceResultId(UUID.randomUUID().toString());
@@ -309,6 +311,9 @@ public class AeaImServiceResultServiceImpl implements AeaImServiceResultService 
             result.setUploadTime(new Date());
             aeaImServiceResultMapper.insertAeaImServiceResult(result);
         } else {
+            //先判断要更新的内容不存在
+            AeaImServiceResult selectResult = aeaImServiceResultMapper.getAeaImServiceResultById(serviceResultId);
+            if (null == selectResult) throw new Exception("can not find serviceResult");
             //更新
             result.setModifyTime(new Date());
             result.setModifier(SecurityContext.getCurrentUserName());

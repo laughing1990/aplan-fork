@@ -69,6 +69,7 @@
                 <!--</el-autocomplete>-->
                 <el-input v-model="gongchengzongFrom.organizationalCode" placeholder="格式：XXXXXXXXX"></el-input>
               </el-form-item>
+              <el-button type="primary" @click="searchFromInternet(gongchengzongFrom,gongchengzongFrom.organizationalCode)" title="联网查询" style="margin-left:3px;">联网查询</el-button>
             </el-col>
             <el-col :span="12">
               <el-form-item label="统一社会信用代码" prop="unifiedSocialCreditCode">
@@ -125,6 +126,7 @@
                 <!--<el-autocomplete :trigger-on-focus="false" v-model="applyJianliFrom.organizationalCode" placeholder="格式：XXXXXXXXX">-->
                 <!--</el-autocomplete>-->
                 <el-input v-model="applyShigongzongFrom.organizationalCode" placeholder="格式：XXXXXXXXX"></el-input>
+                <el-button type="primary" @click="searchFromInternet(applyShigongzongFrom,applyShigongzongFrom.organizationalCode)" title="联网查询" style="margin-left:3px;">联网查询</el-button>
               </el-form-item>
             </el-col>
             <el-col :span="12">
@@ -281,6 +283,7 @@
                 <!--<el-autocomplete :trigger-on-focus="false" v-model="applyJianliFrom.organizationalCode" placeholder="格式：XXXXXXXXX">-->
                 <!--</el-autocomplete>-->
                 <el-input v-model="applyShigongzhuanyefenbaoFrom.organizationalCode" placeholder="格式：XXXXXXXXX"></el-input>
+                <el-button type="primary" @click="searchFromInternet(applyShigongzhuanyefenbaoFrom,applyShigongzhuanyefenbaoFrom.organizationalCode)" title="联网查询" style="margin-left:3px;">联网查询</el-button>
               </el-form-item>
             </el-col>
             <el-col :span="12">
@@ -433,6 +436,7 @@
                 <!--<el-autocomplete :trigger-on-focus="false" v-model="applyJianliFrom.organizationalCode" placeholder="格式：XXXXXXXXX">-->
                 <!--</el-autocomplete>-->
                 <el-input v-model="applyShigonglaowufenbaoFrom.organizationalCode" placeholder="格式：XXXXXXXXX"></el-input>
+                <el-button type="primary" @click="searchFromInternet(applyShigonglaowufenbaoFrom,applyShigonglaowufenbaoFrom.organizationalCode)" title="联网查询" style="margin-left:3px;">联网查询</el-button>
               </el-form-item>
             </el-col>
             <el-col :span="12">
@@ -592,6 +596,7 @@
                 <!--</el-autocomplete>-->
                 <el-input v-model="applyJianliFrom.organizationalCode" placeholder="格式：XXXXXXXXX"></el-input>
               </el-form-item>
+              <el-button type="primary" @click="searchFromInternet(applyJianliFrom,applyJianliFrom.organizationalCode,'applyJianliFrom')" title="联网查询" style="margin-left:3px;">联网查询</el-button>
             </el-col>
             <el-col :span="12">
               <el-form-item label="统一社会信用代码" prop="unifiedSocialCreditCode">
@@ -751,6 +756,7 @@
           </el-form-item>
           <el-form-item label="证件号：" prop="linkmanCertNo">
             <el-input v-model="addEditManform.linkmanCertNo" placeholder="请输入联系人证件号"></el-input>
+            <el-button type="primary" @click="searchLinkmanFromInternet(addEditManform,addEditManform.linkmanCertNo)" title="联网查询" style="margin-left:3px;">联网查询</el-button>
           </el-form-item>
           <el-form-item label="手机号码：" prop="linkmanMobilePhone">
             <el-input v-model="addEditManform.linkmanMobilePhone" placeholder="请输入联系人手机号码"></el-input>

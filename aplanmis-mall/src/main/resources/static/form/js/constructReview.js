@@ -370,7 +370,77 @@ var app = new Vue({
         vm.$message.error('服务器错了哦!');
       })
     },
+    // 联网查询
+    searchFromInternet: function(data, code) {
+      var _this = this;
+      if (!code) {
+        _this.$message({
+          message: '请输入要查询的组织机构代码！',
+          type: 'error'
+        });
+        return false;
+      }
 
+      request('', {
+        type: 'get',
+        url: ctx + 'rest/form/project/webservice/getGdEnterpriseInfo',
+        data: {
+          orgCode: code
+        },
+      }, function(res) {
+        if (!res.success) {
+          _this.$message({
+            message: '未查询到该组织机构代码！',
+            type: 'error'
+          });
+          return false;
+        }
+        _this.$set(data, 'unitInfoId', res.content.unitInfoId);
+        _this.$set(data, 'applicant', res.content.applicant);
+        _this.$set(data, 'organizationalCode', res.content.organizationalCode);
+        _this.$set(data, 'unifiedSocialCreditCode', res.content.unifiedSocialCreditCode);
+
+      }, function(err) {
+        vm.$message.error('服务器错了哦!');
+      })
+    },
+    // 联网查询联系人
+    searchMan: function(data, code) {
+      var _this = this;
+      if (!code) {
+        _this.$message({
+          message: '请输入要查询的联系人证件号！',
+          type: 'error'
+        });
+        return false;
+      }
+
+      request('', {
+        type: 'get',
+        url: ctx + 'rest/form/project/webservice/getGdPersonInfo',
+        data: {
+          idNum: code
+        },
+      }, function(res) {
+        if (!res.success) {
+          _this.$message({
+            message: '未查询到该证件号所属联系人！',
+            type: 'error'
+          });
+          return false;
+        }
+        _this.$set(_this.addEditManform, 'linkmanName', res.content.linkmanName);
+        _this.$set(_this.addEditManform, 'linkmanMobilePhone', res.content.linkmanMobilePhone);
+        _this.$set(_this.addEditManform, 'linkmanOfficePhon', res.content.linkmanOfficePhon);
+        _this.$set(_this.addEditManform, 'linkmanFax', res.content.linkmanFax);
+        _this.$set(_this.addEditManform, 'linkmanMail', res.content.linkmanMail);
+        _this.$set(_this.addEditManform, 'linkmanAddr', res.content.linkmanAddr);
+        _this.$set(_this.addEditManform, 'linkmanMemo', res.content.linkmanMemo);
+
+      }, function(err) {
+        vm.$message.error('服务器错了哦!');
+      })
+    },
     // 模糊查询人员
     getPerson: function(val) {
       var vm = this;

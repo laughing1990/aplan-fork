@@ -187,7 +187,7 @@
                     </div>
                 </el-form>
             </el-collapse-item>
-            <el-button type="primary" icon="el-icon-wallet" class="fr" @click="saveOrUpdateCertBuildFrom()">保存</el-button>
+            <el-button type="primary" icon="el-icon-wallet" v-if="showBasicButton=='true'" class="fr" @click="saveOrUpdateCertBuildFrom()">保存</el-button>
             <!---基本信息end-->
         </el-collapse>
         <!--新增编辑联系人 start-->

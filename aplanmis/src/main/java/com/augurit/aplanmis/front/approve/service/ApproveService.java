@@ -164,6 +164,9 @@ public class ApproveService {
                     }
                 }
 
+                AeaItemBasic aeaItemBasic = aeaItemBasicMapper.getAeaItemBasicByItemVerId(iteminst.getItemVerId(),SecurityContext.getCurrentOrgId());
+                if(aeaItemBasic!=null)
+                    bpmApproveStateVo.setIsShowOneForm(aeaItemBasic.getUseOneForm());
                 bpmApproveStateVo.setItemVerId(iteminst.getItemVerId());
             }
 

@@ -30,6 +30,7 @@ public class AeaExProjCertBuildController {
             aeaExProjCertBuildService.saveForm(aeaExProjCertBuild);
             return new ContentResultForm<>(true,"保存成功", "Save success");
         }catch (Exception e){
+            e.printStackTrace();
             return new ContentResultForm<>(false,e.getMessage(), "save fail");
         }
     }

@@ -725,7 +725,7 @@ public class ReceivePDFTemplate {
             }
 
             //二维码
-            if (vo.getCertBuildQrcode() != null) {
+            if (vo.getCertBuildQrcode() != null && vo.getCertBuildQrcode().length > 0) {
                 Image img = Image.getInstance(vo.getCertBuildQrcode());
                 img.setAbsolutePosition(100, 90);
                 img.scaleToFit(130, 130);

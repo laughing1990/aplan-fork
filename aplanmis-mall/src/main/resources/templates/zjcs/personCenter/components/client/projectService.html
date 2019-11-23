@@ -91,7 +91,7 @@
                     <div class="col-md-6 form-item">
                         <label><b class="red-cl">*</b>结束时间</label>
                         <div class="input-box date">
-                            <el-date-picker style="width: 330px;" type="date" value-format="yyyy-MM-dd HH:mm" format="yyyy-MM-dd"
+                            <el-date-picker style="width: 330px;" type="date" value-format="yyyy-MM-dd" format="yyyy-MM-dd"
                                 placeholder="选择日期" v-model="serviceResultData.endTime" :disabled="isLookServiceReault">
                             </el-date-picker>
                         </div>
@@ -442,6 +442,7 @@
                 var ts = this;
                 if (!data.endTime) {
                     return ts.$message({
+                        type: 'error',
                         message: '请选择结束时间'
                     })
                 }

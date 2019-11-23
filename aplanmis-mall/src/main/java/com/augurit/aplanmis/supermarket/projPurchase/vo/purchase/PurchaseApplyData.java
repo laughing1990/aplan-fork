@@ -20,7 +20,7 @@ import java.util.UUID;
 
 @Data
 @ApiModel("中介事项申报参数实体vo")
-public class purchaseApplyData {
+public class PurchaseApplyData {
     @ApiModelProperty(value = "申请实例ID", hidden = true)
     private String applyinstId;
     @ApiModelProperty(value = "申报来源，网上申报：net、窗口申报：win", required = true, allowableValues = "net, win", hidden = true)

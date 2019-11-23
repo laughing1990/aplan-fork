@@ -352,6 +352,7 @@ var module1 = new Vue({
       preItemCheckPassed: true, // 前置检测是否通过
       preItemCheckkMsg: '', // 前置检测失败提示
       formUrlList: [],
+      leftTabClosed: true, //
     }
   },
   created: function () {
@@ -1079,7 +1080,7 @@ var module1 = new Vue({
           _that.jiansheFrom = data.content.aeaUnitInfos ? data.content.aeaUnitInfos : [];
           _that.projUnitList = JSON.parse(JSON.stringify(data.content.aeaUnitInfos));
           //_that.itemName = data.content.itemName;
-          _that.isNeedFrontCond = data.content.isNeedFrontCond;
+          _that.isNeedFrontCond = data.content.isNeedFrontCond?data.content.isNeedFrontCond:0;
           _that.isNeedState = data.content.isNeedState;
           _that.rootOrgId = data.content.aeaProjInfo.rootOrgId;
           _that.themeId = data.content.aeaProjInfo.themeId;
@@ -1467,6 +1468,8 @@ var module1 = new Vue({
                     } else if (_that.isNeedState == 1) {
                       // _that.declareStep = 3;
                       _that.getRootStateList();
+                    } else if(_that.needOneForm){
+                      _that.declareStep = 4;
                     } else {
                       debugger
                       _that.saveAndGetMats();
@@ -1567,6 +1570,8 @@ var module1 = new Vue({
       }
       if (this.isNeedState == 1) {
         this.getRootStateList();
+      } else if(_that.needOneForm){
+        this.declareStep = 4;
       } else {
         this.saveAndGetMats();
         // this.getParallelApplyinstId();
@@ -1790,10 +1795,21 @@ var module1 = new Vue({
       if (this.isNeedFrontCond != 1 && page == 2) {
         this.declareStep = 1;
       } else if (this.isNeedState != 1 && page == 3) {
-        if (this.isNeedFrontCond != 1) {
-          this.declareStep = 1;
-        } else {
+        if (this.isNeedFrontCond == 1) {
           this.declareStep = 2;
+        } else {
+          this.declareStep = 1;
+
+        }
+      }else if(!this.needOneForm && page == 4){
+        if (this.isNeedState == 1) {
+          this.declareStep = 3;
+        } else{
+          if (this.isNeedFrontCond == 1) {
+            this.declareStep = 2;
+          }else {
+            this.declareStep = 1;
+          }
         }
       } else {
         this.declareStep = page;
@@ -1802,6 +1818,10 @@ var module1 = new Vue({
     // 保存并根据阶段ID、情形ID集合、事项版本ID集合获取材料一单清列表数据
     saveAndGetMats: function () {
       var _that = this;
+      if(_that.needOneForm&&_that.declareStep<4){
+        _that.declareStep = 4;
+        return false;
+      }
       var stateSel = _that.stateList;
       var stateSelLen = stateSel.length;
       _that.stateIds = [];
@@ -2526,9 +2546,13 @@ var module1 = new Vue({
       var _that = this;
       var sFRenderConfig = '&showBasicButton=true&includePlatformResource=false';
       request('', {
-        url: ctx + 'rest/oneform/common/getListForm4ItemOneForm?&projInfoId='+_that.projInfoId + '&itemId=' +_that.itemVerId+ '&'+ sFRenderConfig,
+        url: ctx + 'rest/oneform/common/getListForm4ItemOneForm?itemId=' +_that.itemVerId+ '&'+ sFRenderConfig,
         type: 'post',
-        data: {applyinstId: _that.parallelApplyinstId }
+        data: {
+          applyinstId: _that.parallelApplyinstId,
+          projInfoId: _that.projInfoId,
+          // itemId: _that.itemVerId
+        }
       }, function (result) {
         if (result.success) {
           if(result.content==null || result.content.length==0){
@@ -2542,6 +2566,8 @@ var module1 = new Vue({
             }
           });
           _that.formUrlList = result.content;
+        }else {
+          _that.needOneForm = false;
         }
       }, function (res) {
         // _that.$message({
