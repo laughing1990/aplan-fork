@@ -1080,7 +1080,7 @@ var module1 = new Vue({
           _that.jiansheFrom = data.content.aeaUnitInfos ? data.content.aeaUnitInfos : [];
           _that.projUnitList = JSON.parse(JSON.stringify(data.content.aeaUnitInfos));
           //_that.itemName = data.content.itemName;
-          _that.isNeedFrontCond = data.content.isNeedFrontCond;
+          _that.isNeedFrontCond = data.content.isNeedFrontCond?data.content.isNeedFrontCond:0;
           _that.isNeedState = data.content.isNeedState;
           _that.rootOrgId = data.content.aeaProjInfo.rootOrgId;
           _that.themeId = data.content.aeaProjInfo.themeId;
@@ -1801,12 +1801,14 @@ var module1 = new Vue({
           this.declareStep = 2;
         }
       }else if(!this.needOneForm && page == 4){
-        if (this.isNeedState != 1) {
-          this.declareStep = 2;
-        } else if (this.isNeedFrontCond != 1) {
-          this.declareStep = 1;
-        }else {
+        if (this.isNeedState == 1) {
           this.declareStep = 3;
+        } else{
+          if (this.isNeedState == 1) {
+            this.declareStep = 2;
+          }else {
+            this.declareStep = 3;
+          }
         }
       } else {
         this.declareStep = page;
