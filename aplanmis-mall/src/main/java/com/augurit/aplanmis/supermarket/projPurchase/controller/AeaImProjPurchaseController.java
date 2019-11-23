@@ -23,6 +23,7 @@ import com.augurit.aplanmis.supermarket.projPurchase.service.ProjPurchaseService
 import com.augurit.aplanmis.supermarket.projPurchase.vo.OwnerIndexData;
 import com.augurit.aplanmis.supermarket.projPurchase.vo.QueryUnpublishedProjInfo;
 import com.augurit.aplanmis.supermarket.projPurchase.vo.SelectedQualMajorRequire;
+import com.augurit.aplanmis.supermarket.projPurchase.vo.purchase.PurchaseDetailVo;
 import com.augurit.aplanmis.supermarket.projPurchase.vo.purchase.ShowProjPurchaseVo;
 import com.augurit.aplanmis.supermarket.utils.ContentRestResult;
 import com.augurit.aplanmis.supermarket.utils.RestResult;
@@ -829,7 +830,7 @@ public class AeaImProjPurchaseController {
         try {
             List<AeaProjInfo> aeaProjInfos = aeaProjInfoService.findAeaProjInfoByKeyword(keyword);
             if (aeaProjInfos.size() == 0 && !keyword.contains("#") && !keyword.contains("ZBM") && CommonTools.isComplianceWithRules(keyword)) {
-                aeaProjInfos.addAll(projectCodeService.getProjInfoFromThirdPlatform(keyword, null,""));
+                aeaProjInfos.addAll(projectCodeService.getProjInfoFromThirdPlatform(keyword, null, ""));
             }
             return new ContentResultForm<>(true, aeaProjInfos, "Query success");
         } catch (Exception e) {
@@ -866,7 +867,16 @@ public class AeaImProjPurchaseController {
     @PostMapping("/confirmImunit")
     @ApiOperation("中选机构确认")
     public ResultForm confirmImunit(String projPurchaseId, String unitBiddingId, String confirmFlag) throws Exception {
+
         restImApplyService.confirmImunit(projPurchaseId, unitBiddingId, confirmFlag);
         return new ResultForm(true, "success");
     }
+
+    @GetMapping("/getPurchaseDetail")
+    @ApiOperation(value = "")
+    public ContentResultForm<PurchaseDetailVo> getPurchaseDetail(String projPurchaseId) throws Exception {
+        PurchaseDetailVo vo = projPurchaseService.getPurchaseDetail(projPurchaseId);
+        return new ContentResultForm(true, vo, "success");
+    }
+
 }

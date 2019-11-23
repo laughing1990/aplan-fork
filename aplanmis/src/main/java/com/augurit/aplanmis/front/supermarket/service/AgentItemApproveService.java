@@ -57,7 +57,7 @@ public class AgentItemApproveService {
         if (null == applyinst) throw new Exception("can not find applyinst info ");
         String applyinstCode = applyinst.getApplyinstCode();
         //查询采购项目,中介服务，机构要求等 信息
-        PurchaseProjVo purchaseProj = aeaImProjPurchaseMapper.getProjPurchaseInfoByApplyinstCode(applyinstCode);
+        PurchaseProjVo purchaseProj = aeaImProjPurchaseMapper.getProjPurchaseInfoByApplyinstCode(applyinstCode, null);
         String isApproveProj = purchaseProj.getIsApproveProj();
         if (StringUtils.isNotBlank(isApproveProj) && "1".equals(isApproveProj)) {
             //查询关联的投资审批项目信息
@@ -113,7 +113,7 @@ public class AgentItemApproveService {
     public void uploadServiceResult(String[] matinstIds, String applyinstId) throws Exception {
         AeaHiApplyinst applyinst = aeaHiApplyinstService.getAeaHiApplyinstById(applyinstId);
         if (null == applyinst) throw new Exception("can not find applyinst");
-        PurchaseProjVo purchase = aeaImProjPurchaseMapper.getProjPurchaseInfoByApplyinstCode(applyinst.getApplyinstCode());
+        PurchaseProjVo purchase = aeaImProjPurchaseMapper.getProjPurchaseInfoByApplyinstCode(applyinst.getApplyinstCode(), null);
         if (null == purchase) throw new Exception("can not find purchase");
         restImApplyService.uploadServiceResult(purchase.getProjPurchaseId(), "", matinstIds);
 
