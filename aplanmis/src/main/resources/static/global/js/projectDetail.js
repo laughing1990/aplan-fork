@@ -94,115 +94,97 @@ var vm = new Vue({
         gcbm: '', //工程编码
         isAreaEstimate:'',//是否完成区域评估
         isDesignSolution:'',//土地是否带设计方案
+        gbCodeYear: '2017'
       },
       // 项目信息校验
       baseRules: {
-        localCode: [{
-          required: true,
-          message: '请输入项目代码',
-          trigger: 'blur'
-        }],
-        projName: [{
-          required: true,
-          message: '请输入项目名称',
-          trigger: 'blur'
-        }],
-        projCategory: [{
-          required: true,
-          message: '请选择工程分类',
-          trigger: 'change'
-        }],
-        mainClass: [{
-          required: true,
-          message: '请选择项目大类',
-          trigger: 'change'
-        }],
-        projType: [{
-          required: true,
-          message: '请选择立项类型',
-          trigger: 'change'
-        }],
-        isForeign: [{
-          required: true,
-          message: '请选择是否外资项目',
-          trigger: 'change'
-        }],
-        projNature: [{
-          required: true,
-          message: '请选择建设性质',
-          trigger: 'change'
-        }],
-        projUrgency: [{
-          required: true,
-          message: '请选择紧急程度',
-          trigger: 'change'
-        }],
-        projLevel: [{
-          required: true,
-          message: '请选择项目级别',
-          trigger: 'change'
-        }],
-        isJgxm: [{
-          required: true,
-          message: '请选择是否技改项目',
-          trigger: 'change'
-        }],
-        district: [{
-          required: true,
-          message: '请选择行政分区',
-          trigger: 'change'
-        }],
-        regionalism: [{
-          required: true,
-          message: '请选择项目所在区域',
-          trigger: 'change'
-        }],
-        buildNature: [{
-          required: true,
-          message: '请选择建筑性质',
-          trigger: 'change'
-        }],
-        themeId: [{
-          required: true,
-          message: '请选择主题类型',
-          trigger: 'change'
-        }],
-        // 以下校验为非必填，但是又可以校验的，比如数字，比如号码
-        investSum: [{
-          required: false,
-          validator: checkNumber,
-          trigger: 'blur'
-        }],
-        xmzbj: [{
-          required: false,
-          validator: checkNumber,
-          trigger: 'blur'
-        }],
-        xmYdmj: [{
-          required: false,
-          validator: checkNumber,
-          trigger: 'blur'
-        }], //用地面积
-        xzydmj: [{
-          required: false,
-          validator: checkNumber,
-          trigger: 'blur'
-        }], //新增用地面积
-        nydmj: [{
-          required: false,
-          validator: checkNumber,
-          trigger: 'blur'
-        }], //农用地面积
-        projCreateMobile: [{
-          required: false,
-          validator: checkPhoneNoNeed,
-          trigger: 'blur'
-        }],
-        buildAreaSum: [{
-          required: false,
-          validator: checkNumber,
-          trigger: 'blur'
-        }]
+          projName: [
+              { required: true,message: '请输入项目/工程名称！', trigger: 'change' },
+          ],
+          localCode: [
+              { required: true,message: '请输入投资平台登记的项目代码！', trigger: ['change','blur'] },
+          ],
+          gcbm: [
+              { required: true,message: '请输入工程代码！', trigger: ['change'] },
+          ],
+          regionalism: [
+              { required: true,message: '请选择审批行政区划！', trigger: ['change'] },
+          ],
+          projType: [
+              { required: true,message: '请选择立项类型！', trigger: ['change'] },
+          ],
+          projectAddress: [
+              { required: true,message: '请输入建设地点！', trigger: ['blur'] },
+          ],
+          financialSource: [
+              { required: true,message: '请选择资金来源！', trigger: ['change'] },
+          ],
+          landSource: [
+              { required: true,message: '请选择土地来源！', trigger: ['change'] },
+          ],
+          isDesignSolution: [
+              { required: true,message: '请选择土地是否带设计方案！', trigger: ['change'] },
+          ],
+          isAreaEstimate: [
+              { required: true,message: '请选择是否完成区域评估！', trigger: ['change'] },
+          ],
+          projNature: [
+              { required: true,message: '请选择建设性质！', trigger: ['change'] },
+          ],
+          investType: [
+              { required: true,message: '请选择投资类型！', trigger: ['change'] },
+          ],
+          gbCodeYear: [
+              { required: true,message: '请输入国标行业代码发布年代！', trigger: ['blur'] },
+          ],
+          theIndustry: [
+              { required: true,message: '请选择国标行业！', trigger: ['blur', 'change'] },
+          ],
+          nstartTime: [
+              { required: true,message: '请选择拟开工时间！', trigger: ['change'] },
+          ],
+          endTime: [
+              { required: true,message: '请选择拟建成时间！', trigger: ['change'] },
+          ],
+          themeId: [{
+              required: true,
+              message: '请选择主题类型',
+              trigger: 'change'
+          }],
+          scaleContent: [
+              { required: true,message: '请输入建设规模及内容！', trigger: ['blur'] },
+          ],
+          xmYdmj: [
+              {validator:checkNumber, trigger: ['blur'] },
+              { required: true,message: '请填写用地面积！', trigger: ['blur'] }
+          ],
+          xzydmj: [
+              {validator:checkNumber, trigger: ['blur'] },
+          ],
+          buildAreaSum: [
+              {validator:checkNumber, trigger: ['blur'] },
+              { required: true,message: '请填写建筑面积！', trigger: ['blur'] }
+          ],
+          aboveGround: [
+              {validator:checkNumber, trigger: ['blur'] },
+          ],
+          underGround: [
+              {validator:checkNumber, trigger: ['blur'] },
+          ],
+          investSum: [
+              {validator:checkNumber, trigger: ['blur'] },
+              { required: true,message: '请输入总投资！', trigger: ['blur'] }
+          ],
+          nydmj: [{
+              required: false,
+              validator: checkNumber,
+              trigger: 'blur'
+          }], //农用地面积
+          xmzbj: [{
+              required: false,
+              validator: checkNumber,
+              trigger: 'blur'
+          }],
       },
 
       // 建设单位

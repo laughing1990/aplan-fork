@@ -56,7 +56,7 @@
 				</el-table-column>
 				<el-table-column label="更新时间" prop="modifyTime">
 					<template scope="scope">
-						{{dateFormat(scope.row.modifyTime)}}
+						{{scope.row.modifyTime ? dateFormat(scope.row.modifyTime) : dateFormat(scope.row.createTime)}}
 					</template>
 				</el-table-column>
 				<el-table-column label="操作">
@@ -901,7 +901,7 @@
 				var daterc = val;
 				if (daterc != null) {
 					var dateMat = new Date(parseInt(daterc));
-					return formatDate(dateMat, 'yyyy-MM-dd')
+					return formatDate(dateMat, 'yyyy-MM-dd hh:mm')
 				}
 			},
 			handleSizeChange: function (val) {
