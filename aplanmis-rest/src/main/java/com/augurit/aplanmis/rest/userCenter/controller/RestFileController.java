@@ -20,16 +20,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 
 @RestController
-@RequestMapping("rest/file")
+@RequestMapping("/rest/user/file")
 @Api(value = "", tags = "法人空间 --> 电子文件管理")
 public class RestFileController {
     Logger logger = LoggerFactory.getLogger(RestFileController.class);
@@ -84,7 +87,7 @@ public class RestFileController {
         return new ContentResultForm<>(true, restFileService.getAttFiles(matinstId));
     }
 
-    @GetMapping("/delelteAttachment")
+    @DeleteMapping("/delelteAttachment")
     @ApiOperation("文件处理 --> 列表中删除电子文件")
     @ApiImplicitParams({@ApiImplicitParam(name = "detailIds", value = "文件id", required = true, type = "string"),
             @ApiImplicitParam(name = "matinstId", value = "事项材料ID", required = true, type = "string")})
@@ -103,7 +106,7 @@ public class RestFileController {
         }
     }
 
-    @GetMapping("applydetail/mat/download/{detailId}")
+    @GetMapping("/applydetail/mat/download/{detailId}")
     @ApiOperation(value = "文件处理--> 下载文件接口")
     @ApiImplicitParams({@ApiImplicitParam(value = "文件Id", name = "detailId", required = true, dataType = "string")})
     public ResultForm downloadAttachment(@PathVariable("detailId") String detailId, HttpServletResponse response, HttpServletRequest request) {
@@ -120,23 +123,23 @@ public class RestFileController {
         }
     }
 
-    @GetMapping("/att/preview/{detailId}")
+    /*@GetMapping("/att/preview/{detailId}")
     @ApiOperation(value = "文件处理--> 预览电子件")
     @ApiImplicitParam(name = "detailId", value = "附件ID", dataType = "string", required = true)
     public ModelAndView preview_old(@PathVariable("detailId") String detailId, HttpServletRequest request, HttpServletResponse response, RedirectAttributes redirectAttributes) throws Exception {
         ModelAndView modelAndView = restFileService.preview(detailId, request, response, redirectAttributes);
         return modelAndView;
-    }
+    }*/
 
-    @GetMapping("/att/preview")
+    /*@GetMapping("/att/preview")
     @ApiOperation(value = "申报页面--> 预览电子件")
     @ApiImplicitParam(name = "detailId", value = "附件ID", dataType = "string", required = true)
     public ModelAndView preview(String detailId, HttpServletRequest request, HttpServletResponse response, RedirectAttributes redirectAttributes) throws Exception {
         ModelAndView modelAndView = fileUtilsService.preview(detailId, request, response, redirectAttributes);
         return modelAndView;
-    }
+    }*/
 
-    @GetMapping("/view/{detailId}")
+    /*@GetMapping("/view/{detailId}")
     @ApiOperation("在线预览pdf文件")
     @ApiImplicitParams(
             @ApiImplicitParam(name = "detailId", value = "文件detailId", required = true, dataType = "String")
@@ -145,7 +148,7 @@ public class RestFileController {
         ModelAndView mav = new ModelAndView("/preview/viewPdf");
         mav.addObject("detailId", detailId);
         return mav;
-    }
+    }*/
 
     @GetMapping("/att/read")
     @ApiOperation(value = "申报页面--> 读取电子件")
@@ -154,7 +157,7 @@ public class RestFileController {
         fileUtilsService.readFile(detailId, request, response);
     }
 
-    @PostMapping("/att/delelte")
+    @DeleteMapping("/att/delelte")
     @ApiOperation(value = "材料补正页面--> 删除电子件")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "detailIds", value = "附件ID", dataType = "string", paramType = "query", required = true)

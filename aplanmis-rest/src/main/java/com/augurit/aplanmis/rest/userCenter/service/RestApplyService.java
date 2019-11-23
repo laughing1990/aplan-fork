@@ -7,18 +7,14 @@ import com.augurit.aplanmis.rest.userCenter.vo.SeriesApplyResultVo;
 import com.augurit.aplanmis.rest.userCenter.vo.StageApplyDataPageVo;
 import com.augurit.aplanmis.rest.userCenter.vo.UserInfoVo;
 
-import javax.servlet.http.HttpServletRequest;
-
 public interface RestApplyService {
 
 
     /**
      * 获取当前申报主体
      *
-     * @param request
-     * @return
      */
-    UserInfoVo getApplyObject(HttpServletRequest request) throws Exception;
+    UserInfoVo getApplyObject() throws Exception;
 
     ParallelApplyResultVo startStageProcess(StageApplyDataPageVo stageApplyDataPageVo) throws Exception;
 

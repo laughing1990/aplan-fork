@@ -304,9 +304,9 @@ public class RestApplyProjController {
     @ApiImplicitParams({
             @ApiImplicitParam(value = "项目ID", name = "parentProjId", dataType = "string"),
             @ApiImplicitParam(value = "子项目信息", name = "aeaProjInfo")})
-    public ResultForm saveChildProject(AeaProjInfo aeaProjInfo, HttpServletRequest request) {
+    public ResultForm saveChildProject(AeaProjInfo aeaProjInfo) {
         try {
-            return new ContentResultForm<>(true, restUserCenterService.saveChildProject(request, aeaProjInfo));
+            return new ContentResultForm<>(true, restUserCenterService.saveChildProject(aeaProjInfo));
         } catch (Exception e) {
             return new ResultForm(false, "无法保存子项目");
         }

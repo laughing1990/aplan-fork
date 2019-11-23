@@ -21,8 +21,6 @@ public class AeaExProjBuild implements Serializable {
     private java.lang.String buildId;
     @ApiModelProperty("项目ID")
     private java.lang.String projInfoId;
-    @ApiModelProperty("省级项目编号")
-    private java.lang.String provinceProjCode;
     @ApiModelProperty("合同开工日期")
     private java.lang.String contractStartBuildTime;
     @ApiModelProperty("合同竣工时间")

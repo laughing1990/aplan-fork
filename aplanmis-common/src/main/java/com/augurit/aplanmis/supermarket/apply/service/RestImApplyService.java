@@ -298,7 +298,7 @@ public class RestImApplyService {
      * @param matinstIds     上传的材料实例ID
      * @throws Exception
      */
-    public void uploadServiceResult(String projPurchaseId, String message, String[] matinstIds, String creater) throws Exception {
+    public void uploadServiceResult(String projPurchaseId, String message, String[] matinstIds) throws Exception {
 
         AeaImProjPurchase purchase = this.getApplyinstIdByProPurchaseId(projPurchaseId);
         String applyinstId = purchase.getApplyinstId();
@@ -309,15 +309,15 @@ public class RestImApplyService {
         String taskId = applyStateHist.getTaskinstId();// 节点ID（此时还停留在《发布采购需求》节点）
         String appinstId = applyStateHist.getAppinstId();// 模板实例ID
 
-
+        String creater = SecurityContext.getCurrentUserName();
         List<AeaHiIteminst> iteminsts = aeaHiIteminstService.getAeaHiIteminstListByApplyinstId(applyinstId);
         if (iteminsts.size() < 1) throw new Exception("找不到事项实例信息！");
         AeaHiIteminst iteminst = iteminsts.get(0);
         String iteminstId = iteminst.getIteminstId();
         String rootOrgId = iteminst.getRootOrgId();
         String itemVerId = iteminst.getItemVerId();
-        //保存材料实例输出
-        String[] matIds = this.saveItemInoutinst(matinstIds, itemVerId, iteminstId, creater);
+        //保存材料实例输出---判断是否已存在的材料实例 todo
+        String[] matIds = this.saveItemInoutinst(matinstIds, itemVerId, iteminstId, SecurityContext.getCurrentUserName());
         //查询当前服务结果是否需要电子件
         List<AeaMatinst> matinsts = aeaHiItemInoutinstMapper.getMatinstListByiteminstIdAndMatId(iteminstId, matIds);
         boolean requiredPaper = matinsts.stream().anyMatch(aea -> {

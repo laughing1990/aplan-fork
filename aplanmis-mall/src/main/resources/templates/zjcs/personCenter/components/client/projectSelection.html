@@ -76,7 +76,7 @@
                                 @click="editAgreement(scope.row)">编辑合同</a>
                             <a class="a-color4879E4" href="javascript:;" @click="lookAgreement(scope.row)">查看合同</a>
                             <a class="a-color4879E4" href="javascript:;"
-                                v-if="scope.row.contractFlag == 0 && scope.row.isOwnerUpload == 1"
+                                v-if="scope.row.contractFlag != 0 && scope.row.isOwnerUpload == 1"
                                 @click="sureAgreement(scope.row)">确认合同</a>
                         </p>
                     </div>
@@ -213,7 +213,7 @@
                 </div>
 
                 <!-- 确认合同需要提交的字段 -->
-                <div style="marginTop: 15px;">
+                <div style="marginTop: 20px;">
                     <div class="form-item">
                         <label><b class="red-cl">*</b>确认结果</label>
                         <div class="input-box">
@@ -226,8 +226,7 @@
                     <div class="form-item">
                         <label><b class="red-cl">*</b>确认意见</label>
                         <div class="input-box">
-                            <textarea class="form-control" v-model="contractDetailObj.auditOpinion"
-                                ></textarea>
+                            <textarea class="form-control" v-model="contractDetailObj.auditOpinion"></textarea>
                         </div>
                     </div>
                     <div class="form-item">

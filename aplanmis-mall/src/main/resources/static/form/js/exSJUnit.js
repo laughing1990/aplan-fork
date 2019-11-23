@@ -509,6 +509,7 @@ var vm = new Vue({
                                                     message: '保存成功',
                                                     type: 'success'
                                                 });
+                                                window.location.reload();
                                             } else {
                                                 _that.$message({
                                                     message: '保存失败',
@@ -806,7 +807,7 @@ var vm = new Vue({
             var _that = this;
             _that.addEditManModalShow = true;
             _that.getUnitsListByProjInfoId();
-            _that.addEditManPerform = parData
+            _that.addEditManPerform = parData;
             if (!_that.projInfoId) {
                 if (data) {
                     _that.addEditManModalTitle = '编辑联系人';
@@ -834,16 +835,17 @@ var vm = new Vue({
             }
         },
         // 根据项目ID查找关联的单位列表
-        getUnitsListByProjInfoId: function() {
+        getUnitsListByProjInfoId: function() {debugger
             var _that = this;
             _that.loading = true;
             if (_that.applyShigongzongFrom.unitInfoId) {
                 var unitInfoId = _that.applyShigongzongFrom.unitInfoId;
             }
+            if(!unitInfoId||unitInfoId=='undefined') {_that.loading = false;return;}
             request('', {
                 url: ctx + 'rest/unit/list/by/' + unitInfoId,
                 type: 'get',
-            }, function(result) {
+            }, function(result) {debugger
                 if (result.success) {
                     _that.unitInfoIdList = result.content;
                     _that.loading = false;

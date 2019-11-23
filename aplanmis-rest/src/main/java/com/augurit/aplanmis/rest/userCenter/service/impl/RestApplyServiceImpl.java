@@ -31,10 +31,10 @@ import com.augurit.aplanmis.common.service.item.AeaItemBasicService;
 import com.augurit.aplanmis.common.service.linkman.AeaLinkmanInfoService;
 import com.augurit.aplanmis.common.service.process.AeaBpmProcessService;
 import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
-import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
 import com.augurit.aplanmis.common.service.receive.ReceiveService;
-import com.augurit.aplanmis.rest.common.utils.SessionUtil;
-import com.augurit.aplanmis.rest.common.vo.LoginInfoVo;
+import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
+import com.augurit.aplanmis.rest.auth.AuthContext;
+import com.augurit.aplanmis.rest.auth.AuthUser;
 import com.augurit.aplanmis.rest.userCenter.constant.LoginUserRoleEnum;
 import com.augurit.aplanmis.rest.userCenter.service.AeaParStageService;
 import com.augurit.aplanmis.rest.userCenter.service.AeaSeriesService;
@@ -51,7 +51,6 @@ import org.flowable.engine.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -109,24 +108,24 @@ public class RestApplyServiceImpl implements RestApplyService {
     ReceiveService receiveService;
 
     @Override
-    public UserInfoVo getApplyObject(HttpServletRequest request) throws Exception {
+    public UserInfoVo getApplyObject() throws Exception {
         UserInfoVo vo = new UserInfoVo();
         //申报主体
-        LoginInfoVo user = SessionUtil.getLoginInfo(request);
+        AuthUser user = AuthContext.getCurrentUser();
         if (user != null) {
-            if ("1".equals(user.getIsPersonAccount())) {//个人
-                AeaLinkmanInfo aeaLinkmanInfo = aeaLinkmanInfoService.getAeaLinkmanInfoByLinkmanInfoId(user.getUserId());
+            if (user.isPersonalAccount()) {//个人
+                AeaLinkmanInfo aeaLinkmanInfo = aeaLinkmanInfoService.getAeaLinkmanInfoByLinkmanInfoId(user.getLinkmanInfoId());
                 vo.setAeaLinkmanInfo(aeaLinkmanInfo == null ? new AeaLinkmanInfo() : aeaLinkmanInfo);
                 vo.setRole(LoginUserRoleEnum.PERSONAL.getValue());
-            } else if (StringUtils.isNotBlank(user.getUserId())) {//委托人
-                AeaLinkmanInfo aeaLinkmanInfo = aeaLinkmanInfoService.getAeaLinkmanInfoByLinkmanInfoId(user.getUserId());
+            } else if (StringUtils.isNotBlank(user.getLinkmanInfoId())) {//委托人
+                AeaLinkmanInfo aeaLinkmanInfo = aeaLinkmanInfoService.getAeaLinkmanInfoByLinkmanInfoId(user.getLinkmanInfoId());
                 vo.setAeaLinkmanInfo(aeaLinkmanInfo == null ? new AeaLinkmanInfo() : aeaLinkmanInfo);
-                vo.setAeaUnitList(aeaUnitInfoService.getUnitInfoByLinkmanInfoId(user.getUserId()));
+                vo.setAeaUnitList(aeaUnitInfoService.getUnitInfoByLinkmanInfoId(user.getLinkmanInfoId()));
                 vo.setRole(LoginUserRoleEnum.HANDLE.getValue());
             } else {//企业
-                AeaUnitInfo aeaUnitInfo = aeaUnitInfoService.getAeaUnitInfoByUnitInfoId(user.getUnitId());
+                AeaUnitInfo aeaUnitInfo = aeaUnitInfoService.getAeaUnitInfoByUnitInfoId(user.getUnitInfoId());
                 vo.setAeaUnitInfo(aeaUnitInfo == null ? new AeaUnitInfo() : aeaUnitInfo);
-                vo.setLinkmanInfoList(aeaLinkmanInfoService.getAeaLinkmanInfoByUnitInfoIdAndIsBindAccount(user.getUnitId(), ""));
+                vo.setLinkmanInfoList(aeaLinkmanInfoService.getAeaLinkmanInfoByUnitInfoIdAndIsBindAccount(user.getUnitInfoId(), ""));
                 vo.setRole(LoginUserRoleEnum.UNIT.getValue());
             }
         } else {
@@ -142,9 +141,7 @@ public class RestApplyServiceImpl implements RestApplyService {
     /**
      * 并联申报 --> 发起申报
      *
-     * @param stageApplyDataPageVo
      * @return applyinstIds 申请实例集合
-     * @throws Exception
      */
     public ParallelApplyResultVo startStageProcess(StageApplyDataPageVo stageApplyDataPageVo) throws Exception {
         AeaParStage aeaParStage = aeaParStageMapper.getAeaParStageById(stageApplyDataPageVo.getStageId());
@@ -153,14 +150,13 @@ public class RestApplyServiceImpl implements RestApplyService {
         String appId = aeaParStage.getAppId();
         String themeVerId = aeaParStage.getThemeVerId();
         StageApplyDataVo stageApplyDataVo = stageApplyDataPageVo.toStageApplyDataVo(appId, themeVerId);
-        ParallelApplyResultVo vo = aeaParStageService.stageApply(stageApplyDataVo);
         //updateAeaSmsInfo(stageApplyDataPageVo.getSmsInfoId(), applyinstIds);
         // 保存回执
         //String[] receiptTypes = new String[]{"1", "2"};
         //List<String> applyInstIds = vo.getApplyinstIds();
         //if (applyInstIds==null||applyInstIds.size()==0) return vo;
         //receiveService.saveReceive((String[]) applyInstIds.toArray(), receiptTypes, SecurityContext.getCurrentUserName(), "");
-        return vo;
+        return aeaParStageService.stageApply(stageApplyDataVo);
     }
 
 
@@ -169,7 +165,6 @@ public class RestApplyServiceImpl implements RestApplyService {
      *
      * @param seriesApplyDataPageVo 申报参数
      * @return applyinstId 申请实例ID
-     * @throws Exception
      */
     public SeriesApplyResultVo startSeriesFlow(SeriesApplyDataPageVo seriesApplyDataPageVo) throws Exception {
         AeaItemBasic aeaItemBasic = aeaItemBasicMapper.getAeaItemBasicByItemVerId(seriesApplyDataPageVo.getItemVerId(), SecurityContext.getCurrentOrgId());

@@ -241,9 +241,27 @@
                             </div>
                         </div>
 
+                        <div class="form-group m-form__group row" >
+
+                            <label class="col-lg-2 col-form-label" style="text-align: right;">法定办结时限计量:</label>
+                            <div class="col-lg-4">
+                                <input type="number" class="form-control m-input" name="anticipateDay" value="1" placeholder="请填写整数..."/>
+                            </div>
+
+                            <label class="col-lg-2 col-form-label" style="text-align: right;">法定办结时限单位:</label>
+                            <div class="col-lg-4">
+                                <select type="text" class="form-control" name="anticipateType" value="">
+                                    <option value="">请选择</option>
+                                    <c:forEach items="${dueUnits}" var="dueUnit">
+                                        <option value="${dueUnit.itemCode}">${dueUnit.itemName}</option>
+                                    </c:forEach>
+                                </select>
+                            </div>
+                        </div>
+
                         <div id="isLinkDiv" class="form-group m-form__group row" >
 
-                            <label class="col-lg-2 col-form-label" style="text-align: right;"><font color="red">*</font>是否设置"一张表单":</label>
+                            <label class="col-lg-2 col-form-label" style="text-align: right;"><font color="red">*</font>是否启用"一张表单":</label>
                             <div class="col-lg-4">
                                 <select type="text" class="form-control" name="useOneForm" value="">
                                     <option value="0">否</option>

@@ -513,16 +513,16 @@ public class AeaItemMatAdminServiceImpl implements AeaItemMatAdminService {
                 String formCode = form.getFormCode();
                 // meta-biz表示元数据普通表单，meta-flow表示元数据流程表单，smart-biz表示智能普通表单，smart-flow表示智能流程表单
                 if(StringUtils.isNotBlank(property)){
-                   if("meta-biz".equals(property)){
-                       property =  "【元数据普通表单】";
+                   if("meta-biz".equals(property)||"dev-biz".equals(property)){
+                       property =  "【普通开发表单】";
                    }else if("meta-flow".equals(property)){
-                       property =  "【元数据流程表单】" ;
+                       property =  "【流程开发表单】" ;
                    }else if("smart-biz".equals(property)){
-                       property =  "【智能普通表单】";
+                       property =  "【普通智能表单】";
                    }else if("smart-flow".equals(property)){
-                       property =  "【智能流程表单】";
+                       property =  "【流程智能表单】";
                    }else{
-                       property = "";
+                       property =  "";
                    }
                 }
                 if(StringUtils.isNotBlank(formCode)){
