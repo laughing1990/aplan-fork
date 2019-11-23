@@ -4,7 +4,6 @@ import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.aplanmis.common.service.projPurchase.AeaImProjPurchaseService;
 import com.augurit.aplanmis.common.vo.MatinstVo;
-import com.augurit.aplanmis.front.apply.vo.attach.ApplyMatUploadVo;
 import com.augurit.aplanmis.front.supermarket.service.AgentItemApproveService;
 import com.augurit.aplanmis.front.supermarket.vo.AgentItemApproveForm;
 import io.swagger.annotations.Api;
@@ -51,10 +50,11 @@ public class AgentItemApproveController {
     @ApiOperation(value = "上传中介服务结果附件", notes = "上传中介服务结果附件-新接口，需要判断是否推动流程")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "applyinstId", value = "申请实例id", required = true)
-            , @ApiImplicitParam(name = "iteminstId", value = "事项实例id", required = true)
+            , @ApiImplicitParam(name = "matinstIds", value = "事项实例id", required = true)
     })
-    @GetMapping("/getProjPurchaseMatinstList")
-    public ResultForm uploadServiceResult(ApplyMatUploadVo uploadVo, String[] matinstId, String applyinstId) {
+    @GetMapping("/uploadServiceResult")
+    public ResultForm uploadServiceResult(String[] matinstIds, String applyinstId) throws Exception {
+//        agentItemApproveService.uploadServiceResult(matinstIds, applyinstId);
 
         return new ResultForm(true, "successs");
     }
