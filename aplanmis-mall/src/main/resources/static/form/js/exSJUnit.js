@@ -664,7 +664,7 @@ var vm = new Vue({
             };
         },
         //选择单位
-        selUnitInfo: function(val, flag, index) {
+        selUnitInfo: function(val, flag, unitProj,projLinkman,personSetting) {
             var _that = this;
             if (flag == 'shigongzongchengbao') {
                 val.personSetting = JSON.parse(JSON.stringify(val.personSetting));
