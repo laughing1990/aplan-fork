@@ -616,9 +616,8 @@
 			},
 			//  是否可以竞价
 			isShowWantPriceBtn: function (row) {
-				console.log('time', new Date().getTime() < row.expirationDate)
-				console.log('flag',['6', '7', '11'].indexOf(row.purchaseAuditFlag))
-				if (new Date().getTime() < row.expirationDate) {
+				var time = new Date().getTime();
+				if ( time > row.expirationDate && time < row.choiceImunitTime) {
 					// if (row.purchaseAuditFlag == 7 || row.purchaseAuditFlag == 11) {
 					if (['6', '7', '11'].indexOf(row.purchaseAuditFlag) > -1) {
 						return false;
