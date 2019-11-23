@@ -173,7 +173,6 @@ public class AeaImServiceResultController {
     @ApiOperation(value = "上传服务结果-新接口，需要判断是否推动流程", notes = "上传服务结果-新接口，需要判断是否推动流程", httpMethod = "POST")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "projPurchaseId", value = "项目采购ID", required = true)
-            , @ApiImplicitParam(name = "matinstIds", value = "材料实例ID", required = true)
             , @ApiImplicitParam(name = "aeaImServiceResult", value = "服务结果对象", required = true)
             , @ApiImplicitParam(name = "unitBiddingId", value = "单位竞价ID", required = true)
     })

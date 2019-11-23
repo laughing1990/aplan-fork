@@ -463,7 +463,7 @@
         from AEA_HI_ITEM_MATINST ahim
         inner join AEA_ITEM_MAT aim on aim.MAT_ID=ahim.MAT_ID
         inner join AEA_HI_ITEM_INOUTINST ahii on ahii.MATINST_ID=ahim.MATINST_ID
-        where ahii.ITEMINST_ID=#{iteminstId} and aim.IS_OFFICIAL_DOC!='1'
+        where ahii.ITEMINST_ID=#{iteminstId} and (aim.IS_OFFICIAL_DOC is null or aim.IS_OFFICIAL_DOC!='1')
         and ahim.MAT_ID IN
         <if test="_databaseId == 'oracle'">
             <foreach collection="matIds" item="item" open="(" separator="union all" close=")">

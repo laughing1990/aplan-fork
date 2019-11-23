@@ -3,6 +3,7 @@ package com.augurit.aplanmis.common.service.mat.impl;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.domain.*;
+import com.augurit.aplanmis.common.mapper.AeaItemInoutMapper;
 import com.augurit.aplanmis.common.mapper.AeaItemMatMapper;
 import com.augurit.aplanmis.common.mapper.AeaParStageItemMapper;
 import com.augurit.aplanmis.common.mapper.AeaParStageMapper;
@@ -345,6 +346,23 @@ public class AeaItemMatServiceImpl implements AeaItemMatService {
     public List<AeaItemMat> getOfficeMatsByStageItemVerIds(String stageId, String[] itemVerIds) throws Exception {
 
         return aeaItemMatMapper.getOfficeMatsByStageItemVerIds(stageId, itemVerIds, SecurityContext.getCurrentOrgId());
+    }
+
+    @Autowired
+    private AeaItemInoutMapper aeaItemInoutMapper;
+
+    /**
+     * 查询单项不分情形下材料定义列表-中介超市用
+     *
+     * @param itemVerId 事项版本ID
+     * @return List<AeaItemMat>
+     */
+    @Override
+    public List<AeaItemMat> getSeriesNoStateMatList(String itemVerId) throws Exception {
+        AeaItemBasic basic = aeaItemBasicService.getAeaItemBasicByItemVerId(itemVerId);
+        if (null == basic) throw new Exception("can not find item info ");
+        List<AeaItemMat> itemMats = aeaItemInoutMapper.getSeriesNoStateMatList(itemVerId);
+        return itemMats;
     }
 }
 

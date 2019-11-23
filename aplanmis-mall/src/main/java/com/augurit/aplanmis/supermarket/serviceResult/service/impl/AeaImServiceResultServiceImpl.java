@@ -334,7 +334,16 @@ public class AeaImServiceResultServiceImpl implements AeaImServiceResultService 
     }
 
 
-    //上传服务结果电子件 -发起申报后上传
+    /**
+     * 中介超市上传服务电子件
+     *
+     * @param matId          材料ID
+     * @param matinstId      材料实例ID
+     * @param projPurchaseId 采购项目ID
+     * @param request        附件对象
+     * @return matinstId 材料实例ID
+     * @throws Exception e
+     */
     @Override
     public String uploadServiceResultAtt(String matId, String matinstId, String projPurchaseId, HttpServletRequest request) throws Exception {
         StringBuffer message = new StringBuffer();
