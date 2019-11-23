@@ -8,12 +8,28 @@
 <head>
   <!--公共css,js-->
   <th:block th:include="common/common :: commonheader('单项申报')" />
+<!--  <meta charset="UTF-8">-->
+<!--  <title>单项申报</title>-->
+<!--  <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">-->
+<!--  <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.css" th:href="@{/agcloud/framework/js-lib/element-2/element.css}"/>-->
+<!--  <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css" th:href="@{/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css}">-->
+<!--  <link rel="stylesheet" href="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/css/reset.css" th:href="@{/agcloud/framework/js-lib/agcloud-lib/css/reset.css}">-->
+<!--  <style>-->
+<!--    .custor{-->
+<!--      cursor:pointer;-->
+<!--    }-->
+<!--  </style>-->
   <link rel="stylesheet" href="../../static/apply/css/index.css" th:href="@{/apply/css/index.css}">
-
+  
+  <script src="../../static/approve/js/ip.js" th:src="@{/approve/js/ip.js}"></script>
   <script>
       // var ctx = '[[@{/}]]';
       /*var ctx = 'http://192.168.30.33:8083/aplanmis-front/';*/
       var itemVerId = '[[${itemVerId}]]';
+      if (isDevelop) {
+        itemVerId = '64f5e187-37e5-4665-941b-a41fe7ce1dc5';
+      }
   </script>
 </head>
 
@@ -916,6 +932,20 @@
             </div>
           </el-collapse-item>
           <!--事项一单清 end-->
+  
+          <!--一张表单 start-->
+          <el-collapse-item name="10" v-if="oneFormInfo.length>0" id="oneForm" class="clearfix">
+            <template slot="title">
+              <i class="header-icon el-icon-edit-outline"></i>一张表单
+            </template>
+            <div class="fl" @click="openOneFormDialog">
+              <p class="one-form-name ellipsis">
+                <span class="icon el-icon-edit-outline"></span>
+                查看一张表单
+              </p>
+            </div>
+          </el-collapse-item>
+          <!--一张表单 end-->
           <!--材料一单清 start-->
           <el-collapse-item name="4" id="matsList">
             <template slot="title">
@@ -1707,12 +1737,55 @@
     </el-dialog>
     <!--  材料一张表单  end-->
     </div>
+  <!--  一张表单弹窗  start-->
+  <el-dialog @closed="oneFormDialogVisible=false" class="show-one-form" title="一张表单" :close-on-press-escape="false" :close-on-click-modal="false"
+             :width="(curWidth-20)+'px'" :visible.sync="oneFormDialogVisible">
+    <!--<el-button type="primary" style="margin-left: 20px"><a target="_blank" :href="ctx+'rest/oneform/common/renderPage?applyinstId='+parallelApplyinstId+'&stageId='+stageId+'&'+formItemsIdStr+'&showBasicButton=false&includePlatformResource=true'">打印表单</a></el-button>-->
+    <div :style="{height:(curHeight-64)+'px',overflow: 'auto'}">
+      <el-tabs tab-position="left">
+        <el-tab-pane v-for="(item,index) in oneFormInfo" :key="index" :label="item.formName" @click.native="test(1,2)">
+          <iframe :style="{height:(curHeight-68)+'px',overflow: 'auto',width:'100%'}"
+                  v-if="item.smartForm==false"
+                  :src="ctx+item.formUrl" frameborder="0"></iframe>
+          <div v-else :style="{height:(curHeight-68)+'px',overflow: 'auto',width:'100%','padding-right':'10px'}">
+            <div :id="'smartFormBox_'+index"></div>
+<!--            <div class="right-bottom-btn">-->
+<!--              <el-button type="primary" circle>-->
+<!--                <a target="_blank"-->
+<!--                   :href="ctx+'rest/oneform/common/renderPage?applyinstId='+parallelApplyinstId+'&stageId='+stageId+'&'+formItemsIdStr+'&showBasicButton=false&includePlatformResource=true'">-->
+<!--                  打印<br/>表单-->
+<!--                </a>-->
+<!--              </el-button>-->
+<!--              <el-button circle @click="oneFormDialogVisible=false">关闭<br/>窗口</el-button>-->
+<!--            </div>-->
+          </div>
+        </el-tab-pane>
+      </el-tabs>
+    </div>
+  </el-dialog>
+  <!--  一张表单弹窗  end-->
   </div>
 </body>
 
 <th:block th:include="common/common :: commonfooter" />
 <th:block th:include="common/common :: gaopaiyi" />
-<script th:src="@{/preview/pdfjs/build/pdf.js}"></script>
+<!--<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/jquery-v1/jquery.min.js" th:src="@{/agcloud/framework/js-lib/jquery-v1/jquery.min.js}"></script>-->
+<!--<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/polyfill.min.js" th:src="@{/agcloud/framework/js-lib/element-2/polyfill.min.js}"></script>-->
+<!--<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/vue-v2/vue.js" th:src="@{/agcloud/framework/js-lib/vue-v2/vue.js}"></script>-->
+<!--<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.js" th:src="@{/agcloud/framework/js-lib/element-2/element.js}"></script>-->
+<!--<script src="../../static/common/js/axios.min.js" th:src="@{/common/js/axios.min.js}"></script>-->
+<!--<script src="/framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/js/common.js" th:src="@{/agcloud/framework/js-lib/agcloud-lib/js/common.js}"></script>-->
+<!--&lt;!&ndash;引入图片转pdf文件&ndash;&gt;-->
+<!--<script type="text/javascript" th:src="@{/common/js/pdfmake.js}"></script>-->
+<!--<script src="../../static/common/js/qwebchannel.js" th:src="@{/common/js/qwebchannel.js}"></script>-->
+<!--<script src="../../static/common/js/liangtian_gaopaoyi.js" th:src="@{/common/js/liangtian_gaopaoyi.js}"></script>-->
+<!--<script src="../../static/common/js/fangzheng_gaopaiyi.js" th:src="@{/common/js/fangzheng_gaopaiyi.js}"></script>-->
+<!--&lt;!&ndash;InitializationCompleted 是方正高拍仪控件的事件，表示控件加载完成&ndash;&gt;-->
+<!--<script type="text/javascript" FOR="Capture" EVENT="InitializationCompleted" >-->
+<!--  catchInitFinishedMessage();-->
+<!--</script>-->
+
+<script src="../../static/preview/pdfjs/build/pdf.js" th:src="@{/preview/pdfjs/build/pdf.js}"></script>
 <script src="../../static/apply/js/index-single.js" th:src="@{/apply/js/index-single.js}"></script>
 
 </html>
