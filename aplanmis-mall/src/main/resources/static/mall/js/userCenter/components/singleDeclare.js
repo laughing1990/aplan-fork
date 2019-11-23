@@ -1467,6 +1467,8 @@ var module1 = new Vue({
                     } else if (_that.isNeedState == 1) {
                       // _that.declareStep = 3;
                       _that.getRootStateList();
+                    } else if(_that.needOneForm){
+                      _that.declareStep = 4;
                     } else {
                       debugger
                       _that.saveAndGetMats();
@@ -1567,6 +1569,8 @@ var module1 = new Vue({
       }
       if (this.isNeedState == 1) {
         this.getRootStateList();
+      } else if(_that.needOneForm){
+        this.declareStep = 4;
       } else {
         this.saveAndGetMats();
         // this.getParallelApplyinstId();
@@ -1802,6 +1806,10 @@ var module1 = new Vue({
     // 保存并根据阶段ID、情形ID集合、事项版本ID集合获取材料一单清列表数据
     saveAndGetMats: function () {
       var _that = this;
+      if(_that.needOneForm){
+        _that.declareStep = 4;
+        return false;
+      }
       var stateSel = _that.stateList;
       var stateSelLen = stateSel.length;
       _that.stateIds = [];
@@ -2542,6 +2550,8 @@ var module1 = new Vue({
             }
           });
           _that.formUrlList = result.content;
+        }else {
+          _that.needOneForm = false;
         }
       }, function (res) {
         // _that.$message({
