@@ -54,7 +54,7 @@ public class AgentItemApproveController {
     })
     @GetMapping("/uploadServiceResult")
     public ResultForm uploadServiceResult(String[] matinstIds, String applyinstId) throws Exception {
-        agentItemApproveService.uploadServiceResult(matinstIds, applyinstId);
+//        agentItemApproveService.uploadServiceResult(matinstIds, applyinstId);
 
         return new ResultForm(true, "successs");
     }
