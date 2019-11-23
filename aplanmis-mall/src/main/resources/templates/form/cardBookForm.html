@@ -41,8 +41,8 @@
             <el-form-item class="input-inline" prop="certLandCode" label="用地性质">
               <el-input v-model="formData.certLandCode" placeholder="请输入用地性质"></el-input>
             </el-form-item>
-            <el-form-item class="input-inline" prop="landNature" label='用地性质可用地性质ID'>
-              <el-select v-model="formData.landNature" placeholder="请选择用地性质可用地性质ID" @change="forceUpdate">
+            <el-form-item class="input-inline" prop="landNature" label='用地性质'>
+              <el-select v-model="formData.landNature" placeholder="请选择用地性质" @change="forceUpdate">
                 <el-option :label="item.itemName" :value="item.itemCode" v-for="item in fieldType"></el-option>
               </el-select>
             </el-form-item>
