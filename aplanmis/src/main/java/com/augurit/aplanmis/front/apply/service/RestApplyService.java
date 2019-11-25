@@ -9,22 +9,8 @@ import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.admin.market.item.service.AeaItemRelevanceService;
 import com.augurit.aplanmis.admin.market.service.service.AeaImServiceService;
 import com.augurit.aplanmis.common.constants.ApplyState;
-import com.augurit.aplanmis.common.domain.AeaHiApplyinst;
-import com.augurit.aplanmis.common.domain.AeaHiSmsInfo;
-import com.augurit.aplanmis.common.domain.AeaImProjPurchase;
-import com.augurit.aplanmis.common.domain.AeaImPurchaseinst;
-import com.augurit.aplanmis.common.domain.AeaImService;
-import com.augurit.aplanmis.common.domain.AeaItemBasic;
-import com.augurit.aplanmis.common.domain.AeaItemRelevance;
-import com.augurit.aplanmis.common.domain.AeaLinkmanInfo;
-import com.augurit.aplanmis.common.domain.AeaParStage;
-import com.augurit.aplanmis.common.domain.AeaProjInfo;
-import com.augurit.aplanmis.common.domain.AeaUnitInfo;
-import com.augurit.aplanmis.common.mapper.AeaHiSmsInfoMapper;
-import com.augurit.aplanmis.common.mapper.AeaImProjPurchaseMapper;
-import com.augurit.aplanmis.common.mapper.AeaImPurchaseinstMapper;
-import com.augurit.aplanmis.common.mapper.AeaItemBasicMapper;
-import com.augurit.aplanmis.common.mapper.AeaParStageMapper;
+import com.augurit.aplanmis.common.domain.*;
+import com.augurit.aplanmis.common.mapper.*;
 import com.augurit.aplanmis.common.service.admin.item.AeaItemBasicAdminService;
 import com.augurit.aplanmis.common.service.instance.AeaHiApplyinstService;
 import com.augurit.aplanmis.common.service.linkman.AeaLinkmanInfoService;
@@ -32,12 +18,7 @@ import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
 import com.augurit.aplanmis.common.service.receive.ReceiveService;
 import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
 import com.augurit.aplanmis.common.utils.BusinessUtil;
-import com.augurit.aplanmis.front.apply.vo.ApplyinstIdVo;
-import com.augurit.aplanmis.front.apply.vo.PropulsionItemStateVo;
-import com.augurit.aplanmis.front.apply.vo.SeriesApplyDataPageVo;
-import com.augurit.aplanmis.front.apply.vo.SeriesApplyDataVo;
-import com.augurit.aplanmis.front.apply.vo.StageApplyDataPageVo;
-import com.augurit.aplanmis.front.apply.vo.StageApplyDataVo;
+import com.augurit.aplanmis.front.apply.vo.*;
 import com.augurit.aplanmis.supermarket.apply.vo.ImServiceItemPurchaseVo;
 import io.jsonwebtoken.lang.Assert;
 import lombok.extern.slf4j.Slf4j;
@@ -47,14 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -106,7 +80,7 @@ public class RestApplyService {
         String applyinstId = aeaSeriesService.stageApplay(dataVo);
         updateAeaSmsInfo(seriesApplyDataPageVo.getSmsInfoId(), new String[]{applyinstId});
         //保存受理回执，物料回执
-        if (StringUtils.isBlank(applyinstIdParam)) {
+        if (StringUtils.isNotBlank(applyinstIdParam)) {
             receiveService.saveReceive(new String[]{applyinstId}, new String[]{"1", "2"}, SecurityContext.getCurrentUserName(), "");
         }
         return applyinstId;
