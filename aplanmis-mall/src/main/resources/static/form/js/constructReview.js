@@ -59,9 +59,29 @@ var app = new Vue({
       formData: {
         drawings: []
       },
-      formDataTuShen: {},
+      formDataTuShen: {
+        linkmen: [{
+          linkmanInfoId: '',
+          linkmanType: '8',
+          linkmanName: '',
+          linkmanCertNo: '',
+          prjSpty: '1',
+          unitProjId: '',
+          unitInfoId: ''
+        }]
+      },
       formDataKanCha: {},
-      formDataSheJj: {},
+      formDataSheJj: {
+        linkmen: [{
+          linkmanInfoId: '',
+          linkmanType: '8',
+          linkmanName: '',
+          linkmanCertNo: '',
+          prjSpty: '1',
+          unitProjId: '',
+          unitInfoId: ''
+        }]
+      },
       total: 0,
       tableData: [],
       activeNames: '1',
@@ -209,7 +229,6 @@ var app = new Vue({
     this.getAllType();
     this.showData();
     // this.getUnit();
-    $(".loading").hide();
   },
   methods: {
     // 获取页面的URL参数
@@ -273,9 +292,9 @@ var app = new Vue({
             vm.formDataSheJj = {};
           } else {
             for (var i = 0; i < res.content.drawings.length; i++) {
-              if (res.content.drawings[i].unitType == '13') {
+              if (res.content.drawings[i].unitType == '25') {
                 vm.formDataTuShen = res.content.drawings[i] || {};
-              } else if (res.content.drawings[i].unitType == '3') {
+              } else if (res.content.drawings[i].unitType == '4') {
                 vm.formDataSheJj = res.content.drawings[i] || {};
               } else {
                 vm.formDataKanCha = res.content.drawings[i] || {};
@@ -331,15 +350,15 @@ var app = new Vue({
         type: 'get',
         url: ctx + 'rest/dict/code/multi/items/list',
         data: {
-          dicCodeTypeCodes: 'XM_DWLX,JOB_TITLE,C_PRJ_SPTY,PROJ_UNIT_LINKMAN_TYPE,REGIST_CERTIFI_TYPE'
+          dicCodeTypeCodes: 'XM_DWLX,C_TITLE,C_PRJ_SPTY,PROJ_UNIT_LINKMAN_TYPE,C_REG_LCN_TYPE'
         },
       }, function(res) {
         vm.proType = res.content.XM_DWLX; //请求项目主体类型
-        vm.jobTitle = res.content.JOB_TITLE; //请求职称等级
+        vm.jobTitle = res.content.C_TITLE; //请求职称等级
         vm.prjType = res.content.C_PRJ_SPTY; //请求审查人员专业
         vm.linkmanType = res.content.PROJ_UNIT_LINKMAN_TYPE; //请求项目单位联系人类型
         vm.linkmanType2 = res.content.PROJ_UNIT_LINKMAN_TYPE; //请求项目单位联系人类型
-        vm.CertifiType = res.content.REGIST_CERTIFI_TYPE; //请求执业注册证类型
+        vm.CertifiType = res.content.C_REG_LCN_TYPE; //请求执业注册证类型
 
 
         for (var i = 0; i < vm.linkmanType2.length; i++) {
@@ -351,7 +370,77 @@ var app = new Vue({
         vm.$message.error('服务器错了哦!');
       })
     },
+    // 联网查询
+    searchFromInternet: function(data, code) {
+      var _this = this;
+      if (!code) {
+        _this.$message({
+          message: '请输入要查询的组织机构代码！',
+          type: 'error'
+        });
+        return false;
+      }
 
+      request('', {
+        type: 'get',
+        url: ctx + 'rest/form/project/webservice/getGdEnterpriseInfo',
+        data: {
+          orgCode: code
+        },
+      }, function(res) {
+        if (!res.success) {
+          _this.$message({
+            message: '未查询到该组织机构代码！',
+            type: 'error'
+          });
+          return false;
+        }
+        _this.$set(data, 'unitInfoId', res.content.unitInfoId);
+        _this.$set(data, 'applicant', res.content.applicant);
+        _this.$set(data, 'organizationalCode', res.content.organizationalCode);
+        _this.$set(data, 'unifiedSocialCreditCode', res.content.unifiedSocialCreditCode);
+
+      }, function(err) {
+        vm.$message.error('服务器错了哦!');
+      })
+    },
+    // 联网查询联系人
+    searchMan: function(data, code) {
+      var _this = this;
+      if (!code) {
+        _this.$message({
+          message: '请输入要查询的联系人证件号！',
+          type: 'error'
+        });
+        return false;
+      }
+
+      request('', {
+        type: 'get',
+        url: ctx + 'rest/form/project/webservice/getGdPersonInfo',
+        data: {
+          idNum: code
+        },
+      }, function(res) {
+        if (!res.success) {
+          _this.$message({
+            message: '未查询到该证件号所属联系人！',
+            type: 'error'
+          });
+          return false;
+        }
+        _this.$set(_this.addEditManform, 'linkmanName', res.content.linkmanName);
+        _this.$set(_this.addEditManform, 'linkmanMobilePhone', res.content.linkmanMobilePhone);
+        _this.$set(_this.addEditManform, 'linkmanOfficePhon', res.content.linkmanOfficePhon);
+        _this.$set(_this.addEditManform, 'linkmanFax', res.content.linkmanFax);
+        _this.$set(_this.addEditManform, 'linkmanMail', res.content.linkmanMail);
+        _this.$set(_this.addEditManform, 'linkmanAddr', res.content.linkmanAddr);
+        _this.$set(_this.addEditManform, 'linkmanMemo', res.content.linkmanMemo);
+
+      }, function(err) {
+        vm.$message.error('服务器错了哦!');
+      })
+    },
     // 模糊查询人员
     getPerson: function(val) {
       var vm = this;
@@ -656,7 +745,7 @@ var app = new Vue({
                   _this.showData();
                 } else {
                   _this.$message({
-                    message: '保存失败',
+                    message: '保存失败' + res.content,
                     type: 'error'
                   });
                 }

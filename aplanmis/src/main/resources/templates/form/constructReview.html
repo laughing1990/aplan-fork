@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/js-lib/element-2/element.css" th:href="@{/agcloud/framework/js-lib/element-2/element.css}" />
   <link rel="stylesheet" href="../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css" th:href="@{/agcloud/framework/icon-lib/agcloud-fonts/iconfont.css}">
   <link rel="stylesheet" href="../../static/form/css/constructReview.css" th:href="@{/form/css/constructReview.css}">
+  <link rel="stylesheet" href="../../../../../../../framework-ui/src/main/resources/static/agcloud/framework/js-lib/agcloud-lib/css/reset.css" th:href="@{/agcloud/framework/js-lib/agcloud-lib/css/reset.css}">
   <script>
     var ctx = '[[@{/}]]';
     var projInfoId= '[[${projInfoId}]]'; 
@@ -31,9 +32,6 @@
             <el-input v-model="formData.drawingId"></el-input>
           </el-form-item>
           <div class="clearfix">
-            <el-form-item class="input-inline" prop="provinceProjCode" label="省级项目编号">
-              <el-input v-model="formData.provinceProjCode" placeholder="请输入省级项目编号"></el-input>
-            </el-form-item>
             <el-form-item class="input-inline" prop="drawingQuabookCode" label='施工图审查合格书编号'>
               <el-input v-model="formData.drawingQuabookCode" placeholder="请输入施工图审查合格书编号"></el-input>
             </el-form-item>
@@ -58,12 +56,10 @@
             <el-form-item class="input-inline" label="一次审查时违反强条数" prop="oncePassAgainstCount">
               <el-input v-model="formData.oncePassAgainstCount" placeholder="请输入一次审查时违反强条数"></el-input>
             </el-form-item>
+            <el-form-item class="input-inline" label="一次审查时违反的强条条目" prop="oncePassAgainstItem">
+              <el-input v-model="formData.oncePassAgainstItem" placeholder="请输入一次审查时违反的强条条目"></el-input>
+            </el-form-item>
           </div>
-          <!-- <div class="clearfix"> -->
-          <el-form-item class="proj-code-info" label="一次审查时违反的强条条目" prop="oncePassAgainstItem">
-            <el-input v-model="formData.oncePassAgainstItem" placeholder="请输入一次审查时违反的强条条目"></el-input>
-          </el-form-item>
-          <!-- </div> -->
           <el-form-item class="proj-code-info" label="施工图审查意见（终审）" prop="approveOpinion">
             <el-input v-model="formData.approveOpinion" type="textarea" rows="5" placeholder="请输入施工图审查意见"></el-input>
           </el-form-item>
@@ -88,7 +84,7 @@
           <el-form label-width="220px" :model="formDataTuShen" ref="form2" :rules="rules2" v-if="formDataTuShen">
             <div class="clearfix">
               <el-form-item class="input-inline" prop="organizationalCode" label="组织机构代码">
-                <el-input v-model="formDataTuShen.organizationalCode" placeholder="请输入组织机构代码"></el-input>
+                <el-input v-model="formDataTuShen.organizationalCode" placeholder="格式：XXXXXXXXX"></el-input>
               </el-form-item>
               <el-form-item class="input-inline" prop="unifiedSocialCreditCode" label='统一社会信用代码'>
                 <el-input v-model="formDataTuShen.unifiedSocialCreditCode" placeholder="请输入统一社会信用代码"></el-input>
@@ -109,8 +105,10 @@
                 <el-select @change='forceUpdate' v-model="formDataTuShen.projectLeader" filterable placeholder="请选择图审机构项目负责人" @click.native="getPerson(formDataTuShen)" style="width:68%;">
                   <el-option :label="item.addressName" :value="item.addressName" v-for="item in person" @click.native="selTypeLinkman(formDataTuShen,item)"></el-option>
                 </el-select>
-                <el-button icon="el-icon-edit-outline" type="primary" class="item-left-btn" @click="addEditManModalFlag='edit';edit(formDataTuShen,'')" title="编辑" style="margin-left:5px;float:right;"></el-button>
-                <el-button icon="el-icon-circle-plus-outline" type="primary" class="item-left-btn" @click="addPerson(formDataTuShen);addEditManModalFlag='add'" title="新增" style="margin-left:3px;float:right;"></el-button>
+                <div style="position:absolute;right:0;top:0;">
+                  <el-button icon="el-icon-edit-outline" type="primary" class="item-left-btn" @click="addEditManModalFlag='edit';edit(formDataTuShen,'')" title="编辑" style="margin-left:5px;float:right;"></el-button>
+                  <el-button icon="el-icon-circle-plus-outline" type="primary" class="item-left-btn" @click="addPerson(formDataTuShen);addEditManModalFlag='add'" title="新增" style="margin-left:3px;float:right;"></el-button>
+                </div>
               </el-form-item>
               <el-form-item class="input-inline" prop="projectLeaderCertNum" label='负责人身份证号码'>
                 <el-input v-model="formDataTuShen.projectLeaderCertNum" placeholder="请输入图审机构项目负责人身份证号码" disabled></el-input>
@@ -157,7 +155,7 @@
                     </el-option>
                   </el-select>
                 </el-col>
-                <el-col :span="5">
+                <el-col :span="9">
                   <span><i>*</i>姓名</span>
                   <el-select @change='forceUpdate' v-model="type.linkmanName" filterable placeholder="请选择联系人" @click.native="getPerson(formDataTuShen)" :class="type.linkmanName?'':'red'">
                     <el-option v-for="item in person" :key="item.addressId" @click.native="selTypeLinkman2(type,item)" :label="item.addressName" :value="item.addressId">
@@ -166,11 +164,11 @@
                   <el-button icon="el-icon-circle-plus-outline" type="primary" class="item-left-btn" @click="add(formDataTuShen);addEditManModalFlag='add'" title="新增" style="margin-left:10px;height:33px;"></el-button>
                   <el-button icon="el-icon-edit-outline" type="primary" class="item-left-btn" @click="edit(type,formDataTuShen);addEditManModalFlag='edit'" title="编辑" style="margin-left:12px;height:33px;"></el-button>
                 </el-col>
-                <el-col :span="6">
+                <el-col :span="8">
                   <span><i>*</i>身份证号</span>
                   <el-input v-model="type.linkmanCertNo" placeholder="请输入身份证号" disabled></el-input>
                 </el-col>
-                <el-col :span="6">
+                <el-col :span="8">
                   <span><i>*</i>审查专业</span>
                   <el-select @change='forceUpdate' v-model="type.prjSpty" placeholder="请选择审查专业" @click.native="" :class="type.prjSpty?'':'red'">
                     <el-option v-for="item in prjType" :key="item.itemId" @click.native="" :label="item.itemName" :value="item.itemCode">
@@ -186,7 +184,7 @@
           <el-form label-width="220px" :model="formDataKanCha" ref="form3" :rules="rules3" v-if="formDataKanCha">
             <div class="clearfix">
               <el-form-item class="input-inline" prop="organizationalCode" label="组织机构代码">
-                <el-input v-model="formDataKanCha.organizationalCode" placeholder="请输入组织机构代码"></el-input>
+                <el-input v-model="formDataKanCha.organizationalCode" placeholder="格式：XXXXXXXXX"></el-input>
               </el-form-item>
               <el-form-item class="input-inline" prop="unifiedSocialCreditCode" label='统一社会信用代码'>
                 <el-input v-model="formDataKanCha.unifiedSocialCreditCode" placeholder="请输入统一社会信用代码"></el-input>
@@ -211,8 +209,10 @@
                 <el-select @change='forceUpdate' v-model="formDataKanCha.projectLeader" filterable placeholder="请选择勘察单位项目负责人" @click.native="getPerson(formDataKanCha)" style="width:68%;">
                   <el-option :label="item.addressName" :value="item.addressName" v-for="item in person" @click.native="selTypeLinkman(formDataKanCha,item)"></el-option>
                 </el-select>
-                <el-button icon="el-icon-edit-outline" type="primary" class="item-left-btn" @click="addEditManModalFlag='edit';edit(formDataKanCha,'')" title="编辑" style="margin-left:5px;float:right;"></el-button>
-                <el-button icon="el-icon-circle-plus-outline" type="primary" class="item-left-btn" @click="addPerson(formDataKanCha);addEditManModalFlag='add'" title="新增" style="margin-left:3px;float:right;"></el-button>
+                <div style="position:absolute;right:0;top:0;">
+                  <el-button icon="el-icon-edit-outline" type="primary" class="item-left-btn" @click="addEditManModalFlag='edit';edit(formDataKanCha,'')" title="编辑" style="margin-left:5px;float:right;"></el-button>
+                  <el-button icon="el-icon-circle-plus-outline" type="primary" class="item-left-btn" @click="addPerson(formDataKanCha);addEditManModalFlag='add'" title="新增" style="margin-left:3px;float:right;"></el-button>
+                </div>
               </el-form-item>
               <el-form-item class="input-inline" prop="projectLeaderCertNum" label='负责人身份证号码'>
                 <el-input v-model="formDataKanCha.projectLeaderCertNum" placeholder="请输入勘察单位项目负责人身份证号码" disabled></el-input>
@@ -258,7 +258,7 @@
           <el-form label-width="220px" :model="formDataSheJj" ref="form4" :rules="rules4" v-if="formDataSheJj">
             <div class="clearfix">
               <el-form-item class="input-inline" prop="organizationalCode" label="组织机构代码">
-                <el-input v-model="formDataSheJj.organizationalCode" placeholder="请输入组织机构代码"></el-input>
+                <el-input v-model="formDataSheJj.organizationalCode" placeholder="格式：XXXXXXXXX"></el-input>
               </el-form-item>
               <el-form-item class="input-inline" prop="unifiedSocialCreditCode" label='统一社会信用代码'>
                 <el-input v-model="formDataSheJj.unifiedSocialCreditCode" placeholder="请输入统一社会信用代码"></el-input>
@@ -283,8 +283,10 @@
                 <el-select @change='forceUpdate' v-model="formDataSheJj.projectLeader" filterable placeholder="请选择设计单位项目负责人" @click.native="getPerson(formDataSheJj)" style="width:68%;">
                   <el-option :label="item.addressName" :value="item.addressName" v-for="item in person" @click.native="selTypeLinkman(formDataSheJj,item)"></el-option>
                 </el-select>
-                <el-button icon="el-icon-edit-outline" type="primary" class="item-left-btn" @click="addEditManModalFlag='edit';edit(formDataSheJj,'')" title="编辑" style="margin-left:5px;float:right;"></el-button>
-                <el-button icon="el-icon-circle-plus-outline" type="primary" class="item-left-btn" @click="addPerson(formDataSheJj);addEditManModalFlag='add'" title="新增" style="margin-left:3px;float:right;"></el-button>
+                <div style="position:absolute;right:0;top:0;">
+                  <el-button icon="el-icon-edit-outline" type="primary" class="item-left-btn" @click="addEditManModalFlag='edit';edit(formDataSheJj,'')" title="编辑" style="margin-left:5px;float:right;"></el-button>
+                  <el-button icon="el-icon-circle-plus-outline" type="primary" class="item-left-btn" @click="addPerson(formDataSheJj);addEditManModalFlag='add'" title="新增" style="margin-left:3px;float:right;"></el-button>
+                </div>
               </el-form-item>
               <el-form-item class="input-inline" prop="projectLeaderCertNum" label='负责人身份证号码'>
                 <el-input v-model="formDataSheJj.projectLeaderCertNum" placeholder="请输入设计单位项目负责人身份证号码" disabled></el-input>
@@ -324,7 +326,7 @@
               </el-form-item>
             </div>
             <div class="clearfix">
-              <el-form-item class="input-inline allWidth" label="人员设置" prop="induCommRegNum">
+              <el-form-item class="proj-code-info" label="人员设置" prop="induCommRegNum">
                 <el-row class="linkman-set-item" v-for="(type,index) in formDataSheJj.linkmen" :key="index">
                   <el-col :span="1">
                     <el-button v-if="index==0" icon="el-icon-circle-plus-outline" type="primary" class="item-left-btn" @click="addLinkmanTypes(formDataSheJj.linkmen,formDataSheJj)" title="新增"></el-button>
@@ -336,7 +338,7 @@
                       </el-option>
                     </el-select>
                   </el-col>
-                  <el-col :span="5">
+                  <el-col :span="9">
                     <span><i>*</i>姓名</span>
                     <el-select @change='forceUpdate' v-model="type.linkmanName" filterable placeholder="请选择联系人" @click.native="getPerson(formDataSheJj)" :class="type.linkmanName?'':'red'">
                       <el-option v-for="item in person" :key="item.addressId" @click.native="selTypeLinkman2(type,item)" :label="item.addressName" :value="item.addressId">
@@ -345,11 +347,11 @@
                     <el-button icon="el-icon-circle-plus-outline" type="primary" class="item-left-btn" @click="add(formDataSheJj);addEditManModalFlag='add'" title="新增" style="margin-left:10px;height:33px;"></el-button>
                     <el-button icon="el-icon-edit-outline" type="primary" class="item-left-btn" @click="edit(type,formDataSheJj);addEditManModalFlag='edit'" title="编辑" style="margin-left:12px;height:33px;"></el-button>
                   </el-col>
-                  <el-col :span="6">
+                  <el-col :span="8">
                     <span><i>*</i>身份证号</span>
                     <el-input v-model="type.linkmanCertNo" placeholder="请输入身份证号" disabled></el-input>
                   </el-col>
-                  <el-col :span="6">
+                  <el-col :span="8">
                     <span><i>*</i>审查专业</span>
                     <el-select @change='forceUpdate' v-model="type.prjSpty" placeholder="请选择审查专业" @click.native="" :class="type.prjSpty?'':'red'">
                       <el-option v-for="item in prjType" :key="item.itemId" @click.native="" :label="item.itemName" :value="item.itemCode">

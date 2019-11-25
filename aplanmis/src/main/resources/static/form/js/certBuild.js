@@ -41,6 +41,7 @@ var vm = new Vue({
         return{
             loading: false, // 页面加载遮罩
             projInfoId:'',
+            showBasicButton:'true',
             addEditManModalTitle: '新增联系人',
             addEditManModalFlag: 'edit',
             addEditManModalShow: false, // 是否显示新增编辑联系人窗口
@@ -67,8 +68,8 @@ var vm = new Vue({
             },
             activeNames: ['1', '2', '3', '4', '5', '6'],// el-collapse 默认展开列表
             certBuildFromRules: {  // 基本信息校验
-                provinceProjCode: [
-                    { required: true,message: '请输入省级项目编号！', trigger: ['change','blur'] },
+                constructionUnit: [
+                    { required: true,message: '请输入建设单位！', trigger: ['change','blur'] },
                 ],
                 contractStartBuildTime: [
                     { required: true,message: '请选择合同开工时间！', trigger: ['change'] },
@@ -76,13 +77,45 @@ var vm = new Vue({
                 contractEndBuildTime: [
                     { required: true,message: '请选择合同竣工时间！', trigger: ['change'] },
                 ],
-                structureSystem: [
-                    { required: true,message: '请选择结构体系！', trigger: ['change'] },
+                constructionAddr: [
+                    { required: true,message: '请输入建设地址！', trigger: ['change','blur'] },
                 ],
-                buildArea: [
-                    {validator:checkNumFloat, trigger: ['blur'] },
-                    { required: true,message: '请填写施工面积！', trigger: ['change'] }
-                ]
+                constructionsSize: [
+                    { required: true,message: '请输入建设规模！', trigger: ['change','blur'] },
+                ],
+                contractPrice: [
+                    { required: true,message: '请输入合同价格！', trigger: ['change','blur'] },
+                ],
+                gczcbUnit: [
+                    { required: true,message: '请输入工程总承包单位！', trigger: ['change','blur'] },
+                ],
+                gczcbUnitLeader: [
+                    { required: true,message: '请输入工程总承包单位负责人！', trigger: ['change','blur'] },
+                ],
+                kcUnit: [
+                    { required: true,message: '请输入勘察单位！', trigger: ['change','blur'] },
+                ],
+                kcUnitLeader:[
+                    { required: true,message: '请输入勘察单位负责人！', trigger: ['change','blur'] },
+                ],
+                sjUnit:[
+                    { required: true,message: '请输入设计单位！', trigger: ['change','blur'] },
+                ],
+                sjUnitLeader:[
+                    { required: true,message: '请输入设计单位负责人！', trigger: ['change','blur'] },
+                ],
+                sgUnit:[
+                    { required: true,message: '请输入施工单位！', trigger: ['change','blur'] },
+                ],
+                sgUnitLeader:[
+                    { required: true,message: '请输入施工单位负责人！', trigger: ['change','blur'] },
+                ],
+                jlUnit:[
+                    { required: true,message: '请输入监理单位！', trigger: ['change','blur'] },
+                ],
+                jlUnitLeader:[
+                    { required: true,message: '请输入总监理工程师！', trigger: ['change','blur'] },
+                ],
             },
             loadingUnitLinkMan:false,
             certBuildFrom:{
@@ -113,7 +146,7 @@ var vm = new Vue({
     },
     methods:{
         getUrlParam: function (name) {
-            var _that = this;
+            /*var _that = this;
             var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
             var r = window.location.search.substr(1).match(reg);
             if (r != null) {
@@ -124,11 +157,20 @@ var vm = new Vue({
                     type: 'error'
                 });
             }
+            return null;*/
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+            var r = window.location.search.substr(1).match(reg);
+            if (r != null) {
+                return unescape(r[2]);
+            }
             return null;
         },
         initPage:function(){
             var _that = this;
             _that.certBuildFrom.projInfoId = _that.getUrlParam('projInfoId');
+            if (_that.getUrlParam('showBasicButton') == 'false') {
+                _that.showBasicButton = 'false'
+            }
         },
         initFromPage :function(){//初始化表单页面
             var _that = this;
@@ -200,7 +242,7 @@ var vm = new Vue({
                             });
                         }else {
                             _that.$message({
-                                message: '保存失败',
+                                message: '保存失败' + res.content,
                                 type: 'error'
                             });
                         }

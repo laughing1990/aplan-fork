@@ -3,6 +3,7 @@ package com.augurit.aplanmis.common.service.mat.impl;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.util.StringUtils;
 import com.augurit.aplanmis.common.domain.*;
+import com.augurit.aplanmis.common.mapper.AeaItemInoutMapper;
 import com.augurit.aplanmis.common.mapper.AeaItemMatMapper;
 import com.augurit.aplanmis.common.mapper.AeaParStageItemMapper;
 import com.augurit.aplanmis.common.mapper.AeaParStageMapper;
@@ -295,9 +296,15 @@ public class AeaItemMatServiceImpl implements AeaItemMatService {
         String[] coreItemVerIds = (String[]) ArrayUtils.addAll(coreItemVerIdsDef, coreParentItemVerIds);
         if (StringUtils.isNotBlank(stageId)) {//说明是并联申报
 
-            //List<AeaItemMat> stageMatList = getMatListByStageId(stageId, null);//阶段材料
-            List<AeaItemMat> stageStateMatList = (stageStateIds != null && stageStateIds.length > 0) ? getMatListByStageStateIds(stageStateIds) : new ArrayList<AeaItemMat>();//并联的情形材料
-            list.addAll(stageStateMatList);
+            //并联的情形材料
+            if (parallelItemVerIds != null && stageStateIds != null && parallelItemVerIds.length > 0 && stageStateIds.length > 0) {
+                List<AeaItemMat> stageStateMatList = new ArrayList();
+                for (String itemVerId : parallelItemVerIds) {
+                    stageStateMatList.addAll(this.getMatListByStageStateIdsAndItemVerId(stageStateIds, itemVerId));
+                }
+                list.addAll(stageStateMatList);
+            }
+
             //`HAND_WAY` char(1) DEFAULT NULL COMMENT '办理方式 0 多事项直接合并办理  1 按阶段多级情形组织事项办理',
             //如果该阶段是沿用情形组织事项办理，那么需要去掉对应的实施事项版本ID，免得带出了实施事项所配的材料
             if (parallelParentItemVerIds.length > 0) {
@@ -339,6 +346,23 @@ public class AeaItemMatServiceImpl implements AeaItemMatService {
     public List<AeaItemMat> getOfficeMatsByStageItemVerIds(String stageId, String[] itemVerIds) throws Exception {
 
         return aeaItemMatMapper.getOfficeMatsByStageItemVerIds(stageId, itemVerIds, SecurityContext.getCurrentOrgId());
+    }
+
+    @Autowired
+    private AeaItemInoutMapper aeaItemInoutMapper;
+
+    /**
+     * 查询单项不分情形下材料定义列表-中介超市用
+     *
+     * @param itemVerId 事项版本ID
+     * @return List<AeaItemMat>
+     */
+    @Override
+    public List<AeaItemMat> getSeriesNoStateMatList(String itemVerId) throws Exception {
+        AeaItemBasic basic = aeaItemBasicService.getAeaItemBasicByItemVerId(itemVerId);
+        if (null == basic) throw new Exception("can not find item info ");
+        List<AeaItemMat> itemMats = aeaItemInoutMapper.getSeriesNoStateMatList(itemVerId);
+        return itemMats;
     }
 }
 

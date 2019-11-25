@@ -114,5 +114,5 @@ public interface AeaImProjPurchaseMapper {
      * @param applyinstCode 申报流水号
      * @return PurchaseProjVo
      */
-    PurchaseProjVo getProjPurchaseInfoByApplyinstCode(@Param("applyinstCode") String applyinstCode);
+    PurchaseProjVo getProjPurchaseInfoByApplyinstCode(@Param("applyinstCode") String applyinstCode, @Param("projPurchaseId") String projPurchaseId);
 }

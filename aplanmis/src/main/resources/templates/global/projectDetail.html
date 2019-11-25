@@ -94,21 +94,36 @@
                            v-for="item in allDicItemListData.XM_THEME_TYPE" :key="item.id"></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="投资类型">
+            <el-form-item label="投资类型" prop="investType">
               <el-select placeholder="请选择" v-model="baseForm.investType">
                 <el-option :label="item.itemName" :value="item.itemCode" v-for="item in allDicItemListData.XM_TZLX"
                            :key="item.id">
                 </el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="行业类别">
+            <el-form-item label="行业类别" prop="theIndustry">
               <el-select placeholder="请选择" v-model="baseForm.theIndustry">
                 <el-option :label="item.itemName" :value="item.itemCode" v-for="item in allDicItemListData.XM_GBHY"
                            :key="item.id">
                 </el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="资金来源">
+            <el-form-item class="input-inline" prop="projectAddress">
+              <template slot="label">
+                <el-tooltip class="item" effect="dark" content="选择项目/工程所在地行政区划。如果是跨区，则选择多个行政区划。" placement="right-start">
+                  <i class="ag ag-help"></i>
+                </el-tooltip>
+                建设地点
+              </template>
+              <el-select multiple v-model="baseForm.projectAddress" placeholder="请选择建设地点">
+                <el-option v-for="item in districtList" :key="item.regionId" :label="item.regionName" :value="item.regionId">
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item class="input-inline" label="国标行业代码年代" prop="gbCodeYear">
+              <el-input v-model="baseForm.gbCodeYear" placeholder="请输入国标行业代码发布年代"></el-input>
+            </el-form-item>
+            <el-form-item label="资金来源" prop="financialSource">
               <el-select placeholder="请选择" v-model="baseForm.financialSource">
                 <el-option :label="item.itemName" :value="item.itemCode" v-for="item in allDicItemListData.XM_ZJLY"
                            :key="item.id">
@@ -124,12 +139,36 @@
                 <el-radio label="0">否</el-radio>
               </el-radio-group>
             </el-form-item>
-            <el-form-item label="土地来源">
+            <el-form-item label="土地来源" prop="landSource">
               <el-select placeholder="请选择" v-model="baseForm.landSource">
                 <el-option :label="item.itemName" :value="item.itemCode" v-for="item in allDicItemListData.XM_TDLY"
                            :key="item.id">
                 </el-option>
               </el-select>
+            </el-form-item>
+            <el-form-item class="input-inline" prop="isAreaEstimate">
+              <template slot="label">
+                <el-tooltip class="item" effect="dark" content="建设范围未实施区域评估选“否”，建设范围已实施区域评估选“是”。" placement="right-start">
+                  <i class="ag ag-help"></i>
+                </el-tooltip>
+                是否完成区域评估
+              </template>
+              <el-radio-group v-model="baseForm.isAreaEstimate">
+                <el-radio label="1" value="1" key="1">是</el-radio>
+                <el-radio label="0" value="0" key="0">否</el-radio>
+              </el-radio-group>
+            </el-form-item>
+            <el-form-item class="input-inline" prop="isDesignSolution">
+              <template slot="label">
+                <el-tooltip class="item" effect="dark" content="建设用地不带设计方案选“否”，建设用地带设计方案选“是”。" placement="right-start">
+                  <i class="ag ag-help"></i>
+                </el-tooltip>
+                土地是否带设计方案
+              </template>
+              <el-radio-group v-model="baseForm.isDesignSolution">
+                <el-radio label="1" value="1" key="1">是</el-radio>
+                <el-radio label="0" value="0" key="0">否</el-radio>
+              </el-radio-group>
             </el-form-item>
             <el-form-item label="用地面积(公顷)" prop="xmYdmj">
               <el-input placeholder="请输入用地面积" v-model="baseForm.xmYdmj"></el-input>
@@ -160,15 +199,15 @@
               <el-input placeholder="请输入建筑面积" v-model="baseForm.buildAreaSum"></el-input>
             </el-form-item>
 
-            <el-form-item label="拟开工时间">
-              <el-date-picker type="date" placeholder="选择日期" value-format="yyyy-MM-dd" format="yyyy-MM-dd"
-                              v-model="baseForm.nstartTime">
+            <el-form-item class="input-inline" label="拟开工时间" prop="nstartTime">
+              <el-date-picker v-model="baseForm.nstartTime" type="date" placeholder="请选择拟开工时间" format="yyyy 年 MM 月 dd 日" value-format="yyyy-MM-dd">
               </el-date-picker>
+              <input v-model="baseForm.nstartTime" type="hidden">
             </el-form-item>
-            <el-form-item label="拟建成时间">
-              <el-date-picker type="date" placeholder="选择日期" value-format="yyyy-MM-dd" format="yyyy-MM-dd"
-                              v-model="baseForm.endTime">
+            <el-form-item class="input-inline" label="拟建成时间" prop="endTime">
+              <el-date-picker type="date" placeholder="请选择拟建成时间" format="yyyy 年 MM 月 dd 日" value-format="yyyy-MM-dd" v-model="baseForm.endTime">
               </el-date-picker>
+              <input v-model="baseForm.endTime" type="hidden">
             </el-form-item>
             <el-form-item label="项目资本(万元)" prop="xmzbj">
               <el-input placeholder="请输入项目资本" v-model="baseForm.xmzbj"></el-input>
@@ -196,7 +235,7 @@
                 </el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="建设规模及内容" class="fill-item">
+            <el-form-item label="建设规模及内容" class="fill-item" prop="scaleContent">
               <el-input placeholder="请输入建设规模及内容" type="textarea" v-model="baseForm.scaleContent"></el-input>
             </el-form-item>
             <el-form-item label="目前进展情况" class="fill-item">

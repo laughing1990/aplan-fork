@@ -25,4 +25,8 @@ public interface EtlJobDetailLogMapper {
     List<EtlJobDetailLog> listEtlJobDetailLog(EtlJobDetailLog etlJobDetailLog);
 
     EtlJobDetailLog getEtlJobDetailLogById(@Param("id") String id);
+
+    List<EtlJobDetailLog> findEtlJobDetailLogByJobLogId(@Param("jobLogId") String jobLogId);
+
+    void batchDeleteEtlDetailJobLogByJobLogIds(@Param("jobLogIds") String[] jobLogIds);
 }

@@ -308,6 +308,7 @@ public class AeaExProjCerBuildServiceImpl implements AeaExProjCertBuildService {
         if(StringUtils.isBlank(aeaExProjCertBuild.getBuildId())){
             //查询项目名称
             AeaProjInfo aeaProjInfoById = aeaProjInfoMapper.getAeaProjInfoById(aeaExProjCertBuild.getProjInfoId());
+            aeaExProjCertBuild.setCertBuildCode("0");
             aeaExProjCertBuild.setProjName(aeaProjInfoById.getProjName());
             aeaExProjCertBuild.setBuildId(UuidUtil.generateUuid());
             aeaExProjCertBuild.setCreateTime(new Date());

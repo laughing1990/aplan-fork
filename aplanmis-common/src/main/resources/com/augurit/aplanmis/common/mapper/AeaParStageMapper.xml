@@ -48,7 +48,9 @@
         ${alias}.IS_CHECK_ITEMFORM  isCheckItemform,
         ${alias}.IS_CHECK_PARTFORM  isCheckPartform,
         ${alias}.IS_CHECK_PROJ  isCheckProj,
-        ${alias}.IS_CHECK_STAGE  isCheckStage
+        ${alias}.IS_CHECK_STAGE  isCheckStage,
+        ${alias}.ANTICIPATE_DAY  anticipateDay,
+        ${alias}.ANTICIPATE_TYPE  anticipateType
     </sql>
 
     <!--2 根据主键ID查询单个实体 -->
@@ -231,6 +233,12 @@
             <if test="isCheckStage != null">
                 AND IS_CHECK_STAGE = #{isCheckStage}
             </if>
+            <if test="anticipateDay != null" >
+                AND    ANTICIPATE_DAY = #{anticipateDay}
+            </if>
+            <if test="anticipateType != null" >
+                AND    ANTICIPATE_TYPE = #{anticipateType}
+            </if>
             <if test="keyword != null and keyword !='' ">
                 AND (
                 STAGE_NAME LIKE CONCAT(CONCAT('%',#{keyword}),'%') OR
@@ -288,7 +296,9 @@
             IS_CHECK_ITEMFORM,
             IS_CHECK_PARTFORM,
             IS_CHECK_PROJ,
-            IS_CHECK_STAGE
+            IS_CHECK_STAGE,
+            ANTICIPATE_DAY,
+            ANTICIPATE_TYPE
         )  values  (
             #{stageId},
             #{stageName},
@@ -332,7 +342,9 @@
             #{isCheckItemform},
             #{isCheckPartform},
             #{isCheckProj},
-            #{isCheckStage}
+            #{isCheckStage},
+            #{anticipateDay},
+            #{anticipateType}
         )
     </insert>
 
@@ -469,6 +481,12 @@
             <if test="isCheckStage != null">
                 IS_CHECK_STAGE = #{isCheckStage},
             </if>
+            <if test="anticipateDay != null" >
+                ANTICIPATE_DAY = #{anticipateDay},
+            </if>
+            <if test="anticipateType != null" >
+                ANTICIPATE_TYPE = #{anticipateType},
+            </if>
         </set>
         where STAGE_ID = #{stageId}
     </update>
@@ -540,6 +558,8 @@
         <result property="isCheckPartform" column="IS_CHECK_PARTFORM"/>
         <result property="isCheckProj" column="IS_CHECK_PROJ"/>
         <result property="isCheckStage" column="IS_CHECK_STAGE"/>
+        <result property="anticipateDay" column="ANTICIPATE_DAY"/>
+        <result property="anticipateType" column="ANTICIPATE_TYPE"/>
     </resultMap>
 
     <delete id="deleteAeaParStageByIds">

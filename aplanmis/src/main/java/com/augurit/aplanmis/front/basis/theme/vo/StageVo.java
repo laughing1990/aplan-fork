@@ -60,6 +60,12 @@ public class StageVo {
     @ApiModelProperty(value = "申报时可选事项显示数量")
     private Long optItemShowNum;
 
+    @ApiModelProperty(value = "法定办结时限")
+    protected Double anticipateDay;
+
+    @ApiModelProperty(value = "法定办结时限单位")
+    protected String anticipateType;
+
     public StageVo() {
         this.helperStages = new ArrayList<>();
     }
@@ -85,6 +91,8 @@ public class StageVo {
         stageVo.setNoptItemShowNum(aeaParStage.getNoptItemShowNum());
         stageVo.setOptItemShowNum(aeaParStage.getOptItemShowNum());
         stageVo.setDybzspjdxh(aeaParStage.getDybzspjdxh());
+        stageVo.setAnticipateDay(aeaParStage.getAnticipateDay());
+        stageVo.setAnticipateType(aeaParStage.getAnticipateType());
         return stageVo;
     }
 }

@@ -117,7 +117,7 @@ public class RestApplyProjController {
 
 
     @GetMapping("proj/list")
-    @ApiOperation(value = "我要申报 --> 查询用户项目列表")
+    @ApiOperation(value = "我的项目库 --> 查询用户项目列表")
     @ApiImplicitParams({@ApiImplicitParam(value = "页面数量",name = "pageNum",required = true,dataType = "string"),
             @ApiImplicitParam(value = "页面页数",name = "pageSize",required = true,dataType = "string")})
     public ResultForm getMyProjList(int pageNum, int pageSize, HttpServletRequest request){
@@ -125,26 +125,31 @@ public class RestApplyProjController {
             List<AeaProjInfo> list = new ArrayList<AeaProjInfo>();
             LoginInfoVo loginInfo = SessionUtil.getLoginInfo(request);
             if (loginInfo == null) return new ResultForm(false, "用户身份信息失效，请重新登录！");
-            if("1".equals(loginInfo.getIsPersonAccount())){//个人
-                list=aeaProjInfoService.findAeaProjInfoByLinkmanInfoId(loginInfo.getUserId());
-            }else if(StringUtils.isNotBlank(loginInfo.getUserId())){//委托人
-                list=aeaProjInfoService.findAeaProjInfoByLinkmanInfoIdAndUnitInfoId(loginInfo.getUserId(),loginInfo.getUnitId());
-            }else{//企业
-                list=aeaProjInfoService.findAeaProjInfoByUnitInfoId(loginInfo.getUnitId());
-            }
-            String[] localCodes = list.size() > 0 ? list.stream().map(AeaProjInfo::getLocalCode).toArray(String[]::new) : new String[0];
-            //使用lamada，分页数据会丢失，在lambda之前，先搞一个pageinfo, lambda之后，把分页信息copy进去
             PageHelper.startPage(pageNum, pageSize);
-            List<AeaProjInfo> projs = aeaProjInfoService.getProjListAndChildProjsByParent(localCodes) ;
-            PageInfo origPageInfo = new PageInfo<>(projs);
-            List<AeaProjInfoResultVo> projsByBuild = projs.stream().map(AeaProjInfoResultVo::build).collect(Collectors.toList());
+            if("1".equals(loginInfo.getIsPersonAccount())){//个人
+                list=aeaProjInfoService.findRootAeaProjInfoByLinkmanInfoId(loginInfo.getUserId());
+            }else if(StringUtils.isNotBlank(loginInfo.getUserId())){//委托人
+                list=aeaProjInfoService.findRootAeaProjInfoByLinkmanInfoIdAndUnitInfoId(loginInfo.getUserId(),loginInfo.getUnitId());
+            }else{//企业
+                list=aeaProjInfoService.findRootAeaProjInfoByUnitInfoId(loginInfo.getUnitId());
+            }
+            //String[] localCodes = list.size() > 0 ? list.stream().map(AeaProjInfo::getLocalCode).toArray(String[]::new) : new String[0];
+            //使用lamada，分页数据会丢失，在lambda之前，先搞一个pageinfo, lambda之后，把分页信息copy进去
 
+           // List<AeaProjInfo> projs = aeaProjInfoService.getProjListAndChildProjsByParent(localCodes) ;
+            PageInfo origPageInfo = new PageInfo<>(list);
+            if(list.size()==0) return new ContentResultForm<>(true,origPageInfo);
+            List<AeaProjInfoResultVo> projsByBuild = list.stream().map(AeaProjInfoResultVo::build)
+                    .peek(vo->{
+                List<AeaProjInfo> childs = aeaProjInfoService.findChildProj(vo.getProjInfoId());
+                //if(childs.size()>0) vo.setHasChildren(true);
+                vo.setChildren(childs.size()==0?new ArrayList<>():childs.stream().map(AeaProjInfoResultVo::build).collect(Collectors.toList()));
+            })
+                    .collect(Collectors.toList());
             PageInfo<AeaProjInfoResultVo> pageInfo = new PageInfo<>(projsByBuild);
             BeanUtils.copyProperties(origPageInfo,pageInfo,"list");
 
             return new ContentResultForm<>(true,pageInfo);
-//            return new ContentResultForm<PageInfo<AeaProjInfoResultVo>>(true,
-//                    new PageInfo<AeaProjInfoResultVo>(projs.size() > 0 ? projs.stream().map(AeaProjInfoResultVo::build).collect(Collectors.toList()) : new ArrayList<>()));
            } catch (Exception e) {
             logger.error(e.getMessage(),e);
             return new ResultForm(false,"查询用户项目列表异常");

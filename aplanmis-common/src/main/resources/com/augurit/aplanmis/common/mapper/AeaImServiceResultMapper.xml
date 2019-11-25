@@ -2,9 +2,9 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <!--created by tiantian    2019-06-20 09:10:47 -->
 <!--0 一些前置信息配置 -->
-<mapper namespace="com.augurit.aplanmis.common.mapper.AeaImServiceResultMapper" >
+<mapper namespace="com.augurit.aplanmis.common.mapper.AeaImServiceResultMapper">
     <!--1 返回所有字段的SQL字句 -->
-    <sql id="allColumns" >
+    <sql id="allColumns">
     SERVICE_RESULT_ID  serviceResultId,
     UPLOAD_TIME  uploadTime,
     END_TIME  endTime,
@@ -22,67 +22,67 @@
     </sql>
 
     <!--2 根据主键ID查询单个实体 -->
-    <select id="getAeaImServiceResultById" resultType="AeaImServiceResult" >
+    <select id="getAeaImServiceResultById" resultType="AeaImServiceResult">
         select
         <include refid="allColumns"/>
-        from    AEA_IM_SERVICE_RESULT
-        where    SERVICE_RESULT_ID = #{id}
+        from AEA_IM_SERVICE_RESULT
+        where SERVICE_RESULT_ID = #{id}
     </select>
 
     <!--3 根据条件查询实体list -->
-    <select id="listAeaImServiceResult" resultType="AeaImServiceResult" >
+    <select id="listAeaImServiceResult" resultType="AeaImServiceResult">
         select
         <include refid="allColumns"/>
-        from    AEA_IM_SERVICE_RESULT
+        from AEA_IM_SERVICE_RESULT
         <where>
-            <if test="serviceResultId != null" >
-                AND    SERVICE_RESULT_ID = #{serviceResultId}
+            <if test="serviceResultId != null">
+                AND SERVICE_RESULT_ID = #{serviceResultId}
             </if>
-            <if test="uploadTime != null" >
-                AND    UPLOAD_TIME = #{uploadTime}
+            <if test="uploadTime != null">
+                AND UPLOAD_TIME = #{uploadTime}
             </if>
-            <if test="endTime != null" >
-                AND    END_TIME = #{endTime}
+            <if test="endTime != null">
+                AND END_TIME = #{endTime}
             </if>
-            <if test="memo != null" >
-                AND    MEMO = #{memo}
+            <if test="memo != null">
+                AND MEMO = #{memo}
             </if>
-            <if test="projPurchaseId != null" >
-                AND    PROJ_PURCHASE_ID = #{projPurchaseId}
+            <if test="projPurchaseId != null">
+                AND PROJ_PURCHASE_ID = #{projPurchaseId}
             </if>
-            <if test="auditFlag != null" >
-                AND    AUDIT_FLAG = #{auditFlag}
+            <if test="auditFlag != null">
+                AND AUDIT_FLAG = #{auditFlag}
             </if>
-            <if test="creater != null" >
-                AND    CREATER = #{creater}
+            <if test="creater != null">
+                AND CREATER = #{creater}
             </if>
-            <if test="createTime != null" >
-                AND    CREATE_TIME = #{createTime}
+            <if test="createTime != null">
+                AND CREATE_TIME = #{createTime}
             </if>
-            <if test="modifier != null" >
-                AND    MODIFIER = #{modifier}
+            <if test="modifier != null">
+                AND MODIFIER = #{modifier}
             </if>
-            <if test="modifyTime != null" >
-                AND    MODIFY_TIME = #{modifyTime}
+            <if test="modifyTime != null">
+                AND MODIFY_TIME = #{modifyTime}
             </if>
-            <if test="linkmanInfoId != null" >
-                AND    LINKMAN_INFO_ID = #{linkmanInfoId}
+            <if test="linkmanInfoId != null">
+                AND LINKMAN_INFO_ID = #{linkmanInfoId}
             </if>
-            <if test="unitBiddingId != null" >
-                AND    UNIT_BIDDING_ID = #{unitBiddingId}
+            <if test="unitBiddingId != null">
+                AND UNIT_BIDDING_ID = #{unitBiddingId}
             </if>
-            <if test="isExternalUpload != null" >
-                AND    IS_EXTERNAL_UPLOAD = #{isExternalUpload}
+            <if test="isExternalUpload != null">
+                AND IS_EXTERNAL_UPLOAD = #{isExternalUpload}
             </if>
-            <if test="rootOrgId != null" >
-                AND    ROOT_ORG_ID = #{rootOrgId}
+            <if test="rootOrgId != null">
+                AND ROOT_ORG_ID = #{rootOrgId}
             </if>
         </where>
     </select>
     <!--4 根据条件查询实体list,返回分页对象 -->
 
     <!--5 新增实体对象 -->
-    <insert id="insertAeaImServiceResult" parameterType="AeaImServiceResult" >
+    <insert id="insertAeaImServiceResult" parameterType="AeaImServiceResult">
     insert into AEA_IM_SERVICE_RESULT (
 SERVICE_RESULT_ID  ,UPLOAD_TIME  ,END_TIME  ,MEMO  ,PROJ_PURCHASE_ID  ,AUDIT_FLAG  ,CREATER  ,CREATE_TIME  ,MODIFIER  ,MODIFY_TIME  ,LINKMAN_INFO_ID  ,UNIT_BIDDING_ID  ,IS_EXTERNAL_UPLOAD,ROOT_ORG_ID
     )  values  (
@@ -90,49 +90,49 @@ SERVICE_RESULT_ID  ,UPLOAD_TIME  ,END_TIME  ,MEMO  ,PROJ_PURCHASE_ID  ,AUDIT_FLA
     )
 </insert>
     <!--6 修改实体对象 -->
-    <update id="updateAeaImServiceResult" parameterType="AeaImServiceResult" >
+    <update id="updateAeaImServiceResult" parameterType="AeaImServiceResult">
         update AEA_IM_SERVICE_RESULT
-        <set >
-            <if test="serviceResultId != null" >
+        <set>
+            <if test="serviceResultId != null">
                 SERVICE_RESULT_ID = #{serviceResultId},
             </if>
-            <if test="uploadTime != null" >
+            <if test="uploadTime != null">
                 UPLOAD_TIME = #{uploadTime},
             </if>
-            <if test="endTime != null" >
+            <if test="endTime != null">
                 END_TIME = #{endTime},
             </if>
-            <if test="memo != null" >
+            <if test="memo != null">
                 MEMO = #{memo},
             </if>
-            <if test="projPurchaseId != null" >
+            <if test="projPurchaseId != null">
                 PROJ_PURCHASE_ID = #{projPurchaseId},
             </if>
-            <if test="auditFlag != null" >
+            <if test="auditFlag != null">
                 AUDIT_FLAG = #{auditFlag},
             </if>
-            <if test="creater != null" >
+            <if test="creater != null">
                 CREATER = #{creater},
             </if>
-            <if test="createTime != null" >
+            <if test="createTime != null">
                 CREATE_TIME = #{createTime},
             </if>
-            <if test="modifier != null" >
+            <if test="modifier != null">
                 MODIFIER = #{modifier},
             </if>
-            <if test="modifyTime != null" >
+            <if test="modifyTime != null">
                 MODIFY_TIME = #{modifyTime},
             </if>
-            <if test="linkmanInfoId != null" >
+            <if test="linkmanInfoId != null">
                 LINKMAN_INFO_ID = #{linkmanInfoId},
             </if>
-            <if test="unitBiddingId != null" >
+            <if test="unitBiddingId != null">
                 UNIT_BIDDING_ID = #{unitBiddingId},
             </if>
-            <if test="isExternalUpload != null" >
+            <if test="isExternalUpload != null">
                 IS_EXTERNAL_UPLOAD = #{isExternalUpload},
             </if>
-            <if test="rootOrgId != null" >
+            <if test="rootOrgId != null">
                 ROOT_ORG_ID = #{rootOrgId},
             </if>
         </set>
@@ -163,7 +163,7 @@ SERVICE_RESULT_ID  ,UPLOAD_TIME  ,END_TIME  ,MEMO  ,PROJ_PURCHASE_ID  ,AUDIT_FLA
         <result property="rootOrgId" column="ROOT_ORG_ID"/>
     </resultMap>
 
-    <select id="getServiceProjInfoList" resultType="com.augurit.aplanmis.common.vo.ServiceProjInfoVo" >
+    <select id="getServiceProjInfoList" resultType="com.augurit.aplanmis.common.vo.ServiceProjInfoVo">
         select
         aipp.PROJ_PURCHASE_ID projPurchaseId,
         api.PROJ_NAME projName,
@@ -172,7 +172,7 @@ SERVICE_RESULT_ID  ,UPLOAD_TIME  ,END_TIME  ,MEMO  ,PROJ_PURCHASE_ID  ,AUDIT_FLA
         aic.SERVICE_END_TIME serviceEndTime,
         aipp.AUDIT_FLAG projAuditFlag,
         aic.CONTRACT_ID contractId,
-        aisr.SERVICE_RESULT_ID  serviceResultId,
+        aisr.SERVICE_RESULT_ID serviceResultId,
         aiub.UNIT_BIDDING_ID unitBiddingId,
         aisr.AUDIT_FLAG resultAuditFlag
         from AEA_IM_CONTRACT aic
@@ -203,5 +203,13 @@ SERVICE_RESULT_ID  ,UPLOAD_TIME  ,END_TIME  ,MEMO  ,PROJ_PURCHASE_ID  ,AUDIT_FLA
         select
         <include refid="allColumns"/>
         from AEA_IM_SERVICE_RESULT aisr where aisr.PROJ_PURCHASE_ID=#{projPurchaseId}
+    </select>
+    <select id="getServiceResultByProjPurchaseId"
+            resultType="com.augurit.aplanmis.common.domain.AeaImServiceResult">
+        select
+        <include refid="allColumns"/>
+        from AEA_IM_SERVICE_RESULT
+        where PROJ_PURCHASE_ID = #{projPurchaseId}
+
     </select>
 </mapper>

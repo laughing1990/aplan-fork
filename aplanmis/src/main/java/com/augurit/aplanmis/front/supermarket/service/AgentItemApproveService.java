@@ -10,11 +10,11 @@ import com.augurit.aplanmis.common.mapper.AeaImMajorQualMapper;
 import com.augurit.aplanmis.common.mapper.AeaImProjPurchaseMapper;
 import com.augurit.aplanmis.common.mapper.AeaProjInfoMapper;
 import com.augurit.aplanmis.common.service.instance.AeaHiApplyinstService;
-import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
 import com.augurit.aplanmis.common.vo.AeaImMajorQualVo;
 import com.augurit.aplanmis.common.vo.purchase.PurchaseProjVo;
 import com.augurit.aplanmis.front.approve.service.ApproveService;
 import com.augurit.aplanmis.front.supermarket.vo.AgentItemApproveForm;
+import com.augurit.aplanmis.supermarket.apply.service.RestImApplyService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,8 +29,6 @@ public class AgentItemApproveService {
     @Autowired
     private AeaHiApplyinstService aeaHiApplyinstService;
     @Autowired
-    private AeaProjInfoService aeaProjInfoService;
-    @Autowired
     private ApproveService approveService;
     @Autowired
     private AeaImProjPurchaseMapper aeaImProjPurchaseMapper;
@@ -40,6 +38,9 @@ public class AgentItemApproveService {
     private AeaImMajorQualMapper aeaImMajorQualMapper;
     @Autowired
     private BscDicCodeMapper bscDicCodeMapper;
+    @Autowired
+    private RestImApplyService restImApplyService;
+
 
     /**
      * 获取中介事项申报基本信息
@@ -56,7 +57,7 @@ public class AgentItemApproveService {
         if (null == applyinst) throw new Exception("can not find applyinst info ");
         String applyinstCode = applyinst.getApplyinstCode();
         //查询采购项目,中介服务，机构要求等 信息
-        PurchaseProjVo purchaseProj = aeaImProjPurchaseMapper.getProjPurchaseInfoByApplyinstCode(applyinstCode);
+        PurchaseProjVo purchaseProj = aeaImProjPurchaseMapper.getProjPurchaseInfoByApplyinstCode(applyinstCode, null);
         String isApproveProj = purchaseProj.getIsApproveProj();
         if (StringUtils.isNotBlank(isApproveProj) && "1".equals(isApproveProj)) {
             //查询关联的投资审批项目信息
@@ -100,5 +101,21 @@ public class AgentItemApproveService {
 
         form.changeToIteminst(iteminst);
         return form;
+    }
+
+    /**
+     * 审批系统上传服务结果
+     *
+     * @param matinstIds  材料是滴ID
+     * @param applyinstId 申请实例ID
+     * @throws Exception E
+     */
+    public void uploadServiceResult(String[] matinstIds, String applyinstId) throws Exception {
+        AeaHiApplyinst applyinst = aeaHiApplyinstService.getAeaHiApplyinstById(applyinstId);
+        if (null == applyinst) throw new Exception("can not find applyinst");
+        PurchaseProjVo purchase = aeaImProjPurchaseMapper.getProjPurchaseInfoByApplyinstCode(applyinst.getApplyinstCode(), null);
+        if (null == purchase) throw new Exception("can not find purchase");
+        restImApplyService.uploadServiceResult(purchase.getProjPurchaseId(), "", matinstIds);
+
     }
 }

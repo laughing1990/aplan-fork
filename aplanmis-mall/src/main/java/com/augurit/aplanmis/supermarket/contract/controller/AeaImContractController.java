@@ -101,17 +101,6 @@ public class AeaImContractController {
     public ContentRestResult<AeaImContract> confirmContractByContractId(@PathVariable String contractId, String auditFlag, String auditOpinion, Date postponeServiceEndTime, HttpServletRequest request) throws Exception {
         aeaImContractService.confirmContract(contractId, auditFlag, auditOpinion, postponeServiceEndTime, request);
         return new ContentRestResult(true, "aeaImContract", "success");
-
-        /*if (loginInfoVo != null && StringUtils.isNotBlank(contractId)) {
-
-
-            aeaImContract = aeaImContractService.confirmContractByContractId(aeaImContract, request);
-            if (aeaImContract != null) {
-                return new ContentRestResult(true, "aeaImContract","success");
-            }
-        }
-
-        return new ContentRestResult(false);*/
     }
 
     @ApiOperation(value = "删除合同信息", notes = "删除合同信息", httpMethod = "POST")

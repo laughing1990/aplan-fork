@@ -562,9 +562,6 @@ public class OfficialDocumentService {
             return constructPermit;
         }
 
-        //查询电子证照实例表
-        AeaHiCertinst aeaHiCertinstById = aeaHiCertinstMapper.getAeaHiCertinstById(certinstId);
-
         String iteminstId = aeaHiItemInoutinsts.get(0).getIteminstId();
         String applyinstId = getApplyinstIdByIteminstId(iteminstId);
 
@@ -572,67 +569,35 @@ public class OfficialDocumentService {
         if (aeaProjInfos.isEmpty()) return null;
         AeaProjInfo projInfo = aeaProjInfos.get(0);
 
-        //获取机构信息
+        //查询电子证照实例表
         AeaHiCertinst certinst = aeaHiCertinstMapper.getAeaHiCertinstById(certinstId);
 
         //获取施工核发许可证表的信息
         AeaExProjCertBuild aeaExProjCertBuildByProjId = aeaExProjCertBuildMapper.findAeaExProjCertBuildByProjId(projInfo.getProjInfoId());
         if (aeaExProjCertBuildByProjId != null) {
-            String certBuildCode = aeaExProjCertBuildByProjId.getCertBuildCode();//建设工程规划许可证编号
+            String certinstCode = certinst.getCertinstCode();
+            constructPermit.setConstructPermitCode(certinstCode);
+            aeaExProjCertBuildByProjId.setCertBuildCode(certinstCode);
+
             byte[] certBuildQrcode = aeaExProjCertBuildByProjId.getCertBuildQrcode();//建设工程规划许可证二维码
             if (certBuildQrcode != null) {
                 constructPermit.setCertBuildQrcode(certBuildQrcode);
             }
-            //广东分支将此段放开
-            if (StringUtils.isBlank(certBuildCode) && certBuildQrcode.length == 0 && certBuildQrcode == null) {
-                //获取施工许可证编码和二维码
-//                ResponseConsPermitInfo consPermitInfo = webservice.getConsPermitInfo(projInfo.getProjInfoId(), iteminstId);
-//                if (consPermitInfo.getSuccess()){
-//                    constructPermit.setCertBuildQrcode(consPermitInfo.getqRCodeArray());//二维码
-//                    constructPermit.setConstructPermitCode(consPermitInfo.getPermitNum());//省级施工许可证编号
-//                    aeaExProjCertBuildByProjId.setCertBuildCode(consPermitInfo.getPermitNum());
-//                    aeaExProjCertBuildByProjId.setCertBuildQrcode(consPermitInfo.getqRCodeArray());
-//                    aeaExProjCertBuildMapper.updateAeaExProjCertBuild(aeaExProjCertBuildByProjId);
-//                }else {
-//                    String errorMsg = consPermitInfo.getErrorMsg();
-//                }
-            } else {
-                constructPermit.setCertBuildQrcode(certBuildQrcode);
-                constructPermit.setConstructPermitCode(certBuildCode);
-            }
-            constructPermit.setCertBuildQrcode(certBuildQrcode);
-            if (StringUtils.isBlank(aeaExProjCertBuildByProjId.getConstructionsSize())) {
-                constructPermit.setContructScale(projInfo.getBuildAreaSum() + "平方米");
-            } else {
-                constructPermit.setContructScale(aeaExProjCertBuildByProjId.getConstructionsSize() + "平方米");//建设规模
-            }
+
+            constructPermit.setContructScale(projInfo.getBuildAreaSum() + "平方米");
+            aeaExProjCertBuildByProjId.setConstructionsSize(String.valueOf(projInfo.getBuildAreaSum()));
             //获取核发机关相关信息
-            String govOrgName = aeaExProjCertBuildByProjId.getGovOrgName();
-//            String govOrgCode = aeaExProjCertBuildByProjId.getGovOrgCode();
-            Date publishTime = aeaExProjCertBuildByProjId.getPublishTime();
-            if (StringUtils.isBlank(govOrgName)) {
-                constructPermit.setIssueOrgName(certinst.getIssueOrgName());//核发机关
-                Date issueDate = certinst.getIssueDate();
-                if (null != issueDate) {
-                    String s = DateUtils.convertDateToString(issueDate, "yyyy-MM-dd");
-                    String[] split = s.split("-");
-                    constructPermit.setIssueYear(split[0]);
-                    constructPermit.setIssueMonth(split[1]);
-                    constructPermit.setIssueDay(split[2]);
-                }
-                aeaExProjCertBuildByProjId.setGovOrgName(certinst.getIssueOrgName());
-                aeaExProjCertBuildByProjId.setPublishTime(issueDate);
-                aeaExProjCertBuildMapper.updateAeaExProjCertBuild(aeaExProjCertBuildByProjId);
-            } else {
-                constructPermit.setIssueOrgName(govOrgName);
-                if (publishTime != null) {
-                    String s = DateUtils.convertDateToString(publishTime, "yyyy-MM-dd");
-                    String[] split = s.split("-");
-                    constructPermit.setIssueYear(split[0]);
-                    constructPermit.setIssueMonth(split[1]);
-                    constructPermit.setIssueDay(split[2]);
-                }
+            constructPermit.setIssueOrgName(certinst.getIssueOrgName());//核发机关
+            Date issueDate = certinst.getIssueDate();
+            if (null != issueDate) {
+                String s = DateUtils.convertDateToString(issueDate, "yyyy-MM-dd");
+                String[] split = s.split("-");
+                constructPermit.setIssueYear(split[0]);
+                constructPermit.setIssueMonth(split[1]);
+                constructPermit.setIssueDay(split[2]);
             }
+            aeaExProjCertBuildByProjId.setGovOrgName(certinst.getIssueOrgName());
+            aeaExProjCertBuildByProjId.setPublishTime(issueDate);
 
             constructPermit.setBuildUnitName(aeaExProjCertBuildByProjId.getConstructionUnit());//建设单位
             constructPermit.setProjectName(aeaExProjCertBuildByProjId.getProjName());//工程名称
@@ -649,11 +614,10 @@ public class OfficialDocumentService {
             constructPermit.setConstructUnitLeader(aeaExProjCertBuildByProjId.getSgUnitLeader());//施工单位项目负责人
             constructPermit.setChiefEngineer(aeaExProjCertBuildByProjId.getJlUnitLeader());//总监理工程师
             constructPermit.setContractDuration(aeaExProjCertBuildByProjId.getContractPeriod());//合同工期
-            if (StringUtils.isBlank(aeaHiCertinstById.getMemo())) {
-                constructPermit.setRemarks(aeaHiCertinstById.getMemo());//备注
-            } else {
-                constructPermit.setRemarks(aeaExProjCertBuildByProjId.getCertBuildMemo());//备注
-            }
+            constructPermit.setRemarks(certinst.getMemo());//备注
+            aeaExProjCertBuildByProjId.setCertBuildMemo(certinst.getMemo());
+            aeaExProjCertBuildMapper.updateAeaExProjCertBuild(aeaExProjCertBuildByProjId);
+
         }
         return constructPermit;
     }
@@ -846,18 +810,11 @@ public class OfficialDocumentService {
             inout.setItemVerId(itemVerId);
             inout.setIsDeleted("0");
             inout.setIsInput("0");
+            inout.setMatId(matId);
             inout.setRootOrgId(SecurityContext.getCurrentOrgId());
-            List<AeaItemInout> itemInouts = aeaItemInoutMapper.listAeaItemInoutByItemVerId(inout);
-            if (itemInouts.size() > 0) {
-                for (AeaItemInout inout1 : itemInouts) {
-                    String matId1 = inout1.getMatId();
-                    if (matId.equalsIgnoreCase(matId1)) {
-                        inoutId = inout1.getInoutId();
-                        break;
-                    }
-
-                }
-            }
+            List<AeaItemInout> itemInouts = aeaItemInoutMapper.listAeaItemInout(inout);
+            if (itemInouts.size() < 1) throw new Exception("找不到输出定义！");
+            inoutId = itemInouts.get(0).getInoutId();
 
             AeaItemMat mat = aeaItemMatMapper.getAeaItemMatById(matId);
             if (mat == null) throw new Exception("找不到材料定义！");
@@ -912,7 +869,6 @@ public class OfficialDocumentService {
                 aeaProjInfoService.updateAeaProjInfo(temp);
             }
         }
-
     }
 
     /**
@@ -990,11 +946,12 @@ public class OfficialDocumentService {
     public List<AeaItemMat> getItemInOfficeMat(String applyinstId, String iteminstId) throws Exception {
         List<AeaItemMat> result = new ArrayList<>();
         List<AeaHiIteminst> aeaHiIteminstList = new ArrayList<>();
-        if (StringUtils.isBlank(iteminstId)) {
+        if (StringUtils.isBlank(iteminstId) && "null".equals(iteminstId)) {
             aeaHiIteminstList = aeaHiIteminstMapper.getAeaHiIteminstListByApplyinstId(applyinstId);
         } else {
             AeaHiIteminst iteminst = aeaHiIteminstMapper.getAeaHiIteminstById(iteminstId);
-            aeaHiIteminstList.add(iteminst);
+            if (iteminst != null)
+                aeaHiIteminstList.add(iteminst);
         }
         if (aeaHiIteminstList.size() > 0) {
             String[] itemVerIds = new String[aeaHiIteminstList.size()];

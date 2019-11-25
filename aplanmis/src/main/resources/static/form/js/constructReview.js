@@ -59,9 +59,29 @@ var app = new Vue({
       formData: {
         drawings: []
       },
-      formDataTuShen: {},
+      formDataTuShen: {
+        linkmen: [{
+          linkmanInfoId: '',
+          linkmanType: '8',
+          linkmanName: '',
+          linkmanCertNo: '',
+          prjSpty: '1',
+          unitProjId: '',
+          unitInfoId: ''
+        }]
+      },
       formDataKanCha: {},
-      formDataSheJj: {},
+      formDataSheJj: {
+        linkmen: [{
+          linkmanInfoId: '',
+          linkmanType: '8',
+          linkmanName: '',
+          linkmanCertNo: '',
+          prjSpty: '1',
+          unitProjId: '',
+          unitInfoId: ''
+        }]
+      },
       total: 0,
       tableData: [],
       activeNames: '1',
@@ -655,7 +675,7 @@ var app = new Vue({
                   _this.showData();
                 } else {
                   _this.$message({
-                    message: '保存失败',
+                    message: '保存失败' + res.content,
                     type: 'error'
                   });
                 }

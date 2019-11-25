@@ -854,12 +854,11 @@ public class RestBpmTaskFrontController {
      * @return
      * @throws Exception
      */
-    @RequestMapping("/triggerSubFlow")
-    public ResultForm triggerSubFlow(String taskId,String eventName) throws Exception{
-        if(StringUtils.isBlank(taskId)||StringUtils.isBlank(eventName))
-            return new ResultForm(false,"任务ID及触发事件名称参数不能为空！");
-
-        bpmTaskFrontService.triggerSubFlow(taskId,eventName);
-        return new ResultForm(true,"子流程触发成功！");
-    }
+//    @RequestMapping("/triggerSubFlow")
+//    public ResultForm triggerSubFlow(String taskId,String eventName) throws Exception{
+//        if(StringUtils.isBlank(taskId)||StringUtils.isBlank(eventName))
+//            return new ResultForm(false,"任务ID及触发事件名称参数不能为空！");
+//
+//        return bpmTaskFrontService.triggerSubFlow(taskId,eventName);
+//    }
 }

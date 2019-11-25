@@ -3,7 +3,7 @@
 <!-- 新增阶段信息 -->
 <div id="add_stage_modal" class="modal fade" tabindex="-1" role="dialog"
      aria-labelledby="add_stage_modal_title" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document" style="max-width: 900px;">
         <div class="modal-content">
             <div class="modal-header" style="padding: 15px;height: 45px;">
                 <h5 class="modal-title" id="add_stage_modal_title"></h5>
@@ -84,7 +84,7 @@
                                 <div class="col-10">
                                     <div class="m-checkbox-inline">
                                         <label class="m-checkbox" style="width: 289px;">
-                                            <input type="checkbox" name="useOneForm1" onclick="checkboxOnclick('useOneForm1','useOneForm',false);">是否设置"一张表单"<span></span>
+                                            <input type="checkbox" name="useOneForm1" onclick="checkboxOnclick('useOneForm1','useOneForm',false);">是否启用"一张表单"<span></span>
                                         </label>
 
                                         <label class="m-checkbox">
@@ -235,6 +235,23 @@
                                 <label class="col-lg-2 col-form-label" style="text-align: right;">承诺办结时限单位:</label>
                                 <div class="col-lg-4">
                                     <select type="text" class="form-control" name="dueUnit" value="">
+                                        <option value="">请选择</option>
+                                        <c:forEach items="${dueUnits}" var="dueUnit">
+                                            <option value="${dueUnit.itemCode}">${dueUnit.itemName}</option>
+                                        </c:forEach>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group m-form__group row">
+                                <label class="col-lg-2 col-form-label" style="text-align: right;">法定办结时限计量:</label>
+                                <div class="col-lg-4">
+                                    <input type="number" class="form-control m-input" name="anticipateDay" value="1" />
+                                </div>
+
+                                <label class="col-lg-2 col-form-label" style="text-align: right;">法定办结时限单位:</label>
+                                <div class="col-lg-4">
+                                    <select type="text" class="form-control" name="anticipateType" value="">
                                         <option value="">请选择</option>
                                         <c:forEach items="${dueUnits}" var="dueUnit">
                                             <option value="${dueUnit.itemCode}">${dueUnit.itemName}</option>

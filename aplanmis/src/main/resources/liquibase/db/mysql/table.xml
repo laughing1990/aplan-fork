@@ -1169,4 +1169,12 @@
                 DROP COLUMN `GCZCB_UNIT_LEADER`;
         </sql>
     </changeSet>
+    <changeSet id="201911222217" author="dengzq" failOnError="false">
+        <sql splitStatements="true">
+            ALTER TABLE aea_ex_proj_bid DROP COLUMN PROVINCE_PROJ_CODE;
+            ALTER TABLE aea_ex_proj_build DROP COLUMN PROVINCE_PROJ_CODE;
+            ALTER TABLE aea_ex_proj_drawing DROP COLUMN PROVINCE_PROJ_CODE;
+            ALTER TABLE aea_ex_proj_contract DROP COLUMN PROVINCE_PROJ_CODE;
+        </sql>
+    </changeSet>
 </databaseChangeLog>

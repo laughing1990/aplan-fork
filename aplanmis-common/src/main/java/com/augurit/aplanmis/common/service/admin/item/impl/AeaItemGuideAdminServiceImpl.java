@@ -184,10 +184,15 @@ public class AeaItemGuideAdminServiceImpl implements AeaItemGuideAdminService {
             aeaItemGuide.setHandleType(aeaItemBasic.getSlfs());
             aeaItemGuide.setHandleTypeText(getBscDicCodeItemItemName(aeaItemBasic.getSlfs(), slfss));
 
-            //时限
+            //承诺时限
             aeaItemGuide.setPromiseDay(aeaItemBasic.getDueNum());
             aeaItemGuide.setPromiseType(aeaItemBasic.getBjType());
             aeaItemGuide.setPromiseTypeText(getBscDicCodeItemItemName(aeaItemBasic.getBjType(), dueUnits));
+
+            //法定时限
+            aeaItemGuide.setAnticipateDay(aeaItemBasic.getAnticipateDay());
+            aeaItemGuide.setAnticipateType(aeaItemBasic.getAnticipateType());
+            aeaItemGuide.setAnticipateTypeText(getBscDicCodeItemItemName(aeaItemBasic.getAnticipateType(), dueUnits));
 
             //实施主体
             aeaItemGuide.setDeptName(aeaItemBasic.getOrgName());

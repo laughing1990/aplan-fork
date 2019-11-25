@@ -2,6 +2,8 @@ package com.augurit.aplanmis.front.supermarket.controller;
 
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
+import com.augurit.aplanmis.common.service.projPurchase.AeaImProjPurchaseService;
+import com.augurit.aplanmis.common.vo.MatinstVo;
 import com.augurit.aplanmis.front.supermarket.service.AgentItemApproveService;
 import com.augurit.aplanmis.front.supermarket.vo.AgentItemApproveForm;
 import io.swagger.annotations.Api;
@@ -14,6 +16,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/market/approve")
 @Api(value = "中介事项流程审批接口", tags = "中介事项审批-中介事项流程审批接口")
@@ -22,6 +26,9 @@ public class AgentItemApproveController {
 
     @Autowired
     private AgentItemApproveService agentItemApproveService;
+
+    @Autowired
+    private AeaImProjPurchaseService aeaImProjPurchaseService;
 
     @GetMapping("/basic/apply/info")
     @ApiOperation(value = "业务审批 --> 申报表单基本信息")
@@ -34,4 +41,33 @@ public class AgentItemApproveController {
         AgentItemApproveForm applyFormInfo = agentItemApproveService.getBaseApplyFormInfo(taskId, applyinstId, isItemSeek);
         return new ContentResultForm(true, applyFormInfo, "success");
     }
+
+    /**
+     * 上传中介服务结果附件 todo
+     *
+     * @return
+     */
+    @ApiOperation(value = "上传中介服务结果附件", notes = "上传中介服务结果附件-新接口，需要判断是否推动流程")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "applyinstId", value = "申请实例id", required = true)
+            , @ApiImplicitParam(name = "matinstIds", value = "事项实例id", required = true)
+    })
+    @GetMapping("/uploadServiceResult")
+    public ResultForm uploadServiceResult(String[] matinstIds, String applyinstId) throws Exception {
+//        agentItemApproveService.uploadServiceResult(matinstIds, applyinstId);
+
+        return new ResultForm(true, "successs");
+    }
+
+    @ApiOperation(value = "查询采购项目申报材料及实例列表", notes = "上传服务结果-新接口，需要判断是否推动流程")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "applyinstId", value = "申请实例id", required = true)
+            , @ApiImplicitParam(name = "iteminstId", value = "事项实例id", required = true)
+    })
+    @GetMapping("/getProjPurchaseMatinstList")
+    public ContentResultForm<MatinstVo> getProjPurchaseMatinstList(String applyinstId, String iteminstId) throws Exception {
+        List<MatinstVo> vos = aeaImProjPurchaseService.listPurchaseMatinst(iteminstId, applyinstId);
+        return new ContentResultForm(true, vos, "success");
+    }
+
 }

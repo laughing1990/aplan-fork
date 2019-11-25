@@ -173,7 +173,7 @@
         left join ACT_STO_FORM asf on (
                 aip.STO_FORM_ID = asf.FORM_ID
             and asf.IS_DELETED = '0'
-            and asf.FORM_PROPERTY in ( 'smart-biz', 'smart-flow','dev-biz' )
+--             and asf.FORM_PROPERTY in ( 'smart-biz', 'smart-flow','dev-biz' )
             and aip.STO_FORM_ID is not null
             and aip.STO_FORM_ID !=''
         )
@@ -242,10 +242,7 @@
             and asfrom.FORM_PROPERTY in ( 'smart-biz', 'smart-flow')
             </if>
             <if test="isSmartForm != null and isSmartForm ==0 ">
-            and asfrom.FORM_PROPERTY in ('dev-biz' )
-            </if>
-            <if test="isSmartForm == null ">
-            and asfrom.FORM_PROPERTY in ( 'smart-biz', 'smart-flow', 'dev-biz' )
+            and asfrom.FORM_PROPERTY in ('meta-biz','meta-flow','dev-biz')
             </if>
             <if test="keyword != null and keyword !='' " >
             and (

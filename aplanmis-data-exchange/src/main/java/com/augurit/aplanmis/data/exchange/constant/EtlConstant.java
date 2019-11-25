@@ -7,4 +7,12 @@ package com.augurit.aplanmis.data.exchange.constant;
 public class EtlConstant {
     public static String JOB_NAME_UPLOAD_PROVINCE = "工改审批数据上传省平台";
     public static String JOB_CODE_INCREASE_KEY = "ETL_JOB_LOG-CODE";
+    /**
+     * 上传运行中
+     */
+    public static String JOB_RUN_STATUS_NO = "1";
+    /**
+     * 上传完成
+     */
+    public static String JOB_RUN_STATUS_OFF = "0";
 }

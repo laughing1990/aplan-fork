@@ -13,7 +13,6 @@ import java.util.List;
 public class AeaProjDrawingVo {
     private String drawingId; // (主键)
     private String projInfoId; // (项目ID)
-    private String provinceProjCode; // (省级项目编号)
     private String drawingQuabookCode; // (施工图审查合格书编号)
     private String inverstmentMoeny; // (投资额，单位：万元)
     private String approveDrawingArea; // (图审面积，单位：平方米)

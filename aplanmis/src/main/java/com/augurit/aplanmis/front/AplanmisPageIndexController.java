@@ -14,6 +14,7 @@ import com.augurit.aplanmis.common.service.instance.AeaHiIteminstService;
 import com.augurit.aplanmis.common.service.instance.AeaHiParStageinstService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,6 +24,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -68,13 +70,13 @@ public class AplanmisPageIndexController {
         return modelAndView;
     }
 
-    @GetMapping("/singleApplyIndex1/{itemVerId}")
+    /*@GetMapping("/singleApplyIndex1/{itemVerId}")
     @ApiOperation("菜单-单项申报页")
     public ModelAndView singleApplyIndex1(@PathVariable String itemVerId) {
         ModelAndView modelAndView = new ModelAndView("apply/singleIndex");
         modelAndView.addObject("itemVerId", itemVerId);
         return modelAndView;
-    }
+    }*/
 
     /**
      * 并联申报首页
@@ -134,15 +136,13 @@ public class AplanmisPageIndexController {
         return new ModelAndView("approve/opinionForm");
     }
 
-    /**
-     * 一张表单
-     * 在表单管理配置的是当前这个接口，然后通过接口转发到真正的一张表单接口
-     *
-     * @return
-     */
-    @GetMapping("/oneForm.html")
-    @ApiOperation("iframe一张表单")
-    public ResultForm oneForm(String masterEntityKey, HttpServletRequest request, HttpServletResponse response) {
+        /**
+         * 并联申报 一张表单url构造
+         * enableParamItem 是否启用参数 itemId，用于只查看指定事项的情况
+         * itemId 指定事项的id
+         * */
+        @GetMapping("/urlStageOneForm.html")
+        public ResultForm urlStageOneForm(String masterEntityKey,boolean enableParamItem,String itemId,String projInfoId, HttpServletRequest request, HttpServletResponse response) {
 //        String realUrl = request.getContextPath() + "/rest/oneform/common/renderHtmlFormContainer?";
         String realUrl = request.getContextPath() + "/rest/oneform/common/getListForm4StageOneForm?";
         String params = "";
@@ -154,18 +154,24 @@ public class AplanmisPageIndexController {
                 if (aeaHiParStageinst != null) {
                     params += "&stageId=" + aeaHiParStageinst.getStageId();
                 }
-                List<AeaHiIteminst> aeaHiIteminstList = aeaHiIteminstService.getAeaHiIteminstListByApplyinstId(aeaHiApplyinst.getApplyinstId());
 
-
-                for (AeaHiIteminst aeaHiIteminst : aeaHiIteminstList) {
-                    params += "&itemids=" + aeaHiIteminst.getItemId();
-//                    params += "&itemids=" + aeaHiIteminst.getItemVerId();
+                if(enableParamItem){
+                    params += "&itemids=" + itemId;
+                }
+                else{
+                    List<AeaHiIteminst> aeaHiIteminstList = null;
+                    aeaHiIteminstList=aeaHiIteminstService.getAeaHiIteminstListByApplyinstId(aeaHiApplyinst.getApplyinstId());
+                    for (AeaHiIteminst aeaHiIteminst : aeaHiIteminstList) {
+                        params += "&itemids=" + aeaHiIteminst.getItemId();
+                    }
                 }
             }
+            if(StringUtils.isNotBlank(projInfoId)){
+                params+="&projInfoId="+projInfoId;
+            }
+            params+="&showBasicButton=false";
+            params+="&includePlatformResource=false";
             realUrl += params;
-            realUrl+="&showBasicButton=false";
-            realUrl+="&includePlatformResource=false";
-//            response.sendRedirect(realUrl);
             return new ContentResultForm(true, realUrl);
         } catch (Exception e) {
             e.printStackTrace();

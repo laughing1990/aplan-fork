@@ -41,8 +41,8 @@
             <el-form-item class="input-inline" prop="certLandCode" label="建设项目用地规划许可证编号">
               <el-input v-model="formData.certLandCode" placeholder="请输入建设项目用地规划许可证编号"></el-input>
             </el-form-item>
-            <el-form-item class="input-inline" prop="landNature" label='用地性质可用地性质ID'>
-              <el-select v-model="formData.landNature" placeholder="请选择用地性质可用地性质ID" @change="forceUpdate">
+            <el-form-item class="input-inline" prop="landNature" label='用地性质'>
+              <el-select v-model="formData.landNature" placeholder="请选择用地性质" @change="forceUpdate">
                 <el-option :label="item.itemName" :value="item.itemCode" v-for="item in fieldType"></el-option>
               </el-select>
             </el-form-item>
@@ -72,55 +72,59 @@
           </div>
         </el-form>
         <p class='header'>建设工程规划许可证</p>
-        <el-form label-position="right" label-width="210px" :model="formData2" ref="form2" :rules="rules2" :inline='true'>
+        <el-form label-position="right" label-width="210px" :model="formData2" ref="form2" :rules="rules2">
           <el-form-item prop="certProjectId" v-show="false">
             <el-input v-model="formData2.certProjectId"></el-input>
           </el-form-item>
-          <el-form-item class="input-inline" label="建设工程规划许可证编号" prop="certProjectCode">
-            <el-input v-model="formData2.certProjectCode" placeholder="请输入建设工程规划许可证编号"></el-input>
-          </el-form-item>
-          <el-form-item class="input-inline" label="核发机关组织机构代码" prop="publishOrgCodeProject">
-            <el-input v-model="formData2.publishOrgCodeProject" placeholder="请输入核发机关组织机构代码"></el-input>
-          </el-form-item>
-          <el-form-item class="input-inline" label="核发机关" prop="publishOrgNameProject">
-            <el-input v-model="formData2.publishOrgNameProject" placeholder="请输入核发机关"></el-input>
-          </el-form-item>
-          <el-form-item class="input-inline" label="核发日期" prop="publishTimeProject">
-            <el-date-picker v-model="formData2.publishTimeProject" type="date" placeholder="请选择核发日期">
-            </el-date-picker>
-          </el-form-item>
+          <div class="clearfix">
+            <el-form-item class="input-inline" label="建设工程规划许可证编号" prop="certProjectCode">
+              <el-input v-model="formData2.certProjectCode" placeholder="请输入建设工程规划许可证编号"></el-input>
+            </el-form-item>
+            <el-form-item class="input-inline" label="核发机关组织机构代码" prop="publishOrgCodeProject">
+              <el-input v-model="formData2.publishOrgCodeProject" placeholder="请输入核发机关组织机构代码"></el-input>
+            </el-form-item>
+            <el-form-item class="input-inline" label="核发机关" prop="publishOrgNameProject">
+              <el-input v-model="formData2.publishOrgNameProject" placeholder="请输入核发机关"></el-input>
+            </el-form-item>
+            <el-form-item class="input-inline" label="核发日期" prop="publishTimeProject">
+              <el-date-picker v-model="formData2.publishTimeProject" type="date" placeholder="请选择核发日期">
+              </el-date-picker>
+            </el-form-item>
+          </div>
         </el-form>
         <p class='header'>建设项目选址意见书</p>
-        <el-form label-position="right" label-width="210px" :model="formData3" ref="form3" :rules="rules3" :inline='true'>
+        <el-form label-position="right" label-width="210px" :model="formData3" ref="form3" :rules="rules3">
           <el-form-item prop="siteId">
             <el-input v-model="formData3.siteId" v-show="false"></el-input>
           </el-form-item>
-          <el-form-item class="input-inline" label='建设项目选址意见书批文号' prop="siteCode">
-            <el-input v-model="formData3.siteCode" placeholder="请输入建设项目选址意见书批文号"></el-input>
-          </el-form-item>
-          <el-form-item class="input-inline" prop="landAreaValueSite" label='拟用地面积'>
-            <el-input v-model="formData3.landAreaValueSite" placeholder="请输入拟用地面积" class="input-with-select">
-              <el-select v-model="formData3.landAreaUnitSite" slot="append" placeholder="请选择">
-                <el-option :label="item.itemName" :value="item.itemCode" v-for="item in landAreaUnitSite"></el-option>
-                <!-- <el-option label="餐厅名" value="1"></el-option>
+          <div class="clearfix">
+            <el-form-item class="input-inline" label='建设项目选址意见书批文号' prop="siteCode">
+              <el-input v-model="formData3.siteCode" placeholder="请输入建设项目选址意见书批文号"></el-input>
+            </el-form-item>
+            <el-form-item class="input-inline" prop="landAreaValueSite" label='拟用地面积'>
+              <el-input v-model="formData3.landAreaValueSite" placeholder="请输入拟用地面积" class="input-with-select">
+                <el-select v-model="formData3.landAreaUnitSite" slot="append" placeholder="请选择">
+                  <el-option :label="item.itemName" :value="item.itemCode" v-for="item in landAreaUnitSite"></el-option>
+                  <!-- <el-option label="餐厅名" value="1"></el-option>
 <el-option label="订单号" value="2"></el-option>
 <el-option label="用户电话" value="3"></el-option> -->
-              </el-select>
-            </el-input>
-          </el-form-item>
-          <el-form-item class="input-inline" label="拟建设规模" prop="constructionSize">
-            <el-input v-model="formData3.constructionSize" placeholder="请输入拟建设规模"></el-input>
-          </el-form-item>
-          <el-form-item class="input-inline" label="核发机关组织机构代码" prop="govOrgCodeSite">
-            <el-input v-model="formData3.govOrgCodeSite" placeholder="请输入核发机关组织机构代码"></el-input>
-          </el-form-item>
-          <el-form-item class="input-inline" label="核发机关" prop="govOrgNameSite">
-            <el-input v-model="formData3.govOrgNameSite" placeholder="请输入核发机关"></el-input>
-          </el-form-item>
-          <el-form-item class="input-inline" label="核发日期" prop="publishTimeSite">
-            <el-date-picker v-model="formData3.publishTimeSite" type="date" placeholder="请选择核发日期">
-            </el-date-picker>
-          </el-form-item>
+                </el-select>
+              </el-input>
+            </el-form-item>
+            <el-form-item class="input-inline" label="拟建设规模" prop="constructionSize">
+              <el-input v-model="formData3.constructionSize" placeholder="请输入拟建设规模"></el-input>
+            </el-form-item>
+            <el-form-item class="input-inline" label="核发机关组织机构代码" prop="govOrgCodeSite">
+              <el-input v-model="formData3.govOrgCodeSite" placeholder="请输入核发机关组织机构代码"></el-input>
+            </el-form-item>
+            <el-form-item class="input-inline" label="核发机关" prop="govOrgNameSite">
+              <el-input v-model="formData3.govOrgNameSite" placeholder="请输入核发机关"></el-input>
+            </el-form-item>
+            <el-form-item class="input-inline" label="核发日期" prop="publishTimeSite">
+              <el-date-picker v-model="formData3.publishTimeSite" type="date" placeholder="请选择核发日期">
+              </el-date-picker>
+            </el-form-item>
+          </div>
         </el-form>
         <div class="right-bottom-btn">
           <el-button type="primary" class="save-jinbanUnit-info" icon="el-icon-wallet" @click="save">保存</el-button>

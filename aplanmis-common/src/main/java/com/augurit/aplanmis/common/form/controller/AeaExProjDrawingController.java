@@ -171,7 +171,6 @@ public class AeaExProjDrawingController {
     public AeaExProjDrawing voToPojo(AeaProjDrawingVo aeaProjDrawingVo,AeaExProjDrawing aeaExProjDrawing){
         aeaExProjDrawing.setDrawingId(aeaProjDrawingVo.getDrawingId());
         aeaExProjDrawing.setProjInfoId(aeaProjDrawingVo.getProjInfoId());
-        aeaExProjDrawing.setProvinceProjCode(aeaProjDrawingVo.getProvinceProjCode());
         aeaExProjDrawing.setDrawingQuabookCode(aeaProjDrawingVo.getDrawingQuabookCode());
         aeaExProjDrawing.setInverstmentMoeny(aeaProjDrawingVo.getInverstmentMoeny());
         aeaExProjDrawing.setApproveDrawingArea(aeaProjDrawingVo.getApproveDrawingArea());

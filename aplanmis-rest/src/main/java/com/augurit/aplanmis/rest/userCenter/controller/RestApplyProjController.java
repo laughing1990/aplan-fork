@@ -110,9 +110,9 @@ public class RestApplyProjController {
             List<AeaProjInfo> list;
             PageHelper.startPage(pageNum, pageSize);
             if (AuthContext.isPersionAccount()) {//个人
-                list = aeaProjInfoService.findAeaProjInfoByLinkmanInfoId(AuthContext.getCurrentLinkmanInfoId());
+                list = aeaProjInfoService.findRootAeaProjInfoByLinkmanInfoId(AuthContext.getCurrentLinkmanInfoId());
             } else {//企业
-                list = aeaProjInfoService.findAeaProjInfoByUnitInfoId(AuthContext.getCurrentUnitInfoId());
+                list = aeaProjInfoService.findRootAeaProjInfoByUnitInfoId(AuthContext.getCurrentUnitInfoId());
             }
             String[] localCodes = list.size() > 0 ? list.stream().map(AeaProjInfo::getLocalCode).toArray(String[]::new) : new String[0];
             return new ContentResultForm<>(true, new PageInfo<>(localCodes.length > 0 ? aeaProjInfoService.getProjListAndChildProjsByParent(localCodes) : list));
@@ -304,9 +304,9 @@ public class RestApplyProjController {
     @ApiImplicitParams({
             @ApiImplicitParam(value = "项目ID", name = "parentProjId", dataType = "string"),
             @ApiImplicitParam(value = "子项目信息", name = "aeaProjInfo")})
-    public ResultForm saveChildProject(AeaProjInfo aeaProjInfo, HttpServletRequest request) {
+    public ResultForm saveChildProject(AeaProjInfo aeaProjInfo) {
         try {
-            return new ContentResultForm<>(true, restUserCenterService.saveChildProject(request, aeaProjInfo));
+            return new ContentResultForm<>(true, restUserCenterService.saveChildProject(aeaProjInfo));
         } catch (Exception e) {
             return new ResultForm(false, "无法保存子项目");
         }

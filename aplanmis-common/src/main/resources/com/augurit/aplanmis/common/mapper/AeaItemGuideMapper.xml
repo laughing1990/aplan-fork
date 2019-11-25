@@ -440,5 +440,4 @@
           and ROOT_ORG_ID = #{rootOrgId}
     </select>
 
-
 </mapper>

@@ -64,4 +64,10 @@ public class EtlJobDetailLogServiceImpl implements EtlJobDetailLogService {
         logger.debug("成功执行查询list！！");
         return list;
     }
+
+    @Override
+    public List<EtlJobDetailLog> findEtlJobDetailLogByJobLogId(String jobLogId) {
+        return etlJobDetailLogMapper.findEtlJobDetailLogByJobLogId(jobLogId);
+    }
+
 }

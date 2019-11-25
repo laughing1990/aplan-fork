@@ -62,6 +62,12 @@ public abstract class DiagramItem implements Serializable {
     @ApiModelProperty(value = "承诺工作日", dataType = "string")
     protected Double dueNum;
 
+    @ApiModelProperty(value = "法定办结时限")
+    protected Double anticipateDay;
+
+    @ApiModelProperty(value = "法定办结时限单位")
+    protected String anticipateType;
+
     public DiagramItem(AeaItemBasic currentItemBasic, AeaHiIteminst aeaHiIteminst) {
         this.aeaHiIteminst = aeaHiIteminst;
         this.currentItemBasic = currentItemBasic;
@@ -75,6 +81,8 @@ public abstract class DiagramItem implements Serializable {
         this.catalog = Status.ON.equals(currentItemBasic.getIsCatalog());
         this.milestone = Status.ON.equals(currentItemBasic.getIsMilestoneItem());
         this.dueNum = currentItemBasic.getDueNum();
+        this.anticipateDay = currentItemBasic.getAnticipateDay();
+        this.anticipateType = currentItemBasic.getAnticipateType();
     }
 
     /**

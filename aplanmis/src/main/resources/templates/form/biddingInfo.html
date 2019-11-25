@@ -174,10 +174,10 @@
         </template>
         <el-form label-width="176px" ref="biddingInfo" :rules="biddingInfoRules" :model="biddingInfo">
           <div class="clearfix">
-            <el-form-item label="省级项目编号" class="input-inline" prop="provinceProjCode">
+            <!--  <el-form-item label="省级项目编号" class="input-inline" prop="provinceProjCode">
               <el-input name="localCode" v-model="biddingInfo.provinceProjCode" placeholder="请输入省级项目编号">
               </el-input>
-            </el-form-item>
+            </el-form-item> -->
             <el-form-item label="中标通知书编号" class="input-inline" prop="winBidNoticeCode">
               <el-input name="localCode" v-model="biddingInfo.winBidNoticeCode" placeholder="请输入中标通知书编号">
               </el-input>
@@ -235,7 +235,7 @@
           <div class="clearfix">
             <el-form-item label="组织机构代码" class="input-inline" prop="winBidUnits[0].organizationalCode" :rules="[
                         { required: true, message: '组织机构代码不得为空！', trigger: 'change' }]">
-              <el-input name="localCode" v-model="biddingInfo.winBidUnits[0].organizationalCode" placeholder="请输入组织机构代码">
+              <el-input name="localCode" v-model="biddingInfo.winBidUnits[0].organizationalCode" placeholder="格式：XXXXXXXXX">
               </el-input>
             </el-form-item>
             <el-form-item label="统一社会信用代码" class="input-inline" prop="winBidUnits[0].unifiedSocialCreditCode">
@@ -257,8 +257,10 @@
               <el-select v-model="biddingInfo.winBidUnits[0].projectLeader" filterable placeholder="请选择中标单位负责人" @click.native="getPerson(biddingInfo.winBidUnits[0])" style="width:68%;">
                 <el-option :label="item.addressName" :value="item.addressName" v-for="item in person" @click.native="selTypeLinkman(biddingInfo.winBidUnits[0],item)"></el-option>
               </el-select>
-              <el-button icon="el-icon-edit-outline" type="primary" class="item-left-btn" @click="addEditManModalFlag='edit';edit(biddingInfo.winBidUnits[0],'')" title="编辑" style="margin-left:5px;float:right;"></el-button>
-              <el-button icon="el-icon-circle-plus-outline" type="primary" class="item-left-btn" @click="addPerson(biddingInfo.winBidUnits[0]);addEditManModalFlag='add'" title="新增" style="margin-left:3px;float:right;"></el-button>
+              <div style="position:absolute;right:0;top:0;">
+                <el-button icon="el-icon-edit-outline" type="primary" class="item-left-btn" @click="addEditManModalFlag='edit';edit(biddingInfo.winBidUnits[0],'')" title="编辑" style="margin-left:5px;float:right;"></el-button>
+                <el-button icon="el-icon-circle-plus-outline" type="primary" class="item-left-btn" @click="addPerson(biddingInfo.winBidUnits[0]);addEditManModalFlag='add'" title="新增" style="margin-left:3px;float:right;"></el-button>
+              </div>
             </el-form-item>
             <el-form-item class="input-inline" prop="projectLeaderCertNum" label='负责人身份证号码'>
               <el-input v-model="biddingInfo.winBidUnits[0].projectLeaderCertNum" placeholder="请输入中标单位负责人身份证号码" disabled></el-input>
@@ -269,7 +271,7 @@
             <div class="clearfix">
               <el-form-item label="组织机构代码" class="input-inline" prop="agencyUnits[0].organizationalCode" :rules="[
                         { required: true, message: '组织机构代码不得为空！', trigger: 'change' }]">
-                <el-input name="localCode" v-model="biddingInfo.agencyUnits[0].organizationalCode" placeholder="请输入组织机构代码">
+                <el-input name="localCode" v-model="biddingInfo.agencyUnits[0].organizationalCode" placeholder="格式：XXXXXXXXX">
                 </el-input>
               </el-form-item>
               <el-form-item label="统一社会信用代码" class="input-inline" prop="agencyUnits[0].unifiedSocialCreditCode">
@@ -292,7 +294,7 @@
             <div class="clearfix">
               <el-form-item label="组织机构代码" class="input-inline" prop="costUnits[0].organizationalCode" :rules="[
                         { required: true, message: '组织机构代码不得为空！', trigger: 'change' }]">
-                <el-input name="localCode" v-model="biddingInfo.costUnits[0].organizationalCode" placeholder="请输入组织机构代码">
+                <el-input name="localCode" v-model="biddingInfo.costUnits[0].organizationalCode" placeholder="格式：XXXXXXXXX">
                 </el-input>
               </el-form-item>
               <el-form-item label="统一社会信用代码" class="input-inline" prop="costUnits[0].unifiedSocialCreditCode">

@@ -19,7 +19,7 @@ var vm = new Vue({
         projInfoId: '', // 当前申报项目id
     },
     mounted:function () {
-        this.getprojList()
+        this.getprojList();
         this.GetRequest();
     },
     methods:{
@@ -38,7 +38,7 @@ var vm = new Vue({
             }, function (res) {
                 vm.searchProSearchData = [];
                 if(res.success){
-                    vm.searchProData = res.content.list ||{};
+                    vm.searchProData = res.content.list ;
                     vm.totalDe = res.content.total;
                 }
             },function () {
@@ -48,22 +48,26 @@ var vm = new Vue({
         getSearchProjList:function(){
             var vm = this;
             vm.applyinstFlag = 2;
-            vm.searchBtnLoading = true
-            request('', {
-                url: ctx + 'rest/user/searchProj/list',
-                type: 'get',
-                data:{
-                    keyWord:vm.keyWord,
-                    pageNum:vm.pageNumSearchDe,
-                    pageSize:vm.pageSizeSearchDe,
-                }
-            }, function (res) {
-                vm.searchProData = [];
-                vm.searchProSearchData = res.content.list;
-                vm.totalSearchDe = res.content.total;
-            },function () {
+            vm.searchBtnLoading = true;
+            if(!vm.keyWord){
+                vm.getprojList();
+            }else{
+                request('', {
+                    url: ctx + 'rest/user/searchProj/list',
+                    type: 'get',
+                    data:{
+                        keyWord:vm.keyWord,
+                        pageNum:vm.pageNumSearchDe,
+                        pageSize:vm.pageSizeSearchDe,
+                    }
+                }, function (res) {
+                    vm.searchProData = [];
+                    vm.searchProSearchData = res.content.list;
+                    vm.totalSearchDe = res.content.total;
+                },function () {
 
-            });
+                });
+            }
         },
         getProjectByLocalCode:function(){
             this.getSearchProjList();

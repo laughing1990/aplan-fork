@@ -156,4 +156,12 @@ public interface AeaItemMatService {
      * @throws Exception
      */
     List<AeaItemMat> getOfficeMatsByStageItemVerIds(String stageId, String[] itemVerIds) throws Exception;
+
+    /**
+     * 查询单项不分情形下材料定义列表-中介超市用
+     *
+     * @param itemVerId 事项版本ID
+     * @return List<AeaItemMat>
+     */
+    List<AeaItemMat> getSeriesNoStateMatList(String itemVerId) throws Exception;
 }

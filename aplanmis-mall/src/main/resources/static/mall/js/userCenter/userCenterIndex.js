@@ -121,11 +121,12 @@ var userCenter = (function () {
                 approvalNum: 0,
                 matCompletionNum: 0,
                 withdrawNum: 0,
-				draftNum:0,
+				        draftNum:0,
                 applyNum:0,
                 supplyNum:0,
                 withdrawalNum:0,
-                myMatNum:0
+                myMatNum:0,
+                myProLeftShow: true,
 
             }
         },
@@ -211,6 +212,7 @@ var userCenter = (function () {
                     ts.selectNav = "我的首页";
                     ts.userCenterItemSelect = "MyHomeIndex";
                     ts.moduleLoad('myHomeIndex.html', '#MyHomeIndex',true);
+                    return false;
                 }
                 ts.moduleLoad(mod.value + '.html', '#' + mod.value);
             },

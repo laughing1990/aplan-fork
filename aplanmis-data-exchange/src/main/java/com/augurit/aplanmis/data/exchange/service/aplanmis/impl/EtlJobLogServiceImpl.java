@@ -2,7 +2,9 @@ package com.augurit.aplanmis.data.exchange.service.aplanmis.impl;
 
 import com.augurit.agcloud.bsc.util.SpringUtil;
 import com.augurit.aplanmis.data.exchange.domain.aplanmis.EtlJobLog;
+import com.augurit.aplanmis.data.exchange.mapper.aplanmis.EtlJobDetailLogMapper;
 import com.augurit.aplanmis.data.exchange.mapper.aplanmis.EtlJobLogMapper;
+import com.augurit.aplanmis.data.exchange.service.aplanmis.EtlJobDetailLogService;
 import com.augurit.aplanmis.data.exchange.service.aplanmis.EtlJobLogService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
@@ -17,6 +19,8 @@ import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.transaction.annotation.Transactional;
@@ -36,6 +40,9 @@ public class EtlJobLogServiceImpl implements EtlJobLogService {
 
     @Autowired
     private EtlJobLogMapper etlJobLogMapper;
+
+    @Autowired
+    private EtlJobDetailLogMapper etlJobDetailLogMapper;
 
     @Value("${spring.datasource.aplanmis.jdbc-url}")
     private String aplanmisJdbcUrl;
@@ -58,6 +65,14 @@ public class EtlJobLogServiceImpl implements EtlJobLogService {
     @Override
     public PageInfo<EtlJobLog> listEtlJobLog(EtlJobLog etlJobLog, Page page) {
         PageHelper.startPage(page);
+        if (etlJobLog != null && etlJobLog.getEndTime() != null) {
+            Date endTime = etlJobLog.getEndTime();
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(endTime);
+            calendar.add(Calendar.DATE,1);
+            Date time = calendar.getTime();
+            etlJobLog.setEndTime(time);
+        }
         List<EtlJobLog> list = etlJobLogMapper.listEtlJobLog(etlJobLog);
         logger.debug("成功执行分页查询！！");
         return new PageInfo<EtlJobLog>(list);
@@ -85,5 +100,11 @@ public class EtlJobLogServiceImpl implements EtlJobLogService {
             e.printStackTrace();
         }
         return null;
+    }
+
+    @Override
+    public void batchDeleteEtlJobLogByJobLogIds(String[] jobLogIds) {
+        etlJobDetailLogMapper.batchDeleteEtlDetailJobLogByJobLogIds(jobLogIds);
+        etlJobLogMapper.batchDeleteEtlJobLogByJobLogIds(jobLogIds);
     }
 }

@@ -924,5 +924,18 @@
             ADD COLUMN `ITEM_PARTFORM_MEMO`  varchar(500) NULL COMMENT '备注';
         </sql>
     </changeSet>
+    
+    <changeSet id="201911221506" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `aea_item_basic`
+            ADD COLUMN `ANTICIPATE_DAY`  double(10,0) NULL DEFAULT NULL COMMENT '法定办结时限' AFTER `IS_SHARE`,
+            ADD COLUMN `ANTICIPATE_TYPE`  varchar(10) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '法定办结时限单位' AFTER `ANTICIPATE_DAY`;
+            ALTER TABLE `aea_par_stage`
+            ADD COLUMN `ANTICIPATE_DAY`  double(10,0) NULL DEFAULT NULL COMMENT '法定办结时限' AFTER `IS_CHECK_STAGE`,
+            ADD COLUMN `ANTICIPATE_TYPE`  varchar(10) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '法定办结时限单位' AFTER `ANTICIPATE_DAY`;
+            ALTER TABLE `act_sto_form`
+            MODIFY COLUMN `FORM_PROPERTY`  varchar(12) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '表单属性，meta-biz表示元数据普通表单，meta-flow表示元数据流程表单，smart-biz表示智能普通表单，smart-flow表示智能流程表单' AFTER `FORM_ORG_ID`;
+        </sql>
+    </changeSet>
 
 </databaseChangeLog>

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <!--引入公共css-->
+    <th:block th:include="common/common :: commonheader('上传日志')"/>
+    <link rel="stylesheet" href="../../static/route/css/index.css" th:href="@{/log/css/index.css}">
+</head>
+
+<body class="gray-body">
+<div id="etl-job-log">
+    <el-container style="height: 1100px; border: 1px solid #eee">
+        <el-aside width="60%" style="background-color: rgb(238, 241, 246)">
+            <div style="margin: 10px">
+                <el-row class="">
+                    <el-col :span="6" style="display: flex"><p style="color: lightslategray;margin: 5px 10px">数据上传日志</p>
+                        <el-button type="danger" size="small" plain @click="deleteConfirm">删除</el-button>
+                        <el-button type="primary" size="small" plain @click="listEtlJobLog">刷新</el-button>
+                    </el-col>
+                    <el-col :span="12">
+                        <el-date-picker v-model="timeRange" type="daterange" align="right" unlink-panels
+                                        range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期"
+                                        value-format="yyyy-MM-dd" :picker-options="pickerOptions"
+                                        :default-time="['00:00:00', '23:59:59']" @change="handTimeRangeChange">
+                        </el-date-picker>
+                        <el-switch style="margin-top: 4px;margin-left: 10px"
+                                   v-model="isFilterEmpty"
+                                   active-text="只看有数据" @change="handFilterChange">
+                        </el-switch>
+                    </el-col>
+                    <el-col :span="6">
+                        <p>最近运行时间：{{etlJob.startTime}} </p>
+                        <p>运行状态：{{etlJob.runStatus=='1'?'正在上传':'已结束'}}</p>
+                    </el-col>
+                </el-row>
+            </div>
+            <el-table :data="etlJobLogList" :summary-method="getLogTotal" show-summary row-key="jobLogId" height="1000"
+                      v-loading="logLoading"
+                      ref="etlJobLogTable" @row-click="selectJobLog" highlight-current-row>
+                <el-table-column
+                        type="selection"
+                        width="55">
+                </el-table-column>
+                <el-table-column prop="jobLogCode" label="批次" min-width="125">
+                </el-table-column>
+                <el-table-column prop="readNum" label="读取" min-width="125">
+                </el-table-column>
+                <el-table-column prop="writtenNum" label="写入" min-width="125">
+                </el-table-column>
+                <el-table-column prop="errorNum" label="错误" min-width="125">
+                </el-table-column>
+                <el-table-column prop="solveNum" label="已解决" min-width="125">
+                </el-table-column>
+                <el-table-column prop="startTime" label="读取开始时间" min-width="125">
+                </el-table-column>
+                <el-table-column prop="endTime" label="读取结束时间" min-width="125">
+                </el-table-column>
+                <el-table-column prop="createTime" label="上传完成时间" min-width="125">
+                </el-table-column>
+            </el-table>
+            <el-pagination layout="prev, pager, next,total,jumper, sizes" background align="right" height="700"
+                           :page-sizes="[10, 20, 50, 500]" :page-size="etlJobLogPage.pageSize"
+                           :current-page="etlJobLogPage.pageNum"
+                           :total="etlJobLogPage.total"
+                           @current-change="handPageNumChange" @size-change="handleSizeChange">
+            </el-pagination>
+        </el-aside>
+
+        <el-main>
+            <template>
+                <el-tabs type="card" value="detail-card">
+                    <el-tab-pane label="日志详细信息" name="detail-card">
+                        <el-table :data="etlJobDetailLogList" v-loading="detailLogLoading">
+                            <el-table-column
+                                    type="selection"
+                                    width="55">
+                            </el-table-column>
+                            <el-table-column prop="tableName" label="表名" min-width="210">
+                            </el-table-column>
+                            <el-table-column prop="readNum" label="读取" min-width="125">
+                            </el-table-column>
+                            <el-table-column prop="writtenNum" label="写入" min-width="125">
+                            </el-table-column>
+                            <el-table-column prop="errorNum" label="错误" min-width="125">
+                            </el-table-column>
+                        </el-table>
+                    </el-tab-pane>
+                    <el-tab-pane label="错误日志" name="error-card" v-loading="errorlogLoading">
+                        <el-table :data="etlErrorLogPage.list" row-key="logId"
+                                  height="960"
+                                  ref="etlErrorLogTable">
+                            <el-table-column
+                                    type="selection"
+                                    width="55">
+                            </el-table-column>
+                            <el-table-column prop="stepName" label="表名" min-width="210">
+                            </el-table-column>
+                            <el-table-column prop="errNum" label="错误码" min-width="80">
+                            </el-table-column>
+                            <el-table-column prop="errDesc" label="错误描述" min-width="125">
+                            </el-table-column>
+                            <el-table-column prop="diagnoseResult" label="处理方法" min-width="125">
+                            </el-table-column>
+                            <el-table-column prop="errValue" label="错误值" min-width="125">
+                            </el-table-column>
+                            <el-table-column prop="isSolve" label="是否已解决" min-width="100">
+                            </el-table-column>
+                        </el-table>
+                        <el-pagination layout="prev, pager, next,total,jumper, sizes" background align="right"
+                                       :page-sizes="[10, 20, 50, 100]" :page-size="etlErrorLogPage.pageSize"
+                                       :current-page="etlErrorLogPage.pageNum"
+                                       :total="etlErrorLogPage.total"
+                                       @current-change="handErrorPageNumChange" @size-change="handleErrorSizeChange">
+                        </el-pagination>
+                    </el-tab-pane>
+                </el-tabs>
+            </template>
+        </el-main>
+    </el-container>
+</div>
+</body>
+<th:block th:include="common/common :: commonfooter"/>
+<script src="../../static/route/js/index.js" th:src="@{/log/js/index.js}"></script>
+
+</html>

@@ -1181,10 +1181,10 @@
 <script src="${pageContext.request.contextPath}/agcloud/framework/js-lib/element-2/element.js"></script>
 <script src="${pageContext.request.contextPath}/agcloud/framework/js-lib/agcloud-lib/js/common.js"></script>
 <!-- 业务js -->
-<script src="${pageContext.request.contextPath}/ui-static/kitymind/process/processModelerVue.js?v=1"
+<script src="${pageContext.request.contextPath}/ui-static/kitymind/process/processModelerVue.js?v=2"
         type="text/javascript"></script>
 <script src="${pageContext.request.contextPath}/ui-static/kitymind/process/processTreeGrid.js" type="text/javascript"></script>
-<script src="${pageContext.request.contextPath}/ui-static/kitymind/process/processModeler_stage.js?v=1"
+<script src="${pageContext.request.contextPath}/ui-static/kitymind/process/processModeler_stage.js?v=2"
         type="text/javascript"></script>
 <%--<script src="${pageContext.request.contextPath}/ui-static/kitymind/process/processModeler.js" type="text/javascript"></script>--%>
 <script src="${pageContext.request.contextPath}/ui-static/kitymind/process/getPingyin.js" type="text/javascript"></script>
