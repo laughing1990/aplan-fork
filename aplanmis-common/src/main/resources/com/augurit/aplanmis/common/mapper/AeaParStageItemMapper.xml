@@ -20,7 +20,9 @@
     <!--2 根据主键ID查询单个实体 -->
     <select id="getAeaParStageItemById" resultType="AeaParStageItem">
         select
-        <include refid="allColumns"><property name="alias" value="apsi"/></include>
+            <include refid="allColumns">
+                <property name="alias" value="apsi"/>
+            </include>
         from AEA_PAR_STAGE_ITEM apsi
         where STAGE_ITEM_ID = #{id}
     </select>

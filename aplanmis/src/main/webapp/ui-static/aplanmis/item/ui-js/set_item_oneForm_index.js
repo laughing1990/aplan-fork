@@ -802,10 +802,11 @@ function stagePartformFormatter(value, row, index){
 
     var sumformId = row.stoFormId;
     var isSmartForm = row.isSmartForm;
-    var iteItemId = row.itemPartformId;
+    var params = '?itemPartformId='+row.itemPartformId+'&itemVerId='+row.itemVerId+'&isSmartForm='+isSmartForm;
+
     var strCallback = '';
     strCallback += 'needCallBackSaveActStoForm=1';
-    strCallback += '&urlCallBackSaveActStoForm='+restWebApp+'aea/item/partform/updateAeaItemPartformWithFormId.do?id='+iteItemId;
+    strCallback += '&urlCallBackSaveActStoForm='+restWebApp+'aea/item/partform/updateAeaItemPartformWithFormId.do'+params;
     strCallback += '&requiredField=refEntityId';
 
     var title = '查看';
