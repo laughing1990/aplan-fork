@@ -12,8 +12,10 @@ import org.springframework.beans.BeanUtils;
 @ApiModel(value = "采购项目详情")
 public class PurchaseDetailVo {
     private String iteminstName;
+
     @ApiModelProperty(name = "iteminst", value = "事项实例信息")
     private Iteminst iteminst;
+
     @ApiModelProperty(name = "purchaseProj", value = "采购项目信息")
     private PurchaseProjVo purchaseProj;
 
@@ -65,5 +67,8 @@ public class PurchaseDetailVo {
 
         @ApiModelProperty(name = "serviceObj", value = "服务对象")
         private String serviceObj;
+
+        @ApiModelProperty(name = "relevancyItemName", value = "关联的服务事项")
+        private String relevancyItemName;
     }
 }
