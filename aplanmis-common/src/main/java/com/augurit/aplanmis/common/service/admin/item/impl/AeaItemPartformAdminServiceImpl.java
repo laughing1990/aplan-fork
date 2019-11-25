@@ -128,7 +128,7 @@ public class AeaItemPartformAdminServiceImpl implements AeaItemPartformAdminServ
             actStoForm.setFormId(UUID.randomUUID().toString());
             actStoForm.setFormName(formName);
             actStoForm.setFormLoadUrl(formLoadUrl);
-            actStoForm.setFormProperty("dev-biz");
+            actStoForm.setFormProperty("meta-biz");
             actStoForm.setIsDeleted("0");
             actStoForm.setCreater(SecurityContext.getCurrentUserId());
             actStoForm.setCreateTime(new Date());
