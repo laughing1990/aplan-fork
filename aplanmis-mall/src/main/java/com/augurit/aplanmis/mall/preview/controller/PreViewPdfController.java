@@ -5,6 +5,7 @@ import com.augurit.agcloud.bsc.domain.BscAttDetail;
 import com.augurit.agcloud.bsc.sc.att.service.IBscAttService;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.aplanmis.mall.preview.service.PreviewPdfService;
+import com.augurit.aplanmis.mall.userCenter.service.RestFileService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -36,6 +37,8 @@ public class PreViewPdfController {
     private PreviewPdfService previewPdfService;
     @Autowired
     private IBscAttService bscAttService;
+    @Autowired
+    private RestFileService restFileService;
 
 
     @GetMapping("/view")
@@ -43,7 +46,8 @@ public class PreViewPdfController {
     @ApiImplicitParams(
             @ApiImplicitParam(name = "detailId", value = "文件detailId", required = true, dataType = "String")
     )
-    public ModelAndView previewPdf(String detailId) {
+    public ModelAndView previewPdf(String detailId,HttpServletRequest request)throws Exception {
+        if (!restFileService.isFileBelong(detailId,request)) throw new Exception("预览出错");
         ModelAndView mav = new ModelAndView("preview/viewPdf");
         mav.addObject("detailId", detailId);
         return mav;

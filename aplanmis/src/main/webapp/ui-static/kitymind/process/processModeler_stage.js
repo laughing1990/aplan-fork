@@ -1530,6 +1530,16 @@ $("#selectItemTree").on('click',function (e) {
   }
 });
 
+//绑定模糊查询事项
+$("#timeruleId_").on('change',function(){
+  var text =$(this).find("option:selected").text();
+  if(text){
+      var unit = text.substring(0,3);
+      var placeholder = "单位：" + unit;
+      $("#edit_timeLimit").attr("placeholder",placeholder);
+  }
+});
+
 //清除查询
 function clearSubprocessSearch() {
   $('#subprocessKeyword').val('');

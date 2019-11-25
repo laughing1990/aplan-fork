@@ -822,6 +822,7 @@
             </include>
             AND art_123.ASSIGNEE_ = #{loginName}
             AND ahap_123.APPLYINST_STATE NOT IN ('0', '1', '3', '5', '6')
+            AND ti.TIMERULE_INST_TYPE = '1'
         </where>
         )
         UNION
@@ -886,6 +887,7 @@
             </if>
             <include refid="baseConditionalQuery">
             </include>
+            AND ti.TIMERULE_INST_TYPE = '1'
         </where>
         )
         UNION
@@ -939,6 +941,7 @@
             </if>
             <include refid="baseConditionalQuery">
             </include>
+            AND ti.TIMERULE_INST_TYPE = '1'
         </where>
         )
         UNION
@@ -996,7 +999,7 @@
             AND art_123.ASSIGNEE_ = #{loginName}
             <include refid="baseConditionalQuery">
             </include>
-
+            AND ti.TIMERULE_INST_TYPE = '1'
         </where>
         )
         UNION
@@ -1047,6 +1050,7 @@
             AND art_123.ASSIGNEE_ = #{loginName}
             <include refid="baseConditionalQuery">
             </include>
+            AND ti.TIMERULE_INST_TYPE = '1'
         </where>
         )
         ) ART_123
@@ -1161,6 +1165,7 @@
             </if>
             <include refid="baseConditionalQuery">
             </include>
+            AND ti.TIMERULE_INST_TYPE = '1'
         </where>
         )
         UNION
@@ -1221,6 +1226,7 @@
             </if>
             <include refid="baseConditionalQuery">
             </include>
+            AND ti.TIMERULE_INST_TYPE = '1'
         </where>
         )
         UNION
@@ -1269,6 +1275,7 @@
             AND ahap_123.APPLYINST_STATE !='6'
             <include refid="baseConditionalQuery">
             </include>
+            AND ti.TIMERULE_INST_TYPE = '1'
         </where>
         )
         UNION
@@ -1318,6 +1325,7 @@
             AND ahap_123.APPLYINST_STATE !='6'
             <include refid="baseConditionalQuery">
             </include>
+            AND ti.TIMERULE_INST_TYPE = '1'
         </where>
 
         )

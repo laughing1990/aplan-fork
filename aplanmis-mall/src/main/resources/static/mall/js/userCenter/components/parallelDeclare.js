@@ -188,6 +188,7 @@ var module1 = new Vue({
       smsInfoId: '', // 领件人实例id
       themeId: '', // 所选主题id
       themeName: '', // 所选主题名称
+      selThemeInfo: {}, // 所选主题信息
       themeIdFlag: false, // 项目是否已存在主题id
       themeType: '', // 所选主题类型
       stageList: [], // 阶段列表
@@ -292,7 +293,7 @@ var module1 = new Vue({
           { required: true, message: '请选择工程分类', trigger: 'change' },
         ],
         nstartTime: [
-          { required: true, message: '请选择拟开工时间', trigger: 'blur' },
+          { required: true, message: '请选择拟开工时间', trigger: 'change' },
         ],
         endTime: [
           { required: true, message: '请选择拟建成时间', trigger: 'change' },
@@ -391,6 +392,7 @@ var module1 = new Vue({
       stageFrontCheckFlag: true, // 阶段前置检测是否通过
       stageFrontCheckMsg: '', // 阶段前置检测失败提示
       leftTabClosed: true, //
+      selThemeDialogShow: false, // 是否展示
     }
   },
   mounted: function () {
@@ -988,6 +990,9 @@ var module1 = new Vue({
     searchProjAllInfo: function () {
       var _that = this;
       _that.loading = true;
+      _that.gbhyShowMsg = '';
+      _that.themeId = '';
+      _that.selThemeInfo = {};
       request('', {
         url: ctx + 'rest/apply/common/projInfo/' + _that.projInfoId,
         type: 'get',
@@ -1512,7 +1517,7 @@ var module1 = new Vue({
                     }
                     _that.getThemeList();
                     _that.unitProjIds = data.content.unitProjIds;
-                    if (_that.intelligenceAllow || _that.themeId != '') {
+                    if (_that.intelligenceAllow || (_that.themeId&&_that.themeId != '')) {
                       _that.declareStep = 3;
                     } else {
                       _that.declareStep = 2;
@@ -1579,11 +1584,12 @@ var module1 = new Vue({
                 return item.themeId === _that.themeId;
               })
               _that.themeName = copyThemeTypeList[0].themeList[0].themeName;
+              _that.selThemeInfo = copyThemeTypeList[0].themeList[0];
             }
           } else {
             _that.themeIdFlag = false;
             _that.itemTabSelect = 'tab_' + _that.themeTypeList[0].themeTypeCode;
-            _that.chooseTheme(_that.themeTypeList[0].themeList[0]);
+            // _that.chooseTheme(_that.themeTypeList[0].themeList[0]);
           }
         } else {
           _that.loading = false;
@@ -1615,9 +1621,11 @@ var module1 = new Vue({
       // alertMsg('', '主题已锁定，不可更改', '关闭', 'error', true);
       //   return false;
       // }else {
+      _that.selThemeDialogShow = false;
       _that.themeActive = data.themeId;
       _that.themeId = data.themeId;
       _that.themeName = data.themeName;
+      _that.selThemeInfo = data;
       // }
     },
     // 选择主题保存并下一步根据主题获取阶段
@@ -1734,10 +1742,10 @@ var module1 = new Vue({
       }
       var param = {stageId: this.stageId,projInfoId:this.projInfoId};
       var _that = this;
-      if(data.isCheckStage=='0'){
-        _that.getStatusStateMats(_that.stageId);  // 获取事项情形列表
-        _that.stageFrontCheckFlag = true;
-      }else {
+      // if(data.isCheckStage=='0'){
+      //   _that.getStatusStateMats(_that.stageId);  // 获取事项情形列表
+      //   _that.stageFrontCheckFlag = true;
+      // }else {
         // 阶段前置检测
         request('', {
           url: ctx + 'rest/check/stageFrontCheck',
@@ -1761,7 +1769,7 @@ var module1 = new Vue({
             },'继续申报','放弃申报', 'error', true);
           }
         }, function (msg) {})
-      }
+      // }
     },
     // 判断事项checkbox是否可勾选
     checkboxInit: function (row) {

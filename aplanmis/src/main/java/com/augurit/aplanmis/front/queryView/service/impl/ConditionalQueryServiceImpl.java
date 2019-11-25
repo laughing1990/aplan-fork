@@ -840,8 +840,14 @@ public class ConditionalQueryServiceImpl implements ConditionalQueryService {
                             }
                         }
                         String state = "1";
-                        if(actStoTimegroupAct.getTimeLimit() <= 2 ){
-                            state = "2";
+                        if(unit.contains("H")){
+                            if(actStoTimegroupAct.getTimeLimit() <= 48 ){
+                                state = "2";
+                            }
+                        }else{
+                            if(actStoTimegroupAct.getTimeLimit() <= 2 ){
+                                state = "2";
+                            }
                         }
                         if(StringUtils.isNotBlank(actStoTimegroupAct.getTimegroupId())){
                             if(hasInst.contains(actStoTimegroupAct.getTimegroupId())) continue;
