@@ -1905,7 +1905,7 @@ var vm = new Vue({
         'masterEntityKey',
         'projectCode',
         'viewId',
-          'projInfoId',
+        'projInfoId',
       ];
       var oneFormIndex = -1;
       lTabsData.forEach(function (u, i) {
@@ -1920,10 +1920,10 @@ var vm = new Vue({
       });
       vm.lTabsData = lTabsData;
       if (vm.isShowOneForm == '1' && !vm.isZJItem) { // 中介事项也不显示一张表单
-        if (vm.isSeriesinst == '0'){ // 多事项
+        if (vm.isSeriesinst == '0') { // 多事项
           var targetUrl = oneFromSrc;
           if (vm.isApprover == '1') {
-            targetUrl += '&enableParamItem=true&itemId='+vm.itemVersionId;
+            targetUrl += '&enableParamItem=true&itemId=' + vm.itemVersionId;
           } else {
             targetUrl += '&enableParamItem=false';
           }
@@ -1938,8 +1938,8 @@ var vm = new Vue({
                 type: 'get',
               }, function (res2) {
                 if (res2.success) {
-                  res2.content.forEach(function(u, index){
-                    if (u.smartForm){
+                  res2.content.forEach(function (u, index) {
+                    if (u.smartForm) {
                       u.formUrl = u.formUrl.replace('showBasicButton=true', 'showBasicButton=false')
                       getHtml(u, index);
                     } else {
@@ -1971,10 +1971,10 @@ var vm = new Vue({
               showBasicButton: false,
               includePlatformResource: false,
             },
-          }, function(res){
-            if (res.success){
-              res.content.forEach(function(u, index){
-                if (u.smartForm){
+          }, function (res) {
+            if (res.success) {
+              res.content.forEach(function (u, index) {
+                if (u.smartForm) {
                   u.formUrl = u.formUrl.replace('showBasicButton=true', 'showBasicButton=false')
                   getHtml(u, index);
                 } else {
@@ -1985,24 +1985,26 @@ var vm = new Vue({
             } else {
               vm.$message.error(res.content || '获取一张表单信息失败');
             }
-          }, function (){
+          }, function () {
             vm.$message.error('获取一张表单信息失败');
           });
         }
-        function getHtml(data, index){
+        
+        function getHtml(data, index) {
           request('', {
             url: ctx + data.formUrl,
             type: 'get',
-          }, function(res) {
+          }, function (res) {
             if (res.success) {
-              $('#smartFormBox_'+index).html(res.content);
+              $('#smartFormBox_' + index).html(res.content);
             } else {
               // vm.$message.error('获取智能表单数据失败');
             }
-          }, function(){
+          }, function () {
             // vm.$message.error('获取智能表单数据失败');
           })
         }
+        
         // request('', {
         //   url: oneFromSrc,
         //   type: 'get',
@@ -2471,10 +2473,10 @@ var vm = new Vue({
           if (data.success) {
             vm.processDialogLoading = false; // 关闭遮罩
             vm.$message.success(data.message);
-            setTimeout("location.reload()", 1500 );
+            setTimeout("location.reload()", 1500);
           } else {
             vm.$message.error(data.message);
-              vm.processDialogLoading = false; // 关闭遮罩
+            vm.processDialogLoading = false; // 关闭遮罩
           }
         },
         error: function (jqXHR, textStatus, errorThrown) {
