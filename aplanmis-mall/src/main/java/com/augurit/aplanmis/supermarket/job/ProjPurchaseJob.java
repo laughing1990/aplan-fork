@@ -1,6 +1,5 @@
 package com.augurit.aplanmis.supermarket.job;
 
-import com.augurit.agcloud.framework.util.DateUtils;
 import com.augurit.aplanmis.common.domain.AeaImBiddingPrice;
 import com.augurit.aplanmis.common.domain.AeaImProjPurchase;
 import com.augurit.aplanmis.supermarket.bidProPurchase.service.BidProjectService;
@@ -53,14 +52,14 @@ public class ProjPurchaseJob {
                     // 选取中
                     if ("7".equals(item.getAuditFlag())) {
                         // 判断是否竞价结束，修改状态为 8：选取开始 或 12：已过时
-                        int timeout = 10;// 10分钟无人选取，选取结束
-                        Date beginTime = item.getLastBiddingTime() != null ? item.getLastBiddingTime() : item.getChoiceImunitTime();
-                        Date timeoutDate = DateUtils.addMinute(beginTime, timeout);
-                        if (!timeoutDate.after(new Date())) {
+                        //int timeout = 10;// 10分钟无人选取，选取结束
+//                        Date beginTime = item.getLastBiddingTime() != null ? item.getLastBiddingTime() : item.getChoiceImunitTime();
+                        /*Date timeoutDate = DateUtils.addMinute(beginTime, timeout);
+                        if (!timeoutDate.after(new Date())) {*/
                             logger.info("采购需求项目【{}】竞价结束", item.getProjPurchaseId());
                             String flag = item.getLastBiddingTime() != null ? "8" : "12";//无人出价，则项目12 无效，有竞价，则修改为8 选取开始
                             updateAuditFlag(item.getProjPurchaseId(), "7", flag, "采购需求项目竞价结束");
-                        }
+                        //}
                     }
 
                     // 选取开始
