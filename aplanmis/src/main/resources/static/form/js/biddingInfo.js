@@ -106,6 +106,14 @@
           params.costUnits.splice(0, 1);
         }
 
+          var winBidUnitLinkManInfoIds = '';
+          _that.person.forEach(function (item) {
+              if (item['addressId'] != '' & item['addressId'] != '1') {
+                  winBidUnitLinkManInfoIds = item['addressId'] + ",";
+              }
+          })
+          params.winBidLinkManInfoids = winBidUnitLinkManInfoIds.length > 0 ? winBidUnitLinkManInfoIds.substring(0, winBidUnitLinkManInfoIds.length - 1) : '';
+
         _that.$refs['biddingInfo'].validate(function(valid) {
           if (valid) {
             request('', {

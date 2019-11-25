@@ -2,21 +2,16 @@ package com.augurit.aplanmis.common.form.controller;
 
 
 import com.alibaba.fastjson.JSONObject;
-import com.augurit.agcloud.bsc.sc.dic.code.service.BscDicCodeService;
 import com.augurit.agcloud.framework.ui.result.ContentResultForm;
 import com.augurit.agcloud.framework.ui.result.ResultForm;
 import com.augurit.aplanmis.common.domain.AeaExProjDrawing;
 import com.augurit.aplanmis.common.domain.AeaProjInfo;
+import com.augurit.aplanmis.common.form.service.AeaExProjCertBuildService;
 import com.augurit.aplanmis.common.service.form.AeaExProjDrawingService;
 import com.augurit.aplanmis.common.service.form.AeaProjDrawingSerivce;
-import com.augurit.aplanmis.common.service.linkman.AeaLinkmanInfoService;
 import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
-import com.augurit.aplanmis.common.service.unit.AeaUnitInfoService;
 import com.augurit.aplanmis.common.vo.AeaProjDrawing;
 import com.augurit.aplanmis.common.vo.AeaProjDrawingVo;
-import com.augurit.aplanmis.common.form.service.AeaExProjCertBuildService;
-
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,17 +36,9 @@ public class AeaExProjDrawingController {
 
     @Autowired
     private AeaExProjDrawingService aeaExProjDrawingService;
-    @Autowired
-    private AeaLinkmanInfoService aeaLinkmanInfoService;
-    @Autowired
-    private AeaUnitInfoService aeaUnitInfoService;
-
-    @Autowired
-    private BscDicCodeService bscDicCodeService;
 
     @Autowired
     private AeaProjDrawingSerivce aeaProjDrawingSerivce;
-
 
     @Autowired
     private AeaProjInfoService aeaProjInfoService;
@@ -150,9 +137,6 @@ public class AeaExProjDrawingController {
                         aeaExProjDrawing.setDrawingId(UUID.randomUUID().toString());
                     aeaExProjDrawingService.saveAeaExProjDrawing(aeaExProjDrawing);
                 }
-
-                List<AeaProjDrawing> aeaProjDrawing = aeaProjDrawingVo.getAeaProjDrawing();
-
                 aeaProjDrawingSerivce.saveAeaProjDrawing(aeaProjDrawingVo);
                 return  new ContentResultForm<AeaProjDrawingVo>(true,aeaProjDrawingVo);
             }else {
