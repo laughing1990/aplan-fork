@@ -48,11 +48,11 @@ public interface AeaProjInfoMapper {
 
     List<AeaProjInfo> findAeaProjInfoByApplyLinkmanInfoId(@Param("linkmanInfoId") String linkmanInfoId);
 
-    List<AeaProjInfo> findAeaProjInfoByLinkmanInfoId(@Param("linkmanInfoId") String linkmanInfoId);
+    List<AeaProjInfo> findRootAeaProjInfoByLinkmanInfoId(@Param("linkmanInfoId") String linkmanInfoId);
 
-    List<AeaProjInfo> findAeaProjInfoByUnitInfoId(@Param("unitInfoId") String unitInfoId);
+    List<AeaProjInfo> findRootAeaProjInfoByUnitInfoId(@Param("unitInfoId") String unitInfoId);
 
-    List<AeaProjInfo> findAeaProjInfoByLinkmanInfoIdAndUnitInfoId(@Param("linkmanInfoId") String linkmanInfoId, @Param("unitInfoId") String unitInfoId);
+    List<AeaProjInfo> findRootAeaProjInfoByLinkmanInfoIdAndUnitInfoId(@Param("linkmanInfoId") String linkmanInfoId, @Param("unitInfoId") String unitInfoId);
 
     AeaParentProj getAeaParentProjByChildId(@Param("projInfoId") String projInfoId);
 

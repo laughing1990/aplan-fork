@@ -231,25 +231,45 @@ public class AeaParStageItemAdminController {
     /**
      * 保存或编辑智能表单与事项关联
      *
-     * @return 返回结果对象 包含结果信息
-     * @
+     * @param aeaParStageItem
+     * @param formId
+     * @param operation
+     * @return
      */
     @RequestMapping("/saveAeaParStageItemBySubformId.do")
     public ResultForm saveAeaParStageItemBySubformId(AeaParStageItem aeaParStageItem, String formId, String operation) {
 
-        ResultForm result = new ContentResultForm<>(true, aeaParStageItem);
-        aeaParStageItem.setSubFormId(formId);
-        if(ActStoConstant.SMART_FORM_ENTITY_OPERATION_NEW.equals(operation)){
-            if (StringUtils.isNotBlank(aeaParStageItem.getStageItemId())) {
-                aeaParStageItemAdminService.updateAeaParStageItem(aeaParStageItem);
-                result = new ContentResultForm<>(true, aeaParStageItem);
-            } else {
-                result = new ResultForm(false, "智能表单与事项关联表Id为空!");
+        String stageItemId = aeaParStageItem.getStageItemId();
+        if(StringUtils.isBlank(stageItemId)){
+            return  new ResultForm(false, "智能表单与事项关联表Id为空!");
+        }
+        if(StringUtils.isBlank(formId)){
+            return  new ResultForm(false, "智能表单Id为空!");
+        }
+        AeaParStageItem stageItem = aeaParStageItemAdminService.getAeaParStageItemById(stageItemId);
+        if(stageItem!=null) {
+            aeaParStageItem.setSubFormId(formId);
+            aeaParStageItemAdminService.updateAeaParStageItem(stageItem);
+        }else{
+            if(aeaParStageItem==null){
+                return  new ResultForm(false, "传递参数全部丢失!");
             }
+            if(StringUtils.isBlank(aeaParStageItem.getStageId())){
+                return  new ResultForm(false, "智能表单与阶段事项关联表记录不存在,传递参数stageId为空!");
+            }
+            if(StringUtils.isBlank(aeaParStageItem.getItemId())){
+                return  new ResultForm(false, "智能表单与阶段事项关联表记录不存在,传递参数itemId为空!");
+            }
+            if(StringUtils.isBlank(aeaParStageItem.getItemVerId())){
+                return  new ResultForm(false, "智能表单与阶段事项关联表记录不存在,传递参数itemVerId为空!");
+            }
+            if(StringUtils.isBlank(aeaParStageItem.getIsOptionItem())){
+                return  new ResultForm(false, "智智能表单与阶段事项关联表记录不存在,传递参数isOptionItem为空!");
+            }
+            aeaParStageItem.setStageItemId(UUID.randomUUID().toString());
+            aeaParStageItem.setSubFormId(formId);
+            aeaParStageItemAdminService.saveAeaParStageItem(aeaParStageItem);
         }
-        else if(ActStoConstant.SMART_FORM_ENTITY_OPERATION_UPDATE.equals(operation)){
-            result = new ContentResultForm<>(true, aeaParStageItem);
-        }
-        return result;
+        return new ResultForm(true,"保存成功!");
     }
 }

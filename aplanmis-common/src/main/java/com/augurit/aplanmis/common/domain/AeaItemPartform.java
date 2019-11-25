@@ -29,7 +29,7 @@ public class AeaItemPartform implements Serializable {
     private String stoFormId;
 
     @ApiModelProperty("排序字段")
-    private String sortNo;
+    private Long sortNo;
 
     @ApiModelProperty("是否启动EL表达式，0表示禁用，1表示启用")
     private String useEl;

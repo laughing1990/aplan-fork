@@ -77,6 +77,7 @@ public class RestUserCenterServiceImpl implements RestUserCenterService {
             aeaProjInfo.setCreateTime(new Date());//更新创建时间
             aeaProjInfo.setRootOrgId(SecurityContext.getCurrentOrgId());
             aeaProjInfo.setIsDeleted(DeletedStatus.NOT_DELETED.getValue());
+            aeaProjInfo.setProjFlag("c");
             aeaProjInfoMapper.insertAeaProjInfo(aeaProjInfo);//insert新的aeaProjInfo
             //创建新的aeaParentProj
             AeaParentProj aeaParentProj = new AeaParentProj();

@@ -1192,9 +1192,11 @@ function parStageItemFormatter(value, row, index) {
 
     var sumformId = row.subFormId;
     var stageItemId = row.stageItemId;
+    var params = '?stageItemId='+stageItemId+'&stageId='+ row.stageId +'&itemId='+row.itemId+'&itemVerId='+row.itemVerId+'&isOptionItem='+row.isOptionItem;
+
     var strCallback = '';
     strCallback += 'needCallBackSaveActStoForm=1';
-    strCallback += '&urlCallBackSaveActStoForm=' + restWebApp + 'aea/par/stage/item/saveAeaParStageItemBySubformId.do?stageItemId=' + stageItemId;
+    strCallback += '&urlCallBackSaveActStoForm=' + restWebApp + 'aea/par/stage/item/saveAeaParStageItemBySubformId.do'+params;
     strCallback += '&requiredField=refEntityId';
 
     if (sumformId != null && sumformId != '') {
@@ -1276,10 +1278,12 @@ function stagePartformFormatter(value, row, index) {
 
     var sumformId = row.stoFormId;
     var isSmartForm = row.isSmartForm;
-    var stageItemId = row.stagePartformId;
+    var stagePartformId = row.stagePartformId;
+    var params = '?stagePartformId='+stagePartformId+'&stageId='+row.stageId+'&isSmartForm='+row.isSmartForm;
+
     var strCallback = '';
     strCallback += 'needCallBackSaveActStoForm=1';
-    strCallback += '&urlCallBackSaveActStoForm=' + restWebApp + 'aea/par/stage/partform/saveStagePartformByPartformId.do?stageItemId=' + stageItemId;
+    strCallback += '&urlCallBackSaveActStoForm='+restWebApp+'aea/par/stage/partform/saveStagePartformByPartformId.do'+params;
     strCallback += '&requiredField=refEntityId';
 
     var title = '查看';

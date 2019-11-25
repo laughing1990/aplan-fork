@@ -705,7 +705,7 @@
         AND IS_DELETED = '0'
     </select>
 
-    <select id="findAeaProjInfoByLinkmanInfoId" resultType="AeaProjInfo">
+    <select id="findRootAeaProjInfoByLinkmanInfoId" resultType="AeaProjInfo">
         select DISTINCT
         <include refid="allColumns"/>
         from AEA_PROJ_INFO
@@ -715,10 +715,10 @@
         WHERE LINKMAN_INFO_ID = #{linkmanInfoId}
         AND TYPE = 'link'
         )
-        AND IS_DELETED = '0'
+        AND IS_DELETED = '0' and (PROJ_FLAG = 'p' or PROJ_FLAG = 'r' or proj.PROJ_FLAG is null )
     </select>
 
-    <select id="findAeaProjInfoByUnitInfoId" resultType="AeaProjInfo">
+    <select id="findRootAeaProjInfoByUnitInfoId" resultType="AeaProjInfo">
         SELECT distinct
         <include refid="allColumnsAlias">
             <property name="alias" value="proj"></property>
@@ -727,11 +727,11 @@
         LEFT JOIN AEA_UNIT_PROJ aup ON proj.PROJ_INFO_ID = aup.PROJ_INFO_ID
         WHERE aup.UNIT_INFO_ID = #{unitInfoId}
         and aup.is_deleted='0'
-        AND proj.IS_DELETED = '0'
+        AND proj.IS_DELETED = '0' and (proj.PROJ_FLAG = 'p' or proj.PROJ_FLAG = 'r' or proj.PROJ_FLAG is null )
         order by proj.CREATE_TIME
     </select>
 
-    <select id="findAeaProjInfoByLinkmanInfoIdAndUnitInfoId" resultType="AeaProjInfo">
+    <select id="findRootAeaProjInfoByLinkmanInfoIdAndUnitInfoId" resultType="AeaProjInfo">
         select distinct aea_123.* from (
         (select DISTINCT
         <include refid="allColumnsAlias">
@@ -750,7 +750,7 @@
         </if>
         AND TYPE = 'link'
         )
-        AND proj.IS_DELETED = '0')
+        AND proj.IS_DELETED = '0' and (proj.PROJ_FLAG = 'p' or proj.PROJ_FLAG = 'r' or proj.PROJ_FLAG is null ) )
         union all
         (SELECT DISTINCT
         <include refid="allColumnsAlias">
@@ -766,7 +766,7 @@
             aup.UNIT_INFO_ID is null
         </if>
         and aup.is_deleted='0'
-        AND proj.IS_DELETED = '0')
+        AND proj.IS_DELETED = '0' and (proj.PROJ_FLAG = 'p' or proj.PROJ_FLAG = 'r' or proj.PROJ_FLAG is null ))
         ) aea_123
     </select>
     <select id="getAeaParentProjByChildId" resultType="com.augurit.aplanmis.common.domain.AeaParentProj">

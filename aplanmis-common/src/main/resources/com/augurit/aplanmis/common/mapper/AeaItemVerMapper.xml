@@ -321,4 +321,15 @@
         WHERE
             i.parent_item_id = #{itemId}
     </select>
+
+    <select id="queryAeaItemVerByItemId" resultType="AeaItemVer">
+        select
+        <include refid="allColumns"/>
+        from AEA_ITEM_VER
+        <where>
+            <if test="itemId != null" >
+                and    ITEM_ID = #{itemId}
+            </if>
+        </where>
+    </select>
 </mapper>

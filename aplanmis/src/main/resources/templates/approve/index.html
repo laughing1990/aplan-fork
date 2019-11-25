@@ -41,7 +41,8 @@
   <header class="page-header">
     <h3>
       <b>{{typeAstateData.stageOrItemName || '加载中...'}}</b>
-      <span> {{iteminstName}} —— {{typeAstateData.projName || '加载中...'}}</span>
+      <span> {{iteminstName}}{{typeAstateData.projName ? (' —— '+typeAstateData.projName) : ''}}</span>
+<!--      <span> {{iteminstName}} —— {{typeAstateData.projName || '加载中...'}}</span>-->
     </h3>
   </header>
   <div class="box-position left-content">
