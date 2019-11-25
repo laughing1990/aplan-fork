@@ -412,7 +412,7 @@
               <template slot-scope="scope">
                 <el-button type="success" plain size='mini' v-if="scope.row.isBindAccount=='1'"
                   @click="bindRelation(scope.row,'0')">解绑单位</el-button>
-                <el-button type="success" size='mini' v-else @click="bindRelation(scope.row,'1')">绑定单位</el-button>
+                <el-button type="primary" plain size='mini' v-else @click="bindRelation(scope.row,'1')">绑定单位</el-button>
                 <el-button type="primary" size='mini' @click="editRelation(scope.row)">编辑</el-button>
                 <el-button size='mini' @click="deleteRelation(scope.row)">删除</el-button>
               </template>
