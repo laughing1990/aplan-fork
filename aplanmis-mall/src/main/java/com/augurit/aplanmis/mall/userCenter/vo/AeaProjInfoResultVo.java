@@ -6,13 +6,19 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.springframework.beans.BeanUtils;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
 @Data
 @ApiModel("项目信息返回结果VO")
-public class AeaProjInfoResultVo {
-    @ApiModelProperty(value = "项目/工程名称")
-    private String projName;
+public class AeaProjInfoResultVo implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     @ApiModelProperty(value = "项目ID")
     private String projInfoId;
+    @ApiModelProperty(value = "项目/工程名称")
+    private String projName;
     @ApiModelProperty(value = "项目代码")
     private String localCode;
     @ApiModelProperty(value = "工程编码")
@@ -21,6 +27,10 @@ public class AeaProjInfoResultVo {
     private String themeName;
     @ApiModelProperty(value = "所属主题ID")
     private String themeId;
+//    @ApiModelProperty("是否有子项目")
+//    private boolean hasChildren;
+    @ApiModelProperty("子项目列表")
+    private List<AeaProjInfoResultVo> children=new ArrayList<>();
 
     public static AeaProjInfoResultVo build(AeaProjInfo aeaProjInfo) {
         AeaProjInfoResultVo aeaProjInfoResultVo = new AeaProjInfoResultVo();

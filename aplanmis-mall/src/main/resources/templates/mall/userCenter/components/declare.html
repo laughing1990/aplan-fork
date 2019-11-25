@@ -12,11 +12,14 @@
         </div>
 
         <div id="projTable">
-            <el-table :data="searchProData"  v-if="searchProData.length>0"  style="width:100%" >
+            <el-table :data="searchProData"
+                      row-key="projInfoId"
+                      :tree-props="{children: 'children'}"
+                       style="width:100%" v-show="searchProData.length">
                 <el-table-column
                         fixed
-                        prop="localCode"
-                        label="项目代码"
+                        prop="gcbm"
+                        label="项目/工程代码"
                         width="280">
                 </el-table-column>
                 <el-table-column
@@ -54,7 +57,7 @@
                 </el-table-column>
             </el-table>
 
-            <el-table :data="searchProSearchData" v-else  style="width: 100%">
+            <el-table :data="searchProSearchData" v-show="searchProSearchData.length"  style="width: 100%">
                 <el-table-column
                         fixed
                         prop="localCode"

@@ -134,12 +134,12 @@ public interface AeaProjInfoService {
      * @param linkmanInfoId 联系人ID
      * @return
      */
-    List<AeaProjInfo> findAeaProjInfoByLinkmanInfoId(String linkmanInfoId);
+    List<AeaProjInfo> findRootAeaProjInfoByLinkmanInfoId(String linkmanInfoId);
 
     /**
      * 通过单位id获取项目信息
      */
-    List<AeaProjInfo> findAeaProjInfoByUnitInfoId(String unitInfoId);
+    List<AeaProjInfo> findRootAeaProjInfoByUnitInfoId(String unitInfoId);
 
     /**
      * 通过联系人ID和单位ID查询项目信息
@@ -148,7 +148,8 @@ public interface AeaProjInfoService {
      * @param unitInfoId
      * @return
      */
-    List<AeaProjInfo> findAeaProjInfoByLinkmanInfoIdAndUnitInfoId(String linkmanInfoId, String unitInfoId);
+    List<AeaProjInfo> findRootAeaProjInfoByLinkmanInfoIdAndUnitInfoId(String linkmanInfoId, String unitInfoId);
+
 
     /**
      * 用于mysql下
