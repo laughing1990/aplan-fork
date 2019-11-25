@@ -1536,7 +1536,6 @@ HIGHEST_RATE,QUOTE_TYPE,ROOT_ORG_ID
                 and aipp.PROJ_PURCHASE_ID=#{projPurchaseId}
             </if>
         </where>
-        where aipp.APPLYINST_CODE=#{applyinstCode}
     </select>
 
 </mapper>

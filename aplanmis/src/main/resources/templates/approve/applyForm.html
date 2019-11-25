@@ -102,41 +102,41 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="事项名称：">
-              <el-input v-model="applyinst.itemName" readonly></el-input>
+              <el-input :value="applyinst.iteminstName" readonly></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="实施主体：">
-              <el-input v-model="applyinst.orgName" readonly></el-input>
+              <el-input :value="applyinst.approveOrgName" readonly></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="服务对象：">
-              <el-input v-model="applyinst.serviceObject" readonly></el-input>
+              <el-input :value="applyinst.serviceObj" readonly></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="8">
             <el-form-item label="办件类型：">
-              <el-input v-model="applyinst.itemProperty" readonly></el-input>
+              <el-input :value="applyinst.itemProperty" readonly></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="法定办结时限：">
-              <el-input v-model="applyinst.dueNum" readonly></el-input>
+              <el-input :value="applyinst.dueNum+applyinst.dueNumUnit" readonly></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="承诺办结时限：">
-              <el-input v-model="applyinst.dueNum" readonly></el-input>
+              <el-input :value="applyinst.dueNum+applyinst.dueNumUnit" readonly></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="24">
             <el-form-item label="关联的行政事项：">
-              <el-input v-model="applyinst.procedureName" readonly></el-input>
+              <el-input :value="applyinst.procedureName" readonly></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -263,7 +263,7 @@
                     </el-tooltip>
                   </div>
                 </div>
-                <el-input v-model="item.aeaImUnitRequire.qualRequireExplain" readonly></el-input>
+                <el-input v-model="item.qualRequireExplain" readonly></el-input>
               </div>
             </el-form-item>
           </el-col>
@@ -283,7 +283,7 @@
                     </el-tooltip>
                   </div>
                 </div>
-                <el-input v-model="item.aeaImUnitRequire.registerTotal" readonly></el-input>
+                <el-input v-model="item.registerTotal" readonly></el-input>
               </div>
             </el-form-item>
           </el-col>
@@ -303,7 +303,7 @@
                     </el-tooltip>
                   </div>
                 </div>
-                <el-input v-model="item.aeaImUnitRequire.registerRequire" readonly></el-input>
+                <el-input v-model="item.registerRequire" readonly></el-input>
               </div>
             </el-form-item>
           </el-col>
@@ -323,7 +323,7 @@
                     </el-tooltip>
                   </div>
                 </div>
-                <el-input v-model="item.aeaImUnitRequire.otherRequireExplain" readonly></el-input>
+                <el-input v-model="item.otherRequireExplain" readonly></el-input>
               </div>
             </el-form-item>
           </el-col>

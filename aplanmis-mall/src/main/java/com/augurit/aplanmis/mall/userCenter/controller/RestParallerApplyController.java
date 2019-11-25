@@ -7,6 +7,7 @@ import com.augurit.aplanmis.common.constants.ApplyState;
 import com.augurit.aplanmis.common.domain.AeaHiApplyinst;
 import com.augurit.aplanmis.common.domain.AeaItemBasic;
 import com.augurit.aplanmis.common.domain.AeaParFactor;
+import com.augurit.aplanmis.common.enumer.ThemeTypeEnum;
 import com.augurit.aplanmis.common.service.file.FileUtilsService;
 import com.augurit.aplanmis.common.service.instance.AeaHiApplyinstService;
 import com.augurit.aplanmis.common.service.instance.AeaHiSmsInfoService;
@@ -16,7 +17,9 @@ import com.augurit.aplanmis.common.service.mat.AeaItemMatService;
 import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
 import com.augurit.aplanmis.common.service.state.AeaItemStateService;
 import com.augurit.aplanmis.common.service.state.AeaParStateService;
+import com.augurit.aplanmis.mall.main.service.RestMainService;
 import com.augurit.aplanmis.mall.main.vo.ItemListVo;
+import com.augurit.aplanmis.mall.main.vo.ThemeTypeVo;
 import com.augurit.aplanmis.mall.userCenter.service.RestApplyService;
 import com.augurit.aplanmis.mall.userCenter.service.RestParallerApplyService;
 import com.augurit.aplanmis.mall.userCenter.vo.MatListParamVo;
@@ -33,9 +36,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 //并联申报
 @RestController
@@ -66,6 +71,8 @@ public class RestParallerApplyController {
     AeaItemMatService aeaItemMatService;
     @Autowired
     AeaHiApplyinstService aeaHiApplyinstService;
+    @Autowired
+    private RestMainService restMainService;
 
     @GetMapping("/toParaApplyPage")
     @ApiOperation(value = "阶段申报-->跳转阶段申报页面接口")
@@ -195,6 +202,21 @@ public class RestParallerApplyController {
         } catch (Exception e) {
             logger.error(e.getMessage(),e);
             return new ContentResultForm(false,"","根据选择的因子智能推荐主题异常");
+        }
+    }
+
+    @GetMapping("/theme/list")
+    @ApiOperation(value = "阶段申报-->获取主题列表接口")
+    public ContentResultForm<Map> getThemeList() {
+        try {
+            List<ThemeTypeVo> themeList = restMainService.getThemeTypeList(SecurityContext.getCurrentOrgId());
+            Map<String,List<ThemeTypeVo>> map=new HashMap<>(2);
+            map.put("mainLine",themeList.size()>0?themeList.stream().filter(v-> !"A00002".equals(v.getThemeTypeCode())).collect(Collectors.toList()) : new ArrayList<>());
+            map.put("auxiLine",themeList.size()>0?themeList.stream().filter(v-> "A00002".equals(v.getThemeTypeCode())).collect(Collectors.toList()) : new ArrayList<>());
+            return new ContentResultForm<>(true, map);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return new ContentResultForm(false, "获取主题列表接口异常");
         }
     }
 

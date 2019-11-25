@@ -635,6 +635,17 @@ public class RestImApplyService {
         AeaImUnitRequire aeaImUnitRequire = data.getAeaImUnitRequire();
         aeaImUnitRequire.setUnitRequireId(UuidUtil.generateUuid());
         aeaImUnitRequire.setRootOrgId(data.getRootOrgId());
+        if (StringUtils.isNotBlank(aeaImUnitRequire.getPromiseService())) {
+            if (aeaImUnitRequire.getPromiseService().equals("true")) {
+
+                aeaImUnitRequire.setPromiseService("1");
+            } else if (aeaImUnitRequire.getPromiseService().equals("false")) {
+                aeaImUnitRequire.setPromiseService("0");
+
+            }
+        }
+        //fixme
+        aeaImUnitRequire.setIsQualRequire("0");
         aeaImUnitRequireMapper.insertAeaImUnitRequire(aeaImUnitRequire);
 
         aeaImProjPurchase.setUnitRequireId(aeaImUnitRequire.getUnitRequireId());

@@ -353,6 +353,7 @@ var module1 = new Vue({
       preItemCheckkMsg: '', // 前置检测失败提示
       formUrlList: [],
       leftTabClosed: true, //
+      useOneForm: '1', // 是否启用一张表单
     }
   },
   created: function () {
@@ -1050,6 +1051,7 @@ var module1 = new Vue({
         _that.loading = false;
         if (data.success) {
           _that.itemBasicInfo = data.content;
+          _that.useOneForm = data.content.useOneForm;
         } else {
           _that.$message({
             message: data.message ? data.message : '获取事项信息失败',
@@ -1256,7 +1258,9 @@ var module1 = new Vue({
             _that.querySelentUnit(_that.aeaUnitList[0]);
           }
           _that.getPersonOrUnitBlackByBizId();
-          _that.getParallelApplyinstId(); // 获取一张表单
+          if(_that.useOneForm == '1'){
+            _that.getParallelApplyinstId(); // 获取一张表单
+          }
         } else {
           _that.$message({
             message: result.message ? result.message : '获取申报主体信息失败',
@@ -1570,7 +1574,7 @@ var module1 = new Vue({
       }
       if (this.isNeedState == 1) {
         this.getRootStateList();
-      } else if(_that.needOneForm){
+      } else if(this.needOneForm){
         this.declareStep = 4;
       } else {
         this.saveAndGetMats();

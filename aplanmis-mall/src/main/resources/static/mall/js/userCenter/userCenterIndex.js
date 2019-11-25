@@ -6,6 +6,7 @@ var userCenter = (function () {
                 ctx: ctx,
                 // 页面loading
                 loading: false,
+                curHeight: (document.documentElement.clientHeight || document.body.clientHeight),//当前屏幕高度
 
                 // 当前账号信息
                 curentLoginInfo: {

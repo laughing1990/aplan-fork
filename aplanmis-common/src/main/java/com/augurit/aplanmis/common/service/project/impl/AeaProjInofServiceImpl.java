@@ -269,20 +269,20 @@ public class AeaProjInofServiceImpl implements AeaProjInfoService {
     }
 
     @Override
-    public List<AeaProjInfo> findAeaProjInfoByLinkmanInfoId(String linkmanInfoId) {
+    public List<AeaProjInfo> findRootAeaProjInfoByLinkmanInfoId(String linkmanInfoId) {
         LOGGER.debug("根据项目联系人查询项目信息");
-        return aeaProjInfoMapper.findAeaProjInfoByLinkmanInfoId(linkmanInfoId);
+        return aeaProjInfoMapper.findRootAeaProjInfoByLinkmanInfoId(linkmanInfoId);
     }
 
     @Override
-    public List<AeaProjInfo> findAeaProjInfoByUnitInfoId(String unitInfoId) {
-        List<AeaProjInfo> aeaProjInfos = aeaProjInfoMapper.findAeaProjInfoByUnitInfoId(unitInfoId);
+    public List<AeaProjInfo> findRootAeaProjInfoByUnitInfoId(String unitInfoId) {
+        List<AeaProjInfo> aeaProjInfos = aeaProjInfoMapper.findRootAeaProjInfoByUnitInfoId(unitInfoId);
         return aeaProjInfos;
     }
 
     @Override
-    public List<AeaProjInfo> findAeaProjInfoByLinkmanInfoIdAndUnitInfoId(String linkmanInfoId, String unitInfoId) {
-        return aeaProjInfoMapper.findAeaProjInfoByLinkmanInfoIdAndUnitInfoId(linkmanInfoId, unitInfoId);
+    public List<AeaProjInfo> findRootAeaProjInfoByLinkmanInfoIdAndUnitInfoId(String linkmanInfoId, String unitInfoId) {
+        return aeaProjInfoMapper.findRootAeaProjInfoByLinkmanInfoIdAndUnitInfoId(linkmanInfoId, unitInfoId);
     }
 
     @Override

@@ -462,10 +462,31 @@
           <div v-if="!specialList||!specialList.length" style="padding: 5px 0 0 10px;">暂无数据</div>
         </div>
         <!-- 批文批复 -->
-        <div class="det-content-u" v-show="detailTabsActiveCode=='doc'">
+        <div class="det-content-u content-tables-u" v-show="detailTabsActiveCode=='doc'">
           <el-table style="width:100%" border :data="officialDocumentList">
-            <el-table-column label="序号" type="index" width="50"></el-table-column>
-            <el-table-column label="证照名称" property="matinstName"></el-table-column>
+            <el-table-column label="序号" type="index" width="55"></el-table-column>
+            <el-table-column type="expand" width="15" align="right">
+              <template slot-scope="props">
+                <div class="mat-children" v-if="props.row.attFiles&&props.row.attFiles.length>0">
+                  <div v-for="item in props.row.attFiles" class="file-list-tab"
+                       :key="item.fileId">
+                    <span class="file-name">
+                        <span class="icon ag" :style="{color:getIconColor(getFileType(item.fileName)), fontSize: '20px'}"
+                              :class="'ag-filetype-'+getFileType(item.fileName)"></span>
+                        {{item.fileName}}
+                    </span>
+                    <span class="file-icon-btn">
+                      <span title="预览" class="el-icon-search" style="cursor:pointer;" @click="filePreview(item)"></span>
+                      <span title="下载" class="el-icon-download" @click="downOneFile(item)"></span>
+                    </span>
+                  </div>
+                </div>
+                <div v-else>
+                  <div class="mat-children">无电子件</div>
+                </div>
+              </template>
+            </el-table-column>
+            <el-table-column label="名称" property="matinstName"></el-table-column>
             <el-table-column label="创建人" property="creator" width="120"></el-table-column>
             <el-table-column label="创建日期" property="createDate" width="120"></el-table-column>
           </el-table>
@@ -570,18 +591,20 @@
 
 <!--事项办理提示框-->
 <div id="stageAndItemTableCell">
-  <div class="tips-table-cell" v-show="itemTipShow" style="display: none" v-bind:style="{ 'top': stageTipCss.itemTop, 'left': stageTipCss.itemLeft }">
+  <div class="tips-table-cell" v-show="itemTipShow" style="display: none"
+       v-bind:style="{ 'top': stageTipCss.itemTop, 'left': stageTipCss.itemLeft }">
     <div class="table-cell-hover" id="itemTableInfo" style="height: 320px; !important;">
       <span class="detailArrowDown" v-show="stageTipCss.itemArrowUpShow" style="top:335px;"></span>
       <!-- <div class="cell-head">
          <span style="display: inline-block;">采集林业部门管理的国家一级和二级保护野生植物审批</span>
        </div>-->
       <div style="padding: 0 20px 0 15px; color:#fff;margin-top: 10px;">
-        <div class="itemTd" >
+        <div class="itemTd">
           <label>实施编码：</label><span>{{itemInfo.itemCode}}</span>
         </div>
-        <div class="itemTd" v-bind:title="itemInfo.itemName" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-          <label>实施事项：</label><span >{{itemInfo.itemName}}</span>
+        <div class="itemTd" v-bind:title="itemInfo.itemName"
+             style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+          <label>实施事项：</label><span>{{itemInfo.itemName}}</span>
         </div>
         <div class="itemTd" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;width:95%">
           <label>实施主体：</label><span>{{itemInfo.orgName}}</span>
@@ -608,26 +631,29 @@
         <div class="itemTd" style="margin-left: -15px; width: 370px; border-top: 1px solid #555C60;">
           <a href="javascript:openItemDtailmodel($('#itemTableInfo').data('itemInfo'));" class="state-btn color1"
              style="color: #169AFF;display: flex; justify-content: center;">
-            <span style="border: 1px solid rgb(22, 154, 255); border-radius: 15px; height: 28px; width: 106px; text-align: center; margin-top:6px; display: flex; align-items: center; justify-content: center;">查看详情</span>
+            <span
+                style="border: 1px solid rgb(22, 154, 255); border-radius: 15px; height: 28px; width: 106px; text-align: center; margin-top:6px; display: flex; align-items: center; justify-content: center;">查看详情</span>
           </a>
         </div>
       </div>
-
+      
       <span class="detailArrowUp" v-show="stageTipCss.itemArrowUpShow==false"></span>
     </div>
   </div>
-
+  
   <!--阶段办理信息提示窗-->
-  <div class="tips-Stage-cell" id="stageTableCell" v-show="stageTipShow" style="display: none"  v-bind:style="{ 'top': stageTipCss.top, 'left': stageTipCss.left }">
+  <div class="tips-Stage-cell" id="stageTableCell" v-show="stageTipShow" style="display: none"
+       v-bind:style="{ 'top': stageTipCss.top, 'left': stageTipCss.left }">
     <div class="table-cell-hover" id="stageTableInfo" style="height:285px;">
       <span class="detailArrowDown" v-show="stageTipCss.arrowUpShow" style="top:300px;"></span>
       <!-- <div class="cell-head">
          <span style="display: inline-block;">采集林业部门管理的国家一级和二级保护野生植物审批</span>
        </div>-->
       <div style="padding: 0 20px 0 15px; color:#fff;margin-top: 10px;">
-        <div class="itemTd" v-bind:title="stage.stageName" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;width:99%;">
+        <div class="itemTd" v-bind:title="stage.stageName"
+             style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;width:99%;">
           <label>阶段名称：</label>
-          <span >{{stage.stageName}}</span>
+          <span>{{stage.stageName}}</span>
         </div>
         <div class="itemTd" style="width: 95%;">
           <label>法定办结时限：</label><span>{{itemInfo.anticipateDay?itemInfo.anticipateDay:'-'}}</span>（工作日）
@@ -658,7 +684,7 @@
               </span>
         </div>
       </div>
-
+      
       <span class="detailArrowUp" v-show="stageTipCss.arrowUpShow==false"></span>
     </div>
   </div>
