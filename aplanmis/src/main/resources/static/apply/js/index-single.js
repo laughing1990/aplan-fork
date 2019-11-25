@@ -229,6 +229,8 @@ var vm = new Vue({
             statusLineListActive: 0, // 主题下阶段类型选中状态
             AllFileList: [], // 智能分拣区所选择文件
             fileList: [],
+            stoFormId: '',
+            submitCommentsMatFlag: '',
             checkAll: true, // 智能分拣区文件是否全选
             checkedSelFlie: [], // 智能分拣区已选文件
             AllFileListId: [], // 已选文件name集合
@@ -397,8 +399,8 @@ var vm = new Vue({
             refusedRecepitModalShow: false,//不收件弹窗
             selectMat: '',//选择的材料
             buttonStyle: '',//点击的按钮 0 发起申报；1 打印回执 。。。。。
-          submitCommentsMatFlag: '',
-          stoFormId: '',
+
+
             showMatList: false,//收件意见弹框是否显示材料列表
             //selectedStates:[],//选择的情形，可能有单选，或者多选{stateId:'',parentStateId:''}
             receiveList: [],//回执列表
@@ -3156,7 +3158,6 @@ var vm = new Vue({
                         optionIds = optionIds + item.opinionId + ","
                     })
                     optionIds = optionIds.substr(0, optionIds.length - 1);
-                    debugger;
                     request('', {
                         url: ctx + 'rest/comment/batchDeleteUserOpinion',
                         type: 'DELETE',
@@ -3394,6 +3395,7 @@ var vm = new Vue({
                     _that.receiveList.map(function(item){
                         Vue.set(item,'show',true);
                     });
+                    debugger;
                     // 默认选择第一个回执
                     _that.printReceive1(_that.receiveList[0].receiveList[0],0,0);
                     //显示列表弹框
