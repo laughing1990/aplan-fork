@@ -829,4 +829,14 @@
         <result property="isOptionItem" column="IS_OPTION_ITEM"/>
     </resultMap>
 
+    <select id="listStageItems" resultType="AeaParStageItem">
+        select
+        <include refid="allColumns"><property name="alias" value="apsi"/></include>
+        from AEA_PAR_STAGE_ITEM apsi
+        where 1=1
+        and apsi.STAGE_ID = #{stageId}
+        and apsi.IS_OPTION_ITEM = #{isOptionItem}
+        group by apsi.ITEM_VER_ID
+        order by apsi.SORT_NO asc, apsi.CREATE_TIME asc
+    </select>
 </mapper>
