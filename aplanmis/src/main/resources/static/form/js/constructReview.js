@@ -375,7 +375,7 @@ var app = new Vue({
     getPerson: function(val) {
       var vm = this;
       // vm.loading = true;
-      if (!val.applicant) {
+      if (!val.unitInfoId) {
         this.$message({
           message: '请先选择单位',
           type: 'error'
