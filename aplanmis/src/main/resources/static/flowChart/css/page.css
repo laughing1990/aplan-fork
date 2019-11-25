@@ -760,6 +760,48 @@ td.bg-grey.w7 {
     background-image: url("../images/b1.png");
 }
 
+.content-tables-u th:nth-child(2),
+.content-tables-u td:nth-child(2) {
+    border-right: none;
+}
+
+.content-tables-u .el-table__expanded-cell[class*=cell] {
+    padding: 0;
+}
+.mat-children {
+    padding: 10px 73px;
+}
+.mat-children .file-list-tab {
+    line-height: 30px;
+    height: 30px;
+}
+.file-list-tab:hover .file-icon-btn {
+    display: inline-block;
+}
+
+.file-list-tab:hover .file-name {
+    color: #169AFF;
+}
+.file-list-tab:hover .file-name {
+    color: #169AFF;
+}
+.file-icon-btn {
+    margin-left: 25px;
+    color: #169AFF;
+    display: none;
+}
+
+.file-icon-btn > span {
+    display: inline-block;
+    width: 25px;
+    height: 25px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.file-list-tab:hover .file-icon-btn {
+    display: inline-block;
+}
 
 
 
