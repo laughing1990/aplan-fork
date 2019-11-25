@@ -35,28 +35,7 @@
                     <span>{{scope.row.biddingTime | dateFormat('y-m-d')}}</span>
                 </template>
             </el-table-column>
-            <el-table-column prop="auditFlag" label="项目状态">
-                <template scope="scope">
-                    <span v-if="scope.row.auditFlag==0">未提交</span>
-                    <span v-if="scope.row.auditFlag==1">服务中</span>
-                    <span v-if="scope.row.auditFlag==2">服务完成</span>
-                    <span v-if="scope.row.auditFlag==3">服务中止</span>
-                    <span v-if="scope.row.auditFlag==4">审核中</span>
-                    <span v-if="scope.row.auditFlag==5">退回</span>
-                    <span v-if="scope.row.auditFlag==6">报名中</span>
-                    <span v-if="scope.row.auditFlag==7">选取中</span>
-                    <span v-if="scope.row.auditFlag==8">选取开始</span>
-                    <span v-if="scope.row.auditFlag==9">已选取</span>
-                    <span v-if="scope.row.auditFlag==10">无效</span>
-                    <span v-if="scope.row.auditFlag==11">待选取</span>
-                    <span v-if="scope.row.auditFlag==12">已过时</span>
-                    <span v-if="scope.row.auditFlag==13">部门审批中</span>
-                    <span v-if="scope.row.auditFlag==14">办结通过</span>
-                    <span v-if="scope.row.auditFlag==15">办结不通过</span>
-                    <span v-if="scope.row.auditFlag==16">待上传合同</span>
-                    <span v-if="scope.row.auditFlag==17">待确认合同</span>
-                </template>
-            </el-table-column>
+            <el-table-column prop="auditFlag" label="项目状态" :formatter="formatAuditFlag"></el-table-column>
             <el-table-column label="合同状态">
                 <template scope="scope">
                     <span v-if="!scope.row.isUploadContract">未上传</span>

@@ -149,8 +149,8 @@ public class SupermarketMainController {
 
     @ApiOperation(value = "中介服务详情页面", notes = "中介服务详情页面")
     @GetMapping("/agentServiceInfo.html")
-    public ModelAndView serviceInfo(String serviceId,String serviceName) throws Exception {
-        ModelAndView modelAndView =new ModelAndView("zjcs/serviceOrgan/index2_fromHome.html");
+    public ModelAndView serviceInfo(String serviceId, String serviceName) throws Exception {
+        ModelAndView modelAndView = new ModelAndView("zjcs/serviceOrgan/index2_fromHome.html");
         return modelAndView;
     }
 
@@ -169,7 +169,6 @@ public class SupermarketMainController {
     }
 
     //==============================首页机构模块跳转  end ===================================
-
 
 
     //==============================中介机构模块跳转  start ===================================
@@ -325,6 +324,12 @@ public class SupermarketMainController {
 
     //==============================业主模块跳转  end ===================================
 
+    @GetMapping("/showPorjDetail.html")
+    public ModelAndView showProjDetail(String projPurchaseId) throws Exception {
+        ModelAndView mv = new ModelAndView("zjcs/personCenter/components/owner/waitDealProDetail");
+        mv.addObject("projPurchase", projPurchaseId);
+        return mv;
+    }
 
     @ApiOperation(value = "获取首页展示数据", notes = "获取首页展示数据。")
     @ApiImplicitParams({})
@@ -352,11 +357,11 @@ public class SupermarketMainController {
                 return new ResultForm(false, "缺少请求参数");
             }
             Gson gson = new Gson();
-            ContentResultForm crf=commonLoginService.login(userName, password, isOwner, request);
-            if(crf.isSuccess()){
-                LoginInfoVo loginInfoVo=(LoginInfoVo)crf.getContent();
-                Map<String,Object> map = new HashMap<String,Object>();
-                map.put("loginName",loginInfoVo.getUnitName());
+            ContentResultForm crf = commonLoginService.login(userName, password, isOwner, request);
+            if (crf.isSuccess()) {
+                LoginInfoVo loginInfoVo = (LoginInfoVo) crf.getContent();
+                Map<String, Object> map = new HashMap<String, Object>();
+                map.put("loginName", loginInfoVo.getUnitName());
                 String accessToken = JwtHelper.createJWT(gson.toJson(map));
                 AccessToken accessTokenEntity = new AccessToken();
                 accessTokenEntity.setAccessToken(accessToken);
@@ -367,7 +372,8 @@ public class SupermarketMainController {
                 cookie.setPath("/");
                 cookie.setHttpOnly(true);
                 response.addCookie(cookie);
-            };
+            }
+            ;
             return crf;
         } catch (Exception e) {
             e.printStackTrace();
@@ -377,7 +383,7 @@ public class SupermarketMainController {
 
     @ApiOperation(value = "退出登录", notes = "退出登录状态")
     @RequestMapping(value = "/logout", method = {RequestMethod.POST, RequestMethod.GET})
-    public ResultForm logout(HttpServletRequest request,HttpServletResponse response) {
+    public ResultForm logout(HttpServletRequest request, HttpServletResponse response) {
         try {
             jwtHelper.reMoveToken(response);
             return commonLoginService.logout(request);
