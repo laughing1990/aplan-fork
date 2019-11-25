@@ -42,7 +42,7 @@
     <h3>
       <b>{{typeAstateData.stageOrItemName || '加载中...'}}</b>
       <span> {{iteminstName}}{{typeAstateData.projName ? (' —— '+typeAstateData.projName) : ''}}</span>
-<!--      <span> {{iteminstName}} —— {{typeAstateData.projName || '加载中...'}}</span>-->
+      <!--      <span> {{iteminstName}} —— {{typeAstateData.projName || '加载中...'}}</span>-->
     </h3>
   </header>
   <div class="box-position left-content">
@@ -1735,8 +1735,9 @@
                 <span class="mat-table-btn" @click="idTableListSee(scope.row)">查看</span>
                 <span class="mat-ope-line"></span>
                 <span v-show="!scope.row.isRelated" class="mat-table-btn" @click="idTabListChoose(scope.row)">关联</span>
-<!--                <span v-show="scope.row.isRelated" class="mat-table-btn ope-disabled">已关联</span>-->
-                <span v-show="scope.row.isRelated" class="mat-table-btn" @click="idIisassociation(scope.row)">解除关联</span>
+                <!--                <span v-show="scope.row.isRelated" class="mat-table-btn ope-disabled">已关联</span>-->
+                <span v-show="scope.row.isRelated" class="mat-table-btn"
+                      @click="idIisassociation(scope.row)">解除关联</span>
               </div>
             </template>
           </el-table-column>
@@ -1800,7 +1801,8 @@
                          :value="item.opinionContent" :key="item.opinionId"></el-option>
             </el-select>
             <el-tooltip class="item" effect="dark" content="设为常用意见" placement="top">
-              <el-button size="medium" type="info" style="position:relative;top:3px;" @click="setCommonOpinion('backFormData')"><i
+              <el-button size="medium" type="info" style="position:relative;top:3px;"
+                         @click="setCommonOpinion('backFormData')"><i
                   class="ag ag-save-common"></i></el-button>
             </el-tooltip>
           </el-form-item>
