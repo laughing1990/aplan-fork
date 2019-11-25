@@ -101,6 +101,10 @@ var app = new Vue({
       addEditManform: {},
       unitInfoIdList: [],
       addEditManModalFlag: 'add',
+      shenchaPerson: [],
+      shejiPerson: [],
+      kanchaPerson: [],
+      curUnit: '',
       addLinkManRules: {
         linkmanName: [
           { required: true, validator: checkMissValue, trigger: 'blur' },
@@ -442,7 +446,7 @@ var app = new Vue({
       })
     },
     // 模糊查询人员
-    getPerson: function(val) {
+    getPerson: function(val, type) {
       var vm = this;
       // vm.loading = true;
       if (!val.unitInfoId) {
@@ -460,7 +464,13 @@ var app = new Vue({
           unitInfoId: val.unitInfoId
         },
       }, function(res) {
-        vm.person = res.content;
+        if (type == "shencha") {
+          vm.shenchaPerson = res.content;
+        } else if (type == "sheji") {
+          vm.shejiPerson = res.content;
+        } else {
+          vm.kanshaPerson = res.content;
+        }
       }, function(err) {
         vm.$message.error('服务器错了哦!');
       })
@@ -507,6 +517,16 @@ var app = new Vue({
 
               _that.addEditManModalShow = false;
               _that.loading = false;
+
+              if (_that.addEditManModalFlag == 'add') {
+                if (_that.curUnit == 'shencha') {
+                  _that.getPerson(_that.formDataTuShen, 'shencha');
+                } else if (_that.curUnit == 'sheji') {
+                  _that.getPerson(_that.formDataSheJj, 'sheji');
+                } else {
+                  _that.getPerson(_that.formDataKanCha, 'kancha');
+                }
+              }
             }
           }, function(msg) {
             _that.$message({
@@ -549,14 +569,17 @@ var app = new Vue({
         _that.aeaLinkmanInfoList = {};
       }
     },
-    addPerson: function(row) {
+    addPerson: function(row, type) {
+      this.curUnit = type;
       this.addEditManform = {};
       this.addEditManModalShow = true;
       this.addEditManModalTitle = '新增联系人';
       this.addEditManform.unitName = row.applicant;
       this.addEditManform.unitInfoId = row.unitInfoId;
     },
-    add: function(row) {
+    add: function(row, type) {
+      this.curUnit = type;
+
       this.addEditManModalShow = true;
       this.addEditManModalTitle = '新增联系人';
       this.addEditManform.unitName = row.applicant;
