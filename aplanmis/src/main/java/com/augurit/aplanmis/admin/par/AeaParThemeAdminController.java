@@ -76,19 +76,20 @@ public class AeaParThemeAdminController {
         }
 
         //主题数据
-        theme.setRootOrgId(SecurityContext.getCurrentOrgId());
+        String rootOrgId = SecurityContext.getCurrentOrgId();
+        theme.setRootOrgId(rootOrgId);
         List<AeaParTheme> themes = themeService.listAeaParTheme(theme);
         if (themes != null && themes.size() > 0) {
-            for (AeaParTheme th : themes) {
-                // 最大版本号
-                AeaParThemeVer sthemeVer = new AeaParThemeVer();
-                sthemeVer.setThemeId(th.getThemeId());
-                sthemeVer.setRootOrgId(SecurityContext.getCurrentOrgId());
-                sthemeVer.setIsActive(ActiveStatus.ACTIVE.getValue());
-                sthemeVer.setIsDeleted(DeletedStatus.NOT_DELETED.getValue());
-                List<AeaParThemeVer> themeVerList = themeVerService.listAeaParThemeVer(sthemeVer);
-                if (themeVerList != null && themeVerList.size() > 0) {
-                    th.setThemeVerName("V" + themeVerList.get(0).getVerNum());
+            List<AeaParThemeVer> themeVerList = themeVerService.listMaxThemeVerGroupByThemeId(null, rootOrgId);
+            if (themeVerList != null && themeVerList.size() > 0) {
+                for (AeaParTheme th : themes) {
+                    // 获取主题最大版本号
+                    for (AeaParThemeVer themeVer : themeVerList) {
+                        if (themeVer.getThemeId().equals(th.getThemeId())) {
+                            th.setThemeVerName("V" + themeVer.getVerNum());
+                            break;
+                        }
+                    }
                 }
             }
         }

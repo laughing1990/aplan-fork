@@ -915,6 +915,14 @@ public class AeaParThemeVerAdminServiceImpl implements AeaParThemeVerAdminServic
     }
 
     @Override
+    public List<AeaParThemeVer> listAeaParThemeVerNoRelThemeInfo(AeaParThemeVer aeaParThemeVer){
+
+        List<AeaParThemeVer> list = aeaParThemeVerMapper.listAeaParThemeVerNoRelThemeInfo(aeaParThemeVer);
+        logger.debug("成功执行分页查询！！");
+        return list;
+    }
+
+    @Override
     public PageInfo<AeaParThemeVer> listAeaParThemeVer(AeaParThemeVer aeaParThemeVer, Page page) {
 
         PageHelper.startPage(page);
@@ -4011,6 +4019,12 @@ public class AeaParThemeVerAdminServiceImpl implements AeaParThemeVerAdminServic
         }
 
         return null;
+    }
+
+    @Override
+    public List<AeaParThemeVer> listMaxThemeVerGroupByThemeId(String themeId, String rootOrgId){
+
+        return aeaParThemeVerMapper.listMaxThemeVerGroupByThemeId(themeId, rootOrgId);
     }
 }
 

@@ -88,6 +88,7 @@ aplanmis-mall/src/main/resources/rebel.xml
 /aplanmis/htmllexer.jar
 /aplanmis/htmlparser.jar
 /aplanmis/jsoup-1.12.1.jar
+/aplanmis/bcprov-jdk15on-1.56.jar
 /aplanmis-rest/src/main/resources/application-lwq.properties
 
 # vs code
