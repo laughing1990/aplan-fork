@@ -308,7 +308,6 @@ public class RestFileServiceImpl implements RestFileService {
         //param.setPkName("MATINST_ID");
         List<BscAttLink> links = bscAttMapper.listBscAttLink(param);
         if (links.size()>1){//说明此detailId即是材料库文件，又是申请实例文件，亦或补全补正文件
-            Boolean isBelong = false;
             if ("1".equals(loginInfoVo.getIsPersonAccount())||StringUtils.isNotBlank(loginInfoVo.getUserId())){//个人
                 param.setPkName("LINKMAN_INFO_ID");
                 List<BscAttLink> linkmanLinks = bscAttMapper.listBscAttLink(param);
@@ -337,13 +336,19 @@ public class RestFileServiceImpl implements RestFileService {
             }else if ("CERTINST_ID".equals(pkName)){
                 return false;
             }else return false;
-        }else {
-
-        }
-        if (links.size()==0) return true;
-        String matInstId = links.get(0).getRecordId();
-        return  this.isMatBelong(matInstId,request);
+        }else return false;
     }
+
+//    @Override
+//    public Boolean isFileBelong(String detailId,HttpServletRequest request)throws Exception{
+//        BscAttLink param = new BscAttLink();
+//        param.setDetailId(detailId);
+//        param.setPkName("MATINST_ID");
+//        List<BscAttLink> links = bscAttMapper.listBscAttLink(param);
+//        if (links.size()==0) return true;
+//        String matInstId = links.get(0).getRecordId();
+//        return  this.isMatBelong(matInstId,request);
+//    }
 
     @Override
     public Boolean isMatInstFileBelong(String detailId,HttpServletRequest request)throws Exception{
