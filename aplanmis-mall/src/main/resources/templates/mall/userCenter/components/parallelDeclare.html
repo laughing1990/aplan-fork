@@ -1651,24 +1651,26 @@
   <!--  材料一张表单  end-->
   <!--选择主题 start-->
   <el-dialog title="选择主题" :visible.sync="selThemeDialogShow" width="900px">
-    <el-tabs v-model="itemTabSelect" :style="{'max-height':(curHeight-300)+'px',overflow: 'auto'}">
+    <el-tabs v-model="itemTabSelect">
       <el-tab-pane v-for="(item,index) in themeTypeList"
                    :label="item.themeTypeName"
                    :name="'tab_'+item.themeTypeCode"
                    :key="index">
-        <!--<p class="parallel-appr-title mb20">该项目已确定为 <b>“ {{themeName}} ” </b>主题，确认无误可继续下一步</p>-->
-        <div class="pro-type-item"
-             @click="chooseTheme(itemList)"
-             v-show="ind<showThemeLen"
-             :class="themeActive==itemList.themeId?'active':''"
-             :key="ind"
-             v-for="(itemList,ind) in item.themeList">
-          <img v-if="themeActive==itemList.themeId" :src="ctx+'mall/images/userCenter/pro_type_4.png'" alt="">
-          <img v-else :src="ctx+'mall/images/userCenter/pro_type_4.png'" alt="">
-          <div class="theme-name">{{itemList.themeName}}</div>
-          <i class="el-icon-check"></i>
+        <div :style="{'max-height':(curHeight-360)+'px',overflow: 'auto'}">
+          <!--<p class="parallel-appr-title mb20">该项目已确定为 <b>“ {{themeName}} ” </b>主题，确认无误可继续下一步</p>-->
+          <div class="pro-type-item"
+               @click="chooseTheme(itemList)"
+               :class="themeActive==itemList.themeId?'active':''"
+               :key="ind"
+               v-for="(itemList,ind) in item.themeList">
+            <img v-if="themeActive==itemList.themeId" :src="ctx+'mall/images/userCenter/pro_type_4.png'" alt="">
+            <img v-else :src="ctx+'mall/images/userCenter/pro_type_4.png'" alt="">
+            <div class="theme-name">{{itemList.themeName}}</div>
+            <i class="el-icon-check"></i>
+          </div>
+          <!--<p class="show-more-theme" v-if="item.themeList.length>10" @click="themeListShowHide(item)">{{showThemeLenText?'展开更多':'收起更多'}} <i :class="showThemeLenText?'el-icon-arrow-down':'el-icon-arrow-up'"></i></p>-->
+
         </div>
-        <!--<p class="show-more-theme" v-if="item.themeList.length>10" @click="themeListShowHide(item)">{{showThemeLenText?'展开更多':'收起更多'}} <i :class="showThemeLenText?'el-icon-arrow-down':'el-icon-arrow-up'"></i></p>-->
       </el-tab-pane>
     </el-tabs>
   </el-dialog>
