@@ -83,6 +83,42 @@
         order by themeVer.VER_NUM desc,themeVer.CREATE_TIME desc
     </select>
 
+    <select id="listAeaParThemeVerNoRelThemeInfo" resultType="AeaParThemeVer">
+        select
+            <include refid="allColumns">
+                <property name="alias" value="themeVer"/>
+            </include>
+        from AEA_PAR_THEME_VER themeVer
+        <where>
+            and themeVer.IS_DELETED = '0'
+            <if test="themeVerId != null">
+            and themeVer.THEME_VER_ID = #{themeVerId}
+            </if>
+            <if test="themeId != null">
+            and themeVer.THEME_ID = #{themeId}
+            </if>
+            <if test="verNum != null">
+            and themeVer.VER_NUM = #{verNum}
+            </if>
+            <if test="isActive != null">
+            and themeVer.IS_ACTIVE = #{isActive, jdbcType=VARCHAR}
+            </if>
+            <if test="isPublish != null">
+            and themeVer.IS_PUBLISH = #{isPublish, jdbcType=VARCHAR}
+            </if>
+            <if test="verMemo != null">
+            and themeVer.VER_MEMO = #{verMemo}
+            </if>
+            <if test="themeVerDiagram != null">
+            and themeVer.THEME_VER_DIAGRAM = #{themeVerDiagram}
+            </if>
+            <if test="rootOrgId != null">
+            and themeVer.ROOT_ORG_ID = #{rootOrgId}
+            </if>
+        </where>
+        order by themeVer.VER_NUM desc, themeVer.CREATE_TIME desc
+    </select>
+
     <!--5 新增实体对象 -->
     <insert id="insertOne" parameterType="AeaParThemeVer">
         insert into AEA_PAR_THEME_VER (
@@ -288,5 +324,33 @@
         and apsi.ITEM_ID = #{itemId}
         and aptv.root_org_id = #{rootOrgId}
         group by aptv.THEME_VER_ID
+    </select>
+    
+    <select id="listMaxThemeVerGroupByThemeId" resultType="AeaParThemeVer">
+        select
+            THEME_VER_ID  themeVerId,
+            THEME_ID  themeId,
+            max(VER_NUM)  verNum,
+            IS_ACTIVE  isActive,
+            IS_DELETED  isDeleted,
+            VER_MEMO  verMemo,
+            CREATER  creater,
+            CREATE_TIME  createTime,
+            MODIFIER  modifier,
+            MODIFY_TIME  modifyTime,
+            IS_PUBLISH  isPublish,
+            ROOT_ORG_ID  rootOrgId,
+            THEME_VER_DIAGRAM themeVerDiagram
+        from AEA_PAR_THEME_VER
+        <where>
+            and IS_ACTIVE = '1'
+            and IS_DELETED = '0'
+            <if test="themeId != null and themeId!='' " >
+            and THEME_ID = #{themeId}
+            </if>
+            and ROOT_ORG_ID = #{rootOrgId}
+        </where>
+        group by THEME_ID
+        order by VER_NUM desc
     </select>
 </mapper>
