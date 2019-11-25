@@ -183,7 +183,7 @@ public class RestFileController {
             detailIds[0] = detailId;
 //            return new ContentResultForm<>(true,restApproveService.downloadAttachment(detailIds,response,request));
 //            attachmentAdminService.downloadFileStrategy(detailId, response);
-            if (!restFileService.isFileBelong(detailId,request))return new ResultForm(false, "下载出错");
+            if (!restFileService.isMatInstFileBelong(detailId,request))return new ResultForm(false, "下载出错");
             fileUtilsService.downloadAttachment(detailId, response, request, false);
             return new ResultForm(true, "下载成功");
         } catch (Exception e) {

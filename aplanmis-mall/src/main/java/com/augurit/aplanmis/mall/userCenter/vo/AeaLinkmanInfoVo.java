@@ -37,9 +37,9 @@ public class AeaLinkmanInfoVo {
     private String unitInfoId;//单位ID
 
 
-    public static AeaLinkmanInfoVo build(AeaLinkmanInfo AeaLinkmanInfo) {
+    public static AeaLinkmanInfoVo build(AeaLinkmanInfo aeaLinkmanInfo) {
         AeaLinkmanInfoVo aeaLinkmanIanfoVo = new AeaLinkmanInfoVo();
-        BeanUtils.copyProperties(AeaLinkmanInfo, aeaLinkmanIanfoVo);
+        BeanUtils.copyProperties(aeaLinkmanInfo, aeaLinkmanIanfoVo);
         aeaLinkmanIanfoVo.setLinkmanMobilePhone(DesensitizedUtil.desensitizedPhoneNumber(aeaLinkmanIanfoVo.getLinkmanMobilePhone()));
         return aeaLinkmanIanfoVo;
     }

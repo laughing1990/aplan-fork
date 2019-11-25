@@ -179,11 +179,16 @@ public class RestUserCenterServiceImpl implements RestUserCenterService {
         try {
             LoginInfoVo user = SessionUtil.getLoginInfo(request);
             AeaUnitLinkman query=new AeaUnitLinkman();
-            query.setUnitInfoId(user.getUnitId());
-            query.setLinkmanInfoId(userId);
-            List<AeaUnitLinkman> unitLinkmans = aeaUnitLinkmanMapper.listAeaUnitLinkman(query);
-            //加入权限校验，只能查询属于自己单位的联系人
-            if (unitLinkmans==null||unitLinkmans.size()==0)  return false;
+            if (StringUtils.isBlank(user.getUnitId())) {//个人或委托人登录
+                if (StringUtils.isNotBlank(userId) && !userId.equals(user.getUserId())) return false;
+                return true;
+            }else {
+                query.setUnitInfoId(user.getUnitId());
+                query.setLinkmanInfoId(userId);
+                List<AeaUnitLinkman> unitLinkmans = aeaUnitLinkmanMapper.listAeaUnitLinkman(query);
+                //加入权限校验，只能查询属于自己单位的联系人
+                if (unitLinkmans==null||unitLinkmans.size()==0)  return false;
+            }
         } catch (Exception e) {
             e.printStackTrace();
             throw new Exception(e);
