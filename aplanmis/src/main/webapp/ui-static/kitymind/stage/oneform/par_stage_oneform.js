@@ -1193,6 +1193,7 @@ function parStageItemFormatter(value, row, index) {
     var sumformId = row.subFormId;
     var stageItemId = row.stageItemId;
     var params = '?stageItemId='+stageItemId+'&stageId='+ row.stageId +'&itemId='+row.itemId+'&itemVerId='+row.itemVerId+'&isOptionItem='+row.isOptionItem;
+    params=encodeURIComponent(params);
 
     var strCallback = '';
     strCallback += 'needCallBackSaveActStoForm=1';
