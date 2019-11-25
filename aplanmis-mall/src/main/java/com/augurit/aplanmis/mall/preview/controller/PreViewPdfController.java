@@ -47,7 +47,7 @@ public class PreViewPdfController {
             @ApiImplicitParam(name = "detailId", value = "文件detailId", required = true, dataType = "String")
     )
     public ModelAndView previewPdf(String detailId,HttpServletRequest request)throws Exception {
-        if (!restFileService.isMatInstFileBelong(detailId,request)) throw new Exception("预览出错");
+        if (!restFileService.isFileBelong(detailId,request)) throw new Exception("预览出错");
         ModelAndView mav = new ModelAndView("preview/viewPdf");
         mav.addObject("detailId", detailId);
         return mav;

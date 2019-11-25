@@ -938,4 +938,12 @@
         </sql>
     </changeSet>
 
+
+    <changeSet id="201911251657" author="jjt" failOnError="false">
+        <sql dbms="mysql" endDelimiter="\nGO" splitStatements="true" stripComments="true">
+            ALTER TABLE `act_sto_form`
+            MODIFY COLUMN `FORM_PROPERTY`  varchar(12) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '表单属性，meta-biz表示普通开发表单，meta-flow表流程开发表单，smart-biz表示智能普通表单，smart-flow表示智能流程表单' AFTER `FORM_ORG_ID`;
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

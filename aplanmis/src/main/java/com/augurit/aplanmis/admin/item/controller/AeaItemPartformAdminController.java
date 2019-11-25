@@ -82,16 +82,12 @@ public class AeaItemPartformAdminController {
      * 保存或编辑事项与扩展表单关联表
      *
      * @param aeaItemPartform 事项与扩展表单关联表
-     * @param result          校验对象
      * @return 返回结果对象 包含结果信息
      * @throws Exception
      */
     @RequestMapping("/saveAeaItemPartform.do")
-    public ResultForm saveAeaItemPartform(AeaItemPartform aeaItemPartform, BindingResult result) throws Exception {
-        if (result.hasErrors()) {
-            logger.error("保存事项与扩展表单关联表Form对象出错");
-            throw new InvalidParameterException(aeaItemPartform);
-        }
+    public ResultForm saveAeaItemPartform(AeaItemPartform aeaItemPartform) throws Exception {
+
         if (StringUtils.isNotBlank(aeaItemPartform.getItemPartformId())) {
             aeaItemPartformService.updateAeaItemPartform(aeaItemPartform);
         } else {
