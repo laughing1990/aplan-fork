@@ -368,11 +368,20 @@ public class AeaSeriesService {
 
         seriesApplyDataVo.setApplyinstId(seriesApplyinstId);//回填申请实例ID
 
-        //1、保存单项实例
-        AeaHiSeriesinst aeaHiSeriesinst = aeaHiSeriesinstService.createAeaHiSeriesinst(seriesApplyinstId, appinstId, seriesApplyDataVo.getIsParallel(), seriesApplyDataVo.getStageId());
 
-        //2、事项实例
-        AeaHiIteminst aeaHiIteminst = aeaHiIteminstService.insertAeaHiIteminstAndTriggerAeaLogItemStateHist(aeaHiSeriesinst.getSeriesinstId(), itemVerId, branchOrgMap, null, appinstId);
+        AeaHiSeriesinst seriesInst = aeaHiSeriesinstService.getAeaHiSeriesinstByApplyinstId(seriesApplyinstId);
+        AeaHiSeriesinst aeaHiSeriesinst=null;
+        AeaHiIteminst aeaHiIteminst=null;
+        if(seriesInst==null){
+            //1、保存单项实例
+            aeaHiSeriesinst = aeaHiSeriesinstService.createAeaHiSeriesinst(seriesApplyinstId, appinstId, seriesApplyDataVo.getIsParallel(), seriesApplyDataVo.getStageId());
+            //2、事项实例
+            aeaHiIteminst = aeaHiIteminstService.insertAeaHiIteminstAndTriggerAeaLogItemStateHist(aeaHiSeriesinst.getSeriesinstId(), itemVerId, branchOrgMap, null, appinstId);
+        }else{
+            aeaHiSeriesinst=seriesInst;
+            aeaHiIteminst=aeaHiIteminstService.getAeaHiIteminstListByApplyinstId(seriesApplyinstId).get(0);
+        }
+
 
         if (StringUtils.isNotBlank(branchOrgMap)) {
             List<Map> mapList = JSONArray.parseArray(branchOrgMap, Map.class);
