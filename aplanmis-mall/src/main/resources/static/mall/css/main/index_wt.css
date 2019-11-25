@@ -881,7 +881,7 @@
 .theme-type .theme-type-list {
     display: none;
 }
-.theme-type.active .theme-type-list {
+.theme-type .active .theme-type-list {
     display: block;
     /*max-height: 530px;*/
     overflow: auto;
