@@ -58,7 +58,11 @@
                     </div>
                 </div>
                 <transition name="el-fade-in-linear">
-                    <div class="my-pro-right floor" :class="myProLeftShow?'':'my-pro-right-full'" id="my-pro-right_m" style="min-height: 700px;padding-bottom: 30px;">
+                    <div class="my-pro-right floor"
+                         :class="myProLeftShow?'':'my-pro-right-full'"
+                         id="my-pro-right_m"
+                         :style="{'min-height': (curHeight-258)+'px'}"
+                         style="padding-bottom: 30px;">
 
                     </div>
                 </transition>
