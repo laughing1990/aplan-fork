@@ -49,4 +49,6 @@ public interface AeaParStateItemMapper {
 
      List<AeaParStateItem> listStateItemByParentStateId(@Param("parentStateId") String parentStateId,
                                                        @Param("rootOrgId") String rootOrgId);
+
+     AeaParStateItem getAeaParStateItemByStageItemId(@Param("stageItemId") String stageItemId);
 }

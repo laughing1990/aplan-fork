@@ -265,4 +265,14 @@
        where ROOT_ORG_ID = #{rootOrgId}
     </select>
 
+    <select id="getAeaParStateItemByStageItemId" resultType="AeaParStateItem">
+        select
+        <include refid="allColumns">
+            <property name="alias" value="apsi"/>
+        </include>
+        from AEA_PAR_STATE_ITEM apsi
+        <where>
+            and STAGE_ITEM_ID = #{stageItemId}
+        </where>
+    </select>
 </mapper>
