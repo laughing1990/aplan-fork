@@ -13,10 +13,12 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
@@ -32,11 +34,11 @@ public class AgentItemApproveController {
     private AeaImProjPurchaseService aeaImProjPurchaseService;
 
     @GetMapping("/approveSubmitMat.html")
-    public ModelAndView index(String taskId,String viewId,String busRecordId){
-        ModelAndView mv =new ModelAndView("supermarket/approveSubmitMat");
-        mv.addObject("taskId",taskId);
-        mv.addObject("viewId",viewId);
-        mv.addObject("busRecordId",busRecordId);
+    public ModelAndView index(String taskId, String viewId, String busRecordId) {
+        ModelAndView mv = new ModelAndView("supermarket/approveSubmitMat");
+        mv.addObject("taskId", taskId);
+        mv.addObject("viewId", viewId);
+        mv.addObject("busRecordId", busRecordId);
 
         return mv;
     }
@@ -59,15 +61,17 @@ public class AgentItemApproveController {
      * @return
      */
     @ApiOperation(value = "上传中介服务结果附件", notes = "上传中介服务结果附件-新接口，需要判断是否推动流程")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "applyinstId", value = "申请实例id", required = true)
-            , @ApiImplicitParam(name = "matinstIds", value = "事项实例id", required = true)
+    @ApiImplicitParams(value = {
+            @ApiImplicitParam(name = "matinstId", value = "材料实例ID", dataType = "string", required = false),
+            @ApiImplicitParam(name = "request", value = "文件流", dataType = "HttpServletRequest", required = true),
+            @ApiImplicitParam(name = "applyinstId", value = "申请实例ID", dataType = "string", required = false),
+            @ApiImplicitParam(name = "matId", value = "材料定义ID", dataType = "string", required = false),
     })
-    @GetMapping("/uploadServiceResult")
-    public ResultForm uploadServiceResult(String[] matinstIds, String applyinstId) throws Exception {
-//        agentItemApproveService.uploadServiceResult(matinstIds, applyinstId);
+    @PostMapping("/uploadServiceResultAtt")
+    public ResultForm uploadServiceResult(String matinstId, String applyinstId, String matId, HttpServletRequest request) throws Exception {
+        matinstId = agentItemApproveService.uploadServiceResultAtt(matinstId, applyinstId, matId, request);
 
-        return new ResultForm(true, "successs");
+        return new ContentResultForm<>(true, matinstId, "successs");
     }
 
     @ApiOperation(value = "查询采购项目申报材料及实例列表", notes = "上传服务结果-新接口，需要判断是否推动流程")

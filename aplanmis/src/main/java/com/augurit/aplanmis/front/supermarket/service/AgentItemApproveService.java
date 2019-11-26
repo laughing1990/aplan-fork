@@ -4,9 +4,12 @@ import com.augurit.agcloud.bsc.domain.BscDicCodeItem;
 import com.augurit.agcloud.bsc.mapper.BscDicCodeMapper;
 import com.augurit.agcloud.framework.security.SecurityContext;
 import com.augurit.agcloud.framework.util.StringUtils;
+import com.augurit.aplanmis.common.constants.UnitType;
 import com.augurit.aplanmis.common.domain.*;
 import com.augurit.aplanmis.common.mapper.*;
 import com.augurit.aplanmis.common.service.instance.AeaHiApplyinstService;
+import com.augurit.aplanmis.common.service.instance.AeaHiItemInoutinstService;
+import com.augurit.aplanmis.common.service.instance.AeaHiItemMatinstService;
 import com.augurit.aplanmis.common.service.project.AeaProjInfoService;
 import com.augurit.aplanmis.common.vo.AeaImMajorQualVo;
 import com.augurit.aplanmis.common.vo.purchase.PurchaseProjVo;
@@ -18,7 +21,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,8 +41,6 @@ public class AgentItemApproveService {
     @Autowired
     private AeaImProjPurchaseMapper aeaImProjPurchaseMapper;
     @Autowired
-    private AeaProjInfoMapper aeaProjInfoMapper;
-    @Autowired
     private AeaImMajorQualMapper aeaImMajorQualMapper;
     @Autowired
     private BscDicCodeMapper bscDicCodeMapper;
@@ -50,6 +54,18 @@ public class AgentItemApproveService {
     private AeaProjInfoService aeaProjInfoService;
     @Autowired
     private AeaParentProjMapper aeaParentProjMapper;
+    @Autowired
+    private AeaHiItemMatinstMapper aeaHiItemMatinstMapper;
+    @Autowired
+    private AeaItemMatMapper aeaItemMatMapper;
+    @Autowired
+    private AeaUnitProjMapper aeaUnitProjMapper;
+    @Autowired
+    private AeaHiItemInoutinstService aeaHiItemInoutinstService;
+    @Autowired
+    private AeaHiItemMatinstService aeaHiItemMatinstService;
+    @Autowired
+    private AeaApplyinstProjMapper aeaApplyinstProjMapper;
 
     /**
      * 获取中介事项申报基本信息
@@ -136,5 +152,73 @@ public class AgentItemApproveService {
         if (null == purchase) throw new Exception("can not find purchase");
         restImApplyService.uploadServiceResult(purchase.getProjPurchaseId(), "", matinstIds);
 
+    }
+
+    /**
+     * 中介事项审批页上传服务结果电子件
+     *
+     * @param matinstId   材料实例ID 第一次上传为空
+     * @param applyinstId 申报实例ID
+     * @param matId       材料ID
+     * @param request     附件
+     * @return
+     * @throws Exception
+     */
+    public String uploadServiceResultAtt(String matinstId, String applyinstId, String matId, HttpServletRequest request) throws Exception {
+
+        request.setCharacterEncoding("utf-8");//设置编码，防止附件名称乱码
+
+        if (org.apache.commons.lang.StringUtils.isNotBlank(matinstId)) {
+
+            AeaHiItemMatinst aeaHiItemMatinst = aeaHiItemMatinstService.getAeaHiItemMatinstById(matinstId);
+            if (aeaHiItemMatinst == null) throw new Exception("找不到材料实例！");
+            aeaHiItemMatinstService.setAttCount(aeaHiItemMatinst, request);
+            aeaHiItemMatinst.setModifier(SecurityContext.getCurrentUserName());
+            aeaHiItemMatinst.setModifyTime(new Date());
+            aeaHiItemMatinstMapper.updateAeaHiItemMatinst(aeaHiItemMatinst);
+
+        } else {
+
+            if (org.apache.commons.lang.StringUtils.isBlank(applyinstId) || org.apache.commons.lang.StringUtils.isBlank(matId))
+                throw new Exception("缺少参数！");
+
+            AeaItemMat aeaItemMat = aeaItemMatMapper.getAeaItemMatById(matId);
+            if (null == aeaItemMat) throw new Exception("找不到材料定义！");
+            AeaHiApplyinst aeaHiApplyinst = aeaHiApplyinstService.getAeaHiApplyinstById(applyinstId);
+            if (aeaHiApplyinst == null) throw new Exception("找不到申报实例！");
+
+            AeaHiItemMatinst aeaHiItemMatinst = new AeaHiItemMatinst();
+            matinstId = UUID.randomUUID().toString();
+            aeaHiItemMatinst.setMatinstId(matinstId);
+            aeaHiItemMatinst.setMatId(matId);
+            aeaHiItemMatinst.setCreateTime(new Date());
+            aeaHiItemMatinst.setCreater(SecurityContext.getCurrentUserId());
+            aeaHiItemMatinst.setMatinstCode(aeaItemMat.getMatCode());
+            aeaHiItemMatinst.setMatinstName(aeaItemMat.getMatName());
+            aeaHiItemMatinst.setMatProp(aeaItemMat.getMatProp());
+            aeaHiItemMatinst.setRootOrgId(SecurityContext.getCurrentOrgId());
+
+            List<AeaApplyinstProj> aeaApplyinstProjs = aeaApplyinstProjMapper.getAeaApplyinstProjByApplyinstId(applyinstId);
+            if (aeaApplyinstProjs.size() < 1) throw new Exception("找不到项目信息！");
+            String projInfoId = aeaApplyinstProjs.get(0).getProjInfoId();
+
+            if ("1".equals(aeaHiApplyinst.getApplySubject())) {
+                aeaHiItemMatinst.setMatinstSource("u");
+                List<AeaUnitInfo> aeaUnitInfos = aeaUnitProjMapper.findUnitInfoByProjIdAndUnitType(projInfoId, UnitType.DEVELOPMENT_UNIT.getValue());
+                if (aeaUnitInfos.size() < 1) throw new Exception("找不到建设单位！");
+                aeaHiItemMatinst.setUnitInfoId(aeaUnitInfos.get(0).getUnitInfoId());
+            } else {
+                aeaHiItemMatinst.setLinkmanInfoId(aeaHiApplyinst.getLinkmanInfoId());
+                aeaHiItemMatinst.setMatinstSource("l");
+            }
+            aeaHiItemMatinstService.setAttCount(aeaHiItemMatinst, request);
+            aeaHiItemMatinst.setProjInfoId(projInfoId);
+            aeaHiItemMatinstMapper.insertAeaHiItemMatinst(aeaHiItemMatinst);
+
+            //创建该申报实例下所有需要用到该材料实例的关联关系
+            aeaHiItemInoutinstService.batchInsertAeaHiItemInoutinst(new String[]{aeaHiItemMatinst.getMatinstId()}, applyinstId, SecurityContext.getCurrentUserId());
+
+        }
+        return matinstId;
     }
 }
